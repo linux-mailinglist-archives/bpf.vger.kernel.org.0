@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-14185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14186-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D192A7E0C9D
-	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 01:13:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31CAB7E0C9E
+	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 01:13:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DC58281FC4
-	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 00:13:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2C21282079
+	for <lists+bpf@lfdr.de>; Sat,  4 Nov 2023 00:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB21399;
-	Sat,  4 Nov 2023 00:13:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3B64EBE;
+	Sat,  4 Nov 2023 00:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IS70W66B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KM2aGjo0"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10632188;
-	Sat,  4 Nov 2023 00:13:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1383C433C7;
-	Sat,  4 Nov 2023 00:13:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374B5623;
+	Sat,  4 Nov 2023 00:13:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E589C433C8;
+	Sat,  4 Nov 2023 00:13:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699056798;
-	bh=OlY4LQcPFfzNy2/OnxLNFf9n4Wp+VGtFcO/SRaN23m4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=IS70W66BEuiXBCtWT2osTCrEGvc2O03FQ9XPLXulaB7rVL5M5QuAo/j5CXJzXdtFq
-	 K6v8VrdHbaMenkaI9oFdCzD4/1bnbokh2vEpO0IQ1qi6vu2dTE9OVUCQwGWc1p1tiQ
-	 97nxxqAUOjDqDTuK+KL47Os1plFeVZf9Whhuy1V5Gfy8MAZ900REtgg2Af2ntZCn9l
-	 e5+xh56cKKMnVGeUChbLLOWF8V14t85UYB9sT2CwSvAz4nD5EQYTEO2tP992ZtqyPT
-	 M7kKXWTBjtFPvt5P1CX59GzaF9jC5hllqSROB0dWbZ0GSKnKYy5k1/6+X+z1fDppUe
-	 QuXZ0+B+ZASOg==
+	s=k20201202; t=1699056806;
+	bh=8OdX2T0qQB7W9d/bmyvvWUGsveMnS5apZLWL1Hu1D0I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=KM2aGjo0LFdHhJg1vNKhW/BbTbs2iWopY5mp5E4UwflWCLYXuj2JA0qS7cAGDgCaj
+	 hk3ZGYxyrN/WXum2mTSyHizF1MPD0seQk/4vKt+H3n3S92Z926RxVqJEOBNcaDSbQ0
+	 SbE/fcib+8h87vimVhgUe5b66rvCUwm2ymzIcWyDkPDf9mltWooD/Xdj66bc+dH8a4
+	 Rynt+n72kgrHcVUrjwOg429U3IVwS+bq2gVbxkyIquBnyJeU/I/jvsr/Z2SmGiNZWl
+	 94SQK5nOZ8x4PnjJLD7BiWJhuKVkUqP5wPWn1ADV2wntDWCmlmwVspzXQXwISRm9bK
+	 PucntXXtVO7XA==
 From: Song Liu <song@kernel.org>
 To: bpf@vger.kernel.org,
 	fsverity@lists.linux.dev
@@ -46,10 +46,12 @@ Cc: ast@kernel.org,
 	kpsingh@kernel.org,
 	vadfed@meta.com,
 	Song Liu <song@kernel.org>
-Subject: [PATCH v12 bpf-next 0/9] bpf: File verification with LSM and fsverity
-Date: Fri,  3 Nov 2023 17:13:04 -0700
-Message-Id: <20231104001313.3538201-1-song@kernel.org>
+Subject: [PATCH v12 bpf-next 1/9] bpf: Add __bpf_dynptr_data* for in kernel use
+Date: Fri,  3 Nov 2023 17:13:05 -0700
+Message-Id: <20231104001313.3538201-2-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231104001313.3538201-1-song@kernel.org>
+References: <20231104001313.3538201-1-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -58,105 +60,122 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changes v11 => v12:
-1. Fix typo (data_ptr => sig_ptr) in bpf_get_file_xattr().
+Different types of bpf dynptr have different internal data storage.
+Specifically, SKB and XDP type of dynptr may have non-continuous data.
+Therefore, it is not always safe to directly access dynptr->data.
 
-Changes v10 => v11:
-1. Let __bpf_dynptr_data() return const void *. (Andrii)
-2. Optimize code to reuse output from __bpf_dynptr_size(). (Andrii)
-3. Add __diag_ignore_all("-Wmissing-declarations") for kfunc definition.
-4. Fix an off indentation. (Andrii)
+Add __bpf_dynptr_data and __bpf_dynptr_data_rw to replace direct access to
+dynptr->data.
 
-Changes v9 => v10:
-1. Remove WARN_ON_ONCE() from check_reg_const_str. (Alexei)
+Update bpf_verify_pkcs7_signature to use __bpf_dynptr_data instead of
+dynptr->data.
 
-Changes v8 => v9:
-1. Fix test_progs kfunc_dynptr_param/dynptr_data_null.
+Signed-off-by: Song Liu <song@kernel.org>
+---
+ include/linux/bpf.h      |  2 ++
+ kernel/bpf/helpers.c     | 47 ++++++++++++++++++++++++++++++++++++++++
+ kernel/trace/bpf_trace.c | 12 ++++++----
+ 3 files changed, 57 insertions(+), 4 deletions(-)
 
-Changes v7 => v8:
-1. Do not use bpf_dynptr_slice* in the kernel. Add __bpf_dynptr_data* and
-   use them in ther kernel. (Andrii)
-
-Changes v6 => v7:
-1. Change "__const_str" annotation to "__str". (Alexei, Andrii)
-2. Add KF_TRUSTED_ARGS flag for both new kfuncs. (KP)
-3. Only allow bpf_get_file_xattr() to read xattr with "user." prefix.
-4. Add Acked-by from Eric Biggers.
-
-Changes v5 => v6:
-1. Let fsverity_init_bpf() return void. (Eric Biggers)
-2. Sort things in alphabetic orders. (Eric Biggers)
-
-Changes v4 => v5:
-1. Revise commit logs. (Alexei)
-
-Changes v3 => v4:
-1. Fix error reported by CI.
-2. Update comments of bpf_dynptr_slice* that they may return error pointer.
-
-Changes v2 => v3:
-1. Rebase and resolve conflicts.
-
-Changes v1 => v2:
-1. Let bpf_get_file_xattr() use const string for arg "name". (Alexei)
-2. Add recursion prevention with allowlist. (Alexei)
-3. Let bpf_get_file_xattr() use __vfs_getxattr() to avoid recursion,
-   as vfs_getxattr() calls into other LSM hooks.
-4. Do not use dynptr->data directly, use helper insteadd. (Andrii)
-5. Fixes with bpf_get_fsverity_digest. (Eric Biggers)
-6. Add documentation. (Eric Biggers)
-7. Fix some compile warnings. (kernel test robot)
-
-This set enables file verification with BPF LSM and fsverity.
-
-In this solution, fsverity is used to provide reliable and efficient hash
-of files; and BPF LSM is used to implement signature verification (against
-asymmetric keys), and to enforce access control.
-
-This solution can be used to implement access control in complicated cases.
-For example: only signed python binary and signed python script and access
-special files/devices/ports.
-
-Thanks,
-Song
-
-Song Liu (9):
-  bpf: Add __bpf_dynptr_data* for in kernel use
-  bpf: Factor out helper check_reg_const_str()
-  bpf: Introduce KF_ARG_PTR_TO_CONST_STR
-  bpf: Add kfunc bpf_get_file_xattr
-  bpf, fsverity: Add kfunc bpf_get_fsverity_digest
-  Documentation/bpf: Add documentation for filesystem kfuncs
-  selftests/bpf: Sort config in alphabetic order
-  selftests/bpf: Add tests for filesystem kfuncs
-  selftests/bpf: Add test that uses fsverity and xattr to sign a file
-
- Documentation/bpf/fs_kfuncs.rst               |  21 +++
- Documentation/bpf/index.rst                   |   1 +
- Documentation/bpf/kfuncs.rst                  |  24 +++
- fs/verity/fsverity_private.h                  |  10 ++
- fs/verity/init.c                              |   1 +
- fs/verity/measure.c                           |  88 ++++++++++
- include/linux/bpf.h                           |   2 +
- kernel/bpf/helpers.c                          |  47 +++++
- kernel/bpf/verifier.c                         | 104 +++++++----
- kernel/trace/bpf_trace.c                      |  79 ++++++++-
- tools/testing/selftests/bpf/bpf_kfuncs.h      |  10 ++
- tools/testing/selftests/bpf/config            |   3 +-
- .../selftests/bpf/prog_tests/fs_kfuncs.c      | 132 ++++++++++++++
- .../bpf/prog_tests/verify_pkcs7_sig.c         | 163 +++++++++++++++++-
- .../selftests/bpf/progs/test_fsverity.c       |  46 +++++
- .../selftests/bpf/progs/test_get_xattr.c      |  37 ++++
- .../selftests/bpf/progs/test_sig_in_xattr.c   |  82 +++++++++
- .../bpf/progs/test_verify_pkcs7_sig.c         |   8 +-
- .../testing/selftests/bpf/verify_sig_setup.sh |  25 +++
- 19 files changed, 834 insertions(+), 49 deletions(-)
- create mode 100644 Documentation/bpf/fs_kfuncs.rst
- create mode 100644 tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_fsverity.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_get_xattr.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
-
---
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b4825d3cdb29..eb84caf133df 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1222,6 +1222,8 @@ enum bpf_dynptr_type {
+ 
+ int bpf_dynptr_check_size(u32 size);
+ u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
++const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len);
++void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len);
+ 
+ #ifdef CONFIG_BPF_JIT
+ int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index e46ac288a108..c569c4c43bde 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2611,3 +2611,50 @@ static int __init kfunc_init(void)
+ }
+ 
+ late_initcall(kfunc_init);
++
++/* Get a pointer to dynptr data up to len bytes for read only access. If
++ * the dynptr doesn't have continuous data up to len bytes, return NULL.
++ */
++const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len)
++{
++	enum bpf_dynptr_type type;
++	int err;
++
++	if (!ptr->data)
++		return NULL;
++
++	err = bpf_dynptr_check_off_len(ptr, 0, len);
++	if (err)
++		return NULL;
++	type = bpf_dynptr_get_type(ptr);
++
++	switch (type) {
++	case BPF_DYNPTR_TYPE_LOCAL:
++	case BPF_DYNPTR_TYPE_RINGBUF:
++		return ptr->data + ptr->offset;
++	case BPF_DYNPTR_TYPE_SKB:
++		return skb_pointer_if_linear(ptr->data, ptr->offset, len);
++	case BPF_DYNPTR_TYPE_XDP:
++	{
++		void *xdp_ptr = bpf_xdp_pointer(ptr->data, ptr->offset, len);
++
++		if (IS_ERR_OR_NULL(xdp_ptr))
++			return NULL;
++		return xdp_ptr;
++	}
++	default:
++		WARN_ONCE(true, "unknown dynptr type %d\n", type);
++		return NULL;
++	}
++}
++
++/* Get a pointer to dynptr data up to len bytes for read write access. If
++ * the dynptr doesn't have continuous data up to len bytes, or the dynptr
++ * is read only, return NULL.
++ */
++void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len)
++{
++	if (__bpf_dynptr_is_rdonly(ptr))
++		return NULL;
++	return (void *)__bpf_dynptr_data(ptr, len);
++}
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index df697c74d519..d525a22b8d56 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1378,6 +1378,8 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
+ 			       struct bpf_dynptr_kern *sig_ptr,
+ 			       struct bpf_key *trusted_keyring)
+ {
++	const void *data, *sig;
++	u32 data_len, sig_len;
+ 	int ret;
+ 
+ 	if (trusted_keyring->has_ref) {
+@@ -1394,10 +1396,12 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
+ 			return ret;
+ 	}
+ 
+-	return verify_pkcs7_signature(data_ptr->data,
+-				      __bpf_dynptr_size(data_ptr),
+-				      sig_ptr->data,
+-				      __bpf_dynptr_size(sig_ptr),
++	data_len = __bpf_dynptr_size(data_ptr);
++	data = __bpf_dynptr_data(data_ptr, data_len);
++	sig_len = __bpf_dynptr_size(sig_ptr);
++	sig = __bpf_dynptr_data(sig_ptr, sig_len);
++
++	return verify_pkcs7_signature(data, data_len, sig, sig_len,
+ 				      trusted_keyring->key,
+ 				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
+ 				      NULL);
+-- 
 2.34.1
+
 
