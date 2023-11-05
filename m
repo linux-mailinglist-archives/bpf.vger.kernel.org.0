@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-14236-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEF217E1456
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 17:08:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE377E145A
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 17:09:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E8B7B20DFB
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 16:08:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1A8928139D
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 16:08:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABED7125DA;
-	Sun,  5 Nov 2023 16:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6BAA125DC;
+	Sun,  5 Nov 2023 16:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p0LAesio"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Svb+pP2N"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11FA3F9DA;
-	Sun,  5 Nov 2023 16:08:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B9CEC433C8;
-	Sun,  5 Nov 2023 16:08:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523A5F9DA;
+	Sun,  5 Nov 2023 16:08:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46450C433C7;
+	Sun,  5 Nov 2023 16:08:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699200518;
-	bh=osFvjJGUhbNP9wL7RPDmpl5S4Pn7UmIryjWDNJIazD4=;
+	s=k20201202; t=1699200531;
+	bh=ppDHV4sYM4AQxjT5p82RNOMWNxUOZsOt9Rrtuz4qMjU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=p0LAesiolPSvBHlEMDUci5LTxD0Q8ICVx8zS9GXRprP8GAdxY295BIGVK5ABpUj76
-	 LFgenEkWYXi9xB/xF7ETH9+700jO8RiLeKbdwnrjYBdwFalaw4To6njLNHOP0bNrzC
-	 PuwWUWNiplwQElnpl0qLs/dsDL5/9DxQ3ePrl7ld+jDDkk3iKbeIWd+aqcyDlrymOW
-	 WD2jGSQB8qfRGHP5k/Dqf76m49hs2wJJvplamIG+PARcR0pAFMQQHA92DEjdKyQS0B
-	 SI3VQp85ybSgVNIIfjBFQ+Mn5xKNqYaO+Sw/ZyGiue2f5qeEBh6n5SF2QzE8ecECH6
-	 zQrQdNv2DnJdQ==
+	b=Svb+pP2NmlqJSS5LWHPXMG+rNPvGGXxEISxfzXxdC+/yezWosTYDxi+Spq75srogn
+	 u9KKX7Z/L16jEjsebrwXaMngM3MUsGjPm92uPRgnVHqrTIfmwT6eWFXT9X3ATdioDZ
+	 /15aSpFqshZjCNdznI/Rx97EWDHbLcdslCeBAppQimy5d/sDVOw6okhnCAibqnXWt5
+	 ZACfxzQK/hpWPt34ZLmGI4PWisw9bjde7fX3A0hZP1lhaBDqFmWBtpjkonQdgKs+f1
+	 eU+pQO/wNJgsmon7wa/iCy0mfbqDdrOa3lcFkE+ETbIR8Rrfu5M/TiEUeAJbbuARWi
+	 yeZyVm1R6Io5Q==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -50,9 +50,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH 10/32] function_graph: Have the instances use their own ftrace_ops for filtering
-Date: Mon,  6 Nov 2023 01:08:32 +0900
-Message-Id: <169920051199.482486.17674190105884047734.stgit@devnote2>
+Subject: [RFC PATCH 11/32] function_graph: Add "task variables" per task for fgraph_ops
+Date: Mon,  6 Nov 2023 01:08:44 +0900
+Message-Id: <169920052428.482486.4211809175393725858.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169920038849.482486.15796387219966662967.stgit@devnote2>
 References: <169920038849.482486.15796387219966662967.stgit@devnote2>
@@ -68,292 +68,175 @@ Content-Transfer-Encoding: 8bit
 
 From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Allow for instances to have their own ftrace_ops part of the fgraph_ops that
-makes the funtion_graph tracer filter on the set_ftrace_filter file of the
-instance and not the top instance.
+Add a "task variables" array on the tasks shadow ret_stack that is the
+size of longs for each possible registered fgraph_ops. That's a total of 16,
+taking up 8 * 16 = 128 bytes (out of a page size 4k).
+
+This will allow for fgraph_ops to do specific features on a per task basis
+having a way to maintain state for each task.
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- include/linux/ftrace.h               |    1 +
- kernel/trace/fgraph.c                |   60 +++++++++++++++++++++-------------
- kernel/trace/ftrace.c                |    6 ++-
- kernel/trace/trace.h                 |   16 +++++----
- kernel/trace/trace_functions.c       |    2 +
- kernel/trace/trace_functions_graph.c |    8 +++--
- 6 files changed, 58 insertions(+), 35 deletions(-)
+ include/linux/ftrace.h |    2 +
+ kernel/trace/fgraph.c  |   73 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 74 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 7fd044ae3da5..9dab365c6023 100644
+index 9dab365c6023..31ad20e78522 100644
 --- a/include/linux/ftrace.h
 +++ b/include/linux/ftrace.h
-@@ -1044,6 +1044,7 @@ extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph
- struct fgraph_ops {
- 	trace_func_graph_ent_t		entryfunc;
+@@ -1046,6 +1046,7 @@ struct fgraph_ops {
  	trace_func_graph_ret_t		retfunc;
-+	struct ftrace_ops		ops; /* for the hash lists */
+ 	struct ftrace_ops		ops; /* for the hash lists */
  	void				*private;
++	int				idx;
  };
  
+ /*
+@@ -1084,6 +1085,7 @@ ftrace_graph_get_ret_stack(struct task_struct *task, int idx);
+ 
+ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+ 				    unsigned long ret, unsigned long *retp);
++unsigned long *fgraph_get_task_var(struct fgraph_ops *gops);
+ 
+ /*
+  * Sometimes we don't want to trace a function with the function
 diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 1e8c17f70b84..0642f3281b64 100644
+index 0642f3281b64..748896e320e2 100644
 --- a/kernel/trace/fgraph.c
 +++ b/kernel/trace/fgraph.c
-@@ -17,14 +17,6 @@
- #include "ftrace_internal.h"
- #include "trace.h"
+@@ -92,10 +92,18 @@ enum {
+ #define SHADOW_STACK_SIZE (PAGE_SIZE)
+ #define SHADOW_STACK_INDEX (SHADOW_STACK_SIZE / sizeof(long))
+ /* Leave on a buffer at the end */
+-#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - (FGRAPH_RET_INDEX + 1))
++#define SHADOW_STACK_MAX_INDEX				\
++	(SHADOW_STACK_INDEX - (FGRAPH_RET_INDEX + 1 + FGRAPH_ARRAY_SIZE))
  
--#ifdef CONFIG_DYNAMIC_FTRACE
--#define ASSIGN_OPS_HASH(opsname, val) \
--	.func_hash		= val, \
--	.local_hash.regex_lock	= __MUTEX_INITIALIZER(opsname.local_hash.regex_lock),
--#else
--#define ASSIGN_OPS_HASH(opsname, val)
--#endif
--
- #define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
- #define FGRAPH_RET_INDEX (FGRAPH_RET_SIZE / sizeof(long))
+ #define RET_STACK(t, index) ((struct ftrace_ret_stack *)(&(t)->ret_stack[index]))
  
-@@ -338,9 +330,6 @@ int function_graph_enter(unsigned long ret, unsigned long func,
- 		return -EBUSY;
- #endif
++/*
++ * Each fgraph_ops has a reservered unsigned long at the end (top) of the
++ * ret_stack to store task specific state.
++ */
++#define SHADOW_STACK_TASK_VARS(ret_stack) \
++	((unsigned long *)(&(ret_stack)[SHADOW_STACK_INDEX - FGRAPH_ARRAY_SIZE]))
++
+ DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
+ int ftrace_graph_active;
  
--	if (!ftrace_ops_test(&global_ops, func, NULL))
--		return -EBUSY;
--
- 	trace.func = func;
- 	trace.depth = ++current->curr_ret_depth;
- 
-@@ -361,7 +350,8 @@ int function_graph_enter(unsigned long ret, unsigned long func,
- 			atomic_inc(&current->trace_overrun);
- 			break;
- 		}
--		if (fgraph_array[i]->entryfunc(&trace, fgraph_array[i])) {
-+		if (ftrace_ops_test(&gops->ops, func, NULL) &&
-+		    gops->entryfunc(&trace, gops)) {
- 			offset = current->curr_ret_stack;
- 			/* Check the top level stored word */
- 			type = get_fgraph_type(current, offset - 1);
-@@ -656,17 +646,25 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+@@ -132,6 +140,44 @@ static void return_run(struct ftrace_graph_ret *trace, struct fgraph_ops *ops)
+ 	return;
  }
- #endif /* HAVE_FUNCTION_GRAPH_RET_ADDR_PTR */
  
--static struct ftrace_ops graph_ops = {
--	.func			= ftrace_graph_func,
--	.flags			= FTRACE_OPS_FL_INITIALIZED |
--				   FTRACE_OPS_FL_PID |
--				   FTRACE_OPS_GRAPH_STUB,
-+void fgraph_init_ops(struct ftrace_ops *dst_ops,
-+		     struct ftrace_ops *src_ops)
++static void ret_stack_set_task_var(struct task_struct *t, int idx, long val)
 +{
-+	dst_ops->func = ftrace_stub;
-+	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_FL_STUB;
++	unsigned long *gvals = SHADOW_STACK_TASK_VARS(t->ret_stack);
 +
- #ifdef FTRACE_GRAPH_TRAMP_ADDR
--	.trampoline		= FTRACE_GRAPH_TRAMP_ADDR,
-+	dst_ops->trampoline = FTRACE_GRAPH_TRAMP_ADDR;
- 	/* trampoline_size is only needed for dynamically allocated tramps */
- #endif
--	ASSIGN_OPS_HASH(graph_ops, &global_ops.local_hash)
--};
-+
-+#ifdef CONFIG_DYNAMIC_FTRACE
-+	if (src_ops) {
-+		dst_ops->func_hash = &src_ops->local_hash;
-+		mutex_init(&dst_ops->local_hash.regex_lock);
-+		dst_ops->flags |= FTRACE_OPS_FL_INITIALIZED;
-+	}
-+#endif
++	gvals[idx] = val;
 +}
++
++static unsigned long *
++ret_stack_get_task_var(struct task_struct *t, int idx)
++{
++	unsigned long *gvals = SHADOW_STACK_TASK_VARS(t->ret_stack);
++
++	return &gvals[idx];
++}
++
++static void ret_stack_init_task_vars(unsigned long *ret_stack)
++{
++	unsigned long *gvals = SHADOW_STACK_TASK_VARS(ret_stack);
++
++	memset(gvals, 0, sizeof(*gvals) * FGRAPH_ARRAY_SIZE);
++}
++
++/**
++ * fgraph_get_task_var - retrieve a task specific state variable
++ * @gops: The ftrace_ops that owns the task specific variable
++ *
++ * Every registered fgraph_ops has a task state variable
++ * reserved on the task's ret_stack. This function returns the
++ * address to that variable.
++ *
++ * Returns the address to the fgraph_ops @gops tasks specific
++ * unsigned long variable.
++ */
++unsigned long *fgraph_get_task_var(struct fgraph_ops *gops)
++{
++	return ret_stack_get_task_var(current, gops->idx);
++}
++
+ /*
+  * @offset: The index into @t->ret_stack to find the ret_stack entry
+  * @index: Where to place the index into @t->ret_stack of that entry
+@@ -709,6 +755,7 @@ static int alloc_retstack_tasklist(unsigned long **ret_stack_list)
  
- void ftrace_graph_sleep_time_control(bool enable)
+ 		if (t->ret_stack == NULL) {
+ 			atomic_set(&t->trace_overrun, 0);
++			ret_stack_init_task_vars(ret_stack_list[start]);
+ 			t->curr_ret_stack = 0;
+ 			t->curr_ret_depth = -1;
+ 			/* Make sure the tasks see the 0 first: */
+@@ -769,6 +816,7 @@ static void
+ graph_init_task(struct task_struct *t, unsigned long *ret_stack)
  {
-@@ -871,11 +869,20 @@ static int start_graph_tracing(void)
+ 	atomic_set(&t->trace_overrun, 0);
++	ret_stack_init_task_vars(ret_stack);
+ 	t->ftrace_timestamp = 0;
+ 	t->curr_ret_stack = 0;
+ 	t->curr_ret_depth = -1;
+@@ -867,6 +915,24 @@ static int start_graph_tracing(void)
+ 	return ret;
+ }
  
++static void init_task_vars(int idx)
++{
++	struct task_struct *g, *t;
++	int cpu;
++
++	for_each_online_cpu(cpu) {
++		if (idle_task(cpu)->ret_stack)
++			ret_stack_set_task_var(idle_task(cpu), idx, 0);
++	}
++
++	read_lock(&tasklist_lock);
++	for_each_process_thread(g, t) {
++		if (t->ret_stack)
++			ret_stack_set_task_var(t, idx, 0);
++	}
++	read_unlock(&tasklist_lock);
++}
++
  int register_ftrace_graph(struct fgraph_ops *gops)
  {
-+	int command = 0;
- 	int ret = 0;
- 	int i;
+ 	int command = 0;
+@@ -903,6 +969,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 	fgraph_array[i] = gops;
+ 	if (i + 1 > fgraph_array_cnt)
+ 		fgraph_array_cnt = i + 1;
++	gops->idx = i;
  
- 	mutex_lock(&ftrace_lock);
+ 	ftrace_graph_active++;
  
-+	if (!gops->ops.func) {
-+		gops->ops.flags |= FTRACE_OPS_FL_STUB;
-+		gops->ops.func = ftrace_stub;
-+#ifdef FTRACE_GRAPH_TRAMP_ADDR
-+		gops->ops.trampoline = FTRACE_GRAPH_TRAMP_ADDR;
-+#endif
-+	}
-+
- 	if (!fgraph_array[0]) {
- 		/* The array must always have real data on it */
- 		for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
-@@ -912,9 +919,10 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- 		 */
+@@ -920,6 +987,8 @@ int register_ftrace_graph(struct fgraph_ops *gops)
  		ftrace_graph_return = return_run;
  		ftrace_graph_entry = entry_run;
--
--		ret = ftrace_startup(&graph_ops, FTRACE_START_FUNC_RET);
-+		command = FTRACE_START_FUNC_RET;
- 	}
-+
-+	ret = ftrace_startup(&gops->ops, command);
- out:
- 	mutex_unlock(&ftrace_lock);
- 	return ret;
-@@ -922,6 +930,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- 
- void unregister_ftrace_graph(struct fgraph_ops *gops)
- {
-+	int command = 0;
- 	int i;
- 
- 	mutex_lock(&ftrace_lock);
-@@ -944,10 +953,15 @@ void unregister_ftrace_graph(struct fgraph_ops *gops)
+ 		command = FTRACE_START_FUNC_RET;
++	} else {
++		init_task_vars(gops->idx);
  	}
  
- 	ftrace_graph_active--;
+ 	ret = ftrace_startup(&gops->ops, command);
+@@ -944,6 +1013,8 @@ void unregister_ftrace_graph(struct fgraph_ops *gops)
+ 	if (i >= fgraph_array_cnt)
+ 		goto out;
+ 
++	WARN_ON_ONCE(gops->idx != i);
 +
-+	if (!ftrace_graph_active)
-+		command = FTRACE_STOP_FUNC_RET;
-+
-+	ftrace_shutdown(&gops->ops, command);
-+
- 	if (!ftrace_graph_active) {
- 		ftrace_graph_return = ftrace_stub_graph;
- 		ftrace_graph_entry = ftrace_graph_entry_stub;
--		ftrace_shutdown(&graph_ops, FTRACE_STOP_FUNC_RET);
- 		unregister_pm_notifier(&ftrace_suspend_notifier);
- 		unregister_trace_sched_switch(ftrace_graph_probe_sched_switch, NULL);
- 	}
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 83fbfb7b48f8..c4cc2a9d0047 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -3050,6 +3050,8 @@ int ftrace_startup(struct ftrace_ops *ops, int command)
- 	if (unlikely(ftrace_disabled))
- 		return -ENODEV;
- 
-+	ftrace_ops_init(ops);
-+
- 	ret = __register_ftrace_function(ops);
- 	if (ret)
- 		return ret;
-@@ -7319,7 +7321,7 @@ __init void ftrace_init_global_array_ops(struct trace_array *tr)
- 	tr->ops = &global_ops;
- 	tr->ops->private = tr;
- 	ftrace_init_trace_array(tr);
--	init_array_fgraph_ops(tr);
-+	init_array_fgraph_ops(tr, tr->ops);
- }
- 
- void ftrace_init_array_ops(struct trace_array *tr, ftrace_func_t func)
-@@ -8051,7 +8053,7 @@ static int register_ftrace_function_nolock(struct ftrace_ops *ops)
-  */
- int register_ftrace_function(struct ftrace_ops *ops)
- {
--	int ret;
-+	int ret = -1;
- 
- 	lock_direct_mutex();
- 	ret = prepare_direct_functions_for_ipmodify(ops);
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 73fe789ba143..531cfdb44911 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -886,8 +886,8 @@ extern int __trace_graph_entry(struct trace_array *tr,
- extern void __trace_graph_return(struct trace_array *tr,
- 				 struct ftrace_graph_ret *trace,
- 				 unsigned int trace_ctx);
--extern void init_array_fgraph_ops(struct trace_array *tr);
--extern int allocate_fgraph_ops(struct trace_array *tr);
-+extern void init_array_fgraph_ops(struct trace_array *tr, struct ftrace_ops *ops);
-+extern int allocate_fgraph_ops(struct trace_array *tr, struct ftrace_ops *ops);
- extern void free_fgraph_ops(struct trace_array *tr);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
-@@ -970,6 +970,7 @@ static inline int ftrace_graph_notrace_addr(unsigned long addr)
- 	preempt_enable_notrace();
- 	return ret;
- }
-+
- #else
- static inline int ftrace_graph_addr(struct ftrace_graph_ent *trace)
- {
-@@ -995,18 +996,19 @@ static inline bool ftrace_graph_ignore_func(struct ftrace_graph_ent *trace)
- 		(fgraph_max_depth && trace->depth >= fgraph_max_depth);
- }
- 
-+void fgraph_init_ops(struct ftrace_ops *dst_ops,
-+		     struct ftrace_ops *src_ops);
-+
- #else /* CONFIG_FUNCTION_GRAPH_TRACER */
- static inline enum print_line_t
- print_graph_function_flags(struct trace_iterator *iter, u32 flags)
- {
- 	return TRACE_TYPE_UNHANDLED;
- }
--static inline void init_array_fgraph_ops(struct trace_array *tr) { }
--static inline int allocate_fgraph_ops(struct trace_array *tr)
--{
--	return 0;
--}
- static inline void free_fgraph_ops(struct trace_array *tr) { }
-+/* ftrace_ops may not be defined */
-+#define init_array_fgraph_ops(tr, ops) do { } while (0)
-+#define allocate_fgraph_ops(tr, ops) ({ 0; })
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
- 
- extern struct list_head ftrace_pids;
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 8e8da0d0ee52..13bf2415245d 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -91,7 +91,7 @@ int ftrace_create_function_files(struct trace_array *tr,
- 	if (!tr->ops)
- 		return -EINVAL;
- 
--	ret = allocate_fgraph_ops(tr);
-+	ret = allocate_fgraph_ops(tr, tr->ops);
- 	if (ret) {
- 		kfree(tr->ops);
- 		return ret;
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 9ccc904a7703..7f30652f0e97 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -288,7 +288,7 @@ static struct fgraph_ops funcgraph_ops = {
- 	.retfunc = &trace_graph_return,
- };
- 
--int allocate_fgraph_ops(struct trace_array *tr)
-+int allocate_fgraph_ops(struct trace_array *tr, struct ftrace_ops *ops)
- {
- 	struct fgraph_ops *gops;
- 
-@@ -301,6 +301,9 @@ int allocate_fgraph_ops(struct trace_array *tr)
- 
- 	tr->gops = gops;
- 	gops->private = tr;
-+
-+	fgraph_init_ops(&gops->ops, ops);
-+
- 	return 0;
- }
- 
-@@ -309,10 +312,11 @@ void free_fgraph_ops(struct trace_array *tr)
- 	kfree(tr->gops);
- }
- 
--__init void init_array_fgraph_ops(struct trace_array *tr)
-+__init void init_array_fgraph_ops(struct trace_array *tr, struct ftrace_ops *ops)
- {
- 	tr->gops = &funcgraph_ops;
- 	funcgraph_ops.private = tr;
-+	fgraph_init_ops(&tr->gops->ops, ops);
- }
- 
- static int graph_trace_init(struct trace_array *tr)
+ 	fgraph_array[i] = &fgraph_stub;
+ 	if (i + 1 == fgraph_array_cnt) {
+ 		for (; i >= 0; i--)
 
 
