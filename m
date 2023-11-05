@@ -1,179 +1,101 @@
-Return-Path: <bpf+bounces-14221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BB0D7E1372
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 14:01:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D3B77E13AF
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 14:35:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86D581C209A5
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 13:01:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ED541C20A3C
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 13:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A107BE4D;
-	Sun,  5 Nov 2023 13:01:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B68C2E3;
+	Sun,  5 Nov 2023 13:35:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="qKKvVS5c";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gKN0ryHC"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="EqiApErM"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D786623B3;
-	Sun,  5 Nov 2023 13:01:36 +0000 (UTC)
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B84FDDE;
-	Sun,  5 Nov 2023 05:01:33 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailout.west.internal (Postfix) with ESMTP id 818E33200201;
-	Sun,  5 Nov 2023 08:01:28 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Sun, 05 Nov 2023 08:01:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-	1699189288; x=1699275688; bh=KMpj0q3rV4QkSLdC+R+IgEFDCLdM6ALsOeh
-	s5fxhziE=; b=qKKvVS5cYktSz7q4FEw3JLvDGpkas6wCYRCtYsSz7++VNip4gec
-	SeSmCXAlJKv6k1nBLiIesqRDXB//2opD0udDnpHS9YrJco/iutIrnS0bda9ymFld
-	2EEtR7ReaHFiOigKaIsL75yNEShRk4xuxzB99v2R74Jlc3uEE1qA3XWraSNx9JG8
-	/TPU/SDfig4Q4AKza591VNPVeiG07VffNAebGm+V0F8nvMYSoqX0xceXwi8aktsO
-	9qRq+hjiRj5WFHj5kYYOguVZv9rQgqXjEHxCAOIQVaDPWtckHwNaMWLJ8LS5Aa72
-	UeWSYlMVmpmIUY0O2F8Pp4eSWSjR/pgQJ0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1699189288; x=1699275688; bh=KMpj0q3rV4QkSLdC+R+IgEFDCLdM6ALsOeh
-	s5fxhziE=; b=gKN0ryHCrGDU9pI4Nibqb4KlOnSnqYfdyyh/UoJo92R88Qw9mE5
-	VBN/Byx5jjqPelkmoJpKBeqq69usE589v9cYlw0by2QSxlLHvpJ1g++KdONtre9M
-	kpW7FPCkSHRSVeOe1qyYTvgV+YMgeZN37JHrxmPRtVPuD2WkccxYCXkqIUN1lHEz
-	Ycc9fAo5hRFMOd70WiD3zHnbuHFVmqnQpv/tc2r76I6k/WYeaVA5vjf7d/Vxdi5+
-	6a6jLRa3Fw96WTG57d1SCNO0N9BmB1fCwClOGd1K8RfaSD8nTbQoIZxONgIDuii9
-	mTgG2Cpj2ohk9cLJwKjG4SirVQkj9mqQoTg==
-X-ME-Sender: <xms:JpJHZWZzm02rpCaD9N6VWJnakrZNEK287K8P3xctIQpr-F17-5RmSg>
-    <xme:JpJHZZbi29JWLJwhzqFLbhO8LwXJ3oWT4p6PYohzB47T4tH4Y7mK2baz_ZpLtJwSn
-    OhW1J1jcWdFAIDlYU4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudduvddggeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
-    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
-    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:JpJHZQ-W2kJpxmOeLwdSxnK24r9stieF8ula6iv0eLwmbdI-fcsIuA>
-    <xmx:JpJHZYrKmnYVsRmdd3pAxVhL2-vFOyJYbOlysVf6gL36dJpvCuXuXQ>
-    <xmx:JpJHZRr9WzFLJbYqvuuTTdSfc3WOdbiO6mJLDRyZnmQpI310yZjVGQ>
-    <xmx:KJJHZaY4vB1r_Wu5W_PvepJU1fwsPoTkWVf0RvCv1MckfCgmINoV0g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 245A1B60089; Sun,  5 Nov 2023 08:01:26 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150644423
+	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 13:35:08 +0000 (UTC)
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECF4CC
+	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 05:35:07 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2738269a12.3
+        for <bpf@vger.kernel.org>; Sun, 05 Nov 2023 05:35:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1699191306; x=1699796106; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GLUxCAvMAMlQ5S3jRvjvA+djKH82qjmPj//5dOcsTPk=;
+        b=EqiApErMykJRakwln2pEQ+WWpSPPj/ZTsA8f+zUq6ktqa0Lq8RZcQhfeCWZuItYIcP
+         XpmsgkZ2Tyh3RqQcOEWVYPGRt8Bqh0IMdcqW/+Prjo9hWqD/klxng0KJ/Xu4rap5TblJ
+         G+unuOHK4hbwby8l6q6qo3HoLO3MEFo98/+ZA1GDsKzG2TogNT6lyeOLNz1JPXXCNMpI
+         wEQ1NqtTdevaxPi6+o7rxCyFuLYoAoLFZ9ncphJ6PIt4n+iqtOP2NO0ywLaXroA3kHh2
+         881/bWNfNfFj5oSTR3vL1AMzF15qSHwt9sY52E8x15pZCG3z8HavgZTcDVHYi48RiqbP
+         bXow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699191306; x=1699796106;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GLUxCAvMAMlQ5S3jRvjvA+djKH82qjmPj//5dOcsTPk=;
+        b=S779TTMmJnct3XfkHPeVFacBwhypXyRmW+Th7VCdfDUf7ehDbhXPV0dCG5en5RP4Jv
+         /X6NXSnBhk6Riiv3tAeeyvHvA6ub8Njxe7OXRCQmDN9pU+XP5BzMFwl9opO9vXzqzepz
+         yLtsFP50EQrrMSzFkzBIB3kK0edgv6SfuuQgbQ9PJPgzF80myA9Al+qyw0D0lkrGtGaH
+         6VHMT2QbntcWS8TP4/S/JMAeVOvcFV9pwICIwnASz2H7Cn8g3qq+6qWUz2QQg6Iexdix
+         XGE2jIB2k9pT0cFAFVMLYlJP95JTRRpdsEgYbf1frsN1UDmDoobx5jpSzHYPOImkwK3k
+         UI+g==
+X-Gm-Message-State: AOJu0Yy+QG4DtoZi4YfZSPlISRk1ByF/nukdcu//3fH5PhAavepypsjh
+	p0N9mGGF5mTHnzr1XP2aIJe69OU76AMg5WtChN0=
+X-Google-Smtp-Source: AGHT+IGZx1puYo+KVmUUUG7q2BUtI6+whTxpxivvIC6FTbSTcb2ldO3p3FzGnqCsXxHmbMjme7Y68A==
+X-Received: by 2002:a05:6a20:6a0d:b0:160:a752:59e with SMTP id p13-20020a056a206a0d00b00160a752059emr31520498pzk.40.1699191306647;
+        Sun, 05 Nov 2023 05:35:06 -0800 (PST)
+Received: from n37-019-243.byted.org ([180.184.51.142])
+        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001c8a0879805sm4219711plb.206.2023.11.05.05.35.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 05:35:06 -0800 (PST)
+From: Chuyi Zhou <zhouchuyi@bytedance.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org,
+	Chuyi Zhou <zhouchuyi@bytedance.com>
+Subject: [PATCH bpf 0/2] Let BPF verifier consider {task,cgroup} is trusted in bpf_iter_reg
+Date: Sun,  5 Nov 2023 21:34:56 +0800
+Message-Id: <20231105133458.1315620-1-zhouchuyi@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <d178b5b5-4171-4e76-a486-c20d5f081448@app.fastmail.com>
-In-Reply-To: 
- <CALOAHbCt4-kDGoW=4R0EarPNV2yNcwy3exkVrn6Tz5Ng8M8gvg@mail.gmail.com>
-References: <202311031651.A7crZEur-lkp@intel.com>
- <20231105062227.4190-1-laoar.shao@gmail.com>
- <4f5a8c67-74be-41a1-8a0c-acac40da8902@app.fastmail.com>
- <CALOAHbCt4-kDGoW=4R0EarPNV2yNcwy3exkVrn6Tz5Ng8M8gvg@mail.gmail.com>
-Date: Sun, 05 Nov 2023 14:01:04 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Yafang Shao" <laoar.shao@gmail.com>
-Cc: "kernel test robot" <lkp@intel.com>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Alexei Starovoitov" <ast@kernel.org>,
- bpf@vger.kernel.org, cgroups@vger.kernel.org,
- "Daniel Borkmann" <daniel@iogearbox.net>,
- "Johannes Weiner" <hannes@cmpxchg.org>, "Hao Luo" <haoluo@google.com>,
- "John Fastabend" <john.fastabend@gmail.com>, "Jiri Olsa" <jolsa@kernel.org>,
- "KP Singh" <kpsingh@kernel.org>, lizefan.x@bytedance.com,
- "Waiman Long" <longman@redhat.com>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, mkoutny@suse.com,
- oe-kbuild-all@lists.linux.dev, "kernel test robot" <oliver.sang@intel.com>,
- "Stanislav Fomichev" <sdf@google.com>, sinquersw@gmail.com,
- "Song Liu" <song@kernel.org>, "Tejun Heo" <tj@kernel.org>,
- "Yonghong Song" <yonghong.song@linux.dev>, yosryahmed@google.com,
- "Kumar Kartikeya Dwivedi" <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next] compiler-gcc: Ignore -Wmissing-prototypes warning for
- older GCC
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Nov 5, 2023, at 12:54, Yafang Shao wrote:
-> On Sun, Nov 5, 2023 at 4:24=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> w=
-rote:
->> On Sun, Nov 5, 2023, at 07:22, Yafang Shao wrote:
->> > To address this, we should also suppress the "-Wmissing-prototypes"=
- warning
->> > for older GCC versions. Since "#pragma GCC diagnostic push" is supp=
-orted as
->> > of GCC 4.6, it is acceptable to ignore these warnings for GCC >=3D =
-5.1.0.
->>
->> Not sure why these need to be suppressed like this at all,
->> can't you just add the prototype somewhere?
->
-> BPF kfuncs are intended for use within BPF programs, and they should
-> not be called from other parts of the kernel. Consequently, it is not
-> appropriate to include their prototypes in a kernel header file.
+Hi,
+The patchset aims to let the BPF verivier consider
+bpf_iter__cgroup->cgroup and bpf_iter__task->task is trused suggested by
+Alexei[1].
 
-How does the caller in the BPF program get the prototype?
+Please see individual patches for more details. And comments are always
+welcome.
 
->> > @@ -131,14 +131,14 @@
->> >  #define __diag_str(s)                __diag_str1(s)
->> >  #define __diag(s)            _Pragma(__diag_str(GCC diagnostic s))
->> >
->> > -#if GCC_VERSION >=3D 80000
->> > -#define __diag_GCC_8(s)              __diag(s)
->> > +#if GCC_VERSION >=3D 50100
->> > +#define __diag_GCC_5(s)              __diag(s)
->> >  #else
->> > -#define __diag_GCC_8(s)
->> > +#define __diag_GCC_5(s)
->> >  #endif
->> >
->>
->> This breaks all uses of __diag_ignore that specify
->> version 8 directly. Just add the macros for each version
->> from 5 to 14 here.
->
-> It seems that __diag_GCC_8() or __diag_GCC() are not directly used
-> anywhere in the kernel, right?
+Link[1]:https://lore.kernel.org/bpf/20231022154527.229117-1-zhouchuyi@bytedance.com/T/#mb57725edc8ccdd50a1b165765c7619b4d65ed1b0
 
-I see three instances:
+Chuyi Zhou (2):
+  bpf: Let verifier consider {task,cgroup} is trusted in bpf_iter_reg
+  selftests/bpf: get trusted cgrp from bpf_iter__cgroup directly
 
-drivers/net/ethernet/renesas/sh_eth.c:__diag_ignore(GCC, 8, "-Woverride-=
-init",
-include/linux/compat.h:     __diag_ignore(GCC, 8, "-Wattribute-alias",  =
-                            include/linux/syscalls.h:   __diag_ignore(GC=
-C, 8, "-Wattribute-alias",                     =20
+ kernel/bpf/cgroup_iter.c                         |  2 +-
+ kernel/bpf/task_iter.c                           |  2 +-
+ .../testing/selftests/bpf/progs/iters_css_task.c | 16 ++++------------
+ 3 files changed, 6 insertions(+), 14 deletions(-)
 
-The override-init one should probably use version 5 as well,
-but I think the -Wattribute-alias ones require GCC 8 and otherwise
-cause a warning about an unknown warning option.
+-- 
+2.20.1
 
-__diag_ignore_all() would also be wrong for the override-init
-because the option has a different name in clang
-(-Winitializer-overrides).
-
-> Therefore it won't break anything if we just replace __diag_GCC_8()
-> with __diag_GCC_5().
-> It may be cumbersome to add the macrocs for every GCC version if they
-> aren't actively used.
-
-For the _all variant, I would prefer to completely remove
-the version logic and just use __diag() directly. I think the
-entire point of this is that it is used on all supported
-versions.
-
-      Arnd
 
