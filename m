@@ -1,115 +1,98 @@
-Return-Path: <bpf+bounces-14262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92AB67E1601
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 20:11:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20B807E1668
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 21:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D7551F2168F
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 19:11:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54EA01C20A9B
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 20:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BB3171DC;
-	Sun,  5 Nov 2023 19:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DF023212;
+	Sun,  5 Nov 2023 20:33:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B177A17730;
-	Sun,  5 Nov 2023 19:11:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF9BC433C8;
-	Sun,  5 Nov 2023 19:11:32 +0000 (UTC)
-Date: Sun, 5 Nov 2023 14:11:30 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
-Message-ID: <20231105141130.6ef7d8bd@rorschach.local.home>
-In-Reply-To: <20231105172536.GA7124@noisy.programming.kicks-ass.net>
-References: <169920038849.482486.15796387219966662967.stgit@devnote2>
-	<169920068069.482486.6540417903833579700.stgit@devnote2>
-	<20231105172536.GA7124@noisy.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA325370
+	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 20:33:54 +0000 (UTC)
+Received: from mx.der-flo.net (mx.der-flo.net [IPv6:2001:67c:26f4:224::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CB5B8
+	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 12:33:53 -0800 (PST)
+Date: Sun, 5 Nov 2023 21:33:49 +0100
+From: Florian Lehner <dev@der-flo.net>
+To: David Rheinsberg <david@readahead.eu>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, davem@davemloft.net, daniel@zonque.org
+Subject: Re: [PATCH bpf-next] bpf, lpm: fix check prefixlen before walking
+ trie
+Message-ID: <ZUf8Ld8pQu46dyTi@der-flo.net>
+References: <20231105085801.3742-1-dev@der-flo.net>
+ <1d237338-6341-45be-9f0e-f1f1a9bdc153@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1d237338-6341-45be-9f0e-f1f1a9bdc153@app.fastmail.com>
 
-On Sun, 5 Nov 2023 18:25:36 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Sun, Nov 05, 2023 at 08:08:43PM +0100, David Rheinsberg wrote:
+> Hi
+> 
+> On Sun, Nov 5, 2023, at 9:58 AM, Florian Lehner wrote:
+> > When looking up an element in LPM trie, the condition 'matchlen ==
+> > trie->max_prefixlen' will never return true, if key->prefixlen is larger
+> > than trie->max_prefixlen. Consequently all elements in the LPM trie will
+> > be visited and no element is returned in the end.
+> >
+> 
+> Am I understanding you right that this is an optimization to avoid walking the entire trie? Because the way I read your commit-message I assume the output has always been NULL? Or am I missing something.
+> 
+> Do you have a specific use-case where such lookups are common? Can you explain why it is important to optimize this case? Because you now add a condition for every lookup just to optimize for the lookup-miss of a special case. I don't think I understand your reasoning here, but I might be missing some context.
+> 
+> Thanks!
+> David
 
-> On Mon, Nov 06, 2023 at 01:11:21AM +0900, Masami Hiramatsu (Google) wrote:
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Hi David,
+
+Your understanding is correct. The return value currently and with this patch is
+in both cases the same for the case where key->prefixlen > trie->max_prefixlen.
+
+The optimization is to avoid the locking mechanism, walking the trie and
+checking its elements. It might not be the most common use case, so I see your
+point.
+
+> 
+> > Fixes: b95a5c4db09b ("bpf: add a longest prefix match trie map implementation")
+> > Signed-off-by: Florian Lehner <dev@der-flo.net>
+> > ---
+> >  kernel/bpf/lpm_trie.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
+> > index 17c7e7782a1f..b32be680da6c 100644
+> > --- a/kernel/bpf/lpm_trie.c
+> > +++ b/kernel/bpf/lpm_trie.c
+> > @@ -231,6 +231,9 @@ static void *trie_lookup_elem(struct bpf_map *map, 
+> > void *_key)
+> >  	struct lpm_trie_node *node, *found = NULL;
+> >  	struct bpf_lpm_trie_key *key = _key;
 > > 
-> > Support HAVE_FUNCTION_GRAPH_FREGS on x86-64, which saves ftrace_regs
-> > on the stack in ftrace_graph return trampoline so that the callbacks
-> > can access registers via ftrace_regs APIs.  
-> 
-> What is ftrace_regs ? If I look at arch/x86/include/asm/ftrace.h it's a
-> pointless wrapper around pt_regs.
-> 
-> Can we please remove the pointless wrappery and call it what it is?
-
-A while back ago when I introduced FTRACE_WITH_ARGS, it would have all
-ftrace callbacks get a pt_regs, but it would be partially filled for
-those that did not specify the "REGS" flag when registering the
-callback. You and Thomas complained that it would be a bug to return
-pt_regs that was not full because something might read the non filled
-registers and think they were valid.
-
-To solve this, I came up with ftrace_regs to only hold the registers
-that were required for function parameters (including the stack
-pointer). You could then call arch_ftrace_get_regs(ftrace_regs) and if
-this "wrapper" had all valid pt_regs registers, then it would return
-the pt_regs, otherwise it would return NULL, and you would need to use
-the ftrace_regs accessor calls to get the function registers. You and
-Thomas agreed with this.
-
-You even Acked the patch:
-
-commit 02a474ca266a47ea8f4d5a11f4ffa120f83730ad
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Tue Oct 27 10:55:55 2020 -0400
-
-    ftrace/x86: Allow for arguments to be passed in to ftrace_regs by default
-    
-    Currently, the only way to get access to the registers of a function via a
-    ftrace callback is to set the "FL_SAVE_REGS" bit in the ftrace_ops. But as this
-    saves all regs as if a breakpoint were to trigger (for use with kprobes), it
-    is expensive.
-    
-    The regs are already saved on the stack for the default ftrace callbacks, as
-    that is required otherwise a function being traced will get the wrong
-    arguments and possibly crash. And on x86, the arguments are already stored
-    where they would be on a pt_regs structure to use that code for both the
-    regs version of a callback, it makes sense to pass that information always
-    to all functions.
-    
-    If an architecture does this (as x86_64 now does), it is to set
-    HAVE_DYNAMIC_FTRACE_WITH_ARGS, and this will let the generic code that it
-    could have access to arguments without having to set the flags.
-    
-    This also includes having the stack pointer being saved, which could be used
-    for accessing arguments on the stack, as well as having the function graph
-    tracer not require its own trampoline!
-    
-    Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-
--- Steve
+> > +	if (key->prefixlen > trie->max_prefixlen)
+> > +		return NULL;
+> > +
+> >  	/* Start walking the trie from the root node ... */
+> > 
+> >  	for (node = rcu_dereference_check(trie->root, rcu_read_lock_bh_held());
+> > -- 
+> > 2.39.2
 
