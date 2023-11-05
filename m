@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-14249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599897E1471
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 17:11:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E2F27E1473
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 17:11:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33F6C280E72
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 16:11:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FE251C20A4C
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 16:11:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4C914F98;
-	Sun,  5 Nov 2023 16:11:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C67CFBE1;
+	Sun,  5 Nov 2023 16:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r0T5omuk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q5tYib6A"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A487C3C28;
-	Sun,  5 Nov 2023 16:11:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70CD2C433C7;
-	Sun,  5 Nov 2023 16:11:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F451401C;
+	Sun,  5 Nov 2023 16:11:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B17FAC433C7;
+	Sun,  5 Nov 2023 16:11:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699200675;
-	bh=jG7ymSTJt2pOrHfOUVqQ7eTEuAUumsUaG6MXhuKCWzc=;
+	s=k20201202; t=1699200687;
+	bh=6GBLrBVom66jXJpUAXFDmsg+lvD8A70XktPU9o8fCJA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r0T5omuklfLoUmQqMg+rXOMSSNbY/Cbw1OpcsjU6AcZb/VpvgBDSyEFREJz2FBkYF
-	 MTH20F4bneRLq+bGlm9lnSCa23FSwvi6HQLsfPDWKqPtKfJ5CadXhj+koK7qx+8g8I
-	 LdmUuo6VqLJT2VnXGeetvVCeXiYnw4NiK3ZyyKFhuXTxYf6/kmS3lh3CW6aIbdF4Di
-	 nZef1GgIj0UOTzDauZOHZYpjJbnZh1iggLXqRhaQv87tYv10Vo4SP1HEN/PHslrB5s
-	 lhdLELn6U/qbVkZXbznTJsJVxpgzQ/sUscSCRBl0aykMbqZxXOX5KmecPyL85dSi7b
-	 S8JssNdqbI0CQ==
+	b=Q5tYib6AKnSqhWsonloeJknpIvRW9fg3a+vNV71bChclAFYAYNRfWrO+MILCIcRpm
+	 9JnCBUK/LFtRP+NJDxXpJqF71Vc7FTYssu9PmodHCpcyTaYx6srLQH7UcWrqkFtWUl
+	 R+Omc3GTxTMctRyBIwDdrCcDFNjbDpM+9p/7WFpcKHT116znYOD6sjIOLNpyfscsUl
+	 jaCntjjwMs2D2xtms6ZEAlAZjN1yPT9PwZ0AtgnooGw2PYgaCZQ3MsPZ/UOtAahxzX
+	 co+yneulf26eGDWF3flL5b/ZoPTQSdMRGjXN7tcqRqJXfZz0jinRYh+ge68PdKAOiA
+	 aJY0VKMZ5iJhg==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -50,9 +50,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH 23/32] function_graph: Add a new exit handler with parent_ip and ftrace_regs
-Date: Mon,  6 Nov 2023 01:11:08 +0900
-Message-Id: <169920066851.482486.17730951166172619260.stgit@devnote2>
+Subject: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+Date: Mon,  6 Nov 2023 01:11:21 +0900
+Message-Id: <169920068069.482486.6540417903833579700.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169920038849.482486.15796387219966662967.stgit@devnote2>
 References: <169920038849.482486.15796387219966662967.stgit@devnote2>
@@ -68,244 +68,81 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Add a new return handler to fgraph_ops as 'retregfunc'  which takes
-parent_ip and ftrace_regs instead of ftrace_graph_ret. This handler
-is available only if the arch support CONFIG_HAVE_FUNCTION_GRAPH_FREGS.
-Note that the 'retfunc' and 'reregfunc' are mutual exclusive.
-You can set only one of them.
+Support HAVE_FUNCTION_GRAPH_FREGS on x86-64, which saves ftrace_regs
+on the stack in ftrace_graph return trampoline so that the callbacks
+can access registers via ftrace_regs APIs.
+
+Note that this only recovers 'rax' and 'rdx' registers because other
+registers are not used anymore and recovered by caller. 'rax' and
+'rdx' will be used for passing the return value.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- arch/x86/include/asm/ftrace.h |    2 +
- include/linux/ftrace.h        |   10 +++++-
- kernel/trace/Kconfig          |    5 ++-
- kernel/trace/fgraph.c         |   74 +++++++++++++++++++++++++++--------------
- 4 files changed, 63 insertions(+), 28 deletions(-)
+ arch/x86/Kconfig            |    3 ++-
+ arch/x86/kernel/ftrace_64.S |   30 ++++++++++++++++++++++--------
+ 2 files changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index 897cf02c20b1..74b1d245c38b 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -66,6 +66,8 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
- 	override_function_with_return(&(fregs)->regs)
- #define ftrace_regs_query_register_offset(name) \
- 	regs_query_register_offset(name)
-+#define ftrace_regs_get_frame_pointer(fregs) \
-+	frame_pointer(&(fregs)->regs)
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 66bfabae8814..4b4c2f9d67da 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -219,7 +219,8 @@ config X86
+ 	select HAVE_FAST_GUP
+ 	select HAVE_FENTRY			if X86_64 || DYNAMIC_FTRACE
+ 	select HAVE_FTRACE_MCOUNT_RECORD
+-	select HAVE_FUNCTION_GRAPH_RETVAL	if HAVE_FUNCTION_GRAPH_TRACER
++	select HAVE_FUNCTION_GRAPH_FREGS	if HAVE_DYNAMIC_FTRACE_WITH_ARGS
++	select HAVE_FUNCTION_GRAPH_RETVAL	if !HAVE_DYNAMIC_FTRACE_WITH_ARGS
+ 	select HAVE_FUNCTION_GRAPH_TRACER	if X86_32 || (X86_64 && DYNAMIC_FTRACE)
+ 	select HAVE_FUNCTION_TRACER
+ 	select HAVE_GCC_PLUGINS
+diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
+index 945cfa5f7239..41351a621753 100644
+--- a/arch/x86/kernel/ftrace_64.S
++++ b/arch/x86/kernel/ftrace_64.S
+@@ -348,21 +348,35 @@ STACK_FRAME_NON_STANDARD_FP(__fentry__)
+ SYM_CODE_START(return_to_handler)
+ 	UNWIND_HINT_UNDEFINED
+ 	ANNOTATE_NOENDBR
+-	subq  $24, %rsp
++	/*
++	 * We add enough stack to save all regs, but saves only registers
++	 * for function params.
++	 */
++	subq $(FRAME_SIZE), %rsp
++	movq %rax, RAX(%rsp)
++	movq %rcx, RCX(%rsp)
++	movq %rdx, RDX(%rsp)
++	movq %rsi, RSI(%rsp)
++	movq %rdi, RDI(%rsp)
++	movq %r8, R8(%rsp)
++	movq %r9, R9(%rsp)
++	movq $0, ORIG_RAX(%rsp)
++	movq %rbp, RBP(%rsp)
  
- struct ftrace_ops;
- #define ftrace_graph_func ftrace_graph_func
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index a6fd930d3500..0c036c5d7c12 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -43,7 +43,9 @@ struct dyn_ftrace;
+-	/* Save the return values */
+-	movq %rax, (%rsp)
+-	movq %rdx, 8(%rsp)
+-	movq %rbp, 16(%rsp)
+ 	movq %rsp, %rdi
  
- char *arch_ftrace_match_adjust(char *str, const char *search);
+ 	call ftrace_return_to_handler
  
--#ifdef CONFIG_HAVE_FUNCTION_GRAPH_RETVAL
-+#ifdef CONFIG_HAVE_FUNCTION_GRAPH_FREGS
-+unsigned long ftrace_return_to_handler(struct ftrace_regs *fregs);
-+#elif defined(CONFIG_HAVE_FUNCTION_GRAPH_RETVAL)
- struct fgraph_ret_regs;
- unsigned long ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs);
- #else
-@@ -131,6 +133,7 @@ struct ftrace_regs {
- #define ftrace_regs_set_instruction_pointer(fregs, ip) do { } while (0)
- #endif /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
+ 	movq %rax, %rdi
+-	movq 8(%rsp), %rdx
+-	movq (%rsp), %rax
  
+-	addq $24, %rsp
++	/*
++	 * Restore only rax and rdx because other registers are not used
++	 * for return value nor callee saved. Caller will reuse/recover it.
++	 */
++	movq RDX(%rsp), %rdx
++	movq RAX(%rsp), %rax
 +
- static __always_inline struct pt_regs *ftrace_get_regs(struct ftrace_regs *fregs)
- {
- 	if (!fregs)
-@@ -1041,6 +1044,10 @@ typedef int (*trace_func_graph_regs_ent_t)(unsigned long func,
- 					   unsigned long parent_ip,
- 					   struct ftrace_regs *fregs,
- 					   struct fgraph_ops *); /* entry w/ regs */
-+typedef void (*trace_func_graph_regs_ret_t)(unsigned long func,
-+					    unsigned long parent_ip,
-+					    struct ftrace_regs *,
-+					    struct fgraph_ops *); /* return w/ regs */
- 
- extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph_ops *gops);
- 
-@@ -1050,6 +1057,7 @@ struct fgraph_ops {
- 	trace_func_graph_ent_t		entryfunc;
- 	trace_func_graph_ret_t		retfunc;
- 	trace_func_graph_regs_ent_t	entryregfunc;
-+	trace_func_graph_regs_ret_t	retregfunc;
- 	struct ftrace_ops		ops; /* for the hash lists */
- 	void				*private;
- 	int				idx;
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index 61c541c36596..308b3bec01b1 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -34,6 +34,9 @@ config HAVE_FUNCTION_GRAPH_TRACER
- config HAVE_FUNCTION_GRAPH_RETVAL
- 	bool
- 
-+config HAVE_FUNCTION_GRAPH_FREGS
-+	bool
-+
- config HAVE_DYNAMIC_FTRACE
- 	bool
- 	help
-@@ -232,7 +235,7 @@ config FUNCTION_GRAPH_TRACER
- 
- config FUNCTION_GRAPH_RETVAL
- 	bool "Kernel Function Graph Return Value"
--	depends on HAVE_FUNCTION_GRAPH_RETVAL
-+	depends on HAVE_FUNCTION_GRAPH_RETVAL || HAVE_FUNCTION_GRAPH_FREGS
- 	depends on FUNCTION_GRAPH_TRACER
- 	default n
- 	help
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 2623a5987f52..c76fb2f33437 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -624,8 +624,7 @@ int function_graph_enter_regs(unsigned long ret, unsigned long func,
- 
- /* Retrieve a function return address to the trace stack on thread info.*/
- static struct ftrace_ret_stack *
--ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
--			unsigned long frame_pointer)
-+ftrace_pop_return_trace(unsigned long *ret, unsigned long frame_pointer)
- {
- 	struct ftrace_ret_stack *ret_stack;
- 	int index;
-@@ -670,10 +669,6 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
- #endif
- 
- 	*ret = ret_stack->ret;
--	trace->func = ret_stack->func;
--	trace->calltime = ret_stack->calltime;
--	trace->overrun = atomic_read(&current->trace_overrun);
--	trace->depth = current->curr_ret_depth;
++	addq $(FRAME_SIZE), %rsp
  	/*
- 	 * We still want to trace interrupts coming in if
- 	 * max_depth is set to 1. Make sure the decrement is
-@@ -712,22 +707,43 @@ static struct notifier_block ftrace_suspend_notifier = {
- /* fgraph_ret_regs is not defined without CONFIG_FUNCTION_GRAPH_RETVAL */
- struct fgraph_ret_regs;
- 
-+static void fgraph_call_retfunc(struct ftrace_regs *fregs,
-+				struct fgraph_ret_regs *ret_regs,
-+				struct ftrace_ret_stack *ret_stack,
-+				struct fgraph_ops *gops)
-+{
-+	struct ftrace_graph_ret trace;
-+
-+	trace.func = ret_stack->func;
-+	trace.calltime = ret_stack->calltime;
-+	trace.overrun = atomic_read(&current->trace_overrun);
-+	trace.depth = current->curr_ret_depth;
-+	trace.rettime = trace_clock_local();
-+#ifdef CONFIG_FUNCTION_GRAPH_RETVAL
-+	if (fregs)
-+		trace.retval = ftrace_regs_return_value(fregs);
-+	else
-+		trace.retval = fgraph_ret_regs_return_value(ret_regs);
-+#endif
-+	gops->retfunc(&trace, gops);
-+}
-+
- /*
-  * Send the trace to the ring-buffer.
-  * @return the original return address.
-  */
--static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs,
-+static unsigned long __ftrace_return_to_handler(struct ftrace_regs *fregs,
-+						struct fgraph_ret_regs *ret_regs,
- 						unsigned long frame_pointer)
- {
- 	struct ftrace_ret_stack *ret_stack;
--	struct ftrace_graph_ret trace;
--	unsigned long ret;
-+	struct fgraph_ops *gops;
- 	int curr_ret_stack;
-+	unsigned long ret;
- 	int stop_at;
- 	int index;
--	int idx;
- 
--	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer);
-+	ret_stack = ftrace_pop_return_trace(&ret, frame_pointer);
- 
- 	if (unlikely(!ret_stack)) {
- 		ftrace_graph_stop();
-@@ -736,11 +752,6 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
- 		return (unsigned long)panic;
- 	}
- 
--	trace.rettime = trace_clock_local();
--#ifdef CONFIG_FUNCTION_GRAPH_RETVAL
--	trace.retval = fgraph_ret_regs_return_value(ret_regs);
--#endif
--
- 	curr_ret_stack = current->curr_ret_stack;
- 	index = get_ret_stack_index(current, curr_ret_stack - 1);
- 
-@@ -753,8 +764,11 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
- 		val = current->ret_stack[curr_ret_stack - 1];
- 		switch (__get_type(val)) {
- 		case FGRAPH_TYPE_ARRAY:
--			idx = __get_array(val);
--			fgraph_array[idx]->retfunc(&trace, fgraph_array[idx]);
-+			gops = fgraph_array[__get_array(val)];
-+			if (gops->retregfunc)
-+				gops->retregfunc(ret_stack->func, ret, fregs, gops);
-+			else
-+				fgraph_call_retfunc(fregs, ret_regs, ret_stack, gops);
- 			curr_ret_stack -= __get_index(val);
- 			break;
- 		case FGRAPH_TYPE_RESERVED:
-@@ -778,20 +792,22 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
- 	return ret;
- }
- 
--/*
-- * After all architecures have selected HAVE_FUNCTION_GRAPH_RETVAL, we can
-- * leave only ftrace_return_to_handler(ret_regs).
-- */
--#ifdef CONFIG_HAVE_FUNCTION_GRAPH_RETVAL
-+#ifdef CONFIG_HAVE_FUNCTION_GRAPH_FREGS
-+unsigned long ftrace_return_to_handler(struct ftrace_regs *fregs)
-+{
-+	return __ftrace_return_to_handler(fregs, NULL,
-+				ftrace_regs_get_frame_pointer(fregs));
-+}
-+#elif defined(CONFIG_HAVE_FUNCTION_GRAPH_RETVAL)
- unsigned long ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs)
- {
--	return __ftrace_return_to_handler(ret_regs,
-+	return __ftrace_return_to_handler(NULL, ret_regs,
- 				fgraph_ret_regs_frame_pointer(ret_regs));
- }
- #else
- unsigned long ftrace_return_to_handler(unsigned long frame_pointer)
- {
--	return __ftrace_return_to_handler(NULL, frame_pointer);
-+	return __ftrace_return_to_handler(NULL, NULL, frame_pointer);
- }
- #endif
- 
-@@ -1132,9 +1148,15 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- 	int ret = 0;
- 	int i;
- 
--	if (gops->entryfunc && gops->entryregfunc)
-+	if ((gops->entryfunc && gops->entryregfunc) ||
-+	    (gops->retfunc && gops->retregfunc))
- 		return -EINVAL;
- 
-+#ifndef CONFIG_HAVE_FUNCTION_GRAPH_FREGS
-+	if (gops->retregfunc)
-+		return -EOPNOTSUPP;
-+#endif
-+
- 	mutex_lock(&ftrace_lock);
- 
- 	if (!gops->ops.func) {
+ 	 * Jump back to the old return address. This cannot be JMP_NOSPEC rdi
+ 	 * since IBT would demand that contain ENDBR, which simply isn't so for
 
 
