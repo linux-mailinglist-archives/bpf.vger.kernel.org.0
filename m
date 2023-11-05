@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-14229-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14230-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB5F87E1447
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 17:07:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA9F17E144A
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 17:07:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0DFF41C20A84
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 16:07:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8785D2813C9
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 16:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D35C211CBA;
-	Sun,  5 Nov 2023 16:07:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CDE11CBA;
+	Sun,  5 Nov 2023 16:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dyF6zqhC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EKUOXybI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEF88487;
-	Sun,  5 Nov 2023 16:07:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 263A0C433C8;
-	Sun,  5 Nov 2023 16:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56D458487;
+	Sun,  5 Nov 2023 16:07:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 847C9C433C9;
+	Sun,  5 Nov 2023 16:07:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699200433;
-	bh=BJTb9S/48BMXgKg9JdebJFjIf4uCQaHDkO4DGbu+/d0=;
+	s=k20201202; t=1699200445;
+	bh=B0/aSI1KB5QEqFWG8e41IiV7Rc9rgkz1NK6k4ZuIzko=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dyF6zqhCWxd07sdjAl8Mrzwr5pVkixS3gZKjnp0JhrnrLFhKeNzHfqhRUBW2qRj4D
-	 la81PR8h5F2034JRrNmOstiPEzOMAKF5LExKlV3vlJE2e1XFjzt6aP/4vcQSdunlm9
-	 yxX6zJ2ylc27phnsYa7WwfcJfR3fsb58GrB8rJRnrtjRhGFH3YxJrdxkD0mKvxJXSc
-	 US3GXWMKaYMAClk0Sfy010l4pMEXaoOnyo2hUvrNlzBzZ/v+DiBEsPEKpC2blHq1hA
-	 1uc5iuL3zDROJ4+WWfk8ccymhSQgvX+AzZaGHxWyzJZidF+0auyTegwnwwfaevPPBg
-	 KF3Fj186CGthw==
+	b=EKUOXybIfS8LWt/VXAFtqOUAt2pZ6p0P9DovhIIDcLgYfNi7T2pZ1Z/t8/TkiDB0s
+	 9n1B2bwzpm3U6/Rq0Y81KaMmwARZHmqckvI/0bhjX/8tQBCx5V8eSviP35qJ+lMCj2
+	 qVJO/vCprEmOqlYEXkwFo3PBpE2towK8CL7BEe0f9P52mrrrKkcT1fxro4Fow4cB7j
+	 4KVS01grfMjby3aUvVK6AprZw8E+M5v8WjDuUZmTUNHk77RlFqo/QuRyGG3TNljJPq
+	 0hzCc5HEGce3OOqCOxYoPdPfwPuuKUhlFuKCh0ycIadfRTMk42zHkNdTIV9GNr/qsm
+	 IrKoC3T1QDE0Q==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -50,9 +50,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [RFC PATCH 03/32] fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
-Date: Mon,  6 Nov 2023 01:07:06 +0900
-Message-Id: <169920042620.482486.2035922638334412424.stgit@devnote2>
+Subject: [RFC PATCH 04/32] function_graph: Add an array structure that will allow multiple callbacks
+Date: Mon,  6 Nov 2023 01:07:18 +0900
+Message-Id: <169920043839.482486.410237912533776158.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <169920038849.482486.15796387219966662967.stgit@devnote2>
 References: <169920038849.482486.15796387219966662967.stgit@devnote2>
@@ -68,52 +68,210 @@ Content-Transfer-Encoding: 8bit
 
 From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Instead of using "ALIGN()", use BUILD_BUG_ON() as the structures should
-always be divisible by sizeof(long).
+Add an array structure that will eventually allow the function graph tracer
+to have up to 16 simultaneous callbacks attached. It's an array of 16
+fgraph_ops pointers, that is assigned when one is registered. On entry of a
+function the entry of the first item in the array is called, and if it
+returns zero, then the callback returns non zero if it wants the return
+callback to be called on exit of the function.
 
-Link: http://lkml.kernel.org/r/20190524111144.GI2589@hirez.programming.kicks-ass.net
+The array will simplify the process of having more than one callback
+attached to the same function, as its index into the array can be stored on
+the shadow stack. We need to only save the index, because this will allow
+the fgraph_ops to be freed before the function returns (which may happen if
+the function call schedule for a long time).
 
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- kernel/trace/fgraph.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/trace/fgraph.c |  115 +++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 82 insertions(+), 33 deletions(-)
 
 diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 30edeb6d4aa9..837daf929d2a 100644
+index 837daf929d2a..b34ab7ecd7af 100644
 --- a/kernel/trace/fgraph.c
 +++ b/kernel/trace/fgraph.c
-@@ -26,10 +26,9 @@
+@@ -39,6 +39,11 @@
+ DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
+ int ftrace_graph_active;
+ 
++static int fgraph_array_cnt;
++#define FGRAPH_ARRAY_SIZE	16
++
++static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
++
+ /* Both enabled by default (can be cleared by function_graph tracer flags */
+ static bool fgraph_sleep_time = true;
+ 
+@@ -62,6 +67,20 @@ int __weak ftrace_disable_ftrace_graph_caller(void)
+ }
  #endif
  
- #define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
--#define FGRAPH_RET_INDEX (ALIGN(FGRAPH_RET_SIZE, sizeof(long)) / sizeof(long))
-+#define FGRAPH_RET_INDEX (FGRAPH_RET_SIZE / sizeof(long))
- #define SHADOW_STACK_SIZE (PAGE_SIZE)
--#define SHADOW_STACK_INDEX			\
--	(ALIGN(SHADOW_STACK_SIZE, sizeof(long)) / sizeof(long))
-+#define SHADOW_STACK_INDEX (SHADOW_STACK_SIZE / sizeof(long))
- /* Leave on a buffer at the end */
- #define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_INDEX - FGRAPH_RET_INDEX)
- 
-@@ -91,6 +90,8 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
- 	if (!current->ret_stack)
- 		return -EBUSY;
- 
-+	BUILD_BUG_ON(SHADOW_STACK_SIZE % sizeof(long));
++int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace)
++{
++	return 0;
++}
 +
++static void ftrace_graph_ret_stub(struct ftrace_graph_ret *trace)
++{
++}
++
++static struct fgraph_ops fgraph_stub = {
++	.entryfunc = ftrace_graph_entry_stub,
++	.retfunc = ftrace_graph_ret_stub,
++};
++
+ /**
+  * ftrace_graph_stop - set to permanently disable function graph tracing
+  *
+@@ -159,7 +178,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ 		goto out;
+ 
+ 	/* Only trace if the calling function expects to */
+-	if (!ftrace_graph_entry(&trace))
++	if (!fgraph_array[0]->entryfunc(&trace))
+ 		goto out_ret;
+ 
+ 	return 0;
+@@ -274,7 +293,7 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
+ 	trace.retval = fgraph_ret_regs_return_value(ret_regs);
+ #endif
+ 	trace.rettime = trace_clock_local();
+-	ftrace_graph_return(&trace);
++	fgraph_array[0]->retfunc(&trace);
  	/*
- 	 * We must make sure the ret_stack is tested before we read
- 	 * anything else.
-@@ -325,6 +326,8 @@ ftrace_graph_get_ret_stack(struct task_struct *task, int idx)
- {
- 	int index = task->curr_ret_stack;
+ 	 * The ftrace_graph_return() may still access the current
+ 	 * ret_stack structure, we need to make sure the update of
+@@ -410,11 +429,6 @@ void ftrace_graph_sleep_time_control(bool enable)
+ 	fgraph_sleep_time = enable;
+ }
  
-+	BUILD_BUG_ON(FGRAPH_RET_SIZE % sizeof(long));
+-int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace)
+-{
+-	return 0;
+-}
+-
+ /*
+  * Simply points to ftrace_stub, but with the proper protocol.
+  * Defined by the linker script in linux/vmlinux.lds.h
+@@ -652,37 +666,55 @@ static int start_graph_tracing(void)
+ int register_ftrace_graph(struct fgraph_ops *gops)
+ {
+ 	int ret = 0;
++	int i;
+ 
+ 	mutex_lock(&ftrace_lock);
+ 
+-	/* we currently allow only one tracer registered at a time */
+-	if (ftrace_graph_active) {
++	if (!fgraph_array[0]) {
++		/* The array must always have real data on it */
++		for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
++			fgraph_array[i] = &fgraph_stub;
++		}
++	}
 +
- 	index -= FGRAPH_RET_INDEX * (idx + 1);
- 	if (index < 0)
- 		return NULL;
++	/* Look for an available spot */
++	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
++		if (fgraph_array[i] == &fgraph_stub)
++			break;
++	}
++	if (i >= FGRAPH_ARRAY_SIZE) {
+ 		ret = -EBUSY;
+ 		goto out;
+ 	}
+ 
+-	register_pm_notifier(&ftrace_suspend_notifier);
++	fgraph_array[i] = gops;
++	if (i + 1 > fgraph_array_cnt)
++		fgraph_array_cnt = i + 1;
+ 
+ 	ftrace_graph_active++;
+-	ret = start_graph_tracing();
+-	if (ret) {
+-		ftrace_graph_active--;
+-		goto out;
+-	}
+ 
+-	ftrace_graph_return = gops->retfunc;
++	if (ftrace_graph_active == 1) {
++		register_pm_notifier(&ftrace_suspend_notifier);
++		ret = start_graph_tracing();
++		if (ret) {
++			ftrace_graph_active--;
++			goto out;
++		}
+ 
+-	/*
+-	 * Update the indirect function to the entryfunc, and the
+-	 * function that gets called to the entry_test first. Then
+-	 * call the update fgraph entry function to determine if
+-	 * the entryfunc should be called directly or not.
+-	 */
+-	__ftrace_graph_entry = gops->entryfunc;
+-	ftrace_graph_entry = ftrace_graph_entry_test;
+-	update_function_graph_func();
++		ftrace_graph_return = gops->retfunc;
++
++		/*
++		 * Update the indirect function to the entryfunc, and the
++		 * function that gets called to the entry_test first. Then
++		 * call the update fgraph entry function to determine if
++		 * the entryfunc should be called directly or not.
++		 */
++		__ftrace_graph_entry = gops->entryfunc;
++		ftrace_graph_entry = ftrace_graph_entry_test;
++		update_function_graph_func();
+ 
+-	ret = ftrace_startup(&graph_ops, FTRACE_START_FUNC_RET);
++		ret = ftrace_startup(&graph_ops, FTRACE_START_FUNC_RET);
++	}
+ out:
+ 	mutex_unlock(&ftrace_lock);
+ 	return ret;
+@@ -690,19 +722,36 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 
+ void unregister_ftrace_graph(struct fgraph_ops *gops)
+ {
++	int i;
++
+ 	mutex_lock(&ftrace_lock);
+ 
+ 	if (unlikely(!ftrace_graph_active))
+ 		goto out;
+ 
+-	ftrace_graph_active--;
+-	ftrace_graph_return = ftrace_stub_graph;
+-	ftrace_graph_entry = ftrace_graph_entry_stub;
+-	__ftrace_graph_entry = ftrace_graph_entry_stub;
+-	ftrace_shutdown(&graph_ops, FTRACE_STOP_FUNC_RET);
+-	unregister_pm_notifier(&ftrace_suspend_notifier);
+-	unregister_trace_sched_switch(ftrace_graph_probe_sched_switch, NULL);
++	for (i = 0; i < fgraph_array_cnt; i++)
++		if (gops == fgraph_array[i])
++			break;
++	if (i >= fgraph_array_cnt)
++		goto out;
++
++	fgraph_array[i] = &fgraph_stub;
++	if (i + 1 == fgraph_array_cnt) {
++		for (; i >= 0; i--)
++			if (fgraph_array[i] != &fgraph_stub)
++				break;
++		fgraph_array_cnt = i + 1;
++	}
+ 
++	ftrace_graph_active--;
++	if (!ftrace_graph_active) {
++		ftrace_graph_return = ftrace_stub_graph;
++		ftrace_graph_entry = ftrace_graph_entry_stub;
++		__ftrace_graph_entry = ftrace_graph_entry_stub;
++		ftrace_shutdown(&graph_ops, FTRACE_STOP_FUNC_RET);
++		unregister_pm_notifier(&ftrace_suspend_notifier);
++		unregister_trace_sched_switch(ftrace_graph_probe_sched_switch, NULL);
++	}
+  out:
+ 	mutex_unlock(&ftrace_lock);
+ }
 
 
