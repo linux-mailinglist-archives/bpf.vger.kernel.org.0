@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-14223-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14224-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF8597E13B0
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 14:35:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB5237E13B1
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 14:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39A591F214C9
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF76DB20E43
 	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 13:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF05C8C8;
-	Sun,  5 Nov 2023 13:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268A5C8E8;
+	Sun,  5 Nov 2023 13:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="KfeVkXwb"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="gItYMMWt"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A44C2D8
-	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 13:35:10 +0000 (UTC)
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA065CF
-	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 05:35:09 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6c39ad730aaso696947b3a.0
-        for <bpf@vger.kernel.org>; Sun, 05 Nov 2023 05:35:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7452C8CB
+	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 13:35:12 +0000 (UTC)
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C064BD3
+	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 05:35:11 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5b99bfca064so2341670a12.3
+        for <bpf@vger.kernel.org>; Sun, 05 Nov 2023 05:35:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1699191309; x=1699796109; darn=vger.kernel.org;
+        d=bytedance.com; s=google; t=1699191311; x=1699796111; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4dSl1NDctJPZ1SHMsjt6uhbSHlKCuHSvv/7KzmRIcyg=;
-        b=KfeVkXwbzpEHBsUXa9pKqsDt24y+sJvD+d0YfpBcpATRhdhQnQmwgh/RTA349BBSUV
-         PCuoukb5pQKbT7q5x3/f+hD8cf4QFqKXWEOpQJ4wH9ufetOHpS9zBVBQ64X+bsqzCR5n
-         ApPfniNKFoOoZf891r1JAIt6ElfvtYh8e+oDfUCY3qP01AsEb48tFWQm7k+aKuxW6YD+
-         DdzSdxNfnEPPYzJx22jNP3vKgghcxctjoFtq1vVvpBNaJMvtlxWuwlVQxJ4eKzBG9lYj
-         4ScIDIfDT/+EMhBtsCyVuN+qQZHYreel1H8UalGhY6yavkkptdziHUsIjERhR+9JoLVL
-         g/1A==
+        bh=Swp+JLszvo8UgDu1mzYB5hmOrgxxrAi9cx00dgZy/vo=;
+        b=gItYMMWt7ru2eki8ZV0J/BXu4cafBhZrit7drvgTgZ1dJ/wf5DdF69k84qsNC3foAz
+         AZsqkCXaJCLedo6AnBYiewWJ1gG/pdVAuJLEBPps7PCdjCjZdRekWqScNoGQ5oDZ1Z1w
+         27QLVSwPr0eMGTsQNokU2EjyE/OV/YyPzyR9bLmFyK3AcqKTIJvPx4wbnbuQ6IMEuy7V
+         bMzDtrSzIfvU52WIOpvWYdV/p6Q/cN13w3ZKpFUfdnla9IHGHA5cjjZXAeHW939UnR8t
+         UsD2+QY17MKQu+fGteqx3du5BB15vh/+5ohynCv8lK/mPT40t2fyWbYY7pRniY3xNLU3
+         0/cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699191309; x=1699796109;
+        d=1e100.net; s=20230601; t=1699191311; x=1699796111;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4dSl1NDctJPZ1SHMsjt6uhbSHlKCuHSvv/7KzmRIcyg=;
-        b=EGxqsH29dfsOpPXqITH/2PFviCoibL8OHkODuK6CUtEaCISa7PJj2bELz8KG0WO5Zn
-         GwdkUHmxX7st9hjJr4wCJOoHJlmoQwBr/LRHoHc1iKbFdUBkfYDfYk844iFaEuhZwif8
-         vFCQvruYgHqPmbxT9e+rkEv+06HmfhDitHo/3DXoG8h2jlPy4Gc7gPVkmTm7ynYpA9lq
-         D+RBv2A+yskUVi15hfzzduo0sgaDnf5gDEoJ9fOAS/U3/M4xkg8TGxTYh9+DTUUCKa5J
-         qePjjtauXjz7UST4BVJtBvWLDd6EY+sqigSMWio2o1L/cGnuDUA3omhl3ImsPM/xv07L
-         sYtw==
-X-Gm-Message-State: AOJu0YxZRCtCNQZRAKUopFa/IefRKxO4yXIafcrJj+d75vGCre5xxuUR
-	/Jj3/YbiOSWFY01F1PbGsbHfPG5Ji4znqmO8KT0=
-X-Google-Smtp-Source: AGHT+IHec+dRmOJ1A4LF3fopZqJQ6ruZ6wjxBRX0HxPuaINg3YB3/kNkIwRhIxvmiK4IFkOfwRS3hw==
-X-Received: by 2002:a05:6a20:a4a1:b0:14d:5580:8ff0 with SMTP id y33-20020a056a20a4a100b0014d55808ff0mr15553421pzk.25.1699191308977;
-        Sun, 05 Nov 2023 05:35:08 -0800 (PST)
+        bh=Swp+JLszvo8UgDu1mzYB5hmOrgxxrAi9cx00dgZy/vo=;
+        b=FG0rYlvMLYx7rjirg0zTWn687Ka8B+CzbCVAd0d+Zg1wWgJlI/BRmEO0IJRYVsTnFs
+         QGdpiBknTS7NQFJjG7mEi0hGE+4UTysI9ohJ6A2cMpmMpCwRV1lPhlpxTzyV3SFKmfME
+         EKKCO6CK05IdkCGUyoS4N2W5ieUjRWCyqHL9tWFlRjsEKPnW5Wr1nH+Wp6JMMkCNvYvO
+         gSo2vq/bjn2dublgF13L3u1/yLjkQDUmbzpTKe5D0kKolZppnbPjxQp3Dg9IHN8ul54U
+         1eMByVsjXGG1V12U11YhepInHuadS66zR5eyHIuQ9HAWuQ8W0QXYD6AWJvfQ0VBGL+mu
+         DYLg==
+X-Gm-Message-State: AOJu0YzHQB6fEv3NKS9MStwigimN4McZkFB1/ALBorQTqgfSO62Fqy3d
+	dt+DL+3yuB6la8prmL2VVDHoiYAZdHNLx5m979A=
+X-Google-Smtp-Source: AGHT+IGLykO+eu1IfUVnGQmCJjg+EWmIdm0yJAUP3ajk8AV8TszEIJqBzG7jGfu0PB6QQwr2x1JDOA==
+X-Received: by 2002:a05:6a20:a115:b0:13d:df16:cf29 with SMTP id q21-20020a056a20a11500b0013ddf16cf29mr24351296pzk.15.1699191311062;
+        Sun, 05 Nov 2023 05:35:11 -0800 (PST)
 Received: from n37-019-243.byted.org ([180.184.51.142])
-        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001c8a0879805sm4219711plb.206.2023.11.05.05.35.06
+        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001c8a0879805sm4219711plb.206.2023.11.05.05.35.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Nov 2023 05:35:08 -0800 (PST)
+        Sun, 05 Nov 2023 05:35:10 -0800 (PST)
 From: Chuyi Zhou <zhouchuyi@bytedance.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -65,9 +65,9 @@ Cc: ast@kernel.org,
 	andrii@kernel.org,
 	martin.lau@kernel.org,
 	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH bpf 1/2] bpf: Let verifier consider {task,cgroup} is trusted in bpf_iter_reg
-Date: Sun,  5 Nov 2023 21:34:57 +0800
-Message-Id: <20231105133458.1315620-2-zhouchuyi@bytedance.com>
+Subject: [PATCH bpf 2/2] selftests/bpf: get trusted cgrp from bpf_iter__cgroup directly
+Date: Sun,  5 Nov 2023 21:34:58 +0800
+Message-Id: <20231105133458.1315620-3-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20231105133458.1315620-1-zhouchuyi@bytedance.com>
 References: <20231105133458.1315620-1-zhouchuyi@bytedance.com>
@@ -79,54 +79,60 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-BTF_TYPE_SAFE_TRUSTED(struct bpf_iter__task) in verifier.c wanted to
-teach BPF verifier that bpf_iter__task -> task is a trusted ptr. But it
-doesn't work well.
-
-The reason is, bpf_iter__task -> task would go through btf_ctx_access()
-which enforces the reg_type of 'task' is ctx_arg_info->reg_type, and in
-task_iter.c, we actually explicitly declare that the
-ctx_arg_info->reg_type is PTR_TO_BTF_ID_OR_NULL.
-
-This patch sets ctx_arg_info->reg_type is PTR_TO_BTF_ID_OR_NULL |
-PTR_TRUSTED in task_reg_info.
-
-Similarly, bpf_cgroup_reg_info -> cgroup is also PTR_TRUSTED since we are
-under the protection of cgroup_mutex and we would check cgroup_is_dead()
-in __cgroup_iter_seq_show().
+Commit f49843afde (selftests/bpf: Add tests for css_task iter combining
+with cgroup iter) added a test which demonstrates how css_task iter can be
+combined with cgroup iter. That test used bpf_cgroup_from_id() to convert
+bpf_iter__cgroup->cgroup to a trusted ptr which is pointless now, since
+with the previous fix, we can get a trusted cgroup directly from
+bpf_iter__cgroup.
 
 Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 ---
- kernel/bpf/cgroup_iter.c | 2 +-
- kernel/bpf/task_iter.c   | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ .../testing/selftests/bpf/progs/iters_css_task.c | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-index d1b5c5618..f04a468cf 100644
---- a/kernel/bpf/cgroup_iter.c
-+++ b/kernel/bpf/cgroup_iter.c
-@@ -282,7 +282,7 @@ static struct bpf_iter_reg bpf_cgroup_reg_info = {
- 	.ctx_arg_info_size	= 1,
- 	.ctx_arg_info		= {
- 		{ offsetof(struct bpf_iter__cgroup, cgroup),
--		  PTR_TO_BTF_ID_OR_NULL },
-+		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
- 	},
- 	.seq_info		= &cgroup_iter_seq_info,
- };
-diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-index 4e156dca4..26082b978 100644
---- a/kernel/bpf/task_iter.c
-+++ b/kernel/bpf/task_iter.c
-@@ -704,7 +704,7 @@ static struct bpf_iter_reg task_reg_info = {
- 	.ctx_arg_info_size	= 1,
- 	.ctx_arg_info		= {
- 		{ offsetof(struct bpf_iter__task, task),
--		  PTR_TO_BTF_ID_OR_NULL },
-+		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
- 	},
- 	.seq_info		= &task_seq_info,
- 	.fill_link_info		= bpf_iter_fill_link_info,
+diff --git a/tools/testing/selftests/bpf/progs/iters_css_task.c b/tools/testing/selftests/bpf/progs/iters_css_task.c
+index e180aa1b1..9ac758649 100644
+--- a/tools/testing/selftests/bpf/progs/iters_css_task.c
++++ b/tools/testing/selftests/bpf/progs/iters_css_task.c
+@@ -56,12 +56,9 @@ SEC("?iter/cgroup")
+ int cgroup_id_printer(struct bpf_iter__cgroup *ctx)
+ {
+ 	struct seq_file *seq = ctx->meta->seq;
+-	struct cgroup *cgrp, *acquired;
++	struct cgroup *cgrp = ctx->cgroup;
+ 	struct cgroup_subsys_state *css;
+ 	struct task_struct *task;
+-	u64 cgrp_id;
+-
+-	cgrp = ctx->cgroup;
+ 
+ 	/* epilogue */
+ 	if (cgrp == NULL) {
+@@ -73,20 +70,15 @@ int cgroup_id_printer(struct bpf_iter__cgroup *ctx)
+ 	if (ctx->meta->seq_num == 0)
+ 		BPF_SEQ_PRINTF(seq, "prologue\n");
+ 
+-	cgrp_id = cgroup_id(cgrp);
+-
+-	BPF_SEQ_PRINTF(seq, "%8llu\n", cgrp_id);
++	BPF_SEQ_PRINTF(seq, "%8llu\n", cgroup_id(cgrp));
+ 
+-	acquired = bpf_cgroup_from_id(cgrp_id);
+-	if (!acquired)
+-		return 0;
+-	css = &acquired->self;
++	css = &cgrp->self;
+ 	css_task_cnt = 0;
+ 	bpf_for_each(css_task, task, css, CSS_TASK_ITER_PROCS) {
+ 		if (task->pid == target_pid)
+ 			css_task_cnt++;
+ 	}
+-	bpf_cgroup_release(acquired);
++
+ 	return 0;
+ }
+ 
 -- 
 2.20.1
 
