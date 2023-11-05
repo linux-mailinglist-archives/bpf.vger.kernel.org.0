@@ -1,140 +1,158 @@
-Return-Path: <bpf+bounces-14212-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14213-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 342967E124E
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 06:16:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E4947E1260
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 07:23:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 577B3B20EE7
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 05:16:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30EE428148E
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 06:23:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07441FA8;
-	Sun,  5 Nov 2023 05:16:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BB45249;
+	Sun,  5 Nov 2023 06:22:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X9nOmANY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y1Bu/o/5"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0B6D8BEB;
-	Sun,  5 Nov 2023 05:16:36 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DD811BF;
-	Sat,  4 Nov 2023 22:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699161395; x=1730697395;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QH266okKJWb309c2VT71zlCNS1DZsylF0IqchazjelU=;
-  b=X9nOmANYV4V9FSEM+++uAX9gMQSZZKfF8eeGtSNwm+4g5R7f4iXDxf00
-   uN28MNuaKzgKl0LB+RN0VA3nT4pLLeqVX082JSKJrAUhFh4sK6whgCKvk
-   9RHBNRwVv+aMifSWArjfVwHEWwB3+jtUJ5WNxW6eeu6NzwuUcNagiG3I4
-   jbp+rYnZreNSMpqzidytfYzdG+vrvD1Nd8yNIVyn4xwIdkTlGGm6ROwiB
-   EkfEi0ezPXSZ0WMyuqw+Fwuz4CvddIk96MFuMHxdpH0KYBkiXWGSLIee4
-   61warIEryijuFV7rDwuDs+H+vOqmjB0WTjAA2DY8vcl+dE0Gm8htdqmiq
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="379517602"
-X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
-   d="scan'208";a="379517602"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2023 22:16:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10884"; a="832413278"
-X-IronPort-AV: E=Sophos;i="6.03,278,1694761200"; 
-   d="scan'208";a="832413278"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 04 Nov 2023 22:16:30 -0700
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1qzVUr-00053o-2q;
-	Sun, 05 Nov 2023 05:16:29 +0000
-Date: Sun, 5 Nov 2023 13:16:09 +0800
-From: kernel test robot <lkp@intel.com>
-To: thinker.li@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-	martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
-	andrii@kernel.org, drosen@google.com
-Cc: oe-kbuild-all@lists.linux.dev, sinquersw@gmail.com, kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf-next v10 10/13] bpf, net: switch to dynamic
- registration
-Message-ID: <202311051202.DeubcWTl-lkp@intel.com>
-References: <20231103232202.3664407-11-thinker.li@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09071FD3;
+	Sun,  5 Nov 2023 06:22:52 +0000 (UTC)
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BE9DE;
+	Sat,  4 Nov 2023 23:22:51 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-41cd8bd5727so21603251cf.3;
+        Sat, 04 Nov 2023 23:22:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699165370; x=1699770170; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=05LHD2svU7RVutSA6R3k1PwtdBSTugRDACEJuPt/PNw=;
+        b=Y1Bu/o/59yePJh9DFxEXEV9LoaQF+oPfo5kM49LEotzMJWB5WyQUnqQ+Kh9ekvjNYh
+         aEJ/+CYuqW0HKq0sx7vq2lUDE5zuf9ArKWC9KGl/+rwH1z+vLxoxhim5uHoWFjqfNf2p
+         Ekp5fgMNLz1dYC5PhSlDhk46s/mma5047kH6kCOi9KZziGeLdBFFVIh0YYemO1VvVrzD
+         A0lxY3rel9vrkvhqgShn8yUh42BjkXPRPVxejRnTyq+6ffFMFTOIT+ZcFdRO5g0P8axH
+         /PsdWi7mVrszibpt1yyKhZA6m/v5hFAaftgS4EauXyO3CtzyIAf6LgK0lH5uH7U4R//+
+         C/vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699165370; x=1699770170;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=05LHD2svU7RVutSA6R3k1PwtdBSTugRDACEJuPt/PNw=;
+        b=DaeKO2BMZatfbJ1ogjLQo+vtJnoRiqMDdkl8li9KrSNEikLlsAHiRUkS4eEUoqfF41
+         f1fdZmCel669+ZyNsSNouyaGGMJjr58PUL/zKQPhQUrnh0V/U8eSdIF+eYUeV5LcegNU
+         3Dcxh3sWdC6cps5JPMifpsCAHa0eeyCswFePCnjrSm0J3sMPK47D9CMoYSd57YcS+sDA
+         28//L+SUDksByYU+XCfM+sk3kddsfYRSOeH1osXC04idN7I2ukMuadJUyGStmkA5aJCS
+         UiviTwNjaqhzSVNkQvnJG9qoG1xSi0pd4W0mj8FaCK37Dpmgf/Xg8HI35ROkxY37GrMo
+         +maQ==
+X-Gm-Message-State: AOJu0YwVdBC6Kb//JoT/+KtJXcdXVHMfz/C9VyzweDW3Io8liBGkF/t4
+	LoBuvZ6X+9s7+2/EHUonAtY=
+X-Google-Smtp-Source: AGHT+IEb+mQl9K4ytOXTBeeQ7FXm4+5TRkMuigqPP/f0AkFp2GoT1+qCLAvzVR4FSeqcu8X+V/X9uA==
+X-Received: by 2002:ac8:5bc6:0:b0:40f:f9c8:1b98 with SMTP id b6-20020ac85bc6000000b0040ff9c81b98mr30677451qtb.10.1699165370430;
+        Sat, 04 Nov 2023 23:22:50 -0700 (PDT)
+Received: from vultr.guest ([2001:19f0:ac00:4737:5400:4ff:fea2:f4b4])
+        by smtp.gmail.com with ESMTPSA id g20-20020ac84694000000b00419ab6ffedasm2248098qto.29.2023.11.04.23.22.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Nov 2023 23:22:50 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: lkp@intel.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	daniel@iogearbox.net,
+	hannes@cmpxchg.org,
+	haoluo@google.com,
+	john.fastabend@gmail.com,
+	jolsa@kernel.org,
+	kpsingh@kernel.org,
+	laoar.shao@gmail.com,
+	lizefan.x@bytedance.com,
+	longman@redhat.com,
+	martin.lau@linux.dev,
+	mkoutny@suse.com,
+	oe-kbuild-all@lists.linux.dev,
+	oliver.sang@intel.com,
+	sdf@google.com,
+	sinquersw@gmail.com,
+	song@kernel.org,
+	tj@kernel.org,
+	yonghong.song@linux.dev,
+	yosryahmed@google.com,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH bpf-next] compiler-gcc: Ignore -Wmissing-prototypes warning for older GCC
+Date: Sun,  5 Nov 2023 06:22:27 +0000
+Message-Id: <20231105062227.4190-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
+In-Reply-To: <202311031651.A7crZEur-lkp@intel.com>
+References: <202311031651.A7crZEur-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103232202.3664407-11-thinker.li@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi,
+The kernel supports a minimum GCC version of 5.1.0 for building. However,
+the "__diag_ignore_all" directive only suppresses the
+"-Wmissing-prototypes" warning for GCC versions >= 8.0.0. As a result, when
+building the kernel with older GCC versions, warnings may be triggered. The
+example below illustrates the warnings reported by the kernel test robot
+using GCC 7.5.0:
 
-kernel test robot noticed the following build errors:
+  compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+  All warnings (new ones prefixed by >>):
 
-[auto build test ERROR on bpf-next/master]
+   kernel/bpf/helpers.c:1893:19: warning: no previous prototype for 'bpf_obj_new_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+                      ^~~~~~~~~~~~~~~~
+   kernel/bpf/helpers.c:1907:19: warning: no previous prototype for 'bpf_percpu_obj_new_impl' [-Wmissing-prototypes]
+    __bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
+   [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/thinker-li-gmail-com/bpf-refactory-struct_ops-type-initialization-to-a-function/20231104-072528
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231103232202.3664407-11-thinker.li%40gmail.com
-patch subject: [PATCH bpf-next v10 10/13] bpf, net: switch to dynamic registration
-config: riscv-randconfig-002-20231105 (https://download.01.org/0day-ci/archive/20231105/202311051202.DeubcWTl-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231105/202311051202.DeubcWTl-lkp@intel.com/reproduce)
+To address this, we should also suppress the "-Wmissing-prototypes" warning
+for older GCC versions. Since "#pragma GCC diagnostic push" is supported as
+of GCC 4.6, it is acceptable to ignore these warnings for GCC >= 5.1.0.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311051202.DeubcWTl-lkp@intel.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311031651.A7crZEur-lkp@intel.com/
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+---
+ include/linux/compiler-gcc.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-All errors (new ones prefixed by >>):
-
-   riscv64-linux-ld: kernel/bpf/btf.o: in function `btf_array_show':
->> kernel/bpf/btf.c:3044:(.text+0x6c38): undefined reference to `bpf_struct_ops_desc_init'
-
-
-vim +3044 kernel/bpf/btf.c
-
-31d0bc81637d8d Alan Maguire     2020-09-28  3032  
-31d0bc81637d8d Alan Maguire     2020-09-28  3033  static void btf_array_show(const struct btf *btf, const struct btf_type *t,
-31d0bc81637d8d Alan Maguire     2020-09-28  3034  			   u32 type_id, void *data, u8 bits_offset,
-31d0bc81637d8d Alan Maguire     2020-09-28  3035  			   struct btf_show *show)
-31d0bc81637d8d Alan Maguire     2020-09-28  3036  {
-31d0bc81637d8d Alan Maguire     2020-09-28  3037  	const struct btf_member *m = show->state.member;
-31d0bc81637d8d Alan Maguire     2020-09-28  3038  
-31d0bc81637d8d Alan Maguire     2020-09-28  3039  	/*
-31d0bc81637d8d Alan Maguire     2020-09-28  3040  	 * First check if any members would be shown (are non-zero).
-31d0bc81637d8d Alan Maguire     2020-09-28  3041  	 * See comments above "struct btf_show" definition for more
-31d0bc81637d8d Alan Maguire     2020-09-28  3042  	 * details on how this works at a high-level.
-31d0bc81637d8d Alan Maguire     2020-09-28  3043  	 */
-31d0bc81637d8d Alan Maguire     2020-09-28 @3044  	if (show->state.depth > 0 && !(show->flags & BTF_SHOW_ZERO)) {
-31d0bc81637d8d Alan Maguire     2020-09-28  3045  		if (!show->state.depth_check) {
-31d0bc81637d8d Alan Maguire     2020-09-28  3046  			show->state.depth_check = show->state.depth + 1;
-31d0bc81637d8d Alan Maguire     2020-09-28  3047  			show->state.depth_to_show = 0;
-31d0bc81637d8d Alan Maguire     2020-09-28  3048  		}
-31d0bc81637d8d Alan Maguire     2020-09-28  3049  		__btf_array_show(btf, t, type_id, data, bits_offset, show);
-31d0bc81637d8d Alan Maguire     2020-09-28  3050  		show->state.member = m;
-31d0bc81637d8d Alan Maguire     2020-09-28  3051  
-31d0bc81637d8d Alan Maguire     2020-09-28  3052  		if (show->state.depth_check != show->state.depth + 1)
-31d0bc81637d8d Alan Maguire     2020-09-28  3053  			return;
-31d0bc81637d8d Alan Maguire     2020-09-28  3054  		show->state.depth_check = 0;
-31d0bc81637d8d Alan Maguire     2020-09-28  3055  
-31d0bc81637d8d Alan Maguire     2020-09-28  3056  		if (show->state.depth_to_show <= show->state.depth)
-31d0bc81637d8d Alan Maguire     2020-09-28  3057  			return;
-31d0bc81637d8d Alan Maguire     2020-09-28  3058  		/*
-31d0bc81637d8d Alan Maguire     2020-09-28  3059  		 * Reaching here indicates we have recursed and found
-31d0bc81637d8d Alan Maguire     2020-09-28  3060  		 * non-zero array member(s).
-31d0bc81637d8d Alan Maguire     2020-09-28  3061  		 */
-31d0bc81637d8d Alan Maguire     2020-09-28  3062  	}
-31d0bc81637d8d Alan Maguire     2020-09-28  3063  	__btf_array_show(btf, t, type_id, data, bits_offset, show);
-b00b8daec828dd Martin KaFai Lau 2018-04-18  3064  }
-b00b8daec828dd Martin KaFai Lau 2018-04-18  3065  
-
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index 7af9e34..a5cfcad 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -131,14 +131,14 @@
+ #define __diag_str(s)		__diag_str1(s)
+ #define __diag(s)		_Pragma(__diag_str(GCC diagnostic s))
+ 
+-#if GCC_VERSION >= 80000
+-#define __diag_GCC_8(s)		__diag(s)
++#if GCC_VERSION >= 50100
++#define __diag_GCC_5(s)		__diag(s)
+ #else
+-#define __diag_GCC_8(s)
++#define __diag_GCC_5(s)
+ #endif
+ 
+ #define __diag_ignore_all(option, comment) \
+-	__diag_GCC(8, ignore, option)
++	__diag_GCC(5, ignore, option)
+ 
+ /*
+  * Prior to 9.1, -Wno-alloc-size-larger-than (and therefore the "alloc_size"
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+1.8.3.1
+
 
