@@ -1,158 +1,182 @@
-Return-Path: <bpf+bounces-14213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14214-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E4947E1260
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 07:23:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38FFA7E1266
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 07:34:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30EE428148E
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 06:23:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE2B8B20FAA
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 06:34:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BB45249;
-	Sun,  5 Nov 2023 06:22:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B844B3C34;
+	Sun,  5 Nov 2023 06:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y1Bu/o/5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CO+Hsjva"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09071FD3;
-	Sun,  5 Nov 2023 06:22:52 +0000 (UTC)
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BE9DE;
-	Sat,  4 Nov 2023 23:22:51 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-41cd8bd5727so21603251cf.3;
-        Sat, 04 Nov 2023 23:22:51 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65E71C26;
+	Sun,  5 Nov 2023 06:33:58 +0000 (UTC)
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC2CFB;
+	Sat,  4 Nov 2023 23:33:57 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66fa16092c0so23614736d6.0;
+        Sat, 04 Nov 2023 23:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699165370; x=1699770170; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1699166036; x=1699770836; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=05LHD2svU7RVutSA6R3k1PwtdBSTugRDACEJuPt/PNw=;
-        b=Y1Bu/o/59yePJh9DFxEXEV9LoaQF+oPfo5kM49LEotzMJWB5WyQUnqQ+Kh9ekvjNYh
-         aEJ/+CYuqW0HKq0sx7vq2lUDE5zuf9ArKWC9KGl/+rwH1z+vLxoxhim5uHoWFjqfNf2p
-         Ekp5fgMNLz1dYC5PhSlDhk46s/mma5047kH6kCOi9KZziGeLdBFFVIh0YYemO1VvVrzD
-         A0lxY3rel9vrkvhqgShn8yUh42BjkXPRPVxejRnTyq+6ffFMFTOIT+ZcFdRO5g0P8axH
-         /PsdWi7mVrszibpt1yyKhZA6m/v5hFAaftgS4EauXyO3CtzyIAf6LgK0lH5uH7U4R//+
-         C/vQ==
+        bh=SPT5K74xSEFe9IlCGm6whRvfQDP+YpuOQMYi/ccTjRA=;
+        b=CO+HsjvaEoqoHBpJeKup91+egMHEXBiF64DZ0XVozHhqzFXz7FSCXcQBzlUf3N4jWp
+         sCq3i5DnKdQ29mOhUu4Cll9X0NrqaQ332Xw1+3A3/j+FHQwb5llbJT6r32kjrxCOMhHb
+         bvFcTg7w7jlgLVEgW3sGiNhsZ10KmfRLZ7p13xmB5sC2P2zL3cWpsd6HeyZxzTz5Wp8p
+         UksE5UkAxudsPHQ9WPd0wlRfVVl8ozd0kuc2TuNfuyzBFgGv5o3rXvudU9TVrCaqhVy7
+         MJYh7+mdhIhqVhszQqdYU3xTjP9BoNl4vVSZFyJ3Gvx2vTlq3C5fFbL0FWX88yGz/IuT
+         q4CQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699165370; x=1699770170;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1699166036; x=1699770836;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=05LHD2svU7RVutSA6R3k1PwtdBSTugRDACEJuPt/PNw=;
-        b=DaeKO2BMZatfbJ1ogjLQo+vtJnoRiqMDdkl8li9KrSNEikLlsAHiRUkS4eEUoqfF41
-         f1fdZmCel669+ZyNsSNouyaGGMJjr58PUL/zKQPhQUrnh0V/U8eSdIF+eYUeV5LcegNU
-         3Dcxh3sWdC6cps5JPMifpsCAHa0eeyCswFePCnjrSm0J3sMPK47D9CMoYSd57YcS+sDA
-         28//L+SUDksByYU+XCfM+sk3kddsfYRSOeH1osXC04idN7I2ukMuadJUyGStmkA5aJCS
-         UiviTwNjaqhzSVNkQvnJG9qoG1xSi0pd4W0mj8FaCK37Dpmgf/Xg8HI35ROkxY37GrMo
-         +maQ==
-X-Gm-Message-State: AOJu0YwVdBC6Kb//JoT/+KtJXcdXVHMfz/C9VyzweDW3Io8liBGkF/t4
-	LoBuvZ6X+9s7+2/EHUonAtY=
-X-Google-Smtp-Source: AGHT+IEb+mQl9K4ytOXTBeeQ7FXm4+5TRkMuigqPP/f0AkFp2GoT1+qCLAvzVR4FSeqcu8X+V/X9uA==
-X-Received: by 2002:ac8:5bc6:0:b0:40f:f9c8:1b98 with SMTP id b6-20020ac85bc6000000b0040ff9c81b98mr30677451qtb.10.1699165370430;
-        Sat, 04 Nov 2023 23:22:50 -0700 (PDT)
-Received: from vultr.guest ([2001:19f0:ac00:4737:5400:4ff:fea2:f4b4])
-        by smtp.gmail.com with ESMTPSA id g20-20020ac84694000000b00419ab6ffedasm2248098qto.29.2023.11.04.23.22.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Nov 2023 23:22:50 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: lkp@intel.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	daniel@iogearbox.net,
-	hannes@cmpxchg.org,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	laoar.shao@gmail.com,
-	lizefan.x@bytedance.com,
-	longman@redhat.com,
-	martin.lau@linux.dev,
-	mkoutny@suse.com,
-	oe-kbuild-all@lists.linux.dev,
-	oliver.sang@intel.com,
-	sdf@google.com,
-	sinquersw@gmail.com,
-	song@kernel.org,
-	tj@kernel.org,
-	yonghong.song@linux.dev,
-	yosryahmed@google.com,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH bpf-next] compiler-gcc: Ignore -Wmissing-prototypes warning for older GCC
-Date: Sun,  5 Nov 2023 06:22:27 +0000
-Message-Id: <20231105062227.4190-1-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <202311031651.A7crZEur-lkp@intel.com>
-References: <202311031651.A7crZEur-lkp@intel.com>
+        bh=SPT5K74xSEFe9IlCGm6whRvfQDP+YpuOQMYi/ccTjRA=;
+        b=UOsGdMq6SLBtv2QW50nbslrTGm+5jTz2KnoFmrkMLehOXj8zuKpqcBJuczEQSvleHP
+         JkzUGec80ii85pO6RMEsMw4BA8ev9A1ltfpiVlokrqgJPWrlelK50EHLS/Uqjf3ciO/2
+         S/FNoxPKhQKX7qK3Jtlvvlt3NfIczCyf48JPrYztGHW1q1ufW9+auZsBBSHd0UWVKx/E
+         LQrR7yaDzSzr2Rdc0SMDK5zffZQcfbC7UvhSyLKdZGXnMQ5ciTofPxYTgDxBowVpFx2C
+         srJBkzTWP5BaXhRSprCCSOpxYe2CiSy6soFa9tFOd2RBVkXI4DYtb5fljiUkC1YyP28j
+         r+kw==
+X-Gm-Message-State: AOJu0Yz9Sy4+cNhgY1UE5JIgN4BSygTk5Y3EGrKnDqCU/Dlu3jdI/eB0
+	QthqJI7f5Hgw+pNjwVdGqMQHPCrQFEX8zQY5jmU=
+X-Google-Smtp-Source: AGHT+IF3Uw+7+Bkn6NgMAc7FueWVXrqzfZgqJmcAE2t5D8XONiN/V4uJDAcW/xEs9/tgrAW0M9hTZH7l1p1OIFFmHQM=
+X-Received: by 2002:ad4:5b83:0:b0:66d:1f11:8b7c with SMTP id
+ 3-20020ad45b83000000b0066d1f118b7cmr32449097qvp.52.1699166036504; Sat, 04 Nov
+ 2023 23:33:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231103190523.6353-1-andrii@kernel.org> <20231103190523.6353-2-andrii@kernel.org>
+In-Reply-To: <20231103190523.6353-2-andrii@kernel.org>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 5 Nov 2023 14:33:20 +0800
+Message-ID: <CALOAHbD5xmQO-Acsqd0iQqjj66-CxSQVEnURNqP9zuRCc0SnYg@mail.gmail.com>
+Subject: Re: [PATCH v9 bpf-next 01/17] bpf: align CAP_NET_ADMIN checks with
+ bpf_capable() approach
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, paul@paul-moore.com, 
+	brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The kernel supports a minimum GCC version of 5.1.0 for building. However,
-the "__diag_ignore_all" directive only suppresses the
-"-Wmissing-prototypes" warning for GCC versions >= 8.0.0. As a result, when
-building the kernel with older GCC versions, warnings may be triggered. The
-example below illustrates the warnings reported by the kernel test robot
-using GCC 7.5.0:
+On Sat, Nov 4, 2023 at 3:05=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org> =
+wrote:
+>
+> Within BPF syscall handling code CAP_NET_ADMIN checks stand out a bit
+> compared to CAP_BPF and CAP_PERFMON checks. For the latter, CAP_BPF or
+> CAP_PERFMON are checked first, but if they are not set, CAP_SYS_ADMIN
+> takes over and grants whatever part of BPF syscall is required.
+>
+> Similar kind of checks that involve CAP_NET_ADMIN are not so consistent.
+> One out of four uses does follow CAP_BPF/CAP_PERFMON model: during
+> BPF_PROG_LOAD, if the type of BPF program is "network-related" either
+> CAP_NET_ADMIN or CAP_SYS_ADMIN is required to proceed.
+>
+> But in three other cases CAP_NET_ADMIN is required even if CAP_SYS_ADMIN
+> is set:
+>   - when creating DEVMAP/XDKMAP/CPU_MAP maps;
+>   - when attaching CGROUP_SKB programs;
+>   - when handling BPF_PROG_QUERY command.
+>
+> This patch is changing the latter three cases to follow BPF_PROG_LOAD
+> model, that is allowing to proceed under either CAP_NET_ADMIN or
+> CAP_SYS_ADMIN.
+>
+> This also makes it cleaner in subsequent BPF token patches to switch
+> wholesomely to a generic bpf_token_capable(int cap) check, that always
+> falls back to CAP_SYS_ADMIN if requested capability is missing.
+>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-  compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-  All warnings (new ones prefixed by >>):
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
 
-   kernel/bpf/helpers.c:1893:19: warning: no previous prototype for 'bpf_obj_new_impl' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-                      ^~~~~~~~~~~~~~~~
-   kernel/bpf/helpers.c:1907:19: warning: no previous prototype for 'bpf_percpu_obj_new_impl' [-Wmissing-prototypes]
-    __bpf_kfunc void *bpf_percpu_obj_new_impl(u64 local_type_id__k, void *meta__ign)
-   [...]
+> ---
+>  kernel/bpf/syscall.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 0ed286b8a0f0..ad4d8e433ccc 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1096,6 +1096,11 @@ static int map_check_btf(struct bpf_map *map, cons=
+t struct btf *btf,
+>         return ret;
+>  }
+>
+> +static bool bpf_net_capable(void)
+> +{
+> +       return capable(CAP_NET_ADMIN) || capable(CAP_SYS_ADMIN);
+> +}
+> +
+>  #define BPF_MAP_CREATE_LAST_FIELD map_extra
+>  /* called via syscall */
+>  static int map_create(union bpf_attr *attr)
+> @@ -1199,7 +1204,7 @@ static int map_create(union bpf_attr *attr)
+>         case BPF_MAP_TYPE_DEVMAP:
+>         case BPF_MAP_TYPE_DEVMAP_HASH:
+>         case BPF_MAP_TYPE_XSKMAP:
+> -               if (!capable(CAP_NET_ADMIN))
+> +               if (!bpf_net_capable())
+>                         return -EPERM;
+>                 break;
+>         default:
+> @@ -2599,7 +2604,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfp=
+tr_t uattr, u32 uattr_size)
+>             !bpf_capable())
+>                 return -EPERM;
+>
+> -       if (is_net_admin_prog_type(type) && !capable(CAP_NET_ADMIN) && !c=
+apable(CAP_SYS_ADMIN))
+> +       if (is_net_admin_prog_type(type) && !bpf_net_capable())
+>                 return -EPERM;
+>         if (is_perfmon_prog_type(type) && !perfmon_capable())
+>                 return -EPERM;
+> @@ -3751,7 +3756,7 @@ static int bpf_prog_attach_check_attach_type(const =
+struct bpf_prog *prog,
+>         case BPF_PROG_TYPE_SK_LOOKUP:
+>                 return attach_type =3D=3D prog->expected_attach_type ? 0 =
+: -EINVAL;
+>         case BPF_PROG_TYPE_CGROUP_SKB:
+> -               if (!capable(CAP_NET_ADMIN))
+> +               if (!bpf_net_capable())
+>                         /* cg-skb progs can be loaded by unpriv user.
+>                          * check permissions at attach time.
+>                          */
+> @@ -3954,7 +3959,7 @@ static int bpf_prog_detach(const union bpf_attr *at=
+tr)
+>  static int bpf_prog_query(const union bpf_attr *attr,
+>                           union bpf_attr __user *uattr)
+>  {
+> -       if (!capable(CAP_NET_ADMIN))
+> +       if (!bpf_net_capable())
+>                 return -EPERM;
+>         if (CHECK_ATTR(BPF_PROG_QUERY))
+>                 return -EINVAL;
+> --
+> 2.34.1
+>
+>
 
-To address this, we should also suppress the "-Wmissing-prototypes" warning
-for older GCC versions. Since "#pragma GCC diagnostic push" is supported as
-of GCC 4.6, it is acceptable to ignore these warnings for GCC >= 5.1.0.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311031651.A7crZEur-lkp@intel.com/
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
----
- include/linux/compiler-gcc.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
-index 7af9e34..a5cfcad 100644
---- a/include/linux/compiler-gcc.h
-+++ b/include/linux/compiler-gcc.h
-@@ -131,14 +131,14 @@
- #define __diag_str(s)		__diag_str1(s)
- #define __diag(s)		_Pragma(__diag_str(GCC diagnostic s))
- 
--#if GCC_VERSION >= 80000
--#define __diag_GCC_8(s)		__diag(s)
-+#if GCC_VERSION >= 50100
-+#define __diag_GCC_5(s)		__diag(s)
- #else
--#define __diag_GCC_8(s)
-+#define __diag_GCC_5(s)
- #endif
- 
- #define __diag_ignore_all(option, comment) \
--	__diag_GCC(8, ignore, option)
-+	__diag_GCC(5, ignore, option)
- 
- /*
-  * Prior to 9.1, -Wno-alloc-size-larger-than (and therefore the "alloc_size"
--- 
-1.8.3.1
-
+--=20
+Regards
+Yafang
 
