@@ -1,62 +1,63 @@
-Return-Path: <bpf+bounces-14222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D3B77E13AF
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 14:35:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF8597E13B0
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 14:35:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ED541C20A3C
-	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 13:35:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39A591F214C9
+	for <lists+bpf@lfdr.de>; Sun,  5 Nov 2023 13:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04B68C2E3;
-	Sun,  5 Nov 2023 13:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF05C8C8;
+	Sun,  5 Nov 2023 13:35:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="EqiApErM"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="KfeVkXwb"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 150644423
-	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 13:35:08 +0000 (UTC)
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ECF4CC
-	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 05:35:07 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso2738269a12.3
-        for <bpf@vger.kernel.org>; Sun, 05 Nov 2023 05:35:07 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A44C2D8
+	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 13:35:10 +0000 (UTC)
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA065CF
+	for <bpf@vger.kernel.org>; Sun,  5 Nov 2023 05:35:09 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6c39ad730aaso696947b3a.0
+        for <bpf@vger.kernel.org>; Sun, 05 Nov 2023 05:35:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1699191306; x=1699796106; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GLUxCAvMAMlQ5S3jRvjvA+djKH82qjmPj//5dOcsTPk=;
-        b=EqiApErMykJRakwln2pEQ+WWpSPPj/ZTsA8f+zUq6ktqa0Lq8RZcQhfeCWZuItYIcP
-         XpmsgkZ2Tyh3RqQcOEWVYPGRt8Bqh0IMdcqW/+Prjo9hWqD/klxng0KJ/Xu4rap5TblJ
-         G+unuOHK4hbwby8l6q6qo3HoLO3MEFo98/+ZA1GDsKzG2TogNT6lyeOLNz1JPXXCNMpI
-         wEQ1NqtTdevaxPi6+o7rxCyFuLYoAoLFZ9ncphJ6PIt4n+iqtOP2NO0ywLaXroA3kHh2
-         881/bWNfNfFj5oSTR3vL1AMzF15qSHwt9sY52E8x15pZCG3z8HavgZTcDVHYi48RiqbP
-         bXow==
+        d=bytedance.com; s=google; t=1699191309; x=1699796109; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4dSl1NDctJPZ1SHMsjt6uhbSHlKCuHSvv/7KzmRIcyg=;
+        b=KfeVkXwbzpEHBsUXa9pKqsDt24y+sJvD+d0YfpBcpATRhdhQnQmwgh/RTA349BBSUV
+         PCuoukb5pQKbT7q5x3/f+hD8cf4QFqKXWEOpQJ4wH9ufetOHpS9zBVBQ64X+bsqzCR5n
+         ApPfniNKFoOoZf891r1JAIt6ElfvtYh8e+oDfUCY3qP01AsEb48tFWQm7k+aKuxW6YD+
+         DdzSdxNfnEPPYzJx22jNP3vKgghcxctjoFtq1vVvpBNaJMvtlxWuwlVQxJ4eKzBG9lYj
+         4ScIDIfDT/+EMhBtsCyVuN+qQZHYreel1H8UalGhY6yavkkptdziHUsIjERhR+9JoLVL
+         g/1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699191306; x=1699796106;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GLUxCAvMAMlQ5S3jRvjvA+djKH82qjmPj//5dOcsTPk=;
-        b=S779TTMmJnct3XfkHPeVFacBwhypXyRmW+Th7VCdfDUf7ehDbhXPV0dCG5en5RP4Jv
-         /X6NXSnBhk6Riiv3tAeeyvHvA6ub8Njxe7OXRCQmDN9pU+XP5BzMFwl9opO9vXzqzepz
-         yLtsFP50EQrrMSzFkzBIB3kK0edgv6SfuuQgbQ9PJPgzF80myA9Al+qyw0D0lkrGtGaH
-         6VHMT2QbntcWS8TP4/S/JMAeVOvcFV9pwICIwnASz2H7Cn8g3qq+6qWUz2QQg6Iexdix
-         XGE2jIB2k9pT0cFAFVMLYlJP95JTRRpdsEgYbf1frsN1UDmDoobx5jpSzHYPOImkwK3k
-         UI+g==
-X-Gm-Message-State: AOJu0Yy+QG4DtoZi4YfZSPlISRk1ByF/nukdcu//3fH5PhAavepypsjh
-	p0N9mGGF5mTHnzr1XP2aIJe69OU76AMg5WtChN0=
-X-Google-Smtp-Source: AGHT+IGZx1puYo+KVmUUUG7q2BUtI6+whTxpxivvIC6FTbSTcb2ldO3p3FzGnqCsXxHmbMjme7Y68A==
-X-Received: by 2002:a05:6a20:6a0d:b0:160:a752:59e with SMTP id p13-20020a056a206a0d00b00160a752059emr31520498pzk.40.1699191306647;
-        Sun, 05 Nov 2023 05:35:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699191309; x=1699796109;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4dSl1NDctJPZ1SHMsjt6uhbSHlKCuHSvv/7KzmRIcyg=;
+        b=EGxqsH29dfsOpPXqITH/2PFviCoibL8OHkODuK6CUtEaCISa7PJj2bELz8KG0WO5Zn
+         GwdkUHmxX7st9hjJr4wCJOoHJlmoQwBr/LRHoHc1iKbFdUBkfYDfYk844iFaEuhZwif8
+         vFCQvruYgHqPmbxT9e+rkEv+06HmfhDitHo/3DXoG8h2jlPy4Gc7gPVkmTm7ynYpA9lq
+         D+RBv2A+yskUVi15hfzzduo0sgaDnf5gDEoJ9fOAS/U3/M4xkg8TGxTYh9+DTUUCKa5J
+         qePjjtauXjz7UST4BVJtBvWLDd6EY+sqigSMWio2o1L/cGnuDUA3omhl3ImsPM/xv07L
+         sYtw==
+X-Gm-Message-State: AOJu0YxZRCtCNQZRAKUopFa/IefRKxO4yXIafcrJj+d75vGCre5xxuUR
+	/Jj3/YbiOSWFY01F1PbGsbHfPG5Ji4znqmO8KT0=
+X-Google-Smtp-Source: AGHT+IHec+dRmOJ1A4LF3fopZqJQ6ruZ6wjxBRX0HxPuaINg3YB3/kNkIwRhIxvmiK4IFkOfwRS3hw==
+X-Received: by 2002:a05:6a20:a4a1:b0:14d:5580:8ff0 with SMTP id y33-20020a056a20a4a100b0014d55808ff0mr15553421pzk.25.1699191308977;
+        Sun, 05 Nov 2023 05:35:08 -0800 (PST)
 Received: from n37-019-243.byted.org ([180.184.51.142])
-        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001c8a0879805sm4219711plb.206.2023.11.05.05.35.04
+        by smtp.gmail.com with ESMTPSA id iw21-20020a170903045500b001c8a0879805sm4219711plb.206.2023.11.05.05.35.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Nov 2023 05:35:06 -0800 (PST)
+        Sun, 05 Nov 2023 05:35:08 -0800 (PST)
 From: Chuyi Zhou <zhouchuyi@bytedance.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -64,10 +65,12 @@ Cc: ast@kernel.org,
 	andrii@kernel.org,
 	martin.lau@kernel.org,
 	Chuyi Zhou <zhouchuyi@bytedance.com>
-Subject: [PATCH bpf 0/2] Let BPF verifier consider {task,cgroup} is trusted in bpf_iter_reg
-Date: Sun,  5 Nov 2023 21:34:56 +0800
-Message-Id: <20231105133458.1315620-1-zhouchuyi@bytedance.com>
+Subject: [PATCH bpf 1/2] bpf: Let verifier consider {task,cgroup} is trusted in bpf_iter_reg
+Date: Sun,  5 Nov 2023 21:34:57 +0800
+Message-Id: <20231105133458.1315620-2-zhouchuyi@bytedance.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20231105133458.1315620-1-zhouchuyi@bytedance.com>
+References: <20231105133458.1315620-1-zhouchuyi@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,25 +79,54 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
-The patchset aims to let the BPF verivier consider
-bpf_iter__cgroup->cgroup and bpf_iter__task->task is trused suggested by
-Alexei[1].
+BTF_TYPE_SAFE_TRUSTED(struct bpf_iter__task) in verifier.c wanted to
+teach BPF verifier that bpf_iter__task -> task is a trusted ptr. But it
+doesn't work well.
 
-Please see individual patches for more details. And comments are always
-welcome.
+The reason is, bpf_iter__task -> task would go through btf_ctx_access()
+which enforces the reg_type of 'task' is ctx_arg_info->reg_type, and in
+task_iter.c, we actually explicitly declare that the
+ctx_arg_info->reg_type is PTR_TO_BTF_ID_OR_NULL.
 
-Link[1]:https://lore.kernel.org/bpf/20231022154527.229117-1-zhouchuyi@bytedance.com/T/#mb57725edc8ccdd50a1b165765c7619b4d65ed1b0
+This patch sets ctx_arg_info->reg_type is PTR_TO_BTF_ID_OR_NULL |
+PTR_TRUSTED in task_reg_info.
 
-Chuyi Zhou (2):
-  bpf: Let verifier consider {task,cgroup} is trusted in bpf_iter_reg
-  selftests/bpf: get trusted cgrp from bpf_iter__cgroup directly
+Similarly, bpf_cgroup_reg_info -> cgroup is also PTR_TRUSTED since we are
+under the protection of cgroup_mutex and we would check cgroup_is_dead()
+in __cgroup_iter_seq_show().
 
- kernel/bpf/cgroup_iter.c                         |  2 +-
- kernel/bpf/task_iter.c                           |  2 +-
- .../testing/selftests/bpf/progs/iters_css_task.c | 16 ++++------------
- 3 files changed, 6 insertions(+), 14 deletions(-)
+Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+---
+ kernel/bpf/cgroup_iter.c | 2 +-
+ kernel/bpf/task_iter.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
+index d1b5c5618..f04a468cf 100644
+--- a/kernel/bpf/cgroup_iter.c
++++ b/kernel/bpf/cgroup_iter.c
+@@ -282,7 +282,7 @@ static struct bpf_iter_reg bpf_cgroup_reg_info = {
+ 	.ctx_arg_info_size	= 1,
+ 	.ctx_arg_info		= {
+ 		{ offsetof(struct bpf_iter__cgroup, cgroup),
+-		  PTR_TO_BTF_ID_OR_NULL },
++		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+ 	},
+ 	.seq_info		= &cgroup_iter_seq_info,
+ };
+diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+index 4e156dca4..26082b978 100644
+--- a/kernel/bpf/task_iter.c
++++ b/kernel/bpf/task_iter.c
+@@ -704,7 +704,7 @@ static struct bpf_iter_reg task_reg_info = {
+ 	.ctx_arg_info_size	= 1,
+ 	.ctx_arg_info		= {
+ 		{ offsetof(struct bpf_iter__task, task),
+-		  PTR_TO_BTF_ID_OR_NULL },
++		  PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+ 	},
+ 	.seq_info		= &task_seq_info,
+ 	.fill_link_info		= bpf_iter_fill_link_info,
 -- 
 2.20.1
 
