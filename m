@@ -1,236 +1,242 @@
-Return-Path: <bpf+bounces-14334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14335-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 858487E2FF4
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 23:41:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D8297E3021
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 23:46:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10FCE280D63
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 22:41:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB879280DD9
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 22:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFDAC1CF95;
-	Mon,  6 Nov 2023 22:41:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE382C842;
+	Mon,  6 Nov 2023 22:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XKGWZqnt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NoWzvN1a"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539521CF92
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 22:41:02 +0000 (UTC)
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B76DD51
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 14:41:00 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9dd3f4a0f5aso515392966b.1
-        for <bpf@vger.kernel.org>; Mon, 06 Nov 2023 14:41:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC311D528
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 22:46:12 +0000 (UTC)
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F096B10D2
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 14:46:01 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53de0d1dc46so8621304a12.3
+        for <bpf@vger.kernel.org>; Mon, 06 Nov 2023 14:46:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699310459; x=1699915259; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699310760; x=1699915560; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TxY9zXUG0PvjEP+fiwMUAi3gc50qQYOPjUmna5NAa34=;
-        b=XKGWZqnt4LDuItZ+qat5iiSqNegfkd7SZ+c/QnALP698AwC904VavFwXSAt1JMNxId
-         QUp19uVDKbe/nbP6nANWR2ZRtMVH/JWVe1+wdnNFnu9gWZBFlxmXg0GVY12cVxpte1NB
-         a4vQVCMeT1ZXQtU/gHpLGjvjSsnX1O8RtHUx9b7M6S84ElmKnHwgHT4RvdXBDDcYfSgv
-         +xAvVme4xdb4zxoYGVR9ImiqV4oPvIlQbrlXfW/MB40bmiYFOtfG6lS2GmDsxGCdYZo7
-         n3Vn2tpLm94S3zf5fVE2uTLLU9H3+szC4Lyi8TX02A74bkubA8kBXpJI7lZITu2IvWvN
-         VpoQ==
+        bh=IGjpTRoA2OrfZbr9B39mLiQwQWhKMy2utFRRA9nKvyo=;
+        b=NoWzvN1aWt4zp/FufcqSu6ghf7IlMoQMD+zbT2/viyIde9R0VA6ib37MFxyp1bYhHN
+         tdXhA2QZNWzzwI/oI8H8PQD3+kmuQgV9GRzJ1okDrK9ar4Wq9vFhYcH+jA2sfUeSLUY3
+         Qy/cepFOB7XnI/llQXDNWD9FgJqksTshByRWj3UpWyQPU3ufneL985TSI++KXenMzIcX
+         lYbCU7ksoYvoEbHi6zVXs3hstk4lYWBLaTt1FSU+avciU0ZrkmVsqBfLoM8vfY8Y+Fku
+         wqAyRCeyKn7xVTYnn2vPFiZ7N/puw3eY8CS3IQwSzf+2CUr0m975jTDOAx7E9gsJXWII
+         AwgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699310459; x=1699915259;
+        d=1e100.net; s=20230601; t=1699310760; x=1699915560;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TxY9zXUG0PvjEP+fiwMUAi3gc50qQYOPjUmna5NAa34=;
-        b=fDNin8GAlcX6C/Fs5wz+X5VDdTf9IhJGMRIhcNHvmJ88NSLjkQWBDPqmv6rkR7ylkp
-         7XXMBC1HZzxd4ar+4e0oh+79UADnXU2jXm0551vbmqK74Rd/mUIlcGNUwBATjXSFnxo1
-         d9wwTtUJn9tYcwsyY9Kh7c3lNB8Z5MTXZb0y5YIp+UaZHInPm+v82V7hoY/O1DMu+xm6
-         M6zn/Zf52Qe+SkBiNMbGEYcAarShfcx7mTQC9X8ZSLn/u+fq1lvKTzpSR8yFw+uyUjps
-         uoe9SOvQifJ7nhBMug6s/TZpfZkM5K8kCblDMsRk43UzvsXrscM9ujwOGVzoGP1uy87z
-         6spQ==
-X-Gm-Message-State: AOJu0YxayHQhE6LnmU9tslVRPTQgl2KaNCrNNOrYaL0m5TY8ofM3Sh+X
-	rtgqndbs1wxh6xtgi0+ogsI6SMhz1EVdsKUvaw4=
-X-Google-Smtp-Source: AGHT+IHnCwL9y7/kVgZgCI+JyDy8hslvsXEflto2xPMT2F92j0PKRwwTvHzxR23Kf9RRjSO3daq3VCmyFW7mM97e6ig=
-X-Received: by 2002:a17:907:c20d:b0:9df:4232:5276 with SMTP id
- ti13-20020a170907c20d00b009df42325276mr5889196ejc.76.1699310458502; Mon, 06
- Nov 2023 14:40:58 -0800 (PST)
+        bh=IGjpTRoA2OrfZbr9B39mLiQwQWhKMy2utFRRA9nKvyo=;
+        b=DmFKRG8GTUy8rhThya2rZjZUKFrA8vQg2OZr1aOAkk0Iom5fkdAlYmGKgNElmWYmaR
+         teWtR7IXHS1K4fA9nYtM6+hLCu00YbFTeWHHXUTTa75121j7VR4l7/NZgpBGFnWT+ixa
+         IJ0+0zPYpuwKPBxxQji4qmjs7SQGupa7hEwDqj9A35vBvT4X+1DJ1/tXM+lx5jr/HOCu
+         BVX1/IdI8Kp803yoywKMQID3S1kK58acF5a792N0p1gRZsNApUQo9LkWVcGRn8886z5F
+         FLPsnc7TM78iKTxonMCxV/sKyzvg48V4ruiztS7TnSvrNPuSEh8ESg29SCs8lZeq1CUj
+         kl/w==
+X-Gm-Message-State: AOJu0Yxet2iynT/DX+bOkOwMbqE4NkqMLfYYeB2NrafR63kPfTLl9p6/
+	VqAmooPZji6iWYw/hBk2d08vBppZxf2r4R52riI=
+X-Google-Smtp-Source: AGHT+IH2YEocr3T78Shw061iOeu5i45mRaOxbhKQufQrfWmIwgSPTvMQGr7t/4wVjuBQSg3ZL+LludxwBuHfB66IgAQ=
+X-Received: by 2002:a17:906:ee85:b0:9d4:2080:61d7 with SMTP id
+ wt5-20020a170906ee8500b009d4208061d7mr16200573ejb.51.1699310760027; Mon, 06
+ Nov 2023 14:46:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231104001313.3538201-1-song@kernel.org> <20231104001313.3538201-2-song@kernel.org>
- <CAEf4BzadqTVe=OPiKb=F63j3pqFPayUddjf17WFw0E47zqEqOw@mail.gmail.com> <F6545A31-F23B-4422-A74C-71F8C626A709@fb.com>
-In-Reply-To: <F6545A31-F23B-4422-A74C-71F8C626A709@fb.com>
+References: <20231106221423.564362-1-jordalgo@meta.com>
+In-Reply-To: <20231106221423.564362-1-jordalgo@meta.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 6 Nov 2023 14:40:46 -0800
-Message-ID: <CAEf4BzYGQ8pXdhtqger0p3EZgsehsrMRQDzF-pEmTNzY_5ep1g@mail.gmail.com>
-Subject: Re: [PATCH v12 bpf-next 1/9] bpf: Add __bpf_dynptr_data* for in
- kernel use
-To: Song Liu <songliubraving@meta.com>
-Cc: Song Liu <song@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"fsverity@lists.linux.dev" <fsverity@lists.linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
+Date: Mon, 6 Nov 2023 14:45:48 -0800
+Message-ID: <CAEf4BzaUeSrgvWw7HiMDr1uF0KKSgyz+_19r03nQm+JU7WPkag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: stackmap: add crosstask check to `__bpf_get_stack`
+To: Jordan Rome <jordalgo@meta.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Eric Biggers <ebiggers@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>, 
-	Roberto Sassu <roberto.sassu@huaweicloud.com>, KP Singh <kpsingh@kernel.org>, 
-	Vadim Fedorenko <vadfed@meta.com>
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 6, 2023 at 2:00=E2=80=AFPM Song Liu <songliubraving@meta.com> w=
-rote:
+On Mon, Nov 6, 2023 at 2:15=E2=80=AFPM Jordan Rome <jordalgo@meta.com> wrot=
+e:
 >
+> Currently `get_perf_callchain` only supports user stack walking for
+> the current task. Passing the correct *crosstask* param will return
+> -EFAULT if the task passed to `__bpf_get_stack` isn't the current
+> one instead of a single incorrect frame/address.
 >
+> This issue was found using `bpf_get_task_stack` inside a BPF
+> iterator ("iter/task"), which iterates over all tasks.
+> `bpf_get_task_stack` works fine for fetching kernel stacks
+> but because `get_perf_callchain` relies on the caller to know
+> if the requested *task* is the current one (via *crosstask*)
+> it wasn't returning an error.
 >
-> > On Nov 6, 2023, at 1:07=E2=80=AFPM, Andrii Nakryiko <andrii.nakryiko@gm=
-ail.com> wrote:
-> >
-> > On Fri, Nov 3, 2023 at 5:13=E2=80=AFPM Song Liu <song@kernel.org> wrote=
-:
-> >>
-> >> Different types of bpf dynptr have different internal data storage.
-> >> Specifically, SKB and XDP type of dynptr may have non-continuous data.
-> >> Therefore, it is not always safe to directly access dynptr->data.
-> >>
-> >> Add __bpf_dynptr_data and __bpf_dynptr_data_rw to replace direct acces=
-s to
-> >> dynptr->data.
-> >>
-> >> Update bpf_verify_pkcs7_signature to use __bpf_dynptr_data instead of
-> >> dynptr->data.
-> >>
-> >> Signed-off-by: Song Liu <song@kernel.org>
-> >> ---
-> >> include/linux/bpf.h      |  2 ++
-> >> kernel/bpf/helpers.c     | 47 ++++++++++++++++++++++++++++++++++++++++
-> >> kernel/trace/bpf_trace.c | 12 ++++++----
-> >> 3 files changed, 57 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> >> index b4825d3cdb29..eb84caf133df 100644
-> >> --- a/include/linux/bpf.h
-> >> +++ b/include/linux/bpf.h
-> >> @@ -1222,6 +1222,8 @@ enum bpf_dynptr_type {
-> >>
-> >> int bpf_dynptr_check_size(u32 size);
-> >> u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
-> >> +const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 =
-len);
-> >> +void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len=
-);
-> >>
-> >> #ifdef CONFIG_BPF_JIT
-> >> int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_t=
-rampoline *tr);
-> >> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> >> index e46ac288a108..c569c4c43bde 100644
-> >> --- a/kernel/bpf/helpers.c
-> >> +++ b/kernel/bpf/helpers.c
-> >> @@ -2611,3 +2611,50 @@ static int __init kfunc_init(void)
-> >> }
-> >>
-> >> late_initcall(kfunc_init);
-> >> +
-> >> +/* Get a pointer to dynptr data up to len bytes for read only access.=
- If
-> >> + * the dynptr doesn't have continuous data up to len bytes, return NU=
-LL.
-> >> + */
-> >> +const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 =
-len)
-> >> +{
-> >> +       enum bpf_dynptr_type type;
-> >> +       int err;
-> >> +
-> >> +       if (!ptr->data)
-> >> +               return NULL;
-> >> +
-> >> +       err =3D bpf_dynptr_check_off_len(ptr, 0, len);
-> >> +       if (err)
-> >> +               return NULL;
-> >> +       type =3D bpf_dynptr_get_type(ptr);
-> >> +
-> >> +       switch (type) {
-> >> +       case BPF_DYNPTR_TYPE_LOCAL:
-> >> +       case BPF_DYNPTR_TYPE_RINGBUF:
-> >> +               return ptr->data + ptr->offset;
-> >> +       case BPF_DYNPTR_TYPE_SKB:
-> >> +               return skb_pointer_if_linear(ptr->data, ptr->offset, l=
-en);
-> >> +       case BPF_DYNPTR_TYPE_XDP:
-> >> +       {
-> >> +               void *xdp_ptr =3D bpf_xdp_pointer(ptr->data, ptr->offs=
-et, len);
-> >> +
-> >> +               if (IS_ERR_OR_NULL(xdp_ptr))
-> >> +                       return NULL;
-> >> +               return xdp_ptr;
-> >> +       }
-> >> +       default:
-> >> +               WARN_ONCE(true, "unknown dynptr type %d\n", type);
-> >> +               return NULL;
-> >> +       }
-> >> +}
-> >> +
-> >
-> > Song, you basically reimplemented bpf_dynptr_slice() but didn't unify
-> > the code. Now we have two almost identical non-trivial functions we'd
-> > need to update every time someone adds a new type of dynptr. Why not
-> > have common helper that does everything both bpf_dynptr_slice() kfunc
-> > needs and __bpf_dynptr_data() needs. And then call into it from both,
-> > keeping all the LOCAL vs RINGBUF vs SKB vs XDP logic in one place?
-> >
-> > Is there some problem unifying them?
+> It might be possible to get user stacks for all tasks utilizing
+> something like `access_process_vm` but that requires the bpf
+> program calling `bpf_get_task_stack` to be sleepable and would
+> therefore be a breaking change.
 >
-> Initially, I was thinking "buffer__opt =3D=3D NULL && buffer__szk !=3D 0"=
- was
-> a problem for bpf_dynptr_slice(). And the buffer__opt =3D=3D NULL case ma=
-y
-> make a common helper more complicated. So I decided to not unify the two.
+> Fixes: fa28dcb82a38 ("bpf: Introduce helper bpf_get_task_stack()")
+> Signed-off-by: Jordan Rome <jordalgo@meta.com>
+> ---
+>  include/uapi/linux/bpf.h                                | 3 +++
+>  kernel/bpf/stackmap.c                                   | 3 ++-
+>  tools/include/uapi/linux/bpf.h                          | 3 +++
+>  tools/testing/selftests/bpf/prog_tests/bpf_iter.c       | 3 +++
+>  tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c | 5 +++++
+>  5 files changed, 16 insertions(+), 1 deletion(-)
 >
-> After a second look at it, I agree it shouldn't be a problem. And actuall=
-y
-> we can do: (though you may argue against)
->
-> const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len)
-> {
->         return bpf_dynptr_slice(ptr, 0, NULL, len);
-> }
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0f6cdf52b1da..da2871145274 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4517,6 +4517,8 @@ union bpf_attr {
+>   * long bpf_get_task_stack(struct task_struct *task, void *buf, u32 size=
+, u64 flags)
+>   *     Description
+>   *             Return a user or a kernel stack in bpf program provided b=
+uffer.
+> + *             Note: the user stack will only be populated if the *task*=
+ is
+> + *             the current task; all other tasks will return -EFAULT.
 
-yeah, let's do this, at least for now. If we have a problem with this,
-we can extract a common helper function later. It's more about
-interfaces (__bpf_dynptr_data() vs bpf_dynptr_slice()) staying
-separate
+I thought that you were not getting an error even for a non-current
+task with BPF_F_USER_STACK? Shouldn't we make sure to return error
+(-ENOTSUP?) for such cases? Taking a quick look at
+get_perf_callchain(), it doesn't seem to return NULL in such cases.
 
+>   *             To achieve this, the helper needs *task*, which is a vali=
+d
+>   *             pointer to **struct task_struct**. To store the stacktrac=
+e, the
+>   *             bpf program provides *buf* with a nonnegative *size*.
+> @@ -4528,6 +4530,7 @@ union bpf_attr {
+>   *
+>   *             **BPF_F_USER_STACK**
+>   *                     Collect a user space stack instead of a kernel st=
+ack.
+> + *                     The *task* must be the current task.
+>   *             **BPF_F_USER_BUILD_ID**
+>   *                     Collect buildid+offset instead of ips for user st=
+ack,
+>   *                     only valid if **BPF_F_USER_STACK** is also specif=
+ied.
+> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
+> index d6b277482085..96641766e90c 100644
+> --- a/kernel/bpf/stackmap.c
+> +++ b/kernel/bpf/stackmap.c
+> @@ -388,6 +388,7 @@ static long __bpf_get_stack(struct pt_regs *regs, str=
+uct task_struct *task,
+>  {
+>         u32 trace_nr, copy_len, elem_size, num_elem, max_depth;
+>         bool user_build_id =3D flags & BPF_F_USER_BUILD_ID;
+> +       bool crosstask =3D task && task !=3D current;
+>         u32 skip =3D flags & BPF_F_SKIP_FIELD_MASK;
+>         bool user =3D flags & BPF_F_USER_STACK;
+>         struct perf_callchain_entry *trace;
+> @@ -421,7 +422,7 @@ static long __bpf_get_stack(struct pt_regs *regs, str=
+uct task_struct *task,
+>                 trace =3D get_callchain_entry_for_task(task, max_depth);
+>         else
+>                 trace =3D get_perf_callchain(regs, 0, kernel, user, max_d=
+epth,
+> -                                          false, false);
+> +                                          crosstask, false);
+>         if (unlikely(!trace))
+>                 goto err_fault;
+>
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index 0f6cdf52b1da..da2871145274 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -4517,6 +4517,8 @@ union bpf_attr {
+>   * long bpf_get_task_stack(struct task_struct *task, void *buf, u32 size=
+, u64 flags)
+>   *     Description
+>   *             Return a user or a kernel stack in bpf program provided b=
+uffer.
+> + *             Note: the user stack will only be populated if the *task*=
+ is
+> + *             the current task; all other tasks will return -EFAULT.
+>   *             To achieve this, the helper needs *task*, which is a vali=
+d
+>   *             pointer to **struct task_struct**. To store the stacktrac=
+e, the
+>   *             bpf program provides *buf* with a nonnegative *size*.
+> @@ -4528,6 +4530,7 @@ union bpf_attr {
+>   *
+>   *             **BPF_F_USER_STACK**
+>   *                     Collect a user space stack instead of a kernel st=
+ack.
+> + *                     The *task* must be the current task.
+>   *             **BPF_F_USER_BUILD_ID**
+>   *                     Collect buildid+offset instead of ips for user st=
+ack,
+>   *                     only valid if **BPF_F_USER_STACK** is also specif=
+ied.
+> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c b/tools/te=
+sting/selftests/bpf/prog_tests/bpf_iter.c
+> index 4e02093c2cbe..757635145510 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_iter.c
+> @@ -332,6 +332,9 @@ static void test_task_stack(void)
+>         do_dummy_read(skel->progs.dump_task_stack);
+>         do_dummy_read(skel->progs.get_task_user_stacks);
+>
+> +       ASSERT_EQ(skel->bss->num_user_stacks, 1,
+> +                 "num_user_stacks");
+> +
 
->
->
-> As we are on this, shall we update bpf_dynptr_slice() to return
-> "const void *"? This is a little weird for buffer_opt !=3D NULL, case as
-> buffer_opt is not const. But the compiler (clang) doesn't seem to
-> complain about it.
+please split selftests into a separate patch
 
-Good question, but I don't know the answer, so I'd just leave it as is.
-
+>         bpf_iter_task_stack__destroy(skel);
+>  }
 >
-> If we cannot have bpf_dynptr_slice() return const pointer, we will need
-> a little more casting for __bpf_dynptr_data().
+> diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c b/to=
+ols/testing/selftests/bpf/progs/bpf_iter_task_stack.c
+> index f2b8167b72a8..442f4ca39fd7 100644
+> --- a/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
+> +++ b/tools/testing/selftests/bpf/progs/bpf_iter_task_stack.c
+> @@ -35,6 +35,8 @@ int dump_task_stack(struct bpf_iter__task *ctx)
+>         return 0;
+>  }
 >
-> Thanks,
-> Song
+> +int num_user_stacks =3D 0;
+> +
+>  SEC("iter/task")
+>  int get_task_user_stacks(struct bpf_iter__task *ctx)
+>  {
+> @@ -51,6 +53,9 @@ int get_task_user_stacks(struct bpf_iter__task *ctx)
+>         if (res <=3D 0)
+>                 return 0;
 >
+> +       /* Only one task, the current one, should succeed */
+> +       ++num_user_stacks;
+> +
+>         buf_sz +=3D res;
 >
-> >
-> >> +/* Get a pointer to dynptr data up to len bytes for read write access=
-. If
-> >> + * the dynptr doesn't have continuous data up to len bytes, or the dy=
-nptr
-> >> + * is read only, return NULL.
-> >> + */
->
->
+>         /* If the verifier doesn't refine bpf_get_task_stack res, and ins=
+tead
+> --
+> 2.39.3
 >
 
