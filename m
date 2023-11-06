@@ -1,175 +1,109 @@
-Return-Path: <bpf+bounces-14297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4EA17E2A2A
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 17:43:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4BB87E2A3E
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 17:47:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77136B20FBC
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 16:43:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF689B20FE0
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 16:47:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1922941E;
-	Mon,  6 Nov 2023 16:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09B312942C;
+	Mon,  6 Nov 2023 16:47:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HAsdVZke"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fywR6Dsx"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A425C179B8
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 16:43:32 +0000 (UTC)
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18032D47
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 08:43:31 -0800 (PST)
-Message-ID: <038d3f11-b030-4d53-82ff-6434a543aefa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699289009;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NXeDglBulIEK45i+YiMtoeo6awjpSaCGWm7GIgdoxPw=;
-	b=HAsdVZkedrneHjsTkG8eJKLVPQYScp48Z3FvzdxM9Tb++okxSQUBD4x6vtpovMqXe+8jn9
-	7bOTVueTEmEMOP4DGcwjHEVO99trBjg1r69wgCXPL3cSUnHxqQB2P3DjacjVHNxfXeuq6v
-	LU5RLY+Zbz1YdBu7XEO9u99FVV+Lbac=
-Date: Mon, 6 Nov 2023 16:43:27 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC01729409
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 16:47:36 +0000 (UTC)
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A873D51
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 08:47:35 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7afc13d58c6so1605543241.1
+        for <bpf@vger.kernel.org>; Mon, 06 Nov 2023 08:47:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699289254; x=1699894054; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qw9LT+eDkqBWCWgoT5gi4svTWg+hExM31Ju8qjxl7aE=;
+        b=fywR6DsxejjryKQmtuf8jBf3eaO3m1hy5d+NVcbtCDvVRxa7AbXma2f/1sXOBPCqIh
+         kWA0LlfiaF5eYHNGtD6/oDPjQWSHn+RLQe/W3XWtqG8oywNa081l52idw8dG/IQtE8HK
+         Kzmv2sfOyzxSFCkA2b8qCl89cHnKV+d4vvbJCEa/ZGqu5bm4Do1zPstXK06QOpxOP5XM
+         aKWTwdKdZ38i9mCORpXVvZleLdaqMhBlc65rspdbR1/afD35JYiyEYaDDPEfNl6rfuav
+         TEMJkIH8MDmP4bY5Ivtv0OR0iuCCdmtctoscvDaP9HfAk6HeAW5QUQX7ygGaZnvqixeA
+         JxxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699289254; x=1699894054;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qw9LT+eDkqBWCWgoT5gi4svTWg+hExM31Ju8qjxl7aE=;
+        b=kiXmJu/T9Uh56OH/BqCKuC/+FI2XoTIJXuHysL2SHWvFU+zaw/8IZ3QvvIR36FOcSc
+         wUowRQqNd+Bd5+GDwnFFCouNr8kwLvvzr+9+TXOWpRxp2FK+m4z56vXcburGUzFPoCED
+         9PjZsxcTBPKZ2NIE0koqXQy3XyxQhr0C4B+e6Aucs143WOMOCG1Mq9vKFNcnCGsaK68c
+         /tYSWWTLh2MY5knm0Pfu25YQdtKhl2NY8FQH5E0Er+NIsP8H1a/kAR/07lzcHz2yyoz8
+         BOcd+70Yl0X968teZpWQF1fihzBN3+b2Ajr8wWMLjgA5qDuUYGMpYpQC4wArhbIibGoQ
+         45ow==
+X-Gm-Message-State: AOJu0YyvpRm1nipULa2b62iThQKP0huBAPFSYrGqXlIPG4sEXZaw26Aj
+	Ipny/+FV5T2bLfwhDofgnZwnnZa5bFXrsHeViE9vi5EYP/d7dp/OK1Q=
+X-Google-Smtp-Source: AGHT+IEWgd0iAWCXHfwBGzTrmQrVtW+FMzo5zH4VLf6g9k7F1yhIUlz2cfDSSNKnvFKDG81xgnLwp0Rk+xxKWMedRq4=
+X-Received: by 2002:a1f:1e97:0:b0:4a4:d34:421b with SMTP id
+ e145-20020a1f1e97000000b004a40d34421bmr27136954vke.7.1699289254490; Mon, 06
+ Nov 2023 08:47:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v12 bpf-next 3/9] bpf: Introduce KF_ARG_PTR_TO_CONST_STR
-Content-Language: en-US
-To: Song Liu <song@kernel.org>, bpf@vger.kernel.org,
- fsverity@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@kernel.org, kernel-team@meta.com, ebiggers@kernel.org,
- tytso@mit.edu, roberto.sassu@huaweicloud.com, kpsingh@kernel.org,
- vadfed@meta.com
-References: <20231104001313.3538201-1-song@kernel.org>
- <20231104001313.3538201-4-song@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20231104001313.3538201-4-song@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231102225837.1141915-1-sdf@google.com> <20231102225837.1141915-7-sdf@google.com>
+ <20231105124514.GD3579@kernel.org>
+In-Reply-To: <20231105124514.GD3579@kernel.org>
+From: Stanislav Fomichev <sdf@google.com>
+Date: Mon, 6 Nov 2023 08:47:23 -0800
+Message-ID: <CAKH8qBvg7oEZ0PVrAVFS-av_9uxvS28W+kMvc00AGvbYUCQmtA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 06/13] xsk: Document tx_metadata_len layout
+To: Simon Horman <horms@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com, 
+	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
+	maciej.fijalkowski@intel.com, hawk@kernel.org, yoong.siang.song@intel.com, 
+	netdev@vger.kernel.org, xdp-hints@xdp-project.net
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 04/11/2023 00:13, Song Liu wrote:
-> Similar to ARG_PTR_TO_CONST_STR for BPF helpers, KF_ARG_PTR_TO_CONST_STR
-> specifies kfunc args that point to const strings. Annotation "__str" is
-> used to specify kfunc arg of type KF_ARG_PTR_TO_CONST_STR. Also, add
-> documentation for the "__str" annotation.
-> 
-> bpf_get_file_xattr() will be the first kfunc that uses this type.
-> 
-> Signed-off-by: Song Liu <song@kernel.org>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->   Documentation/bpf/kfuncs.rst | 24 ++++++++++++++++++++++++
->   kernel/bpf/verifier.c        | 19 +++++++++++++++++++
->   2 files changed, 43 insertions(+)
-> 
-> diff --git a/Documentation/bpf/kfuncs.rst b/Documentation/bpf/kfuncs.rst
-> index 0d2647fb358d..bfe065f7e23c 100644
-> --- a/Documentation/bpf/kfuncs.rst
-> +++ b/Documentation/bpf/kfuncs.rst
-> @@ -137,6 +137,30 @@ Either way, the returned buffer is either NULL, or of size buffer_szk. Without t
->   annotation, the verifier will reject the program if a null pointer is passed in with
->   a nonzero size.
->   
-> +2.2.5 __str Annotation
-> +----------------------------
-> +This annotation is used to indicate that the argument is a constant string.
-> +
-> +An example is given below::
-> +
-> +        __bpf_kfunc bpf_get_file_xattr(..., const char *name__str, ...)
-> +        {
-> +        ...
-> +        }
-> +
-> +In this case, ``bpf_get_file_xattr()`` can be called as::
-> +
-> +        bpf_get_file_xattr(..., "xattr_name", ...);
-> +
-> +Or::
-> +
-> +        const char name[] = "xattr_name";  /* This need to be global */
-> +        int BPF_PROG(...)
-> +        {
-> +                ...
-> +                bpf_get_file_xattr(..., name, ...);
-> +                ...
-> +        }
->   
->   .. _BPF_kfunc_nodef:
->   
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 618446006d5a..bf94ba50c6ee 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -10803,6 +10803,11 @@ static bool is_kfunc_arg_nullable(const struct btf *btf, const struct btf_param
->   	return __kfunc_param_match_suffix(btf, arg, "__nullable");
->   }
->   
-> +static bool is_kfunc_arg_const_str(const struct btf *btf, const struct btf_param *arg)
-> +{
-> +	return __kfunc_param_match_suffix(btf, arg, "__str");
-> +}
-> +
->   static bool is_kfunc_arg_scalar_with_name(const struct btf *btf,
->   					  const struct btf_param *arg,
->   					  const char *name)
-> @@ -10946,6 +10951,7 @@ enum kfunc_ptr_arg_type {
->   	KF_ARG_PTR_TO_RB_ROOT,
->   	KF_ARG_PTR_TO_RB_NODE,
->   	KF_ARG_PTR_TO_NULL,
-> +	KF_ARG_PTR_TO_CONST_STR,
->   };
->   
->   enum special_kfunc_type {
-> @@ -11090,6 +11096,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *env,
->   	if (is_kfunc_arg_rbtree_node(meta->btf, &args[argno]))
->   		return KF_ARG_PTR_TO_RB_NODE;
->   
-> +	if (is_kfunc_arg_const_str(meta->btf, &args[argno]))
-> +		return KF_ARG_PTR_TO_CONST_STR;
-> +
->   	if ((base_type(reg->type) == PTR_TO_BTF_ID || reg2btf_ids[base_type(reg->type)])) {
->   		if (!btf_type_is_struct(ref_t)) {
->   			verbose(env, "kernel function %s args#%d pointer type %s %s is not supported\n",
-> @@ -11713,6 +11722,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->   		case KF_ARG_PTR_TO_MEM_SIZE:
->   		case KF_ARG_PTR_TO_CALLBACK:
->   		case KF_ARG_PTR_TO_REFCOUNTED_KPTR:
-> +		case KF_ARG_PTR_TO_CONST_STR:
->   			/* Trusted by default */
->   			break;
->   		default:
-> @@ -11984,6 +11994,15 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
->   			meta->arg_btf = reg->btf;
->   			meta->arg_btf_id = reg->btf_id;
->   			break;
-> +		case KF_ARG_PTR_TO_CONST_STR:
-> +			if (reg->type != PTR_TO_MAP_VALUE) {
-> +				verbose(env, "arg#%d doesn't point to a const string\n", i);
-> +				return -EINVAL;
-> +			}
-> +			ret = check_reg_const_str(env, reg, regno);
-> +			if (ret)
-> +				return ret;
-> +			break;
->   		}
->   	}
->   
+On Sun, Nov 5, 2023 at 4:45=E2=80=AFAM Simon Horman <horms@kernel.org> wrot=
+e:
+>
+> On Thu, Nov 02, 2023 at 03:58:30PM -0700, Stanislav Fomichev wrote:
+> > - how to use
+> > - how to query features
+> > - pointers to the examples
+> >
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+>
+> ...
+>
+> > diff --git a/Documentation/networking/xsk-tx-metadata.rst b/Documentati=
+on/networking/xsk-tx-metadata.rst
+> > new file mode 100644
+> > index 000000000000..4f376560b23f
+> > --- /dev/null
+> > +++ b/Documentation/networking/xsk-tx-metadata.rst
+> > @@ -0,0 +1,70 @@
+>
+> Hi Stan,
+>
+> a minor nit from my side: an SPDX licence identifier tag should probably =
+go
+> here.
 
-Acked-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-
-Alexei, Andrii, is it possible to apply patches 1-3? Looks like they
-are ready to go and can unblock other work.
+Ugh, thanks, not sure how I missed it :-(
 
