@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-14295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10DC47E2A0F
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 17:40:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8677A7E2A11
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 17:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3EC1C20B8C
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 16:40:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 407CF2815B8
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 16:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDA428E2C;
-	Mon,  6 Nov 2023 16:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093B229406;
+	Mon,  6 Nov 2023 16:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b3+YCjG1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T14lgCQD"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F7B2940C
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 16:39:54 +0000 (UTC)
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F9A3D4C
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 08:39:52 -0800 (PST)
-Message-ID: <bc0a0262-31e3-404e-8e45-e1d09ab8ad29@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F42828E27
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 16:40:15 +0000 (UTC)
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [IPv6:2001:41d0:203:375::b1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9728D49
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 08:40:13 -0800 (PST)
+Message-ID: <6091db94-f730-40e8-a9c4-1ee6a3c56d11@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699288790;
+	t=1699288811;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=oN9A869VZHCBy48m5tePmOYoJKbQb+kLiJFQutRmqPQ=;
-	b=b3+YCjG1D3/OMasxPQ3TVixojodUlNjX2S0fLv8KGgr72FzTRnd4/DDWhL5W428pId3nvv
-	qsbijvUaho/aG5vSGdiy4wlE8Rzzumxyt4eMm9prMiHdh81IUSk9zPUtmvjiahR2CqCNfa
-	V2/qepoxPkiL96qdazO6xow95ByHh54=
-Date: Mon, 6 Nov 2023 16:39:46 +0000
+	bh=s25VPfa5QojCyYfjN5OSQVKCu++MV3nm/9B5Yn5BTj0=;
+	b=T14lgCQD+sNBBgnMTOs03djfpOYrZB47SX5n3ZjFqDoOdn0nx7JW/UZiXJoPmaQL3Uw1/H
+	ctdfzWFTxGftVSalPB5G8lVFM7HpOaC+es3c3RV4s16/JjNN8kgDiezrfZfE8JIdU0ZBMc
+	1aQukzTVKJBxPy/TGcL/QG1EUpVgCZ4=
+Date: Mon, 6 Nov 2023 16:40:11 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v12 bpf-next 1/9] bpf: Add __bpf_dynptr_data* for in
- kernel use
+Subject: Re: [PATCH v12 bpf-next 2/9] bpf: Factor out helper
+ check_reg_const_str()
 Content-Language: en-US
 To: Song Liu <song@kernel.org>, bpf@vger.kernel.org, fsverity@lists.linux.dev
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -50,130 +50,140 @@ Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
  tytso@mit.edu, roberto.sassu@huaweicloud.com, kpsingh@kernel.org,
  vadfed@meta.com
 References: <20231104001313.3538201-1-song@kernel.org>
- <20231104001313.3538201-2-song@kernel.org>
+ <20231104001313.3538201-3-song@kernel.org>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20231104001313.3538201-2-song@kernel.org>
+In-Reply-To: <20231104001313.3538201-3-song@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 On 04/11/2023 00:13, Song Liu wrote:
-> Different types of bpf dynptr have different internal data storage.
-> Specifically, SKB and XDP type of dynptr may have non-continuous data.
-> Therefore, it is not always safe to directly access dynptr->data.
+> ARG_PTR_TO_CONST_STR is used to specify constant string args for BPF
+> helpers. The logic that verifies a reg is ARG_PTR_TO_CONST_STR is
+> implemented in check_func_arg().
 > 
-> Add __bpf_dynptr_data and __bpf_dynptr_data_rw to replace direct access to
-> dynptr->data.
+> As we introduce kfuncs with constant string args, it is necessary to
+> do the same check for kfuncs (in check_kfunc_args). Factor out the logic
+> for ARG_PTR_TO_CONST_STR to a new check_reg_const_str() so that it can be
+> reused.
 > 
-> Update bpf_verify_pkcs7_signature to use __bpf_dynptr_data instead of
-> dynptr->data.
+> check_func_arg() ensures check_reg_const_str() is only called with reg of
+> type PTR_TO_MAP_VALUE. Add a redundent type check in check_reg_const_str()
+> to avoid misuse in the future. Other than this redundent check, there is
+> no change in behavior.
 > 
 > Signed-off-by: Song Liu <song@kernel.org>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->   include/linux/bpf.h      |  2 ++
->   kernel/bpf/helpers.c     | 47 ++++++++++++++++++++++++++++++++++++++++
->   kernel/trace/bpf_trace.c | 12 ++++++----
->   3 files changed, 57 insertions(+), 4 deletions(-)
+>   kernel/bpf/verifier.c | 85 +++++++++++++++++++++++++------------------
+>   1 file changed, 49 insertions(+), 36 deletions(-)
 > 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index b4825d3cdb29..eb84caf133df 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1222,6 +1222,8 @@ enum bpf_dynptr_type {
->   
->   int bpf_dynptr_check_size(u32 size);
->   u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
-> +const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len);
-> +void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len);
->   
->   #ifdef CONFIG_BPF_JIT
->   int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index e46ac288a108..c569c4c43bde 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2611,3 +2611,50 @@ static int __init kfunc_init(void)
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 2197385d91dc..618446006d5a 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -8718,6 +8718,54 @@ static enum bpf_dynptr_type dynptr_get_type(struct bpf_verifier_env *env,
+>   	return state->stack[spi].spilled_ptr.dynptr.type;
 >   }
 >   
->   late_initcall(kfunc_init);
-> +
-> +/* Get a pointer to dynptr data up to len bytes for read only access. If
-> + * the dynptr doesn't have continuous data up to len bytes, return NULL.
-> + */
-> +const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len)
+> +static int check_reg_const_str(struct bpf_verifier_env *env,
+> +			       struct bpf_reg_state *reg, u32 regno)
 > +{
-> +	enum bpf_dynptr_type type;
+> +	struct bpf_map *map = reg->map_ptr;
 > +	int err;
+> +	int map_off;
+> +	u64 map_addr;
+> +	char *str_ptr;
 > +
-> +	if (!ptr->data)
-> +		return NULL;
+> +	if (reg->type != PTR_TO_MAP_VALUE)
+> +		return -EINVAL;
 > +
-> +	err = bpf_dynptr_check_off_len(ptr, 0, len);
+> +	if (!bpf_map_is_rdonly(map)) {
+> +		verbose(env, "R%d does not point to a readonly map'\n", regno);
+> +		return -EACCES;
+> +	}
+> +
+> +	if (!tnum_is_const(reg->var_off)) {
+> +		verbose(env, "R%d is not a constant address'\n", regno);
+> +		return -EACCES;
+> +	}
+> +
+> +	if (!map->ops->map_direct_value_addr) {
+> +		verbose(env, "no direct value access support for this map type\n");
+> +		return -EACCES;
+> +	}
+> +
+> +	err = check_map_access(env, regno, reg->off,
+> +			       map->value_size - reg->off, false,
+> +			       ACCESS_HELPER);
 > +	if (err)
-> +		return NULL;
-> +	type = bpf_dynptr_get_type(ptr);
+> +		return err;
 > +
-> +	switch (type) {
-> +	case BPF_DYNPTR_TYPE_LOCAL:
-> +	case BPF_DYNPTR_TYPE_RINGBUF:
-> +		return ptr->data + ptr->offset;
-> +	case BPF_DYNPTR_TYPE_SKB:
-> +		return skb_pointer_if_linear(ptr->data, ptr->offset, len);
-> +	case BPF_DYNPTR_TYPE_XDP:
-> +	{
-> +		void *xdp_ptr = bpf_xdp_pointer(ptr->data, ptr->offset, len);
+> +	map_off = reg->off + reg->var_off.value;
+> +	err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
+> +	if (err) {
+> +		verbose(env, "direct value access on string failed\n");
+> +		return err;
+> +	}
 > +
-> +		if (IS_ERR_OR_NULL(xdp_ptr))
-> +			return NULL;
-> +		return xdp_ptr;
+> +	str_ptr = (char *)(long)(map_addr);
+> +	if (!strnchr(str_ptr + map_off, map->value_size - map_off, 0)) {
+> +		verbose(env, "string is not zero-terminated\n");
+> +		return -EINVAL;
 > +	}
-> +	default:
-> +		WARN_ONCE(true, "unknown dynptr type %d\n", type);
-> +		return NULL;
-> +	}
+> +	return 0;
 > +}
 > +
-> +/* Get a pointer to dynptr data up to len bytes for read write access. If
-> + * the dynptr doesn't have continuous data up to len bytes, or the dynptr
-> + * is read only, return NULL.
-> + */
-> +void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len)
-> +{
-> +	if (__bpf_dynptr_is_rdonly(ptr))
-> +		return NULL;
-> +	return (void *)__bpf_dynptr_data(ptr, len);
-> +}
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index df697c74d519..d525a22b8d56 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1378,6 +1378,8 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
->   			       struct bpf_dynptr_kern *sig_ptr,
->   			       struct bpf_key *trusted_keyring)
->   {
-> +	const void *data, *sig;
-> +	u32 data_len, sig_len;
->   	int ret;
->   
->   	if (trusted_keyring->has_ref) {
-> @@ -1394,10 +1396,12 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
->   			return ret;
+>   static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>   			  struct bpf_call_arg_meta *meta,
+>   			  const struct bpf_func_proto *fn,
+> @@ -8962,44 +9010,9 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
 >   	}
->   
-> -	return verify_pkcs7_signature(data_ptr->data,
-> -				      __bpf_dynptr_size(data_ptr),
-> -				      sig_ptr->data,
-> -				      __bpf_dynptr_size(sig_ptr),
-> +	data_len = __bpf_dynptr_size(data_ptr);
-> +	data = __bpf_dynptr_data(data_ptr, data_len);
-> +	sig_len = __bpf_dynptr_size(sig_ptr);
-> +	sig = __bpf_dynptr_data(sig_ptr, sig_len);
-> +
-> +	return verify_pkcs7_signature(data, data_len, sig, sig_len,
->   				      trusted_keyring->key,
->   				      VERIFYING_UNSPECIFIED_SIGNATURE, NULL,
->   				      NULL);
+>   	case ARG_PTR_TO_CONST_STR:
+>   	{
+> -		struct bpf_map *map = reg->map_ptr;
+> -		int map_off;
+> -		u64 map_addr;
+> -		char *str_ptr;
+> -
+> -		if (!bpf_map_is_rdonly(map)) {
+> -			verbose(env, "R%d does not point to a readonly map'\n", regno);
+> -			return -EACCES;
+> -		}
+> -
+> -		if (!tnum_is_const(reg->var_off)) {
+> -			verbose(env, "R%d is not a constant address'\n", regno);
+> -			return -EACCES;
+> -		}
+> -
+> -		if (!map->ops->map_direct_value_addr) {
+> -			verbose(env, "no direct value access support for this map type\n");
+> -			return -EACCES;
+> -		}
+> -
+> -		err = check_map_access(env, regno, reg->off,
+> -				       map->value_size - reg->off, false,
+> -				       ACCESS_HELPER);
+> +		err = check_reg_const_str(env, reg, regno);
+>   		if (err)
+>   			return err;
+> -
+> -		map_off = reg->off + reg->var_off.value;
+> -		err = map->ops->map_direct_value_addr(map, &map_addr, map_off);
+> -		if (err) {
+> -			verbose(env, "direct value access on string failed\n");
+> -			return err;
+> -		}
+> -
+> -		str_ptr = (char *)(long)(map_addr);
+> -		if (!strnchr(str_ptr + map_off, map->value_size - map_off, 0)) {
+> -			verbose(env, "string is not zero-terminated\n");
+> -			return -EINVAL;
+> -		}
+>   		break;
+>   	}
+>   	case ARG_PTR_TO_KPTR:
 
 Acked-by: Vadim Fedorenko <vadim.fedorenko@linux.dev>
 
