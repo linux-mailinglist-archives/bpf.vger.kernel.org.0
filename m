@@ -1,278 +1,241 @@
-Return-Path: <bpf+bounces-14336-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14337-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23B087E3023
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 23:47:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B61647E3090
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 00:03:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 550131C20850
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 22:47:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17498B20B68
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 23:03:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0F32D7B4;
-	Mon,  6 Nov 2023 22:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078EF2EB08;
+	Mon,  6 Nov 2023 23:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="K8JQoSb7"
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="H8d4xDq7"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393C21CF95
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 22:46:59 +0000 (UTC)
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59792D6E
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 14:46:57 -0800 (PST)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7eef0b931so59388557b3.0
-        for <bpf@vger.kernel.org>; Mon, 06 Nov 2023 14:46:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1699310816; x=1699915616; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=m+CxpgcL4aexq1pxQBuG46UP8l7bbeWIcVPQNBNf8iQ=;
-        b=K8JQoSb7el9HTL9KRhQwzID5BJfxMEh/9nax4gEB6w7NPNEUYMyYB/g5L9qgZaDn7h
-         7TZkBg5w6YKMDW67kybRRR9kTpRtf9LgBNLx6hPbdYKiR3LJ+LC+3v2//hhs2cGHDFgx
-         bfLfPcybjI8GvoOypMOxUJ1Tvnzt971EBpiefS6dJyI1SE9/N80EiKeCplENtAsuTdEx
-         s0PFvxsUv5UK4OzRfWKmGAKM7aPPA290XxufpylJCIUb1wvEwKbFNcSukSJtF97GewSV
-         TrEovf/8cY15HXZ8+TYBAqCj4Il1L41gfLotRIyJf+l2Jss66pPuZ7bu9J+qd96V+E/o
-         xy7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699310816; x=1699915616;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=m+CxpgcL4aexq1pxQBuG46UP8l7bbeWIcVPQNBNf8iQ=;
-        b=iKikt3FC3HAdttGVx8GzJuJtYl9YXFf+Tzmfzi8zLfvgmLzJsUdledTDYF5BR/lBji
-         onaFkSicHwnKcaebtzn5RGQvZbpIjzCLaNmmIUFn3QKsDpBSyw/R+gnpbeEgjaWKwFud
-         RmCjJXqQVjGHEi5JQ5Shppd00N8D7LG4xKuGfNwjaUVTyVUXrHEp+0ShHkOubekfe1Qr
-         TBdKOiZTQelDkdjoUCyRBuYHQ8sOJ8WG7HVej2t6Ump7NqAf+0Rd8weQPpJhlqDbQmXz
-         O22yeJuyoN1GnPTcgZ2xp6avyXaeFnvWwfVKfGT+1NER28vFlCnRyRE5bZMmBNuTjfQ4
-         nf3A==
-X-Gm-Message-State: AOJu0Yyzq/PQPnftb4THE++Eamtne194cnVd4i8D9T0PSt+/D2Do/i9w
-	RzHeGfcu7uzsLx5gLLKNwiD4pxrj688LCV/LYLFB
-X-Google-Smtp-Source: AGHT+IGXWhDoSXxeBh7Czg+txU8kbw2mYBGyDM2qVw79VBO13uUkESRzx7ovAgOHJjgxfDNHWL6IeHZWWm76GepPGGc=
-X-Received: by 2002:a25:ad14:0:b0:d9a:e397:3b4 with SMTP id
- y20-20020a25ad14000000b00d9ae39703b4mr30117731ybi.46.1699310816479; Mon, 06
- Nov 2023 14:46:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988FD14F9B;
+	Mon,  6 Nov 2023 23:03:38 +0000 (UTC)
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2050.outbound.protection.outlook.com [40.107.212.50])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B27D75;
+	Mon,  6 Nov 2023 15:03:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fn+jK1M+Bcf0NcIeMv6nFhtZ31En/NrHWLcocQLv2k6d7wqFmoo7YbdAU4ZgyWOmz7Kut0JYYn8ZUmrsK1AVAUz2dXI1i6Ib/or6OEXSfI0CRrbzM2MptBxNIQES5dwhvvsk3iAxuQ/W/mbJ8SYpWtfXxohTFUhPsxLDTLT1t0u7aBaml36ZvUpFR7At5hq4XonfPMdLGrxKagj+9Svnjc4VCLqw00VUMidF+fsKERFK5RooSEwSvnxKL0L/NxYSC+GjxxVJQe1xuAIXf/oM8WeBrMURyrPupV1JDjyfb2TQ66ZqaEf/l4DtFWZfNw7OiFrkQaKVtjcWaigzUwChRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=58eSutMnVXSn4DZ2Sj1tkPQnTL/2jcKf6sH7D/SPVIM=;
+ b=kwg9B1ZmUD+DQ5VTV4EeaSWUTrjEGyJlDjM/wW8EhsvykfowbQ9NJ0XbUbXbtaV43EdBiBg3FRVyG55BsU5jE6KiCX2bkAJQK+TkD6qbJXZJvvq0SEDJdmsxEeSzXfnzM5A+L+98B+mbMBCeC/meR4nTVow93RngAdmr6rIiTwhxyqX+oHSqaxrOls+jkwoSAr986hBHiRggPgSvdy2mfb3/URgi8C0puCO/tZrouHUqgn0LUdIIbeCTCN6bZlUbA7HbT288yzhJh/sDJA8SQOzGwpSHxin0hpXZxqqlHYxsnWHar84yEJScVejtUVE74Hp/57k9w1Xtdl15TCdqag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=58eSutMnVXSn4DZ2Sj1tkPQnTL/2jcKf6sH7D/SPVIM=;
+ b=H8d4xDq7tn+1AQ7vyw3WbbIvhUeCwLcOjks23hV7g4jG5h7vfOb6yHyK8et6ey8wPs/WEb/kqN56sBs4fpT6RTXUIFAZTQFD/2h6ZdVExdP9AsDfkG1IN236mAy4V08P5pdnIa1lbpk/WL8wzDKdBIljO+mriFX9gH+lztVCXRU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com (2603:10b6:8:d1::12) by
+ MN2PR12MB4359.namprd12.prod.outlook.com (2603:10b6:208:265::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Mon, 6 Nov
+ 2023 23:03:34 +0000
+Received: from DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::3d14:1fe0:fcb0:958c]) by DS0PR12MB6583.namprd12.prod.outlook.com
+ ([fe80::3d14:1fe0:fcb0:958c%2]) with mapi id 15.20.6954.027; Mon, 6 Nov 2023
+ 23:03:34 +0000
+Message-ID: <e3085c47-7452-4302-8401-1bda052a3714@amd.com>
+Date: Mon, 6 Nov 2023 15:03:31 -0800
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: "Nelson, Shannon" <shannon.nelson@amd.com>
+Subject: BPF/XDP: kernel panic when removing an interface that is an
+ xdp_redirect target
+To: Jesper Dangaard Brouer <hawk@kernel.org>,
+ =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ David Ahern <dsahern@gmail.com>, Jakub Kicinski <kuba@kernel.org>,
+ netdev@vger.kernel.org, bpf@vger.kernel.org,
+ Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BY3PR10CA0024.namprd10.prod.outlook.com
+ (2603:10b6:a03:255::29) To DS0PR12MB6583.namprd12.prod.outlook.com
+ (2603:10b6:8:d1::12)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231103190523.6353-12-andrii@kernel.org> <9d2b920cb7e59dfd56f763bdd4e53abd.paul@paul-moore.com>
- <CAEf4BzbGjLQV0CsTwawiqHaGf4eObMQBJT-bpDpWOoQ8hNNcVQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzbGjLQV0CsTwawiqHaGf4eObMQBJT-bpDpWOoQ8hNNcVQ@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 6 Nov 2023 17:46:45 -0500
-Message-ID: <CAHC9VhSkt8SgmJuBzd7cRf-MpZT2rwkp2ndPukCmYftNb62zmg@mail.gmail.com>
-Subject: Re: [PATCH v9 11/17] bpf,lsm: add BPF token LSM hooks
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	kernel-team@meta.com, sargun@sargun.me
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB6583:EE_|MN2PR12MB4359:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5ba9daf8-1b79-4726-5a94-08dbdf1c9a04
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	jT4dGAHor2UGZq94ZSXLgoepx6DtqlGM7pXGnctKJvpwPlmfK2iv644zTJLl5OYMG45DrxTKiHgIqYUiZK4MTGWqW6d95m8s4Ak72yrSM/PWxRFKbbTLoStuWslUDd/tA7AhNwRi4Myv+h5FP33mEOx3PQwMAwKIBVqEO4iw1osek0dDfsOG1dTEbESJBzbuUwy0Bhg4mEhvH18xBw4UfIr3brG02LjrFqSpnrTuMLx8995gS3Jul9FyTiwE3WYrstKFAH3LUIBJXv7SfMSFncP01mNFf3ayjSPr2B/xGKGxFAFWKaSUkfTQAbw0l2WLVuZ8huEQoK40cGxS70MtfJ36WMjB3wzMHySZ3pKE/tuRStivuGyn2SyyQSSMnruxlPuzCjwE+qbjBUAFQolffytog/p6VfxO6E1zl235se488nXAHCBpRmaxdLlfW62PDwV25gxWvonmRZDR59hkc9YUTtZu/3x0QTJyEptQamiwDVXkUEDX+5QKvofE/ePNtqLyNiizqc7uRj+7WbkYgSyaSzGg0vkvLKjIzjMP5fH5J+hSCLNCTKDLcYIP024ie1M+tbwwCmeG+xxZGlJ3sDHty6eKKrQkovT63ECWgoeuZuc70D3NnEJjNb5mgVnXOrmmTqUxz5HZz8jC9aA4COPB7AxcnmX7ehh+uR3neNFA/X6gUo/SxzE+mayRSQ0G
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB6583.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(39860400002)(346002)(230273577357003)(230173577357003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(316002)(8936002)(8676002)(36756003)(41300700001)(2906002)(38100700002)(5660300002)(31696002)(6486002)(66556008)(6512007)(66476007)(31686004)(86362001)(110136005)(66946007)(83380400001)(26005)(2616005)(45080400002)(6666004)(6506007)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WE9ibWNwdmFGQnZNV2hOMTBMS29iTkdKemt2clVIeVNac3pyVDJiSWdYQ2VR?=
+ =?utf-8?B?Q3VoNEpCWGpuejdlUVhkYXhPRHFSL2tSc29salpQclBveWtBMHZsN2JxVnQ1?=
+ =?utf-8?B?RnpYazVVSmVTTlVicWMyc21nQ2YxaHVpWk82eVgxRWtoWVVkSE1RWi96ZFN1?=
+ =?utf-8?B?ZDdHWW5PZEVSOEE3cHVweWNPZFl0ZHpacVBWMWFrdUNaMjBLNG5DbDl6SXBk?=
+ =?utf-8?B?eXdaSmtKUkJqNlhWMWVvbWdBTEhKZXRCYStkVDErK2VPUTFzWit1T3AyQTFU?=
+ =?utf-8?B?VHQ4UU96VjRpYy9GcTdPVUZ0dTRuNW1MMGd2U0dEa2hCeDJFRG1CY04yQzlJ?=
+ =?utf-8?B?d0tvODlNTHNQOXpYRTJkTzFjdnJOK2c2Kzk3QmpyU01DUkg1Y0dQKzVQQm8v?=
+ =?utf-8?B?NEF4NnVuRE1GREFNT0xoL09xVGRjWmVRWGlwZDJLTnZudVNWYVB4cnZoUXc1?=
+ =?utf-8?B?cENEOGNqWU9LYzYrSVlqTDlGQ3ZHUUc2ZzFDMG5GelhRUDZ3eW9YTElkTmkv?=
+ =?utf-8?B?eWVXeFMyaCthL2l0b2d6SURKaUZPQ0JXZDlUSWY1TnZleERPNk56R2sxNGFn?=
+ =?utf-8?B?TFRrN29jK0I2c1V3WkFwbXdsalVFaUt6eXdGMXFJSm9LN0h5clByN1NBWmZM?=
+ =?utf-8?B?Vjc5bU1lMDVUTmhielR3bHNsdXM2VDBnWjlSdTJ3NlFtQUFUMGZwaFpmaEYw?=
+ =?utf-8?B?Nm4vZVh0K3N0U3BGR2huUFpKS2dzd1ZVWWJtOHBuY0FtRzVibmhUeDNxbG02?=
+ =?utf-8?B?UmJNVDlpOVA5WG9ZVGk1c1ZUcUJnR2t1TkcxaGRtNFpLUlFENTByb2ZwVWxk?=
+ =?utf-8?B?eDUvNjdtNnRJbjFGeUJIa3hxVnNWV1dxOUZJdVNOVUxJY083ekV2TnFWYzMx?=
+ =?utf-8?B?RTBRcFRtdGUxYjlPYm5nT0RVSC9vUFlvdDJaRytIZ0FJeDVmMGR4ek9xZkQ3?=
+ =?utf-8?B?OThRc1EwdHBpOUFTVGd3LzNFZ3ZjemhBODE3dFlJZkh2VlVXaVN5RkpxVHhi?=
+ =?utf-8?B?c1Nmdkx6RnYyaXo5OUowWnQ3YjkxRUo2d0tseVZJM2JrME1VZi80ajZiSS9J?=
+ =?utf-8?B?emx0TDlxUTJIRnZWT2Zxc2NyeTlEcWZXVFllalB2b2QyYi8zckh3b3JId2x4?=
+ =?utf-8?B?WFo4NVl0aHczY3NGbk1TWEFuRWllUG1JUW1vT3UyQ3haV3JRRlZJSW1NazZO?=
+ =?utf-8?B?ZVptMU01WUtTallvblhQK2xFS0VFYVVWZ1RPUHpNaHQ5bFFqOE5wU0NSdzM5?=
+ =?utf-8?B?dDU1VTdnLzA3bk9HbG1lejV1aDVJRWN1UU1QMld6eDl5R1BLSTY0Y0VEbzJz?=
+ =?utf-8?B?SGdxN1BZMkl5dzJkd3FZUkxvMkMxNnlkeGhXWlhTV0ZhQlZLcjN6c3Q2a0Qv?=
+ =?utf-8?B?SEZEQk5iZ1FrQ24zVXBVTVBsM01vVVJleG91amJNZjVtNVdsTm51TEdwMllR?=
+ =?utf-8?B?QnJ6ZGhud1prWmxIWmZEYlc5V2I0UGRkSzNpWUZjT0dDK1RaTWd4UXpBenRY?=
+ =?utf-8?B?MCtOYnNHSWFic0Y1UWdka0cyR1d5Rm1WMTNqeDJQSFlvSkhqdE5idWp3NWZ3?=
+ =?utf-8?B?U0JxbmgwbjF2eHBnTTgrc2pxZ2JGMzhwdU1oK3NJRlRpd3NKS1JlajAybzU4?=
+ =?utf-8?B?cHdFS0RNVkJiMmt5elExNVRBeDF0cGZsbFpOKzc3QWJXeDZJa3cwSnh6KzB1?=
+ =?utf-8?B?VU0wMUdKQ21mQ1ZMMlR5MlNTelBhRFZrWnE5RURMbWhRMG5ObW1XeEpyMnJj?=
+ =?utf-8?B?ZUpINDFsMnkyczczV1U5elhCZHlUT1UvTlI0STdFRlhUY3ZnUGRHUkdvbGgz?=
+ =?utf-8?B?N2t5TmdnNFQ0RC9oN0laVGFQTktzY0M3QzZGeXFId2RkSUdKRFZjcStVK0o0?=
+ =?utf-8?B?Rk1lZFI1dXRTNksvajRWWFplNnJzMHo0UnBRQlBUUFlyN2R2WWZMVGZxZWlE?=
+ =?utf-8?B?UFljMmJIc0gzVDd2dVU3NUxqU0ZYbVdwZDQ2QzMxbmg4NU93YWJhN3oyUm1O?=
+ =?utf-8?B?N1EzdHNxK3FEMkF2WkZhTlJCMk1Ic0dGOCtQb1lqeHVkSnRqWVJ6UW5IRGwx?=
+ =?utf-8?B?ZER2TnlkaHlnd21NQWZqOGRmbDE1emJCSDd3aHdCL1pWb1lUT0RzY0JZQzIx?=
+ =?utf-8?Q?IgKhLYbkmAmTf+0XZlv07CDvd?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ba9daf8-1b79-4726-5a94-08dbdf1c9a04
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB6583.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Nov 2023 23:03:34.0542
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Atvh9t1llpJuHJZ/3UTvdkCICk3M8AKeYjNYury+Fk48riu5dDteT7dOu4WZ/Dh4KfrBvFblq+RBHr0QOL/Hpw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4359
 
-On Mon, Nov 6, 2023 at 2:17=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Sun, Nov 5, 2023 at 9:01=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
-rote:
-> > On Nov  3, 2023 Andrii Nakryiko <andrii@kernel.org> wrote:
-> > >
-> > > Wire up bpf_token_create and bpf_token_free LSM hooks, which allow to
-> > > allocate LSM security blob (we add `void *security` field to struct
-> > > bpf_token for that), but also control who can instantiate BPF token.
-> > > This follows existing pattern for BPF map and BPF prog.
-> > >
-> > > Also add security_bpf_token_allow_cmd() and security_bpf_token_capabl=
-e()
-> > > LSM hooks that allow LSM implementation to control and negate (if
-> > > necessary) BPF token's delegation of a specific bpf_cmd and capabilit=
-y,
-> > > respectively.
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  include/linux/bpf.h           |  3 ++
-> > >  include/linux/lsm_hook_defs.h |  5 +++
-> > >  include/linux/security.h      | 25 +++++++++++++++
-> > >  kernel/bpf/bpf_lsm.c          |  4 +++
-> > >  kernel/bpf/token.c            | 13 ++++++--
-> > >  security/security.c           | 60 +++++++++++++++++++++++++++++++++=
-++
-> > >  6 files changed, 107 insertions(+), 3 deletions(-)
-> >
-> > ...
-> >
-> > > diff --git a/include/linux/security.h b/include/linux/security.h
-> > > index 08fd777cbe94..1d6edbf45d1c 100644
-> > > --- a/include/linux/security.h
-> > > +++ b/include/linux/security.h
-> > > @@ -60,6 +60,7 @@ struct fs_parameter;
-> > >  enum fs_value_type;
-> > >  struct watch;
-> > >  struct watch_notification;
-> > > +enum bpf_cmd;
-> >
-> > Yes, I think it's fine to include bpf.h in security.h instead of the
-> > forward declaration.
-> >
-> > >  /* Default (no) options for the capable function */
-> > >  #define CAP_OPT_NONE 0x0
-> > > @@ -2031,6 +2032,11 @@ extern void security_bpf_map_free(struct bpf_m=
-ap *map);
-> > >  extern int security_bpf_prog_load(struct bpf_prog *prog, union bpf_a=
-ttr *attr,
-> > >                                 struct bpf_token *token);
-> > >  extern void security_bpf_prog_free(struct bpf_prog *prog);
-> > > +extern int security_bpf_token_create(struct bpf_token *token, union =
-bpf_attr *attr,
-> > > +                                  struct path *path);
-> > > +extern void security_bpf_token_free(struct bpf_token *token);
-> > > +extern int security_bpf_token_allow_cmd(const struct bpf_token *toke=
-n, enum bpf_cmd cmd);
-> > > +extern int security_bpf_token_capable(const struct bpf_token *token,=
- int cap);
-> > >  #else
-> > >  static inline int security_bpf(int cmd, union bpf_attr *attr,
-> > >                                            unsigned int size)
-> > > @@ -2065,6 +2071,25 @@ static inline int security_bpf_prog_load(struc=
-t bpf_prog *prog, union bpf_attr *
-> > >
-> > >  static inline void security_bpf_prog_free(struct bpf_prog *prog)
-> > >  { }
-> > > +
-> > > +static inline int security_bpf_token_create(struct bpf_token *token,=
- union bpf_attr *attr,
-> > > +                                  struct path *path)
-> > > +{
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static inline void security_bpf_token_free(struct bpf_token *token)
-> > > +{ }
-> > > +
-> > > +static inline int security_bpf_token_allow_cmd(const struct bpf_toke=
-n *token, enum bpf_cmd cmd)
-> > > +{
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static inline int security_bpf_token_capable(const struct bpf_token =
-*token, int cap)
-> > > +{
-> > > +     return 0;
-> > > +}
-> >
-> > Another nitpick, but I would prefer to shorten
-> > security_bpf_token_allow_cmd() renamed to security_bpf_token_cmd() both
-> > to shorten the name and to better fit convention.  I realize the caller
-> > is named bpf_token_allow_cmd() but I'd still rather see the LSM hook
-> > with the shorter name.
->
-> Makes sense, renamed to security_bpf_token_cmd() and updated hook name as=
- well
+While testing new code to support XDP in the ionic driver we found that 
+we could panic the kernel by running a bind/unbind loop on the target 
+interface of an xdp_redirect action.  Obviously this is a stress test 
+that is abusing the system, but it does point to a window of opportunity 
+in bq_enqueue() and bq_xmit_all().  I believe that while the validity of 
+the target interface has been checked in __xdp_enqueue(), the interface 
+can be unbound by the time either bq_enqueue() or bq_xmit_all() tries to 
+use the interface.  There is no locking or reference taken on the 
+interface to hold it in place before the target’s ndo_xdp_xmit() is called.
 
-Thanks.
+Below is a stack trace that our tester captured while running our test 
+code on a RHEL 9.2 kernel – yes, I know, unpublished driver code on a 
+non-upstream kernel.  But if you look at the current upstream code in 
+kernel/bpf/devmap.c I think you can see what we ran into.
 
-> > > diff --git a/kernel/bpf/token.c b/kernel/bpf/token.c
-> > > index 35e6f55c2a41..5d04da54faea 100644
-> > > --- a/kernel/bpf/token.c
-> > > +++ b/kernel/bpf/token.c
-> > > @@ -7,11 +7,12 @@
-> > >  #include <linux/idr.h>
-> > >  #include <linux/namei.h>
-> > >  #include <linux/user_namespace.h>
-> > > +#include <linux/security.h>
-> > >
-> > >  bool bpf_token_capable(const struct bpf_token *token, int cap)
-> > >  {
-> > >       /* BPF token allows ns_capable() level of capabilities */
-> > > -     if (token) {
-> > > +     if (token && security_bpf_token_capable(token, cap) =3D=3D 0) {
-> > >               if (ns_capable(token->userns, cap))
-> > >                       return true;
-> > >               if (cap !=3D CAP_SYS_ADMIN && ns_capable(token->userns,=
- CAP_SYS_ADMIN))
-> >
-> > We typically perform the capability based access controls prior to the
-> > LSM controls, meaning if we want to the token controls to work in a
-> > similar way we should do something like this:
-> >
-> >   bool bpf_token_capable(...)
-> >   {
-> >     if (token) {
-> >       if (ns_capable(token, cap) ||
-> >           (cap !=3D ADMIN && ns_capable(token, ADMIN)))
-> >         return security_bpf_token_capable(token, cap);
-> >     }
-> >     return capable(cap) || (cap !=3D ADMIN && capable(...))
-> >   }
->
-> yep, makes sense, I changed it as you suggested above
+Other than telling users to not abuse the system with a bind/unbind 
+loop, is there something we can do to limit the potential pain here? 
+Without knowing what interfaces might be targeted by the users’ XDP 
+programs, is there a step the originating driver can do to take 
+precautions?  Did we simply miss a step in the driver, or is this an 
+actual problem in the devmap code?
 
-Thanks again.
+Thanks,
+sln
 
-> > > @@ -28,6 +29,7 @@ void bpf_token_inc(struct bpf_token *token)
-> > >
-> > >  static void bpf_token_free(struct bpf_token *token)
-> > >  {
-> > > +     security_bpf_token_free(token);
-> > >       put_user_ns(token->userns);
-> > >       kvfree(token);
-> > >  }
-> > > @@ -172,6 +174,10 @@ int bpf_token_create(union bpf_attr *attr)
-> > >       token->allowed_progs =3D mnt_opts->delegate_progs;
-> > >       token->allowed_attachs =3D mnt_opts->delegate_attachs;
-> > >
-> > > +     err =3D security_bpf_token_create(token, attr, &path);
-> > > +     if (err)
-> > > +             goto out_token;
-> > > +
-> > >       fd =3D get_unused_fd_flags(O_CLOEXEC);
-> > >       if (fd < 0) {
-> > >               err =3D fd;
-> > > @@ -216,8 +222,9 @@ bool bpf_token_allow_cmd(const struct bpf_token *=
-token, enum bpf_cmd cmd)
-> > >  {
-> > >       if (!token)
-> > >               return false;
-> > > -
-> > > -     return token->allowed_cmds & (1ULL << cmd);
-> > > +     if (!(token->allowed_cmds & (1ULL << cmd)))
-> > > +             return false;
-> > > +     return security_bpf_token_allow_cmd(token, cmd) =3D=3D 0;
-> >
-> > I'm not sure how much it really matters, but someone might prefer
-> > the '!!' approach/style over '=3D=3D 0'.
->
-> it would have to be !security_bpf_token_cmd(), right?
-
-Yeah :P
-
-In most, although definitely not all, kernel functions when something
-returns 0 we consider that the positive/success case, with non-zero
-values being some sort of failure.  I must have defaulted to that
-logic here, but you are correct that just a single negation would be
-needed here.
-
-> And that single
-> negation is just very confusing when dealing with int-returning
-> function. I find it much easier to make sure the logic is correct when
-> we have explicit `=3D=3D 0`.
-
-That's fine, it's something I've seen mentioned over the years and
-thought I might offer it as a comment.  I can read either approach
-just fine :)
-
-Anyway, with the other changes mentioned above, e.g. naming and
-permission ordering, feel free to add my ACK.
-
-Acked-by: Paul Moore <paul@paul-moore.com>
-
---=20
-paul-moore.com
+[ 6118.862868] general protection fault, probably for non-canonical 
+address 0x696867666564659a: 0000 [#1] PREEMPT SMP NOPTI
+[ 6118.863026] CPU: 2 PID: 0 Comm: swapper/2 Kdump: loaded Tainted: G 
+   OE  -------- --- 5.14.0-284.11.1.el9_2.x86_64 #1
+[ 6118.863335] Hardware name: HPE ProLiant DL320 Gen11/ProLiant DL320 
+Gen11, BIOS 1.30 03/01/1023
+[ 6118.863515] RIP: 0010:bq_xmit_all+0x8a/0x160
+[ 6118.863704] Code: de 4c 89 f1 44 89 ea e8 b4 fc ff ff 89 c6 85 c0 0f 
+84 af 00 00 00 49 8b 86 d0 00 00 00 44 89 f9 48 89 da 4c 89 f7 89 74 24 
+04 <48> 8b 80 38 02 00 00 ff d0 0f 1f 00 31 c9 8b 74 24 04 85 c0 41 89
+[ 6118.864137] RSP: 0018:ff733629002d8e50 EFLAGS: 00010246
+[ 6118.864366] RAX: 6968676665646362 RBX: ffa53628f9ea47e8 RCX: 
+0000000000000001
+[ 6118.864608] RDX: ffa53628f9ea47e8 RSI: 0000000000000010 RDI: 
+ff1fa0f2a46c8000
+[ 6118.864859] RBP: ffa53628f9ea47f0 R08: ffffffffc082e700 R09: 
+ffffffffffffffff
+[ 6118.865114] R10: 0000000000000040 R11: 0000000000000003 R12: 
+0000000000000010
+[ 6118.865380] R13: 0000000000000010 R14: ff1fa0f2a46c8000 R15: 
+0000000000000001
+[ 6118.865648] FS: 0000000000000000(0000) GS:ff1fa0f5af280000(0000) 
+knlGS:0000000000000000
+[ 6118.865928] CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 6118.866213] CR2: 0000557586bae5e6 CR3: 000000001d410004 CR4: 
+0000000000771ee0
+[ 6118.866509] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+0000000000000000
+[ 6118.866811] DR3: 0000000000000000 DR6: 00000000fffe07f0 DR7: 
+0000000000000400
+[ 6118.867117] PKRU: 55555554
+[ 6118.867423] Call Trace:
+[ 6118.867731] <IRQ>
+[ 6118.868040] __dev_flush+0x39/0xa0
+[ 6118.868358] xdp_do_flush+0xa/0x20
+[ 6118.868681] ionic_txrx_napi+0x1ba/0x1f0 [ionic]
+[ 6118.869024] __napi_poll+0x27/0x170
+[ 6118.869357] net_rx_action+0x233/0x2f0
+[ 6118.869693] __do_softirq+0xc7/0x2ac
+[ 6118.870037] __irq_exit_rcu+0xb5/0xe0
+[ 6118.870383] common_interrupt+0x80/0xa0
+[ 6118.870735] </IRQ>
+[ 6118.871082] <TASK>
+[ 6118.871431] asm_common_interrupt+0x22/0x40
+[ 6118.871790] RIP: 0010:cpuidle_enter_state+0xd2/0x400
+[ 6118.872162] Code: 49 89 c5 0f 1f 44 00 00 31 ff e8 f9 a9 8e ff 45 84 
+ff 74 12 9c 58 f6 c4 02 0f 85 12 03 00 00 31 ff e8 72 b7 94 ff fb 45 85 
+f6 <0f> 88 15 01 00 00 49 63 d6 4c 2b 2c 24 48 8d 04 52 48 8d 04 82 49
+[ 6118.872962] RSP: 0018:ff7336290010fe80 EFLAGS: 00000206
+[ 6118.873377] RAX: ff1fa0f5af2aabc0 RBX: 0000000000000003 RCX: 
+000000000000001f
+[ 6118.873804] RDX: 0000000000000000 RSI: 0000000055555555 RDI: 
+0000000000000000
+[ 6118.874236] RBP: ffa53628faaa4400 R08: 00000590a8a55399 R09: 
+0000000000000001
+[ 6118.874752] R10: 0000000000000400 R11: 0000000000000730 R12: 
+ffffffffbacace60
+[ 6118.875282] R13: 00000590a8a55399 R14: 0000000000000003 R15: 
+0000000000000000
+[ 6118.875737] cpuidle_enter+0x29/0x40
+[ 6118.876198] cpuidle_idle_call+0x12c/0x1c0
+[ 6118.876664] do_idle+0x7b/0xe0
+[ 6118.877132] cpu_startup_entry+0x19/0x20
+[ 6118.877604] start_secondary+0x116/0x140
+[ 6118.878081] secondary_startup_64_no_verify+0xe5/0xeb
+[ 6118.878562] </TASK>
+[ 6118.879104] Modules linked in: ionic(OE) ib_core tls 8021q garp mrp 
+stp llc nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet 
+nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat 
+nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 rfkill ip_set nf_tables 
+nfnetlink vfat fat ipmi_ssif intel_rapl_msr intel_rapl_common nfit 
+libnvdimm x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel 
+pmt_crashlog pmt_telemetry pmt_class kvm irqbypass rapl intel_cstate 
+cdc_eem intel_uncore idxd usbnet acpi_ipmi mei_me isst_if_mbox_pci 
+isst_if_mmio pcspkr isst_if_common intel_vsec mii idxd_bus mei hpilo 
+ipmi_si ipmi_devintf ipmi_msghandler acpi_tad acpi_power_meter xfs 
+libcrc32c sd_mod t10_pi sg mgag200 i2c_algo_bit drm_shmem_helper 
+drm_kms_helper ahci syscopyarea sysfillrect sysimgblt libahci 
+fb_sys_fops qat_4xxx drm libata crct10dif_pclmul crc32_pclmul intel_qat 
+crc32c_intel tg3 ghash_clmulni_intel crc8 hpwdt wmi dm_mirror 
+dm_region_hash dm_log dm_mod fuse [last unloaded: ionic]
 
