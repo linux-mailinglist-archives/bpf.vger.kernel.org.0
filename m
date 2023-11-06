@@ -1,158 +1,126 @@
-Return-Path: <bpf+bounces-14280-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14281-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4575A7E1BA8
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 09:06:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7348B7E1C68
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 09:38:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0889428120B
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 08:06:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FCE41C20AE4
+	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 08:38:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E281EFBF2;
-	Mon,  6 Nov 2023 08:06:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80362561;
+	Mon,  6 Nov 2023 08:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BjSXGWnZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB19F9C8
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 08:06:31 +0000 (UTC)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CB190;
-	Mon,  6 Nov 2023 00:06:29 -0800 (PST)
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-da7238b3eb4so2990997276.1;
-        Mon, 06 Nov 2023 00:06:29 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D39AE15B7
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 08:38:26 +0000 (UTC)
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87E8CC
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 00:38:24 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-409299277bbso29586115e9.2
+        for <bpf@vger.kernel.org>; Mon, 06 Nov 2023 00:38:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699259903; x=1699864703; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1obyZVSBDJ9jwrMhcq9z3qKGElXG9y+4Qk9KA/x4aWA=;
+        b=BjSXGWnZ8LggJrabd+4b9PiubQg/ijuHLcxwQoxrrVKO6mmG9dOFzNRT56yznncVKl
+         1l0a4b7dGTujYXrApB53KBqH6Unn0jDfhRWKVi9WsjiNPFtvlg+qjr8xdDyDdy46Hywh
+         MSLcvqq+Pz2aaF09Pwe4uXR6gvQaYq1eAnGwUHCYSGWzdePMaZb8BRDO81sx+HiMRxc+
+         vddJSAmJR+wI6XZ81Sy/3faDccbkOtIeW2uOv15OtsVCmYy304S5w6QpOuKSRUO+Ebor
+         Fjso1PAfEW6RsD/yUpHdeTlAou0ocqAn2ZCHwbXf2kMOEbNYn7fPnRgncLBDTXbuWQje
+         SGMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699257989; x=1699862789;
+        d=1e100.net; s=20230601; t=1699259903; x=1699864703;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GEegE8ckZG10k1Ra1Y/drVVKgI3ZUf2FMeALzLcJgsk=;
-        b=Y7Vbbyfwdp41G+/9MRhLWX9XrTnkUSW/jGsW3UDyoYaZVpb1zhZa7iJ+U/3iAQBgeQ
-         MtU4HEnBIitTXL8JS8KOwzJq9DZ2AZOWBFJv3+DUgHq6Z3/074C4DmXXSSLDwvYFZIXI
-         erDqrxvIDA4rnbr1UtYubHeXNP1KqGUMjJXquwDGJ7w8Xcm/l/MAX27DHhR6vx91X8T/
-         qbEPPe8l0BlrHb9ouoBHhjhsg3e+sWoXaCAvbD/LU7+OMvewq6rs9pGM5p+1lewUnwIN
-         nW5TzTEYScGLfTHlP4qE0XisMfenHiQjA4AiHZaedK5XNIKRZ5f2HWGdQ2whsgx800TR
-         vBXA==
-X-Gm-Message-State: AOJu0Ywy90DsfCbpHoU+BHCSKOZ4X7NStWfBHlQLjUmD0XMKzscw8reb
-	zbElO/pzAoYWbC7XidU1NTk3Jn0U4mYFbg==
-X-Google-Smtp-Source: AGHT+IFg9RQNjiQOpL049DiRTpAneWA1kKsJw01oZXkPJj4HuqwWC1buYHuV9YsiByr4J0TqCkf/3w==
-X-Received: by 2002:a25:a422:0:b0:da0:94fb:fd7e with SMTP id f31-20020a25a422000000b00da094fbfd7emr26392374ybi.45.1699257988724;
-        Mon, 06 Nov 2023 00:06:28 -0800 (PST)
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
-        by smtp.gmail.com with ESMTPSA id 203-20020a2516d4000000b00d7745e2bb19sm3680396ybw.29.2023.11.06.00.06.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Nov 2023 00:06:28 -0800 (PST)
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-d852b28ec3bso4458136276.2;
-        Mon, 06 Nov 2023 00:06:27 -0800 (PST)
-X-Received: by 2002:a5b:748:0:b0:d9a:4bc3:226d with SMTP id
- s8-20020a5b0748000000b00d9a4bc3226dmr29092496ybq.34.1699257987652; Mon, 06
- Nov 2023 00:06:27 -0800 (PST)
+        bh=1obyZVSBDJ9jwrMhcq9z3qKGElXG9y+4Qk9KA/x4aWA=;
+        b=TjL2HUcLQp1iLbXY9o//BYTh5XKPQ2aUlZzwlkshz4veE32vYLYcU0gsk3MkBR6DLb
+         KQ/mAJFJB4CnSN/d4OYM8sXsGMPkZzBckbUvZ0KAupztMa+ghOjQiI9U4rdGk6kg8nYv
+         oeSqbQ3vcRZnVa3sqJEE5nWEskL2eqZxUxwspVRcYM+yHwNbByvD5Bpx52za3upHm/xk
+         ZkyP+doo6q7J9ZUFtnETEUq8QMETb4wWO8+2WIgpdP0itnQGX6f5KuKTJckH5IV5Tzw3
+         u10S/ZK+hi4IqMg5f1FRG1/rbt4nKmOVF1Nug3waldnY9WCe0LDLvxyE6yuGIb3+r+cz
+         QqyQ==
+X-Gm-Message-State: AOJu0YxT3ld4xf27yLng2D9JWXXU3lhlzn2JUiitUs/E6vtnAP5GETva
+	FDtJTLj2MG93c/YwQ4Z5r2qDLfXoKEYvRnX9i1E+awKSNv0=
+X-Google-Smtp-Source: AGHT+IEjFD8KY/TOwk7PJSfy8vr5F6hRLiRmnwNyGlJHh7X3p/vU0TsTi6LVojM6dLUpjGSx+gm1MvPZzB3JiEP7RW4=
+X-Received: by 2002:a05:600c:539b:b0:408:3cdf:32c with SMTP id
+ hg27-20020a05600c539b00b004083cdf032cmr26538523wmb.41.1699259903021; Mon, 06
+ Nov 2023 00:38:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231101181601.1493271-1-jolsa@kernel.org>
-In-Reply-To: <20231101181601.1493271-1-jolsa@kernel.org>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 6 Nov 2023 09:06:15 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUK4iRF7rTrSypEcbGTO0SnBUFDqT_HA9B7Pj62wTbYAw@mail.gmail.com>
-Message-ID: <CAMuHMdUK4iRF7rTrSypEcbGTO0SnBUFDqT_HA9B7Pj62wTbYAw@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next] bpf: fix compilation error without CGROUPS
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, kernel test robot <lkp@intel.com>, bpf@vger.kernel.org, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Yafang Shao <laoar.shao@gmail.com>, 
-	Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	MPTCP Upstream <mptcp@lists.linux.dev>, Matthieu Baerts <matttbe@kernel.org>
+References: <CADx9qWgqfQdHSVn0RMMz7M2jp5pKP-bnnc7GAfFD4QbP4eFA4w@mail.gmail.com>
+ <20231103212024.327833-1-hawkinsw@obs.cr> <CAADnVQLztq5W9qmGUBQeRBUJeCmTcc9H-OXCCJJzn=0baz+8_Q@mail.gmail.com>
+ <CADx9qWiQA3U+j-QoZPh7z66_2iNv6B51WXmd60Y-6GKhg+k0=w@mail.gmail.com>
+In-Reply-To: <CADx9qWiQA3U+j-QoZPh7z66_2iNv6B51WXmd60Y-6GKhg+k0=w@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 6 Nov 2023 00:38:11 -0800
+Message-ID: <CAADnVQKXz-Y_ykNXa-sgSjo2r6F-vuO0Jx=9zHzG7j3-ZKhGYA@mail.gmail.com>
+Subject: Re: [Bpf] [PATCH v3] bpf, docs: Add additional ABI working draft base text
+To: Will Hawkins <hawkinsw@obs.cr>
+Cc: bpf@ietf.org, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 1, 2023 at 7:16=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
-> From: Matthieu Baerts <matttbe@kernel.org>
-> Our MPTCP CI complained [1] -- and KBuild too -- that it was no longer
-> possible to build the kernel without CONFIG_CGROUPS:
+On Sun, Nov 5, 2023 at 4:17=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> wrote=
+:
 >
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_new':
->   kernel/bpf/task_iter.c:919:14: error: 'CSS_TASK_ITER_PROCS' undeclared =
-(first use in this function)
->     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->         |              ^~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c:919:14: note: each undeclared identifier is repo=
-rted only once for each function it appears in
->   kernel/bpf/task_iter.c:919:36: error: 'CSS_TASK_ITER_THREADED' undeclar=
-ed (first use in this function)
->     919 |         case CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED:
->         |                                    ^~~~~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c:927:60: error: invalid application of 'sizeof' t=
-o incomplete type 'struct css_task_iter'
->     927 |         kit->css_it =3D bpf_mem_alloc(&bpf_global_ma, sizeof(st=
-ruct css_task_iter));
->         |                                                            ^~~~=
-~~
->   kernel/bpf/task_iter.c:930:9: error: implicit declaration of function '=
-css_task_iter_start'; did you mean 'task_seq_start'? [-Werror=3Dimplicit-fu=
-nction-declaration]
->     930 |         css_task_iter_start(css, flags, kit->css_it);
->         |         ^~~~~~~~~~~~~~~~~~~
->         |         task_seq_start
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_next':
->   kernel/bpf/task_iter.c:940:16: error: implicit declaration of function =
-'css_task_iter_next'; did you mean 'class_dev_iter_next'? [-Werror=3Dimplic=
-it-function-declaration]
->     940 |         return css_task_iter_next(kit->css_it);
->         |                ^~~~~~~~~~~~~~~~~~
->         |                class_dev_iter_next
->   kernel/bpf/task_iter.c:940:16: error: returning 'int' from a function w=
-ith return type 'struct task_struct *' makes pointer from integer without a=
- cast [-Werror=3Dint-conversion]
->     940 |         return css_task_iter_next(kit->css_it);
->         |                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   kernel/bpf/task_iter.c: In function 'bpf_iter_css_task_destroy':
->   kernel/bpf/task_iter.c:949:9: error: implicit declaration of function '=
-css_task_iter_end' [-Werror=3Dimplicit-function-declaration]
->     949 |         css_task_iter_end(kit->css_it);
->         |         ^~~~~~~~~~~~~~~~~
+> On Sun, Nov 5, 2023 at 4:51=E2=80=AFAM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Fri, Nov 3, 2023 at 2:20=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> w=
+rote:
+> > > +
+> > > +The ABI is specified in two parts: a generic part and a processor-sp=
+ecific part.
+> > > +A pairing of generic ABI with the processor-specific ABI for a certa=
+in
+> > > +instantiation of a BPF machine represents a complete binary interfac=
+e for BPF
+> > > +programs executing on that machine.
+> > > +
+> > > +This document is the generic ABI and specifies the parameters and be=
+havior
+> > > +common to all instantiations of BPF machines. In addition, it define=
+s the
+> > > +details that must be specified by each processor-specific ABI.
+> > > +
+> > > +These psABIs are the second part of the ABI. Each instantiation of a=
+ BPF
+> > > +machine must describe the mechanism through which binary interface
+> > > +compatibility is maintained with respect to the issues highlighted b=
+y this
+> > > +document. However, the details that must be defined by a psABI are a=
+ minimum --
+> > > +a psABI may specify additional requirements for binary interface com=
+patibility
+> > > +on a platform.
+> >
+> > I don't understand what you are trying to say in the above.
+> > In my mind there is only one BPF psABI and it doesn't have
+> > generic and processor parts. There is only one "processor".
+> > BPF is such a processor.
 >
-> This patch simply surrounds with a #ifdef the new code requiring CGroups
-> support. It seems enough for the compiler and this is similar to
-> bpf_iter_css_{new,next,destroy}() functions where no other #ifdef have
-> been added in kernel/bpf/helpers.c and in the selftests.
->
-> Fixes: 9c66dc94b62a ("bpf: Introduce css_task open-coded iterator kfuncs"=
-)
-> Link: https://github.com/multipath-tcp/mptcp_net-next/actions/runs/666520=
-6927
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310260528.aHWgVFqq-lkp@i=
-ntel.com/
-> Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
-> [ added missing ifdefs for BTF_ID cgroup definitions ]
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> What I was trying to say was that the document here describes a
+> generic ABI. In this document there will be areas that are specific to
+> different implementations and those would be considered processor
+> specific. In other words, the ubpf runtime could define those things
+> differently than the rbpf runtime which, in turn, could define those
+> things differently than the kernel's implementation.
 
-Thank you, this (finally, reported first on Oct 20!) fixes the build of
-e.g. m68k/defconfig.
-
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+I see what you mean. There is only one BPF psABI. There cannot be two.
+ubpf can decide not to follow it, but it could only mean that
+it's non conformant and not compatible.
 
