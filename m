@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-14397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B52FF7E3C14
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 13:12:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5581D7E3C20
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 13:12:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D3C3B207DD
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 12:12:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9541B20DC1
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 12:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D792EAF9;
-	Tue,  7 Nov 2023 12:12:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933F52EB00;
+	Tue,  7 Nov 2023 12:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="exK7Dzoe"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hR6c3w5T"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 774952E636
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 12:12:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B577C433C9;
-	Tue,  7 Nov 2023 12:12:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E302EAE3
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 12:12:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEBA0C433CB;
+	Tue,  7 Nov 2023 12:12:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699359131;
-	bh=i9/DqT04sKEQYZCjg9c7k58LsYtLSY5kbDqqTf7/l6w=;
+	s=k20201202; t=1699359156;
+	bh=UhzqtkAvz5hvgm49oxMlVfd4HYkO+RBaT0RgXicuMJc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=exK7Dzoe3yrVjM0O7rYvbSeioD0Eq2G+d+JuHtW0iVTkTISaeTu7liwKaJ7/6CoS7
-	 UL6CH3YNusDrqzrLSNqfGvCbFNFVJZv2jcVTn2C79TOJn56afwSyfteKrAYNFfG0QH
-	 SgJ5hIv/GFt1+IyRiz55weG20RuDelQcHkB1SZr1h+C9euQcm7j/SaXOJR4BiyzOoA
-	 wAQiEbg2HEvFzSdcv5SR7T1yVQhElHRzPyHT25TWhpwYs4VudMPdSsR7lrOz5wOG9L
-	 A+vo+5+2L2DjZz/tgTfd2FfgbVrYikLwwfyEirM4aqGZf/t5BZZ5Ke18yeLKFZwFef
-	 kyLSTtic/9KKg==
+	b=hR6c3w5TpVVFNGhZ8gL53tFyM7zmq5bgNA8Tt7D2Td0p+038BbxlFeNiIokfVHSqR
+	 48cUuzcABulBfnVEX+16qd91eohZNnvi9kWMHa8BEzpZNXFgpE7iR65o4mN94jO/4x
+	 Z5cThkn/MGboYDod+vdfCkTaBT2A+ZMUJjUC3pyzQzE/ROX/0xlG/axzdcxJi1ipeP
+	 APnmX9OzOzNkUfV0crTgOeRuGWEDiABxVA0z0zogOAYRCrOIWOw6Ee2NAcD0q+iMK3
+	 T1gRrEXI923QaP+qcOJAQwLBlH53SYhbWuy6rXgXDxvb+CVATbKEgz/kyLAm++4/wJ
+	 7lkOOi5BIIKkw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -41,12 +41,12 @@ Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	daniel@iogearbox.net,
 	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 04/12] bpf: Detect IP == ksym.end as part of BPF program
-Date: Tue,  7 Nov 2023 07:11:41 -0500
-Message-ID: <20231107121158.3758348-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 03/11] bpf: Detect IP == ksym.end as part of BPF program
+Date: Tue,  7 Nov 2023 07:12:18 -0500
+Message-ID: <20231107121230.3758617-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231107121158.3758348-1-sashal@kernel.org>
-References: <20231107121158.3758348-1-sashal@kernel.org>
+In-Reply-To: <20231107121230.3758617-1-sashal@kernel.org>
+References: <20231107121230.3758617-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.137
+X-stable-base: Linux 5.10.199
 Content-Transfer-Encoding: 8bit
 
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
@@ -131,10 +131,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index f7c27c1cc593b..36c2896ee45f4 100644
+index d3f6a070875cb..33ea6ab12f47c 100644
 --- a/kernel/bpf/core.c
 +++ b/kernel/bpf/core.c
-@@ -605,7 +605,11 @@ static __always_inline int bpf_tree_comp(void *key, struct latch_tree_node *n)
+@@ -602,7 +602,11 @@ static __always_inline int bpf_tree_comp(void *key, struct latch_tree_node *n)
  
  	if (val < ksym->start)
  		return -1;
