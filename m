@@ -1,60 +1,55 @@
-Return-Path: <bpf+bounces-14341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 801347E3251
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 01:43:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E717E32AF
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 02:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A799280E0E
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 00:43:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75EB21C20971
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 01:48:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C2A17E3;
-	Tue,  7 Nov 2023 00:43:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 121391C06;
+	Tue,  7 Nov 2023 01:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTDWS6yI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L7zjE0NZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9411910E4;
-	Tue,  7 Nov 2023 00:43:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D448C433C7;
-	Tue,  7 Nov 2023 00:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633D538D;
+	Tue,  7 Nov 2023 01:48:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42041C433C8;
+	Tue,  7 Nov 2023 01:47:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699317785;
-	bh=ZDSZrTPjdbQ1tzVXs6DT67Wg83zVrMpSIvmICGi3DDs=;
+	s=k20201202; t=1699321681;
+	bh=CKwjpTG7MJNielJIoM00sd6eXu7x3IOlS8MVxwqNats=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=QTDWS6yId+pWs8EyAV7mggdfaXC2dOCCM7NJJmavNb8580+6kNUX37Nai376HiCgV
-	 xis7aOGWkVhB8qT/ya1PMnsmjm+CDFZrJVO+v6OV+Gf893/BD+vyqRovbVElgu5sNb
-	 O7JjVtE8VJpMZXbDh70Z0ro4gM0lIXU79ZFLFOSqqAbIaVX8w7Ux0fS/XJHClThXF+
-	 6HxdZzRB+jVcEHvmuzezJZ4HguhT7I34Pfg9+1FtF5rgJ8SRS7pB6Gd+dUzvvfP4jX
-	 Te8mAtiJOcgnJnNDevGfm8CK/jITfnB33qWoBHCuec5uc43IfVDv9KI6KOC0TKJzei
-	 cnOMazeqSMxag==
-Date: Tue, 7 Nov 2023 09:42:58 +0900
+	b=L7zjE0NZtBV4FbRXpTA7PX5NK1699ItkbVPWK1Db8EMXaVV5e4Pv2t6QetZOqNqzM
+	 WFOxVZ6MaND1ZMBTNKvSWtq0kVUsL7enH9vY7D926KZDVmviZXJMstE/lEFL711Feh
+	 7S/C16ULC9LGt0lbSYmWF2Or3rb+vI9Am8vUqO1RIKFRwz9FRct1itz40jRhLjvt2i
+	 2HNffJRb9ewxov/3kbv1HFUTjb81hhMMGrudtRqIbSX99iKEEUmlvvHkKlAflSrIhJ
+	 ZQEaj/E1eEjNB9yPFJg8v/hWmyZoXP7BPzFXmDV2VGKcSoJ68DS0QcfkzahQqEWoa1
+	 8fV3D+qYyO9Vg==
+Date: Tue, 7 Nov 2023 10:47:55 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
  linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
  Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
  Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
  Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
  Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
-Message-Id: <20231107094258.d41a46c202197e92bc6d9656@kernel.org>
-In-Reply-To: <20231106113710.3bf69211@gandalf.local.home>
+ Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [RFC PATCH 10/32] function_graph: Have the instances use their
+ own ftrace_ops for filtering
+Message-Id: <20231107104755.19a72f896a016f5d4c165f31@kernel.org>
+In-Reply-To: <169920051199.482486.17674190105884047734.stgit@devnote2>
 References: <169920038849.482486.15796387219966662967.stgit@devnote2>
-	<169920068069.482486.6540417903833579700.stgit@devnote2>
-	<20231105172536.GA7124@noisy.programming.kicks-ass.net>
-	<20231105141130.6ef7d8bd@rorschach.local.home>
-	<20231105231734.GE3818@noisy.programming.kicks-ass.net>
-	<20231105183301.38be5598@rorschach.local.home>
-	<20231106100549.33f6ce30d968906979ca3954@kernel.org>
-	<20231106113710.3bf69211@gandalf.local.home>
+	<169920051199.482486.17674190105884047734.stgit@devnote2>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -65,50 +60,132 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 6 Nov 2023 11:37:10 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon,  6 Nov 2023 01:08:32 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-> On Mon, 6 Nov 2023 10:05:49 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 > 
-> > So for x86-64,
-> > 
-> >  - rdi, rsi, rcx, rdx, r8, r9, and rsp
-> >  - rax and rdx
-> >  - rbp
-> > 
-> > (BTW, why orig_rax is cleared?)
+> Allow for instances to have their own ftrace_ops part of the fgraph_ops that
+> makes the funtion_graph tracer filter on the set_ftrace_filter file of the
+> instance and not the top instance.
 > 
-> You mean from ftrace_caller?
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> ---
+>  include/linux/ftrace.h               |    1 +
+>  kernel/trace/fgraph.c                |   60 +++++++++++++++++++++-------------
+>  kernel/trace/ftrace.c                |    6 ++-
+>  kernel/trace/trace.h                 |   16 +++++----
+>  kernel/trace/trace_functions.c       |    2 +
+>  kernel/trace/trace_functions_graph.c |    8 +++--
+>  6 files changed, 58 insertions(+), 35 deletions(-)
 > 
-> That's a "hack" to determine if we need to call the direct trampoline or
-> not. When you have both a direct trampoline and ftrace functions on the
-> same function, it will call ftrace_ops_list_func() to iterate all the
-> registered ftrace callbacks. The direct callback helper will set "orig_rax"
-> to let the return of the ftrace trampoline call the direct callback.
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index 7fd044ae3da5..9dab365c6023 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -1044,6 +1044,7 @@ extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph
+>  struct fgraph_ops {
+>  	trace_func_graph_ent_t		entryfunc;
+>  	trace_func_graph_ret_t		retfunc;
+> +	struct ftrace_ops		ops; /* for the hash lists */
+>  	void				*private;
+>  };
+>  
+> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> index 1e8c17f70b84..0642f3281b64 100644
+> --- a/kernel/trace/fgraph.c
+> +++ b/kernel/trace/fgraph.c
+> @@ -17,14 +17,6 @@
+>  #include "ftrace_internal.h"
+>  #include "trace.h"
+>  
+> -#ifdef CONFIG_DYNAMIC_FTRACE
+> -#define ASSIGN_OPS_HASH(opsname, val) \
+> -	.func_hash		= val, \
+> -	.local_hash.regex_lock	= __MUTEX_INITIALIZER(opsname.local_hash.regex_lock),
+> -#else
+> -#define ASSIGN_OPS_HASH(opsname, val)
+> -#endif
+> -
+>  #define FGRAPH_RET_SIZE sizeof(struct ftrace_ret_stack)
+>  #define FGRAPH_RET_INDEX (FGRAPH_RET_SIZE / sizeof(long))
+>  
+> @@ -338,9 +330,6 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+>  		return -EBUSY;
+>  #endif
+>  
+> -	if (!ftrace_ops_test(&global_ops, func, NULL))
+> -		return -EBUSY;
+> -
+>  	trace.func = func;
+>  	trace.depth = ++current->curr_ret_depth;
+>  
+> @@ -361,7 +350,8 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+>  			atomic_inc(&current->trace_overrun);
+>  			break;
+>  		}
+> -		if (fgraph_array[i]->entryfunc(&trace, fgraph_array[i])) {
+> +		if (ftrace_ops_test(&gops->ops, func, NULL) &&
+> +		    gops->entryfunc(&trace, gops)) {
+>  			offset = current->curr_ret_stack;
+>  			/* Check the top level stored word */
+>  			type = get_fgraph_type(current, offset - 1);
+> @@ -656,17 +646,25 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+>  }
+>  #endif /* HAVE_FUNCTION_GRAPH_RET_ADDR_PTR */
+>  
+> -static struct ftrace_ops graph_ops = {
+> -	.func			= ftrace_graph_func,
+> -	.flags			= FTRACE_OPS_FL_INITIALIZED |
+> -				   FTRACE_OPS_FL_PID |
+> -				   FTRACE_OPS_GRAPH_STUB,
+> +void fgraph_init_ops(struct ftrace_ops *dst_ops,
+> +		     struct ftrace_ops *src_ops)
+> +{
+> +	dst_ops->func = ftrace_stub;
+> +	dst_ops->flags = FTRACE_OPS_FL_PID | FTRACE_OPS_FL_STUB;
 
-Got it. So does ftrace_regs need a placeholder for direct trampoline?
-(Or, can we use a register to pass it?)
-I think we don't need to clear it for return_to_handler() but if
-`ftrace_regs` spec requires it, it is better to do so.
+This needs to use FTRACE_OPS_GRAPH_STUB instead of FTRACE_OPS_FL_STUB, 
+because commit 0c0593b45c9b ("x86/ftrace: Make function graph use ftrace
+directly") introduced this flag to switch the mode. (fgraph on ftrace)
 
-Thank you,
+> +
+>  #ifdef FTRACE_GRAPH_TRAMP_ADDR
+> -	.trampoline		= FTRACE_GRAPH_TRAMP_ADDR,
+> +	dst_ops->trampoline = FTRACE_GRAPH_TRAMP_ADDR;
+>  	/* trampoline_size is only needed for dynamically allocated tramps */
+>  #endif
+> -	ASSIGN_OPS_HASH(graph_ops, &global_ops.local_hash)
+> -};
+> +
+> +#ifdef CONFIG_DYNAMIC_FTRACE
+> +	if (src_ops) {
+> +		dst_ops->func_hash = &src_ops->local_hash;
+> +		mutex_init(&dst_ops->local_hash.regex_lock);
+> +		dst_ops->flags |= FTRACE_OPS_FL_INITIALIZED;
+> +	}
+> +#endif
+> +}
+>  
+>  void ftrace_graph_sleep_time_control(bool enable)
+>  {
+> @@ -871,11 +869,20 @@ static int start_graph_tracing(void)
+>  
+>  int register_ftrace_graph(struct fgraph_ops *gops)
+>  {
+> +	int command = 0;
+>  	int ret = 0;
+>  	int i;
+>  
+>  	mutex_lock(&ftrace_lock);
+>  
+> +	if (!gops->ops.func) {
+> +		gops->ops.flags |= FTRACE_OPS_FL_STUB;
 
-> 
-> Remember if a direct callback is by itself, the fentry will call that
-> direct trampoline without going through the ftrace trampoline. This is used
-> to tell the ftrace trampoline that it's attached to a direct caller and
-> needs to call that and not return back to the function it is tracing.
-> 
-> See later down in that file we have:
-> 
-> 	/*
-> 	 * If ORIG_RAX is anything but zero, make this a call to that.
-> 	 * See arch_ftrace_set_direct_caller().
-> 	 */
-> 	testq	%rax, %rax
-> 
-> -- Steve
+Ditto.
+
+Thanks,
 
 
 -- 
