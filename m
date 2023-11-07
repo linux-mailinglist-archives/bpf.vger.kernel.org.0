@@ -1,252 +1,301 @@
-Return-Path: <bpf+bounces-14378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 859F17E354B
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 07:38:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B95AA7E3557
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 07:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C6B21F2143D
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 06:38:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37409280F69
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 06:45:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722CB4430;
-	Tue,  7 Nov 2023 06:38:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A013ABA3B;
+	Tue,  7 Nov 2023 06:44:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rutgers.edu header.i=@rutgers.edu header.b="Apo0FMoy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b7eTa45Q"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70C2C2C0
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 06:38:06 +0000 (UTC)
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567D3126
-	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 22:37:52 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Vz/j2rdRBrrI3GZSVd7XsJWihMQ9VHiij568ZkIzLfyTqBkuaK2vsvGKUkDoR3GyIgFp74P4MK+i7cIHrxKGfGXi/VMTTf6Ub2Yik40tP/rlRV9b8sPdTHWg+Y3kjkc/0dopy5rOPuTk6bzWnNs9FZKbphWnbdVlH5C4PigEA2dffayYuvbxHMzAgxF2af9LVG4Y7p5Y0Jg2wibnyQe+LWpi8CJ8ifqbhKn5Af5jwIdSgoidZYw4RlKHemSU7awl6uxHUwGqnEUPE0Mzxjo/o/hzV0OIEhTbtfN0B4bkcjFUTco7TUb5jl0pj9F9jHLKlHFnS1nTMBv9sJOP/JbGvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=07qxiZPlTiL/n9+lD4l5vlhRp+FLQtFuGchKViY1Um4=;
- b=Zpm9bnK+Mg845etINjYq36iRDI3V/+NCSUnEqEIRM8SVrM/NtW2LAmF5oVJpJ7SHfyOAOuK5LuyoOH9a87Px/rMpA1XtLehrg33LpyMc8zRGPz684zsV+elJiiWypvcp6fAkco2Fs7S208qpfIr9ceMw3ta9ndExI+D7fJMqP5Smrmb4bpdLf3T0K5sfTilm69rJdViaJhb/XLpMo7yi0k1586i7h91ANVK/tYYH7WTmwHzG8Dr9jiIuDCEfGpAJAlnWNIGjfGu0mQsdPdogdV/DjBod3pZIl2tbMwnVjYJiCNKhdufGDWd/ZL6R0nICYX1ZSRkY6ASb2JYo3WWZXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=rutgers.edu; dmarc=pass action=none header.from=rutgers.edu;
- dkim=pass header.d=rutgers.edu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rutgers.edu;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=07qxiZPlTiL/n9+lD4l5vlhRp+FLQtFuGchKViY1Um4=;
- b=Apo0FMoyXIdYaZs3B1G7ZxLUPPAG8ghEZlpsVC8qaZY5mI2vYGb+Se4AAIGJtfADFg+I99b3EMvfFKjVGnpIYjZULewlP/CBjLmCwhM1sLThg3NsmKnI1mxxCQ9p4MaeXEvqwlr/rrRPTfcRu6PzFQYXwfU5yGkhS02VS5qxq1I=
-Received: from SJ2PR14MB6501.namprd14.prod.outlook.com (2603:10b6:a03:4c0::14)
- by IA1PR14MB5732.namprd14.prod.outlook.com (2603:10b6:208:3a0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.28; Tue, 7 Nov
- 2023 06:37:47 +0000
-Received: from SJ2PR14MB6501.namprd14.prod.outlook.com
- ([fe80::6c27:f28a:7e74:4e6c]) by SJ2PR14MB6501.namprd14.prod.outlook.com
- ([fe80::6c27:f28a:7e74:4e6c%6]) with mapi id 15.20.6954.029; Tue, 7 Nov 2023
- 06:37:46 +0000
-From: Harishankar Vishwanathan <harishankar.vishwanathan@rutgers.edu>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Paul Chaignon
-	<paul.chaignon@gmail.com>
-CC: Srinivas Narayana <srinivas.narayana@rutgers.edu>, Alexei Starovoitov
-	<alexei.starovoitov@gmail.com>, Paul Chaignon <paul@isovalent.com>, Andrii
- Nakryiko <andrii@kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
-	<daniel@iogearbox.net>, "martin.lau@kernel.org" <martin.lau@kernel.org>,
-	"kernel-team@meta.com" <kernel-team@meta.com>
-Subject: Re: [PATCH v5 bpf-next 00/23] BPF register bounds logic and testing
- improvements
-Thread-Topic: [PATCH v5 bpf-next 00/23] BPF register bounds logic and testing
- improvements
-Thread-Index: AQHaDMBkWZSERI/Y4UCAV9pLw6+Q+bBls/IAgAi7xHM=
-Date: Tue, 7 Nov 2023 06:37:46 +0000
-Message-ID:
- <SJ2PR14MB650157D056A11DBD3FD25E438EA9A@SJ2PR14MB6501.namprd14.prod.outlook.com>
-References: <20231027181346.4019398-1-andrii@kernel.org>
- <20231030175513.4zy3ubkpse2f6gqz@MacBook-Pro-49.local>
- <CAEf4BzZyLwO_ZppGObkY=4aXZEGE+k+tTtJug7MP63DffoxrYA@mail.gmail.com>
- <ZUJGkRGnw+qI15Pv@Mem>
- <CAEf4BzavMQ9kqjVWhasdOMweZKuvwfmthzfz8i38kLwp6jd8SA@mail.gmail.com>
-In-Reply-To:
- <CAEf4BzavMQ9kqjVWhasdOMweZKuvwfmthzfz8i38kLwp6jd8SA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=rutgers.edu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ2PR14MB6501:EE_|IA1PR14MB5732:EE_
-x-ms-office365-filtering-correlation-id: 112b0750-5460-48cf-a520-08dbdf5c0da3
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- IIt/DOc/4UlUgubIdVRQ3FoWKeaqDvFzTwaTyQzV6EtdbK4L+7Qzuzxy/A0a0SbMcomEFJMCuiluj4DR1fonsAobccbtwCRPMFTyn3LHEHbEWBlnYdY9T/GOWRhDW85C1XA5ycShgYks0J/OUD58h/WQjYPCfXAvBqtOQcknUD9e4HvNNnf8R6JIIZ0Dj8Bzpf8d4Q5N1Q3Z+HBmvahdMwUuszUEsm5HPyXidCEmfsEHa2PyQOxz7YmRXsNoqXt4/0Gluy3/81dtlmu3FMIvqnpCPmEMZVAFirRoKog/0hd2ohqHG9wrjy5muo+iziWlAIuik1YWEr3vprz1ID7Z4OjyI6DZPTNjJ6rUcgpeeUDBWcBpi8th1mkfHr2uFrku7JBfDeD3N7c+OE7BlsYerxwN7OYi2rVqBL9YZPe4UPEYZTOsEW6ljaLEEwW+nGhQvXGm2bco+DkCL25ApznG/Cp9N+O3MicuVzEpkoII/DHGyb3CDPFB/RT+PEbMRS6AWSKRABvZ34BohvSeCnhqpMaYvKb23pI84EXujW0WUdtGUHG7ndCm4HKSRBV3rpwCSPuFTk+1GlcDYqpBp7GyLAXS/l8xA2wbju1siP1aPEQ=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR14MB6501.namprd14.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(396003)(366004)(376002)(136003)(346002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(75432002)(83380400001)(71200400001)(38100700002)(44832011)(966005)(8936002)(2906002)(786003)(52536014)(8676002)(5660300002)(7416002)(316002)(4326008)(41300700001)(54906003)(478600001)(9686003)(7696005)(6506007)(110136005)(64756008)(66446008)(66476007)(66946007)(76116006)(91956017)(66556008)(45080400002)(53546011)(86362001)(33656002)(38070700009)(122000001)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?WFg5WWt2MHpvaUdOMnRqR010ZEVhdnFRK2d4VzdUTnRobVpHbHNETTdaUll1?=
- =?utf-8?B?VU5PRWVBbGszTlVJNFgyL250bGtRT0duN1VDdFMzbStnV3lHSDQ3b2pnTTda?=
- =?utf-8?B?U1Z5VXo5VFRkMTdUUVdkVUQyRFIyb0ZWRXlOcUJqR2xwR0pjcjI3TGJVT09U?=
- =?utf-8?B?cTNsY29rZTBTK3JTYzlvVFlucEtnWjNXYTVtNERscnliNzF2Uy9UUi9EeHFO?=
- =?utf-8?B?OEQrOUgzWmxUZFQ4RFJYZUZjWUpySHBLTXE4RytTeElxeFBuNjF6WXlRbzdr?=
- =?utf-8?B?eWQyblpndzlJVnlsY1IxWUFIbkVEbGtMMm1tUDNSN0FqNjBwWnp1K0k2Rkd1?=
- =?utf-8?B?SElDeFNWeS94elhJc2tGcmNvVmNCY0t4UXpBcXlCdnN3bFN0MGZRVjlZTUF3?=
- =?utf-8?B?cmdGVzNpUmJUVElzZThIZ2FWZTEwVThGVlFFallrVldaTHhmQjh5N09Uekxz?=
- =?utf-8?B?c3hXNHJ4cHh1UCtOdEdJNE1ZaWgzWXo2QTdGUU5Xdm9VNDZ6SXB1OWNvVnZy?=
- =?utf-8?B?K294eHVlVGZLRzV1N3hTbkMzOE9VTmJHMkNGTlYvNTFNd2FTSWVIN0VYaHFj?=
- =?utf-8?B?dUp0TTM1ejBpNEdaL2F3UFVuczhwZzUvcUltbngyY2RqSktDNndwNmk3cFAx?=
- =?utf-8?B?Sk10azl4OE5xYWRUWWxoY3VBWkFQd0hkNGI0b204c1dDZXpkU2hzcmdvUVZK?=
- =?utf-8?B?OHh3N29XU0tBc3BOa0swdUpONXUrTUpNUXRwK1k1UFZwUEYrYkJHNHQvK2g4?=
- =?utf-8?B?dWJ0bitHL3VhS0hhWm02b3lJejE1SFZOeC93amcrL0lrYVBmeU41ZHNUc3dB?=
- =?utf-8?B?VUtNVFBQWlpmbmVDUU5va0ZBbktTZVBuYXY3OEdtcS9NdWxmRW0rclBDSllX?=
- =?utf-8?B?RTN5MFJUQUhmMXZnTVhaaldRYVBOZzNQNGhYUU9oZlA0bWdyMEYyNEN3dzRD?=
- =?utf-8?B?TG5CQnlvRDJlcjVWUEhLb1JKcHdRSGd0NldNRkVGMWFhRTAzRkJOY1BGY01V?=
- =?utf-8?B?bHE4aW5MZXJWSlNOT0p5NnZiNVFpdWFqNmF0UW0vZUsvM2lWRktHaWZEcDZu?=
- =?utf-8?B?dUtmUk91OXdCU3B2cllHS3dTVVR0Q0VuZ2daSDk1NGpZK0k1d1MxbjZMMkl6?=
- =?utf-8?B?MVBWSUZSQzBieVhFR2h6VWc4Ly80TnphbzlyU2pGaStya2pTWUI2cFBDRXZo?=
- =?utf-8?B?OVBoR3NQWlpNdi9XKzc0Z0lxdEJGUlJ2aWRoZy9uMjZXcmJuRjBEYkNXYzJ1?=
- =?utf-8?B?NXRPQjdDQ3NqcjExV0VhajRKL3N5Q0RrUGF3ODNNKzhxQXByVU5VU2VwUm02?=
- =?utf-8?B?T3A1YmVzUGhBTnN1SGRGTlM1bWsyMURmMmVHVENhM0hGOWRDdkVxekpseUZr?=
- =?utf-8?B?Z2lwL3U5ZnlNWWJrSzVzUCtjS2xQaFE0WnRXanBiQ0pJcW42R3VkU291cHV4?=
- =?utf-8?B?L0tWWDM5MEl1Y1ZtWjE5bTF2b0NTOE1yaXhENkdvLzVERDhWOFI0R29oMVdk?=
- =?utf-8?B?cW1mWlIrUk8yREJySkcrVmZHYUw0RDZQNmYzQTRzeHBvSmRQTDZRL1JncTZB?=
- =?utf-8?B?T0hMdWZPRmptVUhnenNDdUkzbkZLb05kU1FLN3dMZVdFWldxN1diQ21TQ2U2?=
- =?utf-8?B?K0hTU09TZ1NWUlhCVjFZcWtUYTlxL2NnTndQNzkvSGFKY2FMN1JFaG9ZZmsw?=
- =?utf-8?B?a3o2Mm1wMGhLQ3NqSk1uWHgwYm5rSkhaMEUyYTl4NGk4WGxZVDYwYUxwdDRV?=
- =?utf-8?B?K0NwNUhiSWRLMXExZDFDYW12cnlSSk8vbytHazBUbUFlUXBCQ005ZzJlSmM5?=
- =?utf-8?B?NzZPVC9jZ0pRU05samVuazlFK3NIcFZYYmYxam1oUWFCR3pHQkZ3TjRuaktQ?=
- =?utf-8?B?dFdWSlR3THBPRHRPS2tzMFdZRUMxZVhGT1FwRjhpODFwNXFUT25UZUlRcGpy?=
- =?utf-8?B?VThnRjBzVnBIOCs4Z2duMzBEREZrNnpqekluWGRCMEEyUEJFZDNZVHBrTktD?=
- =?utf-8?B?cVBBQk5XNG9pOVpob2hLMDdvamZxUW5vQkVoYUhMS3h4WTdUL0NUaGd1YjZL?=
- =?utf-8?B?ZFZrSFkrZjhEQ1dEeGZLa2YvK2wzbXdJZC9DelZlRjNlNS8yRXhGNjhXSVo2?=
- =?utf-8?B?MDJKRW5pVVBaYk82MzBsMDd0dmJmQ09xSUZNUFJsYmlSNnhkWDRZeHViYVJu?=
- =?utf-8?Q?9F5cB86tUXntZOHUXNSSXoLfNM/XRzqeC+dgEBku8PEu?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2AAAC126
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 06:44:54 +0000 (UTC)
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA2510F
+	for <bpf@vger.kernel.org>; Mon,  6 Nov 2023 22:44:52 -0800 (PST)
+Message-ID: <6b66f9ab-d100-4a9a-9f78-31eb37e6819d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1699339490;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vy7Vs9SXWPIGAfSkZsvVxYgkVFEzTQmOxN2dKlmndYQ=;
+	b=b7eTa45QefkpwJPTxSShXLXivPJBUHkgB2CDWhxcgIpLcO0g1l44Gn9cym7TlGdzAXeODY
+	64PiJT0CJv6RCaPhBP7s13sK0nV+RC7iIrToQfTioKeqiFGXBEUzLQ5oUE6Sj0u4Pwthvi
+	8Y1MAMCYVyPflQj2fopoX0zQwqqp87I=
+Date: Mon, 6 Nov 2023 22:44:45 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: rutgers.edu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR14MB6501.namprd14.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 112b0750-5460-48cf-a520-08dbdf5c0da3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Nov 2023 06:37:46.1484
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b92d2b23-4d35-4470-93ff-69aca6632ffe
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2v2C2WiLOiDpuXYQdjoya8ULDXcd+CffbIakhxtoRBJJMbKQK9dNxMPpZQbvV6KCVlxtG5ZiUGO6lsPoXTrtdw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR14MB5732
+Subject: Re: [PATCH bpf-next] libbpf: Add tail padding check for
+ LIBBPF_OPTS_RESET macro
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231105185358.1036619-1-yonghong.song@linux.dev>
+ <CAEf4BzaerjXW7v6D-29h_yBGL=wWcoyP96FjetKe9AYT1pVt5g@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzaerjXW7v6D-29h_yBGL=wWcoyP96FjetKe9AYT1pVt5g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-T24gV2VkLCBOb3YgMSwgMjAyMyAxOjEzIFBNIEFsZXhlaSBTdGFyb3ZvaXRvdg0KPGFsZXhlaS5z
-dGFyb3ZvaXRvdkBnbWFpbC5jb20+IHdyb3RlOg0KPiBPbiBXZWQsIE5vdiAxLCAyMDIzIGF0IDU6
-MzfigK9BTSBQYXVsIENoYWlnbm9uIDxwYXVsLmNoYWlnbm9uQGdtYWlsLmNvbT4gd3JvdGU6DQo+
-ID4NCj4gPiBPbiBNb24sIE9jdCAzMCwgMjAyMyBhdCAxMDoxOTowMVBNIC0wNzAwLCBBbmRyaWkg
-TmFrcnlpa28gd3JvdGU6DQo+ID4gPiBPbiBNb24sIE9jdCAzMCwgMjAyMyBhdCAxMDo1NeKAr0FN
-IEFsZXhlaSBTdGFyb3ZvaXRvdg0KPiA+ID4gPGFsZXhlaS5zdGFyb3ZvaXRvdkBnbWFpbC5jb20+
-IHdyb3RlOg0KPiA+ID4gPg0KPiA+ID4gPiBPbiBGcmksIE9jdCAyNywgMjAyMyBhdCAxMToxMzoy
-M0FNIC0wNzAwLCBBbmRyaWkgTmFrcnlpa28gd3JvdGU6DQo+ID4gPiA+ID4NCj4gPiA+ID4gPiBO
-b3RlLCB0aGlzIGlzIG5vdCB1bmlxdWUgdG8gPHJhbmdlPiB2cyA8cmFuZ2U+IGxvZ2ljLiBKdXN0
-IHJlY2VudGx5IChbMF0pDQo+ID4gPiA+ID4gYSByZWxhdGVkIGlzc3VlIHdhcyByZXBvcnRlZCBm
-b3IgZXhpc3RpbmcgdmVyaWZpZXIgbG9naWMuIFRoaXMgcGF0Y2ggc2V0IGRvZXMNCj4gPiA+ID4g
-PiBmaXggdGhhdCBpc3N1ZXMgYXMgd2VsbCwgYXMgcG9pbnRlZCBvdXQgb24gdGhlIG1haWxpbmcg
-bGlzdC4NCj4gPiA+ID4gPg0KPiA+ID4gPiA+ICAgWzBdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3Jn
-L2JwZi9DQUVmNEJ6YmdmLVdRU0N6OEQ0T21oM3pGZFM0b1dTNlhFTG5FN1Zlb1VXZ0tmM2NwaWdA
-bWFpbC5nbWFpbC5jb20vDQo+ID4gPiA+DQo+ID4gPiA+IFF1aWNrIGNvbW1lbnQgcmVnYXJkaW5n
-IHNoaWZ0IG91dCBvZiBib3VuZCBpc3N1ZS4NCj4gPiA+ID4gSSB0aGluayB0aGlzIHBhdGNoIHNl
-dCBtYWtlcyBIYW8gU3VuJ3MgcmVwcm8gbm90IHdvcmtpbmcsIGJ1dCBJIGRvbid0IHRoaW5rDQo+
-ID4gPiA+IHRoZSByYW5nZSB2cyByYW5nZSBpbXByb3ZlbWVudCBmaXhlcyB0aGUgdW5kZXJseWlu
-ZyBpc3N1ZS4NCj4gPiA+DQo+ID4gPiBDb3JyZWN0LCB5ZXMsIEkgdGhpbmsgYWRqdXN0X3JlZ19t
-aW5fbWF4X3ZhbHMoKSBtaWdodCBzdGlsbCBuZWVkIHNvbWUgZml4aW5nLg0KPiA+ID4NCj4gPiA+
-ID4gQ3VycmVudGx5IHdlIGRvOg0KPiA+ID4gPiBpZiAodW1heF92YWwgPj0gaW5zbl9iaXRuZXNz
-KQ0KPiA+ID4gPiAgIG1hcmtfcmVnX3Vua25vd24NCj4gPiA+ID4gZWxzZQ0KPiA+ID4gPiAgIGhl
-cmUgd2VyZSB1c2Ugc3JjX3JlZy0+dTMyX21heF92YWx1ZSBvciBzcmNfcmVnLT51bWF4X3ZhbHVl
-DQo+ID4gPiA+IEkgc3VzcGVjdCB0aGUgaW5zbl9iaXRuZXNzIGNoZWNrIGlzIGJ1Z2d5IGFuZCBp
-dCdzIHN0aWxsIHBvc3NpYmxlIHRvIGhpdCBVQlNBTiBzcGxhdCB3aXRoDQo+ID4gPiA+IG91dCBv
-ZiBib3VuZHMgc2hpZnQuIEp1c3QgbmVlZCB0byB0cnkgaGFyZGVyLg0KPiA+ID4gPiBpZiB3OCA8
-IDB4ZmZmZmZmZmYgZ290byArMjsNCj4gPiA+ID4gaWYgcjggIT0gcjYgZ290byArMTsNCj4gPiA+
-ID4gdzAgPj49IHc4Ow0KPiA+ID4gPiB3b24ndCBiZSBlbm91Z2ggYW55bW9yZS4NCj4gPiA+DQo+
-ID4gPiBBZ3JlZWQsIGJ1dCBJIGZlbHQgdGhhdCBmaXhpbmcgYWRqdXN0X3JlZ19taW5fbWF4X3Zh
-bHMoKSBpcyBvdXQgb2YNCj4gPiA+IHNjb3BlIGZvciB0aGlzIGFscmVhZHkgbGFyZ2UgcGF0Y2gg
-c2V0LiBJZiBzb21lb25lIGNhbiB0YWtlIGEgZGVlcGVyDQo+ID4gPiBsb29rIGludG8gcmVnIGJv
-dW5kcyBmb3IgYXJpdGhtZXRpYyBvcGVyYXRpb25zLCBpdCB3b3VsZCBiZSBncmVhdC4NCj4gPiA+
-DQo+ID4gPiBPbiB0aGUgb3RoZXIgaGFuZCwgb25lIG9mIHRob3NlIGFjYWRlbWljIHBhcGVycyBj
-bGFpbWVkIHRvIHZlcmlmeQ0KPiA+ID4gc291bmRuZXNzIG9mIHZlcmlmaWVyJ3MgcmVnIGJvdW5k
-cywgc28gSSB3b25kZXIgd2h5IHRoZXkgbWlzc2VkIHRoaXM/DQo+ID4NCj4gPiBBRkFJQ1MsIGl0
-IHNob3VsZCBoYXZlIGJlZW4gYWJsZSB0byBkZXRlY3QgdGhpcyBidWcuIEVxdWF0aW9uICgzKSBm
-cm9tDQo+ID4gWzEsIHBhZ2UgMTBdIGVuY29kZXMgdGhlIHNvdW5kbmVzcyBjb25kaXRpb24gZm9y
-IGNvbmRpdGlvbmFsIGp1bXBzIGFuZA0KPiA+IHRoZSBpbXBsZW1lbnRhdGlvbiBkZWZpbml0ZWx5
-IGNvdmVycyBCUEZfSkVRL0pORSBhbmQgdGhlIGxvZ2ljIGluDQo+ID4gY2hlY2tfY29uZF9qbXBf
-b3AuIFNvIGVpdGhlciB0aGVyZSdzIGEgYnVnIGluIHRoZSBpbXBsZW1lbnRhdGlvbiBvciBJJ20N
-Cj4gPiBtaXNzaW5nIHNvbWV0aGluZyBhYm91dCBob3cgaXQgd29ya3MuIExldCBtZSBjYyB0d28g
-b2YgdGhlIHBhcGVyJ3MNCj4gPiBhdXRob3JzIDopDQo+ID4NCj4gPiBIYXJpLCBTcmluaXZhczog
-SGFvIFN1biByZWNlbnRseSBkaXNjb3ZlcmVkIGEgYnVnIGluIHRoZSByYW5nZSBhbmFseXNpcw0K
-PiA+IGxvZ2ljIG9mIHRoZSB2ZXJpZmllciwgd2hlbiBjb21wYXJpbmcgdHdvIHVua25vd24gc2Nh
-bGFycyB3aXRoDQo+ID4gbm9uLW92ZXJsYXBwaW5nIHJhbmdlcy4gU2VlIFsyXSBmb3IgRWR1YXJk
-IFppbmdlcm1hbidzIGV4cGxhbmF0aW9uLiBJdA0KPiA+IHNlZW1zIHRvIGhhdmUgZXhpc3RlZCBm
-b3IgYSB3aGlsZS4gQW55IGlkZWEgd2h5IEFnbmkgZGlkbid0IHVuY292ZXIgaXQ/DQo+ID4NCj4g
-PiAxIC0gaHR0cHM6Ly9oYXJpc2hhbmthcnYuZ2l0aHViLmlvL2Fzc2V0cy9maWxlcy9hZ25pLWNh
-djIzLnBkZg0KPiA+IDIgLSBodHRwczovL2xvcmUua2VybmVsLm9yZy9icGYvODczMTE5NmM5YTg0
-N2ZmMzUwNzNhMjAzNDY2MmQzMzA2Y2VhODA1Zi5jYW1lbEBnbWFpbC5jb20vDQo+ID4NCj4gPiA+
-IGNjIFBhdWwsIG1heWJlIGhlIGNhbiBjbGFyaWZ5IChhbmQgYWxzbywgUGF1bCwgcGxlYXNlIHRy
-eSB0byBydW4gYWxsDQo+ID4gPiB0aGF0IGZvcm1hbCB2ZXJpZmljYXRpb24gbWFjaGluZXJ5IGFn
-YWluc3QgdGhpcyBwYXRjaCBzZXQsIHRoYW5rcyEpDQo+ID4NCg0KVGhhbmtzIFBhdWwgZm9yIGJy
-aW5naW5nIHRoaXMgdG8gb3VyIG5vdGljZSwgYW5kIGZvciB0aGUgdmFsdWFibGUgY2xhcmlmaWNh
-dGlvbnMNCnlvdSBwcm92aWRlZC4gVGhlIGJ1ZyBkaXNjb3ZlcmVkIGJ5IEhhbyBTdW4gb2NjdXJz
-IG9ubHkgZHVyaW5nIHZlcmlmaWNhaXRvbiwNCndoZW4gdGhlIHZlcmlmaWVyIGZvbGxvd3Mgd2hh
-dCBpcyBlc3NlbnRpYWxseSBkZWFkIGNvZGUuIEFuIGV4ZWN1dGlvbiBvZiB0aGUNCmV4YW1wbGUg
-ZUJQRiBwcm9ncmFtIGNhbm5vdCBtYW5pZmVzdCBhIG1pc21hdGNoIGJldHdlZW4gdGhlIHZlcmlm
-aWVyJ3MgYmVsaWVmcw0KYWJvdXQgdGhlIHZhbHVlcyBpbiByZWdpc3RlcnMgYW5kIHRoZSBhY3R1
-YWwgdmFsdWVzIGR1cmluZyBleGVjdXRpb24uIEFzIHN1Y2gsDQp0aGUgZXhhbXBsZSBlQlBGIHBy
-b2dyYW0gY2Fubm90IGJlIHVzZWQgdG8gYWNoaWV2ZSBhbiBhY3R1YWwgdmVyaWZpZXIgYnlwYXNz
-Lg0KDQpBcyBwb2ludGVkIG91dCBieSBFZHVhcmQgWmluZ2VybWFuIGluIHRoZSBtYWlsaW5nIGxp
-c3QgdGhyZWFkLCB0aGUgaXNzdWUgYXJpc2VzDQp3aGVuIHRoZSB2ZXJpZmllciBmb2xsb3dzIHRo
-ZSBmYWxzZSAoc2ltaWxhcmx5IHRydWUpIGJyYW5jaCBvZiBhDQpqdW1wLWlmLW5vdC1lcXVhbCAo
-c2ltaWxhcmx5IGp1bXAtaWYtZXF1YWwpIGluc3RydWN0aW9uLCB3aGVuIGl0IGlzIG5ldmVyDQpw
-b3NzaWJsZSB0aGF0IHRoZSBqdW1wIGNvbmRpdGlvbiBpcyBmYWxzZSAoc2ltaWxhcmx5IHRydWUp
-LiBXaGlsZSBpdCBpcyBva2F5IGZvcg0KdGhlIHZlcmlmaWVyIHRvIGZvbGxvdyBkZWFkIGNvZGUg
-Z2VuZXJhbGx5LCBpdCBzbyBoYXBwZW5zIHRoYXQgdGhlIGxvZ2ljIGl0IHVzZXMNCnRvIHVwZGF0
-ZSB0aGUgcmVnaXN0ZXJzIHJhbmdlcyBkb2VzIG5vdCB3b3JrIGluIHRoaXMgc3BlY2lmaWMgY2Fz
-ZSwgYW5kIGVuZHMgdXANCnZpb2xhdGluZyBvbmUgb2YgdGhlIGludmFyaWFudHMgaXQgaXMgc3Vw
-cG9zZWQgdG8gbWFpbnRhaW4gKGEgPD0gYiBmb3IgYSByYW5nZQ0KW2EsIGJdKS4NCg0KQWduaSdz
-IHZlcmlmaWNhdGlvbiBjb25kaXRpb24gWzFdIGlzIHN0cmljdGVyLiBJdCBmb2xsb3dzIHRoZSBm
-YWxzZSAoc2ltaWxhcmx5DQp0cnVlKSBicmFuY2ggb2YgYSBqdW1wLWlmLW5vdC1lcXVhbCAoc2lt
-aWxhcmx5IGp1bXAtaWYtZXF1YWwpIGluc3RydWN0aW9uICpvbmx5Kg0Kd2hlbiBpdCBpcyBwb3Nz
-aWJsZSB0aGF0IHRoZSByZWdpc3RlcnMgYXJlIGVxdWFsIChzaW1pbGFybHkgbm90IGVxdWFsKS4g
-SW4NCmVzc2VuY2UsIEFnbmkgZGlzY2FyZHMgdGhlIHJlcG9ydGVkIHZlcmlmaWVyIGJ1ZyBhcyBh
-IGZhbHNlIHBvc2l0aXZlLg0KDQpXZSBjYW4gZWFzaWx5IHdlYWtlbiBBZ25pJ3MgdmVyaWZpY2F0
-aW9uIGNvbmRpdGlvbiB0byBkZXRlY3Qgc3VjaCBidWdzLiBXZQ0KbW9kaWZpZWQgQWduaSdzIHZl
-cmlmaWNhdGlvbiBjb25kaXRpb24gWzJdIHRvIGZvbGxvdyBib3RoIHRoZSBicmFuY2hlcyBvZiBh
-DQpqdW1wLWlmLW5vdC1lcXVhbCBpbnN0cnVjdGlvbiwgcmVnYXJkbGVzcyBvZiB3aGV0aGVyIGl0
-IGlzIHBvc3NpYmxlIHRoYXQgdGhlDQpyZWdpc3RlcnMgY2FuIGJlIGVxdWFsLiBJbmRlZWQsIHRo
-ZSBtb2RpZmllZCB2ZXJpZmljYXRpb24gY29uZGl0aW9uIHByb2R1Y2VkIHRoZQ0KdW1pbiA+IHVt
-YXggdmVyaWZpZXIgYnVnIGZyb20gSGFvJ3MgZXhhbXBsZS4gVGhlIGV4YW1wbGUgcHJvZHVjZWQg
-YnkgQWduaSwgYW5kDQphbiBleHRlbmRlZCBkaXNjdXNzaW9uIGNhbiBiZSBmb3VuZCBhdCBBZ25p
-J3MgaXNzdWUgdHJhY2tlciBbM10uDQoNClsxXSBodHRwczovL3VzZXItaW1hZ2VzLmdpdGh1YnVz
-ZXJjb250ZW50LmNvbS84NTg4NjQ1LzI4MDkxNzg4Mi1kYzk3MDkwZC0wNDBhLTQzYjAtOWJmOC04
-MDYwODE5OTI3MTYucG5nDQpbMl0gaHR0cHM6Ly91c2VyLWltYWdlcy5naXRodWJ1c2VyY29udGVu
-dC5jb20vODU4ODY0NS8yODA5MjU3NTYtMTkzMzYwODctODM2Zi00NWU1LTg3ZmItYzI0NTM1NThk
-ZjA2LnBuZw0KWzNdIGh0dHBzOi8vZ2l0aHViLmNvbS9icGZ2ZXJpZi9lYnBmLXJhbmdlLWFuYWx5
-c2lzLXZlcmlmaWNhdGlvbi1jYXYyMy9pc3N1ZXMvMTUjaXNzdWVjb21tZW50LTE3OTc4NTgyNDUN
-Cg0KPiA+IEkgdHJpZWQgaXQgeWVzdGVyZGF5IGJ1dCBhbSBydW5uaW5nIGludG8gd2hhdCBsb29r
-cyBsaWtlIGEgYnVnIGluIHRoZQ0KPiA+IExMVk0gSVIgdG8gU01UIGNvbnZlcnNpb24uIFByb2Jh
-Ymx5IG5vdCBzb21ldGhpbmcgSSBjYW4gZml4IG15c2VsZg0KPiA+IHF1aWNrbHkgc28gSSdsbCBu
-ZWVkIGhlbHAgZnJvbSBIYXJpICYgY28uDQo+ID4NCj4gPiBUaGF0IHNhaWQsIGV2ZW4gd2l0aG91
-dCB5b3VyIHBhdGNoc2V0LCBJJ20gcnVubmluZyBpbnRvIGFub3RoZXIgaXNzdWUNCj4gPiB3aGVy
-ZSB0aGUgZm9ybWFsIHZlcmlmaWNhdGlvbiB0YWtlcyBzZXZlcmFsIHRpbWVzIGxvbmdlciAodXAg
-dG8gd2Vla3MNCj4gPiAvb1wpIHNpbmNlIHY2LjQuDQo+ID4NCg0KSSdtIGxvb2tpbmcgaW50byB0
-aGlzIG5leHQsIHRoYW5rcyBmb3IgdGhlIGhlYWRzIHVwIQ0KDQo+IFRoYXQncyB1bmZvcnR1bmF0
-ZS4gSWYgeW91IGZpZ3VyZSB0aGlzIG91dCwgSSdkIHN0aWxsIGJlIGludGVyZXN0ZWQgaW4NCj4g
-ZG9pbmcgYW4gZXh0cmEgY2hlY2suIE1lYW53aGlsZSBJJ20gd29ya2luZyBvbiBkb2luZyBtb3Jl
-IHNhbml0eQ0KPiBjaGVja3MgaW4gdGhlIGtlcm5lbCAoYW5kIGluZXZpdGFibHkgaGF2aW5nIHRv
-IGRlYnVnIGFuZCBmaXggaXNzdWVzLA0KPiBzdGlsbCB3b3JraW5nIG9uIHRoaXMpLg0K
+
+On 11/6/23 11:47 AM, Andrii Nakryiko wrote:
+> On Sun, Nov 5, 2023 at 10:54 AM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> Martin reported that there is a libbpf complaining of non-zero-value tail
+>> padding with LIBBPF_OPTS_RESET macro if struct bpf_netkit_opts is modified
+>> to have a 4-byte tail padding. This only happens to clang compiler.
+>> The commend line is: ./test_progs -t tc_netkit_multi_links
+>> Martin and I did some investigation and found this indeed the case and
+>> the following are the investigation details.
+>>
+>> Clang 18:
+>>    clang version 18.0.0 (https://github.com/llvm/llvm-project.git e00d32afb9d33a1eca48e2b041c9688436706c5b)
+>>    <I tried clang15/16/17 and they all have similar results>
+>>
+>> tools/lib/bpf/libbpf_common.h:
+>>    #define LIBBPF_OPTS_RESET(NAME, ...)                                      \
+>>          do {                                                                \
+>>                  memset(&NAME, 0, sizeof(NAME));                             \
+>>                  NAME = (typeof(NAME)) {                                     \
+>>                          .sz = sizeof(NAME),                                 \
+>>                          __VA_ARGS__                                         \
+>>                  };                                                          \
+>>          } while (0)
+>>
+>>    #endif
+>>
+>> tools/lib/bpf/libbpf.h:
+>>    struct bpf_netkit_opts {
+>>          /* size of this struct, for forward/backward compatibility */
+>>          size_t sz;
+>>          __u32 flags;
+>>          __u32 relative_fd;
+>>          __u32 relative_id;
+>>          __u64 expected_revision;
+>>          size_t :0;
+>>    };
+>>    #define bpf_netkit_opts__last_field expected_revision
+>> In the above struct bpf_netkit_opts, there is no tail padding.
+>>
+>> prog_tests/tc_netkit.c:
+>>    static void serial_test_tc_netkit_multi_links_target(int mode, int target)
+>>    {
+>>          ...
+>>          LIBBPF_OPTS(bpf_netkit_opts, optl);
+>>          ...
+>>          LIBBPF_OPTS_RESET(optl,
+>>                  .flags = BPF_F_BEFORE,
+>>                  .relative_fd = bpf_program__fd(skel->progs.tc1),
+>>          );
+>>          ...
+>>    }
+>>
+>> Let us make the following source change, note that we have a 4-byte
+>> tailing padding now.
+>>    diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+>>    index 6cd9c501624f..0dd83910ae9a 100644
+>>    --- a/tools/lib/bpf/libbpf.h
+>>    +++ b/tools/lib/bpf/libbpf.h
+>>    @@ -803,13 +803,13 @@ bpf_program__attach_tcx(const struct bpf_program *prog, int ifindex,
+>>     struct bpf_netkit_opts {
+>>          /* size of this struct, for forward/backward compatibility */
+>>          size_t sz;
+>>    -       __u32 flags;
+>>          __u32 relative_fd;
+>>          __u32 relative_id;
+>>          __u64 expected_revision;
+>>    +       __u32 flags;
+>>          size_t :0;
+>>     };
+>>    -#define bpf_netkit_opts__last_field expected_revision
+>>    +#define bpf_netkit_opts__last_field flags
+>>
+>> The clang 18 generated asm code looks like below:
+>>      ;       LIBBPF_OPTS_RESET(optl,
+>>      55e3: 48 8d 7d 98                   leaq    -0x68(%rbp), %rdi
+>>      55e7: 31 f6                         xorl    %esi, %esi
+>>      55e9: ba 20 00 00 00                movl    $0x20, %edx
+>>      55ee: e8 00 00 00 00                callq   0x55f3 <serial_test_tc_netkit_multi_links_target+0x18d3>
+>>      55f3: 48 c7 85 10 fd ff ff 20 00 00 00      movq    $0x20, -0x2f0(%rbp)
+>>      55fe: 48 8b 85 68 ff ff ff          movq    -0x98(%rbp), %rax
+>>      5605: 48 8b 78 18                   movq    0x18(%rax), %rdi
+>>      5609: e8 00 00 00 00                callq   0x560e <serial_test_tc_netkit_multi_links_target+0x18ee>
+>>      560e: 89 85 18 fd ff ff             movl    %eax, -0x2e8(%rbp)
+>>      5614: c7 85 1c fd ff ff 00 00 00 00 movl    $0x0, -0x2e4(%rbp)
+>>      561e: 48 c7 85 20 fd ff ff 00 00 00 00      movq    $0x0, -0x2e0(%rbp)
+>>      5629: c7 85 28 fd ff ff 08 00 00 00 movl    $0x8, -0x2d8(%rbp)
+>>      5633: 48 8b 85 10 fd ff ff          movq    -0x2f0(%rbp), %rax
+>>      563a: 48 89 45 98                   movq    %rax, -0x68(%rbp)
+>>      563e: 48 8b 85 18 fd ff ff          movq    -0x2e8(%rbp), %rax
+>>      5645: 48 89 45 a0                   movq    %rax, -0x60(%rbp)
+>>      5649: 48 8b 85 20 fd ff ff          movq    -0x2e0(%rbp), %rax
+>>      5650: 48 89 45 a8                   movq    %rax, -0x58(%rbp)
+>>      5654: 48 8b 85 28 fd ff ff          movq    -0x2d8(%rbp), %rax
+>>      565b: 48 89 45 b0                   movq    %rax, -0x50(%rbp)
+>>      ;       link = bpf_program__attach_netkit(skel->progs.tc2, ifindex, &optl);
+>>
+>> At -O0 level, the clang compiler creates an intermediate copy.
+>> We have below to store 'flags' with 4-byte store and leave another 4 byte
+>> in the same 8-byte-aligned storage undefined,
+>>      5629: c7 85 28 fd ff ff 08 00 00 00 movl    $0x8, -0x2d8(%rbp)
+>> and later we store 8-byte to the original zero'ed buffer
+>>      5654: 48 8b 85 28 fd ff ff          movq    -0x2d8(%rbp), %rax
+>>      565b: 48 89 45 b0                   movq    %rax, -0x50(%rbp)
+>>
+>> This caused a problem as the 4-byte value at [%rbp-0x2dc, %rbp-0x2e0)
+>> may be garbage.
+>>
+>> gcc (gcc 11.4) does not have this issue as it does zeroing struct first before
+>> doing assignments:
+>>    ;       LIBBPF_OPTS_RESET(optl,
+>>      50fd: 48 8d 85 40 fc ff ff          leaq    -0x3c0(%rbp), %rax
+>>      5104: ba 20 00 00 00                movl    $0x20, %edx
+>>      5109: be 00 00 00 00                movl    $0x0, %esi
+>>      510e: 48 89 c7                      movq    %rax, %rdi
+>>      5111: e8 00 00 00 00                callq   0x5116 <serial_test_tc_netkit_multi_links_target+0x1522>
+>>      5116: 48 8b 45 f0                   movq    -0x10(%rbp), %rax
+>>      511a: 48 8b 40 18                   movq    0x18(%rax), %rax
+>>      511e: 48 89 c7                      movq    %rax, %rdi
+>>      5121: e8 00 00 00 00                callq   0x5126 <serial_test_tc_netkit_multi_links_target+0x1532>
+>>      5126: 48 c7 85 40 fc ff ff 00 00 00 00      movq    $0x0, -0x3c0(%rbp)
+>>      5131: 48 c7 85 48 fc ff ff 00 00 00 00      movq    $0x0, -0x3b8(%rbp)
+>>      513c: 48 c7 85 50 fc ff ff 00 00 00 00      movq    $0x0, -0x3b0(%rbp)
+>>      5147: 48 c7 85 58 fc ff ff 00 00 00 00      movq    $0x0, -0x3a8(%rbp)
+>>      5152: 48 c7 85 40 fc ff ff 20 00 00 00      movq    $0x20, -0x3c0(%rbp)
+>>      515d: 89 85 48 fc ff ff             movl    %eax, -0x3b8(%rbp)
+>>      5163: c7 85 58 fc ff ff 08 00 00 00 movl    $0x8, -0x3a8(%rbp)
+>>    ;       link = bpf_program__attach_netkit(skel->progs.tc2, ifindex, &optl);
+>>
+>> It is not clear how to resolve the compiler code generation as the compiler
+>> generates correct code w.r.t. how to handle unnamed padding in C standard.
+>> So this patch changed LIBBPF_OPTS_RESET macro by adding a static_assert
+>> to complain if there is a non-zero-byte tailing padding. This will effectively
+>> enforce all *_opts struct used by LIBBPF_OPTS_RESET must have zero-byte tailing
+>> padding.
+>>
+>> With the above changed bpf_netkit_opts layout, building the selftest with
+>> clang compiler, the following error will occur:
+>>
+>>    .../bpf-next/tools/testing/selftests/bpf/prog_tests/tc_netkit.c:331:2: error:
+>>      static assertion failed due to requirement 'sizeof (optl) == (__builtin_offsetof(struct bpf_netkit_opts, flags)
+>>        + sizeof ((((struct bpf_netkit_opts *)0)->flags)))': Unexpected tail padding
+>>    331 |         LIBBPF_OPTS_RESET(bpf_netkit_opts, optl,
+>>        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    332 |                 .flags = BPF_F_BEFORE,
+>>        |                 ~~~~~~~~~~~~~~~~~~~~~~
+>>    333 |                 .relative_fd = bpf_program__fd(skel->progs.tc1),
+>>        |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    334 |         );
+>>        |         ~
+>>    .../bpf-next/tools/testing/selftests/bpf/tools/include/bpf/libbpf_common.h:98:4: note: expanded from macro 'LIBBPF_OPTS_RESET'
+>>     98 |                         sizeof(NAME) == offsetofend(struct TYPE,            \
+>>        |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     99 |                                                     TYPE##__last_field),    \
+>>        |                                                     ~~~~~~~~~~~~~~~~~~~
+>>    .../bpf-next/tools/testing/selftests/bpf/prog_tests/tc_netkit.c:331:2: note: expression evaluates to '32 == 28'
+>>    331 |         LIBBPF_OPTS_RESET(bpf_netkit_opts, optl,
+>>        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    332 |                 .flags = BPF_F_BEFORE,
+>>        |                 ~~~~~~~~~~~~~~~~~~~~~~
+>>    333 |                 .relative_fd = bpf_program__fd(skel->progs.tc1),
+>>        |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>    334 |         );
+>>        |         ~
+>>    .../bpf-next/tools/testing/selftests/bpf/tools/include/bpf/libbpf_common.h:98:17: note: expanded from macro 'LIBBPF_OPTS_RESET'
+>>     98 |                         sizeof(NAME) == offsetofend(struct TYPE,            \
+>>        |                         ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>     99 |                                                     TYPE##__last_field),    \
+>>
+>> Note that this patch does not provide a C++ version of changed LIBBPF_OPTS_RESET macro.
+>> It looks C++ complaining about offsetof()
+>>    #define offsetof(type, member)    ((unsigned long)&((type *)0)->member)
+>> to be used in static_assert.
+>>
+>> Cc: Martin KaFai Lau <martin.lau@kernel.org>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+> This patch is adding detection of a potential issue, but doesn't
+> suggest the solution. Did you have a proposed solution in mind for
+> cases when we do have padding at the end?
+
+This patch is kind of ONE possible solution in the sense it tries to
+warn people if the tail padding exists when using LIBBPF_OPTS_RESET
+macro. But later I realized that this may not be the best since
+it is possible LIBBPF_OPTS_RESET may use some other existing *_opts
+struct and if those opts have tail padding, then user will get
+struck since they need to modify that *_opts struct which is not
+good. So best way is still to fix LIBBPF_OPTS_RESET to avoid
+uninitialized tail padding.
+
+After some further thought, I found a solution. See v2:
+https://lore.kernel.org/bpf/20231107062936.2537338-1-yonghong.song@linux.dev/
+
+>
+>>   tools/lib/bpf/libbpf_common.h                 |   7 +-
+>>   .../selftests/bpf/prog_tests/tc_links.c       |  70 ++++-----
+>>   .../selftests/bpf/prog_tests/tc_netkit.c      |   4 +-
+>>   .../selftests/bpf/prog_tests/tc_opts.c        | 144 +++++++++---------
+>>   4 files changed, 115 insertions(+), 110 deletions(-)
+>>
+>> diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
+>> index b7060f254486..f74e5f3cde9c 100644
+>> --- a/tools/lib/bpf/libbpf_common.h
+>> +++ b/tools/lib/bpf/libbpf_common.h
+>> @@ -77,8 +77,13 @@
+>>    * syntax as varargs can be provided as well to reinitialize options struct
+>>    * specific members.
+>>    */
+>> -#define LIBBPF_OPTS_RESET(NAME, ...)                                       \
+>> +#define LIBBPF_OPTS_RESET(TYPE, NAME, ...)                                 \
+> We can't do this. It's both backwards incompatible and will breaks
+> existing users. And it also hurts usability a lot to have to specify
+> the name of the struct.
+
+The original thinking is LIBBPF_OPTS_RESET is introduced in 6.6, so
+we only need to backport to 6.6.
+
+>
+>>          do {                                                                \
+>> +               _Static_assert(                                             \
+>> +                       sizeof(NAME) == offsetofend(struct TYPE,            \
+> you coun't use typeof(NAME) here?
+
+Yes, we can. The key thing is TYPE usage in the below line so TYPE has to be added to
+macro definition.
+
+>
+>> +                                                   TYPE##__last_field),    \
+>> +                       "Unexpected tail padding"                           \
+>> +               );                                                          \
+> I don't see why this static assert has to be inside
+> LIBBPF_OPTS_RESET() macro. We can just add it next to each opts type
+> declaration, if we want to enforce this.
+
+I found another solution without assert. See v2.
+
+
+>
+>>                  memset(&NAME, 0, sizeof(NAME));                             \
+>>                  NAME = (typeof(NAME)) {                                     \
+>>                          .sz = sizeof(NAME),                                 \
+> [...]
 
