@@ -1,87 +1,116 @@
-Return-Path: <bpf+bounces-14340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A3D67E318F
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 00:44:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 801347E3251
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 01:43:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B604A280DFE
-	for <lists+bpf@lfdr.de>; Mon,  6 Nov 2023 23:44:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A799280E0E
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 00:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B7E2FE23;
-	Mon,  6 Nov 2023 23:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C2A17E3;
+	Tue,  7 Nov 2023 00:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Uo2+nLFF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QTDWS6yI"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BD6527452;
-	Mon,  6 Nov 2023 23:44:39 +0000 (UTC)
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B958F;
-	Mon,  6 Nov 2023 15:44:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=tTRXSb5yDpYYXh61it1fVTSb5GgfoqgJPrGpV5LUfTg=; b=Uo2+nLFFtj3kf3LQ9XHtnsySQs
-	Urp4Z3VItQAOTQ1QQp3KwNo1xw0T7FvBc4tbHYId5QCueUGooC728dBubP8PsQ3bVE6XsE7JGZ7pC
-	psVNxpdMA3vxBWKNPof2yObIn6aJoNzcmzlyHy3OwCF+TgLRuN8iS2KEp5aQHfht9GMfysy3v8SjY
-	u0/SHrwm1FL/Jd02mWXFpZBWBbtu401YlnU+ZvtzgPZN3nnfQUafWlPNp+g1qsC5WWAwbZRV3Fcol
-	tRz7WlyJyOAdBF/cI1ltSeEMbL/0f04yP6oYeF/DnAZe2tayTZVqPkbOvhkiMhjs7Wia+rlNLO9Y3
-	lGphUOgg==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r09Gl-000CPq-MH; Tue, 07 Nov 2023 00:44:35 +0100
-Received: from [194.230.147.75] (helo=localhost.localdomain)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r09Gl-000MYv-5A; Tue, 07 Nov 2023 00:44:35 +0100
-Subject: Re: [PATCH bpf 4/6] bpf, netkit: Add indirect call wrapper for
- fetching peer dev
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: martin.lau@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org,
- Nikolay Aleksandrov <razor@blackwall.org>
-References: <20231103222748.12551-1-daniel@iogearbox.net>
- <20231103222748.12551-5-daniel@iogearbox.net>
- <20231106133250.0d49a487@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <b2e12d85-4a45-e6a9-ac3f-aa932c5cf79b@iogearbox.net>
-Date: Tue, 7 Nov 2023 00:44:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9411910E4;
+	Tue,  7 Nov 2023 00:43:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D448C433C7;
+	Tue,  7 Nov 2023 00:43:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699317785;
+	bh=ZDSZrTPjdbQ1tzVXs6DT67Wg83zVrMpSIvmICGi3DDs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QTDWS6yId+pWs8EyAV7mggdfaXC2dOCCM7NJJmavNb8580+6kNUX37Nai376HiCgV
+	 xis7aOGWkVhB8qT/ya1PMnsmjm+CDFZrJVO+v6OV+Gf893/BD+vyqRovbVElgu5sNb
+	 O7JjVtE8VJpMZXbDh70Z0ro4gM0lIXU79ZFLFOSqqAbIaVX8w7Ux0fS/XJHClThXF+
+	 6HxdZzRB+jVcEHvmuzezJZ4HguhT7I34Pfg9+1FtF5rgJ8SRS7pB6Gd+dUzvvfP4jX
+	 Te8mAtiJOcgnJnNDevGfm8CK/jITfnB33qWoBHCuec5uc43IfVDv9KI6KOC0TKJzei
+	 cnOMazeqSMxag==
+Date: Tue, 7 Nov 2023 09:42:58 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Guo Ren <guoren@kernel.org>
+Subject: Re: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+Message-Id: <20231107094258.d41a46c202197e92bc6d9656@kernel.org>
+In-Reply-To: <20231106113710.3bf69211@gandalf.local.home>
+References: <169920038849.482486.15796387219966662967.stgit@devnote2>
+	<169920068069.482486.6540417903833579700.stgit@devnote2>
+	<20231105172536.GA7124@noisy.programming.kicks-ass.net>
+	<20231105141130.6ef7d8bd@rorschach.local.home>
+	<20231105231734.GE3818@noisy.programming.kicks-ass.net>
+	<20231105183301.38be5598@rorschach.local.home>
+	<20231106100549.33f6ce30d968906979ca3954@kernel.org>
+	<20231106113710.3bf69211@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20231106133250.0d49a487@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27085/Mon Nov  6 23:37:38 2023)
 
-On 11/6/23 10:32 PM, Jakub Kicinski wrote:
-> On Fri,  3 Nov 2023 23:27:46 +0100 Daniel Borkmann wrote:
->> ndo_get_peer_dev is used in tcx BPF fast path, therefore make use of
->> indirect call wrapper and therefore optimize the bpf_redirect_peer()
->> internal handling a bit. Add a small skb_get_peer_dev() wrapper which
->> utilizes the INDIRECT_CALL_1() macro instead of open coding.
+On Mon, 6 Nov 2023 11:37:10 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Mon, 6 Nov 2023 10:05:49 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 > 
-> Why don't we kill the ndo and put the pointer in struct net_device?
+> > So for x86-64,
+> > 
+> >  - rdi, rsi, rcx, rdx, r8, r9, and rsp
+> >  - rax and rdx
+> >  - rbp
+> > 
+> > (BTW, why orig_rax is cleared?)
+> 
+> You mean from ftrace_caller?
+> 
+> That's a "hack" to determine if we need to call the direct trampoline or
+> not. When you have both a direct trampoline and ftrace functions on the
+> same function, it will call ftrace_ops_list_func() to iterate all the
+> registered ftrace callbacks. The direct callback helper will set "orig_rax"
+> to let the return of the ftrace trampoline call the direct callback.
 
-I can take a stab at this some time after LPC and probably makes sense
-also after Coco's cacheline optimizations landed.
+Got it. So does ftrace_regs need a placeholder for direct trampoline?
+(Or, can we use a register to pass it?)
+I think we don't need to clear it for return_to_handler() but if
+`ftrace_regs` spec requires it, it is better to do so.
 
-Thanks,
-Daniel
+Thank you,
+
+> 
+> Remember if a direct callback is by itself, the fentry will call that
+> direct trampoline without going through the ftrace trampoline. This is used
+> to tell the ftrace trampoline that it's attached to a direct caller and
+> needs to call that and not return back to the function it is tracing.
+> 
+> See later down in that file we have:
+> 
+> 	/*
+> 	 * If ORIG_RAX is anything but zero, make this a call to that.
+> 	 * See arch_ftrace_set_direct_caller().
+> 	 */
+> 	testq	%rax, %rax
+> 
+> -- Steve
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
