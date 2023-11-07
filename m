@@ -1,100 +1,117 @@
-Return-Path: <bpf+bounces-14427-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14428-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 974837E4195
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 15:10:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2DF47E421A
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 15:50:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C03821C20C6F
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 14:10:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 068221C20B85
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 14:50:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B11F629420;
-	Tue,  7 Nov 2023 14:09:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD94C3158A;
+	Tue,  7 Nov 2023 14:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gDp1g+zK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C3630F89;
-	Tue,  7 Nov 2023 14:09:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE13AC433C7;
-	Tue,  7 Nov 2023 14:09:56 +0000 (UTC)
-Date: Tue, 7 Nov 2023 09:09:59 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH 24/32] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
-Message-ID: <20231107090959.1328bf62@gandalf.local.home>
-In-Reply-To: <20231107084844.7a39ac3f@gandalf.local.home>
-References: <169920038849.482486.15796387219966662967.stgit@devnote2>
-	<169920068069.482486.6540417903833579700.stgit@devnote2>
-	<20231105172536.GA7124@noisy.programming.kicks-ass.net>
-	<20231105141130.6ef7d8bd@rorschach.local.home>
-	<20231105231734.GE3818@noisy.programming.kicks-ass.net>
-	<20231105183301.38be5598@rorschach.local.home>
-	<20231106100549.33f6ce30d968906979ca3954@kernel.org>
-	<20231106113710.3bf69211@gandalf.local.home>
-	<20231107094258.d41a46c202197e92bc6d9656@kernel.org>
-	<20231106220617.5eb73f2f@gandalf.local.home>
-	<20231107144328.cc763a2a137391ceb105e9db@kernel.org>
-	<20231107084844.7a39ac3f@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2D22FE02;
+	Tue,  7 Nov 2023 14:50:05 +0000 (UTC)
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF4D10CF;
+	Tue,  7 Nov 2023 06:50:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=aUPKeGDPANiKH2z7X9OP/b73LHeCDXnx5PDCsJAh+M4=; b=gDp1g+zKei5Pp+ErPuqJGvyIYg
+	xGzHGyM11dG9jI9jae1Aj9AR57XGf62CEXNahL6Witq3vqXbFBnNnn2w0zuJChY94qURrK+HiBImH
+	pWESyPMcD4dOmnpU5lllX9UAYbdxJMpr5Ln6txhpke+KZA2YAyh0sLInwJyzX7Hix9TdvwjCT5etA
+	vV6IZ4jD173+OaWlbqxnaiHufqRf8DGIwc2RwgkWBfYb0+SZiO3M6Nu99qQsiypQ/2N2ILlgk4WL0
+	4RjUb2cNWqjRKD2DPUeQnVEwPsssD2ETwgrhPYUPT3iMCDtuN/5uoJjMr6+nHbbvyIaLpUvpxIbX0
+	rO+83T8g==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1r0NOA-00C4Bw-2I;
+	Tue, 07 Nov 2023 14:49:10 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 5BAC530049D; Tue,  7 Nov 2023 15:49:10 +0100 (CET)
+Date: Tue, 7 Nov 2023 15:49:10 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: j.granados@samsung.com
+Cc: Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+	josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Iurii Zaikin <yzaikin@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Petr Mladek <pmladek@suse.com>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Balbir Singh <bsingharora@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH 06/10] scheduler: Remove the now superfluous sentinel
+ elements from ctl_table array
+Message-ID: <20231107144910.GY8262@noisy.programming.kicks-ass.net>
+References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
+ <20231107-jag-sysctl_remove_empty_elem_kernel-v1-6-e4ce1388dfa0@samsung.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-6-e4ce1388dfa0@samsung.com>
 
-On Tue, 7 Nov 2023 08:48:44 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Tue, 7 Nov 2023 14:43:28 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On Tue, Nov 07, 2023 at 02:45:06PM +0100, Joel Granados via B4 Relay wrote:
+> From: Joel Granados <j.granados@samsung.com>
 > 
-> > > 
-> > > It's only needed if an architecture supports direct trampolines.    
-> > 
-> > I see, and x86_64 needs it.
-> > OK, maybe better to keep it clear on x86-64 even on the
-> > return handler.  
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
 > 
-> As it is arch specific, I'm not sure it matters for the return handler, as
-> the return should never call a direct trampoline.
+> rm sentinel element from ctl_table arrays
+> 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> ---
+>  kernel/sched/autogroup.c | 1 -
+>  kernel/sched/core.c      | 1 -
+>  kernel/sched/deadline.c  | 1 -
+>  kernel/sched/fair.c      | 1 -
+>  kernel/sched/rt.c        | 1 -
+>  kernel/sched/topology.c  | 1 -
+>  6 files changed, 6 deletions(-)
 
-Just to clarify, the return trampoline should not bother touching that
-register. The register was cleared in the fentry trampoline before calling
-all the callbacks because the arch_ftrace_set_direct_caller() would set it.
-Then on return of calling the function callbacks, it would test if
-something set it or not.
-
-If the return trampoline is not testing it after the return from the
-callbacks, there's no reason to clear it. The fentry trampoline used it to
-communicate to itself:
-
-	orig_rax = 0;
-
-	call ftrace_ops_list_func()
-
-	/* Did something set orig_rax? */
-	if (orig_rax != 0)
-		return orig_rax;
-
-It's not setting it to communicate with the callbacks. That is, the
-callback does not expect it to be set.
-
--- Steve
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
