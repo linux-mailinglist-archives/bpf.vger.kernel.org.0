@@ -1,293 +1,147 @@
-Return-Path: <bpf+bounces-14429-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14430-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D55877E436F
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 16:29:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02B167E437C
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 16:31:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FB501C20CF1
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 15:29:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85E9B281147
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 15:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F287831595;
-	Tue,  7 Nov 2023 15:29:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3420C315A4;
+	Tue,  7 Nov 2023 15:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZOCSVrMG"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Rkt6p8Gy"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B39AD52
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 15:29:40 +0000 (UTC)
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39B79E
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 07:29:39 -0800 (PST)
-Message-ID: <92ff17e2-b74d-4497-a011-8cba636b6119@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699370977;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CB7D2C872
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 15:31:28 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFAE03596
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 07:31:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699371086;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=i0xzs5ldDJyfDkDdZIBcfh0BBvHQUrhMvMEzYFwfD9g=;
-	b=ZOCSVrMGSn439X5ORcQgqfDvLNZNjCcr70N994//q375GZyoSsTwisC1NqSCgYsxp5b6C1
-	hq8VCTd6rvLnE8HWmz1Nl+FxFBY8tFI6HL1dbhET2nZKL0l9LuTfnTCP0og0wbzTs7+ZAL
-	gmDnTCNaEnY4arreP/NxEuOVSoIXBDg=
-Date: Tue, 7 Nov 2023 07:29:30 -0800
+	bh=f7AEBVghQW447KZQKO5L8SRKW+vAc5UygEoFswNXMXA=;
+	b=Rkt6p8GyzG/MhDV7zqCfhlR7/YLTlYwpaCTnQNLcvl168hGb9JKyJeEJAABhOoa/Ry6RR9
+	gyNS50ICW/2LykL9E3dBCRRFlkR9DaTR298zx5noQU+E0xGIOx51fsaDu5ObfkakUn3oZH
+	prfZC18h3C5lyFhG58nHwsoh4bSa9nk=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-543-N1X8nJyPOI2xb4AQsGiYKw-1; Tue, 07 Nov 2023 10:31:24 -0500
+X-MC-Unique: N1X8nJyPOI2xb4AQsGiYKw-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9e1020e2996so151049166b.0
+        for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 07:31:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699371082; x=1699975882;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:to:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=f7AEBVghQW447KZQKO5L8SRKW+vAc5UygEoFswNXMXA=;
+        b=vDkMyEF/HmDzj/0Cf1ysyQtWcRkyGThA4QAzhMfpM74cy5o1lt9BsxHoE2OiK214j7
+         ZW0x4ovTcFhbXlsGvSFLQp3HcoP6aWocb/9cR9YNx4gmRgpdeiFmtjxI+kQ7AN4/x7O/
+         Wa+oQSXpuGTIt8TGNXonJMCHznlBVnjildeKSl8WKcbqm4a7pr2oxRtrG+eF3ukevHj+
+         YbzfO1yX45exSGeVCX3aBstEHPWTs7moGMu5AK8sbJ/ZMwxS72IwYI8uSeSNbW2k5Jpu
+         eP742ezwjT26sX9sqVs8KyuAmLWTpXsWK12LPKCesTOeCAbQmjURfUkhlsNnjYv67B1j
+         8n6A==
+X-Gm-Message-State: AOJu0YzfjJul7lfELo6H73wnt9jFKeBpI/+d7EVZifuI+fve87Uvq6vL
+	Zg1Fwg8ilYK6278Vz085SV0B0An02fmUbXJNIku2ZpcClorVaYbNb76FkC5dhR9vS39fbzp9cR0
+	sh5FsejVyGSgbewpeS6yu
+X-Received: by 2002:a17:907:845:b0:9d3:608d:cdf6 with SMTP id ww5-20020a170907084500b009d3608dcdf6mr16431422ejb.19.1699371082745;
+        Tue, 07 Nov 2023 07:31:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGzsYnkK38UDeIKBZ889ENeSWldS+qH42DHXAMdFwo25beCAbY5ow+9LOMNJV0L2bxReSI6yQ==
+X-Received: by 2002:a17:907:845:b0:9d3:608d:cdf6 with SMTP id ww5-20020a170907084500b009d3608dcdf6mr16431397ejb.19.1699371082370;
+        Tue, 07 Nov 2023 07:31:22 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id bx7-20020a170906a1c700b009c5c5c2c5a4sm1150061ejb.219.2023.11.07.07.31.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 07:31:22 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 93B01EE6C2C; Tue,  7 Nov 2023 16:31:21 +0100 (CET)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To: "Nelson, Shannon" <shannon.nelson@amd.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, David Ahern <dsahern@gmail.com>, Jakub Kicinski
+ <kuba@kernel.org>, netdev@vger.kernel.org, bpf@vger.kernel.org, Daniel
+ Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: BPF/XDP: kernel panic when removing an interface that is an
+ xdp_redirect target
+In-Reply-To: <e3085c47-7452-4302-8401-1bda052a3714@amd.com>
+References: <e3085c47-7452-4302-8401-1bda052a3714@amd.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Tue, 07 Nov 2023 16:31:21 +0100
+Message-ID: <87h6lxy3zq.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2] libbpf: Fix potential uninitialized tail
- padding with LIBBPF_OPTS_RESET
-Content-Language: en-GB
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231107062936.2537338-1-yonghong.song@linux.dev>
- <ZUo2mw46o6WAylUc@krava>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ZUo2mw46o6WAylUc@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+"Nelson, Shannon" <shannon.nelson@amd.com> writes:
 
-On 11/7/23 5:07 AM, Jiri Olsa wrote:
-> On Mon, Nov 06, 2023 at 10:29:36PM -0800, Yonghong Song wrote:
->> Martin reported that there is a libbpf complaining of non-zero-value tail
->> padding with LIBBPF_OPTS_RESET macro if struct bpf_netkit_opts is modified
->> to have a 4-byte tail padding. This only happens to clang compiler.
->> The commend line is: ./test_progs -t tc_netkit_multi_links
->> Martin and I did some investigation and found this indeed the case and
->> the following are the investigation details.
->>
->> Clang 18:
->>    clang version 18.0.0
->>    <I tried clang15/16/17 and they all have similar results>
->>
->> tools/lib/bpf/libbpf_common.h:
->>    #define LIBBPF_OPTS_RESET(NAME, ...)                                      \
->>          do {                                                                \
->>                  memset(&NAME, 0, sizeof(NAME));                             \
->>                  NAME = (typeof(NAME)) {                                     \
->>                          .sz = sizeof(NAME),                                 \
->>                          __VA_ARGS__                                         \
->>                  };                                                          \
->>          } while (0)
->>
->>    #endif
->>
->> tools/lib/bpf/libbpf.h:
->>    struct bpf_netkit_opts {
->>          /* size of this struct, for forward/backward compatibility */
->>          size_t sz;
->>          __u32 flags;
->>          __u32 relative_fd;
->>          __u32 relative_id;
->>          __u64 expected_revision;
->>          size_t :0;
->>    };
->>    #define bpf_netkit_opts__last_field expected_revision
->> In the above struct bpf_netkit_opts, there is no tail padding.
->>
->> prog_tests/tc_netkit.c:
->>    static void serial_test_tc_netkit_multi_links_target(int mode, int target)
->>    {
->>          ...
->>          LIBBPF_OPTS(bpf_netkit_opts, optl);
->>          ...
->>          LIBBPF_OPTS_RESET(optl,
->>                  .flags = BPF_F_BEFORE,
->>                  .relative_fd = bpf_program__fd(skel->progs.tc1),
->>          );
->>          ...
->>    }
->>
->> Let us make the following source change, note that we have a 4-byte
->> tailing padding now.
->>    diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
->>    index 6cd9c501624f..0dd83910ae9a 100644
->>    --- a/tools/lib/bpf/libbpf.h
->>    +++ b/tools/lib/bpf/libbpf.h
->>    @@ -803,13 +803,13 @@ bpf_program__attach_tcx(const struct bpf_program *prog, int ifindex,
->>     struct bpf_netkit_opts {
->>          /* size of this struct, for forward/backward compatibility */
->>          size_t sz;
->>    -       __u32 flags;
->>          __u32 relative_fd;
->>          __u32 relative_id;
->>          __u64 expected_revision;
->>    +       __u32 flags;
->>          size_t :0;
->>     };
->>    -#define bpf_netkit_opts__last_field expected_revision
->>    +#define bpf_netkit_opts__last_field flags
->>
->> The clang 18 generated asm code looks like below:
->>      ;       LIBBPF_OPTS_RESET(optl,
->>      55e3: 48 8d 7d 98                   leaq    -0x68(%rbp), %rdi
->>      55e7: 31 f6                         xorl    %esi, %esi
->>      55e9: ba 20 00 00 00                movl    $0x20, %edx
->>      55ee: e8 00 00 00 00                callq   0x55f3 <serial_test_tc_netkit_multi_links_target+0x18d3>
->>      55f3: 48 c7 85 10 fd ff ff 20 00 00 00      movq    $0x20, -0x2f0(%rbp)
->>      55fe: 48 8b 85 68 ff ff ff          movq    -0x98(%rbp), %rax
->>      5605: 48 8b 78 18                   movq    0x18(%rax), %rdi
->>      5609: e8 00 00 00 00                callq   0x560e <serial_test_tc_netkit_multi_links_target+0x18ee>
->>      560e: 89 85 18 fd ff ff             movl    %eax, -0x2e8(%rbp)
->>      5614: c7 85 1c fd ff ff 00 00 00 00 movl    $0x0, -0x2e4(%rbp)
->>      561e: 48 c7 85 20 fd ff ff 00 00 00 00      movq    $0x0, -0x2e0(%rbp)
->>      5629: c7 85 28 fd ff ff 08 00 00 00 movl    $0x8, -0x2d8(%rbp)
->>      5633: 48 8b 85 10 fd ff ff          movq    -0x2f0(%rbp), %rax
->>      563a: 48 89 45 98                   movq    %rax, -0x68(%rbp)
->>      563e: 48 8b 85 18 fd ff ff          movq    -0x2e8(%rbp), %rax
->>      5645: 48 89 45 a0                   movq    %rax, -0x60(%rbp)
->>      5649: 48 8b 85 20 fd ff ff          movq    -0x2e0(%rbp), %rax
->>      5650: 48 89 45 a8                   movq    %rax, -0x58(%rbp)
->>      5654: 48 8b 85 28 fd ff ff          movq    -0x2d8(%rbp), %rax
->>      565b: 48 89 45 b0                   movq    %rax, -0x50(%rbp)
->>      ;       link = bpf_program__attach_netkit(skel->progs.tc2, ifindex, &optl);
->>
->> At -O0 level, the clang compiler creates an intermediate copy.
->> We have below to store 'flags' with 4-byte store and leave another 4 byte
->> in the same 8-byte-aligned storage undefined,
->>      5629: c7 85 28 fd ff ff 08 00 00 00 movl    $0x8, -0x2d8(%rbp)
->> and later we store 8-byte to the original zero'ed buffer
->>      5654: 48 8b 85 28 fd ff ff          movq    -0x2d8(%rbp), %rax
->>      565b: 48 89 45 b0                   movq    %rax, -0x50(%rbp)
->>
->> This caused a problem as the 4-byte value at [%rbp-0x2dc, %rbp-0x2e0)
->> may be garbage.
->>
->> gcc (gcc 11.4) does not have this issue as it does zeroing struct first before
->> doing assignments:
->>    ;       LIBBPF_OPTS_RESET(optl,
->>      50fd: 48 8d 85 40 fc ff ff          leaq    -0x3c0(%rbp), %rax
->>      5104: ba 20 00 00 00                movl    $0x20, %edx
->>      5109: be 00 00 00 00                movl    $0x0, %esi
->>      510e: 48 89 c7                      movq    %rax, %rdi
->>      5111: e8 00 00 00 00                callq   0x5116 <serial_test_tc_netkit_multi_links_target+0x1522>
->>      5116: 48 8b 45 f0                   movq    -0x10(%rbp), %rax
->>      511a: 48 8b 40 18                   movq    0x18(%rax), %rax
->>      511e: 48 89 c7                      movq    %rax, %rdi
->>      5121: e8 00 00 00 00                callq   0x5126 <serial_test_tc_netkit_multi_links_target+0x1532>
->>      5126: 48 c7 85 40 fc ff ff 00 00 00 00      movq    $0x0, -0x3c0(%rbp)
->>      5131: 48 c7 85 48 fc ff ff 00 00 00 00      movq    $0x0, -0x3b8(%rbp)
->>      513c: 48 c7 85 50 fc ff ff 00 00 00 00      movq    $0x0, -0x3b0(%rbp)
->>      5147: 48 c7 85 58 fc ff ff 00 00 00 00      movq    $0x0, -0x3a8(%rbp)
->>      5152: 48 c7 85 40 fc ff ff 20 00 00 00      movq    $0x20, -0x3c0(%rbp)
->>      515d: 89 85 48 fc ff ff             movl    %eax, -0x3b8(%rbp)
->>      5163: c7 85 58 fc ff ff 08 00 00 00 movl    $0x8, -0x3a8(%rbp)
->>    ;       link = bpf_program__attach_netkit(skel->progs.tc2, ifindex, &optl);
->>
->> It is not clear how to resolve the compiler code generation as the compiler
->> generates correct code w.r.t. how to handle unnamed padding in C standard.
->> So this patch changed LIBBPF_OPTS_RESET macro to avoid uninitialized tail
->> padding. We already knows LIBBPF_OPTS macro works on both gcc and clang,
->> even with tail padding. So LIBBPF_OPTS_RESET is changed to be a
->> LIBBPF_OPTS followed by a memcpy(), thus avoiding uninitialized tail padding.
-> if that's the case, could we just do (untested):
+> While testing new code to support XDP in the ionic driver we found that=20
+> we could panic the kernel by running a bind/unbind loop on the target=20
+> interface of an xdp_redirect action.  Obviously this is a stress test=20
+> that is abusing the system, but it does point to a window of opportunity=
+=20
+> in bq_enqueue() and bq_xmit_all().  I believe that while the validity of=
+=20
+> the target interface has been checked in __xdp_enqueue(), the interface=20
+> can be unbound by the time either bq_enqueue() or bq_xmit_all() tries to=
+=20
+> use the interface.  There is no locking or reference taken on the=20
+> interface to hold it in place before the target=E2=80=99s ndo_xdp_xmit() =
+is called.
 >
-> diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-> index b7060f254486..c89d4dbbebd8 100644
-> --- a/tools/lib/bpf/libbpf_common.h
-> +++ b/tools/lib/bpf/libbpf_common.h
-> @@ -79,11 +79,8 @@
->    */
->   #define LIBBPF_OPTS_RESET(NAME, ...)					    \
->   	do {								    \
-> -		memset(&NAME, 0, sizeof(NAME));				    \
-> -		NAME = (typeof(NAME)) {					    \
-> -			.sz = sizeof(NAME),				    \
-> -			__VA_ARGS__					    \
-> -		};							    \
-> +		LIBBPF_OPTS(___##NAME, __VA_ARGS__);			    \
-> +		memcpy(&NAME, &___##NAME, sizeof(typeof(NAME)));	    \
->   	} while (0)
->   
->   #endif /* __LIBBPF_LIBBPF_COMMON_H */
-
-
-Thanks Jiri. The above does not work since the first macro parameter
-in LIBBPF_OPTS is a type (e.g., 'bpf_netkit_opts' for struct bpf_netkit_opts).
-
-
+> Below is a stack trace that our tester captured while running our test=20
+> code on a RHEL 9.2 kernel =E2=80=93 yes, I know, unpublished driver code =
+on a=20
+> non-upstream kernel.  But if you look at the current upstream code in=20
+> kernel/bpf/devmap.c I think you can see what we ran into.
 >
->
-> jirka
->
->> The below is asm code generated with this patch and with clang compiler:
->>      ;       LIBBPF_OPTS_RESET(optl,
->>      55e3: 48 8d bd 10 fd ff ff          leaq    -0x2f0(%rbp), %rdi
->>      55ea: 31 f6                         xorl    %esi, %esi
->>      55ec: ba 20 00 00 00                movl    $0x20, %edx
->>      55f1: e8 00 00 00 00                callq   0x55f6 <serial_test_tc_netkit_multi_links_target+0x18d6>
->>      55f6: 48 c7 85 10 fd ff ff 20 00 00 00      movq    $0x20, -0x2f0(%rbp)
->>      5601: 48 8b 85 68 ff ff ff          movq    -0x98(%rbp), %rax
->>      5608: 48 8b 78 18                   movq    0x18(%rax), %rdi
->>      560c: e8 00 00 00 00                callq   0x5611 <serial_test_tc_netkit_multi_links_target+0x18f1>
->>      5611: 89 85 18 fd ff ff             movl    %eax, -0x2e8(%rbp)
->>      5617: c7 85 1c fd ff ff 00 00 00 00 movl    $0x0, -0x2e4(%rbp)
->>      5621: 48 c7 85 20 fd ff ff 00 00 00 00      movq    $0x0, -0x2e0(%rbp)
->>      562c: c7 85 28 fd ff ff 08 00 00 00 movl    $0x8, -0x2d8(%rbp)
->>      5636: 48 8b 85 10 fd ff ff          movq    -0x2f0(%rbp), %rax
->>      563d: 48 89 45 98                   movq    %rax, -0x68(%rbp)
->>      5641: 48 8b 85 18 fd ff ff          movq    -0x2e8(%rbp), %rax
->>      5648: 48 89 45 a0                   movq    %rax, -0x60(%rbp)
->>      564c: 48 8b 85 20 fd ff ff          movq    -0x2e0(%rbp), %rax
->>      5653: 48 89 45 a8                   movq    %rax, -0x58(%rbp)
->>      5657: 48 8b 85 28 fd ff ff          movq    -0x2d8(%rbp), %rax
->>      565e: 48 89 45 b0                   movq    %rax, -0x50(%rbp)
->>      ;       link = bpf_program__attach_netkit(skel->progs.tc2, ifindex, &optl);
->>
->> In the above code, a temporary buffer is zeroed and then has proper value assigned.
->> Finally, values in temporary buffer are copied to the original variable buffer,
->> hence tail padding is guaranteed to be 0.
->>
->> Cc: Martin KaFai Lau <martin.lau@kernel.org>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   tools/lib/bpf/libbpf_common.h | 13 ++++++++-----
->>   1 file changed, 8 insertions(+), 5 deletions(-)
->>
->> Changelog:
->>    v1 -> v2:
->>      - Do not change the LIBBPF_OPTS_RESET macro definition, rather
->>        re-implement to avoid potential uninitialized tail padding.
->>
->>    v1 link: https://lore.kernel.org/bpf/20231105185358.1036619-1-yonghong.song@linux.dev/
->>
->> diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
->> index b7060f254486..ef14e99bc952 100644
->> --- a/tools/lib/bpf/libbpf_common.h
->> +++ b/tools/lib/bpf/libbpf_common.h
->> @@ -79,11 +79,14 @@
->>    */
->>   #define LIBBPF_OPTS_RESET(NAME, ...)					    \
->>   	do {								    \
->> -		memset(&NAME, 0, sizeof(NAME));				    \
->> -		NAME = (typeof(NAME)) {					    \
->> -			.sz = sizeof(NAME),				    \
->> -			__VA_ARGS__					    \
->> -		};							    \
->> +		typeof(NAME) ___##NAME = ({ 				    \
->> +			memset(&___##NAME, 0, sizeof(typeof(NAME)));	    \
->> +			(typeof(NAME)) {				    \
->> +				.sz = sizeof(typeof(NAME)),		    \
->> +				__VA_ARGS__				    \
->> +			};						    \
->> +		});							    \
->> +		memcpy(&NAME, &___##NAME, sizeof(typeof(NAME)));	    \
->>   	} while (0)
->>   
->>   #endif /* __LIBBPF_LIBBPF_COMMON_H */
->> -- 
->> 2.34.1
->>
->>
+> Other than telling users to not abuse the system with a bind/unbind=20
+> loop, is there something we can do to limit the potential pain here?=20
+> Without knowing what interfaces might be targeted by the users=E2=80=99 X=
+DP=20
+> programs, is there a step the originating driver can do to take=20
+> precautions?  Did we simply miss a step in the driver, or is this an=20
+> actual problem in the devmap code?
+
+Sounds like a driver bug :)
+
+The XDP redirect flow guarantees that all outstanding packets are
+flushed within a single NAPI cycle, as documented here:
+https://docs.kernel.org/bpf/redirect.html
+
+So basically, the driver should be doing a two-step teardown: remove
+global visibility of the resource in question, wait for all concurrent
+users to finish, and *then* free the data structure. This corresponds to
+the usual RCU protection: resources should be kept alive until all
+concurrent RCU critical sections have exited on all CPUs. So if your
+driver is removing an interface's data structure without waiting for
+concurrent NAPI cycles to finish, that's a bug in the driver.
+
+This kind of thing is what the synchronize_net() function is for; for a
+usage example, see veth_napi_del_range(). My guess would be that you're
+missing this as part of your driver teardown flow?
+
+Another source of a bug like this could be that your driver does not in
+fact call xdp_do_flush() before exiting its NAPI cycle, so that there
+will be packets from the previous cycle in the bq queue, in which case
+the assumption mentioned in the linked document obviously breaks down.
+But that would also be a driver bug :)
+
+-Toke
+
 
