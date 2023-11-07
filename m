@@ -1,90 +1,136 @@
-Return-Path: <bpf+bounces-14435-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14436-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDF217E47E3
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 19:10:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CCE77E4809
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 19:16:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07DD01C20BAE
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 18:10:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6700B20EC1
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 18:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DDB7358A0;
-	Tue,  7 Nov 2023 18:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C668358AB;
+	Tue,  7 Nov 2023 18:15:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jFYNuxmf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a1Xmw/Aq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A0C3588D;
-	Tue,  7 Nov 2023 18:10:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 042C8C433CA;
-	Tue,  7 Nov 2023 18:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699380627;
-	bh=+HzkP4Kescl5ETtpnZgfZ1H6Oq13CAxwyRlb2Gc8oB0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jFYNuxmfGmIc8TV4E4QywWpiITR8m1cHvczri8jhi33ioTtQ6Dt4k/DvniMty6UXN
-	 bCFoxTHRKiXJUh1LIb1IOgkZgDeARS+E5CN0ilILaGNdLNm39FNKM+Fwg2wBP4IflI
-	 N0PWSbdJgl3y76xnDcPDD4b9C0k19cDdQmn0VGDsIkfkrVSSAvoVLv59ej8Px2ub7M
-	 KqErGqFiXrYt5MkYTt3q7vMezpwZwbc5e0b34bBOtZILv7ZT6T8hS7S5GjD5575NEr
-	 Xb3FZkTCr8lPnoyFcaXIoiI5Sb0vg2AC3Am8Dz4u2ADyPdDJillkqZgivAC3LVUzQY
-	 iXWxZnNVqE4Nw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DA458E00087;
-	Tue,  7 Nov 2023 18:10:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EBD34CFD;
+	Tue,  7 Nov 2023 18:15:53 +0000 (UTC)
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DFB8AF;
+	Tue,  7 Nov 2023 10:15:52 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a6190af24aso924343566b.0;
+        Tue, 07 Nov 2023 10:15:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699380951; x=1699985751; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YLCkkkRy0xyxhf2w0mzTXDWxtj3x83g3Dw/kY8liqxs=;
+        b=a1Xmw/AqoByUYLBTVTA2rinIw6h8P4ol+Yvy/FQvENFCG3EqQ6xH1Cm/iNcBZO0jF1
+         6ntGVkcoeC2mrSSq9FhCPOPbosvQBMEVCdE8kYm9VS2bJzBmXlVJ/NOJj4y1W9wLzC9g
+         Ckp6fSci94Mpbld1hwNa8+Bnpazf6uncvE4ujsvjNlJREkXnyKW65Mx12uqnb9NKDtx2
+         BSnVKGq5OnEb4KcwHMu3zkWVWJTvN9FvjY/CjxS6EhvUAHYYwiUKuV8yVufI029BEjKL
+         0i6gH+qQ6bU53BB5Nw3DGTmn8GUQgwHL7EowQqHFlazT+R6fTXOWRCTLpXLb3jINvlCN
+         93Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699380951; x=1699985751;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YLCkkkRy0xyxhf2w0mzTXDWxtj3x83g3Dw/kY8liqxs=;
+        b=oaaIsGvYCJq+jxebMWXLkO28hCt4MtTT/XzezBYCI5a37cM0HtJJ32q5/zpLKXODYd
+         E4hNw57fGTEM5fkNAKk0eBxWxMtu93pom4vDYncmsY3rVn/SLPzIvv6FdyJETSwP6BdT
+         eRAQnBDntcQGvO85lxyV0ree8USdbwHhQN5E3SAJ4iDVyj3HSgAOenJ5pHGSR/u26kit
+         K4kyuCbwrWyyXQ3ont72LQz9i9AGQuoK2Wz/RsJho64dTyJMggPvagSAF6pW9ctOCQdH
+         sapKe/leNBKSKBwymPmQr+qFOhQW0K0VdA8EMq4IE421ZWBOUkjGmxi+8J9JkD076yx9
+         Iwxw==
+X-Gm-Message-State: AOJu0YyEXEtoZAVBjqWFytOwE6KvPlHfY9pJGvOdklPXYAewW/AECRZD
+	gDk2mqS6k75MP8K22VkhVod4jgfGR7Hmb8yrn48=
+X-Google-Smtp-Source: AGHT+IEu5edPr9vVltsuODkwaa50hcmnHTRA8lKcWKQoW6T8vdFZrs7ih3QwA4MmdyUXquI2lxrp4aEhdeZvuQjGSwk=
+X-Received: by 2002:a17:907:d21:b0:9c0:eb3e:b070 with SMTP id
+ gn33-20020a1709070d2100b009c0eb3eb070mr17256502ejc.69.1699380950186; Tue, 07
+ Nov 2023 10:15:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next 0/3] bpf: __bpf_dynptr_data* and __str annotation
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169938062689.9957.5221638465583040520.git-patchwork-notify@kernel.org>
-Date: Tue, 07 Nov 2023 18:10:26 +0000
-References: <20231107045725.2278852-1-song@kernel.org>
-In-Reply-To: <20231107045725.2278852-1-song@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, fsverity@lists.linux.dev, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
- kernel-team@meta.com, ebiggers@kernel.org, tytso@mit.edu,
- roberto.sassu@huaweicloud.com, kpsingh@kernel.org, vadfed@meta.com
+References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
+ <20231107-jag-sysctl_remove_empty_elem_kernel-v1-10-e4ce1388dfa0@samsung.com>
+In-Reply-To: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-10-e4ce1388dfa0@samsung.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 7 Nov 2023 10:15:39 -0800
+Message-ID: <CAEf4BzZY0TATP4ug54j43o=qDvHBe8xW=hKwRRTfBuLUKGjrmg@mail.gmail.com>
+Subject: Re: [PATCH 10/10] bpf: Remove the now superfluous sentinel elements
+ from ctl_table array
+To: j.granados@samsung.com
+Cc: Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org, josh@joshtriplett.org, 
+	Kees Cook <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, 
+	Iurii Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, Petr Mladek <pmladek@suse.com>, 
+	John Ogness <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>, 
+	Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	linux-kernel@vger.kernel.org, kexec@lists.infradead.org, 
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Tue, Nov 7, 2023 at 5:45=E2=80=AFAM Joel Granados via B4 Relay
+<devnull+j.granados.samsung.com@kernel.org> wrote:
+>
+> From: Joel Granados <j.granados@samsung.com>
+>
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+>
+> Remove sentinel element from bpf_syscall_table.
+>
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> ---
+>  kernel/bpf/syscall.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+LGTM.
 
-On Mon,  6 Nov 2023 20:57:22 -0800 you wrote:
-> This set contains the first 3 patches of set [1]. Currently, [1] is waiting
-> for [3] to be merged to bpf-next tree. So send these 3 patches first to
-> unblock other works, such as [2]. This set is verified with new version of
-> [1] in CI run [4].
-> 
-> Changes since v12 of [1]:
-> 1. Reuse bpf_dynptr_slice() in __bpf_dynptr_data(). (Andrii)
-> 2. Add Acked-by from Vadim Fedorenko.
-> 
-> [...]
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-Here is the summary with links:
-  - [bpf-next,1/3] bpf: Add __bpf_dynptr_data* for in kernel use
-    https://git.kernel.org/bpf/bpf-next/c/afa58570c3f4
-  - [bpf-next,2/3] bpf: Factor out helper check_reg_const_str()
-    https://git.kernel.org/bpf/bpf-next/c/d8ace21aece8
-  - [bpf-next,3/3] bpf: Introduce KF_ARG_PTR_TO_CONST_STR
-    https://git.kernel.org/bpf/bpf-next/c/6d857121c63b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index eb01c31ed591..1cb5b852b4e7 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -5679,7 +5679,6 @@ static struct ctl_table bpf_syscall_table[] =3D {
+>                 .mode           =3D 0644,
+>                 .proc_handler   =3D bpf_stats_handler,
+>         },
+> -       { }
+>  };
+>
+>  static int __init bpf_syscall_sysctl_init(void)
+>
+> --
+> 2.30.2
+>
 
