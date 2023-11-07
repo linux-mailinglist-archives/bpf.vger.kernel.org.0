@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-14388-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F46F7E370A
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 09:57:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 385A97E3709
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 09:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70BEA1C20A26
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 08:57:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7D3A280F04
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 08:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA79E11C99;
-	Tue,  7 Nov 2023 08:57:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A35121171B;
+	Tue,  7 Nov 2023 08:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="UsJ8AGEd"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="KRR4TwYp"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A26A110A25
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 08:57:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231B9DDB5
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 08:57:00 +0000 (UTC)
 Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F453113
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 00:57:01 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74D7106
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 00:56:58 -0800 (PST)
 Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6NHsQB009020
-	for <bpf@vger.kernel.org>; Tue, 7 Nov 2023 00:57:00 -0800
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A6NHsQ5009020
+	for <bpf@vger.kernel.org>; Tue, 7 Nov 2023 00:56:58 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=C/CxlsKXah3MWLeV4ADzSIOKt6NYh4D/gZsoYRE8/aM=;
- b=UsJ8AGEdTJ+fA3bvSQrADT88W+tBohIUK7ERzMc8NZtfcObaWQCGO6V42XtPEoh2MJI0
- Pp5N15qZsy6yqhniE5Ncv8Puzq4MOR2+DiTVX1tuAFPh5VS/XLKriV7kjRo7Gd98sU2x
- CGVf/Ut9nwp7/aae24OkTfl1WqBjTOR79Fg= 
+ bh=m4r9IIJz+2ad0J+iajXHajvwxTbT/D45vCbZ3bkpeXQ=;
+ b=KRR4TwYpXlv3uNI/Hgwwi9Zf7tvuBzVHfizInd8xtpAhL0wP9SqOutc5R8c6WU7YMmfG
+ Vc0cEo/7lYdygcBNKWMxIKj6Ke92gMh/m/huQcuXxhJmy17sovRymoEl5ec5SAEdR4OC
+ jtVEuHGII0Yar98EVbTlujhnkaEv7V5dnMc= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u79h5k60e-16
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u79h5k60e-10
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 00:57:00 -0800
-Received: from twshared29647.38.frc1.facebook.com (2620:10d:c0a8:1b::2d) by
+	for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 00:56:57 -0800
+Received: from twshared1106.02.ash9.facebook.com (2620:10d:c0a8:1c::1b) by
  mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 7 Nov 2023 00:56:55 -0800
+ 15.1.2507.34; Tue, 7 Nov 2023 00:56:53 -0800
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id 99FEA26E3B71B; Tue,  7 Nov 2023 00:56:45 -0800 (PST)
+	id 7C9A126E3B72A; Tue,  7 Nov 2023 00:56:46 -0800 (PST)
 From: Dave Marchevsky <davemarchevsky@fb.com>
 To: <bpf@vger.kernel.org>
 CC: Alexei Starovoitov <ast@kernel.org>,
@@ -55,9 +55,9 @@ CC: Alexei Starovoitov <ast@kernel.org>,
         Yonghong Song
 	<yonghong.song@linux.dev>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v2 bpf-next 5/6] bpf: Mark direct ld of stashed bpf_{rb,list}_node as non-owning ref
-Date: Tue, 7 Nov 2023 00:56:38 -0800
-Message-ID: <20231107085639.3016113-6-davemarchevsky@fb.com>
+Subject: [PATCH v2 bpf-next 6/6] selftests/bpf: Test bpf_refcount_acquire of node obtained via direct ld
+Date: Tue, 7 Nov 2023 00:56:39 -0800
+Message-ID: <20231107085639.3016113-7-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231107085639.3016113-1-davemarchevsky@fb.com>
 References: <20231107085639.3016113-1-davemarchevsky@fb.com>
@@ -70,116 +70,175 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: o1BP0zj1aiM2XIRbqQdvezUZRPJ5mOH7
-X-Proofpoint-ORIG-GUID: o1BP0zj1aiM2XIRbqQdvezUZRPJ5mOH7
+X-Proofpoint-GUID: PifUbeAOLJjzgZstccmf5t6I7LJN1PVK
+X-Proofpoint-ORIG-GUID: PifUbeAOLJjzgZstccmf5t6I7LJN1PVK
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-06_15,2023-11-02_03,2023-05-22_02
 
-This patch enables the following pattern:
-
-  /* mapval contains a __kptr pointing to refcounted local kptr */
-  mapval =3D bpf_map_lookup_elem(&map, &idx);
-  if (!mapval || !mapval->some_kptr) { /* omitted */ }
-
-  p =3D bpf_refcount_acquire(&mapval->some_kptr);
-
-Currently this doesn't work because bpf_refcount_acquire expects an
-owning or non-owning ref. The verifier defines non-owning ref as a type:
-
-  PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF
-
-while mapval->some_kptr is PTR_TO_BTF_ID | PTR_UNTRUSTED. It's possible
-to do the refcount_acquire by first bpf_kptr_xchg'ing mapval->some_kptr
-into a temp kptr, refcount_acquiring that, and xchg'ing back into
-mapval, but this is unwieldy and shouldn't be necessary.
-
-This patch modifies btf_ld_kptr_type such that user-allocated types are
-marked MEM_ALLOC and if those types have a bpf_{rb,list}_node they're
-marked NON_OWN_REF as well. Additionally, due to changes to
-bpf_obj_drop_impl earlier in this series, rcu_protected_object now
-returns true for all user-allocated types, resulting in
-mapval->some_kptr being marked MEM_RCU.
-
-After this patch's changes, mapval->some_kptr is now:
-
-  PTR_TO_BTF_ID | MEM_ALLOC | NON_OWN_REF | MEM_RCU
-
-which results in it passing the non-owning ref test, and the motivating
-example passing verification.
-
-Future work will likely get rid of special non-owning ref lifetime logic
-in the verifier, at which point we'll be able to delete the NON_OWN_REF
-flag entirely.
+This patch demonstrates that verifier changes earlier in this series
+result in bpf_refcount_acquire(mapval->stashed_kptr) passing
+verification. The added test additionally validates that stashing a kptr
+in mapval and - in a separate BPF program - refcount_acquiring the kptr
+without unstashing works as expected at runtime.
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- kernel/bpf/verifier.c | 36 +++++++++++++++++++++++++++++++-----
- 1 file changed, 31 insertions(+), 5 deletions(-)
+ .../bpf/prog_tests/local_kptr_stash.c         | 33 +++++++++
+ .../selftests/bpf/progs/local_kptr_stash.c    | 71 +++++++++++++++++++
+ 2 files changed, 104 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 2197385d91dc..62076b7aad03 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5542,10 +5542,23 @@ BTF_SET_END(rcu_protected_types)
- static bool rcu_protected_object(const struct btf *btf, u32 btf_id)
- {
- 	if (!btf_is_kernel(btf))
--		return false;
-+		return true;
- 	return btf_id_set_contains(&rcu_protected_types, btf_id);
+diff --git a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c b/=
+tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+index b25b870f87ba..e6e50a394472 100644
+--- a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
++++ b/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+@@ -73,6 +73,37 @@ static void test_local_kptr_stash_unstash(void)
+ 	local_kptr_stash__destroy(skel);
  }
 =20
-+static struct btf_record *kptr_pointee_btf_record(struct btf_field *kptr=
-_field)
++static void test_refcount_acquire_without_unstash(void)
 +{
-+	struct btf_struct_meta *meta;
++	LIBBPF_OPTS(bpf_test_run_opts, opts,
++		    .data_in =3D &pkt_v4,
++		    .data_size_in =3D sizeof(pkt_v4),
++		    .repeat =3D 1,
++	);
++	struct local_kptr_stash *skel;
++	int ret;
 +
-+	if (btf_is_kernel(kptr_field->kptr.btf))
-+		return NULL;
++	skel =3D local_kptr_stash__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "local_kptr_stash__open_and_load"))
++		return;
 +
-+	meta =3D btf_find_struct_meta(kptr_field->kptr.btf,
-+				    kptr_field->kptr.btf_id);
++	ret =3D bpf_prog_test_run_opts(bpf_program__fd(skel->progs.refcount_acq=
+uire_without_unstash),
++				     &opts);
++	ASSERT_OK(ret, "refcount_acquire_without_unstash run");
++	ASSERT_EQ(opts.retval, 2, "refcount_acquire_without_unstash retval");
 +
-+	return meta ? meta->record : NULL;
++	ret =3D bpf_prog_test_run_opts(bpf_program__fd(skel->progs.stash_refcou=
+nted_node), &opts);
++	ASSERT_OK(ret, "stash_refcounted_node run");
++	ASSERT_OK(opts.retval, "stash_refcounted_node retval");
++
++	ret =3D bpf_prog_test_run_opts(bpf_program__fd(skel->progs.refcount_acq=
+uire_without_unstash),
++				     &opts);
++	ASSERT_OK(ret, "refcount_acquire_without_unstash (2) run");
++	ASSERT_EQ(opts.retval, 42, "refcount_acquire_without_unstash (2) retval=
+");
++
++	local_kptr_stash__destroy(skel);
 +}
 +
- static bool rcu_safe_kptr(const struct btf_field *field)
+ static void test_local_kptr_stash_fail(void)
  {
- 	const struct btf_field_kptr *kptr =3D &field->kptr;
-@@ -5556,12 +5569,25 @@ static bool rcu_safe_kptr(const struct btf_field =
-*field)
+ 	RUN_TESTS(local_kptr_stash_fail);
+@@ -86,6 +117,8 @@ void test_local_kptr_stash(void)
+ 		test_local_kptr_stash_plain();
+ 	if (test__start_subtest("local_kptr_stash_unstash"))
+ 		test_local_kptr_stash_unstash();
++	if (test__start_subtest("refcount_acquire_without_unstash"))
++		test_refcount_acquire_without_unstash();
+ 	if (test__start_subtest("local_kptr_stash_fail"))
+ 		test_local_kptr_stash_fail();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/tools=
+/testing/selftests/bpf/progs/local_kptr_stash.c
+index b567a666d2b8..1769fdff6aea 100644
+--- a/tools/testing/selftests/bpf/progs/local_kptr_stash.c
++++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
+@@ -14,6 +14,24 @@ struct node_data {
+ 	struct bpf_rb_node node;
+ };
 =20
- static u32 btf_ld_kptr_type(struct bpf_verifier_env *env, struct btf_fie=
-ld *kptr_field)
- {
-+	struct btf_record *rec;
-+	u32 ret;
++struct refcounted_node {
++	long data;
++	struct bpf_rb_node rb_node;
++	struct bpf_refcount refcount;
++};
 +
-+	ret =3D PTR_MAYBE_NULL;
- 	if (rcu_safe_kptr(kptr_field) && in_rcu_cs(env)) {
--		if (kptr_field->type !=3D BPF_KPTR_PERCPU)
--			return PTR_MAYBE_NULL | MEM_RCU;
--		return PTR_MAYBE_NULL | MEM_RCU | MEM_PERCPU;
-+		ret |=3D MEM_RCU;
-+		if (kptr_field->type =3D=3D BPF_KPTR_PERCPU)
-+			ret |=3D MEM_PERCPU;
-+		else if (!btf_is_kernel(kptr_field->kptr.btf))
-+			ret |=3D MEM_ALLOC;
++struct stash {
++	struct bpf_spin_lock l;
++	struct refcounted_node __kptr *stashed;
++};
 +
-+		rec =3D kptr_pointee_btf_record(kptr_field);
-+		if (rec && btf_record_has_field(rec, BPF_GRAPH_NODE))
-+			ret |=3D NON_OWN_REF;
-+	} else {
-+		ret |=3D PTR_UNTRUSTED;
- 	}
--	return PTR_MAYBE_NULL | PTR_UNTRUSTED;
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, int);
++	__type(value, struct stash);
++	__uint(max_entries, 10);
++} refcounted_node_stash SEC(".maps");
 +
-+	return ret;
+ struct plain_local {
+ 	long key;
+ 	long data;
+@@ -38,6 +56,7 @@ struct map_value {
+  * Had to do the same w/ bpf_kfunc_call_test_release below
+  */
+ struct node_data *just_here_because_btf_bug;
++struct refcounted_node *just_here_because_btf_bug2;
+=20
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_ARRAY);
+@@ -132,4 +151,56 @@ long stash_test_ref_kfunc(void *ctx)
+ 	return 0;
  }
 =20
- static int check_map_kptr_access(struct bpf_verifier_env *env, u32 regno=
-,
++SEC("tc")
++long refcount_acquire_without_unstash(void *ctx)
++{
++	struct refcounted_node *p;
++	struct stash *s;
++	int ret =3D 0;
++
++	s =3D bpf_map_lookup_elem(&refcounted_node_stash, &ret);
++	if (!s)
++		return 1;
++
++	if (!s->stashed)
++		/* refcount_acquire failure is expected when no refcounted_node
++		 * has been stashed before this program executes
++		 */
++		return 2;
++
++	p =3D bpf_refcount_acquire(s->stashed);
++	if (!p)
++		return 3;
++
++	ret =3D s->stashed ? s->stashed->data : -1;
++	bpf_obj_drop(p);
++	return ret;
++}
++
++/* Helper for refcount_acquire_without_unstash test */
++SEC("tc")
++long stash_refcounted_node(void *ctx)
++{
++	struct refcounted_node *p;
++	struct stash *s;
++	int key =3D 0;
++
++	s =3D bpf_map_lookup_elem(&refcounted_node_stash, &key);
++	if (!s)
++		return 1;
++
++	p =3D bpf_obj_new(typeof(*p));
++	if (!p)
++		return 2;
++	p->data =3D 42;
++
++	p =3D bpf_kptr_xchg(&s->stashed, p);
++	if (p) {
++		bpf_obj_drop(p);
++		return 3;
++	}
++
++	return 0;
++}
++
+ char _license[] SEC("license") =3D "GPL";
 --=20
 2.34.1
 
