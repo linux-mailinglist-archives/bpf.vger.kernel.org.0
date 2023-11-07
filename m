@@ -1,127 +1,142 @@
-Return-Path: <bpf+bounces-14440-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14441-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 890487E4975
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 20:55:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 909667E4976
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 20:56:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19B8EB20FB8
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 19:55:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7706E1C2099C
+	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 19:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3115736B13;
-	Tue,  7 Nov 2023 19:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 771B036B08;
+	Tue,  7 Nov 2023 19:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Yx/c11xV"
+	dkim=pass (2048-bit key) header.d=obs-cr.20230601.gappssmtp.com header.i=@obs-cr.20230601.gappssmtp.com header.b="VETaA6jD"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABFF36B01
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 19:55:41 +0000 (UTC)
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657D6D7C
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 11:55:41 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cc5b6d6228so41116105ad.2
-        for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 11:55:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D74F34CE7
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 19:56:20 +0000 (UTC)
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA9AE7
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 11:56:19 -0800 (PST)
+Received: by mail-vs1-xe31.google.com with SMTP id ada2fe7eead31-45da9f949aaso1665207137.2
+        for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 11:56:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699386941; x=1699991741; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HNeFqgo6zpROkihy0ShoA85fAr1c1+bU52BjgzWcK1o=;
-        b=Yx/c11xV+iyISUNC4tjBoSSI8tDR682FVRusZqHd8SLKwKdyfBTM8w5vQkcXgknLJ5
-         jAgQELvmzCuVCKasvH6kMnPtHvprVKl7yqS82mCfrB/C94OMNdAzRAu1PvRDjHy91cqI
-         QScGcCYchxw00U+ge59I8ZKuiL3/85122I5rI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699386941; x=1699991741;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=obs-cr.20230601.gappssmtp.com; s=20230601; t=1699386978; x=1699991778; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HNeFqgo6zpROkihy0ShoA85fAr1c1+bU52BjgzWcK1o=;
-        b=HRrcg27QHeKmnVfA29JHNMPNsn4snKLXzx8MCDWyR2QWQF9ROkuEsXIrTd0o9D91Vd
-         xKuYOoKVyPoK3Teez0nOEGDgSaYWjUNGvTQ/z7F0bQp1kY8SnZ3sizgwLZo+LWmVB8FF
-         L2kdiImIuRAyeg4zA/pz66HTBfVoIVX56BU2hseC+MR59ayEg5BXpYpKijPUb6y4nUmo
-         eXcBNPo3TJGPuA0J6BcVW/ASWeAeIvGjePtsomGc+J/MCDCjq+Sxkv76/VxpAT5I4cyV
-         fXInyOjrJIM3gwEKRvsWODG/cWVOST5S2R7E55aUHUO9gLnf3ZhvAfJyedh8kUax4s+V
-         eW0Q==
-X-Gm-Message-State: AOJu0YwiopjC7sBesmODyVlro/JI5saHj/qCtGqt54R+6Kyh1dl76E7/
-	0fz8eSeM+YyJfYuz/QaW9i6zPGy2AblbIHpr2+HC8w==
-X-Google-Smtp-Source: AGHT+IEZgybC45XGlQUGbU637Xhd/YQognaCWgtAXzdYdCdXOmVngLWoQt1kbfTCkOpNfx5sZXCftA==
-X-Received: by 2002:a17:903:2282:b0:1cc:ee07:1654 with SMTP id b2-20020a170903228200b001ccee071654mr35008plh.14.1699386940686;
-        Tue, 07 Nov 2023 11:55:40 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id jw24-20020a170903279800b001cc3a8af18dsm209511plb.60.2023.11.07.11.55.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 11:55:39 -0800 (PST)
-Date: Tue, 7 Nov 2023 11:55:38 -0800
-From: Kees Cook <keescook@chromium.org>
-To: j.granados@samsung.com
-Cc: Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-	josh@joshtriplett.org, Eric Biederman <ebiederm@xmission.com>,
-	Iurii Zaikin <yzaikin@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Petr Mladek <pmladek@suse.com>,
-	John Ogness <john.ogness@linutronix.de>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Balbir Singh <bsingharora@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH 05/10] seccomp: Remove the now superfluous sentinel
- elements from ctl_table array
-Message-ID: <202311071155.EE9C0FBF@keescook>
-References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
- <20231107-jag-sysctl_remove_empty_elem_kernel-v1-5-e4ce1388dfa0@samsung.com>
+        bh=xjOaWaxhB0I1LfMyCOktuLSgP+foQf9G3E2ZX7OHvsY=;
+        b=VETaA6jDP5/X44uCvHd/04NxHnVMYsXUGIQnuz+mjXY4PqQidWqWznduFhBvZvWin/
+         FLVR+dJjKLLSmJu9lGkbW0eI6ZLpE7hEdpp4LJ4Hovk1Rna3kz3KIu6uGFzYx7nQuieR
+         wvDRtzS3srWLK6NgIzOg1Sh0FTQUV1VX5lKUk2/mAZuCnzTESZYM/58m74/4ZAGmS7DX
+         yfTdHNPhKcSv8I4tKv0MIgEBA1mFgPJDqb84nvtI8GWA6aYTPzy8hJDuFDRHLtoPzUBt
+         yB3ybKAXA4k9CN7XUhNVHc832BmXP6U+QtIA8XNEcWBCK2/rrH+aGrq+iwgjnUGrF590
+         GtUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699386978; x=1699991778;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xjOaWaxhB0I1LfMyCOktuLSgP+foQf9G3E2ZX7OHvsY=;
+        b=hlG5Jh7JwKBp5JCMtzzWuv4c7RVv9LfNqpU/nt77T42LBercQp6kbgTNuvsNe9g0FH
+         6LOsefx9ikcWlWhZQMN6XYXx9II7nuqlB75zXzV3wWomGAXwQSsW18sqXl1048/Jio8W
+         hZhrXB/wOGn2bkYQclwt6CTibQapRkat0KSwOC/XGY6wiO9zl6sHjVxEsyl9qok7Murc
+         VDD8sQ+EBKdrHsDBDFdoQYSSslB8SwUyV5wTvcEkVELhCX7x81D5bPax2Jw8Qeg77/t9
+         gP9cjJRYldgWHsaLl/dT+nNHKP6oH/Q9tbdmxTBz99cbx4G5awhp2bgd7zD485+UTdfY
+         Pehg==
+X-Gm-Message-State: AOJu0YxfRds7wl3+KxGtgMdO9Aq8v3mQKBN238mWKlcHO4MMIj6q3hdl
+	2MBLTV6Frl0PfQFygkfe9HyQEyRscHtnuFjMAhBWZJu04io8LSHg
+X-Google-Smtp-Source: AGHT+IGR4J2p0Gc8io1ZhH7XE5wrcbH80Sc616yItZ7zPJr0mc3fF9JlJKaGh2rze/GRKN/n2C5Ml9nAgWEHUgWBLWA=
+X-Received: by 2002:a05:6102:aca:b0:45f:4ba5:1c4e with SMTP id
+ m10-20020a0561020aca00b0045f4ba51c4emr4303563vsh.35.1699386978430; Tue, 07
+ Nov 2023 11:56:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-5-e4ce1388dfa0@samsung.com>
+References: <CADx9qWgqfQdHSVn0RMMz7M2jp5pKP-bnnc7GAfFD4QbP4eFA4w@mail.gmail.com>
+ <20231103212024.327833-1-hawkinsw@obs.cr> <CAADnVQLztq5W9qmGUBQeRBUJeCmTcc9H-OXCCJJzn=0baz+8_Q@mail.gmail.com>
+ <CADx9qWiQA3U+j-QoZPh7z66_2iNv6B51WXmd60Y-6GKhg+k0=w@mail.gmail.com> <CAADnVQKXz-Y_ykNXa-sgSjo2r6F-vuO0Jx=9zHzG7j3-ZKhGYA@mail.gmail.com>
+In-Reply-To: <CAADnVQKXz-Y_ykNXa-sgSjo2r6F-vuO0Jx=9zHzG7j3-ZKhGYA@mail.gmail.com>
+From: Will Hawkins <hawkinsw@obs.cr>
+Date: Tue, 7 Nov 2023 14:56:04 -0500
+Message-ID: <CADx9qWj0fWWhT4OBLqy9MJ=hSZwSfdWvsn+9AqxmvE_DuEGCTg@mail.gmail.com>
+Subject: Re: [Bpf] [PATCH v3] bpf, docs: Add additional ABI working draft base text
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@ietf.org, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 07, 2023 at 02:45:05PM +0100, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> Remove sentinel element from seccomp_sysctl_table.
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
+On Mon, Nov 6, 2023 at 3:38=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Sun, Nov 5, 2023 at 4:17=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> wro=
+te:
+> >
+> > On Sun, Nov 5, 2023 at 4:51=E2=80=AFAM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Nov 3, 2023 at 2:20=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr>=
+ wrote:
+> > > > +
+> > > > +The ABI is specified in two parts: a generic part and a processor-=
+specific part.
+> > > > +A pairing of generic ABI with the processor-specific ABI for a cer=
+tain
+> > > > +instantiation of a BPF machine represents a complete binary interf=
+ace for BPF
+> > > > +programs executing on that machine.
+> > > > +
+> > > > +This document is the generic ABI and specifies the parameters and =
+behavior
+> > > > +common to all instantiations of BPF machines. In addition, it defi=
+nes the
+> > > > +details that must be specified by each processor-specific ABI.
+> > > > +
+> > > > +These psABIs are the second part of the ABI. Each instantiation of=
+ a BPF
+> > > > +machine must describe the mechanism through which binary interface
+> > > > +compatibility is maintained with respect to the issues highlighted=
+ by this
+> > > > +document. However, the details that must be defined by a psABI are=
+ a minimum --
+> > > > +a psABI may specify additional requirements for binary interface c=
+ompatibility
+> > > > +on a platform.
+> > >
+> > > I don't understand what you are trying to say in the above.
+> > > In my mind there is only one BPF psABI and it doesn't have
+> > > generic and processor parts. There is only one "processor".
+> > > BPF is such a processor.
+> >
+> > What I was trying to say was that the document here describes a
+> > generic ABI. In this document there will be areas that are specific to
+> > different implementations and those would be considered processor
+> > specific. In other words, the ubpf runtime could define those things
+> > differently than the rbpf runtime which, in turn, could define those
+> > things differently than the kernel's implementation.
+>
+> I see what you mean. There is only one BPF psABI. There cannot be two.
+> ubpf can decide not to follow it, but it could only mean that
+> it's non conformant and not compatible.
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Okay. That was not how I was structuring the ABI. I thought we had
+decided that, as the document said, an instantiation of a machine had
+to
 
--- 
-Kees Cook
+1. meet the gABI
+2. specify its requirements vis a vis the psABI
+3. (optionally) describe other requirements.
+
+If that is not what we decided then we will have to restructure the documen=
+t.
+
+Will
 
