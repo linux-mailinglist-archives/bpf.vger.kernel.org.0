@@ -1,195 +1,174 @@
-Return-Path: <bpf+bounces-14453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 137907E4E86
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 02:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50CBD7E4ECF
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 03:14:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3446B1C20DB6
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 01:17:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 819491C20B14
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 02:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71E67FD;
-	Wed,  8 Nov 2023 01:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B91812;
+	Wed,  8 Nov 2023 02:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="b+z3O8Ll";
-	dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="b+z3O8Ll";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bxGQ5tFX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WRyjn/0D"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549FE65E
-	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 01:17:33 +0000 (UTC)
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4BF93
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 17:17:32 -0800 (PST)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 3A65DC1D471A
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 17:17:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1699406252; bh=SwRLRoAN28DJknd28WRGTtrquxRvz9bJn27TF0+9QyQ=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=b+z3O8Ll8Wv5Xkk48fmsFIpxH6CzGCtN4UcbxQTZlSsWHhGZcDBzaimZTx208cbM3
-	 N/NLVKOQuujUZ+v5zOXXLE5AgMeZcN8Bed5R76uWsnA1YP1L/gjxZl8G5VHKNCniUp
-	 C37E19R00vVan7VH6xeuJwFSzPYJT3769uF4H6JI=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Nov  7 17:17:32 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 0BD97C18E52E;
-	Tue,  7 Nov 2023 17:17:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1699406252; bh=SwRLRoAN28DJknd28WRGTtrquxRvz9bJn27TF0+9QyQ=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=b+z3O8Ll8Wv5Xkk48fmsFIpxH6CzGCtN4UcbxQTZlSsWHhGZcDBzaimZTx208cbM3
-	 N/NLVKOQuujUZ+v5zOXXLE5AgMeZcN8Bed5R76uWsnA1YP1L/gjxZl8G5VHKNCniUp
-	 C37E19R00vVan7VH6xeuJwFSzPYJT3769uF4H6JI=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id E28F8C18E52D
- for <bpf@ietfa.amsl.com>; Tue,  7 Nov 2023 17:17:30 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -7.108
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=gmail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 2zg_D-pQEQif for <bpf@ietfa.amsl.com>;
- Tue,  7 Nov 2023 17:17:30 -0800 (PST)
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com
- [IPv6:2a00:1450:4864:20::32d])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 7C787C18E1A2
- for <bpf@ietf.org>; Tue,  7 Nov 2023 17:17:30 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id
- 5b1f17b1804b1-4081ccf69dcso1456575e9.0
- for <bpf@ietf.org>; Tue, 07 Nov 2023 17:17:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00F57EF
+	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 02:13:55 +0000 (UTC)
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167A210F5
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 18:13:55 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5437d60fb7aso10711561a12.3
+        for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 18:13:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1699406248; x=1700011048; darn=ietf.org;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=c9YPgxuoMwLg76ioqZ3IgWHBoV61odditqzhqJ1hENs=;
- b=bxGQ5tFXer5tFK3cJ7McvAn3VZWomx+Zyi71+7NlFSRD08P7jLAgbVLf9CXU7CJJNC
- glHcD5EIbYShlnbXdah50s1Tjb6AHWWFqnduZzEj2W6hhrlfRKw574ZTeLma5C7Mxv1+
- BfdJsedOzwkz7d556VO1MlXDX45ADMa5ajRbL6huYUWpeb+7odW9FEOUbOv3/6AYcPpk
- 1tkvNoUYhTtSyndrj7frLTTbDlSaYm39/d1x+Ju18yVxD3ZYJVpdbtlT9UaX1afllLs4
- t5VY7LF68rKT106BNQB6ikJcfe7/yhgmY4kyK19VwF1aoXaSZEmgvn9vvrYRwaQvF+63
- Jffg==
+        d=gmail.com; s=20230601; t=1699409633; x=1700014433; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QLVB0xnddyCgGQ7oS0htmwM0voMSI3TVj6Bs6EpimJY=;
+        b=WRyjn/0DEWLgJONurMBolMwDy3y6pZe5xAUUB0l2LELpqOwDTUtT8OP2hxKjeYigdG
+         23KIUJ3/h7hKsWRzIi9Vinecv94hsZgFxftGlfxmw0OOkyvoKPJxrw9OXqn9RQ/4y2KQ
+         OL9fiw9tfrJC2Ycr0vZZS8xQb02s26FopIYbrdUilMA3iGWyPRFSmOAZ0PbNNRM0Ilru
+         1JG/UiWi0FMUsRdDGRH41iTeACziw2wz4IRJT9QPsB1nNxSrrqPOAolBEFFC0wbFTURg
+         NbrZhWb1fEahjN3mLVALdFnnSs1mPGpZKjMjHu9yT+za5h1MAcfknHsR8fW6gdb31L78
+         HrcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1699406248; x=1700011048;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=c9YPgxuoMwLg76ioqZ3IgWHBoV61odditqzhqJ1hENs=;
- b=tvhuSSrqW/Ss/Rxw8CwcsE2GCFPZiEoNFbvHMwqAlNsC/2xMZB8vaTuYPF+k2v0741
- xofagwFbYO7KJLU+/jEkgy8C1FIFEOTRCUj5Qbf7o0/zziWyM9SoPKIERfL760b0kuyq
- oB57YEgzvxvp/wwzNzIihxy+XOqBNUeM0Bv2coBXyn+js6CB1rsycANN7MLv3ih9MTWr
- 0vh7cqF2KFEiLs8D/s91lI0Oy24wBxjUx8ALkvswwqC5EyU5owD3TRwq9OdXulQgxyMI
- /RS1VRtaZ13oPvwrI0efv1AlxxXwCYO/pd0/U1FaMBKkWs7FxNmYPe1dRjjVL3p4hM8j
- yg0g==
-X-Gm-Message-State: AOJu0YwCHatM5SW61S90QclQMUSrHiBWFzwE3TkrRJTN1Q/e4iQGhW7N
- uJPBuX6iszGD60VG7NTwWjqbf5wDdp5KkkbYrMI=
-X-Google-Smtp-Source: AGHT+IGhxgguE4IuvkgTaiWIiGJF1oidEjPSW8RiSFLlRciJgT1GG2l/my+me8cw94xtnsn9ZFLwSSIx8ppUtjARxaw=
-X-Received: by 2002:a05:600c:3ba7:b0:408:33ba:569a with SMTP id
- n39-20020a05600c3ba700b0040833ba569amr5231776wms.8.1699406248071; Tue, 07 Nov
- 2023 17:17:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699409633; x=1700014433;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QLVB0xnddyCgGQ7oS0htmwM0voMSI3TVj6Bs6EpimJY=;
+        b=jDyv1AR0cvOKJ4XyP4sx3Qdyh7VTob4eoN6HmfIEZtrBoJtg1k4v30Kg2AE6H6BEwQ
+         mmNCVk13jj7R5UZdSnrGceCvMGHX5qcA23KV5EURVToS9Y4Inoof8sFl2zgDgR1rkW5/
+         JatWIpUZZBgcq0sB7HzerqTcE2TJ7vVMDDa9FT0YEcalCtGrfDHu3xYcnFegYj2fitmM
+         18NLZSiXpzSz1y2AcawaCkXmakVXc648Nw+xEaMQEEIV/O4CxzaBOvg/8U8oP2sDWDSP
+         1Wzf4/3HWLRXwgmW5r0X2dBfmftH24zwsT8JHrlpftPvL1CMsAxgMdOI3jSMY5tXxNvQ
+         H2bA==
+X-Gm-Message-State: AOJu0Yx/d3hGXG7BQmPVvfpkZ/+0Dd3Q2+nTIfP/87lfliJMLth4EIC1
+	CS5Sx66eMenqRk/R4YKRjXYGC28xdqk=
+X-Google-Smtp-Source: AGHT+IGdpqezflstMcchv91OtkNTZJ8I914A9BT33lJEBFlrlT+L16zuHAgW3L2ebqi77FinYU6sdw==
+X-Received: by 2002:a17:906:4796:b0:9bf:10f3:e435 with SMTP id cw22-20020a170906479600b009bf10f3e435mr348016ejc.1.1699409633105;
+        Tue, 07 Nov 2023 18:13:53 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id i17-20020a1709061cd100b00992e14af9c3sm274297ejh.143.2023.11.07.18.13.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Nov 2023 18:13:52 -0800 (PST)
+Message-ID: <ba9076bfb983ef96ca78d584ca751b1fef3a06b9.camel@gmail.com>
+Subject: Re: bpf selftest pyperf180.c compilation failure with latest last
+ llvm18 (in development)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov
+ <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>,  Martin KaFai Lau <martin.lau@kernel.org>, bpf
+ <bpf@vger.kernel.org>
+Date: Wed, 08 Nov 2023 04:13:50 +0200
+In-Reply-To: <3e3a8a30-dde0-43a1-981e-2274962780ef@linux.dev>
+References: <3e3a8a30-dde0-43a1-981e-2274962780ef@linux.dev>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CADx9qWgqfQdHSVn0RMMz7M2jp5pKP-bnnc7GAfFD4QbP4eFA4w@mail.gmail.com>
- <20231103212024.327833-1-hawkinsw@obs.cr>
- <CAADnVQLztq5W9qmGUBQeRBUJeCmTcc9H-OXCCJJzn=0baz+8_Q@mail.gmail.com>
- <CADx9qWiQA3U+j-QoZPh7z66_2iNv6B51WXmd60Y-6GKhg+k0=w@mail.gmail.com>
- <CAADnVQKXz-Y_ykNXa-sgSjo2r6F-vuO0Jx=9zHzG7j3-ZKhGYA@mail.gmail.com>
- <CADx9qWj0fWWhT4OBLqy9MJ=hSZwSfdWvsn+9AqxmvE_DuEGCTg@mail.gmail.com>
-In-Reply-To: <CADx9qWj0fWWhT4OBLqy9MJ=hSZwSfdWvsn+9AqxmvE_DuEGCTg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 7 Nov 2023 17:17:16 -0800
-Message-ID: <CAADnVQ+w5C_MgPh2FVK=YOXrJ2LuqHzn88jFiR+yeHzB=MBoLw@mail.gmail.com>
-To: Will Hawkins <hawkinsw@obs.cr>
-Cc: bpf@ietf.org, bpf <bpf@vger.kernel.org>
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/7eSkU8CRJkNuiIEIT3IczmPKQQQ>
-Subject: Re: [Bpf] [PATCH v3] bpf,
- docs: Add additional ABI working draft base text
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Id: Discussion of BPF/eBPF standardization efforts within the IETF
- <bpf.ietf.org>
-List-Unsubscribe: <https://www.ietf.org/mailman/options/bpf>,
- <mailto:bpf-request@ietf.org?subject=unsubscribe>
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-List-Subscribe: <https://www.ietf.org/mailman/listinfo/bpf>,
- <mailto:bpf-request@ietf.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
 
-T24gVHVlLCBOb3YgNywgMjAyMyBhdCAxMTo1NuKAr0FNIFdpbGwgSGF3a2lucyA8aGF3a2luc3dA
-b2JzLmNyPiB3cm90ZToKPgo+IE9uIE1vbiwgTm92IDYsIDIwMjMgYXQgMzozOOKAr0FNIEFsZXhl
-aSBTdGFyb3ZvaXRvdgo+IDxhbGV4ZWkuc3Rhcm92b2l0b3ZAZ21haWwuY29tPiB3cm90ZToKPiA+
-Cj4gPiBPbiBTdW4sIE5vdiA1LCAyMDIzIGF0IDQ6MTfigK9QTSBXaWxsIEhhd2tpbnMgPGhhd2tp
-bnN3QG9icy5jcj4gd3JvdGU6Cj4gPiA+Cj4gPiA+IE9uIFN1biwgTm92IDUsIDIwMjMgYXQgNDo1
-MeKAr0FNIEFsZXhlaSBTdGFyb3ZvaXRvdgo+ID4gPiA8YWxleGVpLnN0YXJvdm9pdG92QGdtYWls
-LmNvbT4gd3JvdGU6Cj4gPiA+ID4KPiA+ID4gPiBPbiBGcmksIE5vdiAzLCAyMDIzIGF0IDI6MjDi
-gK9QTSBXaWxsIEhhd2tpbnMgPGhhd2tpbnN3QG9icy5jcj4gd3JvdGU6Cj4gPiA+ID4gPiArCj4g
-PiA+ID4gPiArVGhlIEFCSSBpcyBzcGVjaWZpZWQgaW4gdHdvIHBhcnRzOiBhIGdlbmVyaWMgcGFy
-dCBhbmQgYSBwcm9jZXNzb3Itc3BlY2lmaWMgcGFydC4KPiA+ID4gPiA+ICtBIHBhaXJpbmcgb2Yg
-Z2VuZXJpYyBBQkkgd2l0aCB0aGUgcHJvY2Vzc29yLXNwZWNpZmljIEFCSSBmb3IgYSBjZXJ0YWlu
-Cj4gPiA+ID4gPiAraW5zdGFudGlhdGlvbiBvZiBhIEJQRiBtYWNoaW5lIHJlcHJlc2VudHMgYSBj
-b21wbGV0ZSBiaW5hcnkgaW50ZXJmYWNlIGZvciBCUEYKPiA+ID4gPiA+ICtwcm9ncmFtcyBleGVj
-dXRpbmcgb24gdGhhdCBtYWNoaW5lLgo+ID4gPiA+ID4gKwo+ID4gPiA+ID4gK1RoaXMgZG9jdW1l
-bnQgaXMgdGhlIGdlbmVyaWMgQUJJIGFuZCBzcGVjaWZpZXMgdGhlIHBhcmFtZXRlcnMgYW5kIGJl
-aGF2aW9yCj4gPiA+ID4gPiArY29tbW9uIHRvIGFsbCBpbnN0YW50aWF0aW9ucyBvZiBCUEYgbWFj
-aGluZXMuIEluIGFkZGl0aW9uLCBpdCBkZWZpbmVzIHRoZQo+ID4gPiA+ID4gK2RldGFpbHMgdGhh
-dCBtdXN0IGJlIHNwZWNpZmllZCBieSBlYWNoIHByb2Nlc3Nvci1zcGVjaWZpYyBBQkkuCj4gPiA+
-ID4gPiArCj4gPiA+ID4gPiArVGhlc2UgcHNBQklzIGFyZSB0aGUgc2Vjb25kIHBhcnQgb2YgdGhl
-IEFCSS4gRWFjaCBpbnN0YW50aWF0aW9uIG9mIGEgQlBGCj4gPiA+ID4gPiArbWFjaGluZSBtdXN0
-IGRlc2NyaWJlIHRoZSBtZWNoYW5pc20gdGhyb3VnaCB3aGljaCBiaW5hcnkgaW50ZXJmYWNlCj4g
-PiA+ID4gPiArY29tcGF0aWJpbGl0eSBpcyBtYWludGFpbmVkIHdpdGggcmVzcGVjdCB0byB0aGUg
-aXNzdWVzIGhpZ2hsaWdodGVkIGJ5IHRoaXMKPiA+ID4gPiA+ICtkb2N1bWVudC4gSG93ZXZlciwg
-dGhlIGRldGFpbHMgdGhhdCBtdXN0IGJlIGRlZmluZWQgYnkgYSBwc0FCSSBhcmUgYSBtaW5pbXVt
-IC0tCj4gPiA+ID4gPiArYSBwc0FCSSBtYXkgc3BlY2lmeSBhZGRpdGlvbmFsIHJlcXVpcmVtZW50
-cyBmb3IgYmluYXJ5IGludGVyZmFjZSBjb21wYXRpYmlsaXR5Cj4gPiA+ID4gPiArb24gYSBwbGF0
-Zm9ybS4KPiA+ID4gPgo+ID4gPiA+IEkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IHlvdSBhcmUgdHJ5
-aW5nIHRvIHNheSBpbiB0aGUgYWJvdmUuCj4gPiA+ID4gSW4gbXkgbWluZCB0aGVyZSBpcyBvbmx5
-IG9uZSBCUEYgcHNBQkkgYW5kIGl0IGRvZXNuJ3QgaGF2ZQo+ID4gPiA+IGdlbmVyaWMgYW5kIHBy
-b2Nlc3NvciBwYXJ0cy4gVGhlcmUgaXMgb25seSBvbmUgInByb2Nlc3NvciIuCj4gPiA+ID4gQlBG
-IGlzIHN1Y2ggYSBwcm9jZXNzb3IuCj4gPiA+Cj4gPiA+IFdoYXQgSSB3YXMgdHJ5aW5nIHRvIHNh
-eSB3YXMgdGhhdCB0aGUgZG9jdW1lbnQgaGVyZSBkZXNjcmliZXMgYQo+ID4gPiBnZW5lcmljIEFC
-SS4gSW4gdGhpcyBkb2N1bWVudCB0aGVyZSB3aWxsIGJlIGFyZWFzIHRoYXQgYXJlIHNwZWNpZmlj
-IHRvCj4gPiA+IGRpZmZlcmVudCBpbXBsZW1lbnRhdGlvbnMgYW5kIHRob3NlIHdvdWxkIGJlIGNv
-bnNpZGVyZWQgcHJvY2Vzc29yCj4gPiA+IHNwZWNpZmljLiBJbiBvdGhlciB3b3JkcywgdGhlIHVi
-cGYgcnVudGltZSBjb3VsZCBkZWZpbmUgdGhvc2UgdGhpbmdzCj4gPiA+IGRpZmZlcmVudGx5IHRo
-YW4gdGhlIHJicGYgcnVudGltZSB3aGljaCwgaW4gdHVybiwgY291bGQgZGVmaW5lIHRob3NlCj4g
-PiA+IHRoaW5ncyBkaWZmZXJlbnRseSB0aGFuIHRoZSBrZXJuZWwncyBpbXBsZW1lbnRhdGlvbi4K
-PiA+Cj4gPiBJIHNlZSB3aGF0IHlvdSBtZWFuLiBUaGVyZSBpcyBvbmx5IG9uZSBCUEYgcHNBQkku
-IFRoZXJlIGNhbm5vdCBiZSB0d28uCj4gPiB1YnBmIGNhbiBkZWNpZGUgbm90IHRvIGZvbGxvdyBp
-dCwgYnV0IGl0IGNvdWxkIG9ubHkgbWVhbiB0aGF0Cj4gPiBpdCdzIG5vbiBjb25mb3JtYW50IGFu
-ZCBub3QgY29tcGF0aWJsZS4KPgo+IE9rYXkuIFRoYXQgd2FzIG5vdCBob3cgSSB3YXMgc3RydWN0
-dXJpbmcgdGhlIEFCSS4gSSB0aG91Z2h0IHdlIGhhZAo+IGRlY2lkZWQgdGhhdCwgYXMgdGhlIGRv
-Y3VtZW50IHNhaWQsIGFuIGluc3RhbnRpYXRpb24gb2YgYSBtYWNoaW5lIGhhZAo+IHRvCj4KPiAx
-LiBtZWV0IHRoZSBnQUJJCj4gMi4gc3BlY2lmeSBpdHMgcmVxdWlyZW1lbnRzIHZpcyBhIHZpcyB0
-aGUgcHNBQkkKPiAzLiAob3B0aW9uYWxseSkgZGVzY3JpYmUgb3RoZXIgcmVxdWlyZW1lbnRzLgo+
-Cj4gSWYgdGhhdCBpcyBub3Qgd2hhdCB3ZSBkZWNpZGVkIHRoZW4gd2Ugd2lsbCBoYXZlIHRvIHJl
-c3RydWN0dXJlIHRoZSBkb2N1bWVudC4KClRoaXMgYWJpLnJzdCBmaWxlIGlzIHRoZSBiZWdpbm5p
-bmcgb2YgIkJQRiBwc0FCSSIgZG9jdW1lbnQuCldlIHByb2JhYmx5IHNob3VsZCByZW5hbWUgaXQg
-dG8gcHNhYmkucnN0IHRvIGF2b2lkIGNvbmZ1c2lvbi4KU2VlIG15IHNsaWRlcyBmcm9tIElFVEYg
-MTE4LiBJIGhvcGUgdGhleSBleHBsYWluIHdoYXQgIkJQRiBwc0FCSSIgaXMgZm9yLgoKLS0gCkJw
-ZiBtYWlsaW5nIGxpc3QKQnBmQGlldGYub3JnCmh0dHBzOi8vd3d3LmlldGYub3JnL21haWxtYW4v
-bGlzdGluZm8vYnBmCg==
+On Mon, 2023-10-30 at 20:58 -0700, Yonghong Song wrote:
+> With latest llvm18 (main branch of llvm-project repo), when building bpf =
+selftests,
+>     [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf LLVM=
+=3D1 -j
+>=20
+> The following compilation error happens:
+>     fatal error: error in backend: Branch target out of insn range
+>     PLEASE submit a bug report to https://github.com/llvm/llvm-project/is=
+sues/ and include the crash backtrace, preprocessed source, and associated =
+run script.
+>     Stack dump:
+>     0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARCH_x86=
+ -mlittle-endian -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tool=
+s/include -I/home/yhs
+>     /work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/=
+tools/include/uapi -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/in=
+clude -idirafter /hom
+>     e/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18/include -i=
+dirafter /usr/local/include -idirafter /usr/include -Wno-compare-distinct-p=
+ointer-types -DENABLE
+>     _ATOMICS_TESTS -O2 --target=3Dbpf -c progs/pyperf180.c -mcpu=3Dv3 -o =
+/home/yhs/work/bpf-next/tools/testing/selftests/bpf/pyperf180.bpf.o
+>     1.      <eof> parser at end of file
+>     2.      Code generation
+>     .....
+>=20
+> The compilation failure only happens to cpu=3Dv2 and cpu=3Dv3. cpu=3Dv4 i=
+s okay
+> since cpu=3Dv4 supports 32-bit branch target offset.
+>=20
+> The above failure is due to upstream llvm patch
+>     https://reviews.llvm.org/D143624
+> where some inlining ordering are changed in the compiler.
+
+Hi Yonghong, Alexei,
+
+This is a followup for the off-list discussion. I think I have a
+relatively simple two pass algorithm that allows to replace jumps
+longer than 2**16 by series of shorter jumps using "trampoline"
+goto instructions.
+
+The basic idea of the algorithm is to:
+- Visit basic blocks sequentially from first to last (after LLVM is
+  done with figuring BB ordering), effectively splitting basic blocks
+  in two parts: "processed" and "unexplored".
+- Insert "trampoline" jumps only at "unexplored" side, thus
+  guaranteeing that distances between basic blocks on "processed" side
+  never change.
+- Maintain the list of "pending jumps":
+  - Whenever a basic block is picked from "unexplored" side
+    information about edges coming to and from this basic block is
+    added as pending jumps:
+    - backward edges are added before basic block is processed;
+    - forward edges are added after basic block is processed.
+  - Pending jump is a tuple (off,src,dst,backedge):
+    - 'src', 'dst' - basic blocks (swapped for backedges);
+    - 'off' - current distance from 'src'.
+- When a basic block is picked from "unexplored" side:
+  - discard all pending jumps that have this basic block as 'dst';
+  - peek a pending jump for which jmp.off + bb.size > MAX_JUMP_DISTANCE;
+  - if such jump is present:
+    - split basic block;
+    - insert trampoline instruction;
+    - discard pending jump and schedule new pending jump with
+      trampoline src, original dst, and off=3D0;
+  - if such jump is not present move basic block from "unexplored" to
+    "processed";
+  - when basic block is moved from "unexplored" side to "processed",
+    bump 'off' field of each pending jump by the size of the basic
+    block.
+
+So, the main part is to keep 'off' fields of pending jumps smaller
+than MAX_JUMP_DISTANCE by inserting trampoline jumps.
+
+I have a Python model for this algorithm at [0]. It passes a few
+hand-coded tests but I still need to do some property-based testing.
+I think I need another day to finish with testing, after that it
+should be possible to translate this code to LLVM/C++ in a couple of days.
+
+Please let me know if this is interesting.
+
+Thanks,
+Eduard
+
+[0] https://gist.github.com/eddyz87/7e8d162b2bb2071769a9b3d960898405
+
+[...]
 
