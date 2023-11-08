@@ -1,96 +1,186 @@
-Return-Path: <bpf+bounces-14517-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14518-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BE197E5B28
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 17:27:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C62B7E5BEC
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 18:03:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36A1F2812B1
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 16:27:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BBACB20F24
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 17:03:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5795931A93;
-	Wed,  8 Nov 2023 16:27:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7E030351;
+	Wed,  8 Nov 2023 17:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MmEdigN8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CB3D51D;
-	Wed,  8 Nov 2023 16:27:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE87BC433C8;
-	Wed,  8 Nov 2023 16:27:19 +0000 (UTC)
-Date: Wed, 8 Nov 2023 11:27:23 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: <j.granados@samsung.com>, Joel Granados via B4 Relay
- <devnull+j.granados.samsung.com@kernel.org>, Luis Chamberlain
- <mcgrof@kernel.org>, willy@infradead.org, josh@joshtriplett.org, Kees Cook
- <keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, Iurii
- Zaikin <yzaikin@google.com>, Mark Rutland <mark.rutland@arm.com>, Thomas
- Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, Stephen
- Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry
- <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
- <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
- Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider
- <vschneid@redhat.com>, Petr Mladek <pmladek@suse.com>, John Ogness
- <john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
- <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
- Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
- kexec@lists.infradead.org, linux-fsdevel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 03/10] ftrace: Remove the now superfluous sentinel
- elements from ctl_table array
-Message-ID: <20231108112723.275ae223@gandalf.local.home>
-In-Reply-To: <20231108192949.f19832c76d1cf18c5d614e72@kernel.org>
-References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
-	<20231107-jag-sysctl_remove_empty_elem_kernel-v1-3-e4ce1388dfa0@samsung.com>
-	<20231108192949.f19832c76d1cf18c5d614e72@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF53B31A6F;
+	Wed,  8 Nov 2023 17:03:30 +0000 (UTC)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E90E1FF5;
+	Wed,  8 Nov 2023 09:03:30 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9a6190af24aso1111698566b.0;
+        Wed, 08 Nov 2023 09:03:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699463008; x=1700067808; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d5NR/7zKi+/oiqZ54JSFP0TLZYYpLQwpmUmfEUcwBvI=;
+        b=MmEdigN87e0BF5FA4sxqDyz29RE5zh2+IVO310sVGK/8mPJkkNTzREXnNrgn8lKMKT
+         A8YhsJ7HRzzF9itCgW9IjhJIBJsi51sy9J7ACcCPs/JCKfi1SPa7DwUV1Qoy2mDG11TS
+         ho5fl/tq8kbqhDAF2RLYosNUhNdtUUW6QaXzlqYQ10k2goGlvTr90lQ3CUc4oO/SqBSE
+         xMVV/H/qJHLRLigtdKQcp8Ib6LxMPzKB7Y5vsKqpGOtoxCtLjMyZBEnyDY/1GwscKa9s
+         cwC3gRGZW8OMXBYT/3dYn4xVoaWnWRSW/UXcX/w3rmEujBpiLWPIACgAA682gRImW0CA
+         2Bqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699463008; x=1700067808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d5NR/7zKi+/oiqZ54JSFP0TLZYYpLQwpmUmfEUcwBvI=;
+        b=wz8tKERUDVrXGqexEZLHtvqYVGVUhwdjjr7HnG4PQrwXc4QplWDibhGPI8yRkZ8WZt
+         iJ8ZMxS4WX0EohWMrFNnygER2qysRAqlcIoP+r56To6wIR4BXARBIy7NeMZQQ2Zfk/Be
+         Ojx3ZJ2Z/+/7w/d+c3GW5XmwSEiNUgC2lR30iNgokflt32Q9hZrqAEVUC5XUnfoYUfgZ
+         NsT2tv/SA+0Ui6OtUYhxD1Iq+NxrPrbP0iFDl+oFTBdY8RVhroU3hu8OtnExID2WaExY
+         QVKfKxVETb3IC/PQa05mGrXDO38DnQ/ST+P+VmbfwDX/38NGy8RigBns4Pn4gNq0wQP+
+         zznQ==
+X-Gm-Message-State: AOJu0Yx0dwDh5+eFjpmnwpCEx4oM8SEn+tnZCCQLSK8c5vggfkJA37IV
+	juTZ4DI0sBJgguMqn/pL6NVUcD1i/NpP3PluI/U=
+X-Google-Smtp-Source: AGHT+IGT0WqJGvLBjAdabk5bYNm3hDWuM/paOADIY+4ELcAhc+CPTYvUGcejY38H6jJNeeNIbd+FhuBcsmh6K3wdG5g=
+X-Received: by 2002:a17:906:4fd5:b0:9c6:19ea:cdd6 with SMTP id
+ i21-20020a1709064fd500b009c619eacdd6mr2326618ejw.50.1699463008052; Wed, 08
+ Nov 2023 09:03:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231108110048.1988128-1-anders.roxell@linaro.org>
+In-Reply-To: <20231108110048.1988128-1-anders.roxell@linaro.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 8 Nov 2023 09:03:16 -0800
+Message-ID: <CAEf4Bzbbix1KpCKGhK3dnFK99YNyyQzXHp9RzDtd72x7-c6M3A@mail.gmail.com>
+Subject: Re: [PATCHv2] selftests: bpf: xskxceiver: ksft_print_msg: fix format
+ type error
+To: Anders Roxell <anders.roxell@linaro.org>
+Cc: bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 8 Nov 2023 19:29:49 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On Wed, Nov 8, 2023 at 3:00=E2=80=AFAM Anders Roxell <anders.roxell@linaro.=
+org> wrote:
+>
+> Crossbuilding selftests/bpf for architecture arm64, format specifies
+> type error show up like.
+>
+> xskxceiver.c:912:34: error: format specifies type 'int' but the argument
+> has type '__u64' (aka 'unsigned long long') [-Werror,-Wformat]
+>  ksft_print_msg("[%s] expected meta_count [%d], got meta_count [%d]\n",
+>                                                                 ~~
+>                                                                 %llu
+>                 __func__, pkt->pkt_nb, meta->count);
+>                                        ^~~~~~~~~~~
+> xskxceiver.c:929:55: error: format specifies type 'unsigned long long' bu=
+t
+>  the argument has type 'u64' (aka 'unsigned long') [-Werror,-Wformat]
+>  ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr, len);
+>                                     ~~~~             ^~~~
+>
+> Fixing the issues by casting to (unsigned long long) and changing the
+> specifiers to be %llx, since with u64s it might be %llx or %lx,
+> depending on architecture.
+>
+> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> ---
+>  tools/testing/selftests/bpf/xskxceiver.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/sel=
+ftests/bpf/xskxceiver.c
+> index 591ca9637b23..1ab9512f5aa2 100644
+> --- a/tools/testing/selftests/bpf/xskxceiver.c
+> +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> @@ -908,8 +908,9 @@ static bool is_metadata_correct(struct pkt *pkt, void=
+ *buffer, u64 addr)
+>         struct xdp_info *meta =3D data - sizeof(struct xdp_info);
+>
+>         if (meta->count !=3D pkt->pkt_nb) {
+> -               ksft_print_msg("[%s] expected meta_count [%d], got meta_c=
+ount [%d]\n",
+> -                              __func__, pkt->pkt_nb, meta->count);
+> +               ksft_print_msg("[%s] expected meta_count [%d], got meta_c=
+ount [%llx]\n",
 
-> On Tue, 07 Nov 2023 14:45:03 +0100
-> Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org> wrote:
-> 
-> > From: Joel Granados <j.granados@samsung.com>
-> > 
-> > This commit comes at the tail end of a greater effort to remove the
-> > empty elements at the end of the ctl_table arrays (sentinels) which
-> > will reduce the overall build time size of the kernel and run time
-> > memory bloat by ~64 bytes per sentinel (further information Link :
-> > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> > 
-> > Remove sentinel elements from ftrace_sysctls and user_event_sysctls
-> >   
-> 
-> Both looks good to me. (since register_sysctl_init() uses ARRAY_SIZE()
-> macro to get the array size.)
-> 
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+why hex? %llu?
 
-Agreed.
+> +                              __func__, pkt->pkt_nb,
+> +                              (unsigned long long)meta->count);
+>                 return false;
+>         }
+>
+> @@ -926,11 +927,13 @@ static bool is_frag_valid(struct xsk_umem_info *ume=
+m, u64 addr, u32 len, u32 exp
+>
+>         if (addr >=3D umem->num_frames * umem->frame_size ||
+>             addr + len > umem->num_frames * umem->frame_size) {
+> -               ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr,=
+ len);
+> +               ksft_print_msg("Frag invalid addr: %llx len: %u\n",
+> +                              (unsigned long long)addr, len);
+>                 return false;
+>         }
+>         if (!umem->unaligned_mode && addr % umem->frame_size + len > umem=
+->frame_size) {
+> -               ksft_print_msg("Frag crosses frame boundary addr: %llx le=
+n: %u\n", addr, len);
+> +               ksft_print_msg("Frag crosses frame boundary addr: %llx le=
+n: %u\n",
+> +                              (unsigned long long)addr, len);
+>                 return false;
+>         }
+>
+> @@ -1029,7 +1032,8 @@ static int complete_pkts(struct xsk_socket_info *xs=
+k, int batch_size)
+>                         u64 addr =3D *xsk_ring_cons__comp_addr(&xsk->umem=
+->cq, idx + rcvd - 1);
+>
+>                         ksft_print_msg("[%s] Too many packets completed\n=
+", __func__);
+> -                       ksft_print_msg("Last completion address: %llx\n",=
+ addr);
+> +                       ksft_print_msg("Last completion address: %llx\n",
+> +                                      (unsigned long long)addr);
+>                         return TEST_FAILURE;
+>                 }
+>
+> @@ -1513,8 +1517,9 @@ static int validate_tx_invalid_descs(struct ifobjec=
+t *ifobject)
+>         }
+>
+>         if (stats.tx_invalid_descs !=3D ifobject->xsk->pkt_stream->nb_pkt=
+s / 2) {
+> -               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%u]=
+ expected [%u]\n",
+> -                              __func__, stats.tx_invalid_descs,
+> +               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%ll=
+x] expected [%u]\n",
 
-Acked-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+should this be %llu? Or the switch to the hex was intentional?
 
--- Steve
+> +                              __func__,
+> +                              (unsigned long long)stats.tx_invalid_descs=
+,
+>                                ifobject->xsk->pkt_stream->nb_pkts);
+>                 return TEST_FAILURE;
+>         }
+> --
+> 2.42.0
+>
 
