@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-14450-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14451-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B347E4D8B
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 00:40:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA877E4E36
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 01:40:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 171B628131D
-	for <lists+bpf@lfdr.de>; Tue,  7 Nov 2023 23:40:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B1FAB20F7D
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 00:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CB8C34571;
-	Tue,  7 Nov 2023 23:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2CC650;
+	Wed,  8 Nov 2023 00:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HrO6FD5Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nnFEbLa1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C639B34567
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 23:40:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 26A9DC433C9;
-	Tue,  7 Nov 2023 23:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1320634
+	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 00:40:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 13B20C433C9;
+	Wed,  8 Nov 2023 00:40:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699400425;
-	bh=8dzdiSmEEtTvO1+PWORtK+vBe8DaaSBWL5A8uIMPx0g=;
+	s=k20201202; t=1699404025;
+	bh=7Ev7zIpBR2JbyftwmXueiakT202KuLx3+6E9ATV/2pU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=HrO6FD5ZlxfL41Wf8sFkJnjECH6GMOq+C0z/Wlf87176Y5qlEAUBAUH05qUdYebuU
-	 CbYKZSMjn+JG8E0Q2LG1EnDXWXsOii+iTCpRswLhdW4UkgavWgOmNeS32EheQuz7UO
-	 il1/5BSQCxjf1KvzyET0CI4XmLAUYJZ21vRT355JxpkBje+bVtRlbx62vFAOAPgqwe
-	 1bZeruw8D4echZyKlWL2fODfWpYVNKiBERq8bQGT/de2GPIUeo5jNgYmI5+DfhpuiT
-	 v5p7r37AQ2YpHHKW6PuGr8wW6BSabrvtOTvozqYARozVRBE/+3ynfJNDFBlUXBrEze
-	 peMrzpAa3uDuw==
+	b=nnFEbLa1epH7EYlBPCgH7Ca6G+vuyrg3dHusnnO0lTL3sD+snr7MycfMZCWIRDBV7
+	 YiT8njbEV01HyyNxA6QtQ+9yI+OeOh1v2rdV6w+VTL6hB+ZOqs6HWaMXgklP3TEISa
+	 WlGfZYt5jMEgMI1xeseNU1zmpcfq4iOKghQKGtmRBFBOY55mCmum7yTQXxvUZdDd13
+	 E5COLWPGolQvOUOSVzjk7KwGZO/ig+osqLbnerHHds/wiObVJblyUKOwfrl7H8fxNC
+	 dusR9Z/TmpL1b6L6Z2QnUz2lB+lgjE06cvhRsw9FziBhQ/BaZjVf0uUPZtMgNJjCKj
+	 CC62vkDORsTtw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0CC5BE00083;
-	Tue,  7 Nov 2023 23:40:25 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EBEE0C395FC;
+	Wed,  8 Nov 2023 00:40:24 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -43,39 +43,36 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v2 0/2] Let BPF verifier consider {task,cgroup} is trusted
- in bpf_iter_reg
+Subject: Re: [PATCH bpf-next v3] libbpf: Fix potential uninitialized tail padding
+ with LIBBPF_OPTS_RESET
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <169940042504.5976.3079173874531115924.git-patchwork-notify@kernel.org>
-Date: Tue, 07 Nov 2023 23:40:25 +0000
-References: <20231107132204.912120-1-zhouchuyi@bytedance.com>
-In-Reply-To: <20231107132204.912120-1-zhouchuyi@bytedance.com>
-To: Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@kernel.org
+ <169940402496.4503.7316199244566854205.git-patchwork-notify@kernel.org>
+Date: Wed, 08 Nov 2023 00:40:24 +0000
+References: <20231107201511.2548645-1-yonghong.song@linux.dev>
+In-Reply-To: <20231107201511.2548645-1-yonghong.song@linux.dev>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org
 
 Hello:
 
-This series was applied to bpf/bpf.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-On Tue,  7 Nov 2023 21:22:02 +0800 you wrote:
-> Hi,
-> The patchset aims to let the BPF verivier consider
-> bpf_iter__cgroup->cgroup and bpf_iter__task->task is trused suggested by
-> Alexei[1].
-> 
-> Please see individual patches for more details. And comments are always
-> welcome.
+On Tue,  7 Nov 2023 12:15:11 -0800 you wrote:
+> Martin reported that there is a libbpf complaining of non-zero-value tail
+> padding with LIBBPF_OPTS_RESET macro if struct bpf_netkit_opts is modified
+> to have a 4-byte tail padding. This only happens to clang compiler.
+> The commend line is: ./test_progs -t tc_netkit_multi_links
+> Martin and I did some investigation and found this indeed the case and
+> the following are the investigation details.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf,v2,1/2] bpf: Let verifier consider {task,cgroup} is trusted in bpf_iter_reg
-    https://git.kernel.org/bpf/bpf/c/0de4f50de25a
-  - [bpf,v2,2/2] selftests/bpf: get trusted cgrp from bpf_iter__cgroup directly
-    https://git.kernel.org/bpf/bpf/c/3c5864ba9cf9
+  - [bpf-next,v3] libbpf: Fix potential uninitialized tail padding with LIBBPF_OPTS_RESET
+    https://git.kernel.org/bpf/bpf-next/c/9ce5a7a0c8bf
 
 You are awesome, thank you!
 -- 
