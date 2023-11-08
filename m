@@ -1,174 +1,358 @@
-Return-Path: <bpf+bounces-14454-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14455-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50CBD7E4ECF
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 03:14:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A77C87E4FDE
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 06:15:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 819491C20B14
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 02:14:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D866B20E13
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 05:15:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B91812;
-	Wed,  8 Nov 2023 02:13:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WRyjn/0D"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4EA8F68;
+	Wed,  8 Nov 2023 05:14:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00F57EF
-	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 02:13:55 +0000 (UTC)
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 167A210F5
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 18:13:55 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5437d60fb7aso10711561a12.3
-        for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 18:13:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699409633; x=1700014433; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=QLVB0xnddyCgGQ7oS0htmwM0voMSI3TVj6Bs6EpimJY=;
-        b=WRyjn/0DEWLgJONurMBolMwDy3y6pZe5xAUUB0l2LELpqOwDTUtT8OP2hxKjeYigdG
-         23KIUJ3/h7hKsWRzIi9Vinecv94hsZgFxftGlfxmw0OOkyvoKPJxrw9OXqn9RQ/4y2KQ
-         OL9fiw9tfrJC2Ycr0vZZS8xQb02s26FopIYbrdUilMA3iGWyPRFSmOAZ0PbNNRM0Ilru
-         1JG/UiWi0FMUsRdDGRH41iTeACziw2wz4IRJT9QPsB1nNxSrrqPOAolBEFFC0wbFTURg
-         NbrZhWb1fEahjN3mLVALdFnnSs1mPGpZKjMjHu9yT+za5h1MAcfknHsR8fW6gdb31L78
-         HrcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699409633; x=1700014433;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QLVB0xnddyCgGQ7oS0htmwM0voMSI3TVj6Bs6EpimJY=;
-        b=jDyv1AR0cvOKJ4XyP4sx3Qdyh7VTob4eoN6HmfIEZtrBoJtg1k4v30Kg2AE6H6BEwQ
-         mmNCVk13jj7R5UZdSnrGceCvMGHX5qcA23KV5EURVToS9Y4Inoof8sFl2zgDgR1rkW5/
-         JatWIpUZZBgcq0sB7HzerqTcE2TJ7vVMDDa9FT0YEcalCtGrfDHu3xYcnFegYj2fitmM
-         18NLZSiXpzSz1y2AcawaCkXmakVXc648Nw+xEaMQEEIV/O4CxzaBOvg/8U8oP2sDWDSP
-         1Wzf4/3HWLRXwgmW5r0X2dBfmftH24zwsT8JHrlpftPvL1CMsAxgMdOI3jSMY5tXxNvQ
-         H2bA==
-X-Gm-Message-State: AOJu0Yx/d3hGXG7BQmPVvfpkZ/+0Dd3Q2+nTIfP/87lfliJMLth4EIC1
-	CS5Sx66eMenqRk/R4YKRjXYGC28xdqk=
-X-Google-Smtp-Source: AGHT+IGdpqezflstMcchv91OtkNTZJ8I914A9BT33lJEBFlrlT+L16zuHAgW3L2ebqi77FinYU6sdw==
-X-Received: by 2002:a17:906:4796:b0:9bf:10f3:e435 with SMTP id cw22-20020a170906479600b009bf10f3e435mr348016ejc.1.1699409633105;
-        Tue, 07 Nov 2023 18:13:53 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id i17-20020a1709061cd100b00992e14af9c3sm274297ejh.143.2023.11.07.18.13.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Nov 2023 18:13:52 -0800 (PST)
-Message-ID: <ba9076bfb983ef96ca78d584ca751b1fef3a06b9.camel@gmail.com>
-Subject: Re: bpf selftest pyperf180.c compilation failure with latest last
- llvm18 (in development)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov
- <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>,  Martin KaFai Lau <martin.lau@kernel.org>, bpf
- <bpf@vger.kernel.org>
-Date: Wed, 08 Nov 2023 04:13:50 +0200
-In-Reply-To: <3e3a8a30-dde0-43a1-981e-2274962780ef@linux.dev>
-References: <3e3a8a30-dde0-43a1-981e-2274962780ef@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0F66FB0
+	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 05:14:53 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D551A2
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 21:14:51 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 3A7NHSAK000888
+	for <bpf@vger.kernel.org>; Tue, 7 Nov 2023 21:14:51 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by m0089730.ppops.net (PPS) with ESMTPS id 3u7w39jy7h-7
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 21:14:50 -0800
+Received: from twshared34392.14.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 7 Nov 2023 21:14:47 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 16AC93B239432; Tue,  7 Nov 2023 21:14:33 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next 1/2] veristat: add ability to sort by stat's absolute value
+Date: Tue, 7 Nov 2023 21:14:29 -0800
+Message-ID: <20231108051430.1830950-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: YVi-n4bqI_xm_dC9QL4PKefV1ztNlzu1
+X-Proofpoint-ORIG-GUID: YVi-n4bqI_xm_dC9QL4PKefV1ztNlzu1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
 
-On Mon, 2023-10-30 at 20:58 -0700, Yonghong Song wrote:
-> With latest llvm18 (main branch of llvm-project repo), when building bpf =
-selftests,
->     [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf LLVM=
-=3D1 -j
->=20
-> The following compilation error happens:
->     fatal error: error in backend: Branch target out of insn range
->     PLEASE submit a bug report to https://github.com/llvm/llvm-project/is=
-sues/ and include the crash backtrace, preprocessed source, and associated =
-run script.
->     Stack dump:
->     0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARCH_x86=
- -mlittle-endian -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tool=
-s/include -I/home/yhs
->     /work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/=
-tools/include/uapi -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/in=
-clude -idirafter /hom
->     e/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18/include -i=
-dirafter /usr/local/include -idirafter /usr/include -Wno-compare-distinct-p=
-ointer-types -DENABLE
->     _ATOMICS_TESTS -O2 --target=3Dbpf -c progs/pyperf180.c -mcpu=3Dv3 -o =
-/home/yhs/work/bpf-next/tools/testing/selftests/bpf/pyperf180.bpf.o
->     1.      <eof> parser at end of file
->     2.      Code generation
->     .....
->=20
-> The compilation failure only happens to cpu=3Dv2 and cpu=3Dv3. cpu=3Dv4 i=
-s okay
-> since cpu=3Dv4 supports 32-bit branch target offset.
->=20
-> The above failure is due to upstream llvm patch
->     https://reviews.llvm.org/D143624
-> where some inlining ordering are changed in the compiler.
+Add ability to sort results by absolute values of specified stats. This
+is especially useful to find biggest deviations in comparison mode. When
+comparing verifier change effect against a large base of BPF object
+files, it's necessary to see big changes both in positive and negative
+directions, as both might be a signal for regressions or bugs.
 
-Hi Yonghong, Alexei,
+The syntax is natural, e.g., adding `-s '|insns_diff|'^` will instruct
+veristat to sort by absolute value of instructions difference in
+ascending order.
 
-This is a followup for the off-list discussion. I think I have a
-relatively simple two pass algorithm that allows to replace jumps
-longer than 2**16 by series of shorter jumps using "trampoline"
-goto instructions.
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/testing/selftests/bpf/veristat.c | 68 +++++++++++++++++++++-----
+ 1 file changed, 56 insertions(+), 12 deletions(-)
 
-The basic idea of the algorithm is to:
-- Visit basic blocks sequentially from first to last (after LLVM is
-  done with figuring BB ordering), effectively splitting basic blocks
-  in two parts: "processed" and "unexplored".
-- Insert "trampoline" jumps only at "unexplored" side, thus
-  guaranteeing that distances between basic blocks on "processed" side
-  never change.
-- Maintain the list of "pending jumps":
-  - Whenever a basic block is picked from "unexplored" side
-    information about edges coming to and from this basic block is
-    added as pending jumps:
-    - backward edges are added before basic block is processed;
-    - forward edges are added after basic block is processed.
-  - Pending jump is a tuple (off,src,dst,backedge):
-    - 'src', 'dst' - basic blocks (swapped for backedges);
-    - 'off' - current distance from 'src'.
-- When a basic block is picked from "unexplored" side:
-  - discard all pending jumps that have this basic block as 'dst';
-  - peek a pending jump for which jmp.off + bb.size > MAX_JUMP_DISTANCE;
-  - if such jump is present:
-    - split basic block;
-    - insert trampoline instruction;
-    - discard pending jump and schedule new pending jump with
-      trampoline src, original dst, and off=3D0;
-  - if such jump is not present move basic block from "unexplored" to
-    "processed";
-  - when basic block is moved from "unexplored" side to "processed",
-    bump 'off' field of each pending jump by the size of the basic
-    block.
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
+ests/bpf/veristat.c
+index 655095810d4a..102914f70573 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -18,6 +18,7 @@
+ #include <libelf.h>
+ #include <gelf.h>
+ #include <float.h>
++#include <math.h>
+=20
+ #ifndef ARRAY_SIZE
+ #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
+@@ -99,6 +100,7 @@ struct stat_specs {
+ 	enum stat_id ids[ALL_STATS_CNT];
+ 	enum stat_variant variants[ALL_STATS_CNT];
+ 	bool asc[ALL_STATS_CNT];
++	bool abs[ALL_STATS_CNT];
+ 	int lens[ALL_STATS_CNT * 3]; /* 3x for comparison mode */
+ };
+=20
+@@ -133,6 +135,7 @@ struct filter {
+ 	int stat_id;
+ 	enum stat_variant stat_var;
+ 	long value;
++	bool abs;
+ };
+=20
+ static struct env {
+@@ -455,7 +458,8 @@ static struct {
+ 	{ OP_EQ, "=3D" },
+ };
+=20
+-static bool parse_stat_id_var(const char *name, size_t len, int *id, enu=
+m stat_variant *var);
++static bool parse_stat_id_var(const char *name, size_t len, int *id,
++			      enum stat_variant *var, bool *is_abs);
+=20
+ static int append_filter(struct filter **filters, int *cnt, const char *=
+str)
+ {
+@@ -488,13 +492,14 @@ static int append_filter(struct filter **filters, i=
+nt *cnt, const char *str)
+ 		long val;
+ 		const char *end =3D str;
+ 		const char *op_str;
++		bool is_abs;
+=20
+ 		op_str =3D operators[i].op_str;
+ 		p =3D strstr(str, op_str);
+ 		if (!p)
+ 			continue;
+=20
+-		if (!parse_stat_id_var(str, p - str, &id, &var)) {
++		if (!parse_stat_id_var(str, p - str, &id, &var, &is_abs)) {
+ 			fprintf(stderr, "Unrecognized stat name in '%s'!\n", str);
+ 			return -EINVAL;
+ 		}
+@@ -533,6 +538,7 @@ static int append_filter(struct filter **filters, int=
+ *cnt, const char *str)
+ 		f->stat_id =3D id;
+ 		f->stat_var =3D var;
+ 		f->op =3D operators[i].op_kind;
++		f->abs =3D true;
+ 		f->value =3D val;
+=20
+ 		*cnt +=3D 1;
+@@ -657,7 +663,8 @@ static struct stat_def {
+ 	[MARK_READ_MAX_LEN] =3D { "Max mark read length", {"max_mark_read_len",=
+ "mark_read"}, },
+ };
+=20
+-static bool parse_stat_id_var(const char *name, size_t len, int *id, enu=
+m stat_variant *var)
++static bool parse_stat_id_var(const char *name, size_t len, int *id,
++			      enum stat_variant *var, bool *is_abs)
+ {
+ 	static const char *var_sfxs[] =3D {
+ 		[VARIANT_A] =3D "_a",
+@@ -667,6 +674,14 @@ static bool parse_stat_id_var(const char *name, size=
+_t len, int *id, enum stat_v
+ 	};
+ 	int i, j, k;
+=20
++	/* |<stat>| means we take absolute value of given stat */
++	*is_abs =3D false;
++	if (len > 2 && name[0] =3D=3D '|' && name[len - 1] =3D=3D '|') {
++		*is_abs =3D true;
++		name +=3D 1;
++		len -=3D 2;
++	}
++
+ 	for (i =3D 0; i < ARRAY_SIZE(stat_defs); i++) {
+ 		struct stat_def *def =3D &stat_defs[i];
+ 		size_t alias_len, sfx_len;
+@@ -722,7 +737,7 @@ static bool is_desc_sym(char c)
+ static int parse_stat(const char *stat_name, struct stat_specs *specs)
+ {
+ 	int id;
+-	bool has_order =3D false, is_asc =3D false;
++	bool has_order =3D false, is_asc =3D false, is_abs =3D false;
+ 	size_t len =3D strlen(stat_name);
+ 	enum stat_variant var;
+=20
+@@ -737,7 +752,7 @@ static int parse_stat(const char *stat_name, struct s=
+tat_specs *specs)
+ 		len -=3D 1;
+ 	}
+=20
+-	if (!parse_stat_id_var(stat_name, len, &id, &var)) {
++	if (!parse_stat_id_var(stat_name, len, &id, &var, &is_abs)) {
+ 		fprintf(stderr, "Unrecognized stat name '%s'\n", stat_name);
+ 		return -ESRCH;
+ 	}
+@@ -745,6 +760,7 @@ static int parse_stat(const char *stat_name, struct s=
+tat_specs *specs)
+ 	specs->ids[specs->spec_cnt] =3D id;
+ 	specs->variants[specs->spec_cnt] =3D var;
+ 	specs->asc[specs->spec_cnt] =3D has_order ? is_asc : stat_defs[id].asc_=
+by_default;
++	specs->abs[specs->spec_cnt] =3D is_abs;
+ 	specs->spec_cnt++;
+=20
+ 	return 0;
+@@ -1103,7 +1119,7 @@ static int process_obj(const char *filename)
+ }
+=20
+ static int cmp_stat(const struct verif_stats *s1, const struct verif_sta=
+ts *s2,
+-		    enum stat_id id, bool asc)
++		    enum stat_id id, bool asc, bool abs)
+ {
+ 	int cmp =3D 0;
+=20
+@@ -1124,6 +1140,11 @@ static int cmp_stat(const struct verif_stats *s1, =
+const struct verif_stats *s2,
+ 		long v1 =3D s1->stats[id];
+ 		long v2 =3D s2->stats[id];
+=20
++		if (abs) {
++			v1 =3D v1 < 0 ? -v1 : v1;
++			v2 =3D v2 < 0 ? -v2 : v2;
++		}
++
+ 		if (v1 !=3D v2)
+ 			cmp =3D v1 < v2 ? -1 : 1;
+ 		break;
+@@ -1142,7 +1163,8 @@ static int cmp_prog_stats(const void *v1, const voi=
+d *v2)
+ 	int i, cmp;
+=20
+ 	for (i =3D 0; i < env.sort_spec.spec_cnt; i++) {
+-		cmp =3D cmp_stat(s1, s2, env.sort_spec.ids[i], env.sort_spec.asc[i]);
++		cmp =3D cmp_stat(s1, s2, env.sort_spec.ids[i],
++			       env.sort_spec.asc[i], env.sort_spec.abs[i]);
+ 		if (cmp !=3D 0)
+ 			return cmp;
+ 	}
+@@ -1211,7 +1233,8 @@ static void fetch_join_stat_value(const struct veri=
+f_stats_join *s,
+=20
+ static int cmp_join_stat(const struct verif_stats_join *s1,
+ 			 const struct verif_stats_join *s2,
+-			 enum stat_id id, enum stat_variant var, bool asc)
++			 enum stat_id id, enum stat_variant var,
++			 bool asc, bool abs)
+ {
+ 	const char *str1 =3D NULL, *str2 =3D NULL;
+ 	double v1, v2;
+@@ -1220,6 +1243,11 @@ static int cmp_join_stat(const struct verif_stats_=
+join *s1,
+ 	fetch_join_stat_value(s1, id, var, &str1, &v1);
+ 	fetch_join_stat_value(s2, id, var, &str2, &v2);
+=20
++	if (abs) {
++		v1 =3D fabs(v1);
++		v2 =3D fabs(v2);
++	}
++
+ 	if (str1)
+ 		cmp =3D strcmp(str1, str2);
+ 	else if (v1 !=3D v2)
+@@ -1237,7 +1265,8 @@ static int cmp_join_stats(const void *v1, const voi=
+d *v2)
+ 		cmp =3D cmp_join_stat(s1, s2,
+ 				    env.sort_spec.ids[i],
+ 				    env.sort_spec.variants[i],
+-				    env.sort_spec.asc[i]);
++				    env.sort_spec.asc[i],
++				    env.sort_spec.abs[i]);
+ 		if (cmp !=3D 0)
+ 			return cmp;
+ 	}
+@@ -1720,6 +1749,9 @@ static bool is_join_stat_filter_matched(struct filt=
+er *f, const struct verif_sta
+=20
+ 	fetch_join_stat_value(stats, f->stat_id, f->stat_var, &str, &value);
+=20
++	if (f->abs)
++		value =3D fabs(value);
++
+ 	switch (f->op) {
+ 	case OP_EQ: return value > f->value - eps && value < f->value + eps;
+ 	case OP_NEQ: return value < f->value - eps || value > f->value + eps;
+@@ -1766,7 +1798,7 @@ static int handle_comparison_mode(void)
+ 	struct stat_specs base_specs =3D {}, comp_specs =3D {};
+ 	struct stat_specs tmp_sort_spec;
+ 	enum resfmt cur_fmt;
+-	int err, i, j, last_idx;
++	int err, i, j, last_idx, cnt;
+=20
+ 	if (env.filename_cnt !=3D 2) {
+ 		fprintf(stderr, "Comparison mode expects exactly two input CSV files!\=
+n\n");
+@@ -1879,7 +1911,7 @@ static int handle_comparison_mode(void)
+ 		env.join_stat_cnt +=3D 1;
+ 	}
+=20
+-	/* now sort joined results accorsing to sort spec */
++	/* now sort joined results according to sort spec */
+ 	qsort(env.join_stats, env.join_stat_cnt, sizeof(*env.join_stats), cmp_j=
+oin_stats);
+=20
+ 	/* for human-readable table output we need to do extra pass to
+@@ -1896,16 +1928,22 @@ static int handle_comparison_mode(void)
+ 	output_comp_headers(cur_fmt);
+=20
+ 	last_idx =3D -1;
++	cnt =3D 0;
+ 	for (i =3D 0; i < env.join_stat_cnt; i++) {
+ 		const struct verif_stats_join *join =3D &env.join_stats[i];
+=20
+ 		if (!should_output_join_stats(join))
+ 			continue;
+=20
++		if (env.top_n && cnt >=3D env.top_n)
++			break;
++
+ 		if (cur_fmt =3D=3D RESFMT_TABLE_CALCLEN)
+ 			last_idx =3D i;
+=20
+ 		output_comp_stats(join, cur_fmt, i =3D=3D last_idx);
++
++		cnt++;
+ 	}
+=20
+ 	if (cur_fmt =3D=3D RESFMT_TABLE_CALCLEN) {
+@@ -1920,6 +1958,9 @@ static bool is_stat_filter_matched(struct filter *f=
+, const struct verif_stats *s
+ {
+ 	long value =3D stats->stats[f->stat_id];
+=20
++	if (f->abs)
++		value =3D value < 0 ? -value : value;
++
+ 	switch (f->op) {
+ 	case OP_EQ: return value =3D=3D f->value;
+ 	case OP_NEQ: return value !=3D f->value;
+@@ -1964,7 +2005,7 @@ static bool should_output_stats(const struct verif_=
+stats *stats)
+ static void output_prog_stats(void)
+ {
+ 	const struct verif_stats *stats;
+-	int i, last_stat_idx =3D 0;
++	int i, last_stat_idx =3D 0, cnt =3D 0;
+=20
+ 	if (env.out_fmt =3D=3D RESFMT_TABLE) {
+ 		/* calculate column widths */
+@@ -1984,7 +2025,10 @@ static void output_prog_stats(void)
+ 		stats =3D &env.prog_stats[i];
+ 		if (!should_output_stats(stats))
+ 			continue;
++		if (env.top_n && cnt >=3D env.top_n)
++			break;
+ 		output_stats(stats, env.out_fmt, i =3D=3D last_stat_idx);
++		cnt++;
+ 	}
+ }
+=20
+--=20
+2.34.1
 
-So, the main part is to keep 'off' fields of pending jumps smaller
-than MAX_JUMP_DISTANCE by inserting trampoline jumps.
-
-I have a Python model for this algorithm at [0]. It passes a few
-hand-coded tests but I still need to do some property-based testing.
-I think I need another day to finish with testing, after that it
-should be possible to translate this code to LLVM/C++ in a couple of days.
-
-Please let me know if this is interesting.
-
-Thanks,
-Eduard
-
-[0] https://gist.github.com/eddyz87/7e8d162b2bb2071769a9b3d960898405
-
-[...]
 
