@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-14460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6DE37E501F
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 06:46:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 681767E5021
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 06:46:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ED8FB20F2A
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 05:46:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B72B1C20D9C
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 05:46:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FA0BC8D2;
-	Wed,  8 Nov 2023 05:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC24CA5F;
+	Wed,  8 Nov 2023 05:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eh2Pfb0+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JQXkn5YU"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28948CA60
-	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 05:46:41 +0000 (UTC)
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2052.outbound.protection.outlook.com [40.107.14.52])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD561705
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 21:46:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58C5C8D2
+	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 05:46:50 +0000 (UTC)
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2048.outbound.protection.outlook.com [40.107.14.48])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2382170F
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 21:46:49 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iAurLDoUG3s7uaAcTtVZgfaKFEtwUSsR2IRSuSlD++7vjq32oqOcrygNPLT5NcdAfocmeDAX8dXxTv/dDtng0ZnAu84ypi3ASD0dFO6k7Je6o0VUDXVA0zqNDPBcNDvP49tmDfdrmEoWSYaYfG57geOd1cuPPlTycvr+/aW/rwuwSYKSi3MXwrRn95S68a98DzUHNpCunWC4rHw3G3/Nm//0IdrWA3gGjnxiWiLWxFvX5VP1D0s2zcmvRaj+Fvu/sAG6VUET7WlYkbV4FtrtV38GXfZEqAFzPl51UqyrWN4ugF0MZCS+8ESybifmDVLXeL/jKzJaBrWdOziF8Ub5JA==
+ b=ilk5gYRszXv/w/BLKcK5aZVXadcMXrfoDPdQr3NmXS/BQKYqCvYFPNbul4lb6s0pXGfySCaTiZnmNe0thzH0NtxHM9ivsFCnl21k0jhwhwyREMD4VrNWvrYOGc+GYA7p0a4olKTvg8KIoEb+sgiagBYQksrgF7j8wR6Ae5Skzr8XtTJHIV8wIBdjQ6PYQ+oCt4DHwCYzfTiXV/L/oum61DdsYFviBuuJAbxAE8xYVzG6SyVsIuqf0zkl7+YF8+GERSrS3DIUdnrgfi9qlibgogJmKosFXaY3Z2xTQWKiiNaNh3reYZtfgGAT7G7tm4WU/so3iO+GIN2fLKOmndOLPQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DZcDmYTio3JzCp/LgxrHZ77IPmzXRlwzqLj39Rq+ISs=;
- b=gPPehk2rmSUqN1qsrjVEAVeBuykaGbNV9blnN8Fr03nbT0RsFNn+iOCCKF5pI9M99B8BCHNI1Cj0xe2xnTsk1iBFVVOJrKdomr7IXk6Lu8obhX+5zYOcPKrBxZQGy/kZhWVOdpQNAcekfRW4coO/aPWASG9B6EG4w02wSb7rrBlYsJwJmLnMadjAIvyxhLpSASPRqhOwLkvUSd4ea6haHr8xxvwJjY4ar4QA+W927wc36J43HAEYIYVty3dpClcyMXG2n+OZpKbi4Etay+f4ZmBRF9FJknNzKkLFzjQa6dsTdR9cpCrHrb0nOQOzhFW2CYkhxtg+/78oFAaV5O8vBw==
+ bh=EIE0tNHu51H+i91nM9FbSd1pHFQxtReFDljXtYIpyDM=;
+ b=gISfdkECCvMAFCzwSXkkrvgBc/w0aVf/Usqd+zaZUF75SDSU+2nG6UAHdxdvIgfwKclm9OfCROTM3sJ+AYP167SGeetik8jXyn2KJoYQ9RACsAv7J4B1jSzK7dJhH0RD7F7YwTU1cGO6uLTeQup0La3lbh85yU2Boj7DTyZHxvBBthI2Orp+0DEA7FB8D17jQjmFBUNs8WgmbgOv/Tssc728q3UsliE3Hd+Z6Sf2BxKg6rvY+X15CRTzct4jWWxDElxuUbcO2kEYBF1DkgfDJ1l3m+S/XbqKhmqzt51ywR/JKz4lGddbPn6g4OL/WsEBS5qbew0AGYYLfianR0ueoA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DZcDmYTio3JzCp/LgxrHZ77IPmzXRlwzqLj39Rq+ISs=;
- b=eh2Pfb0+KpPYnQ5tJDw63k1tW5G+sWj/qtMVgT5nNOUcH8UjELOysEfqoiUO56fjik3T9sQCW4LErPHgDPxC8kIxbi49/HsYcxwskjwCgMve8tawUQnMvJ/5sntpcqJeWN6TMsy7GsaiSW3YT0ONY58dDVmtn6Ymm2/TUYetN5lWc8RohXYHICbIBzpoaRqamd1X08KqWi0JoU8aGROr4GsshRLGDnW0W1R9l6zR6BrnSFfiP5l0fAO/C2JduxnGCtfOPATCMl6ZdCVOMhXZUzOawdICy6d0D1ooSYbdqJGXzk9KAd3nP2es94f7APUg1cL8gDHL/45p5x5VQx99iw==
+ bh=EIE0tNHu51H+i91nM9FbSd1pHFQxtReFDljXtYIpyDM=;
+ b=JQXkn5YUQyYtO1SmqkKdW+Pcjf7iwludVQ+Ahk7kqmNbRJXcyXTK8FVdZQuJhb5yQhvDGpBhOxaXTZuBuwjCCuaSpJfXQs04fHIoDwsC/MHlkTieCW26XSNbHsOEed1u6ahDWsDJiDrzj0grQlMN56gktVDewuOyHR11lgVVJ7GSfVWdWIkoqZ96uVVJF5m8WS4ItEc03HVvX4jFdpFDpib/iK6dBMhnYYJPqBMOR9Ly1btUWcz5ubOpygG0x3lP5NPaXoFLGXE/HDlDj1jcP8RC7lu19mEqdhibZYiHTSB9wqukNwuP5MLL+rEsJ3s7qM0qkO2gbQxbYDA7Rtjzog==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from AS8PR04MB9510.eurprd04.prod.outlook.com (2603:10a6:20b:44a::11)
  by PA4PR04MB9568.eurprd04.prod.outlook.com (2603:10a6:102:26e::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Wed, 8 Nov
- 2023 05:46:38 +0000
+ 2023 05:46:47 +0000
 Received: from AS8PR04MB9510.eurprd04.prod.outlook.com
  ([fe80::24f2:1041:ddd8:39f1]) by AS8PR04MB9510.eurprd04.prod.outlook.com
  ([fe80::24f2:1041:ddd8:39f1%6]) with mapi id 15.20.6977.018; Wed, 8 Nov 2023
- 05:46:38 +0000
+ 05:46:47 +0000
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 To: bpf@vger.kernel.org
 Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
@@ -58,16 +58,16 @@ Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Paul Chaignon <paul@isovalent.com>
-Subject: [RFC bpf-next v0 2/7] Lift the contrain requiring start <= end
-Date: Wed,  8 Nov 2023 13:46:06 +0800
-Message-ID: <20231108054611.19531-3-shung-hsi.yu@suse.com>
+Subject: [RFC bpf-next v0 3/7] Support tracking signed min/max
+Date: Wed,  8 Nov 2023 13:46:07 +0800
+Message-ID: <20231108054611.19531-4-shung-hsi.yu@suse.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231108054611.19531-1-shung-hsi.yu@suse.com>
 References: <20231108054611.19531-1-shung-hsi.yu@suse.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: TYCP286CA0283.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3c9::11) To AS8PR04MB9510.eurprd04.prod.outlook.com
+X-ClientProxiedBy: TYCP286CA0081.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:2b3::7) To AS8PR04MB9510.eurprd04.prod.outlook.com
  (2603:10a6:20b:44a::11)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -77,233 +77,221 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: AS8PR04MB9510:EE_|PA4PR04MB9568:EE_
-X-MS-Office365-Filtering-Correlation-Id: c6ba97a5-9c08-4672-e1bd-08dbe01e12e8
+X-MS-Office365-Filtering-Correlation-Id: 9e1e875a-f0db-4153-8eb4-08dbe01e18a5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	XRvyOZAyKn5jsFVHQuct1PhsEu5JWQV74n/V4UB9EnIlw7+0nv/0bqMU3DjmWzjuC8nT41fy/SV/WtWeLHCQLBrsi58Z8iqsmuYc1xQhKuwVFWTFMX6X9+rtNQHBhImdhWY+dbVJZY9MiKAUjZHd197pPx5MhNJe9ItXazAwDGLpWtaI1Ywf0+9PwkFUDTOa2Nv0fvps5+5EIz0rZkwmwRGeLpfdNvmO2R4n593BqEzbh2z2T04Lp4vklgOsndN8FnbY1dpzBzE/NfdERDc2nPkeR1ENuNXs2iJVFmHy1vt48NgpulKqwlWxXWGCOndW0dx1AuiQ/xM3F2XrQTyd+LSXvWs3RgvN0Uq+D8NFmcDzIu3kit7yOs1HYW8Ku+k8v6QTtzepvjoOHu812++NwVj79JRMHgBiJsgwUaROXUVKq4YWuwo28XOwIRw0negxrHUjE/oagP4TSN6lRRaAA50l6+29lQAH74vP9i4SpbJfnU4ibDMIhkfRmzWYBpBJ+JIipNzjVDJdJ+mcMmghyjxChQZJlWQ3BjHkrDclD+izDbisev/G6phbkikg3t8F
+	pxNztqCaS3YxudSW6q1jPkihJEqQXRjB9QRIWYF0fMBfHRV3TfTlsmY4DFveDfTOfBmQwry/oAxjaUzZORkkLhNetz0RXUF0Zl0hF2oo98Jfijkp+fA3gh52WXmVZY/cy2SnO5RwM8x+NpX1p55+sbV73ZOdRcWyCKsF7F3muhwMfcK9fu/DgNSC++k1aTqQyvq8vK1TvBJ3k5z39fCDeQhUfsvxfuGanBVPnqgZ+S56vXV3UHOPlPESRm9l9JmqO50+aKBHinzpLXh8pqTk6+05TFfLM0yyWe4bSJQnNaDXKpyGWSxZh4TvcjYdiId53hCV2J8M6viAJz9nI5Y6jSwO7Fgs6Rcohdj4ZiZB60Y6u8JJv0fYmJhS3TbmTc9jJZptVZGQei46WknLgcm4nOk6m3eKtW/gXnr2OVLf8uh5MtgF01SlEJeUaubiUCFrLX3ThT5FV+y6taGjwJj935lGaTaE/yuUNe6qsrEq6zmpxYXyYelzxhkj4CbsqYsD5QN7MBNrPguIqynaCvp9luXZcOrvCyU/r4dWcOyU+zcUu9pbSK85YlugoOgbJpFe
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB9510.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(376002)(39860400002)(396003)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(6916009)(316002)(54906003)(66476007)(66946007)(66556008)(478600001)(6486002)(6666004)(86362001)(5660300002)(41300700001)(36756003)(2906002)(8936002)(4326008)(8676002)(2616005)(83380400001)(1076003)(6506007)(6512007)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?66twX95e//Hi8lLhaJzU5hsxNYFdcLS+m/14hZy2Q76Csa4T5SEoo1oWuVNA?=
- =?us-ascii?Q?Y3ayVOlePmFVCrXZOuSNG+s40EXWCB8HCUUtcmVJddKeBIa1nQRE+zjMGx5g?=
- =?us-ascii?Q?+/Midna5+izpLI+n26b5MjCxPEcZayF61Y5IbBd5ZjVXmeIHVy+x50x51APi?=
- =?us-ascii?Q?aACcDj7dqH8gvZgzwVyiHBt+dhFgO+eJlZyqxpa33K0UiMkRcvWEpLnFvvec?=
- =?us-ascii?Q?Huy8XFmyPNjY2atgthdQURW4g1LsgTuu2BgydVtMKmceDF3heF10TqyPO1MK?=
- =?us-ascii?Q?mvR2j0Hb98cc3cxkL6DV16Nb723zy/FjyS7PgOqqsMJvwWc92Rgb2tHYjJ0N?=
- =?us-ascii?Q?+v1/UJTrSD+iXOIwzzRBVBdAqQsTgbVsoI9nNv5JjVlny/mr5Sizr8D9Ilr6?=
- =?us-ascii?Q?Nk6FDcXdhgh/8V1HMCCJDfonjB/sjMchh5OLhF7lcxAH0Vnb15uYhkUOJT56?=
- =?us-ascii?Q?RDa64qQ+/XQYZ0kMQAmOLbDb7Y9dvmzqkSxk0tU5NhmrkO+IUjjGO9/Avrfr?=
- =?us-ascii?Q?sViS6zdbZ6zEbWUJfW5knIoxfAHxZYCaayMIakHPaqu0L6f95ubVwnlZEJGM?=
- =?us-ascii?Q?iyQaq2r14SXjl0HLFugAFr3s9aMlmxsAwevxIafYBZK7Zj2wHX71vA5U7v0u?=
- =?us-ascii?Q?9BB0F6eCDf5IzLE9oNoll/cMsR0UXcpQNa8pTNGvznCuymC2BeDk1Z+CquO2?=
- =?us-ascii?Q?FqxTNhddEoEZULLe/XGiTJWYQ5BLt/kMBU1uDvll7tojRHDiKmFCHvFnTK73?=
- =?us-ascii?Q?+4pg049h+Bf1HY9dL+PmnnExukIoYHoIFhtoq4hay9kVd3ZLJpULF9+W67Mo?=
- =?us-ascii?Q?khsmsRTgMJBqPDOHw/7cu1P82dagzyqQ1b/oVSglFFoXWuN0/QsVatkGPr9b?=
- =?us-ascii?Q?HARCkQwqdwIm0QBKXeJ5WBXfBY1bWxQlGa9wrgveUoRt4mDlvOwf9mTxT7fw?=
- =?us-ascii?Q?Ebx3DMqR6EDHPK9ohiKe6Bij2qGoIdYYkQATjO+qkolpKHYXGibeYrew0JfU?=
- =?us-ascii?Q?HAPrPyK84+VYk8E0RSsEkoy0YBouomJS2CUw24ZSQiEKEt2/Tmd8gEkZE+j9?=
- =?us-ascii?Q?6jJ541kxIF3BsjBcz4+RMYdicSVpHqM+AWqfH3ElX0Vsg2HJ6ATw22v8hicv?=
- =?us-ascii?Q?i4fsYxX+nATUKphiTqgahWuiaqO1G6ehL+JKkkjRBH1G0Rm6VFCDnLEB/mL6?=
- =?us-ascii?Q?Lc/3Ab18Ah1RTtDO1AJp/s0TquPPvj2V05SMEaCudFJ9W9BHvOuWrRuWoDKy?=
- =?us-ascii?Q?pX6Vk4IpAQqlFz4AMgxQOXIy5nZ+StnfzZ+6xfzqzqj2dAjBfDVZFAPrk2ZU?=
- =?us-ascii?Q?YIrE/FhUsN/ZWu/5uX74oEnw0lZ7aYiF/1g9nph4hDG7hsnsmtDl1RIxpJ1L?=
- =?us-ascii?Q?i4QiN7IKC/k8qmOPwjtQ4nwEEwrDBSYNXHauhgZ/a73orPgTtxz3PEuH/aXi?=
- =?us-ascii?Q?6vfjfuN+aojJhLBaNy64K4znnWqKsXX2FGalh0ogD2lxRRNWUHAgWopnq/uz?=
- =?us-ascii?Q?LO5vFI16OXvyIr90LyfxEj3QPai75hOkbUBOSTypaehs9asXQTcGKcy2D4IL?=
- =?us-ascii?Q?NGgjllXFrWYrXRJYhMp4PE1Ha3asTI/XRJsMUmAMDUWuID4T2BmAu/7WabyO?=
- =?us-ascii?Q?lOhQA4mDtQkd7qN1K7/CDWsOTeBea0OvUxJDH4f99WYP+wKDNjmlvNq0V6Q5?=
- =?us-ascii?Q?r9cmgQ=3D=3D?=
+	=?us-ascii?Q?/hbJ+zPUKlTkOzHUJ39nWsizK25u27c/NftYoJpamf5K4B7yx3yQNLJ4X4T+?=
+ =?us-ascii?Q?jmh9XCpy7khkHpo3wXZWENxpbDRJsbvNxLfnWMpyyMm2Ic3En1S4A/H/5cLz?=
+ =?us-ascii?Q?Y2HoB41vde9bJS9nKY1mkjlCeRDslYk4WOX+B25HprJEuo2p6itY+1IZ0GMB?=
+ =?us-ascii?Q?u0PugDDSagj6GudKZZX9dzkGFKEksMOKkL0yPt6pXQYZ/IooJerrkPwHEyTj?=
+ =?us-ascii?Q?oGcDCV9X8KLrjdxD3hCvW7NJWL9roVoHNX6qS+GBVBF5XP02qrCOwwzHgILX?=
+ =?us-ascii?Q?iYQaN2Ea7Rs829EnYs85UsEZIrzrtIGG+OaWGo10XZcPXB/plNU2y2joJbfE?=
+ =?us-ascii?Q?oVJ6SOwfJXMpmOtyH2uq/CWLPZQXdwOlAcvZEvojaSaRa7Wh9XEmHTqdlWy0?=
+ =?us-ascii?Q?Iat3QxUm7bZ2+5SRU6/SOWI1OKNIkbgbt6oVGWuXoqnw+yA/r9Hu7fKY0QSv?=
+ =?us-ascii?Q?9zSzs9eX/zK5bujd4qIwJbLdQug96GIYWO15K1pJamiiBaljTzeX73fs8G/4?=
+ =?us-ascii?Q?/An8IAJy2dx6IkvWj2WIXiFC8e5lwS1INOiGsqrP9N7c57oKQ5FVPo+EDk6P?=
+ =?us-ascii?Q?FKHYRlq40tUy7KCj7ammiVd48lok9eHezluP/gFAvZlQQ3H3Pq12hwcUtXAf?=
+ =?us-ascii?Q?EHB+kAj589d8kkEJJDpjRSYNhw5y9WpSwarLjHt/s2uYXNDGYw2xasgO0r8d?=
+ =?us-ascii?Q?iDi/OUPSf03Ap5X1p3NXE6WZvTGezSrEh4amsDTVRkQ8wazU0NQFJxR24qwX?=
+ =?us-ascii?Q?HFKUvDuyPDT9UgUzCrndXXuOL6ukMXRwarR/YwEKHXv87GsocczrZw+dQySc?=
+ =?us-ascii?Q?havNmT1xuDAs09RnRTY6QIaSMsRW4vO5QA9JajVmBH9RtMMvOUO/Ig8xDRxf?=
+ =?us-ascii?Q?+KiKWxSTAHCLiDuXpJoG58+V+VxtAACRu61NDH/YPrzb4Afr9PlS5lhjpdqX?=
+ =?us-ascii?Q?0nZPFr26Hes6Rc4O+3JohlqDwnZFXU7oe49shX+fwMEFgDaEYPaWUbx0rrg3?=
+ =?us-ascii?Q?sZT5P4WYMnbOMQmCk43BvQbP1t4wHdIAegU5BviHpQ+925SOrWCqlarFpBSW?=
+ =?us-ascii?Q?lQql5JljdbXoPfIf+CnUxqXhx5cZK2r1Xn0M34p2nlky7lpTJm1gzC4j1zTZ?=
+ =?us-ascii?Q?ENuCBN1K0ALXC8XY+EvX5o+NOm11Lg6SmGyn9nJplCPLDVHwsdkia31vZGRN?=
+ =?us-ascii?Q?2Q/ff6gPxZvZedy4Vz0ixqQaKq/il8N1OlDbLPVFTXRBhthfXkF785v1tiuJ?=
+ =?us-ascii?Q?UQiqPNcam26sSXRUJ+A7MtT7VxO6o5lPfmsLzHFud/b/1AclETNKa5J9dTDW?=
+ =?us-ascii?Q?7vYShmLeLpNqDSDGuNFIsB0Fwp0sCkgatQs8C03dFfWagYknY3Hqe3Urgogt?=
+ =?us-ascii?Q?bxR5mAvYbfB947dI8+ouLBMjKMIojqsBR2Di11T+AJR5bVn4fU7ZVuzLaOaO?=
+ =?us-ascii?Q?14w7uTShhT43YUSMKr5VvnRhT0t+btGPIyB4OJY0WYVhNpLDT6z5VdbbF/yW?=
+ =?us-ascii?Q?nXCLhCB5TFwpJwADW8j+j2kQjblLrRq3iVf1sQB+OhN2Lv1Xg53/faLMb7gI?=
+ =?us-ascii?Q?ajZ+/UXciwz210scF3M0gId3AYARiEAPppH5cL7rKAyIgMjxkyyxG80cxZ8t?=
+ =?us-ascii?Q?vPacrbhBBG+NoaKnTR0IT9hm2Wx92dTkjP49sNm8X18UhFzcJZ0mng1RM0g2?=
+ =?us-ascii?Q?NVzMGw=3D=3D?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c6ba97a5-9c08-4672-e1bd-08dbe01e12e8
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e1e875a-f0db-4153-8eb4-08dbe01e18a5
 X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB9510.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 05:46:38.0705
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 05:46:47.3473
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CK9kpB2UsKgrMCwAEnQTZB/bb4Q3pmv2UHf+I7bVi9TPUBlmRDxxSBLuqSH+ZNMifIZE8a8snyGvROIFKnPyFw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: gQWudJvukl695YmXWEtQbqMlQtpdSKvNHSpzGO6cG06Bme+g2mOrqPPNCZgu88AMVi5eGe7FchZg3uRpTZFe9g==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9568
 
-Lifting the restriction that requires start/umin <= end/umax can allow
-us to track range that wraps around in the u32 range, e.g.
-{0xffffffff, 0, 1} can be tracked with start=0xffffffff and end=1.
-This makes retrieving umin/umax slightly more complicated, and requires
-checking whether wrapping occurs in the u32 range; wrange32_uwrapping()
-helper is introduced to simplify the check.
+With the start <= end restriction lifted, wrange32 gains the ability to
+track the s32 range as well. The example provided in previous patch
+shows that wrange32 can now track {0xffffffff, 0, 1}, which is in fact
+just a plain s32 range {-1, 0, 1}. This patch add helpers to extract the
+smin and smax from wrange32 along with wrange32_swrapping() helper that
+checks whether this wrange32 wraps in the s32 range.
 
-Additional z3Py checks are added to make sure the new reasoning around
-umin/umax for the u32 wrapping case is correct.
+Additional z3Py checks are added to make sure that the smin/smax
+reasoning is correct as well.
 
 Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 ---
- include/linux/wrange.h                       | 26 ++++---
- tools/testing/selftests/bpf/formal/wrange.py | 77 +++++++++++++++++---
- 2 files changed, 82 insertions(+), 21 deletions(-)
+ include/linux/wrange.h                       | 19 ++++++
+ tools/testing/selftests/bpf/formal/wrange.py | 67 +++++++++++++++++++-
+ 2 files changed, 85 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/wrange.h b/include/linux/wrange.h
-index e2316c7bbb2d..f51e674d1f18 100644
+index f51e674d1f18..876e260017fe 100644
 --- a/include/linux/wrange.h
 +++ b/include/linux/wrange.h
-@@ -3,24 +3,30 @@
- #define _LINUX_WRANGE_H
+@@ -29,4 +29,23 @@ static inline u32 wrange32_umax(struct wrange32 a) {
+ 		return a.end;
+ }
  
- #include <linux/types.h>
-+#include <linux/limits.h>
- 
- struct wrange32 {
--	/* Start with a usual u32 min/max.
--	 *
--	 * Requiring umin/start <= umax/end, and cannot be use to track s32
--	 * range.
--	 */
--	u32 start; /* umin */
--	u32 end; /* umax */
-+	/* Allow end < start */
-+	u32 start;
-+	u32 end;
- };
- 
--/* Helper functions that will be required later */
-+static inline bool wrange32_uwrapping(struct wrange32 a) {
-+	return a.end < a.start;
++static inline bool wrange32_swrapping(struct wrange32 a) {
++	return (s32)a.end < (s32)a.start;
 +}
 +
- static inline u32 wrange32_umin(struct wrange32 a) {
--	return a.start;
-+	if (wrange32_uwrapping(a))
-+		return U32_MIN;
++/* Helper functions that will be required later */
++static inline s32 wrange32_smin(struct wrange32 a) {
++	if (wrange32_swrapping(a))
++		return S32_MIN;
 +	else
 +		return a.start;
- }
- 
- static inline u32 wrange32_umax(struct wrange32 a) {
--	return a.end;
-+	if (wrange32_uwrapping(a))
-+		return U32_MAX;
++}
++
++static inline s32 wrange32_smax(struct wrange32 a) {
++	if (wrange32_swrapping(a))
++		return S32_MAX;
 +	else
 +		return a.end;
- }
- 
++}
++
  #endif /* _LINUX_WRANGE_H */
 diff --git a/tools/testing/selftests/bpf/formal/wrange.py b/tools/testing/selftests/bpf/formal/wrange.py
-index 8836f4cbbedb..a2b1b083d291 100755
+index a2b1b083d291..825d79c6570f 100755
 --- a/tools/testing/selftests/bpf/formal/wrange.py
 +++ b/tools/testing/selftests/bpf/formal/wrange.py
-@@ -21,22 +21,31 @@ class Wrange(abc.ABC):
-         assert(self.end.size() == self.SIZE)
+@@ -37,6 +37,19 @@ class Wrange(abc.ABC):
+     def umax(self):
+         return If(self.uwrapping, BitVecVal(2**self.SIZE - 1, bv=self.SIZE), self.end)
  
-     def wellformed(self):
--        # start <= end
--        return ULE(self.start, self.end)
-+        # allow end < start, so any start/end combination is valid
-+        return BoolVal(True)
++    @property
++    def swrapping(self):
++        # signed comparison, (s32)end < (s32)start
++        return self.end < self.start
 +
 +    @property
-+    def uwrapping(self):
-+        # unsigned comparison, (u32)end < (u32)start
-+        return ULT(self.end, self.start)
- 
-     @property
-     def umin(self):
--        return self.start
-+        return If(self.uwrapping, BitVecVal(0, bv=self.SIZE), self.start)
- 
-     @property
-     def umax(self):
--        return self.end
-+        return If(self.uwrapping, BitVecVal(2**self.SIZE - 1, bv=self.SIZE), self.end)
- 
++    def smin(self):
++        return If(self.swrapping, BitVecVal(1 << (self.SIZE - 1), bv=self.SIZE), self.start)
++
++    @property
++    def smax(self):
++        return If(self.swrapping, BitVecVal((2**self.SIZE - 1) >> 1, bv=self.SIZE), self.end)
++
      # Not used in wrange.c, but helps with checking later
      def contains(self, val: BitVecRef):
          assert(val.size() == self.SIZE)
--        # umin <= val <= umax
--        return And(ULE(self.umin, val), ULE(val, self.umax))
-+        # start <= val <= end
-+        nonwrapping_cond = And(ULE(self.start, val), ULE(val, self.end))
-+        # 0 <= val <= end or start <= val <= 2**32-1
-+        # (omit checking 0 <= val and val <= 2**32-1 since they're always true)
-+        wrapping_cond = Or(ULE(val, self.end), ULE(self.start, val))
-+        return If(self.uwrapping, wrapping_cond, nonwrapping_cond)
- 
- 
- class Wrange32(Wrange):
-@@ -115,13 +124,59 @@ def main():
-     # Right now our semantic doesn't allow umax/end < umin/start
-     w3 = Wrange32('w3', start=BitVecVal32(2), end=BitVecVal32(0))
-     print(f'\nGiven w3 start={w3.start} end={w3.end}')
--    print('\nChecking w3 is NOT wellformed')
-+    print('\nChecking w3 is also wellformed')
+@@ -79,6 +92,14 @@ def main():
      prove(
--        Not(w3.wellformed()),
-+        w3.wellformed(),
-+    )
-+    print('\nChecking w3.umin is 0')
+         w1.umax == BitVecVal32(1),
+     )
++    print('\nChecking w1.smin is 1')
 +    prove(
-+        w3.umin == BitVecVal32(0),
++        w1.smin == BitVecVal32(1),
 +    )
-+    print('\nChecking w3.umax is 2**32-1')
++    print('\nChecking w1.smax is 1')
 +    prove(
-+        w3.umax == BitVecVal32(2**32 - 1),
++        w1.smax == BitVecVal32(1),
 +    )
-+    print('\nChecking that w3 contains 0')
+     print('\nChecking that w1 contains 1')
+     prove(
+         w1.contains(BitVecVal32(1)),
+@@ -102,6 +123,14 @@ def main():
+     prove(
+         w2.umax == BitVecVal32(2**32 - 1),
+     )
++    print('\nChecking w2.smin is -2147483648/0x80000000')
 +    prove(
-+        w3.contains(BitVecVal32(0)),
++        w2.smin == BitVecVal32(0x80000000),
 +    )
-+    print('\nChecking that w3 does NOT contain 1')
++    print('\nChecking w2.smax is 2147483647/0x7fffffff')
 +    prove(
-+        Not(w3.contains(BitVecVal32(1))),
++        w2.smax == BitVecVal32(0x7fffffff),
 +    )
-+    print('\nChecking that w3 is a union set of ({0} U {2..2**32-1})')
+     print('\nChecking that w2 contains 2**32 - 1')
+     prove(
+         w2.contains(BitVecVal32(2**32 - 1)),
+@@ -136,6 +165,14 @@ def main():
+     prove(
+         w3.umax == BitVecVal32(2**32 - 1),
+     )
++    print('\nChecking w3.smin is -2147483648/0x80000000')
 +    prove(
-+        w3.contains(x) == Or(x == BitVecVal32(0), And(ULE(2, x), ULE(x, 2**32-1))),
++        w3.smin == BitVecVal32(0x80000000),
++    )
++    print('\nChecking w3.smax is 2147483647/0x7fffffff')
++    prove(
++        w3.smax == BitVecVal32(0x7fffffff),
++    )
+     print('\nChecking that w3 contains 0')
+     prove(
+         w3.contains(BitVecVal32(0)),
+@@ -163,6 +200,14 @@ def main():
+     prove(
+         w4.umax == BitVecVal32(2**32 - 1),
+     )
++    print('\nChecking w4.smin is -1')
++    prove(
++        w4.smin == BitVecVal32(-1),
++    )
++    print('\nChecking w4.smax is 1')
++    prove(
++        w4.smax == BitVecVal32(1),
++    )
+     print('\nChecking that w4 contains 0')
+     prove(
+         w4.contains(BitVecVal32(0)),
+@@ -176,7 +221,7 @@ def main():
+         w4.contains(x) == Or(x == BitVecVal32(2**32-1), x == BitVecVal32(0), x == BitVecVal32(1)),
      )
  
--    # General checks that does not assum the value of start/end, except that it
--    # meets the requirement that start <= end.
-+    w4 = Wrange32('w4', start=BitVecVal32(2**32 - 1), end=BitVecVal32(1))
-+    print(f'\nGiven w4 start={w4.start} end={w4.end}')
-+    print('\nChecking w4 is also wellformed')
-+    prove(
-+        w4.wellformed(),
-+    )
-+    print('\nChecking w4.umin is 0')
-+    prove(
-+        w4.umin == BitVecVal32(0),
-+    )
-+    print('\nChecking w4.umax is 2**32-1')
-+    prove(
-+        w4.umax == BitVecVal32(2**32 - 1),
-+    )
-+    print('\nChecking that w4 contains 0')
-+    prove(
-+        w4.contains(BitVecVal32(0)),
-+    )
-+    print('\nChecking that w4 does contain 2**32-1')
-+    prove(
-+        w4.contains(BitVecVal32(2**32-1)),
-+    )
-+    print('\nChecking that w4 is a union set of ({2**32-1} U {0..1})')
-+    prove(
-+        w4.contains(x) == Or(x == BitVecVal32(2**32-1), x == BitVecVal32(0), x == BitVecVal32(1)),
-+    )
-+
-+    # General checks for umin/umax
+-    # General checks for umin/umax
++    # General checks for umin/umax/smin/smax
      w = Wrange32('w') # Given a Wrange32 called w
      x = BitVec32('x') # And an 32-bit integer x (redeclared for clarity)
      print(f'\nGiven any possible Wrange32 called w, and any possible 32-bit integer called x')
-@@ -129,7 +184,7 @@ def main():
-     prove(
-         Implies(
-             And(
--                w.wellformed(),
-+                w.wellformed(), # Always true, but keeping it for now
-                 w.contains(x),
-             ),
-             ULE(w.umin, x),
+@@ -200,6 +245,26 @@ def main():
+             ULE(x, w.umax),
+         )
+     )
++    print('\nChecking if w.contains(x) == True, then w.smin <= (s32)x is also true')
++    prove(
++        Implies(
++            And(
++                w.wellformed(),
++                w.contains(x),
++            ),
++            w.smin <= x,
++        )
++    )
++    print('\nChecking if w.contains(x) == True, then (s32)x <= w.smax is also true')
++    prove(
++        Implies(
++            And(
++                w.wellformed(),
++                w.contains(x),
++            ),
++            x <= w.smax,
++        )
++    )
+ 
+ if __name__ == '__main__':
+     main()
 -- 
 2.42.0
 
