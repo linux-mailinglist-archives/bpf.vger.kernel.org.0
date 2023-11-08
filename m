@@ -1,196 +1,109 @@
-Return-Path: <bpf+bounces-14456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 222667E4FDF
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 06:15:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEAEB7E5014
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 06:38:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA5A52814D3
-	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 05:15:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6DFE1C20D01
+	for <lists+bpf@lfdr.de>; Wed,  8 Nov 2023 05:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 852AA6AAB;
-	Wed,  8 Nov 2023 05:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2456C8C4;
+	Wed,  8 Nov 2023 05:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="B+8dp0+1"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ECDF944C
-	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 05:15:02 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122D2198
-	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 21:15:02 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A7NHQ2Q007580
-	for <bpf@vger.kernel.org>; Tue, 7 Nov 2023 21:15:01 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u7w3djx1n-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Tue, 07 Nov 2023 21:15:01 -0800
-Received: from twshared9518.03.prn6.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 7 Nov 2023 21:14:46 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 21AB83B23943B; Tue,  7 Nov 2023 21:14:35 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 2/2] veristat: add ability to filter top N results
-Date: Tue, 7 Nov 2023 21:14:30 -0800
-Message-ID: <20231108051430.1830950-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231108051430.1830950-1-andrii@kernel.org>
-References: <20231108051430.1830950-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A887CA4C
+	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 05:38:44 +0000 (UTC)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EA9D79
+	for <bpf@vger.kernel.org>; Tue,  7 Nov 2023 21:38:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=gMKlirG0RrqHuigobtL+LWhHvBf5G8HCE6qH311lAcc=; b=B+8dp0+1Mp5tRmkGs649Fosm2M
+	ojDz090h6ehadSVCKp+bvhJFfYEgynLsna0q3CIBHkCTH11GVE7gjanRzegcg4gEycDaC87NP934v
+	go3U7k1c9Qf317xkjApd2oNBPHcorK1WR1EBCr11V/Q1rYZZQF6tIOCtktSyPy10sUr5m38HM5iKl
+	UP4BDEgai4+DXPkkK4CjPx7+cXrntuFlL906vOx5UnByM6actgY+LFeaMChP2LmhNTSzS/uaDu47j
+	nUqlAG4CceCxaPjR4AVrbeVr3jUAovRlEFQuCo9tlXNIweFnIk+GYIYZ5MJQCRS4gN2MSxgwLAox/
+	6AzvmVYw==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1r0bGy-0009DX-2F; Wed, 08 Nov 2023 06:38:40 +0100
+Received: from [194.230.147.75] (helo=localhost.localdomain)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1r0bGx-000Itd-J4; Wed, 08 Nov 2023 06:38:39 +0100
+Subject: Re: [PATCH bpf-next v3] libbpf: Fix potential uninitialized tail
+ padding with LIBBPF_OPTS_RESET
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231107201511.2548645-1-yonghong.song@linux.dev>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <332d7a0b-d763-2e6f-3c70-e8e73de1b5a2@iogearbox.net>
+Date: Wed, 8 Nov 2023 06:38:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: IcSAofn3YUhEryuZqxLUYcz-IWZAIY0e
-X-Proofpoint-GUID: IcSAofn3YUhEryuZqxLUYcz-IWZAIY0e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-08_01,2023-11-07_01,2023-05-22_02
+In-Reply-To: <20231107201511.2548645-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27086/Tue Nov  7 09:39:18 2023)
 
-Add ability to filter top B results, both in replay/verifier mode and
-comparison mode. Just adding `-n10` will emit only first 10 rows, or
-less, if there is not enough rows.
+On 11/7/23 9:15 PM, Yonghong Song wrote:
+> Martin reported that there is a libbpf complaining of non-zero-value tail
+> padding with LIBBPF_OPTS_RESET macro if struct bpf_netkit_opts is modified
+> to have a 4-byte tail padding. This only happens to clang compiler.
+> The commend line is: ./test_progs -t tc_netkit_multi_links
+> Martin and I did some investigation and found this indeed the case and
+> the following are the investigation details.
 
-This is not just a shortcut instead of passing veristat output through
-`head`, though. Filtering out all the other rows influences final table
-formatting, as table column widths are calculated based on actual
-emitted test.
+[...]
 
-To demonstrate the difference, compare two "equivalent" forms below, one
-using head and another using -n argument.
+Too bad we need this detour, but fix lgtm, thanks!
 
-TOP N FEATURE
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[vmuser@archvm bpf]$ sudo ./veristat -C ~/baseline-results-selftests.csv =
-~/sanity2-results-selftests.csv -e file,prog,insns,states -s '|insns_diff=
-|' -n10
-File                                      Program                Insns (A=
-)  Insns (B)  Insns (DIFF)  States (A)  States (B)  States (DIFF)
-----------------------------------------  ---------------------  --------=
--  ---------  ------------  ----------  ----------  -------------
-test_seg6_loop.bpf.linked3.o              __add_egr_x                1244=
-0      12360  -80 (-0.64%)         364         357    -7 (-1.92%)
-async_stack_depth.bpf.linked3.o           async_call_root_check        14=
-5        145   +0 (+0.00%)           3           3    +0 (+0.00%)
-async_stack_depth.bpf.linked3.o           pseudo_call_check            13=
-9        139   +0 (+0.00%)           3           3    +0 (+0.00%)
-atomic_bounds.bpf.linked3.o               sub                            =
-7          7   +0 (+0.00%)           0           0    +0 (+0.00%)
-bench_local_storage_create.bpf.linked3.o  kmalloc                        =
-5          5   +0 (+0.00%)           0           0    +0 (+0.00%)
-bench_local_storage_create.bpf.linked3.o  sched_process_fork            2=
-2         22   +0 (+0.00%)           2           2    +0 (+0.00%)
-bench_local_storage_create.bpf.linked3.o  socket_post_create            2=
-3         23   +0 (+0.00%)           2           2    +0 (+0.00%)
-bind4_prog.bpf.linked3.o                  bind_v4_prog                 35=
-8        358   +0 (+0.00%)          33          33    +0 (+0.00%)
-bind6_prog.bpf.linked3.o                  bind_v6_prog                 42=
-9        429   +0 (+0.00%)          37          37    +0 (+0.00%)
-bind_perm.bpf.linked3.o                   bind_v4_prog                  1=
-5         15   +0 (+0.00%)           1           1    +0 (+0.00%)
-
-PIPING TO HEAD
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[vmuser@archvm bpf]$ sudo ./veristat -C ~/baseline-results-selftests.csv =
-~/sanity2-results-selftests.csv -e file,prog,insns,states -s '|insns_diff=
-|' | head -n12
-File                                                   Program           =
-                                    Insns (A)  Insns (B)  Insns (DIFF)  S=
-tates (A)  States (B)  States (DIFF)
------------------------------------------------------  ------------------=
-----------------------------------  ---------  ---------  ------------  -=
----------  ----------  -------------
-test_seg6_loop.bpf.linked3.o                           __add_egr_x       =
-                                        12440      12360  -80 (-0.64%)   =
-      364         357    -7 (-1.92%)
-async_stack_depth.bpf.linked3.o                        async_call_root_ch=
-eck                                       145        145   +0 (+0.00%)   =
-        3           3    +0 (+0.00%)
-async_stack_depth.bpf.linked3.o                        pseudo_call_check =
-                                          139        139   +0 (+0.00%)   =
-        3           3    +0 (+0.00%)
-atomic_bounds.bpf.linked3.o                            sub               =
-                                            7          7   +0 (+0.00%)   =
-        0           0    +0 (+0.00%)
-bench_local_storage_create.bpf.linked3.o               kmalloc           =
-                                            5          5   +0 (+0.00%)   =
-        0           0    +0 (+0.00%)
-bench_local_storage_create.bpf.linked3.o               sched_process_fork=
-                                           22         22   +0 (+0.00%)   =
-        2           2    +0 (+0.00%)
-bench_local_storage_create.bpf.linked3.o               socket_post_create=
-                                           23         23   +0 (+0.00%)   =
-        2           2    +0 (+0.00%)
-bind4_prog.bpf.linked3.o                               bind_v4_prog      =
-                                          358        358   +0 (+0.00%)   =
-       33          33    +0 (+0.00%)
-bind6_prog.bpf.linked3.o                               bind_v6_prog      =
-                                          429        429   +0 (+0.00%)   =
-       37          37    +0 (+0.00%)
-bind_perm.bpf.linked3.o                                bind_v4_prog      =
-                                           15         15   +0 (+0.00%)   =
-        1           1    +0 (+0.00%)
-
-Note all the wasted whitespace in the "PIPING TO HEAD" variant.
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/testing/selftests/bpf/veristat.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
-ests/bpf/veristat.c
-index 102914f70573..443a29fc6a62 100644
---- a/tools/testing/selftests/bpf/veristat.c
-+++ b/tools/testing/selftests/bpf/veristat.c
-@@ -149,6 +149,7 @@ static struct env {
- 	bool show_version;
- 	bool comparison_mode;
- 	bool replay_mode;
-+	int top_n;
-=20
- 	int log_level;
- 	int log_size;
-@@ -215,6 +216,7 @@ static const struct argp_option opts[] =3D {
- 	{ "log-size", OPT_LOG_SIZE, "BYTES", 0, "Customize verifier log size (d=
-efault to 16MB)" },
- 	{ "test-states", 't', NULL, 0,
- 	  "Force frequent BPF verifier state checkpointing (set BPF_F_TEST_STAT=
-E_FREQ program flag)" },
-+	{ "top-n", 'n', "N", 0, "Emit only up to first N results." },
- 	{ "quiet", 'q', NULL, 0, "Quiet mode" },
- 	{ "emit", 'e', "SPEC", 0, "Specify stats to be emitted" },
- 	{ "sort", 's', "SPEC", 0, "Specify sort order" },
-@@ -293,6 +295,14 @@ static error_t parse_arg(int key, char *arg, struct =
-argp_state *state)
- 	case 't':
- 		env.force_checkpoints =3D true;
- 		break;
-+	case 'n':
-+		errno =3D 0;
-+		env.top_n =3D strtol(arg, NULL, 10);
-+		if (errno) {
-+			fprintf(stderr, "invalid top N specifier: %s\n", arg);
-+			argp_usage(state);
-+		}
-+		break;
- 	case 'C':
- 		env.comparison_mode =3D true;
- 		break;
---=20
-2.34.1
+> diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
+> index b7060f254486..8fe248e14eb6 100644
+> --- a/tools/lib/bpf/libbpf_common.h
+> +++ b/tools/lib/bpf/libbpf_common.h
+> @@ -79,11 +79,14 @@
+>    */
+>   #define LIBBPF_OPTS_RESET(NAME, ...)					    \
+>   	do {								    \
+> -		memset(&NAME, 0, sizeof(NAME));				    \
+> -		NAME = (typeof(NAME)) {					    \
+> -			.sz = sizeof(NAME),				    \
+> -			__VA_ARGS__					    \
+> -		};							    \
+> +		typeof(NAME) ___##NAME = ({ 				    \
+> +			memset(&___##NAME, 0, sizeof(NAME));		    \
+> +			(typeof(NAME)) {				    \
+> +				.sz = sizeof(NAME),			    \
+> +				__VA_ARGS__				    \
+> +			};						    \
+> +		});							    \
+> +		memcpy(&NAME, &___##NAME, sizeof(NAME));		    \
+>   	} while (0)
+>   
+>   #endif /* __LIBBPF_LIBBPF_COMMON_H */
+> 
 
 
