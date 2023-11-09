@@ -1,217 +1,155 @@
-Return-Path: <bpf+bounces-14632-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14633-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF897E72FE
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 21:39:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E35217E7309
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 21:45:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B65D8281073
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 20:39:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 840DF28120B
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 20:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C0930CE4;
-	Thu,  9 Nov 2023 20:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D47EE30334;
+	Thu,  9 Nov 2023 20:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="my5blm4a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lCCVkfrX"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74CEE225CA
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 20:39:32 +0000 (UTC)
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB6D8E5
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 12:39:31 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9df8d0c2505so276283866b.0
-        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 12:39:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C75F4225DC
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 20:45:42 +0000 (UTC)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1161D449E
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 12:45:42 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-53dd752685fso2131283a12.3
+        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 12:45:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699562370; x=1700167170; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qYMQrZO0HBE8szHbo88acIVM8saUDmuGjptuYVU6RJg=;
-        b=my5blm4a98hMwZrCeNCHmztbq4GoBM/WTBzykUbdVhFNPB+tJV42Ecwojq7xUuMsIc
-         UjXHti+nCMwTK8KyWqzwofGRlQ/mqfuBd/tuEDgwZ+uvun9pIVmzB+1BZAf/oiNEyG4t
-         flJHh4MFkK4+xkyAS/+hglItDIbhaGyRhVTqmGIYveJhPnCG5JsgYL+48tRMQ+cRiU1E
-         seni9O9SG4j6rcO955QzRbVFT/tCdQQYHMmvVm5l9U7xjgm+uxUlfaXB4lJQaFgHSFwQ
-         N8067grYYBCl2D0yIu28lihNrpN7VRT2q4SYDQLcYRTvLYlMj6INRhivlD1MM3mnxunI
-         Shaw==
+        d=gmail.com; s=20230601; t=1699562740; x=1700167540; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=iSFi6EgNOcXNjR2O3zR9sdThlKufSi5trMCjjZ5RtYM=;
+        b=lCCVkfrXaJ+pJeF3vW0PDugj2fyJBr+DWLVp8wZktffwMcje0+3c+PAlh2AoKbYYXq
+         4SaAXP6vmH4djJUkwhTwd4i1RwSGjTbvl2Rar7x0+WzMcUQjvIFB6YPy7cHh/L+IwRBf
+         DRvn+AnjGpPWhVBH3jpSimcmF3+xnk1Rj8Xii+QatQ5b9PkpMWAVEGimtQPCaS66hm3w
+         ScP7DVq3NgMNBehf6N6djhvkHxQlaBdstgJ7qsruwNBdok9FJuViKqyLN4mPXX8IxskH
+         +EDvf3erGgEv6VLcA7AYeiSu9ms+3V8WmN4aYnw4IkT6QCR2NxUhugRF+chv5eiaDKPd
+         ymqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699562370; x=1700167170;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qYMQrZO0HBE8szHbo88acIVM8saUDmuGjptuYVU6RJg=;
-        b=fN94dtTlJTH6DQMyYDuR594s97FkUQZJbSnSdeDjR47wXeZzm/Ot9Q11iMHlwFDgZg
-         ZIZCkPICbOkAPXMhrHM/+g4S23ofp8TIt0rPUiq4RlgwEzu/OIssRxGKshDEJbaSFm7P
-         1Q0iHImKD3dB9WATyK8Y/v5iUiL+iuVMlrobMk6RvyWoHQKnjGIXmkDSwR+FzXymXN/f
-         QGDnFYD6O6U2uu3TibrlM+hYaqklsytxd3XuIMMXmrs4kiMS6m00xi3o6LfM/OdyXYte
-         QkpMjntvoHpq8m8nD5WtI2L93y7PE1AWqXDJlSubRbB4gOtufF0ThKlK3VheyV8KLFJR
-         yJcg==
-X-Gm-Message-State: AOJu0YyTasv1spvoRMLt8wpPl5ZbBLWyUo2KfRvtVNm4qGZSlnYPo9m8
-	yl+qnrKEyZ9NhZoXCa6LTqz1JXiaed8u4rvo4bs=
-X-Google-Smtp-Source: AGHT+IHEhPscpDdAC4auq8KLrsj3ql2EkaFnj5OE7Gux4p6pElo82I9EviWXvwjn+qDVfM63QOlqYF3rNFZBx049sk0=
-X-Received: by 2002:a17:906:a3c9:b0:9c7:6523:407b with SMTP id
- ca9-20020a170906a3c900b009c76523407bmr358359ejb.17.1699562369789; Thu, 09 Nov
- 2023 12:39:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699562740; x=1700167540;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iSFi6EgNOcXNjR2O3zR9sdThlKufSi5trMCjjZ5RtYM=;
+        b=VHovVnF7qDy0OsYt3n4UaQMfSnOt3AXOcl7tVuY/fHyd33tjXJBs1IA4L3Zt8vUXxg
+         7Ol5r8jkyyA8JDssXHpguQe7+WYWvvHZWv7/FF0MIwFHHCKFvEdi/dB/MyFmI79F/rs0
+         JpTPwj+M3rTHxMKRdOgDUUqdG6OeMqc5KuK7/TTRWev7eymjfjVo6+GAximVb9vEyqUQ
+         7aDaKeN/IeWq9EZKkuqZTJZxmA3Hpo0Ycr6p7aF2RYIpuMsb7xd8+ywaqvnlxjxbfdQO
+         QwKhoIOoMWsMIb2rwfh6OF8Kf4IouzPQkZ+QgLIvSxdlZ+nAh7mNN2OX3+mG853bkBmz
+         2ilg==
+X-Gm-Message-State: AOJu0YyufsyCRkvVwoKgrcXER/5dKQWdcrpmlAMo9EMQD+nMIig6WhE9
+	kVJrBfOQqYw8FDG+EF7lj8w=
+X-Google-Smtp-Source: AGHT+IEKHnesEe3P/i1rvOcEPMKSFLUOZIiMwqJ1h7g6KNf/Sf9MCLjZR162pfBo+xV/ZsEWqSnmpw==
+X-Received: by 2002:a17:907:7f1e:b0:9d5:ecf9:e6a0 with SMTP id qf30-20020a1709077f1e00b009d5ecf9e6a0mr3946569ejc.0.1699562740314;
+        Thu, 09 Nov 2023 12:45:40 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id t15-20020a1709064f0f00b0099bcf9c2ec6sm3012655eju.75.2023.11.09.12.45.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 12:45:39 -0800 (PST)
+Message-ID: <2a414a6fbe64e0c8a1b5838b3fd1969a0b1c253a.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix pyperf180 compilation
+ failure with llvm18
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+Date: Thu, 09 Nov 2023 22:45:38 +0200
+In-Reply-To: <8576d3dd-28af-45c2-b72c-30105a451da9@linux.dev>
+References: <20231109053029.1403552-1-yonghong.song@linux.dev>
+	 <6bf022a8cfd8c821ec0a8370fa85bcfd806c8be7.camel@gmail.com>
+	 <8576d3dd-28af-45c2-b72c-30105a451da9@linux.dev>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231031050324.1107444-1-andrii@kernel.org> <20231031050324.1107444-2-andrii@kernel.org>
- <43f0d9f7219b74bfaff14b6496902f1056847de7.camel@gmail.com>
- <CAADnVQL6_o9z3z1=8o7qGNzAD8vKMZ+OetcYYy-1huxGfCJToA@mail.gmail.com>
- <CAEf4BzaA12xjXm8KZNB1mkVDOTtVDQDDWF4nYQtQ2qRYoTip3A@mail.gmail.com>
- <CAADnVQLGn4vRuZLqTm_t_9ff3t=Hsugr0j47YLThhPsnpNrs_Q@mail.gmail.com> <CAEf4BzY72H_0fF4C1kGbX5_ymNu6NHYf55HAnU8i5dnaQ+f_vA@mail.gmail.com>
-In-Reply-To: <CAEf4BzY72H_0fF4C1kGbX5_ymNu6NHYf55HAnU8i5dnaQ+f_vA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 9 Nov 2023 12:39:18 -0800
-Message-ID: <CAEf4BzYn83g6TSwWcqqdcJBPB74kRs5iX73J9Vdrt7fT6VstdA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/7] bpf: use common jump (instruction) history
- across all states
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 9, 2023 at 11:49=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Nov 9, 2023 at 11:29=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Nov 9, 2023 at 9:28=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > >
-> > > If we ever break DFS property, we can easily change this. Or we can
-> > > even have a hybrid: as long as traversal preserves DFS property, we
-> > > use global shared history, but we can also optionally clone and have
-> > > our own history if necessary. It's a matter of adding optional
-> > > potentially NULL pointer to "local history". All this is very nicely
-> > > hidden away from "normal" code.
-> >
-> > If we can "easily change this" then let's make it last and optional pat=
-ch.
-> > So we can revert in the future when we need to take non-DFS path.
->
-> Ok, sounds good. I'll reorder and put it last, you can decide whether
-> to apply it or not that way.
->
-> >
-> > > But again, let's look at data first. I'll get back with numbers soon.
-> >
-> > Sure. I think memory increase due to more tracking is ok.
-> > I suspect it won't cause 2x increase. Likely few %.
-> > The last time I checked the main memory hog is states stashed for pruni=
-ng.
->
-> So I'm back with data. See verifier.c changes I did at the bottom,
-> just to double check I'm not missing something major. I count the
-> number of allocations (but that's an underestimate that doesn't take
-> into account realloc), total number of instruction history entries for
-> entire program verification, and then also peak "depth" of instruction
-> history. Note that entries should be multiplied by 8 to get the amount
-> of bytes (and that's not counting per-allocation overhead).
->
-> Here are top 20 results, sorted by number of allocs for Meta-internal,
-> Cilium, and selftests. BEFORE is without added STACK_ACCESS tracking
-> and STACK_ZERO optimization. AFTER is with all the patches of this
-> patch set applied.
->
-> It's a few megabytes of memory allocation, which in itself is probably
-> not a big deal. But it's just an amount of unnecessary memory
-> allocations which is basically at least 2x of the total number of
-> states that we can save. And instead have just a few reallocs to size
-> global jump history to an order of magnitudes smaller peak entries.
->
-> And if we ever decide to track more stuff similar to
-> INSNS_F_STACK_ACCESS, we won't have to worry about more allocations or
-> more memory usage, because the absolute worst case is our global
-> history will be up to 1 million entries tops. We can track some *code
-> path dependent* per-instruction information for *each simulated
-> instruction* easily without having to think twice about this. Which I
-> think is a nice liberating thought in itself justifying this change.
->
->
+On Thu, 2023-11-09 at 11:54 -0800, Yonghong Song wrote:
+> On 11/9/23 3:47 AM, Eduard Zingerman wrote:
+> > On Wed, 2023-11-08 at 21:30 -0800, Yonghong Song wrote:
+> > > With latest llvm18 (main branch of llvm-project repo), when building =
+bpf selftests,
+> > >      [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf =
+LLVM=3D1 -j
+> > >=20
+> > > The following compilation error happens:
+> > >      fatal error: error in backend: Branch target out of insn range
+> > >      ...
+> > >      Stack dump:
+> > >      0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARC=
+H_x86 -mlittle-endian
+> > >        -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/in=
+clude
+> > >        -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/=
+yhs/work/bpf-next/tools/include/uapi
+> > >        -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include =
+-idirafter
+> > >        /home/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18=
+/include -idirafter /usr/local/include
+> > >        -idirafter /usr/include -Wno-compare-distinct-pointer-types -D=
+ENABLE_ATOMICS_TESTS -O2 --target=3Dbpf
+> > >        -c progs/pyperf180.c -mcpu=3Dv3 -o /home/yhs/work/bpf-next/too=
+ls/testing/selftests/bpf/pyperf180.bpf.o
+> > >      1.      <eof> parser at end of file
+> > >      2.      Code generation
+> > >      ...
+> > >=20
+> > > The compilation failure only happens to cpu=3Dv2 and cpu=3Dv3. cpu=3D=
+v4 is okay
+> > > since cpu=3Dv4 supports 32-bit branch target offset.
+> > >=20
+> > > The above failure is due to upstream llvm patch [1] where some inlini=
+ng behavior
+> > > are changed in llvm18.
+> > >=20
+> > > To workaround the issue, previously all 180 loop iterations are fully=
+ unrolled.
+> > > Now, the fully unrolling count is changed to 90 for llvm18 and later.=
+ This reduced
+> > > some otherwise long branch target distance, and fixed the compilation=
+ failure.
+> > >=20
+> > >    [1] https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b=
+5720c607313a566eebb16e
+> > >=20
+> > > Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> > Can confirm, the issue is present on clang main w/o this patch and
+> > disappears after this patch.
+> >=20
+> > Yonghong, is there a way to keep original UNROLL_COUNT if cpuv4 is used=
+?
+>=20
+> I thought about this but a little bit lazy so not giving it enough throug=
+ht.
+> But since you mentioned this, I think adding a macro to indicate cpu vers=
+ion
+> by llvm is a good idea. This will give bpf developers some flexibility to
+> add new features (new cpu variant) or workaround bugs (for a particular c=
+pu variant
+> but not impacting others if they are fine), etc.
+>=20
+> So here is the llvm patch: https://github.com/llvm/llvm-project/pull/7185=
+6
 
-Gmail butchered tables. See Github gist ([0]) for it properly formatted.
-
-  [0] https://gist.github.com/anakryiko/04c5a3a5ae4ee672bd11d4b7b3d832f5
-
->
-> Stats counting diff:
->
-> $ git show -- kernel
-> commit febebc9586c08820fa927b1628454b2709e98e3f (HEAD)
-> Author: Andrii Nakryiko <andrii@kernel.org>
-> Date:   Thu Nov 9 11:02:40 2023 -0800
->
->     [EXPERIMENT] bpf: add jump/insns history stats
->
->     Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index b688043e5460..d0f25f36221e 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2026,6 +2026,10 @@ static int pop_stack(struct bpf_verifier_env
-> *env, int *prev_insn_idx,
->                 return -ENOENT;
->
->         if (cur) {
-> +               env->jmp_hist_peak =3D max(env->jmp_hist_peak,
-> cur->insn_hist_end);
-> +               env->jmp_hist_total +=3D cur->insn_hist_end -
-> cur->insn_hist_start;
-> +               env->jmp_hist_allocs +=3D 1;
-> +
->                 err =3D copy_verifier_state(cur, &head->st);
->                 if (err)
->                         return err;
-> @@ -3648,6 +3653,8 @@ static int push_jmp_history(struct bpf_verifier_env=
- *env,
->         p->idx =3D env->insn_idx;
->         p->prev_idx =3D env->prev_insn_idx;
->         cur->insn_hist_end++;
-> +
-> +       env->jmp_hist_peak =3D max(env->jmp_hist_peak, cur->insn_hist_end=
-);
->         return 0;
->  }
->
-> @@ -17205,6 +17212,9 @@ static int is_state_visited(struct
-> bpf_verifier_env *env, int insn_idx)
->         WARN_ONCE(new->branches !=3D 1,
->                   "BUG is_state_visited:branches_to_explore=3D%d insn
-> %d\n", new->branches, insn_idx);
->
-> +       env->jmp_hist_total +=3D cur->insn_hist_end - cur->insn_hist_star=
-t;
-> +       env->jmp_hist_allocs +=3D 1;
-> +
->         cur->parent =3D new;
->         cur->first_insn_idx =3D insn_idx;
->         cur->insn_hist_start =3D cur->insn_hist_end;
-> @@ -20170,10 +20180,12 @@ static void print_verification_stats(struct
-> bpf_verifier_env *env)
->                 verbose(env, "\n");
->         }
->         verbose(env, "processed %d insns (limit %d) max_states_per_insn %=
-d "
-> -               "total_states %d peak_states %d mark_read %d\n",
-> +               "total_states %d peak_states %d mark_read %d "
-> +               "jmp_allocs %d jmp_total %d jmp_peak %d\n",
->                 env->insn_processed, BPF_COMPLEXITY_LIMIT_INSNS,
->                 env->max_states_per_insn, env->total_states,
-> -               env->peak_states, env->longest_mark_read_walk);
-> +               env->peak_states, env->longest_mark_read_walk,
-> +               env->jmp_hist_allocs, env->jmp_hist_total, env->jmp_hist_=
-peak);
->  }
+Thank you, tried it locally, works as expected.
 
