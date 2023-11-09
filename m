@@ -1,344 +1,121 @@
-Return-Path: <bpf+bounces-14598-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14599-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C4977E6FDD
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 18:10:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B87787E7010
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 18:21:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DEB01C20C69
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 17:10:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CAF3B20C2A
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 17:21:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9656021113;
-	Thu,  9 Nov 2023 17:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D4BE2232C;
+	Thu,  9 Nov 2023 17:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O8uIzFhW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RUxFDMea"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DCE013AE3;
-	Thu,  9 Nov 2023 17:10:05 +0000 (UTC)
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 975D730D0;
-	Thu,  9 Nov 2023 09:10:04 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5446c9f3a77so1921887a12.0;
-        Thu, 09 Nov 2023 09:10:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80DBD1DFCB
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 17:20:55 +0000 (UTC)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872C130D5
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 09:20:54 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9d0b4dfd60dso180227066b.1
+        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 09:20:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699549803; x=1700154603; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bBLwLk+pvhgBmgsdDnRZ5FktbGP6WVJe4voawdFNuzY=;
-        b=O8uIzFhWr4yEvJdBU9Gyf78fYaPPxAYub9K5psd8NU8j7zox3jg5nYftM0jk5697q6
-         GtZQpVUimTipRasgtukBuui4EhCzJSE5qOLHDYV/OnbkfnL3o6Xw3/HCfBj4RQMEPDPp
-         zCQS1Wh5ZpcnJ1UqglSFUbw/74XqJgTFBEc66fZlYDO0Knhr1jyQsiX/kuYdjDvMg6iY
-         Fft++AI/lG/oouzqHNg81zNL+TWoeHWokThUG8YtZT1FqcYaywEs/IiLEx0aQBheRHJq
-         GVY2xujD++4jCh0twR++5WfYuRUGi8XXJvS7pa/QrLmTMkdvnxADKGKBsiw+r5Fsvlr8
-         dnIg==
+        d=gmail.com; s=20230601; t=1699550453; x=1700155253; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zo+ltWD1vHWMul5qaXHJPskNF8TYrcxhYl9hV01js2U=;
+        b=RUxFDMea8EtoM4YPKvBK9dS85KUCJh5Hiv0IjA+XG7Yz0fqR7Wko3H6fG+/br/RD0y
+         3SGd6+u0U/8OmwnlRfPyJ6detrwr6BlL5Ho7+PgVzBcsYeRr/PPp5WXODlfpSATMip+l
+         aEjtSI77jpz/gmum7Y2GXxcCVh/wFYzMpO9t76iwoxAr5+03LqtPxDTzUonoxMRYte5E
+         ZtULv9xkTaHnufDCEqQqMBPTDudyH1L3iOBZU5QZEoDJ194rawMFSjtxOgrobh2settI
+         B8BURMZ3+TtWfx6eJVR73yE1P0PfCTy5FMse7QcPX4y5X/NTNU6JHY5MBsyHh9jwuoAj
+         4u8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699549803; x=1700154603;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bBLwLk+pvhgBmgsdDnRZ5FktbGP6WVJe4voawdFNuzY=;
-        b=A3A+yeESy6SRMYlT9BVkv0G3pmyudlXErC0l4EJvfyGIc9c2Z09Up0kUzgYck4drTV
-         V6sZIw0wwJC68e7hER07TJV0v9XiZQyBAkr1fcYiC+1Q2Y3I4dlCZE9x+UMdrpA4+kuI
-         EQMd7o0hj88F0lhvXojyk9mIyYA21he0Lhfand5VZvlAzKqAkKXdOuJ2ZEG3jwDyP4wh
-         oI/e3iNgo0Sx9ydVEvTCnDMOwCI9ynDptVg3Osuxb2J99x8WLyPlsODeMiQpFmrvy7ap
-         hDRmIEZUrsSs3yK5z4lWsu1UmEND5KeW4qUKplSBfYLrgxNOpeArmjpp/Xuzi7IS19q5
-         wDiA==
-X-Gm-Message-State: AOJu0YzjEdh3cqsJlz1ZrjPA6/KbtTkVBIljDKZKw7qXUuRC1p2CjZdM
-	C8AaO8yTpfrCI6N+h8j9CSL6jXpMkFQFDcDuMc4=
-X-Google-Smtp-Source: AGHT+IH+BXE2TcCK7OLC0VlwF4WB2/z6g/txyB4F4TbsReHBevUeymbMVQgsRWkvTp2LeJVqPqBaRFr2ckQ9doxG4ic=
-X-Received: by 2002:a17:907:9716:b0:9bd:d405:4e7e with SMTP id
- jg22-20020a170907971600b009bdd4054e7emr4745055ejc.6.1699549802712; Thu, 09
- Nov 2023 09:10:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699550453; x=1700155253;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zo+ltWD1vHWMul5qaXHJPskNF8TYrcxhYl9hV01js2U=;
+        b=tBip2CxES5jCTYb2wy2H1jCNBW60DPwFGbjw4CV2VU9lqiqG0h3fd4OIeHrEctcaCf
+         dlH8ar47UO+3GDa1ZpUfn3uZs25x5ylPFtBbbqj31Db7gADlsN7fwPWdCTCEQe9w6jna
+         /8supi1HFLZIKpmyduGZmLYbTgASdhYq4Ah0od3vPBKwva/i1Pqg9Uz26ptF9MLtIyHN
+         Ymxgxl6hf9iRZs0erGOjN3SAzXuETwgPxKrst+zzSviVGBesJ9Qu+jEfW2ig7GE6B6gh
+         r/PbbjKEcO5lF/pDVPhoiCHVEm9PNPaZMYQJoW1owukc2TgGNzRMzPQZtaXgs+QYRiKn
+         CLtA==
+X-Gm-Message-State: AOJu0YyJrbJwscadoApcdQk1BLteCzN3Q3puV3Z0/x3SxeCtfmXzetuM
+	dDZUDqKqkMDmaPZSTfTIAGiCY/GlxqQ=
+X-Google-Smtp-Source: AGHT+IENuGCGpG5Rv9r3Z85hpDPt46Zw6j+QUjMoRGpr/oFPdP6Qa6e77RfGaXJHjwOQ2e5Nhc7jBg==
+X-Received: by 2002:a17:907:2cc7:b0:9e3:5c27:8862 with SMTP id hg7-20020a1709072cc700b009e35c278862mr4847240ejc.27.1699550452807;
+        Thu, 09 Nov 2023 09:20:52 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id o19-20020a1709061b1300b00991faf3810esm2855583ejg.146.2023.11.09.09.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 09:20:52 -0800 (PST)
+Message-ID: <3ff0d703846a10d2a84ae5086511793a2aba5c08.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: fix precision backtracking
+ instruction iteration
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+Date: Thu, 09 Nov 2023 19:20:46 +0200
+In-Reply-To: <20231108231152.3583545-3-andrii@kernel.org>
+References: <20231108231152.3583545-1-andrii@kernel.org>
+	 <20231108231152.3583545-3-andrii@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.0 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231103190523.6353-1-andrii@kernel.org> <20231103190523.6353-3-andrii@kernel.org>
- <20231108-ungeeignet-uhren-698f16b4b36b@brauner> <CAEf4BzbanZO_QPhzyFgBEuB0i+uZZO4rZn7mO1qNp3aoPx+32g@mail.gmail.com>
- <20231109-linden-kursprogramm-15c2cbd860b3@brauner>
-In-Reply-To: <20231109-linden-kursprogramm-15c2cbd860b3@brauner>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 9 Nov 2023 09:09:51 -0800
-Message-ID: <CAEf4Bza-Rv4YJs8R2YeMyk6psnT71dnuwBt2H=p32PdTCt-6nA@mail.gmail.com>
-Subject: Re: [PATCH v9 bpf-next 02/17] bpf: add BPF token delegation mount
- options to BPF FS
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	paul@paul-moore.com, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	kernel-team@meta.com, sargun@sargun.me
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 9, 2023 at 12:48=E2=80=AFAM Christian Brauner <brauner@kernel.o=
-rg> wrote:
+On Wed, 2023-11-08 at 15:11 -0800, Andrii Nakryiko wrote:
+> Fix an edge case in __mark_chain_precision() which prematurely stops
+> backtracking instructions in a state if it happens that state's first
+> and last instruction indexes are the same. This situations doesn't
+> necessarily mean that there were no instructions simulated in a state,
+> but rather that we starting from the instruction, jumped around a bit,
+> and then ended up at the same instruction before checkpointing or
+> marking precision.
+>=20
+> To distinguish between these two possible situations, we need to consult
+> jump history. If it's empty or contain a single record "bridging" parent
+> state and first instruction of processed state, then we indeed
+> backtracked all instructions in this state. But if history is not empty,
+> we are definitely not done yet.
+>=20
+> Move this logic inside get_prev_insn_idx() to contain it more nicely.
+> Use -ENOENT return code to denote "we are out of instructions"
+> situation.
 >
-> On Wed, Nov 08, 2023 at 01:09:27PM -0800, Andrii Nakryiko wrote:
-> > On Wed, Nov 8, 2023 at 5:51=E2=80=AFAM Christian Brauner <brauner@kerne=
-l.org> wrote:
-> > >
-> > > On Fri, Nov 03, 2023 at 12:05:08PM -0700, Andrii Nakryiko wrote:
-> > > > Add few new mount options to BPF FS that allow to specify that a gi=
-ven
-> > > > BPF FS instance allows creation of BPF token (added in the next pat=
-ch),
-> > > > and what sort of operations are allowed under BPF token. As such, w=
-e get
-> > > > 4 new mount options, each is a bit mask
-> > > >   - `delegate_cmds` allow to specify which bpf() syscall commands a=
-re
-> > > >     allowed with BPF token derived from this BPF FS instance;
-> > > >   - if BPF_MAP_CREATE command is allowed, `delegate_maps` specifies
-> > > >     a set of allowable BPF map types that could be created with BPF=
- token;
-> > > >   - if BPF_PROG_LOAD command is allowed, `delegate_progs` specifies
-> > > >     a set of allowable BPF program types that could be loaded with =
-BPF token;
-> > > >   - if BPF_PROG_LOAD command is allowed, `delegate_attachs` specifi=
-es
-> > > >     a set of allowable BPF program attach types that could be loade=
-d with
-> > > >     BPF token; delegate_progs and delegate_attachs are meant to be =
-used
-> > > >     together, as full BPF program type is, in general, determined
-> > > >     through both program type and program attach type.
-> > > >
-> > > > Currently, these mount options accept the following forms of values=
-:
-> > > >   - a special value "any", that enables all possible values of a gi=
-ven
-> > > >   bit set;
-> > > >   - numeric value (decimal or hexadecimal, determined by kernel
-> > > >   automatically) that specifies a bit mask value directly;
-> > > >   - all the values for a given mount option are combined, if specif=
-ied
-> > > >   multiple times. E.g., `mount -t bpf nodev /path/to/mount -o
-> > > >   delegate_maps=3D0x1 -o delegate_maps=3D0x2` will result in a comb=
-ined 0x3
-> > > >   mask.
-> > > >
-> > > > Ideally, more convenient (for humans) symbolic form derived from
-> > > > corresponding UAPI enums would be accepted (e.g., `-o
-> > > > delegate_progs=3Dkprobe|tracepoint`) and I intend to implement this=
-, but
-> > > > it requires a bunch of UAPI header churn, so I postponed it until t=
-his
-> > > > feature lands upstream or at least there is a definite consensus th=
-at
-> > > > this feature is acceptable and is going to make it, just to minimiz=
-e
-> > > > amount of wasted effort and not increase amount of non-essential co=
-de to
-> > > > be reviewed.
-> > > >
-> > > > Attentive reader will notice that BPF FS is now marked as
-> > > > FS_USERNS_MOUNT, which theoretically makes it mountable inside non-=
-init
-> > > > user namespace as long as the process has sufficient *namespaced*
-> > > > capabilities within that user namespace. But in reality we still
-> > > > restrict BPF FS to be mountable only by processes with CAP_SYS_ADMI=
-N *in
-> > > > init userns* (extra check in bpf_fill_super()). FS_USERNS_MOUNT is =
-added
-> > > > to allow creating BPF FS context object (i.e., fsopen("bpf")) from
-> > > > inside unprivileged process inside non-init userns, to capture that
-> > > > userns as the owning userns. It will still be required to pass this
-> > > > context object back to privileged process to instantiate and mount =
-it.
-> > > >
-> > > > This manipulation is important, because capturing non-init userns a=
-s the
-> > > > owning userns of BPF FS instance (super block) allows to use that u=
-serns
-> > > > to constraint BPF token to that userns later on (see next patch). S=
-o
-> > > > creating BPF FS with delegation inside unprivileged userns will res=
-trict
-> > > > derived BPF token objects to only "work" inside that intended usern=
-s,
-> > > > making it scoped to a intended "container".
-> > > >
-> > > > There is a set of selftests at the end of the patch set that simula=
-tes
-> > > > this sequence of steps and validates that everything works as inten=
-ded.
-> > > > But careful review is requested to make sure there are no missed ga=
-ps in
-> > > > the implementation and testing.
-> > > >
-> > > > All this is based on suggestions and discussions with Christian Bra=
-uner
-> > > > ([0]), to the best of my ability to follow all the implications.
-> > >
-> > > "who will not be held responsible for any CVE future or present as he=
-'s
-> > >  not sure whether bpf token is a good idea in general"
-> > >
-> > > I'm not opposing it because it's really not my subsystem. But it'd be
-> > > nice if you also added a disclaimer that I'm not endorsing this. :)
-> > >
-> >
-> > Sure, I'll clarify. I still appreciate your reviewing everything and
-> > pointing out all the gotchas (like the reconfiguration and other
-> > stuff), thanks!
-> >
-> > > A comment below.
-> > >
-> > > >
-> > > >   [0] https://lore.kernel.org/bpf/20230704-hochverdient-lehne-eeb9e=
-eef785e@brauner/
-> > > >
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > ---
-> > > >  include/linux/bpf.h | 10 ++++++
-> > > >  kernel/bpf/inode.c  | 88 +++++++++++++++++++++++++++++++++++++++--=
-----
-> > > >  2 files changed, 88 insertions(+), 10 deletions(-)
-> > > >
-> >
-> > [...]
-> >
-> > > >       opt =3D fs_parse(fc, bpf_fs_parameters, param, &result);
-> > > >       if (opt < 0) {
-> > > > @@ -665,6 +692,25 @@ static int bpf_parse_param(struct fs_context *=
-fc, struct fs_parameter *param)
-> > > >       case OPT_MODE:
-> > > >               opts->mode =3D result.uint_32 & S_IALLUGO;
-> > > >               break;
-> > > > +     case OPT_DELEGATE_CMDS:
-> > > > +     case OPT_DELEGATE_MAPS:
-> > > > +     case OPT_DELEGATE_PROGS:
-> > > > +     case OPT_DELEGATE_ATTACHS:
-> > > > +             if (strcmp(param->string, "any") =3D=3D 0) {
-> > > > +                     msk =3D ~0ULL;
-> > > > +             } else {
-> > > > +                     err =3D kstrtou64(param->string, 0, &msk);
-> > > > +                     if (err)
-> > > > +                             return err;
-> > > > +             }
-> > > > +             switch (opt) {
-> > > > +             case OPT_DELEGATE_CMDS: opts->delegate_cmds |=3D msk;=
- break;
-> > > > +             case OPT_DELEGATE_MAPS: opts->delegate_maps |=3D msk;=
- break;
-> > > > +             case OPT_DELEGATE_PROGS: opts->delegate_progs |=3D ms=
-k; break;
-> > > > +             case OPT_DELEGATE_ATTACHS: opts->delegate_attachs |=
-=3D msk; break;
-> > > > +             default: return -EINVAL;
-> > > > +             }
-> > > > +             break;
-> > > >       }
-> > >
-> > > So just to repeat that this will allow a container to set it's own
-> > > delegation options:
-> > >
-> > >         # unprivileged container
-> > >
-> > >         fd_fs =3D fsopen();
-> > >         fsconfig(fd_fs, FSCONFIG_BLA_BLA, "give-me-all-the-delegation=
-");
-> > >
-> > >         # Now hand of that fd_fs to a privileged process
-> > >
-> > >         fsconfig(fd_fs, FSCONFIG_CREATE_CMD, ...)
-> > >
-> > > This means the container manager can't be part of your threat model
-> > > because you need to trust it to set delegation options.
-> > >
-> > > But if the container manager is part of your threat model then you ca=
-n
-> > > never trust an fd_fs handed to you because the container manager migh=
-t
-> > > have enabled arbitrary delegation privileges.
-> > >
-> > > There's ways around this:
-> > >
-> > > (1) kernel: Account for this in the kernel and require privileges whe=
-n
-> > >     setting delegation options.
-> >
-> > What sort of privilege would that be? We are in an unprivileged user
-> > namespace, so that would have to be some ns_capable() checks or
-> > something? I can add ns_capable(CAP_BPF), but what else did you have
-> > in mind?
->
-> You would require privileges in the initial namespace aka capable()
-> checks similar to what you require for superblock creation.
+> This bug was exposed by verifier_cfg.c's bounded_recursion subtest, once
 
-ok, I was just wondering if I'm missing something non-obvious.
-capable(CAP_SYS_ADMIN) makes sense and doesn't really hurt intended
-use case. Privileged parent will set these config values and then do
-FSCONFIG_CREATE_CMD.
+Note: verifier_cfg.c should be verifier_loops1.c
 
-For reconfiguration I'll enforce same capable(CAP_SYS_ADMIN) checks,
-unless unprivileged user drops permissions to more restrictive ones
-(but I haven't had a chance to look at exact callback API, so we'll
-see if that's easy to support).
+> the next fix in this patch set is applied.
+>=20
+> Fixes: b5dc0163d8fd ("bpf: precise scalar_value tracking")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Thanks for feedback!
+Funny how nobody noticed this bug for so long, I looked at exactly
+this code today while going through your other patch-set and no alarm
+bells rang in my head.
 
->
-> >
-> > I think even if we say that privileged parent does FSCONFIG_SET_STRING
-> > and unprivileged child just does sys_fsopen("bpf", 0) and nothing
-> > more, we still can't be sure that child won't race with parent and set
-> > FSCONFIG_SET_STRING at the same time. Because they both have access to
-> > the same fs_fd.
->
-> Unless you require privileges as outlined above to set delegation
-> options in which case an unprivileged container cannot change delegation
-> options at all.
+I think that this case needs a dedicated test case that would check
+precision tracking log.
 
-Yep, makes sense, that's what I'm going to do.
-
->
-> >
-> > > (2) userspace: A trusted helper that allocates an fs_context fd in
-> > >     the target user namespace, then sets delegation options and creat=
-es
-> > >     superblock.
-> > >
-> > > (1) Is more restrictive but also more secure. (2) is less restrictive
-> > > but requires more care from userspace.
-> > >
-> > > Either way I would probably consider writing a document detailing
-> > > various delegation scenarios and possible pitfalls and implications
-> > > before advertising it.
-> > >
-> > > If you choose (2) then you also need to be aware that the security of
-> > > this also hinges on bpffs not allowing to reconfigure parameters once=
- it
-> > > has been mounted. Otherwise an unprivileged container can change
-> > > delegation options.
-> > >
-> > > I would recommend that you either add a dummy bpf_reconfigure() metho=
-d
-> > > with a comment in it or you add a comment on top of bpf_context_ops.
-> > > Something like:
-> > >
-> > > /*
-> > >  * Unprivileged mounts of bpffs are owned by the user namespace they =
-are
-> > >  * mounted in. That means unprivileged users can change vfs mount
-> > >  * options (ro<->rw, nosuid, etc.).
-> > >  *
-> > >  * They currently cannot change bpffs specific mount options such as
-> > >  * delegation settings. If that is ever implemented it is necessary t=
-o
-> > >  * require rivileges in the initial namespace. Otherwise unprivileged
-> > >  * users can change delegation options to whatever they want.
-> > >  */
-> >
-> > Yep, I will add a custom callback. I think we can allow reconfiguring
-> > towards less permissive delegation subset, but I'll need to look at
-> > the specifics to see if we can support that easily.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
