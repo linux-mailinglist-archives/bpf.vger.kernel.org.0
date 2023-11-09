@@ -1,42 +1,43 @@
-Return-Path: <bpf+bounces-14573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 342667E66C4
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 10:29:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89AC77E66C5
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 10:29:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4705281189
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 09:29:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C8E1B20B83
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 09:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA54912B7B;
-	Thu,  9 Nov 2023 09:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B135E12B7B;
+	Thu,  9 Nov 2023 09:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e4lefJJp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ciO0BGPL"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 248DD11CA8
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 09:29:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B203C433C7;
-	Thu,  9 Nov 2023 09:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B83C23C8
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 09:29:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDA9AC433C7;
+	Thu,  9 Nov 2023 09:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699522177;
-	bh=LH0mYtbDVT0IO10iwbVOKKmkkutJALsXrVibOnGA1ow=;
+	s=k20201202; t=1699522189;
+	bh=P+pPEdgvwHFVa+c8e06tOkfnEhPYO+jpRUK3poe+nr8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=e4lefJJphJbvb/1xEQTLCErLjg8M10GUiTLoChPdsKVsa91sOajce0A3X6Os/NrDS
-	 AiYFm7Ws6qYFsO1acSG+JwIQuYMVweL6ZUL7WFPqGBVPRWNm6yERNTrIUhWqHMhY9+
-	 fJ22Ym1/USJbpn2wqKBcIqax+2XvsgxmIvVJatc8ZjnAY6lvPvtUaflx5E9MsGGzId
-	 nFHtas06XYsmIDxPD3xnhlAeJafl+VXDqC3n+tztKS6GPW+D3165hsJ/SAVxYAs3jn
-	 UwRJWhmVc4V7tQxGqkYIeGahNd8DeKdjzFChItu/Qav0CCWXEfthOjLrGNGzKE4u42
-	 eCa1g0GHljzaA==
+	b=ciO0BGPLAIlA4rT5Iqvsg/AEzERebjoQ/SU1a2NAUH5SsbZSQYsyjIZISkbyCDadq
+	 SdevPDK5RTTNwPElSWsKgN+8tnjCseuw0+4PR28CtdljhgldBfJRHoKdAeuGYh6C7H
+	 lzj+Y4CfiDwRFFfV4DB0YtVN4d2Gc/2PBhbXkMsSHxGcG8mqI2TLTh3zgszO//JTea
+	 RZN8rOJv9rhf5VzXyIjPTjOB3y4N9HXrjX2411KMZWYxLxIr+akEEyfq9AkkCIZql+
+	 DrztCqB3ifmzX+G3K26TlkY7aGFqQPn8fOFgKbfevyQo6aRHZ+JB1IBDCvJMcjofgT
+	 H6jIouOdmnp4g==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
 Cc: Song Liu <song@kernel.org>,
+	Quentin Monnet <quentin@isovalent.com>,
 	bpf@vger.kernel.org,
 	Martin KaFai Lau <kafai@fb.com>,
 	Song Liu <songliubraving@fb.com>,
@@ -46,9 +47,9 @@ Cc: Song Liu <song@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCHv2 bpf-next 5/6] selftests/bpf: Add link_info test for uprobe_multi link
-Date: Thu,  9 Nov 2023 10:28:37 +0100
-Message-ID: <20231109092838.721233-6-jolsa@kernel.org>
+Subject: [PATCHv2 bpf-next 6/6] bpftool: Add support to display uprobe_multi links
+Date: Thu,  9 Nov 2023 10:28:38 +0100
+Message-ID: <20231109092838.721233-7-jolsa@kernel.org>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231109092838.721233-1-jolsa@kernel.org>
 References: <20231109092838.721233-1-jolsa@kernel.org>
@@ -60,237 +61,215 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding fill_link_info test for uprobe_multi link.
+Adding support to display details for uprobe_multi links,
+both plain:
 
-Setting up uprobes with bogus ref_ctr_offsets and cookie values
-to test all the bpf_link_info::uprobe_multi fields.
+  # bpftool link -p
+  ...
+  24: uprobe_multi  prog 126
+          uprobe.multi  path /home/jolsa/bpf/test_progs  func_cnt 3  pid 4143
+          offset             ref_ctr_offset     cookies
+          0xd1f88            0xf5d5a8           0xdead
+          0xd1f8f            0xf5d5aa           0xbeef
+          0xd1f96            0xf5d5ac           0xcafe
+
+and json:
+
+  # bpftool link -p
+  [{
+  ...
+      },{
+          "id": 24,
+          "type": "uprobe_multi",
+          "prog_id": 126,
+          "retprobe": false,
+          "path": "/home/jolsa/bpf/test_progs",
+          "func_cnt": 3,
+          "pid": 4143,
+          "funcs": [{
+                  "offset": 860040,
+                  "ref_ctr_offset": 16111016,
+                  "cookie": 57005
+              },{
+                  "offset": 860047,
+                  "ref_ctr_offset": 16111018,
+                  "cookie": 48879
+              },{
+                  "offset": 860054,
+                  "ref_ctr_offset": 16111020,
+                  "cookie": 51966
+              }
+          ]
+      }
+  ]
 
 Acked-by: Song Liu <song@kernel.org>
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/fill_link_info.c | 179 ++++++++++++++++++
- .../selftests/bpf/progs/test_fill_link_info.c |   6 +
- 2 files changed, 185 insertions(+)
+ tools/bpf/bpftool/link.c | 105 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 103 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-index 9294cb8d7743..86652622afc2 100644
---- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-@@ -7,6 +7,7 @@
- #include <test_progs.h>
- #include "trace_helpers.h"
- #include "test_fill_link_info.skel.h"
-+#include "bpf/libbpf_internal.h"
- 
- #define TP_CAT "sched"
- #define TP_NAME "sched_switch"
-@@ -300,6 +301,177 @@ static void test_kprobe_multi_fill_link_info(struct test_fill_link_info *skel,
- 	bpf_link__destroy(link);
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index a1528cde81ab..d198adf77d81 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -294,6 +294,37 @@ show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
+ 	jsonw_end_array(json_wtr);
  }
  
-+/* Initialize semaphore variables so they don't end up in bss
-+ * section and we could get retrieve their offsets.
-+ */
-+static short uprobe_link_info_sema_1 = 1;
-+static short uprobe_link_info_sema_2 = 1;
-+static short uprobe_link_info_sema_3 = 1;
-+
-+noinline void uprobe_link_info_func_1(void)
++static __u64 *u64_to_arr(__u64 val)
 +{
-+	uprobe_link_info_sema_1++;
-+	asm volatile ("");
++	return (__u64 *) u64_to_ptr(val);
 +}
 +
-+noinline void uprobe_link_info_func_2(void)
++static void
++show_uprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
 +{
-+	uprobe_link_info_sema_2++;
-+	asm volatile ("");
-+}
++	__u32 i;
 +
-+noinline void uprobe_link_info_func_3(void)
-+{
-+	uprobe_link_info_sema_3++;
-+	asm volatile ("");
-+}
++	jsonw_bool_field(json_wtr, "retprobe",
++			 info->uprobe_multi.flags & BPF_F_UPROBE_MULTI_RETURN);
++	jsonw_string_field(json_wtr, "path", (char *) u64_to_ptr(info->uprobe_multi.path));
++	jsonw_uint_field(json_wtr, "func_cnt", info->uprobe_multi.count);
++	jsonw_int_field(json_wtr, "pid", (int) info->uprobe_multi.pid);
++	jsonw_name(json_wtr, "funcs");
++	jsonw_start_array(json_wtr);
 +
-+static int
-+verify_umulti_link_info(int fd, bool retprobe, __u64 *offsets,
-+			__u64 *cookies, __u64 *ref_ctr_offsets)
-+{
-+	char path[PATH_MAX], path_buf[PATH_MAX];
-+	struct bpf_link_info info;
-+	__u32 len = sizeof(info);
-+	__u64 ref_ctr_offsets_buf[3];
-+	__u64 offsets_buf[3];
-+	__u64 cookies_buf[3];
-+	int i, err;
-+
-+	memset(path, 0, sizeof(path));
-+	err = readlink("/proc/self/exe", path, sizeof(path));
-+	if (!ASSERT_NEQ(err, -1, "readlink"))
-+		return -1;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.uprobe_multi.path = ptr_to_u64(path_buf);
-+	info.uprobe_multi.path_size = sizeof(path_buf);
-+
-+again:
-+	err = bpf_link_get_info_by_fd(fd, &info, &len);
-+	if (!ASSERT_OK(err, "bpf_link_get_info_by_fd"))
-+		return -1;
-+
-+	if (!ASSERT_EQ(info.type, BPF_LINK_TYPE_UPROBE_MULTI, "info.type"))
-+		return -1;
-+
-+	ASSERT_EQ(info.uprobe_multi.pid, getpid(), "info.uprobe_multi.pid");
-+	ASSERT_EQ(info.uprobe_multi.count, 3, "info.uprobe_multi.count");
-+	ASSERT_EQ(info.uprobe_multi.flags & BPF_F_KPROBE_MULTI_RETURN,
-+		  retprobe, "info.uprobe_multi.flags.retprobe");
-+	ASSERT_STREQ(path_buf, path, "info.uprobe_multi.path");
-+
-+	if (!info.uprobe_multi.offsets) {
-+		info.uprobe_multi.offsets = ptr_to_u64(offsets_buf);
-+		info.uprobe_multi.cookies = ptr_to_u64(cookies_buf);
-+		info.uprobe_multi.ref_ctr_offsets = ptr_to_u64(ref_ctr_offsets_buf);
-+		goto again;
++	for (i = 0; i < info->uprobe_multi.count; i++) {
++		jsonw_start_object(json_wtr);
++		jsonw_uint_field(json_wtr, "offset",
++				 u64_to_arr(info->uprobe_multi.offsets)[i]);
++		jsonw_uint_field(json_wtr, "ref_ctr_offset",
++				 u64_to_arr(info->uprobe_multi.ref_ctr_offsets)[i]);
++		jsonw_uint_field(json_wtr, "cookie",
++				 u64_to_arr(info->uprobe_multi.cookies)[i]);
++		jsonw_end_object(json_wtr);
 +	}
-+
-+	for (i = 0; i < info.uprobe_multi.count; i++) {
-+		ASSERT_EQ(offsets_buf[i], offsets[i], "info.uprobe_multi.offsets");
-+		ASSERT_EQ(cookies_buf[i], cookies[i], "info.uprobe_multi.cookies");
-+		ASSERT_EQ(ref_ctr_offsets_buf[i], ref_ctr_offsets[i], "info.uprobe_multi.ref_ctr_offsets");
-+	}
-+	return 0;
++	jsonw_end_array(json_wtr);
 +}
 +
-+static void verify_umulti_invalid_user_buffer(int fd)
-+{
-+	struct bpf_link_info info;
-+	__u32 len = sizeof(info);
-+	__u64 offsets[3];
-+	int err;
-+
-+	/* upath_size defined, not path */
-+	memset(&info, 0, sizeof(info));
-+	info.uprobe_multi.path_size = 3;
-+	err = bpf_link_get_info_by_fd(fd, &info, &len);
-+	ASSERT_EQ(err, -EINVAL, "failed_upath_size");
-+
-+	/* path has wrong pointer */
-+	memset(&info, 0, sizeof(info));
-+	info.uprobe_multi.path_size = PATH_MAX;
-+	info.uprobe_multi.path = 123;
-+	err = bpf_link_get_info_by_fd(fd, &info, &len);
-+	ASSERT_EQ(err, -EFAULT, "failed_bad_path_ptr");
-+
-+	/* count defined, not offsets */
-+	memset(&info, 0, sizeof(info));
-+	info.uprobe_multi.count = 3;
-+	err = bpf_link_get_info_by_fd(fd, &info, &len);
-+	ASSERT_EQ(err, -EINVAL, "failed_count");
-+
-+	/* offsets not big enough */
-+	memset(&info, 0, sizeof(info));
-+	info.uprobe_multi.offsets = ptr_to_u64(offsets);
-+	info.uprobe_multi.count = 2;
-+	err = bpf_link_get_info_by_fd(fd, &info, &len);
-+	ASSERT_EQ(err, -ENOSPC, "failed_small_count");
-+
-+	/* offsets has wrong pointer */
-+	memset(&info, 0, sizeof(info));
-+	info.uprobe_multi.offsets = 123;
-+	info.uprobe_multi.count = 3;
-+	err = bpf_link_get_info_by_fd(fd, &info, &len);
-+	ASSERT_EQ(err, -EFAULT, "failed_wrong_offsets");
-+}
-+
-+static void test_uprobe_multi_fill_link_info(struct test_fill_link_info *skel,
-+					     bool retprobe, bool invalid)
-+{
-+	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts,
-+		.retprobe = retprobe,
-+	);
-+	const char *syms[3] = {
-+		"uprobe_link_info_func_1",
-+		"uprobe_link_info_func_2",
-+		"uprobe_link_info_func_3",
-+	};
-+	__u64 cookies[3] = {
-+		0xdead,
-+		0xbeef,
-+		0xcafe,
-+	};
-+	const char *sema[3] = {
-+		"uprobe_link_info_sema_1",
-+		"uprobe_link_info_sema_2",
-+		"uprobe_link_info_sema_3",
-+	};
-+	__u64 *offsets, *ref_ctr_offsets;
-+	int link_fd, err;
-+
-+	err = elf_resolve_syms_offsets("/proc/self/exe", 3, sema,
-+				       (unsigned long **) &ref_ctr_offsets, STT_OBJECT);
-+	if (!ASSERT_OK(err, "elf_resolve_syms_offsets_object"))
-+		return;
-+
-+	err = elf_resolve_syms_offsets("/proc/self/exe", 3, syms,
-+				       (unsigned long **) &offsets, STT_FUNC);
-+	if (!ASSERT_OK(err, "elf_resolve_syms_offsets_func"))
-+		return;
-+
-+	opts.syms = syms;
-+	opts.cookies = &cookies[0];
-+	opts.ref_ctr_offsets = (unsigned long *) &ref_ctr_offsets[0];
-+	opts.cnt = ARRAY_SIZE(syms);
-+
-+	skel->links.umulti_run = bpf_program__attach_uprobe_multi(skel->progs.umulti_run, 0,
-+								  "/proc/self/exe", NULL, &opts);
-+	if (!ASSERT_OK_PTR(skel->links.umulti_run, "bpf_program__attach_uprobe_multi"))
-+		goto out;
-+
-+	link_fd = bpf_link__fd(skel->links.umulti_run);
-+	if (invalid)
-+		verify_umulti_invalid_user_buffer(link_fd);
-+	else
-+		verify_umulti_link_info(link_fd, retprobe, offsets, cookies, ref_ctr_offsets);
-+
-+	bpf_link__detach(skel->links.umulti_run);
-+out:
-+	free(offsets);
-+}
-+
- void test_fill_link_info(void)
+ static void
+ show_perf_event_kprobe_json(struct bpf_link_info *info, json_writer_t *wtr)
  {
- 	struct test_fill_link_info *skel;
-@@ -339,6 +511,13 @@ void test_fill_link_info(void)
- 	if (test__start_subtest("kprobe_multi_invalid_ubuff"))
- 		test_kprobe_multi_fill_link_info(skel, true, true);
- 
-+	if (test__start_subtest("uprobe_multi_link_info"))
-+		test_uprobe_multi_fill_link_info(skel, false, false);
-+	if (test__start_subtest("uretprobe_multi_link_info"))
-+		test_uprobe_multi_fill_link_info(skel, true, false);
-+	if (test__start_subtest("uprobe_multi_invalid"))
-+		test_uprobe_multi_fill_link_info(skel, false, true);
-+
- cleanup:
- 	test_fill_link_info__destroy(skel);
+@@ -465,6 +496,9 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
+ 	case BPF_LINK_TYPE_KPROBE_MULTI:
+ 		show_kprobe_multi_json(info, json_wtr);
+ 		break;
++	case BPF_LINK_TYPE_UPROBE_MULTI:
++		show_uprobe_multi_json(info, json_wtr);
++		break;
+ 	case BPF_LINK_TYPE_PERF_EVENT:
+ 		switch (info->perf_event.type) {
+ 		case BPF_PERF_EVENT_EVENT:
+@@ -674,6 +708,33 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
+ 	}
  }
-diff --git a/tools/testing/selftests/bpf/progs/test_fill_link_info.c b/tools/testing/selftests/bpf/progs/test_fill_link_info.c
-index 564f402d56fe..69509f8bb680 100644
---- a/tools/testing/selftests/bpf/progs/test_fill_link_info.c
-+++ b/tools/testing/selftests/bpf/progs/test_fill_link_info.c
-@@ -39,4 +39,10 @@ int BPF_PROG(kmulti_run)
+ 
++static void show_uprobe_multi_plain(struct bpf_link_info *info)
++{
++	__u32 i;
++
++	if (!info->uprobe_multi.count)
++		return;
++
++	if (info->uprobe_multi.flags & BPF_F_UPROBE_MULTI_RETURN)
++		printf("\n\turetprobe.multi  ");
++	else
++		printf("\n\tuprobe.multi  ");
++
++	printf("path %s  ", (char *) u64_to_ptr(info->uprobe_multi.path));
++	printf("func_cnt %u  ", info->uprobe_multi.count);
++
++	if (info->uprobe_multi.pid != (__u32) -1)
++		printf("pid %d  ", info->uprobe_multi.pid);
++
++	printf("\n\t%-16s   %-16s   %-16s", "offset", "ref_ctr_offset", "cookies");
++	for (i = 0; i < info->uprobe_multi.count; i++) {
++		printf("\n\t0x%-16llx 0x%-16llx 0x%-16llx",
++			u64_to_arr(info->uprobe_multi.offsets)[i],
++			u64_to_arr(info->uprobe_multi.ref_ctr_offsets)[i],
++			u64_to_arr(info->uprobe_multi.cookies)[i]);
++	}
++}
++
+ static void show_perf_event_kprobe_plain(struct bpf_link_info *info)
+ {
+ 	const char *buf;
+@@ -807,6 +868,9 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
+ 	case BPF_LINK_TYPE_KPROBE_MULTI:
+ 		show_kprobe_multi_plain(info);
+ 		break;
++	case BPF_LINK_TYPE_UPROBE_MULTI:
++		show_uprobe_multi_plain(info);
++		break;
+ 	case BPF_LINK_TYPE_PERF_EVENT:
+ 		switch (info->perf_event.type) {
+ 		case BPF_PERF_EVENT_EVENT:
+@@ -846,8 +910,10 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
+ 
+ static int do_show_link(int fd)
+ {
++	__u64 *ref_ctr_offsets = NULL, *offsets = NULL, *cookies = NULL;
+ 	struct bpf_link_info info;
+ 	__u32 len = sizeof(info);
++	char path_buf[PATH_MAX];
+ 	__u64 *addrs = NULL;
+ 	char buf[PATH_MAX];
+ 	int count;
+@@ -889,6 +955,39 @@ static int do_show_link(int fd)
+ 			goto again;
+ 		}
+ 	}
++	if (info.type == BPF_LINK_TYPE_UPROBE_MULTI &&
++	    !info.uprobe_multi.offsets) {
++		count = info.uprobe_multi.count;
++		if (count) {
++			offsets = calloc(count, sizeof(__u64));
++			if (!offsets) {
++				p_err("mem alloc failed");
++				close(fd);
++				return -ENOMEM;
++			}
++			info.uprobe_multi.offsets = ptr_to_u64(offsets);
++			ref_ctr_offsets = calloc(count, sizeof(__u64));
++			if (!ref_ctr_offsets) {
++				p_err("mem alloc failed");
++				free(offsets);
++				close(fd);
++				return -ENOMEM;
++			}
++			info.uprobe_multi.ref_ctr_offsets = ptr_to_u64(ref_ctr_offsets);
++			cookies = calloc(count, sizeof(__u64));
++			if (!cookies) {
++				p_err("mem alloc failed");
++				free(cookies);
++				free(offsets);
++				close(fd);
++				return -ENOMEM;
++			}
++			info.uprobe_multi.cookies = ptr_to_u64(cookies);
++			info.uprobe_multi.path = ptr_to_u64(path_buf);
++			info.uprobe_multi.path_size = sizeof(path_buf);
++			goto again;
++		}
++	}
+ 	if (info.type == BPF_LINK_TYPE_PERF_EVENT) {
+ 		switch (info.perf_event.type) {
+ 		case BPF_PERF_EVENT_TRACEPOINT:
+@@ -924,8 +1023,10 @@ static int do_show_link(int fd)
+ 	else
+ 		show_link_close_plain(fd, &info);
+ 
+-	if (addrs)
+-		free(addrs);
++	free(ref_ctr_offsets);
++	free(cookies);
++	free(offsets);
++	free(addrs);
+ 	close(fd);
  	return 0;
  }
- 
-+SEC("uprobe.multi")
-+int BPF_PROG(umulti_run)
-+{
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
 -- 
 2.41.0
 
