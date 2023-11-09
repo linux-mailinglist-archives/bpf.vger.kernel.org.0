@@ -1,125 +1,101 @@
-Return-Path: <bpf+bounces-14549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F6667E632F
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 06:30:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E58E97E6380
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 07:03:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F3551C209A6
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 05:30:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C99BB20C8F
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 06:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55E3805;
-	Thu,  9 Nov 2023 05:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76DCD287;
+	Thu,  9 Nov 2023 06:03:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OawGmaT1"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81D6D6D38
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 05:30:45 +0000 (UTC)
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22312696
-	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 21:30:44 -0800 (PST)
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id A9F9F298DF593; Wed,  8 Nov 2023 21:30:29 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix pyperf180 compilation failure with llvm18
-Date: Wed,  8 Nov 2023 21:30:29 -0800
-Message-Id: <20231109053029.1403552-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0EECD289
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 06:03:37 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAA926A4
+	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 22:03:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699509816;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aizM3ELlXHXW7JfsEczOmSTmLbm7Vpen9q9fzHEgyOk=;
+	b=OawGmaT1SxUL+OEdSDYoRxhE4eNQ6XaVlowMKU0UREvSnHEJ06OceHT6SVE7aV/n/oAl1E
+	bP8tHkN6uhETRGuxVBjNGKZh+82JZDUx/aOYr5bs+UeXK2iZleSzxKzl+zvtthWd0fDEfA
+	jkN5LZr0zrLk+LqyzDt88Gic3JdxJJA=
+Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
+ [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-166-vKg4QFdUPxKvf1STWq8XLw-1; Thu, 09 Nov 2023 01:03:35 -0500
+X-MC-Unique: vKg4QFdUPxKvf1STWq8XLw-1
+Received: by mail-lf1-f71.google.com with SMTP id 2adb3069b0e04-5090b916b7fso487417e87.1
+        for <bpf@vger.kernel.org>; Wed, 08 Nov 2023 22:03:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699509813; x=1700114613;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aizM3ELlXHXW7JfsEczOmSTmLbm7Vpen9q9fzHEgyOk=;
+        b=N/geNZ5fTJXix40c8UZLledY7c9V7aP2aaKzvQbSY9VZa7C8V8pbQG5UX/KNyF8cS9
+         /SnLWR6vri96r9wTXylM7v4xl4aTVZHlR2UG4P3SlPpCEZleMQgTTNnXztGLORbKCx+t
+         F1mSelzG3jo8D8ip2UyhL4fCgjXGMf5yCSxYrc1i/VTliErrA18g8WcSAI4VHWMPfwrW
+         AmTqFdzcV0MWPE3p85EWE7aRB+vnSNFdxEQasmdEW9qXtaEZrcpTtzAJP4LgZJuUJzcY
+         Gpewupbw+ymryUospk0BBISZgr/dEo8TdPkMpiWy2dLbvypafAWsNIVzeEhKBBnFKx/v
+         cmuA==
+X-Gm-Message-State: AOJu0YxqbTiRLXHz49ymn9A0ayFgA1O+T8lUoF28y71rdKVh4I0/4MBE
+	VmxTXCumam61zlQEa95YvEnc5kTidhRQLtVJLWYipyNRiD2jU7NlcI/Bz9ZW4any4l+cMATf0Ns
+	dxCy/IIelKXtNxqB5q3nYFD1fzTyg
+X-Received: by 2002:a19:4f17:0:b0:503:2deb:bbc1 with SMTP id d23-20020a194f17000000b005032debbbc1mr411131lfb.22.1699509813667;
+        Wed, 08 Nov 2023 22:03:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHYsjgTD24MZnXktKx7aRviir9RZpQgol0T8Q0VdFoaD8xNFvxps4WomMhc0qsMn/K7CszOgRlSkSBitpfIyVI=
+X-Received: by 2002:a19:4f17:0:b0:503:2deb:bbc1 with SMTP id
+ d23-20020a194f17000000b005032debbbc1mr411106lfb.22.1699509813388; Wed, 08 Nov
+ 2023 22:03:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231107031227.100015-1-xuanzhuo@linux.alibaba.com> <20231107031227.100015-5-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20231107031227.100015-5-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 9 Nov 2023 14:03:22 +0800
+Message-ID: <CACGkMEss6=0ZcmEV-YNSVXiH48TzT1A_VdqrUHbLNn=qW5835g@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 04/21] virtio_net: move core structures to virtio_net.h
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-With latest llvm18 (main branch of llvm-project repo), when building bpf =
-selftests,
-    [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf LLVM=3D=
-1 -j
+On Tue, Nov 7, 2023 at 11:13=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
+>
+> Move some core structures (send_queue, receive_queue, virtnet_info)
+> definitions and the relative structures definitions into the
+> virtio_net.h file.
+>
+> That will be used by the other c code files.
+>
+> Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> ---
 
-The following compilation error happens:
-    fatal error: error in backend: Branch target out of insn range
-    ...
-    Stack dump:
-    0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARCH_x86=
- -mlittle-endian
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/w=
-ork/bpf-next/tools/include/uapi
-      -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include -idir=
-after
-      /home/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18/incl=
-ude -idirafter /usr/local/include
-      -idirafter /usr/include -Wno-compare-distinct-pointer-types -DENABL=
-E_ATOMICS_TESTS -O2 --target=3Dbpf
-      -c progs/pyperf180.c -mcpu=3Dv3 -o /home/yhs/work/bpf-next/tools/te=
-sting/selftests/bpf/pyperf180.bpf.o
-    1.      <eof> parser at end of file
-    2.      Code generation
-    ...
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-The compilation failure only happens to cpu=3Dv2 and cpu=3Dv3. cpu=3Dv4 i=
-s okay
-since cpu=3Dv4 supports 32-bit branch target offset.
-
-The above failure is due to upstream llvm patch [1] where some inlining b=
-ehavior
-are changed in llvm18.
-
-To workaround the issue, previously all 180 loop iterations are fully unr=
-olled.
-Now, the fully unrolling count is changed to 90 for llvm18 and later. Thi=
-s reduced
-some otherwise long branch target distance, and fixed the compilation fai=
-lure.
-
-  [1] https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c=
-607313a566eebb16e
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- tools/testing/selftests/bpf/progs/pyperf180.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/progs/pyperf180.c b/tools/testin=
-g/selftests/bpf/progs/pyperf180.c
-index c39f559d3100..3c38f3e12836 100644
---- a/tools/testing/selftests/bpf/progs/pyperf180.c
-+++ b/tools/testing/selftests/bpf/progs/pyperf180.c
-@@ -1,4 +1,17 @@
- // SPDX-License-Identifier: GPL-2.0
- // Copyright (c) 2019 Facebook
- #define STACK_MAX_LEN 180
-+
-+/* llvm upstream commit at llvm18
-+ *   https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c=
-607313a566eebb16e
-+ * changed inlining behavior and caused compilation failure as some bran=
-ch
-+ * target distance exceeded 16bit representation which is the maximum fo=
-r
-+ * cpu v1/v2/v3. To workaround this, for llvm18 and later, let us set un=
-roll_count
-+ * to be 90, which reduced some branch target distances and resolved the
-+ * compilation failure.
-+ */
-+#if __clang_major__ >=3D 18
-+#define UNROLL_COUNT 90
-+#endif
-+
- #include "pyperf.h"
---=20
-2.34.1
+Thanks
 
 
