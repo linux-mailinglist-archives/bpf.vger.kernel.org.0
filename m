@@ -1,42 +1,42 @@
-Return-Path: <bpf+bounces-14576-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14577-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C5B47E68FE
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 11:58:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3DAC7E6922
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 12:06:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 257491C20A3B
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 10:58:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3008928168E
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 11:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5A6182AF;
-	Thu,  9 Nov 2023 10:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB87319475;
+	Thu,  9 Nov 2023 11:05:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF85134D1;
-	Thu,  9 Nov 2023 10:58:39 +0000 (UTC)
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCC42590;
-	Thu,  9 Nov 2023 02:58:37 -0800 (PST)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vw0bMC3_1699527511;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vw0bMC3_1699527511)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A5F199A2;
+	Thu,  9 Nov 2023 11:05:54 +0000 (UTC)
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 169582728;
+	Thu,  9 Nov 2023 03:05:52 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vw0hJB2_1699527949;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vw0hJB2_1699527949)
           by smtp.aliyun-inc.com;
-          Thu, 09 Nov 2023 18:58:32 +0800
-Message-ID: <1699526256.4202905-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v2 00/21] virtio-net: support AF_XDP zero copy
-Date: Thu, 9 Nov 2023 18:37:36 +0800
+          Thu, 09 Nov 2023 19:05:49 +0800
+Message-ID: <1699527528.5637772-2-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v2 08/21] virtio_net: sq support premapped mode
+Date: Thu, 9 Nov 2023 18:58:48 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
+To: Jason Wang <jasowang@redhat.com>
 Cc: netdev@vger.kernel.org,
  "David S. Miller" <davem@davemloft.net>,
  Eric Dumazet <edumazet@google.com>,
  Jakub Kicinski <kuba@kernel.org>,
  Paolo Abeni <pabeni@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
  Alexei Starovoitov <ast@kernel.org>,
  Daniel Borkmann <daniel@iogearbox.net>,
  Jesper Dangaard Brouer <hawk@kernel.org>,
@@ -44,175 +44,405 @@ Cc: netdev@vger.kernel.org,
  virtualization@lists.linux-foundation.org,
  bpf@vger.kernel.org
 References: <20231107031227.100015-1-xuanzhuo@linux.alibaba.com>
- <20231109031728-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231109031728-mutt-send-email-mst@kernel.org>
+ <20231107031227.100015-9-xuanzhuo@linux.alibaba.com>
+ <CACGkMEtLee8ELzqFnV_zOu3p5tU6hivouKM=WjtNAq+2wQzAFQ@mail.gmail.com>
+In-Reply-To: <CACGkMEtLee8ELzqFnV_zOu3p5tU6hivouKM=WjtNAq+2wQzAFQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
-On Thu, 9 Nov 2023 03:19:04 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Tue, Nov 07, 2023 at 11:12:06AM +0800, Xuan Zhuo wrote:
-> > ## AF_XDP
+On Thu, 9 Nov 2023 14:37:38 +0800, Jason Wang <jasowang@redhat.com> wrote:
+> On Tue, Nov 7, 2023 at 11:12=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba=
+.com> wrote:
 > >
-> > XDP socket(AF_XDP) is an excellent bypass kernel network framework. The zero
-> > copy feature of xsk (XDP socket) needs to be supported by the driver. The
-> > performance of zero copy is very good. mlx5 and intel ixgbe already support
-> > this feature, This patch set allows virtio-net to support xsk's zerocopy xmit
-> > feature.
+> > If the xsk is enabling, the xsk tx will share the send queue.
+> > But the xsk requires that the send queue use the premapped mode.
+> > So the send queue must support premapped mode.
 > >
-> > At present, we have completed some preparation:
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/net/virtio/main.c       | 163 ++++++++++++++++++++++++++++----
+> >  drivers/net/virtio/virtio_net.h |  16 ++++
+> >  2 files changed, 163 insertions(+), 16 deletions(-)
 > >
-> > 1. vq-reset (virtio spec and kernel code)
-> > 2. virtio-core premapped dma
-> > 3. virtio-net xdp refactor
+> > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
+> > index 16e75c08639e..f052db459156 100644
+> > --- a/drivers/net/virtio/main.c
+> > +++ b/drivers/net/virtio/main.c
+> > @@ -46,6 +46,7 @@ module_param(napi_tx, bool, 0644);
+> >  #define VIRTIO_XDP_REDIR       BIT(1)
 > >
-> > So it is time for Virtio-Net to complete the support for the XDP Socket
-> > Zerocopy.
+> >  #define VIRTIO_XDP_FLAG        BIT(0)
+> > +#define VIRTIO_XMIT_DATA_MASK (VIRTIO_XDP_FLAG)
 > >
-> > Virtio-net can not increase the queue num at will, so xsk shares the queue with
-> > kernel.
+> >  #define VIRTNET_DRIVER_VERSION "1.0.0"
 > >
-> > On the other hand, Virtio-Net does not support generate interrupt from driver
-> > manually, so when we wakeup tx xmit, we used some tips. If the CPU run by TX
-> > NAPI last time is other CPUs, use IPI to wake up NAPI on the remote CPU. If it
-> > is also the local CPU, then we wake up napi directly.
+> > @@ -167,6 +168,29 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
+> >         return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FL=
+AG);
+> >  }
 > >
-> > This patch set includes some refactor to the virtio-net to let that to support
-> > AF_XDP.
+> > +static inline void *virtnet_sq_unmap(struct virtnet_sq *sq, void *data)
+> > +{
+> > +       struct virtnet_sq_dma *next, *head;
+> > +
+> > +       head =3D (void *)((unsigned long)data & ~VIRTIO_XMIT_DATA_MASK);
+> > +
+> > +       data =3D head->data;
+> > +
+> > +       while (head) {
+> > +               virtqueue_dma_unmap_single_attrs(sq->vq, head->addr, he=
+ad->len,
+> > +                                                DMA_TO_DEVICE, 0);
+> > +
+> > +               next =3D head->next;
+> > +
+> > +               head->next =3D sq->dmainfo.free;
+> > +               sq->dmainfo.free =3D head;
+> > +
+> > +               head =3D next;
+> > +       }
+> > +
+> > +       return data;
+> > +}
+> > +
+> >  static void __free_old_xmit(struct virtnet_sq *sq, bool in_napi,
+> >                             u64 *bytes, u64 *packets)
+> >  {
+> > @@ -175,14 +199,24 @@ static void __free_old_xmit(struct virtnet_sq *sq=
+, bool in_napi,
 > >
-> > ## performance
+> >         while ((ptr =3D virtqueue_get_buf(sq->vq, &len)) !=3D NULL) {
+> >                 if (!is_xdp_frame(ptr)) {
+> > -                       struct sk_buff *skb =3D ptr;
+> > +                       struct sk_buff *skb;
+> > +
+> > +                       if (sq->do_dma)
+> > +                               ptr =3D virtnet_sq_unmap(sq, ptr);
+> > +
+> > +                       skb =3D ptr;
 > >
-> > ENV: Qemu with vhost-user(polling mode).
-> > Host CPU: Intel(R) Xeon(R) Platinum 8163 CPU @ 2.50GHz
+> >                         pr_debug("Sent skb %p\n", skb);
 > >
-> > ### virtio PMD in guest with testpmd
+> >                         *bytes +=3D skb->len;
+> >                         napi_consume_skb(skb, in_napi);
+> >                 } else {
+> > -                       struct xdp_frame *frame =3D ptr_to_xdp(ptr);
+> > +                       struct xdp_frame *frame;
+> > +
+> > +                       if (sq->do_dma)
+> > +                               ptr =3D virtnet_sq_unmap(sq, ptr);
+> > +
+> > +                       frame =3D ptr_to_xdp(ptr);
 > >
-> > testpmd> show port stats all
+> >                         *bytes +=3D xdp_get_frame_len(frame);
+> >                         xdp_return_frame(frame);
+> > @@ -567,22 +601,104 @@ static void *virtnet_rq_alloc(struct virtnet_rq =
+*rq, u32 size, gfp_t gfp)
+> >         return buf;
+> >  }
 > >
-> >  ######################## NIC statistics for port 0 ########################
-> >  RX-packets: 19531092064 RX-missed: 0     RX-bytes: 1093741155584
-> >  RX-errors: 0
-> >  RX-nombuf: 0
-> >  TX-packets: 5959955552 TX-errors: 0     TX-bytes: 371030645664
+> > -static void virtnet_rq_set_premapped(struct virtnet_info *vi)
+> > +static int virtnet_sq_set_premapped(struct virtnet_sq *sq)
+> >  {
+> > -       int i;
+> > +       struct virtnet_sq_dma *d;
+> > +       int err, size, i;
 > >
+> > -       /* disable for big mode */
+> > -       if (!vi->mergeable_rx_bufs && vi->big_packets)
+> > -               return;
+> > +       size =3D virtqueue_get_vring_size(sq->vq);
+> > +
+> > +       size +=3D MAX_SKB_FRAGS + 2;
+>
+> Btw, the dmainfo seems per sg? If I'm correct, how can vq_size +
+> MAX_SKB_FRAGS + 2 work?
+
+
+We may alloc dmainfo items when the vq is full. So I prepare more dmainfo i=
+tems.
+
+
+>
+> > +
+> > +       sq->dmainfo.head =3D kcalloc(size, sizeof(*sq->dmainfo.head), G=
+FP_KERNEL);
+> > +       if (!sq->dmainfo.head)
+> > +               return -ENOMEM;
+> > +
+> > +       err =3D virtqueue_set_dma_premapped(sq->vq);
+> > +       if (err) {
+> > +               kfree(sq->dmainfo.head);
+> > +               return err;
+> > +       }
+>
+> Allocating after set_dma_premapped() seems easier.
+
+Yes. But, we donot has the way to disable premapped mode.
+
+That is my mistake. :)
+
+
+>
+> Btw, is there a benchmark of TX PPS just for this patch to demonstrate
+> the impact of the performance?
+
+We will have that.
+
+
+>
+> > +
+> > +       sq->dmainfo.free =3D NULL;
+> > +
+> > +       sq->do_dma =3D true;
+> > +
+> > +       for (i =3D 0; i < size; ++i) {
+> > +               d =3D &sq->dmainfo.head[i];
+> > +
+> > +               d->next =3D sq->dmainfo.free;
+> > +               sq->dmainfo.free =3D d;
+> > +       }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static void virtnet_set_premapped(struct virtnet_info *vi)
+> > +{
+> > +       int i;
 > >
-> >  Throughput (since last show)
-> >  Rx-pps:   8861574     Rx-bps:  3969985208
-> >  Tx-pps:   8861493     Tx-bps:  3969962736
-> >  ############################################################################
+> >         for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> > -               if (virtqueue_set_dma_premapped(vi->rq[i].vq))
+> > -                       continue;
+> > +               virtnet_sq_set_premapped(&vi->sq[i]);
 > >
-> > ### AF_XDP PMD in guest with testpmd
+> > -               vi->rq[i].do_dma =3D true;
+> > +               /* disable for big mode */
+> > +               if (vi->mergeable_rx_bufs || !vi->big_packets) {
+> > +                       if (!virtqueue_set_dma_premapped(vi->rq[i].vq))
+> > +                               vi->rq[i].do_dma =3D true;
+>
+> How about sticking a virtnet_rq_set_premapped() and calling it here?
+>
+> It seems more clean.
+
+OK.
+
+
+>
+> Btw, the big mode support for pre mapping is still worthwhile
+> regardless whether or not XDP is supported. It has a page pool so we
+> can avoid redundant DMA map/unmap there.
+
+Yes.
+
+I post other patch set to do this.
+
+
+>
+> > +               }
+> >         }
+> >  }
 > >
-> > testpmd> show port stats all
-> >
-> >   ######################## NIC statistics for port 0  ########################
-> >   RX-packets: 68152727   RX-missed: 0          RX-bytes:  3816552712
-> >   RX-errors: 0
-> >   RX-nombuf:  0
-> >   TX-packets: 68114967   TX-errors: 33216      TX-bytes:  3814438152
-> >
-> >   Throughput (since last show)
-> >   Rx-pps:      6333196          Rx-bps:   2837272088
-> >   Tx-pps:      6333227          Tx-bps:   2837285936
-> >   ############################################################################
-> >
-> > But AF_XDP consumes more CPU for tx and rx napi(100% and 86%).
-> >
-> > ## maintain
-> >
-> > I am currently a reviewer for virtio-net. I commit to maintain AF_XDP support in
-> > virtio-net.
-> >
-> > Please review.
-> >
-> > Thanks.
-> >
-> > v2
-> >     1. wakeup uses the way of GVE. No send ipi to wakeup napi on remote cpu.
-> >     2. remove rcu. Because we synchronize all operat, so the rcu is not needed.
-> >     3. split the commit "move to virtio_net.h" in last patch set. Just move the
-> >        struct/api to header when we use them.
-> >     4. add comments for some code
-> >
-> > v1:
-> >     1. remove two virtio commits. Push this patchset to net-next
-> >     2. squash "virtio_net: virtnet_poll_tx support rescheduled" to xsk: support tx
-> >     3. fix some warnings
-> >
-> >
-> > Xuan Zhuo (21):
-> >   virtio_net: rename free_old_xmit_skbs to free_old_xmit
-> >   virtio_net: unify the code for recycling the xmit ptr
-> >   virtio_net: independent directory
-> >   virtio_net: move core structures to virtio_net.h
-> >   virtio_net: add prefix virtnet to all struct inside virtio_net.h
-> >   virtio_net: separate virtnet_rx_resize()
-> >   virtio_net: separate virtnet_tx_resize()
-> >   virtio_net: sq support premapped mode
-> >   virtio_net: xsk: bind/unbind xsk
-> >   virtio_net: xsk: prevent disable tx napi
-> >   virtio_net: move some api to header
-> >   virtio_net: xsk: tx: support tx
-> >   virtio_net: xsk: tx: support wakeup
-> >   virtio_net: xsk: tx: virtnet_free_old_xmit() distinguishes xsk buffer
-> >   virtio_net: xsk: tx: virtnet_sq_free_unused_buf() check xsk buffer
-> >   virtio_net: xsk: rx: introduce add_recvbuf_xsk()
-> >   virtio_net: xsk: rx: skip dma unmap when rq is bind with AF_XDP
-> >   virtio_net: xsk: rx: introduce receive_xsk() to recv xsk buffer
-> >   virtio_net: xsk: rx: virtnet_rq_free_unused_buf() check xsk buffer
-> >   virtio_net: update tx timeout record
-> >   virtio_net: xdp_features add NETDEV_XDP_ACT_XSK_ZEROCOPY
-> >
-> >  MAINTAINERS                                 |   2 +-
-> >  drivers/net/Kconfig                         |   8 +-
-> >  drivers/net/Makefile                        |   2 +-
-> >  drivers/net/virtio/Kconfig                  |  13 +
-> >  drivers/net/virtio/Makefile                 |   8 +
-> >  drivers/net/{virtio_net.c => virtio/main.c} | 630 +++++++++-----------
-> >  drivers/net/virtio/virtio_net.h             | 346 +++++++++++
-> >  drivers/net/virtio/xsk.c                    | 498 ++++++++++++++++
-> >  drivers/net/virtio/xsk.h                    |  32 +
-> >  9 files changed, 1174 insertions(+), 365 deletions(-)
-> >  create mode 100644 drivers/net/virtio/Kconfig
-> >  create mode 100644 drivers/net/virtio/Makefile
-> >  rename drivers/net/{virtio_net.c => virtio/main.c} (92%)
-> >  create mode 100644 drivers/net/virtio/virtio_net.h
-> >  create mode 100644 drivers/net/virtio/xsk.c
-> >  create mode 100644 drivers/net/virtio/xsk.h
+> > +static struct virtnet_sq_dma *virtnet_sq_map_sg(struct virtnet_sq *sq,=
+ int nents, void *data)
+> > +{
+> > +       struct virtnet_sq_dma *d, *head;
+> > +       struct scatterlist *sg;
+> > +       int i;
+> > +
+> > +       head =3D NULL;
+> > +
+> > +       for_each_sg(sq->sg, sg, nents, i) {
+> > +               sg->dma_address =3D virtqueue_dma_map_single_attrs(sq->=
+vq, sg_virt(sg),
+> > +                                                                sg->le=
+ngth,
+> > +                                                                DMA_TO=
+_DEVICE, 0);
+> > +               if (virtqueue_dma_mapping_error(sq->vq, sg->dma_address=
+))
+> > +                       goto err;
+> > +
+> > +               d =3D sq->dmainfo.free;
+> > +               sq->dmainfo.free =3D d->next;
+> > +
+> > +               d->addr =3D sg->dma_address;
+> > +               d->len =3D sg->length;
+> > +
+> > +               d->next =3D head;
+> > +               head =3D d;
+> > +       }
+> > +
+> > +       head->data =3D data;
+> > +
+> > +       return (void *)((unsigned long)head | ((unsigned long)data & VI=
+RTIO_XMIT_DATA_MASK));
+>
+> So head contains a pointer to data, any reason we still need to pack a
+> data pointer here?
+
+Maybe you are right. We can skip this.
+
+
 >
 >
-> Too much code duplications for my taste. Would there maybe be less if
-> everything was in a single file?
+> > +err:
+> > +       virtnet_sq_unmap(sq, head);
+> > +       return NULL;
+> > +}
+> > +
+> > +static int virtnet_add_outbuf(struct virtnet_sq *sq, u32 num, void *da=
+ta)
+> > +{
+> > +       int ret;
+> > +
+> > +       if (sq->do_dma) {
+> > +               data =3D virtnet_sq_map_sg(sq, num, data);
+> > +               if (!data)
+> > +                       return -ENOMEM;
+> > +       }
+> > +
+> > +       ret =3D virtqueue_add_outbuf(sq->vq, sq->sg, num, data, GFP_ATO=
+MIC);
+> > +       if (ret && sq->do_dma)
+> > +               virtnet_sq_unmap(sq, data);
+> > +
+> > +       return ret;
+> > +}
+> > +
+> >  static void free_old_xmit(struct virtnet_sq *sq, bool in_napi)
+> >  {
+> >         u64 bytes, packets =3D 0;
+> > @@ -686,8 +802,7 @@ static int __virtnet_xdp_xmit_one(struct virtnet_in=
+fo *vi,
+> >                             skb_frag_size(frag), skb_frag_off(frag));
+> >         }
+> >
+> > -       err =3D virtqueue_add_outbuf(sq->vq, sq->sg, nr_frags + 1,
+> > -                                  xdp_to_ptr(xdpf), GFP_ATOMIC);
+> > +       err =3D virtnet_add_outbuf(sq, nr_frags + 1, xdp_to_ptr(xdpf));
+> >         if (unlikely(err))
+> >                 return -ENOSPC; /* Caller handle free/refcnt */
+> >
+> > @@ -2126,7 +2241,8 @@ static int xmit_skb(struct virtnet_sq *sq, struct=
+ sk_buff *skb)
+> >                         return num_sg;
+> >                 num_sg++;
+> >         }
+> > -       return virtqueue_add_outbuf(sq->vq, sq->sg, num_sg, skb, GFP_AT=
+OMIC);
+> > +
+> > +       return virtnet_add_outbuf(sq, num_sg, skb);
+> >  }
+> >
+> >  static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *=
+dev)
+> > @@ -3818,6 +3934,8 @@ static void virtnet_free_queues(struct virtnet_in=
+fo *vi)
+> >         for (i =3D 0; i < vi->max_queue_pairs; i++) {
+> >                 __netif_napi_del(&vi->rq[i].napi);
+> >                 __netif_napi_del(&vi->sq[i].napi);
+> > +
+> > +               kfree(vi->sq[i].dmainfo.head);
+> >         }
+> >
+> >         /* We called __netif_napi_del(),
+> > @@ -3866,10 +3984,23 @@ static void free_receive_page_frags(struct virt=
+net_info *vi)
+> >
+> >  static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
+> >  {
+> > -       if (!is_xdp_frame(buf))
+> > +       struct virtnet_info *vi =3D vq->vdev->priv;
+> > +       struct virtnet_sq *sq;
+> > +       int i =3D vq2rxq(vq);
+> > +
+> > +       sq =3D &vi->sq[i];
+> > +
+> > +       if (!is_xdp_frame(buf)) {
+> > +               if (sq->do_dma)
+> > +                       buf =3D virtnet_sq_unmap(sq, buf);
+> > +
+> >                 dev_kfree_skb(buf);
+> > -       else
+> > +       } else {
+> > +               if (sq->do_dma)
+> > +                       buf =3D virtnet_sq_unmap(sq, buf);
+> > +
+> >                 xdp_return_frame(ptr_to_xdp(buf));
+> > +       }
+> >  }
+> >
+> >  static void virtnet_rq_free_unused_buf(struct virtqueue *vq, void *buf)
+> > @@ -4075,7 +4206,7 @@ static int init_vqs(struct virtnet_info *vi)
+> >         if (ret)
+> >                 goto err_free;
+> >
+> > -       virtnet_rq_set_premapped(vi);
+> > +       virtnet_set_premapped(vi);
+> >
+> >         cpus_read_lock();
+> >         virtnet_set_affinity(vi);
+> > diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virti=
+o_net.h
+> > index d814341d9f97..ce806afb6d64 100644
+> > --- a/drivers/net/virtio/virtio_net.h
+> > +++ b/drivers/net/virtio/virtio_net.h
+> > @@ -48,6 +48,18 @@ struct virtnet_rq_dma {
+> >         u16 need_sync;
+> >  };
+> >
+> > +struct virtnet_sq_dma {
+> > +       struct virtnet_sq_dma *next;
+> > +       dma_addr_t addr;
+> > +       u32 len;
+> > +       void *data;
+>
+> I think we need to seek a way to reuse what has been stored by virtio
+> core. It should be much more efficient.
 
 
-What duplication?
+Yes.
 
-Yes. If everything is in a single file, something maybe simpler. But I
-do not like that, that will be more trouble in the future. We want to
-make the virtnet more like the modern network card, then we will
-introduce more features to the virtio-net. I think it's time to
-split the single file to modules. I think letting every module simple is
-beneficial for the maintaining.
+But that is for net-next branch.
 
-About the duplications, I do not understand. No duplication,
-We just refer the functions from each other.
-
-Do you mean the receive_xsk()?
-Let we resolve this problem if you think it's a duplicate. I think this is the
-right way.
+Can we do that as a fix after that is merged to 6.8?
 
 Thanks.
 
 
-
-
-
 >
+> Thanks
 >
+> > +};
+> > +
+> > +struct virtnet_sq_dma_head {
+> > +       struct virtnet_sq_dma *free;
+> > +       struct virtnet_sq_dma *head;
+> > +};
+> > +
+> >  /* Internal representation of a send virtqueue */
+> >  struct virtnet_sq {
+> >         /* Virtqueue associated with this virtnet_sq */
+> > @@ -67,6 +79,10 @@ struct virtnet_sq {
+> >
+> >         /* Record whether sq is in reset state. */
+> >         bool reset;
+> > +
+> > +       bool do_dma;
+> > +
+> > +       struct virtnet_sq_dma_head dmainfo;
+> >  };
+> >
+> >  /* Internal representation of a receive virtqueue */
 > > --
 > > 2.32.0.3.g01195cf9f
+> >
 >
 >
 
