@@ -1,136 +1,124 @@
-Return-Path: <bpf+bounces-14630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 740CB7E727D
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 20:55:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09B0D7E727E
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 20:55:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18ADD28102A
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 19:55:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA1DC1C20C1A
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 19:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDCD137171;
-	Thu,  9 Nov 2023 19:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E72437157;
+	Thu,  9 Nov 2023 19:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="A29Tj6c2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n5GD5Ifd"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EF4335DB
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 19:55:05 +0000 (UTC)
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bd])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFE73C05
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 11:55:04 -0800 (PST)
-Message-ID: <8576d3dd-28af-45c2-b72c-30105a451da9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699559702;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+ZkYP8SiNfQF8Jmdomj9wCTyoulvvbU50M5EBkSThVU=;
-	b=A29Tj6c2Luc/gaYlhrz0YMLKlDdavOWRC+HD7X1L3fz+2N16WDXG+/ouGqo5zTX9wqMNqj
-	TJnlrrB+uOKczEpiUWyzg4E79TDNIExTAJYAeZ3J4R2rpiw+iTIfzSJQK5LG/rg4dzRr1F
-	u1MgiEjUbtxFvdRxDznRBeCyU5VSKmw=
-Date: Thu, 9 Nov 2023 11:54:55 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B99B632C94
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 19:55:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56F55C433C8;
+	Thu,  9 Nov 2023 19:55:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699559727;
+	bh=y4AxTM/pc091qQZNSl3s+ob0Mzdo0pxJFUWRuYUTuL4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=n5GD5Ifd71XjSuuBCtJ9T5b5jpeb1teaKOomPebepEnDOM/Oj9pV8gBzygussi4si
+	 /5zFXgHt1/KDeaPyJ7fiJvcfOXd7at0zbHmLOI1IX2sQkfkS/6Tv0+LKp9D6J7TsrM
+	 uH2XgoDLOx14xZyqXsfv4nmTW9qZTf6L1wIEYWzoLAl3pFPZmIINiuZs95ozQU1CFY
+	 hFdAdsemQwp+UUHsGNS1dsErd04xihex7bxUGe/5ZOgyILqd+J10M7W8n9ZOg7tMMD
+	 S0a1rKDwSmFmBSy+hvIRcaU3PsVyqDwc547Avhm5mIFnMa2zXRJiacasIM8O5ueiFR
+	 5a25w6r2ASN1A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 08506CE0B77; Thu,  9 Nov 2023 11:55:26 -0800 (PST)
+Date: Thu, 9 Nov 2023 11:55:26 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Hou Tao <houtao@huaweicloud.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Hou Tao <houtao1@huawei.com>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH bpf 05/11] bpf: Add bpf_map_of_map_fd_{get,put}_ptr()
+ helpers
+Message-ID: <64581135-5b99-4da7-9e19-e41122393d89@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231107140702.1891778-1-houtao@huaweicloud.com>
+ <20231107140702.1891778-6-houtao@huaweicloud.com>
+ <6125c508-82fe-37a4-3aa2-a6c2727c071b@linux.dev>
+ <460844a9-a2e6-8cca-dfa1-9073bfffbb76@huaweicloud.com>
+ <CAADnVQJJhjWJRvgdi3hTaCn8s1X1CJ5z1bUoKFXw32LTOjBWCg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix pyperf180 compilation failure
- with llvm18
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231109053029.1403552-1-yonghong.song@linux.dev>
- <6bf022a8cfd8c821ec0a8370fa85bcfd806c8be7.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <6bf022a8cfd8c821ec0a8370fa85bcfd806c8be7.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJJhjWJRvgdi3hTaCn8s1X1CJ5z1bUoKFXw32LTOjBWCg@mail.gmail.com>
 
+On Thu, Nov 09, 2023 at 07:55:50AM -0800, Alexei Starovoitov wrote:
+> On Wed, Nov 8, 2023 at 11:26 PM Hou Tao <houtao@huaweicloud.com> wrote:
+> >
+> > Hi,
+> >
+> > On 11/9/2023 2:36 PM, Martin KaFai Lau wrote:
+> > > On 11/7/23 6:06 AM, Hou Tao wrote:
+> > >> From: Hou Tao <houtao1@huawei.com>
+> > >>
+> > >> bpf_map_of_map_fd_get_ptr() will convert the map fd to the pointer
+> > >> saved in map-in-map. bpf_map_of_map_fd_put_ptr() will release the
+> > >> pointer saved in map-in-map. These two helpers will be used by the
+> > >> following patches to fix the use-after-free problems for map-in-map.
+> > >>
+> > >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> > >> ---
+> > >>   kernel/bpf/map_in_map.c | 51 +++++++++++++++++++++++++++++++++++++++++
+> > >>   kernel/bpf/map_in_map.h | 11 +++++++--
+> > >>   2 files changed, 60 insertions(+), 2 deletions(-)
+> > >>
+> > >>
+> > SNIP
+> > >> +void bpf_map_of_map_fd_put_ptr(void *ptr, bool need_defer)
+> > >> +{
+> > >> +    struct bpf_inner_map_element *element = ptr;
+> > >> +
+> > >> +    /* Do bpf_map_put() after a RCU grace period and a tasks trace
+> > >> +     * RCU grace period, so it is certain that the bpf program which is
+> > >> +     * manipulating the map now has exited when bpf_map_put() is
+> > >> called.
+> > >> +     */
+> > >> +    if (need_defer)
+> > >
+> > > "need_defer" should only happen from the syscall cmd? Instead of
+> > > adding rcu_head to each element, how about
+> > > "synchronize_rcu_mult(call_rcu, call_rcu_tasks)" here?
+> >
+> > No. I have tried the method before, but it didn't work due to dead-lock
+> > (will mention that in commit message in v2). The reason is that bpf
+> > syscall program may also do map update through sys_bpf helper. Because
+> > bpf syscall program is running with sleep-able context and has
+> > rcu_read_lock_trace being held, so call synchronize_rcu_mult(call_rcu,
+> > call_rcu_tasks) will lead to dead-lock.
+> 
+> Dead-lock? why?
+> 
+> I think it's legal to do call_rcu_tasks_trace() while inside RCU CS
+> or RCU tasks trace CS.
 
-On 11/9/23 3:47 AM, Eduard Zingerman wrote:
-> On Wed, 2023-11-08 at 21:30 -0800, Yonghong Song wrote:
->> With latest llvm18 (main branch of llvm-project repo), when building bpf selftests,
->>      [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf LLVM=1 -j
->>
->> The following compilation error happens:
->>      fatal error: error in backend: Branch target out of insn range
->>      ...
->>      Stack dump:
->>      0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARCH_x86 -mlittle-endian
->>        -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include
->>        -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/tools/include/uapi
->>        -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include -idirafter
->>        /home/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18/include -idirafter /usr/local/include
->>        -idirafter /usr/include -Wno-compare-distinct-pointer-types -DENABLE_ATOMICS_TESTS -O2 --target=bpf
->>        -c progs/pyperf180.c -mcpu=v3 -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/pyperf180.bpf.o
->>      1.      <eof> parser at end of file
->>      2.      Code generation
->>      ...
->>
->> The compilation failure only happens to cpu=v2 and cpu=v3. cpu=v4 is okay
->> since cpu=v4 supports 32-bit branch target offset.
->>
->> The above failure is due to upstream llvm patch [1] where some inlining behavior
->> are changed in llvm18.
->>
->> To workaround the issue, previously all 180 loop iterations are fully unrolled.
->> Now, the fully unrolling count is changed to 90 for llvm18 and later. This reduced
->> some otherwise long branch target distance, and fixed the compilation failure.
->>
->>    [1] https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c607313a566eebb16e
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> Can confirm, the issue is present on clang main w/o this patch and
-> disappears after this patch.
->
-> Yonghong, is there a way to keep original UNROLL_COUNT if cpuv4 is used?
+Just confirming that this is the case.  If invoking call_rcu_tasks_trace()
+within under either rcu_read_lock() or rcu_read_lock_trace() deadlocks,
+then there is a bug that needs fixing.  ;-)
 
-I thought about this but a little bit lazy so not giving it enough throught.
-But since you mentioned this, I think adding a macro to indicate cpu version
-by llvm is a good idea. This will give bpf developers some flexibility to
-add new features (new cpu variant) or workaround bugs (for a particular cpu variant
-but not impacting others if they are fine), etc.
-
-So here is the llvm patch: https://github.com/llvm/llvm-project/pull/71856
-
-With the above llvm patch, the following code change should work:
-
-diff --git a/tools/testing/selftests/bpf/progs/pyperf180.c b/tools/testing/selftests/bpf/progs/pyperf180.c
-index c39f559d3100..2473845d1ee2 100644
---- a/tools/testing/selftests/bpf/progs/pyperf180.c
-+++ b/tools/testing/selftests/bpf/progs/pyperf180.c
-@@ -1,4 +1,18 @@
-  // SPDX-License-Identifier: GPL-2.0
-  // Copyright (c) 2019 Facebook
-  #define STACK_MAX_LEN 180
-+
-+/* llvm upstream commit at llvm18
-+ *   https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c607313a566eebb16e
-+ * changed inlining behavior and caused compilation failure as some branch
-+ * target distance exceeded 16bit representation which is the maximum for
-+ * cpu v1/v2/v3. Macro __bpf_cpu_version__ is implemented in llvm18 to specify
-+ * which cpu version is used for compilation. So we can set a smaller
-+ * unroll_count if __bpf_cpu_version__ is less than 4, which reduced
-+ * some branch target distances and resolved the compilation failure.
-+ */
-+#if defined(__bpf_cpu_version__) && __bpf_cpu_version__ < 4
-+#define UNROLL_COUNT 90
-+#endif
-+
-  #include "pyperf.h"
-
-
->
-> Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+							Thanx, Paul
 
