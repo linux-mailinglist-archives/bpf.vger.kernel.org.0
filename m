@@ -1,138 +1,332 @@
-Return-Path: <bpf+bounces-14583-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14584-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9E817E69E5
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 12:47:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB9EE7E6A27
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 12:59:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78FCF281382
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 11:47:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC56F1C20EB8
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 11:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9C91C28F;
-	Thu,  9 Nov 2023 11:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E7C71CFB9;
+	Thu,  9 Nov 2023 11:58:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hy7s6w+7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DFasnnLx"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 323E31A73B
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 11:47:49 +0000 (UTC)
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D9D19E
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 03:47:48 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9d2d8343dc4so129405166b.0
-        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 03:47:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699530467; x=1700135267; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Okv4iAPprpViExhW7Nl3CanFXOrYlvqAqr81C8dj3l8=;
-        b=hy7s6w+7dImobuGTzoV6Gb+VJQLU6ICPvE2zMisRDR3H8IHz13FXnKzc6HpS+fVaQY
-         1GJPMXhJy9NfB/Kg8lQLkpbX0Jd47dhPmK+bcPWcvo01ku79S7krcSDVlYlQ1yv/OJhW
-         it8Mu9KAnTRKrvVH9SQwVkJJd99MBFPOCH8aGH5q3YaJtvE2nBzYNiigzUqXXl26UCRv
-         6U+yt0tQc33Q3oqnpG3O+71KDJdAaL4GSkVsuzoXDK3Zo6rOISPZW7TrXOuourdrVgPG
-         wGPEJFPnSX/k0Rk6COxjFBkKRI7NUpQwLijBYJtC6MbJjC9itJgHcGxfXddrvLp+3t4B
-         n3Lg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E21851DA27
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 11:58:56 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 689EF30D1
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 03:58:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699531135;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TUNOOtGsi1hNHsduk3fSKj7ZCj9VW40bKaKUArdHHXw=;
+	b=DFasnnLx4gAOsQlEpwP8ifLIBvXDfNcIS/aodMyI2VhXqe4pFZ+xhZgIwesl9uAGnQIcJZ
+	AFkb+VA3dyCQn9dvzOsmKFybVjOCVHd76eFs06AZQlny5+RyV+ZCqzP/gmOq20Y4+tFV81
+	FDGJVOIit9XOlvEKx2UhPAIcm9QbeXw=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-662-snC0DRCbNCmdkIY6qrVLSQ-1; Thu, 09 Nov 2023 06:58:54 -0500
+X-MC-Unique: snC0DRCbNCmdkIY6qrVLSQ-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-9d25d0788b8so63283866b.1
+        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 03:58:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699530467; x=1700135267;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Okv4iAPprpViExhW7Nl3CanFXOrYlvqAqr81C8dj3l8=;
-        b=OZXLH/lxiOdTV4g5pasCk/M8VmOLOtVMVtIENa3IIiQmz7KO6Q9uamco7gv/zgpgir
-         +o1gwFeZuYSmH4r2grksPOW5tZcQKWyjsaO3mUTnKjkC0VyPEuRjE/le7il7j93NsHxt
-         6RxYFWuiLe77KyyZ9/mqQTzztyCuUy84oC5HwaFIA331WypiqlTAfkbPEO5L4c52sSgM
-         K+Nh9QdtybMJ50rZrnPdMGi4InFyrAz7q3T9lwcVi6yS3/thvtrnv1u1fFss0hAxeMSy
-         WZLgLkLrEjJ048O/s56Q2M+Kc61pHBNGqrAm18wYZucdrIUJnJ4lkINkq3uTIk9PWt3+
-         uHfw==
-X-Gm-Message-State: AOJu0Yy0FjEK/Pu8ERnv2ZkOyBPC46RBcpqywtXLTsY9CFsb+VWPISAz
-	FkfrEpXGdDr/BauLZU+twTQ=
-X-Google-Smtp-Source: AGHT+IHTIFSy5l02rbNOZ2g8UqHMMzdVCzS8ZWKeCDJoBqTeaypZB2TrN/TRC3svsWAZauWTwBp8iQ==
-X-Received: by 2002:a17:907:6e94:b0:9d1:73da:e4fc with SMTP id sh20-20020a1709076e9400b009d173dae4fcmr4093024ejc.73.1699530466611;
-        Thu, 09 Nov 2023 03:47:46 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id q8-20020a1709060e4800b009de61c89f6fsm2420223eji.1.2023.11.09.03.47.44
+        d=1e100.net; s=20230601; t=1699531133; x=1700135933;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TUNOOtGsi1hNHsduk3fSKj7ZCj9VW40bKaKUArdHHXw=;
+        b=cKylTcktBFCwewUKNG6IXnWEPcS4Ttxf9AT9xrRnAr9d79xqhmXc/2t5TRzWLpWldA
+         whk5D2hbBoJ1sP2CFFl0sa0BPjfWCLYVYWWIkb0zLgYrQLv9dVtorYiMGir+Ep52+0Mh
+         dMIXUe3ss0qfR4VmktMOHAKhhq6DToPcqho2yeYxmt93mq76H8L77IgC90YiNSW80wEH
+         HYXCs17kqOHvoiKBrv6lapXEGkP868jVoTDKyYkE2YPGUedeOt1gI3JD2uanBuTrnK27
+         rCQB80F415biHWT3eOs1t8XFZJFSHlg3lXN0dYtoQNp3YzOwIPjfNxepRajumrBrDnRb
+         PtGg==
+X-Gm-Message-State: AOJu0Yxz/C4Vg84cUgYSTskYfW2/CpfFeppyrIGNhxGy9z7VwL18ksMX
+	vcoBP+kLF2DLRqA0ls/PNPjbHiVevZ/pL1jgGK0n/zlED3KbHZopeuX8a8DydqMDVssa9npRIin
+	26BILo+RF4p2m
+X-Received: by 2002:a17:907:9304:b0:9d3:85b9:afdf with SMTP id bu4-20020a170907930400b009d385b9afdfmr4085470ejc.3.1699531132897;
+        Thu, 09 Nov 2023 03:58:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGEkUoPpfy9AypiUZGSY5pYVHolZGAvOtAKDc+fyXhW0Kg5hhknUXFHv8jBxXXY3nMKTrqU0Q==
+X-Received: by 2002:a17:907:9304:b0:9d3:85b9:afdf with SMTP id bu4-20020a170907930400b009d385b9afdfmr4085458ejc.3.1699531132555;
+        Thu, 09 Nov 2023 03:58:52 -0800 (PST)
+Received: from redhat.com ([2a02:14f:1f4:2044:be5a:328c:4b98:1420])
+        by smtp.gmail.com with ESMTPSA id e14-20020a1709061e8e00b00977cad140a8sm2456887ejj.218.2023.11.09.03.58.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 03:47:45 -0800 (PST)
-Message-ID: <6bf022a8cfd8c821ec0a8370fa85bcfd806c8be7.camel@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix pyperf180 compilation
- failure with llvm18
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-Date: Thu, 09 Nov 2023 13:47:44 +0200
-In-Reply-To: <20231109053029.1403552-1-yonghong.song@linux.dev>
-References: <20231109053029.1403552-1-yonghong.song@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        Thu, 09 Nov 2023 03:58:52 -0800 (PST)
+Date: Thu, 9 Nov 2023 06:58:48 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v2 12/21] virtio_net: xsk: tx: support tx
+Message-ID: <20231109061507-mutt-send-email-mst@kernel.org>
+References: <20231107031227.100015-1-xuanzhuo@linux.alibaba.com>
+ <20231107031227.100015-13-xuanzhuo@linux.alibaba.com>
+ <20231109030424-mutt-send-email-mst@kernel.org>
+ <1699527983.483377-3-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1699527983.483377-3-xuanzhuo@linux.alibaba.com>
 
-On Wed, 2023-11-08 at 21:30 -0800, Yonghong Song wrote:
-> With latest llvm18 (main branch of llvm-project repo), when building bpf =
-selftests,
->     [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf LLVM=
-=3D1 -j
->=20
-> The following compilation error happens:
->     fatal error: error in backend: Branch target out of insn range
->     ...
->     Stack dump:
->     0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARCH_x86=
- -mlittle-endian
->       -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include
->       -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/w=
-ork/bpf-next/tools/include/uapi
->       -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include -idir=
-after
->       /home/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18/incl=
-ude -idirafter /usr/local/include
->       -idirafter /usr/include -Wno-compare-distinct-pointer-types -DENABL=
-E_ATOMICS_TESTS -O2 --target=3Dbpf
->       -c progs/pyperf180.c -mcpu=3Dv3 -o /home/yhs/work/bpf-next/tools/te=
-sting/selftests/bpf/pyperf180.bpf.o
->     1.      <eof> parser at end of file
->     2.      Code generation
->     ...
->=20
-> The compilation failure only happens to cpu=3Dv2 and cpu=3Dv3. cpu=3Dv4 i=
-s okay
-> since cpu=3Dv4 supports 32-bit branch target offset.
->=20
-> The above failure is due to upstream llvm patch [1] where some inlining b=
-ehavior
-> are changed in llvm18.
->=20
-> To workaround the issue, previously all 180 loop iterations are fully unr=
-olled.
-> Now, the fully unrolling count is changed to 90 for llvm18 and later. Thi=
-s reduced
-> some otherwise long branch target distance, and fixed the compilation fai=
-lure.
->=20
->   [1] https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c=
-607313a566eebb16e
->=20
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+On Thu, Nov 09, 2023 at 07:06:23PM +0800, Xuan Zhuo wrote:
+> On Thu, 9 Nov 2023 03:09:00 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > On Tue, Nov 07, 2023 at 11:12:18AM +0800, Xuan Zhuo wrote:
+> > > The driver's tx napi is very important for XSK. It is responsible for
+> > > obtaining data from the XSK queue and sending it out.
+> > >
+> > > At the beginning, we need to trigger tx napi.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > ---
+> > >  drivers/net/virtio/main.c       |  12 +++-
+> > >  drivers/net/virtio/virtio_net.h |   3 +-
+> > >  drivers/net/virtio/xsk.c        | 110 ++++++++++++++++++++++++++++++++
+> > >  drivers/net/virtio/xsk.h        |  13 ++++
+> > >  4 files changed, 136 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
+> > > index 6c608b3ce27d..ff6bc764089d 100644
+> > > --- a/drivers/net/virtio/main.c
+> > > +++ b/drivers/net/virtio/main.c
+> > > @@ -2074,6 +2074,7 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+> > >  	struct virtnet_info *vi = sq->vq->vdev->priv;
+> > >  	unsigned int index = vq2txq(sq->vq);
+> > >  	struct netdev_queue *txq;
+> > > +	int busy = 0;
+> > >  	int opaque;
+> > >  	bool done;
+> > >
+> > > @@ -2086,11 +2087,20 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+> > >  	txq = netdev_get_tx_queue(vi->dev, index);
+> > >  	__netif_tx_lock(txq, raw_smp_processor_id());
+> > >  	virtqueue_disable_cb(sq->vq);
+> > > -	free_old_xmit(sq, true);
+> > > +
+> > > +	if (sq->xsk.pool)
+> > > +		busy |= virtnet_xsk_xmit(sq, sq->xsk.pool, budget);
+> >
+> > You use bitwise or on errno values? What's going on here?
+> 
+> virtnet_xsk_xmit() return that it is busy or not. Not the errno.
+> Here just record whether this handler is busy or not.
 
-Can confirm, the issue is present on clang main w/o this patch and
-disappears after this patch.
 
-Yonghong, is there a way to keep original UNROLL_COUNT if cpuv4 is used?
+Ah I see it's a bool. So make busy a bool too.
 
-Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+
+> >
+> >
+> > > +	else
+> > > +		free_old_xmit(sq, true);
+> > >
+> > >  	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
+> > >  		netif_tx_wake_queue(txq);
+> > >
+> > > +	if (busy) {
+> > > +		__netif_tx_unlock(txq);
+> > > +		return budget;
+> > > +	}
+> > > +
+> > >  	opaque = virtqueue_enable_cb_prepare(sq->vq);
+> > >
+> > >  	done = napi_complete_done(napi, 0);
+> > > diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
+> > > index 442af4673bf8..1c21af47e13c 100644
+> > > --- a/drivers/net/virtio/virtio_net.h
+> > > +++ b/drivers/net/virtio/virtio_net.h
+> > > @@ -9,7 +9,8 @@
+> > >  #include <net/xdp_sock_drv.h>
+> > >
+> > >  #define VIRTIO_XDP_FLAG	BIT(0)
+> > > -#define VIRTIO_XMIT_DATA_MASK (VIRTIO_XDP_FLAG)
+> > > +#define VIRTIO_XSK_FLAG	BIT(1)
+> > > +#define VIRTIO_XMIT_DATA_MASK (VIRTIO_XDP_FLAG | VIRTIO_XSK_FLAG)
+> > >
+> > >  /* RX packet size EWMA. The average packet size is used to determine the packet
+> > >   * buffer size when refilling RX rings. As the entire RX ring may be refilled
+> > > diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
+> > > index 8b397787603f..caa448308232 100644
+> > > --- a/drivers/net/virtio/xsk.c
+> > > +++ b/drivers/net/virtio/xsk.c
+> > > @@ -4,9 +4,119 @@
+> > >   */
+> > >
+> > >  #include "virtio_net.h"
+> > > +#include "xsk.h"
+> > >
+> > >  static struct virtio_net_hdr_mrg_rxbuf xsk_hdr;
+> > >
+> > > +static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len)
+> > > +{
+> > > +	sg->dma_address = addr;
+> > > +	sg->length = len;
+> > > +}
+> > > +
+> > > +static void virtnet_xsk_check_queue(struct virtnet_sq *sq)
+> > > +{
+> > > +	struct virtnet_info *vi = sq->vq->vdev->priv;
+> > > +	struct net_device *dev = vi->dev;
+> > > +	int qnum = sq - vi->sq;
+> > > +
+> > > +	/* If it is a raw buffer queue, it does not check whether the status
+> > > +	 * of the queue is stopped when sending. So there is no need to check
+> > > +	 * the situation of the raw buffer queue.
+> > > +	 */
+> > > +	if (virtnet_is_xdp_raw_buffer_queue(vi, qnum))
+> > > +		return;
+> > > +
+> > > +	/* If this sq is not the exclusive queue of the current cpu,
+> > > +	 * then it may be called by start_xmit, so check it running out
+> > > +	 * of space.
+> > > +	 *
+> > > +	 * Stop the queue to avoid getting packets that we are
+> > > +	 * then unable to transmit. Then wait the tx interrupt.
+> > > +	 */
+> > > +	if (sq->vq->num_free < 2 + MAX_SKB_FRAGS)
+> >
+> > what does MAX_SKB_FRAGS have to do with it? And where's 2 coming from?
+> 
+> check_sq_full_and_disable()
+> 
+> Thanks.
+
+
+This is one example of duplication I was talking about earlier.
+
+> >
+> > > +		netif_stop_subqueue(dev, qnum);
+> > > +}
+> > > +
+> > > +static int virtnet_xsk_xmit_one(struct virtnet_sq *sq,
+> > > +				struct xsk_buff_pool *pool,
+> > > +				struct xdp_desc *desc)
+> > > +{
+> > > +	struct virtnet_info *vi;
+> > > +	dma_addr_t addr;
+> > > +
+> > > +	vi = sq->vq->vdev->priv;
+> > > +
+> > > +	addr = xsk_buff_raw_get_dma(pool, desc->addr);
+> > > +	xsk_buff_raw_dma_sync_for_device(pool, addr, desc->len);
+> > > +
+> > > +	sg_init_table(sq->sg, 2);
+> > > +
+> > > +	sg_fill_dma(sq->sg, sq->xsk.hdr_dma_address, vi->hdr_len);
+> > > +	sg_fill_dma(sq->sg + 1, addr, desc->len);
+> > > +
+> > > +	return virtqueue_add_outbuf(sq->vq, sq->sg, 2,
+> > > +				    virtnet_xsk_to_ptr(desc->len), GFP_ATOMIC);
+> > > +}
+> > > +
+> > > +static int virtnet_xsk_xmit_batch(struct virtnet_sq *sq,
+> > > +				  struct xsk_buff_pool *pool,
+> > > +				  unsigned int budget,
+> > > +				  u64 *kicks)
+> > > +{
+> > > +	struct xdp_desc *descs = pool->tx_descs;
+> > > +	u32 nb_pkts, max_pkts, i;
+> > > +	bool kick = false;
+> > > +	int err;
+> > > +
+> > > +	/* Every xsk tx packet needs two desc(virtnet header and packet). So we
+> > > +	 * use sq->vq->num_free / 2 as the limitation.
+> > > +	 */
+> > > +	max_pkts = min_t(u32, budget, sq->vq->num_free / 2);
+> > > +
+> > > +	nb_pkts = xsk_tx_peek_release_desc_batch(pool, max_pkts);
+> > > +	if (!nb_pkts)
+> > > +		return 0;
+> > > +
+> > > +	for (i = 0; i < nb_pkts; i++) {
+> > > +		err = virtnet_xsk_xmit_one(sq, pool, &descs[i]);
+> > > +		if (unlikely(err))
+> > > +			break;
+> > > +
+> > > +		kick = true;
+> > > +	}
+> > > +
+> > > +	if (kick && virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq))
+> > > +		(*kicks)++;
+> > > +
+> > > +	return i;
+> > > +}
+> > > +
+> > > +bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
+> > > +		      int budget)
+> > > +{
+> > > +	u64 bytes = 0, packets = 0, kicks = 0;
+> > > +	int sent;
+> > > +
+> > > +	virtnet_free_old_xmit(sq, true, &bytes, &packets);
+> > > +
+> > > +	sent = virtnet_xsk_xmit_batch(sq, pool, budget, &kicks);
+> > > +
+> > > +	virtnet_xsk_check_queue(sq);
+> > > +
+> > > +	u64_stats_update_begin(&sq->stats.syncp);
+> > > +	u64_stats_add(&sq->stats.packets, packets);
+> > > +	u64_stats_add(&sq->stats.bytes, bytes);
+> > > +	u64_stats_add(&sq->stats.kicks, kicks);
+> > > +	u64_stats_add(&sq->stats.xdp_tx,  sent);
+> > > +	u64_stats_update_end(&sq->stats.syncp);
+> > > +
+> > > +	if (xsk_uses_need_wakeup(pool))
+> > > +		xsk_set_tx_need_wakeup(pool);
+> > > +
+> > > +	return sent == budget;
+> > > +}
+> > > +
+> > >  static int virtnet_rq_bind_xsk_pool(struct virtnet_info *vi, struct virtnet_rq *rq,
+> > >  				    struct xsk_buff_pool *pool)
+> > >  {
+> > > diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
+> > > index 1918285c310c..73ca8cd5308b 100644
+> > > --- a/drivers/net/virtio/xsk.h
+> > > +++ b/drivers/net/virtio/xsk.h
+> > > @@ -3,5 +3,18 @@
+> > >  #ifndef __XSK_H__
+> > >  #define __XSK_H__
+> > >
+> > > +#define VIRTIO_XSK_FLAG_OFFSET	4
+> > > +
+> > > +static inline void *virtnet_xsk_to_ptr(u32 len)
+> > > +{
+> > > +	unsigned long p;
+> > > +
+> > > +	p = len << VIRTIO_XSK_FLAG_OFFSET;
+> > > +
+> > > +	return (void *)(p | VIRTIO_XSK_FLAG);
+> > > +}
+> > > +
+> > >  int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp);
+> > > +bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
+> > > +		      int budget);
+> > >  #endif
+> > > --
+> > > 2.32.0.3.g01195cf9f
+> >
+
 
