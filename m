@@ -1,85 +1,99 @@
-Return-Path: <bpf+bounces-14625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93DDF7E7223
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 20:20:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD9DC7E7250
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 20:29:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E28BC2810AE
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 19:20:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 77D211F21988
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 19:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57F434180;
-	Thu,  9 Nov 2023 19:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CDE36AFB;
+	Thu,  9 Nov 2023 19:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jfUz7C+x"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hlzJzuz2"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C93120334
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 19:20:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B33FCC433CA;
-	Thu,  9 Nov 2023 19:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699557624;
-	bh=p6JBUbJthfRIx2QkEMmk3QGtHgFszZDpFDeiQRSGkak=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=jfUz7C+xIe1ccRIMFY+Q4J1rh+9bJl1Bd2+hfLk+PjeWZapwCnLbtbz/NKwdVHcj8
-	 QB0rZlFA3rr7LIk0i9bhFRUTBmxlLlxNWYvC0HKVZaG/D0C3fNEDlnVX5noFl31Jnz
-	 xHGxxeHM5x16CegmXdPfx4IE6ZDUAISpqzWKzRiC5/DuVQGHCuh0B7ZI5qUP8N6gac
-	 JEu3prg2AioL+xI7Q7TimdV7FlrErHgEmsa9rN8etXw+nRl6lp4DOCIlmTJVPMNJXa
-	 bEDQQLAyALvVZqIhsHYEtrU8+9b+xsVHOE8VPFs8n9jv5m5r7qXNoiGLWy21BO4KV6
-	 CD2pCYyY09/LA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 993BCC3274C;
-	Thu,  9 Nov 2023 19:20:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DD136AF6
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 19:29:29 +0000 (UTC)
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9C93ABA
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 11:29:28 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40859c466efso8664205e9.3
+        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 11:29:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699558167; x=1700162967; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ttr7Vp9LTH2JYKKc505OAI3ZAivY5iJ1Ddj7oxgjoKk=;
+        b=hlzJzuz2E77LOPnyunydkwDHF1/eVriBw8mSKoJP3lURbQe5ZL2d4ro/zf97yPDDKF
+         QUSfrANTC0s4zqz5/MXNtmpxJnsKzFaoOsGL2kgZPAZKKEwrkhpIfT3TrDS2hWspfG1n
+         xFLpo8Gh5xaDSzhus2rxCeoPYK8zpTYMdaK7Mvgv3UrAI2YbrHbSH4z/Ab6Tp7ncekrq
+         7gi2AIpRgZ+oSwos3f1T+00uRLoiL4U4DzIscUlMEeraTnI9mSntvvInFUXa3ekMu1Mn
+         lFhB3MfWxjlEM9V/SzqdH5+EP+wf6ZsFp+HJ6/JFIJ8ME6dYElOqRwtlBWOXLhzE8jWf
+         mBTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699558167; x=1700162967;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ttr7Vp9LTH2JYKKc505OAI3ZAivY5iJ1Ddj7oxgjoKk=;
+        b=QUJZtIDAR/rw22kT2B14df6J+X6VHDT5RCFe7v/bUU0YieyMNV4s47hL1NMFU/gWda
+         sQToZ64eE9Mo+647gjrmGJcp7cM4FHRhJ83Esdd++6p3x9wWm540fIDu60cn6XfQxv0l
+         144sSEPtXprf937lpyLmiiVwf9ZNlZcE1XuhJ6k2WjIoS8obth8Jc6Fs+HJyy7RdpUX/
+         l3w/WmRs+Mnzt3e6Iq8MyIRJtJOxxF2WW1RTSRYZxtL3b+JfmBSlZ9/y1mlv0lW12tHh
+         XupDGuT4/v3iV4ZFsXGw3GKERkqxVmKbsjURmc2vMTiq2tdBzGKW/XrBquqWha8i3vPM
+         EWyQ==
+X-Gm-Message-State: AOJu0YwH34F0AyI1e7UIluVdBT72/qc6NSR6w4cOyn5spPBEue/Wyas+
+	x7Y2En7AxXfUqfoxmE5Wy++GpzpBX+p5z2jrnJ8=
+X-Google-Smtp-Source: AGHT+IGOQ2FOEAzR1+Mt1XRidFzeP27C+J2aeZ8wqpKpsCuBSUnlqf9l9SBx2O+QkGi0QvyHotWpERBB2MpBHiFuEIs=
+X-Received: by 2002:a05:6000:1882:b0:32d:b2cf:8ccd with SMTP id
+ a2-20020a056000188200b0032db2cf8ccdmr5395841wri.47.1699558166920; Thu, 09 Nov
+ 2023 11:29:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Use named fields for certain bpf uapi structs
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <169955762462.8073.10058023845816903917.git-patchwork-notify@kernel.org>
-Date: Thu, 09 Nov 2023 19:20:24 +0000
-References: <20231104024900.1539182-1-yonghong.song@linux.dev>
-In-Reply-To: <20231104024900.1539182-1-yonghong.song@linux.dev>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
- vadfed@meta.com, martin.lau@linux.dev
+References: <20231031050324.1107444-1-andrii@kernel.org> <20231031050324.1107444-2-andrii@kernel.org>
+ <43f0d9f7219b74bfaff14b6496902f1056847de7.camel@gmail.com>
+ <CAADnVQL6_o9z3z1=8o7qGNzAD8vKMZ+OetcYYy-1huxGfCJToA@mail.gmail.com> <CAEf4BzaA12xjXm8KZNB1mkVDOTtVDQDDWF4nYQtQ2qRYoTip3A@mail.gmail.com>
+In-Reply-To: <CAEf4BzaA12xjXm8KZNB1mkVDOTtVDQDDWF4nYQtQ2qRYoTip3A@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 9 Nov 2023 11:29:15 -0800
+Message-ID: <CAADnVQLGn4vRuZLqTm_t_9ff3t=Hsugr0j47YLThhPsnpNrs_Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/7] bpf: use common jump (instruction) history
+ across all states
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Thu, Nov 9, 2023 at 9:28=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+>
+> If we ever break DFS property, we can easily change this. Or we can
+> even have a hybrid: as long as traversal preserves DFS property, we
+> use global shared history, but we can also optionally clone and have
+> our own history if necessary. It's a matter of adding optional
+> potentially NULL pointer to "local history". All this is very nicely
+> hidden away from "normal" code.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+If we can "easily change this" then let's make it last and optional patch.
+So we can revert in the future when we need to take non-DFS path.
 
-On Fri,  3 Nov 2023 19:49:00 -0700 you wrote:
-> Martin and Vadim reported a verifier failure with bpf_dynptr usage.
-> The issue is mentioned but Vadim workarounded the issue with source
-> change ([1]). The below describes what is the issue and why there
-> is a verification failure.
-> 
->   int BPF_PROG(skb_crypto_setup) {
->     struct bpf_dynptr algo, key;
->     ...
-> 
-> [...]
+> But again, let's look at data first. I'll get back with numbers soon.
 
-Here is the summary with links:
-  - [bpf-next] bpf: Use named fields for certain bpf uapi structs
-    https://git.kernel.org/bpf/bpf-next/c/e80742d91749
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Sure. I think memory increase due to more tracking is ok.
+I suspect it won't cause 2x increase. Likely few %.
+The last time I checked the main memory hog is states stashed for pruning.
 
