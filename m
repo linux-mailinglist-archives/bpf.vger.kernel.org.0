@@ -1,163 +1,202 @@
-Return-Path: <bpf+bounces-14556-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14557-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66D797E6494
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 08:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C3D4F7E64F0
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 09:08:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97CC31C204E8
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 07:44:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 010941C20A37
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 08:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C267FDDDE;
-	Thu,  9 Nov 2023 07:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7EDB107A8;
+	Thu,  9 Nov 2023 08:08:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WJyLbeGk"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431F5F9EE
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 07:44:34 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA25268D
-	for <bpf@vger.kernel.org>; Wed,  8 Nov 2023 23:44:34 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SQv9S3QR4z4f3mJY
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 15:44:28 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 94C211A0199
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 15:44:29 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgC3Bw7ZjUxlL5HDAQ--.2114S2;
-	Thu, 09 Nov 2023 15:44:29 +0800 (CST)
-Subject: Re: [PATCH bpf 01/11] bpf: Check rcu_read_lock_trace_held() before
- calling bpf map helpers
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com,
- bpf@vger.kernel.org
-References: <20231107140702.1891778-1-houtao@huaweicloud.com>
- <20231107140702.1891778-2-houtao@huaweicloud.com>
- <fcca87f3-8a92-2220-5a4a-cfa2851eac02@linux.dev>
- <94fcdeab-4095-fca9-d901-25e6dee0d832@huaweicloud.com>
- <ff0266b2-8388-9027-4e85-4fee9d83f17f@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <e69083b3-f4a1-68af-8cd6-26146a1ad85b@huaweicloud.com>
-Date: Thu, 9 Nov 2023 15:44:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B640910797;
+	Thu,  9 Nov 2023 08:08:27 +0000 (UTC)
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86DD2D44;
+	Thu,  9 Nov 2023 00:08:26 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-6708d2df1a3so937116d6.1;
+        Thu, 09 Nov 2023 00:08:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699517306; x=1700122106; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dh3aK/boLb55s+2CloV3PQFJiW07ZanTj3NExkitxvU=;
+        b=WJyLbeGk62ZRdwPccPzEMqTIB4ABmtCO4CJkgVQ3URAaUkkmWusilE3sGH+OXUKGye
+         N1xPnBwQcQHTIaz5bstDLKcjd5/Tr7fkRNfIwbR+3wCZW+n6hDw6VsFRmBJbZuuanI/0
+         oT9jZpu4Jblh3IBfhC8uhADByBXtfjew3kq8GfIDwu6Uxs89/ZJOJAYghrQkGQbf6Mvm
+         rrwLtxdhPbLfcZDpzYICdSIgSm3wEd7KohYrDVydIwwlJj7Yzha1jhj72kFkWehbZV8d
+         FTTfHfrzEGw2RuUWwkOeNuhymTCF/g2ihk04cVatkm1OzFp0CZ4BfZiVlU29i8P3aZGT
+         sGJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699517306; x=1700122106;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dh3aK/boLb55s+2CloV3PQFJiW07ZanTj3NExkitxvU=;
+        b=ugzgUT9Yy9iemVs+LMReznS0m5i5S5B4vEqx9w3JdZcepiBQUo/PLxD/alkCjhtQQe
+         a3n8fIGGc1T8t9Ii6DUUPeHdGoLIfD/RhxxjqNYQAb7AzrvTTXiCN0B80FIeNOEmhFjO
+         bMkOBP29tsGXXMO6YuxOdYIKqzCv9RvHNICNbaQr/cddztNpdLvsDqii8U9BKp3AzWr4
+         WIn9Jm9ziZ4g4dY72vaVi7KaaXque8o470CXFm+4qcy6ydjAKdVKBO/Qrwqgwb/LN3Q1
+         IdUfK4FC6f/JJfPLhDkmpqDIq5B6oHNDTC5sEVJVE+hfNSEMzrFJ7W9G2On6R9cu5/K8
+         /k+A==
+X-Gm-Message-State: AOJu0YzOjxEdxNxj2x3QlErmbYEVquDBTRq2eV0iCPSJaQt1D6aWNVNI
+	pQWwMwxGSNCtRyjljaso7DZ/x6SWdj6cU+7hFsE=
+X-Google-Smtp-Source: AGHT+IH8i4A2b188pIGfsrVqj2SrzsVFFgMXFKHrIhORMO+ipexlXg3AcHeM3WCYcW218uLn10ecZsqlQ6SVT97+M0M=
+X-Received: by 2002:a05:6214:1187:b0:66d:1bbb:e9f8 with SMTP id
+ t7-20020a056214118700b0066d1bbbe9f8mr4089852qvv.6.1699517305657; Thu, 09 Nov
+ 2023 00:08:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ff0266b2-8388-9027-4e85-4fee9d83f17f@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgC3Bw7ZjUxlL5HDAQ--.2114S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr13KF1rXrWrWrW5Jw4rAFb_yoW5Zr1fpF
-	yvya45KryYgrsavw12va4IqryUKr4UKa1DJw4kXay5AF4DGrnagryxXFsIgFyYyr4rJr4U
-	Xw13WwnxZry8AaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231108110048.1988128-1-anders.roxell@linaro.org> <CAEf4Bzbbix1KpCKGhK3dnFK99YNyyQzXHp9RzDtd72x7-c6M3A@mail.gmail.com>
+In-Reply-To: <CAEf4Bzbbix1KpCKGhK3dnFK99YNyyQzXHp9RzDtd72x7-c6M3A@mail.gmail.com>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Thu, 9 Nov 2023 09:08:14 +0100
+Message-ID: <CAJ8uoz1_g7mZfqUqMfQZEewGgDB0tCjWB_Eb+D6MmBxGS0Zt-w@mail.gmail.com>
+Subject: Re: [PATCHv2] selftests: bpf: xskxceiver: ksft_print_msg: fix format
+ type error
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Anders Roxell <anders.roxell@linaro.org>, bjorn@kernel.org, magnus.karlsson@intel.com, 
+	maciej.fijalkowski@intel.com, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On 11/9/2023 3:02 PM, Martin KaFai Lau wrote:
-> On 11/8/23 7:46 PM, Hou Tao wrote:
->> Hi,
->>
->> On 11/9/2023 7:11 AM, Martin KaFai Lau wrote:
->>> On 11/7/23 6:06 AM, Hou Tao wrote:
->>>> From: Hou Tao <houtao1@huawei.com>
->>>>
->>>> These three bpf_map_{lookup,update,delete}_elem() helpers are also
->>>> available for sleepable bpf program, so add the corresponding lock
->>>> assertion for sleepable bpf program, otherwise the following warning
->>>> will be reported when a sleepable bpf program manipulates bpf map
->>>> under
->>>> interpreter mode (aka bpf_jit_enable=0):
->>>>
->> SNIP
->>>>    BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
->>>>    {
->>>> -    WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held());
->>>> +    WARN_ON_ONCE(!rcu_read_lock_held() &&
->>>> !rcu_read_lock_trace_held() &&
->>>> +             !rcu_read_lock_bh_held());
->>>>        return (unsigned long) map->ops->map_lookup_elem(map, key);
->>>>    }
->>>>    @@ -53,7 +54,8 @@ const struct bpf_func_proto
->>>> bpf_map_lookup_elem_proto = {
->>>>    BPF_CALL_4(bpf_map_update_elem, struct bpf_map *, map, void *, key,
->>>>           void *, value, u64, flags)
->>>>    {
->>>> -    WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held());
->>>> +    WARN_ON_ONCE(!rcu_read_lock_held() &&
->>>> !rcu_read_lock_trace_held() &&
->>>> +             !rcu_read_lock_bh_held());
->>>>        return map->ops->map_update_elem(map, key, value, flags);
->>>>    }
->>>>    @@ -70,7 +72,8 @@ const struct bpf_func_proto
->>>> bpf_map_update_elem_proto = {
->>>>      BPF_CALL_2(bpf_map_delete_elem, struct bpf_map *, map, void *,
->>>> key)
->>>>    {
->>>> -    WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held());
->>>> +    WARN_ON_ONCE(!rcu_read_lock_held() &&
->>>> !rcu_read_lock_trace_held() &&
->>>> +             !rcu_read_lock_bh_held());
->>>
->>> Should these WARN_ON_ONCE be removed from the helpers instead?
->>>
->>> For catching error purpose, the ops->map_{lookup,update,delete}_elem
->>> are inlined  for the jitted case which I believe is the bpf-CI setting
->>> also. Meaning the above change won't help to catch error in the common
->>> normal case.
->>
->> Removing these WARN_ON_ONCE is also an option. Considering JIT is not
->> available for all architectures and there is no KASAN support in JIT,
->> could we enable BPF interpreter mode in BPF CI to find more potential
->> problems ?
+On Wed, 8 Nov 2023 at 18:03, Andrii Nakryiko <andrii.nakryiko@gmail.com> wr=
+ote:
 >
-> ah. The test in patch 11 needs jit to be off because the
-> map_gen_lookup inlined the code? Would it help to use
-> bpf_map_update_elem(inner_map,...) to trigger the issue instead?
-
-Er, I didn't consider that before, but you are right.
-bpf_map_lookup_elem(inner_map) is inlined by verifier. I think using
-bpf_map_update_elem() may be able to reproduce the issue under JIT mode.
-Will try later.
+> On Wed, Nov 8, 2023 at 3:00=E2=80=AFAM Anders Roxell <anders.roxell@linar=
+o.org> wrote:
+> >
+> > Crossbuilding selftests/bpf for architecture arm64, format specifies
+> > type error show up like.
+> >
+> > xskxceiver.c:912:34: error: format specifies type 'int' but the argumen=
+t
+> > has type '__u64' (aka 'unsigned long long') [-Werror,-Wformat]
+> >  ksft_print_msg("[%s] expected meta_count [%d], got meta_count [%d]\n",
+> >                                                                 ~~
+> >                                                                 %llu
+> >                 __func__, pkt->pkt_nb, meta->count);
+> >                                        ^~~~~~~~~~~
+> > xskxceiver.c:929:55: error: format specifies type 'unsigned long long' =
+but
+> >  the argument has type 'u64' (aka 'unsigned long') [-Werror,-Wformat]
+> >  ksft_print_msg("Frag invalid addr: %llx len: %u\n", addr, len);
+> >                                     ~~~~             ^~~~
+> >
+> > Fixing the issues by casting to (unsigned long long) and changing the
+> > specifiers to be %llx, since with u64s it might be %llx or %lx,
+> > depending on architecture.
+> >
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >  tools/testing/selftests/bpf/xskxceiver.c | 19 ++++++++++++-------
+> >  1 file changed, 12 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/s=
+elftests/bpf/xskxceiver.c
+> > index 591ca9637b23..1ab9512f5aa2 100644
+> > --- a/tools/testing/selftests/bpf/xskxceiver.c
+> > +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> > @@ -908,8 +908,9 @@ static bool is_metadata_correct(struct pkt *pkt, vo=
+id *buffer, u64 addr)
+> >         struct xdp_info *meta =3D data - sizeof(struct xdp_info);
+> >
+> >         if (meta->count !=3D pkt->pkt_nb) {
+> > -               ksft_print_msg("[%s] expected meta_count [%d], got meta=
+_count [%d]\n",
+> > -                              __func__, pkt->pkt_nb, meta->count);
+> > +               ksft_print_msg("[%s] expected meta_count [%d], got meta=
+_count [%llx]\n",
 >
->>
->>>
->>>>        return map->ops->map_delete_elem(map, key);
->>>>    }
->>>>    
->>>
->>>
->>> .
->>
->
-> .
+> why hex? %llu?
 
+You are correct, it should be %llu in both these cases. The original
+%d was incorrect here and good that it was corrected to a 64-bit
+unsigned.
+
+>
+> > +                              __func__, pkt->pkt_nb,
+> > +                              (unsigned long long)meta->count);
+> >                 return false;
+> >         }
+> >
+> > @@ -926,11 +927,13 @@ static bool is_frag_valid(struct xsk_umem_info *u=
+mem, u64 addr, u32 len, u32 exp
+> >
+> >         if (addr >=3D umem->num_frames * umem->frame_size ||
+> >             addr + len > umem->num_frames * umem->frame_size) {
+> > -               ksft_print_msg("Frag invalid addr: %llx len: %u\n", add=
+r, len);
+> > +               ksft_print_msg("Frag invalid addr: %llx len: %u\n",
+> > +                              (unsigned long long)addr, len);
+> >                 return false;
+> >         }
+> >         if (!umem->unaligned_mode && addr % umem->frame_size + len > um=
+em->frame_size) {
+> > -               ksft_print_msg("Frag crosses frame boundary addr: %llx =
+len: %u\n", addr, len);
+> > +               ksft_print_msg("Frag crosses frame boundary addr: %llx =
+len: %u\n",
+> > +                              (unsigned long long)addr, len);
+> >                 return false;
+> >         }
+> >
+> > @@ -1029,7 +1032,8 @@ static int complete_pkts(struct xsk_socket_info *=
+xsk, int batch_size)
+> >                         u64 addr =3D *xsk_ring_cons__comp_addr(&xsk->um=
+em->cq, idx + rcvd - 1);
+> >
+> >                         ksft_print_msg("[%s] Too many packets completed=
+\n", __func__);
+> > -                       ksft_print_msg("Last completion address: %llx\n=
+", addr);
+> > +                       ksft_print_msg("Last completion address: %llx\n=
+",
+> > +                                      (unsigned long long)addr);
+> >                         return TEST_FAILURE;
+> >                 }
+> >
+> > @@ -1513,8 +1517,9 @@ static int validate_tx_invalid_descs(struct ifobj=
+ect *ifobject)
+> >         }
+> >
+> >         if (stats.tx_invalid_descs !=3D ifobject->xsk->pkt_stream->nb_p=
+kts / 2) {
+> > -               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%=
+u] expected [%u]\n",
+> > -                              __func__, stats.tx_invalid_descs,
+> > +               ksft_print_msg("[%s] tx_invalid_descs incorrect. Got [%=
+llx] expected [%u]\n",
+>
+> should this be %llu? Or the switch to the hex was intentional?
+
+Same thing here. The original %u should really have been %llu since
+the stats is 64-bits. But no reason for the hex here since it is not
+an address.
+
+> > +                              __func__,
+> > +                              (unsigned long long)stats.tx_invalid_des=
+cs,
+> >                                ifobject->xsk->pkt_stream->nb_pkts);
+> >                 return TEST_FAILURE;
+> >         }
+> > --
+> > 2.42.0
+> >
+>
 
