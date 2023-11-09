@@ -1,122 +1,155 @@
-Return-Path: <bpf+bounces-14604-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14605-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BBD27E706F
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 18:38:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF6E67E7084
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 18:41:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2900281180
-	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 17:38:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DBB21F21871
+	for <lists+bpf@lfdr.de>; Thu,  9 Nov 2023 17:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7141623744;
-	Thu,  9 Nov 2023 17:38:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B55249FC;
+	Thu,  9 Nov 2023 17:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pxqy9z1o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fQ+7qMU4"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0A222330
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 17:38:13 +0000 (UTC)
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EDDD58
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 09:38:12 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53e08b60febso1863584a12.1
-        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 09:38:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B022031E
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 17:41:33 +0000 (UTC)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF8E2D69
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 09:41:33 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9de7a43bd1aso185717566b.3
+        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 09:41:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699551491; x=1700156291; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5SdUy3aAVcFWwqNenbgs6TNnCjzrQ55UwFmdRAA7W7E=;
-        b=Pxqy9z1opg1OgwxmIzBN8QgNVmeBy8AArCAFguL4XqE0wUAyZbNzgsz502FZo2nsaD
-         Sz2mp7DXFb4JLs8t+nKjjBuzkfNCrz2jIr/M8E29T6wkraypoOaEwt0su8VFUsjSCgwh
-         5CeBx+X/4Fnm0uamH0ig8sSq4oKJUe88XmdvaadLBoZirw7yC0ItaYUrRK0Yra3MmZC4
-         mlxi248XgmRmTJN+V7Qd+f6UNhoXLuhOQeOAvQNNweRBkgd5jlIM1gStJ/1tITA+P17G
-         RGTnetl3gnjw9XduTgg4aQ/ZxQXZBBGrs9vTDTtTUSofuriQDJdyldwFnyLi/VHQuWSV
-         SNfw==
+        d=gmail.com; s=20230601; t=1699551692; x=1700156492; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mSCyDgYMto0ZvJEnGxWLSDXHMrB8gYF6M6CmNaUphVI=;
+        b=fQ+7qMU4ifLdCVnOYLa0gsUOENz9NGt5aZZbpAc6kk0HRlUMjvgW73mD0JYwOWsCZb
+         eSwBalBkcnQamSivPPHshB9cTuyF2pYd8TxPbhhqyf/fUVgW/3LbECcvSE5+V0tAN/an
+         S8i4ygTI68osIccwiNrJGHv9rhHjQsao8x5dgXWFDdmgBfI1CuL01EBk9aFLAtd7q3IU
+         eJ6/TBwz1lm+BRRQvaciSJGazRC78T9wh2QWF4Bgo3pVag5Gum/Gv8AUUgCzfltQWj7r
+         HMxlmxd9lnu07L/Sc1SgbaH618mVkZr8ZZiTYRWmKrlONCX+Wzk4gvjlaeLcVtq72Wod
+         HEwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699551491; x=1700156291;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5SdUy3aAVcFWwqNenbgs6TNnCjzrQ55UwFmdRAA7W7E=;
-        b=JKn/26zwWhdbSKCBgtOxJxlMgrlyyxFQYRHdlkwUwXXPWuBOc6ysunLHoZkigB3dE4
-         cRNk59HSeqSo8Wb1cMYIVOxx86FgH+j/8rMu1tWQqGgDEZjd1457sFWI1CguX5uf2cuF
-         gViv1p6yZAmeq8kE6oa2AQ7L+fwrPQ6FJEDfoYrbmTOL6gEOEldXUsligFI6dLn+ERWt
-         Z5PwWy5CLvkUP0CjD44aPnM1Ha8EecuUxvUdlZufplTnFrUDXcUVjYwIvZsefUjxf833
-         pxBUOWKXK4HIcjZ5jk4LtfxjriKVj+MpIuQNjH5O4HtsnUmFLwps95K08nSDChOES8ou
-         0TNA==
-X-Gm-Message-State: AOJu0YzjHmOR8T+OcccnaRXhGkWIpCb8EL0TNwgGkJE+wnKF2eS3UA/j
-	jbU4FePYNfOQyPbepMpSFfprbsQe26E=
-X-Google-Smtp-Source: AGHT+IE0+LI+Nug7EdDbv2m9bbwvpPb8qJkOzrBwpZsekEiO/Bn8++h4MV9etYf5Pvs+1rGaPs0xFQ==
-X-Received: by 2002:a50:baa7:0:b0:53e:7f73:dfbe with SMTP id x36-20020a50baa7000000b0053e7f73dfbemr5007052ede.11.1699551491062;
-        Thu, 09 Nov 2023 09:38:11 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id q28-20020a50c35c000000b005435c317fedsm73725edb.80.2023.11.09.09.38.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Nov 2023 09:38:10 -0800 (PST)
-Message-ID: <b335aa904dca981058e1db92b6270960f2a28948.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 3/7] bpf: enforce precision for r0 on callback
- return
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org,
- kernel-team@meta.com
-Date: Thu, 09 Nov 2023 19:38:09 +0200
-In-Reply-To: <CAEf4BzY1-mcN5Wjf4-FOKQvnom+0EV=a=cGxvBO9=rbCS0kzwA@mail.gmail.com>
-References: <20231031050324.1107444-1-andrii@kernel.org>
-	 <20231031050324.1107444-4-andrii@kernel.org>
-	 <71cc364752f383559c7d7a570001fd353f0ca8aa.camel@gmail.com>
-	 <CAEf4BzY1-mcN5Wjf4-FOKQvnom+0EV=a=cGxvBO9=rbCS0kzwA@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.0 
+        d=1e100.net; s=20230601; t=1699551692; x=1700156492;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mSCyDgYMto0ZvJEnGxWLSDXHMrB8gYF6M6CmNaUphVI=;
+        b=boLAthAVyskMovvx9bF5WQToTpxDChXYFX4WtpFsXqjyQXdFQYXu/qCD1ATWRjK8dq
+         FoCLWZvLhzpocySGpH5+/IEV7m3wJv0+tZD2l/a6e1kCT9lWPf7n13ausOi+QqrEiktX
+         33ty0ifv65ZXW9noABlzxJNq94D45VX4PCDY7VYjftnHPvC/D0uZ1EHU8ZO5kKsaGiy8
+         YIppoZl3xgPqBq6n/jF14kZdUCqF48maq9JR6hqePGUfOeYJiHOlyMzE75boq2lh2je/
+         AFwmmK0CC1pOXhSrNPeJuQfi/AS8IxLjwXPg+IVOUxao9Vr2h5917ubVYcm5Z/Lep07B
+         6cIA==
+X-Gm-Message-State: AOJu0Yyoc9J6mA3sh/KXd6/5YcbLfdInz1pRoIoFH5N/L27GJ+trodhQ
+	FxhwcpevjDaTNl63oR+1B3LHGvXKOTfZFH5/jIpBX//W
+X-Google-Smtp-Source: AGHT+IHzawwm7xNamyTpBDo9pwqIjpllgxSx+nl/ucy4qlbrXUxLt3OjgAcR05ZaZ4SlPNPGmdfx5jXht4vg+rB83N0=
+X-Received: by 2002:a17:907:2da5:b0:9c1:9b3a:4cd1 with SMTP id
+ gt37-20020a1709072da500b009c19b3a4cd1mr4916537ejc.3.1699551691501; Thu, 09
+ Nov 2023 09:41:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231031050324.1107444-1-andrii@kernel.org> <20231031050324.1107444-7-andrii@kernel.org>
+ <891df9e42aee4ce7c46010cd93744e2b90819502.camel@gmail.com>
+In-Reply-To: <891df9e42aee4ce7c46010cd93744e2b90819502.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 9 Nov 2023 09:41:20 -0800
+Message-ID: <CAEf4BzbmCngJeThcwUt52f7nNqOUtfOury3KfCrr+QiYKVX74w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 6/7] bpf: preserve constant zero when doing
+ partial register restore
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2023-11-09 at 09:32 -0800, Andrii Nakryiko wrote:
-> On Thu, Nov 9, 2023 at 7:20=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >=20
-> > On Mon, 2023-10-30 at 22:03 -0700, Andrii Nakryiko wrote:
-> > > > Given verifier checks actual value, r0 has to be precise, so we nee=
-d to
-> > > > propagate precision properly.
-> > > >=20
-> > > > Fixes: 69c087ba6225 ("bpf: Add bpf_for_each_map_elem() helper")
-> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >=20
-> > I don't follow why this is necessary, could you please conjure
-> > an example showing that current behavior is not safe?
-> > This example could be used as a test case, as this change
-> > seems to not be covered by test cases.
->=20
-> We rely on callbacks to return specific value (0 or 1, for example),
-> and use or might use that in kernel code. So if we rely on the
-> specific value of a register, it has to be precise. Marking r0 as
-> precise will have implications on other registers from which r0 was
-> derived. This might have implications on state pruning and stuff. If
-> r0 and its ancestors are not precise, we might erroneously assume some
-> states are safe and prune them, even though they are not.
+On Thu, Nov 9, 2023 at 7:21=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Mon, 2023-10-30 at 22:03 -0700, Andrii Nakryiko wrote:
+> > Similar to special handling of STACK_ZERO, when reading 1/2/4 bytes fro=
+m
+> > stack from slot that has register spilled into it and that register has
+> > a constant value zero, preserve that zero and mark spilled register as
+> > precise for that. This makes spilled const zero register and STACK_ZERO
+> > cases equivalent in their behavior.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> Could you please add a test case?
+>
 
-The r0 returned from bpf_loop's callback says bpf_loop to stop iteration,
-bpf_loop returns the number of completed iterations. However, the return
-value of bpf_loop modeled by verifier is unbounded scalar.
-Same for map's for each.
+There is already at least one test case that relies on this behavior
+:) But yep, I'll add a dedicated test.
 
-I'm not sure we have callback calling functions that can expose this as a
-safety issue.
+> [...]
+>
+> > ---
+> >  kernel/bpf/verifier.c | 25 +++++++++++++++++++++----
+> >  1 file changed, 21 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 0eecc6b3109c..8cfe060e4938 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -4958,22 +4958,39 @@ static int check_stack_read_fixed_off(struct bp=
+f_verifier_env *env,
+> >                               copy_register_state(&state->regs[dst_regn=
+o], reg);
+> >                               state->regs[dst_regno].subreg_def =3D sub=
+reg_def;
+> >                       } else {
+> [...]
+> > +
+> > +                             if (spill_cnt =3D=3D size &&
+> > +                                 tnum_is_const(reg->var_off) && reg->v=
+ar_off.value =3D=3D 0) {
+> > +                                     __mark_reg_const_zero(&state->reg=
+s[dst_regno]);
+> > +                                     /* this IS register fill, so keep=
+ insn_flags */
+> > +                             } else if (zero_cnt =3D=3D size) {
+> > +                                     /* similarly to mark_reg_stack_re=
+ad(), preserve zeroes */
+> > +                                     __mark_reg_const_zero(&state->reg=
+s[dst_regno]);
+> > +                                     insn_flags =3D 0; /* not restorin=
+g original register state */
+> > +                             } else {
+> > +                                     mark_reg_unknown(env, state->regs=
+, dst_regno);
+> > +                                     insn_flags =3D 0; /* not restorin=
+g original register state */
+> > +                             }
+>
+> Condition for this branch is (off % BPF_REG_SIZE !=3D 0) || size !=3D spi=
+ll_size,
+> is it necessary to check for some unusual offsets, e.g. off % BPF_REG_SIZ=
+E =3D=3D 7
+> or something like that?
 
-[...]
+I don't think so. We rely on all bytes we are reading to be either
+spills (and thus spill_cnt =3D=3D size), in which case verifier logic
+makes sure we have spill at slot boundary (off % BPF_REG_SIZE =3D=3D 0).
+Or it's all STACK_ZERO, and then zero_cnt =3D=3D size, in which case we
+know it's zero.
+
+Unless I missed something else?
+
+>
+> [...]
+>
+>
 
