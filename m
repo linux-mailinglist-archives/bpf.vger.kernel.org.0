@@ -1,129 +1,146 @@
-Return-Path: <bpf+bounces-14729-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED14D7E7931
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:22:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89D877E7982
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6E951C20DF0
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 06:22:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44FAC2817E2
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 06:46:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C3363A3;
-	Fri, 10 Nov 2023 06:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DED11FAB;
+	Fri, 10 Nov 2023 06:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ch7QOf0f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ePD0k6H/"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 041F26118
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 06:22:11 +0000 (UTC)
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C0E6E99
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 22:22:10 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-40859dee28cso12381965e9.0
-        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 22:22:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB7B63BC
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 06:45:57 +0000 (UTC)
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15AA7D95
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 22:45:55 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso2389330e87.2
+        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 22:45:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699597329; x=1700202129; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699598754; x=1700203554; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w0V5sue/Dp5gh8SazXmO3goUQuzygoMuLavvwR3dJRQ=;
-        b=ch7QOf0fjaOFwN2cGYlYP58XtS3XLrz5UKLVoi3WCWOAHWyPf/Kwt21nr4bRS82SI3
-         382svMzjEf2cuZ5KRodr26D8vWyZPexMkP9uXz3pSWsJCO/g0QAKxjHvCjHzrwJ4ttMY
-         BQCO4wnMqZVa8dDVSe1AKO8RsoYd49mDQV4Zt5fMhAU58zgCbyFTdhf2ekkIdnIYsGH/
-         HoCkAvROpb7AaPCks5U6Fo/ThU1BG4X6zYBMiiGWCYSSzaI3DDvM4IVTGuAeObrYxwoz
-         FNCG27t0a0VbSdLMJYVMGNUHmnxob1jB3/YaA5Vq4KKiV3sVGPubfcSX8Ob+/O0vorxk
-         kcZw==
+        bh=k+/47ypaQ7iy++mSetffFvL9xB84wT+XjQE6n2YN7Rw=;
+        b=ePD0k6H/M5wrNNvPe5eQV2ft7KQl/3qamaOwCByxpG32M2U+PPvRbaW7PmgpA9P8xp
+         /SRqGa3PpQJjt8Qa2ZHc/lyRqrmNTrOkCbrLH5ye0C345GaoH4t7unCxir6ITHceJGSY
+         vL1B6mB1NQqvQSOJP56fHYXys2KyHTIICnqBlc7ofM/vLxBJdWtyDzVBrX9oa+5CLCeN
+         FrnmhyaaKr0bXGksEmG9tv5bFN6XsdDmMg4fpZTKUh2E7GXeHjtNREdQdJTNHFP4Kh99
+         FbTGijc/BJTh03y3o0sUYl0iZzwgwFk53f0bQSI7ZbDy4V9MPFgiA6/SmqTDPuvQgK6f
+         ZoQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699597329; x=1700202129;
+        d=1e100.net; s=20230601; t=1699598754; x=1700203554;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=w0V5sue/Dp5gh8SazXmO3goUQuzygoMuLavvwR3dJRQ=;
-        b=VeNi0tLZ27IjsFAQzZt4Dt4/8LTeyK3IwVH/4NBLj2OqT9HAeHb7JTQHSJ1qMW7+iZ
-         Qi9Vc4hnckvyhy4QS8iRd7BD74fmm4Jlvn4Nzts05UWY0SEwrpU1rO2UzUCUO7YUwb+U
-         5amrjyWHI6V8uEJp7JQRn7Fz11ew6d/lYqBR3M9fnQ71l8x8caOZRug3I1r5geLxk1pG
-         RjCk5+TUeDY0fRVXhVdyZU4SwOSADcC5ugzKqbgeX9eso1LTPBs5gMDCdXYvBpYuLewP
-         zVb0gApZgTHwGBpADcGbIfowLsiXwWGQsP8ftzm7l1Z8xcDzrYfZLr2sTdzckBjrukVF
-         kGaA==
-X-Gm-Message-State: AOJu0Yywjk3TT5YIrmDXs0HPoO5cJlMM5DUTCe9vI77dgoTDIWPZ7yXd
-	CXIkHC5l9Mdl8zNGLTpWzpiTgpLxFBDH/W99bobGa89yEl4=
-X-Google-Smtp-Source: AGHT+IHBTaI0knehw5JCkGqE0QrfVV8F/5OvjfT9aK0AMd9kAkEum/41DRbprE8Xe7lfRPq9NACGSnLGN5t5E5UekQU=
-X-Received: by 2002:a50:a410:0:b0:540:118:e8f with SMTP id u16-20020a50a410000000b0054001180e8fmr6321749edb.24.1699592801900;
- Thu, 09 Nov 2023 21:06:41 -0800 (PST)
+        bh=k+/47ypaQ7iy++mSetffFvL9xB84wT+XjQE6n2YN7Rw=;
+        b=wlN+vcfSqxXkEpYfmdDhf+2uvDb3rKKwEYpELP0An0A0PLgg7CVm7bbc8hpYEKCC4g
+         4tgDgcJt9MPI1NF4wMU+HRW+ZkWs5DJw2dUfytQI/HNg3tb6p+YKSS/PnwTb8ztJG1KZ
+         5q7uy7J6lbx/O4WAq7h/5X/Y8bPZzARhDCv3GIX5oDrLFU2xi7DHAUe7CQMKB4tKewlT
+         gNCH32RSjJzMQ37vtaXgxCgZN+fJADybOS14ob9E6yW68vvuSIn57ZA3fm2dYQd6sqIL
+         MUbiWH/uiEYb/75MRkR8zeM8XV8IOZ8Oug++UYM65s5iwJhSh5UCpLrAsjzjigOsgy+w
+         IVIA==
+X-Gm-Message-State: AOJu0YxAB+ud/ydTCyZb8f9ZjZlKYW1cN3PXq2wzu14HIRHBYOO06x0u
+	gmxFM6bq1F+kqSXv17rWu37kth18XyM7+1ZWpH+aGEOKDj4=
+X-Google-Smtp-Source: AGHT+IGiteOzpFk9kWrmoZF0GIe388goGUyl4zCe+NZtvyrhXLtBe2eS5FHqpSL02/6ROyzPFUnTrT/V4cFeaM5qluM=
+X-Received: by 2002:a17:907:3e1c:b0:9b2:c583:cd71 with SMTP id
+ hp28-20020a1709073e1c00b009b2c583cd71mr6410424ejc.50.1699594329103; Thu, 09
+ Nov 2023 21:32:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231110002638.4168352-1-andrii@kernel.org> <20231110002638.4168352-4-andrii@kernel.org>
- <CAADnVQ+KtueBdD=8DazMhM3Xz0+YpLVW1-5-N4ZFiBOzji4vbg@mail.gmail.com>
- <CAEf4Bza1nxvLcBORkV+bKbKCz=f1jhRYM=PPaJxXDfQ7rmfJvA@mail.gmail.com>
- <CAEf4BzZFc6t5KCdCH4zYA1jp9UgRWHsEKgfMjVcc72qgH-FHXQ@mail.gmail.com>
- <CAADnVQ+GzfdYSYAK5MYJ4cbOXsFPKG_Ly5CO5raCP7sopj9AXA@mail.gmail.com> <CAEf4BzZT_Sgpgtm2yrUCUoCLAdJey_rofJi7jOq0603N2ELRcg@mail.gmail.com>
-In-Reply-To: <CAEf4BzZT_Sgpgtm2yrUCUoCLAdJey_rofJi7jOq0603N2ELRcg@mail.gmail.com>
+References: <20231108231152.3583545-1-andrii@kernel.org> <20231108231152.3583545-4-andrii@kernel.org>
+ <CAADnVQKQ5TGGwGuaO0eghhnLRFZOVgLE7Hume8uPAvbo-AwA5g@mail.gmail.com>
+ <CAEf4BzbVz9kPFSn4=3k+UOEanwQVeaNjOpRh_3pYLFRnbe3vkQ@mail.gmail.com> <CAADnVQL6UrCKQw1WYbOh1GPhMR5cB3F7_An6-vSBK5Y-2=5tzw@mail.gmail.com>
+In-Reply-To: <CAADnVQL6UrCKQw1WYbOh1GPhMR5cB3F7_An6-vSBK5Y-2=5tzw@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 9 Nov 2023 21:06:30 -0800
-Message-ID: <CAEf4BzbBUkgWGNw3JpozOx_q1XJD4fph1Ubd=H8NSVdGX7ZfQA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf 3/3] selftests/bpf: add edge case backtracking
- logic test
+Date: Thu, 9 Nov 2023 21:31:57 -0800
+Message-ID: <CAEf4BzYbF-qXtRkiJg28N4u97NZrDyb8nYmEaAEO0SW19rRrJQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/4] bpf: fix control-flow graph checking in
+ privileged mode
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Hao Sun <sunhao.th@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 9, 2023 at 8:48=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Thu, Nov 9, 2023 at 8:08=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> On Thu, Nov 9, 2023 at 8:14=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
+> On Thu, Nov 9, 2023 at 7:41=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
 > >
-> > On Thu, Nov 9, 2023 at 8:05=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
+> > On Thu, Nov 9, 2023 at 5:26=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
 > > >
+> > > On Wed, Nov 8, 2023 at 3:12=E2=80=AFPM Andrii Nakryiko <andrii@kernel=
+.org> wrote:
 > > > >
-> > > > When I was analysing and crafting the test I for some reason assume=
-d I
-> > > > need to have a jump inside the state that won't trigger state
-> > > > checkpoint. But I think that's not necessary, just doing conditiona=
-l
-> > > > jump and jumping back an instruction or two should do. With that ye=
-s,
-> > > > TEST_STATE_FREQ should be a better way to do this.
+> > > >
+> > > > @@ -15622,11 +15619,11 @@ static int visit_insn(int t, struct bpf_v=
+erifier_env *env)
+> > > >                 /* conditional jump with two edges */
+> > > >                 mark_prune_point(env, t);
+> > > >
+> > > > -               ret =3D push_insn(t, t + 1, FALLTHROUGH, env, true)=
+;
+> > > > +               ret =3D push_insn(t, t + 1, FALLTHROUGH | CONDITION=
+AL, env);
+> > > >                 if (ret)
+> > > >                         return ret;
+> > > >
+> > > > -               return push_insn(t, t + insn->off + 1, BRANCH, env,=
+ true);
+> > > > +               return push_insn(t, t + insn->off + 1, BRANCH | CON=
+DITIONAL, env);
 > > >
-> > > Ah, ok, TEST_STATE_FREQ won't work. It triggers state checkpointing
-> > > both at conditional jump instruction and on its target, because targe=
-t
-> > > is prune point.
-> > >
-> > > So I think this test has to be the way it is.
+> > > If I'm reading this correctly, after the first conditional jmp
+> > > both fallthrough and branch become sticky with the CONDITIONAL flag.
+> > > So all processing after first 'if a =3D=3D b' insn is running
+> > > with loop_ok=3D=3Dtrue.
+> > > If so, all this complexity is not worth it. Let's just remove 'loop_o=
+k' flag.
 > >
-> > I see.
-> > I was about to apply it, but then noticed:
-> > numamove_bpf-numamove_bpf.o |migrate_misplaced_page |success ->
-> > failure (!!)|-100.00 %
-> >
-> > veristat is not known for sporadic failures.
-> > Is this a real issue?
+> > So you mean just always assume loop_ok, right?
 >
-> No idea what this is, I don't have it in my local object files, will
-> need to regenerate them and check.
+> yes.
+> Since not detecting the loop early only adds more cycles later
+> that states_maybe_looping() should catch quickly enough.
+>
+> > >
+> > > Also
+> > > if (ret) return ret;
+> > > in the above looks like an existing bug.
+> > > It probably should be if (ret < 0) return ret;
+> >
+> > yeah, probably should be error-handling case
+>
+> I thought that refactoring
+> commit 59e2e27d227a ("bpf: Refactor check_cfg to use a structured loop.")
+> is responsible...
+> but it looks to be an older bug.
 
-libbpf: prog 'migrate_misplaced_page_exit': failed to find kernel BTF
-type ID of 'migrate_misplaced_page': -3
+No, I think it was indeed 59e2e27d227a that changed this. Previously we had
 
-It fails also on bpf-next/master.
+if (ret =3D=3D 1)
+   ...
+if (ret < 0)
+   goto err;
+/* ret =3D=3D 0 */
 
-I think CI compares with the last state before net/net-next merge, and
-now this tool (it's from libbpf-tools) fails to find
-migrate_misplaced_page kernel function, apparently.
-
-So veristat itself doesn't have sporadic failures, but our CI setup is
-not 100% reliable, it seems.
+I'll add the fix on top of another fix.
 
