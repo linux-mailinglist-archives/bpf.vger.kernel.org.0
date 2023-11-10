@@ -1,125 +1,130 @@
-Return-Path: <bpf+bounces-14788-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14789-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD8307E7F53
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 18:52:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90F8D7E7F74
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 18:54:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93A35281325
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 17:52:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48961280F25
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 17:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D468938F96;
-	Fri, 10 Nov 2023 17:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0081438DCC;
+	Fri, 10 Nov 2023 17:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hzZTxHbX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m5LfJeRD"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1744838F90
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 17:52:44 +0000 (UTC)
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9377739D
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:50:09 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5431614d90eso3728121a12.1
-        for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:50:09 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EF038DDE
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 17:53:59 +0000 (UTC)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD8E2141A;
+	Fri, 10 Nov 2023 09:52:41 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32f78dcf036so2119170f8f.0;
+        Fri, 10 Nov 2023 09:52:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699638564; x=1700243364; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dkMAB4YVokGeGTxb43Rwt1oILLIE/sypDaAWpbOjiRs=;
-        b=hzZTxHbXWGt3idL3AZ/4bJK3S9G9xjr6rqF7waIWvyuIT9kFrz2YWkOTVA8GG7f8bR
-         RqhBChWPlw9Bj5kYEPtJh7Z97+DjbAS8QWNGCHZJmb2bxqIsk7h92uhD+bOz4nYHQYJF
-         2qlOf+32jDirVSaLwikXRfGf4goWPZ1bc/C9WPlecEtsvy8WrKj8qen3uNruiYjuUcvT
-         51pExRcP9wVPvIPuMJORLLvkyZmRw58TUxmLAhAJ2VfoHydDpTzTevO8UJ/9qSxrEJQ4
-         n7nUUP862oLo4uySjC4G5IolO5ZImTwQCF5AmHCfsP9QFShU+crEjLgvop3+1/sF9HlN
-         bqjQ==
+        d=gmail.com; s=20230601; t=1699638758; x=1700243558; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rjLgosbrIATqy9jCIRZQTn6hGbaoZOX0qQ5LZfhUZPU=;
+        b=m5LfJeRD02RDsdwKcAMC/XOlKOZVdZkSihxXXU3Jyln05dBXO3csTvR26YU9wgVAcI
+         hpBYgqnC7CpJfTfwPIjspcLbGS2HtsAkDAYN6ywTTuppNarTcFjt2SNkbV6ZurF8ptv5
+         fR3bMdxNlEQETXXjJzmx+yLrlx6sET5jYPkMGDhr53DcTJuVZcqyNjGXBLtJuCT3KjBA
+         O1x5GiEWlA17wYq2KSa9ImmrxINnq/e065UOGrBLB9AiI1xwLzW/rDUVpbDsR/oLJDio
+         TuoDNfVnKMj4LE9+q+AiIEPjlrhrCrE+abcYOzYLsO+DONmoBF9n8/7z6Xcsgd4r+zn1
+         YBmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699638564; x=1700243364;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dkMAB4YVokGeGTxb43Rwt1oILLIE/sypDaAWpbOjiRs=;
-        b=WuM9vyJ2lpsipt8BOBmMYqS7Lizc1XfcZteS91Mcz4BvkpjeEcUfYsck/UCH0Jvel6
-         2y/kXIP24x0zDVaaCa4OCMqlzN6q5BQPB9gG+6SaF9OwL4lzLtGc5a40S8YHuQ5mFXY2
-         yrQdfJJaLjX+mKBXkBLQgL/E+3wx6OlojbKKOp0j6U+zIjyzNCNyzB+YWXjYfyewPxt/
-         MgRb4EFOiI4NrNlqOrDxAQrwBWxY4nvMopJXEo+XU0K41ZQrX+mcvFf9aLNHhIj3q127
-         sWVICS+GmVo2emRPAJBedxTc8egbGYRxSwAc9oX4WTEhfWJmsjAO4ZKCWd+ooE1E2XdL
-         TkLg==
-X-Gm-Message-State: AOJu0YxLy609IgK4hekH85XHxEy3r3bzfg94nMoXzepysxw3ta4bBSEJ
-	fXZW+/+ESelKSHlNKvn06HWhaeZVJt4VlTZWPF7hEWRt
-X-Google-Smtp-Source: AGHT+IGVYuySdpLymVG5RmOMH5tB2DLK2dnJvlgEIthQNP8yAWSJdPybqA/9Gr23wLxg7Mu0eR6IknOOPkvcM+dPD5w=
-X-Received: by 2002:a05:6402:518e:b0:543:5c2f:e0e6 with SMTP id
- q14-20020a056402518e00b005435c2fe0e6mr73157edd.17.1699638564331; Fri, 10 Nov
- 2023 09:49:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699638758; x=1700243558;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rjLgosbrIATqy9jCIRZQTn6hGbaoZOX0qQ5LZfhUZPU=;
+        b=qJqkMPxMj50YWDflqOPNyTUIi/JRrfPJQhICLPfIqMQuCxwV/h14BPwdHTV1SlNXVg
+         lyTkMTrlag2mK3AgPiscXccxHgMUjcDCCYHlHoVRqHLPJQURgq+wY0XDW/zrUotKVVt0
+         XSXAlvnQ4IgUOm4cnN/aJZuBa309SlY6GF0kaFdKm2iS+qIhNS2EPDlBr6he/S/BA6y6
+         D6TURSu5DffvkMtWLj3loOAIRYh2rEzcnEigTCMVQU3ro6Nv8Yu0aiZUVQqcArckOGsX
+         /4QNigEWW+yBAH+Qw8NxPFZ1wFdgj3L3Ga/CFshgM5JBasX+DJWubPxoHp580H0iaS0N
+         yngQ==
+X-Gm-Message-State: AOJu0YwgJpjo+tT3NOnrJsIHjA3klAbw/NRLb9W8WCIYmRiuhlhnbKVF
+	Sacfun0juLQ6TIZ54Zkrrn4=
+X-Google-Smtp-Source: AGHT+IGlrIv+1Zu/VM/CpLeTN7etNZZXa2Hx0vzIylwj8e3jyhc5QYaQ0mrrAQTAHKEwmzAiFiKB2A==
+X-Received: by 2002:a05:6000:2ac:b0:32f:64f2:815 with SMTP id l12-20020a05600002ac00b0032f64f20815mr3404438wry.33.1699638758395;
+        Fri, 10 Nov 2023 09:52:38 -0800 (PST)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id e19-20020a5d5953000000b0030647449730sm2362375wri.74.2023.11.10.09.52.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Nov 2023 09:52:38 -0800 (PST)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH bpf] bpf/tests: Remove test for MOVSX32 with offset=32
+Date: Fri, 10 Nov 2023 17:51:50 +0000
+Message-Id: <20231110175150.87803-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231110161057.1943534-1-andrii@kernel.org> <20231110161057.1943534-3-andrii@kernel.org>
- <ZU5qWjVoe--qY_Ja@google.com>
-In-Reply-To: <ZU5qWjVoe--qY_Ja@google.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 10 Nov 2023 09:49:12 -0800
-Message-ID: <CAEf4BzZc7KMxu252cdmbDUk7J3CfFH2Z7juQYqww1Vc2SGYdkA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/8] bpf: move verifier state printing code to kernel/bpf/log.c
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 10, 2023 at 9:37=E2=80=AFAM Stanislav Fomichev <sdf@google.com>=
- wrote:
->
-> On 11/10, Andrii Nakryiko wrote:
-> > Move a good chunk of code from verifier.c to log.c: verifier state
-> > verbose printing logic. This is an important and very much
-> > logging/debugging oriented code. It fits the overlall log.c's focus on
-> > verifier logging, and moving it allows to keep growing it without
-> > unnecessarily adding to verifier.c code that otherwise contains a core
-> > verification logic.
-> >
-> > There are not many shared dependencies between this code and the rest o=
-f
-> > verifier.c code, except a few single-line helpers for various register
-> > type checks and a bit of state "scratching" helpers. We move all such
-> > trivial helpers into include/bpf/bpf_verifier.h as static inlines.
-> >
-> > No functional changes in this patch.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  include/linux/bpf_verifier.h |  72 +++++++
-> >  kernel/bpf/log.c             | 342 +++++++++++++++++++++++++++++
-> >  kernel/bpf/verifier.c        | 403 -----------------------------------
-> >  3 files changed, 414 insertions(+), 403 deletions(-)
-> >
-> > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.=
-h
-> > index d7898f636929..22f56f1eb27d 100644
-> > --- a/include/linux/bpf_verifier.h
-> > +++ b/include/linux/bpf_verifier.h
-> > @@ -782,4 +782,76 @@ static inline bool bpf_type_has_unsafe_modifiers(u=
-32 type)
-> >       return type_flag(type) & ~BPF_REG_TRUSTED_MODIFIERS;
-> >  }
->
-> Does it make sense to have a new bpf_log.h and move these in there?
-> We can then include it from verifier.c only. Looks like bpf_verifier.h
-> is included in a bunch of places and those symbols don't have a prefix
-> and might (potentially) clash with something else in the future.
->
-> Or is not a super clear cut?
+MOVSX32 only supports sign extending 8-bit and 16-bit operands into 32
+bit operands. The "ALU_MOVSX | BPF_W" test tries to sign extend a 32 bit
+operand into a 32 bit operand which is equivalent to a normal BPF_MOV.
 
+Remove this test as it tries to run an invalid instruction.
 
-bpf_verifier.h should be used in very BPF-specific portions of code,
-so I think this shouldn't be a big problem. Doesn't feel justified to
-add a new small header for 4-5 functions, but I don't feel very
-strongly about this.
+Fixes: daabb2b098e0 ("bpf/tests: add tests for cpuv4 instructions")
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202310111838.46ff5b6a-oliver.sang@intel.com
+---
+ lib/test_bpf.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
+
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 7916503e6a6a..c148f8d1e564 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -5144,22 +5144,6 @@ static struct bpf_test tests[] = {
+ 		{ },
+ 		{ { 0, 0x1 } },
+ 	},
+-	{
+-		"ALU_MOVSX | BPF_W",
+-		.u.insns_int = {
+-			BPF_LD_IMM64(R2, 0x00000000deadbeefLL),
+-			BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
+-			BPF_MOVSX32_REG(R1, R3, 32),
+-			BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
+-			BPF_MOV32_IMM(R0, 2),
+-			BPF_EXIT_INSN(),
+-			BPF_MOV32_IMM(R0, 1),
+-			BPF_EXIT_INSN(),
+-		},
+-		INTERNAL,
+-		{ },
+-		{ { 0, 0x1 } },
+-	},
+ 	/* MOVSX64 REG */
+ 	{
+ 		"ALU64_MOVSX | BPF_B",
+-- 
+2.39.2
+
 
