@@ -1,84 +1,101 @@
-Return-Path: <bpf+bounces-14801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 652B17E84EA
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 22:05:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E4047E8573
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 23:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20161280F8D
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 21:05:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ECEB1C2099B
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 22:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088953C09C;
-	Fri, 10 Nov 2023 21:05:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF903D380;
+	Fri, 10 Nov 2023 22:20:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HDZLBVOv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMdOyKeI"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49B953588A
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 21:05:15 +0000 (UTC)
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [IPv6:2001:41d0:203:375::b3])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBEA93
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 13:05:13 -0800 (PST)
-Message-ID: <82346298-c730-43ff-a53f-801dc209617f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699650311;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tRB3z6UhVFAlsCTwbldcgpsM1kbXiIKMUAoqj4FVuBw=;
-	b=HDZLBVOvSvXTRUzbZJYlOLM7AEUfRSNz1okkcelLeqhO8Plb9Ovnv9jEycPRZGYlKvPy2y
-	VpsSa5XCQ/7u30y8jBf+u0S4JIl6uBTukOj5PJRREHhqFq3DsEhd+YQOLFfpqUL1Vz1EsJ
-	E3YyQ3vHzI96YclMzg3NKDqlZ9kW90M=
-Date: Fri, 10 Nov 2023 13:05:07 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9253C6A9
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 22:20:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69209C433CA
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 22:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699654808;
+	bh=NZpHuyACLpRCUBOlVTQueBO3ak832TS3DuZ+jUL9vsg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=UMdOyKeIH7fz/uzH/ZqMUiB3JLxMFdQv4F7ZXcSPefPAnBZrmXoENytsZSyFk8syc
+	 zlkSTTXm4l9DZz02NgSHhbFxeW4vMGb/Sqr+8efjgFtERvO2N9NoP38cqk+5sWPi9M
+	 +Qijw0VPiwCvJaVQ1M//XWPLhDFepP/MoKBt3w4jiRMwt3BhSaYQ0BjF9Zu+lzU4zj
+	 UW+VLJrxIa160nFq5L7LyPsSuLyaHgtSV8dymLLabkUv32xKTXaSWeSZESaTSgsSXs
+	 hV4pqGNkVjqTJA2zq6SavFEAF9dEd+DGgnE20Ha9EzrdBmg+cQytSxGqQq94FgiaOG
+	 ksXuTLwNbNdrg==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5435336ab0bso4206239a12.1
+        for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 14:20:08 -0800 (PST)
+X-Gm-Message-State: AOJu0YwoSz2fc9lC/tPnoW8J/gDeSIlIkmJ4Moy1MtLOtxsBw6H0UsN0
+	4cpfaX8LlVHzoidz998nXuxyHtXjUUuHBFtGomdneA==
+X-Google-Smtp-Source: AGHT+IHmLk1Z/Sz01akvMr/FQh6as32bImEa+pudYGREu5eK4WEKhfIYILoFgQP0CspWs0pXV8plDiECpNfrxfFgNVY=
+X-Received: by 2002:aa7:c993:0:b0:53d:fe98:fd48 with SMTP id
+ c19-20020aa7c993000000b0053dfe98fd48mr462449edt.3.1699654806808; Fri, 10 Nov
+ 2023 14:20:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2] bpf: Do not allocate percpu memory at init
- stage
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20231110172050.2235758-1-yonghong.song@linux.dev>
- <CAADnVQJ2b8UNmzOLAQQbZXxanyPDSd7uv+j=xdh=g9pQCzKi5Q@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQJ2b8UNmzOLAQQbZXxanyPDSd7uv+j=xdh=g9pQCzKi5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231102005521.346983-1-kpsingh@kernel.org> <20231102005521.346983-5-kpsingh@kernel.org>
+ <CAEf4Bzakdg3pxQZtjYZGrvZPo-nmpsxB0=Ymp9q+KFYOPViu=Q@mail.gmail.com>
+In-Reply-To: <CAEf4Bzakdg3pxQZtjYZGrvZPo-nmpsxB0=Ymp9q+KFYOPViu=Q@mail.gmail.com>
+From: KP Singh <kpsingh@kernel.org>
+Date: Fri, 10 Nov 2023 14:19:55 -0800
+X-Gmail-Original-Message-ID: <CACYkzJ5u053pm1gD35xY2_Q8SscsEYKMJn2TRcak8nEucenvEg@mail.gmail.com>
+Message-ID: <CACYkzJ5u053pm1gD35xY2_Q8SscsEYKMJn2TRcak8nEucenvEg@mail.gmail.com>
+Subject: Re: [PATCH v7 4/5] bpf: Only enable BPF LSM hooks when an LSM program
+ is attached
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	paul@paul-moore.com, keescook@chromium.org, casey@schaufler-ca.com, 
+	song@kernel.org, daniel@iogearbox.net, ast@kernel.org, renauld@google.com, 
+	pabeni@redhat.com, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+[...]
 
-On 11/10/23 12:32 PM, Alexei Starovoitov wrote:
-> On Fri, Nov 10, 2023 at 9:23 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->> +                               if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->> +                                       if (!bpf_global_percpu_ma_set) {
->> +                                               mutex_lock(&bpf_verifier_lock);
->> +                                               if (!bpf_global_percpu_ma_set) {
->> +                                                       err = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
->> +                                                       if (!err)
->> +                                                               bpf_global_percpu_ma_set = true;
->> +                                               }
->> +                                               mutex_unlock(&bpf_verifier_lock);
-> I feel we're taking unnecessary risk here by reusing the mutex.
-> bpf_obj_new kfunc is a privileged operation and the verifier lock
-> is not held in such scenario, so it won't deadlock,
+> > @@ -110,11 +110,14 @@ struct lsm_id {
+> >   * @scalls: The beginning of the array of static calls assigned to this hook.
+> >   * @hook: The callback for the hook.
+> >   * @lsm: The name of the lsm that owns this hook.
+> > + * @default_state: The state of the LSM hook when initialized. If set to false,
+> > + * the static key guarding the hook will be set to disabled.
+> >   */
+> >  struct security_hook_list {
+> >         struct lsm_static_call  *scalls;
+> >         union security_list_options     hook;
+> >         const struct lsm_id             *lsmid;
+> > +       bool                            default_state;
+>
+> minor nit: "default_state" would make more sense if it would be some
+> enum instead of bool. But given it's true/false, default_enabled makes
+> more sense.
 
-That is true. deadlock situation won't happen.
+Agreed.
 
-> but let's just add another mutex to protect percpu_ma init.
-> Much easier to reason about.
+>
+> >  } __randomize_layout;
+> >
+> >  /*
+>
 
-Okay. will do.
+[...]
 
+> > +
+> > +void bpf_lsm_toggle_hook(void *addr, bool value)
+>
+> another minor nit: similar to above, s/value/enable/ reads nicer
+>
+
+Fixed.
 
