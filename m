@@ -1,130 +1,129 @@
-Return-Path: <bpf+bounces-14789-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14790-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90F8D7E7F74
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 18:54:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86FB27E81F6
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 19:50:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48961280F25
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 17:54:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02973B20C0F
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 18:50:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0081438DCC;
-	Fri, 10 Nov 2023 17:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644F039878;
+	Fri, 10 Nov 2023 18:50:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m5LfJeRD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="10sfZJRB"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7EF038DDE
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 17:53:59 +0000 (UTC)
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD8E2141A;
-	Fri, 10 Nov 2023 09:52:41 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32f78dcf036so2119170f8f.0;
-        Fri, 10 Nov 2023 09:52:41 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5769C200D7
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 18:50:14 +0000 (UTC)
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45E515E1E
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 10:50:12 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc2a0c7c6cso24640735ad.1
+        for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 10:50:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699638758; x=1700243558; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rjLgosbrIATqy9jCIRZQTn6hGbaoZOX0qQ5LZfhUZPU=;
-        b=m5LfJeRD02RDsdwKcAMC/XOlKOZVdZkSihxXXU3Jyln05dBXO3csTvR26YU9wgVAcI
-         hpBYgqnC7CpJfTfwPIjspcLbGS2HtsAkDAYN6ywTTuppNarTcFjt2SNkbV6ZurF8ptv5
-         fR3bMdxNlEQETXXjJzmx+yLrlx6sET5jYPkMGDhr53DcTJuVZcqyNjGXBLtJuCT3KjBA
-         O1x5GiEWlA17wYq2KSa9ImmrxINnq/e065UOGrBLB9AiI1xwLzW/rDUVpbDsR/oLJDio
-         TuoDNfVnKMj4LE9+q+AiIEPjlrhrCrE+abcYOzYLsO+DONmoBF9n8/7z6Xcsgd4r+zn1
-         YBmw==
+        d=google.com; s=20230601; t=1699642212; x=1700247012; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bK6sSKTu/pLIHN9x3Pj9MvG4rIqlBQlhZxQGfOa3RTY=;
+        b=10sfZJRBzh/F4AVoF0KtEFTheYta5nZBdYEoAHTySy87hD8tZwRtt5vBblJ/zMYa4g
+         kCqWXeVk9/GXzWshT3rl33KfMEN2NlfA8GCbN5Km1gA3AgxOC4QZ20AGZeuR8KtLiIah
+         RsdL6NGOu9CYqRfDoKmMA34oTZ8IQZwgyksCKj9l9kzCXScPylz7vu56TYK+CJl/FKFs
+         7xq7AyF7i47h58AGT305QKeNe1GwBD2RGcLC08nZrT92ANP8luMRczU1NKhJuH+kXtjL
+         JPifyQOnWVsElBhzxIrh0Jud3njsmaekZR2gIiLnWl67KF3OjDOXoTDHKvOBW2T1YyKN
+         f6lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699638758; x=1700243558;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rjLgosbrIATqy9jCIRZQTn6hGbaoZOX0qQ5LZfhUZPU=;
-        b=qJqkMPxMj50YWDflqOPNyTUIi/JRrfPJQhICLPfIqMQuCxwV/h14BPwdHTV1SlNXVg
-         lyTkMTrlag2mK3AgPiscXccxHgMUjcDCCYHlHoVRqHLPJQURgq+wY0XDW/zrUotKVVt0
-         XSXAlvnQ4IgUOm4cnN/aJZuBa309SlY6GF0kaFdKm2iS+qIhNS2EPDlBr6he/S/BA6y6
-         D6TURSu5DffvkMtWLj3loOAIRYh2rEzcnEigTCMVQU3ro6Nv8Yu0aiZUVQqcArckOGsX
-         /4QNigEWW+yBAH+Qw8NxPFZ1wFdgj3L3Ga/CFshgM5JBasX+DJWubPxoHp580H0iaS0N
-         yngQ==
-X-Gm-Message-State: AOJu0YwgJpjo+tT3NOnrJsIHjA3klAbw/NRLb9W8WCIYmRiuhlhnbKVF
-	Sacfun0juLQ6TIZ54Zkrrn4=
-X-Google-Smtp-Source: AGHT+IGlrIv+1Zu/VM/CpLeTN7etNZZXa2Hx0vzIylwj8e3jyhc5QYaQ0mrrAQTAHKEwmzAiFiKB2A==
-X-Received: by 2002:a05:6000:2ac:b0:32f:64f2:815 with SMTP id l12-20020a05600002ac00b0032f64f20815mr3404438wry.33.1699638758395;
-        Fri, 10 Nov 2023 09:52:38 -0800 (PST)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id e19-20020a5d5953000000b0030647449730sm2362375wri.74.2023.11.10.09.52.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 Nov 2023 09:52:38 -0800 (PST)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Puranjay Mohan <puranjay12@gmail.com>,
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf] bpf/tests: Remove test for MOVSX32 with offset=32
-Date: Fri, 10 Nov 2023 17:51:50 +0000
-Message-Id: <20231110175150.87803-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1699642212; x=1700247012;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bK6sSKTu/pLIHN9x3Pj9MvG4rIqlBQlhZxQGfOa3RTY=;
+        b=wpaYzmnHuEX0SeU1F8ES3KWTd77ik+qSZCeWl16V1srw96Ytwy703cMadsuK/5EfMx
+         JxihQCiDtI4bIWLr50ffQroswhgz44y5pn5q/1ZAPDOsUDaEljhbYJiZLGliGzBI5xvU
+         fMkljfDh1QMvd/RSLqIpdckNqMae3PS0cRYdsQR27b/RMKi+RDpvieyuzN4gQmwb7X7A
+         HelnC6jg9bk0OdXf3V9zkXJEfURJIxjDVcx7/93bObiGhcvOUHGe+TdSA3FCeI18yBjL
+         7Q9Zj22fJGzqZ1DffXHJKSgGWK/UjelBqdXYBwxJ5D8CgCkrAfmctZgRPj/TGjv0NfFN
+         WAlA==
+X-Gm-Message-State: AOJu0YwzXYAwRukNub0e1EAos31j5HWkWzGxdILEh3/aDVkUR5kK3WZ+
+	XMZlhF/X8HjfPsKDLqV9qEFsvvI=
+X-Google-Smtp-Source: AGHT+IHy3clwTeVTXe4/lKnfxXSHaJNF0GV4aOjgdMgOiS5o8ICB+skpiG9AWGUmip13b41XFYINJ9o=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:8c84:b0:1cc:3ac9:717b with SMTP id
+ t4-20020a1709028c8400b001cc3ac9717bmr29912plo.6.1699642212311; Fri, 10 Nov
+ 2023 10:50:12 -0800 (PST)
+Date: Fri, 10 Nov 2023 10:50:10 -0800
+In-Reply-To: <20231110161057.1943534-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20231110161057.1943534-1-andrii@kernel.org>
+Message-ID: <ZU57YmTj7GDY3ogk@google.com>
+Subject: Re: [PATCH bpf-next 0/8] BPF verifier log improvements
+From: Stanislav Fomichev <sdf@google.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="utf-8"
 
-MOVSX32 only supports sign extending 8-bit and 16-bit operands into 32
-bit operands. The "ALU_MOVSX | BPF_W" test tries to sign extend a 32 bit
-operand into a 32 bit operand which is equivalent to a normal BPF_MOV.
+On 11/10, Andrii Nakryiko wrote:
+> This patch set moves a big chunk of verifier log related code from gigantic
+> verifier.c file into more focused kernel/bpf/log.c. This is not essential to
+> the rest of functionality in this patch set, so I can undo it, but it felt
+> like it's good to start chipping away from 20K+ verifier.c whenever we can.
+> 
+> The main purpose of the patch set, though, is in improving verifier log
+> further.
+> 
+> Patches #3-#4 start printing out register state even if that register is
+> spilled into stack slot. Previously we'd get only spilled register type, but
+> no additional information, like SCALAR_VALUE's ranges. Super limiting during
+> debugging. For cases of register spills smaller than 8 bytes, we also print
+> out STACK_MISC/STACK_ZERO/STACK_INVALID markers. This, among other things,
+> will make it easier to write tests for these mixed spill/misc cases.
+> 
+> Patch #5 prints map name for PTR_TO_MAP_VALUE/PTR_TO_MAP_KEY/CONST_PTR_TO_MAP
+> registers. In big production BPF programs, it's important to map assembly to
+> actual map, and it's often non-trivial. Having map name helps.
 
-Remove this test as it tries to run an invalid instruction.
+[..]
 
-Fixes: daabb2b098e0 ("bpf/tests: add tests for cpuv4 instructions")
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202310111838.46ff5b6a-oliver.sang@intel.com
----
- lib/test_bpf.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+> Patch #6 just removes visual noise in form of ubiquitous imm=0 and off=0. They
+> are default values, omit them.
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 7916503e6a6a..c148f8d1e564 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -5144,22 +5144,6 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 0x1 } },
- 	},
--	{
--		"ALU_MOVSX | BPF_W",
--		.u.insns_int = {
--			BPF_LD_IMM64(R2, 0x00000000deadbeefLL),
--			BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
--			BPF_MOVSX32_REG(R1, R3, 32),
--			BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
--			BPF_MOV32_IMM(R0, 2),
--			BPF_EXIT_INSN(),
--			BPF_MOV32_IMM(R0, 1),
--			BPF_EXIT_INSN(),
--		},
--		INTERNAL,
--		{ },
--		{ { 0, 0x1 } },
--	},
- 	/* MOVSX64 REG */
- 	{
- 		"ALU64_MOVSX | BPF_B",
--- 
-2.39.2
+If you end up with another respin for some reason:
+s/verifierl/verifier/
+s/furthre/futher/
 
+(in the commit description)
+
+> Patch #7 is probably the most controversial, but it reworks how verifier log
+> prints numbers. For small valued integers we use decimals, but for large ones
+> we switch to hexadecimal. From personal experience this is a much more useful
+> convention. We can tune what consitutes "small value", for now it's 16-bit
+> range.
+
+Not sure why not always print in hex, but no strong preference here.
+
+> Patch #8 prints frame number for PTR_TO_CTX registers, if that frame is
+> different from the "current" one. This removes ambiguity and confusion,
+> especially in complicated cases with multiple subprogs passing around
+> pointers.
+> 
+> Andrii Nakryiko (8):
+>   bpf: move verbose_linfo() into kernel/bpf/log.c
+>   bpf: move verifier state printing code to kernel/bpf/log.c
+>   bpf: extract register state printing
+>   bpf: print spilled register state in stack slot
+>   bpf: emit map name in register state if applicable and available
+>   bpf: omit default off=0 and imm=0 in register state log
+>   bpf: smarter verifier log number printing logic
+>   bpf: emit frameno for PTR_TO_STACK regs if it differs from current one
+
+Acked-by: Stanislav Fomichev <sdf@google.com>
 
