@@ -1,114 +1,182 @@
-Return-Path: <bpf+bounces-14784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 017AD7E7DFA
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 18:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ADEA7E7E14
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 18:23:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318EE1C20B4B
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 17:05:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E18F1C20AD3
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 17:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0EA41DFF9;
-	Fri, 10 Nov 2023 17:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZJh01of8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9EC3208A9;
+	Fri, 10 Nov 2023 17:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364E763B4;
-	Fri, 10 Nov 2023 17:05:25 +0000 (UTC)
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B17431C1;
-	Fri, 10 Nov 2023 09:05:23 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-32f8441dfb5so1435462f8f.0;
-        Fri, 10 Nov 2023 09:05:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699635922; x=1700240722; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EF4hfRre5ZLXHPViGMBkoodu/q24AHzQL/CZl8uDkxs=;
-        b=ZJh01of8yTyws9wOYMLY1SEWHL4XCFNpgVXipXIwZ3wMmW7IRGLj0K1SRMVxQgd9cn
-         mHGgLZew1RkzrjzF48QIupzAk49rtZ1peNOu/pSfhmT6iSzMl+9uwOtgFDyAVAausP17
-         YvkT/S6bi5JKFShKTs/bHEsyHb6etmXsH6+zcb76p2op/KAh5qFvQ247R5XCVKaD5sOb
-         nQJi2J+nr8+PXdmnx7L4fzFvVnpEdSc3fziUHLyB/t32k0gqbfRL6BWoqR6E1VF6YMXB
-         Thu6zKKJIMvGeZOc9F/JBka/cIcl6l6oOHWW8RcsM+aeLE5nG2LuSmYVUpdzMszXKUwi
-         nNjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699635922; x=1700240722;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EF4hfRre5ZLXHPViGMBkoodu/q24AHzQL/CZl8uDkxs=;
-        b=EotoJjjrgz/5ZR7Chpu/2NCTA/fPsRt9TJ0WOh2mYzkfpvQ3CxqPKfOG+ck3ZJinxR
-         DKlU2vBy531colzlMZRot6UDqqdZDoCyb6Fh2ELlUQa1CWHwBFzsl/cihtJ/hJ74tp0h
-         HgeXz469QkO6Adsg0kJveIUSxSvRf/Xo+Cxx2+bpzY/rdsujBUGGgqHsRLqTBR55kY5v
-         wsjzIN2TYiVf+2W12/++rxJdXtBwFcaHtISou5HUPLVrnCosRKV2GGLglDbaUKk4ru8N
-         MKZy0MgTC1hUmgqnYHbQY7idFEtIdQRlMo1rCOV6P6acpVnwj90s6ZYtVEbnnSr78opG
-         Qg4Q==
-X-Gm-Message-State: AOJu0YyE87K+ZhNUhOFqYxRM6Z0OtGQE4wMjsJK0vAQQQAJaudKh1RDx
-	jE7zS4aAUhLc8oonhsbylZsRYz3ug1NxBv94gnc=
-X-Google-Smtp-Source: AGHT+IF58EG5oeO+Wg2hVcP53XwK5+M7sDO8HQW3FB+J3l4kL2Q08XmjVsuV5TY+0AjcroYDlM+5j7d044XkWVv1T3I=
-X-Received: by 2002:adf:e589:0:b0:32d:bae7:6ab4 with SMTP id
- l9-20020adfe589000000b0032dbae76ab4mr6023630wrm.64.1699635921681; Fri, 10 Nov
- 2023 09:05:21 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD25920338
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 17:23:05 +0000 (UTC)
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7824843F3B
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:23:03 -0800 (PST)
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 136F029A382D1; Fri, 10 Nov 2023 09:20:50 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCH bpf-next v2] bpf: Do not allocate percpu memory at init stage
+Date: Fri, 10 Nov 2023 09:20:50 -0800
+Message-Id: <20231110172050.2235758-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231029061438.4215-1-laoar.shao@gmail.com> <ZU1rLOMUJQOGXti5@slm.duckdns.org>
- <CAADnVQJfEWkMhyqt5msd-GsuuEFONQPnhHjB7s2zKw0eAWv4sg@mail.gmail.com> <CALOAHbAM86EaU=7FeKJ+B1vGxGX7oXMm4fDUgEVTAePKFDTrTg@mail.gmail.com>
-In-Reply-To: <CALOAHbAM86EaU=7FeKJ+B1vGxGX7oXMm4fDUgEVTAePKFDTrTg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 10 Nov 2023 09:05:10 -0800
-Message-ID: <CAADnVQ+vJU=21yQ15W-o0R1zxCURXenKP7F1PMcKdLSh_kaxtg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 00/11] bpf, cgroup: Add BPF support for
- cgroup1 hierarchy
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Yosry Ahmed <yosryahmed@google.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Kui-Feng Lee <sinquersw@gmail.com>, Waiman Long <longman@redhat.com>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 9, 2023 at 10:05=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
->
-> On Fri, Nov 10, 2023 at 7:35=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Nov 9, 2023 at 3:28=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
-> > >
-> > > Hello,
-> > >
-> > > Applied 1-5 to cgroup/for-6.8-bpf. The last patch is updated to use
-> > > irqsave/restore. Will post the updated version as a reply to the orig=
-inal
-> > > patch.
-> > >
-> > >   git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.8=
--bpf
-> > >
-> > > Alexei, please feel free to pull from the branch. It's stable and wil=
-l also
-> > > be included as a part of cgroup/for-6.8.
-> >
-> > Perfect. Thanks.
-> > Will probably pull it either tomorrow or on Monday/Tuesday.
->
-> will send a new version for the other parts after you pull it.
+Kirill Shutemov reported significant percpu memory consumption increase a=
+fter
+booting in 288-cpu VM ([1]) due to commit 41a5db8d8161 ("bpf: Add support=
+ for
+non-fix-size percpu mem allocation"). The percpu memory consumption is
+increased from 111MB to 969MB. The number is from /proc/meminfo.
 
-Pulled into bpf-next.
+I tried to reproduce the issue with my local VM which at most supports up=
+to
+255 cpus. With 252 cpus, without the above commit, the percpu memory
+consumption immediately after boot is 57MB while with the above commit th=
+e
+percpu memory consumption is 231MB.
+
+This is not good since so far percpu memory from bpf memory allocator is =
+not
+widely used yet. Let us change pre-allocation in init stage to on-demand
+allocation when verifier detects there is a need of percpu memory for bpf
+program. With this change, percpu memory consumption after boot can be re=
+duced
+signicantly.
+
+  [1] https://lore.kernel.org/lkml/20231109154934.4saimljtqx625l3v@box.sh=
+utemov.name/
+
+Fixes: 41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem alloca=
+tion")
+Reported-and-tested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.c=
+om>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ include/linux/bpf.h   |  2 +-
+ kernel/bpf/core.c     |  8 +++-----
+ kernel/bpf/verifier.c | 19 +++++++++++++++++--
+ 3 files changed, 21 insertions(+), 8 deletions(-)
+
+Changelog:
+  v1 -> v2:
+    - Add proper Reported-and-tested-by tag.
+    - Do a check of !bpf_global_percpu_ma_set before acquiring verifier_l=
+ock.
+
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b4825d3cdb29..3df67a04d32e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -56,7 +56,7 @@ extern struct idr btf_idr;
+ extern spinlock_t btf_idr_lock;
+ extern struct kobject *btf_kobj;
+ extern struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+-extern bool bpf_global_ma_set, bpf_global_percpu_ma_set;
++extern bool bpf_global_ma_set;
+=20
+ typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
+ typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 08626b519ce2..cd3afe57ece3 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -64,8 +64,8 @@
+ #define OFF	insn->off
+ #define IMM	insn->imm
+=20
+-struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+-bool bpf_global_ma_set, bpf_global_percpu_ma_set;
++struct bpf_mem_alloc bpf_global_ma;
++bool bpf_global_ma_set;
+=20
+ /* No hurry in this branch
+  *
+@@ -2934,9 +2934,7 @@ static int __init bpf_global_ma_init(void)
+=20
+ 	ret =3D bpf_mem_alloc_init(&bpf_global_ma, 0, false);
+ 	bpf_global_ma_set =3D !ret;
+-	ret =3D bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
+-	bpf_global_percpu_ma_set =3D !ret;
+-	return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
++	return ret;
+ }
+ late_initcall(bpf_global_ma_init);
+ #endif
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index bd1c42eb540f..fadbabfdef60 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -26,6 +26,7 @@
+ #include <linux/poison.h>
+ #include <linux/module.h>
+ #include <linux/cpumask.h>
++#include <linux/bpf_mem_alloc.h>
+ #include <net/xdp.h>
+=20
+ #include "disasm.h"
+@@ -41,6 +42,9 @@ static const struct bpf_verifier_ops * const bpf_verifi=
+er_ops[] =3D {
+ #undef BPF_LINK_TYPE
+ };
+=20
++struct bpf_mem_alloc bpf_global_percpu_ma;
++static bool bpf_global_percpu_ma_set;
++
+ /* bpf_check() is a static code analyzer that walks eBPF program
+  * instruction by instruction and updates register/stack state.
+  * All paths of conditional branches are analyzed until 'bpf_exit' insn.
+@@ -12074,8 +12078,19 @@ static int check_kfunc_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+ 				if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_new_impl] && !=
+bpf_global_ma_set)
+ 					return -ENOMEM;
+=20
+-				if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_percpu_obj_new_imp=
+l] && !bpf_global_percpu_ma_set)
+-					return -ENOMEM;
++				if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_percpu_obj_new_imp=
+l]) {
++					if (!bpf_global_percpu_ma_set) {
++						mutex_lock(&bpf_verifier_lock);
++						if (!bpf_global_percpu_ma_set) {
++							err =3D bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
++							if (!err)
++								bpf_global_percpu_ma_set =3D true;
++						}
++						mutex_unlock(&bpf_verifier_lock);
++						if (err)
++							return err;
++					}
++				}
+=20
+ 				if (((u64)(u32)meta.arg_constant.value) !=3D meta.arg_constant.value=
+) {
+ 					verbose(env, "local type ID argument must be in range [0, U32_MAX]\=
+n");
+--=20
+2.34.1
+
 
