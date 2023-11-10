@@ -1,200 +1,140 @@
-Return-Path: <bpf+bounces-14740-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14741-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F33D7E79B7
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 08:17:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC48A7E79DA
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 08:48:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1233B1F20D3A
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:17:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6E8F2816EC
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:48:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB4D1FC4;
-	Fri, 10 Nov 2023 07:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80DBB7462;
+	Fri, 10 Nov 2023 07:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rbi08Qqr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nT7U2WSn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E3115C8;
-	Fri, 10 Nov 2023 07:17:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25074C433C8;
-	Fri, 10 Nov 2023 07:17:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699600666;
-	bh=mZiJ9Td++XlK5uAAB4qKyf/MCPDMIrq0nMmKby/gJag=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Rbi08Qqr2TYOjwc5dSkoT6yW5Ku4Ne2FfD8IwpZR93OJiz1jWrYIox5Cnoar3kj+3
-	 lBiBZ8xC+m9BRFv1fIVcIvexFmpoBvH4yOZwMAuljOUP9cDO02npfNw/kXccfrP2Kl
-	 T22qfAchu/gD2tJkVCKHw8pKBPDrCdGQnVlcPI0DAPCp4Mj08pEsvTCOV8Vchc4xzO
-	 1hMtY62rTCv7SyL/F6seB8h3SWFqS5c+g5UqX29wbhVGUF/en0VQow0gD9XtvJxrwC
-	 S1mpeztcpbAp608Sh5ZZyrGOPbAr0i0DuI5zUBp8dr6PXVJc2QjG6ny86Lt9HSc5nL
-	 FSSqO3pckiE2Q==
-Date: Fri, 10 Nov 2023 16:17:39 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [RFC PATCH v2 26/31] fprobe: Rewrite fprobe on function-graph
- tracer
-Message-Id: <20231110161739.f0ff9c50f20ebcfb57be6459@kernel.org>
-In-Reply-To: <169945376173.55307.5892275268096520409.stgit@devnote2>
-References: <169945345785.55307.5003201137843449313.stgit@devnote2>
-	<169945376173.55307.5892275268096520409.stgit@devnote2>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FB97475;
+	Fri, 10 Nov 2023 07:48:45 +0000 (UTC)
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510B686B5;
+	Thu,  9 Nov 2023 23:48:44 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77784edc2edso111737385a.1;
+        Thu, 09 Nov 2023 23:48:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699602523; x=1700207323; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XBs5XjzxU2sBS4BsqeDFs9m90FmLyMBVXgRR9cjPdGc=;
+        b=nT7U2WSn2tzru0Wc5UyyOr0s3ff/5xnVDxhTNFDpYvNgZIJ7teX8NFVF01RoXZ/e7P
+         6zMJHr5oVBmpZ+7WZ5rdgrSaTVTSGhuOE9TU5tM+DColzu7+AZ23Y1npUGRnUkYJUYT+
+         Z7alvFKg4NtKtZuhk3d6GWKeMqpZU4fy7lQZ07aHJsLsnp8MIFUjB+g3299VpGo7phpI
+         jqXfPlSiz/mvPNhmrp8Y2jFreN7T2NLbqRTvPuGMb5mN0+fnVRPBewSt0TtdqbW5VZQE
+         o7kMv0vsxB5hvoXl+24oRA5FweB4n9cjjur4jj88TLhnQuEGBh22mB0LKLfu1pAGNfFG
+         Hmqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699602523; x=1700207323;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XBs5XjzxU2sBS4BsqeDFs9m90FmLyMBVXgRR9cjPdGc=;
+        b=bfbUtbtIoS1caAnyTI1t8rsIiuQlViv/cFayVuzWDiBnudybSs8MFBY1jcdkxyQka3
+         QQJXLNCgfbte/QZKs+/Wmw+OJS89nn+TOKBF6x+m0WPbG6PmTpRvrQTMHf9zpVTs2ATj
+         GfwUbdkK9BcykUfu+VpnNunQf/lAe0wjVLln5vYald54e3/ut8+wdWKj2R7oQNqc9Hve
+         c0gmeH6IUQ2crNIDCE1CrigtxOhtlV8S/g+TRjCQh8QFxRk6wnVq+4ftPW6FeDuEqTF1
+         gQ+oNBNz0mzoaEZOczCYrvcyQciCbrzpp0dGkslFHR+6mLR1PQKoPNMNH7DrvwQFUte2
+         6EmA==
+X-Gm-Message-State: AOJu0YxWVaRqbQF5ty1keRyP04aUM7L8wHKGI7HHg1I2ZkXS++kDCICH
+	cLxJMU1vMDIPX0hSIBsXbPBGsAhJ2D8TrWAc+vg=
+X-Google-Smtp-Source: AGHT+IEOrSo4jUkkbutzn8ChlRAscLYR8uTnBFs2NBoHAKPKV/5D3Qijj4V/8zCCdxsQSMxSi6kq3sUkPjhdq2x9dGk=
+X-Received: by 2002:a05:6214:d0d:b0:66f:b89e:71de with SMTP id
+ 13-20020a0562140d0d00b0066fb89e71demr7409106qvh.36.1699602523394; Thu, 09 Nov
+ 2023 23:48:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <202311031651.A7crZEur-lkp@intel.com> <20231106031802.4188-1-laoar.shao@gmail.com>
+ <CAADnVQLDOEPmDyipHOH0E6QSg4aJtcHcfghoAQmQtROAMd=imQ@mail.gmail.com> <98fe8917-9054-4a46-a777-613d8c640d36@app.fastmail.com>
+In-Reply-To: <98fe8917-9054-4a46-a777-613d8c640d36@app.fastmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Fri, 10 Nov 2023 15:48:07 +0800
+Message-ID: <CALOAHbBFE85shrceCtXDu_isOFNHfcP_2eoHVXct3RwOdfrVbA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] compiler-gcc: Suppress -Wmissing-prototypes
+ warning for all supported GCC
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, kernel test robot <lkp@intel.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Hao Luo <haoluo@google.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Waiman Long <longman@redhat.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	oe-kbuild-all@lists.linux.dev, kernel test robot <oliver.sang@intel.com>, 
+	Stanislav Fomichev <sdf@google.com>, Kui-Feng Lee <sinquersw@gmail.com>, Song Liu <song@kernel.org>, 
+	Tejun Heo <tj@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	Yosry Ahmed <yosryahmed@google.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Nov 10, 2023 at 2:35=E2=80=AFPM Arnd Bergmann <arnd@arndb.de> wrote=
+:
+>
+> On Thu, Nov 9, 2023, at 19:23, Alexei Starovoitov wrote:
+> > On Sun, Nov 5, 2023 at 7:18=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
+m> wrote:
+> >> In the future, if you wish to suppress warnings that are only supporte=
+d on
+> >> higher GCC versions, it is advisable to explicitly use "__diag_ignore"=
+ to
+> >> specify the GCC version you are targeting.
+> >>
+> >> Reported-by: kernel test robot <lkp@intel.com>
+> >> Closes: https://lore.kernel.org/oe-kbuild-all/202311031651.A7crZEur-lk=
+p@intel.com/
+> >> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> >> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> >> Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+> >> Cc: Arnd Bergmann <arnd@arndb.de>
+> >> ---
+> >>  include/linux/compiler-gcc.h | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc=
+.h
+> >> index 7af9e34..80918bd 100644
+> >> --- a/include/linux/compiler-gcc.h
+> >> +++ b/include/linux/compiler-gcc.h
+> >> @@ -138,7 +138,7 @@
+> >>  #endif
+> >>
+> >>  #define __diag_ignore_all(option, comment) \
+> >> -       __diag_GCC(8, ignore, option)
+> >> +       __diag(__diag_GCC_ignore option)
+> >
+> > Arnd,
+> > does this look good to you?
+>
+> Yes, this is good. We could do the same thing for
+> clang already, but it doesn't make a huge difference.
 
-On Wed,  8 Nov 2023 23:29:22 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+The Minimum Clang version is 11.0.0, so I think we don't have to
+change compiler-clang.h.
 
-> + */
-> +static inline int __fprobe_handler(unsigned long ip, unsigned long parent_ip,
-> +				   struct fprobe *fp, struct ftrace_regs *fregs,
-> +				   void *data)
-> +{
-> +	int ret = 0;
->  
-> +	if (fp->entry_handler) {
-> +		if (fp->exit_handler && fp->entry_data_size)
-> +			data += sizeof(unsigned long);
-> +		else
-> +			data = NULL;
-> +		ret = fp->entry_handler(fp, ip, parent_ip, fregs, data);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static inline int __fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
-> +					  struct fprobe *fp, struct ftrace_regs *fregs,
-> +					  void *data)
-> +{
-> +	int ret;
->  	/*
->  	 * This user handler is shared with other kprobes and is not expected to be
->  	 * called recursively. So if any other kprobe handler is running, this will
-> @@ -108,45 +210,173 @@ static void fprobe_kprobe_handler(unsigned long ip, unsigned long parent_ip,
->  	 */
->  	if (unlikely(kprobe_running())) {
->  		fp->nmissed++;
-> -		goto recursion_unlock;
-> +		return 0;
->  	}
->  
->  	kprobe_busy_begin();
-> -	__fprobe_handler(ip, parent_ip, ops, fregs);
-> +	ret = __fprobe_handler(ip, parent_ip, fp, fregs, data);
->  	kprobe_busy_end();
-> -
-> -recursion_unlock:
-> -	ftrace_test_recursion_unlock(bit);
-> +	return ret;
->  }
->  
-> -static void fprobe_exit_handler(struct rethook_node *rh, void *data,
-> -				unsigned long ret_ip, struct pt_regs *regs)
-> +static int fprobe_entry(unsigned long func, unsigned long ret_ip,
-> +			struct ftrace_regs *fregs, struct fgraph_ops *gops)
->  {
-> -	struct fprobe *fp = (struct fprobe *)data;
-> -	struct fprobe_rethook_node *fpr;
-> -	struct ftrace_regs *fregs = (struct ftrace_regs *)regs;
-> -	int bit;
-> +	struct fprobe_hlist_node *node, *first;
-> +	unsigned long header;
-> +	void *fgraph_data = NULL;
-> +	struct fprobe *fp;
-> +	int size, used, ret;
->  
-> -	if (!fp || fprobe_disabled(fp))
-> -		return;
-> +	if (WARN_ON_ONCE(!fregs))
-> +		return 0;
->  
-> -	fpr = container_of(rh, struct fprobe_rethook_node, node);
-> +	first = node = find_first_fprobe_node(func);
-> +	if (unlikely(!first))
-> +		return 0;
-> +
-> +	size = 0;
-> +	hlist_for_each_entry_from_rcu(node, hlist) {
-> +		if (node->addr != func)
-> +			break;
-> +		fp = READ_ONCE(node->fp);
-> +		/*
-> +		 * Since fprobe can be enabled until the next loop, we ignore the
-> +		 * disabled flag in this loop.
-> +		 */
-> +		if (fp && fp->exit_handler)
-> +			size += FPROBE_HEADER_SIZE + fp->entry_data_size;
-> +	}
-> +	node = first;
-> +	/* size can be 0 because fp only has entry_handler. */
-> +	if (size) {
-> +		fgraph_data = fgraph_reserve_data(size);
-> +		if (unlikely(!fgraph_data)) {
-> +			hlist_for_each_entry_from_rcu(node, hlist) {
-> +				if (node->addr != func)
-> +					break;
-> +				fp = READ_ONCE(node->fp);
-> +				if (fp && !fprobe_disabled(fp))
-> +					fp->nmissed++;
-> +			}
-> +			return 0;
-> +		}
-> +	}
->  
->  	/*
-> -	 * we need to assure no calls to traceable functions in-between the
-> -	 * end of fprobe_handler and the beginning of fprobe_exit_handler.
-> +	 * TODO: recursion detection has been done in the fgraph. Thus we need
-> +	 * to add a callback to increment missed counter.
->  	 */
-> -	bit = ftrace_test_recursion_trylock(fpr->entry_ip, fpr->entry_parent_ip);
-> -	if (bit < 0) {
-> -		fp->nmissed++;
-> +	used = 0;
-> +	hlist_for_each_entry_from_rcu(node, hlist) {
-> +		if (node->addr != func)
-> +			break;
-> +		fp = READ_ONCE(node->fp);
-> +		if (!fp || fprobe_disabled(fp))
-> +			continue;
-> +
-> +		if (fprobe_shared_with_kprobes(fp))
-> +			ret = __fprobe_kprobe_handler(func, ret_ip,
-> +					fp, fregs, fgraph_data + used);
-> +		else
-> +			ret = __fprobe_handler(func, ret_ip, fp,
-> +					fregs, fgraph_data + used);
+>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
+Thanks for your review.
 
-Since the fgraph callback is under rcu-locked but not preempt-disabled,
-fprobe unittest fails. I need to add preempt_disable_notrace() and
-preempt_enable_notrace() around this. Note that kprobe_busy_begin()/end()
-also access to per-cpu variable, so it requires to disable preemption.
-
-Thank you,
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+--=20
+Regards
+Yafang
 
