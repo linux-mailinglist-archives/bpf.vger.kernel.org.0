@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-14715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14713-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FB557E7885
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 04:51:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E5C47E787E
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 04:51:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32CF51C20EE0
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 03:51:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52D6C281A18
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 03:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20C720F3;
-	Fri, 10 Nov 2023 03:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8187F13ADA;
+	Fri, 10 Nov 2023 03:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2AB91841
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 03:51:29 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BE2468E
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 19:51:29 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9MYr3H003725
-	for <bpf@vger.kernel.org>; Thu, 9 Nov 2023 19:51:28 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u91s75fxk-5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86F80125C0
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 03:49:21 +0000 (UTC)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A75246B5
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 19:49:21 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9MXpfJ005387
+	for <bpf@vger.kernel.org>; Thu, 9 Nov 2023 19:49:20 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u8nqkjana-13
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 19:51:28 -0800
-Received: from twshared4634.37.frc1.facebook.com (2620:10d:c0a8:1b::30) by
- mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 19:49:20 -0800
+Received: from twshared58712.02.prn6.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 19:51:25 -0800
+ 15.1.2507.34; Thu, 9 Nov 2023 19:49:16 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
 	id 648C63B41DCA6; Thu,  9 Nov 2023 19:49:11 -0800 (PST)
 From: Andrii Nakryiko <andrii@kernel.org>
@@ -48,8 +48,8 @@ In-Reply-To: <20231110034838.1295764-1-andrii@kernel.org>
 References: <20231110034838.1295764-1-andrii@kernel.org>
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 8tsOnS27uohpQkRiYtGRAQksg6-qoyqX
-X-Proofpoint-ORIG-GUID: 8tsOnS27uohpQkRiYtGRAQksg6-qoyqX
+X-Proofpoint-ORIG-GUID: uvzJ_Qaamhd0qJD8ZAr3vfZgUW9qoFYI
+X-Proofpoint-GUID: uvzJ_Qaamhd0qJD8ZAr3vfZgUW9qoFYI
 Content-Transfer-Encoding: quoted-printable
 X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
