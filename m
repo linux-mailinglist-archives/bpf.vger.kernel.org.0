@@ -1,101 +1,97 @@
-Return-Path: <bpf+bounces-14684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14686-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B5297E775E
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 03:23:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13F137E779D
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 03:38:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF41E28161A
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 02:23:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 996EBB210C6
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 02:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9F51374;
-	Fri, 10 Nov 2023 02:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89DF8EDD;
+	Fri, 10 Nov 2023 02:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MZrsAb3e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXyWUrQ1"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EE121363
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 02:23:33 +0000 (UTC)
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b0])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D003420B
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 18:23:32 -0800 (PST)
-Message-ID: <fc7f56af-03e1-faa1-1e53-12dfe353d46e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699583010;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/1WlOoIci7egeLN8bFPY4JFeTuNURMPYyWiYjAnI/To=;
-	b=MZrsAb3ekPlGFXhfGbUN5NdNsqFO10VIBIbIegDpZBiY0MGsMXy2MdhaVYWpnOHuXBN0lL
-	2Euzk58mLQHiXpPGet8LsauKjtYkrNrVcZG94nZjzHEwqQPV+utHWhep02rtm51wcjwbcI
-	zApXXRd4liCdI9YVtFuaXB/EJmSciwQ=
-Date: Thu, 9 Nov 2023 18:23:26 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C8915A8;
+	Fri, 10 Nov 2023 02:37:53 +0000 (UTC)
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412062715;
+	Thu,  9 Nov 2023 18:37:53 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-66d134a019cso10224136d6.3;
+        Thu, 09 Nov 2023 18:37:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699583872; x=1700188672; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rtsyDPNjJDmvA4PUfzNmZv/BEK8N+SaVMjw+0eu5eSE=;
+        b=IXyWUrQ1J6Bv/FCme4vGrhn+X4zS+xkAQU5S/BTyxQUklqD/SeUmWmrcUI/E6BS5Tq
+         2WPgSbmU9Y7m9sqdNyOahNIZE6kpL2aDqc/4aNrqPejUAzX0GIz1+c9D/1yxBpGVsiJq
+         I4lvfXgHDkVuF40bisJ09ZbG9uyQ4R6ZHKX7mKkFfBpF65WrscxhsVWBjc5lAuXMMcOM
+         JWdD3RCEjBNKLthYvuVoYhmfY9G8CdONXXoG0Lj7aLiHQ7vCsSV8BG10x4FlhewTjaiT
+         IfNMsDccWRabu6HIep76mTouiNTjQ/dE6wre+m8NT1nbsqWqEMpZ+m6Nq3xK2KNe6kXQ
+         rWfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699583872; x=1700188672;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rtsyDPNjJDmvA4PUfzNmZv/BEK8N+SaVMjw+0eu5eSE=;
+        b=r6WlxXWsdy/P8fdi2KU70+9+lD26ho/DCRuG5HH45gYwRdl+3P1HQHtEB+eSA5ZPZ1
+         f42XkpOyBta4wePrIQTS3cfJ4OCE+/1s6RstwLHVzN6XWbl0oFhUnQFfY6Jg8T0fzBDv
+         Tgio8coYvQ9EogMolmJwmKpo6lJzbCPyrbad7wNvxzYVBfj7EaZ7hUfzScTmalAJRUOV
+         iEiWEu2dxnu0gDSOQX931shmm8/BiHDE8U1ggOtPEan3qvU2Cn12IMwLPZw5uXPrepOK
+         /ZssaQhcVSHmPOd1qe1tJjWHR9Q3rOjiFb7KCSEntLspUMdWBew2Bw1HeCr+oIX9fxaQ
+         EUDg==
+X-Gm-Message-State: AOJu0Yz8LSt9T/RQzTcTLwmFEmTLZDAuH6DVJ2PXHNynht4JFHy09b+I
+	WCKD1YUxVzBaO5x4XXGVF5ARH/w3/FCWXHENi38=
+X-Google-Smtp-Source: AGHT+IHvga2Fw/5Wax2pZ3UKXDwyoQhotsko3+vT+BLRejWfaAQquJATJ8a78VEMQbsYYmneVd6QAlihJHsLwl2HAkg=
+X-Received: by 2002:ad4:5ae7:0:b0:66d:3f8b:fd93 with SMTP id
+ c7-20020ad45ae7000000b0066d3f8bfd93mr9589296qvh.2.1699583872339; Thu, 09 Nov
+ 2023 18:37:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v11 13/13] selftests/bpf: test case for
- register_bpf_struct_ops().
-Content-Language: en-US
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- drosen@google.com
-References: <20231106201252.1568931-1-thinker.li@gmail.com>
- <20231106201252.1568931-14-thinker.li@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231106201252.1568931-14-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231029061438.4215-1-laoar.shao@gmail.com> <20231029061438.4215-6-laoar.shao@gmail.com>
+ <ZU1riY0lCI3YkAqg@slm.duckdns.org>
+In-Reply-To: <ZU1riY0lCI3YkAqg@slm.duckdns.org>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Fri, 10 Nov 2023 10:37:16 +0800
+Message-ID: <CALOAHbCVp5d=DZn-=F_JXpr9UE_Kp1OJxVY2xaOd-OfXgK7R6A@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 05/11] cgroup: Add a new helper for cgroup1 hierarchy
+To: Tejun Heo <tj@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, lizefan.x@bytedance.com, 
+	hannes@cmpxchg.org, yosryahmed@google.com, mkoutny@suse.com, 
+	sinquersw@gmail.com, longman@redhat.com, cgroups@vger.kernel.org, 
+	bpf@vger.kernel.org, oliver.sang@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/6/23 12:12 PM, thinker.li@gmail.com wrote:
-> From: Kui-Feng Lee <thinker.li@gmail.com>
-> 
-> Create a new struct_ops type called bpf_testmod_ops within the bpf_testmod
-> module. When a struct_ops object is registered, the bpf_testmod module will
-> invoke test_2 from the module.
-> 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  59 +++++++
->   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   5 +
->   .../bpf/prog_tests/test_struct_ops_module.c   | 144 ++++++++++++++++++
->   .../selftests/bpf/progs/struct_ops_module.c   |  30 ++++
->   .../testing/selftests/bpf/progs/testmod_btf.c |  26 ++++
->   5 files changed, 264 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
->   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_module.c
->   create mode 100644 tools/testing/selftests/bpf/progs/testmod_btf.c
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index a5e246f7b202..418e10311c33 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -1,5 +1,6 @@
->   // SPDX-License-Identifier: GPL-2.0
->   /* Copyright (c) 2020 Facebook */
-> +#include <linux/bpf.h>
->   #include <linux/btf.h>
->   #include <linux/btf_ids.h>
->   #include <linux/error-injection.h>
-> @@ -522,11 +523,66 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
->   BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
->   BTF_SET8_END(bpf_testmod_check_kfunc_ids)
->   
-> +#ifdef CONFIG_DEBUG_INFO_BTF_MODULES
+On Fri, Nov 10, 2023 at 7:30=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> The following is the version updated to use irqsave/restore applied to
+> cgroup/for-6.8-bpf.
+>
 
-I don't think it is needed. It should have been enabled (directly/indirectly) by 
-the selftests/bpf/config already.
+Thanks for your update and also thanks for the suggestion from Hou.
 
-[ ... ]
+> [...]
 
+--=20
+Regards
+Yafang
 
