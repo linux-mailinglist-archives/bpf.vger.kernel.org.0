@@ -1,130 +1,167 @@
-Return-Path: <bpf+bounces-14711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B9FE7E7875
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 04:50:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFD127E798A
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:50:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9095E2819D4
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 03:50:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92A461F20D4A
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 06:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6AA9125A4;
-	Fri, 10 Nov 2023 03:49:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A5C612F;
+	Fri, 10 Nov 2023 06:50:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZfhtXxlA"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610081119E
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 03:49:18 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F4A46A6
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 19:49:17 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9MXpfA005387
-	for <bpf@vger.kernel.org>; Thu, 9 Nov 2023 19:49:17 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u8nqkjana-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 19:49:17 -0800
-Received: from twshared11278.41.prn1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 19:49:16 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 747713B41DCBB; Thu,  9 Nov 2023 19:49:13 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <paul@paul-moore.com>,
-        <brauner@kernel.org>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <keescook@chromium.org>, <kernel-team@meta.com>, <sargun@sargun.me>
-Subject: [PATCH v10 bpf-next 17/17] bpf,selinux: allocate bpf_security_struct per BPF token
-Date: Thu, 9 Nov 2023 19:48:38 -0800
-Message-ID: <20231110034838.1295764-18-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231110034838.1295764-1-andrii@kernel.org>
-References: <20231110034838.1295764-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED2B16AB1
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 06:50:46 +0000 (UTC)
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429237DB2
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 22:50:45 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4084095722aso12437865e9.1
+        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 22:50:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699599044; x=1700203844; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mZHuvUfB341M+H6FjgJN1Y0zwu++vQj5qy8NSqIBE+w=;
+        b=ZfhtXxlAsujQSuEiuT1vDbS3gH1UcpAhOIuqzp+XM90F8jhR5c+1VmCi9Al0UkiTRo
+         dnkC5nwBjgoFyg2jAqltEO2QH6IL9FCiL31gqkOZg9Kl7LExRVnm7+e+h2to0v3YbWhl
+         l1kxxmNAU9cVWOVJVu3BOBDrphhU6pWqTXSfZIqMwarHxhyAdtWOncP6w9x0TcIGfK/5
+         oqldLm1d8Zx8I4QM3N1BkpybhMkHpwl1wMfZ4/KYAKnBO7LphutCxoNrQ19zBi0vd5XH
+         zpQC4I/g16tVWGlvRyX8+lQMT5/WJ6TFHKf9zouFZOExxlCMB/e2dz6W6YktWkGdCyYJ
+         0TkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699599044; x=1700203844;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mZHuvUfB341M+H6FjgJN1Y0zwu++vQj5qy8NSqIBE+w=;
+        b=ERy2rQEIf2fHo3Lo5A+2iUgCo1EZhv1K0UrrEMaf4xV7o+SIdiLOmdnCG7rFB76TnK
+         1StBvGG44mGbxzS2i6/ZbVIHprlhvjd24KonSO+VZc2UfZbg5HchQRNXCH4s9WWcvu5e
+         B0EdgDsLu9UxIXaTiNd0cj+l3WZ+jE8lpAp5rTaeFu/u+k6Gteh1yCjGucbzTsSdtSTV
+         nPUtUgljxuK70xoy4mdK5ccq/H5kUc5mIZ3sepdSkbr6DekIGiic2KI8cP2Cs1R5Qah2
+         P7Vq+nVPhdTJvbhctVh8vgjwWDSihIV9K6bCwYk/2sV1DhkiK0NIt+NWcH3xIhkR1u62
+         8GtA==
+X-Gm-Message-State: AOJu0YyaDEuxZrZ2tuY/YijFdk8N9efKZYgMrJMZJ2YLFzbWGjhwOyVd
+	wQZA+XXkViwl/cvlG9YzKcKRR/Xu03UEbGQ5rVISrqnd
+X-Google-Smtp-Source: AGHT+IGVY2HhXif6tKS9FTJqXkgjbVdQGs8NlYZtJ4foK0X3X0PeIcnTE5NLwfe9doRM8IlzJ6TSPtl0NZEJWi9JHrA=
+X-Received: by 2002:a17:907:7295:b0:9d5:ecf9:e6b8 with SMTP id
+ dt21-20020a170907729500b009d5ecf9e6b8mr6180973ejc.12.1699589129686; Thu, 09
+ Nov 2023 20:05:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231110002638.4168352-1-andrii@kernel.org> <20231110002638.4168352-4-andrii@kernel.org>
+ <CAADnVQ+KtueBdD=8DazMhM3Xz0+YpLVW1-5-N4ZFiBOzji4vbg@mail.gmail.com> <CAEf4Bza1nxvLcBORkV+bKbKCz=f1jhRYM=PPaJxXDfQ7rmfJvA@mail.gmail.com>
+In-Reply-To: <CAEf4Bza1nxvLcBORkV+bKbKCz=f1jhRYM=PPaJxXDfQ7rmfJvA@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 9 Nov 2023 20:05:18 -0800
+Message-ID: <CAEf4BzZFc6t5KCdCH4zYA1jp9UgRWHsEKgfMjVcc72qgH-FHXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf 3/3] selftests/bpf: add edge case backtracking
+ logic test
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Qz9OpaB_GNlJVvGblSIxEd6TTbjbCky7
-X-Proofpoint-GUID: Qz9OpaB_GNlJVvGblSIxEd6TTbjbCky7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-09_17,2023-11-09_01,2023-05-22_02
 
-Utilize newly added bpf_token_create/bpf_token_free LSM hooks to
-allocate struct bpf_security_struct for each BPF token object in
-SELinux. This just follows similar pattern for BPF prog and map.
+On Thu, Nov 9, 2023 at 7:43=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, Nov 9, 2023 at 5:34=E2=80=AFPM Alexei Starovoitov
+> <alexei.starovoitov@gmail.com> wrote:
+> >
+> > On Thu, Nov 9, 2023 at 4:26=E2=80=AFPM Andrii Nakryiko <andrii@kernel.o=
+rg> wrote:
+> > >
+> > > Add a dedicated selftests to try to set up conditions to have a state
+> > > with same first and last instruction index, but it actually is a loop
+> > > 3->4->1->2->3. This confuses mark_chain_precision() if verifier doesn=
+'t
+> > > take into account jump history.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  .../selftests/bpf/progs/verifier_precision.c  | 40 +++++++++++++++++=
+++
+> > >  1 file changed, 40 insertions(+)
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/progs/verifier_precision.c b=
+/tools/testing/selftests/bpf/progs/verifier_precision.c
+> > > index 193c0f8272d0..6b564d4c0986 100644
+> > > --- a/tools/testing/selftests/bpf/progs/verifier_precision.c
+> > > +++ b/tools/testing/selftests/bpf/progs/verifier_precision.c
+> > > @@ -91,3 +91,43 @@ __naked int bpf_end_bswap(void)
+> > >  }
+> > >
+> > >  #endif /* v4 instruction */
+> > > +
+> > > +SEC("?raw_tp")
+> > > +__success __log_level(2)
+> > > +/*
+> > > + * Without the bug fix there will be no history between "last_idx 3 =
+first_idx 3"
+> > > + * and "parent state regs=3D" lines. "R0_w=3D6" parts are here to he=
+lp anchor
+> > > + * expected log messages to the one specific mark_chain_precision op=
+eration.
+> > > + *
+> > > + * This is quite fragile: if verifier checkpointing heuristic change=
+s, this
+> > > + * might need adjusting.
+> >
+> > Hmm, but that what
+> > __flag(BPF_F_TEST_STATE_FREQ)
+> > supposed to address.
+>
+> When I was analysing and crafting the test I for some reason assumed I
+> need to have a jump inside the state that won't trigger state
+> checkpoint. But I think that's not necessary, just doing conditional
+> jump and jumping back an instruction or two should do. With that yes,
+> TEST_STATE_FREQ should be a better way to do this.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- security/selinux/hooks.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Ah, ok, TEST_STATE_FREQ won't work. It triggers state checkpointing
+both at conditional jump instruction and on its target, because target
+is prune point.
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 002351ab67b7..1501e95366a1 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -6828,6 +6828,29 @@ static void selinux_bpf_prog_free(struct bpf_prog =
-*prog)
- 	prog->aux->security =3D NULL;
- 	kfree(bpfsec);
- }
-+
-+static int selinux_bpf_token_create(struct bpf_token *token, union bpf_a=
-ttr *attr,
-+				    struct path *path)
-+{
-+	struct bpf_security_struct *bpfsec;
-+
-+	bpfsec =3D kzalloc(sizeof(*bpfsec), GFP_KERNEL);
-+	if (!bpfsec)
-+		return -ENOMEM;
-+
-+	bpfsec->sid =3D current_sid();
-+	token->security =3D bpfsec;
-+
-+	return 0;
-+}
-+
-+static void selinux_bpf_token_free(struct bpf_token *token)
-+{
-+	struct bpf_security_struct *bpfsec =3D token->security;
-+
-+	token->security =3D NULL;
-+	kfree(bpfsec);
-+}
- #endif
-=20
- struct lsm_blob_sizes selinux_blob_sizes __ro_after_init =3D {
-@@ -7183,6 +7206,7 @@ static struct security_hook_list selinux_hooks[] __=
-ro_after_init =3D {
- 	LSM_HOOK_INIT(bpf_prog, selinux_bpf_prog),
- 	LSM_HOOK_INIT(bpf_map_free, selinux_bpf_map_free),
- 	LSM_HOOK_INIT(bpf_prog_free, selinux_bpf_prog_free),
-+	LSM_HOOK_INIT(bpf_token_free, selinux_bpf_token_free),
- #endif
-=20
- #ifdef CONFIG_PERF_EVENTS
-@@ -7241,6 +7265,7 @@ static struct security_hook_list selinux_hooks[] __=
-ro_after_init =3D {
- #ifdef CONFIG_BPF_SYSCALL
- 	LSM_HOOK_INIT(bpf_map_create, selinux_bpf_map_create),
- 	LSM_HOOK_INIT(bpf_prog_load, selinux_bpf_prog_load),
-+	LSM_HOOK_INIT(bpf_token_create, selinux_bpf_token_create),
- #endif
- #ifdef CONFIG_PERF_EVENTS
- 	LSM_HOOK_INIT(perf_event_alloc, selinux_perf_event_alloc),
---=20
-2.34.1
+So I think this test has to be the way it is.
 
+>
+> >
+> > > + */
+> > > +__msg("2: (07) r0 +=3D 1                       ; R0_w=3D6")
+> > > +__msg("3: (35) if r0 >=3D 0xa goto pc+1")
+> > > +__msg("mark_precise: frame0: last_idx 3 first_idx 3 subseq_idx -1")
+> > > +__msg("mark_precise: frame0: regs=3Dr0 stack=3D before 2: (07) r0 +=
+=3D 1")
+> > > +__msg("mark_precise: frame0: regs=3Dr0 stack=3D before 1: (07) r0 +=
+=3D 1")
+> > > +__msg("mark_precise: frame0: regs=3Dr0 stack=3D before 4: (05) goto =
+pc-4")
+> > > +__msg("mark_precise: frame0: regs=3Dr0 stack=3D before 3: (35) if r0=
+ >=3D 0xa goto pc+1")
+> > > +__msg("mark_precise: frame0: parent state regs=3D stack=3D:  R0_rw=
+=3DP4")
+> > > +__msg("3: R0_w=3D6")
+> > > +__naked int state_loop_first_last_equal(void)
+> > > +{
+> > > +       asm volatile (
+> > > +               "r0 =3D 0;"
+> > > +       "l0_%=3D:"
+> > > +               "r0 +=3D 1;"
+> > > +               "r0 +=3D 1;"
+> >
+> > That's why you had two ++ ?
+> > Add state_freq and remove one of them?
 
