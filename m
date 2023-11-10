@@ -1,144 +1,120 @@
-Return-Path: <bpf+bounces-14667-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14668-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D9907E7666
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 02:07:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C58D7E766E
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 02:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC3AF1C20E2D
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 01:07:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 693911C20CEB
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 01:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492EE643;
-	Fri, 10 Nov 2023 01:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC9567F1;
+	Fri, 10 Nov 2023 01:11:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oBR3HSTl"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC9DEA0
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 01:07:04 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A10B1B5
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 17:07:03 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SRLJM0Hf8z4f3jYK
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:06:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 2DE521A0173
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:07:00 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgAXGxEwgk1lAHwFAg--.53598S2;
-	Fri, 10 Nov 2023 09:07:00 +0800 (CST)
-Subject: Re: [PATCH bpf 05/11] bpf: Add bpf_map_of_map_fd_{get,put}_ptr()
- helpers
-To: paulmck@kernel.org, Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>,
- bpf <bpf@vger.kernel.org>
-References: <20231107140702.1891778-1-houtao@huaweicloud.com>
- <20231107140702.1891778-6-houtao@huaweicloud.com>
- <6125c508-82fe-37a4-3aa2-a6c2727c071b@linux.dev>
- <460844a9-a2e6-8cca-dfa1-9073bfffbb76@huaweicloud.com>
- <CAADnVQJJhjWJRvgdi3hTaCn8s1X1CJ5z1bUoKFXw32LTOjBWCg@mail.gmail.com>
- <64581135-5b99-4da7-9e19-e41122393d89@paulmck-laptop>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <5aeecb90-e4fd-1a3e-b8e5-426c67d12cc6@huaweicloud.com>
-Date: Fri, 10 Nov 2023 09:06:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D07B62B
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 01:11:17 +0000 (UTC)
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b0])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1243BBC
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 17:11:17 -0800 (PST)
+Message-ID: <eec08936-e001-5d7b-17b4-5074db0754f2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1699578674;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/TpLAu35WEkKfLe58MkgycKPP0CM1ysM9sVbciYu0p4=;
+	b=oBR3HSTl7MyfvVG/kgTLtuTu9vN1uPsbXNaptXHos/eOScfhmogfXdgGD7MVDWrYEYN3au
+	WynsetCfge74AD1v3PzwMcyUXknQyh9THFcPskMmg3CfPpH2/yGUUTZufpmov5EBy0wkd+
+	6lP8/PFf5NbaMi+nR7DqKANkH+vP8BY=
+Date: Thu, 9 Nov 2023 17:11:07 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <64581135-5b99-4da7-9e19-e41122393d89@paulmck-laptop>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [PATCH bpf-next v11 01/13] bpf: refactory struct_ops type
+ initialization to a function.
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ drosen@google.com
+References: <20231106201252.1568931-1-thinker.li@gmail.com>
+ <20231106201252.1568931-2-thinker.li@gmail.com>
 Content-Language: en-US
-X-CM-TRANSID:cCh0CgAXGxEwgk1lAHwFAg--.53598S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxur4DGw4rJF4fGw4fXFyrWFg_yoW5Gr15pF
-	WxtFyYkr4DZr42kw1Svw48Zw1aywn3W3y7Xr1xJryYyr90yr9xWryxKa13CF1rGrWxCa4j
-	qr90v3sxWryUAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+In-Reply-To: <20231106201252.1568931-2-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+On 11/6/23 12:12 PM, thinker.li@gmail.com wrote:
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index db6176fb64dc..627cf1ea840a 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -110,102 +110,111 @@ const struct bpf_prog_ops bpf_struct_ops_prog_ops = {
+>   
+>   static const struct btf_type *module_type;
+>   
+> -void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
+> +static void bpf_struct_ops_init_one(struct bpf_struct_ops *st_ops,
+> +				    struct btf *btf,
+> +				    struct bpf_verifier_log *log)
+>   {
+> -	s32 type_id, value_id, module_id;
+>   	const struct btf_member *member;
+> -	struct bpf_struct_ops *st_ops;
+>   	const struct btf_type *t;
+> +	s32 type_id, value_id;
+>   	char value_name[128];
+>   	const char *mname;
+> -	u32 i, j;
+> +	int i;
+>   
+> -	/* Ensure BTF type is emitted for "struct bpf_struct_ops_##_name" */
+> -#define BPF_STRUCT_OPS_TYPE(_name) BTF_TYPE_EMIT(struct bpf_struct_ops_##_name);
+> -#include "bpf_struct_ops_types.h"
+> -#undef BPF_STRUCT_OPS_TYPE
+> +	if (strlen(st_ops->name) + VALUE_PREFIX_LEN >=
+> +	    sizeof(value_name)) {
+> +		pr_warn("struct_ops name %s is too long\n",
+> +			st_ops->name);
+> +		return;
+> +	}
+> +	sprintf(value_name, "%s%s", VALUE_PREFIX, st_ops->name);
+>   
+> -	module_id = btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
+> -	if (module_id < 0) {
+> -		pr_warn("Cannot find struct module in btf_vmlinux\n");
+> +	value_id = btf_find_by_name_kind(btf, value_name,
+> +					 BTF_KIND_STRUCT);
+> +	if (value_id < 0) {
+> +		pr_warn("Cannot find struct %s in btf_vmlinux\n",
+> +			value_name);
 
-On 11/10/2023 3:55 AM, Paul E. McKenney wrote:
-> On Thu, Nov 09, 2023 at 07:55:50AM -0800, Alexei Starovoitov wrote:
->> On Wed, Nov 8, 2023 at 11:26 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>> Hi,
->>>
->>> On 11/9/2023 2:36 PM, Martin KaFai Lau wrote:
->>>> On 11/7/23 6:06 AM, Hou Tao wrote:
->>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>
->>>>> bpf_map_of_map_fd_get_ptr() will convert the map fd to the pointer
->>>>> saved in map-in-map. bpf_map_of_map_fd_put_ptr() will release the
->>>>> pointer saved in map-in-map. These two helpers will be used by the
->>>>> following patches to fix the use-after-free problems for map-in-map.
->>>>>
->>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>>>> ---
->>>>>   kernel/bpf/map_in_map.c | 51 +++++++++++++++++++++++++++++++++++++++++
->>>>>   kernel/bpf/map_in_map.h | 11 +++++++--
->>>>>   2 files changed, 60 insertions(+), 2 deletions(-)
->>>>>
->>>>>
->>> SNIP
->>>>> +void bpf_map_of_map_fd_put_ptr(void *ptr, bool need_defer)
->>>>> +{
->>>>> +    struct bpf_inner_map_element *element = ptr;
->>>>> +
->>>>> +    /* Do bpf_map_put() after a RCU grace period and a tasks trace
->>>>> +     * RCU grace period, so it is certain that the bpf program which is
->>>>> +     * manipulating the map now has exited when bpf_map_put() is
->>>>> called.
->>>>> +     */
->>>>> +    if (need_defer)
->>>> "need_defer" should only happen from the syscall cmd? Instead of
->>>> adding rcu_head to each element, how about
->>>> "synchronize_rcu_mult(call_rcu, call_rcu_tasks)" here?
->>> No. I have tried the method before, but it didn't work due to dead-lock
->>> (will mention that in commit message in v2). The reason is that bpf
->>> syscall program may also do map update through sys_bpf helper. Because
->>> bpf syscall program is running with sleep-able context and has
->>> rcu_read_lock_trace being held, so call synchronize_rcu_mult(call_rcu,
->>> call_rcu_tasks) will lead to dead-lock.
->> Dead-lock? why?
->>
->> I think it's legal to do call_rcu_tasks_trace() while inside RCU CS
->> or RCU tasks trace CS.
-> Just confirming that this is the case.  If invoking call_rcu_tasks_trace()
-> within under either rcu_read_lock() or rcu_read_lock_trace() deadlocks,
-> then there is a bug that needs fixing.  ;-)
+"btf_vmlinux" needs to change in the pr_warn(). It should be btf->name but that 
+may need a helper function to return btf->name.
 
-The case for dead-lock is that calling synchronize_rcu_mult(call_rcu,
-call_rcu_tasks_trace) within under rcu_read_lock_trace() and I think it
-is expected. The case that calling call_rcu_tasks_trace() with
-rcu_read_lock_trace() being held is OK.
->
-> 							Thanx, Paul
->
-> .
+>   		return;
+>   	}
+> -	module_type = btf_type_by_id(btf, module_id);
+>   
+> -	for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
+> -		st_ops = bpf_struct_ops[i];
+> +	type_id = btf_find_by_name_kind(btf, st_ops->name,
+> +					BTF_KIND_STRUCT);
+> +	if (type_id < 0) {
+> +		pr_warn("Cannot find struct %s in btf_vmlinux\n",
 
+Same here.
 
