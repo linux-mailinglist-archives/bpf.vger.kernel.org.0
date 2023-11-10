@@ -1,146 +1,215 @@
-Return-Path: <bpf+bounces-14735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89D877E7982
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:46:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8C0A7E78FB
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44FAC2817E2
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 06:46:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E52FB20FBD
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 06:11:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DED11FAB;
-	Fri, 10 Nov 2023 06:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 075ED46A7;
+	Fri, 10 Nov 2023 06:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ePD0k6H/"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aLN9KXQO"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB7B63BC
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 06:45:57 +0000 (UTC)
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15AA7D95
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 22:45:55 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso2389330e87.2
-        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 22:45:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699598754; x=1700203554; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k+/47ypaQ7iy++mSetffFvL9xB84wT+XjQE6n2YN7Rw=;
-        b=ePD0k6H/M5wrNNvPe5eQV2ft7KQl/3qamaOwCByxpG32M2U+PPvRbaW7PmgpA9P8xp
-         /SRqGa3PpQJjt8Qa2ZHc/lyRqrmNTrOkCbrLH5ye0C345GaoH4t7unCxir6ITHceJGSY
-         vL1B6mB1NQqvQSOJP56fHYXys2KyHTIICnqBlc7ofM/vLxBJdWtyDzVBrX9oa+5CLCeN
-         FrnmhyaaKr0bXGksEmG9tv5bFN6XsdDmMg4fpZTKUh2E7GXeHjtNREdQdJTNHFP4Kh99
-         FbTGijc/BJTh03y3o0sUYl0iZzwgwFk53f0bQSI7ZbDy4V9MPFgiA6/SmqTDPuvQgK6f
-         ZoQw==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17D93C36
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 06:11:46 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363F2D4B
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 22:11:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1699596696;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C0FBlN0CWGiDM52kXk7prl9hTa/PXsYBXY2rSTMy4sg=;
+	b=aLN9KXQOyQOccjwJJAW9bQToQqxC/fdkhxhRWakVzN40mT6MaZy3AKpdPogy2Z923jTQAQ
+	OOrgIIxX36oOHxa/2QoFbCZR06gnBcRRo3/Dfzv/gBvp/KyzkZIL/Dt8tJMQsWzrRuZ2yK
+	k8gdyXNy7iaamt56i5EHw9vlw2/gW3g=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-lJ_MW8lwM5CjnSNRbk_HxQ-1; Fri, 10 Nov 2023 00:32:56 -0500
+X-MC-Unique: lJ_MW8lwM5CjnSNRbk_HxQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9dd489c98e7so128329866b.2
+        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 21:32:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699598754; x=1700203554;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k+/47ypaQ7iy++mSetffFvL9xB84wT+XjQE6n2YN7Rw=;
-        b=wlN+vcfSqxXkEpYfmdDhf+2uvDb3rKKwEYpELP0An0A0PLgg7CVm7bbc8hpYEKCC4g
-         4tgDgcJt9MPI1NF4wMU+HRW+ZkWs5DJw2dUfytQI/HNg3tb6p+YKSS/PnwTb8ztJG1KZ
-         5q7uy7J6lbx/O4WAq7h/5X/Y8bPZzARhDCv3GIX5oDrLFU2xi7DHAUe7CQMKB4tKewlT
-         gNCH32RSjJzMQ37vtaXgxCgZN+fJADybOS14ob9E6yW68vvuSIn57ZA3fm2dYQd6sqIL
-         MUbiWH/uiEYb/75MRkR8zeM8XV8IOZ8Oug++UYM65s5iwJhSh5UCpLrAsjzjigOsgy+w
-         IVIA==
-X-Gm-Message-State: AOJu0YxAB+ud/ydTCyZb8f9ZjZlKYW1cN3PXq2wzu14HIRHBYOO06x0u
-	gmxFM6bq1F+kqSXv17rWu37kth18XyM7+1ZWpH+aGEOKDj4=
-X-Google-Smtp-Source: AGHT+IGiteOzpFk9kWrmoZF0GIe388goGUyl4zCe+NZtvyrhXLtBe2eS5FHqpSL02/6ROyzPFUnTrT/V4cFeaM5qluM=
-X-Received: by 2002:a17:907:3e1c:b0:9b2:c583:cd71 with SMTP id
- hp28-20020a1709073e1c00b009b2c583cd71mr6410424ejc.50.1699594329103; Thu, 09
- Nov 2023 21:32:09 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699594376; x=1700199176;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C0FBlN0CWGiDM52kXk7prl9hTa/PXsYBXY2rSTMy4sg=;
+        b=DJd3sG42A4YcnYqQIIza5QHX9UXsDYI4LDRWcZuDpx3VCpBcK/+VSq/GEi76PPg8BA
+         j8SP6eNjhEMuA5s/dZfUTXJfYNuhpx/DecMT7MyowDBnzabqd5Nf2x3mVuX5zhG+Cgb6
+         XIKrZ4hJr238Ow2+Lf/4o3z4mTpxf5YMy2LNXXuaDdWNOfpM8hvZv7HdeoycStTTfKwi
+         TQXJl8UhYvYS+9gkOTdK5iuU+YJ7i7VL1TASS7A91a/EERdcHgs5fXzrdw1O461yePxc
+         hYHcQRssqm0sZ7bMuTMHtbhVkGbVXkz6O3xJhMC33YqxttCLskn0SCTKy7SojY8VbPbE
+         UXwA==
+X-Gm-Message-State: AOJu0YzzmyyVIZrqWkXQ/uCBnlBUk/jHyki4V1nlx0jooPUIWAhrvIPg
+	e0ISJGWRJ0ZVkGe7siVqaFtalXF6GsGZppDekRsEfvlYyRigvmlnJvTwmzxof8Jsc82C7eqL9i4
+	bp98DsD++yC7Z
+X-Received: by 2002:a17:907:2ce1:b0:9a1:f81f:d0d5 with SMTP id hz1-20020a1709072ce100b009a1f81fd0d5mr5593465ejc.54.1699594375868;
+        Thu, 09 Nov 2023 21:32:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHQHgHsq1zGzHRPaMJsrJwpfnDPFYKTZAF6+/FP3fqYhqWEjlgdvAZs5yADDFKLMEEWVfwUyA==
+X-Received: by 2002:a17:907:2ce1:b0:9a1:f81f:d0d5 with SMTP id hz1-20020a1709072ce100b009a1f81fd0d5mr5593450ejc.54.1699594375562;
+        Thu, 09 Nov 2023 21:32:55 -0800 (PST)
+Received: from redhat.com ([2a02:14f:1f4:2044:be5a:328c:4b98:1420])
+        by smtp.gmail.com with ESMTPSA id mj10-20020a170906af8a00b009ddcf5b07b8sm3461131ejb.148.2023.11.09.21.32.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Nov 2023 21:32:54 -0800 (PST)
+Date: Fri, 10 Nov 2023 00:32:50 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v2 14/21] virtio_net: xsk: tx:
+ virtnet_free_old_xmit() distinguishes xsk buffer
+Message-ID: <20231110003159-mutt-send-email-mst@kernel.org>
+References: <20231107031227.100015-1-xuanzhuo@linux.alibaba.com>
+ <20231107031227.100015-15-xuanzhuo@linux.alibaba.com>
+ <20231109061056-mutt-send-email-mst@kernel.org>
+ <1699528568.0674586-6-xuanzhuo@linux.alibaba.com>
+ <20231109065912-mutt-send-email-mst@kernel.org>
+ <1699580672.387567-1-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231108231152.3583545-1-andrii@kernel.org> <20231108231152.3583545-4-andrii@kernel.org>
- <CAADnVQKQ5TGGwGuaO0eghhnLRFZOVgLE7Hume8uPAvbo-AwA5g@mail.gmail.com>
- <CAEf4BzbVz9kPFSn4=3k+UOEanwQVeaNjOpRh_3pYLFRnbe3vkQ@mail.gmail.com> <CAADnVQL6UrCKQw1WYbOh1GPhMR5cB3F7_An6-vSBK5Y-2=5tzw@mail.gmail.com>
-In-Reply-To: <CAADnVQL6UrCKQw1WYbOh1GPhMR5cB3F7_An6-vSBK5Y-2=5tzw@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 9 Nov 2023 21:31:57 -0800
-Message-ID: <CAEf4BzYbF-qXtRkiJg28N4u97NZrDyb8nYmEaAEO0SW19rRrJQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/4] bpf: fix control-flow graph checking in
- privileged mode
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Hao Sun <sunhao.th@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1699580672.387567-1-xuanzhuo@linux.alibaba.com>
 
-On Thu, Nov 9, 2023 at 8:08=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Nov 9, 2023 at 7:41=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Thu, Nov 9, 2023 at 5:26=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
+On Fri, Nov 10, 2023 at 09:44:32AM +0800, Xuan Zhuo wrote:
+> On Thu, 9 Nov 2023 06:59:48 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > On Thu, Nov 09, 2023 at 07:16:08PM +0800, Xuan Zhuo wrote:
+> > > On Thu, 9 Nov 2023 06:11:49 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > > > On Tue, Nov 07, 2023 at 11:12:20AM +0800, Xuan Zhuo wrote:
+> > > > > virtnet_free_old_xmit distinguishes three type ptr(skb, xdp frame, xsk
+> > > > > buffer) by the last bits of the pointer.
+> > > > >
+> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > > > ---
+> > > > >  drivers/net/virtio/virtio_net.h | 18 ++++++++++++++++--
+> > > > >  drivers/net/virtio/xsk.h        |  5 +++++
+> > > > >  2 files changed, 21 insertions(+), 2 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
+> > > > > index a431a2c1ee47..a13d6d301fdb 100644
+> > > > > --- a/drivers/net/virtio/virtio_net.h
+> > > > > +++ b/drivers/net/virtio/virtio_net.h
+> > > > > @@ -225,6 +225,11 @@ struct virtnet_info {
+> > > > >  	struct failover *failover;
+> > > > >  };
+> > > > >
+> > > > > +static inline bool virtnet_is_skb_ptr(void *ptr)
+> > > > > +{
+> > > > > +	return !((unsigned long)ptr & VIRTIO_XMIT_DATA_MASK);
+> > > > > +}
+> > > > > +
+> > > > >  static inline bool virtnet_is_xdp_frame(void *ptr)
+> > > > >  {
+> > > > >  	return (unsigned long)ptr & VIRTIO_XDP_FLAG;
+> > > > > @@ -235,6 +240,8 @@ static inline struct xdp_frame *virtnet_ptr_to_xdp(void *ptr)
+> > > > >  	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
+> > > > >  }
+> > > > >
+> > > > > +static inline u32 virtnet_ptr_to_xsk(void *ptr);
+> > > > > +
+> > > >
+> > > > I don't understand why you need this here.
 > > >
-> > > On Wed, Nov 8, 2023 at 3:12=E2=80=AFPM Andrii Nakryiko <andrii@kernel=
-.org> wrote:
-> > > >
-> > > >
-> > > > @@ -15622,11 +15619,11 @@ static int visit_insn(int t, struct bpf_v=
-erifier_env *env)
-> > > >                 /* conditional jump with two edges */
-> > > >                 mark_prune_point(env, t);
-> > > >
-> > > > -               ret =3D push_insn(t, t + 1, FALLTHROUGH, env, true)=
-;
-> > > > +               ret =3D push_insn(t, t + 1, FALLTHROUGH | CONDITION=
-AL, env);
-> > > >                 if (ret)
-> > > >                         return ret;
-> > > >
-> > > > -               return push_insn(t, t + insn->off + 1, BRANCH, env,=
- true);
-> > > > +               return push_insn(t, t + insn->off + 1, BRANCH | CON=
-DITIONAL, env);
+> > > The below function virtnet_free_old_xmit needs this.
 > > >
-> > > If I'm reading this correctly, after the first conditional jmp
-> > > both fallthrough and branch become sticky with the CONDITIONAL flag.
-> > > So all processing after first 'if a =3D=3D b' insn is running
-> > > with loop_ok=3D=3Dtrue.
-> > > If so, all this complexity is not worth it. Let's just remove 'loop_o=
-k' flag.
+> > > Thanks.
 > >
-> > So you mean just always assume loop_ok, right?
->
-> yes.
-> Since not detecting the loop early only adds more cycles later
-> that states_maybe_looping() should catch quickly enough.
->
-> > >
-> > > Also
-> > > if (ret) return ret;
-> > > in the above looks like an existing bug.
-> > > It probably should be if (ret < 0) return ret;
+> > I don't understand why is virtnet_free_old_xmit inline, either.
+> 
+> That is in the header file.
+> 
+
+It does not belong there.
+
+
 > >
-> > yeah, probably should be error-handling case
->
-> I thought that refactoring
-> commit 59e2e27d227a ("bpf: Refactor check_cfg to use a structured loop.")
-> is responsible...
-> but it looks to be an older bug.
+> > > >
+> > > >
+> > > > >  static inline void *virtnet_sq_unmap(struct virtnet_sq *sq, void *data)
+> > > > >  {
+> > > > >  	struct virtnet_sq_dma *next, *head;
+> > > > > @@ -261,11 +268,12 @@ static inline void *virtnet_sq_unmap(struct virtnet_sq *sq, void *data)
+> > > > >  static inline void virtnet_free_old_xmit(struct virtnet_sq *sq, bool in_napi,
+> > > > >  					 u64 *bytes, u64 *packets)
+> > > > >  {
+> > > > > +	unsigned int xsknum = 0;
+> > > > >  	unsigned int len;
+> > > > >  	void *ptr;
+> > > > >
+> > > > >  	while ((ptr = virtqueue_get_buf(sq->vq, &len)) != NULL) {
+> > > > > -		if (!virtnet_is_xdp_frame(ptr)) {
+> > > > > +		if (virtnet_is_skb_ptr(ptr)) {
+> > > > >  			struct sk_buff *skb;
+> > > > >
+> > > > >  			if (sq->do_dma)
+> > > > > @@ -277,7 +285,7 @@ static inline void virtnet_free_old_xmit(struct virtnet_sq *sq, bool in_napi,
+> > > > >
+> > > > >  			*bytes += skb->len;
+> > > > >  			napi_consume_skb(skb, in_napi);
+> > > > > -		} else {
+> > > > > +		} else if (virtnet_is_xdp_frame(ptr)) {
+> > > > >  			struct xdp_frame *frame;
+> > > > >
+> > > > >  			if (sq->do_dma)
+> > > > > @@ -287,9 +295,15 @@ static inline void virtnet_free_old_xmit(struct virtnet_sq *sq, bool in_napi,
+> > > > >
+> > > > >  			*bytes += xdp_get_frame_len(frame);
+> > > > >  			xdp_return_frame(frame);
+> > > > > +		} else {
+> > > > > +			*bytes += virtnet_ptr_to_xsk(ptr);
+> > > > > +			++xsknum;
+> > > > >  		}
+> > > > >  		(*packets)++;
+> > > > >  	}
+> > > > > +
+> > > > > +	if (xsknum)
+> > > > > +		xsk_tx_completed(sq->xsk.pool, xsknum);
+> > > > >  }
+> > > > >
+> > > > >  static inline bool virtnet_is_xdp_raw_buffer_queue(struct virtnet_info *vi, int q)
+> > > > > diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
+> > > > > index 1bd19dcda649..7ebc9bda7aee 100644
+> > > > > --- a/drivers/net/virtio/xsk.h
+> > > > > +++ b/drivers/net/virtio/xsk.h
+> > > > > @@ -14,6 +14,11 @@ static inline void *virtnet_xsk_to_ptr(u32 len)
+> > > > >  	return (void *)(p | VIRTIO_XSK_FLAG);
+> > > > >  }
+> > > > >
+> > > > > +static inline u32 virtnet_ptr_to_xsk(void *ptr)
+> > > > > +{
+> > > > > +	return ((unsigned long)ptr) >> VIRTIO_XSK_FLAG_OFFSET;
+> > > > > +}
+> > > > > +
+> > > > >  int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp);
+> > > > >  bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
+> > > > >  		      int budget);
+> > > > > --
+> > > > > 2.32.0.3.g01195cf9f
+> > > >
+> > > >
+> >
 
-No, I think it was indeed 59e2e27d227a that changed this. Previously we had
-
-if (ret =3D=3D 1)
-   ...
-if (ret < 0)
-   goto err;
-/* ret =3D=3D 0 */
-
-I'll add the fix on top of another fix.
 
