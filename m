@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-14776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 750247E7D9F
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 17:11:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 490E97E7DA2
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 17:11:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9484B1C20C98
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 16:11:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04D9728143E
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 16:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C8A1DDD4;
-	Fri, 10 Nov 2023 16:11:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F0E1DDCD;
+	Fri, 10 Nov 2023 16:11:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 037E21DA56
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 16:11:22 +0000 (UTC)
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 881763BF3B
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 08:11:20 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AAB1aHK023488
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 08:11:20 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u9k9h1y9y-3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6561DA58
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 16:11:27 +0000 (UTC)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E9A3BF36
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 08:11:25 -0800 (PST)
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AAAx842022162
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 08:11:25 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u9k82sx6p-9
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 08:11:20 -0800
-Received: from twshared44805.48.prn1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 08:11:25 -0800
+Received: from twshared15991.38.frc1.facebook.com (2620:10d:c0a8:1c::1b) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 10 Nov 2023 08:11:18 -0800
+ 15.1.2507.34; Fri, 10 Nov 2023 08:11:21 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 5308F3B499884; Fri, 10 Nov 2023 08:11:14 -0800 (PST)
+	id 6176B3B49988A; Fri, 10 Nov 2023 08:11:16 -0800 (PST)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 7/8] bpf: smarter verifier log number printing logic
-Date: Fri, 10 Nov 2023 08:10:56 -0800
-Message-ID: <20231110161057.1943534-8-andrii@kernel.org>
+Subject: [PATCH bpf-next 8/8] bpf: emit frameno for PTR_TO_STACK regs if it differs from current one
+Date: Fri, 10 Nov 2023 08:10:57 -0800
+Message-ID: <20231110161057.1943534-9-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231110161057.1943534-1-andrii@kernel.org>
 References: <20231110161057.1943534-1-andrii@kernel.org>
@@ -54,258 +54,94 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: wGhnjZ4JqkD42Wwj4baSHeDdRJGoGVUo
-X-Proofpoint-ORIG-GUID: wGhnjZ4JqkD42Wwj4baSHeDdRJGoGVUo
+X-Proofpoint-GUID: xHyPlBBmopjR8uOpgWcjkVh_D5aftAIs
+X-Proofpoint-ORIG-GUID: xHyPlBBmopjR8uOpgWcjkVh_D5aftAIs
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-10_13,2023-11-09_01,2023-05-22_02
 
-Instead of always printing numbers as either decimals (and in some
-cases, like for "imm=3D%llx", in hexadecimals), decide the form based on
-actual values. For numbers in a reasonably small range (currently,
-[0, U16_MAX] for unsigned values, and [S16_MIN, S16_MAX] for signed ones)=
-,
-emit them as decimals. In all other cases, even for signed values,
-emit them in hexadecimals.
+It's possible to pass a pointer to parent's stack to child subprogs. In
+such case verifier state output is ambiguous not showing whether
+register container a pointer to "current" stack, belonging to current
+subprog (frame), or it's actually a pointer to one of parent frames.
 
-For large values hex form is often times way more useful: it's easier to
-see an exact difference between 0xffffffff80000000 and 0xffffffff7fffffff=
-,
-than between 18446744071562067966 and 18446744071562067967, as one
-particular example.
-
-Small values representing small pointer offsets or application
-constants, on the other hand, are way more useful to be represented in
-decimal notation.
+So emit this information if frame number differs between the state which
+register is part of. E.g., if current state is in frame 2 and it has
+a register pointing to stack in grand parent state (frame #0), we'll see
+something like 'R1=3Dfp[0]-16', while "local stack pointer" will be just
+'R2=3Dfp-16'.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/log.c                              | 67 +++++++++++++++++--
- .../selftests/bpf/progs/exceptions_assert.c   | 32 ++++-----
- 2 files changed, 76 insertions(+), 23 deletions(-)
+ kernel/bpf/log.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-index 20b4f81087da..2f4d055849a4 100644
+index 2f4d055849a4..d3d397ed7407 100644
 --- a/kernel/bpf/log.c
 +++ b/kernel/bpf/log.c
-@@ -509,10 +509,52 @@ static void print_liveness(struct bpf_verifier_env =
-*env,
- 		verbose(env, "D");
- }
-=20
-+#define UNUM_MAX_DECIMAL U16_MAX
-+#define SNUM_MAX_DECIMAL S16_MAX
-+#define SNUM_MIN_DECIMAL S16_MIN
-+
-+static bool is_unum_decimal(u64 num)
-+{
-+	return num <=3D UNUM_MAX_DECIMAL;
-+}
-+
-+static bool is_snum_decimal(s64 num)
-+{
-+	return num >=3D SNUM_MIN_DECIMAL && num <=3D SNUM_MAX_DECIMAL;
-+}
-+
-+static void verbose_unum(struct bpf_verifier_env *env, u64 num)
-+{
-+	if (is_unum_decimal(num))
-+		verbose(env, "%llu", num);
-+	else
-+		verbose(env, "%#llx", num);
-+}
-+
-+static void verbose_snum(struct bpf_verifier_env *env, s64 num)
-+{
-+	if (is_snum_decimal(num))
-+		verbose(env, "%lld", num);
-+	else
-+		verbose(env, "%#llx", num);
-+}
-+
- static void print_scalar_ranges(struct bpf_verifier_env *env,
- 				const struct bpf_reg_state *reg,
- 				const char **sep)
- {
-+	/* For signed ranges, we want to unify 64-bit and 32-bit values in the
-+	 * output as much as possible, but there is a bit of a complication.
-+	 * If we choose to print values as decimals, this is natural to do,
-+	 * because negative 64-bit and 32-bit values >=3D -S32_MIN have the sam=
-e
-+	 * representation due to sign extension. But if we choose to print
-+	 * them in hex format (see is_snum_decimal()), then sign extension is
-+	 * misleading.
-+	 * E.g., smin=3D-2 and smin32=3D-2 are exactly the same in decimal, but=
- in
-+	 * hex they will be smin=3D0xfffffffffffffffe and smin32=3D0xfffffffe, =
-two
-+	 * very different numbers.
-+	 * So we avoid sign extension if we choose to print values in hex.
-+	 */
- 	struct {
- 		const char *name;
- 		u64 val;
-@@ -522,8 +564,14 @@ static void print_scalar_ranges(struct bpf_verifier_=
-env *env,
- 		{"smax",   reg->smax_value,         reg->smax_value =3D=3D S64_MAX},
- 		{"umin",   reg->umin_value,         reg->umin_value =3D=3D 0},
- 		{"umax",   reg->umax_value,         reg->umax_value =3D=3D U64_MAX},
--		{"smin32", (s64)reg->s32_min_value, reg->s32_min_value =3D=3D S32_MIN}=
-,
--		{"smax32", (s64)reg->s32_max_value, reg->s32_max_value =3D=3D S32_MAX}=
-,
-+		{"smin32",
-+		 is_snum_decimal((s64)reg->s32_min_value)
-+			 ? (s64)reg->s32_min_value
-+			 : (u32)reg->s32_min_value, reg->s32_min_value =3D=3D S32_MIN},
-+		{"smax32",
-+		 is_snum_decimal((s64)reg->s32_max_value)
-+			 ? (s64)reg->s32_max_value
-+			 : (u32)reg->s32_max_value, reg->s32_max_value =3D=3D S32_MAX},
- 		{"umin32", reg->u32_min_value,      reg->u32_min_value =3D=3D 0},
- 		{"umax32", reg->u32_max_value,      reg->u32_max_value =3D=3D U32_MAX}=
-,
- 	}, *m1, *m2, *mend =3D &minmaxs[ARRAY_SIZE(minmaxs)];
-@@ -549,7 +597,10 @@ static void print_scalar_ranges(struct bpf_verifier_=
-env *env,
- 			verbose(env, "%s=3D", m2->name);
- 		}
-=20
--		verbose(env, m1->name[0] =3D=3D 's' ? "%lld" : "%llu", m1->val);
-+		if (m1->name[0] =3D=3D 's')
-+			verbose_snum(env, m1->val);
-+		else
-+			verbose_unum(env, m1->val);
+@@ -615,7 +615,9 @@ static bool type_is_map_ptr(enum bpf_reg_type t) {
  	}
  }
 =20
-@@ -576,14 +627,14 @@ static void print_reg_state(struct bpf_verifier_env=
- *env, const struct bpf_reg_s
- 	    tnum_is_const(reg->var_off)) {
+-static void print_reg_state(struct bpf_verifier_env *env, const struct b=
+pf_reg_state *reg)
++static void print_reg_state(struct bpf_verifier_env *env,
++			    const struct bpf_func_state *state,
++			    const struct bpf_reg_state *reg)
+ {
+ 	enum bpf_reg_type t;
+ 	const char *sep =3D "";
+@@ -623,10 +625,8 @@ static void print_reg_state(struct bpf_verifier_env =
+*env, const struct bpf_reg_s
+ 	t =3D reg->type;
+ 	if (t =3D=3D SCALAR_VALUE && reg->precise)
+ 		verbose(env, "P");
+-	if ((t =3D=3D SCALAR_VALUE || t =3D=3D PTR_TO_STACK) &&
+-	    tnum_is_const(reg->var_off)) {
++	if (t =3D=3D SCALAR_VALUE && tnum_is_const(reg->var_off)) {
  		/* reg->off should be 0 for SCALAR_VALUE */
- 		verbose(env, "%s", t =3D=3D SCALAR_VALUE ? "" : reg_type_str(env, t));
--		verbose(env, "%lld", reg->var_off.value + reg->off);
-+		verbose_snum(env, reg->var_off.value + reg->off);
+-		verbose(env, "%s", t =3D=3D SCALAR_VALUE ? "" : reg_type_str(env, t));
+ 		verbose_snum(env, reg->var_off.value + reg->off);
  		return;
  	}
- /*
-  * _a stands for append, was shortened to avoid multiline statements bel=
-ow.
-  * This macro is used to output a comma separated list of attributes.
-  */
--#define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, __VA_ARGS__);=
- sep =3D ","; })
-+#define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, ##__VA_ARGS__=
+@@ -637,6 +637,14 @@ static void print_reg_state(struct bpf_verifier_env =
+*env, const struct bpf_reg_s
+ #define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, ##__VA_ARGS__=
 ); sep =3D ","; })
 =20
  	verbose(env, "%s", reg_type_str(env, t));
- 	if (base_type(t) =3D=3D PTR_TO_BTF_ID)
-@@ -608,8 +659,10 @@ static void print_reg_state(struct bpf_verifier_env =
-*env, const struct bpf_reg_s
- 		verbose_a("r=3D%d", reg->range);
- 	if (tnum_is_const(reg->var_off)) {
- 		/* a pointer register with fixed offset */
--		if (reg->var_off.value)
--			verbose_a("imm=3D%llx", reg->var_off.value);
-+		if (reg->var_off.value) {
-+			verbose_a("imm=3D");
-+			verbose_snum(env, reg->var_off.value);
++	if (t =3D=3D PTR_TO_STACK) {
++		if (state->frameno !=3D reg->frameno)
++			verbose(env, "[%d]", reg->frameno);
++		if (tnum_is_const(reg->var_off)) {
++			verbose_snum(env, reg->var_off.value + reg->off);
++			return;
 +		}
- 	} else {
- 		print_scalar_ranges(env, reg, &sep);
- 		if (!tnum_is_unknown(reg->var_off)) {
-diff --git a/tools/testing/selftests/bpf/progs/exceptions_assert.c b/tool=
-s/testing/selftests/bpf/progs/exceptions_assert.c
-index 26f7d67432cc..49efaed143fc 100644
---- a/tools/testing/selftests/bpf/progs/exceptions_assert.c
-+++ b/tools/testing/selftests/bpf/progs/exceptions_assert.c
-@@ -18,48 +18,48 @@
- 		return *(u64 *)num;					\
++	}
+ 	if (base_type(t) =3D=3D PTR_TO_BTF_ID)
+ 		verbose(env, "%s", btf_type_name(reg->btf, reg->btf_id));
+ 	verbose(env, "(");
+@@ -694,7 +702,7 @@ void print_verifier_state(struct bpf_verifier_env *en=
+v, const struct bpf_func_st
+ 		verbose(env, " R%d", i);
+ 		print_liveness(env, reg->live);
+ 		verbose(env, "=3D");
+-		print_reg_state(env, reg);
++		print_reg_state(env, state, reg);
  	}
-=20
--__msg(": R0_w=3D-2147483648 R10=3Dfp0")
-+__msg(": R0_w=3D0xffffffff80000000 R10=3Dfp0")
- check_assert(s64, eq, int_min, INT_MIN);
--__msg(": R0_w=3D2147483647 R10=3Dfp0")
-+__msg(": R0_w=3D0x7fffffff R10=3Dfp0")
- check_assert(s64, eq, int_max, INT_MAX);
- __msg(": R0_w=3D0 R10=3Dfp0")
- check_assert(s64, eq, zero, 0);
--__msg(": R0_w=3D-9223372036854775808 R1_w=3D-9223372036854775808 R10=3Df=
-p0")
-+__msg(": R0_w=3D0x8000000000000000 R1_w=3D0x8000000000000000 R10=3Dfp0")
- check_assert(s64, eq, llong_min, LLONG_MIN);
--__msg(": R0_w=3D9223372036854775807 R1_w=3D9223372036854775807 R10=3Dfp0=
-")
-+__msg(": R0_w=3D0x7fffffffffffffff R1_w=3D0x7fffffffffffffff R10=3Dfp0")
- check_assert(s64, eq, llong_max, LLONG_MAX);
-=20
--__msg(": R0_w=3Dscalar(smax=3D2147483646) R10=3Dfp0")
-+__msg(": R0_w=3Dscalar(smax=3D0x7ffffffe) R10=3Dfp0")
- check_assert(s64, lt, pos, INT_MAX);
--__msg(": R0_w=3Dscalar(smax=3D-1,umin=3D9223372036854775808,var_off=3D(0=
-x8000000000000000; 0x7fffffffffffffff))")
-+__msg(": R0_w=3Dscalar(smax=3D-1,umin=3D0x8000000000000000,var_off=3D(0x=
-8000000000000000; 0x7fffffffffffffff))")
- check_assert(s64, lt, zero, 0);
--__msg(": R0_w=3Dscalar(smax=3D-2147483649,umin=3D9223372036854775808,uma=
-x=3D18446744071562067967,var_off=3D(0x8000000000000000; 0x7ffffffffffffff=
-f))")
-+__msg(": R0_w=3Dscalar(smax=3D0xffffffff7fffffff,umin=3D0x80000000000000=
-00,umax=3D0xffffffff7fffffff,var_off=3D(0x8000000000000000; 0x7ffffffffff=
-fffff))")
- check_assert(s64, lt, neg, INT_MIN);
-=20
--__msg(": R0_w=3Dscalar(smax=3D2147483647) R10=3Dfp0")
-+__msg(": R0_w=3Dscalar(smax=3D0x7fffffff) R10=3Dfp0")
- check_assert(s64, le, pos, INT_MAX);
- __msg(": R0_w=3Dscalar(smax=3D0) R10=3Dfp0")
- check_assert(s64, le, zero, 0);
--__msg(": R0_w=3Dscalar(smax=3D-2147483648,umin=3D9223372036854775808,uma=
-x=3D18446744071562067968,var_off=3D(0x8000000000000000; 0x7ffffffffffffff=
-f))")
-+__msg(": R0_w=3Dscalar(smax=3D0xffffffff80000000,umin=3D0x80000000000000=
-00,umax=3D0xffffffff80000000,var_off=3D(0x8000000000000000; 0x7ffffffffff=
-fffff))")
- check_assert(s64, le, neg, INT_MIN);
-=20
--__msg(": R0_w=3Dscalar(smin=3Dumin=3D2147483648,umax=3D92233720368547758=
-07,var_off=3D(0x0; 0x7fffffffffffffff))")
-+__msg(": R0_w=3Dscalar(smin=3Dumin=3D0x80000000,umax=3D0x7ffffffffffffff=
-f,var_off=3D(0x0; 0x7fffffffffffffff))")
- check_assert(s64, gt, pos, INT_MAX);
--__msg(": R0_w=3Dscalar(smin=3Dumin=3D1,umax=3D9223372036854775807,var_of=
-f=3D(0x0; 0x7fffffffffffffff))")
-+__msg(": R0_w=3Dscalar(smin=3Dumin=3D1,umax=3D0x7fffffffffffffff,var_off=
-=3D(0x0; 0x7fffffffffffffff))")
- check_assert(s64, gt, zero, 0);
--__msg(": R0_w=3Dscalar(smin=3D-2147483647) R10=3Dfp0")
-+__msg(": R0_w=3Dscalar(smin=3D0xffffffff80000001) R10=3Dfp0")
- check_assert(s64, gt, neg, INT_MIN);
-=20
--__msg(": R0_w=3Dscalar(smin=3Dumin=3D2147483647,umax=3D92233720368547758=
-07,var_off=3D(0x0; 0x7fffffffffffffff))")
-+__msg(": R0_w=3Dscalar(smin=3Dumin=3D0x7fffffff,umax=3D0x7ffffffffffffff=
-f,var_off=3D(0x0; 0x7fffffffffffffff))")
- check_assert(s64, ge, pos, INT_MAX);
--__msg(": R0_w=3Dscalar(smin=3D0,umax=3D9223372036854775807,var_off=3D(0x=
-0; 0x7fffffffffffffff)) R10=3Dfp0")
-+__msg(": R0_w=3Dscalar(smin=3D0,umax=3D0x7fffffffffffffff,var_off=3D(0x0=
-; 0x7fffffffffffffff)) R10=3Dfp0")
- check_assert(s64, ge, zero, 0);
--__msg(": R0_w=3Dscalar(smin=3D-2147483648) R10=3Dfp0")
-+__msg(": R0_w=3Dscalar(smin=3D0xffffffff80000000) R10=3Dfp0")
- check_assert(s64, ge, neg, INT_MIN);
-=20
- SEC("?tc")
- __log_level(2) __failure
--__msg(": R0=3D0 R1=3Dctx() R2=3Dscalar(smin=3Dsmin32=3D-2147483646,smax=3D=
-smax32=3D2147483645) R10=3Dfp0")
-+__msg(": R0=3D0 R1=3Dctx() R2=3Dscalar(smin=3D0xffffffff80000002,smax=3D=
-smax32=3D0x7ffffffd,smin32=3D0x80000002) R10=3Dfp0")
- int check_assert_range_s64(struct __sk_buff *ctx)
- {
- 	struct bpf_sock *sk =3D ctx->sk;
+ 	for (i =3D 0; i < state->allocated_stack / BPF_REG_SIZE; i++) {
+ 		char types_buf[BPF_REG_SIZE + 1];
+@@ -727,7 +735,7 @@ void print_verifier_state(struct bpf_verifier_env *en=
+v, const struct bpf_func_st
+ 			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
+ 			print_liveness(env, reg->live);
+ 			verbose(env, "=3D%s", types_buf);
+-			print_reg_state(env, reg);
++			print_reg_state(env, state, reg);
+ 			break;
+ 		case STACK_DYNPTR:
+ 			/* skip to main dynptr slot */
 --=20
 2.34.1
 
