@@ -1,237 +1,144 @@
-Return-Path: <bpf+bounces-14665-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D6887E761C
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 01:56:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D9907E7666
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 02:07:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEF9E1C20D87
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 00:56:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC3AF1C20E2D
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 01:07:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CDFEA4;
-	Fri, 10 Nov 2023 00:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=obs-cr.20230601.gappssmtp.com header.i=@obs-cr.20230601.gappssmtp.com header.b="bvd10MN+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492EE643;
+	Fri, 10 Nov 2023 01:07:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84597EA0
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 00:56:19 +0000 (UTC)
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FD23859
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 16:56:18 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-675b844adc7so9009086d6.0
-        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 16:56:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=obs-cr.20230601.gappssmtp.com; s=20230601; t=1699577778; x=1700182578; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4dG/hRfNgimQHSL2EWxSgb1064gOdk/BgJkC+YiWFos=;
-        b=bvd10MN+lvP0xsjo+0S9ix6F6oCyXCqE1rEXC3A+uRYDBNr44Q7SqPIYC1V2BnP/Pb
-         aI2nC4NdBJ/KjRtOmxAkJRLEi/TgQjqtAT4TJsMRKtWJKpInH6O9PpYbhzJrvDyv6uup
-         ToY/cEtWbULthCBYgLAhCB4pg6RivzOw1M3a5QlbF1da+o4YZC7HO3IMDOmIzKmiqSzE
-         WqzfUJ3R/W87uzlJh+KDGGM/IpLwa3tBdQpSfGKEIR/+OrID51blyw2lFn6D8YQzwKoo
-         fMRi6VU8PNMXd4zlKT8Qtus+lAX8BzJRFs4o322fz1zbNusbq+NEYppQ3JSqAohpSG+T
-         M+wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699577778; x=1700182578;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4dG/hRfNgimQHSL2EWxSgb1064gOdk/BgJkC+YiWFos=;
-        b=Rg1qU34/gUg8mm+iAenpIADvNQggcVEkdlfzZtVLZ78uCNcInmTJ31iyxjf3GbCHVt
-         LczHNre5/mY86sMsolEA4FwjPHF5X2wIIW1JU4zUzAvEr1jGpXA+i26ZR91W2wGS0ZL1
-         V1ExNTIh5XT1U4J/ZyxNnGxwEs6mJxboLv+qAVXRwx0k0apHiO8MVm79/3Sq0gjgtTAM
-         ZSG2J1WCsKuW3fcrax3AEtd6upmetFZy0rp9nv0dTJVL/EZYQ1kVubk8w7lBHs64t8oD
-         +W2PS1g1FrgNfsvNSIck6eC8xieHcafUMKIxIW259ZZTjtgH1K7bJPDHpYB6nml0fEAS
-         F35w==
-X-Gm-Message-State: AOJu0Yy1ZX2ujhepdCizAltM1FFDmVopFxhqzGK4SA3VEEXjynDZjQ6/
-	BGG8+FvrI+KnEgcBp6VgRro8oc1bcob0uLt1m/FR/g==
-X-Google-Smtp-Source: AGHT+IE6yoP7EoJEQZbJNmru7YZxS14UCc93dTurRKruh7wPnrooQYAGRTtVXXoUgqdzfrzeBpIGdj5tTIMXQz57+u8=
-X-Received: by 2002:a05:6214:c81:b0:65b:2660:f577 with SMTP id
- r1-20020a0562140c8100b0065b2660f577mr5927736qvr.3.1699577777908; Thu, 09 Nov
- 2023 16:56:17 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC9DEA0
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 01:07:04 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A10B1B5
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 17:07:03 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SRLJM0Hf8z4f3jYK
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:06:59 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 2DE521A0173
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:07:00 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgAXGxEwgk1lAHwFAg--.53598S2;
+	Fri, 10 Nov 2023 09:07:00 +0800 (CST)
+Subject: Re: [PATCH bpf 05/11] bpf: Add bpf_map_of_map_fd_{get,put}_ptr()
+ helpers
+To: paulmck@kernel.org, Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>,
+ bpf <bpf@vger.kernel.org>
+References: <20231107140702.1891778-1-houtao@huaweicloud.com>
+ <20231107140702.1891778-6-houtao@huaweicloud.com>
+ <6125c508-82fe-37a4-3aa2-a6c2727c071b@linux.dev>
+ <460844a9-a2e6-8cca-dfa1-9073bfffbb76@huaweicloud.com>
+ <CAADnVQJJhjWJRvgdi3hTaCn8s1X1CJ5z1bUoKFXw32LTOjBWCg@mail.gmail.com>
+ <64581135-5b99-4da7-9e19-e41122393d89@paulmck-laptop>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <5aeecb90-e4fd-1a3e-b8e5-426c67d12cc6@huaweicloud.com>
+Date: Fri, 10 Nov 2023 09:06:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CADx9qWgqfQdHSVn0RMMz7M2jp5pKP-bnnc7GAfFD4QbP4eFA4w@mail.gmail.com>
- <20231103212024.327833-1-hawkinsw@obs.cr> <CAADnVQLztq5W9qmGUBQeRBUJeCmTcc9H-OXCCJJzn=0baz+8_Q@mail.gmail.com>
- <CADx9qWiQA3U+j-QoZPh7z66_2iNv6B51WXmd60Y-6GKhg+k0=w@mail.gmail.com>
- <CAADnVQKXz-Y_ykNXa-sgSjo2r6F-vuO0Jx=9zHzG7j3-ZKhGYA@mail.gmail.com>
- <CADx9qWj0fWWhT4OBLqy9MJ=hSZwSfdWvsn+9AqxmvE_DuEGCTg@mail.gmail.com>
- <CAADnVQ+w5C_MgPh2FVK=YOXrJ2LuqHzn88jFiR+yeHzB=MBoLw@mail.gmail.com>
- <CADx9qWgps=T8COiFYTFPKObSUkMo9kaOKMRVub8quN_MkFM_LA@mail.gmail.com>
- <CAADnVQLhJh+qSc=xg5WDCfFzD-SO7KtoBz5MyQZUxEY0foY6aw@mail.gmail.com>
- <CADx9qWh2Q8fxR51UmE7AiWoRykA1VK70jHaNiry5KpNHUbQYhg@mail.gmail.com> <CAADnVQKY+B3n3CXPwg+9PbyyNvfR0DNiSsGDMh-uNA-obK6yiw@mail.gmail.com>
-In-Reply-To: <CAADnVQKY+B3n3CXPwg+9PbyyNvfR0DNiSsGDMh-uNA-obK6yiw@mail.gmail.com>
-From: Will Hawkins <hawkinsw@obs.cr>
-Date: Thu, 9 Nov 2023 19:56:07 -0500
-Message-ID: <CADx9qWj48yftWY3mP3Df3TxC2uk7Fa4b_y=uhv=QQQS4sMtAGQ@mail.gmail.com>
-Subject: Re: [Bpf] [PATCH v3] bpf, docs: Add additional ABI working draft base text
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@ietf.org, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <64581135-5b99-4da7-9e19-e41122393d89@paulmck-laptop>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgAXGxEwgk1lAHwFAg--.53598S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxur4DGw4rJF4fGw4fXFyrWFg_yoW5Gr15pF
+	WxtFyYkr4DZr42kw1Svw48Zw1aywn3W3y7Xr1xJryYyr90yr9xWryxKa13CF1rGrWxCa4j
+	qr90v3sxWryUAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Thu, Nov 9, 2023 at 1:31=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Nov 8, 2023 at 3:57=E2=80=AFPM Will Hawkins <hawkinsw@obs.cr> wro=
-te:
-> >
-> > On Wed, Nov 8, 2023 at 2:51=E2=80=AFPM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Wed, Nov 8, 2023 at 2:13=E2=80=AFAM Will Hawkins <hawkinsw@obs.cr>=
- wrote:
-> > > >
-> > > > On Tue, Nov 7, 2023 at 8:17=E2=80=AFPM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > >
-> > > > > On Tue, Nov 7, 2023 at 11:56=E2=80=AFAM Will Hawkins <hawkinsw@ob=
-s.cr> wrote:
-> > > > > >
-> > > > > > On Mon, Nov 6, 2023 at 3:38=E2=80=AFAM Alexei Starovoitov
-> > > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Sun, Nov 5, 2023 at 4:17=E2=80=AFPM Will Hawkins <hawkinsw=
-@obs.cr> wrote:
-> > > > > > > >
-> > > > > > > > On Sun, Nov 5, 2023 at 4:51=E2=80=AFAM Alexei Starovoitov
-> > > > > > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > > > > >
-> > > > > > > > > On Fri, Nov 3, 2023 at 2:20=E2=80=AFPM Will Hawkins <hawk=
-insw@obs.cr> wrote:
-> > > > > > > > > > +
-> > > > > > > > > > +The ABI is specified in two parts: a generic part and =
-a processor-specific part.
-> > > > > > > > > > +A pairing of generic ABI with the processor-specific A=
-BI for a certain
-> > > > > > > > > > +instantiation of a BPF machine represents a complete b=
-inary interface for BPF
-> > > > > > > > > > +programs executing on that machine.
-> > > > > > > > > > +
-> > > > > > > > > > +This document is the generic ABI and specifies the par=
-ameters and behavior
-> > > > > > > > > > +common to all instantiations of BPF machines. In addit=
-ion, it defines the
-> > > > > > > > > > +details that must be specified by each processor-speci=
-fic ABI.
-> > > > > > > > > > +
-> > > > > > > > > > +These psABIs are the second part of the ABI. Each inst=
-antiation of a BPF
-> > > > > > > > > > +machine must describe the mechanism through which bina=
-ry interface
-> > > > > > > > > > +compatibility is maintained with respect to the issues=
- highlighted by this
-> > > > > > > > > > +document. However, the details that must be defined by=
- a psABI are a minimum --
-> > > > > > > > > > +a psABI may specify additional requirements for binary=
- interface compatibility
-> > > > > > > > > > +on a platform.
-> > > > > > > > >
-> > > > > > > > > I don't understand what you are trying to say in the abov=
-e.
-> > > > > > > > > In my mind there is only one BPF psABI and it doesn't hav=
-e
-> > > > > > > > > generic and processor parts. There is only one "processor=
-".
-> > > > > > > > > BPF is such a processor.
-> > > > > > > >
-> > > > > > > > What I was trying to say was that the document here describ=
-es a
-> > > > > > > > generic ABI. In this document there will be areas that are =
-specific to
-> > > > > > > > different implementations and those would be considered pro=
-cessor
-> > > > > > > > specific. In other words, the ubpf runtime could define tho=
-se things
-> > > > > > > > differently than the rbpf runtime which, in turn, could def=
-ine those
-> > > > > > > > things differently than the kernel's implementation.
-> > > > > > >
-> > > > > > > I see what you mean. There is only one BPF psABI. There canno=
-t be two.
-> > > > > > > ubpf can decide not to follow it, but it could only mean that
-> > > > > > > it's non conformant and not compatible.
-> > > > > >
-> > > > > > Okay. That was not how I was structuring the ABI. I thought we =
-had
-> > > > > > decided that, as the document said, an instantiation of a machi=
-ne had
-> > > > > > to
-> > > > > >
-> > > > > > 1. meet the gABI
-> > > > > > 2. specify its requirements vis a vis the psABI
-> > > > > > 3. (optionally) describe other requirements.
-> > > > > >
-> > > > > > If that is not what we decided then we will have to restructure=
- the document.
-> > > > >
-> > > > > This abi.rst file is the beginning of "BPF psABI" document.
-> > > > > We probably should rename it to psabi.rst to avoid confusion.
-> > > > > See my slides from IETF 118. I hope they explain what "BPF psABI"=
- is for.
-> > > >
-> > > > Of course they do! Thank you! My only question: In the language I w=
-as
-> > > > using, I was taking a cue from the System V world where there is a
-> > > > Generic ABI and a psABI. The Generic ABI applies to all System V
-> > > > compatible systems and defines certain processor-specific details t=
-hat
-> > > > each platform must specify to define a complete ABI. In particular,=
- I
-> > > > took this language as inspiration
-> > > >
-> > > > """
-> > > > The System V ABI is composed of two basic parts: A generic part of =
-the
-> > > > specification describes those parts of the interface that remain
-> > > > constant across all hardware implementations of System V, and a
-> > > > processor-specific part of the specification describes the parts of
-> > > > the specification that are specific to a particular processor
-> > > > architecture. Together, the generic ABI (or gABI) and the processor
-> > > > specific supplement (or psABI) provide a complete interface
-> > > > specification for compiled application programs on systems that sha=
-re
-> > > > a common hardware architecture.
-> > > > """
-> > >
-> > > I see where you got the inspiration from, but it's not applicable
-> > > in the BPF case. BPF is such one and only processor.
-> > > We're not changing nor adding anything to Sys V generic parts.
-> >
-> > That was not quite what I was saying. What I started to draft is
-> > something (yes, modeled after the Sys V (g/ps)ABI) but _brand new_ for
-> > BPF. I think that is where I have been failing to communicate
-> > correctly. What I was proposing was inspired by other ABIs but
-> > completely separate and orthogonal. That is the reason for the
-> > document speaking of a BPF Machine like:
-> >
-> > ABI-conforming BPF Machine Instantiation: A physical or logical realiza=
-tion
-> >    of a computer system capable of executing BPF programs consistently =
-with the
-> >    specifications outlined in this document.
-> >
-> > because it is a (not necessarily physical) entity that executes BPF
-> > programs (i.e. a "BPF CPU") for which we are specifying the binary
-> > compatibility. In other words, the document as it stands is proposing
-> > a gABI where
-> >
-> > the kernel's "BPF CPU" would have its own psABI
-> > ubpf's "BPF CPU" would have its own psABI
->
-> and how would you expect that to work?
-> psABI is a compiler spec in the first place.
-> The user would use clang -O2 -target bpf_kernel vs -target bpf_ubpf ?
+Hi,
 
-They could use some other compiler, too.
+On 11/10/2023 3:55 AM, Paul E. McKenney wrote:
+> On Thu, Nov 09, 2023 at 07:55:50AM -0800, Alexei Starovoitov wrote:
+>> On Wed, Nov 8, 2023 at 11:26 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>>> Hi,
+>>>
+>>> On 11/9/2023 2:36 PM, Martin KaFai Lau wrote:
+>>>> On 11/7/23 6:06 AM, Hou Tao wrote:
+>>>>> From: Hou Tao <houtao1@huawei.com>
+>>>>>
+>>>>> bpf_map_of_map_fd_get_ptr() will convert the map fd to the pointer
+>>>>> saved in map-in-map. bpf_map_of_map_fd_put_ptr() will release the
+>>>>> pointer saved in map-in-map. These two helpers will be used by the
+>>>>> following patches to fix the use-after-free problems for map-in-map.
+>>>>>
+>>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>>>>> ---
+>>>>>   kernel/bpf/map_in_map.c | 51 +++++++++++++++++++++++++++++++++++++++++
+>>>>>   kernel/bpf/map_in_map.h | 11 +++++++--
+>>>>>   2 files changed, 60 insertions(+), 2 deletions(-)
+>>>>>
+>>>>>
+>>> SNIP
+>>>>> +void bpf_map_of_map_fd_put_ptr(void *ptr, bool need_defer)
+>>>>> +{
+>>>>> +    struct bpf_inner_map_element *element = ptr;
+>>>>> +
+>>>>> +    /* Do bpf_map_put() after a RCU grace period and a tasks trace
+>>>>> +     * RCU grace period, so it is certain that the bpf program which is
+>>>>> +     * manipulating the map now has exited when bpf_map_put() is
+>>>>> called.
+>>>>> +     */
+>>>>> +    if (need_defer)
+>>>> "need_defer" should only happen from the syscall cmd? Instead of
+>>>> adding rcu_head to each element, how about
+>>>> "synchronize_rcu_mult(call_rcu, call_rcu_tasks)" here?
+>>> No. I have tried the method before, but it didn't work due to dead-lock
+>>> (will mention that in commit message in v2). The reason is that bpf
+>>> syscall program may also do map update through sys_bpf helper. Because
+>>> bpf syscall program is running with sleep-able context and has
+>>> rcu_read_lock_trace being held, so call synchronize_rcu_mult(call_rcu,
+>>> call_rcu_tasks) will lead to dead-lock.
+>> Dead-lock? why?
+>>
+>> I think it's legal to do call_rcu_tasks_trace() while inside RCU CS
+>> or RCU tasks trace CS.
+> Just confirming that this is the case.  If invoking call_rcu_tasks_trace()
+> within under either rcu_read_lock() or rcu_read_lock_trace() deadlocks,
+> then there is a bug that needs fixing.  ;-)
+
+The case for dead-lock is that calling synchronize_rcu_mult(call_rcu,
+call_rcu_tasks_trace) within under rcu_read_lock_trace() and I think it
+is expected. The case that calling call_rcu_tasks_trace() with
+rcu_read_lock_trace() being held is OK.
+>
+> 							Thanx, Paul
+>
+> .
+
 
