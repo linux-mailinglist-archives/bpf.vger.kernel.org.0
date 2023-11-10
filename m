@@ -1,305 +1,313 @@
-Return-Path: <bpf+bounces-14679-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14680-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351BC7E76DB
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 02:53:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 564297E76FE
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 03:04:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E9351C20DEF
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 01:53:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B0DF281445
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 02:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF8AED5;
-	Fri, 10 Nov 2023 01:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 845DF15C5;
+	Fri, 10 Nov 2023 02:04:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EOIeXlpi"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D98A47;
-	Fri, 10 Nov 2023 01:53:05 +0000 (UTC)
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA12644BA;
-	Thu,  9 Nov 2023 17:53:03 -0800 (PST)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vw2QhnJ_1699581179;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vw2QhnJ_1699581179)
-          by smtp.aliyun-inc.com;
-          Fri, 10 Nov 2023 09:53:00 +0800
-Message-ID: <1699581117.6029274-3-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v2 12/21] virtio_net: xsk: tx: support tx
-Date: Fri, 10 Nov 2023 09:51:57 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: netdev@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- virtualization@lists.linux-foundation.org,
- bpf@vger.kernel.org
-References: <20231107031227.100015-1-xuanzhuo@linux.alibaba.com>
- <20231107031227.100015-13-xuanzhuo@linux.alibaba.com>
- <20231109030424-mutt-send-email-mst@kernel.org>
- <1699527983.483377-3-xuanzhuo@linux.alibaba.com>
- <20231109061507-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20231109061507-mutt-send-email-mst@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 355241374
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 02:04:30 +0000 (UTC)
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AAC14680
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 18:04:30 -0800 (PST)
+Message-ID: <5cbae302-7fa6-5625-921a-c6f548bcc3a2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1699581868;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z0sxEe2kaC2ETyOT6O+HME00RCj83b0CIVuf7k90LJc=;
+	b=EOIeXlpiuE13KPLpWdcGJ57zBJoKsGrsk6qKTdyeCykGjUjpqNnV9M+8PH4N5e4FVfwLCu
+	MbWGzHhWJWd9+3LBGWkjLYT7wO4wP6VGC8PIKJc9XHqO7SMG2IUn/fhtbXIbgztskfdb0Y
+	byplySjsnyuREm31l6iAeDjcmgl9IyY=
+Date: Thu, 9 Nov 2023 18:04:22 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [PATCH bpf-next v11 07/13] bpf: pass attached BTF to the
+ bpf_struct_ops subsystem
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ drosen@google.com
+References: <20231106201252.1568931-1-thinker.li@gmail.com>
+ <20231106201252.1568931-8-thinker.li@gmail.com>
+Content-Language: en-US
+In-Reply-To: <20231106201252.1568931-8-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, 9 Nov 2023 06:58:48 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> On Thu, Nov 09, 2023 at 07:06:23PM +0800, Xuan Zhuo wrote:
-> > On Thu, 9 Nov 2023 03:09:00 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > On Tue, Nov 07, 2023 at 11:12:18AM +0800, Xuan Zhuo wrote:
-> > > > The driver's tx napi is very important for XSK. It is responsible for
-> > > > obtaining data from the XSK queue and sending it out.
-> > > >
-> > > > At the beginning, we need to trigger tx napi.
-> > > >
-> > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > ---
-> > > >  drivers/net/virtio/main.c       |  12 +++-
-> > > >  drivers/net/virtio/virtio_net.h |   3 +-
-> > > >  drivers/net/virtio/xsk.c        | 110 ++++++++++++++++++++++++++++++++
-> > > >  drivers/net/virtio/xsk.h        |  13 ++++
-> > > >  4 files changed, 136 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-> > > > index 6c608b3ce27d..ff6bc764089d 100644
-> > > > --- a/drivers/net/virtio/main.c
-> > > > +++ b/drivers/net/virtio/main.c
-> > > > @@ -2074,6 +2074,7 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
-> > > >  	struct virtnet_info *vi = sq->vq->vdev->priv;
-> > > >  	unsigned int index = vq2txq(sq->vq);
-> > > >  	struct netdev_queue *txq;
-> > > > +	int busy = 0;
-> > > >  	int opaque;
-> > > >  	bool done;
-> > > >
-> > > > @@ -2086,11 +2087,20 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
-> > > >  	txq = netdev_get_tx_queue(vi->dev, index);
-> > > >  	__netif_tx_lock(txq, raw_smp_processor_id());
-> > > >  	virtqueue_disable_cb(sq->vq);
-> > > > -	free_old_xmit(sq, true);
-> > > > +
-> > > > +	if (sq->xsk.pool)
-> > > > +		busy |= virtnet_xsk_xmit(sq, sq->xsk.pool, budget);
-> > >
-> > > You use bitwise or on errno values? What's going on here?
-> >
-> > virtnet_xsk_xmit() return that it is busy or not. Not the errno.
-> > Here just record whether this handler is busy or not.
->
->
-> Ah I see it's a bool. So make busy a bool too.
->
->
-> > >
-> > >
-> > > > +	else
-> > > > +		free_old_xmit(sq, true);
-> > > >
-> > > >  	if (sq->vq->num_free >= 2 + MAX_SKB_FRAGS)
-> > > >  		netif_tx_wake_queue(txq);
-> > > >
-> > > > +	if (busy) {
-> > > > +		__netif_tx_unlock(txq);
-> > > > +		return budget;
-> > > > +	}
-> > > > +
-> > > >  	opaque = virtqueue_enable_cb_prepare(sq->vq);
-> > > >
-> > > >  	done = napi_complete_done(napi, 0);
-> > > > diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
-> > > > index 442af4673bf8..1c21af47e13c 100644
-> > > > --- a/drivers/net/virtio/virtio_net.h
-> > > > +++ b/drivers/net/virtio/virtio_net.h
-> > > > @@ -9,7 +9,8 @@
-> > > >  #include <net/xdp_sock_drv.h>
-> > > >
-> > > >  #define VIRTIO_XDP_FLAG	BIT(0)
-> > > > -#define VIRTIO_XMIT_DATA_MASK (VIRTIO_XDP_FLAG)
-> > > > +#define VIRTIO_XSK_FLAG	BIT(1)
-> > > > +#define VIRTIO_XMIT_DATA_MASK (VIRTIO_XDP_FLAG | VIRTIO_XSK_FLAG)
-> > > >
-> > > >  /* RX packet size EWMA. The average packet size is used to determine the packet
-> > > >   * buffer size when refilling RX rings. As the entire RX ring may be refilled
-> > > > diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
-> > > > index 8b397787603f..caa448308232 100644
-> > > > --- a/drivers/net/virtio/xsk.c
-> > > > +++ b/drivers/net/virtio/xsk.c
-> > > > @@ -4,9 +4,119 @@
-> > > >   */
-> > > >
-> > > >  #include "virtio_net.h"
-> > > > +#include "xsk.h"
-> > > >
-> > > >  static struct virtio_net_hdr_mrg_rxbuf xsk_hdr;
-> > > >
-> > > > +static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len)
-> > > > +{
-> > > > +	sg->dma_address = addr;
-> > > > +	sg->length = len;
-> > > > +}
-> > > > +
-> > > > +static void virtnet_xsk_check_queue(struct virtnet_sq *sq)
-> > > > +{
-> > > > +	struct virtnet_info *vi = sq->vq->vdev->priv;
-> > > > +	struct net_device *dev = vi->dev;
-> > > > +	int qnum = sq - vi->sq;
-> > > > +
-> > > > +	/* If it is a raw buffer queue, it does not check whether the status
-> > > > +	 * of the queue is stopped when sending. So there is no need to check
-> > > > +	 * the situation of the raw buffer queue.
-> > > > +	 */
-> > > > +	if (virtnet_is_xdp_raw_buffer_queue(vi, qnum))
-> > > > +		return;
-> > > > +
-> > > > +	/* If this sq is not the exclusive queue of the current cpu,
-> > > > +	 * then it may be called by start_xmit, so check it running out
-> > > > +	 * of space.
-> > > > +	 *
-> > > > +	 * Stop the queue to avoid getting packets that we are
-> > > > +	 * then unable to transmit. Then wait the tx interrupt.
-> > > > +	 */
-> > > > +	if (sq->vq->num_free < 2 + MAX_SKB_FRAGS)
-> > >
-> > > what does MAX_SKB_FRAGS have to do with it? And where's 2 coming from?
-> >
-> > check_sq_full_and_disable()
-> >
-> > Thanks.
->
->
-> This is one example of duplication I was talking about earlier.
+On 11/6/23 12:12 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> Every kernel module has its BTF, comprising information on types defined in
+> the module. The BTF fd (attr->value_type_btf_obj_fd) passed from userspace
 
+I would highlight this patch (adds) value_type_btf_obj_fd.
 
-OK. I write this function about two years ago. Let me rethink about this.
+> helps the bpf_struct_ops to lookup type information and description of the
+> struct_ops type, which is necessary for parsing the layout of map element
+> values and registering maps. The descriptions are looked up by matching a
+> type id (attr->btf_vmlinux_value_type_id) against bpf_struct_ops_desc(s)
+> defined in a BTF. If the struct_ops type is defined in a module, the
+> bpf_struct_ops needs to know the module BTF to lookup the
+> bpf_struct_ops_desc.
+> 
+> The bpf_prog includes attach_btf in aux which is passed along with the
+> bpf_attr when loading the program. The purpose of attach_btf is to
 
-Thanks.
+I read it as "attach_btf" is passed in the bpf_attr. This has been in my head 
+for a while. I sort of know what is the actual uapi, so didn't get to it yet.
 
+We have already discussed a bit of this offline. I think it meant 
+attr->attach_btf_obj_fd here.
 
->
-> > >
-> > > > +		netif_stop_subqueue(dev, qnum);
-> > > > +}
-> > > > +
-> > > > +static int virtnet_xsk_xmit_one(struct virtnet_sq *sq,
-> > > > +				struct xsk_buff_pool *pool,
-> > > > +				struct xdp_desc *desc)
-> > > > +{
-> > > > +	struct virtnet_info *vi;
-> > > > +	dma_addr_t addr;
-> > > > +
-> > > > +	vi = sq->vq->vdev->priv;
-> > > > +
-> > > > +	addr = xsk_buff_raw_get_dma(pool, desc->addr);
-> > > > +	xsk_buff_raw_dma_sync_for_device(pool, addr, desc->len);
-> > > > +
-> > > > +	sg_init_table(sq->sg, 2);
-> > > > +
-> > > > +	sg_fill_dma(sq->sg, sq->xsk.hdr_dma_address, vi->hdr_len);
-> > > > +	sg_fill_dma(sq->sg + 1, addr, desc->len);
-> > > > +
-> > > > +	return virtqueue_add_outbuf(sq->vq, sq->sg, 2,
-> > > > +				    virtnet_xsk_to_ptr(desc->len), GFP_ATOMIC);
-> > > > +}
-> > > > +
-> > > > +static int virtnet_xsk_xmit_batch(struct virtnet_sq *sq,
-> > > > +				  struct xsk_buff_pool *pool,
-> > > > +				  unsigned int budget,
-> > > > +				  u64 *kicks)
-> > > > +{
-> > > > +	struct xdp_desc *descs = pool->tx_descs;
-> > > > +	u32 nb_pkts, max_pkts, i;
-> > > > +	bool kick = false;
-> > > > +	int err;
-> > > > +
-> > > > +	/* Every xsk tx packet needs two desc(virtnet header and packet). So we
-> > > > +	 * use sq->vq->num_free / 2 as the limitation.
-> > > > +	 */
-> > > > +	max_pkts = min_t(u32, budget, sq->vq->num_free / 2);
-> > > > +
-> > > > +	nb_pkts = xsk_tx_peek_release_desc_batch(pool, max_pkts);
-> > > > +	if (!nb_pkts)
-> > > > +		return 0;
-> > > > +
-> > > > +	for (i = 0; i < nb_pkts; i++) {
-> > > > +		err = virtnet_xsk_xmit_one(sq, pool, &descs[i]);
-> > > > +		if (unlikely(err))
-> > > > +			break;
-> > > > +
-> > > > +		kick = true;
-> > > > +	}
-> > > > +
-> > > > +	if (kick && virtqueue_kick_prepare(sq->vq) && virtqueue_notify(sq->vq))
-> > > > +		(*kicks)++;
-> > > > +
-> > > > +	return i;
-> > > > +}
-> > > > +
-> > > > +bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
-> > > > +		      int budget)
-> > > > +{
-> > > > +	u64 bytes = 0, packets = 0, kicks = 0;
-> > > > +	int sent;
-> > > > +
-> > > > +	virtnet_free_old_xmit(sq, true, &bytes, &packets);
-> > > > +
-> > > > +	sent = virtnet_xsk_xmit_batch(sq, pool, budget, &kicks);
-> > > > +
-> > > > +	virtnet_xsk_check_queue(sq);
-> > > > +
-> > > > +	u64_stats_update_begin(&sq->stats.syncp);
-> > > > +	u64_stats_add(&sq->stats.packets, packets);
-> > > > +	u64_stats_add(&sq->stats.bytes, bytes);
-> > > > +	u64_stats_add(&sq->stats.kicks, kicks);
-> > > > +	u64_stats_add(&sq->stats.xdp_tx,  sent);
-> > > > +	u64_stats_update_end(&sq->stats.syncp);
-> > > > +
-> > > > +	if (xsk_uses_need_wakeup(pool))
-> > > > +		xsk_set_tx_need_wakeup(pool);
-> > > > +
-> > > > +	return sent == budget;
-> > > > +}
-> > > > +
-> > > >  static int virtnet_rq_bind_xsk_pool(struct virtnet_info *vi, struct virtnet_rq *rq,
-> > > >  				    struct xsk_buff_pool *pool)
-> > > >  {
-> > > > diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
-> > > > index 1918285c310c..73ca8cd5308b 100644
-> > > > --- a/drivers/net/virtio/xsk.h
-> > > > +++ b/drivers/net/virtio/xsk.h
-> > > > @@ -3,5 +3,18 @@
-> > > >  #ifndef __XSK_H__
-> > > >  #define __XSK_H__
-> > > >
-> > > > +#define VIRTIO_XSK_FLAG_OFFSET	4
-> > > > +
-> > > > +static inline void *virtnet_xsk_to_ptr(u32 len)
-> > > > +{
-> > > > +	unsigned long p;
-> > > > +
-> > > > +	p = len << VIRTIO_XSK_FLAG_OFFSET;
-> > > > +
-> > > > +	return (void *)(p | VIRTIO_XSK_FLAG);
-> > > > +}
-> > > > +
-> > > >  int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp);
-> > > > +bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
-> > > > +		      int budget);
-> > > >  #endif
-> > > > --
-> > > > 2.32.0.3.g01195cf9f
-> > >
->
->
+This patch is mainly about how the userspace passing kmod's btf to the kernel 
+during map creation and prog load and also what uapi does it use. The commit 
+message should mention this patch is reusing the existing 
+attr->attach_btf_obj_fd for the userspace to pass the kmod's btf when loading 
+the struct_ops prog. I need to go back to the syscall.c code to figure out and 
+also leap forward to the later libbpf patch to confirm it.
+
+I depend on the commit message to help the review. It is much appreciated if the 
+commit message is clear and accurate on things like: what it wants to do, how it 
+does it (addition/deletion/changes), and what are the major changes.
+
+> determine the btf type of attach_btf_id. The attach_btf_id is then used to
+> identify the traced function for a trace program. In the case of struct_ops
+> programs, it is used to identify the struct_ops type of the struct_ops
+> object that a program is attached to.
+> 
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   include/uapi/linux/bpf.h       |  5 +++
+>   kernel/bpf/bpf_struct_ops.c    | 57 ++++++++++++++++++++++++----------
+>   kernel/bpf/syscall.c           |  2 +-
+>   kernel/bpf/verifier.c          |  9 ++++--
+>   tools/include/uapi/linux/bpf.h |  5 +++
+>   5 files changed, 57 insertions(+), 21 deletions(-)
+> 
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 0f6cdf52b1da..fd20c52606b2 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -1398,6 +1398,11 @@ union bpf_attr {
+>   		 * to using 5 hash functions).
+>   		 */
+>   		__u64	map_extra;
+> +
+> +		__u32   value_type_btf_obj_fd;	/* fd pointing to a BTF
+> +						 * type data for
+> +						 * btf_vmlinux_value_type_id.
+> +						 */
+>   	};
+>   
+>   	struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index 4ba6181ed1c4..2fb1b21f989a 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -635,6 +635,7 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
+>   		bpf_jit_uncharge_modmem(PAGE_SIZE);
+>   	}
+>   	bpf_map_area_free(st_map->uvalue);
+> +	btf_put(st_map->btf);
+>   	bpf_map_area_free(st_map);
+>   }
+>   
+> @@ -675,15 +676,30 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   	struct bpf_struct_ops_map *st_map;
+>   	const struct btf_type *t, *vt;
+>   	struct bpf_map *map;
+> +	struct btf *btf;
+>   	int ret;
+>   
+> -	st_ops_desc = bpf_struct_ops_find_value(btf_vmlinux, attr->btf_vmlinux_value_type_id);
+> -	if (!st_ops_desc)
+> -		return ERR_PTR(-ENOTSUPP);
+> +	if (attr->value_type_btf_obj_fd) {
+> +		/* The map holds btf for its whole life time. */
+> +		btf = btf_get_by_fd(attr->value_type_btf_obj_fd);
+> +		if (IS_ERR(btf))
+> +			return ERR_PTR(PTR_ERR(btf));
+> +	} else {
+> +		btf = btf_vmlinux;
+> +		btf_get(btf);
+> +	}
+> +
+> +	st_ops_desc = bpf_struct_ops_find_value(btf, attr->btf_vmlinux_value_type_id);
+> +	if (!st_ops_desc) {
+> +		ret = -ENOTSUPP;
+> +		goto errout;
+> +	}
+>   
+>   	vt = st_ops_desc->value_type;
+> -	if (attr->value_size != vt->size)
+> -		return ERR_PTR(-EINVAL);
+> +	if (attr->value_size != vt->size) {
+> +		ret = -EINVAL;
+> +		goto errout;
+> +	}
+>   
+>   	t = st_ops_desc->type;
+>   
+> @@ -694,17 +710,18 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   		(vt->size - sizeof(struct bpf_struct_ops_value));
+>   
+>   	st_map = bpf_map_area_alloc(st_map_size, NUMA_NO_NODE);
+> -	if (!st_map)
+> -		return ERR_PTR(-ENOMEM);
+> +	if (!st_map) {
+> +		ret = -ENOMEM;
+> +		goto errout;
+> +	}
+>   
+> +	st_map->btf = btf;
+
+How about do the "st_map->btf = btf;" assignment the same as where the current 
+code is doing (a few lines below). Would it avoid the new "btf = NULL;" dance 
+during the error case?
+
+nit, if moving a line, I would move the following "st_map->st_ops_desc = 
+st_ops_desc;" to the later and close to where "st_map->btf = btf;" is.
+
+>   	st_map->st_ops_desc = st_ops_desc;
+>   	map = &st_map->map;
+>   
+>   	ret = bpf_jit_charge_modmem(PAGE_SIZE);
+> -	if (ret) {
+> -		__bpf_struct_ops_map_free(map);
+> -		return ERR_PTR(ret);
+> -	}
+> +	if (ret)
+> +		goto errout_free;
+>   
+>   	st_map->image = bpf_jit_alloc_exec(PAGE_SIZE);
+>   	if (!st_map->image) {
+> @@ -713,25 +730,31 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   		 * here.
+>   		 */
+>   		bpf_jit_uncharge_modmem(PAGE_SIZE);
+> -		__bpf_struct_ops_map_free(map);
+> -		return ERR_PTR(-ENOMEM);
+> +		ret = -ENOMEM;
+> +		goto errout_free;
+>   	}
+>   	st_map->uvalue = bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
+>   	st_map->links =
+>   		bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct bpf_links *),
+>   				   NUMA_NO_NODE);
+>   	if (!st_map->uvalue || !st_map->links) {
+> -		__bpf_struct_ops_map_free(map);
+> -		return ERR_PTR(-ENOMEM);
+> +		ret = -ENOMEM;
+> +		goto errout_free;
+>   	}
+>   
+> -	st_map->btf = btf_vmlinux;
+
+The old code initializes "st_map->btf" here.
+
+> -
+>   	mutex_init(&st_map->lock);
+>   	set_vm_flush_reset_perms(st_map->image);
+>   	bpf_map_init_from_attr(map, attr);
+>   
+>   	return map;
+> +
+> +errout_free:
+> +	__bpf_struct_ops_map_free(map);
+> +	btf = NULL;		/* has been released */
+> +errout:
+> +	btf_put(btf);
+> +
+> +	return ERR_PTR(ret);
+>   }
+>   
+>   static u64 bpf_struct_ops_map_mem_usage(const struct bpf_map *map)
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 0ed286b8a0f0..974651fe2bee 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1096,7 +1096,7 @@ static int map_check_btf(struct bpf_map *map, const struct btf *btf,
+>   	return ret;
+>   }
+>   
+> -#define BPF_MAP_CREATE_LAST_FIELD map_extra
+> +#define BPF_MAP_CREATE_LAST_FIELD value_type_btf_obj_fd
+>   /* called via syscall */
+>   static int map_create(union bpf_attr *attr)
+>   {
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index bdd166cab977..3f446f76d4bf 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20086,6 +20086,7 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+>   	const struct btf_member *member;
+>   	struct bpf_prog *prog = env->prog;
+>   	u32 btf_id, member_idx;
+> +	struct btf *btf;
+>   	const char *mname;
+>   
+>   	if (!prog->gpl_compatible) {
+> @@ -20093,8 +20094,10 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+>   		return -EINVAL;
+>   	}
+>   
+> +	btf = prog->aux->attach_btf;
+> +
+>   	btf_id = prog->aux->attach_btf_id;
+> -	st_ops_desc = bpf_struct_ops_find(btf_vmlinux, btf_id);
+> +	st_ops_desc = bpf_struct_ops_find(btf, btf_id);
+>   	if (!st_ops_desc) {
+>   		verbose(env, "attach_btf_id %u is not a supported struct\n",
+>   			btf_id);
+> @@ -20111,8 +20114,8 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+>   	}
+>   
+>   	member = &btf_type_member(t)[member_idx];
+> -	mname = btf_name_by_offset(btf_vmlinux, member->name_off);
+> -	func_proto = btf_type_resolve_func_ptr(btf_vmlinux, member->type,
+> +	mname = btf_name_by_offset(btf, member->name_off);
+> +	func_proto = btf_type_resolve_func_ptr(btf, member->type,
+>   					       NULL);
+>   	if (!func_proto) {
+>   		verbose(env, "attach to invalid member %s(@idx %u) of struct %s\n",
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+> index 0f6cdf52b1da..fd20c52606b2 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -1398,6 +1398,11 @@ union bpf_attr {
+>   		 * to using 5 hash functions).
+>   		 */
+>   		__u64	map_extra;
+> +
+> +		__u32   value_type_btf_obj_fd;	/* fd pointing to a BTF
+> +						 * type data for
+> +						 * btf_vmlinux_value_type_id.
+> +						 */
+>   	};
+>   
+>   	struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
+
 
