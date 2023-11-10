@@ -1,189 +1,250 @@
-Return-Path: <bpf+bounces-14748-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14749-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4898E7E7A5C
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 10:01:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B24187E7B0F
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 10:44:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02AE42814B7
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 09:01:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB12C1C20E61
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 09:44:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D03ED506;
-	Fri, 10 Nov 2023 09:01:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60791134A7;
+	Fri, 10 Nov 2023 09:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B67D269
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:01:41 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA023A5F4
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 01:01:39 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SRXqy18Z0z4f41Tn
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 17:01:34 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 8760C1A0175
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 17:01:36 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgAXLLpq8U1lVggbAg--.10775S2;
-	Fri, 10 Nov 2023 17:01:34 +0800 (CST)
-Subject: Re: [PATCH bpf] bpf: Do not allocate percpu memory at init stage
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>,
- "Kirill A . Shutemov" <kirill@shutemov.name>
-References: <20231110061734.2958678-1-yonghong.song@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <e17dafc1-6fac-3e87-f8d4-e54e7898e0aa@huaweicloud.com>
-Date: Fri, 10 Nov 2023 17:01:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2EA12E41;
+	Fri, 10 Nov 2023 09:44:31 +0000 (UTC)
+X-Greylist: delayed 74 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Nov 2023 01:44:28 PST
+Received: from wangsu.com (unknown [180.101.34.75])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id F2A8525100;
+	Fri, 10 Nov 2023 01:44:28 -0800 (PST)
+Received: from 102.wangsu.com (unknown [59.61.78.234])
+	by app2 (Coremail) with SMTP id SyJltAAHDgow+01ldQtXAA--.23046S2;
+	Fri, 10 Nov 2023 17:43:12 +0800 (CST)
+From: Pengcheng Yang <yangpc@wangsu.com>
+To: Jakub Sitnicki <jakub@cloudflare.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: Pengcheng Yang <yangpc@wangsu.com>
+Subject: [PATCH bpf-next] bpf, sockmap: Bundle psock->sk_redir and redir_ingress into a tagged pointer
+Date: Fri, 10 Nov 2023 17:41:42 +0800
+Message-Id: <1699609302-8605-1-git-send-email-yangpc@wangsu.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID:SyJltAAHDgow+01ldQtXAA--.23046S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xry7Jw4rZr1DAr1kJF47urg_yoW7ZFW5pF
+	s0ya1rCF4UGFy7Wwn3WFWUZF13Ww1rta4j9r17Aw1Sqwn0kF4FqF95Jr1UZF15trWkWa13
+	Jr4UGFZ8CF17Aw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
+	x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
+	z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
+	xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v26r1j6r4UMcIj6x8ErcxFaVAv
+	8VW8GwAv7VCY1x0262k0Y48FwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0x
+	vY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4fMxAIw28IcxkI
+	7VAKI48JMxAIw28IcVCjz48v1sIEY20_Gr4l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
+	6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	UuMKZUUUUU=
+X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20231110061734.2958678-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgAXLLpq8U1lVggbAg--.10775S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF4DGr1DCw45CrWrGFyDZFb_yoWrtry5pa
-	1kJF1Fyr4qqFs7Ww13Jw4UCryFqwn5WF1xK343Ary7ZrsIqwn7Kr4vyF4rZF90gFZ0kF18
-	tF1v9r1a9FW5CFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
+Like skb->_sk_redir, we bundle the sock redirect pointer and
+the ingress bit to manage them together.
 
+Suggested-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/87cz97cnz8.fsf@cloudflare.com
+Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
+---
+ include/linux/skmsg.h | 30 ++++++++++++++++++++++++++++--
+ net/core/skmsg.c      | 18 ++++++++++--------
+ net/ipv4/tcp_bpf.c    | 13 +++++++------
+ net/tls/tls_sw.c      | 11 ++++++-----
+ 4 files changed, 51 insertions(+), 21 deletions(-)
 
-On 11/10/2023 2:17 PM, Yonghong Song wrote:
-> Kirill Shutemov reported significant percpu memory increase after booting
-> in 288-cpu VM ([1]) due to commit 41a5db8d8161 ("bpf: Add support for
-> non-fix-size percpu mem allocation"). The percpu memory is increased
-> from 111MB to 969MB. The number is from /proc/meminfo.
->
-> I tried to reproduce the issue with my local VM which at most supports
-> upto 255 cpus. With 252 cpus, without the above commit, the percpu memory
-> immediately after boot is 57MB while with the above commit the percpu
-> memory is 231MB.
->
-> This is not good since so far percpu memory from bpf memory allocator
-> is not widely used yet. Let us change pre-allocation in init stage
-> to on-demand allocation when verifier detects there is a need of
-> percpu memory for bpf program. With this change, percpu memory
-> consumption after boot can be reduced signicantly.
->
->   [1] https://lore.kernel.org/lkml/20231109154934.4saimljtqx625l3v@box.shutemov.name/
->
-> Fixes: 41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem allocation")
-> Cc: Kirill A. Shutemov <kirill@shutemov.name>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  include/linux/bpf.h   |  2 +-
->  kernel/bpf/core.c     |  8 +++-----
->  kernel/bpf/verifier.c | 17 +++++++++++++++--
->  3 files changed, 19 insertions(+), 8 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index b4825d3cdb29..3df67a04d32e 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -56,7 +56,7 @@ extern struct idr btf_idr;
->  extern spinlock_t btf_idr_lock;
->  extern struct kobject *btf_kobj;
->  extern struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
-> -extern bool bpf_global_ma_set, bpf_global_percpu_ma_set;
-> +extern bool bpf_global_ma_set;
->  
->  typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
->  typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 08626b519ce2..cd3afe57ece3 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -64,8 +64,8 @@
->  #define OFF	insn->off
->  #define IMM	insn->imm
->  
-> -struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
-> -bool bpf_global_ma_set, bpf_global_percpu_ma_set;
-> +struct bpf_mem_alloc bpf_global_ma;
-> +bool bpf_global_ma_set;
->  
->  /* No hurry in this branch
->   *
-> @@ -2934,9 +2934,7 @@ static int __init bpf_global_ma_init(void)
->  
->  	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
->  	bpf_global_ma_set = !ret;
-> -	ret = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
-> -	bpf_global_percpu_ma_set = !ret;
-> -	return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
-> +	return ret;
->  }
->  late_initcall(bpf_global_ma_init);
->  #endif
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index bd1c42eb540f..7d485c8b794f 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -26,6 +26,7 @@
->  #include <linux/poison.h>
->  #include <linux/module.h>
->  #include <linux/cpumask.h>
-> +#include <linux/bpf_mem_alloc.h>
->  #include <net/xdp.h>
->  
->  #include "disasm.h"
-> @@ -41,6 +42,9 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
->  #undef BPF_LINK_TYPE
->  };
->  
-> +struct bpf_mem_alloc bpf_global_percpu_ma;
-> +static bool bpf_global_percpu_ma_set;
-> +
->  /* bpf_check() is a static code analyzer that walks eBPF program
->   * instruction by instruction and updates register/stack state.
->   * All paths of conditional branches are analyzed until 'bpf_exit' insn.
-> @@ -12074,8 +12078,17 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->  				if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
->  					return -ENOMEM;
->  
-> -				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl] && !bpf_global_percpu_ma_set)
-> -					return -ENOMEM;
-> +				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
-> +					mutex_lock(&bpf_verifier_lock);
-
-Instead of acquiring the global lock each time, can we test whether or
-bpf_global_percpu_ma_set is set before acquiring the global lock ?
-> +					if (!bpf_global_percpu_ma_set) {
-> +						err = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
-> +						if (!err)
-> +							bpf_global_percpu_ma_set = true;
-> +					}
-> +					mutex_unlock(&bpf_verifier_lock);
-> +					if (err)
-> +						return err;
-> +				}
->  
->  				if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
->  					verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
+diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+index c1637515a8a4..ae021f511f46 100644
+--- a/include/linux/skmsg.h
++++ b/include/linux/skmsg.h
+@@ -78,11 +78,10 @@ struct sk_psock_work_state {
+ 
+ struct sk_psock {
+ 	struct sock			*sk;
+-	struct sock			*sk_redir;
++	unsigned long			_sk_redir;
+ 	u32				apply_bytes;
+ 	u32				cork_bytes;
+ 	u32				eval;
+-	bool				redir_ingress; /* undefined if sk_redir is null */
+ 	struct sk_msg			*cork;
+ 	struct sk_psock_progs		progs;
+ #if IS_ENABLED(CONFIG_BPF_STREAM_PARSER)
+@@ -283,6 +282,33 @@ static inline struct sk_psock *sk_psock(const struct sock *sk)
+ 							 SK_USER_DATA_PSOCK);
+ }
+ 
++static inline bool sk_psock_ingress(const struct sk_psock *psock)
++{
++	unsigned long sk_redir = psock->_sk_redir;
++
++	return sk_redir & BPF_F_INGRESS;
++}
++
++static inline void sk_psock_set_redir(struct sk_psock *psock, struct sock *sk_redir,
++				      bool ingress)
++{
++	psock->_sk_redir = (unsigned long)sk_redir;
++	if (ingress)
++		psock->_sk_redir |= BPF_F_INGRESS;
++}
++
++static inline struct sock *sk_psock_get_redir(struct sk_psock *psock)
++{
++	unsigned long sk_redir = psock->_sk_redir;
++
++	return (struct sock *)(sk_redir & ~(BPF_F_INGRESS));
++}
++
++static inline void sk_psock_clear_redir(struct sk_psock *psock)
++{
++	psock->_sk_redir = 0;
++}
++
+ static inline void sk_psock_set_state(struct sk_psock *psock,
+ 				      enum sk_psock_state_bits bit)
+ {
+diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+index 6c31eefbd777..d994621f1f95 100644
+--- a/net/core/skmsg.c
++++ b/net/core/skmsg.c
+@@ -811,6 +811,7 @@ static void sk_psock_destroy(struct work_struct *work)
+ {
+ 	struct sk_psock *psock = container_of(to_rcu_work(work),
+ 					      struct sk_psock, rwork);
++	struct sock *sk_redir = sk_psock_get_redir(psock);
+ 	/* No sk_callback_lock since already detached. */
+ 
+ 	sk_psock_done_strp(psock);
+@@ -824,8 +825,8 @@ static void sk_psock_destroy(struct work_struct *work)
+ 	sk_psock_link_destroy(psock);
+ 	sk_psock_cork_free(psock);
+ 
+-	if (psock->sk_redir)
+-		sock_put(psock->sk_redir);
++	if (sk_redir)
++		sock_put(sk_redir);
+ 	sock_put(psock->sk);
+ 	kfree(psock);
+ }
+@@ -865,6 +866,7 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
+ 			 struct sk_msg *msg)
+ {
+ 	struct bpf_prog *prog;
++	struct sock *sk_redir;
+ 	int ret;
+ 
+ 	rcu_read_lock();
+@@ -880,17 +882,17 @@ int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
+ 	ret = sk_psock_map_verd(ret, msg->sk_redir);
+ 	psock->apply_bytes = msg->apply_bytes;
+ 	if (ret == __SK_REDIRECT) {
+-		if (psock->sk_redir) {
+-			sock_put(psock->sk_redir);
+-			psock->sk_redir = NULL;
++		sk_redir = sk_psock_get_redir(psock);
++		if (sk_redir) {
++			sock_put(sk_redir);
++			sk_psock_clear_redir(psock);
+ 		}
+ 		if (!msg->sk_redir) {
+ 			ret = __SK_DROP;
+ 			goto out;
+ 		}
+-		psock->redir_ingress = sk_msg_to_ingress(msg);
+-		psock->sk_redir = msg->sk_redir;
+-		sock_hold(psock->sk_redir);
++		sk_psock_set_redir(psock, msg->sk_redir, sk_msg_to_ingress(msg));
++		sock_hold(msg->sk_redir);
+ 	}
+ out:
+ 	rcu_read_unlock();
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 53b0d62fd2c2..b3c847dc87dc 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -427,14 +427,14 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+ 		sk_msg_apply_bytes(psock, tosend);
+ 		break;
+ 	case __SK_REDIRECT:
+-		redir_ingress = psock->redir_ingress;
+-		sk_redir = psock->sk_redir;
++		redir_ingress = sk_psock_ingress(psock);
++		sk_redir = sk_psock_get_redir(psock);
+ 		sk_msg_apply_bytes(psock, tosend);
+ 		if (!psock->apply_bytes) {
+ 			/* Clean up before releasing the sock lock. */
+ 			eval = psock->eval;
+ 			psock->eval = __SK_NONE;
+-			psock->sk_redir = NULL;
++			sk_psock_clear_redir(psock);
+ 		}
+ 		if (psock->cork) {
+ 			cork = true;
+@@ -476,9 +476,10 @@ static int tcp_bpf_send_verdict(struct sock *sk, struct sk_psock *psock,
+ 	if (likely(!ret)) {
+ 		if (!psock->apply_bytes) {
+ 			psock->eval =  __SK_NONE;
+-			if (psock->sk_redir) {
+-				sock_put(psock->sk_redir);
+-				psock->sk_redir = NULL;
++			sk_redir = sk_psock_get_redir(psock);
++			if (sk_redir) {
++				sock_put(sk_redir);
++				sk_psock_clear_redir(psock);
+ 			}
+ 		}
+ 		if (msg &&
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index e9d1e83a859d..c91cd07c1285 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -854,8 +854,8 @@ static int bpf_exec_tx_verdict(struct sk_msg *msg, struct sock *sk,
+ 		}
+ 		break;
+ 	case __SK_REDIRECT:
+-		redir_ingress = psock->redir_ingress;
+-		sk_redir = psock->sk_redir;
++		redir_ingress = sk_psock_ingress(psock);
++		sk_redir = sk_psock_get_redir(psock);
+ 		memcpy(&msg_redir, msg, sizeof(*msg));
+ 		if (msg->apply_bytes < send)
+ 			msg->apply_bytes = 0;
+@@ -898,9 +898,10 @@ static int bpf_exec_tx_verdict(struct sk_msg *msg, struct sock *sk,
+ 		}
+ 		if (reset_eval) {
+ 			psock->eval = __SK_NONE;
+-			if (psock->sk_redir) {
+-				sock_put(psock->sk_redir);
+-				psock->sk_redir = NULL;
++			sk_redir = sk_psock_get_redir(psock);
++			if (sk_redir) {
++				sock_put(sk_redir);
++				sk_psock_clear_redir(psock);
+ 			}
+ 		}
+ 		if (rec)
+-- 
+2.38.1
 
 
