@@ -1,114 +1,87 @@
-Return-Path: <bpf+bounces-14737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 643F67E799F
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:57:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B9607E79A6
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 08:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E0591C20D9E
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 06:57:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 655BC1C20A68
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D441874;
-	Fri, 10 Nov 2023 06:57:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DA21FC4;
+	Fri, 10 Nov 2023 07:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gIwkSPJP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n+b5O0aA"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1CEC6FAB
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 06:57:08 +0000 (UTC)
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [IPv6:2001:41d0:1004:224b::aa])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2815F8245
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 22:57:07 -0800 (PST)
-Message-ID: <2af5b517-5f47-644b-9d55-5400f990cba1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699599425;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=trmke9HBdNk5Ak7dexdUONaYWiPgsOdNXSX+82fzh7E=;
-	b=gIwkSPJPY0CF+iKd9yxvbWYM4TJBYHT2v3UjLvp/wRYzPCkZ8r4PNGf496/5HlmXo8yIcE
-	8Oj8IDUgecf4xPCAQVzFB8X4AoxqreqBUAh911Q686zNe7XwM9GmMQMUXEukB9qZsMBy7p
-	4SXg0vPEAhF5xjN+51KKihOJf5ONVbo=
-Date: Thu, 9 Nov 2023 22:56:58 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E727187B
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 07:10:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 04410C433C9;
+	Fri, 10 Nov 2023 07:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699600226;
+	bh=jaRTX6bsXs9F+AZUVTkzNBRQgU8JrEG4tk5ozYQGWNI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=n+b5O0aA/GdWppgFVGYSdOg2EnyZLX/j+idTbHrTucGCDHQagzchNC3sGq3eH9yBu
+	 1fAwLF8VI3y55Nq0hTbgTeUgl7s+QEGgg9SDbtrdUF+swrqW18+KBog/I1OPbYi+we
+	 VXGuaR3+zlQwAY37S26Nrtz90xDYuYb+H41V6QD4kxiy9vEkv9JJFVsBCELQCrFuhz
+	 kV+nIhX2tDLvBQNJLavyXhBYvbhH3MXJq1X5G/nwklUH3Kp8Xpsm+kAd3KkCpNFTWc
+	 74BE/0DobNu/DYhY3XZ2M7N9npuhPdzZC7+xaMzbTX28RoOs/hgyiQArwYczLcTgcm
+	 Ow/rI4qw1hVYQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DC9E3C395DC;
+	Fri, 10 Nov 2023 07:10:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v11 00/13] Registrating struct_ops types from
- modules
-Content-Language: en-US
-To: thinker.li@gmail.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
- ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
- drosen@google.com
-References: <20231106201252.1568931-1-thinker.li@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231106201252.1568931-1-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH bpf 1/2] bpf: fix control-flow graph checking in privileged
+ mode
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <169960022589.7907.16307545616666162450.git-patchwork-notify@kernel.org>
+Date: Fri, 10 Nov 2023 07:10:25 +0000
+References: <20231110061412.2995786-1-andrii@kernel.org>
+In-Reply-To: <20231110061412.2995786-1-andrii@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, kernel-team@meta.com, sunhao.th@gmail.com
 
-On 11/6/23 12:12 PM, thinker.li@gmail.com wrote:
-> From: Kui-Feng Lee <thinker.li@gmail.com>
-> 
-> Given the current constraints of the current implementation,
-> struct_ops cannot be registered dynamically. This presents a
-> significant limitation for modules like coming fuse-bpf, which seeks
-> to implement a new struct_ops type. To address this issue, a new API
-> is introduced that allows the registration of new struct_ops types
-> from modules.
-> 
-> Previously, struct_ops types were defined in bpf_struct_ops_types.h
-> and collected as a static array. The new API lets callers add new
-> struct_ops types dynamically. The static array has been removed and
-> replaced by the per-btf struct_ops_tab.
-> 
-> The struct_ops subsystem relies on BTF to determine the layout of
-> values in a struct_ops map and identify the subsystem that the
-> struct_ops map registers to. However, the kernel BTF does not include
-> the type information of struct_ops types defined by a module. The
-> struct_ops subsystem requires knowledge of the corresponding module
-> for a given struct_ops map and the utilization of BTF information from
-> that module. We empower libbpf to determine the correct module for
-> accessing the BTF information and pass an identity (FD) of the module
-> btf to the kernel. The kernel looks up type information and registered
-> struct_ops types directly from the given btf.
-> 
-> If a module exits while one or more struct_ops maps still refer to a
-> struct_ops type defined by the module, it can lead to unforeseen
-> complications. Therefore, it is crucial to ensure that a module
-> remains intact as long as any struct_ops map is still linked to a
-> struct_ops type defined by the module. To achieve this, every
-> struct_ops map holds a reference to the module while being registered.
-> 
-> Changes from v10:
-> 
->   - Guard btf.c from CONFIG_BPF_JIT=n. This patchset has introduced
->     symbols from bpf_struct_ops.c which is only built when
->     CONFIG_BPF_JIT=y.
-> 
->   - Fix the warning of unused errout_free label by moving code that is
->     leaked to patch 8 to patch 7.
+Hello:
 
-Thanks for the patches and working on this feature.
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-One thing that still needs to check is the "bpftool struct_ops dump" support for 
-kmod's btf. The bpftool changes can be a followup. However, please check if the 
-current uapi has what it needs. A quick look is the userspace should be able to 
-find the kmod btf from the map_info->btf_vmlinux_value_type_id.
+On Thu, 9 Nov 2023 22:14:10 -0800 you wrote:
+> When BPF program is verified in privileged mode, BPF verifier allows
+> bounded loops. This means that from CFG point of view there are
+> definitely some back-edges. Original commit adjusted check_cfg() logic
+> to not detect back-edges in control flow graph if they are resulting
+> from conditional jumps, which the idea that subsequent full BPF
+> verification process will determine whether such loops are bounded or
+> not, and either accept or reject the BPF program. At least that's my
+> reading of the intent.
+> 
+> [...]
 
-We discussed a bit offline on patch 8 about putting the btf and module refcnt 
-together in bpf_struct_ops_map_free (but before synchronize_rcu_mult) which 
-should further simplify patch 8 also. hope that will work out.
+Here is the summary with links:
+  - [bpf,1/2] bpf: fix control-flow graph checking in privileged mode
+    https://git.kernel.org/bpf/bpf/c/10e14e9652bf
+  - [bpf,2/2] selftests/bpf: add more test cases for check_cfg()
+    https://git.kernel.org/bpf/bpf/c/e2e57d637aa5
 
-Looking forward to v12.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
