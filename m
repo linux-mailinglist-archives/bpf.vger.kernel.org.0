@@ -1,52 +1,41 @@
-Return-Path: <bpf+bounces-14723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F34D87E790E
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:14:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B957E7917
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 07:17:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE066281813
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 06:14:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E80AD1C20DB2
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 06:17:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3FF5693;
-	Fri, 10 Nov 2023 06:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 414D7539E;
+	Fri, 10 Nov 2023 06:17:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF8963B4
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 06:14:40 +0000 (UTC)
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE7075274
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 22:14:38 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3A9MYChC023237
-	for <bpf@vger.kernel.org>; Thu, 9 Nov 2023 22:14:38 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3u8q20jcat-5
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 22:14:37 -0800
-Received: from twshared9518.03.prn6.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 9 Nov 2023 22:14:34 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 452453B43D58D; Thu,  9 Nov 2023 22:14:17 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>,
-        Hao Sun
-	<sunhao.th@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf 2/2] selftests/bpf: add more test cases for check_cfg()
-Date: Thu, 9 Nov 2023 22:14:11 -0800
-Message-ID: <20231110061412.2995786-2-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BFB8538C
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 06:17:51 +0000 (UTC)
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594655FD7
+	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 22:17:49 -0800 (PST)
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 21D02299D58F2; Thu,  9 Nov 2023 22:17:34 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: [PATCH bpf] bpf: Do not allocate percpu memory at init stage
+Date: Thu,  9 Nov 2023 22:17:34 -0800
+Message-Id: <20231110061734.2958678-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231110061412.2995786-1-andrii@kernel.org>
-References: <20231110061412.2995786-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -54,97 +43,124 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: MjH-k2IEoHKKH-irW7oUQIUbBGVevJTi
-X-Proofpoint-GUID: MjH-k2IEoHKKH-irW7oUQIUbBGVevJTi
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-10_03,2023-11-09_01,2023-05-22_02
 
-Add a few more simple cases to validate proper privileged vs unprivileged
-loop detection behavior. conditional_loop2 is the one reported by Hao
-Sun that triggered this set of fixes.
+Kirill Shutemov reported significant percpu memory increase after booting
+in 288-cpu VM ([1]) due to commit 41a5db8d8161 ("bpf: Add support for
+non-fix-size percpu mem allocation"). The percpu memory is increased
+from 111MB to 969MB. The number is from /proc/meminfo.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Suggested-by: Hao Sun <sunhao.th@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+I tried to reproduce the issue with my local VM which at most supports
+upto 255 cpus. With 252 cpus, without the above commit, the percpu memory
+immediately after boot is 57MB while with the above commit the percpu
+memory is 231MB.
+
+This is not good since so far percpu memory from bpf memory allocator
+is not widely used yet. Let us change pre-allocation in init stage
+to on-demand allocation when verifier detects there is a need of
+percpu memory for bpf program. With this change, percpu memory
+consumption after boot can be reduced signicantly.
+
+  [1] https://lore.kernel.org/lkml/20231109154934.4saimljtqx625l3v@box.sh=
+utemov.name/
+
+Fixes: 41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem alloca=
+tion")
+Cc: Kirill A. Shutemov <kirill@shutemov.name>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- .../selftests/bpf/progs/verifier_cfg.c        | 62 +++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ include/linux/bpf.h   |  2 +-
+ kernel/bpf/core.c     |  8 +++-----
+ kernel/bpf/verifier.c | 17 +++++++++++++++--
+ 3 files changed, 19 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_cfg.c b/tools/tes=
-ting/selftests/bpf/progs/verifier_cfg.c
-index df7697b94007..c1f55e1d80a4 100644
---- a/tools/testing/selftests/bpf/progs/verifier_cfg.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_cfg.c
-@@ -97,4 +97,66 @@ l0_%=3D:	r2 =3D r0;					\
- "	::: __clobber_all);
- }
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b4825d3cdb29..3df67a04d32e 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -56,7 +56,7 @@ extern struct idr btf_idr;
+ extern spinlock_t btf_idr_lock;
+ extern struct kobject *btf_kobj;
+ extern struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+-extern bool bpf_global_ma_set, bpf_global_percpu_ma_set;
++extern bool bpf_global_ma_set;
 =20
-+SEC("socket")
-+__description("conditional loop (2)")
-+__success
-+__failure_unpriv __msg_unpriv("back-edge from insn 10 to 11")
-+__naked void conditional_loop2(void)
-+{
-+	asm volatile ("					\
-+	r9 =3D 2 ll;					\
-+	r3 =3D 0x20 ll;					\
-+	r4 =3D 0x35 ll;					\
-+	r8 =3D r4;					\
-+	goto l1_%=3D;					\
-+l0_%=3D:	r9 -=3D r3;					\
-+	r9 -=3D r4;					\
-+	r9 -=3D r8;					\
-+l1_%=3D:	r8 +=3D r4;					\
-+	if r8 < 0x64 goto l0_%=3D;			\
-+	r0 =3D r9;					\
-+	exit;						\
-+"	::: __clobber_all);
-+}
+ typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
+ typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 08626b519ce2..cd3afe57ece3 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -64,8 +64,8 @@
+ #define OFF	insn->off
+ #define IMM	insn->imm
+=20
+-struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+-bool bpf_global_ma_set, bpf_global_percpu_ma_set;
++struct bpf_mem_alloc bpf_global_ma;
++bool bpf_global_ma_set;
+=20
+ /* No hurry in this branch
+  *
+@@ -2934,9 +2934,7 @@ static int __init bpf_global_ma_init(void)
+=20
+ 	ret =3D bpf_mem_alloc_init(&bpf_global_ma, 0, false);
+ 	bpf_global_ma_set =3D !ret;
+-	ret =3D bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
+-	bpf_global_percpu_ma_set =3D !ret;
+-	return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
++	return ret;
+ }
+ late_initcall(bpf_global_ma_init);
+ #endif
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index bd1c42eb540f..7d485c8b794f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -26,6 +26,7 @@
+ #include <linux/poison.h>
+ #include <linux/module.h>
+ #include <linux/cpumask.h>
++#include <linux/bpf_mem_alloc.h>
+ #include <net/xdp.h>
+=20
+ #include "disasm.h"
+@@ -41,6 +42,9 @@ static const struct bpf_verifier_ops * const bpf_verifi=
+er_ops[] =3D {
+ #undef BPF_LINK_TYPE
+ };
+=20
++struct bpf_mem_alloc bpf_global_percpu_ma;
++static bool bpf_global_percpu_ma_set;
 +
-+SEC("socket")
-+__description("unconditional loop after conditional jump")
-+__failure __msg("infinite loop detected")
-+__failure_unpriv __msg_unpriv("back-edge from insn 3 to 2")
-+__naked void uncond_loop_after_cond_jmp(void)
-+{
-+	asm volatile ("					\
-+	r0 =3D 0;						\
-+	if r0 > 0 goto l1_%=3D;				\
-+l0_%=3D:	r0 =3D 1;						\
-+	goto l0_%=3D;					\
-+l1_%=3D:	exit;						\
-+"	::: __clobber_all);
-+}
-+
-+
-+__naked __noinline __used
-+static unsigned long never_ending_subprog()
-+{
-+	asm volatile ("					\
-+	r0 =3D r1;					\
-+	goto -1;					\
-+"	::: __clobber_all);
-+}
-+
-+SEC("socket")
-+__description("unconditional loop after conditional jump")
-+/* infinite loop is detected *after* check_cfg() */
-+__failure __msg("infinite loop detected")
-+__naked void uncond_loop_in_subprog_after_cond_jmp(void)
-+{
-+	asm volatile ("					\
-+	r0 =3D 0;						\
-+	if r0 > 0 goto l1_%=3D;				\
-+l0_%=3D:	r0 +=3D 1;					\
-+	call never_ending_subprog;			\
-+l1_%=3D:	exit;						\
-+"	::: __clobber_all);
-+}
-+
- char _license[] SEC("license") =3D "GPL";
+ /* bpf_check() is a static code analyzer that walks eBPF program
+  * instruction by instruction and updates register/stack state.
+  * All paths of conditional branches are analyzed until 'bpf_exit' insn.
+@@ -12074,8 +12078,17 @@ static int check_kfunc_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+ 				if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_obj_new_impl] && !=
+bpf_global_ma_set)
+ 					return -ENOMEM;
+=20
+-				if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_percpu_obj_new_imp=
+l] && !bpf_global_percpu_ma_set)
+-					return -ENOMEM;
++				if (meta.func_id =3D=3D special_kfunc_list[KF_bpf_percpu_obj_new_imp=
+l]) {
++					mutex_lock(&bpf_verifier_lock);
++					if (!bpf_global_percpu_ma_set) {
++						err =3D bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
++						if (!err)
++							bpf_global_percpu_ma_set =3D true;
++					}
++					mutex_unlock(&bpf_verifier_lock);
++					if (err)
++						return err;
++				}
+=20
+ 				if (((u64)(u32)meta.arg_constant.value) !=3D meta.arg_constant.value=
+) {
+ 					verbose(env, "local type ID argument must be in range [0, U32_MAX]\=
+n");
 --=20
 2.34.1
 
