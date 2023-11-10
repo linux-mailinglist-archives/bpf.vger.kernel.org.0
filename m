@@ -1,239 +1,189 @@
-Return-Path: <bpf+bounces-14747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 224437E7A5A
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 10:01:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4898E7E7A5C
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 10:01:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D24751C20D34
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 09:01:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02AE42814B7
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 09:01:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57BA4D506;
-	Fri, 10 Nov 2023 09:01:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DJ7BIcKm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D03ED506;
+	Fri, 10 Nov 2023 09:01:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B0DED269
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:01:24 +0000 (UTC)
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72E7A5F7
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 01:01:21 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5441ba3e53cso2832754a12.1
-        for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 01:01:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699606880; x=1700211680; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=h7cQuee20pHdkoBauXFtPx8H12c1Wo89fa07y5J8E2w=;
-        b=DJ7BIcKm0xgjEvjhyV2y+DPt2E1dVGa4yeqrX2H54h8DUezNAoNTp5NuIckuJXXS8Z
-         1EHp+124In+oB9qXbqPbFC1p+qPt444sO1ioXSUR+sTCsnDnuZFVwoS5dmAcBxq9OoVG
-         DPYAJqC6oDZ3tQXwgswQjxsYBboZgMmpMZOnYUo95slYccNO02xXqD+QoFSLYILMbH6u
-         Or49ZEmhYURqzPyHnO1DJW/+x+HdxyMgcqX5tKUJPaHODXNJR0l3+TwyJ/zdBVjqWVQm
-         ql2x32ykJdBc7wjzmC893TjC+bvBQ3FrifGw2uBMDru77b15D/7n6v+zsARQaos0dkmA
-         94XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699606880; x=1700211680;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h7cQuee20pHdkoBauXFtPx8H12c1Wo89fa07y5J8E2w=;
-        b=lqzCplw/BFjm/GQkldK1o2M96XHUNOS5ftgysH3j+nE7LLqenUeL+iwjjEqODKaAvI
-         LyovWfBpgkIgeC5QxlzU9/TNP0PFxdJSGHZlvN+VyWcPGZcRfPgOgO8opkWs2VWRJt9N
-         YWv/yimAABPnDA8BImhgCzAzmamKqcS/RlPC72uxsW+MydzCeIDPHwA9P8JDWC7Xr4on
-         on6ZnU1ZdplTwLSNgyblivOvfkQOafFlZJebwhVkm5t6akuHXISIM+1a2QQ1e50dV1pI
-         X1KAC+ChmeQMfiosGxgUZMWULZhujb5cVfVPfciIYWrGqKKWbhILnPPSMllhF1uU21Oq
-         QPnA==
-X-Gm-Message-State: AOJu0YxIWxBa/DMokpkwZKF5D1/SlsSen0NpTMsmJbHxF9Q8obIhjheC
-	5zmocmRV5ozuPN6r4ku3utA=
-X-Google-Smtp-Source: AGHT+IF1fAM9H6j6PTVX6V4ryoFzVIiampeNKufa+5+d1TpwnX+mtNAP4kDo2t06oGkbusfPaetQGg==
-X-Received: by 2002:a17:907:7da4:b0:9dd:7536:2b0 with SMTP id oz36-20020a1709077da400b009dd753602b0mr5979980ejc.50.1699606879714;
-        Fri, 10 Nov 2023 01:01:19 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id m15-20020a1709060d8f00b0099297782aa9sm3603628eji.49.2023.11.10.01.01.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 01:01:19 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 10 Nov 2023 10:01:17 +0100
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCHv2 bpf-next 3/6] bpf: Add link_info support for uprobe
- multi link
-Message-ID: <ZU3xXQYLy27ywA3g@krava>
-References: <20231109092838.721233-1-jolsa@kernel.org>
- <20231109092838.721233-4-jolsa@kernel.org>
- <CAEf4BzZAh=aW_4bXSJdBZ-UcoCqa0CuejXBdb7+fB9bDP4q+eQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1B67D269
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 09:01:41 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA023A5F4
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 01:01:39 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SRXqy18Z0z4f41Tn
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 17:01:34 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 8760C1A0175
+	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 17:01:36 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgAXLLpq8U1lVggbAg--.10775S2;
+	Fri, 10 Nov 2023 17:01:34 +0800 (CST)
+Subject: Re: [PATCH bpf] bpf: Do not allocate percpu memory at init stage
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ "Kirill A . Shutemov" <kirill@shutemov.name>
+References: <20231110061734.2958678-1-yonghong.song@linux.dev>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <e17dafc1-6fac-3e87-f8d4-e54e7898e0aa@huaweicloud.com>
+Date: Fri, 10 Nov 2023 17:01:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzZAh=aW_4bXSJdBZ-UcoCqa0CuejXBdb7+fB9bDP4q+eQ@mail.gmail.com>
+In-Reply-To: <20231110061734.2958678-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgAXLLpq8U1lVggbAg--.10775S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF4DGr1DCw45CrWrGFyDZFb_yoWrtry5pa
+	1kJF1Fyr4qqFs7Ww13Jw4UCryFqwn5WF1xK343Ary7ZrsIqwn7Kr4vyF4rZF90gFZ0kF18
+	tF1v9r1a9FW5CFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Thu, Nov 09, 2023 at 09:57:03PM -0800, Andrii Nakryiko wrote:
 
-SNIP
 
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index 52c1ec3a0467..1ea54f3b3f73 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -3046,6 +3046,7 @@ struct bpf_uprobe_multi_link {
-> >         u32 cnt;
-> >         struct bpf_uprobe *uprobes;
-> >         struct task_struct *task;
-> > +       u32 flags;
-> >  };
-> >
-> >  struct bpf_uprobe_multi_run_ctx {
-> > @@ -3085,9 +3086,76 @@ static void bpf_uprobe_multi_link_dealloc(struct bpf_link *link)
-> >         kfree(umulti_link);
-> >  }
-> >
-> > +static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
-> > +                                               struct bpf_link_info *info)
-> > +{
-> > +       u64 __user *uref_ctr_offsets = u64_to_user_ptr(info->uprobe_multi.ref_ctr_offsets);
-> > +       u64 __user *ucookies = u64_to_user_ptr(info->uprobe_multi.cookies);
-> > +       u64 __user *uoffsets = u64_to_user_ptr(info->uprobe_multi.offsets);
-> > +       u64 __user *upath = u64_to_user_ptr(info->uprobe_multi.path);
-> > +       u32 upath_size = info->uprobe_multi.path_size;
-> > +       struct bpf_uprobe_multi_link *umulti_link;
-> > +       u32 ucount = info->uprobe_multi.count;
-> > +       int err = 0, i;
-> > +       long left;
-> > +
-> > +       if (!upath ^ !upath_size)
-> > +               return -EINVAL;
-> > +
-> > +       if (!uoffsets ^ !ucount)
-> 
-> uoffsets is not the only one that requires ucount, right?
+On 11/10/2023 2:17 PM, Yonghong Song wrote:
+> Kirill Shutemov reported significant percpu memory increase after booting
+> in 288-cpu VM ([1]) due to commit 41a5db8d8161 ("bpf: Add support for
+> non-fix-size percpu mem allocation"). The percpu memory is increased
+> from 111MB to 969MB. The number is from /proc/meminfo.
+>
+> I tried to reproduce the issue with my local VM which at most supports
+> upto 255 cpus. With 252 cpus, without the above commit, the percpu memory
+> immediately after boot is 57MB while with the above commit the percpu
+> memory is 231MB.
+>
+> This is not good since so far percpu memory from bpf memory allocator
+> is not widely used yet. Let us change pre-allocation in init stage
+> to on-demand allocation when verifier detects there is a need of
+> percpu memory for bpf program. With this change, percpu memory
+> consumption after boot can be reduced signicantly.
+>
+>   [1] https://lore.kernel.org/lkml/20231109154934.4saimljtqx625l3v@box.shutemov.name/
+>
+> Fixes: 41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem allocation")
+> Cc: Kirill A. Shutemov <kirill@shutemov.name>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  include/linux/bpf.h   |  2 +-
+>  kernel/bpf/core.c     |  8 +++-----
+>  kernel/bpf/verifier.c | 17 +++++++++++++++--
+>  3 files changed, 19 insertions(+), 8 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index b4825d3cdb29..3df67a04d32e 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -56,7 +56,7 @@ extern struct idr btf_idr;
+>  extern spinlock_t btf_idr_lock;
+>  extern struct kobject *btf_kobj;
+>  extern struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+> -extern bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+> +extern bool bpf_global_ma_set;
+>  
+>  typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
+>  typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 08626b519ce2..cd3afe57ece3 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -64,8 +64,8 @@
+>  #define OFF	insn->off
+>  #define IMM	insn->imm
+>  
+> -struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+> -bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+> +struct bpf_mem_alloc bpf_global_ma;
+> +bool bpf_global_ma_set;
+>  
+>  /* No hurry in this branch
+>   *
+> @@ -2934,9 +2934,7 @@ static int __init bpf_global_ma_init(void)
+>  
+>  	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
+>  	bpf_global_ma_set = !ret;
+> -	ret = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
+> -	bpf_global_percpu_ma_set = !ret;
+> -	return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
+> +	return ret;
+>  }
+>  late_initcall(bpf_global_ma_init);
+>  #endif
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index bd1c42eb540f..7d485c8b794f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/poison.h>
+>  #include <linux/module.h>
+>  #include <linux/cpumask.h>
+> +#include <linux/bpf_mem_alloc.h>
+>  #include <net/xdp.h>
+>  
+>  #include "disasm.h"
+> @@ -41,6 +42,9 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
+>  #undef BPF_LINK_TYPE
+>  };
+>  
+> +struct bpf_mem_alloc bpf_global_percpu_ma;
+> +static bool bpf_global_percpu_ma_set;
+> +
+>  /* bpf_check() is a static code analyzer that walks eBPF program
+>   * instruction by instruction and updates register/stack state.
+>   * All paths of conditional branches are analyzed until 'bpf_exit' insn.
+> @@ -12074,8 +12078,17 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  				if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
+>  					return -ENOMEM;
+>  
+> -				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl] && !bpf_global_percpu_ma_set)
+> -					return -ENOMEM;
+> +				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
+> +					mutex_lock(&bpf_verifier_lock);
 
-yep, cookies as well
+Instead of acquiring the global lock each time, can we test whether or
+bpf_global_percpu_ma_set is set before acquiring the global lock ?
+> +					if (!bpf_global_percpu_ma_set) {
+> +						err = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
+> +						if (!err)
+> +							bpf_global_percpu_ma_set = true;
+> +					}
+> +					mutex_unlock(&bpf_verifier_lock);
+> +					if (err)
+> +						return err;
+> +				}
+>  
+>  				if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
+>  					verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
 
-> 
-> > +               return -EINVAL;
-> > +
-> > +       umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
-> > +       info->uprobe_multi.count = umulti_link->cnt;
-> > +       info->uprobe_multi.flags = umulti_link->flags;
-> > +       info->uprobe_multi.pid = umulti_link->task ?
-> > +                                task_pid_nr_ns(umulti_link->task, task_active_pid_ns(current)) : 0;
-> > +
-> > +       if (upath) {
-> > +               char *p, *buf;
-> > +
-> > +               upath_size = min_t(u32, upath_size, PATH_MAX);
-> > +
-> > +               buf = kmalloc(upath_size, GFP_KERNEL);
-> > +               if (!buf)
-> > +                       return -ENOMEM;
-> > +               p = d_path(&umulti_link->path, buf, upath_size);
-> > +               if (IS_ERR(p)) {
-> > +                       kfree(buf);
-> > +                       return -ENOSPC;
-> > +               }
-> > +               left = copy_to_user(upath, p, buf + upath_size - p);
-> > +               kfree(buf);
-> > +               if (left)
-> > +                       return -EFAULT;
-> 
-> hmm.. I expected the actual path_size to be reported back to the
-> user?.. Is there a problem with doing that?
-
-we return back the string, if the string fits in provided buffer it's
-terminated with 0 and user space can do strlen on it if needed
-
-> 
-> > +       }
-> > +
-> > +       if (!uoffsets)
-> > +               return 0;
-> 
-> why guard by uoffsets? what if users only wanted cookies? I think each
-> array should do its own checking and be independent, no?
-
-I did not think of the use case to get just the cookies (at least not the
-one in bpftool), I saw it as optional to offsets, which is mandatory..
-but that should be an easy change I think
-
-jirka
-
-> 
-> > +
-> > +       if (ucount < umulti_link->cnt)
-> > +               err = -ENOSPC;
-> > +       else
-> > +               ucount = umulti_link->cnt;
-> > +
-> > +       for (i = 0; i < ucount; i++) {
-> > +               if (put_user(umulti_link->uprobes[i].offset, uoffsets + i))
-> > +                       return -EFAULT;
-> > +               if (uref_ctr_offsets &&
-> > +                   put_user(umulti_link->uprobes[i].ref_ctr_offset, uref_ctr_offsets + i))
-> > +                       return -EFAULT;
-> > +               if (ucookies &&
-> > +                   put_user(umulti_link->uprobes[i].cookie, ucookies + i))
-> > +                       return -EFAULT;
-> > +       }
-> > +
-> > +       return err;
-> > +}
-> > +
-> >  static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
-> >         .release = bpf_uprobe_multi_link_release,
-> >         .dealloc = bpf_uprobe_multi_link_dealloc,
-> > +       .fill_link_info = bpf_uprobe_multi_link_fill_link_info,
-> >  };
-> >
-> >  static int uprobe_prog_run(struct bpf_uprobe *uprobe,
-> > @@ -3276,6 +3344,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
-> >         link->uprobes = uprobes;
-> >         link->path = path;
-> >         link->task = task;
-> > +       link->flags = flags;
-> >
-> >         bpf_link_init(&link->link, BPF_LINK_TYPE_UPROBE_MULTI,
-> >                       &bpf_uprobe_multi_link_lops, prog);
-> > diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> > index 0f6cdf52b1da..05b355da4508 100644
-> > --- a/tools/include/uapi/linux/bpf.h
-> > +++ b/tools/include/uapi/linux/bpf.h
-> > @@ -6556,6 +6556,16 @@ struct bpf_link_info {
-> >                         __u32 flags;
-> >                         __u64 missed;
-> >                 } kprobe_multi;
-> > +               struct {
-> > +                       __aligned_u64 path;
-> > +                       __aligned_u64 offsets;
-> > +                       __aligned_u64 ref_ctr_offsets;
-> > +                       __aligned_u64 cookies;
-> > +                       __u32 path_size;
-> > +                       __u32 count; /* in/out: uprobe_multi offsets/ref_ctr_offsets/cookies count */
-> > +                       __u32 flags;
-> > +                       __u32 pid;
-> > +               } uprobe_multi;
-> >                 struct {
-> >                         __u32 type; /* enum bpf_perf_event_type */
-> >                         __u32 :32;
-> > --
-> > 2.41.0
-> >
 
