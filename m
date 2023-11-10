@@ -1,233 +1,227 @@
-Return-Path: <bpf+bounces-14690-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BBFD7E77D8
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 04:00:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 550E27E77DA
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 04:04:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7BC831C20B17
-	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 03:00:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5201B210DE
+	for <lists+bpf@lfdr.de>; Fri, 10 Nov 2023 03:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A17561399;
-	Fri, 10 Nov 2023 03:00:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dgcGbb3h"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C3415BB;
+	Fri, 10 Nov 2023 03:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5293015C5
-	for <bpf@vger.kernel.org>; Fri, 10 Nov 2023 03:00:44 +0000 (UTC)
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1494229
-	for <bpf@vger.kernel.org>; Thu,  9 Nov 2023 19:00:43 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-6754b4091b6so9333336d6.3
-        for <bpf@vger.kernel.org>; Thu, 09 Nov 2023 19:00:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699585242; x=1700190042; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0CQprBIT89yr4woUy6wILD1LDiQuucjGa+L5/x5rGyM=;
-        b=dgcGbb3h3wt4uqEoXDjPnOnuKX2FEXI3n9dpzbrBFqA2JcQwJr5HebPH5kBpXHWr+C
-         DKVzkGUooW3/uNWJbMR4hNmtcMn5itM7ykhIYxDdjCGj5Pea6u/aathSlcrGQahRRDF+
-         TxosaAsmlSRlpQhiQPsGFRr/boKUNERdXrZDMlGko6C0yZXV7LrfJbugqQ1jwPhaPpmH
-         lwEfIpD3pCOoeAvCUp6aqvD/sveijB6iFBapJNZYn2bLSCx4I4CV+T7/pUlBvdTit284
-         1D+CInU/IEre6oon1MJ1DCol05KTUtyXSukK9JD25FhETiCY4qzSw/Bzw2gfo/TvnQJC
-         mpEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699585242; x=1700190042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0CQprBIT89yr4woUy6wILD1LDiQuucjGa+L5/x5rGyM=;
-        b=RTrofQ3F8VxmpzuU9eC4KNb3Y05n3c17DInwR3SRrtK72gpWE/4oek11YeDUJbNSvq
-         +h10v8SBUy0kHJwE/LhqHiYiXLYBQxFk5Z0T9fWyu/UaIEXQrWOdcj6Cn5JOSWrr8e9o
-         /9JFHW9vo7BvNxiwZBPK5l58gK5ivs6aDteOAxOkrMwUb3XMuFciXU1h1w4Rm0Z4bWSM
-         ZwMh+8TVY0vCGpNh+BNzlnhtJsRPGmig7qpxM+B7I+1Tlar3ZGtnOEBPLSIFcqBZp6R4
-         pDqykeOoJ0Lu6bRTyTEx5qAt8karflBSKxKjW5ssMuuYFu4GgI3U9LbDiIBqaejSUVv+
-         oFeA==
-X-Gm-Message-State: AOJu0Yyzcu038ruTh3BbywhmjRWfsE+Qz3UeH4bxXJR4uzJqTwm7JLpM
-	APsP9ALdA2kVXyqPMrpr9k06cHvdYTIJSPZ0en8=
-X-Google-Smtp-Source: AGHT+IGAHEAuuRTrltZFHr/7qu2XOcTDCLDt2mUvEaI+rBb7TPcT1e8PNXEXr0biYeahcUi+uQaWlTNVEe7yYEN6YIw=
-X-Received: by 2002:a05:6214:2427:b0:66d:1215:6e3 with SMTP id
- gy7-20020a056214242700b0066d121506e3mr8601922qvb.10.1699585242517; Thu, 09
- Nov 2023 19:00:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70ECA4E;
+	Fri, 10 Nov 2023 03:04:44 +0000 (UTC)
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651824496;
+	Thu,  9 Nov 2023 19:04:43 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0Vw2yIua_1699585477;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vw2yIua_1699585477)
+          by smtp.aliyun-inc.com;
+          Fri, 10 Nov 2023 11:04:38 +0800
+Message-ID: <1699585459.226797-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v2 16/21] virtio_net: xsk: rx: introduce add_recvbuf_xsk()
+Date: Fri, 10 Nov 2023 11:04:19 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: netdev@vger.kernel.org,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ virtualization@lists.linux-foundation.org,
+ bpf@vger.kernel.org
+References: <20231107031227.100015-1-xuanzhuo@linux.alibaba.com>
+ <20231107031227.100015-17-xuanzhuo@linux.alibaba.com>
+ <20231109031003-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20231109031003-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231109092838.721233-1-jolsa@kernel.org> <20231109092838.721233-5-jolsa@kernel.org>
-In-Reply-To: <20231109092838.721233-5-jolsa@kernel.org>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Fri, 10 Nov 2023 11:00:04 +0800
-Message-ID: <CALOAHbCeQEsDG-9nKwywZqYTaCvj7ZbiVsjovU6V-JoQg0dTbw@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 4/6] selftests/bpf: Use bpf_link__destroy in
- fill_link_info tests
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 9, 2023 at 5:29=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+On Thu, 9 Nov 2023 03:12:27 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> On Tue, Nov 07, 2023 at 11:12:22AM +0800, Xuan Zhuo wrote:
+> > Implement the logic of filling rq with XSK buffers.
+> >
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > ---
+> >  drivers/net/virtio/main.c       |  4 ++-
+> >  drivers/net/virtio/virtio_net.h |  5 ++++
+> >  drivers/net/virtio/xsk.c        | 49 ++++++++++++++++++++++++++++++++-
+> >  drivers/net/virtio/xsk.h        |  2 ++
+> >  4 files changed, 58 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
+> > index 6210a6e37396..15943a22e17d 100644
+> > --- a/drivers/net/virtio/main.c
+> > +++ b/drivers/net/virtio/main.c
+> > @@ -1798,7 +1798,9 @@ static bool try_fill_recv(struct virtnet_info *vi, struct virtnet_rq *rq,
+> >  	bool oom;
+> >
+> >  	do {
+> > -		if (vi->mergeable_rx_bufs)
+> > +		if (rq->xsk.pool)
+> > +			err = virtnet_add_recvbuf_xsk(vi, rq, rq->xsk.pool, gfp);
+> > +		else if (vi->mergeable_rx_bufs)
+> >  			err = add_recvbuf_mergeable(vi, rq, gfp);
+> >  		else if (vi->big_packets)
+> >  			err = add_recvbuf_big(vi, rq, gfp);
 >
-> The fill_link_info test keeps skeleton open and just creates
-> various links. We are wrongly calling bpf_link__detach after
-> each test to close them, we need to call bpf_link__destroy.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-
-I've just realized that we can use a local link for this particular scenari=
-o :)
-Feel free to add:
-
-Acked-by: Yafang Shao <laoar.shao@gmail.com>
-
-> ---
->  .../selftests/bpf/prog_tests/fill_link_info.c | 44 ++++++++++---------
->  1 file changed, 23 insertions(+), 21 deletions(-)
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/to=
-ols/testing/selftests/bpf/prog_tests/fill_link_info.c
-> index 97142a4db374..9294cb8d7743 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-> @@ -140,14 +140,14 @@ static void test_kprobe_fill_link_info(struct test_=
-fill_link_info *skel,
->                 .retprobe =3D type =3D=3D BPF_PERF_EVENT_KRETPROBE,
->         );
->         ssize_t entry_offset =3D 0;
-> +       struct bpf_link *link;
->         int link_fd, err;
->
-> -       skel->links.kprobe_run =3D bpf_program__attach_kprobe_opts(skel->=
-progs.kprobe_run,
-> -                                                                KPROBE_F=
-UNC, &opts);
-> -       if (!ASSERT_OK_PTR(skel->links.kprobe_run, "attach_kprobe"))
-> +       link =3D bpf_program__attach_kprobe_opts(skel->progs.kprobe_run, =
-KPROBE_FUNC, &opts);
-> +       if (!ASSERT_OK_PTR(link, "attach_kprobe"))
->                 return;
->
-> -       link_fd =3D bpf_link__fd(skel->links.kprobe_run);
-> +       link_fd =3D bpf_link__fd(link);
->         if (!invalid) {
->                 /* See also arch_adjust_kprobe_addr(). */
->                 if (skel->kconfig->CONFIG_X86_KERNEL_IBT)
-> @@ -157,39 +157,41 @@ static void test_kprobe_fill_link_info(struct test_=
-fill_link_info *skel,
->         } else {
->                 kprobe_fill_invalid_user_buffer(link_fd);
->         }
-> -       bpf_link__detach(skel->links.kprobe_run);
-> +       bpf_link__destroy(link);
->  }
->
->  static void test_tp_fill_link_info(struct test_fill_link_info *skel)
->  {
-> +       struct bpf_link *link;
->         int link_fd, err;
->
-> -       skel->links.tp_run =3D bpf_program__attach_tracepoint(skel->progs=
-.tp_run, TP_CAT, TP_NAME);
-> -       if (!ASSERT_OK_PTR(skel->links.tp_run, "attach_tp"))
-> +       link =3D bpf_program__attach_tracepoint(skel->progs.tp_run, TP_CA=
-T, TP_NAME);
-> +       if (!ASSERT_OK_PTR(link, "attach_tp"))
->                 return;
->
-> -       link_fd =3D bpf_link__fd(skel->links.tp_run);
-> +       link_fd =3D bpf_link__fd(link);
->         err =3D verify_perf_link_info(link_fd, BPF_PERF_EVENT_TRACEPOINT,=
- 0, 0, 0);
->         ASSERT_OK(err, "verify_perf_link_info");
-> -       bpf_link__detach(skel->links.tp_run);
-> +       bpf_link__destroy(link);
->  }
->
->  static void test_uprobe_fill_link_info(struct test_fill_link_info *skel,
->                                        enum bpf_perf_event_type type)
->  {
-> +       struct bpf_link *link;
->         int link_fd, err;
->
-> -       skel->links.uprobe_run =3D bpf_program__attach_uprobe(skel->progs=
-.uprobe_run,
-> -                                                           type =3D=3D B=
-PF_PERF_EVENT_URETPROBE,
-> -                                                           0, /* self pi=
-d */
-> -                                                           UPROBE_FILE, =
-uprobe_offset);
-> -       if (!ASSERT_OK_PTR(skel->links.uprobe_run, "attach_uprobe"))
-> +       link =3D bpf_program__attach_uprobe(skel->progs.uprobe_run,
-> +                                         type =3D=3D BPF_PERF_EVENT_URET=
-PROBE,
-> +                                         0, /* self pid */
-> +                                         UPROBE_FILE, uprobe_offset);
-> +       if (!ASSERT_OK_PTR(link, "attach_uprobe"))
->                 return;
->
-> -       link_fd =3D bpf_link__fd(skel->links.uprobe_run);
-> +       link_fd =3D bpf_link__fd(link);
->         err =3D verify_perf_link_info(link_fd, type, 0, uprobe_offset, 0)=
-;
->         ASSERT_OK(err, "verify_perf_link_info");
-> -       bpf_link__detach(skel->links.uprobe_run);
-> +       bpf_link__destroy(link);
->  }
->
->  static int verify_kmulti_link_info(int fd, bool retprobe)
-> @@ -278,24 +280,24 @@ static void test_kprobe_multi_fill_link_info(struct=
- test_fill_link_info *skel,
->                                              bool retprobe, bool invalid)
->  {
->         LIBBPF_OPTS(bpf_kprobe_multi_opts, opts);
-> +       struct bpf_link *link;
->         int link_fd, err;
->
->         opts.syms =3D kmulti_syms;
->         opts.cnt =3D KMULTI_CNT;
->         opts.retprobe =3D retprobe;
-> -       skel->links.kmulti_run =3D bpf_program__attach_kprobe_multi_opts(=
-skel->progs.kmulti_run,
-> -                                                                      NU=
-LL, &opts);
-> -       if (!ASSERT_OK_PTR(skel->links.kmulti_run, "attach_kprobe_multi")=
-)
-> +       link =3D bpf_program__attach_kprobe_multi_opts(skel->progs.kmulti=
-_run, NULL, &opts);
-> +       if (!ASSERT_OK_PTR(link, "attach_kprobe_multi"))
->                 return;
->
-> -       link_fd =3D bpf_link__fd(skel->links.kmulti_run);
-> +       link_fd =3D bpf_link__fd(link);
->         if (!invalid) {
->                 err =3D verify_kmulti_link_info(link_fd, retprobe);
->                 ASSERT_OK(err, "verify_kmulti_link_info");
->         } else {
->                 verify_kmulti_invalid_user_buffer(link_fd);
->         }
-> -       bpf_link__detach(skel->links.kmulti_run);
-> +       bpf_link__destroy(link);
->  }
->
->  void test_fill_link_info(void)
-> --
-> 2.41.0
->
+> I'm not sure I understand. How does this handle mergeable flag still being set?
 
 
---=20
-Regards
-Yafang
+# xsk with merge
+
+## fill ring
+
+We fill the ring with the buffers from the xdp socket just like we alloc buffer
+from the kernel.
+
+## receive buffer
+
+Now the xsk supported the multi-buffer recently. But I want to support that after
+this packet set. So if the packet uses more buffers, I drop that.
+
+If the xdp is not bound or the xdp prog does not redirect the packet to xsk socket.
+all buffers are used to make skbs, whatever the packet uses one buffer or more.
+But the buffers is from the xsk socket. So we must allocat new pages and copy
+the data to the new pages. And free the buffers of xsk socket.
+
+
+Thanks.
+
+
+>
+>
+> > diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
+> > index a13d6d301fdb..1242785e311e 100644
+> > --- a/drivers/net/virtio/virtio_net.h
+> > +++ b/drivers/net/virtio/virtio_net.h
+> > @@ -140,6 +140,11 @@ struct virtnet_rq {
+> >
+> >  		/* xdp rxq used by xsk */
+> >  		struct xdp_rxq_info xdp_rxq;
+> > +
+> > +		struct xdp_buff **xsk_buffs;
+> > +		u32 nxt_idx;
+> > +		u32 num;
+> > +		u32 size;
+> >  	} xsk;
+> >  };
+> >
+> > diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
+> > index ea5804ddd44e..e737c3353212 100644
+> > --- a/drivers/net/virtio/xsk.c
+> > +++ b/drivers/net/virtio/xsk.c
+> > @@ -38,6 +38,41 @@ static void virtnet_xsk_check_queue(struct virtnet_sq *sq)
+> >  		netif_stop_subqueue(dev, qnum);
+> >  }
+> >
+> > +int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct virtnet_rq *rq,
+> > +			    struct xsk_buff_pool *pool, gfp_t gfp)
+> > +{
+> > +	struct xdp_buff **xsk_buffs;
+> > +	dma_addr_t addr;
+> > +	u32 len, i;
+> > +	int err = 0;
+> > +
+> > +	xsk_buffs = rq->xsk.xsk_buffs;
+> > +
+> > +	if (rq->xsk.nxt_idx >= rq->xsk.num) {
+> > +		rq->xsk.num = xsk_buff_alloc_batch(pool, xsk_buffs, rq->xsk.size);
+> > +		if (!rq->xsk.num)
+> > +			return -ENOMEM;
+> > +		rq->xsk.nxt_idx = 0;
+> > +	}
+>
+> Another manually rolled linked list implementation.
+> Please, don't.
+>
+>
+> > +
+> > +	i = rq->xsk.nxt_idx;
+> > +
+> > +	/* use the part of XDP_PACKET_HEADROOM as the virtnet hdr space */
+> > +	addr = xsk_buff_xdp_get_dma(xsk_buffs[i]) - vi->hdr_len;
+> > +	len = xsk_pool_get_rx_frame_size(pool) + vi->hdr_len;
+> > +
+> > +	sg_init_table(rq->sg, 1);
+> > +	sg_fill_dma(rq->sg, addr, len);
+> > +
+> > +	err = virtqueue_add_inbuf(rq->vq, rq->sg, 1, xsk_buffs[i], gfp);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	rq->xsk.nxt_idx++;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int virtnet_xsk_xmit_one(struct virtnet_sq *sq,
+> >  				struct xsk_buff_pool *pool,
+> >  				struct xdp_desc *desc)
+> > @@ -213,7 +248,7 @@ static int virtnet_xsk_pool_enable(struct net_device *dev,
+> >  	struct virtnet_sq *sq;
+> >  	struct device *dma_dev;
+> >  	dma_addr_t hdr_dma;
+> > -	int err;
+> > +	int err, size;
+> >
+> >  	/* In big_packets mode, xdp cannot work, so there is no need to
+> >  	 * initialize xsk of rq.
+> > @@ -249,6 +284,16 @@ static int virtnet_xsk_pool_enable(struct net_device *dev,
+> >  	if (!dma_dev)
+> >  		return -EPERM;
+> >
+> > +	size = virtqueue_get_vring_size(rq->vq);
+> > +
+> > +	rq->xsk.xsk_buffs = kcalloc(size, sizeof(*rq->xsk.xsk_buffs), GFP_KERNEL);
+> > +	if (!rq->xsk.xsk_buffs)
+> > +		return -ENOMEM;
+> > +
+> > +	rq->xsk.size = size;
+> > +	rq->xsk.nxt_idx = 0;
+> > +	rq->xsk.num = 0;
+> > +
+> >  	hdr_dma = dma_map_single(dma_dev, &xsk_hdr, vi->hdr_len, DMA_TO_DEVICE);
+> >  	if (dma_mapping_error(dma_dev, hdr_dma))
+> >  		return -ENOMEM;
+> > @@ -307,6 +352,8 @@ static int virtnet_xsk_pool_disable(struct net_device *dev, u16 qid)
+> >
+> >  	dma_unmap_single(dma_dev, sq->xsk.hdr_dma_address, vi->hdr_len, DMA_TO_DEVICE);
+> >
+> > +	kfree(rq->xsk.xsk_buffs);
+> > +
+> >  	return err1 | err2;
+> >  }
+> >
+> > diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
+> > index 7ebc9bda7aee..bef41a3f954e 100644
+> > --- a/drivers/net/virtio/xsk.h
+> > +++ b/drivers/net/virtio/xsk.h
+> > @@ -23,4 +23,6 @@ int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp);
+> >  bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
+> >  		      int budget);
+> >  int virtnet_xsk_wakeup(struct net_device *dev, u32 qid, u32 flag);
+> > +int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct virtnet_rq *rq,
+> > +			    struct xsk_buff_pool *pool, gfp_t gfp);
+> >  #endif
+> > --
+> > 2.32.0.3.g01195cf9f
+>
+>
 
