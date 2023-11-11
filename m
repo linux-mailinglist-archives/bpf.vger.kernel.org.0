@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-14847-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14848-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B1307E8899
-	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 03:50:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19C067E889A
+	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 03:50:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 613EDB20B89
-	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 02:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D3841C20AC7
+	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 02:50:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBAB566A;
-	Sat, 11 Nov 2023 02:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E8614414;
+	Sat, 11 Nov 2023 02:50:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EK8GwDae"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PiYJ32Ab"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CE184414
-	for <bpf@vger.kernel.org>; Sat, 11 Nov 2023 02:50:37 +0000 (UTC)
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C1046B2;
-	Fri, 10 Nov 2023 18:50:05 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6bf03b98b9bso2859433b3a.1;
-        Fri, 10 Nov 2023 18:50:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459CF53B1
+	for <bpf@vger.kernel.org>; Sat, 11 Nov 2023 02:50:45 +0000 (UTC)
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747AB46AF;
+	Fri, 10 Nov 2023 18:50:07 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id e9e14a558f8ab-3592fadbd7eso10204715ab.0;
+        Fri, 10 Nov 2023 18:50:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699671004; x=1700275804; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699671007; x=1700275807; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qHu+6MoXAM5xN5qmdOqeh9o8GmUeJcmELsiUMx9NK1c=;
-        b=EK8GwDaejPh7xNeO8+Oq7dOfHvmyylMsvXUMYQzZwAJZy2wgQTXwZyQIM2RBPgSIWk
-         HlPRZsnxBc2wTDuuoO67jeGlnR8m6dVR099p+IqccwTBG0pUutKBqBRx9GhGOc8vV2RY
-         QLJICexBxQqF7ENIim8I7h3uqQlIsK8RE5nNCVKCTI5BlmoGZLtOegG1t8HOMIk5jxcV
-         UXZAjs/loTzhzTEherOym4LteTbisgBKTmKLJ7ps6F4VmBB2MpBuC4XOYO8viEJHc9HN
-         fpqJN8J7YqVPv8BcNCbH0ARGOuN4IdZYZWRNhtOGd29IlZs625X5R7PyrSZHbDVQZuNA
-         J6IA==
+        bh=et9VEo0AAxPogrUw4++2h31/Qd/i4Y1LXtoGl8MHdpY=;
+        b=PiYJ32AbIjSNRVXD47vy8fkr5dKU3qvohYWboujV80P9GXrivr0RMcHOXWEqR3X3vs
+         5w6/6R0M26HB27XCuz9/umvO0e/Y1Xj49edQ2fMt7UaFl2W8koGicqt95Ei33gbZ8KKj
+         7mOfmXYkwVe+rZ0tbGA1Wn2e0ZiyVxoOu/IPQ5bkYUUzcMeOmMqMOTzVM9qNha7cJUl/
+         bLaXbfNuENf30e8pI9wlBqARTQAHWWy79HL6cTjjHukPS63Q4C1Rb4z0DgDUXsXEdQ4n
+         dKwSChLRJu3c+031hhaXkrK0N4cV5/LiiIpjjXtpK4gOiAzBQJd8OYxdtMQiToG/qYFO
+         UxCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699671004; x=1700275804;
+        d=1e100.net; s=20230601; t=1699671007; x=1700275807;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=qHu+6MoXAM5xN5qmdOqeh9o8GmUeJcmELsiUMx9NK1c=;
-        b=jh99oiUCmDKNe/K73jQgAcFdT/SC1Il/5nA43M4wJ2CoDXzD6xS2Oq1DVdsF/RQr6l
-         w5RtEXSdUy2ACO6O+zEsbqphJUf1+GxXBArYY5NMPKRIrPT0by791bOGoqInaa7tHYZM
-         NOewKrV4683ICTe8uZYBNU30ISwKG/xQD4iV8VJjX/hRgtBTXKD2CCs95hQtRBtP+sG4
-         1IqX02+JphgemW5kHI4zB9TsS/zVSEDeKp+C+MWIICQU0X+cXqIDEZS72xh+88p2/lrP
-         bK+PiGcSRQCiQa8ByjBBMKX6po86YbzV/4qulHgrCFCNFB04ELmqs7NgQ68RDW94cibU
-         d/5g==
-X-Gm-Message-State: AOJu0YyiI+gKo1XhJ4cO5C0LGTYuOsp6QQBFNdtMJFhpZPyDgqyylXsa
-	0BHFygOgmJC7dsSSH5htchOrW6IjIu0=
-X-Google-Smtp-Source: AGHT+IF+OEJB2RDecWu59WaHn9FS9cUR/gcTOta8HWvFsN4iUbMjLWWpQdKLFUugIC/TLGUPy7HWJw==
-X-Received: by 2002:a17:90b:33cc:b0:280:23e1:e4dd with SMTP id lk12-20020a17090b33cc00b0028023e1e4ddmr1443938pjb.17.1699671003424;
-        Fri, 10 Nov 2023 18:50:03 -0800 (PST)
+        bh=et9VEo0AAxPogrUw4++2h31/Qd/i4Y1LXtoGl8MHdpY=;
+        b=Xb4bKLrtp7M6u9kC7Csr1JOpQhvBfrsT9KSU6cHd5A6UIKMUd8Ccd+EDiXF1J+K9mf
+         7kESACjiaep+KZedxfUx3fpBww546ceYFicYKVX5jv5yYQNZtEWt25FKPEsT62ZITaZr
+         xOBg4/Fqm0ynDR2/vwqgquwEVHneVmD8nu81D8ogErVSUHRGf/u3DIq2OQbDCn3DjP78
+         TdCc4itLe0BihCNchO7+2N45I2PlQWmhG1ShMdbrlDS6DU7chgZ47RkcQSy83VLgolXI
+         QB/hBx0Qn+GH7+hP2KC2L+h8tmsHY3KO3tDUqLLNHLg/ZeG6ZHzp0PUqStehxWQeStWw
+         xG7g==
+X-Gm-Message-State: AOJu0Yx73mFeJdBWsNE+o8iUZbibfWFub7ZuGvhL90eaGbDO9pgwFgeA
+	hXoGxQoT+c+DPdUg1dv/Dek=
+X-Google-Smtp-Source: AGHT+IEfVUzARDVR1EllVB+5y5DuU7TSyMEUW5lNsS4p890X1rLOw3OUVsTUWVjXZEnrOBWzHlPaeg==
+X-Received: by 2002:a05:6e02:1c4d:b0:359:445:8469 with SMTP id d13-20020a056e021c4d00b0035904458469mr1652634ilg.22.1699671006050;
+        Fri, 10 Nov 2023 18:50:06 -0800 (PST)
 Received: from localhost ([2620:10d:c090:400::4:7384])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170902684800b001cc46240491sm364114pln.136.2023.11.10.18.50.02
+        by smtp.gmail.com with ESMTPSA id u6-20020a170902e5c600b001ca21e05c69sm353899plf.109.2023.11.10.18.50.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 18:50:02 -0800 (PST)
+        Fri, 10 Nov 2023 18:50:05 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: torvalds@linux-foundation.org,
@@ -91,9 +91,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 35/36] sched_ext: Add scx_rusty, a rust userspace hybrid scheduler
-Date: Fri, 10 Nov 2023 16:48:01 -1000
-Message-ID: <20231111024835.2164816-36-tj@kernel.org>
+Subject: [PATCH 36/36] sched_ext: Add scx_layered, a highly configurable multi-layer scheduler
+Date: Fri, 10 Nov 2023 16:48:02 -1000
+Message-ID: <20231111024835.2164816-37-tj@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231111024835.2164816-1-tj@kernel.org>
 References: <20231111024835.2164816-1-tj@kernel.org>
@@ -105,771 +105,116 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Dan Schatzberg <dschatzberg@meta.com>
+scx_layered allows classifying tasks into multiple layers and applying
+different scheduling policies to them. The configuration is specified in
+json and composed of two parts - matches and policies.
 
-Rusty is a multi-domain BPF / userspace hybrid scheduler where the BPF part
-does simple round robin in each domain and the userspace part calculates the
-load factor of each domain and tells the BPF part how to load balance the
-domains.
+The matches classify tasks into a layer and different scheduling policies
+can be applied to the layer. For example, if a layer is "Confined", its
+tasks are confined to the CPUs that are allocated to the layer. The CPU
+allocation is dynamically adjusted to target CPU utilization in a specific
+range. This can be used to e.g. confine managerial workloads to a small
+number of CPUs while leaving the rest for latency sensitive workloads. A
+layer can also be configured to preempt other non-preempting layers.
 
-This scheduler demonstrates dividing scheduling logic between BPF and
-userspace and using rust to build the userspace part. An earlier variant of
-this scheduler was used to balance across six domains, each representing a
-chiplet in a six-chiplet AMD processor, and could match the performance of
-production setup using CFS.
+This scheduler is limited in that it assumes homogenous CPUs in a single
+node and the load based CPU allocation limit doesn't work well yet. However,
+even in the current form, in an experimental deployment over ~1000 machines,
+it showed a significant (>5%) bandwidth gain with a large-scale latency
+sensitive workload.
 
-See the --help message for more details.
+As sched_ext scheduler development style and cadence are different from
+kernel proper, the plan is to keep simpler example schedulers and one more
+generic scheduler (scx_rusty) in tree and publish others in a separate
+repository. This scheduler will be a part of that repo once ready.
 
-v5: * Renamed to scx_rusty and improve build scripts.
-
-    * Load metrics are now tracked in BPF using the running average
-      implementation in tools/sched_ext/ravg[_impl].bpf.h and
-      ravg.read.rs.h. Before, the userspace part was iterating all tasks to
-      calculate load metrics and make LB decisions. Now, high level LB
-      decisions are made by simply reading per-domain load averages and
-      Picking migrating target tasks only accesses the load metrics for a
-      fixed number of recently active tasks in the pushing domains. This
-      greatly reduces CPU overhead and makes rusty a lot more scalable.
-
-v4: * tools/sched_ext/atropos renamed to tools/sched_ext/scx_atropos for
-      consistency.
-
-    * LoadBalancer sometimes couldn't converge on balanced state due to
-      restrictions it put on each balancing operation. Fixed.
-
-    * Topology information refactored into struct Topology and Tuner is
-      added. Tuner runs in shorter cycles (100ms) than LoadBalancer and
-      dynamically adjusts scheduling behaviors, currently, based on the
-      per-domain utilization states.
-
-    * ->select_cpu() has been revamped. Combined with other improvements,
-      this allows atropos to outperform CFS in various sub-saturation
-      scenarios when tested with fio over dm-crypt.
-
-    * Many minor code cleanups and improvements.
-
-v3: * The userspace code is substantially restructured and rewritten. The
-      binary is renamed to scx_atropos and can now figure out the domain
-      topology automatically based on L3 cache configuration. The LB logic
-      which was rather broken in the previous postings are revamped and
-      should behave better.
-
-    * Updated to support weighted vtime scheduling (can be turned off with
-      --fifo-sched). Added a couple options (--slice_us, --kthreads-local)
-      to modify scheduling behaviors.
-
-    * Converted to use BPF inline iterators.
-
-v2: * Updated to use generic BPF cpumask helpers.
-
-Signed-off-by: Dan Schatzberg <dschatzberg@meta.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+NOT_FOR_UPSTREAM_INCLUSION
 ---
- tools/sched_ext/Makefile                      |   53 +-
- tools/sched_ext/README.md                     |   29 +
- tools/sched_ext/ravg.bpf.h                    |   42 +
- tools/sched_ext/ravg_impl.bpf.h               |  358 +++++
- tools/sched_ext/ravg_read.rs.h                |   82 ++
- tools/sched_ext/scx_rusty/.gitignore          |    3 +
- tools/sched_ext/scx_rusty/Cargo.toml          |   28 +
- tools/sched_ext/scx_rusty/build.rs            |   72 +
- tools/sched_ext/scx_rusty/rustfmt.toml        |    8 +
- tools/sched_ext/scx_rusty/src/bpf/rusty.bpf.c | 1153 +++++++++++++++
- tools/sched_ext/scx_rusty/src/bpf/rusty.h     |   97 ++
- tools/sched_ext/scx_rusty/src/main.rs         | 1265 +++++++++++++++++
- tools/sched_ext/scx_rusty/src/rusty_sys.rs    |   10 +
- 13 files changed, 3199 insertions(+), 1 deletion(-)
- create mode 100644 tools/sched_ext/ravg.bpf.h
- create mode 100644 tools/sched_ext/ravg_impl.bpf.h
- create mode 100644 tools/sched_ext/ravg_read.rs.h
- create mode 100644 tools/sched_ext/scx_rusty/.gitignore
- create mode 100644 tools/sched_ext/scx_rusty/Cargo.toml
- create mode 100644 tools/sched_ext/scx_rusty/build.rs
- create mode 100644 tools/sched_ext/scx_rusty/rustfmt.toml
- create mode 100644 tools/sched_ext/scx_rusty/src/bpf/rusty.bpf.c
- create mode 100644 tools/sched_ext/scx_rusty/src/bpf/rusty.h
- create mode 100644 tools/sched_ext/scx_rusty/src/main.rs
- create mode 100644 tools/sched_ext/scx_rusty/src/rusty_sys.rs
+ tools/sched_ext/Makefile                      |    2 +-
+ tools/sched_ext/scx_layered/.gitignore        |    3 +
+ tools/sched_ext/scx_layered/Cargo.toml        |   30 +
+ tools/sched_ext/scx_layered/build.rs          |   77 +
+ tools/sched_ext/scx_layered/rustfmt.toml      |    8 +
+ .../scx_layered/src/bpf/layered.bpf.c         |  974 ++++++++++
+ tools/sched_ext/scx_layered/src/bpf/layered.h |  100 +
+ .../sched_ext/scx_layered/src/bpf/util.bpf.c  |   68 +
+ .../sched_ext/scx_layered/src/layered_sys.rs  |   10 +
+ tools/sched_ext/scx_layered/src/main.rs       | 1641 +++++++++++++++++
+ 10 files changed, 2912 insertions(+), 1 deletion(-)
+ create mode 100644 tools/sched_ext/scx_layered/.gitignore
+ create mode 100644 tools/sched_ext/scx_layered/Cargo.toml
+ create mode 100644 tools/sched_ext/scx_layered/build.rs
+ create mode 100644 tools/sched_ext/scx_layered/rustfmt.toml
+ create mode 100644 tools/sched_ext/scx_layered/src/bpf/layered.bpf.c
+ create mode 100644 tools/sched_ext/scx_layered/src/bpf/layered.h
+ create mode 100644 tools/sched_ext/scx_layered/src/bpf/util.bpf.c
+ create mode 100644 tools/sched_ext/scx_layered/src/layered_sys.rs
+ create mode 100644 tools/sched_ext/scx_layered/src/main.rs
 
 diff --git a/tools/sched_ext/Makefile b/tools/sched_ext/Makefile
-index 59f230bd1437..f72e3be99f5c 100644
+index f72e3be99f5c..94985639b299 100644
 --- a/tools/sched_ext/Makefile
 +++ b/tools/sched_ext/Makefile
-@@ -93,6 +93,11 @@ CFLAGS += -g -O2 -rdynamic -pthread -Wall -Werror $(GENFLAGS)			\
- 	  -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)				\
- 	  -I$(TOOLSINCDIR) -I$(APIDIR)
+@@ -201,7 +201,7 @@ $(c-sched-targets): %: $(BINDIR)/%
+ ###################
+ # Rust schedulers #
+ ###################
+-rust-sched-targets := scx_rusty
++rust-sched-targets := scx_rusty scx_layered
  
-+CARGOFLAGS := --release --target-dir $(OUTPUT_DIR)
-+ifneq ($(CARGO_OFFLINE),)
-+CARGOFLAGS += --offline
-+endif
-+
- # Silence some warnings when compiled with clang
- ifneq ($(LLVM),)
- CFLAGS += -Wno-unused-command-line-argument
-@@ -159,7 +164,7 @@ else
- endif
- 
- $(SCXOBJ_DIR)/%.bpf.o: %.bpf.c $(INCLUDE_DIR)/vmlinux.h scx_common.bpf.h	\
--		       user_exit_info.h						\
-+		       user_exit_info.h ravg.bpf.h ravg_impl.bpf.h		\
- 		       | $(BPFOBJ) $(SCXOBJ_DIR)
- 	$(call msg,CLNG-BPF,,$(notdir $@))
- 	$(Q)$(CLANG) $(BPF_CFLAGS) -target bpf -c $< -o $@
-@@ -192,11 +197,37 @@ $(addprefix $(BINDIR)/,$(c-sched-targets)): \
- 	$(CC) -o $@ $(SCXOBJ_DIR)/$(sched).o $(HOST_BPFOBJ) $(LDFLAGS)
- $(c-sched-targets): %: $(BINDIR)/%
- 
-+
-+###################
-+# Rust schedulers #
-+###################
-+rust-sched-targets := scx_rusty
-+
-+# Separate build target that is available for build systems to use to fetch
-+# dependencies in a separate step from building. This allows the scheduler
-+# to be compiled without network access.
-+#
-+# If the regular rust scheduler Make target (e.g. scx_rusty) is invoked without
-+# CARGO_OFFLINE=1 (e.g. if building locally), then cargo build will download
-+# all of the necessary dependencies, and the deps target can be skipped.
-+$(addsuffix _deps,$(rust-sched-targets)):
-+	$(eval sched=$(@:_deps=))
-+	$(Q)cargo fetch --manifest-path=$(sched)/Cargo.toml
-+
-+$(rust-sched-targets): %: $(INCLUDE_DIR)/vmlinux.h $(SCX_COMMON_DEPS)
-+	$(eval export RUSTFLAGS = -C link-args=-lzstd -C link-args=-lz -C link-args=-lelf -L $(BPFOBJ_DIR))
-+	$(eval export SCX_RUST_CLANG = $(CLANG))
-+	$(eval export SCX_RUST_BPF_CFLAGS= $(BPF_CFLAGS))
-+	$(eval sched=$(notdir $@))
-+	$(Q)cargo build --manifest-path=$(sched)/Cargo.toml $(CARGOFLAGS)
-+	$(Q)cp $(OUTPUT_DIR)/release/$(sched) $(BINDIR)/$@
-+
- install: all
- 	$(Q)mkdir -p $(DESTDIR)/usr/local/bin/
- 	$(Q)cp $(BINDIR)/* $(DESTDIR)/usr/local/bin/
- 
- clean:
-+	$(foreach sched,$(rust-sched-targets),cargo clean --manifest-path=$(sched)/Cargo.toml;)
- 	rm -rf $(OUTPUT_DIR) $(HOST_OUTPUT_DIR)
- 	rm -f *.o *.bpf.o *.skel.h *.subskel.h
- 	rm -f $(c-sched-targets)
-@@ -220,6 +251,26 @@ install: all
- 	@echo   '/tmp/sched_ext/build.'
- 	@echo   ''
- 	@echo   ''
-+	@echo   'Rust scheduler targets'
-+	@echo   '======================'
-+	@echo   ''
-+	@printf '  %s\n' $(rust-sched-targets)
-+	@printf '  %s_deps\n' $(rust-sched-targets)
-+	@echo   ''
-+	@echo   'For any rust schedulers built with cargo, you can specify'
-+	@echo   'CARGO_OFFLINE=1 to ensure the build portion does not access the'
-+	@echo   'network (e.g. if the scheduler is being packaged).'
-+	@echo   ''
-+	@echo   'For such use cases, the build workflow will look something like this:'
-+	@echo   ''
-+	@echo   '   make scx_rusty_deps'
-+	@echo   '   CARGO_OFFLINE=1 make scx_rusty'
-+	@echo   ''
-+	@echo   'If network access during build is allowed, you can just make scx_rusty'
-+	@echo   'directly without CARGO_OFFLINE, and dependencies will be downloaded'
-+	@echo   'during the build step.'
-+	@echo   ''
-+	@echo   ''
- 	@echo   'Installing targets'
- 	@echo   '=================='
- 	@echo   ''
-diff --git a/tools/sched_ext/README.md b/tools/sched_ext/README.md
-index 9e4ec761af62..8e7194ada331 100644
---- a/tools/sched_ext/README.md
-+++ b/tools/sched_ext/README.md
-@@ -309,6 +309,35 @@ top of sched_ext.
- 
- --------------------------------------------------------------------------------
- 
-+## scx_rusty
-+
-+### Overview
-+
-+A multi-domain, BPF / user space hybrid scheduler. The BPF portion of the
-+scheduler does a simple round robin in each domain, and the user space portion
-+(written in Rust) calculates the load factor of each domain, and informs BPF of
-+how tasks should be load balanced accordingly.
-+
-+### Typical Use Case
-+
-+Rusty is designed to be flexible, and accommodate different architectures and
-+workloads. Various load balancing thresholds (e.g. greediness, frequenty, etc),
-+as well as how Rusty should partition the system into scheduling domains, can
-+be tuned to achieve the optimal configuration for any given system or workload.
-+
-+### Production Ready?
-+
-+Yes. If tuned correctly, rusty should be performant across various CPU
-+architectures and workloads. Rusty by default creates a separate scheduling
-+domain per-LLC, so its default configuration may be performant as well.
-+
-+That said, you may run into an issue with infeasible weights, where a task with
-+a very high weight may cause the scheduler to incorrectly leave cores idle
-+because it thinks they're necessary to accommodate the compute for a single
-+task. This can also happen in CFS, and should soon be addressed for rusty.
-+
-+--------------------------------------------------------------------------------
-+
- # Troubleshooting
- 
- There are a number of common issues that you may run into when building the
-diff --git a/tools/sched_ext/ravg.bpf.h b/tools/sched_ext/ravg.bpf.h
-new file mode 100644
-index 000000000000..a233d85d05aa
---- /dev/null
-+++ b/tools/sched_ext/ravg.bpf.h
-@@ -0,0 +1,42 @@
-+#ifndef __SCX_RAVG_BPF_H__
-+#define __SCX_RAVG_BPF_H__
-+
-+/*
-+ * Running average helpers to be used in BPF progs. Assumes vmlinux.h has
-+ * already been included.
-+ */
-+enum ravg_consts {
-+	RAVG_VAL_BITS		= 44,		/* input values are 44bit */
-+	RAVG_FRAC_BITS		= 20,		/* 1048576 is 1.0 */
-+};
-+
-+/*
-+ * Running avg mechanism. Accumulates values between 0 and RAVG_MAX_VAL in
-+ * arbitrary time intervals. The accumulated values are halved every half_life
-+ * with each period starting when the current time % half_life is 0. Zeroing is
-+ * enough for initialization.
-+ *
-+ * See ravg_accumulate() and ravg_read() for more details.
-+ */
-+struct ravg_data {
-+	/* current value */
-+	u64			val;
-+
-+	/*
-+	 * The timestamp of @val. The latest completed seq #:
-+	 *
-+	 *   (val_at / half_life) - 1
-+	 */
-+	u64			val_at;
-+
-+	/* running avg as of the latest completed seq  */
-+	u64			old;
-+
-+	/*
-+	 * Accumulated value of the current period. Input value is 48bits and we
-+	 * normalize half-life to 16bit, so it should fit in an u64.
-+	 */
-+	u64			cur;
-+};
-+
-+#endif /* __SCX_RAVG_BPF_H__ */
-diff --git a/tools/sched_ext/ravg_impl.bpf.h b/tools/sched_ext/ravg_impl.bpf.h
-new file mode 100644
-index 000000000000..4922a3e689bc
---- /dev/null
-+++ b/tools/sched_ext/ravg_impl.bpf.h
-@@ -0,0 +1,358 @@
-+/* to be included in the main bpf.c file */
-+#include "ravg.bpf.h"
-+
-+#define RAVG_FN_ATTRS		inline __attribute__((unused, always_inline))
-+
-+static RAVG_FN_ATTRS void ravg_add(u64 *sum, u64 addend)
-+{
-+	u64 new = *sum + addend;
-+
-+	if (new >= *sum)
-+		*sum = new;
-+	else
-+		*sum = -1;
-+}
-+
-+static RAVG_FN_ATTRS u64 ravg_decay(u64 v, u32 shift)
-+{
-+	if (shift >= 64)
-+		return 0;
-+	else
-+		return v >> shift;
-+}
-+
-+static RAVG_FN_ATTRS u32 ravg_normalize_dur(u32 dur, u32 half_life)
-+{
-+	if (dur < half_life)
-+		return (((u64)dur << RAVG_FRAC_BITS) + half_life - 1) /
-+			half_life;
-+	else
-+		return 1 << RAVG_FRAC_BITS;
-+}
-+
-+/*
-+ * Pre-computed decayed full-period values. This is quicker and keeps the bpf
-+ * verifier happy by removing the need for looping.
-+ *
-+ * [0] = ravg_decay(1 << RAVG_FRAC_BITS, 1)
-+ * [1] = [0] + ravg_decay(1 << RAVG_FRAC_BITS, 2)
-+ * [2] = [1] + ravg_decay(1 << RAVG_FRAC_BITS, 3)
-+ * ...
-+ */
-+static u64 ravg_full_sum[] = {
-+	 524288,  786432,  917504,  983040,
-+	1015808, 1032192, 1040384, 1044480,
-+	1046528, 1047552, 1048064, 1048320,
-+	1048448, 1048512, 1048544, 1048560,
-+	1048568, 1048572, 1048574, 1048575,
-+	/* the same from here on */
-+};
-+
-+static const int ravg_full_sum_len = sizeof(ravg_full_sum) / sizeof(ravg_full_sum[0]);
-+
-+/**
-+ * ravg_accumulate - Accumulate a new value
-+ * @rd: ravg_data to accumulate into
-+ * @new_val: new value
-+ * @now: current timestamp
-+ * @half_life: decay period, must be the same across calls
-+ *
-+ * The current value is changing to @val at @now. Accumulate accordingly.
-+ */
-+static RAVG_FN_ATTRS void ravg_accumulate(struct ravg_data *rd, u64 new_val, u64 now,
-+					  u32 half_life)
-+{
-+	u32 cur_seq, val_seq, seq_delta;
-+
-+	/*
-+	 * It may be difficult for the caller to guarantee monotonic progress if
-+	 * multiple CPUs accumulate to the same ravg_data. Handle @now being in
-+	 * the past of @rd->val_at.
-+	 */
-+	if (now < rd->val_at)
-+		now = rd->val_at;
-+
-+	cur_seq = now / half_life;
-+	val_seq = rd->val_at / half_life;
-+	seq_delta = cur_seq - val_seq;
-+
-+	/*
-+	 * Decay ->old and fold ->cur into it.
-+	 *
-+	 *                                                          @end
-+	 *                                                            v
-+	 * timeline     |---------|---------|---------|---------|---------|
-+	 * seq delta         4         3         2         1          0
-+	 * seq            ->seq                                    cur_seq
-+	 * val            ->old     ->cur                  ^
-+	 *                   |         |                   |
-+	 *                   \---------+------------------/
-+	 */
-+	if (seq_delta > 0) {
-+		/* decay ->old to bring it upto the cur_seq - 1 */
-+		rd->old = ravg_decay(rd->old, seq_delta);
-+		/* non-zero ->cur must be from val_seq, calc and fold */
-+		ravg_add(&rd->old, ravg_decay(rd->cur, seq_delta));
-+		/* clear */
-+		rd->cur = 0;
-+	}
-+
-+	if (!rd->val)
-+		goto out;
-+
-+	/*
-+	 * Accumulate @rd->val between @rd->val_at and @now.
-+	 *
-+	 *                       @rd->val_at                        @now
-+	 *                            v                               v
-+	 * timeline     |---------|---------|---------|---------|---------|
-+	 * seq delta                  [  3  |    2    |    1    |  0  ]
-+	 */
-+	if (seq_delta > 0) {
-+		u32 dur;
-+
-+		/* fold the oldest period which may be partial */
-+		dur = ravg_normalize_dur(half_life - rd->val_at % half_life, half_life);
-+		ravg_add(&rd->old, rd->val * ravg_decay(dur, seq_delta));
-+
-+		/* fold the full periods in the middle with precomputed vals */
-+		if (seq_delta > 1) {
-+			u32 idx = seq_delta - 2;
-+
-+			if (idx >= ravg_full_sum_len)
-+				idx = ravg_full_sum_len - 1;
-+
-+			ravg_add(&rd->old, rd->val * ravg_full_sum[idx]);
-+		}
-+
-+		/* accumulate the current period duration into ->cur */
-+		rd->cur += rd->val * ravg_normalize_dur(now % half_life,
-+							half_life);
-+	} else {
-+		rd->cur += rd->val * ravg_normalize_dur(now - rd->val_at,
-+							half_life);
-+	}
-+out:
-+	if (new_val >= 1LLU << RAVG_VAL_BITS)
-+		rd->val = (1LLU << RAVG_VAL_BITS) - 1;
-+	else
-+		rd->val = new_val;
-+	rd->val_at = now;
-+}
-+
-+/**
-+ * ravg_transfer - Transfer in or out a component running avg
-+ * @base: ravg_data to transfer @xfer into or out of
-+ * @base_new_val: new value for @base
-+ * @xfer: ravg_data to transfer
-+ * @xfer_new_val: new value for @xfer
-+ * @is_xfer_in: transfer direction
-+ *
-+ * An ravg may be a sum of component ravgs. For example, a scheduling domain's
-+ * load is the sum of the load values of all member tasks. If a task is migrated
-+ * to a different domain, its contribution should be subtracted from the source
-+ * ravg and added to the destination one.
-+ *
-+ * This function can be used for such component transfers. Both @base and @xfer
-+ * must have been accumulated at the same timestamp. @xfer's contribution is
-+ * subtracted if @is_fer_in is %false and added if %true.
-+ */
-+static RAVG_FN_ATTRS void ravg_transfer(struct ravg_data *base, u64 base_new_val,
-+					struct ravg_data *xfer, u64 xfer_new_val,
-+					u32 half_life, bool is_xfer_in)
-+{
-+	/* synchronize @base and @xfer */
-+	if ((s64)(base->val_at - xfer->val_at) < 0)
-+		ravg_accumulate(base, base_new_val, xfer->val_at, half_life);
-+	else if ((s64)(base->val_at - xfer->val_at) > 0)
-+		ravg_accumulate(xfer, xfer_new_val, base->val_at, half_life);
-+
-+	/* transfer */
-+	if (is_xfer_in) {
-+		base->old += xfer->old;
-+		base->cur += xfer->cur;
-+	} else {
-+		if (base->old > xfer->old)
-+			base->old -= xfer->old;
-+		else
-+			base->old = 0;
-+
-+		if (base->cur > xfer->cur)
-+			base->cur -= xfer->cur;
-+		else
-+			base->cur = 0;
-+	}
-+}
-+
-+/**
-+ * u64_x_u32_rshift - Calculate ((u64 * u32) >> rshift)
-+ * @a: multiplicand
-+ * @b: multiplier
-+ * @rshift: number of bits to shift right
-+ *
-+ * Poor man's 128bit arithmetic. Calculate ((@a * @b) >> @rshift) where @a is
-+ * u64 and @b is u32 and (@a * @b) may be bigger than #U64_MAX. The caller must
-+ * ensure that the final shifted result fits in u64.
-+ */
-+static inline __attribute__((always_inline))
-+u64 u64_x_u32_rshift(u64 a, u32 b, u32 rshift)
-+{
-+	const u64 mask32 = (u32)-1;
-+	u64 al = a & mask32;
-+	u64 ah = (a & (mask32 << 32)) >> 32;
-+
-+	/*
-+	 *                                        ah: high 32     al: low 32
-+	 * a                                   |--------------||--------------|
-+	 *
-+	 * ah * b              |--------------||--------------|
-+	 * al * b                              |--------------||--------------|
-+	 */
-+	al *= b;
-+	ah *= b;
-+
-+	/*
-+	 * (ah * b) >> rshift        |--------------||--------------|
-+	 * (al * b) >> rshift                        |--------------||--------|
-+	 *                                                           <-------->
-+	 *                                                           32 - rshift
-+	 */
-+	al >>= rshift;
-+	if (rshift <= 32)
-+		ah <<= 32 - rshift;
-+	else
-+		ah >>= rshift - 32;
-+
-+	return al + ah;
-+}
-+
-+/**
-+ * ravg_scale - Scale a running avg
-+ * @rd: ravg_data to scale
-+ * @mult: multipler
-+ * @rshift: right shift amount
-+ *
-+ * Scale @rd by multiplying the tracked values by @mult and shifting right by
-+ * @rshift.
-+ */
-+static RAVG_FN_ATTRS void ravg_scale(struct ravg_data *rd, u32 mult, u32 rshift)
-+{
-+	rd->val = u64_x_u32_rshift(rd->val, mult, rshift);
-+	rd->old = u64_x_u32_rshift(rd->old, mult, rshift);
-+	rd->cur = u64_x_u32_rshift(rd->cur, mult, rshift);
-+}
-+
-+/**
-+ * ravg_read - Read the current running avg
-+ * @rd: ravg_data to read from
-+ * @now: timestamp as of which to read the running avg
-+ * @half_life: decay period, must match ravg_accumulate()'s
-+ *
-+ * Read running avg from @rd as of @now.
-+ */
-+static RAVG_FN_ATTRS u64 ravg_read(struct ravg_data *rd, u64 now, u64 half_life)
-+{
-+	struct ravg_data trd;
-+	u32 elapsed;
-+
-+	/*
-+	 * It may be difficult for the caller to guarantee monotonic progress if
-+	 * multiple CPUs accumulate to the same ravg_data. Handle @now being in
-+	 * the past of @rd->val_at.
-+	 */
-+	if (now < rd->val_at)
-+		now = rd->val_at;
-+
-+	elapsed = now % half_life;
-+
-+	/*
-+	 * Accumulate the ongoing period into a temporary copy. This allows
-+	 * external readers to access up-to-date avg without strongly
-+	 * synchronizing with the updater (we need to add a seq lock tho).
-+	 */
-+	trd = *rd;
-+	rd = &trd;
-+	ravg_accumulate(rd, 0, now, half_life);
-+
-+	/*
-+	 * At the beginning of a new half_life period, the running avg is the
-+	 * same as @rd->old. At the beginning of the next, it'd be old load / 2
-+	 * + current load / 2. Inbetween, we blend the two linearly.
-+	 */
-+	if (elapsed) {
-+		u32 progress = ravg_normalize_dur(elapsed, half_life);
-+		/*
-+		 * `H` is the duration of the half-life window, and `E` is how
-+		 * much time has elapsed in this window. `P` is [0.0, 1.0]
-+		 * representing how much the current window has progressed:
-+		 *
-+		 *   P = E / H
-+		 *
-+		 * If `old` is @rd->old, we would want to calculate the
-+		 * following for blending:
-+		 *
-+		 *   old * (1.0 - P / 2)
-+		 *
-+		 * Because @progress is [0, 1 << RAVG_FRAC_BITS], let's multiply
-+		 * and then divide by 1 << RAVG_FRAC_BITS:
-+		 *
-+		 *         (1 << RAVG_FRAC_BITS) - (1 << RAVG_FRAC_BITS) * P / 2
-+		 *   old * -----------------------------------------------------
-+		 *                       1 << RAVG_FRAC_BITS
-+		 *
-+		 * As @progress is (1 << RAVG_FRAC_BITS) * P:
-+		 *
-+		 *         (1 << RAVG_FRAC_BITS) - progress / 2
-+		 *   old * ------------------------------------
-+		 *                1 << RAVG_FRAC_BITS
-+		 *
-+		 * As @rd->old uses full 64bit, the multiplication can overflow,
-+		 * but we also know that the final result is gonna be smaller
-+		 * than @rd->old and thus fit. Use u64_x_u32_rshift() to handle
-+		 * the interim multiplication correctly.
-+		 */
-+		u64 old = u64_x_u32_rshift(rd->old,
-+					   (1 << RAVG_FRAC_BITS) - progress / 2,
-+					   RAVG_FRAC_BITS);
-+		/*
-+		 * If `S` is the Sum(val * duration) for this half-life window,
-+		 * the avg for this window is:
-+		 *
-+		 *   S / E
-+		 *
-+		 * We would want to calculate the following for blending:
-+		 *
-+		 *   S / E * (P / 2)
-+		 *
-+		 * As P = E / H,
-+		 *
-+		 *   S / E * (E / H / 2)
-+		 *   S / H / 2
-+		 *
-+		 * Expanding S, the above becomes:
-+		 *
-+		 *   Sum(val * duration) / H / 2
-+		 *   Sum(val * (duration / H)) / 2
-+		 *
-+		 * As we use RAVG_FRAC_BITS bits for fixed point arithmetic,
-+		 * let's multiply the whole result accordingly:
-+		 *
-+		 *   (Sum(val * (duration / H)) / 2) * (1 << RAVG_FRAC_BITS)
-+		 *
-+		 *             duration * (1 << RAVG_FRAC_BITS)
-+		 *   Sum(val * --------------------------------) / 2
-+		 *                            H
-+		 *
-+		 * The righthand multiplier inside Sum() is the normalized
-+		 * duration returned from ravg_normalize_dur(), so, the whole
-+		 * Sum term equals @rd->cur.
-+		 *
-+		 *  rd->cur / 2
-+		 */
-+		u64 cur = rd->cur / 2;
-+
-+		return old + cur;
-+	} else {
-+		return rd->old;
-+	}
-+}
-diff --git a/tools/sched_ext/ravg_read.rs.h b/tools/sched_ext/ravg_read.rs.h
-new file mode 100644
-index 000000000000..4efaa2390aa6
---- /dev/null
-+++ b/tools/sched_ext/ravg_read.rs.h
-@@ -0,0 +1,82 @@
-+/// ravg_read() implementation for rust userland. See ravg_read() in
-+/// ravg_impl.bpf.h. We don't yet have a good mechanism to share BPF and
-+/// matching rust code across multiple schedulers. For now, include both BPF
-+/// and rust code from scheduler implementations.
-+fn ravg_read(
-+    val: u64,
-+    val_at: u64,
-+    old: u64,
-+    cur: u64,
-+    now: u64,
-+    half_life: u32,
-+    frac_bits: u32,
-+) -> f64 {
-+    let ravg_1: f64 = (1 << frac_bits) as f64;
-+    let half_life = half_life as u64;
-+    let val = val as f64;
-+    let mut old = old as f64 / ravg_1;
-+    let mut cur = cur as f64 / ravg_1;
-+
-+    let now = now.max(val_at);
-+    let normalized_dur = |dur| dur as f64 / half_life as f64;
-+
-+    //
-+    // The following is f64 implementation of BPF ravg_accumulate().
-+    //
-+    let cur_seq = (now / half_life) as i64;
-+    let val_seq = (val_at / half_life) as i64;
-+    let seq_delta = (cur_seq - val_seq) as i32;
-+
-+    if seq_delta > 0 {
-+        let full_decay = 2f64.powi(seq_delta);
-+
-+        // Decay $old and fold $cur into it.
-+        old /= full_decay;
-+        old += cur / full_decay;
-+        cur = 0.0;
-+
-+        // Fold the oldest period whicy may be partial.
-+        old += val * normalized_dur(half_life - val_at % half_life) / full_decay;
-+
-+        // Pre-computed decayed full-period values.
-+        const FULL_SUMS: [f64; 20] = [
-+            0.5,
-+            0.75,
-+            0.875,
-+            0.9375,
-+            0.96875,
-+            0.984375,
-+            0.9921875,
-+            0.99609375,
-+            0.998046875,
-+            0.9990234375,
-+            0.99951171875,
-+            0.999755859375,
-+            0.9998779296875,
-+            0.99993896484375,
-+            0.999969482421875,
-+            0.9999847412109375,
-+            0.9999923706054688,
-+            0.9999961853027344,
-+            0.9999980926513672,
-+            0.9999990463256836,
-+            // Use the same value beyond this point.
-+        ];
-+
-+        // Fold the full periods in the middle.
-+        if seq_delta >= 2 {
-+            let idx = ((seq_delta - 2) as usize).min(FULL_SUMS.len() - 1);
-+            old += val * FULL_SUMS[idx];
-+        }
-+
-+        // Accumulate the current period duration into @cur.
-+        cur += val * normalized_dur(now % half_life);
-+    } else {
-+        cur += val * normalized_dur(now - val_at);
-+    }
-+
-+    //
-+    // The following is the blending part of BPF ravg_read().
-+    //
-+    old * (1.0 - normalized_dur(now % half_life) / 2.0) + cur / 2.0
-+}
-diff --git a/tools/sched_ext/scx_rusty/.gitignore b/tools/sched_ext/scx_rusty/.gitignore
+ # Separate build target that is available for build systems to use to fetch
+ # dependencies in a separate step from building. This allows the scheduler
+diff --git a/tools/sched_ext/scx_layered/.gitignore b/tools/sched_ext/scx_layered/.gitignore
 new file mode 100644
 index 000000000000..186dba259ec2
 --- /dev/null
-+++ b/tools/sched_ext/scx_rusty/.gitignore
++++ b/tools/sched_ext/scx_layered/.gitignore
 @@ -0,0 +1,3 @@
 +src/bpf/.output
 +Cargo.lock
 +target
-diff --git a/tools/sched_ext/scx_rusty/Cargo.toml b/tools/sched_ext/scx_rusty/Cargo.toml
+diff --git a/tools/sched_ext/scx_layered/Cargo.toml b/tools/sched_ext/scx_layered/Cargo.toml
 new file mode 100644
-index 000000000000..b0edd3b937d4
+index 000000000000..6ba1b98d25cd
 --- /dev/null
-+++ b/tools/sched_ext/scx_rusty/Cargo.toml
-@@ -0,0 +1,28 @@
++++ b/tools/sched_ext/scx_layered/Cargo.toml
+@@ -0,0 +1,30 @@
 +[package]
-+name = "scx_rusty"
-+version = "0.5.0"
-+authors = ["Dan Schatzberg <dschatzberg@meta.com>", "Meta"]
++name = "scx_layered"
++version = "0.0.1"
++authors = ["Tejun Heo <htejun@meta.com>", "Meta"]
 +edition = "2021"
-+description = "Userspace scheduling with BPF"
++description = "Userspace scheduling with BPF for Ads"
 +license = "GPL-2.0-only"
 +
 +[dependencies]
-+anyhow = "1.0.65"
-+bitvec = { version = "1.0", features = ["serde"] }
++anyhow = "1.0"
++bitvec = "1.0"
 +clap = { version = "4.1", features = ["derive", "env", "unicode", "wrap_help"] }
 +ctrlc = { version = "3.1", features = ["termination"] }
-+fb_procfs = "0.7.0"
-+hex = "0.4.3"
-+libbpf-rs = "0.21.0"
++fb_procfs = "0.7"
++lazy_static = "1.4"
++libbpf-rs = "0.21"
 +libbpf-sys = { version = "1.2.0", features = ["novendor", "static"] }
-+libc = "0.2.137"
-+log = "0.4.17"
-+ordered-float = "3.4.0"
-+simplelog = "0.12.0"
++libc = "0.2"
++log = "0.4"
++serde = { version = "1.0", features = ["derive"] }
++serde_json = "1.0"
++simplelog = "0.12"
 +
 +[build-dependencies]
-+bindgen = { version = "0.61.0" }
-+libbpf-cargo = "0.21.0"
++bindgen = { version = "0.61" }
++libbpf-cargo = "0.21"
++glob = "0.3"
 +
 +[features]
 +enable_backtrace = []
-diff --git a/tools/sched_ext/scx_rusty/build.rs b/tools/sched_ext/scx_rusty/build.rs
+diff --git a/tools/sched_ext/scx_layered/build.rs b/tools/sched_ext/scx_layered/build.rs
 new file mode 100644
-index 000000000000..c54b8f33c577
+index 000000000000..ea0bbd48af82
 --- /dev/null
-+++ b/tools/sched_ext/scx_rusty/build.rs
-@@ -0,0 +1,72 @@
++++ b/tools/sched_ext/scx_layered/build.rs
+@@ -0,0 +1,77 @@
 +// Copyright (c) Meta Platforms, Inc. and affiliates.
 +
 +// This software may be used and distributed according to the terms of the
@@ -881,11 +226,12 @@ index 000000000000..c54b8f33c577
 +use std::path::Path;
 +use std::path::PathBuf;
 +
++use glob::glob;
 +use libbpf_cargo::SkeletonBuilder;
 +
-+const HEADER_PATH: &str = "src/bpf/rusty.h";
++const HEADER_PATH: &str = "src/bpf/layered.h";
 +
-+fn bindgen_rusty() {
++fn bindgen_layered() {
 +    // Tell cargo to invalidate the built crate whenever the wrapper changes
 +    println!("cargo:rerun-if-changed={}", HEADER_PATH);
 +
@@ -907,7 +253,7 @@ index 000000000000..c54b8f33c577
 +    // Write the bindings to the $OUT_DIR/bindings.rs file.
 +    let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
 +    bindings
-+        .write_to_file(out_path.join("rusty_sys.rs"))
++        .write_to_file(out_path.join("layered_sys.rs"))
 +        .expect("Couldn't write bindings!");
 +}
 +
@@ -926,11 +272,15 @@ index 000000000000..c54b8f33c577
 +        .clang_args(bpf_cflags)
 +        .build_and_generate(skel)
 +        .unwrap();
-+    println!("cargo:rerun-if-changed={}", src);
++
++    // Trigger rebuild if any .[hc] files are changed in the directory.
++    for path in glob("./src/bpf/*.[hc]").unwrap().filter_map(Result::ok) {
++        println!("cargo:rerun-if-changed={}", path.to_str().unwrap());
++    }
 +}
 +
 +fn main() {
-+    bindgen_rusty();
++    bindgen_layered();
 +    // It's unfortunate we cannot use `OUT_DIR` to store the generated skeleton.
 +    // Reasons are because the generated skeleton contains compiler attributes
 +    // that cannot be `include!()`ed via macro. And we cannot use the `#[path = "..."]`
@@ -940,13 +290,13 @@ index 000000000000..c54b8f33c577
 +    // However, there is hope! When the above feature stabilizes we can clean this
 +    // all up.
 +    create_dir_all("./src/bpf/.output").unwrap();
-+    gen_bpf_sched("rusty");
++    gen_bpf_sched("layered");
 +}
-diff --git a/tools/sched_ext/scx_rusty/rustfmt.toml b/tools/sched_ext/scx_rusty/rustfmt.toml
+diff --git a/tools/sched_ext/scx_layered/rustfmt.toml b/tools/sched_ext/scx_layered/rustfmt.toml
 new file mode 100644
 index 000000000000..b7258ed0a8d8
 --- /dev/null
-+++ b/tools/sched_ext/scx_rusty/rustfmt.toml
++++ b/tools/sched_ext/scx_layered/rustfmt.toml
 @@ -0,0 +1,8 @@
 +# Get help on options with `rustfmt --help=config`
 +# Please keep these in alphabetical order.
@@ -956,52 +306,15 @@ index 000000000000..b7258ed0a8d8
 +merge_derives = false
 +use_field_init_shorthand = true
 +version = "Two"
-diff --git a/tools/sched_ext/scx_rusty/src/bpf/rusty.bpf.c b/tools/sched_ext/scx_rusty/src/bpf/rusty.bpf.c
+diff --git a/tools/sched_ext/scx_layered/src/bpf/layered.bpf.c b/tools/sched_ext/scx_layered/src/bpf/layered.bpf.c
 new file mode 100644
-index 000000000000..7a8b27ceae05
+index 000000000000..b0a27f3c7137
 --- /dev/null
-+++ b/tools/sched_ext/scx_rusty/src/bpf/rusty.bpf.c
-@@ -0,0 +1,1153 @@
++++ b/tools/sched_ext/scx_layered/src/bpf/layered.bpf.c
+@@ -0,0 +1,974 @@
 +/* Copyright (c) Meta Platforms, Inc. and affiliates. */
-+/*
-+ * This software may be used and distributed according to the terms of the
-+ * GNU General Public License version 2.
-+ *
-+ * scx_rusty is a multi-domain BPF / userspace hybrid scheduler where the BPF
-+ * part does simple round robin in each domain and the userspace part
-+ * calculates the load factor of each domain and tells the BPF part how to load
-+ * balance the domains.
-+ *
-+ * Every task has an entry in the task_data map which lists which domain the
-+ * task belongs to. When a task first enters the system (rusty_prep_enable),
-+ * they are round-robined to a domain.
-+ *
-+ * rusty_select_cpu is the primary scheduling logic, invoked when a task
-+ * becomes runnable. The lb_data map is populated by userspace to inform the BPF
-+ * scheduler that a task should be migrated to a new domain. Otherwise, the task
-+ * is scheduled in priority order as follows:
-+ * * The current core if the task was woken up synchronously and there are idle
-+ *   cpus in the system
-+ * * The previous core, if idle
-+ * * The pinned-to core if the task is pinned to a specific core
-+ * * Any idle cpu in the domain
-+ *
-+ * If none of the above conditions are met, then the task is enqueued to a
-+ * dispatch queue corresponding to the domain (rusty_enqueue).
-+ *
-+ * rusty_dispatch will attempt to consume a task from its domain's
-+ * corresponding dispatch queue (this occurs after scheduling any tasks directly
-+ * assigned to it due to the logic in rusty_select_cpu). If no task is found,
-+ * then greedy load stealing will attempt to find a task on another dispatch
-+ * queue to run.
-+ *
-+ * Load balancing is almost entirely handled by userspace. BPF populates the
-+ * task weight, dom mask and current dom in the task_data map and executes the
-+ * load balance based on userspace populating the lb_data map.
-+ */
 +#include "../../../scx_common.bpf.h"
-+#include "../../../ravg_impl.bpf.h"
-+#include "rusty.h"
++#include "layered.h"
 +
 +#include <errno.h>
 +#include <stdbool.h>
@@ -1012,927 +325,754 @@ index 000000000000..7a8b27ceae05
 +
 +char _license[] SEC("license") = "GPL";
 +
-+/*
-+ * const volatiles are set during initialization and treated as consts by the
-+ * jit compiler.
-+ */
-+
-+/*
-+ * Domains and cpus
-+ */
-+const volatile u32 nr_doms = 32;	/* !0 for veristat, set during init */
-+const volatile u32 nr_cpus = 64;	/* !0 for veristat, set during init */
-+const volatile u32 cpu_dom_id_map[MAX_CPUS];
-+const volatile u64 dom_cpumasks[MAX_DOMS][MAX_CPUS / 64];
-+const volatile u32 load_half_life = 1000000000	/* 1s */;
-+
-+const volatile bool kthreads_local;
-+const volatile bool fifo_sched;
-+const volatile bool switch_partial;
-+const volatile u32 greedy_threshold;
-+const volatile u32 debug;
-+
-+/* base slice duration */
++const volatile u32 debug = 0;
 +const volatile u64 slice_ns = SCX_SLICE_DFL;
++const volatile u32 nr_possible_cpus = 1;
++const volatile u32 nr_layers = 1;
++const volatile bool smt_enabled = true;
++const volatile unsigned char all_cpus[MAX_CPUS_U8];
 +
-+/*
-+ * Exit info
-+ */
-+int exit_kind = SCX_EXIT_NONE;
-+char exit_msg[SCX_EXIT_MSG_LEN];
++private(all_cpumask) struct bpf_cpumask __kptr *all_cpumask;
++struct layer layers[MAX_LAYERS];
++u32 fallback_cpu;
++static u32 preempt_cursor;
 +
-+/*
-+ * Per-CPU context
-+ */
-+struct pcpu_ctx {
-+	u32 dom_rr_cur; /* used when scanning other doms */
++#define dbg(fmt, args...)	do { if (debug) bpf_printk(fmt, ##args); } while (0)
++#define trace(fmt, args...)	do { if (debug > 1) bpf_printk(fmt, ##args); } while (0)
 +
-+	/* libbpf-rs does not respect the alignment, so pad out the struct explicitly */
-+	u8 _padding[CACHELINE_SIZE - sizeof(u32)];
-+} __attribute__((aligned(CACHELINE_SIZE)));
++#include "util.bpf.c"
++#include "../../../ravg_impl.bpf.h"
 +
-+struct pcpu_ctx pcpu_ctx[MAX_CPUS];
-+
-+/*
-+ * Domain context
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, u32);
-+	__type(value, struct dom_ctx);
-+	__uint(max_entries, MAX_DOMS);
-+	__uint(map_flags, 0);
-+} dom_data SEC(".maps");
-+
-+struct lock_wrapper {
-+	struct bpf_spin_lock lock;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__type(key, u32);
-+	__type(value, struct lock_wrapper);
-+	__uint(max_entries, MAX_DOMS);
-+	__uint(map_flags, 0);
-+} dom_load_locks SEC(".maps");
-+
-+struct dom_active_pids {
-+	u64 gen;
-+	u64 read_idx;
-+	u64 write_idx;
-+	s32 pids[MAX_DOM_ACTIVE_PIDS];
-+};
-+
-+struct dom_active_pids dom_active_pids[MAX_DOMS];
-+
-+const u64 ravg_1 = 1 << RAVG_FRAC_BITS;
-+
-+static void dom_load_adj(u32 dom_id, s64 adj, u64 now)
-+{
-+	struct dom_ctx *domc;
-+	struct lock_wrapper *lockw;
-+
-+	domc = bpf_map_lookup_elem(&dom_data, &dom_id);
-+	lockw = bpf_map_lookup_elem(&dom_load_locks, &dom_id);
-+
-+	if (!domc || !lockw) {
-+		scx_bpf_error("dom_ctx / lock lookup failed");
-+		return;
-+	}
-+
-+	bpf_spin_lock(&lockw->lock);
-+	domc->load += adj;
-+	ravg_accumulate(&domc->load_rd, domc->load, now, load_half_life);
-+	bpf_spin_unlock(&lockw->lock);
-+
-+	if (adj < 0 && (s64)domc->load < 0)
-+		scx_bpf_error("cpu%d dom%u load underflow (load=%lld adj=%lld)",
-+			      bpf_get_smp_processor_id(), dom_id, domc->load, adj);
-+
-+	if (debug >=2 &&
-+	    (!domc->dbg_load_printed_at || now - domc->dbg_load_printed_at >= 1000000000)) {
-+		bpf_printk("LOAD ADJ dom=%u adj=%lld load=%llu",
-+			   dom_id,
-+			   adj,
-+			   ravg_read(&domc->load_rd, now, load_half_life) >> RAVG_FRAC_BITS);
-+		domc->dbg_load_printed_at = now;
-+	}
-+}
-+
-+static void dom_load_xfer_task(struct task_struct *p, struct task_ctx *taskc,
-+			       u32 from_dom_id, u32 to_dom_id, u64 now)
-+{
-+	struct dom_ctx *from_domc, *to_domc;
-+	struct lock_wrapper *from_lockw, *to_lockw;
-+	struct ravg_data task_load_rd;
-+	u64 from_load[2], to_load[2], task_load;
-+
-+	from_domc = bpf_map_lookup_elem(&dom_data, &from_dom_id);
-+	from_lockw = bpf_map_lookup_elem(&dom_load_locks, &from_dom_id);
-+	to_domc = bpf_map_lookup_elem(&dom_data, &to_dom_id);
-+	to_lockw = bpf_map_lookup_elem(&dom_load_locks, &to_dom_id);
-+	if (!from_domc || !from_lockw || !to_domc || !to_lockw) {
-+		scx_bpf_error("dom_ctx / lock lookup failed");
-+		return;
-+	}
-+
-+	/*
-+	 * @p is moving from @from_dom_id to @to_dom_id. Its load contribution
-+	 * should be moved together. We only track duty cycle for tasks. Scale
-+	 * it by weight to get load_rd.
-+	 */
-+	ravg_accumulate(&taskc->dcyc_rd, taskc->runnable, now, load_half_life);
-+	task_load_rd = taskc->dcyc_rd;
-+	ravg_scale(&task_load_rd, p->scx.weight, 0);
-+
-+	if (debug >= 2)
-+		task_load = ravg_read(&task_load_rd, now, load_half_life);
-+
-+	/* transfer out of @from_dom_id */
-+	bpf_spin_lock(&from_lockw->lock);
-+	if (taskc->runnable)
-+		from_domc->load -= p->scx.weight;
-+
-+	if (debug >= 2)
-+		from_load[0] = ravg_read(&from_domc->load_rd, now, load_half_life);
-+
-+	ravg_transfer(&from_domc->load_rd, from_domc->load,
-+		      &task_load_rd, taskc->runnable, load_half_life, false);
-+
-+	if (debug >= 2)
-+		from_load[1] = ravg_read(&from_domc->load_rd, now, load_half_life);
-+
-+	bpf_spin_unlock(&from_lockw->lock);
-+
-+	/* transfer into @to_dom_id */
-+	bpf_spin_lock(&to_lockw->lock);
-+	if (taskc->runnable)
-+		to_domc->load += p->scx.weight;
-+
-+	if (debug >= 2)
-+		to_load[0] = ravg_read(&to_domc->load_rd, now, load_half_life);
-+
-+	ravg_transfer(&to_domc->load_rd, to_domc->load,
-+		      &task_load_rd, taskc->runnable, load_half_life, true);
-+
-+	if (debug >= 2)
-+		to_load[1] = ravg_read(&to_domc->load_rd, now, load_half_life);
-+
-+	bpf_spin_unlock(&to_lockw->lock);
-+
-+	if (debug >= 2)
-+		bpf_printk("XFER dom%u->%u task=%lu from=%lu->%lu to=%lu->%lu",
-+			   from_dom_id, to_dom_id,
-+			   task_load >> RAVG_FRAC_BITS,
-+			   from_load[0] >> RAVG_FRAC_BITS,
-+			   from_load[1] >> RAVG_FRAC_BITS,
-+			   to_load[0] >> RAVG_FRAC_BITS,
-+			   to_load[1] >> RAVG_FRAC_BITS);
-+}
-+
-+/*
-+ * Statistics
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(u32));
-+	__uint(value_size, sizeof(u64));
-+	__uint(max_entries, RUSTY_NR_STATS);
-+} stats SEC(".maps");
-+
-+static inline void stat_add(enum stat_idx idx, u64 addend)
-+{
-+	u32 idx_v = idx;
-+
-+	u64 *cnt_p = bpf_map_lookup_elem(&stats, &idx_v);
-+	if (cnt_p)
-+		(*cnt_p) += addend;
-+}
-+
-+/* Map pid -> task_ctx */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, pid_t);
-+	__type(value, struct task_ctx);
-+	__uint(max_entries, 1000000);
-+	__uint(map_flags, 0);
-+} task_data SEC(".maps");
-+
-+struct task_ctx *lookup_task_ctx(struct task_struct *p)
-+{
-+	struct task_ctx *taskc;
-+	s32 pid = p->pid;
-+
-+	if ((taskc = bpf_map_lookup_elem(&task_data, &pid))) {
-+		return taskc;
-+	} else {
-+		scx_bpf_error("task_ctx lookup failed for pid %d", p->pid);
-+		return NULL;
-+	}
-+}
-+
-+/*
-+ * This is populated from userspace to indicate which pids should be reassigned
-+ * to new doms.
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__type(key, pid_t);
-+	__type(value, u32);
-+	__uint(max_entries, 1000);
-+	__uint(map_flags, 0);
-+} lb_data SEC(".maps");
-+
-+/*
-+ * Userspace tuner will frequently update the following struct with tuning
-+ * parameters and bump its gen. refresh_tune_params() converts them into forms
-+ * that can be used directly in the scheduling paths.
-+ */
-+struct tune_input{
-+	u64 gen;
-+	u64 direct_greedy_cpumask[MAX_CPUS / 64];
-+	u64 kick_greedy_cpumask[MAX_CPUS / 64];
-+} tune_input;
-+
-+u64 tune_params_gen;
-+private(A) struct bpf_cpumask __kptr *all_cpumask;
-+private(A) struct bpf_cpumask __kptr *direct_greedy_cpumask;
-+private(A) struct bpf_cpumask __kptr *kick_greedy_cpumask;
++struct user_exit_info uei;
 +
 +static inline bool vtime_before(u64 a, u64 b)
 +{
 +	return (s64)(a - b) < 0;
 +}
 +
-+static u32 cpu_to_dom_id(s32 cpu)
-+{
-+	const volatile u32 *dom_idp;
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__type(key, u32);
++	__type(value, struct cpu_ctx);
++	__uint(max_entries, 1);
++} cpu_ctxs SEC(".maps");
 +
-+	if (nr_doms <= 1)
++static struct cpu_ctx *lookup_cpu_ctx(int cpu)
++{
++	struct cpu_ctx *cctx;
++	u32 zero = 0;
++
++	if (cpu < 0)
++		cctx = bpf_map_lookup_elem(&cpu_ctxs, &zero);
++	else
++		cctx = bpf_map_lookup_percpu_elem(&cpu_ctxs, &zero, cpu);
++
++	if (!cctx) {
++		scx_bpf_error("no cpu_ctx for cpu %d", cpu);
++		return NULL;
++	}
++
++	return cctx;
++}
++
++static void gstat_inc(enum global_stat_idx idx, struct cpu_ctx *cctx)
++{
++	if (idx < 0 || idx >= NR_GSTATS) {
++		scx_bpf_error("invalid global stat idx %d", idx);
++		return;
++	}
++
++	cctx->gstats[idx]++;
++}
++
++static void lstat_inc(enum layer_stat_idx idx, struct layer *layer, struct cpu_ctx *cctx)
++{
++	u64 *vptr;
++
++	if ((vptr = MEMBER_VPTR(*cctx, .lstats[layer->idx][idx])))
++		(*vptr)++;
++	else
++		scx_bpf_error("invalid layer or stat idxs: %d, %d", idx, layer->idx);
++}
++
++struct lock_wrapper {
++	struct bpf_spin_lock	lock;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, u32);
++	__type(value, struct lock_wrapper);
++	__uint(max_entries, MAX_LAYERS);
++	__uint(map_flags, 0);
++} layer_load_locks SEC(".maps");
++
++static void adj_load(u32 layer_idx, s64 adj, u64 now)
++{
++	struct layer *layer;
++	struct lock_wrapper *lockw;
++
++	layer = MEMBER_VPTR(layers, [layer_idx]);
++	lockw = bpf_map_lookup_elem(&layer_load_locks, &layer_idx);
++
++	if (!layer || !lockw) {
++		scx_bpf_error("Can't access layer%d or its load_lock", layer_idx);
++		return;
++	}
++
++	bpf_spin_lock(&lockw->lock);
++	layer->load += adj;
++	ravg_accumulate(&layer->load_rd, layer->load, now, USAGE_HALF_LIFE);
++	bpf_spin_unlock(&lockw->lock);
++
++	if (debug && adj < 0 && (s64)layer->load < 0)
++		scx_bpf_error("cpu%d layer%d load underflow (load=%lld adj=%lld)",
++			      bpf_get_smp_processor_id(), layer_idx, layer->load, adj);
++}
++
++struct layer_cpumask_wrapper {
++	struct bpf_cpumask __kptr *cpumask;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__type(key, u32);
++	__type(value, struct layer_cpumask_wrapper);
++	__uint(max_entries, MAX_LAYERS);
++	__uint(map_flags, 0);
++} layer_cpumasks SEC(".maps");
++
++static struct cpumask *lookup_layer_cpumask(int idx)
++{
++	struct layer_cpumask_wrapper *cpumaskw;
++
++	if ((cpumaskw = bpf_map_lookup_elem(&layer_cpumasks, &idx))) {
++		return (struct cpumask *)cpumaskw->cpumask;
++	} else {
++		scx_bpf_error("no layer_cpumask");
++		return NULL;
++	}
++}
++
++static void refresh_cpumasks(int idx)
++{
++	struct layer_cpumask_wrapper *cpumaskw;
++	struct layer *layer;
++	int cpu, total = 0;
++
++	if (!__sync_val_compare_and_swap(&layers[idx].refresh_cpus, 1, 0))
++		return;
++
++	cpumaskw = bpf_map_lookup_elem(&layer_cpumasks, &idx);
++
++	bpf_for(cpu, 0, nr_possible_cpus) {
++		u8 *u8_ptr;
++
++		if ((u8_ptr = MEMBER_VPTR(layers, [idx].cpus[cpu / 8]))) {
++			/*
++			 * XXX - The following test should be outside the loop
++			 * but that makes the verifier think that
++			 * cpumaskw->cpumask might be NULL in the loop.
++			 */
++			barrier_var(cpumaskw);
++			if (!cpumaskw || !cpumaskw->cpumask) {
++				scx_bpf_error("can't happen");
++				return;
++			}
++
++			if (*u8_ptr & (1 << (cpu % 8))) {
++				bpf_cpumask_set_cpu(cpu, cpumaskw->cpumask);
++				total++;
++			} else {
++				bpf_cpumask_clear_cpu(cpu, cpumaskw->cpumask);
++			}
++		} else {
++			scx_bpf_error("can't happen");
++		}
++	}
++
++	// XXX - shouldn't be necessary
++	layer = MEMBER_VPTR(layers, [idx]);
++	if (!layer) {
++		scx_bpf_error("can't happen");
++		return;
++	}
++
++	layer->nr_cpus = total;
++	__sync_fetch_and_add(&layer->cpus_seq, 1);
++	trace("LAYER[%d] now has %d cpus, seq=%llu", idx, layer->nr_cpus, layer->cpus_seq);
++}
++
++SEC("fentry/scheduler_tick")
++int scheduler_tick_fentry(const void *ctx)
++{
++	int idx;
++
++	if (bpf_get_smp_processor_id() == 0)
++		bpf_for(idx, 0, nr_layers)
++			refresh_cpumasks(idx);
++	return 0;
++}
++
++struct task_ctx {
++	int			pid;
++
++	int			layer;
++	bool			refresh_layer;
++	u64			layer_cpus_seq;
++	struct bpf_cpumask __kptr *layered_cpumask;
++
++	bool			all_cpus_allowed;
++	bool			dispatch_local;
++	u64			started_running_at;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__type(key, pid_t);
++	__type(value, struct task_ctx);
++	__uint(max_entries, MAX_TASKS);
++	__uint(map_flags, 0);
++} task_ctxs SEC(".maps");
++
++struct task_ctx *lookup_task_ctx_may_fail(struct task_struct *p)
++{
++	s32 pid = p->pid;
++
++	return bpf_map_lookup_elem(&task_ctxs, &pid);
++}
++
++struct task_ctx *lookup_task_ctx(struct task_struct *p)
++{
++	struct task_ctx *tctx;
++	s32 pid = p->pid;
++
++	if ((tctx = bpf_map_lookup_elem(&task_ctxs, &pid))) {
++		return tctx;
++	} else {
++		scx_bpf_error("task_ctx lookup failed");
++		return NULL;
++	}
++}
++
++struct layer *lookup_layer(int idx)
++{
++	if (idx < 0 || idx >= nr_layers) {
++		scx_bpf_error("invalid layer %d", idx);
++		return NULL;
++	}
++	return &layers[idx];
++}
++
++SEC("tp_btf/cgroup_attach_task")
++int BPF_PROG(tp_cgroup_attach_task, struct cgroup *cgrp, const char *cgrp_path,
++	     struct task_struct *leader, bool threadgroup)
++{
++	struct task_struct *next;
++	struct task_ctx *tctx;
++	int leader_pid = leader->pid;
++
++	if (!(tctx = lookup_task_ctx_may_fail(leader)))
++		return 0;
++	tctx->refresh_layer = true;
++
++	if (!threadgroup)
 +		return 0;
 +
-+	dom_idp = MEMBER_VPTR(cpu_dom_id_map, [cpu]);
-+	if (!dom_idp)
-+		return MAX_DOMS;
++	if (!(next = bpf_task_acquire(leader))) {
++		scx_bpf_error("failed to acquire leader");
++		return 0;
++	}
 +
-+	return *dom_idp;
++	bpf_repeat(MAX_TASKS) {
++		struct task_struct *p;
++		int pid;
++
++		p = container_of(next->thread_group.next, struct task_struct, thread_group);
++		bpf_task_release(next);
++
++		pid = BPF_CORE_READ(p, pid);
++		if (pid == leader_pid) {
++			next = NULL;
++			break;
++		}
++
++		next = bpf_task_from_pid(pid);
++		if (!next) {
++			scx_bpf_error("thread iteration failed");
++			break;
++		}
++
++		if ((tctx = lookup_task_ctx(next)))
++			tctx->refresh_layer = true;
++	}
++
++	if (next)
++		bpf_task_release(next);
++	return 0;
 +}
 +
-+static void refresh_tune_params(void)
++SEC("tp_btf/task_rename")
++int BPF_PROG(tp_task_rename, struct task_struct *p, const char *buf)
 +{
-+	s32 cpu;
++	struct task_ctx *tctx;
 +
-+	if (tune_params_gen == tune_input.gen)
++	if ((tctx = lookup_task_ctx_may_fail(p)))
++		tctx->refresh_layer = true;
++	return 0;
++}
++
++static void maybe_refresh_layered_cpumask(struct cpumask *layered_cpumask,
++					  struct task_struct *p, struct task_ctx *tctx,
++					  const struct cpumask *layer_cpumask)
++{
++	u64 layer_seq = layers->cpus_seq;
++
++	if (tctx->layer_cpus_seq == layer_seq)
 +		return;
 +
-+	tune_params_gen = tune_input.gen;
-+
-+	bpf_for(cpu, 0, nr_cpus) {
-+		u32 dom_id = cpu_to_dom_id(cpu);
-+		struct dom_ctx *domc;
-+
-+		if (!(domc = bpf_map_lookup_elem(&dom_data, &dom_id))) {
-+			scx_bpf_error("Failed to lookup dom[%u]", dom_id);
-+			return;
-+		}
-+
-+		if (tune_input.direct_greedy_cpumask[cpu / 64] & (1LLU << (cpu % 64))) {
-+			if (direct_greedy_cpumask)
-+				bpf_cpumask_set_cpu(cpu, direct_greedy_cpumask);
-+			if (domc->direct_greedy_cpumask)
-+				bpf_cpumask_set_cpu(cpu, domc->direct_greedy_cpumask);
-+		} else {
-+			if (direct_greedy_cpumask)
-+				bpf_cpumask_clear_cpu(cpu, direct_greedy_cpumask);
-+			if (domc->direct_greedy_cpumask)
-+				bpf_cpumask_clear_cpu(cpu, domc->direct_greedy_cpumask);
-+		}
-+
-+		if (tune_input.kick_greedy_cpumask[cpu / 64] & (1LLU << (cpu % 64))) {
-+			if (kick_greedy_cpumask)
-+				bpf_cpumask_set_cpu(cpu, kick_greedy_cpumask);
-+		} else {
-+			if (kick_greedy_cpumask)
-+				bpf_cpumask_clear_cpu(cpu, kick_greedy_cpumask);
-+		}
-+	}
-+}
-+
-+static bool task_set_domain(struct task_ctx *taskc, struct task_struct *p,
-+			    u32 new_dom_id, bool init_dsq_vtime)
-+{
-+	struct dom_ctx *old_domc, *new_domc;
-+	struct bpf_cpumask *d_cpumask, *t_cpumask;
-+	u32 old_dom_id = taskc->dom_id;
-+	s64 vtime_delta;
-+
-+	old_domc = bpf_map_lookup_elem(&dom_data, &old_dom_id);
-+	if (!old_domc) {
-+		scx_bpf_error("Failed to lookup old dom%u", old_dom_id);
-+		return false;
-+	}
-+
-+	if (init_dsq_vtime)
-+		vtime_delta = 0;
-+	else
-+		vtime_delta = p->scx.dsq_vtime - old_domc->vtime_now;
-+
-+	new_domc = bpf_map_lookup_elem(&dom_data, &new_dom_id);
-+	if (!new_domc) {
-+		scx_bpf_error("Failed to lookup new dom%u", new_dom_id);
-+		return false;
-+	}
-+
-+	d_cpumask = new_domc->cpumask;
-+	if (!d_cpumask) {
-+		scx_bpf_error("Failed to get dom%u cpumask kptr",
-+			      new_dom_id);
-+		return false;
-+	}
-+
-+	t_cpumask = taskc->cpumask;
-+	if (!t_cpumask) {
-+		scx_bpf_error("Failed to look up task cpumask");
-+		return false;
-+	}
-+
 +	/*
-+	 * set_cpumask might have happened between userspace requesting LB and
-+	 * here and @p might not be able to run in @dom_id anymore. Verify.
++	 * XXX - We're assuming that the updated @layer_cpumask matching the new
++	 * @layer_seq is visible which may not be true. For now, leave it as-is.
++	 * Let's update once BPF grows enough memory ordering constructs.
 +	 */
-+	if (bpf_cpumask_intersects((const struct cpumask *)d_cpumask,
-+				   p->cpus_ptr)) {
-+		u64 now = bpf_ktime_get_ns();
-+
-+		dom_load_xfer_task(p, taskc, taskc->dom_id, new_dom_id, now);
-+
-+		p->scx.dsq_vtime = new_domc->vtime_now + vtime_delta;
-+		taskc->dom_id = new_dom_id;
-+		bpf_cpumask_and(t_cpumask, (const struct cpumask *)d_cpumask,
-+				p->cpus_ptr);
-+	}
-+
-+	return taskc->dom_id == new_dom_id;
++	bpf_cpumask_and((struct bpf_cpumask *)layered_cpumask, layer_cpumask, p->cpus_ptr);
++	tctx->layer_cpus_seq = layer_seq;
++	trace("%s[%d] cpumask refreshed to seq %llu", p->comm, p->pid, layer_seq);
 +}
 +
-+s32 BPF_STRUCT_OPS(rusty_select_cpu, struct task_struct *p, s32 prev_cpu,
-+		   u64 wake_flags)
++static s32 pick_idle_cpu_from(const struct cpumask *cand_cpumask, s32 prev_cpu,
++			      const struct cpumask *idle_cpumask,
++			      const struct cpumask *idle_smtmask)
 +{
-+	const struct cpumask *idle_smtmask = scx_bpf_get_idle_smtmask();
-+	struct task_ctx *taskc;
-+	struct bpf_cpumask *p_cpumask;
-+	bool prev_domestic, has_idle_cores;
++	bool prev_in_cand = bpf_cpumask_test_cpu(prev_cpu, cand_cpumask);
 +	s32 cpu;
 +
-+	refresh_tune_params();
-+
-+	if (!(taskc = lookup_task_ctx(p)) || !(p_cpumask = taskc->cpumask))
-+		goto enoent;
-+
-+	if (kthreads_local &&
-+	    (p->flags & PF_KTHREAD) && p->nr_cpus_allowed == 1) {
-+		cpu = prev_cpu;
-+		stat_add(RUSTY_STAT_DIRECT_DISPATCH, 1);
-+		goto direct;
-+	}
-+
 +	/*
-+	 * If WAKE_SYNC and the machine isn't fully saturated, wake up @p to the
-+	 * local dsq of the waker.
++	 * If CPU has SMT, any wholly idle CPU is likely a better pick than
++	 * partially idle @prev_cpu.
 +	 */
-+	if (p->nr_cpus_allowed > 1 && (wake_flags & SCX_WAKE_SYNC)) {
-+		struct task_struct *current = (void *)bpf_get_current_task();
-+
-+		if (!(BPF_CORE_READ(current, flags) & PF_EXITING) &&
-+		    taskc->dom_id < MAX_DOMS) {
-+			struct dom_ctx *domc;
-+			struct bpf_cpumask *d_cpumask;
-+			const struct cpumask *idle_cpumask;
-+			bool has_idle;
-+
-+			domc = bpf_map_lookup_elem(&dom_data, &taskc->dom_id);
-+			if (!domc) {
-+				scx_bpf_error("Failed to find dom%u", taskc->dom_id);
-+				goto enoent;
-+			}
-+			d_cpumask = domc->cpumask;
-+			if (!d_cpumask) {
-+				scx_bpf_error("Failed to acquire dom%u cpumask kptr",
-+					      taskc->dom_id);
-+				goto enoent;
-+			}
-+
-+			idle_cpumask = scx_bpf_get_idle_cpumask();
-+
-+			has_idle = bpf_cpumask_intersects((const struct cpumask *)d_cpumask,
-+							  idle_cpumask);
-+
-+			scx_bpf_put_idle_cpumask(idle_cpumask);
-+
-+			if (has_idle) {
-+				cpu = bpf_get_smp_processor_id();
-+				if (bpf_cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+					stat_add(RUSTY_STAT_WAKE_SYNC, 1);
-+					goto direct;
-+				}
-+			}
-+		}
-+	}
-+
-+	/* If only one CPU is allowed, dispatch */
-+	if (p->nr_cpus_allowed == 1) {
-+		stat_add(RUSTY_STAT_PINNED, 1);
-+		cpu = prev_cpu;
-+		goto direct;
-+	}
-+
-+	has_idle_cores = !bpf_cpumask_empty(idle_smtmask);
-+
-+	/* did @p get pulled out to a foreign domain by e.g. greedy execution? */
-+	prev_domestic = bpf_cpumask_test_cpu(prev_cpu,
-+					     (const struct cpumask *)p_cpumask);
-+
-+	/*
-+	 * See if we want to keep @prev_cpu. We want to keep @prev_cpu if the
-+	 * whole physical core is idle. If the sibling[s] are busy, it's likely
-+	 * more advantageous to look for wholly idle cores first.
-+	 */
-+	if (prev_domestic) {
-+		if (bpf_cpumask_test_cpu(prev_cpu, idle_smtmask) &&
-+		    scx_bpf_test_and_clear_cpu_idle(prev_cpu)) {
-+			stat_add(RUSTY_STAT_PREV_IDLE, 1);
-+			cpu = prev_cpu;
-+			goto direct;
-+		}
-+	} else {
-+		/*
-+		 * @prev_cpu is foreign. Linger iff the domain isn't too busy as
-+		 * indicated by direct_greedy_cpumask. There may also be an idle
-+		 * CPU in the domestic domain
-+		 */
-+		if (direct_greedy_cpumask &&
-+		    bpf_cpumask_test_cpu(prev_cpu, (const struct cpumask *)
-+					 direct_greedy_cpumask) &&
++	if (smt_enabled) {
++		if (prev_in_cand &&
 +		    bpf_cpumask_test_cpu(prev_cpu, idle_smtmask) &&
-+		    scx_bpf_test_and_clear_cpu_idle(prev_cpu)) {
-+			stat_add(RUSTY_STAT_GREEDY_IDLE, 1);
-+			cpu = prev_cpu;
-+			goto direct;
-+		}
++		    scx_bpf_test_and_clear_cpu_idle(prev_cpu))
++			return prev_cpu;
++
++		cpu = scx_bpf_pick_idle_cpu(cand_cpumask, SCX_PICK_IDLE_CORE);
++		if (cpu >= 0)
++			return cpu;
 +	}
 +
-+	/*
-+	 * @prev_cpu didn't work out. Let's see whether there's an idle CPU @p
-+	 * can be directly dispatched to. We'll first try to find the best idle
-+	 * domestic CPU and then move onto foreign.
-+	 */
++	if (prev_in_cand && scx_bpf_test_and_clear_cpu_idle(prev_cpu))
++		return prev_cpu;
 +
-+	/* If there is a domestic idle core, dispatch directly */
-+	if (has_idle_cores) {
-+		cpu = scx_bpf_pick_idle_cpu((const struct cpumask *)p_cpumask,
-+					    SCX_PICK_IDLE_CORE);
-+		if (cpu >= 0) {
-+			stat_add(RUSTY_STAT_DIRECT_DISPATCH, 1);
-+			goto direct;
-+		}
-+	}
-+
-+	/*
-+	 * If @prev_cpu was domestic and is idle itself even though the core
-+	 * isn't, picking @prev_cpu may improve L1/2 locality.
-+	 */
-+	if (prev_domestic && scx_bpf_test_and_clear_cpu_idle(prev_cpu)) {
-+		stat_add(RUSTY_STAT_DIRECT_DISPATCH, 1);
-+		cpu = prev_cpu;
-+		goto direct;
-+	}
-+
-+	/* If there is any domestic idle CPU, dispatch directly */
-+	cpu = scx_bpf_pick_idle_cpu((const struct cpumask *)p_cpumask, 0);
-+	if (cpu >= 0) {
-+		stat_add(RUSTY_STAT_DIRECT_DISPATCH, 1);
-+		goto direct;
-+	}
-+
-+	/*
-+	 * Domestic domain is fully booked. If there are CPUs which are idle and
-+	 * under-utilized, ignore domain boundaries and push the task there. Try
-+	 * to find an idle core first.
-+	 */
-+	if (taskc->all_cpus && direct_greedy_cpumask &&
-+	    !bpf_cpumask_empty((const struct cpumask *)direct_greedy_cpumask)) {
-+		u32 dom_id = cpu_to_dom_id(prev_cpu);
-+		struct dom_ctx *domc;
-+
-+		if (!(domc = bpf_map_lookup_elem(&dom_data, &dom_id))) {
-+			scx_bpf_error("Failed to lookup dom[%u]", dom_id);
-+			goto enoent;
-+		}
-+
-+		/* Try to find an idle core in the previous and then any domain */
-+		if (has_idle_cores) {
-+			if (domc->direct_greedy_cpumask) {
-+				cpu = scx_bpf_pick_idle_cpu((const struct cpumask *)
-+							    domc->direct_greedy_cpumask,
-+							    SCX_PICK_IDLE_CORE);
-+				if (cpu >= 0) {
-+					stat_add(RUSTY_STAT_DIRECT_GREEDY, 1);
-+					goto direct;
-+				}
-+			}
-+
-+			if (direct_greedy_cpumask) {
-+				cpu = scx_bpf_pick_idle_cpu((const struct cpumask *)
-+							    direct_greedy_cpumask,
-+							    SCX_PICK_IDLE_CORE);
-+				if (cpu >= 0) {
-+					stat_add(RUSTY_STAT_DIRECT_GREEDY_FAR, 1);
-+					goto direct;
-+				}
-+			}
-+		}
-+
-+		/*
-+		 * No idle core. Is there any idle CPU?
-+		 */
-+		if (domc->direct_greedy_cpumask) {
-+			cpu = scx_bpf_pick_idle_cpu((const struct cpumask *)
-+						    domc->direct_greedy_cpumask, 0);
-+			if (cpu >= 0) {
-+				stat_add(RUSTY_STAT_DIRECT_GREEDY, 1);
-+				goto direct;
-+			}
-+		}
-+
-+		if (direct_greedy_cpumask) {
-+			cpu = scx_bpf_pick_idle_cpu((const struct cpumask *)
-+						    direct_greedy_cpumask, 0);
-+			if (cpu >= 0) {
-+				stat_add(RUSTY_STAT_DIRECT_GREEDY_FAR, 1);
-+				goto direct;
-+			}
-+		}
-+	}
-+
-+	/*
-+	 * We're going to queue on the domestic domain's DSQ. @prev_cpu may be
-+	 * in a different domain. Returning an out-of-domain CPU can lead to
-+	 * stalls as all in-domain CPUs may be idle by the time @p gets
-+	 * enqueued.
-+	 */
-+	if (prev_domestic)
-+		cpu = prev_cpu;
-+	else
-+		cpu = scx_bpf_pick_any_cpu((const struct cpumask *)p_cpumask, 0);
-+
-+	scx_bpf_put_idle_cpumask(idle_smtmask);
-+	return cpu;
-+
-+direct:
-+	taskc->dispatch_local = true;
-+	scx_bpf_put_idle_cpumask(idle_smtmask);
-+	return cpu;
-+
-+enoent:
-+	scx_bpf_put_idle_cpumask(idle_smtmask);
-+	return -ENOENT;
++	return scx_bpf_pick_idle_cpu(cand_cpumask, 0);
 +}
 +
-+void BPF_STRUCT_OPS(rusty_enqueue, struct task_struct *p, u64 enq_flags)
++s32 BPF_STRUCT_OPS(layered_select_cpu, struct task_struct *p, s32 prev_cpu, u64 wake_flags)
 +{
-+	struct task_ctx *taskc;
-+	struct bpf_cpumask *p_cpumask;
-+	pid_t pid = p->pid;
-+	u32 *new_dom;
++	const struct cpumask *idle_cpumask, *idle_smtmask;
++	struct cpumask *layer_cpumask, *layered_cpumask;
++	struct cpu_ctx *cctx;
++	struct task_ctx *tctx;
++	struct layer *layer;
 +	s32 cpu;
 +
-+	if (!(taskc = lookup_task_ctx(p)))
-+		return;
-+	if (!(p_cpumask = taskc->cpumask)) {
-+		scx_bpf_error("NULL cpmask");
-+		return;
-+	}
++	/* look up everything we need */
++	if (!(cctx = lookup_cpu_ctx(-1)) || !(tctx = lookup_task_ctx(p)) ||
++	    !(layered_cpumask = (struct cpumask *)tctx->layered_cpumask))
++		return prev_cpu;
 +
 +	/*
-+	 * Migrate @p to a new domain if requested by userland through lb_data.
++	 * We usually update the layer in layered_runnable() to avoid confusing.
++	 * As layered_select_cpu() takes place before runnable, new tasks would
++	 * still have -1 layer. Just return @prev_cpu.
 +	 */
-+	new_dom = bpf_map_lookup_elem(&lb_data, &pid);
-+	if (new_dom && *new_dom != taskc->dom_id &&
-+	    task_set_domain(taskc, p, *new_dom, false)) {
-+		stat_add(RUSTY_STAT_LOAD_BALANCE, 1);
-+		taskc->dispatch_local = false;
-+		cpu = scx_bpf_pick_any_cpu((const struct cpumask *)p_cpumask, 0);
-+		if (cpu >= 0)
-+			scx_bpf_kick_cpu(cpu, 0);
-+		goto dom_queue;
++	if (tctx->layer < 0)
++		return prev_cpu;
++
++	if (!(layer = lookup_layer(tctx->layer)) ||
++	    !(layer_cpumask = lookup_layer_cpumask(tctx->layer)))
++		return prev_cpu;
++
++	if (!(idle_cpumask = scx_bpf_get_idle_cpumask()))
++		return prev_cpu;
++
++	if (!(idle_smtmask = scx_bpf_get_idle_smtmask())) {
++		cpu = prev_cpu;
++		goto out_put_idle_cpumask;
 +	}
 +
-+	if (taskc->dispatch_local) {
-+		taskc->dispatch_local = false;
++	/* not much to do if bound to a single CPU */
++	if (p->nr_cpus_allowed == 1) {
++		cpu = prev_cpu;
++		if (scx_bpf_test_and_clear_cpu_idle(prev_cpu)) {
++			if (!bpf_cpumask_test_cpu(cpu, layer_cpumask))
++				lstat_inc(LSTAT_AFFN_VIOL, layer, cctx);
++			goto dispatch_local;
++		} else {
++			goto out_put_cpumasks;
++		}
++	}
++
++	maybe_refresh_layered_cpumask(layered_cpumask, p, tctx, layer_cpumask);
++
++	/*
++	 * If CPU has SMT, any wholly idle CPU is likely a better pick than
++	 * partially idle @prev_cpu.
++	 */
++	if ((cpu = pick_idle_cpu_from(layered_cpumask, prev_cpu,
++				      idle_cpumask, idle_smtmask)) >= 0)
++		goto dispatch_local;
++
++	/*
++	 * If the layer is an open one, we can try the whole machine.
++	 */
++	if (layer->open &&
++	    ((cpu = pick_idle_cpu_from(p->cpus_ptr, prev_cpu,
++				       idle_cpumask, idle_smtmask)) >= 0)) {
++		lstat_inc(LSTAT_OPEN_IDLE, layer, cctx);
++		goto dispatch_local;
++	}
++
++	cpu = prev_cpu;
++	goto out_put_cpumasks;
++
++dispatch_local:
++	tctx->dispatch_local = true;
++out_put_cpumasks:
++	scx_bpf_put_idle_cpumask(idle_smtmask);
++out_put_idle_cpumask:
++	scx_bpf_put_idle_cpumask(idle_cpumask);
++	return cpu;
++}
++
++void BPF_STRUCT_OPS(layered_enqueue, struct task_struct *p, u64 enq_flags)
++{
++	struct cpu_ctx *cctx;
++	struct task_ctx *tctx;
++	struct layer *layer;
++	u64 vtime = p->scx.dsq_vtime;
++	u32 idx;
++
++	if (!(cctx = lookup_cpu_ctx(-1)) || !(tctx = lookup_task_ctx(p)) ||
++	    !(layer = lookup_layer(tctx->layer)))
++		return;
++
++	if (tctx->dispatch_local) {
++		tctx->dispatch_local = false;
++		lstat_inc(LSTAT_LOCAL, layer, cctx);
 +		scx_bpf_dispatch(p, SCX_DSQ_LOCAL, slice_ns, enq_flags);
 +		return;
 +	}
 +
++	lstat_inc(LSTAT_GLOBAL, layer, cctx);
++
 +	/*
-+	 * @p is about to be queued on its domain's dsq. However, @p may be on a
-+	 * foreign CPU due to a greedy execution and not have gone through
-+	 * ->select_cpu() if it's being enqueued e.g. after slice exhaustion. If
-+	 * so, @p would be queued on its domain's dsq but none of the CPUs in
-+	 * the domain would be woken up which can induce temporary execution
-+	 * stalls. Kick a domestic CPU if @p is on a foreign domain.
++	 * Limit the amount of budget that an idling task can accumulate
++	 * to one slice.
 +	 */
-+	if (!bpf_cpumask_test_cpu(scx_bpf_task_cpu(p), (const struct cpumask *)p_cpumask)) {
-+		cpu = scx_bpf_pick_any_cpu((const struct cpumask *)p_cpumask, 0);
-+		scx_bpf_kick_cpu(cpu, 0);
-+		stat_add(RUSTY_STAT_REPATRIATE, 1);
++	if (vtime_before(vtime, layer->vtime_now - slice_ns))
++		vtime = layer->vtime_now - slice_ns;
++
++	if (!tctx->all_cpus_allowed) {
++		lstat_inc(LSTAT_AFFN_VIOL, layer, cctx);
++		scx_bpf_dispatch(p, SCX_DSQ_GLOBAL, slice_ns, enq_flags);
++		return;
 +	}
 +
-+dom_queue:
-+	if (fifo_sched) {
-+		scx_bpf_dispatch(p, taskc->dom_id, slice_ns, enq_flags);
-+	} else {
-+		u64 vtime = p->scx.dsq_vtime;
-+		u32 dom_id = taskc->dom_id;
-+		struct dom_ctx *domc;
++	scx_bpf_dispatch_vtime(p, tctx->layer, slice_ns, vtime, enq_flags);
 +
-+		domc = bpf_map_lookup_elem(&dom_data, &dom_id);
-+		if (!domc) {
-+			scx_bpf_error("Failed to lookup dom[%u]", dom_id);
-+			return;
-+		}
++	if (!layer->preempt)
++		return;
++
++	bpf_for(idx, 0, nr_possible_cpus) {
++		struct cpu_ctx *cand_cctx;
++		u32 cpu = (preempt_cursor + idx) % nr_possible_cpus;
++
++		if (!all_cpumask ||
++		    !bpf_cpumask_test_cpu(cpu, (const struct cpumask *)all_cpumask))
++			continue;
++		if (!(cand_cctx = lookup_cpu_ctx(cpu)) || cand_cctx->current_preempt)
++			continue;
++
++		scx_bpf_kick_cpu(cpu, SCX_KICK_PREEMPT);
 +
 +		/*
-+		 * Limit the amount of budget that an idling task can accumulate
-+		 * to one slice.
++		 * Round-robining doesn't have to be strict. Let's not bother
++		 * with atomic ops on $preempt_cursor.
 +		 */
-+		if (vtime_before(vtime, domc->vtime_now - slice_ns))
-+			vtime = domc->vtime_now - slice_ns;
++		preempt_cursor = (cpu + 1) % nr_possible_cpus;
 +
-+		scx_bpf_dispatch_vtime(p, taskc->dom_id, slice_ns, vtime, enq_flags);
-+	}
-+
-+	/*
-+	 * If there are CPUs which are idle and not saturated, wake them up to
-+	 * see whether they'd be able to steal the just queued task. This path
-+	 * is taken only if DIRECT_GREEDY didn't trigger in select_cpu().
-+	 *
-+	 * While both mechanisms serve very similar purposes, DIRECT_GREEDY
-+	 * emplaces the task in a foreign CPU directly while KICK_GREEDY just
-+	 * wakes up a foreign CPU which will then first try to execute from its
-+	 * domestic domain first before snooping foreign ones.
-+	 *
-+	 * While KICK_GREEDY is a more expensive way of accelerating greedy
-+	 * execution, DIRECT_GREEDY shows negative performance impacts when the
-+	 * CPUs are highly loaded while KICK_GREEDY doesn't. Even under fairly
-+	 * high utilization, KICK_GREEDY can slightly improve work-conservation.
-+	 */
-+	if (taskc->all_cpus && kick_greedy_cpumask) {
-+		cpu = scx_bpf_pick_idle_cpu((const struct cpumask *)
-+					    kick_greedy_cpumask, 0);
-+		if (cpu >= 0) {
-+			stat_add(RUSTY_STAT_KICK_GREEDY, 1);
-+			scx_bpf_kick_cpu(cpu, 0);
-+		}
++		lstat_inc(LSTAT_PREEMPT, layer, cctx);
++		break;
 +	}
 +}
 +
-+static bool cpumask_intersects_domain(const struct cpumask *cpumask, u32 dom_id)
++void BPF_STRUCT_OPS(layered_dispatch, s32 cpu, struct task_struct *prev)
 +{
-+	s32 cpu;
++	int idx;
 +
-+	if (dom_id >= MAX_DOMS)
++	/* consume preempting layers first */
++	bpf_for(idx, 0, nr_layers)
++		if (layers[idx].preempt && scx_bpf_consume(idx))
++			return;
++
++	/* consume !open layers second */
++	bpf_for(idx, 0, nr_layers) {
++		struct layer *layer = &layers[idx];
++		struct cpumask *layer_cpumask;
++
++		if (layer->open)
++			continue;
++
++		/* consume matching layers */
++		if (!(layer_cpumask = lookup_layer_cpumask(idx)))
++			return;
++
++		if (bpf_cpumask_test_cpu(cpu, layer_cpumask) ||
++		    (cpu == fallback_cpu && layer->nr_cpus == 0)) {
++			if (scx_bpf_consume(idx))
++				return;
++		}
++	}
++
++	/* consume !preempting open layers */
++	bpf_for(idx, 0, nr_layers) {
++		if (!layers[idx].preempt && layers[idx].open &&
++		    scx_bpf_consume(idx))
++			return;
++	}
++}
++
++static bool match_one(struct layer_match *match, struct task_struct *p, const char *cgrp_path)
++{
++	switch (match->kind) {
++	case MATCH_CGROUP_PREFIX: {
++		return match_prefix(match->cgroup_prefix, cgrp_path, MAX_PATH);
++	}
++	case MATCH_COMM_PREFIX: {
++		char comm[MAX_COMM];
++		memcpy(comm, p->comm, MAX_COMM);
++		return match_prefix(match->comm_prefix, comm, MAX_COMM);
++	}
++	case MATCH_NICE_ABOVE:
++		return (s32)p->static_prio - 120 > match->nice_above_or_below;
++	case MATCH_NICE_BELOW:
++		return (s32)p->static_prio - 120 < match->nice_above_or_below;
++	default:
++		scx_bpf_error("invalid match kind %d", match->kind);
 +		return false;
++	}
++}
 +
-+	bpf_for(cpu, 0, nr_cpus) {
-+		if (bpf_cpumask_test_cpu(cpu, cpumask) &&
-+		    (dom_cpumasks[dom_id][cpu / 64] & (1LLU << (cpu % 64))))
++static bool match_layer(struct layer *layer, struct task_struct *p, const char *cgrp_path)
++{
++	u32 nr_match_ors = layer->nr_match_ors;
++	u64 or_idx, and_idx;
++
++	if (nr_match_ors > MAX_LAYER_MATCH_ORS) {
++		scx_bpf_error("too many ORs");
++		return false;
++	}
++
++	bpf_for(or_idx, 0, nr_match_ors) {
++		struct layer_match_ands *ands;
++		bool matched = true;
++
++		barrier_var(or_idx);
++		if (or_idx >= MAX_LAYER_MATCH_ORS)
++			return false; /* can't happen */
++		ands = &layer->matches[or_idx];
++
++		if (ands->nr_match_ands > NR_LAYER_MATCH_KINDS) {
++			scx_bpf_error("too many ANDs");
++			return false;
++		}
++
++		bpf_for(and_idx, 0, ands->nr_match_ands) {
++			struct layer_match *match;
++
++			barrier_var(and_idx);
++			if (and_idx >= NR_LAYER_MATCH_KINDS)
++				return false; /* can't happen */
++			match = &ands->matches[and_idx];
++
++			if (!match_one(match, p, cgrp_path)) {
++				matched = false;
++				break;
++			}
++		}
++
++		if (matched)
 +			return true;
 +	}
++
 +	return false;
 +}
 +
-+static u32 dom_rr_next(s32 cpu)
++static void maybe_refresh_layer(struct task_struct *p, struct task_ctx *tctx)
 +{
-+	struct pcpu_ctx *pcpuc;
-+	u32 dom_id;
++	const char *cgrp_path;
++	bool matched = false;
++	u64 idx;	// XXX - int makes verifier unhappy
 +
-+	pcpuc = MEMBER_VPTR(pcpu_ctx, [cpu]);
-+	if (!pcpuc)
-+		return 0;
-+
-+	dom_id = (pcpuc->dom_rr_cur + 1) % nr_doms;
-+
-+	if (dom_id == cpu_to_dom_id(cpu))
-+		dom_id = (dom_id + 1) % nr_doms;
-+
-+	pcpuc->dom_rr_cur = dom_id;
-+	return dom_id;
-+}
-+
-+void BPF_STRUCT_OPS(rusty_dispatch, s32 cpu, struct task_struct *prev)
-+{
-+	u32 dom = cpu_to_dom_id(cpu);
-+
-+	if (scx_bpf_consume(dom)) {
-+		stat_add(RUSTY_STAT_DSQ_DISPATCH, 1);
++	if (!tctx->refresh_layer)
 +		return;
-+	}
++	tctx->refresh_layer = false;
 +
-+	if (!greedy_threshold)
++	if (!(cgrp_path = format_cgrp_path(p->cgroups->dfl_cgrp)))
 +		return;
 +
-+	bpf_repeat(nr_doms - 1) {
-+		u32 dom_id = dom_rr_next(cpu);
++	if (tctx->layer >= 0 && tctx->layer < nr_layers)
++		__sync_fetch_and_add(&layers[tctx->layer].nr_tasks, -1);
 +
-+		if (scx_bpf_dsq_nr_queued(dom_id) >= greedy_threshold &&
-+		    scx_bpf_consume(dom_id)) {
-+			stat_add(RUSTY_STAT_GREEDY, 1);
++	bpf_for(idx, 0, nr_layers) {
++		if (match_layer(&layers[idx], p, cgrp_path)) {
++			matched = true;
 +			break;
 +		}
 +	}
++
++	if (matched) {
++		struct layer *layer = &layers[idx];
++
++		tctx->layer = idx;
++		tctx->layer_cpus_seq = layer->cpus_seq - 1;
++		__sync_fetch_and_add(&layer->nr_tasks, 1);
++		/*
++		 * XXX - To be correct, we'd need to calculate the vtime
++		 * delta in the previous layer, scale it by the load
++		 * fraction difference and then offset from the new
++		 * layer's vtime_now. For now, just do the simple thing
++		 * and assume the offset to be zero.
++		 *
++		 * Revisit if high frequency dynamic layer switching
++		 * needs to be supported.
++		 */
++		p->scx.dsq_vtime = layer->vtime_now;
++	} else {
++		scx_bpf_error("[%s]%d didn't match any layer", p->comm, p->pid);
++	}
++
++	if (tctx->layer < nr_layers - 1)
++		trace("LAYER=%d %s[%d] cgrp=\"%s\"",
++		      tctx->layer, p->comm, p->pid, cgrp_path);
 +}
 +
-+void BPF_STRUCT_OPS(rusty_runnable, struct task_struct *p, u64 enq_flags)
++void BPF_STRUCT_OPS(layered_runnable, struct task_struct *p, u64 enq_flags)
 +{
 +	u64 now = bpf_ktime_get_ns();
-+	struct task_ctx *taskc;
++	struct task_ctx *tctx;
 +
-+	if (!(taskc = lookup_task_ctx(p)))
++	if (!(tctx = lookup_task_ctx(p)))
 +		return;
 +
-+	taskc->runnable = true;
-+	taskc->is_kworker = p->flags & PF_WQ_WORKER;
++	maybe_refresh_layer(p, tctx);
 +
-+	ravg_accumulate(&taskc->dcyc_rd, taskc->runnable, now, load_half_life);
-+	dom_load_adj(taskc->dom_id, p->scx.weight, now);
++	adj_load(tctx->layer, p->scx.weight, now);
 +}
 +
-+void BPF_STRUCT_OPS(rusty_running, struct task_struct *p)
++void BPF_STRUCT_OPS(layered_running, struct task_struct *p)
 +{
-+	struct task_ctx *taskc;
-+	struct dom_ctx *domc;
-+	u32 dom_id, dap_gen;
++	struct cpu_ctx *cctx;
++	struct task_ctx *tctx;
++	struct layer *layer;
 +
-+	if (!(taskc = lookup_task_ctx(p)))
++	if (!(cctx = lookup_cpu_ctx(-1)) || !(tctx = lookup_task_ctx(p)) ||
++	    !(layer = lookup_layer(tctx->layer)))
 +		return;
 +
-+	taskc->running_at = bpf_ktime_get_ns();
-+	dom_id = taskc->dom_id;
-+	if (dom_id >= MAX_DOMS) {
-+		scx_bpf_error("Invalid dom ID");
-+		return;
-+	}
++	if (vtime_before(layer->vtime_now, p->scx.dsq_vtime))
++		layer->vtime_now = p->scx.dsq_vtime;
 +
-+	/*
-+	 * Record that @p has been active in @domc. Load balancer will only
-+	 * consider recently active tasks. Access synchronization rules aren't
-+	 * strict. We just need to be right most of the time.
-+	 */
-+	dap_gen = dom_active_pids[dom_id].gen;
-+	if (taskc->dom_active_pids_gen != dap_gen) {
-+		u64 idx = __sync_fetch_and_add(&dom_active_pids[dom_id].write_idx, 1) %
-+			MAX_DOM_ACTIVE_PIDS;
-+		s32 *pidp;
-+
-+		pidp = MEMBER_VPTR(dom_active_pids, [dom_id].pids[idx]);
-+		if (!pidp) {
-+			scx_bpf_error("dom_active_pids[%u][%llu] indexing failed",
-+				      dom_id, idx);
-+			return;
-+		}
-+
-+		*pidp = p->pid;
-+		taskc->dom_active_pids_gen = dap_gen;
-+	}
-+
-+	if (fifo_sched)
-+		return;
-+
-+	domc = bpf_map_lookup_elem(&dom_data, &dom_id);
-+	if (!domc) {
-+		scx_bpf_error("Failed to lookup dom[%u]", dom_id);
-+		return;
-+	}
-+
-+	/*
-+	 * Global vtime always progresses forward as tasks start executing. The
-+	 * test and update can be performed concurrently from multiple CPUs and
-+	 * thus racy. Any error should be contained and temporary. Let's just
-+	 * live with it.
-+	 */
-+	if (vtime_before(domc->vtime_now, p->scx.dsq_vtime))
-+		domc->vtime_now = p->scx.dsq_vtime;
++	cctx->current_preempt = layer->preempt;
++	tctx->started_running_at = bpf_ktime_get_ns();
 +}
 +
-+void BPF_STRUCT_OPS(rusty_stopping, struct task_struct *p, bool runnable)
++void BPF_STRUCT_OPS(layered_stopping, struct task_struct *p, bool runnable)
 +{
-+	struct task_ctx *taskc;
++	struct cpu_ctx *cctx;
++	struct task_ctx *tctx;
++	u64 used;
++	u32 layer;
 +
-+	if (fifo_sched)
++	if (!(cctx = lookup_cpu_ctx(-1)) || !(tctx = lookup_task_ctx(p)))
 +		return;
 +
-+	if (!(taskc = lookup_task_ctx(p)))
++	layer = tctx->layer;
++	if (layer >= nr_layers) {
++		scx_bpf_error("invalid layer %u", layer);
 +		return;
++	}
++
++	used = bpf_ktime_get_ns() - tctx->started_running_at;
++	cctx->layer_cycles[layer] += used;
++	cctx->current_preempt = false;
 +
 +	/* scale the execution time by the inverse of the weight and charge */
-+	p->scx.dsq_vtime +=
-+		(bpf_ktime_get_ns() - taskc->running_at) * 100 / p->scx.weight;
++	p->scx.dsq_vtime += used * 100 / p->scx.weight;
 +}
 +
-+void BPF_STRUCT_OPS(rusty_quiescent, struct task_struct *p, u64 deq_flags)
++void BPF_STRUCT_OPS(layered_quiescent, struct task_struct *p, u64 deq_flags)
 +{
-+	u64 now = bpf_ktime_get_ns();
-+	struct task_ctx *taskc;
++	struct task_ctx *tctx;
 +
-+	if (!(taskc = lookup_task_ctx(p)))
-+		return;
-+
-+	taskc->runnable = false;
-+
-+	ravg_accumulate(&taskc->dcyc_rd, taskc->runnable, now, load_half_life);
-+	dom_load_adj(taskc->dom_id, -(s64)p->scx.weight, now);
++	if ((tctx = lookup_task_ctx(p)))
++		adj_load(tctx->layer, -(s64)p->scx.weight, bpf_ktime_get_ns());
 +}
 +
-+void BPF_STRUCT_OPS(rusty_set_weight, struct task_struct *p, u32 weight)
++void BPF_STRUCT_OPS(layered_set_weight, struct task_struct *p, u32 weight)
 +{
-+	struct task_ctx *taskc;
++	struct task_ctx *tctx;
 +
-+	if (!(taskc = lookup_task_ctx(p)))
-+		return;
-+
-+	taskc->weight = weight;
++	if ((tctx = lookup_task_ctx(p)))
++		tctx->refresh_layer = true;
 +}
 +
-+static u32 task_pick_domain(struct task_ctx *taskc, struct task_struct *p,
-+			    const struct cpumask *cpumask)
-+{
-+	s32 cpu = bpf_get_smp_processor_id();
-+	u32 first_dom = MAX_DOMS, dom;
-+
-+	if (cpu < 0 || cpu >= MAX_CPUS)
-+		return MAX_DOMS;
-+
-+	taskc->dom_mask = 0;
-+
-+	dom = pcpu_ctx[cpu].dom_rr_cur++;
-+	bpf_repeat(nr_doms) {
-+		dom = (dom + 1) % nr_doms;
-+		if (cpumask_intersects_domain(cpumask, dom)) {
-+			taskc->dom_mask |= 1LLU << dom;
-+			/*
-+			 * AsThe starting point is round-robin'd and the first
-+			 * match should be spread across all the domains.
-+			 */
-+			if (first_dom == MAX_DOMS)
-+				first_dom = dom;
-+		}
-+	}
-+
-+	return first_dom;
-+}
-+
-+static void task_pick_and_set_domain(struct task_ctx *taskc,
-+				     struct task_struct *p,
-+				     const struct cpumask *cpumask,
-+				     bool init_dsq_vtime)
-+{
-+	u32 dom_id = 0;
-+
-+	if (nr_doms > 1)
-+		dom_id = task_pick_domain(taskc, p, cpumask);
-+
-+	if (!task_set_domain(taskc, p, dom_id, init_dsq_vtime))
-+		scx_bpf_error("Failed to set dom%d for %s[%d]",
-+			      dom_id, p->comm, p->pid);
-+}
-+
-+void BPF_STRUCT_OPS(rusty_set_cpumask, struct task_struct *p,
++void BPF_STRUCT_OPS(layered_set_cpumask, struct task_struct *p,
 +		    const struct cpumask *cpumask)
 +{
-+	struct task_ctx *taskc;
++	struct task_ctx *tctx;
 +
-+	if (!(taskc = lookup_task_ctx(p)))
++	if (!(tctx = lookup_task_ctx(p)))
 +		return;
 +
-+	task_pick_and_set_domain(taskc, p, cpumask, false);
-+	if (all_cpumask)
-+		taskc->all_cpus =
-+			bpf_cpumask_subset((const struct cpumask *)all_cpumask, cpumask);
++	if (!all_cpumask) {
++		scx_bpf_error("NULL all_cpumask");
++		return;
++	}
++
++	tctx->all_cpus_allowed =
++		bpf_cpumask_subset((const struct cpumask *)all_cpumask, cpumask);
 +}
 +
-+s32 BPF_STRUCT_OPS(rusty_prep_enable, struct task_struct *p,
++s32 BPF_STRUCT_OPS(layered_prep_enable, struct task_struct *p,
 +		   struct scx_enable_args *args)
 +{
++	struct task_ctx tctx_init = {
++		.pid = p->pid,
++		.layer = -1,
++		.refresh_layer = true,
++	};
++	struct task_ctx *tctx;
 +	struct bpf_cpumask *cpumask;
-+	struct task_ctx taskc = { .dom_active_pids_gen = -1 };
-+	struct task_ctx *map_value;
-+	long ret;
-+	pid_t pid;
++	s32 pid = p->pid;
++	s32 ret;
 +
-+	pid = p->pid;
-+	ret = bpf_map_update_elem(&task_data, &pid, &taskc, BPF_NOEXIST);
-+	if (ret) {
-+		stat_add(RUSTY_STAT_TASK_GET_ERR, 1);
++	if (all_cpumask)
++		tctx_init.all_cpus_allowed =
++			bpf_cpumask_subset((const struct cpumask *)all_cpumask, p->cpus_ptr);
++	else
++		scx_bpf_error("missing all_cpumask");
++
++	/*
++	 * XXX - We want BPF_NOEXIST but bpf_map_delete_elem() in .disable() may
++	 * fail spuriously due to BPF recursion protection triggering
++	 * unnecessarily.
++	 */
++	if ((ret = bpf_map_update_elem(&task_ctxs, &pid, &tctx_init, 0 /*BPF_NOEXIST*/))) {
++		scx_bpf_error("task_ctx allocation failure, ret=%d", ret);
 +		return ret;
 +	}
 +
@@ -1940,193 +1080,224 @@ index 000000000000..7a8b27ceae05
 +	 * Read the entry from the map immediately so we can add the cpumask
 +	 * with bpf_kptr_xchg().
 +	 */
-+	map_value = bpf_map_lookup_elem(&task_data, &pid);
-+	if (!map_value)
-+		/* Should never happen -- it was just inserted above. */
-+		return -EINVAL;
++	if (!(tctx = lookup_task_ctx(p)))
++		return -ENOENT;
 +
 +	cpumask = bpf_cpumask_create();
 +	if (!cpumask) {
-+		bpf_map_delete_elem(&task_data, &pid);
++		bpf_map_delete_elem(&task_ctxs, &pid);
 +		return -ENOMEM;
 +	}
 +
-+	cpumask = bpf_kptr_xchg(&map_value->cpumask, cpumask);
++	cpumask = bpf_kptr_xchg(&tctx->layered_cpumask, cpumask);
 +	if (cpumask) {
 +		/* Should never happen as we just inserted it above. */
 +		bpf_cpumask_release(cpumask);
-+		bpf_map_delete_elem(&task_data, &pid);
++		bpf_map_delete_elem(&task_ctxs, &pid);
 +		return -EINVAL;
 +	}
 +
-+	task_pick_and_set_domain(map_value, p, p->cpus_ptr, true);
++	/*
++	 * We are matching cgroup hierarchy path directly rather than the CPU
++	 * controller path. As the former isn't available during the scheduler
++	 * fork path, let's delay the layer selection until the first
++	 * runnable().
++	 */
 +
 +	return 0;
 +}
 +
-+void BPF_STRUCT_OPS(rusty_disable, struct task_struct *p)
++void BPF_STRUCT_OPS(layered_cancel_enable, struct task_struct *p)
 +{
-+	pid_t pid = p->pid;
-+	long ret = bpf_map_delete_elem(&task_data, &pid);
-+	if (ret) {
-+		stat_add(RUSTY_STAT_TASK_GET_ERR, 1);
++	s32 pid = p->pid;
++
++	bpf_map_delete_elem(&task_ctxs, &pid);
++}
++
++void BPF_STRUCT_OPS(layered_disable, struct task_struct *p)
++{
++	struct cpu_ctx *cctx;
++	struct task_ctx *tctx;
++	s32 pid = p->pid;
++	int ret;
++
++	if (!(cctx = lookup_cpu_ctx(-1)) || !(tctx = lookup_task_ctx(p)))
 +		return;
-+	}
++
++	if (tctx->layer >= 0 && tctx->layer < nr_layers)
++		__sync_fetch_and_add(&layers[tctx->layer].nr_tasks, -1);
++
++	/*
++	 * XXX - There's no reason delete should fail here but BPF's recursion
++	 * protection can unnecessarily fail the operation. The fact that
++	 * deletions aren't reliable means that we sometimes leak task_ctx and
++	 * can't use BPF_NOEXIST on allocation in .prep_enable().
++	 */
++	ret = bpf_map_delete_elem(&task_ctxs, &pid);
++	if (ret)
++		gstat_inc(GSTAT_TASK_CTX_FREE_FAILED, cctx);
 +}
 +
-+static s32 create_dom(u32 dom_id)
-+{
-+	struct dom_ctx domc_init = {}, *domc;
-+	struct bpf_cpumask *cpumask;
-+	u32 cpu;
-+	s32 ret;
-+
-+	ret = scx_bpf_create_dsq(dom_id, -1);
-+	if (ret < 0) {
-+		scx_bpf_error("Failed to create dsq %u (%d)", dom_id, ret);
-+		return ret;
-+	}
-+
-+	ret = bpf_map_update_elem(&dom_data, &dom_id, &domc_init, 0);
-+	if (ret) {
-+		scx_bpf_error("Failed to add dom_ctx entry %u (%d)", dom_id, ret);
-+		return ret;
-+	}
-+
-+	domc = bpf_map_lookup_elem(&dom_data, &dom_id);
-+	if (!domc) {
-+		/* Should never happen, we just inserted it above. */
-+		scx_bpf_error("No dom%u", dom_id);
-+		return -ENOENT;
-+	}
-+
-+	cpumask = bpf_cpumask_create();
-+	if (!cpumask) {
-+		scx_bpf_error("Failed to create BPF cpumask for domain %u", dom_id);
-+		return -ENOMEM;
-+	}
-+
-+	for (cpu = 0; cpu < MAX_CPUS; cpu++) {
-+		const volatile u64 *dmask;
-+
-+		dmask = MEMBER_VPTR(dom_cpumasks, [dom_id][cpu / 64]);
-+		if (!dmask) {
-+			scx_bpf_error("array index error");
-+			bpf_cpumask_release(cpumask);
-+			return -ENOENT;
-+		}
-+
-+		if (*dmask & (1LLU << (cpu % 64))) {
-+			bpf_cpumask_set_cpu(cpu, cpumask);
-+
-+			bpf_rcu_read_lock();
-+			if (all_cpumask)
-+				bpf_cpumask_set_cpu(cpu, all_cpumask);
-+			bpf_rcu_read_unlock();
-+		}
-+	}
-+
-+	cpumask = bpf_kptr_xchg(&domc->cpumask, cpumask);
-+	if (cpumask) {
-+		scx_bpf_error("Domain %u cpumask already present", dom_id);
-+		bpf_cpumask_release(cpumask);
-+		return -EEXIST;
-+	}
-+
-+	cpumask = bpf_cpumask_create();
-+	if (!cpumask) {
-+		scx_bpf_error("Failed to create BPF cpumask for domain %u",
-+			      dom_id);
-+		return -ENOMEM;
-+	}
-+
-+	cpumask = bpf_kptr_xchg(&domc->direct_greedy_cpumask, cpumask);
-+	if (cpumask) {
-+		scx_bpf_error("Domain %u direct_greedy_cpumask already present",
-+			      dom_id);
-+		bpf_cpumask_release(cpumask);
-+		return -EEXIST;
-+	}
-+
-+	return 0;
-+}
-+
-+s32 BPF_STRUCT_OPS_SLEEPABLE(rusty_init)
++s32 BPF_STRUCT_OPS_SLEEPABLE(layered_init)
 +{
 +	struct bpf_cpumask *cpumask;
-+	s32 i, ret;
++	int i, j, k, nr_online_cpus, ret;
++
++	scx_bpf_switch_all();
 +
 +	cpumask = bpf_cpumask_create();
 +	if (!cpumask)
 +		return -ENOMEM;
++
++	nr_online_cpus = 0;
++	bpf_for(i, 0, nr_possible_cpus) {
++		const volatile u8 *u8_ptr;
++
++		if ((u8_ptr = MEMBER_VPTR(all_cpus, [i / 8]))) {
++			if (*u8_ptr & (1 << (i % 8))) {
++				bpf_cpumask_set_cpu(i, cpumask);
++				nr_online_cpus++;
++			}
++		} else {
++			return -EINVAL;
++		}
++	}
++
 +	cpumask = bpf_kptr_xchg(&all_cpumask, cpumask);
 +	if (cpumask)
 +		bpf_cpumask_release(cpumask);
 +
-+	cpumask = bpf_cpumask_create();
-+	if (!cpumask)
-+		return -ENOMEM;
-+	cpumask = bpf_kptr_xchg(&direct_greedy_cpumask, cpumask);
-+	if (cpumask)
-+		bpf_cpumask_release(cpumask);
++	dbg("CFG: Dumping configuration, nr_online_cpus=%d smt_enabled=%d",
++	    nr_online_cpus, smt_enabled);
 +
-+	cpumask = bpf_cpumask_create();
-+	if (!cpumask)
-+		return -ENOMEM;
-+	cpumask = bpf_kptr_xchg(&kick_greedy_cpumask, cpumask);
-+	if (cpumask)
-+		bpf_cpumask_release(cpumask);
++	bpf_for(i, 0, nr_layers) {
++		struct layer *layer = &layers[i];
 +
-+	if (!switch_partial)
-+		scx_bpf_switch_all();
++		dbg("CFG LAYER[%d] open=%d preempt=%d",
++		    i, layer->open, layer->preempt);
 +
-+	bpf_for(i, 0, nr_doms) {
-+		ret = create_dom(i);
-+		if (ret)
-+			return ret;
++		if (layer->nr_match_ors > MAX_LAYER_MATCH_ORS) {
++			scx_bpf_error("too many ORs");
++			return -EINVAL;
++		}
++
++		bpf_for(j, 0, layer->nr_match_ors) {
++			struct layer_match_ands *ands = MEMBER_VPTR(layers, [i].matches[j]);
++			if (!ands) {
++				scx_bpf_error("shouldn't happen");
++				return -EINVAL;
++			}
++
++			if (ands->nr_match_ands > NR_LAYER_MATCH_KINDS) {
++				scx_bpf_error("too many ANDs");
++				return -EINVAL;
++			}
++
++			dbg("CFG   OR[%02d]", j);
++
++			bpf_for(k, 0, ands->nr_match_ands) {
++				char header[32];
++				u64 header_data[1] = { k };
++				struct layer_match *match;
++
++				bpf_snprintf(header, sizeof(header), "CFG     AND[%02d]:",
++					     header_data, sizeof(header_data));
++
++				match = MEMBER_VPTR(layers, [i].matches[j].matches[k]);
++				if (!match) {
++					scx_bpf_error("shouldn't happen");
++					return -EINVAL;
++				}
++
++				switch (match->kind) {
++				case MATCH_CGROUP_PREFIX:
++					dbg("%s CGROUP_PREFIX \"%s\"", header, match->cgroup_prefix);
++					break;
++				case MATCH_COMM_PREFIX:
++					dbg("%s COMM_PREFIX \"%s\"", header, match->comm_prefix);
++					break;
++				case MATCH_NICE_ABOVE:
++					dbg("%s NICE_ABOVE %d", header, match->nice_above_or_below);
++					break;
++				case MATCH_NICE_BELOW:
++					dbg("%s NICE_BELOW %d", header, match->nice_above_or_below);
++					break;
++				default:
++					scx_bpf_error("%s Invalid kind", header);
++					return -EINVAL;
++				}
++			}
++			if (ands->nr_match_ands == 0)
++				dbg("CFG     DEFAULT");
++		}
 +	}
 +
-+	bpf_for(i, 0, nr_cpus)
-+		pcpu_ctx[i].dom_rr_cur = i;
++	bpf_for(i, 0, nr_layers) {
++		struct layer_cpumask_wrapper *cpumaskw;
++
++		layers[i].idx = i;
++
++		ret = scx_bpf_create_dsq(i, -1);
++		if (ret < 0)
++			return ret;
++
++		if (!(cpumaskw = bpf_map_lookup_elem(&layer_cpumasks, &i)))
++			return -ENONET;
++
++		cpumask = bpf_cpumask_create();
++		if (!cpumask)
++			return -ENOMEM;
++
++		/*
++		 * Start all layers with full cpumask so that everything runs
++		 * everywhere. This will soon be updated by refresh_cpumasks()
++		 * once the scheduler starts running.
++		 */
++		bpf_cpumask_setall(cpumask);
++
++		cpumask = bpf_kptr_xchg(&cpumaskw->cpumask, cpumask);
++		if (cpumask)
++			bpf_cpumask_release(cpumask);
++	}
 +
 +	return 0;
 +}
 +
-+void BPF_STRUCT_OPS(rusty_exit, struct scx_exit_info *ei)
++void BPF_STRUCT_OPS(layered_exit, struct scx_exit_info *ei)
 +{
-+	bpf_probe_read_kernel_str(exit_msg, sizeof(exit_msg), ei->msg);
-+	exit_kind = ei->kind;
++	uei_record(&uei, ei);
 +}
 +
 +SEC(".struct_ops.link")
-+struct sched_ext_ops rusty = {
-+	.select_cpu		= (void *)rusty_select_cpu,
-+	.enqueue		= (void *)rusty_enqueue,
-+	.dispatch		= (void *)rusty_dispatch,
-+	.runnable		= (void *)rusty_runnable,
-+	.running		= (void *)rusty_running,
-+	.stopping		= (void *)rusty_stopping,
-+	.quiescent		= (void *)rusty_quiescent,
-+	.set_weight		= (void *)rusty_set_weight,
-+	.set_cpumask		= (void *)rusty_set_cpumask,
-+	.prep_enable		= (void *)rusty_prep_enable,
-+	.disable		= (void *)rusty_disable,
-+	.init			= (void *)rusty_init,
-+	.exit			= (void *)rusty_exit,
-+	.name			= "rusty",
++struct sched_ext_ops layered = {
++	.select_cpu		= (void *)layered_select_cpu,
++	.enqueue		= (void *)layered_enqueue,
++	.dispatch		= (void *)layered_dispatch,
++	.runnable		= (void *)layered_runnable,
++	.running		= (void *)layered_running,
++	.stopping		= (void *)layered_stopping,
++	.quiescent		= (void *)layered_quiescent,
++	.set_weight		= (void *)layered_set_weight,
++	.set_cpumask		= (void *)layered_set_cpumask,
++	.prep_enable		= (void *)layered_prep_enable,
++	.cancel_enable		= (void *)layered_cancel_enable,
++	.disable		= (void *)layered_disable,
++	.init			= (void *)layered_init,
++	.exit			= (void *)layered_exit,
++	.name			= "layered",
 +};
-diff --git a/tools/sched_ext/scx_rusty/src/bpf/rusty.h b/tools/sched_ext/scx_rusty/src/bpf/rusty.h
+diff --git a/tools/sched_ext/scx_layered/src/bpf/layered.h b/tools/sched_ext/scx_layered/src/bpf/layered.h
 new file mode 100644
-index 000000000000..8a7487cf426c
+index 000000000000..bedfa0650c00
 --- /dev/null
-+++ b/tools/sched_ext/scx_rusty/src/bpf/rusty.h
-@@ -0,0 +1,97 @@
++++ b/tools/sched_ext/scx_layered/src/bpf/layered.h
+@@ -0,0 +1,100 @@
 +// Copyright (c) Meta Platforms, Inc. and affiliates.
 +
 +// This software may be used and distributed according to the terms of the
 +// GNU General Public License version 2.
-+#ifndef __RUSTY_H
-+#define __RUSTY_H
++#ifndef __LAYERED_H
++#define __LAYERED_H
 +
 +#include <stdbool.h>
 +#ifndef __kptr
@@ -2137,108 +1308,203 @@ index 000000000000..8a7487cf426c
 +#endif
 +
 +#ifndef __KERNEL__
-+typedef unsigned char u8;
-+typedef unsigned int u32;
 +typedef unsigned long long u64;
++typedef long long s64;
 +#endif
 +
 +#include "../../../ravg.bpf.h"
 +
 +enum consts {
-+	MAX_CPUS		= 512,
-+	MAX_DOMS		= 64,	/* limited to avoid complex bitmask ops */
-+	CACHELINE_SIZE		= 64,
++	MAX_CPUS_SHIFT		= 9,
++	MAX_CPUS		= 1 << MAX_CPUS_SHIFT,
++	MAX_CPUS_U8		= MAX_CPUS / 8,
++	MAX_TASKS		= 131072,
++	MAX_PATH		= 4096,
++	MAX_COMM		= 16,
++	MAX_LAYER_MATCH_ORS	= 32,
++	MAX_LAYERS		= 16,
++	USAGE_HALF_LIFE		= 100000000,	/* 100ms */
 +
-+	/*
-+	 * When userspace load balancer is trying to determine the tasks to push
-+	 * out from an overloaded domain, it looks at the the following number
-+	 * of recently active tasks of the domain. While this may lead to
-+	 * spurious migration victim selection failures in pathological cases,
-+	 * this isn't a practical problem as the LB rounds are best-effort
-+	 * anyway and will be retried until loads are balanced.
-+	 */
-+	MAX_DOM_ACTIVE_PIDS	= 1024,
++	/* XXX remove */
++	MAX_CGRP_PREFIXES = 32
 +};
 +
 +/* Statistics */
-+enum stat_idx {
-+	/* The following fields add up to all dispatched tasks */
-+	RUSTY_STAT_WAKE_SYNC,
-+	RUSTY_STAT_PREV_IDLE,
-+	RUSTY_STAT_GREEDY_IDLE,
-+	RUSTY_STAT_PINNED,
-+	RUSTY_STAT_DIRECT_DISPATCH,
-+	RUSTY_STAT_DIRECT_GREEDY,
-+	RUSTY_STAT_DIRECT_GREEDY_FAR,
-+	RUSTY_STAT_DSQ_DISPATCH,
-+	RUSTY_STAT_GREEDY,
-+
-+	/* Extra stats that don't contribute to total */
-+	RUSTY_STAT_REPATRIATE,
-+	RUSTY_STAT_KICK_GREEDY,
-+	RUSTY_STAT_LOAD_BALANCE,
-+
-+	/* Errors */
-+	RUSTY_STAT_TASK_GET_ERR,
-+
-+	RUSTY_NR_STATS,
++enum global_stat_idx {
++	GSTAT_TASK_CTX_FREE_FAILED,
++	NR_GSTATS,
 +};
 +
-+struct task_ctx {
-+	/* The domains this task can run on */
-+	u64 dom_mask;
-+
-+	struct bpf_cpumask __kptr *cpumask;
-+	u32 dom_id;
-+	u32 weight;
-+	bool runnable;
-+	u64 dom_active_pids_gen;
-+	u64 running_at;
-+
-+	/* The task is a workqueue worker thread */
-+	bool is_kworker;
-+
-+	/* Allowed on all CPUs and eligible for DIRECT_GREEDY optimization */
-+	bool all_cpus;
-+
-+	/* select_cpu() telling enqueue() to queue directly on the DSQ */
-+	bool dispatch_local;
-+
-+	struct ravg_data dcyc_rd;
++enum layer_stat_idx {
++	LSTAT_LOCAL,
++	LSTAT_GLOBAL,
++	LSTAT_OPEN_IDLE,
++	LSTAT_AFFN_VIOL,
++	LSTAT_PREEMPT,
++	NR_LSTATS,
 +};
 +
-+struct dom_ctx {
-+	u64 vtime_now;
-+	struct bpf_cpumask __kptr *cpumask;
-+	struct bpf_cpumask __kptr *direct_greedy_cpumask;
-+
-+	u64 load;
-+	struct ravg_data load_rd;
-+	u64 dbg_load_printed_at;
++struct cpu_ctx {
++	bool			current_preempt;
++	u64			layer_cycles[MAX_LAYERS];
++	u64			gstats[NR_GSTATS];
++	u64			lstats[MAX_LAYERS][NR_LSTATS];
 +};
 +
-+#endif /* __RUSTY_H */
-diff --git a/tools/sched_ext/scx_rusty/src/main.rs b/tools/sched_ext/scx_rusty/src/main.rs
++enum layer_match_kind {
++	MATCH_CGROUP_PREFIX,
++	MATCH_COMM_PREFIX,
++	MATCH_NICE_ABOVE,
++	MATCH_NICE_BELOW,
++
++	NR_LAYER_MATCH_KINDS,
++};
++
++struct layer_match {
++	int		kind;
++	char		cgroup_prefix[MAX_PATH];
++	char		comm_prefix[MAX_COMM];
++	int		nice_above_or_below;
++};
++
++struct layer_match_ands {
++	struct layer_match	matches[NR_LAYER_MATCH_KINDS];
++	int			nr_match_ands;
++};
++
++struct layer {
++	struct layer_match_ands	matches[MAX_LAYER_MATCH_ORS];
++	unsigned int		nr_match_ors;
++	unsigned int		idx;
++	bool			open;
++	bool			preempt;
++
++	u64			vtime_now;
++	u64			nr_tasks;
++
++	u64			load;
++	struct ravg_data	load_rd;
++
++	u64			cpus_seq;
++	unsigned int		refresh_cpus;
++	unsigned char		cpus[MAX_CPUS_U8];
++	unsigned int		nr_cpus;	// managed from BPF side
++};
++
++#endif /* __LAYERED_H */
+diff --git a/tools/sched_ext/scx_layered/src/bpf/util.bpf.c b/tools/sched_ext/scx_layered/src/bpf/util.bpf.c
 new file mode 100644
-index 000000000000..3b0bcd742e05
+index 000000000000..703e0eece60b
 --- /dev/null
-+++ b/tools/sched_ext/scx_rusty/src/main.rs
-@@ -0,0 +1,1265 @@
++++ b/tools/sched_ext/scx_layered/src/bpf/util.bpf.c
+@@ -0,0 +1,68 @@
++/* to be included in the main bpf.c file */
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
++	__uint(key_size, sizeof(u32));
++	/* double size because verifier can't follow length calculation */
++	__uint(value_size, 2 * MAX_PATH);
++	__uint(max_entries, 1);
++} cgrp_path_bufs SEC(".maps");
++
++static char *format_cgrp_path(struct cgroup *cgrp)
++{
++	u32 zero = 0;
++	char *path = bpf_map_lookup_elem(&cgrp_path_bufs, &zero);
++	u32 len = 0, level, max_level;
++
++	if (!path) {
++		scx_bpf_error("cgrp_path_buf lookup failed");
++		return NULL;
++	}
++
++	max_level = cgrp->level;
++	if (max_level > 127)
++		max_level = 127;
++
++	bpf_for(level, 1, max_level + 1) {
++		int ret;
++
++		if (level > 1 && len < MAX_PATH - 1)
++			path[len++] = '/';
++
++		if (len >= MAX_PATH - 1) {
++			scx_bpf_error("cgrp_path_buf overflow");
++			return NULL;
++		}
++
++		ret = bpf_probe_read_kernel_str(path + len, MAX_PATH - len - 1,
++						BPF_CORE_READ(cgrp, ancestors[level], kn, name));
++		if (ret < 0) {
++			scx_bpf_error("bpf_probe_read_kernel_str failed");
++			return NULL;
++		}
++
++		len += ret - 1;
++	}
++
++	if (len >= MAX_PATH - 2) {
++		scx_bpf_error("cgrp_path_buf overflow");
++		return NULL;
++	}
++	path[len] = '/';
++	path[len + 1] = '\0';
++
++	return path;
++}
++
++static inline bool match_prefix(const char *prefix, const char *str, u32 max_len)
++{
++	int c;
++
++	bpf_for(c, 0, max_len) {
++		if (prefix[c] == '\0')
++			return true;
++		if (str[c] != prefix[c])
++			return false;
++	}
++	return false;
++}
+diff --git a/tools/sched_ext/scx_layered/src/layered_sys.rs b/tools/sched_ext/scx_layered/src/layered_sys.rs
+new file mode 100644
+index 000000000000..afc821d388d2
+--- /dev/null
++++ b/tools/sched_ext/scx_layered/src/layered_sys.rs
+@@ -0,0 +1,10 @@
 +// Copyright (c) Meta Platforms, Inc. and affiliates.
 +
 +// This software may be used and distributed according to the terms of the
 +// GNU General Public License version 2.
-+#[path = "bpf/.output/rusty.skel.rs"]
-+mod rusty;
-+pub use rusty::*;
-+pub mod rusty_sys;
++#![allow(non_upper_case_globals)]
++#![allow(non_camel_case_types)]
++#![allow(non_snake_case)]
++#![allow(dead_code)]
 +
-+use std::cell::Cell;
++include!(concat!(env!("OUT_DIR"), "/layered_sys.rs"));
+diff --git a/tools/sched_ext/scx_layered/src/main.rs b/tools/sched_ext/scx_layered/src/main.rs
+new file mode 100644
+index 000000000000..7eb2edf53661
+--- /dev/null
++++ b/tools/sched_ext/scx_layered/src/main.rs
+@@ -0,0 +1,1641 @@
++// Copyright (c) Meta Platforms, Inc. and affiliates.
++
++// This software may be used and distributed according to the terms of the
++// GNU General Public License version 2.
++#[path = "bpf/.output/layered.skel.rs"]
++mod layered;
++pub use layered::*;
++pub mod layered_sys;
++
 +use std::collections::BTreeMap;
 +use std::collections::BTreeSet;
 +use std::ffi::CStr;
-+use std::ops::Bound::Included;
-+use std::ops::Bound::Unbounded;
++use std::ffi::CString;
++use std::fs;
++use std::io::Read;
++use std::io::Write;
++use std::ops::Sub;
 +use std::sync::atomic::AtomicBool;
 +use std::sync::atomic::Ordering;
 +use std::sync::Arc;
@@ -2258,129 +1524,286 @@ index 000000000000..3b0bcd742e05
 +use log::debug;
 +use log::info;
 +use log::trace;
-+use log::warn;
-+use ordered_float::OrderedFloat;
++use serde::Deserialize;
++use serde::Serialize;
 +
-+const RAVG_FRAC_BITS: u32 = rusty_sys::ravg_consts_RAVG_FRAC_BITS;
-+const MAX_DOMS: usize = rusty_sys::consts_MAX_DOMS as usize;
-+const MAX_CPUS: usize = rusty_sys::consts_MAX_CPUS as usize;
++const RAVG_FRAC_BITS: u32 = layered_sys::ravg_consts_RAVG_FRAC_BITS;
++const MAX_CPUS: usize = layered_sys::consts_MAX_CPUS as usize;
++const MAX_PATH: usize = layered_sys::consts_MAX_PATH as usize;
++const MAX_COMM: usize = layered_sys::consts_MAX_COMM as usize;
++const MAX_LAYER_MATCH_ORS: usize = layered_sys::consts_MAX_LAYER_MATCH_ORS as usize;
++const MAX_LAYERS: usize = layered_sys::consts_MAX_LAYERS as usize;
++const USAGE_HALF_LIFE: u32 = layered_sys::consts_USAGE_HALF_LIFE;
++const USAGE_HALF_LIFE_F64: f64 = USAGE_HALF_LIFE as f64 / 1_000_000_000.0;
++const NR_GSTATS: usize = layered_sys::global_stat_idx_NR_GSTATS as usize;
++const NR_LSTATS: usize = layered_sys::layer_stat_idx_NR_LSTATS as usize;
++const NR_LAYER_MATCH_KINDS: usize = layered_sys::layer_match_kind_NR_LAYER_MATCH_KINDS as usize;
++const CORE_CACHE_LEVEL: u32 = 2;
 +
 +include!("../../ravg_read.rs.h");
 +
-+/// scx_rusty: A multi-domain BPF / userspace hybrid scheduler
++lazy_static::lazy_static! {
++    static ref NR_POSSIBLE_CPUS: usize = libbpf_rs::num_possible_cpus().unwrap();
++    static ref USAGE_DECAY: f64 = 0.5f64.powf(1.0 / USAGE_HALF_LIFE_F64);
++}
++
++/// scx_layered: A highly configurable multi-layer sched_ext scheduler
 +///
-+/// The BPF part does simple vtime or round robin scheduling in each domain
-+/// while tracking average load of each domain and duty cycle of each task.
++/// scx_layered allows classifying tasks into multiple layers and applying
++/// different scheduling policies to them. The configuration is specified in
++/// json and composed of two parts - matches and policies.
 +///
-+/// The userspace part performs two roles. First, it makes higher frequency
-+/// (100ms) tuning decisions. It identifies CPUs which are not too heavily
-+/// loaded and mark them so that they can pull tasks from other overloaded
-+/// domains on the fly.
++/// Matches
++/// =======
 +///
-+/// Second, it drives lower frequency (2s) load balancing. It determines
-+/// whether load balancing is necessary by comparing domain load averages.
-+/// If there are large enough load differences, it examines upto 1024
-+/// recently active tasks on the domain to determine which should be
-+/// migrated.
++/// Whenever a task is forked or its attributes are changed, the task goes
++/// through a series of matches to determine the layer it belongs to. A
++/// match set is composed of OR groups of AND blocks. An example:
 +///
-+/// The overhead of userspace operations is low. Load balancing is not
-+/// performed frequently but work-conservation is still maintained through
-+/// tuning and greedy execution. Load balancing itself is not that expensive
-+/// either. It only accesses per-domain load metrics to determine the
-+/// domains that need load balancing and limited number of per-task metrics
-+/// for each pushing domain.
++///   "matches": [
++///     [
++///       {
++///         "CgroupPrefix": "system.slice/"
++///       }
++///     ],
++///     [
++///       {
++///         "CommPrefix": "fbagent"
++///       },
++///       {
++///         "NiceAbove": 0
++///       }
++///     ]
++///   ],
 +///
-+/// An earlier variant of this scheduler was used to balance across six
-+/// domains, each representing a chiplet in a six-chiplet AMD processor, and
-+/// could match the performance of production setup using CFS.
++/// The outer array contains the OR groups and the inner AND blocks, so the
++/// above matches:
 +///
-+/// WARNING: Very high weight (low nice value) tasks can throw off load
-+/// balancing due to infeasible weight problem. This problem will be solved
-+/// in the near future.
++/// * Tasks which are in the cgroup sub-hierarchy under "system.slice".
++/// * Or tasks whose comm starts with "fbagent" and have a nice value > 0.
 +///
-+/// WARNING: scx_rusty currently assumes that all domains have equal
-+/// processing power and at similar distances from each other. This
-+/// limitation will be removed in the future.
++/// Currently, the following matches are supported:
++///
++/// * CgroupPrefix: Matches the prefix of the cgroup that the task belongs
++///   to. As this is a string match, whether the pattern has the trailing
++///   '/' makes a difference. For example, "TOP/CHILD/" only matches tasks
++///   which are under that particular cgroup while "TOP/CHILD" also matches
++///   tasks under "TOP/CHILD0/" or "TOP/CHILD1/".
++///
++/// * CommPrefix: Matches the task's comm prefix.
++///
++/// * NiceAbove: Matches if the task's nice value is greater than the
++///   pattern.
++///
++/// * NiceBelow: Matches if the task's nice value is smaller than the
++///   pattern.
++///
++/// While there are complexity limitations as the matches are performed in
++/// BPF, it is straightforward to add more types of matches.
++///
++/// Policies
++/// ========
++///
++/// The following is an example policy configuration for a layer.
++///
++///   "kind": {
++///     "Confined": {
++///       "cpus_range": [1, 8],
++///       "util_range": [0.8, 0.9]
++///     }
++///   }
++///
++/// It's of "Confined" kind, which tries to concentrate the layer's tasks
++/// into a limited number of CPUs. In the above case, the number of CPUs
++/// assigned to the layer is scaled between 1 and 8 so that the per-cpu
++/// utilization is kept between 80% and 90%. If the CPUs are loaded higher
++/// than 90%, more CPUs are allocated to the layer. If the utilization drops
++/// below 80%, the layer loses CPUs.
++///
++/// Currently, the following policy kinds are supported:
++///
++/// * Confined: Tasks are restricted to the allocated CPUs. The number of
++///   CPUs allocated is modulated to keep the per-CPU utilization in
++///   "util_range". The range can optionally be restricted with the
++///   "cpus_range" property.
++///
++/// * Grouped: Similar to Confined but tasks may spill outside if there are
++///   idle CPUs outside the allocated ones. If "preempt" is true, tasks in
++///   this layer will preempt tasks which belong to other non-preempting
++///   layers when no idle CPUs are available.
++///
++/// * Open: Prefer the CPUs which are not occupied by Confined or Grouped
++///   layers. Tasks in this group will spill into occupied CPUs if there are
++///   no unoccupied idle CPUs. If "preempt" is true, tasks in this layer
++///   will preempt tasks which belong to other non-preempting layers when no
++///   idle CPUs are available.
++///
++/// Similar to matches, adding new policies and extending existing ones
++/// should be relatively straightforward.
++///
++/// Configuration example and running scx_layered
++/// =============================================
++///
++/// A scx_layered config is composed of layer configs and a layer config is
++/// composed of a name, a set of matches and a policy block. Running the
++/// following will write an example configuration into example.json.
++///
++///   $ scx_layered -e example.json
++///
++/// Note that the last layer in the configuration must have an empty match
++/// set as it must match all tasks which haven't been matched into previous
++/// layers.
++///
++/// The configuration can be specified in multiple json files and command
++/// line arguments. Each must contain valid layer configurations and they're
++/// concatenated in the specified order. In most cases, something like the
++/// following should do.
++///
++///   $ scx_layered file:example.json
++///
++/// Statistics
++/// ==========
++///
++/// scx_layered will print out a set of statistics every monitoring
++/// interval.
++///
++///   tot= 117909 local=86.20 open_idle= 0.21 affn_viol= 1.37 tctx_err=9 proc=6ms
++///   busy= 34.2 util= 1733.6 load=  21744.1 fallback_cpu=  1
++///     batch    : util/frac=   11.8/  0.7 load/frac=     29.7:  0.1 tasks=  2597
++///                tot=   3478 local=67.80 open_idle= 0.00 preempt= 0.00 affn_viol= 0.00
++///                cpus=  2 [  2,  2] 04000001 00000000
++///     immediate: util/frac= 1218.8/ 70.3 load/frac=  21399.9: 98.4 tasks=  1107
++///                tot=  68997 local=90.57 open_idle= 0.26 preempt= 9.36 affn_viol= 0.00
++///                cpus= 50 [ 50, 50] fbfffffe 000fffff
++///     normal   : util/frac=  502.9/ 29.0 load/frac=    314.5:  1.4 tasks=  3512
++///                tot=  45434 local=80.97 open_idle= 0.16 preempt= 0.00 affn_viol= 3.56
++///                cpus= 50 [ 50, 50] fbfffffe 000fffff
++///
++/// Global statistics:
++///
++/// - tot: Total scheduling events in the period.
++///
++/// - local: % that got scheduled directly into an idle CPU.
++///
++/// - open_idle: % of open layer tasks scheduled into occupied idle CPUs.
++///
++/// - affn_viol: % which violated configured policies due to CPU affinity
++///   restrictions.
++///
++/// - proc: CPU time this binary consumed during the period.
++///
++/// - busy: CPU busy % (100% means all CPUs were fully occupied)
++///
++/// - util: CPU utilization % (100% means one CPU was fully occupied)
++///
++/// - load: Sum of weight * duty_cycle for all tasks
++///
++/// Per-layer statistics:
++///
++/// - util/frac: CPU utilization and fraction % (sum of fractions across
++///   layers is always 100%).
++///
++/// - load/frac: Load sum and fraction %.
++///
++/// - tasks: Number of tasks.
++///
++/// - tot: Total scheduling events.
++///
++/// - open_idle: % of tasks scheduled into idle CPUs occupied by other layers.
++///
++/// - preempt: % of tasks that preempted other tasks.
++///
++/// - affn_viol: % which violated configured policies due to CPU affinity
++///   restrictions.
++///
++/// - cpus: CUR_NR_CPUS [MIN_NR_CPUS, MAX_NR_CPUS] CUR_CPU_MASK
++///
 +#[derive(Debug, Parser)]
++#[command(verbatim_doc_comment)]
 +struct Opts {
 +    /// Scheduling slice duration in microseconds.
 +    #[clap(short = 's', long, default_value = "20000")]
 +    slice_us: u64,
 +
-+    /// Monitoring and load balance interval in seconds.
-+    #[clap(short = 'i', long, default_value = "2.0")]
++    /// Scheduling interval in seconds.
++    #[clap(short = 'i', long, default_value = "0.1")]
 +    interval: f64,
 +
-+    /// Tuner runs at higher frequency than the load balancer to dynamically
-+    /// tune scheduling behavior. Tuning interval in seconds.
-+    #[clap(short = 'I', long, default_value = "0.1")]
-+    tune_interval: f64,
++    /// Monitoring interval in seconds.
++    #[clap(short = 'm', long, default_value = "2.0")]
++    monitor: f64,
 +
-+    /// The half-life of task and domain load running averages in seconds.
-+    #[clap(short = 'l', long, default_value = "1.0")]
-+    load_half_life: f64,
-+
-+    /// Build domains according to how CPUs are grouped at this cache level
-+    /// as determined by /sys/devices/system/cpu/cpuX/cache/indexI/id.
-+    #[clap(short = 'c', long, default_value = "3")]
-+    cache_level: u32,
-+
-+    /// Instead of using cache locality, set the cpumask for each domain
-+    /// manually, provide multiple --cpumasks, one for each domain. E.g.
-+    /// --cpumasks 0xff_00ff --cpumasks 0xff00 will create two domains with
-+    /// the corresponding CPUs belonging to each domain. Each CPU must
-+    /// belong to precisely one domain.
-+    #[clap(short = 'C', long, num_args = 1.., conflicts_with = "cache_level")]
-+    cpumasks: Vec<String>,
-+
-+    /// When non-zero, enable greedy task stealing. When a domain is idle, a
-+    /// cpu will attempt to steal tasks from a domain with at least
-+    /// greedy_threshold tasks enqueued. These tasks aren't permanently
-+    /// stolen from the domain.
-+    #[clap(short = 'g', long, default_value = "1")]
-+    greedy_threshold: u32,
-+
-+    /// Disable load balancing. Unless disabled, periodically userspace will
-+    /// calculate the load factor of each domain and instruct BPF which
-+    /// processes to move.
-+    #[clap(long, action = clap::ArgAction::SetTrue)]
-+    no_load_balance: bool,
-+
-+    /// Put per-cpu kthreads directly into local dsq's.
-+    #[clap(short = 'k', long, action = clap::ArgAction::SetTrue)]
-+    kthreads_local: bool,
-+
-+    /// In recent kernels (>=v6.6), the kernel is responsible for balancing
-+    /// kworkers across L3 cache domains. Exclude them from load-balancing
-+    /// to avoid conflicting operations. Greedy executions still apply.
-+    #[clap(short = 'b', long, action = clap::ArgAction::SetTrue)]
-+    balanced_kworkers: bool,
-+
-+    /// Use FIFO scheduling instead of weighted vtime scheduling.
-+    #[clap(short = 'f', long, action = clap::ArgAction::SetTrue)]
-+    fifo_sched: bool,
-+
-+    /// Idle CPUs with utilization lower than this will get remote tasks
-+    /// directly pushed on them. 0 disables, 100 enables always.
-+    #[clap(short = 'D', long, default_value = "90.0")]
-+    direct_greedy_under: f64,
-+
-+    /// Idle CPUs with utilization lower than this may get kicked to
-+    /// accelerate stealing when a task is queued on a saturated remote
-+    /// domain. 0 disables, 100 enables always.
-+    #[clap(short = 'K', long, default_value = "100.0")]
-+    kick_greedy_under: f64,
-+
-+    /// If specified, only tasks which have their scheduling policy set to
-+    /// SCHED_EXT using sched_setscheduler(2) are switched. Otherwise, all
-+    /// tasks are switched.
-+    #[clap(short = 'p', long, action = clap::ArgAction::SetTrue)]
-+    partial: bool,
++    /// Disable load-fraction based max layer CPU limit. ***NOTE***
++    /// load-fraction calculation is currently broken due to lack of
++    /// infeasible weight adjustments. Setting this option is recommended.
++    #[clap(short = 'n', long)]
++    no_load_frac_limit: bool,
 +
 +    /// Enable verbose output including libbpf details. Specify multiple
 +    /// times to increase verbosity.
 +    #[clap(short = 'v', long, action = clap::ArgAction::Count)]
 +    verbose: u8,
++
++    /// Write example layer specifications into the file and exit.
++    #[clap(short = 'e', long)]
++    example: Option<String>,
++
++    /// Layer specification. See --help.
++    specs: Vec<String>,
++}
++
++#[derive(Clone, Debug, Serialize, Deserialize)]
++enum LayerMatch {
++    CgroupPrefix(String),
++    CommPrefix(String),
++    NiceAbove(i32),
++    NiceBelow(i32),
++}
++
++#[derive(Clone, Debug, Serialize, Deserialize)]
++enum LayerKind {
++    Confined {
++        cpus_range: Option<(usize, usize)>,
++        util_range: (f64, f64),
++    },
++    Grouped {
++        cpus_range: Option<(usize, usize)>,
++        util_range: (f64, f64),
++        preempt: bool,
++    },
++    Open {
++        preempt: bool,
++    },
++}
++
++#[derive(Clone, Debug, Serialize, Deserialize)]
++struct LayerSpec {
++    name: String,
++    comment: Option<String>,
++    matches: Vec<Vec<LayerMatch>>,
++    kind: LayerKind,
++}
++
++impl LayerSpec {
++    fn parse(input: &str) -> Result<Vec<Self>> {
++        let config: LayerConfig = if input.starts_with("f:") || input.starts_with("file:") {
++            let mut f = fs::OpenOptions::new()
++                .read(true)
++                .open(input.split_once(':').unwrap().1)?;
++            let mut content = String::new();
++            f.read_to_string(&mut content)?;
++            serde_json::from_str(&content)?
++        } else {
++            serde_json::from_str(input)?
++        };
++        Ok(config.specs)
++    }
++}
++
++#[derive(Clone, Debug, Serialize, Deserialize)]
++#[serde(transparent)]
++struct LayerConfig {
++    specs: Vec<LayerSpec>,
 +}
 +
 +fn now_monotonic() -> u64 {
@@ -2391,20 +1814,6 @@ index 000000000000..3b0bcd742e05
 +    let ret = unsafe { libc::clock_gettime(libc::CLOCK_MONOTONIC, &mut time) };
 +    assert!(ret == 0);
 +    time.tv_sec as u64 * 1_000_000_000 + time.tv_nsec as u64
-+}
-+
-+fn clear_map(map: &libbpf_rs::Map) {
-+    for key in map.keys() {
-+        let _ = map.delete(&key);
-+    }
-+}
-+
-+fn format_cpumask(cpumask: &[u64], nr_cpus: usize) -> String {
-+    cpumask
-+        .iter()
-+        .take((nr_cpus + 64) / 64)
-+        .rev()
-+        .fold(String::new(), |acc, x| format!("{} {:016X}", acc, x))
 +}
 +
 +fn read_total_cpu(reader: &procfs::ProcReader) -> Result<procfs::CpuStat> {
@@ -2419,17 +1828,6 @@ index 000000000000..3b0bcd742e05
 +    match (curr, prev) {
 +        (
 +            procfs::CpuStat {
-+                user_usec: Some(prev_user),
-+                nice_usec: Some(prev_nice),
-+                system_usec: Some(prev_system),
-+                idle_usec: Some(prev_idle),
-+                iowait_usec: Some(prev_iowait),
-+                irq_usec: Some(prev_irq),
-+                softirq_usec: Some(prev_softirq),
-+                stolen_usec: Some(prev_stolen),
-+                ..
-+            },
-+            procfs::CpuStat {
 +                user_usec: Some(curr_user),
 +                nice_usec: Some(curr_nice),
 +                system_usec: Some(curr_system),
@@ -2438,6 +1836,17 @@ index 000000000000..3b0bcd742e05
 +                irq_usec: Some(curr_irq),
 +                softirq_usec: Some(curr_softirq),
 +                stolen_usec: Some(curr_stolen),
++                ..
++            },
++            procfs::CpuStat {
++                user_usec: Some(prev_user),
++                nice_usec: Some(prev_nice),
++                system_usec: Some(prev_system),
++                idle_usec: Some(prev_idle),
++                iowait_usec: Some(prev_iowait),
++                irq_usec: Some(prev_irq),
++                softirq_usec: Some(prev_softirq),
++                stolen_usec: Some(prev_stolen),
 +                ..
 +            },
 +        ) => {
@@ -2465,96 +1874,340 @@ index 000000000000..3b0bcd742e05
 +    }
 +}
 +
-+#[derive(Debug)]
-+struct Topology {
-+    nr_cpus: usize,
-+    nr_doms: usize,
-+    dom_cpus: Vec<BitVec<u64, Lsb0>>,
-+    cpu_dom: Vec<Option<usize>>,
++fn copy_into_cstr(dst: &mut [i8], src: &str) {
++    let cstr = CString::new(src).unwrap();
++    let bytes = unsafe { std::mem::transmute::<&[u8], &[i8]>(cstr.as_bytes_with_nul()) };
++    dst[0..bytes.len()].copy_from_slice(bytes);
 +}
 +
-+impl Topology {
-+    fn from_cpumasks(cpumasks: &[String], nr_cpus: usize) -> Result<Self> {
-+        if cpumasks.len() > MAX_DOMS {
-+            bail!(
-+                "Number of requested domains ({}) is greater than MAX_DOMS ({})",
-+                cpumasks.len(),
-+                MAX_DOMS
-+            );
++fn format_bitvec(bitvec: &BitVec) -> String {
++    let mut vals = Vec::<u32>::new();
++    let mut val: u32 = 0;
++    for (idx, bit) in bitvec.iter().enumerate() {
++        if idx > 0 && idx % 32 == 0 {
++            vals.push(val);
++            val = 0;
 +        }
-+        let mut cpu_dom = vec![None; nr_cpus];
-+        let mut dom_cpus = vec![bitvec![u64, Lsb0; 0; MAX_CPUS]; cpumasks.len()];
-+        for (dom, cpumask) in cpumasks.iter().enumerate() {
-+            let hex_str = {
-+                let mut tmp_str = cpumask
-+                    .strip_prefix("0x")
-+                    .unwrap_or(cpumask)
-+                    .replace('_', "");
-+                if tmp_str.len() % 2 != 0 {
-+                    tmp_str = "0".to_string() + &tmp_str;
-+                }
-+                tmp_str
-+            };
-+            let byte_vec = hex::decode(&hex_str)
-+                .with_context(|| format!("Failed to parse cpumask: {}", cpumask))?;
++        if *bit {
++            val |= 1 << (idx % 32);
++        }
++    }
++    vals.push(val);
++    let mut output = vals
++        .iter()
++        .fold(String::new(), |string, v| format!("{}{:08x} ", string, v));
++    output.pop();
++    output
++}
 +
-+            for (index, &val) in byte_vec.iter().rev().enumerate() {
-+                let mut v = val;
-+                while v != 0 {
-+                    let lsb = v.trailing_zeros() as usize;
-+                    v &= !(1 << lsb);
-+                    let cpu = index * 8 + lsb;
-+                    if cpu > nr_cpus {
-+                        bail!(
-+                            concat!(
-+                                "Found cpu ({}) in cpumask ({}) which is larger",
-+                                " than the number of cpus on the machine ({})"
-+                            ),
-+                            cpu,
-+                            cpumask,
-+                            nr_cpus
-+                        );
-+                    }
-+                    if let Some(other_dom) = cpu_dom[cpu] {
-+                        bail!(
-+                            "Found cpu ({}) with domain ({}) but also in cpumask ({})",
-+                            cpu,
-+                            other_dom,
-+                            cpumask
-+                        );
-+                    }
-+                    cpu_dom[cpu] = Some(dom);
-+                    dom_cpus[dom].set(cpu, true);
++fn read_cpu_ctxs(skel: &LayeredSkel) -> Result<Vec<layered_sys::cpu_ctx>> {
++    let mut cpu_ctxs = vec![];
++    let cpu_ctxs_vec = skel
++        .maps()
++        .cpu_ctxs()
++        .lookup_percpu(&0u32.to_ne_bytes(), libbpf_rs::MapFlags::ANY)
++        .context("Failed to lookup cpu_ctx")?
++        .unwrap();
++    for cpu in 0..*NR_POSSIBLE_CPUS {
++        cpu_ctxs.push(*unsafe {
++            &*(cpu_ctxs_vec[cpu].as_slice().as_ptr() as *const layered_sys::cpu_ctx)
++        });
++    }
++    Ok(cpu_ctxs)
++}
++
++#[derive(Clone, Debug)]
++struct BpfStats {
++    gstats: Vec<u64>,
++    lstats: Vec<Vec<u64>>,
++    lstats_sums: Vec<u64>,
++}
++
++impl BpfStats {
++    fn read(cpu_ctxs: &[layered_sys::cpu_ctx], nr_layers: usize) -> Self {
++        let mut gstats = vec![0u64; NR_GSTATS];
++        let mut lstats = vec![vec![0u64; NR_LSTATS]; nr_layers];
++
++        for cpu in 0..*NR_POSSIBLE_CPUS {
++            for stat in 0..NR_GSTATS {
++                gstats[stat] += cpu_ctxs[cpu].gstats[stat];
++            }
++            for layer in 0..nr_layers {
++                for stat in 0..NR_LSTATS {
++                    lstats[layer][stat] += cpu_ctxs[cpu].lstats[layer][stat];
 +                }
 +            }
-+            dom_cpus[dom].set_uninitialized(false);
 +        }
 +
-+        for (cpu, dom) in cpu_dom.iter().enumerate() {
-+            if dom.is_none() {
-+                bail!(
-+                    "CPU {} not assigned to any domain. Make sure it is covered by some --cpumasks argument.",
-+                    cpu
-+                );
++        let mut lstats_sums = vec![0u64; NR_LSTATS];
++        for layer in 0..nr_layers {
++            for stat in 0..NR_LSTATS {
++                lstats_sums[stat] += lstats[layer][stat];
 +            }
 +        }
++
++        Self {
++            gstats,
++            lstats,
++            lstats_sums,
++        }
++    }
++}
++
++impl<'a, 'b> Sub<&'b BpfStats> for &'a BpfStats {
++    type Output = BpfStats;
++
++    fn sub(self, rhs: &'b BpfStats) -> BpfStats {
++        let vec_sub = |l: &[u64], r: &[u64]| l.iter().zip(r.iter()).map(|(l, r)| *l - *r).collect();
++        BpfStats {
++            gstats: vec_sub(&self.gstats, &rhs.gstats),
++            lstats: self
++                .lstats
++                .iter()
++                .zip(rhs.lstats.iter())
++                .map(|(l, r)| vec_sub(l, r))
++                .collect(),
++            lstats_sums: vec_sub(&self.lstats_sums, &rhs.lstats_sums),
++        }
++    }
++}
++
++struct Stats {
++    nr_layers: usize,
++    at: Instant,
++
++    nr_layer_tasks: Vec<usize>,
++
++    total_load: f64,
++    layer_loads: Vec<f64>,
++
++    total_util: f64, // Running AVG of sum of layer_utils
++    layer_utils: Vec<f64>,
++    prev_layer_cycles: Vec<u64>,
++
++    cpu_busy: f64, // Read from /proc, maybe higher than total_util
++    prev_total_cpu: procfs::CpuStat,
++
++    bpf_stats: BpfStats,
++    prev_bpf_stats: BpfStats,
++}
++
++impl Stats {
++    fn read_layer_loads(skel: &mut LayeredSkel, nr_layers: usize) -> (f64, Vec<f64>) {
++        let now_mono = now_monotonic();
++        let layer_loads: Vec<f64> = skel
++            .bss()
++            .layers
++            .iter()
++            .take(nr_layers)
++            .map(|layer| {
++                let rd = &layer.load_rd;
++                ravg_read(
++                    rd.val,
++                    rd.val_at,
++                    rd.old,
++                    rd.cur,
++                    now_mono,
++                    USAGE_HALF_LIFE,
++                    RAVG_FRAC_BITS,
++                )
++            })
++            .collect();
++        (layer_loads.iter().sum(), layer_loads)
++    }
++
++    fn read_layer_cycles(cpu_ctxs: &[layered_sys::cpu_ctx], nr_layers: usize) -> Vec<u64> {
++        let mut layer_cycles = vec![0u64; nr_layers];
++
++        for cpu in 0..*NR_POSSIBLE_CPUS {
++            for layer in 0..nr_layers {
++                layer_cycles[layer] += cpu_ctxs[cpu].layer_cycles[layer];
++            }
++        }
++
++        layer_cycles
++    }
++
++    fn new(skel: &mut LayeredSkel, proc_reader: &procfs::ProcReader) -> Result<Self> {
++        let nr_layers = skel.rodata().nr_layers as usize;
++        let bpf_stats = BpfStats::read(&read_cpu_ctxs(skel)?, nr_layers);
 +
 +        Ok(Self {
-+            nr_cpus,
-+            nr_doms: dom_cpus.len(),
-+            dom_cpus,
-+            cpu_dom,
++            at: Instant::now(),
++            nr_layers,
++
++            nr_layer_tasks: vec![0; nr_layers],
++
++            total_load: 0.0,
++            layer_loads: vec![0.0; nr_layers],
++
++            total_util: 0.0,
++            layer_utils: vec![0.0; nr_layers],
++            prev_layer_cycles: vec![0; nr_layers],
++
++            cpu_busy: 0.0,
++            prev_total_cpu: read_total_cpu(&proc_reader)?,
++
++            bpf_stats: bpf_stats.clone(),
++            prev_bpf_stats: bpf_stats,
 +        })
 +    }
 +
-+    fn from_cache_level(level: u32, nr_cpus: usize) -> Result<Self> {
++    fn refresh(
++        &mut self,
++        skel: &mut LayeredSkel,
++        proc_reader: &procfs::ProcReader,
++        now: Instant,
++    ) -> Result<()> {
++        let elapsed = now.duration_since(self.at).as_secs_f64() as f64;
++        let cpu_ctxs = read_cpu_ctxs(skel)?;
++
++        let nr_layer_tasks: Vec<usize> = skel
++            .bss()
++            .layers
++            .iter()
++            .take(self.nr_layers)
++            .map(|layer| layer.nr_tasks as usize)
++            .collect();
++
++        let (total_load, layer_loads) = Self::read_layer_loads(skel, self.nr_layers);
++
++        let cur_layer_cycles = Self::read_layer_cycles(&cpu_ctxs, self.nr_layers);
++        let cur_layer_utils: Vec<f64> = cur_layer_cycles
++            .iter()
++            .zip(self.prev_layer_cycles.iter())
++            .map(|(cur, prev)| (cur - prev) as f64 / 1_000_000_000.0 / elapsed)
++            .collect();
++        let layer_utils: Vec<f64> = cur_layer_utils
++            .iter()
++            .zip(self.layer_utils.iter())
++            .map(|(cur, prev)| {
++                let decay = USAGE_DECAY.powf(elapsed);
++                prev * decay + cur * (1.0 - decay)
++            })
++            .collect();
++
++        let cur_total_cpu = read_total_cpu(proc_reader)?;
++        let cpu_busy = calc_util(&cur_total_cpu, &self.prev_total_cpu)?;
++
++        let cur_bpf_stats = BpfStats::read(&cpu_ctxs, self.nr_layers);
++        let bpf_stats = &cur_bpf_stats - &self.prev_bpf_stats;
++
++        *self = Self {
++            at: now,
++            nr_layers: self.nr_layers,
++
++            nr_layer_tasks,
++
++            total_load,
++            layer_loads,
++
++            total_util: layer_utils.iter().sum(),
++            layer_utils: layer_utils.try_into().unwrap(),
++            prev_layer_cycles: cur_layer_cycles,
++
++            cpu_busy,
++            prev_total_cpu: cur_total_cpu,
++
++            bpf_stats,
++            prev_bpf_stats: cur_bpf_stats,
++        };
++        Ok(())
++    }
++}
++
++#[derive(Debug, Default)]
++struct UserExitInfo {
++    kind: i32,
++    reason: Option<String>,
++    msg: Option<String>,
++}
++
++impl UserExitInfo {
++    fn read(bpf_uei: &layered_bss_types::user_exit_info) -> Result<Self> {
++        let kind = unsafe { std::ptr::read_volatile(&bpf_uei.kind as *const _) };
++
++        let (reason, msg) = if kind != 0 {
++            (
++                Some(
++                    unsafe { CStr::from_ptr(bpf_uei.reason.as_ptr() as *const _) }
++                        .to_str()
++                        .context("Failed to convert reason to string")?
++                        .to_string(),
++                )
++                .filter(|s| !s.is_empty()),
++                Some(
++                    unsafe { CStr::from_ptr(bpf_uei.msg.as_ptr() as *const _) }
++                        .to_str()
++                        .context("Failed to convert msg to string")?
++                        .to_string(),
++                )
++                .filter(|s| !s.is_empty()),
++            )
++        } else {
++            (None, None)
++        };
++
++        Ok(Self { kind, reason, msg })
++    }
++
++    fn exited(bpf_uei: &layered_bss_types::user_exit_info) -> Result<bool> {
++        Ok(Self::read(bpf_uei)?.kind != 0)
++    }
++
++    fn report(&self) -> Result<()> {
++        let why = match (&self.reason, &self.msg) {
++            (Some(reason), None) => format!("{}", reason),
++            (Some(reason), Some(msg)) => format!("{} ({})", reason, msg),
++            _ => "".into(),
++        };
++
++        match self.kind {
++            0 => Ok(()),
++            etype => {
++                if etype != 64 {
++                    bail!("EXIT: kind={} {}", etype, why);
++                } else {
++                    info!("EXIT: {}", why);
++                    Ok(())
++                }
++            }
++        }
++    }
++}
++
++#[derive(Debug)]
++struct CpuPool {
++    nr_cores: usize,
++    nr_cpus: usize,
++    all_cpus: BitVec,
++    core_cpus: Vec<BitVec>,
++    cpu_core: Vec<usize>,
++    available_cores: BitVec,
++    first_cpu: usize,
++    fallback_cpu: usize, // next free or the first CPU if none is free
++}
++
++impl CpuPool {
++    fn new() -> Result<Self> {
++        if *NR_POSSIBLE_CPUS > MAX_CPUS {
++            bail!(
++                "NR_POSSIBLE_CPUS {} > MAX_CPUS {}",
++                *NR_POSSIBLE_CPUS,
++                MAX_CPUS
++            );
++        }
++
 +        let mut cpu_to_cache = vec![]; // (cpu_id, Option<cache_id>)
 +        let mut cache_ids = BTreeSet::<usize>::new();
 +        let mut nr_offline = 0;
 +
 +        // Build cpu -> cache ID mapping.
-+        for cpu in 0..nr_cpus {
-+            let path = format!("/sys/devices/system/cpu/cpu{}/cache/index{}/id", cpu, level);
++        for cpu in 0..*NR_POSSIBLE_CPUS {
++            let path = format!(
++                "/sys/devices/system/cpu/cpu{}/cache/index{}/id",
++                cpu, CORE_CACHE_LEVEL
++            );
 +            let id = match std::fs::read_to_string(&path) {
 +                Ok(val) => Some(val.trim().parse::<usize>().with_context(|| {
 +                    format!("Failed to parse {:?}'s content {:?}", &path, &val)
@@ -2572,881 +2225,716 @@ index 000000000000..3b0bcd742e05
 +            }
 +        }
 +
++        let nr_cpus = *NR_POSSIBLE_CPUS - nr_offline;
++
++        // Cache IDs may have holes. Assign consecutive core IDs to existing
++        // cache IDs.
++        let mut cache_to_core = BTreeMap::<usize, usize>::new();
++        let mut nr_cores = 0;
++        for cache_id in cache_ids.iter() {
++            cache_to_core.insert(*cache_id, nr_cores);
++            nr_cores += 1;
++        }
++
++        // Build core -> cpumask and cpu -> core mappings.
++        let mut all_cpus = bitvec![0; *NR_POSSIBLE_CPUS];
++        let mut core_cpus = vec![bitvec![0; *NR_POSSIBLE_CPUS]; nr_cores];
++        let mut cpu_core = vec![];
++
++        for (cpu, cache) in cpu_to_cache.iter().enumerate().take(*NR_POSSIBLE_CPUS) {
++            if let Some(cache_id) = cache {
++                let core_id = cache_to_core[cache_id];
++                all_cpus.set(cpu, true);
++                core_cpus[core_id].set(cpu, true);
++                cpu_core.push(core_id);
++            }
++        }
++
 +        info!(
-+            "CPUs: online/possible = {}/{}",
-+            nr_cpus - nr_offline,
-+            nr_cpus
++            "CPUs: online/possible={}/{} nr_cores={}",
++            nr_cpus, *NR_POSSIBLE_CPUS, nr_cores,
 +        );
 +
-+        // Cache IDs may have holes. Assign consecutive domain IDs to
-+        // existing cache IDs.
-+        let mut cache_to_dom = BTreeMap::<usize, usize>::new();
-+        let mut nr_doms = 0;
-+        for cache_id in cache_ids.iter() {
-+            cache_to_dom.insert(*cache_id, nr_doms);
-+            nr_doms += 1;
-+        }
++        let first_cpu = core_cpus[0].first_one().unwrap();
 +
-+        if nr_doms > MAX_DOMS {
-+            bail!(
-+                "Total number of doms {} is greater than MAX_DOMS ({})",
-+                nr_doms,
-+                MAX_DOMS
-+            );
-+        }
-+
-+        // Build and return dom -> cpumask and cpu -> dom mappings.
-+        let mut dom_cpus = vec![bitvec![u64, Lsb0; 0; MAX_CPUS]; nr_doms];
-+        let mut cpu_dom = vec![];
-+
-+        for (cpu, cache) in cpu_to_cache.iter().enumerate().take(nr_cpus) {
-+            match cache {
-+                Some(cache_id) => {
-+                    let dom_id = cache_to_dom[cache_id];
-+                    dom_cpus[dom_id].set(cpu, true);
-+                    cpu_dom.push(Some(dom_id));
-+                }
-+                None => {
-+                    dom_cpus[0].set(cpu, true);
-+                    cpu_dom.push(None);
-+                }
-+            }
-+        }
-+
-+        Ok(Self {
++        let mut cpu_pool = Self {
++            nr_cores,
 +            nr_cpus,
-+            nr_doms: dom_cpus.len(),
-+            dom_cpus,
-+            cpu_dom,
-+        })
-+    }
-+}
-+
-+struct Tuner {
-+    top: Arc<Topology>,
-+    direct_greedy_under: f64,
-+    kick_greedy_under: f64,
-+    proc_reader: procfs::ProcReader,
-+    prev_cpu_stats: BTreeMap<u32, procfs::CpuStat>,
-+    dom_utils: Vec<f64>,
-+}
-+
-+impl Tuner {
-+    fn new(top: Arc<Topology>, opts: &Opts) -> Result<Self> {
-+        let proc_reader = procfs::ProcReader::new();
-+        let prev_cpu_stats = proc_reader
-+            .read_stat()?
-+            .cpus_map
-+            .ok_or_else(|| anyhow!("Expected cpus_map to exist"))?;
-+        Ok(Self {
-+            direct_greedy_under: opts.direct_greedy_under / 100.0,
-+            kick_greedy_under: opts.kick_greedy_under / 100.0,
-+            proc_reader,
-+            prev_cpu_stats,
-+            dom_utils: vec![0.0; top.nr_doms],
-+            top,
-+        })
++            all_cpus,
++            core_cpus,
++            cpu_core,
++            available_cores: bitvec![1; nr_cores],
++            first_cpu,
++            fallback_cpu: first_cpu,
++        };
++        cpu_pool.update_fallback_cpu();
++        Ok(cpu_pool)
 +    }
 +
-+    fn step(&mut self, skel: &mut RustySkel) -> Result<()> {
-+        let curr_cpu_stats = self
-+            .proc_reader
-+            .read_stat()?
-+            .cpus_map
-+            .ok_or_else(|| anyhow!("Expected cpus_map to exist"))?;
-+        let ti = &mut skel.bss().tune_input;
-+        let mut dom_nr_cpus = vec![0; self.top.nr_doms];
-+        let mut dom_util_sum = vec![0.0; self.top.nr_doms];
++    fn update_fallback_cpu(&mut self) {
++        match self.available_cores.first_one() {
++            Some(next) => self.fallback_cpu = self.core_cpus[next].first_one().unwrap(),
++            None => self.fallback_cpu = self.first_cpu,
++        }
++    }
 +
-+        for cpu in 0..self.top.nr_cpus {
-+            let cpu32 = cpu as u32;
-+            // None domain indicates the CPU was offline during
-+            // initialization and None CpuStat indicates the CPU has gone
-+            // down since then. Ignore both.
-+            if let (Some(dom), Some(curr), Some(prev)) = (
-+                self.top.cpu_dom[cpu],
-+                curr_cpu_stats.get(&cpu32),
-+                self.prev_cpu_stats.get(&cpu32),
-+            ) {
-+                dom_nr_cpus[dom] += 1;
-+                dom_util_sum[dom] += calc_util(curr, prev)?;
++    fn alloc<'a>(&'a mut self) -> Option<&'a BitVec> {
++        let core = self.available_cores.first_one()?;
++        self.available_cores.set(core, false);
++        self.update_fallback_cpu();
++        Some(&self.core_cpus[core])
++    }
++
++    fn cpus_to_cores(&self, cpus_to_match: &BitVec) -> Result<BitVec> {
++        let mut cpus = cpus_to_match.clone();
++        let mut cores = bitvec![0; self.nr_cores];
++
++        while let Some(cpu) = cpus.first_one() {
++            let core = self.cpu_core[cpu];
++
++            if (self.core_cpus[core].clone() & !cpus.clone()).count_ones() != 0 {
++                bail!(
++                    "CPUs {} partially intersect with core {} ({})",
++                    cpus_to_match,
++                    core,
++                    self.core_cpus[core],
++                );
 +            }
++
++            cpus &= !self.core_cpus[core].clone();
++            cores.set(core, true);
 +        }
 +
-+        for dom in 0..self.top.nr_doms {
-+            // Calculate the domain avg util. If there are no active CPUs,
-+            // it doesn't really matter. Go with 0.0 as that's less likely
-+            // to confuse users.
-+            let util = match dom_nr_cpus[dom] {
-+                0 => 0.0,
-+                nr => dom_util_sum[dom] / nr as f64,
-+            };
++        Ok(cores)
++    }
 +
-+            self.dom_utils[dom] = util;
-+
-+            // This could be implemented better.
-+            let update_dom_bits = |target: &mut [u64; 8], val: bool| {
-+                for cpu in 0..self.top.nr_cpus {
-+                    if let Some(cdom) = self.top.cpu_dom[cpu] {
-+                        if cdom == dom {
-+                            if val {
-+                                target[cpu / 64] |= 1u64 << (cpu % 64);
-+                            } else {
-+                                target[cpu / 64] &= !(1u64 << (cpu % 64));
-+                            }
-+                        }
-+                    }
-+                }
-+            };
-+
-+            update_dom_bits(
-+                &mut ti.direct_greedy_cpumask,
-+                self.direct_greedy_under > 0.99999 || util < self.direct_greedy_under,
-+            );
-+            update_dom_bits(
-+                &mut ti.kick_greedy_cpumask,
-+                self.kick_greedy_under > 0.99999 || util < self.kick_greedy_under,
-+            );
++    fn free<'a>(&'a mut self, cpus_to_free: &BitVec) -> Result<()> {
++        let cores = self.cpus_to_cores(cpus_to_free)?;
++        if (self.available_cores.clone() & &cores).any() {
++            bail!("Some of CPUs {} are already free", cpus_to_free);
 +        }
-+
-+        ti.gen += 1;
-+        self.prev_cpu_stats = curr_cpu_stats;
++        self.available_cores |= cores;
++        self.update_fallback_cpu();
 +        Ok(())
++    }
++
++    fn next_to_free<'a>(&'a self, cands: &BitVec) -> Result<Option<&'a BitVec>> {
++        let last = match cands.last_one() {
++            Some(ret) => ret,
++            None => return Ok(None),
++        };
++        let core = self.cpu_core[last];
++        if (self.core_cpus[core].clone() & !cands.clone()).count_ones() != 0 {
++            bail!(
++                "CPUs{} partially intersect with core {} ({})",
++                cands,
++                core,
++                self.core_cpus[core]
++            );
++        }
++
++        Ok(Some(&self.core_cpus[core]))
++    }
++
++    fn available_cpus(&self) -> BitVec {
++        let mut cpus = bitvec![0; self.nr_cpus];
++        for core in self.available_cores.iter_ones() {
++            cpus |= &self.core_cpus[core];
++        }
++        cpus
 +    }
 +}
 +
 +#[derive(Debug)]
-+struct TaskInfo {
-+    pid: i32,
-+    dom_mask: u64,
-+    migrated: Cell<bool>,
-+    is_kworker: bool,
++struct Layer {
++    name: String,
++    kind: LayerKind,
++
++    nr_cpus: usize,
++    cpus: BitVec,
 +}
 +
-+struct LoadBalancer<'a, 'b, 'c> {
-+    skel: &'a mut RustySkel<'b>,
-+    top: Arc<Topology>,
-+    skip_kworkers: bool,
-+
-+    tasks_by_load: Vec<Option<BTreeMap<OrderedFloat<f64>, TaskInfo>>>,
-+    load_avg: f64,
-+    dom_loads: Vec<f64>,
-+
-+    imbal: Vec<f64>,
-+    doms_to_push: BTreeMap<OrderedFloat<f64>, u32>,
-+    doms_to_pull: BTreeMap<OrderedFloat<f64>, u32>,
-+
-+    nr_lb_data_errors: &'c mut u64,
-+}
-+
-+impl<'a, 'b, 'c> LoadBalancer<'a, 'b, 'c> {
-+    // If imbalance gets higher than this ratio, try to balance the loads.
-+    const LOAD_IMBAL_HIGH_RATIO: f64 = 0.10;
-+
-+    // Aim to transfer this fraction of the imbalance on each round. We want
-+    // to be gradual to avoid unnecessary oscillations. While this can delay
-+    // convergence, greedy execution should be able to bridge the temporary
-+    // gap.
-+    const LOAD_IMBAL_XFER_TARGET_RATIO: f64 = 0.50;
-+
-+    // Don't push out more than this ratio of load on each round. While this
-+    // overlaps with XFER_TARGET_RATIO, XFER_TARGET_RATIO only defines the
-+    // target and doesn't limit the total load. As long as the transfer
-+    // reduces load imbalance between the two involved domains, it'd happily
-+    // transfer whatever amount that can be transferred. This limit is used
-+    // as the safety cap to avoid draining a given domain too much in a
-+    // single round.
-+    const LOAD_IMBAL_PUSH_MAX_RATIO: f64 = 0.50;
-+
-+    fn new(
-+        skel: &'a mut RustySkel<'b>,
-+        top: Arc<Topology>,
-+        skip_kworkers: bool,
-+        nr_lb_data_errors: &'c mut u64,
-+    ) -> Self {
-+        Self {
-+            skel,
-+            skip_kworkers,
-+
-+            tasks_by_load: (0..top.nr_doms).map(|_| None).collect(),
-+            load_avg: 0f64,
-+            dom_loads: vec![0.0; top.nr_doms],
-+
-+            imbal: vec![0.0; top.nr_doms],
-+            doms_to_pull: BTreeMap::new(),
-+            doms_to_push: BTreeMap::new(),
-+
-+            nr_lb_data_errors,
-+
-+            top,
-+        }
-+    }
-+
-+    fn read_dom_loads(&mut self) -> Result<()> {
-+        let now_mono = now_monotonic();
-+        let load_half_life = self.skel.rodata().load_half_life;
-+        let maps = self.skel.maps();
-+        let dom_data = maps.dom_data();
-+        let mut load_sum = 0.0f64;
-+
-+        for i in 0..self.top.nr_doms {
-+            let key = unsafe { std::mem::transmute::<u32, [u8; 4]>(i as u32) };
-+
-+            if let Some(dom_ctx_map_elem) = dom_data
-+                .lookup(&key, libbpf_rs::MapFlags::ANY)
-+                .context("Failed to lookup dom_ctx")?
-+            {
-+                let dom_ctx = unsafe {
-+                    &*(dom_ctx_map_elem.as_slice().as_ptr() as *const rusty_sys::dom_ctx)
-+                };
-+
-+                let rd = &dom_ctx.load_rd;
-+                self.dom_loads[i] = ravg_read(
-+                    rd.val,
-+                    rd.val_at,
-+                    rd.old,
-+                    rd.cur,
-+                    now_mono,
-+                    load_half_life,
-+                    RAVG_FRAC_BITS,
-+                );
-+
-+                load_sum += self.dom_loads[i];
-+            }
-+        }
-+
-+        self.load_avg = load_sum / self.top.nr_doms as f64;
-+
-+        Ok(())
-+    }
-+
-+    /// To balance dom loads, identify doms with lower and higher load than
-+    /// average.
-+    fn calculate_dom_load_balance(&mut self) -> Result<()> {
-+        for (dom, dom_load) in self.dom_loads.iter().enumerate() {
-+            let imbal = dom_load - self.load_avg;
-+            if imbal.abs() >= self.load_avg * Self::LOAD_IMBAL_HIGH_RATIO {
-+                if imbal > 0f64 {
-+                    self.doms_to_push.insert(OrderedFloat(imbal), dom as u32);
-+                } else {
-+                    self.doms_to_pull.insert(OrderedFloat(-imbal), dom as u32);
++impl Layer {
++    fn new(cpu_pool: &mut CpuPool, name: &str, kind: LayerKind) -> Result<Self> {
++        match &kind {
++            LayerKind::Confined {
++                cpus_range,
++                util_range,
++            } => {
++                let cpus_range = cpus_range.unwrap_or((0, std::usize::MAX));
++                if cpus_range.0 > cpus_range.1 || cpus_range.1 == 0 {
++                    bail!("invalid cpus_range {:?}", cpus_range);
 +                }
-+                self.imbal[dom] = imbal;
-+            }
-+        }
-+        Ok(())
-+    }
-+
-+    /// @dom needs to push out tasks to balance loads. Make sure its
-+    /// tasks_by_load is populated so that the victim tasks can be picked.
-+    fn populate_tasks_by_load(&mut self, dom: u32) -> Result<()> {
-+        if self.tasks_by_load[dom as usize].is_some() {
-+            return Ok(());
-+        }
-+
-+        // Read active_pids and update write_idx and gen.
-+        //
-+        // XXX - We can't read task_ctx inline because self.skel.bss()
-+        // borrows mutably and thus conflicts with self.skel.maps().
-+        const MAX_PIDS: u64 = rusty_sys::consts_MAX_DOM_ACTIVE_PIDS as u64;
-+        let active_pids = &mut self.skel.bss().dom_active_pids[dom as usize];
-+        let mut pids = vec![];
-+
-+        let (mut ridx, widx) = (active_pids.read_idx, active_pids.write_idx);
-+        if widx - ridx > MAX_PIDS {
-+            ridx = widx - MAX_PIDS;
-+        }
-+
-+        for idx in ridx..widx {
-+            let pid = active_pids.pids[(idx % MAX_PIDS) as usize];
-+            pids.push(pid);
-+        }
-+
-+        active_pids.read_idx = active_pids.write_idx;
-+        active_pids.gen += 1;
-+
-+        // Read task_ctx and load.
-+        let load_half_life = self.skel.rodata().load_half_life;
-+        let maps = self.skel.maps();
-+        let task_data = maps.task_data();
-+        let now_mono = now_monotonic();
-+        let mut tasks_by_load = BTreeMap::new();
-+
-+        for pid in pids.iter() {
-+            let key = unsafe { std::mem::transmute::<i32, [u8; 4]>(*pid) };
-+
-+            if let Some(task_data_elem) = task_data.lookup(&key, libbpf_rs::MapFlags::ANY)? {
-+                let task_ctx =
-+                    unsafe { &*(task_data_elem.as_slice().as_ptr() as *const rusty_sys::task_ctx) };
-+
-+                if task_ctx.dom_id != dom {
-+                    continue;
++                if util_range.0 < 0.0
++                    || util_range.0 > 1.0
++                    || util_range.1 < 0.0
++                    || util_range.1 > 1.0
++                    || util_range.0 >= util_range.1
++                {
++                    bail!("invalid util_range {:?}", util_range);
 +                }
-+
-+                let rd = &task_ctx.dcyc_rd;
-+                let load = task_ctx.weight as f64
-+                    * ravg_read(
-+                        rd.val,
-+                        rd.val_at,
-+                        rd.old,
-+                        rd.cur,
-+                        now_mono,
-+                        load_half_life,
-+                        RAVG_FRAC_BITS,
-+                    );
-+
-+                tasks_by_load.insert(
-+                    OrderedFloat(load),
-+                    TaskInfo {
-+                        pid: *pid,
-+                        dom_mask: task_ctx.dom_mask,
-+                        migrated: Cell::new(false),
-+                        is_kworker: task_ctx.is_kworker,
-+                    },
-+                );
 +            }
++            _ => {}
 +        }
 +
-+        debug!(
-+            "DOM[{:02}] read load for {} tasks",
-+            dom,
-+            &tasks_by_load.len(),
-+        );
-+        trace!("DOM[{:02}] tasks_by_load={:?}", dom, &tasks_by_load);
++        let nr_cpus = cpu_pool.nr_cpus;
 +
-+        self.tasks_by_load[dom as usize] = Some(tasks_by_load);
-+        Ok(())
-+    }
++        let mut layer = Self {
++            name: name.into(),
++            kind,
 +
-+    // Find the first candidate pid which hasn't already been migrated and
-+    // can run in @pull_dom.
-+    fn find_first_candidate<'d, I>(
-+        tasks_by_load: I,
-+        pull_dom: u32,
-+        skip_kworkers: bool,
-+    ) -> Option<(f64, &'d TaskInfo)>
-+    where
-+        I: IntoIterator<Item = (&'d OrderedFloat<f64>, &'d TaskInfo)>,
-+    {
-+        match tasks_by_load
-+            .into_iter()
-+            .skip_while(|(_, task)| {
-+                task.migrated.get()
-+                    || (task.dom_mask & (1 << pull_dom) == 0)
-+                    || (skip_kworkers && task.is_kworker)
-+            })
-+            .next()
-+        {
-+            Some((OrderedFloat(load), task)) => Some((*load, task)),
-+            None => None,
++            nr_cpus: 0,
++            cpus: bitvec![0; nr_cpus],
++        };
++
++        match &layer.kind {
++            LayerKind::Confined {
++                cpus_range,
++                util_range,
++            }
++            | LayerKind::Grouped {
++                cpus_range,
++                util_range,
++                ..
++            } => {
++                layer.resize_confined_or_grouped(
++                    cpu_pool,
++                    *cpus_range,
++                    *util_range,
++                    (0.0, 0.0),
++                    (0.0, 0.0),
++                    false,
++                )?;
++            }
++            _ => {}
 +        }
++
++        Ok(layer)
 +    }
 +
-+    fn pick_victim(
++    fn grow_confined_or_grouped(
 +        &mut self,
-+        (push_dom, to_push): (u32, f64),
-+        (pull_dom, to_pull): (u32, f64),
-+    ) -> Result<Option<(&TaskInfo, f64)>> {
-+        let to_xfer = to_pull.min(to_push) * Self::LOAD_IMBAL_XFER_TARGET_RATIO;
++        cpu_pool: &mut CpuPool,
++        (cpus_min, cpus_max): (usize, usize),
++        (_util_low, util_high): (f64, f64),
++        (layer_load, total_load): (f64, f64),
++        (layer_util, _total_util): (f64, f64),
++        no_load_frac_limit: bool,
++    ) -> Result<bool> {
++        if self.nr_cpus >= cpus_max {
++            return Ok(false);
++        }
 +
-+        debug!(
-+            "considering dom {}@{:.2} -> {}@{:.2}",
-+            push_dom, to_push, pull_dom, to_pull
-+        );
++        // Do we already have enough?
++        if self.nr_cpus >= cpus_min
++            && (layer_util == 0.0
++                || (self.nr_cpus > 0 && layer_util / self.nr_cpus as f64 <= util_high))
++        {
++            return Ok(false);
++        }
 +
-+        let calc_new_imbal = |xfer: f64| (to_push - xfer).abs() + (to_pull - xfer).abs();
++        // Can't have more CPUs than our load fraction.
++        if !no_load_frac_limit
++            && self.nr_cpus >= cpus_min
++            && (total_load >= 0.0
++                && self.nr_cpus as f64 / cpu_pool.nr_cpus as f64 >= layer_load / total_load)
++        {
++            trace!(
++                "layer-{} needs more CPUs (util={:.3}) but is over the load fraction",
++                &self.name,
++                layer_util
++            );
++            return Ok(false);
++        }
 +
-+        self.populate_tasks_by_load(push_dom)?;
-+
-+        // We want to pick a task to transfer from push_dom to pull_dom to
-+        // reduce the load imbalance between the two closest to $to_xfer.
-+        // IOW, pick a task which has the closest load value to $to_xfer
-+        // that can be migrated. Find such task by locating the first
-+        // migratable task while scanning left from $to_xfer and the
-+        // counterpart while scanning right and picking the better of the
-+        // two.
-+        let (load, task, new_imbal) = match (
-+            Self::find_first_candidate(
-+                self.tasks_by_load[push_dom as usize]
-+                    .as_ref()
-+                    .unwrap()
-+                    .range((Unbounded, Included(&OrderedFloat(to_xfer))))
-+                    .rev(),
-+                pull_dom,
-+                self.skip_kworkers,
-+            ),
-+            Self::find_first_candidate(
-+                self.tasks_by_load[push_dom as usize]
-+                    .as_ref()
-+                    .unwrap()
-+                    .range((Included(&OrderedFloat(to_xfer)), Unbounded)),
-+                pull_dom,
-+                self.skip_kworkers,
-+            ),
-+        ) {
-+            (None, None) => return Ok(None),
-+            (Some((load, task)), None) | (None, Some((load, task))) => {
-+                (load, task, calc_new_imbal(load))
-+            }
-+            (Some((load0, task0)), Some((load1, task1))) => {
-+                let (new_imbal0, new_imbal1) = (calc_new_imbal(load0), calc_new_imbal(load1));
-+                if new_imbal0 <= new_imbal1 {
-+                    (load0, task0, new_imbal0)
-+                } else {
-+                    (load1, task1, new_imbal1)
-+                }
++        let new_cpus = match cpu_pool.alloc().clone() {
++            Some(ret) => ret.clone(),
++            None => {
++                trace!("layer-{} can't grow, no CPUs", &self.name);
++                return Ok(false);
 +            }
 +        };
 +
-+        // If the best candidate can't reduce the imbalance, there's nothing
-+        // to do for this pair.
-+        let old_imbal = to_push + to_pull;
-+        if old_imbal < new_imbal {
-+            debug!(
-+                "skipping pid {}, dom {} -> {} won't improve imbal {:.2} -> {:.2}",
-+                task.pid, push_dom, pull_dom, old_imbal, new_imbal
-+            );
++        trace!(
++            "layer-{} adding {} CPUs to {} CPUs",
++            &self.name,
++            new_cpus.count_ones(),
++            self.nr_cpus
++        );
++
++        self.nr_cpus += new_cpus.count_ones();
++        self.cpus |= &new_cpus;
++        Ok(true)
++    }
++
++    fn cpus_to_free(
++        &self,
++        cpu_pool: &mut CpuPool,
++        (cpus_min, _cpus_max): (usize, usize),
++        (util_low, util_high): (f64, f64),
++        (layer_load, total_load): (f64, f64),
++        (layer_util, _total_util): (f64, f64),
++        no_load_frac_limit: bool,
++    ) -> Result<Option<BitVec>> {
++        if self.nr_cpus <= cpus_min {
 +            return Ok(None);
 +        }
 +
-+        debug!(
-+            "migrating pid {}, dom {} -> {}, imbal={:.2} -> {:.2}",
-+            task.pid, push_dom, pull_dom, old_imbal, new_imbal,
-+        );
++        let cpus_to_free = match cpu_pool.next_to_free(&self.cpus)? {
++            Some(ret) => ret.clone(),
++            None => return Ok(None),
++        };
 +
-+        Ok(Some((task, load)))
-+    }
++        let nr_to_free = cpus_to_free.count_ones();
 +
-+    // Actually execute the load balancing. Concretely this writes pid -> dom
-+    // entries into the lb_data map for bpf side to consume.
-+    fn load_balance(&mut self) -> Result<()> {
-+        clear_map(self.skel.maps().lb_data());
++        // If we'd be over the load fraction even after freeing
++        // $cpus_to_free, we have to free.
++        if !no_load_frac_limit
++            && total_load >= 0.0
++            && (self.nr_cpus - nr_to_free) as f64 / cpu_pool.nr_cpus as f64
++                >= layer_load / total_load
++        {
++            return Ok(Some(cpus_to_free));
++        }
 +
-+        debug!("imbal={:?}", &self.imbal);
-+        debug!("doms_to_push={:?}", &self.doms_to_push);
-+        debug!("doms_to_pull={:?}", &self.doms_to_pull);
++        if layer_util / self.nr_cpus as f64 >= util_low {
++            return Ok(None);
++        }
 +
-+        // Push from the most imbalanced to least.
-+        while let Some((OrderedFloat(mut to_push), push_dom)) = self.doms_to_push.pop_last() {
-+            let push_max = self.dom_loads[push_dom as usize] * Self::LOAD_IMBAL_PUSH_MAX_RATIO;
-+            let mut pushed = 0f64;
-+
-+            // Transfer tasks from push_dom to reduce imbalance.
-+            loop {
-+                let last_pushed = pushed;
-+
-+                // Pull from the most imbalaned to least.
-+                let mut doms_to_pull = BTreeMap::<_, _>::new();
-+                std::mem::swap(&mut self.doms_to_pull, &mut doms_to_pull);
-+                let mut pull_doms = doms_to_pull.into_iter().rev().collect::<Vec<(_, _)>>();
-+
-+                for (to_pull, pull_dom) in pull_doms.iter_mut() {
-+                    if let Some((task, load)) =
-+                        self.pick_victim((push_dom, to_push), (*pull_dom, f64::from(*to_pull)))?
-+                    {
-+                        // Execute migration.
-+                        task.migrated.set(true);
-+                        to_push -= load;
-+                        *to_pull -= load;
-+                        pushed += load;
-+
-+                        // Ask BPF code to execute the migration.
-+                        let pid = task.pid;
-+                        let cpid = (pid as libc::pid_t).to_ne_bytes();
-+                        if let Err(e) = self.skel.maps_mut().lb_data().update(
-+                            &cpid,
-+                            &pull_dom.to_ne_bytes(),
-+                            libbpf_rs::MapFlags::NO_EXIST,
-+                        ) {
-+                            warn!(
-+                                "Failed to update lb_data map for pid={} error={:?}",
-+                                pid, &e
-+                            );
-+                            *self.nr_lb_data_errors += 1;
-+                        }
-+
-+                        // Always break after a successful migration so that
-+                        // the pulling domains are always considered in the
-+                        // descending imbalance order.
-+                        break;
-+                    }
++        // Can't shrink if losing the CPUs pushes us over @util_high.
++        match self.nr_cpus - nr_to_free {
++            0 => {
++                if layer_util > 0.0 {
++                    return Ok(None);
 +                }
-+
-+                pull_doms
-+                    .into_iter()
-+                    .map(|(k, v)| self.doms_to_pull.insert(k, v))
-+                    .count();
-+
-+                // Stop repeating if nothing got transferred or pushed enough.
-+                if pushed == last_pushed || pushed >= push_max {
-+                    break;
++            }
++            nr_left => {
++                if layer_util / nr_left as f64 >= util_high {
++                    return Ok(None);
 +                }
 +            }
 +        }
-+        Ok(())
++
++        return Ok(Some(cpus_to_free));
++    }
++
++    fn shrink_confined_or_grouped(
++        &mut self,
++        cpu_pool: &mut CpuPool,
++        cpus_range: (usize, usize),
++        util_range: (f64, f64),
++        load: (f64, f64),
++        util: (f64, f64),
++        no_load_frac_limit: bool,
++    ) -> Result<bool> {
++        match self.cpus_to_free(
++            cpu_pool,
++            cpus_range,
++            util_range,
++            load,
++            util,
++            no_load_frac_limit,
++        )? {
++            Some(cpus_to_free) => {
++                trace!("freeing CPUs {}", &cpus_to_free);
++                self.nr_cpus -= cpus_to_free.count_ones();
++                self.cpus &= !cpus_to_free.clone();
++                cpu_pool.free(&cpus_to_free)?;
++                Ok(true)
++            }
++            None => Ok(false),
++        }
++    }
++
++    fn resize_confined_or_grouped(
++        &mut self,
++        cpu_pool: &mut CpuPool,
++        cpus_range: Option<(usize, usize)>,
++        util_range: (f64, f64),
++        load: (f64, f64),
++        util: (f64, f64),
++        no_load_frac_limit: bool,
++    ) -> Result<i64> {
++        let cpus_range = cpus_range.unwrap_or((0, std::usize::MAX));
++        let mut adjusted = 0;
++
++        while self.grow_confined_or_grouped(
++            cpu_pool,
++            cpus_range,
++            util_range,
++            load,
++            util,
++            no_load_frac_limit,
++        )? {
++            adjusted += 1;
++            trace!("{} grew, adjusted={}", &self.name, adjusted);
++        }
++
++        if adjusted == 0 {
++            while self.shrink_confined_or_grouped(
++                cpu_pool,
++                cpus_range,
++                util_range,
++                load,
++                util,
++                no_load_frac_limit,
++            )? {
++                adjusted -= 1;
++                trace!("{} shrunk, adjusted={}", &self.name, adjusted);
++            }
++        }
++
++        if adjusted != 0 {
++            trace!("{} done resizing, adjusted={}", &self.name, adjusted);
++        }
++        Ok(adjusted)
 +    }
 +}
 +
 +struct Scheduler<'a> {
-+    skel: RustySkel<'a>,
++    skel: LayeredSkel<'a>,
 +    struct_ops: Option<libbpf_rs::Link>,
++    layer_specs: Vec<LayerSpec>,
 +
-+    sched_interval: Duration,
-+    tune_interval: Duration,
-+    balance_load: bool,
-+    balanced_kworkers: bool,
++    sched_intv: Duration,
++    monitor_intv: Duration,
++    no_load_frac_limit: bool,
 +
-+    top: Arc<Topology>,
++    cpu_pool: CpuPool,
++    layers: Vec<Layer>,
++
 +    proc_reader: procfs::ProcReader,
++    sched_stats: Stats,
++    report_stats: Stats,
 +
-+    prev_at: Instant,
-+    prev_total_cpu: procfs::CpuStat,
-+
-+    nr_lb_data_errors: u64,
-+
-+    tuner: Tuner,
++    nr_layer_cpus_min_max: Vec<(usize, usize)>,
++    processing_dur: Duration,
++    prev_processing_dur: Duration,
 +}
 +
 +impl<'a> Scheduler<'a> {
-+    fn init(opts: &Opts) -> Result<Self> {
++    fn init_layers(skel: &mut OpenLayeredSkel, specs: &Vec<LayerSpec>) -> Result<()> {
++        skel.rodata().nr_layers = specs.len() as u32;
++
++        for (spec_i, spec) in specs.iter().enumerate() {
++            let layer = &mut skel.bss().layers[spec_i];
++
++            for (or_i, or) in spec.matches.iter().enumerate() {
++                for (and_i, and) in or.iter().enumerate() {
++                    let mt = &mut layer.matches[or_i].matches[and_i];
++                    match and {
++                        LayerMatch::CgroupPrefix(prefix) => {
++                            mt.kind = layered_sys::layer_match_kind_MATCH_CGROUP_PREFIX as i32;
++                            copy_into_cstr(&mut mt.cgroup_prefix, prefix.as_str());
++                        }
++                        LayerMatch::CommPrefix(prefix) => {
++                            mt.kind = layered_sys::layer_match_kind_MATCH_COMM_PREFIX as i32;
++                            copy_into_cstr(&mut mt.comm_prefix, prefix.as_str());
++                        }
++                        LayerMatch::NiceAbove(nice) => {
++                            mt.kind = layered_sys::layer_match_kind_MATCH_NICE_ABOVE as i32;
++                            mt.nice_above_or_below = *nice;
++                        }
++                        LayerMatch::NiceBelow(nice) => {
++                            mt.kind = layered_sys::layer_match_kind_MATCH_NICE_BELOW as i32;
++                            mt.nice_above_or_below = *nice;
++                        }
++                    }
++                }
++                layer.matches[or_i].nr_match_ands = or.len() as i32;
++            }
++
++            layer.nr_match_ors = spec.matches.len() as u32;
++
++            match &spec.kind {
++                LayerKind::Open { preempt } | LayerKind::Grouped { preempt, .. } => {
++                    layer.open = true;
++                    layer.preempt = *preempt;
++                }
++                _ => {}
++            }
++        }
++
++        Ok(())
++    }
++
++    fn init(opts: &Opts, layer_specs: Vec<LayerSpec>) -> Result<Self> {
++        let nr_layers = layer_specs.len();
++        let mut cpu_pool = CpuPool::new()?;
++
 +        // Open the BPF prog first for verification.
-+        let mut skel_builder = RustySkelBuilder::default();
-+        skel_builder.obj_builder.debug(opts.verbose > 0);
++        let mut skel_builder = LayeredSkelBuilder::default();
++        skel_builder.obj_builder.debug(opts.verbose > 1);
 +        let mut skel = skel_builder.open().context("Failed to open BPF program")?;
 +
-+        let nr_cpus = libbpf_rs::num_possible_cpus().unwrap();
-+        if nr_cpus > MAX_CPUS {
-+            bail!(
-+                "nr_cpus ({}) is greater than MAX_CPUS ({})",
-+                nr_cpus,
-+                MAX_CPUS
-+            );
-+        }
-+
 +        // Initialize skel according to @opts.
-+        let top = Arc::new(if !opts.cpumasks.is_empty() {
-+            Topology::from_cpumasks(&opts.cpumasks, nr_cpus)?
-+        } else {
-+            Topology::from_cache_level(opts.cache_level, nr_cpus)?
-+        });
-+
-+        skel.rodata().nr_doms = top.nr_doms as u32;
-+        skel.rodata().nr_cpus = top.nr_cpus as u32;
-+
-+        for (cpu, dom) in top.cpu_dom.iter().enumerate() {
-+            skel.rodata().cpu_dom_id_map[cpu] = dom.unwrap_or(0) as u32;
-+        }
-+
-+        for (dom, cpus) in top.dom_cpus.iter().enumerate() {
-+            let raw_cpus_slice = cpus.as_raw_slice();
-+            let dom_cpumask_slice = &mut skel.rodata().dom_cpumasks[dom];
-+            let (left, _) = dom_cpumask_slice.split_at_mut(raw_cpus_slice.len());
-+            left.clone_from_slice(cpus.as_raw_slice());
-+            info!(
-+                "DOM[{:02}] cpumask{} ({} cpus)",
-+                dom,
-+                &format_cpumask(dom_cpumask_slice, nr_cpus),
-+                cpus.count_ones()
-+            );
-+        }
-+
-+        skel.rodata().slice_ns = opts.slice_us * 1000;
-+        skel.rodata().load_half_life = (opts.load_half_life * 1000000000.0) as u32;
-+        skel.rodata().kthreads_local = opts.kthreads_local;
-+        skel.rodata().fifo_sched = opts.fifo_sched;
-+        skel.rodata().switch_partial = opts.partial;
-+        skel.rodata().greedy_threshold = opts.greedy_threshold;
 +        skel.rodata().debug = opts.verbose as u32;
++        skel.rodata().slice_ns = opts.slice_us * 1000;
++        skel.rodata().nr_possible_cpus = *NR_POSSIBLE_CPUS as u32;
++        skel.rodata().smt_enabled = cpu_pool.nr_cpus > cpu_pool.nr_cores;
++        for cpu in cpu_pool.all_cpus.iter_ones() {
++            skel.rodata().all_cpus[cpu / 8] |= 1 << (cpu % 8);
++        }
++        Self::init_layers(&mut skel, &layer_specs)?;
 +
 +        // Attach.
 +        let mut skel = skel.load().context("Failed to load BPF program")?;
 +        skel.attach().context("Failed to attach BPF program")?;
 +        let struct_ops = Some(
 +            skel.maps_mut()
-+                .rusty()
++                .layered()
 +                .attach_struct_ops()
-+                .context("Failed to attach rusty struct ops")?,
++                .context("Failed to attach layered struct ops")?,
 +        );
-+        info!("Rusty Scheduler Attached");
++        info!("Layered Scheduler Attached");
++
++        let mut layers = vec![];
++        for spec in layer_specs.iter() {
++            layers.push(Layer::new(&mut cpu_pool, &spec.name, spec.kind.clone())?);
++        }
 +
 +        // Other stuff.
 +        let proc_reader = procfs::ProcReader::new();
-+        let prev_total_cpu = read_total_cpu(&proc_reader)?;
 +
 +        Ok(Self {
-+            skel,
 +            struct_ops, // should be held to keep it attached
++            layer_specs,
 +
-+            sched_interval: Duration::from_secs_f64(opts.interval),
-+            tune_interval: Duration::from_secs_f64(opts.tune_interval),
-+            balance_load: !opts.no_load_balance,
-+            balanced_kworkers: opts.balanced_kworkers,
++            sched_intv: Duration::from_secs_f64(opts.interval),
++            monitor_intv: Duration::from_secs_f64(opts.monitor),
++            no_load_frac_limit: opts.no_load_frac_limit,
 +
-+            top: top.clone(),
++            cpu_pool,
++            layers,
++
++            sched_stats: Stats::new(&mut skel, &proc_reader)?,
++            report_stats: Stats::new(&mut skel, &proc_reader)?,
++
++            nr_layer_cpus_min_max: vec![(0, 0); nr_layers],
++            processing_dur: Duration::from_millis(0),
++            prev_processing_dur: Duration::from_millis(0),
++
 +            proc_reader,
-+
-+            prev_at: Instant::now(),
-+            prev_total_cpu,
-+
-+            nr_lb_data_errors: 0,
-+
-+            tuner: Tuner::new(top, opts)?,
++            skel,
 +        })
 +    }
 +
-+    fn get_cpu_busy(&mut self) -> Result<f64> {
-+        let total_cpu = read_total_cpu(&self.proc_reader)?;
-+        let busy = match (&self.prev_total_cpu, &total_cpu) {
-+            (
-+                procfs::CpuStat {
-+                    user_usec: Some(prev_user),
-+                    nice_usec: Some(prev_nice),
-+                    system_usec: Some(prev_system),
-+                    idle_usec: Some(prev_idle),
-+                    iowait_usec: Some(prev_iowait),
-+                    irq_usec: Some(prev_irq),
-+                    softirq_usec: Some(prev_softirq),
-+                    stolen_usec: Some(prev_stolen),
-+                    guest_usec: _,
-+                    guest_nice_usec: _,
-+                },
-+                procfs::CpuStat {
-+                    user_usec: Some(curr_user),
-+                    nice_usec: Some(curr_nice),
-+                    system_usec: Some(curr_system),
-+                    idle_usec: Some(curr_idle),
-+                    iowait_usec: Some(curr_iowait),
-+                    irq_usec: Some(curr_irq),
-+                    softirq_usec: Some(curr_softirq),
-+                    stolen_usec: Some(curr_stolen),
-+                    guest_usec: _,
-+                    guest_nice_usec: _,
-+                },
-+            ) => {
-+                let idle_usec = curr_idle - prev_idle;
-+                let iowait_usec = curr_iowait - prev_iowait;
-+                let user_usec = curr_user - prev_user;
-+                let system_usec = curr_system - prev_system;
-+                let nice_usec = curr_nice - prev_nice;
-+                let irq_usec = curr_irq - prev_irq;
-+                let softirq_usec = curr_softirq - prev_softirq;
-+                let stolen_usec = curr_stolen - prev_stolen;
-+
-+                let busy_usec =
-+                    user_usec + system_usec + nice_usec + irq_usec + softirq_usec + stolen_usec;
-+                let total_usec = idle_usec + busy_usec + iowait_usec;
-+                busy_usec as f64 / total_usec as f64
++    fn update_bpf_layer_cpumask(layer: &Layer, bpf_layer: &mut layered_bss_types::layer) {
++        for bit in 0..layer.cpus.len() {
++            if layer.cpus[bit] {
++                bpf_layer.cpus[bit / 8] |= 1 << (bit % 8);
++            } else {
++                bpf_layer.cpus[bit / 8] &= !(1 << (bit % 8));
 +            }
-+            _ => {
-+                bail!("Some procfs stats are not populated!");
-+            }
-+        };
-+
-+        self.prev_total_cpu = total_cpu;
-+        Ok(busy)
-+    }
-+
-+    fn read_bpf_stats(&mut self) -> Result<Vec<u64>> {
-+        let mut maps = self.skel.maps_mut();
-+        let stats_map = maps.stats();
-+        let mut stats: Vec<u64> = Vec::new();
-+        let zero_vec = vec![vec![0u8; stats_map.value_size() as usize]; self.top.nr_cpus];
-+
-+        for stat in 0..rusty_sys::stat_idx_RUSTY_NR_STATS {
-+            let cpu_stat_vec = stats_map
-+                .lookup_percpu(&stat.to_ne_bytes(), libbpf_rs::MapFlags::ANY)
-+                .with_context(|| format!("Failed to lookup stat {}", stat))?
-+                .expect("per-cpu stat should exist");
-+            let sum = cpu_stat_vec
-+                .iter()
-+                .map(|val| {
-+                    u64::from_ne_bytes(
-+                        val.as_slice()
-+                            .try_into()
-+                            .expect("Invalid value length in stat map"),
-+                    )
-+                })
-+                .sum();
-+            stats_map
-+                .update_percpu(&stat.to_ne_bytes(), &zero_vec, libbpf_rs::MapFlags::ANY)
-+                .context("Failed to zero stat")?;
-+            stats.push(sum);
 +        }
-+        Ok(stats)
++        bpf_layer.refresh_cpus = 1;
 +    }
 +
-+    fn report(
-+        &mut self,
-+        stats: &[u64],
-+        cpu_busy: f64,
-+        processing_dur: Duration,
-+        load_avg: f64,
-+        dom_loads: &[f64],
-+        imbal: &[f64],
-+    ) {
-+        let stat = |idx| stats[idx as usize];
-+        let total = stat(rusty_sys::stat_idx_RUSTY_STAT_WAKE_SYNC)
-+            + stat(rusty_sys::stat_idx_RUSTY_STAT_PREV_IDLE)
-+            + stat(rusty_sys::stat_idx_RUSTY_STAT_GREEDY_IDLE)
-+            + stat(rusty_sys::stat_idx_RUSTY_STAT_PINNED)
-+            + stat(rusty_sys::stat_idx_RUSTY_STAT_DIRECT_DISPATCH)
-+            + stat(rusty_sys::stat_idx_RUSTY_STAT_DIRECT_GREEDY)
-+            + stat(rusty_sys::stat_idx_RUSTY_STAT_DIRECT_GREEDY_FAR)
-+            + stat(rusty_sys::stat_idx_RUSTY_STAT_DSQ_DISPATCH)
-+            + stat(rusty_sys::stat_idx_RUSTY_STAT_GREEDY);
-+
-+        info!(
-+            "cpu={:7.2} bal={} load_avg={:8.2} task_err={} lb_data_err={} proc={:?}ms",
-+            cpu_busy * 100.0,
-+            stats[rusty_sys::stat_idx_RUSTY_STAT_LOAD_BALANCE as usize],
-+            load_avg,
-+            stats[rusty_sys::stat_idx_RUSTY_STAT_TASK_GET_ERR as usize],
-+            self.nr_lb_data_errors,
-+            processing_dur.as_millis(),
-+        );
-+
-+        let stat_pct = |idx| stat(idx) as f64 / total as f64 * 100.0;
-+
-+        info!(
-+            "tot={:7} wsync={:5.2} prev_idle={:5.2} greedy_idle={:5.2} pin={:5.2}",
-+            total,
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_WAKE_SYNC),
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_PREV_IDLE),
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_GREEDY_IDLE),
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_PINNED),
-+        );
-+
-+        info!(
-+            "dir={:5.2} dir_greedy={:5.2} dir_greedy_far={:5.2}",
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_DIRECT_DISPATCH),
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_DIRECT_GREEDY),
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_DIRECT_GREEDY_FAR),
-+        );
-+
-+        info!(
-+            "dsq={:5.2} greedy={:5.2} kick_greedy={:5.2} rep={:5.2}",
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_DSQ_DISPATCH),
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_GREEDY),
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_KICK_GREEDY),
-+            stat_pct(rusty_sys::stat_idx_RUSTY_STAT_REPATRIATE),
-+        );
-+
-+        let ti = &self.skel.bss().tune_input;
-+        info!(
-+            "direct_greedy_cpumask={}",
-+            format_cpumask(&ti.direct_greedy_cpumask, self.top.nr_cpus)
-+        );
-+        info!(
-+            "  kick_greedy_cpumask={}",
-+            format_cpumask(&ti.kick_greedy_cpumask, self.top.nr_cpus)
-+        );
-+
-+        for i in 0..self.top.nr_doms {
-+            info!(
-+                "DOM[{:02}] util={:6.2} load={:8.2} imbal={}",
-+                i,
-+                self.tuner.dom_utils[i] * 100.0,
-+                dom_loads[i],
-+                if imbal[i] == 0.0 {
-+                    format!("{:9.2}", 0.0)
-+                } else {
-+                    format!("{:+9.2}", imbal[i])
-+                },
-+            );
-+        }
-+    }
-+
-+    fn lb_step(&mut self) -> Result<()> {
++    fn step(&mut self) -> Result<()> {
 +        let started_at = Instant::now();
-+        let bpf_stats = self.read_bpf_stats()?;
-+        let cpu_busy = self.get_cpu_busy()?;
++        self.sched_stats
++            .refresh(&mut self.skel, &self.proc_reader, started_at)?;
++        let mut updated = false;
 +
-+        let mut lb = LoadBalancer::new(
-+            &mut self.skel,
-+            self.top.clone(),
-+            self.balanced_kworkers,
-+            &mut self.nr_lb_data_errors,
-+        );
-+
-+        lb.read_dom_loads()?;
-+        lb.calculate_dom_load_balance()?;
-+
-+        if self.balance_load {
-+            lb.load_balance()?;
++        for idx in 0..self.layers.len() {
++            match self.layers[idx].kind {
++                LayerKind::Confined {
++                    cpus_range,
++                    util_range,
++                }
++                | LayerKind::Grouped {
++                    cpus_range,
++                    util_range,
++                    ..
++                } => {
++                    let load = (
++                        self.sched_stats.layer_loads[idx],
++                        self.sched_stats.total_load,
++                    );
++                    let util = (
++                        self.sched_stats.layer_utils[idx],
++                        self.sched_stats.total_util,
++                    );
++                    if self.layers[idx].resize_confined_or_grouped(
++                        &mut self.cpu_pool,
++                        cpus_range,
++                        util_range,
++                        load,
++                        util,
++                        self.no_load_frac_limit,
++                    )? != 0
++                    {
++                        Self::update_bpf_layer_cpumask(
++                            &self.layers[idx],
++                            &mut self.skel.bss().layers[idx],
++                        );
++                        updated = true;
++                    }
++                }
++                _ => {}
++            }
 +        }
 +
-+        // Extract fields needed for reporting and drop lb to release
-+        // mutable borrows.
-+        let (load_avg, dom_loads, imbal) = (lb.load_avg, lb.dom_loads, lb.imbal);
++        if updated {
++            let available_cpus = self.cpu_pool.available_cpus();
++            let nr_available_cpus = available_cpus.count_ones();
++            for idx in 0..self.layers.len() {
++                let layer = &mut self.layers[idx];
++                let bpf_layer = &mut self.skel.bss().layers[idx];
++                match &layer.kind {
++                    LayerKind::Open { .. } => {
++                        layer.cpus.copy_from_bitslice(&available_cpus);
++                        layer.nr_cpus = nr_available_cpus;
++                        Self::update_bpf_layer_cpumask(layer, bpf_layer);
++                    }
++                    _ => {}
++                }
++            }
 +
-+        self.report(
-+            &bpf_stats,
-+            cpu_busy,
-+            Instant::now().duration_since(started_at),
-+            load_avg,
-+            &dom_loads,
-+            &imbal,
-+        );
++            self.skel.bss().fallback_cpu = self.cpu_pool.fallback_cpu as u32;
 +
-+        self.prev_at = started_at;
++            for (lidx, layer) in self.layers.iter().enumerate() {
++                self.nr_layer_cpus_min_max[lidx] = (
++                    self.nr_layer_cpus_min_max[lidx].0.min(layer.nr_cpus),
++                    self.nr_layer_cpus_min_max[lidx].1.max(layer.nr_cpus),
++                );
++            }
++        }
++
++        self.processing_dur += Instant::now().duration_since(started_at);
 +        Ok(())
 +    }
 +
-+    fn read_bpf_exit_kind(&mut self) -> i32 {
-+        unsafe { std::ptr::read_volatile(&self.skel.bss().exit_kind as *const _) }
-+    }
++    fn report(&mut self) -> Result<()> {
++        let started_at = Instant::now();
++        self.report_stats
++            .refresh(&mut self.skel, &self.proc_reader, started_at)?;
++        let stats = &self.report_stats;
 +
-+    fn report_bpf_exit_kind(&mut self) -> Result<()> {
-+        // Report msg if EXT_OPS_EXIT_ERROR.
-+        match self.read_bpf_exit_kind() {
-+            0 => Ok(()),
-+            etype if etype == 2 => {
-+                let cstr = unsafe { CStr::from_ptr(self.skel.bss().exit_msg.as_ptr() as *const _) };
-+                let msg = cstr
-+                    .to_str()
-+                    .context("Failed to convert exit msg to string")
-+                    .unwrap();
-+                bail!("BPF exit_kind={} msg={}", etype, msg);
++        let processing_dur = self.processing_dur - self.prev_processing_dur;
++        self.prev_processing_dur = self.processing_dur;
++
++        let lsum = |idx| stats.bpf_stats.lstats_sums[idx as usize];
++        let total = lsum(layered_sys::layer_stat_idx_LSTAT_LOCAL)
++            + lsum(layered_sys::layer_stat_idx_LSTAT_GLOBAL);
++        let lsum_pct = |idx| {
++            if total != 0 {
++                lsum(idx) as f64 / total as f64 * 100.0
++            } else {
++                0.0
 +            }
-+            etype => {
-+                info!("BPF exit_kind={}", etype);
-+                Ok(())
-+            }
++        };
++
++        info!(
++            "tot={:7} local={:5.2} open_idle={:5.2} affn_viol={:5.2} tctx_err={} proc={:?}ms",
++            total,
++            lsum_pct(layered_sys::layer_stat_idx_LSTAT_LOCAL),
++            lsum_pct(layered_sys::layer_stat_idx_LSTAT_OPEN_IDLE),
++            lsum_pct(layered_sys::layer_stat_idx_LSTAT_AFFN_VIOL),
++            stats.prev_bpf_stats.gstats
++                [layered_sys::global_stat_idx_GSTAT_TASK_CTX_FREE_FAILED as usize],
++            processing_dur.as_millis(),
++        );
++
++        info!(
++            "busy={:5.1} util={:7.1} load={:9.1} fallback_cpu={:3}",
++            stats.cpu_busy * 100.0,
++            stats.total_util * 100.0,
++            stats.total_load,
++            self.cpu_pool.fallback_cpu,
++        );
++
++        let header_width = self
++            .layer_specs
++            .iter()
++            .map(|spec| spec.name.len())
++            .max()
++            .unwrap()
++            .max(4);
++
++        let calc_frac = |a, b| {
++            if b != 0.0 { a / b * 100.0 } else { 0.0 }
++        };
++
++        for (lidx, (spec, layer)) in self.layer_specs.iter().zip(self.layers.iter()).enumerate() {
++            let lstat = |sidx| stats.bpf_stats.lstats[lidx][sidx as usize];
++            let ltotal = lstat(layered_sys::layer_stat_idx_LSTAT_LOCAL)
++                + lstat(layered_sys::layer_stat_idx_LSTAT_GLOBAL);
++            let lstat_pct = |sidx| {
++                if ltotal != 0 {
++                    lstat(sidx) as f64 / ltotal as f64 * 100.0
++                } else {
++                    0.0
++                }
++            };
++
++            info!(
++                "  {:<width$}: util/frac={:7.1}/{:5.1} load/frac={:9.1}:{:5.1} tasks={:6}",
++                spec.name,
++                stats.layer_utils[lidx] * 100.0,
++                calc_frac(stats.layer_utils[lidx], stats.total_util),
++                stats.layer_loads[lidx],
++                calc_frac(stats.layer_loads[lidx], stats.total_load),
++                stats.nr_layer_tasks[lidx],
++                width = header_width,
++            );
++            info!(
++                "  {:<width$}  tot={:7} local={:5.2} open_idle={:5.2} preempt={:5.2} affn_viol={:5.2}",
++                "",
++                ltotal,
++                lstat_pct(layered_sys::layer_stat_idx_LSTAT_LOCAL),
++                lstat_pct(layered_sys::layer_stat_idx_LSTAT_OPEN_IDLE),
++                lstat_pct(layered_sys::layer_stat_idx_LSTAT_PREEMPT),
++                lstat_pct(layered_sys::layer_stat_idx_LSTAT_AFFN_VIOL),
++                width = header_width,
++            );
++            info!(
++                "  {:<width$}  cpus={:3} [{:3},{:3}] {}",
++                "",
++                layer.nr_cpus,
++                self.nr_layer_cpus_min_max[lidx].0,
++                self.nr_layer_cpus_min_max[lidx].1,
++                format_bitvec(&layer.cpus),
++                width = header_width
++            );
++            self.nr_layer_cpus_min_max[lidx] = (layer.nr_cpus, layer.nr_cpus);
 +        }
++
++        self.processing_dur += Instant::now().duration_since(started_at);
++        Ok(())
 +    }
 +
 +    fn run(&mut self, shutdown: Arc<AtomicBool>) -> Result<()> {
 +        let now = Instant::now();
-+        let mut next_tune_at = now + self.tune_interval;
-+        let mut next_sched_at = now + self.sched_interval;
++        let mut next_sched_at = now + self.sched_intv;
++        let mut next_monitor_at = now + self.monitor_intv;
 +
-+        while !shutdown.load(Ordering::Relaxed) && self.read_bpf_exit_kind() == 0 {
++        while !shutdown.load(Ordering::Relaxed) && !UserExitInfo::exited(&self.skel.bss().uei)? {
 +            let now = Instant::now();
 +
-+            if now >= next_tune_at {
-+                self.tuner.step(&mut self.skel)?;
-+                next_tune_at += self.tune_interval;
-+                if next_tune_at < now {
-+                    next_tune_at = now + self.tune_interval;
++            if now >= next_sched_at {
++                self.step()?;
++                while next_sched_at < now {
++                    next_sched_at += self.sched_intv;
 +                }
 +            }
 +
-+            if now >= next_sched_at {
-+                self.lb_step()?;
-+                next_sched_at += self.sched_interval;
-+                if next_sched_at < now {
-+                    next_sched_at = now + self.sched_interval;
++            if now >= next_monitor_at {
++                self.report()?;
++                while next_monitor_at < now {
++                    next_monitor_at += self.monitor_intv;
 +                }
 +            }
 +
 +            std::thread::sleep(
 +                next_sched_at
-+                    .min(next_tune_at)
++                    .min(next_monitor_at)
 +                    .duration_since(Instant::now()),
 +            );
 +        }
 +
-+        self.report_bpf_exit_kind()
++        self.struct_ops.take();
++        UserExitInfo::read(&self.skel.bss().uei)?.report()
 +    }
 +}
 +
@@ -3456,6 +2944,140 @@ index 000000000000..3b0bcd742e05
 +            drop(struct_ops);
 +        }
 +    }
++}
++
++fn write_example_file(path: &str) -> Result<()> {
++    let example = LayerConfig {
++        specs: vec![
++            LayerSpec {
++                name: "batch".into(),
++                comment: Some("tasks under system.slice or tasks with nice value > 0".into()),
++                matches: vec![
++                    vec![LayerMatch::CgroupPrefix("system.slice/".into())],
++                    vec![LayerMatch::NiceAbove(0)],
++                ],
++                kind: LayerKind::Confined {
++                    cpus_range: Some((0, 16)),
++                    util_range: (0.8, 0.9),
++                },
++            },
++            LayerSpec {
++                name: "immediate".into(),
++                comment: Some("tasks under workload.slice with nice value < 0".into()),
++                matches: vec![vec![
++                    LayerMatch::CgroupPrefix("workload.slice/".into()),
++                    LayerMatch::NiceBelow(0),
++                ]],
++                kind: LayerKind::Open { preempt: true },
++            },
++            LayerSpec {
++                name: "normal".into(),
++                comment: Some("the rest".into()),
++                matches: vec![vec![]],
++                kind: LayerKind::Grouped {
++                    cpus_range: None,
++                    util_range: (0.5, 0.6),
++                    preempt: false,
++                },
++            },
++        ],
++    };
++
++    let mut f = fs::OpenOptions::new()
++        .create_new(true)
++        .write(true)
++        .open(path)?;
++    Ok(f.write_all(serde_json::to_string_pretty(&example)?.as_bytes())?)
++}
++
++fn verify_layer_specs(specs: &[LayerSpec]) -> Result<()> {
++    let nr_specs = specs.len();
++    if nr_specs == 0 {
++        bail!("No layer spec");
++    }
++    if nr_specs > MAX_LAYERS {
++        bail!("Too many layer specs");
++    }
++
++    for (idx, spec) in specs.iter().enumerate() {
++        if idx < nr_specs - 1 {
++            if spec.matches.len() == 0 {
++                bail!("Non-terminal spec {:?} has NULL matches", spec.name);
++            }
++        } else {
++            if spec.matches.len() != 1 || spec.matches[0].len() != 0 {
++                bail!("Terminal spec {:?} must have an empty match", spec.name);
++            }
++        }
++
++        if spec.matches.len() > MAX_LAYER_MATCH_ORS {
++            bail!(
++                "Spec {:?} has too many ({}) OR match blocks",
++                spec.name,
++                spec.matches.len()
++            );
++        }
++
++        for (ands_idx, ands) in spec.matches.iter().enumerate() {
++            if ands.len() > NR_LAYER_MATCH_KINDS {
++                bail!(
++                    "Spec {:?}'s {}th OR block has too many ({}) match conditions",
++                    spec.name,
++                    ands_idx,
++                    ands.len()
++                );
++            }
++            for one in ands.iter() {
++                match one {
++                    LayerMatch::CgroupPrefix(prefix) => {
++                        if prefix.len() > MAX_PATH {
++                            bail!("Spec {:?} has too long a cgroup prefix", spec.name);
++                        }
++                    }
++                    LayerMatch::CommPrefix(prefix) => {
++                        if prefix.len() > MAX_COMM {
++                            bail!("Spec {:?} has too long a comm prefix", spec.name);
++                        }
++                    }
++                    _ => {}
++                }
++            }
++        }
++
++        match spec.kind {
++            LayerKind::Confined {
++                cpus_range,
++                util_range,
++            }
++            | LayerKind::Grouped {
++                cpus_range,
++                util_range,
++                ..
++            } => {
++                if let Some((cpus_min, cpus_max)) = cpus_range {
++                    if cpus_min > cpus_max {
++                        bail!(
++                            "Spec {:?} has invalid cpus_range({}, {})",
++                            spec.name,
++                            cpus_min,
++                            cpus_max
++                        );
++                    }
++                }
++                if util_range.0 >= util_range.1 {
++                    bail!(
++                        "Spec {:?} has invalid util_range ({}, {})",
++                        spec.name,
++                        util_range.0,
++                        util_range.1
++                    );
++                }
++            }
++            _ => {}
++        }
++    }
++
++    Ok(())
 +}
 +
 +fn main() -> Result<()> {
@@ -3478,7 +3100,25 @@ index 000000000000..3b0bcd742e05
 +        simplelog::ColorChoice::Auto,
 +    )?;
 +
-+    let mut sched = Scheduler::init(&opts)?;
++    debug!("opts={:?}", &opts);
++
++    if let Some(path) = &opts.example {
++        write_example_file(path)?;
++        return Ok(());
++    }
++
++    let mut layer_config = LayerConfig { specs: vec![] };
++    for (idx, input) in opts.specs.iter().enumerate() {
++        layer_config.specs.append(
++            &mut LayerSpec::parse(input)
++                .context(format!("Failed to parse specs[{}] ({:?})", idx, input))?,
++        );
++    }
++
++    debug!("specs={}", serde_json::to_string_pretty(&layer_config)?);
++    verify_layer_specs(&layer_config.specs)?;
++
++    let mut sched = Scheduler::init(&opts, layer_config.specs)?;
 +
 +    let shutdown = Arc::new(AtomicBool::new(false));
 +    let shutdown_clone = shutdown.clone();
@@ -3489,22 +3129,6 @@ index 000000000000..3b0bcd742e05
 +
 +    sched.run(shutdown)
 +}
-diff --git a/tools/sched_ext/scx_rusty/src/rusty_sys.rs b/tools/sched_ext/scx_rusty/src/rusty_sys.rs
-new file mode 100644
-index 000000000000..e948d81e7356
---- /dev/null
-+++ b/tools/sched_ext/scx_rusty/src/rusty_sys.rs
-@@ -0,0 +1,10 @@
-+// Copyright (c) Meta Platforms, Inc. and affiliates.
-+
-+// This software may be used and distributed according to the terms of the
-+// GNU General Public License version 2.
-+#![allow(non_upper_case_globals)]
-+#![allow(non_camel_case_types)]
-+#![allow(non_snake_case)]
-+#![allow(dead_code)]
-+
-+include!(concat!(env!("OUT_DIR"), "/rusty_sys.rs"));
 -- 
 2.42.0
 
