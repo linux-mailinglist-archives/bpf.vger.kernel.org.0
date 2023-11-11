@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-14826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D767E8873
-	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 03:49:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A4317E8877
+	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 03:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4D71280EC0
-	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 02:49:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8704A28122B
+	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 02:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400735690;
-	Sat, 11 Nov 2023 02:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540AD5242;
+	Sat, 11 Nov 2023 02:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y1c4IXlb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pzf7f58r"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 218785673
-	for <bpf@vger.kernel.org>; Sat, 11 Nov 2023 02:49:08 +0000 (UTC)
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F4B3C30;
-	Fri, 10 Nov 2023 18:49:06 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3b512dd7d5bso1689387b6e.1;
-        Fri, 10 Nov 2023 18:49:06 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A7263AE
+	for <bpf@vger.kernel.org>; Sat, 11 Nov 2023 02:49:15 +0000 (UTC)
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80BE44B8;
+	Fri, 10 Nov 2023 18:49:08 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc131e52f1so28826955ad.0;
+        Fri, 10 Nov 2023 18:49:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699670946; x=1700275746; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699670948; x=1700275748; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ajhF3p2bjYBz9DdR3LycrOFMS745TIehR0IbiaJ5SAg=;
-        b=Y1c4IXlbdxufV+WQGH6pHp6YWIyUIky6mxnPiiv7WYbDW53VbemKn+8rsf82k46BZf
-         dai1A0ZvIRvVQwSd1L1F3H+CALWErmM2mbPbVBLMgs3TN6zNCqa5sObFrgqbBHAKHYQb
-         xD1ZisaK2G2vJLdX9mZz9MXFqsLCaEp1yNGhRQdWCA7TrL8ejiBJTilZaOLdRfsp9/bS
-         KQ3jTBaXvnCQz68io4/27ebZ4LSbN1PM4RqymGnymBZbeL3tc4rqzEp8Lyr0fQS2uqwy
-         GbnNjuZXBFEONLIIILXAMOTLpRYRol4HuRuv6iqIhPpo9OJhlnlTLwhCWPfCeOm9IqPZ
-         S/eA==
+        bh=OYAi8NU8qvT6JL+5ks1w/VQtFCCl64ESizJrLPA2acc=;
+        b=Pzf7f58rgFVCN789YOzyZtzBHmarHojB0ayRF5kqyX+Lt9KVyn9o7TRD1+CXdQGjtr
+         AyBnFTg2Xm4zcpQUUSBmVH+lKnvMF8O07oiBrPqT8amnIG3nSCNhutPLgqobF8qztWnh
+         0lWJ0bIsp0FbN8A13qWjmjMOtclL++7TqQgYqtdoi5MkTU1foG7RfFFEUteLokUk1miS
+         X8FqQhy2xEMmpVKoWqgF7GbIYrh6QG8u8dkBK06CCg7/sSLlouVFEkMjrbodxM3iwctR
+         ZlEV/xLZ8MpkBVzlP4gyWMhIGReAS/BW8e9OLRLcjCFAP34zYZ/HFbgJilaR1n003Uzy
+         MwKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699670946; x=1700275746;
+        d=1e100.net; s=20230601; t=1699670948; x=1700275748;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ajhF3p2bjYBz9DdR3LycrOFMS745TIehR0IbiaJ5SAg=;
-        b=D5i1vyQQNfZJKPeoPhkFKu1yeF/nOT7ZPQEq0sFHjU1Mx7qrGOY/FfIgUUC2wj87kX
-         XsAKPCl87feRMAcPIDVXHBLd7Qswhn63ept5kHMcoxLKGn1rtbXwccMtSaazXe+iuJoR
-         1DJctewINR2LKJ0xNu90PuZmk53HgGlo44WHlLKlYLXOnFPAj3CjtCCBjA1luDRBtt0w
-         /Pd1waAucTbLXtB0UvA/co7+yq6yzyzP8x8yAVTdRnzBW8TUZGSDg9ItK8fwdLEEOnxP
-         QcMv9faZsHWnFeLzMGqP9KmXa4f/j1w32HRRtxC4AAM+H0fcG/tXccf/IL0i6MmIyOWw
-         7MIg==
-X-Gm-Message-State: AOJu0YzotTPR9dCDbU8x5QytZ/oacfUUqxx/c2gETrqrjinqiagEwJZw
-	77K/X+FlSYI5owBk7u01HVY=
-X-Google-Smtp-Source: AGHT+IEYnJlUfSgE1UGY8m0tO6dlo2sTjvSD5s3Ql4q5io6utmu89/om61gY45ybFjA19chp9hf1xQ==
-X-Received: by 2002:a05:6808:130e:b0:3af:63ad:a610 with SMTP id y14-20020a056808130e00b003af63ada610mr1728609oiv.14.1699670945928;
-        Fri, 10 Nov 2023 18:49:05 -0800 (PST)
+        bh=OYAi8NU8qvT6JL+5ks1w/VQtFCCl64ESizJrLPA2acc=;
+        b=c2J48Imfwn0udiamzL1Znx6Bi30McVtDDer0Fb19XYhQ6CzpORHA6ob2LM3mROxOAW
+         qwCQ/mwPwoddRZD+qGuq+tGLOv28K0tilfTUdLFsrs/23N1EmvMO2rkXm2Ukx+2Ib7s1
+         jwQjfuEDCM5eYjUqoY6XmNB2j3LD5xU76UHXRg6fWxyg02+VuOQBABzcLMACpfXvKEpU
+         DdzKtYpY1Ho5MERxeupHVcpO4qnqLdUNgd5wNqpMjiSKfdG90g3D1Haws8UW4XjWW2zX
+         ++su8RWTeg+cgNLPtAsal92P/XZRpCg6p+P1Oq/FnzjwKIRqfwKeC10odsJnLn8v58CF
+         XnBQ==
+X-Gm-Message-State: AOJu0YzsNeJoyCMRLjMqNiVhOH1+RAqGE5Ji7uEE3JFd9HZUr3Kyr8Vw
+	2Iy0avtcHZkk3ll9VwpBFWs=
+X-Google-Smtp-Source: AGHT+IHMSrsOCFG7lwNu1/17HnkVspC/S7q8E+eOamI8jiNENyQDAgUSAPxfkwoPmLQnzAn6I93ttg==
+X-Received: by 2002:a17:902:ecd2:b0:1bd:e258:a256 with SMTP id a18-20020a170902ecd200b001bde258a256mr1451669plh.32.1699670948227;
+        Fri, 10 Nov 2023 18:49:08 -0800 (PST)
 Received: from localhost ([2620:10d:c090:400::4:7384])
-        by smtp.gmail.com with ESMTPSA id fa4-20020a056a002d0400b006a77343b0ccsm400960pfb.89.2023.11.10.18.49.05
+        by smtp.gmail.com with ESMTPSA id m18-20020a170902db1200b001c9c6a78a56sm353442plx.97.2023.11.10.18.49.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 18:49:05 -0800 (PST)
+        Fri, 10 Nov 2023 18:49:07 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: torvalds@linux-foundation.org,
@@ -90,10 +90,11 @@ To: torvalds@linux-foundation.org,
 Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@meta.com,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 06/36] sched: Factor out cgroup weight conversion functions
-Date: Fri, 10 Nov 2023 16:47:32 -1000
-Message-ID: <20231111024835.2164816-7-tj@kernel.org>
+	Tejun Heo <tj@kernel.org>,
+	kernel test robot <lkp@intel.com>
+Subject: [PATCH 07/36] sched: Expose css_tg() and __setscheduler_prio()
+Date: Fri, 10 Nov 2023 16:47:33 -1000
+Message-ID: <20231111024835.2164816-8-tj@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231111024835.2164816-1-tj@kernel.org>
 References: <20231111024835.2164816-1-tj@kernel.org>
@@ -105,136 +106,88 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Factor out sched_weight_from/to_cgroup() which convert between scheduler
-shares and cgroup weight. No functional change. The factored out functions
-will be used by a new BPF extensible sched_class so that the weights can be
-exposed to the BPF programs in a way which is consistent cgroup weights and
-easier to interpret.
+These will be used by a new BPF extensible sched_class.
 
-The weight conversions will be used regardless of cgroup usage. It's just
-borrowing the cgroup weight range as it's more intuitive.
-CGROUP_WEIGHT_MIN/DFL/MAX constants are moved outside CONFIG_CGROUPS so that
-the conversion helpers can always be defined.
+css_tg() will be used in the init and exit paths to visit all task_groups by
+walking cgroups.
 
-v2: The helpers are now defined regardless of COFNIG_CGROUPS.
+__setscheduler_prio() is used to pick the sched_class matching the current
+prio of the task. For the new BPF extensible sched_class, the mapping from
+the task configuration to sched_class isn't static and depends on a few
+factors - e.g. whether the BPF progs implementing the scheduler are loaded
+and in a serviceable state. That mapping logic will be added to
+__setscheduler_prio().
+
+When the BPF scheduler progs get loaded and unloaded, the mapping changes
+and the new sched_class will walk the tasks applying the new mapping using
+__setscheduler_prio().
+
+v3: Dropped SCHED_CHANGE_BLOCK() as upstream is adding more generic cleanup
+    mechanism.
+
+v2: Expose SCHED_CHANGE_BLOCK() too and update the description.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
 Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
+Reported-by: kernel test robot <lkp@intel.com>
 ---
- include/linux/cgroup.h |  4 ++--
- kernel/sched/core.c    | 28 +++++++++++++---------------
- kernel/sched/sched.h   | 18 ++++++++++++++++++
- 3 files changed, 33 insertions(+), 17 deletions(-)
+ kernel/sched/core.c  | 7 +------
+ kernel/sched/sched.h | 7 +++++++
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index d164eaeacfa6..53040f7464c4 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -29,8 +29,6 @@
- 
- struct kernel_clone_args;
- 
--#ifdef CONFIG_CGROUPS
--
- /*
-  * All weight knobs on the default hierarchy should use the following min,
-  * default and max values.  The default value is the logarithmic center of
-@@ -40,6 +38,8 @@ struct kernel_clone_args;
- #define CGROUP_WEIGHT_DFL		100
- #define CGROUP_WEIGHT_MAX		10000
- 
-+#ifdef CONFIG_CGROUPS
-+
- enum {
- 	CSS_TASK_ITER_PROCS    = (1U << 0),  /* walk only threadgroup leaders */
- 	CSS_TASK_ITER_THREADED = (1U << 1),  /* walk all threaded css_sets in the domain */
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 26ad5dc65ede..05131ad4b5d5 100644
+index 05131ad4b5d5..ce646cdd87dc 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -11267,29 +11267,27 @@ static int cpu_local_stat_show(struct seq_file *sf,
+@@ -7038,7 +7038,7 @@ int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flag
+ }
+ EXPORT_SYMBOL(default_wake_function);
+ 
+-static void __setscheduler_prio(struct task_struct *p, int prio)
++void __setscheduler_prio(struct task_struct *p, int prio)
+ {
+ 	if (dl_prio(prio))
+ 		p->sched_class = &dl_sched_class;
+@@ -10496,11 +10496,6 @@ void sched_move_task(struct task_struct *tsk)
+ 	}
  }
  
- #ifdef CONFIG_FAIR_GROUP_SCHED
-+
-+static unsigned long tg_weight(struct task_group *tg)
-+{
-+	return scale_load_down(tg->shares);
-+}
-+
- static u64 cpu_weight_read_u64(struct cgroup_subsys_state *css,
- 			       struct cftype *cft)
- {
--	struct task_group *tg = css_tg(css);
--	u64 weight = scale_load_down(tg->shares);
+-static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
+-{
+-	return css ? container_of(css, struct task_group, css) : NULL;
+-}
 -
--	return DIV_ROUND_CLOSEST_ULL(weight * CGROUP_WEIGHT_DFL, 1024);
-+	return sched_weight_to_cgroup(tg_weight(css_tg(css)));
- }
- 
- static int cpu_weight_write_u64(struct cgroup_subsys_state *css,
--				struct cftype *cft, u64 weight)
-+				struct cftype *cft, u64 cgrp_weight)
+ static struct cgroup_subsys_state *
+ cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
  {
--	/*
--	 * cgroup weight knobs should use the common MIN, DFL and MAX
--	 * values which are 1, 100 and 10000 respectively.  While it loses
--	 * a bit of range on both ends, it maps pretty well onto the shares
--	 * value used by scheduler and the round-trip conversions preserve
--	 * the original value over the entire range.
--	 */
--	if (weight < CGROUP_WEIGHT_MIN || weight > CGROUP_WEIGHT_MAX)
-+	unsigned long weight;
-+
-+	if (cgrp_weight < CGROUP_WEIGHT_MIN || cgrp_weight > CGROUP_WEIGHT_MAX)
- 		return -ERANGE;
- 
--	weight = DIV_ROUND_CLOSEST_ULL(weight * 1024, CGROUP_WEIGHT_DFL);
-+	weight = sched_weight_from_cgroup(cgrp_weight);
- 
- 	return sched_group_set_shares(css_tg(css), scale_load(weight));
- }
-@@ -11297,7 +11295,7 @@ static int cpu_weight_write_u64(struct cgroup_subsys_state *css,
- static s64 cpu_weight_nice_read_s64(struct cgroup_subsys_state *css,
- 				    struct cftype *cft)
- {
--	unsigned long weight = scale_load_down(css_tg(css)->shares);
-+	unsigned long weight = tg_weight(css_tg(css));
- 	int last_delta = INT_MAX;
- 	int prio, delta;
- 
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index bfe7303559f1..a6d073a56c2d 100644
+index a6d073a56c2d..97f6e8a28387 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -221,6 +221,24 @@ static inline void update_avg(u64 *avg, u64 sample)
- #define shr_bound(val, shift)							\
- 	(val >> min_t(typeof(shift), shift, BITS_PER_TYPE(typeof(val)) - 1))
+@@ -452,6 +452,11 @@ static inline int walk_tg_tree(tg_visitor down, tg_visitor up, void *data)
+ 	return walk_tg_tree_from(&root_task_group, down, up, data);
+ }
  
-+/*
-+ * cgroup weight knobs should use the common MIN, DFL and MAX values which are
-+ * 1, 100 and 10000 respectively. While it loses a bit of range on both ends, it
-+ * maps pretty well onto the shares value used by scheduler and the round-trip
-+ * conversions preserve the original value over the entire range.
-+ */
-+static inline unsigned long sched_weight_from_cgroup(unsigned long cgrp_weight)
++static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
 +{
-+	return DIV_ROUND_CLOSEST_ULL(cgrp_weight * 1024, CGROUP_WEIGHT_DFL);
++	return css ? container_of(css, struct task_group, css) : NULL;
 +}
 +
-+static inline unsigned long sched_weight_to_cgroup(unsigned long weight)
-+{
-+	return clamp_t(unsigned long,
-+		       DIV_ROUND_CLOSEST_ULL(weight * CGROUP_WEIGHT_DFL, 1024),
-+		       CGROUP_WEIGHT_MIN, CGROUP_WEIGHT_MAX);
-+}
+ extern int tg_nop(struct task_group *tg, void *data);
+ 
+ extern void free_fair_sched_group(struct task_group *tg);
+@@ -2437,6 +2442,8 @@ extern void init_sched_dl_class(void);
+ extern void init_sched_rt_class(void);
+ extern void init_sched_fair_class(void);
+ 
++extern void __setscheduler_prio(struct task_struct *p, int prio);
 +
- /*
-  * !! For sched_setattr_nocheck() (kernel) only !!
-  *
+ extern void resched_curr(struct rq *rq);
+ extern void resched_cpu(int cpu);
+ 
 -- 
 2.42.0
 
