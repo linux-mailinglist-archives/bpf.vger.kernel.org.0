@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-14824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 554517E886B
-	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 03:49:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 582847E886A
+	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 03:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C6011F20F73
-	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 02:49:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0907F281387
+	for <lists+bpf@lfdr.de>; Sat, 11 Nov 2023 02:49:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D1E53B1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348AC5258;
 	Sat, 11 Nov 2023 02:49:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AyfWXJx/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hiXgQNtn"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6367063AC
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D027569F
 	for <bpf@vger.kernel.org>; Sat, 11 Nov 2023 02:49:03 +0000 (UTC)
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F434682;
-	Fri, 10 Nov 2023 18:49:01 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b2e330033fso1480052b6e.3;
-        Fri, 10 Nov 2023 18:49:01 -0800 (PST)
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5A64695;
+	Fri, 10 Nov 2023 18:49:02 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-282e3beb418so2519978a91.0;
+        Fri, 10 Nov 2023 18:49:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699670940; x=1700275740; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699670942; x=1700275742; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lUHH5CPwRNzgz9d7dU60g96xAAx6plF4qt1RwMDTFYk=;
-        b=AyfWXJx/nf0yGRMP0nsYs8CxWdqPg6km98XhkmtQJTLnIIWL8iUItei4XSvlPbiicH
-         TdOrmXygruj+kn4ruP/wxzTIVQCBIW1iIQkIfnf8lHhu2ZiKHWzg/G8M4lnIadnPaUc9
-         VebIu/fsHD1KloX/7r9+pdeZip4xbJbd0EyGjQWkFEpZY97rWcEU0QY7FazAUDh1l1ov
-         EfoNN5VdlJddUVyF4560o506fWUgHUgxnRqlObkXFaQu7VG7w3Rwe59zDE4rXgSccN7N
-         k+qDgEi50lk4ZN3dJimmxZCuXVhiG7k4Prs1yYwlaVzJBEey5o/tcAA+R1qmoSwrCAEL
-         3yfQ==
+        bh=7MM//pMBlM4GuAAmAj+tt8tgOSwOthT3D7HBNuCDy30=;
+        b=hiXgQNtnva67FnrFokQ2LyzhexqwjxTw1xmr+06qntH5hTE9OVq4wEham/V9RRraJT
+         1NXv0fOl4kwiXWlJD0q+L0Y1wfNoeJ6NBgP6a6lBPOv4iFgr/YhY6G/kcvO5/SXFgFf8
+         0qMJ9O9y3qslKEqVatpIGKrE5APv2TjgIK8tUVKsGYy/vWS6g18gyNL6rHBpJodgehN6
+         a4g7dGbtEKb4Wu2e0gBOf8RYl+g0Ku1Qi72yaXWKQl03iMECHwIMdE8Lr7w+FL611u+B
+         hTN3YbbnsomlNNbimiORn8DSh/fUowoD0VxkqN3rMjzThTdiGSSFHi/xq1ap5KnWnuFw
+         nD3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699670940; x=1700275740;
+        d=1e100.net; s=20230601; t=1699670942; x=1700275742;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=lUHH5CPwRNzgz9d7dU60g96xAAx6plF4qt1RwMDTFYk=;
-        b=BU+qE0g7qMxO7DCe2WNbXIS0UKZudvthsRaL65rav7c7+++Yn0/u2jR+yJXA3d9FRy
-         8aaPSabpkmTz22NIJK/J+6U9cuGSsIQPGjKURINuZe0C/oaQmnT2h/cgXkHPWmj7G48a
-         apYiiH8himBU/WfVMheKb1PsNw1GkmN0dlnt8Dev6IRmQNRalzSDtHO3XCG92ClNFWaa
-         /99lSALBASXkCzonRfYaDcyw1KLv7I42DPRiF953utp4965A+NJSdzM6pCVxWrTfuZeJ
-         SGeR43s6OZig6rLbRigE47PKG/0Mzac/EkEXaK53x8G+hlHyquzasZm37dpODko7ZqBp
-         Bbkg==
-X-Gm-Message-State: AOJu0Yzqu//QLys788FgyFxCmvC8WX9ynthXkmxZRS5SOYnkaeHwG70z
-	TqK6DlHHePrs3eysyZG8mx8=
-X-Google-Smtp-Source: AGHT+IFbmEdgitsdOKyuKkl4DTbfi0zHNg+vgGNMPvrhljoXQ93piekXo8Cuww3jOYS4REPIH8lzFQ==
-X-Received: by 2002:a05:6808:4395:b0:3a7:1d15:28fe with SMTP id dz21-20020a056808439500b003a71d1528femr1041649oib.56.1699670940265;
-        Fri, 10 Nov 2023 18:49:00 -0800 (PST)
+        bh=7MM//pMBlM4GuAAmAj+tt8tgOSwOthT3D7HBNuCDy30=;
+        b=Qd47Nhnou/gmUwROvy57HxV3kziXMfHkDG50DigWwSFVEk5smZS+xfUb02daj72/R6
+         2IqLbuJQ4pj1bcM5Iksj/befnYapVj/52qb8qKpBDE4ZatrcUMYYJDyybLvcPfKeYE+1
+         bfd+83mS4Y1XHIynzfyBg+7qtHyas733ROSrPK59tVI88izhCNd7j8sakw0e5pXK3UWh
+         V5121yC3NmUcRxc60HnN/pj9rElv5VyABI1GyU8TZmJx9AkVOcURW16Il9vKpVP3V8Jx
+         ECxv+gXtpIKOKPeGsJeaPfo7bIcEbvYLsbc0Oy7hre7WfftkN60rmICPSiwhGPeQw2No
+         UEtQ==
+X-Gm-Message-State: AOJu0Yy16Dq4K0SP/P80Yp9HLj6oOKWjmjgNEn1UMNDg+wzAacVqYjLk
+	5Ej57tXBIQMasSiJL1tqlF4=
+X-Google-Smtp-Source: AGHT+IEB115bUvoSNdGOFPRlM4qdOvbtXR/o4Rr/HjPysjUYromP3qNqbNUvWFzBQjE6+Riw4en8aQ==
+X-Received: by 2002:a17:90b:4b0c:b0:279:2dac:80b3 with SMTP id lx12-20020a17090b4b0c00b002792dac80b3mr845348pjb.44.1699670942155;
+        Fri, 10 Nov 2023 18:49:02 -0800 (PST)
 Received: from localhost ([2620:10d:c090:400::4:7384])
-        by smtp.gmail.com with ESMTPSA id 71-20020a63004a000000b0057412d84d25sm408459pga.4.2023.11.10.18.48.59
+        by smtp.gmail.com with ESMTPSA id h10-20020a170902f54a00b001c5f7e06256sm351779plf.152.2023.11.10.18.49.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Nov 2023 18:48:59 -0800 (PST)
+        Fri, 10 Nov 2023 18:49:01 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: torvalds@linux-foundation.org,
@@ -91,9 +91,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 03/36] sched: Allow sched_cgroup_fork() to fail and introduce sched_cancel_fork()
-Date: Fri, 10 Nov 2023 16:47:29 -1000
-Message-ID: <20231111024835.2164816-4-tj@kernel.org>
+Subject: [PATCH 04/36] sched: Add sched_class->reweight_task()
+Date: Fri, 10 Nov 2023 16:47:30 -1000
+Message-ID: <20231111024835.2164816-5-tj@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231111024835.2164816-1-tj@kernel.org>
 References: <20231111024835.2164816-1-tj@kernel.org>
@@ -105,19 +105,18 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A new BPF extensible sched_class will need more control over the forking
-process. It wants to be able to fail from sched_cgroup_fork() after the new
-task's sched_task_group is initialized so that the loaded BPF program can
-prepare the task with its cgroup association is established and reject fork
-if e.g. allocation fails.
+Currently, during a task weight change, sched core directly calls
+reweight_task() defined in fair.c if @p is on CFS. Let's make it a proper
+sched_class operation instead. CFS's reweight_task() is renamed to
+reweight_task_fair() and now called through sched_class.
 
-Allow sched_cgroup_fork() to fail by making it return int instead of void
-and adding sched_cancel_fork() to undo sched_fork() in the error path.
+While it turns a direct call into an indirect one, set_load_weight() isn't
+called from a hot path and this change shouldn't cause any noticeable
+difference. This will be used to implement reweight_task for a new BPF
+extensible sched_class so that it can keep its cached task weight
+up-to-date.
 
-sched_cgroup_fork() doesn't fail yet and this patch shouldn't cause any
-behavior changes.
-
-v2: Patch description updated to detail the expected use.
+This will be used by a new sched_class to track weight changes.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
@@ -125,113 +124,69 @@ Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
 ---
- include/linux/sched/task.h |  3 ++-
- kernel/fork.c              | 15 ++++++++++-----
- kernel/sched/core.c        |  8 +++++++-
- 3 files changed, 19 insertions(+), 7 deletions(-)
+ kernel/sched/core.c  | 4 ++--
+ kernel/sched/fair.c  | 3 ++-
+ kernel/sched/sched.h | 4 ++--
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index a23af225c898..03d35e3eda3c 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -61,7 +61,8 @@ extern asmlinkage void schedule_tail(struct task_struct *prev);
- extern void init_idle(struct task_struct *idle, int cpu);
- 
- extern int sched_fork(unsigned long clone_flags, struct task_struct *p);
--extern void sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs);
-+extern int sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs);
-+extern void sched_cancel_fork(struct task_struct *p);
- extern void sched_post_fork(struct task_struct *p);
- extern void sched_dead(struct task_struct *p);
- 
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 204bc1c33533..38c5d142c691 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2472,7 +2472,7 @@ __latent_entropy struct task_struct *copy_process(
- 
- 	retval = perf_event_init_task(p, clone_flags);
- 	if (retval)
--		goto bad_fork_cleanup_policy;
-+		goto bad_fork_sched_cancel_fork;
- 	retval = audit_alloc(p);
- 	if (retval)
- 		goto bad_fork_cleanup_perf;
-@@ -2604,7 +2604,9 @@ __latent_entropy struct task_struct *copy_process(
- 	 * cgroup specific, it unconditionally needs to place the task on a
- 	 * runqueue.
- 	 */
--	sched_cgroup_fork(p, args);
-+	retval = sched_cgroup_fork(p, args);
-+	if (retval)
-+		goto bad_fork_cancel_cgroup;
- 
- 	/*
- 	 * From this point on we must avoid any synchronous user-space
-@@ -2650,13 +2652,13 @@ __latent_entropy struct task_struct *copy_process(
- 	/* Don't start children in a dying pid namespace */
- 	if (unlikely(!(ns_of_pid(pid)->pid_allocated & PIDNS_ADDING))) {
- 		retval = -ENOMEM;
--		goto bad_fork_cancel_cgroup;
-+		goto bad_fork_core_free;
- 	}
- 
- 	/* Let kill terminate clone/fork in the middle */
- 	if (fatal_signal_pending(current)) {
- 		retval = -EINTR;
--		goto bad_fork_cancel_cgroup;
-+		goto bad_fork_core_free;
- 	}
- 
- 	/* No more failure paths after this point. */
-@@ -2732,10 +2734,11 @@ __latent_entropy struct task_struct *copy_process(
- 
- 	return p;
- 
--bad_fork_cancel_cgroup:
-+bad_fork_core_free:
- 	sched_core_free(p);
- 	spin_unlock(&current->sighand->siglock);
- 	write_unlock_irq(&tasklist_lock);
-+bad_fork_cancel_cgroup:
- 	cgroup_cancel_fork(p, args);
- bad_fork_put_pidfd:
- 	if (clone_flags & CLONE_PIDFD) {
-@@ -2774,6 +2777,8 @@ __latent_entropy struct task_struct *copy_process(
- 	audit_free(p);
- bad_fork_cleanup_perf:
- 	perf_event_free_task(p);
-+bad_fork_sched_cancel_fork:
-+	sched_cancel_fork(p);
- bad_fork_cleanup_policy:
- 	lockdep_free_task(p);
- #ifdef CONFIG_NUMA
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 5c0ef271a31a..b5fb4b894477 100644
+index b5fb4b894477..09e6ce45e65a 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4784,7 +4784,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
- 	return 0;
+@@ -1319,8 +1319,8 @@ static void set_load_weight(struct task_struct *p, bool update_load)
+ 	 * SCHED_OTHER tasks have to update their load when changing their
+ 	 * weight
+ 	 */
+-	if (update_load && p->sched_class == &fair_sched_class) {
+-		reweight_task(p, prio);
++	if (update_load && p->sched_class->reweight_task) {
++		p->sched_class->reweight_task(task_rq(p), p, prio);
+ 	} else {
+ 		load->weight = scale_load(sched_prio_to_weight[prio]);
+ 		load->inv_weight = sched_prio_to_wmult[prio];
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 8767988242ee..8ec0c040e9e8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3717,7 +3717,7 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 	}
  }
  
--void sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
-+int sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
+-void reweight_task(struct task_struct *p, int prio)
++static void reweight_task_fair(struct rq *rq, struct task_struct *p, int prio)
  {
- 	unsigned long flags;
+ 	struct sched_entity *se = &p->se;
+ 	struct cfs_rq *cfs_rq = cfs_rq_of(se);
+@@ -12990,6 +12990,7 @@ DEFINE_SCHED_CLASS(fair) = {
+ 	.task_tick		= task_tick_fair,
+ 	.task_fork		= task_fork_fair,
  
-@@ -4811,6 +4811,12 @@ void sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
- 	if (p->sched_class->task_fork)
- 		p->sched_class->task_fork(p);
- 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
-+
-+	return 0;
-+}
-+
-+void sched_cancel_fork(struct task_struct *p)
-+{
- }
++	.reweight_task		= reweight_task_fair,
+ 	.prio_changed		= prio_changed_fair,
+ 	.switched_from		= switched_from_fair,
+ 	.switched_to		= switched_to_fair,
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 2e5a95486a42..a66b48bc45ba 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2259,6 +2259,8 @@ struct sched_class {
+ 	 */
+ 	void (*switched_from)(struct rq *this_rq, struct task_struct *task);
+ 	void (*switched_to)  (struct rq *this_rq, struct task_struct *task);
++	void (*reweight_task)(struct rq *this_rq, struct task_struct *task,
++			      int newprio);
+ 	void (*prio_changed) (struct rq *this_rq, struct task_struct *task,
+ 			      int oldprio);
  
- void sched_post_fork(struct task_struct *p)
+@@ -2416,8 +2418,6 @@ extern void init_sched_dl_class(void);
+ extern void init_sched_rt_class(void);
+ extern void init_sched_fair_class(void);
+ 
+-extern void reweight_task(struct task_struct *p, int prio);
+-
+ extern void resched_curr(struct rq *rq);
+ extern void resched_cpu(int cpu);
+ 
 -- 
 2.42.0
 
