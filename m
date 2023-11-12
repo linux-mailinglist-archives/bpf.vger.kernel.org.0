@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-14954-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14955-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CB257E92A4
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 21:31:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F0A87E92A6
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 21:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95D3CB20B07
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 20:31:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5943A280A65
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 20:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83AE1BDF7;
-	Sun, 12 Nov 2023 20:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3BE1C29E;
+	Sun, 12 Nov 2023 20:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="TKctWSjz"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="eMoGN4n1"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D94BB19BD9;
-	Sun, 12 Nov 2023 20:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C3E1C2B1;
+	Sun, 12 Nov 2023 20:30:56 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57492591;
-	Sun, 12 Nov 2023 12:30:51 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37522583;
+	Sun, 12 Nov 2023 12:30:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=O//B7vzpUYGv9/Sg7vGtQAuoxPZDY/KV6EnYeizveiQ=; b=TKctWSjz1xTaaBRnM1NB1pUYd/
-	JOG8lsalmWs34thTcwl4d7Br1btQOhD6I8IFAyej9ilKc4MicBB/zky71NtEHr4+JDm6uYMyjseVL
-	StpTrOlaUC+khYCUYSjEBuIyIav1RaORE/sKK7io+yyjbEtCSDHv5PPdvHrs48g24ltC6KEJzGbgN
-	ayvCFQ5lGZajBFMD2APekXawUiBzAInTpm+ap1+7r8BThW0fcz70VicexaA1e4FfFsIKPfEWjlQlZ
-	0SgD8OOMe2KOBne26Da6k6OWETtSN3DaEMVM4tPFsUtvHPg17qPDNQu13aRGBr6aX2M/HR/Tc3oEj
-	9U8RB+rA==;
+	bh=knerlEFtXADCCHk6mTG+BfnZldJsp6pMWaGG7POLMBA=; b=eMoGN4n136yUP5BDzls+Uo7S4P
+	NKVb+kX4JAK2NRMLVZzRuEdkz/PhHELGoIignHa9aBHcRXQP3MBkB8hnsr3aDjZN15YV3Q4Tkp71E
+	uc9+AR70LWVGMzNZsM3C/1+PDCgrNI0shNSJq5lqkzrx5RBNEnu7zjgu1ES9IKsB1+ChJoTTdc55D
+	+XSVsxQ9qsRXCJn7Ctnlrrmh/ia44XBdFuk++czOuFVN+lwhkXTQzcdMyXYP9/Mvy7boBzxOWyN7A
+	9iAF34HnMhUPBLI2aM6MG6LOEFXz6WznOoXsui4QGk3Ex+heC6MjPK1sKNSsy9XO1SMnL/H+nQque
+	k7MvgZSg==;
 Received: from mob-194-230-158-57.cgn.sunrise.net ([194.230.158.57] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1r2H6X-0002WM-B0; Sun, 12 Nov 2023 21:30:50 +0100
+	id 1r2H6a-0002Wn-OX; Sun, 12 Nov 2023 21:30:53 +0100
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: martin.lau@kernel.org
 Cc: kuba@kernel.org,
@@ -46,12 +46,10 @@ Cc: kuba@kernel.org,
 	sdf@google.com,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
-	Peilin Ye <peilin.ye@bytedance.com>,
-	Youlun Zhang <zhangyoulun@bytedance.com>,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf v2 5/8] bpf: Fix dev's rx stats for bpf_redirect_peer traffic
-Date: Sun, 12 Nov 2023 21:30:06 +0100
-Message-Id: <20231112203009.26073-6-daniel@iogearbox.net>
+Subject: [PATCH bpf v2 6/8] bpf, netkit: Add indirect call wrapper for fetching peer dev
+Date: Sun, 12 Nov 2023 21:30:07 +0100
+Message-Id: <20231112203009.26073-7-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20231112203009.26073-1-daniel@iogearbox.net>
 References: <20231112203009.26073-1-daniel@iogearbox.net>
@@ -65,64 +63,113 @@ Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27091/Sun Nov 12 09:38:11 2023)
 
-From: Peilin Ye <peilin.ye@bytedance.com>
+ndo_get_peer_dev is used in tcx BPF fast path, therefore make use of
+indirect call wrapper and therefore optimize the bpf_redirect_peer()
+internal handling a bit. Add a small skb_get_peer_dev() wrapper which
+utilizes the INDIRECT_CALL_1() macro instead of open coding.
 
-Traffic redirected by bpf_redirect_peer() (used by recent CNIs like Cilium)
-is not accounted for in the RX stats of supported devices (that is, veth
-and netkit), confusing user space metrics collectors such as cAdvisor [0],
-as reported by Youlun.
+Future work could potentially add a peer pointer directly into struct
+net_device in future and convert veth and netkit over to use it so
+that eventually ndo_get_peer_dev can be removed.
 
-Fix it by calling dev_sw_netstats_rx_add() in skb_do_redirect(), to update
-RX traffic counters. Devices that support ndo_get_peer_dev _must_ use the
-@tstats per-CPU counters (instead of @lstats, or @dstats).
-
-To make this more fool-proof, error out when ndo_get_peer_dev is set but
-@tstats are not selected.
-
-  [0] Specifically, the "container_network_receive_{byte,packet}s_total"
-      counters are affected.
-
-Fixes: 9aa1206e8f48 ("bpf: Add redirect_peer helper")
-Reported-by: Youlun Zhang <zhangyoulun@bytedance.com>
-Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
-Co-developed-by: Daniel Borkmann <daniel@iogearbox.net>
+Co-developed-by: Nikolay Aleksandrov <razor@blackwall.org>
+Signed-off-by: Nikolay Aleksandrov <razor@blackwall.org>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Stanislav Fomichev <sdf@google.com>
 ---
- net/core/dev.c    | 8 ++++++++
- net/core/filter.c | 1 +
- 2 files changed, 9 insertions(+)
+ drivers/net/netkit.c |  3 ++-
+ include/net/netkit.h |  6 ++++++
+ net/core/filter.c    | 18 +++++++++++++-----
+ 3 files changed, 21 insertions(+), 6 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 75db81496db5..5c9ab37298ac 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -10053,6 +10053,14 @@ static int netdev_do_alloc_pcpu_stats(struct net_device *dev)
- {
- 	void __percpu *v;
+diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
+index 99de11f9cde5..97bd6705c241 100644
+--- a/drivers/net/netkit.c
++++ b/drivers/net/netkit.c
+@@ -7,6 +7,7 @@
+ #include <linux/filter.h>
+ #include <linux/netfilter_netdev.h>
+ #include <linux/bpf_mprog.h>
++#include <linux/indirect_call_wrapper.h>
  
-+	/* Drivers implementing ndo_get_peer_dev must support tstat
-+	 * accounting, so that skb_do_redirect() can bump the dev's
-+	 * RX stats upon network namespace switch.
-+	 */
-+	if (dev->netdev_ops->ndo_get_peer_dev &&
-+	    dev->pcpu_stat_type != NETDEV_PCPU_STAT_TSTATS)
-+		return -EINVAL;
+ #include <net/netkit.h>
+ #include <net/dst.h>
+@@ -177,7 +178,7 @@ static void netkit_set_headroom(struct net_device *dev, int headroom)
+ 	rcu_read_unlock();
+ }
+ 
+-static struct net_device *netkit_peer_dev(struct net_device *dev)
++INDIRECT_CALLABLE_SCOPE struct net_device *netkit_peer_dev(struct net_device *dev)
+ {
+ 	return rcu_dereference(netkit_priv(dev)->peer);
+ }
+diff --git a/include/net/netkit.h b/include/net/netkit.h
+index 0ba2e6b847ca..9ec0163739f4 100644
+--- a/include/net/netkit.h
++++ b/include/net/netkit.h
+@@ -10,6 +10,7 @@ int netkit_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+ int netkit_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+ int netkit_prog_detach(const union bpf_attr *attr, struct bpf_prog *prog);
+ int netkit_prog_query(const union bpf_attr *attr, union bpf_attr __user *uattr);
++INDIRECT_CALLABLE_DECLARE(struct net_device *netkit_peer_dev(struct net_device *dev));
+ #else
+ static inline int netkit_prog_attach(const union bpf_attr *attr,
+ 				     struct bpf_prog *prog)
+@@ -34,5 +35,10 @@ static inline int netkit_prog_query(const union bpf_attr *attr,
+ {
+ 	return -EINVAL;
+ }
 +
- 	switch (dev->pcpu_stat_type) {
- 	case NETDEV_PCPU_STAT_NONE:
- 		return 0;
++static inline struct net_device *netkit_peer_dev(struct net_device *dev)
++{
++	return NULL;
++}
+ #endif /* CONFIG_NETKIT */
+ #endif /* __NET_NETKIT_H */
 diff --git a/net/core/filter.c b/net/core/filter.c
-index 383f96b0a1c7..cca810987c8d 100644
+index cca810987c8d..7e4d7c3bcc84 100644
 --- a/net/core/filter.c
 +++ b/net/core/filter.c
-@@ -2492,6 +2492,7 @@ int skb_do_redirect(struct sk_buff *skb)
- 			     net_eq(net, dev_net(dev))))
+@@ -81,6 +81,7 @@
+ #include <net/xdp.h>
+ #include <net/mptcp.h>
+ #include <net/netfilter/nf_conntrack_bpf.h>
++#include <net/netkit.h>
+ #include <linux/un.h>
+ 
+ #include "dev.h"
+@@ -2468,6 +2469,16 @@ static const struct bpf_func_proto bpf_clone_redirect_proto = {
+ DEFINE_PER_CPU(struct bpf_redirect_info, bpf_redirect_info);
+ EXPORT_PER_CPU_SYMBOL_GPL(bpf_redirect_info);
+ 
++static struct net_device *skb_get_peer_dev(struct net_device *dev)
++{
++	const struct net_device_ops *ops = dev->netdev_ops;
++
++	if (likely(ops->ndo_get_peer_dev))
++		return INDIRECT_CALL_1(ops->ndo_get_peer_dev,
++				       netkit_peer_dev, dev);
++	return NULL;
++}
++
+ int skb_do_redirect(struct sk_buff *skb)
+ {
+ 	struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
+@@ -2481,12 +2492,9 @@ int skb_do_redirect(struct sk_buff *skb)
+ 	if (unlikely(!dev))
+ 		goto out_drop;
+ 	if (flags & BPF_F_PEER) {
+-		const struct net_device_ops *ops = dev->netdev_ops;
+-
+-		if (unlikely(!ops->ndo_get_peer_dev ||
+-			     !skb_at_tc_ingress(skb)))
++		if (unlikely(!skb_at_tc_ingress(skb)))
  			goto out_drop;
- 		skb->dev = dev;
-+		dev_sw_netstats_rx_add(dev, skb->len);
- 		return -EAGAIN;
- 	}
- 	return flags & BPF_F_NEIGH ?
+-		dev = ops->ndo_get_peer_dev(dev);
++		dev = skb_get_peer_dev(dev);
+ 		if (unlikely(!dev ||
+ 			     !(dev->flags & IFF_UP) ||
+ 			     net_eq(net, dev_net(dev))))
 -- 
 2.34.1
 
