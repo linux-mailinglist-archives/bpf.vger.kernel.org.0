@@ -1,75 +1,76 @@
-Return-Path: <bpf+bounces-14912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7C97E8E73
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 06:27:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80F077E8E7F
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 06:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C30C51F20FAA
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 05:27:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B07591C203DE
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 05:57:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC102904;
-	Sun, 12 Nov 2023 05:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F16233E3;
+	Sun, 12 Nov 2023 05:57:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pgiw8CpO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJzsm43b"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8031023BD;
-	Sun, 12 Nov 2023 05:27:05 +0000 (UTC)
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8F330C2;
-	Sat, 11 Nov 2023 21:27:03 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32fb1d757f7so2132811f8f.0;
-        Sat, 11 Nov 2023 21:27:03 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FF42568
+	for <bpf@vger.kernel.org>; Sun, 12 Nov 2023 05:57:11 +0000 (UTC)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87BF9D8
+	for <bpf@vger.kernel.org>; Sat, 11 Nov 2023 21:57:09 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-407c3adef8eso28662115e9.2
+        for <bpf@vger.kernel.org>; Sat, 11 Nov 2023 21:57:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699766822; x=1700371622; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699768628; x=1700373428; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AmJo+4JR9D++H06Odt2/It/dOE9mMoGAQoVBxUyxVu0=;
-        b=Pgiw8CpOELr5BPeFDN3PrrCIVX8B3LlvXaRoS5c3mnK0Cw69+Lx1MPTSkXoOx2t5il
-         qHaW5xv1pYwRB3ItnZ56E7lPfGOlu7YXnjIg6Ya4O0k/at/DR8ElEpk/ymTM5FXCZ8D2
-         XH3lbHz7KiQBTVAVZslDULyFAq31FNpNwPRH3yiad0KYbU3BI+lxim/HBVgZ02cpM5Tp
-         s9fWvjs33iBzA+vudc6fU1xADC8sCBGe6+f+PlX3qT+w2mVP12XA29camA5o4Qs/QqkG
-         Aa99kNbeDenSVt75deUQqFiyrM+TeO5f8kjgkvRJPWQmC4aWOtrncMCdvsQ0M9ef2UtW
-         Xp8g==
+        bh=bcZqb1i9IztXtqrbd3S2IHFs4ju/R4DGpnEXVNx/Cjg=;
+        b=RJzsm43bSsZzGhdadTJ/N4HmdFih4wTLJsshWSdOa2ioGYQ9tZoMNuVop22f+i/l/Z
+         J7+7FZ9jV4JWzEQQgQOuNWftHqUTNzQkvjbpElxqivLSu4M5IMJ3Ht+EKx9SZoKEgWOy
+         lOFQpiJKzGv9EtZNnuL+DIDgMpor1b7atBSc2gwtxgrLm7at2Nfy04y3SFz89wB/jhi4
+         9SPB+X8s1j97sUMmB+hBfxELZZ6Nq+nCohyLQV3ZKy9aMXOirOVKI++gPDWtiZ5nug6I
+         ewnrCpQRBx7i/4ZB9LVck4DovbYxcxgHf4dUGqSW1d1YfWwm8d8dY+B/Lewo2r8doN4e
+         3TiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699766822; x=1700371622;
+        d=1e100.net; s=20230601; t=1699768628; x=1700373428;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AmJo+4JR9D++H06Odt2/It/dOE9mMoGAQoVBxUyxVu0=;
-        b=XwissVlZpLxhdG3gDAQ4s49kpy04z6CZ7fZUF4CdeOTQ2SUrDvFLou6r6jzInFNREv
-         oeYCCSdKNlE2OzPF0ZWk570uItHIlVd7WKLAHme/uxkB0Z6nOPzDVwrWOKtiYufAJlnn
-         GtRHRGLnoxnMFMeBovePhwQ9434gqKcNA/VONtHm8fIA2rl2XNMoKQYx/2FxL3U4KR54
-         C4dxPiRejqannWnG1a7v/7bjz45AmByOG+pYmRE/RXwD3x+9yvldRH/X0E4Y3VGwsHlj
-         jPx7xTiCtku8srA2VHZF5QVu1bcOzb0A0LWSU7QU4RHdmPjmU+IsFCQKYQ+BkLkrOJMw
-         dH4w==
-X-Gm-Message-State: AOJu0Yz5VmkmTYD44/eeeBRerN5vnxO5jb0vQNIS34hs0QEZDApzXOzp
-	bu5jJVvf4Dtc2xZGL7aVB4k=
-X-Google-Smtp-Source: AGHT+IHC8LRwYI280EnhXhEYvBwgsY9T3ZzC0lxuCsoQwNs/s/0D3IZACASCbYB33dmuDiBB5RNb5Q==
-X-Received: by 2002:a5d:5850:0:b0:323:1887:dd6d with SMTP id i16-20020a5d5850000000b003231887dd6dmr2889583wrf.3.1699766821864;
-        Sat, 11 Nov 2023 21:27:01 -0800 (PST)
+        bh=bcZqb1i9IztXtqrbd3S2IHFs4ju/R4DGpnEXVNx/Cjg=;
+        b=BvBFFk/v0j+OUBvQM+JxR4yL3Jwh8mHRRJdp1FVHUDTVhtJN4E0UwiBkG7Pae0XehE
+         CdCz8+bmUcF47RBWD9zuqP3/IcK0QOyW85HbsbFTxH3rAXuqct9EIUonZTE4bO01uZir
+         TrghH+C6ayZZVLxzYhbfGQQZW0Vd8nOhcdTajosUAQSE6HgoOAkmc338b2vgOO5zvXra
+         f/ky8lfr1Ds5d9AP5BptF31Ooa1vrBiiVXn1iUwwfB2Zzrc7xT0zdJKHl259HZVLdbWn
+         UfViIs7NDhHjItdt6GhSJ4vcAs9DoE1SMC1iIULGdkF6Q2qIT+RMxgVXP07vKWmXLaMg
+         EZMA==
+X-Gm-Message-State: AOJu0YwqISwSPFKHHJVMO+LZV7vO0uhL/RgbK6QdEGx5D39TYR0Z/Qz8
+	0nk9hGQtC8OX1ol7nGVckas=
+X-Google-Smtp-Source: AGHT+IFOiLMqJpIErcx3mJ/k3FeFhdgDpyKmU7DSgBCz576/gAscey1oAdh7m1RMh9dzoD+XgsRK2w==
+X-Received: by 2002:a05:600c:3b9b:b0:405:367d:4656 with SMTP id n27-20020a05600c3b9b00b00405367d4656mr3075221wms.29.1699768627535;
+        Sat, 11 Nov 2023 21:57:07 -0800 (PST)
 Received: from krava (brn-rj-tbond04.sa.cz. [185.94.55.133])
-        by smtp.gmail.com with ESMTPSA id dl3-20020a0560000b8300b0032f79e55eb8sm2677740wrb.16.2023.11.11.21.27.00
+        by smtp.gmail.com with ESMTPSA id j16-20020a05600c191000b004090798d29csm4023135wmq.15.2023.11.11.21.57.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 21:27:01 -0800 (PST)
+        Sat, 11 Nov 2023 21:57:07 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 12 Nov 2023 06:26:58 +0100
-To: Jordan Rome <linux@jordanrome.com>
-Cc: linux-perf-users@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kernel Team <kernel-team@fb.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH v2] perf: get_perf_callchain return NULL for crosstask
-Message-ID: <ZVBiItVMzcOFLscd@krava>
-References: <20231111172001.1259065-1-linux@jordanrome.com>
+Date: Sun, 12 Nov 2023 06:57:04 +0100
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	quentin@isovalent.com, eddyz87@gmail.com, martin.lau@linux.dev,
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3 bpf-next 09/17] bpf: switch to --btf_features, add
+ crc,kind_layout features
+Message-ID: <ZVBpMLvqhrFpnd3d@krava>
+References: <20231110110304.63910-1-alan.maguire@oracle.com>
+ <20231110110304.63910-10-alan.maguire@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,71 +79,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231111172001.1259065-1-linux@jordanrome.com>
+In-Reply-To: <20231110110304.63910-10-alan.maguire@oracle.com>
 
-On Sat, Nov 11, 2023 at 09:20:01AM -0800, Jordan Rome wrote:
-> Return NULL instead of returning 1 incorrect frame, which
-> currently happens when trying to walk the user stack for
-> any task that isn't current. Returning NULL is a better
-> indicator that this behavior is not supported.
-> 
-> This issue was found using bpf_get_task_stack inside a BPF
-> iterator ("iter/task"), which iterates over all tasks. The
-> single address/frame in the buffer when getting user stacks
-> for tasks that aren't current could not be symbolized (testing
-> multiple symbolizers).
-> 
-> Signed-off-by: Jordan Rome <linux@jordanrome.com>
+On Fri, Nov 10, 2023 at 11:02:56AM +0000, Alan Maguire wrote:
+> For pahole v1.26 and later, --btf_features is used to specify BTF
+> features for encoding.  Since it tolerates unknown features, no
+> further version checking will be needed when adding new features.
+> Add crc, kind_layout features.
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+hi,
+this commit got merged:
+  72d091846de9 kbuild: avoid too many execution of scripts/pahole-flags.sh
+
+so this change needs rebase
 
 jirka
 
+> 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
+>  scripts/pahole-flags.sh | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> Changes in v2:
-> * move user and crosstask check before get_callchain_entry
-> 
-> v1:
-> https://lore.kernel.org/linux-perf-users/CAEf4BzaWtOeTBb_+b7Td3NHaKjZU+OohuBJje_nvw9kd6xPA3g@mail.gmail.com/T/#t
-> 
->  kernel/events/callchain.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-> index 1273be84392c..104ea2975a57 100644
-> --- a/kernel/events/callchain.c
-> +++ b/kernel/events/callchain.c
-> @@ -184,6 +184,9 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
->  	struct perf_callchain_entry_ctx ctx;
->  	int rctx;
+> diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+> index 728d55190d97..30a3e270308b 100755
+> --- a/scripts/pahole-flags.sh
+> +++ b/scripts/pahole-flags.sh
+> @@ -26,5 +26,8 @@ fi
+>  if [ "${pahole_ver}" -ge "125" ]; then
+>  	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
+>  fi
+> +if [ "${pahole_ver}" -ge "126" ]; then
+> +	extra_paholeopt="-j --lang_exclude=rust --btf_features=encode_force,var,float,decl_tag,type_tag,enum64,optimized_func,consistent_func,crc,kind_layout"
+> +fi
 >  
-> +	if (user && crosstask)
-> +		return NULL;
-> +
->  	entry = get_callchain_entry(&rctx);
->  	if (!entry)
->  		return NULL;
-> @@ -209,9 +212,6 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
->  		}
->  
->  		if (regs) {
-> -			if (crosstask)
-> -				goto exit_put;
-> -
->  			if (add_mark)
->  				perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
->  
-> @@ -219,7 +219,6 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
->  		}
->  	}
->  
-> -exit_put:
->  	put_callchain_entry(rctx);
->  
->  	return entry;
+>  echo ${extra_paholeopt}
 > -- 
-> 2.39.3
-> 
+> 2.31.1
 > 
 
