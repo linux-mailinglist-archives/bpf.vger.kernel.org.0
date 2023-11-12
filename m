@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-14952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8E737E92A0
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 21:31:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA487E92A2
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 21:31:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E0F61F20FD3
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 20:31:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08A3B1C20967
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 20:31:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD97C1862F;
-	Sun, 12 Nov 2023 20:30:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C0A1BDD6;
+	Sun, 12 Nov 2023 20:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="IAWQ8k54"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="NVyFWc+O"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982C11BDE8;
-	Sun, 12 Nov 2023 20:30:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F911A287;
+	Sun, 12 Nov 2023 20:30:49 +0000 (UTC)
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED393211F;
-	Sun, 12 Nov 2023 12:30:43 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4283258E;
+	Sun, 12 Nov 2023 12:30:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
 	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=GmCNYe88O88YYGkw4HOTS9BNA/qGhpz4y1T/7yqIr5w=; b=IAWQ8k54oAJG8lIo0kdX/Kc/M1
-	FFFhtPknq9szYdUfhAKqSJ7yFqXWTSIR7YN4o0ZxO6QH/VwaCfm0en1VRpNyNLP8rI8WD5WKO9WTI
-	aKgmHDY8fY+uTemv2EfQnxBLyp1tXesUgU8U5eYe+pd7xrh2nqKg46JfL/GAkQRfRrtSmcHwUdiSO
-	P5ys4Pl2v+KJNvqmnxzZidif6KG/YbccSfYxrI490bEukxFCWeFeW7ee5OHVCQjPeaShjPA3f5l2M
-	/7zJ5ZMuKhccz7D8nyApCdOlDGZEgNFMJaIW1Jz1MRUZ5TuJPCU+DuC1JA5YxzM96O29L08SId29x
-	9eG025tA==;
+	bh=eBibH2MBQzmtuuW5mBAIQg68Bz2CPSDCjsyt1b5Y7Dk=; b=NVyFWc+OMTi5K/ZLtmr6DV3g5P
+	h0BWPvb8xxs0eLST7lTM7nvtqBSCS3sbhP2y8mfNi9DloR/PpCq/q9IM1gq8HwYJDWPUExRFPmSgz
+	91hL2WAOKuddk5JOupQMRk1BwMO6wJWTWx+tZAV8uWwFH1NjBe0PIQoV57TzasbHL6uuM9PvUAzxX
+	jKG5HRQQA4G9vgiSMTlK6PxqybIrd4wbv0dHxdl/xTpuJnLC36EWicaid5leXuDbYUj87tYkOuhHS
+	Q15+ly4BlIoBYZ4AQuTFQibObB6wXhWgNKhuqS9kZO9d+HKIME+IAa4kLCP/zxjzIX9THNL8GjprV
+	2DwNZqXQ==;
 Received: from mob-194-230-158-57.cgn.sunrise.net ([194.230.158.57] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1r2H6O-0002Ug-Sw; Sun, 12 Nov 2023 21:30:42 +0100
+	id 1r2H6T-0002Vp-FF; Sun, 12 Nov 2023 21:30:46 +0100
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: martin.lau@kernel.org
 Cc: kuba@kernel.org,
@@ -46,10 +46,11 @@ Cc: kuba@kernel.org,
 	sdf@google.com,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org,
+	Peilin Ye <peilin.ye@bytedance.com>,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf v2 3/8] netkit: Add tstats per-CPU traffic counters
-Date: Sun, 12 Nov 2023 21:30:04 +0100
-Message-Id: <20231112203009.26073-4-daniel@iogearbox.net>
+Subject: [PATCH bpf v2 4/8] veth: Use tstats per-CPU traffic counters
+Date: Sun, 12 Nov 2023 21:30:05 +0100
+Message-Id: <20231112203009.26073-5-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20231112203009.26073-1-daniel@iogearbox.net>
 References: <20231112203009.26073-1-daniel@iogearbox.net>
@@ -63,91 +64,106 @@ Content-Transfer-Encoding: 8bit
 X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27091/Sun Nov 12 09:38:11 2023)
 
-Add dev->tstats traffic accounting to netkit. The latter contains per-CPU
-RX and TX counters.
+From: Peilin Ye <peilin.ye@bytedance.com>
 
-The dev's TX counters are bumped upon pass/unspec as well as redirect
-verdicts, in other words, on everything except for drops.
+Currently veth devices use the lstats per-CPU traffic counters, which only
+cover TX traffic. veth_get_stats64() actually populates RX stats of a veth
+device from its peer's TX counters, based on the assumption that a veth
+device can _only_ receive packets from its peer, which is no longer true:
 
-The dev's RX counters are bumped upon successful __netif_rx(), as well
-as from skb_do_redirect() (not part of this commit here).
+For example, recent CNIs (like Cilium) can use the bpf_redirect_peer() BPF
+helper to redirect traffic from NIC's tc ingress to veth's tc ingress (in
+a different netns), skipping veth's peer device. Unfortunately, this kind
+of traffic isn't currently accounted for in veth's RX stats.
 
-Using dev->lstats with having just a single packets/bytes counter and
-inferring one another's RX counters from the peer dev's lstats is not
-possible given skb_do_redirect() can also bump the device's stats.
+In preparation for the fix, use tstats (instead of lstats) to maintain
+both RX and TX counters for each veth device. We'll use RX counters for
+bpf_redirect_peer() traffic, and keep using TX counters for the usual
+"peer-to-peer" traffic. In veth_get_stats64(), calculate RX stats by
+_adding_ RX count to peer's TX count, in order to cover both kinds of
+traffic.
 
+veth_stats_rx() might need a name change (perhaps to "veth_stats_xdp()")
+for less confusion, but let's leave it to another patch to keep the fix
+minimal.
+
+Signed-off-by: Peilin Ye <peilin.ye@bytedance.com>
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
 ---
- drivers/net/netkit.c | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ drivers/net/veth.c | 30 +++++++++++-------------------
+ 1 file changed, 11 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-index 5a0f86f38f09..99de11f9cde5 100644
---- a/drivers/net/netkit.c
-+++ b/drivers/net/netkit.c
-@@ -68,6 +68,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
- 	netdev_tx_t ret_dev = NET_XMIT_SUCCESS;
- 	const struct bpf_mprog_entry *entry;
- 	struct net_device *peer;
-+	int len = skb->len;
- 
- 	rcu_read_lock();
- 	peer = rcu_dereference(nk->peer);
-@@ -85,15 +86,22 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
- 	case NETKIT_PASS:
- 		skb->protocol = eth_type_trans(skb, skb->dev);
- 		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
--		__netif_rx(skb);
-+		if (likely(__netif_rx(skb) == NET_RX_SUCCESS)) {
-+			dev_sw_netstats_tx_add(dev, 1, len);
-+			dev_sw_netstats_rx_add(peer, len);
-+		} else {
-+			goto drop_stats;
-+		}
- 		break;
- 	case NETKIT_REDIRECT:
-+		dev_sw_netstats_tx_add(dev, 1, len);
- 		skb_do_redirect(skb);
- 		break;
- 	case NETKIT_DROP:
- 	default:
- drop:
- 		kfree_skb(skb);
-+drop_stats:
- 		dev_core_stats_tx_dropped_inc(dev);
- 		ret_dev = NET_XMIT_DROP;
- 		break;
-@@ -174,6 +182,13 @@ static struct net_device *netkit_peer_dev(struct net_device *dev)
- 	return rcu_dereference(netkit_priv(dev)->peer);
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index ac030c241d1a..6cc352296c67 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -373,7 +373,7 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	skb_tx_timestamp(skb);
+ 	if (likely(veth_forward_skb(rcv, skb, rq, use_napi) == NET_RX_SUCCESS)) {
+ 		if (!use_napi)
+-			dev_lstats_add(dev, length);
++			dev_sw_netstats_tx_add(dev, 1, length);
+ 		else
+ 			__veth_xdp_flush(rq);
+ 	} else {
+@@ -387,14 +387,6 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	return ret;
  }
  
-+static void netkit_get_stats(struct net_device *dev,
-+			     struct rtnl_link_stats64 *stats)
-+{
-+	dev_fetch_sw_netstats(stats, dev->tstats);
-+	stats->tx_dropped = DEV_STATS_READ(dev, tx_dropped);
-+}
+-static u64 veth_stats_tx(struct net_device *dev, u64 *packets, u64 *bytes)
+-{
+-	struct veth_priv *priv = netdev_priv(dev);
+-
+-	dev_lstats_read(dev, packets, bytes);
+-	return atomic64_read(&priv->dropped);
+-}
+-
+ static void veth_stats_rx(struct veth_stats *result, struct net_device *dev)
+ {
+ 	struct veth_priv *priv = netdev_priv(dev);
+@@ -432,24 +424,24 @@ static void veth_get_stats64(struct net_device *dev,
+ 	struct veth_priv *priv = netdev_priv(dev);
+ 	struct net_device *peer;
+ 	struct veth_stats rx;
+-	u64 packets, bytes;
+ 
+-	tot->tx_dropped = veth_stats_tx(dev, &packets, &bytes);
+-	tot->tx_bytes = bytes;
+-	tot->tx_packets = packets;
++	tot->tx_dropped = atomic64_read(&priv->dropped);
++	dev_fetch_sw_netstats(tot, dev->tstats);
+ 
+ 	veth_stats_rx(&rx, dev);
+ 	tot->tx_dropped += rx.xdp_tx_err;
+ 	tot->rx_dropped = rx.rx_drops + rx.peer_tq_xdp_xmit_err;
+-	tot->rx_bytes = rx.xdp_bytes;
+-	tot->rx_packets = rx.xdp_packets;
++	tot->rx_bytes += rx.xdp_bytes;
++	tot->rx_packets += rx.xdp_packets;
+ 
+ 	rcu_read_lock();
+ 	peer = rcu_dereference(priv->peer);
+ 	if (peer) {
+-		veth_stats_tx(peer, &packets, &bytes);
+-		tot->rx_bytes += bytes;
+-		tot->rx_packets += packets;
++		struct rtnl_link_stats64 tot_peer = {};
 +
- static void netkit_uninit(struct net_device *dev);
++		dev_fetch_sw_netstats(&tot_peer, peer->tstats);
++		tot->rx_bytes += tot_peer.tx_bytes;
++		tot->rx_packets += tot_peer.tx_packets;
  
- static const struct net_device_ops netkit_netdev_ops = {
-@@ -184,6 +199,7 @@ static const struct net_device_ops netkit_netdev_ops = {
- 	.ndo_set_rx_headroom	= netkit_set_headroom,
- 	.ndo_get_iflink		= netkit_get_iflink,
- 	.ndo_get_peer_dev	= netkit_peer_dev,
-+	.ndo_get_stats64	= netkit_get_stats,
- 	.ndo_uninit		= netkit_uninit,
- 	.ndo_features_check	= passthru_features_check,
- };
-@@ -218,6 +234,7 @@ static void netkit_setup(struct net_device *dev)
- 
- 	ether_setup(dev);
- 	dev->max_mtu = ETH_MAX_MTU;
+ 		veth_stats_rx(&rx, peer);
+ 		tot->tx_dropped += rx.peer_tq_xdp_xmit_err;
+@@ -1783,7 +1775,7 @@ static void veth_setup(struct net_device *dev)
+ 			       NETIF_F_HW_VLAN_STAG_RX);
+ 	dev->needs_free_netdev = true;
+ 	dev->priv_destructor = veth_dev_free;
+-	dev->pcpu_stat_type = NETDEV_PCPU_STAT_LSTATS;
 +	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
+ 	dev->max_mtu = ETH_MAX_MTU;
  
- 	dev->flags |= IFF_NOARP;
- 	dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+ 	dev->hw_features = VETH_FEATURES;
 -- 
 2.34.1
 
