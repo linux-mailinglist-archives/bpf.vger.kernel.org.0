@@ -1,62 +1,63 @@
-Return-Path: <bpf+bounces-14914-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14915-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE4AA7E8EF1
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 08:35:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FDF47E8EF2
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 08:35:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FF66280CC9
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 07:35:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EC2C1F20F83
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 07:35:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9F45CAF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFAA63D2;
 	Sun, 12 Nov 2023 07:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FLBVwpyH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RvTisVuc"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBFA5397
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 328B753AE
 	for <bpf@vger.kernel.org>; Sun, 12 Nov 2023 07:35:06 +0000 (UTC)
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D65AF2D77;
-	Sat, 11 Nov 2023 23:35:04 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c9b7c234a7so30563995ad.3;
-        Sat, 11 Nov 2023 23:35:04 -0800 (PST)
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE43330C2;
+	Sat, 11 Nov 2023 23:35:05 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc5b7057d5so30587405ad.2;
+        Sat, 11 Nov 2023 23:35:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699774504; x=1700379304; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hTE/8bAfe9m2x3uZl0zATPmiaV/MvY+WvngHd7GFoLg=;
-        b=FLBVwpyHz9+XzAl/swsRXeg54bC+Zp4Ik0I6GdrnCMOw6V0IUseDoj1Sp9r38U0PuW
-         t8R9rccbbohmFAHlTrpHVNnSiRoFy85XFz9zbTQ55Z3STxM1q+DTmfMrEUZ72x8L8Kq9
-         tnfubKpf4fUA+h+KyW/McK7JMDAXLmPwgwH7ZlNncJb7xHqVge+r37VospMbhlAlsQ0Q
-         V1e7JLSj9/aX4GgtRPrWV2V8889Zd9hZkZc86ALoZ3mXf9L7OVGhgJR87KW6S24GG1BF
-         bp6fZ8B9EyKend71s5iS9QwwBE6U4bm7HOSOzCjwP9DA8cyaIfReTMGEOPK4ZG6c1pH1
-         noDw==
+        d=gmail.com; s=20230601; t=1699774505; x=1700379305; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TF16udhUX0adXTLrLbh6IbPub7a4ZNSYXitVXWKEGdk=;
+        b=RvTisVucAWu5NecdOBh3/1u+8/7q44e5vMH89JlX1C/qC+ecV2ZEJeVxbznEZFxL+S
+         x2oKVhn1jqOB7dN+bjLtt7jnaPWMY6wzb87bGYfsZvx2x6K4PJS6WG0k9A5nhAlUZuz6
+         xOPF1Ayze4QlfwwYX7dfx/beikQgzQSfkZ6EIGklIq83UgPbA7DfV/iFUJLezxPIkjPr
+         TcVx2SN5wS0e1S+zguJAVYqgAbvYmBt64MWGFe5gVTqW92edBdBKrfmV0w7rgkVSkOZ8
+         2HgkYPX4VPySlXCoTezqB+NwIZ9FYNtA7PpIhZwf+iJPIkaJT2eg1G/elpU+mj3QWNuO
+         213w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699774504; x=1700379304;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hTE/8bAfe9m2x3uZl0zATPmiaV/MvY+WvngHd7GFoLg=;
-        b=ReUZ+F+HeRqq8Vn8rHGnh55gH33Ww3TO3+dZckbevXKNlhaLXkNuAk/wULQyYx/ZYn
-         odAEI1KxZoCqIkDZ95FLyRNprxdc926N9uE0G/TsEtpv8tVNtPci+QeYrZYW4GEp+I+A
-         q39e0VcdvX3T+Pm47l54/gPc6BiY7IeD7otvFLvAvGQ7iKYBvSAPagvDMQhXX48st1UW
-         UYNqTSxGSSAh7FKZdpk+R5XsUqhYDg4u+cX6RC5Gz8PLmjxoHyKG0FatA9ljmT22rpHg
-         zS1IUDCY/8Z92P08oh39n1VVGMO9fOMA32i9IiCRGFqDOEU9LJK787XDHXArp7sasMlt
-         cbsQ==
-X-Gm-Message-State: AOJu0Yypv9DKUpwYhg0Z62FTb6jhvAJIeNU+pAHtHIpzQR3t0HO6lhRD
-	cGfSt9TgJRFAFuxyjUsn1Cjs3HVzektC7tUz
-X-Google-Smtp-Source: AGHT+IEOhLam9DwI+UQW5ovCf1qGG2QFJv6o6NvB0SmJkGtdtaNwnDhDO5OZmwkM0jQ4jQhz4FuozA==
-X-Received: by 2002:a17:902:cec1:b0:1cc:543b:b361 with SMTP id d1-20020a170902cec100b001cc543bb361mr5542234plg.43.1699774504223;
-        Sat, 11 Nov 2023 23:35:04 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699774505; x=1700379305;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TF16udhUX0adXTLrLbh6IbPub7a4ZNSYXitVXWKEGdk=;
+        b=VPi/3TqE9rN3lXr5sqVe6JvJe/TTHCcmKnumrm/9ubd7rsELFREI41Ioe2eAZr5bvu
+         z3USPzXld075tCcG4aGb7/CKIh/ARikm5DD1yGlQUWgxW0EQ3oMeDSqxvcCgSgh8m4jf
+         yg/uSZ83mwmrCpfJOyFGRiLsQQ6YTFvqI2v3GVwc0e+xY11d4ZH/WNF7UGwWTeRqdTk+
+         MaruPztMahK0Hf+WLqc1Mlkov2FrgIRnvt5wnWb/3VO8VUIwwOUHTMl20qzAMY5jOVgt
+         gLY3w74aWWwvhjjUBAEaD6TI4veVJhzCagy5jYf0n0L7rNC1gBNOgwkJEplbgc7gHP2g
+         V2Wg==
+X-Gm-Message-State: AOJu0YyiH1dt8tvlloYGbrJCQhGo+OIKaVmDOUxXJqxYSvQTxD1lC0Nl
+	mNbs5bXvgiHBkGsQ75LzSNc=
+X-Google-Smtp-Source: AGHT+IFRF+p6A6m+6oYptnt4iKcO5Ngi/6FUUkp6zcOzgdCiab8IHnyyrYPQ8+IHM1LVXHOf4XGC1w==
+X-Received: by 2002:a17:902:f646:b0:1cc:40eb:79ae with SMTP id m6-20020a170902f64600b001cc40eb79aemr5284483plg.63.1699774505378;
+        Sat, 11 Nov 2023 23:35:05 -0800 (PST)
 Received: from vultr.guest ([2001:19f0:ac00:49b3:5400:4ff:fea5:2304])
-        by smtp.gmail.com with ESMTPSA id 6-20020a170902c10600b001ca4c20003dsm2217394pli.69.2023.11.11.23.35.02
+        by smtp.gmail.com with ESMTPSA id 6-20020a170902c10600b001ca4c20003dsm2217394pli.69.2023.11.11.23.35.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 11 Nov 2023 23:35:03 -0800 (PST)
+        Sat, 11 Nov 2023 23:35:04 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	paul@paul-moore.com,
@@ -68,10 +69,12 @@ Cc: linux-mm@kvack.org,
 	ligang.bdlg@bytedance.com,
 	mhocko@suse.com,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH -mm 0/4] mm, security, bpf: Fine-grained control over memory policy adjustments with lsm bpf
-Date: Sun, 12 Nov 2023 07:34:20 +0000
-Message-Id: <20231112073424.4216-1-laoar.shao@gmail.com>
+Subject: [RFC PATCH -mm 1/4] mm, security: Add lsm hook for mbind(2)
+Date: Sun, 12 Nov 2023 07:34:21 +0000
+Message-Id: <20231112073424.4216-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20231112073424.4216-1-laoar.shao@gmail.com>
+References: <20231112073424.4216-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -80,77 +83,90 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Background
-==========
+In container environment, we don't want users to bind their memory to a
+specific numa node, while we want to unit control memory resource with
+kubelet. Therefore, add a new lsm hook for mbind(2), then we can enforce
+fine-grained control over memory policy adjustment by the tasks in a
+container.
 
-In our containerized environment, we've identified unexpected OOM events
-where the OOM-killer terminates tasks despite having ample free memory.
-This anomaly is traced back to tasks within a container using mbind(2) to
-bind memory to a specific NUMA node. When the allocated memory on this node
-is exhausted, the OOM-killer, prioritizing tasks based on oom_score,
-indiscriminately kills tasks. This becomes more critical with guaranteed
-tasks (oom_score_adj: -998) aggravating the issue.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ include/linux/lsm_hook_defs.h |  4 ++++
+ include/linux/security.h      | 10 ++++++++++
+ mm/mempolicy.c                |  4 ++++
+ security/security.c           |  7 +++++++
+ 4 files changed, 25 insertions(+)
 
-The selected victim might not have allocated memory on the same NUMA node,
-rendering the killing ineffective. This patch aims to address this by
-disabling MPOL_BIND in container environments.
-
-In the container environment, our aim is to consolidate memory resource
-control under the management of kubelet. If users express a preference for
-binding their memory to a specific NUMA node, we encourage the adoption of
-a standardized approach. Specifically, we recommend configuring this memory
-policy through kubelet using cpuset.mems in the cpuset controller, rather
-than individual users setting it autonomously. This centralized approach
-ensures that NUMA nodes are globally managed through kubelet, promoting
-consistency and facilitating streamlined administration of memory resources
-across the entire containerized environment.
-
-Proposed Solutions
-=================
-
-- Introduce Capability to Disable MPOL_BIND
-  Currently, any task can perform MPOL_BIND without specific capabilities.
-  Enforcing CAP_SYS_RESOURCE or CAP_SYS_NICE could be an option, but this
-  may have unintended consequences. Capabilities, being broad, might grant
-  unnecessary privileges. We should explore alternatives to prevent
-  unexpected side effects.
-
-- Use LSM BPF to Disable MPOL_BIND
-  Introduce LSM hooks for syscalls such as mbind(2), set_mempolicy(2), and
-  set_mempolicy_home_node(2) to disable MPOL_BIND. This approach is more
-  flexibility and allows for fine-grained control without unintended
-  consequences. A sample LSM BPF program is included, demonstrating
-  practical implementation in a production environment.
-
-Future Considerations
-=====================
-
-In addition, there's room for enhancement in the OOM-killer for cases
-involving CONSTRAINT_MEMORY_POLICY. It would be more beneficial to
-prioritize selecting a victim that has allocated memory on the same NUMA
-node. My exploration on the lore led me to a proposal[0] related to this
-matter, although consensus seems elusive at this point. Nevertheless,
-delving into this specific topic is beyond the scope of the current
-patchset.
-
-[0]. https://lore.kernel.org/lkml/20220512044634.63586-1-ligang.bdlg@bytedance.com/ 
-
-Yafang Shao (4):
-  mm, security: Add lsm hook for mbind(2)
-  mm, security: Add lsm hook for set_mempolicy(2)
-  mm, security: Add lsm hook for set_mempolicy_home_node(2)
-  selftests/bpf: Add selftests for mbind(2) with lsm prog
-
- include/linux/lsm_hook_defs.h                      |  8 +++
- include/linux/security.h                           | 26 +++++++
- mm/mempolicy.c                                     | 13 ++++
- security/security.c                                | 19 ++++++
- tools/testing/selftests/bpf/prog_tests/mempolicy.c | 79 ++++++++++++++++++++++
- tools/testing/selftests/bpf/progs/test_mempolicy.c | 29 ++++++++
- 6 files changed, 174 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/mempolicy.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_mempolicy.c
-
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 99b8176..b1b5e3a 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -419,3 +419,7 @@
+ LSM_HOOK(int, 0, uring_sqpoll, void)
+ LSM_HOOK(int, 0, uring_cmd, struct io_uring_cmd *ioucmd)
+ #endif /* CONFIG_IO_URING */
++
++LSM_HOOK(int, 0, mbind, unsigned long start, unsigned long len,
++	 unsigned long mode, const unsigned long __user *nmask,
++	 unsigned long maxnode, unsigned int flags)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 1d1df326..9f87543 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -484,6 +484,9 @@ int security_setprocattr(const char *lsm, const char *name, void *value,
+ int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
+ int security_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen);
+ int security_locked_down(enum lockdown_reason what);
++int security_mbind(unsigned long start, unsigned long len,
++		   unsigned long mode, const unsigned long __user *nmask,
++		   unsigned long maxnode, unsigned int flags);
+ #else /* CONFIG_SECURITY */
+ 
+ static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
+@@ -1395,6 +1398,13 @@ static inline int security_locked_down(enum lockdown_reason what)
+ {
+ 	return 0;
+ }
++
++static inline int security_mbind(unsigned long start, unsigned long len,
++				 unsigned long mode, const unsigned long __user *nmask,
++				 unsigned long maxnode, unsigned int flags)
++{
++	return 0;
++}
+ #endif	/* CONFIG_SECURITY */
+ 
+ #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 10a590e..98a378c 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1483,6 +1483,10 @@ static long kernel_mbind(unsigned long start, unsigned long len,
+ 	if (err)
+ 		return err;
+ 
++	err = security_mbind(start, len, mode, nmask, maxnode, flags);
++	if (err)
++		return err;
++
+ 	return do_mbind(start, len, lmode, mode_flags, &nodes, flags);
+ }
+ 
+diff --git a/security/security.c b/security/security.c
+index dcb3e70..425ec1c 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -5337,3 +5337,10 @@ int security_uring_cmd(struct io_uring_cmd *ioucmd)
+ 	return call_int_hook(uring_cmd, 0, ioucmd);
+ }
+ #endif /* CONFIG_IO_URING */
++
++int security_mbind(unsigned long start, unsigned long len,
++		   unsigned long mode, const unsigned long __user *nmask,
++		   unsigned long maxnode, unsigned int flags)
++{
++	return call_int_hook(mbind, 0, start, len, mode, nmask, maxnode, flags);
++}
 -- 
 1.8.3.1
 
