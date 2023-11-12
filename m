@@ -1,57 +1,57 @@
-Return-Path: <bpf+bounces-14933-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14934-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5FF47E8FCC
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 13:50:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 625857E8FCD
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 13:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A156B280C91
-	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 12:49:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8602F1C2040C
+	for <lists+bpf@lfdr.de>; Sun, 12 Nov 2023 12:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C592679EB;
-	Sun, 12 Nov 2023 12:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A67479EB;
+	Sun, 12 Nov 2023 12:50:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="tlQrPTpc"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="goFMqafW"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7658832
-	for <bpf@vger.kernel.org>; Sun, 12 Nov 2023 12:49:55 +0000 (UTC)
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CF72D5B
-	for <bpf@vger.kernel.org>; Sun, 12 Nov 2023 04:49:54 -0800 (PST)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ACChvTp023723;
-	Sun, 12 Nov 2023 12:49:38 GMT
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A225D525A
+	for <bpf@vger.kernel.org>; Sun, 12 Nov 2023 12:50:00 +0000 (UTC)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D3C2D64
+	for <bpf@vger.kernel.org>; Sun, 12 Nov 2023 04:49:59 -0800 (PST)
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ACCiiJl006420;
+	Sun, 12 Nov 2023 12:49:42 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2023-03-30;
- bh=gKHJWU0T2PN4V4H8YnwkWPyMqTCCKQoI5Xp1gDDfh2o=;
- b=tlQrPTpcrAc37wSTsct5Fzp7wERYCv0bENtn7ZXATCK6ohkEFaJJ9vjs4R8tGzJ39poi
- wSskW2DL3b9q3HEZT6dM6G4keSPZ9AFI2oRWx161ZMLxb22rY7ZJfpcY6W276Lmrx7Iy
- xCjuapesES/YQKjtrZzr4nyWeN/VwTftNzwFU9Bf08+Ui/3Vm9PUIMitovSGBF/5wVmr
- HKUTaJaTbt1EVdsTnBHs04I/rT0eunIX0Na1iAYYqEY85BedDAdgbfYZMWlKQiBYngoX
- Kp1A7JHgYvY5IA+aK4LFkS9iOIgHF5jJlO1WdpCAFG3VYvjuMvm+G4b8vE5U7lAtKKJ5 oA== 
+ bh=j/xT3Hk030zCDc/bbVIEG56D3U6crXbdraI3B6XtZKk=;
+ b=goFMqafWrzyoqKMTBEgQ+zWDfi7U9iBjUiO2UWsoJjXMVE1F84x6SgmO6DnzmEWavJkz
+ KnuYSDmus/nq78H6LyGhICnkRXsAzHr2nvEhBoE2eBbxSdkis8W8+a2poCwJklcoEr0I
+ Poui9g48scO1cALj/rwpZULCyq9G2yhjEoyCzD0thw9QCi394AroPNcs3JURz+BK8vUk
+ GlVhnBta+eDQ2hCZAkwdvV5N2ut7FjmFg66nDNHqVBl1A/Cq3C0aEmDkBsYCmF7PGNhX
+ QydlxuqRDK4UjojTcI6K5C6C2ssstXnk4gF6lFv+LZaWD3MtJq474Nu/rBlyOV3NMvbD xw== 
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2mdhey7-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2n39e2d-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 12 Nov 2023 12:49:37 +0000
+	Sun, 12 Nov 2023 12:49:42 +0000
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3ACCEP1x008885;
-	Sun, 12 Nov 2023 12:49:37 GMT
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3ACCFCuH009374;
+	Sun, 12 Nov 2023 12:49:41 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxhngfsb-1
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxhngfsy-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 12 Nov 2023 12:49:37 +0000
+	Sun, 12 Nov 2023 12:49:40 +0000
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ACCmceU029718;
-	Sun, 12 Nov 2023 12:49:36 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3ACCmceW029718;
+	Sun, 12 Nov 2023 12:49:40 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-175-173-14.vpn.oracle.com [10.175.173.14])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3uaxhngfep-15;
-	Sun, 12 Nov 2023 12:49:36 +0000
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3uaxhngfep-16;
+	Sun, 12 Nov 2023 12:49:40 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, jolsa@kernel.org
 Cc: quentin@isovalent.com, eddyz87@gmail.com, martin.lau@linux.dev,
@@ -59,9 +59,9 @@ Cc: quentin@isovalent.com, eddyz87@gmail.com, martin.lau@linux.dev,
         kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
         masahiroy@kernel.org, bpf@vger.kernel.org,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v4 bpf-next 14/17] kbuild, bpf: allow opt-out from using split BTF for modules
-Date: Sun, 12 Nov 2023 12:48:31 +0000
-Message-Id: <20231112124834.388735-15-alan.maguire@oracle.com>
+Subject: [PATCH v4 bpf-next 15/17] selftests/bpf: generalize module load to support specifying a module name
+Date: Sun, 12 Nov 2023 12:48:32 +0000
+Message-Id: <20231112124834.388735-16-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231112124834.388735-1-alan.maguire@oracle.com>
 References: <20231112124834.388735-1-alan.maguire@oracle.com>
@@ -79,53 +79,211 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 spams
  mlxlogscore=999 adultscore=0 mlxscore=0 suspectscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
  definitions=main-2311120113
-X-Proofpoint-GUID: zrSjkRWugFzXNqQ2w0nVcINF8Zn7Kw4v
-X-Proofpoint-ORIG-GUID: zrSjkRWugFzXNqQ2w0nVcINF8Zn7Kw4v
+X-Proofpoint-GUID: 4Ht93aZbbui6vi2lS5JlGpD2xuWUO6kb
+X-Proofpoint-ORIG-GUID: 4Ht93aZbbui6vi2lS5JlGpD2xuWUO6kb
 
-By having a BTF_BASE variable defaulting to using vmlinux
-as base BTF, we allow module builders to build standalone
-BTF such that it is generated independently and not
-de-duplicated with core vmlinux BTF.  This allows such
-modules to be more resilient to changes in vmlinux BTF
-if they occur, as would happen if a change resulted in
-a different vmlinux BTF id mapping.
-
-Opt-out of split BTF is done via
-
- make BTF_BASE= M=path/2/module
+This will be used in testing standalone module BTF.
 
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- scripts/Makefile.btf      | 3 +++
- scripts/Makefile.modfinal | 4 ++--
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ .../selftests/bpf/prog_tests/bpf_mod_race.c   |  8 +++----
+ .../selftests/bpf/prog_tests/module_attach.c  |  6 ++---
+ tools/testing/selftests/bpf/test_progs.c      |  6 ++---
+ tools/testing/selftests/bpf/test_verifier.c   |  6 ++---
+ tools/testing/selftests/bpf/testing_helpers.c | 24 ++++++++++---------
+ tools/testing/selftests/bpf/testing_helpers.h |  4 ++--
+ 6 files changed, 28 insertions(+), 26 deletions(-)
 
-diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-index f8ce33d7f9bb..352271a10fb5 100644
---- a/scripts/Makefile.btf
-+++ b/scripts/Makefile.btf
-@@ -19,3 +19,6 @@ pahole-flags-$(call test-ge, $(pahole-ver), 125)	+= --skip_encoding_btf_inconsis
- pahole-flags-$(call test-ge, $(pahole-ver), 126)	= -j --lang_exclude=rust --btf_features=encode_force,var,float,decl_tag,type_tag,enum64,optimized_func,consistent_func,crc,kind_layout
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c b/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
+index fe2c502e5089..c4aeb40390a3 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_mod_race.c
+@@ -48,7 +48,7 @@ static _Atomic enum bpf_test_state state = _TS_INVALID;
+ static void *load_module_thread(void *p)
+ {
  
- export PAHOLE_FLAGS := $(pahole-flags-y)
-+
-+# Allow opt-out of split BTF by overriding BTF_BASE
-+export BTF_BASE	:= --btf_base vmlinux
-diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-index 8568d256d6fb..3400d1a72127 100644
---- a/scripts/Makefile.modfinal
-+++ b/scripts/Makefile.modfinal
-@@ -39,8 +39,8 @@ quiet_cmd_btf_ko = BTF [M] $@
- 	if [ ! -f vmlinux ]; then					\
- 		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
- 	else								\
--		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
--		$(RESOLVE_BTFIDS) -b vmlinux $@; 			\
-+		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) $(BTF_BASE) $@; \
-+		$(RESOLVE_BTFIDS) $(BTF_BASE) $@; 			\
- 	fi;
+-	if (!ASSERT_NEQ(load_bpf_testmod(false), 0, "load_module_thread must fail"))
++	if (!ASSERT_NEQ(load_bpf_testmod("bpf_testmod", false), 0, "load_module_thread must fail"))
+ 		atomic_store(&state, TS_MODULE_LOAD);
+ 	else
+ 		atomic_store(&state, TS_MODULE_LOAD_FAIL);
+@@ -100,7 +100,7 @@ static void test_bpf_mod_race_config(const struct test_config *config)
+ 	if (!ASSERT_NEQ(fault_addr, MAP_FAILED, "mmap for uffd registration"))
+ 		return;
  
- # Same as newer-prereqs, but allows to exclude specified extra dependencies
+-	if (!ASSERT_OK(unload_bpf_testmod(false), "unload bpf_testmod"))
++	if (!ASSERT_OK(unload_bpf_testmod("bpf_testmod", false), "unload bpf_testmod"))
+ 		goto end_mmap;
+ 
+ 	skel = bpf_mod_race__open();
+@@ -178,8 +178,8 @@ static void test_bpf_mod_race_config(const struct test_config *config)
+ 	bpf_mod_race__destroy(skel);
+ 	ASSERT_OK(kern_sync_rcu(), "kern_sync_rcu");
+ end_module:
+-	unload_bpf_testmod(false);
+-	ASSERT_OK(load_bpf_testmod(false), "restore bpf_testmod");
++	unload_bpf_testmod("bpf_testmod", false);
++	ASSERT_OK(load_bpf_testmod("bpf_testmod", false), "restore bpf_testmod");
+ end_mmap:
+ 	munmap(fault_addr, 4096);
+ 	atomic_store(&state, _TS_INVALID);
+diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+index f53d658ed080..9f1f00c63d30 100644
+--- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
++++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+@@ -89,21 +89,21 @@ void test_module_attach(void)
+ 	if (!ASSERT_OK_PTR(link, "attach_fentry"))
+ 		goto cleanup;
+ 
+-	ASSERT_ERR(unload_bpf_testmod(false), "unload_bpf_testmod");
++	ASSERT_ERR(unload_bpf_testmod("bpf_testmod", false), "unload_bpf_testmod");
+ 	bpf_link__destroy(link);
+ 
+ 	link = bpf_program__attach(skel->progs.handle_fexit);
+ 	if (!ASSERT_OK_PTR(link, "attach_fexit"))
+ 		goto cleanup;
+ 
+-	ASSERT_ERR(unload_bpf_testmod(false), "unload_bpf_testmod");
++	ASSERT_ERR(unload_bpf_testmod("bpf_testmod", false), "unload_bpf_testmod");
+ 	bpf_link__destroy(link);
+ 
+ 	link = bpf_program__attach(skel->progs.kprobe_multi);
+ 	if (!ASSERT_OK_PTR(link, "attach_kprobe_multi"))
+ 		goto cleanup;
+ 
+-	ASSERT_ERR(unload_bpf_testmod(false), "unload_bpf_testmod");
++	ASSERT_ERR(unload_bpf_testmod("bpf_testmod", false), "unload_bpf_testmod");
+ 	bpf_link__destroy(link);
+ 
+ cleanup:
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 1b9387890148..a3a89743e7aa 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -1659,9 +1659,9 @@ int main(int argc, char **argv)
+ 	env.has_testmod = true;
+ 	if (!env.list_test_names) {
+ 		/* ensure previous instance of the module is unloaded */
+-		unload_bpf_testmod(verbose());
++		unload_bpf_testmod("bpf_testmod", verbose());
+ 
+-		if (load_bpf_testmod(verbose())) {
++		if (load_bpf_testmod("bpf_testmod", verbose())) {
+ 			fprintf(env.stderr, "WARNING! Selftests relying on bpf_testmod.ko will be skipped.\n");
+ 			env.has_testmod = false;
+ 		}
+@@ -1761,7 +1761,7 @@ int main(int argc, char **argv)
+ 	close(env.saved_netns_fd);
+ out:
+ 	if (!env.list_test_names && env.has_testmod)
+-		unload_bpf_testmod(verbose());
++		unload_bpf_testmod("bpf_testmod", verbose());
+ 
+ 	free_test_selector(&env.test_selector);
+ 	free_test_selector(&env.subtest_selector);
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index 98107e0452d3..b712424d6a10 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -1804,9 +1804,9 @@ static int do_test(bool unpriv, unsigned int from, unsigned int to)
+ 	int i, passes = 0, errors = 0;
+ 
+ 	/* ensure previous instance of the module is unloaded */
+-	unload_bpf_testmod(verbose);
++	unload_bpf_testmod("bpf_testmod", verbose);
+ 
+-	if (load_bpf_testmod(verbose))
++	if (load_bpf_testmod("bpf_testmod", verbose))
+ 		return EXIT_FAILURE;
+ 
+ 	for (i = from; i < to; i++) {
+@@ -1836,7 +1836,7 @@ static int do_test(bool unpriv, unsigned int from, unsigned int to)
+ 		}
+ 	}
+ 
+-	unload_bpf_testmod(verbose);
++	unload_bpf_testmod("bpf_testmod", verbose);
+ 	kfuncs_cleanup();
+ 
+ 	printf("Summary: %d PASSED, %d SKIPPED, %d FAILED\n", passes,
+diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
+index 8d994884c7b4..d5cde3f298f1 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.c
++++ b/tools/testing/selftests/bpf/testing_helpers.c
+@@ -338,45 +338,47 @@ static int delete_module(const char *name, int flags)
+ 	return syscall(__NR_delete_module, name, flags);
+ }
+ 
+-int unload_bpf_testmod(bool verbose)
++int unload_bpf_testmod(const char *name, bool verbose)
+ {
+ 	if (kern_sync_rcu())
+ 		fprintf(stdout, "Failed to trigger kernel-side RCU sync!\n");
+-	if (delete_module("bpf_testmod", 0)) {
++	if (delete_module(name, 0)) {
+ 		if (errno == ENOENT) {
+ 			if (verbose)
+-				fprintf(stdout, "bpf_testmod.ko is already unloaded.\n");
++				fprintf(stdout, "%s.ko is already unloaded.\n", name);
+ 			return -1;
+ 		}
+-		fprintf(stdout, "Failed to unload bpf_testmod.ko from kernel: %d\n", -errno);
++		fprintf(stdout, "Failed to unload %s.ko from kernel: %d\n", name, -errno);
+ 		return -1;
+ 	}
+ 	if (verbose)
+-		fprintf(stdout, "Successfully unloaded bpf_testmod.ko.\n");
++		fprintf(stdout, "Successfully unloaded %s.ko.\n", name);
+ 	return 0;
+ }
+ 
+-int load_bpf_testmod(bool verbose)
++int load_bpf_testmod(const char *name, bool verbose)
+ {
++	char koname[PATH_MAX];
+ 	int fd;
+ 
+ 	if (verbose)
+-		fprintf(stdout, "Loading bpf_testmod.ko...\n");
++		fprintf(stdout, "Loading %s.ko...\n", name);
+ 
+-	fd = open("bpf_testmod.ko", O_RDONLY);
++	snprintf(koname, sizeof(koname), "%s.ko", name);
++	fd = open(koname, O_RDONLY);
+ 	if (fd < 0) {
+-		fprintf(stdout, "Can't find bpf_testmod.ko kernel module: %d\n", -errno);
++		fprintf(stdout, "Can't find %s.ko kernel module: %d\n", name, -errno);
+ 		return -ENOENT;
+ 	}
+ 	if (finit_module(fd, "", 0)) {
+-		fprintf(stdout, "Failed to load bpf_testmod.ko into the kernel: %d\n", -errno);
++		fprintf(stdout, "Failed to load %s.ko into the kernel: %d\n", name, -errno);
+ 		close(fd);
+ 		return -EINVAL;
+ 	}
+ 	close(fd);
+ 
+ 	if (verbose)
+-		fprintf(stdout, "Successfully loaded bpf_testmod.ko.\n");
++		fprintf(stdout, "Successfully loaded %s.ko.\n", name);
+ 	return 0;
+ }
+ 
+diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
+index 5b7a55136741..831329ad5091 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.h
++++ b/tools/testing/selftests/bpf/testing_helpers.h
+@@ -30,8 +30,8 @@ int parse_test_list_file(const char *path,
+ 			 bool is_glob_pattern);
+ 
+ __u64 read_perf_max_sample_freq(void);
+-int load_bpf_testmod(bool verbose);
+-int unload_bpf_testmod(bool verbose);
++int load_bpf_testmod(const char *name, bool verbose);
++int unload_bpf_testmod(const char *name, bool verbose);
+ int kern_sync_rcu(void);
+ 
+ static inline __u64 get_time_ns(void)
 -- 
 2.31.1
 
