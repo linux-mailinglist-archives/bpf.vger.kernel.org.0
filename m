@@ -1,421 +1,207 @@
-Return-Path: <bpf+bounces-14990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B52CC7E9C35
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 13:32:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9C777E9C4C
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 13:42:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 679DD280D3F
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 12:32:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 539991F20F10
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 12:42:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1581DFC6;
-	Mon, 13 Nov 2023 12:32:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0B41D527;
+	Mon, 13 Nov 2023 12:42:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98ADD1DA3F
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 12:32:28 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A5819BD
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 04:32:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E8CB156CE
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 12:42:15 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEDD171A
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 04:42:13 -0800 (PST)
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4STTMk0X2xz4f3kkZ
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 20:32:18 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8DC201A0170
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 20:32:20 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgA3iA5NF1Jl2c5BAw--.31533S9;
-	Mon, 13 Nov 2023 20:32:20 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4STTb53ZYdz4f3mLl
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 20:42:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id CA6AD1A0183
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 20:42:10 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgAXJkacGVJl+xhfAw--.35390S2;
+	Mon, 13 Nov 2023 20:42:08 +0800 (CST)
+Subject: Re: [PATCH bpf-next v3] bpf: Do not allocate percpu memory at init
+ stage
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231111013928.948838-1-yonghong.song@linux.dev>
 From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf v2 5/5] selftests/bpf: Add test cases for inner map
-Date: Mon, 13 Nov 2023 20:33:24 +0800
-Message-Id: <20231113123324.3914612-6-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20231113123324.3914612-1-houtao@huaweicloud.com>
-References: <20231113123324.3914612-1-houtao@huaweicloud.com>
+Message-ID: <50a70429-169f-0d44-86da-d5fe6a9d59e6@huaweicloud.com>
+Date: Mon, 13 Nov 2023 20:42:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgA3iA5NF1Jl2c5BAw--.31533S9
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wry8uw1fGw15KrWkGrWUtwb_yoWftryxpF
-	WrCry3CrW8JrWUWw4Uta17uFW8Krs5Ww1UtanYkr15ZF1DWr9xXrZ7WFWUXF13urWkAryF
-	93ZFyay8G3ykAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBab4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
-	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZo7tUUUUU=
+In-Reply-To: <20231111013928.948838-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgAXJkacGVJl+xhfAw--.35390S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3ArW7XrWDKF43Xw1rZry7KFg_yoW7WFy8pa
+	1kJF1Yyr4qqFs7W343Jw48AryFqwn5WF1xK343Ary7CrsIqrn7Gr4vkr4rZF909FZ0kFy0
+	yFyvvr1agFW5CrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6x
+	AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+	aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-From: Hou Tao <houtao1@huawei.com>
+Hi,
 
-Add test cases to test the race between the destroy of inner map due to
-map-in-map update and the access of inner map in bpf program. The
-following 4 combination are added:
-(1) array map in map array + bpf program
-(2) array map in map array + sleepable bpf program
-(3) array map in map htab + bpf program
-(4) array map in map htab + sleepable bpf program
+On 11/11/2023 9:39 AM, Yonghong Song wrote:
+> Kirill Shutemov reported significant percpu memory consumption increase after
+> booting in 288-cpu VM ([1]) due to commit 41a5db8d8161 ("bpf: Add support for
+> non-fix-size percpu mem allocation"). The percpu memory consumption is
+> increased from 111MB to 969MB. The number is from /proc/meminfo.
+>
+> I tried to reproduce the issue with my local VM which at most supports upto
+> 255 cpus. With 252 cpus, without the above commit, the percpu memory
+> consumption immediately after boot is 57MB while with the above commit the
+> percpu memory consumption is 231MB.
+>
+> This is not good since so far percpu memory from bpf memory allocator is not
+> widely used yet. Let us change pre-allocation in init stage to on-demand
+> allocation when verifier detects there is a need of percpu memory for bpf
+> program. With this change, percpu memory consumption after boot can be reduced
+> signicantly.
+>
+>   [1] https://lore.kernel.org/lkml/20231109154934.4saimljtqx625l3v@box.shutemov.name/
+>
+> Fixes: 41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem allocation")
+> Reported-and-tested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  include/linux/bpf.h   |  2 +-
+>  kernel/bpf/core.c     |  8 +++-----
+>  kernel/bpf/verifier.c | 20 ++++++++++++++++++--
+>  3 files changed, 22 insertions(+), 8 deletions(-)
+>
+> Changelog:
+>   v2 -> v3:
+>     - Use dedicated mutex lock (bpf_percpu_ma_lock)
+>   v1 -> v2:
+>     - Add proper Reported-and-tested-by tag.
+>     - Do a check of !bpf_global_percpu_ma_set before acquiring verifier_lock.
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 35bff17396c0..6762dac3ef76 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -56,7 +56,7 @@ extern struct idr btf_idr;
+>  extern spinlock_t btf_idr_lock;
+>  extern struct kobject *btf_kobj;
+>  extern struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+> -extern bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+> +extern bool bpf_global_ma_set;
+>  
+>  typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
+>  typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 08626b519ce2..cd3afe57ece3 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -64,8 +64,8 @@
+>  #define OFF	insn->off
+>  #define IMM	insn->imm
+>  
+> -struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+> -bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+> +struct bpf_mem_alloc bpf_global_ma;
+> +bool bpf_global_ma_set;
+>  
+>  /* No hurry in this branch
+>   *
+> @@ -2934,9 +2934,7 @@ static int __init bpf_global_ma_init(void)
+>  
+>  	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
+>  	bpf_global_ma_set = !ret;
+> -	ret = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
+> -	bpf_global_percpu_ma_set = !ret;
+> -	return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
+> +	return ret;
+>  }
+>  late_initcall(bpf_global_ma_init);
+>  #endif
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index a2267d5ed14e..6da370a047fe 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/poison.h>
+>  #include <linux/module.h>
+>  #include <linux/cpumask.h>
+> +#include <linux/bpf_mem_alloc.h>
+>  #include <net/xdp.h>
+>  
+>  #include "disasm.h"
+> @@ -41,6 +42,9 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
+>  #undef BPF_LINK_TYPE
+>  };
+>  
+> +struct bpf_mem_alloc bpf_global_percpu_ma;
+> +static bool bpf_global_percpu_ma_set;
+> +
+>  /* bpf_check() is a static code analyzer that walks eBPF program
+>   * instruction by instruction and updates register/stack state.
+>   * All paths of conditional branches are analyzed until 'bpf_exit' insn.
+> @@ -336,6 +340,7 @@ struct bpf_kfunc_call_arg_meta {
+>  struct btf *btf_vmlinux;
+>  
+>  static DEFINE_MUTEX(bpf_verifier_lock);
+> +static DEFINE_MUTEX(bpf_percpu_ma_lock);
+>  
+>  static const struct bpf_line_info *
+>  find_linfo(const struct bpf_verifier_env *env, u32 insn_off)
+> @@ -12091,8 +12096,19 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>  				if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
+>  					return -ENOMEM;
+>  
+> -				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl] && !bpf_global_percpu_ma_set)
+> -					return -ENOMEM;
+> +				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
+> +					if (!bpf_global_percpu_ma_set) {
+> +						mutex_lock(&bpf_percpu_ma_lock);
+> +						if (!bpf_global_percpu_ma_set) {
+> +							err = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
+> +							if (!err)
+> +								bpf_global_percpu_ma_set = true;
+> +						}
 
-Before applying the fixes, when running `./test_prog -a map_in_map`, the
-following error was reported:
-
-  ==================================================================
-  BUG: KASAN: slab-use-after-free in array_map_update_elem+0x48/0x3e0
-  Read of size 4 at addr ffff888114f33824 by task test_progs/1858
-
-  CPU: 1 PID: 1858 Comm: test_progs Tainted: G           O     6.6.0+ #7
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
-  Call Trace:
-   <TASK>
-   dump_stack_lvl+0x4a/0x90
-   print_report+0xd2/0x620
-   kasan_report+0xd1/0x110
-   __asan_load4+0x81/0xa0
-   array_map_update_elem+0x48/0x3e0
-   bpf_prog_be94a9f26772f5b7_access_map_in_array+0xe6/0xf6
-   trace_call_bpf+0x1aa/0x580
-   kprobe_perf_func+0xdd/0x430
-   kprobe_dispatcher+0xa0/0xb0
-   kprobe_ftrace_handler+0x18b/0x2e0
-   0xffffffffc02280f7
-  RIP: 0010:__x64_sys_getpgid+0x1/0x30
-  ......
-   </TASK>
-
-  Allocated by task 1857:
-   kasan_save_stack+0x26/0x50
-   kasan_set_track+0x25/0x40
-   kasan_save_alloc_info+0x1e/0x30
-   __kasan_kmalloc+0x98/0xa0
-   __kmalloc_node+0x6a/0x150
-   __bpf_map_area_alloc+0x141/0x170
-   bpf_map_area_alloc+0x10/0x20
-   array_map_alloc+0x11f/0x310
-   map_create+0x28a/0xb40
-   __sys_bpf+0x753/0x37c0
-   __x64_sys_bpf+0x44/0x60
-   do_syscall_64+0x36/0xb0
-   entry_SYSCALL_64_after_hwframe+0x6e/0x76
-
-  Freed by task 11:
-   kasan_save_stack+0x26/0x50
-   kasan_set_track+0x25/0x40
-   kasan_save_free_info+0x2b/0x50
-   __kasan_slab_free+0x113/0x190
-   slab_free_freelist_hook+0xd7/0x1e0
-   __kmem_cache_free+0x170/0x260
-   kfree+0x9b/0x160
-   kvfree+0x2d/0x40
-   bpf_map_area_free+0xe/0x20
-   array_map_free+0x120/0x2c0
-   bpf_map_free_deferred+0xd7/0x1e0
-   process_one_work+0x462/0x990
-   worker_thread+0x370/0x670
-   kthread+0x1b0/0x200
-   ret_from_fork+0x3a/0x70
-   ret_from_fork_asm+0x1b/0x30
-
-  Last potentially related work creation:
-   kasan_save_stack+0x26/0x50
-   __kasan_record_aux_stack+0x94/0xb0
-   kasan_record_aux_stack_noalloc+0xb/0x20
-   __queue_work+0x331/0x950
-   queue_work_on+0x75/0x80
-   bpf_map_put+0xfa/0x160
-   bpf_map_fd_put_ptr+0xe/0x20
-   bpf_fd_array_map_update_elem+0x174/0x1b0
-   bpf_map_update_value+0x2b7/0x4a0
-   __sys_bpf+0x2551/0x37c0
-   __x64_sys_bpf+0x44/0x60
-   do_syscall_64+0x36/0xb0
-   entry_SYSCALL_64_after_hwframe+0x6e/0x76
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/map_in_map.c     | 141 ++++++++++++++++++
- .../selftests/bpf/progs/access_map_in_map.c   |  93 ++++++++++++
- 2 files changed, 234 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/map_in_map.c
- create mode 100644 tools/testing/selftests/bpf/progs/access_map_in_map.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/map_in_map.c b/tools/testing/selftests/bpf/prog_tests/map_in_map.c
-new file mode 100644
-index 0000000000000..d2a10eb4e5b52
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/map_in_map.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#define _GNU_SOURCE
-+#include <unistd.h>
-+#include <sys/syscall.h>
-+#include <test_progs.h>
-+#include <bpf/btf.h>
-+#include "access_map_in_map.skel.h"
-+
-+struct thread_ctx {
-+	pthread_barrier_t barrier;
-+	int outer_map_fd;
-+	int start, abort;
-+	int loop, err;
-+};
-+
-+static int wait_for_start_or_abort(struct thread_ctx *ctx)
-+{
-+	while (!ctx->start && !ctx->abort)
-+		usleep(1);
-+	return ctx->abort ? -1 : 0;
-+}
-+
-+static void *update_map_fn(void *data)
-+{
-+	struct thread_ctx *ctx = data;
-+	int loop = ctx->loop, err = 0;
-+
-+	if (wait_for_start_or_abort(ctx) < 0)
-+		return NULL;
-+	pthread_barrier_wait(&ctx->barrier);
-+
-+	while (loop-- > 0) {
-+		int fd, zero = 0;
-+
-+		fd = bpf_map_create(BPF_MAP_TYPE_ARRAY, NULL, 4, 4, 1, NULL);
-+		if (fd < 0) {
-+			err |= 1;
-+			pthread_barrier_wait(&ctx->barrier);
-+			continue;
-+		}
-+
-+		/* Remove the old inner map */
-+		if (bpf_map_update_elem(ctx->outer_map_fd, &zero, &fd, 0) < 0)
-+			err |= 2;
-+		close(fd);
-+		pthread_barrier_wait(&ctx->barrier);
-+	}
-+
-+	ctx->err = err;
-+
-+	return NULL;
-+}
-+
-+static void *access_map_fn(void *data)
-+{
-+	struct thread_ctx *ctx = data;
-+	int loop = ctx->loop;
-+
-+	if (wait_for_start_or_abort(ctx) < 0)
-+		return NULL;
-+	pthread_barrier_wait(&ctx->barrier);
-+
-+	while (loop-- > 0) {
-+		/* Access the old inner map */
-+		syscall(SYS_getpgid);
-+		pthread_barrier_wait(&ctx->barrier);
-+	}
-+
-+	return NULL;
-+}
-+
-+static void test_map_in_map_access(const char *prog_name, const char *map_name)
-+{
-+	struct access_map_in_map *skel;
-+	struct bpf_map *outer_map;
-+	struct bpf_program *prog;
-+	struct thread_ctx ctx;
-+	pthread_t tid[2];
-+	int err;
-+
-+	skel = access_map_in_map__open();
-+	if (!ASSERT_OK_PTR(skel, "access_map_in_map open"))
-+		return;
-+
-+	prog = bpf_object__find_program_by_name(skel->obj, prog_name);
-+	if (!ASSERT_OK_PTR(prog, "find program"))
-+		goto out;
-+	bpf_program__set_autoload(prog, true);
-+
-+	outer_map = bpf_object__find_map_by_name(skel->obj, map_name);
-+	if (!ASSERT_OK_PTR(outer_map, "find map"))
-+		goto out;
-+
-+	err = access_map_in_map__load(skel);
-+	if (!ASSERT_OK(err, "access_map_in_map load"))
-+		goto out;
-+
-+	err = access_map_in_map__attach(skel);
-+	if (!ASSERT_OK(err, "access_map_in_map attach"))
-+		goto out;
-+
-+	skel->bss->tgid = getpid();
-+
-+	memset(&ctx, 0, sizeof(ctx));
-+	pthread_barrier_init(&ctx.barrier, NULL, 2);
-+	ctx.outer_map_fd = bpf_map__fd(outer_map);
-+	ctx.loop = 4;
-+
-+	err = pthread_create(&tid[0], NULL, update_map_fn, &ctx);
-+	if (!ASSERT_OK(err, "close_thread"))
-+		goto out;
-+
-+	err = pthread_create(&tid[1], NULL, access_map_fn, &ctx);
-+	if (!ASSERT_OK(err, "read_thread")) {
-+		ctx.abort = 1;
-+		pthread_join(tid[0], NULL);
-+		goto out;
-+	}
-+
-+	ctx.start = 1;
-+	pthread_join(tid[0], NULL);
-+	pthread_join(tid[1], NULL);
-+
-+	ASSERT_OK(ctx.err, "err");
-+out:
-+	access_map_in_map__destroy(skel);
-+}
-+
-+void test_map_in_map(void)
-+{
-+	if (test__start_subtest("acc_map_in_array"))
-+		test_map_in_map_access("access_map_in_array", "outer_array_map");
-+	if (test__start_subtest("sleepable_acc_map_in_array"))
-+		test_map_in_map_access("sleepable_access_map_in_array", "outer_array_map");
-+	if (test__start_subtest("acc_map_in_htab"))
-+		test_map_in_map_access("access_map_in_htab", "outer_htab_map");
-+	if (test__start_subtest("sleepable_acc_map_in_htab"))
-+		test_map_in_map_access("sleepable_access_map_in_htab", "outer_htab_map");
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/access_map_in_map.c b/tools/testing/selftests/bpf/progs/access_map_in_map.c
-new file mode 100644
-index 0000000000000..1126871c2ebd8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/access_map_in_map.c
-@@ -0,0 +1,93 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#include <linux/bpf.h>
-+#include <time.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_misc.h"
-+
-+struct inner_map_type {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, 4);
-+	__uint(value_size, 4);
-+	__uint(max_entries, 1);
-+} inner_map SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__type(key, int);
-+	__type(value, int);
-+	__uint(max_entries, 1);
-+	__array(values, struct inner_map_type);
-+} outer_array_map SEC(".maps") = {
-+	.values = {
-+		[0] = &inner_map,
-+	},
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-+	__type(key, int);
-+	__type(value, int);
-+	__uint(max_entries, 1);
-+	__array(values, struct inner_map_type);
-+} outer_htab_map SEC(".maps") = {
-+	.values = {
-+		[0] = &inner_map,
-+	},
-+};
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int tgid = 0;
-+
-+static int acc_map_in_map(void *outer_map)
-+{
-+	int i, key, value = 0xdeadbeef;
-+	void *inner_map;
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != tgid)
-+		return 0;
-+
-+	/* Find nonexistent inner map */
-+	key = 1;
-+	inner_map = bpf_map_lookup_elem(outer_map, &key);
-+	if (inner_map)
-+		return 0;
-+
-+	/* Find the old inner map */
-+	key = 0;
-+	inner_map = bpf_map_lookup_elem(outer_map, &key);
-+	if (!inner_map)
-+		return 0;
-+
-+	/* Wait for the old inner map to be replaced */
-+	for (i = 0; i < 2048; i++)
-+		bpf_map_update_elem(inner_map, &key, &value, 0);
-+
-+	return 0;
-+}
-+
-+SEC("?kprobe/" SYS_PREFIX "sys_getpgid")
-+int access_map_in_array(void *ctx)
-+{
-+	return acc_map_in_map(&outer_array_map);
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int sleepable_access_map_in_array(void *ctx)
-+{
-+	return acc_map_in_map(&outer_array_map);
-+}
-+
-+SEC("?kprobe/" SYS_PREFIX "sys_getpgid")
-+int access_map_in_htab(void *ctx)
-+{
-+	return acc_map_in_map(&outer_htab_map);
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int sleepable_access_map_in_htab(void *ctx)
-+{
-+	return acc_map_in_map(&outer_htab_map);
-+}
--- 
-2.29.2
+A dumb question here: do we need some memory barrier to guarantee the
+memory order between bpf_global_percpu_ma_set and bpf_global_percpu_ma ?
+> +						mutex_unlock(&bpf_percpu_ma_lock);
+> +						if (err)
+> +							return err;
+> +					}
+> +				}
+>  
+>  				if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
+>  					verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
 
 
