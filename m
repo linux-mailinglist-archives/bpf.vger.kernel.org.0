@@ -1,98 +1,148 @@
-Return-Path: <bpf+bounces-14963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-14964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A74007E9513
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 03:34:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3DBC7E955D
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 04:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B0EA28121B
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 02:34:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66296280FD8
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 03:15:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C889E6ABC;
-	Mon, 13 Nov 2023 02:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05808829;
+	Mon, 13 Nov 2023 03:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RdqrXNhF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GNSu4R9L"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 175B34401
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 02:34:43 +0000 (UTC)
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF2310E
-	for <bpf@vger.kernel.org>; Sun, 12 Nov 2023 18:34:40 -0800 (PST)
-Message-ID: <07e4414b-3347-49e4-9c19-57d101ccd009@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1699842878;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pa6h/CUHE2/4xq/oTHsz1sOIt5eKXHfEp9nNrtey2TE=;
-	b=RdqrXNhFgBOy5cP6zH3orZfAN27buRYPYXT1sRUd6+pf5FQ+PKjForO1g2YoRAdPAKxHrv
-	aykoI15YtNd2SHlAxtoA0Tu4UimiQzSD6p8WH63VSTyfWF1ofLoVwQYINNQXn1jXQvb+Ki
-	YYfReJHeArgkYMuauY2/5phiJ2yC0jI=
-Date: Sun, 12 Nov 2023 21:34:28 -0500
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DACDD8820
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 03:15:48 +0000 (UTC)
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBE61716;
+	Sun, 12 Nov 2023 19:15:47 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso3697911276.3;
+        Sun, 12 Nov 2023 19:15:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699845347; x=1700450147; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T8B96Ni+FGUAk/kFVWQhHFafqodPoSpSscy2GJncHQw=;
+        b=GNSu4R9LZupKLsPOe8kXj0oo23LGLUTiCbVKeUdW1u3Ol1X+tFjhM5PsFH3yCdToUT
+         Kh+5YUr4FWdpGx8ix6Wy6ZV3hqqNbl5RjYs/8mfEghRBjbWntT+ZF4ZqGGJpMXZBCrPB
+         ABfssgLRcjrfKgu5NoJJPI8gdaDMyX1nPT7xkrBGwe/RUMc2YWEQh0cTalo6ksa1L4uX
+         U+xnuzFxuSsfxlSmQWvxj4N8m28X/mwWQyI5e9jm++yJd1+cKYst4fLFCev/P6BLlHFM
+         YGqsvKZHtjoWnS+HTiSVMZp0tu8TcIe/vy9THErRJNkfWTjUFFfgX0nT09p7PU3t2aw6
+         dJFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699845347; x=1700450147;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T8B96Ni+FGUAk/kFVWQhHFafqodPoSpSscy2GJncHQw=;
+        b=hN6cTuTFBGxBC8uqQYuRkfKMWGNsjHbKRM4zAUGtrVw9JvshfnqQowqiyw1Y/1dRlQ
+         YrbOuyVfJ1g0zoJJXYO3AyKJzzvlLcfjOKBTcqbNrLB4Ou/DpWfduXLWZaCrL4fibjcX
+         WSYXXFY88mYpMOFha35csce7ELwdA9Hh+H/bS18OxwdJN5NU+YK3ma33sZGT2tEBjOm0
+         2sLE3ceG6fcdRB6KnNuFP8fcQoTAzMAxyLlht0jJGkFiYO1VeR0HvEztFWMpCugZjVEk
+         ae8fYEPTS/xo3xIHArNk3BdBcIrVXnhRQYl7d1HarPCmNQlUdS/53roPY01N91ABidG1
+         gxyA==
+X-Gm-Message-State: AOJu0Yw1SgD5ZgcJC7elvdkYPagkNeyEJFt/AakO9ZwA2ObCvJFJDc+O
+	6BGkk7LukNUXLSN1QypVCgfRRMVOC3GQP+EIoaA=
+X-Google-Smtp-Source: AGHT+IGgoOn1GD9rsX8lEdOR18h9YH3PIsSRn09mwvNzpVQHVvocjvVSovUR6KBjYyKPtj7t4Wtss/58PVhBz+Dl7N4=
+X-Received: by 2002:a25:5ca:0:b0:da3:9a65:84b1 with SMTP id
+ 193-20020a2505ca000000b00da39a6584b1mr2840571ybf.12.1699845346849; Sun, 12
+ Nov 2023 19:15:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf] bpf: Add missed allocation hint for
- bpf_mem_cache_alloc_flags()
-Content-Language: en-GB
-To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Daniel Borkmann <daniel@iogearbox.net>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- houtao1@huawei.com
-References: <20231111043821.2258513-1-houtao@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20231111043821.2258513-1-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231112073424.4216-1-laoar.shao@gmail.com> <188dc90e-864f-4681-88a5-87401c655878@schaufler-ca.com>
+In-Reply-To: <188dc90e-864f-4681-88a5-87401c655878@schaufler-ca.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Mon, 13 Nov 2023 11:15:06 +0800
+Message-ID: <CALOAHbD+_0tHcm72Q6TM=EXDoZFrVWAsi4AC8_xGqK3wGkEy3g@mail.gmail.com>
+Subject: Re: [RFC PATCH -mm 0/4] mm, security, bpf: Fine-grained control over
+ memory policy adjustments with lsm bpf
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org, 
+	serge@hallyn.com, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, ligang.bdlg@bytedance.com, mhocko@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 11/10/23 8:38 PM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
+On Mon, Nov 13, 2023 at 12:45=E2=80=AFAM Casey Schaufler <casey@schaufler-c=
+a.com> wrote:
 >
-> bpf_mem_cache_alloc_flags() may call __alloc() directly when there is no
-> free object in free list, but it doesn't initialize the allocation hint
-> for the returned pointer. It may lead to bad memory dereference when
-> freeing the pointer, so fix it by initializing the allocation hint.
+> On 11/11/2023 11:34 PM, Yafang Shao wrote:
+> > Background
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > In our containerized environment, we've identified unexpected OOM event=
+s
+> > where the OOM-killer terminates tasks despite having ample free memory.
+> > This anomaly is traced back to tasks within a container using mbind(2) =
+to
+> > bind memory to a specific NUMA node. When the allocated memory on this =
+node
+> > is exhausted, the OOM-killer, prioritizing tasks based on oom_score,
+> > indiscriminately kills tasks. This becomes more critical with guarantee=
+d
+> > tasks (oom_score_adj: -998) aggravating the issue.
 >
-> Fixes: 822fb26bdb55 ("bpf: Add a hint to allocated objects.")
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> Is there some reason why you can't fix the callers of mbind(2)?
+> This looks like an user space configuration error rather than a
+> system security issue.
 
-LGTM based on my reading of the code. Maybe you could explain
-how you found this issue and whether a test case can be constructed
-relatively easily to expose this issue?
+It appears my initial description may have caused confusion. In this
+scenario, the caller is an unprivileged user lacking any capabilities.
+While a privileged user, such as root, experiencing this issue might
+indicate a user space configuration error, the concerning aspect is
+the potential for an unprivileged user to disrupt the system easily.
+If this is perceived as a misconfiguration, the question arises: What
+is the correct configuration to prevent an unprivileged user from
+utilizing mbind(2)?"
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-
-> ---
->   kernel/bpf/memalloc.c | 2 ++
->   1 file changed, 2 insertions(+)
 >
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 63b909d277d47..6a51cfe4c2d63 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -978,6 +978,8 @@ void notrace *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)
->   		memcg = get_memcg(c);
->   		old_memcg = set_active_memcg(memcg);
->   		ret = __alloc(c, NUMA_NO_NODE, GFP_KERNEL | __GFP_NOWARN | __GFP_ACCOUNT);
-> +		if (ret)
-> +			*(struct bpf_mem_cache **)ret = c;
->   		set_active_memcg(old_memcg);
->   		mem_cgroup_put(memcg);
->   	}
+> >
+> > The selected victim might not have allocated memory on the same NUMA no=
+de,
+> > rendering the killing ineffective. This patch aims to address this by
+> > disabling MPOL_BIND in container environments.
+> >
+> > In the container environment, our aim is to consolidate memory resource
+> > control under the management of kubelet. If users express a preference =
+for
+> > binding their memory to a specific NUMA node, we encourage the adoption=
+ of
+> > a standardized approach. Specifically, we recommend configuring this me=
+mory
+> > policy through kubelet using cpuset.mems in the cpuset controller, rath=
+er
+> > than individual users setting it autonomously. This centralized approac=
+h
+> > ensures that NUMA nodes are globally managed through kubelet, promoting
+> > consistency and facilitating streamlined administration of memory resou=
+rces
+> > across the entire containerized environment.
+>
+> Changing system behavior for a single use case doesn't seem prudent.
+> You're introducing a bunch of kernel code to avoid fixing a broken
+> user space configuration.
+
+Currently, there is no mechanism in place to proactively prevent an
+unprivileged user from utilizing mbind(2). The approach adopted is to
+monitor mbind(2) through a BPF program and trigger an alert if its
+usage is detected. However, beyond this monitoring, the only recourse
+is to verbally communicate with the user, advising against the use of
+mbind(2). As a result, users will question why mbind(2) isn't outright
+prohibited in the first place.
+
+--=20
+Regards
+Yafang
 
