@@ -1,79 +1,174 @@
-Return-Path: <bpf+bounces-15006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48F397EA115
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 17:16:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1451B7EA140
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 17:29:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 669E91C208C4
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 16:16:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3FBC280E7C
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 16:29:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFB6D2232A;
-	Mon, 13 Nov 2023 16:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BA92233E;
+	Mon, 13 Nov 2023 16:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NgytOnSK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rp4faMSe"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F8521A0E;
-	Mon, 13 Nov 2023 16:15:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE521C433C9;
-	Mon, 13 Nov 2023 16:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F18221362;
+	Mon, 13 Nov 2023 16:29:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E5D8C433C7;
+	Mon, 13 Nov 2023 16:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1699892156;
-	bh=oB+TvMxi4DPxrJsrEqQNrgfa8cu29Qp2KY/zuWRtuo4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NgytOnSKcVZq9tDlW1mZGtQn/H00iwOBEOdhWTCmKb5zjDOt/p5JaYHTrvK4q6zUi
-	 JX4Qrw1I1fQvSjpcEZc+xWw5OUW9rcAVUlOP1cbEwE2Nrqxod7nD+1223svgHhTD2s
-	 6POK8w5ZRyrB5mKTPcB49rtJ0m+TFVzC/TFa1LU+SnzwcEUef2Gk3j/og276F7oCkG
-	 yjlZ4J6Li1fi2XlL5xunAXedqbvmpUPJli1/9m/nJc/eLYC3bsnpeNXPl0k8W7nXfa
-	 Sq+q6aUFCyarh/uDW7r0ldQqm0iPyM/PeFpXSSnT4xA/39HV58b5m7MIMW0iSulK0V
-	 udTF1aJ7gjVIA==
-Date: Mon, 13 Nov 2023 16:15:52 +0000
-From: Simon Horman <horms@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: martin.lau@kernel.org, kuba@kernel.org, razor@blackwall.org,
-	sdf@google.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
-	David Ahern <dsahern@kernel.org>
-Subject: Re: [PATCH bpf v2 2/8] net: Move {l,t,d}stats allocation to core and
- convert veth & vrf
-Message-ID: <20231113161552.GA4482@kernel.org>
-References: <20231112203009.26073-1-daniel@iogearbox.net>
- <20231112203009.26073-3-daniel@iogearbox.net>
- <20231113100305.GO705326@kernel.org>
- <cc269865-d3c7-f8e6-9a61-25794f5ae220@iogearbox.net>
+	s=k20201202; t=1699892966;
+	bh=rFA9qo+KavsfAkBCp0SvdYqsAEdix8gEFowhv7AczRM=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=rp4faMSeg+19SKsnboDdTo6OKFhdE28+p6fjruPfnrispp1WW32oTmd78gVDWLvlf
+	 +z5E5beb2Ln0pcRLmsEjGnF9vQenMeubN14Uy5oUuTZ8anDOdGWADla3wSr8wb+la1
+	 YZ4EGarxPX8plZaAZe6gR0m8eVR+o1bj/C+8S+1Wbk0fiTtxYy73wq9aAtYFoZVZ8N
+	 lpL2JJn2IG6BbqwOcvXZC5gcWaxe6Ad5OVUSqfY0zOV3zh6E3wtYRJY7dfPlMSmVZd
+	 tHFRkEGMrNcjrCxSb7T9u6BeW0pnljC7N4DaYl/eIhI+9lIWW++C4FH+4g+/2nROC1
+	 CcSbY8UCJKJ3w==
+Message-ID: <2ed17b27-f211-4f58-95b5-5a71914264f3@kernel.org>
+Date: Mon, 13 Nov 2023 17:29:18 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc269865-d3c7-f8e6-9a61-25794f5ae220@iogearbox.net>
+User-Agent: Mozilla Thunderbird
+Cc: hawk@kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ haoluo@google.com, jolsa@kernel.org, kuba@kernel.org, toke@kernel.org,
+ willemb@google.com, dsahern@kernel.org, magnus.karlsson@intel.com,
+ bjorn@kernel.org, maciej.fijalkowski@intel.com, yoong.siang.song@intel.com,
+ netdev@vger.kernel.org, xdp-hints@xdp-project.net
+Subject: Re: [PATCH bpf-next v5 02/13] xsk: Add TX timestamp and TX checksum
+ offload support
+Content-Language: en-US
+To: Stanislav Fomichev <sdf@google.com>
+References: <20231102225837.1141915-1-sdf@google.com>
+ <20231102225837.1141915-3-sdf@google.com>
+ <c9bfe356-1942-4e49-b025-115faeec39dd@kernel.org>
+ <CAKH8qBtiv8ArtbbMW9+c75y+NfkX-Tk-rcPuHBVdKDMmmFdtdA@mail.gmail.com>
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <CAKH8qBtiv8ArtbbMW9+c75y+NfkX-Tk-rcPuHBVdKDMmmFdtdA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 13, 2023 at 02:05:36PM +0100, Daniel Borkmann wrote:
-> On 11/13/23 11:03 AM, Simon Horman wrote:
-> > On Sun, Nov 12, 2023 at 09:30:03PM +0100, Daniel Borkmann wrote:
 
-...
 
-> > > @@ -10469,6 +10513,7 @@ void netdev_run_todo(void)
-> > >   		WARN_ON(rcu_access_pointer(dev->ip_ptr));
-> > >   		WARN_ON(rcu_access_pointer(dev->ip6_ptr));
-> > > +		netdev_do_free_pcpu_stats(dev);
-> > >   		if (dev->priv_destructor)
-> > >   			dev->priv_destructor(dev);
-> > >   		if (dev->needs_free_netdev)
-> > 
-> > nit: the hunk above seems unnecessary; one blank line is enough.
+On 11/13/23 15:10, Stanislav Fomichev wrote:
+> On Mon, Nov 13, 2023 at 5:16 AM Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+>>
+>>
+>> On 11/2/23 23:58, Stanislav Fomichev wrote:
+>>> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+>>> index 2ecf79282c26..b0ee7ad19b51 100644
+>>> --- a/include/uapi/linux/if_xdp.h
+>>> +++ b/include/uapi/linux/if_xdp.h
+>>> @@ -106,6 +106,41 @@ struct xdp_options {
+>>>    #define XSK_UNALIGNED_BUF_ADDR_MASK \
+>>>        ((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
+>>>
+>>> +/* Request transmit timestamp. Upon completion, put it into tx_timestamp
+>>> + * field of struct xsk_tx_metadata.
+>>> + */
+>>> +#define XDP_TXMD_FLAGS_TIMESTAMP             (1 << 0)
+>>> +
+>>> +/* Request transmit checksum offload. Checksum start position and offset
+>>> + * are communicated via csum_start and csum_offset fields of struct
+>>> + * xsk_tx_metadata.
+>>> + */
+>>> +#define XDP_TXMD_FLAGS_CHECKSUM                      (1 << 1)
+>>> +
+>>> +/* AF_XDP offloads request. 'request' union member is consumed by the driver
+>>> + * when the packet is being transmitted. 'completion' union member is
+>>> + * filled by the driver when the transmit completion arrives.
+>>> + */
+>>> +struct xsk_tx_metadata {
+>>> +     union {
+>>> +             struct {
+>>> +                     __u32 flags;
+>>> +
+>>> +                     /* XDP_TXMD_FLAGS_CHECKSUM */
+>>> +
+>>> +                     /* Offset from desc->addr where checksumming should start. */
+>>> +                     __u16 csum_start;
+>>> +                     /* Offset from csum_start where checksum should be stored. */
+>>> +                     __u16 csum_offset;
+>>> +             } request;
+>>> +
+>>> +             struct {
+>>> +                     /* XDP_TXMD_FLAGS_TIMESTAMP */
+>>> +                     __u64 tx_timestamp;
+>>> +             } completion;
+>>> +     };
+>>> +};
+>>
+>> This looks wrong to me. It looks like member @flags is not avail at
+>> completion time.  At completion time, I assume we also want to know if
+>> someone requested to get the timestamp for this packet (else we could
+>> read garbage).
 > 
-> I'm not sure which one you mean?
+> I've moved the parts that are preserved across tx and tx completion
+> into xsk_tx_metadata_compl.
+> This is to address Magnus/Maciej feedback where userspace might race
+> with the kernel.
+> See: https://lore.kernel.org/bpf/ZNoJenzKXW5QSR3E@boxer/
+> 
 
-It seems that I was confused for some reason,
-please ignore my previous comment.
+Does this mean that every driver have to extend their TX-desc ring with
+sizeof(struct xsk_tx_metadata_compl)?
+Won't this affect the performance of this V5?
+
+  $ pahole -C xsk_tx_metadata_compl 
+./drivers/net/ethernet/stmicro/stmmac/stmmac.ko
+  struct xsk_tx_metadata_compl {
+	__u64 *              tx_timestamp;         /*     0     8 */
+
+	/* size: 8, cachelines: 1, members: 1 */
+	/* last cacheline: 8 bytes */
+  };
+
+Guess, I must be misunderstanding, as I was expecting to see the @flags
+member being preserved across, as I get the race there.
+
+Looking at stmmac driver, it does look like this xsk_tx_metadata_compl
+is part of the TX-ring for completion (tx_skbuff_dma) and the
+tx_timestamp data is getting stored here.  How is userspace AF_XDP
+application getting access to the tx_timestamp data?
+I though this was suppose to get stored in metadata data area (umem)?
+
+Also looking at the code, the kernel would not have a "crash" race on
+the flags member (if we preserve in struct), because the code checks the
+driver HW-TS config-state + TX-descriptor for the availability of a
+HW-TS in the descriptor.
+
+
+>> Another thing (I've raised this before): It would be really practical to
+>> store an u64 opaque value at TX and then read it at Completion time.
+>> One use-case is a forwarding application storing HW RX-time and
+>> comparing this to TX completion time to deduce the time spend processing
+>> the packet.
+> 
+> This can be another member, right? But note that extending
+> xsk_tx_metadata_compl might be a bit complicated because drivers have
+> to carry this info somewhere. So we have to balance the amount of
+> passed data between the tx and the completion.
+
+I don't think my opaque value proposal is subject to same race problem.
+I think this can be stores in metadata area and across tx and tx
+completion, because any race on a flags change is the userspace
+programmers problem, as it cannot cause any kernel crash (given kernel
+have no need to read this).
+
+--Jesper
+
 
 
