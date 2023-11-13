@@ -1,226 +1,100 @@
-Return-Path: <bpf+bounces-15008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B3E87EA19D
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 18:03:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682FA7EA31A
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 19:53:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E5381C208D6
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 17:03:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA431280F15
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 18:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E11224C9;
-	Mon, 13 Nov 2023 17:02:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3809D22EEF;
+	Mon, 13 Nov 2023 18:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BvRTT1j5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zdOhWB51"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3C022334
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 17:02:57 +0000 (UTC)
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BBE173F
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 09:02:51 -0800 (PST)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7af53bde4so65971377b3.0
-        for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 09:02:51 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74F1022EEB
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 18:53:20 +0000 (UTC)
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 868EC10DA
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 10:53:19 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-777754138bdso323798285a.1
+        for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 10:53:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699894970; x=1700499770; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PAJhDBnKSX8hMywTnbhs2D/NpNn8H7rbhedPkq9pcUg=;
-        b=BvRTT1j5XCFMVASLP/RQAgdSITod8DqLjDYV9mm52u4rnVplYyNZVOdqpnDunLG45n
-         bfyqzN50sS0rlqAObD1t9cduOcoZtzEbQk5YRkFLGgToFzycR8Wh+SztV2nGQCB9prUv
-         Ha7zeTpPgp83tuG3Q5yVhkcpwP6S0CEncoGT6s08PmrwMyerd0fBMGlhd2o+kYLm4V6H
-         3f7qPJujy4bzl/jVcBBtmyGB1Q9a2pJe3y9kasQrMjTWcCutEEmnZtar3zsRbjUTg30M
-         69kwK9RZ+oUUVxI1YZmyRVRieTD0z4o7q46t9dXAMgxtOmsdVOLHXXvsM598lO+xzd43
-         nLMg==
+        d=google.com; s=20230601; t=1699901598; x=1700506398; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e/1vgNbrzcrjswtNPRvbWXiDhjN8BGJ6BpUfet0Upv0=;
+        b=zdOhWB51qfQM0pc8M5Z+lcdjYXg2gW3TcYrdrHP1kS1r8T4PXEjv4DS7V03uqCc+GH
+         crJvcntaIB15rbcy0yQ0RO4JR1yAw9olEnQtPOQqXqeHVMtLoRB7kAsTnUEYdhqqXNpF
+         KtBpNw0Ny0qjurcViDLl3zgMjbLEv/fv4TcBTAevdvfRZKf2bfX9U6lSZ20IwebqYszT
+         5QYResB0x0uM4KehvxPdaIEtlRUESMnHr2YeI13uc3lMCNIBBSscXyqlKJCNnps1GwxO
+         WtWEO3wZthSG8VhiDca3k/QvxEMEQbn217LYX6VwZs43RfiZY9z/7sK9GZOj6Kny+Ojw
+         vmPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699894970; x=1700499770;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=PAJhDBnKSX8hMywTnbhs2D/NpNn8H7rbhedPkq9pcUg=;
-        b=cbhKCJKlEwl+HZFZPcW7CjNcDsjv9Un+jli6nLbFjoCod2EKTzVMDsPuUUwnWx3pBO
-         NzgkYeE3wdYMZcK9mwR3N6VAQDORAuqHip5v+djDywwqkgUoxsycvwSvHsyQPuwJrH+o
-         mVWDEH6QnD8dg7+XqWtRHO7t4v3zyWMxdqDwG8+gcb1PJagmBNEcJhy2530uRwvdLWm3
-         OQaqlcEHrqQT6Uz9EWxwPclBrM6jw0dHZZhAfOnYDZR2uclKZqgwwkSuFyHjPiVn8hd+
-         brVIv5atL/NfpWWTpK2MIg5Qx9I9UCUxaUZDbGDve0h8hp9ou/rf7ocrs0/wMkjb8BlB
-         E0GA==
-X-Gm-Message-State: AOJu0YycvvNiANBSjaPexvnQFz2uFEHx06S4Lgy9sdA0jlqWDXIx60Gf
-	1cBK4bgzLkjNnlG4VhAG0iIydJc=
-X-Google-Smtp-Source: AGHT+IFZlJzNBRz95LZBqclb+YjjBicOGP4YIjHzDU2LitrspIlAvgFGBM0RoSZXrWON7epmyCoFpU4=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:690c:a9d:b0:5c1:47e1:fb45 with SMTP id
- ci29-20020a05690c0a9d00b005c147e1fb45mr172083ywb.0.1699894970352; Mon, 13 Nov
- 2023 09:02:50 -0800 (PST)
-Date: Mon, 13 Nov 2023 09:02:48 -0800
-In-Reply-To: <2ed17b27-f211-4f58-95b5-5a71914264f3@kernel.org>
+        d=1e100.net; s=20230601; t=1699901598; x=1700506398;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e/1vgNbrzcrjswtNPRvbWXiDhjN8BGJ6BpUfet0Upv0=;
+        b=HlKwY784erd7LDq+6WqIHT7XoOvz18bWzD2cY18liOh7ewAQekG5IADytgr2isTx23
+         HDf84MsL/5D9FCSstn3mNfRhn0XqeET5+aI7Ctn1o3YFcetcnQnWlbCEvrgWnpFs1Dnu
+         PqywrBOknGu4jgdwjTS64gF4szmRBskacAThEZt2wqg82PBpmV5vvAEoIrAFzTmEQDPK
+         9d9r5JlwE5mys9oIJq5r/vUc/KYX0KcRNW00fNh+hca7pa6PB+bPyMvKZ521sOpmXQIB
+         F9IRra6PWidjdcAmtI2E5M5z/qJi7oLF22brPfeYZVt5JhOax2hWOSYibibqP1vTEg4J
+         EBJg==
+X-Gm-Message-State: AOJu0YwRDUQHNipFmHBRN9rkIvfzhsp6q9ei5RE9b7FB90ph4ubxeRIU
+	ivyEnC/HVGKlV7CxyJtMSJNuRWsLLKnvVFyVLVMMZw==
+X-Google-Smtp-Source: AGHT+IGe+tP2mJU2qINFsQN9XAQoKcE+glB8AASGRH9LpqzP4vJSnSNzpjP8PcYaT0DrVCiGgSp9lQ==
+X-Received: by 2002:ad4:4441:0:b0:658:c75c:1946 with SMTP id l1-20020ad44441000000b00658c75c1946mr50346qvt.52.1699901598493;
+        Mon, 13 Nov 2023 10:53:18 -0800 (PST)
+Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
+        by smtp.gmail.com with ESMTPSA id dm2-20020ad44e22000000b0064f3b0d0143sm2233203qvb.142.2023.11.13.10.53.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 10:53:18 -0800 (PST)
+Message-ID: <a7ff8638-84b2-467f-89fa-63916a082d09@google.com>
+Date: Mon, 13 Nov 2023 13:53:17 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231102225837.1141915-1-sdf@google.com> <20231102225837.1141915-3-sdf@google.com>
- <c9bfe356-1942-4e49-b025-115faeec39dd@kernel.org> <CAKH8qBtiv8ArtbbMW9+c75y+NfkX-Tk-rcPuHBVdKDMmmFdtdA@mail.gmail.com>
- <2ed17b27-f211-4f58-95b5-5a71914264f3@kernel.org>
-Message-ID: <ZVJWuB4qtWfC-W_h@google.com>
-Subject: Re: [PATCH bpf-next v5 02/13] xsk: Add TX timestamp and TX checksum
- offload support
-From: Stanislav Fomichev <sdf@google.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
-	jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com, 
-	dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org, 
-	maciej.fijalkowski@intel.com, yoong.siang.song@intel.com, 
-	netdev@vger.kernel.org, xdp-hints@xdp-project.net
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: BPF memory model
+Content-Language: en-US
+To: paulmck@kernel.org
+Cc: Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
+ davemarchevsky@meta.com, Tejun Heo <tj@kernel.org>,
+ David Vernet <dvernet@meta.com>, Neel Natu <neelnatu@google.com>,
+ Jack Humphries <jhumphri@google.com>, bpf@vger.kernel.org, ast@kernel.org
+References: <CABk29NuQ4C-w_JA-zev796Nr_vx932qC4_OcdH=gMM6HZ_r4WQ@mail.gmail.com>
+ <33f06fa6-2f4d-4e50-a87e-0d6604d3c413@paulmck-laptop>
+ <5c3b16c8-63e6-4f80-8fa2-6bacb38cdcb6@google.com>
+ <e5c6b7f7-3776-4c2e-9896-fe44e735c1d1@paulmck-laptop>
+ <22da941e-384a-4f02-80c4-8b84c0073f8d@google.com>
+ <5b23c67b-8b15-4d54-8f38-c201a6842b20@paulmck-laptop>
+From: Barret Rhoden <brho@google.com>
+In-Reply-To: <5b23c67b-8b15-4d54-8f38-c201a6842b20@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 11/13, Jesper Dangaard Brouer wrote:
->=20
->=20
-> On 11/13/23 15:10, Stanislav Fomichev wrote:
-> > On Mon, Nov 13, 2023 at 5:16=E2=80=AFAM Jesper Dangaard Brouer <hawk@ke=
-rnel.org> wrote:
-> > >=20
-> > >=20
-> > > On 11/2/23 23:58, Stanislav Fomichev wrote:
-> > > > diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xd=
-p.h
-> > > > index 2ecf79282c26..b0ee7ad19b51 100644
-> > > > --- a/include/uapi/linux/if_xdp.h
-> > > > +++ b/include/uapi/linux/if_xdp.h
-> > > > @@ -106,6 +106,41 @@ struct xdp_options {
-> > > >    #define XSK_UNALIGNED_BUF_ADDR_MASK \
-> > > >        ((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
-> > > >=20
-> > > > +/* Request transmit timestamp. Upon completion, put it into tx_tim=
-estamp
-> > > > + * field of struct xsk_tx_metadata.
-> > > > + */
-> > > > +#define XDP_TXMD_FLAGS_TIMESTAMP             (1 << 0)
-> > > > +
-> > > > +/* Request transmit checksum offload. Checksum start position and =
-offset
-> > > > + * are communicated via csum_start and csum_offset fields of struc=
-t
-> > > > + * xsk_tx_metadata.
-> > > > + */
-> > > > +#define XDP_TXMD_FLAGS_CHECKSUM                      (1 << 1)
-> > > > +
-> > > > +/* AF_XDP offloads request. 'request' union member is consumed by =
-the driver
-> > > > + * when the packet is being transmitted. 'completion' union member=
- is
-> > > > + * filled by the driver when the transmit completion arrives.
-> > > > + */
-> > > > +struct xsk_tx_metadata {
-> > > > +     union {
-> > > > +             struct {
-> > > > +                     __u32 flags;
-> > > > +
-> > > > +                     /* XDP_TXMD_FLAGS_CHECKSUM */
-> > > > +
-> > > > +                     /* Offset from desc->addr where checksumming =
-should start. */
-> > > > +                     __u16 csum_start;
-> > > > +                     /* Offset from csum_start where checksum shou=
-ld be stored. */
-> > > > +                     __u16 csum_offset;
-> > > > +             } request;
-> > > > +
-> > > > +             struct {
-> > > > +                     /* XDP_TXMD_FLAGS_TIMESTAMP */
-> > > > +                     __u64 tx_timestamp;
-> > > > +             } completion;
-> > > > +     };
-> > > > +};
-> > >=20
-> > > This looks wrong to me. It looks like member @flags is not avail at
-> > > completion time.  At completion time, I assume we also want to know i=
-f
-> > > someone requested to get the timestamp for this packet (else we could
-> > > read garbage).
-> >=20
-> > I've moved the parts that are preserved across tx and tx completion
-> > into xsk_tx_metadata_compl.
-> > This is to address Magnus/Maciej feedback where userspace might race
-> > with the kernel.
-> > See: https://lore.kernel.org/bpf/ZNoJenzKXW5QSR3E@boxer/
-> >=20
->=20
-> Does this mean that every driver have to extend their TX-desc ring with
-> sizeof(struct xsk_tx_metadata_compl)?
-> Won't this affect the performance of this V5?
+On 10/16/23 12:48, Paul E. McKenney wrote:
+> Hopefully better late than never, here is a draft:
+> 
+> https://docs.google.com/document/d/1TaSEfWfLnRUi5KqkavUQyL2tThJXYWHS15qcbxIsFb0/edit?usp=sharing
+> 
+> Please do feel free to add relevant comments.
+> 
+> 							Thanx, Paul
 
-Yes, but it doesn't have to be a descriptor. Might be some internal
-driver completion queue (as in the case of mlx5). And definitely does
-affect performance :-( (see all the static branches to disable it)
-=20
->  $ pahole -C xsk_tx_metadata_compl
-> ./drivers/net/ethernet/stmicro/stmmac/stmmac.ko
->  struct xsk_tx_metadata_compl {
-> 	__u64 *              tx_timestamp;         /*     0     8 */
->=20
-> 	/* size: 8, cachelines: 1, members: 1 */
-> 	/* last cacheline: 8 bytes */
->  };
->=20
-> Guess, I must be misunderstanding, as I was expecting to see the @flags
-> member being preserved across, as I get the race there.
->
-> Looking at stmmac driver, it does look like this xsk_tx_metadata_compl
-> is part of the TX-ring for completion (tx_skbuff_dma) and the
-> tx_timestamp data is getting stored here.  How is userspace AF_XDP
-> application getting access to the tx_timestamp data?
-> I though this was suppose to get stored in metadata data area (umem)?
->
-> Also looking at the code, the kernel would not have a "crash" race on
-> the flags member (if we preserve in struct), because the code checks the
-> driver HW-TS config-state + TX-descriptor for the availability of a
-> HW-TS in the descriptor.
+thanks for putting this together, and great LPC talk today!
 
-xsk_tx_metadata_compl stores a pointer to the completion timestamp
-in the umem, so everything still arrives via the metadata area.
-
-We want to make sure the flags are not changing across tx and tx completion=
-.
-Instead of saving the flags, we just use that xsk_tx_metadata_compl to
-signal to the completion that "I know that I've requested the tx
-completion timestamp, please put it at this address in umem".
-
-I store the pointer instead of flags to avoid doing pointer math again
-at completion. But it's an implementation detail and somewhat abstracted
-from the drivers (besides the fact that it's probably has to fit in 8
-bytes).
-
-> > > Another thing (I've raised this before): It would be really practical=
- to
-> > > store an u64 opaque value at TX and then read it at Completion time.
-> > > One use-case is a forwarding application storing HW RX-time and
-> > > comparing this to TX completion time to deduce the time spend process=
-ing
-> > > the packet.
-> >=20
-> > This can be another member, right? But note that extending
-> > xsk_tx_metadata_compl might be a bit complicated because drivers have
-> > to carry this info somewhere. So we have to balance the amount of
-> > passed data between the tx and the completion.
->=20
-> I don't think my opaque value proposal is subject to same race problem.
-> I think this can be stores in metadata area and across tx and tx
-> completion, because any race on a flags change is the userspace
-> programmers problem, as it cannot cause any kernel crash (given kernel
-> have no need to read this).
-
-Thinking about it, I don't think this needs any special handing?
-You can request sizeof(struct xsk_tx_metadata) + sizeof(opaque data)
-as metadata. The kernel won't touch the 'opaque data' part. Or am I missing
-something?
+barret
 
