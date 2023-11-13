@@ -1,147 +1,262 @@
-Return-Path: <bpf+bounces-15012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D0B67EA571
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 22:24:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D1DE7EA62A
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 23:54:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB059280F2B
-	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 21:24:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D2DDB20A41
+	for <lists+bpf@lfdr.de>; Mon, 13 Nov 2023 22:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 281712D612;
-	Mon, 13 Nov 2023 21:24:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517662D62D;
+	Mon, 13 Nov 2023 22:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="DAB7J6Fh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="db3kv2uF"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1E2025115
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 21:24:05 +0000 (UTC)
-Received: from sonic315-27.consmr.mail.ne1.yahoo.com (sonic315-27.consmr.mail.ne1.yahoo.com [66.163.190.153])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFCDB8
-	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 13:24:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699910643; bh=Q+acr/be70t1qaqJl98sZAgblqxBJgZGNWufCtP0+54=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=DAB7J6Fh4T6a065J+Qt6rU6lpcVtqeaiYz/5Qaes4MXfm/ymM4AbtFUa/WxGVMl46jDt2X6lJlsbfszKCCuEqayuf3Mmpx009vDmUnMGY7E+NmRn/YjTeuKNiyb/c7Cgb15s7vUDYemTPUt0UtDHqPJ46GrL9GgKmW7Ck2k437B9UrZ18futhMhtBWLk5CaACpIwYxuDKd9rPyWxBp7Rm1IpUKg+oWg0U4RxW03iApNiRA5PEdvWuy38CLR1jGZq+O2RdPMvNY+4G9fZ+Avo3yF2itlfAXOW183jP7q80JuoFhfyBJIbgvTPN4m0ZUeB+9WXTt+hXn/mIhdZVU9C6w==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699910643; bh=lx6aW4wJ3MYFenIX2EelGXCn52W6fOSVGiJ6lkZ4Q9d=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=mzHoZXhbjRBqC1+F+UvMCfjWcs60WERfNONfwzMy2nlzsqeIZUwdDnkHnhp3ZSFskCkSO9u30j7XVbTaRUeiWnSUP1oBdQCHyT2dn+/Ohd2bBUPJmW3ECUWmmvvpZ06pK7np4WI3ImMZVoRxbD0ryPEhEujxU67thme8CSr2dKLBpYDnVzeYxHYm3tNeRPJ0RsZCUYAWg1+BkdzsC8I6RkPyolPsyeT4GBBkNxasBZXDI4Kbvz3tzOQf3SW8k+PuM3vQMZEwGRp7PYH5BiyOCNn4IEcaMPXm96uo3kfhwWmAlrTsZiE69BEK5bK6NgdhuYSgU55jlo6GFktE/UyJ3w==
-X-YMail-OSG: pXRkN8AVM1kSWfabgwrN8ScX7L6rK20C4w46QI4ah1W9ktBubQwALWKwBzvAOhG
- ZvmJzjrHrcn.JxyLjiICO7m.QloiotK9LAcVm1izKei1qx3Vr5fbJAxOt2RHEgOCqykND2NjAU5n
- mPUW.SyHi9Kpw5.Qx6pHn5cj0VrcDpLFbV0hnYYrRJqtskTbpE_0gKAJTK5B0RQNqWqQSIaEEeL2
- KDawA26rFtTDb5k3G0LLxHnHMH9mgKsPfHu7OwzSwwYT8SBNbbjZ_dqlNRWcsnWyH7sFZMBrRFQy
- AHcN1O3KUbzQbKETHFaYKg8QhORSdkSMthyW2Y.Pyu5mgSSnySUdlHroUW_LtD6ZxEXI6Uuctpii
- hsIS.PXOAbLWP2OiQyjgQPAko1tJBsqr1cr9ZE3SLWAxue_zbIX0X0l6rRsYba_Go4jf9kr8gW0b
- OU462eXwfSjf..vj4Wwh_g7NcTsfrYGnfaiv7BFG4wAjKDVEC9jKJOddtBdDj_CPMLSZ3BgSgr9D
- BPmg812odWF4HF6yLs62ZOEb0jpivsyEOHwB3tnEYI6tBCRR8nyO20Qpa.WgeWvc4WOop0yDk.Rs
- 3RnE5VCW0wsWJWiUHS.QFEkYl6oAeyt4ZlQWdVFntF9H9qmhZobhdNH07hO1jygw0cvwPg0a5kxW
- ZouLOlhHScZ4kXS3OeBauIiIpninaYNeZn4eqnyZwvTwUxO4ZQGnOjp465njJa5Ln3KF1IvECnqn
- QQRHALdlO8Q6YuSPqKnOHZ3jXVX07dwOyehFVSzVyeyzEQ4MezMp7XXgvmYgOt8vxkIru7oRCu9R
- crqbZkGduB2pNRZAI_FUOX5js1_JJOFxHbGCIlLz5dPzbzR9ZQ7hF9QE1T4yDhHmCdMjFmUkZrHA
- w_hwMDHZWQBLF805DWOR2ugB2n6nNFs5eKVXYc6CrmtyOqHbWbpNOVqvC.e5lalTK3N4ld049s0l
- XY7lu03laj237Y5.wOnIf1Au23eEEXhbP_KVhfKU1ehkJDDNi5d8FjLt6R.qPWUDesIjeR5W1g9X
- V4iShA1h5WjNLY9QjQa9A3u7aqyE4g80qSmSw3BVN711YyBxXL8hS3BrV3ZfxjH0dIuCN0Gc43or
- UGFE1g1hUXSd65dm4ul7I2BRPsCdjM0hXIGgllN8eQaYCT3.5roHsRRolYVx_0TO_qG9rG.2sOmh
- .bfw.7HvXaDNCd.94eQ7RGcB5tOhWPqx.8ymuSU9Cm_etSSo97kmBDRAIJyAEj8DB5SIQAWSuFiM
- EZfEPR4E6TmoCSxXNBCWAIAQbhc3AA9sLO6_5yCAapSsnfn70Fz2Pc0ngnY4EucS6qycVzMPArgc
- NU64_Bjd8B3n0RbTn5tyRavB53oT5F2vs_c6KaxaAgPky9__Ip5kW4q6.tILomfroo7I_bYhKH35
- PIrqq6pgtfapa1eR.UdXfnWdnvdT1pUZw3KgebsmVz7FICQ7tUf_wU2Z5r.Hx0Z.EpBrzYekeBzV
- SBiVFTQXGMAVAQ7m6sU7YzbHVywLrI7U4diEjKSip2UEuoWLLE8FgXRguoaANywtWYbr8K1GUjul
- mFLi.vNGwEQQ1ro6tkfeM2zsN3cM862iWI640wfuUIwdPyPrwdC5ZgpQv_mBdf3PHTy9yW5CtzmG
- 8qJGdnRj4hU2FaJjQNcX5z7dzvp7Vxh09PqQ3aFoL8lqy9oiZxMUNbqyYmeKLFgUOEl7LlAUTTGz
- A53qCM.uTdEEaj9S6Bq.5X1iDqgfcJxRr1asy84U7oJkMBgdsQU9EKHVCeWZMKBwoQLjgh5_Zd99
- Dnz7P0Y37xIENocn1E_Nv1wnqQro3ByFL9BrqrHvPWex_UjfkjHZ1xg7Z9Pe4qjTenOywxxiJKga
- 3gtW9kHZ4VbPIaKx9Tg11jCHXewx5c1oRgXrC0LjUjnXiP8jkkx9MfntEf0jdB.hteLWtWlUNarv
- j2Kqe5x4WWylMgLIeZ052ryaxoXyEPAOjWST9KFHB0zR4uPv.yRgUTi_nv8k2dKHHGMg7cwfMz_Y
- sCapLN6DxPXImF7vUNQIkDpMf6NL4yrvmML8tTt.f8ROgtipZOE1jQJQWnToFlBViRWisCN_v7rC
- Rfw_Xhp4oz19HJkpK5k5KeBcIJBZK8w_vKXgGurhsT0idOPKd4jGS3Y6sOVFR2Q0bBrvrT6j93f0
- 1mO30K76oMC1gXX..gSoDz0h1_Xd0XBwqXjFlotkuprgUQtvKOOEfnpE6NKOZ8YGLDRhSPFkLY1z
- tTHYP1ZVMZ5XYNWliqQc7iLGyUeNrU6Dup2ul2TEoVDExNJkFdMbMq0B9ydUcUh1CHpSAdv5Bk9Y
- 0CSG4dbxQ7g--
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 11c2019e-6fcc-4a2e-8d0b-00606d5bd6c7
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Mon, 13 Nov 2023 21:24:03 +0000
-Received: by hermes--production-bf1-5b945b6d47-ksq7q (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 0973dd5b3d849ec6c74308b376602aaf;
-          Mon, 13 Nov 2023 21:23:57 +0000 (UTC)
-Message-ID: <88021458-2620-4e18-b5f3-11c6e380b38c@schaufler-ca.com>
-Date: Mon, 13 Nov 2023 13:23:53 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA7A249FA
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 22:54:07 +0000 (UTC)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0350BD50;
+	Mon, 13 Nov 2023 14:54:06 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50a71aac023so4847635e87.3;
+        Mon, 13 Nov 2023 14:54:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699916044; x=1700520844; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WPzazopAtUp+EgOFQKTlhOdPvNnxkyd2UByDdcWqmgk=;
+        b=db3kv2uFTFkzyATcKk9t7wWTDaCUnGluMbtrbFxRtQeU0/XgC4XRBlpcrKWIhB+UKU
+         fcNNdPUFwLSfbscvBHIqycmy6UruxCA6dy7GentlaibcLTpIHlw5DsT4SPVA4Xvxc6H6
+         i+AQ58h9RFDLVNhfhD0LDerhTyuzEzcpX/E2Vp2d8IKg+bpsHyA6S8VDj1iYsowGXnG9
+         I0fts0BwNrYneeyk2A/mzgANhveNH7GzeDSMv7QOfxqsriAdvBmgseV83Yy0VU52xhmt
+         epB2OfF3qy2bX5e1Oux4HQOwb8xzigu0m6TWqrsVNtyxWmXnPQHk2Cu1xZ15IMJ9mCv3
+         VMbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699916044; x=1700520844;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WPzazopAtUp+EgOFQKTlhOdPvNnxkyd2UByDdcWqmgk=;
+        b=sn5EZqlZ3iqFGr9XLiSR7FNVKVFC91tTP/KyYQNuPzrcPo0NPZdcIB3Ccn4im9mXqq
+         h3wkivTqwZcVptbc9l1BuFSy7Wqa+CumZxl1NTTdud+yXMGxb108IpOfXxwceknxTWVY
+         G0KhndlrE02lljGyh8/47yY2cXIkLLIqti11zsvCDQa5ioVqAeuS/PNAYlgzyKFA1+cC
+         KOpkLWE3H80npV3id4nZZY1TzxsMPUSJ+W1xYEeWD5zEcxsupQjllUc4d00dMa2CHvW8
+         7eKQBimZaJtr85w34Urmkyj+qxsjVOHeauGgjwG0KMWe+Tx9pW551wHbOXwxFPN4D+Wq
+         DCEQ==
+X-Gm-Message-State: AOJu0YxrH3Fd2ow/TXTHlrYrmfJtRjbN+MmTL+HfvJ67lmpB/+iLI0c0
+	dfd18Ip8qg2ERDzsEoX2z+L60Q8RCCKyNX2xsyxqprFVyIQZH621
+X-Google-Smtp-Source: AGHT+IE2bTUx0LhkZZJH+vP5uJOdSWaGyU3nUDdSamSvabzCzRXojWIN5VyaTGMJJLe06hGlnsX8P69m2vKy+T4pCYk=
+X-Received: by 2002:a05:6512:32b3:b0:509:cc4:f23a with SMTP id
+ q19-20020a05651232b300b005090cc4f23amr4786433lfe.64.1699916043876; Mon, 13
+ Nov 2023 14:54:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH -mm 0/4] mm, security, bpf: Fine-grained control over
- memory policy adjustments with lsm bpf
-Content-Language: en-US
-To: Ondrej Mosnacek <omosnace@redhat.com>, Yafang Shao <laoar.shao@gmail.com>
-Cc: akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
- serge@hallyn.com, linux-mm@kvack.org, linux-security-module@vger.kernel.org,
- bpf@vger.kernel.org, ligang.bdlg@bytedance.com, mhocko@suse.com,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20231112073424.4216-1-laoar.shao@gmail.com>
- <188dc90e-864f-4681-88a5-87401c655878@schaufler-ca.com>
- <CALOAHbD+_0tHcm72Q6TM=EXDoZFrVWAsi4AC8_xGqK3wGkEy3g@mail.gmail.com>
- <CAFqZXNsd5QCPQmOprf_iCCDNj8JKLjZWu3yA2=HtCYE+78F75A@mail.gmail.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <CAFqZXNsd5QCPQmOprf_iCCDNj8JKLjZWu3yA2=HtCYE+78F75A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <20230917000045.56377-1-puranjay12@gmail.com> <20230917000045.56377-2-puranjay12@gmail.com>
+ <ZUPVbrMSNNwPw_B-@FVFF77S0Q05N.cambridge.arm.com> <CANk7y0g8SOrSAY2jqZ22v6Duu9yhHY-d39g5gJ2vA2j2Y-v53Q@mail.gmail.com>
+ <ZUtjyxBheN-dbj84@FVFF77S0Q05N>
+In-Reply-To: <ZUtjyxBheN-dbj84@FVFF77S0Q05N>
+From: Puranjay Mohan <puranjay12@gmail.com>
+Date: Mon, 13 Nov 2023 23:53:52 +0100
+Message-ID: <CANk7y0hvEu3WkYEJ5oRqRHwKGfDnM+fO0=vDen5=zO8-rCvr9Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/13/2023 12:50 AM, Ondrej Mosnacek wrote:
-> On Mon, Nov 13, 2023 at 4:17 AM Yafang Shao <laoar.shao@gmail.com> wrote:
->> On Mon, Nov 13, 2023 at 12:45 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
->>> On 11/11/2023 11:34 PM, Yafang Shao wrote:
->>>> Background
->>>> ==========
->>>>
->>>> In our containerized environment, we've identified unexpected OOM events
->>>> where the OOM-killer terminates tasks despite having ample free memory.
->>>> This anomaly is traced back to tasks within a container using mbind(2) to
->>>> bind memory to a specific NUMA node. When the allocated memory on this node
->>>> is exhausted, the OOM-killer, prioritizing tasks based on oom_score,
->>>> indiscriminately kills tasks. This becomes more critical with guaranteed
->>>> tasks (oom_score_adj: -998) aggravating the issue.
->>> Is there some reason why you can't fix the callers of mbind(2)?
->>> This looks like an user space configuration error rather than a
->>> system security issue.
->> It appears my initial description may have caused confusion. In this
->> scenario, the caller is an unprivileged user lacking any capabilities.
->> While a privileged user, such as root, experiencing this issue might
->> indicate a user space configuration error, the concerning aspect is
->> the potential for an unprivileged user to disrupt the system easily.
->> If this is perceived as a misconfiguration, the question arises: What
->> is the correct configuration to prevent an unprivileged user from
->> utilizing mbind(2)?"
->>
->>>> The selected victim might not have allocated memory on the same NUMA node,
->>>> rendering the killing ineffective. This patch aims to address this by
->>>> disabling MPOL_BIND in container environments.
->>>>
->>>> In the container environment, our aim is to consolidate memory resource
->>>> control under the management of kubelet. If users express a preference for
->>>> binding their memory to a specific NUMA node, we encourage the adoption of
->>>> a standardized approach. Specifically, we recommend configuring this memory
->>>> policy through kubelet using cpuset.mems in the cpuset controller, rather
->>>> than individual users setting it autonomously. This centralized approach
->>>> ensures that NUMA nodes are globally managed through kubelet, promoting
->>>> consistency and facilitating streamlined administration of memory resources
->>>> across the entire containerized environment.
->>> Changing system behavior for a single use case doesn't seem prudent.
->>> You're introducing a bunch of kernel code to avoid fixing a broken
->>> user space configuration.
->> Currently, there is no mechanism in place to proactively prevent an
->> unprivileged user from utilizing mbind(2). The approach adopted is to
->> monitor mbind(2) through a BPF program and trigger an alert if its
->> usage is detected. However, beyond this monitoring, the only recourse
->> is to verbally communicate with the user, advising against the use of
->> mbind(2). As a result, users will question why mbind(2) isn't outright
->> prohibited in the first place.
-> Is there a reason why you can't use syscall filtering via seccomp(2)?
-> AFAIK, all the mainstream container tooling already has support for
-> specifying seccomp filters for containers.
+Hi Mark,
 
-That looks like a practical solution from here.
+On Wed, Nov 8, 2023 at 11:32=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
+ wrote:
+>
+> On Mon, Nov 06, 2023 at 10:04:09AM +0100, Puranjay Mohan wrote:
+> > Hi Mark,
+> >
+> > On Thu, Nov 2, 2023 at 5:59=E2=80=AFPM Mark Rutland <mark.rutland@arm.c=
+om> wrote:
+> > >
+> > > On Sun, Sep 17, 2023 at 12:00:45AM +0000, Puranjay Mohan wrote:
+> > > > Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be use=
+d
+> > > > by bpf_throw() to unwind till the program marked as exception bound=
+ary and
+> > > > run the callback with the stack of the main program.
+> > > >
+> > > > The prologue generation code has been modified to make the callback
+> > > > program use the stack of the program marked as exception boundary w=
+here
+> > > > callee-saved registers are already pushed.
+> > > >
+> > > > As the bpf_throw function never returns, if it clobbers any callee-=
+saved
+> > > > registers, they would remain clobbered. So, the prologue of the
+> > > > exception-boundary program is modified to push R23 and R24 as well,
+> > > > which the callback will then recover in its epilogue.
+> > > >
+> > > > The Procedure Call Standard for the Arm 64-bit Architecture[1] stat=
+es
+> > > > that registers r19 to r28 should be saved by the callee. BPF progra=
+ms on
+> > > > ARM64 already save all callee-saved registers except r23 and r24. T=
+his
+> > > > patch adds an instruction in prologue of the  program to save these
+> > > > two registers and another instruction in the epilogue to recover th=
+em.
+> > > >
+> > > > These extra instructions are only added if bpf_throw() used. Otherw=
+ise
+> > > > the emitted prologue/epilogue remains unchanged.
+> > > >
+> > > > [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs6=
+4.rst
+> > > >
+> > > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > > > ---
+> > >
+> > > [...]
+> > >
+> > > > +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, =
+u64 sp, u64 bp), void *cookie)
+> > > > +{
+> > > > +     struct stack_info stacks[] =3D {
+> > > > +             stackinfo_get_task(current),
+> > > > +     };
+> > >
+> > > Can bpf_throw() only be used by BPF programs that run in task context=
+, or is it
+> > > possible e.g. for those to run within an IRQ handler (or otherwise on=
+ the IRQ
+> > > stack)?
+> >
+> > I will get back on this with more information.
+> >
+> > >
+> > > > +
+> > > > +     struct unwind_state state =3D {
+> > > > +             .stacks =3D stacks,
+> > > > +             .nr_stacks =3D ARRAY_SIZE(stacks),
+> > > > +     };
+> > > > +     unwind_init_common(&state, current);
+> > > > +     state.fp =3D (unsigned long)__builtin_frame_address(1);
+> > > > +     state.pc =3D (unsigned long)__builtin_return_address(0);
+> > > > +
+> > > > +     if (unwind_next_frame_record(&state))
+> > > > +             return;
+> > > > +     while (1) {
+> > > > +             /* We only use the fp in the exception callback. Pass=
+ 0 for sp as it's unavailable*/
+> > > > +             if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.=
+fp))
+> > > > +                     break;
+> > > > +             if (unwind_next_frame_record(&state))
+> > > > +                     break;
+> > > > +     }
+> > > > +}
+> > >
+> > > IIUC you're not using arch_stack_walk() because you need the FP in ad=
+dition to
+> > > the PC.
+> >
+> > Yes,
+> >
+> > > Is there any other reason you need to open-code this?
+> >
+> > No,
+> >
+> > >
+> > > If not, I'd rather rework the common unwinder so that it's possible t=
+o get at
+> > > the FP. I had patches for that a while back:
+> > >
+> > >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/=
+?h=3Darm64/stacktrace/metadata
+> > >
+> > > ... and I'm happy to rebase that and pull out the minimum necessary t=
+o make
+> > > that possible.
+> >
+> > It would be great if you can rebase and push the code, I can rebase thi=
+s on
+> > your work and not open code this implementation.
+>
+> I've rebased the core of that atop v6.6, and pushed that out to my
+> arm64/stacktrace/kunwind branch:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=
+=3Darm64/stacktrace/kunwind
+>
+> Once v6.7-rc1 is out, I'll rebase that and post it out (possibly with som=
+e of
+> the other patches atop).
+>
+> With that I think you can implement arch_bpf_stack_walk() in stacktrace.c=
+ using
+> kunwind_stack_walk() in a similar way to how arch_stack_walk() is impleme=
+nted
+> in that branch.
+>
+> If BPF only needs a single consume_fn, that can probably be even simpler =
+as you
+> won't need a struct to hold the consume_fn and cookie value.
 
+Thanks for the help.
+I am planning to do something like the following:
+let me know if this can be done in a better way:
+
++struct bpf_unwind_consume_entry_data {
++       bool (*consume_entry)(void *cookie, u64 ip, u64 sp, u64 fp);
++       void *cookie;
++};
++
++static bool
++arch_bpf_unwind_consume_entry (const struct kunwind_state *state, void *co=
+okie)
++{
++       struct bpf_unwind_consume_entry_data *data =3D cookie;
++       return data->consume_entry(data->cookie, state->common.pc, 0,
+state->common.fp);
++}
++
++noinline noinstr void arch_bpf_stack_walk(bool (*consume_entry)(void
+*cookie, u64 ip, u64 sp,
++                                         u64 fp), void *cookie)
++{
++       struct bpf_unwind_consume_entry_data data =3D {
++               .consume_entry =3D consume_entry,
++               .cookie =3D cookie,
++       };
+
+I need to get the task and regs here so it can work from all contexts.
+How can I do it?
+
++
++       kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, task, regs=
+);
++}
+
+
+>
+> Mark.
+
+
+
+Thanks,
+Puranjay
 
