@@ -1,139 +1,253 @@
-Return-Path: <bpf+bounces-15064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9E5E7EB52C
-	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 17:58:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3762D7EB549
+	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 18:04:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B1552812A7
-	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 16:58:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10B451C20B29
+	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 17:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C886B405EB;
-	Tue, 14 Nov 2023 16:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05AE041237;
+	Tue, 14 Nov 2023 17:04:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="YBOIB2uk"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EoAizpae"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764323FE2A
-	for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 16:58:13 +0000 (UTC)
-Received: from sonic304-27.consmr.mail.ne1.yahoo.com (sonic304-27.consmr.mail.ne1.yahoo.com [66.163.191.153])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC73B8
-	for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 08:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699981089; bh=GDJ5Xw7eIW1h0CD8YYo/VIQzHj9A7Sut1sTIsbNgDJg=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=YBOIB2uk5eL4H/cXdU1Ed1Av/uS4/n+nGMTWkl0H1dZ5twvaeorIlj1XvbuF3hF+IQRHlagX3fu7EjOW4CZJ9kc/X0aYOiEZSxH9I+WIBCxdIQw0u808qrShwl6uP0iKjmF/UwXpr1v7wQ93kKD6HvL9eogDGGvB/b2H82ejVeCUelNbBVe+dKAjM6KssWHfrf4+qfwiA2YntmncAbLzZ4ybP9xlUnVaotfKzsYD1KoTGwJ2/UgF9BuXluFGIZf10Ol75rBGucx85IHY1VZBPKJrYFylMLx2gYItY409KpE9CoqK8Jw/aoZ8TPfSRKMHV7Op/eyeJ1YwNvJO4bZpig==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1699981089; bh=8+nhCVC05YUDF7rvCX/1OY4jhw2+sh3dfE4loYTHX/P=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=uhoQW1IiD3qZ0AeFmWp7dE5BayZjgg06hYWqb177ooGVzhXUvQ0qG/JHdzY35Gxsf2wutWS586Rvevwguc/GgXRBXGVuEvpBA86atkh/qBOYbYW/Iax+emS7JN9Q3iRooih1emH1WNOzQqzhKrj0oVpcn+VF9ekWw4tMzFPEeC6z2gQZHbIsl/1ouaSuapub44PMlWZSAhdD7kX9/5L2spt62R5+2ZxJEkWTgC43iXLFB7zspJVyGlA4s5iMaXBVdCJtmTQJIzhz/MNwd+P/+ARpI+JXS5EMtGs7Ip3jS/YHNnwGBp7Q7runb+Nm9fle0PdAUXYcABTOU1j6QMx/mw==
-X-YMail-OSG: kYyPSW4VM1nDp.GJeuaZ1G562mmiLDMvjVXl3.mqV9_G9bhgiP0c7Tntc60ok15
- Zu_NgVxrvqRAlafKLN45t4DquFrdH7_ZjNF0whpospzd5UcGp7vSETWYKqDgzYs7jscV004WATNE
- UV3xh1IjrIx.LgLwP1eiMSbF6p3S0dNxmNyVCB4iMVDdg3GZLAiHMBGZ5_T_KK3va.7bPO1x_o.t
- xHPicRIeC58DCMMzOBDZ88Hl6qJQcUfk04noOTfqX45QKjbFE.Dc4FiZOI2edKYqjZqM83vCgQaT
- .IyT31W9YpsQjZW0pFVr1RCkZMKPByZ02Zha4g..hX_hWhqYa9fU4q6SOl1Hvd1C181HgYpmA8PP
- 13MEEoUVNMA.mrC3OoeG8ypMRFHtywSuOwlCwythFFeXwaB6qwAcTfDoHjjPTrfQg5S96zTQ_usL
- e1jRPJRMZx_JCMqQNM4SvxVwh_8z51zdXRV.crNPu47_ud.y1IzeLtDq3mLkfY1EiBKrTuRMH9ei
- UFLjuPNUmh8lrkSObv5viitp3g9Q9mOo1tPYN6f5tXHeU7s0kniRKoM8_Z3by1IfGVdBiSyBCI44
- 6M6yVSa44oYF8AfK8h9ri3TZI2CcEEP4lcLjWuU7pY225ZoUZYak7Zz7E8jf0M.1vm8i_3QGnOwI
- oljTcCKmqUKF3i.DA3gtMhvIA521YkWVmwWGwfAvAmePGS6p7X12gFPNiDbRtYOdk3.x6UAIMhcH
- nx8Gm2OaGn_8QUWL143grXqqfcc0ncMJdfvY5r2tPjhN7snNo4ii5FXeec8EAqZXPdbXBI_lGaQe
- XNMzr4LOQB4QVNvCZlu7WnLPudBkLnZ7AvFI2n4KA0cKtmnC0zmQFrk3nfMJh7JESTMH8kYlW2nG
- .fYFG.yVLLC99iYcMBQqoMv7rgC8etkye4xYznBcKUT0_eGvf5wPzNcbLZTaZL3EPnjupiSz6QUy
- 9h23Hzi2j.ENQnW3ksDSCBRB0._WX7iKR3ZhGEh2QTrqj8OlDzoWR4VWdJwaM5r30KPldap.RpfL
- Luhkh8ILdEFEkQJHAq403LaFG7vdmDiLJg7Gi_8gZJUA6TFgw2t7ORuOSBPF6gtxW1OXjhryefBy
- 40OlpYX.7eNLxXOELzlVXJ5OmGyaJn1VYYTP7SHlVSQripnJpjTTm_jgV80cA4w90lbHEdj71E2c
- 7Uxw8nGj1SVBACSmpViSZmWbC76lbEkqm83WpJ5pblpt0.xQQeZeZsW7UOmoCyh6qr_6fLDwPu53
- nj2RHKA_9dEADAsGn3JmIB3iF0.3F6TrYNCb4Scvvgd4ipa.Y.__HbLXH9veo15XJTMhz2v7DMc2
- cXsC.F7r1ek9qLVFH37tkG64j9qLJ86nMcMynEqLmbFAXPaW_UDpYYYYPJnEF0cyjgeyIBvCOKhp
- O4SDVKEPIthkf_kaSG4WtMlmSrvwausloEsmA1.ZLqOnAGy1FQXtk2k8bBTZsXWjkez10lntvhrY
- CZXwm_n7GZxKKfHMa0sFaDc59f4GLTAN2pp4hWJbYXdO_oxFZb0QXwyp1Pgo58WKkIjNcrTuhpGm
- _qLqSMlHkxaOxpHKz2cX50HThZzRhrjOkxb8e0HCL06_auNVu_Plcnc1KhvsnPNWiZ7hSIb6ULRM
- FTBzra2Z9D7Fafhw9NGKrQoWrfatlN2WoWzFv6vULSUy.vU7r1js2xR5xSMmWtJSwRbeHFx2hvie
- Jlgk3bDP4ZqHn.3RML_7mKgE_cUEfg_AUacHOeNp7Kr8d.rZoS.qrQ4ndHJSPnz3HFBpZcRewgi4
- YCUDxkbDSrVUlRR6H0I_QRm8flybJM2AM1G_2X383SEWCvGqOxH6S.Vy5dNTiAIKyPhT9Tcu.t2n
- uZDoRDzP230TM5.ZEjSiwA3g9YR8nlIn24N1xJTSnqiRKSLGONkLsyI7LOvGvPPS2kyP9VZO3s60
- Fi9LgvZXavwsvk6jNXVIFqmht6W62MDr3WO8EtPhuDh_d9I38ShvGpccntHSuJ83tj9CMA2fHxAh
- EIUsH6zE5bwgAQX3Tp6Nahthk5vM3A6gnzxp9V8dNirsQD6h1F5z0iw4wOcohKmPcdYUZ3Yryb2c
- xMtp2hZQRgKHXIR3kzAUbQH.RgOk1KaHWHXNODXvTGxZ.s3SNqzvFRaa933QvsH7kHiDrrRf_717
- Pl81Hu3Mbv8XauOwuiHAh3S9F2CigODrFXpR1ywR3uU4PAGSF4WbocZil1cdi6Iy532WGXjkV7VG
- iIsXtFZOfsvEMZQz6ok4C6I_7h3DRNqkp
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 4370bd34-8856-4583-8150-ab0931e637b0
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.ne1.yahoo.com with HTTP; Tue, 14 Nov 2023 16:58:09 +0000
-Received: by hermes--production-bf1-5b945b6d47-h4jfj (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 7ee03597e617be2bba3f59ab1d14b26f;
-          Tue, 14 Nov 2023 16:58:07 +0000 (UTC)
-Message-ID: <b13050b3-54f8-431a-abcf-1323a9791199@schaufler-ca.com>
-Date: Tue, 14 Nov 2023 08:57:58 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E7441741;
+	Tue, 14 Nov 2023 17:03:57 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B9FB8;
+	Tue, 14 Nov 2023 09:03:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699981437; x=1731517437;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=0OrbkmIQ22EiN1pknDxjQ/dT9e5FPvFosOpZ7pBQ3yI=;
+  b=EoAizpaeLnGPmIz1W+mDfPcTsA+t2Etl/LBw0FX333A2bvtFXJfuIF4J
+   0fOsFyou/CTMt0QJp7+JrcPbBB8VBdiT5AI41pXYcYRoKytztHbrW5DWS
+   P3STUx4TCxhjle2RGPPAEQI+hX+dj24gBLv4abFI+6jdu2twyn1yh+3V0
+   RPVwqQRrvx/ebjzWgkAdd9SWjOW9KCBXFVZEeYZJ1mwYVzGdp0/WVUbjz
+   rC1V3u9x+FtzDIIzEAsLk5V2l8oqjZAh74SEYhUbZBK+ZSGWNQZzt7lUe
+   CWVABOJTj8A3iVzkdjVcMBRdYD/tQHcZD/4mz7XejJ2tVtLy0KlcOCr0D
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="9334564"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="9334564"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 09:03:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="758227274"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="758227274"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Nov 2023 09:03:39 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 14 Nov 2023 09:03:38 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Tue, 14 Nov 2023 09:03:38 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 14 Nov 2023 09:03:37 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LflI2+wvhoPPqyBtSN4k1mppkchJ8rpqE3zAXhafPAFAqvluaMyYKcyCjZhfOPbEZ4GFA9IPfksSPTTa86BAQhG3S/gVcACNHv/J9UDHFoCD/edj3laRmFSoL/O1PhZ71XjxJ2+9FJJht4sNb1HxMcaCUQKcKPo33HXxJ8mquwsT6yaDSfkZpA7RklueqXm2Pr/K0KnOmrE4AqfPYVrN9VR/NHD3a9YVhlPR4OuxoQVQvsyCK1XrHry64/d6VZzuVESMBJSuPfZOnFg8EQArI5sBiN6DmFsHgY7GqFuSwk6fb1+kh/2xzg90/aA7zAosZGgANwgjY0pA/XgBZ9kNWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=krPtTpx6trRGKYy3XpgS+QsYEqHCBtVfoMyVt8SVL7k=;
+ b=iRvi4q9y26GTn8CnlsjNHNgbX2zd+V3CpUiJoPHzn0daddTJ+19j87187NIbJFPkqTYl15fQPZkzzZoCCiPrlqWbQXyk8aR13McsqiZQRRn+QAeCiTo91yC+ldVHYtt6HWmfahIUaa5sUPEe3ejGJe2SjVVpXJS8Og2gb6oZptR65LMOkHYSKJrm3rndqMzJ3MVM6b/rlbfYRO4c42uKgzP9WYHorkopjWWvWeOMYVf0MjgmaKOo7LvQ7XDf4W/H4VTO6ktTPCWwHP7NS+4gHhpzB2/Kkf1vOmfO21LKwcTUmhCebtm8pTDD8jVeVryRTVS9MpQKE1MnrZNGlHqlgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
+ IA1PR11MB6075.namprd11.prod.outlook.com (2603:10b6:208:3d5::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6977.29; Tue, 14 Nov 2023 17:03:34 +0000
+Received: from DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::ee54:9452:634e:8c53]) by DM4PR11MB6117.namprd11.prod.outlook.com
+ ([fe80::ee54:9452:634e:8c53%7]) with mapi id 15.20.6977.029; Tue, 14 Nov 2023
+ 17:03:34 +0000
+Date: Tue, 14 Nov 2023 18:03:23 +0100
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: "Vyavahare, Tushar" <tushar.vyavahare@intel.com>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, "bjorn@kernel.org" <bjorn@kernel.org>, "Karlsson,
+ Magnus" <magnus.karlsson@intel.com>, "jonathan.lemon@gmail.com"
+	<jonathan.lemon@gmail.com>, "davem@davemloft.net" <davem@davemloft.net>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"ast@kernel.org" <ast@kernel.org>, "daniel@iogearbox.net"
+	<daniel@iogearbox.net>, "Sarkar, Tirthendu" <tirthendu.sarkar@intel.com>
+Subject: Re: [PATCH bpf-next] selftests/xsk: fix for SEND_RECEIVE_UNALIGNED
+ test.
+Message-ID: <ZVOoWyTMLMPxyExo@boxer>
+References: <20231103142936.393654-1-tushar.vyavahare@intel.com>
+ <ZUubk1lZ6WDDV2k+@boxer>
+ <IA1PR11MB65141693FD1808D40560A4FC8FB3A@IA1PR11MB6514.namprd11.prod.outlook.com>
+ <ZVIGjshhLOeuMXQN@boxer>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZVIGjshhLOeuMXQN@boxer>
+X-ClientProxiedBy: FR3P281CA0198.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a5::20) To DM4PR11MB6117.namprd11.prod.outlook.com
+ (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH -mm 0/4] mm, security, bpf: Fine-grained control over
- memory policy adjustments with lsm bpf
-Content-Language: en-US
-To: Yafang Shao <laoar.shao@gmail.com>, Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
- serge@hallyn.com, linux-mm@kvack.org, linux-security-module@vger.kernel.org,
- bpf@vger.kernel.org, ligang.bdlg@bytedance.com,
- Casey Schaufler <casey@schaufler-ca.com>
-References: <20231112073424.4216-1-laoar.shao@gmail.com>
- <188dc90e-864f-4681-88a5-87401c655878@schaufler-ca.com>
- <CALOAHbD+_0tHcm72Q6TM=EXDoZFrVWAsi4AC8_xGqK3wGkEy3g@mail.gmail.com>
- <ZVNIprbQU3NqwPi_@tiehlicka>
- <CALOAHbDi_8ERHdtPB6sJdv=qewoAfGkheCfriW+QLoN0rLUQAw@mail.gmail.com>
-From: Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <CALOAHbDi_8ERHdtPB6sJdv=qewoAfGkheCfriW+QLoN0rLUQAw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Mailer: WebService/1.1.21896 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|IA1PR11MB6075:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6e6885ab-77a6-4086-fb33-08dbe533a315
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LP0+PGXiJgNih2To0TgzGV3Yc9YZhfiAK4kIpEKjDNYjLCz4To0+LkNsrg0ss/zCSUQoxfzFWzO1U6V1W+MAl/6baZomIgDQnPtDt6jDlAyUmUVsKr2XmoedjR+ydlg5Ui/NZCxwAKuyYtaa9QT+I1GFYttDIXEbAQlrVPrUWb2aDFcadFUf0884r7TiuU+2zrAonn1z0YOvGF1Lg98UCpN4Ym+nf6PXpVr8d4xkb6PAEMACgaQBpIlYTnCVsuZdLPB5y1b+KTB6VMIZDPX9ZBHe3c2r+tKo8P/OnDo6eT39MKJGnARUf1jFEGuNcL1dJ3hJCsBKo8JeCM0fZiqEkUlG9F/HUOpJHaSJ9CD5MNz6IoQs9JH+0DAxizypiJJavF1eGjohbY8X39kpuqvVUpC49bwaAmBKZaQvr/5rlqr+B2/AMjPlXwS0b3JBG3VI792vwdTAqTiuBEWFNK2VNe69WEl7zWf5PQB4rQfThvvFO+0C/vITpvydXAC95C8R9WoD73tkrHXFX0mkmXgDkE3yTo9lT8lffLTiR1+x6q6QNCvozlAUW2kVF79os6di
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(396003)(376002)(366004)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(54906003)(66556008)(9686003)(66476007)(6636002)(6512007)(66946007)(316002)(83380400001)(38100700002)(82960400001)(6862004)(8676002)(8936002)(4326008)(6486002)(478600001)(6666004)(6506007)(53546011)(44832011)(86362001)(5660300002)(107886003)(2906002)(33716001)(26005)(41300700001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ar9peinywuxHq8CfhzkmK34e6E49CCSDkoNn020OIEMqRqxP4vpmlgBdmXLv?=
+ =?us-ascii?Q?8PUZGx+Xi5TqE0sP/khk2mNfe5JlRELLIV2T2yO2FOReX5BLn9NT80FsAcNO?=
+ =?us-ascii?Q?SKaA2KgReX5bO3VLtxKEcH53YQaxldvQlIQmYCrkCoG26YNMe3oOUr69wrNa?=
+ =?us-ascii?Q?phjH7KSBTorXZZIswHZZwFz5FaNeX8b42hAh4XbtDKDeDGgsCD+NRgRFc2Hv?=
+ =?us-ascii?Q?FJLkyaNbV7xtUtRdHgbN1Cdh48BQDcQ8fweoLjWlbcN3us8RCObY61/vc89e?=
+ =?us-ascii?Q?Z3ADNtHp0ULmibTvZtl3pEjun9AIyfFfDIx5P+09MuN0DwmhMimp/WbuKktn?=
+ =?us-ascii?Q?s1Ye/FQK4ZRZC29jjNWqYIpfPd/6oyTThXnzdaa47r08H4+47eem6nK4bY4f?=
+ =?us-ascii?Q?06usg3jbn04mevuTY3h6n7ghfXXDsvmFZN9RmVdqmrfPJ05dkT/vG8+QUJEU?=
+ =?us-ascii?Q?O0a6tDoHZdTCcwVzD7NcPKhGvcKe74tF5vwdVyabtzY179tnGNdPgyqCXOOJ?=
+ =?us-ascii?Q?EWlQrBhzNxJMohf8PdT65Z35JzAyUGzk3eTTWRIbfko0yeKYQ7PTucF+mioa?=
+ =?us-ascii?Q?CZHL0DPHVVwZ5Y9HmhwsAdYgTIgkwYK2qC/GA+JtywnYEd+V3nmqj/tnxzXD?=
+ =?us-ascii?Q?s4MsgS40r96DW208v/ll+gZVtu15Bf+8jzq93RsTMfE5eCTYWnXVNOYowjUf?=
+ =?us-ascii?Q?b+TBBzQWKyOoSMg0pTbpC65pPqQPg0E91nbEZ2FEIP03bUtkffPHMUfR6kFU?=
+ =?us-ascii?Q?6IHZTGcFcnT91FsUr1t8vuz0PXXtDM2zoD2GBY59ovt1BrsrQdBnx2wegxdP?=
+ =?us-ascii?Q?zu1WDiZcC66eQbHRCHcVn8KJurdOBx6UDwxl9+fBEgqOEpk6xYyFFdZSYQrz?=
+ =?us-ascii?Q?ggRrYPOlY7OTHo+5sCa5XAYI54iVYBn/QMouOgFfD+reDE2ql88Duw28Nz0E?=
+ =?us-ascii?Q?1IksaLCuKWyA3BdbD32n9iuO1hniK/pZWjrR5/94uTZOH3Ec5ABCiBxWDAUN?=
+ =?us-ascii?Q?yWmybcNsx2xAgG9t1g03esqi4FfMm2FO8NDw9XhBoUhLNzD5JWkG3FMX8vp9?=
+ =?us-ascii?Q?/qULqdTK9uld4BefZW+qBBjkg55dRBRzMXLUPXG0a/sbRL3zs6erYN7WV9A5?=
+ =?us-ascii?Q?uyL3tpp64DdY6BOy7N9oGnZWrHUO4AjVWYuagCrQ198nYbjFqVbO7E/RGl0L?=
+ =?us-ascii?Q?nUsocUMSjWtZZJ9GZX8kS1W7skYE/IGekwKDvNegtvsqNbsFsmTuuPlAtJMX?=
+ =?us-ascii?Q?pmsNgNuq8IXM88clGwZsT8ElYPd3TZLtLAWresjVLPVlWnxaFgBn2FlxBM2Z?=
+ =?us-ascii?Q?O8ISh3E8U3fr9gfABf26jy+qq+FfE5A2NXQTzrQRzXpDUTN9aYNlVgGFulE9?=
+ =?us-ascii?Q?xvo2P+Jmcvhc+QZyegJdKVmb3dm0Aq3NdRAHS0qA3qI8J4JpokGvWo3yFT8J?=
+ =?us-ascii?Q?DSgif41hm1VlYAYn7zxjjNEd6W7/pQIAcC6aMw2i6FHi7zIAC5ARBMqqIbrL?=
+ =?us-ascii?Q?Yb+b09xyNBrGmdLTSMwtwJJM0JpbLXTLe0qKl8O5ysVOh2dlRHqeYCB5s5SQ?=
+ =?us-ascii?Q?s+rkpl/ZHlnTo9QIZL6C7rRrciekgpopZqUOx9KX4w2wVr3rbNYMvOGDERtQ?=
+ =?us-ascii?Q?LA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e6885ab-77a6-4086-fb33-08dbe533a315
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 17:03:34.7040
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XylLFPA4Br5OdWsG8N09hzY2qdDGOT2B+1hfW0RAiafPO4dsTyoXMzr1/AuHUGn3r+/V6SzK+f4wVfyOdztEag/X9XDLDhHkv9KLzGv5+0c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB6075
+X-OriginatorOrg: intel.com
 
-On 11/14/2023 3:59 AM, Yafang Shao wrote:
-> On Tue, Nov 14, 2023 at 6:15 PM Michal Hocko <mhocko@suse.com> wrote:
->> On Mon 13-11-23 11:15:06, Yafang Shao wrote:
->>> On Mon, Nov 13, 2023 at 12:45 AM Casey Schaufler <casey@schaufler-ca.com> wrote:
->>>> On 11/11/2023 11:34 PM, Yafang Shao wrote:
->>>>> Background
->>>>> ==========
->>>>>
->>>>> In our containerized environment, we've identified unexpected OOM events
->>>>> where the OOM-killer terminates tasks despite having ample free memory.
->>>>> This anomaly is traced back to tasks within a container using mbind(2) to
->>>>> bind memory to a specific NUMA node. When the allocated memory on this node
->>>>> is exhausted, the OOM-killer, prioritizing tasks based on oom_score,
->>>>> indiscriminately kills tasks. This becomes more critical with guaranteed
->>>>> tasks (oom_score_adj: -998) aggravating the issue.
->>>> Is there some reason why you can't fix the callers of mbind(2)?
->>>> This looks like an user space configuration error rather than a
->>>> system security issue.
->>> It appears my initial description may have caused confusion. In this
->>> scenario, the caller is an unprivileged user lacking any capabilities.
->>> While a privileged user, such as root, experiencing this issue might
->>> indicate a user space configuration error, the concerning aspect is
->>> the potential for an unprivileged user to disrupt the system easily.
->>> If this is perceived as a misconfiguration, the question arises: What
->>> is the correct configuration to prevent an unprivileged user from
->>> utilizing mbind(2)?"
->> How is this any different than a non NUMA (mbind) situation?
-> In a UMA system, each gigabyte of memory carries the same cost.
-> Conversely, in a NUMA architecture, opting to confine processes within
-> a specific NUMA node incurs additional costs. In the worst-case
-> scenario, if all containers opt to bind their memory exclusively to
-> specific nodes, it will result in significant memory wastage.
+On Mon, Nov 13, 2023 at 12:20:46PM +0100, Maciej Fijalkowski wrote:
+> On Mon, Nov 13, 2023 at 07:42:09AM +0100, Vyavahare, Tushar wrote:
+> > 
+> > 
+> > > -----Original Message-----
+> > > From: Fijalkowski, Maciej <maciej.fijalkowski@intel.com>
+> > > Sent: Wednesday, November 8, 2023 8:01 PM
+> > > To: Vyavahare, Tushar <tushar.vyavahare@intel.com>
+> > > Cc: bpf@vger.kernel.org; netdev@vger.kernel.org; bjorn@kernel.org; Karlsson,
+> > > Magnus <magnus.karlsson@intel.com>; jonathan.lemon@gmail.com;
+> > > davem@davemloft.net; kuba@kernel.org; pabeni@redhat.com;
+> > > ast@kernel.org; daniel@iogearbox.net; Sarkar, Tirthendu
+> > > <tirthendu.sarkar@intel.com>
+> > > Subject: Re: [PATCH bpf-next] selftests/xsk: fix for SEND_RECEIVE_UNALIGNED
+> > > test.
+> > > 
+> > > On Fri, Nov 03, 2023 at 02:29:36PM +0000, Tushar Vyavahare wrote:
+> > > > Fix test broken by shared umem test and framework enhancement commit.
+> > > >
+> > > > Correct the current implementation of pkt_stream_replace_half() by
+> > > > ensuring that nb_valid_entries are not set to half, as this is not
+> > > > true for all the tests.
+> > > 
+> > > Please be more specific - so what is the expected value for nb_valid_entries for
+> > > unaligned mode test then, if not the half?
+> > > 
+> > 
+> > The expected value for nb_valid_entries for the SEND_RECEIVE_UNALIGNED
+> > test would be equal to the total number of packets sent.
+> > 
+> > > >
+> > > > Create a new function called pkt_modify() that allows for packet
+> > > > modification to meet specific requirements while ensuring the accurate
+> > > > maintenance of the valid packet count to prevent inconsistencies in
+> > > > packet tracking.
+> > > >
+> > > > Fixes: 6d198a89c004 ("selftests/xsk: Add a test for shared umem
+> > > > feature")
+> > > > Reported-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > > > Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+> > > > ---
+> > > >  tools/testing/selftests/bpf/xskxceiver.c | 71
+> > > > ++++++++++++++++--------
+> > > >  1 file changed, 47 insertions(+), 24 deletions(-)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/xskxceiver.c
+> > > > b/tools/testing/selftests/bpf/xskxceiver.c
+> > > > index 591ca9637b23..f7d3a4a9013f 100644
+> > > > --- a/tools/testing/selftests/bpf/xskxceiver.c
+> > > > +++ b/tools/testing/selftests/bpf/xskxceiver.c
+> > > > @@ -634,16 +634,35 @@ static u32 pkt_nb_frags(u32 frame_size, struct
+> > > pkt_stream *pkt_stream, struct pk
+> > > >  	return nb_frags;
+> > > >  }
+> > > >
+> > > > -static void pkt_set(struct pkt_stream *pkt_stream, struct pkt *pkt,
+> > > > int offset, u32 len)
+> > > > +static bool pkt_valid(bool unaligned_mode, int offset, u32 len)
+> > > 
+> > > kinda confusing to have is_pkt_valid() and pkt_valid() functions...
+> > > maybe name this as set_pkt_valid() ? doesn't help much but anyways.
+> > > 
+> > 
+> > will do it.
+> > 
+> > > > +{
+> > > > +	if (len > MAX_ETH_JUMBO_SIZE || (!unaligned_mode && offset < 0))
+> > > > +		return false;
+> > > > +
+> > > > +	return true;
+> > > > +}
+> > > > +
+> > > > +static void pkt_set(struct pkt_stream *pkt_stream, struct xsk_umem_info
+> > > *umem, struct pkt *pkt,
+> > > > +		    int offset, u32 len)
+> > > 
+> > > How about adding a bool unaligned to pkt_stream instead of passing whole
+> > > xsk_umem_info to pkt_set - wouldn't this make the diff smaller?
+> > > 
+> > 
+> > We can also do it this way, but in this case, the difference will be
+> > larger. Wherever we are using "struct pkt_stream *pkt_stream," we must set
+> > this bool flag again. For example, in places like 
+> > __pkt_stream_replace_half(), __pkt_stream_generate_custom() , and a few
+> > more. I believe we should stick with the current approach.
+> 
+> We have a default pkt streams that are restored in run_pkt_test(), so I
+> believe that setting this unaligned flag could be scoped to each test_func
+> that is related to unaligned mode tests?
 
-That still sounds like you've misconfigured your containers such
-that they expect to get more memory than is available, and that
-they have more control over it than they really do.
-
-
->> You can
->> still have an unprivileged user to allocate just until the OOM triggers
->> and disrupt other workload consuming more memory. Sure the mempolicy
->> based OOM is less precise and it might select a victim with only a small
->> consumption on a target NUMA node but fundamentally the situation is
->> very similar. I do not think disallowing mbind specifically is solving a
->> real problem.
-> How would you recommend addressing this more effectively?
->
+Ok now I see that we are sort of losing context when generating pkt
+streams, that's a bit unfortunate in this case. Maybe we can think of some
+refactor later on.
 
