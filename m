@@ -1,139 +1,145 @@
-Return-Path: <bpf+bounces-15057-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15058-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D7ED7EAF96
-	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 13:00:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FD7A7EB06C
+	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 13:59:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45DE81C20A63
-	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 12:00:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FAE51F24A83
+	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 12:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11A73D984;
-	Tue, 14 Nov 2023 12:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D685F3FE27;
+	Tue, 14 Nov 2023 12:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="afyBfB4K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rG9w4LHD"
 X-Original-To: bpf@vger.kernel.org
-Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6503C2420C
-	for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 12:00:33 +0000 (UTC)
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF196193;
-	Tue, 14 Nov 2023 04:00:31 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66cfd874520so30901626d6.2;
-        Tue, 14 Nov 2023 04:00:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699963230; x=1700568030; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fT89VrUM4OJhyd4A4Cn9ZU5tdEguZqAnwhZWFOOT8fs=;
-        b=afyBfB4KkIMvTEXe+bswHlpvNkc2e/yell4pxoGdVsdwZ8NkVFr2XAZJ5T3dKhcO3n
-         BYRAR7ZMp4rnyRwxPCv/Y/19zG64DhyFqPCUbPOJW5/9AtRm/oWmUQp/QjWaUoIWl0oH
-         0hxJcbgqjsc/bOEaFcQZVnBP9OlPY2KQQHx7D0SU6p1sXQx9OmYp54H+g1cICOhpshVS
-         Bv28CfPuo7RvXWKfzNNJ8FHLSxsNDjXE5MjGoxWJJzoOrSRIl5AEq/cwQlZP52bAmeud
-         zcz4LBNVLj0uQv08TifsFvCtpGP7Zhsrle5xGmRlyh5bRpGlfrVrtCbP4Qpim3xaJJZ8
-         2TTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699963230; x=1700568030;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fT89VrUM4OJhyd4A4Cn9ZU5tdEguZqAnwhZWFOOT8fs=;
-        b=Q8gXEzpD6KZxKxFL67YqaLm2nN76t+v/LYzxMdyPK6G8X7q9xZKZy50pClDHjUiemk
-         +XOveHikh8BXx+OaULFx5Ue01Y2f11hHg2/zcLraX6SgxESNrcdL1e/9ne+qUCQ3TRqE
-         9iQShBs0BMIhvEMfNEyfmGMF3VI8FTGz3U1giPmg7FZiNuzyArwCP8jMgiGz3VO5kyy3
-         iQR61ob3Sh285EuAfpOEOk+RL9KvsmY7dXRBp4YaNLho/wfn85vub3Jg/kBueVr+ZtsE
-         FjrLk8c0GB8lHhbsxfIGMo9Q036bNPfCIHokeXkfO8gGDfdM7jPnW7GewdbaqIvLQJxm
-         qDEw==
-X-Gm-Message-State: AOJu0YxLeLvQFV+UeJovhkv5GtK3rjzUhFaRR9vf0Z+fCGuPRs8u5yb0
-	kmGXh4dFBoJyWHb6FEz9gHeJKCWa89jZvADKc9oXxOQfdKTMgm/v
-X-Google-Smtp-Source: AGHT+IELivM7PdGAPOr5HMY5T+cLa3aYp631h40RVkoxQiFV0TnNHl9sZdX2KAviztPvfo3EUpARMpWi2B+gK/slfBE=
-X-Received: by 2002:ad4:4592:0:b0:66f:e3d4:2145 with SMTP id
- x18-20020ad44592000000b0066fe3d42145mr2413827qvu.46.1699963230533; Tue, 14
- Nov 2023 04:00:30 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557AE18637
+	for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 12:59:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B980FC433C7;
+	Tue, 14 Nov 2023 12:59:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1699966760;
+	bh=KKuJZTYZBluSmb80QF3UMVQxN/zqipWwj+t34OUqGOE=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=rG9w4LHDUQIvLeMctg6TFwjBEPx+GYmAeo+BhkQdF9fE0FSWnCl/31TFLRXwxajEo
+	 oU9mAlFknRjlqtqUrV2VUZNRydD5S6UmRrhHgNBI0QKKM5YGrX/4eEVZja0Dpuj+Cb
+	 sNsb9vkePjFQ8E6UciygKCW28e6nXA4GCRUEcITzJdZ2AmZTCccOQQDbLR6DIZD6JI
+	 HtcnQ060ZPriU/SsykVf1CKQ/OwWbGHWw4/n0X01gPyQjeSbNo/u2bdZrcsW+Iacru
+	 5BUqbtIjRbusIG5HhmVt6qwRk2CU7nbpzx45frzlT3+yPoA057FiINAZ7imWB4Ofnz
+	 dTUIpNluQHwfQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D41BACE2119; Tue, 14 Nov 2023 04:58:37 -0800 (PST)
+Date: Tue, 14 Nov 2023 04:58:37 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Hou Tao <houtao1@huawei.com>
+Subject: Re: [PATCH bpf 05/11] bpf: Add bpf_map_of_map_fd_{get,put}_ptr()
+ helpers
+Message-ID: <ed634d38-3383-4367-a97d-973800dc64c9@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <6125c508-82fe-37a4-3aa2-a6c2727c071b@linux.dev>
+ <460844a9-a2e6-8cca-dfa1-9073bfffbb76@huaweicloud.com>
+ <CAADnVQJJhjWJRvgdi3hTaCn8s1X1CJ5z1bUoKFXw32LTOjBWCg@mail.gmail.com>
+ <64581135-5b99-4da7-9e19-e41122393d89@paulmck-laptop>
+ <5aeecb90-e4fd-1a3e-b8e5-426c67d12cc6@huaweicloud.com>
+ <5a4cd7db-4ef8-4033-aa9e-bf50e3560e46@paulmck-laptop>
+ <23b55935-0ad4-5a0a-f19a-ba718793902b@linux.dev>
+ <f8e1e390-2f12-33c0-cd4b-e59c8223711f@huaweicloud.com>
+ <61d71a4f-5216-452b-a695-75fef5d37dd6@paulmck-laptop>
+ <0757f77f-9186-39c5-e3f5-c8d3fe530d65@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231112073424.4216-1-laoar.shao@gmail.com> <188dc90e-864f-4681-88a5-87401c655878@schaufler-ca.com>
- <CALOAHbD+_0tHcm72Q6TM=EXDoZFrVWAsi4AC8_xGqK3wGkEy3g@mail.gmail.com> <ZVNIprbQU3NqwPi_@tiehlicka>
-In-Reply-To: <ZVNIprbQU3NqwPi_@tiehlicka>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Tue, 14 Nov 2023 19:59:53 +0800
-Message-ID: <CALOAHbDi_8ERHdtPB6sJdv=qewoAfGkheCfriW+QLoN0rLUQAw@mail.gmail.com>
-Subject: Re: [RFC PATCH -mm 0/4] mm, security, bpf: Fine-grained control over
- memory policy adjustments with lsm bpf
-To: Michal Hocko <mhocko@suse.com>
-Cc: Casey Schaufler <casey@schaufler-ca.com>, akpm@linux-foundation.org, paul@paul-moore.com, 
-	jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
-	ligang.bdlg@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0757f77f-9186-39c5-e3f5-c8d3fe530d65@huaweicloud.com>
 
-On Tue, Nov 14, 2023 at 6:15=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Mon 13-11-23 11:15:06, Yafang Shao wrote:
-> > On Mon, Nov 13, 2023 at 12:45=E2=80=AFAM Casey Schaufler <casey@schaufl=
-er-ca.com> wrote:
-> > >
-> > > On 11/11/2023 11:34 PM, Yafang Shao wrote:
-> > > > Background
-> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > >
-> > > > In our containerized environment, we've identified unexpected OOM e=
-vents
-> > > > where the OOM-killer terminates tasks despite having ample free mem=
-ory.
-> > > > This anomaly is traced back to tasks within a container using mbind=
-(2) to
-> > > > bind memory to a specific NUMA node. When the allocated memory on t=
-his node
-> > > > is exhausted, the OOM-killer, prioritizing tasks based on oom_score=
-,
-> > > > indiscriminately kills tasks. This becomes more critical with guara=
-nteed
-> > > > tasks (oom_score_adj: -998) aggravating the issue.
-> > >
-> > > Is there some reason why you can't fix the callers of mbind(2)?
-> > > This looks like an user space configuration error rather than a
-> > > system security issue.
+On Mon, Nov 13, 2023 at 08:53:06AM +0800, Hou Tao wrote:
+> Hi,
+> 
+> On 11/10/2023 12:58 PM, Paul E. McKenney wrote:
+> > On Fri, Nov 10, 2023 at 11:34:03AM +0800, Hou Tao wrote:
+> >> Hi Martin,
+> >>
+> >> On 11/10/2023 10:48 AM, Martin KaFai Lau wrote:
+> >>> On 11/9/23 5:45 PM, Paul E. McKenney wrote:
+> >>>>>>>>>> +void bpf_map_of_map_fd_put_ptr(void *ptr, bool need_defer)
+> >>>>>>>>>> +{
+> >>>>>>>>>> +    struct bpf_inner_map_element *element = ptr;
+> >>>>>>>>>> +
+> >>>>>>>>>> +    /* Do bpf_map_put() after a RCU grace period and a tasks
+> >>>>>>>>>> trace
+> >>>>>>>>>> +     * RCU grace period, so it is certain that the bpf program
+> >>>>>>>>>> which is
+> >>>>>>>>>> +     * manipulating the map now has exited when bpf_map_put() is
+> >>>>>>>>>> called.
+> >>>>>>>>>> +     */
+> >>>>>>>>>> +    if (need_defer)
+> >>>>>>>>> "need_defer" should only happen from the syscall cmd? Instead of
+> >>>>>>>>> adding rcu_head to each element, how about
+> >>>>>>>>> "synchronize_rcu_mult(call_rcu, call_rcu_tasks)" here?
+> >>>>>>>> No. I have tried the method before, but it didn't work due to
+> >>>>>>>> dead-lock
+> >>>>>>>> (will mention that in commit message in v2). The reason is that bpf
+> >>>>>>>> syscall program may also do map update through sys_bpf helper.
+> >>>>>>>> Because
+> >>>>>>>> bpf syscall program is running with sleep-able context and has
+> >>>>>>>> rcu_read_lock_trace being held, so call
+> >>>>>>>> synchronize_rcu_mult(call_rcu,
+> >>>>>>>> call_rcu_tasks) will lead to dead-lock.
+> >>> Need to think of a less intrusive solution instead of adding rcu_head
+> >>> to each element and lookup also needs an extra de-referencing.
+> >> I see.
+> >>> May be the bpf_map_{update,delete}_elem(&outer_map, ....) should not
+> >>> be done by the syscall program? Which selftest does it?
+> >> Now bpf_map_update_elem is allowed for bpf_sys_bpf helper. If I
+> >> remembered correctly it was map_ptr.
+> >>> Can the inner_map learn that it has been deleted from an outer map
+> >>> that is used in a sleepable prog->aux->used_maps? The
+> >>> bpf_map_free_deferred() will then wait for a task_trace gp?
+> >> Considering an inner_map may be used by multiple outer_map, the
+> >> following solution will be simpler: if the inner map has been deleted
+> >> from an outer map once, its free must be delayed after one RCU GP and
+> >> one tasks trace RCU GP. But I will check whether it is possible to only
+> >> wait for one RCU GP instead of two.
+> > If you are freeing a large quantity of elements at a time, one approach
+> > is to use a single rcu_head structure for the group.  (Or, in this case,
+> > maybe a pair of rcu_head structures, one for call_rcu() and the other
+> > for call_rcu_tasks_trace().)
 > >
-> > It appears my initial description may have caused confusion. In this
-> > scenario, the caller is an unprivileged user lacking any capabilities.
-> > While a privileged user, such as root, experiencing this issue might
-> > indicate a user space configuration error, the concerning aspect is
-> > the potential for an unprivileged user to disrupt the system easily.
-> > If this is perceived as a misconfiguration, the question arises: What
-> > is the correct configuration to prevent an unprivileged user from
-> > utilizing mbind(2)?"
->
-> How is this any different than a non NUMA (mbind) situation?
+> > This requires that you be able to link the elements in the group
+> > together somehow, which requires some per-element storage, but only
+> > one word per element instead of two.
+> >
+> > There are other variations on this theme, depending on what constraints
+> > apply here.
+> 
+> Thanks for your suggestions. Although there are batch update support for
+> inner map, but I think inner map is updated one-by-one at most case. And
+> the main concern here is the extra dereference due to memory allocation,
+> so I think adding extra flags to indicate bpf_mem_free_deferred() to
+> free the map differently may be appropriate.
 
-In a UMA system, each gigabyte of memory carries the same cost.
-Conversely, in a NUMA architecture, opting to confine processes within
-a specific NUMA node incurs additional costs. In the worst-case
-scenario, if all containers opt to bind their memory exclusively to
-specific nodes, it will result in significant memory wastage.
+Whatever gets the job done is of course goodness, and yes, if the freeing
+cannot be batched, my suggestion won't help much.  ;-)
 
-> You can
-> still have an unprivileged user to allocate just until the OOM triggers
-> and disrupt other workload consuming more memory. Sure the mempolicy
-> based OOM is less precise and it might select a victim with only a small
-> consumption on a target NUMA node but fundamentally the situation is
-> very similar. I do not think disallowing mbind specifically is solving a
-> real problem.
-
-How would you recommend addressing this more effectively?
-
---=20
-Regards
-Yafang
+							Thanx, Paul
 
