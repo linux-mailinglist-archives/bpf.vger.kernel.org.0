@@ -1,358 +1,197 @@
-Return-Path: <bpf+bounces-15030-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15031-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 582D37EA913
-	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 04:21:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EFC37EA916
+	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 04:23:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8917028108A
-	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 03:21:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5ED51F23D1A
+	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 03:23:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398E68C00;
-	Tue, 14 Nov 2023 03:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9516D8BF9;
+	Tue, 14 Nov 2023 03:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j+4a8VJa"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122D0881F;
-	Tue, 14 Nov 2023 03:21:22 +0000 (UTC)
-Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74724C6;
-	Mon, 13 Nov 2023 19:21:19 -0800 (PST)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R241e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VwNgcnu_1699932075;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VwNgcnu_1699932075)
-          by smtp.aliyun-inc.com;
-          Tue, 14 Nov 2023 11:21:16 +0800
-Message-ID: <1699931796.7141047-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v2 16/21] virtio_net: xsk: rx: introduce add_recvbuf_xsk()
-Date: Tue, 14 Nov 2023 11:16:36 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>,
- <netdev@vger.kernel.org>,
- "David S.  Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub  Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Jason Wang <jasowang@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John  Fastabend <john.fastabend@gmail.com>,
- <virtualization@lists.linux-foundation.org>,
- <bpf@vger.kernel.org>
-References: <20231107031227.100015-1-xuanzhuo@linux.alibaba.com>
- <20231107031227.100015-17-xuanzhuo@linux.alibaba.com>
- <20231109031003-mutt-send-email-mst@kernel.org>
- <1699528306.7236402-5-xuanzhuo@linux.alibaba.com>
- <ZU0IOQQB5WJzJezw@boxer>
- <1699583884.626623-1-xuanzhuo@linux.alibaba.com>
- <ZVJIMgc+VnrDm0uj@boxer>
-In-Reply-To: <ZVJIMgc+VnrDm0uj@boxer>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17F6F8813
+	for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 03:23:41 +0000 (UTC)
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b7])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C34791
+	for <bpf@vger.kernel.org>; Mon, 13 Nov 2023 19:23:40 -0800 (PST)
+Message-ID: <05207c41-2e2f-49d6-a8bf-a2820701242f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1699932218;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=f3e86WVIsab+nIxh+vo37Xnl/AnLwiK5k+I8kh/dvIk=;
+	b=j+4a8VJaepGn2qmvf/ukV/hbFQ3IipOcC/OksIIzdaWarxuAFvnjo1VmGFXPsM4h+s7dG6
+	bUb8aKav2+nySAr7g6/fs8I/j6z+H1vAxtQQjaRGLd42oY3eaHPeh2uzDT347lqN91mWGC
+	aIeh2K8/Uo3DIz/yHkJvuUber6ibUDI=
+Date: Mon, 13 Nov 2023 22:23:32 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-
-On Mon, 13 Nov 2023 17:00:50 +0100, Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
-> On Fri, Nov 10, 2023 at 10:38:04AM +0800, Xuan Zhuo wrote:
-> > On Thu, 9 Nov 2023 17:26:33 +0100, Maciej Fijalkowski <maciej.fijalkowski@intel.com> wrote:
-> > > On Thu, Nov 09, 2023 at 07:11:46PM +0800, Xuan Zhuo wrote:
-> > > > On Thu, 9 Nov 2023 03:12:27 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
-> > > > > On Tue, Nov 07, 2023 at 11:12:22AM +0800, Xuan Zhuo wrote:
-> > > > > > Implement the logic of filling rq with XSK buffers.
-> > > > > >
-> > > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > > > ---
-> > > > > >  drivers/net/virtio/main.c       |  4 ++-
-> > > > > >  drivers/net/virtio/virtio_net.h |  5 ++++
-> > > > > >  drivers/net/virtio/xsk.c        | 49 ++++++++++++++++++++++++++++++++-
-> > > > > >  drivers/net/virtio/xsk.h        |  2 ++
-> > > > > >  4 files changed, 58 insertions(+), 2 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-> > > > > > index 6210a6e37396..15943a22e17d 100644
-> > > > > > --- a/drivers/net/virtio/main.c
-> > > > > > +++ b/drivers/net/virtio/main.c
-> > > > > > @@ -1798,7 +1798,9 @@ static bool try_fill_recv(struct virtnet_info *vi, struct virtnet_rq *rq,
-> > > > > >  	bool oom;
-> > > > > >
-> > > > > >  	do {
-> > > > > > -		if (vi->mergeable_rx_bufs)
-> > > > > > +		if (rq->xsk.pool)
-> > > > > > +			err = virtnet_add_recvbuf_xsk(vi, rq, rq->xsk.pool, gfp);
-> > > > > > +		else if (vi->mergeable_rx_bufs)
-> > > > > >  			err = add_recvbuf_mergeable(vi, rq, gfp);
-> > > > > >  		else if (vi->big_packets)
-> > > > > >  			err = add_recvbuf_big(vi, rq, gfp);
-> > > > >
-> > > > > I'm not sure I understand. How does this handle mergeable flag still being set?
-> > > >
-> > > >
-> > > > You has the same question as Jason.
-> > > >
-> > > > So I think maybe I should put the handle into the
-> > > > add_recvbuf_mergeable and add_recvbuf_small.
-> > > >
-> > > > Let me think about this.
-> > > >
-> > > >
-> > > > >
-> > > > >
-> > > > > > diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
-> > > > > > index a13d6d301fdb..1242785e311e 100644
-> > > > > > --- a/drivers/net/virtio/virtio_net.h
-> > > > > > +++ b/drivers/net/virtio/virtio_net.h
-> > > > > > @@ -140,6 +140,11 @@ struct virtnet_rq {
-> > > > > >
-> > > > > >  		/* xdp rxq used by xsk */
-> > > > > >  		struct xdp_rxq_info xdp_rxq;
-> > > > > > +
-> > > > > > +		struct xdp_buff **xsk_buffs;
-> > > > > > +		u32 nxt_idx;
-> > > > > > +		u32 num;
-> > > > > > +		u32 size;
-> > > > > >  	} xsk;
-> > > > > >  };
-> > > > > >
-> > > > > > diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
-> > > > > > index ea5804ddd44e..e737c3353212 100644
-> > > > > > --- a/drivers/net/virtio/xsk.c
-> > > > > > +++ b/drivers/net/virtio/xsk.c
-> > > > > > @@ -38,6 +38,41 @@ static void virtnet_xsk_check_queue(struct virtnet_sq *sq)
-> > > > > >  		netif_stop_subqueue(dev, qnum);
-> > > > > >  }
-> > > > > >
-> > > > > > +int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct virtnet_rq *rq,
-> > > > > > +			    struct xsk_buff_pool *pool, gfp_t gfp)
-> > > > > > +{
-> > > > > > +	struct xdp_buff **xsk_buffs;
-> > > > > > +	dma_addr_t addr;
-> > > > > > +	u32 len, i;
-> > > > > > +	int err = 0;
-> > > > > > +
-> > > > > > +	xsk_buffs = rq->xsk.xsk_buffs;
-> > > > > > +
-> > > > > > +	if (rq->xsk.nxt_idx >= rq->xsk.num) {
-> > > > > > +		rq->xsk.num = xsk_buff_alloc_batch(pool, xsk_buffs, rq->xsk.size);
-> > > > > > +		if (!rq->xsk.num)
-> > > > > > +			return -ENOMEM;
-> > > > > > +		rq->xsk.nxt_idx = 0;
-> > > > > > +	}
-> > > > >
-> > > > > Another manually rolled linked list implementation.
-> > > > > Please, don't.
-> > > >
-> > > >
-> > > > The array is for speedup.
-> > > >
-> > > > xsk_buff_alloc_batch will return many xsk_buff that will be more efficient than
-> > > > the xsk_buff_alloc.
-> > >
-> > > But your sg list just contains a single entry?
-> > > I think that you have to walk through the xsk_buffs array, retrieve dma
-> > > addrs from there and have sg list sized to the value
-> > > xsk_buff_alloc_batch() returned.
-> > >
-> > > I don't think your logic based on nxt_idx is needed. Please take a look
-> > > how other drivers use xsk_buff_alloc_batch().
-> > >
-> > > I don't see callsites of virtnet_add_recvbuf_xsk() though.
-> >
-> >
-> > virtnet_add_recvbuf_xsk is called by the above try_fill_recv()
-> > And the loop is in there.
->
-> Ah sorry I was looking for another patch to call it as it used to be in
-> v1.
->
-> >
-> > Jason want to reuse the loop of the try_fill_recv().
-> > So in this function I just consume one item.
-> >
-> > The nxt_idx is used to cross the try_fill_recv.
-> >
-> > If we drop the nxt_idx. This patch will like this:
-> >
-> > diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-> > index 6210a6e37396..88bff83ad0d8 100644
-> > --- a/drivers/net/virtio/main.c
-> > +++ b/drivers/net/virtio/main.c
-> > @@ -1797,6 +1797,15 @@ static bool try_fill_recv(struct virtnet_info *vi, struct virtnet_rq *rq,
-> >  	int err;
-> >  	bool oom;
-> >
-> > +	if (rq->xsk.pool) {
-> > +		err = virtnet_add_recvbuf_xsk(vi, rq, rq->xsk.pool, gfp);
-> > +		oom = err == -ENOMEM;
-> > +		if (err > 0)
-> > +			goto kick;
-> > +
-> > +		return err;
-> > +	}
-> > +
-> >  	do {
-> >  		if (vi->mergeable_rx_bufs)
-> >  			err = add_recvbuf_mergeable(vi, rq, gfp);
-> > @@ -1809,6 +1818,7 @@ static bool try_fill_recv(struct virtnet_info *vi, struct virtnet_rq *rq,
-> >  		if (err)
-> >  			break;
-> >  	} while (rq->vq->num_free);
-> > +kick:
-> >  	if (virtqueue_kick_prepare(rq->vq) && virtqueue_notify(rq->vq)) {
-> >  		unsigned long flags;
-> >
-> > diff --git a/drivers/net/virtio/virtio_net.h b/drivers/net/virtio/virtio_net.h
-> > index a13d6d301fdb..184866014a19 100644
-> > --- a/drivers/net/virtio/virtio_net.h
-> > +++ b/drivers/net/virtio/virtio_net.h
-> > @@ -140,6 +140,8 @@ struct virtnet_rq {
-> >
-> >  		/* xdp rxq used by xsk */
-> >  		struct xdp_rxq_info xdp_rxq;
-> > +
-> > +		struct xdp_buff **xsk_buffs;
-> >  	} xsk;
-> >  };
-> >
-> > diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
-> > index ea5804ddd44e..73c9323bffd3 100644
-> > --- a/drivers/net/virtio/xsk.c
-> > +++ b/drivers/net/virtio/xsk.c
-> > @@ -38,6 +38,46 @@ static void virtnet_xsk_check_queue(struct virtnet_sq *sq)
-> >  		netif_stop_subqueue(dev, qnum);
-> >  }
-> >
-> > +int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct virtnet_rq *rq,
-> > +			    struct xsk_buff_pool *pool, gfp_t gfp)
-> > +{
-> > +	struct xdp_buff **xsk_buffs;
-> > +	dma_addr_t addr;
-> > +	u32 len, i;
-> > +	int err = 0;
-> > +	int num;
-> > +
-> > +	xsk_buffs = rq->xsk.xsk_buffs;
-> > +
-> > +	num = xsk_buff_alloc_batch(pool, xsk_buffs, rq->vq->num_free);
-> > +	if (!num)
-> > +		return -ENOMEM;
-> > +
-> > +	for (i = 0; i < num; ++i) {
-> > +		/* use the part of XDP_PACKET_HEADROOM as the virtnet hdr space */
-> > +		addr = xsk_buff_xdp_get_dma(xsk_buffs[i]) - vi->hdr_len;
-> > +		len = xsk_pool_get_rx_frame_size(pool) + vi->hdr_len;
->
-> len can be pulled out of loop...
->
-> > +
-> > +		sg_init_table(rq->sg, 1);
-> > +		sg_fill_dma(rq->sg, addr, len);
->
-> ... but when I first commented I did not understand why you were not
-> passing dma from xsk_buff_pool like this:
->
-> 	sg_init_table(rq->sg, num);
-> 	len = xsk_pool_get_rx_frame_size(pool) + vi->hdr_len;
->
-> 	for (i = 0; i < num; ++i) {
-> 		/* use the part of XDP_PACKET_HEADROOM as the virtnet hdr space */
-> 		addr = xsk_buff_xdp_get_dma(xsk_buffs[i]) - vi->hdr_len;
-> 		/* TODO: extend scatterlist size in receive_queue */
-> 		sg_fill_dma(&rq->sg[i], addr, len);
-> 	}
->
-> 	err = virtqueue_add_inbuf(rq->vq, rq->sg, num, xsk_buffs, gfp);
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v3] bpf: Do not allocate percpu memory at init
+ stage
+Content-Language: en-GB
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231111013928.948838-1-yonghong.song@linux.dev>
+ <50a70429-169f-0d44-86da-d5fe6a9d59e6@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <50a70429-169f-0d44-86da-d5fe6a9d59e6@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
-Yes, you are right.
-
-
+On 11/13/23 4:42 AM, Hou Tao wrote:
+> Hi,
 >
-> and now I see that the problem is with 'data' argument above (or xsk_buffs
-> in this particular example).
->
-> Why do you need to pass xdp_buff to virtio_ring? You already have the
-> rq->xsk.xsk_buffs which you can use on rx side.
->
-> Can someone shed some light on it?
+> On 11/11/2023 9:39 AM, Yonghong Song wrote:
+>> Kirill Shutemov reported significant percpu memory consumption increase after
+>> booting in 288-cpu VM ([1]) due to commit 41a5db8d8161 ("bpf: Add support for
+>> non-fix-size percpu mem allocation"). The percpu memory consumption is
+>> increased from 111MB to 969MB. The number is from /proc/meminfo.
+>>
+>> I tried to reproduce the issue with my local VM which at most supports upto
+>> 255 cpus. With 252 cpus, without the above commit, the percpu memory
+>> consumption immediately after boot is 57MB while with the above commit the
+>> percpu memory consumption is 231MB.
+>>
+>> This is not good since so far percpu memory from bpf memory allocator is not
+>> widely used yet. Let us change pre-allocation in init stage to on-demand
+>> allocation when verifier detects there is a need of percpu memory for bpf
+>> program. With this change, percpu memory consumption after boot can be reduced
+>> signicantly.
+>>
+>>    [1] https://lore.kernel.org/lkml/20231109154934.4saimljtqx625l3v@box.shutemov.name/
+>>
+>> Fixes: 41a5db8d8161 ("bpf: Add support for non-fix-size percpu mem allocation")
+>> Reported-and-tested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/linux/bpf.h   |  2 +-
+>>   kernel/bpf/core.c     |  8 +++-----
+>>   kernel/bpf/verifier.c | 20 ++++++++++++++++++--
+>>   3 files changed, 22 insertions(+), 8 deletions(-)
+>>
+>> Changelog:
+>>    v2 -> v3:
+>>      - Use dedicated mutex lock (bpf_percpu_ma_lock)
+>>    v1 -> v2:
+>>      - Add proper Reported-and-tested-by tag.
+>>      - Do a check of !bpf_global_percpu_ma_set before acquiring verifier_lock.
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 35bff17396c0..6762dac3ef76 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -56,7 +56,7 @@ extern struct idr btf_idr;
+>>   extern spinlock_t btf_idr_lock;
+>>   extern struct kobject *btf_kobj;
+>>   extern struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+>> -extern bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+>> +extern bool bpf_global_ma_set;
+>>   
+>>   typedef u64 (*bpf_callback_t)(u64, u64, u64, u64, u64);
+>>   typedef int (*bpf_iter_init_seq_priv_t)(void *private_data,
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index 08626b519ce2..cd3afe57ece3 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -64,8 +64,8 @@
+>>   #define OFF	insn->off
+>>   #define IMM	insn->imm
+>>   
+>> -struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+>> -bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+>> +struct bpf_mem_alloc bpf_global_ma;
+>> +bool bpf_global_ma_set;
+>>   
+>>   /* No hurry in this branch
+>>    *
+>> @@ -2934,9 +2934,7 @@ static int __init bpf_global_ma_init(void)
+>>   
+>>   	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
+>>   	bpf_global_ma_set = !ret;
+>> -	ret = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
+>> -	bpf_global_percpu_ma_set = !ret;
+>> -	return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
+>> +	return ret;
+>>   }
+>>   late_initcall(bpf_global_ma_init);
+>>   #endif
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index a2267d5ed14e..6da370a047fe 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -26,6 +26,7 @@
+>>   #include <linux/poison.h>
+>>   #include <linux/module.h>
+>>   #include <linux/cpumask.h>
+>> +#include <linux/bpf_mem_alloc.h>
+>>   #include <net/xdp.h>
+>>   
+>>   #include "disasm.h"
+>> @@ -41,6 +42,9 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
+>>   #undef BPF_LINK_TYPE
+>>   };
+>>   
+>> +struct bpf_mem_alloc bpf_global_percpu_ma;
+>> +static bool bpf_global_percpu_ma_set;
+>> +
+>>   /* bpf_check() is a static code analyzer that walks eBPF program
+>>    * instruction by instruction and updates register/stack state.
+>>    * All paths of conditional branches are analyzed until 'bpf_exit' insn.
+>> @@ -336,6 +340,7 @@ struct bpf_kfunc_call_arg_meta {
+>>   struct btf *btf_vmlinux;
+>>   
+>>   static DEFINE_MUTEX(bpf_verifier_lock);
+>> +static DEFINE_MUTEX(bpf_percpu_ma_lock);
+>>   
+>>   static const struct bpf_line_info *
+>>   find_linfo(const struct bpf_verifier_env *env, u32 insn_off)
+>> @@ -12091,8 +12096,19 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+>>   				if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
+>>   					return -ENOMEM;
+>>   
+>> -				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl] && !bpf_global_percpu_ma_set)
+>> -					return -ENOMEM;
+>> +				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
+>> +					if (!bpf_global_percpu_ma_set) {
+>> +						mutex_lock(&bpf_percpu_ma_lock);
+>> +						if (!bpf_global_percpu_ma_set) {
+>> +							err = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
+>> +							if (!err)
+>> +								bpf_global_percpu_ma_set = true;
+>> +						}
+> A dumb question here: do we need some memory barrier to guarantee the
+> memory order between bpf_global_percpu_ma_set and bpf_global_percpu_ma ?
 
-For virtio, we should not assume that the virtio ring is consumed
-sequentially by default.
+We should be fine. There is a control dependence on '!err' for
+'bpf_global_percpu_ma_set = true'.
 
-So we normally use the "data" to distinguish the received buffers.
-
-Thanks.
-
-
->
-> > +
-> > +		err = virtqueue_add_inbuf(rq->vq, rq->sg, 1, xsk_buffs[i], gfp);
-> > +		if (err)
-> > +			goto err;
-> > +	}
-> > +
-> > +	return num;
-> > +
-> > +err:
-> > +	if (i)
-> > +		err = i;
-> > +
-> > +	for (; i < num; ++i)
-> > +		xsk_buff_free(xsk_buffs[i]);
-> > +
-> > +	return err;
-> > +}
-> > +
-> >  static int virtnet_xsk_xmit_one(struct virtnet_sq *sq,
-> >  				struct xsk_buff_pool *pool,
-> >  				struct xdp_desc *desc)
-> > @@ -213,7 +253,7 @@ static int virtnet_xsk_pool_enable(struct net_device *dev,
-> >  	struct virtnet_sq *sq;
-> >  	struct device *dma_dev;
-> >  	dma_addr_t hdr_dma;
-> > -	int err;
-> > +	int err, size;
-> >
-> >  	/* In big_packets mode, xdp cannot work, so there is no need to
-> >  	 * initialize xsk of rq.
-> > @@ -249,6 +289,12 @@ static int virtnet_xsk_pool_enable(struct net_device *dev,
-> >  	if (!dma_dev)
-> >  		return -EPERM;
-> >
-> > +	size = virtqueue_get_vring_size(rq->vq);
-> > +
-> > +	rq->xsk.xsk_buffs = kcalloc(size, sizeof(*rq->xsk.xsk_buffs), GFP_KERNEL);
-> > +	if (!rq->xsk.xsk_buffs)
-> > +		return -ENOMEM;
-> > +
-> >  	hdr_dma = dma_map_single(dma_dev, &xsk_hdr, vi->hdr_len, DMA_TO_DEVICE);
-> >  	if (dma_mapping_error(dma_dev, hdr_dma))
-> >  		return -ENOMEM;
-> > @@ -307,6 +353,8 @@ static int virtnet_xsk_pool_disable(struct net_device *dev, u16 qid)
-> >
-> >  	dma_unmap_single(dma_dev, sq->xsk.hdr_dma_address, vi->hdr_len, DMA_TO_DEVICE);
-> >
-> > +	kfree(rq->xsk.xsk_buffs);
-> > +
-> >  	return err1 | err2;
-> >  }
-> >
-> > diff --git a/drivers/net/virtio/xsk.h b/drivers/net/virtio/xsk.h
-> > index 7ebc9bda7aee..bef41a3f954e 100644
-> > --- a/drivers/net/virtio/xsk.h
-> > +++ b/drivers/net/virtio/xsk.h
-> > @@ -23,4 +23,6 @@ int virtnet_xsk_pool_setup(struct net_device *dev, struct netdev_bpf *xdp);
-> >  bool virtnet_xsk_xmit(struct virtnet_sq *sq, struct xsk_buff_pool *pool,
-> >  		      int budget);
-> >  int virtnet_xsk_wakeup(struct net_device *dev, u32 qid, u32 flag);
-> > +int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct virtnet_rq *rq,
-> > +			    struct xsk_buff_pool *pool, gfp_t gfp);
-> >  #endif
-> >
-> >
+>> +						mutex_unlock(&bpf_percpu_ma_lock);
+>> +						if (err)
+>> +							return err;
+>> +					}
+>> +				}
+>>   
+>>   				if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
+>>   					verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
 
