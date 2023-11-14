@@ -1,97 +1,139 @@
-Return-Path: <bpf+bounces-15054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15057-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 175B87EAF64
-	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 12:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D7ED7EAF96
+	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 13:00:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 328191C208A5
-	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 11:42:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45DE81C20A63
+	for <lists+bpf@lfdr.de>; Tue, 14 Nov 2023 12:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638FE3D993;
-	Tue, 14 Nov 2023 11:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11A73D984;
+	Tue, 14 Nov 2023 12:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="afyBfB4K"
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F25224E1;
-	Tue, 14 Nov 2023 11:42:24 +0000 (UTC)
-Received: from wangsu.com (unknown [180.101.34.75])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7965FAB;
-	Tue, 14 Nov 2023 03:42:22 -0800 (PST)
-Received: from 102.wangsu.com (unknown [59.61.78.234])
-	by app2 (Coremail) with SMTP id SyJltADX3QkZXVNlXr9cAA--.24900S5;
-	Tue, 14 Nov 2023 19:42:19 +0800 (CST)
-From: Pengcheng Yang <yangpc@wangsu.com>
-To: John Fastabend <john.fastabend@gmail.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: Pengcheng Yang <yangpc@wangsu.com>
-Subject: [PATCH bpf-next 3/3] tcp_diag: Add the data length in skmsg to rx_queue
-Date: Tue, 14 Nov 2023 19:42:00 +0800
-Message-Id: <1699962120-3390-4-git-send-email-yangpc@wangsu.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1699962120-3390-1-git-send-email-yangpc@wangsu.com>
-References: <1699962120-3390-1-git-send-email-yangpc@wangsu.com>
-X-CM-TRANSID:SyJltADX3QkZXVNlXr9cAA--.24900S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF4fAr13AF1fCr47Jr17Awb_yoW3Kwb_uw
-	n7ZrW8W3srXr1xta1xZFZxJFyYk34IyFn5W3WS9a4qy34DJF9xuw4rXF98Ars7CanxCrZ5
-	ur1DJryUG34rujkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wA2ocxC64kI
-	II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7
-	xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-	z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-	xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v26r1j6r4UMcIj6x8ErcxFaVAv
-	8VW8GwAv7VCY1x0262k0Y48FwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48Icx
-	kI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gw4l42xK82IYc2Ij
-	64vIr41l42xK82IY6x8ErcxFaVAv8VW8GwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-	Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-	jesjbUUUUU=
-X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6503C2420C
+	for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 12:00:33 +0000 (UTC)
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF196193;
+	Tue, 14 Nov 2023 04:00:31 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66cfd874520so30901626d6.2;
+        Tue, 14 Nov 2023 04:00:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699963230; x=1700568030; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fT89VrUM4OJhyd4A4Cn9ZU5tdEguZqAnwhZWFOOT8fs=;
+        b=afyBfB4KkIMvTEXe+bswHlpvNkc2e/yell4pxoGdVsdwZ8NkVFr2XAZJ5T3dKhcO3n
+         BYRAR7ZMp4rnyRwxPCv/Y/19zG64DhyFqPCUbPOJW5/9AtRm/oWmUQp/QjWaUoIWl0oH
+         0hxJcbgqjsc/bOEaFcQZVnBP9OlPY2KQQHx7D0SU6p1sXQx9OmYp54H+g1cICOhpshVS
+         Bv28CfPuo7RvXWKfzNNJ8FHLSxsNDjXE5MjGoxWJJzoOrSRIl5AEq/cwQlZP52bAmeud
+         zcz4LBNVLj0uQv08TifsFvCtpGP7Zhsrle5xGmRlyh5bRpGlfrVrtCbP4Qpim3xaJJZ8
+         2TTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699963230; x=1700568030;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fT89VrUM4OJhyd4A4Cn9ZU5tdEguZqAnwhZWFOOT8fs=;
+        b=Q8gXEzpD6KZxKxFL67YqaLm2nN76t+v/LYzxMdyPK6G8X7q9xZKZy50pClDHjUiemk
+         +XOveHikh8BXx+OaULFx5Ue01Y2f11hHg2/zcLraX6SgxESNrcdL1e/9ne+qUCQ3TRqE
+         9iQShBs0BMIhvEMfNEyfmGMF3VI8FTGz3U1giPmg7FZiNuzyArwCP8jMgiGz3VO5kyy3
+         iQR61ob3Sh285EuAfpOEOk+RL9KvsmY7dXRBp4YaNLho/wfn85vub3Jg/kBueVr+ZtsE
+         FjrLk8c0GB8lHhbsxfIGMo9Q036bNPfCIHokeXkfO8gGDfdM7jPnW7GewdbaqIvLQJxm
+         qDEw==
+X-Gm-Message-State: AOJu0YxLeLvQFV+UeJovhkv5GtK3rjzUhFaRR9vf0Z+fCGuPRs8u5yb0
+	kmGXh4dFBoJyWHb6FEz9gHeJKCWa89jZvADKc9oXxOQfdKTMgm/v
+X-Google-Smtp-Source: AGHT+IELivM7PdGAPOr5HMY5T+cLa3aYp631h40RVkoxQiFV0TnNHl9sZdX2KAviztPvfo3EUpARMpWi2B+gK/slfBE=
+X-Received: by 2002:ad4:4592:0:b0:66f:e3d4:2145 with SMTP id
+ x18-20020ad44592000000b0066fe3d42145mr2413827qvu.46.1699963230533; Tue, 14
+ Nov 2023 04:00:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20231112073424.4216-1-laoar.shao@gmail.com> <188dc90e-864f-4681-88a5-87401c655878@schaufler-ca.com>
+ <CALOAHbD+_0tHcm72Q6TM=EXDoZFrVWAsi4AC8_xGqK3wGkEy3g@mail.gmail.com> <ZVNIprbQU3NqwPi_@tiehlicka>
+In-Reply-To: <ZVNIprbQU3NqwPi_@tiehlicka>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Tue, 14 Nov 2023 19:59:53 +0800
+Message-ID: <CALOAHbDi_8ERHdtPB6sJdv=qewoAfGkheCfriW+QLoN0rLUQAw@mail.gmail.com>
+Subject: Re: [RFC PATCH -mm 0/4] mm, security, bpf: Fine-grained control over
+ memory policy adjustments with lsm bpf
+To: Michal Hocko <mhocko@suse.com>
+Cc: Casey Schaufler <casey@schaufler-ca.com>, akpm@linux-foundation.org, paul@paul-moore.com, 
+	jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	ligang.bdlg@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In order to help us track the data length in ingress_msg
-when using sk_msg redirect.
+On Tue, Nov 14, 2023 at 6:15=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Mon 13-11-23 11:15:06, Yafang Shao wrote:
+> > On Mon, Nov 13, 2023 at 12:45=E2=80=AFAM Casey Schaufler <casey@schaufl=
+er-ca.com> wrote:
+> > >
+> > > On 11/11/2023 11:34 PM, Yafang Shao wrote:
+> > > > Background
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > >
+> > > > In our containerized environment, we've identified unexpected OOM e=
+vents
+> > > > where the OOM-killer terminates tasks despite having ample free mem=
+ory.
+> > > > This anomaly is traced back to tasks within a container using mbind=
+(2) to
+> > > > bind memory to a specific NUMA node. When the allocated memory on t=
+his node
+> > > > is exhausted, the OOM-killer, prioritizing tasks based on oom_score=
+,
+> > > > indiscriminately kills tasks. This becomes more critical with guara=
+nteed
+> > > > tasks (oom_score_adj: -998) aggravating the issue.
+> > >
+> > > Is there some reason why you can't fix the callers of mbind(2)?
+> > > This looks like an user space configuration error rather than a
+> > > system security issue.
+> >
+> > It appears my initial description may have caused confusion. In this
+> > scenario, the caller is an unprivileged user lacking any capabilities.
+> > While a privileged user, such as root, experiencing this issue might
+> > indicate a user space configuration error, the concerning aspect is
+> > the potential for an unprivileged user to disrupt the system easily.
+> > If this is perceived as a misconfiguration, the question arises: What
+> > is the correct configuration to prevent an unprivileged user from
+> > utilizing mbind(2)?"
+>
+> How is this any different than a non NUMA (mbind) situation?
 
-Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
----
- net/ipv4/tcp_diag.c | 2 ++
- 1 file changed, 2 insertions(+)
+In a UMA system, each gigabyte of memory carries the same cost.
+Conversely, in a NUMA architecture, opting to confine processes within
+a specific NUMA node incurs additional costs. In the worst-case
+scenario, if all containers opt to bind their memory exclusively to
+specific nodes, it will result in significant memory wastage.
 
-diff --git a/net/ipv4/tcp_diag.c b/net/ipv4/tcp_diag.c
-index 01b50fa79189..b22382820a4b 100644
---- a/net/ipv4/tcp_diag.c
-+++ b/net/ipv4/tcp_diag.c
-@@ -11,6 +11,7 @@
- #include <linux/inet_diag.h>
- 
- #include <linux/tcp.h>
-+#include <linux/skmsg.h>
- 
- #include <net/netlink.h>
- #include <net/tcp.h>
-@@ -28,6 +29,7 @@ static void tcp_diag_get_info(struct sock *sk, struct inet_diag_msg *r,
- 
- 		r->idiag_rqueue = max_t(int, READ_ONCE(tp->rcv_nxt) -
- 					     READ_ONCE(tp->copied_seq), 0);
-+		r->idiag_rqueue += sk_msg_queue_len(sk);
- 		r->idiag_wqueue = READ_ONCE(tp->write_seq) - tp->snd_una;
- 	}
- 	if (info)
--- 
-2.38.1
+> You can
+> still have an unprivileged user to allocate just until the OOM triggers
+> and disrupt other workload consuming more memory. Sure the mempolicy
+> based OOM is less precise and it might select a victim with only a small
+> consumption on a target NUMA node but fundamentally the situation is
+> very similar. I do not think disallowing mbind specifically is solving a
+> real problem.
 
+How would you recommend addressing this more effectively?
+
+--=20
+Regards
+Yafang
 
