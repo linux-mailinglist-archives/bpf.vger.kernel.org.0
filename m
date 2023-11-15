@@ -1,85 +1,60 @@
-Return-Path: <bpf+bounces-15119-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51C5A7ECA18
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 18:56:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 937E17ECCC0
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 20:32:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5C61B20974
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 17:56:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5599A2810BA
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 19:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 640433DB92;
-	Wed, 15 Nov 2023 17:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7DD41223;
+	Wed, 15 Nov 2023 19:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ULIX03YG"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="r4KpT/be"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586291B8;
-	Wed, 15 Nov 2023 09:55:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700070918; x=1731606918;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=DWUvSPk8dYIik6pabuSpB3yucrVqkgv1hHSOpBoNELg=;
-  b=ULIX03YGIHg4Kq4BchbCAymhvTLSx78f6uWZtBFNuWmn+GQ3ps/CWwAT
-   HWVz8TGCqYPC3FONcJdkxCSf7ItGXaPSyM+B3Jl7T2rRcw5LRbTXD9jS+
-   vYHg1q4+VclpRtF7MYdC3U4yvEkoNFVLDNLOU7oqAaClu7HgS9k9vRYVL
-   Dtvmpp/ZC2Zp2qm1HLUyp56OwpnMj/gPJCuZ1PKHymX1Vupas2eE+JynR
-   700hiBCs5WcE2sQSgEZiq1s5+hBz3Mtp1n+tdKNF5wm4keuWh6aq7+dqI
-   AMSfGfXSwqcXinCpuwuTNb0zFrd3jU6jM4BkSRKFmA7hlaODxjVOppgVT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="375965679"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="375965679"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 09:55:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="855720236"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="855720236"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by FMSMGA003.fm.intel.com with ESMTP; 15 Nov 2023 09:55:11 -0800
-Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id B1A4837841;
-	Wed, 15 Nov 2023 17:55:09 +0000 (GMT)
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: bpf@vger.kernel.org
-Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	David Ahern <dsahern@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Anatoly Burakov <anatoly.burakov@intel.com>,
-	Alexander Lobakin <alexandr.lobakin@intel.com>,
-	Magnus Karlsson <magnus.karlsson@gmail.com>,
-	Maryam Tahhan <mtahhan@redhat.com>,
-	xdp-hints@xdp-project.net,
-	netdev@vger.kernel.org,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Tariq Toukan <tariqt@mellanox.com>,
-	Saeed Mahameed <saeedm@mellanox.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next v7 18/18] selftests/bpf: Check VLAN tag and proto in xdp_metadata
-Date: Wed, 15 Nov 2023 18:53:00 +0100
-Message-ID: <20231115175301.534113-19-larysa.zaremba@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231115175301.534113-1-larysa.zaremba@intel.com>
-References: <20231115175301.534113-1-larysa.zaremba@intel.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB05341A81;
+	Wed, 15 Nov 2023 19:32:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58D8BC433C7;
+	Wed, 15 Nov 2023 19:32:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1700076741;
+	bh=rAsmqsTaQIAgAUi/vKnMBZhkAEWhtoD02GWkqmUksj0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=r4KpT/beXeJLGNQXs/g4gmKq1TtmgyMbxx8Q+3lenAxvQnVJaDlLXklxuoQDn+pd9
+	 CWiRMSWqW8yDNoxMqqTNyMMXZLLVT+9hrXfbJHO8Dq0+xmql9J90yvBDhJAYsENM9a
+	 j2rde08plZnAuR0sfFWTE0tGVkRaYIiWLqPOQKmI=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	bpf@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@redhat.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.5 387/550] perf parse-events: Remove unused PE_PMU_EVENT_FAKE token
+Date: Wed, 15 Nov 2023 14:16:11 -0500
+Message-ID: <20231115191627.668324833@linuxfoundation.org>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
+References: <20231115191600.708733204@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,108 +63,106 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Verify, whether VLAN tag and proto are set correctly.
+6.5-stable review patch.  If anyone has any objections, please let me know.
 
-To simulate "stripped" VLAN tag on veth, send test packet from VLAN
-interface.
+------------------
 
-Also, add TO_STR() macro for convenience.
+From: Ian Rogers <irogers@google.com>
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+[ Upstream commit 84efbdb7fb8e0844a3f9c67a6bdcc89db1012e1c ]
+
+Removed by commit 70c90e4a6b2f ("perf parse-events: Avoid scanning
+PMUs before parsing").
+
+Signed-off-by: Ian Rogers <irogers@google.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Kan Liang <kan.liang@linux.intel.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: bpf@vger.kernel.org
+Link: https://lore.kernel.org/r/20230627181030.95608-2-irogers@google.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Stable-dep-of: ede72dca45b1 ("perf parse-events: Fix tracepoint name memory leak")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/prog_tests/xdp_metadata.c   | 21 +++++++++++++++++--
- .../selftests/bpf/progs/xdp_metadata.c        |  5 +++++
- tools/testing/selftests/bpf/testing_helpers.h |  3 +++
- 3 files changed, 27 insertions(+), 2 deletions(-)
+ tools/perf/util/parse-events.y | 42 ++--------------------------------
+ 1 file changed, 2 insertions(+), 40 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-index 4fcdda02c75e..21b8e0e95019 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-@@ -38,7 +38,14 @@
- #define TX_MAC "00:00:00:00:00:01"
- #define RX_MAC "00:00:00:00:00:02"
- 
-+#define VLAN_ID 59
-+#define VLAN_PROTO "802.1Q"
-+#define VLAN_PID htons(ETH_P_8021Q)
-+#define TX_NAME_VLAN TX_NAME "." TO_STR(VLAN_ID)
-+#define RX_NAME_VLAN RX_NAME "." TO_STR(VLAN_ID)
-+
- #define XDP_RSS_TYPE_L4 BIT(3)
-+#define VLAN_VID_MASK 0xfff
- 
- struct xsk {
- 	void *umem_area;
-@@ -215,6 +222,12 @@ static int verify_xsk_metadata(struct xsk *xsk)
- 	if (!ASSERT_NEQ(meta->rx_hash_type & XDP_RSS_TYPE_L4, 0, "rx_hash_type"))
- 		return -1;
- 
-+	if (!ASSERT_EQ(meta->rx_vlan_tci & VLAN_VID_MASK, VLAN_ID, "rx_vlan_tci"))
-+		return -1;
-+
-+	if (!ASSERT_EQ(meta->rx_vlan_proto, VLAN_PID, "rx_vlan_proto"))
-+		return -1;
-+
- 	xsk_ring_cons__release(&xsk->rx, 1);
- 	refill_rx(xsk, comp_addr);
- 
-@@ -248,10 +261,14 @@ void test_xdp_metadata(void)
- 
- 	SYS(out, "ip link set dev " TX_NAME " address " TX_MAC);
- 	SYS(out, "ip link set dev " TX_NAME " up");
--	SYS(out, "ip addr add " TX_ADDR "/" PREFIX_LEN " dev " TX_NAME);
-+
-+	SYS(out, "ip link add link " TX_NAME " " TX_NAME_VLAN
-+		 " type vlan proto " VLAN_PROTO " id " TO_STR(VLAN_ID));
-+	SYS(out, "ip link set dev " TX_NAME_VLAN " up");
-+	SYS(out, "ip addr add " TX_ADDR "/" PREFIX_LEN " dev " TX_NAME_VLAN);
- 
- 	/* Avoid ARP calls */
--	SYS(out, "ip -4 neigh add " RX_ADDR " lladdr " RX_MAC " dev " TX_NAME);
-+	SYS(out, "ip -4 neigh add " RX_ADDR " lladdr " RX_MAC " dev " TX_NAME_VLAN);
- 	close_netns(tok);
- 
- 	tok = open_netns(RX_NETNS_NAME);
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-index d151d406a123..2c6c46ef8502 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-@@ -23,6 +23,9 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
- 				    enum xdp_rss_hash_type *rss_type) __ksym;
-+extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
-+					__be16 *vlan_proto,
-+					__u16 *vlan_tci) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -57,6 +60,8 @@ int rx(struct xdp_md *ctx)
- 		meta->rx_timestamp = 1;
- 
- 	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
-+	bpf_xdp_metadata_rx_vlan_tag(ctx, &meta->rx_vlan_proto,
-+				     &meta->rx_vlan_tci);
- 
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index c590cf7f02a45..43557f20d0989 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -70,7 +70,7 @@ static void free_list_evsel(struct list_head* list_evsel)
+ %token PE_LEGACY_CACHE
+ %token PE_PREFIX_MEM PE_PREFIX_RAW PE_PREFIX_GROUP
+ %token PE_ERROR
+-%token PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
++%token PE_KERNEL_PMU_EVENT
+ %token PE_ARRAY_ALL PE_ARRAY_RANGE
+ %token PE_DRV_CFG_TERM
+ %token PE_TERM_HW
+@@ -88,7 +88,7 @@ static void free_list_evsel(struct list_head* list_evsel)
+ %type <str> PE_MODIFIER_EVENT
+ %type <str> PE_MODIFIER_BP
+ %type <str> PE_EVENT_NAME
+-%type <str> PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
++%type <str> PE_KERNEL_PMU_EVENT
+ %type <str> PE_DRV_CFG_TERM
+ %type <str> name_or_raw name_or_legacy
+ %destructor { free ($$); } <str>
+@@ -421,44 +421,6 @@ PE_KERNEL_PMU_EVENT opt_pmu_config
+ 		YYABORT;
+ 	$$ = list;
  }
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index 5b7a55136741..35284faff4f2 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -9,6 +9,9 @@
- #include <bpf/libbpf.h>
- #include <time.h>
+-|
+-PE_PMU_EVENT_FAKE sep_dc
+-{
+-	struct list_head *list;
+-	int err;
+-
+-	list = alloc_list();
+-	if (!list)
+-		YYABORT;
+-
+-	err = parse_events_add_pmu(_parse_state, list, $1, /*head_config=*/NULL,
+-				   /*auto_merge_stats=*/false);
+-	free($1);
+-	if (err < 0) {
+-		free(list);
+-		YYABORT;
+-	}
+-	$$ = list;
+-}
+-|
+-PE_PMU_EVENT_FAKE opt_pmu_config
+-{
+-	struct list_head *list;
+-	int err;
+-
+-	list = alloc_list();
+-	if (!list)
+-		YYABORT;
+-
+-	err = parse_events_add_pmu(_parse_state, list, $1, $2, /*auto_merge_stats=*/false);
+-	free($1);
+-	parse_events_terms__delete($2);
+-	if (err < 0) {
+-		free(list);
+-		YYABORT;
+-	}
+-	$$ = list;
+-}
  
-+#define __TO_STR(x) #x
-+#define TO_STR(x) __TO_STR(x)
-+
- int parse_num_list(const char *s, bool **set, int *set_len);
- __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info);
- int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
+ value_sym:
+ PE_VALUE_SYM_HW
 -- 
-2.41.0
+2.42.0
+
+
 
 
