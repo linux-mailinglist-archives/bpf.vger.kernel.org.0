@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-15112-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15113-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C984F7ECA06
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 18:55:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60B387ECA08
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 18:56:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3E20B20C8B
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 17:55:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BB271F27F10
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 17:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2684364B8;
-	Wed, 15 Nov 2023 17:55:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7121B364D5;
+	Wed, 15 Nov 2023 17:55:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mUhBvkdH"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jzx+Obj/"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34331B6;
-	Wed, 15 Nov 2023 09:54:59 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FB11A8;
+	Wed, 15 Nov 2023 09:55:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700070899; x=1731606899;
+  t=1700070900; x=1731606900;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=LbEfOd6Jv0NpBeUgIYPCjCItPjwBYGhWlvKUQmRQGLI=;
-  b=mUhBvkdHMXEDSoGMN/7gl5TO/zTeRdseDammAensnbR8WXe7a+y7FLpB
-   RScmjOFzCsta5Nz+VUSLFvMO0MtUDfwD2O66RPXQQn7Epw+FMktGXaDGF
-   aSeJ+3mtUL7o2nMoZxwzOCUY2EsvXn0iB3C6GC/iTrwjP0Q/IH7cX5LCC
-   5Co1N42FBSY45vsJQq4Ifhll2TspXlwav5+f/AVOAOzXDvZ8BYVN75jyT
-   S0o2GtN8I7q2Qhu4qRsD2FIxSQdxTaOQItezAjHPxXucGaJlrMQVSWTa9
-   ZKFptTDh9egwPIArRx3arP8f9c8DINlIx/30J+V43EKPejhGuN3igg4aG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="375965537"
+  bh=j6gwKVjN5zDhrI8Qg8CP0sWoCX1TV6Jz0KKQcNP7yvU=;
+  b=Jzx+Obj/iykFKydCb6vc8diFoaw4OszjBLOVoOvAfpuVjbTxM/NK290d
+   gI5POZHI1Ox/G6l4mWohkto4K7n2sJGYtYilkMEI1fm0csb+NvG/VYYkS
+   jRg9l/+QmFQKwrM7A6a9w/JABUPp/f2Lwg/bqxAYioOWbLOipx2gVVBBl
+   DLIKuEJy4isjJLH02dlQcLSE1exdyKyz3w3Cnzlu+Mq1X4BUXYR0rH/hI
+   vDdmoCNT1zR9N1B1R5bkSALT2V85wF8hrxtHxaiEGuV/gtMVc8KBMrQP0
+   beKE1RXnldxC4V+5PDl2g36tnDV1jb97pz5X1HxSjOR2a2wPyHH0/nHat
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="375965548"
 X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="375965537"
+   d="scan'208";a="375965548"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 09:54:59 -0800
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 09:55:00 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="855719954"
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="855719970"
 X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="855719954"
+   d="scan'208";a="855719970"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by FMSMGA003.fm.intel.com with ESMTP; 15 Nov 2023 09:54:51 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 15 Nov 2023 09:54:54 -0800
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id A72F03581D;
-	Wed, 15 Nov 2023 17:54:48 +0000 (GMT)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 800703581F;
+	Wed, 15 Nov 2023 17:54:51 +0000 (GMT)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -74,9 +74,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Tariq Toukan <tariqt@mellanox.com>,
 	Saeed Mahameed <saeedm@mellanox.com>,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next v7 11/18] ice: use VLAN proto from ring packet context in skb path
-Date: Wed, 15 Nov 2023 18:52:53 +0100
-Message-ID: <20231115175301.534113-12-larysa.zaremba@intel.com>
+Subject: [PATCH bpf-next v7 12/18] veth: Implement VLAN tag XDP hint
+Date: Wed, 15 Nov 2023 18:52:54 +0100
+Message-ID: <20231115175301.534113-13-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231115175301.534113-1-larysa.zaremba@intel.com>
 References: <20231115175301.534113-1-larysa.zaremba@intel.com>
@@ -88,64 +88,52 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-VLAN proto, used in ice XDP hints implementation is stored in ring packet
-context. Utilize this value in skb VLAN processing too instead of checking
-netdev features.
+In order to test VLAN tag hint in hardware-independent selftests, implement
+newly added hint in veth driver.
 
-At the same time, use vlan_tci instead of vlan_tag in touched code,
-because VLAN tag often refers to VLAN proto and VLAN TCI combined,
-while in the code we clearly store only VLAN TCI.
-
+Acked-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 14 +++++---------
- drivers/net/ethernet/intel/ice/ice_txrx_lib.h |  2 +-
- 2 files changed, 6 insertions(+), 10 deletions(-)
+ drivers/net/veth.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-index 63bf9f882363..a1f5243299c5 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-@@ -246,21 +246,17 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
-  * ice_receive_skb - Send a completed packet up the stack
-  * @rx_ring: Rx ring in play
-  * @skb: packet to send up
-- * @vlan_tag: VLAN tag for packet
-+ * @vlan_tci: VLAN TCI for packet
-  *
-  * This function sends the completed packet (via. skb) up the stack using
-  * gro receive functions (with/without VLAN tag)
-  */
- void
--ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag)
-+ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tci)
- {
--	netdev_features_t features = rx_ring->netdev->features;
--	bool non_zero_vlan = !!(vlan_tag & VLAN_VID_MASK);
--
--	if ((features & NETIF_F_HW_VLAN_CTAG_RX) && non_zero_vlan)
--		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q), vlan_tag);
--	else if ((features & NETIF_F_HW_VLAN_STAG_RX) && non_zero_vlan)
--		__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021AD), vlan_tag);
-+	if ((vlan_tci & VLAN_VID_MASK) && rx_ring->vlan_proto)
-+		__vlan_hwaccel_put_tag(skb, rx_ring->vlan_proto,
-+				       vlan_tci);
- 
- 	napi_gro_receive(&rx_ring->q_vector->napi, skb);
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 9980517ed8b0..b6617784e7d3 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1743,6 +1743,24 @@ static int veth_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash,
+ 	return 0;
  }
-diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-index 3893af1c11f3..762047508619 100644
---- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-+++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-@@ -150,7 +150,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
- 		       union ice_32b_rx_flex_desc *rx_desc,
- 		       struct sk_buff *skb);
- void
--ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag);
-+ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tci);
  
- static inline void
- ice_xdp_meta_set_desc(struct xdp_buff *xdp,
++static int veth_xdp_rx_vlan_tag(const struct xdp_md *ctx, __be16 *vlan_proto,
++				u16 *vlan_tci)
++{
++	const struct veth_xdp_buff *_ctx = (void *)ctx;
++	const struct sk_buff *skb = _ctx->skb;
++	int err;
++
++	if (!skb)
++		return -ENODATA;
++
++	err = __vlan_hwaccel_get_tag(skb, vlan_tci);
++	if (err)
++		return err;
++
++	*vlan_proto = skb->vlan_proto;
++	return err;
++}
++
+ static const struct net_device_ops veth_netdev_ops = {
+ 	.ndo_init            = veth_dev_init,
+ 	.ndo_open            = veth_open,
+@@ -1767,6 +1785,7 @@ static const struct net_device_ops veth_netdev_ops = {
+ static const struct xdp_metadata_ops veth_xdp_metadata_ops = {
+ 	.xmo_rx_timestamp		= veth_xdp_rx_timestamp,
+ 	.xmo_rx_hash			= veth_xdp_rx_hash,
++	.xmo_rx_vlan_tag		= veth_xdp_rx_vlan_tag,
+ };
+ 
+ #define VETH_FEATURES (NETIF_F_SG | NETIF_F_FRAGLIST | NETIF_F_HW_CSUM | \
 -- 
 2.41.0
 
