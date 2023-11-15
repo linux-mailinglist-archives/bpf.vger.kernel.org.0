@@ -1,119 +1,103 @@
-Return-Path: <bpf+bounces-15128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A0A77ED10E
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 20:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D21237ED1F4
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 21:25:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C810D2817AB
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 19:59:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86920280EEC
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 20:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209753EA7E;
-	Wed, 15 Nov 2023 19:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BCDD446A0;
+	Wed, 15 Nov 2023 20:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="K7mv8naE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NGDADwOZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF3E3EA62;
-	Wed, 15 Nov 2023 19:59:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DA8AC433C8;
-	Wed, 15 Nov 2023 19:59:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700078347;
-	bh=NNVtTDSA2SCvFpMrYU8VXGiEIFvdbpZIOK5Y/8yQ6a8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K7mv8naEtjyL3BxoKq+6BJEi1epzDxU7ZrXJ1gyFA7eiRTZeMeyfGSJVefvujdCaM
-	 WENf4RLw2hr6bjfOzYU5Tw6I0BxyDsUQ5KA0xcyndE2mIFiqRM8OF2NRtnQSZponkV
-	 c23p2YpC/nUlWAIWZA9S/scRVmAka42pP8hwXwFk=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	Ian Rogers <irogers@google.com>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	bpf@vger.kernel.org,
-	Namhyung Kim <namhyung@kernel.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 266/379] perf record: Fix BTF type checks in the off-cpu profiling
-Date: Wed, 15 Nov 2023 14:25:41 -0500
-Message-ID: <20231115192700.865914644@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231115192645.143643130@linuxfoundation.org>
-References: <20231115192645.143643130@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA1EDD
+	for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 12:25:14 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32fa7d15f4eso53839f8f.3
+        for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 12:25:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700079913; x=1700684713; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qUHP9AL4gVsfND2YM3oThE2mo1Ynufz44UsMsvpKGt8=;
+        b=NGDADwOZYCXmMeAALg/WTDRHApti/WlP1q0S+J/8uMt1zl0JihOycVZxwexBRHHh52
+         AOpGsRo3CHavLNWRO//xOMO1GebvvE3BEXlPaMVpkzFh1WSZuy9vfTQQ0yx0OBBId6cs
+         6jSDL5T3uWF2duSnnb/s6JkyECsHiKbMP0+AxOpEK8wYveQ/Ov455X1qp1WxDKKdEE55
+         EzpIf96Ju6cLetOOmKcovkGMQAoiTE6Md/yuxExR+CceHtx31uEX/OmZxXBPH+5x3Piu
+         Zaq2Um4MqDVVPOuQvF34vjFwo4zR/U20kbI07ikLsZjGGHdW2OBix9qr5uiH6iuKJY+c
+         LTZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700079913; x=1700684713;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qUHP9AL4gVsfND2YM3oThE2mo1Ynufz44UsMsvpKGt8=;
+        b=JRk166FBwM29iPFdUeQMpHA65uey2b92dAn81MAsUxComJaAg5SkL3YVMcedrJv4Sb
+         RmoZfhDNKnDo7qwx38wZYRkgwiSvKJztjeCJacmAWNOiTX7VbwcLKnBBfaTMO9sWbehV
+         HxQ3ZA4H01KIJzvQWs7tntKiLO/Rf83bMVHDHGlG7ViXTqb16HVA0XImk4H5BHC5V603
+         +az2PceOC6+XtqF9vrz+xyLX6ONci9lTaxH/oTO+1iDNeavroJPLRB5PebHjQwMeAF58
+         DjpIUDs8f2PVP1WwluvRKlPMXxgMVKpq2w9osnMEPhE3NORHUpjucXTyipIJQAgCW9XJ
+         94Fg==
+X-Gm-Message-State: AOJu0YwO5XVBKu8ToT5OXybLLgpWtdCeNP7/RzaN/Gm3R1nCN/2x5Ahy
+	2iPB9MdkUf/J7zTXSKJfqx+82IigmR/QMRspFGs=
+X-Google-Smtp-Source: AGHT+IGRlSTedOjnT5IBsLfsCKLpFuQt8dL51JG2NA0ygxMk6IZrNCvUaabyzqdqqenv56UE4kEC6wjho6VdEzhTWQw=
+X-Received: by 2002:a5d:6483:0:b0:32d:ae31:458b with SMTP id
+ o3-20020a5d6483000000b0032dae31458bmr9234757wri.52.1700079912764; Wed, 15 Nov
+ 2023 12:25:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231112010609.848406-1-andrii@kernel.org> <20231112010609.848406-5-andrii@kernel.org>
+In-Reply-To: <20231112010609.848406-5-andrii@kernel.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 15 Nov 2023 12:25:01 -0800
+Message-ID: <CAADnVQJZr3Za=oM9VeTeY0BGL6rymSHSsKqEWVSJmkRhSvcsHA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 04/13] bpf: add register bounds sanity checks
+ and sanitization
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>, Eduard Zingerman <eddyz87@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-6.1-stable review patch.  If anyone has any objections, please let me know.
+On Sat, Nov 11, 2023 at 5:06=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+>
+> By default, sanity violation will trigger a warning in verifier log and
+> resetting register bounds to "unbounded" ones. But to aid development
+> and debugging, BPF_F_TEST_SANITY_STRICT flag is added, which will
+> trigger hard failure of verification with -EFAULT on register bounds
+> violations. This allows selftests to catch such issues. veristat will
+> also gain a CLI option to enable this behavior.
+...
+> +       bool test_sanity_strict;        /* fail verification on sanity vi=
+olations */
+...
+> +/* The verifier internal test flag. Behavior is undefined */
+> +#define BPF_F_TEST_SANITY_STRICT       (1U << 7)
 
-------------------
+Applied, but please follow up with a rename.
 
-From: Namhyung Kim <namhyung@kernel.org>
-
-[ Upstream commit 0e501a65d35bf72414379fed0e31a0b6b81ab57d ]
-
-The BTF func proto for a tracepoint has one more argument than the
-actual tracepoint function since it has a context argument at the
-begining.  So it should compare to 5 when the tracepoint has 4
-arguments.
-
-  typedef void (*btf_trace_sched_switch)(void *, bool, struct task_struct *, struct task_struct *, unsigned int);
-
-Also, recent change in the perf tool would use a hand-written minimal
-vmlinux.h to generate BTF in the skeleton.  So it won't have the info
-of the tracepoint.  Anyway it should use the kernel's vmlinux BTF to
-check the type in the kernel.
-
-Fixes: b36888f71c85 ("perf record: Handle argument change in sched_switch")
-Reviewed-by: Ian Rogers <irogers@google.com>
-Acked-by: Song Liu <song@kernel.org>
-Cc: Hao Luo <haoluo@google.com>
-CC: bpf@vger.kernel.org
-Link: https://lore.kernel.org/r/20230922234444.3115821-1-namhyung@kernel.org
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- tools/perf/util/bpf_off_cpu.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/util/bpf_off_cpu.c b/tools/perf/util/bpf_off_cpu.c
-index 01f70b8e705a8..21f4d9ba023d9 100644
---- a/tools/perf/util/bpf_off_cpu.c
-+++ b/tools/perf/util/bpf_off_cpu.c
-@@ -98,7 +98,7 @@ static void off_cpu_finish(void *arg __maybe_unused)
- /* v5.18 kernel added prev_state arg, so it needs to check the signature */
- static void check_sched_switch_args(void)
- {
--	const struct btf *btf = bpf_object__btf(skel->obj);
-+	const struct btf *btf = btf__load_vmlinux_btf();
- 	const struct btf_type *t1, *t2, *t3;
- 	u32 type_id;
- 
-@@ -116,7 +116,8 @@ static void check_sched_switch_args(void)
- 		return;
- 
- 	t3 = btf__type_by_id(btf, t2->type);
--	if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) == 4) {
-+	/* btf_trace func proto has one more argument for the context */
-+	if (t3 && btf_is_func_proto(t3) && btf_vlen(t3) == 5) {
- 		/* new format: pass prev_state as 4th arg */
- 		skel->rodata->has_prev_state = true;
- 	}
--- 
-2.42.0
-
-
-
+The name of the flag here in uapi and in the "veristat --test-sanity"
+will be a subject of bad jokes.
+The flag is asking the verifier to test its own sanity?
+Can the verifier go insane?
+Let's call it TEST_RANGE_ACCOUNTING or something.
+I'm guessing you didn't qualify it with 'range' to reuse it
+in the future for other 'sanity' checks?
+We can add another flag later.
+Like BPF_F_TEST_STATE_FREQ is pretty specific and it's a good thing.
+I think being specific like BPF_F_TEST_RANGE_TRACKING or
+RANGE_ACCOUNTING is better long term.
 
