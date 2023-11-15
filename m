@@ -1,110 +1,103 @@
-Return-Path: <bpf+bounces-15080-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15081-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105257EBAA0
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 01:36:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC49B7EBAAC
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 01:46:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEB102813CA
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 00:36:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C5611C20AC6
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 00:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4DB119D;
-	Wed, 15 Nov 2023 00:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="GiYsYDBn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4042739E;
+	Wed, 15 Nov 2023 00:46:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BF5F625
-	for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 00:36:45 +0000 (UTC)
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BCCD9
-	for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 16:36:44 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5b383b4184fso73573067b3.1
-        for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 16:36:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1700008603; x=1700613403; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XIevNFu0KUbpOnxFdIZtIm8Qr94xdqJKRuJSXcWfDnI=;
-        b=GiYsYDBnbZJcg3vR66S8+0BJxtZp9z/Slh4JphC6UIgACccPylHI0Cn2cJ0gWqpFGx
-         OqFP+XcfjrMMj/CcBSsB7yVpskmHS8+9KBGJdCjK4EvZicUYiHlqSTaC+difjEmPyovO
-         LFmsSmd5qYfCCk1xYvu56E7yrXpNptkzDql1OOWa82y4VolVQaTVTi0EUdY/Apx3HXno
-         i6ig3IeAUhUAkZZzYdPowT+/QtDH7BNwH0z2+9Df3mwQ2DfNkGdcjf5u4+/gyFasCZhh
-         KCxTF4c35O85Ljhf/aX8/7PwdADnWBR0KY+el7RINGmRbHisvxtuPX3B1ME+AWZqHS07
-         rAMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700008603; x=1700613403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XIevNFu0KUbpOnxFdIZtIm8Qr94xdqJKRuJSXcWfDnI=;
-        b=bAhPW7LG8v8Mtz+k+z5N8RDprSmhjukk4CrRAcvUcsUx1Y+T5KJwCoYwrILB0FU5hh
-         35r5emTM6l04BKTR44nm5UhXwGqurO3vdrXCsYbPUgeerAagHplHbHBkk5zoN61aXZqk
-         De2qadobBtG/Qodwz8nVnZDfi7tSFcRindrNvcr8f/Khuo+GOP+A/wK9djka0tTrmQsJ
-         eDPrrviPPY+7g3my89sYmW9sYlRQc8IjgSPUnrAoClDj+NIKQqhQarJrt7dcYv21FPFq
-         M9S5lHlhGNQaK3YNZ9B7NoWlPl8Oq7lmUIUJWH/keigNL3YvBU8hi+nktK/mLI+Lr0+H
-         2ctg==
-X-Gm-Message-State: AOJu0YxbeCCL+ZhzB2JQyMwqKx8zZQsGjLTYr2EtgvBW+Zo1LK5i3wym
-	+xfsRtH8m3LvPQJkp2hglnNrS4U7YaMpqbCdWtlZ
-X-Google-Smtp-Source: AGHT+IHE1hSQfo7fzHFpI5FuO+9eFgNwa7xnRAVut/1YkucrvGMMZKLpFYyO5r9YrEujw78LA4Gm1aFof4buCYXsFDk=
-X-Received: by 2002:a25:da86:0:b0:d81:9612:46fe with SMTP id
- n128-20020a25da86000000b00d81961246femr10810780ybf.57.1700008603554; Tue, 14
- Nov 2023 16:36:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E621839F
+	for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 00:45:56 +0000 (UTC)
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9FE4DC
+	for <bpf@vger.kernel.org>; Tue, 14 Nov 2023 16:45:52 -0800 (PST)
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id B245A240027
+	for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 01:45:50 +0100 (CET)
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4SVPbd5kJpz9rxF
+	for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 01:45:49 +0100 (CET)
+Date: Wed, 15 Nov 2023 00:45:46 +0000
+From: Daniel =?utf-8?Q?M=C3=BCller?= <deso@posteo.net>
+To: bpf@vger.kernel.org
+Subject: BPF CI email notifications
+Message-ID: <eirb3ygold3flp7p6gtj76pii2q43mli6ocoe5btqwwwz36vsw@tnvv4w2ekgz3>
+Reply-To: kernel-ci@meta.com
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231024161432.97029-2-paul@paul-moore.com> <a5650045-164f-4bff-b688-ddbc66dc95c4@canonical.com>
- <CAHC9VhR-5uK=D0r3zDDsHegjiEqEuhsBhBqLTZ7Xm2PPup64oA@mail.gmail.com>
- <CAGudoHEAes9Avq4EKqNCFwKd_AQPhQE4v6Z3LYCZasJqQXKtjA@mail.gmail.com>
- <20231114092903.GA590929@alecto.usersys.redhat.com> <CAGudoHEDXaPTN1icH64Ff9rOJPJmr6ek-nCUhWtzUb0JqbXDzw@mail.gmail.com>
- <CAHC9VhSjJ+ZgScF9f=8Fyovn15tKgaqFdV1qZxp=RWiuZSAdAA@mail.gmail.com> <CAGudoHFGT2QaMGLzePtY23AQk85Uy2uMKDV08n_ep6k-7EE0zQ@mail.gmail.com>
-In-Reply-To: <CAGudoHFGT2QaMGLzePtY23AQk85Uy2uMKDV08n_ep6k-7EE0zQ@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 14 Nov 2023 19:36:32 -0500
-Message-ID: <CAHC9VhREsz5A5GvmYRmA9+ZUypjFtc72eJoMOSv_QmBxZMaLFw@mail.gmail.com>
-Subject: Re: [PATCH v2] audit: don't take task_lock() in audit_exe_compare()
- code path
-To: Mateusz Guzik <mjguzik@gmail.com>
-Cc: Artem Savkov <asavkov@redhat.com>, John Johansen <john.johansen@canonical.com>, 
-	audit@vger.kernel.org, Andreas Steinmetz <anstein99@googlemail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, Nov 14, 2023 at 5:32=E2=80=AFPM Mateusz Guzik <mjguzik@gmail.com> w=
-rote:
-> On 11/14/23, Paul Moore <paul@paul-moore.com> wrote:
-> > On Tue, Nov 14, 2023 at 5:33=E2=80=AFAM Mateusz Guzik <mjguzik@gmail.co=
-m> wrote:
-> >> On 11/14/23, Artem Savkov <asavkov@redhat.com> wrote:
-> >> > On Tue, Oct 24, 2023 at 07:59:18PM +0200, Mateusz Guzik wrote:
+Hi everyone,
 
-...
+As I am sure most of you are aware, BPF has a CI system that runs on all patch
+submissions. Details have been presented at various conferences, with several
+recordings and slide decks detailing workings available (e.g., [0]). In the past
+this system has, in large parts, been a tool for maintainers to quickly spot
+problems, as results get bubbled up to Patchwork [1].
 
-> > I'm going to drop the WARN_ON_ONCE() since there is always a risk of
-> > eBPF doing something odd and I don't want to have to keep revisiting
-> > this each time to figure out what is at fault.
-> >
-> > Thanks for reporting this Artem, I'll put together a patch and run it
-> > overnight, if everything looks good in the morning I'll post it for
-> > review, comment, etc. before sending it up to Linus.
->
-> SGTM. Hopefully we can put the matter to rest after that. ;)
+We believe that it is equally important for patch submitters to be made aware of
+CI results. To that end, we added support for email notifications to the CI
+system a while back. For some time now, these notifications had been enabled for
+chosen Meta BPF developers as well as BPF maintainers to gather and address
+feedback.
 
-I was still online when the test finished, so I've gone ahead and
-posted the patch, lore link below:
+At this point, we would like to take the next step and have notification emails
+go out to *all* patch submitters.
 
-https://lore.kernel.org/audit/20231115003113.433773-2-paul@paul-moore.com
+# What to expect
 
---=20
-paul-moore.com
+Everybody submitting a patch will be informed about success or failure of said
+submission once CI concluded or a failure has been detected via email. A link to
+the GitHub Actions run will be included (e.g., [2]), which allows for quick
+navigation to the individual failed test runs in case of failure.
+
+All emails originate from bot+bpf-ci@kernel.org, allowing for easy filtering.
+
+Note that as per our current CI design, patches are effectively tested
+continuously. That is, if an update is pushed to the upstream branch (bpf or
+bpf-next), the patch will be rebased and retested. An email notification will
+only be sent if the current result is different from what it was before (i.e.,
+success -> failure or failure -> success). New patch versions (e.g., update from
+v1 -> v2) will always trigger a new email initially.
+
+Please also note that while the Kernel CI team at Meta tries to address
+infrastructure issues affecting the CI system in a timely manner, we do not have
+the resources to fix all sources of selftest flakiness. We encourage everyone to
+send out fixes addressing problems, including when not directly caused by their
+submission. It is in this context that submissions such as Tao's recent
+test_maps fix [3] are very valuable and will only become more so as test
+flakiness has the potential to affect more people (thanks!).
+
+# Moving forward
+
+If you have any concerns or want to be excluded from CI emails for your
+submissions, please reach out to kernel-ci@meta.com. If not, expect to receive
+email notifications for your own patch submissions starting some time next week.
+Once enabled, please feel free to share any feedback you have with
+kernel-ci@meta.com. Eventually, our intent is to CC the bpf mailing list on
+all such CI emails.
+
+Regards,
+Daniel (on behalf of the Kernel CI team at Meta)
+
+[0] http://vger.kernel.org/bpfconf2022_material/lsfmmbpf2022-bpf-ci.pdf
+[1] https://patchwork.kernel.org/project/netdevbpf/list/
+[2] https://github.com/kernel-patches/bpf/actions/runs/6867078893
+[3] https://lore.kernel.org/bpf/20231101032455.3808547-1-houtao@huaweicloud.com/
 
