@@ -1,218 +1,129 @@
-Return-Path: <bpf+bounces-15091-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15092-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C9B87EBFEC
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 11:05:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE0457EC168
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 12:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 730791C208FC
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 10:05:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 080F41C2091C
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 11:45:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3BD1C2EE;
-	Wed, 15 Nov 2023 10:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T6sxZnuL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED3EE17728;
+	Wed, 15 Nov 2023 11:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1683E947F;
-	Wed, 15 Nov 2023 10:05:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5126BC433C7;
-	Wed, 15 Nov 2023 10:05:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700042721;
-	bh=DZed9r/uuffRfe8k59h8AmxiUG073vO6ie7IjrT87lQ=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=T6sxZnuLR6e7N9aXymb2tIfTziRk/3poR8ZcYZhPWeut0365Va7yc+RLZPoj58BRC
-	 h7+Z2xCfrC7zvujGof+obMMhIl+QUc4RqrnBGX+URz39uFfqfSuTslo3wT1e+Rj2u4
-	 c7BfZbjbZKUhF0vf42HcOhE7B1O1nGGE619LFWh6gBIJqFL0+28nxvALEcRSJQIzwr
-	 V1zl6Rp4TKMky1/tPsqxhE1fV/GspKUKxmYwzjUzCbkDODa9Jlg7/8tJgSV/HyfJXr
-	 ZlmGoOXBEXKzYO+59hfsSmVdn4c7P1vYry9jSXrVzqgr/ZBKsDf9rMsyOHx3ML00OE
-	 O0TOb6vqYlI+g==
-Message-ID: <be6186c1-52ee-42aa-b53c-39781af3a1ec@kernel.org>
-Date: Wed, 15 Nov 2023 11:05:12 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0579171A3;
+	Wed, 15 Nov 2023 11:45:28 +0000 (UTC)
+Received: from wangsu.com (unknown [180.101.34.75])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id C2AD6E9;
+	Wed, 15 Nov 2023 03:45:26 -0800 (PST)
+Received: from XMCDN1207038 (unknown [59.61.78.234])
+	by app2 (Coremail) with SMTP id SyJltADn7QlQr1RlDnFeAA--.25295S2;
+	Wed, 15 Nov 2023 19:45:21 +0800 (CST)
+From: "Pengcheng Yang" <yangpc@wangsu.com>
+To: "'John Fastabend'" <john.fastabend@gmail.com>,
+	"'Jakub Sitnicki'" <jakub@cloudflare.com>,
+	"'Eric Dumazet'" <edumazet@google.com>,
+	"'Jakub Kicinski'" <kuba@kernel.org>,
+	<bpf@vger.kernel.org>,
+	<netdev@vger.kernel.org>
+References: <1699962120-3390-1-git-send-email-yangpc@wangsu.com> <1699962120-3390-3-git-send-email-yangpc@wangsu.com> <6554713028d5b_3733620856@john.notmuch>
+In-Reply-To: <6554713028d5b_3733620856@john.notmuch>
+Subject: Re: [PATCH bpf-next 2/3] tcp: Add the data length in skmsg to SIOCINQ ioctl
+Date: Wed, 15 Nov 2023 19:45:20 +0800
+Message-ID: <000101da17b9$36951720$a3bf4560$@wangsu.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: hawk@kernel.org, bpf@vger.kernel.org, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
- haoluo@google.com, jolsa@kernel.org, kuba@kernel.org, toke@kernel.org,
- willemb@google.com, dsahern@kernel.org, magnus.karlsson@intel.com,
- bjorn@kernel.org, maciej.fijalkowski@intel.com, yoong.siang.song@intel.com,
- netdev@vger.kernel.org, xdp-hints@xdp-project.net
-Subject: Re: [PATCH bpf-next v5 02/13] xsk: Add TX timestamp and TX checksum
- offload support
-Content-Language: en-US
-To: Stanislav Fomichev <sdf@google.com>
-References: <20231102225837.1141915-1-sdf@google.com>
- <20231102225837.1141915-3-sdf@google.com>
- <c9bfe356-1942-4e49-b025-115faeec39dd@kernel.org>
- <CAKH8qBtiv8ArtbbMW9+c75y+NfkX-Tk-rcPuHBVdKDMmmFdtdA@mail.gmail.com>
- <2ed17b27-f211-4f58-95b5-5a71914264f3@kernel.org>
- <ZVJWuB4qtWfC-W_h@google.com>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <ZVJWuB4qtWfC-W_h@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHO/J1mBkmXfIRCzv54wVJwMMBhiQJx1G0UAqlCf8SwaJ/CIA==
+Content-Language: zh-cn
+X-CM-TRANSID:SyJltADn7QlQr1RlDnFeAA--.25295S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr18XF4DWF45Gw4UWr4xCrg_yoW5XryrpF
+	WrK3Z3Ar4kGrW8ArWvkr4fXa12k397KF13XF1kA3y5Zws8CFySyr45GF1YvF4ktr4ruw4Y
+	vrW0grWvkas8Za7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU92b7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+	cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+	v20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK
+	6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4
+	CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v2
+	6r1j6r4UMcIj6x8ErcxFaVAv8VW8GwAv7VCY1x0262k0Y48FwI0_Cr0_Gr1UMcvjeVCFs4
+	IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY02Av
+	z4vE14v_Gw4l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8GwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
+	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
+	BIdaVFxhVjvjDU0xZFpf9x07b82-5UUUUU=
+X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
 
-
-
-On 11/13/23 18:02, Stanislav Fomichev wrote:
-> On 11/13, Jesper Dangaard Brouer wrote:
->>
->>
->> On 11/13/23 15:10, Stanislav Fomichev wrote:
->>> On Mon, Nov 13, 2023 at 5:16 AM Jesper Dangaard Brouer <hawk@kernel.org> wrote:
->>>>
->>>>
->>>> On 11/2/23 23:58, Stanislav Fomichev wrote:
->>>>> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
->>>>> index 2ecf79282c26..b0ee7ad19b51 100644
->>>>> --- a/include/uapi/linux/if_xdp.h
->>>>> +++ b/include/uapi/linux/if_xdp.h
->>>>> @@ -106,6 +106,41 @@ struct xdp_options {
->>>>>     #define XSK_UNALIGNED_BUF_ADDR_MASK \
->>>>>         ((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
->>>>>
->>>>> +/* Request transmit timestamp. Upon completion, put it into tx_timestamp
->>>>> + * field of struct xsk_tx_metadata.
->>>>> + */
->>>>> +#define XDP_TXMD_FLAGS_TIMESTAMP             (1 << 0)
->>>>> +
->>>>> +/* Request transmit checksum offload. Checksum start position and offset
->>>>> + * are communicated via csum_start and csum_offset fields of struct
->>>>> + * xsk_tx_metadata.
->>>>> + */
->>>>> +#define XDP_TXMD_FLAGS_CHECKSUM                      (1 << 1)
->>>>> +
->>>>> +/* AF_XDP offloads request. 'request' union member is consumed by the driver
->>>>> + * when the packet is being transmitted. 'completion' union member is
->>>>> + * filled by the driver when the transmit completion arrives.
->>>>> + */
->>>>> +struct xsk_tx_metadata {
->>>>> +     union {
->>>>> +             struct {
->>>>> +                     __u32 flags;
->>>>> +
->>>>> +                     /* XDP_TXMD_FLAGS_CHECKSUM */
->>>>> +
->>>>> +                     /* Offset from desc->addr where checksumming should start. */
->>>>> +                     __u16 csum_start;
->>>>> +                     /* Offset from csum_start where checksum should be stored. */
->>>>> +                     __u16 csum_offset;
->>>>> +             } request;
->>>>> +
->>>>> +             struct {
->>>>> +                     /* XDP_TXMD_FLAGS_TIMESTAMP */
->>>>> +                     __u64 tx_timestamp;
->>>>> +             } completion;
->>>>> +     };
->>>>> +};
->>>>
->>>> This looks wrong to me. It looks like member @flags is not avail at
->>>> completion time.  At completion time, I assume we also want to know if
->>>> someone requested to get the timestamp for this packet (else we could
->>>> read garbage).
->>>
->>> I've moved the parts that are preserved across tx and tx completion
->>> into xsk_tx_metadata_compl.
->>> This is to address Magnus/Maciej feedback where userspace might race
->>> with the kernel.
->>> See: https://lore.kernel.org/bpf/ZNoJenzKXW5QSR3E@boxer/
->>>
->>
->> Does this mean that every driver have to extend their TX-desc ring with
->> sizeof(struct xsk_tx_metadata_compl)?
->> Won't this affect the performance of this V5?
+John Fastabend <john.fastabend@gmail.com> wrote:
+> Pengcheng Yang wrote:
+> > SIOCINQ ioctl returns the number unread bytes of the receive
+> > queue but does not include the ingress_msg queue. With the
+> > sk_msg redirect, an application may get a value 0 if it calls
+> > SIOCINQ ioctl before recv() to determine the readable size.
+> >
+> > Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
 > 
-> Yes, but it doesn't have to be a descriptor. Might be some internal
-> driver completion queue (as in the case of mlx5). And definitely does
-> affect performance :-( (see all the static branches to disable it)
->   
->>   $ pahole -C xsk_tx_metadata_compl
->> ./drivers/net/ethernet/stmicro/stmmac/stmmac.ko
->>   struct xsk_tx_metadata_compl {
->> 	__u64 *              tx_timestamp;         /*     0     8 */
->>
->> 	/* size: 8, cachelines: 1, members: 1 */
->> 	/* last cacheline: 8 bytes */
->>   };
->>
->> Guess, I must be misunderstanding, as I was expecting to see the @flags
->> member being preserved across, as I get the race there.
->>
->> Looking at stmmac driver, it does look like this xsk_tx_metadata_compl
->> is part of the TX-ring for completion (tx_skbuff_dma) and the
->> tx_timestamp data is getting stored here.  How is userspace AF_XDP
->> application getting access to the tx_timestamp data?
->> I though this was suppose to get stored in metadata data area (umem)?
->>
->> Also looking at the code, the kernel would not have a "crash" race on
->> the flags member (if we preserve in struct), because the code checks the
->> driver HW-TS config-state + TX-descriptor for the availability of a
->> HW-TS in the descriptor.
+> This will break the SK_PASS case I believe. Here we do
+> not update copied_seq until data is actually copied into user
+> space. This also ensures tcp_epollin_ready works correctly and
+> tcp_inq. The fix is relatively recent.
 > 
-> xsk_tx_metadata_compl stores a pointer to the completion timestamp
-> in the umem, so everything still arrives via the metadata area.
+>  commit e5c6de5fa025882babf89cecbed80acf49b987fa
+>  Author: John Fastabend <john.fastabend@gmail.com>
+>  Date:   Mon May 22 19:56:12 2023 -0700
 > 
-> We want to make sure the flags are not changing across tx and tx completion.
-> Instead of saving the flags, we just use that xsk_tx_metadata_compl to
-> signal to the completion that "I know that I've requested the tx
-> completion timestamp, please put it at this address in umem".
+>     bpf, sockmap: Incorrectly handling copied_seq
 > 
-> I store the pointer instead of flags to avoid doing pointer math again
-> at completion. But it's an implementation detail and somewhat abstracted
-> from the drivers (besides the fact that it's probably has to fit in 8
-> bytes).
+> The previous patch increments the msg_len for all cases even
+> the SK_PASS case so you will get double counting.
 
-I see it now (what I missed). At TX time you are storing a pointer where
-to (later) write the TS at completion time.  It just seems overkill to
-store 8 byte (pointer) to signal (via NULL) if the HWTS was requested.
-Space in the drivers TX-ring is performance critical, and I think driver
-developers would prefer to find a bit to indicate HWTS requested.
-
-If HWTS was *NOT* requested, then the metadata area will not be updated
-(right, correct?). Then memory area is basically garbage that survived.
-How does the AF_XDP application know this packet contains a HWTS or not?
-
- From an UAPI PoV wouldn't it be easier to use (and extend) via keeping
-the @flags member (in struct xsk_tx_metadata), but (as you already do)
-not let kernel checks depend on it (to avoid the races).
+You are right, I missed the SK_PASS case of skb stream verdict.
 
 > 
->>>> Another thing (I've raised this before): It would be really practical to
->>>> store an u64 opaque value at TX and then read it at Completion time.
->>>> One use-case is a forwarding application storing HW RX-time and
->>>> comparing this to TX completion time to deduce the time spend processing
->>>> the packet.
->>>
->>> This can be another member, right? But note that extending
->>> xsk_tx_metadata_compl might be a bit complicated because drivers have
->>> to carry this info somewhere. So we have to balance the amount of
->>> passed data between the tx and the completion.
->>
->> I don't think my opaque value proposal is subject to same race problem.
->> I think this can be stores in metadata area and across tx and tx
->> completion, because any race on a flags change is the userspace
->> programmers problem, as it cannot cause any kernel crash (given kernel
->> have no need to read this).
+> I was starting to poke around at how to fix the other cases e.g.
+> stream parser is in use and redirects but haven't got to it  yet.
+> By the way I think even with this patch epollin_ready is likely
+> not correct still. We observe this as either failing to wake up
+> or waking up an application to early when using stream parser.
 > 
-> Thinking about it, I don't think this needs any special handing?
-> You can request sizeof(struct xsk_tx_metadata) + sizeof(opaque data)
-> as metadata. The kernel won't touch the 'opaque data' part. Or am I missing
-> something?
+> The other thing to consider is redirected skb into another socket
+> and then read off the list increment the copied_seq even though
+> they shouldn't if they came from another sock?  The result would
+> be tcp_inq would be incorrect even negative perhaps?
+> 
+> What does your test setup look like? Simple redirect between
+> two TCP sockets? With or without stream parser? My guess is we
+> need to fix underlying copied_seq issues related to the redirect
+> and stream parser case. I believe the fix is, only increment
+> copied_seq for data that was put on the ingress_queue from SK_PASS.
+> Then update previous patch to only incrmeent sk_msg_queue_len()
+> for redirect paths. And this patch plus fix to tcp_epollin_ready
+> would resolve most the issues. Its a bit unfortunate to leak the
+> sk_sg_queue_len() into tcp_ioctl and tcp_epollin but I don't have
+> a cleaner idea right now.
+> 
 
-Sure, I can just create some room after struct xsk_tx_metadata, via 
-setting something larger than sizeof(struct xsk_tx_metadata).  I'm 
-buying that.
+What I tested was to use msg_verdict to redirect between two sockets
+without stream parser, and the problem I encountered is that msg has
+been queued in psock->ingress_msg, and the application has been woken up
+by epoll (because of sk_psock_data_ready), but the ioctl(FIONREAD) returns 0.
 
---Jesper
+The key is that the rcv_nxt is not updated on ingress redirect, or we only need
+to update rcv_nxt on ingress redirect, such as in bpf_tcp_ingress() and
+sk_psock_skb_ingress_enqueue() ?
+
 
