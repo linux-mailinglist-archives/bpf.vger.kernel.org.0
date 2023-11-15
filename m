@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-15121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B907A7ECCA3
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 20:31:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15A8C7ECF4B
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 20:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9EA31C20BA9
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 19:31:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF48A28175C
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 19:47:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D46141238;
-	Wed, 15 Nov 2023 19:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D782A364CB;
+	Wed, 15 Nov 2023 19:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="tpx4v2xv"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KfPgKxUl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA04341212;
-	Wed, 15 Nov 2023 19:31:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 792A2C433C7;
-	Wed, 15 Nov 2023 19:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0433A8CC;
+	Wed, 15 Nov 2023 19:47:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF052C433C8;
+	Wed, 15 Nov 2023 19:47:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700076700;
-	bh=VsEcYVVGBhlJhxpYZ+sclyVoGw66Ptr93Y1gzgTMTAU=;
+	s=korg; t=1700077650;
+	bh=b27ozrtTBe+7qAT97L76t/PYQ4xrWxtFOX0OMKaNFyI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tpx4v2xvfVjIG+9fvMKeR1UgD+dmFswTuIs/M3mqvSn8fAHUFf8q6OGoytKWEcm1Q
-	 Zt4hE+bvqN//ykkTXSelEJsn3sTzs3HPr018HUbtZsKgqf0W3feaOK0u7+lm0GNQWL
-	 WmeKchlRAM4JBNINjlVrgd0/tUvrFNNTd2I0kSbg=
+	b=KfPgKxUlbCfjZyGT1Kd/BScEkRUImhLKLhCFaxUEq26pisQLdyfWZ3ZKRVz1Kv0x4
+	 PoOheaN4l98FSoQeWo3arUFm5s7+qA7N3r0TA1tsDAKiNYm6mciXe9Iq3SrB9fwigi
+	 I9eIL0ETuf2JRFXxeoVp+uoNv8TPlokzMxzTTatA=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -39,12 +39,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	bpf@vger.kernel.org,
 	Namhyung Kim <namhyung@kernel.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.5 394/550] perf record: Fix BTF type checks in the off-cpu profiling
-Date: Wed, 15 Nov 2023 14:16:18 -0500
-Message-ID: <20231115191628.150882613@linuxfoundation.org>
+Subject: [PATCH 6.6 434/603] perf record: Fix BTF type checks in the off-cpu profiling
+Date: Wed, 15 Nov 2023 14:16:19 -0500
+Message-ID: <20231115191642.865449745@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
-References: <20231115191600.708733204@linuxfoundation.org>
+In-Reply-To: <20231115191613.097702445@linuxfoundation.org>
+References: <20231115191613.097702445@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.5-stable review patch.  If anyone has any objections, please let me know.
+6.6-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
