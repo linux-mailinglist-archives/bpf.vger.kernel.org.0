@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-15122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 937E17ECCC0
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 20:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B2EBB7ECCC6
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 20:32:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5599A2810BA
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 19:32:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C020281128
+	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 19:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7DD41223;
-	Wed, 15 Nov 2023 19:32:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABCE4175C;
+	Wed, 15 Nov 2023 19:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="r4KpT/be"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ybcshk2y"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB05341A81;
-	Wed, 15 Nov 2023 19:32:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58D8BC433C7;
-	Wed, 15 Nov 2023 19:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70D8841238;
+	Wed, 15 Nov 2023 19:32:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05195C433C8;
+	Wed, 15 Nov 2023 19:32:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700076741;
-	bh=rAsmqsTaQIAgAUi/vKnMBZhkAEWhtoD02GWkqmUksj0=;
+	s=korg; t=1700076743;
+	bh=EF7rVuSrJIJJ1FthvxSiZE5jAtJfgUgrH84hHDAz9mU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=r4KpT/beXeJLGNQXs/g4gmKq1TtmgyMbxx8Q+3lenAxvQnVJaDlLXklxuoQDn+pd9
-	 CWiRMSWqW8yDNoxMqqTNyMMXZLLVT+9hrXfbJHO8Dq0+xmql9J90yvBDhJAYsENM9a
-	 j2rde08plZnAuR0sfFWTE0tGVkRaYIiWLqPOQKmI=
+	b=Ybcshk2yzTCwgYF7+NotXC/Xus4MvUpt7Gi9RTttGqn4/ldOmOPpE67mi536O4q4W
+	 TG+/8T0a3O9yaJNFdA7W8v37K7Wk7lk3+Psrh9zDx3jWyjYobHiV9LnI1gZW2+mFI+
+	 lREV7Pk9fB+2wtFSuR57ZJsC4y+I56IAlEgMTQfU=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -46,9 +46,9 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	bpf@vger.kernel.org,
 	Arnaldo Carvalho de Melo <acme@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.5 387/550] perf parse-events: Remove unused PE_PMU_EVENT_FAKE token
-Date: Wed, 15 Nov 2023 14:16:11 -0500
-Message-ID: <20231115191627.668324833@linuxfoundation.org>
+Subject: [PATCH 6.5 388/550] perf parse-events: Remove unused PE_KERNEL_PMU_EVENT token
+Date: Wed, 15 Nov 2023 14:16:12 -0500
+Message-ID: <20231115191627.737078401@linuxfoundation.org>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
 References: <20231115191600.708733204@linuxfoundation.org>
@@ -69,7 +69,7 @@ Content-Transfer-Encoding: 8bit
 
 From: Ian Rogers <irogers@google.com>
 
-[ Upstream commit 84efbdb7fb8e0844a3f9c67a6bdcc89db1012e1c ]
+[ Upstream commit bf7d46b3a088ccb8f8045c5902d5848bc23286f9 ]
 
 Removed by commit 70c90e4a6b2f ("perf parse-events: Avoid scanning
 PMUs before parsing").
@@ -85,76 +85,68 @@ Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: bpf@vger.kernel.org
-Link: https://lore.kernel.org/r/20230627181030.95608-2-irogers@google.com
+Link: https://lore.kernel.org/r/20230627181030.95608-3-irogers@google.com
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Stable-dep-of: ede72dca45b1 ("perf parse-events: Fix tracepoint name memory leak")
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/parse-events.y | 42 ++--------------------------------
- 1 file changed, 2 insertions(+), 40 deletions(-)
+ tools/perf/util/parse-events.y | 27 ---------------------------
+ 1 file changed, 27 deletions(-)
 
 diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-index c590cf7f02a45..43557f20d0989 100644
+index 43557f20d0989..1393c39ebf330 100644
 --- a/tools/perf/util/parse-events.y
 +++ b/tools/perf/util/parse-events.y
-@@ -70,7 +70,7 @@ static void free_list_evsel(struct list_head* list_evsel)
+@@ -70,7 +70,6 @@ static void free_list_evsel(struct list_head* list_evsel)
  %token PE_LEGACY_CACHE
  %token PE_PREFIX_MEM PE_PREFIX_RAW PE_PREFIX_GROUP
  %token PE_ERROR
--%token PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
-+%token PE_KERNEL_PMU_EVENT
+-%token PE_KERNEL_PMU_EVENT
  %token PE_ARRAY_ALL PE_ARRAY_RANGE
  %token PE_DRV_CFG_TERM
  %token PE_TERM_HW
-@@ -88,7 +88,7 @@ static void free_list_evsel(struct list_head* list_evsel)
+@@ -88,7 +87,6 @@ static void free_list_evsel(struct list_head* list_evsel)
  %type <str> PE_MODIFIER_EVENT
  %type <str> PE_MODIFIER_BP
  %type <str> PE_EVENT_NAME
--%type <str> PE_KERNEL_PMU_EVENT PE_PMU_EVENT_FAKE
-+%type <str> PE_KERNEL_PMU_EVENT
+-%type <str> PE_KERNEL_PMU_EVENT
  %type <str> PE_DRV_CFG_TERM
  %type <str> name_or_raw name_or_legacy
  %destructor { free ($$); } <str>
-@@ -421,44 +421,6 @@ PE_KERNEL_PMU_EVENT opt_pmu_config
- 		YYABORT;
- 	$$ = list;
+@@ -376,18 +374,6 @@ PE_NAME opt_pmu_config
+ #undef CLEANUP
  }
--|
--PE_PMU_EVENT_FAKE sep_dc
+ |
+-PE_KERNEL_PMU_EVENT sep_dc
 -{
 -	struct list_head *list;
 -	int err;
 -
--	list = alloc_list();
--	if (!list)
--		YYABORT;
--
--	err = parse_events_add_pmu(_parse_state, list, $1, /*head_config=*/NULL,
--				   /*auto_merge_stats=*/false);
+-	err = parse_events_multi_pmu_add(_parse_state, $1, NULL, &list);
 -	free($1);
--	if (err < 0) {
--		free(list);
+-	if (err < 0)
 -		YYABORT;
--	}
 -	$$ = list;
 -}
 -|
--PE_PMU_EVENT_FAKE opt_pmu_config
+ PE_NAME sep_dc
+ {
+ 	struct list_head *list;
+@@ -408,19 +394,6 @@ PE_NAME sep_dc
+ 	free($1);
+ 	$$ = list;
+ }
+-|
+-PE_KERNEL_PMU_EVENT opt_pmu_config
 -{
 -	struct list_head *list;
 -	int err;
 -
--	list = alloc_list();
--	if (!list)
--		YYABORT;
--
--	err = parse_events_add_pmu(_parse_state, list, $1, $2, /*auto_merge_stats=*/false);
+-	/* frees $2 */
+-	err = parse_events_multi_pmu_add(_parse_state, $1, $2, &list);
 -	free($1);
--	parse_events_terms__delete($2);
--	if (err < 0) {
--		free(list);
+-	if (err < 0)
 -		YYABORT;
--	}
 -	$$ = list;
 -}
  
