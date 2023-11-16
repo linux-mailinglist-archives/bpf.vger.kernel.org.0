@@ -1,134 +1,188 @@
-Return-Path: <bpf+bounces-15173-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15174-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06B1F7EE1FA
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 14:55:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7037EE258
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 15:08:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3A8E1F2450F
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 13:55:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 581081C20BED
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 14:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B7730CE7;
-	Thu, 16 Nov 2023 13:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A636315AF;
+	Thu, 16 Nov 2023 14:08:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="d7hHsHsZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JhgXfcfq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5DEAF;
-	Thu, 16 Nov 2023 05:54:54 -0800 (PST)
-Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGDoPsZ012042;
-	Thu, 16 Nov 2023 13:54:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=k4+XzjxisPHaDAbUWdypNQD1W73qMIUcQhfWlrRelXg=;
- b=d7hHsHsZ9BS848uJUmYOfx/wk/1Pq/08h6cJowBK8V/V0Scp79OJRpC+/Ff0E0PbSTDD
- 1u8e5sg0nmzjy5V/Llwx6GIqAgU0MyfNAfLZDXJADiJ/9nmcAkZdqgQWROLfn4+V7l3P
- fNmHK/kN+R4EmGsZsAdCEURe7vvw3O1OvrFwAG4h6T93x3konNn7VmhKdFjQRgEN5Qvl
- F16Hyup3hpFHeEYP8JSKIbX6SULG1/zj6JUlAgp4NF4yX6AXaWxO9iLlnwCemRZd3DRV
- mBhq5HVuF8CecBg2QJj5Rf57HqzETYEtbyISwetqNAFdjjLXyQSris0KVlxximNaWtfQ Mg== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3udmamr48u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 16 Nov 2023 13:54:27 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGBVKOh003493;
-	Thu, 16 Nov 2023 13:54:27 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uamayq67c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 16 Nov 2023 13:54:27 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AGDsNit5112390
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 16 Nov 2023 13:54:23 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C54BC20043;
-	Thu, 16 Nov 2023 13:54:23 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 94D5620040;
-	Thu, 16 Nov 2023 13:54:23 +0000 (GMT)
-Received: from osiris (unknown [9.152.212.60])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 16 Nov 2023 13:54:23 +0000 (GMT)
-Date: Thu, 16 Nov 2023 14:54:21 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Marc Hartmayer <mhartmay@linux.ibm.com>,
-        Mikhail Zaslonko <zaslonko@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 01/13] bpf: Add support for non-fix-size
- percpu mem allocation
-Message-ID: <20231116135421.22287-A-hca@linux.ibm.com>
-References: <20230827152729.1995219-1-yonghong.song@linux.dev>
- <20230827152734.1995725-1-yonghong.song@linux.dev>
- <20231115153139.29313-A-hca@linux.ibm.com>
- <379ff74e-cad2-919c-4130-adbe80d50a26@huaweicloud.com>
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9559FB7
+	for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 06:08:19 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9e623356d5dso122905166b.3
+        for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 06:08:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700143698; x=1700748498; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fCDgqu7sWoAS0V1mochu50Ig11gLKauVGkXZUuzwspg=;
+        b=JhgXfcfqYy4BoMqnrSLn9GA18gm7LZ5LIyhcdfZvXDnjfZvJLxuzenqd2s9j8G7/cM
+         rHhydgvCOeKJ92h8v0fZbnrW3O94IYrP/hHLO0wf570RyoUhXuXv6raeJceQ383/N1Id
+         rYMH3deLO/z46YK+jUILkPg3cRWCx7qKraq9A2PmaDNPsM1Me4m2fkVzrHdivjC/vOA5
+         MSBOpq2NY/iJEU5ZwaI4SHy6I8HroNJGydhQ4QSSN7sJbs8geAfbopHpMXagIgtkaF1H
+         KJfYlCiv3JReq4Esw136okKAqnX25cB+1BGWC0anpHO15427O08oYItM2zyt4btyfV1y
+         5htg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700143698; x=1700748498;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fCDgqu7sWoAS0V1mochu50Ig11gLKauVGkXZUuzwspg=;
+        b=nvOjuHdB4GrsIk3oXrIlUSMyIQNmydp5FMRnH0BxDcgxHKPqrrSsuFqKq653Zp4/6D
+         9ski7Dstsyi48ubqJW7RrKlwT3r7M6WP7V2CLj4jtvy1qo6Xba51YVbeAlBQJA7lRDIL
+         LaPWqNbu2QuSSVTGot4/E4Du5pdKNdXjN9qvP0KXgitXN7rv+dk5x6ziBY/dwjRIfPrP
+         pSvhQmWPorQ0KcEIpQKYjeTobC2qgTpLGY0h9tU9rK1uU+FKrsNog419sAO8rVkU68TR
+         vRIEqfNxTLdderzBlCDvUeKXi8Oa5IBn+607LPPo8nNFYZtZZIKhKHtJOtF9wXKKx6pb
+         kshg==
+X-Gm-Message-State: AOJu0YzyXxVWsm2lMon9b7gl/JBQcnsd6dfFxwdnSyk8nOHDYIXIr9SY
+	hes10zRET+YpDtLmmlBVsIF/Jt4FPRzgOtUezCU=
+X-Google-Smtp-Source: AGHT+IEwFOxFC6BIsdqLGO3itNfAWXuxBGvdSx4wxH26z6ALqosMkWxuY9vbgpKiu6AFIOCnK30f1zdn79wUWInDiI8=
+X-Received: by 2002:a17:906:c312:b0:9be:fc60:32d9 with SMTP id
+ s18-20020a170906c31200b009befc6032d9mr11137752ejz.47.1700143697663; Thu, 16
+ Nov 2023 06:08:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <379ff74e-cad2-919c-4130-adbe80d50a26@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: liBaMNIlxU-nrf3Ohmh4w-GHdF05LtXt
-X-Proofpoint-ORIG-GUID: liBaMNIlxU-nrf3Ohmh4w-GHdF05LtXt
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_13,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- lowpriorityscore=0 clxscore=1011 bulkscore=0 mlxlogscore=286
- malwarescore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311160108
+References: <20231116021803.9982-1-eddyz87@gmail.com> <20231116021803.9982-11-eddyz87@gmail.com>
+In-Reply-To: <20231116021803.9982-11-eddyz87@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 16 Nov 2023 09:08:06 -0500
+Message-ID: <CAEf4BzY8-97hcj2eKjo-uPoOJAnxy-jmbhRxxzQxO1naUiMHdg@mail.gmail.com>
+Subject: Re: [PATCH bpf 10/12] bpf: keep track of max number of bpf_loop
+ callback iterations
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, memxor@gmail.com, awerner32@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 16, 2023 at 09:15:26AM +0800, Hou Tao wrote:
-> > If we have a machine with 8GB, 6 present CPUs and 512 possible CPUs (yes,
-> > this is a realistic scenario) the memory consumption directly after boot
-> > is:
-> >
-> > $ cat /sys/devices/system/cpu/present
-> > 0-5
-> > $ cat /sys/devices/system/cpu/possible
-> > 0-511
-> 
-> Will the present CPUs be hot-added dynamically and eventually increase
-> to 512 CPUs ? Or will the present CPUs rarely be hot-added ? After all
-> possible CPUs are online, will these CPUs be hot-plugged dynamically ?
-> Because I am considering add CPU hotplug support for bpf mem allocator,
-> so we can allocate memory according to the present CPUs instead of
-> possible CPUs. But if the present CPUs will be increased to all possible
-> CPUs quickly, there will be not too much benefit to support hotplug in
-> bpf mem allocator.
+On Wed, Nov 15, 2023 at 9:18=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> In some cases verifier can't infer convergence of the bpf_loop()
+> iteration. E.g. for the following program:
+>
+>     static int cb(__u32 idx, struct num_context* ctx)
+>     {
+>         ctx->i++;
+>         return 0;
+>     }
+>
+>     SEC("?raw_tp")
+>     int prog(void *_)
+>     {
+>         struct num_context ctx =3D { .i =3D 0 };
+>         __u8 choice_arr[2] =3D { 0, 1 };
+>
+>         bpf_loop(2, cb, &ctx, 0);
+>         return choice_arr[ctx.i];
+>     }
+>
+> Each 'cb' simulation would eventually return to 'prog' and reach
+> 'return choice_arr[ctx.i]' statement. At which point ctx.i would be
+> marked precise, thus forcing verifier to track multitude of separate
+> states with {.i=3D0}, {.i=3D1}, ... at bpf_loop() callback entry.
+>
+> This commit allows "brute force" handling for such cases by limiting
+> number of callback body simulations using 'umax' value of the first
+> bpf_loop() parameter.
+>
+> For this, extend bpf_func_state with 'callback_depth' field.
+> Increment this field when callback visiting state is pushed to states
+> traversal stack. For frame #N it's 'callback_depth' field counts how
+> many times callback with frame depth N+1 had been executed.
+> Use bpf_func_state specifically to allow independent tracking of
+> callback depths when multiple nested bpf_loop() calls are present.
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  include/linux/bpf_verifier.h |  9 +++++++++
+>  kernel/bpf/verifier.c        | 12 ++++++++++--
+>  2 files changed, 19 insertions(+), 2 deletions(-)
+>
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 0ffb479c72d8..302f9c310de7 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -301,6 +301,15 @@ struct bpf_func_state {
+>         struct tnum callback_ret_range;
+>         bool in_async_callback_fn;
+>         bool in_exception_callback_fn;
+> +       /* For callback calling functions that limit number of possible
+> +        * callback executions (e.g. bpf_loop) keeps track of current
+> +        * simulated iteration number. When non-zero either:
+> +        * - current frame has a child frame, in such case it's callsite =
+points
+> +        *   to callback calling function;
+> +        * - current frame is a topmost frame, in such case callback has =
+just
+> +        *   returned and env->insn_idx points to callback calling functi=
+on.
+> +        */
+> +       u32 callback_depth;
+>
+>         /* The following fields should be last. See copy_func_state() */
+>         int acquired_refs;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 5b8c0ebcb4f6..474af277ea54 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -9680,6 +9680,8 @@ static int push_callback_call(struct bpf_verifier_e=
+nv *env, struct bpf_insn *ins
+>                 return err;
+>
+>         callback_state->callback_iter_depth++;
+> +       callback_state->frame[callback_state->curframe - 1]->callback_dep=
+th++;
+> +       caller->callback_depth =3D 0;
+>         return 0;
+>  }
+>
+> @@ -10479,8 +10481,14 @@ static int check_helper_call(struct bpf_verifier=
+_env *env, struct bpf_insn *insn
+>                 break;
+>         case BPF_FUNC_loop:
+>                 update_loop_inline_state(env, meta.subprogno);
+> -               err =3D push_callback_call(env, insn, insn_idx, meta.subp=
+rogno,
+> -                                        set_loop_callback_state);
+> +               if (env->log.level & BPF_LOG_LEVEL2)
+> +                       verbose(env, "frame%d callback_depth=3D%u\n",
+> +                               env->cur_state->curframe, cur_func(env)->=
+callback_depth);
+> +               if (cur_func(env)->callback_depth < regs[BPF_REG_1].umax_=
+value)
 
-You can assume that the present CPUs would change only very rarely. Even
-though we are only talking about virtual CPUs in this case systems are
-usually setup in a way that they have enough CPUs for their workload. Only
-if that is not the case additional CPUs may be added (and brought online) -
-which is usually much later than boot time.
+I haven't had time to look at the patch set properly yet and I'm not
+sure if I'll have time today. But one thing that I randomly realized
+is that if you are taking umax_value into account then this BPF_REG_1
+has to be precise, so please make sure to mark_chain_precision() on it
+first.
 
-Obviously the above is even more true for systems where you have to add new
-CPUs in a physical way in order to change present CPUs.
-
-So I guess it is fair to assume that if there is such a large difference
-between present and possible CPUs, that this will also stay that way while
-the system is running in most cases.
-
-Or in other words: it sounds like it is worth to add CPU hotplug support
-for the the bpf mem allocator (without that I would know what that would
-really mean for the bpf code).
-
-Note for the above numbers: I hacked the number of possible CPUs manually
-in the kernel code just to illustrate the high memory consumption for the
-report. On a real system you would see "0-399" CPUs instead.
-But that's just a minor detail.
+> +                       err =3D push_callback_call(env, insn, insn_idx, m=
+eta.subprogno,
+> +                                                set_loop_callback_state)=
+;
+> +               else
+> +                       cur_func(env)->callback_depth =3D 0;
+>                 break;
+>         case BPF_FUNC_dynptr_from_mem:
+>                 if (regs[BPF_REG_1].type !=3D PTR_TO_MAP_VALUE) {
+> --
+> 2.42.0
+>
 
