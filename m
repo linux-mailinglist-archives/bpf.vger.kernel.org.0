@@ -1,114 +1,164 @@
-Return-Path: <bpf+bounces-15134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C557ED8D6
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 02:15:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0BCC7ED8F0
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 02:41:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92F26B20B16
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 01:15:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 516FC1F22C0E
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 01:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFD51361;
-	Thu, 16 Nov 2023 01:15:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E94C10F0;
+	Thu, 16 Nov 2023 01:41:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fwbe5ImA"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF63197;
-	Wed, 15 Nov 2023 17:15:34 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SW2CM4mQmz4f3jHc;
-	Thu, 16 Nov 2023 09:15:27 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 3829C1A0181;
-	Thu, 16 Nov 2023 09:15:30 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgAnNUUubVVlby1OBA--.26664S2;
-	Thu, 16 Nov 2023 09:15:30 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 01/13] bpf: Add support for non-fix-size
- percpu mem allocation
-To: Heiko Carstens <hca@linux.ibm.com>,
- Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
- Marc Hartmayer <mhartmay@linux.ibm.com>,
- Mikhail Zaslonko <zaslonko@linux.ibm.com>, linux-s390@vger.kernel.org
-References: <20230827152729.1995219-1-yonghong.song@linux.dev>
- <20230827152734.1995725-1-yonghong.song@linux.dev>
- <20231115153139.29313-A-hca@linux.ibm.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <379ff74e-cad2-919c-4130-adbe80d50a26@huaweicloud.com>
-Date: Thu, 16 Nov 2023 09:15:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DC798;
+	Wed, 15 Nov 2023 17:41:49 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-6779f5e9410so1696406d6.1;
+        Wed, 15 Nov 2023 17:41:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700098908; x=1700703708; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OqoDEMqUC1HhkGXWjIU1Ow81RM3RUo27P1s8rtquI7c=;
+        b=Fwbe5ImAg7QwDUxNuz0/KEEkElba0G7zDP5LYiQIBh08uTHGDv+Efdrpb61doxxH3h
+         uSCkwiKs4wNYlEMopjvBPfJtITw12YMa2+ELMVSAsb43aXFG8RdgqWh6tvAIqLbIllkS
+         mU9fJY0uB3ZhqgMX+4vGdtDIvgo41UzOEt5i6FCNNdq7yN16957R9YmXGqjUtxZBOXOE
+         1YHlVT8OYKiA3rOE/HTEE1qZ0r/82G9srQAvktuRzS4zCTrumVkgB93n/dxPYeTczn62
+         i3QpVYh9UtXgtTuMfJVUR8l2D004+FGIVdoyGEc+sNYV8rJucMRDdPzFNMLqOuNdxaR2
+         ikaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700098908; x=1700703708;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OqoDEMqUC1HhkGXWjIU1Ow81RM3RUo27P1s8rtquI7c=;
+        b=H/TvvJ7FRjvS4yVMqFED1OUYTGIe8LAChcUnUakxeunNFolhnc6hg9tcwqEGc2oYPy
+         Lq/MGrOaxRSxPedZp4a5YKNugg0wnmVixKtx6HfKMruQIj/lqABHZIubKQEWqKom1+Td
+         lfQNWzdif4UbI4tVpvklySGS3mN4JTnToUocXqqVhFMHtpz+I2QkJd12S6G8pIjXiihw
+         /UqfUOkgEkgRo1RBC4i609Ram9YH1sTN413vHtCQ0zxGOCJApzOmg6MuMN51QOmLSA4m
+         VzWGL8hO15XSZHdbyUS842UoEb2Sc9ICq+TVGxVZqeGJBXisOHfHqzb1LZ54C6eaEWBy
+         GVQg==
+X-Gm-Message-State: AOJu0Yw7w/jky1XNgGix+/k26MhiBvaJ6F3Grt140Wp9Ok8DpvfW7hcN
+	hTLHOCG1ZmMwVvvJMDPZwCYoOLxHbsEYr6k9gvM=
+X-Google-Smtp-Source: AGHT+IHu7uq5rUpxzoyeqwZeAScz1klj4YjnR2LARo7SvHvIiQmm6l3m3tK46Pw34TCk+NfVO88+9Q4WJbchjYYWg54=
+X-Received: by 2002:a05:6214:1c85:b0:66d:5c10:cab7 with SMTP id
+ ib5-20020a0562141c8500b0066d5c10cab7mr8678469qvb.46.1700098908290; Wed, 15
+ Nov 2023 17:41:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231115153139.29313-A-hca@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgAnNUUubVVlby1OBA--.26664S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw15tr47KFyDtr18Jry3CFg_yoW8WrW3pF
-	4fGFyxWrn3Arn3Ca17uw48WF1Fy395K3W7tw4jyw1DCry3Xryqkws8Xrs3ur98ArZY9FW5
-	XrZ0vF9xZFy8Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231112073424.4216-1-laoar.shao@gmail.com> <188dc90e-864f-4681-88a5-87401c655878@schaufler-ca.com>
+ <CALOAHbD+_0tHcm72Q6TM=EXDoZFrVWAsi4AC8_xGqK3wGkEy3g@mail.gmail.com>
+ <ZVNIprbQU3NqwPi_@tiehlicka> <CALOAHbDi_8ERHdtPB6sJdv=qewoAfGkheCfriW+QLoN0rLUQAw@mail.gmail.com>
+ <b13050b3-54f8-431a-abcf-1323a9791199@schaufler-ca.com> <CALOAHbBKCsdmko_ugHZ_z6Zpgo-xJ8j46oPHkHj+gBGsRCR=eA@mail.gmail.com>
+ <ZVSFNzf4QCbpLGyF@tiehlicka> <CALOAHbAjHJ_47b15v3d+f3iZZ+vBVsLugKew_t_ZFaJoE2_3uw@mail.gmail.com>
+ <CALOAHbDK0hzvxw84brfV2tZnyVp9Ry22gp3Jj8EmQySUbdqmiw@mail.gmail.com> <22994ba0-18eb-4f9d-a399-abde52ffdc38@schaufler-ca.com>
+In-Reply-To: <22994ba0-18eb-4f9d-a399-abde52ffdc38@schaufler-ca.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 16 Nov 2023 09:41:11 +0800
+Message-ID: <CALOAHbBOh8JDwK0VeqOHVonen4TxmaEbdtry8jeMhQfJnvGNQA@mail.gmail.com>
+Subject: Re: [RFC PATCH -mm 0/4] mm, security, bpf: Fine-grained control over
+ memory policy adjustments with lsm bpf
+To: Casey Schaufler <casey@schaufler-ca.com>
+Cc: Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, paul@paul-moore.com, 
+	jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	ligang.bdlg@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On 11/15/2023 11:31 PM, Heiko Carstens wrote:
-> On Sun, Aug 27, 2023 at 08:27:34AM -0700, Yonghong Song wrote:
->> This is needed for later percpu mem allocation when the
->> allocation is done by bpf program. For such cases, a global
->> bpf_global_percpu_ma is added where a flexible allocation
->> size is needed.
->>
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>  include/linux/bpf.h   |  4 ++--
->>  kernel/bpf/core.c     |  8 +++++---
->>  kernel/bpf/memalloc.c | 14 ++++++--------
->>  3 files changed, 13 insertions(+), 13 deletions(-)
-> Both Marc and Mikhail reported out-of-memory conditions on s390 machines,
-> and bisected it down to this upstream commit 41a5db8d8161 ("bpf: Add
-> support for non-fix-size percpu mem allocation").
-> This seems to eat up a lot of memory only based on the number of possible
-> CPUs.
+On Thu, Nov 16, 2023 at 1:09=E2=80=AFAM Casey Schaufler <casey@schaufler-ca=
+.com> wrote:
 >
-> If we have a machine with 8GB, 6 present CPUs and 512 possible CPUs (yes,
-> this is a realistic scenario) the memory consumption directly after boot
-> is:
+> On 11/15/2023 6:26 AM, Yafang Shao wrote:
+> > On Wed, Nov 15, 2023 at 5:33=E2=80=AFPM Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> >> On Wed, Nov 15, 2023 at 4:45=E2=80=AFPM Michal Hocko <mhocko@suse.com>=
+ wrote:
+> >>> On Wed 15-11-23 09:52:38, Yafang Shao wrote:
+> >>>> On Wed, Nov 15, 2023 at 12:58=E2=80=AFAM Casey Schaufler <casey@scha=
+ufler-ca.com> wrote:
+> >>>>> On 11/14/2023 3:59 AM, Yafang Shao wrote:
+> >>>>>> On Tue, Nov 14, 2023 at 6:15=E2=80=AFPM Michal Hocko <mhocko@suse.=
+com> wrote:
+> >>>>>>> On Mon 13-11-23 11:15:06, Yafang Shao wrote:
+> >>>>>>>> On Mon, Nov 13, 2023 at 12:45=E2=80=AFAM Casey Schaufler <casey@=
+schaufler-ca.com> wrote:
+> >>>>>>>>> On 11/11/2023 11:34 PM, Yafang Shao wrote:
+> >>>>>>>>>> Background
+> >>>>>>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>>>>>>>
+> >>>>>>>>>> In our containerized environment, we've identified unexpected =
+OOM events
+> >>>>>>>>>> where the OOM-killer terminates tasks despite having ample fre=
+e memory.
+> >>>>>>>>>> This anomaly is traced back to tasks within a container using =
+mbind(2) to
+> >>>>>>>>>> bind memory to a specific NUMA node. When the allocated memory=
+ on this node
+> >>>>>>>>>> is exhausted, the OOM-killer, prioritizing tasks based on oom_=
+score,
+> >>>>>>>>>> indiscriminately kills tasks. This becomes more critical with =
+guaranteed
+> >>>>>>>>>> tasks (oom_score_adj: -998) aggravating the issue.
+> >>>>>>>>> Is there some reason why you can't fix the callers of mbind(2)?
+> >>>>>>>>> This looks like an user space configuration error rather than a
+> >>>>>>>>> system security issue.
+> >>>>>>>> It appears my initial description may have caused confusion. In =
+this
+> >>>>>>>> scenario, the caller is an unprivileged user lacking any capabil=
+ities.
+> >>>>>>>> While a privileged user, such as root, experiencing this issue m=
+ight
+> >>>>>>>> indicate a user space configuration error, the concerning aspect=
+ is
+> >>>>>>>> the potential for an unprivileged user to disrupt the system eas=
+ily.
+> >>>>>>>> If this is perceived as a misconfiguration, the question arises:=
+ What
+> >>>>>>>> is the correct configuration to prevent an unprivileged user fro=
+m
+> >>>>>>>> utilizing mbind(2)?"
+> >>>>>>> How is this any different than a non NUMA (mbind) situation?
+> >>>>>> In a UMA system, each gigabyte of memory carries the same cost.
+> >>>>>> Conversely, in a NUMA architecture, opting to confine processes wi=
+thin
+> >>>>>> a specific NUMA node incurs additional costs. In the worst-case
+> >>>>>> scenario, if all containers opt to bind their memory exclusively t=
+o
+> >>>>>> specific nodes, it will result in significant memory wastage.
+> >>>>> That still sounds like you've misconfigured your containers such
+> >>>>> that they expect to get more memory than is available, and that
+> >>>>> they have more control over it than they really do.
+> >>>> And again: What configuration method is suitable to limit user contr=
+ol
+> >>>> over memory policy adjustments, besides the heavyweight seccomp
+> >>>> approach?
 >
-> $ cat /sys/devices/system/cpu/present
-> 0-5
-> $ cat /sys/devices/system/cpu/possible
-> 0-511
+> What makes seccomp "heavyweight"? The overhead? The infrastructure requir=
+ed?
+>
+> >>> This really depends on the workloads. What is the reason mbind is use=
+d
+> >>> in the first place?
+> >> It can improve their performance.
+>
+> How much? You've already demonstrated that using mbind can degrade their =
+performance.
 
-Will the present CPUs be hot-added dynamically and eventually increase
-to 512 CPUs ? Or will the present CPUs rarely be hot-added ? After all
-possible CPUs are online, will these CPUs be hot-plugged dynamically ?
-Because I am considering add CPU hotplug support for bpf mem allocator,
-so we can allocate memory according to the present CPUs instead of
-possible CPUs. But if the present CPUs will be increased to all possible
-CPUs quickly, there will be not too much benefit to support hotplug in
-bpf mem allocator.
+Pls. calm down and read the whole discussion carefully. It is not easy
+to understand.
 
+--=20
+Regards
+Yafang
 
