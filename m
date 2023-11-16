@@ -1,85 +1,81 @@
-Return-Path: <bpf+bounces-15171-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15172-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 182317EE1A6
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 14:39:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 433687EE1C4
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 14:45:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 389311C20940
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 13:39:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 651C91C20A3B
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 13:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D39430F8B;
-	Thu, 16 Nov 2023 13:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9FD30FAC;
+	Thu, 16 Nov 2023 13:45:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fgIheVib"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FeP5gqo4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E5319C;
-	Thu, 16 Nov 2023 05:39:39 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434FAD5E;
+	Thu, 16 Nov 2023 05:45:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700141979; x=1731677979;
+  t=1700142324; x=1731678324;
   h=date:from:to:cc:subject:message-id:references:
    in-reply-to:mime-version;
-  bh=mboqLyz+lBLXQMQKeJ3r9GXOM/1mivampUmD9n4ZF8Q=;
-  b=fgIheVibu9+Wggr3gAOX1qt7gzw1EECi7Nybc+qiA2WuHQtFgRs1bsq0
-   HYS7TYlhE2aZOME66RwgkfJ/aB30FFnOCUFi9Igze9maHF1J+FDw1nvP6
-   anCgskJtASNsCViR+/D9aezeYamxHHqv2x/RfaVzCcxhlB/v1XGqjEgV8
-   OjGcMJ2nfeIhfNnI/YyXHYQH43eaBByQHTvmQN3MCi3C8gwaZBxlFwFVw
-   NPxiscthdVa6VgFbFhVqgiEhWnbuyBE/WFE5jO0LXocY3/2QwDgakGNon
-   tRJ8jWUZZczyDnMSWyEK/FsDlPLQkekJNQsbDCl0j/TkvljtrYBej3qsH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="422180085"
+  bh=UYAMSQ29yGaiDc2IUsFPKQp/A2TVZ0YOvG94KSS4AUI=;
+  b=FeP5gqo4FFikMuY0hB7lv0b9IekmW3XPWqozjNxncUyW5vk4DzlL2RZr
+   +1gXTEoMzADgQBPX3PzE2lPNIS8NOXHtxnmfj5CkDc+eCyPSlujO/lGNf
+   UaLrvj9ywNMNCZ+Z6lN0XtUtiiiszKRFaWfiDVsWu4Op/VeqdBbRexemH
+   NjcEksV7+voaOkmXViKieWsrABxAixpM637jcBZFHZGR6+EcLbOu8Cqhp
+   QlldNQBp+hi7mctbUDUNJA8lm/K5uZ6Uy4U4ULWMZ0zY+lHLTnIqGpChX
+   rtwNjARtn86n15n5eQ3YoF85NhlPKNXRczDbr3QxvL9wPg+PuMfJf90xz
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="393940504"
 X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="422180085"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 05:39:38 -0800
+   d="scan'208";a="393940504"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 05:45:23 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="1096785435"
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="741769532"
 X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="1096785435"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Nov 2023 05:39:38 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 16 Nov 2023 05:39:38 -0800
+   d="scan'208";a="741769532"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Nov 2023 05:45:22 -0800
 Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 16 Nov 2023 05:39:38 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ 15.1.2507.34; Thu, 16 Nov 2023 05:45:21 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
  fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 16 Nov 2023 05:39:38 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ 15.1.2507.34 via Frontend Transport; Thu, 16 Nov 2023 05:45:21 -0800
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 16 Nov 2023 05:39:37 -0800
+ 15.1.2507.34; Thu, 16 Nov 2023 05:45:21 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XZNHV5gFTngH3Hno2SZZMk3bunIGtM3KgNj/5o9PfxRkd51fPZameqycZVBROWFFd8HEopGS+EwH5hTHqeSGzwWvShiVtNOxkkdcNMyPfoFQt0i2cZ+MqclWAXlCKGtdOwOXg0U1vSmx2gSfWW/qcJ8QVayUdVHB83kviTzs1OO/whgGEiaHkvus+im4Bo05BADxLIhNY6UsMyliAMZCfVXUjMCO0cC9Pxh5nHxA6waBkRWVKWW287kQT7bAB1SXtEaXA+Al21IkF6BBCS9QkjAxcUVWOysIVQirtoIWfW2wHEdLAll5wYCiIWPJq6gS/LdSedu8Ws0tAzV/e8cMPA==
+ b=f3yOtwSusrRNdgsY3qkNm9Nnt6cQ83eKsZxPNFbwCuoLEBqwWZmoGS3sCFLUuPYjj0EsWAPcfMFLpwa4qE0C/RRs0pANvHV+LXF+CYJBvKr8rx3dWYnCp9aSNU3pLdqrpVgYfiKyuRvzFhUx5rpmWEblLQCxxEj+THCso/QH6jojrARNrAcAlI4Cj8kIkyzsLbZJb6/3KcD17TyBa5XFc+FzcAtQfVUXmJ+DP/pZcJqs/E9I13nezwL4Fvb0dnBhPgPggYDwZUElhMyAVWPJ/oEB5zQVN1cDbXyr7sMksUpT4Xx+MyocCoVvlnxkaQYoOJBLH6UoSmB+ZewsqYuXNA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hLfUh6O0Fmua/Ok0rdA9P3PzfQPzb7h3Sfj9PP+VJck=;
- b=dHTddJ2pK9fb/jfriwt2sCoDYoeVdLI0eRWscJ3mCcFfopqSx5ZG0rBvGiaKwoTcDZbdp0EqzUwtk7EbIdZke2xaeB7JE7mqX9YS/j2dGx8MW8zUXir9TVA2MJT4YLNrRrDNkBWi8+OIgtd0OyXfFrxWRUR0xfoLvJ5u/B4wmBBlvQoZh1lpGptPX45g6XP/6f6DY1uQx2hwnICIWXZ4RabLXkMrDqglwX8ve3W6+ikjK2YhZO/TyQN0Hogi1BOunqfe0ZVI9D+5Zi3/7kN7h2JjZ3Frdvxijs94u/dsMDP36Rc6WB8/rskXRGhznLfBbJvT8ZWi5+egQ3x1haaxMw==
+ bh=hxErEKQzFjEIay8RZHH6FecR335kpOd7F83e5Tkawjw=;
+ b=BsuiojKcJhsRUPi5TWxf0uOfzcs3Gj5Yyo4naPRKoeDRULG4F1k/Cah1kKTbd6iy4fow8sXgpXVknsVtnsxdQ2LZcrFLXH+Fs1Nk6ULJg1Ex6++MDNy3NyhV7Oo9Py28g9ic7GPPBrgn7Og5Kv3QqnYtycX+d/Pip+PGtIj10fYmUwJqt+XUWYx4zaVUcPG7fua7qyYdKjhfIHBuDr00GhATh+xmjjAsoIZipg9cXrKTsuAUTEWy3syLG65D8UyaNgRRT+TQvnPJLQrhIR1LEsh/bA0cFmkytt+Tm6DtKOL1rKVSZ8r52OkCAbKOcGuEoLw8E4pgyRxBT8TIRnKIOw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by IA0PR11MB7910.namprd11.prod.outlook.com (2603:10b6:208:40d::6) with
+ by CH3PR11MB7915.namprd11.prod.outlook.com (2603:10b6:610:12f::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Thu, 16 Nov
- 2023 13:39:35 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.20; Thu, 16 Nov
+ 2023 13:45:18 +0000
 Received: from SN7PR11MB7540.namprd11.prod.outlook.com
  ([fe80::f37d:cbd6:9df8:d06d]) by SN7PR11MB7540.namprd11.prod.outlook.com
  ([fe80::f37d:cbd6:9df8:d06d%7]) with mapi id 15.20.6977.029; Thu, 16 Nov 2023
- 13:39:35 +0000
-Date: Thu, 16 Nov 2023 03:55:19 +0100
+ 13:45:18 +0000
+Date: Thu, 16 Nov 2023 04:01:01 +0100
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
@@ -94,17 +90,17 @@ CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
 	<alexei.starovoitov@gmail.com>, Tariq Toukan <tariqt@mellanox.com>, "Saeed
  Mahameed" <saeedm@mellanox.com>
-Subject: Re: [PATCH bpf-next v7 04/18] ice: Introduce ice_xdp_buff
-Message-ID: <ZVWEl+Nx36HklpEM@lzaremba-mobl.ger.corp.intel.com>
+Subject: Re: [PATCH bpf-next v7 08/18] ice: Support XDP hints in AF_XDP ZC
+ mode
+Message-ID: <ZVWF7a1Z1s9HgTsF@lzaremba-mobl.ger.corp.intel.com>
 References: <20231115175301.534113-1-larysa.zaremba@intel.com>
- <20231115175301.534113-5-larysa.zaremba@intel.com>
- <ZVYQiAhahijwfN+w@boxer>
+ <20231115175301.534113-9-larysa.zaremba@intel.com>
+ <ZVYP4M30jzb16RJl@boxer>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <ZVYQiAhahijwfN+w@boxer>
-X-ClientProxiedBy: FR3P281CA0176.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a0::11) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+In-Reply-To: <ZVYP4M30jzb16RJl@boxer>
+X-ClientProxiedBy: WA0P291CA0012.POLP291.PROD.OUTLOOK.COM (2603:10a6:1d0:1::7)
+ To SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -112,198 +108,207 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|IA0PR11MB7910:EE_
-X-MS-Office365-Filtering-Correlation-Id: ccbebbac-fd05-4bda-e2ff-08dbe6a97896
+X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|CH3PR11MB7915:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc70463d-2f79-47de-3921-08dbe6aa450e
 X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: h8Qjcy48EpiIcnxq08o7gRMSxz19xRL8Pkxqte72lCNLZQN9A8etQaLwWeuIweuP94rTX2EmlbiXCfWWJOG+SXhmwnt6aV84NC30JWBXtIz4m74s5IYQ2dZYWmBRNyGXAIy3pr8+6ecuwYZFHudjkpf8rQGMB9GBFZWPfgmMiBw3EffEUOeHKuvndUhaDHEIGDThWkSNdjtPNr4dmFxwPzFw1mMUPGi5j/MmmSG5s4sE8xInjGGve7U+jFQk+qY2VcS+1bO9h+AxzIUtkiLN9GISMziVt/lGfUw4/igzHs1KY3K2MpYuJR6OPelUJzAct1ZME3U/6j+59Ihy2SxWMAUFC/GrxthpPiWbIZiEah06ziqni5ufDo54vV35A5X0Cf+k2m8UigoJb2K6e+Hu/Ixpp5Ho5tyflFO2I7FeCvI0LXnX9kOe2tNJZtyDreEfj796sA4Z4WlqgUaVe3DT4D1WVVROYdH+Z4lE7rgwDiN8q+OLeGb+irPpU0NwX/fEkTNQAY+yK44afrQhk6gj0J/r3leGRi+c5CDBDXT67YX62Z+LSV6jKsOIdDbPTtdZh+uerJiGkaAMqXjbSo4Yu5gW95r2t4TOv5F943d81gI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(39860400002)(376002)(396003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(26005)(6486002)(6512007)(6666004)(83380400001)(6862004)(7416002)(4326008)(44832011)(5660300002)(41300700001)(6636002)(2906002)(6506007)(8936002)(8676002)(316002)(66946007)(66556008)(38100700002)(66476007)(86362001)(54906003)(478600001)(82960400001)(67856001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 9irmBSB47EjPy6QnVNhUH57NS6aM9Cb/euPJlTj/YI2AHI5Wo/i/ec3GKa0/g0py3nsNrYzGuXBKQjFQezXXiVbS4pBoSmoNe0hzzP116s/MCg8tkSr7CjK14hbjjg5kTc8tiMIR/v2lr97RZzh2gBjy3WP7RxiiDwx6XJ1tBtaaViwiMfVlh8zQ1fC6A6ta7velfssKVjZuT5pQfn1d+Rk2GGCgqAeCiLWkLRxF0HR11OdBYKoAylMJvuSne7RZEwkSVT98TvVlVeatfEGg20LLUxmfiZXDcNIETCkZz3T1042heonMCog7149J2X9qUu311F9XWRXfY9fLi+9R8cieyu7j3llRdkInvqeH2CxF03PT7fOUX7Yes0k/6MyW32PI0wkJAW3737gRMOBrmyj83X1//LsH4YrwBgg3ykYKSadcC7fPx4ZsJDq3qn1kHe9g1AOAZy+hIrG+MzV2Ly6yX669NcgEqv62VSRmN88/bqIt+6BoqjeRR/VtDDeS6HbHj5bTrl0rFo1DlsKNflKCAFa2NDxpYGQO5Ce4qbOG1SbgrtxKiYj+ty581qlp
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(396003)(366004)(346002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(5660300002)(7416002)(86362001)(44832011)(6512007)(6486002)(66476007)(4326008)(6636002)(316002)(8936002)(66946007)(8676002)(66556008)(6862004)(54906003)(41300700001)(2906002)(38100700002)(83380400001)(26005)(82960400001)(6666004)(6506007)(478600001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J0m86ckFcDOTrN4f6oI1QizXR7MX4N3eYa8b/AEMy+l7QboKiBOK9WX1YCVs?=
- =?us-ascii?Q?7kcQ2JJYCNR6KfjLCQ5GSpe+VkTKZWT8pzski+pVAYnepr48T+UpVs68Rb/e?=
- =?us-ascii?Q?qD8UwGp9ECgNlYvuZAUJpg5tM8LD8O1CDkkU5Nn4uusHp4mpLyMF+YeXB2qM?=
- =?us-ascii?Q?hAN/zqeJIrGn+zyt2nSW3qpfafnVdDr3ssn1SR9MaYLiFkIdK2OvlMI0nsKw?=
- =?us-ascii?Q?duHycBh7bItv7G6F+UJr/d1qwqtC5oRRmWpDDBLKbXJIIgQ6oA0CH6mDH3qP?=
- =?us-ascii?Q?PUbHstm6j8LtV1DzlcNSZYuLMgVcGp9/Yw+4JCzLv8DjZUL6Tn6RuYcYnfyR?=
- =?us-ascii?Q?WuwCja6t/ceZ6SQKkGhTCq5saI6lqkSYuqUGPXH/SOsJWIsWh/VMhoBN7Ljh?=
- =?us-ascii?Q?EBnZiJ5IQanF9RAJt876VmaMlIFcrKry9ieCVExcV2kXnIFwC2ElYyvPQq8T?=
- =?us-ascii?Q?f8kJ4TowUIYO5aQnxuCKgLy34sfs+Dc+NHkins7tYbE+YA6OM3Zx5DpFlRdg?=
- =?us-ascii?Q?XMbz1/EGtXHANCA5ZoUfeYCAUL7zkSBFiao0DNzyc+xbtxHEVt4tR4WRPKD9?=
- =?us-ascii?Q?ghp3sHvYVLoKpkhHltZTxp2q3vn++9K0Vqa0AQIae5EHU+zbM3PLPlvY2vyZ?=
- =?us-ascii?Q?wwrlY6Qo4vnzEQb+sxKfwbggemBmUQU4xkIGtPfrOcVPB+KbGhz9h1SuZhEd?=
- =?us-ascii?Q?JkRGYZE+g3HOHdskiYf2wmBzJmoow4H+MxdFGpWnFrFMPVSaAB1BpVubwnYX?=
- =?us-ascii?Q?0mYQXIATjvyAlN7rvEffuZcEdRLVVTppBZ5Ejr9uRLuF5GtZikgTDYRZAt+R?=
- =?us-ascii?Q?48IQN/vPBF0HUcglbG1oTb5XJu1JjygDjEwgZUJuJe9JSiC/WJs8p6S7nVrJ?=
- =?us-ascii?Q?hw+he3ZcVIlZfs5ZOBc3Crednar+JynpLDYabw7uCbeXSyHNtjZCoEos33fG?=
- =?us-ascii?Q?O+h+3nkNPp0yUK1EscCFBqhAyTyNS4KAs3lj4sFrGZBk7H98t61yfKlcMpLn?=
- =?us-ascii?Q?hVmEsHHWHGXJ1hZCWrxDw9A8uZGQG58pOWLvRgyIz4jBlwrXw2AahGG+/LUo?=
- =?us-ascii?Q?s/8mLXHNo8qBtsigHnFCoPtwGQHvgxik6ymLR9gxGRysZPqW1YVazHYPK3ub?=
- =?us-ascii?Q?pQViBbHqCCuvKQcJntyzYAIf7cOgwBX1E5NLL3DrGZfzo0WLsV0+NttA5idj?=
- =?us-ascii?Q?PSmBH8aJgSQQDc64I7q9x210T7H95ymTW9SX5YmBNrKF5jkNSHTHN5YV3+HM?=
- =?us-ascii?Q?nxMP0z3dIn7qsVGYR9cpr++u8wDPKYloR79FI2iHm8usMYXQbpR0/fdTDRUp?=
- =?us-ascii?Q?1tsSiIPq1Ml/ou74yt2IMZvBw4XwNwdlHtt2siZLRjEdPAuFg6mWhtNdHXol?=
- =?us-ascii?Q?4UhP6zRqnhYSZYmbtNrwqUqcOGrkMIa3Jep3KKgd+5ryAYO4BzKliyfpiUbq?=
- =?us-ascii?Q?6vCbubNZQnj9IIIaxuBAFIiT2vFGNC+x+GZwJiOr24tWRnuZKlHHxuH1JJFL?=
- =?us-ascii?Q?+rLHCjUXamciJX7I7mfgi92SGQZ8yeeo03fCuovvapj/yWI5BInN0SqpMzU6?=
- =?us-ascii?Q?7saK4Vx4Brsl87upDN6dQVi6+A9LOqd34T7NrAl+MjsX38TGATwfkTv6i/yK?=
- =?us-ascii?Q?iw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ccbebbac-fd05-4bda-e2ff-08dbe6a97896
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?V8G47TDTYyNUTiIper9CFzZ8ZNNqp6/6XxtWSuYQtaizQ7A6muQFijLLdcde?=
+ =?us-ascii?Q?XnmOLUn6zbkbM8KZ32o5gnpKs22ryGkV3CDnAhqiuipNOPbEbq7m7cILcaT0?=
+ =?us-ascii?Q?ZcB1+ZO3p6SlgONLKIFbW7gAuNPo1vWmyja2ZX9WtriVho1py4eUBN3+wbJb?=
+ =?us-ascii?Q?pjUko7tHjOMXrDax+AUtXZ8JurDqjt8pdDA0ola8TzAGgsBWpbMlFkwZz4JZ?=
+ =?us-ascii?Q?ws2Nkszqi0xY5tdSDjD/mCfGIwBO0iV/E83okVZYnzST6atMLP4Fisnnt2Qo?=
+ =?us-ascii?Q?5CKper+82T1L9bPKaXMtRCIbKPtbk4kN2w7LqFGsZlsGJbdZtDCMEJG3QFpS?=
+ =?us-ascii?Q?bwiLi1CtC0hdh93+KVjEHIHPDPzNW7lA5YnIAx9CYMJRbLnCrk7/6A7Vjnq7?=
+ =?us-ascii?Q?S/UxW3V3XOFmixzE2eNwaiMgOdaYXp+8t8odJ3ucHsIhY1Es2r6Hlp1DSiPe?=
+ =?us-ascii?Q?aCxnf8wRaOuwkJDFQxs3lpHsFLq9ayTWIjwOcvLbTiAnblVVuwKLM5ziHaia?=
+ =?us-ascii?Q?CdDSHIfxqfuXCXT2UqtsdOLL7JIOcNAJo7JwMOwG2CNil/cv0FyGgZiJnFnY?=
+ =?us-ascii?Q?a+qItqh26BbH96yHN4yWigtpeCWe6PjYPEqCahhZrZ+HagpfXGoi3MwmUJJb?=
+ =?us-ascii?Q?rkLO2/ISucW/yjB1PnkXzu3c40XaSXkfsDKRq8fNi9aHWsEzyCSJlIhZ2Jma?=
+ =?us-ascii?Q?LTZZ6ekXHVS3xMC5pyLa4HGjJ14n6ehIO5k1IirAVRQYAxCEjVwDiTUcIoib?=
+ =?us-ascii?Q?hcYldWax/2IQdF9ddrGmaGcWsxzThfeAb/ykZxL5q+I7Ozk5DoCotsW2tDuW?=
+ =?us-ascii?Q?yGsRcueeezGyOXUTCcCHR/y/HqX9a20JHC/rebwD7tFr4as1dpMRr80TGbfy?=
+ =?us-ascii?Q?0vpGFbsYwt/EVNObwSDjd7eiIy0N1fn9iyRsNGW9YHhc2W/EAqdEHLZ8J2DT?=
+ =?us-ascii?Q?7ljxqeJDg5SNc/NZzPEyXzIc00f+Hwv8ghqcSVQonWNTAYde4S2rXjpecCuy?=
+ =?us-ascii?Q?QH/pa13jhlxi1EkcuzkmKlGtK/mDVIoWbCR2/7WtPtEhDSG27stF+9jYk6O6?=
+ =?us-ascii?Q?KjgQ2dD/VIIlXSGxdivTr8Yk5kEYIy+JHP5/QEPA3rs3QqFSshCI3RCwJBhp?=
+ =?us-ascii?Q?Wn3+2UtCxjmwUJT+Wq0pTusvN6hvdsKUEvl6BXBEjlA7wEzy68HbDrSirj/J?=
+ =?us-ascii?Q?BroQtYt3QcqOjlO8QamvO4M80zpM6+lToPBn19kwMqxzLoJ2uAeg4MPTdVRq?=
+ =?us-ascii?Q?wJILX4hmmcrvv4LbiHl4X80GFBEiYfCPec98Gj2inAqdOPFuukuHfjdP0Z02?=
+ =?us-ascii?Q?kaXCMd9fCG8tdBSVgXtMc7s/ou5+N7q0YLiRrfs7BbKkX95KMrkmKPazBMq+?=
+ =?us-ascii?Q?LU1fq+f4rSdcfV4ULW1O3gNhLd7Q80/QyFfgIspwY8lm988tbSbLcw6YMSi/?=
+ =?us-ascii?Q?8NHnKA1CLp4zehZagjH/3wvZBKiVVWCJx0hNSfWlveQM+JMj5/vedA53nQHj?=
+ =?us-ascii?Q?KPJ/qiI7wqsIiC+PAgqmtE2jn2tE88jw6L8CZv95wXPlLRXzlYJHlT2rb6Cb?=
+ =?us-ascii?Q?rKcKkh4uHn9o/s8SbnyalJhY1ygcC9Ivbcats7wfFKMsEwLGl3gtI2TYeuUX?=
+ =?us-ascii?Q?ng=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc70463d-2f79-47de-3921-08dbe6aa450e
 X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 13:39:35.1595
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 13:45:18.1729
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FpeabQ7TuG2bTWe2NQn4N8lyNNSAr2OdSmO8eElpVzQT8zO0cdpzSnc3J/1XYp+3UZWhmZ6gIzyh4wPC5rLGMz7Lxw/ihjGvIuKuGxn49Lg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7910
+X-MS-Exchange-CrossTenant-UserPrincipalName: TpUfeNuut3llg7MFh1T+5NEwaLGhlDDuGY+eiM9dPPelTsg1yD9jg+V6VDJB63N0G1V54CFEK4TGzpMkCihlE0lAPuhjgVR3kdaIK8vJWuQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7915
 X-OriginatorOrg: intel.com
 
-On Thu, Nov 16, 2023 at 01:52:24PM +0100, Maciej Fijalkowski wrote:
-> On Wed, Nov 15, 2023 at 06:52:46PM +0100, Larysa Zaremba wrote:
-> > In order to use XDP hints via kfuncs we need to put
-> > RX descriptor and miscellaneous data next to xdp_buff.
-> > Same as in hints implementations in other drivers, we achieve
-> > this through putting xdp_buff into a child structure.
+On Thu, Nov 16, 2023 at 01:49:36PM +0100, Maciej Fijalkowski wrote:
+> On Wed, Nov 15, 2023 at 06:52:50PM +0100, Larysa Zaremba wrote:
+> > In AF_XDP ZC, xdp_buff is not stored on ring,
+> > instead it is provided by xsk_buff_pool.
+> > Space for metadata sources right after such buffers was already reserved
+> > in commit 94ecc5ca4dbf ("xsk: Add cb area to struct xdp_buff_xsk").
 > > 
-> > Currently, xdp_buff is stored in the ring structure,
-> > so replace it with union that includes child structure.
-> > This way enough memory is available while existing XDP code
-> > remains isolated from hints.
+> > Some things (such as pointer to packet context) do not change on a
+> > per-packet basis, so they can be set at the same time as RX queue info.
+> > On the other hand, RX descriptor is unique for each packet, but is already
+> > known when setting DMA addresses. This minimizes performance impact of
+> > hints on regular packet processing.
 > > 
-> > Minimum size of the new child structure (ice_xdp_buff) is exactly
-> > 64 bytes (single cache line). To place it at the start of a cache line,
-> > move 'next' field from CL1 to CL4, as it isn't used often. This still
-> > leaves 192 bits available in CL3 for packet context extensions.
+> > Update AF_XDP ZC packet processing to support XDP hints.
 > > 
+> > Co-developed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+> > Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 > > ---
-> >  drivers/net/ethernet/intel/ice/ice_txrx.c     |  7 +++++--
-> >  drivers/net/ethernet/intel/ice/ice_txrx.h     | 18 +++++++++++++++---
-> >  drivers/net/ethernet/intel/ice/ice_txrx_lib.h | 10 ++++++++++
-> >  3 files changed, 30 insertions(+), 5 deletions(-)
+> >  drivers/net/ethernet/intel/ice/ice_base.c | 13 +++++++++++++
+> >  drivers/net/ethernet/intel/ice/ice_xsk.c  | 17 +++++++++++------
+> >  2 files changed, 24 insertions(+), 6 deletions(-)
 > > 
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > index 40f2f6dabb81..4e6546d9cf85 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
-> > @@ -557,13 +557,14 @@ ice_rx_frame_truesize(struct ice_rx_ring *rx_ring, const unsigned int size)
+> > diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
+> > index 2d83f3c029e7..d3396c1c87a9 100644
+> > --- a/drivers/net/ethernet/intel/ice/ice_base.c
+> > +++ b/drivers/net/ethernet/intel/ice/ice_base.c
+> > @@ -519,6 +519,18 @@ static int ice_setup_rx_ctx(struct ice_rx_ring *ring)
+> >  	return 0;
+> >  }
+> >  
+> > +static void ice_xsk_pool_fill_cb(struct ice_rx_ring *ring)
+> > +{
+> > +	void *ctx_ptr = &ring->pkt_ctx;
+> > +	struct xsk_cb_desc desc = {};
+> > +
+> > +	desc.src = &ctx_ptr;
+> > +	desc.off = offsetof(struct ice_xdp_buff, pkt_ctx) -
+> > +		   sizeof(struct xdp_buff);
+> 
+> Took me a while to figure out this offset calculation:D
+>
+
+Do you have a suggestion, how to make it easier to understand?
+ 
+> > +	desc.bytes = sizeof(ctx_ptr);
+> > +	xsk_pool_fill_cb(ring->xsk_pool, &desc);
+> > +}
+> > +
+> >  /**
+> >   * ice_vsi_cfg_rxq - Configure an Rx queue
+> >   * @ring: the ring being configured
+> > @@ -553,6 +565,7 @@ int ice_vsi_cfg_rxq(struct ice_rx_ring *ring)
+> >  			if (err)
+> >  				return err;
+> >  			xsk_pool_set_rxq_info(ring->xsk_pool, &ring->xdp_rxq);
+> 
+> A good place for XSK_CHECK_PRIV_TYPE() ?
+
+Seems so, have not noticed that it was missing :(
+
+> 
+> > +			ice_xsk_pool_fill_cb(ring);
+> >  
+> >  			dev_info(dev, "Registered XDP mem model MEM_TYPE_XSK_BUFF_POOL on Rx ring %d\n",
+> >  				 ring->q_index);
+> > diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> > index 906e383e864a..a690e34ea8ae 100644
+> > --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> > +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> > @@ -433,7 +433,7 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+> >  
+> >  /**
+> >   * ice_fill_rx_descs - pick buffers from XSK buffer pool and use it
+> > - * @pool: XSK Buffer pool to pull the buffers from
+> > + * @rx_ring: rx ring
+> >   * @xdp: SW ring of xdp_buff that will hold the buffers
+> >   * @rx_desc: Pointer to Rx descriptors that will be filled
+> >   * @count: The number of buffers to allocate
+> > @@ -445,19 +445,24 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+> >   *
+> >   * Returns the amount of allocated Rx descriptors
+> >   */
+> > -static u16 ice_fill_rx_descs(struct xsk_buff_pool *pool, struct xdp_buff **xdp,
+> > +static u16 ice_fill_rx_descs(struct ice_rx_ring *rx_ring, struct xdp_buff **xdp,
+> 
+> Might be lack of caffeine on my side, but I don't see a reason for passing
+> rx_ring down to ice_fill_rx_descs() ?
+> 
+> I see I introduced this in the code example previously but it must have
+> been some leftover from previous hacking...
+> 
+> Help!
+
+It is lack of caffeine on both sides. I have missed the fact that indeed, we do 
+not need rx_ring here.
+
+> 
+> >  			     union ice_32b_rx_flex_desc *rx_desc, u16 count)
+> >  {
+> >  	dma_addr_t dma;
+> >  	u16 buffs;
+> >  	int i;
+> >  
+> > -	buffs = xsk_buff_alloc_batch(pool, xdp, count);
+> > +	buffs = xsk_buff_alloc_batch(rx_ring->xsk_pool, xdp, count);
+> >  	for (i = 0; i < buffs; i++) {
+> >  		dma = xsk_buff_xdp_get_dma(*xdp);
+> >  		rx_desc->read.pkt_addr = cpu_to_le64(dma);
+> >  		rx_desc->wb.status_error0 = 0;
+> >  
+> > +		/* Put private info that changes on a per-packet basis
+> > +		 * into xdp_buff_xsk->cb.
+> > +		 */
+> > +		ice_xdp_meta_set_desc(*xdp, rx_desc);
+> > +
+> >  		rx_desc++;
+> >  		xdp++;
+> >  	}
+> > @@ -488,8 +493,7 @@ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
+> >  	xdp = ice_xdp_buf(rx_ring, ntu);
+> >  
+> >  	if (ntu + count >= rx_ring->count) {
+> > -		nb_buffs_extra = ice_fill_rx_descs(rx_ring->xsk_pool, xdp,
+> > -						   rx_desc,
+> > +		nb_buffs_extra = ice_fill_rx_descs(rx_ring, xdp, rx_desc,
+> >  						   rx_ring->count - ntu);
+> >  		if (nb_buffs_extra != rx_ring->count - ntu) {
+> >  			ntu += nb_buffs_extra;
+> > @@ -502,7 +506,7 @@ static bool __ice_alloc_rx_bufs_zc(struct ice_rx_ring *rx_ring, u16 count)
+> >  		ice_release_rx_desc(rx_ring, 0);
+> >  	}
+> >  
+> > -	nb_buffs = ice_fill_rx_descs(rx_ring->xsk_pool, xdp, rx_desc, count);
+> > +	nb_buffs = ice_fill_rx_descs(rx_ring, xdp, rx_desc, count);
+> >  
+> >  	ntu += nb_buffs;
+> >  	if (ntu == rx_ring->count)
+> > @@ -752,6 +756,7 @@ static int ice_xmit_xdp_tx_zc(struct xdp_buff *xdp,
+> >   * @xdp: xdp_buff used as input to the XDP program
 > >   * @xdp_prog: XDP program to run
 > >   * @xdp_ring: ring to be used for XDP_TX action
-> >   * @rx_buf: Rx buffer to store the XDP action
-> > + * @eop_desc: Last descriptor in packet to read metadata from
+> > + * @rx_desc: packet descriptor
+> 
+> leftover comment from previous approach
+> 
+
+Will fix.
+
 > >   *
 > >   * Returns any of ICE_XDP_{PASS, CONSUMED, TX, REDIR}
 > >   */
-> >  static void
-> >  ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
-> >  	    struct bpf_prog *xdp_prog, struct ice_tx_ring *xdp_ring,
-> > -	    struct ice_rx_buf *rx_buf)
-> > +	    struct ice_rx_buf *rx_buf, union ice_32b_rx_flex_desc *eop_desc)
-> >  {
-> >  	unsigned int ret = ICE_XDP_PASS;
-> >  	u32 act;
-> > @@ -571,6 +572,8 @@ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buff *xdp,
-> >  	if (!xdp_prog)
-> >  		goto exit;
-> >  
-> > +	ice_xdp_meta_set_desc(xdp, eop_desc);
-> > +
-> >  	act = bpf_prog_run_xdp(xdp_prog, xdp);
-> >  	switch (act) {
-> >  	case XDP_PASS:
-> > @@ -1240,7 +1243,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring, int budget)
-> >  		if (ice_is_non_eop(rx_ring, rx_desc))
-> >  			continue;
-> >  
-> > -		ice_run_xdp(rx_ring, xdp, xdp_prog, xdp_ring, rx_buf);
-> > +		ice_run_xdp(rx_ring, xdp, xdp_prog, xdp_ring, rx_buf, rx_desc);
-> >  		if (rx_buf->act == ICE_XDP_PASS)
-> >  			goto construct_skb;
-> >  		total_rx_bytes += xdp_get_buff_len(xdp);
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
-> > index 166413fc33f4..9efb42f99415 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_txrx.h
-> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
-> > @@ -257,6 +257,14 @@ enum ice_rx_dtype {
-> >  	ICE_RX_DTYPE_SPLIT_ALWAYS	= 2,
-> >  };
-> >  
-> > +struct ice_xdp_buff {
-> > +	struct xdp_buff xdp_buff;
-> > +	const union ice_32b_rx_flex_desc *eop_desc;
-> > +};
-> > +
-> > +/* Required for compatibility with xdp_buffs from xsk_pool */
-> > +static_assert(offsetof(struct ice_xdp_buff, xdp_buff) == 0);
-> 
-> That should go to xsk core as a macro and should be used by ZC drivers
-> that support hints. Useful stuff similar to XSK_CEHCK_PRIV_TYPE() but
-> check is from the other end.
-
-Seems like there will be a v8 anyway, so I might as well do this :)
-
-> 
-> > +
-> >  /* indices into GLINT_ITR registers */
-> >  #define ICE_RX_ITR	ICE_IDX_ITR0
-> >  #define ICE_TX_ITR	ICE_IDX_ITR1
-> > @@ -298,7 +306,6 @@ enum ice_dynamic_itr {
-> >  /* descriptor ring, associated with a VSI */
-> >  struct ice_rx_ring {
-> >  	/* CL1 - 1st cacheline starts here */
-> > -	struct ice_rx_ring *next;	/* pointer to next ring in q_vector */
-> >  	void *desc;			/* Descriptor ring memory */
-> >  	struct device *dev;		/* Used for DMA mapping */
-> >  	struct net_device *netdev;	/* netdev ring maps to */
-> > @@ -310,12 +317,16 @@ struct ice_rx_ring {
-> >  	u16 count;			/* Number of descriptors */
-> >  	u16 reg_idx;			/* HW register index of the ring */
-> >  	u16 next_to_alloc;
-> > -	/* CL2 - 2nd cacheline starts here */
-> > +
-> >  	union {
-> >  		struct ice_rx_buf *rx_buf;
-> >  		struct xdp_buff **xdp_buf;
-> >  	};
-> > -	struct xdp_buff xdp;
-> > +	/* CL2 - 2nd cacheline starts here */
-> > +	union {
-> > +		struct ice_xdp_buff xdp_ext;
-> > +		struct xdp_buff xdp;
-> > +	};
-> >  	/* CL3 - 3rd cacheline starts here */
-> >  	struct bpf_prog *xdp_prog;
-> >  	u16 rx_offset;
-> > @@ -332,6 +343,7 @@ struct ice_rx_ring {
-> >  	/* CL4 - 4th cacheline starts here */
-> >  	struct ice_channel *ch;
-> >  	struct ice_tx_ring *xdp_ring;
-> > +	struct ice_rx_ring *next;	/* pointer to next ring in q_vector */
-> >  	struct xsk_buff_pool *xsk_pool;
-> >  	dma_addr_t dma;			/* physical address of ring */
-> >  	u64 cached_phctime;
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> > index e1d49e1235b3..81b8856d8e13 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.h
-> > @@ -151,4 +151,14 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
-> >  		       struct sk_buff *skb);
-> >  void
-> >  ice_receive_skb(struct ice_rx_ring *rx_ring, struct sk_buff *skb, u16 vlan_tag);
-> > +
-> > +static inline void
-> > +ice_xdp_meta_set_desc(struct xdp_buff *xdp,
-> > +		      union ice_32b_rx_flex_desc *eop_desc)
-> > +{
-> > +	struct ice_xdp_buff *xdp_ext = container_of(xdp, struct ice_xdp_buff,
-> > +						    xdp_buff);
-> > +
-> > +	xdp_ext->eop_desc = eop_desc;
-> > +}
-> >  #endif /* !_ICE_TXRX_LIB_H_ */
 > > -- 
 > > 2.41.0
 > > 
