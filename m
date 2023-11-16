@@ -1,76 +1,155 @@
-Return-Path: <bpf+bounces-15150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C095E7ED9DD
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 04:14:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB6BB7ED9E2
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 04:14:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 776551F2371D
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 03:14:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE9721C209E3
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 03:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAFF6FD9;
-	Thu, 16 Nov 2023 03:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FAE63C7;
+	Thu, 16 Nov 2023 03:14:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="btCmsGt0"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="di1eErC3"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [IPv6:2001:41d0:203:375::b8])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E252199
-	for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 19:14:02 -0800 (PST)
-Message-ID: <c768aae4-1c41-41ef-895d-33556b99dc15@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700104441;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LVTbIWjaYj/Zzkxn6Ukw8lgVfPfXoOn5/TENdtMr4GY=;
-	b=btCmsGt0X6sFafJDU5gd7nnPc2QMLVpFrf6LWdb3nrmMtMuOSwWpcruiVM5Jy1nXiU7ZwM
-	nZtGRfjQ6PE3QXk/UOC/NKm6GGwEq/IsL5w6mIimemiQ3+1FwRl9tA8wuc1rTDoOE28kEw
-	YvELle5WYIK2ZVjQhlheSAuVK71UnP8=
-Date: Wed, 15 Nov 2023 22:13:52 -0500
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04olkn2093.outbound.protection.outlook.com [40.92.74.93])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3257199;
+	Wed, 15 Nov 2023 19:14:49 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HAZ5PmXX9jQ72BT4FkaA7XE80UVjxcc329YuMsJaJuqRxVvFg9AWuGDrrG9q5Uijp4KMn9lN6wDL8RfUk0iA86KQBzQVop6mdZHwfN203BXoPyiBsmOApxsvHLpS1nEB2dBPburbZPLYG4NjxuuoblvvmbelAQGUg3RNpqLhHoZsyyj3qQOsOz8yXLvKBhk5UI7KSYTfljDeJbACbAHrd5s7nLRVcIpvKCZZFLarSrng1ndk87b4B4NSSZ7SinrrB5NXjpSkjqYejxi/1iVLed+VoOLecUWOgFkx4IMJXE66H0MBhhXDIqTeBm7iTWF2jZ32fU3eMvgn9F04jYXDmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6ItYPg33DmUFNe2euMC6cf/7ytVgkAoH8Lpbj5FWP4U=;
+ b=D3fnUuhslIAkgX8vanVhby66n/PvmydAC3ZXIFGLi99bkzQRybil1bFlW5OuUFMi9o5glBhqTKxTki5aUxEVwGzRu2E+/Vx6oi6sHCXts3h+THeabStUpSEjZB/XcTZ21PXipD9NbWSvGv5u4qg7zrH/2E1K2vTR2J+bXoY5kQOT/AkiQS/TtOlmvsTGeFrJITq3geetnumq8iytsssqvx/fceVHmEGjwJwVqj6uxc1C0bip29GxlFWS+5S2pq1zTVm42HGWRo6uSyE/AphDAclC0EVoTAHNbxmdiyeQ+ELPp/nse3XyddFS3fdNpqw6N/uyY8UOni6ebICgv4m4zA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ItYPg33DmUFNe2euMC6cf/7ytVgkAoH8Lpbj5FWP4U=;
+ b=di1eErC3dAVzhGTChtOD0HYUwYVcGj8hZ98oovpr+3Ra5dlfQWjbvr84RIbbTvrPvpFZXZRPBxqnOONH6QhEqvyilyLyRDOkifrQnLIvx+hgdecbzgEOGy5pMkHd/d4zeqHTHv8lqjTlq/2ayj+N3VLGxp0egeRZjhV+kP8h1U4+RRXUK3IkqJ8K5WcU4IKKT78XwyPx6zFL2C//DhEEg1CakKvSD6Jd3QxWhtQq8wZHLpph/g1NaqFRHU+xZ713rzyg2RbaJiSVKTXoh0co3hg7xKJ+saRTsMXIo1oCdUn8FRf6M71SdTEfPzQZ+5p0ie1kJ6TSUbSBhI4PKfSmWA==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by AS2PR10MB7227.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:609::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Thu, 16 Nov
+ 2023 03:14:47 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
+ 03:14:47 +0000
+From: Yuran Pereira <yuran.pereira@hotmail.com>
+To: bpf@vger.kernel.org
+Cc: Yuran Pereira <yuran.pereira@hotmail.com>,
+	andrii@kernel.org,
+	mykolal@fb.com,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	shuah@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH bpf-next 0/4] selftests/bpf: Update multiple prog_tests to use ASSERT_ macros
+Date: Thu, 16 Nov 2023 08:44:15 +0530
+Message-ID:
+ <GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [O0aQZ4dmxRJVg2vVkhqN9kEitbWQ+Z+u]
+X-ClientProxiedBy: JNAP275CA0023.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::16)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID:
+ <20231116031415.70401-1-yuran.pereira@hotmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 0/3] bpf: kernel/bpf/task_iter.c: don't abuse
- next_thread()
-To: Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>
-Cc: Chuyi Zhou <zhouchuyi@bytedance.com>,
- Daniel Borkmann <daniel@iogearbox.net>, Kui-Feng Lee <kuifeng@fb.com>,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-References: <20231114163211.GA874@redhat.com>
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20231114163211.GA874@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AS2PR10MB7227:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8ee0e384-e2c6-40b8-9e23-08dbe6522f67
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	rxFQO+tAlWq6vJiXq2A3ETqb+UJi2xefcEfT22Zy5Lro3i37ws800iEGnHL2BGXFH0cxKE4gpgSpUUxzvlpK2YyvAKDVbx56hiSgdtN1B1tqkzixihZOqvdDNpj6vmCBS5R8wYxREveZTN+g9Lpv4J4JacbZZiR49HxkyjZCDC8BJI4brPpFH/B4dnWkUiO0SwUEOGv5CmhmZQgGan1vzkfXyOnOd6wIAavDXM2vE+gzJXLc6FlpE+PA0Q+c61FFyvoTpY1gBGFh5FidaifVQ3HZ6m1Y/504xuUnOCPf2Fi9xU9epwVg9rpOBViBNVt8gEsapwtwUuqdMVKtA6nZsBupVTDu5qwb4KgnP/q3KqiIMCmggJ2fNMmhPKBghQpopmxlKskO8aufd0l3R8/AuOv2In2e0BvOrsFfBKuKyQYh5sosAU4xaacuHbaWaJ2Gicgpg5+7DWnSV8wbnBjW4BFYeTizgQ0/dOmIBaT1kOjzyAToUpPtlT+2XABdggV/Fna6oPfT26crrm6Kc+/zzBbC5SN3h3Ycmf+se7ub7G5bszGnkLLmshj8w7RhT00hdc6L7x0suosXFWsYBAViKTVr1SwSlxF202pGXK4Tu5v3SOrzgzijiSnDK1K124I1
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?tI/FnxaC+DO95UcbcN1zQ4r/3VmGjMbmxxpLMQzqk4tIFR2Nd0bwvqSpoA8H?=
+ =?us-ascii?Q?I3V5a+qkc9+zeYD2ESGdndyz8PiGxbqA8WJQloj0ubqX//raMuycz65761oM?=
+ =?us-ascii?Q?3GQyRKxJOGGeiN50MqQBSGoLuflZ4efKixiCqVDl9KE/QKyPliiUC+JUuj7n?=
+ =?us-ascii?Q?6vS/FVbjkrprrrLBZah1QuV67daQ3qnQbh9PBWZu0K77HQGNc1dtWSsIdjKr?=
+ =?us-ascii?Q?9k3G5W4uEjdT3kophV6XYPAMNKIEfhzMdl3JZmNrjNpxkWNO/IfLdL4XBQVF?=
+ =?us-ascii?Q?0S4iYvmBr5GYPsiKoV5U/2xx+2vO+rsjgM/7X/58zpW29aj/qjPyiFXCAJxV?=
+ =?us-ascii?Q?M4tsJJPDWwD1mH74E7PHix4elmau1iY9qPIGZdoLIh5dhGlhSUMIWeloa3vp?=
+ =?us-ascii?Q?Kvn1tSXySxgSBwJir3lyLVzvhoMWnsTe2ag7RDvg9COCM3BilSuAA6z7Cewe?=
+ =?us-ascii?Q?b+M1OZgXr71k/z/hCkQx13sfgqi9C4lrED3mNxO/Ere41Y3DPnL3WqMrITJL?=
+ =?us-ascii?Q?e0hYTiOrQVD5ouVqIrUZ6nRbXqtM3WSlyQOjCoI6JcwvCfUnt7bRWH3JR4hX?=
+ =?us-ascii?Q?9IIHEYvIpyvC/PgAMUW9n3NG9QtOGUa7b1dvSoosMeE6P8WHR1T7sqE2tPRk?=
+ =?us-ascii?Q?dsySbXihZtiKQ76ShDShUxoiPh9E4oQIpOXPks0W1h06+SRZZmKPrw7kgurp?=
+ =?us-ascii?Q?ibVOMNl7Gh+j5g3vxjouMetS6cVE7QY8XL9BmaERSaLY9wqP6oEOGw0EV1fc?=
+ =?us-ascii?Q?wBkhV59Y73Au6EEQYiv6Za2piwIdc1Z3fcDHVsKXM/FP+6z2LP11FHJMeHf/?=
+ =?us-ascii?Q?K/PdnybpuIuWD0vmufNv5JIU/ZHrlpXdMRj58rpfXW0tG49zxEa1Xg6fl6Gg?=
+ =?us-ascii?Q?pGazNAzEOIt66CsaFz32MNsdxxyBuFPSlHr1PmrNy8VcJYp9a36ht4hOgwgA?=
+ =?us-ascii?Q?r+wqwBOCMt1PDTns1X773AhypNaznfXJEGJCXNrGEcKV192vFmU897qaIS7v?=
+ =?us-ascii?Q?ls3HA+CbWzLKu2wQPreYFmvo+aYrIPHL6ZFivTsEOqazKCgvBuMveZP9BZam?=
+ =?us-ascii?Q?mkDip4ppjwWy5qiBHAtjHcF/34SJ4ArT0PzgZFst6H+y2khvg4MZADcCSc8m?=
+ =?us-ascii?Q?KdAkiV6FYgr6oc1SNJPUVL0t8gkoFLzn5lgoNM7Gcb25Lk7RWMtjG3dQ66TX?=
+ =?us-ascii?Q?w49dLNnyEpaSoESNWyLTqrOafx1uUOe8a4HX0YB0cV07N/pdPB4OVWaRvwQ?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8ee0e384-e2c6-40b8-9e23-08dbe6522f67
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 03:14:47.5893
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7227
 
+Multiple files/programs in `tools/testing/selftests/bpf/prog_tests/` still
+heavily use the `CHECK` macro, even when better `ASSERT_` alternatives are
+available.
 
-On 11/14/23 11:32 AM, Oleg Nesterov wrote:
-> Compile tested.
->
-> Every lockless usage of next_thread() was wrong, bpf/task_iter.c is
-> the last user and is no exception.
+As it was already pointed out by Yonghong Song [1] in the bpf selftests the use
+of the ASSERT_* series of macros is preferred over the CHECK macro.
 
-It would be great if you can give more information in the commit message
-about why the usage of next_thread() is wrong in bpf/task_iter.c.
-IIUC, some information is presented in :
-   https://lore.kernel.org/all/20230824143112.GA31208@redhat.com/
+This patchset replaces the usage of `CHECK(` macros to the equivalent `ASSERT_`
+family of macros in the following prog_tests:
+- bind_perm.c
+- bpf_obj_id.c
+- bpf_tcp_ca.c
+- vmlinux.c
 
-Also, please add 'bpf' in the subject tag ([PATCH bpf 0/3]) to
-make it clear the patch should be applied to bpf tree.
+[1] https://lore.kernel.org/lkml/0a142924-633c-44e6-9a92-2dc019656bf2@linux.dev
 
->
-> Oleg.
-> ---
->
->   kernel/bpf/task_iter.c | 29 +++++++++++------------------
->   1 file changed, 11 insertions(+), 18 deletions(-)
->
+Yuran Pereira (4):
+  Replaces the usage of CHECK calls for ASSERTs in bpf_tcp_ca
+  Replaces the usage of CHECK calls for ASSERTs in bind_perm
+  Replaces the usage of CHECK calls for ASSERTs in bpf_obj_id
+  selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in
+    vmlinux
+
+ .../selftests/bpf/prog_tests/bind_perm.c      |   6 +-
+ .../selftests/bpf/prog_tests/bpf_obj_id.c     | 204 +++++++-----------
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  48 ++---
+ .../selftests/bpf/prog_tests/vmlinux.c        |  16 +-
+ 4 files changed, 105 insertions(+), 169 deletions(-)
+
+-- 
+2.25.1
+
 
