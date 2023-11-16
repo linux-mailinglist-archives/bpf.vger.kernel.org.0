@@ -1,113 +1,114 @@
-Return-Path: <bpf+bounces-15133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15134-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5097ED708
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 23:07:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C557ED8D6
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 02:15:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51A221C208DC
-	for <lists+bpf@lfdr.de>; Wed, 15 Nov 2023 22:07:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92F26B20B16
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 01:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E206446C6;
-	Wed, 15 Nov 2023 22:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MwYLSYff"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFD51361;
+	Thu, 16 Nov 2023 01:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662D7E6
-	for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 14:07:01 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9e2838bcb5eso26728366b.0
-        for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 14:07:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700086020; x=1700690820; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TFrijGlQfaVLIufbsKxvAaXRVZ5PaUILbDgcfi3XEcs=;
-        b=MwYLSYffq1GsoHrFOco1XBNwnQz7wVSz5h6NiwmMgoJp7wqR0UixdwHDr3n1HhjZq5
-         FvhVTN/5wlLYu09oCoAlVGbIzI8unaYwOUfGE5Ro3fCPh6QxpqQ9j2VKKEh+6KibAWDC
-         0xFHp67EXO8rJhBFSsrHhvucO4+2hekRAEvjRiTZh3pCiCsvnfMbGi+xfpPT4kvYrSCj
-         C/nuks2HO1x2vr8TN7G6yihzO7qJbtq8kVYb61JTUkaNr+tQ2pwCwh8bEF9Llc4VBlN1
-         Z2xvKRrM6uaxnRMUAYvMCnuzjWG1XkPTO5JPS9+TVgcgRfGpTasU8ta4P+qS+366Mdt9
-         N8ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700086020; x=1700690820;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TFrijGlQfaVLIufbsKxvAaXRVZ5PaUILbDgcfi3XEcs=;
-        b=xOLIrNv8UGlBtEoCFbxlJZemkVnPcjonaxU5+OTcM0bACstjUDm4X7kj6vJhSc3b2i
-         h1+sOpfH75A7Nr1enCFkaCulf6wVesIQVUqi4H03CXMFEJiE+2CZxxKExVGnO5r48WLc
-         McN1D3T3mvCB+5IkQjscKvg/NHyijo3XVpUyN6JwCnM37AJNK3xOzSGsWzoAOTm+KBza
-         cmgvQnMpAf+x9406cN+u7ufmiqsDnC2ysb7rLtqCA8c4F8z3340XuqFVo37fJnDz4bzI
-         xoZS0qVOZ7C3Qb8tTKWUTYrbAbosFSvjDzt0tW9HfUi/g39wwFr/HdgM86tCZo584aY4
-         FiTA==
-X-Gm-Message-State: AOJu0YzzVgtftL+9MVFZgNSyI/1041TaA0yo+5d+gEUCU4sU6BL9iz72
-	YtOHBPjjwh3nS0Ltaa5wBuUWyh5hEofuIvahK6A=
-X-Google-Smtp-Source: AGHT+IH3a3gH5KGIem89z0MHmdEWXxmijjBv+yflPZIBN8maI60aouQKxdi8rOjH0aUF/QcZxUXUu5ahTH/Z/wG+Qmg=
-X-Received: by 2002:a17:906:e86:b0:9df:bc50:250d with SMTP id
- p6-20020a1709060e8600b009dfbc50250dmr9501624ejf.54.1700086019579; Wed, 15 Nov
- 2023 14:06:59 -0800 (PST)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF63197;
+	Wed, 15 Nov 2023 17:15:34 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SW2CM4mQmz4f3jHc;
+	Thu, 16 Nov 2023 09:15:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 3829C1A0181;
+	Thu, 16 Nov 2023 09:15:30 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgAnNUUubVVlby1OBA--.26664S2;
+	Thu, 16 Nov 2023 09:15:30 +0800 (CST)
+Subject: Re: [PATCH bpf-next v3 01/13] bpf: Add support for non-fix-size
+ percpu mem allocation
+To: Heiko Carstens <hca@linux.ibm.com>,
+ Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Marc Hartmayer <mhartmay@linux.ibm.com>,
+ Mikhail Zaslonko <zaslonko@linux.ibm.com>, linux-s390@vger.kernel.org
+References: <20230827152729.1995219-1-yonghong.song@linux.dev>
+ <20230827152734.1995725-1-yonghong.song@linux.dev>
+ <20231115153139.29313-A-hca@linux.ibm.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <379ff74e-cad2-919c-4130-adbe80d50a26@huaweicloud.com>
+Date: Thu, 16 Nov 2023 09:15:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231112010609.848406-1-andrii@kernel.org> <20231112010609.848406-5-andrii@kernel.org>
- <CAADnVQJZr3Za=oM9VeTeY0BGL6rymSHSsKqEWVSJmkRhSvcsHA@mail.gmail.com>
-In-Reply-To: <CAADnVQJZr3Za=oM9VeTeY0BGL6rymSHSsKqEWVSJmkRhSvcsHA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 15 Nov 2023 17:06:48 -0500
-Message-ID: <CAEf4BzYCDGKnUd6zJJV-aetUhSq_+QsBFZ6bxS+vvaxvmUDZ6A@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 04/13] bpf: add register bounds sanity checks
- and sanitization
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231115153139.29313-A-hca@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgAnNUUubVVlby1OBA--.26664S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw15tr47KFyDtr18Jry3CFg_yoW8WrW3pF
+	4fGFyxWrn3Arn3Ca17uw48WF1Fy395K3W7tw4jyw1DCry3Xryqkws8Xrs3ur98ArZY9FW5
+	XrZ0vF9xZFy8Z37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Wed, Nov 15, 2023 at 3:25=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sat, Nov 11, 2023 at 5:06=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
-g> wrote:
-> >
-> >
-> > By default, sanity violation will trigger a warning in verifier log and
-> > resetting register bounds to "unbounded" ones. But to aid development
-> > and debugging, BPF_F_TEST_SANITY_STRICT flag is added, which will
-> > trigger hard failure of verification with -EFAULT on register bounds
-> > violations. This allows selftests to catch such issues. veristat will
-> > also gain a CLI option to enable this behavior.
-> ...
-> > +       bool test_sanity_strict;        /* fail verification on sanity =
-violations */
-> ...
-> > +/* The verifier internal test flag. Behavior is undefined */
-> > +#define BPF_F_TEST_SANITY_STRICT       (1U << 7)
->
-> Applied, but please follow up with a rename.
->
-> The name of the flag here in uapi and in the "veristat --test-sanity"
-> will be a subject of bad jokes.
-> The flag is asking the verifier to test its own sanity?
-> Can the verifier go insane?
-> Let's call it TEST_RANGE_ACCOUNTING or something.
-> I'm guessing you didn't qualify it with 'range' to reuse it
-> in the future for other 'sanity' checks?
-> We can add another flag later.
-> Like BPF_F_TEST_STATE_FREQ is pretty specific and it's a good thing.
-> I think being specific like BPF_F_TEST_RANGE_TRACKING or
-> RANGE_ACCOUNTING is better long term.
+Hi,
 
-Sure, I like BPF_F_TEST_RANGE_TRACKING_STRICT. Or you want to drop the
-_STRICT suffix? We can also do something like
-BPF_F_TEST_REG_INVARIANTS_STRICT or something to keep it a bit more
-generic?
+On 11/15/2023 11:31 PM, Heiko Carstens wrote:
+> On Sun, Aug 27, 2023 at 08:27:34AM -0700, Yonghong Song wrote:
+>> This is needed for later percpu mem allocation when the
+>> allocation is done by bpf program. For such cases, a global
+>> bpf_global_percpu_ma is added where a flexible allocation
+>> size is needed.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>  include/linux/bpf.h   |  4 ++--
+>>  kernel/bpf/core.c     |  8 +++++---
+>>  kernel/bpf/memalloc.c | 14 ++++++--------
+>>  3 files changed, 13 insertions(+), 13 deletions(-)
+> Both Marc and Mikhail reported out-of-memory conditions on s390 machines,
+> and bisected it down to this upstream commit 41a5db8d8161 ("bpf: Add
+> support for non-fix-size percpu mem allocation").
+> This seems to eat up a lot of memory only based on the number of possible
+> CPUs.
+>
+> If we have a machine with 8GB, 6 present CPUs and 512 possible CPUs (yes,
+> this is a realistic scenario) the memory consumption directly after boot
+> is:
+>
+> $ cat /sys/devices/system/cpu/present
+> 0-5
+> $ cat /sys/devices/system/cpu/possible
+> 0-511
+
+Will the present CPUs be hot-added dynamically and eventually increase
+to 512 CPUs ? Or will the present CPUs rarely be hot-added ? After all
+possible CPUs are online, will these CPUs be hot-plugged dynamically ?
+Because I am considering add CPU hotplug support for bpf mem allocator,
+so we can allocate memory according to the present CPUs instead of
+possible CPUs. But if the present CPUs will be increased to all possible
+CPUs quickly, there will be not too much benefit to support hotplug in
+bpf mem allocator.
+
 
