@@ -1,107 +1,242 @@
-Return-Path: <bpf+bounces-15175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F2277EE26C
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 15:14:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DE7B7EE2D6
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 15:31:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECDED280FE5
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 14:14:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4B6CB20D1E
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 14:31:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0571315BC;
-	Thu, 16 Nov 2023 14:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF72328C1;
+	Thu, 16 Nov 2023 14:31:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m8aUr8iV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N8xb9+UL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D2E4B7
-	for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 06:13:59 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9f26ee4a6e5so123884466b.2
-        for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 06:13:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700144038; x=1700748838; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=gzWXmNE34Xz2pqPLLLkPGgyGfsAIczrBuWjSvDlSAHo=;
-        b=m8aUr8iVq+659Rq9v36HKv01WZuoB4Svo3CYL23HLEudEVPRZuE1TAXymErGhKHs1E
-         IVn+igvMbb7zDBYXdYrNEexX8bP4C9FdOA5Fc2gANojklQPZprCzMl2BubHm4+7TT+Q8
-         oeEhADWSmcGpJjNbyhNJ+Rrk98cDjV+I5XZDAIsTA1WDAUNNusLuWPdI947MGJYQw1QF
-         pyInl+etW6nsfWNFepXg0EGvQujGibLKUpPtBrmS79+ju7gcWqPe5aiZbeDn0iuU0gFc
-         K8amYDUHdSroOnk9YohqFlcWjxiZlpU2yaoHdWCwSKzqsnZNluInHyhI9U31B+LhqWSc
-         1x0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700144038; x=1700748838;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gzWXmNE34Xz2pqPLLLkPGgyGfsAIczrBuWjSvDlSAHo=;
-        b=rKfShK1x19C2EPOqfqu/daqCy2M88aNPtr58WZjw82ehisOhDzK8iL0iRwP/15ytCf
-         vJdPTQ+NPMoPeAIOfCXk8Dpsv5heKnkXHyfKJukgDxqjjH/lBnAWaJ/rwEJE7Xej/iW5
-         w3z4j6/gJDEKPkdvfn84pWf2o0pdx8Qq07ze5lMrABwp0iOFSqXpVLVnb4BSmSCInNTU
-         jZwSDC/NpE+eooIW7mPE6jYSM+4f4Di59ucqBoWW6Xpo4BlEDdfC5ZLhMnNCSIsEvy/c
-         cJ/j59Ti378yPOoFrA7UXmy+/bOKVi/NWFYncx6ktxoa9tX6V+mYq8i39NdlT1ZhL9JR
-         +DaA==
-X-Gm-Message-State: AOJu0Yy4SrQOj4XCYPH/1NbULT0HH+8Azs//J9yDTfm8ocZ4aSQm18yG
-	9aljTvLgluZqXR3yxZzLO+0=
-X-Google-Smtp-Source: AGHT+IFDQo5lH8HRVCthXed9LsyX9bE7rRyD28mi6p1az1L85chzfbhL0vFD5I0aicxoJ085oFpYFA==
-X-Received: by 2002:a17:907:96a9:b0:9d3:f436:61e5 with SMTP id hd41-20020a17090796a900b009d3f43661e5mr15708223ejc.29.1700144037731;
-        Thu, 16 Nov 2023 06:13:57 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id s4-20020a170906168400b009aa292a2df2sm8480483ejd.217.2023.11.16.06.13.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 06:13:57 -0800 (PST)
-Message-ID: <5fcab3fc8a9dabfb3632877ac805c6db67e11487.camel@gmail.com>
-Subject: Re: [PATCH bpf 10/12] bpf: keep track of max number of bpf_loop
- callback iterations
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev,  memxor@gmail.com, awerner32@gmail.com
-Date: Thu, 16 Nov 2023 16:13:56 +0200
-In-Reply-To: <CAEf4BzY8-97hcj2eKjo-uPoOJAnxy-jmbhRxxzQxO1naUiMHdg@mail.gmail.com>
-References: <20231116021803.9982-1-eddyz87@gmail.com>
-	 <20231116021803.9982-11-eddyz87@gmail.com>
-	 <CAEf4BzY8-97hcj2eKjo-uPoOJAnxy-jmbhRxxzQxO1naUiMHdg@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB68328B7;
+	Thu, 16 Nov 2023 14:31:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DCEDC433C8;
+	Thu, 16 Nov 2023 14:30:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700145064;
+	bh=EhGHuwDh91cqarIXUDT3tp44P964N6cVpra9ZSSgrHQ=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=N8xb9+ULvNniRwmzMdpxBtU8u7OyH+mGbDxyCcbK0uJacZTjERDbNmjFrqCHyY3qv
+	 97gcZFgeT9L/lulv7LSGjCUfM3+cPCdrSR1xyS/sagSzpgQZWwj46Q0GGG1SJZue+w
+	 pfRTQHAWokyDjTEFlSTQxlCgokaEHDpUk6rOsQQ6MLEpfFXvxrgWe0shARZKYaqmiE
+	 nwm0lbYi/xO8RI70dFP2fmt6KzJqFgpFQOgelf4eFQINQPGzEboEgm4fs79OY8aNnr
+	 7b9+q+3noy3GFEUMkE4VIJFqXwTfwSMCvb4vJLuLQHzXde5Um8+dAUMvjpVubhZRiN
+	 mrsyKtNVMUz7g==
+Message-ID: <a0dc04da-eb36-4824-b774-fd16f3f65875@kernel.org>
+Date: Thu, 16 Nov 2023 15:30:55 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: hawk@kernel.org, bpf@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ haoluo@google.com, jolsa@kernel.org, kuba@kernel.org, toke@kernel.org,
+ willemb@google.com, dsahern@kernel.org, magnus.karlsson@intel.com,
+ bjorn@kernel.org, maciej.fijalkowski@intel.com, yoong.siang.song@intel.com,
+ netdev@vger.kernel.org, xdp-hints@xdp-project.net
+Subject: Re: [PATCH bpf-next v5 02/13] xsk: Add TX timestamp and TX checksum
+ offload support
+Content-Language: en-US
+To: Stanislav Fomichev <sdf@google.com>
+References: <20231102225837.1141915-1-sdf@google.com>
+ <20231102225837.1141915-3-sdf@google.com>
+ <c9bfe356-1942-4e49-b025-115faeec39dd@kernel.org>
+ <CAKH8qBtiv8ArtbbMW9+c75y+NfkX-Tk-rcPuHBVdKDMmmFdtdA@mail.gmail.com>
+ <2ed17b27-f211-4f58-95b5-5a71914264f3@kernel.org>
+ <ZVJWuB4qtWfC-W_h@google.com>
+ <be6186c1-52ee-42aa-b53c-39781af3a1ec@kernel.org>
+ <ZVTJpLoSCaLoBa67@google.com>
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <ZVTJpLoSCaLoBa67@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2023-11-16 at 09:08 -0500, Andrii Nakryiko wrote:
-[...]
-> > @@ -10479,8 +10481,14 @@ static int check_helper_call(struct bpf_verifi=
-er_env *env, struct bpf_insn *insn
-> >                 break;
-> >         case BPF_FUNC_loop:
-> >                 update_loop_inline_state(env, meta.subprogno);
-> > -               err =3D push_callback_call(env, insn, insn_idx, meta.su=
-bprogno,
-> > -                                        set_loop_callback_state);
-> > +               if (env->log.level & BPF_LOG_LEVEL2)
-> > +                       verbose(env, "frame%d callback_depth=3D%u\n",
-> > +                               env->cur_state->curframe, cur_func(env)=
-->callback_depth);
-> > +               if (cur_func(env)->callback_depth < regs[BPF_REG_1].uma=
-x_value)
->=20
-> I haven't had time to look at the patch set properly yet and I'm not
-> sure if I'll have time today. But one thing that I randomly realized
-> is that if you are taking umax_value into account then this BPF_REG_1
-> has to be precise, so please make sure to mark_chain_precision() on it
-> first.
 
-Yes, makes sense, thank you for spotting this.
-Will update in v2, waiting for some more feedback before resending.
+
+On 11/15/23 14:37, Stanislav Fomichev wrote:
+> On 11/15, Jesper Dangaard Brouer wrote:
+>>
+>>
+>> On 11/13/23 18:02, Stanislav Fomichev wrote:
+>>> On 11/13, Jesper Dangaard Brouer wrote:
+>>>>
+>>>>
+>>>> On 11/13/23 15:10, Stanislav Fomichev wrote:
+>>>>> On Mon, Nov 13, 2023 at 5:16 AM Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 11/2/23 23:58, Stanislav Fomichev wrote:
+>>>>>>> diff --git a/include/uapi/linux/if_xdp.h b/include/uapi/linux/if_xdp.h
+>>>>>>> index 2ecf79282c26..b0ee7ad19b51 100644
+>>>>>>> --- a/include/uapi/linux/if_xdp.h
+>>>>>>> +++ b/include/uapi/linux/if_xdp.h
+>>>>>>> @@ -106,6 +106,41 @@ struct xdp_options {
+>>>>>>>      #define XSK_UNALIGNED_BUF_ADDR_MASK \
+>>>>>>>          ((1ULL << XSK_UNALIGNED_BUF_OFFSET_SHIFT) - 1)
+>>>>>>>
+>>>>>>> +/* Request transmit timestamp. Upon completion, put it into tx_timestamp
+>>>>>>> + * field of struct xsk_tx_metadata.
+>>>>>>> + */
+>>>>>>> +#define XDP_TXMD_FLAGS_TIMESTAMP             (1 << 0)
+>>>>>>> +
+>>>>>>> +/* Request transmit checksum offload. Checksum start position and offset
+>>>>>>> + * are communicated via csum_start and csum_offset fields of struct
+>>>>>>> + * xsk_tx_metadata.
+>>>>>>> + */
+>>>>>>> +#define XDP_TXMD_FLAGS_CHECKSUM                      (1 << 1)
+>>>>>>> +
+>>>>>>> +/* AF_XDP offloads request. 'request' union member is consumed by the driver
+>>>>>>> + * when the packet is being transmitted. 'completion' union member is
+>>>>>>> + * filled by the driver when the transmit completion arrives.
+>>>>>>> + */
+>>>>>>> +struct xsk_tx_metadata {
+>>>>>>> +     union {
+>>>>>>> +             struct {
+>>>>>>> +                     __u32 flags;
+>>>>>>> +
+>>>>>>> +                     /* XDP_TXMD_FLAGS_CHECKSUM */
+>>>>>>> +
+>>>>>>> +                     /* Offset from desc->addr where checksumming should start. */
+>>>>>>> +                     __u16 csum_start;
+>>>>>>> +                     /* Offset from csum_start where checksum should be stored. */
+>>>>>>> +                     __u16 csum_offset;
+>>>>>>> +             } request;
+>>>>>>> +
+>>>>>>> +             struct {
+>>>>>>> +                     /* XDP_TXMD_FLAGS_TIMESTAMP */
+>>>>>>> +                     __u64 tx_timestamp;
+>>>>>>> +             } completion;
+>>>>>>> +     };
+>>>>>>> +};
+>>>>>>
+>>>>>> This looks wrong to me. It looks like member @flags is not avail at
+>>>>>> completion time.  At completion time, I assume we also want to know if
+>>>>>> someone requested to get the timestamp for this packet (else we could
+>>>>>> read garbage).
+>>>>>
+>>>>> I've moved the parts that are preserved across tx and tx completion
+>>>>> into xsk_tx_metadata_compl.
+>>>>> This is to address Magnus/Maciej feedback where userspace might race
+>>>>> with the kernel.
+>>>>> See: https://lore.kernel.org/bpf/ZNoJenzKXW5QSR3E@boxer/
+>>>>>
+>>>>
+>>>> Does this mean that every driver have to extend their TX-desc ring with
+>>>> sizeof(struct xsk_tx_metadata_compl)?
+>>>> Won't this affect the performance of this V5?
+>>>
+>>> Yes, but it doesn't have to be a descriptor. Might be some internal
+>>> driver completion queue (as in the case of mlx5). And definitely does
+>>> affect performance :-( (see all the static branches to disable it)
+>>>>    $ pahole -C xsk_tx_metadata_compl
+>>>> ./drivers/net/ethernet/stmicro/stmmac/stmmac.ko
+>>>>    struct xsk_tx_metadata_compl {
+>>>> 	__u64 *              tx_timestamp;         /*     0     8 */
+>>>>
+>>>> 	/* size: 8, cachelines: 1, members: 1 */
+>>>> 	/* last cacheline: 8 bytes */
+>>>>    };
+>>>>
+>>>> Guess, I must be misunderstanding, as I was expecting to see the @flags
+>>>> member being preserved across, as I get the race there.
+>>>>
+>>>> Looking at stmmac driver, it does look like this xsk_tx_metadata_compl
+>>>> is part of the TX-ring for completion (tx_skbuff_dma) and the
+>>>> tx_timestamp data is getting stored here.  How is userspace AF_XDP
+>>>> application getting access to the tx_timestamp data?
+>>>> I though this was suppose to get stored in metadata data area (umem)?
+>>>>
+>>>> Also looking at the code, the kernel would not have a "crash" race on
+>>>> the flags member (if we preserve in struct), because the code checks the
+>>>> driver HW-TS config-state + TX-descriptor for the availability of a
+>>>> HW-TS in the descriptor.
+>>>
+>>> xsk_tx_metadata_compl stores a pointer to the completion timestamp
+>>> in the umem, so everything still arrives via the metadata area.
+>>>
+>>> We want to make sure the flags are not changing across tx and tx completion.
+>>> Instead of saving the flags, we just use that xsk_tx_metadata_compl to
+>>> signal to the completion that "I know that I've requested the tx
+>>> completion timestamp, please put it at this address in umem".
+>>>
+>>> I store the pointer instead of flags to avoid doing pointer math again
+>>> at completion. But it's an implementation detail and somewhat abstracted
+>>> from the drivers (besides the fact that it's probably has to fit in 8
+>>> bytes).
+>>
+>> I see it now (what I missed). At TX time you are storing a pointer where
+>> to (later) write the TS at completion time.  It just seems overkill to
+>> store 8 byte (pointer) to signal (via NULL) if the HWTS was requested.
+>> Space in the drivers TX-ring is performance critical, and I think driver
+>> developers would prefer to find a bit to indicate HWTS requested.
+>>
+>> If HWTS was *NOT* requested, then the metadata area will not be updated
+>> (right, correct?). Then memory area is basically garbage that survived.
+>> How does the AF_XDP application know this packet contains a HWTS or not?
+>>
+>>  From an UAPI PoV wouldn't it be easier to use (and extend) via keeping
+>> the @flags member (in struct xsk_tx_metadata), but (as you already do)
+>> not let kernel checks depend on it (to avoid the races).
+> 
+> I was assuming the userspace can keep this signal out of band or use
+> the same idea as suggested with padding struct xsk_tx_metadata to keep
+> some data around. But I see your point, it might be convenient to
+> keep the original flags around during completion on the uapi side.
+> 
+> I think I can just move flags from the request union member to the outer
+> struct. So the struct xsk_tx_metadata would look like:
+> 
+> struct xsk_tx_metadata {
+> 	__u32 flags; /* maybe can even make this u64? */
+> 
+
+Yes to u64 for two reasons (1) this becomes UAPI and
+(2) better alignment for tx_timestamp.
+But I'm open to keeping it u32.
+
+> 	union {
+> 		__u16 csum_start;
+> 		__u16 csum_offset;
+> 	} request;
+> 
+> 	union {
+> 		__u64 tx_timestamp;
+> 	} completion;
+> 
+> 	__u32 padding; /* to drop this padding */
+> };
+> 
+> But I'd also keep the existing xsk_tx_metadata_compl to carry the
+> pointer+signal around. As I mentioned previously, it's completely
+> opaque to the driver and we can change the internals in the future.
+> 
+
+Sure, it is an implementation detail and my objections are mostly that I
+don't find it as a pretty code approach that can be hard to follow.
+Maybe driver developer will object and change this later if it cost too
+much to increase the element size in their TX-ring queues.
+
+> IOW, we won't override the flags from the kernel side and as long
+> as the userspace consumer doesn't mess them up it should receive
+> the original value at completion.
+> 
+> Would that work for you?
+
+Yes, that will work for me, thanks!
+
+--Jesper
 
