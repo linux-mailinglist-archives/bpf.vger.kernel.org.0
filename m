@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-15198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15199-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C9597EE4E9
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 17:04:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0499E7EE4FC
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 17:11:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D2811C20BAA
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 16:04:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02EA71C20928
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 16:11:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8478B39FF0;
-	Thu, 16 Nov 2023 16:04:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79F13BB3E;
+	Thu, 16 Nov 2023 16:11:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="Oiv5F6jK"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="Hn2vy02P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF61B194
-	for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 08:03:56 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54394328f65so1399904a12.3
-        for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 08:03:56 -0800 (PST)
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF92A1A8
+	for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 08:11:07 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40906fc54fdso8641425e9.0
+        for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 08:11:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1700150635; x=1700755435; darn=vger.kernel.org;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1700151066; x=1700755866; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=67lWi1khNFKDh2TF9Oi28b0MSBxN3Mo+0RqYqCKcNBo=;
-        b=Oiv5F6jKtdbZtS9nakn/WC2BC2hwU/CBHiEJP+4EvFMFIMwFf/o1rDESLaAUbMmFc8
-         yPpfSbv2nsf+RD/wEVLWZ17dipwX0Ehhy4FXqzgrcVvvqfS9ThasKhO6t9xxG66tHd0b
-         0jNK/XjT9TVW/AJhlnu+cq0BMNrvARr1jNAEJd4RtcPuQFdZLNGz8qSKPx9NeiOhhUtj
-         v3weY4xCNuQh64/7wOg3HxBQUJX4PJE+vJSSrUC6ttmtAEULRp4YCzirLIQ5wRWFbejp
-         k1AeMVCSz6w16vds0UW0H3+42dAhCFz6znfnETVcUM8KuMrBxqRyeLNO4ApbQuidStyK
-         WM0Q==
+        bh=/FrAh6VZJs4Mwoi9RIsxy0fEAEPO1KkRo4SmyQeSET4=;
+        b=Hn2vy02PJ5AsZqBSHxrMq4juswMYuPznYe28tTWbebHVYyJHzfPANPiY7rcttlU2a3
+         6LgYbYYmzOYDHka1/1BzeUOj4WfHOWBddmKmLfp+OW+atvMv3dK1tCnh9FEur+qD80Pn
+         iNR+zSpU0Dfj+KQMQaRs1fBL+2ScIYmsWDvKjIyXb/txTyWBbXb0/A6sxXQxylDsZAEA
+         nDFLiNpI/AuPSLYpoy8Z8uZYaloNjl0jAMfB0pfIMFezt27/rCP8aeNVDd96OBg6JjCO
+         33O6jaLS4pSnQCfr47AiWnFtUE9F9PQ5gf71jbYYPdtGRRjRnK250e67KnzgDn3R4Tz1
+         Ja8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700150635; x=1700755435;
+        d=1e100.net; s=20230601; t=1700151066; x=1700755866;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=67lWi1khNFKDh2TF9Oi28b0MSBxN3Mo+0RqYqCKcNBo=;
-        b=hebgTBApZXEW16uxoyUAs2qpfOAp2TbVVYfIDfj2cHyHKxM/SXNPfx6y1lcAAslhcM
-         p9jgr44W4tLLQ+7o+smooHK9RjVXG6bqeLAhLu1Mr5wEsMUFqeK1l2ffT4OIRY57DZVm
-         m0sB1Z8KFlNrZCBazpHE/gmGlcRKqONNPKd5NPzP7yX2NhMq+SBbblwaUlDskZIPFr1d
-         0A6gM2PCacNq1O/U0cr540qHzzeSliHdc+MqtLCD6gRa3kW1Qis1hU6ZSbVgF2wZZcwC
-         6EjmH0Zro+Loqo6vhrZ8o157uKEWQaRJWJ5eCN5ycGoy8Zz1jlLhD45pKmpCofrCpig9
-         ST4w==
-X-Gm-Message-State: AOJu0YwFJ+JZY99YnpUMpyfQNt5KjCgAg/Utg9xZXVtJytKFxMvC76Pk
-	EEdCI45jTIg4FLGObkLGpm2s1A==
-X-Google-Smtp-Source: AGHT+IFxekn32MKO2A2JKW+uFm2KOnfwSIwAPTQgijQeLn8YLb/+iIDsavYVSRkNfs9PDpGp12fyog==
-X-Received: by 2002:aa7:d49a:0:b0:533:97c:8414 with SMTP id b26-20020aa7d49a000000b00533097c8414mr13422326edr.7.1700150635095;
-        Thu, 16 Nov 2023 08:03:55 -0800 (PST)
+        bh=/FrAh6VZJs4Mwoi9RIsxy0fEAEPO1KkRo4SmyQeSET4=;
+        b=Lr9mi2Ui7z4+KpaHUaTPRBvvsy7ePxZgxUoEx2jf4N5bYVsdpZ2tBVSK7gHNZLvluL
+         pNx/uf0+NRu/XO/2XZjhxS/bUIRZI2TfBEwORTfPNOMY5M7AqLe8AScEq+jJdnVfGaZ8
+         uWcS5hsTzd1LhF4PRELZ4V9s2o2r9Kf6xaA/RPq8EzRsbiECCrujUJ0rttx9ChC6TZ/y
+         v4RuxJREwGHoKcAyhXAIXPnr2OTKogQQhxvciNmlm4TBhZFNMXgQ7Dtx2Bwy7iid1RTi
+         wXRV6fSV09YUyGotgmu2TY6Az8rxUF1D47ZANdSDJjHsG6T7lwLnqyKvVtdwwVP+R6Nl
+         8I7g==
+X-Gm-Message-State: AOJu0Yx0H1dn4BnN40/+Uo5WAtddk5ID9EVEFfZAHfagfVwR/8mMsZJ0
+	yu5l1outLrUKDlUOfHiZN3XLRA==
+X-Google-Smtp-Source: AGHT+IH61uvUUEzsBFgCjsCDVmtEKg+RtvAK/2QN8TjqwM+xkBsR6BCisHnnTQA/kSCK1y9d7P4UMw==
+X-Received: by 2002:a5d:47cd:0:b0:331:4a30:a34d with SMTP id o13-20020a5d47cd000000b003314a30a34dmr10893482wrc.35.1700151066047;
+        Thu, 16 Nov 2023 08:11:06 -0800 (PST)
 Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id n4-20020a056402060400b005401a4184ddsm7822933edv.27.2023.11.16.08.03.54
+        by smtp.gmail.com with ESMTPSA id y4-20020a5d4ac4000000b0032dbf32bd56sm14028188wrs.37.2023.11.16.08.11.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 08:03:54 -0800 (PST)
-Date: Thu, 16 Nov 2023 17:03:53 +0100
+        Thu, 16 Nov 2023 08:11:05 -0800 (PST)
+Date: Thu, 16 Nov 2023 17:11:04 +0100
 From: Jiri Pirko <jiri@resnulli.us>
 To: Jamal Hadi Salim <jhs@mojatatu.com>
 Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com,
@@ -63,10 +63,11 @@ Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com,
 	pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org,
 	daniel@iogearbox.net, bpf@vger.kernel.org, khalidm@nvidia.com,
 	toke@redhat.com, mattyk@nvidia.com
-Subject: Re: [PATCH net-next v8 08/15] p4tc: add P4 data types
-Message-ID: <ZVY9aQW0C8kxq0xA@nanopsycho>
+Subject: Re: [PATCH net-next v8 09/15] p4tc: add template pipeline create,
+ get, update, delete
+Message-ID: <ZVY/GBIC4ckerGSc@nanopsycho>
 References: <20231116145948.203001-1-jhs@mojatatu.com>
- <20231116145948.203001-9-jhs@mojatatu.com>
+ <20231116145948.203001-10-jhs@mojatatu.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,73 +76,51 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231116145948.203001-9-jhs@mojatatu.com>
+In-Reply-To: <20231116145948.203001-10-jhs@mojatatu.com>
 
-Thu, Nov 16, 2023 at 03:59:41PM CET, jhs@mojatatu.com wrote:
-
-[...]
-
->diff --git a/include/net/p4tc_types.h b/include/net/p4tc_types.h
->new file mode 100644
->index 000000000..8f6f002ae
-
-[...]
-
->+#define P4T_MAX_BITSZ 128
-
-[...]
-
->+#define P4T_MAX_STR_SZ 32
+Thu, Nov 16, 2023 at 03:59:42PM CET, jhs@mojatatu.com wrote:
 
 [...]
 
 
 >diff --git a/include/uapi/linux/p4tc.h b/include/uapi/linux/p4tc.h
->new file mode 100644
->index 000000000..ba32dba66
->--- /dev/null
+>index ba32dba66..4d33f44c1 100644
+>--- a/include/uapi/linux/p4tc.h
 >+++ b/include/uapi/linux/p4tc.h
->@@ -0,0 +1,33 @@
->+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
->+#ifndef __LINUX_P4TC_H
->+#define __LINUX_P4TC_H
+>@@ -2,8 +2,71 @@
+> #ifndef __LINUX_P4TC_H
+> #define __LINUX_P4TC_H
+> 
+>+#include <linux/types.h>
+>+#include <linux/pkt_sched.h>
 >+
->+#define P4TC_MAX_KEYSZ 512
->+
->+enum {
->+	P4T_UNSPEC,
-
-I wonder, what it the reason for "P4T"/"P4TC" prefix inconsistency.
-In the kernel header, that could be fixes, but in uapi header this is
-forever. Is this just to be aligned with other TC uapi
-inconsitencies? :D
-
-
->+	P4T_U8,
->+	P4T_U16,
->+	P4T_U32,
->+	P4T_U64,
->+	P4T_STRING,
->+	P4T_S8,
->+	P4T_S16,
->+	P4T_S32,
->+	P4T_S64,
->+	P4T_MACADDR,
->+	P4T_IPV4ADDR,
->+	P4T_BE16,
->+	P4T_BE32,
->+	P4T_BE64,
->+	P4T_U128,
->+	P4T_S128,
->+	P4T_BOOL,
->+	P4T_DEV,
->+	P4T_KEY,
->+	__P4T_MAX,
+>+/* pipeline header */
+>+struct p4tcmsg {
+>+	__u32 pipeid;
+>+	__u32 obj;
 >+};
+
+I don't follow. Is there any sane reason to use header instead of normal
+netlink attribute? Moveover, you extend the existing RT netlink with
+a huge amout of p4 things. Isn't this the good time to finally introduce
+generic netlink TC family with proper yaml spec with all the benefits it
+brings and implement p4 tc uapi there? Please?
+
+
 >+
->+#define P4T_MAX (__P4T_MAX - 1)
+>+#define P4TC_MAXPIPELINE_COUNT 32
+>+#define P4TC_MAXTABLES_COUNT 32
+>+#define P4TC_MINTABLES_COUNT 0
+>+#define P4TC_MSGBATCH_SIZE 16
 >+
->+#endif
+> #define P4TC_MAX_KEYSZ 512
+> 
+>+#define TEMPLATENAMSZ 32
+>+#define PIPELINENAMSIZ TEMPLATENAMSZ
+
+ugh. A prefix please?
+
+pw-bot: cr
 
 [...]
 
