@@ -1,217 +1,119 @@
-Return-Path: <bpf+bounces-15202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15206-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 964237EE5A4
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 18:03:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A86E7EE76A
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 20:22:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 224521F22A30
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 17:03:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5B6EB20DA3
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 19:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD07B48CDA;
-	Thu, 16 Nov 2023 17:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FC7346528;
+	Thu, 16 Nov 2023 19:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="k+gERTjO"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 297F2B7;
-	Thu, 16 Nov 2023 09:03:42 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1245E1595;
-	Thu, 16 Nov 2023 09:04:28 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.119.36.141])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8ED33F6C4;
-	Thu, 16 Nov 2023 09:03:40 -0800 (PST)
-Date: Thu, 16 Nov 2023 12:03:35 -0500
-From: Mark Rutland <mark.rutland@arm.com>
-To: Puranjay Mohan <puranjay12@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
-Message-ID: <ZVZLZ4lxJa2hjVWv@FVFF77S0Q05N>
-References: <20230917000045.56377-1-puranjay12@gmail.com>
- <20230917000045.56377-2-puranjay12@gmail.com>
- <ZUPVbrMSNNwPw_B-@FVFF77S0Q05N.cambridge.arm.com>
- <CANk7y0g8SOrSAY2jqZ22v6Duu9yhHY-d39g5gJ2vA2j2Y-v53Q@mail.gmail.com>
- <ZUtjyxBheN-dbj84@FVFF77S0Q05N>
- <CANk7y0hvEu3WkYEJ5oRqRHwKGfDnM+fO0=vDen5=zO8-rCvr9Q@mail.gmail.com>
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8062DD5E
+	for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 11:21:30 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc3bb4c307so10978065ad.0
+        for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 11:21:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700162490; x=1700767290; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YzF2ALYUXgtOOWHICjx/9sp3ZlXGizxmY7whZwnkVqs=;
+        b=k+gERTjO6F93q1lS3m32rhR1J28d3mpm2fohBNlGcICYiGp+WYLpMxD8T7g/NwYvkq
+         TnISjy6v2HHl9uLVBPS8As3+3N6VKqEA9rJCcxc1hfXLgupG0st4Nw0XKCMTajq+7gAC
+         fZ1sQBFKSupkE3fCKaYxdMbwZ3O33arR2wFwM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700162490; x=1700767290;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YzF2ALYUXgtOOWHICjx/9sp3ZlXGizxmY7whZwnkVqs=;
+        b=PUX0zkVfEFeq7jdqdc1CA/znKfBayS14VIGPFne27rJQlV78qDftPCmeHhS2sZSl8j
+         6PTvrAUDju8ifxVc2f171REEOwmsWVe1KaNy0fAnbdEfR9gLGemZsn0bubJev8PsdAEC
+         GwwaKUleadJxMErHO7IF75iIeV7VdoBS/VYr6tcKczD0h43YZ1unTCE2hf5yEhOEGG7q
+         OMARUY4ef9+4dDqdRGolH7N5HQvMplpkWtiqm55Hc8QnCP2pcOB69grDWH27qdnsnG9z
+         nTi+zw8o3N863umf6DCpf4Gz3D5t8Yfxa0G2UhMpKZZ97EkyIWo62zfsMBvBz4Gl0Pof
+         vBRQ==
+X-Gm-Message-State: AOJu0YyL3nwNKjajmM3UuaWoYXhJoX9rRNk4W4P/rQtDGlJjdGg0NE6t
+	jaMLXHtrWcpYNAL9fETXdC/FrA==
+X-Google-Smtp-Source: AGHT+IFOsmNi6M20q2mMZfgvvs7Ny35X8FWHOzyId2w5LMV8GyUNADT9qbMocFM5IvDg5rKoPH1waA==
+X-Received: by 2002:a17:902:f54f:b0:1cc:4eb1:edaa with SMTP id h15-20020a170902f54f00b001cc4eb1edaamr11388254plf.51.1700162489866;
+        Thu, 16 Nov 2023 11:21:29 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1709028c9800b001c9bfd20d0csm17388plo.124.2023.11.16.11.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 11:21:28 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Tejun Heo <tj@kernel.org>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Waiman Long <longman@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH 0/3] kernfs: Convert from strlcpy() to strscpy()
+Date: Thu, 16 Nov 2023 11:21:22 -0800
+Message-Id: <20231116191718.work.246-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-Developer-Signature: v=1; a=openpgp-sha256; l=805; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=w0GAtTzgRNL9znjaphz3FN4VQ24pFDHc0eBL30sFkpg=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlVmu11zVyAR1N094pTJIYi2lpml53vIr/7Zkfb
+ zgMf4lRuPCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZVZrtQAKCRCJcvTf3G3A
+ JqcUEACow96whY2PXsoj9tPefpjj3UIwlfJ3ut/35CSfyT8UK7/zYhv7KEZrBeHK/qxMRJ9+xBe
+ Pc7j5tIqc68ExBPJVWjYfDJ37dsg28n4AbifgDfF4Tfr+XD/B/7zBYlbqa+YfKIoqNsie3TuEmb
+ Jo5TNLzmJ+iHwLZQBg52HuTJ8IypsNdhdPUDt+GSVayHbFP8sOaZMzSgNzkWGE0EZPJVbhJkBhG
+ dgaf1he3KcoFhM6lOXcJzNfLL4wP3gW0wQvCa7n53dwozdUYLAN8vAo99ju0ONbxHC5gaRy2hV1
+ m8LYlDrVzBTldqKUPCwLlfworllGmywSzRyIvViY2SKCuLTEJMhrfrRT7eIc9F/TyhwKXjfWGox
+ Q4MGthWvVnHSVXW26aJPBCdBexdQe0UNHIe1e9GtdPVv6/DSkPteLizTSuVXO/m6gY1q3uCYF9G
+ RsrfA76ykmz8PiMZ1HwiSOUivMyMCZYd9dgBIcnKAxJdRmYQm6zmTcEY6iUR4P/ay56A0T7/tW+
+ SIqHoC9vLAMJk2kagkrDUu4Q7FIjW4MKeI+Ul2jrc9WW0ggDCMFFYhz9oXzEcrakU5x04mo7l07
+ mIs0IZlQmu6Y6/xTB1XcYB+9kCsQ0kxxgVUzqWsljvkctWg0ATuQ6HYRvZxRPR3AoAIvMha9INk
+ Mb18F4pb gdKumXw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANk7y0hvEu3WkYEJ5oRqRHwKGfDnM+fO0=vDen5=zO8-rCvr9Q@mail.gmail.com>
 
-On Mon, Nov 13, 2023 at 11:53:52PM +0100, Puranjay Mohan wrote:
-> Hi Mark,
-> 
-> On Wed, Nov 8, 2023 at 11:32 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Mon, Nov 06, 2023 at 10:04:09AM +0100, Puranjay Mohan wrote:
-> > > Hi Mark,
-> > >
-> > > On Thu, Nov 2, 2023 at 5:59 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > >
-> > > > On Sun, Sep 17, 2023 at 12:00:45AM +0000, Puranjay Mohan wrote:
-> > > > > Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be used
-> > > > > by bpf_throw() to unwind till the program marked as exception boundary and
-> > > > > run the callback with the stack of the main program.
-> > > > >
-> > > > > The prologue generation code has been modified to make the callback
-> > > > > program use the stack of the program marked as exception boundary where
-> > > > > callee-saved registers are already pushed.
-> > > > >
-> > > > > As the bpf_throw function never returns, if it clobbers any callee-saved
-> > > > > registers, they would remain clobbered. So, the prologue of the
-> > > > > exception-boundary program is modified to push R23 and R24 as well,
-> > > > > which the callback will then recover in its epilogue.
-> > > > >
-> > > > > The Procedure Call Standard for the Arm 64-bit Architecture[1] states
-> > > > > that registers r19 to r28 should be saved by the callee. BPF programs on
-> > > > > ARM64 already save all callee-saved registers except r23 and r24. This
-> > > > > patch adds an instruction in prologue of the  program to save these
-> > > > > two registers and another instruction in the epilogue to recover them.
-> > > > >
-> > > > > These extra instructions are only added if bpf_throw() used. Otherwise
-> > > > > the emitted prologue/epilogue remains unchanged.
-> > > > >
-> > > > > [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
-> > > > >
-> > > > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > > > > ---
-> > > >
-> > > > [...]
-> > > >
-> > > > > +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
-> > > > > +{
-> > > > > +     struct stack_info stacks[] = {
-> > > > > +             stackinfo_get_task(current),
-> > > > > +     };
-> > > >
-> > > > Can bpf_throw() only be used by BPF programs that run in task context, or is it
-> > > > possible e.g. for those to run within an IRQ handler (or otherwise on the IRQ
-> > > > stack)?
-> > >
-> > > I will get back on this with more information.
-> > >
-> > > >
-> > > > > +
-> > > > > +     struct unwind_state state = {
-> > > > > +             .stacks = stacks,
-> > > > > +             .nr_stacks = ARRAY_SIZE(stacks),
-> > > > > +     };
-> > > > > +     unwind_init_common(&state, current);
-> > > > > +     state.fp = (unsigned long)__builtin_frame_address(1);
-> > > > > +     state.pc = (unsigned long)__builtin_return_address(0);
-> > > > > +
-> > > > > +     if (unwind_next_frame_record(&state))
-> > > > > +             return;
-> > > > > +     while (1) {
-> > > > > +             /* We only use the fp in the exception callback. Pass 0 for sp as it's unavailable*/
-> > > > > +             if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.fp))
-> > > > > +                     break;
-> > > > > +             if (unwind_next_frame_record(&state))
-> > > > > +                     break;
-> > > > > +     }
-> > > > > +}
-> > > >
-> > > > IIUC you're not using arch_stack_walk() because you need the FP in addition to
-> > > > the PC.
-> > >
-> > > Yes,
-> > >
-> > > > Is there any other reason you need to open-code this?
-> > >
-> > > No,
-> > >
-> > > >
-> > > > If not, I'd rather rework the common unwinder so that it's possible to get at
-> > > > the FP. I had patches for that a while back:
-> > > >
-> > > >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/stacktrace/metadata
-> > > >
-> > > > ... and I'm happy to rebase that and pull out the minimum necessary to make
-> > > > that possible.
-> > >
-> > > It would be great if you can rebase and push the code, I can rebase this on
-> > > your work and not open code this implementation.
-> >
-> > I've rebased the core of that atop v6.6, and pushed that out to my
-> > arm64/stacktrace/kunwind branch:
-> >
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/stacktrace/kunwind
-> >
-> > Once v6.7-rc1 is out, I'll rebase that and post it out (possibly with some of
-> > the other patches atop).
-> >
-> > With that I think you can implement arch_bpf_stack_walk() in stacktrace.c using
-> > kunwind_stack_walk() in a similar way to how arch_stack_walk() is implemented
-> > in that branch.
-> >
-> > If BPF only needs a single consume_fn, that can probably be even simpler as you
-> > won't need a struct to hold the consume_fn and cookie value.
-> 
-> Thanks for the help.
-> I am planning to do something like the following:
-> let me know if this can be done in a better way:
-> 
-> +struct bpf_unwind_consume_entry_data {
-> +       bool (*consume_entry)(void *cookie, u64 ip, u64 sp, u64 fp);
-> +       void *cookie;
-> +};
-> +
-> +static bool
-> +arch_bpf_unwind_consume_entry (const struct kunwind_state *state, void *cookie)
-> +{
-> +       struct bpf_unwind_consume_entry_data *data = cookie;
-> +       return data->consume_entry(data->cookie, state->common.pc, 0,
-> state->common.fp);
-> +}
-> +
-> +noinline noinstr void arch_bpf_stack_walk(bool (*consume_entry)(void
-> *cookie, u64 ip, u64 sp,
-> +                                         u64 fp), void *cookie)
-> +{
-> +       struct bpf_unwind_consume_entry_data data = {
-> +               .consume_entry = consume_entry,
-> +               .cookie = cookie,
-> +       };
-> +
-> +       kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, task, regs);
-> +}
+Hi,
 
-That's roughly what I had expected, so that looks good to me.
+One of the last users of strlcpy() is kernfs, which has some complex
+calling hierarchies that needed to be carefully examined. This series
+refactors the strlcpy() calls into strscpy() calls, and bubbles up all
+changes in return value checking for callers.
 
-> I need to get the task and regs here so it can work from all contexts.
-> How can I do it?
+-Kees
 
-Are you asking because that's what the kunwind_stack_walk() prototype takes?
+Kees Cook (3):
+  kernfs: Convert kernfs_walk_ns() from strlcpy() to strscpy()
+  kernfs: Convert kernfs_name_locked() from strlcpy() to strscpy()
+  kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to
+    strscpy()
 
-If so, I believe you just need:
+ fs/kernfs/dir.c             | 53 ++++++++++++++++++++-----------------
+ kernel/cgroup/cgroup-v1.c   |  2 +-
+ kernel/cgroup/cgroup.c      |  4 +--
+ kernel/cgroup/cpuset.c      |  2 +-
+ kernel/trace/trace_uprobe.c |  2 +-
+ 5 files changed, 33 insertions(+), 30 deletions(-)
 
-	kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, current, NULL);
+-- 
+2.34.1
 
-Note that we currently *cannot* reliably unwind across an exception boundary,
-so if you have non-NULL regs the unwind will be unsafe. IIUC the BPF exceptions
-you're adding support for are handled via a branch rather than via an
-architectural exception, so there are no regs to pass (and so NULL is correct).
-
-Thanks,
-Mark.
 
