@@ -1,80 +1,84 @@
-Return-Path: <bpf+bounces-15195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8159B7EE40B
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 16:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CCF87EE419
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 16:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA9CD1F2121D
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 15:20:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B4C21F24DC6
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 15:21:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D46233CDD;
-	Thu, 16 Nov 2023 15:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C666358B5;
+	Thu, 16 Nov 2023 15:21:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q6bLVvm5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WW50UbWC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEAD18D;
-	Thu, 16 Nov 2023 07:19:57 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CBE1AD;
+	Thu, 16 Nov 2023 07:21:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700147997; x=1731683997;
+  t=1700148086; x=1731684086;
   h=date:from:to:cc:subject:message-id:references:
    in-reply-to:mime-version;
-  bh=xZiq0ZmmHJKCM6KzitQXLov9k1JXbUec4ZFcWzQvsEg=;
-  b=Q6bLVvm5PxNq9PZY83ADturOTeS/HkTmzIJqstnO17POLz6uA9aoGtfy
-   PzNtGr6e1Z2Zgl0C6eW2+1b/2YMB5eMUtMxH/6C8tyq6itQ1kDmO5tYiB
-   qQG5jTycIaVh9iTnQbpT6ryfbhMvNi9SS1hzKP7WaJhLP2N6OKQg5LOJ7
-   AfHS/57vFEYGaJo/Hb1kPIfq4FS0eYm40SOn9prh/ZlMlo7eKT/WLWHll
-   88dlT35L6pNmiojx7l9iXXbQhya8dXYxNaCD7LUFJHKKFTuES7MdX477W
-   kRHmzrMX5h3jOEfG7AVtnEsQsXB4bxVhMrOU5+wuXsrhvy9TLG2zd0sfi
+  bh=zFk+F/T2I7NhpyUVICWjBYM11j9EYhq0X3tgetM31q0=;
+  b=WW50UbWCObHsPfwvFAPsCUfeKDereeQWoL8Nce9uSfx3TM/9HQzbdy4M
+   qzqH80L1ymgTUW55EYb17GGWjVLE8qI7TzB6Z8yA8SEefcqcmAthzVDDT
+   N1jqCUdK4GdAOSjIQuFFxw3n+22EwrU3aWAOekBvpdepNzrqpjIdD3kL4
+   tAjzqX/6YTx3Ojfb4iCVgfw8JmbQCJ/6Cu3zVYyyPV+W1qO0/U+iM42Vw
+   PlL//Oum4yWZ4YmSs7xmPCMvyrMvseP8DGk6obYW8KBzibawZSnmWM34M
+   1F5P59IcqLB2NLq7M1vmV2Fz/TBZgfGaYB4LCnfSB51QEJpkR2bFbB9Uo
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="388271528"
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="422199665"
 X-IronPort-AV: E=Sophos;i="6.04,204,1695711600"; 
-   d="scan'208";a="388271528"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 07:19:57 -0800
+   d="scan'208";a="422199665"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 07:21:26 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="856037806"
 X-IronPort-AV: E=Sophos;i="6.04,204,1695711600"; 
-   d="scan'208";a="6560365"
+   d="scan'208";a="856037806"
 Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Nov 2023 07:19:56 -0800
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Nov 2023 07:21:26 -0800
 Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
  fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 16 Nov 2023 07:19:55 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ 15.1.2507.34; Thu, 16 Nov 2023 07:21:25 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
  fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 16 Nov 2023 07:19:55 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ 15.1.2507.34; Thu, 16 Nov 2023 07:21:25 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Thu, 16 Nov 2023 07:21:25 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 16 Nov 2023 07:19:54 -0800
+ 15.1.2507.34; Thu, 16 Nov 2023 07:21:25 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CcjwEt9Tc/Q2d9ekEmUtAxZA8Zp82NtfeL+P+XyKxUrmcxmK7EOMevave5DFlhAQyUnjZ9hT4YeBPJafLkbx6oc+vhmrZGTJOxtGCJPTX+Brju3//7mEHEY5L27lb8+nvWHAWX4Fb/tnTN7cpziYXiDOKtQA7NDmbzynSWr4HAYTDEwlZmxNIlmNKWlcbJgi10uIzAi3v3xHY5lYzxbvXvaQM3kVg3zFoUAArw2xyIGhB4hm4ZU/aws/Y1zd0VbK11kaPXLNTFodsSYYsaUeH2lnqDiUQ4sSfw78N2ZuRkdY+PG3AiurclsML3iEPBgNeOnwDlw4bIypxyLypu1vFg==
+ b=nkOpor61Gs8sTkwF9UMyc6awIDenyqtGYuJFBJttjnjmwKNJBy2V+Dd/EWDe/yjfjaxkvGrlhUTziqx+4/C1eQowRoTUKaqT6PqpvnKE6JmSYP/F3bG6fQ/W4r+KGlyAhm/lrBmE7zl3hiuaJS0u9c4rr3RcHNLajSC3/MU4xhUWM5g6Ir+6Ejc+oO7YzT4MnwwLai2yU79K08534PJjlWHPyZoEcfZp+RPurUgATuGV3vkPXC01uL8nUvoCpqXx10Kynvn8g6bWa4PfCS86zFIifM1NihsaPy5EineChnxrXt4K9cR6rzL0OUXhQG+jzn9ud8u6WCJU2/wxMkCWew==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XzA0fXeQgkg/QTwrBPq+Xv0TwJJtvUu5vcmw/7o2/sA=;
- b=OI78Wd9Q/0DQ61R/9dXKgO817CId2PfXyAOQi+NSSayWh5M8911J4SUCqnvW+Gxw9kf0/ZJrLimMMqPqhwRFVRArHU77sryxRrVa4ro/T+hTbfKCXwPu/3eWzKz9fqlP2lzQW0bzw2stBYXZ3ln2sTW7+1BMrfspQrY0M2kj8gqh8fOfbtJSSj71JZCxngMO4ubd4YzZU451dO65Q4sYmGkOSfddMenk2fxSxrSmymRqleTkmQ7bC8t+hqkEG0jH45IuOEpz9Q0EfoSiayEfHqJ41UdRl36ZGsI88ST3v5OwBqsihgm/AMnMBmVxN2xq2z+QU8r97l+tBjNP3MVT9A==
+ bh=mRnsWvmuKi0q34qzWBOsD8t+nVQfWJnzar4P7oo/21o=;
+ b=brpwaazD18DVuiOH0J2H1xn44oCDRmSnhDkRea5SwLR9P519va/AP54Wo3AYdLUToSLd1PR5cTmTOxALSa/8xuvC/el4NAAuCgoj2FaBBHnW4CTDV+lubhndeLeBVCOR+xprzILFYKBs7toNk50lQA6T1oFL3oWYrL38VHvE/xExt9mR/FgDCrErhJ/PnVmVRxY3qqkry2DM1ic775+XDh0o0gatyoEEp0ZZQijyShSV0lUjPnHcsKYMhcmdceC8zllaHOQAROOTtn4vak9dEdCi4AIb3WGm62uZCPTO+Z1djQJ5NBzSMsgiFh8P0tz+vmrh21LeLSDbz4ved+Y3jg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- MN6PR11MB8242.namprd11.prod.outlook.com (2603:10b6:208:474::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Thu, 16 Nov
- 2023 15:19:52 +0000
+ DM4PR11MB6238.namprd11.prod.outlook.com (2603:10b6:8:a8::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7002.18; Thu, 16 Nov 2023 15:21:21 +0000
 Received: from DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::ee54:9452:634e:8c53]) by DM4PR11MB6117.namprd11.prod.outlook.com
  ([fe80::ee54:9452:634e:8c53%7]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
- 15:19:52 +0000
-Date: Thu, 16 Nov 2023 16:19:37 +0100
+ 15:21:21 +0000
+Date: Thu, 16 Nov 2023 16:21:14 +0100
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: Larysa Zaremba <larysa.zaremba@intel.com>
 CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
@@ -89,16 +93,15 @@ CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
 	<alexei.starovoitov@gmail.com>, Tariq Toukan <tariqt@mellanox.com>, "Saeed
  Mahameed" <saeedm@mellanox.com>
-Subject: Re: [PATCH bpf-next v7 02/18] ice: make RX HW timestamp reading code
- more reusable
-Message-ID: <ZVYzCRFm6gc4x+VS@boxer>
+Subject: Re: [PATCH bpf-next v7 05/18] ice: Support HW timestamp hint
+Message-ID: <ZVYzasQqh18fo8Kr@boxer>
 References: <20231115175301.534113-1-larysa.zaremba@intel.com>
- <20231115175301.534113-3-larysa.zaremba@intel.com>
+ <20231115175301.534113-6-larysa.zaremba@intel.com>
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20231115175301.534113-3-larysa.zaremba@intel.com>
-X-ClientProxiedBy: DU2PR04CA0158.eurprd04.prod.outlook.com
- (2603:10a6:10:2b0::13) To DM4PR11MB6117.namprd11.prod.outlook.com
+In-Reply-To: <20231115175301.534113-6-larysa.zaremba@intel.com>
+X-ClientProxiedBy: DB8P191CA0021.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:10:130::31) To DM4PR11MB6117.namprd11.prod.outlook.com
  (2603:10b6:8:b3::19)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -107,208 +110,243 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|MN6PR11MB8242:EE_
-X-MS-Office365-Filtering-Correlation-Id: 04ce7a4b-895a-4c3f-6589-08dbe6b77a1b
+X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|DM4PR11MB6238:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9310a308-f353-40b0-628e-08dbe6b7b048
 X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sOKWOHjHR4GtBdh9KAq2Gnyu/V4aCoO3UpULHtvnhSeCVXx+VMnRfh0Jn9q2lJijVvCz/UNEhVGukYnfqbCglDiTlIO7SHuzG0mKCxWsk1ggm9a3wNoZYl5gC+uCu9bue9Q+OsuR/reWvPbLgtUCb871eC/OgQaVP/mVnqWnubHfOZ+0gijYZ2EFmFuCn79u0kXNCHO/8bLBoWFE19pBZ1VvR1Vud4/2LwVyFGv5pi/3q1X/i67Oy+gdCOSxjSUvf0qNUdV8Oi4ht5k/gIw7x12H+zxmy3PfuyKEkiWHoEnrMK3+eOcsOuSpJLVLLNeXEb2EP+dyJEi5eLcEs4XcwjXrbM5dPmxukWBx3TmTBARDeTzr6XLlydJVKqmblCnKJ6Ti3cRGRe/GZFaY8646JD8I4n6HdkLfFZKoO1u/AlfYZV6CTX5PvowLqCtioIe6WiGCR//wnbxU++PGlVXevVxzTzrkKpR35Vg5V5RXYYFSDfHs4x9QUD1sVFecCA9VMUZ9gODxLMQoRxPUBguyL21pHDfGpNdPpjp4CiwKTIHD5e3FsFqbRcGl4bv2ho8PGiZnFzJQgKVaGnqtGj2dkF8/D5mOyUB/uOgfNfIak8E=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(39860400002)(396003)(346002)(136003)(376002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(8936002)(8676002)(6862004)(9686003)(6512007)(26005)(2906002)(44832011)(6666004)(6506007)(83380400001)(4326008)(478600001)(41300700001)(38100700002)(6486002)(7416002)(82960400001)(316002)(5660300002)(33716001)(54906003)(66556008)(66476007)(86362001)(66946007)(6636002)(67856001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: I2GCy1oLohWmRnkkWPnUPQetTItJyfrFwjX7UhepV6YCmkiM8fEZ8w2CgGT7nID5AIBqZDTCh89KpDCtyYrKT1PZ3TxmLdhiWVPhEp494rzKjUYXNuz/pg1i3DqRrMD8ySXGloWqwp+ip5GzTniRIPEB9y8VHf1+1LBYvwx0t7carO9nJP/5t41No8f/StrxULOPxopJl+n5X6zhOkppCBqUtmRbqJoG79IgMJjRLi96hW/ULsWOI/GN0DslKsQllioLopWnqskJCnSC9X3ZZgf+9+VYkNGzKyu67a+31x6HWltAcRCZpqO/ovmN5bPI2OKkh+KbNWB7/ybLb124MCk6b2kBCLk41ddovBuRziH3WoAw2RSGnEmJzWaPGXib5N/W3H5fciWfTqqOmT3ZNtR/Pv25qZw6t86B1CEcZfip3icLsoMxTA5a4zurv00lWIu4aae/ThgxRZ3WIglzMENMTb1ik8IYP+QPm8H5805oGH4+pbte3iM0FDa5an8339PpdrlpjD2snSPiypsVE9jgCHoAyP8/VG4vU5upilnDgNN1lqABJW+PDpm2Lw2Y
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(346002)(376002)(396003)(136003)(39860400002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(8676002)(2906002)(8936002)(4326008)(6862004)(6506007)(26005)(83380400001)(41300700001)(82960400001)(9686003)(38100700002)(6512007)(6486002)(6666004)(66476007)(66556008)(66946007)(6636002)(54906003)(316002)(86362001)(7416002)(5660300002)(33716001)(478600001)(44832011);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0IanAISD5MatJbSmIvlFY5nyCtnlpiCZF3/ffw454zzmKxMnOQ3tT25ql4cK?=
- =?us-ascii?Q?gDHBrRvzHYyE/mEQmJ6TTg+sEpzPxXX2DvUQK0uGWvqnRZZ47TqQAfEuyQt8?=
- =?us-ascii?Q?yJ4gfLcHZlGrWZKRzuUnLo1p8ELn876QPQiEhkZWys29nJSznJgjz+Lul/zK?=
- =?us-ascii?Q?VS7938kOkjjTNDKqmQvnMpvECD8xngS4ZA1mX20HuwM2kQkgWC1q+gMjusa1?=
- =?us-ascii?Q?0qKNFy2vvUUhR9IJLuxFQ2QtamZPqAyMijHHzM3Ncn7adH6cJUyfX3jhIL3A?=
- =?us-ascii?Q?Gv92lRQNLSX3bAAPUNw0fTYRjtcC+MnzcmDTxSrh3+2rc2R//2rLeqoyvWO1?=
- =?us-ascii?Q?xkkZE7dpyz82lFnsfm6PJO20Z3P7UNRqOMYM8vOpP6gr8hC1gh6wbrrl4UW/?=
- =?us-ascii?Q?ZIm7wiEKscby3xrsl6GPCgyzqRhwHn5IzveMrBQtzEJZ0gF/gaVweeb6hxyp?=
- =?us-ascii?Q?COeoPnzTpMo01Vocy/8FUEVYBuoTDETaDk32MnmYhf32kdgr/NtiQ9Fb4QSX?=
- =?us-ascii?Q?5OKhpFL1JWKO1+GMfFusb9bE7gvRRDKLszshiqnDme/FXnGUH+JIRuB2RLpd?=
- =?us-ascii?Q?WoIgmhJxvtQkshv8VPD67rIzb1W9wdKeVKqXPI6RyzNHs9ptOqqNgYxAYyu9?=
- =?us-ascii?Q?UdlXxaAH0uF68wXPnEo4xnsapKQqpGLqxQFHc2UsYQrpZ9SeIuzdvqhp1kBQ?=
- =?us-ascii?Q?b5dF99RQle1QVmRfgf/oP8hyVDptcN73LjNsqfR/bI6MeonThLn1gIScl0wb?=
- =?us-ascii?Q?PrH3vef3e8zXO2M6ZK82aSrGqPPLMsiGx9T3Tr8We2hN5B+igILMwHTmYhV3?=
- =?us-ascii?Q?uNYiSLp5CrqQWPTL33FIhSP861JWfvZa5Jjq0mxoMT1wW/P+tXVSpq+U0kg+?=
- =?us-ascii?Q?eE4RMTouhUWA6CkOliEvgk63+/1a9wYJQ+Olo4JZIX4ol1F+lEsoWYInziE0?=
- =?us-ascii?Q?4EeEQf52X1ccs4DQHve7GSPgOEBxyzYd7H+vgkEhzg5TG/p4PDt5NXq/xXtb?=
- =?us-ascii?Q?P/e0B5dEt3zujfSPHetOKCJVc4YGhmGrfEy5Ig63ZjF0557ycfybMiDYfmLg?=
- =?us-ascii?Q?zuRbrPdnp3OU67TIgRF1V8LDGbZanP1Tt8dlwDhDsGANERerqX5hbeVxJ90q?=
- =?us-ascii?Q?TF0pq36tGKRDiAxwKsEb/GpLKIjQJnxp52pxXFq11E1lCBWmvZ7V5yW81gXf?=
- =?us-ascii?Q?uyaAUvu9GaLgHVJWjNxQPa8sF9GJ2ilox9GtEdUoL1HX/OM+HkUohEu8ElKv?=
- =?us-ascii?Q?QjoZDFTFdlvSoNrP72qAAKqql0/HJhdQJVjJ/+F94JMYWSek05WVKe+Zp7DX?=
- =?us-ascii?Q?4xkgChn8AGh0ZqqOkVMlaqa19fBUO3akAvj2P+nRtxuCPlIXXXtbe7M9ZH2F?=
- =?us-ascii?Q?CBmO/8feH+fjH3lzIIdRMwNcNHuFv2zmRV8TX78slt+Lwa0W7kIPl9xvLTHy?=
- =?us-ascii?Q?q4OQTxfLzS/OVGQ4efscvWu6gp/Rk8nlYB7csv+E1gXjLxxd1LNZh/PrTSa7?=
- =?us-ascii?Q?vg6f4mMxWLJqHlNfXLFSlE4GcSmWwy4ORNn49rK2KkuUrDDgIbcVmQ8zEvGh?=
- =?us-ascii?Q?TR5T+HygERgYwmqrG553QkOn37KrlPx6BGOsep/MD9JXLdio9CnR29J9JFzx?=
- =?us-ascii?Q?Ig=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04ce7a4b-895a-4c3f-6589-08dbe6b77a1b
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fDwEf8cl6v/ce+wT4WLOjtH8066UqsNhFxBwO124inC9bBugL3i6uzjRwh/p?=
+ =?us-ascii?Q?nFvAA5hW62D9f9DuK8MD7/u9XShwE0H1Pqv7rMHuE+BokjSX6HQUk3fZFkh/?=
+ =?us-ascii?Q?7uVtMJBl6o24GsP6O6yHMptYdY4lyIDgtTdIQlTKOktKQJEBY0Oz5mbHmKh4?=
+ =?us-ascii?Q?vtA0Y5LSekBBTOkbcwqfcz00NDFHi7ciSkV2auntPyBuJdI9ZPb4wCpL9Leh?=
+ =?us-ascii?Q?x+rr3YhWdPaAVA6iUYYOaa8dznqzkhO7jYbuZ4Ab3qI4OZVSesEp2vmLogvt?=
+ =?us-ascii?Q?kJqZAC17LpNy3MxyR5p6j30iRJqlk1wvvO3ak43keENk5AVXKH8GbuDd7QRB?=
+ =?us-ascii?Q?E4a9JnG+qkXsYszBbd+CRVwda8+l/KAA26nUD8rX63k+6T6TIeCFM+Znp/M6?=
+ =?us-ascii?Q?NbMxatimx9kUdOYVlueEwldhnH28Svz9D4HMByeG4L2gfPbEnr2BEtSox2MR?=
+ =?us-ascii?Q?AR9ylrbXaUxtQZDRYMcgoHlpN47yLdWEMMUhbB/gmE5dnmvp3MBzOxLhUOTl?=
+ =?us-ascii?Q?maGn13BbSvPSMryLieaKadJ7mMy0Lhww1/NsesUWJgrzcUDhSJQJl1OzgLgH?=
+ =?us-ascii?Q?u+sUCQtvws0HKA5VC9JuRi7vRprnGm3OaovjPFSVL60iPQUJrxOkd9iDFo2w?=
+ =?us-ascii?Q?lCLZ11kOTXLoYWT9OoG5Kn7FQteK3PQkRce1IMFUuNZQBHgJKILVEWIg597U?=
+ =?us-ascii?Q?I0iSfDWiDKH1MuWnv8WgCAFyiyggNJCPY0YUKbXQqdbvLRLpj1Pfa5Nu1/k9?=
+ =?us-ascii?Q?6/SVmOQBrts8cyi8d3PbA79FHyrOyzCVMEu7zH6QvGRiw6hbALUyXrPE82hG?=
+ =?us-ascii?Q?ZCOJzwEO03YXJFomkLerA7gaPuQBzF/9e3n7MebTM7oOlqRQjIsXxJuXrnew?=
+ =?us-ascii?Q?Ee7kM5OeGqJXF/wo8HR937xUg0g0jW9CPFTUc1z+mLMuajQKey3yQgWSJDX3?=
+ =?us-ascii?Q?yDCaRjUYou828SBD2U/XTD7N91eVi7NLXgjXHYdhOnNMTiF7UGLuiPOZV6y/?=
+ =?us-ascii?Q?n4HaS1ujfpQOzftZJoh2ylYcsaNY+r58RE8TzAxo3Pt+3lw+nSRFeN4B28VV?=
+ =?us-ascii?Q?K74WIElP9HqXrlpd7KyHZ58nb1n8mijh6u4d6EQKDlXmepkZG3LmiSVB+Bt8?=
+ =?us-ascii?Q?bhBxIqfb+lviFjni5HQcIUn+tzcEexlCbN2D/XxW/Uwo8OKkFfJPhv6TzwGa?=
+ =?us-ascii?Q?26svOa+uFwVAw3nEuFs5ZjYc8uWLHoivkVKkwHdwnS/XLJYhPj1q5+tSrHv6?=
+ =?us-ascii?Q?R2/JDshGuEX6OGtkyhqbkhyN0p+3OC0fCauI1H6gDbU12SnlF+HEDlP0FLwY?=
+ =?us-ascii?Q?BIoDEiOSwhh3wVa2rQ+KOvsK0tiHGFldoaUhFuvE36e8omwdnYB4DTWe1NT+?=
+ =?us-ascii?Q?hUQHqaUVQzRhrGFmNUHEgFR5jaqYSz58kMT8CEugKwc2GcbEhHwSsehWJqw8?=
+ =?us-ascii?Q?FgXZ59Brxeya1ZHTjEx9w1+6ZauC3tigoai4ObV1zkbjkaLeKZ+VHnYAH/Mz?=
+ =?us-ascii?Q?XAI8RB08t1yrbHekUst159vtXu8ZHIN6ZBQNnHVH++5nY2doI9kxtNX5tSf+?=
+ =?us-ascii?Q?2z/4RdiRkJRG/JEYYXWKNijrKCZmjYBxsxT4UECHCz7CfxH2+yf7BuotkOBc?=
+ =?us-ascii?Q?qQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9310a308-f353-40b0-628e-08dbe6b7b048
 X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 15:19:50.6181
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 15:21:21.5494
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eSSBsQjM52CH8wPOka/pTplvfSAdDdvgcndzYBd0k5OOABCg4gg/OIgPPudLsW9oYnDWcZ3/N2ilplp2m0d1PY8MmxgKreVbmzq+65z2M2Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN6PR11MB8242
+X-MS-Exchange-CrossTenant-UserPrincipalName: o2uReNKF6TCX7PEDrzJ2VN9gGE4vIFTMN1bIDiHIH8fRY0WM520IFJmxeyoGfZ+85No0TkSWk/35vb7ZlG1W8MdfuX2YMGTw+5HxFLbx/98=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6238
 X-OriginatorOrg: intel.com
 
-On Wed, Nov 15, 2023 at 06:52:44PM +0100, Larysa Zaremba wrote:
-> Previously, we only needed RX HW timestamp in skb path,
-> hence all related code was written with skb in mind.
-> But with the addition of XDP hints via kfuncs to the ice driver,
-> the same logic will be needed in .xmo_() callbacks.
+On Wed, Nov 15, 2023 at 06:52:47PM +0100, Larysa Zaremba wrote:
+> Use previously refactored code and create a function
+> that allows XDP code to read HW timestamp.
 > 
-> Put generic process of reading RX HW timestamp from a descriptor
-> into a separate function.
-> Move skb-related code into another source file.
+> Also, introduce packet context, where hints-related data will be stored.
+> ice_xdp_buff contains only a pointer to this structure, to avoid copying it
+> in ZC mode later in the series.
+> 
+> HW timestamp is the first supported hint in the driver,
+> so also add xdp_metadata_ops.
 > 
 > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 
 Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 
 > ---
->  drivers/net/ethernet/intel/ice/ice_ptp.c      | 20 ++++++-----------
->  drivers/net/ethernet/intel/ice/ice_ptp.h      | 16 +++++++++-----
->  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 22 ++++++++++++++++++-
->  3 files changed, 38 insertions(+), 20 deletions(-)
+>  drivers/net/ethernet/intel/ice/ice.h          |  2 ++
+>  drivers/net/ethernet/intel/ice/ice_base.c     |  1 +
+>  drivers/net/ethernet/intel/ice/ice_main.c     |  1 +
+>  drivers/net/ethernet/intel/ice/ice_ptp.c      |  6 ++---
+>  drivers/net/ethernet/intel/ice/ice_ptp.h      |  4 +--
+>  drivers/net/ethernet/intel/ice/ice_txrx.h     | 10 +++++++-
+>  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 25 ++++++++++++++++++-
+>  7 files changed, 42 insertions(+), 7 deletions(-)
 > 
+> diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
+> index 351e0d36df44..366c82a87e56 100644
+> --- a/drivers/net/ethernet/intel/ice/ice.h
+> +++ b/drivers/net/ethernet/intel/ice/ice.h
+> @@ -989,4 +989,6 @@ static inline void ice_clear_rdma_cap(struct ice_pf *pf)
+>  	set_bit(ICE_FLAG_UNPLUG_AUX_DEV, pf->flags);
+>  	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+>  }
+> +
+> +extern const struct xdp_metadata_ops ice_xdp_md_ops;
+>  #endif /* _ICE_H_ */
+> diff --git a/drivers/net/ethernet/intel/ice/ice_base.c b/drivers/net/ethernet/intel/ice/ice_base.c
+> index 7fa43827a3f0..2d83f3c029e7 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_base.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_base.c
+> @@ -575,6 +575,7 @@ int ice_vsi_cfg_rxq(struct ice_rx_ring *ring)
+>  
+>  	xdp_init_buff(&ring->xdp, ice_rx_pg_size(ring) / 2, &ring->xdp_rxq);
+>  	ring->xdp.data = NULL;
+> +	ring->xdp_ext.pkt_ctx = &ring->pkt_ctx;
+>  	err = ice_setup_rx_ctx(ring);
+>  	if (err) {
+>  		dev_err(dev, "ice_setup_rx_ctx failed for RxQ %d, err %d\n",
+> diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
+> index 6607fa6fe556..cfb6beadcc60 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_main.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_main.c
+> @@ -3397,6 +3397,7 @@ static void ice_set_ops(struct ice_vsi *vsi)
+>  
+>  	netdev->netdev_ops = &ice_netdev_ops;
+>  	netdev->udp_tunnel_nic_info = &pf->hw.udp_tunnel_nic;
+> +	netdev->xdp_metadata_ops = &ice_xdp_md_ops;
+>  	ice_set_ethtool_ops(netdev);
+>  
+>  	if (vsi->type != ICE_VSI_PF)
 > diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.c b/drivers/net/ethernet/intel/ice/ice_ptp.c
-> index 1eddcbe89b0c..a435f89b262f 100644
+> index a435f89b262f..667264c8dc8b 100644
 > --- a/drivers/net/ethernet/intel/ice/ice_ptp.c
 > +++ b/drivers/net/ethernet/intel/ice/ice_ptp.c
-> @@ -2103,30 +2103,26 @@ int ice_ptp_set_ts_config(struct ice_pf *pf, struct ifreq *ifr)
->  }
->  
+> @@ -2105,12 +2105,12 @@ int ice_ptp_set_ts_config(struct ice_pf *pf, struct ifreq *ifr)
 >  /**
-> - * ice_ptp_rx_hwtstamp - Check for an Rx timestamp
-> - * @rx_ring: Ring to get the VSI info
-> + * ice_ptp_get_rx_hwts - Get packet Rx timestamp in ns
+>   * ice_ptp_get_rx_hwts - Get packet Rx timestamp in ns
 >   * @rx_desc: Receive descriptor
-> - * @skb: Particular skb to send timestamp with
-> + * @rx_ring: Ring to get the cached time
+> - * @rx_ring: Ring to get the cached time
+> + * @pkt_ctx: Packet context to get the cached time
 >   *
 >   * The driver receives a notification in the receive descriptor with timestamp.
-> - * The timestamp is in ns, so we must convert the result first.
 >   */
-> -void
-> -ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
-> -		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb)
-> +u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
-> +			struct ice_rx_ring *rx_ring)
+>  u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
+> -			struct ice_rx_ring *rx_ring)
+> +			const struct ice_pkt_ctx *pkt_ctx)
 >  {
-> -	struct skb_shared_hwtstamps *hwtstamps;
 >  	u64 ts_ns, cached_time;
 >  	u32 ts_high;
->  
+> @@ -2118,7 +2118,7 @@ u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
 >  	if (!(rx_desc->wb.time_stamp_low & ICE_PTP_TS_VALID))
-> -		return;
-> +		return 0;
+>  		return 0;
 >  
->  	cached_time = READ_ONCE(rx_ring->cached_phctime);
+> -	cached_time = READ_ONCE(rx_ring->cached_phctime);
+> +	cached_time = READ_ONCE(pkt_ctx->cached_phctime);
 >  
 >  	/* Do not report a timestamp if we don't have a cached PHC time */
 >  	if (!cached_time)
-> -		return;
-> +		return 0;
->  
->  	/* Use ice_ptp_extend_32b_ts directly, using the ring-specific cached
->  	 * PHC value, rather than accessing the PF. This also allows us to
-> @@ -2137,9 +2133,7 @@ ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
->  	ts_high = le32_to_cpu(rx_desc->wb.flex_ts.ts_high);
->  	ts_ns = ice_ptp_extend_32b_ts(cached_time, ts_high);
->  
-> -	hwtstamps = skb_hwtstamps(skb);
-> -	memset(hwtstamps, 0, sizeof(*hwtstamps));
-> -	hwtstamps->hwtstamp = ns_to_ktime(ts_ns);
-> +	return ts_ns;
->  }
->  
->  /**
 > diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.h b/drivers/net/ethernet/intel/ice/ice_ptp.h
-> index 8f6f94392756..0274da964fe3 100644
+> index 0274da964fe3..30b382ed204d 100644
 > --- a/drivers/net/ethernet/intel/ice/ice_ptp.h
 > +++ b/drivers/net/ethernet/intel/ice/ice_ptp.h
-> @@ -298,9 +298,8 @@ void ice_ptp_extts_event(struct ice_pf *pf);
->  s8 ice_ptp_request_ts(struct ice_ptp_tx *tx, struct sk_buff *skb);
+> @@ -299,7 +299,7 @@ s8 ice_ptp_request_ts(struct ice_ptp_tx *tx, struct sk_buff *skb);
 >  enum ice_tx_tstamp_work ice_ptp_process_ts(struct ice_pf *pf);
 >  
-> -void
-> -ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
-> -		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb);
-> +u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
-> +			struct ice_rx_ring *rx_ring);
+>  u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
+> -			struct ice_rx_ring *rx_ring);
+> +			const struct ice_pkt_ctx *pkt_ctx);
 >  void ice_ptp_reset(struct ice_pf *pf);
 >  void ice_ptp_prepare_for_reset(struct ice_pf *pf);
 >  void ice_ptp_init(struct ice_pf *pf);
-> @@ -330,9 +329,14 @@ static inline bool ice_ptp_process_ts(struct ice_pf *pf)
+> @@ -332,7 +332,7 @@ static inline bool ice_ptp_process_ts(struct ice_pf *pf)
+>  
+>  static inline u64
+>  ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
+> -		    struct ice_rx_ring *rx_ring)
+> +		    const struct ice_pkt_ctx *pkt_ctx)
 >  {
->  	return true;
+>  	return 0;
 >  }
-> -static inline void
-> -ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
-> -		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb) { }
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.h b/drivers/net/ethernet/intel/ice/ice_txrx.h
+> index 9efb42f99415..3d77c058c6de 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx.h
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx.h
+> @@ -257,9 +257,14 @@ enum ice_rx_dtype {
+>  	ICE_RX_DTYPE_SPLIT_ALWAYS	= 2,
+>  };
+>  
+> +struct ice_pkt_ctx {
+> +	u64 cached_phctime;
+> +};
 > +
-> +static inline u64
-> +ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
-> +		    struct ice_rx_ring *rx_ring)
+>  struct ice_xdp_buff {
+>  	struct xdp_buff xdp_buff;
+>  	const union ice_32b_rx_flex_desc *eop_desc;
+> +	const struct ice_pkt_ctx *pkt_ctx;
+>  };
+>  
+>  /* Required for compatibility with xdp_buffs from xsk_pool */
+> @@ -328,6 +333,10 @@ struct ice_rx_ring {
+>  		struct xdp_buff xdp;
+>  	};
+>  	/* CL3 - 3rd cacheline starts here */
+> +	union {
+> +		struct ice_pkt_ctx pkt_ctx;
+> +		u64 cached_phctime;
+> +	};
+>  	struct bpf_prog *xdp_prog;
+>  	u16 rx_offset;
+>  
+> @@ -346,7 +355,6 @@ struct ice_rx_ring {
+>  	struct ice_rx_ring *next;	/* pointer to next ring in q_vector */
+>  	struct xsk_buff_pool *xsk_pool;
+>  	dma_addr_t dma;			/* physical address of ring */
+> -	u64 cached_phctime;
+>  	u16 rx_buf_len;
+>  	u8 dcb_tc;			/* Traffic class of ring */
+>  	u8 ptp_rx;
+> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> index 1fc1794b8e80..d57019b85641 100644
+> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
+> @@ -197,7 +197,7 @@ ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
+>  		       const union ice_32b_rx_flex_desc *rx_desc,
+>  		       struct sk_buff *skb)
+>  {
+> -	u64 ts_ns = ice_ptp_get_rx_hwts(rx_desc, rx_ring);
+> +	u64 ts_ns = ice_ptp_get_rx_hwts(rx_desc, &rx_ring->pkt_ctx);
+>  
+>  	*skb_hwtstamps(skb) = (struct skb_shared_hwtstamps){
+>  		.hwtstamp	= ns_to_ktime(ts_ns),
+> @@ -509,3 +509,26 @@ void ice_finalize_xdp_rx(struct ice_tx_ring *xdp_ring, unsigned int xdp_res,
+>  			spin_unlock(&xdp_ring->tx_lock);
+>  	}
+>  }
+> +
+> +/**
+> + * ice_xdp_rx_hw_ts - HW timestamp XDP hint handler
+> + * @ctx: XDP buff pointer
+> + * @ts_ns: destination address
+> + *
+> + * Copy HW timestamp (if available) to the destination address.
+> + */
+> +static int ice_xdp_rx_hw_ts(const struct xdp_md *ctx, u64 *ts_ns)
 > +{
+> +	const struct ice_xdp_buff *xdp_ext = (void *)ctx;
+> +
+> +	*ts_ns = ice_ptp_get_rx_hwts(xdp_ext->eop_desc,
+> +				     xdp_ext->pkt_ctx);
+> +	if (!*ts_ns)
+> +		return -ENODATA;
+> +
 > +	return 0;
 > +}
 > +
->  static inline void ice_ptp_reset(struct ice_pf *pf) { }
->  static inline void ice_ptp_prepare_for_reset(struct ice_pf *pf) { }
->  static inline void ice_ptp_init(struct ice_pf *pf) { }
-> diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> index 17530359aaf8..c4dbbb246946 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> @@ -184,6 +184,26 @@ ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
->  	ring->vsi->back->hw_csum_rx_error++;
->  }
->  
-> +/**
-> + * ice_ptp_rx_hwts_to_skb - Put RX timestamp into skb
-> + * @rx_ring: Ring to get the VSI info
-> + * @rx_desc: Receive descriptor
-> + * @skb: Particular skb to send timestamp with
-> + *
-> + * The timestamp is in ns, so we must convert the result first.
-> + */
-> +static void
-> +ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
-> +		       const union ice_32b_rx_flex_desc *rx_desc,
-> +		       struct sk_buff *skb)
-> +{
-> +	u64 ts_ns = ice_ptp_get_rx_hwts(rx_desc, rx_ring);
-> +
-> +	*skb_hwtstamps(skb) = (struct skb_shared_hwtstamps){
-> +		.hwtstamp	= ns_to_ktime(ts_ns),
-> +	};
-
-could this just be
-
-	skb_hwtstamps(skb)->hwtstamp = ns_to_ktime(ts_ns);
-
-?
-
-> +}
-> +
->  /**
->   * ice_process_skb_fields - Populate skb header fields from Rx descriptor
->   * @rx_ring: Rx descriptor ring packet is being transacted on
-> @@ -208,7 +228,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
->  	ice_rx_csum(rx_ring, skb, rx_desc, ptype);
->  
->  	if (rx_ring->ptp_rx)
-> -		ice_ptp_rx_hwtstamp(rx_ring, rx_desc, skb);
-> +		ice_ptp_rx_hwts_to_skb(rx_ring, rx_desc, skb);
->  }
->  
->  /**
+> +const struct xdp_metadata_ops ice_xdp_md_ops = {
+> +	.xmo_rx_timestamp		= ice_xdp_rx_hw_ts,
+> +};
 > -- 
 > 2.41.0
 > 
