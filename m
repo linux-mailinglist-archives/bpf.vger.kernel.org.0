@@ -1,169 +1,187 @@
-Return-Path: <bpf+bounces-15148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042D07ED93D
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 03:19:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5B957ED946
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 03:22:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFAB8280F54
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 02:19:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E72E280EE8
+	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 02:22:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA868F74;
-	Thu, 16 Nov 2023 02:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EEF61C06;
+	Thu, 16 Nov 2023 02:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YURxgT+B"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dvf24Vse"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063BCA6
-	for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 18:18:47 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9d267605ceeso40230866b.2
-        for <bpf@vger.kernel.org>; Wed, 15 Nov 2023 18:18:46 -0800 (PST)
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 797FB1A4;
+	Wed, 15 Nov 2023 18:22:49 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id 3f1490d57ef6-db029574f13so288400276.1;
+        Wed, 15 Nov 2023 18:22:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700101125; x=1700705925; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1700101368; x=1700706168; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fE7HVCtp7LqjDVUWaVlJ2gXiaM3EpDCNv9IEbE1iFL4=;
-        b=YURxgT+BFZqRGEV+Hrv/wGRC62gC2eYZZKSakmoBCx62LcMCsRQoQxuGBOlTJTECFf
-         AlT2daRbtmetWMXv/YQmO3F1VBmvTniPJLaRhDk6fOK0b1b18tpdVdMeg+4RmrgY+ht8
-         vzuIW3hScDrfG1eVibijsgak8kN7TDW/uEILIGr3p65oT/qR2PwJ92arfwoKl8kOvVX+
-         IvZfku3rScn6URqHzStSlc3MJVMrxxslaTCIBqEt9sl6ZwGAq92wVAnVd4sO4WDsheJP
-         rO7qirNQevnyFym7MuVoxjZNRJmQg3nCT2QxbaeY+Djat0n2bBzM7gY/QNzJT6ADmbbQ
-         9izw==
+        bh=MGQ9YKX/G2W66tZSKmmzF1Dhr3FgNuFObNkiMHjizoE=;
+        b=Dvf24VseY2EgDwQ959YKKmpdKjwyWyzdg6qlgbJJYUlHuhLY595+cIg4uSLcbwduDP
+         OA0kcIicEj4a6LCaUo09EUzrBVySGUZ25YKWkgdc+ohlgqLOimQl9i7Z9GGfAXiQjkIf
+         BBaqs2z4vT8ejSFv9erL0ljCey1GnYj9DNZUdvkL0U4YidzZrbHg/1CnuqCiHrOnWMDE
+         /3Ok7XnxMEvA/g98Lo7CTFeXow0nbNPRXKj6rGeV9lihvdsOca7sq4W1uIyEFQUmMjAQ
+         /kpObj85WVZs30zF7Vu2SdUUWq7Yh8Ls6MvdFscLmWgnEbhZU6YJQajrMMdzkGHTqmbg
+         4O7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700101125; x=1700705925;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700101368; x=1700706168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fE7HVCtp7LqjDVUWaVlJ2gXiaM3EpDCNv9IEbE1iFL4=;
-        b=Yj+NUIpiH5P9S8jf1TPDeyKwdwh9/jRFpos3owqNDjCPWBuie+DBpvIbQCSVQxHrIX
-         R1Tt/om57lQC4EwUe7iZ9xmmlwZlP2bxFIECgbLqRTuHOsfD2MZu7qwyMkKRY9u0Vj+D
-         dc7QBmxDSZP+FAP1tTdxj/5W09/9jayid/hhfCdAEYXnEfg4H9ZaoHQy6R8KQLVbna+N
-         9jRfPUC2MAJeQsUodSVbGyOCkF0Np6n+g3imygNhkV2mXYiw9V03lz10glf6X5M8YNvq
-         0uifA1lYlGkQw9Q/qsfCIdjtG1v/WXDrEAjskTQeGAb7ABsmuKRyrpTvi98rtpirB7dg
-         g4Pw==
-X-Gm-Message-State: AOJu0YxC6DN4P1PByfPbf0v7SiU13NtrkFxywPijjCwlxmkYsaomdBVe
-	d1M5MgRwXvOkRK3QZz42IuStLjak4B6cyw==
-X-Google-Smtp-Source: AGHT+IFDSi3utF8UEi+l2s2AmLsZMylBZaMAcvn5Aek60Zk1T+J4uPZRdALvHkzMNFoFunodG8GKFQ==
-X-Received: by 2002:a17:906:16c2:b0:9be:d55a:81c3 with SMTP id t2-20020a17090616c200b009bed55a81c3mr10734427ejd.67.1700101125117;
-        Wed, 15 Nov 2023 18:18:45 -0800 (PST)
-Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id ay1-20020a170906d28100b009dd606ce80fsm7774064ejb.31.2023.11.15.18.18.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 18:18:44 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	memxor@gmail.com,
-	awerner32@gmail.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf 12/12] selftests/bpf: check if max number of bpf_loop iterations is tracked
-Date: Thu, 16 Nov 2023 04:18:03 +0200
-Message-ID: <20231116021803.9982-13-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231116021803.9982-1-eddyz87@gmail.com>
-References: <20231116021803.9982-1-eddyz87@gmail.com>
+        bh=MGQ9YKX/G2W66tZSKmmzF1Dhr3FgNuFObNkiMHjizoE=;
+        b=UvmebOqI3eKy7IwosHgJCPU7t9S+65/QV4XK1KdS7Nsw0d6uBsBMsUNNmW4HbqFfEF
+         pos8/qUa9xJninAUre0+/c8AaqpfKcQh1lYemIuNtBdTuBwQIldM3ulX3OKD/t+qFocP
+         DxRQz9SUPb/qQTML8+DepNZXfwdYzVuAb4hDBjIDDW0hut7CvoomRFu4yezc0QwneiYo
+         il2L0QugAMvhWUk/lghyFT6m2/FRO6YwiLHE+DdfuC0pzJuGWxB5zNSpxErZMn8V4L5C
+         YLErZGv4A1oXttwWN+AqcOkTYgcOnD7O7Rerlk0oeNeDf0eRBdktGnjwAZEgjcMgCfxH
+         fZtg==
+X-Gm-Message-State: AOJu0Yytg/1mIGc7Zz+STANEDmXR++STN8mivsQEWY4UvxPQGjH9I9Ot
+	gjJb5Xb+kTu2JAYAdlqcY9ySrze/X8DrED8P+KyD/tjcRsc=
+X-Google-Smtp-Source: AGHT+IEgGri604YUX0vfvdcXXXL+exWNnifxZT2c9KihxjTFs8lzjW8zgVjGk9cWEoukuySq6viBH50vd8iYtM7GLAk=
+X-Received: by 2002:a25:e0d5:0:b0:d9a:e6d6:42f8 with SMTP id
+ x204-20020a25e0d5000000b00d9ae6d642f8mr15463351ybg.29.1700101368588; Wed, 15
+ Nov 2023 18:22:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231112073424.4216-1-laoar.shao@gmail.com> <188dc90e-864f-4681-88a5-87401c655878@schaufler-ca.com>
+ <CALOAHbD+_0tHcm72Q6TM=EXDoZFrVWAsi4AC8_xGqK3wGkEy3g@mail.gmail.com>
+ <ZVNIprbQU3NqwPi_@tiehlicka> <CALOAHbDi_8ERHdtPB6sJdv=qewoAfGkheCfriW+QLoN0rLUQAw@mail.gmail.com>
+ <b13050b3-54f8-431a-abcf-1323a9791199@schaufler-ca.com> <CALOAHbBKCsdmko_ugHZ_z6Zpgo-xJ8j46oPHkHj+gBGsRCR=eA@mail.gmail.com>
+ <ZVSFNzf4QCbpLGyF@tiehlicka> <CALOAHbAjHJ_47b15v3d+f3iZZ+vBVsLugKew_t_ZFaJoE2_3uw@mail.gmail.com>
+ <ZVT5JG_osL7yFHHA@tiehlicka>
+In-Reply-To: <ZVT5JG_osL7yFHHA@tiehlicka>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 16 Nov 2023 10:22:12 +0800
+Message-ID: <CALOAHbAihVjj4dnc_o60ZsUMZ5Pg+neavsvS9XPkgYaPx-=8ag@mail.gmail.com>
+Subject: Re: [RFC PATCH -mm 0/4] mm, security, bpf: Fine-grained control over
+ memory policy adjustments with lsm bpf
+To: Michal Hocko <mhocko@suse.com>
+Cc: Casey Schaufler <casey@schaufler-ca.com>, akpm@linux-foundation.org, paul@paul-moore.com, 
+	jmorris@namei.org, serge@hallyn.com, linux-mm@kvack.org, 
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	ligang.bdlg@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Check that even if bpf_loop() callback simulation does not converge to
-a specific state, verification could proceed via "brute force"
-simulation of maximal number of callback calls.
+On Thu, Nov 16, 2023 at 1:00=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Wed 15-11-23 17:33:51, Yafang Shao wrote:
+> > On Wed, Nov 15, 2023 at 4:45=E2=80=AFPM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > On Wed 15-11-23 09:52:38, Yafang Shao wrote:
+> > > > On Wed, Nov 15, 2023 at 12:58=E2=80=AFAM Casey Schaufler <casey@sch=
+aufler-ca.com> wrote:
+> > > > >
+> > > > > On 11/14/2023 3:59 AM, Yafang Shao wrote:
+> > > > > > On Tue, Nov 14, 2023 at 6:15=E2=80=AFPM Michal Hocko <mhocko@su=
+se.com> wrote:
+> > > > > >> On Mon 13-11-23 11:15:06, Yafang Shao wrote:
+> > > > > >>> On Mon, Nov 13, 2023 at 12:45=E2=80=AFAM Casey Schaufler <cas=
+ey@schaufler-ca.com> wrote:
+> > > > > >>>> On 11/11/2023 11:34 PM, Yafang Shao wrote:
+> > > > > >>>>> Background
+> > > > > >>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > >>>>>
+> > > > > >>>>> In our containerized environment, we've identified unexpect=
+ed OOM events
+> > > > > >>>>> where the OOM-killer terminates tasks despite having ample =
+free memory.
+> > > > > >>>>> This anomaly is traced back to tasks within a container usi=
+ng mbind(2) to
+> > > > > >>>>> bind memory to a specific NUMA node. When the allocated mem=
+ory on this node
+> > > > > >>>>> is exhausted, the OOM-killer, prioritizing tasks based on o=
+om_score,
+> > > > > >>>>> indiscriminately kills tasks. This becomes more critical wi=
+th guaranteed
+> > > > > >>>>> tasks (oom_score_adj: -998) aggravating the issue.
+> > > > > >>>> Is there some reason why you can't fix the callers of mbind(=
+2)?
+> > > > > >>>> This looks like an user space configuration error rather tha=
+n a
+> > > > > >>>> system security issue.
+> > > > > >>> It appears my initial description may have caused confusion. =
+In this
+> > > > > >>> scenario, the caller is an unprivileged user lacking any capa=
+bilities.
+> > > > > >>> While a privileged user, such as root, experiencing this issu=
+e might
+> > > > > >>> indicate a user space configuration error, the concerning asp=
+ect is
+> > > > > >>> the potential for an unprivileged user to disrupt the system =
+easily.
+> > > > > >>> If this is perceived as a misconfiguration, the question aris=
+es: What
+> > > > > >>> is the correct configuration to prevent an unprivileged user =
+from
+> > > > > >>> utilizing mbind(2)?"
+> > > > > >> How is this any different than a non NUMA (mbind) situation?
+> > > > > > In a UMA system, each gigabyte of memory carries the same cost.
+> > > > > > Conversely, in a NUMA architecture, opting to confine processes=
+ within
+> > > > > > a specific NUMA node incurs additional costs. In the worst-case
+> > > > > > scenario, if all containers opt to bind their memory exclusivel=
+y to
+> > > > > > specific nodes, it will result in significant memory wastage.
+> > > > >
+> > > > > That still sounds like you've misconfigured your containers such
+> > > > > that they expect to get more memory than is available, and that
+> > > > > they have more control over it than they really do.
+> > > >
+> > > > And again: What configuration method is suitable to limit user cont=
+rol
+> > > > over memory policy adjustments, besides the heavyweight seccomp
+> > > > approach?
+> > >
+> > > This really depends on the workloads. What is the reason mbind is use=
+d
+> > > in the first place?
+> >
+> > It can improve their performance.
+> >
+> > > Is it acceptable to partition the system so that
+> > > there is a numa node reserved for NUMA aware workloads?
+> >
+> > As highlighted in the commit log, our preference is to configure this
+> > memory policy through kubelet using cpuset.mems in the cpuset
+> > controller, rather than allowing individual users to set it
+> > independently.
+>
+> OK, I have missed that part.
+>
+> > > If not, have you
+> > > considered (already proposed numa=3Doff)?
+> >
+> > The challenge at hand isn't solely about whether users should bind to
+> > a memory node or the deployment of workloads. What we're genuinely
+> > dealing with is the fact that users can bind to a specific node
+> > without our explicit agreement or authorization.
+>
+> mbind outside of the cpuset shouldn't be possible (policy_nodemask). So
+> if you are configuring cpusets already then mbind should add much to a
+> problem. I can see how you can have problems when you do not have any
+> NUMA partitioning in place because mixing NUMA aware and unaware
+> workloads doesn't really work out well when the memory is short on
+> supply.
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../bpf/progs/verifier_iterating_callbacks.c  | 67 +++++++++++++++++++
- 1 file changed, 67 insertions(+)
+Right, we're trying to move NUMA aware workloads to dedicated servers.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-index 598c1e984b26..da10ce57da5e 100644
---- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-@@ -164,4 +164,71 @@ int unsafe_find_vma(void *unused)
- 	return choice_arr[loop_ctx.i];
- }
- 
-+static int iter_limit_cb(__u32 idx, struct num_context *ctx)
-+{
-+	ctx->i++;
-+	return 0;
-+}
-+
-+SEC("?raw_tp")
-+__success
-+int bpf_loop_iter_limit_ok(void *unused)
-+{
-+	struct num_context ctx = { .i = 0 };
-+
-+	bpf_loop(1, iter_limit_cb, &ctx, 0);
-+	return choice_arr[ctx.i];
-+}
-+
-+SEC("?raw_tp")
-+__failure __msg("invalid access to map value, value_size=2 off=2 size=1")
-+int bpf_loop_iter_limit_overflow(void *unused)
-+{
-+	struct num_context ctx = { .i = 0 };
-+
-+	bpf_loop(2, iter_limit_cb, &ctx, 0);
-+	return choice_arr[ctx.i];
-+}
-+
-+static int iter_limit_level2a_cb(__u32 idx, struct num_context *ctx)
-+{
-+	ctx->i += 100;
-+	return 0;
-+}
-+
-+static int iter_limit_level2b_cb(__u32 idx, struct num_context *ctx)
-+{
-+	ctx->i += 10;
-+	return 0;
-+}
-+
-+static int iter_limit_level1_cb(__u32 idx, struct num_context *ctx)
-+{
-+	ctx->i += 1;
-+	bpf_loop(1, iter_limit_level2a_cb, ctx, 0);
-+	bpf_loop(1, iter_limit_level2b_cb, ctx, 0);
-+	return 0;
-+}
-+
-+SEC("?raw_tp")
-+__success __log_level(2)
-+/* Check that last verified exit from the program visited each
-+ * callback expected number of times: one visit per callback for each
-+ * top level bpf_loop call.
-+ */
-+__msg("r1 = *(u64 *)(r10 -16)       ; R1_w=111111 R10=fp0 fp-16=111111")
-+/* Ensure that read above is the last one by checking that there are
-+ * no more reads for ctx.i.
-+ */
-+__not_msg("r1 = *(u64 *)(r10 -16)	; R1_w=")
-+int bpf_loop_iter_limit_nested(void *unused)
-+{
-+	struct num_context ctx = { .i = 0 };
-+
-+	bpf_loop(1, iter_limit_level1_cb, &ctx, 0);
-+	ctx.i *= 1000;
-+	bpf_loop(1, iter_limit_level1_cb, &ctx, 0);
-+	return choice_arr[ctx.i % 2];
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.42.0
-
+--=20
+Regards
+Yafang
 
