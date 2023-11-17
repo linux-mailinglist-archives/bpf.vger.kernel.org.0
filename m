@@ -1,97 +1,158 @@
-Return-Path: <bpf+bounces-15225-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15226-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3479E7EF0E2
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 11:45:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A387EF14A
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 12:00:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EE21C20A77
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 10:45:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFD3AB20BE2
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 11:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5CB618E10;
-	Fri, 17 Nov 2023 10:45:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777171B28B;
+	Fri, 17 Nov 2023 11:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79E811D
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 02:45:09 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SWtp74cpSz4f3jZ1
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 18:45:03 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 3B8651A01A1
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 18:45:06 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgAnfUsuRFdlvfTQBA--.59012S2;
-	Fri, 17 Nov 2023 18:45:06 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-Subject: Re: [PATCH bpf-next v11 13/13] selftests/bpf: test case for
- register_bpf_struct_ops().
-To: thinker.li@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org, drosen@google.com
-Cc: sinquersw@gmail.com, kuifeng@meta.com
-References: <20231106201252.1568931-1-thinker.li@gmail.com>
- <20231106201252.1568931-14-thinker.li@gmail.com>
-Message-ID: <e9360742-57db-9f40-6227-d15db29ee25f@huaweicloud.com>
-Date: Fri, 17 Nov 2023 18:45:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from wangsu.com (unknown [180.101.34.75])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 122E611D;
+	Fri, 17 Nov 2023 02:59:54 -0800 (PST)
+Received: from XMCDN1207038 (unknown [59.61.78.234])
+	by app2 (Coremail) with SMTP id SyJltACHAhKmR1dl66hhAA--.26433S2;
+	Fri, 17 Nov 2023 18:59:51 +0800 (CST)
+From: "Pengcheng Yang" <yangpc@wangsu.com>
+To: "'John Fastabend'" <john.fastabend@gmail.com>,
+	"'Jakub Sitnicki'" <jakub@cloudflare.com>,
+	"'Eric Dumazet'" <edumazet@google.com>,
+	"'Jakub Kicinski'" <kuba@kernel.org>,
+	<bpf@vger.kernel.org>,
+	<netdev@vger.kernel.org>
+References: <1699962120-3390-1-git-send-email-yangpc@wangsu.com> <1699962120-3390-3-git-send-email-yangpc@wangsu.com> <6554713028d5b_3733620856@john.notmuch> <000101da17b9$36951720$a3bf4560$@wangsu.com> <6556c2c238099_537dc208ab@john.notmuch>
+In-Reply-To: <6556c2c238099_537dc208ab@john.notmuch>
+Subject: Re: [PATCH bpf-next 2/3] tcp: Add the data length in skmsg to SIOCINQ ioctl
+Date: Fri, 17 Nov 2023 18:59:50 +0800
+Message-ID: <009601da1945$2ff0d0c0$8fd27240$@wangsu.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231106201252.1568931-14-thinker.li@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain;
+	charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgAnfUsuRFdlvfTQBA--.59012S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF18ZFW8ur4xGFy7GrW7Arb_yoWDGrXEvw
-	4Iyr1kGa13Jr1rAr40vFy5CrWIg3yfGrnFq345Xw1fJw45Wa1DCF4kJ343Xa48WrZ3GrZa
-	qwn8C393Wr42kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI62AI
-	1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07
-	UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHO/J1mBkmXfIRCzv54wVJwMMBhiQJx1G0UAqlCf8QBxnk5/QJgXLDNsEp4bpA=
+Content-Language: zh-cn
+X-CM-TRANSID:SyJltACHAhKmR1dl66hhAA--.26433S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw1xZw43AF4UXFyxAFykAFb_yoWrAw1UpF
+	W5KF1Skr4kCr4xArZ2vw1fX3W3K393KF17Xrn8t3y3Aws0kFySyr45GF4Y9FZ7tr4rur4Y
+	vr4jgrWS9wn8ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+	cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
+	v20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK
+	6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4
+	CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0EF7xvrVAajcxG14v2
+	6r1j6r4UMcIj6x8ErcxFaVAv8VW8GwAv7VCY1x0262k0Y48FwI0_Gr1j6F4UJwAm72CE4I
+	kC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xS
+	Y4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Gr4l4I8I3I0E4I
+	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
+	WwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
+	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUD0edUUUUU
+X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
 
-Hi,
+John Fastabend <john.fastabend@gmail.com> wrote:
+> Pengcheng Yang wrote:
+> > John Fastabend <john.fastabend@gmail.com> wrote:
+> > > Pengcheng Yang wrote:
+> > > > SIOCINQ ioctl returns the number unread bytes of the receive
+> > > > queue but does not include the ingress_msg queue. With the
+> > > > sk_msg redirect, an application may get a value 0 if it calls
+> > > > SIOCINQ ioctl before recv() to determine the readable size.
+> > > >
+> > > > Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
+> > >
+> > > This will break the SK_PASS case I believe. Here we do
+> > > not update copied_seq until data is actually copied into user
+> > > space. This also ensures tcp_epollin_ready works correctly and
+> > > tcp_inq. The fix is relatively recent.
+> > >
+> > >  commit e5c6de5fa025882babf89cecbed80acf49b987fa
+> > >  Author: John Fastabend <john.fastabend@gmail.com>
+> > >  Date:   Mon May 22 19:56:12 2023 -0700
+> > >
+> > >     bpf, sockmap: Incorrectly handling copied_seq
+> > >
+> > > The previous patch increments the msg_len for all cases even
+> > > the SK_PASS case so you will get double counting.
+> >
+> > You are right, I missed the SK_PASS case of skb stream verdict.
+> >
+> > >
+> > > I was starting to poke around at how to fix the other cases e.g.
+> > > stream parser is in use and redirects but haven't got to it  yet.
+> > > By the way I think even with this patch epollin_ready is likely
+> > > not correct still. We observe this as either failing to wake up
+> > > or waking up an application to early when using stream parser.
+> > >
+> > > The other thing to consider is redirected skb into another socket
+> > > and then read off the list increment the copied_seq even though
+> > > they shouldn't if they came from another sock?  The result would
+> > > be tcp_inq would be incorrect even negative perhaps?
+> > >
+> > > What does your test setup look like? Simple redirect between
+> > > two TCP sockets? With or without stream parser? My guess is we
+> > > need to fix underlying copied_seq issues related to the redirect
+> > > and stream parser case. I believe the fix is, only increment
+> > > copied_seq for data that was put on the ingress_queue from SK_PASS.
+> > > Then update previous patch to only incrmeent sk_msg_queue_len()
+> > > for redirect paths. And this patch plus fix to tcp_epollin_ready
+> > > would resolve most the issues. Its a bit unfortunate to leak the
+> > > sk_sg_queue_len() into tcp_ioctl and tcp_epollin but I don't have
+> > > a cleaner idea right now.
+> > >
+> >
+> > What I tested was to use msg_verdict to redirect between two sockets
+> > without stream parser, and the problem I encountered is that msg has
+> > been queued in psock->ingress_msg, and the application has been woken up
+> > by epoll (because of sk_psock_data_ready), but the ioctl(FIONREAD) returns 0.
+> 
+> Yep makes sense.
+> 
+> >
+> > The key is that the rcv_nxt is not updated on ingress redirect, or we only need
+> > to update rcv_nxt on ingress redirect, such as in bpf_tcp_ingress() and
+> > sk_psock_skb_ingress_enqueue() ?
+> >
+> 
+> I think its likely best not to touch rcv_nxt. 'rcv_nxt' is used in
+> the tcp stack to calculate lots of things. If you just bump it and
+> then ever received an actual TCP pkt you would get some really
+> odd behavior because seq numbers and rcv_nxt would be unrelated then.
+> 
+> The approach you have is really the best bet IMO, but mask out
+> the increment msg_len where its not needed. Then it should be OK.
+> 
 
-On 11/7/2023 4:12 AM, thinker.li@gmail.com wrote:
-> From: Kui-Feng Lee <thinker.li@gmail.com>
->
-> Create a new struct_ops type called bpf_testmod_ops within the bpf_testmod
-> module. When a struct_ops object is registered, the bpf_testmod module will
-> invoke test_2 from the module.
->
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-SNIP
-> diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-> new file mode 100644
-> index 000000000000..49f4a4460642
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-> @@ -0,0 +1,144 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
-> +#include <test_progs.h>
-> +#include <time.h>
-> +
-> +#include "rcu_tasks_trace_gp.skel.h"
+I think we can add a flag to msg to identify whether msg comes from the same
+sock's receive_queue. In this way, we can increase and decrease the msg_len
+based on this flag when msg is queued to ingress_msg and when it is read by
+the application.
 
-It is no needed anymore. It seems it is a leftover from last revision.
+And, this can also fix the case you mentioned above:
+
+	"The other thing to consider is redirected skb into another socket
+	and then read off the list increment the copied_seq even though
+	they shouldn't if they came from another sock?  The result would
+	be tcp_inq would be incorrect even negative perhaps?"
+
+During recv in tcp_bpf_recvmsg_parser(), we only need to increment copied_seq
+when the msg comes from the same sock's receive_queue, otherwise copied_seq
+may overflow rcv_nxt in this case.
+
+> Mixing ingress redirect and TCP sending/recv pkts doesn't usually work
+> very well anyway but I still think leaving rcv_nxt alone is best.
 
 
