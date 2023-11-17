@@ -1,155 +1,156 @@
-Return-Path: <bpf+bounces-15217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5D207EE7A6
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 20:43:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D2C7EEAB5
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 02:33:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B815B20A8B
-	for <lists+bpf@lfdr.de>; Thu, 16 Nov 2023 19:43:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6F07B20B3E
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 01:33:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE1F148CF5;
-	Thu, 16 Nov 2023 19:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30EE138F;
+	Fri, 17 Nov 2023 01:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NqTuGCDi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DgRObeCY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A93690
-	for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 11:43:33 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6cd09663b1cso721254a34.3
-        for <bpf@vger.kernel.org>; Thu, 16 Nov 2023 11:43:33 -0800 (PST)
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDD71A8;
+	Thu, 16 Nov 2023 17:32:53 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5bdb0be3591so1173458a12.2;
+        Thu, 16 Nov 2023 17:32:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700163812; x=1700768612; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+kxCYimjhScHhOiqFD0x0jmkbAuTB3yGg/QItDo0Jk4=;
-        b=NqTuGCDiZAxdWZIxine5fKV3r/2O7C+PDIyQf7+0Sbaras+vVTfsaOXCGgbQUdLfq+
-         RR2/1UXU/ZPa7LIviw3AUPznCZFb18wxTQnSW26315X6V7R3TQH9hppcocUZuGzUDaqW
-         CKfZVyAx/Tdmet6ckGUNjKHcBDA9CkPUv17axZIHP9Datgh6+KL7ZGM76WvIP1+HabgL
-         ii6dxHEUROsnhMHgaY4DW2Jk7Nu+9VdEe89FqgGhiVhZwFDHe+zidzPZK7tYJOXBiZdC
-         /0GxkbWjdKa1bhHN2KuL69eVkbrAPmfLHf3gfcLZ+kxedaO9MMb8PurmNDDyD6EMoq5m
-         grQg==
+        d=gmail.com; s=20230601; t=1700184773; x=1700789573; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hu/ZPQV80A4ISgZrwoGV5UgX5RK6K+Si4rWx0zCLHuc=;
+        b=DgRObeCY2B2RY/QWfPXsZ0ec5mVQO8S5a07iXR8s7/omzVMLwXRs0e13bibb91a4n8
+         4t1WOfaPu6M4AgOA5MjCk8NMiip5c2JOMhimGZq3fxp7/smnyVWTmvZlJHGOhJ99JHXa
+         2J21mYi+dGtQtHVvFWZ0Or2XJ+YSwR2LbjHrVBK92csOqrh+e8hXgyjic44fZ53T3c80
+         FDiigeJwYw0apzPbPfR4sgsxIGNZAq9I9M9ECQXnkTeeDSOvnmxyVqOyc99SoSAqLJmn
+         cxJGmR+CttE94vPgAYlZjCS0Cl0VVQNvAnnwQCJujm1Ih0gdDrL7uKCGowiNFC4q6dNt
+         f0AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700163812; x=1700768612;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700184773; x=1700789573;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+kxCYimjhScHhOiqFD0x0jmkbAuTB3yGg/QItDo0Jk4=;
-        b=ic9YsPK58riPFroQ0gqBNS+oxzkFBDyjwtBiFpRyQT79unjv0F11Pk2MYxPuFHTo6T
-         seZNdTqfqv63bBKdNscXH0Ket8+YElB6JVGhup2aT+2beB5ffq0J1e2vor/44eErFa0j
-         fZTnFMZIl8h1UsIZBppQhizjNCIHWDJS7bcmbuxwnFaE+SPpMG3blZUVKgM9IVSjDGJ1
-         Nx/3HQ+LD9YFziUeGLNe9ylZAjRPvcUAc0d4Wm1pMSVl1IICgo2Q98UJZLjLoNrtXj9z
-         5GKaNPhFL3FiWv1rlrUwCpftaUVqyXUzzsPROGmpIsv7P3gJgDWgPmgBKEXxfxogDiNS
-         BfZg==
-X-Gm-Message-State: AOJu0YzJC/389M4DWxz70+Kfk6NUORNTOXLUO8IPO6jDRowUjCZop5zT
-	CP/vSzEGLBD1dpu6lvd5NB83vnjzbV/3KA==
-X-Google-Smtp-Source: AGHT+IE816fwN7drhSdgULnmKZoWcPgdJQfFW8HEOvmoP5M0nG6DZLR1WBMZoo9Qy9ovtImoR8KoVg==
-X-Received: by 2002:a9d:4802:0:b0:6bf:1e78:cc52 with SMTP id c2-20020a9d4802000000b006bf1e78cc52mr9342475otf.25.1700163812495;
-        Thu, 16 Nov 2023 11:43:32 -0800 (PST)
-Received: from localhost (fwdproxy-vll-116.fbsv.net. [2a03:2880:12ff:74::face:b00c])
-        by smtp.gmail.com with ESMTPSA id em9-20020a056830020900b006d691456571sm1365otb.64.2023.11.16.11.43.32
+        bh=Hu/ZPQV80A4ISgZrwoGV5UgX5RK6K+Si4rWx0zCLHuc=;
+        b=Pkpyz3v567T/mxW3Z+dJ4/F4jEpVV1teSG2e5nRFUi5KTa25KKxYY9FNzS1Lr2BS4m
+         tOrHHvCWVMk7wL497NdW3ZbiGLC/fi5vhKpiYvL4I9KCMwhXbcD3BnEyXFKDnCRSFBei
+         HhEh/fzbW4pg5b79QkHKiqTZElh3AurqKNBayNUK87D+AWs40BLCBasyVB1XsmsV24x5
+         4nIOMD6P1kN9EFrtWeVPTUPwOUAYpR6c5qjcSXNsJDXFhXoxm1vqrDf63o2Ox2P/uHTw
+         mPhZpaJQGkj8lZ0gXjj9fxMu/QCjQzpamjmBgGNKi5TjC3KbI32wjOvt9B5uN5Y7zpJ/
+         uUMQ==
+X-Gm-Message-State: AOJu0YxgaVUFcVsARWZ/taRMf0oQTKki9x1IJ4XdFAzY2LIiIEwbivQl
+	8YtTEmtAxtnOCPcKRNjXPDE=
+X-Google-Smtp-Source: AGHT+IElEsWtMyi+Au04aGz/UC7A60cwpWW3SkM12tnJDAjm16MTW66txPqgPSmqELnre4Wn6EXTsA==
+X-Received: by 2002:a05:6a20:7d93:b0:188:1125:88bd with SMTP id v19-20020a056a207d9300b00188112588bdmr558627pzj.43.1700184773019;
+        Thu, 16 Nov 2023 17:32:53 -0800 (PST)
+Received: from localhost ([2605:59c8:148:ba10:5efa:e403:ded8:175e])
+        by smtp.gmail.com with ESMTPSA id t10-20020a1709028c8a00b001a9b29b6759sm289132plo.183.2023.11.16.17.32.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 11:43:32 -0800 (PST)
-From: Manu Bretelle <chantr4@gmail.com>
-To: bpf@vger.kernel.org,
-	quentin@isovalent.com,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org
-Subject: [PATCH v1 bpf-next  9/9] bpftool: Add Makefile to facilitate bpftool_tests usage
-Date: Thu, 16 Nov 2023 11:42:36 -0800
-Message-Id: <20231116194236.1345035-10-chantr4@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231116194236.1345035-1-chantr4@gmail.com>
-References: <20231116194236.1345035-1-chantr4@gmail.com>
+        Thu, 16 Nov 2023 17:32:51 -0800 (PST)
+Date: Thu, 16 Nov 2023 17:32:50 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Pengcheng Yang <yangpc@wangsu.com>, 
+ 'John Fastabend' <john.fastabend@gmail.com>, 
+ 'Jakub Sitnicki' <jakub@cloudflare.com>, 
+ 'Eric Dumazet' <edumazet@google.com>, 
+ 'Jakub Kicinski' <kuba@kernel.org>, 
+ bpf@vger.kernel.org, 
+ netdev@vger.kernel.org
+Message-ID: <6556c2c238099_537dc208ab@john.notmuch>
+In-Reply-To: <000101da17b9$36951720$a3bf4560$@wangsu.com>
+References: <1699962120-3390-1-git-send-email-yangpc@wangsu.com>
+ <1699962120-3390-3-git-send-email-yangpc@wangsu.com>
+ <6554713028d5b_3733620856@john.notmuch>
+ <000101da17b9$36951720$a3bf4560$@wangsu.com>
+Subject: Re: [PATCH bpf-next 2/3] tcp: Add the data length in skmsg to SIOCINQ
+ ioctl
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Provide some Makefile targets to run the linter, build the tests, and
-run them on the host or in a VM.
+Pengcheng Yang wrote:
+> John Fastabend <john.fastabend@gmail.com> wrote:
+> > Pengcheng Yang wrote:
+> > > SIOCINQ ioctl returns the number unread bytes of the receive
+> > > queue but does not include the ingress_msg queue. With the
+> > > sk_msg redirect, an application may get a value 0 if it calls
+> > > SIOCINQ ioctl before recv() to determine the readable size.
+> > >
+> > > Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
+> > 
+> > This will break the SK_PASS case I believe. Here we do
+> > not update copied_seq until data is actually copied into user
+> > space. This also ensures tcp_epollin_ready works correctly and
+> > tcp_inq. The fix is relatively recent.
+> > 
+> >  commit e5c6de5fa025882babf89cecbed80acf49b987fa
+> >  Author: John Fastabend <john.fastabend@gmail.com>
+> >  Date:   Mon May 22 19:56:12 2023 -0700
+> > 
+> >     bpf, sockmap: Incorrectly handling copied_seq
+> > 
+> > The previous patch increments the msg_len for all cases even
+> > the SK_PASS case so you will get double counting.
+> 
+> You are right, I missed the SK_PASS case of skb stream verdict.
+> 
+> > 
+> > I was starting to poke around at how to fix the other cases e.g.
+> > stream parser is in use and redirects but haven't got to it  yet.
+> > By the way I think even with this patch epollin_ready is likely
+> > not correct still. We observe this as either failing to wake up
+> > or waking up an application to early when using stream parser.
+> > 
+> > The other thing to consider is redirected skb into another socket
+> > and then read off the list increment the copied_seq even though
+> > they shouldn't if they came from another sock?  The result would
+> > be tcp_inq would be incorrect even negative perhaps?
+> > 
+> > What does your test setup look like? Simple redirect between
+> > two TCP sockets? With or without stream parser? My guess is we
+> > need to fix underlying copied_seq issues related to the redirect
+> > and stream parser case. I believe the fix is, only increment
+> > copied_seq for data that was put on the ingress_queue from SK_PASS.
+> > Then update previous patch to only incrmeent sk_msg_queue_len()
+> > for redirect paths. And this patch plus fix to tcp_epollin_ready
+> > would resolve most the issues. Its a bit unfortunate to leak the
+> > sk_sg_queue_len() into tcp_ioctl and tcp_epollin but I don't have
+> > a cleaner idea right now.
+> > 
+> 
+> What I tested was to use msg_verdict to redirect between two sockets
+> without stream parser, and the problem I encountered is that msg has
+> been queued in psock->ingress_msg, and the application has been woken up
+> by epoll (because of sk_psock_data_ready), but the ioctl(FIONREAD) returns 0.
 
-    $ make vmtest
-    cargo test --no-run --offline
-        Finished test [unoptimized + debuginfo] target(s) in 0.05s
-      Executable unittests src/main.rs
-    (target/debug/deps/bpftool_tests-afa5a7eef3cdeafb)
-    vmtest -k /data/users/chantra/bpf-next/arch/x86/boot/bzImage
-    "RUST_TEST_THREADS=1 BPFTOOL_PATH=../tools/build/bpftool/bpftool cargo
-    test"
-    => bzImage
-    ===> Booting
-    ===> Setting up VM
-    ===> Running command
-        Finished test [unoptimized + debuginfo] target(s) in 2.05s
-         Running unittests src/main.rs
-    (target/debug/deps/bpftool_tests-afa5a7eef3cdeafb)
+Yep makes sense.
 
-    running 11 tests
-    test bpftool_tests::run_bpftool ... ok
-    test bpftool_tests::run_bpftool_map_dump_id ... ok
-    test bpftool_tests::run_bpftool_map_list ... ok
-    test bpftool_tests::run_bpftool_map_pids ... ok
-    test bpftool_tests::run_bpftool_prog_list ... ok
-    test bpftool_tests::run_bpftool_prog_pids ... ok
-    test bpftool_tests::run_bpftool_prog_show_id ... ok
-    test bpftool_tests::run_bpftool_struct_ops_can_unregister_id ... ok
-    test bpftool_tests::run_bpftool_struct_ops_can_unregister_name ... ok
-    test bpftool_tests::run_bpftool_struct_ops_dump_name ... ok
-    test bpftool_tests::run_bpftool_struct_ops_list ... ok
+> 
+> The key is that the rcv_nxt is not updated on ingress redirect, or we only need
+> to update rcv_nxt on ingress redirect, such as in bpf_tcp_ingress() and
+> sk_psock_skb_ingress_enqueue() ?
+> 
 
-    test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered
-    out; finished in 2.88s
+I think its likely best not to touch rcv_nxt. 'rcv_nxt' is used in
+the tcp stack to calculate lots of things. If you just bump it and
+then ever received an actual TCP pkt you would get some really
+odd behavior because seq numbers and rcv_nxt would be unrelated then.
 
-Signed-off-by: Manu Bretelle <chantr4@gmail.com>
----
- .../selftests/bpf/bpftool_tests/Makefile      | 22 +++++++++++++++++++
- 1 file changed, 22 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/bpftool_tests/Makefile
+The approach you have is really the best bet IMO, but mask out
+the increment msg_len where its not needed. Then it should be OK.
 
-diff --git a/tools/testing/selftests/bpf/bpftool_tests/Makefile b/tools/testing/selftests/bpf/bpftool_tests/Makefile
-new file mode 100644
-index 000000000000..0b5633cda8b4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/bpftool_tests/Makefile
-@@ -0,0 +1,22 @@
-+BPFTOOL := ../tools/build/bpftool/bpftool
-+
-+lint:
-+	cargo clippy --tests
-+	cargo check --tests
-+
-+# Build the tests but do not run them.
-+build-test:
-+	cargo test --no-run --offline
-+
-+# Run the tests on the host using sudo
-+test: build-test
-+	RUST_TEST_THREADS=1 BPFTOOL_PATH=$(BPFTOOL) sudo -E $(shell which cargo) test --offline
-+
-+# Run the tests in a vm. Requires danobi/vmtest.
-+vmtest: build-test
-+	$(eval repo_root := $(shell git rev-parse --show-toplevel))
-+	$(eval kernel_img := $(shell make -s -C $(repo_root) image_name))
-+	vmtest -k $(repo_root)/$(kernel_img) "RUST_TEST_THREADS=1 BPFTOOL_PATH=$(BPFTOOL) cargo test"
-+
-+clean:
-+	cargo clean
--- 
-2.39.3
-
+Mixing ingress redirect and TCP sending/recv pkts doesn't usually work
+very well anyway but I still think leaving rcv_nxt alone is best.
 
