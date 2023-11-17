@@ -1,109 +1,126 @@
-Return-Path: <bpf+bounces-15262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60D0C7EF798
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 19:53:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 697827EF7EC
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 20:37:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A7C42811C8
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 18:53:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A11131C2094C
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 19:37:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFBBD43173;
-	Fri, 17 Nov 2023 18:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E31446AF;
+	Fri, 17 Nov 2023 19:37:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AENdSaHR"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="Iz3/WjCI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95CBC5
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 10:53:36 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9c603e2354fso441555866b.1
-        for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 10:53:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700247215; x=1700852015; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=cpbDwLpNiWFsMvbOYPI1FsSaL8yG3bUFRzto6tvMaQA=;
-        b=AENdSaHRqDwdTNffYjfMl76OmyOI4cqdeqbNEkB4PQOXMSiQ/EHkscb4uFdvp1cW2B
-         h4xmmLcsl6o5Aq7cC2VqMaEAhl+WgRFW5hliIyugaC7syuBnbaP75YhLv0ptG5zUOTkd
-         ccFll/aK8lHAflsjgsC/IJYSFTTh1xb0GJb6CT6dukPoXlq6rEGjjLzEXKSTcq+hiQ3j
-         CR9C8iBYWulVkIl5kA24oRdLxLRZO2P5FZuHgloz57cRjmdX7GAWVhtDw9SWvgU95oTW
-         r3UiWMIsFoS+uqNo9ISF7uoeVdX4ObQ6n0PhPmSbKkMWqPVzenUsByvNcNk5FEXoGnAy
-         pgxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700247215; x=1700852015;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cpbDwLpNiWFsMvbOYPI1FsSaL8yG3bUFRzto6tvMaQA=;
-        b=NwfSnXrZjzE8l3G6JaBBQy1TzSf2VJ72xzLuElln7V0HNr1ilXmp+UysP45AoUjuGa
-         AwV7p/o2lelpBATBTAf6zgYZOu5pWcd04hT9yt+GfUdzFNenDCRkA3DxqjAoSqmsBknp
-         5loDj2vxfBLZuROqjjEnVy/QJSdoZAtH3PnM0SAFC63ckernbs07UqrSnRU8MGemDHkk
-         fH94PwiB31iPbFt84ZVOalX52Ol7Yoxkch5407skAd3joxWFwVINcjPJDgji3KRd1fK7
-         Ydgp0+Vks+YKggvHXLVTgMBPZRd85+wpQxR1TFJpVdsF9czvS5KD+bBcnoAkflj+xycV
-         bJjQ==
-X-Gm-Message-State: AOJu0YzAsDZd77Qx/jljYNYOMFKspd4pU/oj14nkNmm5rkT6QOP9kF0t
-	fBZUzjkbv/z+g9hJh5F+SZI=
-X-Google-Smtp-Source: AGHT+IGEqlKsK5K5qpo0SpBUwvexDYWn7oPp+z2CfKX8CscXLIiCmKM1M0Dj4DLVAHmES4fy0F3PPA==
-X-Received: by 2002:a17:906:a859:b0:9a9:f0e6:904e with SMTP id dx25-20020a170906a85900b009a9f0e6904emr6123213ejb.16.1700247215090;
-        Fri, 17 Nov 2023 10:53:35 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id ig11-20020a1709072e0b00b009adc5802d08sm1045329ejc.190.2023.11.17.10.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 10:53:34 -0800 (PST)
-Message-ID: <6da7c6b9617663daa54ed27d2c1637cc71dfb7a3.camel@gmail.com>
-Subject: Re: [PATCH bpf 12/12] selftests/bpf: check if max number of
- bpf_loop iterations is tracked
-From: Eduard Zingerman <eddyz87@gmail.com>
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2029.outbound.protection.outlook.com [40.92.89.29])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9CAD5D;
+	Fri, 17 Nov 2023 11:37:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mKUwi4ki6e0aaaWxLlSh1j3SGVIEHIHBJi+BrGHGcOj6XcKnZ95w4Wrcvk79Ef8uTcMWI3IUkN/1hK1YVeTM2mJU9HC4mwCxNb11e85gCse9URuW4XlIIp21JlZflGfo/KG5ANMHmEfcK5kfW0n2JUgeFsian1fn+H9MvzwvzWwLY3xvjoKmEA5PjAuXddkBlsUeiON0F9Huix6ocxb32WCRfWWEcfd93n321NVuY4U6J0wX4AFXaCp/JRSQoNnUnSnFpFBnSc0ooGxxHUD6ffIaQG8DCf3dgvL3MHZotJpwMugQzYBThQQWZurkg2DEHrvG9OsXPhbootInXQzDIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o7vtm5M+DrnHxDLH1kSsteR4p+8R9btkNm9QT0DIVUA=;
+ b=KJhlK/yaeiM9NjkdME7ILi+xajng0fdA+94vGJpiePT7cGxy9GDeGGed5hj6dU8JNoQkVHaDzPSXQDymgbtNQQdP67uaUypiL3BGVO5neTbkHQjujJ+VtFjUfP8YJT2yA1GfjknFzmAFABOs2uqpDIa3EXb+fan9Fj8gPXgd6E6lnMZMntlGRKzQwriNTTT1lp51d6psaqhsm1vWmQXqbKo/TzVLZLsWpTDl7tX/OGh0M161IG8AoAWYONumjMQzRZlZXrj+bX3DWg356zz4FzQtP7M3d+ktP2RgGBsxc4smHcKoABjVlKa3xFZl8UvmzM5N2+EUM86+ScwySBFjlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o7vtm5M+DrnHxDLH1kSsteR4p+8R9btkNm9QT0DIVUA=;
+ b=Iz3/WjCInj1BxgdRsW2XFTV0MzWcQhStEevv6E+V75iDnKpz2Yk0iDljYw9N7txWXyxOG5f2elN6Tcmdd+Uul8xhYtvl6pSreNbvzPRFJnCqUgVHb5i8nobOn3s2UQGVCtFFm9cKZkBJeAJHV2KBHNSEJmIDMzWAlop7P9ud8uP47UyUs+JpdWbNWAfv8/+b2woNAvg3BFBtfiBy62iIyi/4CrM+KC5i96x2DShPmzNelshCUhaQ0FusozLU0EMa2HB0m5k3zj2h5QJ1fAuGbnlI7O2iWrZG/lrA0irsX86pVIfgJ2CC2NoZlzMCZK92mjr8yf1A2Phd6gFY5ntqqw==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by AS2PR10MB6520.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:55c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Fri, 17 Nov
+ 2023 19:37:26 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.025; Fri, 17 Nov 2023
+ 19:37:26 +0000
+Date: Sat, 18 Nov 2023 01:07:02 +0530
+From: Yuran Pereira <yuran.pereira@hotmail.com>
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev,  memxor@gmail.com, awerner32@gmail.com
-Date: Fri, 17 Nov 2023 20:53:32 +0200
-In-Reply-To: <CAEf4BzYd_Dv4fEoPe+n+sRXxHFmYrTs7w45jtYeQByNH521gzA@mail.gmail.com>
-References: <20231116021803.9982-1-eddyz87@gmail.com>
-	 <20231116021803.9982-13-eddyz87@gmail.com>
-	 <CAEf4BzYd_Dv4fEoPe+n+sRXxHFmYrTs7w45jtYeQByNH521gzA@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=mQGNBGKNNQEBDACwcUNXZOGTzn4rr7Sd18SA5Wv0Wna/ONE0ZwZEx+sIjyGrPOIhR14/DsOr3ZJer9UJ/WAJwbxOBj6E5Y2iF7grehljNbLr/jMjzPJ+hJpfOEAb5xjCB8xIqDoric1WRcCaRB+tDSk7jcsIIiMish0diTK3qTdu4MB6i/sh4aeFs2nifkNi3LdBuk8Xnk+RJHRoKFJ+C+EoSmQPuDQIRaF9N2m4yO0eG36N8jLwvUXnZzGvHkphoQ9ztbRJp58oh6xT7uH62m98OHbsVgzYKvHyBu/IU2ku5kVG9pLrFp25xfD4YdlMMkJH6l+jk+cpY0cvMTS1b6/g+1fyPM+uzD8Wy+9LtZ4PHwLZX+t4ONb/48i5AKq/jSsb5HWdciLuKEwlMyFAihZamZpEj+9n91NLPX4n7XeThXHaEvaeVVl4hfW/1Qsao7l1YjU/NCHuLaDeH4U1P59bagjwo9d1n5/PESeuD4QJFNqW+zkmE4tmyTZ6bPV6T5xdDRHeiITGc00AEQEAAbQkRWR1YXJkIFppbmdlcm1hbiA8ZWRkeXo4N0BnbWFpbC5jb20+iQHUBBMBCgA+FiEEx+6LrjApQyqnXCYELgxleklgRAkFAmKNNQECGwMFCQPCZwAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQLgxleklgRAlWZAv/cJ5v3zlEyP0/jMKQBqbVCCHTirPEw+nqxbkeSO6r2FUds0NnGA9a6NPOpBH+qW7a6+n6q3sIbvH7jlss4pzLI7LYlDC6z+egTv7KR5X1xFrY1uR5UGs1beAjnzYeV2hK4yqRUfygsT0Wk5e4FiNBv4+DUZ8r0cNDkO6swJxU55DO21mcteC147+4aDoHZ40R0tsAu+brDGSSoOPpb0RWVsEf9XOBJqWWA+T7mluw
- nYzhLWGcczc6J71q1Dje0l5vIPaSFOgwmWD4DA+WvuxM/shH4rtWeodbv iCTce6yYIygHgUAtJcHozAlgRrL0jz44cggBTcoeXp/atckXK546OugZPnl00J3qmm5uWAznU6T5YDv2vCvAMEbz69ib+kHtnOSBvR0Jb86UZZqSb4ATfwMOWe9htGTjKMb0QQOLK0mTcrk/TtymaG+T4Fsos0kgrxqjgfrxxEhYcVNW8v8HISmFGFbqsJmFbVtgk68BcU0wgF8oFxo7u+XYQDdKbI1uQGNBGKNNQEBDADbQIdo8L3sdSWGQtu+LnFqCZoAbYurZCmUjLV3df1b+sg+GJZvVTmMZnzDP/ADufcbjopBBjGTRAY4L76T2niu2EpjclMMM3mtrOc738Kr3+RvPjUupdkZ1ZEZaWpf4cZm+4wH5GUfyu5pmD5WXX2i1r9XaUjeVtebvbuXWmWI1ZDTfOkiz/6Z0GDSeQeEqx2PXYBcepU7S9UNWttDtiZ0+IH4DZcvyKPUcK3tOj4u8GvO3RnOrglERzNCM/WhVdG1+vgU9fXO83TB/PcfAsvxYSie7u792s/I+yA4XKKh82PSTvTzg2/4vEDGpI9yubkfXRkQN28w+HKF5qoRB8/L1ZW/brlXkNzA6SveJhCnH7aOF0Yezl6TfX27w1CW5Xmvfi7X33V/SPvo0tY1THrO1c+bOjt5F+2/K3tvejmXMS/I6URwa8n1e767y5ErFKyXAYRweE9zarEgpNZTuSIGNNAqK+SiLLXt51G7P30TVavIeB6s2lCt1QKt62ccLqUAEQEAAYkBvAQYAQoAJhYhBMfui64wKUMqp1wmBC4MZXpJYEQJBQJijTUBAhsMBQkDwmcAAAoJEC4MZXpJYEQJkRAMAKNvWVwtXm/WxWoiLnXyF2WGXKoDe5+itTLvBmKcV/b1OKZF1s90V7WfSBz712eFAynEzyeezPbwU8QBiTpZcHXwQni3IYKvsh7s
- t1iq+gsfnXbPz5AnS598ScZI1oP7OrPSFJkt/z4acEbOQDQs8aUqrd46PV jsdqGvKnXZxzylux29UTNby4jTlz9pNJM+wPrDRmGfchLDUmf6CffaUYCbu4FiId+9+dcTCDvxbABRy1C3OJ8QY7cxfJ+pEZW18fRJ0XCl/fiV/ecAOfB3HsqgTzAn555h0rkFgay0hAvMU/mAW/CFNSIxV397zm749ZNLA0L2dMy1AKuOqH+/B+/ImBfJMDjmdyJQ8WU/OFRuGLdqOd2oZrA1iuPIa+yUYyZkaZfz/emQwpIL1+Q4p1R/OplA4yc301AqruXXUcVDbEB+joHW3hy5FwK5t5OwTKatrSJBkydSF9zdXy98fYzGniRyRA65P0Ix/8J3BYB4edY2/w0Ip/mdYsYQljBY0A==
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+Cc: bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com, ast@kernel.org,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: Update multiple prog_tests
+ to use ASSERT_ macros
+Message-ID:
+ <GV1PR10MB656347ACF4A078EAC2677797E8B7A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+References: <GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <CAEf4Bza4fejyKRCdcq0WwrvZ-p8JbMq0MPQB_BGzaxPGHT2EoQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4Bza4fejyKRCdcq0WwrvZ-p8JbMq0MPQB_BGzaxPGHT2EoQ@mail.gmail.com>
+X-TMN: [IgT1M9sFBSBG7EozLlGnd2SqZnGdBRVN]
+X-ClientProxiedBy: JN3P275CA0019.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:71::13)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231117193702.GA158015@nmj-network>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AS2PR10MB6520:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9196034b-9dcc-4876-9dd4-08dbe7a4a039
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4Ly7ewqE2Uu8M0j3frmYtYTf91oGABZjMv5T8WJyTR3jdANCU5W+1zhf5w0+IeVh25xFJ4OZBJZneZyj9E/2x4/GpG+zYtpynR9bd4/fL4UnJyLfvyAwk9jAW1UIpddeYXebCWI/mr2FtAMfQjknHh0XemDKTe4pv175XHpjoylCieXBQ9OTHmKSSzqH+R1I9XsvMIhi8svalWUqGsWaCG22bJGflsm/LoOmaR11LvqmW4sCtIDLNluGYLpyjLxrfWSzNC2G1cSSTWlOsIjjdZk5QK6Dt/+U4Ga4hnLa3/mGxEaOKPc4trcmSVT1wfCqaIHdjIfKZLXIEVNaVW5S3SpdEupv+87n4B5zUgOyLmLcFgIHlh2P9FPn1LnrWm8/L5Xp08Tc6eGVvc+lO9uJehOC/yFCKR8PJjWPTV2+8f52TUwZteQPhx7kTSv9jXKe3eKIPjP9vB9nwYxgt8AVqRKs3S2gYKAW8mkdd2DPhZNf5e8JBFg9TDPkZZKqlUNtCKCYTqwzU1Yf4oB1hG1ZYpMNipOC+/fvBRtD9u+/1R93QeMfSndlwyzhX2X+bNJk
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?4ypphGV1dwvqPMsuJriQ40SGbjBUY/zBAPnx5UlZ+s2a8jxvw8OKzZKCYxSF?=
+ =?us-ascii?Q?WmE1YX/dp4U1YQQCIv6JD9OzlpSDMX4KfVbY/c7rs0v4kZDLPj5XLWpGRYAr?=
+ =?us-ascii?Q?o3rzESkojp6sbZ2PF9AJ9/3718Sar6YFkfN8DUuu0KqElWZSZBxopD/dJ7zq?=
+ =?us-ascii?Q?Nl+2/1li2nAo5HbCcMMvgbO32GW+O7sHJA+IKdqgaLp2q5pWWBLiP2EjbvSJ?=
+ =?us-ascii?Q?Jg4767fByd1NCe6n42SnsXN2i0n1gqqfISwq33iNketQa4X6aoaA70NhJrUQ?=
+ =?us-ascii?Q?PmDn+LLeOgqLlbwFSeSWC+BGnNQUp3n/eYEg0QOKzR0aDtuGOcyW57djT5mk?=
+ =?us-ascii?Q?S1F+wUfkf9A7KPnJCsIVsfDGY5zXHs0x+Br8xkTAXhqBa0TrDwZfX3dNeeQ1?=
+ =?us-ascii?Q?gmaJX/yoevODHxw1usd5vOeIwRS2bjAaZzc1XT8tHPPxvBaeyZOU+di1SZEa?=
+ =?us-ascii?Q?FvrtjUx0hnwTS1LfE5oi7SCQ7thu75diBBP6YT8lZ/qB3rowixQnEPOYco3a?=
+ =?us-ascii?Q?f+8OqQe5asHGTKbrOle5BH6VH0N3fr3VVc4QNqJse0AUZ4Yk/NpFnCN3cFPp?=
+ =?us-ascii?Q?LVkIgfDG9bEomAlc9G7vDPaw2amE8AaFWaGTQ4h+m5wQ26+o/J8nt+yeQNP0?=
+ =?us-ascii?Q?9xn+KJPvIKBFFL9BIhfbL04+J1M7lAhoPE13M4/sBdoC3Pn+77Utqx/Np/R1?=
+ =?us-ascii?Q?lxWQByuJqJglq0uockM3WyGuGFXtRY0HhxxhoOCk+EZh7CnRbkt37xI13vUf?=
+ =?us-ascii?Q?puiZMXHGXSiU+IxQW2X09YFkI55Tw1wo4Hu20nu3tvGmRbD0GTpPUAJ5Zv5p?=
+ =?us-ascii?Q?bwaZPRvOgmnss9wy3x7BCI4dliYtWnGbSPPRZgqd3W9l/zI79ZifQ7qr6rrS?=
+ =?us-ascii?Q?K/ol62MRRLs4ZiiBM5tvbbuxAErn94U5gcsQu7Goe0Q2tRjc1UfpCKVS6HOp?=
+ =?us-ascii?Q?Zq/Fugvx6JspI7aCDKEIxZkvmP/Q/E6+KOAk2QesuN1Y3NMu1o31nVUbRRfa?=
+ =?us-ascii?Q?9bifPKXjrj8s5Nt4PgQT1H2G356XasbdWpW29RzEKXA168E/8uNr4B/KCiGW?=
+ =?us-ascii?Q?UNEimtrpdhKZ2zqynqjGpeyC3RWIBBT+yPWPSygW6VS9hM0aKLb0vREu65Ko?=
+ =?us-ascii?Q?A1DQbE7PtutniyrP8DSe6i6Vao3e4Zqx90gLHOJY3Sd/XiBsaVTKIxXf1hb+?=
+ =?us-ascii?Q?5ZhS0bcL1hdSccziNIC2SFfCzxR8Y4wlmldezFIkJjnmE5hZjgK+PKgMZ8w?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9196034b-9dcc-4876-9dd4-08dbe7a4a039
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2023 19:37:26.5537
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB6520
 
-On Fri, 2023-11-17 at 11:47 -0500, Andrii Nakryiko wrote:
-[...]
-> > +SEC("?raw_tp")
-> > +__success __log_level(2)
-> > +/* Check that last verified exit from the program visited each
-> > + * callback expected number of times: one visit per callback for each
-> > + * top level bpf_loop call.
-> > + */
-> > +__msg("r1 =3D *(u64 *)(r10 -16)       ; R1_w=3D111111 R10=3Dfp0 fp-16=
-=3D111111")
-> > +/* Ensure that read above is the last one by checking that there are
-> > + * no more reads for ctx.i.
-> > + */
-> > +__not_msg("r1 =3D *(u64 *)(r10 -16)      ; R1_w=3D")
->=20
-> can't you enforce that we don't go above 111111 just by making sure to
-> use r1 - 111111 + 1 as an index into choice_arr()?
->=20
-> We can then simplify the patch set by dropping __not_msg() parts (and
-> can add them separately).
+Hello Andrii,
+On Fri, Nov 17, 2023 at 12:18:40PM -0500, Andrii Nakryiko wrote:
+> 
+> It seems like you introduced a few failures in selftests, please take
+> a look at [0] and fix them, thanks!
+> 
+Thank you for letting me know. I will see what's wrong
+and submit a v2 ASAP.
 
-Well, r1 could be 0 as well, so idx would be out of bounds.
-But I like the idea, it is possible to check that r1 is either 00000,
-100000, ..., 111111 and do something unsafe otherwise.
-Thank you. I'll drop __not_msg() then.
-
-
+Thanks,
+Yuran Pereira
 
