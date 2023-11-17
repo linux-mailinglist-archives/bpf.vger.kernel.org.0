@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-15267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8CF97EF8B0
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 21:31:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B89C7EF8B6
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 21:33:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5E2A1C20A3B
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 20:31:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9FB0B20B0C
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 20:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38FA43161;
-	Fri, 17 Nov 2023 20:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C4EC43AAF;
+	Fri, 17 Nov 2023 20:33:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CaJfk0gx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DOhYAOL6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E3BD189
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 12:31:39 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50a938dda08so3488628e87.3
-        for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 12:31:39 -0800 (PST)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B9CD6D
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 12:33:01 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50970c2115eso3568304e87.1
+        for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 12:33:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700253097; x=1700857897; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700253179; x=1700857979; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Op/AFKqc4vrV8aDpfVFLQsUA6BcpmIXzLmZzySD+mkk=;
-        b=CaJfk0gxvRmWtXhL2MMSGzDMniPkfHC+tV/6Rx66nXjYif+dZ+K5+BA3bCRKoHsf4N
-         VnsySZSZT8Y7df8TZaS1BMyip0n1YVSfIhmdNVBJvmQRnwTVAOFkBzi883vnBR7hL/i3
-         v8c5l43U+QJaukxK2d773MTEO82KvVqajOAuS5LQ9DTF7sQQF/fIz2VBx3KicpWT3rkQ
-         0TzAIzLkwMo2tyePvoeom1kklmKQM6krFvHHzVmO4QZtX/JU2wJDZpknxZI6leHuR5ef
-         eSpMIC9XqlmV5o0Q8WsiGLDidRP4272+Ssd5MkPa0pB+2A7ZAcsQvCN46Yiao9qR3mdE
-         q/Tg==
+        bh=jQXktW7bqjdbRZwOE0dKHiUWqD4Wap4fQoSK+yKyJek=;
+        b=DOhYAOL6jmi3idOu04ELzkLWHqdkwfZNgG91WOZjN1zfTMlq+b8O/xt5+OOaQEDlCU
+         ecAUvX73GZ4t1kwG1M6g0b2mU2zi2/uncmFz9EkJWM5/1uwWTjCELqjff+uShWshGu+q
+         65hjWoHPDnlT8F63ciGG362oHFn65eDioq61mOz69K3IdWZsZziJNOPfsQ46EW6RYUv1
+         kHqPv6XzL4pYRMc3LZPLuvGIicmw6dF25u0j33CvZrRJkHTKMHsVG0fbwGYc2v0U/qEI
+         hVaeGpHwFaVCsBFjAjnycKU9SR5/fF5RmGvw8M+Rd7ZIigGJjN+tN8n8zP9fTkGd9CGZ
+         cXXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700253097; x=1700857897;
+        d=1e100.net; s=20230601; t=1700253179; x=1700857979;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Op/AFKqc4vrV8aDpfVFLQsUA6BcpmIXzLmZzySD+mkk=;
-        b=Ui46xHU7YwcUhGgr9iomdv6YEcCr0We4iKb6nO25aCEFZlmRVCiyg2S+y1aAsXm77C
-         sbyTE3ERXRIqhtaKbQTGFTPiVAnEsrlv/MiaQwaphAag75CUO6I19MPVUkIPZJiwlyU0
-         UfFt5O6vavMJBFihgyt5FY4x0y0s+hEn6X0Bla6oayZmAmj5/zAEbWssEICL5/LQpald
-         77V0UV6AxbqvBo+SG54Tn6ad7j19lxtW9t+/bf3n8PrA0o+gSWp0xoPMtceJIgQB/uzi
-         CPufVnuG7Q2YrNSNrnnIfCAzQbvUNmnwNtH72WmHehRpl4glbrRusA6xkmoCkOzJeZkO
-         q6iw==
-X-Gm-Message-State: AOJu0YzTFhoclZrRRPbymeAq9BwqxXSXp1qTHG7fBnc35dB3BqoiwgmG
-	5of2FYsgwhX/m+CFIIfKeuSpZQsPjH30PQroPMU=
-X-Google-Smtp-Source: AGHT+IGCa1V7jCCBujNy0ghz1pCjF5wXMiIS5qWuyLgkMFVlrx72cvgS+4PHDUq44Uw33bNCFiRPhqGFsRuJZs/x8YM=
-X-Received: by 2002:a05:6512:5ce:b0:50a:40b6:2d32 with SMTP id
- o14-20020a05651205ce00b0050a40b62d32mr426567lfo.54.1700253097284; Fri, 17 Nov
- 2023 12:31:37 -0800 (PST)
+        bh=jQXktW7bqjdbRZwOE0dKHiUWqD4Wap4fQoSK+yKyJek=;
+        b=pCy17hBZjI3yb8t6FJZLdK/uf3tcoaH/xYiM+QyRmiu4yWO+vgWpcK8rb95JqfjwRN
+         Wuq7lgOhHYIRJE1AIP9eLsBAQXfr8Vpi0ECicSG0B1JsBdHUQcNS3D6TrVD5KYTVyOjF
+         /XpThmv7xnWT09BwL2TSM1gKX5VBvvLrrNHz+jSoAeeKKJohZ2JvUF34jQg5x4BS+rBZ
+         HoUQxg5jV0qLJkR2hBtd2JlCSjPfEH7jj/u5HyIqYc6Vtf0K+ZObUxKa0A/tNGDdQ9iz
+         TgzEye2jLvM1JbGC198wwl28POwNxIACKRM4e00YXWPg0o65Q86wtKWWW5jlob6glcP3
+         0/xQ==
+X-Gm-Message-State: AOJu0YzxUTjPvBbkPNpAPnIT3uWzcozGjZGvXOwcdoI+NHlfxFdfbWjS
+	c0XPGXWK2fOY1ux3KiUCAh10Xt6tbvtUgQG/WqQ=
+X-Google-Smtp-Source: AGHT+IFzX7bKvapKKYgGP8fR4wflUyKelxc+x7oTxrygwf8TItqxIK4hckxHbcnbDUH1+/U9TVMppNUfvWmSKtWcYDE=
+X-Received: by 2002:a05:6512:108d:b0:50a:a243:3eb2 with SMTP id
+ j13-20020a056512108d00b0050aa2433eb2mr617876lfg.36.1700253179362; Fri, 17 Nov
+ 2023 12:32:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231116021803.9982-1-eddyz87@gmail.com> <20231116021803.9982-12-eddyz87@gmail.com>
- <CAEf4BzZhEU-h0yfY2WCBfPDjmwOzxxw1a70J4c78Bix34W70QQ@mail.gmail.com> <d6e728aa421b08544b982a0ce60148ef45af7b53.camel@gmail.com>
-In-Reply-To: <d6e728aa421b08544b982a0ce60148ef45af7b53.camel@gmail.com>
+References: <20231116021803.9982-1-eddyz87@gmail.com> <20231116021803.9982-13-eddyz87@gmail.com>
+ <CAEf4BzYd_Dv4fEoPe+n+sRXxHFmYrTs7w45jtYeQByNH521gzA@mail.gmail.com> <6da7c6b9617663daa54ed27d2c1637cc71dfb7a3.camel@gmail.com>
+In-Reply-To: <6da7c6b9617663daa54ed27d2c1637cc71dfb7a3.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 17 Nov 2023 15:31:26 -0500
-Message-ID: <CAEf4BzYHjLdw4xDkoa_r2hBc_RiOtZE78uGcg013GxJ-am0uBw@mail.gmail.com>
-Subject: Re: [PATCH bpf 11/12] selftests/bpf: add __not_msg annotation for
- test_loader based tests
+Date: Fri, 17 Nov 2023 15:32:48 -0500
+Message-ID: <CAEf4BzbNYveHmjxmKN9doBD_yEh6nyEiqQVSSbeh-yMnNJsG8Q@mail.gmail.com>
+Subject: Re: [PATCH bpf 12/12] selftests/bpf: check if max number of bpf_loop
+ iterations is tracked
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
@@ -74,47 +74,39 @@ Content-Transfer-Encoding: quoted-printable
 On Fri, Nov 17, 2023 at 1:53=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
 >
-> On Fri, 2023-11-17 at 11:45 -0500, Andrii Nakryiko wrote:
+> On Fri, 2023-11-17 at 11:47 -0500, Andrii Nakryiko wrote:
 > [...]
-> > I think this implementation has an undesired surprising behavior.
-> > Imagine you have a log like this:
+> > > +SEC("?raw_tp")
+> > > +__success __log_level(2)
+> > > +/* Check that last verified exit from the program visited each
+> > > + * callback expected number of times: one visit per callback for eac=
+h
+> > > + * top level bpf_loop call.
+> > > + */
+> > > +__msg("r1 =3D *(u64 *)(r10 -16)       ; R1_w=3D111111 R10=3Dfp0 fp-1=
+6=3D111111")
+> > > +/* Ensure that read above is the last one by checking that there are
+> > > + * no more reads for ctx.i.
+> > > + */
+> > > +__not_msg("r1 =3D *(u64 *)(r10 -16)      ; R1_w=3D")
 > >
-> > A
-> > C
-> > D
-> > B
+> > can't you enforce that we don't go above 111111 just by making sure to
+> > use r1 - 111111 + 1 as an index into choice_arr()?
 > >
-> >
-> > And you specify
-> >
-> > __msg("A")
-> > __nomsg("B")
-> > __msg("C")
-> > __msg("D")
-> > __msg("B")
-> >
-> > Log matches the spec, right? But your implementation will eagerly rejec=
-t it.
-> >
-> > I think you can implement more coherent behavior if you only strstr()
-> > __msg() specs, skipping __nomsg() first. But on each __msg one, if
-> > successful, you go back and validate that there are no matches for all
-> > __nomsg() specs that you skipped, taking into account matched
-> > positions for current __msg() and last __msg() (or the start of the
-> > log, of course).
-> >
-> > Not sure if I explained clearly, but the idea is to postpone __nomsg()
-> > until we anchor ourselves between two __msg()s. And beginning/end of
-> > verifier log are two other anchoring positions.
+> > We can then simplify the patch set by dropping __not_msg() parts (and
+> > can add them separately).
 >
-> Yes, makes total sense, thank you for spotting it. I can fix this and
-> submit this patch as an unrelated change or just drop it, what would
-> you prefer?
->
->
+> Well, r1 could be 0 as well, so idx would be out of bounds.
+> But I like the idea, it is possible to check that r1 is either 00000,
+> 100000, ..., 111111 and do something unsafe otherwise.
 
-I think it's useful in general, I believe I had few cases where this
-would be helpful. So submitting separately makes sense. But I think
-this patch set doesn't need it if we can validate logic in last patch
-without relying on this feature.
+then why not `return choice_arr[r <=3D 111111 ? (r & 1) : -1];` or
+something along those lines?
+
+> Thank you. I'll drop __not_msg() then.
+
+yep, thanks
+
+>
+>
 
