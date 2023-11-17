@@ -1,175 +1,370 @@
-Return-Path: <bpf+bounces-15249-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15250-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 987617EF68D
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 17:47:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CAD07EF6D6
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 18:14:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F66A2814E3
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 16:47:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4124BB209AD
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 17:14:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AF443EA94;
-	Fri, 17 Nov 2023 16:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b7QnD5/P"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56FB53D3BB;
+	Fri, 17 Nov 2023 17:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3566A4
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 08:47:25 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9c53e8b7cf4so298762866b.1
-        for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 08:47:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700239644; x=1700844444; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NlOa0PxruMfZM0o3nplLblXGAOxXcc5rMqLqO7eouQ4=;
-        b=b7QnD5/Pr9EDbhsH6TkoqNavcL7k47ZlK7Wjs3b1PjdBx15jFNtRhtzuMETBGLzOSm
-         pXnl2QmArZs8+YTbZIX/UanklqhzZP1wgrGi+9FYHDQ6sIh4sIF8vjOZqyHwmkKIFt9g
-         lMogNlfAeOIhAEhCeSsyuOOj3hIwjL+oea0SwQIXuGEVQwy9Uxeova4/9Bm6Q4kgNK9y
-         5iJ1BEl1i/cfk8Qmlh6kDDM0AiV4vRFV3ZFha878mHmjJv8XoKjUiKuUvLKq2mIpD5ZX
-         sq3B0LqbpLSnY0AsedcmrBemMXKABYIiWHG0Vcs8gkC53IBp+IztSNUjV1Qn531gmcd2
-         RuVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700239644; x=1700844444;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NlOa0PxruMfZM0o3nplLblXGAOxXcc5rMqLqO7eouQ4=;
-        b=dsYbXkey3o0uCXsImSi/zDVO9N4eZxaT9ZFKqLSxsNJ9vl2NdwgJa/w8mrqUtA792v
-         vrrnDuL6Di7W/nkM6WGq8VAKaOOYI9C75QAjGHQ4BKBkUoSjrWK/nvbE7K62N7aEXO5u
-         UPz7cr0PZk9VMvj0DZGJ7y0YZ2LNjpuO13byGOXUY3QnzVux5gsp9d9lMIb5EWLKAUsJ
-         LItfu5Pfbc32+5hU8zd0gqA/hSHf8dAzmAdDD8v9o0ThifXMr6HDMDqe7Ya0OFjxt+zE
-         e6Efm7iCgJuiIjkUXcCAdqTUhKXFzJJ8SsambsuW0OXliVU8LSCE1bu3AkEcMelRp1BJ
-         4tug==
-X-Gm-Message-State: AOJu0YzeaTMz+tSZmhXoPP6dZaWCLjNzz63qjtEyS9qJV/0ZucMV0ZNX
-	R2J2alg2fGzB49CiseL2OSeyGyY0RCEnl19tyn8=
-X-Google-Smtp-Source: AGHT+IHCVficRzcVJErSgc/p5PCUgHCP2Z3dKReCNukiZd4Mhqt9/7X73Q7U2rMV5NIOHN4iGJenHz9KXlc5kgH8tUE=
-X-Received: by 2002:a17:906:f8cd:b0:9bf:889e:32a4 with SMTP id
- lh13-20020a170906f8cd00b009bf889e32a4mr14550047ejb.54.1700239644197; Fri, 17
- Nov 2023 08:47:24 -0800 (PST)
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF429D68
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 09:14:26 -0800 (PST)
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AHF5nTH026654
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 09:14:26 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ue785t72s-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 09:14:25 -0800
+Received: from twshared29647.38.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 17 Nov 2023 09:14:23 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id B78EC3BACE23E; Fri, 17 Nov 2023 09:14:08 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next] bpf: rename BPF_F_TEST_SANITY_STRICT to BPF_F_TEST_REG_INVARIANTS
+Date: Fri, 17 Nov 2023 09:14:04 -0800
+Message-ID: <20231117171404.225508-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 472kOJaB90SBA0iHakOyUn9jgy4oNqMf
+X-Proofpoint-GUID: 472kOJaB90SBA0iHakOyUn9jgy4oNqMf
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231116021803.9982-1-eddyz87@gmail.com> <20231116021803.9982-13-eddyz87@gmail.com>
-In-Reply-To: <20231116021803.9982-13-eddyz87@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 17 Nov 2023 11:47:13 -0500
-Message-ID: <CAEf4BzYd_Dv4fEoPe+n+sRXxHFmYrTs7w45jtYeQByNH521gzA@mail.gmail.com>
-Subject: Re: [PATCH bpf 12/12] selftests/bpf: check if max number of bpf_loop
- iterations is tracked
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev, memxor@gmail.com, awerner32@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_16,2023-11-17_01,2023-05-22_02
 
-On Wed, Nov 15, 2023 at 9:18=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> Check that even if bpf_loop() callback simulation does not converge to
-> a specific state, verification could proceed via "brute force"
-> simulation of maximal number of callback calls.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  .../bpf/progs/verifier_iterating_callbacks.c  | 67 +++++++++++++++++++
->  1 file changed, 67 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_iterating_callbac=
-ks.c b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-> index 598c1e984b26..da10ce57da5e 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-> @@ -164,4 +164,71 @@ int unsafe_find_vma(void *unused)
->         return choice_arr[loop_ctx.i];
->  }
->
-> +static int iter_limit_cb(__u32 idx, struct num_context *ctx)
-> +{
-> +       ctx->i++;
-> +       return 0;
-> +}
-> +
-> +SEC("?raw_tp")
-> +__success
-> +int bpf_loop_iter_limit_ok(void *unused)
-> +{
-> +       struct num_context ctx =3D { .i =3D 0 };
-> +
-> +       bpf_loop(1, iter_limit_cb, &ctx, 0);
-> +       return choice_arr[ctx.i];
-> +}
-> +
-> +SEC("?raw_tp")
-> +__failure __msg("invalid access to map value, value_size=3D2 off=3D2 siz=
-e=3D1")
-> +int bpf_loop_iter_limit_overflow(void *unused)
-> +{
-> +       struct num_context ctx =3D { .i =3D 0 };
-> +
-> +       bpf_loop(2, iter_limit_cb, &ctx, 0);
-> +       return choice_arr[ctx.i];
-> +}
-> +
-> +static int iter_limit_level2a_cb(__u32 idx, struct num_context *ctx)
-> +{
-> +       ctx->i +=3D 100;
-> +       return 0;
-> +}
-> +
-> +static int iter_limit_level2b_cb(__u32 idx, struct num_context *ctx)
-> +{
-> +       ctx->i +=3D 10;
-> +       return 0;
-> +}
-> +
-> +static int iter_limit_level1_cb(__u32 idx, struct num_context *ctx)
-> +{
-> +       ctx->i +=3D 1;
-> +       bpf_loop(1, iter_limit_level2a_cb, ctx, 0);
-> +       bpf_loop(1, iter_limit_level2b_cb, ctx, 0);
-> +       return 0;
-> +}
-> +
-> +SEC("?raw_tp")
-> +__success __log_level(2)
-> +/* Check that last verified exit from the program visited each
-> + * callback expected number of times: one visit per callback for each
-> + * top level bpf_loop call.
-> + */
-> +__msg("r1 =3D *(u64 *)(r10 -16)       ; R1_w=3D111111 R10=3Dfp0 fp-16=3D=
-111111")
-> +/* Ensure that read above is the last one by checking that there are
-> + * no more reads for ctx.i.
-> + */
-> +__not_msg("r1 =3D *(u64 *)(r10 -16)      ; R1_w=3D")
+Rename verifier internal flag BPF_F_TEST_SANITY_STRICT to more neutral
+BPF_F_TEST_REG_INVARIANTS. This is a follow up to [0].
 
-can't you enforce that we don't go above 111111 just by making sure to
-use r1 - 111111 + 1 as an index into choice_arr()?
+A few selftests and veristat need to be adjusted in the same patch as
+well.
 
-We can then simplify the patch set by dropping __not_msg() parts (and
-can add them separately).
+  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20231112010609.8=
+48406-5-andrii@kernel.org/
 
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ include/linux/bpf_verifier.h                         |  2 +-
+ include/uapi/linux/bpf.h                             |  2 +-
+ kernel/bpf/syscall.c                                 |  2 +-
+ kernel/bpf/verifier.c                                |  6 +++---
+ tools/include/uapi/linux/bpf.h                       |  2 +-
+ .../selftests/bpf/prog_tests/bpf_verif_scale.c       |  2 +-
+ tools/testing/selftests/bpf/prog_tests/reg_bounds.c  |  2 +-
+ tools/testing/selftests/bpf/progs/verifier_bounds.c  |  4 ++--
+ tools/testing/selftests/bpf/test_loader.c            |  6 +++---
+ tools/testing/selftests/bpf/test_sock_addr.c         |  3 +--
+ tools/testing/selftests/bpf/test_verifier.c          |  2 +-
+ tools/testing/selftests/bpf/testing_helpers.c        |  4 ++--
+ tools/testing/selftests/bpf/veristat.c               | 12 ++++++------
+ 13 files changed, 24 insertions(+), 25 deletions(-)
 
-> +int bpf_loop_iter_limit_nested(void *unused)
-> +{
-> +       struct num_context ctx =3D { .i =3D 0 };
-> +
-> +       bpf_loop(1, iter_limit_level1_cb, &ctx, 0);
-> +       ctx.i *=3D 1000;
-> +       bpf_loop(1, iter_limit_level1_cb, &ctx, 0);
-> +       return choice_arr[ctx.i % 2];
-> +}
-> +
->  char _license[] SEC("license") =3D "GPL";
-> --
-> 2.42.0
->
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 402b6bc44a1b..52a4012b8255 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -602,7 +602,7 @@ struct bpf_verifier_env {
+ 	int stack_size;			/* number of states to be processed */
+ 	bool strict_alignment;		/* perform strict pointer alignment checks */
+ 	bool test_state_freq;		/* test verifier with different pruning frequency =
+*/
+-	bool test_sanity_strict;	/* fail verification on sanity violations */
++	bool test_reg_invariants;	/* fail verification on register invariants vio=
+lations */
+ 	struct bpf_verifier_state *cur_state; /* current verifier state */
+ 	struct bpf_verifier_state_list **explored_states; /* search pruning optim=
+ization */
+ 	struct bpf_verifier_state_list *free_list;
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 8a5855fcee69..7a5498242eaa 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1201,7 +1201,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_XDP_DEV_BOUND_ONLY	(1U << 6)
+=20
+ /* The verifier internal test flag. Behavior is undefined */
+-#define BPF_F_TEST_SANITY_STRICT	(1U << 7)
++#define BPF_F_TEST_REG_INVARIANTS	(1U << 7)
+=20
+ /* link_create.kprobe_multi.flags used in LINK_CREATE command for
+  * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index f266e03ba342..5e43ddd1b83f 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2574,7 +2574,7 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr=
+_t uattr, u32 uattr_size)
+ 				 BPF_F_TEST_RND_HI32 |
+ 				 BPF_F_XDP_HAS_FRAGS |
+ 				 BPF_F_XDP_DEV_BOUND_ONLY |
+-				 BPF_F_TEST_SANITY_STRICT))
++				 BPF_F_TEST_REG_INVARIANTS))
+ 		return -EINVAL;
+=20
+ 	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) &&
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 59505881e7a7..7c3461b89513 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2608,14 +2608,14 @@ static int reg_bounds_sanity_check(struct bpf_verif=
+ier_env *env,
+=20
+ 	return 0;
+ out:
+-	verbose(env, "REG SANITY VIOLATION (%s): %s u64=3D[%#llx, %#llx] "
++	verbose(env, "REG INVARIANTS VIOLATION (%s): %s u64=3D[%#llx, %#llx] "
+ 		"s64=3D[%#llx, %#llx] u32=3D[%#x, %#x] s32=3D[%#x, %#x] var_off=3D(%#llx=
+, %#llx)\n",
+ 		ctx, msg, reg->umin_value, reg->umax_value,
+ 		reg->smin_value, reg->smax_value,
+ 		reg->u32_min_value, reg->u32_max_value,
+ 		reg->s32_min_value, reg->s32_max_value,
+ 		reg->var_off.value, reg->var_off.mask);
+-	if (env->test_sanity_strict)
++	if (env->test_reg_invariants)
+ 		return -EFAULT;
+ 	__mark_reg_unbounded(reg);
+ 	return 0;
+@@ -20791,7 +20791,7 @@ int bpf_check(struct bpf_prog **prog, union bpf_att=
+r *attr, bpfptr_t uattr, __u3
+=20
+ 	if (is_priv)
+ 		env->test_state_freq =3D attr->prog_flags & BPF_F_TEST_STATE_FREQ;
+-	env->test_sanity_strict =3D attr->prog_flags & BPF_F_TEST_SANITY_STRICT;
++	env->test_reg_invariants =3D attr->prog_flags & BPF_F_TEST_REG_INVARIANTS;
+=20
+ 	env->explored_states =3D kvcalloc(state_htab_size(env),
+ 				       sizeof(struct bpf_verifier_state_list *),
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 8a5855fcee69..7a5498242eaa 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1201,7 +1201,7 @@ enum bpf_perf_event_type {
+ #define BPF_F_XDP_DEV_BOUND_ONLY	(1U << 6)
+=20
+ /* The verifier internal test flag. Behavior is undefined */
+-#define BPF_F_TEST_SANITY_STRICT	(1U << 7)
++#define BPF_F_TEST_REG_INVARIANTS	(1U << 7)
+=20
+ /* link_create.kprobe_multi.flags used in LINK_CREATE command for
+  * BPF_TRACE_KPROBE_MULTI attach type to create return probe.
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/too=
+ls/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+index 3f2d70831873..e770912fc1d2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
+@@ -35,7 +35,7 @@ static int check_load(const char *file, enum bpf_prog_typ=
+e type)
+ 	}
+=20
+ 	bpf_program__set_type(prog, type);
+-	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32 | BPF_F_TEST_SANITY_STRI=
+CT);
++	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIA=
+NTS);
+ 	bpf_program__set_log_level(prog, 4 | extra_prog_load_log_flags);
+=20
+ 	err =3D bpf_object__load(obj);
+diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/te=
+sting/selftests/bpf/prog_tests/reg_bounds.c
+index fe0cb906644b..7a8b0bf0a7f8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+@@ -838,7 +838,7 @@ static int load_range_cmp_prog(struct range x, struct r=
+ange y, enum op op,
+ 		.log_level =3D 2,
+ 		.log_buf =3D log_buf,
+ 		.log_size =3D log_sz,
+-		.prog_flags =3D BPF_F_TEST_SANITY_STRICT,
++		.prog_flags =3D BPF_F_TEST_REG_INVARIANTS,
+ 	);
+=20
+ 	/* ; skip exit block below
+diff --git a/tools/testing/selftests/bpf/progs/verifier_bounds.c b/tools/te=
+sting/selftests/bpf/progs/verifier_bounds.c
+index 0c1460936373..ec430b71730b 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_bounds.c
++++ b/tools/testing/selftests/bpf/progs/verifier_bounds.c
+@@ -965,7 +965,7 @@ l0_%=3D:	r0 =3D 0;						\
+ SEC("xdp")
+ __description("bound check with JMP_JSLT for crossing 64-bit signed bounda=
+ry")
+ __success __retval(0)
+-__flag(!BPF_F_TEST_SANITY_STRICT) /* known sanity violation */
++__flag(!BPF_F_TEST_REG_INVARIANTS) /* known invariants violation */
+ __naked void crossing_64_bit_signed_boundary_2(void)
+ {
+ 	asm volatile ("					\
+@@ -1047,7 +1047,7 @@ l0_%=3D:	r0 =3D 0;						\
+ SEC("xdp")
+ __description("bound check with JMP32_JSLT for crossing 32-bit signed boun=
+dary")
+ __success __retval(0)
+-__flag(!BPF_F_TEST_SANITY_STRICT) /* known sanity violation */
++__flag(!BPF_F_TEST_REG_INVARIANTS) /* known invariants violation */
+ __naked void crossing_32_bit_signed_boundary_2(void)
+ {
+ 	asm volatile ("					\
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/self=
+tests/bpf/test_loader.c
+index 57e27b1a73a6..a350ecdfba4a 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -179,7 +179,7 @@ static int parse_test_spec(struct test_loader *tester,
+ 	memset(spec, 0, sizeof(*spec));
+=20
+ 	spec->prog_name =3D bpf_program__name(prog);
+-	spec->prog_flags =3D BPF_F_TEST_SANITY_STRICT; /* by default be strict */
++	spec->prog_flags =3D BPF_F_TEST_REG_INVARIANTS; /* by default be strict */
+=20
+ 	btf =3D bpf_object__btf(obj);
+ 	if (!btf) {
+@@ -280,8 +280,8 @@ static int parse_test_spec(struct test_loader *tester,
+ 				update_flags(&spec->prog_flags, BPF_F_SLEEPABLE, clear);
+ 			} else if (strcmp(val, "BPF_F_XDP_HAS_FRAGS") =3D=3D 0) {
+ 				update_flags(&spec->prog_flags, BPF_F_XDP_HAS_FRAGS, clear);
+-			} else if (strcmp(val, "BPF_F_TEST_SANITY_STRICT") =3D=3D 0) {
+-				update_flags(&spec->prog_flags, BPF_F_TEST_SANITY_STRICT, clear);
++			} else if (strcmp(val, "BPF_F_TEST_REG_INVARIANTS") =3D=3D 0) {
++				update_flags(&spec->prog_flags, BPF_F_TEST_REG_INVARIANTS, clear);
+ 			} else /* assume numeric value */ {
+ 				err =3D parse_int(val, &flags, "test prog flags");
+ 				if (err)
+diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing/s=
+elftests/bpf/test_sock_addr.c
+index 878c077e0fa7..b0068a9d2cfe 100644
+--- a/tools/testing/selftests/bpf/test_sock_addr.c
++++ b/tools/testing/selftests/bpf/test_sock_addr.c
+@@ -679,8 +679,7 @@ static int load_path(const struct sock_addr_test *test,=
+ const char *path)
+=20
+ 	bpf_program__set_type(prog, BPF_PROG_TYPE_CGROUP_SOCK_ADDR);
+ 	bpf_program__set_expected_attach_type(prog, test->expected_attach_type);
+-	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32);
+-	bpf_program__set_flags(prog, BPF_F_TEST_SANITY_STRICT);
++	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIA=
+NTS);
+=20
+ 	err =3D bpf_object__load(obj);
+ 	if (err) {
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/se=
+lftests/bpf/test_verifier.c
+index 4992022f3137..f36e41435be7 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -1588,7 +1588,7 @@ static void do_test_single(struct bpf_test *test, boo=
+l unpriv,
+ 	if (fixup_skips !=3D skips)
+ 		return;
+=20
+-	pflags =3D BPF_F_TEST_RND_HI32 | BPF_F_TEST_SANITY_STRICT;
++	pflags =3D BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS;
+ 	if (test->flags & F_LOAD_WITH_STRICT_ALIGNMENT)
+ 		pflags |=3D BPF_F_STRICT_ALIGNMENT;
+ 	if (test->flags & F_NEEDS_EFFICIENT_UNALIGNED_ACCESS)
+diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/=
+selftests/bpf/testing_helpers.c
+index 9786a94a666c..d2458c1b1671 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.c
++++ b/tools/testing/selftests/bpf/testing_helpers.c
+@@ -276,7 +276,7 @@ int bpf_prog_test_load(const char *file, enum bpf_prog_=
+type type,
+ 	if (type !=3D BPF_PROG_TYPE_UNSPEC && bpf_program__type(prog) !=3D type)
+ 		bpf_program__set_type(prog, type);
+=20
+-	flags =3D bpf_program__flags(prog) | BPF_F_TEST_RND_HI32 | BPF_F_TEST_SAN=
+ITY_STRICT;
++	flags =3D bpf_program__flags(prog) | BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG=
+_INVARIANTS;
+ 	bpf_program__set_flags(prog, flags);
+=20
+ 	err =3D bpf_object__load(obj);
+@@ -299,7 +299,7 @@ int bpf_test_load_program(enum bpf_prog_type type, cons=
+t struct bpf_insn *insns,
+ {
+ 	LIBBPF_OPTS(bpf_prog_load_opts, opts,
+ 		.kern_version =3D kern_version,
+-		.prog_flags =3D BPF_F_TEST_RND_HI32 | BPF_F_TEST_SANITY_STRICT,
++		.prog_flags =3D BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS,
+ 		.log_level =3D extra_prog_load_log_flags,
+ 		.log_buf =3D log_buf,
+ 		.log_size =3D log_buf_sz,
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftes=
+ts/bpf/veristat.c
+index 609fd9753af0..1d418d66e375 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -145,7 +145,7 @@ static struct env {
+ 	bool debug;
+ 	bool quiet;
+ 	bool force_checkpoints;
+-	bool strict_range_sanity;
++	bool force_reg_invariants;
+ 	enum resfmt out_fmt;
+ 	bool show_version;
+ 	bool comparison_mode;
+@@ -225,8 +225,8 @@ static const struct argp_option opts[] =3D {
+ 	{ "filter", 'f', "FILTER", 0, "Filter expressions (or @filename for file =
+with expressions)." },
+ 	{ "test-states", 't', NULL, 0,
+ 	  "Force frequent BPF verifier state checkpointing (set BPF_F_TEST_STATE_=
+FREQ program flag)" },
+-	{ "test-sanity", 'r', NULL, 0,
+-	  "Force strict BPF verifier register sanity behavior (BPF_F_TEST_SANITY_=
+STRICT program flag)" },
++	{ "test-reg-invariants", 'r', NULL, 0,
++	  "Force BPF verifier failure on register invariant violation (BPF_F_TEST=
+_REG_INVARIANTS program flag)" },
+ 	{},
+ };
+=20
+@@ -299,7 +299,7 @@ static error_t parse_arg(int key, char *arg, struct arg=
+p_state *state)
+ 		env.force_checkpoints =3D true;
+ 		break;
+ 	case 'r':
+-		env.strict_range_sanity =3D true;
++		env.force_reg_invariants =3D true;
+ 		break;
+ 	case 'n':
+ 		errno =3D 0;
+@@ -1028,8 +1028,8 @@ static int process_prog(const char *filename, struct =
+bpf_object *obj, struct bpf
+=20
+ 	if (env.force_checkpoints)
+ 		bpf_program__set_flags(prog, bpf_program__flags(prog) | BPF_F_TEST_STATE=
+_FREQ);
+-	if (env.strict_range_sanity)
+-		bpf_program__set_flags(prog, bpf_program__flags(prog) | BPF_F_TEST_SANIT=
+Y_STRICT);
++	if (env.force_reg_invariants)
++		bpf_program__set_flags(prog, bpf_program__flags(prog) | BPF_F_TEST_REG_I=
+NVARIANTS);
+=20
+ 	err =3D bpf_object__load(obj);
+ 	env.progs_processed++;
+--=20
+2.34.1
+
 
