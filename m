@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-15221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD5E7EEC64
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 07:52:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B49AE7EEC7B
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 08:09:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5AC441C20AC4
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 06:51:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E8421F255D3
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 07:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8066FD52F;
-	Fri, 17 Nov 2023 06:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CDF1DDB6;
+	Fri, 17 Nov 2023 07:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yz94nh4f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MSqStNsR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7494EB7;
-	Thu, 16 Nov 2023 22:51:48 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6c4d06b6ddaso1529025b3a.3;
-        Thu, 16 Nov 2023 22:51:48 -0800 (PST)
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A84194;
+	Thu, 16 Nov 2023 23:09:13 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc34c3420bso15078725ad.3;
+        Thu, 16 Nov 2023 23:09:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700203908; x=1700808708; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700204953; x=1700809753; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fhWs88U6MPRZe0S+hAPo0cZxqSNW0WDEnXMqzKp3mWQ=;
-        b=Yz94nh4fgnGLp/LagyHfLlissEbtO190eMIO53Q7U4UbZrfa+6wKA0uw40iZNp6NdG
-         EmGaFilYxxaxPWXFYfNA+zmU7Y+vzgcvRzLjIWCmSaJYAIyiEV9PJlABgctRsvsbue4U
-         AILmx/Nnu2KfRrHLqI2zRRPx0pGDmg78GyCz5gr9JXtGjRAgvRlgst6Ayhuc3ht8ZVR3
-         4NR79TXqV2acexx2udOK48m8Q38ttQ3cWToeVktlsFMjFKVvKx13LEFHZkLcnt4DCj7i
-         lKaz5NitYDvhGEp92HNVk5dcZFfGR0n5LQlWnzShc5urq4z+HBbsYqedIYI29ANIyb4T
-         MWRA==
+        bh=oKGrB53cKKY0Owh0a3XvEKXkqzVrBqUCTPJE4dZj0yw=;
+        b=MSqStNsR9OGuRwnx+vkeGmhTNUHRLp1xe3doP8S6nQtExpgFpWv2meHAGtGlrBxkuA
+         GUlo5gKoSJSIu66+flxyLg0B9Zxur7j87Vz24uEOYiYEOz2NiMdECwAYM6Aq9rwiM6E0
+         lRhMxIePX6ZMvN5NsjgN3hdJIA6ax3jg4jocOqFDPo0eb0zba5R2l+2asG8+8I5Ulh8w
+         Ia+Qih6TnI6Fb2Z0TaBSGHkSYpDPC7Gl0ioqBQTVaYYA+C+/zFM16EDIdA/DayKQrbEB
+         Q12wcAVpWkK4mP88+PjUBqefpZ8NSxHe8RAlVJuGqLRfGz4Dlu83M+wxSoWCnzSEeYEV
+         huGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700203908; x=1700808708;
+        d=1e100.net; s=20230601; t=1700204953; x=1700809753;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=fhWs88U6MPRZe0S+hAPo0cZxqSNW0WDEnXMqzKp3mWQ=;
-        b=nWwvTdYf7HLw8schrp97DMGJx24g7og4C2vWYX4Qi3XLeFwWA6MLxah6TXUcHfkxbk
-         JueQTpFie4cxscmxqsjnMEpIoE8kalQrHKGaTvyJJCjwXJMS0djGVzCSajHna1HanMEe
-         9Buc8FQcKu8QqpweXvoewv6qBXoyPWESNyCelIyEnoZtfoLigBUHTMKkxV9J4Y41Dvfv
-         OZZqHFGWPZaCPsS1+6IHPtzhJNb+ccKj+UttBv6W2sDZTEaVj7NLV1kWZibEeLLSBCVx
-         OVigVgoFRjazciZIb0V6G72ow8b4f15fUjxtHklmuLuTEA+W95cpLRap3VjAjGUKrPud
-         uslA==
-X-Gm-Message-State: AOJu0YwNrIZ1FFeFmRjDfVgI1Nuhjbgy2tcCdiHS6fFIpgAoEzJc4lMz
-	KDXq5eqU+VagGmgWpAn7ArE=
-X-Google-Smtp-Source: AGHT+IHZ/ljki98Dp5EMoOIgFmx0y22inHV+Gz4sRXRxbMhuIMXbK4kDDBpkquAHF0umEFE2CQ2LAA==
-X-Received: by 2002:a05:6a20:6a92:b0:187:ab4:19b9 with SMTP id bi18-20020a056a206a9200b001870ab419b9mr10692294pzb.35.1700203907835;
-        Thu, 16 Nov 2023 22:51:47 -0800 (PST)
+        bh=oKGrB53cKKY0Owh0a3XvEKXkqzVrBqUCTPJE4dZj0yw=;
+        b=sMYtQ2PHpvO2BiPmZzttUPMkmdLLsAINAHpx0WCukRyHVfHY4psr7TJ3h1B4wHQUTH
+         fKeRdow5Iqp3r+9Uve066x2PMDQJYYS+97koNnXxd6ioY/MOGRSGuf2jX0ZCm6qhbNQe
+         zyk0hcvqVgl3cP/CA/XT5ykavqXKr+gZiMBcekmfQTzpA5kvArl98dFT/28YRDC5g4T1
+         LUNylqgGBDlU+2WwpAc1yOuwnRxANSlYfj/2f2hVJEKvlh6EpofbqtC7ESDmItfbLnkk
+         uMqmO7oRiEJ8DepU/r4Y2E5kGRmpMZ0tOucz+ZXWLShnjoS1h5z5LqoqqK2nR+4hbNU5
+         tbKA==
+X-Gm-Message-State: AOJu0Yy5TbuHhkPnU5CaQvIVSCP6AEVWoe7c78Y8V7O/Ye0jkSdxkpuO
+	Cexe72kM/4hR5GpFajjnkeI=
+X-Google-Smtp-Source: AGHT+IHUP9H2HU25w7abrLgLF04fFn3SPDzr6faUfmJDYOl+TgAZp6hmU/YvbWT3o+QdiKsh2vE+CA==
+X-Received: by 2002:a17:902:8542:b0:1c3:1f0c:fb82 with SMTP id d2-20020a170902854200b001c31f0cfb82mr9176199plo.41.1700204952839;
+        Thu, 16 Nov 2023 23:09:12 -0800 (PST)
 Received: from localhost ([2605:59c8:148:ba10:377e:7905:3027:d8fd])
-        by smtp.gmail.com with ESMTPSA id bj9-20020a170902850900b001b9e9edbf43sm696908plb.171.2023.11.16.22.51.45
+        by smtp.gmail.com with ESMTPSA id u18-20020a170902e5d200b001b8b2a6c4a4sm738973plf.172.2023.11.16.23.09.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 22:51:46 -0800 (PST)
-Date: Thu, 16 Nov 2023 22:51:45 -0800
+        Thu, 16 Nov 2023 23:09:12 -0800 (PST)
+Date: Thu, 16 Nov 2023 23:09:10 -0800
 From: John Fastabend <john.fastabend@gmail.com>
 To: Jamal Hadi Salim <jhs@mojatatu.com>, 
  netdev@vger.kernel.org
@@ -77,12 +77,11 @@ Cc: deb.chatterjee@intel.com,
  khalidm@nvidia.com, 
  toke@redhat.com, 
  mattyk@nvidia.com
-Message-ID: <65570d81e9db_55d732089f@john.notmuch>
-In-Reply-To: <20231116145948.203001-11-jhs@mojatatu.com>
+Message-ID: <65571196cff83_55d7320865@john.notmuch>
+In-Reply-To: <20231116145948.203001-14-jhs@mojatatu.com>
 References: <20231116145948.203001-1-jhs@mojatatu.com>
- <20231116145948.203001-11-jhs@mojatatu.com>
-Subject: RE: [PATCH net-next v8 10/15] p4tc: add action template create,
- update, delete, get, flush and dump
+ <20231116145948.203001-14-jhs@mojatatu.com>
+Subject: RE: [PATCH net-next v8 13/15] p4tc: add set of P4TC table kfuncs
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,153 +93,79 @@ Content-Type: text/plain;
 Content-Transfer-Encoding: 7bit
 
 Jamal Hadi Salim wrote:
-> This commit allows users to create, update, delete, get, flush and dump
-> dynamic action kinds based on P4 action definition.
-> 
-> At the moment dynamic actions are tied to P4 programs only and cannot be
-> used outside of a P4 program definition.
-> 
-> Visualize the following action in a P4 program:
-> 
-> action ipv4_forward(@tc_type("macaddr) bit<48> dstAddr, @tc_type("dev") bit<8> port)
-> {
->      // Action code (generated by the compiler)
+> We add an initial set of kfuncs to allow interactions from eBPF programs
+> to the P4TC domain.
+>
 
-So this is BPF or what?
+If you just use bpf maps then you get all the bpf map type for
+free and you get the bpf_map_* ops from BPF side.
 
-> }
-> 
-> The above is an action called ipv4_forward which receives as parameters
-> a bit<48> dstAddr (a mac address) and a bit<8> port (something close to
-> ifindex).
-> 
-> which is invoked on a P4 table match as such:
-> 
-> table mytable {
->         key = {
->             hdr.ipv4.dstAddr @tc_type("ipv4"): lpm;
->         }
-> 
->         actions = {
->             ipv4_forward;
->             drop;
->             NoAction;
->         }
-> 
->         size = 1024;
-> }
-> 
-> We don't have an equivalent built in "ipv4_forward" action in TC. So we
-> create this action dynamically.
-> 
-> The mechanics of dynamic actions follow the CRUD semantics.
-> 
-> ___DYNAMIC ACTION KIND CREATION___
-> 
-> In this stage we issue the creation command for the dynamic action which
-> specifies the action name, its ID, parameters and the parameter types.
-> So for the ipv4_forward action, the creation would look something like
-> this:
-> 
-> tc p4template create action/aP4proggie/ipv4_forward \
->   param dstAddr type macaddr id 1 param port type dev id 2
-> 
-> Note1: Although the P4 program defined dstAddr as type bit48 we use our
-> type called macaddr (likewise for port) - see commit on p4 types for
-> details.
-> 
-> Note2: All the template commands (tc p4template) are generated by the
-> p4c compiler.
-> 
-> Note that in the template creation op we usually just specify the action
-> name, the parameters and their respective types. Also see that we specify
-> a pipeline name during the template creation command. As an example, the
-> above command creates an action template that is bounded to
-> pipeline or program named aP4proggie.
-> 
-> Note, In P4, actions are assumed to pre-exist and have an upper bound
-> number of instances. Typically if you have 1M table entries you want to allocate
-> enough action instances to cover the 1M entries. However, this is a big waste
-> waste of memory if the action instances are not in use. So for our case, we allow
-> the user to specify a minimal amount of actions instances in the template and then
-> if more dynamic action instances are needed then they will be added on
-> demand as in the current approach with tc filter-action relationship.
-> For example, if one were to create the action ipv4_forward preallocating
-> 128 instances, one would issue the following command:
-> 
-> tc p4template create action/aP4proggie/ipv4_forward num_prealloc 128 \
->   param dstAddr type macaddr id 1 param port type dev id 2
-> 
-> By default, 16 action instances will be preallocated.
-> If the user wishes to have more actions instances, they will have to be
-> created individually by the control plane using the tc actions command.
-> For example:
-> 
-> tc actions add action aP4proggie/ipv4_forward \
-> param dstAddr AA:BB:CC:DD:EE:DD param port eth1
-> 
-> Only then they can issue a table entry creation command using this newly
-> created action instance.
-> 
-> Note, this does not disqualify a user from binding to an existing action
-> instances. For example:
-> 
-> tc p4ctrl create aP4proggie/table/mycontrol/mytable \
->    srcAddr 10.10.10.0/24 action ipv4_forward index 1
-> 
-> ___ACTION KIND ACTIVATION___
-> 
-> Once we provided all the necessary information for the new dynamic action,
-> we can go to the final stage, which is action activation. In this stage,
-> we activate the dynamic action and make it available for instantiation.
-> To activate the action template, we issue the following command:
-> 
-> tc p4template update action aP4proggie/ipv4_forward state active
-> 
-> After the above the command, the action is ready to be instantiated.
-> 
-> ___RUNTIME___
-> 
-> This next section deals with the runtime part of action templates, which
-> handle action template instantiation and binding.
-> 
-> To instantiate a new action that was created from a template, we use the
-> following command:
-> 
-> tc actions add action aP4proggie/ipv4_forward \
-> param dstAddr AA:BB:CC:DD:EE:FF param port eth0 index 1
-> 
-> Observe these are the same semantics as what tc today already provides
-> with a caveat that we have a keyword "param" to precede the appropriate
-> parameters - as such specifying the index is optional (kernel provides
-> one when unspecified).
-> 
-> As previously stated, we refer to the action by it's "full name"
-> (pipeline_name/action_name). Here we are creating an instance of the
-> ipv4_forward action specifying as parameter values AA:BB:CC:DD:EE:FF for
-> dstAddr and eth0 for port. We can create as many instances for action
-> templates as we wish.
-> 
-> To bind the above instantiated action to a table entry, you can do use the
-> same classical approach used to bind ordinary actions to filters, for
-> example:
-> 
-> tc p4ctrl create aP4proggie/table/mycontrol/mytable \
->    srcAddr 10.10.10.0/24 action ipv4_forward index 1
-> 
-> The above command will bind our newly instantiated action to a table
-> entry which is executed if there's a match.
-> 
-> Of course one could have created the table entry as:
-> 
-> tc p4ctrl create aP4proggie/table/mycontrol/mytable \
-> srcAddr 10.10.10.0/24 \
-> action ipv4_forward param dstAddr AA:BB:CC:DD:EE:FF param port eth0
-> 
-> Actions from other P4 control blocks (in the same pipeline) might be
-> referenced as the action index is global within a pipeline.
-> 
+I don't see any use for this duplication.
 
-Where did what the action actually does get defined? It looks like
-a label at this point, but without code?
+> - bpf_p4tc_tbl_read: Used to lookup a table entry from a BPF
+> program installed in TC. To find the table entry we take in an skb, the
+> pipeline ID, the table ID, a key and a key size.
+> We use the skb to get the network namespace structure where all the
+> pipelines are stored. After that we use the pipeline ID and the table
+> ID, to find the table. We then use the key to search for the entry.
+> We return an entry on success and NULL on failure.
+> 
+> - xdp_p4tc_tbl_read: Used to lookup a table entry from a BPF
+> program installed in XDP. To find the table entry we take in an xdp_md,
+> the pipeline ID, the table ID, a key and a key size.
+> We use struct xdp_md to get the network namespace structure where all
+> the pipelines are stored. After that we use the pipeline ID and the table
+> ID, to find the table. We then use the key to search for the entry.
+> We return an entry on success and NULL on failure.
+> 
+> - bpf_p4tc_entry_create: Used to create a table entry from a BPF
+> program installed in TC. To create the table entry we take an skb, the
+> pipeline ID, the table ID, a key and its size, and an action which will
+> be associated with the new entry.
+> We return 0 on success and a negative errno on failure
+> 
+> - xdp_p4tc_entry_create: Used to create a table entry from a BPF
+> program installed in XDP. To create the table entry we take an xdp_md, the
+> pipeline ID, the table ID, a key and its size, and an action which will
+> be associated with the new entry.
+> We return 0 on success and a negative errno on failure
+> 
+> - bpf_p4tc_entry_create_on_miss: conforms to PNA "add on miss".
+> First does a lookup using the passed key and upon a miss will add the entry
+> to the table.
+> We return 0 on success and a negative errno on failure
+> 
+> - xdp_p4tc_entry_create_on_miss: conforms to PNA "add on miss".
+> First does a lookup using the passed key and upon a miss will add the entry
+> to the table.
+> We return 0 on success and a negative errno on failure
+> 
+> - bpf_p4tc_entry_update: Used to update a table entry from a BPF
+> program installed in TC. To update the table entry we take an skb, the
+> pipeline ID, the table ID, a key and its size, and an action which will
+> be associated with the new entry.
+> We return 0 on success and a negative errno on failure
+> 
+> - xdp_p4tc_entry_update: Used to update a table entry from a BPF
+> program installed in XDP. To update the table entry we take an xdp_md, the
+> pipeline ID, the table ID, a key and its size, and an action which will
+> be associated with the new entry.
+> We return 0 on success and a negative errno on failure
+> 
+> - bpf_p4tc_entry_delete: Used to delete a table entry from a BPF
+> program installed in TC. To delete the table entry we take an skb, the
+> pipeline ID, the table ID, a key and a key size.
+> We return 0 on success and a negative errno on failure
+> 
+> - xdp_p4tc_entry_delete: Used to delete a table entry from a BPF
+> program installed in XDP. To delete the table entry we take an xdp_md, the
+> pipeline ID, the table ID, a key and a key size.
+> We return 0 on success and a negative errno on failure
+> 
+> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> ---
 
