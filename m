@@ -1,331 +1,326 @@
-Return-Path: <bpf+bounces-15235-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15236-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5E0C7EF468
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 15:27:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A5E17EF4EA
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 16:11:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 050911C20A65
-	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 14:27:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFDC81F260AD
+	for <lists+bpf@lfdr.de>; Fri, 17 Nov 2023 15:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D2636B09;
-	Fri, 17 Nov 2023 14:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4AE037153;
+	Fri, 17 Nov 2023 15:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IO4gOZch"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="IhdAyDwm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B6511D;
-	Fri, 17 Nov 2023 06:26:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700231211; x=1731767211;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=EFhXml7CVHscFI/zYp0FSrO1a227NHsPRizlqOOAmuU=;
-  b=IO4gOZchsrHyn6hJMXD4cwnxACAJPC/cFn4siNkoNYJGNSOY+K/88YpD
-   cwD0Nkipdr77AB0NZwOmZCItWdD0PLwa/JTkzl/gE/ARBizJipf7ILOVy
-   gbu0ia902ArpE/wXP3klPbtEiSFY2Fj7DjrDrYPVakA5szfwnmEF89tCd
-   d206zlROVE9V9izHV0vKYqMWW+ArxQ7+3CGwVwmbZAkhXp7E9PN729LrU
-   lhavBYTX+ec1ANIyyV28Zfw545ameONuqDglWfQ+PJ9IQEEGwxMat7tsO
-   jj7rukSb23sr2kWLvM40Zs7g6yUpPAVPf5/d3VkQrikFfRjbrimhdo7ou
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="9966525"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="9966525"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 06:26:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="1097109961"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="1097109961"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Nov 2023 06:26:51 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 17 Nov 2023 06:26:50 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Fri, 17 Nov 2023 06:26:50 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Fri, 17 Nov 2023 06:26:49 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BPUUeRtcKh0iOz3QwBKSG4FxwjTRmb/hYSvi4blCGtKA5Hzp637LoXfuMVBb2Fbsf5Ab9Aw6s723KD4exjbrxIx8ckCRXG3Jdodx70XfGszTI49ANYqhPcuNODTxtfDDcdqNk8aIGN9if+orl/0S5mY+oITdumgmdlTMvFxh8Vqo+CV55iQxAOl0al06LNSQd0BdpCizeYwTNNO7xxZ4INDvb68HXNL+iOUKuFNBbzaNmocSxqTLuCzxsRyfjMNOdVg2oENEukWnN7tc17V6XONRvWL1Wd9pf+oYLocOFTqKxRx19SbOSkGwlU9KnilAn6jjzOqJIhcyzSVDRlqJ9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sQ2cOGHLs+LzfKQ05Ewk5b5iM32qdNjEAnCeK+KHM+Y=;
- b=SvjtdtPJ0LOBFX5YMbZbXlNmim5QuiJ7M5Xz8W5QpQ/7aRQrObngTcGuM5ay+dNVuo17ccsUNtXyuQ7VVQS/ZetP07LA+OeRIhsm9tUIK3eb/xEQ9VrKFr7i1E6lvGgeLYCRFsChjrL88n3H9mnUH3sIMRdNRD3g5aKNS8eigqbnm6LXlhLbHhKB+3x41uNwYe9jRkI2JoTXl1a1GaOCYtoE3d/pE+2dF7zOn5eDrLT+D2XoMdFfbEpI8OudtL5QF7/LBwlsSE8Bh4+YvNVprepPVMT2wuNRTGNBf+JYYMaEW3SJ9kgPcNCOwiZzX0/aop4J+mNpWJeDzJU4wSUgyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
- by SJ1PR11MB6275.namprd11.prod.outlook.com (2603:10b6:a03:456::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.20; Fri, 17 Nov
- 2023 14:26:45 +0000
-Received: from SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::f37d:cbd6:9df8:d06d]) by SN7PR11MB7540.namprd11.prod.outlook.com
- ([fe80::f37d:cbd6:9df8:d06d%7]) with mapi id 15.20.6977.029; Fri, 17 Nov 2023
- 14:26:45 +0000
-Date: Fri, 17 Nov 2023 15:26:12 +0100
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-CC: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
-	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
-	<haoluo@google.com>, <jolsa@kernel.org>, David Ahern <dsahern@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>, Willem de Bruijn <willemb@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, Anatoly Burakov
-	<anatoly.burakov@intel.com>, Alexander Lobakin <alexandr.lobakin@intel.com>,
-	Magnus Karlsson <magnus.karlsson@gmail.com>, Maryam Tahhan
-	<mtahhan@redhat.com>, <xdp-hints@xdp-project.net>, <netdev@vger.kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Alexei Starovoitov
-	<alexei.starovoitov@gmail.com>, Tariq Toukan <tariqt@mellanox.com>, "Saeed
- Mahameed" <saeedm@mellanox.com>
-Subject: Re: [PATCH bpf-next v7 02/18] ice: make RX HW timestamp reading code
- more reusable
-Message-ID: <ZVd4BJlDcdfeiLPj@lzaremba-mobl.ger.corp.intel.com>
-References: <20231115175301.534113-1-larysa.zaremba@intel.com>
- <20231115175301.534113-3-larysa.zaremba@intel.com>
- <ZVYzCRFm6gc4x+VS@boxer>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZVYzCRFm6gc4x+VS@boxer>
-X-ClientProxiedBy: WA2P291CA0034.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1f::7) To SN7PR11MB7540.namprd11.prod.outlook.com
- (2603:10b6:806:340::7)
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F9D9D56
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 07:11:41 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a822f96aedso23649537b3.2
+        for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 07:11:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700233900; x=1700838700; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sjrSdC9pvnKdheRWEFlEs9nICPDqDurAxXTJp3YxT8c=;
+        b=IhdAyDwmWv8pHWoa5XTsdtJ8tnr5r4zzlqB2wJ6E93CHYFrQV1rjjnT66u3IlOxs0V
+         dF+207yektd3XayfJ8Nr6zfERvD0Mk+hbVpaonzuxe9aUz2BZepwGVlzsw5pPw3dMIP3
+         ziaq8uCa+FFF+EFLQrdmfNwDWX2kDkqmiW2Wp2BZtCe0Rmskt+5e6hs4IBpx9XVtGyFr
+         eDSrL+kpjsDCNGQ0cVb+kS3Vp0NOtJ3abbAhKoWt512RpiGcT3QkQJrU4TGkGnu4+gWi
+         ZppJmiwsueL29YloVq+bcBXeP+frBpNCJHfOyluZQaL99gRK/Yt5SBi660KFKI0LZhIt
+         nD3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700233900; x=1700838700;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sjrSdC9pvnKdheRWEFlEs9nICPDqDurAxXTJp3YxT8c=;
+        b=AGVlJpUam5IKHhkt4nXHZb5aNdcuC34pXKjhWB6cSUdOo458ssn9/21ccnvkJ+f+Yt
+         IDGHl+G8BVA0hTCNkhQNccFuvgTA+Jxp5TNzGg9AMEYorNxRmgAeW/vYSwfZixi2SbqH
+         fzi9KsHI2ghMWqQtjHljbh95fx2stQUwSJWhX30VtnKd7XOg2IPe0S+JGOMML/4wKjv3
+         0lJKHZjMdm2nFt9MCCi1ImVNZQW5w8q/yTtaPDqJRHdJZlYTzV+AdOZZqQTMVZ2U2uG+
+         cCAXs3500+p1fSz9nk7PHZ8gdeepWqTJdtkZIz0gaCteU3PTZGBT1mr3QlSpSJ8LXL3p
+         GrMg==
+X-Gm-Message-State: AOJu0Yyawp4XU5qHUrkCP4C0jFi8As00qj7BJs+KdbBDL7mJ938/xO/u
+	brFfxX+Qo2ymDOUydOU9wZjHUO2EePYbFccuxvsUkg==
+X-Google-Smtp-Source: AGHT+IEDBn7xNxWFogQAYs52wAmGUgbdOCNqGbi58j1Oiw1Zly+UQureafxtP1DwBpWr16BWcHYH4/v2/mWBP5cLfGU=
+X-Received: by 2002:a81:5d88:0:b0:5a8:62f2:996a with SMTP id
+ r130-20020a815d88000000b005a862f2996amr20133661ywb.6.1700233900499; Fri, 17
+ Nov 2023 07:11:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|SJ1PR11MB6275:EE_
-X-MS-Office365-Filtering-Correlation-Id: 77600b7a-63e3-4c26-39fa-08dbe7793a01
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vJinElf7mRbY6v/3jrOBtKpFQvja25dTT9noKB/kmc0Gy87y6U1zhjgtyKA+0U53cPSprZ5fURDXKNvUrhguktzeJ9VOUDIyWO1ByuStvozDYNgwvcICUAG1MmXuaS41wc5mFOEaJ7QhitWTv7lAin4SbCF23eidInnqR8+Xz52H8Kgl3CmBd4G/LiH3q0LTvBXxa8QndlFHcmOADOaZgtfWXGWsy0qj7aj1yiQcayTddrR8P2ioo2HUsnHglYRYw5WxVW+7qTGX+EptKJMxppW6HlQq3uSpZHSpgAMebM3x4w3CDX9FC6LNwURHAK2SYqgbuAPgrfZkefwocCRXufO9Gps+FMn/WFPZm5408HqnVZ1bespoKK8KnBzf2HoHysDBMH5UjbWwraJfUayPcWXYsNPbM8yBtCg3/1wLpiYBJZ56i6nIz9T9DxrlrRR3QtWAVc1j89OL2rqlrCaD7psKp3e6ehbAmrdhg1LE5eIlV+M5p0Nwq1QzsjT0Odi2ghl3Bjd/OnQWSz7NPPA2jpDbGDiB7gf9ANT72MYVY6orsmU8/B941n/trT+d1bLa
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(83380400001)(38100700002)(66946007)(54906003)(6862004)(8676002)(8936002)(66556008)(66476007)(4326008)(41300700001)(82960400001)(26005)(6512007)(6506007)(6666004)(478600001)(6486002)(2906002)(44832011)(6636002)(7416002)(316002)(5660300002)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Muc1vSPpEnnFuwoGpLqjeanV4aKNorZfF7OmnODyBQKXMEvb+B+tOCA/xsRt?=
- =?us-ascii?Q?ADZBRTiHkswNVBO2jAn9o1SpJ/cOmGaQ7NKOc0LMp0p69OKQi4AoFzRFR33a?=
- =?us-ascii?Q?XO/OfVeGIQsMSOCh2p1BSjUXaRVJ55veqkmr+Yx/G3oAhLQrN0UHvRkltl4U?=
- =?us-ascii?Q?mHqg9lI+kO+BlyUhrGqghcFqkn382CT28rCGirmFf4SS3RBeJ6u269ffr5gD?=
- =?us-ascii?Q?sPomW5zvIyGqMv19KHJE7rEU92l6k4DZCZ2wBwAtXGvHHwZ0vpxiXmoV8zsH?=
- =?us-ascii?Q?DwniHaL6jf33eyy2nP39tOR4sABqOVNqchdHAqfrbTmbzzMujE510ZULqXHD?=
- =?us-ascii?Q?PvO5dIokdtgks8uPYdXEWmjol5E5+kfNd3HjRssz7uQQJyecaK2SjlWUje/U?=
- =?us-ascii?Q?/Y7I9thO7bFpj1tb9nULB6xPGlsetsTxi5mQY2XxaBoGx/CJqdZ+eDoAQr75?=
- =?us-ascii?Q?x8JJDfiC/WH7PzkKJ/fLQv9JTyLYDeKnxSYbH44+NUlqVfHFz6P/K7RbJMCm?=
- =?us-ascii?Q?FrHWBiY9nGJj08vE2/yUlFb1bdwYmFDNo+mVjN4EtTxj8pfiCxGqE29WCY5a?=
- =?us-ascii?Q?S+nYhUDqnGSrFCuyVGrAwwwOGOn/5qFfsl5O++bqX11FLCBapxt/9QI72EN/?=
- =?us-ascii?Q?aQKeXpVm+8cwNmeyCMniKuJcBtzTCyPfMwuGGw6HaNAzLtbdBg1xCVBhC2h7?=
- =?us-ascii?Q?vu7YotBkCwQL4c7H4b/ySGp3afj4BKyez4ji9HP7ZhNPO0cnfelwHByhWYPY?=
- =?us-ascii?Q?Sy0yzA4zHsM1X8vMLWY2wfzD8Zge82WDjY8wDRuJmBs/6yg10UlMPgrFszO0?=
- =?us-ascii?Q?c6UP28yzGOiBPQpY/f8d4e6vgphXJF2kLv1I/RaajHOQgkeUM77KZtL2m3/J?=
- =?us-ascii?Q?X/JAMTJVSdTkm/1dbeU9wFadBBIXS+zhifshUU3O+TR+pudOVnXR2yCx3ZkW?=
- =?us-ascii?Q?6XL3Cd//RsO9z60pahVjD4RzuN+RJmoTSadOPigWjWraJ8F1soXQXjkkBT9u?=
- =?us-ascii?Q?wG+d1heaiuos1KqIfWGUuY4XWblt8wIKBUJYLFKnTVXbOgZpGqrGmKwULMWz?=
- =?us-ascii?Q?PKUHtKXasVtU0vsrploNqfI9OlwmlodmWWwqiJjYR9GCgw5tPy6cFS6S/SZY?=
- =?us-ascii?Q?pfWPHKwGesoFlAyZB5hnCK3zPVrGqtG8wSs4+5mHT71d8EKTzP4VUF3iGGbM?=
- =?us-ascii?Q?AYrrf+VydVINVg6tJqhXJIYYe97Mr1CmE1yeQ9nB7lf1dGrkCgjOu+dEjNou?=
- =?us-ascii?Q?sC1XF2WlffdmYYsSDiR0RMDqgfWNlX36R+IvmPB5dKfYDKlTzTx7OvRgxO3K?=
- =?us-ascii?Q?SgVJo+YQSqIn9cmjuoSVXT9fOuutVdvr2mqPEfeJ7m/aleJY/OHvidrIwJTa?=
- =?us-ascii?Q?ztsYUs6LKvwPn3BuZOT+3DL+E8bDHmAArwooHpfZm/xH01471Jrn+bptk6LG?=
- =?us-ascii?Q?Y6BDQejrTO28HhMnGTbcUwDAKvA8shbtqgA9581nsyDofWsirlPZCWsIyY6F?=
- =?us-ascii?Q?OSBdfetlR8AjVbM6wcB3nRYdwh+wDnG7lKdxw69+1p+C928tpmQTPqz47g8y?=
- =?us-ascii?Q?s7jOHgRbOpykcrKXDrjoEJMXu0x1F4mGWStd7+vipmvgNmBUpH1TP9oV5bx9?=
- =?us-ascii?Q?mA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77600b7a-63e3-4c26-39fa-08dbe7793a01
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2023 14:26:45.4676
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KPQsfCt0HrIDmH2aKn1Tggkv4Ui1vgLHHjS9oGIrLHp45p7rQSXNaTRCLjxR6wWJwv/0N8GgnbrL00qnZRK8+OE4yQZKEHX59pln/hUepPQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR11MB6275
-X-OriginatorOrg: intel.com
+References: <20231116145948.203001-1-jhs@mojatatu.com> <20231116145948.203001-11-jhs@mojatatu.com>
+ <ZVZDH9OzqFvc3VSS@nanopsycho>
+In-Reply-To: <ZVZDH9OzqFvc3VSS@nanopsycho>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Fri, 17 Nov 2023 10:11:29 -0500
+Message-ID: <CAM0EoM=KrC5dD=cC1H7+LsSXfxj386AD=Xpy3sG19QWaiFipCg@mail.gmail.com>
+Subject: Re: [PATCH net-next v8 10/15] p4tc: add action template create,
+ update, delete, get, flush and dump
+To: Jiri Pirko <jiri@resnulli.us>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
+	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
+	Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com, xiyou.wangcong@gmail.com, 
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	vladbu@nvidia.com, horms@kernel.org, daniel@iogearbox.net, 
+	bpf@vger.kernel.org, khalidm@nvidia.com, toke@redhat.com, mattyk@nvidia.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 16, 2023 at 04:19:37PM +0100, Maciej Fijalkowski wrote:
-> On Wed, Nov 15, 2023 at 06:52:44PM +0100, Larysa Zaremba wrote:
-> > Previously, we only needed RX HW timestamp in skb path,
-> > hence all related code was written with skb in mind.
-> > But with the addition of XDP hints via kfuncs to the ice driver,
-> > the same logic will be needed in .xmo_() callbacks.
-> > 
-> > Put generic process of reading RX HW timestamp from a descriptor
-> > into a separate function.
-> > Move skb-related code into another source file.
-> > 
-> > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
-> 
-> Reviewed-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> 
-> > ---
-> >  drivers/net/ethernet/intel/ice/ice_ptp.c      | 20 ++++++-----------
-> >  drivers/net/ethernet/intel/ice/ice_ptp.h      | 16 +++++++++-----
-> >  drivers/net/ethernet/intel/ice/ice_txrx_lib.c | 22 ++++++++++++++++++-
-> >  3 files changed, 38 insertions(+), 20 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.c b/drivers/net/ethernet/intel/ice/ice_ptp.c
-> > index 1eddcbe89b0c..a435f89b262f 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_ptp.c
-> > +++ b/drivers/net/ethernet/intel/ice/ice_ptp.c
-> > @@ -2103,30 +2103,26 @@ int ice_ptp_set_ts_config(struct ice_pf *pf, struct ifreq *ifr)
-> >  }
-> >  
-> >  /**
-> > - * ice_ptp_rx_hwtstamp - Check for an Rx timestamp
-> > - * @rx_ring: Ring to get the VSI info
-> > + * ice_ptp_get_rx_hwts - Get packet Rx timestamp in ns
-> >   * @rx_desc: Receive descriptor
-> > - * @skb: Particular skb to send timestamp with
-> > + * @rx_ring: Ring to get the cached time
-> >   *
-> >   * The driver receives a notification in the receive descriptor with timestamp.
-> > - * The timestamp is in ns, so we must convert the result first.
-> >   */
-> > -void
-> > -ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
-> > -		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb)
-> > +u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
-> > +			struct ice_rx_ring *rx_ring)
-> >  {
-> > -	struct skb_shared_hwtstamps *hwtstamps;
-> >  	u64 ts_ns, cached_time;
-> >  	u32 ts_high;
-> >  
-> >  	if (!(rx_desc->wb.time_stamp_low & ICE_PTP_TS_VALID))
-> > -		return;
-> > +		return 0;
-> >  
-> >  	cached_time = READ_ONCE(rx_ring->cached_phctime);
-> >  
-> >  	/* Do not report a timestamp if we don't have a cached PHC time */
-> >  	if (!cached_time)
-> > -		return;
-> > +		return 0;
-> >  
-> >  	/* Use ice_ptp_extend_32b_ts directly, using the ring-specific cached
-> >  	 * PHC value, rather than accessing the PF. This also allows us to
-> > @@ -2137,9 +2133,7 @@ ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
-> >  	ts_high = le32_to_cpu(rx_desc->wb.flex_ts.ts_high);
-> >  	ts_ns = ice_ptp_extend_32b_ts(cached_time, ts_high);
-> >  
-> > -	hwtstamps = skb_hwtstamps(skb);
-> > -	memset(hwtstamps, 0, sizeof(*hwtstamps));
-> > -	hwtstamps->hwtstamp = ns_to_ktime(ts_ns);
-> > +	return ts_ns;
-> >  }
-> >  
-> >  /**
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_ptp.h b/drivers/net/ethernet/intel/ice/ice_ptp.h
-> > index 8f6f94392756..0274da964fe3 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_ptp.h
-> > +++ b/drivers/net/ethernet/intel/ice/ice_ptp.h
-> > @@ -298,9 +298,8 @@ void ice_ptp_extts_event(struct ice_pf *pf);
-> >  s8 ice_ptp_request_ts(struct ice_ptp_tx *tx, struct sk_buff *skb);
-> >  enum ice_tx_tstamp_work ice_ptp_process_ts(struct ice_pf *pf);
-> >  
-> > -void
-> > -ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
-> > -		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb);
-> > +u64 ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
-> > +			struct ice_rx_ring *rx_ring);
-> >  void ice_ptp_reset(struct ice_pf *pf);
-> >  void ice_ptp_prepare_for_reset(struct ice_pf *pf);
-> >  void ice_ptp_init(struct ice_pf *pf);
-> > @@ -330,9 +329,14 @@ static inline bool ice_ptp_process_ts(struct ice_pf *pf)
-> >  {
-> >  	return true;
-> >  }
-> > -static inline void
-> > -ice_ptp_rx_hwtstamp(struct ice_rx_ring *rx_ring,
-> > -		    union ice_32b_rx_flex_desc *rx_desc, struct sk_buff *skb) { }
-> > +
-> > +static inline u64
-> > +ice_ptp_get_rx_hwts(const union ice_32b_rx_flex_desc *rx_desc,
-> > +		    struct ice_rx_ring *rx_ring)
-> > +{
-> > +	return 0;
-> > +}
-> > +
-> >  static inline void ice_ptp_reset(struct ice_pf *pf) { }
-> >  static inline void ice_ptp_prepare_for_reset(struct ice_pf *pf) { }
-> >  static inline void ice_ptp_init(struct ice_pf *pf) { }
-> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> > index 17530359aaf8..c4dbbb246946 100644
-> > --- a/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx_lib.c
-> > @@ -184,6 +184,26 @@ ice_rx_csum(struct ice_rx_ring *ring, struct sk_buff *skb,
-> >  	ring->vsi->back->hw_csum_rx_error++;
-> >  }
-> >  
-> > +/**
-> > + * ice_ptp_rx_hwts_to_skb - Put RX timestamp into skb
-> > + * @rx_ring: Ring to get the VSI info
-> > + * @rx_desc: Receive descriptor
-> > + * @skb: Particular skb to send timestamp with
-> > + *
-> > + * The timestamp is in ns, so we must convert the result first.
-> > + */
-> > +static void
-> > +ice_ptp_rx_hwts_to_skb(struct ice_rx_ring *rx_ring,
-> > +		       const union ice_32b_rx_flex_desc *rx_desc,
-> > +		       struct sk_buff *skb)
-> > +{
-> > +	u64 ts_ns = ice_ptp_get_rx_hwts(rx_desc, rx_ring);
-> > +
-> > +	*skb_hwtstamps(skb) = (struct skb_shared_hwtstamps){
-> > +		.hwtstamp	= ns_to_ktime(ts_ns),
-> > +	};
-> 
-> could this just be
-> 
-> 	skb_hwtstamps(skb)->hwtstamp = ns_to_ktime(ts_ns);
-> 
-> ?
+On Thu, Nov 16, 2023 at 11:28=E2=80=AFAM Jiri Pirko <jiri@resnulli.us> wrot=
+e:
+>
+> Thu, Nov 16, 2023 at 03:59:43PM CET, jhs@mojatatu.com wrote:
+>
+> [...]
+>
+>
+> >diff --git a/include/net/act_api.h b/include/net/act_api.h
+> >index cd5a8e86f..b95a9bc29 100644
+> >--- a/include/net/act_api.h
+> >+++ b/include/net/act_api.h
+> >@@ -70,6 +70,7 @@ struct tc_action {
+> > #define TCA_ACT_FLAGS_AT_INGRESS      (1U << (TCA_ACT_FLAGS_USER_BITS +=
+ 4))
+> > #define TCA_ACT_FLAGS_PREALLOC        (1U << (TCA_ACT_FLAGS_USER_BITS +=
+ 5))
+> > #define TCA_ACT_FLAGS_UNREFERENCED    (1U << (TCA_ACT_FLAGS_USER_BITS +=
+ 6))
+> >+#define TCA_ACT_FLAGS_FROM_P4TC       (1U << (TCA_ACT_FLAGS_USER_BITS +=
+ 7))
+> >
+> > /* Update lastuse only if needed, to avoid dirtying a cache line.
+> >  * We use a temp variable to avoid fetching jiffies twice.
+> >diff --git a/include/net/p4tc.h b/include/net/p4tc.h
+> >index ccb54d842..68b00fa72 100644
+> >--- a/include/net/p4tc.h
+> >+++ b/include/net/p4tc.h
+> >@@ -9,17 +9,23 @@
+> > #include <linux/refcount.h>
+> > #include <linux/rhashtable.h>
+> > #include <linux/rhashtable-types.h>
+> >+#include <net/tc_act/p4tc.h>
+> >+#include <net/p4tc_types.h>
+> >
+> > #define P4TC_DEFAULT_NUM_TABLES P4TC_MINTABLES_COUNT
+> > #define P4TC_DEFAULT_MAX_RULES 1
+> > #define P4TC_PATH_MAX 3
+> >+#define P4TC_MAX_TENTRIES 33554432
+>
+> Seeing define like this one always makes me happier. Where does it come
+> from? Why not 0x2000000 at least?
+
+I dont recall why we decided to do decimal - will change it.
+
+>
+> >
+> > #define P4TC_KERNEL_PIPEID 0
+> >
+> > #define P4TC_PID_IDX 0
+> >+#define P4TC_AID_IDX 1
+> >+#define P4TC_PARSEID_IDX 1
+> >
+> > struct p4tc_dump_ctx {
+> >       u32 ids[P4TC_PATH_MAX];
+> >+      struct rhashtable_iter *iter;
+> > };
+> >
+> > struct p4tc_template_common;
+> >@@ -63,8 +69,10 @@ extern const struct p4tc_template_ops p4tc_pipeline_o=
+ps;
+> >
+> > struct p4tc_pipeline {
+> >       struct p4tc_template_common common;
+> >+      struct idr                  p_act_idr;
+> >       struct rcu_head             rcu;
+> >       struct net                  *net;
+> >+      u32                         num_created_acts;
+> >       /* Accounts for how many entities are referencing this pipeline.
+> >        * As for now only P4 filters can refer to pipelines.
+> >        */
+> >@@ -109,18 +117,157 @@ p4tc_pipeline_find_byany_unsealed(struct net *net=
+, const char *p_name,
+> >                                 const u32 pipeid,
+> >                                 struct netlink_ext_ack *extack);
+> >
+> >+struct p4tc_act *tcf_p4_find_act(struct net *net,
+> >+                               const struct tc_action_ops *a_o,
+> >+                               struct netlink_ext_ack *extack);
+> >+void
+> >+tcf_p4_put_prealloc_act(struct p4tc_act *act, struct tcf_p4act *p4_act)=
+;
+> >+
+> > static inline int p4tc_action_destroy(struct tc_action **acts)
+> > {
+> >+      struct tc_action *acts_non_prealloc[TCA_ACT_MAX_PRIO] =3D {NULL};
+> >       int ret =3D 0;
+> >
+> >       if (acts) {
+> >-              ret =3D tcf_action_destroy(acts, TCA_ACT_UNBIND);
+> >+              int j =3D 0;
+> >+              int i;
+>
+> Move declarations to the beginning of the if body.
 >
 
-Seem so. The previous logic was basically:
+Didnt follow - which specific declaration?
 
-memset(skb_hwtstamps(skb), 0, sizeof(*skb_hwtstamps(skb)));
-skb_hwtstamps(skb)->hwtstamp = ns_to_ktime(ts_ns);
+> [...]
+>
+>
+> >diff --git a/include/uapi/linux/p4tc.h b/include/uapi/linux/p4tc.h
+> >index 4d33f44c1..7b89229a7 100644
+> >--- a/include/uapi/linux/p4tc.h
+> >+++ b/include/uapi/linux/p4tc.h
+> >@@ -4,6 +4,7 @@
+> >
+> > #include <linux/types.h>
+> > #include <linux/pkt_sched.h>
+> >+#include <linux/pkt_cls.h>
+> >
+> > /* pipeline header */
+> > struct p4tcmsg {
+> >@@ -17,9 +18,12 @@ struct p4tcmsg {
+> > #define P4TC_MSGBATCH_SIZE 16
+> >
+> > #define P4TC_MAX_KEYSZ 512
+> >+#define P4TC_DEFAULT_NUM_PREALLOC 16
+> >
+> > #define TEMPLATENAMSZ 32
+> > #define PIPELINENAMSIZ TEMPLATENAMSZ
+> >+#define ACTTMPLNAMSIZ TEMPLATENAMSZ
+> >+#define ACTPARAMNAMSIZ TEMPLATENAMSZ
+>
+> Prefix? This is uapi. Could you please be more careful with naming at
+> least in the uapi area?
 
-So it was changed to a more nice-looking '= {}' construct after Olek's review.
-Honestly, I've thought memset serves some purpose, but after actually looking at 
-the structures it does not seem so. Also, not only intel drivers do such thing, 
-seems like some historical artifact.
+Good point.
 
-TLDR: will change :)
+>
+> [...]
+>
+>
+> >diff --git a/net/sched/p4tc/p4tc_action.c b/net/sched/p4tc/p4tc_action.c
+> >new file mode 100644
+> >index 000000000..19db0772c
+> >--- /dev/null
+> >+++ b/net/sched/p4tc/p4tc_action.c
+> >@@ -0,0 +1,2242 @@
+> >+// SPDX-License-Identifier: GPL-2.0-or-later
+> >+/*
+> >+ * net/sched/p4tc_action.c    P4 TC ACTION TEMPLATES
+> >+ *
+> >+ * Copyright (c) 2022-2023, Mojatatu Networks
+> >+ * Copyright (c) 2022-2023, Intel Corporation.
+> >+ * Authors:     Jamal Hadi Salim <jhs@mojatatu.com>
+> >+ *              Victor Nogueira <victor@mojatatu.com>
+> >+ *              Pedro Tammela <pctammela@mojatatu.com>
+> >+ */
+> >+
+> >+#include <linux/err.h>
+> >+#include <linux/errno.h>
+> >+#include <linux/init.h>
+> >+#include <linux/kernel.h>
+> >+#include <linux/kmod.h>
+> >+#include <linux/list.h>
+> >+#include <linux/module.h>
+> >+#include <linux/netdevice.h>
+> >+#include <linux/skbuff.h>
+> >+#include <linux/slab.h>
+> >+#include <linux/string.h>
+> >+#include <linux/types.h>
+> >+#include <net/flow_offload.h>
+> >+#include <net/net_namespace.h>
+> >+#include <net/netlink.h>
+> >+#include <net/pkt_cls.h>
+> >+#include <net/p4tc.h>
+> >+#include <net/sch_generic.h>
+> >+#include <net/sock.h>
+> >+#include <net/tc_act/p4tc.h>
+> >+
+> >+static LIST_HEAD(dynact_list);
+> >+
+> >+#define SEPARATOR "/"
+>
+> Prefix? Btw, why exactly do you need this. It is used only once.
+>
 
-> > +}
-> > +
-> >  /**
-> >   * ice_process_skb_fields - Populate skb header fields from Rx descriptor
-> >   * @rx_ring: Rx descriptor ring packet is being transacted on
-> > @@ -208,7 +228,7 @@ ice_process_skb_fields(struct ice_rx_ring *rx_ring,
-> >  	ice_rx_csum(rx_ring, skb, rx_desc, ptype);
-> >  
-> >  	if (rx_ring->ptp_rx)
-> > -		ice_ptp_rx_hwtstamp(rx_ring, rx_desc, skb);
-> > +		ice_ptp_rx_hwts_to_skb(rx_ring, rx_desc, skb);
-> >  }
-> >  
-> >  /**
-> > -- 
-> > 2.41.0
-> > 
+We'll get rid of it.
+
+> To quote a few function names in this file:
+>
+> >+static void set_param_indices(struct idr *params_idr)
+> >+static void generic_free_param_value(struct p4tc_act_param *param)
+> >+static int dev_init_param_value(struct net *net, struct p4tc_act_param_=
+ops *op,
+> >+static void dev_free_param_value(struct p4tc_act_param *param)
+> >+static void tcf_p4_act_params_destroy_rcu(struct rcu_head *head)
+> >+static int __tcf_p4_dyna_init_set(struct p4tc_act *act, struct tc_actio=
+n **a,
+> >+static int tcf_p4_dyna_template_init(struct net *net, struct tc_action =
+**a,
+> >+init_prealloc_param(struct p4tc_act *act, struct idr *params_idr,
+> >+static void p4tc_param_put(struct p4tc_act_param *param)
+> >+static void free_intermediate_param(struct p4tc_act_param *param)
+> >+static void free_intermediate_params_list(struct list_head *params_list=
+)
+> >+static int init_prealloc_params(struct p4tc_act *act,
+> >+struct p4tc_act *p4tc_action_find_byid(struct p4tc_pipeline *pipeline,
+> >+static void tcf_p4_prealloc_list_add(struct p4tc_act *act_tmpl,
+> >+static int tcf_p4_prealloc_acts(struct net *net, struct p4tc_act *act,
+> >+tcf_p4_get_next_prealloc_act(struct p4tc_act *act)
+> >+void tcf_p4_set_init_flags(struct tcf_p4act *p4act)
+> >+static void __tcf_p4_put_prealloc_act(struct p4tc_act *act,
+> >+tcf_p4_put_prealloc_act(struct p4tc_act *act, struct tcf_p4act *p4act)
+> >+static int generic_dump_param_value(struct sk_buff *skb, struct p4tc_ty=
+pe *type,
+> >+static int generic_init_param_value(struct p4tc_act_param *nparam,
+> >+static struct p4tc_act_param *param_find_byname(struct idr *params_idr,
+> >+tcf_param_find_byany(struct p4tc_act *act,
+> >+tcf_param_find_byanyattr(struct p4tc_act *act, struct nlattr *name_attr=
+,
+> >+static int __p4_init_param_type(struct p4tc_act_param *param,
+> >+static int tcf_p4_act_init_params(struct net *net,
+> >+static struct p4tc_act *p4tc_action_find_byname(const char *act_name,
+> >+static int tcf_p4_dyna_init(struct net *net, struct nlattr *nla,
+> >+static int tcf_act_fill_param_type(struct sk_buff *skb,
+> >+static void tcf_p4_dyna_cleanup(struct tc_action *a)
+> >+struct p4tc_act *p4tc_action_find_get(struct p4tc_pipeline *pipeline,
+> >+p4tc_action_find_byanyattr(struct nlattr *act_name_attr, const u32 a_id=
+,
+> >+static void p4_put_many_params(struct idr *params_idr)
+> >+static int p4_init_param_type(struct p4tc_act_param *param,
+> >+static struct p4tc_act_param *p4_create_param(struct p4tc_act *act,
+> >+static struct p4tc_act_param *p4_update_param(struct p4tc_act *act,
+> >+static struct p4tc_act_param *p4_act_init_param(struct p4tc_act *act,
+> >+static void p4tc_action_net_exit(struct tc_action_net *tn)
+> >+static void p4_act_params_put(struct p4tc_act *act)
+> >+static int __tcf_act_put(struct net *net, struct p4tc_pipeline *pipelin=
+e,
+> >+static int _tcf_act_fill_nlmsg(struct net *net, struct sk_buff *skb,
+> >+static int tcf_act_fill_nlmsg(struct net *net, struct sk_buff *skb,
+> >+static int tcf_act_flush(struct sk_buff *skb, struct net *net,
+> >+static void p4tc_params_replace_many(struct p4tc_act *act,
+> >+                                   struct idr *params_idr)
+> >+static struct p4tc_act *tcf_act_create(struct net *net, struct nlattr *=
+*tb,
+> >+tcf_act_cu(struct net *net, struct nlmsghdr *n, struct nlattr *nla,
+>
+> Is there some secret key how you name the functions? To me, this looks
+> completely inconsistent :/
+
+What would be better? tcf_p4_xxxx?
+A lot of the tcf_xxx is because that convention is used in that file
+but we can change it.
+
+cheers,
+jamal
+>
 
