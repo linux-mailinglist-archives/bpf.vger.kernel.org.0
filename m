@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-15301-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C357EFD93
-	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 04:47:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A0087EFD95
+	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 04:47:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 894B71F23C98
-	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 03:47:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 963E41C2099F
+	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 03:47:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A3D6FBB;
-	Sat, 18 Nov 2023 03:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C90524B;
+	Sat, 18 Nov 2023 03:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B07D5126
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:00 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C9A126
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:05 -0800 (PST)
 Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AI2sO11005937
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:00 -0800
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AI2rE6h003777
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:05 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uemvd856j-20
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uemvd856w-13
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:00 -0800
-Received: from twshared40933.03.prn6.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:04 -0800
+Received: from twshared32169.15.frc2.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 17 Nov 2023 19:46:51 -0800
+ 15.1.2507.34; Fri, 17 Nov 2023 19:47:01 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 3E26F3BB2FFCF; Fri, 17 Nov 2023 19:46:47 -0800 (PST)
+	id 509FB3BB2FFF2; Fri, 17 Nov 2023 19:46:49 -0800 (PST)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
@@ -37,9 +37,9 @@ CC: <andrii@kernel.org>, <kernel-team@meta.com>,
         Eduard Zingerman
 	<eddyz87@gmail.com>,
         Stanislav Fomichev <sdf@google.com>
-Subject: [PATCH v3 bpf-next 6/8] bpf: omit default off=0 and imm=0 in register state log
-Date: Fri, 17 Nov 2023 19:46:21 -0800
-Message-ID: <20231118034623.3320920-7-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 7/8] bpf: smarter verifier log number printing logic
+Date: Fri, 17 Nov 2023 19:46:22 -0800
+Message-ID: <20231118034623.3320920-8-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231118034623.3320920-1-andrii@kernel.org>
 References: <20231118034623.3320920-1-andrii@kernel.org>
@@ -52,348 +52,387 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 2Z4OcG3L0WpxDmErN2suGH_DSl82-uwe
-X-Proofpoint-ORIG-GUID: 2Z4OcG3L0WpxDmErN2suGH_DSl82-uwe
+X-Proofpoint-GUID: kp6uYGcMkdj1yHA2b3bBxQFALoRm4wQl
+X-Proofpoint-ORIG-GUID: kp6uYGcMkdj1yHA2b3bBxQFALoRm4wQl
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-18_01,2023-11-17_01,2023-05-22_02
 
-Simplify BPF verifier log further by omitting default (and frequently
-irrelevant) off=3D0 and imm=3D0 parts for non-SCALAR_VALUE registers. As =
-can
-be seen from fixed tests, this is often a visual noise for PTR_TO_CTX
-register and even for PTR_TO_PACKET registers.
+Instead of always printing numbers as either decimals (and in some
+cases, like for "imm=3D%llx", in hexadecimals), decide the form based on
+actual values. For numbers in a reasonably small range (currently,
+[0, U16_MAX] for unsigned values, and [S16_MIN, S16_MAX] for signed ones)=
+,
+emit them as decimals. In all other cases, even for signed values,
+emit them in hexadecimals.
 
-Omitting default values follows the rest of register state logic: we
-omit default values to keep verifier log succinct and to highlight
-interesting state that deviates from default one. E.g., we do the same
-for var_off, when it's unknown, which gives no additional information.
+For large values hex form is often times way more useful: it's easier to
+see an exact difference between 0xffffffff80000000 and 0xffffffff7fffffff=
+,
+than between 18446744071562067966 and 18446744071562067967, as one
+particular example.
+
+Small values representing small pointer offsets or application
+constants, on the other hand, are way more useful to be represented in
+decimal notation.
+
+Adjust reg_bounds register state parsing logic to take into account this
+change.
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Acked-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/log.c                              | 10 ++---
- .../testing/selftests/bpf/prog_tests/align.c  | 42 +++++++++----------
- .../selftests/bpf/prog_tests/log_buf.c        |  4 +-
- .../selftests/bpf/prog_tests/spin_lock.c      | 14 +++----
- .../selftests/bpf/progs/exceptions_assert.c   | 10 ++---
- 5 files changed, 39 insertions(+), 41 deletions(-)
+ kernel/bpf/log.c                              | 79 ++++++++++++++++---
+ .../selftests/bpf/prog_tests/reg_bounds.c     | 53 ++++++++-----
+ .../selftests/bpf/progs/exceptions_assert.c   | 32 ++++----
+ 3 files changed, 118 insertions(+), 46 deletions(-)
 
 diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-index c209ab1ec2b5..20b4f81087da 100644
+index 20b4f81087da..87105aa482ed 100644
 --- a/kernel/bpf/log.c
 +++ b/kernel/bpf/log.c
-@@ -602,16 +602,14 @@ static void print_reg_state(struct bpf_verifier_env=
+@@ -509,10 +509,52 @@ static void print_liveness(struct bpf_verifier_env =
+*env,
+ 		verbose(env, "D");
+ }
+=20
++#define UNUM_MAX_DECIMAL U16_MAX
++#define SNUM_MAX_DECIMAL S16_MAX
++#define SNUM_MIN_DECIMAL S16_MIN
++
++static bool is_unum_decimal(u64 num)
++{
++	return num <=3D UNUM_MAX_DECIMAL;
++}
++
++static bool is_snum_decimal(s64 num)
++{
++	return num >=3D SNUM_MIN_DECIMAL && num <=3D SNUM_MAX_DECIMAL;
++}
++
++static void verbose_unum(struct bpf_verifier_env *env, u64 num)
++{
++	if (is_unum_decimal(num))
++		verbose(env, "%llu", num);
++	else
++		verbose(env, "%#llx", num);
++}
++
++static void verbose_snum(struct bpf_verifier_env *env, s64 num)
++{
++	if (is_snum_decimal(num))
++		verbose(env, "%lld", num);
++	else
++		verbose(env, "%#llx", num);
++}
++
+ static void print_scalar_ranges(struct bpf_verifier_env *env,
+ 				const struct bpf_reg_state *reg,
+ 				const char **sep)
+ {
++	/* For signed ranges, we want to unify 64-bit and 32-bit values in the
++	 * output as much as possible, but there is a bit of a complication.
++	 * If we choose to print values as decimals, this is natural to do,
++	 * because negative 64-bit and 32-bit values >=3D -S32_MIN have the sam=
+e
++	 * representation due to sign extension. But if we choose to print
++	 * them in hex format (see is_snum_decimal()), then sign extension is
++	 * misleading.
++	 * E.g., smin=3D-2 and smin32=3D-2 are exactly the same in decimal, but=
+ in
++	 * hex they will be smin=3D0xfffffffffffffffe and smin32=3D0xfffffffe, =
+two
++	 * very different numbers.
++	 * So we avoid sign extension if we choose to print values in hex.
++	 */
+ 	struct {
+ 		const char *name;
+ 		u64 val;
+@@ -522,8 +564,14 @@ static void print_scalar_ranges(struct bpf_verifier_=
+env *env,
+ 		{"smax",   reg->smax_value,         reg->smax_value =3D=3D S64_MAX},
+ 		{"umin",   reg->umin_value,         reg->umin_value =3D=3D 0},
+ 		{"umax",   reg->umax_value,         reg->umax_value =3D=3D U64_MAX},
+-		{"smin32", (s64)reg->s32_min_value, reg->s32_min_value =3D=3D S32_MIN}=
+,
+-		{"smax32", (s64)reg->s32_max_value, reg->s32_max_value =3D=3D S32_MAX}=
+,
++		{"smin32",
++		 is_snum_decimal((s64)reg->s32_min_value)
++			 ? (s64)reg->s32_min_value
++			 : (u32)reg->s32_min_value, reg->s32_min_value =3D=3D S32_MIN},
++		{"smax32",
++		 is_snum_decimal((s64)reg->s32_max_value)
++			 ? (s64)reg->s32_max_value
++			 : (u32)reg->s32_max_value, reg->s32_max_value =3D=3D S32_MAX},
+ 		{"umin32", reg->u32_min_value,      reg->u32_min_value =3D=3D 0},
+ 		{"umax32", reg->u32_max_value,      reg->u32_max_value =3D=3D U32_MAX}=
+,
+ 	}, *m1, *m2, *mend =3D &minmaxs[ARRAY_SIZE(minmaxs)];
+@@ -549,7 +597,10 @@ static void print_scalar_ranges(struct bpf_verifier_=
+env *env,
+ 			verbose(env, "%s=3D", m2->name);
+ 		}
+=20
+-		verbose(env, m1->name[0] =3D=3D 's' ? "%lld" : "%llu", m1->val);
++		if (m1->name[0] =3D=3D 's')
++			verbose_snum(env, m1->val);
++		else
++			verbose_unum(env, m1->val);
+ 	}
+ }
+=20
+@@ -576,14 +627,14 @@ static void print_reg_state(struct bpf_verifier_env=
+ *env, const struct bpf_reg_s
+ 	    tnum_is_const(reg->var_off)) {
+ 		/* reg->off should be 0 for SCALAR_VALUE */
+ 		verbose(env, "%s", t =3D=3D SCALAR_VALUE ? "" : reg_type_str(env, t));
+-		verbose(env, "%lld", reg->var_off.value + reg->off);
++		verbose_snum(env, reg->var_off.value + reg->off);
+ 		return;
+ 	}
+ /*
+  * _a stands for append, was shortened to avoid multiline statements bel=
+ow.
+  * This macro is used to output a comma separated list of attributes.
+  */
+-#define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, __VA_ARGS__);=
+ sep =3D ","; })
++#define verbose_a(fmt, ...) ({ verbose(env, "%s" fmt, sep, ##__VA_ARGS__=
+); sep =3D ","; })
+=20
+ 	verbose(env, "%s", reg_type_str(env, t));
+ 	if (base_type(t) =3D=3D PTR_TO_BTF_ID)
+@@ -602,14 +653,20 @@ static void print_reg_state(struct bpf_verifier_env=
  *env, const struct bpf_reg_s
  			  reg->map_ptr->key_size,
  			  reg->map_ptr->value_size);
  	}
--	if (t !=3D SCALAR_VALUE)
-+	if (t !=3D SCALAR_VALUE && reg->off)
- 		verbose_a("off=3D%d", reg->off);
- 	if (type_is_pkt_pointer(t))
- 		verbose_a("r=3D%d", reg->range);
+-	if (t !=3D SCALAR_VALUE && reg->off)
+-		verbose_a("off=3D%d", reg->off);
+-	if (type_is_pkt_pointer(t))
+-		verbose_a("r=3D%d", reg->range);
++	if (t !=3D SCALAR_VALUE && reg->off) {
++		verbose_a("off=3D");
++		verbose_snum(env, reg->off);
++	}
++	if (type_is_pkt_pointer(t)) {
++		verbose_a("r=3D");
++		verbose_unum(env, reg->range);
++	}
  	if (tnum_is_const(reg->var_off)) {
--		/* Typically an immediate SCALAR_VALUE, but
--		 * could be a pointer whose offset is too big
--		 * for reg->off
--		 */
--		verbose_a("imm=3D%llx", reg->var_off.value);
-+		/* a pointer register with fixed offset */
-+		if (reg->var_off.value)
-+			verbose_a("imm=3D%llx", reg->var_off.value);
+ 		/* a pointer register with fixed offset */
+-		if (reg->var_off.value)
+-			verbose_a("imm=3D%llx", reg->var_off.value);
++		if (reg->var_off.value) {
++			verbose_a("imm=3D");
++			verbose_snum(env, reg->var_off.value);
++		}
  	} else {
  		print_scalar_ranges(env, reg, &sep);
  		if (!tnum_is_unknown(reg->var_off)) {
-diff --git a/tools/testing/selftests/bpf/prog_tests/align.c b/tools/testi=
-ng/selftests/bpf/prog_tests/align.c
-index 465c1c3a3d3c..4ebd0da898f5 100644
---- a/tools/testing/selftests/bpf/prog_tests/align.c
-+++ b/tools/testing/selftests/bpf/prog_tests/align.c
-@@ -40,7 +40,7 @@ static struct bpf_align_test tests[] =3D {
- 		},
- 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
- 		.matches =3D {
--			{0, "R1", "ctx(off=3D0,imm=3D0)"},
-+			{0, "R1", "ctx()"},
- 			{0, "R10", "fp0"},
- 			{0, "R3_w", "2"},
- 			{1, "R3_w", "4"},
-@@ -68,7 +68,7 @@ static struct bpf_align_test tests[] =3D {
- 		},
- 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
- 		.matches =3D {
--			{0, "R1", "ctx(off=3D0,imm=3D0)"},
-+			{0, "R1", "ctx()"},
- 			{0, "R10", "fp0"},
- 			{0, "R3_w", "1"},
- 			{1, "R3_w", "2"},
-@@ -97,7 +97,7 @@ static struct bpf_align_test tests[] =3D {
- 		},
- 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
- 		.matches =3D {
--			{0, "R1", "ctx(off=3D0,imm=3D0)"},
-+			{0, "R1", "ctx()"},
- 			{0, "R10", "fp0"},
- 			{0, "R3_w", "4"},
- 			{1, "R3_w", "8"},
-@@ -119,7 +119,7 @@ static struct bpf_align_test tests[] =3D {
- 		},
- 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
- 		.matches =3D {
--			{0, "R1", "ctx(off=3D0,imm=3D0)"},
-+			{0, "R1", "ctx()"},
- 			{0, "R10", "fp0"},
- 			{0, "R3_w", "7"},
- 			{1, "R3_w", "7"},
-@@ -162,13 +162,13 @@ static struct bpf_align_test tests[] =3D {
- 		},
- 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
- 		.matches =3D {
--			{6, "R0_w", "pkt(off=3D8,r=3D8,imm=3D0)"},
-+			{6, "R0_w", "pkt(off=3D8,r=3D8)"},
- 			{6, "R3_w", "var_off=3D(0x0; 0xff)"},
- 			{7, "R3_w", "var_off=3D(0x0; 0x1fe)"},
- 			{8, "R3_w", "var_off=3D(0x0; 0x3fc)"},
- 			{9, "R3_w", "var_off=3D(0x0; 0x7f8)"},
- 			{10, "R3_w", "var_off=3D(0x0; 0xff0)"},
--			{12, "R3_w", "pkt_end(off=3D0,imm=3D0)"},
-+			{12, "R3_w", "pkt_end()"},
- 			{17, "R4_w", "var_off=3D(0x0; 0xff)"},
- 			{18, "R4_w", "var_off=3D(0x0; 0x1fe0)"},
- 			{19, "R4_w", "var_off=3D(0x0; 0xff0)"},
-@@ -235,11 +235,11 @@ static struct bpf_align_test tests[] =3D {
- 		},
- 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
- 		.matches =3D {
--			{2, "R5_w", "pkt(off=3D0,r=3D0,imm=3D0)"},
--			{4, "R5_w", "pkt(off=3D14,r=3D0,imm=3D0)"},
--			{5, "R4_w", "pkt(off=3D14,r=3D0,imm=3D0)"},
--			{9, "R2", "pkt(off=3D0,r=3D18,imm=3D0)"},
--			{10, "R5", "pkt(off=3D14,r=3D18,imm=3D0)"},
-+			{2, "R5_w", "pkt(r=3D0)"},
-+			{4, "R5_w", "pkt(off=3D14,r=3D0)"},
-+			{5, "R4_w", "pkt(off=3D14,r=3D0)"},
-+			{9, "R2", "pkt(r=3D18)"},
-+			{10, "R5", "pkt(off=3D14,r=3D18)"},
- 			{10, "R4_w", "var_off=3D(0x0; 0xff)"},
- 			{13, "R4_w", "var_off=3D(0x0; 0xffff)"},
- 			{14, "R4_w", "var_off=3D(0x0; 0xffff)"},
-@@ -299,7 +299,7 @@ static struct bpf_align_test tests[] =3D {
- 			/* Calculated offset in R6 has unknown value, but known
- 			 * alignment of 4.
- 			 */
--			{6, "R2_w", "pkt(off=3D0,r=3D8,imm=3D0)"},
-+			{6, "R2_w", "pkt(r=3D8)"},
- 			{7, "R6_w", "var_off=3D(0x0; 0x3fc)"},
- 			/* Offset is added to packet pointer R5, resulting in
- 			 * known fixed offset, and variable offset from R6.
-@@ -337,7 +337,7 @@ static struct bpf_align_test tests[] =3D {
- 			/* Constant offset is added to R5 packet pointer,
- 			 * resulting in reg->off value of 14.
- 			 */
--			{26, "R5_w", "pkt(off=3D14,r=3D8,"},
-+			{26, "R5_w", "pkt(off=3D14,r=3D8)"},
- 			/* Variable offset is added to R5, resulting in a
- 			 * variable offset of (4n). See comment for insn #18
- 			 * for R4 =3D R5 trick.
-@@ -397,7 +397,7 @@ static struct bpf_align_test tests[] =3D {
- 			/* Calculated offset in R6 has unknown value, but known
- 			 * alignment of 4.
- 			 */
--			{6, "R2_w", "pkt(off=3D0,r=3D8,imm=3D0)"},
-+			{6, "R2_w", "pkt(r=3D8)"},
- 			{7, "R6_w", "var_off=3D(0x0; 0x3fc)"},
- 			/* Adding 14 makes R6 be (4n+2) */
- 			{8, "R6_w", "var_off=3D(0x2; 0x7fc)"},
-@@ -459,7 +459,7 @@ static struct bpf_align_test tests[] =3D {
- 		.prog_type =3D BPF_PROG_TYPE_SCHED_CLS,
- 		.result =3D REJECT,
- 		.matches =3D {
--			{3, "R5_w", "pkt_end(off=3D0,imm=3D0)"},
-+			{3, "R5_w", "pkt_end()"},
- 			/* (ptr - ptr) << 2 =3D=3D unknown, (4n) */
- 			{5, "R5_w", "var_off=3D(0x0; 0xfffffffffffffffc)"},
- 			/* (4n) + 14 =3D=3D (4n+2).  We blow our bounds, because
-@@ -513,7 +513,7 @@ static struct bpf_align_test tests[] =3D {
- 			/* Calculated offset in R6 has unknown value, but known
- 			 * alignment of 4.
- 			 */
--			{6, "R2_w", "pkt(off=3D0,r=3D8,imm=3D0)"},
-+			{6, "R2_w", "pkt(r=3D8)"},
- 			{8, "R6_w", "var_off=3D(0x0; 0x3fc)"},
- 			/* Adding 14 makes R6 be (4n+2) */
- 			{9, "R6_w", "var_off=3D(0x2; 0x7fc)"},
-@@ -566,7 +566,7 @@ static struct bpf_align_test tests[] =3D {
- 			/* Calculated offset in R6 has unknown value, but known
- 			 * alignment of 4.
- 			 */
--			{6, "R2_w", "pkt(off=3D0,r=3D8,imm=3D0)"},
-+			{6, "R2_w", "pkt(r=3D8)"},
- 			{9, "R6_w", "var_off=3D(0x0; 0x3c)"},
- 			/* Adding 14 makes R6 be (4n+2) */
- 			{10, "R6_w", "var_off=3D(0x2; 0x7c)"},
-@@ -659,14 +659,14 @@ static int do_test_single(struct bpf_align_test *te=
-st)
- 			/* Check the next line as well in case the previous line
- 			 * did not have a corresponding bpf insn. Example:
- 			 * func#0 @0
--			 * 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-+			 * 0: R1=3Dctx() R10=3Dfp0
- 			 * 0: (b7) r3 =3D 2                 ; R3_w=3D2
- 			 *
- 			 * Sometimes it's actually two lines below, e.g. when
- 			 * searching for "6: R3_w=3Dscalar(umax=3D255,var_off=3D(0x0; 0xff))"=
-:
--			 *   from 4 to 6: R0_w=3Dpkt(off=3D8,r=3D8,imm=3D0) R1=3Dctx(off=3D0,=
-imm=3D0) R2_w=3Dpkt(off=3D0,r=3D8,imm=3D0) R3_w=3Dpkt_end(off=3D0,imm=3D0=
-) R10=3Dfp0
--			 *   6: R0_w=3Dpkt(off=3D8,r=3D8,imm=3D0) R1=3Dctx(off=3D0,imm=3D0) R=
-2_w=3Dpkt(off=3D0,r=3D8,imm=3D0) R3_w=3Dpkt_end(off=3D0,imm=3D0) R10=3Dfp=
-0
--			 *   6: (71) r3 =3D *(u8 *)(r2 +0)           ; R2_w=3Dpkt(off=3D0,r=3D=
-8,imm=3D0) R3_w=3Dscalar(umax=3D255,var_off=3D(0x0; 0xff))
-+			 *   from 4 to 6: R0_w=3Dpkt(off=3D8,r=3D8) R1=3Dctx() R2_w=3Dpkt(r=3D=
-8) R3_w=3Dpkt_end() R10=3Dfp0
-+			 *   6: R0_w=3Dpkt(off=3D8,r=3D8) R1=3Dctx() R2_w=3Dpkt(r=3D8) R3_w=3D=
-pkt_end() R10=3Dfp0
-+			 *   6: (71) r3 =3D *(u8 *)(r2 +0)           ; R2_w=3Dpkt(r=3D8) R3_w=
-=3Dscalar(umax=3D255,var_off=3D(0x0; 0xff))
- 			 */
- 			while (!(p =3D strstr(line_ptr, m.reg)) || !strstr(p, m.match)) {
- 				cur_line =3D -1;
-diff --git a/tools/testing/selftests/bpf/prog_tests/log_buf.c b/tools/tes=
-ting/selftests/bpf/prog_tests/log_buf.c
-index fe9a23e65ef4..0f7ea4d7d9f6 100644
---- a/tools/testing/selftests/bpf/prog_tests/log_buf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/log_buf.c
-@@ -78,7 +78,7 @@ static void obj_load_log_buf(void)
- 	ASSERT_OK_PTR(strstr(libbpf_log_buf, "prog 'bad_prog': BPF program load=
- failed"),
- 		      "libbpf_log_not_empty");
- 	ASSERT_OK_PTR(strstr(obj_log_buf, "DATASEC license"), "obj_log_not_empt=
-y");
--	ASSERT_OK_PTR(strstr(good_log_buf, "0: R1=3Dctx(off=3D0,imm=3D0) R10=3D=
-fp0"),
-+	ASSERT_OK_PTR(strstr(good_log_buf, "0: R1=3Dctx() R10=3Dfp0"),
- 		      "good_log_verbose");
- 	ASSERT_OK_PTR(strstr(bad_log_buf, "invalid access to map value, value_s=
-ize=3D16 off=3D16000 size=3D4"),
- 		      "bad_log_not_empty");
-@@ -175,7 +175,7 @@ static void bpf_prog_load_log_buf(void)
- 	opts.log_level =3D 2;
- 	fd =3D bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "good_prog", "GPL",
- 			   good_prog_insns, good_prog_insn_cnt, &opts);
--	ASSERT_OK_PTR(strstr(log_buf, "0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0")=
-, "good_log_2");
-+	ASSERT_OK_PTR(strstr(log_buf, "0: R1=3Dctx() R10=3Dfp0"), "good_log_2")=
-;
- 	ASSERT_GE(fd, 0, "good_fd2");
- 	if (fd >=3D 0)
- 		close(fd);
-diff --git a/tools/testing/selftests/bpf/prog_tests/spin_lock.c b/tools/t=
-esting/selftests/bpf/prog_tests/spin_lock.c
-index ace65224286f..18d451be57c8 100644
---- a/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-+++ b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
-@@ -13,22 +13,22 @@ static struct {
- 	const char *err_msg;
- } spin_lock_fail_tests[] =3D {
- 	{ "lock_id_kptr_preserve",
--	  "5: (bf) r1 =3D r0                       ; R0_w=3Dptr_foo(id=3D2,ref_=
-obj_id=3D2,off=3D0,imm=3D0) "
--	  "R1_w=3Dptr_foo(id=3D2,ref_obj_id=3D2,off=3D0,imm=3D0) refs=3D2\n6: (=
-85) call bpf_this_cpu_ptr#154\n"
-+	  "5: (bf) r1 =3D r0                       ; R0_w=3Dptr_foo(id=3D2,ref_=
-obj_id=3D2) "
-+	  "R1_w=3Dptr_foo(id=3D2,ref_obj_id=3D2) refs=3D2\n6: (85) call bpf_thi=
-s_cpu_ptr#154\n"
- 	  "R1 type=3Dptr_ expected=3Dpercpu_ptr_" },
- 	{ "lock_id_global_zero",
--	  "; R1_w=3Dmap_value(map=3D.data.A,ks=3D4,vs=3D4,off=3D0,imm=3D0)\n2: =
-(85) call bpf_this_cpu_ptr#154\n"
-+	  "; R1_w=3Dmap_value(map=3D.data.A,ks=3D4,vs=3D4)\n2: (85) call bpf_th=
-is_cpu_ptr#154\n"
- 	  "R1 type=3Dmap_value expected=3Dpercpu_ptr_" },
- 	{ "lock_id_mapval_preserve",
- 	  "[0-9]\\+: (bf) r1 =3D r0                       ;"
--	  " R0_w=3Dmap_value(id=3D1,map=3Darray_map,ks=3D4,vs=3D8,off=3D0,imm=3D=
-0)"
--	  " R1_w=3Dmap_value(id=3D1,map=3Darray_map,ks=3D4,vs=3D8,off=3D0,imm=3D=
-0)\n"
-+	  " R0_w=3Dmap_value(id=3D1,map=3Darray_map,ks=3D4,vs=3D8)"
-+	  " R1_w=3Dmap_value(id=3D1,map=3Darray_map,ks=3D4,vs=3D8)\n"
- 	  "[0-9]\\+: (85) call bpf_this_cpu_ptr#154\n"
- 	  "R1 type=3Dmap_value expected=3Dpercpu_ptr_" },
- 	{ "lock_id_innermapval_preserve",
- 	  "[0-9]\\+: (bf) r1 =3D r0                      ;"
--	  " R0=3Dmap_value(id=3D2,ks=3D4,vs=3D8,off=3D0,imm=3D0)"
--	  " R1_w=3Dmap_value(id=3D2,ks=3D4,vs=3D8,off=3D0,imm=3D0)\n"
-+	  " R0=3Dmap_value(id=3D2,ks=3D4,vs=3D8)"
-+	  " R1_w=3Dmap_value(id=3D2,ks=3D4,vs=3D8)\n"
- 	  "[0-9]\\+: (85) call bpf_this_cpu_ptr#154\n"
- 	  "R1 type=3Dmap_value expected=3Dpercpu_ptr_" },
- 	{ "lock_id_mismatch_kptr_kptr", "bpf_spin_unlock of different lock" },
+diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/=
+testing/selftests/bpf/prog_tests/reg_bounds.c
+index 7a8b0bf0a7f8..fd4ab23e6f54 100644
+--- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+@@ -13,10 +13,13 @@
+  */
+ #define U64_MAX ((u64)UINT64_MAX)
+ #define U32_MAX ((u32)UINT_MAX)
++#define U16_MAX ((u32)UINT_MAX)
+ #define S64_MIN ((s64)INT64_MIN)
+ #define S64_MAX ((s64)INT64_MAX)
+ #define S32_MIN ((s32)INT_MIN)
+ #define S32_MAX ((s32)INT_MAX)
++#define S16_MIN ((s16)0x80000000)
++#define S16_MAX ((s16)0x7fffffff)
+=20
+ typedef unsigned long long ___u64;
+ typedef unsigned int ___u32;
+@@ -138,13 +141,17 @@ static enum num_t t_unsigned(enum num_t t)
+ 	}
+ }
+=20
++#define UNUM_MAX_DECIMAL U16_MAX
++#define SNUM_MAX_DECIMAL S16_MAX
++#define SNUM_MIN_DECIMAL S16_MIN
++
+ static bool num_is_small(enum num_t t, u64 x)
+ {
+ 	switch (t) {
+-	case U64: return (u64)x <=3D 256;
+-	case U32: return (u32)x <=3D 256;
+-	case S64: return (s64)x >=3D -256 && (s64)x <=3D 256;
+-	case S32: return (s32)x >=3D -256 && (s32)x <=3D 256;
++	case U64: return (u64)x <=3D UNUM_MAX_DECIMAL;
++	case U32: return (u32)x <=3D UNUM_MAX_DECIMAL;
++	case S64: return (s64)x >=3D SNUM_MIN_DECIMAL && (s64)x <=3D SNUM_MAX_D=
+ECIMAL;
++	case S32: return (s32)x >=3D SNUM_MIN_DECIMAL && (s32)x <=3D SNUM_MAX_D=
+ECIMAL;
+ 	default: printf("num_is_small!\n"); exit(1);
+ 	}
+ }
+@@ -1023,20 +1030,19 @@ static int parse_reg_state(const char *s, struct =
+reg_state *reg)
+ 	 */
+ 	struct {
+ 		const char *pfx;
+-		const char *fmt;
+ 		u64 *dst, def;
+ 		bool is_32, is_set;
+ 	} *f, fields[8] =3D {
+-		{"smin=3D", "%lld", &reg->r[S64].a, S64_MIN},
+-		{"smax=3D", "%lld", &reg->r[S64].b, S64_MAX},
+-		{"umin=3D", "%llu", &reg->r[U64].a, 0},
+-		{"umax=3D", "%llu", &reg->r[U64].b, U64_MAX},
+-		{"smin32=3D", "%lld", &reg->r[S32].a, (u32)S32_MIN, true},
+-		{"smax32=3D", "%lld", &reg->r[S32].b, (u32)S32_MAX, true},
+-		{"umin32=3D", "%llu", &reg->r[U32].a, 0,            true},
+-		{"umax32=3D", "%llu", &reg->r[U32].b, U32_MAX,      true},
++		{"smin=3D", &reg->r[S64].a, S64_MIN},
++		{"smax=3D", &reg->r[S64].b, S64_MAX},
++		{"umin=3D", &reg->r[U64].a, 0},
++		{"umax=3D", &reg->r[U64].b, U64_MAX},
++		{"smin32=3D", &reg->r[S32].a, (u32)S32_MIN, true},
++		{"smax32=3D", &reg->r[S32].b, (u32)S32_MAX, true},
++		{"umin32=3D", &reg->r[U32].a, 0,            true},
++		{"umax32=3D", &reg->r[U32].b, U32_MAX,      true},
+ 	};
+-	const char *p, *fmt;
++	const char *p;
+ 	int i;
+=20
+ 	p =3D strchr(s, '=3D');
+@@ -1050,8 +1056,13 @@ static int parse_reg_state(const char *s, struct r=
+eg_state *reg)
+ 		long long sval;
+ 		enum num_t t;
+=20
+-		if (sscanf(p, "%lld", &sval) !=3D 1)
+-			return -EINVAL;
++		if (p[0] =3D=3D '0' && p[1] =3D=3D 'x') {
++			if (sscanf(p, "%llx", &sval) !=3D 1)
++				return -EINVAL;
++		} else {
++			if (sscanf(p, "%lld", &sval) !=3D 1)
++				return -EINVAL;
++		}
+=20
+ 		reg->valid =3D true;
+ 		for (t =3D first_t; t <=3D last_t; t++) {
+@@ -1075,9 +1086,13 @@ static int parse_reg_state(const char *s, struct r=
+eg_state *reg)
+=20
+ 		if (mcnt) {
+ 			/* populate all matched fields */
+-			fmt =3D fields[midxs[0]].fmt;
+-			if (sscanf(p, fmt, &val) !=3D 1)
+-				return -EINVAL;
++			if (p[0] =3D=3D '0' && p[1] =3D=3D 'x') {
++				if (sscanf(p, "%llx", &val) !=3D 1)
++					return -EINVAL;
++			} else {
++				if (sscanf(p, "%lld", &val) !=3D 1)
++					return -EINVAL;
++			}
+=20
+ 			for (i =3D 0; i < mcnt; i++) {
+ 				f =3D &fields[midxs[i]];
 diff --git a/tools/testing/selftests/bpf/progs/exceptions_assert.c b/tool=
 s/testing/selftests/bpf/progs/exceptions_assert.c
-index e1e5c54a6a11..26f7d67432cc 100644
+index 26f7d67432cc..49efaed143fc 100644
 --- a/tools/testing/selftests/bpf/progs/exceptions_assert.c
 +++ b/tools/testing/selftests/bpf/progs/exceptions_assert.c
-@@ -59,7 +59,7 @@ check_assert(s64, ge, neg, INT_MIN);
+@@ -18,48 +18,48 @@
+ 		return *(u64 *)num;					\
+ 	}
+=20
+-__msg(": R0_w=3D-2147483648 R10=3Dfp0")
++__msg(": R0_w=3D0xffffffff80000000 R10=3Dfp0")
+ check_assert(s64, eq, int_min, INT_MIN);
+-__msg(": R0_w=3D2147483647 R10=3Dfp0")
++__msg(": R0_w=3D0x7fffffff R10=3Dfp0")
+ check_assert(s64, eq, int_max, INT_MAX);
+ __msg(": R0_w=3D0 R10=3Dfp0")
+ check_assert(s64, eq, zero, 0);
+-__msg(": R0_w=3D-9223372036854775808 R1_w=3D-9223372036854775808 R10=3Df=
+p0")
++__msg(": R0_w=3D0x8000000000000000 R1_w=3D0x8000000000000000 R10=3Dfp0")
+ check_assert(s64, eq, llong_min, LLONG_MIN);
+-__msg(": R0_w=3D9223372036854775807 R1_w=3D9223372036854775807 R10=3Dfp0=
+")
++__msg(": R0_w=3D0x7fffffffffffffff R1_w=3D0x7fffffffffffffff R10=3Dfp0")
+ check_assert(s64, eq, llong_max, LLONG_MAX);
+=20
+-__msg(": R0_w=3Dscalar(smax=3D2147483646) R10=3Dfp0")
++__msg(": R0_w=3Dscalar(smax=3D0x7ffffffe) R10=3Dfp0")
+ check_assert(s64, lt, pos, INT_MAX);
+-__msg(": R0_w=3Dscalar(smax=3D-1,umin=3D9223372036854775808,var_off=3D(0=
+x8000000000000000; 0x7fffffffffffffff))")
++__msg(": R0_w=3Dscalar(smax=3D-1,umin=3D0x8000000000000000,var_off=3D(0x=
+8000000000000000; 0x7fffffffffffffff))")
+ check_assert(s64, lt, zero, 0);
+-__msg(": R0_w=3Dscalar(smax=3D-2147483649,umin=3D9223372036854775808,uma=
+x=3D18446744071562067967,var_off=3D(0x8000000000000000; 0x7ffffffffffffff=
+f))")
++__msg(": R0_w=3Dscalar(smax=3D0xffffffff7fffffff,umin=3D0x80000000000000=
+00,umax=3D0xffffffff7fffffff,var_off=3D(0x8000000000000000; 0x7ffffffffff=
+fffff))")
+ check_assert(s64, lt, neg, INT_MIN);
+=20
+-__msg(": R0_w=3Dscalar(smax=3D2147483647) R10=3Dfp0")
++__msg(": R0_w=3Dscalar(smax=3D0x7fffffff) R10=3Dfp0")
+ check_assert(s64, le, pos, INT_MAX);
+ __msg(": R0_w=3Dscalar(smax=3D0) R10=3Dfp0")
+ check_assert(s64, le, zero, 0);
+-__msg(": R0_w=3Dscalar(smax=3D-2147483648,umin=3D9223372036854775808,uma=
+x=3D18446744071562067968,var_off=3D(0x8000000000000000; 0x7ffffffffffffff=
+f))")
++__msg(": R0_w=3Dscalar(smax=3D0xffffffff80000000,umin=3D0x80000000000000=
+00,umax=3D0xffffffff80000000,var_off=3D(0x8000000000000000; 0x7ffffffffff=
+fffff))")
+ check_assert(s64, le, neg, INT_MIN);
+=20
+-__msg(": R0_w=3Dscalar(smin=3Dumin=3D2147483648,umax=3D92233720368547758=
+07,var_off=3D(0x0; 0x7fffffffffffffff))")
++__msg(": R0_w=3Dscalar(smin=3Dumin=3D0x80000000,umax=3D0x7ffffffffffffff=
+f,var_off=3D(0x0; 0x7fffffffffffffff))")
+ check_assert(s64, gt, pos, INT_MAX);
+-__msg(": R0_w=3Dscalar(smin=3Dumin=3D1,umax=3D9223372036854775807,var_of=
+f=3D(0x0; 0x7fffffffffffffff))")
++__msg(": R0_w=3Dscalar(smin=3Dumin=3D1,umax=3D0x7fffffffffffffff,var_off=
+=3D(0x0; 0x7fffffffffffffff))")
+ check_assert(s64, gt, zero, 0);
+-__msg(": R0_w=3Dscalar(smin=3D-2147483647) R10=3Dfp0")
++__msg(": R0_w=3Dscalar(smin=3D0xffffffff80000001) R10=3Dfp0")
+ check_assert(s64, gt, neg, INT_MIN);
+=20
+-__msg(": R0_w=3Dscalar(smin=3Dumin=3D2147483647,umax=3D92233720368547758=
+07,var_off=3D(0x0; 0x7fffffffffffffff))")
++__msg(": R0_w=3Dscalar(smin=3Dumin=3D0x7fffffff,umax=3D0x7ffffffffffffff=
+f,var_off=3D(0x0; 0x7fffffffffffffff))")
+ check_assert(s64, ge, pos, INT_MAX);
+-__msg(": R0_w=3Dscalar(smin=3D0,umax=3D9223372036854775807,var_off=3D(0x=
+0; 0x7fffffffffffffff)) R10=3Dfp0")
++__msg(": R0_w=3Dscalar(smin=3D0,umax=3D0x7fffffffffffffff,var_off=3D(0x0=
+; 0x7fffffffffffffff)) R10=3Dfp0")
+ check_assert(s64, ge, zero, 0);
+-__msg(": R0_w=3Dscalar(smin=3D-2147483648) R10=3Dfp0")
++__msg(": R0_w=3Dscalar(smin=3D0xffffffff80000000) R10=3Dfp0")
+ check_assert(s64, ge, neg, INT_MIN);
 =20
  SEC("?tc")
  __log_level(2) __failure
--__msg(": R0=3D0 R1=3Dctx(off=3D0,imm=3D0) R2=3Dscalar(smin=3Dsmin32=3D-2=
-147483646,smax=3Dsmax32=3D2147483645) R10=3Dfp0")
-+__msg(": R0=3D0 R1=3Dctx() R2=3Dscalar(smin=3Dsmin32=3D-2147483646,smax=3D=
+-__msg(": R0=3D0 R1=3Dctx() R2=3Dscalar(smin=3Dsmin32=3D-2147483646,smax=3D=
 smax32=3D2147483645) R10=3Dfp0")
++__msg(": R0=3D0 R1=3Dctx() R2=3Dscalar(smin=3D0xffffffff80000002,smax=3D=
+smax32=3D0x7ffffffd,smin32=3D0x80000002) R10=3Dfp0")
  int check_assert_range_s64(struct __sk_buff *ctx)
  {
  	struct bpf_sock *sk =3D ctx->sk;
-@@ -75,7 +75,7 @@ int check_assert_range_s64(struct __sk_buff *ctx)
-=20
- SEC("?tc")
- __log_level(2) __failure
--__msg(": R1=3Dctx(off=3D0,imm=3D0) R2=3Dscalar(smin=3Dumin=3Dsmin32=3Dum=
-in32=3D4096,smax=3Dumax=3Dsmax32=3Dumax32=3D8192,var_off=3D(0x0; 0x3fff))=
-")
-+__msg(": R1=3Dctx() R2=3Dscalar(smin=3Dumin=3Dsmin32=3Dumin32=3D4096,sma=
-x=3Dumax=3Dsmax32=3Dumax32=3D8192,var_off=3D(0x0; 0x3fff))")
- int check_assert_range_u64(struct __sk_buff *ctx)
- {
- 	u64 num =3D ctx->len;
-@@ -86,7 +86,7 @@ int check_assert_range_u64(struct __sk_buff *ctx)
-=20
- SEC("?tc")
- __log_level(2) __failure
--__msg(": R0=3D0 R1=3Dctx(off=3D0,imm=3D0) R2=3D4096 R10=3Dfp0")
-+__msg(": R0=3D0 R1=3Dctx() R2=3D4096 R10=3Dfp0")
- int check_assert_single_range_s64(struct __sk_buff *ctx)
- {
- 	struct bpf_sock *sk =3D ctx->sk;
-@@ -103,7 +103,7 @@ int check_assert_single_range_s64(struct __sk_buff *c=
-tx)
-=20
- SEC("?tc")
- __log_level(2) __failure
--__msg(": R1=3Dctx(off=3D0,imm=3D0) R2=3D4096 R10=3Dfp0")
-+__msg(": R1=3Dctx() R2=3D4096 R10=3Dfp0")
- int check_assert_single_range_u64(struct __sk_buff *ctx)
- {
- 	u64 num =3D ctx->len;
-@@ -114,7 +114,7 @@ int check_assert_single_range_u64(struct __sk_buff *c=
-tx)
-=20
- SEC("?tc")
- __log_level(2) __failure
--__msg(": R1=3Dpkt(off=3D64,r=3D64,imm=3D0) R2=3Dpkt_end(off=3D0,imm=3D0)=
- R6=3Dpkt(off=3D0,r=3D64,imm=3D0) R10=3Dfp0")
-+__msg(": R1=3Dpkt(off=3D64,r=3D64) R2=3Dpkt_end() R6=3Dpkt(r=3D64) R10=3D=
-fp0")
- int check_assert_generic(struct __sk_buff *ctx)
- {
- 	u8 *data_end =3D (void *)(long)ctx->data_end;
 --=20
 2.34.1
 
