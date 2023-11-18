@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-15299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15303-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3276F7EFD91
-	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 04:47:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EC807EFD96
+	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 04:47:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 817781F23CDF
-	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 03:47:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1AB0B20B13
+	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 03:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8016F6AA1;
-	Sat, 18 Nov 2023 03:47:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC34C8FD;
+	Sat, 18 Nov 2023 03:47:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E22126
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:46:57 -0800 (PST)
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AI2r5Se003655
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:46:57 -0800
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F55D7A
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:03 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AHMWxFj008635
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:03 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uemvd856k-14
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ue4fq64xw-5
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:46:56 -0800
-Received: from twshared40933.03.prn6.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:47:02 -0800
+Received: from twshared44805.48.prn1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 17 Nov 2023 19:46:51 -0800
+ 15.1.2507.34; Fri, 17 Nov 2023 19:46:57 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 1B4583BB2FFB9; Fri, 17 Nov 2023 19:46:43 -0800 (PST)
+	id 279E33BB2FFC4; Fri, 17 Nov 2023 19:46:45 -0800 (PST)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
@@ -37,9 +37,9 @@ CC: <andrii@kernel.org>, <kernel-team@meta.com>,
         Eduard Zingerman
 	<eddyz87@gmail.com>,
         Stanislav Fomichev <sdf@google.com>
-Subject: [PATCH v3 bpf-next 4/8] bpf: print spilled register state in stack slot
-Date: Fri, 17 Nov 2023 19:46:19 -0800
-Message-ID: <20231118034623.3320920-5-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 5/8] bpf: emit map name in register state if applicable and available
+Date: Fri, 17 Nov 2023 19:46:20 -0800
+Message-ID: <20231118034623.3320920-6-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231118034623.3320920-1-andrii@kernel.org>
 References: <20231118034623.3320920-1-andrii@kernel.org>
@@ -52,144 +52,121 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: dFYvlLvj5p98WqtM9MZMDp4D210k-vaq
-X-Proofpoint-ORIG-GUID: dFYvlLvj5p98WqtM9MZMDp4D210k-vaq
+X-Proofpoint-ORIG-GUID: 9jF7RI8A2E1WwUtb16GED_Nj2TD6Jxk2
+X-Proofpoint-GUID: 9jF7RI8A2E1WwUtb16GED_Nj2TD6Jxk2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-18_01,2023-11-17_01,2023-05-22_02
 
-Print the same register state representation when printing stack state,
-as we do for normal registers. Note that if stack slot contains
-subregister spill (1, 2, or 4 byte long), we'll still emit "m0?" mask
-for those bytes that are not part of spilled register.
+In complicated real-world applications, whenever debugging some
+verification error through verifier log, it often would be very useful
+to see map name for PTR_TO_MAP_VALUE register. Usually this needs to be
+inferred from key/value sizes and maybe trying to guess C code location,
+but it's not always clear.
 
-While means we can get something like fp-8=3D0000scalar() for a 4-byte
-spill with other 4 bytes still being STACK_ZERO.
+Given verifier has the name, and it's never too long, let's just emit it
+for ptr_to_map_key, ptr_to_map_value, and const_ptr_to_map registers. We
+reshuffle the order a bit, so that map name, key size, and value size
+appear before offset and immediate values, which seems like a more
+logical order.
 
-Some example before and after, taken from the log of
-pyperf_subprogs.bpf.o:
+Current output:
 
-49: (7b) *(u64 *)(r10 -256) =3D r1      ; frame1: R1_w=3Dctx(off=3D0,imm=3D=
-0) R10=3Dfp0 fp-256_w=3Dctx
-49: (7b) *(u64 *)(r10 -256) =3D r1      ; frame1: R1_w=3Dctx(off=3D0,imm=3D=
-0) R10=3Dfp0 fp-256_w=3Dctx(off=3D0,imm=3D0)
+  R1_w=3Dmap_ptr(map=3Darray_map,ks=3D4,vs=3D8,off=3D0,imm=3D0)
 
-150: (7b) *(u64 *)(r10 -264) =3D r0     ; frame1: R0_w=3Dmap_value_or_nul=
-l(id=3D6,off=3D0,ks=3D192,vs=3D4,imm=3D0) R10=3Dfp0 fp-264_w=3Dmap_value_=
-or_null
-150: (7b) *(u64 *)(r10 -264) =3D r0     ; frame1: R0_w=3Dmap_value_or_nul=
-l(id=3D6,off=3D0,ks=3D192,vs=3D4,imm=3D0) R10=3Dfp0 fp-264_w=3Dmap_value_=
-or_null(id=3D6,off=3D0,ks=3D192,vs=3D4,imm=3D0)
-
-5192: (61) r1 =3D *(u32 *)(r10 -272)    ; frame1: R1_w=3Dscalar(smin=3Dsm=
-in32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf)) R10=3Df=
-p0 fp-272=3D
-5192: (61) r1 =3D *(u32 *)(r10 -272)    ; frame1: R1_w=3Dscalar(smin=3Dsm=
-in32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D15,var_off=3D(0x0; 0xf)) R10=3Df=
-p0 fp-272=3D????scalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D=
-15,var_off=3D(0x0; 0xf))
-
-While at it, do a few other simple clean ups:
-  - skip slot if it's not scratched before detecting whether it's valid;
-  - move taking spilled_reg pointer outside of switch (only DYNPTR has
-    to adjust that to get to the "main" slot);
-  - don't recalculate types_buf second time for MISC/ZERO/default case.
+But we'll get rid of useless off=3D0 and imm=3D0 parts in the next patch.
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Acked-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/log.c | 36 +++++++++++++++++-------------------
- 1 file changed, 17 insertions(+), 19 deletions(-)
+ kernel/bpf/log.c                              | 24 ++++++++++++++-----
+ .../selftests/bpf/prog_tests/spin_lock.c      | 10 ++++----
+ 2 files changed, 23 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-index 05d737e2fab3..97a1641e848e 100644
+index 97a1641e848e..c209ab1ec2b5 100644
 --- a/kernel/bpf/log.c
 +++ b/kernel/bpf/log.c
-@@ -618,7 +618,6 @@ void print_verifier_state(struct bpf_verifier_env *en=
-v, const struct bpf_func_st
- 			  bool print_all)
+@@ -553,6 +553,17 @@ static void print_scalar_ranges(struct bpf_verifier_=
+env *env,
+ 	}
+ }
+=20
++static bool type_is_map_ptr(enum bpf_reg_type t) {
++	switch (base_type(t)) {
++	case CONST_PTR_TO_MAP:
++	case PTR_TO_MAP_KEY:
++	case PTR_TO_MAP_VALUE:
++		return true;
++	default:
++		return false;
++	}
++}
++
+ static void print_reg_state(struct bpf_verifier_env *env, const struct b=
+pf_reg_state *reg)
  {
- 	const struct bpf_reg_state *reg;
--	enum bpf_reg_type t;
- 	int i;
-=20
- 	if (state->frameno)
-@@ -637,32 +636,38 @@ void print_verifier_state(struct bpf_verifier_env *=
-env, const struct bpf_func_st
- 	for (i =3D 0; i < state->allocated_stack / BPF_REG_SIZE; i++) {
- 		char types_buf[BPF_REG_SIZE + 1];
- 		bool valid =3D false;
-+		u8 slot_type;
- 		int j;
-=20
-+		if (!print_all && !stack_slot_scratched(env, i))
-+			continue;
-+
- 		for (j =3D 0; j < BPF_REG_SIZE; j++) {
--			if (state->stack[i].slot_type[j] !=3D STACK_INVALID)
-+			slot_type =3D state->stack[i].slot_type[j];
-+			if (slot_type !=3D STACK_INVALID)
- 				valid =3D true;
--			types_buf[j] =3D slot_type_char[state->stack[i].slot_type[j]];
-+			types_buf[j] =3D slot_type_char[slot_type];
- 		}
- 		types_buf[BPF_REG_SIZE] =3D 0;
- 		if (!valid)
- 			continue;
--		if (!print_all && !stack_slot_scratched(env, i))
--			continue;
-+
-+		reg =3D &state->stack[i].spilled_ptr;
- 		switch (state->stack[i].slot_type[BPF_REG_SIZE - 1]) {
- 		case STACK_SPILL:
--			reg =3D &state->stack[i].spilled_ptr;
--			t =3D reg->type;
-+			/* print MISC/ZERO/INVALID slots above subreg spill */
-+			for (j =3D 0; j < BPF_REG_SIZE; j++)
-+				if (state->stack[i].slot_type[j] =3D=3D STACK_SPILL)
-+					break;
-+			types_buf[j] =3D '\0';
-=20
- 			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
- 			print_liveness(env, reg->live);
--			verbose(env, "=3D%s", t =3D=3D SCALAR_VALUE ? "" : reg_type_str(env, =
-t));
--			if (t =3D=3D SCALAR_VALUE && reg->precise)
--				verbose(env, "P");
--			if (t =3D=3D SCALAR_VALUE && tnum_is_const(reg->var_off))
--				verbose(env, "%lld", reg->var_off.value + reg->off);
-+			verbose(env, "=3D%s", types_buf);
-+			print_reg_state(env, reg);
- 			break;
- 		case STACK_DYNPTR:
-+			/* skip to main dynptr slot */
- 			i +=3D BPF_DYNPTR_NR_SLOTS - 1;
- 			reg =3D &state->stack[i].spilled_ptr;
-=20
-@@ -674,7 +679,6 @@ void print_verifier_state(struct bpf_verifier_env *en=
-v, const struct bpf_func_st
- 			break;
- 		case STACK_ITER:
- 			/* only main slot has ref_obj_id set; skip others */
--			reg =3D &state->stack[i].spilled_ptr;
- 			if (!reg->ref_obj_id)
- 				continue;
-=20
-@@ -688,12 +692,6 @@ void print_verifier_state(struct bpf_verifier_env *e=
-nv, const struct bpf_func_st
- 		case STACK_MISC:
- 		case STACK_ZERO:
- 		default:
--			reg =3D &state->stack[i].spilled_ptr;
--
--			for (j =3D 0; j < BPF_REG_SIZE; j++)
--				types_buf[j] =3D slot_type_char[state->stack[i].slot_type[j]];
--			types_buf[BPF_REG_SIZE] =3D 0;
--
- 			verbose(env, " fp%d", (-i - 1) * BPF_REG_SIZE);
- 			print_liveness(env, reg->live);
- 			verbose(env, "=3D%s", types_buf);
+ 	enum bpf_reg_type t;
+@@ -584,16 +595,17 @@ static void print_reg_state(struct bpf_verifier_env=
+ *env, const struct bpf_reg_s
+ 		verbose_a("ref_obj_id=3D%d", reg->ref_obj_id);
+ 	if (type_is_non_owning_ref(reg->type))
+ 		verbose_a("%s", "non_own_ref");
++	if (type_is_map_ptr(t)) {
++		if (reg->map_ptr->name[0])
++			verbose_a("map=3D%s", reg->map_ptr->name);
++		verbose_a("ks=3D%d,vs=3D%d",
++			  reg->map_ptr->key_size,
++			  reg->map_ptr->value_size);
++	}
+ 	if (t !=3D SCALAR_VALUE)
+ 		verbose_a("off=3D%d", reg->off);
+ 	if (type_is_pkt_pointer(t))
+ 		verbose_a("r=3D%d", reg->range);
+-	else if (base_type(t) =3D=3D CONST_PTR_TO_MAP ||
+-		 base_type(t) =3D=3D PTR_TO_MAP_KEY ||
+-		 base_type(t) =3D=3D PTR_TO_MAP_VALUE)
+-		verbose_a("ks=3D%d,vs=3D%d",
+-			  reg->map_ptr->key_size,
+-			  reg->map_ptr->value_size);
+ 	if (tnum_is_const(reg->var_off)) {
+ 		/* Typically an immediate SCALAR_VALUE, but
+ 		 * could be a pointer whose offset is too big
+diff --git a/tools/testing/selftests/bpf/prog_tests/spin_lock.c b/tools/t=
+esting/selftests/bpf/prog_tests/spin_lock.c
+index f29c08d93beb..ace65224286f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/spin_lock.c
++++ b/tools/testing/selftests/bpf/prog_tests/spin_lock.c
+@@ -17,18 +17,18 @@ static struct {
+ 	  "R1_w=3Dptr_foo(id=3D2,ref_obj_id=3D2,off=3D0,imm=3D0) refs=3D2\n6: (=
+85) call bpf_this_cpu_ptr#154\n"
+ 	  "R1 type=3Dptr_ expected=3Dpercpu_ptr_" },
+ 	{ "lock_id_global_zero",
+-	  "; R1_w=3Dmap_value(off=3D0,ks=3D4,vs=3D4,imm=3D0)\n2: (85) call bpf_=
+this_cpu_ptr#154\n"
++	  "; R1_w=3Dmap_value(map=3D.data.A,ks=3D4,vs=3D4,off=3D0,imm=3D0)\n2: =
+(85) call bpf_this_cpu_ptr#154\n"
+ 	  "R1 type=3Dmap_value expected=3Dpercpu_ptr_" },
+ 	{ "lock_id_mapval_preserve",
+ 	  "[0-9]\\+: (bf) r1 =3D r0                       ;"
+-	  " R0_w=3Dmap_value(id=3D1,off=3D0,ks=3D4,vs=3D8,imm=3D0)"
+-	  " R1_w=3Dmap_value(id=3D1,off=3D0,ks=3D4,vs=3D8,imm=3D0)\n"
++	  " R0_w=3Dmap_value(id=3D1,map=3Darray_map,ks=3D4,vs=3D8,off=3D0,imm=3D=
+0)"
++	  " R1_w=3Dmap_value(id=3D1,map=3Darray_map,ks=3D4,vs=3D8,off=3D0,imm=3D=
+0)\n"
+ 	  "[0-9]\\+: (85) call bpf_this_cpu_ptr#154\n"
+ 	  "R1 type=3Dmap_value expected=3Dpercpu_ptr_" },
+ 	{ "lock_id_innermapval_preserve",
+ 	  "[0-9]\\+: (bf) r1 =3D r0                      ;"
+-	  " R0=3Dmap_value(id=3D2,off=3D0,ks=3D4,vs=3D8,imm=3D0)"
+-	  " R1_w=3Dmap_value(id=3D2,off=3D0,ks=3D4,vs=3D8,imm=3D0)\n"
++	  " R0=3Dmap_value(id=3D2,ks=3D4,vs=3D8,off=3D0,imm=3D0)"
++	  " R1_w=3Dmap_value(id=3D2,ks=3D4,vs=3D8,off=3D0,imm=3D0)\n"
+ 	  "[0-9]\\+: (85) call bpf_this_cpu_ptr#154\n"
+ 	  "R1 type=3Dmap_value expected=3Dpercpu_ptr_" },
+ 	{ "lock_id_mismatch_kptr_kptr", "bpf_spin_unlock of different lock" },
 --=20
 2.34.1
 
