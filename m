@@ -1,57 +1,58 @@
-Return-Path: <bpf+bounces-15281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A5727EFCF3
-	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 02:34:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED2A77EFCF4
+	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 02:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5B8EB20B27
-	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 01:34:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8C6DB20B9E
+	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 01:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04746110C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1580111A;
 	Sat, 18 Nov 2023 01:34:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ig6H6B9G"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P/gP6WG+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C58AD79
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 17:34:08 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5094cb3a036so3820223e87.2
-        for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 17:34:08 -0800 (PST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172B7D6C
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 17:34:09 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9fa45e75ed9so26038466b.1
+        for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 17:34:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700271246; x=1700876046; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pihGi/vPQR0VfAmtQvVQ2ZNidR8XzZq5eJAmI4p3c+U=;
-        b=ig6H6B9GfcyR/yQoM4+tpgNiPttOX7NpWNJeyC9frXL7z0s64z2zbcWTUPnb98y2Wu
-         CrpYQNlCCIdGPBYTCnRWT3PMzmfzZQpCA2BSWsw7n+hDQ+n7V9YJE7j/ud4zi1lXgoCz
-         7Rz8qNNtgLaLhH+xvqh/eMRkFoJSeWSn/dqWcN2zYsx68yVL93kG0dPpvUW/dfoRWwLN
-         d+J3TT99gWcX98Cc7Ra44Lx5EMcdD40Mx4CQTIbD/8RznZQcL2E9q1JaYz+Wpfgh7po4
-         lG6mQR2GxxRpDw/ycADSoZpno+HnIj+LyPjl6IirwVReO8CacghXnmYHocvUwAQJJQxb
-         e7Ag==
+        d=gmail.com; s=20230601; t=1700271247; x=1700876047; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q54AApPDQlPpB/oCFac6IGlMYTF/fqY4mhrc95TTVjo=;
+        b=P/gP6WG+f15X4cF6B/+ugfPAfqO2A0eq7Svnjn7DCoz6R74z+sBg6c86BKxzqj0zq8
+         tLPV22VoSkh7smx/NtzbBtFhku7S3Peo7dFbvqi+F0EDZFdlR9Gz1u0A4dK0qAxqvV+F
+         LGVMMn5sEjs5nXQvs8BHOfn1NzjYYjNgDB5lOWM2iL+QyQmRGj0XbVtQF2JPmMsbHzFw
+         6H26VxGSURmRv57jusW1FW9+maQrPSNWULvkaSOFB/RRfgBY2yy0GCVuXj0uYHAlz/Z3
+         3CWtP1tkYa2mOjPYH+KaTsttX2aY66st+3RTWXPFcPFyg1qyV2eDnH8AeoJaJnNNuvjB
+         BZSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700271246; x=1700876046;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pihGi/vPQR0VfAmtQvVQ2ZNidR8XzZq5eJAmI4p3c+U=;
-        b=Kae45PlzqLYhMy9gpBv+6GmIqCU6SPSBpIxKmLGUWB7dz4hH08u7+v7EzPuBg9aB7j
-         maptTM94Zn5lEs8y7lRWtwjf1ABWBmv3TZfxNdWeRiY+6Fa0u1577s1odssfJQQcIbAk
-         6XBWo6IJYD2PcW7xIb3nF97IsjMHUKpcbdnVw8Epd2QOUL0KEhqKQtS/jnCfeTF+mVWx
-         BTzV6RX3Sv+JYAzhrSuV+xmsBH2unqYiqo6kocaH9YWwvXGX8y2E7jJm5tUk4SuuGFNu
-         X4vkQ8WabofFZFg8H738mEn8a51BqART4OocBQzfowE1NgTLgw0IKS/Fdh/eRiZiBDQG
-         qvcw==
-X-Gm-Message-State: AOJu0YzTDPVnHFc/FT5PTeizFF4sQI5c2k8/uP+8YBqlTpuMN83sJnZK
-	8yCchGHNZ/11YkNiC0hhJEj6x0oyUtqQnA==
-X-Google-Smtp-Source: AGHT+IGWLygOfY6Ey79gowomZiUhEeobP34ive+BHjycKMQl2oPNhTnqRHSUnnktybEC/61P74FAGQ==
-X-Received: by 2002:a05:6512:1056:b0:50a:a006:77bc with SMTP id c22-20020a056512105600b0050aa00677bcmr1019431lfb.58.1700271245737;
-        Fri, 17 Nov 2023 17:34:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700271247; x=1700876047;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q54AApPDQlPpB/oCFac6IGlMYTF/fqY4mhrc95TTVjo=;
+        b=fR4aXnyyOXruE4jFdOpCsy58EWZQUCkw7pawGMJxugOpZP9aLo93EAc9AAl+OAkTnT
+         hN8bPztcENwUhqw/3UZxplQSU2gqCLwnqYEAF3k2u+A0gChqCOJeuJONM8K3hWSP/3Bw
+         DCyFTouVKauToeV2sK09mdKdCdBgYmXN5qwXXIvbVWSKvqXCZzT8zsTIkrfan13dhinM
+         WsAFg4hxkx6ccsFJurHlvuavg10aVvRgi5CmEoJbaKccEEzOeHVvMEYx4L7XpG8NTh4h
+         av7hshvrF86TbxAxvh05Spe3vvcVjt5gfhpUbDB9392kdktIwf84izEfZx/vtPJt8wM6
+         gNRg==
+X-Gm-Message-State: AOJu0YzwUsVkF8HV76C7Tpo6AqZqxxIHjPYlnWyhVQ17lnl1kmTVzrbs
+	qscYxH2bmbYXAfj2h9cuNU+g0SME9RQ=
+X-Google-Smtp-Source: AGHT+IHIlrthGyaSDVk6bNwUSfrL7uBtgFXPXvCTR+X+NJ14ByNFOe3WmB9xYDvo5k1eHf7+LSSg4g==
+X-Received: by 2002:a17:906:2496:b0:9b2:b786:5e9c with SMTP id e22-20020a170906249600b009b2b7865e9cmr700157ejb.28.1700271247108;
+        Fri, 17 Nov 2023 17:34:07 -0800 (PST)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id v27-20020a170906489b00b009d2eb40ff9dsm1359284ejq.33.2023.11.17.17.34.04
+        by smtp.gmail.com with ESMTPSA id v27-20020a170906489b00b009d2eb40ff9dsm1359284ejq.33.2023.11.17.17.34.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 17:34:05 -0800 (PST)
+        Fri, 17 Nov 2023 17:34:06 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -63,10 +64,12 @@ Cc: andrii@kernel.org,
 	memxor@gmail.com,
 	awerner32@gmail.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf v2 00/11] verify callbacks as if they are called unknown number of times
-Date: Sat, 18 Nov 2023 03:33:44 +0200
-Message-ID: <20231118013355.7943-1-eddyz87@gmail.com>
+Subject: [PATCH bpf v2 01/11] selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
+Date: Sat, 18 Nov 2023 03:33:45 +0200
+Message-ID: <20231118013355.7943-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.42.1
+In-Reply-To: <20231118013355.7943-1-eddyz87@gmail.com>
+References: <20231118013355.7943-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,104 +78,175 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series updates verifier logic for callback functions handling.
-Current master simulates callback body execution exactly once,
-which leads to verifier not detecting unsafe programs like below:
+This change prepares syncookie_{tc,xdp} for update in callbakcs
+verification logic. To allow bpf_loop() verification converge when
+multiple callback itreations are considered:
+- track offset inside TCP payload explicitly, not as a part of the
+  pointer;
+- make sure that offset does not exceed MAX_PACKET_OFF enforced by
+  verifier;
+- make sure that offset is tracked as unbound scalar between
+  iterations, otherwise verifier won't be able infer that bpf_loop
+  callback reaches identical states.
 
-    static int unsafe_on_zero_iter_cb(__u32 idx, struct num_context *ctx)
-    {
-        ctx->i = 0;
-        return 0;
-    }
-    
-    SEC("?raw_tp")
-    int unsafe_on_zero_iter(void *unused)
-    {
-        struct num_context loop_ctx = { .i = 32 };
-        __u8 choice_arr[2] = { 0, 1 };
-    
-        bpf_loop(100, unsafe_on_zero_iter_cb, &loop_ctx, 0);
-        return choice_arr[loop_ctx.i];
-    }
-    
-This was reported previously in [0].
-The basic idea of the fix is to schedule callback entry state for
-verification in env->head until some identical, previously visited
-state in current DFS state traversal is found. Same logic as with open
-coded iterators, and builds on top recent fixes [1] for those.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ .../selftests/bpf/progs/xdp_synproxy_kern.c   | 84 ++++++++++++-------
+ 1 file changed, 52 insertions(+), 32 deletions(-)
 
-The series is structured as follows:
-- patches #1,2,3 update strobemeta, xdp_synproxy selftests and
-  bpf_loop_bench benchmark to allow convergence of the bpf_loop
-  callback states;
-- patches #4,5 just shuffle the code a bit;
-- patch #6 is the main part of the series;
-- patch #7 adds test cases for #6;
-- patch #8 extend patch #6 with same speculative scalar widening
-  logic, as used for open coded iterators;
-- patch #9 adds test cases for #8;
-- patch #10 extends patch #6 to track maximal number of callback
-  executions specifically for bpf_loop();
-- patch #11 adds test cases for #10.
-
-Veristat results comparing this series to master+patches #1,2,3 using selftests
-show the following difference:
-
-File                       Program        States (A)  States (B)  States (DIFF)
--------------------------  -------------  ----------  ----------  -------------
-bpf_loop_bench.bpf.o       benchmark               1           2  +1 (+100.00%)
-pyperf600_bpf_loop.bpf.o   on_event              322         407  +85 (+26.40%)
-strobemeta_bpf_loop.bpf.o  on_event              113         151  +38 (+33.63%)
-xdp_synproxy_kern.bpf.o    syncookie_tc          341         291  -50 (-14.66%)
-xdp_synproxy_kern.bpf.o    syncookie_xdp         344         301  -43 (-12.50%)
-
-Veristat results comparing this series to master using Tetragon BPF
-files [2] also show some differences.
-States diff varies from +2% to +15% on 23 programs out of 186,
-no new failures.
-
-Changelog V1 [3] -> V2, changes suggested by Andrii:
-- small changes for error handling code in __check_func_call();
-- callback body processing log is now matched in relevant
-  verifier_subprog_precision.c tests;
-- R1 passed to bpf_loop() is now always marked as precise;
-- log level 2 message for bpf_loop() iteration termination instead of
-  iteration depth messages;
-- __no_msg macro removed;
-- bpf_loop_iter_limit_nested updated to avoid using __no_msg;
-- commit message for patch #3 updated according to Alexei's request.
-
-[0] https://lore.kernel.org/bpf/CA+vRuzPChFNXmouzGG+wsy=6eMcfr1mFG0F3g7rbg-sedGKW3w@mail.gmail.com/
-[1] https://lore.kernel.org/bpf/20231024000917.12153-1-eddyz87@gmail.com/
-[2] git@github.com:cilium/tetragon.git
-[3] https://lore.kernel.org/bpf/20231116021803.9982-1-eddyz87@gmail.com/T/#t
-
-Eduard Zingerman (11):
-  selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
-  selftests/bpf: track string payload offset as scalar in strobemeta
-  selftests/bpf: fix bpf_loop_bench for new callback verification scheme
-  bpf: extract __check_reg_arg() utility function
-  bpf: extract setup_func_entry() utility function
-  bpf: verify callbacks as if they are called unknown number of times
-  selftests/bpf: tests for iterating callbacks
-  bpf: widening for callback iterators
-  selftests/bpf: test widening for iterating callbacks
-  bpf: keep track of max number of bpf_loop callback iterations
-  selftests/bpf: check if max number of bpf_loop iterations is tracked
-
- include/linux/bpf_verifier.h                  |  14 +
- kernel/bpf/verifier.c                         | 395 ++++++++++++------
- .../selftests/bpf/prog_tests/verifier.c       |   2 +
- .../selftests/bpf/progs/bpf_loop_bench.c      |  13 +-
- tools/testing/selftests/bpf/progs/cb_refs.c   |   1 +
- .../selftests/bpf/progs/exceptions_fail.c     |   2 +
- .../testing/selftests/bpf/progs/strobemeta.h  |  78 ++--
- .../bpf/progs/verifier_iterating_callbacks.c  | 250 +++++++++++
- .../bpf/progs/verifier_subprog_precision.c    |  80 +++-
- .../selftests/bpf/progs/xdp_synproxy_kern.c   |  84 ++--
- 10 files changed, 702 insertions(+), 217 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-
+diff --git a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+index e959336c7a73..80f620602d50 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
++++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
+@@ -53,6 +53,8 @@
+ #define DEFAULT_TTL 64
+ #define MAX_ALLOWED_PORTS 8
+ 
++#define MAX_PACKET_OFF 0xffff
++
+ #define swap(a, b) \
+ 	do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
+ 
+@@ -183,63 +185,76 @@ static __always_inline __u32 tcp_clock_ms(void)
+ }
+ 
+ struct tcpopt_context {
+-	__u8 *ptr;
+-	__u8 *end;
++	void *data;
+ 	void *data_end;
+ 	__be32 *tsecr;
+ 	__u8 wscale;
+ 	bool option_timestamp;
+ 	bool option_sack;
++	__u32 off;
+ };
+ 
+-static int tscookie_tcpopt_parse(struct tcpopt_context *ctx)
++static __always_inline u8 *next(struct tcpopt_context *ctx, __u32 sz)
+ {
+-	__u8 opcode, opsize;
++	__u64 off = ctx->off;
++	__u8 *data;
+ 
+-	if (ctx->ptr >= ctx->end)
+-		return 1;
+-	if (ctx->ptr >= ctx->data_end)
+-		return 1;
++	/* Verifier forbids access to packet when offset exceeds MAX_PACKET_OFF */
++	if (off > MAX_PACKET_OFF - sz)
++		return NULL;
+ 
+-	opcode = ctx->ptr[0];
++	data = ctx->data + off;
++	barrier_var(data);
++	if (data + sz >= ctx->data_end)
++		return NULL;
+ 
+-	if (opcode == TCPOPT_EOL)
+-		return 1;
+-	if (opcode == TCPOPT_NOP) {
+-		++ctx->ptr;
+-		return 0;
+-	}
++	ctx->off += sz;
++	return data;
++}
+ 
+-	if (ctx->ptr + 1 >= ctx->end)
+-		return 1;
+-	if (ctx->ptr + 1 >= ctx->data_end)
++static int tscookie_tcpopt_parse(struct tcpopt_context *ctx)
++{
++	__u8 *opcode, *opsize, *wscale, *tsecr;
++	__u32 off = ctx->off;
++
++	opcode = next(ctx, 1);
++	if (!opcode)
+ 		return 1;
+-	opsize = ctx->ptr[1];
+-	if (opsize < 2)
++
++	if (*opcode == TCPOPT_EOL)
+ 		return 1;
++	if (*opcode == TCPOPT_NOP)
++		return 0;
+ 
+-	if (ctx->ptr + opsize > ctx->end)
++	opsize = next(ctx, 1);
++	if (!opsize || *opsize < 2)
+ 		return 1;
+ 
+-	switch (opcode) {
++	switch (*opcode) {
+ 	case TCPOPT_WINDOW:
+-		if (opsize == TCPOLEN_WINDOW && ctx->ptr + TCPOLEN_WINDOW <= ctx->data_end)
+-			ctx->wscale = ctx->ptr[2] < TCP_MAX_WSCALE ? ctx->ptr[2] : TCP_MAX_WSCALE;
++		wscale = next(ctx, 1);
++		if (!wscale)
++			return 1;
++		if (*opsize == TCPOLEN_WINDOW)
++			ctx->wscale = *wscale < TCP_MAX_WSCALE ? *wscale : TCP_MAX_WSCALE;
+ 		break;
+ 	case TCPOPT_TIMESTAMP:
+-		if (opsize == TCPOLEN_TIMESTAMP && ctx->ptr + TCPOLEN_TIMESTAMP <= ctx->data_end) {
++		tsecr = next(ctx, 4);
++		if (!tsecr)
++			return 1;
++		if (*opsize == TCPOLEN_TIMESTAMP) {
+ 			ctx->option_timestamp = true;
+ 			/* Client's tsval becomes our tsecr. */
+-			*ctx->tsecr = get_unaligned((__be32 *)(ctx->ptr + 2));
++			*ctx->tsecr = get_unaligned((__be32 *)tsecr);
+ 		}
+ 		break;
+ 	case TCPOPT_SACK_PERM:
+-		if (opsize == TCPOLEN_SACK_PERM)
++		if (*opsize == TCPOLEN_SACK_PERM)
+ 			ctx->option_sack = true;
+ 		break;
+ 	}
+ 
+-	ctx->ptr += opsize;
++	ctx->off = off + *opsize;
+ 
+ 	return 0;
+ }
+@@ -256,16 +271,21 @@ static int tscookie_tcpopt_parse_batch(__u32 index, void *context)
+ 
+ static __always_inline bool tscookie_init(struct tcphdr *tcp_header,
+ 					  __u16 tcp_len, __be32 *tsval,
+-					  __be32 *tsecr, void *data_end)
++					  __be32 *tsecr, void *data, void *data_end)
+ {
+ 	struct tcpopt_context loop_ctx = {
+-		.ptr = (__u8 *)(tcp_header + 1),
+-		.end = (__u8 *)tcp_header + tcp_len,
++		.data = data,
+ 		.data_end = data_end,
+ 		.tsecr = tsecr,
+ 		.wscale = TS_OPT_WSCALE_MASK,
+ 		.option_timestamp = false,
+ 		.option_sack = false,
++		/* Note: currently verifier would track .off as unbound scalar.
++		 *       In case if verifier would at some point get smarter and
++		 *       compute bounded value for this var, beware that it might
++		 *       hinder bpf_loop() convergence validation.
++		 */
++		.off = (__u8 *)(tcp_header + 1) - (__u8 *)data,
+ 	};
+ 	u32 cookie;
+ 
+@@ -635,7 +655,7 @@ static __always_inline int syncookie_handle_syn(struct header_pointers *hdr,
+ 	cookie = (__u32)value;
+ 
+ 	if (tscookie_init((void *)hdr->tcp, hdr->tcp_len,
+-			  &tsopt_buf[0], &tsopt_buf[1], data_end))
++			  &tsopt_buf[0], &tsopt_buf[1], data, data_end))
+ 		tsopt = tsopt_buf;
+ 
+ 	/* Check that there is enough space for a SYNACK. It also covers
 -- 
 2.42.1
 
