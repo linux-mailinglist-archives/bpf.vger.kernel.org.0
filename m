@@ -1,119 +1,134 @@
-Return-Path: <bpf+bounces-15295-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15296-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E92417EFD76
-	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 04:38:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5599A7EFD8E
+	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 04:46:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F8BD1C209C6
-	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 03:38:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC1DE28133F
+	for <lists+bpf@lfdr.de>; Sat, 18 Nov 2023 03:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63DE524B;
-	Sat, 18 Nov 2023 03:38:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mY84iQGx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2BF46A0;
+	Sat, 18 Nov 2023 03:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A84BC
-	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:38:28 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9e62f903e88so344627666b.2
-        for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:38:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700278707; x=1700883507; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=91JTQs1M1Pu0C/MxU/i1WP/5f9NlnNxdw/URS1f06K4=;
-        b=mY84iQGxVd+z/GW5xWz/rv/iJPn9soMan1FLobh7CSRZrDwRdFLrRa0Rssy4jdhbWr
-         QhEkFxR+CVrrEK7CnM9+iaq9QBOqhrVK1nOfk8/HVax+zK9gQdwEhgW9tO8ceEv5wIE7
-         Xdxx4T0oJufibSauXlN+xZOueR/tv4y++emJcfypNSxHoMcb6rYmwhIZvMzELWUkzC2y
-         Tb1xIzN7Q0NGHjvfvs9h3wbYG3GcFbIzbKFIL/Rw/F3e9oKsFzh9jHT414Jko9i5NlXV
-         U8xdWuA1+SOGgBA7X4PAibxdh0aQSLj8h9IaepRmlRKhF9mYrQyDqMJ+6R/PNrgTwavY
-         gI1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700278707; x=1700883507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=91JTQs1M1Pu0C/MxU/i1WP/5f9NlnNxdw/URS1f06K4=;
-        b=ewcf3WwccE051XSYab4iS6WnxdrxAGsKEHQLp55uHTEyNoeUaa3pvEKnpYS/m9OIWO
-         6hmWvXWVuiJ3Ui1vEwX6nyAhuA9vNxbpVZONxPkp5NCgH6x/FHPqLdXXNrnw/2A2bYYZ
-         EDDLD+y2koRYxbno8Htc9JhNCqoEB/MuzewESI+WrlXXvDbXxB4ulHO83LyaqZEd2IJl
-         Hdf9iDL57Lara/Eq8gF4+jHT8NNqmSamohhu0lQxS4/L89BGRp/FMlRHPzcaqzjdfE+w
-         7PBKLIWr5IAyQnMEewdiDlnTPPlL4Jv3pI3HT4HDFdhlTrHR/7iTUIWJ0g17DWIdWJuq
-         xnEg==
-X-Gm-Message-State: AOJu0YyIRy/Siy/ZrupRgWET/DvZ4YAUcexP4Rw/SLCDhQiZioGOw9HX
-	jXi+O17Ox5rZMQIafUiNiB+tdUYEvemWVFkGV1E=
-X-Google-Smtp-Source: AGHT+IFwhdNPPjpXLZ4FmXhnSATffgWyv++jniaSn2t9qV89BWoWVcMMLEZVq3qu/+ZPBQnZgTeZtnaVRTs1UsZxdVA=
-X-Received: by 2002:a17:906:a014:b0:9e8:de5e:911a with SMTP id
- p20-20020a170906a01400b009e8de5e911amr849606ejy.73.1700278707083; Fri, 17 Nov
- 2023 19:38:27 -0800 (PST)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4D23D72
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:46:47 -0800 (PST)
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AI2rQnh028591
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:46:47 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uemv285bw-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Fri, 17 Nov 2023 19:46:47 -0800
+Received: from twshared2123.40.prn1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Fri, 17 Nov 2023 19:46:46 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id D5C2A3BB2FF7B; Fri, 17 Nov 2023 19:46:34 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v3 bpf-next 0/8] BPF verifier log improvements
+Date: Fri, 17 Nov 2023 19:46:15 -0800
+Message-ID: <20231118034623.3320920-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231111201633.3434794-1-andrii@kernel.org> <20231111201633.3434794-8-andrii@kernel.org>
- <CAADnVQJT_On7dbs8_KZt8otZfVZBUerJfTBJpLE2_CmbbiNvdA@mail.gmail.com>
-In-Reply-To: <CAADnVQJT_On7dbs8_KZt8otZfVZBUerJfTBJpLE2_CmbbiNvdA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 17 Nov 2023 19:38:14 -0800
-Message-ID: <CAEf4BzYdY9b3hsKYPipwxQGy3X1tLbQMqjTxJf2Y5-XamuQaZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 7/8] bpf: smarter verifier log number printing logic
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Stanislav Fomichev <sdf@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: sl4YjniZZzXAlR2kgnRSemE1kVFXiOKl
+X-Proofpoint-ORIG-GUID: sl4YjniZZzXAlR2kgnRSemE1kVFXiOKl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-18_01,2023-11-17_01,2023-05-22_02
 
-On Fri, Nov 17, 2023 at 9:33=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Sat, Nov 11, 2023 at 12:17=E2=80=AFPM Andrii Nakryiko <andrii@kernel.o=
-rg> wrote:
-> >
-> > +static void verbose_unum(struct bpf_verifier_env *env, u64 num)
-> > +{
-> > +       if (is_unum_decimal(num))
-> > +               verbose(env, "%llu", num);
-> > +       else
-> > +               verbose(env, "%#llx", num);
->
-> I didn't know about %#.
-> The kernel printk doc doesn't describe it.
-> Great find.
-> Curious, how did you discover this modifier?
-> Not sure whether it's worth adding a comment here
-> that # adds 0x. Probably not ?
+This patch set moves a big chunk of verifier log related code from gigant=
+ic
+verifier.c file into more focused kernel/bpf/log.c. This is not essential=
+ to
+the rest of functionality in this patch set, so I can undo it, but it fel=
+t
+like it's good to start chipping away from 20K+ verifier.c whenever we ca=
+n.
 
-This # is called "an alternative form" and is a standard printf()
-feature. I saw it somewhere, don't remember where, so yeah, probably
-an overkill to add a comment for that.
+The main purpose of the patch set, though, is in improving verifier log
+further.
 
->
-> > +       if (type_is_pkt_pointer(t)) {
-> > +               verbose_a("r=3D");
-> > +               verbose_snum(env, reg->range);
-> > +       }
->
-> A tiny nit...
-> The pkt range cannot be negative, so using Snum here
-> begs the question... why?
+Patches #3-#4 start printing out register state even if that register is
+spilled into stack slot. Previously we'd get only spilled register type, =
+but
+no additional information, like SCALAR_VALUE's ranges. Super limiting dur=
+ing
+debugging. For cases of register spills smaller than 8 bytes, we also pri=
+nt
+out STACK_MISC/STACK_ZERO/STACK_INVALID markers. This, among other things=
+,
+will make it easier to write tests for these mixed spill/misc cases.
 
-original code was using "r=3D%d" format string, so I was preserving
-signedness. But if it's supposed to be unsigned, then yeah, no reason
-to do snum here.
+Patch #5 prints map name for PTR_TO_MAP_VALUE/PTR_TO_MAP_KEY/CONST_PTR_TO=
+_MAP
+registers. In big production BPF programs, it's important to map assembly=
+ to
+actual map, and it's often non-trivial. Having map name helps.
 
-> The rest looks great.
-> If you're ok I can fix it up to unum while applying or respin?
+Patch #6 just removes visual noise in form of ubiquitous imm=3D0 and off=3D=
+0. They
+are default values, omit them.
 
-This patch requires fixes for reg_bounds.c tester in the part that
-parses register state. It's not a lot, but not really trivially
-fixup-able. I already have all that ready locally, so I'll repost v3
-with unum change.
+Patch #7 is probably the most controversial, but it reworks how verifier =
+log
+prints numbers. For small valued integers we use decimals, but for large =
+ones
+we switch to hexadecimal. From personal experience this is a much more us=
+eful
+convention. We can tune what consitutes "small value", for now it's 16-bi=
+t
+range.
+
+Patch #8 prints frame number for PTR_TO_CTX registers, if that frame is
+different from the "current" one. This removes ambiguity and confusion,
+especially in complicated cases with multiple subprogs passing around
+pointers.
+
+v2->v3:
+  - adjust reg_bounds tester to parse hex form of reg state as well;
+  - print reg->range as unsigned (Alexei);
+v1->v2:
+  - use verbose_snum() for range and offset in register state (Eduard);
+  - fixed typos and added acks from Eduard and Stanislav.
+
+Andrii Nakryiko (8):
+  bpf: move verbose_linfo() into kernel/bpf/log.c
+  bpf: move verifier state printing code to kernel/bpf/log.c
+  bpf: extract register state printing
+  bpf: print spilled register state in stack slot
+  bpf: emit map name in register state if applicable and available
+  bpf: omit default off=3D0 and imm=3D0 in register state log
+  bpf: smarter verifier log number printing logic
+  bpf: emit frameno for PTR_TO_STACK regs if it differs from current one
+
+ include/linux/bpf_verifier.h                  |  76 +++
+ kernel/bpf/log.c                              | 480 ++++++++++++++++++
+ kernel/bpf/verifier.c                         | 460 -----------------
+ .../testing/selftests/bpf/prog_tests/align.c  |  42 +-
+ .../selftests/bpf/prog_tests/log_buf.c        |   4 +-
+ .../selftests/bpf/prog_tests/reg_bounds.c     |  53 +-
+ .../selftests/bpf/prog_tests/spin_lock.c      |  14 +-
+ .../selftests/bpf/progs/exceptions_assert.c   |  40 +-
+ 8 files changed, 640 insertions(+), 529 deletions(-)
+
+--=20
+2.34.1
+
 
