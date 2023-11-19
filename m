@@ -1,93 +1,81 @@
-Return-Path: <bpf+bounces-15333-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15334-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 315ED7F093E
-	for <lists+bpf@lfdr.de>; Sun, 19 Nov 2023 22:58:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E09E7F09E8
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 00:53:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C641CB20A6C
-	for <lists+bpf@lfdr.de>; Sun, 19 Nov 2023 21:58:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D22CEB207E9
+	for <lists+bpf@lfdr.de>; Sun, 19 Nov 2023 23:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0581519BD6;
-	Sun, 19 Nov 2023 21:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A191B284;
+	Sun, 19 Nov 2023 23:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X5xLKXQ9"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mBrD3wgp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AC8E107;
-	Sun, 19 Nov 2023 13:58:15 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32f7c80ab33so2479447f8f.0;
-        Sun, 19 Nov 2023 13:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700431093; x=1701035893; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7DHInlKAixtjHWpCSSb9nsEcmRnYPF01P98gw/ou6aY=;
-        b=X5xLKXQ9sYzakXg8w1uPp7vdZ5El/h0D46ilttHnXh+8BTxaR7w4d8UU8FkVglEAhc
-         0Us/wGua7lDzVY5ahaa0gfFIcAkLAQ4XAOq+Gq2RAHhWdAO9wl6Jgyb7wvwAk/cL+HFY
-         8FeTDioAu8PxECEqgDbLiD+uz0MjFvAZeJhAGI7S/CBE/iLbEOZnoJIug+6fd3Zpd0/D
-         vr+x3rU0uADGzlfThOmjhj50xoTeeOzpytbfbTdKN7rbyaL2BGWpkrRp/0a6JBrGtkM9
-         LGKneVx9SXMb2jT0X632aoYa4lrw1D/DvrpVE1oBAkGaalTY4YrJ7lNAkmoVxUrlQLqF
-         kJQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700431093; x=1701035893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7DHInlKAixtjHWpCSSb9nsEcmRnYPF01P98gw/ou6aY=;
-        b=lCE8ZSCg1JFUfyQxZD2ULa91apVzG+Gga/VyyDsgfje7tv45MFFgBlb8KpjqYuhmjh
-         ctqmgashQmfjtQA+WXIUHfbJDfkGQS3266RQGtbC2qpCaAlmiL/nQoWujgNgehOOx3Ue
-         FkAO+dnOsRKBt0UHnMsexPWMa5HUA1X9OYDcoDIrk1jVVRaoFfd2lAaVgQ3782IG1klc
-         yXzsOgfQa10KFMa8/KmaPnyXM67+OD3OycalKKdQ6uLkyKx3zElGw0yFJHB7qiIXy1Aj
-         Hm671XOwwqfSqXiGyt71G0Ii5gIC7GC31b5Iee2ijgLoOfsFlHsNu6cdqDk7fK/VnyZC
-         WZXw==
-X-Gm-Message-State: AOJu0Yz8d1EYQ/XFT1cSvMoCHnc1XJPVpLGyHC4J9cZ8rB90+xV6KUji
-	HjHLN5iv5MDOkG+iY0lZ8FpkK+aW8Z8FyiYqG4lcU+6R
-X-Google-Smtp-Source: AGHT+IGZM04mtNc46owlWHC1iRvF8ZmEk8CGAt5Ztp/xNz3uveCctVYkqYfV5uytJlgCfvg1hQigvUgo9oAIx9RePpY=
-X-Received: by 2002:adf:fd86:0:b0:32d:857c:d51d with SMTP id
- d6-20020adffd86000000b0032d857cd51dmr3326047wrr.60.1700431093124; Sun, 19 Nov
- 2023 13:58:13 -0800 (PST)
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9356913A
+	for <bpf@vger.kernel.org>; Sun, 19 Nov 2023 15:52:55 -0800 (PST)
+Message-ID: <ee9e6afb-479e-d38f-9424-5c79feded44d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700437973;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ge1ESl70XYT5mVJCTL6jYd0++iV00VntBKPAsXCCsDE=;
+	b=mBrD3wgpdEviEZB2Y8gRoDomRsxMCkNEuqRsne8g4QP80QOeBrn9k5Xa05SVZBOImuHV4a
+	R/ipDWylkH258pDk0FNWeK12mUNdP2bKNUaEpLfBjuVLEEmVnA1XfSyEpaSFzacLt8w0Lg
+	bmxJJmNKByXD4E03VCWNHiSx0jS/ehI=
+Date: Sun, 19 Nov 2023 23:52:51 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231118225451.2132137-1-vadfed@meta.com> <20231118225451.2132137-2-vadfed@meta.com>
-In-Reply-To: <20231118225451.2132137-2-vadfed@meta.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 19 Nov 2023 13:58:01 -0800
-Message-ID: <CAADnVQ+tLbMppLNT7HOV5=k+8075qjjyO5wWEDvLRoPi5WALJw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 2/2] selftests: bpf: crypto skcipher algo selftests
-To: Vadim Fedorenko <vadfed@meta.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Jakub Kicinski <kuba@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, Network Development <netdev@vger.kernel.org>, 
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v5 2/2] selftests: bpf: crypto skcipher algo
+ selftests
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Vadim Fedorenko <vadfed@meta.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ Network Development <netdev@vger.kernel.org>,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ bpf <bpf@vger.kernel.org>
+References: <20231118225451.2132137-1-vadfed@meta.com>
+ <20231118225451.2132137-2-vadfed@meta.com>
+ <CAADnVQ+tLbMppLNT7HOV5=k+8075qjjyO5wWEDvLRoPi5WALJw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <CAADnVQ+tLbMppLNT7HOV5=k+8075qjjyO5wWEDvLRoPi5WALJw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Nov 18, 2023 at 2:55=E2=80=AFPM Vadim Fedorenko <vadfed@meta.com> w=
-rote:
->
-> +
-> +SEC("fentry.s/bpf_fentry_test1")
-> +int BPF_PROG(skb_crypto_setup)
-> +{
-> +       struct bpf_crypto_lskcipher_ctx *cctx;
-> +       struct bpf_dynptr key =3D {};
-> +       int err =3D 0;
-> +
-> +       status =3D 0;
-> +
-> +       bpf_dynptr_from_mem(crypto_key, sizeof(crypto_key), 0, &key);
-> +       cctx =3D bpf_crypto_lskcipher_ctx_create(crypto_algo, &key, &err)=
-;
+On 19.11.2023 21:58, Alexei Starovoitov wrote:
+> On Sat, Nov 18, 2023 at 2:55 PM Vadim Fedorenko <vadfed@meta.com> wrote:
+>>
+>> +
+>> +SEC("fentry.s/bpf_fentry_test1")
+>> +int BPF_PROG(skb_crypto_setup)
+>> +{
+>> +       struct bpf_crypto_lskcipher_ctx *cctx;
+>> +       struct bpf_dynptr key = {};
+>> +       int err = 0;
+>> +
+>> +       status = 0;
+>> +
+>> +       bpf_dynptr_from_mem(crypto_key, sizeof(crypto_key), 0, &key);
+>> +       cctx = bpf_crypto_lskcipher_ctx_create(crypto_algo, &key, &err);
+> 
+> Direct string will work here, right?
+> What's the reason to use global var?
 
-Direct string will work here, right?
-What's the reason to use global var?
+Mmm, yeah, should work. I'll update the test, thanks!
 
