@@ -1,70 +1,59 @@
-Return-Path: <bpf+bounces-15412-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15413-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D3197F1F5D
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 22:41:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 939837F1FB1
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 22:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05783B213B8
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 21:41:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5E781C216B9
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 21:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B116F38F95;
-	Mon, 20 Nov 2023 21:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CF338FB4;
+	Mon, 20 Nov 2023 21:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="r/4Eoehs"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IpU6vftx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC89CA
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 13:41:40 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-679dd8d1281so6645946d6.1
-        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 13:41:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1700516499; x=1701121299; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4q+hMR3Vn6buxrgiUhrEVNiuT6kNxsSE4tKqqNyrpy8=;
-        b=r/4EoehsYkLv37vXNkIerfhzevfwqev5maymqIqe9xiJpUEuCp0bkj/NdBtuBGJEV6
-         Hyeca3UPw68b1SoJHseeiNwkcSuURp+Ij+9DkVdDuAqwRxOiSPvCd87vk1gIs/l2nG+E
-         J1JbFWfvmGr+sEkKjSPq1DDgHujEcANFfN/hCL+t2FlIFUsRoxmSvLTsBMCrC+QTNq41
-         cnmkBsLHLMBobqjWmW24z7YAtAxyWv3s29PMOPVfJXIQM8pwInEVkslr4AtgDE8TPI9M
-         YWgk+EqSy9c26pr9P2yx9652zPL9fJ6trYgF86Ee7/cUG3qQRCRImfCQi/nfxtT8qtGV
-         ogUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700516499; x=1701121299;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4q+hMR3Vn6buxrgiUhrEVNiuT6kNxsSE4tKqqNyrpy8=;
-        b=GqVsWbWrcF69iwGW+X/4oMnwVfaTiQwkpTjnzhnYbMrhUsXSkzGfDkgFEl+cCiItoG
-         Zndz/KjVKfLEleFOgZUWIF+2yCu1T7PCiV2rxE2JS+Zo53RM+/Ejftrza+qVTIf3fNqV
-         AGRDvEG8xzN9IUbJSMxY6klXdDdMbC3kG4gS6XCTOwEhOdErnOa+Pz06gZ2CvmU1wWIl
-         DDXjEKIi2FDROfUmPORG7cEzBDaHExYX8Ib2Llr2la/ylBSs+/haUOSaeF5tDU4faTFF
-         ENm+fh6VqnDfpspo3rX6nkDImyORuJBZ3TcYqdTFF0E+bc1Fn0JtihmIhiqPiIY727VF
-         AKmA==
-X-Gm-Message-State: AOJu0YyuFEj4n6u+TyvOjubLmbrJ0nZ3zhMCKoieG80Lf4NsTa+v0ghS
-	fyLxR3fLLHdDSi/m/CO8kF2lXKEBXhT1nw7QFAY=
-X-Google-Smtp-Source: AGHT+IFPJIln1M+AXx2i/Q8nOQvdPOri0yPtVD6j6QI1cvRX8kMXHRgaJKRdeKwl0Wd6YKY1Fq+LDw==
-X-Received: by 2002:a05:6214:529c:b0:66d:ab4a:dc4e with SMTP id kj28-20020a056214529c00b0066dab4adc4emr7525661qvb.1.1700516499517;
-        Mon, 20 Nov 2023 13:41:39 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id m13-20020a0cbf0d000000b0066d04196c3dsm3244676qvi.49.2023.11.20.13.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 13:41:39 -0800 (PST)
-Date: Mon, 20 Nov 2023 16:41:31 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Dave Marchevsky <davemarchevsky@fb.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local
- storage
-Message-ID: <20231120214131.GA20984@cmpxchg.org>
-References: <20231120175925.733167-1-davemarchevsky@fb.com>
- <20231120175925.733167-2-davemarchevsky@fb.com>
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D932626A9;
+	Mon, 20 Nov 2023 13:47:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=VbEEEvOKQiy4zEH0Fh29KF4UlqN9PFMjTOjddwVcuH0=; b=IpU6vftxa1fXYJ78C8NKRyS+9l
+	f7v4iA/kVSFpjbSWiu9akz5U9lxJc07AnqL9j2Objf4DHd6mnsNCRRxH737bJyhjFpFD1fKjFw0/E
+	S9J40QiM4h0O8mWcRRQGHVEywvU6hWuYP1C8vNed/oLM1FqvKVEgZdTRLCM8IiHzBSbqTRIcRg60z
+	tEW5D+sriSXR1wWbCcBt5UKy6tkB/ZrwxNpeZZMQwtquD+PdOhEiF5nvUf4VzCvQqvHqxin936pNf
+	8I1hnpVhmz4WbWMabaHjJfRcPHGqbQYR34Em/11cCC7yDHfXYCIArGDEVvZBcTmhti8NljgnrREK5
+	8mOBNh+Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1r5C6c-00B8ac-0k;
+	Mon, 20 Nov 2023 21:46:58 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 1F2C33004E3; Mon, 20 Nov 2023 22:46:57 +0100 (CET)
+Date: Mon, 20 Nov 2023 22:46:57 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Michael Jeanson <mjeanson@efficios.com>,
+	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+	bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 5/5] tracing: convert sys_enter/exit to faultable
+ tracepoints
+Message-ID: <20231120214657.GB8262@noisy.programming.kicks-ass.net>
+References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
+ <20231120205418.334172-6-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,32 +62,286 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231120175925.733167-2-davemarchevsky@fb.com>
+In-Reply-To: <20231120205418.334172-6-mathieu.desnoyers@efficios.com>
 
-On Mon, Nov 20, 2023 at 09:59:24AM -0800, Dave Marchevsky wrote:
-> This patch modifies the generic bpf_local_storage infrastructure to
-> support mmapable map values and adds mmap() handling to task_local
-> storage leveraging this new functionality. A userspace task which
-> mmap's a task_local storage map will receive a pointer to the map_value
-> corresponding to that tasks' key - mmap'ing in other tasks' mapvals is
-> not supported in this patch.
-> 
-> Currently, struct bpf_local_storage_elem contains both bookkeeping
-> information as well as a struct bpf_local_storage_data with additional
-> bookkeeping information and the actual mapval data. We can't simply map
-> the page containing this struct into userspace. Instead, mmapable
-> local_storage uses bpf_local_storage_data's data field to point to the
-> actual mapval, which is allocated separately such that it can be
-> mmapped. Only the mapval lives on the page(s) allocated for it.
-> 
-> The lifetime of the actual_data mmapable region is tied to the
-> bpf_local_storage_elem which points to it. This doesn't necessarily mean
-> that the pages go away when the bpf_local_storage_elem is free'd - if
-> they're mapped into some userspace process they will remain until
-> unmapped, but are no longer the task_local storage's mapval.
+On Mon, Nov 20, 2023 at 03:54:18PM -0500, Mathieu Desnoyers wrote:
 
-Those bits look good to me. vfree() uses __free_pages(), which
-participates in refcounting. remap_vmalloc_range() acquires references
-to the individual pages, which will be dropped once the page tables
-disappear on munmap(). The vmalloc area doesn't need to stick around.
+> diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
+> index de753403cdaf..718a0723a0bc 100644
+> --- a/kernel/trace/trace_syscalls.c
+> +++ b/kernel/trace/trace_syscalls.c
+> @@ -299,27 +299,33 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+>  	int syscall_nr;
+>  	int size;
+>  
+> +	/*
+> +	 * Probe called with preemption enabled (may_fault), but ring buffer and
+> +	 * per-cpu data require preemption to be disabled.
+> +	 */
+> +	preempt_disable_notrace();
+
+	guard(preempt_notrace)();
+
+and ditch all the goto crap.
+
+> +
+>  	syscall_nr = trace_get_syscall_nr(current, regs);
+>  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> -		return;
+> +		goto end;
+>  
+>  	/* Here we're inside tp handler's rcu_read_lock_sched (__DO_TRACE) */
+>  	trace_file = rcu_dereference_sched(tr->enter_syscall_files[syscall_nr]);
+>  	if (!trace_file)
+> -		return;
+> +		goto end;
+>  
+>  	if (trace_trigger_soft_disabled(trace_file))
+> -		return;
+> +		goto end;
+>  
+>  	sys_data = syscall_nr_to_meta(syscall_nr);
+>  	if (!sys_data)
+> -		return;
+> +		goto end;
+>  
+>  	size = sizeof(*entry) + sizeof(unsigned long) * sys_data->nb_args;
+>  
+>  	entry = trace_event_buffer_reserve(&fbuffer, trace_file, size);
+>  	if (!entry)
+> -		return;
+> +		goto end;
+>  
+>  	entry = ring_buffer_event_data(fbuffer.event);
+>  	entry->nr = syscall_nr;
+> @@ -327,6 +333,8 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
+>  	memcpy(entry->args, args, sizeof(unsigned long) * sys_data->nb_args);
+>  
+>  	trace_event_buffer_commit(&fbuffer);
+> +end:
+> +	preempt_enable_notrace();
+>  }
+>  
+>  static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
+> @@ -338,31 +346,39 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
+>  	struct trace_event_buffer fbuffer;
+>  	int syscall_nr;
+>  
+> +	/*
+> +	 * Probe called with preemption enabled (may_fault), but ring buffer and
+> +	 * per-cpu data require preemption to be disabled.
+> +	 */
+> +	preempt_disable_notrace();
+
+Idem.
+
+> +
+>  	syscall_nr = trace_get_syscall_nr(current, regs);
+>  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> -		return;
+> +		goto end;
+>  
+>  	/* Here we're inside tp handler's rcu_read_lock_sched (__DO_TRACE()) */
+>  	trace_file = rcu_dereference_sched(tr->exit_syscall_files[syscall_nr]);
+>  	if (!trace_file)
+> -		return;
+> +		goto end;
+>  
+>  	if (trace_trigger_soft_disabled(trace_file))
+> -		return;
+> +		goto end;
+>  
+>  	sys_data = syscall_nr_to_meta(syscall_nr);
+>  	if (!sys_data)
+> -		return;
+> +		goto end;
+>  
+>  	entry = trace_event_buffer_reserve(&fbuffer, trace_file, sizeof(*entry));
+>  	if (!entry)
+> -		return;
+> +		goto end;
+>  
+>  	entry = ring_buffer_event_data(fbuffer.event);
+>  	entry->nr = syscall_nr;
+>  	entry->ret = syscall_get_return_value(current, regs);
+>  
+>  	trace_event_buffer_commit(&fbuffer);
+> +end:
+> +	preempt_enable_notrace();
+>  }
+>  
+>  static int reg_event_syscall_enter(struct trace_event_file *file,
+> @@ -377,7 +393,9 @@ static int reg_event_syscall_enter(struct trace_event_file *file,
+>  		return -ENOSYS;
+>  	mutex_lock(&syscall_trace_lock);
+>  	if (!tr->sys_refcount_enter)
+> -		ret = register_trace_sys_enter(ftrace_syscall_enter, tr);
+> +		ret = register_trace_prio_flags_sys_enter(ftrace_syscall_enter, tr,
+> +							  TRACEPOINT_DEFAULT_PRIO,
+> +							  TRACEPOINT_MAY_FAULT);
+>  	if (!ret) {
+>  		rcu_assign_pointer(tr->enter_syscall_files[num], file);
+>  		tr->sys_refcount_enter++;
+> @@ -415,7 +433,9 @@ static int reg_event_syscall_exit(struct trace_event_file *file,
+>  		return -ENOSYS;
+>  	mutex_lock(&syscall_trace_lock);
+>  	if (!tr->sys_refcount_exit)
+> -		ret = register_trace_sys_exit(ftrace_syscall_exit, tr);
+> +		ret = register_trace_prio_flags_sys_exit(ftrace_syscall_exit, tr,
+> +							 TRACEPOINT_DEFAULT_PRIO,
+> +							 TRACEPOINT_MAY_FAULT);
+>  	if (!ret) {
+>  		rcu_assign_pointer(tr->exit_syscall_files[num], file);
+>  		tr->sys_refcount_exit++;
+
+/me hands you a bucket of {}, free of charge.
+
+> @@ -582,20 +602,26 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
+>  	int rctx;
+>  	int size;
+>  
+> +	/*
+> +	 * Probe called with preemption enabled (may_fault), but ring buffer and
+> +	 * per-cpu data require preemption to be disabled.
+> +	 */
+> +	preempt_disable_notrace();
+
+Again, guard(preempt_notrace)();
+
+> +
+>  	syscall_nr = trace_get_syscall_nr(current, regs);
+>  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> -		return;
+> +		goto end;
+>  	if (!test_bit(syscall_nr, enabled_perf_enter_syscalls))
+> -		return;
+> +		goto end;
+>  
+>  	sys_data = syscall_nr_to_meta(syscall_nr);
+>  	if (!sys_data)
+> -		return;
+> +		goto end;
+>  
+>  	head = this_cpu_ptr(sys_data->enter_event->perf_events);
+>  	valid_prog_array = bpf_prog_array_valid(sys_data->enter_event);
+>  	if (!valid_prog_array && hlist_empty(head))
+> -		return;
+> +		goto end;
+>  
+>  	/* get the size after alignment with the u32 buffer size field */
+>  	size = sizeof(unsigned long) * sys_data->nb_args + sizeof(*rec);
+> @@ -604,7 +630,7 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
+>  
+>  	rec = perf_trace_buf_alloc(size, NULL, &rctx);
+>  	if (!rec)
+> -		return;
+> +		goto end;
+>  
+>  	rec->nr = syscall_nr;
+>  	syscall_get_arguments(current, regs, args);
+> @@ -614,12 +640,14 @@ static void perf_syscall_enter(void *ignore, struct pt_regs *regs, long id)
+>  	     !perf_call_bpf_enter(sys_data->enter_event, regs, sys_data, rec)) ||
+>  	    hlist_empty(head)) {
+>  		perf_swevent_put_recursion_context(rctx);
+> -		return;
+> +		goto end;
+>  	}
+>  
+>  	perf_trace_buf_submit(rec, size, rctx,
+>  			      sys_data->enter_event->event.type, 1, regs,
+>  			      head, NULL);
+> +end:
+> +	preempt_enable_notrace();
+>  }
+>  
+>  static int perf_sysenter_enable(struct trace_event_call *call)
+> @@ -631,7 +659,9 @@ static int perf_sysenter_enable(struct trace_event_call *call)
+>  
+>  	mutex_lock(&syscall_trace_lock);
+>  	if (!sys_perf_refcount_enter)
+> -		ret = register_trace_sys_enter(perf_syscall_enter, NULL);
+> +		ret = register_trace_prio_flags_sys_enter(perf_syscall_enter, NULL,
+> +							  TRACEPOINT_DEFAULT_PRIO,
+> +							  TRACEPOINT_MAY_FAULT);
+
+More {}
+
+>  	if (ret) {
+>  		pr_info("event trace: Could not activate syscall entry trace point");
+>  	} else {
+> @@ -682,20 +712,26 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
+>  	int rctx;
+>  	int size;
+>  
+> +	/*
+> +	 * Probe called with preemption enabled (may_fault), but ring buffer and
+> +	 * per-cpu data require preemption to be disabled.
+> +	 */
+> +	preempt_disable_notrace();
+
+Guess?
+
+> +
+>  	syscall_nr = trace_get_syscall_nr(current, regs);
+>  	if (syscall_nr < 0 || syscall_nr >= NR_syscalls)
+> -		return;
+> +		goto end;
+>  	if (!test_bit(syscall_nr, enabled_perf_exit_syscalls))
+> -		return;
+> +		goto end;
+>  
+>  	sys_data = syscall_nr_to_meta(syscall_nr);
+>  	if (!sys_data)
+> -		return;
+> +		goto end;
+>  
+>  	head = this_cpu_ptr(sys_data->exit_event->perf_events);
+>  	valid_prog_array = bpf_prog_array_valid(sys_data->exit_event);
+>  	if (!valid_prog_array && hlist_empty(head))
+> -		return;
+> +		goto end;
+>  
+>  	/* We can probably do that at build time */
+>  	size = ALIGN(sizeof(*rec) + sizeof(u32), sizeof(u64));
+> @@ -703,7 +739,7 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
+>  
+>  	rec = perf_trace_buf_alloc(size, NULL, &rctx);
+>  	if (!rec)
+> -		return;
+> +		goto end;
+>  
+>  	rec->nr = syscall_nr;
+>  	rec->ret = syscall_get_return_value(current, regs);
+> @@ -712,11 +748,13 @@ static void perf_syscall_exit(void *ignore, struct pt_regs *regs, long ret)
+>  	     !perf_call_bpf_exit(sys_data->exit_event, regs, rec)) ||
+>  	    hlist_empty(head)) {
+>  		perf_swevent_put_recursion_context(rctx);
+> -		return;
+> +		goto end;
+>  	}
+>  
+>  	perf_trace_buf_submit(rec, size, rctx, sys_data->exit_event->event.type,
+>  			      1, regs, head, NULL);
+> +end:
+> +	preempt_enable_notrace();
+>  }
+>  
+>  static int perf_sysexit_enable(struct trace_event_call *call)
+> @@ -728,7 +766,9 @@ static int perf_sysexit_enable(struct trace_event_call *call)
+>  
+>  	mutex_lock(&syscall_trace_lock);
+>  	if (!sys_perf_refcount_exit)
+> -		ret = register_trace_sys_exit(perf_syscall_exit, NULL);
+> +		ret = register_trace_prio_flags_sys_exit(perf_syscall_exit, NULL,
+> +							 TRACEPOINT_DEFAULT_PRIO,
+> +							 TRACEPOINT_MAY_FAULT);
+
+And yet more {}
+
+>  	if (ret) {
+>  		pr_info("event trace: Could not activate syscall exit trace point");
+>  	} else {
+> -- 
+> 2.25.1
+> 
 
