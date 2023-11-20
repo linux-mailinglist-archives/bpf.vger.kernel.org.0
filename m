@@ -1,68 +1,69 @@
-Return-Path: <bpf+bounces-15341-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15342-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7D47F0A7A
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 03:10:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863977F0A7D
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 03:11:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C10371F21643
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 02:10:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B212D1C20837
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 02:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A081878;
-	Mon, 20 Nov 2023 02:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425D41874;
+	Mon, 20 Nov 2023 02:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iigN4vPb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VOmppsRl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 515AF95
-	for <bpf@vger.kernel.org>; Sun, 19 Nov 2023 18:10:01 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4094301d505so10800735e9.2
-        for <bpf@vger.kernel.org>; Sun, 19 Nov 2023 18:10:01 -0800 (PST)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E148137
+	for <bpf@vger.kernel.org>; Sun, 19 Nov 2023 18:11:24 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3316a4bc37dso1604953f8f.2
+        for <bpf@vger.kernel.org>; Sun, 19 Nov 2023 18:11:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700446200; x=1701051000; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700446282; x=1701051082; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Y3B0IuUB2NM62xV1krahzZD/JLHQpKp4AioqK62vE5c=;
-        b=iigN4vPb9Hdl6+2TUURbpPmIWamdIi53EwGR6u2Qqm7F3wFPAygek2CAccD8n4JCwg
-         sXQXjBu9prsHpdI5W8LxJgLGiyjDy/vVY5Nx6bRnQebjkrVMi2bHxLIeYsiiMUSqBa7S
-         GicgkJYrPKpcCyilD3B0F4EtWEqDQmNwxszhPyKkr37tvW+8JuzydPCAmRpiNywZJvBN
-         S3pZ2lqk/qMoWUuvlVPpmDWYM2ORDlYYeO77B2/0cTegGGTO3sRvJWggYnlIhYEli+t0
-         Agm2uvis5m0bnSFY27+xl+IDZjj7CBoc5rxrQkhm0hyupTQMdJvenU6sSBWQdQWDt6Vl
-         YjgA==
+        bh=wW+wp6eEsOQW68ii1iWR3AwBz4HSmYkYG7SuXtX759g=;
+        b=VOmppsRlPmGbLocYbjJGpF+QjdG4n6CyARguX02nOoTa8CJKTOWFbojv4OsdhukTvy
+         ik5lEjUXPwb+uxAZuxY7PH7EDrRJW1iU/oAhD3/uW9/QTXK7q0w0IuhM38BjoIsfo9NQ
+         BwsgtGn6N9clvg3Yp7ZX0Ur+O8SFV6ntWeGSW/dXfJUdnWMZ90+xdAKSraZ2t4MYY2eC
+         8I6+g1B1uSKWWYqVCSavq5lpnELqC4EDgXsdMgfrouIZd/QCWv9dzfRwrA5Yuv3hHo2V
+         uwbmWr4naOL9HZFkodQnYCHnuq8rPcHQzoHoYMi2skBOusXXqbxHmEJQ6p4p/zOJw0Y4
+         PuNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700446200; x=1701051000;
+        d=1e100.net; s=20230601; t=1700446282; x=1701051082;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Y3B0IuUB2NM62xV1krahzZD/JLHQpKp4AioqK62vE5c=;
-        b=B1NpMCMUpGv7BZSqOvNo/0v4GCl45W24DGVLT7BscRzjS2WfZi7hiZoxQe2hVEXmBg
-         hDmsiOMiCBzOqcRsw0j4Oebo4Dj140T9XyTd728kOxWEZxDXOkT181NKPzOpTa7tDG/R
-         232v7Gpnfhok3/bAqKHK4NfCZeICp5XctR7KQI3cAUq7iNeU3aMUTVqo0/xBvWb2Qo6w
-         qLX53IeaAIM80pV/1BoyxOCC/FikRcN5clDFFNShuSizaKQrb+qmQ3AGgGuHMeX970mX
-         Vv1o6w9XkF+H66PEuFI43UMKfRcvB13i9DHTU51VFE4vAsEDkZcfR2McWVloyRE14VtP
-         ZgPw==
-X-Gm-Message-State: AOJu0YxMwSiyal9KIk2tpp8BCnnHth2F3XsOJ1383i+2kaUgfB6GOUam
-	5OkVvw2UgtB8Yb0GfydZapMPPCtP9KZ0UR4t4ik=
-X-Google-Smtp-Source: AGHT+IHxsABTUoz90muCokb+j2MCul2+JK92LHa5ZyLyWNMaTGIzWwCkUCxTp+sMDRKrD5zFqONSaIt3rOejhrwWm50=
-X-Received: by 2002:a5d:574e:0:b0:32f:810e:8a3f with SMTP id
- q14-20020a5d574e000000b0032f810e8a3fmr3451312wrw.14.1700446199629; Sun, 19
- Nov 2023 18:09:59 -0800 (PST)
+        bh=wW+wp6eEsOQW68ii1iWR3AwBz4HSmYkYG7SuXtX759g=;
+        b=wJl3pYNgCQLbUVIcejCFKHFJNXTHhkez5tsYOIUZJogeYfDyQ12VYpbZ72eFz6I/1g
+         W2cPOpfd8M3zvj+xcRdb9IVGHtld4gF0nIVTgVhxsd0HVGlX+8DGcZb+xq0lu7QkChk4
+         0stmB5n7kEkydsOnP82qp/ScABiasi56K6mfHjqC9QPT8AEo/4ELg7Tp69A4ddSD9vZk
+         G3ionbG3TVQnc+yCZ2wD2IOh5pnvnTbrqNjtSHqIGNUn3/pnHiV4eMTGIc2g9eXCyCvW
+         aR2aRSZZCC2FUIsqMb6Yp/bA9hEdViHrGtAeGdGzFVm4SAGnkkR/wez1sNi4ozwF7rMw
+         /HJQ==
+X-Gm-Message-State: AOJu0Ywo+igWGd6cJIhqEpRtMZ812E7edz2ZklIXkJWsmK3t5VNrez4T
+	uhuo5ime+jVKY5Zft+jjk0Le6okGti2CvI/PJ+KdlA0Y
+X-Google-Smtp-Source: AGHT+IEzBf01Wo+lRZrk/VaM/tV0+gJNwHq4gY5N2Wf+jyZI5QkXEBOYhglvNK49kYBZPoJI7vnajc5wY5BFVTKBmus=
+X-Received: by 2002:a05:6000:4c6:b0:32f:a6fe:9c00 with SMTP id
+ h6-20020a05600004c600b0032fa6fe9c00mr3267646wri.35.1700446282568; Sun, 19 Nov
+ 2023 18:11:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231118013355.7943-1-eddyz87@gmail.com> <20231118013355.7943-12-eddyz87@gmail.com>
-In-Reply-To: <20231118013355.7943-12-eddyz87@gmail.com>
+References: <20231118013355.7943-1-eddyz87@gmail.com> <20231118013355.7943-11-eddyz87@gmail.com>
+ <CAADnVQ+Zit-KLSnoo0x-dh7Ek-VGm1K0-oBWZ085dke-ztYLMg@mail.gmail.com> <3f21d362899947f716a0cfa93b9c22bcec66afd8.camel@gmail.com>
+In-Reply-To: <3f21d362899947f716a0cfa93b9c22bcec66afd8.camel@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 19 Nov 2023 18:09:48 -0800
-Message-ID: <CAADnVQKw78ENkqFa65W9gxY-VEhz8-7GtbRtA=WwtnipRkmtyA@mail.gmail.com>
-Subject: Re: [PATCH bpf v2 11/11] selftests/bpf: check if max number of
- bpf_loop iterations is tracked
+Date: Sun, 19 Nov 2023 18:11:11 -0800
+Message-ID: <CAADnVQKXG+aydLKE+as9B_S0KTd_cScO4-x12vAiyp_uyuXQQA@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 10/11] bpf: keep track of max number of bpf_loop
+ callback iterations
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -72,57 +73,47 @@ Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 17, 2023 at 5:34=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+On Sun, Nov 19, 2023 at 6:06=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
-> +
-> +SEC("?raw_tp")
-> +__success __log_level(2)
-> +/* Check that path visiting every callback function once had been
-> + * reached by verifier. Variable 'i' below (stored as r2) serves
-> + * as a flag, with each decimal digit corresponding to a callback
-> + * visit marker.
-> + */
-> +__msg("(73) *(u8 *)(r1 +0) =3D r2          ; R1_w=3Dmap_value(off=3D0,ks=
-=3D4,vs=3D2,imm=3D0) R2_w=3D111111")
-> +int bpf_loop_iter_limit_nested(void *unused)
-> +{
-> +       struct num_context ctx1 =3D { .i =3D 0 };
-> +       struct num_context ctx2 =3D { .i =3D 0 };
-> +       /* Set registers for 'i' and 'p' to get guaranteed asm
-> +        * instruction shape for __msg matching.
-> +        */
-> +       register unsigned i asm("r2");
-> +       register __u8 *p asm("r1");
+>
+> On Sun, 2023-11-19 at 18:00 -0800, Alexei Starovoitov wrote:
+> > On Fri, Nov 17, 2023 at 5:34=E2=80=AFPM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> > >
+> > > diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifie=
+r.h
+> > > index 7def320aceef..71b7c7c39cea 100644
+> > > --- a/include/linux/bpf_verifier.h
+> > > +++ b/include/linux/bpf_verifier.h
+> > > @@ -301,6 +301,15 @@ struct bpf_func_state {
+> > >         struct tnum callback_ret_range;
+> > >         bool in_async_callback_fn;
+> > >         bool in_exception_callback_fn;
+> > > +       /* For callback calling functions that limit number of possib=
+le
+> > > +        * callback executions (e.g. bpf_loop) keeps track of current
+> > > +        * simulated iteration number. When non-zero either:
+> > > +        * - current frame has a child frame, in such case it's calls=
+ite points
+> > > +        *   to callback calling function;
+> > > +        * - current frame is a topmost frame, in such case callback =
+has just
+> > > +        *   returned and env->insn_idx points to callback calling fu=
+nction.
+> > > +        */
+> > > +       u32 callback_depth;
+> >
+> > The first part of the comment makes sense, but the second...
+> > What are you trying to explain with the second part ?
+> > How does the knowledge of insn_idx help here ? or helps to
+> > understand the rest of the patch?
+>
+> The intent was to explain that 'callback_depth' in frame N refers to
+> number of times callback with frame N+1 was simulated, e.g.:
+>
+>   bpf_loop(..., fn, ...); | suppose current frame is N
+>                           | fn would be simulated in frame N+1
+>                           | number of simulations is tracked in frame N
 
-I suspect this is fragile.
-The compiler will use r2 for 'i' if 'i' is actually there,
-but if it can optimize 'i' and 'p' away the r1 and r2 may be used
-for something else.
-The "register" keyword is not mandatory. Unlike "volatile".
-
-> +       unsigned a, b;
-> +
-> +       bpf_loop(1, iter_limit_level1_cb, &ctx1, 0);
-> +       bpf_loop(1, iter_limit_level1_cb, &ctx2, 0);
-> +       a =3D ctx1.i;
-> +       b =3D ctx2.i;
-> +       i =3D a * 1000 + b;
-> +       /* Force 'ctx1.i' and 'ctx2.i' precise. */
-> +       p =3D &choice_arr[(a % 2 + b % 2) % 2];
-> +       /* Make sure that verifier does not visit 'impossible' states:
-> +        * enumerate all possible callback visit masks.
-> +        */
-> +       if (a !=3D 0 && a !=3D 1 && a !=3D 11 && a !=3D 101 && a !=3D 111=
- &&
-> +           b !=3D 0 && b !=3D 1 && b !=3D 11 && b !=3D 101 && b !=3D 111=
-)
-> +               asm volatile ("r0 /=3D 0;" ::: "r0");
-> +       /* Instruction for match in __msg spec. */
-> +       asm volatile ("*(u8 *)(r1 + 0) =3D r2;" :: "r"(p), "r"(i) : "memo=
-ry");
-
-Feels even more fragile. Not sure what gcc will do.
-Can 'i' be checked as run-time value ?
-If it passes the verifier and after bpf_prog_run the 'i' is equal
-to expected value we're good, no?
+I see. Pls use this instead. Much clearer :)
 
