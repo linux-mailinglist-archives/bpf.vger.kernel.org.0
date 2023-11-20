@@ -1,99 +1,127 @@
-Return-Path: <bpf+bounces-15393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A54BF7F1CD3
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 19:40:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 196317F1D04
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 20:00:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4AFC1C21837
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 18:40:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EA0EB21899
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 19:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38C3C31A87;
-	Mon, 20 Nov 2023 18:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4927F30649;
+	Mon, 20 Nov 2023 19:00:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X/7/UnYt"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LXLgLVWq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC3330F94;
-	Mon, 20 Nov 2023 18:40:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E7C39C433C7;
-	Mon, 20 Nov 2023 18:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700505626;
-	bh=VsRE5W6uW4em/GgA7UkjI+XyVLcVjlRUHUVbH3pekBU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=X/7/UnYtE8kIT8r6KwVgDVLMvpiF+CbkVH35YAq3WtpmMgxY+8vFZD1iNdXLpibtU
-	 95NzbEszBzKh/g9kDBnNCX7tTD9x9m4+oyXxpyKeqApOQSX2/jImWKsGj/BYtQNh1+
-	 9DwtdcEahGWXwts7Ek0Tud+Em+EcLtq885g4v9HAZCKEgXFmv1tTr8Vwz6hOsRVY4X
-	 9efwuJNeaQEj3JALkI3IMYvJ9Ldz86qAGqwTU1rdpKZ6duGWhbnRp5bOmqSgKf+8oD
-	 0LMhEo9hi6dBxwMUKgtNNHPDNjAFceCFqCGtQp9DBi0mALh/zoRBpXv780hwzX75wZ
-	 1MbYiQrqDx1ug==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D2D65EAA957;
-	Mon, 20 Nov 2023 18:40:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6C3F10C
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 11:00:26 -0800 (PST)
+Message-ID: <be025c4d-4602-4b2f-963c-5ec2561cc255@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700506824;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jfwHLBU/eMYU2BU5PuQp1CafAYg938BQTjSvVXHWz4g=;
+	b=LXLgLVWq5d+Vt3kcSsr/102ISqSrsb2lZKMQtSIc6oXuNTEevMqOjFf0A2S5Qa8E8ymmfl
+	HtJX1uvCKr4/QI3sG4lwRY4oyVYmmHNEcjYuuiuSfBUoSyEO60ybTCWPO0RZ6nC4JG7p9E
+	aGJElRS3bcHtUTeQQE1jKb8w/N/R/UA=
+Date: Mon, 20 Nov 2023 11:00:17 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2 1/4] selftests/bpf: Replaces the usage of
+ CHECK calls for ASSERTs in bpf_tcp_ca
+Content-Language: en-GB
+To: Yuran Pereira <yuran.pereira@hotmail.com>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, andrii.nakryiko@gmail.com,
+ mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kernel-mentees@lists.linuxfoundation.org
+References: <GV1PR10MB6563AECF8E94798A1E5B36A4E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <GV1PR10MB6563A7938B9B403861CA88F3E8B6A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <14c7dea0-242c-4b47-929c-7cbd1d7e202a@linux.dev>
+ <GV1PR10MB6563596BC3E2B01F664010C7E8B4A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <GV1PR10MB6563596BC3E2B01F664010C7E8B4A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v3 0/8] bpf_redirect_peer fixes
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170050562585.4532.1588179408610417971.git-patchwork-notify@kernel.org>
-Date: Mon, 20 Nov 2023 18:40:25 +0000
-References: <20231114004220.6495-1-daniel@iogearbox.net>
-In-Reply-To: <20231114004220.6495-1-daniel@iogearbox.net>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: martin.lau@kernel.org, kuba@kernel.org, razor@blackwall.org,
- sdf@google.com, horms@kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
-
-Hello:
-
-This series was applied to bpf/bpf.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Tue, 14 Nov 2023 01:42:12 +0100 you wrote:
-> This fixes bpf_redirect_peer stats accounting for veth and netkit,
-> and adds tstats in the first place for the latter. Utilise indirect
-> call wrapper for bpf_redirect_peer, and improve test coverage of the
-> latter also for netkit devices. Details in the patches, thanks!
-> 
-> The series was targeted at bpf originally, and is done here as well,
-> so it can trigger BPF CI. Jakub, if you think directly going via net
-> is better since the majority of the diff touches net anyway, that is
-> fine, too.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf,v3,1/8] net, vrf: Move dstats structure to core
-    https://git.kernel.org/bpf/bpf/c/79e0c5be8c73
-  - [bpf,v3,2/8] net: Move {l,t,d}stats allocation to core and convert veth & vrf
-    https://git.kernel.org/bpf/bpf/c/34d21de99cea
-  - [bpf,v3,3/8] netkit: Add tstats per-CPU traffic counters
-    https://git.kernel.org/bpf/bpf/c/ae1658272c64
-  - [bpf,v3,4/8] veth: Use tstats per-CPU traffic counters
-    https://git.kernel.org/bpf/bpf/c/6f2684bf2b44
-  - [bpf,v3,5/8] bpf: Fix dev's rx stats for bpf_redirect_peer traffic
-    https://git.kernel.org/bpf/bpf/c/024ee930cb3c
-  - [bpf,v3,6/8] bpf, netkit: Add indirect call wrapper for fetching peer dev
-    https://git.kernel.org/bpf/bpf/c/2c2254257040
-  - [bpf,v3,7/8] selftests/bpf: De-veth-ize the tc_redirect test case
-    https://git.kernel.org/bpf/bpf/c/eee82da79f03
-  - [bpf,v3,8/8] selftests/bpf: Add netkit to tc_redirect selftest
-    https://git.kernel.org/bpf/bpf/c/adfeae2d243d
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+X-Migadu-Flow: FLOW_OUT
 
 
+On 11/20/23 12:15 PM, Yuran Pereira wrote:
+> Hello Yonghong,
+> On Mon, Nov 20, 2023 at 07:22:59AM -0800, Yonghong Song wrote:
+>>> -		if (CHECK(!err || errno != ENOENT,
+>>> -			  "bpf_map_lookup_elem(sk_stg_map)",
+>>> -			  "err:%d errno:%d\n", err, errno))
+>>> +		if (!ASSERT_NEQ(err, 0, "bpf_map_lookup_elem(sk_stg_map)") ||
+>> !ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)")
+>> might be simpler than !ASSERT_NEQ(..).
+>>
+> Sure, that makes sense. I'll change it in v3.
+>>> -	pthread_join(srv_thread, &thread_ret);
+>>> -	CHECK(IS_ERR(thread_ret), "pthread_join", "thread_ret:%ld",
+>>> -	      PTR_ERR(thread_ret));
+>>> +	err = pthread_join(srv_thread, &thread_ret);
+>>> +	ASSERT_OK(err, "pthread_join");
+>> The above is not equivalent to the original code.
+>> The original didn't check pthread_join() return as it
+>> is very very unlikely to fail. And check 'thread_ret'
+>> is still needed.
+>>
+> Yes that is true, but the v1 [1] broke the tests because the
+> ASSERT_OK_PTR(thread_ret, "pthread_join") kept failing, even
+> though all the asserts within the `server()` function itself
+> passed.
+>
+> Also, isn't asserting `thread_ret` technically checking the
+> `server()` function instead of `pthread_join`? So should we
+> have two asserts here? One for `server` and one for `pthread_join`
+> or is it not necessary?
+> i.e:
+> ```
+> ASSERT_OK_PTR(thread_ret, "server");
+> ASSERT_OK(err, "pthread_join");
+> ```
+
+As I mentioned, checking return value of pthread_join()
+is not critical as in general pthread_join() not fail.
+The test is not to test pthread_join() and if pthread_join()
+fails it would be an even bigger problem affecting many other
+tests.
+
+>
+> Upon taking a second look, I now think that the reason why
+> `ASSERT_OK_PTR(thread_ret, "pthread_join");` failed in v1 might
+> have been because it calls `libbpf_get_error` which returns
+> `-errno` when the pointer is `NULL`.
+>
+> Since `server`'s return value is not a bpf address, which
+> `ASSERT_OK_PTR` expects it to be, do you that think we should
+> explicitly set `errno = 0` prior to returning NULL on server?
+> That way that assert would pass even when the pointer is NULL
+> (which is the case when `server` returns successfuly).
+
+Let us just do
+
+   ASSERT_OK(IS_ERR(thread_ret), "thread_ret")
+
+
+>
+> [1] - https://lore.kernel.org/lkml/GV1PR10MB6563A0BE91080E6E8EC2651DE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM/
+>
+> As always, thank you for your feedback.
+>
+> Yuran Pereira
+>
 
