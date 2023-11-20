@@ -1,214 +1,162 @@
-Return-Path: <bpf+bounces-15353-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15354-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 112D47F1424
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 14:16:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85E867F1463
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 14:27:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED79B1C2187F
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 13:16:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B68A01C2155E
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 13:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A2D1A71B;
-	Mon, 20 Nov 2023 13:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="LPp30pGP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED83A1A5BC;
+	Mon, 20 Nov 2023 13:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4F4113
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 05:16:07 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-548696eac92so2982211a12.3
-        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 05:16:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1700486165; x=1701090965; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=paXWmZJjkzeTHk9KbxsJ5PCYxiV+9eLWIGBAJo/o7w8=;
-        b=LPp30pGP66A+V3hrUWdHnljY/Jl8ueyxCPhErg80swGZg5aDtQzOB5W16XnLYWRaoV
-         0Ihe0MgX/9gNPDc8o8ylxQKR2kG6C6rcQy2i5nbfBwmtHTI9xejFC5L1EJuFyWBLYeul
-         diLNn31VQtxhw2/980OGnVWn+iJmY4baHgcV7hFTdPBTX+PIe1/jUP2djP4XCOuH5rcF
-         QBPm7oxwv/n16I+ldw209C8ZVqnpfwOm/g8bPrYfMQgbxR9KYriAHB43v0xv4BAMjOyd
-         sPCtG8mlmMzhojO2f+M16ze2SJz2KgYiA7wJfeAJ7uJB89xtTtb+qXBaLfjDCUZhstuM
-         vybg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700486165; x=1701090965;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=paXWmZJjkzeTHk9KbxsJ5PCYxiV+9eLWIGBAJo/o7w8=;
-        b=wIDwXX2pNFUCjJvgz27twCrDTdtT1Mbqcasb5oKQcXNZXMDGuVSE+sIWlzo+iUN66W
-         H9pz+sPCvaw7sc4OQeE+lNPPmDHnh0+BxBWVZ7+n6pfD9rajd0imW4UOiRXzHnf1stgH
-         ymHLpGGrpq7eGsWFLazJUheyrAWwCkb/CyD/7yG8t80wwEQJrU4aq+Gae7Vyq0HPGMFK
-         OM8hs0IjYvQPXe7nvxm3Auks3nMoDbTqz5PGLWkfJlu2TyaJRgAh3gInIA91qzHFD+/1
-         uXk9cfSb7uX7VMBy5ppA1SiET88GMyPGoUc5yQJsN+ioRg7wBugXB044npc5Z+t4OV//
-         ywuA==
-X-Gm-Message-State: AOJu0Yz/QQMmjIvqNFW47G/LMqCCB3V2ezA83zuqtGrETRzBlpIcvF7p
-	NGXfXiRU3hphurxymL3tUqBxPw==
-X-Google-Smtp-Source: AGHT+IEWyPu++B3DE+4d8255KgTG/8MpKf+RTbXjZHmp0gcLahMNvhvPxYv5IOqWBy5p1Lr9nmPYfQ==
-X-Received: by 2002:a05:6402:2d7:b0:53d:b59c:8f91 with SMTP id b23-20020a05640202d700b0053db59c8f91mr5458780edx.27.1700486165430;
-        Mon, 20 Nov 2023 05:16:05 -0800 (PST)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id o9-20020a509b09000000b0053deb97e8e6sm3732932edi.28.2023.11.20.05.16.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Nov 2023 05:16:04 -0800 (PST)
-Date: Mon, 20 Nov 2023 14:16:03 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com,
-	anjali.singhai@intel.com, namrata.limaye@intel.com, tom@sipanda.io,
-	mleitner@redhat.com, Mahesh.Shirshyad@amd.com,
-	tomasz.osinski@intel.com, xiyou.wangcong@gmail.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org,
-	daniel@iogearbox.net, bpf@vger.kernel.org, khalidm@nvidia.com,
-	toke@redhat.com, mattyk@nvidia.com, David Ahern <dsahern@gmail.com>,
-	Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: [PATCH net-next v8 09/15] p4tc: add template pipeline create,
- get, update, delete
-Message-ID: <ZVtcEwICZHsTtija@nanopsycho>
-References: <20231116145948.203001-1-jhs@mojatatu.com>
- <20231116145948.203001-10-jhs@mojatatu.com>
- <ZVY/GBIC4ckerGSc@nanopsycho>
- <CAM0EoMkdOnvzK3J1caSeKzVj+h-XrkLPfsfwRCS_udHem-C29g@mail.gmail.com>
- <ZVsWP29UyIzg4Jwq@nanopsycho>
- <CAM0EoM=nANF_-HaMKmk0j6JXqGeuEUZVU3fxZp4VoB9GzZwjUQ@mail.gmail.com>
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F98AA
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 05:27:38 -0800 (PST)
+Received: from fsav412.sakura.ne.jp (fsav412.sakura.ne.jp [133.242.250.111])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 3AKDRagN045739;
+	Mon, 20 Nov 2023 22:27:36 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav412.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp);
+ Mon, 20 Nov 2023 22:27:36 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav412.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 3AKDRaAJ045731
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Mon, 20 Nov 2023 22:27:36 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <93b5e861-c1ec-417c-b21e-56d0c4a3ae79@I-love.SAKURA.ne.jp>
+Date: Mon, 20 Nov 2023 22:27:31 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM0EoM=nANF_-HaMKmk0j6JXqGeuEUZVU3fxZp4VoB9GzZwjUQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-security-module <linux-security-module@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>
+Cc: Paul Moore <paul@paul-moore.com>, Kees Cook <keescook@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>, song@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, renauld@google.com,
+        Paolo Abeni <pabeni@redhat.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [RFC PATCH v2 0/4] LSM: Officially support appending LSM hooks after
+ boot.
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Mon, Nov 20, 2023 at 01:48:14PM CET, jhs@mojatatu.com wrote:
->On Mon, Nov 20, 2023 at 3:18 AM Jiri Pirko <jiri@resnulli.us> wrote:
->>
->> Fri, Nov 17, 2023 at 01:09:45PM CET, jhs@mojatatu.com wrote:
->> >On Thu, Nov 16, 2023 at 11:11 AM Jiri Pirko <jiri@resnulli.us> wrote:
->> >>
->> >> Thu, Nov 16, 2023 at 03:59:42PM CET, jhs@mojatatu.com wrote:
->> >>
->> >> [...]
->> >>
->> >>
->> >> >diff --git a/include/uapi/linux/p4tc.h b/include/uapi/linux/p4tc.h
->> >> >index ba32dba66..4d33f44c1 100644
->> >> >--- a/include/uapi/linux/p4tc.h
->> >> >+++ b/include/uapi/linux/p4tc.h
->> >> >@@ -2,8 +2,71 @@
->> >> > #ifndef __LINUX_P4TC_H
->> >> > #define __LINUX_P4TC_H
->> >> >
->> >> >+#include <linux/types.h>
->> >> >+#include <linux/pkt_sched.h>
->> >> >+
->> >> >+/* pipeline header */
->> >> >+struct p4tcmsg {
->> >> >+      __u32 pipeid;
->> >> >+      __u32 obj;
->> >> >+};
->> >>
->> >> I don't follow. Is there any sane reason to use header instead of normal
->> >> netlink attribute? Moveover, you extend the existing RT netlink with
->> >> a huge amout of p4 things. Isn't this the good time to finally introduce
->> >> generic netlink TC family with proper yaml spec with all the benefits it
->> >> brings and implement p4 tc uapi there? Please?
->> >>
->> >
->> >Several reasons:
->> >a) We are similar to current tc messaging with the subheader being
->> >there for multiplexing.
->>
->> Yeah, you don't need to carry 20year old burden in newly introduced
->> interface. That's my point.
->
->Having a demux sub header is 20 year old burden? I didnt follow.
+This functionality will be used by TOMOYO security module.
 
-You don't need the header, that's my point.
+In order to officially use an LSM module, that LSM module has to be
+built into vmlinux. This limitation has been a big barrier for allowing
+distribution kernel users to use LSM modules which the organization who
+builds that distribution kernel cannot afford supporting [1]. Therefore,
+I've been asking for ability to append LSM hooks from LKM-based LSMs so
+that distribution kernel users can use LSMs which the organization who
+builds that distribution kernel cannot afford supporting.
 
+In order to unofficially use LSMs which are not built into vmlinux,
+I've been maintaining AKARI as an LKM-based LSM which can run on kernels
+between 2.6.0 and 6.6. But KP Singh's "Reduce overhead of LSMs with static
+calls" proposal will make AKARI more difficult to run because it removes
+the linked list. Therefore, reviving ability to officially append LSM
+hooks from LKM-based LSMs became an urgent matter.
 
->
->>
->> >b) Where does this leave iproute2? +Cc David and Stephen. Do other
->> >generic netlink conversions get contributed back to iproute2?
->>
->> There is no conversion afaik, only extensions. And they has to be,
->> otherwise the user would not be able to use the newly introduced
->> features.
->
->The big question is does the collective who use iproute2 still get to
->use the same tooling or now they have to go and learn some new
->tooling. I understand the value of the new approach but is it a
->revolution or an evolution? We opted to put thing in iproute2 instead
->for example because that is widely available (and used).
+KP Singh suggested me to implement such LSMs as eBPF programs. But the
+result is that eBPF is too restricted to emulate such LSMs [2]. Therefore,
+I still need ability to append LSM hooks from LKM-based LSMs.
 
-I don't see why iproute2 user facing interface would be any different
-depending on if you user RTnetlink or genetlink as backend channel...
+KP Singh commented
 
+  I think what you can do is send patches for an API for LKM based LSMs
+  and have it merged before my series, I will work with the code I have
+  and make LKM based LSMs work. If this work gets merged, and your
+  use-case is accepted (I think I can speak for at least Kees [if not
+  others] too here) we will help you if you get stuck with MAX_LSM_COUNT
+  or a dual static call and linked list based approach.
 
->
->>
->> >c) note: Our API is CRUD-ish instead of RPC(per generic netlink)
->> >based. i.e you have:
->> > COMMAND <PATH/TO/OBJECT> [optional data]  so we can support arbitrary
->> >P4 programs from the control plane.
->>
->> I'm pretty sure you can achieve the same over genetlink.
->>
->
->I think you are right.
->
->>
->> >d) we have spent many hours optimizing the control to the kernel so i
->> >am not sure what it would buy us to switch to generic netlink..
->>
->> All the benefits of ynl yaml tooling, at least.
->>
->
->Did you pay close attention to what we have? The user space code is
->written once into iproute2 and subsequent to that there is no
->recompilation  of any iproute2 code. The compiler generates a json
->file specific to a P4 program which is then introspected by the
->iproute2 code.
+at [3] and I posted one at [4] but I didn't get any response.
 
-Right, but in real life, netlink is used directly by many apps. I don't
-see why this is any different.
+Anyway, here is an updated version. This version focused on how to
+implement an LSM module which calls LSM hooks in the LKM based LSMs
+(mod_lsm). Since there are a lot of duplication between
+security/security.c and security/mod_lsm.c , I tried to auto-genarate
+typical functions using macros.
 
-Plus, the very best part of yaml from user perpective I see is,
-you just need the kernel-git yaml file and you can submit all commands.
-No userspace implementation needed.
+The result is that, although I succeeded to avoid bloating total lines
+of source code, I feel that it might become less readable. Therefore,
+I came to think that we don't need to implement an LSM module which calls
+LSM hooks in the LKM based LSMs.
 
+ b/include/linux/bpf_lsm.h       |    1
+ b/include/linux/lsm_hook_args.h |  250 +++++++++++++++++++++++++
+ b/include/linux/lsm_hook_defs.h |    3
+ b/include/linux/lsm_hooks.h     |    2
+ b/kernel/bpf/bpf_lsm.c          |    3
+ b/security/Makefile             |    2
+ b/security/bpf/hooks.c          |    1
+ b/security/mod_lsm.c            |  321 ++++++++++++++++++++++++++++++++
+ b/security/security.c           |    3
+ include/linux/lsm_hook_defs.h   |  780 ++++++++++++++++++++++++++++++++++++++++++-------------------------------------
+ include/linux/lsm_hooks.h       |    9
+ security/security.c             |  752 ++--------------------------------------------------------------------------
+ 12 files changed, 1035 insertions(+), 1092 deletions(-)
 
->
->
->cheers,
->jamal
->
->>
->> >
->> >cheers,
->> >jamal
->> >
->> >>
->> >> >+
->> >> >+#define P4TC_MAXPIPELINE_COUNT 32
->> >> >+#define P4TC_MAXTABLES_COUNT 32
->> >> >+#define P4TC_MINTABLES_COUNT 0
->> >> >+#define P4TC_MSGBATCH_SIZE 16
->> >> >+
->> >> > #define P4TC_MAX_KEYSZ 512
->> >> >
->> >> >+#define TEMPLATENAMSZ 32
->> >> >+#define PIPELINENAMSIZ TEMPLATENAMSZ
->> >>
->> >> ugh. A prefix please?
->> >>
->> >> pw-bot: cr
->> >>
->> >> [...]
+Instead, directly embedding the code to call LSM hooks in the LKM based
+LSMs into call_int_hook() and call_void_hook() macros will save a lot of
+symbols compared to implementing functions for calling LSM hooks in the
+LKM based LSMs. Since LKM-based LSMs was not officially supported as of
+introduction of the lsm= parameter, forcing to call LKM-based LSMs after
+calling built-in LSMs will not confuse userspace.
+
+Unless someone has objection on not using an LSM module which calls
+LSM hooks in the LKM based LSMs, I'd like to try something like below
+in the next version.
+
+ #define call_void_hook(FUNC, ...)				\
+ 	do {							\
+ 		struct security_hook_list *P;			\
+ 								\
+ 		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) \
+ 			P->hook.FUNC(__VA_ARGS__);		\
++		if (mod_lsm_enabled) {				\
++			hlist_for_each_entry(P, &mod_lsm_hook_heads.FUNC, list) \
++				P->hook.FUNC(__VA_ARGS__);	\
++		}						\
+ 	} while (0)
+ 
+ #define call_int_hook(FUNC, IRC, ...) ({			\
+ 	int RC = IRC;						\
+ 	do {							\
+ 		struct security_hook_list *P;			\
+ 								\
+ 		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
+ 			RC = P->hook.FUNC(__VA_ARGS__);		\
+ 			if (RC != 0)				\
+ 				break;				\
+ 		}						\
++		if (mod_lsm_enabled) {				\
++			hlist_for_each_entry(P, &mod_lsm_hook_heads.FUNC, list) { \
++				RC = P->hook.FUNC(__VA_ARGS__);	\
++				if (RC != 0)			\
++					break;			\
++			}					\
++		}						\
+ 	} while (0);						\
+ 	RC;							\
+ })
+
+Link: https://lkml.kernel.org/r/9b006dfe-450e-4d73-8117-9625d2586dad@I-love.SAKURA.ne.jp [1]
+Link: https://lkml.kernel.org/r/c588ca5d-c343-4ea2-a1f1-4efe67ebb8e3@I-love.SAKURA.ne.jp [2]
+Link: https://lkml.kernel.org/r/CACYkzJ7ght66802wQFKzokfJKMKDOobYgeaCpu5Gx=iX0EuJVg@mail.gmail.com [3]
+Link: https://lkml.kernel.org/r/38b318a5-0a16-4cc2-878e-4efa632236f3@I-love.SAKURA.ne.jp [4]
 
