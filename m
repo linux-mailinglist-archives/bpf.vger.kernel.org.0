@@ -1,138 +1,186 @@
-Return-Path: <bpf+bounces-15345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C730B7F0CF2
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 08:41:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EFEF7F0D26
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 09:05:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9A091C210F9
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 07:41:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E741E28195D
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 08:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3172CA4D;
-	Mon, 20 Nov 2023 07:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170CDD2ED;
+	Mon, 20 Nov 2023 08:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BhZjDEmW"
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="OGRyE6wZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C1DB7;
-	Sun, 19 Nov 2023 23:41:47 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-32fd7fc9f19so2671575f8f.2;
-        Sun, 19 Nov 2023 23:41:47 -0800 (PST)
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FBE107
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 00:05:47 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b2018a11efso4261731b3a.0
+        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 00:05:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700466106; x=1701070906; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=UcnRCn9RBtyZwzYZjL7Mal3df0TOYaoALw3ajoI8ruo=;
-        b=BhZjDEmWA6rMhy2zRLDgfrKFAF8a/S/0etGDujI+e4o+gnbFdJPTUaqIY6ZnnC/B30
-         TeI4s+w4PXARxXrma6rn9lLXI/mggcJHvq6m8DRQgJ9csaGCgzDnQjLx4a8SvTw6muwf
-         q5HZOe4asiYuZflkKWeKhTZsoSwO5fnMoIiKci2SqpEd71J+smJw0ltd56BvTNk98XdT
-         DiLuiOgegCreNJJU1F8T56KVn1Mr4VQbwWfTEAEICGi3Jv+pZhXkp2sHesE1wJPd6w3J
-         IaS5KU+x49OeJ92wQm+lv39uwnD3XrP+/v4eyJaCmBvoGhOHx1igMi8TTYuteO3BGri8
-         55cQ==
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1700467547; x=1701072347; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n4NoqTxZnppS8i0nP/xGCXWB/hxXsx67zIl1hkFjXDo=;
+        b=OGRyE6wZHDiPSa6gF4QXDy5G++VYIEFZkEWmeZEiaskWAB2wUBXtzA5uds46mPpmIB
+         tOe9lhtEvqHdhC3ulemjpZKATvLGbU8hgBrIG5BVVwHGG2ZUNIuZQYotukauA/hBuIRG
+         YptTDtk2RaTYWz51aEQzGQB18IalXh2sqC4SErvC7mZ+3fQwRJA42NBV3fQTU85VvVmv
+         F7RoQe10E6yMVAKEEJcC5js3pXvwarz8J+wa5FW5c4E2S4VaqaBKERXUG+DhVfT2Urnp
+         kRLqGRCEzdGsy85oOI2lKINxkTEKWq3ChqOIkRxk6eeU4aDNjhfThaO37pT2P9HxPaAA
+         b44w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700466106; x=1701070906;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+        d=1e100.net; s=20230601; t=1700467547; x=1701072347;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UcnRCn9RBtyZwzYZjL7Mal3df0TOYaoALw3ajoI8ruo=;
-        b=owbAUT75hoLH873t3p7i22kikH65MPqktXNGW0ZnRGYpcYXCEV7G5+oriFcMKpCbjA
-         hkZ1Fpq2XFE1EqpQOZkCcpiC+/QWTz9Hj6dBwUXW2bj8ZJWfwEx5p5c/5u2evFd9R7h6
-         UGuyOTeITPMP2DYe2ByQKjgeWMM6TC11fIOGYASESQJVFeD7jUe30Zk/b6qoJ7cHcCEc
-         tOOARoy4ceO/ICAa3er1RwOlvPiYQz7fqkMGkXqc8+r8uRNog6yp5Vp9DglOQkepmG1e
-         Ho3TJ5PtFi40raDrfiw0TtZGzawNPsUjVACGHZOoWeOy+GEy+7VDzXre3IUQxNM9Smfh
-         ImUA==
-X-Gm-Message-State: AOJu0YzF1SiOipm9gnwkkyvm9TDvSaO6TWcCJOTZVUaNIVlwtA0yZ+up
-	JsSU/8J0PueXQ6C9JhO33IlvnGB7WFMctA==
-X-Google-Smtp-Source: AGHT+IGLxhKtp3IKpPAJiweTS4UYRDByB4GjdiKC0IaFf2a6rUb8Hh+cAbWkEb3mZscgg4QSavm/EA==
-X-Received: by 2002:a5d:48c9:0:b0:331:6ad3:853 with SMTP id p9-20020a5d48c9000000b003316ad30853mr3683767wrs.41.1700466105720;
-        Sun, 19 Nov 2023 23:41:45 -0800 (PST)
-Received: from f (cst-prg-3-109.cust.vodafone.cz. [46.135.3.109])
-        by smtp.gmail.com with ESMTPSA id i13-20020a5d55cd000000b003313426f136sm10142299wrw.39.2023.11.19.23.41.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Nov 2023 23:41:45 -0800 (PST)
-Date: Mon, 20 Nov 2023 08:41:06 +0100
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: kernel test robot <oliver.sang@intel.com>
-Cc: Christian Brauner <brauner@kernel.org>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	Jann Horn <jannh@google.com>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	intel-gfx@lists.freedesktop.org, linux-fsdevel@vger.kernel.org,
-	gfs2@lists.linux.dev, bpf@vger.kernel.org, ying.huang@intel.com,
-	feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [file]  0ede61d858:  will-it-scale.per_thread_ops
- -2.9% regression
-Message-ID: <ZVsNklEgxi5GkIZ/@f>
-References: <202311201406.2022ca3f-oliver.sang@intel.com>
+        bh=n4NoqTxZnppS8i0nP/xGCXWB/hxXsx67zIl1hkFjXDo=;
+        b=lm9TY/g7pvb1Ul4L5mV2iTrhqH0Q+Q37YdZV8mZSAT/+IiM6g2V2lniKX0vy9xuAEB
+         k7DDw0KzTMccqVuJLnwa138zlZ/sOZQBxbfX1SocEiTzFMsY2wzA9lW8XGqRh1u1reLF
+         gLtHs/yLqUHW64YRKTHBWsp1Vgcuv/PBCj5Mmygjn7zW12EztsRvtqg04DYVzbq/KEQT
+         WmKIiOuBI9ToROk4NgC3YzINPvODu4zXVqe+rTxqEX+WZ0zcWG5spbXvm0stWnQRs1Y3
+         lGHPe5ICo7rkN9dQw6zucs6FKqO7OaZ0q6Z/wwE9z0ORCb3mSLkNG9dnphvWyK2H1nb8
+         WSRw==
+X-Gm-Message-State: AOJu0YxP+XAh2mn+Xr3tsllempJFpj51CVbiLBeUYIpbPOCF6YHSfiYB
+	TAQbdYmZKJ/RKYL3C78/kUiZFg==
+X-Google-Smtp-Source: AGHT+IGssdhQXa2d+roUN7IT+TTU6LwlrMuPiMYOCQM48dnmpaA4XEU9k505dahywkNiyYYGiT6THg==
+X-Received: by 2002:a05:6a00:80a:b0:6cb:910a:c6fe with SMTP id m10-20020a056a00080a00b006cb910ac6femr3670261pfk.7.1700467547194;
+        Mon, 20 Nov 2023 00:05:47 -0800 (PST)
+Received: from [157.82.205.15] ([157.82.205.15])
+        by smtp.gmail.com with ESMTPSA id f32-20020a056a000b2000b006c5da63556dsm5673415pfu.178.2023.11.20.00.05.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Nov 2023 00:05:46 -0800 (PST)
+Message-ID: <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com>
+Date: Mon, 20 Nov 2023 17:05:40 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To: Song Liu <song@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Jason Wang <jasowang@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>, kvm@vger.kernel.org,
+ virtualization@lists.linux-foundation.org,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ Yuri Benditovich <yuri.benditovich@daynix.com>,
+ Andrew Melnychenko <andrew@daynix.com>
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com>
+ <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com>
+ <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+ <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+ <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
+ <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com>
+ <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
+ <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
+ <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com>
+ <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
+Content-Language: en-US
+From: Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <202311201406.2022ca3f-oliver.sang@intel.com>
 
-On Mon, Nov 20, 2023 at 03:11:31PM +0800, kernel test robot wrote:
+On 2023/11/20 6:02, Song Liu wrote:
+> On Sun, Nov 19, 2023 at 12:03 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+>>
+> [...]
+>>
+>> Unfortunately no. The communication with the userspace can be done with
+>> two different means:
+>> - usual socket read/write
+>> - vhost for direct interaction with a KVM guest
+>>
+>> The BPF map may be a valid option for socket read/write, but it is not
+>> for vhost. In-kernel vhost may fetch hash from the BPF map, but I guess
+>> it's not a standard way to have an interaction between the kernel code
+>> and a BPF program.
 > 
-> 
-> Hello,
-> 
-> kernel test robot noticed a -2.9% regression of will-it-scale.per_thread_ops on:
-> 
-> 
-> commit: 0ede61d8589cc2d93aa78230d74ac58b5b8d0244 ("file: convert to SLAB_TYPESAFE_BY_RCU")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> 93faf426e3cc000c 0ede61d8589cc2d93aa78230d74 
-> ---------------- --------------------------- 
->          %stddev     %change         %stddev
->              \          |                \  
-[snip]
->      30.90 ±  4%     -20.6       10.35 ±  2%  perf-profile.self.cycles-pp.__fget_light
->       0.00           +26.5       26.48        perf-profile.self.cycles-pp.__get_file_rcu
-[snip]
+> I am very new to areas like vhost and KVM. So I don't really follow.
+> Does this mean we have the guest kernel reading data from host eBPF
+> programs (loaded by Qemu)?
 
-So __fget_light now got a func call.
+Yes, the guest will read hashes calculated by the host, and the 
+interface is strictly defined with the virtio-net specification.
 
-I don't know if this is worth patching (and benchmarking after), but I
-if sorting this out is of interest, triviality below is probably the
-easiest way out:
+> 
+>>>
+>>>>
+>>>> Unfortunately, however, it is not acceptable for the BPF subsystem
+>>>> because the "stable" BPF is completely fixed these days. The
+>>>> "unstable/kfunc" BPF is an alternative, but the eBPF program will be
+>>>> shipped with a portable userspace program (QEMU)[1] so the lack of
+>>>> interface stability is not tolerable.
+>>>
+>>> bpf kfuncs are as stable as exported symbols. Is exported symbols
+>>> like stability enough for the use case? (I would assume yes.)
+>>>
+>>>>
+>>>> Another option is to hardcode the algorithm that was conventionally
+>>>> implemented with eBPF steering program in the kernel[2]. It is possible
+>>>> because the algorithm strictly follows the virtio-net specification[3].
+>>>> However, there are proposals to add different algorithms to the
+>>>> specification[4], and hardcoding the algorithm to the kernel will
+>>>> require to add more UAPIs and code each time such a specification change
+>>>> happens, which is not good for tuntap.
+>>>
+>>> The requirement looks similar to hid-bpf. Could you explain why that
+>>> model is not enough? HID also requires some stability AFAICT.
+>>
+>> I have little knowledge with hid-bpf, but I assume it is more like a
+>> "safe" kernel module; in my understanding, it affects the system state
+>> and is intended to be loaded with some kind of a system daemon. It is
+>> fine to have the same lifecycle with the kernel for such a BPF program;
+>> whenever the kernel is updated, the distributor can recompile the BPF
+>> program with the new kernel headers and ship it along with the kernel
+>> just as like a kernel module.
+>>
+>> In contrast, our intended use case is more like a normal application.
+>> So, for example, a user may download a container and run QEMU (including
+>> the BPF program) installed in the container. As such, it is nice if the
+>> ABI is stable across kernel releases, but it is not guaranteed for
+>> kfuncs. Such a use case is already covered with the eBPF steering
+>> program so I want to maintain it if possible.
+> 
+> TBH, I don't think stability should be a concern for kfuncs used by QEMU.
+> Many core BPF APIs are now implemented as kfuncs: bpf_dynptr_*,
+> bpf_rcu_*, etc. As long as there are valid use cases,these kfuncs will
+> be supported.
 
-diff --git a/fs/file.c b/fs/file.c
-index 5fb0b146e79e..d8d3e18800c4 100644
---- a/fs/file.c
-+++ b/fs/file.c
-@@ -856,14 +856,14 @@ void do_close_on_exec(struct files_struct *files)
- 	spin_unlock(&files->file_lock);
- }
- 
--static struct file *__get_file_rcu(struct file __rcu **f)
-+static __always_inline struct file *__get_file_rcu(struct file __rcu **f)
- {
- 	struct file __rcu *file;
- 	struct file __rcu *file_reloaded;
- 	struct file __rcu *file_reloaded_cmp;
- 
- 	file = rcu_dereference_raw(*f);
--	if (!file)
-+	if (unlikely(!file))
- 		return NULL;
- 
- 	if (unlikely(!atomic_long_inc_not_zero(&file->f_count)))
-@@ -891,7 +891,7 @@ static struct file *__get_file_rcu(struct file __rcu **f)
- 	 * If the pointers don't match the file has been reallocated by
- 	 * SLAB_TYPESAFE_BY_RCU.
- 	 */
--	if (file == file_reloaded_cmp)
-+	if (likely(file == file_reloaded_cmp))
- 		return file_reloaded;
- 
- 	fput(file);
+Documentation/bpf/kfuncs.rst still says:
+ > kfuncs provide a kernel <-> kernel API, and thus are not bound by any
+ > of the strict stability restrictions associated with kernel <-> user
+ > UAPIs.
+
+Is it possible to change the statement like as follows:
+"Most kfuncs provide a kernel <-> kernel API, and thus are not bound by 
+any of the strict stability restrictions associated with kernel <-> user
+UAPIs. kfuncs that have same stability restrictions associated with 
+UAPIs are exceptional, and must be carefully reviewed by subsystem (and 
+BPF?) maintainers as any other UAPIs are."
+
+Regards,
+Akihiko Odaki
 
