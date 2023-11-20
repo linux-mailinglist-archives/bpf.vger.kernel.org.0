@@ -1,119 +1,174 @@
-Return-Path: <bpf+bounces-15410-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15411-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D81707F1F4B
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 22:38:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C3D97F1F52
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 22:39:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1D7F61C214A2
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 21:38:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDA8F2821C7
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 21:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F8538F96;
-	Mon, 20 Nov 2023 21:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4248638F9F;
+	Mon, 20 Nov 2023 21:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BiNUXGpP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GcYKFBPp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E87CA
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 13:38:10 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5ca2a6f07b6so21993307b3.2
-        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 13:38:10 -0800 (PST)
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7962CB
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 13:39:11 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cf5901b1a9so25583385ad.1
+        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 13:39:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700516290; x=1701121090; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1700516351; x=1701121151; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dq4CfKUj5/ZaNFEkeLfqEzl0ki2CvJ4LAjxnKGFqLpY=;
-        b=BiNUXGpP5wlEY+v5NUBfPrzAiXeoa31DcGU9rl1ZCVXkuOJ3GtBA/ZuyzlzDU8CaiD
-         s2w659socGpf7dBbS7xZhnNlsXlPXmfjy+Qh1qZ+oSSF+00C2Vvpgp187QE1eAn9kSyV
-         ntOjH31OFRbBF+Tb2Mim3UZge8rxIr3IMzU75HYw2HFMDBc/XQE01JOYo/wVT6GNhthe
-         KM9QG+5Qf+02Ekx6bQmfzBthDVPoO3f9jxrORF4LwXNpJW4TIEmsYBPWDlV+f8n+rdHo
-         a7CD9EDyFGiyOM1jVhVIQSSaD5uhwpmtKY3IPWB7LTep2xzG4cCBuW23PzATkYoNmIWq
-         KKIw==
+        bh=ZG1vDgWu2nKSdBVzCq8kAu+r1Dbdevu3C444hSj0rlg=;
+        b=GcYKFBPpGNxwdHHQFscglbYbuHfT1DH0C0Mu4K5EUJ48EfGHae7TN1nSMK+1S8cj4r
+         0j8O3xXnr7PDgiofQFkCwi/UWJx5UlpH0UMnND4bjYX7rDN+FHK2PpcWLmrPrEZClqSi
+         MxAkD62UWJ8DNX7c6wIKYTSRUQp7zT5Qp43x7wtlkrKrWo1Ie73kchErZMlw3HC4vhUB
+         +m9p/68qL2ihouPN1WYtZxdi7vUHT7frCqnF5ZAu1UY0VKNZcXtOqj+NTZQLE9o8VCqu
+         QWvkuyqxdYwLOdWmRg92la27eE66kAAVg3PQRUdUKb7dsRJXwtkFWUEhTIyxmB7bK0ha
+         qP6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700516290; x=1701121090;
+        d=1e100.net; s=20230601; t=1700516351; x=1701121151;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dq4CfKUj5/ZaNFEkeLfqEzl0ki2CvJ4LAjxnKGFqLpY=;
-        b=GkpiE/BkUGB/k8FJxWjOn9GNZxyxZgMlS13lrLroeRBxxzjT3AO4gSudly3H1wLR+a
-         nKge18yz7QwwOAY1Tw8dj/YJwo6cvdzndP7zS48vKjlgQxHHTtwXrxjHQ3gHhl3zLtep
-         v3Rx70Rq6j6/bvEpQ2aVQQVIFDU2bn3drDdhhWlN2SqTxdYTQ4FW6wf3jAxxacOS/HOf
-         55e/ru6Gg6fGuJu55m+cXv5d3w6hhxiBmGxAOyir+8HhzVatj46dz0z6Q+DRDk8pf7Pm
-         fdV+0LKAeu3KHd8kEhSrvP/+r6QZ3eNxRiy6boBDbmlx6z6/+yrWa+l1WKMbv9cC7ZtW
-         dm2A==
-X-Gm-Message-State: AOJu0YxdWbdB/mr60TNylVk+BUQUBjeyQU0df61IWOcq5Y+6WLEOBJ0u
-	wvpv/a/A3jfXJ0bDT+vJzn/22ni7mmQEuHXZUyl96oKBgIFeXDq50zIzmbUjxXKoB+cgGK0ioKT
-	lHqksq2DikweSx8Jjhn2gjTOGm+N9/v6gibQYGvOU+PXmv+B2vQ==
-X-Google-Smtp-Source: AGHT+IF5G39joqJfR/xXRnSv4jxlxoWo/M6mCYoU1xlmcfGOaqHKjpRBNQ9Ynfdgyr6ADX0c2lsN080=
+        bh=ZG1vDgWu2nKSdBVzCq8kAu+r1Dbdevu3C444hSj0rlg=;
+        b=hvJ27C3Pz5SB/TWek2PWC799sQNxKxIEWgLOssKWNOxtURF0ltzOceTfflFuTIO4Zb
+         /YCBJmUdwlGwkcPoKUZ3qKaWvGI4psZOnz6cLVXS+WfgMR9ALlHMxFP4JwTZmFjCxqEi
+         tUODIi3PVy/deMLiF1VabfxQAgDfP7aLp7+7F6Zhd/i/GaEagCBgCk6cM3eTrZrPwmvW
+         X9jZfnMsfHRj/sNsSwX/aquMSsO8ef4H/ZltaQH8DgRveoqlIp0PVVFyFFA5iPgzJl8g
+         QEMRz0X+KkcDKlSQhJcLv2q/e+07Q2Q8Ut8umu0SYKinBYihHcL3wMpoedtfjhl9kjuH
+         Mfqw==
+X-Gm-Message-State: AOJu0Yxd15hCViMePxny6DEoX1clnhH6TUiwCyg7tMzSrqq7lowQGsni
+	Q40ZMKVMWyZzQcXSpT31GA6F33J/aGaFyUCDJmkjYiYKdl84ap9V2WRNbq9lBMOtfvgyy1Ni7+9
+	tqQE2GbTs1I666UZSn6qDgSj1z+TkfJN5/YyutyggHdy7bXIX9Q==
+X-Google-Smtp-Source: AGHT+IE6HMKV3e822phR9t0E3N3YA0C18ABXo35ybFcnnPVw7dOBk1yIOwnYxo5D0z70IOi/dBH01oM=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:690c:2a8f:b0:5c9:b457:d73 with SMTP id
- ek15-20020a05690c2a8f00b005c9b4570d73mr132946ywb.6.1700516289968; Mon, 20 Nov
- 2023 13:38:09 -0800 (PST)
-Date: Mon, 20 Nov 2023 13:38:08 -0800
-In-Reply-To: <20231114045453.1816995-2-sdf@google.com>
+ (user=sdf job=sendgmr) by 2002:a17:902:ce81:b0:1cc:2bd6:b54a with SMTP id
+ f1-20020a170902ce8100b001cc2bd6b54amr2761974plg.10.1700516351192; Mon, 20 Nov
+ 2023 13:39:11 -0800 (PST)
+Date: Mon, 20 Nov 2023 13:39:09 -0800
+In-Reply-To: <20231114045453.1816995-3-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20231114045453.1816995-1-sdf@google.com> <20231114045453.1816995-2-sdf@google.com>
-Message-ID: <ZVvRwIUFOAP5lacY@google.com>
-Subject: Re: [PATCH bpf-next 1/2] netdevsim: don't accept device bound programs
+References: <20231114045453.1816995-1-sdf@google.com> <20231114045453.1816995-3-sdf@google.com>
+Message-ID: <ZVvR_fu2TIe4Puii@google.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: bring back removal of dev-bound id from idr
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org, netdev@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
 	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org, 
-	Dipendra Khadka <kdipendra88@gmail.com>, 
-	syzbot+44c2416196b7c607f226@syzkaller.appspotmail.com
+	kpsingh@kernel.org, haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="utf-8"
 
 On 11/13, Stanislav Fomichev wrote:
-> Commit 2b3486bc2d23 ("bpf: Introduce device-bound XDP programs")
-> introduced device-bound programs by largely reusing existing
-> offloading infrastructure. This changed the semantics of
-> 'prog->aux->offload' a bit. Now, it's non-null for both
-> offloaded and device-bound programs.
+> Commit ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
+> and PERF_BPF_EVENT_PROG_UNLOAD") stopped removing program's id from
+> idr when the offloaded/bound netdev goes away. I was supposed to
+> take a look and check in [0], but apparently I did not.
 > 
-> Instead of looking at 'prog->aux->offload' let's call
-> bpf_prog_is_offloaded which should be true iff the program
-> is offloaded and not merely device-bound.
+> The purpose of idr removal is to avoid BPF_PROG_GET_NEXT_ID returning
+> stale ids for the programs that have a dead netdev. This functionality
+> is verified by test_offload.py, but we don't run this test in the CI.
 > 
-> Cc: Dipendra Khadka <kdipendra88@gmail.com>
-> Reported-by: syzbot+44c2416196b7c607f226@syzkaller.appspotmail.com
-> Fixes: 2b3486bc2d23 ("bpf: Introduce device-bound XDP programs")
+> Introduce new bpf_prog_remove_from_idr which takes care of correctly
+> dealing with potential double idr_remove() via separate skip_idr_remove
+> flag in the aux.
+> 
+> Verified by running the test manually:
+> test_offload.py: OK
+> 
+> 0: https://lore.kernel.org/all/CAKH8qBtyR20ZWAc11z1-6pGb3Hd47AQUTbE_cfoktG59TqaJ7Q@mail.gmail.com/
+> 
+> Fixes: ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD")
 > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
->  drivers/net/netdevsim/bpf.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  include/linux/bpf.h  |  2 ++
+>  kernel/bpf/offload.c |  3 +++
+>  kernel/bpf/syscall.c | 15 +++++++++++----
+>  3 files changed, 16 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/net/netdevsim/bpf.c b/drivers/net/netdevsim/bpf.c
-> index f60eb97e3a62..608953d4f98d 100644
-> --- a/drivers/net/netdevsim/bpf.c
-> +++ b/drivers/net/netdevsim/bpf.c
-> @@ -93,7 +93,7 @@ static void nsim_prog_set_loaded(struct bpf_prog *prog, bool loaded)
->  {
->  	struct nsim_bpf_bound_prog *state;
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 4001d11be151..d2aa4b59bf1e 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1414,6 +1414,7 @@ struct bpf_prog_aux {
+>  	bool xdp_has_frags;
+>  	bool exception_cb;
+>  	bool exception_boundary;
+> +	bool skip_idr_remove;
+>  	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
+>  	const struct btf_type *attach_func_proto;
+>  	/* function name for valid attach_btf_id */
+> @@ -2049,6 +2050,7 @@ void bpf_prog_inc(struct bpf_prog *prog);
+>  struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+>  void bpf_prog_put(struct bpf_prog *prog);
 >  
-> -	if (!prog || !prog->aux->offload)
-> +	if (!prog || !bpf_prog_is_offloaded(prog->aux))
+> +void bpf_prog_remove_from_idr(struct bpf_prog *prog);
+>  void bpf_prog_free_id(struct bpf_prog *prog);
+>  void bpf_map_free_id(struct bpf_map *map);
+>  
+> diff --git a/kernel/bpf/offload.c b/kernel/bpf/offload.c
+> index 1a4fec330eaa..6f4fe492ee2a 100644
+> --- a/kernel/bpf/offload.c
+> +++ b/kernel/bpf/offload.c
+> @@ -112,6 +112,9 @@ static void __bpf_prog_offload_destroy(struct bpf_prog *prog)
+>  	if (offload->dev_state)
+>  		offload->offdev->ops->destroy(prog);
+>  
+> +	/* Make sure BPF_PROG_GET_NEXT_ID can't find this dead program */
+> +	bpf_prog_remove_from_idr(prog);
+> +
+>  	list_del_init(&offload->offloads);
+>  	kfree(offload);
+>  	prog->aux->offload = NULL;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 0ed286b8a0f0..bc813e03e2cf 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2083,10 +2083,19 @@ static int bpf_prog_alloc_id(struct bpf_prog *prog)
+>  	return id > 0 ? 0 : id;
+>  }
+>  
+> -void bpf_prog_free_id(struct bpf_prog *prog)
+> +void bpf_prog_remove_from_idr(struct bpf_prog *prog)
+>  {
+>  	unsigned long flags;
+>  
+> +	spin_lock_irqsave(&prog_idr_lock, flags);
+> +	if (!prog->aux->skip_idr_remove)
+> +		idr_remove(&prog_idr, prog->aux->id);
+> +	prog->aux->skip_idr_remove = 1;
+> +	spin_unlock_irqrestore(&prog_idr_lock, flags);
+> +}
+> +
+> +void bpf_prog_free_id(struct bpf_prog *prog)
+> +{
+>  	/* cBPF to eBPF migrations are currently not in the idr store.
+>  	 * Offloaded programs are removed from the store when their device
+>  	 * disappears - even if someone grabs an fd to them they are unusable,
+> @@ -2095,10 +2104,8 @@ void bpf_prog_free_id(struct bpf_prog *prog)
+>  	if (!prog->aux->id)
 >  		return;
 >  
->  	state = prog->aux->offload->dev_priv;
-> @@ -311,7 +311,7 @@ nsim_setup_prog_hw_checks(struct netdevsim *ns, struct netdev_bpf *bpf)
->  	if (!bpf->prog)
->  		return 0;
+> -	spin_lock_irqsave(&prog_idr_lock, flags);
+> -	idr_remove(&prog_idr, prog->aux->id);
+> +	bpf_prog_remove_from_idr(prog);
+>  	prog->aux->id = 0;
+> -	spin_unlock_irqrestore(&prog_idr_lock, flags);
+>  }
 >  
-> -	if (!bpf->prog->aux->offload) {
-> +	if (!bpf_prog_is_offloaded(bpf->prog->aux)) {
->  		NSIM_EA(bpf->extack, "xdpoffload of non-bound program");
->  		return -EINVAL;
->  	}
+>  static void __bpf_prog_put_rcu(struct rcu_head *rcu)
 > -- 
 > 2.42.0.869.gea05f2083d-goog
 > 
 
-Forgot to CC netdev of these..
+Same here, should have been CC'ed to netdev.
 
