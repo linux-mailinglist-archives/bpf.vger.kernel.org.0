@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-15383-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07F9B7F1BD3
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 18:59:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 092D87F1BD4
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 19:00:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD8A0282241
-	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 17:59:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 871DF1F258E4
+	for <lists+bpf@lfdr.de>; Mon, 20 Nov 2023 17:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7133E2FE2F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF8B2FE30;
 	Mon, 20 Nov 2023 17:59:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="qjblR0nW"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="P/fZbGXa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDABA4
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 09:59:45 -0800 (PST)
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKHt7io021267
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 09:59:44 -0800
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73888A7
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 09:59:46 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AKHISVg028898
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 09:59:46 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=nTkv5AgwVJZIcb5WfkdA3pBswRVpp5QAEUyU3nLIegs=;
- b=qjblR0nWTGV3nrAB6ifqF7WlFuL8kJjSkVbj638pmnAD5PNGA56xQnjoaWKs97uVfw1q
- dl7RLdmkvLN5j+SfCniDVEAJlkO9GrbUWobcppRisrMmRnNQJVNLduqbQgM8LHHIVhyo
- sPbVpMHXdkGrtRFQRCYLmFhxxWr49pTqq/E= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ugajcs0dm-6
+ bh=MuKNvY+3BFWilUxwi5FUjN5PsKRQh5qRi2vksgVHt1s=;
+ b=P/fZbGXaIcgHAlLjW9GO8TMSayZQ51NP++NHqIztSwGc99tzBXZjf7aCHBciKX/Id23w
+ p8f8KyRmpdOBrTqypy/R3JFy8lRPPzjavGltkvUDgnexHLN9WKJRyz/xlzlLSwa5xXeO
+ 4GVtfKL2woSqxPnkG+5qH7b050ictH2yalc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ug57uay7k-17
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 09:59:44 -0800
-Received: from twshared4397.08.ash8.facebook.com (2620:10d:c0a8:1c::1b) by
- mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 09:59:46 -0800
+Received: from twshared51573.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 20 Nov 2023 09:59:39 -0800
+ 15.1.2507.34; Mon, 20 Nov 2023 09:59:41 -0800
 Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
-	id ADF7E2792C0FF; Mon, 20 Nov 2023 09:59:27 -0800 (PST)
+	id E4E832792C101; Mon, 20 Nov 2023 09:59:27 -0800 (PST)
 From: Dave Marchevsky <davemarchevsky@fb.com>
 To: <bpf@vger.kernel.org>
 CC: Alexei Starovoitov <ast@kernel.org>,
@@ -50,9 +50,9 @@ CC: Alexei Starovoitov <ast@kernel.org>,
         Johannes Weiner
 	<hannes@cmpxchg.org>,
         Dave Marchevsky <davemarchevsky@fb.com>
-Subject: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local storage
-Date: Mon, 20 Nov 2023 09:59:24 -0800
-Message-ID: <20231120175925.733167-2-davemarchevsky@fb.com>
+Subject: [PATCH v1 bpf-next 2/2] selftests/bpf: Add test exercising mmapable task_local_storage
+Date: Mon, 20 Nov 2023 09:59:25 -0800
+Message-ID: <20231120175925.733167-3-davemarchevsky@fb.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231120175925.733167-1-davemarchevsky@fb.com>
 References: <20231120175925.733167-1-davemarchevsky@fb.com>
@@ -65,504 +65,390 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 9gUEXguDYtHN-MYHVRr3o0LG2Piz6g90
-X-Proofpoint-GUID: 9gUEXguDYtHN-MYHVRr3o0LG2Piz6g90
+X-Proofpoint-ORIG-GUID: fh6OZgbw0NKLl3vslVcZwVeTHKPOW14o
+X-Proofpoint-GUID: fh6OZgbw0NKLl3vslVcZwVeTHKPOW14o
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-20_18,2023-11-20_01,2023-05-22_02
 
-This patch modifies the generic bpf_local_storage infrastructure to
-support mmapable map values and adds mmap() handling to task_local
-storage leveraging this new functionality. A userspace task which
-mmap's a task_local storage map will receive a pointer to the map_value
-corresponding to that tasks' key - mmap'ing in other tasks' mapvals is
-not supported in this patch.
+This patch tests mmapable task_local storage functionality added earlier
+in the series. The success tests focus on verifying correctness of the
+various ways of reading from and writing to mmapable task_local storage:
 
-Currently, struct bpf_local_storage_elem contains both bookkeeping
-information as well as a struct bpf_local_storage_data with additional
-bookkeeping information and the actual mapval data. We can't simply map
-the page containing this struct into userspace. Instead, mmapable
-local_storage uses bpf_local_storage_data's data field to point to the
-actual mapval, which is allocated separately such that it can be
-mmapped. Only the mapval lives on the page(s) allocated for it.
-
-The lifetime of the actual_data mmapable region is tied to the
-bpf_local_storage_elem which points to it. This doesn't necessarily mean
-that the pages go away when the bpf_local_storage_elem is free'd - if
-they're mapped into some userspace process they will remain until
-unmapped, but are no longer the task_local storage's mapval.
-
-Implementation details:
-
-  * A few small helpers are added to deal with bpf_local_storage_data's
-    'data' field having different semantics when the local_storage map
-    is mmapable. With their help, many of the changes to existing code
-    are purely mechanical (e.g. sdata->data becomes sdata_mapval(sdata),
-    selem->elem_size becomes selem_bytes_used(selem)).
-
-  * The map flags are copied into bpf_local_storage_data when its
-    containing bpf_local_storage_elem is alloc'd, since the
-    bpf_local_storage_map associated with them may be gone when
-    bpf_local_storage_data is free'd, and testing flags for
-    BPF_F_MMAPABLE is necessary when free'ing to ensure that the
-    mmapable region is free'd.
-    * The extra field doesn't change bpf_local_storage_elem's size.
-      There were 48 bytes of padding after the bpf_local_storage_data
-      field, now there are 40.
-
-  * Currently, bpf_local_storage_update always creates a new
-    bpf_local_storage_elem for the 'updated' value - the only exception
-    being if the map_value has a bpf_spin_lock field, in which case the
-    spin lock is grabbed instead of the less granular bpf_local_storage
-    lock, and the value updated in place. This inplace update behavior
-    is desired for mmapable local_storage map_values as well, since
-    creating a new selem would result in new mmapable pages.
-
-  * The size of the mmapable pages are accounted for when calling
-    mem_{charge,uncharge}. If the pages are mmap'd into a userspace task
-    mem_uncharge may be called before they actually go away.
+  * Write through mmap'd region should be visible when BPF program
+    makes bpf_task_storage_get call
+  * If BPF program reads-and-incrs the mapval, the new value should be
+    visible when userspace reads from mmap'd region or does
+    map_lookup_elem call
+  * If userspace does map_update_elem call, new value should be visible
+    when userspace reads from mmap'd region or does map_lookup_elem
+    call
+  * After bpf_map_delete_elem, reading from mmap'd region should still
+    succeed, but map_lookup_elem w/o BPF_LOCAL_STORAGE_GET_F_CREATE flag
+    should fail
+  * After bpf_map_delete_elem, creating a new map_val via mmap call
+    should return a different memory region
 
 Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- include/linux/bpf_local_storage.h |  14 ++-
- kernel/bpf/bpf_local_storage.c    | 145 ++++++++++++++++++++++++------
- kernel/bpf/bpf_task_storage.c     |  35 ++++++--
- kernel/bpf/syscall.c              |   2 +-
- 4 files changed, 163 insertions(+), 33 deletions(-)
+ .../bpf/prog_tests/task_local_storage.c       | 177 ++++++++++++++++++
+ .../bpf/progs/task_local_storage__mmap.c      |  59 ++++++
+ .../bpf/progs/task_local_storage__mmap.h      |   7 +
+ .../bpf/progs/task_local_storage__mmap_fail.c |  39 ++++
+ 4 files changed, 282 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+_mmap.c
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+_mmap.h
+ create mode 100644 tools/testing/selftests/bpf/progs/task_local_storage_=
+_mmap_fail.c
 
-diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_=
-storage.h
-index 173ec7f43ed1..114973f925ea 100644
---- a/include/linux/bpf_local_storage.h
-+++ b/include/linux/bpf_local_storage.h
-@@ -69,7 +69,17 @@ struct bpf_local_storage_data {
- 	 * the number of cachelines accessed during the cache hit case.
- 	 */
- 	struct bpf_local_storage_map __rcu *smap;
--	u8 data[] __aligned(8);
-+	/* Need to duplicate smap's map_flags as smap may be gone when
-+	 * it's time to free bpf_local_storage_data
-+	 */
-+	u64 smap_map_flags;
-+	/* If BPF_F_MMAPABLE, this is a void * to separately-alloc'd data
-+	 * Otherwise the actual mapval data lives here
-+	 */
-+	union {
-+		DECLARE_FLEX_ARRAY(u8, data) __aligned(8);
-+		void *actual_data __aligned(8);
-+	};
- };
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c =
+b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+index ea8537c54413..08c589a12bd6 100644
+--- a/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
++++ b/tools/testing/selftests/bpf/prog_tests/task_local_storage.c
+@@ -5,14 +5,19 @@
+ #include <unistd.h>
+ #include <sched.h>
+ #include <pthread.h>
++#include <sys/mman.h>   /* For mmap and associated flags */
+ #include <sys/syscall.h>   /* For SYS_xxx definitions */
+ #include <sys/types.h>
+ #include <test_progs.h>
++#include <network_helpers.h>
+ #include "task_local_storage_helpers.h"
+ #include "task_local_storage.skel.h"
+ #include "task_local_storage_exit_creds.skel.h"
++#include "task_local_storage__mmap.skel.h"
++#include "task_local_storage__mmap_fail.skel.h"
+ #include "task_ls_recursion.skel.h"
+ #include "task_storage_nodeadlock.skel.h"
++#include "progs/task_local_storage__mmap.h"
 =20
- /* Linked to bpf_local_storage and bpf_local_storage_map */
-@@ -124,6 +134,8 @@ static struct bpf_local_storage_cache name =3D {			\
- /* Helper functions for bpf_local_storage */
- int bpf_local_storage_map_alloc_check(union bpf_attr *attr);
-=20
-+void *sdata_mapval(struct bpf_local_storage_data *data);
-+
- struct bpf_map *
- bpf_local_storage_map_alloc(union bpf_attr *attr,
- 			    struct bpf_local_storage_cache *cache,
-diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storag=
-e.c
-index 146824cc9689..9b3becbcc1a3 100644
---- a/kernel/bpf/bpf_local_storage.c
-+++ b/kernel/bpf/bpf_local_storage.c
-@@ -15,7 +15,8 @@
- #include <linux/rcupdate_trace.h>
- #include <linux/rcupdate_wait.h>
-=20
--#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK (BPF_F_NO_PREALLOC | BPF_F_CL=
-ONE)
-+#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK \
-+	(BPF_F_NO_PREALLOC | BPF_F_CLONE | BPF_F_MMAPABLE)
-=20
- static struct bpf_local_storage_map_bucket *
- select_bucket(struct bpf_local_storage_map *smap,
-@@ -24,6 +25,51 @@ select_bucket(struct bpf_local_storage_map *smap,
- 	return &smap->buckets[hash_ptr(selem, smap->bucket_log)];
+ static void test_sys_enter_exit(void)
+ {
+@@ -40,6 +45,173 @@ static void test_sys_enter_exit(void)
+ 	task_local_storage__destroy(skel);
  }
 =20
-+struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map);
-+
-+void *alloc_mmapable_selem_value(struct bpf_local_storage_map *smap)
++static int basic_mmapable_read_write(struct task_local_storage__mmap *sk=
+el,
++				     long *mmaped_task_local)
 +{
-+	struct mem_cgroup *memcg, *old_memcg;
-+	void *ptr;
++	int err;
 +
-+	memcg =3D bpf_map_get_memcg(&smap->map);
-+	old_memcg =3D set_active_memcg(memcg);
-+	ptr =3D bpf_map_area_mmapable_alloc(PAGE_ALIGN(smap->map.value_size),
-+					  NUMA_NO_NODE);
-+	set_active_memcg(old_memcg);
-+	mem_cgroup_put(memcg);
++	*mmaped_task_local =3D 42;
 +
-+	return ptr;
++	err =3D task_local_storage__mmap__attach(skel);
++	if (!ASSERT_OK(err, "skel_attach"))
++		return -1;
++
++	syscall(SYS_gettid);
++	ASSERT_EQ(skel->bss->mmaped_mapval, 42, "mmaped_mapval");
++
++	/* Incr from userspace should be visible when BPF prog reads */
++	*mmaped_task_local =3D *mmaped_task_local + 1;
++	syscall(SYS_gettid);
++	ASSERT_EQ(skel->bss->mmaped_mapval, 43, "mmaped_mapval_user_incr");
++
++	/* Incr from BPF prog should be visible from userspace */
++	skel->bss->read_and_incr =3D 1;
++	syscall(SYS_gettid);
++	ASSERT_EQ(skel->bss->mmaped_mapval, 44, "mmaped_mapval_bpf_incr");
++	ASSERT_EQ(skel->bss->mmaped_mapval, *mmaped_task_local, "bpf_incr_eq");
++	skel->bss->read_and_incr =3D 0;
++
++	return 0;
 +}
 +
-+void *sdata_mapval(struct bpf_local_storage_data *data)
++static void test_sys_enter_mmap(void)
 +{
-+	if (data->smap_map_flags & BPF_F_MMAPABLE)
-+		return data->actual_data;
-+	return &data->data;
-+}
++	struct task_local_storage__mmap *skel;
++	long *task_local, *task_local2, value;
++	int err, task_fd, map_fd;
 +
-+static size_t sdata_data_field_size(struct bpf_local_storage_map *smap,
-+				    struct bpf_local_storage_data *data)
-+{
-+	if (smap->map.map_flags & BPF_F_MMAPABLE)
-+		return sizeof(void *);
-+	return (size_t)smap->map.value_size;
-+}
++	task_local =3D task_local2 =3D (long *)-1;
++	task_fd =3D sys_pidfd_open(getpid(), 0);
++	if (!ASSERT_NEQ(task_fd, -1, "sys_pidfd_open"))
++		return;
 +
-+static u32 selem_bytes_used(struct bpf_local_storage_map *smap)
-+{
-+	if (smap->map.map_flags & BPF_F_MMAPABLE)
-+		return smap->elem_size + PAGE_ALIGN(smap->map.value_size);
-+	return smap->elem_size;
-+}
-+
-+static bool can_update_existing_selem(struct bpf_local_storage_map *smap=
-,
-+				      u64 flags)
-+{
-+	return flags & BPF_F_LOCK || smap->map.map_flags & BPF_F_MMAPABLE;
-+}
-+
- static int mem_charge(struct bpf_local_storage_map *smap, void *owner, u=
-32 size)
- {
- 	struct bpf_map *map =3D &smap->map;
-@@ -76,10 +122,19 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, =
-void *owner,
- 		void *value, bool charge_mem, gfp_t gfp_flags)
- {
- 	struct bpf_local_storage_elem *selem;
-+	void *mmapable_value =3D NULL;
-+	u32 selem_mem;
-=20
--	if (charge_mem && mem_charge(smap, owner, smap->elem_size))
-+	selem_mem =3D selem_bytes_used(smap);
-+	if (charge_mem && mem_charge(smap, owner, selem_mem))
- 		return NULL;
-=20
-+	if (smap->map.map_flags & BPF_F_MMAPABLE) {
-+		mmapable_value =3D alloc_mmapable_selem_value(smap);
-+		if (!mmapable_value)
-+			goto err_out;
++	skel =3D task_local_storage__mmap__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open_and_load")) {
++		close(task_fd);
++		return;
 +	}
 +
- 	if (smap->bpf_ma) {
- 		migrate_disable();
- 		selem =3D bpf_mem_cache_alloc_flags(&smap->selem_ma, gfp_flags);
-@@ -92,22 +147,28 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, =
-void *owner,
- 			 * only does bpf_mem_cache_free when there is
- 			 * no other bpf prog is using the selem.
- 			 */
--			memset(SDATA(selem)->data, 0, smap->map.value_size);
-+			memset(SDATA(selem)->data, 0,
-+			       sdata_data_field_size(smap, SDATA(selem)));
- 	} else {
- 		selem =3D bpf_map_kzalloc(&smap->map, smap->elem_size,
- 					gfp_flags | __GFP_NOWARN);
- 	}
-=20
--	if (selem) {
--		if (value)
--			copy_map_value(&smap->map, SDATA(selem)->data, value);
--		/* No need to call check_and_init_map_value as memory is zero init */
--		return selem;
--	}
--
-+	if (!selem)
-+		goto err_out;
++	map_fd =3D bpf_map__fd(skel->maps.mmapable);
++	task_local =3D mmap(NULL, sizeof(long), PROT_READ | PROT_WRITE,
++			  MAP_SHARED, map_fd, 0);
++	if (!ASSERT_OK_PTR(task_local, "mmap_task_local_storage"))
++		goto out;
 +
-+	selem->sdata.smap_map_flags =3D smap->map.map_flags;
-+	if (smap->map.map_flags & BPF_F_MMAPABLE)
-+		selem->sdata.actual_data =3D mmapable_value;
-+	if (value)
-+		copy_map_value(&smap->map, sdata_mapval(SDATA(selem)), value);
-+	/* No need to call check_and_init_map_value as memory is zero init */
-+	return selem;
-+err_out:
-+	if (mmapable_value)
-+		bpf_map_area_free(mmapable_value);
- 	if (charge_mem)
--		mem_uncharge(smap, owner, smap->elem_size);
--
-+		mem_uncharge(smap, owner, selem_mem);
- 	return NULL;
- }
-=20
-@@ -184,6 +245,21 @@ static void bpf_local_storage_free(struct bpf_local_=
-storage *local_storage,
- 	}
- }
-=20
-+static void __bpf_selem_kfree(struct bpf_local_storage_elem *selem)
-+{
-+	if (selem->sdata.smap_map_flags & BPF_F_MMAPABLE)
-+		bpf_map_area_free(selem->sdata.actual_data);
-+	kfree(selem);
-+}
++	err =3D basic_mmapable_read_write(skel, task_local);
++	if (!ASSERT_OK(err, "basic_mmapable_read_write"))
++		goto out;
 +
-+static void __bpf_selem_kfree_rcu(struct rcu_head *rcu)
-+{
-+	struct bpf_local_storage_elem *selem;
++	err =3D bpf_map_lookup_elem(map_fd, &task_fd, &value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_elem") ||
++	    !ASSERT_EQ(value, 44, "bpf_map_lookup_elem value"))
++		goto out;
 +
-+	selem =3D container_of(rcu, struct bpf_local_storage_elem, rcu);
-+	__bpf_selem_kfree(selem);
-+}
-+
- /* rcu tasks trace callback for bpf_ma =3D=3D false */
- static void __bpf_selem_free_trace_rcu(struct rcu_head *rcu)
- {
-@@ -191,9 +267,9 @@ static void __bpf_selem_free_trace_rcu(struct rcu_hea=
-d *rcu)
-=20
- 	selem =3D container_of(rcu, struct bpf_local_storage_elem, rcu);
- 	if (rcu_trace_implies_rcu_gp())
--		kfree(selem);
-+		__bpf_selem_kfree(selem);
- 	else
--		kfree_rcu(selem, rcu);
-+		call_rcu(rcu, __bpf_selem_kfree_rcu);
- }
-=20
- /* Handle bpf_ma =3D=3D false */
-@@ -201,7 +277,7 @@ static void __bpf_selem_free(struct bpf_local_storage=
-_elem *selem,
- 			     bool vanilla_rcu)
- {
- 	if (vanilla_rcu)
--		kfree_rcu(selem, rcu);
-+		call_rcu(&selem->rcu, __bpf_selem_kfree_rcu);
- 	else
- 		call_rcu_tasks_trace(&selem->rcu, __bpf_selem_free_trace_rcu);
- }
-@@ -209,8 +285,12 @@ static void __bpf_selem_free(struct bpf_local_storag=
-e_elem *selem,
- static void bpf_selem_free_rcu(struct rcu_head *rcu)
- {
- 	struct bpf_local_storage_elem *selem;
-+	struct bpf_local_storage_map *smap;
-=20
- 	selem =3D container_of(rcu, struct bpf_local_storage_elem, rcu);
-+	smap =3D selem->sdata.smap;
-+	if (selem->sdata.smap_map_flags & BPF_F_MMAPABLE)
-+		bpf_map_area_free(selem->sdata.actual_data);
- 	bpf_mem_cache_raw_free(selem);
- }
-=20
-@@ -241,6 +321,8 @@ void bpf_selem_free(struct bpf_local_storage_elem *se=
-lem,
- 		 * immediately.
- 		 */
- 		migrate_disable();
-+		if (smap->map.map_flags & BPF_F_MMAPABLE)
-+			bpf_map_area_free(selem->sdata.actual_data);
- 		bpf_mem_cache_free(&smap->selem_ma, selem);
- 		migrate_enable();
- 	}
-@@ -266,7 +348,7 @@ static bool bpf_selem_unlink_storage_nolock(struct bp=
-f_local_storage *local_stor
- 	 * from local_storage.
- 	 */
- 	if (uncharge_mem)
--		mem_uncharge(smap, owner, smap->elem_size);
-+		mem_uncharge(smap, owner, selem_bytes_used(smap));
-=20
- 	free_local_storage =3D hlist_is_singular_node(&selem->snode,
- 						    &local_storage->list);
-@@ -583,14 +665,14 @@ bpf_local_storage_update(void *owner, struct bpf_lo=
-cal_storage_map *smap,
- 		err =3D bpf_local_storage_alloc(owner, smap, selem, gfp_flags);
- 		if (err) {
- 			bpf_selem_free(selem, smap, true);
--			mem_uncharge(smap, owner, smap->elem_size);
-+			mem_uncharge(smap, owner, selem_bytes_used(smap));
- 			return ERR_PTR(err);
- 		}
-=20
- 		return SDATA(selem);
- 	}
-=20
--	if ((map_flags & BPF_F_LOCK) && !(map_flags & BPF_NOEXIST)) {
-+	if (can_update_existing_selem(smap, map_flags) && !(map_flags & BPF_NOE=
-XIST)) {
- 		/* Hoping to find an old_sdata to do inline update
- 		 * such that it can avoid taking the local_storage->lock
- 		 * and changing the lists.
-@@ -601,8 +683,13 @@ bpf_local_storage_update(void *owner, struct bpf_loc=
-al_storage_map *smap,
- 		if (err)
- 			return ERR_PTR(err);
- 		if (old_sdata && selem_linked_to_storage_lockless(SELEM(old_sdata))) {
--			copy_map_value_locked(&smap->map, old_sdata->data,
--					      value, false);
-+			if (map_flags & BPF_F_LOCK)
-+				copy_map_value_locked(&smap->map,
-+						      sdata_mapval(old_sdata),
-+						      value, false);
-+			else
-+				copy_map_value(&smap->map, sdata_mapval(old_sdata),
-+					       value);
- 			return old_sdata;
- 		}
- 	}
-@@ -633,8 +720,8 @@ bpf_local_storage_update(void *owner, struct bpf_loca=
-l_storage_map *smap,
- 		goto unlock;
-=20
- 	if (old_sdata && (map_flags & BPF_F_LOCK)) {
--		copy_map_value_locked(&smap->map, old_sdata->data, value,
--				      false);
-+		copy_map_value_locked(&smap->map, sdata_mapval(old_sdata),
-+				      value, false);
- 		selem =3D SELEM(old_sdata);
- 		goto unlock;
- 	}
-@@ -656,7 +743,7 @@ bpf_local_storage_update(void *owner, struct bpf_loca=
-l_storage_map *smap,
- unlock:
- 	raw_spin_unlock_irqrestore(&local_storage->lock, flags);
- 	if (alloc_selem) {
--		mem_uncharge(smap, owner, smap->elem_size);
-+		mem_uncharge(smap, owner, selem_bytes_used(smap));
- 		bpf_selem_free(alloc_selem, smap, true);
- 	}
- 	return err ? ERR_PTR(err) : SDATA(selem);
-@@ -707,6 +794,10 @@ int bpf_local_storage_map_alloc_check(union bpf_attr=
- *attr)
- 	if (attr->value_size > BPF_LOCAL_STORAGE_MAX_VALUE_SIZE)
- 		return -E2BIG;
-=20
-+	if ((attr->map_flags & BPF_F_MMAPABLE) &&
-+	    attr->map_type !=3D BPF_MAP_TYPE_TASK_STORAGE)
-+		return -EINVAL;
-+
- 	return 0;
- }
-=20
-@@ -820,8 +911,12 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
- 		raw_spin_lock_init(&smap->buckets[i].lock);
- 	}
-=20
--	smap->elem_size =3D offsetof(struct bpf_local_storage_elem,
--				   sdata.data[attr->value_size]);
-+	if (attr->map_flags & BPF_F_MMAPABLE)
-+		smap->elem_size =3D offsetof(struct bpf_local_storage_elem,
-+					   sdata.data[sizeof(void *)]);
-+	else
-+		smap->elem_size =3D offsetof(struct bpf_local_storage_elem,
-+					   sdata.data[attr->value_size]);
-=20
- 	smap->bpf_ma =3D bpf_ma;
- 	if (bpf_ma) {
-diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.=
-c
-index adf6dfe0ba68..ce75c8d8b2ce 100644
---- a/kernel/bpf/bpf_task_storage.c
-+++ b/kernel/bpf/bpf_task_storage.c
-@@ -90,6 +90,7 @@ void bpf_task_storage_free(struct task_struct *task)
- static void *bpf_pid_task_storage_lookup_elem(struct bpf_map *map, void =
-*key)
- {
- 	struct bpf_local_storage_data *sdata;
-+	struct bpf_local_storage_map *smap;
- 	struct task_struct *task;
- 	unsigned int f_flags;
- 	struct pid *pid;
-@@ -114,7 +115,8 @@ static void *bpf_pid_task_storage_lookup_elem(struct =
-bpf_map *map, void *key)
- 	sdata =3D task_storage_lookup(task, map, true);
- 	bpf_task_storage_unlock();
- 	put_pid(pid);
--	return sdata ? sdata->data : NULL;
-+	smap =3D (struct bpf_local_storage_map *)map;
-+	return sdata ? sdata_mapval(sdata) : NULL;
- out:
- 	put_pid(pid);
- 	return ERR_PTR(err);
-@@ -209,18 +211,19 @@ static void *__bpf_task_storage_get(struct bpf_map =
-*map,
- 				    u64 flags, gfp_t gfp_flags, bool nobusy)
- {
- 	struct bpf_local_storage_data *sdata;
-+	struct bpf_local_storage_map *smap;
-=20
-+	smap =3D (struct bpf_local_storage_map *)map;
- 	sdata =3D task_storage_lookup(task, map, nobusy);
- 	if (sdata)
--		return sdata->data;
-+		return sdata_mapval(sdata);
-=20
- 	/* only allocate new storage, when the task is refcounted */
- 	if (refcount_read(&task->usage) &&
- 	    (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) && nobusy) {
--		sdata =3D bpf_local_storage_update(
--			task, (struct bpf_local_storage_map *)map, value,
--			BPF_NOEXIST, gfp_flags);
--		return IS_ERR(sdata) ? NULL : sdata->data;
-+		sdata =3D bpf_local_storage_update(task, smap, value,
-+						 BPF_NOEXIST, gfp_flags);
-+		return IS_ERR(sdata) ? NULL : sdata_mapval(sdata);
- 	}
-=20
- 	return NULL;
-@@ -317,6 +320,25 @@ static void task_storage_map_free(struct bpf_map *ma=
-p)
- 	bpf_local_storage_map_free(map, &task_cache, &bpf_task_storage_busy);
- }
-=20
-+static int task_storage_map_mmap(struct bpf_map *map, struct vm_area_str=
-uct *vma)
-+{
-+	void *data;
-+
-+	if (!(map->map_flags & BPF_F_MMAPABLE) || vma->vm_pgoff ||
-+	    (vma->vm_end - vma->vm_start) < map->value_size)
-+		return -EINVAL;
-+
-+	WARN_ON_ONCE(!bpf_rcu_lock_held());
-+	bpf_task_storage_lock();
-+	data =3D __bpf_task_storage_get(map, current, NULL, BPF_LOCAL_STORAGE_G=
-ET_F_CREATE,
-+				      0, true);
-+	bpf_task_storage_unlock();
-+	if (!data)
-+		return -EINVAL;
-+
-+	return remap_vmalloc_range(vma, data, vma->vm_pgoff);
-+}
-+
- BTF_ID_LIST_GLOBAL_SINGLE(bpf_local_storage_map_btf_id, struct, bpf_loca=
-l_storage_map)
- const struct bpf_map_ops task_storage_map_ops =3D {
- 	.map_meta_equal =3D bpf_map_meta_equal,
-@@ -331,6 +353,7 @@ const struct bpf_map_ops task_storage_map_ops =3D {
- 	.map_mem_usage =3D bpf_local_storage_map_mem_usage,
- 	.map_btf_id =3D &bpf_local_storage_map_btf_id[0],
- 	.map_owner_storage_ptr =3D task_storage_ptr,
-+	.map_mmap =3D task_storage_map_mmap,
- };
-=20
- const struct bpf_func_proto bpf_task_storage_get_recur_proto =3D {
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 5e43ddd1b83f..d7c05a509870 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -404,7 +404,7 @@ static void bpf_map_release_memcg(struct bpf_map *map=
++	value =3D 148;
++	bpf_map_update_elem(map_fd, &task_fd, &value, BPF_EXIST);
++	if (!ASSERT_EQ(READ_ONCE(*task_local), 148, "mmaped_read_after_update")=
 )
- 		obj_cgroup_put(map->objcg);
- }
-=20
--static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
-+struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
++		goto out;
++
++	err =3D bpf_map_lookup_elem(map_fd, &task_fd, &value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_elem") ||
++	    !ASSERT_EQ(value, 148, "bpf_map_lookup_elem value"))
++		goto out;
++
++	/* The mmapable page is not released by map_delete_elem, but no longer
++	 * linked to local_storage
++	 */
++	err =3D bpf_map_delete_elem(map_fd, &task_fd);
++	if (!ASSERT_OK(err, "bpf_map_delete_elem") ||
++	    !ASSERT_EQ(READ_ONCE(*task_local), 148, "mmaped_read_after_delete")=
+)
++		goto out;
++
++	err =3D bpf_map_lookup_elem(map_fd, &task_fd, &value);
++	if (!ASSERT_EQ(err, -ENOENT, "bpf_map_lookup_elem_after_delete"))
++		goto out;
++
++	task_local_storage__mmap__destroy(skel);
++
++	/* The mmapable page is not released when __destroy unloads the map.
++	 * It will stick around until we munmap it
++	 */
++	*task_local =3D -999;
++
++	/* Although task_local's page is still around, it won't be reused */
++	skel =3D task_local_storage__mmap__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open_and_load2"))
++		return;
++
++	map_fd =3D bpf_map__fd(skel->maps.mmapable);
++	err =3D task_local_storage__mmap__attach(skel);
++	if (!ASSERT_OK(err, "skel_attach2"))
++		goto out;
++
++	skel->bss->read_and_incr =3D 1;
++	skel->bss->create_flag =3D BPF_LOCAL_STORAGE_GET_F_CREATE;
++	syscall(SYS_gettid);
++	ASSERT_EQ(skel->bss->mmaped_mapval, 1, "mmaped_mapval2");
++
++	skel->bss->read_and_incr =3D 0;
++	task_local2 =3D mmap(NULL, sizeof(long), PROT_READ | PROT_WRITE,
++			   MAP_SHARED, map_fd, 0);
++	if (!ASSERT_OK_PTR(task_local, "mmap_task_local_storage2"))
++		goto out;
++
++	if (!ASSERT_NEQ(task_local, task_local2, "second_mmap_address"))
++		goto out;
++
++	ASSERT_EQ(READ_ONCE(*task_local2), 1, "mmaped_mapval2_bpf_create_incr")=
+;
++
++out:
++	close(task_fd);
++	if (task_local > 0)
++		munmap(task_local, sizeof(long));
++	if (task_local2 > 0)
++		munmap(task_local2, sizeof(long));
++	task_local_storage__mmap__destroy(skel);
++}
++
++static void test_sys_enter_mmap_big_mapval(void)
++{
++	struct two_page_struct *task_local, value;
++	struct task_local_storage__mmap *skel;
++	int task_fd, map_fd, err;
++
++	task_local =3D (struct two_page_struct *)-1;
++	task_fd =3D sys_pidfd_open(getpid(), 0);
++	if (!ASSERT_NEQ(task_fd, -1, "sys_pidfd_open"))
++		return;
++
++	skel =3D task_local_storage__mmap__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel_open_and_load")) {
++		close(task_fd);
++		return;
++	}
++	map_fd =3D bpf_map__fd(skel->maps.mmapable_two_pages);
++	task_local =3D mmap(NULL, sizeof(struct two_page_struct),
++			  PROT_READ | PROT_WRITE, MAP_SHARED,
++			  map_fd, 0);
++	if (!ASSERT_OK_PTR(task_local, "mmap_task_local_storage"))
++		goto out;
++
++	skel->bss->use_big_mapval =3D 1;
++	err =3D basic_mmapable_read_write(skel, &task_local->val);
++	if (!ASSERT_OK(err, "basic_mmapable_read_write"))
++		goto out;
++
++	task_local->c[4096] =3D 'z';
++
++	err =3D bpf_map_lookup_elem(map_fd, &task_fd, &value);
++	if (!ASSERT_OK(err, "bpf_map_lookup_elem") ||
++	    !ASSERT_EQ(value.val, 44, "bpf_map_lookup_elem value"))
++		goto out;
++
++out:
++	close(task_fd);
++	if (task_local > 0)
++		munmap(task_local, sizeof(struct two_page_struct));
++	task_local_storage__mmap__destroy(skel);
++}
++
+ static void test_exit_creds(void)
  {
- 	if (map->objcg)
- 		return get_mem_cgroup_from_objcg(map->objcg);
+ 	struct task_local_storage_exit_creds *skel;
+@@ -237,10 +409,15 @@ void test_task_local_storage(void)
+ {
+ 	if (test__start_subtest("sys_enter_exit"))
+ 		test_sys_enter_exit();
++	if (test__start_subtest("sys_enter_mmap"))
++		test_sys_enter_mmap();
++	if (test__start_subtest("sys_enter_mmap_big_mapval"))
++		test_sys_enter_mmap_big_mapval();
+ 	if (test__start_subtest("exit_creds"))
+ 		test_exit_creds();
+ 	if (test__start_subtest("recursion"))
+ 		test_recursion();
+ 	if (test__start_subtest("nodeadlock"))
+ 		test_nodeadlock();
++	RUN_TESTS(task_local_storage__mmap_fail);
+ }
+diff --git a/tools/testing/selftests/bpf/progs/task_local_storage__mmap.c=
+ b/tools/testing/selftests/bpf/progs/task_local_storage__mmap.c
+new file mode 100644
+index 000000000000..1c8850c8d189
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/task_local_storage__mmap.c
+@@ -0,0 +1,59 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "task_local_storage__mmap.h"
++
++char _license[] SEC("license") =3D "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_MMAPABLE);
++	__type(key, int);
++	__type(value, long);
++} mmapable SEC(".maps");
++
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_MMAPABLE);
++	__type(key, int);
++	__type(value, struct two_page_struct);
++} mmapable_two_pages SEC(".maps");
++
++long mmaped_mapval =3D 0;
++int read_and_incr =3D 0;
++int create_flag =3D 0;
++int use_big_mapval =3D 0;
++
++SEC("tp_btf/sys_enter")
++int BPF_PROG(on_enter, struct pt_regs *regs, long id)
++{
++	struct two_page_struct *big_mapval;
++	struct task_struct *task;
++	long *ptr;
++
++	task =3D bpf_get_current_task_btf();
++	if (!task)
++		return 1;
++
++	if (use_big_mapval) {
++		big_mapval =3D bpf_task_storage_get(&mmapable_two_pages, task, 0,
++						  create_flag);
++		if (!big_mapval)
++			return 2;
++		ptr =3D &big_mapval->val;
++	} else {
++		ptr =3D bpf_task_storage_get(&mmapable, task, 0, create_flag);
++	}
++
++	if (!ptr)
++		return 3;
++
++	if (read_and_incr)
++		*ptr =3D *ptr + 1;
++
++	mmaped_mapval =3D *ptr;
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/task_local_storage__mmap.h=
+ b/tools/testing/selftests/bpf/progs/task_local_storage__mmap.h
+new file mode 100644
+index 000000000000..f4a3264142c2
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/task_local_storage__mmap.h
+@@ -0,0 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++struct two_page_struct {
++	long val;
++	char c[4097];
++};
+diff --git a/tools/testing/selftests/bpf/progs/task_local_storage__mmap_f=
+ail.c b/tools/testing/selftests/bpf/progs/task_local_storage__mmap_fail.c
+new file mode 100644
+index 000000000000..f32c5bfe370a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/task_local_storage__mmap_fail.c
+@@ -0,0 +1,39 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") =3D "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC | BPF_F_MMAPABLE);
++	__type(key, int);
++	__type(value, long);
++} mmapable SEC(".maps");
++
++__failure __msg("invalid access to map value, value_size=3D8 off=3D8 siz=
+e=3D8")
++SEC("tp_btf/sys_enter")
++long BPF_PROG(fail_read_past_mapval_end, struct pt_regs *regs, long id)
++{
++	struct task_struct *task;
++	long *ptr;
++	long res;
++
++	task =3D bpf_get_current_task_btf();
++	if (!task)
++		return 1;
++
++	ptr =3D bpf_task_storage_get(&mmapable, task, 0, 0);
++	if (!ptr)
++		return 3;
++	/* Although mmapable mapval is given an entire page, verifier shouldn't
++	 * allow r/w past end of 'long' type
++	 */
++	res =3D *(ptr + 1);
++
++	return res;
++}
 --=20
 2.34.1
 
