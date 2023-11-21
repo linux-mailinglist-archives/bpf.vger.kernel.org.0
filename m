@@ -1,365 +1,159 @@
-Return-Path: <bpf+bounces-15585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFE5C7F36CE
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:30:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDA507F36D0
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9BEB1C20CC2
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 19:30:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B20F2823A1
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 19:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3723C5B210;
-	Tue, 21 Nov 2023 19:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C905B212;
+	Tue, 21 Nov 2023 19:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PoJoIqTy"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="iIL65mGH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51F712C
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:30:17 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a00a9d677fcso243199266b.0
-        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:30:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700595016; x=1701199816; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4zLXbfhErrunYg232eQrMvqop0ovtGaCWAp1U3mMQfU=;
-        b=PoJoIqTysw+ArMwa5DFw92I807RVJU9FG7AxJqGDi0+y3Q8Y2T9Ny33IvWiUqbyDTQ
-         PXrQaAhdoRhHo4x9y9qXgAb1Tu1aZIQbl70Nnfrhz4gqqOFlGbmhbfgJ4Z5Kf22CtFiS
-         nWdR/yDuncZAbZLoEnrSGgCy7fAPJQhzfpMzGzELSAWd2R+yANiv8m+SSDZTR2h798Ge
-         Hz/RtZwPePrl9p0S9+CGXSWg36rZDjGYLOQ9gylsfDD5HnISfqhdos3l9Wje0c2yyn2o
-         ArK0F5jejF0EMGVVpa2L2sh7EWPo9fwZTUd1QP350Ta9V0uIGanxGpE+reKjlYjgDErj
-         nwrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700595016; x=1701199816;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4zLXbfhErrunYg232eQrMvqop0ovtGaCWAp1U3mMQfU=;
-        b=C24Ytg6av3kSjpGbxo7at+TdFhM8NGN/K+ilaqsWnGQyJsQyvUcYdeg+jzKyqxVRRt
-         MOZdjPGgyLnlo734/AwceEx0gUdalZy3U0BZN9PO8xKcvKr3FAxQDI15sAozmEvMGZA+
-         PezgU4dt6jL4AX4PAxGLiw1DTTCNomRvUdyMNGnN/a4MXuQ9ubssO/9/n3CGb6t9YYxi
-         UKFX5u23D5R2tHmA9/LbmTLb2Jx+46JR5aBTbXgDMjYCt3rV7ysLoFhMPkmHHVzVtNDq
-         QeRFmYHbKKQ3Yeca50IeLhO2nl98LjHeTRo171Xy8aQby15df8/xR3myUwQ1oLatFjsw
-         8b0w==
-X-Gm-Message-State: AOJu0YyoeUAOGnVIo8fzo0fHI7w9l8RsvQmKc2qGFdn7DF9J0wrVEVF/
-	LVv80RiDU0nueEO5snVikNrm9CzLP3+ccafpcKGXZErx
-X-Google-Smtp-Source: AGHT+IHDOG00QjvGGazo13xb5gwRn59BOzARtx6ftCLuhuf7yZgEJAaWqcT353/bbWvrsnBj6qnu8I8dGOMmb/OhcNc=
-X-Received: by 2002:a17:906:24d4:b0:9fd:59ea:2dec with SMTP id
- f20-20020a17090624d400b009fd59ea2decmr5909024ejb.73.1700595015818; Tue, 21
- Nov 2023 11:30:15 -0800 (PST)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8848512A;
+	Tue, 21 Nov 2023 11:31:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=/hjIueDZ+uBL332IyO4l6P2oWRA58WLJYhHKA0zENV4=; b=iIL65mGHp1XZ2ttNpNUITrOSpA
+	qQzsPiMSsbuSyPirkWARjBGDraFooBaxDjQWtItSWOhgMTUOx2wuyU1YVGMkhgRXIPx7UBwHC0m65
+	BNdr59DG2hkG0rcbi2eQek0rz4CtSf+xIR9lS333jiIFpuPMU9ktNT0h7+bNimfNyhp4n1sBqaFqs
+	h+hJvdCaz/XtVcEGDk2/XshrFPoG36YHl5IXOSN5toVK0jk1pIS8Ig9OxoVe/2+smZcNp2WppFSmv
+	1attFmrXOmg+ME/nIAOBr2uTBLUna7ww7FjCNhRwgXxEk8fGj/b8dFhcpGtTHtoMziQ9ENUYsOwT+
+	lTy0ovUw==;
+Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1r5WSo-000IwZ-Gc; Tue, 21 Nov 2023 20:31:14 +0100
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf 2023-11-21
+Date: Tue, 21 Nov 2023 20:31:13 +0100
+Message-Id: <20231121193113.11796-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231120175925.733167-1-davemarchevsky@fb.com> <20231120175925.733167-2-davemarchevsky@fb.com>
-In-Reply-To: <20231120175925.733167-2-davemarchevsky@fb.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 21 Nov 2023 11:30:03 -0800
-Message-ID: <CAEf4BzYZGC3VVMn0q9o=2KauT=7gsQPHbi1epC_Q5oPiPekRWw@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local storage
-To: Dave Marchevsky <davemarchevsky@fb.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27100/Tue Nov 21 09:39:58 2023)
 
-On Mon, Nov 20, 2023 at 9:59=E2=80=AFAM Dave Marchevsky <davemarchevsky@fb.=
-com> wrote:
->
-> This patch modifies the generic bpf_local_storage infrastructure to
-> support mmapable map values and adds mmap() handling to task_local
-> storage leveraging this new functionality. A userspace task which
-> mmap's a task_local storage map will receive a pointer to the map_value
-> corresponding to that tasks' key - mmap'ing in other tasks' mapvals is
-> not supported in this patch.
->
-> Currently, struct bpf_local_storage_elem contains both bookkeeping
-> information as well as a struct bpf_local_storage_data with additional
-> bookkeeping information and the actual mapval data. We can't simply map
-> the page containing this struct into userspace. Instead, mmapable
-> local_storage uses bpf_local_storage_data's data field to point to the
-> actual mapval, which is allocated separately such that it can be
-> mmapped. Only the mapval lives on the page(s) allocated for it.
->
-> The lifetime of the actual_data mmapable region is tied to the
-> bpf_local_storage_elem which points to it. This doesn't necessarily mean
-> that the pages go away when the bpf_local_storage_elem is free'd - if
-> they're mapped into some userspace process they will remain until
-> unmapped, but are no longer the task_local storage's mapval.
->
-> Implementation details:
->
->   * A few small helpers are added to deal with bpf_local_storage_data's
->     'data' field having different semantics when the local_storage map
->     is mmapable. With their help, many of the changes to existing code
->     are purely mechanical (e.g. sdata->data becomes sdata_mapval(sdata),
->     selem->elem_size becomes selem_bytes_used(selem)).
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-might be worth doing this as a pre-patch with no functional changes to
-make the main change a bit smaller and more focused?
+The following pull-request contains BPF updates for your *net* tree.
 
->
->   * The map flags are copied into bpf_local_storage_data when its
->     containing bpf_local_storage_elem is alloc'd, since the
->     bpf_local_storage_map associated with them may be gone when
->     bpf_local_storage_data is free'd, and testing flags for
->     BPF_F_MMAPABLE is necessary when free'ing to ensure that the
->     mmapable region is free'd.
->     * The extra field doesn't change bpf_local_storage_elem's size.
->       There were 48 bytes of padding after the bpf_local_storage_data
->       field, now there are 40.
->
->   * Currently, bpf_local_storage_update always creates a new
->     bpf_local_storage_elem for the 'updated' value - the only exception
->     being if the map_value has a bpf_spin_lock field, in which case the
->     spin lock is grabbed instead of the less granular bpf_local_storage
->     lock, and the value updated in place. This inplace update behavior
->     is desired for mmapable local_storage map_values as well, since
->     creating a new selem would result in new mmapable pages.
->
->   * The size of the mmapable pages are accounted for when calling
->     mem_{charge,uncharge}. If the pages are mmap'd into a userspace task
->     mem_uncharge may be called before they actually go away.
->
-> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
-> ---
->  include/linux/bpf_local_storage.h |  14 ++-
->  kernel/bpf/bpf_local_storage.c    | 145 ++++++++++++++++++++++++------
->  kernel/bpf/bpf_task_storage.c     |  35 ++++++--
->  kernel/bpf/syscall.c              |   2 +-
->  4 files changed, 163 insertions(+), 33 deletions(-)
->
-> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_=
-storage.h
-> index 173ec7f43ed1..114973f925ea 100644
-> --- a/include/linux/bpf_local_storage.h
-> +++ b/include/linux/bpf_local_storage.h
-> @@ -69,7 +69,17 @@ struct bpf_local_storage_data {
->          * the number of cachelines accessed during the cache hit case.
->          */
->         struct bpf_local_storage_map __rcu *smap;
-> -       u8 data[] __aligned(8);
-> +       /* Need to duplicate smap's map_flags as smap may be gone when
-> +        * it's time to free bpf_local_storage_data
-> +        */
-> +       u64 smap_map_flags;
-> +       /* If BPF_F_MMAPABLE, this is a void * to separately-alloc'd data
-> +        * Otherwise the actual mapval data lives here
-> +        */
-> +       union {
-> +               DECLARE_FLEX_ARRAY(u8, data) __aligned(8);
-> +               void *actual_data __aligned(8);
+We've added 19 non-merge commits during the last 4 day(s) which contain
+a total of 18 files changed, 1043 insertions(+), 416 deletions(-).
 
-I don't know if it's the issue, but probably best to keep FLEX_ARRAY
-member the last even within the union, just in case if some tool
-doesn't handle FLEX_ARRAY not being last line number-wise?
+The main changes are:
 
+1) Fix BPF verifier to validate callbacks as if they are called an unknown
+   number of times in order to fix not detecting some unsafe programs,
+   from Eduard Zingerman.
 
-> +       };
->  };
->
->  /* Linked to bpf_local_storage and bpf_local_storage_map */
-> @@ -124,6 +134,8 @@ static struct bpf_local_storage_cache name =3D {     =
-                 \
->  /* Helper functions for bpf_local_storage */
->  int bpf_local_storage_map_alloc_check(union bpf_attr *attr);
->
-> +void *sdata_mapval(struct bpf_local_storage_data *data);
-> +
->  struct bpf_map *
->  bpf_local_storage_map_alloc(union bpf_attr *attr,
->                             struct bpf_local_storage_cache *cache,
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storag=
-e.c
-> index 146824cc9689..9b3becbcc1a3 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
-> @@ -15,7 +15,8 @@
->  #include <linux/rcupdate_trace.h>
->  #include <linux/rcupdate_wait.h>
->
-> -#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK (BPF_F_NO_PREALLOC | BPF_F_CL=
-ONE)
-> +#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK \
-> +       (BPF_F_NO_PREALLOC | BPF_F_CLONE | BPF_F_MMAPABLE)
->
->  static struct bpf_local_storage_map_bucket *
->  select_bucket(struct bpf_local_storage_map *smap,
-> @@ -24,6 +25,51 @@ select_bucket(struct bpf_local_storage_map *smap,
->         return &smap->buckets[hash_ptr(selem, smap->bucket_log)];
->  }
->
-> +struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map);
-> +
-> +void *alloc_mmapable_selem_value(struct bpf_local_storage_map *smap)
-> +{
-> +       struct mem_cgroup *memcg, *old_memcg;
-> +       void *ptr;
-> +
-> +       memcg =3D bpf_map_get_memcg(&smap->map);
-> +       old_memcg =3D set_active_memcg(memcg);
-> +       ptr =3D bpf_map_area_mmapable_alloc(PAGE_ALIGN(smap->map.value_si=
-ze),
-> +                                         NUMA_NO_NODE);
-> +       set_active_memcg(old_memcg);
-> +       mem_cgroup_put(memcg);
-> +
-> +       return ptr;
-> +}
-> +
-> +void *sdata_mapval(struct bpf_local_storage_data *data)
-> +{
-> +       if (data->smap_map_flags & BPF_F_MMAPABLE)
-> +               return data->actual_data;
-> +       return &data->data;
-> +}
+2) Fix bpf_redirect_peer() handling which missed proper stats accounting
+   for veth and netkit and also generally fix missing stats for the latter,
+   from Peilin Ye, Daniel Borkmann et al.
 
-given this being potentially high-frequency helper called from other
-.o files and it is simple, should this be a static inline in .h header
-instead?
+Please consider pulling these changes from:
 
-> +
-> +static size_t sdata_data_field_size(struct bpf_local_storage_map *smap,
-> +                                   struct bpf_local_storage_data *data)
-> +{
-> +       if (smap->map.map_flags & BPF_F_MMAPABLE)
-> +               return sizeof(void *);
-> +       return (size_t)smap->map.value_size;
-> +}
-> +
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
 
-[...]
+Thanks a lot!
 
-> diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.=
-c
-> index adf6dfe0ba68..ce75c8d8b2ce 100644
-> --- a/kernel/bpf/bpf_task_storage.c
-> +++ b/kernel/bpf/bpf_task_storage.c
-> @@ -90,6 +90,7 @@ void bpf_task_storage_free(struct task_struct *task)
->  static void *bpf_pid_task_storage_lookup_elem(struct bpf_map *map, void =
-*key)
->  {
->         struct bpf_local_storage_data *sdata;
-> +       struct bpf_local_storage_map *smap;
->         struct task_struct *task;
->         unsigned int f_flags;
->         struct pid *pid;
-> @@ -114,7 +115,8 @@ static void *bpf_pid_task_storage_lookup_elem(struct =
-bpf_map *map, void *key)
->         sdata =3D task_storage_lookup(task, map, true);
->         bpf_task_storage_unlock();
->         put_pid(pid);
-> -       return sdata ? sdata->data : NULL;
-> +       smap =3D (struct bpf_local_storage_map *)map;
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
 
-smap seems unused?
+Andrew Werner, Andrii Nakryiko, Nikolay Aleksandrov, Stanislav Fomichev, 
+Youlun Zhang
 
-> +       return sdata ? sdata_mapval(sdata) : NULL;
->  out:
->         put_pid(pid);
->         return ERR_PTR(err);
-> @@ -209,18 +211,19 @@ static void *__bpf_task_storage_get(struct bpf_map =
-*map,
->                                     u64 flags, gfp_t gfp_flags, bool nobu=
-sy)
->  {
->         struct bpf_local_storage_data *sdata;
-> +       struct bpf_local_storage_map *smap;
->
-> +       smap =3D (struct bpf_local_storage_map *)map;
+----------------------------------------------------------------
 
-used much later, so maybe move it down? or just not change this part?
+The following changes since commit 76df934c6d5f5c93ba7a0112b1818620ddc10b19:
 
->         sdata =3D task_storage_lookup(task, map, nobusy);
->         if (sdata)
-> -               return sdata->data;
-> +               return sdata_mapval(sdata);
->
->         /* only allocate new storage, when the task is refcounted */
->         if (refcount_read(&task->usage) &&
->             (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) && nobusy) {
-> -               sdata =3D bpf_local_storage_update(
-> -                       task, (struct bpf_local_storage_map *)map, value,
-> -                       BPF_NOEXIST, gfp_flags);
-> -               return IS_ERR(sdata) ? NULL : sdata->data;
-> +               sdata =3D bpf_local_storage_update(task, smap, value,
-> +                                                BPF_NOEXIST, gfp_flags);
-> +               return IS_ERR(sdata) ? NULL : sdata_mapval(sdata);
->         }
->
->         return NULL;
-> @@ -317,6 +320,25 @@ static void task_storage_map_free(struct bpf_map *ma=
-p)
->         bpf_local_storage_map_free(map, &task_cache, &bpf_task_storage_bu=
-sy);
->  }
->
-> +static int task_storage_map_mmap(struct bpf_map *map, struct vm_area_str=
-uct *vma)
-> +{
-> +       void *data;
-> +
-> +       if (!(map->map_flags & BPF_F_MMAPABLE) || vma->vm_pgoff ||
-> +           (vma->vm_end - vma->vm_start) < map->value_size)
+  MAINTAINERS: Add netdev subsystem profile link (2023-11-17 03:44:21 +0000)
 
-so we enforce that vm_pgoff is zero, that's understandable. But why
-disallowing mmaping only a smaller portion of map value?
+are available in the Git repository at:
 
-Also, more importantly, I think you should reject `vma->vm_end -
-vma->vm_start > PAGE_ALIGN(map->value_size)`, no?
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
 
-Another question. I might have missed it, but where do we disallow
-mmap()'ing maps that have "special" fields in map_value, like kptrs,
-spin_locks, timers, etc?
+for you to fetch changes up to acb12c859ac7c36d6d7632280fd1e263188cb07f:
 
-> +               return -EINVAL;
-> +
-> +       WARN_ON_ONCE(!bpf_rcu_lock_held());
-> +       bpf_task_storage_lock();
-> +       data =3D __bpf_task_storage_get(map, current, NULL, BPF_LOCAL_STO=
-RAGE_GET_F_CREATE,
-> +                                     0, true);
-> +       bpf_task_storage_unlock();
-> +       if (!data)
-> +               return -EINVAL;
-> +
-> +       return remap_vmalloc_range(vma, data, vma->vm_pgoff);
-> +}
-> +
->  BTF_ID_LIST_GLOBAL_SINGLE(bpf_local_storage_map_btf_id, struct, bpf_loca=
-l_storage_map)
->  const struct bpf_map_ops task_storage_map_ops =3D {
->         .map_meta_equal =3D bpf_map_meta_equal,
-> @@ -331,6 +353,7 @@ const struct bpf_map_ops task_storage_map_ops =3D {
->         .map_mem_usage =3D bpf_local_storage_map_mem_usage,
->         .map_btf_id =3D &bpf_local_storage_map_btf_id[0],
->         .map_owner_storage_ptr =3D task_storage_ptr,
-> +       .map_mmap =3D task_storage_map_mmap,
->  };
->
->  const struct bpf_func_proto bpf_task_storage_get_recur_proto =3D {
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 5e43ddd1b83f..d7c05a509870 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -404,7 +404,7 @@ static void bpf_map_release_memcg(struct bpf_map *map=
-)
->                 obj_cgroup_put(map->objcg);
->  }
->
-> -static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
-> +struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
->  {
->         if (map->objcg)
->                 return get_mem_cgroup_from_objcg(map->objcg);
-> --
-> 2.34.1
->
+  Merge branch 'verify-callbacks-as-if-they-are-called-unknown-number-of-times' (2023-11-20 18:36:41 -0800)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      Merge branch 'verify-callbacks-as-if-they-are-called-unknown-number-of-times'
+
+Daniel Borkmann (6):
+      net, vrf: Move dstats structure to core
+      net: Move {l,t,d}stats allocation to core and convert veth & vrf
+      netkit: Add tstats per-CPU traffic counters
+      bpf, netkit: Add indirect call wrapper for fetching peer dev
+      selftests/bpf: De-veth-ize the tc_redirect test case
+      selftests/bpf: Add netkit to tc_redirect selftest
+
+Eduard Zingerman (11):
+      selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
+      selftests/bpf: track string payload offset as scalar in strobemeta
+      selftests/bpf: fix bpf_loop_bench for new callback verification scheme
+      bpf: extract __check_reg_arg() utility function
+      bpf: extract setup_func_entry() utility function
+      bpf: verify callbacks as if they are called unknown number of times
+      selftests/bpf: tests for iterating callbacks
+      bpf: widening for callback iterators
+      selftests/bpf: test widening for iterating callbacks
+      bpf: keep track of max number of bpf_loop callback iterations
+      selftests/bpf: check if max number of bpf_loop iterations is tracked
+
+Martin KaFai Lau (1):
+      Merge branch 'bpf_redirect_peer fixes'
+
+Peilin Ye (2):
+      veth: Use tstats per-CPU traffic counters
+      bpf: Fix dev's rx stats for bpf_redirect_peer traffic
+
+ drivers/net/netkit.c                               |  22 +-
+ drivers/net/veth.c                                 |  44 +--
+ drivers/net/vrf.c                                  |  38 +-
+ include/linux/bpf_verifier.h                       |  16 +
+ include/linux/netdevice.h                          |  30 +-
+ include/net/netkit.h                               |   6 +
+ kernel/bpf/verifier.c                              | 402 ++++++++++++++-------
+ net/core/dev.c                                     |  57 ++-
+ net/core/filter.c                                  |  19 +-
+ .../testing/selftests/bpf/prog_tests/tc_redirect.c | 317 +++++++++-------
+ tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
+ tools/testing/selftests/bpf/progs/bpf_loop_bench.c |  13 +-
+ tools/testing/selftests/bpf/progs/cb_refs.c        |   1 +
+ .../testing/selftests/bpf/progs/exceptions_fail.c  |   2 +
+ tools/testing/selftests/bpf/progs/strobemeta.h     |  78 ++--
+ .../bpf/progs/verifier_iterating_callbacks.c       | 242 +++++++++++++
+ .../bpf/progs/verifier_subprog_precision.c         |  86 ++++-
+ .../selftests/bpf/progs/xdp_synproxy_kern.c        |  84 +++--
+ 18 files changed, 1043 insertions(+), 416 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
 
