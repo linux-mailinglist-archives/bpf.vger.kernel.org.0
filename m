@@ -1,124 +1,264 @@
-Return-Path: <bpf+bounces-15601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB7F17F38DD
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 23:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9F1A7F3948
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 23:38:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64E032826F3
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 22:06:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60BB5282A31
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 22:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D275644D;
-	Tue, 21 Nov 2023 22:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384EA58129;
+	Tue, 21 Nov 2023 22:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="Mjmosxud"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="G3pUW2bX"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2038.outbound.protection.outlook.com [40.92.48.38])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A342A3C0A;
-	Tue, 21 Nov 2023 14:04:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IqROlfJ2TZbUq3rr39xx/doOiGyFupdPMuumIoMGM1EEaaacNCrIu+F3VzSnc685fkPlGyL4PKJ/fPogv+QJWzFi3ebq98x6CE6Te54rEY+kFYINlaPS+lGNG9gRApmuE998H5qcsug6g2djKDI86GCJJo2wvso7kH8Ys0VFuU23G5ome9rjMlw947nvvsO6LgrSWYOfBQoDEmABMNuwP/+E+mshqGx6F0ZzVxpjkeccyAJ6lKr8zTGTugI3o+CZVziYDsC3zyKRgV8LlN56NmzcgQaaCBzWmp0zeetVu576HYOPSeXheiW5O1Brd9V12RCzCoXusQl7eflyPck+Cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/Mpxw1ESlYWIati3JK8aJuXqpkEJ3t+k9eoKtet8dpw=;
- b=KQlgbQiTDb/G2a/hnpaMXi2fZL7zG6FnEA0sU6CRRfBIrC3Btb4qIil/u6M/G41QNhvl2R7aeUTeL54rtx1Pnk8h/OpAnIFEMYapHavWTVyr+L85A8ZRcD3BBGyPDu139dD+qE/2fZfQXghPT+/Yt+mzhDjCHh8hhEr4Fv83juS9J4xftdlNzCvNIuhcqgPH6/X9vDmBNa+xbdb/kgO0OoLuZyOu+L4N/vwAVrbqL6I6TfX61VUqneIlLKlstjrs8sThWkvGaYVijHJVxcTwBuIwDqmOe4goaWwc0GZxfvdGIB2EVO73XtAjVSOQ/eqzDkn8NEKk+fagBQJmtHGXfw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/Mpxw1ESlYWIati3JK8aJuXqpkEJ3t+k9eoKtet8dpw=;
- b=Mjmosxud8hdSYgKJYd9+Km72QoXYoNMpKAllUOJj7mX4KJ5zM8ZSe0mE+CBccWJMcalfbKvgsdpxjdikP6vO7PeUBL1Lm9RWKTzH7yNAihwLIF+3ByK2MIg+NFyBCafJwIo8Y0wAJJi9nywtk6th1eVwHEaBNoXDkEe/kJ3acD8L2QawZht1uz4KcjorUuBocJ1M0tGTNVGCu6DR8EsIO14Iy09qoqav1RGwArYTHToPkSSo9WtIPPnXlVmZJY1HsYaKBdXKMjPhmZGfhn9RhKImc2bXq06U0HM1eB8040GylP52T6iP3pb/72okUV5qrNkq6QUKXOH/6BXWFJmygw==
-Received: from DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:405::20)
- by AM0PR10MB3971.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:144::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
- 2023 22:04:46 +0000
-Received: from DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::3f75:4763:843c:a330]) by DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::3f75:4763:843c:a330%5]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
- 22:04:46 +0000
-Date: Wed, 22 Nov 2023 03:34:29 +0530
-From: Yuran Pereira <yuran.pereira@hotmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
-	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
-	kpsingh@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	martin.lau@linux.dev, mykolal@fb.com, sdf@google.com,
-	shuah@kernel.org, song@kernel.org
-Subject: Re: [PATCH bpf-next v3 0/4] selftests/bpf: Update multiple
- prog_tests to use ASSERT_ macros
-Message-ID:
- <DU0PR10MB6558D41ADAD7B5B9CDB43CC2E8BBA@DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM>
-References: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
- <11bf3c0f-f78b-4dd3-97d3-c39b5b2ae7bd@linux.dev>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11bf3c0f-f78b-4dd3-97d3-c39b5b2ae7bd@linux.dev>
-X-TMN: [oKT/7LovT6WUlYTz9u2iJhY3GSaipBUh]
-X-ClientProxiedBy: JNAP275CA0007.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::12)
- To DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:405::20)
-X-Microsoft-Original-Message-ID: <20231121220429.GA465153@nmj-network>
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E740D1AA
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 14:37:49 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-db029574f13so6020044276.1
+        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 14:37:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700606269; x=1701211069; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5PhJ58DzGJEIVblaXAuceHul3/IImKCshOtqF3D3RDY=;
+        b=G3pUW2bX8byqs35VWE2lNPVsBNcPlbaF5SlaScwyUrgiZSZs00xuRH+KAE+IEGFSEO
+         iaMKubjto92VurzGn40vzoGHqbMnAyi1IEwwVT+TliIjIy9E+xnQhspWx1eYKR/PeMAX
+         TDxIZpd6DUjkgW9Qgw/6ArBgbb7TlH7qK1AJoCjPXtW8BPEC4kXgSdVYK9KNSkJ/pPcQ
+         4qixQneYFUV3fi5ukpH67Z0q/RN//VSyXW3MEgEz1xm8cgclFNDGHfccsjodCS8N9prM
+         HWggSM4a45AxHT1/SM71jHFD2ku1cx41ruYKSRey7XXkvqxADsYeb7lOtMCs+VK9dQDy
+         AfCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700606269; x=1701211069;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5PhJ58DzGJEIVblaXAuceHul3/IImKCshOtqF3D3RDY=;
+        b=sEL1JeoDRcSRH66GtpG7ZpFQ0azNhBlxZtqjTsHIP4bc77olOSZK94bByiWv5gCOON
+         1NSaUBDMILiD2CopCNMor+jmLenW3xDB8TKuHdJFhJmhjaYoKZkOt6PnbwAxst2ortWM
+         AsGMdebFtUOHA3M0GEA+8cbaIZIYvsHzjUZZfKLoItid1DBACFfQJx/GOauUZWnvKm+E
+         yQ2KEovmxs7uSiWB5hUOOzWQ4Qcb05BJU550+/AdgvXFWX7TvIENMnBaaBeUZgytZbGH
+         ZwGGHBOmkNP4Xbp4Zb17npNTtF+zQE+up3bdyH1TwGmzDPMWhqikLsIHTKevf3K8YxQh
+         SbYw==
+X-Gm-Message-State: AOJu0Yx9TN9/eKnv615Us9d5VLWBhKYjD8MS/N45UGobZ6DPcaKr9dV2
+	wqe3O9RklxS1iG93U9OliW0Bj3581WDC8yobR+khtQ==
+X-Google-Smtp-Source: AGHT+IFagDuyax0DNgWQWewr4Jl8bk+ehoQOtcabRwSIbmpcVEP0szwxg8PkrH2pRvlyeDOVm1B6JRdrl1GS+tzgroM=
+X-Received: by 2002:a81:5b06:0:b0:5bf:f907:e07c with SMTP id
+ p6-20020a815b06000000b005bff907e07cmr437425ywb.33.1700606269085; Tue, 21 Nov
+ 2023 14:37:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR10MB6558:EE_|AM0PR10MB3971:EE_
-X-MS-Office365-Filtering-Correlation-Id: 573e870d-7b31-4312-072e-08dbeadddf4d
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	JloLnv/Vs6Dh0DxaR4H+iCZXIfMKUuwHdKLT1X7q7Pca9AckDi8uLeHRSPZ4MxvQgPZexz0uOyr/qjtKtMeyCxqFxO4fWPJMiQqvOqBS3nip4qDUiMsIj9iqeGr5By9/Fwqzg36nmRRKzWXqVzXKm6Npj8nnSgBvPWXHSYt+uTkMiDaa9YQa2uDb0u99FOzxnLyj8Snfppo4mUznkGFq+DmFKPItN7PP8fUyLnjWU4Zxq/mlTKwMClWs9YCJQGy/du8/GY7yGHYUod5XXVnSve6Ng/6kzDVP/uKN1VnNhlL7boYx3uq9jJ9CNK7SMbkUayFPp/zlpG2gsFMGncKfiTw7u6U5m6fm4FPWtb890RM05x0hU0wXLccuyr7ZsJl6sm8iDMUGZK6UrKeeXGHye2EdfSG10cHdBNcUGLSJ2b+EJ7ElHlNlI2XvM23VHrqrbIhXxNEnKVBot/UUL862eXi1YTA7oG8ghZUpGDacuwOXbk6ysV4i5aQbNyHHoLvQZilFXTX4FlPOe/1vh3S1U0L2gmqnf1kAsd29FaSJ+8VD90LCNZx/Mp1GZwxh+s1k
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1k4DTXusypQ5D1g6DMuyjUUpI0jT/fJU4opsKJ2U6t+Jz2y9HjnnCP9bm+8H?=
- =?us-ascii?Q?KyVZWyE+Ra9awzMWNJSUhPUFEK28DxuRTFPBol/T8/854ktmJGbi5uXWxJi+?=
- =?us-ascii?Q?gLl6S8yV9dbpEAuZBUFu+3U028WVZqPWTI8dXE2KVZXnYvelpjTmI3I6Baen?=
- =?us-ascii?Q?FhW8BZbdTJDpRun1BaVqgzQm1Kodbs/jqiFY87jDEEARuCJLj/BFzh1PKvZy?=
- =?us-ascii?Q?dV6IcXrSgQapH6i+5FB0qYzCCtC3JQY3aw8B6ToLM7QWRqJCUghV2UAEdYju?=
- =?us-ascii?Q?aGEnbYpcuddRvO/QToD3amAfbo3U5x6/TDr8Z1qShVyDi27QPVNK3k2pVD5m?=
- =?us-ascii?Q?y+aJqio9VS5YTsHfNkHsEeAerJXNj9dTthUcsi2KU9PNlsRKH8lQSLJgu5PL?=
- =?us-ascii?Q?r/CTwPBCQX6pcvPeOa1Pp1ZtOZa+ufI6lCk6CR6clvB5T0vesC/sp1qOSg1H?=
- =?us-ascii?Q?nwrZC+5mG3CeQszeGwoRAiKRsg1XxdoN7KQoSCbO/0vfKbIMbZLcORer5VOx?=
- =?us-ascii?Q?+kKR+GN7nRl/Ve88ygaaj7kKqprLU4o6PpvdikzcO6zGzcWm4iIZWS4avPWX?=
- =?us-ascii?Q?OGg/COw35XTN74xfmf6PrBmVKe6CqUnQ1/+cZV0QszArNfno6YaW1VUunAm6?=
- =?us-ascii?Q?9ncH9bu3bPTAPD/zkObw5Cx96fe74QKS0khzaGzP7PpZNRxAHRJG6rU58guE?=
- =?us-ascii?Q?Oq0/WvvrfuWQbdbInNKCBh83u6Zds20rq6D5SkRH61UtTEvQPVuJT83B0GTB?=
- =?us-ascii?Q?2x7jH1hNm5AtrMWK7IBp5Y3aZuFPZef2GiiSWQoj0M2hmBJGsqvubp9ifBSQ?=
- =?us-ascii?Q?lRv09HtGq86/BV+ZBUol4l7f09oOR3MLa8o/C+kk9+zID/3Tk0UMucwW4UUZ?=
- =?us-ascii?Q?VyQgHgcIaypPb379zzyF0m0Rm8OX5a2bHNIZd2wJCq2bE7gnEdGPUEjXljNT?=
- =?us-ascii?Q?ka0GKrp6XRkWd2UXfziq71VpopWwNVTCWenXNQ9ED4/wlyXUC90uJAFXBzKL?=
- =?us-ascii?Q?xxM9DAd0cCqlrCbMUegkaGWjS/2L1Q7XcHbBlFWsTUeu00ienHNxgF0f69i+?=
- =?us-ascii?Q?DF6G/9QU7qYJEl99OcACoPnP/FcDBlXepZJzaK+/SC48HEtIyN5rMZP3KBMo?=
- =?us-ascii?Q?IjdaMCQ8iTqbKVKPGD7oPqW+Q9genwVWhA8QnyAyX+eGUdFvq2C0uTnKTkbl?=
- =?us-ascii?Q?XRNOszSK0yOsXJG56wbOsNn8/jY7kWz8uDBLIagLgDCI0Xk52hLhNEhex2o?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 573e870d-7b31-4312-072e-08dbeadddf4d
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 22:04:46.2704
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3971
+References: <20231121175640.9981-1-mkoutny@suse.com>
+In-Reply-To: <20231121175640.9981-1-mkoutny@suse.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Tue, 21 Nov 2023 17:37:37 -0500
+Message-ID: <CAM0EoM=id7xo1=F5SY2f+hy8a8pkXQ5a0xNJ+JKd9e6o=--RQg@mail.gmail.com>
+Subject: Re: [PATCH] net/sched: cls: Load net classifier modules via alias
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
+	Martin Wilck <mwilck@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 20, 2023 at 10:49:39PM -0800, Yonghong Song wrote:
-> Yuran, next time when you submit patches, you can carry 'Acked-by' tag
-> from previous revision if there are no significant changes. This will
-> reduce some of reviewers and maintainers' work.
-> 
-Alright, I will keep that in mind in the future.
+On Tue, Nov 21, 2023 at 12:56=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.c=
+om> wrote:
+>
+> The classifier modules may be loaded lazily without user's awareness and
+> control. Add respective aliases to modules and request them under these
+> aliases so that modprobe's blacklisting mechanism works also for
+> classifier modules. (The same pattern exists e.g. for filesystem
+> modules.)
+>
 
-Thanks,
-Yuran Pereira
+Hi Michal,
+Dumb question: What's speacial about the "tcf- '' that makes it work
+better for filtering than existing "cls_" prefix? What about actions
+(prefix "act_") etc?
+
+cheers,
+jamal
+
+> Original module names remain unchanged.
+>
+> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+> ---
+>  include/net/pkt_cls.h    | 1 +
+>  net/sched/cls_api.c      | 2 +-
+>  net/sched/cls_basic.c    | 1 +
+>  net/sched/cls_bpf.c      | 1 +
+>  net/sched/cls_cgroup.c   | 1 +
+>  net/sched/cls_flow.c     | 1 +
+>  net/sched/cls_flower.c   | 1 +
+>  net/sched/cls_fw.c       | 1 +
+>  net/sched/cls_matchall.c | 1 +
+>  net/sched/cls_route.c    | 1 +
+>  net/sched/cls_u32.c      | 1 +
+>  11 files changed, 11 insertions(+), 1 deletion(-)
+>
+> This is primarily for TC subsystem maintainers where the
+> request_module() resides but Cc list is large because of touches in
+> various classifier modules.
+>
+> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+> index a76c9171db0e..424b4f889feb 100644
+> --- a/include/net/pkt_cls.h
+> +++ b/include/net/pkt_cls.h
+> @@ -24,6 +24,7 @@ struct tcf_walker {
+>
+>  int register_tcf_proto_ops(struct tcf_proto_ops *ops);
+>  void unregister_tcf_proto_ops(struct tcf_proto_ops *ops);
+> +#define MODULE_ALIAS_TCF(kind) MODULE_ALIAS("tcf-" __stringify(kind))
+>
+>  struct tcf_block_ext_info {
+>         enum flow_block_binder_type binder_type;
+> diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+> index 1976bd163986..02fdcceee083 100644
+> --- a/net/sched/cls_api.c
+> +++ b/net/sched/cls_api.c
+> @@ -257,7 +257,7 @@ tcf_proto_lookup_ops(const char *kind, bool rtnl_held=
+,
+>  #ifdef CONFIG_MODULES
+>         if (rtnl_held)
+>                 rtnl_unlock();
+> -       request_module("cls_%s", kind);
+> +       request_module("tcf-%s", kind);
+>         if (rtnl_held)
+>                 rtnl_lock();
+>         ops =3D __tcf_proto_lookup_ops(kind);
+> diff --git a/net/sched/cls_basic.c b/net/sched/cls_basic.c
+> index a1f56931330c..a3500ac7fc1a 100644
+> --- a/net/sched/cls_basic.c
+> +++ b/net/sched/cls_basic.c
+> @@ -328,6 +328,7 @@ static struct tcf_proto_ops cls_basic_ops __read_most=
+ly =3D {
+>         .bind_class     =3D       basic_bind_class,
+>         .owner          =3D       THIS_MODULE,
+>  };
+> +MODULE_ALIAS_TCF("basic");
+>
+>  static int __init init_basic(void)
+>  {
+> diff --git a/net/sched/cls_bpf.c b/net/sched/cls_bpf.c
+> index 382c7a71f81f..8d57ac155c0c 100644
+> --- a/net/sched/cls_bpf.c
+> +++ b/net/sched/cls_bpf.c
+> @@ -693,6 +693,7 @@ static struct tcf_proto_ops cls_bpf_ops __read_mostly=
+ =3D {
+>         .dump           =3D       cls_bpf_dump,
+>         .bind_class     =3D       cls_bpf_bind_class,
+>  };
+> +MODULE_ALIAS_TCF("bpf");
+>
+>  static int __init cls_bpf_init_mod(void)
+>  {
+> diff --git a/net/sched/cls_cgroup.c b/net/sched/cls_cgroup.c
+> index 7ee8dbf49ed0..0ded7d79894c 100644
+> --- a/net/sched/cls_cgroup.c
+> +++ b/net/sched/cls_cgroup.c
+> @@ -209,6 +209,7 @@ static struct tcf_proto_ops cls_cgroup_ops __read_mos=
+tly =3D {
+>         .dump           =3D       cls_cgroup_dump,
+>         .owner          =3D       THIS_MODULE,
+>  };
+> +MODULE_ALIAS_TCF("cgroup");
+>
+>  static int __init init_cgroup_cls(void)
+>  {
+> diff --git a/net/sched/cls_flow.c b/net/sched/cls_flow.c
+> index 6ab317b48d6c..2806aa1254e1 100644
+> --- a/net/sched/cls_flow.c
+> +++ b/net/sched/cls_flow.c
+> @@ -702,6 +702,7 @@ static struct tcf_proto_ops cls_flow_ops __read_mostl=
+y =3D {
+>         .walk           =3D flow_walk,
+>         .owner          =3D THIS_MODULE,
+>  };
+> +MODULE_ALIAS_TCF("flow");
+>
+>  static int __init cls_flow_init(void)
+>  {
+> diff --git a/net/sched/cls_flower.c b/net/sched/cls_flower.c
+> index e5314a31f75a..739e09e0fa57 100644
+> --- a/net/sched/cls_flower.c
+> +++ b/net/sched/cls_flower.c
+> @@ -3633,6 +3633,7 @@ static struct tcf_proto_ops cls_fl_ops __read_mostl=
+y =3D {
+>         .owner          =3D THIS_MODULE,
+>         .flags          =3D TCF_PROTO_OPS_DOIT_UNLOCKED,
+>  };
+> +MODULE_ALIAS_TCF("flower");
+>
+>  static int __init cls_fl_init(void)
+>  {
+> diff --git a/net/sched/cls_fw.c b/net/sched/cls_fw.c
+> index afc534ee0a18..86c833885a2d 100644
+> --- a/net/sched/cls_fw.c
+> +++ b/net/sched/cls_fw.c
+> @@ -433,6 +433,7 @@ static struct tcf_proto_ops cls_fw_ops __read_mostly =
+=3D {
+>         .bind_class     =3D       fw_bind_class,
+>         .owner          =3D       THIS_MODULE,
+>  };
+> +MODULE_ALIAS_TCF("fw");
+>
+>  static int __init init_fw(void)
+>  {
+> diff --git a/net/sched/cls_matchall.c b/net/sched/cls_matchall.c
+> index c4ed11df6254..21ba73978c6a 100644
+> --- a/net/sched/cls_matchall.c
+> +++ b/net/sched/cls_matchall.c
+> @@ -398,6 +398,7 @@ static struct tcf_proto_ops cls_mall_ops __read_mostl=
+y =3D {
+>         .bind_class     =3D mall_bind_class,
+>         .owner          =3D THIS_MODULE,
+>  };
+> +MODULE_ALIAS_TCF("matchall");
+>
+>  static int __init cls_mall_init(void)
+>  {
+> diff --git a/net/sched/cls_route.c b/net/sched/cls_route.c
+> index 12a505db4183..a4701c0752df 100644
+> --- a/net/sched/cls_route.c
+> +++ b/net/sched/cls_route.c
+> @@ -671,6 +671,7 @@ static struct tcf_proto_ops cls_route4_ops __read_mos=
+tly =3D {
+>         .bind_class     =3D       route4_bind_class,
+>         .owner          =3D       THIS_MODULE,
+>  };
+> +MODULE_ALIAS_TCF("route");
+>
+>  static int __init init_route4(void)
+>  {
+> diff --git a/net/sched/cls_u32.c b/net/sched/cls_u32.c
+> index d5bdfd4a7655..a969adbd7423 100644
+> --- a/net/sched/cls_u32.c
+> +++ b/net/sched/cls_u32.c
+> @@ -1453,6 +1453,7 @@ static struct tcf_proto_ops cls_u32_ops __read_most=
+ly =3D {
+>         .bind_class     =3D       u32_bind_class,
+>         .owner          =3D       THIS_MODULE,
+>  };
+> +MODULE_ALIAS_TCF("u32");
+>
+>  static int __init init_u32(void)
+>  {
+> --
+> 2.42.1
+>
 
