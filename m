@@ -1,157 +1,93 @@
-Return-Path: <bpf+bounces-15470-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15471-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 147CD7F226E
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 01:42:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FDE87F226F
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 01:43:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2C2F282345
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 00:42:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80199B217A7
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 00:43:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723CF15B6;
-	Tue, 21 Nov 2023 00:42:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FE715B6;
+	Tue, 21 Nov 2023 00:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jyKQc/PE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hYvO1VGc"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [IPv6:2001:41d0:203:375::b2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C1EC9
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 16:42:30 -0800 (PST)
-Message-ID: <9b037dde-e65c-4d1a-8295-68d51ac3ce25@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700527349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=acaf17Q0NNuM+Wdg/HUB9N3cO7Z2FPWOT2nLmDLwXe8=;
-	b=jyKQc/PETGniDYpVFoKwi3wkzPtghbAqGg2LYRC2HPYL07aZpnajR6O62Ov9tUSY5MDU4N
-	2U94YnuHg0s91MjjB6tVqAopUGlForLcEzI2ZCZpSvgNA2UcQbmxRds5i+B3aM0hmt3kYM
-	6HHPKQn+yZiC6jB7FBnyn4qlcx/EpIg=
-Date: Mon, 20 Nov 2023 16:42:21 -0800
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CFE9CD
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 16:42:58 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-548f6f3cdc9so426152a12.2
+        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 16:42:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700527377; x=1701132177; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=f+m785zn0Z1WV+YazKTrjT5PG7s/tHYuIN2lTfuI8a8=;
+        b=hYvO1VGcW6QucibBIaNwd/eXWN9RtDp+A6z7T/7gpUbxfNE+xN4nbXTtnqHuyznp9e
+         VlsYWDTzZTf0BtnadIsxFLymXiHHf9B3h+ihDht1l0VgZahuoSrH+DqqsMC+IQMUphds
+         JlXSsjfwXkksV/K43u56ElB5OAN5vNIhT553Ia5fEv+uiolFs/NRiIr9UUnzg1e4Wn8J
+         isbTzUFwbw9QNVPJwAshchkLLJIB6BqP9SXizKd9NDefpm8bmZxI8H2dxK2OyXjYpaoK
+         Ozz/kooIGlrirOMuWMkiasBD1z+8Gtd7PI/SzjvnaxD5XcfDAmk3gLV0iqfdNn/b9dZk
+         ewNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700527377; x=1701132177;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f+m785zn0Z1WV+YazKTrjT5PG7s/tHYuIN2lTfuI8a8=;
+        b=MiR8vO+LtVVB9knFjVoSlcLeVknQ97biR8qv6D44BZ8IZXKELWlA2Nd6AWes4Z5bpp
+         kOi1W3Z6yUhlN230ZRqcvK1UftNrYJdf2g/KtYp6NzWviyKFpYfI54ZLO22l7+bXjsO7
+         9aTZ3kdF001QKP5u9zTdgl/2Bm2me5Z71468fS/j5I6nAFYvLS/PLh8167vnnV0qePlq
+         Nbs5zM7O1aYFEYzcrnM/CIG7dTKM6jNnDxSf8VmlfOvwhKrkaPkSABEinD7K41zcd7JK
+         keWfqyJFDs6pase3jlvJmukUd0a6yqHwQpMB8pIDSUjPqLmFeep43YZluMinLgZrt261
+         fXdA==
+X-Gm-Message-State: AOJu0YyYfHJPsVf3TuLYTmJW1EO5cvttQyDszedkdZ3uVy96B4YxSo7C
+	sMKFagNwIgbOYltlN9CC8Fw=
+X-Google-Smtp-Source: AGHT+IHWeOBTMcPmLXsOYePvTofOOK4dzrwiQoVyrsNWu+yqE1Yf1ARX1D39bWasYo/2Le9l+Hzcpw==
+X-Received: by 2002:a17:906:256:b0:a00:3bc8:d481 with SMTP id 22-20020a170906025600b00a003bc8d481mr2256689ejl.16.1700527376954;
+        Mon, 20 Nov 2023 16:42:56 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id g24-20020a170906c19800b009a1b857e3a5sm4510809ejz.54.2023.11.20.16.42.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 16:42:56 -0800 (PST)
+Message-ID: <2ace40c9c5b8133956bcdefc1d8592dad640455c.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 02/10] selftests/bpf: add stack access
+ precision test
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+Date: Tue, 21 Nov 2023 02:42:55 +0200
+In-Reply-To: <20231121002221.3687787-3-andrii@kernel.org>
+References: <20231121002221.3687787-1-andrii@kernel.org>
+	 <20231121002221.3687787-3-andrii@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local
- storage
-Content-Language: en-US
-To: Dave Marchevsky <davemarchevsky@fb.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>,
- Johannes Weiner <hannes@cmpxchg.org>, bpf@vger.kernel.org
-References: <20231120175925.733167-1-davemarchevsky@fb.com>
- <20231120175925.733167-2-davemarchevsky@fb.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231120175925.733167-2-davemarchevsky@fb.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 11/20/23 9:59 AM, Dave Marchevsky wrote:
-> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
-> index 173ec7f43ed1..114973f925ea 100644
-> --- a/include/linux/bpf_local_storage.h
-> +++ b/include/linux/bpf_local_storage.h
-> @@ -69,7 +69,17 @@ struct bpf_local_storage_data {
->   	 * the number of cachelines accessed during the cache hit case.
->   	 */
->   	struct bpf_local_storage_map __rcu *smap;
-> -	u8 data[] __aligned(8);
-> +	/* Need to duplicate smap's map_flags as smap may be gone when
-> +	 * it's time to free bpf_local_storage_data
-> +	 */
-> +	u64 smap_map_flags;
-> +	/* If BPF_F_MMAPABLE, this is a void * to separately-alloc'd data
-> +	 * Otherwise the actual mapval data lives here
-> +	 */
-> +	union {
-> +		DECLARE_FLEX_ARRAY(u8, data) __aligned(8);
-> +		void *actual_data __aligned(8);
+On Mon, 2023-11-20 at 16:22 -0800, Andrii Nakryiko wrote:
+> Add a new selftests that validates precision tracking for stack access
+> instruction, using both r10-based and non-r10-based accesses. For
+> non-r10 ones we also make sure to have non-zero var_off to validate that
+> final stack offset is tracked properly in instruction history
+> information inside verifier.
+>=20
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
 
-The pages (that can be mmap'ed later) feel like a specific kind of kptr.
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-Have you thought about allowing a kptr (pointing to some pages that can be 
-mmap'ed later) to be stored as one of the members of the map's value as a kptr. 
-bpf_local_storage_map is one of the maps that supports kptr.
-
-struct normal_and_mmap_value {
-     int some_int;
-     int __percpu_kptr *some_cnts;
-
-     struct bpf_mmap_page __kptr *some_stats;
-};
-
-struct mmap_only_value {
-     struct bpf_mmap_page __kptr *some_stats;
-};
-
-[ ... ]
-
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
-> index 146824cc9689..9b3becbcc1a3 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
-> @@ -15,7 +15,8 @@
->   #include <linux/rcupdate_trace.h>
->   #include <linux/rcupdate_wait.h>
->   
-> -#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK (BPF_F_NO_PREALLOC | BPF_F_CLONE)
-> +#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK \
-> +	(BPF_F_NO_PREALLOC | BPF_F_CLONE | BPF_F_MMAPABLE)
->   
->   static struct bpf_local_storage_map_bucket *
->   select_bucket(struct bpf_local_storage_map *smap,
-> @@ -24,6 +25,51 @@ select_bucket(struct bpf_local_storage_map *smap,
->   	return &smap->buckets[hash_ptr(selem, smap->bucket_log)];
->   }
->   
-> +struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map);
-> +
-> +void *alloc_mmapable_selem_value(struct bpf_local_storage_map *smap)
-> +{
-> +	struct mem_cgroup *memcg, *old_memcg;
-> +	void *ptr;
-> +
-> +	memcg = bpf_map_get_memcg(&smap->map);
-> +	old_memcg = set_active_memcg(memcg);
-> +	ptr = bpf_map_area_mmapable_alloc(PAGE_ALIGN(smap->map.value_size),
-> +					  NUMA_NO_NODE);
-> +	set_active_memcg(old_memcg);
-> +	mem_cgroup_put(memcg);
-> +
-> +	return ptr;
-> +}
-
-[ ... ]
-
-> @@ -76,10 +122,19 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
->   		void *value, bool charge_mem, gfp_t gfp_flags)
->   {
->   	struct bpf_local_storage_elem *selem;
-> +	void *mmapable_value = NULL;
-> +	u32 selem_mem;
->   
-> -	if (charge_mem && mem_charge(smap, owner, smap->elem_size))
-> +	selem_mem = selem_bytes_used(smap);
-> +	if (charge_mem && mem_charge(smap, owner, selem_mem))
->   		return NULL;
->   
-> +	if (smap->map.map_flags & BPF_F_MMAPABLE) {
-> +		mmapable_value = alloc_mmapable_selem_value(smap);
-
-This probably is not always safe for bpf prog to do. Leaving the gfp_flags was 
-not used aside, the bpf local storage is moving to the bpf's memalloc because of 
-https://lore.kernel.org/bpf/20221118190109.1512674-1-namhyung@kernel.org/
-
-> +		if (!mmapable_value)
-> +			goto err_out;
-> +	}
-> +
-
+[...]
 
