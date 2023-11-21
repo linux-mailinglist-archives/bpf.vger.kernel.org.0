@@ -1,177 +1,129 @@
-Return-Path: <bpf+bounces-15500-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15501-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACB2E7F252D
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 06:19:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31F7F7F252E
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 06:19:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30CF9B21C10
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 05:19:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82521B21CF5
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 05:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCA718643;
-	Tue, 21 Nov 2023 05:19:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD9D18AF3;
+	Tue, 21 Nov 2023 05:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="j327D7gO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gqh6lepc"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9B4C8;
-	Mon, 20 Nov 2023 21:19:16 -0800 (PST)
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244B7ED
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 21:19:22 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc394f4cdfso38104355ad.0
+        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 21:19:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1700543957; x=1732079957;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pcsXmk8Q6mE4d84jdRULTsqZMUZAGSif0EL2ns/7/gA=;
-  b=j327D7gOylNOojX+/dRINxIPjD4eKbEk2sS016hmxJjSPncZHZuvxQhJ
-   dyRrinKJVhlmxK0mCqO4UQFvE28Wara40OPvVgUSjI22GiEXmXXf/JJL8
-   /f2mK6tO09CWfLc4hdAebx/uU9k7Ebo+1gLfxGG1Us88FoFBtMZw5XeQ/
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.04,215,1695686400"; 
-   d="scan'208";a="167409420"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-d2040ec1.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 05:19:13 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-	by email-inbound-relay-pdx-2c-m6i4x-d2040ec1.us-west-2.amazon.com (Postfix) with ESMTPS id 1BFD440D91;
-	Tue, 21 Nov 2023 05:19:11 +0000 (UTC)
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.38.20:30199]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.22.224:2525] with esmtp (Farcaster)
- id 78b88525-b3b4-4dd6-82ed-c2b6d0c9ab58; Tue, 21 Nov 2023 05:19:10 +0000 (UTC)
-X-Farcaster-Flow-ID: 78b88525-b3b4-4dd6-82ed-c2b6d0c9ab58
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 21 Nov 2023 05:19:10 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.187.171.26) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 21 Nov 2023 05:19:06 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <lkp@intel.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <john.fastabend@gmail.com>,
-	<jolsa@kernel.org>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-	<kuniyu@amazon.com>, <martin.lau@linux.dev>, <mykolal@fb.com>,
-	<netdev@vger.kernel.org>, <oe-kbuild-all@lists.linux.dev>,
-	<pabeni@redhat.com>, <sdf@google.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>
-Subject: Re: [PATCH v2 bpf-next 10/11] bpf: tcp: Support arbitrary SYN Cookie.
-Date: Mon, 20 Nov 2023 21:18:57 -0800
-Message-ID: <20231121051857.89600-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <202311211229.8GAmfTPp-lkp@intel.com>
-References: <202311211229.8GAmfTPp-lkp@intel.com>
+        d=gmail.com; s=20230601; t=1700543961; x=1701148761; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4QvWxVyLHfe1THaPjb2vgpfNpnx2h6mMp4izAMQEqjA=;
+        b=gqh6lepcyN4Kam0WNwzF9Lic2FMvlh7XwEjLXVUqwUgEfI4Ocup0KNlafZ2hO76h7Q
+         rY2bWH6/tVAiHp8jqhOXWrdrryd1hL+Ay1cs/AMlspOzoB/GlPLdLDZkbwmDg5UVEeMI
+         jKu0iTwsHYBf5+MOryR7ifb9RUXoxeC1II/bNNlE0ce1DW70RuUrA+Mv6JqVAZMvE8N2
+         DssZQ0sP9+bNtY49sn6gFB3/ceh0SRFJUa5419OFCNlmZBPqhsYnABIxeHps05G/xfH+
+         UEP7vv/wB7NqtHY3tmcADJj3FFfCiNQKz2T2dT/7tAenWDGCt740Un8RgJKbdP0ivcop
+         t8ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700543961; x=1701148761;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4QvWxVyLHfe1THaPjb2vgpfNpnx2h6mMp4izAMQEqjA=;
+        b=vAjus74LNyzo0n99fFiIG7kNHdA83RhjkjCtPMmpnSDL1vlmQBEUUEEVZfeK+zYpVO
+         EGAVjE2bGX3Vemtx5WvbsfNmiXuxTymsm0vSMQeyPXrlnIbsmJvidU1gayEKNr3J96bp
+         qMCgk+1F52KHfnPItyAb2xzPqKor8MVp2dteVcJyh9SiRVUOL0CWH8/ZOwfJo7OH5JXV
+         /GF1px+Ce7uVOUFsn+csvJ3zkpnNryJsnM3Hxv1nHhwHHN4einA6QcqUuqK8juIeDycO
+         Prhq5c7RrvRc6kymCD6K7kFatFoJiG0G0KNhTxpyBQobeWrrqlXDvx1kkmtBPOuC4WEV
+         3kNA==
+X-Gm-Message-State: AOJu0YytHyBi8/nc9Nd6Ku+sB2KdhvnLBYn7tHGJvNQCsUOFsblEowoO
+	ubeBa3WMgYRfZ3QZdFCwYDA=
+X-Google-Smtp-Source: AGHT+IEKijp1uhIVGXVGdqeBSNmpl6xivkAWqw5eHW0ZXc0aVSj2VppWNpMbqd7VR9b+YWbSYFOYHw==
+X-Received: by 2002:a17:902:6941:b0:1cc:76c4:5144 with SMTP id k1-20020a170902694100b001cc76c45144mr7531998plt.12.1700543961233;
+        Mon, 20 Nov 2023 21:19:21 -0800 (PST)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:e8eb])
+        by smtp.gmail.com with ESMTPSA id i10-20020a17090332ca00b001c9c97beb9csm6937452plr.71.2023.11.20.21.19.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 21:19:20 -0800 (PST)
+Date: Mon, 20 Nov 2023 21:19:17 -0800
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
+Subject: Re: [PATCH bpf v2 4/5] bpf: Optimize the free of inner map
+Message-ID: <20231121051917.lbp6luone7pxqkvw@macbook-pro-49.dhcp.thefacebook.com>
+References: <20231113123324.3914612-1-houtao@huaweicloud.com>
+ <20231113123324.3914612-5-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.187.171.26]
-X-ClientProxiedBy: EX19D042UWB002.ant.amazon.com (10.13.139.175) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113123324.3914612-5-houtao@huaweicloud.com>
 
-From: kernel test robot <lkp@intel.com>
-Date: Tue, 21 Nov 2023 13:06:23 +0800
-> Hi Kuniyuki,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on bpf-next/master]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Kuniyuki-Iwashima/tcp-Clean-up-reverse-xmas-tree-in-cookie_v-46-_check/20231121-063036
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> patch link:    https://lore.kernel.org/r/20231120222341.54776-11-kuniyu%40amazon.com
-> patch subject: [PATCH v2 bpf-next 10/11] bpf: tcp: Support arbitrary SYN Cookie.
-> config: arm-randconfig-001-20231121 (https://download.01.org/0day-ci/archive/20231121/202311211229.8GAmfTPp-lkp@intel.com/config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211229.8GAmfTPp-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311211229.8GAmfTPp-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> net/core/filter.c:11812:48: warning: 'struct tcp_cookie_attributes' declared inside parameter list will not be visible outside of this definition or declaration
->    11812 |                                         struct tcp_cookie_attributes *attr,
->          |                                                ^~~~~~~~~~~~~~~~~~~~~
->    net/core/filter.c: In function 'bpf_sk_assign_tcp_reqsk':
->    net/core/filter.c:11821:31: error: invalid application of 'sizeof' to incomplete type 'struct tcp_cookie_attributes'
->    11821 |         if (attr__sz != sizeof(*attr))
->          |                               ^
->    net/core/filter.c:11851:17: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11851 |         if (attr->tcp_opt.mss_clamp < min_mss) {
->          |                 ^~
->    net/core/filter.c:11856:17: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11856 |         if (attr->tcp_opt.wscale_ok &&
->          |                 ^~
->    net/core/filter.c:11857:17: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11857 |             attr->tcp_opt.snd_wscale > TCP_MAX_WSCALE) {
->          |                 ^~
->    net/core/filter.c:11875:24: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11875 |         req->mss = attr->tcp_opt.mss_clamp;
->          |                        ^~
->    net/core/filter.c:11877:32: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11877 |         ireq->snd_wscale = attr->tcp_opt.snd_wscale;
->          |                                ^~
->    net/core/filter.c:11878:31: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11878 |         ireq->wscale_ok = attr->tcp_opt.wscale_ok;
->          |                               ^~
->    net/core/filter.c:11879:31: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11879 |         ireq->tstamp_ok = attr->tcp_opt.tstamp_ok;
->          |                               ^~
->    net/core/filter.c:11880:29: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11880 |         ireq->sack_ok = attr->tcp_opt.sack_ok;
->          |                             ^~
->    net/core/filter.c:11881:28: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11881 |         ireq->ecn_ok = attr->ecn_ok;
->          |                            ^~
->    net/core/filter.c:11883:33: error: invalid use of undefined type 'struct tcp_cookie_attributes'
->    11883 |         treq->req_usec_ts = attr->usec_ts_ok;
->          |                                 ^~
-> 
-> 
-> vim +11812 net/core/filter.c
-> 
->  11810	
->  11811	__bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct sk_buff *skb, struct sock *sk,
->  11812						struct tcp_cookie_attributes *attr,
->  11813						int attr__sz)
->  11814	{
+On Mon, Nov 13, 2023 at 08:33:23PM +0800, Hou Tao wrote:
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index e2d2701ce2c45..5a7906f2b027e 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -694,12 +694,20 @@ static void bpf_map_free_deferred(struct work_struct *work)
+>  {
+>  	struct bpf_map *map = container_of(work, struct bpf_map, work);
+>  	struct btf_record *rec = map->record;
+> +	int acc_ctx;
+>  
+>  	security_bpf_map_free(map);
+>  	bpf_map_release_memcg(map);
+>  
+> -	if (READ_ONCE(map->free_after_mult_rcu_gp))
+> -		synchronize_rcu_mult(call_rcu, call_rcu_tasks_trace);
 
-bpf_sk_assign_tcp_reqsk() needs to be guarded by CONFIG_SYN_COOKIE.
+The previous patch 3 is doing too much.
+There is maybe_wait_bpf_programs() that will do synchronize_rcu()
+when necessary.
+The patch 3 could do synchronize_rcu_tasks_trace() only and it will solve the issue.
 
-Will fix in v3.
+> +	acc_ctx = atomic_read(&map->may_be_accessed_prog_ctx) & BPF_MAP_ACC_PROG_CTX_MASK;
+> +	if (acc_ctx) {
+> +		if (acc_ctx == BPF_MAP_ACC_NORMAL_PROG_CTX)
+> +			synchronize_rcu();
+> +		else if (acc_ctx == BPF_MAP_ACC_SLEEPABLE_PROG_CTX)
+> +			synchronize_rcu_tasks_trace();
+> +		else
+> +			synchronize_rcu_mult(call_rcu, call_rcu_tasks_trace);
 
-Thanks!
+and this patch 4 goes to far.
+Could you add sleepable_refcnt in addition to existing refcnt that is incremented
+in outer map when it's used by sleepable prog and when sleepable_refcnt > 0
+the caller of bpf_map_free_deferred sets free_after_mult_rcu_gp.
+(which should be renamed to free_after_tasks_rcu_gp).
+Patch 3 is simpler and patch 4 is simple too.
+No need for atomic_or games.
 
----8<---
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 58b567aaf577..7beba469e8a7 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -11808,6 +11808,7 @@ __bpf_kfunc int bpf_sock_addr_set_sun_path(struct bpf_sock_addr_kern *sa_kern,
- 	return 0;
- }
- 
-+#if IS_ENABLED(CONFIG_SYN_COOKIE)
- __bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct sk_buff *skb, struct sock *sk,
- 					struct tcp_cookie_attributes *attr,
- 					int attr__sz)
-@@ -11888,6 +11889,7 @@ __bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct sk_buff *skb, struct sock *sk,
- 
- 	return 0;
- }
-+#endif
- 
- __bpf_kfunc_end_defs();
- 
----8<---
+In addition I'd like to see an extra patch that demonstrates this UAF
+when update/delete is done by syscall bpf prog type.
+The test case in patch 5 is doing update/delete from user space.
+If that was the only issue we could have easily extended maybe_wait_bpf_programs()
+to do synchronize_rcu_tasks_trace() and that would close the issue exposed by patch 5.
+But inner maps can indeed be updated by syscall bpf prog and since they run
+under rcu_read_lock_trace() we cannot add synchronize_rcu_tasks_trace() to
+maybe_wait_bpf_programs() because it will deadlock.
+So let's make sure we have test cases for all combinations where inner maps
+can be updated/deleted.
 
