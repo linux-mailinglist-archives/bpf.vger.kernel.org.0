@@ -1,99 +1,110 @@
-Return-Path: <bpf+bounces-15596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CDB27F37BC
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 21:50:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F1A47F37CE
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 22:04:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4343B217D5
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:50:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C5411C20906
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 21:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1165101C;
-	Tue, 21 Nov 2023 20:50:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 846C95103A;
+	Tue, 21 Nov 2023 21:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="sAzyBX7b";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="C3TF2PAy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Byq3H9b+"
 X-Original-To: bpf@vger.kernel.org
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE48C19E;
-	Tue, 21 Nov 2023 12:50:30 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id 8F5C73200BB2;
-	Tue, 21 Nov 2023 15:50:29 -0500 (EST)
-Received: from imap42 ([10.202.2.92])
-  by compute4.internal (MEProxy); Tue, 21 Nov 2023 15:50:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:reply-to:sender:subject
-	:subject:to:to; s=fm3; t=1700599829; x=1700686229; bh=2Qs9fWSfJt
-	gCu3V8Z3tcwX7KwBoXsBofNMuRavCMnRo=; b=sAzyBX7bquZduUrazxktB+Rq+4
-	DytOlHD6u3YebvG+GJtCq5h95SFSy9bWZ1JVb22VbRqwclhdqCryRBw7Yl7Z3XZB
-	MNt+UKU30MVqZ4kUHKM1KPjP3RUlQK72nMsiPMAqrkPSYivyhFbOIBA1+S5Xt85R
-	yw2uzACor5V+KOMwEKyZFCqf1IOPMS/J23YlniZ8CA2Q7M33qXEFZMcxakJd7u9z
-	uWvD8bzeqRdpqkuUurtojFv0N4zzctKJbQVvbjhdzT7n5Cowhv085iWsA1Xaii5z
-	Su8euMgPF2UFRtCLCG+c4FcuTX4WuJK6YxGOP+A+7mUAiZC2rbyOtbLEqaEA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:reply-to:sender:subject:subject:to:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1700599829; x=1700686229; bh=2Qs9fWSfJtgCu3V8Z3tcwX7KwBoX
-	sBofNMuRavCMnRo=; b=C3TF2PAyoOuGwA7+FWJvYOVJRM1BjHtK4Y8SYb9Ika1T
-	UaAHqZpvpdPICrQyy9hy1z8NZeh1yoBQJsoxyuL0j24U4qeqUdDrJdkcepiCsWaL
-	sB0J8JICd4uQWJJ2xPN3obvYDtb6u8rLFIzzuVeDj97IuM784NfYr8gkG/Cr9R3Q
-	6Sn3MIw02tPNI9vmd7UC1rx9V/oMjjgiLir38OTPg7jJkrQpn/t8+PinHD4dRW4z
-	xo3C7jxssQIRBotKLeoymsYarK1OtR8X0tzaTx44GHHLSOnt/39TLaeJddhVQpFT
-	PMiFIbLCQ3NVBNzXeUa9myWXLfzehFCmcbv591MR3Q==
-X-ME-Sender: <xms:FBhdZSsI9EzTHjj1wMJgCHwtpvPCzkDIsOQuWiM4McXNVhjNk5uzRQ>
-    <xme:FBhdZXc42BwBIGpyrARofUA7_bniaG9W9rLAc4NFFG56ZZCYJKDKOnQTtHYFUay-K
-    vBhxrM3LuWg5BIP6Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledgudefgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepofgfggfkjgffhffvvefutgesthdtredt
-    reertdenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighi
-    iiqeenucggtffrrghtthgvrhhnpedvtdeitdeuiedujeejfeelvdeigfdvgefhjeehiefh
-    vddufeduueejffetffefudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:FBhdZdxM38Eo0EQ-5qSkDkYtyqH6Ocan2JbVZnkHc8Lg8-QcRQY88g>
-    <xmx:FBhdZdPN1BIABuAy_DAHVra09Jbbh-7GOAxk8eNN3YQp8ibv2vAx8Q>
-    <xmx:FBhdZS_5Tip1GjnM1zEBLlMs0IpnX3jgIfJm5Zwj5afNGLLs0bv04A>
-    <xmx:FRhdZZlGtqkI9j2MZm37kRSum3T2kxxn-j1ijq0Hb-LRE4zG_SjBJg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id B01A9BC007E; Tue, 21 Nov 2023 15:50:28 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 070871A3
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 13:03:57 -0800 (PST)
+Message-ID: <49538852-1ca0-49bb-86c2-cb1b95739b91@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700600636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a/EP9bzttwvfqDFCQaIFuoHqmW27VAkLQXuTgHfmiVs=;
+	b=Byq3H9b+AoLk5RvWFliQvg4zfpk8qhapUx89tnpGIFwWrXV/XSXLuo3Ohl/x0S6eg0Xt4J
+	HJJIwKGzryBe2AgabM5IgbaiEYCsY829eLoVKylXnxeRoZyjiF61Gcxi+b0XXVrVbPa59S
+	3NckR3O2FNurL1MLuTYFG7Q5pEXbgaA=
+Date: Tue, 21 Nov 2023 13:03:49 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3cdecb2e-ef70-4171-8c36-edf46370d74d@app.fastmail.com>
-In-Reply-To: <<20231109174328.1774571-1-anders.roxell@linaro.org>>
-Date: Tue, 21 Nov 2023 14:50:07 -0600
-From: "Daniel Xu" <dxu@dxuuu.xyz>
-To: anders.roxell@linaro.org
-Cc: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>, bjorn@kernel.org,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
- maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
- netdev@vger.kernel.org
-Subject: Re: [PATCHv3] selftests: bpf: xskxceiver: ksft_print_msg: fix format type
- error
-Content-Type: text/plain
+Subject: Re: [PATCH bpf-next 2/2] bpf: bring back removal of dev-bound id from
+ idr
+Content-Language: en-US
+To: Stanislav Fomichev <sdf@google.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+ yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, bpf@vger.kernel.org
+References: <20231114045453.1816995-1-sdf@google.com>
+ <20231114045453.1816995-3-sdf@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231114045453.1816995-3-sdf@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+On 11/13/23 8:54 PM, Stanislav Fomichev wrote:
+> Commit ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
+> and PERF_BPF_EVENT_PROG_UNLOAD") stopped removing program's id from
+> idr when the offloaded/bound netdev goes away. I was supposed to
+> take a look and check in [0], but apparently I did not.
+> 
+> The purpose of idr removal is to avoid BPF_PROG_GET_NEXT_ID returning
+> stale ids for the programs that have a dead netdev. This functionality
 
-I'm hitting the same error on bpf-next/master for native x86-64 build:
-3cbbf9192abd ("Merge branch 'selftests-bpf-update-multiple-prog_tests-to-use-assert_-macros'"
+What may be wrong if BPF_PROG_GET_NEXT_ID returns the id?
+e.g. If the prog is pinned somewhere, it may be useful to know a prog is still 
+loaded in the system.
 
-Applying this patch helped.
+Does the fixes mean to be for the bpf tree instead?
 
-Does this need to go onto bpf-next as well?
+> is verified by test_offload.py, but we don't run this test in the CI.
+> 
+> Introduce new bpf_prog_remove_from_idr which takes care of correctly
+> dealing with potential double idr_remove() via separate skip_idr_remove
+> flag in the aux.
+> 
+> Verified by running the test manually:
+> test_offload.py: OK
+> 
+> 0: https://lore.kernel.org/all/CAKH8qBtyR20ZWAc11z1-6pGb3Hd47AQUTbE_cfoktG59TqaJ7Q@mail.gmail.com/
+> 
+> Fixes: ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD")
+> Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> ---
+>   include/linux/bpf.h  |  2 ++
+>   kernel/bpf/offload.c |  3 +++
+>   kernel/bpf/syscall.c | 15 +++++++++++----
+>   3 files changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 4001d11be151..d2aa4b59bf1e 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1414,6 +1414,7 @@ struct bpf_prog_aux {
+>   	bool xdp_has_frags;
+>   	bool exception_cb;
+>   	bool exception_boundary;
+> +	bool skip_idr_remove;
+>   	/* BTF_KIND_FUNC_PROTO for valid attach_btf_id */
+>   	const struct btf_type *attach_func_proto;
+>   	/* function name for valid attach_btf_id */
+> @@ -2049,6 +2050,7 @@ void bpf_prog_inc(struct bpf_prog *prog);
+>   struct bpf_prog * __must_check bpf_prog_inc_not_zero(struct bpf_prog *prog);
+>   void bpf_prog_put(struct bpf_prog *prog);
+>   
+> +void bpf_prog_remove_from_idr(struct bpf_prog *prog);
+>   void bpf_prog_free_id(struct bpf_prog *prog);
+>   void bpf_map_free_id(struct bpf_map *map);
+>   
 
-Thanks,
-Daniel
 
