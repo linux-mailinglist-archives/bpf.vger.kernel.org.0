@@ -1,251 +1,220 @@
-Return-Path: <bpf+bounces-15588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 255C57F36E2
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:45:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 573FA7F36EE
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6EE2B218A6
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 19:45:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 718EA1C20D27
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 19:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B3342047;
-	Tue, 21 Nov 2023 19:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71C04205F;
+	Tue, 21 Nov 2023 19:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i2lBF47g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LcZVgW98"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C9318E
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:44:54 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a002562bd8bso24522066b.0
-        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:44:54 -0800 (PST)
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1048219B
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:50:07 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-33139ecdca7so3605159f8f.0
+        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:50:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700595893; x=1701200693; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700596205; x=1701201005; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Fl248It0EqY6Zxf4HE+A6xO9ymK7R/4L7KhAWGxR/aw=;
-        b=i2lBF47gPJ+Avr8pHvUGEYhsY+AAV/0TV6xSIFeEN/nr+33gYy5LI0Wz+5fMJilN1D
-         AgN5wXzqp3kJvGDfLuMuZ/FBnXubqpFliMayuAeOfGDj5NlZw2ttKbcW2MSq2X0IVXg6
-         ihGpj/j/d325eNgUVVez/1j2lhQ/0HoIznntEYHLvsIr5rnNSGyaupMXaLoHxIR/nIQa
-         p8VM+tdRpn8gOmQ45Ziw9bzPGhaZyzvc8Z9LMFxXtHhLUc4Z0ClQwJ9Y3RokCsRnwKS9
-         ecGbmra/a1YW1KMMn5Uhh6PXkE/PGQdZC7aWcr3lkCcflUgmET2J837SjYbnmfTd2tme
-         W7Pw==
+        bh=zg4v9mhW9i0AZKE0+N9Mrqy2Elax74YgikUIIda3cWo=;
+        b=LcZVgW98xaDbuOTrtp5zW9p8ANiUIdKqqC7t9Jlk+AjwN5aeEpvGOIwYuLP26SKUjw
+         s3pZ1cwrdeXh9El8/9caFqedUkm6BhJ4mfJsV5hwZBGV4N4wRNi00lu2KsLDWxQEjapH
+         9nZ30b3BEfTACqFACNE/RxpWq9fMrU0BQUUnFio5ofqcU52clrFvT8b432yAN+T6QcBY
+         19FPV4U+FaahCmARjI2TNGnZTvah6IE/3EAshGW97bNXo22+8ZUVr94ZoqE9QZmBEFiX
+         extUHFwuuL5wfl6FmwW2RK46ioBkW8ttcic5A7kpGQC5k3K0y99L07zV54Qe4UImyg4o
+         KHUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700595893; x=1701200693;
+        d=1e100.net; s=20230601; t=1700596205; x=1701201005;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Fl248It0EqY6Zxf4HE+A6xO9ymK7R/4L7KhAWGxR/aw=;
-        b=ttdvvR99BP2B28tzZwuSZzBX3AU7R6BIzBZL/HKceFzXHRwUKzPBOwqPyTDXT5stah
-         DyyMpoYa6lN35eu5JTcOw0Mq4/KS9nQPaLotNS3BV/3+joMxxol+ZoyFfCoOSCxk9GAg
-         2Ue6jrLTaqc3NlyS2k7+Z0eLyoVJbgY0ufLGgDkC3eQ8YiKm4OGYMEz1vm0+7DAqdcxC
-         P1dZNnMT/Pq+u8/2hseZmBNCrWO8/5lqh4tZqkB5HbGjYjAd8IkFoQvIP3i3Y+1kkXo2
-         bgkoGz4zebJZ2YndjjrErBud+Cpje+Qkw5vxczllGblUEAVruP44t1SGNckVkAYVpUsv
-         CkKA==
-X-Gm-Message-State: AOJu0YzuvLr5Tjr49RDX9RJzJJgYieiuIUgs+3bfok513EDjEWd9Uo77
-	QpUp+Geim5ulgnIu8X40m9+ps1+Wm8U74O7VWFM=
-X-Google-Smtp-Source: AGHT+IF/ev1QR7DnE6cCqUwMcQXKbzFdZt+HtC9/RuN+4/v7WPSxcrcrb4isfgvHXw97ADT2JV7hbykTqhgV0csL8wE=
-X-Received: by 2002:a17:907:1004:b0:9ff:3d80:1863 with SMTP id
- ox4-20020a170907100400b009ff3d801863mr3248984ejb.20.1700595892531; Tue, 21
- Nov 2023 11:44:52 -0800 (PST)
+        bh=zg4v9mhW9i0AZKE0+N9Mrqy2Elax74YgikUIIda3cWo=;
+        b=rm3IH2hOj25R9HgDERds5RCG/CeTD0zuL0b5vfcDs4kjukgkTBfHKHIz5JadNmrhJe
+         QoTPkPwJ8W28O9QFioGwq7N1DSv13KIHfjpV2g2E61dzqc6HKTYND3l+zXSCPOv7adco
+         kaHdTvZlFWzz2dQ8eDlwbG5QvfHlctexeGqtCRajiOuPVHi8gljCsi4vsv0MpILhjz5O
+         Mi5f4O/pBuvVfh8nSTkHk8qqTM5xiEO47144xh1TNw9dSddn31pVFsLavdOG3gAlXHW3
+         1wKymYUMRqzqSvArJsebo7rMS88QcHRi1FyhGuZeGERZoBSsw8/hm9zkPJieJnYcjTEg
+         09Cg==
+X-Gm-Message-State: AOJu0YyctRbYA5YUqtX3oxt+OKp2jfhIvqsN4CJO63WOjNiGlGCzsA4Z
+	bmITtfB8pC9sAEX62CHd4dpOSg4tPzoPLit9SGjlgtfg
+X-Google-Smtp-Source: AGHT+IG1K6k5EJ1pKJKjD6CLUSKi+IkQUmlg8+fkNZzfHjGS7audcRsW93Qn2fCeAlPs3ugTmUDaZ8fRibeEHIAuOVY=
+X-Received: by 2002:a5d:588e:0:b0:332:cae1:db4 with SMTP id
+ n14-20020a5d588e000000b00332cae10db4mr22010wrf.52.1700596204726; Tue, 21 Nov
+ 2023 11:50:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231112124834.388735-1-alan.maguire@oracle.com> <f546e2bf-982b-62cd-b2d4-88760d4d97d7@oracle.com>
-In-Reply-To: <f546e2bf-982b-62cd-b2d4-88760d4d97d7@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 21 Nov 2023 11:44:41 -0800
-Message-ID: <CAEf4BzZa1Z1c+oe2=he_UDgZbowDUvCaDLKKhHyvR5PQqZBNNw@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/17] Add kind layout, CRCs to BTF
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, jolsa@kernel.org, 
-	quentin@isovalent.com, eddyz87@gmail.com, martin.lau@linux.dev, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, masahiroy@kernel.org, 
-	bpf@vger.kernel.org
+References: <20231120175925.733167-1-davemarchevsky@fb.com>
+ <20231120175925.733167-2-davemarchevsky@fb.com> <9b037dde-e65c-4d1a-8295-68d51ac3ce25@linux.dev>
+ <3dd86df3-0692-42d8-b075-f79c5dc052be@linux.dev> <f4d7f72d-1ba2-49dc-b4e0-03289393d436@linux.dev>
+In-Reply-To: <f4d7f72d-1ba2-49dc-b4e0-03289393d436@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 21 Nov 2023 11:49:53 -0800
+Message-ID: <CAADnVQK6c8chC1E6_O8bncncBuiscdFrKk6EgPbBC_WyVoj=9w@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local storage
+To: Martin KaFai Lau <martin.lau@linux.dev>, Tejun Heo <tj@kernel.org>, 
+	David Vernet <void@manifault.com>
+Cc: David Marchevsky <david.marchevsky@linux.dev>, Dave Marchevsky <davemarchevsky@fb.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kernel Team <kernel-team@fb.com>, Johannes Weiner <hannes@cmpxchg.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 14, 2023 at 12:20=E2=80=AFPM Alan Maguire <alan.maguire@oracle.=
-com> wrote:
+On Tue, Nov 21, 2023 at 11:27=E2=80=AFAM Martin KaFai Lau <martin.lau@linux=
+.dev> wrote:
 >
-> On 12/11/2023 12:48, Alan Maguire wrote:
-> > Update struct btf_header to add a new "kind_layout" section containing
-> > a description of how to parse the BTF kinds known about at BTF
-> > encoding time.  This provides the opportunity for tools that might
-> > not know all of these kinds - as is the case when older tools run
-> > on more newly-generated BTF - to still parse the BTF provided,
-> > even if it cannot all be used.
+> On 11/20/23 10:11 PM, David Marchevsky wrote:
 > >
-> > Also add CRCs for the BTF and base BTF (if needed) from which it was
-> > created.  CRCs provide a few useful features:
 > >
-> > - the base CRC allows us to explicitly identify when the split and
-> >   base BTF are not matched
-> > - absence of a base BTF CRC can indicate that BTF is standalone;
-> >   i.e. not defined relative to base BTF
+> > On 11/20/23 7:42 PM, Martin KaFai Lau wrote:
+> >> On 11/20/23 9:59 AM, Dave Marchevsky wrote:
+> >>> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_lo=
+cal_storage.h
+> >>> index 173ec7f43ed1..114973f925ea 100644
+> >>> --- a/include/linux/bpf_local_storage.h
+> >>> +++ b/include/linux/bpf_local_storage.h
+> >>> @@ -69,7 +69,17 @@ struct bpf_local_storage_data {
+> >>>         * the number of cachelines accessed during the cache hit case=
+.
+> >>>         */
+> >>>        struct bpf_local_storage_map __rcu *smap;
+> >>> -    u8 data[] __aligned(8);
+> >>> +    /* Need to duplicate smap's map_flags as smap may be gone when
+> >>> +     * it's time to free bpf_local_storage_data
+> >>> +     */
+> >>> +    u64 smap_map_flags;
+> >>> +    /* If BPF_F_MMAPABLE, this is a void * to separately-alloc'd dat=
+a
+> >>> +     * Otherwise the actual mapval data lives here
+> >>> +     */
+> >>> +    union {
+> >>> +        DECLARE_FLEX_ARRAY(u8, data) __aligned(8);
+> >>> +        void *actual_data __aligned(8);
+> >>
+> >> The pages (that can be mmap'ed later) feel like a specific kind of kpt=
+r.
+> >>
+> >> Have you thought about allowing a kptr (pointing to some pages that ca=
+n be mmap'ed later) to be stored as one of the members of the map's value a=
+s a kptr. bpf_local_storage_map is one of the maps that supports kptr.
+> >>
+> >> struct normal_and_mmap_value {
+> >>      int some_int;
+> >>      int __percpu_kptr *some_cnts;
+> >>
+> >>      struct bpf_mmap_page __kptr *some_stats;
+> >> };
+> >>
+> >> struct mmap_only_value {
+> >>      struct bpf_mmap_page __kptr *some_stats;
+> >> };
+> >>
+> >> [ ... ]
+> >>
 > >
-> > The former case can be used to explicitly reject mismatched
-> > module/kernel BTF rather than assuming it is matched until an
-> > unexpected type is encountered.
+> > This is an intriguing idea. For conciseness I'll call this specific
+> > kind of kptr 'mmapable kptrs' for the rest of this message. Below is
+> > more of a brainstorming dump than a cohesive response, separate trains
+> > of thought are separated by two newlines.
+>
+> Thanks for bearing with me while some ideas could be crazy. I am trying t=
+o see
+> how this would look like for other local storage, sk and inode. Allocatin=
+g a
+> page for each sk will not be nice for server with half a million sk(s). e=
+.g.
+> half a million sk(s) sharing a few bandwidth policies or a few tuning
+> parameters. Creating something mmap'able to the user space and also shara=
+ble
+> among many sk(s) will be useful.
+>
 > >
-> > The latter case is useful for modules that are not built as
-> > frequently as the kernel; in such cases, the module can be built
-> > standalone by specifying an empty BTF base:
 > >
-> >  make BTF_BASE=3D M=3Dpath/2/module
+> > My initial thought upon seeing struct normal_and_mmap_value was to note
+> > that we currently don't support mmaping for map_value types with _any_
+> > special fields ('special' as determined by btf_parse_fields). But IIUC
+> > you're actually talking about exposing the some_stats pointee memory vi=
+a
+> > mmap, not the containing struct with kptr fields. That is, for maps tha=
+t
+> > support these kptrs, mmap()ing a map with value type struct
+> > normal_and_mmap_value would return the some_stats pointer value, and
+> > likely initialize the pointer similarly to BPF_LOCAL_STORAGE_GET_F_CREA=
+TE
+> > logic in this patch. We'd only be able to support one such mmapable kpt=
+r
+> > field per mapval type, but that isn't a dealbreaker.
 > >
-> > If CRCs are not present (as will be the case for pahole versions
-> > prior to the proposed v1.26 which will support CRC generation),
-> > standalone BTF can still be identified by a slower fallback
-> > method of examining BTF type ids to ensure that BTF is
-> > self-referential only.
-> >
-> > To ensure existing tooling can handle standalone BTF for kernel
-> > modules,  we remap the type ids to start after the vmlinux
-> > BTF ids, to make it appear to be split BTF.  This allows tools
-> > (and the kernel) that assume split BTF for modules to operate normally.
-> >
+> > Some maps, like task_storage, would only support mmap() on a map_value
+> > with mmapable kptr field, as mmap()ing the mapval itself doesn't make
+> > sense or is unsafe. Seems like arraymap would do the opposite, only
 >
-> hi folks
+> Changing direction a bit since arraymap is brought up. :)
 >
-> I wanted to capture feedback received on the approach described here for
-> BTF module generation at my talk at LPC [1].
+> arraymap supports BPF_F_MMAPABLE. If the local storage map's value can st=
+ore an
+> arraymap as kptr, the bpf prog should be able to access it as a map. More=
+ like
+> the current map-in-map setup. The arraymap can be used as regular map in =
+the
+> user space also (like pinning). It may need some btf plumbing to tell the=
+ value
+> type of the arrayamp to the verifier.
 >
-> Stepping back, the aim is to provide a way to generate BTF for a module
-> such that it is somewhat resilient to minor changes in underlying BTF,
-> so it does not have to be rebuilt every time vmlinux is built.  The
-> module references to vmlinux BTF ids are currently very brittle, and
-> even for the same kernel we get different vmlinux BTF ids if the BTF is
-> rebuilt.  So the aim is to support a more robust method of module BTF
-> generation.  Note that the approach described here is not needed for
-> modules that are built at the same time as the kernel, so it's unlikely
-> any in-tree modules will need this, but it will be useful for cases such
-> as where modules are delivered via a package and want to make use
-> of BTF such that it will not be invalidated.
+> The syscall bpf_map_update_elem(task_storage_map_fd, &task_pidfd, &value,=
+ flags)
+> can be used where the value->array_mmap initialized as an arraymap_fd. Th=
+is will
+> limit the arraymap kptr update only from the syscall side which seems to =
+be your
+> usecase also? Allocating the arraymap from the bpf prog side needs some t=
+houghts
+> and need a whitelist.
 >
-> Turning to the talk, the general consensus - I think - was that the
-> standalone BTF approach described in this series was problematic.
-> Consider kfuncs, if we have, for example, our own definition of a
-> structure in  standalone module BTF, the BTF id of the local structure
-> will not match that of the core kernel, which has the potential to
-> confuse the verifier.
+> The same goes for the syscall bpf_map_lookup_elem(task_storage_map_fd,
+> &task_pidfd, &value). The kernel can return a fd in value->array_mmap. Ma=
+y be we
+> can create a libbpf helper to free the fd(s) resources held in the looked=
+-up
+> value by using the value's btf.
 >
-> A similar problem exists for tracing; we would trace an sk_buff in
-> the module via the module's view of struct sk_buff, but we have no
-> guarantees that the module's view is still consistent with the vmlinux
-> representation (which actually allocated it).
->
-> Hopefully I've characterized this correctly; let me know if I missed
-> something here.
+> The bpf_local_storage_map side probably does not need to support mmap() t=
+hen.
 
-Correct.
+Martin,
+that's an interesting idea!
+I kinda like it and I think it's worth exploring further.
 
->
-> So we need some means to both remap BTF ids in the module BTF that refer
-> to the vmlinux BTF so they point at the right types, _and_ to check the
-> consistency of the representation of a vmlinux type between module BTF
-> build time and when it is loaded into the kernel.
->
-> With this in mind, I think a good way forward might be something like
-> the following:
->
-> For cases where we want more change-independent module BTF - which
-> is resilient to things like reshuffling of vmlinux BTF ids, and small
-> changes that don't invalidate structure use completely - we add
-> a "relocatable" option to the --btf_features list of features for pahole
-> encoding of module BTF.
->
-> This option would not be needed for modules built at the same time as
-> the kernel, since the BTF ids and the types they refer to are consistent.
->
-> When used however, it would tell BTF dedup in pahole to add reocation
-> information as well as generating usual split BTF at the time of module
-> BTF generation. This relocation information would consist of
-> descriptions of the BTF types that the module refers to in base BTF and
-> their dependents. By providing such descriptions, we can then reconcile
-> the views of types between module and kernel, or if such reconciliation
-> is impossible, we can refuse to use the BTF. The amount of information
-> needed for a module will need to be determined, but I'm hopeful in most
-> cases it would be a small subset of the type information
-> required for vmlinux as a whole.
->
-> The process of reconciling module and vmlinux BTF at module load time
-> would then be
->
-> 1. Remap all the split BTF ids representing module-specific types
->    and functions to start at last_vmlinux_id + 1. Since the current
->    vmlinux may have a different number of types than the vmlinux
->    at time of encoding, this remapping is necessary.
+I think the main quirk of the proposed mmap-of-task-local-storage
+is using 'current' task as an implicit 'key' in task local storage map.
+It fits here, but I'm not sure it addresses sched-ext use case.
 
-Correct.
+Tejun, David,
+could you please chime in ?
+Do you think mmap(..., task_local_storage_map_fd, ...)
+that returns a page that belongs to current task only is enough ?
 
->
-> 2. For each vmlinux type in our list of relocations, check its
->    compatibility with the associated vmlinux type.  This is
->    somewhat akin to the CO-RE compatibility checks.  Exact rules
+If not we need to think through how to mmap local storage of other
+tasks. One proposal was to use pgoff to carry the key somehow
+like io-uring does, but if we want to generalize that the pgoff approach
+falls apart if we want __mmapable_kptr to work like Martin is proposing abo=
+ve,
+since the key will not fit in 64-bit of pgoff.
 
-Not really. CO-RE compatiblity is explicitly very permissive, while
-here we want to make sure that types are actually memory
-layout-compatible.
-
->    would need to be ironed out, but a somewhat loose approach
->    would be ideal such that a few minor changes in a struct
->    somewhere do not totally invalidate module BTF. Unlike CO-RE
->    though, field offset changes are _not_ good since they imply the
->    module has an incorrect view of the structure and might
->    start using fields incorrectly.
-
-I think vmlinux type should have at least all the members that module
-expects, at the same offset, with the same size. Maybe we should allow
-vmlinux type to get some types at the end, not sure. How hard a
-requirement it is to accommodate non-exact type matches between
-vmlinux and kernel module's types?
-
->
->    Note that this is a bit easier than BTF deduplication, because
->    the deduplication process that happened at module encoding time
->    has already done the dependency checking for us; we just need
->    to do a type-by-type, 1-to-1 comparison between our relocation
->    types and current vmlinux types.
->
-> 3. If all types are consistent, BTF is loaded and we remap the
->    module's vmlinux BTF id references to the corresponding
->    vmlinux BTF ids of the current vmlinux.
-
-Note that we might need to do something special for anonymous types
-(modifiers, anon enums and structs/unions). Otherwise it's not clear
-how to even map them between vmlinux BTF and module BTF.
-
->
-> I _think_ this gets us what we want; more resilient module BTF,
-> but with safety checks to ensure compatible representations.
-> There were some suggestions of using a hashing method, but I think
-> such a method presupposes we want exact type matches, which I suspect
-> would be unlikely to be useful in practice as with most stable-based
-> distros, small changes in types can be made due to fixes etc.
-
-What are "small changes" and how are they automatically determined and
-validated?
-
->
-> There were also a suggestion of doing a full dedup, but I think the
-> consensus in the room (which I agree with) is that would be hard
-> to do in-kernel.  So the above approach is a compropmise I think;
-> it gets actual dedup at BTF creation time to create the list of
-> references and dependents, and we later check them one-by-one on module
-> load for compatibility.
->
-> Anyway I just wanted to try and capture the feedback received, and
-> lay out a possible direction. Any further thoughts or suggestions
-> would be much appreciated. Thanks!
->
-> Alan
->
-> [1] https://lpc.events/event/17/contributions/1576/
+Maybe we need an office hours slot to discuss. This looks to be a big
+topic. Not sure we can converge over email.
+Just getting everyone on the same page will take a lot of email reading.
 
