@@ -1,233 +1,147 @@
-Return-Path: <bpf+bounces-15562-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15563-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9D197F3499
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 18:12:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA4197F34B8
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 18:16:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 080001C20969
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 17:12:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB4921C20B67
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 17:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FF859162;
-	Tue, 21 Nov 2023 17:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7715A0F2;
+	Tue, 21 Nov 2023 17:16:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kvTLYkKh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F3612C;
-	Tue, 21 Nov 2023 09:12:06 -0800 (PST)
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab9eso1969591a12.3;
-        Tue, 21 Nov 2023 09:12:06 -0800 (PST)
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BD1199
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 09:16:20 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d9beb865a40so5446947276.1
+        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 09:16:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700586980; x=1701191780; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iBk8V6n3pE8ZeaB8hGFlcC0qe5iEw87ibKdEnJawyLI=;
+        b=kvTLYkKhl0yH9b0/V22rf7N9+dRVzW/HGxoW8ZOiknbvi/xDxRrMb0zoLjzMmrmwCZ
+         dSVca7P16FAZQiYpvqa+tCk62CbhOfxH0ILNPUWo0WUVc5AzQI8OoZWI4rakPQlddmfX
+         nPCilOP+pAAAS8f17VMmybzyW+lyaqxPpGij6/DWaZDjpaRb5R3GWCoaR85CHsrSI+Kz
+         qdri/Hu1qNaucOBfH0QlxxGXKZQHpiDhEKIOeaEnIooBufnAzGTkHY0BDymN/wbAKvvW
+         RZPebvlKaUiH0tuIm/lPASLetarVqQjlab3ZV0q9HXMaCQmztmK5bHFaH+Cq2i7qakoY
+         HbuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700586725; x=1701191525;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700586980; x=1701191780;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ebJQJJFo7/pcaMF1DppCtjVHP/HYRDV89vhrdayN63o=;
-        b=oKeJuf1gYZcTqTzGimi5tUkNsCS9Duz6Am7mo2Ls1JxIpREN4DuxAbQnqb/RH4OZTH
-         GeeCXm9PhPpqgpLRAvg8Y4ZzgikZ3l4rNnodLMb01bPaX4qxXPqBohiPSl8+K+FB8iNJ
-         oKh0qYpDjQAIdlUOS8T4toQ2mVK2PsYXDio1gHQV6gkRJGskRlLuiSQQsCOnKz9imWrQ
-         H9MoscfWx+e4wDK7Eup8FturTLTJa48SrMipN0yrw6uhtZwbvNlDSC4eZGNVrpJCEwt2
-         GMUmb3qHiwShEQjZM0puqkJn1rD0vTeM/U9v7JeVKn9Ap/XU2Gf2o8sT8Zk7uC5Cx3r6
-         V6Xw==
-X-Gm-Message-State: AOJu0YyONPm8IEbqn5fa3X3YOi9X/ckVXNmuwNIwwPmiInExDmghUiw9
-	70NwtmqUpQFTujNY5azBv3o=
-X-Google-Smtp-Source: AGHT+IHUp28jw9wemj9vkp0605dFINkpbeYM4ti0Dj59xJ6PmYGDso+p9DDgIfhD+xaWesCmDI/usA==
-X-Received: by 2002:a17:906:1011:b0:a02:8820:cfa4 with SMTP id 17-20020a170906101100b00a028820cfa4mr1723457ejm.32.1700586724955;
-        Tue, 21 Nov 2023 09:12:04 -0800 (PST)
-Received: from localhost (fwdproxy-cln-017.fbsv.net. [2a03:2880:31ff:11::face:b00c])
-        by smtp.gmail.com with ESMTPSA id d2-20020a170906640200b0099bd7b26639sm5461362ejm.6.2023.11.21.09.12.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 09:12:04 -0800 (PST)
-From: Breno Leitao <leitao@debian.org>
-To: jpoimboe@kernel.org,
-	mingo@redhat.com,
-	tglx@linutronix.de,
-	bp@alien8.de,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>
-Cc: leit@meta.com,
-	linux-kernel@vger.kernel.org,
-	pawan.kumar.gupta@linux.intel.com,
-	Ingo Molnar <mingo@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Jinghao Jia <jinghao@linux.ibm.com>,
-	Vincent Whitchurch <vincent.whitchurch@axis.com>,
-	Kees Cook <keescook@chromium.org>,
-	linux-trace-kernel@vger.kernel.org (open list:FUNCTION HOOKS (FTRACE)),
-	netdev@vger.kernel.org (open list:NETWORKING [IPv4/IPv6]),
-	bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and Tools))
-Subject: [PATCH v6 06/13] x86/bugs: Rename SLS to CONFIG_MITIGATION_SLS
-Date: Tue, 21 Nov 2023 08:07:33 -0800
-Message-Id: <20231121160740.1249350-7-leitao@debian.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231121160740.1249350-1-leitao@debian.org>
-References: <20231121160740.1249350-1-leitao@debian.org>
+        bh=iBk8V6n3pE8ZeaB8hGFlcC0qe5iEw87ibKdEnJawyLI=;
+        b=ehr3YD8LeIuXBil6wFNCx8BwJjq4GGpPOyVv2SNBoNJMwiTIMc7OavwklTBZe5Xf9e
+         yjHUhZjDSez/a5mVWyhJZDWKYFmRnhkT46RrviZomLZYbi0wiUAanT/JAt1aiukorBpe
+         6gs0y4zV7OUmjiiySX/nD3EfI7H27X/yHyUi1q3hJwJqrAc9nH+9Ls7IqfrlDKQgEUsL
+         1d8DUDycWIuefl7IPZ/tT8zlHk2jlHEGqdq4GCP3s/bCMKzIKRUCqFcYHyB2mipBBGKw
+         SiR4UQLVyVDyjjbrX3N8CH6GH5VTNk0VHoQy7nCEk6UZ3YqT18vidn9ZDwWo/L9LDpVa
+         aTiA==
+X-Gm-Message-State: AOJu0YyMzm1nWyuXiRAdEP6CRxfXBFU2iSKBWijcQHXDcUsGuI5LqOny
+	BpJO2AcBfU3XxKr/20EAgHkmtqhIgz/+Ht/i1g==
+X-Google-Smtp-Source: AGHT+IF4VvhpzDjdvFYJ7z92hUDlD55kUUxdbApaRbRoU4Hs7i/HMC3db92OYXXpp7D7122cZOx0a49fVRQafg7C5D4=
+X-Received: by 2002:a25:69ca:0:b0:da0:2757:eb7 with SMTP id
+ e193-20020a2569ca000000b00da027570eb7mr11804619ybc.37.1700586979985; Tue, 21
+ Nov 2023 09:16:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231113235008.127238-1-andreimatei1@gmail.com> <CAEf4BzZbXML3oWaHejXRFNAG4NM2vGpsz9axjvOX6wKxEG+ExA@mail.gmail.com>
+In-Reply-To: <CAEf4BzZbXML3oWaHejXRFNAG4NM2vGpsz9axjvOX6wKxEG+ExA@mail.gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Tue, 21 Nov 2023 18:16:08 +0100
+Message-ID: <CACkBjsbWdOVMs7vRXvxi0MCoOAh+skYWFN1douBjkRzeTX=wvg@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: fix tracking of stack size for var-off access
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrei Matei <andreimatei1@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, 
+	ast@kernel.org, kernel-team@dataexmachina.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-CPU mitigations config entries are inconsistent, and names are hard to
-related. There are concrete benefits for both users and developers of
-having all the mitigation config options living in the same config
-namespace.
+On Tue, Nov 21, 2023 at 1:46=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+>
+> It *feels* like this stack depth update *and* growing allocated stack
+> slots should happen somewhere in check_stack_access_within_bounds() or
+> right after it. It shouldn't matter whether we read or write to the
+> stack slot: either way that slot becomes part of the verifier state
+> that we should take into account during state comparison. Eduard not
+> so long ago added a change that allows reading STACK_INVALID slots, so
+> it's completely valid to read something that was never written to (and
+> so grow_stack_state() wasn't called for that slot, as it is
+> implemented right now). So I think we should fix that.
+>
 
-The mitigation options should have consistency and start with
-MITIGATION.
+Agree. The following cases are currently confusing to me.
 
-Rename the Kconfig entry from SLS to MITIGATION_SLS.
+The verifier accepts the following program, which goes from #4 to #8
+and directly read the stack at runtime without any previous write:
+func#0 @0
+0: R1=3Dctx() R10=3Dfp0
+0: (bf) r6 =3D r10                      ; R6_w=3Dfp0 R10=3Dfp0
+1: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
+2: (bf) r3 =3D r0                       ; R0_w=3Dscalar(id=3D1) R3_w=3Dscal=
+ar(id=3D1)
+3: (bf) r8 =3D r0                       ; R0_w=3Dscalar(id=3D1) R8_w=3Dscal=
+ar(id=3D1)
+4: (4e) if w0 & w3 goto pc+3          ; R0_w=3Dscalar(id=3D1) R3_w=3Dscalar=
+(id=3D1)
+5: (63) *(u32 *)(r6 -196) =3D r3        ; R3_w=3Dscalar(id=3D1) R6_w=3Dfp0
+fp-200=3Dmmmm????
+6: (18) r7 =3D 0x19                     ; R7=3D25
+8: (61) r7 =3D *(u32 *)(r6 -200)        ; R6=3Dfp0
+R7_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xffffffff)=
+)
+fp-200=3Dmmmm????
+9: (95) exit
 
-Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- arch/x86/Kconfig               | 2 +-
- arch/x86/Makefile              | 2 +-
- arch/x86/include/asm/linkage.h | 4 ++--
- arch/x86/kernel/alternative.c  | 4 ++--
- arch/x86/kernel/ftrace.c       | 3 ++-
- arch/x86/net/bpf_jit_comp.c    | 4 ++--
- scripts/Makefile.lib           | 2 +-
- 7 files changed, 11 insertions(+), 10 deletions(-)
+from 4 to 8: safe
+verification time 358 usec
+stack depth 200
+processed 10 insns (limit 1000000) max_states_per_insn 0 total_states
+1 peak_states 1 mark_read 1
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 862be9b3b216..fa246de60cdb 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2580,7 +2580,7 @@ config CPU_SRSO
- 	help
- 	  Enable the SRSO mitigation needed on AMD Zen1-4 machines.
- 
--config SLS
-+config MITIGATION_SLS
- 	bool "Mitigate Straight-Line-Speculation"
- 	depends on CC_HAS_SLS && X86_64
- 	select OBJTOOL if HAVE_OBJTOOL
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index b8d23ed059fb..5ce8c30e7701 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -205,7 +205,7 @@ ifdef CONFIG_MITIGATION_RETPOLINE
-   endif
- endif
- 
--ifdef CONFIG_SLS
-+ifdef CONFIG_MITIGATION_SLS
-   KBUILD_CFLAGS += -mharden-sls=all
- endif
- 
-diff --git a/arch/x86/include/asm/linkage.h b/arch/x86/include/asm/linkage.h
-index c5165204c66f..09e2d026df33 100644
---- a/arch/x86/include/asm/linkage.h
-+++ b/arch/x86/include/asm/linkage.h
-@@ -43,7 +43,7 @@
- #if defined(CONFIG_RETHUNK) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
- #define RET	jmp __x86_return_thunk
- #else /* CONFIG_MITIGATION_RETPOLINE */
--#ifdef CONFIG_SLS
-+#ifdef CONFIG_MITIGATION_SLS
- #define RET	ret; int3
- #else
- #define RET	ret
-@@ -55,7 +55,7 @@
- #if defined(CONFIG_RETHUNK) && !defined(__DISABLE_EXPORTS) && !defined(BUILD_VDSO)
- #define ASM_RET	"jmp __x86_return_thunk\n\t"
- #else /* CONFIG_MITIGATION_RETPOLINE */
--#ifdef CONFIG_SLS
-+#ifdef CONFIG_MITIGATION_SLS
- #define ASM_RET	"ret; int3\n\t"
- #else
- #define ASM_RET	"ret\n\t"
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 5ec887d065ce..b01d49862497 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -637,8 +637,8 @@ static int patch_retpoline(void *addr, struct insn *insn, u8 *bytes)
- 	/*
- 	 * The compiler is supposed to EMIT an INT3 after every unconditional
- 	 * JMP instruction due to AMD BTC. However, if the compiler is too old
--	 * or SLS isn't enabled, we still need an INT3 after indirect JMPs
--	 * even on Intel.
-+	 * or MITIGATION_SLS isn't enabled, we still need an INT3 after
-+	 * indirect JMPs even on Intel.
- 	 */
- 	if (op == JMP32_INSN_OPCODE && i < insn->length)
- 		bytes[i++] = INT3_INSN_OPCODE;
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 93bc52d4a472..70139d9d2e01 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -307,7 +307,8 @@ union ftrace_op_code_union {
- 	} __attribute__((packed));
- };
- 
--#define RET_SIZE	(IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) ? 5 : 1 + IS_ENABLED(CONFIG_SLS))
-+#define RET_SIZE \
-+	(IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) ? 5 : 1 + IS_ENABLED(CONFIG_MITIGATION_SLS))
- 
- static unsigned long
- create_trampoline(struct ftrace_ops *ops, unsigned int *tramp_size)
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index ef732f323926..96a63c4386a9 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -469,7 +469,7 @@ static void emit_indirect_jump(u8 **pprog, int reg, u8 *ip)
- 			emit_jump(&prog, &__x86_indirect_thunk_array[reg], ip);
- 	} else {
- 		EMIT2(0xFF, 0xE0 + reg);	/* jmp *%\reg */
--		if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) || IS_ENABLED(CONFIG_SLS))
-+		if (IS_ENABLED(CONFIG_MITIGATION_RETPOLINE) || IS_ENABLED(CONFIG_MITIGATION_SLS))
- 			EMIT1(0xCC);		/* int3 */
- 	}
- 
-@@ -484,7 +484,7 @@ static void emit_return(u8 **pprog, u8 *ip)
- 		emit_jump(&prog, x86_return_thunk, ip);
- 	} else {
- 		EMIT1(0xC3);		/* ret */
--		if (IS_ENABLED(CONFIG_SLS))
-+		if (IS_ENABLED(CONFIG_MITIGATION_SLS))
- 			EMIT1(0xCC);	/* int3 */
- 	}
- 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index d6e157938b5f..0d5461276179 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -264,7 +264,7 @@ endif
- objtool-args-$(CONFIG_UNWINDER_ORC)			+= --orc
- objtool-args-$(CONFIG_MITIGATION_RETPOLINE)		+= --retpoline
- objtool-args-$(CONFIG_RETHUNK)				+= --rethunk
--objtool-args-$(CONFIG_SLS)				+= --sls
-+objtool-args-$(CONFIG_MITIGATION_SLS)			+= --sls
- objtool-args-$(CONFIG_STACK_VALIDATION)			+= --stackval
- objtool-args-$(CONFIG_HAVE_STATIC_CALL_INLINE)		+= --static-call
- objtool-args-$(CONFIG_HAVE_UACCESS_VALIDATION)		+= --uaccess
--- 
-2.34.1
+The state is pruned, because of this:
+static bool stacksafe(...)
+         ....
+         if (env->allow_uninit_stack &&
+             old->stack[spi].slot_type[i % BPF_REG_SIZE] =3D=3D STACK_MISC)
+             continue;
 
+Yet, the sample direct read would be rejected:
+
+func#0 @0
+0: R1=3Dctx() R10=3Dfp0
+0: (bf) r6 =3D r10                      ; R6_w=3Dfp0 R10=3Dfp0
+1: (61) r7 =3D *(u32 *)(r6 -200)
+invalid read from stack R6 off=3D-200 size=3D4
+
+Eduard, you added support for reading uninit slots, should we also add some=
+thing
+like the following:
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 8c2d31aa3d31..aa861d2da240 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6446,7 +6446,7 @@ static int check_stack_slot_within_bounds(int off,
+ {
+        int min_valid_off;
+
+-       if (t =3D=3D BPF_WRITE)
++       if (t =3D=3D BPF_WRITE || env->allow_uninit_stack)
+                min_valid_off =3D -MAX_BPF_STACK;
+        else
+                min_valid_off =3D -state->allocated_stack;
 
