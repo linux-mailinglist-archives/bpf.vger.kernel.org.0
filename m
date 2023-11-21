@@ -1,191 +1,142 @@
-Return-Path: <bpf+bounces-15603-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15604-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9507F7F3966
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 23:43:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD9697F3A7E
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 00:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EE2E282848
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 22:43:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16698B21906
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 23:53:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723EF5645D;
-	Tue, 21 Nov 2023 22:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D702BB00;
+	Tue, 21 Nov 2023 23:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b8vYkh7T"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83A5C1A3
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 14:43:20 -0800 (PST)
-Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-6c415e09b2cso7306057b3a.2
-        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 14:43:20 -0800 (PST)
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CC69F
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 15:53:10 -0800 (PST)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-1ef370c2e12so3575948fac.1
+        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 15:53:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700610790; x=1701215590; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZpB+FK2LvDSXiXkQautuBmX/ZjDpuIE1iuU2q7dUd2w=;
+        b=b8vYkh7T66/A70gxwtnfAxKpN4hP+FF/agYZozu2QHUQXwGx4eTvToTYci7vc+dcNZ
+         dOgUIjaq+x8LlmBtcF1DFNXDwjG50I+KieYDTbrTEJjKEFmW/rQjhUpWoES9NAY7yBea
+         p+YgwZo2jYwKGiUT+7YxWJEUeOq28vdtxqRmd1nFKRqeRR1Z3/v8WFlHxwpQ50WSmiOh
+         YLaxgvbHP6CFvJG9SZAKsE+aBZJxzG7RiKa6TatsLLLxMPg+iHuSsOm9p+wAaRpxy5ev
+         SQUuPizAkhVVG7PBAL+feaeE8omUzlXNidPdNCdEGi2jlM8VqMcw/okR83IAxnfQ8CwS
+         z42A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700606600; x=1701211400;
-        h=content-transfer-encoding:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ivbz5bpE+W+Oj9SpHnmJixA7SEzdHmNbg1vNF2tT5Tg=;
-        b=kXqPXyuCmrKI8wbYTGz62yodIdAdSFMqvOeU9K45LOWryVW8wUF0VKNI9Ycq6xQzDg
-         saX3zTtF6VYVRd0vBsudhF4eqbjZp31+P93gbe7mMF/lkssgzolA8Ql5O3HkA6nUUoY0
-         rBxMARLqw/nbKSdFLuYf2OXfjAF5YzEhLWxapUV9c4WC88xfhzr6mJS2diFW2cCk9r3o
-         Crx2KtAIuWSPP7MVRznfwQ8dWc7uGuUF+ccWYVQG3m2Tb5O52w/8HgoWGNq7fcjWOV9Z
-         0fSn/v+64ttxs3cWS9v3q8c6r8FWsuQEdo8FydpJcutfwpXZRQS3Yj1hhJPQP4cXwCh9
-         guOw==
-X-Gm-Message-State: AOJu0YyW15OqP/CbE7kEXcZBpn/fmG/1RdYlt4jwAdSj/e9fvrJAXnEh
-	KEY7PHCXjZRerSE3sDF5yf3LHY9M3YrYinEkQyqQfWiDSe/M
-X-Google-Smtp-Source: AGHT+IExPtY3zCeKZZGHiMjJ+inznyEtr4G9raGYEtOGjRDcr2B/bafIj7qKUBJbMBlx7hCThkCreDweHnb5Kp0bujc6MUXvWdpw
+        d=1e100.net; s=20230601; t=1700610790; x=1701215590;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZpB+FK2LvDSXiXkQautuBmX/ZjDpuIE1iuU2q7dUd2w=;
+        b=Lodty7hxiS0pWLD4v6Rg6l4cQx8qBbSqr3sMOp6MzAyefPi/vP6VxPtwCyVW7xiCdT
+         HQ4cn2Pu79QColKEctX9MoJKizR78l1YlsSAStmq8hGqZvTR7iKr/J7SsEoduUbe9EIx
+         P2NDM5ZwQ8U4zUHKgLVrcvkftbyV9/GWsjis2O7ZERhzcV47fn+MeQlAeT71TyBG8CAC
+         /EYT7mVgnyiAwTaHTT1PxfAV4kTBqQQU52JGhJtg+ulD3gWcdEZBPK3jBO1VqjIHGPK1
+         DaLOBB6dd4Fr8u0jMNMjwf3GWbRheD68qHX3SNYBx776nxhsc0v1hskzuqP5037rFEcw
+         9E6w==
+X-Gm-Message-State: AOJu0YxlBmz5/De8KdTiBRj1e3P+2yNDx0bSk5rSrtX6u++rKUqsLwlK
+	NouC/WY40osCj7+82IPmm70=
+X-Google-Smtp-Source: AGHT+IE2+b1XUyxuKlvm0FLszanYzYvqj8+BYBBMdcVAkqKou9ofqrqYj6l8XgUmhTaxotVrIgGSqg==
+X-Received: by 2002:a05:6870:bacf:b0:1f9:5155:b135 with SMTP id js15-20020a056870bacf00b001f95155b135mr1120480oab.39.1700610790121;
+        Tue, 21 Nov 2023 15:53:10 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:ef40:7e31:9d9d:46c4? ([2600:1700:6cf8:1240:ef40:7e31:9d9d:46c4])
+        by smtp.gmail.com with ESMTPSA id h26-20020a056830165a00b006ce46212341sm1700421otr.54.2023.11.21.15.53.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 Nov 2023 15:53:09 -0800 (PST)
+Message-ID: <c63d2021-a10e-436e-ac67-c5c9f6a095d4@gmail.com>
+Date: Tue, 21 Nov 2023 15:53:07 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:aa7:8211:0:b0:6c6:bfb:900 with SMTP id k17-20020aa78211000000b006c60bfb0900mr124673pfi.2.1700606599979;
- Tue, 21 Nov 2023 14:43:19 -0800 (PST)
-Date: Tue, 21 Nov 2023 14:43:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004b6de5060ab1545b@google.com>
-Subject: [syzbot] [bpf?] [trace?] WARNING in format_decode (3)
-From: syzbot <syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
-	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	martin.lau@kernel.org, martin.lau@linux.dev, mhiramat@kernel.org, 
-	netdev@vger.kernel.org, pabeni@redhat.com, rostedt@goodmis.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, yhs@fb.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    76df934c6d5f MAINTAINERS: Add netdev subsystem profile link
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D10c2b667680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3D84217b7fc4acdc5=
-9
-dashboard link: https://syzkaller.appspot.com/bug?extid=3De2c932aec5c8a6e1d=
-31c
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Deb=
-ian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12b2f668e8000=
-0
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D171ea200e80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e271179068c6/disk-=
-76df934c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b9523b3749bb/vmlinux-=
-76df934c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6c1a888bade0/bzI=
-mage-76df934c.xz
-
-The issue was bisected to:
-
-commit 114039b342014680911c35bd6b72624180fd669a
-Author: Stanislav Fomichev <sdf@google.com>
-Date:   Mon Nov 21 18:03:39 2022 +0000
-
-    bpf: Move skb->len =3D=3D 0 checks into __bpf_redirect
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D13d237b76800=
-00
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D103237b76800=
-00
-console output: https://syzkaller.appspot.com/x/log.txt?x=3D17d237b7680000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit=
-:
-Reported-by: syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
-Fixes: 114039b34201 ("bpf: Move skb->len =3D=3D 0 checks into __bpf_redirec=
-t")
-
-------------[ cut here ]------------
-Please remove unsupported %=00 in format string
-WARNING: CPU: 0 PID: 5068 at lib/vsprintf.c:2675 format_decode+0xa03/0xba0 =
-lib/vsprintf.c:2675
-Modules linked in:
-CPU: 0 PID: 5068 Comm: syz-executor288 Not tainted 6.7.0-rc1-syzkaller-0013=
-4-g76df934c6d5f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Goo=
-gle 11/10/2023
-RIP: 0010:format_decode+0xa03/0xba0 lib/vsprintf.c:2675
-Code: f7 41 c6 44 24 05 08 e9 c4 fa ff ff e8 c6 f7 15 f7 c6 05 0b bd 91 04 =
-01 90 48 c7 c7 60 5f 19 8c 40 0f b6 f5 e8 2e 17 dc f6 90 <0f> 0b 90 90 e9 1=
-7 fc ff ff 48 8b 3c 24 e8 4b 87 6c f7 e9 13 f7 ff
-RSP: 0018:ffffc90003b6f798 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffffc90003b6fa0c RCX: ffffffff814db209
-RDX: ffff8880214b9dc0 RSI: ffffffff814db216 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffffc90003b6f898
-R13: 0000000000000000 R14: 0000000000000000 R15: 00000000ffffffd0
-FS:  000055555567c380(0000) GS:ffff8880b9800000(0000) knlGS:000000000000000=
-0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000f6f398 CR3: 00000000251e7000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bstr_printf+0x13b/0x1050 lib/vsprintf.c:3248
- ____bpf_trace_printk kernel/trace/bpf_trace.c:386 [inline]
- bpf_trace_printk+0x10b/0x180 kernel/trace/bpf_trace.c:371
- bpf_prog_12183cdb1cd51dab+0x36/0x3a
- bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x3e1/0x9e0 net/bpf/test_run.c:423
- bpf_prog_test_run_skb+0xb75/0x1dd0 net/bpf/test_run.c:1045
- bpf_prog_test_run kernel/bpf/syscall.c:4040 [inline]
- __sys_bpf+0x11bf/0x4920 kernel/bpf/syscall.c:5401
- __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5485
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fefcec014e9
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 =
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff f=
-f 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffca6179888 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007ffca6179a58 RCX: 00007fefcec014e9
-RDX: 0000000000000028 RSI: 0000000020000080 RDI: 000000000000000a
-RBP: 00007fefcec74610 R08: 0000000000000000 R09: 00007ffca6179a58
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffca6179a48 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v11 01/13] bpf: refactory struct_ops type
+ initialization to a function.
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, drosen@google.com
+References: <20231106201252.1568931-1-thinker.li@gmail.com>
+ <20231106201252.1568931-2-thinker.li@gmail.com>
+ <eec08936-e001-5d7b-17b4-5074db0754f2@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <eec08936-e001-5d7b-17b4-5074db0754f2@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisectio=
-n
+On 11/9/23 17:11, Martin KaFai Lau wrote:
+> On 11/6/23 12:12 PM, thinker.li@gmail.com wrote:
+>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+>> index db6176fb64dc..627cf1ea840a 100644
+>> --- a/kernel/bpf/bpf_struct_ops.c
+>> +++ b/kernel/bpf/bpf_struct_ops.c
+>> @@ -110,102 +110,111 @@ const struct bpf_prog_ops 
+>> bpf_struct_ops_prog_ops = {
+>>   static const struct btf_type *module_type;
+>> -void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
+>> +static void bpf_struct_ops_init_one(struct bpf_struct_ops *st_ops,
+>> +                    struct btf *btf,
+>> +                    struct bpf_verifier_log *log)
+>>   {
+>> -    s32 type_id, value_id, module_id;
+>>       const struct btf_member *member;
+>> -    struct bpf_struct_ops *st_ops;
+>>       const struct btf_type *t;
+>> +    s32 type_id, value_id;
+>>       char value_name[128];
+>>       const char *mname;
+>> -    u32 i, j;
+>> +    int i;
+>> -    /* Ensure BTF type is emitted for "struct bpf_struct_ops_##_name" */
+>> -#define BPF_STRUCT_OPS_TYPE(_name) BTF_TYPE_EMIT(struct 
+>> bpf_struct_ops_##_name);
+>> -#include "bpf_struct_ops_types.h"
+>> -#undef BPF_STRUCT_OPS_TYPE
+>> +    if (strlen(st_ops->name) + VALUE_PREFIX_LEN >=
+>> +        sizeof(value_name)) {
+>> +        pr_warn("struct_ops name %s is too long\n",
+>> +            st_ops->name);
+>> +        return;
+>> +    }
+>> +    sprintf(value_name, "%s%s", VALUE_PREFIX, st_ops->name);
+>> -    module_id = btf_find_by_name_kind(btf, "module", BTF_KIND_STRUCT);
+>> -    if (module_id < 0) {
+>> -        pr_warn("Cannot find struct module in btf_vmlinux\n");
+>> +    value_id = btf_find_by_name_kind(btf, value_name,
+>> +                     BTF_KIND_STRUCT);
+>> +    if (value_id < 0) {
+>> +        pr_warn("Cannot find struct %s in btf_vmlinux\n",
+>> +            value_name);
+> 
+> "btf_vmlinux" needs to change in the pr_warn(). It should be btf->name 
+> but that may need a helper function to return btf->name.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Right! I will add a helper function to return the name.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
+>>           return;
+>>       }
+>> -    module_type = btf_type_by_id(btf, module_id);
+>> -    for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
+>> -        st_ops = bpf_struct_ops[i];
+>> +    type_id = btf_find_by_name_kind(btf, st_ops->name,
+>> +                    BTF_KIND_STRUCT);
+>> +    if (type_id < 0) {
+>> +        pr_warn("Cannot find struct %s in btf_vmlinux\n",
+> 
+> Same here.
 
