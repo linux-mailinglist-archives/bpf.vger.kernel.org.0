@@ -1,270 +1,208 @@
-Return-Path: <bpf+bounces-15570-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15571-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0024F7F3648
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 19:41:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28C837F364D
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 19:43:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 311AA1C20DA7
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 18:41:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76E02B21103
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 18:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C45916405;
-	Tue, 21 Nov 2023 18:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C923522094;
+	Tue, 21 Nov 2023 18:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dltIvtaU"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="kiaBsYVz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B1CACB
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 10:41:38 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-548f6f3cdc9so1847733a12.2
-        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 10:41:38 -0800 (PST)
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7393F110;
+	Tue, 21 Nov 2023 10:43:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700592097; x=1701196897; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gkN3yzB+ctjHWSXOnp3RvwSgr/T1Rhm8QuPQqazX2xc=;
-        b=dltIvtaUQQZux+m6Jgg1fX/FtSBcjPLIezLp+onZsr6OitwFtWfQeycBRaPTC/ykYL
-         gHOOqdGu1ho94YRCe7ta+BUTOeXATqo+pvr1FbNq+9ZuWhl6GcRYCzo98+NLKz/TO/VM
-         FxJ8Xykgm4XPWxgdZM0l68xjTeqd/Zaa0hetdE3pVVLuLFTwwdYSGJ0N/aJwWwZ5Qrba
-         fd4WbOAYUPiy3qxpOXwVgL4DsxGGOXCDKaoNrCsOcnM7PxnfHhWQPh0DYMuZdGp2awNM
-         ClD1UrqJrZWqYc3580hqVouNlZIvh4nypqtmxO/8k0t6vzRibB0vrVLmiknm+zgsu5aD
-         2lig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700592097; x=1701196897;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gkN3yzB+ctjHWSXOnp3RvwSgr/T1Rhm8QuPQqazX2xc=;
-        b=KwwIPW3xfGHl+7My9B5H25a/DQL9BYcA4RSh4vfCOKoK2Go1aGwQA3vVmej0woytSE
-         L0gNqH9+Q+Yp7x5m9hS81+hIRnIseo2Y/JGTHweEV0Z3nmtiJvTwSyo3mePzko81nHhA
-         zFXnXIrRxfnOTyNTqa6759O5s4ezGZJePb6m4+tIeaWVpfkdbnr0cA+X2YVCvZNY4waD
-         q+KYW1ui7hmlqJqRW6wvz7MuyuDc0bLxouzQumHT6p85J9QQGi9NjKPspvuGMdl3k2aH
-         FDpgUg/9zlq5m1sNYzkljoFgWOH8IyHo3uGgvTrPSuBGIClvzQCFPfmBAqVK6Xccbuj3
-         atvw==
-X-Gm-Message-State: AOJu0YyVTccUazpZmst2pKEjZBqmFP513PGH5VurKEtWuo1FhkX5KNJH
-	FVF/+l8E6VZdoClzB25OpjYT60+f0vgwWoEdY24=
-X-Google-Smtp-Source: AGHT+IHpbTejSukUrzDrwMa82lwwnbMKUATVYqKeh7F17Phd4ZIsORZ3RU9L/LGXjHAUaS9txukYVavi5o8SHja5MOw=
-X-Received: by 2002:a17:906:535b:b0:a02:8b23:895d with SMTP id
- j27-20020a170906535b00b00a028b23895dmr1494642ejo.35.1700592096532; Tue, 21
- Nov 2023 10:41:36 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1700592182; x=1732128182;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IHixAHhojhqDKX1MpvKPKEJH/md3GgMpTtulY7CorTo=;
+  b=kiaBsYVzbifPp3MrwIY9LY1pdPFcfFqCzfemjjEocRqszkTefCII3lJF
+   Tww4518LUarPiesy/PGi0LAnKiuLlAHrNOFZ8pZKwrdOt7BTrj86cQaOs
+   dUhAigsy6RfMDOIP2XNKcSohd64+EpGsf6ZQOtMDgf7LUrXNJYEtKe+3C
+   I=;
+X-IronPort-AV: E=Sophos;i="6.04,216,1695686400"; 
+   d="scan'208";a="45393175"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-fa5fe5fb.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Nov 2023 18:43:00 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+	by email-inbound-relay-pdx-2c-m6i4x-fa5fe5fb.us-west-2.amazon.com (Postfix) with ESMTPS id 1256840D96;
+	Tue, 21 Nov 2023 18:42:59 +0000 (UTC)
+Received: from EX19MTAUWB001.ant.amazon.com [10.0.38.20:58992]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.167:2525] with esmtp (Farcaster)
+ id 22748138-2f85-49f8-83fe-3267437bc3fd; Tue, 21 Nov 2023 18:42:58 +0000 (UTC)
+X-Farcaster-Flow-ID: 22748138-2f85-49f8-83fe-3267437bc3fd
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 21 Nov 2023 18:42:58 +0000
+Received: from 88665a182662.ant.amazon.com (10.187.170.30) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 21 Nov 2023 18:42:54 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, Alexei Starovoitov
+	<ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
+	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>
+CC: Kuniyuki Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima
+	<kuni1840@gmail.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: [PATCH v3 bpf-next 00/11] bpf: tcp: Support arbitrary SYN Cookie at TC.
+Date: Tue, 21 Nov 2023 10:42:34 -0800
+Message-ID: <20231121184245.69569-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231120145639.3179656-1-jolsa@kernel.org> <20231120145639.3179656-4-jolsa@kernel.org>
-In-Reply-To: <20231120145639.3179656-4-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 21 Nov 2023 10:41:24 -0800
-Message-ID: <CAEf4BzY0EpOorNs2Vm0ijeYsL7doAf4-mQBoz6y1xpWb2bWY6Q@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 3/6] bpf: Add link_info support for uprobe
- multi link
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Yafang Shao <laoar.shao@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.187.170.30]
+X-ClientProxiedBy: EX19D043UWC001.ant.amazon.com (10.13.139.202) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
 
-On Mon, Nov 20, 2023 at 6:57=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding support to get uprobe_link details through bpf_link_info
-> interface.
->
-> Adding new struct uprobe_multi to struct bpf_link_info to carry
-> the uprobe_multi link details.
->
-> The uprobe_multi.count is passed from user space to denote size
-> of array fields (offsets/ref_ctr_offsets/cookies). The actual
-> array size is stored back to uprobe_multi.count (allowing user
-> to find out the actual array size) and array fields are populated
-> up to the user passed size.
->
-> All the non-array fields (path/count/flags/pid) are always set.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  include/uapi/linux/bpf.h       | 10 +++++
->  kernel/trace/bpf_trace.c       | 72 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h | 10 +++++
->  3 files changed, 92 insertions(+)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 7a5498242eaa..a63b5eb7f9ec 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -6562,6 +6562,16 @@ struct bpf_link_info {
->                         __u32 flags;
->                         __u64 missed;
->                 } kprobe_multi;
-> +               struct {
-> +                       __aligned_u64 path;
-> +                       __aligned_u64 offsets;
-> +                       __aligned_u64 ref_ctr_offsets;
-> +                       __aligned_u64 cookies;
-> +                       __u32 path_size; /* in/out: real path size on suc=
-cess */
-> +                       __u32 count; /* in/out: uprobe_multi offsets/ref_=
-ctr_offsets/cookies count */
-> +                       __u32 flags;
-> +                       __u32 pid;
-> +               } uprobe_multi;
->                 struct {
->                         __u32 type; /* enum bpf_perf_event_type */
->                         __u32 :32;
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index ad0323f27288..ca453b642819 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3044,6 +3044,7 @@ struct bpf_uprobe_multi_link {
->         u32 cnt;
->         struct bpf_uprobe *uprobes;
->         struct task_struct *task;
-> +       u32 flags;
+Under SYN Flood, the TCP stack generates SYN Cookie to remain stateless
+for the connection request until a valid ACK is responded to the SYN+ACK.
 
-this fits better after cnt to avoid increasing the size of
-bpf_uprobe_multi_link, please it move up
+The cookie contains two kinds of host-specific bits, a timestamp and
+secrets, so only can it be validated by the generator.  It means SYN
+Cookie consumes network resources between the client and the server;
+intermediate nodes must remember which nodes to route ACK for the cookie.
 
->  };
->
->  struct bpf_uprobe_multi_run_ctx {
-> @@ -3083,9 +3084,79 @@ static void bpf_uprobe_multi_link_dealloc(struct b=
-pf_link *link)
->         kfree(umulti_link);
->  }
->
-> +static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *l=
-ink,
-> +                                               struct bpf_link_info *inf=
-o)
-> +{
-> +       u64 __user *uref_ctr_offsets =3D u64_to_user_ptr(info->uprobe_mul=
-ti.ref_ctr_offsets);
-> +       u64 __user *ucookies =3D u64_to_user_ptr(info->uprobe_multi.cooki=
-es);
-> +       u64 __user *uoffsets =3D u64_to_user_ptr(info->uprobe_multi.offse=
-ts);
-> +       u64 __user *upath =3D u64_to_user_ptr(info->uprobe_multi.path);
-> +       u32 upath_size =3D info->uprobe_multi.path_size;
-> +       struct bpf_uprobe_multi_link *umulti_link;
-> +       u32 ucount =3D info->uprobe_multi.count;
-> +       int err =3D 0, i;
-> +       long left;
-> +
-> +       if (!upath ^ !upath_size)
-> +               return -EINVAL;
-> +
-> +       if ((uoffsets || uref_ctr_offsets || ucookies) && !ucount)
-> +               return -EINVAL;
-> +
-> +       umulti_link =3D container_of(link, struct bpf_uprobe_multi_link, =
-link);
-> +       info->uprobe_multi.count =3D umulti_link->cnt;
-> +       info->uprobe_multi.flags =3D umulti_link->flags;
-> +       info->uprobe_multi.pid =3D umulti_link->task ?
-> +                                task_pid_nr_ns(umulti_link->task, task_a=
-ctive_pid_ns(current)) : 0;
-> +
-> +       if (upath) {
-> +               char *p, *buf;
-> +
-> +               upath_size =3D min_t(u32, upath_size, PATH_MAX);
-> +
-> +               buf =3D kmalloc(upath_size, GFP_KERNEL);
-> +               if (!buf)
-> +                       return -ENOMEM;
-> +               p =3D d_path(&umulti_link->path, buf, upath_size);
-> +               if (IS_ERR(p)) {
-> +                       kfree(buf);
-> +                       return -ENOSPC;
-> +               }
-> +               upath_size =3D buf + upath_size - p;
-> +               left =3D copy_to_user(upath, p, upath_size);
-> +               kfree(buf);
-> +               if (left)
-> +                       return -EFAULT;
-> +               info->uprobe_multi.path_size =3D upath_size - 1 /* NULL *=
-/;
+SYN Proxy reduces such unwanted resource allocation by handling 3WHS at
+the edge network.  After SYN Proxy completes 3WHS, it forwards SYN to the
+backend server and completes another 3WHS.  However, since the server's
+ISN differs from the cookie, the proxy must manage the ISN mappings and
+fix up SEQ/ACK numbers in every packet for each connection.  If a proxy
+node is down, all the connections through it are also down.  Keeping a
+state at proxy is painful from that perspective.
 
-why subtract zero terminating byte? I think we should drop this -1 and
-return filled out buffer content size, including zero terminator.
+At AWS, we use a dirty hack to build truly stateless SYN Proxy at scale.
+Our SYN Proxy consists of the front proxy layer and the backend kernel
+module.  (See slides of LPC2023 [0], p37 - p48)
+
+The cookie that SYN Proxy generates differs from the kernel's cookie in
+that it contains a secret (called rolling salt) (i) shared by all the proxy
+nodes so that any node can validate ACK and (ii) updated periodically so
+that old cookies cannot be validated.  Also, ISN contains WScale, SACK, and
+ECN, not in TS val.  This is not to sacrifice any connection quality, where
+some customers turn off the timestamp option due to retro CVE.
+
+After 3WHS, the proxy restores SYN and forwards it and ACK to the backend
+server.  Our kernel module works at Netfilter input/output hooks and first
+feeds SYN to the TCP stack to initiate 3WHS.  When the module is triggered
+for SYN+ACK, it looks up the corresponding request socket and overwrites
+tcp_rsk(req)->snt_isn with the proxy's cookie.  Then, the module can
+complete 3WHS with the original ACK as is.
+
+This way, our SYN Proxy does not manage the ISN mappings and can remain
+stateless.  It's working very well for high-bandwidth services like
+multiple Tbps, but we are looking for a way to drop the dirty hack and
+further optimise the sequences.
+
+If we could validate an arbitrary SYN Cookie on the backend server with
+BPF, the proxy would need not restore SYN nor pass it.  After validating
+ACK, the proxy node just needs to forward it, and then the server can do
+the lightweight validation (e.g. check if ACK came from proxy nodes, etc)
+and create a connection from the ACK.
+
+This series adds a new kfunc available on TC to create a reqsk and
+configure it based on the argument populated from SYN Cookie.
+
+    Usage:
+
+    struct tcp_cookie_attributes attr = {
+        .tcp_opt = {
+            .mss_clamp = mss,
+            .wscale_ok = wscale_ok,
+            .snd_scale = send_scale, /* < 15 */
+            .tstamp_ok = tstamp_ok,
+            .sack_ok = sack_ok,
+        },
+        .ecn_ok = ecn_ok,
+        .usec_ts_ok = usec_ts_ok,
+    };
+
+    skc = bpf_skc_lookup_tcp(...);
+    sk = (struct sock *)bpf_skc_to_tcp_sock(skc);
+    bpf_sk_assign_tcp_reqsk(skb, sk, attr, sizeof(attr));
+    bpf_sk_release(skc);
+
+For details, please see each patch.  Here's an overview:
+
+  Patch 1 - 6 : Misc cleanup
+  Patch 7, 8  : Factorise non-BPF SYN Cookie handling
+  Patch 9, 10 : Support arbitrary SYN Cookie with BPF
+  Patch 11    : Selftest
+
+[0]: https://lpc.events/event/17/contributions/1645/attachments/1350/2701/SYN_Proxy_at_Scale_with_BPF.pdf
 
 
-> +       }
-> +
-> +       if (!uoffsets && !ucookies && !uref_ctr_offsets)
-> +               return 0;
-> +
-> +       if (ucount < umulti_link->cnt)
-> +               err =3D -ENOSPC;
-> +       else
-> +               ucount =3D umulti_link->cnt;
-> +
-> +       for (i =3D 0; i < ucount; i++) {
-> +               if (uoffsets &&
-> +                   put_user(umulti_link->uprobes[i].offset, uoffsets + i=
-))
-> +                       return -EFAULT;
-> +               if (uref_ctr_offsets &&
-> +                   put_user(umulti_link->uprobes[i].ref_ctr_offset, uref=
-_ctr_offsets + i))
-> +                       return -EFAULT;
-> +               if (ucookies &&
-> +                   put_user(umulti_link->uprobes[i].cookie, ucookies + i=
-))
-> +                       return -EFAULT;
-> +       }
-> +
-> +       return err;
-> +}
-> +
->  static const struct bpf_link_ops bpf_uprobe_multi_link_lops =3D {
->         .release =3D bpf_uprobe_multi_link_release,
->         .dealloc =3D bpf_uprobe_multi_link_dealloc,
-> +       .fill_link_info =3D bpf_uprobe_multi_link_fill_link_info,
->  };
->
->  static int uprobe_prog_run(struct bpf_uprobe *uprobe,
-> @@ -3274,6 +3345,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_at=
-tr *attr, struct bpf_prog *pr
->         link->uprobes =3D uprobes;
->         link->path =3D path;
->         link->task =3D task;
-> +       link->flags =3D flags;
->
->         bpf_link_init(&link->link, BPF_LINK_TYPE_UPROBE_MULTI,
->                       &bpf_uprobe_multi_link_lops, prog);
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
-f.h
-> index 7a5498242eaa..a63b5eb7f9ec 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -6562,6 +6562,16 @@ struct bpf_link_info {
->                         __u32 flags;
->                         __u64 missed;
->                 } kprobe_multi;
-> +               struct {
-> +                       __aligned_u64 path;
-> +                       __aligned_u64 offsets;
-> +                       __aligned_u64 ref_ctr_offsets;
-> +                       __aligned_u64 cookies;
-> +                       __u32 path_size; /* in/out: real path size on suc=
-cess */
-> +                       __u32 count; /* in/out: uprobe_multi offsets/ref_=
-ctr_offsets/cookies count */
-> +                       __u32 flags;
-> +                       __u32 pid;
-> +               } uprobe_multi;
->                 struct {
->                         __u32 type; /* enum bpf_perf_event_type */
->                         __u32 :32;
-> --
-> 2.42.0
->
+Changes:
+  v3:
+    Patch 10:
+      * Guard kfunc and req->syncookie part in inet6?_steal_sock() with
+        CONFIG_SYN_COOKIE (kernel test robot)
+
+  v2: https://lore.kernel.org/netdev/20231120222341.54776-1-kuniyu@amazon.com/
+    * Drop SOCK_OPS and move SYN Cookie validation logic to TC with kfunc.
+    * Add cleanup patches to reduce discrepancy between cookie_v[46]_check()
+
+  v1: https://lore.kernel.org/bpf/20231013220433.70792-1-kuniyu@amazon.com/
+
+
+
+Kuniyuki Iwashima (11):
+  tcp: Clean up reverse xmas tree in cookie_v[46]_check().
+  tcp: Cache sock_net(sk) in cookie_v[46]_check().
+  tcp: Clean up goto labels in cookie_v[46]_check().
+  tcp: Don't pass cookie to __cookie_v[46]_check().
+  tcp: Don't initialise tp->tsoffset in tcp_get_cookie_sock().
+  tcp: Move TCP-AO bits from cookie_v[46]_check() to tcp_ao_syncookie().
+  tcp: Factorise cookie req initialisation.
+  tcp: Factorise non-BPF SYN Cookie handling.
+  bpf: tcp: Handle BPF SYN Cookie in cookie_v[46]_check().
+  bpf: tcp: Support arbitrary SYN Cookie.
+  selftest: bpf: Test bpf_sk_assign_tcp_reqsk().
+
+ include/linux/netfilter_ipv6.h                |   8 +-
+ include/net/inet6_hashtables.h                |  16 +-
+ include/net/inet_hashtables.h                 |  16 +-
+ include/net/tcp.h                             |  49 +-
+ include/net/tcp_ao.h                          |   6 +-
+ net/core/filter.c                             | 113 +++-
+ net/core/sock.c                               |  14 +-
+ net/ipv4/syncookies.c                         | 273 +++++----
+ net/ipv4/tcp_ao.c                             |  16 +-
+ net/ipv6/syncookies.c                         | 112 ++--
+ net/netfilter/nf_synproxy_core.c              |   4 +-
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  10 +
+ .../bpf/prog_tests/tcp_custom_syncookie.c     | 163 +++++
+ .../selftests/bpf/progs/test_siphash.h        |  64 ++
+ .../bpf/progs/test_tcp_custom_syncookie.c     | 570 ++++++++++++++++++
+ .../bpf/progs/test_tcp_custom_syncookie.h     | 161 +++++
+ 16 files changed, 1393 insertions(+), 202 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tcp_custom_syncookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_siphash.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
+
+-- 
+2.30.2
+
 
