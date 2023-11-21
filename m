@@ -1,43 +1,42 @@
-Return-Path: <bpf+bounces-15535-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15536-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EAA37F32B4
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 16:51:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEF907F32C2
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 16:53:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2157D1F21E73
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 15:51:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79874282E89
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 15:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E825D54F86;
-	Tue, 21 Nov 2023 15:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EBCE58133;
+	Tue, 21 Nov 2023 15:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYFhZuQW"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="m93MnOeH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBD754F89
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 15:51:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C36C433C8;
-	Tue, 21 Nov 2023 15:51:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700581912;
-	bh=WwKdR5EpIuoPyTiF9l91qy2/U/TA9wpVWOK/oMQGTTA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=tYFhZuQWeZs0lWDOpEMMrTsTZOk9FNIxy7sRunS70HvJkwJcc2Q7c9Vm+f8+yH2kb
-	 pIVOrRKjevNbzvaQuvNHfNIjaN/dDZ7BgYVHdatmXFDVYBzTYIJEnU0QqFjDNOIpdC
-	 oul2a9CuXx8CN2c6km9nADrsGY5R5UTE61JMZJxWElPVz2DUyBDb/znP2CBIRYTt5i
-	 PmcepSKVAffPnNst6hXbM4mzCQ9SlKZtMYbhNkHPenxW7j+OZSXpM5tKWaFLttlGt5
-	 wrdRtgSYxEc70QU16iWwFpM2OuavpjPxMXNgyAiGKaoEaQh80CE7kmnXDikohc8/Q0
-	 994pzEV1A6Lyw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 61131CE04BD; Tue, 21 Nov 2023 07:51:52 -0800 (PST)
-Date: Tue, 21 Nov 2023 07:51:52 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B67D185;
+	Tue, 21 Nov 2023 07:53:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=w97cVJb/aQInQREnjHpwi7QFE9oxzcwBFUlRXyXpLTM=; b=m93MnOeHJp3JuYMNkSzI0h+sh5
+	z10+8KAVJ91/7rNYnQBsLhrTDLx1pyFHMrAJfaMKirCS4WjNaxwUJvyCrzY/NG0ig0b//FNRDdupH
+	VyDa1SgQ7G53XY5K7EfMksqVhEdxhd2Yix8bmQ99JaiPJJWOBWOeOi15EslMK7oOFvwWZbr/IyqsU
+	I1Oir5kkvhZDF9P3Bn4fT58qS+rf2UZj91HCtCjGpuAwOa6j8KdSniVISY8dE8GB8r9Ttezlnnvry
+	N1ECNDQXgVkUrnkVr3O0Xn4RAm+o7ZO876ARb3WHUNomBPAqXcuPOqcfOPvUf7rSjUWG+1sukH7Jn
+	HMqwGzZA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1r5T3a-005icl-2G; Tue, 21 Nov 2023 15:52:58 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 242B6300338; Tue, 21 Nov 2023 16:52:56 +0100 (CET)
+Date: Tue, 21 Nov 2023 16:52:56 +0100
+From: Peter Zijlstra <peterz@infradead.org>
 To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
@@ -50,9 +49,9 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
 	bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
 Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Message-ID: <ba543d44-9302-4115-ac4f-d4e9f8d98a90@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+Message-ID: <20231121155256.GN4779@noisy.programming.kicks-ass.net>
+References: <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
+ <20231120214742.GC8262@noisy.programming.kicks-ass.net>
  <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
  <20231120222311.GE8262@noisy.programming.kicks-ass.net>
  <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
@@ -61,7 +60,6 @@ References: <20231120214742.GC8262@noisy.programming.kicks-ass.net>
  <20231121143647.GI8262@noisy.programming.kicks-ass.net>
  <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
  <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
- <0364d2c5-e5af-4bb5-b650-124a90f3d220@efficios.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -70,94 +68,40 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0364d2c5-e5af-4bb5-b650-124a90f3d220@efficios.com>
+In-Reply-To: <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
 
-On Tue, Nov 21, 2023 at 09:56:55AM -0500, Mathieu Desnoyers wrote:
-> On 2023-11-21 09:46, Peter Zijlstra wrote:
-> > On Tue, Nov 21, 2023 at 09:40:24AM -0500, Mathieu Desnoyers wrote:
-> > > On 2023-11-21 09:36, Peter Zijlstra wrote:
-> > > > On Tue, Nov 21, 2023 at 09:06:18AM -0500, Mathieu Desnoyers wrote:
-> > > > > Task trace RCU fits a niche that has the following set of requirements/tradeoffs:
-> > > > > 
-> > > > > - Allow page faults within RCU read-side (like SRCU),
-> > > > > - Has a low-overhead read lock-unlock (without the memory barrier overhead of SRCU),
-> > > > > - The tradeoff: Has a rather slow synchronize_rcu(), but tracers should not care about
-> > > > >     that. Hence, this is not meant to be a generic replacement for SRCU.
-> > > > > 
-> > > > > Based on my reading of https://lwn.net/Articles/253651/ , preemptible RCU is not a good
-> > > > > fit for the following reasons:
-> > > > > 
-> > > > > - It disallows blocking within a RCU read-side on non-CONFIG_PREEMPT kernels,
-> > > > 
-> > > > Your counter points are confused, we simply don't build preemptible RCU
-> > > > unless PREEMPT=y, but that could surely be fixed and exposed as a
-> > > > separate flavour.
-> > > > 
-> > > > > - AFAIU the mmap_sem used within the page fault handler does not have priority inheritance.
-> > > > 
-> > > > What's that got to do with anything?
+On Tue, Nov 21, 2023 at 03:46:43PM +0100, Peter Zijlstra wrote:
 
-Preemptible RCU allows blocking/preemption only in those cases where
-priority inheritance applies.  As Mathieu says below, this prevents
-indefinite postponement of a global grace period.  Such postponement is
-especially problematic in kernels built with PREEMPT_RCU=y.  For but one
-example, consider a situation where someone maps a file served by NFS.
-We can debate the wisdom of creating such a map, but having the kernel
-OOM would be a completely unacceptable "error message".
+> Why is this such a hard question?
 
-> > > > Still utterly confused about what task-tracing rcu is and how it is
-> > > > different from preemptible rcu.
+Anyway, recapping from IRC:
 
-Task Trace RCU allows general blocking, which it tolerates by stringent
-restrictions on what exactly it is used for (tracing in cases where the
-memory to be included in the tracing might page fault).  Preemptible RCU
-does not permit general blocking.
+preemptible, SRCU:
+  counter-array based, GP advances by increasing array index
+  and waiting for previous index to drop to 0.
 
-Tasks Trace RCU is a very specialized tool for a very specific use case.
+  notably, a GP can pass while a task is preempted but not within a
+  critical section.
 
-> > > In addition to taking the mmap_sem, the page fault handler need to block
-> > > until its requested pages are faulted in, which may depend on disk I/O.
-> > > Is it acceptable to wait for I/O while holding preemptible RCU read-side?
-> > 
-> > I don't know, preemptible rcu already needs to track task state anyway,
-> > it needs to ensure all tasks have passed through a safe spot etc.. vs regular
-> > RCU which only needs to ensure all CPUs have passed through start.
-> > 
-> > Why is this such a hard question?
+  SRCU has smp_mb() in the critical sections to improve GP.
 
-It is not a hard question.  Nor is the answer, which is that preemptible
-RCU is not a good fit for this task for all the reasons that Mathieu has
-laid out.
+tasks:
+  waits for every task to pass schedule()
 
-> Personally what I am looking for is a clear documentation of preemptible rcu
-> with respect to whether it is possible to block on I/O (take a page fault,
-> call schedule() explicitly) from within a preemptible rcu critical section.
-> I guess this is a hard question because there is no clear statement to that
-> effect in the kernel documentation.
-> 
-> If it is allowed (which I doubt), then I wonder about the effect of those
-> long readers on grace period delays. Things like expedited grace periods may
-> suffer.
-> 
-> Based on Documentation/RCU/rcu.rst:
-> 
->   Preemptible variants of RCU (CONFIG_PREEMPT_RCU) get the
->   same effect, but require that the readers manipulate CPU-local
->   counters.  These counters allow limited types of blocking within
->   RCU read-side critical sections.  SRCU also uses CPU-local
->   counters, and permits general blocking within RCU read-side
->   critical sections.  These variants of RCU detect grace periods
->   by sampling these counters.
-> 
-> Then we just have to find a definition of "limited types of blocking"
-> vs "general blocking".
+  ensures that any pieces of text rendered unreachable before, is
+  actually unused after.
 
-The key point is that you are not allowed to place any source code in
-a preemptible RCU reader that would not be legal in a non-preemptible
-RCU reader.  The rationale again is that the cases in which preemptible
-RCU readers call schedule are cases to which priority boosting applies.
+tasks-rude:
+  like tasks, but different? build to handle tracing while rcu-idle,
+  even though that was already deemed bad?
 
-It is quite possible that the documentation needs upgrading.  ;-)
+tasks-tracing-rcu:
+  extention of tasks to have critical-sections ? Should this simply be
+  tasks?
 
-							Thanx, Paul
+
+Can someone complete, please?
+
+
+
 
