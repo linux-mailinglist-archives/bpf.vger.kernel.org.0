@@ -1,111 +1,126 @@
-Return-Path: <bpf+bounces-15594-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15595-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E147F3799
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 21:38:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BD1D7F37A7
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 21:40:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEFF628273B
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:38:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55C95282812
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED50555791;
-	Tue, 21 Nov 2023 20:38:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BAB47799;
+	Tue, 21 Nov 2023 20:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N5Ve+PMx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOcbTovf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3511210C
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 12:38:10 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cc2fc281cdso42256885ad.0
-        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 12:38:10 -0800 (PST)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D520E1A3;
+	Tue, 21 Nov 2023 12:40:48 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cf6af8588fso14013755ad.0;
+        Tue, 21 Nov 2023 12:40:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700599089; x=1701203889; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l1hk3qZeaM7c7oBivNAl1xpNadwLMnXFOxJSloUhdhs=;
-        b=N5Ve+PMxaGpbLwrNqLHbOOG3WNz7cGrssG0eeKmK/9uxViOInJRgj64CoeYmIH1T0T
-         qbCscp7UwY1TDOthPWnXYZThCyF5PPCD+ZoZqFFprzQxhf9OjarU+Wqm4qIabuBETBaO
-         ZqNsFLJIOcIcV4jgnncaTI9OXYHVCo3Wpy+hyor8+HwTQCyERTfJKaz1xfbMeVPV4xTx
-         mcIYlOZSww6qhvHrNY9zDp10MTtKYRnuI2FWKZtX4tekNlF5V1FNy9IEsbNgjozP/m6U
-         5j28/3i2cLPtuQgcQxlgGdI+8dGdMcj0ABazNIiIUeBwfetxtfLSAqAT7RudPKVMVeGD
-         TWLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700599089; x=1701203889;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1700599248; x=1701204048; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=l1hk3qZeaM7c7oBivNAl1xpNadwLMnXFOxJSloUhdhs=;
-        b=pZ62oZdmHzUtFfEI4H2axqWkG/ETRB2CNf5JNL8rWn9R7LO4qLyPxiADVKyEAlhMdT
-         26NqrYd010J2rTFJk1wYY2+jZAoqweU3ojgrsZZYRVctzSwTeOMDoCcuZp4L5WCmY33d
-         GnJVh3EVPMwY6PGm21F0ekQ0qErTCfjmtVw+QX2vTbVEglp6vs74dOUXHr9Ca5mwcWog
-         FntEUu9FY3lcSMz7DLkH/JNbTJEhQETklXzHsrePZESJOjyyO6saX2C9dxs3nk6XySpq
-         5diJI7a72SdlHY6UlJMQ8Jy5mloaLdaGCqv7duSbvagOy2wW5/z1/sAyEwjXdGtQEA8C
-         KTlA==
-X-Gm-Message-State: AOJu0YxysOCU/TKTfa1xLXkbzJjLwHsCDcnvo1RQMUesMn2LeDazhsay
-	oUEoSLh1PQq9/BLdYNGx+r4=
-X-Google-Smtp-Source: AGHT+IGu1D7smSGI+pd2HefZzhp5USC25+53Qd9+3bAcZh1FvxUkVAZ010jk+nhLfkm1z+p438fXsg==
-X-Received: by 2002:a17:902:e5c6:b0:1cf:662b:44f9 with SMTP id u6-20020a170902e5c600b001cf662b44f9mr289343plf.69.1700599089405;
-        Tue, 21 Nov 2023 12:38:09 -0800 (PST)
-Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:500::4:8368])
-        by smtp.gmail.com with ESMTPSA id o10-20020a170902d4ca00b001cf5d324817sm4481779plg.188.2023.11.21.12.38.08
+        bh=WCC6s9NGPFKJC7qCc4GCCVN10BOm0r6c3YXwRd9V+sE=;
+        b=NOcbTovf/u9WZES1HyIp/jIRGkMPkN5MHAZnPWJMI/4Isl55m7fCWkWUHtIsh1OHJc
+         Ax3Qf+bPc32D4BOpEhWNbFksWSQLW96IqLA0pBDsGApkwcEbxyJvh1vEwB8vanOSNRvw
+         ZN0tlrgVTvdi3tPj5d1eeG8jSlkFce1Iu1s9vpMYJvQ5SzU9a7eyzxR0MpKgxGGZXlJI
+         qE25ChhZUtaPOtFb/n3NGeqF0gvI0F69K5uUanyeZrIGiNLKcgG6pgT/KGc6Q0b0Dauv
+         3veqCzBs9yL52C0TWPC/IIQSuJuZguhr9YFnE5Q8bFue4nNhsm3496kjH11TjvO/Jqw2
+         XpUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700599248; x=1701204048;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WCC6s9NGPFKJC7qCc4GCCVN10BOm0r6c3YXwRd9V+sE=;
+        b=X0cofuNDY1XzZ8/pHZzWFlf50tsCQpB/hiAsib3/H6/dqL+mqjOBHmeHuWgukjqa6N
+         vTRl6w57GAy6ZRmkfyOLzkJZoXcHB2vqYbnRT2JVaRJRCIyekR7c0xz/HHNshm4QlSXt
+         KJtQkX7W5JguYGph3mWO3DF+4zvyyFREbDJRr/3b3xjziGUieET4VySjfdqOjdLBrK+S
+         ip3DrXfJn6Vn0SDMwKsJT9AVgDxnfJVvqcR8oBcXA7HqsPNfOCRzJ/2Wv8AFjglXfHyf
+         AXE+R3YrtwkwjtLTqtRuIUjVWSTcEjBx15B4s/UxOSZjxct7k3dhpTzxIvaUJJ4Cplyi
+         QkXA==
+X-Gm-Message-State: AOJu0YzyMBtsk33PqP+C150rMyhOb5Xlvig8b2bj+BCuEfLVMaE9061h
+	9CThYYd/r2P37IW1htwv2r8=
+X-Google-Smtp-Source: AGHT+IFE5wsKsmA/KMmkZhA/gpV1ibyC+Cl5yRXxt+owMi2A/BfcaFFEKIJ8+rLUR9zV4LdjMBDG1g==
+X-Received: by 2002:a17:903:493:b0:1cf:774c:39a8 with SMTP id jj19-20020a170903049300b001cf774c39a8mr264254plb.56.1700599248179;
+        Tue, 21 Nov 2023 12:40:48 -0800 (PST)
+Received: from localhost ([98.97.116.126])
+        by smtp.gmail.com with ESMTPSA id p2-20020a170902e74200b001b895336435sm8325327plf.21.2023.11.21.12.40.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 12:38:08 -0800 (PST)
-Date: Tue, 21 Nov 2023 12:38:06 -0800
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, kernel-team@meta.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 08/10] bpf: track aligned STACK_ZERO cases as
- imprecise spilled registers
-Message-ID: <20231121203806.43i6tytzwdzeoqvg@macbook-pro-49.dhcp.thefacebook.com>
-References: <20231121002221.3687787-1-andrii@kernel.org>
- <20231121002221.3687787-9-andrii@kernel.org>
+        Tue, 21 Nov 2023 12:40:47 -0800 (PST)
+Date: Tue, 21 Nov 2023 12:40:45 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>, 
+ John Fastabend <john.fastabend@gmail.com>
+Cc: bpf@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ yangyingliang@huawei.com, 
+ martin.lau@kernel.org, 
+ Jakub Sitnicki <jakub@cloudflare.com>
+Message-ID: <655d15cdb26fb_1fc7a208a5@john.notmuch>
+In-Reply-To: <bc92c670-f472-43b1-af0b-a50353ed8757@linux.dev>
+References: <20231016190819.81307-1-john.fastabend@gmail.com>
+ <20231016190819.81307-2-john.fastabend@gmail.com>
+ <87cywnjblh.fsf@cloudflare.com>
+ <bc92c670-f472-43b1-af0b-a50353ed8757@linux.dev>
+Subject: Re: [PATCH bpf 1/2] bpf: sockmap, af_unix sockets need to hold ref
+ for pair sock
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121002221.3687787-9-andrii@kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Nov 20, 2023 at 04:22:19PM -0800, Andrii Nakryiko wrote:
-> include it here. But the reduction in states is due to the following
-> piece of C code:
+Martin KaFai Lau wrote:
+> On 11/6/23 4:35 AM, Jakub Sitnicki wrote:
+> >> diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
+> >> index 2f9d8271c6ec..705eeed10be3 100644
+> >> --- a/net/unix/unix_bpf.c
+> >> +++ b/net/unix/unix_bpf.c
+> >> @@ -143,6 +143,8 @@ static void unix_stream_bpf_check_needs_rebuild(struct proto *ops)
+> >>   
+> >>   int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
+> >>   {
+> >> +	struct sock *skpair;
+> >> +
+> >>   	if (sk->sk_type != SOCK_DGRAM)
+> >>   		return -EOPNOTSUPP;
+> >>   
+> >> @@ -152,6 +154,9 @@ int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool re
+> >>   		return 0;
+> >>   	}
+> >>   
+> >> +	skpair = unix_peer(sk);
+> >> +	sock_hold(skpair);
+> >> +	psock->skpair = skpair;
+> >>   	unix_dgram_bpf_check_needs_rebuild(psock->sk_proto);
+> >>   	sock_replace_proto(sk, &unix_dgram_bpf_prot);
+> >>   	return 0;
+> > unix_dgram should not need this, since it grabs a ref on each sendmsg.
 > 
->         unsigned long ino;
-> 
-> 	...
-> 
->         sk = s->sk_socket;
->         if (!sk) {
->                 ino = 0;
->         } else {
->                 inode = SOCK_INODE(sk);
->                 bpf_probe_read_kernel(&ino, sizeof(ino), &inode->i_ino);
->         }
->         BPF_SEQ_PRINTF(seq, "%-8u %-8lu\n", s->sk_drops.counter, ino);
-> 	return 0;
-> 
-> You can see that in some situations `ino` is zero-initialized, while in
-> others it's unknown value filled out by bpf_probe_read_kernel(). Before
-> this change both branches have to be validated twice. Once with
+> John, could you address this comment and respin v2?
 
-I think you wanted to say that the code _after_ both branches converge
-had to be validated twice.
-With or without this patch both branches (ino = 0 and probe_read)
-will be validated only once. It's the code that after the branch
-that gets state pruned after this patch.
+Respinning now just letting some tests run for a bit and I'll kick it out.
 
-> (precise) ino == 0, due to eager STACK_ZERO logic, and then again for
-> when ino is just STACK_MISC. But BPF_SEQ_PRINTF() doesn't care about
-> precise value of ino, so with the change in this patch verifier is able
-> to prune states from one of the branches, reducing number of total
-> states (and instructions) required for successful validation.
+Thanks.
 
-This part is good.
+> 
+> The unix_inet_redir_to_connected() seems needing a fix in patch 2 also as 
+> pointed out by JakubS.
+> 
+> Thanks.
+> 
+> > 
+> > I'm not able to reproduce this bug for unix_dgram.
+> > 
+> > Have you seen any KASAN reports for unix_dgram from syzcaller?
 
