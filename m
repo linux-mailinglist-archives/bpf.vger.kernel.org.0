@@ -1,84 +1,107 @@
-Return-Path: <bpf+bounces-15496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D41F17F2472
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 04:01:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F7777F2480
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 04:10:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1788CB21A2F
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 03:01:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B048B1C2187D
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 03:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A52981427E;
-	Tue, 21 Nov 2023 03:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA196154AE;
+	Tue, 21 Nov 2023 03:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nViiEbTa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nwio0uFc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 414159C
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 19:01:27 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-332ce50450dso57824f8f.1
-        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 19:01:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700535685; x=1701140485; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x1pstbD97kHcUgQjbvFy5NbfJUOFlMjG8/d//91HchM=;
-        b=nViiEbTaMnHRN7BmX/13sll5rn8tj6R49q97vOeLJNGm2ajlpk8fRuqgdmOpMrC6S4
-         0HaOlC2zI+z/mm1D/MzuEack3S/pcedPgtdHhwwJU9ysKOpkCMNJUp0bIJtjP3v+uaOg
-         7KmFiPRPNBYiQWBKvXpLRSCmj6kEwr43hzYk4K4p0x0Wq+oCzBSuGCVT9JvBeBr9ijP6
-         S1hEGLdrtKtTDvBYbWbenDO3YC7nlqUbkKuMJFSUm8u+YRVEQbmhlyjXGRjwDFeHsQEB
-         1q/RAdMRG2qm/JXFGDU+M2TG/Q8RKdeXANuyBQlUHfxN5JP/dn93v8YVRwvFD1T/SXUK
-         gJuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700535685; x=1701140485;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x1pstbD97kHcUgQjbvFy5NbfJUOFlMjG8/d//91HchM=;
-        b=cVSE8OrM7kDbqA5sIH326UI9gt2KRYlTwprG7dZYpN+Oq9AITgjGfxdbOwCfn2Lkaz
-         iFGFE6U5ytw9HEzb1jTQlurJHFQhChqOZAQHtP+e5tIEt7/PBncJ1IVH6sj9UMBNvJb8
-         AnoDAw9O24oQKFUoyOCFuaOXXluqW8pyHbclBzzXFCM9UcVFs2D2XyMZMLZPvf7YDh4i
-         KHmL8gXowLnRAf3JF/YDkEroVsIzHNxAOkcAS+NESXuZPRm0OuNWHfWRmhxZghghRc20
-         pHfcYOAAjm2AgAsrVeziiCTdQQJU4cV4jWi0DOptcdMindDY//f3hRr5DoZUQCj8F0LD
-         N40A==
-X-Gm-Message-State: AOJu0YziRo69RwBUEAuHwJVew0zg7gsuVNSDEYK+IbmMlgfFYR+ij6GA
-	XkO2d0rIeWzNRCyKy0MZ3wzZCxjLp540LnkNzFQ=
-X-Google-Smtp-Source: AGHT+IF+VGcZrzhX+WwiwbWl+eyW3FzdiV2UsC8XMKAfrVcCLjDvNUWMB705CBlWub5S5aHagvOGQXrXbr812uR4qlc=
-X-Received: by 2002:a5d:540a:0:b0:32f:7f2c:de2e with SMTP id
- g10-20020a5d540a000000b0032f7f2cde2emr5785907wrv.36.1700535685410; Mon, 20
- Nov 2023 19:01:25 -0800 (PST)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5590614ABA
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 03:10:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C3185C433C9;
+	Tue, 21 Nov 2023 03:10:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700536225;
+	bh=ETNTRngyLczj0NJqTWDSdlcaPzWPnzte11JQufL48ec=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Nwio0uFcR97mAYVT/Xf9eCufiDOf7veO0IBzC33VowaFTDQwQjwbMsChormCQG+wa
+	 E3x2gT3c68wPBEGsS8uZDAhhHW5Jxr+C8L25b08qqctsy0HhBrx9RW/YEg7IuS8tCq
+	 LybHT3Bty41xe/FR46h3r40EQ1KA4etIwVKY7dkuvF6+j6XI/L/hTVhbGtRJL0Jpp/
+	 HM7WqqcyVprX3DIGLrysnpArcT/rBMYevFXfuEOtI4kA+ghk8G/t+cTDok23M6z57v
+	 4QlPqpUqwM6WftRhwggDo4NkSwog3mbAJbzcjF8fqBhe6nPGQArcCrwPYlp+YcaKuf
+	 I6eVab87DDIRA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A8EC3EAA959;
+	Tue, 21 Nov 2023 03:10:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231121020701.26440-1-eddyz87@gmail.com> <20231121020701.26440-7-eddyz87@gmail.com>
-In-Reply-To: <20231121020701.26440-7-eddyz87@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 20 Nov 2023 19:01:13 -0800
-Message-ID: <CAADnVQJv8gm4KH9mROdU9BEcxh3UrdpZTn3WKTbB1_Abp-QzDQ@mail.gmail.com>
-Subject: Re: [PATCH bpf v4 06/11] bpf: verify callbacks as if they are called
- unknown number of times
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf v4 00/11] verify callbacks as if they are called unknown
+ number of times
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170053622568.18568.10821625949332133695.git-patchwork-notify@kernel.org>
+Date: Tue, 21 Nov 2023 03:10:25 +0000
+References: <20231121020701.26440-1-eddyz87@gmail.com>
+In-Reply-To: <20231121020701.26440-1-eddyz87@gmail.com>
 To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, 
-	Andrew Werner <awerner32@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev, memxor@gmail.com, awerner32@gmail.com
 
-On Mon, Nov 20, 2023 at 6:07=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> Closes:
-> https://lore.kernel.org/bpf/CA+vRuzPChFNXmouzGG+wsy=3D6eMcfr1mFG0F3g7rbg-=
-sedGKW3w@mail.gmail.com/
+Hello:
 
-The url needs to be on the same line as 'Closes:' tag.
-I fixed it up while applying.
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Tue, 21 Nov 2023 04:06:50 +0200 you wrote:
+> This series updates verifier logic for callback functions handling.
+> Current master simulates callback body execution exactly once,
+> which leads to verifier not detecting unsafe programs like below:
+> 
+>     static int unsafe_on_zero_iter_cb(__u32 idx, struct num_context *ctx)
+>     {
+>         ctx->i = 0;
+>         return 0;
+>     }
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf,v4,01/11] selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
+    https://git.kernel.org/bpf/bpf/c/977bc146d4eb
+  - [bpf,v4,02/11] selftests/bpf: track string payload offset as scalar in strobemeta
+    https://git.kernel.org/bpf/bpf/c/87eb0152bcc1
+  - [bpf,v4,03/11] selftests/bpf: fix bpf_loop_bench for new callback verification scheme
+    https://git.kernel.org/bpf/bpf/c/f40bfd167944
+  - [bpf,v4,04/11] bpf: extract __check_reg_arg() utility function
+    https://git.kernel.org/bpf/bpf/c/683b96f9606a
+  - [bpf,v4,05/11] bpf: extract setup_func_entry() utility function
+    https://git.kernel.org/bpf/bpf/c/58124a98cb8e
+  - [bpf,v4,06/11] bpf: verify callbacks as if they are called unknown number of times
+    https://git.kernel.org/bpf/bpf/c/ab5cfac139ab
+  - [bpf,v4,07/11] selftests/bpf: tests for iterating callbacks
+    https://git.kernel.org/bpf/bpf/c/958465e217db
+  - [bpf,v4,08/11] bpf: widening for callback iterators
+    https://git.kernel.org/bpf/bpf/c/cafe2c21508a
+  - [bpf,v4,09/11] selftests/bpf: test widening for iterating callbacks
+    https://git.kernel.org/bpf/bpf/c/9f3330aa644d
+  - [bpf,v4,10/11] bpf: keep track of max number of bpf_loop callback iterations
+    https://git.kernel.org/bpf/bpf/c/bb124da69c47
+  - [bpf,v4,11/11] selftests/bpf: check if max number of bpf_loop iterations is tracked
+    https://git.kernel.org/bpf/bpf/c/57e2a52deeb1
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
