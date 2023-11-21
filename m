@@ -1,107 +1,103 @@
-Return-Path: <bpf+bounces-15497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15498-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F7777F2480
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 04:10:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD88E7F24FD
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 06:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B048B1C2187D
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 03:10:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C919B21909
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 05:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA196154AE;
-	Tue, 21 Nov 2023 03:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BC113AF1;
+	Tue, 21 Nov 2023 05:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nwio0uFc"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bJZiJgJv"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5590614ABA
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 03:10:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C3185C433C9;
-	Tue, 21 Nov 2023 03:10:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700536225;
-	bh=ETNTRngyLczj0NJqTWDSdlcaPzWPnzte11JQufL48ec=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Nwio0uFcR97mAYVT/Xf9eCufiDOf7veO0IBzC33VowaFTDQwQjwbMsChormCQG+wa
-	 E3x2gT3c68wPBEGsS8uZDAhhHW5Jxr+C8L25b08qqctsy0HhBrx9RW/YEg7IuS8tCq
-	 LybHT3Bty41xe/FR46h3r40EQ1KA4etIwVKY7dkuvF6+j6XI/L/hTVhbGtRJL0Jpp/
-	 HM7WqqcyVprX3DIGLrysnpArcT/rBMYevFXfuEOtI4kA+ghk8G/t+cTDok23M6z57v
-	 4QlPqpUqwM6WftRhwggDo4NkSwog3mbAJbzcjF8fqBhe6nPGQArcCrwPYlp+YcaKuf
-	 I6eVab87DDIRA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A8EC3EAA959;
-	Tue, 21 Nov 2023 03:10:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08ED4C8
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 21:06:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700543217; x=1732079217;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hORAHsk0+bAUiIBHj8Bzl2B12BklrzmMrZXTNlKZhJE=;
+  b=bJZiJgJvDb10HWtidS20EzyN0N1XvtWryvvSxwTkS9qQ6pwWaaBtKZOE
+   7RFMV5Q+h6WdXVnW9C16mDA6AcB6cJqncVQfTw4AJfXrUHFySjfM65ynt
+   9wrZ9ISl7qgYOdFu2xtpFq/Wc82zmRepXaD8DVi6MTl6dWmmNIbk76TqX
+   vfbHH4bj9LigNYa7wIrQ5UqjY3lND2JKQlupIhhwVNPDMfUYGgJcHVdCH
+   qynUWxzA8bpH1uW8C5yar/H3MzxkahGmwRnl+JX9sg38RsV7DpW1JkNpr
+   2pPlet/olypdz30Zt4SK5yxJaoP9Q2Cb7oI8UBl8J3+K8u/+ufHeu2PFf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="477970311"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="477970311"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2023 21:06:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10900"; a="832520457"
+X-IronPort-AV: E=Sophos;i="6.04,215,1695711600"; 
+   d="scan'208";a="832520457"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 20 Nov 2023 21:06:55 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r5IyL-0007KO-0w;
+	Tue, 21 Nov 2023 05:06:53 +0000
+Date: Tue, 21 Nov 2023 13:06:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: Dave Marchevsky <davemarchevsky@fb.com>, bpf@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kernel Team <kernel-team@fb.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Dave Marchevsky <davemarchevsky@fb.com>
+Subject: Re: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local
+ storage
+Message-ID: <202311211247.KBiJyddD-lkp@intel.com>
+References: <20231120175925.733167-2-davemarchevsky@fb.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v4 00/11] verify callbacks as if they are called unknown
- number of times
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170053622568.18568.10821625949332133695.git-patchwork-notify@kernel.org>
-Date: Tue, 21 Nov 2023 03:10:25 +0000
-References: <20231121020701.26440-1-eddyz87@gmail.com>
-In-Reply-To: <20231121020701.26440-1-eddyz87@gmail.com>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com,
- yonghong.song@linux.dev, memxor@gmail.com, awerner32@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120175925.733167-2-davemarchevsky@fb.com>
 
-Hello:
+Hi Dave,
 
-This series was applied to bpf/bpf.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+kernel test robot noticed the following build errors:
 
-On Tue, 21 Nov 2023 04:06:50 +0200 you wrote:
-> This series updates verifier logic for callback functions handling.
-> Current master simulates callback body execution exactly once,
-> which leads to verifier not detecting unsafe programs like below:
-> 
->     static int unsafe_on_zero_iter_cb(__u32 idx, struct num_context *ctx)
->     {
->         ctx->i = 0;
->         return 0;
->     }
-> 
-> [...]
+[auto build test ERROR on bpf-next/master]
 
-Here is the summary with links:
-  - [bpf,v4,01/11] selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
-    https://git.kernel.org/bpf/bpf/c/977bc146d4eb
-  - [bpf,v4,02/11] selftests/bpf: track string payload offset as scalar in strobemeta
-    https://git.kernel.org/bpf/bpf/c/87eb0152bcc1
-  - [bpf,v4,03/11] selftests/bpf: fix bpf_loop_bench for new callback verification scheme
-    https://git.kernel.org/bpf/bpf/c/f40bfd167944
-  - [bpf,v4,04/11] bpf: extract __check_reg_arg() utility function
-    https://git.kernel.org/bpf/bpf/c/683b96f9606a
-  - [bpf,v4,05/11] bpf: extract setup_func_entry() utility function
-    https://git.kernel.org/bpf/bpf/c/58124a98cb8e
-  - [bpf,v4,06/11] bpf: verify callbacks as if they are called unknown number of times
-    https://git.kernel.org/bpf/bpf/c/ab5cfac139ab
-  - [bpf,v4,07/11] selftests/bpf: tests for iterating callbacks
-    https://git.kernel.org/bpf/bpf/c/958465e217db
-  - [bpf,v4,08/11] bpf: widening for callback iterators
-    https://git.kernel.org/bpf/bpf/c/cafe2c21508a
-  - [bpf,v4,09/11] selftests/bpf: test widening for iterating callbacks
-    https://git.kernel.org/bpf/bpf/c/9f3330aa644d
-  - [bpf,v4,10/11] bpf: keep track of max number of bpf_loop callback iterations
-    https://git.kernel.org/bpf/bpf/c/bb124da69c47
-  - [bpf,v4,11/11] selftests/bpf: check if max number of bpf_loop iterations is tracked
-    https://git.kernel.org/bpf/bpf/c/57e2a52deeb1
+url:    https://github.com/intel-lab-lkp/linux/commits/Dave-Marchevsky/bpf-Support-BPF_F_MMAPABLE-task_local-storage/20231121-020345
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231120175925.733167-2-davemarchevsky%40fb.com
+patch subject: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local storage
+config: i386-buildonly-randconfig-005-20231121 (https://download.01.org/0day-ci/archive/20231121/202311211247.KBiJyddD-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231121/202311211247.KBiJyddD-lkp@intel.com/reproduce)
 
-You are awesome, thank you!
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311211247.KBiJyddD-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   ld: kernel/bpf/bpf_local_storage.o: in function `alloc_mmapable_selem_value':
+   bpf_local_storage.c:(.text+0x207): undefined reference to `bpf_map_get_memcg'
+   ld: kernel/bpf/bpf_local_storage.o: in function `bpf_selem_alloc':
+   bpf_local_storage.c:(.text+0x410): undefined reference to `bpf_map_get_memcg'
+>> ld: bpf_local_storage.c:(.text+0x543): undefined reference to `bpf_map_get_memcg'
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
