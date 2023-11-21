@@ -1,141 +1,113 @@
-Return-Path: <bpf+bounces-15530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C92D47F31B6
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 15:56:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16C557F31F6
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 16:08:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 696ACB22023
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 14:56:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64E74B21C8D
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 15:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B3655C1B;
-	Tue, 21 Nov 2023 14:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686A24A9AE;
+	Tue, 21 Nov 2023 15:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="R3LIKvyM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T4/z8z57"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455BD9A;
-	Tue, 21 Nov 2023 06:56:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1700578594;
-	bh=gCXHbPeW/4/LB/bSJQ/3MhPkRCxJ7g2+PzpBkp1VBrI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=R3LIKvyMEbskpJj2vtUJMorWCchBcKg7clor1RjYIHZ48x4MlX9pQoY08zbJmwbj/
-	 3HCX/MGaN/7GRz9zwta3YU+2pCjQmJGuPCuH8g3CknUHDHcoOCQ7ek5Z9i15FDiJgB
-	 9u/PMAv9OW1/pFVAAlKbaL6YG/Th+gz8x547gtcfIdZ/HgjLaSAhvtFI48+kVez4lc
-	 AZ71BOB6VtkF3D3Uv8GCKNqGDSLaec5R4vwdknqd1XDkh/HNJptCOAi+OZneC5qc5h
-	 8+uwn32qSQzmJIeV4OVXXr8LXDV99FiZ60KRsBLE1Z9eWX3y4A3zNXRHhDCz93UXZp
-	 Y+KcdRzPaPXdA==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4SZSBV1kNhz1d1C;
-	Tue, 21 Nov 2023 09:56:34 -0500 (EST)
-Message-ID: <0364d2c5-e5af-4bb5-b650-124a90f3d220@efficios.com>
-Date: Tue, 21 Nov 2023 09:56:55 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C1A9A;
+	Tue, 21 Nov 2023 07:08:11 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-da37522a363so5315856276.0;
+        Tue, 21 Nov 2023 07:08:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700579290; x=1701184090; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=W5kXeUZxl0n8jZUXvoDWX0N3dXRmZvV6vzKsfNwrock=;
+        b=T4/z8z57Xz4Bz4NtppxLVST+zvh7A6C4CASn0qNtj5aqlE8bWW6JiFS3nqPNkSc1rP
+         WFxxCVoWhYUi+eX42Ntq3SaYNHTO3uGwPIqIY62j5DhQ0XDMU1U1OV/TZ7aSk9QUmdeA
+         8wBmqCHp8GDvanDD3rAcZciPj/iUD4/UplMXFgRf0lj+gqSM9HGucIeG7++Ivcn6Egx+
+         ME72gaaFnuh+p2KS0NtYUrJF5+KVK0O8uCNA7AHBzVTO7cLJsco+DXfYo1E6sA/1BAZo
+         0/s7ezWYCBZKTfc6Ryr6I6aDd7MZlBKEsrhJV4JBOCj7/nSyhBJ/nDG2aosjnG1tkQtS
+         hNOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700579290; x=1701184090;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=W5kXeUZxl0n8jZUXvoDWX0N3dXRmZvV6vzKsfNwrock=;
+        b=K32L4dSuA1PoH+jNAUFH/ECnGOV3agF8eKA9m5EQBKT1j7Mp+05x5aaamzye64X2sZ
+         Nbqx0ZPDAFkB8bzfy1DG+kfEVWylmLF6hHHqBvqIhZmr/uo4QNDBX2YWEHM4S/T/q0zN
+         yVRQDKiP/t+W9OZ3ZprT/klp7m5WDeqtBWkWIOkgATdd9SU644PJxwf4JRiNEE12yKI2
+         TUiFzhv8zlqxFZvDPsfH2FtJdakDo0V2fw2dbauvoT725pZqkofqai4VGbCPK1myxYDy
+         8fi+vHI1bnv8q9U5rJ1StWoiJZIvzmxAmAGc2+9jMqQlubr83cRN1K11dSuz2hPhEcEK
+         DiJg==
+X-Gm-Message-State: AOJu0YyoHpck2+O458YjErJf6afcqYQuRbx510z0XtmSnhR8HDeDWSTU
+	sVgFqoGnADiIT5tc8jlHoxBMSWMizYbK9xuARQ==
+X-Google-Smtp-Source: AGHT+IEmENhX7kKPX20b34IoiBD9PEriJ+16Q1elwbSjgqsLD1BDATvXkEnfa2wCx/3nsnoEAFr5IraZyWQfS+hpJhs=
+X-Received: by 2002:a25:888b:0:b0:d9a:5666:7ab5 with SMTP id
+ d11-20020a25888b000000b00d9a56667ab5mr10077485ybl.10.1700579290491; Tue, 21
+ Nov 2023 07:08:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Content-Language: en-US
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
- Michael Jeanson <mjeanson@efficios.com>, Alexei Starovoitov
- <ast@kernel.org>, Yonghong Song <yhs@fb.com>, Ingo Molnar
- <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
- bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
-References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
- <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
- <20231120214742.GC8262@noisy.programming.kicks-ass.net>
- <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
- <20231120222311.GE8262@noisy.programming.kicks-ass.net>
- <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
- <20231121084706.GF8262@noisy.programming.kicks-ass.net>
- <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
- <20231121143647.GI8262@noisy.programming.kicks-ass.net>
- <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
- <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Tue, 21 Nov 2023 16:07:58 +0100
+Message-ID: <CACkBjsaecr+VjmfOHzaMbiei5G3WMDjvjp4kZVE79Bn8ib1-Rg@mail.gmail.com>
+Subject: [Bug Report] bpf: reg invariant voilation after JSLE
+To: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2023-11-21 09:46, Peter Zijlstra wrote:
-> On Tue, Nov 21, 2023 at 09:40:24AM -0500, Mathieu Desnoyers wrote:
->> On 2023-11-21 09:36, Peter Zijlstra wrote:
->>> On Tue, Nov 21, 2023 at 09:06:18AM -0500, Mathieu Desnoyers wrote:
->>>> Task trace RCU fits a niche that has the following set of requirements/tradeoffs:
->>>>
->>>> - Allow page faults within RCU read-side (like SRCU),
->>>> - Has a low-overhead read lock-unlock (without the memory barrier overhead of SRCU),
->>>> - The tradeoff: Has a rather slow synchronize_rcu(), but tracers should not care about
->>>>     that. Hence, this is not meant to be a generic replacement for SRCU.
->>>>
->>>> Based on my reading of https://lwn.net/Articles/253651/ , preemptible RCU is not a good
->>>> fit for the following reasons:
->>>>
->>>> - It disallows blocking within a RCU read-side on non-CONFIG_PREEMPT kernels,
->>>
->>> Your counter points are confused, we simply don't build preemptible RCU
->>> unless PREEMPT=y, but that could surely be fixed and exposed as a
->>> separate flavour.
->>>
->>>> - AFAIU the mmap_sem used within the page fault handler does not have priority inheritance.
->>>
->>> What's that got to do with anything?
->>>
->>> Still utterly confused about what task-tracing rcu is and how it is
->>> different from preemptible rcu.
->>
->> In addition to taking the mmap_sem, the page fault handler need to block
->> until its requested pages are faulted in, which may depend on disk I/O.
->> Is it acceptable to wait for I/O while holding preemptible RCU read-side?
-> 
-> I don't know, preemptible rcu already needs to track task state anyway,
-> it needs to ensure all tasks have passed through a safe spot etc.. vs regular
-> RCU which only needs to ensure all CPUs have passed through start.
-> 
-> Why is this such a hard question?
+Hi,
 
-Personally what I am looking for is a clear documentation of preemptible 
-rcu with respect to whether it is possible to block on I/O (take a page 
-fault, call schedule() explicitly) from within a preemptible rcu 
-critical section. I guess this is a hard question because there is no 
-clear statement to that effect in the kernel documentation.
+The following program (reduced) breaks reg invariant:
 
-If it is allowed (which I doubt), then I wonder about the effect of 
-those long readers on grace period delays. Things like expedited grace 
-periods may suffer.
+C Repro: https://pastebin.com/raw/SRQJYx91
 
-Based on Documentation/RCU/rcu.rst:
+-------- Verifier Log --------
+func#0 @0
+0: R1=ctx() R10=fp0
+0: (b7) r0 = -2                       ; R0_w=-2
+1: (37) r0 /= 1                       ; R0_w=scalar()
+2: (bf) r8 = r0                       ; R0_w=scalar(id=1) R8_w=scalar(id=1)
+3: (56) if w8 != 0xfffffffe goto pc+4         ;
+R8_w=scalar(id=1,smin=0x80000000fffffffe,smax=0x7ffffffffffffffe,umin=umin32=0xfffffffe,umax=0xfffffffffffffffe,smin32=-2,smax32=-2,umax32=0xfffffffe,var_off=(0xfffffffe;
+0xffffffff00000000))
+4: (65) if r8 s> 0xd goto pc+3        ;
+R8_w=scalar(id=1,smin=0x80000000fffffffe,smax=13,umin=umin32=0xfffffffe,umax=0xfffffffffffffffe,smin32=-2,smax32=-2,umax32=0xfffffffe,var_off=(0xfffffffe;
+0xffffffff00000000))
+5: (b7) r4 = 2                        ; R4_w=2
+6: (dd) if r8 s<= r4 goto pc+1
+REG INVARIANTS VIOLATION (false_reg1): range bounds violation
+u64=[0xfffffffe, 0xd] s64=[0xfffffffe, 0xd] u32=[0xfffffffe, 0xd]
+s32=[0x3, 0xfffffffe] var_off=(0xfffffffe, 0x0)
+6: R4_w=2 R8_w=0xfffffffe
+7: (cc) w8 s>>= w0                    ; R0=0xfffffffe R8=scalar()
+8: (77) r0 >>= 32                     ; R0_w=0
+9: (57) r0 &= 1                       ; R0_w=0
+10: (95) exit
 
-   Preemptible variants of RCU (CONFIG_PREEMPT_RCU) get the
-   same effect, but require that the readers manipulate CPU-local
-   counters.  These counters allow limited types of blocking within
-   RCU read-side critical sections.  SRCU also uses CPU-local
-   counters, and permits general blocking within RCU read-side
-   critical sections.  These variants of RCU detect grace periods
-   by sampling these counters.
+from 6 to 8: safe
 
-Then we just have to find a definition of "limited types of blocking"
-vs "general blocking".
+from 4 to 8: safe
 
-Thanks,
+from 3 to 8: safe
+processed 14 insns (limit 1000000) max_states_per_insn 0 total_states
+1 peak_states 1 mark_read 1
 
-Mathieu
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Besides, the verifier enforces the return value of some prog types to
+be zero, the bug may lead to programs with arbitrary values loaded.
 
+Best
+Hao Sun
 
