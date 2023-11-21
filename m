@@ -1,150 +1,132 @@
-Return-Path: <bpf+bounces-15564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB53F7F34F7
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 18:32:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEB1C7F34F8
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 18:33:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 358F2B21445
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 17:32:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ABD8B213F3
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 17:33:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB005B1F7;
-	Tue, 21 Nov 2023 17:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F3A5B1FC;
+	Tue, 21 Nov 2023 17:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="EQsRtLAH"
+	dkim=pass (1024-bit key) header.d=epfl.ch header.i=@epfl.ch header.b="zOAWITTj"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B17919E;
-	Tue, 21 Nov 2023 09:32:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=HsRKL7oJPeTSKmfazEgvxbiEjBhhBtyUd3QT8UX3zvI=; b=EQsRtLAHV3P4RtP7U88x97d4t5
-	C6nQkrCGo7FTm+zzeiPpnuLQjxk0WcYtW9mRg0W6S64NgrqTt5nKv/8efRLyl7r1ZG1WpRuAf/9x1
-	i7k8HW/4sswY5d746+Ap+38pZsi4mGGHJPx0jkbjH+jINICwg2orhCgzwn4XEM2egvdLRMXAjWOM1
-	Ch5ag11bq5m/+cktSzw47ysiiihDTx/6/8QXSX2OQQPMys8ffCJesm51nNlsFEjbhchFE7ikQ3vU9
-	OUe+o3J/+eJtTFfA8jA28dmyBatOcfL8tabjq/ULMTDwKiEgudgoiR1iEl61oNshBofiw/jignIJ4
-	cUadN58g==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1r5Ub7-005mh6-KM; Tue, 21 Nov 2023 17:31:41 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 8DC72300338; Tue, 21 Nov 2023 18:31:40 +0100 (CET)
-Date: Tue, 21 Nov 2023 18:31:40 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Michael Jeanson <mjeanson@efficios.com>,
-	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
-	bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
-Message-ID: <20231121173140.GO4779@noisy.programming.kicks-ass.net>
-References: <20231120222311.GE8262@noisy.programming.kicks-ass.net>
- <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
- <20231121084706.GF8262@noisy.programming.kicks-ass.net>
- <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
- <20231121143647.GI8262@noisy.programming.kicks-ass.net>
- <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
- <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
- <20231121155256.GN4779@noisy.programming.kicks-ass.net>
- <dd48866e-782e-4362-aa20-1c7a3be5a2fc@efficios.com>
- <20231121165029.GL8262@noisy.programming.kicks-ass.net>
+Received: from smtp5.epfl.ch (smtp5.epfl.ch [IPv6:2001:620:618:1e0:1:80b2:e034:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8B8A4
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 09:32:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=epfl.ch;
+      s=epfl; t=1700587966;
+      h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Content-Type;
+      bh=jvGH3NXa5GlWcCaBDaa8HWpUyA7/lGEVd6apye4g4uc=;
+      b=zOAWITTjPTAyka5Sl6K/2XS0xYh3bAFZ36mU5Kc9H25xcgqsxSofP1qkAeZ2Htbbv
+        o8skMXMqwR/zBcSKCA5t1MrCwwMl4xXQUHMCYZiqNRWxnrIkhB87FrCLuY5s0PTKQ
+        w3Mwv1zDpaOKAFZ2dKyoEulNLAxeeTxAb+pBWv91E=
+Received: (qmail 3237 invoked by uid 107); 21 Nov 2023 17:32:46 -0000
+Received: from ax-snat-224-178.epfl.ch (HELO ewa07.intranet.epfl.ch) (192.168.224.178) (TLS, ECDHE-RSA-AES256-GCM-SHA384 (P-256 curve) cipher)
+  by mail.epfl.ch (AngelmatoPhylax SMTP proxy) with ESMTPS; Tue, 21 Nov 2023 18:32:46 +0100
+X-EPFL-Auth: VRUgMN/hQcQlK1BLiy9zSVOoAsGGoPPzcQRUwI0cisOKrDksmp8=
+Received: from rs3labsrv2.iccluster.epfl.ch (10.90.46.62) by
+ ewa07.intranet.epfl.ch (128.178.224.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 21 Nov 2023 18:32:43 +0100
+From: Tao Lyu <tao.lyu@epfl.ch>
+To: <andrii@kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<song@kernel.org>, <yonghong.song@linux.dev>, <haoluo@google.com>,
+	<martin.lau@linux.dev>
+CC: <bpf@vger.kernel.org>, <sanidhya.kashyap@epfl.ch>,
+	<mathias.payer@nebelwelt.net>, <meng.xu.cs@uwaterloo.ca>, Tao Lyu
+	<tao.lyu@epfl.ch>
+Subject: max<min after jset
+Date: Tue, 21 Nov 2023 18:32:06 +0100
+Message-ID: <20231121173206.3594040-1-tao.lyu@epfl.ch>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231121165029.GL8262@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.90.46.62]
+X-ClientProxiedBy: ewa12.intranet.epfl.ch (128.178.224.187) To
+ ewa07.intranet.epfl.ch (128.178.224.178)
 
-On Tue, Nov 21, 2023 at 05:50:29PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 21, 2023 at 11:00:13AM -0500, Mathieu Desnoyers wrote:
-> > On 2023-11-21 10:52, Peter Zijlstra wrote:
-> > > On Tue, Nov 21, 2023 at 03:46:43PM +0100, Peter Zijlstra wrote:
-> > > 
-> > > > Why is this such a hard question?
-> > > 
-> > > Anyway, recapping from IRC:
-> > > 
-> > > preemptible, SRCU:
-> > >    counter-array based, GP advances by increasing array index
-> > >    and waiting for previous index to drop to 0.
-> > > 
-> > >    notably, a GP can pass while a task is preempted but not within a
-> > >    critical section.
-> > > 
-> > >    SRCU has smp_mb() in the critical sections to improve GP.
-> > 
-> > Also:
-> > 
-> > preemptible only allows blocking when priority inheritance is
-> > guarantees, which excludes doing I/O, and thus page faults.
-> > Otherwise a long I/O could cause the system to OOM.
-> > 
-> > SRCU allows all kind of blocking, as long as the entire SRCU
-> > domain does not mind waiting for a while before readers complete.
-> 
-> Well, no. Fundamentally both SRCU and preemptible (and many other
-> flavours) are just a counter-array. The non-blocking for preempt comes
-> from the fact that it is the main global rcu instance and allowing all
-> that would make GPs too rare and cause you memory trouble.
-> 
-> But that's not because of how it's implemented, but because of it being
-> the main global instance.
-> 
-> > > tasks:
-> > >    waits for every task to pass schedule()
-> > > 
-> > >    ensures that any pieces of text rendered unreachable before, is
-> > >    actually unused after.
-> > > 
-> > > tasks-rude:
-> > >    like tasks, but different? build to handle tracing while rcu-idle,
-> > >    even though that was already deemed bad?
-> > > 
-> > > tasks-tracing-rcu:
-> > >    extention of tasks to have critical-sections ? Should this simply be
-> > >    tasks?
-> > 
-> > tasks-trace-rcu is meant to allow tasks to block/take a page fault within
-> > the read-side. It is specialized for tracing and has a single domain. It
-> > does not need the smp_mb on the read-side, which makes it lower-overhead
-> > than SRCU.
-> 
-> That's what it's meant for, not what it is.
-> 
-> Turns out that tasks-tracing is a per-task counter based thing, and as
-> such does not require all tasks to pass through schedule() and does not
-> imply the tasks flavour (nor the tasks-rude) despite the similarity in
-> naming.
-> 
-> But now I am again left wondering what the fundamental difference is
-> between a per-task counter and a per-cpu counter.
-> 
-> At the end of the day, you still have to wait for the thing to hit 0.
-> 
-> So I'm once again confused, ...
+Hi,
 
-Updating myself.. so task-tracing-rcu is in fact *very* similar to
-regular preemptible-rcu but is slightly different mostly because it is
-*not* the main global instance.
+The eBPF program shown below leads to an reversed min and max
+after insn 6 "if w0 & 0x894b6a55 goto +2",
+whic means max < min.
 
-Both are a single per-task counter (and not the per-cpu summing that I
-remember from many many *many* years ago; OLS'07), mostly because this
-helps identify which task is to blame when things go sideways.
+Here is the introduction how it happens.
 
+Before insn 6,
+the range of r0 expressed by the min and max field is
+min1 = 884670597, max1 = 900354100
+And the range expressed by the var_off=(0x34000000; 0x1ff5fbf))
+is min2=872415232, max2=905928639.
+
+---min2-----------------------min1-----max1-----max2---
+
+Here we can see that the range expressed by var_off is wider than that of min and max.
+
+When verifying insn6,
+it first uses the var_off and immediate "0x894b6a55" to
+calculate the new var_off=(0x34b00000; 0x415aa).
+The range expressed by the new var_off is:
+min3=883949568, max3=884217258
+
+---min2-----min3-----max3-----min1-----max1-----max2---
+
+And then it will calculate the new min and max by:
+(1) new-min = MAX(min3, min1) = min1
+(2) new-max = MIN(max3, max1) = max3
+
+---min2-----min3-----max3-----min1-----max1-----max2---
+         "new-max"          "new-min" 
+
+Now, the new-max becomes less than the new min.
+
+Notably, [min1, max1] can never make "w0 & 0x894b6a55 == 0"
+and thus cannot goes the fall-through branch.
+In other words, actually the fall-trough branch is a dead path.
+
+BTW, I cannot successfully compile this instruciton "if w0 != 0 goto +2;\"
+in the c inline assembly code.
+So I can only attach the bytecodes.
+
+Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+---
+ .../selftests/bpf/verifier/jset_reversed_range.c  | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/verifier/jset_reversed_range.c
+
+diff --git a/tools/testing/selftests/bpf/verifier/jset_reversed_range.c b/tools/testing/selftests/bpf/verifier/jset_reversed_range.c
+new file mode 100644
+index 000000000000..734f492a2a96
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/jset_reversed_range.c
+@@ -0,0 +1,15 @@
++{
++    "BPF_JSET: incorrect scalar range",
++    .insns = {
++    BPF_MOV64_IMM(BPF_REG_5, 100),
++    BPF_ALU64_IMM(BPF_DIV, BPF_REG_5, 3),
++    BPF_ALU32_IMM(BPF_RSH, BPF_REG_5, 7),
++    BPF_ALU64_IMM(BPF_AND, BPF_REG_5, -386969681),
++    BPF_ALU64_IMM(BPF_SUB, BPF_REG_5, -884670597),
++    BPF_MOV32_REG(BPF_REG_0, BPF_REG_5),
++    BPF_JMP32_IMM(BPF_JSET, BPF_REG_0, 0x894b6a55, 1),
++    BPF_MOV64_IMM(BPF_REG_0, 1),
++    BPF_MOV64_IMM(BPF_REG_0, 0),
++    BPF_EXIT_INSN(),
++    },
++},
+-- 
+2.25.1
 
 
