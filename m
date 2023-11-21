@@ -1,88 +1,163 @@
-Return-Path: <bpf+bounces-15534-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15535-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98FEC7F3286
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 16:41:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EAA37F32B4
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 16:51:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA3911C21AB9
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 15:41:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2157D1F21E73
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 15:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A740158121;
-	Tue, 21 Nov 2023 15:41:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E825D54F86;
+	Tue, 21 Nov 2023 15:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYFhZuQW"
 X-Original-To: bpf@vger.kernel.org
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C0C99;
-	Tue, 21 Nov 2023 07:41:22 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1r5SsI-0003vD-Qs; Tue, 21 Nov 2023 16:41:18 +0100
-Message-ID: <0a594a11-d345-48c3-a651-08ea80ab76a1@leemhuis.info>
-Date: Tue, 21 Nov 2023 16:41:17 +0100
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBD754F89
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 15:51:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1C36C433C8;
+	Tue, 21 Nov 2023 15:51:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700581912;
+	bh=WwKdR5EpIuoPyTiF9l91qy2/U/TA9wpVWOK/oMQGTTA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=tYFhZuQWeZs0lWDOpEMMrTsTZOk9FNIxy7sRunS70HvJkwJcc2Q7c9Vm+f8+yH2kb
+	 pIVOrRKjevNbzvaQuvNHfNIjaN/dDZ7BgYVHdatmXFDVYBzTYIJEnU0QqFjDNOIpdC
+	 oul2a9CuXx8CN2c6km9nADrsGY5R5UTE61JMZJxWElPVz2DUyBDb/znP2CBIRYTt5i
+	 PmcepSKVAffPnNst6hXbM4mzCQ9SlKZtMYbhNkHPenxW7j+OZSXpM5tKWaFLttlGt5
+	 wrdRtgSYxEc70QU16iWwFpM2OuavpjPxMXNgyAiGKaoEaQh80CE7kmnXDikohc8/Q0
+	 994pzEV1A6Lyw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 61131CE04BD; Tue, 21 Nov 2023 07:51:52 -0800 (PST)
+Date: Tue, 21 Nov 2023 07:51:52 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Michael Jeanson <mjeanson@efficios.com>,
+	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+	bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <ba543d44-9302-4115-ac4f-d4e9f8d98a90@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+ <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+ <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+ <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+ <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+ <20231121143647.GI8262@noisy.programming.kicks-ass.net>
+ <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
+ <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
+ <0364d2c5-e5af-4bb5-b650-124a90f3d220@efficios.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: inet6_sock_destruct->inet_sock_destruct trigger Call Trace
-Content-Language: en-US, de-DE
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Bagas Sanjaya <bagasdotme@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>
-Cc: Linux Networking <netdev@vger.kernel.org>, Linux BPF
- <bpf@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Regressions <regressions@lists.linux.dev>
-References: <8bfaee54-3117-65d3-d723-6408edf93961@gmail.com>
- <c3a5d08e-9c7c-4888-916a-ba4bd22a3319@collabora.com>
-From: "Linux regression tracking #update (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <c3a5d08e-9c7c-4888-916a-ba4bd22a3319@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1700581283;bc6798bc;
-X-HE-SMSGID: 1r5SsI-0003vD-Qs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0364d2c5-e5af-4bb5-b650-124a90f3d220@efficios.com>
 
-On 29.08.23 15:07, Muhammad Usama Anjum wrote:
-> On 6/16/23 5:43 PM, Bagas Sanjaya wrote:
->> I notice a regression report on Bugzilla [1]. Quoting from it:
-> [...]
->>> When the IPv6 address or NIC configuration changes, the following kernel warnings may be triggered:
-> [...]
->>> Thu Jun 15 09:02:31 2023 daemon.info : 09[KNL] interface utun deleted
-> [...]
->> #regzbot introduced: v6.1.27..v6.1.32 https://bugzilla.kernel.org/show_bug.cgi?id=217555
->> #regzbot title: kernel warning (oops) at inet_sock_destruct
-> The same warning has been seen on 4.14, 5.15, 6.1 and latest mainline.
->
-> This WARN_ON is present from 2008.
+On Tue, Nov 21, 2023 at 09:56:55AM -0500, Mathieu Desnoyers wrote:
+> On 2023-11-21 09:46, Peter Zijlstra wrote:
+> > On Tue, Nov 21, 2023 at 09:40:24AM -0500, Mathieu Desnoyers wrote:
+> > > On 2023-11-21 09:36, Peter Zijlstra wrote:
+> > > > On Tue, Nov 21, 2023 at 09:06:18AM -0500, Mathieu Desnoyers wrote:
+> > > > > Task trace RCU fits a niche that has the following set of requirements/tradeoffs:
+> > > > > 
+> > > > > - Allow page faults within RCU read-side (like SRCU),
+> > > > > - Has a low-overhead read lock-unlock (without the memory barrier overhead of SRCU),
+> > > > > - The tradeoff: Has a rather slow synchronize_rcu(), but tracers should not care about
+> > > > >     that. Hence, this is not meant to be a generic replacement for SRCU.
+> > > > > 
+> > > > > Based on my reading of https://lwn.net/Articles/253651/ , preemptible RCU is not a good
+> > > > > fit for the following reasons:
+> > > > > 
+> > > > > - It disallows blocking within a RCU read-side on non-CONFIG_PREEMPT kernels,
+> > > > 
+> > > > Your counter points are confused, we simply don't build preemptible RCU
+> > > > unless PREEMPT=y, but that could surely be fixed and exposed as a
+> > > > separate flavour.
+> > > > 
+> > > > > - AFAIU the mmap_sem used within the page fault handler does not have priority inheritance.
+> > > > 
+> > > > What's that got to do with anything?
 
-Hmmm, the commit that according to syzkaller's bisection caused this is
-not in those series. So I assume the bisection went sideways.
+Preemptible RCU allows blocking/preemption only in those cases where
+priority inheritance applies.  As Mathieu says below, this prevents
+indefinite postponement of a global grace period.  Such postponement is
+especially problematic in kernels built with PREEMPT_RCU=y.  For but one
+example, consider a situation where someone maps a file served by NFS.
+We can debate the wisdom of creating such a map, but having the kernel
+OOM would be a completely unacceptable "error message".
 
-And the reporter of the bugzilla ticket never bisected this either.
-Wondering if it started to show up there due to small unrelated timing
-changes.
+> > > > Still utterly confused about what task-tracing rcu is and how it is
+> > > > different from preemptible rcu.
 
-Not totally sure, but it seems like this in the end is not a real
-regression or one we can't do anything about. Thus removing this from
-the tracking; if anyone disagrees, please holler.
+Task Trace RCU allows general blocking, which it tolerates by stringent
+restrictions on what exactly it is used for (tracing in cases where the
+memory to be included in the tracing might page fault).  Preemptible RCU
+does not permit general blocking.
 
-#regzbot inconclusive: likely an older problem
-#regzbot ignore-activity
+Tasks Trace RCU is a very specialized tool for a very specific use case.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+> > > In addition to taking the mmap_sem, the page fault handler need to block
+> > > until its requested pages are faulted in, which may depend on disk I/O.
+> > > Is it acceptable to wait for I/O while holding preemptible RCU read-side?
+> > 
+> > I don't know, preemptible rcu already needs to track task state anyway,
+> > it needs to ensure all tasks have passed through a safe spot etc.. vs regular
+> > RCU which only needs to ensure all CPUs have passed through start.
+> > 
+> > Why is this such a hard question?
 
+It is not a hard question.  Nor is the answer, which is that preemptible
+RCU is not a good fit for this task for all the reasons that Mathieu has
+laid out.
+
+> Personally what I am looking for is a clear documentation of preemptible rcu
+> with respect to whether it is possible to block on I/O (take a page fault,
+> call schedule() explicitly) from within a preemptible rcu critical section.
+> I guess this is a hard question because there is no clear statement to that
+> effect in the kernel documentation.
+> 
+> If it is allowed (which I doubt), then I wonder about the effect of those
+> long readers on grace period delays. Things like expedited grace periods may
+> suffer.
+> 
+> Based on Documentation/RCU/rcu.rst:
+> 
+>   Preemptible variants of RCU (CONFIG_PREEMPT_RCU) get the
+>   same effect, but require that the readers manipulate CPU-local
+>   counters.  These counters allow limited types of blocking within
+>   RCU read-side critical sections.  SRCU also uses CPU-local
+>   counters, and permits general blocking within RCU read-side
+>   critical sections.  These variants of RCU detect grace periods
+>   by sampling these counters.
+> 
+> Then we just have to find a definition of "limited types of blocking"
+> vs "general blocking".
+
+The key point is that you are not allowed to place any source code in
+a preemptible RCU reader that would not be legal in a non-preemptible
+RCU reader.  The rationale again is that the cases in which preemptible
+RCU readers call schedule are cases to which priority boosting applies.
+
+It is quite possible that the documentation needs upgrading.  ;-)
+
+							Thanx, Paul
 
