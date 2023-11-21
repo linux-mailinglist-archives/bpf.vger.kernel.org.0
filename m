@@ -1,154 +1,140 @@
-Return-Path: <bpf+bounces-15552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A590C7F33A8
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 17:26:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40FDF7F340E
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 17:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FFD3283058
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 16:26:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68D6FB21C4D
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 16:41:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D6CE5A10C;
-	Tue, 21 Nov 2023 16:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD704A9BC;
+	Tue, 21 Nov 2023 16:41:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="VA8nEGH9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IoHNeeUS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5CE191
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 08:26:48 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-332ce3fa438so484139f8f.1
-        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 08:26:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1700584006; x=1701188806; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=phxKT//Kr/jPYhL4EV8Oyn7wgtVh/Gt9brQ45hWxM0U=;
-        b=VA8nEGH9t4SoA5bSk+IXQFKFOP/j2TFC9Ye415vzHHOfd8q4Y0Dlq25J3XIYO9wAv2
-         JtuF0gig/d2t0iNfU0BsqT5pbCH+ryy4N2ryxJBOGeeOkq9jfiuMBXX7WqKb8ejgfc3M
-         j+TGunHxG0yQjdjo3hOtcEt57AFiRV0GUpxYr3PpBMZMj0qjGkLcU4JIcQeSjyQWYaW9
-         2Tiop9pI4NolDbrsNAJ2Cw9877m6f1b1NGCvbQbA7Al8H1ZLB7EbXpuIBNLcGJTcdNV1
-         7GWhAzg1PkyyW+8t8hrS+Yf6SQF0OOAer5XlXph9+uGnBMKBlXZD1foIIj8y/MNwKUNz
-         JAkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700584006; x=1701188806;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=phxKT//Kr/jPYhL4EV8Oyn7wgtVh/Gt9brQ45hWxM0U=;
-        b=jtu+/UG+fwpe386wazo62q6JAQqPmAyTkX775tEZOEvN3ZYwsBcRcEgRLQzQvUiimT
-         6vnhqNUfuup59QhUmWxlf0eC4XFIQ2xXJycDlTL4msnhokjadH7s9lEZHWoiVs9/qk46
-         0M5Ha1noBQaRCip6GzXMRlBDjlkk1xpd9A58uMDkgtuLM8ISbL7q+oOyJ0Z7FE72A1Ij
-         w2Lc9dK9Oc4ndqDDb5cNdSl5LzpQc26X6eSXBwGZRrW3M6KT4xpZDUZ75JTjp4UyWDOF
-         z1BxyBdI0v6LIrBUS0GqUftBSu29sHOjKtjQuJ4cw0PKVvTYA9n9L4OjWBJCldKa7OTD
-         MLWg==
-X-Gm-Message-State: AOJu0YyfTT/L+JQldXUZ/AGXDzjxPznprXZwBsKpi2VeXSN6+1GAY0bg
-	osP4aObwGD8EXiqGhFEnfcKf4Q==
-X-Google-Smtp-Source: AGHT+IFAOMXPhQuOuubIw+w9xipTeZgUnnPJMjAjkqkCZs2QSIjIG3TJQClH0ufkkMq06X7r/WIZaA==
-X-Received: by 2002:adf:f384:0:b0:32d:d2aa:ed21 with SMTP id m4-20020adff384000000b0032dd2aaed21mr2152405wro.28.1700584006273;
-        Tue, 21 Nov 2023 08:26:46 -0800 (PST)
-Received: from ?IPV6:2a02:8011:e80c:0:3815:34ab:69a0:6fd2? ([2a02:8011:e80c:0:3815:34ab:69a0:6fd2])
-        by smtp.gmail.com with ESMTPSA id p11-20020adfcc8b000000b0032d9337e7d1sm14871554wrj.11.2023.11.21.08.26.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 21 Nov 2023 08:26:46 -0800 (PST)
-Message-ID: <a9ac8c82-7b97-4001-a839-215eb4cc292f@isovalent.com>
-Date: Tue, 21 Nov 2023 16:26:44 +0000
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B72295A119
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 16:41:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F3CDC433C8;
+	Tue, 21 Nov 2023 16:41:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700584916;
+	bh=GA5cVgxVxFnsICwvLexb6iEuW/gfAj83suuz969sIis=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=IoHNeeUSDJO1JlkHUfNVI4gvYxREiQjrTPMCpEOjyHuAF9b3xCiEVgxpmx5hSQzjs
+	 DKWF8JCjAEqAEYMYhYKj4bks9WRYWXzi53pKDF8kVDWQgS9SfovbAsrWWwIHk/xWNn
+	 h2GETJFxru8kBvRGRo/a2pAtEToSx7NjmuBMAChMQWTXpw8FE3yilI80YBWel6GXJr
+	 nGg3MZrP2GLAe9veDlXLNj1UUfSCPvlJ1vjB7kIQpIRYy0ot+srfS1J5mwbE5EpS/g
+	 hYfCGJSYJUij6I/vcbIoi6pS0FBjn5y16vaSjLmjXLIzPlsbZzFssbn+hg3GUhNaTp
+	 5icqFEcMLJqhQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 164D8CE04C0; Tue, 21 Nov 2023 08:41:56 -0800 (PST)
+Date: Tue, 21 Nov 2023 08:41:56 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Michael Jeanson <mjeanson@efficios.com>,
+	Alexei Starovoitov <ast@kernel.org>, Yonghong Song <yhs@fb.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+	bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+Message-ID: <e3721b80-4dfb-4914-acfb-b315b8cc45b8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231120214742.GC8262@noisy.programming.kicks-ass.net>
+ <62c6e37c-88cc-43f7-ac3f-1c14059277cc@paulmck-laptop>
+ <20231120222311.GE8262@noisy.programming.kicks-ass.net>
+ <cfc4b94e-8076-4e44-a8a7-2fd42dd9f2f2@paulmck-laptop>
+ <20231121084706.GF8262@noisy.programming.kicks-ass.net>
+ <a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com>
+ <20231121143647.GI8262@noisy.programming.kicks-ass.net>
+ <6f503545-9c42-4d10-aca4-5332fd1097f3@efficios.com>
+ <20231121144643.GJ8262@noisy.programming.kicks-ass.net>
+ <20231121155256.GN4779@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 bpf-next 1/9] bpftool: add testing skeleton
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Manu Bretelle <chantr4@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>
-References: <20231116194236.1345035-1-chantr4@gmail.com>
- <20231116194236.1345035-2-chantr4@gmail.com>
- <CAADnVQ+Mb-eQUxp-0c_C_nVme0Sqy7CST_vaCiawefjTb5spiw@mail.gmail.com>
-From: Quentin Monnet <quentin@isovalent.com>
-In-Reply-To: <CAADnVQ+Mb-eQUxp-0c_C_nVme0Sqy7CST_vaCiawefjTb5spiw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121155256.GN4779@noisy.programming.kicks-ass.net>
 
-2023-11-21 01:38 UTC+0000 ~ Alexei Starovoitov
-<alexei.starovoitov@gmail.com>
-> On Thu, Nov 16, 2023 at 11:43 AM Manu Bretelle <chantr4@gmail.com> wrote:
->>
->> +++ b/tools/testing/selftests/bpf/bpftool_tests/src/bpftool_tests.rs
->> @@ -0,0 +1,20 @@
->> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
->> +use std::process::Command;
->> +
->> +const BPFTOOL_PATH_ENV: &str = "BPFTOOL_PATH";
->> +const BPFTOOL_PATH: &str = "/usr/sbin/bpftool";
->> +
->> +/// Run a bpftool command and returns the output
->> +fn run_bpftool_command(args: &[&str]) -> std::process::Output {
->> +    let mut cmd = Command::new(std::env::var(BPFTOOL_PATH_ENV).unwrap_or(BPFTOOL_PATH.to_string()));
->> +    cmd.args(args);
->> +    println!("Running command {:?}", cmd);
->> +    cmd.output().expect("failed to execute process")
->> +}
->> +
->> +/// Simple test to make sure we can run bpftool
->> +#[test]
->> +fn run_bpftool() {
->> +    let output = run_bpftool_command(&["version"]);
->> +    assert!(output.status.success());
->> +}
->> diff --git a/tools/testing/selftests/bpf/bpftool_tests/src/main.rs b/tools/testing/selftests/bpf/bpftool_tests/src/main.rs
->> new file mode 100644
->> index 000000000000..6b4ffcde7406
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/bpftool_tests/src/main.rs
->> @@ -0,0 +1,3 @@
->> +// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
->> +#[cfg(test)]
->> +mod bpftool_tests;
+On Tue, Nov 21, 2023 at 04:52:56PM +0100, Peter Zijlstra wrote:
+> On Tue, Nov 21, 2023 at 03:46:43PM +0100, Peter Zijlstra wrote:
 > 
-> There is rust in the kernel tree already.
-> Most of it is #![no_std] and the rest depend on
-> rust_is_available.sh and the kernel build system.
-> This rust usage doesn't fit into two existing rust categories afaics.
+> > Why is this such a hard question?
 
-I haven't followed closely the introduction of Rust in the kernel
-repository, so apologies if I'm incorrect. From what I understand,
-#![no_std] is to avoid linking against the std-crate, which is necessary
-for Rust code that needs to be compiled as part of the kernel or
-modules, but is maybe not relevant for something external like a test
-suite? As for rust_is_available.sh, we would need a way to determine
-whether Rust is available indeed, before plugging these tests into the
-Makefile for the BPF selftests.
+The place to look is here:
 
-As far as I'm aware, these would be the first selftests written in Rust
-in the repo (other than for the code under rust/). I'm fine having tests
-in Rust for bpftool, for what it matters. Whether we want selftests in
-Rust in the kernel repo is another thing.
+https://docs.kernel.org/RCU/Design/Requirements/Requirements.html
 
+Or, if you prefer, Documentation/RCU/Design/Requirements/Requirements.rst.
+
+> Anyway, recapping from IRC:
 > 
-> Does it have to leave in the kernel tree?
-> We have bpftool on github, maybe it can be there?
-> Do you want to run bpftool tester as part of BPF CI and that's why
-> you want it to be in the kernel tree?
+> preemptible, SRCU:
+>   counter-array based, GP advances by increasing array index
+>   and waiting for previous index to drop to 0.
+> 
+>   notably, a GP can pass while a task is preempted but not within a
+>   critical section.
+> 
+>   SRCU has smp_mb() in the critical sections to improve GP.
 
-It doesn't _have_ to be in the kernel tree, although it's a nice place
-where to have it. We have bpftool on GitHub, but the CI that runs there
-is triggered only when syncing the mirror to check that mirroring is not
-broken, so after new patches are applied to bpf-next. If we want this on
-GitHub, we would rather target the BPF CI infra.
+https://docs.kernel.org/RCU/Design/Requirements/Requirements.html#sleepable-rcu
 
-A nice point of having it in the repo would be the ability to add tests
-at the same time as we add features in bpftool, of course.
+Allows general blocking in SRCU readers, which it tolerates by giving
+each user its own SRCU via DEFINE_SRCU(), DEFINE_STATIC_SRCU() or
+a srcu_struct structure.  Users blocking too much in SRCU read-side
+critical sections hurt only themselves.  Yes, heavy-weight readers.
 
-Quentin
+> tasks:
+>   waits for every task to pass schedule()
+> 
+>   ensures that any pieces of text rendered unreachable before, is
+>   actually unused after.
+
+But does not wait for tasks where RCU is not watching, including the
+idle loop.
+
+> tasks-rude:
+>   like tasks, but different? build to handle tracing while rcu-idle,
+>   even though that was already deemed bad?
+
+This waits for the tasks that RCU Tasks cannot wait for.  If noinstr
+is fully fixed, RCU Tasks Rude can go away.
+
+> tasks-tracing-rcu:
+>   extention of tasks to have critical-sections ? Should this simply be
+>   tasks?
+
+Tasks Trace RCU is its own thing.  It uses rcu_read_lock_trace() and
+rcu_read_unlock_trace() to mark its readers.  It can detect quiescent
+states even when the task in question does not call schedule().
+Unlike Tasks RCU, Tasks Trace RCU does not scan the full task list.
+(It used to, but that caused latency blows on non-realtime workloads.)
+Tasks Trace RCU allows preemption and blocking for page faults in
+its readers.  Also blocking on non-raw spinlocks in PREEMPT_RT, but I
+am not sure that anyone cares.  If you want to block on anything else,
+you need to talk to the current Tasks Trace RCU users.
+
+							Thanx, Paul
+
+> Can someone complete, please?
+> 
+> 
+> 
 
