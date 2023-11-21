@@ -1,272 +1,365 @@
-Return-Path: <bpf+bounces-15584-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15585-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B033D7F36CC
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:27:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFE5C7F36CE
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:30:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3D7128239B
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 19:27:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9BEB1C20CC2
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 19:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26575B1F3;
-	Tue, 21 Nov 2023 19:27:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3723C5B210;
+	Tue, 21 Nov 2023 19:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MPTW3RmS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PoJoIqTy"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b0])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531A912A
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:27:38 -0800 (PST)
-Message-ID: <f4d7f72d-1ba2-49dc-b4e0-03289393d436@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700594855;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dXqyza/cGSamA5v1IajCl/ltMBxck2L1S3FDcsNLS/0=;
-	b=MPTW3RmStvqI+4+OePNPic5Px7W1w3Qs+BhYuufv3RHDnhzEFhE02j+OlCNRdXrxAqavS5
-	cb2Pg1b6JI6IKcVvo1iOw6Bvc1PcmH2LvfVmDNPH3nWu4dO8b1WC7oO0n8bF49/MYu+npw
-	PxZGgnXZvc1csVh7xMH1Py4XJDR1XnU=
-Date: Tue, 21 Nov 2023 11:27:28 -0800
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D51F712C
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:30:17 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a00a9d677fcso243199266b.0
+        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 11:30:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700595016; x=1701199816; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4zLXbfhErrunYg232eQrMvqop0ovtGaCWAp1U3mMQfU=;
+        b=PoJoIqTysw+ArMwa5DFw92I807RVJU9FG7AxJqGDi0+y3Q8Y2T9Ny33IvWiUqbyDTQ
+         PXrQaAhdoRhHo4x9y9qXgAb1Tu1aZIQbl70Nnfrhz4gqqOFlGbmhbfgJ4Z5Kf22CtFiS
+         nWdR/yDuncZAbZLoEnrSGgCy7fAPJQhzfpMzGzELSAWd2R+yANiv8m+SSDZTR2h798Ge
+         Hz/RtZwPePrl9p0S9+CGXSWg36rZDjGYLOQ9gylsfDD5HnISfqhdos3l9Wje0c2yyn2o
+         ArK0F5jejF0EMGVVpa2L2sh7EWPo9fwZTUd1QP350Ta9V0uIGanxGpE+reKjlYjgDErj
+         nwrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700595016; x=1701199816;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4zLXbfhErrunYg232eQrMvqop0ovtGaCWAp1U3mMQfU=;
+        b=C24Ytg6av3kSjpGbxo7at+TdFhM8NGN/K+ilaqsWnGQyJsQyvUcYdeg+jzKyqxVRRt
+         MOZdjPGgyLnlo734/AwceEx0gUdalZy3U0BZN9PO8xKcvKr3FAxQDI15sAozmEvMGZA+
+         PezgU4dt6jL4AX4PAxGLiw1DTTCNomRvUdyMNGnN/a4MXuQ9ubssO/9/n3CGb6t9YYxi
+         UKFX5u23D5R2tHmA9/LbmTLb2Jx+46JR5aBTbXgDMjYCt3rV7ysLoFhMPkmHHVzVtNDq
+         QeRFmYHbKKQ3Yeca50IeLhO2nl98LjHeTRo171Xy8aQby15df8/xR3myUwQ1oLatFjsw
+         8b0w==
+X-Gm-Message-State: AOJu0YyoeUAOGnVIo8fzo0fHI7w9l8RsvQmKc2qGFdn7DF9J0wrVEVF/
+	LVv80RiDU0nueEO5snVikNrm9CzLP3+ccafpcKGXZErx
+X-Google-Smtp-Source: AGHT+IHDOG00QjvGGazo13xb5gwRn59BOzARtx6ftCLuhuf7yZgEJAaWqcT353/bbWvrsnBj6qnu8I8dGOMmb/OhcNc=
+X-Received: by 2002:a17:906:24d4:b0:9fd:59ea:2dec with SMTP id
+ f20-20020a17090624d400b009fd59ea2decmr5909024ejb.73.1700595015818; Tue, 21
+ Nov 2023 11:30:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local
- storage
-Content-Language: en-US
-To: David Marchevsky <david.marchevsky@linux.dev>,
- Dave Marchevsky <davemarchevsky@fb.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>,
- Johannes Weiner <hannes@cmpxchg.org>, bpf@vger.kernel.org
-References: <20231120175925.733167-1-davemarchevsky@fb.com>
- <20231120175925.733167-2-davemarchevsky@fb.com>
- <9b037dde-e65c-4d1a-8295-68d51ac3ce25@linux.dev>
- <3dd86df3-0692-42d8-b075-f79c5dc052be@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <3dd86df3-0692-42d8-b075-f79c5dc052be@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231120175925.733167-1-davemarchevsky@fb.com> <20231120175925.733167-2-davemarchevsky@fb.com>
+In-Reply-To: <20231120175925.733167-2-davemarchevsky@fb.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 21 Nov 2023 11:30:03 -0800
+Message-ID: <CAEf4BzYZGC3VVMn0q9o=2KauT=7gsQPHbi1epC_Q5oPiPekRWw@mail.gmail.com>
+Subject: Re: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local storage
+To: Dave Marchevsky <davemarchevsky@fb.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/20/23 10:11 PM, David Marchevsky wrote:
-> 
-> 
-> On 11/20/23 7:42 PM, Martin KaFai Lau wrote:
->> On 11/20/23 9:59 AM, Dave Marchevsky wrote:
->>> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
->>> index 173ec7f43ed1..114973f925ea 100644
->>> --- a/include/linux/bpf_local_storage.h
->>> +++ b/include/linux/bpf_local_storage.h
->>> @@ -69,7 +69,17 @@ struct bpf_local_storage_data {
->>>         * the number of cachelines accessed during the cache hit case.
->>>         */
->>>        struct bpf_local_storage_map __rcu *smap;
->>> -    u8 data[] __aligned(8);
->>> +    /* Need to duplicate smap's map_flags as smap may be gone when
->>> +     * it's time to free bpf_local_storage_data
->>> +     */
->>> +    u64 smap_map_flags;
->>> +    /* If BPF_F_MMAPABLE, this is a void * to separately-alloc'd data
->>> +     * Otherwise the actual mapval data lives here
->>> +     */
->>> +    union {
->>> +        DECLARE_FLEX_ARRAY(u8, data) __aligned(8);
->>> +        void *actual_data __aligned(8);
->>
->> The pages (that can be mmap'ed later) feel like a specific kind of kptr.
->>
->> Have you thought about allowing a kptr (pointing to some pages that can be mmap'ed later) to be stored as one of the members of the map's value as a kptr. bpf_local_storage_map is one of the maps that supports kptr.
->>
->> struct normal_and_mmap_value {
->>      int some_int;
->>      int __percpu_kptr *some_cnts;
->>
->>      struct bpf_mmap_page __kptr *some_stats;
->> };
->>
->> struct mmap_only_value {
->>      struct bpf_mmap_page __kptr *some_stats;
->> };
->>
->> [ ... ]
->>
-> 
-> This is an intriguing idea. For conciseness I'll call this specific
-> kind of kptr 'mmapable kptrs' for the rest of this message. Below is
-> more of a brainstorming dump than a cohesive response, separate trains
-> of thought are separated by two newlines.
+On Mon, Nov 20, 2023 at 9:59=E2=80=AFAM Dave Marchevsky <davemarchevsky@fb.=
+com> wrote:
+>
+> This patch modifies the generic bpf_local_storage infrastructure to
+> support mmapable map values and adds mmap() handling to task_local
+> storage leveraging this new functionality. A userspace task which
+> mmap's a task_local storage map will receive a pointer to the map_value
+> corresponding to that tasks' key - mmap'ing in other tasks' mapvals is
+> not supported in this patch.
+>
+> Currently, struct bpf_local_storage_elem contains both bookkeeping
+> information as well as a struct bpf_local_storage_data with additional
+> bookkeeping information and the actual mapval data. We can't simply map
+> the page containing this struct into userspace. Instead, mmapable
+> local_storage uses bpf_local_storage_data's data field to point to the
+> actual mapval, which is allocated separately such that it can be
+> mmapped. Only the mapval lives on the page(s) allocated for it.
+>
+> The lifetime of the actual_data mmapable region is tied to the
+> bpf_local_storage_elem which points to it. This doesn't necessarily mean
+> that the pages go away when the bpf_local_storage_elem is free'd - if
+> they're mapped into some userspace process they will remain until
+> unmapped, but are no longer the task_local storage's mapval.
+>
+> Implementation details:
+>
+>   * A few small helpers are added to deal with bpf_local_storage_data's
+>     'data' field having different semantics when the local_storage map
+>     is mmapable. With their help, many of the changes to existing code
+>     are purely mechanical (e.g. sdata->data becomes sdata_mapval(sdata),
+>     selem->elem_size becomes selem_bytes_used(selem)).
 
-Thanks for bearing with me while some ideas could be crazy. I am trying to see 
-how this would look like for other local storage, sk and inode. Allocating a 
-page for each sk will not be nice for server with half a million sk(s). e.g. 
-half a million sk(s) sharing a few bandwidth policies or a few tuning 
-parameters. Creating something mmap'able to the user space and also sharable 
-among many sk(s) will be useful.
+might be worth doing this as a pre-patch with no functional changes to
+make the main change a bit smaller and more focused?
 
-> 
-> 
-> My initial thought upon seeing struct normal_and_mmap_value was to note
-> that we currently don't support mmaping for map_value types with _any_
-> special fields ('special' as determined by btf_parse_fields). But IIUC
-> you're actually talking about exposing the some_stats pointee memory via
-> mmap, not the containing struct with kptr fields. That is, for maps that
-> support these kptrs, mmap()ing a map with value type struct
-> normal_and_mmap_value would return the some_stats pointer value, and
-> likely initialize the pointer similarly to BPF_LOCAL_STORAGE_GET_F_CREATE
-> logic in this patch. We'd only be able to support one such mmapable kptr
-> field per mapval type, but that isn't a dealbreaker.
-> 
-> Some maps, like task_storage, would only support mmap() on a map_value
-> with mmapable kptr field, as mmap()ing the mapval itself doesn't make
-> sense or is unsafe. Seems like arraymap would do the opposite, only
+>
+>   * The map flags are copied into bpf_local_storage_data when its
+>     containing bpf_local_storage_elem is alloc'd, since the
+>     bpf_local_storage_map associated with them may be gone when
+>     bpf_local_storage_data is free'd, and testing flags for
+>     BPF_F_MMAPABLE is necessary when free'ing to ensure that the
+>     mmapable region is free'd.
+>     * The extra field doesn't change bpf_local_storage_elem's size.
+>       There were 48 bytes of padding after the bpf_local_storage_data
+>       field, now there are 40.
+>
+>   * Currently, bpf_local_storage_update always creates a new
+>     bpf_local_storage_elem for the 'updated' value - the only exception
+>     being if the map_value has a bpf_spin_lock field, in which case the
+>     spin lock is grabbed instead of the less granular bpf_local_storage
+>     lock, and the value updated in place. This inplace update behavior
+>     is desired for mmapable local_storage map_values as well, since
+>     creating a new selem would result in new mmapable pages.
+>
+>   * The size of the mmapable pages are accounted for when calling
+>     mem_{charge,uncharge}. If the pages are mmap'd into a userspace task
+>     mem_uncharge may be called before they actually go away.
+>
+> Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
+> ---
+>  include/linux/bpf_local_storage.h |  14 ++-
+>  kernel/bpf/bpf_local_storage.c    | 145 ++++++++++++++++++++++++------
+>  kernel/bpf/bpf_task_storage.c     |  35 ++++++--
+>  kernel/bpf/syscall.c              |   2 +-
+>  4 files changed, 163 insertions(+), 33 deletions(-)
+>
+> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_=
+storage.h
+> index 173ec7f43ed1..114973f925ea 100644
+> --- a/include/linux/bpf_local_storage.h
+> +++ b/include/linux/bpf_local_storage.h
+> @@ -69,7 +69,17 @@ struct bpf_local_storage_data {
+>          * the number of cachelines accessed during the cache hit case.
+>          */
+>         struct bpf_local_storage_map __rcu *smap;
+> -       u8 data[] __aligned(8);
+> +       /* Need to duplicate smap's map_flags as smap may be gone when
+> +        * it's time to free bpf_local_storage_data
+> +        */
+> +       u64 smap_map_flags;
+> +       /* If BPF_F_MMAPABLE, this is a void * to separately-alloc'd data
+> +        * Otherwise the actual mapval data lives here
+> +        */
+> +       union {
+> +               DECLARE_FLEX_ARRAY(u8, data) __aligned(8);
+> +               void *actual_data __aligned(8);
 
-Changing direction a bit since arraymap is brought up. :)
-
-arraymap supports BPF_F_MMAPABLE. If the local storage map's value can store an 
-arraymap as kptr, the bpf prog should be able to access it as a map. More like 
-the current map-in-map setup. The arraymap can be used as regular map in the 
-user space also (like pinning). It may need some btf plumbing to tell the value 
-type of the arrayamp to the verifier.
-
-The syscall bpf_map_update_elem(task_storage_map_fd, &task_pidfd, &value, flags) 
-can be used where the value->array_mmap initialized as an arraymap_fd. This will 
-limit the arraymap kptr update only from the syscall side which seems to be your 
-usecase also? Allocating the arraymap from the bpf prog side needs some thoughts 
-and need a whitelist.
-
-The same goes for the syscall bpf_map_lookup_elem(task_storage_map_fd, 
-&task_pidfd, &value). The kernel can return a fd in value->array_mmap. May be we 
-can create a libbpf helper to free the fd(s) resources held in the looked-up 
-value by using the value's btf.
-
-The bpf_local_storage_map side probably does not need to support mmap() then.
+I don't know if it's the issue, but probably best to keep FLEX_ARRAY
+member the last even within the union, just in case if some tool
+doesn't handle FLEX_ARRAY not being last line number-wise?
 
 
-> supporting mmap()ing the mapval itself. I'm curious if any map could
-> feasibly support both, and if so, might have to do logic like:
-> 
->    if (map_val has mmapable kptr)
->       mmap the pointee of mmapable kptr
->    else
->       mmap the map_val itself
-> 
-> Which is maybe too confusing of a detail to expose to BPF program
-> writers. Maybe a little too presumptuous and brainstorm-ey given the
-> limited number of mmap()able maps currently, but making this a kptr type
-> means maps should either ignore/fail if they don't support it, or have
-> consistent semantics amongst maps that do support it.
-> 
-> 
-> Instead of  struct bpf_mmap_page __kptr *some_stats;  I'd prefer
-> something like
-> 
-> struct my_type { long count; long another_count; };
-> 
-> struct mmap_only_value {
->    struct my_type __mmapable_kptr *some_stats;
-> };
-> 
-> This way the type of mmap()able field is known to BPF programs that
-> interact with it. This is all assuming that struct bpf_mmap_page is an
-> opaque page-sized blob of bytes.
-> 
-> 
-> We could then support structs like
-> 
-> struct mmap_value_and_lock {
->    struct bpf_spin_lock l;
->    int some_int;
->    struct my_type __mmapable_kptr *some_stats;
-> };
-> 
-> and have bpf_map_update_elem handler use the spin_lock instead of
-> map-internal lock where appropriate. But no way to ensure userspace task
-> using the mmap()ed region uses the spin_lock.
-> 
->>> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storage.c
->>> index 146824cc9689..9b3becbcc1a3 100644
->>> --- a/kernel/bpf/bpf_local_storage.c
->>> +++ b/kernel/bpf/bpf_local_storage.c
->>> @@ -15,7 +15,8 @@
->>>    #include <linux/rcupdate_trace.h>
->>>    #include <linux/rcupdate_wait.h>
->>>    -#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK (BPF_F_NO_PREALLOC | BPF_F_CLONE)
->>> +#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK \
->>> +    (BPF_F_NO_PREALLOC | BPF_F_CLONE | BPF_F_MMAPABLE)
->>>      static struct bpf_local_storage_map_bucket *
->>>    select_bucket(struct bpf_local_storage_map *smap,
->>> @@ -24,6 +25,51 @@ select_bucket(struct bpf_local_storage_map *smap,
->>>        return &smap->buckets[hash_ptr(selem, smap->bucket_log)];
->>>    }
->>>    +struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map);
->>> +
->>> +void *alloc_mmapable_selem_value(struct bpf_local_storage_map *smap)
->>> +{
->>> +    struct mem_cgroup *memcg, *old_memcg;
->>> +    void *ptr;
->>> +
->>> +    memcg = bpf_map_get_memcg(&smap->map);
->>> +    old_memcg = set_active_memcg(memcg);
->>> +    ptr = bpf_map_area_mmapable_alloc(PAGE_ALIGN(smap->map.value_size),
->>> +                      NUMA_NO_NODE);
->>> +    set_active_memcg(old_memcg);
->>> +    mem_cgroup_put(memcg);
->>> +
->>> +    return ptr;
->>> +}
->>
->> [ ... ]
->>
->>> @@ -76,10 +122,19 @@ bpf_selem_alloc(struct bpf_local_storage_map *smap, void *owner,
->>>            void *value, bool charge_mem, gfp_t gfp_flags)
->>>    {
->>>        struct bpf_local_storage_elem *selem;
->>> +    void *mmapable_value = NULL;
->>> +    u32 selem_mem;
->>>    -    if (charge_mem && mem_charge(smap, owner, smap->elem_size))
->>> +    selem_mem = selem_bytes_used(smap);
->>> +    if (charge_mem && mem_charge(smap, owner, selem_mem))
->>>            return NULL;
->>>    +    if (smap->map.map_flags & BPF_F_MMAPABLE) {
->>> +        mmapable_value = alloc_mmapable_selem_value(smap);
->>
->> This probably is not always safe for bpf prog to do. Leaving the gfp_flags was not used aside, the bpf local storage is moving to the bpf's memalloc because of https://lore.kernel.org/bpf/20221118190109.1512674-1-namhyung@kernel.org/
->>
-> 
-> Minor point: alloc_mmapable_selem_value's bpf_map_area_mmapable_alloc
-> call will always call vmalloc under the hood. vmalloc has locks as well,
-> so your point stands.
-> 
-> I think I see how this ties into your 'specific kptr type' proposal
-> above. Let me know if this sounds right: if there was a bpf_mem_alloc
-> type focused on providing vmalloc'd mmap()able memory, we could use it
-> here instead of raw vmalloc and avoid the lock recursion problem linked
-> above. Such an allocator could be used in something like bpf_obj_new to
-> create the __mmapable_kptr - either from BPF prog or mmap path before
-> remap_vmalloc_range.
-> 
-> re: gfp_flags, looks like verifier is setting this param to either
-> GFP_ATOMIC or GFP_KERNEL. Looks like we should not allow GFP_KERNEL
-> allocs here?
+> +       };
+>  };
+>
+>  /* Linked to bpf_local_storage and bpf_local_storage_map */
+> @@ -124,6 +134,8 @@ static struct bpf_local_storage_cache name =3D {     =
+                 \
+>  /* Helper functions for bpf_local_storage */
+>  int bpf_local_storage_map_alloc_check(union bpf_attr *attr);
+>
+> +void *sdata_mapval(struct bpf_local_storage_data *data);
+> +
+>  struct bpf_map *
+>  bpf_local_storage_map_alloc(union bpf_attr *attr,
+>                             struct bpf_local_storage_cache *cache,
+> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storag=
+e.c
+> index 146824cc9689..9b3becbcc1a3 100644
+> --- a/kernel/bpf/bpf_local_storage.c
+> +++ b/kernel/bpf/bpf_local_storage.c
+> @@ -15,7 +15,8 @@
+>  #include <linux/rcupdate_trace.h>
+>  #include <linux/rcupdate_wait.h>
+>
+> -#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK (BPF_F_NO_PREALLOC | BPF_F_CL=
+ONE)
+> +#define BPF_LOCAL_STORAGE_CREATE_FLAG_MASK \
+> +       (BPF_F_NO_PREALLOC | BPF_F_CLONE | BPF_F_MMAPABLE)
+>
+>  static struct bpf_local_storage_map_bucket *
+>  select_bucket(struct bpf_local_storage_map *smap,
+> @@ -24,6 +25,51 @@ select_bucket(struct bpf_local_storage_map *smap,
+>         return &smap->buckets[hash_ptr(selem, smap->bucket_log)];
+>  }
+>
+> +struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map);
+> +
+> +void *alloc_mmapable_selem_value(struct bpf_local_storage_map *smap)
+> +{
+> +       struct mem_cgroup *memcg, *old_memcg;
+> +       void *ptr;
+> +
+> +       memcg =3D bpf_map_get_memcg(&smap->map);
+> +       old_memcg =3D set_active_memcg(memcg);
+> +       ptr =3D bpf_map_area_mmapable_alloc(PAGE_ALIGN(smap->map.value_si=
+ze),
+> +                                         NUMA_NO_NODE);
+> +       set_active_memcg(old_memcg);
+> +       mem_cgroup_put(memcg);
+> +
+> +       return ptr;
+> +}
+> +
+> +void *sdata_mapval(struct bpf_local_storage_data *data)
+> +{
+> +       if (data->smap_map_flags & BPF_F_MMAPABLE)
+> +               return data->actual_data;
+> +       return &data->data;
+> +}
 
-Going back to this patch, not sure what does it take to make bpf_mem_alloc() 
-mmap()able. May be we can limit the blast radius for now, like limit this alloc 
-to the user space mmap() call for now. Does it fit your use case? A whitelist 
-for bpf prog could also be created later if needed.
+given this being potentially high-frequency helper called from other
+.o files and it is simple, should this be a static inline in .h header
+instead?
 
-> 
->>> +        if (!mmapable_value)
->>> +            goto err_out;
->>> +    }
->>> +
->>
+> +
+> +static size_t sdata_data_field_size(struct bpf_local_storage_map *smap,
+> +                                   struct bpf_local_storage_data *data)
+> +{
+> +       if (smap->map.map_flags & BPF_F_MMAPABLE)
+> +               return sizeof(void *);
+> +       return (size_t)smap->map.value_size;
+> +}
+> +
 
+[...]
+
+> diff --git a/kernel/bpf/bpf_task_storage.c b/kernel/bpf/bpf_task_storage.=
+c
+> index adf6dfe0ba68..ce75c8d8b2ce 100644
+> --- a/kernel/bpf/bpf_task_storage.c
+> +++ b/kernel/bpf/bpf_task_storage.c
+> @@ -90,6 +90,7 @@ void bpf_task_storage_free(struct task_struct *task)
+>  static void *bpf_pid_task_storage_lookup_elem(struct bpf_map *map, void =
+*key)
+>  {
+>         struct bpf_local_storage_data *sdata;
+> +       struct bpf_local_storage_map *smap;
+>         struct task_struct *task;
+>         unsigned int f_flags;
+>         struct pid *pid;
+> @@ -114,7 +115,8 @@ static void *bpf_pid_task_storage_lookup_elem(struct =
+bpf_map *map, void *key)
+>         sdata =3D task_storage_lookup(task, map, true);
+>         bpf_task_storage_unlock();
+>         put_pid(pid);
+> -       return sdata ? sdata->data : NULL;
+> +       smap =3D (struct bpf_local_storage_map *)map;
+
+smap seems unused?
+
+> +       return sdata ? sdata_mapval(sdata) : NULL;
+>  out:
+>         put_pid(pid);
+>         return ERR_PTR(err);
+> @@ -209,18 +211,19 @@ static void *__bpf_task_storage_get(struct bpf_map =
+*map,
+>                                     u64 flags, gfp_t gfp_flags, bool nobu=
+sy)
+>  {
+>         struct bpf_local_storage_data *sdata;
+> +       struct bpf_local_storage_map *smap;
+>
+> +       smap =3D (struct bpf_local_storage_map *)map;
+
+used much later, so maybe move it down? or just not change this part?
+
+>         sdata =3D task_storage_lookup(task, map, nobusy);
+>         if (sdata)
+> -               return sdata->data;
+> +               return sdata_mapval(sdata);
+>
+>         /* only allocate new storage, when the task is refcounted */
+>         if (refcount_read(&task->usage) &&
+>             (flags & BPF_LOCAL_STORAGE_GET_F_CREATE) && nobusy) {
+> -               sdata =3D bpf_local_storage_update(
+> -                       task, (struct bpf_local_storage_map *)map, value,
+> -                       BPF_NOEXIST, gfp_flags);
+> -               return IS_ERR(sdata) ? NULL : sdata->data;
+> +               sdata =3D bpf_local_storage_update(task, smap, value,
+> +                                                BPF_NOEXIST, gfp_flags);
+> +               return IS_ERR(sdata) ? NULL : sdata_mapval(sdata);
+>         }
+>
+>         return NULL;
+> @@ -317,6 +320,25 @@ static void task_storage_map_free(struct bpf_map *ma=
+p)
+>         bpf_local_storage_map_free(map, &task_cache, &bpf_task_storage_bu=
+sy);
+>  }
+>
+> +static int task_storage_map_mmap(struct bpf_map *map, struct vm_area_str=
+uct *vma)
+> +{
+> +       void *data;
+> +
+> +       if (!(map->map_flags & BPF_F_MMAPABLE) || vma->vm_pgoff ||
+> +           (vma->vm_end - vma->vm_start) < map->value_size)
+
+so we enforce that vm_pgoff is zero, that's understandable. But why
+disallowing mmaping only a smaller portion of map value?
+
+Also, more importantly, I think you should reject `vma->vm_end -
+vma->vm_start > PAGE_ALIGN(map->value_size)`, no?
+
+Another question. I might have missed it, but where do we disallow
+mmap()'ing maps that have "special" fields in map_value, like kptrs,
+spin_locks, timers, etc?
+
+> +               return -EINVAL;
+> +
+> +       WARN_ON_ONCE(!bpf_rcu_lock_held());
+> +       bpf_task_storage_lock();
+> +       data =3D __bpf_task_storage_get(map, current, NULL, BPF_LOCAL_STO=
+RAGE_GET_F_CREATE,
+> +                                     0, true);
+> +       bpf_task_storage_unlock();
+> +       if (!data)
+> +               return -EINVAL;
+> +
+> +       return remap_vmalloc_range(vma, data, vma->vm_pgoff);
+> +}
+> +
+>  BTF_ID_LIST_GLOBAL_SINGLE(bpf_local_storage_map_btf_id, struct, bpf_loca=
+l_storage_map)
+>  const struct bpf_map_ops task_storage_map_ops =3D {
+>         .map_meta_equal =3D bpf_map_meta_equal,
+> @@ -331,6 +353,7 @@ const struct bpf_map_ops task_storage_map_ops =3D {
+>         .map_mem_usage =3D bpf_local_storage_map_mem_usage,
+>         .map_btf_id =3D &bpf_local_storage_map_btf_id[0],
+>         .map_owner_storage_ptr =3D task_storage_ptr,
+> +       .map_mmap =3D task_storage_map_mmap,
+>  };
+>
+>  const struct bpf_func_proto bpf_task_storage_get_recur_proto =3D {
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 5e43ddd1b83f..d7c05a509870 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -404,7 +404,7 @@ static void bpf_map_release_memcg(struct bpf_map *map=
+)
+>                 obj_cgroup_put(map->objcg);
+>  }
+>
+> -static struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
+> +struct mem_cgroup *bpf_map_get_memcg(const struct bpf_map *map)
+>  {
+>         if (map->objcg)
+>                 return get_mem_cgroup_from_objcg(map->objcg);
+> --
+> 2.34.1
+>
 
