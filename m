@@ -1,248 +1,90 @@
-Return-Path: <bpf+bounces-15472-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15473-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63C4B7F2277
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 01:46:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23BBD7F229D
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 01:55:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92F511C21531
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 00:46:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA0F51F26421
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 00:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE8915C1;
-	Tue, 21 Nov 2023 00:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCC7417EC;
+	Tue, 21 Nov 2023 00:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H9R2Psav"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SuoEK/lV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36CA1CD
-	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 16:46:23 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-507a62d4788so7078902e87.0
-        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 16:46:23 -0800 (PST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEC5891
+	for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 16:55:34 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9f27af23443so679952566b.0
+        for <bpf@vger.kernel.org>; Mon, 20 Nov 2023 16:55:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700527581; x=1701132381; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pa3xMWoAQf1VaC1S8a6TWCbpTdOC2N9pWVnPuGL7khY=;
-        b=H9R2Psavu+XmnhyOMENlnTcJLSPJw+49q5DOwzMXBw9GZXyo6xDVtIkYuyZjHzRZFg
-         Oqcg4OT/0feoweeNZYszpca4MHUKa2YRnQ9d/5S4dKz7oGXKhONqk35+3cFBtXbTPBJ4
-         M1cZ56kxvnjxDYDEdeCWrYo8DHwBNixHfhdqaPCgpep9nkZ4Rp9GcU6ZyS0H1ieKSrx/
-         KK5N0Wh369CWoP+dTIgCuVVLqfduk8LHlnBgoIB/VBgOG4pB57rdGX90cb4Bz3ECMwKY
-         tndE9z3jMnyp/okMnLdeQ+SxEMJ6m4SRyVMH/scy8YC5Eohm2Z/chQ+9P5Tm6fB1rdaW
-         AnPQ==
+        d=gmail.com; s=20230601; t=1700528133; x=1701132933; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1sWIvWGuWW4ubiSUVGp+dwZI0V6Ok7DdmoWjkC/5c+U=;
+        b=SuoEK/lVJczLZUOzRis0Uw3b0C4dRQLl9zep6D6T+0/HkRt+aVAE3qzIZ+o3vvVaRN
+         j5UfyDRFCP+KAJqScg4qG1YV12BRHpOa0TwEQQ7PKf9JNkB04uqZ7kNbURDD5ou0HxA6
+         mP+1htBozu3Oxu2vbVE+6/dg2U9PTXCriGcPYxdlFRytW9jUJxCEz1Rnr2ofG1W3Gv5p
+         ggADI+UyHgq11ap+C/szFwbHv1GV0ERrPUXSrz6Fwjez1vhEp+aGBPGwKsOa8/R19EOq
+         NscdHCEkkyn9FRLcrA+fQCgljccNnkCOiXh9QlsjEELroAhw+blQJ219cEsI1uV7BINj
+         yEyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700527581; x=1701132381;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pa3xMWoAQf1VaC1S8a6TWCbpTdOC2N9pWVnPuGL7khY=;
-        b=Q6pDa31A93UyYJhva+bWQaP/p0vs2/TIXBUgia8Ts6Feh+dkfwDB7VviESzMenAnia
-         8s1mkSEy90jGHWDoDG9nIYgxJBQQRP9fG1rYx446MkhOLpF9ukvPhsDzQwC0iTEcLwqW
-         RUmuaYhI4Ap1RFEz+7OHM7xCNhMDBS14UMi7FE4D1CPbr4KgzPU4Xi+MS4+LdAxwHbQA
-         nyGTvTBzZQIgsZBJItleQoCwnVSazHGKqok6sVGsGSRoGbR25EPevZ2dAifUcEO0BTLm
-         NoAJn3mIlPbpYAET5veKm/HEmx0tbd65U7GhRpLzYpVpRfybt1Z40IfZ6lo6TCo8/PGX
-         pcXg==
-X-Gm-Message-State: AOJu0YyGU/pFk4qlIbYuTHie4+x7kopBPDFJfUGL39dBUN1vs4X8qSyF
-	UmXNzuujCs6GtFAmYavEjcqyeGzxquvG3/3U4IpDNvwHnEI=
-X-Google-Smtp-Source: AGHT+IET5pxzznvs3txaL5CYYthjXybpl7VjDybB8o2MqQ5D2fGkhXy81WnSZWAPdjDiW+ZN9UfXe1PG1jOln8M+brg=
-X-Received: by 2002:a05:6512:2112:b0:503:36cb:5438 with SMTP id
- q18-20020a056512211200b0050336cb5438mr5538199lfr.21.1700527581045; Mon, 20
- Nov 2023 16:46:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700528133; x=1701132933;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1sWIvWGuWW4ubiSUVGp+dwZI0V6Ok7DdmoWjkC/5c+U=;
+        b=s/wW8R4WMbslVgZH9/if8QDgQ1P3Ri0B5fskR6tor3JuSdVv7PxHPRVUDPfKJmGo1M
+         YfPrAYCwyI4HcximH8GeJQei8qtX07Ie3cZbMlqt8mZltgDPqcwzWafZ30g3w9kFPbLk
+         TPkU+kIts4Maeo5M3crVkpepTFiqTp2KBtDkXiLXWX6bDkKRWVQSZgs5nV5K1jKKvN1l
+         LdFN0MQwb2vpDiOX4P2hEptMZ3JU3R8+AZIemJqYjW4TSxaAYnNCnYRJ0slWVB1P+qEt
+         JLUypNNDuGHA5IkUORWmOqpMZrjPao+NRMRQnYc3ugyMDIWsBAvE8xzQoho4hNSHerd2
+         bzHg==
+X-Gm-Message-State: AOJu0YxBw+LgNvadoEF4Q7Sm7tYP+D8uEMPPF2XLsCjzhjnirOJLTSnv
+	ApQsVD9Blrc2OP79filbEOQ=
+X-Google-Smtp-Source: AGHT+IGziIJ633eDUMt6geQ3YsO52wdkXXTRYpfgb97VD0QfyHGcQnuklBvISmUjKjky2um7vBt5Ew==
+X-Received: by 2002:a17:906:9d12:b0:9fe:5afc:bd3e with SMTP id fn18-20020a1709069d1200b009fe5afcbd3emr3028484ejc.22.1700528132954;
+        Mon, 20 Nov 2023 16:55:32 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id k2-20020a1709065fc200b009c503bf61c9sm4426311ejv.165.2023.11.20.16.55.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Nov 2023 16:55:32 -0800 (PST)
+Message-ID: <697e73f788a473b7cc946fc109566dbdb5134dfc.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 05/10] selftests/bpf: validate STACK_ZERO is
+ preserved on subreg spill
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+Date: Tue, 21 Nov 2023 02:55:31 +0200
+In-Reply-To: <20231121002221.3687787-6-andrii@kernel.org>
+References: <20231121002221.3687787-1-andrii@kernel.org>
+	 <20231121002221.3687787-6-andrii@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231113235008.127238-1-andreimatei1@gmail.com>
-In-Reply-To: <20231113235008.127238-1-andreimatei1@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 20 Nov 2023 16:46:09 -0800
-Message-ID: <CAEf4BzZbXML3oWaHejXRFNAG4NM2vGpsz9axjvOX6wKxEG+ExA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: fix tracking of stack size for var-off access
-To: Andrei Matei <andreimatei1@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, sunhao.th@gmail.com, 
-	kernel-team@dataexmachina.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 13, 2023 at 3:51=E2=80=AFPM Andrei Matei <andreimatei1@gmail.co=
-m> wrote:
->
-> Before this patch, writes to the stack using registers containing a
-> variable offset (as opposed to registers with fixed, known values) were
-> not properly contributing to the function's needed stack size. As a
-> result, it was possible for a program to verify, but then to attempt to
-> read out-of-bounds data at runtime because a too small stack had been
-> allocated for it.
->
-> Each function tracks the size of the stack it needs in
-> bpf_subprog_info.stack_depth, which is maintained by
-> update_stack_depth(). For regular memory accesses, check_mem_access()
-> was calling update_state_depth() but it was passing in only the fixed
-> part of the offset register, ignoring the variable offset. This was
-> incorrect; the minimum possible value of that register should be used
-> instead.
->
-> This patch fixes it by pushing down the update_stack_depth() call into
-> grow_stack_depth(), which then correctly uses the registers lower bound.
-> grow_stack_depth() is responsible for tracking the maximum stack size
-> for the current verifier state, so it seems like a good idea to couple
-> it with also updating the per-function high-water mark. As a result of
-> this re-arrangement, update_stack_depth() is no longer needlessly called
-> for reads; it is now called only for writes (plus other cases like
-> helper memory access). I think this is a good thing, as reads cannot
-> possibly grow the needed stack.
-
-I'm going to disagree. I think we should calculate max stack size both
-on reads and writes. I'm not sure why it's ok for a BPF program to
-access a stack with some big offset, but the BPF verifier not
-rejecting this. What do I miss?
-
->
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
-> Fixes: 01f810ace9ed3 ("bpf: Allow variable-offset stack access")
-> Closes: https://lore.kernel.org/bpf/CABWLsev9g8UP_c3a=3D1qbuZUi20tGoUXoU0=
-7FPf-5FLvhOKOY+Q@mail.gmail.com/
-> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+On Mon, 2023-11-20 at 16:22 -0800, Andrii Nakryiko wrote:
+> Add tests validating that STACK_ZERO slots are preserved when slot is
+> partially overwritten with subregister spill.
+>=20
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  kernel/bpf/verifier.c | 47 ++++++++++++++++++++++---------------------
->  1 file changed, 24 insertions(+), 23 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a2267d5ed14e..303a3572b169 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -1669,8 +1669,29 @@ static int resize_reference_state(struct bpf_func_=
-state *state, size_t n)
->         return 0;
->  }
->
-> -static int grow_stack_state(struct bpf_func_state *state, int size)
-> +static int update_stack_depth(struct bpf_verifier_env *env,
-> +                             const struct bpf_func_state *func,
-> +                             int off)
-> +{
-> +       u16 stack =3D env->subprog_info[func->subprogno].stack_depth;
-> +
-> +       if (stack >=3D -off)
-> +               return 0;
-> +
-> +       /* update known max for given subprogram */
-> +       env->subprog_info[func->subprogno].stack_depth =3D -off;
-> +       return 0;
-> +}
 
-given this is targeting bpf tree and will probably be backported to
-stable kernels, let's minimize code movement. Can you just add
-update_stack_depth forward declaration here instead?
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-> +
-> +/* Possibly update state->allocated_stack to be at least size bytes. Als=
-o
-> + * possibly update the function's high-water mark in its bpf_subprog_inf=
-o.
-> + */
-> +static int grow_stack_state(struct bpf_verifier_env *env, struct bpf_fun=
-c_state *state, int size)
->  {
-> +       int err =3D update_stack_depth(env, state, -size);
-> +       if (err) {
-> +               return err;
-> +       }
->         size_t old_n =3D state->allocated_stack / BPF_REG_SIZE, n =3D siz=
-e / BPF_REG_SIZE;
->
->         if (old_n >=3D n)
-> @@ -4638,7 +4659,7 @@ static int check_stack_write_fixed_off(struct bpf_v=
-erifier_env *env,
->         struct bpf_reg_state *reg =3D NULL;
->         u32 dst_reg =3D insn->dst_reg;
->
-> -       err =3D grow_stack_state(state, round_up(slot + 1, BPF_REG_SIZE))=
-;
-> +       err =3D grow_stack_state(env, state, round_up(slot + 1, BPF_REG_S=
-IZE));
->         if (err)
->                 return err;
->         /* caller checked that off % size =3D=3D 0 and -MAX_BPF_STACK <=
-=3D off < 0,
-> @@ -4796,7 +4817,7 @@ static int check_stack_write_var_off(struct bpf_ver=
-ifier_env *env,
->             (!value_reg && is_bpf_st_mem(insn) && insn->imm =3D=3D 0))
->                 writing_zero =3D true;
->
-> -       err =3D grow_stack_state(state, round_up(-min_off, BPF_REG_SIZE))=
-;
-> +       err =3D grow_stack_state(env, state, round_up(-min_off, BPF_REG_S=
-IZE));
->         if (err)
->                 return err;
->
-> @@ -5928,20 +5949,6 @@ static int check_ptr_alignment(struct bpf_verifier=
-_env *env,
->                                            strict);
->  }
->
-> -static int update_stack_depth(struct bpf_verifier_env *env,
-> -                             const struct bpf_func_state *func,
-> -                             int off)
-> -{
-> -       u16 stack =3D env->subprog_info[func->subprogno].stack_depth;
-> -
-> -       if (stack >=3D -off)
-> -               return 0;
-> -
-> -       /* update known max for given subprogram */
-> -       env->subprog_info[func->subprogno].stack_depth =3D -off;
-> -       return 0;
-> -}
-> -
->  /* starting from main bpf function walk all instructions of the function
->   * and recursively walk all callees that given function can call.
->   * Ignore jump and exit insns.
-> @@ -6822,7 +6829,6 @@ static int check_mem_access(struct bpf_verifier_env=
- *env, int insn_idx, u32 regn
->  {
->         struct bpf_reg_state *regs =3D cur_regs(env);
->         struct bpf_reg_state *reg =3D regs + regno;
-> -       struct bpf_func_state *state;
->         int size, err =3D 0;
->
->         size =3D bpf_size_to_bytes(bpf_size);
-> @@ -6965,11 +6971,6 @@ static int check_mem_access(struct bpf_verifier_en=
-v *env, int insn_idx, u32 regn
->                 if (err)
->                         return err;
->
-> -               state =3D func(env, reg);
-> -               err =3D update_stack_depth(env, state, off);
-> -               if (err)
-> -                       return err;
-> -
-
-It *feels* like this stack depth update *and* growing allocated stack
-slots should happen somewhere in check_stack_access_within_bounds() or
-right after it. It shouldn't matter whether we read or write to the
-stack slot: either way that slot becomes part of the verifier state
-that we should take into account during state comparison. Eduard not
-so long ago added a change that allows reading STACK_INVALID slots, so
-it's completely valid to read something that was never written to (and
-so grow_stack_state() wasn't called for that slot, as it is
-implemented right now). So I think we should fix that.
-
-Let's also add a test that will trigger this situation with both
-direct stack slot read into register and through helper?
-
-cc'ing Eduard just in case I'm missing some subtle detail here
-
->                 if (t =3D=3D BPF_READ)
->                         err =3D check_stack_read(env, regno, off, size,
->                                                value_regno);
-> --
-> 2.39.2
->
->
+[...]
 
