@@ -1,131 +1,124 @@
-Return-Path: <bpf+bounces-15600-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15601-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D010A7F3888
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 23:01:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB7F17F38DD
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 23:06:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE824B21649
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 22:01:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64E032826F3
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 22:06:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17FA51034;
-	Tue, 21 Nov 2023 22:01:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D275644D;
+	Tue, 21 Nov 2023 22:06:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JCPcPKXP"
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="Mjmosxud"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B56C19E
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 14:01:34 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-548d67d30bbso3463964a12.1
-        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 14:01:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700604092; x=1701208892; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZYziiKXAmyKjFv3OtcQJf9YaLr076uoahoGoSYpzcGM=;
-        b=JCPcPKXPpPGtEMkgk9l2+Zmdp21zM9UmZHoFb0AljbtAwqnSGZLV3AL1TffmxJyGt+
-         7X6sPgPzlJuLOpr97uOdvbqmGjCjYTM2aVIzo8IUeCNJfZ/a+jieQhWZkPbZ9Rt1ytwD
-         A+u8+Pvwk7phwmgZ1ZuO8sOa3qRGVbWe1UGu3oJJFkKKTEDqZVvCi7qMBLyQyYnT52mp
-         sVd8xr2QxSjxEQgowGWmVSK1DQeMX8DsykgqQQyNpiZEyuCfaBME4JnX4OB2+igzd4N9
-         lhdsqS0h9domeMmoGoEEXkFr1E6hGU6pM50GfEwGIVHTjmEE9yHaMMbQhTv07N0CmTLl
-         s6+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700604092; x=1701208892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZYziiKXAmyKjFv3OtcQJf9YaLr076uoahoGoSYpzcGM=;
-        b=jfCPcxWw0M2O7foFSWsKn6HBr4zmJCp5peUOg97DlXKkQZJ85FknEfTbogs5QAV0Z3
-         2e1x/j5l3Kq71AN50CMlQ5sGAVEtvL8nnwm6Iu+odCE5lPX6NHmWz8ZpNHoeqsoBxG3I
-         M1YrZSnXJCkHZE9G+YinzR4GvRH7R34fIWWeTsq5HE7ZiF5sXgLrUUEbMM/dB2ppd/26
-         6dLgg/6E9Lpyi0n1Nnritzhid13Pfs0Dvcm+XSe5wJEp88OsOcKBi9TOkfS4p7ViijRB
-         Cuuk7vtVcSvDY6GWMfDxfTowkuhmy2kiECVct/PlY4H1HQQxIsoPTvPhLaoADjTTjgrb
-         P+GA==
-X-Gm-Message-State: AOJu0YzHBi127LFG4VLM8+L6renIpZHB00KMqRMsBYL1TRdto7ut7IMs
-	bZbgPv+xNv3A5qr2P8kBqwY+GC1GR9669Nc7PCs=
-X-Google-Smtp-Source: AGHT+IGkO6ds+G71EKeVQQ47keXeK+9lq3kqEoRVaq9Jz81VEi17zV9lgbOf27ga64POSqpXkTDYZLLxN5k5l0QVwZw=
-X-Received: by 2002:a17:906:3e5b:b0:a00:185a:a150 with SMTP id
- t27-20020a1709063e5b00b00a00185aa150mr153952eji.38.1700604092320; Tue, 21 Nov
- 2023 14:01:32 -0800 (PST)
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02olkn2038.outbound.protection.outlook.com [40.92.48.38])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A342A3C0A;
+	Tue, 21 Nov 2023 14:04:48 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IqROlfJ2TZbUq3rr39xx/doOiGyFupdPMuumIoMGM1EEaaacNCrIu+F3VzSnc685fkPlGyL4PKJ/fPogv+QJWzFi3ebq98x6CE6Te54rEY+kFYINlaPS+lGNG9gRApmuE998H5qcsug6g2djKDI86GCJJo2wvso7kH8Ys0VFuU23G5ome9rjMlw947nvvsO6LgrSWYOfBQoDEmABMNuwP/+E+mshqGx6F0ZzVxpjkeccyAJ6lKr8zTGTugI3o+CZVziYDsC3zyKRgV8LlN56NmzcgQaaCBzWmp0zeetVu576HYOPSeXheiW5O1Brd9V12RCzCoXusQl7eflyPck+Cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/Mpxw1ESlYWIati3JK8aJuXqpkEJ3t+k9eoKtet8dpw=;
+ b=KQlgbQiTDb/G2a/hnpaMXi2fZL7zG6FnEA0sU6CRRfBIrC3Btb4qIil/u6M/G41QNhvl2R7aeUTeL54rtx1Pnk8h/OpAnIFEMYapHavWTVyr+L85A8ZRcD3BBGyPDu139dD+qE/2fZfQXghPT+/Yt+mzhDjCHh8hhEr4Fv83juS9J4xftdlNzCvNIuhcqgPH6/X9vDmBNa+xbdb/kgO0OoLuZyOu+L4N/vwAVrbqL6I6TfX61VUqneIlLKlstjrs8sThWkvGaYVijHJVxcTwBuIwDqmOe4goaWwc0GZxfvdGIB2EVO73XtAjVSOQ/eqzDkn8NEKk+fagBQJmtHGXfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Mpxw1ESlYWIati3JK8aJuXqpkEJ3t+k9eoKtet8dpw=;
+ b=Mjmosxud8hdSYgKJYd9+Km72QoXYoNMpKAllUOJj7mX4KJ5zM8ZSe0mE+CBccWJMcalfbKvgsdpxjdikP6vO7PeUBL1Lm9RWKTzH7yNAihwLIF+3ByK2MIg+NFyBCafJwIo8Y0wAJJi9nywtk6th1eVwHEaBNoXDkEe/kJ3acD8L2QawZht1uz4KcjorUuBocJ1M0tGTNVGCu6DR8EsIO14Iy09qoqav1RGwArYTHToPkSSo9WtIPPnXlVmZJY1HsYaKBdXKMjPhmZGfhn9RhKImc2bXq06U0HM1eB8040GylP52T6iP3pb/72okUV5qrNkq6QUKXOH/6BXWFJmygw==
+Received: from DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:405::20)
+ by AM0PR10MB3971.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:144::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.28; Tue, 21 Nov
+ 2023 22:04:46 +0000
+Received: from DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3f75:4763:843c:a330]) by DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3f75:4763:843c:a330%5]) with mapi id 15.20.7002.028; Tue, 21 Nov 2023
+ 22:04:46 +0000
+Date: Wed, 22 Nov 2023 03:34:29 +0530
+From: Yuran Pereira <yuran.pereira@hotmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, andrii@kernel.org, ast@kernel.org,
+	haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+	kpsingh@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	martin.lau@linux.dev, mykolal@fb.com, sdf@google.com,
+	shuah@kernel.org, song@kernel.org
+Subject: Re: [PATCH bpf-next v3 0/4] selftests/bpf: Update multiple
+ prog_tests to use ASSERT_ macros
+Message-ID:
+ <DU0PR10MB6558D41ADAD7B5B9CDB43CC2E8BBA@DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM>
+References: <GV1PR10MB6563BEFEA4269E1DDBC264B1E8BBA@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <11bf3c0f-f78b-4dd3-97d3-c39b5b2ae7bd@linux.dev>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11bf3c0f-f78b-4dd3-97d3-c39b5b2ae7bd@linux.dev>
+X-TMN: [oKT/7LovT6WUlYTz9u2iJhY3GSaipBUh]
+X-ClientProxiedBy: JNAP275CA0007.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4c::12)
+ To DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:405::20)
+X-Microsoft-Original-Message-ID: <20231121220429.GA465153@nmj-network>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231121002221.3687787-1-andrii@kernel.org> <20231121002221.3687787-9-andrii@kernel.org>
- <20231121203806.43i6tytzwdzeoqvg@macbook-pro-49.dhcp.thefacebook.com>
-In-Reply-To: <20231121203806.43i6tytzwdzeoqvg@macbook-pro-49.dhcp.thefacebook.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 21 Nov 2023 14:01:21 -0800
-Message-ID: <CAEf4BzZANs_dCdaE8kCuJUTFjh1D7JtMpTNV4i9QeCgtHvoX6w@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 08/10] bpf: track aligned STACK_ZERO cases as
- imprecise spilled registers
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
-	Eduard Zingerman <eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR10MB6558:EE_|AM0PR10MB3971:EE_
+X-MS-Office365-Filtering-Correlation-Id: 573e870d-7b31-4312-072e-08dbeadddf4d
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JloLnv/Vs6Dh0DxaR4H+iCZXIfMKUuwHdKLT1X7q7Pca9AckDi8uLeHRSPZ4MxvQgPZexz0uOyr/qjtKtMeyCxqFxO4fWPJMiQqvOqBS3nip4qDUiMsIj9iqeGr5By9/Fwqzg36nmRRKzWXqVzXKm6Npj8nnSgBvPWXHSYt+uTkMiDaa9YQa2uDb0u99FOzxnLyj8Snfppo4mUznkGFq+DmFKPItN7PP8fUyLnjWU4Zxq/mlTKwMClWs9YCJQGy/du8/GY7yGHYUod5XXVnSve6Ng/6kzDVP/uKN1VnNhlL7boYx3uq9jJ9CNK7SMbkUayFPp/zlpG2gsFMGncKfiTw7u6U5m6fm4FPWtb890RM05x0hU0wXLccuyr7ZsJl6sm8iDMUGZK6UrKeeXGHye2EdfSG10cHdBNcUGLSJ2b+EJ7ElHlNlI2XvM23VHrqrbIhXxNEnKVBot/UUL862eXi1YTA7oG8ghZUpGDacuwOXbk6ysV4i5aQbNyHHoLvQZilFXTX4FlPOe/1vh3S1U0L2gmqnf1kAsd29FaSJ+8VD90LCNZx/Mp1GZwxh+s1k
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?1k4DTXusypQ5D1g6DMuyjUUpI0jT/fJU4opsKJ2U6t+Jz2y9HjnnCP9bm+8H?=
+ =?us-ascii?Q?KyVZWyE+Ra9awzMWNJSUhPUFEK28DxuRTFPBol/T8/854ktmJGbi5uXWxJi+?=
+ =?us-ascii?Q?gLl6S8yV9dbpEAuZBUFu+3U028WVZqPWTI8dXE2KVZXnYvelpjTmI3I6Baen?=
+ =?us-ascii?Q?FhW8BZbdTJDpRun1BaVqgzQm1Kodbs/jqiFY87jDEEARuCJLj/BFzh1PKvZy?=
+ =?us-ascii?Q?dV6IcXrSgQapH6i+5FB0qYzCCtC3JQY3aw8B6ToLM7QWRqJCUghV2UAEdYju?=
+ =?us-ascii?Q?aGEnbYpcuddRvO/QToD3amAfbo3U5x6/TDr8Z1qShVyDi27QPVNK3k2pVD5m?=
+ =?us-ascii?Q?y+aJqio9VS5YTsHfNkHsEeAerJXNj9dTthUcsi2KU9PNlsRKH8lQSLJgu5PL?=
+ =?us-ascii?Q?r/CTwPBCQX6pcvPeOa1Pp1ZtOZa+ufI6lCk6CR6clvB5T0vesC/sp1qOSg1H?=
+ =?us-ascii?Q?nwrZC+5mG3CeQszeGwoRAiKRsg1XxdoN7KQoSCbO/0vfKbIMbZLcORer5VOx?=
+ =?us-ascii?Q?+kKR+GN7nRl/Ve88ygaaj7kKqprLU4o6PpvdikzcO6zGzcWm4iIZWS4avPWX?=
+ =?us-ascii?Q?OGg/COw35XTN74xfmf6PrBmVKe6CqUnQ1/+cZV0QszArNfno6YaW1VUunAm6?=
+ =?us-ascii?Q?9ncH9bu3bPTAPD/zkObw5Cx96fe74QKS0khzaGzP7PpZNRxAHRJG6rU58guE?=
+ =?us-ascii?Q?Oq0/WvvrfuWQbdbInNKCBh83u6Zds20rq6D5SkRH61UtTEvQPVuJT83B0GTB?=
+ =?us-ascii?Q?2x7jH1hNm5AtrMWK7IBp5Y3aZuFPZef2GiiSWQoj0M2hmBJGsqvubp9ifBSQ?=
+ =?us-ascii?Q?lRv09HtGq86/BV+ZBUol4l7f09oOR3MLa8o/C+kk9+zID/3Tk0UMucwW4UUZ?=
+ =?us-ascii?Q?VyQgHgcIaypPb379zzyF0m0Rm8OX5a2bHNIZd2wJCq2bE7gnEdGPUEjXljNT?=
+ =?us-ascii?Q?ka0GKrp6XRkWd2UXfziq71VpopWwNVTCWenXNQ9ED4/wlyXUC90uJAFXBzKL?=
+ =?us-ascii?Q?xxM9DAd0cCqlrCbMUegkaGWjS/2L1Q7XcHbBlFWsTUeu00ienHNxgF0f69i+?=
+ =?us-ascii?Q?DF6G/9QU7qYJEl99OcACoPnP/FcDBlXepZJzaK+/SC48HEtIyN5rMZP3KBMo?=
+ =?us-ascii?Q?IjdaMCQ8iTqbKVKPGD7oPqW+Q9genwVWhA8QnyAyX+eGUdFvq2C0uTnKTkbl?=
+ =?us-ascii?Q?XRNOszSK0yOsXJG56wbOsNn8/jY7kWz8uDBLIagLgDCI0Xk52hLhNEhex2o?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 573e870d-7b31-4312-072e-08dbeadddf4d
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR10MB6558.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Nov 2023 22:04:46.2704
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3971
 
-On Tue, Nov 21, 2023 at 12:38=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Mon, Nov 20, 2023 at 04:22:19PM -0800, Andrii Nakryiko wrote:
-> > include it here. But the reduction in states is due to the following
-> > piece of C code:
-> >
-> >         unsigned long ino;
-> >
-> >       ...
-> >
-> >         sk =3D s->sk_socket;
-> >         if (!sk) {
-> >                 ino =3D 0;
-> >         } else {
-> >                 inode =3D SOCK_INODE(sk);
-> >                 bpf_probe_read_kernel(&ino, sizeof(ino), &inode->i_ino)=
-;
-> >         }
-> >         BPF_SEQ_PRINTF(seq, "%-8u %-8lu\n", s->sk_drops.counter, ino);
-> >       return 0;
-> >
-> > You can see that in some situations `ino` is zero-initialized, while in
-> > others it's unknown value filled out by bpf_probe_read_kernel(). Before
-> > this change both branches have to be validated twice. Once with
->
-> I think you wanted to say that the code _after_ both branches converge
-> had to be validated twice.
-> With or without this patch both branches (ino =3D 0 and probe_read)
-> will be validated only once. It's the code that after the branch
-> that gets state pruned after this patch.
+On Mon, Nov 20, 2023 at 10:49:39PM -0800, Yonghong Song wrote:
+> Yuran, next time when you submit patches, you can carry 'Acked-by' tag
+> from previous revision if there are no significant changes. This will
+> reduce some of reviewers and maintainers' work.
+> 
+Alright, I will keep that in mind in the future.
 
-Yes, correct, it's the common code after two branches that now will
-converge, so BPF_SEQ_PRINTF() invocation in this case, I'll improve
-the wording.
-
-In practice a slightly modified variant also happens: we
-zero-initialize something, then depending on some conditions (error
-checking, etc), we overwrite zero-initialized stack slots with some
-unknown values that are not precise. Before this change we'll have
-STACK_ZERO and STACK_MISC in different branches/code paths, which
-would effectively duplicate all subsequent states that needs to be
-verified. Now there is a high chance for this STACK_ZERO vs STACK_MISC
-to not matter at all. We also can have spilled imprecise SCALAR_VALUE
-register instead of STACK_MISC. The principal idea is that STACK_ZERO
-promises a lot (that it is precisely zero), while often time those
-values are just some integers with values we don't care about.
-
->
-> > (precise) ino =3D=3D 0, due to eager STACK_ZERO logic, and then again f=
-or
-> > when ino is just STACK_MISC. But BPF_SEQ_PRINTF() doesn't care about
-> > precise value of ino, so with the change in this patch verifier is able
-> > to prune states from one of the branches, reducing number of total
-> > states (and instructions) required for successful validation.
->
-> This part is good.
+Thanks,
+Yuran Pereira
 
