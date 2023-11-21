@@ -1,126 +1,99 @@
-Return-Path: <bpf+bounces-15595-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15596-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BD1D7F37A7
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 21:40:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CDB27F37BC
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 21:50:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55C95282812
-	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:40:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4343B217D5
+	for <lists+bpf@lfdr.de>; Tue, 21 Nov 2023 20:50:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43BAB47799;
-	Tue, 21 Nov 2023 20:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1165101C;
+	Tue, 21 Nov 2023 20:50:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NOcbTovf"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="sAzyBX7b";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="C3TF2PAy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D520E1A3;
-	Tue, 21 Nov 2023 12:40:48 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cf6af8588fso14013755ad.0;
-        Tue, 21 Nov 2023 12:40:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700599248; x=1701204048; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WCC6s9NGPFKJC7qCc4GCCVN10BOm0r6c3YXwRd9V+sE=;
-        b=NOcbTovf/u9WZES1HyIp/jIRGkMPkN5MHAZnPWJMI/4Isl55m7fCWkWUHtIsh1OHJc
-         Ax3Qf+bPc32D4BOpEhWNbFksWSQLW96IqLA0pBDsGApkwcEbxyJvh1vEwB8vanOSNRvw
-         ZN0tlrgVTvdi3tPj5d1eeG8jSlkFce1Iu1s9vpMYJvQ5SzU9a7eyzxR0MpKgxGGZXlJI
-         qE25ChhZUtaPOtFb/n3NGeqF0gvI0F69K5uUanyeZrIGiNLKcgG6pgT/KGc6Q0b0Dauv
-         3veqCzBs9yL52C0TWPC/IIQSuJuZguhr9YFnE5Q8bFue4nNhsm3496kjH11TjvO/Jqw2
-         XpUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700599248; x=1701204048;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WCC6s9NGPFKJC7qCc4GCCVN10BOm0r6c3YXwRd9V+sE=;
-        b=X0cofuNDY1XzZ8/pHZzWFlf50tsCQpB/hiAsib3/H6/dqL+mqjOBHmeHuWgukjqa6N
-         vTRl6w57GAy6ZRmkfyOLzkJZoXcHB2vqYbnRT2JVaRJRCIyekR7c0xz/HHNshm4QlSXt
-         KJtQkX7W5JguYGph3mWO3DF+4zvyyFREbDJRr/3b3xjziGUieET4VySjfdqOjdLBrK+S
-         ip3DrXfJn6Vn0SDMwKsJT9AVgDxnfJVvqcR8oBcXA7HqsPNfOCRzJ/2Wv8AFjglXfHyf
-         AXE+R3YrtwkwjtLTqtRuIUjVWSTcEjBx15B4s/UxOSZjxct7k3dhpTzxIvaUJJ4Cplyi
-         QkXA==
-X-Gm-Message-State: AOJu0YzyMBtsk33PqP+C150rMyhOb5Xlvig8b2bj+BCuEfLVMaE9061h
-	9CThYYd/r2P37IW1htwv2r8=
-X-Google-Smtp-Source: AGHT+IFE5wsKsmA/KMmkZhA/gpV1ibyC+Cl5yRXxt+owMi2A/BfcaFFEKIJ8+rLUR9zV4LdjMBDG1g==
-X-Received: by 2002:a17:903:493:b0:1cf:774c:39a8 with SMTP id jj19-20020a170903049300b001cf774c39a8mr264254plb.56.1700599248179;
-        Tue, 21 Nov 2023 12:40:48 -0800 (PST)
-Received: from localhost ([98.97.116.126])
-        by smtp.gmail.com with ESMTPSA id p2-20020a170902e74200b001b895336435sm8325327plf.21.2023.11.21.12.40.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Nov 2023 12:40:47 -0800 (PST)
-Date: Tue, 21 Nov 2023 12:40:45 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org, 
- netdev@vger.kernel.org, 
- yangyingliang@huawei.com, 
- martin.lau@kernel.org, 
- Jakub Sitnicki <jakub@cloudflare.com>
-Message-ID: <655d15cdb26fb_1fc7a208a5@john.notmuch>
-In-Reply-To: <bc92c670-f472-43b1-af0b-a50353ed8757@linux.dev>
-References: <20231016190819.81307-1-john.fastabend@gmail.com>
- <20231016190819.81307-2-john.fastabend@gmail.com>
- <87cywnjblh.fsf@cloudflare.com>
- <bc92c670-f472-43b1-af0b-a50353ed8757@linux.dev>
-Subject: Re: [PATCH bpf 1/2] bpf: sockmap, af_unix sockets need to hold ref
- for pair sock
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE48C19E;
+	Tue, 21 Nov 2023 12:50:30 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailout.west.internal (Postfix) with ESMTP id 8F5C73200BB2;
+	Tue, 21 Nov 2023 15:50:29 -0500 (EST)
+Received: from imap42 ([10.202.2.92])
+  by compute4.internal (MEProxy); Tue, 21 Nov 2023 15:50:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to; s=fm3; t=1700599829; x=1700686229; bh=2Qs9fWSfJt
+	gCu3V8Z3tcwX7KwBoXsBofNMuRavCMnRo=; b=sAzyBX7bquZduUrazxktB+Rq+4
+	DytOlHD6u3YebvG+GJtCq5h95SFSy9bWZ1JVb22VbRqwclhdqCryRBw7Yl7Z3XZB
+	MNt+UKU30MVqZ4kUHKM1KPjP3RUlQK72nMsiPMAqrkPSYivyhFbOIBA1+S5Xt85R
+	yw2uzACor5V+KOMwEKyZFCqf1IOPMS/J23YlniZ8CA2Q7M33qXEFZMcxakJd7u9z
+	uWvD8bzeqRdpqkuUurtojFv0N4zzctKJbQVvbjhdzT7n5Cowhv085iWsA1Xaii5z
+	Su8euMgPF2UFRtCLCG+c4FcuTX4WuJK6YxGOP+A+7mUAiZC2rbyOtbLEqaEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:reply-to:sender:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1700599829; x=1700686229; bh=2Qs9fWSfJtgCu3V8Z3tcwX7KwBoX
+	sBofNMuRavCMnRo=; b=C3TF2PAyoOuGwA7+FWJvYOVJRM1BjHtK4Y8SYb9Ika1T
+	UaAHqZpvpdPICrQyy9hy1z8NZeh1yoBQJsoxyuL0j24U4qeqUdDrJdkcepiCsWaL
+	sB0J8JICd4uQWJJ2xPN3obvYDtb6u8rLFIzzuVeDj97IuM784NfYr8gkG/Cr9R3Q
+	6Sn3MIw02tPNI9vmd7UC1rx9V/oMjjgiLir38OTPg7jJkrQpn/t8+PinHD4dRW4z
+	xo3C7jxssQIRBotKLeoymsYarK1OtR8X0tzaTx44GHHLSOnt/39TLaeJddhVQpFT
+	PMiFIbLCQ3NVBNzXeUa9myWXLfzehFCmcbv591MR3Q==
+X-ME-Sender: <xms:FBhdZSsI9EzTHjj1wMJgCHwtpvPCzkDIsOQuWiM4McXNVhjNk5uzRQ>
+    <xme:FBhdZXc42BwBIGpyrARofUA7_bniaG9W9rLAc4NFFG56ZZCYJKDKOnQTtHYFUay-K
+    vBhxrM3LuWg5BIP6Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudegledgudefgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdefhedmnecujfgurhepofgfggfkjgffhffvvefutgesthdtredt
+    reertdenucfhrhhomhepfdffrghnihgvlhcuighufdcuoegugihusegugihuuhhurdighi
+    iiqeenucggtffrrghtthgvrhhnpedvtdeitdeuiedujeejfeelvdeigfdvgefhjeehiefh
+    vddufeduueejffetffefudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:FBhdZdxM38Eo0EQ-5qSkDkYtyqH6Ocan2JbVZnkHc8Lg8-QcRQY88g>
+    <xmx:FBhdZdPN1BIABuAy_DAHVra09Jbbh-7GOAxk8eNN3YQp8ibv2vAx8Q>
+    <xmx:FBhdZS_5Tip1GjnM1zEBLlMs0IpnX3jgIfJm5Zwj5afNGLLs0bv04A>
+    <xmx:FRhdZZlGtqkI9j2MZm37kRSum3T2kxxn-j1ijq0Hb-LRE4zG_SjBJg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id B01A9BC007E; Tue, 21 Nov 2023 15:50:28 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Message-Id: <3cdecb2e-ef70-4171-8c36-edf46370d74d@app.fastmail.com>
+In-Reply-To: <<20231109174328.1774571-1-anders.roxell@linaro.org>>
+Date: Tue, 21 Nov 2023 14:50:07 -0600
+From: "Daniel Xu" <dxu@dxuuu.xyz>
+To: anders.roxell@linaro.org
+Cc: "Andrii Nakryiko" <andrii.nakryiko@gmail.com>, bjorn@kernel.org,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ maciej.fijalkowski@intel.com, magnus.karlsson@intel.com,
+ netdev@vger.kernel.org
+Subject: Re: [PATCHv3] selftests: bpf: xskxceiver: ksft_print_msg: fix format type
+ error
+Content-Type: text/plain
 
-Martin KaFai Lau wrote:
-> On 11/6/23 4:35 AM, Jakub Sitnicki wrote:
-> >> diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
-> >> index 2f9d8271c6ec..705eeed10be3 100644
-> >> --- a/net/unix/unix_bpf.c
-> >> +++ b/net/unix/unix_bpf.c
-> >> @@ -143,6 +143,8 @@ static void unix_stream_bpf_check_needs_rebuild(struct proto *ops)
-> >>   
-> >>   int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool restore)
-> >>   {
-> >> +	struct sock *skpair;
-> >> +
-> >>   	if (sk->sk_type != SOCK_DGRAM)
-> >>   		return -EOPNOTSUPP;
-> >>   
-> >> @@ -152,6 +154,9 @@ int unix_dgram_bpf_update_proto(struct sock *sk, struct sk_psock *psock, bool re
-> >>   		return 0;
-> >>   	}
-> >>   
-> >> +	skpair = unix_peer(sk);
-> >> +	sock_hold(skpair);
-> >> +	psock->skpair = skpair;
-> >>   	unix_dgram_bpf_check_needs_rebuild(psock->sk_proto);
-> >>   	sock_replace_proto(sk, &unix_dgram_bpf_prot);
-> >>   	return 0;
-> > unix_dgram should not need this, since it grabs a ref on each sendmsg.
-> 
-> John, could you address this comment and respin v2?
+Hi,
 
-Respinning now just letting some tests run for a bit and I'll kick it out.
+I'm hitting the same error on bpf-next/master for native x86-64 build:
+3cbbf9192abd ("Merge branch 'selftests-bpf-update-multiple-prog_tests-to-use-assert_-macros'"
 
-Thanks.
+Applying this patch helped.
 
-> 
-> The unix_inet_redir_to_connected() seems needing a fix in patch 2 also as 
-> pointed out by JakubS.
-> 
-> Thanks.
-> 
-> > 
-> > I'm not able to reproduce this bug for unix_dgram.
-> > 
-> > Have you seen any KASAN reports for unix_dgram from syzcaller?
+Does this need to go onto bpf-next as well?
+
+Thanks,
+Daniel
 
