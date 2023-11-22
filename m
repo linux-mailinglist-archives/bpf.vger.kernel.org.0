@@ -1,108 +1,128 @@
-Return-Path: <bpf+bounces-15617-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15B317F3B20
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 02:18:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 879F87F3B61
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 02:41:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEB4D282A8F
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 01:18:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B75A31C210B8
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 01:41:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000C9187F;
-	Wed, 22 Nov 2023 01:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B47346AA;
+	Wed, 22 Nov 2023 01:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hwCsdM2z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB221A3
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 17:17:52 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALKK8Zv018592
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 17:17:52 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uh3g9hwub-12
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 17:17:51 -0800
-Received: from twshared11278.41.prn1.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 21 Nov 2023 17:17:26 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 069073BE88963; Tue, 21 Nov 2023 17:17:20 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 10/10] selftests/bpf: adjust global_func15 test to validate prog exit precision
-Date: Tue, 21 Nov 2023 17:16:56 -0800
-Message-ID: <20231122011656.1105943-11-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231122011656.1105943-1-andrii@kernel.org>
-References: <20231122011656.1105943-1-andrii@kernel.org>
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A6C12C;
+	Tue, 21 Nov 2023 17:41:14 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6cbb71c3020so264777b3a.1;
+        Tue, 21 Nov 2023 17:41:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700617273; x=1701222073; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wZkVnSThHSQ0nduxa23VteQPHRdj2Ex/elZXOf6IRxQ=;
+        b=hwCsdM2zxxJ5EjZy88b7OGh/WAkqreYdl2vZV+JsgrpGgSlXRKlRhKwf/GqMIAyvjx
+         mLORQM7zVddznURZsWaMQIseNG6TfCoGpxBj7yX7hyJJocFFymkOuLm1Rw4Uxat/URow
+         bhSpbMHmEKubjYyetZGQFZQkiP0P1tPR8z1lIu3MIMn7+cdyJKnvPpLVZdFe4NFBb03D
+         ngic5VpYtEal4ixYE/Efms/RTOi0fQUbywZ/ASoQqDiWL+7SBXtjuTzGuYgY6dDqX0q8
+         Idlyk69apU5YfCijVxUCslEjDgUf5gdvQL7K+BqnnTc3KbqaeigrQpMPjndgBKv7Inhr
+         2oGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700617273; x=1701222073;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wZkVnSThHSQ0nduxa23VteQPHRdj2Ex/elZXOf6IRxQ=;
+        b=gDL3CQKpHqZVKAcj/YZao+1+wtjq7cJ59cG6HKi3H5x9+OD7Dbv2m1KtMd6/YFoQff
+         daJFlym0J8nZY5eomy1Gp/wUTwENPuNhgvwKn8T/RQXPbA+QzuUqVecVDmSc/30y1h8M
+         rrWzXPNSnGG/oxgfW9heSBOHYHtY+9rpEUWNfAl1jCvKckzSieLyqs/msYijnNReJ+89
+         m2FCp+6CpMgI0kItLhcoXqi2JLcSEA2Z3gjsD5/jSdsFAd33OelyhxJlbg3ghs5zGWU9
+         2+PiA4XdFeXHCcEH3camGIitmWkhJAbYkbeTY4hDmp5FlHU8sC8C1OUAj4YC9XRK0uWZ
+         Lt9g==
+X-Gm-Message-State: AOJu0YxVszJF+4pNlTco84lW9YGkHVAIgr4lNdbGPNNq7dZyHgxnn5Xw
+	NBirWT0nr5dGEZ8ooKMxcyg=
+X-Google-Smtp-Source: AGHT+IHAMbcH80Qv38sfnNHrOUL21YxFpmpRBj4ZbJPJ09PEy1rp7PPEr4++1O5WoMpvW2iMsf+Omg==
+X-Received: by 2002:a05:6a21:a59b:b0:187:962d:746b with SMTP id gd27-20020a056a21a59b00b00187962d746bmr1839947pzc.9.1700617273489;
+        Tue, 21 Nov 2023 17:41:13 -0800 (PST)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:da69])
+        by smtp.gmail.com with ESMTPSA id v4-20020aa78504000000b006cb884c0362sm5005865pfn.87.2023.11.21.17.41.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Nov 2023 17:41:12 -0800 (PST)
+Date: Tue, 21 Nov 2023 17:41:07 -0800
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+	davem@davemloft.net, dsahern@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, Arnd Bergmann <arnd@arndb.de>,
+	samitolvanen@google.com, keescook@chromium.org, nathan@kernel.org,
+	ndesaulniers@google.com, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	llvm@lists.linux.dev, jpoimboe@kernel.org, joao@overdrivepizza.com,
+	mark.rutland@arm.com
+Subject: Re: [PATCH 0/2] x86/bpf: Fix FineIBT vs eBPF
+Message-ID: <20231122014107.p5zf4o6kjanypla4@macbook-pro-49.dhcp.thefacebook.com>
+References: <20231120144642.591358648@infradead.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: zLOFdcGFEV9kvwK3j0Gr-qa3EYFVC6L1
-X-Proofpoint-GUID: zLOFdcGFEV9kvwK3j0Gr-qa3EYFVC6L1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-21_16,2023-11-21_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231120144642.591358648@infradead.org>
 
-Add one more subtest to  global_func15 selftest to validate that
-verifier properly marks r0 as precise and avoids erroneous state pruning
-of the branch that has return value outside of expected [0, 1] value.
+On Mon, Nov 20, 2023 at 03:46:42PM +0100, Peter Zijlstra wrote:
+> Hi!
+> 
+> There's a problem with FineIBT and eBPF using __nocfi when
+> CONFIG_BPF_JIT_ALWAYS_ON=n, in which case the __nocfi indirect call can target
+> a normal function like __bpf_prog_run32().
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/progs/test_global_func15.c  | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
+The lack (or partially broken) cfi in the kernel built with
+CONFIG_BPF_JIT_ALWAYS_ON=n is probably the last of people security concerns.
+We introduced CONFIG_BPF_JIT_ALWAYS_ON=y to remove the interpreter,
+since mere presence of _any_ interpreter in the kernel (bpf and any other)
+is an attack vector. As it was demonstrated during spectre days an interpreter
+sitting in executable part of vmlinux .text tremendously helps to craft
+a speculative execution exploit.
 
-diff --git a/tools/testing/selftests/bpf/progs/test_global_func15.c b/too=
-ls/testing/selftests/bpf/progs/test_global_func15.c
-index f80207480e8a..fc24d1e1f287 100644
---- a/tools/testing/selftests/bpf/progs/test_global_func15.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_func15.c
-@@ -22,3 +22,32 @@ int global_func15(struct __sk_buff *skb)
-=20
- 	return v;
- }
-+
-+SEC("cgroup_skb/ingress")
-+__failure __msg("At program exit the register R0 has ")
-+__log_level(2) __flag(BPF_F_TEST_STATE_FREQ)
-+__naked int global_func15_tricky_pruning(void)
-+{
-+	asm volatile (
-+		"r0 =3D 1;"
-+		"*(u64 *)(r10 -8) =3D r0;"
-+		"call %[bpf_get_prandom_u32];"
-+		"if r0 > 1000 goto 1f;"
-+		"r0 =3D 1;"
-+	"1:"
-+		"goto +0;" /* checkpoint */
-+		/* cgroup_skb/ingress program is expected to return [0, 1]
-+		 * values, so branch above makes sure that in a fallthrough
-+		 * case we have a valid 1 stored in R0 register, but in
-+		 * a branch case we assign some random value to R0.  So if
-+		 * there is something wrong with precision tracking for R0 at
-+		 * program exit, we might erronenously prune branch case,
-+		 * because R0 in fallthrough case is imprecise (and thus any
-+		 * value is valid from POV of verifier is_state_equal() logic)
-+		 */
-+		"exit;"
-+		:
-+		: __imm(bpf_get_prandom_u32)
-+		: __clobber_common
-+	);
-+}
---=20
-2.34.1
+Anyway, motivation aside, more comments in the patch 2...
 
+> Specifically the various preambles look like:
+> 
+>    FineIBT				JIT
+> 
+>    __cfi_foo:
+>       endbr64
+>       subl	$hash, %r10d
+>       jz	1f
+>       ud2
+>    1: nop
+>    foo:					foo:
+>       osp nop3				   endbr64
+>       ...				   ...
+> 
+> So while bpf_dispatcher_*_func() does a __nocfi call to foo()+0 and this
+> matches what the JIT generates, it does not work for regular FineIBT functions,
+> since their +0 endbr got poisoned and things go *boom*.
+> 
+> Cure this by teaching the BPF JIT about all the various CFI forms. Notably this
+> removes the last __nocfi call on x86.
+> 
+> If the BPF folks agree (and the robots don't find fail) I'd like to take this
+> through the x86 tree, because I have a few more patches that turn the non-fatal
+> 'osp nop3' poison into a 4 byte ud1 instruction which is rather fatal. As a
+> result this problem will also surface on !IBT hardware.
+> 
 
