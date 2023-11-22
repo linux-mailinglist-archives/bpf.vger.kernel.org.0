@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-15677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D26F07F4EA0
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:45:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D0DC7F4EA1
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:46:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A1ECB20D4D
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 17:45:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23F5E2813B9
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 17:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1C157898;
-	Wed, 22 Nov 2023 17:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0425788B;
+	Wed, 22 Nov 2023 17:46:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fMQZEna1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KOfJTyBJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB115BC
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 09:45:40 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a00ac0101d9so398933466b.0
-        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 09:45:40 -0800 (PST)
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1C6BC
+	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 09:46:47 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c8769edd9fso757291fa.0
+        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 09:46:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700675139; x=1701279939; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700675206; x=1701280006; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yTaG8gvjGqbBe1ElweAD1y2yynBvXeWggWHe/rVpTIw=;
-        b=fMQZEna1I4okup3OqQZq/IMxgi05D7IZ7fLDt41ItG4aZSpCRBNH/JE5pkwTsVdkwR
-         KXS+hapt7DPtQGnQ2uv2gXjEF5AA8/DkDyXAKkqOHL7UoqKYVzFc6ujd4XvhI425YQOJ
-         A1cMEHUiFDMmq096T2QtARJmN1YPp43Hi8VtKvMraD82XU26fJ+y5FQyOCe/hx1cgGl3
-         mXZVb8PNz/JVWic8JTz5ExddTg2sJ66NJeJZL5t0pdgCbbeiykt0cr9xnjvxZ3XfvSJv
-         ujKSMXKWIF6QKQPnURjJVUjGG9RtHVEZdFkExS5k/jvhiuQZwdwKB4hyP3eb/GQdlSCE
-         zh2w==
+        bh=PtpVViMgF2GbPpkDYmrFz/mZu4iLwZlMpIVwzkMUSDE=;
+        b=KOfJTyBJt12b2YSzVZdGs0OAb0e9d5gsMK8yEdx+Dcc7+rCk/GLrU5KJz/94mlpa0y
+         OIj4mNEDP6PQn23x1IVFmcc2LbvgOMcslXfuOfYlxDas8gVgApPXm0bPfAf9lU66ihIk
+         3Z50+f8h1viV4qaaOxCITVTKbx+LlYnOat1L13tLspfX3aFm4e/uAiO30BSAWckrTuzI
+         xuP+GS1X9r0wEcuQYl5+6lez43BR9atLgq2unlVREDhd/7tKo4O9BHBYlRU9Yd+mQXTr
+         XZrHjKvMe9AYi0raarLEJTJssTDhLvb1tSAphgNIzThI/byxLozIkBz9iIvfF1Q5mgeH
+         gr8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700675139; x=1701279939;
+        d=1e100.net; s=20230601; t=1700675206; x=1701280006;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yTaG8gvjGqbBe1ElweAD1y2yynBvXeWggWHe/rVpTIw=;
-        b=TnLty2y6pY6s1fpS0ufQWOnrW8IpbnpMU+7kY83W0oiaJ0RRydOWDwC2pN6qBa3LGS
-         bsk4xvAWPRtIH0nG+V5K5lD7YGjBLzqSBcWkw4cqXxn+U4Lo08wr/jYB3V1T9+yab60v
-         rUNqgy35Ycjl8Ar1/T+SR3P22ixb7YD1cVfdthin5WJcDMIDlbkdUWgie7Ht6XaSqel6
-         XTG5jmuzsIe95Fict9yU6h1+7j5rUORmBZrjc3GNs6m+3gNmxe+qgQrgYpEOP03XQTsr
-         S9WoA0aj/gf1ojbM5gv5gbRb5uml2+RNdaO3+xTYTQr8CSX4H4MS1XnmQSmjXEFendNh
-         220Q==
-X-Gm-Message-State: AOJu0YwcPgBUp1s8ThmgLnvNc8f0TS35EpNni+d3LO+W9LOh1bn+W1DO
-	T6hQ8fcNR2J1IOQxiiI/gKi5Z8lIDC/SkrWuU1s=
-X-Google-Smtp-Source: AGHT+IGQ2OTsEpZrj2tlecbp4t5LurMDSayTEwAoudrAlwfsyL8Y5hFtnOmHrZ1XFyboom87b9TfQYTRoFQFwr76Xnw=
-X-Received: by 2002:a17:906:250a:b0:a00:b4ab:cb6d with SMTP id
- i10-20020a170906250a00b00a00b4abcb6dmr937288ejb.69.1700675138852; Wed, 22 Nov
- 2023 09:45:38 -0800 (PST)
+        bh=PtpVViMgF2GbPpkDYmrFz/mZu4iLwZlMpIVwzkMUSDE=;
+        b=PN934w//OY1hCDqG4bebrtoUyrQcF258Yf1m5hEjcXh6CWK5cc/+/Dw2c3Y1fi6y1n
+         C2MTJN4942dAw8UgdkzQogh8h/x5+GZUifmF80y7M9ozGO+jeVXs9N/UyzZAoDdQZ2Dx
+         moNp04cCuS+YaFZJ0/Vl3YCi33RH9kapFaBnLNFUO+Zbr1ZY9YfjrJ2aQ14M0LUNQe68
+         jnzoG0vpZ8oWb7RWgWbqT6ZGxtmo4sB02UI9/MC3n6RZz5bnkZA4BYi2nWll0pDaZjfX
+         RmMhVfrLAWc0rzML2GIKpBuoV+THGOPQ2jJS+yQa6vAc5cXg5/gFbkgQI8atMmGWHbQm
+         sFZw==
+X-Gm-Message-State: AOJu0Yw51CmPswiBLKZuwUKE95cY1VEbAa2VOp0wGLUne4hgJo/2iiSE
+	JNLWUFKiuj8XpI/2+AIaezZxe3J0gGKrCkNzEwpEBTCD
+X-Google-Smtp-Source: AGHT+IHlToWimUVJgEabQdX3mbLhh/P8Lj8rz67gz8B0cFx/rCdC0Vy6pmmscNRIg4CbWTuYfatGrhEX0AxNaY9c230=
+X-Received: by 2002:a2e:8709:0:b0:2c6:e46e:9849 with SMTP id
+ m9-20020a2e8709000000b002c6e46e9849mr2231457lji.15.1700675205531; Wed, 22 Nov
+ 2023 09:46:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231122011656.1105943-1-andrii@kernel.org> <20231122011656.1105943-5-andrii@kernel.org>
- <a6edebc8d7063836c7d031d86a3c43f2dd0f49bd.camel@gmail.com>
-In-Reply-To: <a6edebc8d7063836c7d031d86a3c43f2dd0f49bd.camel@gmail.com>
+References: <20231122011656.1105943-1-andrii@kernel.org> <20231122011656.1105943-6-andrii@kernel.org>
+ <4b12e29372014a46a399ee26870c306fa492319d.camel@gmail.com>
+In-Reply-To: <4b12e29372014a46a399ee26870c306fa492319d.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 22 Nov 2023 09:45:27 -0800
-Message-ID: <CAEf4BzaXazY88jiLgwdrnOw2OgSREfuTp5sAfs_-0FyumQB4BQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 04/10] bpf: enforce exact retval range on
- subprog/callback exit
+Date: Wed, 22 Nov 2023 09:46:34 -0800
+Message-ID: <CAEf4BzbTCMAHYmsr4kKiyyxL63DhNZZQhp9RCAkxARG9T_6B1w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 05/10] selftests/bpf: add selftest validating
+ callback result is enforced
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
 	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
@@ -74,60 +74,35 @@ On Wed, Nov 22, 2023 at 7:13=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
 > wrote:
 >
 > On Tue, 2023-11-21 at 17:16 -0800, Andrii Nakryiko wrote:
-> > Instead of relying on potentially imprecise tnum representation of
-> > expected return value range for callbacks and subprogs, validate that
-> > both tnum and umin/umax range satisfy exact expected range of return
-> > values.
+> > BPF verifier expects callback subprogs to return values from specified
+> > range (typically [0, 1]). This requires that r0 at exit is both precise
+> > (because we rely on specific value range) and is marked as read
+> > (otherwise state comparison will ignore such register as unimportant).
 > >
-> > E.g., if callback would need to return [0, 2] range, tnum can't
-> > represent this precisely and instead will allow [0, 3] range. By
-> > additionally checking umin/umax range, we can make sure that
-> > subprog/callback indeed returns only valid [0, 2] range.
+> > Add a simple test that validates that all these conditions are enforced=
+.
 > >
 > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > > ---
 >
 > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> (but please see a question below)
 >
 > [...]
 >
-> > @@ -9464,6 +9477,16 @@ static bool in_rbtree_lock_required_cb(struct bp=
-f_verifier_env *env)
-> >       return is_rbtree_lock_required_kfunc(kfunc_btf_id);
-> >  }
-> >
-> > +static bool retval_range_within(struct bpf_retval_range range, const s=
-truct bpf_reg_state *reg)
-> > +{
-> > +     struct tnum trange =3D retval_range_as_tnum(range);
-> > +
-> > +     if (!tnum_in(trange, reg->var_off))
-> > +             return false;
+> > +SEC("?raw_tp")
+> > +__failure __log_level(2)
+> > +__flag(BPF_F_TEST_STATE_FREQ)
 >
-> Q: When is it necessary to do this check?
->    I tried commenting it and test_{verifier,progs} still pass.
->    Are there situations when umin/umax change is not sufficient?
-
-I believe not. But we still check tnum in check_cond_jmp_op, for
-example, so I decided to keep it to not have to argue and prove why
-it's ok to ditch tnum.
-
-Generally speaking, I think tnum is useful in only one use case:
-checking (un)aligned memory accesses. This is the only representation
-that can make sure we have lower 2-3 bits as zero to prove that memory
-access is 4- or 8-byte aligned.
-
-Other than this, I think ranges are more precise and easier to work with.
-
-But I'm not ready to go on the quest to eliminate tnum usage everywhere :)
-
+> Nit: although it is redundant, but maybe also check precision log to
+>      check that r0 is indeed marked precise?
 >
-> > +
-> > +     return range.minval <=3D reg->umin_value && reg->umax_value <=3D =
-range.maxval;
-> > +}
-> > +
+
+sure, I'll add another expected msg, no problem
+
+> > +__msg("from 10 to 12: frame1: R0=3Dscalar(umin=3D1001) R10=3Dfp0 cb")
+> > +__msg("At callback return the register R0 has unknown scalar value sho=
+uld have been in (0x0; 0x1)")
+> > +__naked int callback_precise_return_fail(void)
 >
 > [...]
 >
