@@ -1,113 +1,104 @@
-Return-Path: <bpf+bounces-15608-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15609-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1959C7F3AED
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 01:59:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE9E57F3B18
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 02:17:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C222B2187A
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 00:59:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 150271C20F83
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 01:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF33F15B2;
-	Wed, 22 Nov 2023 00:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="J82MtHS8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4036015C4;
+	Wed, 22 Nov 2023 01:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6AE7199
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 16:59:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1700614772; bh=gzvxNaFgXpUPDEUAHkQPkAaRXyYwT0flcIsNk4lBtvw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=J82MtHS88jVBORJk1A16qWoq3+1ifYI4zVYQOlsL5vS5mCbKcXoedOmLAiYeAa96B
-	 dA71JI210zpUPAl2pBgwHVfcQK/xp2KgFcyyXuyyXQDpipx64D1nq+zG3DdH6TF0H9
-	 /NoGTg3U0Y6bgBNq4U2WqX+7nwNxXalO9vglCRWA=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.56])
-	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
-	id CB7B5A80; Wed, 22 Nov 2023 08:50:55 +0800
-X-QQ-mid: xmsmtpt1700614255tc8djfbyw
-Message-ID: <tencent_884D1773977426D9D3600371696883B6A405@qq.com>
-X-QQ-XMAILINFO: NQR8mRxMnur9ovjyRgGNqgtMh6Va05ELoy2/HMi6IsAkx4szUMBjSpTD+efd4/
-	 ov9kgVGiM/scZ0CutViE1B97RX0XHB6K3ewEpzAtd9+yFfRbnUj9WEZ9Bd1lW+hdhIgoT7knR5P5
-	 AvmevPfcyOb8Q1Pf283rP6fxMoSMzU7esdpmXZ8Nw7+U2f3Dmxurp9W5yaPNyvAmgVub4v/eqKPc
-	 M0n9sOEYAc952p7plqJG51dsVJL/zmgo2nmNzO7R//sBQciI767tEoe2ZI9bg9FZ5jfnE4RM9NRF
-	 OlXoz1B1E0jZUuMDBvM29dczwMpbGZ0STD33HBb+W2+7nV8RBvsEsVQpmJ0HflOKUYabAwkmf4Mp
-	 e0FqFZyRF2qNK2busSQMv6ptOwaa/Yxk59a2I86AHNjmzA64Py5Tgd0i86qYtJURLsWvTOLx29hS
-	 IOd1qWY35fn7Vx4eN1iUWZz0fg6u26iClnu+NEhuiLJQ9vjOnCMv3Isj8uENMLNs5RB6Wz9eaEU4
-	 yEUQ2/i4j8I/roydVJb8XztnEWTZYtTuW4MawdgY4tPLIcubZR4G+JkZamrR1GTK9B0DupfCiGTQ
-	 Peofz4F2gAN3we5PJEc0KceR61ZLBnnOG470q6tkhwrsT7+fNBnpW4QKQrWU+/Sror7Gs7cymUgw
-	 08pvkKMFOIyOyN2OgEofXAYVW4EDmY5W+r4ThwO7Tkxi+AqnvNdXnFwiFlqMKT+8P/WrIfyQpeKd
-	 Bp7fQeJQv5wSKhGjSa6wLMYuq5J6znE+3634ZZ5Odg1g4mlO46H1cUHd3TtUbHTqfoPRiitmgbhx
-	 TU35ZDjq0D8B/eP+748ZE1n646xOLLxoIJlE9TJk6bpIZnQrFde8ch+1artGe9yRoXz+VjDrouC1
-	 4JFfLqg/YJiaSnBXpDH2IFKP0tBbKiUQLvrYVZ2KVUzPZP65cm3wWPDdU5fOd9UFu9bNusK+Il
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	haoluo@google.com,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	martin.lau@kernel.org,
-	martin.lau@linux.dev,
-	mhiramat@kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	rostedt@goodmis.org,
-	sdf@google.com,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yhs@fb.com,
-	yonghong.song@linux.dev
-Subject: [PATCH net] bpf: test_run: fix WARNING in format_decode
-Date: Wed, 22 Nov 2023 08:50:56 +0800
-X-OQ-MSGID: <20231122005055.3594477-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <0000000000004b6de5060ab1545b@google.com>
-References: <0000000000004b6de5060ab1545b@google.com>
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE877199
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 17:17:07 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ALNMW0h030143
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 17:17:07 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uh65qrpnr-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 17:17:07 -0800
+Received: from twshared40933.03.prn6.facebook.com (2620:10d:c0a8:1c::1b) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 21 Nov 2023 17:17:04 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 456C13BE884F1; Tue, 21 Nov 2023 17:16:59 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next 00/10] BPF verifier retval logic fixes
+Date: Tue, 21 Nov 2023 17:16:46 -0800
+Message-ID: <20231122011656.1105943-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: jZm34nrEp4L3TdVMn6VmVUX4slAmce03
+X-Proofpoint-GUID: jZm34nrEp4L3TdVMn6VmVUX4slAmce03
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-21_16,2023-11-21_01,2023-05-22_02
 
-Confirm that skb->len is not 0 to ensure that skb length is valid.
+This patch set fixes BPF verifier logic around validating and enforcing r=
+eturn
+values for BPF programs that have specific range of expected return value=
+s.
+Both sync and async callbacks have similar logic and are fixes as well.
+A few tests are added that would fail without the fixes in this patch set=
+.
 
-Fixes: 114039b34201 ("bpf: Move skb->len == 0 checks into __bpf_redirect")
-Reported-by: syzbot+e2c932aec5c8a6e1d31c@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/bpf/test_run.c | 3 +++
- 1 file changed, 3 insertions(+)
+Also, while at it, we extend retval checking logic to use not just tnum v=
+alue,
+but also umin/umax range, avoiding future potential issues if expected ra=
+nge
+cannot be represented precisely by tnum (e.g., [0, 2] is not representabl=
+e by
+tnum and is treated as [0, 3]).
 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index c9fdcc5cdce1..78258a822a5c 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -845,6 +845,9 @@ static int convert___skb_to_skb(struct sk_buff *skb, struct __sk_buff *__skb)
- {
- 	struct qdisc_skb_cb *cb = (struct qdisc_skb_cb *)skb->cb;
- 
-+	if (!skb->len)
-+		return -EINVAL;
-+
- 	if (!__skb)
- 		return 0;
- 
--- 
-2.26.1
+There is a little bit of refactoring to unify async callback and program =
+exit
+logic to avoid duplication of checks as much as possible.
+
+Andrii Nakryiko (10):
+  bpf: rearrange bpf_func_state fields to save a bit of memory
+  bpf: provide correct register name for exception callback retval check
+  bpf: enforce precision of R0 on callback return
+  bpf: enforce exact retval range on subprog/callback exit
+  selftests/bpf: add selftest validating callback result is enforced
+  bpf: enforce precise retval range on program exit
+  bpf: unify async callback and program retval checks
+  bpf: enforce precision of R0 on program/async callback return
+  selftests/bpf: validate async callback return value check correctness
+  selftests/bpf: adjust global_func15 test to validate prog exit
+    precision
+
+ include/linux/bpf_verifier.h                  |   9 +-
+ kernel/bpf/verifier.c                         | 133 +++++++++++-------
+ .../selftests/bpf/progs/exceptions_assert.c   |   2 +-
+ .../selftests/bpf/progs/exceptions_fail.c     |   2 +-
+ .../selftests/bpf/progs/test_global_func15.c  |  31 +++-
+ .../selftests/bpf/progs/timer_failure.c       |  31 ++--
+ .../selftests/bpf/progs/user_ringbuf_fail.c   |   2 +-
+ .../bpf/progs/verifier_cgroup_inv_retcode.c   |   8 +-
+ .../bpf/progs/verifier_netfilter_retcode.c    |   2 +-
+ .../bpf/progs/verifier_subprog_precision.c    |  45 ++++++
+ 10 files changed, 198 insertions(+), 67 deletions(-)
+
+--=20
+2.34.1
 
 
