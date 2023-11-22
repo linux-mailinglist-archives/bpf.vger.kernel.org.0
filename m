@@ -1,43 +1,45 @@
-Return-Path: <bpf+bounces-15704-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15705-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB8C27F5298
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 22:31:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A861D7F5299
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 22:31:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AFE22815DC
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 21:31:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9F021C20AAD
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 21:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE91A1CA85;
-	Wed, 22 Nov 2023 21:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ED811CA94;
+	Wed, 22 Nov 2023 21:31:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452A51A5
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6012E1B3
 	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 13:31:26 -0800 (PST)
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMIrJVg006857
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMLInVn013303
 	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 13:31:26 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uhqadh283-7
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uhses02tt-7
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 13:31:25 -0800
-Received: from twshared4634.37.frc1.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 13:31:26 -0800
+Received: from twshared4634.37.frc1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 22 Nov 2023 13:31:23 -0800
+ 15.1.2507.34; Wed, 22 Nov 2023 13:31:24 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id F117A3BF4602F; Wed, 22 Nov 2023 13:31:12 -0800 (PST)
+	id 1613B3BF4603B; Wed, 22 Nov 2023 13:31:14 -0800 (PST)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 0/3] Verify global subprogs lazily
-Date: Wed, 22 Nov 2023 13:31:09 -0800
-Message-ID: <20231122213112.3596548-1-andrii@kernel.org>
+Subject: [PATCH bpf-next 1/3] bpf: emit global subprog name in verifier logs
+Date: Wed, 22 Nov 2023 13:31:10 -0800
+Message-ID: <20231122213112.3596548-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231122213112.3596548-1-andrii@kernel.org>
+References: <20231122213112.3596548-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -47,36 +49,109 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: WtydsIyZIdChTNWblYxfWQccEni1_9nW
-X-Proofpoint-GUID: WtydsIyZIdChTNWblYxfWQccEni1_9nW
+X-Proofpoint-GUID: UItgzE3IhIGtPYO7vSVO1ot89eP4X9BJ
+X-Proofpoint-ORIG-GUID: UItgzE3IhIGtPYO7vSVO1ot89eP4X9BJ
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-22_16,2023-11-22_01,2023-05-22_02
 
-See patch #2 for justification. In few words, current eager verification =
-of
-global func prevents BPF CO-RE approaches to be applied to global functio=
-ns.
+We have the name, instead of emitting just func#N to identify global
+subprog, augment verifier log messages with actual function name to make
+it more user-friendly.
 
-Patch #1 is just a nicety to emit global subprog names in verifier logs.
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/bpf/verifier.c | 39 +++++++++++++++++++++++++--------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
 
-Patch #3 adds selftests validating new lazy semantics.
-
-Andrii Nakryiko (3):
-  bpf: emit global subprog name in verifier logs
-  bpf: validate global subprogs lazily
-  selftests/bpf: add lazy global subprog validation tests
-
- include/linux/bpf.h                           |  2 +
- kernel/bpf/verifier.c                         | 88 ++++++++++++++----
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/test_global_func12.c  |  4 +-
- .../bpf/progs/verifier_global_subprogs.c      | 92 +++++++++++++++++++
- .../bpf/progs/verifier_subprog_precision.c    |  4 +-
- 6 files changed, 168 insertions(+), 24 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_global_sub=
-progs.c
-
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1340921ea311..fe2fd76d6ec4 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -339,6 +339,11 @@ struct bpf_kfunc_call_arg_meta {
+=20
+ struct btf *btf_vmlinux;
+=20
++static const char *btf_type_name(const struct btf *btf, u32 id)
++{
++	return btf_name_by_offset(btf, btf_type_by_id(btf, id)->name_off);
++}
++
+ static DEFINE_MUTEX(bpf_verifier_lock);
+ static DEFINE_MUTEX(bpf_percpu_ma_lock);
+=20
+@@ -418,6 +423,17 @@ static bool subprog_is_global(const struct bpf_verif=
+ier_env *env, int subprog)
+ 	return aux && aux[subprog].linkage =3D=3D BTF_FUNC_GLOBAL;
+ }
+=20
++static const char *subprog_name(const struct bpf_verifier_env *env, int =
+subprog)
++{
++	struct bpf_func_info *info;
++
++	if (!env->prog->aux->func_info)
++		return "";
++
++	info =3D &env->prog->aux->func_info[subprog];
++	return btf_type_name(env->prog->aux->btf, info->type_id);
++}
++
+ static bool reg_may_point_to_spin_lock(const struct bpf_reg_state *reg)
+ {
+ 	return btf_record_has_field(reg_btf_record(reg), BPF_SPIN_LOCK);
+@@ -576,11 +592,6 @@ static int iter_get_spi(struct bpf_verifier_env *env=
+, struct bpf_reg_state *reg,
+ 	return stack_slot_obj_get_spi(env, reg, "iter", nr_slots);
+ }
+=20
+-static const char *btf_type_name(const struct btf *btf, u32 id)
+-{
+-	return btf_name_by_offset(btf, btf_type_by_id(btf, id)->name_off);
+-}
+-
+ static enum bpf_dynptr_type arg_to_dynptr_type(enum bpf_arg_type arg_typ=
+e)
+ {
+ 	switch (arg_type & DYNPTR_TYPE_FLAG_MASK) {
+@@ -9128,15 +9139,16 @@ static int __check_func_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn
+ 	if (err =3D=3D -EFAULT)
+ 		return err;
+ 	if (subprog_is_global(env, subprog)) {
++		const char *sub_name =3D subprog_name(env, subprog);
++
+ 		if (err) {
+-			verbose(env, "Caller passes invalid args into func#%d\n",
+-				subprog);
++			verbose(env, "Caller passes invalid args into func#%d ('%s')\n",
++				subprog, sub_name);
+ 			return err;
+ 		} else {
+-			if (env->log.level & BPF_LOG_LEVEL)
+-				verbose(env,
+-					"Func#%d is global and valid. Skipping.\n",
+-					subprog);
++			verbose(env, "Func#%d ('%s') is global and assumed valid.\n",
++				subprog, sub_name);
++
+ 			clear_caller_saved_regs(env, caller->regs);
+=20
+ 			/* All global functions return a 64-bit SCALAR_VALUE */
+@@ -19763,9 +19775,8 @@ static int do_check_subprogs(struct bpf_verifier_=
+env *env)
+ 		if (ret) {
+ 			return ret;
+ 		} else if (env->log.level & BPF_LOG_LEVEL) {
+-			verbose(env,
+-				"Func#%d is safe for any args that match its prototype\n",
+-				i);
++			verbose(env, "Func#%d ('%s') is safe for any args that match its prot=
+otype\n",
++				i, subprog_name(env, i));
+ 		}
+ 	}
+ 	return 0;
 --=20
 2.34.1
 
