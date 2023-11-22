@@ -1,110 +1,96 @@
-Return-Path: <bpf+bounces-15678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D0DC7F4EA1
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:46:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41B657F4EE9
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 19:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23F5E2813B9
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 17:46:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F02BF281390
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C0425788B;
-	Wed, 22 Nov 2023 17:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B6ED58AB6;
+	Wed, 22 Nov 2023 18:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KOfJTyBJ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Oau+khQa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F1C6BC
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 09:46:47 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id 38308e7fff4ca-2c8769edd9fso757291fa.0
-        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 09:46:47 -0800 (PST)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D547B2
+	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 10:05:37 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9ce4e0e2bdso32764276.3
+        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 10:05:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700675206; x=1701280006; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PtpVViMgF2GbPpkDYmrFz/mZu4iLwZlMpIVwzkMUSDE=;
-        b=KOfJTyBJt12b2YSzVZdGs0OAb0e9d5gsMK8yEdx+Dcc7+rCk/GLrU5KJz/94mlpa0y
-         OIj4mNEDP6PQn23x1IVFmcc2LbvgOMcslXfuOfYlxDas8gVgApPXm0bPfAf9lU66ihIk
-         3Z50+f8h1viV4qaaOxCITVTKbx+LlYnOat1L13tLspfX3aFm4e/uAiO30BSAWckrTuzI
-         xuP+GS1X9r0wEcuQYl5+6lez43BR9atLgq2unlVREDhd/7tKo4O9BHBYlRU9Yd+mQXTr
-         XZrHjKvMe9AYi0raarLEJTJssTDhLvb1tSAphgNIzThI/byxLozIkBz9iIvfF1Q5mgeH
-         gr8A==
+        d=google.com; s=20230601; t=1700676337; x=1701281137; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8rLGzr2RwpR7u2JJS1qUA9AQ9iJQ3KxhhH8GvvtmAwY=;
+        b=Oau+khQaF+bnBUhdYBNIfeXCgdP93isQpEoxWZcy8GcZT2ojD1bTP2PNn2RoBC4McH
+         OM5qlRduyoS8yfXPoA2d7qGN6Y0e0ewtyNShoDz4RuYuoJSBtr5rSvLYfC3BMNEZqgzq
+         9CyWKJ6xsqzl5KwDCFVYNkPtigHYh21VQ6JwZ+EaO11I5fA8fwqlSyj8AwwPBh9t7IST
+         8JZLEEdWYlITc/tdjdapkh0iQQrzXXA4qCE74z4Ds+iUNgF+Lk1Qsg8L6gP5M+odkn96
+         +8Jv/Qh1abCuoVDDrNWKcCkFr21gnNoQuMzplHz3fcSNIZSuexDY76/3ngL3i3q+TdWG
+         RIuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700675206; x=1701280006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PtpVViMgF2GbPpkDYmrFz/mZu4iLwZlMpIVwzkMUSDE=;
-        b=PN934w//OY1hCDqG4bebrtoUyrQcF258Yf1m5hEjcXh6CWK5cc/+/Dw2c3Y1fi6y1n
-         C2MTJN4942dAw8UgdkzQogh8h/x5+GZUifmF80y7M9ozGO+jeVXs9N/UyzZAoDdQZ2Dx
-         moNp04cCuS+YaFZJ0/Vl3YCi33RH9kapFaBnLNFUO+Zbr1ZY9YfjrJ2aQ14M0LUNQe68
-         jnzoG0vpZ8oWb7RWgWbqT6ZGxtmo4sB02UI9/MC3n6RZz5bnkZA4BYi2nWll0pDaZjfX
-         RmMhVfrLAWc0rzML2GIKpBuoV+THGOPQ2jJS+yQa6vAc5cXg5/gFbkgQI8atMmGWHbQm
-         sFZw==
-X-Gm-Message-State: AOJu0Yw51CmPswiBLKZuwUKE95cY1VEbAa2VOp0wGLUne4hgJo/2iiSE
-	JNLWUFKiuj8XpI/2+AIaezZxe3J0gGKrCkNzEwpEBTCD
-X-Google-Smtp-Source: AGHT+IHlToWimUVJgEabQdX3mbLhh/P8Lj8rz67gz8B0cFx/rCdC0Vy6pmmscNRIg4CbWTuYfatGrhEX0AxNaY9c230=
-X-Received: by 2002:a2e:8709:0:b0:2c6:e46e:9849 with SMTP id
- m9-20020a2e8709000000b002c6e46e9849mr2231457lji.15.1700675205531; Wed, 22 Nov
- 2023 09:46:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700676337; x=1701281137;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8rLGzr2RwpR7u2JJS1qUA9AQ9iJQ3KxhhH8GvvtmAwY=;
+        b=NFgASf7ioi60fvEvOpGjdWekG1TBUqynCExI38+uZ1eLS4lYeeVUTEu9b0PtVW1v71
+         Tp+s+EVgAx7HuyXJvqcqW5IRMBZhkMXObABLUzYAdQE9oPFswYfd+zGNP0kQZJbSme+C
+         wU+Lmh304qLtZfLQlylbJ4cYLYHN3hJoNroGmcp52sJ85QQcrxdIOyWAw+wUJnucBCs6
+         hEc4OJ3A/CKSDhdcaO9wbeL4ZrjqwptbrlDcrYU13pA02gcy9yoj+Z8Y4NUaCursYKnw
+         JO3KIjufGIpceZuFtbuXUyV8ftfz+w6qB/27X2Ky9yEVmFPK0PHbfkosqE94j7K9nu6S
+         eBzQ==
+X-Gm-Message-State: AOJu0YzGa0qjtJUdnHrAQ7Tiaf/sxPU1rhYJfq1jA0pcfH2z4t6w5Rvv
+	tHj7hZCA5VZNcTaINAp/EAnCBwA=
+X-Google-Smtp-Source: AGHT+IEi6rx5HdAmblcgb3pSvcyJd6i+t9+j+spXNk9UPPt1M3L2tpTF82haI295T4NsMAwrCh+AJRk=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a25:aa52:0:b0:db4:7ac:fea6 with SMTP id
+ s76-20020a25aa52000000b00db407acfea6mr64505ybi.7.1700676336797; Wed, 22 Nov
+ 2023 10:05:36 -0800 (PST)
+Date: Wed, 22 Nov 2023 10:05:35 -0800
+In-Reply-To: <b4854a4b-a692-8164-5684-4315939966f3@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231122011656.1105943-1-andrii@kernel.org> <20231122011656.1105943-6-andrii@kernel.org>
- <4b12e29372014a46a399ee26870c306fa492319d.camel@gmail.com>
-In-Reply-To: <4b12e29372014a46a399ee26870c306fa492319d.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 22 Nov 2023 09:46:34 -0800
-Message-ID: <CAEf4BzbTCMAHYmsr4kKiyyxL63DhNZZQhp9RCAkxARG9T_6B1w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 05/10] selftests/bpf: add selftest validating
- callback result is enforced
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20231114045453.1816995-1-sdf@google.com> <20231114045453.1816995-3-sdf@google.com>
+ <49538852-1ca0-49bb-86c2-cb1b95739b91@linux.dev> <b4854a4b-a692-8164-5684-4315939966f3@iogearbox.net>
+Message-ID: <ZV5C7099HylvusQO@google.com>
+Subject: Re: [PATCH bpf-next 2/2] bpf: bring back removal of dev-bound id from idr
+From: Stanislav Fomichev <sdf@google.com>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>, ast@kernel.org, andrii@kernel.org, 
+	song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-On Wed, Nov 22, 2023 at 7:13=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2023-11-21 at 17:16 -0800, Andrii Nakryiko wrote:
-> > BPF verifier expects callback subprogs to return values from specified
-> > range (typically [0, 1]). This requires that r0 at exit is both precise
-> > (because we rely on specific value range) and is marked as read
-> > (otherwise state comparison will ignore such register as unimportant).
-> >
-> > Add a simple test that validates that all these conditions are enforced=
-.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
->
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
->
-> [...]
->
-> > +SEC("?raw_tp")
-> > +__failure __log_level(2)
-> > +__flag(BPF_F_TEST_STATE_FREQ)
->
-> Nit: although it is redundant, but maybe also check precision log to
->      check that r0 is indeed marked precise?
->
+On 11/22, Daniel Borkmann wrote:
+> On 11/21/23 10:03 PM, Martin KaFai Lau wrote:
+> > On 11/13/23 8:54 PM, Stanislav Fomichev wrote:
+> > > Commit ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
+> > > and PERF_BPF_EVENT_PROG_UNLOAD") stopped removing program's id from
+> > > idr when the offloaded/bound netdev goes away. I was supposed to
+> > > take a look and check in [0], but apparently I did not.
+> > > 
+> > > The purpose of idr removal is to avoid BPF_PROG_GET_NEXT_ID returning
+> > > stale ids for the programs that have a dead netdev. This functionality
+> > 
+> > What may be wrong if BPF_PROG_GET_NEXT_ID returns the id?
+> > e.g. If the prog is pinned somewhere, it may be useful to know a prog is still loaded in the system.
 
-sure, I'll add another expected msg, no problem
+bpftool is a bit spooked by those prog ids currently: calling GET_INFO_BY_ID
+on those programs returns ENODEV. So we can keep those ids around, but
+need some tweaks on the bpftool in this case. LMK if any of you prefer
+this option.
 
-> > +__msg("from 10 to 12: frame1: R0=3Dscalar(umin=3D1001) R10=3Dfp0 cb")
-> > +__msg("At callback return the register R0 has unknown scalar value sho=
-uld have been in (0x0; 0x1)")
-> > +__naked int callback_precise_return_fail(void)
->
-> [...]
->
->
+> Wouldn't this strictly speaking provide an invalid id (== 0) upon unload
+> back to audit - see the bpf_audit_prog(prog, BPF_AUDIT_UNLOAD) call location?
+
+Removing from idr shouldn't affect bpf_audit_prog, right? bpf_audit_prog
+is using prog->aux->id for its purposes, so as long as we are not resetting
+this value - we're good.
 
