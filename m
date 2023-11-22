@@ -1,147 +1,155 @@
-Return-Path: <bpf+bounces-15708-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15709-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F85C7F52DA
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 22:50:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E3D67F5354
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 23:23:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B51D281031
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 21:50:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDBF6B20E43
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 22:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799801D6A5;
-	Wed, 22 Nov 2023 21:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297FA20325;
+	Wed, 22 Nov 2023 22:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GL5ZzqPl"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CxwaB/kv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F99DA9
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 13:50:16 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c87acba73bso3601871fa.1
-        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 13:50:16 -0800 (PST)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8501AE
+	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 14:23:38 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c1c48d7226so297031a12.0
+        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 14:23:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700689814; x=1701294614; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QsCRSylyHi6x7qRXO3i1EJe0apQp53G7vBdDkCDj+MU=;
-        b=GL5ZzqPl5u0VZWTX88StMUJoHuwCD1y5yWv64J3Gnpy8IsCHUZDQGTV1z9ZBrdaDGH
-         fOSTwxwTfxPZNHJWICPbjSeHHpnXRjzd2qJfHS8SBshKkgsJj6qo2pSR7X/wJTO1azY2
-         My108BY8NAADDPystugWrK5RhCv9KmW3Aol5JCPjhUZ0iirX91HJl8qVmVzY0YqLXOFA
-         FrPRrcVTUE7O4PQa64CHlx4uE/lZ1M0MKOHExzXyeqgvvZHQFnTrf4QHLKBwbRHcV1xv
-         JC56WwzsTQFN3CGAdiCFG7JBzYXzTE21JkSbJZIzT3j6lL3ekDQsj0pS+n8S96XUpyud
-         gVjA==
+        d=google.com; s=20230601; t=1700691817; x=1701296617; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=d9Z0zE07XUIxOa6vpdef3ArNyljMDifNTElQJ7RMUJ0=;
+        b=CxwaB/kvRZmzl/8wOkpABlUaYG7LVfz288QuboezCX0ehj8YRCRbL5D79IrPtEBaMk
+         /iP+jB3JhBgGDO4ajSnAeFNkfS1dAweLYB1LvH84wFp9PjdHOakGdutgmqQkxeXGXSQ/
+         TPd5lw6Jrr04FI5TnetS2DpH6+1W4UWSCFZ3K177c6wGux723uitJ/gRsLFe62NeXXQN
+         TItsLcN4U4IQeSYTbZZP+z4VQGwJuAENgdtCFGMQ34KHdSzu3LURwPmC8jcxO6DEVZ3a
+         uzsScNBeWnjxruNpZf9XVFuW+c48VgkwO/+KU/ZVrSPxq2VNyEhpRJtR+g6TXHSoTizt
+         586w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700689814; x=1701294614;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QsCRSylyHi6x7qRXO3i1EJe0apQp53G7vBdDkCDj+MU=;
-        b=Upg6YDOgrLwwvwry8sT+pxSB5L7MD6ioExW2Pjxrxy0k2aJyz7etnFOuZU8UDbfDnm
-         2ATzBhiV27jbr08FYDucc55I1rSDzMR6kebk6BcysvA3SkKceIF2rBztSLhfnk+2XKTw
-         kR9Ycptwpf160IGCuRWsq95tv7WTN44iUaTWugWthSsakiNNwn23uZppyqPPXo5SsQHQ
-         4AxVcBI+8yeCCsDGa1dugr8IyWiwhUzvwznjBo3rD5dxxMGNYbJFFz67OYN1+5FYzAal
-         kXztyP4wsxQChulEXLN9hZ+SvRU9PtTqAsU48tIS8ctzrPuEePypNPLDhe39d82sIBL6
-         HApg==
-X-Gm-Message-State: AOJu0YwQ3k2dvp1LTTP6zzyMHO+6miSv+4oEdKbaYa8IJW24OxIo+Or6
-	fxozzcQSLHKuGEVz9V3MSNU=
-X-Google-Smtp-Source: AGHT+IFAA6sGK7Yat4Ubzvy6Ce/xi2wCb6+l3IvTwT63aXM52lsuGrsY/dpnoFMot2Glo8WIjcrbdg==
-X-Received: by 2002:a2e:a285:0:b0:2c6:f51f:c96d with SMTP id k5-20020a2ea285000000b002c6f51fc96dmr2474025lja.13.1700689814077;
-        Wed, 22 Nov 2023 13:50:14 -0800 (PST)
-Received: from krava ([83.240.61.242])
-        by smtp.gmail.com with ESMTPSA id g8-20020a17090670c800b009b65a834dd6sm244546ejk.215.2023.11.22.13.50.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 13:50:13 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 22 Nov 2023 22:50:06 +0100
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCHv3 bpf-next 3/6] bpf: Add link_info support for uprobe
- multi link
-Message-ID: <ZV53jlOMcLu3dRVt@krava>
-References: <20231120145639.3179656-1-jolsa@kernel.org>
- <20231120145639.3179656-4-jolsa@kernel.org>
- <70c4f23e-7de2-4373-a5f3-a6ef0ed31ef7@linux.dev>
+        d=1e100.net; s=20230601; t=1700691817; x=1701296617;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d9Z0zE07XUIxOa6vpdef3ArNyljMDifNTElQJ7RMUJ0=;
+        b=piGfDHPmOQFr5ulUvkmhGA2l3T5HasrWuR2G3Uo9ELBBLGKASuIJnQm4rx/3ydZiIP
+         lNlKyYmoI39I4Kqo1vf3rj7Dxx6c+IWSNbzTd3Kpu9kWLHh8Vf81XtJITgdJ91W/atus
+         eGXYlWoA7BlyOf7jqfCcz24QJ6Yt+0YZyFpSB3bF7g+eWuqhJsxPQZZGXzNWGNJdmti4
+         XtNETGJ3/CQ0QAV/guXdLkCWP3xjZlkD1cfTJcm7dGIfvQr3lcY5vrNJXTmrBBsAtuAB
+         GhAuEJ6gMeRB8iXE2nPnL0SB+YwRWwURGOdYTJx4VSpQ3xQa5k3OwI1ugpiLZjzCPS3B
+         SM7w==
+X-Gm-Message-State: AOJu0Yzt2xkSBqwFPB+CYmkVkgbduV9Oi+cFuE4RTu9q299B9fTjxKIi
+	eH4cYxYYqbPoyaqJ9DLCaLISQzrRAK9mVNhG4FCcHNhMnfSzJbeQDPTFs+Dw6e68Ngsiz49clcL
+	RYYFNphu3uHhjVady2XaWHrolYkWINxtIX8odnWjqU/U1DytQgQ==
+X-Google-Smtp-Source: AGHT+IFqwaSuj3OPgIroBPt2rOC2Kuja+f/S+zxDQcsYHu2Duc5oSE+HQptrJbGQA/MKDNFU6x8V2Q8=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:4047:0:b0:5c2:2f9:c374 with SMTP id
+ n68-20020a634047000000b005c202f9c374mr643470pga.9.1700691817358; Wed, 22 Nov
+ 2023 14:23:37 -0800 (PST)
+Date: Wed, 22 Nov 2023 14:23:34 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <70c4f23e-7de2-4373-a5f3-a6ef0ed31ef7@linux.dev>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
+Message-ID: <20231122222335.1799186-1-sdf@google.com>
+Subject: [PATCH bpf-next v2 1/2] bpftool: mark orphaned programs during prog show
+From: Stanislav Fomichev <sdf@google.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Nov 20, 2023 at 10:04:16AM -0800, Yonghong Song wrote:
+Commit ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
+and PERF_BPF_EVENT_PROG_UNLOAD") stopped removing program's id from
+idr when the offloaded/bound netdev goes away. I was supposed to
+take a look and check in [0], but apparently I did not.
 
-SNIP
+Martin points out it might be useful to keep it that way for
+observability sake, but we at least need to mark those programs as
+unusable.
 
-> > +static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
-> > +						struct bpf_link_info *info)
-> > +{
-> > +	u64 __user *uref_ctr_offsets = u64_to_user_ptr(info->uprobe_multi.ref_ctr_offsets);
-> > +	u64 __user *ucookies = u64_to_user_ptr(info->uprobe_multi.cookies);
-> > +	u64 __user *uoffsets = u64_to_user_ptr(info->uprobe_multi.offsets);
-> > +	u64 __user *upath = u64_to_user_ptr(info->uprobe_multi.path);
-> > +	u32 upath_size = info->uprobe_multi.path_size;
-> > +	struct bpf_uprobe_multi_link *umulti_link;
-> > +	u32 ucount = info->uprobe_multi.count;
-> > +	int err = 0, i;
-> > +	long left;
-> > +
-> > +	if (!upath ^ !upath_size)
-> > +		return -EINVAL;
-> > +
-> > +	if ((uoffsets || uref_ctr_offsets || ucookies) && !ucount)
-> > +		return -EINVAL;
-> > +
-> > +	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
-> > +	info->uprobe_multi.count = umulti_link->cnt;
-> > +	info->uprobe_multi.flags = umulti_link->flags;
-> > +	info->uprobe_multi.pid = umulti_link->task ?
-> > +				 task_pid_nr_ns(umulti_link->task, task_active_pid_ns(current)) : 0;
-> > +
-> > +	if (upath) {
-> > +		char *p, *buf;
-> > +
-> > +		upath_size = min_t(u32, upath_size, PATH_MAX);
-> > +
-> > +		buf = kmalloc(upath_size, GFP_KERNEL);
-> > +		if (!buf)
-> > +			return -ENOMEM;
-> > +		p = d_path(&umulti_link->path, buf, upath_size);
-> > +		if (IS_ERR(p)) {
-> > +			kfree(buf);
-> > +			return -ENOSPC;
-> 
-> Should we just return PTR_ERR(p)? In d_path, it is possible that
-> -ENAMETOOLONG is returned. But path->dentry->d_op->d_dname() might
-> return a different error reason than  -ENAMETOOLONG or -ENOSPC?
+Mark those programs as 'orphaned' and keep printing the list when
+we encounter ENODEV.
 
-true, will change
+0: unspec  tag 0000000000000000
+        xlated 0B  not jited  memlock 4096B orphaned
 
-> 
-> > +		}
-> > +		upath_size = buf + upath_size - p;
-> > +		left = copy_to_user(upath, p, upath_size);
-> 
-> Here, the data copied to user may contain more than
-> actual path itself. I am okay with this since this
-> is not in critical path. But early buf allocation is using
-> kmalloc whose content could be arbitrary. Should we
-> use kzalloc for the above 'buf' allocation?
+[0]: https://lore.kernel.org/all/CAKH8qBtyR20ZWAc11z1-6pGb3Hd47AQUTbE_cfoktG59TqaJ7Q@mail.gmail.com/
 
-good catch, will use kzalloc
+Fixes: ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ tools/bpf/bpftool/prog.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-thanks,
-jirka
+diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+index 7ec4f5671e7a..a4f23692c187 100644
+--- a/tools/bpf/bpftool/prog.c
++++ b/tools/bpf/bpftool/prog.c
+@@ -442,7 +442,7 @@ static void print_prog_header_json(struct bpf_prog_info *info, int fd)
+ 		jsonw_uint_field(json_wtr, "recursion_misses", info->recursion_misses);
+ }
+ 
+-static void print_prog_json(struct bpf_prog_info *info, int fd)
++static void print_prog_json(struct bpf_prog_info *info, int fd, bool orphaned)
+ {
+ 	char *memlock;
+ 
+@@ -461,6 +461,7 @@ static void print_prog_json(struct bpf_prog_info *info, int fd)
+ 		jsonw_uint_field(json_wtr, "uid", info->created_by_uid);
+ 	}
+ 
++	jsonw_bool_field(json_wtr, "orphaned", orphaned);
+ 	jsonw_uint_field(json_wtr, "bytes_xlated", info->xlated_prog_len);
+ 
+ 	if (info->jited_prog_len) {
+@@ -527,7 +528,7 @@ static void print_prog_header_plain(struct bpf_prog_info *info, int fd)
+ 	printf("\n");
+ }
+ 
+-static void print_prog_plain(struct bpf_prog_info *info, int fd)
++static void print_prog_plain(struct bpf_prog_info *info, int fd, bool orphaned)
+ {
+ 	char *memlock;
+ 
+@@ -554,6 +555,9 @@ static void print_prog_plain(struct bpf_prog_info *info, int fd)
+ 		printf("  memlock %sB", memlock);
+ 	free(memlock);
+ 
++	if (orphaned)
++		printf(" orphaned");
++
+ 	if (info->nr_map_ids)
+ 		show_prog_maps(fd, info->nr_map_ids);
+ 
+@@ -581,15 +585,15 @@ static int show_prog(int fd)
+ 	int err;
+ 
+ 	err = bpf_prog_get_info_by_fd(fd, &info, &len);
+-	if (err) {
++	if (err && err != -ENODEV) {
+ 		p_err("can't get prog info: %s", strerror(errno));
+ 		return -1;
+ 	}
+ 
+ 	if (json_output)
+-		print_prog_json(&info, fd);
++		print_prog_json(&info, fd, err == -ENODEV);
+ 	else
+-		print_prog_plain(&info, fd);
++		print_prog_plain(&info, fd, err == -ENODEV);
+ 
+ 	return 0;
+ }
+-- 
+2.43.0.rc1.413.gea7ed67945-goog
+
 
