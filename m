@@ -1,142 +1,121 @@
-Return-Path: <bpf+bounces-15626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F897F3CF6
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 05:41:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 136607F3D43
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 06:26:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D18171F23686
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 04:41:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 940291F22A30
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 05:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A52AA8494;
-	Wed, 22 Nov 2023 04:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8270D11C9C;
+	Wed, 22 Nov 2023 05:25:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="HILqKYZ4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="srHVmV7f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A25193
-	for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 20:41:27 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-da0359751dbso399219276.1
-        for <bpf@vger.kernel.org>; Tue, 21 Nov 2023 20:41:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1700628087; x=1701232887; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZGTSoBXC/6Jkt5M8V7vCMsiBLn/G0YqKZNvpHoWAN7w=;
-        b=HILqKYZ4n1N9Ad42Z/VVJUn+8ranxQhzx9VA0YXdMNGpyGLaH19kcqhf0DOT8b1ti9
-         Zty/AZrfNDWUuF/egTOeVG3iCUyp55OxpWcEDrJjioY5l5Jpjfq3om/wQI9vOt/2ijEH
-         SazXpSdMm7xzeu2Quhha+0+MJWvCG5zZBySI2+zWj4Xdi6OtTcUuWMOo/6V1EOtljMI8
-         aRfPGC7vgdmzx7Ofjzm9MZNucg701zIAVyokCRBkNgpApINy8TGOtl3v0c+yrMZjitTa
-         cG5MCIdP3BmeiC7N3FqHs5YexVkV3nZWkgp5e5UI17T1YGnFMqcJsayiijr2tWuFn9eX
-         aXCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700628087; x=1701232887;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZGTSoBXC/6Jkt5M8V7vCMsiBLn/G0YqKZNvpHoWAN7w=;
-        b=BscoJcqzMnyK5lesQ2EWIBKMRPklK93kwEZFUl6QTF3mEX/6NDmsEtRVz6OfVAVsdb
-         V4/JHwVJ13ltwyw3nmi3xEN55qSG82KZQSeJeCSGiwKeqPoVc/vYbKWBWRRRZnPNpVZE
-         ZMC0j8uB26NcZ6uQkJdlxxHkkc8LRkWE0POHh+IvYfF8k/kdOZkiCGdCnXq3rKOcOMR4
-         meJtoEtBnP6JR/3dLlOOn6ezk+rKpJofN0oJ4rnnA/87d4Uh2AfHm6tQaB9jRBiXkqvb
-         KfH+ZGUFUCil7FJJ9h9790bP4fPL/yQQmvbRe5xKmt7qSb9//IL0q00ZuYMdnfUuJi3M
-         yNyw==
-X-Gm-Message-State: AOJu0YxdWwIDnDJUJuYsa4XREACvYi/SYtYC1W5Bf9jIrGUVjdRV8fjs
-	R1s2AkgLISL8ENcYSbZVgMWrCRmBuBdLKAsDczBS
-X-Google-Smtp-Source: AGHT+IHe8amBKBsj3yLOHRxofJ+KPSrg0taVp4UY3/qytXiDrVNd3+3/eM9zDlh5XZb5Egn1ifS1YQTJpxov+QEIpYM=
-X-Received: by 2002:a25:3496:0:b0:db3:5185:1737 with SMTP id
- b144-20020a253496000000b00db351851737mr1001554yba.17.1700628086781; Tue, 21
- Nov 2023 20:41:26 -0800 (PST)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C380311702;
+	Wed, 22 Nov 2023 05:25:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5069AC43391;
+	Wed, 22 Nov 2023 05:25:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700630751;
+	bh=wmWxPUOd6qlcwcRUdP9zuOVzyu62ETC1UMPH8fike0s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=srHVmV7fUud/rEPkwYZ3Cf5j0ftTgJLhUI7Bo8HYn9HEAes9nqIimFw0PB86lodKU
+	 T1ZNMaIbN3euB6D0xE4fwIy6xpxe4lQ4VhtDNaClDULPbIAEsQ8ElQsUqc/6pczdKo
+	 yhUl3o346DRC6NoHNKUFTDvjkq+3ODvzulKTlnJBHirP+OeOAMOvuqrdqc76q1J7QD
+	 wo0rO4lvF3kc/l9eEdZtO5TMRctWyVlE49mL1a1a/gY8ba+WSuDcD7jayvwiKDt5ww
+	 bxRRkRq/1jfo2UzWDhQZc/U/UdcJEFp4zmS7H7BSQGjqzFXTfOqsdelZCW5/y7mQi8
+	 x+sqkgbKWrkLQ==
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-507be298d2aso8333707e87.1;
+        Tue, 21 Nov 2023 21:25:51 -0800 (PST)
+X-Gm-Message-State: AOJu0YwwWtFd96QHzKD7yRRBIxrUUhq+6i8J0fHpX1UtCkJXzffg6H6o
+	2/roU9C3j6XToRjtIag0MYRwq1+PGb4D6gsez4c=
+X-Google-Smtp-Source: AGHT+IHCMVEXjnRbdnaoZRHF4v+WDOV92AxJZtPtfrW5rxC0f/SkxPzWTYT9Yga0zajW7oMblajVNdE6RRo1Nyf4qs8=
+X-Received: by 2002:a05:6512:4014:b0:503:258f:fd1b with SMTP id
+ br20-20020a056512401400b00503258ffd1bmr1128073lfb.18.1700630749453; Tue, 21
+ Nov 2023 21:25:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <93b5e861-c1ec-417c-b21e-56d0c4a3ae79@I-love.SAKURA.ne.jp>
- <CAHC9VhRbak9Mij=uKQ-Drod0tQu1+Z+JaahUzH5uj9JUf7ZTuA@mail.gmail.com> <7b9e471a-a9df-4ff6-89bf-0fed01fcd5e7@I-love.SAKURA.ne.jp>
-In-Reply-To: <7b9e471a-a9df-4ff6-89bf-0fed01fcd5e7@I-love.SAKURA.ne.jp>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 21 Nov 2023 23:41:16 -0500
-Message-ID: <CAHC9VhRy_sZNSRHMJoULFX2vb=opj1s2hEffaVNJyaHycWF+=w@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/4] LSM: Officially support appending LSM hooks
- after boot.
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: linux-security-module <linux-security-module@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, 
-	Casey Schaufler <casey@schaufler-ca.com>, song@kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, renauld@google.com, 
-	Paolo Abeni <pabeni@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>
+References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
+ <20231015141644.260646-2-akihiko.odaki@daynix.com> <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
+ <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
+ <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
+ <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
+ <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com> <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
+ <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
+ <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com> <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
+ <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com>
+In-Reply-To: <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 21 Nov 2023 21:25:37 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4o5o41a+jVjgGP+Ck3eUD8w6coLXMTYewXKJYmciLLnQ@mail.gmail.com>
+Message-ID: <CAPhsuW4o5o41a+jVjgGP+Ck3eUD8w6coLXMTYewXKJYmciLLnQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
+To: Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jason Wang <jasowang@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, kvm@vger.kernel.org, 
+	virtualization@lists.linux-foundation.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Yuri Benditovich <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 21, 2023 at 8:03=E2=80=AFAM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
-> On 2023/11/21 7:52, Paul Moore wrote:
-> > On Mon, Nov 20, 2023 at 8:28=E2=80=AFAM Tetsuo Handa
-> > <penguin-kernel@i-love.sakura.ne.jp> wrote:
-> >>
-> >> This functionality will be used by TOMOYO security module.
-> >>
-> >> In order to officially use an LSM module, that LSM module has to be
-> >> built into vmlinux. This limitation has been a big barrier for allowin=
-g
-> >> distribution kernel users to use LSM modules which the organization wh=
-o
-> >> builds that distribution kernel cannot afford supporting [1]. Therefor=
-e,
-> >> I've been asking for ability to append LSM hooks from LKM-based LSMs s=
-o
-> >> that distribution kernel users can use LSMs which the organization who
-> >> builds that distribution kernel cannot afford supporting.
+On Mon, Nov 20, 2023 at 12:05=E2=80=AFAM Akihiko Odaki <akihiko.odaki@dayni=
+x.com> wrote:
+>
+> On 2023/11/20 6:02, Song Liu wrote:
+[...]
+> >> In contrast, our intended use case is more like a normal application.
+> >> So, for example, a user may download a container and run QEMU (includi=
+ng
+> >> the BPF program) installed in the container. As such, it is nice if th=
+e
+> >> ABI is stable across kernel releases, but it is not guaranteed for
+> >> kfuncs. Such a use case is already covered with the eBPF steering
+> >> program so I want to maintain it if possible.
 > >
-> > It doesn't really matter for this discussion, but based on my days
-> > working for a Linux distro company I would be very surprised if a
-> > commercial distro would support a system running unapproved
-> > third-party kernel modules.
+> > TBH, I don't think stability should be a concern for kfuncs used by QEM=
+U.
+> > Many core BPF APIs are now implemented as kfuncs: bpf_dynptr_*,
+> > bpf_rcu_*, etc. As long as there are valid use cases,these kfuncs will
+> > be supported.
 >
-> A commercial distro does not care about problems that are caused by
-> using kernel modules that are not included in that distro's kernels.
-
-My experience has taught me otherwise.
-
-> If a commercial distro does not want to allow use of kernel modules that
-> are not included in that distro's kernels, that distro would enforce modu=
-le
-> signature verification rather than disabling loadable module support.
-> Keeping loadable module support enabled is a balance that is important fo=
-r
-> getting wider developers/users.
-
-We don't currently support LSMs as dynamically loadable kernel modules
-and if the only reasons for doing so are either to A) support
-out-of-tree LSMs or B) avoid having to recompile a kernel (to hack an
-unsupported LSM into a distro kernel) I have to say (yet again) that I
-am not interested.
-
-> > We've talked a lot about this core problem and I maintain that it is
-> > still a disto problem and not something I'm really concerned about
-> > upstream.
+> Documentation/bpf/kfuncs.rst still says:
+>  > kfuncs provide a kernel <-> kernel API, and thus are not bound by any
+>  > of the strict stability restrictions associated with kernel <-> user
+>  > UAPIs.
 >
-> LSM modules that are not built into vmlinux currently cannot be appended
-> after boot. Such asymmetry is strange and remains a big barrier.
->
-> You are not concerned about this asymmetry, but I am very much concerned.
-> Please give me feedback on not "I don't need it" but "how we can do it".
+> Is it possible to change the statement like as follows:
+> "Most kfuncs provide a kernel <-> kernel API, and thus are not bound by
+> any of the strict stability restrictions associated with kernel <-> user
+> UAPIs. kfuncs that have same stability restrictions associated with
+> UAPIs are exceptional, and must be carefully reviewed by subsystem (and
+> BPF?) maintainers as any other UAPIs are."
 
-I thought my feedback has been clear up to this point, but perhaps I
-need to be more direct.  At this point in time I am not interested in
-supporting dynamically loaded LSM kernel modules if the only reasons
-are to support out-of-tree LSMs or users who want to hack unsupported
-LSMs into pre-built distro kernels; both of these use cases can be
-solved today by compiling your own kernel.
+I am afraid this is against the intention to not guarantee UAPI-level stabi=
+lity
+for kfuncs.
 
-As with the other threads involving this topic, I'm going to refrain
-from any further comments until I see a new discussion point.
-
---
-paul-moore.com
+Thanks,
+Song
 
