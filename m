@@ -1,57 +1,58 @@
-Return-Path: <bpf+bounces-15648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D75A7F48B3
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 15:16:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9F27F48B2
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 15:16:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EDDDB211D4
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 14:16:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67F1D1C20BA0
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 14:16:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7922A4C3CD;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D894D5BE;
 	Wed, 22 Nov 2023 14:16:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mBBIpDfd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IcsUGyv3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF09101;
-	Wed, 22 Nov 2023 06:16:19 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6c34e87b571so5506235b3a.3;
-        Wed, 22 Nov 2023 06:16:19 -0800 (PST)
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F92419D;
+	Wed, 22 Nov 2023 06:16:20 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6c431b91b2aso5928761b3a.1;
+        Wed, 22 Nov 2023 06:16:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700662579; x=1701267379; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gEFaC38G2s27p4sRXGudzDSfRCeLNbnrtzWPTvuPOrE=;
-        b=mBBIpDfdRD158dyCUhvkxm5a2zMAI2AGBY+utO481YikNmyh2u2LN2hBXRy7cYDZmp
-         NS80YyDNow07pRvew+e6gs+IODlJR/syxKbfxFOkq9RA0KlHKdQ5I3yYRlP2XC8ktsRB
-         TloJD+DyZv4PVwAwhinSuvpHqvHiHV+GwnszxdOBKcjdXzZdxwFZr5a2I8z8CiE2AWMk
-         N0KKujncAL4j73A55rgltObNu+r+dxdINGMfnEtGIaOWlkVAGONF3P2VE3p48xxuRYrX
-         ELyv8GWEvoj9maO6Wf/mwHeTNJLYJdx8nPSbYstr/q60vrTiWBR5qkJOjX9pOL/BZJas
-         d+ug==
+        d=gmail.com; s=20230601; t=1700662580; x=1701267380; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wEKF8LLG6U3WOQ+0Jd5b+JaDhInk2g16roqp0OT/5iQ=;
+        b=IcsUGyv3r72G7slMp6GHDoKK55hqMYE20fFUiAi8OSjJ8/uLEFNZt45bDDUpcWcBvJ
+         36CenbaP70wYGtrI6iJUGliE4sdqHXKJsS57Hxsd0MGqQTePI03LLRkE9gYBlq7oaL7G
+         Aj5g4B+KG3jPCNhugmjgDlhzNB2Nw+S1dq4AzA1ociIPzQphfsU+7UWXIApRK5DiY9E6
+         aHTaPat5qyBgIvTSxMtQvzy9T+NjDQG14Tz9h5AbD+pHJfXLGEcrTlaI9h37dO2v9R0I
+         tfsUg9tHIhLldBrGMfZscQgZlMX7TtLfNRLn0CgiUgD7CX9Byq7GEDyKydGJj1lMAP12
+         qoBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700662579; x=1701267379;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gEFaC38G2s27p4sRXGudzDSfRCeLNbnrtzWPTvuPOrE=;
-        b=l4BofyLpjjzr27wahjhHogFdBEbdHA9E/Y+N8XaGVqcdvAkUG2OLn5cEDRSRSRAbYG
-         0Wep4j9gedlp72wv2tI/8yYjgtM4vHhoMJyo93ClXRj+GZ+I2fPZOx7Ql73jWDS113xG
-         7RfiNcgSwaZmIqqSgCdgm1b7nagseIfTTcGV6mTY56FjKWvpWPi1zQgLIRppWdiVk52Y
-         vYDGR3hcy2SOFUBoyd/5myhJKadKqz7dZwXRO6xbC2+/UfcV7onPUhqDw7EkkzarlDMI
-         WHlGwT7tVYAEX6UzQjQtQ4z/2VEB2OxUIY7iFZqVNDSXVXa79HCY13CWOHRDSequkZoE
-         zVSQ==
-X-Gm-Message-State: AOJu0Yyb4LK5sK9d+MvWK5hSBb7vy4cha0Z4Swga3i4w3o/mEkuNtb1v
-	W0UX9Kzm7dgUdAMJsznX7r3KrE85TRROkd6n
-X-Google-Smtp-Source: AGHT+IFhmaA9eJSUL6Bl04UTu5jGhNUgNaEDGcrXHRztOb4CKetZJ/zl0FEet0evFRzuIE+jA8PGEA==
-X-Received: by 2002:a05:6a20:7207:b0:187:58b0:337 with SMTP id y7-20020a056a20720700b0018758b00337mr1586648pzb.11.1700662578496;
-        Wed, 22 Nov 2023 06:16:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700662580; x=1701267380;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wEKF8LLG6U3WOQ+0Jd5b+JaDhInk2g16roqp0OT/5iQ=;
+        b=h4r8Zab0vnwXRZ/34lr8FeKgaDnW5nIivUTEIaWCMqX4tspHhEdpgr5PcSRI5vqPIW
+         H6Kz25LQM29cK/UlaHAVfLawK5rerrZ9ip6lnvu4xWcZ39DQoD0eu2Nq5EXlYN6qe4GU
+         DE4VsbNtsFRwjgQL19zjdxiPhrHb98COzSsefqOEEFDW1F+qhX6dyF9HF3MEylOgOFel
+         to0EztWx6WyHu0DmXmk8zwLM35HrBbO9WEjbAi7jRfAARFCiEDz1n8iCjX6FHaVPLj+g
+         XO37QPB7efTTaYEL0jH9KIF+j8i6U6LzvOCY1pv0mNd/Ay9A1fysulbflhja2hYnL9lL
+         t7OA==
+X-Gm-Message-State: AOJu0YwPdlsN/+jftZo9U6iHGBO6p/1RFaqlDLcXYzloZs4hqan5dYX0
+	vFJrXjm6D7d0n1Ip7W0O2/8=
+X-Google-Smtp-Source: AGHT+IHaW2MTTY6XpXzARVPEMKHa87mJ8Yxq3K7qITmUxY6o2gfygIc8izDK27aA06ZWTKsysRRh+w==
+X-Received: by 2002:a05:6a20:e126:b0:187:7917:189d with SMTP id kr38-20020a056a20e12600b001877917189dmr2568042pzb.29.1700662579836;
+        Wed, 22 Nov 2023 06:16:19 -0800 (PST)
 Received: from vultr.guest ([2001:19f0:ac01:a71:5400:4ff:fea8:5687])
-        by smtp.gmail.com with ESMTPSA id p18-20020a63fe12000000b0058988954686sm9356260pgh.90.2023.11.22.06.16.17
+        by smtp.gmail.com with ESMTPSA id p18-20020a63fe12000000b0058988954686sm9356260pgh.90.2023.11.22.06.16.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 06:16:17 -0800 (PST)
+        Wed, 22 Nov 2023 06:16:19 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	paul@paul-moore.com,
@@ -63,11 +64,14 @@ Cc: linux-mm@kvack.org,
 	linux-security-module@vger.kernel.org,
 	bpf@vger.kernel.org,
 	ligang.bdlg@bytedance.com,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH v2 0/6] mm, security, bpf: Fine-grained control over memory policy adjustments with lsm bpf 
-Date: Wed, 22 Nov 2023 14:15:53 +0000
-Message-Id: <20231122141559.4228-1-laoar.shao@gmail.com>
+	Yafang Shao <laoar.shao@gmail.com>,
+	"Huang, Ying" <ying.huang@intel.com>
+Subject: [RFC PATCH v2 1/6] mm, doc: Add doc for MPOL_F_NUMA_BALANCING
+Date: Wed, 22 Nov 2023 14:15:54 +0000
+Message-Id: <20231122141559.4228-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20231122141559.4228-1-laoar.shao@gmail.com>
+References: <20231122141559.4228-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,96 +80,57 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Background
-==========
+The document on MPOL_F_NUMA_BALANCING was missed in the initial commit
+The MPOL_F_NUMA_BALANCING document was inadvertently omitted from the
+initial commit bda420b98505 ("numa balancing: migrate on fault among
+multiple bound nodes")
 
-In our containerized environment, we've identified unexpected OOM events
-where the OOM-killer terminates tasks despite having ample free memory.
-This anomaly is traced back to tasks within a container using mbind(2) to
-bind memory to a specific NUMA node. When the allocated memory on this node
-is exhausted, the OOM-killer, prioritizing tasks based on oom_score,
-indiscriminately kills tasks. 
+Let's ensure its inclusion.
 
-The Challenge 
-============
-In a containerized environment, independent memory binding by a user can
-lead to unexpected system issues or disrupt tasks being run by other users
-on the same server. If a user genuinely requires memory binding, we will
-allocate dedicated servers to them by leveraging kubelet deployment.
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Cc: "Huang, Ying" <ying.huang@intel.com>
+---
+ .../admin-guide/mm/numa_memory_policy.rst     | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-Currently, users possess the ability to autonomously bind their memory to
-specific nodes without explicit agreement or authorization from our end.
-It's imperative that we establish a method to prevent this behavior.
-
-Proposed Solutions
-=================
-
-- Introduce Capability to Disable MPOL_BIND
-  Currently, any task can perform MPOL_BIND without specific capabilities.
-  Enforcing CAP_SYS_RESOURCE or CAP_SYS_NICE could be an option, but this
-  may have unintended consequences. Capabilities, being broad, might grant
-  unnecessary privileges. We should explore alternatives to prevent
-  unexpected side effects.
-
-- Use LSM BPF to Disable MPOL_BIND
-  Introduce LSM hooks for syscalls such as mbind(2), set_mempolicy(2), and
-  set_mempolicy_home_node(2) to disable MPOL_BIND. This approach is more
-  flexibility and allows for fine-grained control without unintended
-  consequences. A sample LSM BPF program is included, demonstrating
-  practical implementation in a production environment.
-
-- seccomp
-  seccomp is relatively heavyweight, making it less suitable for
-  enabling in our production environment:
-  - Both kubelet and containers need adaptation to support it.
-  - Dynamically altering security policies for individual containers
-    without interrupting their operations isn't straightforward.
-
-Future Considerations
-=====================
-
-In addition, there's room for enhancement in the OOM-killer for cases
-involving CONSTRAINT_MEMORY_POLICY. It would be more beneficial to
-prioritize selecting a victim that has allocated memory on the same NUMA
-node. My exploration on the lore led me to a proposal[0] related to this
-matter, although consensus seems elusive at this point. Nevertheless,
-delving into this specific topic is beyond the scope of the current
-patchset.
-
-[0] https://lore.kernel.org/lkml/20220512044634.63586-1-ligang.bdlg@bytedance.com/
-
-
-Changes:
-- RFC v1 -> RFC v2:
-  - Refine the commit log to avoid misleading
-  - Use one common lsm hook instead and add comment for it
-  - Add selinux implementation
-  - Other improments in mempolicy
-- RFC v1: https://lwn.net/Articles/951188/
-
-Yafang Shao (6):
-  mm, doc: Add doc for MPOL_F_NUMA_BALANCING
-  mm: mempolicy: Revise comment regarding mempolicy mode flags
-  mm, security: Fix missed security_task_movememory() in mbind(2)
-  mm, security: Add lsm hook for memory policy adjustment
-  security: selinux: Implement set_mempolicy hook
-  selftests/bpf: Add selftests for set_mempolicy with a lsm prog
-
- .../admin-guide/mm/numa_memory_policy.rst     | 27 +++++++
- include/linux/lsm_hook_defs.h                 |  3 +
- include/linux/security.h                      |  9 +++
- include/uapi/linux/mempolicy.h                |  2 +-
- mm/mempolicy.c                                | 17 +++-
- security/security.c                           | 13 +++
- security/selinux/hooks.c                      |  8 ++
- security/selinux/include/classmap.h           |  2 +-
- tools/testing/selftests/bpf/Makefile          |  2 +-
- .../selftests/bpf/prog_tests/set_mempolicy.c  | 79 +++++++++++++++++++
- .../selftests/bpf/progs/test_set_mempolicy.c  | 29 +++++++
- 11 files changed, 187 insertions(+), 4 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/set_mempolicy.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_set_mempolicy.c
-
+diff --git a/Documentation/admin-guide/mm/numa_memory_policy.rst b/Documentation/admin-guide/mm/numa_memory_policy.rst
+index eca38fa81e0f..19071b71979c 100644
+--- a/Documentation/admin-guide/mm/numa_memory_policy.rst
++++ b/Documentation/admin-guide/mm/numa_memory_policy.rst
+@@ -332,6 +332,33 @@ MPOL_F_RELATIVE_NODES
+ 	MPOL_PREFERRED policies that were created with an empty nodemask
+ 	(local allocation).
+ 
++MPOL_F_NUMA_BALANCING (since Linux 5.12)
++        When operating in MPOL_BIND mode, enables NUMA balancing for tasks,
++        contingent upon kernel support. This feature optimizes page
++        placement within the confines of the specified memory binding
++        policy. The addition of the MPOL_F_NUMA_BALANCING flag augments the
++        control mechanism for NUMA balancing:
++
++        - The sysctl knob numa_balancing governs global activation or
++          deactivation of NUMA balancing.
++
++        - Even if sysctl numa_balancing is enabled, NUMA balancing remains
++          disabled by default for memory areas or applications utilizing
++          explicit memory policies.
++
++        - The MPOL_F_NUMA_BALANCING flag facilitates NUMA balancing
++          activation for applications employing explicit memory policies
++          (MPOL_BIND).
++
++        This flags enables various optimizations for page placement through
++        NUMA balancing. For instance, when an application's memory is bound
++        to multiple nodes (MPOL_BIND), the hint page fault handler attempts
++        to migrate accessed pages to reduce cross-node access if the
++        accessing node aligns with the policy nodemask.
++
++        If the flag isn't supported by the kernel, or is used with mode
++        other than MPOL_BIND, -1 is returned and errno is set to EINVAL.
++
+ Memory Policy Reference Counting
+ ================================
+ 
 -- 
 2.30.1 (Apple Git-130)
 
