@@ -1,106 +1,109 @@
-Return-Path: <bpf+bounces-15670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE1457F4A3D
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 16:27:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4D317F4A7D
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 16:33:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77FDD281270
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 15:27:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 440A5B20D80
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 15:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75E24EB26;
-	Wed, 22 Nov 2023 15:26:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79AC74CDEA;
+	Wed, 22 Nov 2023 15:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="l3m0X5Z9"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="ZotGumm1"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E664110E;
-	Wed, 22 Nov 2023 07:26:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=kKnoX+HyOnw1r1mDaa1wv9GN0J9jKHuPtPaSsz/q4ZQ=; b=l3m0X5Z94HbaNlDOyHc9EmfZ8B
-	Em4t8OKJmEXp4Hew7DPcDCFJgTbUIkYn4uXq1/9kLi9/49ce4vyimjhaTa/o819YikdOnHkaFGHVl
-	cGPNm0H+7sajv19JyGh5tRGCyzoroJn5YoCbc2WqwwT0xF2eFaeHcKjmehFo0y7au9J9FXCWHSLH1
-	Trt+Ivem8UiUTUWUPCQY9aeXjQoYcEmEm1CvLchMixDLQhw65IZpjHBVDc83KxNvy78nNBdE3f3rc
-	no+K7MQCckTtgjLC7Fa7JotMwy5gdZx3SX6CIvL89KeW83AgJfjgaa4xfXAuoEzv7FYKE0RMh84cA
-	+8jH84Iw==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r5p7r-000DKO-Os; Wed, 22 Nov 2023 16:26:51 +0100
-Received: from [178.197.248.19] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r5p7r-000MIo-Fb; Wed, 22 Nov 2023 16:26:51 +0100
-Subject: Re: [PATCH] bpf: add __printf() to for printf fmt strings
-To: Ben Dooks <ben.dooks@codethink.co.uk>, bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-References: <20231122133656.290475-1-ben.dooks@codethink.co.uk>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <ee3385e1-4b49-2d9a-df90-2b3dfc7b07d1@iogearbox.net>
-Date: Wed, 22 Nov 2023 16:26:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EFB10CA
+	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 07:33:13 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5cc5adfa464so8923487b3.2
+        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 07:33:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700667192; x=1701271992; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q4ei9NRU/G7jwU5acqapK3n4Kv1mApAAownSARqq2L0=;
+        b=ZotGumm18UkjuzQlhCKJy3Pu0MPvp/26g9R0vuU7+vIzkLf/zZIC/dVBFj8r4LcvQ3
+         4KcAlrI11IjyvgjUHVZYV2Q6BsxRkhpzG45d88mQqmk7WCUGLkXGGwAy8jo4UFDh9UCZ
+         B9V2M4UcNPMpSYeZ3U79QjlYVG1mTdhrIMFyBpcnGwVkABFeCF6wiGtpG4iA+mUeLnw+
+         PAe8Q7QaA7hl8meuB085PBVal2zn4uaoiRQZ7nY23xgN+SC352eIE01y7Qni55kabB+y
+         TfxaCr66ufKsreFEYtxfffAOS0RYr07Huo8yR1eO5xVk3w1Go7zcwGIvArv1ugCWqm1s
+         11Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700667192; x=1701271992;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q4ei9NRU/G7jwU5acqapK3n4Kv1mApAAownSARqq2L0=;
+        b=YmCaLY9yt/FHkYGT7MNcqI3cGazEKwK5+4hE8HWJM+ppi3CnGH/wxZcwyE9B0JrO92
+         eQemJbXp8uCHcnehFwfCY2TQlRZ3gvKvRQMR+ZOl6Lj0SMbY4t/UeBSwPj1p3m6lvpRS
+         887VS30/rCT5pD1IiJ12OEasMu3rp/zPRci+6If6AI2qW2kZQTCfrTIld7NrG0gji4NR
+         wK1WXIQkoOKD6LJip/irrmQIyqNiG8SswpyZmwBqe7ZOM7bN6AfiO7F0W176cFqnWNha
+         64EKa1G4eprqmyXVoQqd1XGDD1wMGM1EtiKlbIh7fcH5PVbYPypaZa/kg4TrXUNoY47O
+         t+Ig==
+X-Gm-Message-State: AOJu0YwBJd+RuAm/tvnzmYwXGLNfNeluD2XhflzrKVPlS7ciZFegipCd
+	eqcB158uYqhayg6KjiMg5vFJHGGhP2neqeAJcgdevg==
+X-Google-Smtp-Source: AGHT+IE4G4KLm9Drcj26SIBaIAfNRfhVxN87Ha1FgM1GhfP1jQnP9+8vTA0KhZEZWso2wFxW5NqLLp8rwsJG9A9wifg=
+X-Received: by 2002:a0d:efc2:0:b0:5cb:e3a9:5e77 with SMTP id
+ y185-20020a0defc2000000b005cbe3a95e77mr2755985ywe.6.1700667192512; Wed, 22
+ Nov 2023 07:33:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231122133656.290475-1-ben.dooks@codethink.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27101/Wed Nov 22 09:40:55 2023)
+References: <20231121175640.9981-1-mkoutny@suse.com> <CAM0EoM=id7xo1=F5SY2f+hy8a8pkXQ5a0xNJ+JKd9e6o=--RQg@mail.gmail.com>
+ <yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75>
+In-Reply-To: <yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Wed, 22 Nov 2023 10:33:01 -0500
+Message-ID: <CAM0EoMk_OgpjV7Huh-NHF_WxkJtQYGAMY+kutsL=qD9oYthh_w@mail.gmail.com>
+Subject: Re: [PATCH] net/sched: cls: Load net classifier modules via alias
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
+	Martin Wilck <mwilck@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 11/22/23 2:36 PM, Ben Dooks wrote:
-> The btf_seq_show() and btf_snprintf_show() take a printk format
-> string so add a __printf() to these two functions. This fixes the
-> following extended warnings:
-> 
-> kernel/bpf/btf.c:7094:29: error: function ‘btf_seq_show’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
-> kernel/bpf/btf.c:7131:9: error: function ‘btf_snprintf_show’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
-> 
-> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-> ---
->   kernel/bpf/btf.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 15d71d2986d3..46c2e87c383d 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -7088,8 +7088,8 @@ static void btf_type_show(const struct btf *btf, u32 type_id, void *obj,
->   	btf_type_ops(t)->show(btf, t, type_id, obj, 0, show);
->   }
->   
-> -static void btf_seq_show(struct btf_show *show, const char *fmt,
-> -			 va_list args)
-> +static __printf(2,0) void btf_seq_show(struct btf_show *show, const char *fmt,
-> +				       va_list args)
->   {
->   	seq_vprintf((struct seq_file *)show->target, fmt, args);
->   }
-> @@ -7122,7 +7122,7 @@ struct btf_show_snprintf {
->   	int len;		/* length we would have written */
->   };
->   
-> -static void btf_snprintf_show(struct btf_show *show, const char *fmt,
-> +static __printf(2,0) void btf_snprintf_show(struct btf_show *show, const char *fmt,
->   			      va_list args)
->   {
+On Wed, Nov 22, 2023 at 5:41=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> On Tue, Nov 21, 2023 at 05:37:37PM -0500, Jamal Hadi Salim <jhs@mojatatu.=
+com> wrote:
+> > What's speacial about the "tcf- '' that makes it work
+> > better for filtering than existing "cls_" prefix?
+>
+> tcf-foo is an alias.
+> cls_foo is the canonical name of the kernel module.
+>
+> request_module() + blacklist (as described in modprobe.d(5)) works only
+> when calling with the alias. The actual string is not important, being
+> an alias is the crux.
+>
 
-Looks good, only small nit is to fix up kernel-style formatting wrt spacing.
+Thanks for the explanation.
 
->   	struct btf_show_snprintf *ssnprintf = (struct btf_show_snprintf *)show;
-> 
+> > What about actions (prefix "act_") etc?
+>
+> I focused only on "cls_" for the first iteration. Do you want me to look
+> at other analogous loads?
 
+Yes, look at act_ and sch_
+
+cheers,
+jamal
+> Thanks,
+> Michal
 
