@@ -1,100 +1,131 @@
-Return-Path: <bpf+bounces-15713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07E727F53BB
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 23:54:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F2857F5464
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 00:19:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 905A52815B6
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 22:54:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04B69B20C47
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 23:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F3461D52F;
-	Wed, 22 Nov 2023 22:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE86221106;
+	Wed, 22 Nov 2023 23:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="QHIu78eq"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dEO32lU2"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F028E92
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 14:54:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=CWOQLuVDOvjEZTOm6Iwjk8kiQDnUdG2I08ZE5DN4K+U=; b=QHIu78eq0kcbJruViOjA1g9a7G
-	qOW89TCgegEoBQV+bC2uehoJ7zoJ2cC1J9OlvtoB95ZaWy2DHmZhdM4AbHyj0T00bampJeGnG4YXy
-	hQs/CVr2o88/qFVORifISUmKwxwoAWlqZhlnDvsjPRAu9RHoKGX/bcc6Zj5d8CkqxzLW8MfrzbGIp
-	Drly69ySdhQ7T55NBwu5Mzae5uMnTOZbbGsGu34GhW/HPdYvsYecpPcx8bo41jpCpMwMDMEzvs1PV
-	Sus8f74E5h6omOfii6p/nbWsYypJ9Q6sKJdp74+GLMSjnnMAzRLOu74ssObDzecjBZgP05Ip3PfsO
-	lz+wDsng==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r5w6e-000Dx0-Q8; Wed, 22 Nov 2023 23:54:04 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r5w6e-000RzK-45; Wed, 22 Nov 2023 23:54:04 +0100
-Subject: Re: [PATCH bpf-next 2/2] bpf: bring back removal of dev-bound id from
- idr
-To: Stanislav Fomichev <sdf@google.com>,
- Martin KaFai Lau <martin.lau@linux.dev>
-Cc: ast@kernel.org, andrii@kernel.org, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
- jolsa@kernel.org, bpf@vger.kernel.org
-References: <20231114045453.1816995-1-sdf@google.com>
- <20231114045453.1816995-3-sdf@google.com>
- <49538852-1ca0-49bb-86c2-cb1b95739b91@linux.dev>
- <b4854a4b-a692-8164-5684-4315939966f3@iogearbox.net>
- <ZV5C7099HylvusQO@google.com>
- <20c42052-8cb7-4b8b-a7f8-d9311e37479d@linux.dev>
- <CAKH8qBuk=+1Xr6wM3N50SJW5QS3Kv-Vnq2z1dncHoVqL9DvNVQ@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <634ca45b-b613-dff4-0cde-25d2610adf2f@iogearbox.net>
-Date: Wed, 22 Nov 2023 23:54:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C8618D
+	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 15:19:40 -0800 (PST)
+Message-ID: <825b7dde-f421-436e-99c8-47f9c1d83f5f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700695178;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M0SdBYwoVa7t0s/5f4Mfjq0zCPOORxBTD1xrJ9cW3qI=;
+	b=dEO32lU21qCqsbjfNveGAmR/RkZwjQMWu15I10HYUhMoB6VmZnCuQbrtRe2ZOffUPunzGk
+	ALS7kieIcfNqJjMoByogXscns4N0juL9HEnd94k9RYfTDKfprrNRiwA4AkfN4RUGZVXsmd
+	jPnM/Aa20cpYF9MZPiCS5/TDiVw2Htc=
+Date: Wed, 22 Nov 2023 15:19:29 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAKH8qBuk=+1Xr6wM3N50SJW5QS3Kv-Vnq2z1dncHoVqL9DvNVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Subject: Re: [PATCH v3 bpf-next 10/11] bpf: tcp: Support arbitrary SYN Cookie.
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27101/Wed Nov 22 09:40:55 2023)
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>
+References: <20231121184245.69569-1-kuniyu@amazon.com>
+ <20231121184245.69569-11-kuniyu@amazon.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231121184245.69569-11-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 11/22/23 11:41 PM, Stanislav Fomichev wrote:
-> On Wed, Nov 22, 2023 at 10:40 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->> On 11/22/23 10:05 AM, Stanislav Fomichev wrote:
->>>>>> Commit ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
->>>>>> and PERF_BPF_EVENT_PROG_UNLOAD") stopped removing program's id from
->>>>>> idr when the offloaded/bound netdev goes away. I was supposed to
->>>>>> take a look and check in [0], but apparently I did not.
->>>>>>
->>>>>> The purpose of idr removal is to avoid BPF_PROG_GET_NEXT_ID returning
->>>>>> stale ids for the programs that have a dead netdev. This functionality
->>>>>
->>>>> What may be wrong if BPF_PROG_GET_NEXT_ID returns the id?
->>>>> e.g. If the prog is pinned somewhere, it may be useful to know a prog is still loaded in the system.
->>>
->>> bpftool is a bit spooked by those prog ids currently: calling GET_INFO_BY_ID
->>> on those programs returns ENODEV. So we can keep those ids around, but
->>> need some tweaks on the bpftool in this case. LMK if any of you prefer
->>> this option.
->>
->> I think it is in general useful to improve 'bpftool prog show' to keep going for
->> the next prog id if possible. May be print an error message after the prog id
->> and then keep going for the next prog id?
-> 
-> Replied with a v2 where I mark those progs as 'orphaned'!
+On 11/21/23 10:42 AM, Kuniyuki Iwashima wrote:
+> diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
+> index 533a7337865a..9a67f47a5e64 100644
+> --- a/include/net/inet6_hashtables.h
+> +++ b/include/net/inet6_hashtables.h
+> @@ -116,9 +116,23 @@ struct sock *inet6_steal_sock(struct net *net, struct sk_buff *skb, int doff,
+>   	if (!sk)
+>   		return NULL;
+>   
+> -	if (!prefetched || !sk_fullsock(sk))
+> +	if (!prefetched)
+>   		return sk;
+>   
+> +	if (sk->sk_state == TCP_NEW_SYN_RECV) {
+> +#if IS_ENABLED(CONFIG_SYN_COOKIE)
+> +		if (inet_reqsk(sk)->syncookie) {
+> +			*refcounted = false;
+> +			skb->sk = sk;
+> +			skb->destructor = sock_pfree;
 
-Sg, we could perhaps do something similar for netdev detached links.
+Instead of re-init the skb->sk and skb->destructor, can skb_steal_sock() avoid 
+resetting them to NULL in the first place and skb_steal_sock() returns the 
+rsk_listener instead? btw, can inet_reqsk(sk)->rsk_listener be set to NULL after 
+this point?
+
+Beside, it is essentially assigning the incoming request to a listening sk. Does 
+it need to call the inet6_lookup_reuseport() a few lines below to avoid skipping 
+the bpf reuseport selection that was fixed in commit 9c02bec95954 ("bpf, net: 
+Support SO_REUSEPORT sockets with bpf_sk_assign")?
+
+> +			return inet_reqsk(sk)->rsk_listener;
+> +		}
+> +#endif
+> +		return sk;
+> +	} else if (sk->sk_state == TCP_TIME_WAIT) {
+> +		return sk;
+> +	}
+> +
+>   	if (sk->sk_protocol == IPPROTO_TCP) {
+>   		if (sk->sk_state != TCP_LISTEN)
+>   			return sk;
+> diff --git a/include/net/inet_hashtables.h b/include/net/inet_hashtables.h
+> index 3ecfeadbfa06..36609656a047 100644
+> --- a/include/net/inet_hashtables.h
+> +++ b/include/net/inet_hashtables.h
+> @@ -462,9 +462,23 @@ struct sock *inet_steal_sock(struct net *net, struct sk_buff *skb, int doff,
+>   	if (!sk)
+>   		return NULL;
+>   
+> -	if (!prefetched || !sk_fullsock(sk))
+> +	if (!prefetched)
+>   		return sk;
+>   
+> +	if (sk->sk_state == TCP_NEW_SYN_RECV) {
+> +#if IS_ENABLED(CONFIG_SYN_COOKIE)
+> +		if (inet_reqsk(sk)->syncookie) {
+> +			*refcounted = false;
+> +			skb->sk = sk;
+> +			skb->destructor = sock_pfree;
+> +			return inet_reqsk(sk)->rsk_listener;
+> +		}
+> +#endif
+> +		return sk;
+> +	} else if (sk->sk_state == TCP_TIME_WAIT) {
+> +		return sk;
+> +	}
+> +
+>   	if (sk->sk_protocol == IPPROTO_TCP) {
+>   		if (sk->sk_state != TCP_LISTEN)
+
 
