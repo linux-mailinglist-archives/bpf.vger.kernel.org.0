@@ -1,138 +1,156 @@
-Return-Path: <bpf+bounces-15637-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0213F7F4411
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 11:41:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 635447F4477
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 11:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B170128159D
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 10:41:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7962B210AB
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 10:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165773E487;
-	Wed, 22 Nov 2023 10:41:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 348753D38B;
+	Wed, 22 Nov 2023 10:58:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="uWzO5A9x"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="G84a0EFV"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C76693;
-	Wed, 22 Nov 2023 02:41:08 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2170B92;
+	Wed, 22 Nov 2023 02:58:38 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id B645C120069;
+	Wed, 22 Nov 2023 13:58:36 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru B645C120069
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1700650716;
+	bh=zFx+5dXlR2EQJnObSWY+xM9oMXFlaTN9St5MLae6TwM=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=G84a0EFVLTgDdOvzlXW6Mebu1TojgZDXRItdf9fVmFZptmL/l4AUVXhCOIcCS6MlY
+	 F3AlevIX7gjzhw4tHFR/HPMzOyEWKhNnpdWCqD4bFODqBbEoGdNOZKnrzzdKpdoAnU
+	 L7G/cZEMqghNyITCn6zr97jKaLuiz81Xlf3bWFkBQTyZrN0eOju9xmwfXbrASCzCF/
+	 id2MaU/PYACpREAf8Lvad1T8JfY3/Z/SDHdOBupzg2wLKLbfXzbiHVf/wFrHoHhE/I
+	 l7irZapLjznCc0Uxpi6nfeX3qRnSjOXyJsRfpbkOvhFOkXwVI4DnJgDbabHMWfPK9o
+	 E7iNEXuUIrLpA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DF46521961;
-	Wed, 22 Nov 2023 10:41:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1700649666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6kSomUq3ZgKD9Dy04ZZVsli1peGLtP7gkcJ/caQ/Ogw=;
-	b=uWzO5A9xEDIEYoWmSXMXHUWo7vnjLVJPopQxOm/IJeUt0FjiDe0bGnYS7kWRz7fShbr+22
-	XjLqlF14nZbgecSPqMVT/lyoUGnE7wITx8wmm0kwFIIJaUW91mm5UEZ6YhDTdgJQkkTRsU
-	x65avsS0HGJH0F1/MQw7aqoBkBowMw0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-	(No client certificate requested)
-	by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 74C19139FD;
-	Wed, 22 Nov 2023 10:41:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-	by imap2.suse-dmz.suse.de with ESMTPSA
-	id 78ipG8LaXWWdGwAAMHmgww
-	(envelope-from <mkoutny@suse.com>); Wed, 22 Nov 2023 10:41:06 +0000
-Date: Wed, 22 Nov 2023 11:41:05 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>, 
-	Jiri Pirko <jiri@resnulli.us>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
-	Martin Wilck <mwilck@suse.com>
-Subject: Re: [PATCH] net/sched: cls: Load net classifier modules via alias
-Message-ID: <yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75>
-References: <20231121175640.9981-1-mkoutny@suse.com>
- <CAM0EoM=id7xo1=F5SY2f+hy8a8pkXQ5a0xNJ+JKd9e6o=--RQg@mail.gmail.com>
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed, 22 Nov 2023 13:58:36 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
+ 2023 13:58:36 +0300
+Date: Wed, 22 Nov 2023 13:58:36 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Michal Hocko <mhocko@suse.com>
+CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+	<roman.gushchin@linux.dev>, <shakeelb@google.com>, <muchun.song@linux.dev>,
+	<akpm@linux-foundation.org>, <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+	<cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-3-ddrokosov@salutedevices.com>
+ <ZV3WnIJMzxT-Zkt4@tiehlicka>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hvfgyyhk2fzdpfpi"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <CAM0EoM=id7xo1=F5SY2f+hy8a8pkXQ5a0xNJ+JKd9e6o=--RQg@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -8.25
-X-Spamd-Result: default: False [-8.25 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 REPLY(-4.00)[];
-	 BAYES_HAM(-2.85)[99.34%];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[24];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,resnulli.us,davemloft.net,google.com,kernel.org,redhat.com,iogearbox.net,linux.dev,suse.cz,suse.com];
-	 RCVD_COUNT_TWO(0.00)[2];
-	 SUSPICIOUS_RECIPS(1.50)[]
+In-Reply-To: <ZV3WnIJMzxT-Zkt4@tiehlicka>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181528 [Nov 22 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/22 09:18:00 #22500551
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+Hello Michal,
 
---hvfgyyhk2fzdpfpi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thank you for the quick review!
 
-On Tue, Nov 21, 2023 at 05:37:37PM -0500, Jamal Hadi Salim <jhs@mojatatu.com> wrote:
-> What's speacial about the "tcf- '' that makes it work
-> better for filtering than existing "cls_" prefix?
+On Wed, Nov 22, 2023 at 11:23:24AM +0100, Michal Hocko wrote:
+> On Wed 22-11-23 13:01:56, Dmitry Rokosov wrote:
+> > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > Currently, it is not possible to trace this point from non-direct
+> > reclaim paths.
+> 
+> Is this really true? AFAICS we have
+> mm_vmscan_lru_isolate
+> mm_vmscan_lru_shrink_active
+> mm_vmscan_lru_shrink_inactive
+> 
+> which are in the vry core of the memory reclaim. Sure post processing
+> those is some work.
 
-tcf-foo is an alias.
-cls_foo is the canonical name of the kernel module.
+Sure, you are absolutely right. In the usual scenario, the memcg
+shrinker utilizes two sub-shrinkers: slab and LRU. We can enable the
+tracepoints you mentioned and analyze them. However, there is one
+potential issue. Enabling these tracepoints will trigger the reclaim
+events show for all pages. Although we can filter them per pid, we
+cannot filter them per cgroup. Nevertheless, there are times when it
+would be extremely beneficial to comprehend the effectiveness of the
+reclaim process within the relevant cgroup. For this reason, I am adding
+the cgroup name to the memcg tracepoints and implementing a cumulative
+tracepoint for memcg shrink (LRU + slab)."
 
-request_module() + blacklist (as described in modprobe.d(5)) works only
-when calling with the alias. The actual string is not important, being
-an alias is the crux.
+> 
+> [...]
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 45780952f4b5..6d89b39d9a91 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -6461,6 +6461,12 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+> >  		 */
+> >  		cond_resched();
+> >  
+> > +#ifdef CONFIG_MEMCG
+> > +		trace_mm_vmscan_memcg_shrink_begin(sc->order,
+> > +						   sc->gfp_mask,
+> > +						   memcg);
+> > +#endif
+> 
+> this is a common code path for node and direct reclaim which means that
+> we will have multiple begin/end tracepoints covering similar operations.
+> To me that sounds excessive. If you are missing a cumulative kswapd
+> alternative to 
+> mm_vmscan_direct_reclaim_begin
+> mm_vmscan_direct_reclaim_end
+> mm_vmscan_memcg_reclaim_begin
+> mm_vmscan_memcg_reclaim_end
+> mm_vmscan_memcg_softlimit_reclaim_begin
+> mm_vmscan_memcg_softlimit_reclaim_end
+> mm_vmscan_node_reclaim_begin
+> mm_vmscan_node_reclaim_end
+> 
+> then place it into kswapd path. But it would be really great to
+> elaborate some more why this is really needed. Cannot you simply
+> aggregate stats for kswapd from existing tracepoints?
+> 
+> -- 
+> Michal Hocko
+> SUSE Labs
 
-> What about actions (prefix "act_") etc?
-
-I focused only on "cls_" for the first iteration. Do you want me to look
-at other analogous loads?
-
-Thanks,
-Michal
-
---hvfgyyhk2fzdpfpi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZV3arwAKCRAGvrMr/1gc
-jkwzAQDHQdxXiLSK9txPaG5n5I1nu0X31MhXkwtgeqnEsbGX6gD+IXMKMqFV4nxO
-NvX00/KWQgqRxpCHccYwaoAj7w4rgAc=
-=Wm5L
------END PGP SIGNATURE-----
-
---hvfgyyhk2fzdpfpi--
+-- 
+Thank you,
+Dmitry
 
