@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-15718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CF937F54F6
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 00:47:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2185E7F550D
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 00:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7DF7B1C20BB8
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 23:47:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C357F2816A1
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 23:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BCF82137F;
-	Wed, 22 Nov 2023 23:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C84F21A02;
+	Wed, 22 Nov 2023 23:53:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HvYJhvVR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SSvDWi5e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EA0BC
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 15:47:32 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b843fea0dfso235031b6e.3
-        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 15:47:32 -0800 (PST)
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2428E83;
+	Wed, 22 Nov 2023 15:53:32 -0800 (PST)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-58a6ad82b07so188338eaf.2;
+        Wed, 22 Nov 2023 15:53:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700696851; x=1701301651; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700697211; x=1701302011; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=RN44jNH8D0YRnNCczizAkC25tHC+wOD4XVqEeP1pydI=;
-        b=HvYJhvVR9RcBXkHAtbTi7oXYnOtsDXHmH7P+J4dFEBE8jmP0OU6+vNvkCDWu6JR1GD
-         Ur0LFTRGuJELvyogVsuOMZLbvt1eTQgUtmvWUgs653LYo9vp1rJm7h2WwFxNlSssRQye
-         HQQOXsyOWIcHdtwMR/pagJR8gQAZIU7DinazQik0tjMbFJTv1DTsMynyDVjlT198VWzi
-         BcAjqtWqKewDnr5K3tGeuf0JbuA9HxhFsXbxU09SLSzhqYMLbI/g5/e5au2zSjXSef5K
-         zOWnEHRzzHQF+NIMCEoyQvXsIoX43s8R6hglYA7ABnMTmcuBtpBOl/cmmcJwGSv9+P8R
-         aQdQ==
+        bh=ptSuTKQvR9JLLDZ9nZXPY/xCjnt8PeE7nphMGTE2Dq4=;
+        b=SSvDWi5ewE7fJQ/ks1Sd63snWhnGyn7UlXfIPG9W5VMP+fDee2ZzinJ6SCXr7yIH4x
+         nh68IexXrPuJMEv9WDdFQiaRGPnL9XsM34Ok9eh77DQL1v3KGeUNVF2MzzjDw2Rq2Phv
+         ABm8gJkhAr5ajj2RU4cPkLF9+iXL/wtDzJHbNYso9HXJFmO6noPTcv7HzLYyU0nCNfvR
+         /Z2ENoIzwDJKtv/cfL1b58p/aD/tVA+l3C7KBtT0tQ4j+sIs38KLMLKNryBmNsC2f5pN
+         vUjDAgx0gOjK9D7O7hFsqqG7DxhIAJUHADZt8ugNkU0Mv0e/xZ4JpaX9BFBaIguUqawd
+         fyHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700696851; x=1701301651;
+        d=1e100.net; s=20230601; t=1700697211; x=1701302011;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RN44jNH8D0YRnNCczizAkC25tHC+wOD4XVqEeP1pydI=;
-        b=N1i8UI3oiunQQBBb7tGLG1dMxsItD4NgHjYIUxFdFXicQikFcY+DBTiEpOdF3gElyQ
-         yOgTyfwMCPq/a2OvH40HFri+NYDCwkUZUv0pXdtQ+c79Rd9kyt3D12hy1IUBF0fxHpWL
-         w/SsZAV/7DBGqLYzgDsjXcJz8WA6GL7UwlrJbfRjWblbekxdWtGFkmnU7jfkzZnmvwPb
-         6ibLX6FBdki9YZ8EDiANu7dSGHjwywbyCwZAznEF3Hf3ZkNYV4hALfgyC2LUtP1mLYMu
-         939MBtyER6oYLGZfigUY68UhxE75iJTAkQUo+AsDiHOqlESfKzSJP6dgSepCh0F4f/rl
-         4GJQ==
-X-Gm-Message-State: AOJu0Yw0jRPTNozyo7y9EeUdD3t3TiaMU2Sk45vjYcdHNoR6FhNWpv0z
-	CSZQQVUMYZk3h4z0rUi91wE=
-X-Google-Smtp-Source: AGHT+IF3aAd9HLEuvTMujTkp0feoqqtyNqSNUtl/nhxM3EZrMG/O9paa9VKOLOVcH5FzdJPkX6kc4g==
-X-Received: by 2002:a05:6808:23d6:b0:3b8:45a3:917c with SMTP id bq22-20020a05680823d600b003b845a3917cmr2315145oib.23.1700696851408;
-        Wed, 22 Nov 2023 15:47:31 -0800 (PST)
+        bh=ptSuTKQvR9JLLDZ9nZXPY/xCjnt8PeE7nphMGTE2Dq4=;
+        b=Fga1AWEzKq+87vLS2emBqgJmCcCG3z8B+OtS2+Y7VtrSiAcwRs7RkqGE6nhHAHOb51
+         uaBuYmep9ZalIQ6K3djlRGuz0Y+hQtmHD0m+XvxuL71NFCBbaNBCOFxGAX9Slutf95hH
+         UPeFKv0BrH6FoWFr3sG8KWmp2KeiSjer0k5YgLdHpNTFQsWNoxt+twm0HUGMleX2qNcp
+         FLNeMLD55e66b6pbtRy4gTD7cSlgasc5n0Xx0WYBy07HbcmNaAUxFUYZviDU9JW7ykhS
+         mDt2CPNE9prPLWWp81/L3VAfR+wrkqibmaHheUSSbgayPmGiEIKFb+ubpZOEPS2ftgA1
+         CsXw==
+X-Gm-Message-State: AOJu0YyVx4dAOkVND0DJ9Yk6IIOwetHcUnsVWY4W6TvZAiHqmHDhjy/G
+	h8NUg89Vrx/z4ga5FYhCc7w=
+X-Google-Smtp-Source: AGHT+IHSOk8tvELns4MrPKu24TBAdB5OEcSmHvkF79+ccbUgXzfoSTPn1JruJ0RHC4StU9Nq8if0eA==
+X-Received: by 2002:a05:6820:80d:b0:58a:231d:750e with SMTP id bg13-20020a056820080d00b0058a231d750emr4877895oob.1.1700697211305;
+        Wed, 22 Nov 2023 15:53:31 -0800 (PST)
 Received: from ?IPV6:2600:1700:6cf8:1240:5a79:4034:522e:2b90? ([2600:1700:6cf8:1240:5a79:4034:522e:2b90])
-        by smtp.gmail.com with ESMTPSA id d14-20020a05680813ce00b003b2e2d134a5sm10820oiw.35.2023.11.22.15.47.30
+        by smtp.gmail.com with ESMTPSA id o62-20020a4a4441000000b0058a010374e6sm4963ooa.39.2023.11.22.15.53.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 Nov 2023 15:47:30 -0800 (PST)
-Message-ID: <bdb45ec6-e9dd-4a25-947c-dfa8059d10cb@gmail.com>
-Date: Wed, 22 Nov 2023 15:47:29 -0800
+        Wed, 22 Nov 2023 15:53:30 -0800 (PST)
+Message-ID: <11a24655-4d13-4f37-a415-6351477f9912@gmail.com>
+Date: Wed, 22 Nov 2023 15:53:29 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,67 +62,96 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v11 09/13] bpf: validate value_type
+Subject: Re: [PATCH bpf-next v11 10/13] bpf, net: switch to dynamic
+ registration
 Content-Language: en-US
 To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, drosen@google.com
+Cc: kuifeng@meta.com, netdev@vger.kernel.org, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ drosen@google.com
 References: <20231106201252.1568931-1-thinker.li@gmail.com>
- <20231106201252.1568931-10-thinker.li@gmail.com>
- <4218c215-a8f9-8efb-6958-d7cbb4d792a3@linux.dev>
+ <20231106201252.1568931-11-thinker.li@gmail.com>
+ <c2876de6-d726-5a6a-fe65-98c08e7f2b91@linux.dev>
 From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <4218c215-a8f9-8efb-6958-d7cbb4d792a3@linux.dev>
+In-Reply-To: <c2876de6-d726-5a6a-fe65-98c08e7f2b91@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 11/9/23 18:11, Martin KaFai Lau wrote:
+On 11/9/23 18:19, Martin KaFai Lau wrote:
 > On 11/6/23 12:12 PM, thinker.li@gmail.com wrote:
->> From: Kui-Feng Lee <thinker.li@gmail.com>
->>
->> A value_type should consist of three components: refcnt, state, and data.
->> refcnt and state has been move to struct bpf_struct_ops_common_value to
->> make it easier to check the value type.
->>
->> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->> ---
->>   include/linux/bpf.h         | 14 ++++++
->>   kernel/bpf/bpf_struct_ops.c | 93 ++++++++++++++++++++++++-------------
->>   2 files changed, 74 insertions(+), 33 deletions(-)
->>
 >> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->> index c287f42b2e48..48e97a255945 100644
+>> index 48e97a255945..432c088d4001 100644
 >> --- a/include/linux/bpf.h
 >> +++ b/include/linux/bpf.h
->> @@ -3231,4 +3231,18 @@ static inline bool bpf_is_subprog(const struct 
->> bpf_prog *prog)
->>       return prog->aux->func_idx != 0;
+>> @@ -1643,7 +1643,6 @@ struct bpf_struct_ops_desc {
+>>   #if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
+>>   #define BPF_MODULE_OWNER ((void *)((0xeB9FUL << 2) + 
+>> POISON_POINTER_DELTA))
+>>   const struct bpf_struct_ops_desc *bpf_struct_ops_find(struct btf 
+>> *btf, u32 type_id);
+>> -void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log);
+>>   bool bpf_struct_ops_get(const void *kdata);
+>>   void bpf_struct_ops_put(const void *kdata);
+>>   int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map, void *key,
+>> @@ -1689,10 +1688,6 @@ static inline const struct bpf_struct_ops_desc 
+>> *bpf_struct_ops_find(struct btf *
+>>   {
+>>       return NULL;
 >>   }
->> +#ifdef CONFIG_BPF_JIT
-> 
-> There is an existing "#if defined(CONFIG_BPF_JIT) && 
-> defined(CONFIG_BPF_SYSCALL)" above and a few bpf_struct_ops_*() has 
-> already been there. Does it need another separate one which is only 
-> CONFIG_BPF_JIT here?
-> 
->> +enum bpf_struct_ops_state {
->> +    BPF_STRUCT_OPS_STATE_INIT,
->> +    BPF_STRUCT_OPS_STATE_INUSE,
->> +    BPF_STRUCT_OPS_STATE_TOBEFREE,
->> +    BPF_STRUCT_OPS_STATE_READY,
->> +};
+>> -static inline void bpf_struct_ops_init(struct btf *btf,
+>> -                       struct bpf_verifier_log *log)
+>> -{
+>> -}
+>>   static inline bool bpf_try_module_get(const void *data, struct 
+>> module *owner)
+>>   {
+>>       return try_module_get(owner);
+>> @@ -3232,6 +3227,8 @@ static inline bool bpf_is_subprog(const struct 
+>> bpf_prog *prog)
+>>   }
+>>   #ifdef CONFIG_BPF_JIT
+>> +int register_bpf_struct_ops(struct bpf_struct_ops *st_ops);
 >> +
->> +struct bpf_struct_ops_common_value {
->> +    refcount_t refcnt;
->> +    enum bpf_struct_ops_state state;
->> +};
-> 
-> Do the struct and enum really need to be in ifdef?
-> 
->> +#endif /* CONFIG_BPF_JIT */
+>>   enum bpf_struct_ops_state {
+>>       BPF_STRUCT_OPS_STATE_INIT,
+>>       BPF_STRUCT_OPS_STATE_INUSE,
+>> @@ -3243,6 +3240,23 @@ struct bpf_struct_ops_common_value {
+>>       refcount_t refcnt;
+>>       enum bpf_struct_ops_state state;
+>>   };
 >> +
+>> +/* bpf_struct_ops_##_name (e.g. bpf_struct_ops_tcp_congestion_ops) is
+>> + * the map's value exposed to the userspace and its btf-type-id is
+>> + * stored at the map->btf_vmlinux_value_type_id.
+>> + *
+>> + */
+>> +#define DEFINE_STRUCT_OPS_VALUE_TYPE(_name)            \
+>> +extern struct bpf_struct_ops bpf_##_name;            \
 > 
-I just removed this pair of #if-else.
-You are right! They are not necessary.
+> Is it still needed?
+
+No, will remove it.
+
+> 
+>> +                                \
+>> +struct bpf_struct_ops_##_name {                    \
+>> +    struct bpf_struct_ops_common_value common;        \
+>> +    struct _name data ____cacheline_aligned_in_smp;        \
+>> +}
+>> +
+>> +extern int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc 
+>> *st_ops_desc,
+>> +                    struct btf *btf,
+>> +                    struct bpf_verifier_log *log);
+> 
+> nit. Remove extern.
+
+Sure!
+
+> 
+>>   #endif /* CONFIG_BPF_JIT */
+>>   #endif /* _LINUX_BPF_H */
+> 
 
