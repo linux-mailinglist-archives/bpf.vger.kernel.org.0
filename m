@@ -1,65 +1,68 @@
-Return-Path: <bpf+bounces-15709-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15710-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E3D67F5354
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 23:23:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 648A87F5356
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 23:23:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDBF6B20E43
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 22:23:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C2FC4B20F20
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 22:23:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 297FA20325;
-	Wed, 22 Nov 2023 22:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F876208B9;
+	Wed, 22 Nov 2023 22:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CxwaB/kv"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1jNYwU+4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C8501AE
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 14:23:38 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c1c48d7226so297031a12.0
-        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 14:23:38 -0800 (PST)
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2323919E
+	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 14:23:40 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6bdd2f09939so324235b3a.1
+        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 14:23:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700691817; x=1701296617; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=d9Z0zE07XUIxOa6vpdef3ArNyljMDifNTElQJ7RMUJ0=;
-        b=CxwaB/kvRZmzl/8wOkpABlUaYG7LVfz288QuboezCX0ehj8YRCRbL5D79IrPtEBaMk
-         /iP+jB3JhBgGDO4ajSnAeFNkfS1dAweLYB1LvH84wFp9PjdHOakGdutgmqQkxeXGXSQ/
-         TPd5lw6Jrr04FI5TnetS2DpH6+1W4UWSCFZ3K177c6wGux723uitJ/gRsLFe62NeXXQN
-         TItsLcN4U4IQeSYTbZZP+z4VQGwJuAENgdtCFGMQ34KHdSzu3LURwPmC8jcxO6DEVZ3a
-         uzsScNBeWnjxruNpZf9XVFuW+c48VgkwO/+KU/ZVrSPxq2VNyEhpRJtR+g6TXHSoTizt
-         586w==
+        d=google.com; s=20230601; t=1700691819; x=1701296619; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qbZkilK+2GPPK5gRSFy0+hBTdndgvFzZuH6276NZUa4=;
+        b=1jNYwU+4jKe9QikMsEnY5ia+/sk2+pZx+neFhiWRUz1u8ndecgcFFHUNxrBxefMLaE
+         pLk0Eq7u9uhaUqh9s1wwWLhGeJCR7pOR6qJFxB/XRmDFk6J/nWYtYIDsGTO+9GL/JVbX
+         jeH5XA5tg207kY6PPg4vXRkH7cH501hAZ9Mq4SbKH1OulavTME49fBM2dSbBBUeIRkwP
+         EBnp75Sg3a5NUyV4POmAM7H8t9iGqlMx7xL71RlEX1ueJfhA3CPq6ZsikuhGMcKxZQZL
+         5cUCmwXdGGICVM3zDM1jj4fpLWcNU9qSc+NmCi9GrN0qxcm/O7QMXVPNU4r8XdJdRL3c
+         i7CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700691817; x=1701296617;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d9Z0zE07XUIxOa6vpdef3ArNyljMDifNTElQJ7RMUJ0=;
-        b=piGfDHPmOQFr5ulUvkmhGA2l3T5HasrWuR2G3Uo9ELBBLGKASuIJnQm4rx/3ydZiIP
-         lNlKyYmoI39I4Kqo1vf3rj7Dxx6c+IWSNbzTd3Kpu9kWLHh8Vf81XtJITgdJ91W/atus
-         eGXYlWoA7BlyOf7jqfCcz24QJ6Yt+0YZyFpSB3bF7g+eWuqhJsxPQZZGXzNWGNJdmti4
-         XtNETGJ3/CQ0QAV/guXdLkCWP3xjZlkD1cfTJcm7dGIfvQr3lcY5vrNJXTmrBBsAtuAB
-         GhAuEJ6gMeRB8iXE2nPnL0SB+YwRWwURGOdYTJx4VSpQ3xQa5k3OwI1ugpiLZjzCPS3B
-         SM7w==
-X-Gm-Message-State: AOJu0Yzt2xkSBqwFPB+CYmkVkgbduV9Oi+cFuE4RTu9q299B9fTjxKIi
-	eH4cYxYYqbPoyaqJ9DLCaLISQzrRAK9mVNhG4FCcHNhMnfSzJbeQDPTFs+Dw6e68Ngsiz49clcL
-	RYYFNphu3uHhjVady2XaWHrolYkWINxtIX8odnWjqU/U1DytQgQ==
-X-Google-Smtp-Source: AGHT+IFqwaSuj3OPgIroBPt2rOC2Kuja+f/S+zxDQcsYHu2Duc5oSE+HQptrJbGQA/MKDNFU6x8V2Q8=
+        d=1e100.net; s=20230601; t=1700691819; x=1701296619;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qbZkilK+2GPPK5gRSFy0+hBTdndgvFzZuH6276NZUa4=;
+        b=l5D5gQBWc+4cyfqa4p8xtfBAip06O9pSJm9VAnMbP4XIVjUCESsSl3NRiVwLnO0sPc
+         +hsFeHwwL3kDCNBOPkkZgr1IMwu0OBoDH5hLmZAOsRmU2vpyYj7bfsK8IRIlIDztMMK0
+         AeDw5zaSSoEP9NSREzIHeqTT/EjKOOVCHpjWWKArc4lvKsOl7BLGHMehNPhVDzplg8Y0
+         aFhcBNN7LNbF/7RNrsyAfX3JCPipTDLdFTmxFLhp6+T3YymshfQZnfwlPrKj1B60lG91
+         vi0TdvNuu4x3IcBMgQPt99RNhxMatrrSItelwuQ4YRvihHxX1tFwitdS/t2olafWus6K
+         LF1w==
+X-Gm-Message-State: AOJu0YxebzEyqL0ADqpg5LB1hB7thq/3jb6I2IEG6omjmRYcj5xjsnpv
+	zAJxgmtUdETiTgzzxKYYnp+8Kiutb4OuyX418R7sbLM29LhitYWN1U3PaGxRwL7sVTwiFNwfzFc
+	9kMB+kovCxrkHXMP92ZlC5/SaxXfJh49AhkGcomgu3Dqv+XMInQ==
+X-Google-Smtp-Source: AGHT+IHHWy8S+OOJ92hYw+7xOPYUZPBATTib4bR/2G3jJw/NiTXovkgpWXc+ISNUqwoMfpWsXMBpyyU=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:4047:0:b0:5c2:2f9:c374 with SMTP id
- n68-20020a634047000000b005c202f9c374mr643470pga.9.1700691817358; Wed, 22 Nov
- 2023 14:23:37 -0800 (PST)
-Date: Wed, 22 Nov 2023 14:23:34 -0800
+ (user=sdf job=sendgmr) by 2002:a05:6a00:1c8f:b0:6cb:95ab:cf8d with SMTP id
+ y15-20020a056a001c8f00b006cb95abcf8dmr870773pfw.6.1700691819171; Wed, 22 Nov
+ 2023 14:23:39 -0800 (PST)
+Date: Wed, 22 Nov 2023 14:23:35 -0800
+In-Reply-To: <20231122222335.1799186-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20231122222335.1799186-1-sdf@google.com>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231122222335.1799186-1-sdf@google.com>
-Subject: [PATCH bpf-next v2 1/2] bpftool: mark orphaned programs during prog show
+Message-ID: <20231122222335.1799186-2-sdf@google.com>
+Subject: [PATCH bpf-next v2 2/2] selftests/bpf: update test_offload to use new
+ orphaned property
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
@@ -67,88 +70,60 @@ Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
 	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Commit ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
-and PERF_BPF_EVENT_PROG_UNLOAD") stopped removing program's id from
-idr when the offloaded/bound netdev goes away. I was supposed to
-take a look and check in [0], but apparently I did not.
+- filter orphaned programs by default
+- when trying to query orphaned program, don't expect bpftool failure
 
-Martin points out it might be useful to keep it that way for
-observability sake, but we at least need to mark those programs as
-unusable.
-
-Mark those programs as 'orphaned' and keep printing the list when
-we encounter ENODEV.
-
-0: unspec  tag 0000000000000000
-        xlated 0B  not jited  memlock 4096B orphaned
-
-[0]: https://lore.kernel.org/all/CAKH8qBtyR20ZWAc11z1-6pGb3Hd47AQUTbE_cfoktG59TqaJ7Q@mail.gmail.com/
-
-Fixes: ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD")
 Signed-off-by: Stanislav Fomichev <sdf@google.com>
 ---
- tools/bpf/bpftool/prog.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/test_offload.py | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
-index 7ec4f5671e7a..a4f23692c187 100644
---- a/tools/bpf/bpftool/prog.c
-+++ b/tools/bpf/bpftool/prog.c
-@@ -442,7 +442,7 @@ static void print_prog_header_json(struct bpf_prog_info *info, int fd)
- 		jsonw_uint_field(json_wtr, "recursion_misses", info->recursion_misses);
- }
+diff --git a/tools/testing/selftests/bpf/test_offload.py b/tools/testing/selftests/bpf/test_offload.py
+index 40cba8d368d9..6157f884d091 100755
+--- a/tools/testing/selftests/bpf/test_offload.py
++++ b/tools/testing/selftests/bpf/test_offload.py
+@@ -169,12 +169,14 @@ netns = [] # net namespaces to be removed
+     return tool("bpftool", args, {"json":"-p"}, JSON=JSON, ns=ns,
+                 fail=fail, include_stderr=include_stderr)
  
--static void print_prog_json(struct bpf_prog_info *info, int fd)
-+static void print_prog_json(struct bpf_prog_info *info, int fd, bool orphaned)
- {
- 	char *memlock;
+-def bpftool_prog_list(expected=None, ns=""):
++def bpftool_prog_list(expected=None, ns="", exclude_orphaned=True):
+     _, progs = bpftool("prog show", JSON=True, ns=ns, fail=True)
+     # Remove the base progs
+     for p in base_progs:
+         if p in progs:
+             progs.remove(p)
++    if exclude_orphaned:
++        progs = [ p for p in progs if not p['orphaned'] ]
+     if expected is not None:
+         if len(progs) != expected:
+             fail(True, "%d BPF programs loaded, expected %d" %
+@@ -612,11 +614,9 @@ def bpftool_prog_load(sample, file_name, maps=[], prog_type="xdp", dev=None,
  
-@@ -461,6 +461,7 @@ static void print_prog_json(struct bpf_prog_info *info, int fd)
- 		jsonw_uint_field(json_wtr, "uid", info->created_by_uid);
- 	}
+ def check_dev_info_removed(prog_file=None, map_file=None):
+     bpftool_prog_list(expected=0)
++    bpftool_prog_list(expected=1, exclude_orphaned=False)
+     ret, err = bpftool("prog show pin %s" % (prog_file), fail=False)
+-    fail(ret == 0, "Showing prog with removed device did not fail")
+-    fail(err["error"].find("No such device") == -1,
+-         "Showing prog with removed device expected ENODEV, error is %s" %
+-         (err["error"]))
++    fail(ret != 0, "failed to show prog with removed device")
  
-+	jsonw_bool_field(json_wtr, "orphaned", orphaned);
- 	jsonw_uint_field(json_wtr, "bytes_xlated", info->xlated_prog_len);
+     bpftool_map_list(expected=0)
+     ret, err = bpftool("map show pin %s" % (map_file), fail=False)
+@@ -1395,10 +1395,7 @@ netns = []
  
- 	if (info->jited_prog_len) {
-@@ -527,7 +528,7 @@ static void print_prog_header_plain(struct bpf_prog_info *info, int fd)
- 	printf("\n");
- }
+     start_test("Test multi-dev ASIC cross-dev destruction - orphaned...")
+     ret, out = bpftool("prog show %s" % (progB), fail=False)
+-    fail(ret == 0, "got information about orphaned program")
+-    fail("error" not in out, "no error reported for get info on orphaned")
+-    fail(out["error"] != "can't get prog info: No such device",
+-         "wrong error for get info on orphaned")
++    fail(ret != 0, "couldn't get information about orphaned program")
  
--static void print_prog_plain(struct bpf_prog_info *info, int fd)
-+static void print_prog_plain(struct bpf_prog_info *info, int fd, bool orphaned)
- {
- 	char *memlock;
+     print("%s: OK" % (os.path.basename(__file__)))
  
-@@ -554,6 +555,9 @@ static void print_prog_plain(struct bpf_prog_info *info, int fd)
- 		printf("  memlock %sB", memlock);
- 	free(memlock);
- 
-+	if (orphaned)
-+		printf(" orphaned");
-+
- 	if (info->nr_map_ids)
- 		show_prog_maps(fd, info->nr_map_ids);
- 
-@@ -581,15 +585,15 @@ static int show_prog(int fd)
- 	int err;
- 
- 	err = bpf_prog_get_info_by_fd(fd, &info, &len);
--	if (err) {
-+	if (err && err != -ENODEV) {
- 		p_err("can't get prog info: %s", strerror(errno));
- 		return -1;
- 	}
- 
- 	if (json_output)
--		print_prog_json(&info, fd);
-+		print_prog_json(&info, fd, err == -ENODEV);
- 	else
--		print_prog_plain(&info, fd);
-+		print_prog_plain(&info, fd, err == -ENODEV);
- 
- 	return 0;
- }
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
