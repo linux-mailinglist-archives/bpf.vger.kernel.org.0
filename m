@@ -1,422 +1,369 @@
-Return-Path: <bpf+bounces-15690-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15691-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DAF57F4F8D
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 19:31:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 671527F4FB8
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 19:39:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E6A01C20AA7
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:31:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0C8FB20DCB
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F8058AB5;
-	Wed, 22 Nov 2023 18:31:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B42F5B20D;
+	Wed, 22 Nov 2023 18:39:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="Xl4yDSSL"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="T8PrMZVE";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="kEunJZWc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074D5197
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 10:31:28 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-549070a04baso103192a12.3
-        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 10:31:27 -0800 (PST)
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0452A271F
+	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 10:38:20 -0800 (PST)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMI23IH005851;
+	Wed, 22 Nov 2023 18:37:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=YO3KiMwMRGZmlkvXG79mOw3JOf4lY/k/RHN424ie7QQ=;
+ b=T8PrMZVE8Vc938ZfinvWD4PfN2xJ17ck66bAAkgOD85i/gW9SoDTzFo2h41+XkAOOCla
+ 67PphSToY4E8hjybYWpdAFdEwjrZpfJ/QbUNEL0WB8jFof4pf+qZBGYANF7EhUtV6C7v
+ 3NIyBsJcGiHarHqCbrQbJNiPlWUO0aoWAQcMiUJZWsfczmWBcVdPWBamvTObUz0wz2Dz
+ 22RMZy739QSvqaAG5O47ruC9ERBbJ6VEMTHkCPmu1RCYJMUfQmhUH0HGF9q786d6tfx8
+ 7usrg6CeNU+vXWo6siPQqZGAdKfeqqu155XgJeCLPVMQlcIKZwSLa7DeVp2a4+rvgHug 7g== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3uem6cg8kv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 22 Nov 2023 18:37:52 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AMHZ0ot023566;
+	Wed, 22 Nov 2023 18:37:50 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uekq95g3t-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 22 Nov 2023 18:37:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DYkatx54agg0YLjYUg5IXxpBYZ/KrhxgrHc0/XvxDULxazIhd2jEoaeoDcIz2F739vXxGNpD+8q8RstKPvyOwy+ZcRAt9CM1fva1A5N0zA56hOGEZpslXvQO+4cI6Z8VHyJpY0HsscyBdXOLVVpnRo64YYQ7+dwQ2YVPo0pynYjvgpguq/dEU8cj9KOjEaepX1bLmL1oQcfWWd4MsoVOQRzbDJvCiz8+ixwfCRmF5pk136Qs0+0p/40l3wzq+cIwMYhQuv78NfoAr06zVDLveKpZMKPPT7mriwkt7LqpskhNJuvjD/ZQxiX0Twl3DgdCHR7dqg/pDZCbs6MOY9dzLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YO3KiMwMRGZmlkvXG79mOw3JOf4lY/k/RHN424ie7QQ=;
+ b=UVwbSWLIfOUHitP2edlJSLiXLb75l0mm2pC0bdkpDZ/f7/AIPaPoNZ5HNN32VDEib5QoyQeqggUO74HGXdbopJKw1UHcdFn1cJCErHKKCgwH3L2eTxn2y8+LOivGuUXmgQZjJINqacDACPKcoLq1C+EkKjJXkn41NUmhOpR8FFHk3VI7o2xexb+TV9DH+hdd8yumUHFSk2ponsA/E+5uuFCcMIo36yDj4xq5a0EbcNJ4cU4eHooejvuV3UXgUtdHIn4vC2vu0bdrtT7IdAGwfWEuU1UazilbK6/EsWs6X+deWTQFzBZ03B1BBCL+hy2imnd7iOPku9cQ2Jw6a0CguA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1700677886; x=1701282686; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rV85xzWIeC//Ygqzq9YKExBGyjqCkv/bGoEWqpQEfZw=;
-        b=Xl4yDSSL9VFRa1bvqRQ/Gy88RcZnErtVh3T0k2Cy9V4rRZJa7S364D/UipilrpiqZf
-         QC6tgzo1m5nC1xJFsAgUI2JSmte3e/JYpdEQ/kV03BffWIBGozV+QTk2bkvpAkmMOuTA
-         OrxX8eGWMQzEaC3gIC0VnrqHIiuyWq8HFccD7MmCvpOB69pHS4fbmNjk79fpDFVHA2Gh
-         PwXApRXI2zH0sUwR9Ee0v3Tk8T9tnuc/rYN3EF0upHjLccX/RnWa47RfBw6bKHiBSxnU
-         RAXaZRv+TNPLTiTCu5NP0ro6/76tCHQ64piKg0bOO1HODDGDQdbbLyx4EYuvnBDsDS6D
-         5kKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700677886; x=1701282686;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rV85xzWIeC//Ygqzq9YKExBGyjqCkv/bGoEWqpQEfZw=;
-        b=Kdxxp8KofoTAPUAvMvjIBIlzp8UgG1/Xjw1cEQGAtf6i0Zc5WkAoZP7YhcpTGwhWoF
-         KBVCv39IwCMYl5SepQueK7REaqrfD6Z6JORwdd5hTH2m4/CcmtWgID4BxVaaO/KLE9zq
-         LYs85YXoQvEBKMiKN2cG6veckISseeUNfgsJwjyUvPVc1pyOieEf+xW6vgawgvdAmtOp
-         RzJP6nbC3oTxcjrQQaSK5HE2SQDa7GnKFyJ8MmwOMqxsdWN3O/RPIfFGV5Z3+nocX40z
-         9/wH41sqS3LYs8NwsYc20mA1W0iGAc9LAdtvpxAzjGJzeVGTztwtWroWevW7EBDqGusl
-         U1hg==
-X-Gm-Message-State: AOJu0YxWKuTEcSecafmedJbgkKD1eUOQLjxTnJ/vPCcvK5VD1EC8OyrV
-	qXxLeEBD8ZX7PXOG926lgYdPiA==
-X-Google-Smtp-Source: AGHT+IGENg2jfX7+U4S8AoaLOQMQh6aQc6gQn4WtfYTvbcmnAWZWvblxpjmUgzs1aUe0uXU04HoEGQ==
-X-Received: by 2002:a17:906:15:b0:9e8:f078:e600 with SMTP id 21-20020a170906001500b009e8f078e600mr2028166eja.6.1700677886272;
-        Wed, 22 Nov 2023 10:31:26 -0800 (PST)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id a25-20020a17090680d900b009fd4583851esm60234ejx.178.2023.11.22.10.31.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Nov 2023 10:31:25 -0800 (PST)
-Date: Wed, 22 Nov 2023 19:31:24 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	deb.chatterjee@intel.com, anjali.singhai@intel.com,
-	Vipin.Jain@amd.com, namrata.limaye@intel.com, tom@sipanda.io,
-	mleitner@redhat.com, Mahesh.Shirshyad@amd.com,
-	tomasz.osinski@intel.com, xiyou.wangcong@gmail.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org,
-	bpf@vger.kernel.org, khalidm@nvidia.com, toke@redhat.com,
-	mattyk@nvidia.com, dan.daly@intel.com, chris.sommers@keysight.com,
-	john.andy.fingerhut@intel.com
-Subject: Re: [PATCH net-next v8 00/15] Introducing P4TC
-Message-ID: <ZV5I/F+b5fu58Rlg@nanopsycho>
-References: <ZVuhBlYRwi8eGiSF@nanopsycho>
- <CAM0EoMknA01gmGX-XLH4fT_yW9H82bN3iNYEvFRypvTwARiNqg@mail.gmail.com>
- <2a7d6f27-3464-c57b-b09d-55c03bc5eae6@iogearbox.net>
- <CAM0EoMkBHqRU9tprJ-SK3tKMfcGsnydp0UA9cH2ALjpSNyJhig@mail.gmail.com>
- <ZVyrRFDrVqluD9k/@nanopsycho>
- <CAM0EoMkUFzZ=Qnk3kWCGw83apANybjvNUZHHAi5is4ewag5xOA@mail.gmail.com>
- <ZVy8cEjs9VK2OVxE@nanopsycho>
- <CAM0EoMmPnCeU2uLph=uwh3JxtE4RQnvcSA2WdZgORywzNFCO6g@mail.gmail.com>
- <ZV3JJQirPdZpbVIC@nanopsycho>
- <CAM0EoM=R1H1iGQDZs3m7tY7f++VWzPegvSdt=MfN0wvFXdT+Mg@mail.gmail.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YO3KiMwMRGZmlkvXG79mOw3JOf4lY/k/RHN424ie7QQ=;
+ b=kEunJZWcff9eVkqiTQY0kit1F2xqWlWRtVLhAnj9ikCtY8d1bYO6wm8osAjk85OAFfxqgRqsYtiwMnPzRGbCCuIkFWvLhbibdyqlddHXRv2TExsK9oXjaIZ4alkBUqTJVZAynKASHI5uXWvzjPtDPvCQQei/bA1Ajtwzh8IuOYc=
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com (2603:10b6:a03:88::32)
+ by CH0PR10MB5193.namprd10.prod.outlook.com (2603:10b6:610:c4::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.19; Wed, 22 Nov
+ 2023 18:37:48 +0000
+Received: from BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::ba16:f585:1052:a61c]) by BYAPR10MB2888.namprd10.prod.outlook.com
+ ([fe80::ba16:f585:1052:a61c%5]) with mapi id 15.20.7025.017; Wed, 22 Nov 2023
+ 18:37:48 +0000
+From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>,
+        Tao Lyu <tao.lyu@epfl.ch>, Andrii Nakryiko <andrii@kernel.org>,
+        Alexei
+ Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann
+ <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>,
+        Martin KaFai Lau
+ <martin.lau@linux.dev>, mathias.payer@nebelwelt.net,
+        meng.xu.cs@uwaterloo.ca, sanidhya.kashyap@epfl.ch,
+        Song Liu
+ <song@kernel.org>
+Subject: Re: [PATCH] C inlined assembly for reproducing max<min
+In-Reply-To: <CAADnVQJqmpSoABqd-dCQBU2ExiPda1mHz2pKHv2jzpSMYFMeqQ@mail.gmail.com>
+	(Alexei Starovoitov's message of "Wed, 22 Nov 2023 10:15:55 -0800")
+References: <d3a518de-ada3-45e8-be3e-df942c2208b5@linux.dev>
+	<20231122144018.4047232-1-tao.lyu@epfl.ch>
+	<2e8a1584-a289-4b2e-800c-8b463e734bcb@linux.dev>
+	<CAADnVQJqmpSoABqd-dCQBU2ExiPda1mHz2pKHv2jzpSMYFMeqQ@mail.gmail.com>
+Date: Wed, 22 Nov 2023 19:37:44 +0100
+Message-ID: <874jhdk51j.fsf@oracle.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: LO2P123CA0079.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:138::12) To BYAPR10MB2888.namprd10.prod.outlook.com
+ (2603:10b6:a03:88::32)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM0EoM=R1H1iGQDZs3m7tY7f++VWzPegvSdt=MfN0wvFXdT+Mg@mail.gmail.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2888:EE_|CH0PR10MB5193:EE_
+X-MS-Office365-Filtering-Correlation-Id: 979ca927-61ea-4196-2311-08dbeb8a205a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	eznoCDsIqQvCnPCUHS3w/ImNxaBtnUgCfIOcqGq8H3V7Eijsz0KO9AWuONLWEN4i66QJZJaeDT4c00rpXPJ+p91EfmLmPcymSIgZDhyGOcUYheCDj9Jh4JNy1CbDnTKST7ge9xwF7YT1PluA+G/y7MURkHS99orc8niANAdm3+C0fmXSRJy8PgjApJOVTYg2lEEPOuUpW5j/CUXxXP1/xmYPq9rDwxgrEl3B61IXcur4fR52sFnrfHHpJWQdoEEaQ9eHWZEPKDmPzbx1h6l8BP/ZIJqEea+Ska2fm0Bw2FtitBXhereoX3pbriTERXrc96u8QZVucsM7G2aibCssM+u6WcA/E4YfwrfrMCzpQFQQa/tu2rTUWXZFSpMKt2G4M4hHQYDVT1xDX58U3uHy1n7VZsyJ+fQ35xIspWm8fensBUXujIfiiR3YgxTtHXdzbKsCXRovNSk+lhaywGjIjp4AN5VNVpAQoM7Oxzb4/TNwy5+2pWyVkQTDhL6tAW2j+saw+zrpL52upX9dcifKeX74zw0IMIaVy7cwujiidIs=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2888.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(39860400002)(346002)(136003)(396003)(230922051799003)(451199024)(64100799003)(1800799012)(186009)(38100700002)(41300700001)(478600001)(966005)(6486002)(6916009)(86362001)(26005)(36756003)(316002)(7416002)(53546011)(66476007)(66946007)(54906003)(5660300002)(2616005)(6506007)(66556008)(2906002)(4326008)(8936002)(8676002)(6512007)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?RGxWb3ZqczJYUmdzOE5NSXB5ZSt4dHFVQVU5WWFBRm1CRXRXOGFCVjE2S05W?=
+ =?utf-8?B?UytYZjg2aHBBRWdsbURrZkZWL2kwYWJmck9iUFRRUVVUUUt4RDNmS1l4QlVS?=
+ =?utf-8?B?NUpEcUpkQyt3S3ZNTmR4Y2NrRjA4aW1Cc2twUDFJcHNvaTIrZWJUZlZ1MEJu?=
+ =?utf-8?B?amFZUE03L1JpNzhqTWxFSWJtYU93bkxHRkp4b0dBVlBIRWZhSjB6VHVtcEZN?=
+ =?utf-8?B?MTNodXVOTTFma08wS0hMTndyWU5PaFl4eDFUeW9xSXArVzJrbjVXZXB4d3hH?=
+ =?utf-8?B?ZWtkUzNoTHc0S1MyTktGVG9LUjFFem1lOWhIeXJaUW15bm5ISmh3TTgxeTVJ?=
+ =?utf-8?B?VGhseW5yMkVKNGlMcHkrL1BONkd1OWlWcm93K0VicFl2WUlMakw2ZDdSa044?=
+ =?utf-8?B?TWZGTFBPNEpoRDNnb3FpQTQyVVhwWjAwbWVGZS9MMVEyUDZueGUvMTlXU2Mz?=
+ =?utf-8?B?VXNPUnRlamRZa0toTCt5WGw2S09ReDhobXl4WkY3RTRvWk93b1lDMW9weHY1?=
+ =?utf-8?B?RmFzMmRRc2t2UmxBN212WGNuc3MzTml1M05oWlYrRlEvenpqR1cydVM2VTNa?=
+ =?utf-8?B?Slc3c2VHclQ4blZ0Mjd1c2JRbEJjQXJMNmtaNFRiWVBSdTZIL2ZNekxyTmpo?=
+ =?utf-8?B?WFdMb0lLdFBrYUZ5YXoyYTlGWC9ORnoxc1prVmRiYVhMZ1hxN052WHQzVlZx?=
+ =?utf-8?B?T2pKSnY4ZVV1VExaV3RLcWtFNWRXQ2NPd2lsY29zdmxONnNwNWoxTUp6YzlF?=
+ =?utf-8?B?M0MraTJPZUV2WUZleWJMVExmWWlWaDBHbzhxZlZUc2lTR1NlTkdsSStSWkU4?=
+ =?utf-8?B?WkdHUjFBcDEzOTlSWjR1cC8yUWRBeGpTSkZYOTQwdWs5dFZWT041NjJ5clJx?=
+ =?utf-8?B?clVDd2NvenRMN2c2RVJNK0M3SVUweWlZSkxiL3VWNk5zTDhoKzBLZ2psNUF2?=
+ =?utf-8?B?a3VwRWZ3RTFPSG13blg5b0ZhT2tza0hmYkpEYVJ2ZWxLRm5HeTdqRmJNc0gy?=
+ =?utf-8?B?ZGNXOEplZE8wMEdPZW9QTzJLNmRnN091VXpDS21YV0c3TXlsOW53c0dyVTFu?=
+ =?utf-8?B?MkllZzdhQ0E3STV5UEtLWXF2OExGVEJiK2M1WFV6UmNBbVlxV2pRRDFZcmo4?=
+ =?utf-8?B?TENsdjBHZC9raCtCTEt2Z1hpU3FkVGhKYlYwYkdad1RlSk5KV1drYWJzRHps?=
+ =?utf-8?B?dGswZGs2RWREQlJBWnB3blcyMlBBd0VYdkZVLzF1WHNpVDhSdEEyRHpzTFg5?=
+ =?utf-8?B?ZjJJK0EvY1JrMVJHQzdSWURwREQ5MjA3NnRYUysyV3Z0cVQza2JwTjhocVNK?=
+ =?utf-8?B?b0V6VXErZk91VDJ4K2xEZGJHRDMrdTFBb1lFY253d0t4MStyUlhZa2d4VElC?=
+ =?utf-8?B?RDZUVlpOc1AyaUlFeCsxZVRHQ045ay9MU0Z0dEZ1SnpoSC81U0VPUkRVY0Jo?=
+ =?utf-8?B?aGcyTFpTdzhrWWR3bXN5SXRWVy9jMzZuelVpWHc0M3N1SlhhM0tuVUJUWmsz?=
+ =?utf-8?B?OGJPaEkvQTJYeDZXdUd5NHBuUVhmUm5WeWVwMnV0YkRmL3hYZkJKYUEvSUo1?=
+ =?utf-8?B?SktKWG4zY0NlYnBNMWhSQUNwVEdrV3pKMkorVnNDZnptMTVyWndRZ09scmUy?=
+ =?utf-8?B?dXNzTGNpK2pUanVyWEpORGp6NFFYN2dXKzdhakpBa0xnMmZyRlU0aU1QUVd2?=
+ =?utf-8?B?aGMvdE5GQWVYcUFzb1ppM2UyTHJJeTZ5SDlsZXZrSW1kcDlwbGNScytZb3Zr?=
+ =?utf-8?B?dXltd01vajM5UlVTMlFGZmttRjZLQkxCeTQ1a2oyZGtUbXNhbFNlQmVJd3oy?=
+ =?utf-8?B?NkdmQWtnSHhpUXM3a2JmbG0wdXF5d0xOdkJMTDF3UGxwT3JOZEE5NEpPTzdY?=
+ =?utf-8?B?dDFpUjFCSjc2MWQxcTFMVjJSY1hjcG9ROVQyK0dHdnRNbTFFQnJpejlEdUFp?=
+ =?utf-8?B?WjVNYWVmU00ycG1sZ1NTSmZFcWtISmMrS0JjSXRWYy9aWmZpRXJ1V0ljWk81?=
+ =?utf-8?B?Mm4vRWIzMFNvQkJoRW5TZ1QxUTd4cDk2SzJJb3dILzQybjBqVGo4OFRzQnFF?=
+ =?utf-8?B?KzJ0N245N0RacVV0V20zUEpJZnEyT09CeHY1MmkxTlhkRlhxc0hydnkxR3NZ?=
+ =?utf-8?B?Z00yNDZ5bWMybjFJV2lvclhwU1JteTNRRnJHOWlvRjU1bm1adnlFOWlYeEl1?=
+ =?utf-8?B?c3c9PQ==?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	=?utf-8?B?RGFScStoMEl0UlczSGgwNlN6dUtaL1RDcER3aTZnMWFnYml3NXdTeW9nNnpI?=
+ =?utf-8?B?Ziszb2NuRjNPellWQk9VK28xNGNaeDU3UUxqYWloTGNMdXorZEFhU0NTdjI2?=
+ =?utf-8?B?Vmx4bmlpS2xJaTkxRGcxdkxJWk44K3lLOHdzd1JBWkg2Qi94OTNwODl2S05q?=
+ =?utf-8?B?V0NaL1QrRWlHeVBTVVVqMDFLTm1EUDRjaFpxZU9Lc2VjR0MzSFFVU25PaEJY?=
+ =?utf-8?B?aFlDRGpxY1M2UkJsbE1Fc3dpVmhsS1hvZkRmeGlwSWNVMGY3KzlqYTJjLzVY?=
+ =?utf-8?B?bk85NDB0QTVzZmtyQ3dSN0grNDdTM3BFSWRHVUh1MnRKUDZxY3BUWlNoNDNF?=
+ =?utf-8?B?NnVPeWNCaEFuRkYvOWpqWDM1NVhZMEVmUmlRUFRqTGZmbjNjOXRVWTBOQ01C?=
+ =?utf-8?B?YVgvRldjRlVJWlVlZmwvRFFnYUxDMTluRHdNSXE5SXJ5bnBwSFBHUktaNDdL?=
+ =?utf-8?B?SEpxcnRIbjhwdjRCSzJLUFozRHRkZDlvV3QzTjlWQUlHSStlbmpGUUhObFRq?=
+ =?utf-8?B?MzZVSmkzUnNWdlJnRklXcFJ3RzdxS0N0SGFWTGFrNkR0cjBndWEvMmwrQ1Vy?=
+ =?utf-8?B?d1ZwUXA3ci9oSkVDalQ1b1pvZERNYlQ1blhtcEFBZHgyQ3NpbUh3bkFIVkJ1?=
+ =?utf-8?B?UzlUUWV4dldoL3NLRGJIekZaYzh0bnppRnFEVm5CZjZmUHZFZENkTjZPOVcw?=
+ =?utf-8?B?bkorMkpMWnZCWWhjWlNLVVhoVFRtY3JCMU9oYW8vTGYyMXFDNE5Va0Z3TVRw?=
+ =?utf-8?B?Ymc2ejh3T0FrcXVpTitHMnk3bTUvVHVZa1NQWGVSNlRiM0c3Yi9IaW04NHNm?=
+ =?utf-8?B?YTdoZUJ5Rkt5WEhmWnppcEF0OGREN3RaY0xxMkMxaWpRVjhmdzkwbDBJaTA3?=
+ =?utf-8?B?NWZ0T212cWtLU29GUTNjSWU3VlNBTjJBRGJ3QTYwdXBIUldUTktIanNrUlM3?=
+ =?utf-8?B?OG0xYiszb3pEM3BtOFoycEhWNkNpZkJwWjArZFRBVFBUc0JXcU1CdFFzVEZm?=
+ =?utf-8?B?RVJWMXN5RHprSUxPNEVVSDRVM0JCK0JhU2c2RVF6WEFLOUdpQkpSYlYvelN3?=
+ =?utf-8?B?VTBqWi9mNzN3ZWFjVlk4TU1NRWoxUTBpelZEKzdEN2g0clpjUFJtc3ZXT1pN?=
+ =?utf-8?B?UGh4VXAxOXBYQXdYMlJLU1l3RmRsN2Q0SDg5S1NMY21OOXFvdld4d3hUS0dU?=
+ =?utf-8?B?REt4N2F6M1paTEpKSWorLzcyMlpBbDRMNFdNT2ppVEdtbmN6TWZvNnNCWVpZ?=
+ =?utf-8?B?dmtuMkhMZitYQ3FmNWVkTzIxd0JSRG9KeUVmam1ZN1pHL24wK3M2UWFwZjlM?=
+ =?utf-8?Q?ix8JKOwB6SUdonhDkIIWPjaSAuvbMZGOv6?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 979ca927-61ea-4196-2311-08dbeb8a205a
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2888.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Nov 2023 18:37:48.6460
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FyiFSUESsIy0R5lKicRzIGJ2yRsHhh/YQyATihDsO7J1ZVoPij5sNcyKgloExy7aN+zPSaXOmXq4fqzlnoSYJ8ii2dsMBuJ1x6Utepo/WnE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5193
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-22_13,2023-11-22_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 malwarescore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311220134
+X-Proofpoint-ORIG-GUID: pkWzz0ayht9g97GWdW36_P7QjQkHmxXe
+X-Proofpoint-GUID: pkWzz0ayht9g97GWdW36_P7QjQkHmxXe
 
-Wed, Nov 22, 2023 at 04:14:02PM CET, jhs@mojatatu.com wrote:
->On Wed, Nov 22, 2023 at 4:25 AM Jiri Pirko <jiri@resnulli.us> wrote:
+
+> On Wed, Nov 22, 2023 at 10:08=E2=80=AFAM Yonghong Song <yonghong.song@lin=
+ux.dev> wrote:
 >>
->> Tue, Nov 21, 2023 at 04:21:44PM CET, jhs@mojatatu.com wrote:
->> >On Tue, Nov 21, 2023 at 9:19 AM Jiri Pirko <jiri@resnulli.us> wrote:
->> >>
->> >> Tue, Nov 21, 2023 at 02:47:40PM CET, jhs@mojatatu.com wrote:
->> >> >On Tue, Nov 21, 2023 at 8:06 AM Jiri Pirko <jiri@resnulli.us> wrote:
->> >> >>
->> >> >> Mon, Nov 20, 2023 at 11:56:50PM CET, jhs@mojatatu.com wrote:
->> >> >> >On Mon, Nov 20, 2023 at 4:49 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> >> >> >>
->> >> >> >> On 11/20/23 8:56 PM, Jamal Hadi Salim wrote:
->> >> >> >> > On Mon, Nov 20, 2023 at 1:10 PM Jiri Pirko <jiri@resnulli.us> wrote:
->> >> >> >> >> Mon, Nov 20, 2023 at 03:23:59PM CET, jhs@mojatatu.com wrote:
->> >> >>
->> >> >> [...]
->> >> >>
->> >> >> >
->> >> >> >> tc BPF and XDP already have widely used infrastructure and can be developed
->> >> >> >> against libbpf or other user space libraries for a user space control plane.
->> >> >> >> With 'control plane' you refer here to the tc / netlink shim you've built,
->> >> >> >> but looking at the tc command line examples, this doesn't really provide a
->> >> >> >> good user experience (you call it p4 but people load bpf obj files). If the
->> >> >> >> expectation is that an operator should run tc commands, then neither it's
->> >> >> >> a nice experience for p4 nor for BPF folks. From a BPF PoV, we moved over
->> >> >> >> to bpf_mprog and plan to also extend this for XDP to have a common look and
->> >> >> >> feel wrt networking for developers. Why can't this be reused?
->> >> >> >
->> >> >> >The filter loading which loads the program is considered pipeline
->> >> >> >instantiation - consider it as "provisioning" more than "control"
->> >> >> >which runs at runtime. "control" is purely netlink based. The iproute2
->> >> >> >code we use links libbpf for example for the filter. If we can achieve
->> >> >> >the same with bpf_mprog then sure - we just dont want to loose
->> >> >> >functionality though.  off top of my head, some sample space:
->> >> >> >- we could have multiple pipelines with different priorities (which tc
->> >> >> >provides to us) - and each pipeline may have its own logic with many
->> >> >> >tables etc (and the choice to iterate the next one is essentially
->> >> >> >encoded in the tc action codes)
->> >> >> >- we use tc block to map groups of ports (which i dont think bpf has
->> >> >> >internal access of)
->> >> >> >
->> >> >> >In regards to usability: no i dont expect someone doing things at
->> >> >> >scale to use command line tc. The APIs are via netlink. But the tc cli
->> >> >> >is must for the rest of the masses per our traditions. Also i really
->> >> >>
->> >> >> I don't follow. You repeatedly mention "the must of the traditional tc
->> >> >> cli", but what of the existing traditional cli you use for p4tc?
->> >> >> If I look at the examples, pretty much everything looks new to me.
->> >> >> Example:
->> >> >>
->> >> >>   tc p4ctrl create myprog/table/mytable dstAddr 10.0.1.2/32 \
->> >> >>     action send_to_port param port eno1
->> >> >>
->> >> >> This is just TC/RTnetlink used as a channel to pass new things over. If
->> >> >> that is the case, what's traditional here?
->> >> >>
->> >> >
->> >> >
->> >> >What is not traditional about it?
->> >>
->> >> Okay, so in that case, the following example communitating with
->> >> userspace deamon using imaginary "p4ctrl" app is equally traditional:
->> >>   $ p4ctrl create myprog/table/mytable dstAddr 10.0.1.2/32 \
->> >>      action send_to_port param port eno1
->> >
->> >Huh? Thats just an application - classical tc which part of iproute2
->> >that is sending to the kernel, no different than "tc flower.."
->> >Where do you get the "userspace" daemon part? Yes, you can write a
->> >daemon but it will use the same APIs as tc.
+>> > +SEC("?tc")
+>> > +__log_level(2)
+>> > +int test_verifier_range(void)
+>> > +{
+>> > +    asm volatile (
+>> > +        "r5 =3D 100; \
+>> > +        r5 /=3D 3; \
+>> > +        w5 >>=3D 7; \
+>> > +        r5 &=3D -386969681; \
+>> > +        r5 -=3D -884670597; \
+>> > +        w0 =3D w5; \
+>> > +        if w0 & 0x894b6a55 goto +2; \
 >>
->> Okay, so which part is the "tradition"?
+>> So actually it is 'if w0 & 0x894b6a55 goto +2' failed
+>> the compilation.
 >>
+>> Indeed, the above operation is not supported in llvm.
+>> See
+>>    https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/BPF/BP=
+FInstrFormats.td#L62-L74
+>> the missing BPFJumpOp<0x4> which corresponds to JSET.
+>>
+>> The following llvm patch (on top of llvm-project main branch):
+>>
+>> diff --git a/llvm/lib/Target/BPF/BPFInstrFormats.td b/llvm/lib/Target/BP=
+F/BPFInstrFormats.td
+>> index 841d97efc01c..6ed83d877ac0 100644
+>> --- a/llvm/lib/Target/BPF/BPFInstrFormats.td
+>> +++ b/llvm/lib/Target/BPF/BPFInstrFormats.td
+>> @@ -63,6 +63,7 @@ def BPF_JA   : BPFJumpOp<0x0>;
+>>   def BPF_JEQ  : BPFJumpOp<0x1>;
+>>   def BPF_JGT  : BPFJumpOp<0x2>;
+>>   def BPF_JGE  : BPFJumpOp<0x3>;
+>> +def BPF_JSET : BPFJumpOp<0x4>;
+>>   def BPF_JNE  : BPFJumpOp<0x5>;
+>>   def BPF_JSGT : BPFJumpOp<0x6>;
+>>   def BPF_JSGE : BPFJumpOp<0x7>;
+>> diff --git a/llvm/lib/Target/BPF/BPFInstrInfo.td b/llvm/lib/Target/BPF/B=
+PFInstrInfo.td
+>> index 305cbbd34d27..9e75f35efe70 100644
+>> --- a/llvm/lib/Target/BPF/BPFInstrInfo.td
+>> +++ b/llvm/lib/Target/BPF/BPFInstrInfo.td
+>> @@ -246,6 +246,70 @@ class JMP_RI_32<BPFJumpOp Opc, string OpcodeStr, Pa=
+tLeaf Cond>
+>>     let BPFClass =3D BPF_JMP32;
+>>   }
+>>
+>> +class JSET_RR<string OpcodeStr>
+>> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_X.Value,
+>> +                   (outs),
+>> +                   (ins GPR:$dst, GPR:$src, brtarget:$BrDst),
+>> +                   "if $dst "#OpcodeStr#" $src goto $BrDst",
+>> +                   []> {
+>> +  bits<4> dst;
+>> +  bits<4> src;
+>> +  bits<16> BrDst;
+>> +
+>> +  let Inst{55-52} =3D src;
+>> +  let Inst{51-48} =3D dst;
+>> +  let Inst{47-32} =3D BrDst;
+>> +  let BPFClass =3D BPF_JMP;
+>> +}
+>> +
+>> +class JSET_RI<string OpcodeStr>
+>> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_K.Value,
+>> +                   (outs),
+>> +                   (ins GPR:$dst, i64imm:$imm, brtarget:$BrDst),
+>> +                   "if $dst "#OpcodeStr#" $imm goto $BrDst",
+>> +                   []> {
+>> +  bits<4> dst;
+>> +  bits<16> BrDst;
+>> +  bits<32> imm;
+>> +
+>> +  let Inst{51-48} =3D dst;
+>> +  let Inst{47-32} =3D BrDst;
+>> +  let Inst{31-0} =3D imm;
+>> +  let BPFClass =3D BPF_JMP;
+>> +}
+>> +
+>> +class JSET_RR_32<string OpcodeStr>
+>> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_X.Value,
+>> +                   (outs),
+>> +                   (ins GPR32:$dst, GPR32:$src, brtarget:$BrDst),
+>> +                   "if $dst "#OpcodeStr#" $src goto $BrDst",
+>> +                   []> {
+>> +  bits<4> dst;
+>> +  bits<4> src;
+>> +  bits<16> BrDst;
+>> +
+>> +  let Inst{55-52} =3D src;
+>> +  let Inst{51-48} =3D dst;
+>> +  let Inst{47-32} =3D BrDst;
+>> +  let BPFClass =3D BPF_JMP32;
+>> +}
+>> +
+>> +class JSET_RI_32<string OpcodeStr>
+>> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_K.Value,
+>> +                   (outs),
+>> +                   (ins GPR32:$dst, i32imm:$imm, brtarget:$BrDst),
+>> +                   "if $dst "#OpcodeStr#" $imm goto $BrDst",
+>> +                   []> {
+>> +  bits<4> dst;
+>> +  bits<16> BrDst;
+>> +  bits<32> imm;
+>> +
+>> +  let Inst{51-48} =3D dst;
+>> +  let Inst{47-32} =3D BrDst;
+>> +  let Inst{31-0} =3D imm;
+>> +  let BPFClass =3D BPF_JMP32;
+>> +}
+>> +
+>>   multiclass J<BPFJumpOp Opc, string OpcodeStr, PatLeaf Cond, PatLeaf Co=
+nd32> {
+>>     def _rr : JMP_RR<Opc, OpcodeStr, Cond>;
+>>     def _ri : JMP_RI<Opc, OpcodeStr, Cond>;
+>> @@ -265,6 +329,10 @@ defm JULT : J<BPF_JLT, "<", BPF_CC_LTU, BPF_CC_LTU_=
+32>;
+>>   defm JULE : J<BPF_JLE, "<=3D", BPF_CC_LEU, BPF_CC_LEU_32>;
+>>   defm JSLT : J<BPF_JSLT, "s<", BPF_CC_LT, BPF_CC_LT_32>;
+>>   defm JSLE : J<BPF_JSLE, "s<=3D", BPF_CC_LE, BPF_CC_LE_32>;
+>> +def JSET_RR    : JSET_RR<"&">;
+>> +def JSET_RI    : JSET_RI<"&">;
+>> +def JSET_RR_32 : JSET_RR_32<"&">;
+>> +def JSET_RI_32 : JSET_RI_32<"&">;
+>>   }
+>>
+>>   // ALU instructions
+>>
+>> can solve your inline asm issue. We will discuss whether llvm compiler
+>> should be implementing this instruction from source or not.
 >
->Provides tooling via tc cli that _everyone_ in the tc world is
->familiar with - which uses the same syntax as other tc extensions do,
->same expectations (eg events, request responses, familiar commands for
->dumping, flushing etc). Basically someone familiar with tc will pick
->this up and operate it very quickly and would have an easier time
->debugging it.
->There are caveats - as will be with all new classifiers - but those
->are within reason.
-
-Okay, so syntax familiarity wise, what's the difference between
-following 2 approaches:
-$ tc p4ctrl create myprog/table/mytable dstAddr 10.0.1.2/32 \
-      action send_to_port param port eno1
-$ p4ctrl create myprog/table/mytable dstAddr 10.0.1.2/32 \
-      action send_to_port param port eno1
-?
-
-
+> I'd say 'yes'. clang/llvm should support such asm syntax.
 >
->> >>
->> >> >
->> >> >>
->> >> >> >didnt even want to use ebpf at all for operator experience reasons -
->> >> >> >it requires a compilation of the code and an extra loading compared to
->> >> >> >what our original u32/pedit code offered.
->> >> >> >
->> >> >> >> I don't quite follow why not most of this could be implemented entirely in
->> >> >> >> user space without the detour of this and you would provide a developer
->> >> >> >> library which could then be integrated into a p4 runtime/frontend? This
->> >> >> >> way users never interface with ebpf parts nor tc given they also shouldn't
->> >> >> >> have to - it's an implementation detail. This is what John was also pointing
->> >> >> >> out earlier.
->> >> >> >>
->> >> >> >
->> >> >> >Netlink is the API. We will provide a library for object manipulation
->> >> >> >which abstracts away the need to know netlink. Someone who for their
->> >> >> >own reasons wants to use p4runtime or TDI could write on top of this.
->> >> >> >I would not design a kernel interface to just meet p4runtime (we
->> >> >> >already have TDI which came later which does things differently). So i
->> >> >> >expect us to support both those two. And if i was to do something on
->> >> >> >SDN that was more robust i would write my own that still uses these
->> >> >> >netlink interfaces.
->> >> >>
->> >> >> Actually, what Daniel says about the p4 library used as a backend to p4
->> >> >> frontend is pretty much aligned what I claimed on the p4 calls couple of
->> >> >> times. If you have this p4 userspace tooling, it is easy for offloads to
->> >> >> replace the backed by vendor-specific library which allows p4 offload
->> >> >> suitable for all vendors (your plan of p4tc offload does not work well
->> >> >> for our hw, as we repeatedly claimed).
->> >> >>
->> >> >
->> >> >That's you - NVIDIA. You have chosen a path away from the kernel
->> >> >towards DOCA. I understand NVIDIA's frustration with dealing with
->> >> >upstream process (which has been cited to me as a good reason for
->> >> >DOCA) but please dont impose these values and your politics on other
->> >> >vendors(Intel, AMD for example) who are more than willing to invest
->> >> >into making the kernel interfaces the path forward. Your choice.
->> >>
->> >> No, you are missing the point. This has nothing to do with DOCA.
->> >
->> >Right Jiri ;->
->> >
->> >> This
->> >> has to do with the simple limitation of your offload assuming there are
->> >> no runtime changes in the compiled pipeline. For Intel, maybe they
->> >> aren't, and it's a good fit for them. All I say is, that it is not the
->> >> good fit for everyone.
->> >
->> > a) it is not part of the P4 spec to dynamically make changes to the
->> >datapath pipeline after it is create and we are discussing a P4
->>
->> Isn't this up to the implementation? I mean from the p4 perspective,
->> everything is static. Hw might need to reshuffle the pipeline internally
->> during rule insertion/remove in order to optimize the layout.
->>
->
->But do note: the focus here is on P4 (hence the name P4TC).
->
->> >implementation not an extension that would add more value b) We are
->> >more than happy to add extensions in the future to accomodate for
->> >features but first _P4 spec_ must be met c) we had longer discussions
->> >with Matty, Khalid and the Rice folks who wrote a paper on that topic
->> >which you probably didnt attend and everything that needs to be done
->> >can be from user space today for all those optimizations.
->> >
->> >Conclusion is: For what you need to do (which i dont believe is a
->> >limitation in your hardware rather a design decision on your part) run
->> >your user space daemon, do optimizations and update the datapath.
->> >Everybody is happy.
->>
->> Should the userspace daemon listen on inserted rules to be offloade
->> over netlink?
->>
->
->I mean you could if you wanted to given this is just traditional
->netlink which emits events (with some filtering when we integrate the
->filter approach). But why?
+> Jose, Eduard,
+> Thoughts?
 
-Nevermind.
+We already support it in GAS:
 
 
->
->> >
->> >>
->> >> >Nobody is stopping you from offering your customers proprietary
->> >> >solutions which include a specific ebpf approach alongside DOCA. We
->> >> >believe that a singular interface regardless of the vendor is the
->> >> >right way forward. IMHO, this siloing that unfortunately is also added
->> >> >by eBPF being a double edged sword is not good for the community.
->> >> >
->> >> >> As I also said on the p4 call couple of times, I don't see the kernel
->> >> >> as the correct place to do the p4 abstractions. Why don't you do it in
->> >> >> userspace and give vendors possiblity to have p4 backends with compilers,
->> >> >> runtime optimizations etc in userspace, talking to the HW in the
->> >> >> vendor-suitable way too. Then the SW implementation could be easily eBPF
->> >> >> and the main reason (I believe) why you need to have this is TC
->> >> >> (offload) is then void.
->> >> >>
->> >> >> The "everyone wants to use TC/netlink" claim does not seem correct
->> >> >> to me. Why not to have one Linux p4 solution that fits everyones needs?
->> >> >
->> >> >You mean more fitting to the DOCA world? no, because iam a kernel
->> >>
->> >> Again, this has 0 relation to DOCA.
->> >>
->> >>
->> >> >first person and kernel interfaces are good for everyone.
->> >>
->> >> Yeah, not really. Not always the kernel is the right answer. Your/Intel
->> >> plan to handle the offload by:
->> >> 1) abuse devlink to flash p4 binary
->> >> 2) parse the binary in kernel to match to the table ids of rules coming
->> >>    from p4tc ndo_setup_tc
->> >> 3) abuse devlink to flash p4 binary for tc-flower
->> >> 4) parse the binary in kernel to match to the table ids of rules coming
->> >>    from tc-flower ndo_setup_tc
->> >> is really something that is making me a little bit nauseous.
->> >>
->> >> If you don't have a feasible plan to do the offload, p4tc does not make
->> >> sense to me to be honest.
->> >
->> >You mean if there's no plan to match your (NVIDIA?)  point of view.
->> >For #1 - how's this different from DDP? Wasnt that your suggestion to
->>
->> I doubt that. Any flashing-blob-parsing-in-kernel is something I'm
->> opposed to from day 1.
->>
->>
->
->Oh well - it is in the kernel and it works fine tbh.
->
->> >begin with? For #2 Nobody is proposing to do anything of the sort. The
->> >ndo is passed IDs for the objects and associated contents. For #3+#4
->>
->> During offload, you need to parse the blob in driver to be able to match
->> the ids with blob entities. That was presented by you/Intel in the past
->> IIRC.
->>
->
->You are correct - in case of offload the netlink IDs will have to be
->authenticated against what the hardware can accept, but the devlink
->flash use i believe was from you as a compromise.
-
-Definitelly not. I'm against devlink abuse for this from day 1.
+  $ echo 'if w0 & 0x894b6a55 goto +2' | bpf-unknown-none-as -mdialect=3Dpse=
+udoc -
+  $ bpf-unknown-none-objdump -M hex,pseudoc -d a.out
+ =20
+  a.out:     file format elf64-bpfle
+ =20
+ =20
+  Disassembly of section .text:
+ =20
+  0000000000000000 <.text>:
+     0:	46 00 02 00 55 6a 4b 89 	if w0&0x894b6a55 goto 0x2
 
 
->
->>
->> >tc flower thing has nothing to do with P4TC that was just some random
->> >proposal someone made seeing if they could ride on top of P4TC.
->>
->> Yeah, it's not yet merged and already mentally used for abuse. I love
->> that :)
->>
->> >
->> >Besides this nobody really has to satisfy your point of view - like i
->> >said earlier feel free to provide proprietary solutions. From a
->> >consumer perspective  I would not want to deal with 4 different
->> >vendors with 4 different proprietary approaches. The kernel is the
->> >unifying part. You seemed happier with tc flower just not with the
->>
->> Yeah, that is my point, why the unifying part can't be a userspace
->> daemon/library with multiple backends (p4tc, bpf, vendorX, vendorY, ..)?
->>
->> I just don't see the kernel as a good fit for abstraction here,
->> given the fact that the vendor compilers does not run in kernel.
->> That is breaking your model.
->>
->
->Jiri - we want to support P4, first. Like you said the P4 pipeline,
->once installed is static.
->P4 doesnt allow dynamic update of the pipeline. For example, once you
->say "here are my 14 tables and their associated actions and here's how
->the pipeline main control (on how to iterate the tables etc) is going
->to be" and after you instantiate/activate that pipeline, you dont go
->back 5 minutes later and say "sorry, please introduce table 15, which
->i want you to walk to after you visit table 3 if metadata foo is 5" or
->"shoot, let's change that table 5 to be exact instead of LPM". It's
->not anywhere in the spec.
->That doesnt mean it is not useful thing to have - but it is an
->invention that has _nothing to do with the P4 spec_; so saying a P4
->implementation must support it is a bit out of scope and there are
->vendors with hardware who support P4 today that dont need any of this.
+We weren't aware we were diverging with llvm by doing so.  We support
+syntax for all the conditional jump instructions using the following
+operators:
 
-I'm not talking about the spec. I'm talking about the offload
-implemetation, the offload compiler the offload runtime manager. You
-don't have those in kernel. That is the issue. The runtime manager is
-the one to decide and reshuffle the hw internals. Again, this has
-nothing to do with p4 frontend. This is offload implementation.
-
-And that is why I believe your p4 kernel implementation is unoffloadable.
-And if it is unoffloadable, do we really need it? IDK.
-
-
->In my opinion that is a feature that could be added later out of
->necessity (there is some good niche value in being able to add some
->"dynamicism" to any pipeline) and influence the P4 standards on why it
->is needed.
->It should be doable today in a brute force way (this is just one
->suggestion that came to me when Rice University/Nvidia presented[1]);
->i am sure there are other approaches and the idea is by no means
->proven.
->
->1) User space Creates/compiles/Adds/activate your program that has 14
->tables at tc prio X chain Y
->2) a) 5 minutes later user space decides it wants to change and add
->table 3 after table 15, visited when metadata foo=5
->    b) your compiler in user space compiles a brand new program which
->satisfies #2a (how this program was authored is out of scope of
->discussion)
->    c) user space adds the new program at tc prio X+1 chain Y or another chain Z
->    d) user space delete tc prio X chain Y (and make sure your packets
->entry point is whatever #c is)
-
-I never suggested anything like what you describe. I'm not sure why you
-think so.
-
-
->
->cheers,
->jamal
->
->[1] https://www.cs.rice.edu/~eugeneng/papers/SIGCOMM23-Pipeleon.pdf
->
->>
->> >kernel process - which is ironically the same thing we are going
->> >through here ;->
->> >
->> >cheers,
->> >jamal
->> >
->> >>
->> >> >
->> >> >cheers,
->> >> >jamal
+  BPF_JEQ    =3D=3D
+  BPF_JGT    >
+  BPF_JSGT   s>
+  BPF_JGE    >=3D
+  BPF_JSGE   s>=3D
+  BPF_JLT    <
+  BPF_JLST   s<
+  BPF_JLE    <=3D
+  BPF_JSLE   s<=3D
+  BPF_JSET   &
+  BPF_JNE    !=3D
 
