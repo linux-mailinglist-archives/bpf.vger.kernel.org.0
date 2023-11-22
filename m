@@ -1,214 +1,135 @@
-Return-Path: <bpf+bounces-15681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 454AD7F4F1C
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 19:16:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95ED47F4F3A
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 19:21:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F21882814C3
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:16:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F8852813B5
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCCB4F5EC;
-	Wed, 22 Nov 2023 18:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C8E58114;
+	Wed, 22 Nov 2023 18:21:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YaaJ4YH3"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="GS/APCbr";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="szbLNXMR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FCDB2
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 10:16:09 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40b31232bf0so287235e9.1
-        for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 10:16:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700676967; x=1701281767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ziyj9RxO/Gi+z/D/gx21VY2iMmQR+es/iZFGxe8ouSY=;
-        b=YaaJ4YH3FuAZYqQ8ORBasXImYRkAbX9yAApVwI6NSEWvlVvB+wP+JuVBi/gLMqE9Xg
-         aVxTQBLdqVsIzqvCU3P9MTOlQnOExjbtIauYeznWMr9alWm0lrL9RgmzdrEDT+R7TPP1
-         BJCqG/rbpHzFdUmikvOnORH9IOAOnX8XEGgNbfxUshf2lEaEhSnQdOVwK7BTnE/a2zEq
-         yOyJNmvHTjQjOER8kxEq2uD2jAMaSrjnVDNWLVbytwmRZGjYjVnBaKznq/ZqQ1Yv9ANF
-         olEn3awpBrm6hlbgbxRqs0YgWksH1UIXfQZDCU2b4DVRKzlVrFS6uhcMEJv+OQzSbaE5
-         NDog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700676967; x=1701281767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ziyj9RxO/Gi+z/D/gx21VY2iMmQR+es/iZFGxe8ouSY=;
-        b=Y9iXKoKXWw9PVtNzIj2o0ok9VIsbL41i9j41tZtWnx57c/+8bf5fERI91Fnd/+mDbT
-         UQ92Dm26dTU4BT4MbGKkZbZq442sOqQa5vGTgWfn+nChKo/Ft7N8fClB8fkqdsZaRQiO
-         SZst91eanV8T6lRbzqpQOeFtVLvYIMiISr6uuL073O5pmkfx5cCCMwzpkxpv9HnNrE5f
-         GMPdwQ8ZYW5S4zLHSITPxFZygQh/AAFV4C2iNrPYr3dEOJclQTXp0MEBaEDzXYMHAeqK
-         JtI7ULyQrDOlB/ZER6HsH/0vFssOYGIbEL/vZeiaW5Z20FjxbY7ecXS1SiEN/sEPhZ4J
-         vGuA==
-X-Gm-Message-State: AOJu0YyZdWhKAw7cmh11q8IL2It4TQAChWHhdp5soHS3TVY9Ul3kZR7T
-	TpEchLXK6S1VwuWp+CwSnTE0t2StZNd/MiqxQJE=
-X-Google-Smtp-Source: AGHT+IFSl8VR9SN1X59d67J/vHjTifCw1sIWZ/+Vj1ls3TXI21XZ+Gswq9NqA9kXcvItaTru5IqpjNbxd7lgUltdcx0=
-X-Received: by 2002:a05:6000:400e:b0:331:3425:b84d with SMTP id
- cp14-20020a056000400e00b003313425b84dmr979693wrb.12.1700676967148; Wed, 22
- Nov 2023 10:16:07 -0800 (PST)
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445AEA2;
+	Wed, 22 Nov 2023 10:21:02 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id 1BD265C0131;
+	Wed, 22 Nov 2023 13:20:59 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Wed, 22 Nov 2023 13:20:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to; s=fm3; t=1700677259; x=1700763659; bh=IXy9hEwDva
+	zgBgsi6N7DtR+e9WjAm48zXkbX44TGPGQ=; b=GS/APCbrMj2F3EvQBvMqdGxB0m
+	lU0U2qu2WVG+6csf0xBpIO5GR+iNDvatl2UrLabMtjjV4grTi/KwB+nDDbDE4Wpk
+	TG0yiDVlzA0iWJvFlG0ySYigTtNDCuaDckG6qAExIGYAdILqrWwHcJia3jyRcQnu
+	dMxzbakbDjcI7gEhMVwyU9R/Xsl1TQHtuMw5bjV0mwXQk6bpQMZcYqyigWeb3s1T
+	UzRbjGjSVgoo3MYrk5x+S6WhSlrKDLP06Y89J8Z0VsJ6wsflvG4vwSaS+vpvXdZk
+	/aN2S/s+KDJ5S0hH1/GUVEpk4B/igL1YLnOJ5kBLDHlYnmiQSOO+T9oeqXgg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm1; t=1700677259; x=1700763659; bh=IXy9hEwDvazgB
+	gsi6N7DtR+e9WjAm48zXkbX44TGPGQ=; b=szbLNXMRsBV1JbaczpHNx3zsmIhnk
+	QDSvv6xRx5oA2cCrseTNNyZ1C6ELqe3HwIuQu1HGuP+IZJSZGWRJZ3Heehfg6FHo
+	pLCcGjeru4izEzhI0sR0feZLBbT6Ylm267D5/N+hvzl8f3XhaMDZgukhn7Tkkx3c
+	UXNuYfTQy7YTctFi74/M69vsytdZIPQCu8Us6RUFCLKv2yIwb5a7AhCCaQXxxKzA
+	hohTyG1AGg65vPg+lG20IJDOq+zfRt70Zj2PZhy74QpdrShEVZZqjlhsRpYTCykJ
+	6BOJe/Rz8GPDuiFrHZCV1JjKdnIKnxKAMPqsqmhFg4zUdIXfWb1GZc+pQ==
+X-ME-Sender: <xms:ikZeZRA69fsvHlD-91jJp8i6LSJdbtglycXyxoVF5mRExJeH6fMMJg>
+    <xme:ikZeZfg0Skj4tRRhmSd4oXUjGY9YtHOe55HatmKxXcqRvzw8F1rMTHMqhkYKT8su-
+    -QQjkIGg1w7hEQmYw>
+X-ME-Received: <xmr:ikZeZcm1L0-GhzkPVLPqwS4rneerAoAKrzsGl8uZlDvTWCMsGWHxvyxHfZINy3xcNAWzeP87Yh0vaXwvCDJEXDZ4w47ufp4R7iF-FtaElos1AQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehuddguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculddvfedmnecujfgurhephf
+    fvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
+    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeikeehudegteevuddthf
+    eilefhjefgueeuueffveevheeggfeufeejfeeuudekfeenucffohhmrghinhepihgvthhf
+    rdhorhhgpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:ikZeZbxo0rz_iAxlkNzfSmPoqdGaN3jmI4b__fs_TpN-Au_A60T-nQ>
+    <xmx:ikZeZWREQ0H-cS1AXfjDkgS6wr8RaOj8v9wsaPswJqk-3DFnoNS-4Q>
+    <xmx:ikZeZeaSLH4Sxx2sVvoPhJsFKEsxJ5IzzI98YmR8lu41-H8IZphkMA>
+    <xmx:i0ZeZVFDZd7eMFlnhBQZ_ZpJIu3iAsuW0I8M5hjyMDU5wNXaov9_EQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Nov 2023 13:20:57 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	steffen.klassert@secunet.com,
+	antony.antony@secunet.com,
+	alexei.starovoitov@gmail.com
+Cc: devel@linux-ipsec.org
+Subject: [PATCH ipsec-next v1 0/7] Add bpf_xdp_get_xfrm_state() kfunc
+Date: Wed, 22 Nov 2023 11:20:21 -0700
+Message-ID: <cover.1700676682.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <d3a518de-ada3-45e8-be3e-df942c2208b5@linux.dev>
- <20231122144018.4047232-1-tao.lyu@epfl.ch> <2e8a1584-a289-4b2e-800c-8b463e734bcb@linux.dev>
-In-Reply-To: <2e8a1584-a289-4b2e-800c-8b463e734bcb@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 22 Nov 2023 10:15:55 -0800
-Message-ID: <CAADnVQJqmpSoABqd-dCQBU2ExiPda1mHz2pKHv2jzpSMYFMeqQ@mail.gmail.com>
-Subject: Re: [PATCH] C inlined assembly for reproducing max<min
-To: Yonghong Song <yonghong.song@linux.dev>, "Jose E. Marchesi" <jose.marchesi@oracle.com>, 
-	Eddy Z <eddyz87@gmail.com>
-Cc: Tao Lyu <tao.lyu@epfl.ch>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Hao Luo <haoluo@google.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, mathias.payer@nebelwelt.net, meng.xu.cs@uwaterloo.ca, 
-	sanidhya.kashyap@epfl.ch, Song Liu <song@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 22, 2023 at 10:08=E2=80=AFAM Yonghong Song <yonghong.song@linux=
-.dev> wrote:
->
-> > +SEC("?tc")
-> > +__log_level(2)
-> > +int test_verifier_range(void)
-> > +{
-> > +    asm volatile (
-> > +        "r5 =3D 100; \
-> > +        r5 /=3D 3; \
-> > +        w5 >>=3D 7; \
-> > +        r5 &=3D -386969681; \
-> > +        r5 -=3D -884670597; \
-> > +        w0 =3D w5; \
-> > +        if w0 & 0x894b6a55 goto +2; \
->
-> So actually it is 'if w0 & 0x894b6a55 goto +2' failed
-> the compilation.
->
-> Indeed, the above operation is not supported in llvm.
-> See
->    https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/BPF/BPF=
-InstrFormats.td#L62-L74
-> the missing BPFJumpOp<0x4> which corresponds to JSET.
->
-> The following llvm patch (on top of llvm-project main branch):
->
-> diff --git a/llvm/lib/Target/BPF/BPFInstrFormats.td b/llvm/lib/Target/BPF=
-/BPFInstrFormats.td
-> index 841d97efc01c..6ed83d877ac0 100644
-> --- a/llvm/lib/Target/BPF/BPFInstrFormats.td
-> +++ b/llvm/lib/Target/BPF/BPFInstrFormats.td
-> @@ -63,6 +63,7 @@ def BPF_JA   : BPFJumpOp<0x0>;
->   def BPF_JEQ  : BPFJumpOp<0x1>;
->   def BPF_JGT  : BPFJumpOp<0x2>;
->   def BPF_JGE  : BPFJumpOp<0x3>;
-> +def BPF_JSET : BPFJumpOp<0x4>;
->   def BPF_JNE  : BPFJumpOp<0x5>;
->   def BPF_JSGT : BPFJumpOp<0x6>;
->   def BPF_JSGE : BPFJumpOp<0x7>;
-> diff --git a/llvm/lib/Target/BPF/BPFInstrInfo.td b/llvm/lib/Target/BPF/BP=
-FInstrInfo.td
-> index 305cbbd34d27..9e75f35efe70 100644
-> --- a/llvm/lib/Target/BPF/BPFInstrInfo.td
-> +++ b/llvm/lib/Target/BPF/BPFInstrInfo.td
-> @@ -246,6 +246,70 @@ class JMP_RI_32<BPFJumpOp Opc, string OpcodeStr, Pat=
-Leaf Cond>
->     let BPFClass =3D BPF_JMP32;
->   }
->
-> +class JSET_RR<string OpcodeStr>
-> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_X.Value,
-> +                   (outs),
-> +                   (ins GPR:$dst, GPR:$src, brtarget:$BrDst),
-> +                   "if $dst "#OpcodeStr#" $src goto $BrDst",
-> +                   []> {
-> +  bits<4> dst;
-> +  bits<4> src;
-> +  bits<16> BrDst;
-> +
-> +  let Inst{55-52} =3D src;
-> +  let Inst{51-48} =3D dst;
-> +  let Inst{47-32} =3D BrDst;
-> +  let BPFClass =3D BPF_JMP;
-> +}
-> +
-> +class JSET_RI<string OpcodeStr>
-> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_K.Value,
-> +                   (outs),
-> +                   (ins GPR:$dst, i64imm:$imm, brtarget:$BrDst),
-> +                   "if $dst "#OpcodeStr#" $imm goto $BrDst",
-> +                   []> {
-> +  bits<4> dst;
-> +  bits<16> BrDst;
-> +  bits<32> imm;
-> +
-> +  let Inst{51-48} =3D dst;
-> +  let Inst{47-32} =3D BrDst;
-> +  let Inst{31-0} =3D imm;
-> +  let BPFClass =3D BPF_JMP;
-> +}
-> +
-> +class JSET_RR_32<string OpcodeStr>
-> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_X.Value,
-> +                   (outs),
-> +                   (ins GPR32:$dst, GPR32:$src, brtarget:$BrDst),
-> +                   "if $dst "#OpcodeStr#" $src goto $BrDst",
-> +                   []> {
-> +  bits<4> dst;
-> +  bits<4> src;
-> +  bits<16> BrDst;
-> +
-> +  let Inst{55-52} =3D src;
-> +  let Inst{51-48} =3D dst;
-> +  let Inst{47-32} =3D BrDst;
-> +  let BPFClass =3D BPF_JMP32;
-> +}
-> +
-> +class JSET_RI_32<string OpcodeStr>
-> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_K.Value,
-> +                   (outs),
-> +                   (ins GPR32:$dst, i32imm:$imm, brtarget:$BrDst),
-> +                   "if $dst "#OpcodeStr#" $imm goto $BrDst",
-> +                   []> {
-> +  bits<4> dst;
-> +  bits<16> BrDst;
-> +  bits<32> imm;
-> +
-> +  let Inst{51-48} =3D dst;
-> +  let Inst{47-32} =3D BrDst;
-> +  let Inst{31-0} =3D imm;
-> +  let BPFClass =3D BPF_JMP32;
-> +}
-> +
->   multiclass J<BPFJumpOp Opc, string OpcodeStr, PatLeaf Cond, PatLeaf Con=
-d32> {
->     def _rr : JMP_RR<Opc, OpcodeStr, Cond>;
->     def _ri : JMP_RI<Opc, OpcodeStr, Cond>;
-> @@ -265,6 +329,10 @@ defm JULT : J<BPF_JLT, "<", BPF_CC_LTU, BPF_CC_LTU_3=
-2>;
->   defm JULE : J<BPF_JLE, "<=3D", BPF_CC_LEU, BPF_CC_LEU_32>;
->   defm JSLT : J<BPF_JSLT, "s<", BPF_CC_LT, BPF_CC_LT_32>;
->   defm JSLE : J<BPF_JSLE, "s<=3D", BPF_CC_LE, BPF_CC_LE_32>;
-> +def JSET_RR    : JSET_RR<"&">;
-> +def JSET_RI    : JSET_RI<"&">;
-> +def JSET_RR_32 : JSET_RR_32<"&">;
-> +def JSET_RI_32 : JSET_RI_32<"&">;
->   }
->
->   // ALU instructions
->
-> can solve your inline asm issue. We will discuss whether llvm compiler
-> should be implementing this instruction from source or not.
 
-I'd say 'yes'. clang/llvm should support such asm syntax.
+This patchset adds two kfunc helpers, bpf_xdp_get_xfrm_state() and
+bpf_xdp_xfrm_state_release() that wrap xfrm_state_lookup() and
+xfrm_state_put(). The intent is to support software RSS (via XDP) for
+the ongoing/upcoming ipsec pcpu work [0]. Recent experiments performed
+on (hopefully) reproducible AWS testbeds indicate that single tunnel
+pcpu ipsec can reach line rate on 100G ENA nics.
 
-Jose, Eduard,
-Thoughts?
+Note this patchset only tests/shows generic xfrm_state access. The
+"secret sauce" (if you can really even call it that) involves accessing
+a soon-to-be-upstreamed pcpu_num field in xfrm_state. Early example is
+available here [1].
+
+[0]: https://datatracker.ietf.org/doc/draft-ietf-ipsecme-multi-sa-performance/03/
+[1]: https://github.com/danobi/xdp-tools/blob/e89a1c617aba3b50d990f779357d6ce2863ecb27/xdp-bench/xdp_redirect_cpumap.bpf.c#L385-L406
+
+Changes from RFCv2:
+* Rebased to ipsec-next
+* Fix netns leak
+
+Changes from RFCv1:
+* Add Antony's commit tags
+* Add KF_ACQUIRE and KF_RELEASE semantics
+
+Daniel Xu (7):
+  bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+  bpf: xfrm: Add bpf_xdp_xfrm_state_release() kfunc
+  bpf: selftests: test_tunnel: Use ping -6 over ping6
+  bpf: selftests: test_tunnel: Mount bpffs if necessary
+  bpf: selftests: test_tunnel: Use vmlinux.h declarations
+  bpf: selftests: test_tunnel: Disable CO-RE relocations
+  bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
+
+ include/net/xfrm.h                            |   9 ++
+ net/xfrm/Makefile                             |   1 +
+ net/xfrm/xfrm_policy.c                        |   2 +
+ net/xfrm/xfrm_state_bpf.c                     | 127 ++++++++++++++++++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+ .../selftests/bpf/progs/test_tunnel_kern.c    |  98 ++++++++------
+ tools/testing/selftests/bpf/test_tunnel.sh    |  43 ++++--
+ 7 files changed, 227 insertions(+), 54 deletions(-)
+ create mode 100644 net/xfrm/xfrm_state_bpf.c
+
+-- 
+2.42.1
+
 
