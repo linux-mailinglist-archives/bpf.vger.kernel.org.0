@@ -1,224 +1,143 @@
-Return-Path: <bpf+bounces-15696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E084C7F4FEF
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 19:51:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B4207F5010
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 19:59:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88C0128147E
-	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:51:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CC4E1C20AB5
+	for <lists+bpf@lfdr.de>; Wed, 22 Nov 2023 18:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC1055760;
-	Wed, 22 Nov 2023 18:51:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 299A05C8E1;
+	Wed, 22 Nov 2023 18:59:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ggHxEcC+"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Ps7gMGLY"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [IPv6:2001:41d0:203:375::b9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41E792
-	for <bpf@vger.kernel.org>; Wed, 22 Nov 2023 10:51:28 -0800 (PST)
-Message-ID: <82e99ae6-be6e-494b-abac-040eaa89ecf7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700679087;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KDxdhvxEYEzhvYXgI84jgZbxDD65vMIxB2OQsJBitpc=;
-	b=ggHxEcC+wO5CJYLFnpe92P54LLpTt+fQ5iN2nJ9tJkZy9Mc/KjKosh+oGyckpJgu4BN80C
-	gWAxqH3yWXrrwKDnW4DXx1SFgxiLA0fyDyLCYhl9XTP5eZbH/svKF+DupKS1E5djAFnAnb
-	7YDaPzafe9GTy3afZyxJV1yWF0U4T04=
-Date: Wed, 22 Nov 2023 10:51:20 -0800
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F193510C3;
+	Wed, 22 Nov 2023 10:57:28 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 8C408120059;
+	Wed, 22 Nov 2023 21:57:27 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8C408120059
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1700679447;
+	bh=5pEAGVMHc8CTrD7GrkHh/WKsgucxfvk3kjp7oHifpy8=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=Ps7gMGLYUda/9sTqLehU9RfZaHRhwpKP074r5tSVuqiqu5M3p5IygHC5alGBu98kM
+	 1UPJIXL6zr7Hjbw+Mi4UMM25mrRoIVf6OiumGiyk/6wAoxfjvvJUh+gUbmVTXsW7uh
+	 inw145BYrR7+QxUmOYJzPLt3kpVS3Zi6FjBRJBsrzGuXSE5fIENCODJ8jPj/T9R3/b
+	 MKJ1YJKZ0LHfGWQVMTMrb6qjhro3y5odZILgATUmslcgzs4TW/kH/JUoyovIwZOTXe
+	 WppijZA4S7wLB7Ed8AocJXmY+HEXOceK+odJhx8ScX5FspCF8l+pdh6yCsRBFTXZOx
+	 C6zzgmO2L9QBw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed, 22 Nov 2023 21:57:27 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 22 Nov
+ 2023 21:57:27 +0300
+Date: Wed, 22 Nov 2023 21:57:27 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Michal Hocko <mhocko@suse.com>
+CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+	<roman.gushchin@linux.dev>, <shakeelb@google.com>, <muchun.song@linux.dev>,
+	<akpm@linux-foundation.org>, <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+	<cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231122185727.vcfg56d7sekdfhnm@CAB-WSD-L081021>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-3-ddrokosov@salutedevices.com>
+ <ZV3WnIJMzxT-Zkt4@tiehlicka>
+ <20231122105836.xhlgbwmwjdwd3g5v@CAB-WSD-L081021>
+ <ZV4BK0wbUAZBIhmA@tiehlicka>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] C inlined assembly for reproducing max<min
-Content-Language: en-GB
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eddy Z <eddyz87@gmail.com>, Tao Lyu <tao.lyu@epfl.ch>,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Hao Luo <haoluo@google.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- mathias.payer@nebelwelt.net, meng.xu.cs@uwaterloo.ca,
- sanidhya.kashyap@epfl.ch, Song Liu <song@kernel.org>
-References: <d3a518de-ada3-45e8-be3e-df942c2208b5@linux.dev>
- <20231122144018.4047232-1-tao.lyu@epfl.ch>
- <2e8a1584-a289-4b2e-800c-8b463e734bcb@linux.dev>
- <CAADnVQJqmpSoABqd-dCQBU2ExiPda1mHz2pKHv2jzpSMYFMeqQ@mail.gmail.com>
- <874jhdk51j.fsf@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <874jhdk51j.fsf@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZV4BK0wbUAZBIhmA@tiehlicka>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181545 [Nov 22 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/22 11:24:00 #22501433
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+On Wed, Nov 22, 2023 at 02:24:59PM +0100, Michal Hocko wrote:
+> On Wed 22-11-23 13:58:36, Dmitry Rokosov wrote:
+> > Hello Michal,
+> > 
+> > Thank you for the quick review!
+> > 
+> > On Wed, Nov 22, 2023 at 11:23:24AM +0100, Michal Hocko wrote:
+> > > On Wed 22-11-23 13:01:56, Dmitry Rokosov wrote:
+> > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > > > Currently, it is not possible to trace this point from non-direct
+> > > > reclaim paths.
+> > > 
+> > > Is this really true? AFAICS we have
+> > > mm_vmscan_lru_isolate
+> > > mm_vmscan_lru_shrink_active
+> > > mm_vmscan_lru_shrink_inactive
+> > > 
+> > > which are in the vry core of the memory reclaim. Sure post processing
+> > > those is some work.
+> > 
+> > Sure, you are absolutely right. In the usual scenario, the memcg
+> > shrinker utilizes two sub-shrinkers: slab and LRU. We can enable the
+> > tracepoints you mentioned and analyze them. However, there is one
+> > potential issue. Enabling these tracepoints will trigger the reclaim
+> > events show for all pages. Although we can filter them per pid, we
+> > cannot filter them per cgroup. Nevertheless, there are times when it
+> > would be extremely beneficial to comprehend the effectiveness of the
+> > reclaim process within the relevant cgroup. For this reason, I am adding
+> > the cgroup name to the memcg tracepoints and implementing a cumulative
+> > tracepoint for memcg shrink (LRU + slab)."
+> 
+> I can see how printing memcg in mm_vmscan_memcg_reclaim_begin makes it
+> easier to postprocess per memcg reclaim. But you could do that just by
+> adding that to mm_vmscan_memcg_reclaim_{begin, end}, no? Why exactly
+> does this matter for kswapd and other global reclaim contexts? 
 
-On 11/22/23 1:37 PM, Jose E. Marchesi wrote:
->> On Wed, Nov 22, 2023 at 10:08 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>>> +SEC("?tc")
->>>> +__log_level(2)
->>>> +int test_verifier_range(void)
->>>> +{
->>>> +    asm volatile (
->>>> +        "r5 = 100; \
->>>> +        r5 /= 3; \
->>>> +        w5 >>= 7; \
->>>> +        r5 &= -386969681; \
->>>> +        r5 -= -884670597; \
->>>> +        w0 = w5; \
->>>> +        if w0 & 0x894b6a55 goto +2; \
->>> So actually it is 'if w0 & 0x894b6a55 goto +2' failed
->>> the compilation.
->>>
->>> Indeed, the above operation is not supported in llvm.
->>> See
->>>     https://github.com/llvm/llvm-project/blob/main/llvm/lib/Target/BPF/BPFInstrFormats.td#L62-L74
->>> the missing BPFJumpOp<0x4> which corresponds to JSET.
->>>
->>> The following llvm patch (on top of llvm-project main branch):
->>>
->>> diff --git a/llvm/lib/Target/BPF/BPFInstrFormats.td b/llvm/lib/Target/BPF/BPFInstrFormats.td
->>> index 841d97efc01c..6ed83d877ac0 100644
->>> --- a/llvm/lib/Target/BPF/BPFInstrFormats.td
->>> +++ b/llvm/lib/Target/BPF/BPFInstrFormats.td
->>> @@ -63,6 +63,7 @@ def BPF_JA   : BPFJumpOp<0x0>;
->>>    def BPF_JEQ  : BPFJumpOp<0x1>;
->>>    def BPF_JGT  : BPFJumpOp<0x2>;
->>>    def BPF_JGE  : BPFJumpOp<0x3>;
->>> +def BPF_JSET : BPFJumpOp<0x4>;
->>>    def BPF_JNE  : BPFJumpOp<0x5>;
->>>    def BPF_JSGT : BPFJumpOp<0x6>;
->>>    def BPF_JSGE : BPFJumpOp<0x7>;
->>> diff --git a/llvm/lib/Target/BPF/BPFInstrInfo.td b/llvm/lib/Target/BPF/BPFInstrInfo.td
->>> index 305cbbd34d27..9e75f35efe70 100644
->>> --- a/llvm/lib/Target/BPF/BPFInstrInfo.td
->>> +++ b/llvm/lib/Target/BPF/BPFInstrInfo.td
->>> @@ -246,6 +246,70 @@ class JMP_RI_32<BPFJumpOp Opc, string OpcodeStr, PatLeaf Cond>
->>>      let BPFClass = BPF_JMP32;
->>>    }
->>>
->>> +class JSET_RR<string OpcodeStr>
->>> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_X.Value,
->>> +                   (outs),
->>> +                   (ins GPR:$dst, GPR:$src, brtarget:$BrDst),
->>> +                   "if $dst "#OpcodeStr#" $src goto $BrDst",
->>> +                   []> {
->>> +  bits<4> dst;
->>> +  bits<4> src;
->>> +  bits<16> BrDst;
->>> +
->>> +  let Inst{55-52} = src;
->>> +  let Inst{51-48} = dst;
->>> +  let Inst{47-32} = BrDst;
->>> +  let BPFClass = BPF_JMP;
->>> +}
->>> +
->>> +class JSET_RI<string OpcodeStr>
->>> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_K.Value,
->>> +                   (outs),
->>> +                   (ins GPR:$dst, i64imm:$imm, brtarget:$BrDst),
->>> +                   "if $dst "#OpcodeStr#" $imm goto $BrDst",
->>> +                   []> {
->>> +  bits<4> dst;
->>> +  bits<16> BrDst;
->>> +  bits<32> imm;
->>> +
->>> +  let Inst{51-48} = dst;
->>> +  let Inst{47-32} = BrDst;
->>> +  let Inst{31-0} = imm;
->>> +  let BPFClass = BPF_JMP;
->>> +}
->>> +
->>> +class JSET_RR_32<string OpcodeStr>
->>> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_X.Value,
->>> +                   (outs),
->>> +                   (ins GPR32:$dst, GPR32:$src, brtarget:$BrDst),
->>> +                   "if $dst "#OpcodeStr#" $src goto $BrDst",
->>> +                   []> {
->>> +  bits<4> dst;
->>> +  bits<4> src;
->>> +  bits<16> BrDst;
->>> +
->>> +  let Inst{55-52} = src;
->>> +  let Inst{51-48} = dst;
->>> +  let Inst{47-32} = BrDst;
->>> +  let BPFClass = BPF_JMP32;
->>> +}
->>> +
->>> +class JSET_RI_32<string OpcodeStr>
->>> +    : TYPE_ALU_JMP<BPF_JSET.Value, BPF_K.Value,
->>> +                   (outs),
->>> +                   (ins GPR32:$dst, i32imm:$imm, brtarget:$BrDst),
->>> +                   "if $dst "#OpcodeStr#" $imm goto $BrDst",
->>> +                   []> {
->>> +  bits<4> dst;
->>> +  bits<16> BrDst;
->>> +  bits<32> imm;
->>> +
->>> +  let Inst{51-48} = dst;
->>> +  let Inst{47-32} = BrDst;
->>> +  let Inst{31-0} = imm;
->>> +  let BPFClass = BPF_JMP32;
->>> +}
->>> +
->>>    multiclass J<BPFJumpOp Opc, string OpcodeStr, PatLeaf Cond, PatLeaf Cond32> {
->>>      def _rr : JMP_RR<Opc, OpcodeStr, Cond>;
->>>      def _ri : JMP_RI<Opc, OpcodeStr, Cond>;
->>> @@ -265,6 +329,10 @@ defm JULT : J<BPF_JLT, "<", BPF_CC_LTU, BPF_CC_LTU_32>;
->>>    defm JULE : J<BPF_JLE, "<=", BPF_CC_LEU, BPF_CC_LEU_32>;
->>>    defm JSLT : J<BPF_JSLT, "s<", BPF_CC_LT, BPF_CC_LT_32>;
->>>    defm JSLE : J<BPF_JSLE, "s<=", BPF_CC_LE, BPF_CC_LE_32>;
->>> +def JSET_RR    : JSET_RR<"&">;
->>> +def JSET_RI    : JSET_RI<"&">;
->>> +def JSET_RR_32 : JSET_RR_32<"&">;
->>> +def JSET_RI_32 : JSET_RI_32<"&">;
->>>    }
->>>
->>>    // ALU instructions
->>>
->>> can solve your inline asm issue. We will discuss whether llvm compiler
->>> should be implementing this instruction from source or not.
->> I'd say 'yes'. clang/llvm should support such asm syntax.
->>
->> Jose, Eduard,
->> Thoughts?
-> We already support it in GAS:
->
->
->    $ echo 'if w0 & 0x894b6a55 goto +2' | bpf-unknown-none-as -mdialect=pseudoc -
->    $ bpf-unknown-none-objdump -M hex,pseudoc -d a.out
->    
->    a.out:     file format elf64-bpfle
->    
->    
->    Disassembly of section .text:
->    
->    0000000000000000 <.text>:
->       0:	46 00 02 00 55 6a 4b 89 	if w0&0x894b6a55 goto 0x2
->
->
-> We weren't aware we were diverging with llvm by doing so.  We support
-> syntax for all the conditional jump instructions using the following
-> operators:
->
->    BPF_JEQ    ==
->    BPF_JGT    >
->    BPF_JSGT   s>
->    BPF_JGE    >=
->    BPF_JSGE   s>=
->    BPF_JLT    <
->    BPF_JLST   s<
->    BPF_JLE    <=
->    BPF_JSLE   s<=
->    BPF_JSET   &
->    BPF_JNE    !=
+From my point of view, kswapd and other non-direct reclaim paths are
+important for memcg analysis because they also influence the memcg
+reclaim statistics.
 
-Sounds good. Eduard inthe other thread has similar opinion. Will add asm support in llvm soon.
+The tracepoint mm_vmscan_memcg_reclaim_{begin, end} is called from the
+direct memcg reclaim flow, such as:
+    - a direct write to the 'reclaim' node
+    - changing 'max' and 'high' thresholds
+    - raising the 'force_empty' mechanism
+    - the charge path
+    - etc.
 
+However, it doesn't cover global reclaim contexts, so it doesn't provide
+us with the full memcg reclaim statistics.
+
+-- 
+Thank you,
+Dmitry
 
