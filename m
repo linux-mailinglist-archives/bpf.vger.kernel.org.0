@@ -1,125 +1,111 @@
-Return-Path: <bpf+bounces-15768-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15769-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DB827F662C
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 19:26:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED4C77F66AE
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 19:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0363281BEA
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 18:26:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2299B212B0
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 18:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E9E4B5DC;
-	Thu, 23 Nov 2023 18:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9643FB28;
+	Thu, 23 Nov 2023 18:53:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JbRLAr7n"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ebv3spVE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F5FD8
-	for <bpf@vger.kernel.org>; Thu, 23 Nov 2023 10:26:40 -0800 (PST)
-Message-ID: <a6f81e2d-6f6c-422b-a099-272d54efb4f1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700763999;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tZUnjWqk6NKYtBERPPkwJtgxetNdeWam1kLrDUIAcaM=;
-	b=JbRLAr7nnY+B/sPitFvJwvGnbFWUFZfrVmw/6xeC8AI/Y3dwQO/B/9OQL5czAqXt1Yxa3Q
-	hZbn6XWbgCwdSjXUT5pdgFVAMmWU5rFiRoUBiw9RdGUp02gVxgzIPojQxYBxxxB71a7lF/
-	w5Q6RFikp063lMIhuOyMTmNHnAwOqnw=
-Date: Thu, 23 Nov 2023 10:26:30 -0800
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91E624A10;
+	Thu, 23 Nov 2023 18:53:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16118C433CA;
+	Thu, 23 Nov 2023 18:53:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700765588;
+	bh=Y0PegqXIQ7kcn/YOYMXsf/jpB5XlhL7JeuQ0uTx82eQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Ebv3spVE6vu1eBUphjcxy5N5+pwIFjshAp8CW9gpkSZJ5LhLDVtXTCCh64ZfSjwd9
+	 jMIZFnD4sXryqZ02RfjwFfanRq2if+MWG0Z45C8nFn7ZQncB0AUhctKt9T+IR7XHqa
+	 0CKXLjW0Rs16Cw9NOz4E2EnU6Vjg3UyyKQZmM0ylz+2ob06qJnzN31W4bAJWDPn3Bm
+	 IrKq9hpsGTeGmVdCzE3XpPF5dWgVFPkIoTNSbMjmv6nC5xNUZYpiPd/CUA+eIFa/3A
+	 VgHImhSpudi3FOLH4GKbTYHth3H9cs9lX+x2lKWy270jnxZN72H1b2T9+sHudUWaG8
+	 aY3cijmN+ABHA==
+Date: Thu, 23 Nov 2023 10:53:05 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Edward Cree <ecree.xilinx@gmail.com>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
+ Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+ deb.chatterjee@intel.com, anjali.singhai@intel.com, Vipin.Jain@amd.com,
+ namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com,
+ Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com,
+ xiyou.wangcong@gmail.com, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org,
+ bpf@vger.kernel.org, khalidm@nvidia.com, toke@redhat.com,
+ mattyk@nvidia.com, dan.daly@intel.com, chris.sommers@keysight.com,
+ john.andy.fingerhut@intel.com
+Subject: Re: [PATCH net-next v8 00/15] Introducing P4TC
+Message-ID: <20231123105305.7edeab94@kernel.org>
+In-Reply-To: <0d1d37f9-1ef1-4622-409e-a976c8061a41@gmail.com>
+References: <ZV3JJQirPdZpbVIC@nanopsycho>
+	<CAM0EoM=R1H1iGQDZs3m7tY7f++VWzPegvSdt=MfN0wvFXdT+Mg@mail.gmail.com>
+	<ZV5I/F+b5fu58Rlg@nanopsycho>
+	<CAM0EoM=RR6kcdHsGhFNUeDc96rSDa8S7SP7GQOeXrZBN_P7jtQ@mail.gmail.com>
+	<ZV7y9JG0d4id8GeG@nanopsycho>
+	<CAM0EoMkOvEnPmw=0qye9gWAqgbZjaTYZhiho=qmG1x4WiQxkxA@mail.gmail.com>
+	<ZV9U+zsMM5YqL8Cx@nanopsycho>
+	<CAM0EoMnFB0hgcVFj3=QN4114HiQy46uvYJKqa7=p2VqJTwqBsg@mail.gmail.com>
+	<ZV9csgFAurzm+j3/@nanopsycho>
+	<CAM0EoMkgD10dFvgtueDn7wjJTFTQX6_mkA4Kwr04Dnwp+S-u-A@mail.gmail.com>
+	<ZV9vfYy42G0Fk6m4@nanopsycho>
+	<CAM0EoMkC6+hJ0fb9zCU8bcKDjpnz5M0kbKZ=4GGAMmXH4_W8rg@mail.gmail.com>
+	<0d1d37f9-1ef1-4622-409e-a976c8061a41@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCHv3 bpf-next 3/6] bpf: Add link_info support for uprobe
- multi link
-Content-Language: en-GB
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
- Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Yafang Shao <laoar.shao@gmail.com>
-References: <20231120145639.3179656-1-jolsa@kernel.org>
- <20231120145639.3179656-4-jolsa@kernel.org>
- <70c4f23e-7de2-4373-a5f3-a6ef0ed31ef7@linux.dev> <ZV53jlOMcLu3dRVt@krava>
- <ZV8ZR0UD8A7tJiil@krava>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ZV8ZR0UD8A7tJiil@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
+On Thu, 23 Nov 2023 17:53:42 +0000 Edward Cree wrote:
+> The kernel doesn't like to trust offload blobs from a userspace compiler,
+>  because it has no way to be sure that what comes out of the compiler
+>  matches the rules/tables/whatever it has in the SW datapath.
+> It's also a support nightmare because it's basically like each user
+>  compiling their own device firmware.  
 
-On 11/23/23 4:20 AM, Jiri Olsa wrote:
-> On Wed, Nov 22, 2023 at 10:50:06PM +0100, Jiri Olsa wrote:
->> On Mon, Nov 20, 2023 at 10:04:16AM -0800, Yonghong Song wrote:
->>
->> SNIP
->>
->>>> +static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
->>>> +						struct bpf_link_info *info)
->>>> +{
->>>> +	u64 __user *uref_ctr_offsets = u64_to_user_ptr(info->uprobe_multi.ref_ctr_offsets);
->>>> +	u64 __user *ucookies = u64_to_user_ptr(info->uprobe_multi.cookies);
->>>> +	u64 __user *uoffsets = u64_to_user_ptr(info->uprobe_multi.offsets);
->>>> +	u64 __user *upath = u64_to_user_ptr(info->uprobe_multi.path);
->>>> +	u32 upath_size = info->uprobe_multi.path_size;
->>>> +	struct bpf_uprobe_multi_link *umulti_link;
->>>> +	u32 ucount = info->uprobe_multi.count;
->>>> +	int err = 0, i;
->>>> +	long left;
->>>> +
->>>> +	if (!upath ^ !upath_size)
->>>> +		return -EINVAL;
->>>> +
->>>> +	if ((uoffsets || uref_ctr_offsets || ucookies) && !ucount)
->>>> +		return -EINVAL;
->>>> +
->>>> +	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
->>>> +	info->uprobe_multi.count = umulti_link->cnt;
->>>> +	info->uprobe_multi.flags = umulti_link->flags;
->>>> +	info->uprobe_multi.pid = umulti_link->task ?
->>>> +				 task_pid_nr_ns(umulti_link->task, task_active_pid_ns(current)) : 0;
->>>> +
->>>> +	if (upath) {
->>>> +		char *p, *buf;
->>>> +
->>>> +		upath_size = min_t(u32, upath_size, PATH_MAX);
->>>> +
->>>> +		buf = kmalloc(upath_size, GFP_KERNEL);
->>>> +		if (!buf)
->>>> +			return -ENOMEM;
->>>> +		p = d_path(&umulti_link->path, buf, upath_size);
->>>> +		if (IS_ERR(p)) {
->>>> +			kfree(buf);
->>>> +			return -ENOSPC;
->>> Should we just return PTR_ERR(p)? In d_path, it is possible that
->>> -ENAMETOOLONG is returned. But path->dentry->d_op->d_dname() might
->>> return a different error reason than  -ENAMETOOLONG or -ENOSPC?
->> true, will change
->>
->>>> +		}
->>>> +		upath_size = buf + upath_size - p;
->>>> +		left = copy_to_user(upath, p, upath_size);
->>> Here, the data copied to user may contain more than
->>> actual path itself. I am okay with this since this
->>> is not in critical path. But early buf allocation is using
->>> kmalloc whose content could be arbitrary. Should we
->>> use kzalloc for the above 'buf' allocation?
->> good catch, will use kzalloc
-> hum, actually.. after checking d_path IIUC it copies into the end of buffer,
-> so I can't see this code copying more data to user buffer
+Practically speaking every high speed NIC runs a huge binary blob of FW.
+First, let's acknowledge that as reality.
 
-Double checked as well. Indeed, the path is copied to the end of buffer,
-so kmalloc() should be okay. Sorry for noise.
+Second, there is no equivalent for arbitrary packet parsing in the
+kernel proper. Offload means take something form the host and put it
+on the device. If there's nothing in the kernel, we can't consider
+the new functionality an offload.
 
+I understand that "we offload SW functionality" is our general policy,
+but we should remember why this policy is in place, and not
+automatically jump to the conclusion.
+
+>  At least normally with device firmware the driver side is talking to
+>  something with narrow/fixed semantics and went through upstream
+>  review, even if the firmware side is still a black box.
+
+We should be buildings things which are useful and open (as in
+extensible by people "from the street"). With that in mind, to me,
+a more practical approach would be to try to figure out a common
+and rigid FW interface for expressing the parsing graph.
+
+But that's an interface going from the binary blob to the kernel.
+
+> Just to prove I'm not playing favourites: this is *also* a problem with
+>  eBPF offloads like Nanotubes, and I'm not convinced we have a viable
+>  solution yet.
+
+BPF offloads are actual offloads. Config/state is in the kernel,
+you need to pop it out to user space, then prove that it's what
+user intended.
 
