@@ -1,131 +1,125 @@
-Return-Path: <bpf+bounces-15767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F3A7F6600
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 19:09:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DB827F662C
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 19:26:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42BA4B21269
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 18:09:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0363281BEA
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 18:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D6EC4B5D2;
-	Thu, 23 Nov 2023 18:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E9E4B5DC;
+	Thu, 23 Nov 2023 18:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="iA0GdCRf"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JbRLAr7n"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5130DD47
-	for <bpf@vger.kernel.org>; Thu, 23 Nov 2023 10:09:27 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a00f67f120aso149755566b.2
-        for <bpf@vger.kernel.org>; Thu, 23 Nov 2023 10:09:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1700762966; x=1701367766; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8PoS77Z9JkureBJlYC2LtoCnhbJ8qY8D9dKa58I6fkU=;
-        b=iA0GdCRfJFYqzTlVkaXyHqzuwPpc1SPfWLuWsxOqbnL0CHCrS6N2XEV3RbqV2NCcLq
-         2Yc32VGqt0ldVeT4bcDT2udkj7IlLBq1p3MfxJ/M5NGb4yMCjIkxEfP497OLqtSnTvYa
-         J3U3BUxOhscjhSCWmbiangCzcSvtW71w/VS6sRFPnpuiYsINgjmlSAhKoFsL0BP0wy8/
-         KsPsMne5ReKpST4gHKaw1vv4vQZq5AbTh/JDZhdprEOOZiBxXc2VhHfhmpWtSaB7jSLl
-         7cJkFDneRjchgh1GVTLNzujIu95kxhMpBcoVxEVHU2P20AtOEh3u6pM+U2OuK5DMEtH2
-         mUBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700762966; x=1701367766;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8PoS77Z9JkureBJlYC2LtoCnhbJ8qY8D9dKa58I6fkU=;
-        b=As4UdV6Ots6ByQo/Z8TNAdgO127qHvnkiRMx7CV9hKppJvFzWxqqzEWHsG0wCGLXMU
-         VdGHG1G8kUchi/rs3Xy6cWdmLvNu7gEHCRFMkIXqco7Krs2Zfl1eWYREhXArdgMa9ihx
-         VyjzYm14GNal23ej9TXNTBaPvQk+OAEQPCocVykO0rphyGb7fM6GaBJmRYwkneu0tMdB
-         juBEacf06pFzMPradDm56JL06HygLQQf8spDNst6qXUD6VKMLXHeFLLj0Doi2SfWf3KI
-         nfnX6+09wJM1zTGBox32vZAXd8+W8HvqTNvHfagcMRZR/Q2H5NussfvNSIdzd4jNCeC5
-         TX8w==
-X-Gm-Message-State: AOJu0YxYcPhHmAfgAIu4WUw5ZRFpZZkpX58PkekbHn/l3FpfRC+msHCx
-	PfxipK0H4mwO3J69ZjxhIKObHQ==
-X-Google-Smtp-Source: AGHT+IH61IjcX0UIbXIDTesrdOX1OBc5ieaVpkan88YfWHSIBhoczFnyaS1L4mnG3NFfjlvUNKCLCw==
-X-Received: by 2002:a17:906:590e:b0:a04:837e:a955 with SMTP id h14-20020a170906590e00b00a04837ea955mr83581ejq.32.1700762965683;
-        Thu, 23 Nov 2023 10:09:25 -0800 (PST)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id ck16-20020a170906c45000b00a0029289961sm1055139ejb.190.2023.11.23.10.09.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Nov 2023 10:09:25 -0800 (PST)
-Date: Thu, 23 Nov 2023 19:09:24 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Edward Cree <ecree.xilinx@gmail.com>
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	deb.chatterjee@intel.com, anjali.singhai@intel.com,
-	Vipin.Jain@amd.com, namrata.limaye@intel.com, tom@sipanda.io,
-	mleitner@redhat.com, Mahesh.Shirshyad@amd.com,
-	tomasz.osinski@intel.com, xiyou.wangcong@gmail.com,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org,
-	bpf@vger.kernel.org, khalidm@nvidia.com, toke@redhat.com,
-	mattyk@nvidia.com, dan.daly@intel.com, chris.sommers@keysight.com,
-	john.andy.fingerhut@intel.com
-Subject: Re: [PATCH net-next v8 00/15] Introducing P4TC
-Message-ID: <ZV+VVLWzL/j4ayAt@nanopsycho>
-References: <CAM0EoM=RR6kcdHsGhFNUeDc96rSDa8S7SP7GQOeXrZBN_P7jtQ@mail.gmail.com>
- <ZV7y9JG0d4id8GeG@nanopsycho>
- <CAM0EoMkOvEnPmw=0qye9gWAqgbZjaTYZhiho=qmG1x4WiQxkxA@mail.gmail.com>
- <ZV9U+zsMM5YqL8Cx@nanopsycho>
- <CAM0EoMnFB0hgcVFj3=QN4114HiQy46uvYJKqa7=p2VqJTwqBsg@mail.gmail.com>
- <ZV9csgFAurzm+j3/@nanopsycho>
- <CAM0EoMkgD10dFvgtueDn7wjJTFTQX6_mkA4Kwr04Dnwp+S-u-A@mail.gmail.com>
- <ZV9vfYy42G0Fk6m4@nanopsycho>
- <CAM0EoMkC6+hJ0fb9zCU8bcKDjpnz5M0kbKZ=4GGAMmXH4_W8rg@mail.gmail.com>
- <0d1d37f9-1ef1-4622-409e-a976c8061a41@gmail.com>
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F5FD8
+	for <bpf@vger.kernel.org>; Thu, 23 Nov 2023 10:26:40 -0800 (PST)
+Message-ID: <a6f81e2d-6f6c-422b-a099-272d54efb4f1@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700763999;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tZUnjWqk6NKYtBERPPkwJtgxetNdeWam1kLrDUIAcaM=;
+	b=JbRLAr7nnY+B/sPitFvJwvGnbFWUFZfrVmw/6xeC8AI/Y3dwQO/B/9OQL5czAqXt1Yxa3Q
+	hZbn6XWbgCwdSjXUT5pdgFVAMmWU5rFiRoUBiw9RdGUp02gVxgzIPojQxYBxxxB71a7lF/
+	w5Q6RFikp063lMIhuOyMTmNHnAwOqnw=
+Date: Thu, 23 Nov 2023 10:26:30 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d1d37f9-1ef1-4622-409e-a976c8061a41@gmail.com>
-
-Thu, Nov 23, 2023 at 06:53:42PM CET, ecree.xilinx@gmail.com wrote:
->On 23/11/2023 16:30, Jamal Hadi Salim wrote:
->> I was hoping not to say anything but my fingers couldnt help themselves:
->> So "unoffloadable" means there is a binary blob and this doesnt work
->> per your design idea of how it should work?
->> Not that it cant be implemented (clearly it has been implemented), it
->> is just not how _you_ would implement it? All along I thought this was
->> an issue with your hardware.
->
->The kernel doesn't like to trust offload blobs from a userspace compiler,
-> because it has no way to be sure that what comes out of the compiler
-> matches the rules/tables/whatever it has in the SW datapath.
->It's also a support nightmare because it's basically like each user
-> compiling their own device firmware.  At least normally with device
-> firmware the driver side is talking to something with narrow/fixed
-> semantics and went through upstream review, even if the firmware side is
-> still a black box.
->Just to prove I'm not playing favourites: this is *also* a problem with
-> eBPF offloads like Nanotubes, and I'm not convinced we have a viable
-> solution yet.
-
-Just for the record, I'm not aware of anyone suggesting p4 eBPF offload
-in this thread.
+Subject: Re: [PATCHv3 bpf-next 3/6] bpf: Add link_info support for uprobe
+ multi link
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+ Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Yafang Shao <laoar.shao@gmail.com>
+References: <20231120145639.3179656-1-jolsa@kernel.org>
+ <20231120145639.3179656-4-jolsa@kernel.org>
+ <70c4f23e-7de2-4373-a5f3-a6ef0ed31ef7@linux.dev> <ZV53jlOMcLu3dRVt@krava>
+ <ZV8ZR0UD8A7tJiil@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <ZV8ZR0UD8A7tJiil@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
->
->The only way I can see to handle it is something analogous to proof-
-> carrying code, where the kernel (driver, since the blob is likely to be
-> wholly vendor-specific) can inspect the binary blob and verify somehow
-> that (assuming the HW behaves according to its datasheet) it implements
-> the same thing that exists in SW.
->Or simplify the hardware design enough that the compiler can be small
-> and tight enough to live in-kernel, but that's often impossible.
+On 11/23/23 4:20 AM, Jiri Olsa wrote:
+> On Wed, Nov 22, 2023 at 10:50:06PM +0100, Jiri Olsa wrote:
+>> On Mon, Nov 20, 2023 at 10:04:16AM -0800, Yonghong Song wrote:
+>>
+>> SNIP
+>>
+>>>> +static int bpf_uprobe_multi_link_fill_link_info(const struct bpf_link *link,
+>>>> +						struct bpf_link_info *info)
+>>>> +{
+>>>> +	u64 __user *uref_ctr_offsets = u64_to_user_ptr(info->uprobe_multi.ref_ctr_offsets);
+>>>> +	u64 __user *ucookies = u64_to_user_ptr(info->uprobe_multi.cookies);
+>>>> +	u64 __user *uoffsets = u64_to_user_ptr(info->uprobe_multi.offsets);
+>>>> +	u64 __user *upath = u64_to_user_ptr(info->uprobe_multi.path);
+>>>> +	u32 upath_size = info->uprobe_multi.path_size;
+>>>> +	struct bpf_uprobe_multi_link *umulti_link;
+>>>> +	u32 ucount = info->uprobe_multi.count;
+>>>> +	int err = 0, i;
+>>>> +	long left;
+>>>> +
+>>>> +	if (!upath ^ !upath_size)
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	if ((uoffsets || uref_ctr_offsets || ucookies) && !ucount)
+>>>> +		return -EINVAL;
+>>>> +
+>>>> +	umulti_link = container_of(link, struct bpf_uprobe_multi_link, link);
+>>>> +	info->uprobe_multi.count = umulti_link->cnt;
+>>>> +	info->uprobe_multi.flags = umulti_link->flags;
+>>>> +	info->uprobe_multi.pid = umulti_link->task ?
+>>>> +				 task_pid_nr_ns(umulti_link->task, task_active_pid_ns(current)) : 0;
+>>>> +
+>>>> +	if (upath) {
+>>>> +		char *p, *buf;
+>>>> +
+>>>> +		upath_size = min_t(u32, upath_size, PATH_MAX);
+>>>> +
+>>>> +		buf = kmalloc(upath_size, GFP_KERNEL);
+>>>> +		if (!buf)
+>>>> +			return -ENOMEM;
+>>>> +		p = d_path(&umulti_link->path, buf, upath_size);
+>>>> +		if (IS_ERR(p)) {
+>>>> +			kfree(buf);
+>>>> +			return -ENOSPC;
+>>> Should we just return PTR_ERR(p)? In d_path, it is possible that
+>>> -ENAMETOOLONG is returned. But path->dentry->d_op->d_dname() might
+>>> return a different error reason than  -ENAMETOOLONG or -ENOSPC?
+>> true, will change
+>>
+>>>> +		}
+>>>> +		upath_size = buf + upath_size - p;
+>>>> +		left = copy_to_user(upath, p, upath_size);
+>>> Here, the data copied to user may contain more than
+>>> actual path itself. I am okay with this since this
+>>> is not in critical path. But early buf allocation is using
+>>> kmalloc whose content could be arbitrary. Should we
+>>> use kzalloc for the above 'buf' allocation?
+>> good catch, will use kzalloc
+> hum, actually.. after checking d_path IIUC it copies into the end of buffer,
+> so I can't see this code copying more data to user buffer
 
-Yeah, that would solve the offloading problem. From what I'm hearing
-from multiple sides, not going to happen.
+Double checked as well. Indeed, the path is copied to the end of buffer,
+so kmalloc() should be okay. Sorry for noise.
 
->
->-ed
 
