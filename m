@@ -1,763 +1,313 @@
-Return-Path: <bpf+bounces-15762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0067A7F63F5
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 17:31:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 539B37F6519
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 18:18:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B17C1F20F03
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 16:31:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76FAD1C20F64
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 17:18:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9C03FB28;
-	Thu, 23 Nov 2023 16:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCC03FE50;
+	Thu, 23 Nov 2023 17:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="3CXkpbGJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kwUAbNgT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859A310C9
-	for <bpf@vger.kernel.org>; Thu, 23 Nov 2023 08:31:11 -0800 (PST)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5cc642e4c69so10273107b3.0
-        for <bpf@vger.kernel.org>; Thu, 23 Nov 2023 08:31:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700757070; x=1701361870; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hLatdOc/sshvgvm0jcH2v+VMmVo5ZQ6EyS51x/UZrQg=;
-        b=3CXkpbGJMNJLG0xGT/PqPp5h+JaSozE122w7lQSu80m45WKmRe/z7BlDb+Kl4trrfL
-         yc+XxxEciqf1YlDuQ6ScEgNo/MeosLIYQvejuzalbxehRUTmDLrIde0zGd5gzC2nHIMQ
-         dT12kdkiozt1WktxaCBLtv6WK9v6WHkahG0uIQI6NayZv1qsie1dJru2UBAQiyoM02Zn
-         VVWdHPgoqDLt7sxf5sOPHYRx4HiqJWh+p61yrondcZybowfh7fTNvl8PWx2TwybBAnKn
-         PP8ujNoWzgfO/22v14xjWG91q21AkrWZpHi+n3qycSM8lxrzbN14UaCS3SxjfOgWx7ty
-         LvsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700757070; x=1701361870;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hLatdOc/sshvgvm0jcH2v+VMmVo5ZQ6EyS51x/UZrQg=;
-        b=EyI1s9K2jWWQMstkqZzcLcy0hA/ACYHWnyw95SJaQUCMadt+hvB12xW75qPq/icTb7
-         9AOpqtXVInHlyat+VUwK7xgxrKLkpGPfxhr3HB8IqwadcJmyCYM+7Z14IwZd9EJsU/HJ
-         Z33c4dl9WhNPnWruiKL7WCGCDvPRXOtGQTSLuIID3zCfy2TFdSF7s4c2rifwCWsufO51
-         9u2I7b0c/0gkyHAFUA/91Uy49ZZC408walFoWjYy3wQPQrcyWUKbjU6RfT4nbeY2EN+h
-         t8o7hPaD1ZGtAJzYg/SKuEDyVzYgyeVxJlG5fc9pfGsfcS++pwZ+EJ1smmb3GMCjHqbH
-         2VLg==
-X-Gm-Message-State: AOJu0Yyh3+h4bGkCuBf40sKrhZj5TDQsUffAy5McHIB1u90URvNbZ7tg
-	dYnL2FEBfSylzTOzkv//iF2/6ZjZk6oqRc/ufgsV2g==
-X-Google-Smtp-Source: AGHT+IHtkKd3DaUGTV+4mcoARdnCRBhV0uf/69XKROv3s5sG+1QOnRrWKnpjdN6qbHQH/tNnVsVjmRjAyQwLj1FnQ6I=
-X-Received: by 2002:a0d:e206:0:b0:5ca:275:a94d with SMTP id
- l6-20020a0de206000000b005ca0275a94dmr5912093ywe.12.1700757070503; Thu, 23 Nov
- 2023 08:31:10 -0800 (PST)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F87E3FE28;
+	Thu, 23 Nov 2023 17:18:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42A23C433CC;
+	Thu, 23 Nov 2023 17:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700759906;
+	bh=VjB3FlEP5mzJb2iOsvQ+sI6wD44eHxHZMbdOFnxC2YI=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kwUAbNgThF/7sGUCPWbFqIqoJMyEyEjA6Eb9UwPozhLiJ1bK5ER3+sfPl12gIHMn0
+	 uoTu82pZN3VZR65XPImX0WVLqlMusGFxQctu6U8RkNTtsTmxASwxPxJCLY7Jfeyy/f
+	 Vvn7L5QX0C0FiXjH53F+G0zhBJ92f4zk6Oa2Z4ka0L0Gle4ab0EhD7MppdRYjMnlm2
+	 jN2vJbHYqDDwyRk67N9//+ZnIVhTKeUHe5eKtg/76Uw+ajU9IpjRC0FnvdzxARWsOq
+	 nmwhT/HP39PpbBuw+YiDkn8+4SM/PPeqSuhrkrWUI82zJbOeUfoQMJWO9UxhCDzMcQ
+	 4h9HzOoMiY9lQ==
+From: Jakub Kicinski <kuba@kernel.org>
+To: torvalds@linux-foundation.org
+Cc: kuba@kernel.org,
+	davem@davemloft.net,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	pabeni@redhat.com,
+	bpf@vger.kernel.org
+Subject: [GIT PULL] Networking for v6.7-rc3
+Date: Thu, 23 Nov 2023 09:18:25 -0800
+Message-ID: <20231123171825.957077-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZV3JJQirPdZpbVIC@nanopsycho> <CAM0EoM=R1H1iGQDZs3m7tY7f++VWzPegvSdt=MfN0wvFXdT+Mg@mail.gmail.com>
- <ZV5I/F+b5fu58Rlg@nanopsycho> <CAM0EoM=RR6kcdHsGhFNUeDc96rSDa8S7SP7GQOeXrZBN_P7jtQ@mail.gmail.com>
- <ZV7y9JG0d4id8GeG@nanopsycho> <CAM0EoMkOvEnPmw=0qye9gWAqgbZjaTYZhiho=qmG1x4WiQxkxA@mail.gmail.com>
- <ZV9U+zsMM5YqL8Cx@nanopsycho> <CAM0EoMnFB0hgcVFj3=QN4114HiQy46uvYJKqa7=p2VqJTwqBsg@mail.gmail.com>
- <ZV9csgFAurzm+j3/@nanopsycho> <CAM0EoMkgD10dFvgtueDn7wjJTFTQX6_mkA4Kwr04Dnwp+S-u-A@mail.gmail.com>
- <ZV9vfYy42G0Fk6m4@nanopsycho>
-In-Reply-To: <ZV9vfYy42G0Fk6m4@nanopsycho>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Thu, 23 Nov 2023 11:30:58 -0500
-Message-ID: <CAM0EoMkC6+hJ0fb9zCU8bcKDjpnz5M0kbKZ=4GGAMmXH4_W8rg@mail.gmail.com>
-Subject: Re: [PATCH net-next v8 00/15] Introducing P4TC
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
-	Vipin.Jain@amd.com, namrata.limaye@intel.com, tom@sipanda.io, 
-	mleitner@redhat.com, Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com, 
-	xiyou.wangcong@gmail.com, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org, 
-	bpf@vger.kernel.org, khalidm@nvidia.com, toke@redhat.com, mattyk@nvidia.com, 
-	dan.daly@intel.com, chris.sommers@keysight.com, john.andy.fingerhut@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 23, 2023 at 10:28=E2=80=AFAM Jiri Pirko <jiri@resnulli.us> wrot=
-e:
->
-> Thu, Nov 23, 2023 at 03:28:07PM CET, jhs@mojatatu.com wrote:
-> >On Thu, Nov 23, 2023 at 9:07=E2=80=AFAM Jiri Pirko <jiri@resnulli.us> wr=
-ote:
-> >>
-> >> Thu, Nov 23, 2023 at 02:45:50PM CET, jhs@mojatatu.com wrote:
-> >> >On Thu, Nov 23, 2023 at 8:34=E2=80=AFAM Jiri Pirko <jiri@resnulli.us>=
- wrote:
-> >> >>
-> >> >> Thu, Nov 23, 2023 at 02:22:11PM CET, jhs@mojatatu.com wrote:
-> >> >> >On Thu, Nov 23, 2023 at 1:36=E2=80=AFAM Jiri Pirko <jiri@resnulli.=
-us> wrote:
-> >> >> >>
-> >> >> >> Wed, Nov 22, 2023 at 08:35:21PM CET, jhs@mojatatu.com wrote:
-> >> >> >> >On Wed, Nov 22, 2023 at 1:31=E2=80=AFPM Jiri Pirko <jiri@resnul=
-li.us> wrote:
-> >> >> >> >>
-> >> >> >> >> Wed, Nov 22, 2023 at 04:14:02PM CET, jhs@mojatatu.com wrote:
-> >> >> >> >> >On Wed, Nov 22, 2023 at 4:25=E2=80=AFAM Jiri Pirko <jiri@res=
-nulli.us> wrote:
-> >> >> >> >> >>
-> >> >> >> >> >> Tue, Nov 21, 2023 at 04:21:44PM CET, jhs@mojatatu.com wrot=
-e:
-> >> >> >> >> >> >On Tue, Nov 21, 2023 at 9:19=E2=80=AFAM Jiri Pirko <jiri@=
-resnulli.us> wrote:
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> Tue, Nov 21, 2023 at 02:47:40PM CET, jhs@mojatatu.com w=
-rote:
-> >> >> >> >> >> >> >On Tue, Nov 21, 2023 at 8:06=E2=80=AFAM Jiri Pirko <ji=
-ri@resnulli.us> wrote:
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> Mon, Nov 20, 2023 at 11:56:50PM CET, jhs@mojatatu.co=
-m wrote:
-> >> >> >> >> >> >> >> >On Mon, Nov 20, 2023 at 4:49=E2=80=AFPM Daniel Bork=
-mann <daniel@iogearbox.net> wrote:
-> >> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> >> On 11/20/23 8:56 PM, Jamal Hadi Salim wrote:
-> >> >> >> >> >> >> >> >> > On Mon, Nov 20, 2023 at 1:10=E2=80=AFPM Jiri Pi=
-rko <jiri@resnulli.us> wrote:
-> >> >> >> >> >> >> >> >> >> Mon, Nov 20, 2023 at 03:23:59PM CET, jhs@mojat=
-atu.com wrote:
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> [...]
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >> >> tc BPF and XDP already have widely used infrastru=
-cture and can be developed
-> >> >> >> >> >> >> >> >> against libbpf or other user space libraries for =
-a user space control plane.
-> >> >> >> >> >> >> >> >> With 'control plane' you refer here to the tc / n=
-etlink shim you've built,
-> >> >> >> >> >> >> >> >> but looking at the tc command line examples, this=
- doesn't really provide a
-> >> >> >> >> >> >> >> >> good user experience (you call it p4 but people l=
-oad bpf obj files). If the
-> >> >> >> >> >> >> >> >> expectation is that an operator should run tc com=
-mands, then neither it's
-> >> >> >> >> >> >> >> >> a nice experience for p4 nor for BPF folks. From =
-a BPF PoV, we moved over
-> >> >> >> >> >> >> >> >> to bpf_mprog and plan to also extend this for XDP=
- to have a common look and
-> >> >> >> >> >> >> >> >> feel wrt networking for developers. Why can't thi=
-s be reused?
-> >> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >> >The filter loading which loads the program is consi=
-dered pipeline
-> >> >> >> >> >> >> >> >instantiation - consider it as "provisioning" more =
-than "control"
-> >> >> >> >> >> >> >> >which runs at runtime. "control" is purely netlink =
-based. The iproute2
-> >> >> >> >> >> >> >> >code we use links libbpf for example for the filter=
-. If we can achieve
-> >> >> >> >> >> >> >> >the same with bpf_mprog then sure - we just dont wa=
-nt to loose
-> >> >> >> >> >> >> >> >functionality though.  off top of my head, some sam=
-ple space:
-> >> >> >> >> >> >> >> >- we could have multiple pipelines with different p=
-riorities (which tc
-> >> >> >> >> >> >> >> >provides to us) - and each pipeline may have its ow=
-n logic with many
-> >> >> >> >> >> >> >> >tables etc (and the choice to iterate the next one =
-is essentially
-> >> >> >> >> >> >> >> >encoded in the tc action codes)
-> >> >> >> >> >> >> >> >- we use tc block to map groups of ports (which i d=
-ont think bpf has
-> >> >> >> >> >> >> >> >internal access of)
-> >> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >> >In regards to usability: no i dont expect someone d=
-oing things at
-> >> >> >> >> >> >> >> >scale to use command line tc. The APIs are via netl=
-ink. But the tc cli
-> >> >> >> >> >> >> >> >is must for the rest of the masses per our traditio=
-ns. Also i really
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> I don't follow. You repeatedly mention "the must of =
-the traditional tc
-> >> >> >> >> >> >> >> cli", but what of the existing traditional cli you u=
-se for p4tc?
-> >> >> >> >> >> >> >> If I look at the examples, pretty much everything lo=
-oks new to me.
-> >> >> >> >> >> >> >> Example:
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >>   tc p4ctrl create myprog/table/mytable dstAddr 10.0=
-.1.2/32 \
-> >> >> >> >> >> >> >>     action send_to_port param port eno1
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> This is just TC/RTnetlink used as a channel to pass =
-new things over. If
-> >> >> >> >> >> >> >> that is the case, what's traditional here?
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >What is not traditional about it?
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> Okay, so in that case, the following example communitat=
-ing with
-> >> >> >> >> >> >> userspace deamon using imaginary "p4ctrl" app is equall=
-y traditional:
-> >> >> >> >> >> >>   $ p4ctrl create myprog/table/mytable dstAddr 10.0.1.2=
-/32 \
-> >> >> >> >> >> >>      action send_to_port param port eno1
-> >> >> >> >> >> >
-> >> >> >> >> >> >Huh? Thats just an application - classical tc which part =
-of iproute2
-> >> >> >> >> >> >that is sending to the kernel, no different than "tc flow=
-er.."
-> >> >> >> >> >> >Where do you get the "userspace" daemon part? Yes, you ca=
-n write a
-> >> >> >> >> >> >daemon but it will use the same APIs as tc.
-> >> >> >> >> >>
-> >> >> >> >> >> Okay, so which part is the "tradition"?
-> >> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >Provides tooling via tc cli that _everyone_ in the tc world =
-is
-> >> >> >> >> >familiar with - which uses the same syntax as other tc exten=
-sions do,
-> >> >> >> >> >same expectations (eg events, request responses, familiar co=
-mmands for
-> >> >> >> >> >dumping, flushing etc). Basically someone familiar with tc w=
-ill pick
-> >> >> >> >> >this up and operate it very quickly and would have an easier=
- time
-> >> >> >> >> >debugging it.
-> >> >> >> >> >There are caveats - as will be with all new classifiers - bu=
-t those
-> >> >> >> >> >are within reason.
-> >> >> >> >>
-> >> >> >> >> Okay, so syntax familiarity wise, what's the difference betwe=
-en
-> >> >> >> >> following 2 approaches:
-> >> >> >> >> $ tc p4ctrl create myprog/table/mytable dstAddr 10.0.1.2/32 \
-> >> >> >> >>       action send_to_port param port eno1
-> >> >> >> >> $ p4ctrl create myprog/table/mytable dstAddr 10.0.1.2/32 \
-> >> >> >> >>       action send_to_port param port eno1
-> >> >> >> >> ?
-> >> >> >> >>
-> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> >didnt even want to use ebpf at all for operator exp=
-erience reasons -
-> >> >> >> >> >> >> >> >it requires a compilation of the code and an extra =
-loading compared to
-> >> >> >> >> >> >> >> >what our original u32/pedit code offered.
-> >> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >> >> I don't quite follow why not most of this could b=
-e implemented entirely in
-> >> >> >> >> >> >> >> >> user space without the detour of this and you wou=
-ld provide a developer
-> >> >> >> >> >> >> >> >> library which could then be integrated into a p4 =
-runtime/frontend? This
-> >> >> >> >> >> >> >> >> way users never interface with ebpf parts nor tc =
-given they also shouldn't
-> >> >> >> >> >> >> >> >> have to - it's an implementation detail. This is =
-what John was also pointing
-> >> >> >> >> >> >> >> >> out earlier.
-> >> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >> >Netlink is the API. We will provide a library for o=
-bject manipulation
-> >> >> >> >> >> >> >> >which abstracts away the need to know netlink. Some=
-one who for their
-> >> >> >> >> >> >> >> >own reasons wants to use p4runtime or TDI could wri=
-te on top of this.
-> >> >> >> >> >> >> >> >I would not design a kernel interface to just meet =
-p4runtime (we
-> >> >> >> >> >> >> >> >already have TDI which came later which does things=
- differently). So i
-> >> >> >> >> >> >> >> >expect us to support both those two. And if i was t=
-o do something on
-> >> >> >> >> >> >> >> >SDN that was more robust i would write my own that =
-still uses these
-> >> >> >> >> >> >> >> >netlink interfaces.
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> Actually, what Daniel says about the p4 library used=
- as a backend to p4
-> >> >> >> >> >> >> >> frontend is pretty much aligned what I claimed on th=
-e p4 calls couple of
-> >> >> >> >> >> >> >> times. If you have this p4 userspace tooling, it is =
-easy for offloads to
-> >> >> >> >> >> >> >> replace the backed by vendor-specific library which =
-allows p4 offload
-> >> >> >> >> >> >> >> suitable for all vendors (your plan of p4tc offload =
-does not work well
-> >> >> >> >> >> >> >> for our hw, as we repeatedly claimed).
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >That's you - NVIDIA. You have chosen a path away from =
-the kernel
-> >> >> >> >> >> >> >towards DOCA. I understand NVIDIA's frustration with d=
-ealing with
-> >> >> >> >> >> >> >upstream process (which has been cited to me as a good=
- reason for
-> >> >> >> >> >> >> >DOCA) but please dont impose these values and your pol=
-itics on other
-> >> >> >> >> >> >> >vendors(Intel, AMD for example) who are more than will=
-ing to invest
-> >> >> >> >> >> >> >into making the kernel interfaces the path forward. Yo=
-ur choice.
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> No, you are missing the point. This has nothing to do w=
-ith DOCA.
-> >> >> >> >> >> >
-> >> >> >> >> >> >Right Jiri ;->
-> >> >> >> >> >> >
-> >> >> >> >> >> >> This
-> >> >> >> >> >> >> has to do with the simple limitation of your offload as=
-suming there are
-> >> >> >> >> >> >> no runtime changes in the compiled pipeline. For Intel,=
- maybe they
-> >> >> >> >> >> >> aren't, and it's a good fit for them. All I say is, tha=
-t it is not the
-> >> >> >> >> >> >> good fit for everyone.
-> >> >> >> >> >> >
-> >> >> >> >> >> > a) it is not part of the P4 spec to dynamically make cha=
-nges to the
-> >> >> >> >> >> >datapath pipeline after it is create and we are discussin=
-g a P4
-> >> >> >> >> >>
-> >> >> >> >> >> Isn't this up to the implementation? I mean from the p4 pe=
-rspective,
-> >> >> >> >> >> everything is static. Hw might need to reshuffle the pipel=
-ine internally
-> >> >> >> >> >> during rule insertion/remove in order to optimize the layo=
-ut.
-> >> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >But do note: the focus here is on P4 (hence the name P4TC).
-> >> >> >> >> >
-> >> >> >> >> >> >implementation not an extension that would add more value=
- b) We are
-> >> >> >> >> >> >more than happy to add extensions in the future to accomo=
-date for
-> >> >> >> >> >> >features but first _P4 spec_ must be met c) we had longer=
- discussions
-> >> >> >> >> >> >with Matty, Khalid and the Rice folks who wrote a paper o=
-n that topic
-> >> >> >> >> >> >which you probably didnt attend and everything that needs=
- to be done
-> >> >> >> >> >> >can be from user space today for all those optimizations.
-> >> >> >> >> >> >
-> >> >> >> >> >> >Conclusion is: For what you need to do (which i dont beli=
-eve is a
-> >> >> >> >> >> >limitation in your hardware rather a design decision on y=
-our part) run
-> >> >> >> >> >> >your user space daemon, do optimizations and update the d=
-atapath.
-> >> >> >> >> >> >Everybody is happy.
-> >> >> >> >> >>
-> >> >> >> >> >> Should the userspace daemon listen on inserted rules to be=
- offloade
-> >> >> >> >> >> over netlink?
-> >> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >I mean you could if you wanted to given this is just traditi=
-onal
-> >> >> >> >> >netlink which emits events (with some filtering when we inte=
-grate the
-> >> >> >> >> >filter approach). But why?
-> >> >> >> >>
-> >> >> >> >> Nevermind.
-> >> >> >> >>
-> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >> >
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> >Nobody is stopping you from offering your customers pr=
-oprietary
-> >> >> >> >> >> >> >solutions which include a specific ebpf approach along=
-side DOCA. We
-> >> >> >> >> >> >> >believe that a singular interface regardless of the ve=
-ndor is the
-> >> >> >> >> >> >> >right way forward. IMHO, this siloing that unfortunate=
-ly is also added
-> >> >> >> >> >> >> >by eBPF being a double edged sword is not good for the=
- community.
-> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >> As I also said on the p4 call couple of times, I don=
-'t see the kernel
-> >> >> >> >> >> >> >> as the correct place to do the p4 abstractions. Why =
-don't you do it in
-> >> >> >> >> >> >> >> userspace and give vendors possiblity to have p4 bac=
-kends with compilers,
-> >> >> >> >> >> >> >> runtime optimizations etc in userspace, talking to t=
-he HW in the
-> >> >> >> >> >> >> >> vendor-suitable way too. Then the SW implementation =
-could be easily eBPF
-> >> >> >> >> >> >> >> and the main reason (I believe) why you need to have=
- this is TC
-> >> >> >> >> >> >> >> (offload) is then void.
-> >> >> >> >> >> >> >>
-> >> >> >> >> >> >> >> The "everyone wants to use TC/netlink" claim does no=
-t seem correct
-> >> >> >> >> >> >> >> to me. Why not to have one Linux p4 solution that fi=
-ts everyones needs?
-> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >You mean more fitting to the DOCA world? no, because i=
-am a kernel
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> Again, this has 0 relation to DOCA.
-> >> >> >> >> >> >>
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> >first person and kernel interfaces are good for everyo=
-ne.
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> Yeah, not really. Not always the kernel is the right an=
-swer. Your/Intel
-> >> >> >> >> >> >> plan to handle the offload by:
-> >> >> >> >> >> >> 1) abuse devlink to flash p4 binary
-> >> >> >> >> >> >> 2) parse the binary in kernel to match to the table ids=
- of rules coming
-> >> >> >> >> >> >>    from p4tc ndo_setup_tc
-> >> >> >> >> >> >> 3) abuse devlink to flash p4 binary for tc-flower
-> >> >> >> >> >> >> 4) parse the binary in kernel to match to the table ids=
- of rules coming
-> >> >> >> >> >> >>    from tc-flower ndo_setup_tc
-> >> >> >> >> >> >> is really something that is making me a little bit naus=
-eous.
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> If you don't have a feasible plan to do the offload, p4=
-tc does not make
-> >> >> >> >> >> >> sense to me to be honest.
-> >> >> >> >> >> >
-> >> >> >> >> >> >You mean if there's no plan to match your (NVIDIA?)  poin=
-t of view.
-> >> >> >> >> >> >For #1 - how's this different from DDP? Wasnt that your s=
-uggestion to
-> >> >> >> >> >>
-> >> >> >> >> >> I doubt that. Any flashing-blob-parsing-in-kernel is somet=
-hing I'm
-> >> >> >> >> >> opposed to from day 1.
-> >> >> >> >> >>
-> >> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >Oh well - it is in the kernel and it works fine tbh.
-> >> >> >> >> >
-> >> >> >> >> >> >begin with? For #2 Nobody is proposing to do anything of =
-the sort. The
-> >> >> >> >> >> >ndo is passed IDs for the objects and associated contents=
-. For #3+#4
-> >> >> >> >> >>
-> >> >> >> >> >> During offload, you need to parse the blob in driver to be=
- able to match
-> >> >> >> >> >> the ids with blob entities. That was presented by you/Inte=
-l in the past
-> >> >> >> >> >> IIRC.
-> >> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >You are correct - in case of offload the netlink IDs will ha=
-ve to be
-> >> >> >> >> >authenticated against what the hardware can accept, but the =
-devlink
-> >> >> >> >> >flash use i believe was from you as a compromise.
-> >> >> >> >>
-> >> >> >> >> Definitelly not. I'm against devlink abuse for this from day =
-1.
-> >> >> >> >>
-> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >>
-> >> >> >> >> >> >tc flower thing has nothing to do with P4TC that was just=
- some random
-> >> >> >> >> >> >proposal someone made seeing if they could ride on top of=
- P4TC.
-> >> >> >> >> >>
-> >> >> >> >> >> Yeah, it's not yet merged and already mentally used for ab=
-use. I love
-> >> >> >> >> >> that :)
-> >> >> >> >> >>
-> >> >> >> >> >> >
-> >> >> >> >> >> >Besides this nobody really has to satisfy your point of v=
-iew - like i
-> >> >> >> >> >> >said earlier feel free to provide proprietary solutions. =
-From a
-> >> >> >> >> >> >consumer perspective  I would not want to deal with 4 dif=
-ferent
-> >> >> >> >> >> >vendors with 4 different proprietary approaches. The kern=
-el is the
-> >> >> >> >> >> >unifying part. You seemed happier with tc flower just not=
- with the
-> >> >> >> >> >>
-> >> >> >> >> >> Yeah, that is my point, why the unifying part can't be a u=
-serspace
-> >> >> >> >> >> daemon/library with multiple backends (p4tc, bpf, vendorX,=
- vendorY, ..)?
-> >> >> >> >> >>
-> >> >> >> >> >> I just don't see the kernel as a good fit for abstraction =
-here,
-> >> >> >> >> >> given the fact that the vendor compilers does not run in k=
-ernel.
-> >> >> >> >> >> That is breaking your model.
-> >> >> >> >> >>
-> >> >> >> >> >
-> >> >> >> >> >Jiri - we want to support P4, first. Like you said the P4 pi=
-peline,
-> >> >> >> >> >once installed is static.
-> >> >> >> >> >P4 doesnt allow dynamic update of the pipeline. For example,=
- once you
-> >> >> >> >> >say "here are my 14 tables and their associated actions and =
-here's how
-> >> >> >> >> >the pipeline main control (on how to iterate the tables etc)=
- is going
-> >> >> >> >> >to be" and after you instantiate/activate that pipeline, you=
- dont go
-> >> >> >> >> >back 5 minutes later and say "sorry, please introduce table =
-15, which
-> >> >> >> >> >i want you to walk to after you visit table 3 if metadata fo=
-o is 5" or
-> >> >> >> >> >"shoot, let's change that table 5 to be exact instead of LPM=
-". It's
-> >> >> >> >> >not anywhere in the spec.
-> >> >> >> >> >That doesnt mean it is not useful thing to have - but it is =
-an
-> >> >> >> >> >invention that has _nothing to do with the P4 spec_; so sayi=
-ng a P4
-> >> >> >> >> >implementation must support it is a bit out of scope and the=
-re are
-> >> >> >> >> >vendors with hardware who support P4 today that dont need an=
-y of this.
-> >> >> >> >>
-> >> >> >> >> I'm not talking about the spec. I'm talking about the offload
-> >> >> >> >> implemetation, the offload compiler the offload runtime manag=
-er. You
-> >> >> >> >> don't have those in kernel. That is the issue. The runtime ma=
-nager is
-> >> >> >> >> the one to decide and reshuffle the hw internals. Again, this=
- has
-> >> >> >> >> nothing to do with p4 frontend. This is offload implementatio=
-n.
-> >> >> >> >>
-> >> >> >> >> And that is why I believe your p4 kernel implementation is un=
-offloadable.
-> >> >> >> >> And if it is unoffloadable, do we really need it? IDK.
-> >> >> >> >>
-> >> >> >> >
-> >> >> >> >Say what?
-> >> >> >> >It's not offloadable in your hardware, you mean? Because i have=
- beside
-> >> >> >> >me here an intel e2000 which offloads just fine (and the AMD fo=
-lks
-> >> >> >> >seem fine too).
-> >> >> >>
-> >> >> >> Will Intel and AMD have compiler in kernel, so no blob transfer =
-and
-> >> >> >> parsing it in kernel wound not be needed? No.
-> >> >> >
-> >> >> >By that definition anything that parses anything is a compiler.
-> >> >> >
-> >> >> >>
-> >> >> >> >If your view is that all these runtime optimization surmount to=
- a
-> >> >> >> >compiler in the kernel/driver that is your, well, your view. In=
- my
-> >> >> >> >view (and others have said this to you already) the P4C compile=
-r is
-> >> >> >> >responsible for resource optimizations. The hardware supports P=
-4, you
-> >> >> >> >give it constraints and it knows what to do. At runtime, anythi=
-ng a
-> >> >> >> >driver needs to do for resource optimization (resorting, reshuf=
-fling
-> >> >> >> >etc), that is not a P4 problem - sorry if you have issues in yo=
-ur
-> >> >> >> >architecture approach.
-> >> >> >>
-> >> >> >> Sure, it is the offload implementation problem. And for them, yo=
-u need
-> >> >> >> to use userspace components. And that is the problem. This discu=
-ssion
-> >> >> >> leads nowhere, I don't know how differently I should describe th=
-is.
-> >> >> >
-> >> >> >Jiri's - that's your view based on whatever design you have in you=
-r
-> >> >> >mind. This has nothing to do with P4.
-> >> >> >So let me repeat again:
-> >> >> >1) A vendor's backend for P4 when it compiles ensures that resourc=
-e
-> >> >> >constraints are taken care of.
-> >> >> >2) The same program can run in s/w.
-> >> >> >3) It makes *ZERO* sense to mix vendor specific constraint
-> >> >> >optimization(what you described as resorting, reshuffling etc) as =
-part
-> >> >> >of P4TC or P4. Absolutely nothing to do with either. Write a
-> >> >>
-> >> >> I never suggested for it to be part of P4tc of P4. I don't know why=
- you
-> >> >> think so.
-> >> >
-> >> >I guess because this discussion is about P4/P4TC? I may have misread
-> >> >what you are saying then because I saw the  "P4TC must be in
-> >> >userspace" mantra tied to this specific optimization requirement.
-> >>
-> >> Yeah, and again, my point is, this is unoffloadable.
-> >
-> >Here we go again with this weird claim. I guess we need to give an
-> >award to the other vendors for doing the "impossible"?
->
-> By having the compiler in kernel, that would be awesome. Clear offload
-> from kernel to device.
->
-> That's not the case. Trampolines, binary blobs parsing in kernel doing
-> the match with tc structures in drivers, abuse of devlink flash,
-> tc-flower offload using this facility. All this was already seriously
-> discussed before p4tc is even merged. Great, love that.
->
+Hi Linus!
 
-I was hoping not to say anything but my fingers couldnt help themselves:
-So "unoffloadable" means there is a binary blob and this doesnt work
-per your design idea of how it should work?
-Not that it cant be implemented (clearly it has been implemented), it
-is just not how _you_ would implement it? All along I thought this was
-an issue with your hardware.
-I know that when someone says devlink your answer is N.O - but that is
-a different topic.
+The following changes since commit 7475e51b87969e01a6812eac713a1c8310372e8a:
 
-cheers,
-jamal
+  Merge tag 'net-6.7-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-11-16 07:51:26 -0500)
 
->
-> >
-> >>Do we still  need it in kernel?
-> >
-> >Didnt you just say it has nothing to do with P4TC?
-> >
-> >You "It cant be offloaded".
-> >Me "it can be offloaded, other vendors are doing it and it has nothing
-> >to do with P4 or P4TC and here's why..."
-> >You " i didnt say it has anything to do with P4 or P4TC"
-> >Me "ok i misunderstood i thought you said P4 cant be offloaded via
-> >P4TC and has to be done in user space"
-> >You "It cant be offloaded"
->
-> Let me do my own misinterpretation please.
->
->
->
-> >
-> >Circular non-ending discussion.
-> >
-> >Then there's John
-> >John "ebpf, ebpf, ebpf"
-> >Me "we gave you ebpf"
-> >John "but you are not using ebpf system call"
-> >Me " but it doesnt make sense for the following reasons..."
-> >John "but someone has already implemented ebpf.."
-> >Me "yes, but here's how ..."
-> >John "ebpf, ebpf, ebpf"
-> >
-> >Another circular non-ending discussion.
-> >
-> >Let's just end this electron-wasting lawyering discussion.
-> >
-> >cheers,
-> >jamal
-> >
-> >
-> >
-> >
-> >
-> >
-> >Bizare. Unoffloadable according to you.
-> >
-> >>
-> >> >
-> >> >>
-> >> >> >background task, specific to you,  if you feel you need to move th=
-ings
-> >> >> >around at runtime.
-> >> >>
-> >> >> Yeah, that backgroud task is in userspace.
-> >> >>
-> >> >
-> >> >I don't have a horse in this race.
-> >> >
-> >> >cheers,
-> >> >jamal
-> >> >
-> >> >>
-> >> >> >
-> >> >> >We agree on one thing at least: This discussion is going nowhere.
-> >> >>
-> >> >> Correct.
-> >> >>
-> >> >> >
-> >> >> >cheers,
-> >> >> >jamal
-> >> >> >
-> >> >> >
-> >> >> >
-> >> >> >> >
-> >> >> >> >> >In my opinion that is a feature that could be added later ou=
-t of
-> >> >> >> >> >necessity (there is some good niche value in being able to a=
-dd some
-> >> >> >> >> >"dynamicism" to any pipeline) and influence the P4 standards=
- on why it
-> >> >> >> >> >is needed.
-> >> >> >> >> >It should be doable today in a brute force way (this is just=
- one
-> >> >> >> >> >suggestion that came to me when Rice University/Nvidia prese=
-nted[1]);
-> >> >> >> >> >i am sure there are other approaches and the idea is by no m=
-eans
-> >> >> >> >> >proven.
-> >> >> >> >> >
-> >> >> >> >> >1) User space Creates/compiles/Adds/activate your program th=
-at has 14
-> >> >> >> >> >tables at tc prio X chain Y
-> >> >> >> >> >2) a) 5 minutes later user space decides it wants to change =
-and add
-> >> >> >> >> >table 3 after table 15, visited when metadata foo=3D5
-> >> >> >> >> >    b) your compiler in user space compiles a brand new prog=
-ram which
-> >> >> >> >> >satisfies #2a (how this program was authored is out of scope=
- of
-> >> >> >> >> >discussion)
-> >> >> >> >> >    c) user space adds the new program at tc prio X+1 chain =
-Y or another chain Z
-> >> >> >> >> >    d) user space delete tc prio X chain Y (and make sure yo=
-ur packets
-> >> >> >> >> >entry point is whatever #c is)
-> >> >> >> >>
-> >> >> >> >> I never suggested anything like what you describe. I'm not su=
-re why you
-> >> >> >> >> think so.
-> >> >> >> >
-> >> >> >> >It's the same class of problems - the paper i pointed to (coaut=
-hored
-> >> >> >> >by Matty and others) has runtime resource optimizations which a=
-re
-> >> >> >> >tantamount to changing the nature of the pipeline. We may need =
-to
-> >> >> >> >profile in the kernel but all those optimizations can be derive=
-d in
-> >> >> >> >user space using the approach I described.
-> >> >> >> >
-> >> >> >> >cheers,
-> >> >> >> >jamal
-> >> >> >> >
-> >> >> >> >
-> >> >> >> >> >[1] https://www.cs.rice.edu/~eugeneng/papers/SIGCOMM23-Pipel=
-eon.pdf
-> >> >> >> >> >
-> >> >> >> >> >>
-> >> >> >> >> >> >kernel process - which is ironically the same thing we ar=
-e going
-> >> >> >> >> >> >through here ;->
-> >> >> >> >> >> >
-> >> >> >> >> >> >cheers,
-> >> >> >> >> >> >jamal
-> >> >> >> >> >> >
-> >> >> >> >> >> >>
-> >> >> >> >> >> >> >
-> >> >> >> >> >> >> >cheers,
-> >> >> >> >> >> >> >jamal
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc3
+
+for you to fetch changes up to 39f04b1406b23fcc129a67e70d6205d5a7322f38:
+
+  tools: ynl: fix duplicate op name in devlink (2023-11-23 08:52:23 -0800)
+
+----------------------------------------------------------------
+Including fixes from bpf.
+
+Current release - regressions:
+
+ - Revert "net: r8169: Disable multicast filter for RTL8168H
+   and RTL8107E"
+
+ - kselftest: rtnetlink: fix ip route command typo
+
+Current release - new code bugs:
+
+ - s390/ism: make sure ism driver implies smc protocol in kconfig
+
+ - two build fixes for tools/net
+
+Previous releases - regressions:
+
+ - rxrpc: couple of ACK/PING/RTT handling fixes
+
+Previous releases - always broken:
+
+ - bpf: verify bpf_loop() callbacks as if they are called unknown
+   number of times
+
+ - improve stability of auto-bonding with Hyper-V
+
+ - account BPF-neigh-redirected traffic in interface statistics
+
+Misc:
+
+ - net: fill in some more MODULE_DESCRIPTION()s
+
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+
+----------------------------------------------------------------
+Alex Elder (1):
+      net: ipa: fix one GSI register field width
+
+Alexei Starovoitov (1):
+      Merge branch 'verify-callbacks-as-if-they-are-called-unknown-number-of-times'
+
+Arseniy Krasnov (1):
+      vsock/test: fix SEQPACKET message bounds test
+
+D. Wythe (1):
+      net/smc: avoid data corruption caused by decline
+
+Daniel Borkmann (6):
+      net, vrf: Move dstats structure to core
+      net: Move {l,t,d}stats allocation to core and convert veth & vrf
+      netkit: Add tstats per-CPU traffic counters
+      bpf, netkit: Add indirect call wrapper for fetching peer dev
+      selftests/bpf: De-veth-ize the tc_redirect test case
+      selftests/bpf: Add netkit to tc_redirect selftest
+
+David Howells (3):
+      rxrpc: Fix some minor issues with bundle tracing
+      rxrpc: Fix RTT determination to use any ACK as a source
+      rxrpc: Defer the response to a PING ACK until we've parsed it
+
+David S. Miller (1):
+      Merge branch 'rxrpc-ack-fixes'
+
+Eduard Zingerman (11):
+      selftests/bpf: track tcp payload offset as scalar in xdp_synproxy
+      selftests/bpf: track string payload offset as scalar in strobemeta
+      selftests/bpf: fix bpf_loop_bench for new callback verification scheme
+      bpf: extract __check_reg_arg() utility function
+      bpf: extract setup_func_entry() utility function
+      bpf: verify callbacks as if they are called unknown number of times
+      selftests/bpf: tests for iterating callbacks
+      bpf: widening for callback iterators
+      selftests/bpf: test widening for iterating callbacks
+      bpf: keep track of max number of bpf_loop callback iterations
+      selftests/bpf: check if max number of bpf_loop iterations is tracked
+
+Eric Dumazet (1):
+      wireguard: use DEV_STATS_INC()
+
+Gerd Bayer (1):
+      s390/ism: ism driver implies smc protocol
+
+Haiyang Zhang (2):
+      hv_netvsc: fix race of netvsc and VF register_netdevice
+      hv_netvsc: Fix race of register_netdevice_notifier and VF register
+
+Hao Ge (1):
+      dpll: Fix potential msg memleak when genlmsg_put_reply failed
+
+Heiner Kallweit (1):
+      Revert "net: r8169: Disable multicast filter for RTL8168H and RTL8107E"
+
+Ivan Vecera (1):
+      i40e: Fix adding unsupported cloud filters
+
+Jacob Keller (3):
+      ice: remove ptp_tx ring parameter flag
+      ice: unify logic for programming PFINT_TSYN_MSK
+      ice: restore timestamp configuration after device reset
+
+Jakub Kicinski (5):
+      net: fill in MODULE_DESCRIPTION()s for SOCK_DIAG modules
+      docs: netdev: try to guide people on dealing with silence
+      Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
+      tools: ynl: fix header path for nfsd
+      tools: ynl: fix duplicate op name in devlink
+
+Jann Horn (1):
+      tls: fix NULL deref on tls_sw_splice_eof() with empty record
+
+Jean Delvare (1):
+      stmmac: dwmac-loongson: Add architecture dependency
+
+Jiawen Wu (1):
+      net: wangxun: fix kernel panic due to null pointer
+
+Jose Ignacio Tornos Martinez (1):
+      net: usb: ax88179_178a: fix failed operations during ax88179_reset
+
+Kees Cook (1):
+      MAINTAINERS: Add netdev subsystem profile link
+
+Kunwu Chan (1):
+      ipv4: Correct/silence an endian warning in __ip_do_redirect
+
+Lech Perczak (1):
+      net: usb: qmi_wwan: claim interface 4 for ZTE MF290
+
+Long Li (1):
+      hv_netvsc: Mark VF as slave before exposing it to user-mode
+
+Lorenzo Bianconi (1):
+      net: veth: fix ethtool stats reporting
+
+Martin KaFai Lau (1):
+      Merge branch 'bpf_redirect_peer fixes'
+
+Nguyen Dinh Phi (1):
+      nfc: virtual_ncidev: Add variable to check if ndev is running
+
+Oliver Neukum (1):
+      usb: aqc111: check packet for fixup for true limit
+
+Paolo Abeni (4):
+      kselftest: rtnetlink: fix ip route command typo
+      Merge branch 'hv_netvsc-fix-race-of-netvsc-vf-register-and-slave-bit'
+      Merge branch 'amd-xgbe-fixes-to-handle-corner-cases'
+      Merge branch 'ice-restore-timestamp-config-after-reset'
+
+Peilin Ye (2):
+      veth: Use tstats per-CPU traffic counters
+      bpf: Fix dev's rx stats for bpf_redirect_peer traffic
+
+Raju Rangoju (3):
+      amd-xgbe: handle corner-case during sfp hotplug
+      amd-xgbe: handle the corner-case during tx completion
+      amd-xgbe: propagate the correct speed and duplex status
+
+Samuel Holland (1):
+      net: axienet: Fix check for partial TX checksum
+
+Simon Horman (1):
+      MAINTAINERS: Add indirect_call_wrapper.h to NETWORKING [GENERAL]
+
+Suman Ghosh (2):
+      octeontx2-pf: Fix memory leak during interface down
+      octeontx2-pf: Fix ntuple rule creation to direct packet to VF with higher Rx queue than its PF
+
+ Documentation/process/maintainer-netdev.rst        |  20 +-
+ MAINTAINERS                                        |   3 +
+ drivers/dpll/dpll_netlink.c                        |  17 +-
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c           |  14 +
+ drivers/net/ethernet/amd/xgbe/xgbe-ethtool.c       |  11 +-
+ drivers/net/ethernet/amd/xgbe/xgbe-mdio.c          |  14 +-
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c |  16 +-
+ drivers/net/ethernet/intel/ice/ice_main.c          |  12 +-
+ drivers/net/ethernet/intel/ice/ice_ptp.c           | 146 +++----
+ drivers/net/ethernet/intel/ice/ice_ptp.h           |   5 +-
+ drivers/net/ethernet/intel/ice/ice_txrx.c          |   3 -
+ drivers/net/ethernet/intel/ice/ice_txrx.h          |   1 -
+ .../ethernet/marvell/octeontx2/nic/otx2_flows.c    |  20 +-
+ .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   2 +
+ drivers/net/ethernet/realtek/r8169_main.c          |   4 +-
+ drivers/net/ethernet/stmicro/stmmac/Kconfig        |   2 +-
+ drivers/net/ethernet/wangxun/libwx/wx_hw.c         |   8 +-
+ drivers/net/ethernet/wangxun/ngbe/ngbe_main.c      |   4 +-
+ drivers/net/ethernet/wangxun/txgbe/txgbe_main.c    |   4 +-
+ drivers/net/ethernet/xilinx/xilinx_axienet_main.c  |   2 +-
+ drivers/net/hyperv/netvsc_drv.c                    |  68 ++--
+ drivers/net/ipa/reg/gsi_reg-v5.0.c                 |   2 +-
+ drivers/net/netkit.c                               |  22 +-
+ drivers/net/usb/aqc111.c                           |   8 +-
+ drivers/net/usb/ax88179_178a.c                     |   4 +-
+ drivers/net/usb/qmi_wwan.c                         |   1 +
+ drivers/net/veth.c                                 |  46 +--
+ drivers/net/vrf.c                                  |  38 +-
+ drivers/net/wireguard/device.c                     |   4 +-
+ drivers/net/wireguard/receive.c                    |  12 +-
+ drivers/net/wireguard/send.c                       |   3 +-
+ drivers/nfc/virtual_ncidev.c                       |   7 +-
+ drivers/s390/net/Kconfig                           |   3 +-
+ drivers/s390/net/ism_drv.c                         |  93 +++--
+ include/linux/bpf_verifier.h                       |  16 +
+ include/linux/netdevice.h                          |  30 +-
+ include/net/netkit.h                               |   6 +
+ include/trace/events/rxrpc.h                       |   2 +-
+ kernel/bpf/verifier.c                              | 438 +++++++++++++--------
+ net/core/dev.c                                     |  57 ++-
+ net/core/filter.c                                  |  19 +-
+ net/ipv4/inet_diag.c                               |   1 +
+ net/ipv4/raw_diag.c                                |   1 +
+ net/ipv4/route.c                                   |   2 +-
+ net/ipv4/tcp_diag.c                                |   1 +
+ net/ipv4/udp_diag.c                                |   1 +
+ net/mptcp/mptcp_diag.c                             |   1 +
+ net/packet/diag.c                                  |   1 +
+ net/rxrpc/conn_client.c                            |   7 +-
+ net/rxrpc/input.c                                  |  61 ++-
+ net/sctp/diag.c                                    |   1 +
+ net/smc/af_smc.c                                   |   8 +-
+ net/smc/smc_diag.c                                 |   1 +
+ net/tipc/diag.c                                    |   1 +
+ net/tls/tls_sw.c                                   |   3 +
+ net/unix/diag.c                                    |   1 +
+ net/vmw_vsock/diag.c                               |   1 +
+ net/xdp/xsk_diag.c                                 |   1 +
+ tools/net/ynl/Makefile.deps                        |   2 +-
+ tools/net/ynl/generated/devlink-user.c             |   2 +-
+ tools/net/ynl/ynl-gen-c.py                         |   6 +
+ .../testing/selftests/bpf/prog_tests/tc_redirect.c | 315 +++++++++------
+ tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
+ tools/testing/selftests/bpf/progs/bpf_loop_bench.c |  13 +-
+ tools/testing/selftests/bpf/progs/cb_refs.c        |   1 +
+ .../testing/selftests/bpf/progs/exceptions_fail.c  |   2 +
+ tools/testing/selftests/bpf/progs/strobemeta.h     |  78 ++--
+ .../bpf/progs/verifier_iterating_callbacks.c       | 242 ++++++++++++
+ .../bpf/progs/verifier_subprog_precision.c         |  86 +++-
+ .../selftests/bpf/progs/xdp_synproxy_kern.c        |  84 ++--
+ tools/testing/selftests/net/rtnetlink.sh           |   2 +-
+ tools/testing/vsock/vsock_test.c                   |  19 +-
+ 72 files changed, 1448 insertions(+), 686 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
 
