@@ -1,71 +1,120 @@
-Return-Path: <bpf+bounces-15771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B27D27F670E
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 20:22:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B04727F67AB
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 20:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D80241C21075
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 19:22:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D19161C20E0F
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 19:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA9B4C3A7;
-	Thu, 23 Nov 2023 19:22:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F87A4D102;
+	Thu, 23 Nov 2023 19:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hxi1O8Iq"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="dvmOZBOq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CB1D43;
+	Thu, 23 Nov 2023 11:39:47 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 8B11F120010;
+	Thu, 23 Nov 2023 22:39:44 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8B11F120010
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1700768384;
+	bh=3yNZRyHWMdnnlqHBz7P8oLgTMmMyWNxQ6iEoDg0G7sA=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=dvmOZBOqdWu3rS3gcaqdktBkeo0jLcSQM3wfFcsJheGAJUxm0HNz0wSIXCHXTOUad
+	 TKQ3dh8V4f3rZTWvFyy1vdvwTLoxVhkhp/WclxT8me8cF3FaI/KTH9MR4UZtATL9K1
+	 lMzlk7woD6o6eokd/aev2ytEPBlbRcbkvEtG8YdMeWKBGCgQg5pLppUTLTV7NFIzN0
+	 XRX5PnCLeFobjS87/I2mw2Qm2t0W5MxgoI6rC8yyRGuH2CKNHd1pjQUAVHUWqosAgK
+	 X023mS6oDLWKitT8ii1dEaCKQAPD+36KbNMpbuKNDMm/85MZkvSGRxsxevd8Qmp5HG
+	 tuMp2LOngGJeg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC4674B5A9;
-	Thu, 23 Nov 2023 19:22:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D90FC433C9;
-	Thu, 23 Nov 2023 19:22:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700767339;
-	bh=R6XsSadM5I2yXfIdaPIQgY509tpbrMFgDxEb4kwI94I=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=hxi1O8Iq7Fh36dXc8H+L2W2SmRulDZoZjizjVeTdbcoXqs9uqbTQyuSm5th9QPCXP
-	 fEbbOc+PveOQ97Qsa7p1jdXyi+R7Rz58Nh6/UrlR0DeujTFMbXUD+qlV9Zs1OtoN8f
-	 xJXHTOxhgtKwYOf9ZP3CXWQg8KxdPQ5PSzu0jtAdWB5GoNPNVOKAqxoRk9/9IJbmko
-	 OrSsnRhn2t1QL6+4wCMTHYnG8IzYICnDxW4d1hOj9IVXfWzyQqhkf+FBJ5BkLmbrQM
-	 +QKJM/7loigbcS8VS7KhSBvDHYRPQw4gTQGC98GDIkWxSiEcgCMUr3r8mynkwzwVAs
-	 UJyjIQoZJb09A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4B2E4EAA95A;
-	Thu, 23 Nov 2023 19:22:19 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v6.7-rc3
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20231123171825.957077-1-kuba@kernel.org>
-References: <20231123171825.957077-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20231123171825.957077-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc3
-X-PR-Tracked-Commit-Id: 39f04b1406b23fcc129a67e70d6205d5a7322f38
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d3fa86b1a7b4cdc4367acacea16b72e0a200b3d7
-Message-Id: <170076733930.13126.8602329933324976229.pr-tracker-bot@kernel.org>
-Date: Thu, 23 Nov 2023 19:22:19 +0000
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com, bpf@vger.kernel.org
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu, 23 Nov 2023 22:39:44 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 23 Nov 2023 22:39:44 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+	<mhocko@kernel.org>, <roman.gushchin@linux.dev>, <shakeelb@google.com>,
+	<muchun.song@linux.dev>, <mhocko@suse.com>, <akpm@linux-foundation.org>
+CC: <kernel@sberdevices.ru>, <rockosov@gmail.com>, <cgroups@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v3 0/2] mm: memcg: improve vmscan tracepoints
+Date: Thu, 23 Nov 2023 22:39:35 +0300
+Message-ID: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.36.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181569 [Nov 23 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;100.64.160.123:7.1.2;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/11/23 18:34:00
+X-KSMG-LinksScanning: Clean, bases: 2023/11/23 18:34:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/23 17:02:00 #22509098
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-The pull request you sent on Thu, 23 Nov 2023 09:18:25 -0800:
+The motivation behind this commit is to enhance the traceability and
+understanding of memcg events. By integrating the function cgroup_ino()
+into the existing memcg tracepoints, this patch series introduces a new
+tracepoint template for the begin() and end() events. It utilizes a new
+entry field ino to store the cgroup ino, enabling developers to easily
+identify the cgroup associated with a specific memcg tracepoint event.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc3
+Additionally, this patch series introduces new shrink_memcg tracepoints
+to facilitate non-direct memcg reclaim tracing and debugging.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d3fa86b1a7b4cdc4367acacea16b72e0a200b3d7
+Changes v3 since v2 at [2]:
+    - use cgroup_ino() instead of cgroup_name() for memcg tracepoints
+      because cgroup_name() acquires a global rw_lock, which can
+      potentially slow down the system
+    - introduce a stub macro for each shrink_memcg tracepoint to avoid
+      using ifdefs within the common vmscan code."
 
-Thank you!
+Changes v2 since v1 at [1]:
+    - change the position of the "memcg" parameter to ensure backward
+      compatibility with userspace tools that use memcg tracepoints
+    - add additional CONFIG_MEMCG ifdefs to prevent the use of memcg
+      tracepoints when memcg is disabled
+
+Links:
+    [1] https://lore.kernel.org/all/20231101102837.25205-1-ddrokosov@salutedevices.com/
+    [2] https://lore.kernel.org/all/20231123071945.25811-1-ddrokosov@salutedevices.com/
+
+Dmitry Rokosov (2):
+  mm: memcg: print out cgroup ino in the memcg tracepoints
+  mm: memcg: introduce new event to trace shrink_memcg
+
+ include/trace/events/vmscan.h | 95 ++++++++++++++++++++++++++++++-----
+ mm/vmscan.c                   | 17 +++++--
+ 2 files changed, 95 insertions(+), 17 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.36.0
+
 
