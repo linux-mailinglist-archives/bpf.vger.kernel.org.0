@@ -1,114 +1,180 @@
-Return-Path: <bpf+bounces-15747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8485F7F5EF2
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 13:22:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 733687F5F1E
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 13:38:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35BB5281CC2
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 12:22:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36E56281D03
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 12:38:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D3624A0D;
-	Thu, 23 Nov 2023 12:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m7NAxxBZ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE83B24A07;
+	Thu, 23 Nov 2023 12:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C7791;
-	Thu, 23 Nov 2023 04:22:11 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-778940531dbso43289785a.0;
-        Thu, 23 Nov 2023 04:22:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700742130; x=1701346930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w9b7hxZxggUNzWPZcEt2SSt9tvfb5uiUa5fxRekt8xM=;
-        b=m7NAxxBZQdgQaDGWQHbgh+vTzt8lhp2V6ju3wXOJ5gadCmS1MA7iRQfjre5Py+8+qP
-         kZZ0lODUNrcLd03D+JveLu5AOpheqd3pN88MNybXQk9ll8SuLUSD+VpJBq3erjCy3svQ
-         v2Rzg2rG1L9qNGqBWfLP69YqbAApm4GpZ758wrm5NzsTTznHc6Jhh9P96u1vSHP/xtL8
-         3IVGeMwFQlMXXTsUfDIH+R4ByfYTagpeiUqfee1pTZFKfbeC9/IScYTB0oCUNzcu7SyP
-         vMKhuQCZT5JT9Q1s1v8+scvNQSiSqAokohpJezGX9t9eDVPYLjcIdGrn5QcqdwZquYWW
-         BJkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700742130; x=1701346930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w9b7hxZxggUNzWPZcEt2SSt9tvfb5uiUa5fxRekt8xM=;
-        b=Zh8bPkIuHLB1jWZqOfMltU+FCBV8rXH+kTuD5yEMAoJ667shppJAnXqrXG6DfgFpw8
-         RI3v8qKjLRPd2s++awAQPxgxQ56024Lz2ULlKy5depIqNwva5hl1XcAj3P94PFo/n4NA
-         ikGhu71ZnUs8vhx3sUIPQBI03HSYn83VU1prsygzys729h15ulzqreesY4HVGMY+TDg4
-         F+41+qRfiqG9EQoV71Haq5eUGQC5A2P+wkTAYR/H2WyT2a+Runij4SAhp3AzYecRS4sP
-         jVFbCyQWDv/8BZzW31y7nOU5IrBjXCVuS3u4jMev6gnDq65YJ7ZycigH46u0V17X+b4N
-         d36A==
-X-Gm-Message-State: AOJu0Yyz5sp/WZbcip225al3Bde3HijPxP7sb2j2kyLwKEqeY2dpV6EN
-	tMw/EEYXQ0cCiiDz0xEmzFfPqIpxizPBshMMuw4=
-X-Google-Smtp-Source: AGHT+IGV5ARiTvmQFIAC9uDVavWcbdxbAY4C8q2cxi8gW6E6IUDziRn+hFG4aSjasmgZgK5w/Ye/bBVfOR6njOUoJ4g=
-X-Received: by 2002:ad4:58e5:0:b0:67a:e8c:863b with SMTP id
- di5-20020ad458e5000000b0067a0e8c863bmr96257qvb.63.1700742130607; Thu, 23 Nov
- 2023 04:22:10 -0800 (PST)
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038601A4;
+	Thu, 23 Nov 2023 04:37:56 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Vx-biHa_1700743073;
+Received: from 30.221.128.94(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0Vx-biHa_1700743073)
+          by smtp.aliyun-inc.com;
+          Thu, 23 Nov 2023 20:37:54 +0800
+Message-ID: <438f45f9-4e18-4d7d-bfa5-4a239c4a2304@linux.alibaba.com>
+Date: Thu, 23 Nov 2023 20:37:49 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231122141559.4228-1-laoar.shao@gmail.com> <20231122141559.4228-3-laoar.shao@gmail.com>
- <87il5t7zi3.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87il5t7zi3.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 23 Nov 2023 20:21:33 +0800
-Message-ID: <CALOAHbDwyFg+SPGACsOoWU9fo48paX4O_vc2OYaDJ2uaq=pQdQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/6] mm: mempolicy: Revise comment regarding
- mempolicy mode flags
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, omosnace@redhat.com, mhocko@suse.com, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
-	ligang.bdlg@bytedance.com, Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] bpf: add sock_ops callbacks for data
+ send/recv/acked events
+From: Philo Lu <lulie@linux.alibaba.com>
+To: bpf@vger.kernel.org
+Cc: xuanzhuo@linux.alibaba.com, dust.li@linux.alibaba.com,
+ alibuda@linux.alibaba.com, guwen@linux.alibaba.com,
+ hengqi@linux.alibaba.com, edumazet@google.com, davem@davemloft.net,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, dsahern@kernel.org,
+ netdev@vger.kernel.org
+References: <20231123030732.111576-1-lulie@linux.alibaba.com>
+In-Reply-To: <20231123030732.111576-1-lulie@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Nov 23, 2023 at 2:32=E2=80=AFPM Huang, Ying <ying.huang@intel.com> =
-wrote:
->
-> Yafang Shao <laoar.shao@gmail.com> writes:
->
-> > MPOL_F_STATIC_NODES, MPOL_F_RELATIVE_NODES, and MPOL_F_NUMA_BALANCING a=
-re
-> > mode flags applicable to both set_mempolicy(2) and mbind(2) system call=
-s.
-> > It's worth noting that MPOL_F_NUMA_BALANCING was initially introduced i=
-n
-> > commit bda420b98505 ("numa balancing: migrate on fault among multiple b=
-ound
-> > nodes") exclusively for set_mempolicy(2). However, it was later made a
-> > shared flag for both set_mempolicy(2) and mbind(2) following
-> > commit 6d2aec9e123b ("mm/mempolicy: do not allow illegal
-> > MPOL_F_NUMA_BALANCING | MPOL_LOCAL in mbind()").
-> >
-> > This revised version aims to clarify the details regarding the mode fla=
-gs.
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Cc: Eric Dumazet <edumazet@google.com>
-> > Cc: "Huang, Ying" <ying.huang@intel.com>
->
-> Thanks for fixing this.
->
-> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
->
-> And, please revise the manpage for mbind() too.  As we have done for
-> set_mempolicy(),
->
-> https://lore.kernel.org/all/20210120061235.148637-3-ying.huang@intel.com/
+Sorry, I forgot to cc the maintainers.
 
-Thanks for your review. will do it.
-
---=20
-Regards
-Yafang
+On 2023/11/23 11:07, Philo Lu wrote:
+> Add 3 sock_ops operators, namely BPF_SOCK_OPS_DATA_SEND_CB,
+> BPF_SOCK_OPS_DATA_RECV_CB, and BPF_SOCK_OPS_DATA_ACKED_CB. A flag
+> BPF_SOCK_OPS_DATA_EVENT_CB_FLAG is provided to minimize the performance
+> impact. The flag must be explicitly set to enable these callbacks.
+>
+> If the flag is enabled, bpf sock_ops program will be called every time a
+> tcp data packet is sent, received, and acked.
+> BPF_SOCK_OPS_DATA_SEND_CB: call bpf after a data packet is sent.
+> BPF_SOCK_OPS_DATA_RECV_CB: call bpf after a data packet is receviced.
+> BPF_SOCK_OPS_DATA_ACKED_CB: call bpf after a valid ack packet is
+> processed (some sent data are ackknowledged).
+>
+> We use these callbacks for fine-grained tcp monitoring, which collects
+> and analyses every tcp request/response event information. The whole
+> system has been described in SIGMOD'18 (see
+> https://dl.acm.org/doi/pdf/10.1145/3183713.3190659 for details). To
+> achieve this with bpf, we require hooks for data events that call
+> sock_ops bpf (1) when any data packet is sent/received/acked, and (2)
+> after critical tcp state variables have been updated (e.g., snd_una,
+> snd_nxt, rcv_nxt). However, existing sock_ops operators cannot meet our
+> requirements.
+>
+> Besides, these hooks also help to debug tcp when data send/recv/acked.
+>
+> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+> ---
+>   include/net/tcp.h        |  9 +++++++++
+>   include/uapi/linux/bpf.h | 14 +++++++++++++-
+>   net/ipv4/tcp_input.c     |  4 ++++
+>   net/ipv4/tcp_output.c    |  2 ++
+>   4 files changed, 28 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index d2f0736b76b8..73eda03fdda5 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -2660,6 +2660,15 @@ static inline void tcp_bpf_rtt(struct sock *sk)
+>   		tcp_call_bpf(sk, BPF_SOCK_OPS_RTT_CB, 0, NULL);
+>   }
+>   
+> +/* op must be one of BPF_SOCK_OPS_DATA_SEND_CB, BPF_SOCK_OPS_DATA_RECV_CB,
+> + * or BPF_SOCK_OPS_DATA_ACKED_CB.
+> + */
+> +static inline void tcp_bpf_data_event(struct sock *sk, int op)
+> +{
+> +	if (BPF_SOCK_OPS_TEST_FLAG(tcp_sk(sk), BPF_SOCK_OPS_DATA_EVENT_CB_FLAG))
+> +		tcp_call_bpf(sk, op, 0, NULL);
+> +}
+> +
+>   #if IS_ENABLED(CONFIG_SMC)
+>   extern struct static_key_false tcp_have_smc;
+>   #endif
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 7cf8bcf9f6a2..2154a6235901 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -3016,6 +3016,7 @@ union bpf_attr {
+>    * 		* **BPF_SOCK_OPS_RETRANS_CB_FLAG** (retransmission)
+>    * 		* **BPF_SOCK_OPS_STATE_CB_FLAG** (TCP state change)
+>    * 		* **BPF_SOCK_OPS_RTT_CB_FLAG** (every RTT)
+> + * 		* **BPF_SOCK_OPS_DATA_EVENT_CB_FLAG** (data packet send/recv/acked)
+>    *
+>    * 		Therefore, this function can be used to clear a callback flag by
+>    * 		setting the appropriate bit to zero. e.g. to disable the RTO
+> @@ -6755,8 +6756,10 @@ enum {
+>   	 * options first before the BPF program does.
+>   	 */
+>   	BPF_SOCK_OPS_WRITE_HDR_OPT_CB_FLAG = (1<<6),
+> +	/* Call bpf when data send/recv/acked. */
+> +	BPF_SOCK_OPS_DATA_EVENT_CB_FLAG = (1<<7),
+>   /* Mask of all currently supported cb flags */
+> -	BPF_SOCK_OPS_ALL_CB_FLAGS       = 0x7F,
+> +	BPF_SOCK_OPS_ALL_CB_FLAGS       = 0xFF,
+>   };
+>   
+>   /* List of known BPF sock_ops operators.
+> @@ -6869,6 +6872,15 @@ enum {
+>   					 * by the kernel or the
+>   					 * earlier bpf-progs.
+>   					 */
+> +	BPF_SOCK_OPS_DATA_SEND_CB,		/* Calls BPF program when a
+> +					 * data packet is sent. Pure ack is ignored.
+> +					 */
+> +	BPF_SOCK_OPS_DATA_RECV_CB,		/* Calls BPF program when a
+> +					 * data packet is received. Pure ack is ignored.
+> +					 */
+> +	BPF_SOCK_OPS_DATA_ACKED_CB,		/* Calls BPF program when sent
+> +					 * data are acknowledged.
+> +					 */
+>   };
+>   
+>   /* List of TCP states. There is a build check in net/ipv4/tcp.c to detect
+> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> index bcb55d98004c..72c6192e7cd0 100644
+> --- a/net/ipv4/tcp_input.c
+> +++ b/net/ipv4/tcp_input.c
+> @@ -824,6 +824,8 @@ static void tcp_event_data_recv(struct sock *sk, struct sk_buff *skb)
+>   
+>   	now = tcp_jiffies32;
+>   
+> +	tcp_bpf_data_event(sk, BPF_SOCK_OPS_DATA_RECV_CB);
+> +
+>   	if (!icsk->icsk_ack.ato) {
+>   		/* The _first_ data packet received, initialize
+>   		 * delayed ACK engine.
+> @@ -3454,6 +3456,8 @@ static int tcp_clean_rtx_queue(struct sock *sk, const struct sk_buff *ack_skb,
+>   		flag |= FLAG_SET_XMIT_TIMER;  /* set TLP or RTO timer */
+>   	}
+>   
+> +	tcp_bpf_data_event(sk, BPF_SOCK_OPS_DATA_ACKED_CB);
+> +
+>   	if (icsk->icsk_ca_ops->pkts_acked) {
+>   		struct ack_sample sample = { .pkts_acked = pkts_acked,
+>   					     .rtt_us = sack->rate->rtt_us };
+> diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+> index eb13a55d660c..ddd6a9c2150f 100644
+> --- a/net/ipv4/tcp_output.c
+> +++ b/net/ipv4/tcp_output.c
+> @@ -2821,6 +2821,8 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
+>   		/* Send one loss probe per tail loss episode. */
+>   		if (push_one != 2)
+>   			tcp_schedule_loss_probe(sk, false);
+> +
+> +		tcp_bpf_data_event(sk, BPF_SOCK_OPS_DATA_SEND_CB);
+>   		return false;
+>   	}
+>   	return !tp->packets_out && !tcp_write_queue_empty(sk);
 
