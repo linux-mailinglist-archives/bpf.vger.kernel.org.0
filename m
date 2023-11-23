@@ -1,124 +1,130 @@
-Return-Path: <bpf+bounces-15744-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15745-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1307F5DAD
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 12:21:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 038257F5DAE
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 12:21:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9642281ADF
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 11:21:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6A8B281BAE
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 11:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BD1D22F19;
-	Thu, 23 Nov 2023 11:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4080522F1A;
+	Thu, 23 Nov 2023 11:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="gCrG99tM"
 X-Original-To: bpf@vger.kernel.org
-Received: from wangsu.com (unknown [180.101.34.75])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 418CD1BD;
-	Thu, 23 Nov 2023 03:21:14 -0800 (PST)
-Received: from XMCDN1207038 (unknown [59.61.78.234])
-	by app2 (Coremail) with SMTP id SyJltAAnoxKZNV9lmDJsAA--.28580S2;
-	Thu, 23 Nov 2023 19:20:59 +0800 (CST)
-From: "Pengcheng Yang" <yangpc@wangsu.com>
-To: "'Daniel Borkmann'" <daniel@iogearbox.net>,
-	"'John Fastabend'" <john.fastabend@gmail.com>,
-	"'Jakub Sitnicki'" <jakub@cloudflare.com>,
-	"'Eric Dumazet'" <edumazet@google.com>,
-	"'Jakub Kicinski'" <kuba@kernel.org>,
-	<bpf@vger.kernel.org>,
-	<netdev@vger.kernel.org>
-References: <1700565725-2706-1-git-send-email-yangpc@wangsu.com> <6c856222-d103-8149-1cdb-b3e07105f5f8@iogearbox.net>
-In-Reply-To: <6c856222-d103-8149-1cdb-b3e07105f5f8@iogearbox.net>
-Subject: Re: [PATCH bpf-next v2 0/3] skmsg: Add the data length in skmsg to SIOCINQ ioctl and rx_queue
-Date: Thu, 23 Nov 2023 19:20:57 +0800
-Message-ID: <000001da1dff$223ed4e0$66bc7ea0$@wangsu.com>
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9943D6C;
+	Thu, 23 Nov 2023 03:21:40 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 5DABC120003;
+	Thu, 23 Nov 2023 14:21:37 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 5DABC120003
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1700738497;
+	bh=Vn+apVzXsEM6pqvtCgpqeXfkP+wK1W/P560NUnnIQWw=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=gCrG99tMe19Ma2XQZX1ZrXApT9lHM0RmaeJnK+ikOirwkyOLHbdW0T3SCq4RMakMz
+	 YTjh901E2O56zBcccytdOogebIZZqVtHZPxHkhRKLCvgje7gCky0Pqv6kQsx3EAH1s
+	 i9E2aCGP59MEwj5lNDzIa2EO+u6owlAOoJwSdCLtMJYYpWpTxXWY0a8euMGMBhXef1
+	 J36qV8oONQzlLFd9wHo/LD0kE9Jq1hCZl/OsauD24GposE5t0uaLW63ymrd+4uSICA
+	 cb/DJ8cq2SQlYYC/rtV1cUh/iJTvPZ9PUwq6X8lppbaqf++BEh/B8pccZKKrYDkj9t
+	 lKyWHhsrXpC8Q==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu, 23 Nov 2023 14:21:37 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Thu, 23 Nov
+ 2023 14:21:37 +0300
+Date: Thu, 23 Nov 2023 14:21:36 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Shakeel Butt <shakeelb@google.com>
+CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <hannes@cmpxchg.org>,
+	<mhocko@kernel.org>, <roman.gushchin@linux.dev>, <muchun.song@linux.dev>,
+	<akpm@linux-foundation.org>, <kernel@sberdevices.ru>, <rockosov@gmail.com>,
+	<cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] mm: memcg: print out cgroup name in the memcg
+ tracepoints
+Message-ID: <20231123112136.n7qgkevgrracuk7m@CAB-WSD-L081021>
+References: <20231122100156.6568-1-ddrokosov@salutedevices.com>
+ <20231122100156.6568-2-ddrokosov@salutedevices.com>
+ <20231123072126.jpukmc6rqmzckdw2@google.com>
+ <20231123080334.5owfpg7zl4nzeh4t@CAB-WSD-L081021>
+ <20231123081547.7fbxd4ts3qohrioq@google.com>
+ <20231123084510.wwnkjyrrbp5vltkg@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQIpjviH4qTFjCB89Pc8Rjk1Q8y5HALF/A0Ur9KtXqA=
-Content-Language: zh-cn
-X-CM-TRANSID:SyJltAAnoxKZNV9lmDJsAA--.28580S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGw4rCw4xCw4rKw43Xr48Xrb_yoW5AFWDpa
-	4DA34UGFWkZa42grsxWr4Igw4Fgr9Iyw45Kr1UWry3CF13uw1F9r4xWayaqr4xGr4rua4j
-	gw4UWFW8J3y5JaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkKb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-	cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-	v20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK
-	6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4
-	CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26r48
-	McIj6xkF7I0En7xvr7AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-	AKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8KwCF04k20xvY0x0EwIxG
-	rwCF04k20xvE74AGY7Cv6cx26r48MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCI
-	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_
-	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5no2U
-	UUUUU==
-X-CM-SenderInfo: p1dqw1nf6zt0xjvxhudrp/
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231123084510.wwnkjyrrbp5vltkg@CAB-WSD-L081021>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181556 [Nov 23 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 3 0.3.3 e5c6a18a9a9bff0226d530c5b790210c0bd117c8, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/23 09:18:00 #22508170
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-Daniel Borkmann <daniel@iogearbox.net> wrote:
-> On 11/21/23 12:22 PM, Pengcheng Yang wrote:
-> > When using skmsg redirect, the msg is queued in psock->ingress_msg,
-> > and the application calling SIOCINQ ioctl will return a readable
-> > length of 0, and we cannot track the data length of ingress_msg with
-> > the ss tool.
-> >
-> > In this patch set, we added the data length in ingress_msg to the
-> > SIOCINQ ioctl and the rx_queue of tcp_diag.
-> >
-> > v2:
-> > - Add READ_ONCE()/WRITE_ONCE() on accesses to psock->msg_len
-> > - Mask out the increment msg_len where its not needed
+Shakeel,
+
+On Thu, Nov 23, 2023 at 11:45:10AM +0300, Dmitry Rokosov wrote:
+> On Thu, Nov 23, 2023 at 08:15:47AM +0000, Shakeel Butt wrote:
+> > On Thu, Nov 23, 2023 at 11:03:34AM +0300, Dmitry Rokosov wrote:
+> > [...]
+> > > > > +		cgroup_name(memcg->css.cgroup,
+> > > > > +			__entry->name,
+> > > > > +			sizeof(__entry->name));
+> > > > 
+> > > > Any reason not to use cgroup_ino? cgroup_name may conflict and be
+> > > > ambiguous.
+> > > 
+> > > I actually didn't consider it, as the cgroup name serves as a clear tag
+> > > for filtering the appropriate cgroup in the entire trace file. However,
+> > > you are correct that there might be conflicts with cgroup names.
+> > > Therefore, it might be better to display both tags: ino and name. What
+> > > do you think on this?
+> > > 
+> > 
+> > I can see putting cgroup name can avoid pre or post processing, so
+> > putting both are fine. Though keep in mind that cgroup_name acquires a
+> > lock which may impact the applications running on the system.
 > 
-> Please double check BPF CI, this series might be breaking sockmap selftests :
-> 
-> https://github.com/kernel-patches/bpf/actions/runs/6922624338/job/18829650043
-> 
+> Are you talking about kernfs_rename_lock? Yes, it's acquired each
+> time... Unfortunatelly, I don't know a way to save cgroup_name one time
+> somehow...
 
-Is this a misunderstanding?
-The selftests failure above were run on patch set v1 4 days ago, and this patch v2
-is the fix for this case.
+I delved deeper and realized that kernfs_rename_lock is a read-write
+lock, but it's a global one. While it's true that we only enable
+tracepoints during specific periods of the host's lifetime, the trace
+system is still a fast way to debug things. So, you're absolutely right,
+we shouldn't slow down the system unnecessarily.
 
-> [...]
-> Notice: Success: 501/13458, Skipped: 57, Failed: 1
-> Error: #281 sockmap_basic
-> Error: #281/16 sockmap_basic/sockmap skb_verdict fionread
->    Error: #281/16 sockmap_basic/sockmap skb_verdict fionread
->    test_sockmap_skb_verdict_fionread:PASS:open_and_load 0 nsec
->    test_sockmap_skb_verdict_fionread:PASS:bpf_prog_attach 0 nsec
->    test_sockmap_skb_verdict_fionread:PASS:socket_loopback(s) 0 nsec
->    test_sockmap_skb_verdict_fionread:PASS:create_socket_pairs(s) 0 nsec
->    test_sockmap_skb_verdict_fionread:PASS:bpf_map_update_elem(c1) 0 nsec
->    test_sockmap_skb_verdict_fionread:PASS:xsend(p0) 0 nsec
->    test_sockmap_skb_verdict_fionread:PASS:ioctl(FIONREAD) error 0 nsec
->    test_sockmap_skb_verdict_fionread:FAIL:ioctl(FIONREAD) unexpected ioctl(FIONREAD): actual 512 != expected 256
->    test_sockmap_skb_verdict_fionread:PASS:recv_timeout(c0) 0 nsec
-> Error: #281/18 sockmap_basic/sockmap skb_verdict msg_f_peek
->    Error: #281/18 sockmap_basic/sockmap skb_verdict msg_f_peek
->    test_sockmap_skb_verdict_peek:PASS:open_and_load 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:bpf_prog_attach 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:socket_loopback(s) 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:create_pairs(s) 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:bpf_map_update_elem(c1) 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:xsend(p1) 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:recv(c1) 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:ioctl(FIONREAD) error 0 nsec
->    test_sockmap_skb_verdict_peek:FAIL:after peek ioctl(FIONREAD) unexpected after peek ioctl(FIONREAD): actual 512 != expected 256
->    test_sockmap_skb_verdict_peek:PASS:recv(p0) 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:ioctl(FIONREAD) error 0 nsec
->    test_sockmap_skb_verdict_peek:PASS:after read ioctl(FIONREAD) 0 nsec
-> Test Results:
->               bpftool: PASS
->   test_progs-no_alu32: FAIL (returned 1)
->              shutdown: CLEAN
-> Error: Process completed with exit code 1.
+Therefore, today I will prepare a new version with only the cgroup ino.
+Thank you for pointing that out to me!
 
+-- 
+Thank you,
+Dmitry
 
