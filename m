@@ -1,193 +1,224 @@
-Return-Path: <bpf+bounces-15723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E73EE7F555A
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 01:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 07B6E7F557B
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 01:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2097028177C
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 00:32:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B73472816EC
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 00:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E218A1115;
-	Thu, 23 Nov 2023 00:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3917717C4;
+	Thu, 23 Nov 2023 00:43:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="KlEDbsl7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AAhYVkDN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2AA100;
-	Wed, 22 Nov 2023 16:32:13 -0800 (PST)
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94BEC10E;
+	Wed, 22 Nov 2023 16:43:18 -0800 (PST)
+Received: by mail-wr1-x431.google.com with SMTP id ffacd0b85a97d-32daeed7771so202121f8f.3;
+        Wed, 22 Nov 2023 16:43:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1700699534; x=1732235534;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=CHEbKPadk4pyqek3DmP5yJp/m9dEG4KiF/yUIpEWD2c=;
-  b=KlEDbsl7TCilrGZCcsN8mS8OhgfD2KTNXxI/JwJ7+UxKPh93Hatb/ftH
-   dNHkXE6RuwHuKlsb6tfrhdBchU5+RXZZlS6/vCP8MxKdr24w4xsPVwLpu
-   b2zOG981tCimWlszbL079DULvu+CIKxHc1HcaaBdTA8Fkrn8277o9wQ2c
-   o=;
-X-IronPort-AV: E=Sophos;i="6.04,220,1695686400"; 
-   d="scan'208";a="364473715"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Nov 2023 00:32:10 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-	by email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com (Postfix) with ESMTPS id 7DDA580640;
-	Thu, 23 Nov 2023 00:32:07 +0000 (UTC)
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:3865]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.54.99:2525] with esmtp (Farcaster)
- id 09acb04e-cb71-483b-8fe0-f8c2bca46f92; Thu, 23 Nov 2023 00:32:07 +0000 (UTC)
-X-Farcaster-Flow-ID: 09acb04e-cb71-483b-8fe0-f8c2bca46f92
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Thu, 23 Nov 2023 00:32:06 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.187.170.50) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.39;
- Thu, 23 Nov 2023 00:32:03 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <martin.lau@linux.dev>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <davem@davemloft.net>, <dsahern@kernel.org>,
-	<edumazet@google.com>, <haoluo@google.com>, <john.fastabend@gmail.com>,
-	<jolsa@kernel.org>, <kpsingh@kernel.org>, <kuba@kernel.org>,
-	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <mykolal@fb.com>,
-	<netdev@vger.kernel.org>, <pabeni@redhat.com>, <sdf@google.com>,
-	<song@kernel.org>, <yonghong.song@linux.dev>
-Subject: Re: [PATCH v3 bpf-next 10/11] bpf: tcp: Support arbitrary SYN Cookie.
-Date: Wed, 22 Nov 2023 16:31:54 -0800
-Message-ID: <20231123003154.56710-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <825b7dde-f421-436e-99c8-47f9c1d83f5f@linux.dev>
-References: <825b7dde-f421-436e-99c8-47f9c1d83f5f@linux.dev>
+        d=gmail.com; s=20230601; t=1700700197; x=1701304997; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I4mDM3fOhLxMKv9Qsj/stPbdPgmQsMFznGIuQOD753M=;
+        b=AAhYVkDNOyIif9CmavrWY98Y86DL8k4oXHyIICTLTPAj9elVkBZ1tLDetXk2YZ+13R
+         UCvnB01W5jQR8s2sUMDm1TVemTOY5uqjvUVS2JAWQldwwAwZrOj1M4/pXnyAHTwHWhFw
+         JZPXvJT3Ywvu0srodVY0D6zIwY68ESp3GrWXF8qvRTdYzUfnuPtSyl0f7N8pDEQeKwti
+         OGFni6YSI8V6Ah9lxEfBySkReoT91kKG+x4UB9n3oOFO/BK1dgmmwfVwl0Sgf4LhYvmO
+         SHs48AaSkdUhRHoMLHgrYeJyJasOD3PT+JXOiwsFyGeMXVuuIUyi/47VSnt2Z9vQlmkv
+         gf4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700700197; x=1701304997;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I4mDM3fOhLxMKv9Qsj/stPbdPgmQsMFznGIuQOD753M=;
+        b=YOSK155JLFZseJpEYjJ1ddyUuEEAwQDd5okf24v63C9PjeCw0UJy8L9+dVItJ+4TWY
+         ZGs6IuoG1BBlRdIeiLf7xL9L52Bk2VyWKsLdDkNMJjWYkliDO3P43aZ/HB9uyAARD/3M
+         Koa2oUTlYGHhXRb1Os4pdVv4WTCYu5eXV68ykkjTnZQ7JxOCnlhaDcGFkw56Cmf6yBp2
+         Zx41sWoauX/IFmOWWnH9+AsB2NIZOkKL5AvocwFQOTPtRQvPOwokjw6caawbSEuYtm+I
+         ihdVZuw6SHJKBMDOOp6pyMsKv42IEG73TfgGylXsYn0S90jgZsqdOyWpBuVRamoT7/bR
+         UQ7g==
+X-Gm-Message-State: AOJu0YwNen8GTt81BW5vW2GxVp5uuEnCeQVd6n4s3oVelGk/s65SlqlM
+	Yu9ffR/i9kEAeL3izrCWXLPswUkeQzcoaah3NLM=
+X-Google-Smtp-Source: AGHT+IFaGuLwN1xpFTtgde8hjR8udeumSPNXj31L06f21NbuevuO4pwK/eQWIUQlq/PJPmsAyg32Y1iA4ZTIjeNqURg=
+X-Received: by 2002:a05:6000:128d:b0:332:cc15:6bae with SMTP id
+ f13-20020a056000128d00b00332cc156baemr2454118wrx.20.1700700196781; Wed, 22
+ Nov 2023 16:43:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D045UWC001.ant.amazon.com (10.13.139.223) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
+References: <20231120144642.591358648@infradead.org> <20231120154948.708762225@infradead.org>
+ <20231122021817.ggym3biyfeksiplo@macbook-pro-49.dhcp.thefacebook.com> <20231122111517.GR8262@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231122111517.GR8262@noisy.programming.kicks-ass.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 22 Nov 2023 16:43:05 -0800
+Message-ID: <CAADnVQLhWFKcxno53zqGtuiWwUcw+TU8gB2eCBRPQC=2y5vrFw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] x86/cfi,bpf: Fix BPF JIT call
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
+	"H. Peter Anvin" <hpa@zytor.com>, "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	linux-riscv <linux-riscv@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	linux-arch <linux-arch@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>, 
+	Josh Poimboeuf <jpoimboe@kernel.org>, Joao Moreira <joao@overdrivepizza.com>, 
+	Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Date: Wed, 22 Nov 2023 15:19:29 -0800
-> On 11/21/23 10:42 AM, Kuniyuki Iwashima wrote:
-> > diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
-> > index 533a7337865a..9a67f47a5e64 100644
-> > --- a/include/net/inet6_hashtables.h
-> > +++ b/include/net/inet6_hashtables.h
-> > @@ -116,9 +116,23 @@ struct sock *inet6_steal_sock(struct net *net, struct sk_buff *skb, int doff,
-> >   	if (!sk)
-> >   		return NULL;
-> >   
-> > -	if (!prefetched || !sk_fullsock(sk))
-> > +	if (!prefetched)
-> >   		return sk;
-> >   
-> > +	if (sk->sk_state == TCP_NEW_SYN_RECV) {
-> > +#if IS_ENABLED(CONFIG_SYN_COOKIE)
-> > +		if (inet_reqsk(sk)->syncookie) {
-> > +			*refcounted = false;
-> > +			skb->sk = sk;
-> > +			skb->destructor = sock_pfree;
-> 
-> Instead of re-init the skb->sk and skb->destructor, can skb_steal_sock() avoid 
-> resetting them to NULL in the first place and skb_steal_sock() returns the 
-> rsk_listener instead?
+On Wed, Nov 22, 2023 at 3:15=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+>
+> To be very explicit, let me list all the various forms of function
+> calls:
+>
+> Traditional:
+>
+> foo:
+>   ... code here ...
+>   ret
+>
+> direct caller:
+>
+>   call foo
+>
+> indirect caller:
+>
+>   lea foo(%rip), %r11
+>   call *%r11
+>
+> IBT:
+>
+> foo:
+>   endbr64
+>   ... code here ...
+>   ret
+>
+> direct caller:
+>
+>   call foo / call foo+4
+>
+> indirect caller:
+>
+>   lea foo(%rip), %r11
+>   ...
+>   call *%r11
+>
+>
+> kCFI:
+>
+> __cfi_foo:
+>   movl $0x12345678, %rax
+>   (11 nops when CALL_PADDING)
+> foo:
+>   endbr64 (when also IBT)
+>   ... code here ...
+>   ret
+>
+> direct caller:
+>
+>   call foo / call foo+4
+>
+> indirect caller:
+>
+>   lea foo(%rip), %r11
+>   ...
+>   movl $(-0x12345678), %r10d
+>   addl -15(%r11), %r10d (or -4 without CALL_PADDING)
+>   je 1f
+>   ud2
+> 1:call *%r11
+>
+>
+> FineIBT (builds as kCFI + CALL_PADDING + IBT + RETPOLINE and runtime
+> patches things to look like):
+>
+> __cfi_foo:
+>   endbr64
+>   subl $0x12345678, %r10d
+>   jz foo
+>   ud2
+>   nop
+> foo:
+>   osp nop3 (was endbr64)
+>   ... code here ...
+>   ret
+>
+> direct caller:
+>
+>   call foo / call foo+4
+>
+> indirect caller:
+>
+>   lea foo(%rip), %r11
+>   ...
+>   movl $0x12345678, %r10d
+>   subl $16, %r11
+>   nop4
+>   call *%r11
 
-Yes, but we need to move skb_steal_sock() to request_sock.h or include it just
-before skb_steal_sock() in sock.h like below.  When I include request_sock.h in
-top of sock.h, there were many build errors.
+Got it. That helps a lot!
+You kind of have this comment scattered through arch/x86/kernel/alternative=
+.c
+but having it in one place like above would go a long way.
+Could you please add it to arch/x86/net/bpf_jit_comp.c
+or arch/x86/include/asm/cfi.h next to enum cfi_mode ?
 
+> > I'm not sure doing cfi_bpf_hash check in JITed code is completely solvi=
+ng the problem.
+> > From bpf_dispatcher_*_func() calling into JITed will work,
+> > but this emit_prologue() is doing the same job for all bpf progs.
+> > Some bpf progs call each other directly and indirectly.
+> > bpf_dispatcher_*_func() -> JITed_BPF_A -> JITed_BPF_B.
+> > A into B can be a direct call (which cfi doesn't care about) and
+> > indirect via emit_bpf_tail_call_indirect()->emit_indirect_jump().
+> > Should we care about fineibt/kcfi there too?
+>
+> The way I understood the tail-call thing to work is that it jumps to
+> bpf_prog + X86_TAIL_CALL_OFFSET, we already emit an extra ENDBR there to
+> make this work.
+>
+> So the A -> B indirect call is otherwise unadornen and only needs ENDBR.
+>
+> Ideally that would use kCFI/FineIBT but since it also skips some of the
+> setup, this gets to be non-trivial, so I've let this be as is.
 
-> btw, can inet_reqsk(sk)->rsk_listener be set to NULL after 
-> this point?
+I see. yeah. The setup is not trivial indeed. Keep as-is is fine.
 
-except for sock_pfree(), we will not set NULL until cookie_bpf_check().
+> So the kCFI thing is 'new' but readily inspected by objdump or godbolt:
+>
+>   https://godbolt.org/z/sGe18z3ca
+>
+> (@Sami, that .Ltmp15 thing, I don't see that in the kernel, what
+> compiler flag makes that go away?)
 
+I also noticed this discrepancy. It doesn't seem to be used.
+Looks weird to spend 8 bytes to store -sizeof(ud2)
 
-> Beside, it is essentially assigning the incoming request to a listening sk. Does 
-> it need to call the inet6_lookup_reuseport() a few lines below to avoid skipping 
-> the bpf reuseport selection that was fixed in commit 9c02bec95954 ("bpf, net: 
-> Support SO_REUSEPORT sockets with bpf_sk_assign")?
+> As to FineIBT, that has a big comment in arch/x86/kernel/alternative.c
+> where I rewrite the kCFI thing into FineIBT. I can refer there to avoid
+> duplicating comments, would that work?
 
-Ah, good point.  I assumed bpf_sk_lookup() will do the random pick, but we
-need to call it just in case sk is picked from bpf map.
-
-As you suggested, if we return rsk_listener from skb_steal_sock(), we can
-reuse the reuseport_lookup call in inet6_steal_sock().
-
-Thanks!
-
-
----8<---
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 1d6931caf0c3..83efbe0e7c3b 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2838,6 +2838,8 @@ sk_is_refcounted(struct sock *sk)
-        return !sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE);
- }
- 
-+#include <net/request_sock.h>
-+
- /**
-  * skb_steal_sock - steal a socket from an sk_buff
-  * @skb: sk_buff to steal the socket from
-@@ -2847,20 +2849,38 @@ sk_is_refcounted(struct sock *sk)
- static inline struct sock *
- skb_steal_sock(struct sk_buff *skb, bool *refcounted, bool *prefetched)
- {
--       if (skb->sk) {
--               struct sock *sk = skb->sk;
-+       struct sock *sk = skb->sk;
- 
-+       if (!sk) {
-+               *prefetched = false;
-+               *refcounted = false;
-+               return NULL;
-+       }
-+
-+       *prefetched = skb_sk_is_prefetched(skb);
-+       if (!*prefetched) {
-                *refcounted = true;
--               *prefetched = skb_sk_is_prefetched(skb);
--               if (*prefetched)
--                       *refcounted = sk_is_refcounted(sk);
--               skb->destructor = NULL;
--               skb->sk = NULL;
--               return sk;
-+               goto out;
-        }
--       *prefetched = false;
--       *refcounted = false;
--       return NULL;
-+
-+       switch (sk->sk_state) {
-+       case TCP_NEW_SYN_RECV:
-+               if (inet_reqsk(sk)->syncookie) {
-+                       *refcounted = false;
-+                       return inet_reqsk(sk)->rsk_listener;
-+               }
-+               fallthrough;
-+       case TCP_TIME_WAIT:
-+               *refcounted = true;
-+               break;
-+       default:
-+               *refcounted = !sock_flag(sk, SOCK_RCU_FREE);
-+       }
-+
-+out:
-+       skb->destructor = NULL;
-+       skb->sk = NULL;
-+       return sk;
- }
- 
- /* Checks if this SKB belongs to an HW offloaded socket
----8<---
+Just the above comment somewhere would work.
+I wouldn't worry about duplication. This is tricky stuff.
+When gcc folks get around implementing kcfi they will find it useful too.
 
