@@ -1,103 +1,163 @@
-Return-Path: <bpf+bounces-15779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 522027F691F
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 23:48:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5308A7F6985
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 00:40:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4346CB20E7D
-	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 22:48:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A315281986
+	for <lists+bpf@lfdr.de>; Thu, 23 Nov 2023 23:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE9F3399F;
-	Thu, 23 Nov 2023 22:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA20405CA;
+	Thu, 23 Nov 2023 23:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="iYFYrfax"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iux8csEa"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657A0D50
-	for <bpf@vger.kernel.org>; Thu, 23 Nov 2023 14:48:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=2c3wg12LhdiVkH+Q+2pqlFM5vGeT5lV3abSHoh4IGPI=; b=iYFYrfax34tgT9bW7uvjmzKcAS
-	6Rp4Hvh/AYtC0idTsYAhIsNVpFH7c7Z8JHnR7IU+q8AU7sxy4onDTOXWlRxcEs3TWaXrYKd0KdDpQ
-	5CSoFFIyKswum/jww5GS/z8onkpGVoAksg1YVdRxkAp1no+s9EWSjqW+g1EnHp+BbZ8Pjt8/epN27
-	9PoNz/bw9Mkv+iyFFIGWCKBlxrRi4zhLIYEcWQRpgiY9ma3YFwERjZwnDHJGZqSuRMADQylYv8eSD
-	a8EQjHs3OIUGIwp0D68rneqIDDHBwVgz04C0VBBefcC3l8yiJD5arXCkn70tDzSlei2HGXQBAFYcy
-	AODdpdTA==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r6IUP-000IHQ-PA; Thu, 23 Nov 2023 23:48:05 +0100
-Received: from [178.197.249.24] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r6IUP-000GEb-5K; Thu, 23 Nov 2023 23:48:05 +0100
-Subject: Re: [PATCH bpf-next 0/3] Verify global subprogs lazily
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@kernel.org
-Cc: kernel-team@meta.com
-References: <20231122213112.3596548-1-andrii@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <0117ddb8-4251-c4a1-1bb0-ca19769bd6b3@iogearbox.net>
-Date: Thu, 23 Nov 2023 23:48:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0BB3FE3F;
+	Thu, 23 Nov 2023 23:40:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 345EAC433C8;
+	Thu, 23 Nov 2023 23:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1700782808;
+	bh=igir30jG+cvp7fVhdQ5LA77yamuAtAL/40S8t5CSTO0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=iux8csEaIIP5t+/NYUBIhjL0zb+5FDhYTgNBgYQ4kaTYi/VxvlsXFINvtLrSnC7FU
+	 +wq8lMU1W9BVTHlJNS7uV4JUhsmE0aJSnXYXw+rbdajiDT6Y7h99DAqN/kMXHtaCme
+	 zQKM5y9hekMOgXYuqdOomUiHD1hINvM/C2yn/tl+ifpvg+lJr/5W7lj6dW7tIXIWLQ
+	 DDxDZyErhr+3DBMBddu7y9X1MVtKOe5czQAipW8RMdGFZfOMRVp6ly1ki2W8uyYcKU
+	 pWFKGz/p4CZwVSuslBqn+OW0ikW1BoCK5q2c0gCV5eDvnZXn9AxlWjnCVn7t3F9gPq
+	 6KwThDEbRdouw==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	fsverity@lists.linux.dev
+Cc: ebiggers@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	brauner@kernel.org,
+	viro@zeniv.linux.org.uk,
+	casey@schaufler-ca.com,
+	amir73il@gmail.com,
+	kpsingh@kernel.org,
+	roberto.sassu@huawei.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v13 bpf-next 0/6] bpf: File verification with LSM and fsverity
+Date: Thu, 23 Nov 2023 15:39:30 -0800
+Message-Id: <20231123233936.3079687-1-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231122213112.3596548-1-andrii@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27102/Thu Nov 23 09:42:42 2023)
+Content-Transfer-Encoding: 8bit
 
-On 11/22/23 10:31 PM, Andrii Nakryiko wrote:
-> See patch #2 for justification. In few words, current eager verification of
-> global func prevents BPF CO-RE approaches to be applied to global functions.
-> 
-> Patch #1 is just a nicety to emit global subprog names in verifier logs.
-> 
-> Patch #3 adds selftests validating new lazy semantics.
-> 
-> Andrii Nakryiko (3):
->    bpf: emit global subprog name in verifier logs
->    bpf: validate global subprogs lazily
->    selftests/bpf: add lazy global subprog validation tests
-> 
->   include/linux/bpf.h                           |  2 +
->   kernel/bpf/verifier.c                         | 88 ++++++++++++++----
->   .../selftests/bpf/prog_tests/verifier.c       |  2 +
->   .../selftests/bpf/progs/test_global_func12.c  |  4 +-
->   .../bpf/progs/verifier_global_subprogs.c      | 92 +++++++++++++++++++
->   .../bpf/progs/verifier_subprog_precision.c    |  4 +-
->   6 files changed, 168 insertions(+), 24 deletions(-)
->   create mode 100644 tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+Changes v12 => v13:
+1. Only keep 4/9 through 9/9 of v12, as the first 3 patches already
+   applied;
+2. Use new macro __bpf_kfunc_[start|end]_defs().
 
-Series looks good to me, ACK. It needs a rebase however after the fast
-forward of the bpf-next tree from today.
+Changes v11 => v12:
+1. Fix typo (data_ptr => sig_ptr) in bpf_get_file_xattr().
 
- > With BPF CO-RE approach, the natural way would be to still compile BPF
- > object file once and guard calls to this global subprog with some CO-RE
- > check or using .rodata variables. That's what people do to guard usage
- > of new helpers or kfuncs, and any other new BPF-side feature that might
- > be missing on old kernels.
+Changes v10 => v11:
+1. Let __bpf_dynptr_data() return const void *. (Andrii)
+2. Optimize code to reuse output from __bpf_dynptr_size(). (Andrii)
+3. Add __diag_ignore_all("-Wmissing-declarations") for kfunc definition.
+4. Fix an off indentation. (Andrii)
 
-I was wondering for selftests, could we also add something similar to the
-above to guard calls via co-re? Just to have this use-case covered in CI.
-Also perhaps one global_bad function which is dead-code would be nice to
-have.
+Changes v9 => v10:
+1. Remove WARN_ON_ONCE() from check_reg_const_str. (Alexei)
+
+Changes v8 => v9:
+1. Fix test_progs kfunc_dynptr_param/dynptr_data_null.
+
+Changes v7 => v8:
+1. Do not use bpf_dynptr_slice* in the kernel. Add __bpf_dynptr_data* and
+   use them in ther kernel. (Andrii)
+
+Changes v6 => v7:
+1. Change "__const_str" annotation to "__str". (Alexei, Andrii)
+2. Add KF_TRUSTED_ARGS flag for both new kfuncs. (KP)
+3. Only allow bpf_get_file_xattr() to read xattr with "user." prefix.
+4. Add Acked-by from Eric Biggers.
+
+Changes v5 => v6:
+1. Let fsverity_init_bpf() return void. (Eric Biggers)
+2. Sort things in alphabetic orders. (Eric Biggers)
+
+Changes v4 => v5:
+1. Revise commit logs. (Alexei)
+
+Changes v3 => v4:
+1. Fix error reported by CI.
+2. Update comments of bpf_dynptr_slice* that they may return error pointer.
+
+Changes v2 => v3:
+1. Rebase and resolve conflicts.
+
+Changes v1 => v2:
+1. Let bpf_get_file_xattr() use const string for arg "name". (Alexei)
+2. Add recursion prevention with allowlist. (Alexei)
+3. Let bpf_get_file_xattr() use __vfs_getxattr() to avoid recursion,
+   as vfs_getxattr() calls into other LSM hooks.
+4. Do not use dynptr->data directly, use helper insteadd. (Andrii)
+5. Fixes with bpf_get_fsverity_digest. (Eric Biggers)
+6. Add documentation. (Eric Biggers)
+7. Fix some compile warnings. (kernel test robot)
+
+This set enables file verification with BPF LSM and fsverity.
+
+In this solution, fsverity is used to provide reliable and efficient hash
+of files; and BPF LSM is used to implement signature verification (against
+asymmetric keys), and to enforce access control.
+
+This solution can be used to implement access control in complicated cases.
+For example: only signed python binary and signed python script and access
+special files/devices/ports.
 
 Thanks,
-Daniel
+Song
+
+Song Liu (6):
+  bpf: Add kfunc bpf_get_file_xattr
+  bpf, fsverity: Add kfunc bpf_get_fsverity_digest
+  Documentation/bpf: Add documentation for filesystem kfuncs
+  selftests/bpf: Sort config in alphabetic order
+  selftests/bpf: Add tests for filesystem kfuncs
+  selftests/bpf: Add test that uses fsverity and xattr to sign a file
+
+ Documentation/bpf/fs_kfuncs.rst               |  21 +++
+ Documentation/bpf/index.rst                   |   1 +
+ fs/verity/fsverity_private.h                  |  10 ++
+ fs/verity/init.c                              |   1 +
+ fs/verity/measure.c                           |  84 +++++++++
+ kernel/trace/bpf_trace.c                      |  63 +++++++
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  10 ++
+ tools/testing/selftests/bpf/config            |   3 +-
+ .../selftests/bpf/prog_tests/fs_kfuncs.c      | 132 ++++++++++++++
+ .../bpf/prog_tests/verify_pkcs7_sig.c         | 163 +++++++++++++++++-
+ .../selftests/bpf/progs/test_fsverity.c       |  46 +++++
+ .../selftests/bpf/progs/test_get_xattr.c      |  37 ++++
+ .../selftests/bpf/progs/test_sig_in_xattr.c   |  82 +++++++++
+ .../bpf/progs/test_verify_pkcs7_sig.c         |   8 +-
+ .../testing/selftests/bpf/verify_sig_setup.sh |  25 +++
+ 15 files changed, 677 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/bpf/fs_kfuncs.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_fsverity.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_get_xattr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
+
+--
+2.34.1
 
