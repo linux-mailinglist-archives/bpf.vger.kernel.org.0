@@ -1,119 +1,159 @@
-Return-Path: <bpf+bounces-15813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4808F7F75AC
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 14:53:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ED597F758C
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 14:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7964D1C21095
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 13:53:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE75E280ED7
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 13:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC5E2C854;
-	Fri, 24 Nov 2023 13:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6782C1BC;
+	Fri, 24 Nov 2023 13:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="CSlCy3vm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GpGQcg9b"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018DAD71
-	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 05:53:44 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a02d91ab195so274358166b.3
-        for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 05:53:43 -0800 (PST)
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E237D41;
+	Fri, 24 Nov 2023 05:50:16 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b83fdab870so151335b6e.0;
+        Fri, 24 Nov 2023 05:50:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1700834022; x=1701438822; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=bPYBdZ4ItIfXHITMkeTq4Bl+yk6j2zAle2zwSmDGCiE=;
-        b=CSlCy3vmpAK9Xa7vG2XkYYMDhnrzFMUw+MmjZ4KxW/Ey+9J6AuuuLtWeZtUlglp0A2
-         N3UyMGKB1/oXNRpAgYguNX8r8vntT/u5leSwEcJD+nubCnDa2S7kOh4aL6XPLEctDnFP
-         ApbYgL9iqUwI/XWzCJ3i7kwf61KGbg/5aJoT+0MfOW9ocK+M5yKFo6IxRYWxQ6RvSnPR
-         oN/1ZN2iVdpT1ObltM80a7L+N+IZO5gEjgYgT4Ichr8e1IcKqigv5kiTkDMBizekrx4+
-         60P/ZFTj22nTq4EEEBrNgc6XTxrWEHK6XvSH+Te90E41iqyam9ByGhKxMBMl+8NfNxZ9
-         wSHA==
+        d=gmail.com; s=20230601; t=1700833815; x=1701438615; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6I7CJB0Cp8tuYLriqcIjeTAsEGcMeXyDXVh80cPjfPM=;
+        b=GpGQcg9bodbd+Wnp/O+gz37+ltHLLWa+Lh72rJFdbNBbJlns6yigoGp6xlKxFbn3gh
+         psZM//O5IELvcUr6tLWXyzEK+LrrPYKIspSUDmgSjk3rV6f3ozoI4DE0f835S4UmpryR
+         CQBzjBeqy4R+nz1/Nz5RcstYrwf+dRMG2BJf/w3pwUL88v0PkAaqaWZh2j/CWjS8PepN
+         MY9VFxim1jfYSfAJNwNwpJXajoig3mMRIfqByT4+Fl1+55olU7dunJZ4nNhevtHBiCo/
+         25XJzq0I6ir2hT9ZbWIJmkTjoNGWkZnALGO9Oemx5zHYyJVHuzXMeXMXkIg3rBHbfCLs
+         fsPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700834022; x=1701438822;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bPYBdZ4ItIfXHITMkeTq4Bl+yk6j2zAle2zwSmDGCiE=;
-        b=g+/NDrIkO6U5I4pnR/wihWA8sQ+7ufsndZef1SktLpEKXcGth5u41CGDnWBiUpL2tG
-         fFFFgraijwy4ZEPuBKEWT9WXo9blkb2DKv7GNA0nazM+Oqnsp5FeYve7HfPdBpJ/oG6u
-         YRN/aRZp0eGPKKkfUFUa8FCBEbIMWq0hob55mXSh49Dw2kxfBsv1IpcZANrhh8YbqXBy
-         N7HclevsvZP7ofrwmfGw4CNMstaVASVy2pKVDoEF7lIT81cuSzicrj2Znj0gts7lGyhf
-         gQUePSi3nB7CTGOi7SOgbIKXndMWpcCcBZB/yIqMP/IO1XVR0AYu6W+WOxTeMcG0dm6Q
-         LYHQ==
-X-Gm-Message-State: AOJu0YzXPekdnYQyplLH2yc/hzX7CSi9Zg9/Z9WCcHpCE01uQWAm02Vq
-	Dob0gZc18XB2XKHXbxe3NVnOX/mXTIOfGc6lxlA=
-X-Google-Smtp-Source: AGHT+IHT1u7eoX5hY4Xg63LmKH9zDr2fIVDbIuCFbsbxe+I7C5HM3eY56BlqM8wGTordlZj6XssmTQ==
-X-Received: by 2002:a17:907:9009:b0:9fe:458e:a814 with SMTP id ay9-20020a170907900900b009fe458ea814mr1915902ejc.21.1700834022459;
-        Fri, 24 Nov 2023 05:53:42 -0800 (PST)
-Received: from cloudflare.com (79.184.209.104.ipv4.supernova.orange.pl. [79.184.209.104])
-        by smtp.gmail.com with ESMTPSA id kg16-20020a17090776f000b00a0371c6cc23sm2092349ejc.95.2023.11.24.05.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 05:53:41 -0800 (PST)
-References: <20231122192452.335312-1-john.fastabend@gmail.com>
- <20231122192452.335312-2-john.fastabend@gmail.com>
- <ZV+07PlDoxrcAn9c@pop-os.localdomain>
-User-agent: mu4e 1.6.10; emacs 28.3
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: John Fastabend <john.fastabend@gmail.com>, martin.lau@kernel.org,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH bpf v2 1/2] bpf: sockmap, af_unix stream sockets need to
- hold ref for pair sock
-Date: Fri, 24 Nov 2023 14:43:24 +0100
-In-reply-to: <ZV+07PlDoxrcAn9c@pop-os.localdomain>
-Message-ID: <87zfz32r6j.fsf@cloudflare.com>
+        d=1e100.net; s=20230601; t=1700833815; x=1701438615;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6I7CJB0Cp8tuYLriqcIjeTAsEGcMeXyDXVh80cPjfPM=;
+        b=Mvrrnqin1fJfGuw6kaf8Do9XyQg4L3RFwW+dQ/lr7dEbYKLD2sQWBNluz6lZOTu9Ew
+         VVoSqtdtSgBDPRVVFIvOd/xWQ1f/hUw7HDKfe1bQAtKbp2XoDA107K0Mq1jGLB63T9cO
+         8qyZ9bEGzbrQshPnHja0sGrfTPGlAf6QFKyUybw/5IZKtoA/D5k6x2jA24M0SXkNbwfu
+         JUJm7rDS93Pv/vzkBkLkv1wntyOObIOl3OWzsIFKwfOikUGntYxZGLa/HJ0Ff6AP+ioc
+         g/QL4efl0CBx/Vkk4ZvO5zZ/j+k1z8sJ1TOGJQCfnanVjUzlTZz/TTJxG7FoFtr5/Qrl
+         xOJQ==
+X-Gm-Message-State: AOJu0YwUoeiDij9aiSnI1N022lLaqdArExaAESin90nIy7dHOY8dsBOu
+	wm/x8NQ4QjorMDcwdw2iuVURciJDaVZaxdmsy7c=
+X-Google-Smtp-Source: AGHT+IHKzjuBMbN9TdS5p/8W++p2f2puyviMZRwWreH/6vgLDyaY425mPqrCC61xMREv+5rRtr2OlQ5myV2gS9mjevI=
+X-Received: by 2002:a9d:6a59:0:b0:6d7:ea8a:f0c1 with SMTP id
+ h25-20020a9d6a59000000b006d7ea8af0c1mr3497137otn.3.1700833815295; Fri, 24 Nov
+ 2023 05:50:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20231124070005.GA10393@libra05>
+In-Reply-To: <20231124070005.GA10393@libra05>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Fri, 24 Nov 2023 14:50:04 +0100
+Message-ID: <CAJ8uoz1s_TqemsQSsu4=pH147d9M1y-cy5G1VCLkM9g3pFj93w@mail.gmail.com>
+Subject: Re: xdp/xsk.c: missing read memory barrier in xsk_poll()
+To: Yewon Choi <woni9911@gmail.com>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, threeearcat@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-
-On Thu, Nov 23, 2023 at 12:24 PM -08, Cong Wang wrote:
-> On Wed, Nov 22, 2023 at 11:24:51AM -0800, John Fastabend wrote:
->> AF_UNIX stream sockets are a paired socket. So sending on one of the pairs
->> will lookup the paired socket as part of the send operation. It is possible
->> however to put just one of the pairs in a BPF map. This currently
->> increments the refcnt on the sock in the sockmap to ensure it is not
->> free'd by the stack before sockmap cleans up its state and stops any
->> skbs being sent/recv'd to that socket.
->> 
->> But we missed a case. If the peer socket is closed it will be
->> free'd by the stack. However, the paired socket can still be
->> referenced from BPF sockmap side because we hold a reference
->> there. Then if we are sending traffic through BPF sockmap to
->> that socket it will try to dereference the free'd pair in its
->> send logic creating a use after free.  And following splat,
+On Fri, 24 Nov 2023 at 08:00, Yewon Choi <woni9911@gmail.com> wrote:
 >
-> Hmm, how could it pass the SOCK_DEAD test in unix_stream_sendmsg()?
+> Hello,
 >
-> 2285                 unix_state_lock(other);
-> 2286
-> 2287                 if (sock_flag(other, SOCK_DEAD) ||
-> 2288                     (other->sk_shutdown & RCV_SHUTDOWN))
-> 2289                         goto pipe_err_free;
+> We found some possibility of missing read memory barrier in xsk_poll(),
+> so we would like to ask to check it.
+>
+> commit e6762c8b adds two smp_rmb() in xsk_mmap(), which are paired with
+> smp_wmb() in XDP_UMEM_REG and xsk_init_queue each. The later one is
+> added in order to prevent reordering between reading of q and reading
+> of q->ring.
+> One example in simplied code is:
+>
+> xsk_mmap():
+>         if (offset == XDP_PGOFF_RX_RING) {
+>                 q = READ_ONCE(xs->rx);
+>         }
+>         ...
+>         if (!q)
+>                 return -EINVAL;
+>
+>         /* Matches the smp_wmb() in xsk_init_queue */
+>         smp_rmb();
+>         ...
+>         return remap_vmalloc_range(vma, q->ring, 0);
+>
+> Also, the similar logic exists in xsk_poll() without smp_rmb().
+>
+> xsk_poll():
+>         ...
+>         if (xs->rx && !xskq_prod_is_empty(xs->rx))
+>                 mask |= EPOLLIN | EPOLLRDNORM;
+>         if (xs->tx && xsk_tx_writeable(xs))
+>                 mask |= EPOLLOUT | EPOLLWRNORM;
+>
+> xskq_prod_is_empty():
+>         return READ_ONCE(q->ring->consumer) && ...
+>
+> To be consistent, I think that smp_rmb() is needed between
+> xs->rx and !xsq_prod_is_empty() and the same applies for xs->tx.
+>
+> Could you check this please?
+> If a patch is needed, we will send them.
 
-The quoted UAF happens after unix_state_unlock(other):
+Yes, you are correct that the current code would need an smp_rmb().
+However, an unbound socket should never be allowed to enter the
+xsk_poll() code in the first place since it is pointless to poll a
+socket that has not been bound. This error was introduced in the
+commit below:
 
-  2285                  unix_state_lock(other);
-  2286
-  2287                  if (sock_flag(other, SOCK_DEAD) ||
-  2288                      (other->sk_shutdown & RCV_SHUTDOWN))
-  2289                          goto pipe_err_free;
-  2290
-  2291                  maybe_add_creds(skb, sock, other);
-  2292                  scm_stat_add(other, skb);
-  2293                  skb_queue_tail(&other->sk_receive_queue, skb);
-  2294                  unix_state_unlock(other);
-  2295                  other->sk_data_ready(other); <-- UAF
+commit 1596dae2f17ec5c6e8c8f0e3fec78c5ae55c1e0b
+Author: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Date:   Wed Feb 15 15:33:09 2023 +0100
 
-Although, I think I saw it happen at unix_state_lock(other) as well.
+    xsk: check IFF_UP earlier in Tx path
 
-We don't hold a ref on other, so we're racing with __sock_release /
-unix_release_sock.
+When an AF_XDP socket has been bound, it is guaranteed to have been
+set up in the correct way and a memory barrier has already been
+executed in the xsk_bind call. It would be great if you could submit a
+patch, but I suggest that you do something like this instead of
+introducing an smp_rmb():
+
+    if (xsk_check_common(xs))
+        goto out;
+    :
+    :
+
+    if (xs->rx && !xskq_prod_is_empty(xs->rx))
+        mask |= EPOLLIN | EPOLLRDNORM;
+    if (xs->tx && xsk_tx_writeable(xs))
+        mask |= EPOLLOUT | EPOLLWRNORM;
+
+out:
+    rcu_read_unlock();
+    return mask;
+
+Thank you for spotting this!
+
+/Magnus
+
+>
+> Best Regards,
+> Yewon Choi
+>
 
