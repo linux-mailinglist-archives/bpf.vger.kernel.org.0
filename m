@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-15823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B78EE7F79AA
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 17:47:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE1B7F7A10
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 18:06:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6273F281A69
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 16:47:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4B08B20FD4
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 17:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF81835F03;
-	Fri, 24 Nov 2023 16:47:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA7035F19;
+	Fri, 24 Nov 2023 17:06:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qzEdsyqs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s098XSVg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2905A364AB;
-	Fri, 24 Nov 2023 16:47:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E7F1C433C8;
-	Fri, 24 Nov 2023 16:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495682D631;
+	Fri, 24 Nov 2023 17:06:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E892C433C7;
+	Fri, 24 Nov 2023 17:06:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700844460;
-	bh=BVlDq5Ewu2rdhljejSY79vNe84v5IwBc/GsApe5yU/s=;
+	s=k20201202; t=1700845602;
+	bh=PPv7r8G9gWCUU0EJn3vhveqcEwikXh9jLw+nzQQY9WI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qzEdsyqs4qX/8QxQpY1uTGL4HjT8TD9PHyDFKrvVO8V4aMZWkHwQBR3R5xKe60OgY
-	 4P/zM6kd9pWUB7TaKewQTegxNBwW64+j4X86xFW+QgfblB2uysr0eQLcZhkZXMmxKF
-	 ZFTSkkV2hCRt1Ss+sFvxK4pyYPi/dK0e83c5jUHJlnksdwN1mD0ZZ1F9zFPi5hTTk2
-	 ka5MZP1GYaHPzjk1T4E0YsZpsc5J4ZoGa9vlDNWZVXEFiJWLyw0rp7Drsr3vlxwQtA
-	 wUhqVlnPDpoUxYfhHAqKqFTgnSv5zNhYEX6QvS3upn0WIwdVAWollBPUFNliLQR13/
-	 zz+3aL1xxPz+Q==
-Date: Fri, 24 Nov 2023 17:47:32 +0100
+	b=s098XSVgPCPMuCM9JTGjDOF6ArkD588pr3xbbacn2qrOnd9HdljQZka8/F74S7hX/
+	 NCrzX39xQUb9ZC1YaRAG/Qblvr+/P97J4ZA0u56pvC3u9G+kuEwR4nl6VwlkZy78Pt
+	 psqbG3gpul7rn/IGgdWC86LMED9JYliFM2YB+zwCcpl3grRq9jv6vibKGKBot89jut
+	 Tj+gLKs6zd24iD6Jzn8vw2OAum0VVLRac51PEJZjO2Ei0fRwFK/fSMxRvvbTXifNfw
+	 Xq70m4AbVloSNq5hz05Q8J/FhfY9FYKrXWXUfR/MIo9HqWCCtNUzAEc+U1fypTaVxx
+	 6W6AIfwVULQxA==
+Date: Fri, 24 Nov 2023 18:06:34 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
 Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>,
@@ -52,10 +52,11 @@ Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>,
 	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	gyroidos@aisec.fraunhofer.de
-Subject: Re: [RESEND RFC PATCH v2 00/14] device_cgroup: guard mknod for
- non-initial user namespace
-Message-ID: <20231124-filzen-bohrinsel-7ff9c7f44fe1@brauner>
+Subject: Re: [RESEND RFC PATCH v2 11/14] vfs: Wire up security hooks for
+ lsm-based device guard in userns
+Message-ID: <20231124-neidisch-drehbaren-d80ef7aa6390@brauner>
 References: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+ <20231025094224.72858-12-michael.weiss@aisec.fraunhofer.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,57 +65,81 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231025094224.72858-1-michael.weiss@aisec.fraunhofer.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231025094224.72858-12-michael.weiss@aisec.fraunhofer.de>
 
-> - Integrate this as LSM (Christian, Paul)
+On Wed, Oct 25, 2023 at 11:42:21AM +0200, Michael Weiß wrote:
+> Wire up security_inode_mknod_capns() in fs/namei.c. If implemented
+> and access is granted by an lsm, check ns_capable() instead of the
+> global CAP_MKNOD.
+> 
+> Wire up security_sb_alloc_userns() in fs/super.c. If implemented
+> and access is granted by an lsm, the created super block will allow
+> access to device nodes also if it was created in a non-inital userns.
+> 
+> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+> ---
+>  fs/namei.c | 16 +++++++++++++++-
+>  fs/super.c |  6 +++++-
+>  2 files changed, 20 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/namei.c b/fs/namei.c
+> index f601fcbdc4d2..1f68d160e2c0 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3949,6 +3949,20 @@ inline struct dentry *user_path_create(int dfd, const char __user *pathname,
+>  }
+>  EXPORT_SYMBOL(user_path_create);
+>  
+> +static bool mknod_capable(struct inode *dir, struct dentry *dentry,
+> +			  umode_t mode, dev_t dev)
+> +{
+> +	/*
+> +	 * In case of a security hook implementation check mknod in user
+> +	 * namespace. Otherwise just check global capability.
+> +	 */
+> +	int error = security_inode_mknod_nscap(dir, dentry, mode, dev);
+> +	if (!error)
+> +		return ns_capable(current_user_ns(), CAP_MKNOD);
+> +	else
+> +		return capable(CAP_MKNOD);
+> +}
+> +
+>  /**
+>   * vfs_mknod - create device node or file
+>   * @idmap:	idmap of the mount the inode was found from
+> @@ -3975,7 +3989,7 @@ int vfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
+>  		return error;
+>  
+>  	if ((S_ISCHR(mode) || S_ISBLK(mode)) && !is_whiteout &&
+> -	    !capable(CAP_MKNOD))
+> +	    !mknod_capable(dir, dentry, mode, dev))
+>  		return -EPERM;
+>  
+>  	if (!dir->i_op->mknod)
+> diff --git a/fs/super.c b/fs/super.c
+> index 2d762ce67f6e..bb01db6d9986 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -362,7 +362,11 @@ static struct super_block *alloc_super(struct file_system_type *type, int flags,
+>  	}
+>  	s->s_bdi = &noop_backing_dev_info;
+>  	s->s_flags = flags;
+> -	if (s->s_user_ns != &init_user_ns)
+> +	/*
+> +	 * We still have to think about this here. Several concerns exist
+> +	 * about the security model, especially about malicious fuse.
+> +	 */
+> +	if (s->s_user_ns != &init_user_ns && security_sb_alloc_userns(s))
+>  		s->s_iflags |= SB_I_NODEV;
 
-Huh, my rant made you write an LSM. I'm not sure if that's a good or bad
-thing...
+Hm, no.
 
-So I dislike this less than the initial version that just worked around
-SB_I_NODEV and this might be able to go somewhere. _But_ I want to see
-the rules written down:
+We dont want to have security hooks called in alloc_super(). That's just
+the wrong layer for this. This is deeply internal stuff where we should
+avoid interfacing with other subsystems.
 
-(1) current device access management
-    I summarized the current places where that's done very very briefly in
-    https://lore.kernel.org/all/20230815-feigling-kopfsache-56c2d31275bd@brauner
-
-    * inode_permission()
-      -> devcgroup_inode_permission()
-
-    * vfs_mknod()
-      -> devcgroup_inode_mknod()
-
-    * blkdev_get_by_dev() // sget()/sget_fc(), other ways to open block devices and friends
-      -> devcgroup_check_permission()
-
-    * drivers/gpu/drm/amd/amdkfd // weird restrictions on showing gpu info afaict
-      -> devcgroup_check_permission()
-
-    but that's not enough. What we need is a summary of how device node
-    creation and device node opening currently interact.
-
-    Because it is subtle. Currently you cannot even create device nodes
-    without capable(CAP_SYS_ADMIN) and you can't open any existing ones
-    if you lack capable(CAP_SYS_ADMIN).
-
-    Years ago we tried that insane model where we enabled userspace to
-    create device nodes but not open them. IOW, the capability check
-    for device node creation was lifted but the SB_I_NODEV limitation
-    wasn't lifted. That broke the whole world and had to be reverted.
-
-(2) LSM device access management
-
-    I really want to be able to see how you envision the permission
-    checking to work in the new model. Specifically:
-
-    * How do device node creation and device node opening interact.
-    * The consequences of allowing to remove the SB_I_NODEV restriction.
-    * Permission checking for users without and without a bpf guarded
-      profile.
-
-If you write this down we'll add it to documentation as well or to the
-commit messages. It won't be lost. It doesn't have to be some really
-long thing. I just want to better understand what you think this is
-going to do and what the code does.
+Removing SB_I_NODEV here is also problematic or at least overly broad
+because you allow to circumvent this for _every_ filesystems including
+stuff like proc and so on where that doesn't make any sense.
 
