@@ -1,147 +1,149 @@
-Return-Path: <bpf+bounces-15804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 155B67F71AD
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 11:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 412F67F72B5
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 12:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98071B212E5
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 10:40:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87907B21481
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 11:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842D91A5A2;
-	Fri, 24 Nov 2023 10:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="DYcv1TwT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765BB1DDD9;
+	Fri, 24 Nov 2023 11:29:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BA518E
-	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 02:39:51 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so2358162a12.2
-        for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 02:39:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1700822390; x=1701427190; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=E3CbeSPBGv/93N4a58P9G5/aucfGqzwYdA8+uNojSvY=;
-        b=DYcv1TwT5fs8XfXra8ZEiJCyb+l2cmBxN70cbKCLxIWKC34jBcN6SeAAus/IF+W9VO
-         TuFuMNOR4uWeKHKCEEqy6ULlxfY8gcTeJr4GTdkJprtwz//mTRttXSKBHy97TaZ+oIRV
-         8f6myOv0kbiZLL+HK93CAtzHu8F3SZ3YBkutaaApqvOmNLM95DLuyHjehIZ326Z36bFW
-         TrLd6Dm4EdEhc/kQ65/dDlS8XpJK1x0Wkz/uyA1UosIBTVnZ1iKNZAb7m+tYsAWIPiJm
-         Jx95XcJlHwdRDzjPLH11mnwkvTp676EvG9GZoM6BpyfbCUzT4DcefXK9NMadHlNbmNUo
-         hXNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700822390; x=1701427190;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E3CbeSPBGv/93N4a58P9G5/aucfGqzwYdA8+uNojSvY=;
-        b=IZUXAYdJLX2kdeWRu2iLLLxnh2gQdNOz5eWed2cL6W6XwwzCpJvdc8tSn7ozpdMrmg
-         4axNjFQTZDK3vtd7tNzDqoOVNXYKBonM3njk+lBbVxD+7UR/EbHKVSnIulksZb1O+9dn
-         dWMWmLMuCA+BsTz2YNimHYtbjMhuK8rQ9zZ+M2LTAVUJvh+dS0sACUzmTuP6ZBi7bRC5
-         qi4l/ORIvZGZNaENFeUKYpFYAciUSO6pBIaS6KmjqKNFCSvI5AIduUJPxDI3JLbFyZbs
-         DkSUFVk3Ebk26tB7u3vN8pmDGS26r9ygBYM7NtBZXZEe6L/PvKZN4y5XKZLxFO4u01fi
-         MyKQ==
-X-Gm-Message-State: AOJu0YzU0/5GlwoVXGlkF0l0Ta9tH94Yk8yhCrz4wlrqAEN6ootJUaNM
-	Zc7gjnY5fqtyqbWOG4CQy2ECVg==
-X-Google-Smtp-Source: AGHT+IHBQS9u0x8xZRIF1tYnmQbgx7Tl8spe3HLfZnEj6pYZl4ExuWUKfoudSxw3WaKk/G1xMy0J/w==
-X-Received: by 2002:a50:9312:0:b0:53e:3b8f:8a58 with SMTP id m18-20020a509312000000b0053e3b8f8a58mr1968390eda.11.1700822390310;
-        Fri, 24 Nov 2023 02:39:50 -0800 (PST)
-Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
-        by smtp.gmail.com with ESMTPSA id i12-20020a056402054c00b00548851486d8sm1638589edx.44.2023.11.24.02.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 02:39:49 -0800 (PST)
-Date: Fri, 24 Nov 2023 11:39:48 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Edward Cree <ecree.xilinx@gmail.com>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18F2510F1
+	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 03:29:31 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4ScCS66KNWz4f3jHt
+	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 19:29:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 9CA881A069A
+	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 19:29:28 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP1 (Coremail) with SMTP id cCh0CgDn6xEUiWBloME3Bw--.31197S4;
+	Fri, 24 Nov 2023 19:29:26 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	deb.chatterjee@intel.com, anjali.singhai@intel.com,
-	Vipin.Jain@amd.com, namrata.limaye@intel.com, tom@sipanda.io,
-	mleitner@redhat.com, Mahesh.Shirshyad@amd.com,
-	tomasz.osinski@intel.com, xiyou.wangcong@gmail.com,
-	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-	vladbu@nvidia.com, horms@kernel.org, bpf@vger.kernel.org,
-	khalidm@nvidia.com, toke@redhat.com, mattyk@nvidia.com,
-	dan.daly@intel.com, chris.sommers@keysight.com,
-	john.andy.fingerhut@intel.com
-Subject: Re: [PATCH net-next v8 00/15] Introducing P4TC
-Message-ID: <ZWB9dF8/Uk2iP2uy@nanopsycho>
-References: <ZV7y9JG0d4id8GeG@nanopsycho>
- <CAM0EoMkOvEnPmw=0qye9gWAqgbZjaTYZhiho=qmG1x4WiQxkxA@mail.gmail.com>
- <ZV9U+zsMM5YqL8Cx@nanopsycho>
- <CAM0EoMnFB0hgcVFj3=QN4114HiQy46uvYJKqa7=p2VqJTwqBsg@mail.gmail.com>
- <ZV9csgFAurzm+j3/@nanopsycho>
- <CAM0EoMkgD10dFvgtueDn7wjJTFTQX6_mkA4Kwr04Dnwp+S-u-A@mail.gmail.com>
- <ZV9vfYy42G0Fk6m4@nanopsycho>
- <CAM0EoMkC6+hJ0fb9zCU8bcKDjpnz5M0kbKZ=4GGAMmXH4_W8rg@mail.gmail.com>
- <0d1d37f9-1ef1-4622-409e-a976c8061a41@gmail.com>
- <20231123105305.7edeab94@kernel.org>
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	houtao1@huawei.com
+Subject: [PATCH bpf v3 0/6] bpf: Fix the release of inner map
+Date: Fri, 24 Nov 2023 19:30:27 +0800
+Message-Id: <20231124113033.503338-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231123105305.7edeab94@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDn6xEUiWBloME3Bw--.31197S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAry7Zw1rCF1kKw1fKw4rZrb_yoW5KFy8pF
+	WrKr45Kr4ktry2qwnrGw47Xa4Syws5Ga4Ygr13Gr4rA3y5XryfZryIgFW5uF9xCrZ3tryF
+	vw1ayas5G34DZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Thu, Nov 23, 2023 at 07:53:05PM CET, kuba@kernel.org wrote:
->On Thu, 23 Nov 2023 17:53:42 +0000 Edward Cree wrote:
->> The kernel doesn't like to trust offload blobs from a userspace compiler,
->>  because it has no way to be sure that what comes out of the compiler
->>  matches the rules/tables/whatever it has in the SW datapath.
->> It's also a support nightmare because it's basically like each user
->>  compiling their own device firmware.  
->
->Practically speaking every high speed NIC runs a huge binary blob of FW.
->First, let's acknowledge that as reality.
+From: Hou Tao <houtao1@huawei.com>
 
-True, but I believe we need to diferenciate:
-1) vendor created, versioned, signed binary fw blob
-2) user compiled on demand, blob
+Hi,
 
-I look at 2) as on "a configuration" of some sort.
+The patchset aims to fix the release of inner map in map array or map
+htab. The release of inner map is different with normal map. For normal
+map, the map is released after the bpf program which uses the map is
+destroyed, because the bpf program tracks the used maps. However bpf
+program can not track the used inner map because these inner map may be
+updated or deleted dynamically, and for now the ref-counter of inner map
+is decreased after the inner map is remove from outer map, so the inner
+map may be freed before the bpf program, which is accessing the inner
+map, exits and there will be use-after-free problem as demonstrated by
+patch #5.
+
+The patchset fixes the problem by deferring the release of inner map.
+The freeing of inner map is deferred according to the sleepable
+attributes of the bpf programs which own the outer map. Patch #1 fixes
+the warning when running the newly-added selftest under interpreter
+mode. Patch #2 adds more parameters to .map_fd_put_ptr() to prepare for
+the fix. Patch #3 fixes the potential use-after-free problem by using
+call_rcu_tasks_trace() and call_rcu() to waiting for one tasks trace RCU
+GP and one RCU GP unconditionally. Patch #4 optimizes the free of inner
+map by removing the unnecessary RCU GP waiting. Patch #5 adds a selftest
+to demonstrate the potential use-after-free problem. Patch #6 updates a
+selftest to update outer map in syscall bpf program.
+
+Please see individual patches for more details. And comments are always
+welcome.
+
+Change Log:
+v3:
+  * multiple variable renamings (Martin)
+  * define BPF_MAP_RCU_GP/BPF_MAP_RCU_TT_GP as bit (Martin)
+  * use call_rcu() and its variants instead of synchronize_rcu() (Martin)
+  * remove unnecessary mask in bpf_map_free_deferred() (Martin)
+  * place atomic_or() and the related smp_mb() together (Martin)
+  * add patch #6 to demonstrate that updating outer map in syscall
+    program is dead-lock free (Alexei)
+  * update comments about the memory barrier in bpf_map_fd_put_ptr()
+  * update commit message for patch #3 and #4 to describe more details
+
+v2: https://lore.kernel.org/bpf/20231113123324.3914612-1-houtao@huaweicloud.com
+  * defer the invocation of ops->map_free() instead of bpf_map_put() (Martin)
+  * update selftest to make it being reproducible under JIT mode (Martin)
+  * remove unnecessary preparatory patches
+
+v1: https://lore.kernel.org/bpf/20231107140702.1891778-1-houtao@huaweicloud.com
 
 
->
->Second, there is no equivalent for arbitrary packet parsing in the
->kernel proper. Offload means take something form the host and put it
->on the device. If there's nothing in the kernel, we can't consider
->the new functionality an offload.
->
->I understand that "we offload SW functionality" is our general policy,
->but we should remember why this policy is in place, and not
->automatically jump to the conclusion.
+Hou Tao (6):
+  bpf: Check rcu_read_lock_trace_held() before calling bpf map helpers
+  bpf: Add map and need_defer parameters to .map_fd_put_ptr()
+  bpf: Defer the free of inner map when necessary
+  bpf: Optimize the free of inner map
+  selftests/bpf: Add test cases for inner map
+  selftests/bpf: Test outer map update operations in syscall program
 
-It is in place to have well defined SW definition of what devices
-offloads.
+ include/linux/bpf.h                           |  19 ++-
+ kernel/bpf/arraymap.c                         |  12 +-
+ kernel/bpf/hashtab.c                          |   6 +-
+ kernel/bpf/helpers.c                          |  13 +-
+ kernel/bpf/map_in_map.c                       |  22 ++-
+ kernel/bpf/map_in_map.h                       |   2 +-
+ kernel/bpf/syscall.c                          |  43 +++++-
+ kernel/bpf/verifier.c                         |   4 +
+ .../selftests/bpf/prog_tests/map_in_map.c     | 141 ++++++++++++++++++
+ .../selftests/bpf/prog_tests/syscall.c        |  30 +++-
+ .../selftests/bpf/progs/access_map_in_map.c   |  93 ++++++++++++
+ tools/testing/selftests/bpf/progs/syscall.c   |  91 ++++++++++-
+ 12 files changed, 444 insertions(+), 32 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/map_in_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/access_map_in_map.c
 
+-- 
+2.29.2
 
->
->>  At least normally with device firmware the driver side is talking to
->>  something with narrow/fixed semantics and went through upstream
->>  review, even if the firmware side is still a black box.
->
->We should be buildings things which are useful and open (as in
->extensible by people "from the street"). With that in mind, to me,
->a more practical approach would be to try to figure out a common
->and rigid FW interface for expressing the parsing graph.
-
-Hmm, could you elaborate a bit more on this one please?
-
->
->But that's an interface going from the binary blob to the kernel.
->
->> Just to prove I'm not playing favourites: this is *also* a problem with
->>  eBPF offloads like Nanotubes, and I'm not convinced we have a viable
->>  solution yet.
->
->BPF offloads are actual offloads. Config/state is in the kernel,
->you need to pop it out to user space, then prove that it's what
->user intended.
 
