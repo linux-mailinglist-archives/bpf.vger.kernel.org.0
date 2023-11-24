@@ -1,116 +1,114 @@
-Return-Path: <bpf+bounces-15829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6483D7F8557
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 21:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F0C27F8568
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 22:20:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E58028AEE6
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 20:59:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52F772820B5
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 21:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B6373A8F0;
-	Fri, 24 Nov 2023 20:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4113BB36;
+	Fri, 24 Nov 2023 21:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="TJo54wDK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Bi9AtZKV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TWDtU42I"
 X-Original-To: bpf@vger.kernel.org
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF0619A3;
-	Fri, 24 Nov 2023 12:59:31 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 7313958049F;
-	Fri, 24 Nov 2023 15:59:27 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Fri, 24 Nov 2023 15:59:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-	1700859567; x=1700866767; bh=LUc6+oAUXdxf0gLuIlkH0gh0571S4Y/6Cb0
-	mYTuCEC4=; b=TJo54wDKCgMuWkoE9drzZDiVLRQhY/GJRZQbHp7h+tibivPtYdz
-	aoy+dD/iB6VH/tHq1lkDZSyBeUiPUKnU+CPUBLH9oDL4UiuE6hzBkHgZdpTaAyMD
-	vGDocwfPKyrAxwD4arpe2BagHsS4TfP6SchUmq7QzlC0tl9WV6mhq4DbdDSaJCkG
-	DiZRzg+Grk2oWd3veN4MrIlJxOdoTv80OKIq9dyWH6G+POItZfygpmv6Hde5rox+
-	VRCqRKdHztbDx/R3ACq9XqwpDs3mJqjXeVXTQV0qz2ku+2/FxPr2IdVbKLyeWSXT
-	z2sPjzPCWFWfQyjSK3eu992T16Pw5NYvfrg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1700859567; x=1700866767; bh=LUc6+oAUXdxf0gLuIlkH0gh0571S4Y/6Cb0
-	mYTuCEC4=; b=Bi9AtZKVEzB6ILE28gGs0V2BjploLrLFm4vL9yieiaAbuReoHKj
-	S60zq3BxmqGOrsPP16zHlbzesBhzij7oshzaUNJtfr8XyXKD7Y/f2gmFQnb1AXiu
-	9yrNXo063xCLmAJehlT5JPFAc6fWKVUQ3DzZcnEinVvimSEOWM5/r08H43JKgk7b
-	tkKSbPHpzmOW7YzvYqwQeYXXntHkpV7cMBehqn2I9KbyZK+enTbdOy4mnTlSfkiC
-	KE2fcCPj8cU+u4o6qVzO2LKoIYF4nPxii4WlldEPSRHxAAy7Ly8EArEnUf0LO8jr
-	VGHpemmpxDrV/SevjcIIHWH6+TnbVtMJmBg==
-X-ME-Sender: <xms:rg5hZWcjngq0PBJ4Yt3DFGUS9mKKrFvQ303LZs4GmU1rdAtZJN3lTg>
-    <xme:rg5hZQO5DdaBzcgYbUGXxPSRLUxCdh55A2W2lv9ITgz-joW-u7JXZaw49hWbn3muY
-    jbX95IOBlzKyjt3EA>
-X-ME-Received: <xmr:rg5hZXjQNJgd0YWEGzNMF92LA72-QPYKp2622RdnvCTjTsQtmF25A1O7OJl6Mv_cHrWUIM8XkOmGmx3seIC6N2roMDcwXiZxmuVx1-51lNdk_015rndatAEDw1Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehhedgudeggecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
-    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:rg5hZT__S8VmppWZ-1-GJdLAUH0xp8oh4ZwiDoj9JUI2-36UilZY2w>
-    <xmx:rg5hZSsMBnUp1nRxqwPpVc2fNRielAXeqic28Nl-pai_BQD8lJuvWg>
-    <xmx:rg5hZaFsDEW49cZxHhwMqUFl5AZKUrSxHjmv5j-MR6jvRFD3dAdmSA>
-    <xmx:rw5hZSf9w0z44a0z6VFmEW3z8LJC7RQyr-7597RGS6OlXcFCDjuG1A>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 24 Nov 2023 15:59:25 -0500 (EST)
-Date: Fri, 24 Nov 2023 13:59:24 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: John Fastabend <john.fastabend@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	antony.antony@secunet.com, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, devel@linux-ipsec.org
-Subject: Re: [PATCH ipsec-next v1 7/7] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <rsj2usphrnghq3gnwkbho7rek7ffbgyur4kjuakpfxwu7zqpzw@cj3rmd4gupxq>
-References: <cover.1700676682.git.dxu@dxuuu.xyz>
- <84111ba0ea652a7013df520c151d40d400401e9c.1700676682.git.dxu@dxuuu.xyz>
- <CAADnVQKg7-T_g7CFRs62ZDFyR9z=FTxfyXyTe=3_ojGpnvxJ4w@mail.gmail.com>
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB9919AB
+	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 13:20:12 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c8880f14eeso30244301fa.3
+        for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 13:20:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700860811; x=1701465611; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=u3iUEvooS6LvoxobsGk/GXAcB8kezGs2AkcikIhMBXs=;
+        b=TWDtU42IiiNUEmrKYA2mNf+Zf+kF6ltij6hqaM2VzLtlaR8rNZy1nJmRqDXrG6IZPl
+         vsMNGHI3pdEdPSfR1CaABzQW/IvbBLaE+4HHtjTzjiyAYYR+byy4PT7C1uEVw6kPwu8l
+         V4oM3o1bn3tM/SF86Z+hEAAkSV+NKjYWvSclIPLMv2MZTMK6ULWZGQ7VUzHfe3gmetsO
+         0i7lyi+LgxbiSvLsOyLb2OIuQQJoQxxvo401KX/QmnDlWGK0rjHd20WZJ2gPTeKVPdS+
+         zhFq4nFA25T3LT44lAdZpRatEgGReWIMvd5PcErCr4D+ncYJOSicoNHdT7309vyEmgfK
+         SiPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700860811; x=1701465611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u3iUEvooS6LvoxobsGk/GXAcB8kezGs2AkcikIhMBXs=;
+        b=AyJSrZMYstfdbi0tokYzAu1BXjGdLfd2td0MbmtLU6EureN0yMjAVeSpmRd3+kFUCW
+         fJDOE2z2beRbwmN+A8+5ldNvjx09Y+zZ9xL7gi39dZwbKyTnxso4HX6jbWA+NT2bTMQA
+         7u1Pc3BS4lKgl8/L8vNw+fYu7aLwpkDaNBYeRxMBIDgJ+gvIyK3Pt8Lt/vsXo6QAt6/8
+         n0qz9qOHHZKwFoXxoP/OMtTYpyhkkJb4sdMKiZjhxFu8dTeNx512oOS4PP+JQkkxVb19
+         k7hQke4eUsJ6NorJiiZeDYpNvzSqyhV+V6GCHpIUskFXet2WrHOGj1gmFmGvMLwl8q+V
+         6crw==
+X-Gm-Message-State: AOJu0Yw4kFkLyqjzkrbxJgq+VN5Hz7AWM5FPEVAyP8SdNnJ6QAjLr/y9
+	fx2nv9ygmSeAlIjSz7M33rs=
+X-Google-Smtp-Source: AGHT+IEVe2mi7AtJV67UkmYxoVyXy0BMsLM+s2/VIa9tOYWfPdtdMc0BOA2B8ad2lO5t5+c0X81thQ==
+X-Received: by 2002:a2e:a41b:0:b0:2bc:b557:cee9 with SMTP id p27-20020a2ea41b000000b002bcb557cee9mr3478796ljn.43.1700860810755;
+        Fri, 24 Nov 2023 13:20:10 -0800 (PST)
+Received: from erthalion.local (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
+        by smtp.gmail.com with ESMTPSA id u6-20020a1709064ac600b009ff1bb1d295sm2584803ejt.18.2023.11.24.13.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 13:20:10 -0800 (PST)
+Date: Fri, 24 Nov 2023 22:16:31 +0100
+From: Dmitry Dolgov <9erthalion6@gmail.com>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev,
+	dan.carpenter@linaro.org
+Subject: Re: [RFC PATCH bpf-next v2] bpf: Relax tracing prog recursive attach
+ rules
+Message-ID: <20231124211631.ktwsigoafnnbhpyt@erthalion.local>
+References: <20231122191816.5572-1-9erthalion6@gmail.com>
+ <CAPhsuW6Zj4-CuBeQmsp9j-CjAE3j1bMF_RUUQM85m60yFT0nxg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKg7-T_g7CFRs62ZDFyR9z=FTxfyXyTe=3_ojGpnvxJ4w@mail.gmail.com>
+In-Reply-To: <CAPhsuW6Zj4-CuBeQmsp9j-CjAE3j1bMF_RUUQM85m60yFT0nxg@mail.gmail.com>
 
-Hi Alexei,
+> On Thu, Nov 23, 2023 at 11:24:34PM -0800, Song Liu wrote:
+> > Following the corresponding discussion [1], the reason for that is to
+> > avoid tracing progs call cycles without introducing more complex
+> > solutions. Relax "no same type" requirement to "no progs that are
+> > already an attach target themselves" for the tracing type. In this way
+> > only a standalone tracing program (without any other progs attached to
+> > it) could be attached to another one, and no cycle could be formed. To
+>
+> If prog B attached to prog A, and prog C attached to prog B, then we
+> detach B. At this point, can we re-attach B to A?
 
-On Wed, Nov 22, 2023 at 03:28:16PM -0800, Alexei Starovoitov wrote:
-> On Wed, Nov 22, 2023 at 10:21 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
+Nope, with the proposed changes it still wouldn't be possible to
+reattach B to A (if we're talking about tracing progs of course),
+because this time B is an attachment target on its own.
+
+> > +       if (tgt_prog) {
+> > +               /* Bookkeeping for managing the prog attachment chain. */
+> > +               tgt_prog->aux->follower_cnt++;
+> > +               prog->aux->attach_depth = tgt_prog->aux->attach_depth + 1;
+> > +       }
 > > +
-> > +       bpf_printk("replay-window %d\n", x->replay_esn->replay_window);
-> 
-> Pls no printk in tests. Find a different way to validate.
+>
+> attach_depth is calculated at attach time, so...
+>
+> >                 struct bpf_prog_aux *aux = tgt_prog->aux;
+> >
+> > +               if (aux->attach_depth >= 32) {
+> > +                       bpf_log(log, "Target program attach depth is %d. Too large\n",
+> > +                                       aux->attach_depth);
+> > +                       return -EINVAL;
+> > +               }
+> > +
+>
+> (continue from above) attach_depth is always 0 at program load time, no?
 
-Ack. I'll migrate the ipsec tunnel tests to test_progs next rev so it
-can use mmaped globals.
-
-Thanks,
-Daniel
+Right, it's going to be always 0 for the just loaded program -- but here
+in verifier we check attach_depth of the target program, which is
+calculated at some point before. Or were you asking about something else?
 
