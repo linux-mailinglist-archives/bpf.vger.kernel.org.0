@@ -1,137 +1,147 @@
-Return-Path: <bpf+bounces-15803-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15804-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F3D77F712E
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 11:17:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 155B67F71AD
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 11:40:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 266571F20EF1
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 10:17:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98071B212E5
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 10:40:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99FC199B8;
-	Fri, 24 Nov 2023 10:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842D91A5A2;
+	Fri, 24 Nov 2023 10:39:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uJyJbOmO"
+	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="DYcv1TwT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD5E18026;
-	Fri, 24 Nov 2023 10:16:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F46FC433C8;
-	Fri, 24 Nov 2023 10:16:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700821017;
-	bh=uKHj27pgxPKnUs9P/LiD5S+Q9YM+KGgU4rETYT0qdng=;
-	h=Subject:From:To:Cc:Date:From;
-	b=uJyJbOmOBAibq3lA951l5hET3O2sE8fzfV75AQYGk3H2bxqGz7Xv2SxHJ/DI4YNm/
-	 wNTq1fggFPjfN2hAdKJnMdsvYY27z5uRUlJbKAB19E9N6t8lc/pgjede+HuFQcGAbi
-	 uu04iISyY1d3wEEvV9n5EuHN94Vgv3q08U2fYdJIBuZnbQ7ncb4rrUY/zG0yoggeZ2
-	 9h9s6MFcDBq4EjJ8QRCphmPnrUnSyhKBLfrjL2NExugpifkB3J8oCgeiMSIboO3oh0
-	 j+aPZoaJh86dQC5FJiYPzCzCjhiktBWxW0uCxz0hh4KNQebiN7ROVJrws3+0FwrKBH
-	 MHNOug/BVDNDA==
-Subject: [PATCH net-next] mm/page_pool: catch page_pool memory leaks
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-To: netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>, vbabka@suse.cz
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
- Eric Dumazet <eric.dumazet@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>,
- linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Mel Gorman <mgorman@techsingularity.net>,
- Matthew Wilcox <willy@infradead.org>, kernel-team@cloudflare.com
-Date: Fri, 24 Nov 2023 11:16:52 +0100
-Message-ID: <170082101266.1085481.12199867179160710331.stgit@firesoul>
-User-Agent: StGit/1.5
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00BA518E
+	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 02:39:51 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so2358162a12.2
+        for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 02:39:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1700822390; x=1701427190; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=E3CbeSPBGv/93N4a58P9G5/aucfGqzwYdA8+uNojSvY=;
+        b=DYcv1TwT5fs8XfXra8ZEiJCyb+l2cmBxN70cbKCLxIWKC34jBcN6SeAAus/IF+W9VO
+         TuFuMNOR4uWeKHKCEEqy6ULlxfY8gcTeJr4GTdkJprtwz//mTRttXSKBHy97TaZ+oIRV
+         8f6myOv0kbiZLL+HK93CAtzHu8F3SZ3YBkutaaApqvOmNLM95DLuyHjehIZ326Z36bFW
+         TrLd6Dm4EdEhc/kQ65/dDlS8XpJK1x0Wkz/uyA1UosIBTVnZ1iKNZAb7m+tYsAWIPiJm
+         Jx95XcJlHwdRDzjPLH11mnwkvTp676EvG9GZoM6BpyfbCUzT4DcefXK9NMadHlNbmNUo
+         hXNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700822390; x=1701427190;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E3CbeSPBGv/93N4a58P9G5/aucfGqzwYdA8+uNojSvY=;
+        b=IZUXAYdJLX2kdeWRu2iLLLxnh2gQdNOz5eWed2cL6W6XwwzCpJvdc8tSn7ozpdMrmg
+         4axNjFQTZDK3vtd7tNzDqoOVNXYKBonM3njk+lBbVxD+7UR/EbHKVSnIulksZb1O+9dn
+         dWMWmLMuCA+BsTz2YNimHYtbjMhuK8rQ9zZ+M2LTAVUJvh+dS0sACUzmTuP6ZBi7bRC5
+         qi4l/ORIvZGZNaENFeUKYpFYAciUSO6pBIaS6KmjqKNFCSvI5AIduUJPxDI3JLbFyZbs
+         DkSUFVk3Ebk26tB7u3vN8pmDGS26r9ygBYM7NtBZXZEe6L/PvKZN4y5XKZLxFO4u01fi
+         MyKQ==
+X-Gm-Message-State: AOJu0YzU0/5GlwoVXGlkF0l0Ta9tH94Yk8yhCrz4wlrqAEN6ootJUaNM
+	Zc7gjnY5fqtyqbWOG4CQy2ECVg==
+X-Google-Smtp-Source: AGHT+IHBQS9u0x8xZRIF1tYnmQbgx7Tl8spe3HLfZnEj6pYZl4ExuWUKfoudSxw3WaKk/G1xMy0J/w==
+X-Received: by 2002:a50:9312:0:b0:53e:3b8f:8a58 with SMTP id m18-20020a509312000000b0053e3b8f8a58mr1968390eda.11.1700822390310;
+        Fri, 24 Nov 2023 02:39:50 -0800 (PST)
+Received: from localhost (host-213-179-129-39.customer.m-online.net. [213.179.129.39])
+        by smtp.gmail.com with ESMTPSA id i12-20020a056402054c00b00548851486d8sm1638589edx.44.2023.11.24.02.39.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 Nov 2023 02:39:49 -0800 (PST)
+Date: Fri, 24 Nov 2023 11:39:48 +0100
+From: Jiri Pirko <jiri@resnulli.us>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Edward Cree <ecree.xilinx@gmail.com>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	deb.chatterjee@intel.com, anjali.singhai@intel.com,
+	Vipin.Jain@amd.com, namrata.limaye@intel.com, tom@sipanda.io,
+	mleitner@redhat.com, Mahesh.Shirshyad@amd.com,
+	tomasz.osinski@intel.com, xiyou.wangcong@gmail.com,
+	davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
+	vladbu@nvidia.com, horms@kernel.org, bpf@vger.kernel.org,
+	khalidm@nvidia.com, toke@redhat.com, mattyk@nvidia.com,
+	dan.daly@intel.com, chris.sommers@keysight.com,
+	john.andy.fingerhut@intel.com
+Subject: Re: [PATCH net-next v8 00/15] Introducing P4TC
+Message-ID: <ZWB9dF8/Uk2iP2uy@nanopsycho>
+References: <ZV7y9JG0d4id8GeG@nanopsycho>
+ <CAM0EoMkOvEnPmw=0qye9gWAqgbZjaTYZhiho=qmG1x4WiQxkxA@mail.gmail.com>
+ <ZV9U+zsMM5YqL8Cx@nanopsycho>
+ <CAM0EoMnFB0hgcVFj3=QN4114HiQy46uvYJKqa7=p2VqJTwqBsg@mail.gmail.com>
+ <ZV9csgFAurzm+j3/@nanopsycho>
+ <CAM0EoMkgD10dFvgtueDn7wjJTFTQX6_mkA4Kwr04Dnwp+S-u-A@mail.gmail.com>
+ <ZV9vfYy42G0Fk6m4@nanopsycho>
+ <CAM0EoMkC6+hJ0fb9zCU8bcKDjpnz5M0kbKZ=4GGAMmXH4_W8rg@mail.gmail.com>
+ <0d1d37f9-1ef1-4622-409e-a976c8061a41@gmail.com>
+ <20231123105305.7edeab94@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231123105305.7edeab94@kernel.org>
 
-Pages belonging to a page_pool (PP) instance must be freed through the
-PP APIs in-order to correctly release any DMA mappings and release
-refcnt on the DMA device when freeing PP instance. When PP release a
-page (page_pool_release_page) the page->pp_magic value is cleared.
+Thu, Nov 23, 2023 at 07:53:05PM CET, kuba@kernel.org wrote:
+>On Thu, 23 Nov 2023 17:53:42 +0000 Edward Cree wrote:
+>> The kernel doesn't like to trust offload blobs from a userspace compiler,
+>>  because it has no way to be sure that what comes out of the compiler
+>>  matches the rules/tables/whatever it has in the SW datapath.
+>> It's also a support nightmare because it's basically like each user
+>>  compiling their own device firmware.  
+>
+>Practically speaking every high speed NIC runs a huge binary blob of FW.
+>First, let's acknowledge that as reality.
 
-This patch detect a leaked PP page in free_page_is_bad() via
-unexpected state of page->pp_magic value being PP_SIGNATURE.
+True, but I believe we need to diferenciate:
+1) vendor created, versioned, signed binary fw blob
+2) user compiled on demand, blob
 
-We choose to report and treat it as a bad page. It would be possible
-to release the page via returning it to the PP instance as the
-page->pp pointer is likely still valid.
-
-Notice this code is only activated when either compiled with
-CONFIG_DEBUG_VM or boot cmdline debug_pagealloc=on, and
-CONFIG_PAGE_POOL.
-
-Reduced example output of leak with PP_SIGNATURE = dead000000000040:
-
- BUG: Bad page state in process swapper/4  pfn:141fa6
- page:000000006dbf8062 refcount:0 mapcount:0 mapping:0000000000000000 index:0x141fa6000 pfn:0x141fa6
- flags: 0x2fffff80000000(node=0|zone=2|lastcpupid=0x1fffff)
- page_type: 0xffffffff()
- raw: 002fffff80000000 dead000000000040 ffff88814888a000 0000000000000000
- raw: 0000000141fa6000 0000000000000001 00000000ffffffff 0000000000000000
- page dumped because: page_pool leak
- [...]
- Call Trace:
-  <IRQ>
-  dump_stack_lvl+0x32/0x50
-  bad_page+0x70/0xf0
-  free_unref_page_prepare+0x263/0x430
-  free_unref_page+0x34/0x130
-  mlx5e_free_rx_mpwqe+0x190/0x1c0 [mlx5_core]
-  mlx5e_post_rx_mpwqes+0x1ac/0x280 [mlx5_core]
-  mlx5e_napi_poll+0x12b/0x710 [mlx5_core]
-  ? skb_free_head+0x4f/0x90
-  __napi_poll+0x2b/0x1c0
-  net_rx_action+0x27b/0x360
-
-The advantage is the Call Trace directly points to the function
-leaking the PP page, which in this case is an on purpose bug
-introduced into the mlx5 driver to test this code change.
-
-Currently PP will periodically in page_pool_release_retry()
-printk warning "stalled pool shutdown" which cannot be directly
-corrolated to leaking and might as well be a false positive
-due to SKBs being stuck on a socket for an extended period.
-After this patch we should be able to remove this printk.
-
-Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
----
- mm/page_alloc.c |    7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 733732e7e0ba..37ca4f4b62bf 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -915,6 +915,9 @@ static inline bool page_expected_state(struct page *page,
- 			page_ref_count(page) |
- #ifdef CONFIG_MEMCG
- 			page->memcg_data |
-+#endif
-+#ifdef CONFIG_PAGE_POOL
-+			((page->pp_magic & ~0x3UL) == PP_SIGNATURE) |
- #endif
- 			(page->flags & check_flags)))
- 		return false;
-@@ -941,6 +944,10 @@ static const char *page_bad_reason(struct page *page, unsigned long flags)
- #ifdef CONFIG_MEMCG
- 	if (unlikely(page->memcg_data))
- 		bad_reason = "page still charged to cgroup";
-+#endif
-+#ifdef CONFIG_PAGE_POOL
-+	if (unlikely((page->pp_magic & ~0x3UL) == PP_SIGNATURE))
-+		bad_reason = "page_pool leak";
- #endif
- 	return bad_reason;
- }
+I look at 2) as on "a configuration" of some sort.
 
 
+>
+>Second, there is no equivalent for arbitrary packet parsing in the
+>kernel proper. Offload means take something form the host and put it
+>on the device. If there's nothing in the kernel, we can't consider
+>the new functionality an offload.
+>
+>I understand that "we offload SW functionality" is our general policy,
+>but we should remember why this policy is in place, and not
+>automatically jump to the conclusion.
+
+It is in place to have well defined SW definition of what devices
+offloads.
+
+
+>
+>>  At least normally with device firmware the driver side is talking to
+>>  something with narrow/fixed semantics and went through upstream
+>>  review, even if the firmware side is still a black box.
+>
+>We should be buildings things which are useful and open (as in
+>extensible by people "from the street"). With that in mind, to me,
+>a more practical approach would be to try to figure out a common
+>and rigid FW interface for expressing the parsing graph.
+
+Hmm, could you elaborate a bit more on this one please?
+
+>
+>But that's an interface going from the binary blob to the kernel.
+>
+>> Just to prove I'm not playing favourites: this is *also* a problem with
+>>  eBPF offloads like Nanotubes, and I'm not convinced we have a viable
+>>  solution yet.
+>
+>BPF offloads are actual offloads. Config/state is in the kernel,
+>you need to pop it out to user space, then prove that it's what
+>user intended.
 
