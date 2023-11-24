@@ -1,31 +1,31 @@
-Return-Path: <bpf+bounces-15808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 657227F72B8
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 336117F72B7
 	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 12:29:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE97DB213EF
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 11:29:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 570831C20BCA
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 11:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E771EB3C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2741EB4A;
 	Fri, 24 Nov 2023 11:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2593B10E4
-	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 03:29:32 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F41810FD
+	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 03:29:33 -0800 (PST)
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ScCS72XGGz4f3k6S
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4ScCS768stz4f3k6Y
 	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 19:29:27 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 1DE8C1A06C9
+	by mail.maildlp.com (Postfix) with ESMTP id 9A0761A06D2
 	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 19:29:30 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6xEUiWBloME3Bw--.31197S7;
-	Fri, 24 Nov 2023 19:29:29 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDn6xEUiWBloME3Bw--.31197S8;
+	Fri, 24 Nov 2023 19:29:30 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -40,9 +40,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf v3 3/6] bpf: Defer the free of inner map when necessary
-Date: Fri, 24 Nov 2023 19:30:30 +0800
-Message-Id: <20231124113033.503338-4-houtao@huaweicloud.com>
+Subject: [PATCH bpf v3 4/6] bpf: Optimize the free of inner map
+Date: Fri, 24 Nov 2023 19:30:31 +0800
+Message-Id: <20231124113033.503338-5-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20231124113033.503338-1-houtao@huaweicloud.com>
 References: <20231124113033.503338-1-houtao@huaweicloud.com>
@@ -53,153 +53,166 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDn6xEUiWBloME3Bw--.31197S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr4UGry7GFWkur4xXrWrXwb_yoWrtrW5pF
-	Z8K348Cw40qr429rZxZa17ZrWYyw4fW34DCas5Ga4YyrnxWr9Fv3W0gFy3AF15Ar4kJrW2
-	vrnFg34Fk3yUZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
+X-CM-TRANSID:cCh0CgDn6xEUiWBloME3Bw--.31197S8
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFyxCF43KF43KFyxAr43KFg_yoW7Ww4DpF
+	W5KrW8Gr4kXr42k39Iyw47Z345XwsYgw45Gas5C345Ar15Wr9FqFy0gFW5Jr98AF4kJ3yI
+	vrnIgryUK3yUZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
+	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
+	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
+	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-When updating or deleting an inner map in map array or map htab, the map
-may still be accessed by non-sleepable program or sleepable program.
-However bpf_map_fd_put_ptr() decreases the ref-counter of the inner map
-directly through bpf_map_put(), if the ref-counter is the last one
-(which is true for most cases), the inner map will be freed by
-ops->map_free() in a kworker. But for now, most .map_free() callbacks
-don't use synchronize_rcu() or its variants to wait for the elapse of a
-RCU grace period, so after the invocation of ops->map_free completes,
-the bpf program which is accessing the inner map may incur
-use-after-free problem.
+When removing the inner map from the outer map, the inner map will be
+freed after one RCU grace period and one RCU tasks trace grace
+period, so it is certain that the bpf program, which may access the
+inner map, has exited before the inner map is freed.
 
-Fix the free of inner map by invoking bpf_map_free_deferred() after both
-one RCU grace period and one tasks trace RCU grace period if the inner
-map has been removed from the outer map before. The deferment is
-accomplished by using call_rcu() or call_rcu_tasks_trace() when freeing
-the last ref-counter of bpf map, and the newly-added rcu_head field in
-bpf_map shares the same space with work field to reduce the size of
-bpf_map.
+However there is unnecessary to wait for any RCU grace period, one RCU
+grace period or one RCU tasks trace grace period if the outer map is
+only accessed by userspace, sleepable program or non-sleepable program.
+So recording the sleepable attributes of the owned bpf programs when
+adding the outer map into env->used_maps, copying the recorded
+attributes to inner map atomically when removing inner map from the
+outer map and using the recorded attributes in the inner map to decide
+which, and how many, RCU grace periods are needed when freeing the
+inner map.
 
-Fixes: bba1dc0b55ac ("bpf: Remove redundant synchronize_rcu.")
-Fixes: 638e4b825d52 ("bpf: Allows per-cpu maps and map-in-map in sleepable programs")
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- include/linux/bpf.h     |  7 ++++++-
- kernel/bpf/map_in_map.c | 11 ++++++++---
- kernel/bpf/syscall.c    | 32 +++++++++++++++++++++++++++-----
- 3 files changed, 41 insertions(+), 9 deletions(-)
+ include/linux/bpf.h     |  8 +++++++-
+ kernel/bpf/map_in_map.c | 19 ++++++++++++++-----
+ kernel/bpf/syscall.c    | 15 +++++++++++++--
+ kernel/bpf/verifier.c   |  4 ++++
+ 4 files changed, 38 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 6f68ac24bb9a..15a6bb951b70 100644
+index 15a6bb951b70..c5b549f352d7 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -276,7 +276,11 @@ struct bpf_map {
- 	 */
- 	atomic64_t refcnt ____cacheline_aligned;
- 	atomic64_t usercnt;
--	struct work_struct work;
-+	/* rcu is used before freeing and work is only used during freeing */
-+	union {
-+		struct work_struct work;
-+		struct rcu_head rcu;
-+	};
- 	struct mutex freeze_mutex;
- 	atomic64_t writecnt;
- 	/* 'Ownership' of program-containing map is claimed by the first program
-@@ -292,6 +296,7 @@ struct bpf_map {
+@@ -245,6 +245,11 @@ struct bpf_list_node_kern {
+ 	void *owner;
+ } __attribute__((aligned(8)));
+ 
++enum {
++	BPF_MAP_RCU_GP = BIT(0),
++	BPF_MAP_RCU_TT_GP = BIT(1),
++};
++
+ struct bpf_map {
+ 	/* The first two cachelines with read-mostly members of which some
+ 	 * are also accessed in fast-path (e.g. ops, max_entries).
+@@ -296,7 +301,8 @@ struct bpf_map {
  	} owner;
  	bool bypass_spec_v1;
  	bool frozen; /* write-once; write-protected by freeze_mutex */
-+	bool free_after_mult_rcu_gp;
+-	bool free_after_mult_rcu_gp;
++	atomic_t used_in_rcu_gp;
++	atomic_t free_by_rcu_gp;
  	s64 __percpu *elem_count;
  };
  
 diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-index 7d5754d18fd0..cf3363065566 100644
+index cf3363065566..d044ee677107 100644
 --- a/kernel/bpf/map_in_map.c
 +++ b/kernel/bpf/map_in_map.c
-@@ -129,10 +129,15 @@ void *bpf_map_fd_get_ptr(struct bpf_map *map,
- 
- void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool deferred)
+@@ -131,12 +131,21 @@ void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool deferred)
  {
--	/* ptr->ops->map_free() has to go through one
--	 * rcu grace period by itself.
-+	struct bpf_map *inner_map = ptr;
-+
-+	/* The inner map may still be used by both non-sleepable and sleepable
-+	 * bpf program, so free it after one RCU grace period and one tasks
-+	 * trace RCU grace period.
+ 	struct bpf_map *inner_map = ptr;
+ 
+-	/* The inner map may still be used by both non-sleepable and sleepable
+-	 * bpf program, so free it after one RCU grace period and one tasks
+-	 * trace RCU grace period.
++	/* Defer the freeing of inner map according to the attribute of bpf
++	 * program which owns the outer map, so unnecessary multiple RCU GP
++	 * waitings can be avoided.
  	 */
--	bpf_map_put(ptr);
-+	if (deferred)
-+		WRITE_ONCE(inner_map->free_after_mult_rcu_gp, true);
-+	bpf_map_put(inner_map);
+-	if (deferred)
+-		WRITE_ONCE(inner_map->free_after_mult_rcu_gp, true);
++	if (deferred) {
++		/* used_in_rcu_gp may be updated concurrently by new bpf
++		 * program, so add smp_mb() to guarantee the order between
++		 * used_in_rcu_gp and lookup/deletion operation of inner map.
++		 * If a new bpf program finds the inner map before it is
++		 * removed from outer map, reading used_in_rcu_gp below will
++		 * return the newly-set bit set by the new bpf program.
++		 */
++		smp_mb();
++		atomic_or(atomic_read(&map->used_in_rcu_gp), &inner_map->free_by_rcu_gp);
++	}
+ 	bpf_map_put(inner_map);
  }
  
- u32 bpf_map_fd_sys_lookup_elem(void *ptr)
 diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a144eb286974..88882cb58121 100644
+index 88882cb58121..014a8cd55a41 100644
 --- a/kernel/bpf/syscall.c
 +++ b/kernel/bpf/syscall.c
-@@ -718,6 +718,28 @@ static void bpf_map_put_uref(struct bpf_map *map)
- 	}
- }
+@@ -734,7 +734,10 @@ static void bpf_map_free_rcu_gp(struct rcu_head *rcu)
  
-+static void bpf_map_free_in_work(struct bpf_map *map)
-+{
-+	INIT_WORK(&map->work, bpf_map_free_deferred);
-+	/* Avoid spawning kworkers, since they all might contend
-+	 * for the same mutex like slab_mutex.
-+	 */
-+	queue_work(system_unbound_wq, &map->work);
-+}
+ static void bpf_map_free_mult_rcu_gp(struct rcu_head *rcu)
+ {
+-	if (rcu_trace_implies_rcu_gp())
++	struct bpf_map *map = container_of(rcu, struct bpf_map, rcu);
 +
-+static void bpf_map_free_rcu_gp(struct rcu_head *rcu)
-+{
-+	bpf_map_free_in_work(container_of(rcu, struct bpf_map, rcu));
-+}
++	if (!(atomic_read(&map->free_by_rcu_gp) & BPF_MAP_RCU_GP) ||
++	    rcu_trace_implies_rcu_gp())
+ 		bpf_map_free_rcu_gp(rcu);
+ 	else
+ 		call_rcu(rcu, bpf_map_free_rcu_gp);
+@@ -746,11 +749,16 @@ static void bpf_map_free_mult_rcu_gp(struct rcu_head *rcu)
+ void bpf_map_put(struct bpf_map *map)
+ {
+ 	if (atomic64_dec_and_test(&map->refcnt)) {
++		int free_by_rcu_gp;
 +
-+static void bpf_map_free_mult_rcu_gp(struct rcu_head *rcu)
-+{
-+	if (rcu_trace_implies_rcu_gp())
-+		bpf_map_free_rcu_gp(rcu);
-+	else
-+		call_rcu(rcu, bpf_map_free_rcu_gp);
-+}
-+
- /* decrement map refcnt and schedule it for freeing via workqueue
-  * (underlying map implementation ops->map_free() might sleep)
-  */
-@@ -727,11 +749,11 @@ void bpf_map_put(struct bpf_map *map)
  		/* bpf_map_free_id() must be called first */
  		bpf_map_free_id(map);
  		btf_put(map->btf);
--		INIT_WORK(&map->work, bpf_map_free_deferred);
--		/* Avoid spawning kworkers, since they all might contend
--		 * for the same mutex like slab_mutex.
--		 */
--		queue_work(system_unbound_wq, &map->work);
-+
-+		if (READ_ONCE(map->free_after_mult_rcu_gp))
-+			call_rcu_tasks_trace(&map->rcu, bpf_map_free_mult_rcu_gp);
-+		else
-+			bpf_map_free_in_work(map);
+ 
+-		if (READ_ONCE(map->free_after_mult_rcu_gp))
++		free_by_rcu_gp = atomic_read(&map->free_by_rcu_gp);
++		if (free_by_rcu_gp == BPF_MAP_RCU_GP)
++			call_rcu(&map->rcu, bpf_map_free_rcu_gp);
++		else if (free_by_rcu_gp)
+ 			call_rcu_tasks_trace(&map->rcu, bpf_map_free_mult_rcu_gp);
+ 		else
+ 			bpf_map_free_in_work(map);
+@@ -5343,6 +5351,9 @@ static int bpf_prog_bind_map(union bpf_attr *attr)
+ 		goto out_unlock;
  	}
- }
- EXPORT_SYMBOL_GPL(bpf_map_put);
+ 
++	/* No need to update used_in_rcu_gp, because the bpf program doesn't
++	 * access the map.
++	 */
+ 	memcpy(used_maps_new, used_maps_old,
+ 	       sizeof(used_maps_old[0]) * prog->aux->used_map_cnt);
+ 	used_maps_new[prog->aux->used_map_cnt] = map;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 6da370a047fe..3b86c02077f1 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -18051,6 +18051,10 @@ static int resolve_pseudo_ldimm64(struct bpf_verifier_env *env)
+ 				return -E2BIG;
+ 			}
+ 
++			atomic_or(env->prog->aux->sleepable ? BPF_MAP_RCU_TT_GP : BPF_MAP_RCU_GP,
++				  &map->used_in_rcu_gp);
++			/* Pairs with smp_mb() in bpf_map_fd_put_ptr() */
++			smp_mb__before_atomic();
+ 			/* hold the map. If the program is rejected by verifier,
+ 			 * the map will be released by release_maps() or it
+ 			 * will be used by the valid program until it's unloaded
 -- 
 2.29.2
 
