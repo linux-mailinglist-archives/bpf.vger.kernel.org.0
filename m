@@ -1,68 +1,65 @@
-Return-Path: <bpf+bounces-15830-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15831-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F0C27F8568
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 22:20:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 725827F85AD
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 22:55:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52F772820B5
-	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 21:20:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E7C428397E
+	for <lists+bpf@lfdr.de>; Fri, 24 Nov 2023 21:55:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4113BB36;
-	Fri, 24 Nov 2023 21:20:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6359A3C491;
+	Fri, 24 Nov 2023 21:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TWDtU42I"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PuirzZON"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB9919AB
-	for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 13:20:12 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2c8880f14eeso30244301fa.3
-        for <bpf@vger.kernel.org>; Fri, 24 Nov 2023 13:20:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700860811; x=1701465611; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u3iUEvooS6LvoxobsGk/GXAcB8kezGs2AkcikIhMBXs=;
-        b=TWDtU42IiiNUEmrKYA2mNf+Zf+kF6ltij6hqaM2VzLtlaR8rNZy1nJmRqDXrG6IZPl
-         vsMNGHI3pdEdPSfR1CaABzQW/IvbBLaE+4HHtjTzjiyAYYR+byy4PT7C1uEVw6kPwu8l
-         V4oM3o1bn3tM/SF86Z+hEAAkSV+NKjYWvSclIPLMv2MZTMK6ULWZGQ7VUzHfe3gmetsO
-         0i7lyi+LgxbiSvLsOyLb2OIuQQJoQxxvo401KX/QmnDlWGK0rjHd20WZJ2gPTeKVPdS+
-         zhFq4nFA25T3LT44lAdZpRatEgGReWIMvd5PcErCr4D+ncYJOSicoNHdT7309vyEmgfK
-         SiPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700860811; x=1701465611;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u3iUEvooS6LvoxobsGk/GXAcB8kezGs2AkcikIhMBXs=;
-        b=AyJSrZMYstfdbi0tokYzAu1BXjGdLfd2td0MbmtLU6EureN0yMjAVeSpmRd3+kFUCW
-         fJDOE2z2beRbwmN+A8+5ldNvjx09Y+zZ9xL7gi39dZwbKyTnxso4HX6jbWA+NT2bTMQA
-         7u1Pc3BS4lKgl8/L8vNw+fYu7aLwpkDaNBYeRxMBIDgJ+gvIyK3Pt8Lt/vsXo6QAt6/8
-         n0qz9qOHHZKwFoXxoP/OMtTYpyhkkJb4sdMKiZjhxFu8dTeNx512oOS4PP+JQkkxVb19
-         k7hQke4eUsJ6NorJiiZeDYpNvzSqyhV+V6GCHpIUskFXet2WrHOGj1gmFmGvMLwl8q+V
-         6crw==
-X-Gm-Message-State: AOJu0Yw4kFkLyqjzkrbxJgq+VN5Hz7AWM5FPEVAyP8SdNnJ6QAjLr/y9
-	fx2nv9ygmSeAlIjSz7M33rs=
-X-Google-Smtp-Source: AGHT+IEVe2mi7AtJV67UkmYxoVyXy0BMsLM+s2/VIa9tOYWfPdtdMc0BOA2B8ad2lO5t5+c0X81thQ==
-X-Received: by 2002:a2e:a41b:0:b0:2bc:b557:cee9 with SMTP id p27-20020a2ea41b000000b002bcb557cee9mr3478796ljn.43.1700860810755;
-        Fri, 24 Nov 2023 13:20:10 -0800 (PST)
-Received: from erthalion.local (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
-        by smtp.gmail.com with ESMTPSA id u6-20020a1709064ac600b009ff1bb1d295sm2584803ejt.18.2023.11.24.13.20.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 Nov 2023 13:20:10 -0800 (PST)
-Date: Fri, 24 Nov 2023 22:16:31 +0100
-From: Dmitry Dolgov <9erthalion6@gmail.com>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev,
-	dan.carpenter@linaro.org
-Subject: Re: [RFC PATCH bpf-next v2] bpf: Relax tracing prog recursive attach
- rules
-Message-ID: <20231124211631.ktwsigoafnnbhpyt@erthalion.local>
-References: <20231122191816.5572-1-9erthalion6@gmail.com>
- <CAPhsuW6Zj4-CuBeQmsp9j-CjAE3j1bMF_RUUQM85m60yFT0nxg@mail.gmail.com>
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C08B198D;
+	Fri, 24 Nov 2023 13:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700862894; x=1732398894;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jGRZBAZBF364mV5fItFOiFIV3VjaPOBDqkOVnrlj6us=;
+  b=PuirzZONBttUV+TIE8CNigyCXNB86iwyH3Cf6FK8HdnKVWP+uq/NF01o
+   vJHvxaUxDKFt/dYKOVNfOcVaxoT8by+RXjWr8Osm4GdHKqzqwQRmxqSTR
+   HvzRKsHxU0xuT11H70pS0c/aRuL1S2eEsUSsbmqdBm4Cyzm5JHPe0RPAf
+   WJaSri7am1LSAfORmhKbM9cjgDSNCKFQ1EScrzi3R+USQdaZ6MF35sGpd
+   d64rCaW5MRrKrAstEGw8U5djjer++S8hQFR1OFn6wER/79oIpEOn8vjNf
+   ZfpHCxtVDpntnkpay9anKjYAIJfOLpN8HJzdZPybW/O5IvrjVzI3L51M5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="391344092"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="391344092"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2023 13:54:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10904"; a="802229620"
+X-IronPort-AV: E=Sophos;i="6.04,224,1695711600"; 
+   d="scan'208";a="802229620"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 24 Nov 2023 13:54:50 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r6e8N-0003Jb-30;
+	Fri, 24 Nov 2023 21:54:47 +0000
+Date: Sat, 25 Nov 2023 05:54:25 +0800
+From: kernel test robot <lkp@intel.com>
+To: Song Liu <song@kernel.org>, bpf@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, fsverity@lists.linux.dev
+Cc: oe-kbuild-all@lists.linux.dev, ebiggers@kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	brauner@kernel.org, viro@zeniv.linux.org.uk, casey@schaufler-ca.com,
+	amir73il@gmail.com, kpsingh@kernel.org, roberto.sassu@huawei.com,
+	Song Liu <song@kernel.org>
+Subject: Re: [PATCH v13 bpf-next 6/6] selftests/bpf: Add test that uses
+ fsverity and xattr to sign a file
+Message-ID: <202311250314.KGxKh0fm-lkp@intel.com>
+References: <20231123233936.3079687-7-song@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,44 +68,37 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPhsuW6Zj4-CuBeQmsp9j-CjAE3j1bMF_RUUQM85m60yFT0nxg@mail.gmail.com>
+In-Reply-To: <20231123233936.3079687-7-song@kernel.org>
 
-> On Thu, Nov 23, 2023 at 11:24:34PM -0800, Song Liu wrote:
-> > Following the corresponding discussion [1], the reason for that is to
-> > avoid tracing progs call cycles without introducing more complex
-> > solutions. Relax "no same type" requirement to "no progs that are
-> > already an attach target themselves" for the tracing type. In this way
-> > only a standalone tracing program (without any other progs attached to
-> > it) could be attached to another one, and no cycle could be formed. To
->
-> If prog B attached to prog A, and prog C attached to prog B, then we
-> detach B. At this point, can we re-attach B to A?
+Hi Song,
 
-Nope, with the proposed changes it still wouldn't be possible to
-reattach B to A (if we're talking about tracing progs of course),
-because this time B is an attachment target on its own.
+kernel test robot noticed the following build errors:
 
-> > +       if (tgt_prog) {
-> > +               /* Bookkeeping for managing the prog attachment chain. */
-> > +               tgt_prog->aux->follower_cnt++;
-> > +               prog->aux->attach_depth = tgt_prog->aux->attach_depth + 1;
-> > +       }
-> > +
->
-> attach_depth is calculated at attach time, so...
->
-> >                 struct bpf_prog_aux *aux = tgt_prog->aux;
-> >
-> > +               if (aux->attach_depth >= 32) {
-> > +                       bpf_log(log, "Target program attach depth is %d. Too large\n",
-> > +                                       aux->attach_depth);
-> > +                       return -EINVAL;
-> > +               }
-> > +
->
-> (continue from above) attach_depth is always 0 at program load time, no?
+[auto build test ERROR on bpf-next/master]
 
-Right, it's going to be always 0 for the just loaded program -- but here
-in verifier we check attach_depth of the target program, which is
-calculated at some point before. Or were you asking about something else?
+url:    https://github.com/intel-lab-lkp/linux/commits/Song-Liu/bpf-Add-kfunc-bpf_get_file_xattr/20231124-074239
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231123233936.3079687-7-song%40kernel.org
+patch subject: [PATCH v13 bpf-next 6/6] selftests/bpf: Add test that uses fsverity and xattr to sign a file
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231125/202311250314.KGxKh0fm-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311250314.KGxKh0fm-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> progs/test_sig_in_xattr.c:36:26: error: invalid application of 'sizeof' to an incomplete type 'struct fsverity_digest'
+      36 | char digest[MAGIC_SIZE + sizeof(struct fsverity_digest) + SHA256_DIGEST_SIZE];
+         |                          ^     ~~~~~~~~~~~~~~~~~~~~~~~~
+   progs/test_sig_in_xattr.c:36:40: note: forward declaration of 'struct fsverity_digest'
+      36 | char digest[MAGIC_SIZE + sizeof(struct fsverity_digest) + SHA256_DIGEST_SIZE];
+         |                                        ^
+   1 error generated.
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
