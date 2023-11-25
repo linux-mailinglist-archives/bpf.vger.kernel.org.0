@@ -1,121 +1,133 @@
-Return-Path: <bpf+bounces-15849-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B3557F8E3F
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 20:55:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1EB87F8E46
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 20:59:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 746691C20C6D
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 19:55:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40EB8B21065
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 19:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DACF2FE1E;
-	Sat, 25 Nov 2023 19:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48B872FE1F;
+	Sat, 25 Nov 2023 19:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SZc5paeA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LgST56Qj"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3500D3
-	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 11:55:35 -0800 (PST)
-Message-ID: <f1fde0d0-dba6-481d-8b2d-d0c3d63620cc@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1700942133;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L8F9MPFwmOCLPLh8hmhGAN37mH4T2KQmfMjmUggVj90=;
-	b=SZc5paeACdtCsfOQZrfxxewPoTqdyO35fFPpTs4U8NXsZ0oEHm3hbd+Gqodgncau5QMv21
-	PLLS7U2rXzQW4DviSbyXl7NVEVX2U45mCVoXXRgK9//yueu208RZHrrjexexSdBFj7Nzob
-	MyWqyRPftxWdxFpro2o+OxOPkbUZeY8=
-Date: Sat, 25 Nov 2023 11:55:25 -0800
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70370C1;
+	Sat, 25 Nov 2023 11:59:46 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b2e4107f47so1962924b6e.2;
+        Sat, 25 Nov 2023 11:59:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700942385; x=1701547185; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VO2STeGiEdMah3Rs2OqrcrAeByRtw44j2ObgacSxxiE=;
+        b=LgST56Qjx/YIMLqSoJqVxm7x1UXV50JBAtyTWhCiz6WJRtG81EJjSIMCCXLcYPvNY1
+         dmnNypoWAmRiiW1hde5W9KFzIjPSUZ5Zfonxey8nC9SitwMqvcgFyefuJFnthGLlA6vN
+         mnpR/iaEV4BCSViF1SdyTwZQ8+RIAWaPmUiJiM60gBmsk6N3NIeV3ekz1xH1v55DpCxw
+         yIHxy7WrWFRmhdC8YEdJuhwlAtc0HQnLEWO6Ahnl0A3sN51JiDrrrSA8qkCsjrjqduI3
+         qH/YnyBy8TUrr3azmuuGutQcqjQPeDIac7HSBPQshmngX4RjUcisL9I/4e4QtF1WLTsl
+         BGcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700942385; x=1701547185;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VO2STeGiEdMah3Rs2OqrcrAeByRtw44j2ObgacSxxiE=;
+        b=gb8VKhmRT/4EALhWPolmcYd465T7iZ8YwyzqrkG6YAiQRC6Euf78oOb2TJgj+/yjgN
+         u65+tnlvSLPaRo2OivXB8C1Mvqh8gSp/9EmYjq+ofvNROlg+zQZ1RPSqyDOKiwQQGXpl
+         cwPnau5pWj3ymBzQSvDxONnJafRQMwbk+k3W6NFaPXdxirIIXZpcp/knQ/fm0fTf3rio
+         yAPIabBkXILZIbjcDhK4gcGvkiir2NajKDNxJCybGNr0EP0sIWBrm4p7QKmkPdIVBNqR
+         f7Hm0bpHnCB5gL/TkJHKpjgJU8eJRH3sVSwgdpOquDW/A1sHvb0asqnaAiaW/p78siJP
+         DZvg==
+X-Gm-Message-State: AOJu0Yy3haYYMZ2RkEuebDfGj/sRElwvqeTzRoTtme+KtYVnlj6CVxNI
+	DOKrzvcTT/rKyPbZLDU7paU=
+X-Google-Smtp-Source: AGHT+IF+BxyzFQahU6Dxq/44kcsAgGeS2aylZ4ZZxV46S/9sIA9rChJVPx29c5ohIiymo++7u/6c2Q==
+X-Received: by 2002:a05:6808:1a1d:b0:3b5:c587:d9ed with SMTP id bk29-20020a0568081a1d00b003b5c587d9edmr9808829oib.26.1700942385503;
+        Sat, 25 Nov 2023 11:59:45 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id fb2-20020a056a002d8200b006c4d371ef7csm4860212pfb.14.2023.11.25.11.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 25 Nov 2023 11:59:44 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Sat, 25 Nov 2023 09:59:43 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Andrea Righi <andrea.righi@canonical.com>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+	pjt@google.com, derkling@google.com, haoluo@google.com,
+	dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+	riel@surriel.com, changwoo@igalia.com, himadrics@inria.fr,
+	memxor@gmail.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH 12/36] sched_ext: Implement BPF extensible scheduler class
+Message-ID: <ZWJSL15eCe0aXnZe@mtj.duckdns.org>
+References: <20231111024835.2164816-1-tj@kernel.org>
+ <20231111024835.2164816-13-tj@kernel.org>
+ <ZV8IR/w4IaxJ2vPA@gpd>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next v2] bpf: Relax tracing prog recursive attach
- rules
-Content-Language: en-GB
-To: Dmitry Dolgov <9erthalion6@gmail.com>, Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, dan.carpenter@linaro.org
-References: <20231122191816.5572-1-9erthalion6@gmail.com>
- <CAPhsuW6Zj4-CuBeQmsp9j-CjAE3j1bMF_RUUQM85m60yFT0nxg@mail.gmail.com>
- <20231124211631.ktwsigoafnnbhpyt@erthalion.local>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20231124211631.ktwsigoafnnbhpyt@erthalion.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZV8IR/w4IaxJ2vPA@gpd>
 
+Hello,
 
-On 11/24/23 4:16 PM, Dmitry Dolgov wrote:
->> On Thu, Nov 23, 2023 at 11:24:34PM -0800, Song Liu wrote:
->>> Following the corresponding discussion [1], the reason for that is to
->>> avoid tracing progs call cycles without introducing more complex
->>> solutions. Relax "no same type" requirement to "no progs that are
->>> already an attach target themselves" for the tracing type. In this way
->>> only a standalone tracing program (without any other progs attached to
->>> it) could be attached to another one, and no cycle could be formed. To
->> If prog B attached to prog A, and prog C attached to prog B, then we
->> detach B. At this point, can we re-attach B to A?
-> Nope, with the proposed changes it still wouldn't be possible to
-> reattach B to A (if we're talking about tracing progs of course),
-> because this time B is an attachment target on its own.
+On Thu, Nov 23, 2023 at 09:07:35AM +0100, Andrea Righi wrote:
+> On Fri, Nov 10, 2023 at 04:47:38PM -1000, Tejun Heo wrote:
+...
+> > +#ifdef CONFIG_SCHED_CLASS_EXT
+> > +	p->scx.dsq		= NULL;
+> > +	INIT_LIST_HEAD(&p->scx.dsq_node);
+> > +	p->scx.flags		= 0;
+> > +	p->scx.weight		= 0;
+> > +	p->scx.sticky_cpu	= -1;
+> > +	p->scx.holding_cpu	= -1;
+> > +	p->scx.kf_mask		= 0;
+> > +	atomic64_set(&p->scx.ops_state, 0);
+> 
+> We probably need atomic_long_set() here or in 32-bit arches (such as
+> armhf) we get this:
+> 
+> kernel/sched/core.c:4564:22: error: passing argument 1 of ‘atomic64_set’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+>  4564 |         atomic64_set(&p->scx.ops_state, 0);
+>       |                      ^~~~~~~~~~~~~~~~~
+>       |                      |
+>       |                      atomic_long_t * {aka atomic_t *}
+> 
+...
+> > +static void set_next_task_scx(struct rq *rq, struct task_struct *p, bool first)
+> > +{
+> > +	if (p->scx.flags & SCX_TASK_QUEUED) {
+> > +		WARN_ON_ONCE(atomic64_read(&p->scx.ops_state) != SCX_OPSS_NONE);
+> 
+> Ditto. Even if this line is replaced later by
+> "[PATCH 31/36] sched_ext: Implement core-sched support"
+> 
+> > +		dispatch_dequeue(&rq->scx, p);
+> > +	}
+> > +
+> > +	p->se.exec_start = rq_clock_task(rq);
+> > +}
 
-IIUC, the 'prog B attached to prog A, and prog C attached to prog B'
-not really possible.
-    After prog B attached to prog A, we have
-      prog B follower_cnt = 1
-      prog A attach_depth = 1
-    Then prog C wants to attach to prog B,
-      since we have prog B follower_cnt = 1, then attaching will fail.
+Sorry about that. I updated them and will include the changes in the next
+iteration. Will test 32bit build too next time.
 
-If we do have A <- B <- C chain by
-    first prog C attached to prog B, and then prog B attached to A
-    now we have
-     prog B/C follower_cnt = 1
-     prog A/B attach_depth = 1
-after detaching B from A, we have
-     prog B follower_cnt = 0
-     prog A attach_depth = 0
+Thanks.
 
-In this particular case, prog B attaching to prog A should succeed
-since prog B follower_cnt = 0.
-
-Did I miss anything?
-
-In the commit message, 'falcosecurity libs project' is mentioned as a use
-case for chained fentry/fexit bpf programs. I think you should expand the
-use case in more details. It is possible with use case description, people
-might find better/alternative solutions for your use case.
-
-Also, if you can have a test case to exercise your commit logic,
-it will be even better.
-
->
->>> +       if (tgt_prog) {
->>> +               /* Bookkeeping for managing the prog attachment chain. */
->>> +               tgt_prog->aux->follower_cnt++;
->>> +               prog->aux->attach_depth = tgt_prog->aux->attach_depth + 1;
->>> +       }
->>> +
->> attach_depth is calculated at attach time, so...
->>
->>>                  struct bpf_prog_aux *aux = tgt_prog->aux;
->>>
->>> +               if (aux->attach_depth >= 32) {
->>> +                       bpf_log(log, "Target program attach depth is %d. Too large\n",
->>> +                                       aux->attach_depth);
->>> +                       return -EINVAL;
->>> +               }
->>> +
->> (continue from above) attach_depth is always 0 at program load time, no?
-> Right, it's going to be always 0 for the just loaded program -- but here
-> in verifier we check attach_depth of the target program, which is
-> calculated at some point before. Or were you asking about something else?
+-- 
+tejun
 
