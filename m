@@ -1,124 +1,110 @@
-Return-Path: <bpf+bounces-15835-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03E847F88FB
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 09:07:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9402C7F8958
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 09:43:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A8781C20CB9
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 08:07:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53F4C281785
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 08:43:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C9F98F75;
-	Sat, 25 Nov 2023 08:07:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC1B72106;
+	Sat, 25 Nov 2023 08:43:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Rdqj6MRD"
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="HozOdHTi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09369B7;
-	Sat, 25 Nov 2023 00:07:23 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 772FF10001E;
-	Sat, 25 Nov 2023 11:07:21 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 772FF10001E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1700899641;
-	bh=K7fr0lZtqmONXfZHNs6nAmOycaDMnGOOKILgnfl+LIQ=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=Rdqj6MRDCKN2d8lc2syBteEBMtCQzrlDYW1KBbOPAp2s2tKlmV7KiOjHS9Neuvewn
-	 fnOOkbNxnP5WMHD4M5jcgpHPxZVfBN76FrhWwFI30da+XEY4W3/vf36jTJI2PuM3Q+
-	 49VPziGMV9x5OuXaBS6+syprhr0oAXnCg/ZhQpEVScT2/SZOzTXAJXD9VUcxcJABIb
-	 KFBOUhr9GFdmWSjwTy6oVwJmLwkvGynMvjkWYLXn6wPxwF4RNoVKYwGq42VXgeUUr8
-	 9jDtwNXUTTZYb4uk+aSzz6foNiREai7FXC7jFS5aN8xiuy8cUDzzheBXBO5Zd1P8gW
-	 svF/Z1UB/R/Cw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sat, 25 Nov 2023 11:07:21 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
- (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 25 Nov
- 2023 11:07:21 +0300
-Date: Sat, 25 Nov 2023 11:07:20 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-CC: <hannes@cmpxchg.org>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
-	<shakeelb@google.com>, <muchun.song@linux.dev>, <kernel@sberdevices.ru>,
-	<rockosov@gmail.com>, <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] samples: introduce cgroup events listeners
-Message-ID: <20231125080720.h7kbdzumlsi6ltrj@CAB-WSD-L081021>
-References: <20231123071945.25811-1-ddrokosov@salutedevices.com>
- <20231124114230.22ed97e85058dc339947f13f@linux-foundation.org>
- <20231124200633.scnct5f7auawsjn2@CAB-WSD-L081021>
+Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1591E101
+	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 00:43:08 -0800 (PST)
+Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1fa1bcf1d01so299601fac.0
+        for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 00:43:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1700901786; x=1701506586; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7HH2pxIh3nFi6PgmibuEVDY9PSlg1zWmdehxfnJOthE=;
+        b=HozOdHTidnvXz+6zbgktJW2ePFhpn3MzoGuGF+AEc4ueOTzg68BVWj5IyR0dYsmvDO
+         7EZ/UgKmStDBuxM+FU6nvjYVSLA+GDuJYakqYLKzvVFEf7IqgN5MoWzzbpEaf9pzRtA7
+         e5aP0lEglX0R0o3Ck4o2TR0PXe371+wwkJN+UTre+XST547MrcvKhSBkZYwxllrFjKWI
+         m5gk51cgJx6rQKnqgrBz2yzFW6A9cp5quM9uktbqfIsEL4+uNgYq1W8y6qaQbNKNu/pE
+         uXEVpgBMN/uZx4UTtVvd3pe13tRbOwAdWJYuRL8ECikdP5POJ1AXqr1d48IA5I2GT/+q
+         CZ4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700901786; x=1701506586;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7HH2pxIh3nFi6PgmibuEVDY9PSlg1zWmdehxfnJOthE=;
+        b=GlUjmSvHPhngZOJ79Og/oxbowYR8EsRtqdyTWOwY8Rlx0xJsKv43sKAKx1s6rlslq+
+         POs+rIpjQ/uYIUBbkR0pG5K6azqO6MuF2IM6akKXVUpCgirEQDs0MPi51F/SRFvN+Yzv
+         0yjiWFWufKstlBvj1vkefLXEcfWkZDuwiam3YQ98jZoYFmYaG7+KkjrhnXyAilxptNOL
+         jBoPy9Jy83pp9il2KV6wmhjRdyt9oLqdRX2VXHzhE9GXi/Zw+7VBgGPYClidf1Qb8VMA
+         26t1USeCVxBvYp4a3nwuEOtV7pVHFS/KQl9jPXIcBb1SVe4bD1nj1e0fsStTLOGgK7d5
+         uLkg==
+X-Gm-Message-State: AOJu0YyaseKuCcrFy1O7E+fpXZxxJJO2vY527awH9lUjW3bNoGuti8Ct
+	lo5gt3wUaPwTwS6KQ5ZNJM54ww==
+X-Google-Smtp-Source: AGHT+IFmZhHL5cLpP2WUD/tuxlPb1Nw3FRYAI7O7Swcj6l2uZNuYbQz1/jSNINvtK+tOhi1SIoMNZg==
+X-Received: by 2002:a05:6870:7028:b0:1e9:e97e:24e5 with SMTP id u40-20020a056870702800b001e9e97e24e5mr1002542oae.20.1700901786025;
+        Sat, 25 Nov 2023 00:43:06 -0800 (PST)
+Received: from localhost ([157.82.205.15])
+        by smtp.gmail.com with UTF8SMTPSA id e13-20020a170902d38d00b001cf5c99f031sm2451130pld.283.2023.11.25.00.43.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 25 Nov 2023 00:43:05 -0800 (PST)
+From: Akihiko Odaki <akihiko.odaki@daynix.com>
+To: 
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Nick Terrell <terrelln@fb.com>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Akihiko Odaki <akihiko.odaki@daynix.com>
+Subject: [PATCH bpf-next v5 0/3] selftests/bpf: Use pkg-config to determine ld flags
+Date: Sat, 25 Nov 2023 17:42:49 +0900
+Message-ID: <20231125084253.85025-1-akihiko.odaki@daynix.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231124200633.scnct5f7auawsjn2@CAB-WSD-L081021>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181592 [Nov 25 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 4 0.3.4 720d3c21819df9b72e78f051e300e232316d302a, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;salutedevices.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/25 05:15:00 #22531701
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8bit
 
-Andrew,
+When linking statically, libraries may require other dependencies to be
+included to ld flags. In particular, libelf may require libzstd. Use
+pkg-config to determine such dependencies.
 
-On Fri, Nov 24, 2023 at 11:06:33PM +0300, Dmitry Rokosov wrote:
-> On Fri, Nov 24, 2023 at 11:42:30AM -0800, Andrew Morton wrote:
-> > On Thu, 23 Nov 2023 10:19:42 +0300 Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
-> > 
-> > > To begin with, this patch series relocates the cgroup example code to
-> > > the samples/cgroup directory, which is the appropriate location for such
-> > > code snippets.
-> > 
-> > butbut.  Didn't we decide to do s/cgroup/memcg/ throughout?
-> 
-> I believe the samples directory should be named "samples/cgroup" instead
-> of "memcg" because the cgroup v1 event listener cannot be renamed to
-> "memcg" due to the common naming of cgroup v1 event_control (this sample
-> uses that control to access eventfd).
-> 
-> Additionally, I think it would be a good idea to add the new samples for
-> cgroup helpers in that directory.
-> 
-> That's why I have only renamed the new memcg listener.
+V4 -> V5: Introduced variables LIBELF_CFLAGS and LIBELF_LIBS.
+          (Daniel Borkmann)
+          Added patch "selftests/bpf: Choose pkg-config for the target".
+V3 -> V4: Added "2> /dev/null".
+V2 -> V3: Added missing "echo".
+V1 -> V2: Implemented fallback, referring to HOSTPKG_CONFIG.
 
-I looked into this more deeply. And yes, the old cgroup.event_control
-has the common name, but it's used in the memcg implementation only.
+Akihiko Odaki (3):
+  selftests/bpf: Choose pkg-config for the target
+  selftests/bpf: Override PKG_CONFIG for static builds
+  selftests/bpf: Use pkg-config for libelf
 
-So, if we plan to introduce new samples for cgroup, I suggest we use the
-following naming convention:
-
-1) Directory: samples/cgroup
-2) V1 sample: memcg_v1_event_listener
-3) V2 sample: memcg_v2_event_listener
-
-Please let me know what you think about this. If it's okay with you, I
-will prepare the v4 version with the above changes. I would appreciate
-any feedback on that!"
+ tools/testing/selftests/bpf/Makefile   | 14 +++++++++-----
+ tools/testing/selftests/bpf/README.rst |  2 +-
+ 2 files changed, 10 insertions(+), 6 deletions(-)
 
 -- 
-Thank you,
-Dmitry
+2.43.0
+
 
