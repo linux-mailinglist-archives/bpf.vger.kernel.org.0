@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-15837-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15838-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF3DE7F8959
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 09:43:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FD847F895F
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 09:43:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B6D81C20C2B
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 08:43:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10E07B21145
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 08:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DC698F75;
-	Sat, 25 Nov 2023 08:43:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 691358F6A;
+	Sat, 25 Nov 2023 08:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="pRBffyQr"
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="A7+eJJOH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A539E
-	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 00:43:11 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cfb30ce241so3765145ad.0
-        for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 00:43:11 -0800 (PST)
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1381127
+	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 00:43:16 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1cf6373ce31so18701375ad.0
+        for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 00:43:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1700901791; x=1701506591; darn=vger.kernel.org;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1700901796; x=1701506596; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NPPxIVkRMPlLUxZMsEygBEBjgDTLIaOmfxI6JWnloIc=;
-        b=pRBffyQrCwf4oKhvTAqwDsql81Gi1ZUG1TrWWb6Th9wByymCvZ4X4bzpp/9PDyFHGb
-         JmdQhjCkn7EtugvsHui0i2ssEtCDYTd8z1fElK0aM/ar8YXaqvCuXiGIlud47tTtebc/
-         E3CA4FM2z4dZmUjPX8X1wtv+VyAfON7Zm3JDIQZEoQ3JQf8+S7RgUq9/BMI8BTUB0oRj
-         kUfC7HIugLwA/ZSj+ifnjYyeBQxHnKX6pMeLK394C9+iS1BFK/W3kafNRnEBwK4ThjeY
-         /ofKbPaRIuRdqkfj24IYDyXAbJkKu08h6EhVO27TDEzpTNj9N6hTphqY893bNlUtGjMB
-         /WEA==
+        bh=wItB+PKNO3hEPBQi2nWGljT56dVv5dpK/TMccffm1xE=;
+        b=A7+eJJOHV4FYPhX3BvVFbgFr8IQz2aEf+nyW6RrsjFANP7WaeRG5j+/qc7OaqNZDVq
+         VrDqPpjSiRL2yMnhJUh0S8SLlM0ARw5vihf4IGq9xmvTvXDWdea4R5xt4qT9XrXG/ULI
+         FIqLzD4sObronjXYSMMdB0xzQVK4zKAsKJbpsxVy8zmYuuM5bCYMwqb4r1g+rismbrHW
+         IlKcqrtS7kVuiQiWNTGHStVoJRrmNwxoJVcZn2NaxMy/LshngjGzqViabGer0aTxYYLM
+         2JTjvtOuPA1O3BgoRkplAQvf6jQZ/06T/6PefkxFhFNZ9HJzZWHy6HR92LwnaBzcOFSi
+         OZqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700901791; x=1701506591;
+        d=1e100.net; s=20230601; t=1700901796; x=1701506596;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NPPxIVkRMPlLUxZMsEygBEBjgDTLIaOmfxI6JWnloIc=;
-        b=BPn+hTLBexfVEv3uMMYJS5WrVsShZolVHMcdB1/FCdbZ80YBxT+WOHc57Wt47VLdhC
-         A+qP5RcTllXeQlLVN+ArmF1XI7QTexCWEITlDOqmIcG8dr/UiMhSc+Qb3exsCKr+70RK
-         MAKVS9b4JPtnhiGAbYB5meD6FG17rLIrnWcU9KncWCZLCgnlzE6+xcq5ueiS5JkDqBen
-         t6IrBteBfFS+sZtB5pTqG1LFz+drii/72VGAN3dZZFjnO8ljVvIwbEyK3yQfsSHHYJyp
-         c0XkkQyKIrDl+JHsX9lav1jGW+ZuRJueCwuBkRCKW0Vhi7nSXuBoiT0y+dMmSbjBJ9QG
-         MeNQ==
-X-Gm-Message-State: AOJu0YxXem1ZfypsF50zCCeygy104FN+0y6yosDXcDKWnllzIY1RCKro
-	hTtC3L3NefUZpPR5BeOYX/tHTA==
-X-Google-Smtp-Source: AGHT+IEVVpVFIcUVQouFS95iWEttXau5YwBJgu8W9QjT7uKgsVIqZzxbtoETCuWtg/ws4lKe1JRV9g==
-X-Received: by 2002:a17:902:f68d:b0:1cf:6704:4340 with SMTP id l13-20020a170902f68d00b001cf67044340mr6468913plg.22.1700901791152;
-        Sat, 25 Nov 2023 00:43:11 -0800 (PST)
+        bh=wItB+PKNO3hEPBQi2nWGljT56dVv5dpK/TMccffm1xE=;
+        b=p5R15m9bTbjU9X7pD/3z6fySsWTWiCxMhVOio29emBhtrV3cScqtZYhJJFSsUWxhhK
+         GNwViTY85EKDNmzpWxOt7iLgT6LFfesF323J9iUCotlQ4qnuENVSUNVuyBkAA5PRofo3
+         XFuoSiLCi7qFQ8xZAtqHKylRE5leabaDacPVlX1ah5gK86MaKBld6toRZmu/AFwK6DIN
+         h/v15llcvUUdzDl1Jqco6ra7Misv+JVb3vP48M0ISpZ82ShLL6Bi2+r5irkK2zSvjW6g
+         YKkc9O7MezbCP49oILyLcb7Se0QzoEibu81xwJB+rMJi9r3hp6Jf/Fp35lnjKU2mogcg
+         epbw==
+X-Gm-Message-State: AOJu0Yx3hxETGGGyymWwzsaXW/Uzt/y+p1RtbSq6lQI+jX33fGlcptnk
+	rufiVTdbC8tlm+nPC0169px9IA==
+X-Google-Smtp-Source: AGHT+IFxiQz3BsHEBO78xSibjA97oPp4WKGwp+0jnIwsj/tgRFBbBaOp+jEnT/85fbLaPzY/Qm92DQ==
+X-Received: by 2002:a17:902:e88f:b0:1cf:6832:46c with SMTP id w15-20020a170902e88f00b001cf6832046cmr6577902plg.6.1700901796260;
+        Sat, 25 Nov 2023 00:43:16 -0800 (PST)
 Received: from localhost ([157.82.205.15])
-        by smtp.gmail.com with UTF8SMTPSA id h12-20020a170902748c00b001c9d011581dsm4432500pll.164.2023.11.25.00.43.07
+        by smtp.gmail.com with UTF8SMTPSA id t8-20020a170902bc4800b001cc131c65besm4432871plz.168.2023.11.25.00.43.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 00:43:10 -0800 (PST)
+        Sat, 25 Nov 2023 00:43:15 -0800 (PST)
 From: Akihiko Odaki <akihiko.odaki@daynix.com>
 To: 
 Cc: Andrii Nakryiko <andrii@kernel.org>,
@@ -73,9 +73,9 @@ Cc: Andrii Nakryiko <andrii@kernel.org>,
 	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Akihiko Odaki <akihiko.odaki@daynix.com>
-Subject: [PATCH bpf-next v5 1/3] selftests/bpf: Choose pkg-config for the target
-Date: Sat, 25 Nov 2023 17:42:50 +0900
-Message-ID: <20231125084253.85025-2-akihiko.odaki@daynix.com>
+Subject: [PATCH bpf-next v5 2/3] selftests/bpf: Override PKG_CONFIG for static builds
+Date: Sat, 25 Nov 2023 17:42:51 +0900
+Message-ID: <20231125084253.85025-3-akihiko.odaki@daynix.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231125084253.85025-1-akihiko.odaki@daynix.com>
 References: <20231125084253.85025-1-akihiko.odaki@daynix.com>
@@ -87,39 +87,27 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-pkg-config is used to build sign-file executable. It should use the
-library for the target instead of the host as it is called during tests.
+A library may need to depend on additional archive files for static
+builds so pkg-config should be instructed to list them.
 
 Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
 ---
- tools/testing/selftests/bpf/Makefile | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/bpf/README.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 9c27b67bc7b1..94825ef813d5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -18,7 +18,7 @@ else
- GENDIR := $(abspath ../../../../include/generated)
- endif
- GENHDR := $(GENDIR)/autoconf.h
--HOSTPKG_CONFIG := pkg-config
-+PKG_CONFIG ?= $(CROSS_COMPILE)pkg-config
+diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
+index cb9b95702ac6..9af79c7a9b58 100644
+--- a/tools/testing/selftests/bpf/README.rst
++++ b/tools/testing/selftests/bpf/README.rst
+@@ -77,7 +77,7 @@ In case of linker errors when running selftests, try using static linking:
  
- ifneq ($(wildcard $(GENHDR)),)
-   GENFLAGS := -DHAVE_GENHDR
-@@ -219,9 +219,9 @@ $(OUTPUT)/urandom_read: urandom_read.c urandom_read_aux.c $(OUTPUT)/liburandom_r
+ .. code-block:: console
  
- $(OUTPUT)/sign-file: ../../../../scripts/sign-file.c
- 	$(call msg,SIGN-FILE,,$@)
--	$(Q)$(CC) $(shell $(HOSTPKG_CONFIG) --cflags libcrypto 2> /dev/null) \
-+	$(Q)$(CC) $(shell $(PKG_CONFIG) --cflags libcrypto 2> /dev/null) \
- 		  $< -o $@ \
--		  $(shell $(HOSTPKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
-+		  $(shell $(PKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
+-  $ LDLIBS=-static vmtest.sh
++  $ LDLIBS=-static PKG_CONFIG='pkg-config --static' vmtest.sh
  
- $(OUTPUT)/bpf_testmod.ko: $(VMLINUX_BTF) $(RESOLVE_BTFIDS) $(wildcard bpf_testmod/Makefile bpf_testmod/*.[ch])
- 	$(call msg,MOD,,$@)
+ .. note:: Some distros may not support static linking.
+ 
 -- 
 2.43.0
 
