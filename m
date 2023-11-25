@@ -1,126 +1,103 @@
-Return-Path: <bpf+bounces-15839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63BAF7F8960
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 09:43:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 822F77F8CDB
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 18:38:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D33D281738
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 08:43:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AB742815C2
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 17:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A7A8F6B;
-	Sat, 25 Nov 2023 08:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FDD2D036;
+	Sat, 25 Nov 2023 17:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="gZiEqYa8"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Sb4za/p9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3924F1990
-	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 00:43:22 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1cfae5ca719so6125015ad.0
-        for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 00:43:22 -0800 (PST)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EA411F
+	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 09:38:05 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da040c021aeso3471501276.3
+        for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 09:38:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1700901801; x=1701506601; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U0MgZk1wjA7oN6wh0F/2QVcx7Di6tJCC9+3i36KMM74=;
-        b=gZiEqYa8bHmIGeqQ8gKc1wQ9NjI0djpJqRsXlwIaF3uWwfg2r8MeSqg0OdbPCGO4tf
-         pZL8KZoi7rgYvozNxXwCu/jDz6YJDzKFmxBOKjkRKDTpCbp/a2TglEWl5N1ifU7j8ZP+
-         vDfTaUBL56IfarFBUrvcieiDKqzyt5nJk7uk47fGthCx3hcTCRHOQOLvs+xAvLly5WUe
-         ZBJT0/OhcReVmNR/7/GpFloS8RcI6mKUD+D+QoPbNGFfHKP1QiLe7dFXqNi9uVHJPNcw
-         5w+ZrxR1w4px3DUl7jM1dSaCN25q5vonmpEXU9PDXDfFnc4wCMEGZo3OymngIv+R2vgn
-         UIfw==
+        d=google.com; s=20230601; t=1700933884; x=1701538684; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/OjN2yjM4lGF+xoZzPeOmLggYv6X6PaCmv884vExzhQ=;
+        b=Sb4za/p9PvTD0oIEk6DlS068u8izzt+Sbq6UOPQjqx4DXCVv3RzHfPPtGJvLBf9rEY
+         gx3iWBUNixvRIlAXWhsJqAEWH/lDvJto9kE+a6x9TJTskmY5EDfzR2IFfD3egqbZ8WWY
+         9vZKRKCQWjUxR2eOC4eKFtWqyYFL6QcpZwKE8lVHFIuhFyboHHyGXplhidwIClLPfVqB
+         DVNX4I/6qtjEZsFqaCERd12IM72HcJxqdb05CIp1TkG5vxAGsXeQT/XWRRrKRAWBpddK
+         hXY29g905eyC4DjR98qVwDL/n+f4BRWMcS840qldcg6y0MGMW2ZlBTuRJLUf/X6SIiwT
+         Gbmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700901801; x=1701506601;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U0MgZk1wjA7oN6wh0F/2QVcx7Di6tJCC9+3i36KMM74=;
-        b=DeWjpb/ySO2X8np2oqOo1aPNG3+Z+hlpjjqFX7KX//YBTUw+nwVUtWGuD0A1GHga6B
-         px6Q2EFs1siHlUBngGjOIOLGgIk9qylr+M+g8bqNkEMLitvkxkAvXKNWg/p6oAayWusO
-         dUwxCUiFGBrwJee2IyJV2vbOvgPUzGQ9uVgJxeCQLS0J1z1+PZeAu2Ysikx2G8aOFBWE
-         nwM2ohF7V9uoT3yp5s68B4iTBaNvuPmULECqpluVQYxYkq/7i//bb8N+9jixiWxW7Bul
-         EKUYd1g0CXo8cntaDii/f31LaOROiQQ7u/spMXUvRo0mOFppHCaUiJQSlPuXxpG4hHfu
-         9oGA==
-X-Gm-Message-State: AOJu0YyGVqtezb6kDTOIRw4gx+n9TjXKs3P5SVixXLBTrPdZ3mB4f3Xb
-	wmtiH9A4iHVkHagfDx1Dhotvsg==
-X-Google-Smtp-Source: AGHT+IHaALqakfp4Ql5TcXmGo6Ln+y2ernCX4AymHrvtStelwdd1wSXPTd6Nn3zAPPadG0W0MisnBg==
-X-Received: by 2002:a17:902:cec3:b0:1cf:7cfc:c3b7 with SMTP id d3-20020a170902cec300b001cf7cfcc3b7mr5703205plg.10.1700901801375;
-        Sat, 25 Nov 2023 00:43:21 -0800 (PST)
-Received: from localhost ([157.82.205.15])
-        by smtp.gmail.com with UTF8SMTPSA id a3-20020a170902ecc300b001cfba46e407sm260609plh.129.2023.11.25.00.43.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Nov 2023 00:43:21 -0800 (PST)
-From: Akihiko Odaki <akihiko.odaki@daynix.com>
-To: 
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Nick Terrell <terrelln@fb.com>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Akihiko Odaki <akihiko.odaki@daynix.com>
-Subject: [PATCH bpf-next v5 3/3] selftests/bpf: Use pkg-config for libelf
-Date: Sat, 25 Nov 2023 17:42:52 +0900
-Message-ID: <20231125084253.85025-4-akihiko.odaki@daynix.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231125084253.85025-1-akihiko.odaki@daynix.com>
-References: <20231125084253.85025-1-akihiko.odaki@daynix.com>
+        d=1e100.net; s=20230601; t=1700933884; x=1701538684;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/OjN2yjM4lGF+xoZzPeOmLggYv6X6PaCmv884vExzhQ=;
+        b=Qt+jprQ+mPkTGO2QxeQ8z9eNx7CoeZwahorsgxFH42nEi2pb5KkX8ypa3sTqVPOLzi
+         n6J0jINRKL8muWiUvCT752/MBlc5jlfEFFzIwRUsTOtrgfVrksYo6mIR321G1aIh1AtA
+         krqlUAq1gp73tT2H1fMZEbrdsCkADjp3UZdR6A0aEG9jaE0Ie8kXfatAnt+LovgxAEL4
+         H8hY97cjhLA78BSnkmompM1qgQlzZkYBsx6O+XxmbzfY00syJQLZnwXR0J1k8QCLgOzr
+         xroXC1HuSCYSh4AoGD9PTuSr1l393AX6p4lClHfuI/jqImzBPhnLHnTikxlM13Bn5clL
+         ZjAA==
+X-Gm-Message-State: AOJu0YziWpigVgDTkzc0rPEQQEMPXiArVOaF0oQjePgXrRW+k0ZArBtx
+	2YokUFIsMBRDSTXZqbS8qE1lq0fgeX+mWw==
+X-Google-Smtp-Source: AGHT+IHnGysxB/944b9w0n+byMEk08BlMdz921PvjzprbIkgHG0uwA4pdEh20uVwBEuI1Q+ppKReG75nHOmEVQ==
+X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
+ (user=shakeelb job=sendgmr) by 2002:a25:3d44:0:b0:da0:567d:f819 with SMTP id
+ k65-20020a253d44000000b00da0567df819mr220022yba.10.1700933884073; Sat, 25 Nov
+ 2023 09:38:04 -0800 (PST)
+Date: Sat, 25 Nov 2023 17:38:02 +0000
+In-Reply-To: <20231125080137.2fhmi4374yxqjyix@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com> <20231125063616.dex3kh3ea43ceyu3@google.com>
+ <20231125080137.2fhmi4374yxqjyix@CAB-WSD-L081021>
+Message-ID: <20231125173802.pfhalf27kxk3wavy@google.com>
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace shrink_memcg
+From: Shakeel Butt <shakeelb@google.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org, 
+	mhocko@kernel.org, roman.gushchin@linux.dev, muchun.song@linux.dev, 
+	mhocko@suse.com, akpm@linux-foundation.org, kernel@sberdevices.ru, 
+	rockosov@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-When linking statically, libraries may require other dependencies to be
-included to ld flags. In particular, libelf may require libzstd. Use
-pkg-config to determine such dependencies.
+On Sat, Nov 25, 2023 at 11:01:37AM +0300, Dmitry Rokosov wrote:
+[...]
+> > > +		trace_mm_vmscan_memcg_shrink_begin(sc->order,
+> > > +						   sc->gfp_mask,
+> > > +						   memcg);
+> > > +
+> > 
+> > If you place the start of the trace here, you may have only the begin
+> > trace for memcgs whose usage are below their min or low limits. Is that
+> > fine? Otherwise you can put it just before shrink_lruvec() call.
+> > 
+> 
+> From my point of view, it's fine. For situations like the one you
+> described, when we only see the begin() tracepoint raised without the
+> end(), we understand that reclaim requests are being made but cannot be
+> satisfied due to certain conditions within memcg (such as limits).
+> 
+> There may be some spam tracepoints in the trace pipe, which is a disadvantage
+> of this approach.
+> 
+> How important do you think it is to understand such situations? Or do
+> you suggest moving the begin() tracepoint after the memcg limits checks
+> and don't care about it?
+> 
 
-Signed-off-by: Akihiko Odaki <akihiko.odaki@daynix.com>
----
- tools/testing/selftests/bpf/Makefile | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 94825ef813d5..617ae55c3bb5 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -29,13 +29,17 @@ SAN_CFLAGS	?=
- SAN_LDFLAGS	?= $(SAN_CFLAGS)
- RELEASE		?=
- OPT_FLAGS	?= $(if $(RELEASE),-O2,-O0)
-+
-+LIBELF_CFLAGS	:= $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
-+LIBELF_LIBS	:= $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-+
- CFLAGS += -g $(OPT_FLAGS) -rdynamic					\
- 	  -Wall -Werror 						\
--	  $(GENFLAGS) $(SAN_CFLAGS)					\
-+	  $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)			\
- 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
- 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
- LDFLAGS += $(SAN_LDFLAGS)
--LDLIBS += -lelf -lz -lrt -lpthread
-+LDLIBS += $(LIBELF_LIBS) -lz -lrt -lpthread
- 
- ifneq ($(LLVM),)
- # Silence some warnings when compiled with clang
--- 
-2.43.0
-
+I was mainly wondering if that is intentional. It seems like you as
+first user of this trace has a need to know that a reclaim for a given
+memcg was triggered but due to min/low limits no reclaim was done. This
+is a totally reasonable use-case.
 
