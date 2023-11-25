@@ -1,276 +1,121 @@
-Return-Path: <bpf+bounces-15848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FF857F8DF9
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 20:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B3557F8E3F
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 20:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 635D91C20B2C
-	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 19:32:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 746691C20C6D
+	for <lists+bpf@lfdr.de>; Sat, 25 Nov 2023 19:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D0F2F86D;
-	Sat, 25 Nov 2023 19:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DACF2FE1E;
+	Sat, 25 Nov 2023 19:55:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZcbqX04b"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SZc5paeA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD6562F85E
-	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 19:32:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09BBCC433C7;
-	Sat, 25 Nov 2023 19:32:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1700940761;
-	bh=KaeDC1/iiL7pJg4cUZiY6qALaWFuycoOKb9VMi7GGWc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZcbqX04bDJFgoE52MwbMYHAvzYrdvCBDNcxaihAQ3YqDeBRohIBIY7IREj+htYlya
-	 MH+GATZM/70RZGtzQnaE4BXpdJyppxoRA0WXu5wQuN6ENFOv/u2Tr1x4YiG/SdUZ8T
-	 XVYsTGyxzzFgKZetzTamD17amshTbB1ylon/vn6GReWtfsaLANmWqZ3iRtu0/jA5I5
-	 WobZRypzumK3H462sLiSgXmBRX+s5AU+sp+WhG8DPhGiC1v73wqVMH7fGqvo/wvlUh
-	 2dxYohg82PNVC+dtia64owU4ef97uacUBMp9+8CO1eCxT/f1iIlcy9Si8NODm3M72L
-	 UBr+FspJo0mdg==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Song Liu <song@kernel.org>,
-	Quentin Monnet <quentin@isovalent.com>,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCHv4 bpf-next 6/6] bpftool: Add support to display uprobe_multi links
-Date: Sat, 25 Nov 2023 20:31:30 +0100
-Message-ID: <20231125193130.834322-7-jolsa@kernel.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231125193130.834322-1-jolsa@kernel.org>
-References: <20231125193130.834322-1-jolsa@kernel.org>
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3500D3
+	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 11:55:35 -0800 (PST)
+Message-ID: <f1fde0d0-dba6-481d-8b2d-d0c3d63620cc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700942133;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L8F9MPFwmOCLPLh8hmhGAN37mH4T2KQmfMjmUggVj90=;
+	b=SZc5paeACdtCsfOQZrfxxewPoTqdyO35fFPpTs4U8NXsZ0oEHm3hbd+Gqodgncau5QMv21
+	PLLS7U2rXzQW4DviSbyXl7NVEVX2U45mCVoXXRgK9//yueu208RZHrrjexexSdBFj7Nzob
+	MyWqyRPftxWdxFpro2o+OxOPkbUZeY8=
+Date: Sat, 25 Nov 2023 11:55:25 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: Re: [RFC PATCH bpf-next v2] bpf: Relax tracing prog recursive attach
+ rules
+Content-Language: en-GB
+To: Dmitry Dolgov <9erthalion6@gmail.com>, Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, dan.carpenter@linaro.org
+References: <20231122191816.5572-1-9erthalion6@gmail.com>
+ <CAPhsuW6Zj4-CuBeQmsp9j-CjAE3j1bMF_RUUQM85m60yFT0nxg@mail.gmail.com>
+ <20231124211631.ktwsigoafnnbhpyt@erthalion.local>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231124211631.ktwsigoafnnbhpyt@erthalion.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Adding support to display details for uprobe_multi links,
-both plain:
 
-  # bpftool link -p
-  ...
-  24: uprobe_multi  prog 126
-          uprobe.multi  path /home/jolsa/bpf/test_progs  func_cnt 3  pid 4143
-          offset             ref_ctr_offset     cookies
-          0xd1f88            0xf5d5a8           0xdead
-          0xd1f8f            0xf5d5aa           0xbeef
-          0xd1f96            0xf5d5ac           0xcafe
+On 11/24/23 4:16 PM, Dmitry Dolgov wrote:
+>> On Thu, Nov 23, 2023 at 11:24:34PM -0800, Song Liu wrote:
+>>> Following the corresponding discussion [1], the reason for that is to
+>>> avoid tracing progs call cycles without introducing more complex
+>>> solutions. Relax "no same type" requirement to "no progs that are
+>>> already an attach target themselves" for the tracing type. In this way
+>>> only a standalone tracing program (without any other progs attached to
+>>> it) could be attached to another one, and no cycle could be formed. To
+>> If prog B attached to prog A, and prog C attached to prog B, then we
+>> detach B. At this point, can we re-attach B to A?
+> Nope, with the proposed changes it still wouldn't be possible to
+> reattach B to A (if we're talking about tracing progs of course),
+> because this time B is an attachment target on its own.
 
-and json:
+IIUC, the 'prog B attached to prog A, and prog C attached to prog B'
+not really possible.
+    After prog B attached to prog A, we have
+      prog B follower_cnt = 1
+      prog A attach_depth = 1
+    Then prog C wants to attach to prog B,
+      since we have prog B follower_cnt = 1, then attaching will fail.
 
-  # bpftool link -p
-  [{
-  ...
-      },{
-          "id": 24,
-          "type": "uprobe_multi",
-          "prog_id": 126,
-          "retprobe": false,
-          "path": "/home/jolsa/bpf/test_progs",
-          "func_cnt": 3,
-          "pid": 4143,
-          "funcs": [{
-                  "offset": 860040,
-                  "ref_ctr_offset": 16111016,
-                  "cookie": 57005
-              },{
-                  "offset": 860047,
-                  "ref_ctr_offset": 16111018,
-                  "cookie": 48879
-              },{
-                  "offset": 860054,
-                  "ref_ctr_offset": 16111020,
-                  "cookie": 51966
-              }
-          ]
-      }
-  ]
+If we do have A <- B <- C chain by
+    first prog C attached to prog B, and then prog B attached to A
+    now we have
+     prog B/C follower_cnt = 1
+     prog A/B attach_depth = 1
+after detaching B from A, we have
+     prog B follower_cnt = 0
+     prog A attach_depth = 0
 
-Acked-by: Song Liu <song@kernel.org>
-Reviewed-by: Quentin Monnet <quentin@isovalent.com>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- tools/bpf/bpftool/link.c | 105 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 103 insertions(+), 2 deletions(-)
+In this particular case, prog B attaching to prog A should succeed
+since prog B follower_cnt = 0.
 
-diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
-index a1528cde81ab..cb46667a6b2e 100644
---- a/tools/bpf/bpftool/link.c
-+++ b/tools/bpf/bpftool/link.c
-@@ -294,6 +294,37 @@ show_kprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
- 	jsonw_end_array(json_wtr);
- }
- 
-+static __u64 *u64_to_arr(__u64 val)
-+{
-+	return (__u64 *) u64_to_ptr(val);
-+}
-+
-+static void
-+show_uprobe_multi_json(struct bpf_link_info *info, json_writer_t *wtr)
-+{
-+	__u32 i;
-+
-+	jsonw_bool_field(json_wtr, "retprobe",
-+			 info->uprobe_multi.flags & BPF_F_UPROBE_MULTI_RETURN);
-+	jsonw_string_field(json_wtr, "path", (char *) u64_to_ptr(info->uprobe_multi.path));
-+	jsonw_uint_field(json_wtr, "func_cnt", info->uprobe_multi.count);
-+	jsonw_int_field(json_wtr, "pid", (int) info->uprobe_multi.pid);
-+	jsonw_name(json_wtr, "funcs");
-+	jsonw_start_array(json_wtr);
-+
-+	for (i = 0; i < info->uprobe_multi.count; i++) {
-+		jsonw_start_object(json_wtr);
-+		jsonw_uint_field(json_wtr, "offset",
-+				 u64_to_arr(info->uprobe_multi.offsets)[i]);
-+		jsonw_uint_field(json_wtr, "ref_ctr_offset",
-+				 u64_to_arr(info->uprobe_multi.ref_ctr_offsets)[i]);
-+		jsonw_uint_field(json_wtr, "cookie",
-+				 u64_to_arr(info->uprobe_multi.cookies)[i]);
-+		jsonw_end_object(json_wtr);
-+	}
-+	jsonw_end_array(json_wtr);
-+}
-+
- static void
- show_perf_event_kprobe_json(struct bpf_link_info *info, json_writer_t *wtr)
- {
-@@ -465,6 +496,9 @@ static int show_link_close_json(int fd, struct bpf_link_info *info)
- 	case BPF_LINK_TYPE_KPROBE_MULTI:
- 		show_kprobe_multi_json(info, json_wtr);
- 		break;
-+	case BPF_LINK_TYPE_UPROBE_MULTI:
-+		show_uprobe_multi_json(info, json_wtr);
-+		break;
- 	case BPF_LINK_TYPE_PERF_EVENT:
- 		switch (info->perf_event.type) {
- 		case BPF_PERF_EVENT_EVENT:
-@@ -674,6 +708,33 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
- 	}
- }
- 
-+static void show_uprobe_multi_plain(struct bpf_link_info *info)
-+{
-+	__u32 i;
-+
-+	if (!info->uprobe_multi.count)
-+		return;
-+
-+	if (info->uprobe_multi.flags & BPF_F_UPROBE_MULTI_RETURN)
-+		printf("\n\turetprobe.multi  ");
-+	else
-+		printf("\n\tuprobe.multi  ");
-+
-+	printf("path %s  ", (char *) u64_to_ptr(info->uprobe_multi.path));
-+	printf("func_cnt %u  ", info->uprobe_multi.count);
-+
-+	if (info->uprobe_multi.pid)
-+		printf("pid %d  ", info->uprobe_multi.pid);
-+
-+	printf("\n\t%-16s   %-16s   %-16s", "offset", "ref_ctr_offset", "cookies");
-+	for (i = 0; i < info->uprobe_multi.count; i++) {
-+		printf("\n\t0x%-16llx 0x%-16llx 0x%-16llx",
-+			u64_to_arr(info->uprobe_multi.offsets)[i],
-+			u64_to_arr(info->uprobe_multi.ref_ctr_offsets)[i],
-+			u64_to_arr(info->uprobe_multi.cookies)[i]);
-+	}
-+}
-+
- static void show_perf_event_kprobe_plain(struct bpf_link_info *info)
- {
- 	const char *buf;
-@@ -807,6 +868,9 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
- 	case BPF_LINK_TYPE_KPROBE_MULTI:
- 		show_kprobe_multi_plain(info);
- 		break;
-+	case BPF_LINK_TYPE_UPROBE_MULTI:
-+		show_uprobe_multi_plain(info);
-+		break;
- 	case BPF_LINK_TYPE_PERF_EVENT:
- 		switch (info->perf_event.type) {
- 		case BPF_PERF_EVENT_EVENT:
-@@ -846,8 +910,10 @@ static int show_link_close_plain(int fd, struct bpf_link_info *info)
- 
- static int do_show_link(int fd)
- {
-+	__u64 *ref_ctr_offsets = NULL, *offsets = NULL, *cookies = NULL;
- 	struct bpf_link_info info;
- 	__u32 len = sizeof(info);
-+	char path_buf[PATH_MAX];
- 	__u64 *addrs = NULL;
- 	char buf[PATH_MAX];
- 	int count;
-@@ -889,6 +955,39 @@ static int do_show_link(int fd)
- 			goto again;
- 		}
- 	}
-+	if (info.type == BPF_LINK_TYPE_UPROBE_MULTI &&
-+	    !info.uprobe_multi.offsets) {
-+		count = info.uprobe_multi.count;
-+		if (count) {
-+			offsets = calloc(count, sizeof(__u64));
-+			if (!offsets) {
-+				p_err("mem alloc failed");
-+				close(fd);
-+				return -ENOMEM;
-+			}
-+			info.uprobe_multi.offsets = ptr_to_u64(offsets);
-+			ref_ctr_offsets = calloc(count, sizeof(__u64));
-+			if (!ref_ctr_offsets) {
-+				p_err("mem alloc failed");
-+				free(offsets);
-+				close(fd);
-+				return -ENOMEM;
-+			}
-+			info.uprobe_multi.ref_ctr_offsets = ptr_to_u64(ref_ctr_offsets);
-+			cookies = calloc(count, sizeof(__u64));
-+			if (!cookies) {
-+				p_err("mem alloc failed");
-+				free(cookies);
-+				free(offsets);
-+				close(fd);
-+				return -ENOMEM;
-+			}
-+			info.uprobe_multi.cookies = ptr_to_u64(cookies);
-+			info.uprobe_multi.path = ptr_to_u64(path_buf);
-+			info.uprobe_multi.path_size = sizeof(path_buf);
-+			goto again;
-+		}
-+	}
- 	if (info.type == BPF_LINK_TYPE_PERF_EVENT) {
- 		switch (info.perf_event.type) {
- 		case BPF_PERF_EVENT_TRACEPOINT:
-@@ -924,8 +1023,10 @@ static int do_show_link(int fd)
- 	else
- 		show_link_close_plain(fd, &info);
- 
--	if (addrs)
--		free(addrs);
-+	free(ref_ctr_offsets);
-+	free(cookies);
-+	free(offsets);
-+	free(addrs);
- 	close(fd);
- 	return 0;
- }
--- 
-2.42.0
+Did I miss anything?
 
+In the commit message, 'falcosecurity libs project' is mentioned as a use
+case for chained fentry/fexit bpf programs. I think you should expand the
+use case in more details. It is possible with use case description, people
+might find better/alternative solutions for your use case.
+
+Also, if you can have a test case to exercise your commit logic,
+it will be even better.
+
+>
+>>> +       if (tgt_prog) {
+>>> +               /* Bookkeeping for managing the prog attachment chain. */
+>>> +               tgt_prog->aux->follower_cnt++;
+>>> +               prog->aux->attach_depth = tgt_prog->aux->attach_depth + 1;
+>>> +       }
+>>> +
+>> attach_depth is calculated at attach time, so...
+>>
+>>>                  struct bpf_prog_aux *aux = tgt_prog->aux;
+>>>
+>>> +               if (aux->attach_depth >= 32) {
+>>> +                       bpf_log(log, "Target program attach depth is %d. Too large\n",
+>>> +                                       aux->attach_depth);
+>>> +                       return -EINVAL;
+>>> +               }
+>>> +
+>> (continue from above) attach_depth is always 0 at program load time, no?
+> Right, it's going to be always 0 for the just loaded program -- but here
+> in verifier we check attach_depth of the target program, which is
+> calculated at some point before. Or were you asking about something else?
 
