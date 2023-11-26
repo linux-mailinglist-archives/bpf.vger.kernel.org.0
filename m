@@ -1,183 +1,144 @@
-Return-Path: <bpf+bounces-15862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF90F7F90B1
-	for <lists+bpf@lfdr.de>; Sun, 26 Nov 2023 02:53:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFA5D7F913C
+	for <lists+bpf@lfdr.de>; Sun, 26 Nov 2023 05:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EE672813AB
-	for <lists+bpf@lfdr.de>; Sun, 26 Nov 2023 01:53:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 999A428130A
+	for <lists+bpf@lfdr.de>; Sun, 26 Nov 2023 04:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC11C1375;
-	Sun, 26 Nov 2023 01:53:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9DE3C32;
+	Sun, 26 Nov 2023 04:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bnHhYLSE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iFZ1kHr0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B614E110
-	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 17:53:28 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-67a295e40baso3793196d6.1
-        for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 17:53:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700963607; x=1701568407; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yI+oR2NZvrQ1Hdif94QsAEG+mGJnjt6kUj6zcM9W8Jc=;
-        b=bnHhYLSED87+g6hEhMuhdjyAjdYx1q+qC7ZxsKaycy7eodTSxycuq2+x+EQdS9tnbe
-         2FPHXRPAgZeTKWgtali4zUAo2jEYBbpi0/xbyKkQZu+kdH0RXpbkXdZBRCcfJABYOWrY
-         vbdui9fr8SJCU/O0QXKui0NHz3KKvjOq9bz0jn1AS69gpdOsS1atPWtwGq3ex2cEJCsX
-         AT6cDhwfrx355BtiYsYP9ts07kp7iArCj0D+DjjPl7iCQEII38GNmD/gMBDOTK2sphiW
-         mVo4A7/hJ++uVdc61M57iNJOybJToz0jwVbxUYW+p2JoB8n0d6rVsGANw0XEm3wtBb9h
-         X38g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700963607; x=1701568407;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yI+oR2NZvrQ1Hdif94QsAEG+mGJnjt6kUj6zcM9W8Jc=;
-        b=t8oaSXQbM5b3q0uM0FL29Lf4A4My5Ct/6pDY7MwHJQEOMq7Dobz0/mYZtOqs7Fhss1
-         qX1I1ueOzSUCw7i/TdWzuAfYtfkX6dhljShwXR3nZXe4XbaGuM362T6Q9A415HAfzbez
-         vLFgCb+k4Spw04cy0DrTaQlLZ48YdhZ3Ce+FCRUz9aySJkb6hDQGAsmhSoBVbM8jsEJv
-         LHlTFUjTG0nih3NHvLVSBCixZGaT53m3a/rSjD6PTbilgjAfh+9ljfUjrPr27vR2bcU5
-         0Hhbpi4Upx69RYO4SJHDSMBxgRlOm6Z3RU7Mw9moM5zUOCD6UzNATwpXSNfv+KC8IBPA
-         i/UQ==
-X-Gm-Message-State: AOJu0YyGNz1+LgLMYxBQ1DXWMrfZrqe4aMMggPipg2blq38Op0skIU6w
-	5UwCP/2gUrE9dp4q4Gqsg46ko9fMziQ=
-X-Google-Smtp-Source: AGHT+IGoeEiuO9udC9z7IYXNsoQCZGNvCR0i8SsWWf09y3pyeyhOu9lYOnJedBkICtncBEITPhQb5g==
-X-Received: by 2002:ad4:5147:0:b0:67a:3ab2:12b4 with SMTP id g7-20020ad45147000000b0067a3ab212b4mr499100qvq.50.1700963607099;
-        Sat, 25 Nov 2023 17:53:27 -0800 (PST)
-Received: from andrei-framework.. (c-73-133-17-174.hsd1.md.comcast.net. [73.133.17.174])
-        by smtp.gmail.com with ESMTPSA id k11-20020a0cb24b000000b0066cfbe4e0f4sm1245501qve.26.2023.11.25.17.53.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Nov 2023 17:53:26 -0800 (PST)
-From: Andrei Matei <andreimatei1@gmail.com>
-To: bpf@vger.kernel.org,
-	andrii.nakryiko@gmail.com
-Cc: sunhao.th@gmail.com,
-	eddyz87@gmail.com,
-	kernel-team@dataexmachina.dev,
-	Andrei Matei <andreimatei1@gmail.com>
-Subject: [PATCH bpf v2 2/2] bpf: new verifier tests for stack access
-Date: Sat, 25 Nov 2023 20:50:46 -0500
-Message-Id: <20231126015045.1092826-3-andreimatei1@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231126015045.1092826-1-andreimatei1@gmail.com>
-References: <20231126015045.1092826-1-andreimatei1@gmail.com>
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ac])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5E510B
+	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 20:22:27 -0800 (PST)
+Message-ID: <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1700972545;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YPqbGwvoWuhH3MNinMuIoCbVuSs6v7gO8I55MtBSoJU=;
+	b=iFZ1kHr0JZmtTSmpiAQW0kJwEZwA2ZDUGadFJNdN4Xb6zgg5w0HO3U4tT+Wh1oK/6dJq9a
+	jZGPr5LjmCSgn6KBRW+H6QBHPiXz3RDDaf02BawHtOiX78jLogyZ7gDFWhyXgHgYowGOdE
+	nEsGPUjAhKOBmOaFutn/Y8xbp9F5Lqo=
+Date: Sat, 25 Nov 2023 20:22:14 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+Content-Language: en-GB
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, Shuah Khan <shuah@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Steffen Klassert <steffen.klassert@secunet.com>, antony.antony@secunet.com,
+ Eddy Z <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
+ Network Development <netdev@vger.kernel.org>
+References: <cover.1700676682.git.dxu@dxuuu.xyz>
+ <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
+ <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+ <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-This patch adds tests for the previous patch, checking the tracking of
-the maximum stack size and checking that accesses to uninit stack memory
-are allowed.
 
-They are a separate patch for review purposes; whoever merges them can
-consider squashing.
+On 11/25/23 7:54 PM, Alexei Starovoitov wrote:
+> On Sat, Nov 25, 2023 at 4:52 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>>> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+>>> index 3065a716544d..ec7e04e012ae 100644
+>>> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+>>> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+>>> @@ -6,6 +6,7 @@
+>>>     * modify it under the terms of version 2 of the GNU General Public
+>>>     * License as published by the Free Software Foundation.
+>>>     */
+>>> +#define BPF_NO_PRESERVE_ACCESS_INDEX
+>> This is a temporary workaround and hopefully we can lift it in the
+>> near future. Please add a comment here with prefix 'Workaround' to
+>> explain why this is needed and later on we can earliy search the
+>> keyword and remember to tackle this.
+> I suspect we will forget to remove this "workaround" and people
+> will start copy pasting it.
+> Let's change the test instead to avoid bitfield access.
 
-Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
----
- tools/testing/selftests/bpf/test_verifier.c  | 24 ++++++++++++
- tools/testing/selftests/bpf/verifier/stack.c | 40 ++++++++++++++++++++
- 2 files changed, 64 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/verifier/stack.c
+Agree. Avoiding bitfield access is definitely a solution.
+I just checked llvm preserve_static_offset (not merged yet),
+it seems to be able to fix the issue as well.
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 98107e0452d3..a62610585ee4 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -135,6 +135,10 @@ struct bpf_test {
- 	const char *errstr;
- 	const char *errstr_unpriv;
- 	uint32_t insn_processed;
-+	/* Expected maximum stack depth for the main subprogram. Not checked if 0.
-+	 * Only checked if the program is accepted.
-+	 */
-+	uint16_t max_stack_depth;
- 	int prog_len;
- 	enum {
- 		UNDEF,
-@@ -1703,6 +1707,26 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 		}
- 	}
- 
-+	/* Check the stack size if the test configured an expecation and the program
-+	 * was loaded successfully.
-+	 */
-+	if (test->max_stack_depth && fd_prog >= 0) {
-+		uint32_t max_stack;
-+		char *s;
-+
-+		s = strstr(bpf_vlog, "stack depth ");
-+		if (s == NULL) {
-+			printf("FAIL\nstack depth result not found in verifier output\n");
-+			goto fail_log;
-+		}
-+		max_stack = atoi(s + 12);
-+		if (test->max_stack_depth != max_stack) {
-+			printf("FAIL\nUnexpected max stack %u vs %u\n",
-+			       max_stack, test->max_stack_depth);
-+			goto fail_log;
-+		}
-+	}
-+
- 	if (verbose)
- 		printf(", verifier log:\n%s", bpf_vlog);
- 
-diff --git a/tools/testing/selftests/bpf/verifier/stack.c b/tools/testing/selftests/bpf/verifier/stack.c
-new file mode 100644
-index 000000000000..ac571783c05e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/stack.c
-@@ -0,0 +1,40 @@
-+{
-+	/* Check that reading unitialized stack memory is allowed only in privileged
-+	 * mode. Also check that such reads maintain the max stack depth.
-+	 */
-+	"read uninit stack",
-+	.insns = {
-+		BPF_LDX_MEM(BPF_DW, BPF_REG_0, BPF_REG_10, -504),
-+		/* exit(0); */
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.result_unpriv = REJECT,
-+	.errstr_unpriv = "invalid read from stack",
-+    .max_stack_depth = 504,
-+},
-+{
-+    /* Check that indirect accesses to stack maintain the max stack depth. */
-+	"read (indirect) uninit stack",
-+	.insns = {
-+		/* We'll use probe_read_user as an arbitrary helper that can access the
-+		 * stack. We're going to read into *(fp-104).
-+		 */
-+		BPF_MOV64_REG(BPF_REG_1, BPF_REG_10),
-+		BPF_ALU64_IMM(BPF_ADD, BPF_REG_1, -104),
-+		BPF_MOV32_IMM(BPF_REG_2, 8),
-+        /* read from a random address */
-+		BPF_MOV32_IMM(BPF_REG_3, 0x4242),
-+        BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_probe_read_user),
-+        BPF_JMP_IMM(BPF_JNE, BPF_REG_0, 0, 1),
-+	    BPF_EXIT_INSN(),
-+		/* exit(0); */
-+		BPF_MOV32_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.result_unpriv = REJECT,
-+	.errstr_unpriv = "",
-+    .max_stack_depth = 104,
-+},
-\ No newline at end of file
--- 
-2.40.1
+Applying patch https://reviews.llvm.org/D133361 to latest llvm-project,
+and with the following patch on top of patch 6,
+
+=====
+
+diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+index ec7e04e012ae..11cbb12b4029 100644
+--- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
++++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+@@ -6,7 +6,10 @@
+   * modify it under the terms of version 2 of the GNU General Public
+   * License as published by the Free Software Foundation.
+   */
+-#define BPF_NO_PRESERVE_ACCESS_INDEX
++#if __has_attribute(preserve_static_offset)
++struct __attribute__((preserve_static_offset)) erspan_md2;
++struct __attribute__((preserve_static_offset)) erspan_metadata;
++#endif
+  #include "vmlinux.h"
+  #include <bpf/bpf_helpers.h>
+  #include <bpf/bpf_endian.h>
+@@ -25,12 +28,12 @@
+   * 172.16.1.200
+   */
+  #define ASSIGNED_ADDR_VETH1 0xac1001c8
+
+  struct vxlanhdr {
+         __be32 vx_flags;
+         __be32 vx_vni;
+  } __attribute__((packed));
+
+  int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
+                           struct bpf_fou_encap *encap, int type) __ksym;
+  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
+@@ -174,9 +177,13 @@ int erspan_set_tunnel(struct __sk_buff *skb)
+         __u8 hwid = 7;
+  
+         md.version = 2;
++#if __has_attribute(preserve_static_offset)
+         md.u.md2.dir = direction;
+         md.u.md2.hwid = hwid & 0xf;
+         md.u.md2.hwid_upper = (hwid >> 4) & 0x3;
++#else
++       /* Change bit-field store to byte(s)-level stores. */
++#endif
+  #endif
+  
+         ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
+
+====
+
+Eduard, could you double check whether this is a valid use case
+to solve this kind of issue with preserve_static_offset attribute?
 
 
