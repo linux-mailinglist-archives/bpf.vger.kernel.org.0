@@ -1,182 +1,102 @@
-Return-Path: <bpf+bounces-15864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4AF47F9146
-	for <lists+bpf@lfdr.de>; Sun, 26 Nov 2023 05:34:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 848687F914C
+	for <lists+bpf@lfdr.de>; Sun, 26 Nov 2023 05:38:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60721C20C1C
-	for <lists+bpf@lfdr.de>; Sun, 26 Nov 2023 04:34:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05732281320
+	for <lists+bpf@lfdr.de>; Sun, 26 Nov 2023 04:38:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBF2B211A;
-	Sun, 26 Nov 2023 04:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="DGUMPjvK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="X/2xbBLc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077E72108;
+	Sun, 26 Nov 2023 04:37:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786E510D;
-	Sat, 25 Nov 2023 20:34:34 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 2FA34580892;
-	Sat, 25 Nov 2023 23:34:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Sat, 25 Nov 2023 23:34:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1700973271; x=1700980471; bh=nt
-	RXoWRJb4uUGlWmDeWV4tv5+SsfDee3WWNlUl0hNCM=; b=DGUMPjvKnI7cJfCzZA
-	wavOFcmQvrABWS14qboN+2+WyqDTo0d5tsIqtxw7HerR7dr07UYAMtHdfszL6UsX
-	8Jl2wAXaD8ZNqTooBHQfHJA7ivMb/6LP3/EVwn8MzH/Rzdkaj+NUn+dPogdYqGYb
-	2Up2+DWm6L0Z8Hy88qUPqGUDoEaPc2XpsN/ivnZO6H6f7tQ0xqZlFb3YW3+5aoOq
-	oAQqTe/6va+A5LE+mhav1RoENWzACKenhTC74Sic9vzwO8+WXK3/Thh3CAvY3aFX
-	9UZPsBLHO4or6xcfVVb5lSwtv93SlePWb4bkrAEr5Bv1fhpsKXiGHJhSVhpXn04J
-	Po1g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1700973271; x=1700980471; bh=ntRXoWRJb4uUG
-	lWmDeWV4tv5+SsfDee3WWNlUl0hNCM=; b=X/2xbBLcKl45j7AHiUzN//xsKfI2w
-	V74vQeN9TnSyfpV3+0QNswby9mtcxq3qXf+H4TUdRnF0polbKjfR66tyN2v/Hjos
-	M4OiQr5KptrmxuNPnXQAF1ZGtNVoOV+D5KwwklF5pIeTPP8OmRUNt9jHhkEob7TI
-	G5/o+uRKGBOzXsBJSWZTCqK+OMVoZ9Lm/xPTfJd4mppliEFpiDwTD9RZNdVkc6A6
-	6adjHi/mgZ7KJoBmhWYrlp0sZxr/0jaAAajwQxc07d0n6PVnrPuc1gIvhJ7bxR8m
-	Ovko2P1vExblqKzMOvEX48m6tgd5FMNJHISBAN4epXZA/PH5i7lsbisfw==
-X-ME-Sender: <xms:1spiZZ6qZxO8zIpyRWjyWei2hmWHxI4lW2hgbRj4C_JGrOl8X9MZbQ>
-    <xme:1spiZW61C_wbtfuW_ORqQck0SNFlXLPDSn7fFRh0iCKCXwva8-31YW2q3RYxgj1cl
-    ZpFeYiVf657__6Fmw>
-X-ME-Received: <xmr:1spiZQdsxXKcvxKdkp0BGJ00BAJ79wIH9yGlldDrw-gtLSeRM9WKWu_yzgnj2z91QZFchW37hRQCNvE3vMWO_RTHg2iprf8TEVYS5cnY9BcJylDl25bhDA6g7_A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudehkedgjeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
-    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:1spiZSK1dCq9SZtCGns5zlZXiW87j6LeWakZ-g4pHtG4M1wWnOFujQ>
-    <xmx:1spiZdJvCaJr22eazr9EzXM7nesMnt-SRl5W2doqtAtSgqfYr8KoTA>
-    <xmx:1spiZbzk-SplHBHW8d0Tq65EbuNBZuN6V9l405xTJVGVlABmUZn41w>
-    <xmx:18piZV9DCv0VkxPOPViftn1rNfjgZh1Y97QVRf5qAGOb8BR74FY9ew>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 25 Nov 2023 23:34:29 -0500 (EST)
-Date: Sat, 25 Nov 2023 22:34:28 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: shuah@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	ast@kernel.org, steffen.klassert@secunet.com, antony.antony@secunet.com, 
-	alexei.starovoitov@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
-	jolsa@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devel@linux-ipsec.org, netdev@vger.kernel.org
-Subject: Re: [PATCH ipsec-next v1 5/7] bpf: selftests: test_tunnel: Use
- vmlinux.h declarations
-Message-ID: <a6npfmowxzvzgs77zitwlhumpfwkvopbzbf3scwlgxfn5j2xcg@b6orczqbftvf>
-References: <cover.1700676682.git.dxu@dxuuu.xyz>
- <c5f6a6686e1472e17014f5d015c8dacade9f053e.1700676682.git.dxu@dxuuu.xyz>
- <eb34b5e0-caf0-472a-99fa-77b43cfce56e@linux.dev>
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FB8110
+	for <bpf@vger.kernel.org>; Sat, 25 Nov 2023 20:37:53 -0800 (PST)
+Received: from fsav313.sakura.ne.jp (fsav313.sakura.ne.jp [153.120.85.144])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 3AQ4b9sD001375;
+	Sun, 26 Nov 2023 13:37:09 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav313.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp);
+ Sun, 26 Nov 2023 13:37:09 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 3AQ4b83E001370
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sun, 26 Nov 2023 13:37:09 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <d759146e-5d74-4782-931b-adda33b125d4@I-love.SAKURA.ne.jp>
+Date: Sun, 26 Nov 2023 13:37:08 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb34b5e0-caf0-472a-99fa-77b43cfce56e@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 0/4] LSM: Officially support appending LSM hooks
+ after boot.
+Content-Language: en-US
+To: Paul Moore <paul@paul-moore.com>
+Cc: linux-security-module <linux-security-module@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Casey Schaufler <casey@schaufler-ca.com>, song@kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>, renauld@google.com,
+        Paolo Abeni <pabeni@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <93b5e861-c1ec-417c-b21e-56d0c4a3ae79@I-love.SAKURA.ne.jp>
+ <CAHC9VhRbak9Mij=uKQ-Drod0tQu1+Z+JaahUzH5uj9JUf7ZTuA@mail.gmail.com>
+ <7b9e471a-a9df-4ff6-89bf-0fed01fcd5e7@I-love.SAKURA.ne.jp>
+ <CAHC9VhRy_sZNSRHMJoULFX2vb=opj1s2hEffaVNJyaHycWF+=w@mail.gmail.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CAHC9VhRy_sZNSRHMJoULFX2vb=opj1s2hEffaVNJyaHycWF+=w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Yonghong,
+On 2023/11/22 13:41, Paul Moore wrote:
+> both of these use cases can be solved today by compiling your own kernel.
 
-On Sat, Nov 25, 2023 at 04:34:36PM -0800, Yonghong Song wrote:
-> 
-> On 11/22/23 1:20 PM, Daniel Xu wrote:
-> > vmlinux.h declarations are more ergnomic, especially when working with
-> > kfuncs. The uapi headers are often incomplete for kfunc definitions.
-> > 
-> > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >   .../selftests/bpf/progs/bpf_tracing_net.h     |  1 +
-> >   .../selftests/bpf/progs/test_tunnel_kern.c    | 48 ++++---------------
-> >   2 files changed, 9 insertions(+), 40 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > index 0b793a102791..1bdc680b0e0e 100644
-> > --- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > +++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-> > @@ -26,6 +26,7 @@
-> >   #define IPV6_AUTOFLOWLABEL	70
-> >   #define TC_ACT_UNSPEC		(-1)
-> > +#define TC_ACT_OK		0
-> >   #define TC_ACT_SHOT		2
-> >   #define SOL_TCP			6
-> > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > index f66af753bbbb..3065a716544d 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > @@ -6,62 +6,30 @@
-> >    * modify it under the terms of version 2 of the GNU General Public
-> >    * License as published by the Free Software Foundation.
-> >    */
-> > -#include <stddef.h>
-> > -#include <string.h>
-> > -#include <arpa/inet.h>
-> > -#include <linux/bpf.h>
-> > -#include <linux/if_ether.h>
-> > -#include <linux/if_packet.h>
-> > -#include <linux/if_tunnel.h>
-> > -#include <linux/ip.h>
-> > -#include <linux/ipv6.h>
-> > -#include <linux/icmp.h>
-> > -#include <linux/types.h>
-> > -#include <linux/socket.h>
-> > -#include <linux/pkt_cls.h>
-> > -#include <linux/erspan.h>
-> > -#include <linux/udp.h>
-> > +#include "vmlinux.h"
-> >   #include <bpf/bpf_helpers.h>
-> >   #include <bpf/bpf_endian.h>
-> > +#include "bpf_kfuncs.h"
-> > +#include "bpf_tracing_net.h"
-> >   #define log_err(__ret) bpf_printk("ERROR line:%d ret:%d\n", __LINE__, __ret)
-> > -#define VXLAN_UDP_PORT 4789
-> > +#define VXLAN_UDP_PORT		4789
-> > +#define ETH_P_IP		0x0800
-> > +#define PACKET_HOST		0
-> > +#define TUNNEL_CSUM		bpf_htons(0x01)
-> > +#define TUNNEL_KEY		bpf_htons(0x04)
-> >   /* Only IPv4 address assigned to veth1.
-> >    * 172.16.1.200
-> >    */
-> >   #define ASSIGNED_ADDR_VETH1 0xac1001c8
-> > -struct geneve_opt {
-> > -	__be16	opt_class;
-> > -	__u8	type;
-> > -	__u8	length:5;
-> > -	__u8	r3:1;
-> > -	__u8	r2:1;
-> > -	__u8	r1:1;
-> > -	__u8	opt_data[8]; /* hard-coded to 8 byte */
-> > -};
-> > -
-> >   struct vxlanhdr {
-> >   	__be32 vx_flags;
-> >   	__be32 vx_vni;
-> >   } __attribute__((packed));
-> 
-> In my particular setup, I have struct vxlanhdr defined in vmlinux.h so
-> I hit a compilation failure.
+No. Compiling kernels is not a viable option for regular developers/users.
 
-Yeah, saw the same error in CI (the emails are nice btw). Looks like
-vxlanhdr isn't even being used in this selftest. I've deleted it for v2.
+We (who are kernel developers) tend to think that compiling/replacing a
+kernel as a trivial thing. But majority of Linux users do not think so.
+The kernel is one of most puzzling programs for Linux users, and most of
+Linux users afraid compiling/replacing kernels.
 
-Thanks,
-Daniel
+Red Hat's support said that Red Hat does not support a rebuilt RHEL kernel
+even if that kernel is rebuilt using the same kernel source and the same
+kernel config shipped by Red Hat. Let alone kernels which are rebuilt with
+the modified kernel config.
+
+Your "compiling your own kernel" answer is asking me to become a Linux
+distributor and to support the whole rebuilt kernels. That will include
+management of kernel-debuginfo packages needed for analyzing vmcore, and
+also management of userspace packages which depend on the kernel package.
+
+What do you think if you are obligated to support whatever problems just because
+you want to allow users to use your code? I'm sure that you will say "I can't".
+Your answer cannot be satisfied by a kernel developer who can develop/support
+an LSM module but cannot afford supporting problems that are irrelevant to
+that LSM module.
+
+Being able to use whatever functionality (not only LSM modules but also
+device drivers and filesystem drivers) using pre-built distribution kernels
+and pre-built kernel-debuginfo packages is the mandatory baseline.
+
+Of course, the best solution is that whatever LSM modules are built into
+distributor's kernels. But since such solution is impossible
+( https://bugzilla.redhat.com/show_bug.cgi?id=542986 ), the second best
+solution will be that distributor's kernels support only ability to load LSM
+modules which that distributor's kernels cannot afford supporting as loadable
+kernel modules, and somebody else other than distributor provides support for
+LSM modules which that distributor's kernels cannot afford supporting.
+
 
