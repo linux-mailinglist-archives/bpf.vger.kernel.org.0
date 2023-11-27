@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-15905-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15906-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C5D7FA16D
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 14:53:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E6FB7FA16F
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 14:53:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FFA5B210D2
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 13:53:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6DCD31C20DB7
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 13:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1BA3033D;
-	Mon, 27 Nov 2023 13:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2AF030341;
+	Mon, 27 Nov 2023 13:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vm/jERzZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L4MHBN57"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313682E413;
-	Mon, 27 Nov 2023 13:53:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0EBEC433C9;
-	Mon, 27 Nov 2023 13:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693BA2E413;
+	Mon, 27 Nov 2023 13:53:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1814BC433C9;
+	Mon, 27 Nov 2023 13:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701093204;
-	bh=dL9JJoim7F8avDTUtPFPrZxdt2I1oZt3h3FTr1Er5xQ=;
+	s=k20201202; t=1701093217;
+	bh=EOdwMS7vJXCXxyNePs9bFMY5mRinN5nN+9oKZfWkeWA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Vm/jERzZ2fHzywwmEj0R+oEtJZprum1Ef+4LZK687lXtAzXVoPj/i0HSav4xiHpC/
-	 43HhdUl37/3LO0QaLmPk1cdYzEujLXJPP6D2PiBDOnbp8EBzPe/gfaq0aBwNg1Ttfk
-	 fgC5VT4tJ2No2tFIq7DCYvY31An+d7uQDDEXW9YEhbrj8Gr8sgEd8K7YhgWPJ3T9Tt
-	 m8dU9mof7YbNAb7z8Tj9tMxjGJF3yXZCMNWjFXJoUc2JFZTLqqRs8gZzz36fvwdUR0
-	 Lhp0CGCQxJs++ZgqkXnddxvG7Low112u8Q3a66+uAMHVqXSKT6l1/xI2jUfQmf2VAT
-	 JTYZT9oouhJUw==
+	b=L4MHBN57G3QZY8ZAh54PDFudFE/St4hEVitLMygv1Z4kN+/CH7s0Ubc9aIiSMnpWw
+	 gN8AOtl4+2kJlP8xj/QCVHu7xMdGJbhNKMnvyychWczEQQ/qlfXzpbalfCqtA/EeFB
+	 zNs6si1q0pdoOYUndWF9NKh1+Jg7Ii43OKR4M0nQ3n+GYr8UTFk/emjyVFIZ2uubgx
+	 gWS3Aja/nmDUGqncUIc6Rae++58FMe3Jb6ytLBJVWIIAUXIPQNrvWwIMKnpTAFKPz8
+	 kUqE75Z+ZCFdXELpXEZQKSWEvS5N53wfCXvcCnOQrm2hN7ltjMteO7Rysr+4hgyxlA
+	 K1KjVb0sr1ChA==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -50,9 +50,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 02/33] x86: tracing: Add ftrace_regs definition in the header
-Date: Mon, 27 Nov 2023 22:53:18 +0900
-Message-Id: <170109319767.343914.9766180271697584732.stgit@devnote2>
+Subject: [PATCH v3 03/33] seq_buf: Export seq_buf_puts()
+Date: Mon, 27 Nov 2023 22:53:30 +0900
+Message-Id: <170109320996.343914.1584440210780959121.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <170109317214.343914.4784420430328654397.stgit@devnote2>
 References: <170109317214.343914.4784420430328654397.stgit@devnote2>
@@ -66,37 +66,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Add ftrace_regs definition for x86_64 in the ftrace header to
-clarify what register will be accessible from ftrace_regs.
+Mark seq_buf_puts() which is part of the seq_buf API to be exported to
+kernel loadable GPL modules.
 
+Link: https://lkml.kernel.org/r/b9e3737f66ec2450221b492048ce0d9c65c84953.1698861216.git.christophe.jaillet@wanadoo.fr
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- Changes in v3:
-  - Add rip to be saved.
- Changes in v2:
-  - Newly added.
----
- arch/x86/include/asm/ftrace.h |    6 ++++++
- 1 file changed, 6 insertions(+)
+ lib/seq_buf.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
-index 897cf02c20b1..415cf7a2ec2c 100644
---- a/arch/x86/include/asm/ftrace.h
-+++ b/arch/x86/include/asm/ftrace.h
-@@ -36,6 +36,12 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
+diff --git a/lib/seq_buf.c b/lib/seq_buf.c
+index 45c450f423fa..46a1b00c3815 100644
+--- a/lib/seq_buf.c
++++ b/lib/seq_buf.c
+@@ -189,6 +189,7 @@ int seq_buf_puts(struct seq_buf *s, const char *str)
+ 	seq_buf_set_overflow(s);
+ 	return -1;
+ }
++EXPORT_SYMBOL_GPL(seq_buf_puts);
  
- #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
- struct ftrace_regs {
-+	/*
-+	 * On the x86_64, the ftrace_regs saves;
-+	 * rax, rcx, rdx, rdi, rsi, r8, r9, rbp, rip and rsp.
-+	 * Also orig_ax is used for passing direct trampoline address.
-+	 * x86_32 doesn't support ftrace_regs.
-+	 */
- 	struct pt_regs		regs;
- };
- 
+ /**
+  * seq_buf_putc - sequence printing of simple character
 
 
