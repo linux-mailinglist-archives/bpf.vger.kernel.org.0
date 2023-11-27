@@ -1,379 +1,306 @@
-Return-Path: <bpf+bounces-15978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48D127FA99D
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 20:05:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 155247FA99F
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 20:05:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FDD7B211A1
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 19:05:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE195281809
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 19:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E35B4597D;
-	Mon, 27 Nov 2023 19:03:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="G9ALPJsg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8B23A8D8;
+	Mon, 27 Nov 2023 19:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2039BD64
-	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:03:46 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-daee86e2d70so5564570276.0
-        for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:03:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701111825; x=1701716625; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=aC0MUVrEZYxjfAF4f/0rZDSKLUrYPaQCejwf2lWEL6M=;
-        b=G9ALPJsg57c+HgathfbTBKDANAU0IhRIII7umWuVlM3YfTYmNSIG0npc76E0/yhIUe
-         f8WteS1iMEibEWGTYEMsZOc6ucMgc+9KywDXh4/TdBbW0/rn+qz4FNsViW0rzqalhswa
-         cvWM7TfwiuBmfulwtokREMRHNZT7YM9nmMx1gpFV4sIEcyDrVJw4NvppUDeFoqivsmg1
-         0u1PUgOkbCwMYBJyLRNYLXhf6CSnkGXGOkce/QWjvZL1DSq2iMUMG197PEDL7geZK6cB
-         z+mGqSt5xxUUHytGsXscU2/hPtAXACxwAFO7Z0HCoKQQOUGJ5qgSgMMmtXMaFLnMaoHR
-         GFlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701111825; x=1701716625;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aC0MUVrEZYxjfAF4f/0rZDSKLUrYPaQCejwf2lWEL6M=;
-        b=CDXyGYprFjGR9NNkQR1CINUQp8++Z//XI148WklFyCOo2T6DVNBw4fGNKY92xSSbsj
-         InI4/+SADS4am3QwuDeMn3X4U8dWiP02vE5ZssFbkj08khG5TLqbZYOiaSCwzAIJBZDe
-         Z4MbFZTL9kphm86LaeDn4OGJnOjmhwd1P9oFiY4ON0ynZj6rTaLb8MLja3dOt8tALHLM
-         HiI8WjVjlqjKRhlfZ5Mzx73wt3adC4Ek6uYO8J0yGMaqSkpICscEcu5+UydLs2W8xx9D
-         amoO3Cfbvs06E+AeqVsL2miXlqseNDkKfBFN1OSOI9eqt4YwXLme/LYhz4A8YuAGm8tu
-         +1Ew==
-X-Gm-Message-State: AOJu0YzL5gR0Ia42tJ3RzKBs7dPXnkcevurMupcJSZaWlP+UkpGpc9Tz
-	7tVuKYjUMTTSpojwIAzDYYw3pGa/H4zs9cPyTKgiqNyaXn/qDbYVALrTJGCMY30PkgvTp6Zp/Bd
-	u7Xd4ady4Z79Ewf9sTX33+osSGqn0sDfPan00gSvG5jQQl7AVRw==
-X-Google-Smtp-Source: AGHT+IEyWw1rFaEtva2abKBWLH/BWw/JiEVXaHeYe1SwZrUJDV9SaIrZHHbmcNLI6LhJzWJrHYqfjtE=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a25:6f09:0:b0:d9a:d233:b2a3 with SMTP id
- k9-20020a256f09000000b00d9ad233b2a3mr400180ybc.1.1701111825142; Mon, 27 Nov
- 2023 11:03:45 -0800 (PST)
-Date: Mon, 27 Nov 2023 11:03:19 -0800
-In-Reply-To: <20231127190319.1190813-1-sdf@google.com>
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F7BD5D
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:04:18 -0800 (PST)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARIpi4f018198
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:04:18 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3umphr3vnb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:04:17 -0800
+Received: from twshared15991.38.frc1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 27 Nov 2023 11:04:16 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id DE3703C35FB63; Mon, 27 Nov 2023 11:04:09 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <paul@paul-moore.com>,
+        <brauner@kernel.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+        <keescook@chromium.org>, <kernel-team@meta.com>, <sargun@sargun.me>
+Subject: [PATCH v11 bpf-next 00/17] BPF token and BPF FS-based delegation
+Date: Mon, 27 Nov 2023 11:03:52 -0800
+Message-ID: <20231127190409.2344550-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: GhyJGbsRX_3H8QdJRsUMENX928uvGsa2
+X-Proofpoint-ORIG-GUID: GhyJGbsRX_3H8QdJRsUMENX928uvGsa2
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231127190319.1190813-1-sdf@google.com>
-X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Message-ID: <20231127190319.1190813-14-sdf@google.com>
-Subject: [PATCH bpf-next v6 13/13] selftests/bpf: Add TX side to xdp_hw_metadata
-From: Stanislav Fomichev <sdf@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	kuba@kernel.org, toke@kernel.org, willemb@google.com, dsahern@kernel.org, 
-	magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com, 
-	hawk@kernel.org, yoong.siang.song@intel.com, netdev@vger.kernel.org, 
-	xdp-hints@xdp-project.net
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-27_17,2023-11-27_01,2023-05-22_02
 
-When we get a packet on port 9091, we swap src/dst and send it out.
-At this point we also request the timestamp and checksum offloads.
+This patch set introduces an ability to delegate a subset of BPF subsystem
+functionality from privileged system-wide daemon (e.g., systemd or any other
+container manager) through special mount options for userns-bound BPF FS to
+a *trusted* unprivileged application. Trust is the key here. This
+functionality is not about allowing unconditional unprivileged BPF usage.
+Establishing trust, though, is completely up to the discretion of respective
+privileged application that would create and mount a BPF FS instance with
+delegation enabled, as different production setups can and do achieve it
+through a combination of different means (signing, LSM, code reviews, etc),
+and it's undesirable and infeasible for kernel to enforce any particular way
+of validating trustworthiness of particular process.
 
-Checksum offload is verified by looking at the tcpdump on the other side.
-The tool prints pseudo-header csum and the final one it expects.
-The final checksum actually matches the incoming packets checksum
-because we only flip the src/dst and don't change the payload.
+The main motivation for this work is a desire to enable containerized BPF
+applications to be used together with user namespaces. This is currently
+impossible, as CAP_BPF, required for BPF subsystem usage, cannot be namespa=
+ced
+or sandboxed, as a general rule. E.g., tracing BPF programs, thanks to BPF
+helpers like bpf_probe_read_kernel() and bpf_probe_read_user() can safely r=
+ead
+arbitrary memory, and it's impossible to ensure that they only read memory =
+of
+processes belonging to any given namespace. This means that it's impossible=
+ to
+have a mechanically verifiable namespace-aware CAP_BPF capability, and as s=
+uch
+another mechanism to allow safe usage of BPF functionality is necessary.BPF=
+ FS
+delegation mount options and BPF token derived from such BPF FS instance is
+such a mechanism. Kernel makes no assumption about what "trusted" constitut=
+es
+in any particular case, and it's up to specific privileged applications and
+their surrounding infrastructure to decide that. What kernel provides is a =
+set
+of APIs to setup and mount special BPF FS instanecs and derive BPF tokens f=
+rom
+it. BPF FS and BPF token are both bound to its owning userns and in such a =
+way
+are constrained inside intended container. Users can then pass BPF token FD=
+ to
+privileged bpf() syscall commands, like BPF map creation and BPF program
+loading, to perform such operations without having init userns privileged.
 
-Some other related changes:
-- switched to zerocopy mode by default; new flag can be used to force
-  old behavior
-- request fixed tx_metadata_len headroom
-- some other small fixes (umem size, fill idx+i, etc)
+This version incorporates feedback and suggestions ([3]) received on v3 of
+this patch set, and instead of allowing to create BPF tokens directly assum=
+ing
+capable(CAP_SYS_ADMIN), we instead enhance BPF FS to accept a few new
+delegation mount options. If these options are used and BPF FS itself is
+properly created, set up, and mounted inside the user namespaced container,
+user application is able to derive a BPF token object from BPF FS instance,
+and pass that token to bpf() syscall. As explained in patch #3, BPF token
+itself doesn't grant access to BPF functionality, but instead allows kernel=
+ to
+do namespaced capabilities checks (ns_capable() vs capable()) for CAP_BPF,
+CAP_PERFMON, CAP_NET_ADMIN, and CAP_SYS_ADMIN, as applicable. So it forms o=
+ne
+half of a puzzle and allows container managers and sys admins to have safe =
+and
+flexible configuration options: determining which containers get delegation=
+ of
+BPF functionality through BPF FS, and then which applications within such
+containers are allowed to perform bpf() commands, based on namespaces
+capabilities.
 
-mvbz3:~# ./xdp_hw_metadata eth3
-...
-xsk_ring_cons__peek: 1
-0x19546f8: rx_desc[0]->addr=80100 addr=80100 comp_addr=80100
-rx_hash: 0x80B7EA8B with RSS type:0x2A
-rx_timestamp:  1697580171852147395 (sec:1697580171.8521)
-HW RX-time:   1697580171852147395 (sec:1697580171.8521), delta to User RX-time sec:0.2797 (279673.082 usec)
-XDP RX-time:   1697580172131699047 (sec:1697580172.1317), delta to User RX-time sec:0.0001 (121.430 usec)
-0x19546f8: ping-pong with csum=3b8e (want d862) csum_start=54 csum_offset=6
-0x19546f8: complete tx idx=0 addr=8
-tx_timestamp:  1697580172056756493 (sec:1697580172.0568)
-HW TX-complete-time:   1697580172056756493 (sec:1697580172.0568), delta to User TX-complete-time sec:0.0852 (85175.537 usec)
-XDP RX-time:   1697580172131699047 (sec:1697580172.1317), delta to User TX-complete-time sec:0.0102 (10232.983 usec)
-HW RX-time:   1697580171852147395 (sec:1697580171.8521), delta to HW TX-complete-time sec:0.2046 (204609.098 usec)
-0x19546f8: complete rx idx=128 addr=80100
+Previous attempt at addressing this very same problem ([0]) attempted to
+utilize authoritative LSM approach, but was conclusively rejected by upstre=
+am
+LSM maintainers. BPF token concept is not changing anything about LSM
+approach, but can be combined with LSM hooks for very fine-grained security
+policy. Some ideas about making BPF token more convenient to use with LSM (=
+in
+particular custom BPF LSM programs) was briefly described in recent LSF/MM/=
+BPF
+2023 presentation ([1]). E.g., an ability to specify user-provided data
+(context), which in combination with BPF LSM would allow implementing a very
+dynamic and fine-granular custom security policies on top of BPF token. In =
+the
+interest of minimizing API surface area and discussions this was relegated =
+to
+follow up patches, as it's not essential to the fundamental concept of
+delegatable BPF token.
 
-mvbz4:~# nc  -Nu -q1 ${MVBZ3_LINK_LOCAL_IP}%eth3 9091
+It should be noted that BPF token is conceptually quite similar to the idea=
+ of
+/dev/bpf device file, proposed by Song a while ago ([2]). The biggest
+difference is the idea of using virtual anon_inode file to hold BPF token a=
+nd
+allowing multiple independent instances of them, each (potentially) with its
+own set of restrictions. And also, crucially, BPF token approach is not usi=
+ng
+any special stateful task-scoped flags. Instead, bpf() syscall accepts
+token_fd parameters explicitly for each relevant BPF command. This addresses
+main concerns brought up during the /dev/bpf discussion, and fits better wi=
+th
+overall BPF subsystem design.
 
-mvbz4:~# tcpdump -vvx -i eth3 udp
-        tcpdump: listening on eth3, link-type EN10MB (Ethernet), snapshot length 262144 bytes
-12:26:09.301074 IP6 (flowlabel 0x35fa5, hlim 127, next-header UDP (17) payload length: 11) fe80::1270:fdff:fe48:1087.55807 > fe80::1270:fdff:fe48:1077.9091: [bad udp cksum 0x3b8e -> 0xde7e!] UDP, length 3
-        0x0000:  6003 5fa5 000b 117f fe80 0000 0000 0000
-        0x0010:  1270 fdff fe48 1087 fe80 0000 0000 0000
-        0x0020:  1270 fdff fe48 1077 d9ff 2383 000b 3b8e
-        0x0030:  7864 70
-12:26:09.301976 IP6 (flowlabel 0x35fa5, hlim 127, next-header UDP (17) payload length: 11) fe80::1270:fdff:fe48:1077.9091 > fe80::1270:fdff:fe48:1087.55807: [udp sum ok] UDP, length 3
-        0x0000:  6003 5fa5 000b 117f fe80 0000 0000 0000
-        0x0010:  1270 fdff fe48 1077 fe80 0000 0000 0000
-        0x0020:  1270 fdff fe48 1087 2383 d9ff 000b de7e
-        0x0030:  7864 70
+This patch set adds a basic minimum of functionality to make BPF token idea
+useful and to discuss API and functionality. Currently only low-level libbpf
+APIs support creating and passing BPF token around, allowing to test kernel
+functionality, but for the most part is not sufficient for real-world
+applications, which typically use high-level libbpf APIs based on `struct
+bpf_object` type. This was done with the intent to limit the size of patch =
+set
+and concentrate on mostly kernel-side changes. All the necessary plumbing f=
+or
+libbpf will be sent as a separate follow up patch set kernel support makes =
+it
+upstream.
 
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
----
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 164 +++++++++++++++++-
- 1 file changed, 160 insertions(+), 4 deletions(-)
+Another part that should happen once kernel-side BPF token is established, =
+is
+a set of conventions between applications (e.g., systemd), tools (e.g.,
+bpftool), and libraries (e.g., libbpf) on exposing delegatable BPF FS
+instance(s) at well-defined locations to allow applications take advantage =
+of
+this in automatic fashion without explicit code changes on BPF application's
+side. But I'd like to postpone this discussion to after BPF token concept
+lands.
 
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 4484b17c7a56..3291625ba4fb 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -10,7 +10,9 @@
-  *   - rx_hash
-  *
-  * TX:
-- * - TBD
-+ * - UDP 9091 packets trigger TX reply
-+ * - TX HW timestamp is requested and reported back upon completion
-+ * - TX checksum is requested
-  */
- 
- #include <test_progs.h>
-@@ -24,11 +26,14 @@
- #include <linux/net_tstamp.h>
- #include <linux/udp.h>
- #include <linux/sockios.h>
-+#include <linux/if_xdp.h>
- #include <sys/mman.h>
- #include <net/if.h>
- #include <ctype.h>
- #include <poll.h>
- #include <time.h>
-+#include <unistd.h>
-+#include <libgen.h>
- 
- #include "xdp_metadata.h"
- 
-@@ -53,6 +58,9 @@ struct xsk *rx_xsk;
- const char *ifname;
- int ifindex;
- int rxq;
-+bool skip_tx;
-+__u64 last_hw_rx_timestamp;
-+__u64 last_xdp_rx_timestamp;
- 
- void test__fail(void) { /* for network_helpers.c */ }
- 
-@@ -69,6 +77,7 @@ static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
- 		.comp_size = XSK_RING_CONS__DEFAULT_NUM_DESCS,
- 		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
- 		.flags = XSK_UMEM__DEFAULT_FLAGS,
-+		.tx_metadata_len = sizeof(struct xsk_tx_metadata),
- 	};
- 	__u32 idx;
- 	u64 addr;
-@@ -185,15 +194,19 @@ static void verify_xdp_metadata(void *data, clockid_t clock_id)
- 		printf("rx_hash: 0x%X with RSS type:0x%X\n",
- 		       meta->rx_hash, meta->rx_hash_type);
- 
--	printf("rx_timestamp:  %llu (sec:%0.4f)\n", meta->rx_timestamp,
--	       (double)meta->rx_timestamp / NANOSEC_PER_SEC);
- 	if (meta->rx_timestamp) {
- 		__u64 ref_tstamp = gettime(clock_id);
- 
-+		/* store received timestamps to calculate a delta at tx */
-+		last_hw_rx_timestamp = meta->rx_timestamp;
-+		last_xdp_rx_timestamp = meta->xdp_timestamp;
-+
- 		print_tstamp_delta("HW RX-time", "User RX-time",
- 				   meta->rx_timestamp, ref_tstamp);
- 		print_tstamp_delta("XDP RX-time", "User RX-time",
- 				   meta->xdp_timestamp, ref_tstamp);
-+	} else {
-+		printf("No rx_timestamp\n");
- 	}
- }
- 
-@@ -242,6 +255,129 @@ static void verify_skb_metadata(int fd)
- 	printf("skb hwtstamp is not found!\n");
- }
- 
-+static bool complete_tx(struct xsk *xsk, clockid_t clock_id)
-+{
-+	struct xsk_tx_metadata *meta;
-+	__u64 addr;
-+	void *data;
-+	__u32 idx;
-+
-+	if (!xsk_ring_cons__peek(&xsk->comp, 1, &idx))
-+		return false;
-+
-+	addr = *xsk_ring_cons__comp_addr(&xsk->comp, idx);
-+	data = xsk_umem__get_data(xsk->umem_area, addr);
-+	meta = data - sizeof(struct xsk_tx_metadata);
-+
-+	printf("%p: complete tx idx=%u addr=%llx\n", xsk, idx, addr);
-+
-+	if (meta->completion.tx_timestamp) {
-+		__u64 ref_tstamp = gettime(clock_id);
-+
-+		print_tstamp_delta("HW TX-complete-time", "User TX-complete-time",
-+				   meta->completion.tx_timestamp, ref_tstamp);
-+		print_tstamp_delta("XDP RX-time", "User TX-complete-time",
-+				   last_xdp_rx_timestamp, ref_tstamp);
-+		print_tstamp_delta("HW RX-time", "HW TX-complete-time",
-+				   last_hw_rx_timestamp, meta->completion.tx_timestamp);
-+	} else {
-+		printf("No tx_timestamp\n");
-+	}
-+
-+	xsk_ring_cons__release(&xsk->comp, 1);
-+
-+	return true;
-+}
-+
-+#define swap(a, b, len) do { \
-+	for (int i = 0; i < len; i++) { \
-+		__u8 tmp = ((__u8 *)a)[i]; \
-+		((__u8 *)a)[i] = ((__u8 *)b)[i]; \
-+		((__u8 *)b)[i] = tmp; \
-+	} \
-+} while (0)
-+
-+static void ping_pong(struct xsk *xsk, void *rx_packet, clockid_t clock_id)
-+{
-+	struct xsk_tx_metadata *meta;
-+	struct ipv6hdr *ip6h = NULL;
-+	struct iphdr *iph = NULL;
-+	struct xdp_desc *tx_desc;
-+	struct udphdr *udph;
-+	struct ethhdr *eth;
-+	__sum16 want_csum;
-+	void *data;
-+	__u32 idx;
-+	int ret;
-+	int len;
-+
-+	ret = xsk_ring_prod__reserve(&xsk->tx, 1, &idx);
-+	if (ret != 1) {
-+		printf("%p: failed to reserve tx slot\n", xsk);
-+		return;
-+	}
-+
-+	tx_desc = xsk_ring_prod__tx_desc(&xsk->tx, idx);
-+	tx_desc->addr = idx % (UMEM_NUM / 2) * UMEM_FRAME_SIZE + sizeof(struct xsk_tx_metadata);
-+	data = xsk_umem__get_data(xsk->umem_area, tx_desc->addr);
-+
-+	meta = data - sizeof(struct xsk_tx_metadata);
-+	memset(meta, 0, sizeof(*meta));
-+	meta->flags = XDP_TXMD_FLAGS_TIMESTAMP;
-+
-+	eth = rx_packet;
-+
-+	if (eth->h_proto == htons(ETH_P_IP)) {
-+		iph = (void *)(eth + 1);
-+		udph = (void *)(iph + 1);
-+	} else if (eth->h_proto == htons(ETH_P_IPV6)) {
-+		ip6h = (void *)(eth + 1);
-+		udph = (void *)(ip6h + 1);
-+	} else {
-+		printf("%p: failed to detect IP version for ping pong %04x\n", xsk, eth->h_proto);
-+		xsk_ring_prod__cancel(&xsk->tx, 1);
-+		return;
-+	}
-+
-+	len = ETH_HLEN;
-+	if (ip6h)
-+		len += sizeof(*ip6h) + ntohs(ip6h->payload_len);
-+	if (iph)
-+		len += ntohs(iph->tot_len);
-+
-+	swap(eth->h_dest, eth->h_source, ETH_ALEN);
-+	if (iph)
-+		swap(&iph->saddr, &iph->daddr, 4);
-+	else
-+		swap(&ip6h->saddr, &ip6h->daddr, 16);
-+	swap(&udph->source, &udph->dest, 2);
-+
-+	want_csum = udph->check;
-+	if (ip6h)
-+		udph->check = ~csum_ipv6_magic(&ip6h->saddr, &ip6h->daddr,
-+					       ntohs(udph->len), IPPROTO_UDP, 0);
-+	else
-+		udph->check = ~csum_tcpudp_magic(iph->saddr, iph->daddr,
-+						 ntohs(udph->len), IPPROTO_UDP, 0);
-+
-+	meta->flags |= XDP_TXMD_FLAGS_CHECKSUM;
-+	if (iph)
-+		meta->request.csum_start = sizeof(*eth) + sizeof(*iph);
-+	else
-+		meta->request.csum_start = sizeof(*eth) + sizeof(*ip6h);
-+	meta->request.csum_offset = offsetof(struct udphdr, check);
-+
-+	printf("%p: ping-pong with csum=%04x (want %04x) csum_start=%d csum_offset=%d\n",
-+	       xsk, ntohs(udph->check), ntohs(want_csum),
-+	       meta->request.csum_start, meta->request.csum_offset);
-+
-+	memcpy(data, rx_packet, len); /* don't share umem chunk for simplicity */
-+	tx_desc->options |= XDP_TX_METADATA;
-+	tx_desc->len = len;
-+
-+	xsk_ring_prod__submit(&xsk->tx, 1);
-+}
-+
- static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t clock_id)
- {
- 	const struct xdp_desc *rx_desc;
-@@ -307,6 +443,22 @@ static int verify_metadata(struct xsk *rx_xsk, int rxq, int server_fd, clockid_t
- 				verify_xdp_metadata(xsk_umem__get_data(xsk->umem_area, addr),
- 						    clock_id);
- 				first_seg = false;
-+
-+				if (!skip_tx) {
-+					/* mirror first chunk back */
-+					ping_pong(xsk, xsk_umem__get_data(xsk->umem_area, addr),
-+						  clock_id);
-+
-+					ret = kick_tx(xsk);
-+					if (ret)
-+						printf("kick_tx ret=%d\n", ret);
-+
-+					for (int j = 0; j < 500; j++) {
-+						if (complete_tx(xsk, clock_id))
-+							break;
-+						usleep(10*1000);
-+					}
-+				}
- 			}
- 
- 			xsk_ring_cons__release(&xsk->rx, 1);
-@@ -442,6 +594,7 @@ static void print_usage(void)
- 		"  -c    Run in copy mode (zerocopy is default)\n"
- 		"  -h    Display this help and exit\n\n"
- 		"  -m    Enable multi-buffer XDP for larger MTU\n"
-+		"  -r    Don't generate AF_XDP reply (rx metadata only)\n"
- 		"Generate test packets on the other machine with:\n"
- 		"  echo -n xdp | nc -u -q1 <dst_ip> 9091\n";
- 
-@@ -452,7 +605,7 @@ static void read_args(int argc, char *argv[])
- {
- 	int opt;
- 
--	while ((opt = getopt(argc, argv, "chm")) != -1) {
-+	while ((opt = getopt(argc, argv, "chmr")) != -1) {
- 		switch (opt) {
- 		case 'c':
- 			bind_flags &= ~XDP_USE_NEED_WAKEUP;
-@@ -465,6 +618,9 @@ static void read_args(int argc, char *argv[])
- 		case 'm':
- 			bind_flags |= XDP_USE_SG;
- 			break;
-+		case 'r':
-+			skip_tx = true;
-+			break;
- 		case '?':
- 			if (isprint(optopt))
- 				fprintf(stderr, "Unknown option: -%c\n", optopt);
--- 
-2.43.0.rc1.413.gea7ed67945-goog
+  [0] https://lore.kernel.org/bpf/20230412043300.360803-1-andrii@kernel.org/
+  [1] http://vger.kernel.org/bpfconf2023_material/Trusted_unprivileged_BPF_=
+LSFMM2023.pdf
+  [2] https://lore.kernel.org/bpf/20190627201923.2589391-2-songliubraving@f=
+b.com/
+  [3] https://lore.kernel.org/bpf/20230704-hochverdient-lehne-eeb9eeef785e@=
+brauner/
+
+v10->v11:
+  - fix BPF FS root check to disallow using bind-mounted subdirectory of BPF
+    FS instance (Christian);
+  - further restrict BPF_TOKEN_CREATE command to be executed from inside
+    exactly the same user namespace as the one used to create BPF FS instan=
+ce
+    (Christian);
+v9->v10:
+  - slight adjustments in LSM parts (Paul);
+  - setting delegate_xxx  options require capable(CAP_SYS_ADMIN) (Christian=
+);
+  - simplify BPF_TOKEN_CREATE UAPI by accepting BPF FS FD directly (Christi=
+an);
+v8->v9:
+  - fix issue in selftests due to sys/mount.h header (Jiri);
+  - fix warning in doc comments in LSM hooks (kernel test robot);
+v7->v8:
+  - add bpf_token_allow_cmd and bpf_token_capable hooks (Paul);
+  - inline bpf_token_alloc() into bpf_token_create() to prevent accidental
+    divergence with security_bpf_token_create() hook (Paul);
+v6->v7:
+  - separate patches to refactor bpf_prog_alloc/bpf_map_alloc LSM hooks, as
+    discussed with Paul, and now they also accept struct bpf_token;
+  - added bpf_token_create/bpf_token_free to allow LSMs (SELinux,
+    specifically) to set up security LSM blob (Paul);
+  - last patch also wires bpf_security_struct setup by SELinux, similar to =
+how
+    it's done for BPF map/prog, though I'm not sure if that's enough, so wo=
+rst
+    case it's easy to drop this patch if more full fledged SELinux
+    implementation will be done separately;
+  - small fixes for issues caught by code reviews (Jiri, Hou);
+  - fix for test_maps test that doesn't use LIBBPF_OPTS() macro (CI);
+v5->v6:
+  - fix possible use of uninitialized variable in selftests (CI);
+  - don't use anon_inode, instead create one from BPF FS instance (Christia=
+n);
+  - don't store bpf_token inside struct bpf_map, instead pass it explicitly=
+ to
+    map_check_btf(). We do store bpf_token inside prog->aux, because it's u=
+sed
+    during verification and even can be checked during attach time for some
+    program types;
+  - LSM hooks are left intact pending the conclusion of discussion with Paul
+    Moore; I'd prefer to do LSM-related changes as a follow up patch set
+    anyways;
+v4->v5:
+  - add pre-patch unifying CAP_NET_ADMIN handling inside kernel/bpf/syscall=
+.c
+    (Paul Moore);
+  - fix build warnings and errors in selftests and kernel, detected by CI a=
+nd
+    kernel test robot;
+v3->v4:
+  - add delegation mount options to BPF FS;
+  - BPF token is derived from the instance of BPF FS and associates itself
+    with BPF FS' owning userns;
+  - BPF token doesn't grant BPF functionality directly, it just turns
+    capable() checks into ns_capable() checks within BPF FS' owning user;
+  - BPF token cannot be pinned;
+v2->v3:
+  - make BPF_TOKEN_CREATE pin created BPF token in BPF FS, and disallow
+    BPF_OBJ_PIN for BPF token;
+v1->v2:
+  - fix build failures on Kconfig with CONFIG_BPF_SYSCALL unset;
+  - drop BPF_F_TOKEN_UNKNOWN_* flags and simplify UAPI (Stanislav).
+
+Andrii Nakryiko (17):
+  bpf: align CAP_NET_ADMIN checks with bpf_capable() approach
+  bpf: add BPF token delegation mount options to BPF FS
+  bpf: introduce BPF token object
+  bpf: add BPF token support to BPF_MAP_CREATE command
+  bpf: add BPF token support to BPF_BTF_LOAD command
+  bpf: add BPF token support to BPF_PROG_LOAD command
+  bpf: take into account BPF token when fetching helper protos
+  bpf: consistently use BPF token throughout BPF verifier logic
+  bpf,lsm: refactor bpf_prog_alloc/bpf_prog_free LSM hooks
+  bpf,lsm: refactor bpf_map_alloc/bpf_map_free LSM hooks
+  bpf,lsm: add BPF token LSM hooks
+  libbpf: add bpf_token_create() API
+  libbpf: add BPF token support to bpf_map_create() API
+  libbpf: add BPF token support to bpf_btf_load() API
+  libbpf: add BPF token support to bpf_prog_load() API
+  selftests/bpf: add BPF token-enabled tests
+  bpf,selinux: allocate bpf_security_struct per BPF token
+
+ drivers/media/rc/bpf-lirc.c                   |   2 +-
+ include/linux/bpf.h                           |  83 ++-
+ include/linux/filter.h                        |   2 +-
+ include/linux/lsm_hook_defs.h                 |  15 +-
+ include/linux/security.h                      |  43 +-
+ include/uapi/linux/bpf.h                      |  42 ++
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/arraymap.c                         |   2 +-
+ kernel/bpf/bpf_lsm.c                          |  15 +-
+ kernel/bpf/cgroup.c                           |   6 +-
+ kernel/bpf/core.c                             |   3 +-
+ kernel/bpf/helpers.c                          |   6 +-
+ kernel/bpf/inode.c                            | 101 ++-
+ kernel/bpf/syscall.c                          | 215 ++++--
+ kernel/bpf/token.c                            | 258 +++++++
+ kernel/bpf/verifier.c                         |  13 +-
+ kernel/trace/bpf_trace.c                      |   2 +-
+ net/core/filter.c                             |  36 +-
+ net/ipv4/bpf_tcp_ca.c                         |   2 +-
+ net/netfilter/nf_bpf_link.c                   |   2 +-
+ security/security.c                           | 101 ++-
+ security/selinux/hooks.c                      |  47 +-
+ tools/include/uapi/linux/bpf.h                |  42 ++
+ tools/lib/bpf/bpf.c                           |  28 +-
+ tools/lib/bpf/bpf.h                           |  35 +-
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/libbpf_probes.c  |   4 +
+ .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +
+ .../testing/selftests/bpf/prog_tests/token.c  | 672 ++++++++++++++++++
+ 29 files changed, 1619 insertions(+), 167 deletions(-)
+ create mode 100644 kernel/bpf/token.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/token.c
+
+--=20
+2.34.1
 
 
