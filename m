@@ -1,178 +1,244 @@
-Return-Path: <bpf+bounces-15873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE637F96B7
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 01:05:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25D5F7F9723
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 02:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DB2E280DE4
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 00:05:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99826B20A71
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 01:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C36379;
-	Mon, 27 Nov 2023 00:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="NaulhuTw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IddQoC+7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4455BEC4;
+	Mon, 27 Nov 2023 01:25:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99351FB;
-	Sun, 26 Nov 2023 16:04:57 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 8E18F5807BE;
-	Sun, 26 Nov 2023 19:04:53 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sun, 26 Nov 2023 19:04:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:sender
-	:subject:subject:to:to; s=fm3; t=1701043493; x=1701050693; bh=UG
-	Nk44U4jmXOJ/AcIH3TlGvpqXW3QFjzprbde8gLJZU=; b=NaulhuTwyiNqIMbSl8
-	cyVa+7RWp/OPWxg3O6P76LZYVLpu1kn9SSue+Gawi6CCJnxzv/34X+Dje+wkdcH1
-	f8LbXnkQwglIhjYZ5xLYDHHiXJejykMtIaKkvynrpBp806WZFNj1LAlKuObSyZhx
-	yBXlqxjT6mkV+9AlVfDMXlXc+3pvahR790j3p7HWy4LXsLquJbbGhI0IBPPtvwkk
-	m06RNfkcOqs46d46Op1KamrJp9AFX8G2XRjcSUZ6whvllI9SdGkV45OEdy7KStJb
-	l7/BlGCzViVsjjzLmFhXKj5mc6sx1w8CCxCV1VAFj8d64QeWkPOwH/TUNcUN+cj4
-	Z4Fw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:sender:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1701043493; x=1701050693; bh=UGNk44U4jmXOJ
-	/AcIH3TlGvpqXW3QFjzprbde8gLJZU=; b=IddQoC+7h+piTRX4O77oxs63wgeJ/
-	qQnXeFocUrafGEluooWeaacpsCbDVfmdZuE4tsjVFdeVqbb5pBhzuOIjeP8npVRu
-	rIveoi2kbsn9DsEuo98IuOaOda6yDqAHriusUOrL/l0e72i6Nn9UkmlHN6DPGKZZ
-	lpopZKJC7so4PuhVBw0ANM3hoH3xpte6LkxKztaZTx+dPA496kw//3jrzxW8F6ZF
-	mna5ObqhhpOf88uguLewL6PNO15mHOs8bpMYXVB6LfWRmRbKxnXzrRwau+yIvQ3W
-	SAHtD0C6guqpxbuH+2NfaKPBFSUxLropKwdtGyEDIDPvaOgNbjzwy8XHA==
-X-ME-Sender: <xms:JN1jZYB8lkRG4HvbGfVVyl63D6gCGn9Vy6pqBUHi1bZaXcEVSOdFGA>
-    <xme:JN1jZage5HU5HK2QOTcsYn1zmUjds4J1h2TBFXRg0qHFZvInr-sJ3n0iUzhka-3rx
-    QbjlCDDn-m1u86J_Q>
-X-ME-Received: <xmr:JN1jZblV7A9gPrV_VYyDnqvA5U1eL2YjD67We8yizuvZfUeJJKItobc6vEA0YDfmfB-48OZoRIU96Vb5x8T6iNb-KD-kbfdmqv717jjKQfjxsHmEj1YDFtJIiTQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeitddgudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
-    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:JN1jZewhFNYrH3CWZo3e6cDOkL-r3TE0Y62hP4FPt5KiaEMaV6VPhg>
-    <xmx:JN1jZdQ94GZwV7HD3rNVtmbhQWKh6EvZgaR4qqWYMnrJSZSSakv0Aw>
-    <xmx:JN1jZZZnXZ1yJmMlvYfD_FqJhTP2Fpd4oOmFJLWNmdMHC0IjITNloA>
-    <xmx:Jd1jZeSaCF8iY51kKfXZA8wE1Q39ayvlE32l--qTjttdD6eITauZIA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 26 Nov 2023 19:04:50 -0500 (EST)
-Date: Sun, 26 Nov 2023 18:04:49 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org, 
-	Network Development <netdev@vger.kernel.org>
-Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
- CO-RE relocations
-Message-ID: <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
-References: <cover.1700676682.git.dxu@dxuuu.xyz>
- <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
- <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
- <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
- <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
- <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAAE10F
+	for <bpf@vger.kernel.org>; Sun, 26 Nov 2023 17:25:01 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SdnvB0M3Fz4f3l13
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 09:24:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 72B521A0273
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 09:24:58 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgCnS0rk72NlEERrCA--.10212S2;
+	Mon, 27 Nov 2023 09:24:56 +0800 (CST)
+Subject: Re: [PATCH bpf v3 4/6] bpf: Optimize the free of inner map
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ houtao1@huawei.com
+References: <20231124113033.503338-1-houtao@huaweicloud.com>
+ <20231124113033.503338-5-houtao@huaweicloud.com>
+ <03909d48-646d-4d71-b7bd-0b7510b0bd4f@linux.dev>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <e17eb2fc-9678-9d5f-bdca-eb2322304900@huaweicloud.com>
+Date: Mon, 27 Nov 2023 09:24:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+In-Reply-To: <03909d48-646d-4d71-b7bd-0b7510b0bd4f@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgCnS0rk72NlEERrCA--.10212S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFWkXw1kXry7Gr4UWFW8tFb_yoW3WryfpF
+	4kKrWUGrWUXr1kJryUJw1UXFyUJw4rJ3WDG3W8Xa4UAr4UGryjqr1UWFWqgrn8Jr4kJr4j
+	yr1jqry7u347ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
+Hi Yonghong,
 
-On Sun, Nov 26, 2023 at 10:14:21PM +0200, Eduard Zingerman wrote:
-> On Sat, 2023-11-25 at 20:22 -0800, Yonghong Song wrote:
-> [...]
-> > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > @@ -6,7 +6,10 @@
-> >    * modify it under the terms of version 2 of the GNU General Public
-> >    * License as published by the Free Software Foundation.
-> >    */
-> > -#define BPF_NO_PRESERVE_ACCESS_INDEX
-> > +#if __has_attribute(preserve_static_offset)
-> > +struct __attribute__((preserve_static_offset)) erspan_md2;
-> > +struct __attribute__((preserve_static_offset)) erspan_metadata;
-> > +#endif
-> >   #include "vmlinux.h"
-> [...]
-> >   int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-> > @@ -174,9 +177,13 @@ int erspan_set_tunnel(struct __sk_buff *skb)
-> >          __u8 hwid = 7;
-> >   
-> >          md.version = 2;
-> > +#if __has_attribute(preserve_static_offset)
-> >          md.u.md2.dir = direction;
-> >          md.u.md2.hwid = hwid & 0xf;
-> >          md.u.md2.hwid_upper = (hwid >> 4) & 0x3;
-> > +#else
-> > +       /* Change bit-field store to byte(s)-level stores. */
-> > +#endif
-> >   #endif
-> >   
-> >          ret = bpf_skb_set_tunnel_opt(skb, &md, sizeof(md));
-> > 
-> > ====
-> > 
-> > Eduard, could you double check whether this is a valid use case
-> > to solve this kind of issue with preserve_static_offset attribute?
-> 
-> Tbh I'm not sure. This test passes with preserve_static_offset
-> because it suppresses preserve_access_index. In general clang
-> translates bitfield access to a set of IR statements like:
-> 
->   C:
->     struct foo {
->       unsigned _;
->       unsigned a:1;
->       ...
->     };
->     ... foo->a ...
-> 
->   IR:
->     %a = getelementptr inbounds %struct.foo, ptr %0, i32 0, i32 1
->     %bf.load = load i8, ptr %a, align 4
->     %bf.clear = and i8 %bf.load, 1
->     %bf.cast = zext i8 %bf.clear to i32
-> 
-> With preserve_static_offset the getelementptr+load are replaced by a
-> single statement which is preserved as-is till code generation,
-> thus load with align 4 is preserved.
-> 
-> On the other hand, I'm not sure that clang guarantees that load or
-> stores used for bitfield access would be always aligned according to
-> verifier expectations.
-> 
-> I think we should check if there are some clang knobs that prevent
-> generation of unaligned memory access. I'll take a look.
+On 11/26/2023 3:13 PM, Yonghong Song wrote:
+>
+> On 11/24/23 6:30 AM, Hou Tao wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> When removing the inner map from the outer map, the inner map will be
+>> freed after one RCU grace period and one RCU tasks trace grace
+>> period, so it is certain that the bpf program, which may access the
+>> inner map, has exited before the inner map is freed.
+>>
+>> However there is unnecessary to wait for any RCU grace period, one RCU
+>> grace period or one RCU tasks trace grace period if the outer map is
+>> only accessed by userspace, sleepable program or non-sleepable program.
+>> So recording the sleepable attributes of the owned bpf programs when
+>> adding the outer map into env->used_maps, copying the recorded
+>> attributes to inner map atomically when removing inner map from the
+>> outer map and using the recorded attributes in the inner map to decide
+>> which, and how many, RCU grace periods are needed when freeing the
+>> inner map.
+>>
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>   include/linux/bpf.h     |  8 +++++++-
+>>   kernel/bpf/map_in_map.c | 19 ++++++++++++++-----
+>>   kernel/bpf/syscall.c    | 15 +++++++++++++--
+>>   kernel/bpf/verifier.c   |  4 ++++
+>>   4 files changed, 38 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index 15a6bb951b70..c5b549f352d7 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -245,6 +245,11 @@ struct bpf_list_node_kern {
+>>       void *owner;
+>>   } __attribute__((aligned(8)));
+>>   +enum {
+>> +    BPF_MAP_RCU_GP = BIT(0),
+>> +    BPF_MAP_RCU_TT_GP = BIT(1),
+>> +};
+>> +
+>>   struct bpf_map {
+>>       /* The first two cachelines with read-mostly members of which some
+>>        * are also accessed in fast-path (e.g. ops, max_entries).
+>> @@ -296,7 +301,8 @@ struct bpf_map {
+>>       } owner;
+>>       bool bypass_spec_v1;
+>>       bool frozen; /* write-once; write-protected by freeze_mutex */
+>> -    bool free_after_mult_rcu_gp;
+>> +    atomic_t used_in_rcu_gp;
+>> +    atomic_t free_by_rcu_gp;
+>>       s64 __percpu *elem_count;
+>>   };
+>>   diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
+>> index cf3363065566..d044ee677107 100644
+>> --- a/kernel/bpf/map_in_map.c
+>> +++ b/kernel/bpf/map_in_map.c
+>> @@ -131,12 +131,21 @@ void bpf_map_fd_put_ptr(struct bpf_map *map,
+>> void *ptr, bool deferred)
+>>   {
+>>       struct bpf_map *inner_map = ptr;
+>>   -    /* The inner map may still be used by both non-sleepable and
+>> sleepable
+>> -     * bpf program, so free it after one RCU grace period and one tasks
+>> -     * trace RCU grace period.
+>> +    /* Defer the freeing of inner map according to the attribute of bpf
+>> +     * program which owns the outer map, so unnecessary multiple RCU GP
+>> +     * waitings can be avoided.
+>>        */
+>> -    if (deferred)
+>> -        WRITE_ONCE(inner_map->free_after_mult_rcu_gp, true);
+>> +    if (deferred) {
+>> +        /* used_in_rcu_gp may be updated concurrently by new bpf
+>> +         * program, so add smp_mb() to guarantee the order between
+>> +         * used_in_rcu_gp and lookup/deletion operation of inner map.
+>> +         * If a new bpf program finds the inner map before it is
+>> +         * removed from outer map, reading used_in_rcu_gp below will
+>> +         * return the newly-set bit set by the new bpf program.
+>> +         */
+>> +        smp_mb();
+>
+> smp_mb__before_atomic()?
 
-Is there a reason to prefer fixing in compiler? I'm not opposed to it,
-but the downside to compiler fix is it takes years to propagate and
-sprinkles ifdefs into the code.
+The memory barrier is used for atomic_read() instead of atomic_or(), so
+I think smp_mb() is appropriate.
 
-Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD()?
+>> +        atomic_or(atomic_read(&map->used_in_rcu_gp),
+>> &inner_map->free_by_rcu_gp);
+>> +    }
+>>       bpf_map_put(inner_map);
+>>   }
+>>   diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 88882cb58121..014a8cd55a41 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -734,7 +734,10 @@ static void bpf_map_free_rcu_gp(struct rcu_head
+>> *rcu)
+>>     static void bpf_map_free_mult_rcu_gp(struct rcu_head *rcu)
+>>   {
+>> -    if (rcu_trace_implies_rcu_gp())
+>> +    struct bpf_map *map = container_of(rcu, struct bpf_map, rcu);
+>> +
+>> +    if (!(atomic_read(&map->free_by_rcu_gp) & BPF_MAP_RCU_GP) ||
+>> +        rcu_trace_implies_rcu_gp())
+>>           bpf_map_free_rcu_gp(rcu);
+>>       else
+>>           call_rcu(rcu, bpf_map_free_rcu_gp);
+>> @@ -746,11 +749,16 @@ static void bpf_map_free_mult_rcu_gp(struct
+>> rcu_head *rcu)
+>>   void bpf_map_put(struct bpf_map *map)
+>>   {
+>>       if (atomic64_dec_and_test(&map->refcnt)) {
+>> +        int free_by_rcu_gp;
+>> +
+>>           /* bpf_map_free_id() must be called first */
+>>           bpf_map_free_id(map);
+>>           btf_put(map->btf);
+>>   -        if (READ_ONCE(map->free_after_mult_rcu_gp))
+>> +        free_by_rcu_gp = atomic_read(&map->free_by_rcu_gp);
+>> +        if (free_by_rcu_gp == BPF_MAP_RCU_GP)
+>> +            call_rcu(&map->rcu, bpf_map_free_rcu_gp);
+>> +        else if (free_by_rcu_gp)
+>>               call_rcu_tasks_trace(&map->rcu, bpf_map_free_mult_rcu_gp);
+>>           else
+>>               bpf_map_free_in_work(map);
+>> @@ -5343,6 +5351,9 @@ static int bpf_prog_bind_map(union bpf_attr *attr)
+>>           goto out_unlock;
+>>       }
+>>   +    /* No need to update used_in_rcu_gp, because the bpf program
+>> doesn't
+>> +     * access the map.
+>> +     */
+>>       memcpy(used_maps_new, used_maps_old,
+>>              sizeof(used_maps_old[0]) * prog->aux->used_map_cnt);
+>>       used_maps_new[prog->aux->used_map_cnt] = map;
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 6da370a047fe..3b86c02077f1 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -18051,6 +18051,10 @@ static int resolve_pseudo_ldimm64(struct
+>> bpf_verifier_env *env)
+>>                   return -E2BIG;
+>>               }
+>>   +            atomic_or(env->prog->aux->sleepable ?
+>> BPF_MAP_RCU_TT_GP : BPF_MAP_RCU_GP,
+>> +                  &map->used_in_rcu_gp);
+>> +            /* Pairs with smp_mb() in bpf_map_fd_put_ptr() */
+>> +            smp_mb__before_atomic();
+>
+> smp_mb__after_atomic()?
 
-Thanks,
-Daniel
+smp_mb__after_atomic() is better because it doesn't depend on the
+implementation of bpf_map_inc() below. Will use it in next version.
+>
+> Just curious, are two smp_mb*() memory barriers in this patch truely
+> necessary or just
+> want to be cautious?
+
+Martin had asked me the same question in [1]. The reason for these two
+memory barrier is just want to be cautious.
+
+[1]:
+https://lore.kernel.org/bpf/467cd7b0-9b41-4db5-9646-9b044db14bf0@linux.dev/
+>
+>>               /* hold the map. If the program is rejected by verifier,
+>>                * the map will be released by release_maps() or it
+>>                * will be used by the valid program until it's unloaded
+
 
