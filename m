@@ -1,200 +1,237 @@
-Return-Path: <bpf+bounces-16003-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16004-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC60A7FAB32
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 21:18:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4847FABD6
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 21:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9713B281BDA
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 20:18:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D553E281C5B
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 20:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E82945C1B;
-	Mon, 27 Nov 2023 20:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B0145C0B;
+	Mon, 27 Nov 2023 20:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="VA2VBuHl";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="Rk9o4sag"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="pgevG6dm";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Rfq6nyQn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9E71B6
-	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 12:18:23 -0800 (PST)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 2BC67C15198D
-	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 12:18:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1701116303; bh=KsXUGSc8BLQoctpkzIadjQgnqy4NWt5ieifzcOrQOgs=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe;
-	b=VA2VBuHl/aPuoHaC/VTy3XFT/KEkCnpfKHWrK6q36JgcuAh2gsiJ8H6vaS20U5eMW
-	 UVTlFy7MKmV4OWhtmpL78NHv9ZTZxM5DqV/KVNM0UU6tsMZ+Jkj17B+/YCywgtXo2l
-	 iuMyoETfpVAuuwLnGuVo37stYWPkSfaQSWMDsknM=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Mon Nov 27 12:18:22 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id B5D63C15152F;
-	Mon, 27 Nov 2023 12:18:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1701116302; bh=KsXUGSc8BLQoctpkzIadjQgnqy4NWt5ieifzcOrQOgs=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe;
-	b=Rk9o4sagg8SvCmgAV8lM2cxnni9bpRAjY9M9vYVV6BlDNsz2GaHTVBLZEguDptaQT
-	 /Dl8Lv5pAb5oC4jNJg/mAWN7H/Qfzza17N3vxnqWpLQl2JK8pU4dKvU323h2RDYTfM
-	 YSESCtk2CP6vbGZqsAOWEZIdweKnHWGfmShuZ8pA=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id 8EBE0C15152F
- for <bpf@ietfa.amsl.com>; Mon, 27 Nov 2023 12:18:21 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -1.407
-X-Spam-Level: 
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id eJkm3uGpyZDy for <bpf@ietfa.amsl.com>;
- Mon, 27 Nov 2023 12:18:20 -0800 (PST)
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com
- [209.85.210.43])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id EF813C151520
- for <bpf@ietf.org>; Mon, 27 Nov 2023 12:18:20 -0800 (PST)
-Received: by mail-ot1-f43.google.com with SMTP id
- 46e09a7af769-6d7e8da5e99so2611879a34.2
- for <bpf@ietf.org>; Mon, 27 Nov 2023 12:18:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1701116300; x=1701721100;
- h=user-agent:content-disposition:mime-version:message-id:subject:cc
- :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=3DS3whckSH7/U1pY2zav0ht92ISA+ZglbMKMja86Eno=;
- b=J3HvW48f0qvENgSnikEI/vlSAWl60gcvWf5uy0NWjbiH15ZhNIK8G0CcNbgrwO0isU
- Rm3eT91uo3jc0fUuGOmI4zEYTducZe2mRA9zRTZsluM2k8oy62uHt6PZdl3hPELihVAM
- xClRRiuJJ17lMPhY4IztlrQQ0KNVbc6Fczfl06KfN43cNyjUZeJGCnBbLBqdJRsbxX7I
- tlVj8JHeE4QSMH5F5AgLYx/ADFzVsqXOY4sJ0YNYPabqZWcIZHuuJbDfk8uiVJRigz3X
- XPY60gYwLFiitAvTidTesbLa7KqdMMgVaOrrTepEy+EohhXzVaau/ry3fggQGp78mk4K
- O/Ng==
-X-Gm-Message-State: AOJu0YxzauNV1w2/fwlPIluImKRDn01Qi5lkafgwdOAgmvFqCBw/NqZT
- v49uLNWcD1SR5wD73a/2Ci6cXdJOhZ7T8yEs
-X-Google-Smtp-Source: AGHT+IGl1kYxdqsywHq4xwEal56V3iwb7YhAcNDIezY974BACP4tUQY1FcJl1U/udKCvhphlRSddpA==
-X-Received: by 2002:a9d:5e13:0:b0:6b7:56d9:533 with SMTP id
- d19-20020a9d5e13000000b006b756d90533mr12781926oti.28.1701116299692; 
- Mon, 27 Nov 2023 12:18:19 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
- by smtp.gmail.com with ESMTPSA id
- e29-20020a0cb45d000000b0066cf4fa7b47sm2418380qvf.4.2023.11.27.12.18.18
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Mon, 27 Nov 2023 12:18:19 -0800 (PST)
-Date: Mon, 27 Nov 2023 14:18:17 -0600
-From: David Vernet <void@manifault.com>
-To: bpf@ietf.org
-Cc: bpf@vger.kernel.org, suresh.krishnan@gmail.com, ek.ietf@gmail.com,
- ast@kernel.org, hch@infradead.org, dthaler@microsoft.com,
- hawkinsw@obs.cr, jemarch@gnu.org, yonghong.song@linux.dev
-Message-ID: <20231127201817.GB5421@maniforge>
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C22A1AA;
+	Mon, 27 Nov 2023 12:45:19 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailnew.west.internal (Postfix) with ESMTP id 4BBC32B0013D;
+	Mon, 27 Nov 2023 15:45:15 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 27 Nov 2023 15:45:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1701117914; x=1701125114; bh=c6RIxCPZspuBtK8K2FUFUy9oe3rOA3IlnLJ
+	SMn0aJrY=; b=pgevG6dm8hI24w8peAUEuqrhrBxxBUDDFCa0Hm1UIUnb/T7rTjM
+	qCpKbObWmxmmRGvLKpbJUQDavUV2Er1g3ipGG7DCnXPezvkHY65i21yrNKxtdzuk
+	DR+PN7+i5JLdCXSmBY5xbAjfCJsdBFzf9wWI6ADakx3kMBu+wilTOKOiWs9TFpAc
+	vBd8zruS+Gtr97UiqdlR9OG6hY+NSi7KYPE0l2P1R7JcUpqDCGmTsPyRcLXcZ/ox
+	5wmtS+5X4JdCWnCY881cxlgGzWkae7Afzbufdr+Mmn2ha5+/jqf6+89NQ99FeLlC
+	x7/gYhb6UeZGD4zsq2Bdhb5KpuOW87GY+bw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1701117914; x=1701125114; bh=c6RIxCPZspuBtK8K2FUFUy9oe3rOA3IlnLJ
+	SMn0aJrY=; b=Rfq6nyQnKnCi3gDOoi66hH0ZpfPk+E924Vdx/1BipZdSjeaqekH
+	tdWqN63IevDJNwH9oSolNGavAKGHMUxjSTcHTUMACgQJO4au11SbcZHQZ5v3Rvgw
+	ENZ9XeCF6VyNxNSLdT82qFEni/due1wxdKM7Ddj3ksHDPHpN/d5KpxpcJE+xvu3P
+	f7F44b6mBTFFaSuslNTiM7bnBOgbwt2tB3/G3UvDjIOzB/X2+jggM80wPzmuD9AI
+	N1ZVbM2WU53AQ3igGLR1fhVnUGtmtZzq6tXgYZzxQXUdc4f4SPPk4vVE4/vxyHpQ
+	2erVRMU6Ho3grJA25M9wZRMBMz6B/pXbGnw==
+X-ME-Sender: <xms:2f9kZTi25_zkJrmXET_KDyWAMVKkbzoFgBrHv8ANkfUdiguLApTjcg>
+    <xme:2f9kZQAC9a8vBBDBZ2y9HZL2MllFJxZVGfAbQgFoR6BxFPquFOFcr6syCkFh_RQpY
+    owHmYIW79EpgiY-OQ>
+X-ME-Received: <xmr:2f9kZTEyftqvefDvMcRt0CG2BhcjG29W99bYFbe8OvIbu-W0Vd-maMnkDnx22jQz4GeAswwJluDws32c3gx4WqIAg1bDbmlhDqPBxvaFYICO7-xT-cajyhSSifk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiuddgudegvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttddunecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnhepudefiedtieehffeuffelffegheegjeekteekgfdtkeef
+    jeehffejtdfgkeeiteelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:2f9kZQTR4nBr7Y-dxUjnLjjdQwBsfjoT2Wxh1e_j4OlC7I4qIFJNFA>
+    <xmx:2f9kZQxbUDx61KaAdVg2gkVDDml2RCQ9JvKRBNEw2KRu64np0V1pUw>
+    <xmx:2f9kZW4o-rcgLZw2yXCCC5SxWGNAFYksp9XUJv3CeDlP8uEP6cV1pg>
+    <xmx:2v9kZdz7R6dEonqpP1w4QvJ7vI63sdvRV-JRlc_kM7IMCMr7dm2sfn1H2-8>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Nov 2023 15:45:12 -0500 (EST)
+Date: Mon, 27 Nov 2023 14:45:11 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org, 
+	Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+Message-ID: <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
+References: <cover.1700676682.git.dxu@dxuuu.xyz>
+ <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
+ <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+ <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+ <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
+ <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+ <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
+ <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
+ <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
+ <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/2.2.12 (2023-09-09)
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/SORPUCqpwU9nTOgqQVHnGRWf7qM>
-Subject: [Bpf] IETF 118 BPF WG summary
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
 
-Hello everyone,
+On Sun, Nov 26, 2023 at 09:53:04PM -0800, Yonghong Song wrote:
+> 
+> On 11/27/23 12:44 AM, Yonghong Song wrote:
+> > 
+> > On 11/26/23 8:52 PM, Eduard Zingerman wrote:
+> > > On Sun, 2023-11-26 at 18:04 -0600, Daniel Xu wrote:
+> > > [...]
+> > > > > Tbh I'm not sure. This test passes with preserve_static_offset
+> > > > > because it suppresses preserve_access_index. In general clang
+> > > > > translates bitfield access to a set of IR statements like:
+> > > > > 
+> > > > >    C:
+> > > > >      struct foo {
+> > > > >        unsigned _;
+> > > > >        unsigned a:1;
+> > > > >        ...
+> > > > >      };
+> > > > >      ... foo->a ...
+> > > > > 
+> > > > >    IR:
+> > > > >      %a = getelementptr inbounds %struct.foo, ptr %0, i32 0, i32 1
+> > > > >      %bf.load = load i8, ptr %a, align 4
+> > > > >      %bf.clear = and i8 %bf.load, 1
+> > > > >      %bf.cast = zext i8 %bf.clear to i32
+> > > > > 
+> > > > > With preserve_static_offset the getelementptr+load are replaced by a
+> > > > > single statement which is preserved as-is till code generation,
+> > > > > thus load with align 4 is preserved.
+> > > > > 
+> > > > > On the other hand, I'm not sure that clang guarantees that load or
+> > > > > stores used for bitfield access would be always aligned according to
+> > > > > verifier expectations.
+> > > > > 
+> > > > > I think we should check if there are some clang knobs that prevent
+> > > > > generation of unaligned memory access. I'll take a look.
+> > > > Is there a reason to prefer fixing in compiler? I'm not opposed to it,
+> > > > but the downside to compiler fix is it takes years to propagate and
+> > > > sprinkles ifdefs into the code.
+> > > > 
+> > > > Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD()?
+> > > Well, the contraption below passes verification, tunnel selftest
+> > > appears to work. I might have messed up some shifts in the macro,
+> > > though.
+> > 
+> > I didn't test it. But from high level it should work.
+> > 
+> > > 
+> > > Still, if clang would peek unlucky BYTE_{OFFSET,SIZE} for a particular
+> > > field access might be unaligned.
+> > 
+> > clang should pick a sensible BYTE_SIZE/BYTE_OFFSET to meet
+> > alignment requirement. This is also required for BPF_CORE_READ_BITFIELD.
+> > 
+> > > 
+> > > ---
+> > > 
+> > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > index 3065a716544d..41cd913ac7ff 100644
+> > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > @@ -9,6 +9,7 @@
+> > >   #include "vmlinux.h"
+> > >   #include <bpf/bpf_helpers.h>
+> > >   #include <bpf/bpf_endian.h>
+> > > +#include <bpf/bpf_core_read.h>
+> > >   #include "bpf_kfuncs.h"
+> > >   #include "bpf_tracing_net.h"
+> > >   @@ -144,6 +145,38 @@ int ip6gretap_get_tunnel(struct __sk_buff *skb)
+> > >       return TC_ACT_OK;
+> > >   }
+> > >   +#define BPF_CORE_WRITE_BITFIELD(s, field, new_val) ({            \
+> > > +    void *p = (void *)s + __CORE_RELO(s, field, BYTE_OFFSET);    \
+> > > +    unsigned byte_size = __CORE_RELO(s, field, BYTE_SIZE);        \
+> > > +    unsigned lshift = __CORE_RELO(s, field, LSHIFT_U64); \
+> > > +    unsigned rshift = __CORE_RELO(s, field, RSHIFT_U64); \
+> > > +    unsigned bit_size = (rshift - lshift);                \
+> > > +    unsigned long long nval, val, hi, lo;                \
+> > > +                                    \
+> > > +    asm volatile("" : "=r"(p) : "0"(p));                \
+> > 
+> > Use asm volatile("" : "+r"(p)) ?
+> > 
+> > > +                                    \
+> > > +    switch (byte_size) {                        \
+> > > +    case 1: val = *(unsigned char *)p; break;            \
+> > > +    case 2: val = *(unsigned short *)p; break;            \
+> > > +    case 4: val = *(unsigned int *)p; break;            \
+> > > +    case 8: val = *(unsigned long long *)p; break;            \
+> > > +    }                                \
+> > > +    hi = val >> (bit_size + rshift);                \
+> > > +    hi <<= bit_size + rshift;                    \
+> > > +    lo = val << (bit_size + lshift);                \
+> > > +    lo >>= bit_size + lshift;                    \
+> > > +    nval = new_val;                            \
+> > > +    nval <<= lshift;                        \
+> > > +    nval >>= rshift;                        \
+> > > +    val = hi | nval | lo;                        \
+> > > +    switch (byte_size) {                        \
+> > > +    case 1: *(unsigned char *)p      = val; break;            \
+> > > +    case 2: *(unsigned short *)p     = val; break;            \
+> > > +    case 4: *(unsigned int *)p       = val; break;            \
+> > > +    case 8: *(unsigned long long *)p = val; break;            \
+> > > +    }                                \
+> > > +})
+> > 
+> > I think this should be put in libbpf public header files but not sure
+> > where to put it. bpf_core_read.h although it is core write?
+> > 
+> > But on the other hand, this is a uapi struct bitfield write,
+> > strictly speaking, CORE write is really unnecessary here. It
+> > would be great if we can relieve users from dealing with
+> > such unnecessary CORE writes. In that sense, for this particular
+> > case, I would prefer rewriting the code by using byte-level
+> > stores...
+> or preserve_static_offset to clearly mean to undo bitfield CORE ...
 
-We had a productive BPF working group meeting at IETF 118, and we wanted
-to provide a summary to recap what was discussed.
+Ok, I will do byte-level rewrite for next revision.
 
-*BPF ISA*
+Just wondering, though: will bpftool be able to generate the appropriate
+annotations for uapi structs? IIUC uapi structs look the same in BTF as
+any other struct.
 
-Dave Thaler provided an update on what's changed in the BPF ISA I-D
-since IETF 117. Those changes included (but were not necessarily limited
-to) the following:
+> 
+> [...]
+> 
 
-- ABI-specific text was moved from this document into a separate ABI [0]
-  document that has yet to be adopted into the WG.
-- IANA considerations were added to the document:
-        - Permanent: Standards action or IESG Review
-        - Provisional: Specification required
-        - Historical: Specification required
-- For listing instructions in the IANA registry, it was decided to keep
-  them as a single table with multiple key fields.
-- New instructions (signed division, signed modulo, move with sign
-  extension, load with sign extension, unconditional byte swap, and
-  32-bit offset jumps) were added by Yonghong Song.
-- A few other fixes and improvements provided by Will Hawkins, Jose
-  Marchesi, and others.
-
-After this update, the discussion moved to a topic for the BPF ISA
-document that has yet to be resolved: ISA RFC compliance. Dave pointed
-out that we still need to specify which instructions in the ISA are
-MUST, SHOULD, etc, to ensure interoperability.  Several different
-options were presented, including having individual-instruction
-granularity, following the clang CPU versioning convention, and grouping
-instructions by logical functionality.
-
-We did not obtain consensus at the conference on which was the best way
-forward. Some of the points raised include the following:
-
-- Following the clang CPU versioning labels is somewhat arbitrary. It
-  may not be appropriate to standardize around grouping that is a result
-  of largely organic historical artifacts.
-- If we decide to do logical grouping, there is a danger of
-  bikeshedding. Looking at anecdotes from industry, some vendors such as
-  Netronome elected to not support particular instructions for
-  performance reasons.
-
-Once this compliance question has been resolved, we expect that the ISA
-document will be ready to move to WG last call.
-
-*BPF Memory Model and psABI*
-
-Alexei Starovoitov presented the rough outline of a proposal for the BPF
-Memory Model, and clarified some of his views on the BPF psABI. The main
-thrust of the proposal was that the BPF MM should reflect that of
-hardware memory models such as ARM and x86, and be mirrored after the
-LKMM (Linux Kernel Memory Model), of which language MMs are a strict
-subset. Existing language MMs do not properly handle control
-dependencies, and suffer from issues such as OOTA (Out-of-Thin-Air)
-reads. The presentation outlined the control dependencies proposed for
-various types of BPF instructions, such as atomics, jumps, etc.
-
-Overall the proposal seemed well received, though the issue of whether
-ABIs should be standardized was again resurfaced. When the WG was
-formed, the expectation was that such conventions would be captured in
-one or more Informational documents. This question will likely have to
-be resolved before an I-D could be adopted.
-
-*Conclusion*
-
-This was another very productive session. It's clear that we're almost
-ready to make a WG last call for the ISA document. Hopefully we can
-resolve the issue of compliance quickly. It's also great to see that the
-BPF MM and ABI standardization discussions are proceeding. It seemed
-that we all had rough consensus on the proposal for the BPF MM, so it
-would be great for us to get some of that written down into the existing
-ABI document.
-
-Have a wonderful week, and we look forward to more progress!
-
-Best,
-David and Suresh
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+Thanks,
+Daniel
 
