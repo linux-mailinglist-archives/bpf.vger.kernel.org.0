@@ -1,86 +1,73 @@
-Return-Path: <bpf+bounces-15901-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15911-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC5507FA13E
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 14:43:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A38BE7FA189
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 14:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F235B21155
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 13:43:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D57271C20CD3
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 13:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F16C2FE38;
-	Mon, 27 Nov 2023 13:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8BD23064C;
+	Mon, 27 Nov 2023 13:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="O/YSnbK8"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lpc9evsT"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE22111;
-	Mon, 27 Nov 2023 05:43:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=jFd/xkuX/ftetMANpbJB4kdYUDf7JGwdEouihkb81Hg=; b=O/YSnbK8TbXGiVNqeT6AY2IwYV
-	M/Zqqw0c0PkAVi6Z695Mc6/0Pbb3PAgg9kfr2i8F17NdF9fYiBODQsau1C2IxNYfNasAUposXxkeg
-	JeQnFCIssGSnfTuStmUY8G9YVK7n92gXLhQCxHxLoK2Ce5xJ7f+Y1+5dLMG/RGEHikyRLgnuikr+7
-	se4MvJ5ra1aXW74Y8GoCWYEMaZiWZx53K1V5DFe9DTDOrRPzvARFBbCf3cmvwOzoIdKSycBYORx21
-	8XnjsTU2jl4YPA6QqolG6jqGClfDZpcltf9AvFohb/o8vdopfAEkyYD6/TDCiYamVh2YZY7DcVWWp
-	lD5Aaa0A==;
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r7btJ-0006Pv-5f; Mon, 27 Nov 2023 14:43:13 +0100
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: martin.lau@linux.dev
-Cc: razor@blackwall.org,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf] netkit: Reject IFLA_NETKIT_PEER_INFO in netkit_change_link
-Date: Mon, 27 Nov 2023 14:43:11 +0100
-Message-Id: <20231127134311.30345-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38D983033D;
+	Mon, 27 Nov 2023 13:54:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BA89C433CB;
+	Mon, 27 Nov 2023 13:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1701093271;
+	bh=x8+axdfJnWcUTrYe+z6TxMAlJf7WBymVwQzRmWFuviE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lpc9evsTNarsDVwG4URGVbx2z9JD2xuyvsua8/jM3OgZTRRjECZeoefY/rz77RNH8
+	 tVkw8sFInsRrwrs6uIx4TohZExMunko97zDk3OXyb/DvUxGLQRu93OutVCak6vFsoa
+	 afSruwfshNiGdQSdoAY5WOCtrpInZob9S5FGS6Tc=
+Date: Mon, 27 Nov 2023 13:43:57 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Tejun Heo <tj@kernel.org>, Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Waiman Long <longman@redhat.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 0/3] kernfs: Convert from strlcpy() to strscpy()
+Message-ID: <2023112751-cozy-dangle-3f5a@gregkh>
+References: <20231116191718.work.246-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27106/Mon Nov 27 09:39:12 2023)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116191718.work.246-kees@kernel.org>
 
-The IFLA_NETKIT_PEER_INFO attribute can only be used during device
-creation, but not via changelink callback. Hence reject it there.
+On Thu, Nov 16, 2023 at 11:21:22AM -0800, Kees Cook wrote:
+> Hi,
+> 
+> One of the last users of strlcpy() is kernfs, which has some complex
+> calling hierarchies that needed to be carefully examined. This series
+> refactors the strlcpy() calls into strscpy() calls, and bubbles up all
+> changes in return value checking for callers.
 
-Fixes: 35dfaad7188c ("netkit, bpf: Add bpf programmable net device")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- drivers/net/netkit.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Why not work instead to convert kernfs (and by proxy cgroups) to use the
+"safe" string functions based on seq_file?  This should be a simpler
+patch series to review, and implement on a per-function basis, and then
+we would not have any string functions in kernfs anymore.
 
-diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-index 97bd6705c241..35553b16b8e2 100644
---- a/drivers/net/netkit.c
-+++ b/drivers/net/netkit.c
-@@ -851,6 +851,12 @@ static int netkit_change_link(struct net_device *dev, struct nlattr *tb[],
- 		return -EACCES;
- 	}
- 
-+	if (data[IFLA_NETKIT_PEER_INFO]) {
-+		NL_SET_ERR_MSG_ATTR(extack, data[IFLA_NETKIT_PEER_INFO],
-+				    "netkit peer info cannot be changed after device creation");
-+		return -EACCES;
-+	}
-+
- 	if (data[IFLA_NETKIT_POLICY]) {
- 		attr = data[IFLA_NETKIT_POLICY];
- 		policy = nla_get_u32(attr);
--- 
-2.27.0
+thanks,
 
+greg k-h
 
