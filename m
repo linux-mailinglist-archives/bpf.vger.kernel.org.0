@@ -1,64 +1,129 @@
-Return-Path: <bpf+bounces-16005-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16006-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADA857FAC42
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 22:07:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EE577FAC6A
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 22:13:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD4E41C20EEC
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 21:07:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F7201C20F68
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 21:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5876945969;
-	Mon, 27 Nov 2023 21:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C500E4642B;
+	Mon, 27 Nov 2023 21:13:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Joazzyn+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E6nJAGzz"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83BD31735;
-	Mon, 27 Nov 2023 21:07:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FE16C433C7;
-	Mon, 27 Nov 2023 21:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A6F31735;
+	Mon, 27 Nov 2023 21:13:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB329C433CD;
+	Mon, 27 Nov 2023 21:13:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701119254;
-	bh=cIm4i4ni8q9KxV9YAi623eGX0mZmJPuO4aPGKrPyO/Y=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Joazzyn+WlzTbkWr3WmPWY6ApFhiHgfBQ7BQF2nF8Lau630P+33KXOuL1L8ecSE9s
-	 xQtFShRFR7LjTr9rSgxPVLU+1Vyb+3bC/cdO5xJuW48Q/mcKdSjk39TimxLEaeoNln
-	 sMVq/xNds4evFmR9xzj9NEoyECDTJSsmFidB1eZUmDIZ5v+wx6HSFwY2Jr7g5hckHH
-	 9crRHSCLqEQUHKL3V7CHQZS4qpAk3dQOV4s7Vame26l+OCqaLz+kaU4KrLW8YUvyON
-	 Vihrof7DNbNQWuQMmOpABCmjI26txkePUSYi5zXnd5Gb55ZMnWoc2VSgg3fjr8rS1n
-	 9z6wcIi0WQjDA==
-Date: Mon, 27 Nov 2023 13:07:33 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: martin.lau@linux.dev, razor@blackwall.org, bpf@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH bpf v2] netkit: Reject IFLA_NETKIT_PEER_INFO in
- netkit_change_link
-Message-ID: <20231127130733.6182c088@kernel.org>
-In-Reply-To: <e86a277a1e8d3b19890312779e42f790b0605ea4.1701115314.git.daniel@iogearbox.net>
-References: <e86a277a1e8d3b19890312779e42f790b0605ea4.1701115314.git.daniel@iogearbox.net>
+	s=k20201202; t=1701119591;
+	bh=O7B53ahSsXYZv0/3GtytayozB/LdwWtvoTPV/D9zgKQ=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=E6nJAGzzU+y1vd2Te3ZQJmiqo+LPPSj9NjgaLfueRXcQ10DmnLOZolPq/Ew9HhxFk
+	 d/fBJcv3pA8khk2kENXTvZsUzrEBCvSeD2OjYxkPRgtUU5cOz7MuxOnJQckSZMN761
+	 fhPBLu/5s78qjmC+n0APxGm6IMeWipjDMJgacsOZMlWdqhdcW8W1E2V5ve+ZMvOp9N
+	 Wx/GNW/1fIXNE15nOd2N/RgKQynU3gh63gEGV3DZM6b+GnQsINK7NMoHUwdKCXWKhx
+	 AuMyKBCa7/psA+u2MoeD931lWCL2KumVQB0O7TDRdGSGGu5RXH/aBniO1VDVfDULYI
+	 hXdz7yi8k4IsA==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-507e85ebf50so6406349e87.1;
+        Mon, 27 Nov 2023 13:13:11 -0800 (PST)
+X-Gm-Message-State: AOJu0YxkddygyDHX5AwR15uHgrlc66Uk9W1tB9pIUJLaI7uagwzAoljB
+	cLxQkKY8BmdfxPQyRpphQhXiP/xzzDFxRpmm59A=
+X-Google-Smtp-Source: AGHT+IHv8e6noXFC9uvnadiggk6Xhu6Uimbht251vU7wvruHM56yuqTGHcwt7VVU19mRALhez0VMAqJmWQOn7BE/rhY=
+X-Received: by 2002:a05:6512:3a82:b0:509:489f:d84e with SMTP id
+ q2-20020a0565123a8200b00509489fd84emr12046812lfu.37.1701119589893; Mon, 27
+ Nov 2023 13:13:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231123233936.3079687-1-song@kernel.org> <20231123233936.3079687-2-song@kernel.org>
+ <20231124-heilung-wohnumfeld-6b7797c4d41a@brauner> <CAPhsuW7BFzsBv48xgbY4-2xhG1-GazBuQq_pnaUrJqY1q_H27w@mail.gmail.com>
+ <20231127-auffiel-wutentbrannt-7b8b3efb09e4@brauner> <CAPhsuW4qP=VYhQ8BTOA3WFhu2LW+cjQ0YtdAVcj-kY_3r4yjnA@mail.gmail.com>
+In-Reply-To: <CAPhsuW4qP=VYhQ8BTOA3WFhu2LW+cjQ0YtdAVcj-kY_3r4yjnA@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Mon, 27 Nov 2023 13:12:57 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW64QYs3pk7Uva5kWhSm4f+25CektGYn9PB6_G1cLb67RQ@mail.gmail.com>
+Message-ID: <CAPhsuW64QYs3pk7Uva5kWhSm4f+25CektGYn9PB6_G1cLb67RQ@mail.gmail.com>
+Subject: Re: [PATCH v13 bpf-next 1/6] bpf: Add kfunc bpf_get_file_xattr
+To: Christian Brauner <brauner@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	fsverity@lists.linux.dev, ebiggers@kernel.org, andrii@kernel.org, 
+	martin.lau@linux.dev, viro@zeniv.linux.org.uk, casey@schaufler-ca.com, 
+	amir73il@gmail.com, kpsingh@kernel.org, roberto.sassu@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 27 Nov 2023 21:05:33 +0100 Daniel Borkmann wrote:
-> The IFLA_NETKIT_PEER_INFO attribute can only be used during device
-> creation, but not via changelink callback. Hence reject it there.
-> 
-> Fixes: 35dfaad7188c ("netkit, bpf: Add bpf programmable net device")
-> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-> Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
-> Cc: Jakub Kicinski <kuba@kernel.org>
+On Mon, Nov 27, 2023 at 10:05=E2=80=AFAM Song Liu <song@kernel.org> wrote:
+>
+> Hi Christian,
+>
+> Thanks again for your comments.
+>
+> On Mon, Nov 27, 2023 at 2:50=E2=80=AFAM Christian Brauner <brauner@kernel=
+.org> wrote:
+> >
+[...]
+> Going back to xattr_permission itself. AFAICT, it does 3 checks:
+>
+> 1. MAY_WRITE check;
+> 2. prefix check;
+> 3. inode_permission().
+>
+> We don't need MAY_WRITE check as bpf_get_file_xattr is read only.
+> We have the prefix check embedded in bpf_get_file_xattr():
+>
+>        if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
+>                return -EPERM;
+>
+> inode_permission() is a little trickier here, which checks against idmap.
+> However, I don't think the check makes sense in the context of LSM.
+> In this case, we have two processes: one security daemon, which
+> owns the BPF LSM program, and a process being monitored.
+> idmap here, from file_mnt_idmap(file), is the idmap from the being
+> monitored process. However, whether the BPF LSM program have the
+> permission to read the xattr should be determined by the security
+> daemon.
 
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+Maybe we should check against nop_mnt_idmap? Would something like
+the following make more sense?
+
+Thanks,
+Song
+
+diff --git i/kernel/trace/bpf_trace.c w/kernel/trace/bpf_trace.c
+index 0019e990408e..62fc51bc57af 100644
+--- i/kernel/trace/bpf_trace.c
++++ w/kernel/trace/bpf_trace.c
+@@ -1453,6 +1453,7 @@ __bpf_kfunc int bpf_get_file_xattr(struct file
+*file, const char *name__str,
+        struct dentry *dentry;
+        u32 value_len;
+        void *value;
++       int ret;
+
+        if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
+                return -EPERM;
+@@ -1463,6 +1464,9 @@ __bpf_kfunc int bpf_get_file_xattr(struct file
+*file, const char *name__str,
+                return -EINVAL;
+
+        dentry =3D file_dentry(file);
++       ret =3D inode_permission(&nop_mnt_idmap, dentry->d_inode, MAY_READ)=
+;
++       if (ret)
++               return ret;
+        return __vfs_getxattr(dentry, dentry->d_inode, name__str,
+value, value_len);
+ }
 
