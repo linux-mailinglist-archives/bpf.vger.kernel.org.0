@@ -1,129 +1,126 @@
-Return-Path: <bpf+bounces-16006-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16007-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EE577FAC6A
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 22:13:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09EC47FAC99
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 22:32:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F7201C20F68
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 21:13:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4667281CFF
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 21:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C500E4642B;
-	Mon, 27 Nov 2023 21:13:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F02346529;
+	Mon, 27 Nov 2023 21:32:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E6nJAGzz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mypgcsMM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30A6F31735;
-	Mon, 27 Nov 2023 21:13:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB329C433CD;
-	Mon, 27 Nov 2023 21:13:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701119591;
-	bh=O7B53ahSsXYZv0/3GtytayozB/LdwWtvoTPV/D9zgKQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=E6nJAGzzU+y1vd2Te3ZQJmiqo+LPPSj9NjgaLfueRXcQ10DmnLOZolPq/Ew9HhxFk
-	 d/fBJcv3pA8khk2kENXTvZsUzrEBCvSeD2OjYxkPRgtUU5cOz7MuxOnJQckSZMN761
-	 fhPBLu/5s78qjmC+n0APxGm6IMeWipjDMJgacsOZMlWdqhdcW8W1E2V5ve+ZMvOp9N
-	 Wx/GNW/1fIXNE15nOd2N/RgKQynU3gh63gEGV3DZM6b+GnQsINK7NMoHUwdKCXWKhx
-	 AuMyKBCa7/psA+u2MoeD931lWCL2KumVQB0O7TDRdGSGGu5RXH/aBniO1VDVfDULYI
-	 hXdz7yi8k4IsA==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-507e85ebf50so6406349e87.1;
-        Mon, 27 Nov 2023 13:13:11 -0800 (PST)
-X-Gm-Message-State: AOJu0YxkddygyDHX5AwR15uHgrlc66Uk9W1tB9pIUJLaI7uagwzAoljB
-	cLxQkKY8BmdfxPQyRpphQhXiP/xzzDFxRpmm59A=
-X-Google-Smtp-Source: AGHT+IHv8e6noXFC9uvnadiggk6Xhu6Uimbht251vU7wvruHM56yuqTGHcwt7VVU19mRALhez0VMAqJmWQOn7BE/rhY=
-X-Received: by 2002:a05:6512:3a82:b0:509:489f:d84e with SMTP id
- q2-20020a0565123a8200b00509489fd84emr12046812lfu.37.1701119589893; Mon, 27
- Nov 2023 13:13:09 -0800 (PST)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5E7131;
+	Mon, 27 Nov 2023 13:32:39 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a0bdf4eeb46so312673066b.3;
+        Mon, 27 Nov 2023 13:32:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701120758; x=1701725558; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=W/1uSzXDfGGBJQhktgQcNYFDx6Quw5SgU4SWdrjub/w=;
+        b=mypgcsMMNggtuV9bW2/YnBKFa7upRp8gWnNMYqJwu0p6+UOuuv6BnTBFcNdW1zBLsc
+         ZIqWj3tESlJeGVfwZfSp1H0r1U3Csqp1M84sikaQ80RKZLTagy1vftXeoi7ljIdfBqgU
+         yxAMsPEzL3pFHRsTF+6Xgs4Mlzm79SJgYo9aQFYdnaenaXjaHi2w+uRRiwEctpZUVTUK
+         HdzmRfPswq2XmKHTDDTMCji24snRwp9E0XhjXeaJhVXmape+BusMYSP/wXBOry0qLOgx
+         fYPLY5AsLzoVezZPlnPXfI7hlNM5JjzUiFIQUc+n7StMZmpqy4V2BDLTabJrjb88lfX+
+         r7SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701120758; x=1701725558;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W/1uSzXDfGGBJQhktgQcNYFDx6Quw5SgU4SWdrjub/w=;
+        b=FeKMbURmP9juaeuHq0t0fEWjiF0Nm9jbhPxoekZ6BNqVHlFthm81gtgcZf0v2VTvme
+         KH4s4CMI7JY9CLkD/fqaKcHgiUVUF8giQ2Go2Ez52I2ikHf3WzCysYj/42UI/EZKEbit
+         ZyDWrdjW0/qtT0hm7XiDgY0vm3dlSotwRfXY9/zR5OEB3imFnThbPU4DrZoYvPVckt6w
+         Wbipbmd5QmDDex8LZE7CW+ULQhxz0ZFiKkNaMBBpWAycw621WrUc7cdAJKZbYOO4nin6
+         ONn//Z/RlnOatqkpmK8VEDeH0MPd9kJ8qVrkK4IUvI7Xhp+igGGuixGyPmlguZj0ROr7
+         6EIw==
+X-Gm-Message-State: AOJu0YxxKf+DjolOaxx8PwG/qKkv7HODA1Zuj0AmrLBhFnSaWOMCNlwL
+	2NlmzPJcvckF/v3DLps82hw=
+X-Google-Smtp-Source: AGHT+IGiLRdPfMRCVg9ZEFSpMdpp/TzdZZxtg0wo3DlOFoWnGAfTT/GaVGLjZGSYXUHwDj1D6qqoJA==
+X-Received: by 2002:a17:906:4e81:b0:a0e:3a22:af5 with SMTP id v1-20020a1709064e8100b00a0e3a220af5mr1303801eju.77.1701120757825;
+        Mon, 27 Nov 2023 13:32:37 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id 3-20020a170906018300b00a0a8b2b74ddsm4087917ejb.154.2023.11.27.13.32.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Nov 2023 13:32:37 -0800 (PST)
+Message-ID: <f4777af7e0b47b41760da5f291a7535c7006adf9.camel@gmail.com>
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Daniel Xu <dxu@dxuuu.xyz>, Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Shuah Khan
+ <shuah@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Steffen Klassert
+ <steffen.klassert@secunet.com>, antony.antony@secunet.com, Mykola Lysenko
+ <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+ <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>, KP Singh
+ <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf
+ <bpf@vger.kernel.org>,  "open list:KERNEL SELFTEST FRAMEWORK"
+ <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+ devel@linux-ipsec.org, Network Development <netdev@vger.kernel.org>
+Date: Mon, 27 Nov 2023 23:32:35 +0200
+In-Reply-To: <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
+References: <cover.1700676682.git.dxu@dxuuu.xyz>
+	 <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
+	 <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+	 <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+	 <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
+	 <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+	 <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
+	 <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
+	 <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
+	 <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
+	 <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231123233936.3079687-1-song@kernel.org> <20231123233936.3079687-2-song@kernel.org>
- <20231124-heilung-wohnumfeld-6b7797c4d41a@brauner> <CAPhsuW7BFzsBv48xgbY4-2xhG1-GazBuQq_pnaUrJqY1q_H27w@mail.gmail.com>
- <20231127-auffiel-wutentbrannt-7b8b3efb09e4@brauner> <CAPhsuW4qP=VYhQ8BTOA3WFhu2LW+cjQ0YtdAVcj-kY_3r4yjnA@mail.gmail.com>
-In-Reply-To: <CAPhsuW4qP=VYhQ8BTOA3WFhu2LW+cjQ0YtdAVcj-kY_3r4yjnA@mail.gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 27 Nov 2023 13:12:57 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW64QYs3pk7Uva5kWhSm4f+25CektGYn9PB6_G1cLb67RQ@mail.gmail.com>
-Message-ID: <CAPhsuW64QYs3pk7Uva5kWhSm4f+25CektGYn9PB6_G1cLb67RQ@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 1/6] bpf: Add kfunc bpf_get_file_xattr
-To: Christian Brauner <brauner@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	fsverity@lists.linux.dev, ebiggers@kernel.org, andrii@kernel.org, 
-	martin.lau@linux.dev, viro@zeniv.linux.org.uk, casey@schaufler-ca.com, 
-	amir73il@gmail.com, kpsingh@kernel.org, roberto.sassu@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 27, 2023 at 10:05=E2=80=AFAM Song Liu <song@kernel.org> wrote:
->
-> Hi Christian,
->
-> Thanks again for your comments.
->
-> On Mon, Nov 27, 2023 at 2:50=E2=80=AFAM Christian Brauner <brauner@kernel=
-.org> wrote:
-> >
+On Mon, 2023-11-27 at 14:45 -0600, Daniel Xu wrote:
 [...]
-> Going back to xattr_permission itself. AFAICT, it does 3 checks:
->
-> 1. MAY_WRITE check;
-> 2. prefix check;
-> 3. inode_permission().
->
-> We don't need MAY_WRITE check as bpf_get_file_xattr is read only.
-> We have the prefix check embedded in bpf_get_file_xattr():
->
->        if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
->                return -EPERM;
->
-> inode_permission() is a little trickier here, which checks against idmap.
-> However, I don't think the check makes sense in the context of LSM.
-> In this case, we have two processes: one security daemon, which
-> owns the BPF LSM program, and a process being monitored.
-> idmap here, from file_mnt_idmap(file), is the idmap from the being
-> monitored process. However, whether the BPF LSM program have the
-> permission to read the xattr should be determined by the security
-> daemon.
+> IIUC uapi structs look the same in BTF as any other struct.
 
-Maybe we should check against nop_mnt_idmap? Would something like
-the following make more sense?
+Yes, and all share preserve_access_index attribute because of the way
+attribute push/pop directives are generated in vmlinux.h.
+
+> Just wondering, though: will bpftool be able to generate the appropriate
+> annotations for uapi structs?=20
+
+The problem is that there is no easy way to identify if structure is
+uapi in DWARF (from which BTF is generated).
+One way to do this:
+- modify pahole to check DW_AT_decl_file for each struct DWARF entry
+  and generate some special decl tag in BTF;
+- modify bpftool to interpret this tag as a marker to not generate
+  preserve_access_index for a structure.
+
+The drawback is that such behavior hardcodes some kernel specific
+assumptions both in pahole and in bpftool. It also remains to be seen
+if DW_AT_decl_file tags are consistent.
+
+It might be the case that allowing excessive CO-RE relocations is a
+better option. (And maybe tweak something about bitfield access
+generation to avoid such issues as in this thread).
 
 Thanks,
-Song
-
-diff --git i/kernel/trace/bpf_trace.c w/kernel/trace/bpf_trace.c
-index 0019e990408e..62fc51bc57af 100644
---- i/kernel/trace/bpf_trace.c
-+++ w/kernel/trace/bpf_trace.c
-@@ -1453,6 +1453,7 @@ __bpf_kfunc int bpf_get_file_xattr(struct file
-*file, const char *name__str,
-        struct dentry *dentry;
-        u32 value_len;
-        void *value;
-+       int ret;
-
-        if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
-                return -EPERM;
-@@ -1463,6 +1464,9 @@ __bpf_kfunc int bpf_get_file_xattr(struct file
-*file, const char *name__str,
-                return -EINVAL;
-
-        dentry =3D file_dentry(file);
-+       ret =3D inode_permission(&nop_mnt_idmap, dentry->d_inode, MAY_READ)=
-;
-+       if (ret)
-+               return ret;
-        return __vfs_getxattr(dentry, dentry->d_inode, name__str,
-value, value_len);
- }
+Eduard
 
