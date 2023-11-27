@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-15925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C4D47FA1B5
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 14:57:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 213AD7FA1B8
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 14:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38A5D28130B
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 13:57:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8225B2129B
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 13:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88D13066C;
-	Mon, 27 Nov 2023 13:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABB830676;
+	Mon, 27 Nov 2023 13:57:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tc1U8C8B"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhIzkEBU"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C8A1DFD5;
-	Mon, 27 Nov 2023 13:57:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E92A8C43142;
-	Mon, 27 Nov 2023 13:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631182FE12;
+	Mon, 27 Nov 2023 13:57:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AFFBC433CB;
+	Mon, 27 Nov 2023 13:57:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701093441;
-	bh=5BNVBB7peZKxOYYyHONtdZrMFDGpcSDPvsIQ08LtrvI=;
+	s=k20201202; t=1701093454;
+	bh=XgejxEeSUCgC78mdpML2P/NZltFSt+DFPHLOkxfE4cc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tc1U8C8BCNN5UzRem7hdSm4O98H/yFk/QaKBcxjKhB4Y15Ed35bD5P1DcNtu7Ly7L
-	 yDFDZM5DkWfQNzsY818YkfJMK4+lW1sEppUvuPGc7SneWKamDbU4hKW0Dzb1Bk/3yf
-	 ejFzvhMVB+8MDzkAzj2JqpeJgGQZFgRlcQY2hQ0KQv9jy8t+chs3E4F2Zq98+2dfla
-	 MHOPRV7nFL7fVmSxa69OyO9ke4gqW6ttpsfLK0C9pJj/1cA1gKjugk7V75VG2D+5/7
-	 67cT19Igd4Vk0yODvBs6w8akuKyDEgi0fwnkLUTTEAV5yLWendJUvwysvzAhqnS9fu
-	 29nl/Z1FmT++A==
+	b=AhIzkEBUjsZmIX7dBCEzhF6+8hcCIffZrHxn4j0PEX6cacO0NeiAE0mrJzYrloJcc
+	 YX0S1gxD6Y+Vux81EMxp99RHo6nG1X/78Zhli8DrYQDhEki3Oo2l0KnS2yD1NJDhmI
+	 kgDgWxM1sMONq3aMX2mEmd+5DkgHJHJYFiVg7tgdttcV3sIQyY8qXALxZNhVbp6DCV
+	 SbgVOkTNKG/epk0nSgIsp5pIQ0I+H7nVZqsYbHuOMhOgX3MOR4aQKmLmlF6zVQe3JP
+	 AAjvIqyu2srbtBOBDb0LfTRi0SU30j50yeTHUP/e/pPNiCrFfvyV2IZYZZjRLIw/45
+	 kUSThxUX2jnFA==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -50,9 +50,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 21/33] x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
-Date: Mon, 27 Nov 2023 22:57:15 +0900
-Message-Id: <170109343500.343914.8822279017262195121.stgit@devnote2>
+Subject: [PATCH v3 22/33] tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+Date: Mon, 27 Nov 2023 22:57:27 +0900
+Message-Id: <170109344719.343914.7390510141635028198.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <170109317214.343914.4784420430328654397.stgit@devnote2>
 References: <170109317214.343914.4784420430328654397.stgit@devnote2>
@@ -68,93 +68,99 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Support HAVE_FUNCTION_GRAPH_FREGS on x86-64, which saves ftrace_regs
-on the stack in ftrace_graph return trampoline so that the callbacks
-can access registers via ftrace_regs APIs.
-
-Note that this only recovers 'rax' and 'rdx' registers because other
-registers are not used anymore and recovered by caller. 'rax' and
-'rdx' will be used for passing the return value.
+Rename ftrace_regs_return_value to ftrace_regs_get_return_value as same as
+other ftrace_regs_get/set_* APIs.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
  Changes in v3:
-  - Add a comment about rip.
- Changes in v2:
-  - Save rsp register and drop clearing orig_ax.
+  - Newly added.
 ---
- arch/x86/Kconfig            |    3 ++-
- arch/x86/kernel/ftrace_64.S |   37 +++++++++++++++++++++++++++++--------
- 2 files changed, 31 insertions(+), 9 deletions(-)
+ arch/loongarch/include/asm/ftrace.h |    2 +-
+ arch/powerpc/include/asm/ftrace.h   |    2 +-
+ arch/s390/include/asm/ftrace.h      |    2 +-
+ arch/x86/include/asm/ftrace.h       |    2 +-
+ include/linux/ftrace.h              |    2 +-
+ kernel/trace/fgraph.c               |    2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 66bfabae8814..4b4c2f9d67da 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -219,7 +219,8 @@ config X86
- 	select HAVE_FAST_GUP
- 	select HAVE_FENTRY			if X86_64 || DYNAMIC_FTRACE
- 	select HAVE_FTRACE_MCOUNT_RECORD
--	select HAVE_FUNCTION_GRAPH_RETVAL	if HAVE_FUNCTION_GRAPH_TRACER
-+	select HAVE_FUNCTION_GRAPH_FREGS	if HAVE_DYNAMIC_FTRACE_WITH_ARGS
-+	select HAVE_FUNCTION_GRAPH_RETVAL	if !HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 	select HAVE_FUNCTION_GRAPH_TRACER	if X86_32 || (X86_64 && DYNAMIC_FTRACE)
- 	select HAVE_FUNCTION_TRACER
- 	select HAVE_GCC_PLUGINS
-diff --git a/arch/x86/kernel/ftrace_64.S b/arch/x86/kernel/ftrace_64.S
-index 945cfa5f7239..89a479f0c332 100644
---- a/arch/x86/kernel/ftrace_64.S
-+++ b/arch/x86/kernel/ftrace_64.S
-@@ -348,21 +348,42 @@ STACK_FRAME_NON_STANDARD_FP(__fentry__)
- SYM_CODE_START(return_to_handler)
- 	UNWIND_HINT_UNDEFINED
- 	ANNOTATE_NOENDBR
--	subq  $24, %rsp
-+	/*
-+	 * Save the registers requires for ftrace_regs;
-+	 * rax, rcx, rdx, rdi, rsi, r8, r9 and rbp
-+	 */
-+	subq $(FRAME_SIZE), %rsp
-+	movq %rax, RAX(%rsp)
-+	movq %rcx, RCX(%rsp)
-+	movq %rdx, RDX(%rsp)
-+	movq %rsi, RSI(%rsp)
-+	movq %rdi, RDI(%rsp)
-+	movq %r8, R8(%rsp)
-+	movq %r9, R9(%rsp)
-+	movq %rbp, RBP(%rsp)
-+	/*
-+	 * orig_ax is not cleared because it is used for indicating the direct
-+	 * trampoline in the fentry. And rip is not set because we don't know
-+	 * the correct return address here.
-+	 */
-+
-+	leaq FRAME_SIZE(%rsp), %rcx
-+	movq %rcx, RSP(%rsp)
- 
--	/* Save the return values */
--	movq %rax, (%rsp)
--	movq %rdx, 8(%rsp)
--	movq %rbp, 16(%rsp)
- 	movq %rsp, %rdi
- 
- 	call ftrace_return_to_handler
- 
- 	movq %rax, %rdi
--	movq 8(%rsp), %rdx
--	movq (%rsp), %rax
- 
--	addq $24, %rsp
-+	/*
-+	 * Restore only rax and rdx because other registers are not used
-+	 * for return value nor callee saved. Caller will reuse/recover it.
-+	 */
-+	movq RDX(%rsp), %rdx
-+	movq RAX(%rsp), %rax
-+
-+	addq $(FRAME_SIZE), %rsp
- 	/*
- 	 * Jump back to the old return address. This cannot be JMP_NOSPEC rdi
- 	 * since IBT would demand that contain ENDBR, which simply isn't so for
+diff --git a/arch/loongarch/include/asm/ftrace.h b/arch/loongarch/include/asm/ftrace.h
+index a11996eb5892..a9c3d0f2f941 100644
+--- a/arch/loongarch/include/asm/ftrace.h
++++ b/arch/loongarch/include/asm/ftrace.h
+@@ -70,7 +70,7 @@ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs, unsigned long ip)
+ 	regs_get_kernel_argument(&(fregs)->regs, n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(&(fregs)->regs)
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(&(fregs)->regs)
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(&(fregs)->regs, ret)
+diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
+index 9e5a39b6a311..7e138e0e3baf 100644
+--- a/arch/powerpc/include/asm/ftrace.h
++++ b/arch/powerpc/include/asm/ftrace.h
+@@ -69,7 +69,7 @@ ftrace_regs_get_instruction_pointer(struct ftrace_regs *fregs)
+ 	regs_get_kernel_argument(&(fregs)->regs, n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(&(fregs)->regs)
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(&(fregs)->regs)
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(&(fregs)->regs, ret)
+diff --git a/arch/s390/include/asm/ftrace.h b/arch/s390/include/asm/ftrace.h
+index 5a82b08f03cd..01e775c98425 100644
+--- a/arch/s390/include/asm/ftrace.h
++++ b/arch/s390/include/asm/ftrace.h
+@@ -88,7 +88,7 @@ ftrace_regs_set_instruction_pointer(struct ftrace_regs *fregs,
+ 	regs_get_kernel_argument(&(fregs)->regs, n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(&(fregs)->regs)
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(&(fregs)->regs)
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(&(fregs)->regs, ret)
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+index 0b306c82855d..a061f8832b20 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -64,7 +64,7 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
+ 	regs_get_kernel_argument(&(fregs)->regs, n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(&(fregs)->regs)
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(&(fregs)->regs)
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(&(fregs)->regs, ret)
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 79875a00c02b..da2a23f5a9ed 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -187,7 +187,7 @@ static __always_inline bool ftrace_regs_has_args(struct ftrace_regs *fregs)
+ 	regs_get_kernel_argument(ftrace_get_regs(fregs), n)
+ #define ftrace_regs_get_stack_pointer(fregs) \
+ 	kernel_stack_pointer(ftrace_get_regs(fregs))
+-#define ftrace_regs_return_value(fregs) \
++#define ftrace_regs_get_return_value(fregs) \
+ 	regs_return_value(ftrace_get_regs(fregs))
+ #define ftrace_regs_set_return_value(fregs, ret) \
+ 	regs_set_return_value(ftrace_get_regs(fregs), ret)
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index 6faf04740908..d1740f990ce7 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -754,7 +754,7 @@ static void fgraph_call_retfunc(struct ftrace_regs *fregs,
+ 	trace.rettime = trace_clock_local();
+ #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+ 	if (fregs)
+-		trace.retval = ftrace_regs_return_value(fregs);
++		trace.retval = ftrace_regs_get_return_value(fregs);
+ 	else
+ 		trace.retval = fgraph_ret_regs_return_value(ret_regs);
+ #endif
 
 
