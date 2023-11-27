@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-15962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D4557FA945
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 19:51:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2118F7FA947
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 19:51:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3946B2817D3
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 18:51:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 517EB1C20A13
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 18:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8D23A8D8;
-	Mon, 27 Nov 2023 18:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1776C3DB82;
+	Mon, 27 Nov 2023 18:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HBIBKxFM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ThKZPKTM"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959B81A1;
-	Mon, 27 Nov 2023 10:51:42 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E90D4C;
+	Mon, 27 Nov 2023 10:51:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701111102; x=1732647102;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=fFpHfP4ITdLtgR0u/kz6TTamJSgRwMGF34hlG9l1BU0=;
-  b=HBIBKxFMLIrqxD3Nm7iwEe8xtkGmiia1YbG3QyskUsyzcMUQZciGYrUT
-   fsB0kFkc1fhgv7aYzDza8eFqf4KIMS1/JgdEnqJMaAennCzRkkTo6mtH7
-   inarQNKt6esBnjG2pEEb0sMAcRX9/99A91Ae1/pVJyKdBP/0V3xRxsscg
-   C8Ot7iKDkimkbZaoCAHy6uAwa81G4ze0OwGr6YaXtTvmcsW3/Pxzeppxq
-   FQ7zuOAYtWM8kabMOr2RQk1l6RKgC3M6ZcS7wAtsR7jMtR22znoIITxL0
-   ETtcoFJNPNmRAVvholcNhHxj5hzI27KnN+x/C0d3dbWlACbf0NLONQqvg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="389921339"
+  t=1701111103; x=1732647103;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jRJExu1kINjylZ5RqABycvnvPx8c1x03hFJra8lgzQA=;
+  b=ThKZPKTM4iaPMR/Qg1a/bgBItdc/3axNV27wHclBAtCy2KFxBtOuphWN
+   OeJfgBYwHjR/pJkwFb7KT37GG9lzr5nDsbFwfaIM3qp5bWMg7GY+xPYnC
+   iR5bFIylAv7A4TZHb0edhvPbBrsQXQdKNGhWLTR2WILXuOAF9hQu60iNK
+   8Q/p0peOOVXxvnc8Q8JvwhBEgX+Ej+pshHCB5Cu92z5JwlXa8P6B63OQ5
+   48R8POMPYtlwZAyFizMdbeXS7lbEyBwWZOnOclRpRiX8Sixxh4CttFAMT
+   jeSO/kC2YSShah4JNnjeQyxxu1Os1QHcfiVxlWgXDrdVhRkkeXi0b4WgG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10907"; a="389921343"
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="389921339"
+   d="scan'208";a="389921343"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Nov 2023 10:51:42 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.04,231,1695711600"; 
-   d="scan'208";a="16376300"
+   d="scan'208";a="16376304"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orviesa001.jf.intel.com with ESMTP; 27 Nov 2023 10:51:38 -0800
+  by orviesa001.jf.intel.com with ESMTP; 27 Nov 2023 10:51:39 -0800
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id B002838D80;
-	Mon, 27 Nov 2023 18:33:48 +0000 (GMT)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 1AB2138D81;
+	Mon, 27 Nov 2023 18:33:52 +0000 (GMT)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -60,10 +60,12 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Aleksander Lobakin <aleksander.lobakin@intel.com>
-Subject: [PATCH bpf-next v3 0/2] Allow data_meta size > 32
-Date: Mon, 27 Nov 2023 19:32:14 +0100
-Message-ID: <20231127183216.269958-1-larysa.zaremba@intel.com>
+Subject: [PATCH bpf-next v3 1/2] selftests/bpf: increase invalid metadata size
+Date: Mon, 27 Nov 2023 19:32:15 +0100
+Message-ID: <20231127183216.269958-2-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231127183216.269958-1-larysa.zaremba@intel.com>
+References: <20231127183216.269958-1-larysa.zaremba@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,30 +74,31 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, there is no reason for data_meta to be limited to 32 bytes.
-Loosen this limitation and make maximum meta size 252.
+Changed check expects passed data meta to be deemed invalid.
+After loosening the requirement, the size of 36 bytes becomes valid.
+Therefore, increase tested meta size to 256, so we do not get an unexpected
+success.
 
-Also, modify the selftest, so test_xdp_context_error does not complain
-about the unexpected success.
+Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+---
+ tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-v2->v3:
-* Fix main patch author
-* Add selftests path
-
-v1->v2:
-* replace 'typeof(metalen)' with the actual type
-
-Aleksander Lobakin (1):
-  net, xdp: allow metadata > 32
-
-Larysa Zaremba (1):
-  selftests/bpf: increase invalid metadata size
-
- include/linux/skbuff.h                              | 13 ++++++++-----
- include/net/xdp.h                                   |  7 ++++++-
- .../selftests/bpf/prog_tests/xdp_context_test_run.c |  4 ++--
- 3 files changed, 16 insertions(+), 8 deletions(-)
-
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+index ab4952b9fb1d..e6a783c7f5db 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_context_test_run.c
+@@ -77,8 +77,8 @@ void test_xdp_context_test_run(void)
+ 	test_xdp_context_error(prog_fd, opts, 4, sizeof(__u32), sizeof(data),
+ 			       0, 0, 0);
+ 
+-	/* Meta data must be 32 bytes or smaller */
+-	test_xdp_context_error(prog_fd, opts, 0, 36, sizeof(data), 0, 0, 0);
++	/* Meta data must be 255 bytes or smaller */
++	test_xdp_context_error(prog_fd, opts, 0, 256, sizeof(data), 0, 0, 0);
+ 
+ 	/* Total size of data must match data_end - data_meta */
+ 	test_xdp_context_error(prog_fd, opts, 0, sizeof(__u32),
 -- 
 2.41.0
 
