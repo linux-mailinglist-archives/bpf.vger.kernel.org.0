@@ -1,110 +1,116 @@
-Return-Path: <bpf+bounces-15951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CACF27FA7D4
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 18:16:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4F837FA885
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 19:02:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D32DB20D87
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 17:16:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5ED6A281589
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 18:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 002C5374D8;
-	Mon, 27 Nov 2023 17:16:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BFCB3BB43;
+	Mon, 27 Nov 2023 18:02:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lXuNZeuL"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ztI4LteM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6462731A7F;
-	Mon, 27 Nov 2023 17:16:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07924C433CC;
-	Mon, 27 Nov 2023 17:16:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701105407;
-	bh=Z3mxDdL+PqtA5yH4uMuYEk7MynKzhH/smSi/F1rtE9U=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lXuNZeuLJCg63BOS4ss7Wt8rZEIywAcpSSKZBh5TRbzs5Mr2vZ5doOw2df+2WHN5o
-	 Gzp3PHA+x6DuH02m1C4/wap/6TL9i6k7/sp9h0ihgTftEkk32YTCZt409LvnfCEtUA
-	 itS7AsiywMtafK9vnHIEk5ZaDXe5ii2ROlcb6giBFxiSNBBEHEhqCjt9XD3dyYFib5
-	 Lid/+GSnv83MDpNjmJVG7RiOLtGdgWYen2Uo0a6uk5Z9e9AsxDRYU9a7G3/DFGVrrM
-	 a6Ytwjwhi7VTzBI1pxcsP06QGmQ4vdygE20GOvhhEhbEHbSma1jIMVapdVUqo5P/0L
-	 YxaOYQQh4pz/Q==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-50aab0ca90aso6460337e87.0;
-        Mon, 27 Nov 2023 09:16:46 -0800 (PST)
-X-Gm-Message-State: AOJu0YwvW+Iu1mno0FNmjpDYeCjz1YjrE9oT39Xx/6AkiCLzB8Ecd7bm
-	B1QsveAMuPorljUpS3dEVgYHNDAlSK1i0kDvPt8=
-X-Google-Smtp-Source: AGHT+IE94nVGO+Nt+JsTf2kcz8yM3o+hyvAYX3KAh+Mc2jj7ivqZIujRneJNEfFqdSqJg23Z63EuFI5EGGcU4nJQ2dY=
-X-Received: by 2002:ac2:532f:0:b0:505:6cc7:e0f7 with SMTP id
- f15-20020ac2532f000000b005056cc7e0f7mr8104295lfh.44.1701105405175; Mon, 27
- Nov 2023 09:16:45 -0800 (PST)
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDFEC94
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 10:02:35 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5b9344d72bbso6428528a12.0
+        for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 10:02:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1701108155; x=1701712955; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=sFwrRNgtpndmD04FXQMHozSeJLAywA1viHEPTr71Fbg=;
+        b=ztI4LteMfKv0pzjDX81SCosYHecMXVgkLLPLhUE/3IvBjiJNry0KB3oajRxTyYTqk9
+         9Fi6y6dtCM9RAz1B0P2UqbUP3I4ijiMZOh9SqhpCYeDZbZGZM0NgcgnolAsK/hx+QF9a
+         r3UC6L9b5Vbnk93Qj8dTC3lVhg6kV51ctu01gQ6jK5IcWTuv2AIx9VrbBFJYXkQX/lMx
+         451P2R+6NtqM8zps2beBEeLT1xTr1sQED4ceqqhqmh65EfU89AiAsEl3ee2InpZIWqXq
+         f5/Y8OSSDnEC4tYra+nDjgSQwr2We4peU6o/q+bU0+qQ1lGrikB+eEfitHge0l2tZsTH
+         HuCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701108155; x=1701712955;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sFwrRNgtpndmD04FXQMHozSeJLAywA1viHEPTr71Fbg=;
+        b=o3S5gcbWexyB6oqaMrEwQTQe/D8XmLey+f4Io7RPOIapUXA1fNLClL+nkCrQbETDe7
+         h8zoHhbJjPD1PHEEXKWPbuYi5/Sl1+1oJvDPObN12a3DFFwAt7JNcyhHtiJcQf/C/TfI
+         hw82rYbZJdiTjEFRFPn0rRpxYk4Y6MU+JFF1Nl49NSKlB1eOBy4k6yz7GG26fu9BkBrd
+         U7KD/kMAjBHOcxbeMkiozuZOuX/nUowLx/0dLPJQnHE3XqzG/OZaYE1lK3mJEmMGp7qW
+         doBOhw6h+WaaVUP9GtOcZSKUAYqyoG924uFyJKT09YJvNKYFKYxGD2j+Pq7O4t2vZAhF
+         bZoQ==
+X-Gm-Message-State: AOJu0YzfTl+6jeXiRPLMKFM+JnG+BXoh4FbUnguMO9mGh06OKLECXBEn
+	LAg/Pvjun+oRa2K1ByGEe6vM+Yg=
+X-Google-Smtp-Source: AGHT+IF0Ktuax4/b1gwrJF1jhmkhSIP2ZPNN/R4F84pSb5TVnM5FbvcjEW6I/TDXKIp/4M15PoanjBo=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:90a:d488:b0:285:8a40:8f04 with SMTP id
+ s8-20020a17090ad48800b002858a408f04mr2391872pju.7.1701108155386; Mon, 27 Nov
+ 2023 10:02:35 -0800 (PST)
+Date: Mon, 27 Nov 2023 10:02:33 -0800
+In-Reply-To: <402e2e7a-c01c-4aad-8ca2-0dd40282820e@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231123233936.3079687-1-song@kernel.org> <20231123233936.3079687-6-song@kernel.org>
- <CAADnVQKHTdGiBFh_sVr+jdsA8di8i4HHivp98QCOnHZGoHAW5Q@mail.gmail.com>
-In-Reply-To: <CAADnVQKHTdGiBFh_sVr+jdsA8di8i4HHivp98QCOnHZGoHAW5Q@mail.gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 27 Nov 2023 09:16:32 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW6GhuX_pprU-182vg6D1hRktd0sMoELCe0_uLNwSdhPqA@mail.gmail.com>
-Message-ID: <CAPhsuW6GhuX_pprU-182vg6D1hRktd0sMoELCe0_uLNwSdhPqA@mail.gmail.com>
-Subject: Re: [PATCH v13 bpf-next 5/6] selftests/bpf: Add tests for filesystem kfuncs
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, LSM List <linux-security-module@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, fsverity@lists.linux.dev, 
-	Eric Biggers <ebiggers@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Christian Brauner <brauner@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Casey Schaufler <casey@schaufler-ca.com>, 
-	Amir Goldstein <amir73il@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20231122222335.1799186-1-sdf@google.com> <402e2e7a-c01c-4aad-8ca2-0dd40282820e@isovalent.com>
+Message-ID: <ZWTZucxHSw6wovwi@google.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpftool: mark orphaned programs during
+ prog show
+From: Stanislav Fomichev <sdf@google.com>
+To: Quentin Monnet <quentin@isovalent.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-On Sun, Nov 26, 2023 at 6:09=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Nov 23, 2023 at 3:40=E2=80=AFPM Song Liu <song@kernel.org> wrote:
-> >
-> > +static const char expected_value[] =3D "hello";
-> > +char value[32];
-> > +
-> > +SEC("lsm.s/file_open")
-> > +int BPF_PROG(test_file_open, struct file *f)
-> > +{
-> > +       struct bpf_dynptr value_ptr;
-> > +       __u32 pid;
-> > +       int ret;
-> > +
-> > +       pid =3D bpf_get_current_pid_tgid() >> 32;
-> > +       if (pid !=3D monitored_pid)
-> > +               return 0;
-> > +
-> > +       bpf_dynptr_from_mem(value, sizeof(value), 0, &value_ptr);
-> > +
-> > +       ret =3D bpf_get_file_xattr(f, "user.kfuncs", &value_ptr);
-> > +       if (ret !=3D sizeof(expected_value))
-> > +               return 0;
-> > +       if (bpf_strncmp(value, ret, expected_value))
->
-> Hmm. It doesn't work like:
-> if (bpf_strncmp(value, ret, "hello"))
+On 11/23, Quentin Monnet wrote:
+> 2023-11-22 22:23 UTC+0000 ~ Stanislav Fomichev <sdf@google.com>
+> > Commit ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD
+> > and PERF_BPF_EVENT_PROG_UNLOAD") stopped removing program's id from
+> > idr when the offloaded/bound netdev goes away. I was supposed to
+> > take a look and check in [0], but apparently I did not.
+> > 
+> > Martin points out it might be useful to keep it that way for
+> > observability sake, but we at least need to mark those programs as
+> > unusable.
+> > 
+> > Mark those programs as 'orphaned' and keep printing the list when
+> > we encounter ENODEV.
+> > 
+> > 0: unspec  tag 0000000000000000
+> >         xlated 0B  not jited  memlock 4096B orphaned
+> > 
+> > [0]: https://lore.kernel.org/all/CAKH8qBtyR20ZWAc11z1-6pGb3Hd47AQUTbE_cfoktG59TqaJ7Q@mail.gmail.com/
+> > 
+> > Fixes: ef01f4e25c17 ("bpf: restore the ebpf program ID for BPF_AUDIT_UNLOAD and PERF_BPF_EVENT_PROG_UNLOAD")
+> > Signed-off-by: Stanislav Fomichev <sdf@google.com>
+> > ---
+> >  tools/bpf/bpftool/prog.c | 14 +++++++++-----
+> >  1 file changed, 9 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/tools/bpf/bpftool/prog.c b/tools/bpf/bpftool/prog.c
+> > index 7ec4f5671e7a..a4f23692c187 100644
+> > --- a/tools/bpf/bpftool/prog.c
+> > +++ b/tools/bpf/bpftool/prog.c
+> 
+> > @@ -554,6 +555,9 @@ static void print_prog_plain(struct bpf_prog_info *info, int fd)
+> >  		printf("  memlock %sB", memlock);
+> >  	free(memlock);
+> >  
+> > +	if (orphaned)
+> > +		printf(" orphaned");
+> 
+> Please use a double space at the beginning of "  orphaned" here, this is
+> what we do elsewhere in bpftool to make the different fields easier to
+> dissociate visually (given that some contain multiple words).
+> 
+> Looks good otherwise. Thanks!
 
-This also works. I used expected_value because there is a size
-check above. We can also make do something like
-
-if (ret !=3D sizeof("hello"))
-             return 0;
-if (bpf_strncmp(value, ret, "hello"))
-             return 0;
-
-Both of the two work.
-
-Thanks,
-Song
+Sure, will do, thanks!
 
