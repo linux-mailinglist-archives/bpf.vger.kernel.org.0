@@ -1,133 +1,94 @@
-Return-Path: <bpf+bounces-16010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B547E7FAE2A
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 00:02:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A18107FAE2B
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 00:04:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E20F81C20CB8
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 23:02:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5095A281A9C
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 23:04:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6B52DF91;
-	Mon, 27 Nov 2023 23:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16D0E495D5;
+	Mon, 27 Nov 2023 23:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I8C5RHR6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tOwjcNQk"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7A62D05C;
-	Mon, 27 Nov 2023 23:02:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33008C433C7;
-	Mon, 27 Nov 2023 23:02:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701126148;
-	bh=YLLMZKQjdvs7uz96PPE8o23RNDSBJoI1RZLjOJeLQMI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=I8C5RHR6EFDKcBVX3nje6O6EJvUbNDCsMTBoso5bENtaBBA1jHF0aQZtI6JtptfiE
-	 wo1Nwx4a3wkB5Mi05gtOh2NWro+X3ZUmpR46MNx4iopyoB7z+XjnMdw25yaAeC7rvU
-	 sX5l9pl7+vJ8u1vY/3N1ovxT3baJP/HSyAsnXPBqVv4uthCy2j75YxoxZYU5FMkrM/
-	 648PCIzkaRri7Ar+DZyGpZV4ERXtvoA5hhY8V8Mr1lV94pXuDcNAHRj5fRSyTtWE8b
-	 uAA5Bt0WBhz4TmoIGGlRFWI0soZMvWE11aAlwrc/axPfbOxx3DC57vT8cHXl9NfnTA
-	 oSzQDKtJAuLIw==
-Date: Tue, 28 Nov 2023 08:02:23 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org,
- oe-kbuild-all@lists.linux.dev, JP Kobryn <inwardvessel@gmail.com>,
- bpf@vger.kernel.org, kernel-team@meta.com, rostedt@goodmis.org,
- peterz@infradead.org
-Subject: Re: [PATCH] rethook: Use __rcu pointer for rethook::handler
-Message-Id: <20231128080223.2c0bfdbe0738983b38250333@kernel.org>
-In-Reply-To: <202311241808.rv9ceuAh-lkp@intel.com>
-References: <170078778632.209874.7893551840863388753.stgit@devnote2>
-	<202311241808.rv9ceuAh-lkp@intel.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E791A2
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 15:04:46 -0800 (PST)
+Message-ID: <96afef48-a729-4947-9672-d63627a43cb0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701126285;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NTyfDqxBZcr8oN7mgZIp9hCONWbE61hVHn2IywdLDaM=;
+	b=tOwjcNQkmYk5dK6dFsE0mOvfdY9cDTQT5C616pazMxNwn/wvI+KZSw/zgQChrgzzzMkLta
+	HHJvZJDKCBufhw9SjRuxj0uW3fLvBnxK96PQhXMDn7WdCqFy0DiyGYT7hq/FJ3IncN5oJ7
+	q/Ylrxeo0EMSf1n4C7v936NtuQ4mPnI=
+Date: Mon, 27 Nov 2023 15:04:38 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Subject: Re: [PATCH v3 bpf-next 10/11] bpf: tcp: Support arbitrary SYN Cookie.
+Content-Language: en-US
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
+ edumazet@google.com, haoluo@google.com, john.fastabend@gmail.com,
+ jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, kuni1840@gmail.com,
+ mykolal@fb.com, netdev@vger.kernel.org, pabeni@redhat.com, sdf@google.com,
+ song@kernel.org, yonghong.song@linux.dev
+References: <825b7dde-f421-436e-99c8-47f9c1d83f5f@linux.dev>
+ <20231123003154.56710-1-kuniyu@amazon.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231123003154.56710-1-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, 24 Nov 2023 23:40:57 +0800
-kernel test robot <lkp@intel.com> wrote:
+On 11/22/23 4:31 PM, Kuniyuki Iwashima wrote:
+> From: Martin KaFai Lau <martin.lau@linux.dev>
+> Date: Wed, 22 Nov 2023 15:19:29 -0800
+>> On 11/21/23 10:42 AM, Kuniyuki Iwashima wrote:
+>>> diff --git a/include/net/inet6_hashtables.h b/include/net/inet6_hashtables.h
+>>> index 533a7337865a..9a67f47a5e64 100644
+>>> --- a/include/net/inet6_hashtables.h
+>>> +++ b/include/net/inet6_hashtables.h
+>>> @@ -116,9 +116,23 @@ struct sock *inet6_steal_sock(struct net *net, struct sk_buff *skb, int doff,
+>>>    	if (!sk)
+>>>    		return NULL;
+>>>    
+>>> -	if (!prefetched || !sk_fullsock(sk))
+>>> +	if (!prefetched)
+>>>    		return sk;
+>>>    
+>>> +	if (sk->sk_state == TCP_NEW_SYN_RECV) {
+>>> +#if IS_ENABLED(CONFIG_SYN_COOKIE)
+>>> +		if (inet_reqsk(sk)->syncookie) {
+>>> +			*refcounted = false;
+>>> +			skb->sk = sk;
+>>> +			skb->destructor = sock_pfree;
+>>
+>> Instead of re-init the skb->sk and skb->destructor, can skb_steal_sock() avoid
+>> resetting them to NULL in the first place and skb_steal_sock() returns the
+>> rsk_listener instead?
+> 
+> Yes, but we need to move skb_steal_sock() to request_sock.h or include it just
 
-> Hi Masami,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on linus/master]
-> [also build test WARNING on v6.7-rc2 next-20231124]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Masami-Hiramatsu-Google/rethook-Use-__rcu-pointer-for-rethook-handler/20231124-090634
-> base:   linus/master
-> patch link:    https://lore.kernel.org/r/170078778632.209874.7893551840863388753.stgit%40devnote2
-> patch subject: [PATCH] rethook: Use __rcu pointer for rethook::handler
-> config: x86_64-randconfig-r113-20231124 (https://download.01.org/0day-ci/archive/20231124/202311241808.rv9ceuAh-lkp@intel.com/config)
-> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231124/202311241808.rv9ceuAh-lkp@intel.com/reproduce)
-
-Let me fix this issue. It seems that sparse with function pointer
-needs a special care.
-
-Thank you,
-
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202311241808.rv9ceuAh-lkp@intel.com/
-> 
-> sparse warnings: (new ones prefixed by >>)
-> >> kernel/trace/rethook.c:51:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-> >> kernel/trace/rethook.c:51:9: sparse:    void ( [noderef] __rcu * )( ... )
-> >> kernel/trace/rethook.c:51:9: sparse:    void ( * )( ... )
->    kernel/trace/rethook.c:66:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    kernel/trace/rethook.c:66:9: sparse:    void ( [noderef] __rcu * )( ... )
->    kernel/trace/rethook.c:66:9: sparse:    void ( * )( ... )
->    kernel/trace/rethook.c:110:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    kernel/trace/rethook.c:110:9: sparse:    void ( [noderef] __rcu * )( ... )
->    kernel/trace/rethook.c:110:9: sparse:    void ( * )( ... )
->    kernel/trace/rethook.c:140:19: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    kernel/trace/rethook.c:140:19: sparse:    void ( [noderef] __rcu * )( ... )
->    kernel/trace/rethook.c:140:19: sparse:    void ( * )( ... )
->    kernel/trace/rethook.c:161:19: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    kernel/trace/rethook.c:161:19: sparse:    void ( [noderef] __rcu * )( ... )
->    kernel/trace/rethook.c:161:19: sparse:    void ( * )( ... )
->    kernel/trace/rethook.c:305:27: sparse: sparse: incompatible types in comparison expression (different address spaces):
->    kernel/trace/rethook.c:305:27: sparse:    void ( [noderef] __rcu * )( ... )
->    kernel/trace/rethook.c:305:27: sparse:    void ( * )( ... )
-> 
-> vim +51 kernel/trace/rethook.c
-> 
->     40	
->     41	/**
->     42	 * rethook_stop() - Stop using a rethook.
->     43	 * @rh: the struct rethook to stop.
->     44	 *
->     45	 * Stop using a rethook to prepare for freeing it. If you want to wait for
->     46	 * all running rethook handler before calling rethook_free(), you need to
->     47	 * call this first and wait RCU, and call rethook_free().
->     48	 */
->     49	void rethook_stop(struct rethook *rh)
->     50	{
->   > 51		rcu_assign_pointer(rh->handler, NULL);
->     52	}
->     53	
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+Moving it seems better than including a header in the middle. Not sure if 
+inet_sock.h or request_sock.h is a better target.
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> before skb_steal_sock() in sock.h like below.  When I include request_sock.h in
+> top of sock.h, there were many build errors.
+
+
 
