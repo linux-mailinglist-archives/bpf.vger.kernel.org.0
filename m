@@ -1,125 +1,149 @@
-Return-Path: <bpf+bounces-15991-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33C17FA9C2
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 20:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C1E27FAA93
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 20:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E57DB21949
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 19:07:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 789C0B20FBE
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 19:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3EB83FB39;
-	Mon, 27 Nov 2023 19:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE2E405F9;
+	Mon, 27 Nov 2023 19:49:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cBnLyRTl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C26D60
-	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:05:34 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ARIBA7B021593
-	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:05:34 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3um4gy7ffp-17
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:05:34 -0800
-Received: from twshared15991.38.frc1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Mon, 27 Nov 2023 11:04:51 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 11BE13C35FC69; Mon, 27 Nov 2023 11:04:45 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <paul@paul-moore.com>,
-        <brauner@kernel.org>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <keescook@chromium.org>, <kernel-team@meta.com>, <sargun@sargun.me>
-Subject: [PATCH v11 bpf-next 17/17] bpf,selinux: allocate bpf_security_struct per BPF token
-Date: Mon, 27 Nov 2023 11:04:09 -0800
-Message-ID: <20231127190409.2344550-18-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231127190409.2344550-1-andrii@kernel.org>
-References: <20231127190409.2344550-1-andrii@kernel.org>
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [IPv6:2001:41d0:203:375::b3])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A933B8
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 11:49:12 -0800 (PST)
+Message-ID: <f25da05e-0a93-449b-a683-526641c7acf6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701114548;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W2xyc3bczQKjD8Ol+8w/yaoX1aqzk7PaaSu2pYKAhqw=;
+	b=cBnLyRTlYeXHcur1bmUe0d2zQgLqXM2KFlMpooz5YXuDhtNC7N5skMhm5mBhnisoxFBGBK
+	eOaqyZfsKgT5icGJ4oJ1sjtkh5wa+Le8XdKo5ZIh87GS9V8WRDSNl72vQQ50C/9tsCuTp3
+	9qcY2nJ9G9cBIXx2vSqiU1p1QFuhw0E=
+Date: Mon, 27 Nov 2023 11:49:03 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: NGrQnhrThLMmfhE58PsfbXbkIYLIoZt1
-X-Proofpoint-ORIG-GUID: NGrQnhrThLMmfhE58PsfbXbkIYLIoZt1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-27_17,2023-11-27_01,2023-05-22_02
+Subject: Re: [PATCH bpf-next] bpf: Fix a few selftest failures due to llvm18
+ change
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231127050342.1945270-1-yonghong.song@linux.dev>
+ <CAEf4BzZYydzYLCyPYxsUQ1OhMnnHw7f+mmErzNQFXubZCj8t9w@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzZYydzYLCyPYxsUQ1OhMnnHw7f+mmErzNQFXubZCj8t9w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Utilize newly added bpf_token_create/bpf_token_free LSM hooks to
-allocate struct bpf_security_struct for each BPF token object in
-SELinux. This just follows similar pattern for BPF prog and map.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- security/selinux/hooks.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+On 11/27/23 1:49 PM, Andrii Nakryiko wrote:
+> On Sun, Nov 26, 2023 at 9:04 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> With latest upstream llvm18, the following test cases failed:
+>>    $ ./test_progs -j
+>>    #13/2    bpf_cookie/multi_kprobe_link_api:FAIL
+>>    #13/3    bpf_cookie/multi_kprobe_attach_api:FAIL
+>>    #13      bpf_cookie:FAIL
+>>    #77      fentry_fexit:FAIL
+>>    #78/1    fentry_test/fentry:FAIL
+>>    #78      fentry_test:FAIL
+>>    #82/1    fexit_test/fexit:FAIL
+>>    #82      fexit_test:FAIL
+>>    #112/1   kprobe_multi_test/skel_api:FAIL
+>>    #112/2   kprobe_multi_test/link_api_addrs:FAIL
+>>    ...
+>>    #112     kprobe_multi_test:FAIL
+>>    #356/17  test_global_funcs/global_func17:FAIL
+>>    #356     test_global_funcs:FAIL
+>>
+>> Further analysis shows llvm upstream patch [1] is responsible
+>> for the above failures. For example, for function bpf_fentry_test7()
+>> in net/bpf/test_run.c, without [1], the asm code is:
+>>    0000000000000400 <bpf_fentry_test7>:
+>>       400: f3 0f 1e fa                   endbr64
+>>       404: e8 00 00 00 00                callq   0x409 <bpf_fentry_test7+0x9>
+>>       409: 48 89 f8                      movq    %rdi, %rax
+>>       40c: c3                            retq
+>>       40d: 0f 1f 00                      nopl    (%rax)
+>> and with [1], the asm code is:
+>>    0000000000005d20 <bpf_fentry_test7.specialized.1>:
+>>      5d20: e8 00 00 00 00                callq   0x5d25 <bpf_fentry_test7.specialized.1+0x5>
+>>      5d25: c3                            retq
+>> and <bpf_fentry_test7.specialized.1> is called instead of <bpf_fentry_test7>
+>> and this caused test failures for #13/#77 etc. except #356.
+>>
+>> For test case #356/17, with [1] (progs/test_global_func17.c)),
+>> the main prog looks like:
+>>    0000000000000000 <global_func17>:
+>>         0:       b4 00 00 00 2a 00 00 00 w0 = 0x2a
+>>         1:       95 00 00 00 00 00 00 00 exit
+>> which passed verification while the test itself expects a verification
+>> failure.
+>>
+>> Let us add 'barrier_var' style asm code in both places to prevent
+>> function specialization which caused selftests failure.
+>>
+>>    [1] https://github.com/llvm/llvm-project/pull/72903
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   net/bpf/test_run.c                                     | 2 +-
+>>   tools/testing/selftests/bpf/progs/test_global_func17.c | 1 +
+>>   2 files changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+>> index c9fdcc5cdce1..711cf5d59816 100644
+>> --- a/net/bpf/test_run.c
+>> +++ b/net/bpf/test_run.c
+>> @@ -542,7 +542,7 @@ struct bpf_fentry_test_t {
+>>
+>>   int noinline bpf_fentry_test7(struct bpf_fentry_test_t *arg)
+>>   {
+>> -       asm volatile ("");
+>> +       asm volatile ("": "+r"(arg));
+>>          return (long)arg;
+>>   }
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/test_global_func17.c b/tools/testing/selftests/bpf/progs/test_global_func17.c
+>> index a32e11c7d933..5de44b09e8ec 100644
+>> --- a/tools/testing/selftests/bpf/progs/test_global_func17.c
+>> +++ b/tools/testing/selftests/bpf/progs/test_global_func17.c
+>> @@ -5,6 +5,7 @@
+>>
+>>   __noinline int foo(int *p)
+>>   {
+>> +       barrier_var(p);
+>>          return p ? (*p = 42) : 0;
+>>   }
+>>
+> I recently stumbled upon no_clone ([0]) and no_ipa ([1]) attributes.
+> Should we consider using those here instead?
+>
+>    [0] https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-noclone-function-attribute
+>    [1] https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-noipa-function-attribute
 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 002351ab67b7..1501e95366a1 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -6828,6 +6828,29 @@ static void selinux_bpf_prog_free(struct bpf_prog =
-*prog)
- 	prog->aux->security =3D NULL;
- 	kfree(bpfsec);
- }
-+
-+static int selinux_bpf_token_create(struct bpf_token *token, union bpf_a=
-ttr *attr,
-+				    struct path *path)
-+{
-+	struct bpf_security_struct *bpfsec;
-+
-+	bpfsec =3D kzalloc(sizeof(*bpfsec), GFP_KERNEL);
-+	if (!bpfsec)
-+		return -ENOMEM;
-+
-+	bpfsec->sid =3D current_sid();
-+	token->security =3D bpfsec;
-+
-+	return 0;
-+}
-+
-+static void selinux_bpf_token_free(struct bpf_token *token)
-+{
-+	struct bpf_security_struct *bpfsec =3D token->security;
-+
-+	token->security =3D NULL;
-+	kfree(bpfsec);
-+}
- #endif
-=20
- struct lsm_blob_sizes selinux_blob_sizes __ro_after_init =3D {
-@@ -7183,6 +7206,7 @@ static struct security_hook_list selinux_hooks[] __=
-ro_after_init =3D {
- 	LSM_HOOK_INIT(bpf_prog, selinux_bpf_prog),
- 	LSM_HOOK_INIT(bpf_map_free, selinux_bpf_map_free),
- 	LSM_HOOK_INIT(bpf_prog_free, selinux_bpf_prog_free),
-+	LSM_HOOK_INIT(bpf_token_free, selinux_bpf_token_free),
- #endif
-=20
- #ifdef CONFIG_PERF_EVENTS
-@@ -7241,6 +7265,7 @@ static struct security_hook_list selinux_hooks[] __=
-ro_after_init =3D {
- #ifdef CONFIG_BPF_SYSCALL
- 	LSM_HOOK_INIT(bpf_map_create, selinux_bpf_map_create),
- 	LSM_HOOK_INIT(bpf_prog_load, selinux_bpf_prog_load),
-+	LSM_HOOK_INIT(bpf_token_create, selinux_bpf_token_create),
- #endif
- #ifdef CONFIG_PERF_EVENTS
- 	LSM_HOOK_INIT(perf_event_alloc, selinux_perf_event_alloc),
---=20
-2.34.1
+noipa attribute might help here. But sadly, noclone and noipa are gcc specific
+and clang does not support either of them.
 
+>
+>
+>> --
+>> 2.34.1
+>>
 
