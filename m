@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-15904-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-15905-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B39B77FA16B
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 14:53:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6C5D7FA16D
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 14:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C463C1C20DA2
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 13:53:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FFA5B210D2
+	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 13:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602B63033B;
-	Mon, 27 Nov 2023 13:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1BA3033D;
+	Mon, 27 Nov 2023 13:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uIZrQVq+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vm/jERzZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E0D2E413;
-	Mon, 27 Nov 2023 13:53:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69C9DC433C7;
-	Mon, 27 Nov 2023 13:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313682E413;
+	Mon, 27 Nov 2023 13:53:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0EBEC433C9;
+	Mon, 27 Nov 2023 13:53:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701093192;
-	bh=HAB8fcsYhkztOqkqxJN8HQ+Use/Y/czjonQXwZoidcQ=;
+	s=k20201202; t=1701093204;
+	bh=dL9JJoim7F8avDTUtPFPrZxdt2I1oZt3h3FTr1Er5xQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uIZrQVq+lXnVL0iTGzyTMigq0VYprpHHea7QEp0DUwqMa/mw57jtjUHOuti+awSJI
-	 Je9LXpbgbtOLePDnB/Qz/KxfFX0yg5V4HRpbz28in5M48FLLl9mdf1LW4JVfeXuIwS
-	 WN6aWPwufQbpYnFM+zX77ASxb2IhAm9VHFafxmf7FUTMeZPiQQETk7gTUmELI16Gfb
-	 6mFoEcALesSrJHfNdtncl1RuVu8+Eto6THI5tIWy+ss28SCcMHqCy48yIg2PPoKYUR
-	 sNGBfgYDxoGWi3j9rPKiz88S5awEMyujyg4PCrRmq8UkIbad/nrr/ThSG+BXKYUMFG
-	 QE+Aeg8ZUhFKA==
+	b=Vm/jERzZ2fHzywwmEj0R+oEtJZprum1Ef+4LZK687lXtAzXVoPj/i0HSav4xiHpC/
+	 43HhdUl37/3LO0QaLmPk1cdYzEujLXJPP6D2PiBDOnbp8EBzPe/gfaq0aBwNg1Ttfk
+	 fgC5VT4tJ2No2tFIq7DCYvY31An+d7uQDDEXW9YEhbrj8Gr8sgEd8K7YhgWPJ3T9Tt
+	 m8dU9mof7YbNAb7z8Tj9tMxjGJF3yXZCMNWjFXJoUc2JFZTLqqRs8gZzz36fvwdUR0
+	 Lhp0CGCQxJs++ZgqkXnddxvG7Low112u8Q3a66+uAMHVqXSKT6l1/xI2jUfQmf2VAT
+	 JTYZT9oouhJUw==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -50,9 +50,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 01/33] tracing: Add a comment about ftrace_regs definition
-Date: Mon, 27 Nov 2023 22:53:05 +0900
-Message-Id: <170109318538.343914.8426711105240287815.stgit@devnote2>
+Subject: [PATCH v3 02/33] x86: tracing: Add ftrace_regs definition in the header
+Date: Mon, 27 Nov 2023 22:53:18 +0900
+Message-Id: <170109319767.343914.9766180271697584732.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <170109317214.343914.4784420430328654397.stgit@devnote2>
 References: <170109317214.343914.4784420430328654397.stgit@devnote2>
@@ -68,55 +68,35 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-To clarify what will be expected on ftrace_regs, add a comment to the
-architecture independent definition of the ftrace_regs.
+Add ftrace_regs definition for x86_64 in the ftrace header to
+clarify what register will be accessible from ftrace_regs.
 
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
  Changes in v3:
-  - Add instruction pointer
+  - Add rip to be saved.
  Changes in v2:
-  - newly added.
+  - Newly added.
 ---
- include/linux/ftrace.h |   26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/x86/include/asm/ftrace.h |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index e8921871ef9a..8b48fc621ea0 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -118,6 +118,32 @@ extern int ftrace_enabled;
+diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+index 897cf02c20b1..415cf7a2ec2c 100644
+--- a/arch/x86/include/asm/ftrace.h
++++ b/arch/x86/include/asm/ftrace.h
+@@ -36,6 +36,12 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
  
- #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
- 
-+/**
-+ * ftrace_regs - ftrace partial/optimal register set
-+ *
-+ * ftrace_regs represents a group of registers which is used at the
-+ * function entry and exit. There are three types of registers.
-+ *
-+ * - Registers for passing the parameters to callee, including the stack
-+ *   pointer. (e.g. rcx, rdx, rdi, rsi, r8, r9 and rsp on x86_64)
-+ * - Registers for passing the return values to caller.
-+ *   (e.g. rax and rdx on x86_64)
-+ * - Registers for hooking the function call and return including the
-+ *   frame pointer (the frame pointer is architecture/config dependent)
-+ *   (e.g. rip, rbp and rsp for x86_64)
-+ *
-+ * Also, architecture dependent fields can be used for internal process.
-+ * (e.g. orig_ax on x86_64)
-+ *
-+ * On the function entry, those registers will be restored except for
-+ * the stack pointer, so that user can change the function parameters
-+ * and instruction pointer (e.g. live patching.)
-+ * On the function exit, only registers which is used for return values
-+ * are restored.
-+ *
-+ * NOTE: user *must not* access regs directly, only do it via APIs, because
-+ * the member can be changed according to the architecture.
-+ */
+ #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
  struct ftrace_regs {
++	/*
++	 * On the x86_64, the ftrace_regs saves;
++	 * rax, rcx, rdx, rdi, rsi, r8, r9, rbp, rip and rsp.
++	 * Also orig_ax is used for passing direct trampoline address.
++	 * x86_32 doesn't support ftrace_regs.
++	 */
  	struct pt_regs		regs;
  };
+ 
 
 
