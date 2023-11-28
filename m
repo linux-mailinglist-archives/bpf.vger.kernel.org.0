@@ -1,37 +1,37 @@
-Return-Path: <bpf+bounces-16076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16077-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73E737FC6DA
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 22:07:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8A8E7FC724
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 22:08:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A53AA1C21147
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 21:07:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 743592870D7
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 21:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4283442AA8;
-	Tue, 28 Nov 2023 21:06:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE2E42ABA;
+	Tue, 28 Nov 2023 21:08:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IWUE5p09"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JPQlJoGD"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0B644366;
-	Tue, 28 Nov 2023 21:06:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3689C433C9;
-	Tue, 28 Nov 2023 21:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDB644379;
+	Tue, 28 Nov 2023 21:08:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BED2C433BB;
+	Tue, 28 Nov 2023 21:08:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701205608;
+	s=k20201202; t=1701205697;
 	bh=EDCjcGa/9qYw0OmkOOcM9slY4BEMMCgERd1JriivOxA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IWUE5p09g1r86ue3lc5sNqnhdJmrfrvFBFn+EqfX3WSQSl+WwWdMHcVnykwM0banh
-	 ZRG09GJKNo+Kn0OQYM6DnYv5OSfOcbz4TxDDOkyIkrXHDLY1cF5Jb9G+8meDXPHJAB
-	 abtd73lMBo6hoNsDrPolST9+NFSXnKFmkPXpoewvebMyywZfz/OhBHpcLamFnmh1kE
-	 bY59fgMGOKiUntmAIr55rmLv5tbNiaLoyayzdI2orn4uod7JHoVWonsp1Xuev4Jq+D
-	 gEkgYFPoRNtlOfLfNhBnGb+kAzsV+NShP1usMdyWh+2w8TLVrvXLq/knJ+Y2xcpQdF
-	 a80guQiGyJcUQ==
+	b=JPQlJoGDiieULMpD/xwW5WT/GtjfBknnQFvvZsTyioTkrFyxbAOCxxykb/SOLhqSO
+	 LOsK5DpLSagz4sMrNbIXec67WkmZxbXx36zqQ53Kvaaisdy6VD04K1iR8pl4HYnEDJ
+	 /FZDA+VzocXZA3dbuSNYvOuf3RE4+6pZ+XHMswknyJdDXEBVxp9tZjjLcLNsL8JZJx
+	 VOgpYiTXjzrrU3Qmm66knHmCQrIshMonJsqvpX45liUxxWA+yO4Z04EXPZsiWNHzbT
+	 bES4XivPfuLW6g92llpbep6a3FxZCdWYmEZU92OdivSLwBc8LlKgM+Xqow9fawrVPY
+	 4t+LxSiytrARg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -43,12 +43,12 @@ Cc: Eduard Zingerman <eddyz87@gmail.com>,
 	shuah@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 17/40] selftests/bpf: fix bpf_loop_bench for new callback verification scheme
-Date: Tue, 28 Nov 2023 16:05:23 -0500
-Message-ID: <20231128210615.875085-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 14/25] selftests/bpf: fix bpf_loop_bench for new callback verification scheme
+Date: Tue, 28 Nov 2023 16:07:30 -0500
+Message-ID: <20231128210750.875945-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231128210615.875085-1-sashal@kernel.org>
-References: <20231128210615.875085-1-sashal@kernel.org>
+In-Reply-To: <20231128210750.875945-1-sashal@kernel.org>
+References: <20231128210750.875945-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -58,7 +58,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.3
+X-stable-base: Linux 6.1.64
 Content-Transfer-Encoding: 8bit
 
 From: Eduard Zingerman <eddyz87@gmail.com>
