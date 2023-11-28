@@ -1,71 +1,77 @@
-Return-Path: <bpf+bounces-16022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A7787FB027
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 03:37:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC8E47FB05A
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 04:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05D7B281CB7
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 02:37:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE3821C20DC8
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 03:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9E5B20F6;
-	Tue, 28 Nov 2023 02:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59DCE6FC0;
+	Tue, 28 Nov 2023 03:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FMO7hcbn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VpOMdNtR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CE118E;
-	Mon, 27 Nov 2023 18:37:01 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c50305c5c4so64592521fa.1;
-        Mon, 27 Nov 2023 18:37:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701139020; x=1701743820; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=p9DehPb+B0avMQIEahya5tFyVOrTp2O4+WIgAS2v9xk=;
-        b=FMO7hcbnv3OCuTYDZhns5/GKavPWFd1M2oUl75oFXByMLXpkpM3+JNzPgoU++MtKei
-         2KnzR5DbYk/7e9yBi8OaGI4lnykEz/87OtRyVMNtcf3WxksbrObnFSuf8hsorytie4OT
-         UR6dcZcm4uUnRhSxEhIBWq5cjLnib54H990xLUfQtmHoIaLohegVY47Gu/PG3SgSUpJB
-         YUvlfkxIK6UxtVXcLpVmR2o4GrE65/oLI930N3aYTi5nkoSzmQm7FE428EV/cKbbNHaC
-         Vd6Pic8l9RSVK6Y3mQoABTU2Pe5ieGRHSFQf4ReSUjJ3UnjT+AzBWCVWItAYKsHqStbQ
-         SCVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701139020; x=1701743820;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=p9DehPb+B0avMQIEahya5tFyVOrTp2O4+WIgAS2v9xk=;
-        b=n9IF974PAVuEyOSUOjSGN6YQgc24ANBiYThbcRYRbvFm91LTEdLKAtLa6SLchdMy0k
-         KwbWvTsyqWQxIQJZUlARyolwJSl8iJMtYws5eKz1HsGsUNtOns/J0NwllM7lC7alCP7s
-         ger9nH6vy3FRxpwdhgNq+gmhEne6OVDaj9u4uo4xxlP9Z/czcr1jpHXKgn3yY2w8IJ8C
-         am3ar3YsFkrGf+BwYZt0ieshuKzLpfKbyTsHquYnr3zEhVpoMPTr7vvUFAKzCFsdJHr5
-         h2yts9JO6Sti+5/b6zUhVfsyMEeuCCQc6Ag0pZwewVRYIfhx54ZbwChaYP/qZlhr+FNl
-         b7yA==
-X-Gm-Message-State: AOJu0YwVOOUEx7IbkQSSJrgBJijW1V1o1hQT0954Cydaih3JNAKPSL3k
-	sKh6WtwfEc/wvUzFJ3VBYX700SnndE0MJsAmvjA=
-X-Google-Smtp-Source: AGHT+IF6Md78NIt1A4rE+Nxd2qAgloV2QTWu429Ac/B5IF8drR/zassEwyV2rUGEvSdF/ZuusnjIQKQCbQbZcTWYPGU=
-X-Received: by 2002:a2e:9490:0:b0:2c8:71d5:abfb with SMTP id
- c16-20020a2e9490000000b002c871d5abfbmr10288257ljh.43.1701139019479; Mon, 27
- Nov 2023 18:36:59 -0800 (PST)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1AAB746F;
+	Tue, 28 Nov 2023 03:09:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28FD8C433C7;
+	Tue, 28 Nov 2023 03:09:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701140980;
+	bh=PxGteF7iO02cA2HMwpt9WIBm9CHhptr+zLzAIBnCTqc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=VpOMdNtR7egI3mQ7P6K0P7LlWmbkEtwBR4l9E8yklT4Kznw9qsNb+OTrxC5WbSs03
+	 Rq6GAFSQ4iMNl/KVRA+ngtyqiQ2Op1lqPcnnWNrNE4Wnd/6iCVhESVR2l1sJ5GWFZZ
+	 dlbbC/NIaz7Oo8PM2e3TGEgTz64Uas1N+DprHC9LuD4HT2u3IV1VZt3b7k+bQOUuzv
+	 Ol0BtXIVNBt1T22tqTKPBujAEjnYL/10c7x6MKRvUTxhmLSe5u1s+UPprXMAOKpI0w
+	 YKkPBGfHOl1Zmbb3QMYKH/Z40gKIqpql6SwhwFiy+LgbOWoehqOyw4TwlHh4CRuXKv
+	 hl3Tjmpreti2w==
+Date: Mon, 27 Nov 2023 19:09:38 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Stanislav Fomichev <sdf@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, toke@kernel.org, willemb@google.com, dsahern@kernel.org,
+ magnus.karlsson@intel.com, bjorn@kernel.org, maciej.fijalkowski@intel.com,
+ hawk@kernel.org, yoong.siang.song@intel.com, netdev@vger.kernel.org,
+ xdp-hints@xdp-project.net
+Subject: Re: [PATCH bpf-next v6 01/13] xsk: Support tx_metadata_len
+Message-ID: <20231127190938.01005780@kernel.org>
+In-Reply-To: <20231127190319.1190813-2-sdf@google.com>
+References: <20231127190319.1190813-1-sdf@google.com>
+	<20231127190319.1190813-2-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACkBjsZGEUaRCHsmaX=h-efVogsRfK1FPxmkgb0Os_frnHiNdw@mail.gmail.com>
-In-Reply-To: <CACkBjsZGEUaRCHsmaX=h-efVogsRfK1FPxmkgb0Os_frnHiNdw@mail.gmail.com>
-From: Andrei Matei <andreimatei1@gmail.com>
-Date: Mon, 27 Nov 2023 21:36:47 -0500
-Message-ID: <CABWLseuvzphU7+1BxXnjdbBMbqYzvXH-OSX+2bKi6KMNnFiqcA@mail.gmail.com>
-Subject: Re: [Bug Report] bpf: zero access_size of stack causes array indix
- oob in check_stack_range_initialized()
-To: Hao Sun <sunhao.th@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Thanks for another great report, Hao! Will investigate.
+On Mon, 27 Nov 2023 11:03:07 -0800 Stanislav Fomichev wrote:
+> For zerocopy mode, tx_desc->addr can point to an arbitrary offset
+> and carry some TX metadata in the headroom. For copy mode, there
+> is no way currently to populate skb metadata.
+> 
+> Introduce new tx_metadata_len umem config option that indicates how many
+> bytes to treat as metadata. Metadata bytes come prior to tx_desc address
+> (same as in RX case).
+> 
+> The size of the metadata has mostly the same constraints as XDP:
+> - less than 256 bytes
+> - 8-byte aligned (compared to 4-byte alignment on xdp, due to 8-byte
+>   timestamp in the completion)
+> - non-zero
+> 
+> This data is not interpreted in any way right now.
+
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
 
