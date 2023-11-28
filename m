@@ -1,130 +1,246 @@
-Return-Path: <bpf+bounces-16012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F0C57FAE7C
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 00:39:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A32A57FAED0
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 01:01:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA74AB21278
-	for <lists+bpf@lfdr.de>; Mon, 27 Nov 2023 23:39:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59BBD281986
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 00:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A8049F6F;
-	Mon, 27 Nov 2023 23:38:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9DA653;
+	Tue, 28 Nov 2023 00:01:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cuudT2jW"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="h0vUhgD6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="awkJk73X"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275F546455;
-	Mon, 27 Nov 2023 23:38:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 136F8C433C9;
-	Mon, 27 Nov 2023 23:38:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701128336;
-	bh=OP9pFvTtBocrekjm3I1I/EiiFMe+iBP2KL9HIYzUNSI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=cuudT2jWSs91YKbtzL/2EpIMFsjFm/LslPE/gq2jjnZfheBO3ufnWdzA+/XTlJahz
-	 xQAOitOW+WtCT6DMYGVD1UYF+9T1+rMWyyscLEC5aFLw+2rnyDRDQeiQYzEJ149dkC
-	 gMoN8VepkUGmdW0trAfsy5Rg/7wpMkI+YeVdpLnEnGfs9dJ4uoAvRVsB0vrLvtCy1z
-	 It3u3CfqUVWuHSCGS0wZd45K8KgL9h2IohXblEkOt5sc3720kupblryU1aJ2hqvr9V
-	 u5wLPLWXAVLcJq8cL/UdvLRBF0W1R4Yr/M4WVubHYKFdX9K84WGRrGT7XGb5fBplw+
-	 /oJuu9SKdS46g==
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	lorenzo.bianconi@redhat.com,
-	bpf@vger.kernel.org,
-	hawk@kernel.org,
-	toke@redhat.com
-Subject: [PATCH net-next] xdp: add multi-buff support for xdp running in generic mode
-Date: Tue, 28 Nov 2023 00:38:32 +0100
-Message-ID: <c928f7c698de070b33d38f230081fd4f993f2567.1701128026.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.43.0
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1824101;
+	Mon, 27 Nov 2023 16:01:10 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailnew.nyi.internal (Postfix) with ESMTP id 6ACEB580979;
+	Mon, 27 Nov 2023 19:01:07 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Mon, 27 Nov 2023 19:01:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+	1701129667; x=1701136867; bh=OSQtcO0pegrxarZcG5C5VOBtpHVJhZcct9m
+	oQPXmvT4=; b=h0vUhgD60RYO7nCWRGpot3ijJG19C3YfA4IIwFyt5kXWyvb9puA
+	AWklEiuo9lkbPYgqPBm+2ytpwqLWv92V3IFFRnw6+Rix78s95QWtzD2eNtSNh9MU
+	KAx7SQ36fYiuB2pu6ZIn6I5UzbWhCYN0C+vkTtYL4/oR9sB5wZETNiHhRqQLNPIb
+	NPIGXPvNNH6fAgi1IztrtsLv7z/FkVWLs49gojsQCNR8ouH2JHr+RY0kd5rtvxZL
+	tJ6nE1jzcThqBubP7Llz+8WPQ0SNyce3wca8453C24xAH2Jh6tzGjvihH/Ab+VU/
+	sPti/9X12x1it+XA/cy54WoIimh/YQVFKUg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1701129667; x=1701136867; bh=OSQtcO0pegrxarZcG5C5VOBtpHVJhZcct9m
+	oQPXmvT4=; b=awkJk73X+I1uiAWNEQNYVfVRIMq1ZItqrORBmTZep8lSK1xxZkY
+	DtfTBYj+ETVL2WGPowa6TQNRc0pr+lBFrUNDwhYtfWy68hW5yvbWFDUDpLg6GHDt
+	QyYDf0s0B6Yh5NzguaHrASuO91Eek9LcP1FfwggGl9oE7l6l8KxQKyGMQ2c+ViWD
+	aNRW9/AokxHlC4Y8eahUqlQMmwwyfkkjjpEQTD8bAAPIl20seqA5fkxm1VAewsJK
+	0ims1oXiSYZjbRadYrgAKD3+t2JUpSZtzOV3eyy0+11wNgve47OuUJKVQqOuphDU
+	hR6w3hI5ilKBqyo4usayhnAerJpaKSJIkgw==
+X-ME-Sender: <xms:wS1lZVNjk5J9DyJX2P6YmrMiP6c0IX9o4-SWgScUp8iL4Wod9Ms5PA>
+    <xme:wS1lZX_4d6aXQX2n04miga8vf0Cixzw6Zm5zfP5cvJ2KztEFddxIUCLcVgqCKKYKF
+    yr3XNjhfO9a-Yk3rw>
+X-ME-Received: <xmr:wS1lZURAy9jMPGoMfF26znWE7bQ1hyeHMnwrfM5nEPhiEcXISryDbBmOxL7zx9ZgzmXeJmcZtcSRuahiwgwndR0kWnWLZGjW3AzJSeDE4qD6kEXSiTtju2xs21I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeivddgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
+    tddtudenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
+    enucggtffrrghtthgvrhhnpeehteelgfffiedtledulefgteejhedufeehuefhvefhhfff
+    hfekhfefkefhkeegudenucffohhmrghinhepugiguhhuuhdrgiihiienucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:wi1lZRvh2mX76SoCmDnz2VUJdkbcWfB2EPb-TbIcqCuiC3W1k_xsbQ>
+    <xmx:wi1lZdfely_9ITCr7XGzR6-e6lXE5Hn1tzwI2rfWH5UWxkhmPMyvhA>
+    <xmx:wi1lZd2n-RYWze-qa67kob1sGvPedOBU5Ci5c8tkWoC1sLB2EHbSdw>
+    <xmx:wy1lZT_Mhk3mz2Zi4Uj1Nt66u5V5I4EIZ-k2l2d-vaNb0HVRA7-06w>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Nov 2023 19:01:04 -0500 (EST)
+Date: Mon, 27 Nov 2023 18:01:03 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	antony.antony@secunet.com, Mykola Lysenko <mykolal@fb.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org, 
+	Network Development <netdev@vger.kernel.org>
+Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
+ CO-RE relocations
+Message-ID: <53jaqi72ef4gynyafxidl5veb54kfs7dttxezkarwg75t7szd4@cvfg5pc7pyum>
+References: <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
+ <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
+ <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
+ <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
+ <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
+ <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
+ <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
+ <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
+ <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
+ <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
 
-Similar to native xdp, do not always linearize the skb in
-netif_receive_generic_xdp routine but create a non-linear xdp_buff to be
-processed by the eBPF program. This allow to add multi-buffer support
-for xdp running in generic mode.
+On Mon, Nov 27, 2023 at 02:45:11PM -0600, Daniel Xu wrote:
+> On Sun, Nov 26, 2023 at 09:53:04PM -0800, Yonghong Song wrote:
+> > 
+> > On 11/27/23 12:44 AM, Yonghong Song wrote:
+> > > 
+> > > On 11/26/23 8:52 PM, Eduard Zingerman wrote:
+> > > > On Sun, 2023-11-26 at 18:04 -0600, Daniel Xu wrote:
+> > > > [...]
+> > > > > > Tbh I'm not sure. This test passes with preserve_static_offset
+> > > > > > because it suppresses preserve_access_index. In general clang
+> > > > > > translates bitfield access to a set of IR statements like:
+> > > > > > 
+> > > > > >    C:
+> > > > > >      struct foo {
+> > > > > >        unsigned _;
+> > > > > >        unsigned a:1;
+> > > > > >        ...
+> > > > > >      };
+> > > > > >      ... foo->a ...
+> > > > > > 
+> > > > > >    IR:
+> > > > > >      %a = getelementptr inbounds %struct.foo, ptr %0, i32 0, i32 1
+> > > > > >      %bf.load = load i8, ptr %a, align 4
+> > > > > >      %bf.clear = and i8 %bf.load, 1
+> > > > > >      %bf.cast = zext i8 %bf.clear to i32
+> > > > > > 
+> > > > > > With preserve_static_offset the getelementptr+load are replaced by a
+> > > > > > single statement which is preserved as-is till code generation,
+> > > > > > thus load with align 4 is preserved.
+> > > > > > 
+> > > > > > On the other hand, I'm not sure that clang guarantees that load or
+> > > > > > stores used for bitfield access would be always aligned according to
+> > > > > > verifier expectations.
+> > > > > > 
+> > > > > > I think we should check if there are some clang knobs that prevent
+> > > > > > generation of unaligned memory access. I'll take a look.
+> > > > > Is there a reason to prefer fixing in compiler? I'm not opposed to it,
+> > > > > but the downside to compiler fix is it takes years to propagate and
+> > > > > sprinkles ifdefs into the code.
+> > > > > 
+> > > > > Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD()?
+> > > > Well, the contraption below passes verification, tunnel selftest
+> > > > appears to work. I might have messed up some shifts in the macro,
+> > > > though.
+> > > 
+> > > I didn't test it. But from high level it should work.
+> > > 
+> > > > 
+> > > > Still, if clang would peek unlucky BYTE_{OFFSET,SIZE} for a particular
+> > > > field access might be unaligned.
+> > > 
+> > > clang should pick a sensible BYTE_SIZE/BYTE_OFFSET to meet
+> > > alignment requirement. This is also required for BPF_CORE_READ_BITFIELD.
+> > > 
+> > > > 
+> > > > ---
+> > > > 
+> > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > index 3065a716544d..41cd913ac7ff 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > @@ -9,6 +9,7 @@
+> > > >   #include "vmlinux.h"
+> > > >   #include <bpf/bpf_helpers.h>
+> > > >   #include <bpf/bpf_endian.h>
+> > > > +#include <bpf/bpf_core_read.h>
+> > > >   #include "bpf_kfuncs.h"
+> > > >   #include "bpf_tracing_net.h"
+> > > >   @@ -144,6 +145,38 @@ int ip6gretap_get_tunnel(struct __sk_buff *skb)
+> > > >       return TC_ACT_OK;
+> > > >   }
+> > > >   +#define BPF_CORE_WRITE_BITFIELD(s, field, new_val) ({            \
+> > > > +    void *p = (void *)s + __CORE_RELO(s, field, BYTE_OFFSET);    \
+> > > > +    unsigned byte_size = __CORE_RELO(s, field, BYTE_SIZE);        \
+> > > > +    unsigned lshift = __CORE_RELO(s, field, LSHIFT_U64); \
+> > > > +    unsigned rshift = __CORE_RELO(s, field, RSHIFT_U64); \
+> > > > +    unsigned bit_size = (rshift - lshift);                \
+> > > > +    unsigned long long nval, val, hi, lo;                \
+> > > > +                                    \
+> > > > +    asm volatile("" : "=r"(p) : "0"(p));                \
+> > > 
+> > > Use asm volatile("" : "+r"(p)) ?
+> > > 
+> > > > +                                    \
+> > > > +    switch (byte_size) {                        \
+> > > > +    case 1: val = *(unsigned char *)p; break;            \
+> > > > +    case 2: val = *(unsigned short *)p; break;            \
+> > > > +    case 4: val = *(unsigned int *)p; break;            \
+> > > > +    case 8: val = *(unsigned long long *)p; break;            \
+> > > > +    }                                \
+> > > > +    hi = val >> (bit_size + rshift);                \
+> > > > +    hi <<= bit_size + rshift;                    \
+> > > > +    lo = val << (bit_size + lshift);                \
+> > > > +    lo >>= bit_size + lshift;                    \
+> > > > +    nval = new_val;                            \
+> > > > +    nval <<= lshift;                        \
+> > > > +    nval >>= rshift;                        \
+> > > > +    val = hi | nval | lo;                        \
+> > > > +    switch (byte_size) {                        \
+> > > > +    case 1: *(unsigned char *)p      = val; break;            \
+> > > > +    case 2: *(unsigned short *)p     = val; break;            \
+> > > > +    case 4: *(unsigned int *)p       = val; break;            \
+> > > > +    case 8: *(unsigned long long *)p = val; break;            \
+> > > > +    }                                \
+> > > > +})
+> > > 
+> > > I think this should be put in libbpf public header files but not sure
+> > > where to put it. bpf_core_read.h although it is core write?
+> > > 
+> > > But on the other hand, this is a uapi struct bitfield write,
+> > > strictly speaking, CORE write is really unnecessary here. It
+> > > would be great if we can relieve users from dealing with
+> > > such unnecessary CORE writes. In that sense, for this particular
+> > > case, I would prefer rewriting the code by using byte-level
+> > > stores...
+> > or preserve_static_offset to clearly mean to undo bitfield CORE ...
+> 
+> Ok, I will do byte-level rewrite for next revision.
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- net/core/dev.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+[...]
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 3950ced396b5..5a58f3e28657 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4853,6 +4853,12 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- 	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
- 	xdp_prepare_buff(xdp, hard_start, skb_headroom(skb) - mac_len,
- 			 skb_headlen(skb) + mac_len, true);
-+	if (skb_is_nonlinear(skb)) {
-+		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
-+		xdp_buff_set_frags_flag(xdp);
-+	} else {
-+		xdp_buff_clear_frags_flag(xdp);
-+	}
- 
- 	orig_data_end = xdp->data_end;
- 	orig_data = xdp->data;
-@@ -4882,6 +4888,14 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- 		skb->len += off; /* positive on grow, negative on shrink */
- 	}
- 
-+	/* XDP frag metadata (e.g. nr_frags) are updated in eBPF helpers
-+	 * (e.g. bpf_xdp_adjust_tail), we need to update data_len here.
-+	 */
-+	if (xdp_buff_has_frags(xdp))
-+		skb->data_len = skb_shinfo(skb)->xdp_frags_size;
-+	else
-+		skb->data_len = 0;
-+
- 	/* check if XDP changed eth hdr such SKB needs update */
- 	eth = (struct ethhdr *)xdp->data;
- 	if ((orig_eth_type != eth->h_proto) ||
-@@ -4927,9 +4941,9 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 	if (skb_is_redirected(skb))
- 		return XDP_PASS;
- 
--	/* XDP packets must be linear and must have sufficient headroom
--	 * of XDP_PACKET_HEADROOM bytes. This is the guarantee that also
--	 * native XDP provides, thus we need to do it here as well.
-+	/* XDP packets must have sufficient headroom of XDP_PACKET_HEADROOM
-+	 * bytes. This is the guarantee that also native XDP provides,
-+	 * thus we need to do it here as well.
- 	 */
- 	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
- 	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
-@@ -4943,8 +4957,12 @@ static u32 netif_receive_generic_xdp(struct sk_buff *skb,
- 				     hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
- 				     troom > 0 ? troom + 128 : 0, GFP_ATOMIC))
- 			goto do_drop;
--		if (skb_linearize(skb))
--			goto do_drop;
-+
-+		/* XDP does not support fraglist */
-+		if (skb_has_frag_list(skb) || !xdp_prog->aux->xdp_has_frags) {
-+			if (skb_linearize(skb))
-+				goto do_drop;
-+		}
- 	}
- 
- 	act = bpf_prog_run_generic_xdp(skb, xdp, xdp_prog);
--- 
-2.43.0
+This patch seems to work: https://pastes.dxuuu.xyz/0glrf9 .
 
+But I don't think it's very pretty. Also I'm seeing on the internet that
+people are saying the exact layout of bitfields is compiler dependent.
+So I am wondering if these byte sized writes are correct. For that
+matter, I am wondering how the GCC generated bitfield accesses line up
+with clang generated BPF bytecode. Or why uapi contains a bitfield.
+
+WDYT, should I send up v2 with this or should I do one of the other
+approaches in this thread?
+
+I am ok with any of the approaches.
+
+Thanks,
+Daniel
 
