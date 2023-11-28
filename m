@@ -1,221 +1,144 @@
-Return-Path: <bpf+bounces-16025-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16026-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB4C87FB0CF
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 05:06:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C8EB7FB0DE
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 05:16:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 310F0B20FEF
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 04:06:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA377B211AA
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 04:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE602101C1;
-	Tue, 28 Nov 2023 04:06:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25884101D7;
+	Tue, 28 Nov 2023 04:16:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RPyOjSsl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dOVBBACm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E596197
-	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 20:06:15 -0800 (PST)
-Message-ID: <f68c01d6-bf6b-4b76-8b20-53e9f4a61fcd@linux.dev>
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEEE198
+	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 20:16:25 -0800 (PST)
+Message-ID: <56c00185-0b14-40d8-b72b-5a79797b94c0@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701144373;
+	t=1701144983;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hCB+Tnyjl/lcxIYlcCvvwZQa4hXLluU5PYVE5GOSw70=;
-	b=RPyOjSslSqXufqb2RcMVQZndE8KliOKF1eVOVbP5IFrliwhRUVgf0GqNx7IeMI6fvTjqPP
-	XiHnLJlArI1wx3nI4OjsWwft97gCu/JKzfN/qBUBYFGqV53KIMaWNZHc9FRN4LGaucizNS
-	qBCFMpVRgiAutrTogxxUsoG/7+02+ZI=
-Date: Mon, 27 Nov 2023 20:06:01 -0800
+	bh=ocydM1nNBN5Nf43pURgrJeTdZHtYbKYgtEHTlEI7AZo=;
+	b=dOVBBACmdrXRp+NIg2qwY7AM0LUUkaa6wxBnSC+G6px5D7KJZfDnywupgmYczgedNuiK+4
+	PZXc0F9J52SDdSnJqhC9Z0sUCIYSJpcbrPg9b5/GBpL3TAynEhzK5fOtHsnsSJ1kFRmLjc
+	sP4gYw9k1RudTPUdq48uEwSed3yldJE=
+Date: Mon, 27 Nov 2023 20:16:15 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH ipsec-next v1 6/7] bpf: selftests: test_tunnel: Disable
- CO-RE relocations
+Subject: Re: max<min after jset
 Content-Language: en-GB
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Steffen Klassert <steffen.klassert@secunet.com>, antony.antony@secunet.com,
- Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- bpf <bpf@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>, devel@linux-ipsec.org,
- Network Development <netdev@vger.kernel.org>
-References: <391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz>
- <0f210cef-c6e9-41c1-9ba8-225f046435e5@linux.dev>
- <CAADnVQ+sEsUyNYPeZyOf2PcCnxOvOqw4bUuAuMofCU14szTGvg@mail.gmail.com>
- <3ec6c068-7f95-419a-a0ae-a901f95e4838@linux.dev>
- <18e43cdf65e7ba0d8f6912364fbc5b08a6928b35.camel@gmail.com>
- <uc5fv3keghefszuvono7aclgtjtgjnnia3i54ynejmyrs42ser@bwdpq5gmuvub>
- <0535eb913f1a0c2d3c291478fde07e0aa2b333f1.camel@gmail.com>
- <42f9bf0d-695a-412d-bea5-cb7036fa7418@linux.dev>
- <a5a84482-13ef-47d8-bf07-8017060a5d64@linux.dev>
- <xehp2qvy5cyaairbnfhem4hvbsl26blo4zzu7z6ywbp26jcwyn@hgp3v2q4ud7o>
- <53jaqi72ef4gynyafxidl5veb54kfs7dttxezkarwg75t7szd4@cvfg5pc7pyum>
+To: Tao Lyu <tao.lyu@epfl.ch>, andrii@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, song@kernel.org, haoluo@google.com,
+ martin.lau@linux.dev
+Cc: bpf@vger.kernel.org, sanidhya.kashyap@epfl.ch,
+ mathias.payer@nebelwelt.net, meng.xu.cs@uwaterloo.ca
+References: <20231121173206.3594040-1-tao.lyu@epfl.ch>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <53jaqi72ef4gynyafxidl5veb54kfs7dttxezkarwg75t7szd4@cvfg5pc7pyum>
+In-Reply-To: <20231121173206.3594040-1-tao.lyu@epfl.ch>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 11/27/23 7:01 PM, Daniel Xu wrote:
-> On Mon, Nov 27, 2023 at 02:45:11PM -0600, Daniel Xu wrote:
->> On Sun, Nov 26, 2023 at 09:53:04PM -0800, Yonghong Song wrote:
->>> On 11/27/23 12:44 AM, Yonghong Song wrote:
->>>> On 11/26/23 8:52 PM, Eduard Zingerman wrote:
->>>>> On Sun, 2023-11-26 at 18:04 -0600, Daniel Xu wrote:
->>>>> [...]
->>>>>>> Tbh I'm not sure. This test passes with preserve_static_offset
->>>>>>> because it suppresses preserve_access_index. In general clang
->>>>>>> translates bitfield access to a set of IR statements like:
->>>>>>>
->>>>>>>     C:
->>>>>>>       struct foo {
->>>>>>>         unsigned _;
->>>>>>>         unsigned a:1;
->>>>>>>         ...
->>>>>>>       };
->>>>>>>       ... foo->a ...
->>>>>>>
->>>>>>>     IR:
->>>>>>>       %a = getelementptr inbounds %struct.foo, ptr %0, i32 0, i32 1
->>>>>>>       %bf.load = load i8, ptr %a, align 4
->>>>>>>       %bf.clear = and i8 %bf.load, 1
->>>>>>>       %bf.cast = zext i8 %bf.clear to i32
->>>>>>>
->>>>>>> With preserve_static_offset the getelementptr+load are replaced by a
->>>>>>> single statement which is preserved as-is till code generation,
->>>>>>> thus load with align 4 is preserved.
->>>>>>>
->>>>>>> On the other hand, I'm not sure that clang guarantees that load or
->>>>>>> stores used for bitfield access would be always aligned according to
->>>>>>> verifier expectations.
->>>>>>>
->>>>>>> I think we should check if there are some clang knobs that prevent
->>>>>>> generation of unaligned memory access. I'll take a look.
->>>>>> Is there a reason to prefer fixing in compiler? I'm not opposed to it,
->>>>>> but the downside to compiler fix is it takes years to propagate and
->>>>>> sprinkles ifdefs into the code.
->>>>>>
->>>>>> Would it be possible to have an analogue of BPF_CORE_READ_BITFIELD()?
->>>>> Well, the contraption below passes verification, tunnel selftest
->>>>> appears to work. I might have messed up some shifts in the macro,
->>>>> though.
->>>> I didn't test it. But from high level it should work.
->>>>
->>>>> Still, if clang would peek unlucky BYTE_{OFFSET,SIZE} for a particular
->>>>> field access might be unaligned.
->>>> clang should pick a sensible BYTE_SIZE/BYTE_OFFSET to meet
->>>> alignment requirement. This is also required for BPF_CORE_READ_BITFIELD.
->>>>
->>>>> ---
->>>>>
->>>>> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
->>>>> b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
->>>>> index 3065a716544d..41cd913ac7ff 100644
->>>>> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
->>>>> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
->>>>> @@ -9,6 +9,7 @@
->>>>>    #include "vmlinux.h"
->>>>>    #include <bpf/bpf_helpers.h>
->>>>>    #include <bpf/bpf_endian.h>
->>>>> +#include <bpf/bpf_core_read.h>
->>>>>    #include "bpf_kfuncs.h"
->>>>>    #include "bpf_tracing_net.h"
->>>>>    @@ -144,6 +145,38 @@ int ip6gretap_get_tunnel(struct __sk_buff *skb)
->>>>>        return TC_ACT_OK;
->>>>>    }
->>>>>    +#define BPF_CORE_WRITE_BITFIELD(s, field, new_val) ({            \
->>>>> +    void *p = (void *)s + __CORE_RELO(s, field, BYTE_OFFSET);    \
->>>>> +    unsigned byte_size = __CORE_RELO(s, field, BYTE_SIZE);        \
->>>>> +    unsigned lshift = __CORE_RELO(s, field, LSHIFT_U64); \
->>>>> +    unsigned rshift = __CORE_RELO(s, field, RSHIFT_U64); \
->>>>> +    unsigned bit_size = (rshift - lshift);                \
->>>>> +    unsigned long long nval, val, hi, lo;                \
->>>>> +                                    \
->>>>> +    asm volatile("" : "=r"(p) : "0"(p));                \
->>>> Use asm volatile("" : "+r"(p)) ?
->>>>
->>>>> +                                    \
->>>>> +    switch (byte_size) {                        \
->>>>> +    case 1: val = *(unsigned char *)p; break;            \
->>>>> +    case 2: val = *(unsigned short *)p; break;            \
->>>>> +    case 4: val = *(unsigned int *)p; break;            \
->>>>> +    case 8: val = *(unsigned long long *)p; break;            \
->>>>> +    }                                \
->>>>> +    hi = val >> (bit_size + rshift);                \
->>>>> +    hi <<= bit_size + rshift;                    \
->>>>> +    lo = val << (bit_size + lshift);                \
->>>>> +    lo >>= bit_size + lshift;                    \
->>>>> +    nval = new_val;                            \
->>>>> +    nval <<= lshift;                        \
->>>>> +    nval >>= rshift;                        \
->>>>> +    val = hi | nval | lo;                        \
->>>>> +    switch (byte_size) {                        \
->>>>> +    case 1: *(unsigned char *)p      = val; break;            \
->>>>> +    case 2: *(unsigned short *)p     = val; break;            \
->>>>> +    case 4: *(unsigned int *)p       = val; break;            \
->>>>> +    case 8: *(unsigned long long *)p = val; break;            \
->>>>> +    }                                \
->>>>> +})
->>>> I think this should be put in libbpf public header files but not sure
->>>> where to put it. bpf_core_read.h although it is core write?
->>>>
->>>> But on the other hand, this is a uapi struct bitfield write,
->>>> strictly speaking, CORE write is really unnecessary here. It
->>>> would be great if we can relieve users from dealing with
->>>> such unnecessary CORE writes. In that sense, for this particular
->>>> case, I would prefer rewriting the code by using byte-level
->>>> stores...
->>> or preserve_static_offset to clearly mean to undo bitfield CORE ...
->> Ok, I will do byte-level rewrite for next revision.
-> [...]
+On 11/21/23 12:32 PM, Tao Lyu wrote:
+> Hi,
 >
-> This patch seems to work: https://pastes.dxuuu.xyz/0glrf9 .
+> The eBPF program shown below leads to an reversed min and max
+> after insn 6 "if w0 & 0x894b6a55 goto +2",
+> whic means max < min.
 >
-> But I don't think it's very pretty. Also I'm seeing on the internet that
-> people are saying the exact layout of bitfields is compiler dependent.
-
-Any reference for this (exact layout of bitfields is compiler dependent)?
-
-> So I am wondering if these byte sized writes are correct. For that
-> matter, I am wondering how the GCC generated bitfield accesses line up
-> with clang generated BPF bytecode. Or why uapi contains a bitfield.
-
-One thing for sure is memory layout of bitfields should be the same
-for both clang and gcc as it is determined by C standard. Register
-representation and how to manipulate could be different for different
-compilers.
-
+> Here is the introduction how it happens.
 >
-> WDYT, should I send up v2 with this or should I do one of the other
-> approaches in this thread?
+> Before insn 6,
+> the range of r0 expressed by the min and max field is
+> min1 = 884670597, max1 = 900354100
+> And the range expressed by the var_off=(0x34000000; 0x1ff5fbf))
+> is min2=872415232, max2=905928639.
+>
+> ---min2-----------------------min1-----max1-----max2---
+>
+> Here we can see that the range expressed by var_off is wider than that of min and max.
+>
+> When verifying insn6,
+> it first uses the var_off and immediate "0x894b6a55" to
+> calculate the new var_off=(0x34b00000; 0x415aa).
+> The range expressed by the new var_off is:
+> min3=883949568, max3=884217258
+>
+> ---min2-----min3-----max3-----min1-----max1-----max2---
+>
+> And then it will calculate the new min and max by:
+> (1) new-min = MAX(min3, min1) = min1
+> (2) new-max = MIN(max3, max1) = max3
+>
+> ---min2-----min3-----max3-----min1-----max1-----max2---
+>           "new-max"          "new-min"
+>
+> Now, the new-max becomes less than the new min.
+>
+> Notably, [min1, max1] can never make "w0 & 0x894b6a55 == 0"
+> and thus cannot goes the fall-through branch.
+> In other words, actually the fall-trough branch is a dead path.
+>
+> BTW, I cannot successfully compile this instruciton "if w0 != 0 goto +2;\"
+> in the c inline assembly code.
+> So I can only attach the bytecodes.
+>
+> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+> ---
+>   .../selftests/bpf/verifier/jset_reversed_range.c  | 15 +++++++++++++++
+>   1 file changed, 15 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/verifier/jset_reversed_range.c
+>
+> diff --git a/tools/testing/selftests/bpf/verifier/jset_reversed_range.c b/tools/testing/selftests/bpf/verifier/jset_reversed_range.c
+> new file mode 100644
+> index 000000000000..734f492a2a96
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/verifier/jset_reversed_range.c
+> @@ -0,0 +1,15 @@
+> +{
+> +    "BPF_JSET: incorrect scalar range",
+> +    .insns = {
+> +    BPF_MOV64_IMM(BPF_REG_5, 100),
+> +    BPF_ALU64_IMM(BPF_DIV, BPF_REG_5, 3),
+> +    BPF_ALU32_IMM(BPF_RSH, BPF_REG_5, 7),
+> +    BPF_ALU64_IMM(BPF_AND, BPF_REG_5, -386969681),
+> +    BPF_ALU64_IMM(BPF_SUB, BPF_REG_5, -884670597),
+> +    BPF_MOV32_REG(BPF_REG_0, BPF_REG_5),
+> +    BPF_JMP32_IMM(BPF_JSET, BPF_REG_0, 0x894b6a55, 1),
+> +    BPF_MOV64_IMM(BPF_REG_0, 1),
+> +    BPF_MOV64_IMM(BPF_REG_0, 0),
+> +    BPF_EXIT_INSN(),
+> +    },
+> +},
 
-Daniel, look at your patch, since we need to do CORE_READ for
-those bitfields any way, I think Eduard's patch with
-BPF_CORE_WRITE_BITFIELD does make sense and it also makes code
-easy to understand. Could you take Eduard's patch for now?
-Whether and where to put BPF_CORE_WRITE_BITFIELD macros
-can be decided later.
+Tao Lyu,
 
->
-> I am ok with any of the approaches.
->
-> Thanks,
-> Daniel
->
+The llvm patch to support BPF_JSET asm has been merged into upstream.
+    https://github.com/yonghong-song/llvm-project/commit/e247e6ff272ce70003ca67f62be178f332f9de0f
+
+Now you can write inline asm code with BPF_JSET insn with latest llvm18.
+If you intend to submit a patch to the kernel, please guard the test case
+with
+     #if __clang_major__ >= 18
+
+This should also facilitate to add inline asm test cases with BPF_JSET
+in bpf selftests.
+
+Thanks,
+Yonghong
+
+
 
