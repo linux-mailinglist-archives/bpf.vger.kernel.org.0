@@ -1,191 +1,161 @@
-Return-Path: <bpf+bounces-16030-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16031-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C670F7FB5C9
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 10:29:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094FC7FB5E0
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 10:33:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41B9CB216EB
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 09:29:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B67B1C20EED
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 09:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F13E048CC3;
-	Tue, 28 Nov 2023 09:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RUwp5qAk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25CFB48CEF;
+	Tue, 28 Nov 2023 09:32:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71804DE;
+	Tue, 28 Nov 2023 01:32:52 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67DD72E3F2
-	for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 09:29:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F73FC433C8;
-	Tue, 28 Nov 2023 09:29:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701163761;
-	bh=AqnHQYm5KJcppl/sr8C22RY8YgWq7vXqnLF5mYExpcM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RUwp5qAkaz/Rv7TVtFZLw4FEkVtDPQ8KGYp93N/SScwu7wxmRv0vndLvHgKZ2T2FD
-	 YXJn0Vo+E0GLSMp0gl62/CFsP6fGFigCr+c77SjSi7RpY8ZwbUChybye2xUCen50Vw
-	 ddJ5iMaIQB5giuj+iM4mpbjgfqY7o9xFhvDdDJeEuwmEeGeoRtgLQok7of7Htk4DF6
-	 sleR/pGtG34hD3XN3WpafT2oTotsmW/SjPRf8doGgzRi530F/fUSdnf6KRxw9pnonY
-	 Dt5i1dcNId7aqzgEAaOA5L+iRhwcqLjXMyuEjuklHqcgyhACxOYPurX7+klkaOP0rE
-	 0Fcfkri1gUoDw==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Lee Jones <lee@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	syzbot+97a4fe20470e9bc30810@syzkaller.appspotmail.com,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Xu Kuohai <xukuohai@huawei.com>,
-	Will Deacon <will@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Pu Lehui <pulehui@huawei.com>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCHv2 bpf 2/2] bpf: Fix prog_array_map_poke_run map poke update
-Date: Tue, 28 Nov 2023 10:28:50 +0100
-Message-ID: <20231128092850.1545199-3-jolsa@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231128092850.1545199-1-jolsa@kernel.org>
-References: <20231128092850.1545199-1-jolsa@kernel.org>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 211EB2198D;
+	Tue, 28 Nov 2023 09:32:51 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED9751343E;
+	Tue, 28 Nov 2023 09:32:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ALBEMsKzZWWUYAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Tue, 28 Nov 2023 09:32:50 +0000
+Date: Tue, 28 Nov 2023 10:32:50 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWWzwhWnW1_iX0FP@tiehlicka>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 211EB2198D
 
-Lee pointed out issue found by syscaller [0] hitting BUG in prog array
-map poke update in prog_array_map_poke_run function due to error value
-returned from bpf_arch_text_poke function.
+On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+> On Mon, Nov 27, 2023 at 01:50:22PM +0100, Michal Hocko wrote:
+> > On Mon 27-11-23 14:36:44, Dmitry Rokosov wrote:
+> > > On Mon, Nov 27, 2023 at 10:33:49AM +0100, Michal Hocko wrote:
+> > > > On Thu 23-11-23 22:39:37, Dmitry Rokosov wrote:
+> > > > > The shrink_memcg flow plays a crucial role in memcg reclamation.
+> > > > > Currently, it is not possible to trace this point from non-direct
+> > > > > reclaim paths. However, direct reclaim has its own tracepoint, so there
+> > > > > is no issue there. In certain cases, when debugging memcg pressure,
+> > > > > developers may need to identify all potential requests for memcg
+> > > > > reclamation including kswapd(). The patchset introduces the tracepoints
+> > > > > mm_vmscan_memcg_shrink_{begin|end}() to address this problem.
+> > > > > 
+> > > > > Example of output in the kswapd context (non-direct reclaim):
+> > > > >     kswapd0-39      [001] .....   240.356378: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356396: mm_vmscan_memcg_shrink_end: nr_reclaimed=0 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356420: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356454: mm_vmscan_memcg_shrink_end: nr_reclaimed=1 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356479: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356506: mm_vmscan_memcg_shrink_end: nr_reclaimed=4 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356525: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356593: mm_vmscan_memcg_shrink_end: nr_reclaimed=11 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356614: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356738: mm_vmscan_memcg_shrink_end: nr_reclaimed=25 memcg=16
+> > > > >     kswapd0-39      [001] .....   240.356790: mm_vmscan_memcg_shrink_begin: order=0 gfp_flags=GFP_KERNEL memcg=16
+> > > > >     kswapd0-39      [001] .....   240.357125: mm_vmscan_memcg_shrink_end: nr_reclaimed=53 memcg=16
+> > > > 
+> > > > In the previous version I have asked why do we need this specific
+> > > > tracepoint when we already do have trace_mm_vmscan_lru_shrink_{in}active
+> > > > which already give you a very good insight. That includes the number of
+> > > > reclaimed pages but also more. I do see that we do not include memcg id
+> > > > of the reclaimed LRU, but that shouldn't be a big problem to add, no?
+> > > 
+> > > >From my point of view, memcg reclaim includes two points: LRU shrink and
+> > > slab shrink, as mentioned in the vmscan.c file.
+> > > 
+> > > 
+> > > static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
+> > > ...
+> > > 		reclaimed = sc->nr_reclaimed;
+> > > 		scanned = sc->nr_scanned;
+> > > 
+> > > 		shrink_lruvec(lruvec, sc);
+> > > 
+> > > 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
+> > > 			    sc->priority);
+> > > ...
+> > > 
+> > > So, both of these operations are important for understanding whether
+> > > memcg reclaiming was successful or not, as well as its effectiveness. I
+> > > believe it would be beneficial to summarize them, which is why I have
+> > > created new tracepoints.
+> > 
+> > This sounds like nice to have rather than must. Put it differently. If
+> > you make existing reclaim trace points memcg aware (print memcg id) then
+> > what prevents you from making analysis you need?
+> 
+> You are right, nothing prevents me from making this analysis... but...
+> 
+> This approach does have some disadvantages:
+> 1) It requires more changes to vmscan. At the very least, the memcg
+> object should be forwarded to all subfunctions for LRU and SLAB
+> shrinkers.
 
-There's race window where bpf_arch_text_poke can fail due to missing
-bpf program kallsym symbols, which is accounted for with check for
--EINVAL in that BUG_ON call.
+We should have lruvec or memcg available. lruvec_memcg() could be used
+to get memcg from the lruvec. It might be more places to add the id but
+arguably this would improve them to identify where the memory has been
+scanned/reclaimed from.
+ 
+> 2) With this approach, we will not have the ability to trace a situation
+> where the kernel is requesting reclaim for a specific memcg, but due to
+> limits issues, we are unable to run it.
 
-The problem is that in such case we won't update the tail call jump
-and cause imballance for the next tail call update check which will
-fail with -EBUSY in bpf_arch_text_poke.
+I do not follow. Could you be more specific please?
 
-I'm hitting following race during the program load:
+> 3) LRU and SLAB shrinkers are too common places to handle memcg-related
+> tasks. Additionally, memcg can be disabled in the kernel configuration.
 
-  CPU 0                             CPU 1
+Right. This could be all hidden in the tracing code. You simply do not
+print memcg id when the controller is disabled. Or just simply print 0.
+I do not really see any major problems with that.
 
-  bpf_prog_load
-    bpf_check
-      do_misc_fixups
-        prog_array_map_poke_track
-
-                                    map_update_elem
-                                      bpf_fd_array_map_update_elem
-                                        prog_array_map_poke_run
-
-                                          bpf_arch_text_poke returns -EINVAL
-
-    bpf_prog_kallsyms_add
-
-After bpf_arch_text_poke (CPU 1) fails to update the tail call jump, the next
-poke update fails on expected jump instruction check in bpf_arch_text_poke
-with -EBUSY and triggers the BUG_ON in prog_array_map_poke_run.
-
-Similar race exists on the program unload.
-
-Fixing this by calling bpf_arch_text_poke with 'checkip=false' to skip the
-bpf symbol check like we do in bpf_tail_call_direct_fixup. This way the
-prog_array_map_poke_run does not depend on bpf program having the kallsym
-symbol in place.
-
-[0] https://syzkaller.appspot.com/bug?extid=97a4fe20470e9bc30810
-
-Cc: Lee Jones <lee@kernel.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
-Reported-by: syzbot+97a4fe20470e9bc30810@syzkaller.appspotmail.com
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/bpf/arraymap.c | 31 +++++++++++--------------------
- 1 file changed, 11 insertions(+), 20 deletions(-)
-
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 7ba389f7212f..b194282eacbb 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -1044,20 +1044,11 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
- 			 *    activated, so tail call updates can arrive from here
- 			 *    while JIT is still finishing its final fixup for
- 			 *    non-activated poke entries.
--			 * 3) On program teardown, the program's kallsym entry gets
--			 *    removed out of RCU callback, but we can only untrack
--			 *    from sleepable context, therefore bpf_arch_text_poke()
--			 *    might not see that this is in BPF text section and
--			 *    bails out with -EINVAL. As these are unreachable since
--			 *    RCU grace period already passed, we simply skip them.
--			 * 4) Also programs reaching refcount of zero while patching
-+			 * 3) Also programs reaching refcount of zero while patching
- 			 *    is in progress is okay since we're protected under
- 			 *    poke_mutex and untrack the programs before the JIT
--			 *    buffer is freed. When we're still in the middle of
--			 *    patching and suddenly kallsyms entry of the program
--			 *    gets evicted, we just skip the rest which is fine due
--			 *    to point 3).
--			 * 5) Any other error happening below from bpf_arch_text_poke()
-+			 *    buffer is freed.
-+			 * 4) Any error happening below from bpf_arch_text_poke()
- 			 *    is a unexpected bug.
- 			 */
- 			if (!READ_ONCE(poke->tailcall_target_stable))
-@@ -1075,21 +1066,21 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
- 			if (new) {
- 				ret = bpf_arch_text_poke(poke->tailcall_target,
- 							 BPF_MOD_JUMP,
--							 old_addr, new_addr, true);
--				BUG_ON(ret < 0 && ret != -EINVAL);
-+							 old_addr, new_addr, false);
-+				BUG_ON(ret < 0);
- 				if (!old) {
- 					ret = bpf_arch_text_poke(poke->tailcall_bypass,
- 								 BPF_MOD_JUMP,
- 								 poke->bypass_addr,
--								 NULL, true);
--					BUG_ON(ret < 0 && ret != -EINVAL);
-+								 NULL, false);
-+					BUG_ON(ret < 0);
- 				}
- 			} else {
- 				ret = bpf_arch_text_poke(poke->tailcall_bypass,
- 							 BPF_MOD_JUMP,
- 							 old_bypass_addr,
--							 poke->bypass_addr, true);
--				BUG_ON(ret < 0 && ret != -EINVAL);
-+							 poke->bypass_addr, false);
-+				BUG_ON(ret < 0);
- 				/* let other CPUs finish the execution of program
- 				 * so that it will not possible to expose them
- 				 * to invalid nop, stack unwind, nop state
-@@ -1098,8 +1089,8 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
- 					synchronize_rcu();
- 				ret = bpf_arch_text_poke(poke->tailcall_target,
- 							 BPF_MOD_JUMP,
--							 old_addr, NULL, true);
--				BUG_ON(ret < 0 && ret != -EINVAL);
-+							 old_addr, NULL, false);
-+				BUG_ON(ret < 0);
- 			}
- 		}
- 	}
+I would really prefer to focus on that direction rather than adding
+another begin/end tracepoint which overalaps with existing begin/end
+traces and provides much more limited information because I would bet we
+will have somebody complaining that mere nr_reclaimed is not sufficient.
 -- 
-2.43.0
-
+Michal Hocko
+SUSE Labs
 
