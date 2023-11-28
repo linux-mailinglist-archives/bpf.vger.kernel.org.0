@@ -1,124 +1,157 @@
-Return-Path: <bpf+bounces-16048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0CBE7FBB96
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 14:30:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E2B7FBC39
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 15:08:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E881B218C7
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 13:30:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AA00B2177B
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 14:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF3458ABC;
-	Tue, 28 Nov 2023 13:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92AC45AB8B;
+	Tue, 28 Nov 2023 14:07:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Ai5O+hna"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="T6qJw7IS"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5A3A0;
-	Tue, 28 Nov 2023 05:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=xv7kkM3bD5JS3z0Z3022nvxV1GroAeAgG+bGfaKDzy8=; b=Ai5O+hnaBD1IlpfBEz6XbT1WdI
-	meyGj4iUc/6nyKEj7z+ARnl+jg88fnth38ejk1aF3NmAxGV6N2xM593Bk7heIRZ4Ana1q6aqJw9m8
-	2aeWKbR1q+qcg0hibK9QRXNbw67T5Qk/hFmYljMINY6TGaoHycvnr3GGrCYalBGvtQlR0hYKK+sxP
-	0HKu9H/m8NuED9vaw3kTsMGWD93OM2OHHq+y1/QfUDPHWt+F7+hIBAUVy2u+OZBYYP9v9pgS1AJR4
-	hJWJjhSk114eW1FLFOtrB2rzVawmqINF8X4jBOmWThrTJ91Ul+Vc3fjBDv6pkzYBJQDnGLaH1foKb
-	ZSnRnmeg==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r7yAC-0006Q5-Re; Tue, 28 Nov 2023 14:30:08 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r7yAB-0005pY-04; Tue, 28 Nov 2023 14:30:07 +0100
-Subject: Re: Does skb_metadata_differs really need to stop GRO aggregation?
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Yan Zhai <yan@cloudflare.com>, Stanislav Fomichev <sdf@google.com>,
- Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, kernel-team
- <kernel-team@cloudflare.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
- "David S. Miller" <davem@davemloft.net>,
- Jakub Sitnicki <jakub@cloudflare.com>
-References: <92a355bd-7105-4a17-9543-ba2d8ae36a37@kernel.org>
- <21d05784-3cd7-4050-b66f-bad3eab73f4e@kernel.org>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <7f48dc04-080d-f7e1-5e01-598a1ace2d37@iogearbox.net>
-Date: Tue, 28 Nov 2023 14:30:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57396D53;
+	Tue, 28 Nov 2023 06:07:50 -0800 (PST)
+Received: from relay2.suse.de (unknown [149.44.160.134])
+	by smtp-out1.suse.de (Postfix) with ESMTP id 0799F2199D;
+	Tue, 28 Nov 2023 14:07:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701180468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Szd0kfLvWrSYQ3QHqmPI1rgK3WdJ32bLnGKR57G4N6w=;
+	b=T6qJw7ISXA7Fi4iKSgAIz3Ci3iO4Hj5dsdiOgi/iNjyE2l49xviNFjkJbyvwWJqBPV0TQj
+	ucjBzs5PCwMb0LE/FC9ZrB/jEgLhJLFQ5yjPSkdON+6JAzmGsS2+s+ToTdB34n3Wv8cMKL
+	kQb+PuFAw5fQHCwHaszJUvKiMw0Ob1o=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by relay2.suse.de (Postfix) with ESMTPS id 24C2F2C153;
+	Tue, 28 Nov 2023 14:07:43 +0000 (UTC)
+Date: Tue, 28 Nov 2023 15:07:43 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: j.granados@samsung.com
+Cc: Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+	josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Iurii Zaikin <yzaikin@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Balbir Singh <bsingharora@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH 07/10] printk: Remove the now superfluous sentinel
+ elements from ctl_table array
+Message-ID: <ZWX0L4lV8TWOgcpv@alley>
+References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
+ <20231107-jag-sysctl_remove_empty_elem_kernel-v1-7-e4ce1388dfa0@samsung.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <21d05784-3cd7-4050-b66f-bad3eab73f4e@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27107/Tue Nov 28 09:40:10 2023)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-7-e4ce1388dfa0@samsung.com>
+X-Spamd-Bar: +++++++++++++++++++++++++
+X-Spam-Score: 26.00
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none;
+	spf=fail (smtp-out1.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine)
+X-Rspamd-Queue-Id: 0799F2199D
+X-Spamd-Result: default: False [26.00 / 50.00];
+	 RDNS_NONE(1.00)[];
+	 SPAMHAUS_XBL(0.00)[149.44.160.134:from];
+	 TO_DN_SOME(0.00)[];
+	 RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+	 HFILTER_HELO_IP_A(1.00)[relay2.suse.de];
+	 HFILTER_HELO_NORES_A_OR_MX(0.30)[relay2.suse.de];
+	 R_RATELIMIT(0.00)[rip(RLa6h5sh378tcam5q78u)];
+	 MX_GOOD(-0.01)[];
+	 RCVD_NO_TLS_LAST(0.10)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FORGED_RECIPIENTS(2.00)[m:mgorman@suse.de,s:mgorman@imap.suse.de];
+	 BAYES_HAM(-0.00)[29.52%];
+	 RDNS_DNSFAIL(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_SPF_FAIL(1.00)[-all];
+	 FROM_HAS_DN(0.00)[];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 NEURAL_SPAM_SHORT(3.00)[1.000];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 VIOLATED_DIRECT_SPF(3.50)[];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 RCPT_COUNT_TWELVE(0.00)[46];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,infradead.org,joshtriplett.org,chromium.org,xmission.com,google.com,goodmis.org,arm.com,linutronix.de,amacapital.net,redhat.com,linaro.org,suse.de,linux.ibm.com,intel.com,davemloft.net,gmail.com,iogearbox.net,linux.dev,vger.kernel.org,lists.infradead.org];
+	 HFILTER_HOSTNAME_UNKNOWN(2.50)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RCVD_COUNT_TWO(0.00)[2]
 
-On 11/28/23 2:06 PM, Jesper Dangaard Brouer wrote:
-> On 11/28/23 13:37, Jesper Dangaard Brouer wrote:
->> Hi Daniel,
->>
->> I'm trying to understand why skb_metadata_differs() needed to block GRO ?
->>
->> I was looking at XDP storing information in metadata area that also
->> survives into SKBs layer.  E.g. the RX timestamp.
->>
->> Then I noticed that GRO code (gro_list_prepare) will not allow
->> aggregating if metadata isn't the same in all packets via
->> skb_metadata_differs().  Is this really needed?
->> Can we lift/remove this limitation?
+On Tue 2023-11-07 14:45:07, Joel Granados via B4 Relay wrote:
+> From: Joel Granados <j.granados@samsung.com>
 > 
-> (Answering myself)
-> I understand/see now, that when an SKB gets GRO aggregated, I will
-> "lose" access to the metadata information and only have access to the
-> metadata in the "first" SKB.
-> Thus, GRO layer still needs this check and it cannot know if the info
-> was important or not.
-
-^ This exactly in order to avoid loosing information for the upper stack. I'm
-not sure if there is an alternative scheme we could do where BPF prog can tell
-'it's okay to loose meta data if skb can get aggregated', and then we just skip
-the below skb_metadata_differs() check. We could probably encode a flag in the
-meta_len given the latter requires 4 byte alignment. Then BPF prog can decide.
-
-> I wonder if there is a BPF hook, prior to GRO step, that could allow me
-> to extract variable metadata and zero it out before GRO step.
+> This commit comes at the tail end of a greater effort to remove the
+> empty elements at the end of the ctl_table arrays (sentinels) which
+> will reduce the overall build time size of the kernel and run time
+> memory bloat by ~64 bytes per sentinel (further information Link :
+> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
 > 
->> E.g. if I want to store a timestamp, then it will differ per packet.
->>
->> --Jesper
->>
->> Git history says it dates back to the original commit that added meta
->> pointer de8f3a83b0a0 ("bpf: add meta pointer for direct access") (author
->> Daniel).
->>
->>
->> diff --git a/net/core/gro.c b/net/core/gro.c
->> index 0759277dc14e..7fb6a6a24288 100644
->> --- a/net/core/gro.c
->> +++ b/net/core/gro.c
->> @@ -341,7 +341,7 @@ static void gro_list_prepare(const struct list_head *head,
->>
->>                  diffs = (unsigned long)p->dev ^ (unsigned long)skb->dev;
->>                  diffs |= p->vlan_all ^ skb->vlan_all;
->> -               diffs |= skb_metadata_differs(p, skb);
->> +               diffs |= skb_metadata_differs(p, skb); // Why?
->>                  if (maclen == ETH_HLEN)
->>                          diffs |= compare_ether_header(skb_mac_header(p),
+> rm sentinel element from printk_sysctls
 > 
+> Signed-off-by: Joel Granados <j.granados@samsung.com>
 
+I am a bit sceptical if the size and time reduction is worth the
+effort. I feel that this change makes the access a bit less secure.
+
+Well, almost all arrays are static so that it should just work.
+The patch does what it says. Feel free to use:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Best Regards,
+Petr
 
