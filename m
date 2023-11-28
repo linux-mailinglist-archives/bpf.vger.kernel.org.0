@@ -1,73 +1,96 @@
-Return-Path: <bpf+bounces-16019-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16020-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4D27FAFFB
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 03:15:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F78E7FB00C
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 03:20:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6B51F20F22
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 02:15:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B643281B7B
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 02:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F9B4C9E;
-	Tue, 28 Nov 2023 02:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC5095C9C;
+	Tue, 28 Nov 2023 02:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uEw0olYp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FNNJ1vf6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79D6020E5;
-	Tue, 28 Nov 2023 02:15:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7249CC433C7;
-	Tue, 28 Nov 2023 02:15:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA0F53AB;
+	Tue, 28 Nov 2023 02:20:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F3F0CC433C9;
+	Tue, 28 Nov 2023 02:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701137729;
-	bh=XfJwlAwJtcgZM2kH0vH5xqAnbMPT8rha/PkVQK+7j9M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=uEw0olYpKxEmA/M0Qq5UT/ckq6DKdhxOr/lbSRS7jI8DWBNYFiGzEb9s3541kpcqG
-	 vLIXH7B0JZEl75RiD/3nN/OQiE34CbZqG6QpvJ5l7kZY4DDTEuIXbUWjUKw3qo3SrL
-	 9lpub5+3MNRtSt0X/sNEAxiIWgulV+RRLuc55Y97yhfUDnEj1ZnOPWnyOw6X7et/fx
-	 ZS0YDkbs+FJeUk6iAPCIgkqHifW/ZjjoBxDi8Te8LKGSpNmmP0zGhjQfR6pcPU9fJi
-	 lwcWXCqENtfCmlsQGC0igjBNjg16lY8DA2+kh+0F4WNGp0EU//WQU0rdmRrT0FOLup
-	 GqWpNEc5MAiEA==
-Date: Mon, 27 Nov 2023 18:15:27 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Pedro Tammela <pctammela@mojatatu.com>
-Cc: netdev@vger.kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
- jiri@resnulli.us, davem@davemloft.net, pabeni@redhat.com,
- edumazet@google.com, linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- llvm@lists.linux.dev, Davide Caratti <dcaratti@redhat.com>
-Subject: Re: [PATCH net-next 1/5] selftests: tc-testing: remove buildebpf
- plugin
-Message-ID: <20231127181527.1101e015@kernel.org>
-In-Reply-To: <20231124154248.315470-2-pctammela@mojatatu.com>
-References: <20231124154248.315470-1-pctammela@mojatatu.com>
-	<20231124154248.315470-2-pctammela@mojatatu.com>
+	s=k20201202; t=1701138029;
+	bh=MX6JF8VCP5UU3YcF6Y4EjwlyajsBhh+XjE1CTILOLXQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=FNNJ1vf6t987kHONgBTEzFgvYj5QQoLMajTnl31KH6EaWn+OkdpzUcnOaZAxaHAv8
+	 sOtN5P0yEeOWYRP2rQ46n24IJAWTchCG9uSGUXKbYWbhTta9TBSjDLOS0V4Dt0EzFS
+	 OuoITDCA8Wh/R71TY0SX0CqtvfpZbgppWZa29xjsFOOCPY94SwPkCmTUUWmDBMnruI
+	 m1R/ON4TELgRrNdAA5bzfaE91gfrbZu56eb9NOVoaxK40lVV4Yqf2C5p84sv345M2X
+	 JoXgWp8VL6f1pADh8ZSjybBWDtjrGDI/HEihbH8E95e8CbWFnuH57w1igz9IZvXx4I
+	 ZEXVo3sWfuL6Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DEFDCE11F68;
+	Tue, 28 Nov 2023 02:20:28 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/5] selftests: tc-testing: updates and cleanups for
+ tdc
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170113802890.29254.11697314055682451731.git-patchwork-notify@kernel.org>
+Date: Tue, 28 Nov 2023 02:20:28 +0000
+References: <20231124154248.315470-1-pctammela@mojatatu.com>
+In-Reply-To: <20231124154248.315470-1-pctammela@mojatatu.com>
+To: Pedro Tammela <pctammela@mojatatu.com>
+Cc: netdev@vger.kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
+ jiri@resnulli.us, davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
+ llvm@lists.linux.dev
 
-On Fri, 24 Nov 2023 12:42:44 -0300 Pedro Tammela wrote:
-> diff --git a/tools/testing/selftests/tc-testing/Makefile b/tools/testing/selftests/tc-testing/Makefile
-> index b1fa2e177e2f..e8b3dde4fa16 100644
-> --- a/tools/testing/selftests/tc-testing/Makefile
-> +++ b/tools/testing/selftests/tc-testing/Makefile
-> @@ -1,31 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
-> -include ../../../scripts/Makefile.include
->  
-> -top_srcdir = $(abspath ../../../..)
-> -APIDIR := $(top_scrdir)/include/uapi
-> -TEST_GEN_FILES = action.o
-> +TEST_PROGS += ./tdc.sh
+Hello:
 
-nit: could you try to remove the ./ prefix, as a follow up? 
-     I think it's not necessary and it confuses one of patchwork checks.
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 24 Nov 2023 12:42:43 -0300 you wrote:
+> Address the recommendations from the previous series and cleanup some
+> leftovers.
+> 
+> Pedro Tammela (5):
+>   selftests: tc-testing: remove buildebpf plugin
+>   selftests: tc-testing: remove unnecessary time.sleep
+>   selftests: tc-testing: prefix iproute2 functions with "ipr2"
+>   selftests: tc-testing: cleanup on Ctrl-C
+>   selftests: tc-testing: remove unused import
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,1/5] selftests: tc-testing: remove buildebpf plugin
+    https://git.kernel.org/netdev/net-next/c/a79d8ba734bd
+  - [net-next,2/5] selftests: tc-testing: remove unnecessary time.sleep
+    https://git.kernel.org/netdev/net-next/c/8059e68b9928
+  - [net-next,3/5] selftests: tc-testing: prefix iproute2 functions with "ipr2"
+    https://git.kernel.org/netdev/net-next/c/56e16bc69bb7
+  - [net-next,4/5] selftests: tc-testing: cleanup on Ctrl-C
+    https://git.kernel.org/netdev/net-next/c/501679f5d4a4
+  - [net-next,5/5] selftests: tc-testing: remove unused import
+    https://git.kernel.org/netdev/net-next/c/ed346fccfc40
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
