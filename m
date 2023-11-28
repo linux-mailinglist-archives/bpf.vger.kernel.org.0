@@ -1,265 +1,111 @@
-Return-Path: <bpf+bounces-16071-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16072-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 342E57FC0C3
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 18:55:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D876A7FC0EC
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 18:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5431282BA8
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 17:55:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9474928182C
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 17:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05CEC41C7A;
-	Tue, 28 Nov 2023 17:55:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F1541C95;
+	Tue, 28 Nov 2023 17:59:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="fYxIriBq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ESXHxqeR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DuQnsUuT"
 X-Original-To: bpf@vger.kernel.org
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7E21BEE;
-	Tue, 28 Nov 2023 09:55:01 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 4D4DA5808A6;
-	Tue, 28 Nov 2023 12:55:01 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 28 Nov 2023 12:55:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm3; t=1701194101; x=
-	1701201301; bh=pRzLMeVRPt+MUHCng+m1tZ8fgrKzg19ebGP/3BAFCkA=; b=f
-	YxIriBqXmmHg8j6KtUAs/3OPkhsMO0klMHNjwrU/YJyLjr00tiMG9XQmCnDsf/zB
-	3EC1PlMzxU50eN8WfT8AobHniog8ctqc3x3GyPBzkwJx/kfXKEITLaBCdT+S2DHS
-	GbUf0lAilvzSd3fq8bO+GQi6jVBFkeweD3A5xYdgVtT4ELoxWrfwR59lkQ+T/XIW
-	W4DzQlpiTxN1diMkRGCDwvknGKHpI0aQ5lEogRKPm+jtAkLJE8CHCasSvF7HYe8W
-	H3wuoAdU2fhdyl0pkVnqmQfgsLzvBGSoA86BDKq8ORwIYi+UB8d1WUy2uV3e2a30
-	ucsHILT89/jVCEGsLNj4w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1701194101; x=
-	1701201301; bh=pRzLMeVRPt+MUHCng+m1tZ8fgrKzg19ebGP/3BAFCkA=; b=E
-	SXHxqeRf/J/HiMLdJB5LjmNYaN5GEguqEdhdlUMuSlu6zsAXw4+zHC1vjTWsPiOn
-	pr06G6jucT4jVQ9ywbfgJDFcDDjOoD5+NNQnqnvPJUrGzYpaWt9vj8aHfG3NRtR+
-	J5bs9bzj0mr4sz7VCvihnX+tngfsQo0eC1vC9C9Qjw8xFrNAbX7tX+Tue1Y7Wv4Z
-	mjR0PIWdeYyRwfjO93cTPWC+jMc11kTHdsl/eQ4TW8bG6Udz4+LXah/b0tUXVXfm
-	9OREeT5jyEROAIEo2xbaua96MRSTLE0iTvlgam87Pri9yZTvWK7wnkhWA8y/7Eg/
-	QBCxRqOsWkcHVpT8+gHnA==
-X-ME-Sender: <xms:dSlmZWowACGY5zciQXmiOYkwKC3Q6N_kkHlO9_6RX8mpH55SI4t4OA>
-    <xme:dSlmZUr1QQ4N6MOUS_U3p15ap0a_Lp8O0XujUAROeG6byi07grDDSnZYk71CyZlji
-    Ubk6If2aUIS4ssyXg>
-X-ME-Received: <xmr:dSlmZbNEDpjdQlx2-0D-_KYQbBQUmJzNAQjnlP3IVu7SoIw3jR5l1gJt2825YGJPNNn1UAZjs8W43eQNux1lp09rNV_pC9WAShhcTYsz23ZNlA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeifedguddthecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:dSlmZV5-s2N4K6uXL_1iopFu6ouxabwtnLbfEDRVMm9Q7yhbSnAzdQ>
-    <xmx:dSlmZV4G4fVvBcy_aITFyy2jh9II6jU7P_d05xWYaJtG9956ar0B7A>
-    <xmx:dSlmZVjGFsD-k_sRvyy8xYAi5HSQXZDBbdoo9GkkqgAHDmfRkG5v-A>
-    <xmx:dSlmZUJSrdTrjh4WJ2cOh1swIaNpO_apQTXeOAov5ihqXza0DCoB_w>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Nov 2023 12:54:59 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: kuba@kernel.org,
-	john.fastabend@gmail.com,
-	davem@davemloft.net,
-	shuah@kernel.org,
-	hawk@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	steffen.klassert@secunet.com,
-	antony.antony@secunet.com,
-	alexei.starovoitov@gmail.com,
-	yonghong.song@linux.dev,
-	eddyz87@gmail.com
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devel@linux-ipsec.org
-Subject: [PATCH ipsec-next v2 6/6] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-Date: Tue, 28 Nov 2023 10:54:26 -0700
-Message-ID: <85d3bf6440c6fd3b7b007d044da9b78ccc1dbda4.1701193577.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1701193577.git.dxu@dxuuu.xyz>
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B741D63;
+	Tue, 28 Nov 2023 09:59:05 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-548f0b7ab11so7820849a12.1;
+        Tue, 28 Nov 2023 09:59:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701194344; x=1701799144; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6sdNoskqMew+HpExOfScjyA4mWrsG/qt11aXDDvMoFM=;
+        b=DuQnsUuTl6bXIPL5yzW3wHLfna4B6Mlzl+i4oIazGZ64gDwARjuMBCOBX8YQUx29nb
+         TpltC0Peqi0OyC85eBPCdGV5h9bS8zMCkXGotzIb4HZ5J7f8Q73xhMpeitYgiYW1iOJN
+         s3wt0BsxFDddbvshu8pqTBIz5bxHSe6sGEi4dwckMjpclGtl/sQc1JdQPJdHKLWdx9Vk
+         5fnF+LRtHaDe/5Rk82fdipinDj7b89669dsOnXDdqHmYth790emi+KnsnkanH6C63sh0
+         UkCramFz3NW/dF3b4hhxKQRCCdoxDcWg7GCwz8JBwFolxoY/rYTkt9i9dRFJjXKOhQr5
+         laRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701194344; x=1701799144;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6sdNoskqMew+HpExOfScjyA4mWrsG/qt11aXDDvMoFM=;
+        b=Vf0mCEsfPp6ryt/hP3eUPBM5oDOI7lC3sKleqiLoXPp/FFXTFgl/NJiLyis2ImNeMj
+         /wGD4WEYE/FOV0PR4D5WUCepWPjSuEivIBR7lxgn20fVmPM2driFW78wbLaaidA3AjL0
+         gjTw/FnJzUZd6Q+wxl7RmtLNbCPUFBiCZ7AtHfOg+7Tn3v6UrXaqL0YHMsLZpV/BegrH
+         F0srtayATX2B4KEeNijIG08d+346cRTNdJPxrArkjOa1tYSQ/JDpPQU7sX2lmS48QbqK
+         60wvTP1tVbyC5uxJezKZ1QkQRAwrvmTaZTvptCMZ5em0IM+MZQWmNFqMv+4m9W6ITuoP
+         NrgQ==
+X-Gm-Message-State: AOJu0YyJVJ+NAuGXuZw5YLeZWqPqQ1ZzfZi7HzpzwX94b91t3lLvmt25
+	wRBR0ecDAwBHla2Z9CyroHI=
+X-Google-Smtp-Source: AGHT+IHcpvtkJ+/6Ab8l0lMASvhL/2FhG4i1AyR4GuDleSu00vZSOO7uh9rtEwq21nDBa7iakhIbDQ==
+X-Received: by 2002:a50:d55e:0:b0:53d:b839:2045 with SMTP id f30-20020a50d55e000000b0053db8392045mr12185509edj.25.1701194343503;
+        Tue, 28 Nov 2023 09:59:03 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id eh9-20020a0564020f8900b005486f7f654dsm6617724edb.7.2023.11.28.09.59.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 09:59:03 -0800 (PST)
+Message-ID: <20c593b6f31720a3d24d75e5e5cc3245b67249d1.camel@gmail.com>
+Subject: Re: [PATCH ipsec-next v2 3/6] libbpf: Add BPF_CORE_WRITE_BITFIELD()
+ macro
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Daniel Xu <dxu@dxuuu.xyz>, ndesaulniers@google.com, andrii@kernel.org, 
+	nathan@kernel.org, daniel@iogearbox.net, ast@kernel.org, 
+	steffen.klassert@secunet.com, antony.antony@secunet.com, 
+	alexei.starovoitov@gmail.com, yonghong.song@linux.dev
+Cc: martin.lau@linux.dev, song@kernel.org, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	trix@redhat.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	llvm@lists.linux.dev, devel@linux-ipsec.org, netdev@vger.kernel.org
+Date: Tue, 28 Nov 2023 19:59:01 +0200
+In-Reply-To: <ed7920365daf5eff1c82892b57e918d3db786ac7.1701193577.git.dxu@dxuuu.xyz>
 References: <cover.1701193577.git.dxu@dxuuu.xyz>
+	 <ed7920365daf5eff1c82892b57e918d3db786ac7.1701193577.git.dxu@dxuuu.xyz>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-This commit extends test_tunnel selftest to test the new XDP xfrm state
-lookup kfunc.
+On Tue, 2023-11-28 at 10:54 -0700, Daniel Xu wrote:
+> Similar to reading from CO-RE bitfields, we need a CO-RE aware bitfield
+> writing wrapper to make the verifier happy.
+>=20
+> Two alternatives to this approach are:
+>=20
+> 1. Use the upcoming `preserve_static_offset` [0] attribute to disable
+>    CO-RE on specific structs.
+> 2. Use broader byte-sized writes to write to bitfields.
+>=20
+> (1) is a bit a bit hard to use. It requires specific and
+> not-very-obvious annotations to bpftool generated vmlinux.h. It's also
+> not generally available in released LLVM versions yet.
+>=20
+> (2) makes the code quite hard to read and write. And especially if
+> BPF_CORE_READ_BITFIELD() is already being used, it makes more sense to
+> to have an inverse helper for writing.
+>=20
+> [0]: https://reviews.llvm.org/D133361
+> From: Eduard Zingerman <eddyz87@gmail.com>
+>=20
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
 
-Co-developed-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
- .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
- 2 files changed, 67 insertions(+), 4 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-index 3bcb6f96b9b5..54308afb3cdc 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-@@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 1 mode tunnel "
-+			"spi %d reqid 1 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 2 mode tunnel "
-+			"spi %d reqid 2 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
- 	 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 1 mode tunnel "
-+		    "spi %d reqid 1 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
- 	/* root -> at_ns0 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 2 mode tunnel "
-+		    "spi %d reqid 2 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
- 			    .attach_point = BPF_TC_INGRESS);
-+	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
- 	struct test_tunnel_kern *skel = NULL;
- 	struct nstoken *nstoken;
-+	int xdp_prog_fd;
- 	int tc_prog_fd;
- 	int ifindex;
- 	int err;
-@@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
- 	if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
- 		goto done;
- 
-+	/* attach xdp prog to tunnel dev */
-+	xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-+	if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-+	if (!ASSERT_OK(err, "bpf_xdp_attach"))
-+		goto done;
-+
- 	/* ping from at_ns0 namespace test */
- 	nstoken = open_netns("at_ns0");
- 	err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-@@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
- 		goto done;
- 	if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
- 		goto done;
-+	if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-+		goto done;
- 
- done:
- 	delete_xfrm_tunnel();
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 3a59eb9c34de..c0dd38616562 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap) __ksym;
-+struct xfrm_state *
-+bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-+		       u32 opts__sz) __ksym;
-+void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+volatile int xfrm_replay_window = 0;
-+
-+SEC("xdp")
-+int xfrm_get_state_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_xfrm_state_opts opts = {};
-+	struct xfrm_state *x = NULL;
-+	struct ip_esp_hdr *esph;
-+	struct bpf_dynptr ptr;
-+	u8 esph_buf[8] = {};
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+	u32 off;
-+
-+	if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-+		goto out;
-+
-+	off = sizeof(struct ethhdr);
-+	iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-+	if (!iph || iph->protocol != IPPROTO_ESP)
-+		goto out;
-+
-+	off += sizeof(struct iphdr);
-+	esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-+	if (!esph)
-+		goto out;
-+
-+	opts.netns_id = BPF_F_CURRENT_NETNS;
-+	opts.daddr.a4 = iph->daddr;
-+	opts.spi = esph->spi;
-+	opts.proto = IPPROTO_ESP;
-+	opts.family = AF_INET;
-+
-+	x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-+	if (!x || opts.error)
-+		goto out;
-+
-+	if (!x->replay_esn)
-+		goto out;
-+
-+	xfrm_replay_window = x->replay_esn->replay_window;
-+out:
-+	if (x)
-+		bpf_xdp_xfrm_state_release(x);
-+	return XDP_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.42.1
-
+Could you please also add a selftest (or several) using __retval()
+annotation for this macro?
 
