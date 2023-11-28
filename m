@@ -1,144 +1,188 @@
-Return-Path: <bpf+bounces-16026-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C8EB7FB0DE
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 05:16:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1D837FB552
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 10:13:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA377B211AA
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 04:16:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3174BB2159B
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 09:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25884101D7;
-	Tue, 28 Nov 2023 04:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16043DBA0;
+	Tue, 28 Nov 2023 09:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dOVBBACm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UJwYOtVA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEEE198
-	for <bpf@vger.kernel.org>; Mon, 27 Nov 2023 20:16:25 -0800 (PST)
-Message-ID: <56c00185-0b14-40d8-b72b-5a79797b94c0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701144983;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ocydM1nNBN5Nf43pURgrJeTdZHtYbKYgtEHTlEI7AZo=;
-	b=dOVBBACmdrXRp+NIg2qwY7AM0LUUkaa6wxBnSC+G6px5D7KJZfDnywupgmYczgedNuiK+4
-	PZXc0F9J52SDdSnJqhC9Z0sUCIYSJpcbrPg9b5/GBpL3TAynEhzK5fOtHsnsSJ1kFRmLjc
-	sP4gYw9k1RudTPUdq48uEwSed3yldJE=
-Date: Mon, 27 Nov 2023 20:16:15 -0800
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E16310A32;
+	Tue, 28 Nov 2023 09:13:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 199F1C433C7;
+	Tue, 28 Nov 2023 09:13:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701162818;
+	bh=T7hBcwa5USfiGcIefyizkPkv6zBH40PIfTtTgfhZNF4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UJwYOtVA5kHN61FW963/B374fpDkxQjGELwNAD17FSh7hRvIH2y5ThXOYt9XnQpUo
+	 6fyPrwOkuCfxyIWyYrSCzatAFjdtRTD+lf4T5G0wcUSZBoijtd+MZlCNs5w8opkM24
+	 VEiZ1bUaWz8099EwvTDpFD4HwR7vChnR9zouZCu3QtRAbz72QRV1XUH0JQGxY5P9mk
+	 6/Odm4UKynVzBHiEqIJpr1aUo0a72A6psPMEaJqztID48EuSZ+NZYBFccU4Mv5h4AT
+	 BqdbJcq8J0uAPGHcDIswLB1sW/yT3YSgd0QPYrN+Q/xXTT3obCAdWxOayIlI0dhikx
+	 QJb23zyjsl1zw==
+Date: Tue, 28 Nov 2023 10:13:31 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Song Liu <song@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, fsverity@lists.linux.dev,
+	ebiggers@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+	viro@zeniv.linux.org.uk, casey@schaufler-ca.com, amir73il@gmail.com,
+	kpsingh@kernel.org, roberto.sassu@huawei.com
+Subject: Re: [PATCH v13 bpf-next 1/6] bpf: Add kfunc bpf_get_file_xattr
+Message-ID: <20231128-hermachen-westen-74b7951e8e38@brauner>
+References: <20231123233936.3079687-1-song@kernel.org>
+ <20231123233936.3079687-2-song@kernel.org>
+ <20231124-heilung-wohnumfeld-6b7797c4d41a@brauner>
+ <CAPhsuW7BFzsBv48xgbY4-2xhG1-GazBuQq_pnaUrJqY1q_H27w@mail.gmail.com>
+ <20231127-auffiel-wutentbrannt-7b8b3efb09e4@brauner>
+ <CAPhsuW4qP=VYhQ8BTOA3WFhu2LW+cjQ0YtdAVcj-kY_3r4yjnA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: max<min after jset
-Content-Language: en-GB
-To: Tao Lyu <tao.lyu@epfl.ch>, andrii@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, song@kernel.org, haoluo@google.com,
- martin.lau@linux.dev
-Cc: bpf@vger.kernel.org, sanidhya.kashyap@epfl.ch,
- mathias.payer@nebelwelt.net, meng.xu.cs@uwaterloo.ca
-References: <20231121173206.3594040-1-tao.lyu@epfl.ch>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20231121173206.3594040-1-tao.lyu@epfl.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <CAPhsuW4qP=VYhQ8BTOA3WFhu2LW+cjQ0YtdAVcj-kY_3r4yjnA@mail.gmail.com>
 
+On Mon, Nov 27, 2023 at 10:05:23AM -0800, Song Liu wrote:
+> Hi Christian,
+> 
+> Thanks again for your comments.
+> 
+> On Mon, Nov 27, 2023 at 2:50 AM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> [...]
+> > >
+> > > AFAICT, the XATTR_USER_PREFIX above is equivalent to the prefix
+> > > check in xattr_permission().
+> > >
+> > > For inode_permission(), I think it is not required because we already
+> > > have the "struct file" of  the target file. Did I misunderstand something
+> > > here?
+> >
+> > I had overlooked that you don't allow writing xattrs. But there's still
+> > some issues:
+> >
+> > So if you look at the system call interface:
+> >
+> > fgetxattr(fd)
+> > -> getxattr()
+> >    -> do_getxattr()
+> >       -> vfs_getxattr()
+> >          -> xattr_permission()
+> >          -> __vfs_getxattr()
+> >
+> > and io_uring:
+> >
+> > do_getxattr()
+> > -> vfs_getxattr()
+> >    -> xattr_permission()
+> >    -> __vfs_getxattr()
+> >
+> > you can see that xattr_permission() is a _read/write-time check_, not an
+> > open check. That's because the read/write permissions may depend on what
+> > xattr is read/written. Since you don't know what xattr will be
+> > read/written at open-time.
+> >
+> > So there needs to be a good reason for bpf_get_file_xattr() to deviate
+> > from the system call and io_uring interface. And I'd like to hear it,
+> > please. :)
+> >
+> > I think I might see the argument because you document the helper as "may
+> > only be called from BPF LSM function" in which case you're trying to say
+> > that bpf_get_file_xattr() is equivalent to a call to __vfs_getxattr()
+> > from an LSM to get at it's own security xattr.
+> >
+> > But if that's the case you really should have a way to verify that these
+> > helpers are only callable from a specific BPF context. Because you
+> > otherwise omit read/write-time permission checking when retrieving
+> > xattrs which is a potentialy security issue and may be abused by a BPF
+> > program to skip permission checks that are otherwise enforced.
+> 
+> What do you mean by "a specific BPF context"? Current implementation
+> makes sure the helper only works on LSM hooks with "struct file *" in the
+> argument list. Specifically, we can only use them from the following hooks:
+> 
+>     security_binder_transfer_file
+>     security_bprm_creds_from_file
+>     security_file_permission
+>     security_file_alloc_security
+>     security_file_free_security
+>     security_file_ioctl
+>     security_mmap_file
+>     security_file_lock
+>     security_file_fcntl
+>     security_file_set_fowner
+>     security_file_receive
+>     security_file_open
+>     security_file_truncate
+>     security_kernel_read_file
+>     security_kernel_post_read_file
 
-On 11/21/23 12:32 PM, Tao Lyu wrote:
-> Hi,
->
-> The eBPF program shown below leads to an reversed min and max
-> after insn 6 "if w0 & 0x894b6a55 goto +2",
-> whic means max < min.
->
-> Here is the introduction how it happens.
->
-> Before insn 6,
-> the range of r0 expressed by the min and max field is
-> min1 = 884670597, max1 = 900354100
-> And the range expressed by the var_off=(0x34000000; 0x1ff5fbf))
-> is min2=872415232, max2=905928639.
->
-> ---min2-----------------------min1-----max1-----max2---
->
-> Here we can see that the range expressed by var_off is wider than that of min and max.
->
-> When verifying insn6,
-> it first uses the var_off and immediate "0x894b6a55" to
-> calculate the new var_off=(0x34b00000; 0x415aa).
-> The range expressed by the new var_off is:
-> min3=883949568, max3=884217258
->
-> ---min2-----min3-----max3-----min1-----max1-----max2---
->
-> And then it will calculate the new min and max by:
-> (1) new-min = MAX(min3, min1) = min1
-> (2) new-max = MIN(max3, max1) = max3
->
-> ---min2-----min3-----max3-----min1-----max1-----max2---
->           "new-max"          "new-min"
->
-> Now, the new-max becomes less than the new min.
->
-> Notably, [min1, max1] can never make "w0 & 0x894b6a55 == 0"
-> and thus cannot goes the fall-through branch.
-> In other words, actually the fall-trough branch is a dead path.
->
-> BTW, I cannot successfully compile this instruciton "if w0 != 0 goto +2;\"
-> in the c inline assembly code.
-> So I can only attach the bytecodes.
->
-> Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
-> ---
->   .../selftests/bpf/verifier/jset_reversed_range.c  | 15 +++++++++++++++
->   1 file changed, 15 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/verifier/jset_reversed_range.c
->
-> diff --git a/tools/testing/selftests/bpf/verifier/jset_reversed_range.c b/tools/testing/selftests/bpf/verifier/jset_reversed_range.c
-> new file mode 100644
-> index 000000000000..734f492a2a96
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/verifier/jset_reversed_range.c
-> @@ -0,0 +1,15 @@
-> +{
-> +    "BPF_JSET: incorrect scalar range",
-> +    .insns = {
-> +    BPF_MOV64_IMM(BPF_REG_5, 100),
-> +    BPF_ALU64_IMM(BPF_DIV, BPF_REG_5, 3),
-> +    BPF_ALU32_IMM(BPF_RSH, BPF_REG_5, 7),
-> +    BPF_ALU64_IMM(BPF_AND, BPF_REG_5, -386969681),
-> +    BPF_ALU64_IMM(BPF_SUB, BPF_REG_5, -884670597),
-> +    BPF_MOV32_REG(BPF_REG_0, BPF_REG_5),
-> +    BPF_JMP32_IMM(BPF_JSET, BPF_REG_0, 0x894b6a55, 1),
-> +    BPF_MOV64_IMM(BPF_REG_0, 1),
-> +    BPF_MOV64_IMM(BPF_REG_0, 0),
-> +    BPF_EXIT_INSN(),
-> +    },
-> +},
+Ok, good!
 
-Tao Lyu,
+> Note that, we disallow pointer-walking with the kfunc, so the kfunc is not
+> allowed from hooks with indirect access to "struct file". For example, we
+> cannot use it with security_bprm_creds_for_exec(struct linux_binprm *bprm)
+> as this hook only has bprm, and calling bpf_get_file_xattr(bprm->file) is
+> not allowed.
 
-The llvm patch to support BPF_JSET asm has been merged into upstream.
-    https://github.com/yonghong-song/llvm-project/commit/e247e6ff272ce70003ca67f62be178f332f9de0f
+Great.
 
-Now you can write inline asm code with BPF_JSET insn with latest llvm18.
-If you intend to submit a patch to the kernel, please guard the test case
-with
-     #if __clang_major__ >= 18
+> 
+> > Is there a way for BPF to enforce/verify that a function is only called
+> > from a specific BPF program? It should be able to recognize that, no?
+> > And then refuse to load that BPF program if a helper is called outside
+> > it's intended context.
+> 
+> Similarly, I am not quite sure what you mean by "a specific BPF program".
+> My answer to this is probably the same as above.
 
-This should also facilitate to add inline asm test cases with BPF_JSET
-in bpf selftests.
+Yes, this is exactly what I meant.
 
-Thanks,
-Yonghong
+> 
+> Going back to xattr_permission itself. AFAICT, it does 3 checks:
+> 
+> 1. MAY_WRITE check;
+> 2. prefix check;
+> 3. inode_permission().
+> 
+> We don't need MAY_WRITE check as bpf_get_file_xattr is read only.
+> We have the prefix check embedded in bpf_get_file_xattr():
+> 
+>        if (strncmp(name__str, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN))
+>                return -EPERM;
+> 
+> inode_permission() is a little trickier here, which checks against idmap.
+> However, I don't think the check makes sense in the context of LSM.
+> In this case, we have two processes: one security daemon, which
+> owns the BPF LSM program, and a process being monitored.
+> idmap here, from file_mnt_idmap(file), is the idmap from the being
+> monitored process. However, whether the BPF LSM program have the
+> permission to read the xattr should be determined by the security
+> daemon.
+> 
+> Overall, we can technically add xattr_permission() check here. But I
+> don't think that's the right check for the LSM use case.
+> 
+> Does this make sense? Did I miss or misunderstand something?
 
-
+If the helper is only callable from an LSM context then this should be
+fine.
 
