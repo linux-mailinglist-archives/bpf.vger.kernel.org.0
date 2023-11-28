@@ -1,101 +1,102 @@
-Return-Path: <bpf+bounces-16054-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16055-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A517FBE99
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 16:52:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FB567FBEB4
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 16:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 000D628263F
-	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 15:52:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCDCAB20C85
+	for <lists+bpf@lfdr.de>; Tue, 28 Nov 2023 15:55:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3252D18E03;
-	Tue, 28 Nov 2023 15:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23593528B;
+	Tue, 28 Nov 2023 15:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhCM0efN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GibD/jeZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5034A35267;
-	Tue, 28 Nov 2023 15:52:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69B3AC433C7;
-	Tue, 28 Nov 2023 15:52:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701186757;
-	bh=W49ajMFtN9aTN86Tnl430idPA/txjACjmrkpyxn3DE8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qhCM0efNQ55/CadBsgmu3A+z7I663gGmRlop+aHtsSVP3W3KCJxS4fFnJj2rO9RpG
-	 y+R924PIXTrR+evJd3GTxqaL5irmDkrqNbRWw9SV1YHNS71I8J/El1OHEQtPkEIRyr
-	 Afc1O5Xcnr2agGFbz1OiKZ75NeDBlttGNDF5zEkddR7IRkSJ/bYJXRhvwXvYTDouWl
-	 WOc9GyV32DURezCRx7CTi+a6DGNmgsBWfsB2RHkt8xIdcAxiZzDkyVQICDB2vFML3C
-	 hmh8wYtpto+fz3KlsQeu2I/pmzyU/Po0vKVV7MZySBCX95gqixVMLw42/5bpJlCqj3
-	 T2wz5oaTTY4Gw==
-Date: Tue, 28 Nov 2023 16:52:31 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	Jann Horn <jannh@google.com>, linux-doc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, intel-gfx@lists.freedesktop.org,
-	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
-	bpf@vger.kernel.org, ying.huang@intel.com, feng.tang@intel.com,
-	fengwei.yin@intel.com
-Subject: Re: [linus:master] [file] 0ede61d858: will-it-scale.per_thread_ops
- -2.9% regression
-Message-ID: <20231128-serpentinen-sinnieren-e186ea8742e9@brauner>
-References: <202311201406.2022ca3f-oliver.sang@intel.com>
- <CAHk-=wjMKONPsXAJ=yJuPBEAx6HdYRkYE8TdYVBvpm3=x_EnCw@mail.gmail.com>
- <CAHk-=wiCJtLbFWNURB34b9a_R_unaH3CiMRXfkR0-iihB_z68A@mail.gmail.com>
- <20231127-kirschen-dissens-b511900fa85a@brauner>
- <CAHk-=wgwpzgoSYU9Ob+MRyFuHRow4s5J099=DsCo1hGT=bkCtw@mail.gmail.com>
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E2795;
+	Tue, 28 Nov 2023 07:55:18 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6cc02e77a9cso3164783b3a.0;
+        Tue, 28 Nov 2023 07:55:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701186917; x=1701791717; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xZsgogkFvQta+bD1L9N7CDsGe7p3FH8Sftpj+xzgtys=;
+        b=GibD/jeZsGav8M6mKhLQy/3rYSN2llBtoYc6WH3FZFlrLp0DGDfn28u6pc++brVQmO
+         ERnK265GrFAE7TeC4sYBo8n1A9cBcPrYsG/tPq9fPo19/5P37/nsGV+og/N09XqSIPch
+         kYYc/BHNckArVVX0RFIidiMw8Le5XKdLEJ0GtCr8csmXuT/lqYWF6BF2bYss/WRkJQOF
+         IofmUFizkXjobX6OadGP+LMfRPtOaV9a6vJJC+HWWmXshvQLuTIomVA0U5q9itB/+ZCu
+         CMGeMpKeQIdHtwdw0vebxmes18fdfTfvwAmdmuc1cKYCPVyT7N0pWpzzdDPMixrAp24G
+         jl5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701186917; x=1701791717;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xZsgogkFvQta+bD1L9N7CDsGe7p3FH8Sftpj+xzgtys=;
+        b=XXgCer2KUD+0h+fCHCCGeD4Y/oU3dqXA+51P4Wkf2UMQovUA6F71/vo1o+l+owDKpC
+         TCqjU1nl22WybqEkDmXdl94TMRLXANIg5pooCmAZOS/GgflXeVMxhG/mCtopmBg0JlTN
+         EJ9ivl+tF03yQx743eYq/IB189PlejRDLFo6fBwQSRLL3WvPxBbd+dXcNYgsOwSv5y0n
+         DRuDFD3x8jM3EZe6QuurbpvPCMhOYi6Mb9hpTp0fHA+jxHEq7yRMpOqfDGeL05GIz5IU
+         7jZ/ZVoTy/vgMjkvLDXjvGehNMzlsWZ2O4HZqQbVQzAubrKWaaF5ZLvdVFbx0KkqEr9S
+         h/5A==
+X-Gm-Message-State: AOJu0Yzu7P8o1+4oUPWG4k69m4jOsESMiU3JZg+LLNR9Yrnu9FI+EyFF
+	ycUtSheIeKDxKg5LWGAhAOs=
+X-Google-Smtp-Source: AGHT+IGmRwrCZgkZ2DHuQvbtB6nkOCBHOYq2T5y5w4VsyCL3mzjT9Ocy2+j53sxtXblWgBJmnTRoRA==
+X-Received: by 2002:aa7:9f05:0:b0:6b8:69fa:a11 with SMTP id g5-20020aa79f05000000b006b869fa0a11mr17909686pfr.12.1701186917478;
+        Tue, 28 Nov 2023 07:55:17 -0800 (PST)
+Received: from john.lan ([2605:59c8:148:ba10:1a40:ebd8:363b:757e])
+        by smtp.gmail.com with ESMTPSA id w12-20020aa7858c000000b006cd8c9ae7adsm3695378pfn.25.2023.11.28.07.55.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Nov 2023 07:55:16 -0800 (PST)
+From: John Fastabend <john.fastabend@gmail.com>
+To: martin.lau@kernel.org,
+	jakub@cloudflare.com
+Cc: john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH bpf v3 0/2] sockmap fix for KASAN_VMALLOC and af_unix
+Date: Tue, 28 Nov 2023 07:55:13 -0800
+Message-Id: <20231128155515.9302-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wgwpzgoSYU9Ob+MRyFuHRow4s5J099=DsCo1hGT=bkCtw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 27, 2023 at 09:10:54AM -0800, Linus Torvalds wrote:
-> On Mon, 27 Nov 2023 at 02:27, Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > So I've picked up your patch (vfs.misc). It's clever alright so thanks
-> > for the comments in there otherwise I would've stared at this for far
-> > too long.
-> 
-> Note that I should probably have commented on one other thing: that
-> whole "just load from fd[0] is always safe, because the fd[] array
-> always exists".
+The af_unix tests in sockmap_listen causes a splat from KASAN_VMALLOC.
+Fix it here and include an extra test to catch case where both pairs
+of the af_unix socket are included in a BPF sockmap.
 
-I added a comment to that effect in the code.
+Also it seems the test infra is not passing type through correctly when
+testing unix_inet_redir_to_connected. Unfortunately, the simple fix
+also caused some CI tests to fail so investigating that now.
 
-> 
-> IOW, that whole "load and mask" thing only works when you know the
-> array exists at all.
-> 
-> Doing that "just mask the index" wouldn't be valid if "size = 0" is an
-> option and might mean that we don't have an array at all (ie if "->fd"
-> itself could be NULL.
-> 
-> But we never have a completely empty file descriptor array, and
-> fdp->fd is never NULL.  At a minimum 'max_fds' is NR_OPEN_DEFAULT.
-> 
-> (The whole 'tsk->files' could be NULL, but only for kernel threads or
-> when exiting, so fget_task() will check for *that*, but it's a
-> separate thing)
+v3: drop unnecessary assignment (Martin) and rebase on latest selftests.
 
-Yep.
+v2: drop changes to dgram side its fine per Jakub's point it graps a
+    reference on the peer socket from each sendmsg.
 
-> 
-> So that's why it's safe to *entirely* remove the whole
-> 
->                 if (unlikely(fd >= fdt->max_fds))
-> 
-> test, and do it *all* with just "mask the index, and mask the resulting load".
+John Fastabend (2):
+  bpf: sockmap, af_unix stream sockets need to hold ref for pair sock
+  bpf: sockmap, add af_unix test with both sockets in map
 
-Yep.
+ include/linux/skmsg.h                         |  1 +
+ include/net/af_unix.h                         |  1 +
+ net/core/skmsg.c                              |  2 +
+ net/unix/af_unix.c                            |  2 -
+ net/unix/unix_bpf.c                           |  5 ++
+ .../selftests/bpf/prog_tests/sockmap_listen.c | 51 +++++++++++++++----
+ .../selftests/bpf/progs/test_sockmap_listen.c |  7 +++
+ 7 files changed, 56 insertions(+), 13 deletions(-)
+
+-- 
+2.33.0
+
 
