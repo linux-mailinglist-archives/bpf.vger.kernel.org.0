@@ -1,174 +1,162 @@
-Return-Path: <bpf+bounces-16165-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16166-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75CA57FDDDD
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 18:01:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACBCB7FDDFE
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 18:10:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0564CB20F8E
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 17:01:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E8C72829E9
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 17:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059483B79C;
-	Wed, 29 Nov 2023 17:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BA93D0C5;
+	Wed, 29 Nov 2023 17:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f8DcIBOS"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="c5lp+V55"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34018B6
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 09:01:16 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-332cb136335so28773f8f.0
-        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 09:01:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701277274; x=1701882074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Ro32rvbSXFPUgcvcu8vSVPFr0plmQhSXQyZRUyDDug=;
-        b=f8DcIBOSPiAGdHzcqboKFYTNJKZDtZRSrV5yHCzE2tpuPIHKDDOjDL90EtoXqBBN9e
-         UpWF6eSPBnosRQr1VTpaAy5sYr7fRg6mwNDC/MKVL78ZYavx64zQZ72AC442Kb6UHMwo
-         /IvDzZTSrp2sb6CMVHhlFx9CQURR6A/Kx58Qhc4S+5D3WlhsqmBFSak59a1uzG+ewdb8
-         t6fmII5g04hDjC8+a1zsJEmpiFKJeSyMIkG7co4jlmaDgDPBFJigA5d2AbxaEZP4Y/Rc
-         +YZHzEHo/g5UJqADJwgZL09RHub3ej/qsj1R1OBJ8LSfwFFi7nLBq6yBLEeQzYclMteA
-         kh3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701277274; x=1701882074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4Ro32rvbSXFPUgcvcu8vSVPFr0plmQhSXQyZRUyDDug=;
-        b=GQ78amYEZaxRm2KwMaCmLIgCl/+DF7KfLZVwaEF4jRgJYYvZz4GwO6a1ZC9SCW8ShH
-         FtqNwWpLKar/3AWmJPfIG741uNzRrtla7JBa2LineZCei+T5NNQlGMbiDoxhznKpxlgR
-         CYQOgrYHlCGILBlouHAvxKkCSWwtRyfsti9qOowLX0UTRviwVUVtIbNoUd//ZJLR4zPw
-         M9RVs0gdG7O2RXxBfDSjXaEchKM6mXrJ1By5jKSYxkZhjYkqiZXIRlMV+1OXXYXxTXYl
-         pEu7faQUV91XWhZ3XCb0VSjbinUkhC1gEsCCqqgUZd+AIsWFC6KRr81OHmbSAGyTG0ak
-         11eQ==
-X-Gm-Message-State: AOJu0YxYc9Yb8w/fL2UgU4csDD7FDBEIpIrCzzat74UVA86W75QQHs81
-	DYioH64Z92J2CPLXwMpW6nQIuDAeVCs85i2I9jw=
-X-Google-Smtp-Source: AGHT+IHzEVtGA+C8+2hYjTSk/XqsgehvrH4AFrn3bw5tIlzr7zhAImRVxx1d+aQVKb2wBG3ExOr+qHFU4lphBHZLz8Q=
-X-Received: by 2002:a5d:4b45:0:b0:332:fd0f:b2d9 with SMTP id
- w5-20020a5d4b45000000b00332fd0fb2d9mr8708231wrs.18.1701277274370; Wed, 29 Nov
- 2023 09:01:14 -0800 (PST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D27BC;
+	Wed, 29 Nov 2023 09:10:35 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 486F7219B5;
+	Wed, 29 Nov 2023 17:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701277834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vzwYMvZH+lLs7nIcf9848QxwWYfgK9k6V/VFPR/CPRo=;
+	b=c5lp+V55CaoT+Xdq7Wwd+8OE9dGrFAn2IzXhIrl90H2aFxKRO6Ii6NJEzhC7kZQmNiA1RG
+	cd9t4hK0Yg4/h5Z+6oIfZSu4CPnTItNmi9PW9op1hC60azk4mNv3lNiAKZZPZP4eAAUZ8j
+	NputPfcch4/rlsKJdpGm3lxHYX0cirI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1B94213637;
+	Wed, 29 Nov 2023 17:10:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id AycXA4pwZ2V1DgAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 29 Nov 2023 17:10:34 +0000
+Date: Wed, 29 Nov 2023 18:10:33 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: akpm@linux-foundation.org, rostedt@goodmis.org, mhiramat@kernel.org,
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, kernel@sberdevices.ru, rockosov@gmail.com,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWdwifakPuMZbFUV@tiehlicka>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+ <ZWWzwhWnW1_iX0FP@tiehlicka>
+ <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
+ <ZWdhjYPjbsoUE_mI@tiehlicka>
+ <20231129165752.7r4o3jylbxrj7inb@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <87leahx2xh.fsf@oracle.com> <3733942b-f0ef-4e71-8c49-aa4177e9433c@linux.dev>
- <87jzq1t4sk.fsf@oracle.com> <a1073bd0-9df2-4a9e-900c-7e8ac63ac464@linux.dev>
-In-Reply-To: <a1073bd0-9df2-4a9e-900c-7e8ac63ac464@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 29 Nov 2023 09:01:03 -0800
-Message-ID: <CAADnVQJjQDQBNHZzpuBZfQdfeqGSX9_Y106PDgiY=bi-S0Wsqw@mail.gmail.com>
-Subject: Re: BPF GCC status - Nov 2023
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129165752.7r4o3jylbxrj7inb@CAB-WSD-L081021>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-0.993];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -3.80
 
-On Wed, Nov 29, 2023 at 8:44=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
-> On 11/29/23 2:08 AM, Jose E. Marchesi wrote:
-> >> On 11/28/23 11:23 AM, Jose E. Marchesi wrote:
-> >>> [During LPC 2023 we talked about improving communication between the =
-GCC
-> >>>    BPF toolchain port and the kernel side.  This is the first periodi=
-cal
-> >>>    report that we plan to publish in the GCC wiki and send to interes=
-ted
-> >>>    parties.  Hopefully this will help.]
-> >>>
-> >>> GCC wiki page for the port: https://gcc.gnu.org/wiki/BPFBackEnd
-> >>> IRC channel: #gccbpf at irc.oftc.net.
-> >>> Help on using the port: gcc@gcc.gnu.org
-> >>> Patches and/or development discussions: gcc-patches@gnu.org
-> >> Thanks a lot for detailed report. Really helpful to nail down
-> >> issues facing one or both compilers. See comments below for
-> >> some mentioned issues.
-> >>
-> >>> Assembler
-> >>> =3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >> [...]
-> >>
-> >>> - In the Pseudo-C syntax register names are not preceded by % charact=
-ers
-> >>>     nor any other prefix.  A consequence of that is that in contexts =
-like
-> >>>     instruction operands, where both register names and expressions
-> >>>     involving symbols are expected, there is no way to disambiguate
-> >>>     between them.  GAS was allowing symbols like `w3' or `r5' in synt=
-actic
-> >>>     contexts where no registers were expected, such as in:
-> >>>
-> >>>       r0 =3D w3 ll  ; GAS interpreted w3 as symbol, clang emits error
-> >>>
-> >>>     The clang assembler wasn't allowing that.  During LPC we agreed t=
-hat
-> >>>     the simplest approach is to not allow any symbol to have the same=
- name
-> >>>     than a register, in any context.  So we changed GAS so it now doe=
-sn't
-> >>>     allow to use register names as symbols in any expression, such as=
-:
-> >>>
-> >>>       r0 =3D w3 + 1 ll  ; This now fails for both GAS and llvm.
-> >>>       r0 =3D 1 + w3 ll  ; NOTE this does not fail with llvm, but it s=
-hould.
-> >> Could you provide a reproducible case above for llvm? llvm does not
-> >> support syntax like 'r0 =3D 1 + w3 ll'. For add, it only supports
-> >> 'r1 +=3D r2' or 'r1 +=3D 100' syntax.
-> > It is a 128-bit load with an expression.  In compiler explorer, clang:
-> >
-> >    int
-> >    foo ()
-> >    {
-> >      asm volatile ("r1 =3D 10 + w3 ll");
-> >      return 0;
-> >    }
-> >
-> > I get:
-> >
-> >    foo:                                    # @foo
-> >            r1 =3D 10+w3 ll
-> >            r0 =3D 0
-> >            exit
-> >
-> > i.e. `10 + w3' is interpreted as an expression with two operands: the
-> > literal number 10 and a symbol (not a register) `w3'.
-> >
-> > If the expression is `w3+10' instead, your parser recognizes the w3 as =
-a
-> > register name and errors out, as expected.
-> >
-> > I suppose llvm allows to hook on the expression parser to handle
-> > individual operands.  That's how we handled this in GAS.
->
-> Thanks for the code. I can reproduce the result with compiler explorer.
-> The following is the link https://godbolt.org/z/GEGexf1Pj
-> where I added -grecord-gcc-switches to dump compilation flags
-> into .s file.
->
-> The following is the compiler explorer compilation command line:
-> /opt/compiler-explorer/clang-trunk-20231129/bin/clang-18 -g -o /app/outpu=
-t.s \
->    -S --target=3Dbpf -fcolor-diagnostics -gen-reproducer=3Doff -O2 \
->    -g -grecord-command-line /app/example.c
->
-> I then compile the above C code with
->    clang -g -S --target=3Dbpf -fcolor-diagnostics -gen-reproducer=3Doff -=
-O2 -g -grecord-command-line t.c
-> with identical flags.
->
-> I tried locally with llvm16/17/18. They all failed compilation since
-> 'r1 =3D 10+w3 ll' cannot be recognized by the llvm.
-> We will investigate why llvm18 in compiler explorer compiles
-> differently from my local build.
+On Wed 29-11-23 19:57:52, Dmitry Rokosov wrote:
+> On Wed, Nov 29, 2023 at 05:06:37PM +0100, Michal Hocko wrote:
+> > On Wed 29-11-23 18:20:57, Dmitry Rokosov wrote:
+> > > On Tue, Nov 28, 2023 at 10:32:50AM +0100, Michal Hocko wrote:
+> > > > On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+> > [...]
+> > > > > 2) With this approach, we will not have the ability to trace a situation
+> > > > > where the kernel is requesting reclaim for a specific memcg, but due to
+> > > > > limits issues, we are unable to run it.
+> > > > 
+> > > > I do not follow. Could you be more specific please?
+> > > > 
+> > > 
+> > > I'm referring to a situation where kswapd() or another kernel mm code
+> > > requests some reclaim pages from memcg, but memcg rejects it due to
+> > > limits checkers. This occurs in the shrink_node_memcgs() function.
+> > 
+> > Ohh, you mean reclaim protection
+> > 
+> > > ===
+> > > 		mem_cgroup_calculate_protection(target_memcg, memcg);
+> > > 
+> > > 		if (mem_cgroup_below_min(target_memcg, memcg)) {
+> > > 			/*
+> > > 			 * Hard protection.
+> > > 			 * If there is no reclaimable memory, OOM.
+> > > 			 */
+> > > 			continue;
+> > > 		} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+> > > 			/*
+> > > 			 * Soft protection.
+> > > 			 * Respect the protection only as long as
+> > > 			 * there is an unprotected supply
+> > > 			 * of reclaimable memory from other cgroups.
+> > > 			 */
+> > > 			if (!sc->memcg_low_reclaim) {
+> > > 				sc->memcg_low_skipped = 1;
+> > > 				continue;
+> > > 			}
+> > > 			memcg_memory_event(memcg, MEMCG_LOW);
+> > > 		}
+> > > ===
+> > > 
+> > > With separate shrink begin()/end() tracepoints we can detect such
+> > > problem.
+> > 
+> > How? You are only reporting the number of reclaimed pages and no
+> > reclaimed pages could be not just because of low/min limits but
+> > generally because of other reasons. You would need to report also the
+> > number of scanned/isolated pages.
+> >  
+> 
+> From my perspective, if memory control group (memcg) protection
+> restrictions occur, we can identify them by the absence of the end()
+> pair of begin(). Other reasons will have both tracepoints raised.
 
-Is that a different issue from:
-https://github.com/compiler-explorer/compiler-explorer/issues/5701
-?
+That is not really great way to detect that TBH. Trace events could be
+lost and then you simply do not know what has happened.
+
+-- 
+Michal Hocko
+SUSE Labs
 
