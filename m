@@ -1,99 +1,136 @@
-Return-Path: <bpf+bounces-16183-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16184-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCB917FE07D
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 20:52:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A87A7FE08E
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 20:56:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6332AB211AA
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 19:52:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEE87B2114A
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 19:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3047C5EE75;
-	Wed, 29 Nov 2023 19:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3E55EE78;
+	Wed, 29 Nov 2023 19:56:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vhIvd7VL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dHQfQyzn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68FF812F
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:52:18 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5be3799791fso112298a12.3
-        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:52:18 -0800 (PST)
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BEA194
+	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:56:35 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a02c48a0420so17880066b.2
+        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:56:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701287538; x=1701892338; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5yBfexVnGjK9zT3HZQkyABuZs4aynbOBNLg3URm818I=;
-        b=vhIvd7VLT9IVEnL+3RHfdlFioTqgbCkogKsPkRp8dTukhSDh9tH8MNb3uExfA82yoF
-         50Vwyf3AVTE2Q25FN8PR3UuU+7xuohmD5EBEmegetFO+eI3SXRoWfzCBIn/hWkgFLomw
-         cOFDFZBcsfZDKNFQxa4ijYvJhcoKx5RQ1dROANTy3MBvqxvVElM2inY3BRtDPWAjqEvH
-         qyH9ox5pwcVv3K8xz96kGn2c+i9J+9+tjWzLcU7q+iS5fuuyRPJHxO3BJWmArSi7P8dx
-         wMpziYtoUt/Og90PF1j35iP5v/X125gUdEpU6oXVk8gtY2vRLdVl87VZkuhih9SXlaVt
-         E4dw==
+        d=gmail.com; s=20230601; t=1701287793; x=1701892593; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=C4GPhQ+sLgiEcHXE4/l/jgu+gnQoD3xuZZnFnmNzMMI=;
+        b=dHQfQyznOC08qf4meYRhv0VCK4aapUD1b3HtYiLuuRdpWFKS4FBQATZcSROIkcoYbV
+         PryU78puL54twJsG+Ci9C6S/yxEhHS3nXyn7dqycT8JSE9LHRNRaTt+sUs6cCr6g/DVL
+         5PI776nOZBiT78A4xqqiWCXbCtKU4uxoHIU1KgVg4htkFXdc6ufy+/FoMn+0MZ3BGPCg
+         NX+h1+nhpe7nQ1BKpulIL9lVRFGB0T0UhZe1LEHbtxYFExrFQxpHPnRDH7F9AhjJb7sc
+         HqoGR/fYupgdaS/NyYvKdJKNojH6Y+o6aV+Sp0msx+RComvazv6vbGD7bSC4+VUbVRUh
+         62yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701287538; x=1701892338;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5yBfexVnGjK9zT3HZQkyABuZs4aynbOBNLg3URm818I=;
-        b=NdXuz7ZlRtQzeTWWBMiUODGoE6qelQ4qs4sAzmG5DsEeTmUpD9vIVaiP7c8qoOtRyz
-         TxM1xJHzTGA1fNkh+tVuVTeDnpST5EIiAAdwmgPv9wnJNT3bxuQfVxAcoG4bFj7y73Dk
-         XK8X1lKXlQ55N5wG9hiv2yp8a78rqnnYCI7QohzujKPv/VxIDH9DPmUZD+11yttRrg57
-         BB3Hh3zmsgfjy0DdW2HPR9sZhKD0C7MaPZT8l1Iudmo3o35Pn2fDWOj8M80+Ti3HeT7S
-         +CeX0DYjC8Jc8ysI5K5n8IkHrXgsHk6SjrsOcaw4YCKx1HwZJ2TeTMd4RO7lsyTxyg1I
-         FJSg==
-X-Gm-Message-State: AOJu0YxNT74dQcyDkjHyWMZfA7lBRjpZgwJCWArxC/GU4U3RfPbco14b
-	49WFOyBru7AfrRRwNM6ZejYpDe0=
-X-Google-Smtp-Source: AGHT+IE/bAe6yat1ELBoTysTNVFXDSpYFyBEtSfWnZTL9dc2J1KYFSoSrBW40He+g5e8T/b1H8UtjaY=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:e848:0:b0:5be:1b76:6a87 with SMTP id
- a8-20020a63e848000000b005be1b766a87mr3323713pgk.12.1701287537886; Wed, 29 Nov
- 2023 11:52:17 -0800 (PST)
-Date: Wed, 29 Nov 2023 11:52:16 -0800
-In-Reply-To: <20231129075409.2709587-1-yonghong.song@linux.dev>
+        d=1e100.net; s=20230601; t=1701287793; x=1701892593;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=C4GPhQ+sLgiEcHXE4/l/jgu+gnQoD3xuZZnFnmNzMMI=;
+        b=Zvs33lbFjmhiRGZfvSJEBfE982cDgfk4gLd5b1A/jrBIIh/ebSWELn0btlJrlmlPOH
+         jmyPoCurI7TJ0Z7QNIM2qhrM8LBnPqfGNdxTtRAtykpuEyximU16FgqqAb+Fs8L2OIWP
+         D3UHx3bWKbalQ5N8Sc/99saby4SlXRlYfVI6ZXckp9ms3TIgXsyJISfoQz08cmD3kiqC
+         +hAsnQaIoNTDE1d7qxUxzZJmXXYE3nWPLULVqLAh5GQKPl7B2z67t+y4+3/Urk5ED/hL
+         9g4O4pAhntbXgOydSc71FYsCukVDq0Y6LHbw2ibkwprLhZ/OjvnhP2KbX7WNwChOwNYU
+         eEiA==
+X-Gm-Message-State: AOJu0YxoOn1JCsPxOaVw0F6ttm2DvBiJrAW9WbBfo7UbJR7VrItiFHwr
+	hIH3U2bYu0c5UXFORuKBx8Uw5k0qXXEWPQ==
+X-Google-Smtp-Source: AGHT+IH0Ru4InKVqafM/3Zwyot5oKFcot+3g4bXRK8Vcw5lTMe+Y01Kora5/JDwQJS+oGGfQ2g+i8A==
+X-Received: by 2002:a17:906:e0d3:b0:9fd:3ba:ddcb with SMTP id gl19-20020a170906e0d300b009fd03baddcbmr14152018ejb.29.1701287793477;
+        Wed, 29 Nov 2023 11:56:33 -0800 (PST)
+Received: from erthalion.local (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
+        by smtp.gmail.com with ESMTPSA id p4-20020a170906b20400b009ddaf5ebb6fsm8287742ejz.177.2023.11.29.11.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 11:56:33 -0800 (PST)
+From: Dmitrii Dolgov <9erthalion6@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	dan.carpenter@linaro.org,
+	olsajiri@gmail.com,
+	Dmitrii Dolgov <9erthalion6@gmail.com>
+Subject: [PATCH bpf-next v4 0/3] Relax tracing prog recursive attach rules
+Date: Wed, 29 Nov 2023 20:52:35 +0100
+Message-ID: <20231129195240.19091-1-9erthalion6@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231129075409.2709587-1-yonghong.song@linux.dev>
-Message-ID: <ZWeWcIWpNHsSY0fK@google.com>
-Subject: Re: [PATCH bpf] bpf: Fix a verifier bug due to incorrect branch
- offset comparison with cpu=v4
-From: Stanislav Fomichev <sdf@google.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On 11/28, Yonghong Song wrote:
-> Bpf cpu=v4 support is introduced in [1] and Commit 4cd58e9af8b9
-> ("bpf: Support new 32bit offset jmp instruction") added support for new
-> 32bit offset jmp instruction. Unfortunately, in function
-> bpf_adj_delta_to_off(), for new branch insn with 32bit offset, the offset
-> (plus/minor a small delta) compares to 16-bit offset bound
-> [S16_MIN, S16_MAX], which caused the following verification failure:
->   $ ./test_progs-cpuv4 -t verif_scale_pyperf180
->   ...
->   insn 10 cannot be patched due to 16-bit range
->   ...
->   libbpf: failed to load object 'pyperf180.bpf.o'
->   scale_test:FAIL:expect_success unexpected error: -12 (errno 12)
->   #405     verif_scale_pyperf180:FAIL
-> 
-> Note that due to recent llvm18 development, the patch [2] (already applied
-> in bpf-next) needs to be applied to bpf tree for testing purpose.
-> 
-> The fix is rather simple. For 32bit offset branch insn, the adjusted
-> offset compares to [S32_MIN, S32_MAX] and then verification succeeded.
-> 
->   [1] https://lore.kernel.org/all/20230728011143.3710005-1-yonghong.song@linux.dev
->   [2] https://lore.kernel.org/bpf/20231110193644.3130906-1-yonghong.song@linux.dev
-> 
-> Fixes: 4cd58e9af8b9 ("bpf: Support new 32bit offset jmp instruction")
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Currently, it's not allowed to attach an fentry/fexit prog to another
+one of the same type. At the same time it's not uncommon to see a
+tracing program with lots of logic in use, and the attachment limitation
+prevents usage of fentry/fexit for performance analysis (e.g. with
+"bpftool prog profile" command) in this case. An example could be
+falcosecurity libs project that uses tp_btf tracing programs for
+offloading certain part of logic into tail-called programs, but the
+use-case is still generic enough -- a tracing program could be
+complicated and heavy enough to warrant its profiling, yet frustratingly
+it's not possible to do so use best tooling for that.
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+Following the corresponding discussion [1], the reason for that is to
+avoid tracing progs call cycles without introducing more complex
+solutions. Relax "no same type" requirement to "no progs that are
+already an attach target themselves" for the tracing type. In this way
+only a standalone tracing program (without any other progs attached to
+it) could be attached to another one, and no cycle could be formed.
+
+Note that currently, due to various limitations, it's actually not
+possible to form such an attachment cycle the original implementation
+was prohibiting. It seems that the idea was to make this part robust
+even in the view of potential future changes.
+
+The series contains a test for recursive attachment, as well as a fix +
+test for what looks like an issue in re-attachment branch of
+bpf_tracing_prog_attach. When preparing the test for the main change
+set, I've stumbled upon the possibility to construct a sequence of
+events when attach_btf would be NULL while computing a trampoline key.
+It doesn't look like this issue is triggered by the main change,
+because the reproduces doesn't actually need to have an fentry
+attachment chain.
+
+[1]: https://lore.kernel.org/bpf/20191108064039.2041889-16-ast@kernel.org/
+
+Dmitrii Dolgov (3):
+  bpf: Relax tracing prog recursive attach rules
+  selftests/bpf: Add test for recursive attachment of tracing progs
+  bpf, selftest/bpf: Fix re-attachment branch in bpf_tracing_prog_attach
+
+ include/linux/bpf.h                           |   2 +
+ include/uapi/linux/bpf.h                      |   1 +
+ kernel/bpf/syscall.c                          |  16 ++-
+ kernel/bpf/verifier.c                         |  19 ++-
+ tools/bpf/bpftool/prog.c                      |   3 +
+ tools/include/uapi/linux/bpf.h                |   1 +
+ .../bpf/prog_tests/recursive_attach.c         | 133 ++++++++++++++++++
+ .../selftests/bpf/progs/fentry_recursive.c    |  19 +++
+ .../bpf/progs/fentry_recursive_target.c       |  31 ++++
+ 9 files changed, 220 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/recursive_attach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive_target.c
+
+
+base-commit: 40d0eb0259ae77ace3e81d7454d1068c38bc95c2
+-- 
+2.41.0
+
 
