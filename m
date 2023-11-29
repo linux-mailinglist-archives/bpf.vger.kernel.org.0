@@ -1,170 +1,168 @@
-Return-Path: <bpf+bounces-16091-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16094-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2F247FCB76
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 01:36:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 563047FCB7A
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 01:37:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 590C8B2181D
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 00:36:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12E3F283287
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 00:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA54A29;
-	Wed, 29 Nov 2023 00:36:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B68815B3;
+	Wed, 29 Nov 2023 00:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SipIV3Ha"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867BA1998
-	for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 16:36:50 -0800 (PST)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ASIXlBd018705
-	for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 16:36:50 -0800
-Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3unnkgj97c-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 16:36:49 -0800
-Received: from twshared19982.14.prn3.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 28 Nov 2023 16:36:49 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id EC3663C47F99C; Tue, 28 Nov 2023 16:36:42 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH v2 bpf-next 10/10] bpf: simplify tnum output if a fully known constant
-Date: Tue, 28 Nov 2023 16:36:20 -0800
-Message-ID: <20231129003620.1049610-11-andrii@kernel.org>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DCDCA35;
+	Wed, 29 Nov 2023 00:37:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05C1DC433C7;
+	Wed, 29 Nov 2023 00:37:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701218223;
+	bh=kdIRsKLRcIcA0iXyzdZN/aSUQG54RXIUtB60difygWo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SipIV3HaFQi80qqa2I8P40D9b/jgcVX5MugptQclkwT+2sJU3MX9SOUZAaoNWf6wr
+	 h0Qmh9cUYgLXoRJzoHZ84uposyk7nFV7QQNQotTZaRQT8dMcm/wHICfpVHFNF02KC1
+	 evegJYuvlVnL+CYhHhTy3i3GEKpQcEJBE4vSsegfWnMrsQdlRBv/KY0s3TMlsJ9YAD
+	 XHYVFHfr3bd0GMKof8LmXIDhSe0QNKmyi3Axe5Pg3kONEsWsnKnvyuCrxr9KaTORfL
+	 YDIbVCbmcMIE6rPzxndt1gHZNJuwadd8aCHn0hlh9O0H/niirZsgkZZids6BokQJof
+	 07Cr41GLx51uw==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	fsverity@lists.linux.dev
+Cc: ebiggers@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	brauner@kernel.org,
+	viro@zeniv.linux.org.uk,
+	casey@schaufler-ca.com,
+	amir73il@gmail.com,
+	kpsingh@kernel.org,
+	roberto.sassu@huawei.com,
+	kernel-team@meta.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v14 bpf-next 0/6] bpf: File verification with LSM and fsverity
+Date: Tue, 28 Nov 2023 16:36:50 -0800
+Message-Id: <20231129003656.1165061-1-song@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231129003620.1049610-1-andrii@kernel.org>
-References: <20231129003620.1049610-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: RSeDUIdhy3NRTtTQUwUWoGVxQVO43DQL
-X-Proofpoint-ORIG-GUID: RSeDUIdhy3NRTtTQUwUWoGVxQVO43DQL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-28_26,2023-11-27_01,2023-05-22_02
+Content-Transfer-Encoding: 8bit
 
-Emit tnum representation as just a constant if all bits are known.
-Use decimal-vs-hex logic to determine exact format of emitted
-constant value, just like it's done for register range values.
-For that move tnum_strn() to kernel/bpf/log.c to reuse decimal-vs-hex
-determination logic and constants.
+Changes v13 => v14:
+1. Add "static" for bpf_fs_kfunc_set.
+2. Add Acked-by from Christian Brauner.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/bpf/log.c                                    | 13 +++++++++++++
- kernel/bpf/tnum.c                                   |  6 ------
- .../bpf/progs/verifier_direct_packet_access.c       |  2 +-
- .../testing/selftests/bpf/progs/verifier_int_ptr.c  |  2 +-
- .../selftests/bpf/progs/verifier_stack_ptr.c        |  4 ++--
- 5 files changed, 17 insertions(+), 10 deletions(-)
+Changes v12 => v13:
+1. Only keep 4/9 through 9/9 of v12, as the first 3 patches already
+   applied;
+2. Use new macro __bpf_kfunc_[start|end]_defs().
 
-diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
-index 3505f3e5ae96..55d019f30e91 100644
---- a/kernel/bpf/log.c
-+++ b/kernel/bpf/log.c
-@@ -539,6 +539,19 @@ static void verbose_snum(struct bpf_verifier_env *en=
-v, s64 num)
- 		verbose(env, "%#llx", num);
- }
-=20
-+int tnum_strn(char *str, size_t size, struct tnum a)
-+{
-+	/* print as a constant, if tnum is fully known */
-+	if (a.mask =3D=3D 0) {
-+		if (is_unum_decimal(a.value))
-+			return snprintf(str, size, "%llu", a.value);
-+		else
-+			return snprintf(str, size, "%#llx", a.value);
-+	}
-+	return snprintf(str, size, "(%#llx; %#llx)", a.value, a.mask);
-+}
-+EXPORT_SYMBOL_GPL(tnum_strn);
-+
- static void print_scalar_ranges(struct bpf_verifier_env *env,
- 				const struct bpf_reg_state *reg,
- 				const char **sep)
-diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
-index f4c91c9b27d7..9dbc31b25e3d 100644
---- a/kernel/bpf/tnum.c
-+++ b/kernel/bpf/tnum.c
-@@ -172,12 +172,6 @@ bool tnum_in(struct tnum a, struct tnum b)
- 	return a.value =3D=3D b.value;
- }
-=20
--int tnum_strn(char *str, size_t size, struct tnum a)
--{
--	return snprintf(str, size, "(%#llx; %#llx)", a.value, a.mask);
--}
--EXPORT_SYMBOL_GPL(tnum_strn);
--
- int tnum_sbin(char *str, size_t size, struct tnum a)
- {
- 	size_t n;
-diff --git a/tools/testing/selftests/bpf/progs/verifier_direct_packet_acc=
-ess.c b/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
-index 99a23dea8233..be95570ab382 100644
---- a/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_direct_packet_access.c
-@@ -411,7 +411,7 @@ l0_%=3D:	r0 =3D 0;						\
-=20
- SEC("tc")
- __description("direct packet access: test17 (pruning, alignment)")
--__failure __msg("misaligned packet access off 2+(0x0; 0x0)+15+-4 size 4"=
-)
-+__failure __msg("misaligned packet access off 2+0+15+-4 size 4")
- __flag(BPF_F_STRICT_ALIGNMENT)
- __naked void packet_access_test17_pruning_alignment(void)
- {
-diff --git a/tools/testing/selftests/bpf/progs/verifier_int_ptr.c b/tools=
-/testing/selftests/bpf/progs/verifier_int_ptr.c
-index b054f9c48143..74d9cad469d9 100644
---- a/tools/testing/selftests/bpf/progs/verifier_int_ptr.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_int_ptr.c
-@@ -67,7 +67,7 @@ __naked void ptr_to_long_half_uninitialized(void)
-=20
- SEC("cgroup/sysctl")
- __description("ARG_PTR_TO_LONG misaligned")
--__failure __msg("misaligned stack access off (0x0; 0x0)+-20+0 size 8")
-+__failure __msg("misaligned stack access off 0+-20+0 size 8")
- __naked void arg_ptr_to_long_misaligned(void)
- {
- 	asm volatile ("					\
-diff --git a/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c b/too=
-ls/testing/selftests/bpf/progs/verifier_stack_ptr.c
-index e0f77e3e7869..417c61cd4b19 100644
---- a/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_stack_ptr.c
-@@ -37,7 +37,7 @@ __naked void ptr_to_stack_store_load(void)
-=20
- SEC("socket")
- __description("PTR_TO_STACK store/load - bad alignment on off")
--__failure __msg("misaligned stack access off (0x0; 0x0)+-8+2 size 8")
-+__failure __msg("misaligned stack access off 0+-8+2 size 8")
- __failure_unpriv
- __naked void load_bad_alignment_on_off(void)
- {
-@@ -53,7 +53,7 @@ __naked void load_bad_alignment_on_off(void)
-=20
- SEC("socket")
- __description("PTR_TO_STACK store/load - bad alignment on reg")
--__failure __msg("misaligned stack access off (0x0; 0x0)+-10+8 size 8")
-+__failure __msg("misaligned stack access off 0+-10+8 size 8")
- __failure_unpriv
- __naked void load_bad_alignment_on_reg(void)
- {
---=20
+Changes v11 => v12:
+1. Fix typo (data_ptr => sig_ptr) in bpf_get_file_xattr().
+
+Changes v10 => v11:
+1. Let __bpf_dynptr_data() return const void *. (Andrii)
+2. Optimize code to reuse output from __bpf_dynptr_size(). (Andrii)
+3. Add __diag_ignore_all("-Wmissing-declarations") for kfunc definition.
+4. Fix an off indentation. (Andrii)
+
+Changes v9 => v10:
+1. Remove WARN_ON_ONCE() from check_reg_const_str. (Alexei)
+
+Changes v8 => v9:
+1. Fix test_progs kfunc_dynptr_param/dynptr_data_null.
+
+Changes v7 => v8:
+1. Do not use bpf_dynptr_slice* in the kernel. Add __bpf_dynptr_data* and
+   use them in ther kernel. (Andrii)
+
+Changes v6 => v7:
+1. Change "__const_str" annotation to "__str". (Alexei, Andrii)
+2. Add KF_TRUSTED_ARGS flag for both new kfuncs. (KP)
+3. Only allow bpf_get_file_xattr() to read xattr with "user." prefix.
+4. Add Acked-by from Eric Biggers.
+
+Changes v5 => v6:
+1. Let fsverity_init_bpf() return void. (Eric Biggers)
+2. Sort things in alphabetic orders. (Eric Biggers)
+
+Changes v4 => v5:
+1. Revise commit logs. (Alexei)
+
+Changes v3 => v4:
+1. Fix error reported by CI.
+2. Update comments of bpf_dynptr_slice* that they may return error pointer.
+
+Changes v2 => v3:
+1. Rebase and resolve conflicts.
+
+Changes v1 => v2:
+1. Let bpf_get_file_xattr() use const string for arg "name". (Alexei)
+2. Add recursion prevention with allowlist. (Alexei)
+3. Let bpf_get_file_xattr() use __vfs_getxattr() to avoid recursion,
+   as vfs_getxattr() calls into other LSM hooks.
+4. Do not use dynptr->data directly, use helper insteadd. (Andrii)
+5. Fixes with bpf_get_fsverity_digest. (Eric Biggers)
+6. Add documentation. (Eric Biggers)
+7. Fix some compile warnings. (kernel test robot)
+
+This set enables file verification with BPF LSM and fsverity.
+
+In this solution, fsverity is used to provide reliable and efficient hash
+of files; and BPF LSM is used to implement signature verification (against
+asymmetric keys), and to enforce access control.
+
+This solution can be used to implement access control in complicated cases.
+For example: only signed python binary and signed python script and access
+special files/devices/ports.
+
+Thanks,
+Song
+
+Song Liu (6):
+  bpf: Add kfunc bpf_get_file_xattr
+  bpf, fsverity: Add kfunc bpf_get_fsverity_digest
+  Documentation/bpf: Add documentation for filesystem kfuncs
+  selftests/bpf: Sort config in alphabetic order
+  selftests/bpf: Add tests for filesystem kfuncs
+  selftests/bpf: Add test that uses fsverity and xattr to sign a file
+
+ Documentation/bpf/fs_kfuncs.rst               |  21 +++
+ Documentation/bpf/index.rst                   |   1 +
+ fs/verity/fsverity_private.h                  |  10 ++
+ fs/verity/init.c                              |   1 +
+ fs/verity/measure.c                           |  84 +++++++++
+ kernel/trace/bpf_trace.c                      |  67 +++++++
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  10 ++
+ tools/testing/selftests/bpf/config            |   3 +-
+ .../selftests/bpf/prog_tests/fs_kfuncs.c      | 132 ++++++++++++++
+ .../bpf/prog_tests/verify_pkcs7_sig.c         | 163 +++++++++++++++++-
+ .../selftests/bpf/progs/test_fsverity.c       |  46 +++++
+ .../selftests/bpf/progs/test_get_xattr.c      |  37 ++++
+ .../selftests/bpf/progs/test_sig_in_xattr.c   |  82 +++++++++
+ .../bpf/progs/test_verify_pkcs7_sig.c         |   8 +-
+ .../testing/selftests/bpf/verify_sig_setup.sh |  25 +++
+ 15 files changed, 681 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/bpf/fs_kfuncs.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_fsverity.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_get_xattr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
+
+--
 2.34.1
-
 
