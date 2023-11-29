@@ -1,132 +1,119 @@
-Return-Path: <bpf+bounces-16202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA537FE452
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 00:49:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7B4B7FE459
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 00:55:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5371C209EE
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 23:49:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB1551C20B9C
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 23:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D26247A6D;
-	Wed, 29 Nov 2023 23:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB54747A6A;
+	Wed, 29 Nov 2023 23:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="aDhigzmU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZuZwSF1o"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CFC884;
-	Wed, 29 Nov 2023 15:49:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=+1mG0n8jEXMUcbRRUHaIgbHxu7jhjROAA37nRQGORFk=; b=aDhigzmUxV4IfAJ4blEFYKvVr5
-	ZzgxRzd79xhkuRexHNy5IkpHrNiZs49snGzhq64X9FpTlCADJKQREPaNotNs1c85V3E5W5aSEUcY1
-	+Zyd/b7nn4xaNEdg5khHzpYVI1xHbO27Se3j28WcY+tS8GBKO6hmEYcxGXWwpYI0X8eUsO8f/q4q4
-	SlFwyrEo3eveVfnNlYt4VjyXTro69oRR66KwOt02ppuClHpe/GAvHRHD5pwwRie6VejQ1RGdIPIrh
-	upv5/M+qvBOlzUzJrPq/RKMSLFcPLjma1WQVElh5Qr9mataO7aalvkMllyIj565WM8Fu5wfXynqN9
-	yCPGVNrw==;
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r8UIv-000Atx-CP; Thu, 30 Nov 2023 00:49:17 +0100
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf 2023-11-30
-Date: Thu, 30 Nov 2023 00:49:16 +0100
-Message-Id: <20231129234916.16128-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9399EB2
+	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 15:55:13 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a0064353af8so293434466b.0
+        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 15:55:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701302112; x=1701906912; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cL59atYyTbrU3zPrN5rRx4ln4qf/sokDGr+bfPVBr9Y=;
+        b=ZuZwSF1ojvoovg2RA0wj/VMClg4dtC5hURvt2DP3PMc0eZsN00QclpbSQ7URWzf83U
+         oHmBVqgc/bFS+IiEWIwNIRMKNIhlxSJd/V9O7Z/JFEVTdqn0C9RD0rB/DLYBbv7z/iLw
+         fuAXCtOyhv6Ghu/rKWLUuw+44dIiw3WgNju2I248X3B4ScQEPUN2pmYhTkw1dw8hih7o
+         WeLRZA8JcBGA4a4rSYEYC5+98oLGz95uBWRmHgQeh8EC/dWzmSMCCLWFXgeIq5i5B4hb
+         Fuv0FXz7U7GWKviUvnayfJ5yEptOqzrhOWR7JMWrZbPld00UdGBoryeSpGKjsVi3ZQv9
+         Ylcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701302112; x=1701906912;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cL59atYyTbrU3zPrN5rRx4ln4qf/sokDGr+bfPVBr9Y=;
+        b=SaJtr+GkFiWsZKxw7sa4yNGS65bJ9eKfcwI9S9eCsExCrTP9YkmMZO2a0/ccSImrjT
+         f8JMdaw+F1llEE7e2SuguGtwrQ3SlCT6R4VM6snT2Pgj0557Y4aJWfKBWBitmDmFzxOU
+         y7DlIiFHu/suTPj/3GDElmjVqM337D05uCA+KczvhxpnpbNkxXoq55o00lq7ulfIKcm+
+         /slGIlJuj3B9/v4EZR8m+wK37XS1PrVsuXkaNkH8JbBQ96akj4xCUff65G6kyJEcNAjw
+         Vbco8BQw0EXOmG8KHEqJiu7RHZWaYIT0rOmvpi6WQmff3XetnS67rojyBs7vvkansCTL
+         QOig==
+X-Gm-Message-State: AOJu0Yy4wCCV4aZBzxh3FgsE2QVHeguHhIJt7kSfuuhYcCgLewCGZ2ry
+	3YuKFW34KSB8XAL9PCj4gsLPjk2YqivJZtKNWcfo5w3o
+X-Google-Smtp-Source: AGHT+IHPa+lPf7Dw7Dd/oJxdDa6S1QSE4hJgWwL2EC12ygVPLFIGVPwBy7HXxvKFjGKrA+5iBY6L2hRS3IXZERWpArk=
+X-Received: by 2002:a17:906:5788:b0:a18:4d81:5091 with SMTP id
+ k8-20020a170906578800b00a184d815091mr519962ejq.21.1701302111813; Wed, 29 Nov
+ 2023 15:55:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27108/Wed Nov 29 09:40:15 2023)
+References: <20231126015045.1092826-1-andreimatei1@gmail.com>
+ <20231126015045.1092826-2-andreimatei1@gmail.com> <CAEf4BzacRRwzdQH8LuQkV695=rm65jnv1bX2n9gks6G+wGAw6w@mail.gmail.com>
+ <CABWLses9f6izTmODQf_hKwhvH54-vpWrzWHP_KRG=n8gRWpp-w@mail.gmail.com>
+In-Reply-To: <CABWLses9f6izTmODQf_hKwhvH54-vpWrzWHP_KRG=n8gRWpp-w@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 29 Nov 2023 15:54:59 -0800
+Message-ID: <CAEf4BzZuf1XHe7=Am1c3Crv9CMrz8TjDKczKQaih=guAVi0wpA@mail.gmail.com>
+Subject: Re: [PATCH bpf v2 1/2] bpf: fix accesses to uninit stack slots
+To: Andrei Matei <andreimatei1@gmail.com>
+Cc: bpf@vger.kernel.org, sunhao.th@gmail.com, eddyz87@gmail.com, 
+	kernel-team@dataexmachina.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On Wed, Nov 29, 2023 at 8:48=E2=80=AFAM Andrei Matei <andreimatei1@gmail.co=
+m> wrote:
+>
+> [...]
+>
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index af2819d5c8ee..f9546dd73f3c 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -1685,10 +1685,12 @@ static int resize_reference_state(struct bpf_=
+func_state *state, size_t n)
+> > >         return 0;
+> > >  }
+> > >
+> > > -static int grow_stack_state(struct bpf_func_state *state, int size)
+> > > +/* Possibly update state->allocated_stack to be at least size bytes.=
+ Also
+> > > + * possibly update the function's high-water mark in its bpf_subprog=
+_info.
+> > > + */
+> > > +static int grow_stack_state(struct bpf_verifier_env *env, struct bpf=
+_func_state *state, int size)
+> > >  {
+> > >         size_t old_n =3D state->allocated_stack / BPF_REG_SIZE, n =3D=
+ size / BPF_REG_SIZE;
+> >
+> > shouldn't this be rounding up? (size + BPF_REG_SIZE - 1) / BPF_REG_SIZE=
+?
+>
+> You're saying this was always broken, regardless of the current patch, ri=
+ght? I
 
-The following pull-request contains BPF updates for your *net* tree.
+I think so, yes...
 
-We've added 5 non-merge commits during the last 7 day(s) which contain
-a total of 10 files changed, 66 insertions(+), 15 deletions(-).
+> think you're right, but that seems like a bug that should have been
+> caught somehow; I'm surprised no programs crashed the verifier. Perhaps i=
+n
+> practice all stack accesses are 8-byte aligned, so the rounding doesn't m=
+atter?
+>
+> I'll spend a bit of time reading code and come back.
 
-The main changes are:
+Thanks!
 
-1) Fix AF_UNIX splat from use after free in BPF sockmap, from John Fastabend.
-
-2) Fix a syzkaller splat in netdevsim by properly handling offloaded programs (and
-   not device-bound ones), from Stanislav Fomichev.
-
-3) Fix bpf_mem_cache_alloc_flags() to initialize the allocation hint, from Hou Tao.
-
-4) Fix netkit by rejecting IFLA_NETKIT_PEER_INFO in changelink, from Daniel Borkmann.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Jakub Kicinski, Jakub Sitnicki, Nikolay Aleksandrov, Yonghong Song
-
-----------------------------------------------------------------
-
-The following changes since commit d3fa86b1a7b4cdc4367acacea16b72e0a200b3d7:
-
-  Merge tag 'net-6.7-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-11-23 10:40:13 -0800)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-for you to fetch changes up to 51354f700d400e55b329361e1386b04695e6e5c1:
-
-  bpf, sockmap: Add af_unix test with both sockets in map (2023-11-30 00:25:25 +0100)
-
-----------------------------------------------------------------
-bpf-for-netdev
-
-----------------------------------------------------------------
-Daniel Borkmann (1):
-      netkit: Reject IFLA_NETKIT_PEER_INFO in netkit_change_link
-
-Hou Tao (1):
-      bpf: Add missed allocation hint for bpf_mem_cache_alloc_flags()
-
-John Fastabend (2):
-      bpf, sockmap: af_unix stream sockets need to hold ref for pair sock
-      bpf, sockmap: Add af_unix test with both sockets in map
-
-Stanislav Fomichev (1):
-      netdevsim: Don't accept device bound programs
-
- drivers/net/netdevsim/bpf.c                        |  4 +-
- drivers/net/netkit.c                               |  6 +++
- include/linux/skmsg.h                              |  1 +
- include/net/af_unix.h                              |  1 +
- kernel/bpf/memalloc.c                              |  2 +
- net/core/skmsg.c                                   |  2 +
- net/unix/af_unix.c                                 |  2 -
- net/unix/unix_bpf.c                                |  5 +++
- .../selftests/bpf/prog_tests/sockmap_listen.c      | 51 +++++++++++++++++-----
- .../selftests/bpf/progs/test_sockmap_listen.c      |  7 +++
- 10 files changed, 66 insertions(+), 15 deletions(-)
+>
+> [...]
 
