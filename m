@@ -1,139 +1,233 @@
-Return-Path: <bpf+bounces-16109-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16110-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B19C37FCE80
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 06:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 922DF7FCE86
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 06:51:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 609D12834B6
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 05:46:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 485402834C0
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 05:51:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2415A7462;
-	Wed, 29 Nov 2023 05:46:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8E77475;
+	Wed, 29 Nov 2023 05:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RuNuh1zf"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FwcwU+SM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD38E1AE;
-	Tue, 28 Nov 2023 21:46:27 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a03a900956dso100378666b.1;
-        Tue, 28 Nov 2023 21:46:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701236786; x=1701841586; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ueXoKt71z3XuYUBIRdhazyfZxt2NDv9TI5Vbp/wAPOE=;
-        b=RuNuh1zfM82ZNwMY3BcThel4suOHA66vhNXDWJxJJAOmVsT7SiRE3fmQBw2Nv5Z+uH
-         R0QvuB0Y6JgMCW0vb0SqpJ1z+gAH4+0hF3/nZ9yZdAYFc5hHAuak9onBpfgakLoJ9vQh
-         pO0ssZE0LOXsm5AgJs9P8MJ+L48Ef48DL8kiLN0montLyOkMVVWwx2aNe8Qi9tMqw70i
-         fwCe5nk4LPy04CKUZSGWDFlJHgLoimXmxuxqfEnmM/1eDV7PJFHBUGPeKglnjVyxHAmf
-         V6JWVQp8wCtV0kMvb/6T554Ad5AHqEV+vanPXjwYC7qFF06SAPBYKAEHr0Vrgv+h/Aru
-         zt+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701236786; x=1701841586;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ueXoKt71z3XuYUBIRdhazyfZxt2NDv9TI5Vbp/wAPOE=;
-        b=h3SBdHarS5sJ/GoLH9sj3xlE98Niz3CKw1g1+PCGYY+vUWzhZo/T/Zu01s+/X7//uy
-         0iw6u8J4ybw2lCFf/NckLJ0vxHYp9T3Sqc65GI1MO1X/qgLFPocZOLicFSo2HaAprA2N
-         5O+Rtd6fg6abEIpIGQcN+03Z4SkYdum7icspeLjs2Di3Agbqg+GaU9a0X7cR2FLEnbNi
-         MfduBClmh6kDzgdHhnnAFm/bIsRthu+cR/NYE5BwTqcRgGNvX+AJsNzQFdtOb4/0XOjY
-         qf1/97HS+0AIlC2e/HNW0oGYELrNTQOdCanldJVn6d56GhtdzQPzqG942XH1dRGfy4J5
-         Vudg==
-X-Gm-Message-State: AOJu0YxvpRPv8Ucd93aTHU1TeD+ucEzzFV+mL6wcR9Os+AQRu9L4zDXd
-	dirDqM832+W1b4M/qieoPoOclRXI35jwo3hZhKs=
-X-Google-Smtp-Source: AGHT+IGE+KzPojjTp4Kh+YKhE2d7vQEA73S1tl+4mJLqh6RfLpPO3Xn8jNYQ6NfTYgY+GbROxETn0GD3WWTmxhKNkzM=
-X-Received: by 2002:a17:906:2bd1:b0:9e8:2441:5cd4 with SMTP id
- n17-20020a1709062bd100b009e824415cd4mr12413558ejg.17.1701236785791; Tue, 28
- Nov 2023 21:46:25 -0800 (PST)
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ae])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE43C171D
+	for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 21:51:09 -0800 (PST)
+Message-ID: <3733942b-f0ef-4e71-8c49-aa4177e9433c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701237066;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=G1uxQwDCw64wpxEyKcQROxpbXzbH6eGgkDgc1MBL+ZA=;
+	b=FwcwU+SM/UdE7hlPfbd+MBz81fbxGWSqGUFhhfv2PazuN50L4UoC8WzugJiLmYCkOHqH/U
+	rFxdUc6E8fHhw9OHxW47UOBJ/vBXFlZCIGt6MUUhNy4CSiAkd8mDU0Ji64b8JVjgxpPIcp
+	goyK0aTD6f52pMho7W0siTKsYJyBuqQ=
+Date: Tue, 28 Nov 2023 21:50:59 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACkBjsZ-M=1Yj2PQZM7JN4=9rnDLP36fVO35o9fuAvAMKe=9Nw@mail.gmail.com>
-In-Reply-To: <CACkBjsZ-M=1Yj2PQZM7JN4=9rnDLP36fVO35o9fuAvAMKe=9Nw@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 28 Nov 2023 21:46:14 -0800
-Message-ID: <CAEf4BzYkc-4kk6gVJPY50txLV_5keNkOruJREKMbew7+Qp71YA@mail.gmail.com>
-Subject: Re: [Bug Report] bpf: reg invariant voilation after JSET
-To: Hao Sun <sunhao.th@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: BPF GCC status - Nov 2023
+Content-Language: en-GB
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
+References: <87leahx2xh.fsf@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <87leahx2xh.fsf@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Nov 21, 2023 at 4:57=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote=
-:
->
-> Hi,
->
-> The following program (reduced) breaks reg invariant:
->
-> C Repro: https://pastebin.com/raw/FmM9q9D4
->
-> -------- Verifier Log --------
-> func#0 @0
-> 0: R1=3Dctx() R10=3Dfp0
-> 0: (18) r8 =3D 0x3d                     ; R8_w=3D61
-> 2: (85) call bpf_ktime_get_ns#5       ; R0_w=3Dscalar()
-> 3: (ce) if w8 s< w0 goto pc+1         ; R0_w=3Dscalar(smax32=3D61) R8_w=
-=3D61
-> 4: (95) exit
->
-> from 3 to 5: R0_w=3Dscalar(smin=3D0x800000000000003e,smax=3D0x7fffffff7ff=
-fffff,umin=3Dsmin32=3Dumin32=3D62,umax=3D0xffffffff7fffffff,umax32=3D0x7fff=
-ffff,var_off=3D(0x0;
-> 0xffffffff7fffffff)) R8_w=3D61 R10=3Dfp0
-> 5: R0_w=3Dscalar(smin=3D0x800000000000003e,smax=3D0x7fffffff7fffffff,umin=
-=3Dsmin32=3Dumin32=3D62,umax=3D0xffffffff7fffffff,umax32=3D0x7fffffff,var_o=
-ff=3D(0x0;
-> 0xffffffff7fffffff)) R8_w=3D61 R10=3Dfp0
-> 5: (45) if r0 & 0xfffffff7 goto pc+2
-> REG INVARIANTS VIOLATION (false_reg1): range bounds violation
-> u64=3D[0x3e, 0x8] s64=3D[0x3e, 0x8] u32=3D[0x3e, 0x8] s32=3D[0x3e, 0x8]
-> var_off=3D(0x0, 0x8)
-> 5: R0_w=3Dscalar(var_off=3D(0x0; 0x8))
-> 6: (dd) if r0 s<=3D r8 goto pc+1
-> REG INVARIANTS VIOLATION (false_reg1): range bounds violation
-> u64=3D[0x0, 0x8] s64=3D[0x3e, 0x8] u32=3D[0x0, 0x8] s32=3D[0x0, 0x8]
-> var_off=3D(0x0, 0x8)
-> 6: R0_w=3Dscalar(var_off=3D(0x0; 0x8)) R8_w=3D61
-> 7: (bc) w1 =3D w0                       ; R0=3Dscalar(var_off=3D(0x0; 0x8=
-))
-> R1=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D8,var_off=
-=3D(0x0; 0x8))
-> 8: (95) exit
->
-> from 6 to 8: safe
->
-> from 5 to 8: safe
-> processed 10 insns (limit 1000000) max_states_per_insn 0 total_states
-> 1 peak_states 1 mark_read 1
->
-> The tnum after #5 is correct, but the ranges are incorrect, which seems a=
- bug in
-> reg_bounds_sync().  Thoughts?
->
 
-It would be great if in addition to reporting the bug and repro
-program, you could also try to analyse why this is happening and
-suggest fixes in the verifier.
+On 11/28/23 11:23 AM, Jose E. Marchesi wrote:
+> [During LPC 2023 we talked about improving communication between the GCC
+>   BPF toolchain port and the kernel side.  This is the first periodical
+>   report that we plan to publish in the GCC wiki and send to interested
+>   parties.  Hopefully this will help.]
+>
+> GCC wiki page for the port: https://gcc.gnu.org/wiki/BPFBackEnd
+> IRC channel: #gccbpf at irc.oftc.net.
+> Help on using the port: gcc@gcc.gnu.org
+> Patches and/or development discussions: gcc-patches@gnu.org
 
-As I mentioned in another email, when we see REG INVARIANTS VIOLATION,
-verifier reverts to conservative unknown scalar register state. We
-should try to avoid this pessimistic outcome, but generally speaking
-it should not be a critical bug.
+Thanks a lot for detailed report. Really helpful to nail down
+issues facing one or both compilers. See comments below for
+some mentioned issues.
 
-> Best
-> Hao Sun
+>
+> Assembler
+> =========
+
+[...]
+
+> - In the Pseudo-C syntax register names are not preceded by % characters
+>    nor any other prefix.  A consequence of that is that in contexts like
+>    instruction operands, where both register names and expressions
+>    involving symbols are expected, there is no way to disambiguate
+>    between them.  GAS was allowing symbols like `w3' or `r5' in syntactic
+>    contexts where no registers were expected, such as in:
+>
+>      r0 = w3 ll  ; GAS interpreted w3 as symbol, clang emits error
+>
+>    The clang assembler wasn't allowing that.  During LPC we agreed that
+>    the simplest approach is to not allow any symbol to have the same name
+>    than a register, in any context.  So we changed GAS so it now doesn't
+>    allow to use register names as symbols in any expression, such as:
+>
+>      r0 = w3 + 1 ll  ; This now fails for both GAS and llvm.
+>      r0 = 1 + w3 ll  ; NOTE this does not fail with llvm, but it should.
+
+Could you provide a reproducible case above for llvm? llvm does not
+support syntax like 'r0 = 1 + w3 ll'. For add, it only supports
+'r1 += r2' or 'r1 += 100' syntax.
+
+>
+>    We installed a patch in GAS for this.
+>    Jose E. Marchesi
+>    https://sourceware.org/pipermail/binutils/2023-November/130684.html
+>
+>
+> Pending Patches for bpf-next
+> ============================
+>
+>
+> - bpf: avoid VLAs in progs/test_xdp_dynptr.c
+>
+>    In the progs/test_xdp_dynptr.c there are a bunch of VLAs in the
+>    handle_ipv4 and handle_ipv6 functions:
+>
+>      const size_t tcphdr_sz = sizeof(struct tcphdr);
+>      const size_t udphdr_sz = sizeof(struct udphdr);
+>      const size_t ethhdr_sz = sizeof(struct ethhdr);
+>      const size_t iphdr_sz = sizeof(struct iphdr);
+>      const size_t ipv6hdr_sz = sizeof(struct ipv6hdr);
+>      
+>      [...]
+>      
+>      static __always_inline int handle_ipv6(struct xdp_md *xdp, struct bpf_dynptr *xdp_ptr)
+>      {
+> 	__u8 eth_buffer[ethhdr_sz + ipv6hdr_sz + ethhdr_sz];
+> 	__u8 ip6h_buffer_tcp[ipv6hdr_sz + tcphdr_sz];
+> 	__u8 ip6h_buffer_udp[ipv6hdr_sz + udphdr_sz];
+>    	[...]
+>      }
+>      
+>      static __always_inline int handle_ipv6(struct xdp_md *xdp, struct bpf_dynptr *xdp_ptr)
+>      {
+>    	__u8 eth_buffer[ethhdr_sz + ipv6hdr_sz + ethhdr_sz];
+> 	__u8 ip6h_buffer_tcp[ipv6hdr_sz + tcphdr_sz];
+> 	__u8 ip6h_buffer_udp[ipv6hdr_sz + udphdr_sz];
+> 	[...]
+>      }
+>
+>    In both GCC and clang we are not allowing dynamic stack allocation (we
+>    used to support it in GCC using one register as an auxiliary stack
+>    pointer, but not any longer).
+>
+>    The above code builds with clang but not with GCC:
+>
+>      progs/test_xdp_dynptr.c:79:14: error: BPF does not support dynamic stack allocation
+>         79 |         __u8 eth_buffer[ethhdr_sz + iphdr_sz + ethhdr_sz];
+>            |              ^~~~~~~~~~
+>
+>    We are guessing that clang turns these arrays from VLAs into normal
+>    statically sized arrays because ethhdr_sz and friends are constant and
+>    set to sizeof, which is always known at compile time.  This patch
+>    changes the selftest to use preprocessor constants instead of
+>    variables:
+>
+>      #define tcphdr_sz sizeof(struct tcphdr)
+>      #define udphdr_sz sizeof(struct udphdr)
+>      #define ethhdr_sz sizeof(struct ethhdr)
+>      #define iphdr_sz sizeof(struct iphdr)
+>      #define ipv6hdr_sz sizeof(struct ipv6hdr)
+
+Indeed, clang frontend (before generating IR) did some optimization
+and calculates the real array size and that is why dynamic stack
+allocation didn't happen. Since this is an optimizaiton, there is
+no guarantee that frontend is able to calculate the precise
+array size in all cases. See llvm patch https://reviews.llvm.org/D111897.
+
+So your above change looks good to me.
+
+>
+> - bpf_helpers.h: define bpf_tail_call_static when building with GCC
+>
+> - bpf: fix constraint in test_tcpbpf_kern.c
+>
+>    GCC emits a warning:
+>
+>      progs/test_tcpbpf_kern.c:60:9: error: ‘op’ is used uninitialized [-Werror=uninitialized]
+>
+>    when the uninitialized automatic `op' is used with a "+r" constraint
+>    in:
+>
+> 	asm volatile (
+> 		"%[op] = *(u32 *)(%[skops] +96)"
+> 		: [op] "+r"(op)
+> 		: [skops] "r"(skops)
+> 		:);
+>
+>    The constraint shall be "=r" instead.
+
+We may miss an error case like above in llvm. Will double check.
+
+>
+>
+> Open Questions
+> ==============
+>
+> - BPF programs including libc headers.
+>
+>    BPF programs run on their own without an operating system or a C
+>    library.  Implementing C implies providing certain definitions and
+>    headers, such as stdint.h and stdarg.h.  For such targets, known as
+>    "bare metal targets", the compiler has to provide these definitions
+>    and headers in order to implement the language.
+>
+>    GCC provides the following C headers for BPF targets:
+>
+>      float.h
+>      gcov.h
+>      iso646.h
+>      limits.h
+>      stdalign.h
+>      stdarg.h
+>      stdatomic.h
+>      stdbool.h
+>      stdckdint.h
+>      stddef.h
+>      stdfix.h
+>      stdint.h
+>      stdnoreturn.h
+>      syslimits.h
+>      tgmath.h
+>      unwind.h
+>      varargs.h
+>
+>    However, we have found that there is at least one BPF kernel self test
+>    that include glibc headers that, indirectly, include glibc's own
+>    definitions of stdint.h and friends.  This leads to compile-time
+>    errors due to conflicting types.  We think that including headers from
+>    a glibc built for some host target is very questionable.  For example,
+>    in BPF a C `char' is defined to be signed.  But if a BPF program
+>    includes glibc headers in an android system, that code will assume an
+>    unsigned char instead.
+
+Currently clang side does not have compiler side bpf specific header so
+we do not have this issues. We do encourage users to use vmlinux.h, e.g.,
+for tracing programs, or for all kinds of programs using kfunc's
+where parameters likely being kernel structures. In the future, kfunc
+definitions are likely to be included in vmlinux.h itself.
+For selftests, we also slowly move to vmlinux.h.
+
 
