@@ -1,206 +1,306 @@
-Return-Path: <bpf+bounces-16187-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16188-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 295BB7FE096
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 20:57:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A219F7FE244
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 22:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD6A4B21169
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 19:57:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0382CB210CC
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 21:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D005EE7A;
-	Wed, 29 Nov 2023 19:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19EDA61687;
+	Wed, 29 Nov 2023 21:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DTovyUDe"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QNkQ707E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7034194
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:57:04 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54af2498e85so267259a12.0
-        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:57:04 -0800 (PST)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D74A98
+	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 13:46:34 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-5c604d8e6f5so219622a12.2
+        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 13:46:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701287823; x=1701892623; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l3gmxtg+/HLCBzmNCvOVfc0IlSQp/+6x3hv9R45IOxk=;
-        b=DTovyUDecrpU08OhUaP7CYjX8G0CBN+vwdngwjTCXyRjWwB8+Z066Wv5QgJKSCq4RI
-         EAjnWLtHleWLX6d3LDvQ8GwV/p3cKMm1UtY+HWTPG9bt98MPz4BNBIPgNhegjUKUs4pB
-         SW2lGET7/SDLMVx+gT5y1yIEu2ndbhyy9WPBznuex5lMEpU4K1378TYOg5D7WTCbZKDe
-         baSh5Sefd+MMQQmVznHCIjIttPSvlqQPnhtw/XmqmXg3tjvBDmzgP/X0X2uPBtDTZI/o
-         mJqL12iVALFV1btVB/5JsChX9Yenl4T/K8olPYgiJwbQeRtw3Nrfl7vZxj4nQ4YkfV5Q
-         Hxpg==
+        d=google.com; s=20230601; t=1701294393; x=1701899193; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RmPgJjUfKbWa+Er855UcJSrqjq1cQ/hlgSQV1H1avp8=;
+        b=QNkQ707E/jN1XznYIHUyYHLMMUUr3nulkmY/0b+eBQtVtiSKBYUjMZlNFVOktRwhI8
+         GZVKFuLgbG2dHbOLwQOWWECvufhLGmjoYP9EVVdhF4KFw8FitFTdB2PSEDW8DQacaPJg
+         9PA92t7KbZH99wLwtJGpVkmzgOqpmyURxSgIOf1wuYLzyF8O8OG9dS90novav6fvlMRU
+         Uvk2c6I+HOSUyjH5nNCrzQYVqiOmHulyNOdX1l+29Wis+LmYYIRwADkSMg5D7zVP+eB1
+         zqPrf3uW/iiy8SvR9zAy+epjQcgDbalEnQ7+jj/G4BFIrK8sM+VzxZiInDzBA//fuLTC
+         a6Xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701287823; x=1701892623;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l3gmxtg+/HLCBzmNCvOVfc0IlSQp/+6x3hv9R45IOxk=;
-        b=Jdn9BEY79bRVZhi33SyRzXleqPwvKjgyY9z/vLHASvJn4fgZ+JQn7pCI5fSzh/8/Yv
-         ulkCTRVW6b+sz2aJhWa2K3Anher8QbQEUqKJvHYBugfaS8LTlE9s90wn34OyfZtHxdbb
-         az2S9Qz0NXwJl5txhjz4pTo2HCXHV4FmdrIbSdeL5MDs/p0dErvu8v3JbvsPuqFv+FJs
-         cTG/LzgEFjii07nH9+UuZ18b8gma0NyPQxI1MpvNEWbt1ak7zGdhwn/m53eambhUqRUy
-         Siid0/1T+/dAdrFQOWwPaI4ZvU3ckhxH38b467Lh381UpKK9uK8nC7S0hgHGR4mK6nwV
-         0p5w==
-X-Gm-Message-State: AOJu0YykVR4m1WF2vkGJz4wN79fGWe7AOifsz95dl9U78RssCosm/XsW
-	9ezdFhDfa/0brBe8qi1xS7sSYyvl8n+zpw==
-X-Google-Smtp-Source: AGHT+IFAkpDqXzkLejwF12RflKJhu+bTbKTWMyq09wv7nPgkYno4l+Hjw4hSgruEmV8eRd14xrEzjQ==
-X-Received: by 2002:a17:906:2dd2:b0:9ce:24d0:8a01 with SMTP id h18-20020a1709062dd200b009ce24d08a01mr13714945eji.60.1701287823318;
-        Wed, 29 Nov 2023 11:57:03 -0800 (PST)
-Received: from erthalion.local (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
-        by smtp.gmail.com with ESMTPSA id p4-20020a170906b20400b009ddaf5ebb6fsm8287742ejz.177.2023.11.29.11.56.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 11:57:03 -0800 (PST)
-From: Dmitrii Dolgov <9erthalion6@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	dan.carpenter@linaro.org,
-	olsajiri@gmail.com,
-	Dmitrii Dolgov <9erthalion6@gmail.com>
-Subject: [PATCH bpf-next v4 3/3] bpf, selftest/bpf: Fix re-attachment branch in bpf_tracing_prog_attach
-Date: Wed, 29 Nov 2023 20:52:38 +0100
-Message-ID: <20231129195240.19091-4-9erthalion6@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231129195240.19091-1-9erthalion6@gmail.com>
-References: <20231129195240.19091-1-9erthalion6@gmail.com>
+        d=1e100.net; s=20230601; t=1701294393; x=1701899193;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RmPgJjUfKbWa+Er855UcJSrqjq1cQ/hlgSQV1H1avp8=;
+        b=audUQ3qWmlVUchu0PctETDvO9Dw5V8OP8oEk8RVPB547wjsbqqHEonV6LCfwS5uuN/
+         GIA4SlZgVpE7Bh18f3K+El1EOiwoFWvoxAXqCGVe17sbM3VOzEeaBMXO4lJe1BXfdhHb
+         gvLdcLtfRdngT5bvFfZKgCcI7XGPIkNHwDSInNEzD/uMHvZIY/jBD8/ug8y6WdnmRB81
+         R0lv10Em7LNVMda4VOE2P9mnvKKtxKfg6005z5idi0V7IBNxOujK2wkagIQlbP7/qH+u
+         w2NrifyRdcXUmD76kgusFj7FusMEH8z9KGqtzWJkhigmLcepqG/FCAwViRMFqwi51vIm
+         6MdQ==
+X-Gm-Message-State: AOJu0YzgFn39lPcbjtAAboYumnUN/c0fYYgstmdpSCnNh8b/tCp6sQl8
+	YIM7ICs3KY6kZOLjyGyKRGComv8=
+X-Google-Smtp-Source: AGHT+IFKZxbl8PTby1m1BJqUp4BpFOXctibSXmrTYbtne1CQZhCyhYUcTixDWDXC1EWaZLHdDdmGd80=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a63:4e52:0:b0:5c1:708f:7288 with SMTP id
+ o18-20020a634e52000000b005c1708f7288mr3401777pgl.1.1701294393350; Wed, 29 Nov
+ 2023 13:46:33 -0800 (PST)
+Date: Wed, 29 Nov 2023 13:46:31 -0800
+In-Reply-To: <20231129173312.31008-1-vadfed@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20231129173312.31008-1-vadfed@meta.com>
+Message-ID: <ZWexN5Uf8XbxYkC7@google.com>
+Subject: Re: [PATCH bpf-next v6 1/3] bpf: make common crypto API for TC/XDP programs
+From: Stanislav Fomichev <sdf@google.com>
+To: Vadim Fedorenko <vadfed@meta.com>
+Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>, Jakub Kicinski <kuba@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, netdev@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-It looks like there is an issue in bpf_tracing_prog_attach, in the
-"prog->aux->dst_trampoline and tgt_prog is NULL" case. One can construct
-a sequence of events when prog->aux->attach_btf will be NULL, and
-bpf_trampoline_compute_key will fail.
+On 11/29, Vadim Fedorenko wrote:
+> Add crypto API support to BPF to be able to decrypt or encrypt packets
+> in TC/XDP BPF programs. Special care should be taken for initialization
+> part of crypto algo because crypto alloc) doesn't work with preemtion
+> disabled, it can be run only in sleepable BPF program. Also async crypto
+> is not supported because of the very same issue - TC/XDP BPF programs
+> are not sleepable.
+> 
+> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+> 
+> ---
+> v5 -> v6:
+> - replace lskcipher with infrastructure to provide pluggable cipher
+>   types
+> - add BPF skcipher as plug-in module in a separate patch
+> v4 -> v5:
+> - replace crypto API to use lskcipher (suggested by Herbert Xu)
+> - remove SG list usage and provide raw buffers
+> v3 -> v4:
+> - reuse __bpf_dynptr_data and remove own implementation
+> - use const __str to provide algorithm name
+> - use kfunc macroses to avoid compilator warnings
+> v2 -> v3:
+> - fix kdoc issues
+> v1 -> v2:
+> - use kmalloc in sleepable func, suggested by Alexei
+> - use __bpf_dynptr_is_rdonly() to check destination, suggested by Jakub
+> - use __bpf_dynptr_data_ptr() for all dynptr accesses
+> ---
+>  include/linux/bpf.h        |   1 +
+>  include/linux/bpf_crypto.h |  23 +++
+>  kernel/bpf/Makefile        |   3 +
+>  kernel/bpf/crypto.c        | 364 +++++++++++++++++++++++++++++++++++++
+>  kernel/bpf/helpers.c       |   2 +-
+>  kernel/bpf/verifier.c      |   1 +
+>  6 files changed, 393 insertions(+), 1 deletion(-)
+>  create mode 100644 include/linux/bpf_crypto.h
+>  create mode 100644 kernel/bpf/crypto.c
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index eb447b0a9423..0143ff6c93a1 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1228,6 +1228,7 @@ int bpf_dynptr_check_size(u32 size);
+>  u32 __bpf_dynptr_size(const struct bpf_dynptr_kern *ptr);
+>  const void *__bpf_dynptr_data(const struct bpf_dynptr_kern *ptr, u32 len);
+>  void *__bpf_dynptr_data_rw(const struct bpf_dynptr_kern *ptr, u32 len);
+> +bool __bpf_dynptr_is_rdonly(const struct bpf_dynptr_kern *ptr);
+>  
+>  #ifdef CONFIG_BPF_JIT
+>  int bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr);
+> diff --git a/include/linux/bpf_crypto.h b/include/linux/bpf_crypto.h
+> new file mode 100644
+> index 000000000000..e81bd8ab979c
+> --- /dev/null
+> +++ b/include/linux/bpf_crypto.h
+> @@ -0,0 +1,23 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+> +#ifndef _BPF_CRYPTO_H
+> +#define _BPF_CRYPTO_H
+> +
+> +struct bpf_crypto_type {
+> +	void *(*alloc_tfm)(const char *algo);
+> +	void (*free_tfm)(void *tfm);
+> +	int (*has_algo)(const char *algo);
+> +	int (*setkey)(void *tfm, const u8 *key, unsigned int keylen);
+> +	int (*setauthsize)(void *tfm, unsigned int authsize);
+> +	int (*encrypt)(void *tfm, const u8 *src, u8 *dst, unsigned int len, u8 *iv);
+> +	int (*decrypt)(void *tfm, const u8 *src, u8 *dst, unsigned int len, u8 *iv);
+> +	unsigned int (*ivsize)(void *tfm);
+> +	u32 (*get_flags)(void *tfm);
+> +	struct module *owner;
+> +	char name[14];
+> +};
+> +
+> +int bpf_crypto_register_type(const struct bpf_crypto_type *type);
+> +int bpf_crypto_unregister_type(const struct bpf_crypto_type *type);
+> +
+> +#endif /* _BPF_CRYPTO_H */
+> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
+> index f526b7573e97..bcde762bb2c2 100644
+> --- a/kernel/bpf/Makefile
+> +++ b/kernel/bpf/Makefile
+> @@ -41,6 +41,9 @@ obj-$(CONFIG_BPF_SYSCALL) += bpf_struct_ops.o
+>  obj-$(CONFIG_BPF_SYSCALL) += cpumask.o
+>  obj-${CONFIG_BPF_LSM} += bpf_lsm.o
+>  endif
+> +ifeq ($(CONFIG_CRYPTO),y)
+> +obj-$(CONFIG_BPF_SYSCALL) += crypto.o
+> +endif
+>  obj-$(CONFIG_BPF_PRELOAD) += preload/
+>  
+>  obj-$(CONFIG_BPF_SYSCALL) += relo_core.o
+> diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
+> new file mode 100644
+> index 000000000000..46b4d263e472
+> --- /dev/null
+> +++ b/kernel/bpf/crypto.c
+> @@ -0,0 +1,364 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/* Copyright (c) 2023 Meta, Inc */
+> +#include <linux/bpf.h>
+> +#include <linux/bpf_crypto.h>
+> +#include <linux/bpf_mem_alloc.h>
+> +#include <linux/btf.h>
+> +#include <linux/btf_ids.h>
+> +#include <linux/filter.h>
+> +#include <linux/scatterlist.h>
+> +#include <linux/skbuff.h>
+> +#include <crypto/skcipher.h>
+> +
+> +struct bpf_crypto_type_list {
+> +	const struct bpf_crypto_type *type;
+> +	struct list_head list;
+> +};
+> +
+> +static LIST_HEAD(bpf_crypto_types);
+> +static DECLARE_RWSEM(bpf_crypto_types_sem);
+> +
+> +/**
+> + * struct bpf_crypto_ctx - refcounted BPF crypto context structure
+> + * @type:	The pointer to bpf crypto type
+> + * @tfm:	The pointer to instance of crypto API struct.
+> + * @rcu:	The RCU head used to free the crypto context with RCU safety.
+> + * @usage:	Object reference counter. When the refcount goes to 0, the
+> + *		memory is released back to the BPF allocator, which provides
+> + *		RCU safety.
+> + */
+> +struct bpf_crypto_ctx {
+> +	const struct bpf_crypto_type *type;
+> +	void *tfm;
+> +	struct rcu_head rcu;
+> +	refcount_t usage;
+> +};
+> +
+> +int bpf_crypto_register_type(const struct bpf_crypto_type *type)
+> +{
+> +	struct bpf_crypto_type_list *node;
+> +	int err = -EEXIST;
+> +
+> +	down_write(&bpf_crypto_types_sem);
+> +	list_for_each_entry(node, &bpf_crypto_types, list) {
+> +		if (!strcmp(node->type->name, type->name))
+> +			goto unlock;
+> +	}
+> +
+> +	node = kmalloc(sizeof(*node), GFP_KERNEL);
+> +	err = -ENOMEM;
+> +	if (!node)
+> +		goto unlock;
+> +
+> +	node->type = type;
+> +	list_add(&node->list, &bpf_crypto_types);
+> +	err = 0;
+> +
+> +unlock:
+> +	up_write(&bpf_crypto_types_sem);
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(bpf_crypto_register_type);
+> +
+> +int bpf_crypto_unregister_type(const struct bpf_crypto_type *type)
+> +{
+> +	struct bpf_crypto_type_list *node;
+> +	int err = -ENOENT;
+> +
+> +	down_write(&bpf_crypto_types_sem);
+> +	list_for_each_entry(node, &bpf_crypto_types, list) {
+> +		if (strcmp(node->type->name, type->name))
+> +			continue;
+> +
+> +		list_del(&node->list);
+> +		kfree(node);
+> +		err = 0;
+> +		break;
+> +	}
+> +	up_write(&bpf_crypto_types_sem);
+> +
+> +	return err;
+> +}
+> +EXPORT_SYMBOL_GPL(bpf_crypto_unregister_type);
+> +
+> +static const struct bpf_crypto_type *bpf_crypto_get_type(const char *name)
+> +{
+> +	const struct bpf_crypto_type *type = ERR_PTR(-ENOENT);
+> +	struct bpf_crypto_type_list *node;
+> +
+> +	down_read(&bpf_crypto_types_sem);
+> +	list_for_each_entry(node, &bpf_crypto_types, list) {
+> +		if (strcmp(node->type->name, name))
+> +			continue;
+> +
+> +		if (try_module_get(node->type->owner))
+> +			type = node->type;
+> +		break;
+> +	}
+> +	up_read(&bpf_crypto_types_sem);
+> +
+> +	return type;
+> +}
+> +
+> +__bpf_kfunc_start_defs();
+> +
+> +/**
+> + * bpf_crypto_ctx_create() - Create a mutable BPF crypto context.
+> + *
+> + * Allocates a crypto context that can be used, acquired, and released by
+> + * a BPF program. The crypto context returned by this function must either
+> + * be embedded in a map as a kptr, or freed with bpf_crypto_ctx_release().
+> + * As crypto API functions use GFP_KERNEL allocations, this function can
+> + * only be used in sleepable BPF programs.
+> + *
+> + * bpf_crypto_ctx_create() allocates memory for crypto context.
+> + * It may return NULL if no memory is available.
+> + * @type__str: pointer to string representation of crypto type.
+> + * @algo__str: pointer to string representation of algorithm.
+> + * @pkey:      bpf_dynptr which holds cipher key to do crypto.
+> + * @err:       integer to store error code when NULL is returned
+> + */
+> +__bpf_kfunc struct bpf_crypto_ctx *
+> +bpf_crypto_ctx_create(const char *type__str, const char *algo__str,
+> +		      const struct bpf_dynptr_kern *pkey,
+> +		      unsigned int authsize, int *err)
+> +{
+> +	const struct bpf_crypto_type *type = bpf_crypto_get_type(type__str);
+> +	struct bpf_crypto_ctx *ctx;
+> +	const u8 *key;
+> +	u32 key_len;
+> +
+> +	//type = bpf_crypto_get_type(type__str);
 
-    BUG: kernel NULL pointer dereference, address: 0000000000000058
-    Call Trace:
-     <TASK>
-     ? __die+0x20/0x70
-     ? page_fault_oops+0x15b/0x430
-     ? fixup_exception+0x22/0x330
-     ? exc_page_fault+0x6f/0x170
-     ? asm_exc_page_fault+0x22/0x30
-     ? bpf_tracing_prog_attach+0x279/0x560
-     ? btf_obj_id+0x5/0x10
-     bpf_tracing_prog_attach+0x439/0x560
-     __sys_bpf+0x1cf4/0x2de0
-     __x64_sys_bpf+0x1c/0x30
-     do_syscall_64+0x41/0xf0
-     entry_SYSCALL_64_after_hwframe+0x6e/0x76
-
-The issue seems to be not relevant to the previous changes with
-recursive tracing prog attach, because the reproducing test doesn't
-actually include recursive fentry attaching.
-
-Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
----
- kernel/bpf/syscall.c                          |  4 +-
- .../bpf/prog_tests/recursive_attach.c         | 48 +++++++++++++++++++
- .../bpf/progs/fentry_recursive_target.c       | 11 +++++
- 3 files changed, 62 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a595d7a62dbc..e01a949dfed7 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -3197,7 +3197,9 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
- 			goto out_unlock;
- 		}
- 		btf_id = prog->aux->attach_btf_id;
--		key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf, btf_id);
-+		if (prog->aux->attach_btf)
-+			key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
-+											 btf_id);
- 	}
- 
- 	if (!prog->aux->dst_trampoline ||
-diff --git a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-index 9c422dd92c4e..a4abf1745e62 100644
---- a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-@@ -83,3 +83,51 @@ void test_recursive_fentry_attach(void)
- 			fentry_recursive__destroy(tracing_chain[i]);
- 	}
- }
-+
-+/*
-+ * Test that a tracing prog reattachment (when we land in
-+ * "prog->aux->dst_trampoline and tgt_prog is NULL" branch in
-+ * bpf_tracing_prog_attach) does not lead to a crash due to missing attach_btf
-+ */
-+void test_fentry_attach_btf_presence(void)
-+{
-+	struct fentry_recursive_target *target_skel = NULL;
-+	struct fentry_recursive *tracing_skel = NULL;
-+	struct bpf_program *prog;
-+	int err, link_fd, tgt_prog_fd;
-+
-+	target_skel = fentry_recursive_target__open_and_load();
-+	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
-+		goto close_prog;
-+
-+	tracing_skel = fentry_recursive__open();
-+	if (!ASSERT_OK_PTR(tracing_skel, "fentry_recursive__open"))
-+		goto close_prog;
-+
-+	prog = tracing_skel->progs.recursive_attach;
-+	tgt_prog_fd = bpf_program__fd(target_skel->progs.fentry_target);
-+	err = bpf_program__set_attach_target(prog, tgt_prog_fd, "fentry_target");
-+	if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
-+		goto close_prog;
-+
-+	err = fentry_recursive__load(tracing_skel);
-+	if (!ASSERT_OK(err, "fentry_recursive__load"))
-+		goto close_prog;
-+
-+	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-+
-+	link_fd = bpf_link_create(bpf_program__fd(tracing_skel->progs.recursive_attach),
-+							  0, BPF_TRACE_FENTRY, &link_opts);
-+	if (!ASSERT_GE(link_fd, 0, "link_fd"))
-+		goto close_prog;
-+
-+	fentry_recursive__detach(tracing_skel);
-+
-+	err = fentry_recursive__attach(tracing_skel);
-+	if (!ASSERT_ERR(err, "fentry_recursive__attach"))
-+		goto close_prog;
-+
-+close_prog:
-+	fentry_recursive_target__destroy(target_skel);
-+	fentry_recursive__destroy(tracing_skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-index b6fb8ebd598d..f812d2de0c3c 100644
---- a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-+++ b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-@@ -18,3 +18,14 @@ int BPF_PROG(test1, int a)
- 	test1_result = a == 1;
- 	return 0;
- }
-+
-+/*
-+ * Dummy bpf prog for testing attach_btf presence when attaching an fentry
-+ * program.
-+ */
-+SEC("raw_tp/sys_enter")
-+int BPF_PROG(fentry_target, struct pt_regs *regs, long id)
-+{
-+	test1_result = id == 1;
-+	return 0;
-+}
--- 
-2.41.0
-
+Passing by comment: the line above probably shouldn't start with // ?
 
