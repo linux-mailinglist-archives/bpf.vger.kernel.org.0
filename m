@@ -1,142 +1,133 @@
-Return-Path: <bpf+bounces-16174-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16175-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 797E47FDEA5
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 18:45:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B72147FDEDD
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 18:50:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E83A9B2101A
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 17:45:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E787A1C20A1A
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 17:50:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEAC058AD8;
-	Wed, 29 Nov 2023 17:45:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CB195B5BE;
+	Wed, 29 Nov 2023 17:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dL7RL8Lx"
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="fhIsZVEC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B5495
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 09:45:03 -0800 (PST)
-Message-ID: <814656bd-ba11-44aa-8340-f1f990c3e3e7@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701279901;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a/rnhEN1gQN9HveusTrX/t0+mKd3c3pXR2LpMK1RLoY=;
-	b=dL7RL8LxZ1AfBQVZYgBz+Q52eEz5nzgJozTBL6cmaHCZzAWOnggUpZhhLlSvtraqPOFOVs
-	TCMuM4cNnPDFBpv53O2GEw5MNk97GkTN41jK/O8GSEKMCeWuJ8Ma3ptnudBnDXrU481A6P
-	ufdO43xX0Y0PTKPJS8LeENhFoT1HYRE=
-Date: Wed, 29 Nov 2023 09:44:55 -0800
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520CDB9;
+	Wed, 29 Nov 2023 09:50:02 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id D1065100013;
+	Wed, 29 Nov 2023 20:50:00 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru D1065100013
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1701280200;
+	bh=w/vcxLuvL4bYagE3sFg1qmNDtBHSFkm5vrXEEsp+H3A=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=fhIsZVECVT80mvBztgePCDfDhnH+BNC6Ph0ZibOZCiHrvrrF7yXGq9OPCKpNxuYPt
+	 HpAeyiPcAtM3aIVzuROEdv/GEupZj6aP7EVVePikDiQmIZpx8gmZriMc7SHd8vN0ui
+	 aktKWyegsMXKP9wbygusgf7xvLlnzytfFWXEFlbdkYjEhXj0g/r4nUOgRmSwWh888b
+	 ZD3/G4+9h+Myo+gurPyv5qnxF9zWxK1QFUWxamfwPOh6V7lCXOh3hnr0YjJZGP+x+R
+	 8gLvZXLAbIK6dJb4L+8vVhIc/fwopcId2tyna5vRGISffHN03LDElBh4KeYshupH8T
+	 KxHJPeeB9ofCw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Wed, 29 Nov 2023 20:49:59 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m01.sberdevices.ru
+ (172.16.192.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Wed, 29 Nov
+ 2023 20:49:59 +0300
+Date: Wed, 29 Nov 2023 20:49:54 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+CC: Michal Hocko <mhocko@suse.com>, <rostedt@goodmis.org>,
+	<mhiramat@kernel.org>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>,
+	<shakeelb@google.com>, <muchun.song@linux.dev>, <kernel@sberdevices.ru>,
+	<rockosov@gmail.com>, <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <20231129174954.bmujk37cufq37oyp@CAB-WSD-L081021>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+ <ZWWzwhWnW1_iX0FP@tiehlicka>
+ <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
+ <20231129093341.02605a16142fc3e04384c52e@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: BPF GCC status - Nov 2023
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf <bpf@vger.kernel.org>
-References: <87leahx2xh.fsf@oracle.com>
- <3733942b-f0ef-4e71-8c49-aa4177e9433c@linux.dev> <87jzq1t4sk.fsf@oracle.com>
- <a1073bd0-9df2-4a9e-900c-7e8ac63ac464@linux.dev>
- <CAADnVQJjQDQBNHZzpuBZfQdfeqGSX9_Y106PDgiY=bi-S0Wsqw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQJjQDQBNHZzpuBZfQdfeqGSX9_Y106PDgiY=bi-S0Wsqw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231129093341.02605a16142fc3e04384c52e@linux-foundation.org>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181709 [Nov 29 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 5 0.3.5 98d108ddd984cca1d7e65e595eac546a62b0144b, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/29 16:31:00 #22572963
+X-KSMG-AntiVirus-Status: Clean, skipped
 
+On Wed, Nov 29, 2023 at 09:33:41AM -0800, Andrew Morton wrote:
+> On Wed, 29 Nov 2023 18:20:57 +0300 Dmitry Rokosov <ddrokosov@salutedevices.com> wrote:
+> 
+> > Okay, I will try to prepare a new patch version with memcg printing from
+> > lruvec and slab tracepoints.
+> > 
+> > Then Andrew should drop the previous patchsets, I suppose. Please advise
+> > on the correct workflow steps here.
+> 
+> This series is present in mm.git's mm-unstable branch.  Note
+> "unstable".  So dropping the v3 series and merging v4 is totally not a
+> problem.  It's why this branch exists - it's daily rebasing, in high
+> flux.
+> 
+> When a patchset is considered stabilized and ready, I'll move it into
+> the mm-stable branch, which is (supposed to be) the non-rebasing tree
+> for next merge window.
+> 
+> If you have small fixes then I prefer little fixup patches against what
+> is presently in mm-unstable.
+> 
+> If you send replacement patches then no problem, I'll check to see
+> whether I should turn them into little fixup deltas.
+> 
+> I prefer little fixups so that people can see what has changed, so I
+> can see which review/test issues were addressed and so that people
+> don't feel a need to re-review the whole patchset.
+> 
+> If generation of little fixups is impractical, I'll drop the old series
+> entirely and I'll merge the new one.
+> 
+> Each case is a judgement call, please send whatever you think makes
+> most sense given the above.
 
-On 11/29/23 12:01 PM, Alexei Starovoitov wrote:
-> On Wed, Nov 29, 2023 at 8:44 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->>
->> On 11/29/23 2:08 AM, Jose E. Marchesi wrote:
->>>> On 11/28/23 11:23 AM, Jose E. Marchesi wrote:
->>>>> [During LPC 2023 we talked about improving communication between the GCC
->>>>>     BPF toolchain port and the kernel side.  This is the first periodical
->>>>>     report that we plan to publish in the GCC wiki and send to interested
->>>>>     parties.  Hopefully this will help.]
->>>>>
->>>>> GCC wiki page for the port: https://gcc.gnu.org/wiki/BPFBackEnd
->>>>> IRC channel: #gccbpf at irc.oftc.net.
->>>>> Help on using the port: gcc@gcc.gnu.org
->>>>> Patches and/or development discussions: gcc-patches@gnu.org
->>>> Thanks a lot for detailed report. Really helpful to nail down
->>>> issues facing one or both compilers. See comments below for
->>>> some mentioned issues.
->>>>
->>>>> Assembler
->>>>> =========
->>>> [...]
->>>>
->>>>> - In the Pseudo-C syntax register names are not preceded by % characters
->>>>>      nor any other prefix.  A consequence of that is that in contexts like
->>>>>      instruction operands, where both register names and expressions
->>>>>      involving symbols are expected, there is no way to disambiguate
->>>>>      between them.  GAS was allowing symbols like `w3' or `r5' in syntactic
->>>>>      contexts where no registers were expected, such as in:
->>>>>
->>>>>        r0 = w3 ll  ; GAS interpreted w3 as symbol, clang emits error
->>>>>
->>>>>      The clang assembler wasn't allowing that.  During LPC we agreed that
->>>>>      the simplest approach is to not allow any symbol to have the same name
->>>>>      than a register, in any context.  So we changed GAS so it now doesn't
->>>>>      allow to use register names as symbols in any expression, such as:
->>>>>
->>>>>        r0 = w3 + 1 ll  ; This now fails for both GAS and llvm.
->>>>>        r0 = 1 + w3 ll  ; NOTE this does not fail with llvm, but it should.
->>>> Could you provide a reproducible case above for llvm? llvm does not
->>>> support syntax like 'r0 = 1 + w3 ll'. For add, it only supports
->>>> 'r1 += r2' or 'r1 += 100' syntax.
->>> It is a 128-bit load with an expression.  In compiler explorer, clang:
->>>
->>>     int
->>>     foo ()
->>>     {
->>>       asm volatile ("r1 = 10 + w3 ll");
->>>       return 0;
->>>     }
->>>
->>> I get:
->>>
->>>     foo:                                    # @foo
->>>             r1 = 10+w3 ll
->>>             r0 = 0
->>>             exit
->>>
->>> i.e. `10 + w3' is interpreted as an expression with two operands: the
->>> literal number 10 and a symbol (not a register) `w3'.
->>>
->>> If the expression is `w3+10' instead, your parser recognizes the w3 as a
->>> register name and errors out, as expected.
->>>
->>> I suppose llvm allows to hook on the expression parser to handle
->>> individual operands.  That's how we handled this in GAS.
->> Thanks for the code. I can reproduce the result with compiler explorer.
->> The following is the link https://godbolt.org/z/GEGexf1Pj
->> where I added -grecord-gcc-switches to dump compilation flags
->> into .s file.
->>
->> The following is the compiler explorer compilation command line:
->> /opt/compiler-explorer/clang-trunk-20231129/bin/clang-18 -g -o /app/output.s \
->>     -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 \
->>     -g -grecord-command-line /app/example.c
->>
->> I then compile the above C code with
->>     clang -g -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 -g -grecord-command-line t.c
->> with identical flags.
->>
->> I tried locally with llvm16/17/18. They all failed compilation since
->> 'r1 = 10+w3 ll' cannot be recognized by the llvm.
->> We will investigate why llvm18 in compiler explorer compiles
->> differently from my local build.
-> Is that a different issue from:
-> https://github.com/compiler-explorer/compiler-explorer/issues/5701
-> ?
-Yes, it is a different one. I verified that the issue #5701 has been fixed.
+Thank you for the detailed explanation! It is now completely clear to
+me! I will be sending the new patch series soon.
+
+-- 
+Thank you,
+Dmitry
 
