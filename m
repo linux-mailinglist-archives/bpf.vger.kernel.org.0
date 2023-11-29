@@ -1,129 +1,172 @@
-Return-Path: <bpf+bounces-16194-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A3047FE438
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 00:42:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C854E7FE43A
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 00:44:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 274DD2823A9
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 23:42:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83FFC28238D
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 23:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC0447A5D;
-	Wed, 29 Nov 2023 23:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1F247A62;
+	Wed, 29 Nov 2023 23:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a857CSBt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IXLEwFJ/"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1244BD
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 15:42:30 -0800 (PST)
-Message-ID: <a5a38b31-8089-4fd9-b515-1be98226d140@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701301349;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AegibG3n3UiWdQIGK3pVKNHZIaO4zJQkqAOkhQVKHDM=;
-	b=a857CSBt0MC/SBA2we005vCPDtr0Wcnkv/bhzp13eeGsZ/vCZp4UGJHXpzjtdBsfLFZCta
-	xzpcp1pNjPKkjyBCwrFyWGTdIBsrgspgxWWLvQzwEFnppH/R/X68bmSKr/jE6TB5XFD9zn
-	xqXF571JoPz0NtLSnWUG6KpHDp33lhM=
-Date: Wed, 29 Nov 2023 15:42:22 -0800
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959654CB33;
+	Wed, 29 Nov 2023 23:44:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A61ADC433C8;
+	Wed, 29 Nov 2023 23:44:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701301466;
+	bh=CcEO7YNSYuxPBMvFIa6ONPKbf+zpneW4HNRhzxmoH5c=;
+	h=From:To:Cc:Subject:Date:From;
+	b=IXLEwFJ/44zyHlOzc45h/mjiYkURlcO6yxc2snQjyOv6QJIayDWnOS0X38ZH94hPF
+	 X0yXjZBXYmzfUnArytNE9B1bxMEiA4/lwfqj1ve/cGFjBl6sCS6eoVG+MWPUUtdk2o
+	 hfdLS2/iojaO2IzmKyzOVooXnVxuou9nO5iCexcrT9CxQKCoeCw7rGefNNTYChiKCS
+	 Eda/4CxiJ/ffpTNJvPV1QuGTk9ZIMUfwNYOWB29GwBdlUZ0QGSM31pjjPMm4NZxG8N
+	 Q6GN9ymFLmFkYsGfamAeC1q4eJSH8gVahoA7dfyo7q6qzrb4ywphI6mMTxsIE0GT2L
+	 Z99Nmt46y6Iwg==
+From: Song Liu <song@kernel.org>
+To: bpf@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	fsverity@lists.linux.dev
+Cc: ebiggers@kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	brauner@kernel.org,
+	viro@zeniv.linux.org.uk,
+	casey@schaufler-ca.com,
+	amir73il@gmail.com,
+	kpsingh@kernel.org,
+	roberto.sassu@huawei.com,
+	kernel-team@meta.com,
+	Song Liu <song@kernel.org>
+Subject: [PATCH v15 bpf-next 0/6] bpf: File verification with LSM and fsverity
+Date: Wed, 29 Nov 2023 15:44:11 -0800
+Message-Id: <20231129234417.856536-1-song@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf] bpf: Fix a verifier bug due to incorrect branch
- offset comparison with cpu=v4
-Content-Language: en-GB
-To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231129075409.2709587-1-yonghong.song@linux.dev>
- <470e1b48-fea7-3f3d-b840-cc0613a930b0@iogearbox.net>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <470e1b48-fea7-3f3d-b840-cc0613a930b0@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+Changes v14 => v15:
+1. Fix selftest build without CONFIG_FS_VERITY. (Alexei)
+2. Add Acked-by from KP.
 
-On 11/29/23 5:51 PM, Daniel Borkmann wrote:
-> On 11/29/23 8:54 AM, Yonghong Song wrote:
->> Bpf cpu=v4 support is introduced in [1] and Commit 4cd58e9af8b9
->> ("bpf: Support new 32bit offset jmp instruction") added support for new
->> 32bit offset jmp instruction. Unfortunately, in function
->> bpf_adj_delta_to_off(), for new branch insn with 32bit offset, the 
->> offset
->> (plus/minor a small delta) compares to 16-bit offset bound
->> [S16_MIN, S16_MAX], which caused the following verification failure:
->>    $ ./test_progs-cpuv4 -t verif_scale_pyperf180
->>    ...
->>    insn 10 cannot be patched due to 16-bit range
->>    ...
->>    libbpf: failed to load object 'pyperf180.bpf.o'
->>    scale_test:FAIL:expect_success unexpected error: -12 (errno 12)
->>    #405     verif_scale_pyperf180:FAIL
->>
->> Note that due to recent llvm18 development, the patch [2] (already 
->> applied
->> in bpf-next) needs to be applied to bpf tree for testing purpose.
->>
->> The fix is rather simple. For 32bit offset branch insn, the adjusted
->> offset compares to [S32_MIN, S32_MAX] and then verification succeeded.
->>
->>    [1] 
->> https://lore.kernel.org/all/20230728011143.3710005-1-yonghong.song@linux.dev
->>    [2] 
->> https://lore.kernel.org/bpf/20231110193644.3130906-1-yonghong.song@linux.dev
->>
->> Fixes: 4cd58e9af8b9 ("bpf: Support new 32bit offset jmp instruction")
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>   kernel/bpf/core.c | 9 ++++++---
->>   1 file changed, 6 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->> index cd3afe57ece3..74f2fd48148c 100644
->> --- a/kernel/bpf/core.c
->> +++ b/kernel/bpf/core.c
->> @@ -371,14 +371,17 @@ static int bpf_adj_delta_to_imm(struct bpf_insn 
->> *insn, u32 pos, s32 end_old,
->>   static int bpf_adj_delta_to_off(struct bpf_insn *insn, u32 pos, s32 
->> end_old,
->>                   s32 end_new, s32 curr, const bool probe_pass)
->>   {
->> -    const s32 off_min = S16_MIN, off_max = S16_MAX;
->> +    s32 off_min = S16_MIN, off_max = S16_MAX;
->>       s32 delta = end_new - end_old;
->>       s32 off;
->
-> These should all be converted to s64, no? E.g. further below
-> the test will never trigger then for jmp32:
->
->        if (off < off_min || off > off_max)
->                 return -ERANGE;
+Changes v13 => v14:
+1. Add "static" for bpf_fs_kfunc_set.
+2. Add Acked-by from Christian Brauner.
 
+Changes v12 => v13:
+1. Only keep 4/9 through 9/9 of v12, as the first 3 patches already
+   applied;
+2. Use new macro __bpf_kfunc_[start|end]_defs().
 
-good point! Let us use s64 for potential overflows.
-Will send v2 soon.
+Changes v11 => v12:
+1. Fix typo (data_ptr => sig_ptr) in bpf_get_file_xattr().
 
->
->> -    if (insn->code == (BPF_JMP32 | BPF_JA))
->> +    if (insn->code == (BPF_JMP32 | BPF_JA)) {
->>           off = insn->imm;
->> -    else
->> +        off_min = S32_MIN;
->> +        off_max = S32_MAX;
->> +    } else {
->>           off = insn->off;
->> +    }
->>         if (curr < pos && curr + off + 1 >= end_old)
->>           off += delta;
->>
->
+Changes v10 => v11:
+1. Let __bpf_dynptr_data() return const void *. (Andrii)
+2. Optimize code to reuse output from __bpf_dynptr_size(). (Andrii)
+3. Add __diag_ignore_all("-Wmissing-declarations") for kfunc definition.
+4. Fix an off indentation. (Andrii)
+
+Changes v9 => v10:
+1. Remove WARN_ON_ONCE() from check_reg_const_str. (Alexei)
+
+Changes v8 => v9:
+1. Fix test_progs kfunc_dynptr_param/dynptr_data_null.
+
+Changes v7 => v8:
+1. Do not use bpf_dynptr_slice* in the kernel. Add __bpf_dynptr_data* and
+   use them in ther kernel. (Andrii)
+
+Changes v6 => v7:
+1. Change "__const_str" annotation to "__str". (Alexei, Andrii)
+2. Add KF_TRUSTED_ARGS flag for both new kfuncs. (KP)
+3. Only allow bpf_get_file_xattr() to read xattr with "user." prefix.
+4. Add Acked-by from Eric Biggers.
+
+Changes v5 => v6:
+1. Let fsverity_init_bpf() return void. (Eric Biggers)
+2. Sort things in alphabetic orders. (Eric Biggers)
+
+Changes v4 => v5:
+1. Revise commit logs. (Alexei)
+
+Changes v3 => v4:
+1. Fix error reported by CI.
+2. Update comments of bpf_dynptr_slice* that they may return error pointer.
+
+Changes v2 => v3:
+1. Rebase and resolve conflicts.
+
+Changes v1 => v2:
+1. Let bpf_get_file_xattr() use const string for arg "name". (Alexei)
+2. Add recursion prevention with allowlist. (Alexei)
+3. Let bpf_get_file_xattr() use __vfs_getxattr() to avoid recursion,
+   as vfs_getxattr() calls into other LSM hooks.
+4. Do not use dynptr->data directly, use helper insteadd. (Andrii)
+5. Fixes with bpf_get_fsverity_digest. (Eric Biggers)
+6. Add documentation. (Eric Biggers)
+7. Fix some compile warnings. (kernel test robot)
+
+This set enables file verification with BPF LSM and fsverity.
+
+In this solution, fsverity is used to provide reliable and efficient hash
+of files; and BPF LSM is used to implement signature verification (against
+asymmetric keys), and to enforce access control.
+
+This solution can be used to implement access control in complicated cases.
+For example: only signed python binary and signed python script and access
+special files/devices/ports.
+
+Thanks,
+Song
+
+Song Liu (6):
+  bpf: Add kfunc bpf_get_file_xattr
+  bpf, fsverity: Add kfunc bpf_get_fsverity_digest
+  Documentation/bpf: Add documentation for filesystem kfuncs
+  selftests/bpf: Sort config in alphabetic order
+  selftests/bpf: Add tests for filesystem kfuncs
+  selftests/bpf: Add test that uses fsverity and xattr to sign a file
+
+ Documentation/bpf/fs_kfuncs.rst               |  21 +++
+ Documentation/bpf/index.rst                   |   1 +
+ fs/verity/fsverity_private.h                  |  10 ++
+ fs/verity/init.c                              |   1 +
+ fs/verity/measure.c                           |  84 +++++++++
+ kernel/trace/bpf_trace.c                      |  67 +++++++
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  10 ++
+ tools/testing/selftests/bpf/config            |   3 +-
+ .../selftests/bpf/prog_tests/fs_kfuncs.c      | 134 ++++++++++++++
+ .../bpf/prog_tests/verify_pkcs7_sig.c         | 165 +++++++++++++++++-
+ .../selftests/bpf/progs/test_fsverity.c       |  48 +++++
+ .../selftests/bpf/progs/test_get_xattr.c      |  37 ++++
+ .../selftests/bpf/progs/test_sig_in_xattr.c   |  83 +++++++++
+ .../bpf/progs/test_verify_pkcs7_sig.c         |   8 +-
+ .../testing/selftests/bpf/verify_sig_setup.sh |  25 +++
+ 15 files changed, 688 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/bpf/fs_kfuncs.rst
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/fs_kfuncs.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_fsverity.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_get_xattr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_sig_in_xattr.c
+
+--
+2.34.1
 
