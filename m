@@ -1,112 +1,129 @@
-Return-Path: <bpf+bounces-16193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16194-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C023A7FE40B
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 00:10:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A3047FE438
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 00:42:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F20E21C2094B
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 23:10:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 274DD2823A9
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 23:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D50247A56;
-	Wed, 29 Nov 2023 23:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC0447A5D;
+	Wed, 29 Nov 2023 23:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zw7SoYcK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a857CSBt"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1C5C46B92;
-	Wed, 29 Nov 2023 23:10:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D9FFC433CA;
-	Wed, 29 Nov 2023 23:10:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701299427;
-	bh=rXWWdIwNwFR58FE7bBu6UPEyak7iQY9m/qfQbZm1gL4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Zw7SoYcKgvwjdvTT1EtRzHJMgI0Fu+o/xFcBsX70ecJYts+/rn+uYfFQ/KEEisNP5
-	 oOXhRBt6so2QG6kxRum9mBUfItCp8khDERQxiqvKUN2TgdZlw+Iu18RLQ/J4gUGkRw
-	 Sgk5hlFd7ovsDtpAUgOq7vjYSriwZyM/LwGhuXOH+/S6BYwZG1aWg3kQ/k8oVxRwTz
-	 B728gPzA+ds+W+oiTOdSR+imJ5QoDbXk/PgoFJ29ptT8VsKQ+hdZWQXuYxRkttC6E7
-	 RvOG7a+xbZ079pgyvnih1pjoIG4Bc9PVnJGZ0B1g8XcIGxUpX9pLCCQuTdMNZd3YRr
-	 BKXQ5dgBtcKIw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4388EDFAA84;
-	Wed, 29 Nov 2023 23:10:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b4])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1244BD
+	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 15:42:30 -0800 (PST)
+Message-ID: <a5a38b31-8089-4fd9-b515-1be98226d140@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701301349;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AegibG3n3UiWdQIGK3pVKNHZIaO4zJQkqAOkhQVKHDM=;
+	b=a857CSBt0MC/SBA2we005vCPDtr0Wcnkv/bhzp13eeGsZ/vCZp4UGJHXpzjtdBsfLFZCta
+	xzpcp1pNjPKkjyBCwrFyWGTdIBsrgspgxWWLvQzwEFnppH/R/X68bmSKr/jE6TB5XFD9zn
+	xqXF571JoPz0NtLSnWUG6KpHDp33lhM=
+Date: Wed, 29 Nov 2023 15:42:22 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Subject: Re: [PATCH bpf] bpf: Fix a verifier bug due to incorrect branch
+ offset comparison with cpu=v4
+Content-Language: en-GB
+To: Daniel Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231129075409.2709587-1-yonghong.song@linux.dev>
+ <470e1b48-fea7-3f3d-b840-cc0613a930b0@iogearbox.net>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <470e1b48-fea7-3f3d-b840-cc0613a930b0@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 00/13] xsk: TX metadata
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170129942727.25575.2476044025307341580.git-patchwork-notify@kernel.org>
-Date: Wed, 29 Nov 2023 23:10:27 +0000
-References: <20231127190319.1190813-1-sdf@google.com>
-In-Reply-To: <20231127190319.1190813-1-sdf@google.com>
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
- jolsa@kernel.org, kuba@kernel.org, toke@kernel.org, willemb@google.com,
- dsahern@kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
- maciej.fijalkowski@intel.com, hawk@kernel.org, yoong.siang.song@intel.com,
- netdev@vger.kernel.org, xdp-hints@xdp-project.net
-
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Mon, 27 Nov 2023 11:03:06 -0800 you wrote:
-> This series implements initial TX metadata (offloads) for AF_XDP.
-> See patch #2 for the main implementation and mlx5/stmmac ones for the
-> example on how to consume the metadata on the device side.
-> 
-> Starting with two types of offloads:
-> - request TX timestamp (and write it back into the metadata area)
-> - request TX checksum offload
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next,v6,01/13] xsk: Support tx_metadata_len
-    https://git.kernel.org/bpf/bpf-next/c/341ac980eab9
-  - [bpf-next,v6,02/13] xsk: Add TX timestamp and TX checksum offload support
-    https://git.kernel.org/bpf/bpf-next/c/48eb03dd2630
-  - [bpf-next,v6,03/13] tools: ynl: Print xsk-features from the sample
-    https://git.kernel.org/bpf/bpf-next/c/9276009d35d3
-  - [bpf-next,v6,04/13] net/mlx5e: Implement AF_XDP TX timestamp and checksum offload
-    https://git.kernel.org/bpf/bpf-next/c/ec706a860eba
-  - [bpf-next,v6,05/13] net: stmmac: Add Tx HWTS support to XDP ZC
-    https://git.kernel.org/bpf/bpf-next/c/1347b419318d
-  - [bpf-next,v6,06/13] xsk: Document tx_metadata_len layout
-    https://git.kernel.org/bpf/bpf-next/c/9620e956d5b5
-  - [bpf-next,v6,07/13] xsk: Validate xsk_tx_metadata flags
-    https://git.kernel.org/bpf/bpf-next/c/ce59f9686e0e
-  - [bpf-next,v6,08/13] xsk: Add option to calculate TX checksum in SW
-    https://git.kernel.org/bpf/bpf-next/c/11614723af26
-  - [bpf-next,v6,09/13] selftests/xsk: Support tx_metadata_len
-    https://git.kernel.org/bpf/bpf-next/c/df3ed0003ec4
-  - [bpf-next,v6,10/13] selftests/bpf: Add csum helpers
-    https://git.kernel.org/bpf/bpf-next/c/f6642de0c3e9
-  - [bpf-next,v6,11/13] selftests/bpf: Add TX side to xdp_metadata
-    https://git.kernel.org/bpf/bpf-next/c/40808a237d9c
-  - [bpf-next,v6,12/13] selftests/bpf: Convert xdp_hw_metadata to XDP_USE_NEED_WAKEUP
-    https://git.kernel.org/bpf/bpf-next/c/12b4b7963d3c
-  - [bpf-next,v6,13/13] selftests/bpf: Add TX side to xdp_hw_metadata
-    https://git.kernel.org/bpf/bpf-next/c/60523115c1b1
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+X-Migadu-Flow: FLOW_OUT
 
 
+On 11/29/23 5:51 PM, Daniel Borkmann wrote:
+> On 11/29/23 8:54 AM, Yonghong Song wrote:
+>> Bpf cpu=v4 support is introduced in [1] and Commit 4cd58e9af8b9
+>> ("bpf: Support new 32bit offset jmp instruction") added support for new
+>> 32bit offset jmp instruction. Unfortunately, in function
+>> bpf_adj_delta_to_off(), for new branch insn with 32bit offset, the 
+>> offset
+>> (plus/minor a small delta) compares to 16-bit offset bound
+>> [S16_MIN, S16_MAX], which caused the following verification failure:
+>>    $ ./test_progs-cpuv4 -t verif_scale_pyperf180
+>>    ...
+>>    insn 10 cannot be patched due to 16-bit range
+>>    ...
+>>    libbpf: failed to load object 'pyperf180.bpf.o'
+>>    scale_test:FAIL:expect_success unexpected error: -12 (errno 12)
+>>    #405     verif_scale_pyperf180:FAIL
+>>
+>> Note that due to recent llvm18 development, the patch [2] (already 
+>> applied
+>> in bpf-next) needs to be applied to bpf tree for testing purpose.
+>>
+>> The fix is rather simple. For 32bit offset branch insn, the adjusted
+>> offset compares to [S32_MIN, S32_MAX] and then verification succeeded.
+>>
+>>    [1] 
+>> https://lore.kernel.org/all/20230728011143.3710005-1-yonghong.song@linux.dev
+>>    [2] 
+>> https://lore.kernel.org/bpf/20231110193644.3130906-1-yonghong.song@linux.dev
+>>
+>> Fixes: 4cd58e9af8b9 ("bpf: Support new 32bit offset jmp instruction")
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   kernel/bpf/core.c | 9 ++++++---
+>>   1 file changed, 6 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index cd3afe57ece3..74f2fd48148c 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -371,14 +371,17 @@ static int bpf_adj_delta_to_imm(struct bpf_insn 
+>> *insn, u32 pos, s32 end_old,
+>>   static int bpf_adj_delta_to_off(struct bpf_insn *insn, u32 pos, s32 
+>> end_old,
+>>                   s32 end_new, s32 curr, const bool probe_pass)
+>>   {
+>> -    const s32 off_min = S16_MIN, off_max = S16_MAX;
+>> +    s32 off_min = S16_MIN, off_max = S16_MAX;
+>>       s32 delta = end_new - end_old;
+>>       s32 off;
+>
+> These should all be converted to s64, no? E.g. further below
+> the test will never trigger then for jmp32:
+>
+>        if (off < off_min || off > off_max)
+>                 return -ERANGE;
+
+
+good point! Let us use s64 for potential overflows.
+Will send v2 soon.
+
+>
+>> -    if (insn->code == (BPF_JMP32 | BPF_JA))
+>> +    if (insn->code == (BPF_JMP32 | BPF_JA)) {
+>>           off = insn->imm;
+>> -    else
+>> +        off_min = S32_MIN;
+>> +        off_max = S32_MAX;
+>> +    } else {
+>>           off = insn->off;
+>> +    }
+>>         if (curr < pos && curr + off + 1 >= end_old)
+>>           off += delta;
+>>
+>
 
