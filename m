@@ -1,87 +1,170 @@
-Return-Path: <bpf+bounces-16154-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16155-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D2E7FDC2E
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 17:06:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 249027FDC33
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 17:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C70942825EE
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 16:06:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53A661C20944
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 16:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA8F39AC0;
-	Wed, 29 Nov 2023 16:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TTP3n+O7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99753987C;
+	Wed, 29 Nov 2023 16:06:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47692BF;
+	Wed, 29 Nov 2023 08:06:55 -0800 (PST)
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D510539879
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 16:06:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 760E4C433B9
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 16:06:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701273983;
-	bh=TC7ljq37dxoM/N5BhmRf4oO+x43hche9TKzUYyoc/2c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TTP3n+O75BxHrh7nQdgG+DVP7XICfxzlZxf29NjtO/5Z4eKv766vkBxV/+E4AC1jE
-	 Ym3i40L2gaJjEKJG/4BOIXAjmM6sy2zC7eynF9/0X6qTydBUagIAVyVPYEnNKIs2X4
-	 hCua37pThJfNRRQXLvNUinOmJ0S0+HoMhtJKjHcV1QzhqaoEVaMWfPKa3nhnO53N6+
-	 6ZGUxs1cQYHrku+LNbjrFuy+mL97sgQspzunxNcfbyC3Ys0+KuZLyt1PdOyZR6SK3E
-	 SySEzGsRC3lrnK4tpBD4DiyU5Gq3BYMjwZ2dbn6O5WNgshqioArOh6RILKAac1F26G
-	 0ShfsO3b3IqIA==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-54acdd65c88so7651139a12.2
-        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 08:06:23 -0800 (PST)
-X-Gm-Message-State: AOJu0YzNaJ4QYbG9ENGMiKM49oKGUN5dcyoN5e8GSAGpwZ5y3zOUQrFb
-	OZZE8uNEWveN1rTNA/OFwh5Du+/yH8rwRKgm4/VljA==
-X-Google-Smtp-Source: AGHT+IHJqz1hroxRgeKBvuotxqNz5IAAJ/Ci8bcGGncdN5ojveL5t+JX7nwfjC37Jm+7alW9HB3GlXBqLpK3eL47qQU=
-X-Received: by 2002:a50:cd47:0:b0:544:a26c:804c with SMTP id
- d7-20020a50cd47000000b00544a26c804cmr16413550edj.16.1701273981612; Wed, 29
- Nov 2023 08:06:21 -0800 (PST)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AB71D1FB40;
+	Wed, 29 Nov 2023 16:06:53 +0000 (UTC)
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86CD61388B;
+	Wed, 29 Nov 2023 16:06:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id P5KmHZ1hZ2VffAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 29 Nov 2023 16:06:53 +0000
+Date: Wed, 29 Nov 2023 17:06:37 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dmitry Rokosov <ddrokosov@salutedevices.com>
+Cc: rostedt@goodmis.org, mhiramat@kernel.org, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	kernel@sberdevices.ru, rockosov@gmail.com, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] mm: memcg: introduce new event to trace
+ shrink_memcg
+Message-ID: <ZWdhjYPjbsoUE_mI@tiehlicka>
+References: <20231123193937.11628-1-ddrokosov@salutedevices.com>
+ <20231123193937.11628-3-ddrokosov@salutedevices.com>
+ <ZWRifQgRR0570oDY@tiehlicka>
+ <20231127113644.btg2xrcpjhq4cdgu@CAB-WSD-L081021>
+ <ZWSQji7UDSYa1m5M@tiehlicka>
+ <20231127161637.5eqxk7xjhhyr5tj4@CAB-WSD-L081021>
+ <ZWWzwhWnW1_iX0FP@tiehlicka>
+ <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231129003656.1165061-1-song@kernel.org> <20231129003656.1165061-2-song@kernel.org>
-In-Reply-To: <20231129003656.1165061-2-song@kernel.org>
-From: KP Singh <kpsingh@kernel.org>
-Date: Wed, 29 Nov 2023 17:06:10 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7XybrUU1NuZDJHc-GSVv-rOXGMDsLfX5NxvJ1jE71cWA@mail.gmail.com>
-Message-ID: <CACYkzJ7XybrUU1NuZDJHc-GSVv-rOXGMDsLfX5NxvJ1jE71cWA@mail.gmail.com>
-Subject: Re: [PATCH v14 bpf-next 1/6] bpf: Add kfunc bpf_get_file_xattr
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, fsverity@lists.linux.dev, ebiggers@kernel.org, 
-	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev, 
-	brauner@kernel.org, viro@zeniv.linux.org.uk, casey@schaufler-ca.com, 
-	amir73il@gmail.com, roberto.sassu@huawei.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231129152057.x7fhbcvwtsmkbdpb@CAB-WSD-L081021>
+X-Spamd-Bar: +++++++++++++++
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+	spf=fail (smtp-out2.suse.de: domain of mhocko@suse.com does not designate 2a07:de40:b281:104:10:150:64:97 as permitted sender) smtp.mailfrom=mhocko@suse.com
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [15.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_SPF_FAIL(1.00)[-all];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 MIME_GOOD(-0.10)[text/plain];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[goodmis.org,kernel.org,cmpxchg.org,linux.dev,google.com,linux-foundation.org,sberdevices.ru,gmail.com,vger.kernel.org,kvack.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: 15.00
+X-Rspamd-Queue-Id: AB71D1FB40
+X-Spam: Yes
 
-On Wed, Nov 29, 2023 at 1:37=E2=80=AFAM Song Liu <song@kernel.org> wrote:
->
-> It is common practice for security solutions to store tags/labels in
-> xattrs. To implement similar functionalities in BPF LSM, add new kfunc
-> bpf_get_file_xattr().
->
-> The first use case of bpf_get_file_xattr() is to implement file
-> verifications with asymmetric keys. Specificially, security applications
-> could use fsverity for file hashes and use xattr to store file signatures=
-.
-> (kfunc for fsverity hash will be added in a separate commit.)
->
-> Currently, only xattrs with "user." prefix can be read with kfunc
-> bpf_get_file_xattr(). As use cases evolve, we may add a dedicated prefix
-> for bpf_get_file_xattr().
->
-> To avoid recursion, bpf_get_file_xattr can be only called from LSM hooks.
->
-> Signed-off-by: Song Liu <song@kernel.org>
-> Acked-by: Christian Brauner <brauner@kernel.org>
+On Wed 29-11-23 18:20:57, Dmitry Rokosov wrote:
+> On Tue, Nov 28, 2023 at 10:32:50AM +0100, Michal Hocko wrote:
+> > On Mon 27-11-23 19:16:37, Dmitry Rokosov wrote:
+[...]
+> > > 2) With this approach, we will not have the ability to trace a situation
+> > > where the kernel is requesting reclaim for a specific memcg, but due to
+> > > limits issues, we are unable to run it.
+> > 
+> > I do not follow. Could you be more specific please?
+> > 
+> 
+> I'm referring to a situation where kswapd() or another kernel mm code
+> requests some reclaim pages from memcg, but memcg rejects it due to
+> limits checkers. This occurs in the shrink_node_memcgs() function.
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+Ohh, you mean reclaim protection
+
+> ===
+> 		mem_cgroup_calculate_protection(target_memcg, memcg);
+> 
+> 		if (mem_cgroup_below_min(target_memcg, memcg)) {
+> 			/*
+> 			 * Hard protection.
+> 			 * If there is no reclaimable memory, OOM.
+> 			 */
+> 			continue;
+> 		} else if (mem_cgroup_below_low(target_memcg, memcg)) {
+> 			/*
+> 			 * Soft protection.
+> 			 * Respect the protection only as long as
+> 			 * there is an unprotected supply
+> 			 * of reclaimable memory from other cgroups.
+> 			 */
+> 			if (!sc->memcg_low_reclaim) {
+> 				sc->memcg_low_skipped = 1;
+> 				continue;
+> 			}
+> 			memcg_memory_event(memcg, MEMCG_LOW);
+> 		}
+> ===
+> 
+> With separate shrink begin()/end() tracepoints we can detect such
+> problem.
+
+How? You are only reporting the number of reclaimed pages and no
+reclaimed pages could be not just because of low/min limits but
+generally because of other reasons. You would need to report also the
+number of scanned/isolated pages.
+ 
+> > > 3) LRU and SLAB shrinkers are too common places to handle memcg-related
+> > > tasks. Additionally, memcg can be disabled in the kernel configuration.
+> > 
+> > Right. This could be all hidden in the tracing code. You simply do not
+> > print memcg id when the controller is disabled. Or just simply print 0.
+> > I do not really see any major problems with that.
+> > 
+> > I would really prefer to focus on that direction rather than adding
+> > another begin/end tracepoint which overalaps with existing begin/end
+> > traces and provides much more limited information because I would bet we
+> > will have somebody complaining that mere nr_reclaimed is not sufficient.
+> 
+> Okay, I will try to prepare a new patch version with memcg printing from
+> lruvec and slab tracepoints.
+> 
+> Then Andrew should drop the previous patchsets, I suppose. Please advise
+> on the correct workflow steps here.
+
+Andrew usually just drops the patch from his tree and it will disappaer
+from the linux-next as well.
+-- 
+Michal Hocko
+SUSE Labs
 
