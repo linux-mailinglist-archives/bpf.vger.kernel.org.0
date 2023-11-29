@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-16186-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16187-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E0857FE090
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 20:56:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 295BB7FE096
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 20:57:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36B8D282D4E
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 19:56:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD6A4B21169
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 19:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE7F5EE80;
-	Wed, 29 Nov 2023 19:56:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D005EE7A;
+	Wed, 29 Nov 2023 19:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lawpvSZI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DTovyUDe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1749B12F
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:56:52 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-a184d717de1so11213366b.1
-        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:56:52 -0800 (PST)
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7034194
+	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:57:04 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54af2498e85so267259a12.0
+        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 11:57:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701287810; x=1701892610; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701287823; x=1701892623; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y7cZeYFylMaxtzJfPZHbirUIFCzRX6DWKIf3smwQVOE=;
-        b=lawpvSZIC1RpcIHsnbFESjsWb9WmHG9NL8NF1XEpojfLt3O7Kb/NxTyA4KlPlnfsmU
-         ZmTb2E2nI2EwgZ9zVqY+I9Wfm6DKcT1Igfc/EgvB8hw2pWDWGsfwWsll4KO0G33b2O6g
-         U6YWHn16pu2DADgc4CEN0C/JTF288OhrbMACoQhnEPflXvHRLFbSbg0rvTQ7sXdqONGf
-         FQsKFLiJkdMvTT/+9RYjZq1/7dZ2gbcIsPDvwB0BnnTFNl2X/JnzgM8YiGDfhyn8KPBu
-         dTCOWX3F8UAeFEmhXnooIQJMDWFAoqIwc0D+q1ZNE3RKNbsXjVXaQM3Kb8FAOWdvKekQ
-         4yPw==
+        bh=l3gmxtg+/HLCBzmNCvOVfc0IlSQp/+6x3hv9R45IOxk=;
+        b=DTovyUDecrpU08OhUaP7CYjX8G0CBN+vwdngwjTCXyRjWwB8+Z066Wv5QgJKSCq4RI
+         EAjnWLtHleWLX6d3LDvQ8GwV/p3cKMm1UtY+HWTPG9bt98MPz4BNBIPgNhegjUKUs4pB
+         SW2lGET7/SDLMVx+gT5y1yIEu2ndbhyy9WPBznuex5lMEpU4K1378TYOg5D7WTCbZKDe
+         baSh5Sefd+MMQQmVznHCIjIttPSvlqQPnhtw/XmqmXg3tjvBDmzgP/X0X2uPBtDTZI/o
+         mJqL12iVALFV1btVB/5JsChX9Yenl4T/K8olPYgiJwbQeRtw3Nrfl7vZxj4nQ4YkfV5Q
+         Hxpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701287810; x=1701892610;
+        d=1e100.net; s=20230601; t=1701287823; x=1701892623;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y7cZeYFylMaxtzJfPZHbirUIFCzRX6DWKIf3smwQVOE=;
-        b=MgNmTPIB46rzqMrgo0hkdJ9mG/IqwWBoAKOAg6B5nKcFmRCqAvGBjtKzMS0mChFf0J
-         6nx5LzlYex9Y8NtKKpV4Z9cDARQYEwlHrY05Cq5dZLLx5uTNacYqMNpS5pyCkTPGJIVQ
-         tIvpRNZFuGgQrU2zx81p1Q+h1XP9XwR9Yxqk/rK+FAZePyVPRD7QKoqeTHpkkCQjY5x5
-         KOBxvD2F5GYkY0f1LXYtJsi9Wqt2XwLv0MAgeapplafVROm2tMykqgF5TceXG5GGkIja
-         F/pI9modGhbZsZXQ35zo8vMVICA9rZVanfbRiQyw41wyYJaePJhMv2ZwV5ONFggkEJDq
-         Ts4w==
-X-Gm-Message-State: AOJu0Yx3z8LTGsOEBtXJ5wLrpCcLpvYEglhIBSQm15hhWS3MPfqlALk/
-	RpnxXAGXLOzrMbPIdDKvjd/D2jT+i/hQYw==
-X-Google-Smtp-Source: AGHT+IF1s3Yxi6tLcDDQdhHk7hLqa1rpEw9DLIxDkvQ1/WkSFFp9RcmBMINruoezbrXxvKKpUKLA+w==
-X-Received: by 2002:a17:906:20dd:b0:a0c:f253:a901 with SMTP id c29-20020a17090620dd00b00a0cf253a901mr10242430ejc.39.1701287810222;
-        Wed, 29 Nov 2023 11:56:50 -0800 (PST)
+        bh=l3gmxtg+/HLCBzmNCvOVfc0IlSQp/+6x3hv9R45IOxk=;
+        b=Jdn9BEY79bRVZhi33SyRzXleqPwvKjgyY9z/vLHASvJn4fgZ+JQn7pCI5fSzh/8/Yv
+         ulkCTRVW6b+sz2aJhWa2K3Anher8QbQEUqKJvHYBugfaS8LTlE9s90wn34OyfZtHxdbb
+         az2S9Qz0NXwJl5txhjz4pTo2HCXHV4FmdrIbSdeL5MDs/p0dErvu8v3JbvsPuqFv+FJs
+         cTG/LzgEFjii07nH9+UuZ18b8gma0NyPQxI1MpvNEWbt1ak7zGdhwn/m53eambhUqRUy
+         Siid0/1T+/dAdrFQOWwPaI4ZvU3ckhxH38b467Lh381UpKK9uK8nC7S0hgHGR4mK6nwV
+         0p5w==
+X-Gm-Message-State: AOJu0YykVR4m1WF2vkGJz4wN79fGWe7AOifsz95dl9U78RssCosm/XsW
+	9ezdFhDfa/0brBe8qi1xS7sSYyvl8n+zpw==
+X-Google-Smtp-Source: AGHT+IFAkpDqXzkLejwF12RflKJhu+bTbKTWMyq09wv7nPgkYno4l+Hjw4hSgruEmV8eRd14xrEzjQ==
+X-Received: by 2002:a17:906:2dd2:b0:9ce:24d0:8a01 with SMTP id h18-20020a1709062dd200b009ce24d08a01mr13714945eji.60.1701287823318;
+        Wed, 29 Nov 2023 11:57:03 -0800 (PST)
 Received: from erthalion.local (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
-        by smtp.gmail.com with ESMTPSA id p4-20020a170906b20400b009ddaf5ebb6fsm8287742ejz.177.2023.11.29.11.56.48
+        by smtp.gmail.com with ESMTPSA id p4-20020a170906b20400b009ddaf5ebb6fsm8287742ejz.177.2023.11.29.11.56.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Nov 2023 11:56:50 -0800 (PST)
+        Wed, 29 Nov 2023 11:57:03 -0800 (PST)
 From: Dmitrii Dolgov <9erthalion6@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -64,9 +64,9 @@ Cc: ast@kernel.org,
 	dan.carpenter@linaro.org,
 	olsajiri@gmail.com,
 	Dmitrii Dolgov <9erthalion6@gmail.com>
-Subject: [PATCH bpf-next v4 2/3] selftests/bpf: Add test for recursive attachment of tracing progs
-Date: Wed, 29 Nov 2023 20:52:37 +0100
-Message-ID: <20231129195240.19091-3-9erthalion6@gmail.com>
+Subject: [PATCH bpf-next v4 3/3] bpf, selftest/bpf: Fix re-attachment branch in bpf_tracing_prog_attach
+Date: Wed, 29 Nov 2023 20:52:38 +0100
+Message-ID: <20231129195240.19091-4-9erthalion6@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231129195240.19091-1-9erthalion6@gmail.com>
 References: <20231129195240.19091-1-9erthalion6@gmail.com>
@@ -78,170 +78,126 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Verify the fact that an fentry prog could be attached to another one,
-building up an attachment chain of limited size. Use existing
-bpf_testmod as a start of the chain.
+It looks like there is an issue in bpf_tracing_prog_attach, in the
+"prog->aux->dst_trampoline and tgt_prog is NULL" case. One can construct
+a sequence of events when prog->aux->attach_btf will be NULL, and
+bpf_trampoline_compute_key will fail.
 
-Note, that currently it's not possible to:
-* form a cycle within an attachment chain
-* splice two attachment chains
+    BUG: kernel NULL pointer dereference, address: 0000000000000058
+    Call Trace:
+     <TASK>
+     ? __die+0x20/0x70
+     ? page_fault_oops+0x15b/0x430
+     ? fixup_exception+0x22/0x330
+     ? exc_page_fault+0x6f/0x170
+     ? asm_exc_page_fault+0x22/0x30
+     ? bpf_tracing_prog_attach+0x279/0x560
+     ? btf_obj_id+0x5/0x10
+     bpf_tracing_prog_attach+0x439/0x560
+     __sys_bpf+0x1cf4/0x2de0
+     __x64_sys_bpf+0x1c/0x30
+     do_syscall_64+0x41/0xf0
+     entry_SYSCALL_64_after_hwframe+0x6e/0x76
 
-Those limitations are coming from the fact that attach_prog_fd is
-specified at the prog load (thus making it impossible to attach to a
-program loaded after it in this way), as well as tracing progs not
-implementing link_detach. This is the reason there is only one test for
-the chain length.
+The issue seems to be not relevant to the previous changes with
+recursive tracing prog attach, because the reproducing test doesn't
+actually include recursive fentry attaching.
 
 Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
 ---
- .../bpf/prog_tests/recursive_attach.c         | 85 +++++++++++++++++++
- .../selftests/bpf/progs/fentry_recursive.c    | 19 +++++
- .../bpf/progs/fentry_recursive_target.c       | 20 +++++
- 3 files changed, 124 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/recursive_attach.c
- create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive.c
- create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive_target.c
+ kernel/bpf/syscall.c                          |  4 +-
+ .../bpf/prog_tests/recursive_attach.c         | 48 +++++++++++++++++++
+ .../bpf/progs/fentry_recursive_target.c       | 11 +++++
+ 3 files changed, 62 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a595d7a62dbc..e01a949dfed7 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3197,7 +3197,9 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+ 			goto out_unlock;
+ 		}
+ 		btf_id = prog->aux->attach_btf_id;
+-		key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf, btf_id);
++		if (prog->aux->attach_btf)
++			key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
++											 btf_id);
+ 	}
+ 
+ 	if (!prog->aux->dst_trampoline ||
 diff --git a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-new file mode 100644
-index 000000000000..9c422dd92c4e
---- /dev/null
+index 9c422dd92c4e..a4abf1745e62 100644
+--- a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
 +++ b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Red Hat, Inc. */
-+#include <test_progs.h>
-+#include "fentry_recursive.skel.h"
-+#include "fentry_recursive_target.skel.h"
-+#include <bpf/btf.h>
-+#include "bpf/libbpf_internal.h"
-+
-+#define ATTACH_DEPTH 33
+@@ -83,3 +83,51 @@ void test_recursive_fentry_attach(void)
+ 			fentry_recursive__destroy(tracing_chain[i]);
+ 	}
+ }
 +
 +/*
-+ * Test following scenarios:
-+ * - one can attach fentry progs recursively, one fentry to another one
-+ * - an attachment chain generated this way is limited, after 32 attachment no
-+ *   more progs could be added
++ * Test that a tracing prog reattachment (when we land in
++ * "prog->aux->dst_trampoline and tgt_prog is NULL" branch in
++ * bpf_tracing_prog_attach) does not lead to a crash due to missing attach_btf
 + */
-+void test_recursive_fentry_attach(void)
++void test_fentry_attach_btf_presence(void)
 +{
 +	struct fentry_recursive_target *target_skel = NULL;
-+	struct fentry_recursive *tracing_chain[ATTACH_DEPTH + 1] = {};
++	struct fentry_recursive *tracing_skel = NULL;
 +	struct bpf_program *prog;
-+	int prev_fd, err;
++	int err, link_fd, tgt_prog_fd;
 +
 +	target_skel = fentry_recursive_target__open_and_load();
 +	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
 +		goto close_prog;
 +
-+	/* This is going to be the start of the chain */
-+	tracing_chain[0] = fentry_recursive__open();
-+	if (!ASSERT_OK_PTR(tracing_chain[0], "fentry_recursive__open"))
++	tracing_skel = fentry_recursive__open();
++	if (!ASSERT_OK_PTR(tracing_skel, "fentry_recursive__open"))
 +		goto close_prog;
 +
-+	prog = tracing_chain[0]->progs.recursive_attach;
-+	prev_fd = bpf_program__fd(target_skel->progs.test1);
-+	err = bpf_program__set_attach_target(prog, prev_fd, "test1");
++	prog = tracing_skel->progs.recursive_attach;
++	tgt_prog_fd = bpf_program__fd(target_skel->progs.fentry_target);
++	err = bpf_program__set_attach_target(prog, tgt_prog_fd, "fentry_target");
 +	if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
 +		goto close_prog;
 +
-+	err = fentry_recursive__load(tracing_chain[0]);
++	err = fentry_recursive__load(tracing_skel);
 +	if (!ASSERT_OK(err, "fentry_recursive__load"))
 +		goto close_prog;
 +
-+	/* Create an attachment chain to exhaust the limit */
-+	for (int i = 1; i < ATTACH_DEPTH; i++) {
-+		tracing_chain[i] = fentry_recursive__open();
-+		if (!ASSERT_OK_PTR(tracing_chain[i], "fentry_recursive__open"))
-+			goto close_prog;
++	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
 +
-+		prog = tracing_chain[i]->progs.recursive_attach;
-+		prev_fd = bpf_program__fd(tracing_chain[i-1]->progs.recursive_attach);
-+		err = bpf_program__set_attach_target(prog, prev_fd, "recursive_attach");
-+		if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
-+			goto close_prog;
-+
-+		err = fentry_recursive__load(tracing_chain[i]);
-+		if (!ASSERT_OK(err, "fentry_recursive__load"))
-+			goto close_prog;
-+
-+		err = fentry_recursive__attach(tracing_chain[i]);
-+		if (!ASSERT_OK(err, "fentry_recursive__attach"))
-+			goto close_prog;
-+	}
-+
-+	/* The next attachment would fail */
-+	tracing_chain[ATTACH_DEPTH] = fentry_recursive__open();
-+	if (!ASSERT_OK_PTR(tracing_chain[ATTACH_DEPTH], "last fentry_recursive__open"))
++	link_fd = bpf_link_create(bpf_program__fd(tracing_skel->progs.recursive_attach),
++							  0, BPF_TRACE_FENTRY, &link_opts);
++	if (!ASSERT_GE(link_fd, 0, "link_fd"))
 +		goto close_prog;
 +
-+	prog = tracing_chain[ATTACH_DEPTH]->progs.recursive_attach;
-+	prev_fd = bpf_program__fd(tracing_chain[ATTACH_DEPTH - 1]->progs.recursive_attach);
-+	err = bpf_program__set_attach_target(prog, prev_fd, "recursive_attach");
-+	if (!ASSERT_OK(err, "last bpf_program__set_attach_target"))
-+		goto close_prog;
++	fentry_recursive__detach(tracing_skel);
 +
-+	err = fentry_recursive__load(tracing_chain[ATTACH_DEPTH]);
-+	if (!ASSERT_ERR(err, "last fentry_recursive__load"))
++	err = fentry_recursive__attach(tracing_skel);
++	if (!ASSERT_ERR(err, "fentry_recursive__attach"))
 +		goto close_prog;
 +
 +close_prog:
 +	fentry_recursive_target__destroy(target_skel);
-+	for (int i = 1; i < ATTACH_DEPTH + 1; i++) {
-+		if (tracing_chain[i])
-+			fentry_recursive__destroy(tracing_chain[i]);
-+	}
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fentry_recursive.c b/tools/testing/selftests/bpf/progs/fentry_recursive.c
-new file mode 100644
-index 000000000000..1df490230344
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/fentry_recursive.c
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Red Hat, Inc. */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 test1_result = 0;
-+
-+/*
-+ * Dummy fentry bpf prog for testing fentry attachment chains
-+ */
-+SEC("fentry/XXX")
-+int BPF_PROG(recursive_attach, int a)
-+{
-+	test1_result = a == 1;
-+	return 0;
++	fentry_recursive__destroy(tracing_skel);
 +}
 diff --git a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-new file mode 100644
-index 000000000000..b6fb8ebd598d
---- /dev/null
+index b6fb8ebd598d..f812d2de0c3c 100644
+--- a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
 +++ b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-@@ -0,0 +1,20 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Red Hat, Inc. */
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 test1_result = 0;
+@@ -18,3 +18,14 @@ int BPF_PROG(test1, int a)
+ 	test1_result = a == 1;
+ 	return 0;
+ }
 +
 +/*
-+ * Dummy fentry bpf prog for testing fentry attachment chains. It's going to be
-+ * a start of the chain.
++ * Dummy bpf prog for testing attach_btf presence when attaching an fentry
++ * program.
 + */
-+SEC("fentry/bpf_testmod_fentry_test1")
-+int BPF_PROG(test1, int a)
++SEC("raw_tp/sys_enter")
++int BPF_PROG(fentry_target, struct pt_regs *regs, long id)
 +{
-+	test1_result = a == 1;
++	test1_result = id == 1;
 +	return 0;
 +}
 -- 
