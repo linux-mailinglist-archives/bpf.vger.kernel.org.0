@@ -1,64 +1,66 @@
-Return-Path: <bpf+bounces-16112-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16113-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE0227FCEA4
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 07:02:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C25747FCEA6
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 07:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 513B3283475
-	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 06:02:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C957E1C20932
+	for <lists+bpf@lfdr.de>; Wed, 29 Nov 2023 06:02:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F9479FE;
-	Wed, 29 Nov 2023 06:02:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F15D26B;
+	Wed, 29 Nov 2023 06:02:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F43Cdyei"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kX7c6gCv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9129A19A6
-	for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 22:02:15 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da04fb79246so7699313276.2
-        for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 22:02:15 -0800 (PST)
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234DF19B1
+	for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 22:02:18 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5cdde93973aso83917367b3.1
+        for <bpf@vger.kernel.org>; Tue, 28 Nov 2023 22:02:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701237735; x=1701842535; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=M0G+iPFdqPEFrwKvYIt+aM1SI2CrgzPYcwp9sXOSF54=;
-        b=F43Cdyei04AdOpfSQd3OpAJLSm9xhRahe1O9QqkF0mPs+iLhQVMaGKePv7pinYZ8Tt
-         0wvo1siGlfX7V9OTI2E1LDcrKbupla3Oq1lkJ9v3JRvjB/+Z5gDI6OAfI7dgs+FN5cE6
-         Hjx4ZL1f7OMt0sQXCWHzs+0jBc4NqNejl8NeWqOYRUlrJOu71IZ0zvvaojVqYF96RQUV
-         fBz+l7xylyjOOwEaNhN8igDLxh1OHIortZ8drWSn4OsasC7ouRfbL1ihY0d2nc0kbL9J
-         7Qb42/47N4NEToqDAXQRLXwX/AT3ivOJJ6+RvfdawBEMIyP2+qMNC69Fw5BO9I5kQPL9
-         yahw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701237735; x=1701842535;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20230601; t=1701237737; x=1701842537; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=M0G+iPFdqPEFrwKvYIt+aM1SI2CrgzPYcwp9sXOSF54=;
-        b=sFPJ2k1OTPdYj/0f4Bks3LLXe79thLpWF6rNPb7sGsOQRUHmzoj5ZgdBa4lrn+geyj
-         iYuwpsfwZ/8eM7+xTD8lg6CWKZJdSaj79DcIEqnEX5/52IjCoFF//raRbdKHOQ1fwzCk
-         Qh5JXfSNODRYggOhIqy+002V8057exRKaPgL4rznlQHq2Soe4dEXKi3zSbUPCkjzZwtF
-         pvjc4/f8PydmjcBCHDbF+rIb/cBu1H1xirBbneGpK1TGsHRzOsvnQ4AjuEUD3brGEFzk
-         KdHxuYPW5Ej2NPlFZF3XZ5gMkkOPifcWuTpTUXxIcQh1yq4NlmObH6mzxXmJ+c+mxSjf
-         q/9w==
-X-Gm-Message-State: AOJu0YxrJetKEluiUc/mstQ6wUGrTQT5UYBj/OzQwvNwTaa6kVUBkf8l
-	F/MfBhsEgcdobwGkRn2gX2XYpyTaQKNi
-X-Google-Smtp-Source: AGHT+IF0ACoSYZCtsTHrbz5F11NIz13TQ5Pg2yk0VsMy0quHAj1RB3jL2FGMYTv/jpjjrYqF7QXw8dBKFGOB
+        bh=6thajjQRkz+HkHW7D3sSCmpzEeB477d5Mr+y0iQJVzs=;
+        b=kX7c6gCvFHw5an55jNpK+MCu0n06UnFZxpirz/t1R5a+0/qU6FHchFYK0P3WAbTCNe
+         7jCpy0TUz3XvRTvuxNSDzEe6NHfQvoroF07Bf2C49yGQuXLSvgmYoLKq0qeXUYC3cEgD
+         niQMAV1yT7yxf9enxT5SYiFJwaJx8O81E1dJfadtGep4iH6fMzCC5zfduJBLOH0te26/
+         eqiqV62q0rHdJj3IQCVbYLlhxcO3Sl5b2kChwLyJx9Cyd79ycy6KwxoMbH27JBFNvY9T
+         3M4kxZX/x2AHpOHW3yYE1ehG4/zjlra1zTcMRZlrBaTbzPUPC/lOJ6BXBcpdvkZkmCR5
+         GYBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701237737; x=1701842537;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6thajjQRkz+HkHW7D3sSCmpzEeB477d5Mr+y0iQJVzs=;
+        b=W2ZIecAC0uPxQgW0b19q7FwDs8GdP21c+5QRaDFII09anUFhqY8k/38Ga4/XZVbQxb
+         sLumlVN+srXakES1wG9/KXobkZs6McL3apA6hjRQdmWP98IPeKFc9AK060y07IXJKuzg
+         XjYrRN2He0yPOytJYMU6tgl4o9tROAfPWwXSCMwVSE4BxY3W543Fr/z4vkji4DDfOr/o
+         uEAwRsE75/EfCHdM1JdgNl4mxStE7HgnUt/bcIm1hQ08I3Gsx43f70Gq4hab4Fnd0Dd/
+         8HcRMKPD7alATV7j0lNeC745kfbdNSqQNWrwDVEC6iNMFjkDgM/7NyjabVYLHtZmfta5
+         Jy+Q==
+X-Gm-Message-State: AOJu0Yxq81WPTyU/9bh1T8EUDdDB5Ubms0WftNeZHjgGRyjcdZ7T/EUo
+	fJd1Wu95WYnVl1123ocaCakIqKTDdqQZ
+X-Google-Smtp-Source: AGHT+IHStCf02eR5Z7G2oMb+qjaqd+bye5wyKkPORIP+SdC4EPzelKmD6TjLiarOMrn6W9b9mIBoWBllGFGX
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:763b:80fa:23ca:96f8])
- (user=irogers job=sendgmr) by 2002:a25:d114:0:b0:da3:ab41:304a with SMTP id
- i20-20020a25d114000000b00da3ab41304amr505879ybg.4.1701237734702; Tue, 28 Nov
- 2023 22:02:14 -0800 (PST)
-Date: Tue, 28 Nov 2023 22:01:57 -0800
-Message-Id: <20231129060211.1890454-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a05:690c:2e8a:b0:5ce:dff:f7a1 with SMTP id
+ eu10-20020a05690c2e8a00b005ce0dfff7a1mr482531ywb.9.1701237737183; Tue, 28 Nov
+ 2023 22:02:17 -0800 (PST)
+Date: Tue, 28 Nov 2023 22:01:58 -0800
+In-Reply-To: <20231129060211.1890454-1-irogers@google.com>
+Message-Id: <20231129060211.1890454-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20231129060211.1890454-1-irogers@google.com>
 X-Mailer: git-send-email 2.43.0.rc1.413.gea7ed67945-goog
-Subject: [PATCH v1 00/14] Clean up libperf cpumap's empty function
+Subject: [PATCH v1 01/14] libperf cpumap: Rename perf_cpu_map__dummy_new
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
@@ -84,86 +86,194 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Rename and clean up the use of libperf CPU map functions particularly
-focussing on perf_cpu_map__empty that may return true for maps
-containing CPUs but also with an "any CPU"/dummy value.
+Rename perf_cpu_map__dummy_new to perf_cpu_map__new_any_cpu to better
+indicate this is creating a CPU map for the perf_event_open "any" CPU
+case.
 
-perf_cpu_map__nr is also troubling in that iterating an empty CPU map
-will yield the "any CPU"/dummy value. Reduce the appearance of some
-calls to this by using the perf_cpu_map__for_each_cpu macro.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/lib/perf/Documentation/libperf.txt | 2 +-
+ tools/lib/perf/cpumap.c                  | 4 ++--
+ tools/lib/perf/evsel.c                   | 2 +-
+ tools/lib/perf/include/perf/cpumap.h     | 4 ++--
+ tools/lib/perf/libperf.map               | 2 +-
+ tools/lib/perf/tests/test-cpumap.c       | 2 +-
+ tools/lib/perf/tests/test-evlist.c       | 2 +-
+ tools/perf/tests/cpumap.c                | 2 +-
+ tools/perf/tests/sw-clock.c              | 2 +-
+ tools/perf/tests/task-exit.c             | 2 +-
+ tools/perf/util/evlist.c                 | 2 +-
+ tools/perf/util/evsel.c                  | 2 +-
+ 12 files changed, 14 insertions(+), 14 deletions(-)
 
-Ian Rogers (14):
-  libperf cpumap: Rename perf_cpu_map__dummy_new
-  libperf cpumap: Rename and prefer sysfs for perf_cpu_map__default_new
-  libperf cpumap: Rename perf_cpu_map__empty
-  libperf cpumap: Replace usage of perf_cpu_map__new(NULL)
-  libperf cpumap: Add for_each_cpu that skips the "any CPU" case
-  libperf cpumap: Add any, empty and min helpers
-  perf arm-spe/cs-etm: Directly iterate CPU maps
-  perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is_empty
-    use
-  perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_empty
-  perf top: Avoid repeated function calls
-  perf arm64 header: Remove unnecessary CPU map get and put
-  perf stat: Remove duplicate cpus_map_matched function
-  perf cpumap: Use perf_cpu_map__for_each_cpu when possible
-  libperf cpumap: Document perf_cpu_map__nr's behavior
-
- .../perf/Documentation/examples/sampling.c    |  2 +-
- .../perf/Documentation/libperf-sampling.txt   |  2 +-
- tools/lib/perf/Documentation/libperf.txt      |  4 +-
- tools/lib/perf/cpumap.c                       | 92 +++++++++++++------
- tools/lib/perf/evlist.c                       |  6 +-
- tools/lib/perf/evsel.c                        |  2 +-
- tools/lib/perf/include/perf/cpumap.h          | 56 ++++++++++-
- tools/lib/perf/libperf.map                    | 10 +-
- tools/lib/perf/tests/test-cpumap.c            |  4 +-
- tools/lib/perf/tests/test-evlist.c            |  6 +-
- tools/lib/perf/tests/test-evsel.c             |  2 +-
- tools/perf/arch/arm/util/cs-etm.c             | 83 +++++++----------
- tools/perf/arch/arm64/util/arm-spe.c          |  4 +-
- tools/perf/arch/arm64/util/header.c           | 15 +--
- tools/perf/arch/x86/util/intel-bts.c          |  4 +-
- tools/perf/arch/x86/util/intel-pt.c           | 10 +-
- tools/perf/bench/epoll-ctl.c                  |  2 +-
- tools/perf/bench/epoll-wait.c                 |  2 +-
- tools/perf/bench/futex-hash.c                 |  2 +-
- tools/perf/bench/futex-lock-pi.c              |  2 +-
- tools/perf/bench/futex-requeue.c              |  2 +-
- tools/perf/bench/futex-wake-parallel.c        |  2 +-
- tools/perf/bench/futex-wake.c                 |  2 +-
- tools/perf/builtin-c2c.c                      |  6 +-
- tools/perf/builtin-ftrace.c                   |  2 +-
- tools/perf/builtin-record.c                   |  4 +-
- tools/perf/builtin-stat.c                     | 31 +------
- tools/perf/tests/bitmap.c                     | 13 +--
- tools/perf/tests/code-reading.c               |  2 +-
- tools/perf/tests/cpumap.c                     |  2 +-
- tools/perf/tests/keep-tracking.c              |  2 +-
- tools/perf/tests/mmap-basic.c                 |  2 +-
- tools/perf/tests/openat-syscall-all-cpus.c    |  2 +-
- tools/perf/tests/perf-time-to-tsc.c           |  2 +-
- tools/perf/tests/sw-clock.c                   |  2 +-
- tools/perf/tests/switch-tracking.c            |  2 +-
- tools/perf/tests/task-exit.c                  |  2 +-
- tools/perf/tests/topology.c                   | 48 +++++-----
- tools/perf/util/auxtrace.c                    |  4 +-
- tools/perf/util/bpf_counter.c                 |  2 +-
- tools/perf/util/bpf_kwork.c                   | 16 ++--
- tools/perf/util/bpf_kwork_top.c               | 12 +--
- tools/perf/util/cpumap.c                      | 14 ++-
- tools/perf/util/cputopo.c                     |  2 +-
- tools/perf/util/evlist.c                      |  4 +-
- tools/perf/util/evsel.c                       |  2 +-
- tools/perf/util/perf_api_probe.c              |  4 +-
- tools/perf/util/record.c                      |  4 +-
- .../scripting-engines/trace-event-python.c    | 12 ++-
- tools/perf/util/session.c                     |  5 +-
- tools/perf/util/stat.c                        |  2 +-
- tools/perf/util/svghelper.c                   | 20 ++--
- tools/perf/util/top.c                         |  9 +-
- 53 files changed, 296 insertions(+), 254 deletions(-)
-
+diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
+index a8f1a237931b..a256a26598b0 100644
+--- a/tools/lib/perf/Documentation/libperf.txt
++++ b/tools/lib/perf/Documentation/libperf.txt
+@@ -37,7 +37,7 @@ SYNOPSIS
+ 
+   struct perf_cpu_map;
+ 
+-  struct perf_cpu_map *perf_cpu_map__dummy_new(void);
++  struct perf_cpu_map *perf_cpu_map__new_any_cpu(void);
+   struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
+   struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+   struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
+diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+index 2a5a29217374..2bd6aba3d8c9 100644
+--- a/tools/lib/perf/cpumap.c
++++ b/tools/lib/perf/cpumap.c
+@@ -27,7 +27,7 @@ struct perf_cpu_map *perf_cpu_map__alloc(int nr_cpus)
+ 	return result;
+ }
+ 
+-struct perf_cpu_map *perf_cpu_map__dummy_new(void)
++struct perf_cpu_map *perf_cpu_map__new_any_cpu(void)
+ {
+ 	struct perf_cpu_map *cpus = perf_cpu_map__alloc(1);
+ 
+@@ -271,7 +271,7 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+ 	else if (*cpu_list != '\0')
+ 		cpus = cpu_map__default_new();
+ 	else
+-		cpus = perf_cpu_map__dummy_new();
++		cpus = perf_cpu_map__new_any_cpu();
+ invalid:
+ 	free(tmp_cpus);
+ out:
+diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+index 8b51b008a81f..c07160953224 100644
+--- a/tools/lib/perf/evsel.c
++++ b/tools/lib/perf/evsel.c
+@@ -120,7 +120,7 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
+ 		static struct perf_cpu_map *empty_cpu_map;
+ 
+ 		if (empty_cpu_map == NULL) {
+-			empty_cpu_map = perf_cpu_map__dummy_new();
++			empty_cpu_map = perf_cpu_map__new_any_cpu();
+ 			if (empty_cpu_map == NULL)
+ 				return -ENOMEM;
+ 		}
+diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+index e38d859a384d..d0bf218ada11 100644
+--- a/tools/lib/perf/include/perf/cpumap.h
++++ b/tools/lib/perf/include/perf/cpumap.h
+@@ -19,9 +19,9 @@ struct perf_cache {
+ struct perf_cpu_map;
+ 
+ /**
+- * perf_cpu_map__dummy_new - a map with a singular "any CPU"/dummy -1 value.
++ * perf_cpu_map__new_any_cpu - a map with a singular "any CPU"/dummy -1 value.
+  */
+-LIBPERF_API struct perf_cpu_map *perf_cpu_map__dummy_new(void);
++LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_any_cpu(void);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__default_new(void);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+index 190b56ae923a..a8ff64baea3e 100644
+--- a/tools/lib/perf/libperf.map
++++ b/tools/lib/perf/libperf.map
+@@ -1,7 +1,7 @@
+ LIBPERF_0.0.1 {
+ 	global:
+ 		libperf_init;
+-		perf_cpu_map__dummy_new;
++		perf_cpu_map__new_any_cpu;
+ 		perf_cpu_map__default_new;
+ 		perf_cpu_map__get;
+ 		perf_cpu_map__put;
+diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/test-cpumap.c
+index 87b0510a556f..2c359bdb951e 100644
+--- a/tools/lib/perf/tests/test-cpumap.c
++++ b/tools/lib/perf/tests/test-cpumap.c
+@@ -21,7 +21,7 @@ int test_cpumap(int argc, char **argv)
+ 
+ 	libperf_init(libperf_print);
+ 
+-	cpus = perf_cpu_map__dummy_new();
++	cpus = perf_cpu_map__new_any_cpu();
+ 	if (!cpus)
+ 		return -1;
+ 
+diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
+index ed616fc19b4f..ab63878bacb9 100644
+--- a/tools/lib/perf/tests/test-evlist.c
++++ b/tools/lib/perf/tests/test-evlist.c
+@@ -261,7 +261,7 @@ static int test_mmap_thread(void)
+ 	threads = perf_thread_map__new_dummy();
+ 	__T("failed to create threads", threads);
+ 
+-	cpus = perf_cpu_map__dummy_new();
++	cpus = perf_cpu_map__new_any_cpu();
+ 	__T("failed to create cpus", cpus);
+ 
+ 	perf_thread_map__set_pid(threads, 0, pid);
+diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
+index 7730fc2ab40b..bd8e396f3e57 100644
+--- a/tools/perf/tests/cpumap.c
++++ b/tools/perf/tests/cpumap.c
+@@ -213,7 +213,7 @@ static int test__cpu_map_intersect(struct test_suite *test __maybe_unused,
+ 
+ static int test__cpu_map_equal(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
+ {
+-	struct perf_cpu_map *any = perf_cpu_map__dummy_new();
++	struct perf_cpu_map *any = perf_cpu_map__new_any_cpu();
+ 	struct perf_cpu_map *one = perf_cpu_map__new("1");
+ 	struct perf_cpu_map *two = perf_cpu_map__new("2");
+ 	struct perf_cpu_map *empty = perf_cpu_map__intersect(one, two);
+diff --git a/tools/perf/tests/sw-clock.c b/tools/perf/tests/sw-clock.c
+index 4d7493fa0105..290716783ac6 100644
+--- a/tools/perf/tests/sw-clock.c
++++ b/tools/perf/tests/sw-clock.c
+@@ -62,7 +62,7 @@ static int __test__sw_clock_freq(enum perf_sw_ids clock_id)
+ 	}
+ 	evlist__add(evlist, evsel);
+ 
+-	cpus = perf_cpu_map__dummy_new();
++	cpus = perf_cpu_map__new_any_cpu();
+ 	threads = thread_map__new_by_tid(getpid());
+ 	if (!cpus || !threads) {
+ 		err = -ENOMEM;
+diff --git a/tools/perf/tests/task-exit.c b/tools/perf/tests/task-exit.c
+index 968dddde6dda..d33d0952025c 100644
+--- a/tools/perf/tests/task-exit.c
++++ b/tools/perf/tests/task-exit.c
+@@ -70,7 +70,7 @@ static int test__task_exit(struct test_suite *test __maybe_unused, int subtest _
+ 	 * evlist__prepare_workload we'll fill in the only thread
+ 	 * we're monitoring, the one forked there.
+ 	 */
+-	cpus = perf_cpu_map__dummy_new();
++	cpus = perf_cpu_map__new_any_cpu();
+ 	threads = thread_map__new_by_tid(-1);
+ 	if (!cpus || !threads) {
+ 		err = -ENOMEM;
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index e36da58522ef..ff7f85ded89d 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1056,7 +1056,7 @@ int evlist__create_maps(struct evlist *evlist, struct target *target)
+ 		return -1;
+ 
+ 	if (target__uses_dummy_map(target))
+-		cpus = perf_cpu_map__dummy_new();
++		cpus = perf_cpu_map__new_any_cpu();
+ 	else
+ 		cpus = perf_cpu_map__new(target->cpu_list);
+ 
+diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+index a5da74e3a517..76ef3ab488a2 100644
+--- a/tools/perf/util/evsel.c
++++ b/tools/perf/util/evsel.c
+@@ -1801,7 +1801,7 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
+ 
+ 	if (cpus == NULL) {
+ 		if (empty_cpu_map == NULL) {
+-			empty_cpu_map = perf_cpu_map__dummy_new();
++			empty_cpu_map = perf_cpu_map__new_any_cpu();
+ 			if (empty_cpu_map == NULL)
+ 				return -ENOMEM;
+ 		}
 -- 
 2.43.0.rc1.413.gea7ed67945-goog
 
