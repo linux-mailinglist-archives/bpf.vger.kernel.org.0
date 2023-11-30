@@ -1,133 +1,171 @@
-Return-Path: <bpf+bounces-16235-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16236-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D33707FE936
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 07:34:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 437E37FE946
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 07:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 886E42822D6
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 06:34:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D80EBB20E1A
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 06:42:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966D5154B8;
-	Thu, 30 Nov 2023 06:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5445715AED;
+	Thu, 30 Nov 2023 06:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="k7/seFRU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M4ARx+q3"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2073.outbound.protection.outlook.com [40.107.22.73])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C602910CE
-	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 22:34:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=n1JSfrB8T/aC3vpJ6PfteyYeqBvOPYASqifT2mlxgraBIz2GzE6kIAghe68iLVmFjvi9SSkR6BmOGdiz11xSmoafR90uFejQ+rIxejQQc5VZpGxeO/Qgi9FTs605xxoB+5C+2PfAnjiiqm5+7wFESysthD2dTXKGo3EttWKaP+Gwt2QgsjCVcbVStm3sJ1KAiR/8HcR41M8mt14IyC0EI6daGVkRAbRqhKJBiNt/+2WHnxZpexXCUytjP0PrgY4CPZ8OlkFDa1UyR5QRLN1mbkrhRTiDuHELHGfH/hE7men52QHRihebZr7LkNJgzRdJzPMCYzEvNqPS/GtTkYm2dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p2eW5CQRYtlHkEhphgYff59QBo5gKhBAbt/GZKvfYRk=;
- b=lcEg4lJk1ZRODpSDdEtlZ+b/b68dG5bpiItEmYHcbqIEARqMl2Wn+3ponDT4J/omINWlxwDJTmCJkJq60BvIkmz7jKqOIRyIzgyplq1WNudQaKPceXWwNYN3/rTn3/SKRT5A5BY3aALyX9Y55tLpmpPWMPVmaGFFlpXpzREXLjsdeG17A+t3nS09t6bpjX8OmZHnKFvNrS262eCYyOBnF+6NtepXmqfuWsmogyoU74zNXPGfTJjL/3HROGPCsKjdupMOYx0Py/U0QQ2EkIxpYwlkFBsM9s7CsMH47x2jRlt17Q/llKFYGtu+wlqUUuR1UbYApKX6yiiDm2D1iOGX2A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p2eW5CQRYtlHkEhphgYff59QBo5gKhBAbt/GZKvfYRk=;
- b=k7/seFRUVDZeNxU1i1QszAuQWq3bKWgga+Y5TmoJM4FXBTSP1TKzdOGyaTjAACFX2Yx4kQt/6SZK1GFDwl6sxZ3qJaBPEhqEWNPFsnk00Pw9DhfTtXhYLfuEKz2zucbJtd7jETnUKEDsTtivZeTfT6GebVBrKyKnU5EBh5UVADomY2jf2ZuRzybdUyrdAocTUMtqJ/4s1E89HttqDf1/vHjJreQYYn4S/ekMyqu/fFDuHkbxY3AlFI/qVlQPiX6aMjnZz25nTiqzamgQm5A/3+ra7mjn5bn3zAFs/vWtX25D9s/bou2hZHfR6xgKjIuEbvtxnnce1vjXNrQrY8bG5Q==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from AS8PR04MB8660.eurprd04.prod.outlook.com (2603:10a6:20b:42b::14)
- by AM9PR04MB8414.eurprd04.prod.outlook.com (2603:10a6:20b:3ef::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.8; Thu, 30 Nov
- 2023 06:34:46 +0000
-Received: from AS8PR04MB8660.eurprd04.prod.outlook.com
- ([fe80::fda7:fd74:c07d:c8f3]) by AS8PR04MB8660.eurprd04.prod.outlook.com
- ([fe80::fda7:fd74:c07d:c8f3%7]) with mapi id 15.20.7068.012; Thu, 30 Nov 2023
- 06:34:46 +0000
-Date: Thu, 30 Nov 2023 14:34:37 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v3 bpf-next 10/10] bpf: simplify tnum output if a fully
- known constant
-Message-ID: <55qt5jr6srtznchng3sxdjdvril4gfd7bf7ysscmzfpdxidlrj@uy3qpd5fk5fu>
-References: <20231130000406.480870-1-andrii@kernel.org>
- <20231130000406.480870-11-andrii@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130000406.480870-11-andrii@kernel.org>
-X-ClientProxiedBy: TYXPR01CA0050.jpnprd01.prod.outlook.com
- (2603:1096:403:a::20) To AS8PR04MB8660.eurprd04.prod.outlook.com
- (2603:10a6:20b:42b::14)
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53E25A3
+	for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 22:41:54 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50bc22c836bso901196e87.0
+        for <bpf@vger.kernel.org>; Wed, 29 Nov 2023 22:41:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701326512; x=1701931312; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D5YbB4y8X5Gsw7QofaXjop6RL11N8m4TdjLoLhFlr5Y=;
+        b=M4ARx+q3dMIoem2EQWLTwYpIRD8NTIH5P/Jh0nWPrrcwj0mq4D1DC3wc59xHMjf2RX
+         +p52CfI+TJvvzG9Nj8iT9qt5cMPloSeU0V6g6/L1QEBy4GlYEqxWTFK7sGBjS4pxAGV/
+         hCttAee09dGNWeGJSiaN3UEz4LBtBtzpApHvbYnMgHeIaEw88gkfH9nqltzhJCZ/qJ4p
+         sNdRmizZ2+1tfrxdE5oIvDQC8sxBN7qOu5Ht4qHdl92BzmGh6Zrw+Cnzr1SCCQXS8N3w
+         yYcPP465el2nutgKU0AmV5IXBC8Rh0kj/wAFIM7d33VqylBuP9dOAeRnkNDLD81fAxDb
+         OrzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701326512; x=1701931312;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D5YbB4y8X5Gsw7QofaXjop6RL11N8m4TdjLoLhFlr5Y=;
+        b=CYzZAriAT7t/d9uoyGv5k21sGcp3pEQCQmDAxJQUgQbhcuJHfCE+Uf1pN9oO8FMC0N
+         mJCSaH+C57mkVKjCiPMaF6SnEe+bhgUmRo1/F12tCxozqU77+cfxH8FrRAwEiD3klAfw
+         Iy92wkMD1yFVg7wjjdbOd4tV3MxcnnWKtEg4/U0wPnXGB6Tm4hle0i5lHo2Tbow9WJFP
+         +jKUwD5PKS6I5tLQj66DUB6SXhT9vS4q9NySk0ERFi5j0PDKqBYVEWrtufyr3HGhe1OJ
+         iG8J6duMdDfaVC8JN6+0i84VwO3LL6nadcDte+Y/oUdCXdyuogXHWGMZBDERjQUHOhkq
+         NYGg==
+X-Gm-Message-State: AOJu0Yzx3MUAlvqWLnWpKBzi9sdwfUD6fOjmdS2po+D97/yE1Ng8Z3ZP
+	M3jYwU4OTbWM1dSszB1g6N+3QLmjfgbulYsioXVBlDqi
+X-Google-Smtp-Source: AGHT+IGJUSH+6wzMUOd5MhCgiR7QI8jU/jnlTT0uUK3EQMx8ZT+rB74zdrMcxEUFgyNlxRiEprtDL90o+ZD3+AysVtk=
+X-Received: by 2002:a05:6512:2203:b0:50b:d0e3:c95b with SMTP id
+ h3-20020a056512220300b0050bd0e3c95bmr326568lfu.15.1701326512225; Wed, 29 Nov
+ 2023 22:41:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8660:EE_|AM9PR04MB8414:EE_
-X-MS-Office365-Filtering-Correlation-Id: 59f2755d-23db-4ebf-7288-08dbf16e7231
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	0PMzNwchNP6Q4wnA58blLLWIikAbsHhdCRIJabHidFBD9seCOMvtcNapMizR5tK36LKo382VyXae93ZxzJuTPNL6QJhc1ln5axT6zvnw26W1TAtKwnJz8qbvYxa0ST08dr8HXikNvNgsOteOG273zY2f7IJw2V7f+4bsGevbNs0qO3CLjr2FwLBb4Z02OpZRWEgsuVTYphaX2ENzQxiBXIPxev5USc4kxKDJ/Ws9k46JN0y41UkuNGaGgGeKa5A5EUDvFcuT4iIIltoedP0qzMaNFM/r8UVFi88KC0nJk4l+4Dlf3uz6FdJfkFo7/XoVqfPIM0xLo1kxE5idcWIlUrioPFNrdze4XGgPbjrAUeE4EsibmWz40XRO9n9owauSJlWFTjlPkptOU61EUJfZdz9zObkUTL4IeCUEnhaxUxwa9ZlW51Wi4sYXnyOaRMmyvYis0XtFWUVxxNXjKWIHZnfKKTH2qXCS09/PfGwePRM5Gp+FO0AfDyiwj+GTMwNKVcaqgRx3Ggenf/Q+Oi2L427fz9FlwHfygiPY7esjooytYolIjRBC3j6COPa7DUjbvjMtUh4utzcb8wY6hNp8nPJdwL8h1iHirzTlBgeN6smnol6iP2BXzUapXBD8YO+S
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8660.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(376002)(396003)(136003)(346002)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(2906002)(4744005)(66556008)(66476007)(66946007)(8936002)(6916009)(8676002)(316002)(5660300002)(4326008)(33716001)(41300700001)(86362001)(202311291699003)(38100700002)(6666004)(9686003)(6512007)(6506007)(478600001)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?GvFslyIIrimu+4FBrYli5ZvUpIK14b/GwwnAMRTCXb7gxvInRUYlS558JOhe?=
- =?us-ascii?Q?q29vUa5iXOqYrVRURHxTTY1vyulbXc0wgbHP2o5vENnGuUD/V12AH4hlODwa?=
- =?us-ascii?Q?qKVvO1B827i/Xsxu1GsA538zKx36owcjNje21dNtrKlYi0PgI4hjr8J8ipW8?=
- =?us-ascii?Q?eVkKJQeXHFM30VhrgGcWpZldbI8xR65KjSUNzRW/JhdB6RkknudklR0hpJzb?=
- =?us-ascii?Q?C4bOmaUW6eGXEIws6QsA2KgkFre2Vqc9NOdDsrHRUhJeBf5MCtov8AvJqE2y?=
- =?us-ascii?Q?fuXEHlvqzv9MbfbvYGplB+LMm0dd+rksWRbid9LiL580ZAy3IyLo6EKMEQYu?=
- =?us-ascii?Q?MCJMx7qm08KMLKPvOHjoE7jU/5H4o67wnKEo574VsdvOhDp6m7jOq1dEiTTc?=
- =?us-ascii?Q?z104hBIppeh5F5DVPFrfvepOR2RdYTRTUn+8+OiAMysh+JCqKUN6MAlHjRG6?=
- =?us-ascii?Q?yt5n4MykJwP56HXGd5iKYDojQwNCrnf8eBzomt5M41HB6oVAipH3pMUERtA1?=
- =?us-ascii?Q?bcAFMgEu/Gm7pI81ti7gzSTMtp8lQRdapqRQu4dxjziUqbYWLPwsBRlB1Vht?=
- =?us-ascii?Q?qIhgSjD3GDQDKBIdn4F+YD3nJ7o8hVho5Z0FEmMxchXXxJTL8bTIQOtfXXqI?=
- =?us-ascii?Q?4+HpLQ5IGWJoD0sUmek3pil7ytjRvDA2Zk7hZo1db38ISN5f7KFcvgm46SHT?=
- =?us-ascii?Q?7n77NPKrVHgmPLeeSlSjH0q9E+LwbDcg4OjrCBNBnWkkT4yHTW4JjgNHkVBL?=
- =?us-ascii?Q?hCg5e9IIUaK6sLVzSpsX/HQpvGmV4DHnnvIJ+NkujPRXsD5xxZAriIID38pP?=
- =?us-ascii?Q?RYEj03RIm5CW2Y9p3klu4VJNEOVQWX1FnCGgA3yacpCoJTe3N/AqHDvMS873?=
- =?us-ascii?Q?1RB5xnt3tpejDrY3/jyH90a0grPoPEwXn8/fguj/04kbN2u3CpFq60D1yaiW?=
- =?us-ascii?Q?V0xNZNLZ2Jm8/ro2iNsu/iz5sZFR33NefDKy0p4ZkaikdSgUcZCPKp7jFjxD?=
- =?us-ascii?Q?JNgLgAKKjpQvQRUJuOHv2CaZXLWyruqVnaCSpuyoa/MzdzbXx0BKAWLzQeU/?=
- =?us-ascii?Q?AY/mCk5ATXGZ9u4li8k7tk7iIKj0uorJAvvH/nsZ69d5Qc+z+FQbBfgbd09R?=
- =?us-ascii?Q?TNfwlWzCXbcq4yiUMQL7O/Q0SaU1ES5ZtHzvKs/L/hBLObnkpa+FFV1Z5Jog?=
- =?us-ascii?Q?IkYHrlEzGoPaxC006kcs1/RzxvIzy/794nq758MVisRy1DPTw554T4m0ljCv?=
- =?us-ascii?Q?iSpsnPML1mlCx5q/8NOrk5OB2liKYA/DhgDpbkbF06Nf19VoyKPlKq+3M7Lq?=
- =?us-ascii?Q?ITcmQ/uqFJWGYQCKzMTj6tOW4irtRHW+jSw/Asc8uM1rSHzE97/vzMW1Cqpb?=
- =?us-ascii?Q?yk/iviI+wXclZunzZQt1dLscz+LDJR/BXnyKb6gMlEWYELk3Upkhm4pJcZWm?=
- =?us-ascii?Q?/m/zH70ZT+JTdwagOMPS933pgA+WFwcMQ9tbE/vPb+LXXQS1Q3Z1Gjd9ARIa?=
- =?us-ascii?Q?8Lk7CeXkhv+ztp5UNsXiGuJcka9LjKzMBpHbtjMkz8sjRF9ghFtC0r8LBz7c?=
- =?us-ascii?Q?wCDhrzglFEs0j6ro4fDWHAl61OiuABCgwCMZ3uffuRHfOHZUuS98PhzEO5f4?=
- =?us-ascii?Q?KqxJ+3sc4f9ZNDWZThtuihWgYuPVJ7k8s8IJtc+zMOpUMferG29hl7EyCCx+?=
- =?us-ascii?Q?D9jhEQ=3D=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59f2755d-23db-4ebf-7288-08dbf16e7231
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR04MB8660.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 06:34:46.8430
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Kn4Z1wg7ptngcBw440C25i6sLuUJiaP7mHwXPk9xSHcOnTfpIpo9rukH4c5Qwoph1z4BangfkklfCiZ1mcjXYQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8414
+References: <20231129003620.1049610-1-andrii@kernel.org> <20231129003620.1049610-4-andrii@kernel.org>
+ <carufygwn5mf27v5y336tout32yokzoqhfaot2skxgn7s54rxb@qp3qicqilpcz>
+ <CAEf4BzbUjsW0JfMwZQQYETafs=6yD=cs23W_PJ6=H90YMZudyQ@mail.gmail.com> <ZWgcW2RCDW9hoOVI@u94a>
+In-Reply-To: <ZWgcW2RCDW9hoOVI@u94a>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 29 Nov 2023 22:41:39 -0800
+Message-ID: <CAEf4BzZXPqfPouShM2UcpX3NEyM425ePZV_kS6vrUmXFtY4d0A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 03/10] bpf: enforce exact retval range on
+ subprog/callback exit
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
+	Eduard Zingerman <eddyz87@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 29, 2023 at 04:04:06PM -0800, Andrii Nakryiko wrote:
-> Emit tnum representation as just a constant if all bits are known.
-> Use decimal-vs-hex logic to determine exact format of emitted
-> constant value, just like it's done for register range values.
-> For that move tnum_strn() to kernel/bpf/log.c to reuse decimal-vs-hex
-> determination logic and constants.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+On Wed, Nov 29, 2023 at 9:23=E2=80=AFPM Shung-Hsi Yu <shung-hsi.yu@suse.com=
+> wrote:
+>
+> On Wed, Nov 29, 2023 at 08:23:38AM -0800, Andrii Nakryiko wrote:
+> > On Wed, Nov 29, 2023 at 2:56=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@suse=
+.com> wrote:
+> > > On Tue, Nov 28, 2023 at 04:36:13PM -0800, Andrii Nakryiko wrote:
+> > > > Instead of relying on potentially imprecise tnum representation of
+> > > > expected return value range for callbacks and subprogs, validate th=
+at
+> > > > umin/umax range satisfy exact expected range of return values.
+> > > >
+> > > > E.g., if callback would need to return [0, 2] range, tnum can't
+> > > > represent this precisely and instead will allow [0, 3] range. By
+> > > > checking umin/umax range, we can make sure that subprog/callback in=
+deed
+> > > > returns only valid [0, 2] range.
+> > > >
+> > > > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > ---
+> > > >  include/linux/bpf_verifier.h |  7 ++++++-
+> > > >  kernel/bpf/verifier.c        | 40 ++++++++++++++++++++++++++------=
+----
+> > > >  2 files changed, 35 insertions(+), 12 deletions(-)
+> > >
+> > > ...
+> > >
+> > > > --- a/kernel/bpf/verifier.c
+> > > > +++ b/kernel/bpf/verifier.c
+> > > > @@ -9560,6 +9565,19 @@ static bool in_rbtree_lock_required_cb(struc=
+t bpf_verifier_env *env)
+> > > >       return is_rbtree_lock_required_kfunc(kfunc_btf_id);
+> > > >  }
+> > > >
+> > > > +static bool retval_range_within(struct bpf_retval_range range, con=
+st struct bpf_reg_state *reg)
+> > > > +{
+> > > > +     return range.minval <=3D reg->umin_value && reg->umax_value <=
+=3D range.maxval;
+> > > > +}
+> > > > +
+> > > > +static struct tnum retval_range_as_tnum(struct bpf_retval_range ra=
+nge)
+> > > > +{
+> > > > +     if (range.minval =3D=3D range.maxval)
+> > > > +             return tnum_const(range.minval);
+> > > > +     else
+> > > > +             return tnum_range(range.minval, range.maxval);
+> > > > +}
+> > >
+> > > Nit: find it slightly strange to have retval_range_as_tnum() added he=
+re
+> > > (patch 3), only to be removed again in the patch 5. As far as I can s=
+ee
+> > > patch 4 doesn't require this, and it is only used once.
+> > >
+> > > Perhaps just replace its use below with tnum_range() instead? (Not
+> > > pretty, but will be removed anyway).
+> >
+> > I do this to delay the refactoring of verbose_invalid_scalar() which
+> > is used by another piece of logic which I refactor in a separate
+> > patch. If I don't do this temporary retval_range_as_tnum() helper, I
+> > might need to update some more tests that expect exact var_off value
+> > in logs, and I didn't want to do it. Given it's a trivial helper, it
+> > feels like it's not a big deal to keep it for a patch or two before
+> > completing the refactoring.
+>
+> Replace retval_range_as_tnum(callee->callback_ret_range) with
+>
+>   tnum_range(callee->callback_ret_range.minval,
+>              callee->callback_ret_range.maxval)
+>
+> and the verbose_invalid_scalar() signature stays the same; also no var_of=
+f
+> changes because it is just manual inline of retval_range_as_tnum(), as
+> tnum_range(n, n) =3D=3D tnum_const(n).
 
-This is much easier to read, thanks1
+I tried it locally, and I don't have to adjust any new tests, so I'll
+inline tnum_range() as you suggested, thanks.
 
-Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+
+>
+> Agree it really is not a big deal, so I won't insist on it.
+>
+> > > > @@ -9597,7 +9612,10 @@ static int prepare_func_exit(struct bpf_veri=
+fier_env *env, int *insn_idx)
+> > > >               if (err)
+> > > >                       return err;
+> > > >
+> > > > -             if (!tnum_in(range, r0->var_off)) {
+> > > > +             /* enforce R0 return value range */
+> > > > +             if (!retval_range_within(callee->callback_ret_range, =
+r0)) {
+> > > > +                     struct tnum range =3D retval_range_as_tnum(ca=
+llee->callback_ret_range);
 
