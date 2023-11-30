@@ -1,201 +1,94 @@
-Return-Path: <bpf+bounces-16328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 219207FFCBF
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 21:38:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F4EB7FFD03
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 21:45:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4D081F20EE7
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 20:38:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EDE91C20F68
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 20:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B4B55C3F;
-	Thu, 30 Nov 2023 20:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4162052F84;
+	Thu, 30 Nov 2023 20:45:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="mpx5N8JZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CHaWi4Rt"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F395B10DE
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 12:38:16 -0800 (PST)
-Received: from [192.168.1.18] ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id 8nnYrCuP2RmBy8nnYrb7ak; Thu, 30 Nov 2023 21:38:14 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1701376694;
-	bh=PxjlyLqGg3ejqMJeqvlJH8ecba7J9j55JY/fAcFBxOY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=mpx5N8JZgAr8OKYmGqydFOQXanBTNLnUTxMCMkjffdOBjH3960VuM68iMmcV3ckiF
-	 uZZikEUKK7/Z2RqDMSL4xubHHbnSnhbP2QGKopG1AU4B06AbisV7xYZo7YmFI05aJb
-	 zRQzecFqyZenFSuTG9zd5b+axWXJsTJXJNUTx+a5/03lGS1j9KXuqKjnhbY6jP+2GV
-	 lbnIS1UWBPgzKwbU2WulaGV7hOAhzdV6CMeiyFDsN+uBVq3QVWHKACgKdZXr6c2SI3
-	 Ykxq1s2rK4IJYcnWGSdD4W+Gvoc0WbIPW3riWIJbGtyoglWFiz85SqJV63vvuzsxF/
-	 3R84QqIrZzbPQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 30 Nov 2023 21:38:14 +0100
-X-ME-IP: 92.140.202.140
-Message-ID: <40b65db9-1b37-45b6-8afe-7be2df11cfa9@wanadoo.fr>
-Date: Thu, 30 Nov 2023 21:38:11 +0100
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0922E10E6
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 12:45:23 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-548f853fc9eso1636599a12.1
+        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 12:45:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701377121; x=1701981921; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4kMiPQV1+/zOdCemmSBZA6su7Frp1ygAuove7+Wudso=;
+        b=CHaWi4RtLQ3jp8pdJmS6/+pLUlIaZ8m15qsGIbHNgK5pBFIibhxGIlKkY8XnGrm6LO
+         M0f9/U7deZ39gkKdw9lUAbH5gTsytCRqkE1AhtQXGT5gV0C4pOY8Rl3896OZ1HEgxAry
+         Lj5f27BQOhnYMn4ukROVHosolk0pjd/TQ697I7jcDYmPG3QvR1kOKIdCHQwhFnLxnY+i
+         28Lmop+WaPvIFx6ONkacvhdZk5U/TMx5vS4z7Kwz38u1VvWlE9bUsuDzuT2Q1eldFJIB
+         /LB6JeaElkF0BoHrmi8sRpyjUVSrzIkyADpeNbanvSLowwT5J9ken2YgEY4Db22kIoxG
+         IUEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701377121; x=1701981921;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4kMiPQV1+/zOdCemmSBZA6su7Frp1ygAuove7+Wudso=;
+        b=hicI3SefrChelAivH4lFbjaPj8xXh9JCF9Eof7ZC00p1+pQXRUDHoPlJmNzTb3WGEf
+         qdhPmtBp7KfJ5+027HlbvK3HbJPwFdnmMNpWfTOVvSd7kCWramZMWcS0IO+ZFbzkGt4L
+         xOivTmTO3UVyMf+nUnBEZ2vGsM6N8Ff8U/iXpKuLwFW+Mo2eF2kJk6YhjKf7IizOJfmh
+         NID8ss/MKx7hLbF393aSqDhYoTh/nmrnzIDrZuG8lLPefzGUBvygeWMHSwcC8Joyoslx
+         UOQcko4rsypPBlSbeH9Z+pdGlqs7U7pe+GKgDMbrlKzjWpKBU8VKFcgjtWWh3PEREzeF
+         Ti3Q==
+X-Gm-Message-State: AOJu0YybvRvv2gcpR9ArqiV1HbEIxmakoEe0BmVom6MUNw73LC1pgQz5
+	yKfiCrV31aFgSa56QHX5bUTnn2dSw93INQ==
+X-Google-Smtp-Source: AGHT+IGN2MTosweo0E3TH94fLzBjBXX3uR0lyh1WQVHzeKQkvIWIRN2tm1L7vaQLW+xEW6RgGwd7Ng==
+X-Received: by 2002:a50:c042:0:b0:54c:4837:9fe7 with SMTP id u2-20020a50c042000000b0054c48379fe7mr101893edd.62.1701377114440;
+        Thu, 30 Nov 2023 12:45:14 -0800 (PST)
+Received: from erthalion.local (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
+        by smtp.gmail.com with ESMTPSA id v17-20020aa7dbd1000000b0054b286fa48bsm882116edt.91.2023.11.30.12.45.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 12:45:14 -0800 (PST)
+Date: Thu, 30 Nov 2023 21:41:34 +0100
+From: Dmitry Dolgov <9erthalion6@gmail.com>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev,
+	dan.carpenter@linaro.org, olsajiri@gmail.com
+Subject: Re: [PATCH bpf-next v4 1/3] bpf: Relax tracing prog recursive attach
+ rules
+Message-ID: <20231130204134.4i4tloaylxrkrnrt@erthalion.local>
+References: <20231129195240.19091-1-9erthalion6@gmail.com>
+ <20231129195240.19091-2-9erthalion6@gmail.com>
+ <CAPhsuW6J+ZN7KQdxm+2=ZcGGkWohcQxeNS+nNjE5r0K-jdq=FQ@mail.gmail.com>
+ <20231130100851.fymwxhwevd3t5d7m@ddolgov.remote.csb>
+ <CAPhsuW7Yif_mhaUsiwSFyUD7Pv4sz163DBz73EDhnTGMhwdApg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] kernfs: Convert kernfs_path_from_node_locked()
- from strlcpy() to strscpy()
-Content-Language: fr
-To: Kees Cook <keescook@chromium.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Waiman Long <longman@redhat.com>,
- cgroups@vger.kernel.org, Azeem Shaikh <azeemshaikh38@gmail.com>,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20231130200937.it.424-kees@kernel.org>
- <20231130201222.3613535-3-keescook@chromium.org>
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20231130201222.3613535-3-keescook@chromium.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW7Yif_mhaUsiwSFyUD7Pv4sz163DBz73EDhnTGMhwdApg@mail.gmail.com>
 
-Le 30/11/2023 à 21:12, Kees Cook a écrit :
-> One of the last remaining users of strlcpy() in the kernel is
-> kernfs_path_from_node_locked(), which passes back the problematic "length
-> we _would_ have copied" return value to indicate truncation.  Convert the
-> chain of all callers to use the negative return value (some of which
-> already doing this explicitly). All callers were already also checking
-> for negative return values, so the risk to missed checks looks very low.
-> 
-> In this analysis, it was found that cgroup1_release_agent() actually
-> didn't handle the "too large" condition, so this is technically also a
-> bug fix. :)
-> 
-> Here's the chain of callers, and resolution identifying each one as now
-> handling the correct return value:
-> 
-> kernfs_path_from_node_locked()
->          kernfs_path_from_node()
->                  pr_cont_kernfs_path()
->                          returns void
->                  kernfs_path()
->                          sysfs_warn_dup()
->                                  return value ignored
->                          cgroup_path()
->                                  blkg_path()
->                                          bfq_bic_update_cgroup()
->                                                  return value ignored
->                                  TRACE_IOCG_PATH()
->                                          return value ignored
->                                  TRACE_CGROUP_PATH()
->                                          return value ignored
->                                  perf_event_cgroup()
->                                          return value ignored
->                                  task_group_path()
->                                          return value ignored
->                                  damon_sysfs_memcg_path_eq()
->                                          return value ignored
->                                  get_mm_memcg_path()
->                                          return value ignored
->                                  lru_gen_seq_show()
->                                          return value ignored
->                          cgroup_path_from_kernfs_id()
->                                  return value ignored
->                  cgroup_show_path()
->                          already converted "too large" error to negative value
->                  cgroup_path_ns_locked()
->                          cgroup_path_ns()
->                                  bpf_iter_cgroup_show_fdinfo()
->                                          return value ignored
->                                  cgroup1_release_agent()
->                                          wasn't checking "too large" error
->                          proc_cgroup_show()
->                                  already converted "too large" to negative value
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Zefan Li <lizefan.x@bytedance.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: cgroups@vger.kernel.org
-> Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-> Link: https://lore.kernel.org/r/20231116192127.1558276-3-keescook@chromium.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->   fs/kernfs/dir.c           | 37 ++++++++++++++++++++-----------------
->   kernel/cgroup/cgroup-v1.c |  2 +-
->   kernel/cgroup/cgroup.c    |  4 ++--
->   kernel/cgroup/cpuset.c    |  2 +-
->   4 files changed, 24 insertions(+), 21 deletions(-)
-> 
-> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> index 8c0e5442597e..183f353b3852 100644
-> --- a/fs/kernfs/dir.c
-> +++ b/fs/kernfs/dir.c
-> @@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
->    *
->    * [3] when @kn_to is %NULL result will be "(null)"
->    *
-> - * Return: the length of the full path.  If the full length is equal to or
-> + * Return: the length of the constructed path.  If the path would have been
->    * greater than @buflen, @buf contains the truncated path with the trailing
->    * '\0'.  On error, -errno is returned.
->    */
-> @@ -138,16 +138,17 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
->   	struct kernfs_node *kn, *common;
->   	const char parent_str[] = "/..";
->   	size_t depth_from, depth_to, len = 0;
-> +	ssize_t copied;
->   	int i, j;
->   
->   	if (!kn_to)
-> -		return strlcpy(buf, "(null)", buflen);
-> +		return strscpy(buf, "(null)", buflen);
->   
->   	if (!kn_from)
->   		kn_from = kernfs_root(kn_to)->kn;
->   
->   	if (kn_from == kn_to)
-> -		return strlcpy(buf, "/", buflen);
-> +		return strscpy(buf, "/", buflen);
->   
->   	common = kernfs_common_ancestor(kn_from, kn_to);
->   	if (WARN_ON(!common))
-> @@ -158,18 +159,22 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
->   
->   	buf[0] = '\0';
->   
-> -	for (i = 0; i < depth_from; i++)
-> -		len += strlcpy(buf + len, parent_str,
-> -			       len < buflen ? buflen - len : 0);
-> +	for (i = 0; i < depth_from; i++) {
-> +		copied = strscpy(buf + len, parent_str, buflen - len);
-> +		if (copied < 0)
-> +			return copied;
-> +		len += copied;
-> +	}
->   
->   	/* Calculate how many bytes we need for the rest */
->   	for (i = depth_to - 1; i >= 0; i--) {
->   		for (kn = kn_to, j = 0; j < i; j++)
->   			kn = kn->parent;
-> -		len += strlcpy(buf + len, "/",
-> -			       len < buflen ? buflen - len : 0);
-> -		len += strlcpy(buf + len, kn->name,
-> -			       len < buflen ? buflen - len : 0);
-> +
-> +		copied = scnprintf(buf + len, buflen - len, "/%s", kn->name);
-> +		if (copied < 0)
+> On Thu, Nov 30, 2023 at 12:19:31PM -0800, Song Liu wrote:
+> > All in all I've decided that more elaborated approach is slightly
+> > better. But if everyone in the community agrees that less
+> > "defensiveness" is not an issue and verifier could be simply made less
+> > restrictive, I'm fine with that. What do you think?
+>
+> I think the follower_cnt check is not necessary, and may cause confusions.
+> For tracing programs, we are very specific on "which function(s) are we
+> tracing". So I don't think circular attachment can be a real issue. Do we
+> have potential use cases that make the circular attach possible?
 
-Can scnprintf() return <0 ?
-
-> +			return copied;
-> +		len += copied;
->   	}
-
-...
-
+At the moment no, nothing like that in sight. Ok, you've convinced me --
+plus since nobody has yet actively mentioned that potential cycle
+prevention is nice to have, I can drop follower_cnt and the
+corresponding check in the verifier.
 
