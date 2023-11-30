@@ -1,39 +1,42 @@
-Return-Path: <bpf+bounces-16327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01E0C7FFC9D
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 21:35:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 219207FFCBF
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 21:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 329F51C2121B
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 20:35:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4D081F20EE7
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 20:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9377059144;
-	Thu, 30 Nov 2023 20:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B4B55C3F;
+	Thu, 30 Nov 2023 20:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="maO0WLRr"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="mpx5N8JZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4F95674E;
-	Thu, 30 Nov 2023 20:35:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5CA8C433C8;
-	Thu, 30 Nov 2023 20:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701376507;
-	bh=TMbxkVXhSMNls7arGzXSGdcXn5cA3ZdLWLsa3WgMvsM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=maO0WLRrf6UG7/RQiYC1WqanCdVjCwlFVybtsufUe13lzOPxLM7bflV0XP65Ryv09
-	 Ox1WXDYJWLLFehrmtADKcpw2/qI1rU00LW6/u00uRCIc4DQPxS+gbBskTqiWMlg79Y
-	 B3fS/o/vKRiUz4TGGjWq2l65adtBOO1cfllh5Myybw4aOlUVBv0wnPDhE9iV0XJ3ev
-	 56rdhlSjXqGORxxswNy7kRz33uDTynVSnNUgL04EEEWMp2ymVCe3VYIkBgWqeJK5E7
-	 DWBNTrbDfIEb6MXFdFxDQwU5EyfL4Bm/UWiOOcCYkY/XQZzcKsrOiz1Ge0Ks5aSmvX
-	 qYHEJvxvNMsGw==
-Message-ID: <e3402045-a36f-461f-8eab-bbc51735492d@kernel.org>
-Date: Thu, 30 Nov 2023 21:35:01 +0100
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F395B10DE
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 12:38:16 -0800 (PST)
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id 8nnYrCuP2RmBy8nnYrb7ak; Thu, 30 Nov 2023 21:38:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1701376694;
+	bh=PxjlyLqGg3ejqMJeqvlJH8ecba7J9j55JY/fAcFBxOY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=mpx5N8JZgAr8OKYmGqydFOQXanBTNLnUTxMCMkjffdOBjH3960VuM68iMmcV3ckiF
+	 uZZikEUKK7/Z2RqDMSL4xubHHbnSnhbP2QGKopG1AU4B06AbisV7xYZo7YmFI05aJb
+	 zRQzecFqyZenFSuTG9zd5b+axWXJsTJXJNUTx+a5/03lGS1j9KXuqKjnhbY6jP+2GV
+	 lbnIS1UWBPgzKwbU2WulaGV7hOAhzdV6CMeiyFDsN+uBVq3QVWHKACgKdZXr6c2SI3
+	 Ykxq1s2rK4IJYcnWGSdD4W+Gvoc0WbIPW3riWIJbGtyoglWFiz85SqJV63vvuzsxF/
+	 3R84QqIrZzbPQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 30 Nov 2023 21:38:14 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <40b65db9-1b37-45b6-8afe-7be2df11cfa9@wanadoo.fr>
+Date: Thu, 30 Nov 2023 21:38:11 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -41,129 +44,158 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Does skb_metadata_differs really need to stop GRO aggregation?
-Content-Language: en-US
-To: Daniel Borkmann <daniel@iogearbox.net>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Edward Cree <ecree.xilinx@gmail.com>
-Cc: Yan Zhai <yan@cloudflare.com>, Stanislav Fomichev <sdf@google.com>,
- Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, kernel-team
- <kernel-team@cloudflare.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>,
- "David S. Miller" <davem@davemloft.net>,
- Jakub Sitnicki <jakub@cloudflare.com>
-References: <92a355bd-7105-4a17-9543-ba2d8ae36a37@kernel.org>
- <21d05784-3cd7-4050-b66f-bad3eab73f4e@kernel.org>
- <7f48dc04-080d-f7e1-5e01-598a1ace2d37@iogearbox.net> <87fs0qj61x.fsf@toke.dk>
- <0b0c6538-92a5-3041-bc48-d7286f1b873b@gmail.com> <87plzsi5wj.fsf@toke.dk>
- <1ff5c528-79a8-fbb7-8083-668ca5086ecf@iogearbox.net> <871qc72vmh.fsf@toke.dk>
- <8677db3e-5662-7ebe-5af0-e5a3ca60587f@iogearbox.net>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <8677db3e-5662-7ebe-5af0-e5a3ca60587f@iogearbox.net>
+Subject: Re: [PATCH v2 3/3] kernfs: Convert kernfs_path_from_node_locked()
+ from strlcpy() to strscpy()
+Content-Language: fr
+To: Kees Cook <keescook@chromium.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Waiman Long <longman@redhat.com>,
+ cgroups@vger.kernel.org, Azeem Shaikh <azeemshaikh38@gmail.com>,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20231130200937.it.424-kees@kernel.org>
+ <20231130201222.3613535-3-keescook@chromium.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20231130201222.3613535-3-keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-
-
-On 11/30/23 17:32, Daniel Borkmann wrote:
-> On 11/30/23 2:55 PM, Toke Høiland-Jørgensen wrote:
->> Daniel Borkmann <daniel@iogearbox.net> writes
->>> On 11/29/23 10:52 PM, Toke Høiland-Jørgensen wrote:
->>>> Edward Cree <ecree.xilinx@gmail.com> writes:
->>>>> On 28/11/2023 14:39, Toke Høiland-Jørgensen wrote:
->>>>>> I'm not quite sure what should be the semantics of that, though. 
->>>>>> I.e.,
->>>>>> if you are trying to aggregate two packets that have the flag set, 
->>>>>> which
->>>>>> packet do you take the value from? What if only one packet has the 
->>>>>> flag
->>>
->>> It would probably make sense if both packets have it set.
->>
->> Right, so "aggregate only if both packets have the flag set, keeping the
->> metadata area from the first packet", then?
+Le 30/11/2023 à 21:12, Kees Cook a écrit :
+> One of the last remaining users of strlcpy() in the kernel is
+> kernfs_path_from_node_locked(), which passes back the problematic "length
+> we _would_ have copied" return value to indicate truncation.  Convert the
+> chain of all callers to use the negative return value (some of which
+> already doing this explicitly). All callers were already also checking
+> for negative return values, so the risk to missed checks looks very low.
 > 
-> Yes, sgtm.
+> In this analysis, it was found that cgroup1_release_agent() actually
+> didn't handle the "too large" condition, so this is technically also a
+> bug fix. :)
 > 
-
-Seems like a good default behavior: "keeping the metadata area from the 
-first packet".
-(Please object if someone sees a issue for their use-case with this 
-default.)
-
-
->>>>>> set? Or should we instead have a "metadata_xdp_only" flag that just
->>>>>> prevents the skb metadata field from being set entirely?
->>>
->>> What would be the use case compared to resetting meta data right before
->>> we return with XDP_PASS?
->>
->> I was thinking it could save a call to xdp_adjust_meta() to reset it
->> back to zero before PASSing the packet. But okay, that may be of
->> marginal utility.
+> Here's the chain of callers, and resolution identifying each one as now
+> handling the correct return value:
 > 
-> Agree, feels too marginal.
->
+> kernfs_path_from_node_locked()
+>          kernfs_path_from_node()
+>                  pr_cont_kernfs_path()
+>                          returns void
+>                  kernfs_path()
+>                          sysfs_warn_dup()
+>                                  return value ignored
+>                          cgroup_path()
+>                                  blkg_path()
+>                                          bfq_bic_update_cgroup()
+>                                                  return value ignored
+>                                  TRACE_IOCG_PATH()
+>                                          return value ignored
+>                                  TRACE_CGROUP_PATH()
+>                                          return value ignored
+>                                  perf_event_cgroup()
+>                                          return value ignored
+>                                  task_group_path()
+>                                          return value ignored
+>                                  damon_sysfs_memcg_path_eq()
+>                                          return value ignored
+>                                  get_mm_memcg_path()
+>                                          return value ignored
+>                                  lru_gen_seq_show()
+>                                          return value ignored
+>                          cgroup_path_from_kernfs_id()
+>                                  return value ignored
+>                  cgroup_show_path()
+>                          already converted "too large" error to negative value
+>                  cgroup_path_ns_locked()
+>                          cgroup_path_ns()
+>                                  bpf_iter_cgroup_show_fdinfo()
+>                                          return value ignored
+>                                  cgroup1_release_agent()
+>                                          wasn't checking "too large" error
+>                          proc_cgroup_show()
+>                                  already converted "too large" to negative value
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: cgroups@vger.kernel.org
+> Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Link: https://lore.kernel.org/r/20231116192127.1558276-3-keescook@chromium.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>   fs/kernfs/dir.c           | 37 ++++++++++++++++++++-----------------
+>   kernel/cgroup/cgroup-v1.c |  2 +-
+>   kernel/cgroup/cgroup.c    |  4 ++--
+>   kernel/cgroup/cpuset.c    |  2 +-
+>   4 files changed, 24 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> index 8c0e5442597e..183f353b3852 100644
+> --- a/fs/kernfs/dir.c
+> +++ b/fs/kernfs/dir.c
+> @@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
+>    *
+>    * [3] when @kn_to is %NULL result will be "(null)"
+>    *
+> - * Return: the length of the full path.  If the full length is equal to or
+> + * Return: the length of the constructed path.  If the path would have been
+>    * greater than @buflen, @buf contains the truncated path with the trailing
+>    * '\0'.  On error, -errno is returned.
+>    */
+> @@ -138,16 +138,17 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+>   	struct kernfs_node *kn, *common;
+>   	const char parent_str[] = "/..";
+>   	size_t depth_from, depth_to, len = 0;
+> +	ssize_t copied;
+>   	int i, j;
+>   
+>   	if (!kn_to)
+> -		return strlcpy(buf, "(null)", buflen);
+> +		return strscpy(buf, "(null)", buflen);
+>   
+>   	if (!kn_from)
+>   		kn_from = kernfs_root(kn_to)->kn;
+>   
+>   	if (kn_from == kn_to)
+> -		return strlcpy(buf, "/", buflen);
+> +		return strscpy(buf, "/", buflen);
+>   
+>   	common = kernfs_common_ancestor(kn_from, kn_to);
+>   	if (WARN_ON(!common))
+> @@ -158,18 +159,22 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+>   
+>   	buf[0] = '\0';
+>   
+> -	for (i = 0; i < depth_from; i++)
+> -		len += strlcpy(buf + len, parent_str,
+> -			       len < buflen ? buflen - len : 0);
+> +	for (i = 0; i < depth_from; i++) {
+> +		copied = strscpy(buf + len, parent_str, buflen - len);
+> +		if (copied < 0)
+> +			return copied;
+> +		len += copied;
+> +	}
+>   
+>   	/* Calculate how many bytes we need for the rest */
+>   	for (i = depth_to - 1; i >= 0; i--) {
+>   		for (kn = kn_to, j = 0; j < i; j++)
+>   			kn = kn->parent;
+> -		len += strlcpy(buf + len, "/",
+> -			       len < buflen ? buflen - len : 0);
+> -		len += strlcpy(buf + len, kn->name,
+> -			       len < buflen ? buflen - len : 0);
+> +
+> +		copied = scnprintf(buf + len, buflen - len, "/%s", kn->name);
+> +		if (copied < 0)
 
-I should explain our use-case(s) a bit more.
-We do want the information to survive XDP_PASS into the SKB.
-Its the hole point, as we want to transfer information from XDP layer to
-TC-layer and perhaps further all the way to BPF socket filters (I even
-heard someone asked for).
+Can scnprintf() return <0 ?
 
-I'm trying to get an overview, as I now have multiple product teams that
-want to store information across/into differ layer, and they have other
-teams that consume this information.
+> +			return copied;
+> +		len += copied;
+>   	}
 
-We are exploring more options than only XDP metadata area to store
-information.  I have suggested that once an SKB have a socket
-associated, then we can switch into using BPF local socket storage
-tricks. (The lifetime of XDP metadata is not 100% clear as e.g.
-pskb_expand_head clears it via skb_metadata_clear).
-All ideas are welcome, e.g. I'm also looking at ability to store
-auxiliary/metadata data associated with a dst_entry. And SKB->mark is
-already used for other use-cases and isn't big enough. (and then there
-is fun crossing a netns boundry).
+...
 
-Let me explain *one* of the concrete use-cases.  As described in [1],
-the CF XDP L4 load-balancer Unimog have been extended to a product
-called Plurimog that does load-balancing across data-centers "colo's".
-When Plurimog redirects to another colo, the original "landing" colo's
-ID is carried across (in some encap header) to a Unimog instance.  Thus,
-the original landing Colo ID is known to Unimog running in another colo,
-but that header is popped, so this info need to be transferred somehow.
-I'm told that even the webserver/Nginx need to know the orig/foreign
-landing colo ID (here there should be socket associated). For TCP SYN
-packets, the layered DOS protecting also need to know foreign landing
-colo ID. Other teams/products needs this for accounting, e.g. Traffic
-Manager[1], Radar[2] and Capacity planning.
-
-
-  [1] https://blog.cloudflare.com/meet-traffic-manager/
-  [2] https://radar.cloudflare.com/
-
-
-
->>>>> Sounds like what's actually needed is bpf progs inside the GRO engine
->>>>>    to implement the metadata "protocol" prepare and coalesce 
->>>>> callbacks?
->>>>
->>>> Hmm, yes, I guess that would be the most general solution :)
->>>
->>> Feels like a potential good fit, agree, although for just solving the
->>> above sth not requiring extra BPF might be nice as well.
->>
->> Yeah, I agree that just the flag makes sense on its own.
-
-I've mentioned before (e.g. at NetConf) I would really like to see BPF
-progs inside the GRO engine, but that is a larger project on its own.
-I think it is worth doing eventually, but I likely need a solution to
-unblock the "tracing"/debugging use-case, where someone added a
-timestamp to XDP metadata and discovered GRO was not working.
-
-I guess, we can do the Plurimog use-case now, as it should be stable for
-packets belonging to the same (GRO) flow.
-
---Jesper
 
