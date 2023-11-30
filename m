@@ -1,260 +1,222 @@
-Return-Path: <bpf+bounces-16292-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F01B7FF875
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 18:39:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 718737FF97B
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 19:36:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D955B2105E
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 17:39:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A14D2815D1
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 18:36:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D635810B;
-	Thu, 30 Nov 2023 17:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CDD35A0FE;
+	Thu, 30 Nov 2023 18:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w/fHai8k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VClaQUPo"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02207131
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 09:39:15 -0800 (PST)
-Message-ID: <840e33ec-ea4c-4b55-bda1-0be8d1e0324f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701365954;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nfWUC30JUSCmwoYj4vKyiknlvKqWv4pfeoM/YirSLtM=;
-	b=w/fHai8kY3V7PTbNp43G1IX2sCvWmX9nqtBOUYRQE1LGUFdwMfUw/nNGuz6u2X9XR/r+ly
-	rP9Z+3wGm2rAa0KvDv7vWW/uLkQ63+kT8gzEDx6bsu3Hz9STXZttB5x2MkSXOFCyLT480x
-	ICf+N+XchtDNz311TYHyzcBGB6B3uu4=
-Date: Thu, 30 Nov 2023 09:39:08 -0800
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A952D10EA;
+	Thu, 30 Nov 2023 10:35:59 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1882023bbfso140719566b.3;
+        Thu, 30 Nov 2023 10:35:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701369358; x=1701974158; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j0ZuOjmtVHlX0ubp6onvOS4SnKgdwsygvRAPYLPj5Bk=;
+        b=VClaQUPoMm3HrD4O9OjZ+GMdSY65hI0RPDnB5/uv2AJdZ/K6dEpNsbvDkEnJwrdMzx
+         R/ZwthoENl1ma5LsRAxS1WZqN3PO1VsQjMJv6PWlXaln02sFFxSE+TYg12k4vbCW5QfL
+         VVbfwRBaJ6BNkH6rEz52xtxgrFeFQ9JE+CaVBhG8JLJXDGmUL4fASFTh/WzPvnns9SQw
+         dRRlEpGVQYwFawRsaXAlZzkXmkxfUfwzRjwPfp307i/6ucwYwrHFBFt6iFyA+uyA2yTN
+         y6LmeJkY8e/tKMFw9BzC8t9ULdg3/KzmFobXz/IwUqcr3gU65Ad//sSN/dva0awB0b8T
+         wuTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701369358; x=1701974158;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j0ZuOjmtVHlX0ubp6onvOS4SnKgdwsygvRAPYLPj5Bk=;
+        b=J8T3Nf9BrFM18dYiBj8jwGnX8Det9o5kFjeF3Qib14gPowNq7lOE5TdjwGVqpalh48
+         Ip1DB0R4ZaIyV3DJeCHQyeBHPuceoHuqwXRnIZszQZaCNQX2tWrOqhqCG8trZs/8M00x
+         gnbKqb2Myj5PfgpMXEb3EPHRRUthtkQRdukB7FtRY2PgMqFoCSJGTq+lNro160cM2Fq9
+         EUYscLLmdT54vDv1kWPY5BpwXoSkTqdjq8p1bcGRDcQAl00b21NManBgVNXXaG8wdnFu
+         GQm4AdDC1mFdJN8qz9cct1ZLRoAXDJrMv5gK11cpYecGpKt/eM4rkIjB5nBlt2LbzSzE
+         q7Mg==
+X-Gm-Message-State: AOJu0Yyn4vnnqDZcny2qgTENq8G9lhqHC8jG0kxX78Lvw4W4+VwMSXoN
+	lLbVO9kk0s3QPGIJQCZnEQZQ07ESZGEGqBUI1kD+xUOy
+X-Google-Smtp-Source: AGHT+IGIBH8l0IRBM5I7fwjL4au6/JL5XgUgQma4YCeHzWocvzxDOGysPlgCPKQFgWRiAKTrYRHY2EhCVQJG+08hf58=
+X-Received: by 2002:a50:aad8:0:b0:54b:10a8:ad6f with SMTP id
+ r24-20020a50aad8000000b0054b10a8ad6fmr1119edc.40.1701367070000; Thu, 30 Nov
+ 2023 09:57:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: BPF GCC status - Nov 2023
-Content-Language: en-GB
-To: "Jose E. Marchesi" <jemarch@gnu.org>
-Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-References: <87leahx2xh.fsf@oracle.com>
- <3733942b-f0ef-4e71-8c49-aa4177e9433c@linux.dev> <87jzq1t4sk.fsf@oracle.com>
- <a1073bd0-9df2-4a9e-900c-7e8ac63ac464@linux.dev> <87h6l3a16n.fsf@gnu.org>
- <b1b003f0-dfa7-434f-a03a-1c9e2a21c3bf@linux.dev> <87v89j8emi.fsf@gnu.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <87v89j8emi.fsf@gnu.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231127190409.2344550-1-andrii@kernel.org> <20231127190409.2344550-4-andrii@kernel.org>
+ <CAEf4BzauJjmqMdgqBrsvmXjATj4s6Om94BV471LwwdmJpx3PjQ@mail.gmail.com> <20231130-katzen-anhand-7ad530f187da@brauner>
+In-Reply-To: <20231130-katzen-anhand-7ad530f187da@brauner>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 30 Nov 2023 09:57:37 -0800
+Message-ID: <CAEf4BzZA2or352VkAaBsr+fsWAGO1Cs_gonH7Ffm5emXGE+2Ug@mail.gmail.com>
+Subject: Re: [PATCH v11 bpf-next 03/17] bpf: introduce BPF token object
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	paul@paul-moore.com, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 11/30/23 10:06 AM, Jose E. Marchesi wrote:
->> On 11/30/23 7:13 AM, Jose E. Marchesi wrote:
->>>> On 11/29/23 2:08 AM, Jose E. Marchesi wrote:
->>>>>> On 11/28/23 11:23 AM, Jose E. Marchesi wrote:
->>>>>>> [During LPC 2023 we talked about improving communication between the GCC
->>>>>>>      BPF toolchain port and the kernel side.  This is the first periodical
->>>>>>>      report that we plan to publish in the GCC wiki and send to interested
->>>>>>>      parties.  Hopefully this will help.]
->>>>>>>
->>>>>>> GCC wiki page for the port: https://gcc.gnu.org/wiki/BPFBackEnd
->>>>>>> IRC channel: #gccbpf at irc.oftc.net.
->>>>>>> Help on using the port: gcc@gcc.gnu.org
->>>>>>> Patches and/or development discussions: gcc-patches@gnu.org
->>>>>> Thanks a lot for detailed report. Really helpful to nail down
->>>>>> issues facing one or both compilers. See comments below for
->>>>>> some mentioned issues.
->>>>>>
->>>>>>> Assembler
->>>>>>> =========
->>>>>> [...]
->>>>>>
->>>>>>> - In the Pseudo-C syntax register names are not preceded by % characters
->>>>>>>       nor any other prefix.  A consequence of that is that in contexts like
->>>>>>>       instruction operands, where both register names and expressions
->>>>>>>       involving symbols are expected, there is no way to disambiguate
->>>>>>>       between them.  GAS was allowing symbols like `w3' or `r5' in syntactic
->>>>>>>       contexts where no registers were expected, such as in:
->>>>>>>
->>>>>>>         r0 = w3 ll  ; GAS interpreted w3 as symbol, clang emits error
->>>>>>>
->>>>>>>       The clang assembler wasn't allowing that.  During LPC we agreed that
->>>>>>>       the simplest approach is to not allow any symbol to have the same name
->>>>>>>       than a register, in any context.  So we changed GAS so it now doesn't
->>>>>>>       allow to use register names as symbols in any expression, such as:
->>>>>>>
->>>>>>>         r0 = w3 + 1 ll  ; This now fails for both GAS and llvm.
->>>>>>>         r0 = 1 + w3 ll  ; NOTE this does not fail with llvm, but it should.
->>>>>> Could you provide a reproducible case above for llvm? llvm does not
->>>>>> support syntax like 'r0 = 1 + w3 ll'. For add, it only supports
->>>>>> 'r1 += r2' or 'r1 += 100' syntax.
->>>>> It is a 128-bit load with an expression.  In compiler explorer, clang:
->>>>>
->>>>>      int
->>>>>      foo ()
->>>>>      {
->>>>>        asm volatile ("r1 = 10 + w3 ll");
->>>>>        return 0;
->>>>>      }
->>>>>
->>>>> I get:
->>>>>
->>>>>      foo:                                    # @foo
->>>>>              r1 = 10+w3 ll
->>>>>              r0 = 0
->>>>>              exit
->>>>>
->>>>> i.e. `10 + w3' is interpreted as an expression with two operands: the
->>>>> literal number 10 and a symbol (not a register) `w3'.
->>>>>
->>>>> If the expression is `w3+10' instead, your parser recognizes the w3 as a
->>>>> register name and errors out, as expected.
->>>>>
->>>>> I suppose llvm allows to hook on the expression parser to handle
->>>>> individual operands.  That's how we handled this in GAS.
->>>> Thanks for the code. I can reproduce the result with compiler explorer.
->>>> The following is the link https://godbolt.org/z/GEGexf1Pj
->>>> where I added -grecord-gcc-switches to dump compilation flags
->>>> into .s file.
->>>>
->>>> The following is the compiler explorer compilation command line:
->>>> /opt/compiler-explorer/clang-trunk-20231129/bin/clang-18 -g -o /app/output.s \
->>>>     -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 \
->>>>     -g -grecord-command-line /app/example.c
->>>>
->>>> I then compile the above C code with
->>>>     clang -g -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 -g -grecord-command-line t.c
->>>> with identical flags.
->>>>
->>>> I tried locally with llvm16/17/18. They all failed compilation since
->>>> 'r1 = 10+w3 ll' cannot be recognized by the llvm.
->>>> We will investigate why llvm18 in compiler explorer compiles
->>>> differently from my local build.
->>> I updated git llvm master today and I managed to reproduce locally with:
->>>
->>> jemarch@termi:~/gnu/src/llvm-project/llvm/build$ clang --version
->>> clang version 18.0.0 (https://github.com/llvm/llvm-project.git 586986a063ee4b9a7490aac102e103bab121c764)
->>> Target: unknown
->>> Thread model: posix
->>> InstalledDir: /usr/local/bin
->>> $ cat foo.c
->>>       int
->>>       foo ()
->>>       {
->>>         asm volatile ("r1 = 10 + w3 ll");
->>>         return 0;
->>>       }
->>> $ clang -target bpf -c foo.c
->>> $ llvm-objdump -dr foo.o
->>>
->>> foo.o:	file format elf64-bpf
->>>
->>> Disassembly of section .text:
->>>
->>> 0000000000000000 <foo>:
->>>          0:	18 01 00 00 0a 00 00 00 00 00 00 00 00 00 00 00	r1 = 0xa ll
->>> 		0000000000000000:  R_BPF_64_64	w3
->>>          2:	b7 00 00 00 00 00 00 00	r0 = 0x0
->>>          3:	95 00 00 00 00 00 00 00	exit
->> Could you share the cmake command line options when you build you clang?
->> My cmake command line looks like
->> cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja \
->>      -DLLVM_ENABLE_PROJECTS="clang;lld;compiler-rt" \
->>      -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
->>      -DLLVM_ENABLE_ASSERTIONS=ON \
->>      -DLLVM_ENABLE_ZLIB=ON \
->>      -DCMAKE_INSTALL_PREFIX=$PWD/install
->>
->> and cannot reproduce the issue.
-> I don't have the original cmake command, I executed it long ago
-> (rebuilding clang/llvm in my laptop takes three days or more so I do it
-> incrementally.)
+On Thu, Nov 30, 2023 at 6:27=E2=80=AFAM Christian Brauner <brauner@kernel.o=
+rg> wrote:
 >
-> I see this in my CMakeCache.txt:
+> On Tue, Nov 28, 2023 at 04:05:36PM -0800, Andrii Nakryiko wrote:
+> > On Mon, Nov 27, 2023 at 11:06=E2=80=AFAM Andrii Nakryiko <andrii@kernel=
+.org> wrote:
+> > >
+> > > Add new kind of BPF kernel object, BPF token. BPF token is meant to
+> > > allow delegating privileged BPF functionality, like loading a BPF
+> > > program or creating a BPF map, from privileged process to a *trusted*
+> > > unprivileged process, all while having a good amount of control over =
+which
+> > > privileged operations could be performed using provided BPF token.
+> > >
+> > > This is achieved through mounting BPF FS instance with extra delegati=
+on
+> > > mount options, which determine what operations are delegatable, and a=
+lso
+> > > constraining it to the owning user namespace (as mentioned in the
+> > > previous patch).
+> > >
+> > > BPF token itself is just a derivative from BPF FS and can be created
+> > > through a new bpf() syscall command, BPF_TOKEN_CREATE, which accepts =
+BPF
+> > > FS FD, which can be attained through open() API by opening BPF FS mou=
+nt
+> > > point. Currently, BPF token "inherits" delegated command, map types,
+> > > prog type, and attach type bit sets from BPF FS as is. In the future,
+> > > having an BPF token as a separate object with its own FD, we can allo=
+w
+> > > to further restrict BPF token's allowable set of things either at the
+> > > creation time or after the fact, allowing the process to guard itself
+> > > further from unintentionally trying to load undesired kind of BPF
+> > > programs. But for now we keep things simple and just copy bit sets as=
+ is.
+> > >
+> > > When BPF token is created from BPF FS mount, we take reference to the
+> > > BPF super block's owning user namespace, and then use that namespace =
+for
+> > > checking all the {CAP_BPF, CAP_PERFMON, CAP_NET_ADMIN, CAP_SYS_ADMIN}
+> > > capabilities that are normally only checked against init userns (usin=
+g
+> > > capable()), but now we check them using ns_capable() instead (if BPF
+> > > token is provided). See bpf_token_capable() for details.
+> > >
+> > > Such setup means that BPF token in itself is not sufficient to grant =
+BPF
+> > > functionality. User namespaced process has to *also* have necessary
+> > > combination of capabilities inside that user namespace. So while
+> > > previously CAP_BPF was useless when granted within user namespace, no=
+w
+> > > it gains a meaning and allows container managers and sys admins to ha=
+ve
+> > > a flexible control over which processes can and need to use BPF
+> > > functionality within the user namespace (i.e., container in practice)=
+.
+> > > And BPF FS delegation mount options and derived BPF tokens serve as
+> > > a per-container "flag" to grant overall ability to use bpf() (plus fu=
+rther
+> > > restrict on which parts of bpf() syscalls are treated as namespaced).
+> > >
+> > > Note also, BPF_TOKEN_CREATE command itself requires ns_capable(CAP_BP=
+F)
+> > > within the BPF FS owning user namespace, rounding up the ns_capable()
+> > > story of BPF token.
+> > >
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > ---
+> > >  include/linux/bpf.h            |  41 +++++++
+> > >  include/uapi/linux/bpf.h       |  37 ++++++
+> > >  kernel/bpf/Makefile            |   2 +-
+> > >  kernel/bpf/inode.c             |  17 ++-
+> > >  kernel/bpf/syscall.c           |  17 +++
+> > >  kernel/bpf/token.c             | 209 +++++++++++++++++++++++++++++++=
+++
+> > >  tools/include/uapi/linux/bpf.h |  37 ++++++
+> > >  7 files changed, 350 insertions(+), 10 deletions(-)
+> > >  create mode 100644 kernel/bpf/token.c
+> > >
+> >
+> > [...]
+> >
+> > > +int bpf_token_create(union bpf_attr *attr)
+> > > +{
+> > > +       struct bpf_mount_opts *mnt_opts;
+> > > +       struct bpf_token *token =3D NULL;
+> > > +       struct user_namespace *userns;
+> > > +       struct inode *inode;
+> > > +       struct file *file;
+> > > +       struct path path;
+> > > +       struct fd f;
+> > > +       umode_t mode;
+> > > +       int err, fd;
+> > > +
+> > > +       f =3D fdget(attr->token_create.bpffs_fd);
+> > > +       if (!f.file)
+> > > +               return -EBADF;
+> > > +
+> > > +       path =3D f.file->f_path;
+> > > +       path_get(&path);
+> > > +       fdput(f);
+> > > +
+> > > +       if (path.dentry !=3D path.mnt->mnt_sb->s_root) {
+> > > +               err =3D -EINVAL;
+> > > +               goto out_path;
+> > > +       }
+> > > +       if (path.mnt->mnt_sb->s_op !=3D &bpf_super_ops) {
+> > > +               err =3D -EINVAL;
+> > > +               goto out_path;
+> > > +       }
+> > > +       err =3D path_permission(&path, MAY_ACCESS);
+> > > +       if (err)
+> > > +               goto out_path;
+> > > +
+> > > +       userns =3D path.dentry->d_sb->s_user_ns;
+> > > +       /*
+> > > +        * Enforce that creators of BPF tokens are in the same user
+> > > +        * namespace as the BPF FS instance. This makes reasoning abo=
+ut
+> > > +        * permissions a lot easier and we can always relax this late=
+r.
+> > > +        */
+> > > +       if (current_user_ns() !=3D userns) {
+> > > +               err =3D -EPERM;
+> > > +               goto out_path;
+> > > +       }
+> >
+> > Hey Christian,
+> >
+> > I've added stricter userns check as discussed on previous revision,
+> > and a few lines above fixed BPF FS root check (path.dentry !=3D
+> > path.mnt->mnt_sb->s_root). Hopefully that addresses the remaining
+> > concerns you've had.
+> >
+> > I'd appreciate it if you could take another look to double check if
+> > I'm not messing anything up, and if it all looks good, can I please
+> > get an ack from you? Thank you!
 >
->    LLVM_ENABLE_PROJECTS:STRING=clang
->    LLVM_TARGETS_TO_BUILD:STRING=BPF
->    LLVM_ENABLE_ASSERTIONS:BOOL=OFF
->    LLVM_ENABLE_ZLIB:STRING=ON
->    CMAKE_INSTALL_PREFIX:PATH=/usr/local
+> Please enforce that in order to use a token the caller must be in the
+> same user namespace as the token as well. IOW, we don't want to yet make
+> it possible to use a token created in an ancestor user namespace to load
+> or attach bpf programs in a descendant user namespace. Let's be as
+> restrictive as we can: tokens are only valid within the user namespace
+> they were created in.
 
-Thanks for your cmake command line options. Looks like the reason is due to LLVM_ENABLE_ASSERTIONS=OFF while in my case
-LLVM_ENABLE_ASSERTIONS=ON.
+Ok, I will add the check to bpf_token_allow_cmd() and bpf_token_capable().
 
-The related function in llvm is:
-
-static void printExpr(const MCExpr *Expr, raw_ostream &O) {
-#ifndef NDEBUG
-   const MCSymbolRefExpr *SRE;
-
-   if (const MCBinaryExpr *BE = dyn_cast<MCBinaryExpr>(Expr))
-     SRE = dyn_cast<MCSymbolRefExpr>(BE->getLHS());
-   else
-     SRE = dyn_cast<MCSymbolRefExpr>(Expr);
-   assert(SRE && "Unexpected MCExpr type.");
-
-   MCSymbolRefExpr::VariantKind Kind = SRE->getKind();
-
-   assert(Kind == MCSymbolRefExpr::VK_None);
-#endif
-   O << *Expr;
-}
-
-If LLVM_ENABLE_ASSERTIONS=ON, NDEBUG will not be defined
-and 'assert' will actually do assertion.
-If LLVM_ENABLE_ASSERTIONS=OFF, NDEBUG will be defined
-and 'assert' will be a noop.
-
-That is why ASSERTIONS OFF flag is okay while ASSERTIONS ON
-will cause the following error:
-    $ clang --target=bpf -g -S -O2 t.c
-    clang: ../lib/Target/BPF/MCTargetDesc/BPFInstPrinter.cpp:46: void printExpr(const llvm::MCExpr*, llvm::raw_ostream&):
-        Assertion `SRE && "Unexpected MCExpr type."' failed.
-    .... stack trace etc. ....
-
-I also tried with my local redhat built clang15 and it didn't produce error either.
-   $ /bin/clang --target=bpf -g -S -O2 t.c
-   $ rpm -qf /bin/clang
-   clang-16.0.6-1.el9.x86_64
-Looks like their cmake options does not have LLVM_ENABLE_ASSERTIONS at all
-which I assume is OFF. See
-   https://gitlab.com/redhat/centos-stream/rpms/clang/-/blob/4fcf8241b99430ba239c5461b962fea1f3107a22/clang.spec
-
-clang really does not support this syntax:
-    r1 = 10 + w3 ll
-
-The following clang patch will emit error regardless of LLVM_ENABLE_ASSERTIONS value.
-
-======
-
-diff --git a/llvm/lib/Target/BPF/MCTargetDesc/BPFInstPrinter.cpp b/llvm/lib/Target/BPF/MCTargetDesc/BPFInstPrinter.cpp
-index 15ab55f95e69..c266538bec73 100644
---- a/llvm/lib/Target/BPF/MCTargetDesc/BPFInstPrinter.cpp
-+++ b/llvm/lib/Target/BPF/MCTargetDesc/BPFInstPrinter.cpp
-@@ -36,15 +36,16 @@ void BPFInstPrinter::printInst(const MCInst *MI, uint64_t Address,
-  }
-  
-  static void printExpr(const MCExpr *Expr, raw_ostream &O) {
--#ifndef NDEBUG
-    const MCSymbolRefExpr *SRE;
-  
-    if (const MCBinaryExpr *BE = dyn_cast<MCBinaryExpr>(Expr))
-      SRE = dyn_cast<MCSymbolRefExpr>(BE->getLHS());
-    else
-      SRE = dyn_cast<MCSymbolRefExpr>(Expr);
--  assert(SRE && "Unexpected MCExpr type.");
-+  if (!SRE)
-+    report_fatal_error("Unexpected MCExpr type.");
-  
-+#ifndef NDEBUG
-    MCSymbolRefExpr::VariantKind Kind = SRE->getKind();
-  
-    assert(Kind == MCSymbolRefExpr::VK_None);
-
-=======
-
+Thanks a lot for the reviews!
 
