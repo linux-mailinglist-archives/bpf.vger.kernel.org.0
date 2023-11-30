@@ -1,211 +1,155 @@
-Return-Path: <bpf+bounces-16281-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16282-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 491977FF346
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:15:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 196CB7FF406
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:54:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79A321C20EC1
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:15:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D2DEB2107D
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7999D51C55;
-	Thu, 30 Nov 2023 15:15:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1601853811;
+	Thu, 30 Nov 2023 15:54:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mUQv958t"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N/GBRaRv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332B310E3
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 07:14:59 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a00cbb83c80so154416466b.0
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 07:14:59 -0800 (PST)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC65810D5;
+	Thu, 30 Nov 2023 07:54:39 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5ab94fc098cso853998a12.1;
+        Thu, 30 Nov 2023 07:54:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701357297; x=1701962097; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IYayEXRcOr/Ge0hVQdoowZCw8WeY4pGQPtDgJkx98nQ=;
-        b=mUQv958tNLvjlspVO5lVPoUtxOYEyWmST/Ymq5++BTMq2dPlwJnkjS9W6iKrGcnbxG
-         Cd7guk65jpHxx5PurzzEJCJKikFWKbJ4mQV1t0Fqezz1Q09hBhXlmJSflX8DDnNl8dnK
-         5DfSp10tb0me4JymR1U1GMBdAMGBzsYtNmsoXvl95hSmEf3ydunAYW1ocJTVNSykKtUu
-         3JP8mNlbtnKLNQWTsllp66cd/bvXlQYFCVPvN75E/SBiw7pMvBj6P2vgyZzXjl2tGorF
-         T1iALA/TRuzX6eyx3/TgcLZJYzwMPHPTpu7pl84l7WARFJ7x5zRf5fV6p4rSr4Bmvu9a
-         abhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701357297; x=1701962097;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701359679; x=1701964479; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IYayEXRcOr/Ge0hVQdoowZCw8WeY4pGQPtDgJkx98nQ=;
-        b=XoF8y3gXireDd2Wj7i6uDa8RPrOmZKnlam5qP3YUdvpW6LUQXl0fCFFYydnv9SgUwq
-         /U08ZoL5IzUrri/VK0DnPP92LRGAJqSzslGmbcpLd0LpLBh2aRCyeDDCTJvmo5o3OOCw
-         d3jEx/4apC0w+x4JAtyxoPHhJzZXzpn/qAoXlwmURbrL1DMfK2HGQVz2Hporvh3g03oQ
-         uHsmOWYoEkkTL92eT8H8IGcE/hejVBBXgcwv0E1rrpT+HQH1wEo+MacapTnyeqwnzcp2
-         Zjvtv94B4zj6uX3HEAYIwkApORQz5pz+crbNXdtxvTwWXK4EzoF2YsuhVoJoqQdftkiG
-         8Umg==
-X-Gm-Message-State: AOJu0YxqMepOp76ZBZIfigwqkThjdoDhug+bD5/fuHwz+hHonRZDh8NE
-	3ozq8lxVU7sMDwtWlrDgdIw=
-X-Google-Smtp-Source: AGHT+IHdlaIfUamvXsIX3zAwyg6dQKA6o9KUOcfTjRU9qA2zWdu2lrzPj1FWqs/CkLSShl7WiQdxqw==
-X-Received: by 2002:a17:906:2082:b0:a18:65b8:ec3f with SMTP id 2-20020a170906208200b00a1865b8ec3fmr1871869ejq.50.1701357297397;
-        Thu, 30 Nov 2023 07:14:57 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id gg6-20020a170906e28600b00a1848bc033csm769903ejb.128.2023.11.30.07.14.56
+        bh=7SEGQMTDM9nIwkV/HUIBS14c5J5qAwdGyfYFq/Vjc8o=;
+        b=N/GBRaRvH/ya7kg0T2sHwYMdBqUQ4OyfzaEPkwlFaLKPRRCeLWy9TaTcq/X5zlEt0x
+         0/j4T6t/gCgPbIpY/TNyDHglAvagmBOBNrpaTMfc3DKCi18TOleIRJMZFE7qEIeL8Qu0
+         /8GyWV3ZNHUvo2IZfmuyoih5hGDBnqenHQcyZpZcpxPEl8ULw4dejYp+UgPOjtGZg0fz
+         1Rc5irYs2QDDI4XbU05pWduzUHXZzxuLQN+t9g4SXQBgNg7Ige1Y1viW4rkFdfKYRVFm
+         lvPTcXuXFWNpiX35oEN2yCXJ/sXfOvS+Glm+R4hWBLN1tJQhy0EIknltycNKskvALiiV
+         /6aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701359679; x=1701964479;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=7SEGQMTDM9nIwkV/HUIBS14c5J5qAwdGyfYFq/Vjc8o=;
+        b=lxKMRzCnCEJvxtkErx6c/q7W9yDvHItYqgLBs03cYBTDeaj4WjgX7Wi0JRE9R9cnxb
+         1hPUi6uW4s8eVkQNy6Z/S7MT3j/j0yKdsTlxIWJpTbEbvurGFk8twWh5NfNJ5WlTEeRu
+         lFTC3LroJE3ntRri2JjJuhRzalYE7/DUtmv0siuCkqjuyeV3F5KbomdEtX/7LsIpGV+j
+         /Wz/0PcpCn4rrjBJ9mf4S7JiaI0Lpa5x1VSrrn7Wp0WBWGujYDYeKBxW4z1P5hlL2FtJ
+         rp8VVsVC9y3ZNmPJeqHwSOcjR3wq1DSCxlX5cyObwQnqhYGHiK3uOKi6FIKjFO1qK/Ek
+         kVSg==
+X-Gm-Message-State: AOJu0YzA+8AiAyOuY+9xE7FNiNG+FQlEGAjwgolRY1eYYEladX3c/VI3
+	HkEspYpBakxbjdqxRRFlDlQ=
+X-Google-Smtp-Source: AGHT+IEuvjIe4wkG0SuuT+uuCcHxxohkSxvU+YD+z3xS6xwZ9Uh6MTAq9f8PID06mw39uv4zNSsETg==
+X-Received: by 2002:a05:6a21:a591:b0:18c:138e:f268 with SMTP id gd17-20020a056a21a59100b0018c138ef268mr23600964pzc.21.1701359678849;
+        Thu, 30 Nov 2023 07:54:38 -0800 (PST)
+Received: from localhost ([2605:59c8:148:ba10:1053:7b0:e3cc:7b48])
+        by smtp.gmail.com with ESMTPSA id k5-20020aa79d05000000b006cbcd08ed56sm1369884pfp.56.2023.11.30.07.54.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 07:14:57 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 30 Nov 2023 16:14:55 +0100
-To: Dmitrii Dolgov <9erthalion6@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, dan.carpenter@linaro.org,
-	olsajiri@gmail.com
-Subject: Re: [PATCH bpf-next v4 3/3] bpf, selftest/bpf: Fix re-attachment
- branch in bpf_tracing_prog_attach
-Message-ID: <ZWim7zRLA-cgVQpr@krava>
-References: <20231129195240.19091-1-9erthalion6@gmail.com>
- <20231129195240.19091-4-9erthalion6@gmail.com>
+        Thu, 30 Nov 2023 07:54:37 -0800 (PST)
+Date: Thu, 30 Nov 2023 07:54:36 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Daniel Borkmann <daniel@iogearbox.net>, 
+ Eric Dumazet <edumazet@google.com>
+Cc: davem@davemloft.net, 
+ kuba@kernel.org, 
+ pabeni@redhat.com, 
+ ast@kernel.org, 
+ andrii@kernel.org, 
+ martin.lau@linux.dev, 
+ netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ john.fastabend@gmail.com, 
+ jakub@cloudflare.com
+Message-ID: <6568b03cbceb7_1b8920827@john.notmuch>
+In-Reply-To: <edef4d8b-8682-c23f-31c4-57546be97299@iogearbox.net>
+References: <20231129234916.16128-1-daniel@iogearbox.net>
+ <CANn89i+0UuXTYzBD1=zaWmvBKNtyriWQifOhQKF3Y7z4BWZhig@mail.gmail.com>
+ <edef4d8b-8682-c23f-31c4-57546be97299@iogearbox.net>
+Subject: Re: pull-request: bpf 2023-11-30
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129195240.19091-4-9erthalion6@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 29, 2023 at 08:52:38PM +0100, Dmitrii Dolgov wrote:
-> It looks like there is an issue in bpf_tracing_prog_attach, in the
-> "prog->aux->dst_trampoline and tgt_prog is NULL" case. One can construct
-> a sequence of events when prog->aux->attach_btf will be NULL, and
-> bpf_trampoline_compute_key will fail.
-> 
->     BUG: kernel NULL pointer dereference, address: 0000000000000058
->     Call Trace:
->      <TASK>
->      ? __die+0x20/0x70
->      ? page_fault_oops+0x15b/0x430
->      ? fixup_exception+0x22/0x330
->      ? exc_page_fault+0x6f/0x170
->      ? asm_exc_page_fault+0x22/0x30
->      ? bpf_tracing_prog_attach+0x279/0x560
->      ? btf_obj_id+0x5/0x10
->      bpf_tracing_prog_attach+0x439/0x560
->      __sys_bpf+0x1cf4/0x2de0
->      __x64_sys_bpf+0x1c/0x30
->      do_syscall_64+0x41/0xf0
->      entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> 
-> The issue seems to be not relevant to the previous changes with
-> recursive tracing prog attach, because the reproducing test doesn't
-> actually include recursive fentry attaching.
-> 
-> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
-> ---
->  kernel/bpf/syscall.c                          |  4 +-
->  .../bpf/prog_tests/recursive_attach.c         | 48 +++++++++++++++++++
->  .../bpf/progs/fentry_recursive_target.c       | 11 +++++
->  3 files changed, 62 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index a595d7a62dbc..e01a949dfed7 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -3197,7 +3197,9 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->  			goto out_unlock;
->  		}
->  		btf_id = prog->aux->attach_btf_id;
-> -		key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf, btf_id);
-> +		if (prog->aux->attach_btf)
-> +			key = bpf_trampoline_compute_key(NULL, prog->aux->attach_btf,
-> +											 btf_id);
->  	}
+Daniel Borkmann wrote:
+> On 11/30/23 3:53 PM, Eric Dumazet wrote:
+> > On Thu, Nov 30, 2023 at 12:49=E2=80=AFAM Daniel Borkmann <daniel@ioge=
+arbox.net> wrote:
+> >>
+> >> Hi David, hi Jakub, hi Paolo, hi Eric,
+> >>
+> >> The following pull-request contains BPF updates for your *net* tree.=
 
-nice catch.. I'd think dst_trampoline would caught it, because the
-program is loaded with attach_prog_fd=x and check_attach_btf_id should
-create dst_trampoline.. hum
+> >>
+> >> We've added 5 non-merge commits during the last 7 day(s) which conta=
+in
+> >> a total of 10 files changed, 66 insertions(+), 15 deletions(-).
+> >>
+> >> The main changes are:
+> >>
+> >> 1) Fix AF_UNIX splat from use after free in BPF sockmap, from John F=
+astabend.
+> > =
 
-jirka
+> > syzbot is not happy with this patch.
+> > =
 
->  
->  	if (!prog->aux->dst_trampoline ||
-> diff --git a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-> index 9c422dd92c4e..a4abf1745e62 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-> @@ -83,3 +83,51 @@ void test_recursive_fentry_attach(void)
->  			fentry_recursive__destroy(tracing_chain[i]);
->  	}
->  }
-> +
-> +/*
-> + * Test that a tracing prog reattachment (when we land in
-> + * "prog->aux->dst_trampoline and tgt_prog is NULL" branch in
-> + * bpf_tracing_prog_attach) does not lead to a crash due to missing attach_btf
-> + */
-> +void test_fentry_attach_btf_presence(void)
-> +{
-> +	struct fentry_recursive_target *target_skel = NULL;
-> +	struct fentry_recursive *tracing_skel = NULL;
-> +	struct bpf_program *prog;
-> +	int err, link_fd, tgt_prog_fd;
-> +
-> +	target_skel = fentry_recursive_target__open_and_load();
-> +	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
-> +		goto close_prog;
-> +
-> +	tracing_skel = fentry_recursive__open();
-> +	if (!ASSERT_OK_PTR(tracing_skel, "fentry_recursive__open"))
-> +		goto close_prog;
-> +
-> +	prog = tracing_skel->progs.recursive_attach;
-> +	tgt_prog_fd = bpf_program__fd(target_skel->progs.fentry_target);
-> +	err = bpf_program__set_attach_target(prog, tgt_prog_fd, "fentry_target");
-> +	if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
-> +		goto close_prog;
-> +
-> +	err = fentry_recursive__load(tracing_skel);
-> +	if (!ASSERT_OK(err, "fentry_recursive__load"))
-> +		goto close_prog;
-> +
-> +	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
-> +
-> +	link_fd = bpf_link_create(bpf_program__fd(tracing_skel->progs.recursive_attach),
-> +							  0, BPF_TRACE_FENTRY, &link_opts);
-> +	if (!ASSERT_GE(link_fd, 0, "link_fd"))
-> +		goto close_prog;
-> +
-> +	fentry_recursive__detach(tracing_skel);
-> +
-> +	err = fentry_recursive__attach(tracing_skel);
-> +	if (!ASSERT_ERR(err, "fentry_recursive__attach"))
-> +		goto close_prog;
-> +
-> +close_prog:
-> +	fentry_recursive_target__destroy(target_skel);
-> +	fentry_recursive__destroy(tracing_skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-> index b6fb8ebd598d..f812d2de0c3c 100644
-> --- a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-> +++ b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-> @@ -18,3 +18,14 @@ int BPF_PROG(test1, int a)
->  	test1_result = a == 1;
->  	return 0;
->  }
-> +
-> +/*
-> + * Dummy bpf prog for testing attach_btf presence when attaching an fentry
-> + * program.
-> + */
-> +SEC("raw_tp/sys_enter")
-> +int BPF_PROG(fentry_target, struct pt_regs *regs, long id)
-> +{
-> +	test1_result = id == 1;
-> +	return 0;
-> +}
-> -- 
-> 2.41.0
-> 
+> > Would the following fix make sense?
+> > =
+
+> > diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
+> > index 7ea7c3a0d0d06224f49ad5f073bf772b9528a30a..58e89361059fbf9d5942c=
+6dd268dd80ac4b57098
+> > 100644
+> > --- a/net/unix/unix_bpf.c
+> > +++ b/net/unix/unix_bpf.c
+> > @@ -168,7 +168,8 @@ int unix_stream_bpf_update_proto(struct sock *sk,=
+
+> > struct sk_psock *psock, bool r
+> >          }
+> > =
+
+> >          sk_pair =3D unix_peer(sk);
+> > -       sock_hold(sk_pair);
+> > +       if (sk_pair)
+> > +               sock_hold(sk_pair);
+> >          psock->sk_pair =3D sk_pair;
+> >          unix_stream_bpf_check_needs_rebuild(psock->sk_proto);
+> >          sock_replace_proto(sk, &unix_stream_bpf_prot);
+> > =
+
+> =
+
+> Oh well :/ Above looks reasonable to me, thanks, but I'll defer to John=
+ & Jakub (both Cc'ed)
+> for a final look.
+> =
+
+> Thanks,
+> Daniel
+
+Is that sk in LISTEN state by any chance? I can't think why we even allow=
+ such a
+thing for af_unix sockets.  Another possible fix would be to block adding=
+ these
+to sockmap at all.
+
+But, above should be fine as well so I would just go with that. Eric or D=
+aniel
+would you like to submit a patch or I can if needed.
+
+Thanks,
+John=
 
