@@ -1,174 +1,162 @@
-Return-Path: <bpf+bounces-16277-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16280-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD3CF7FF315
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:59:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AE097FF339
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:09:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95FD7B20B4F
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 14:59:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99FA82819F4
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B66A51C34;
-	Thu, 30 Nov 2023 14:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ngR9v8Ly"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF7B951C59;
+	Thu, 30 Nov 2023 15:09:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ab])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C801A4
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 06:59:04 -0800 (PST)
-Message-ID: <b1b003f0-dfa7-434f-a03a-1c9e2a21c3bf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701356342;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZellG2DWbvQM64pO0wYeDOeXAXzmVPQuIkXi5n/9H9Q=;
-	b=ngR9v8LygEZApSdsb3f5d1QW1xPaExvrX3yPwVpulWd9HK7GoxrnTIf7d9dhOS9N6MfTKS
-	EKpkeiL6czW7e0lsN0cu5V/O0h84XSkJpKR+f8TYm4A83GRNKBrVopL5j9qLpV3CLDQ1GW
-	/KHt5zZG8pIME2w2SYGo9xEwHq3/Kvw=
-Date: Thu, 30 Nov 2023 06:58:56 -0800
+X-Greylist: delayed 581 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 30 Nov 2023 07:09:15 PST
+Received: from mail-m155101.qiye.163.com (mail-m155101.qiye.163.com [101.71.155.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8F4194
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 07:09:15 -0800 (PST)
+Received: from localhost.localdomain (unknown [120.208.100.109])
+	by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 5DF278000BB;
+	Thu, 30 Nov 2023 22:57:59 +0800 (CST)
+From: Hu Haowen <2023002089@link.tyut.edu.cn>
+To: song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	martin.lau@linux.dev
+Cc: Hu Haowen <2023002089@link.tyut.edu.cn>,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts/bpf_doc: add __main__ judgement before main code
+Date: Thu, 30 Nov 2023 22:57:46 +0800
+Message-Id: <20231130145746.23621-1-2023002089@link.tyut.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: BPF GCC status - Nov 2023
-Content-Language: en-GB
-To: "Jose E. Marchesi" <jemarch@gnu.org>
-Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-References: <87leahx2xh.fsf@oracle.com>
- <3733942b-f0ef-4e71-8c49-aa4177e9433c@linux.dev> <87jzq1t4sk.fsf@oracle.com>
- <a1073bd0-9df2-4a9e-900c-7e8ac63ac464@linux.dev> <87h6l3a16n.fsf@gnu.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <87h6l3a16n.fsf@gnu.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkZT0wYVk8fGElKTh1PQhgdTlUTARMWGhIXJBQOD1
+	lXWRgSC1lBWUpJS1VJS0NVSktLVUpLQllXWRYaDxIVHRRZQVlLVUtVS1VLWQY+
+X-HM-Tid: 0a8c20bc9835b03akuuu5df278000bb
+X-HM-MType: 10
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NRw6Sjo6SDw*KBdIMxM9Lg8#
+	HDhPCxxVSlVKTEtKSE5NSUNLTEpNVTMWGhIXVUlLSUhLS0lLQ0I7FxIVEFUPAg4PVR4fDlUYFUVZ
+	V1kSC1lBWUpJS1VJS0NVSktLVUpLQllXWQgBWUFOT05MNwY+
 
+When doing Python programming it is a nice convention to insert the if
+statement `if __name__ == "__main__":` before any main code that does
+actual functionalities to ensure the code will be executed only as a
+script rather than as an imported module.  Hence attach the missing
+judgement to bpf_doc.py.
 
-On 11/30/23 7:13 AM, Jose E. Marchesi wrote:
->> On 11/29/23 2:08 AM, Jose E. Marchesi wrote:
->>>> On 11/28/23 11:23 AM, Jose E. Marchesi wrote:
->>>>> [During LPC 2023 we talked about improving communication between the GCC
->>>>>     BPF toolchain port and the kernel side.  This is the first periodical
->>>>>     report that we plan to publish in the GCC wiki and send to interested
->>>>>     parties.  Hopefully this will help.]
->>>>>
->>>>> GCC wiki page for the port: https://gcc.gnu.org/wiki/BPFBackEnd
->>>>> IRC channel: #gccbpf at irc.oftc.net.
->>>>> Help on using the port: gcc@gcc.gnu.org
->>>>> Patches and/or development discussions: gcc-patches@gnu.org
->>>> Thanks a lot for detailed report. Really helpful to nail down
->>>> issues facing one or both compilers. See comments below for
->>>> some mentioned issues.
->>>>
->>>>> Assembler
->>>>> =========
->>>> [...]
->>>>
->>>>> - In the Pseudo-C syntax register names are not preceded by % characters
->>>>>      nor any other prefix.  A consequence of that is that in contexts like
->>>>>      instruction operands, where both register names and expressions
->>>>>      involving symbols are expected, there is no way to disambiguate
->>>>>      between them.  GAS was allowing symbols like `w3' or `r5' in syntactic
->>>>>      contexts where no registers were expected, such as in:
->>>>>
->>>>>        r0 = w3 ll  ; GAS interpreted w3 as symbol, clang emits error
->>>>>
->>>>>      The clang assembler wasn't allowing that.  During LPC we agreed that
->>>>>      the simplest approach is to not allow any symbol to have the same name
->>>>>      than a register, in any context.  So we changed GAS so it now doesn't
->>>>>      allow to use register names as symbols in any expression, such as:
->>>>>
->>>>>        r0 = w3 + 1 ll  ; This now fails for both GAS and llvm.
->>>>>        r0 = 1 + w3 ll  ; NOTE this does not fail with llvm, but it should.
->>>> Could you provide a reproducible case above for llvm? llvm does not
->>>> support syntax like 'r0 = 1 + w3 ll'. For add, it only supports
->>>> 'r1 += r2' or 'r1 += 100' syntax.
->>> It is a 128-bit load with an expression.  In compiler explorer, clang:
->>>
->>>     int
->>>     foo ()
->>>     {
->>>       asm volatile ("r1 = 10 + w3 ll");
->>>       return 0;
->>>     }
->>>
->>> I get:
->>>
->>>     foo:                                    # @foo
->>>             r1 = 10+w3 ll
->>>             r0 = 0
->>>             exit
->>>
->>> i.e. `10 + w3' is interpreted as an expression with two operands: the
->>> literal number 10 and a symbol (not a register) `w3'.
->>>
->>> If the expression is `w3+10' instead, your parser recognizes the w3 as a
->>> register name and errors out, as expected.
->>>
->>> I suppose llvm allows to hook on the expression parser to handle
->>> individual operands.  That's how we handled this in GAS.
->> Thanks for the code. I can reproduce the result with compiler explorer.
->> The following is the link https://godbolt.org/z/GEGexf1Pj
->> where I added -grecord-gcc-switches to dump compilation flags
->> into .s file.
->>
->> The following is the compiler explorer compilation command line:
->> /opt/compiler-explorer/clang-trunk-20231129/bin/clang-18 -g -o /app/output.s \
->>    -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 \
->>    -g -grecord-command-line /app/example.c
->>
->> I then compile the above C code with
->>    clang -g -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 -g -grecord-command-line t.c
->> with identical flags.
->>
->> I tried locally with llvm16/17/18. They all failed compilation since
->> 'r1 = 10+w3 ll' cannot be recognized by the llvm.
->> We will investigate why llvm18 in compiler explorer compiles
->> differently from my local build.
-> I updated git llvm master today and I managed to reproduce locally with:
->
-> jemarch@termi:~/gnu/src/llvm-project/llvm/build$ clang --version
-> clang version 18.0.0 (https://github.com/llvm/llvm-project.git 586986a063ee4b9a7490aac102e103bab121c764)
-> Target: unknown
-> Thread model: posix
-> InstalledDir: /usr/local/bin
-> $ cat foo.c
->      int
->      foo ()
->      {
->        asm volatile ("r1 = 10 + w3 ll");
->        return 0;
->      }
-> $ clang -target bpf -c foo.c
-> $ llvm-objdump -dr foo.o
->
-> foo.o:	file format elf64-bpf
->
-> Disassembly of section .text:
->
-> 0000000000000000 <foo>:
->         0:	18 01 00 00 0a 00 00 00 00 00 00 00 00 00 00 00	r1 = 0xa ll
-> 		0000000000000000:  R_BPF_64_64	w3
->         2:	b7 00 00 00 00 00 00 00	r0 = 0x0
->         3:	95 00 00 00 00 00 00 00	exit
+Signed-off-by: Hu Haowen <2023002089@link.tyut.edu.cn>
+---
+ scripts/bpf_doc.py | 81 +++++++++++++++++++++++-----------------------
+ 1 file changed, 41 insertions(+), 40 deletions(-)
 
-Could you share the cmake command line options when you build you clang?
-My cmake command line looks like
-cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja \
-     -DLLVM_ENABLE_PROJECTS="clang;lld;compiler-rt" \
-     -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
-     -DLLVM_ENABLE_ASSERTIONS=ON \
-     -DLLVM_ENABLE_ZLIB=ON \
-     -DCMAKE_INSTALL_PREFIX=$PWD/install
-
-and cannot reproduce the issue.
-Thanks!
+diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+index 61b7dddedc46..af2a87d97832 100755
+--- a/scripts/bpf_doc.py
++++ b/scripts/bpf_doc.py
+@@ -851,43 +851,44 @@ class PrinterHelpers(Printer):
+ 
+ ###############################################################################
+ 
+-# If script is launched from scripts/ from kernel tree and can access
+-# ../include/uapi/linux/bpf.h, use it as a default name for the file to parse,
+-# otherwise the --filename argument will be required from the command line.
+-script = os.path.abspath(sys.argv[0])
+-linuxRoot = os.path.dirname(os.path.dirname(script))
+-bpfh = os.path.join(linuxRoot, 'include/uapi/linux/bpf.h')
+-
+-printers = {
+-        'helpers': PrinterHelpersRST,
+-        'syscall': PrinterSyscallRST,
+-}
+-
+-argParser = argparse.ArgumentParser(description="""
+-Parse eBPF header file and generate documentation for the eBPF API.
+-The RST-formatted output produced can be turned into a manual page with the
+-rst2man utility.
+-""")
+-argParser.add_argument('--header', action='store_true',
+-                       help='generate C header file')
+-if (os.path.isfile(bpfh)):
+-    argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h',
+-                           default=bpfh)
+-else:
+-    argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h')
+-argParser.add_argument('target', nargs='?', default='helpers',
+-                       choices=printers.keys(), help='eBPF API target')
+-args = argParser.parse_args()
+-
+-# Parse file.
+-headerParser = HeaderParser(args.filename)
+-headerParser.run()
+-
+-# Print formatted output to standard output.
+-if args.header:
+-    if args.target != 'helpers':
+-        raise NotImplementedError('Only helpers header generation is supported')
+-    printer = PrinterHelpers(headerParser)
+-else:
+-    printer = printers[args.target](headerParser)
+-printer.print_all()
++if __name__ == "__main__":
++    # If script is launched from scripts/ from kernel tree and can access
++    # ../include/uapi/linux/bpf.h, use it as a default name for the file to parse,
++    # otherwise the --filename argument will be required from the command line.
++    script = os.path.abspath(sys.argv[0])
++    linuxRoot = os.path.dirname(os.path.dirname(script))
++    bpfh = os.path.join(linuxRoot, 'include/uapi/linux/bpf.h')
++
++    printers = {
++            'helpers': PrinterHelpersRST,
++            'syscall': PrinterSyscallRST,
++    }
++
++    argParser = argparse.ArgumentParser(description="""
++    Parse eBPF header file and generate documentation for the eBPF API.
++    The RST-formatted output produced can be turned into a manual page with the
++    rst2man utility.
++    """)
++    argParser.add_argument('--header', action='store_true',
++                           help='generate C header file')
++    if (os.path.isfile(bpfh)):
++        argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h',
++                               default=bpfh)
++    else:
++        argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h')
++    argParser.add_argument('target', nargs='?', default='helpers',
++                           choices=printers.keys(), help='eBPF API target')
++    args = argParser.parse_args()
++
++    # Parse file.
++    headerParser = HeaderParser(args.filename)
++    headerParser.run()
++
++    # Print formatted output to standard output.
++    if args.header:
++        if args.target != 'helpers':
++            raise NotImplementedError('Only helpers header generation is supported')
++        printer = PrinterHelpers(headerParser)
++    else:
++        printer = printers[args.target](headerParser)
++    printer.print_all()
+-- 
+2.34.1
 
 
