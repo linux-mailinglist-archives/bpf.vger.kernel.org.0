@@ -1,167 +1,181 @@
-Return-Path: <bpf+bounces-16274-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16275-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F08B77FF2CC
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:47:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31D8F7FF2F3
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:53:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92F45B20FAF
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 14:47:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9615BB2103D
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 14:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71F524879F;
-	Thu, 30 Nov 2023 14:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AAC1482F8;
+	Thu, 30 Nov 2023 14:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KYI84ZE7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZoADjwe5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA7D93
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 06:47:23 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9fa2714e828so144682566b.1
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 06:47:23 -0800 (PST)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08290133
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 06:53:45 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso10783a12.1
+        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 06:53:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701355642; x=1701960442; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Hl1/fISzWTmcDIWaAhQv7y3OdrjyjzxR0aSI3jUOxw=;
-        b=KYI84ZE7yvciEiIR8EOZZ19jWtzeG6i4n4uKHlWyXwYDv1xt5k0au8VOaMsvdwDi9e
-         F2Jq+BcStL4RvQtJCIjdA/Ebb0gzh5/dOFSajaV5HDeaRzHz5iYYi8QPtiZ/prz7SPPf
-         G2q6ZcqSHzHPr4GZ9wQEDhjHwuA/treU4ODKC7Y2b/5ekgO7DrDX2tlH+1Gy9qI5oOnX
-         OO9dFaUeZvhMAaRjWfyWGyx7m4hlT0Ch1m/RZFRba4sHCuQiRDjNQ9DvpGiFtlZxczKe
-         eVz0vEkV2ca3MUsN8gPfus+LqUo11HHA/U7Kv91RtZAAx4rIKYBAiVzSKcY71vvzQELk
-         bNsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701355642; x=1701960442;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1701356023; x=1701960823; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/Hl1/fISzWTmcDIWaAhQv7y3OdrjyjzxR0aSI3jUOxw=;
-        b=oJaPibAj4fojgF9iPKMs2aRAjmVXIIh3XR0apsCMEI1aAAMk3xPIvQP9llYdwNmaQp
-         NzmCH79ruPdbzv9ZcYoFmpNQ6MWnZJsf8qDpdqxF0hbM51xw4ekUTcTVQlewmeX+C1Rg
-         KOJotBd6WNagNdraxvRj0eZZN+fBkVuHUNLQ/SVd3UuFyjhypQ0VZY6Eo70tiJaG/3Am
-         EonZB8koqqQui6Fba/qiX8pyHM+H/4QX+gqhP1CI6ycm3p11EfWOgWY144IHBfBuzVzH
-         oagmocgWf62RiW8qFeQriQWWFPiSIOnMeJ1T1++L5mIZK4uGO+TSHIhWv/BFF139lvK4
-         w/GA==
-X-Gm-Message-State: AOJu0YxO8TaDzc6z6DOZYCV7GFLpWOlqBV8cPQYM4b04Ap/lpO0w00e6
-	ZfV6nEIt67A9lXJoUFEY2rQ=
-X-Google-Smtp-Source: AGHT+IFiECc/xKHRrzVKlFYi50ilO7eAMX2DTZZMw1eZC2CqL37jniGC1wmPKVFZOm2TosExzXc0BA==
-X-Received: by 2002:a17:906:7e0c:b0:a02:5ebc:ea81 with SMTP id e12-20020a1709067e0c00b00a025ebcea81mr16336001ejr.45.1701355641633;
-        Thu, 30 Nov 2023 06:47:21 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id z21-20020a170906715500b00a1185ad53c6sm748273ejj.199.2023.11.30.06.47.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 06:47:21 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 30 Nov 2023 15:47:19 +0100
-To: Dmitrii Dolgov <9erthalion6@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, dan.carpenter@linaro.org,
-	olsajiri@gmail.com
-Subject: Re: [PATCH bpf-next v4 2/3] selftests/bpf: Add test for recursive
- attachment of tracing progs
-Message-ID: <ZWigd7sMA2nVM0rf@krava>
-References: <20231129195240.19091-1-9erthalion6@gmail.com>
- <20231129195240.19091-3-9erthalion6@gmail.com>
+        bh=LCn18EbYTvQN6Hx5SPwp2Hrn3+cuHj5r6QyCYUKQz1g=;
+        b=ZoADjwe5HdRUJImOHKCyzd2+M25lXDdUiOL5o/7uHeu7AnLnz0gr75+dOSpVdSttg4
+         Wrfl9A/LurnYPnf5vZJAz/IC8TDypNvrb+kc1H2pvPvB9y3OnfBo8suPLqmppl7FDlnc
+         Zcgjf7Uap+CVo6V8Y09K+4NCOw/0Ven1baMW4ZhPAvU+gMcQ+XlRUhtLl+dv/nUp9sgi
+         bSTmCB5HNxM67+KJrUKkL98xUFN6vBl3+TeN6ZWcpbH5fAzGo/0rgND+1JZcZ9imUFyJ
+         CkS2N3gdFHa3jlpx266bd0fCKNYxjdRIxC1Zvyj/rZ0OkFOOUdBBxOaULqXZGy3g8xcI
+         XZDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701356023; x=1701960823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LCn18EbYTvQN6Hx5SPwp2Hrn3+cuHj5r6QyCYUKQz1g=;
+        b=rVm8ZbkKPDTENzluQVAM24ev90Ca/55/0S1RP8Gou6AOk1x8QEC2WkIAMyJxM1MyDI
+         7Qg42wBLeK3GRn1GmbXQP170dfsblu33XY/6TRpaIRd6xWZBZwLh1+s5ZECjG/cHF1Di
+         J9h3TrIs9AhFTFhAinKwsHeh01KtI2W7kSpAboCmjQNEHgUYwROpPSA3myv6did+hnro
+         n8X9Qxq8OGklTWhfs9taPyRsX2uYtzIB3YVfJgkRqnnU9HH/800/tmHXyhUQ7zGI1g9t
+         yF8mNmg3sdruB3a862WktA/VepCw4BzwtBZCyHBdSXRp6bQk9m/I2ivQUWAZbzxITEM4
+         +cOw==
+X-Gm-Message-State: AOJu0YxQU1fpcoO2lO6t7dJMrDUYiOJMyBJZHBAs6LCwU9o+7WRaWPcD
+	OSetYNSbHlF/VA5gNa/nObmOldu48UbRKWHoQf5hwA==
+X-Google-Smtp-Source: AGHT+IFw5LXEARjiFdEk0Hh6YkSO8IVJfZ4dQPB1Q86yBLt/M6hCAybSTpLWdQddRpJBjxxo9owtUpWZZ2e/l1SI6tI=
+X-Received: by 2002:aa7:c6c1:0:b0:54b:8f42:e3dc with SMTP id
+ b1-20020aa7c6c1000000b0054b8f42e3dcmr166944eds.2.1701356023223; Thu, 30 Nov
+ 2023 06:53:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129195240.19091-3-9erthalion6@gmail.com>
+References: <20231129234916.16128-1-daniel@iogearbox.net>
+In-Reply-To: <20231129234916.16128-1-daniel@iogearbox.net>
+From: Eric Dumazet <edumazet@google.com>
+Date: Thu, 30 Nov 2023 15:53:29 +0100
+Message-ID: <CANn89i+0UuXTYzBD1=zaWmvBKNtyriWQifOhQKF3Y7z4BWZhig@mail.gmail.com>
+Subject: Re: pull-request: bpf 2023-11-30
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, 
+	andrii@kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 29, 2023 at 08:52:37PM +0100, Dmitrii Dolgov wrote:
-
-SNIP
-
-> +void test_recursive_fentry_attach(void)
-> +{
-> +	struct fentry_recursive_target *target_skel = NULL;
-> +	struct fentry_recursive *tracing_chain[ATTACH_DEPTH + 1] = {};
-> +	struct bpf_program *prog;
-> +	int prev_fd, err;
-> +
-> +	target_skel = fentry_recursive_target__open_and_load();
-> +	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
-> +		goto close_prog;
-> +
-> +	/* This is going to be the start of the chain */
-> +	tracing_chain[0] = fentry_recursive__open();
-> +	if (!ASSERT_OK_PTR(tracing_chain[0], "fentry_recursive__open"))
-> +		goto close_prog;
-> +
-> +	prog = tracing_chain[0]->progs.recursive_attach;
-> +	prev_fd = bpf_program__fd(target_skel->progs.test1);
-> +	err = bpf_program__set_attach_target(prog, prev_fd, "test1");
-> +	if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
-> +		goto close_prog;
-> +
-> +	err = fentry_recursive__load(tracing_chain[0]);
-> +	if (!ASSERT_OK(err, "fentry_recursive__load"))
-> +		goto close_prog;
-
-should you call fentry_recursive__attach in here as well?
-
-> +
-> +	/* Create an attachment chain to exhaust the limit */
-> +	for (int i = 1; i < ATTACH_DEPTH; i++) {
-> +		tracing_chain[i] = fentry_recursive__open();
-> +		if (!ASSERT_OK_PTR(tracing_chain[i], "fentry_recursive__open"))
-> +			goto close_prog;
-> +
-> +		prog = tracing_chain[i]->progs.recursive_attach;
-> +		prev_fd = bpf_program__fd(tracing_chain[i-1]->progs.recursive_attach);
-
-or maybe better brach here for (i == 0) and call
-
-  bpf_program__set_attach_target(prog, prev_fd, "test1");
+On Thu, Nov 30, 2023 at 12:49=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
+net> wrote:
+>
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+>
+> The following pull-request contains BPF updates for your *net* tree.
+>
+> We've added 5 non-merge commits during the last 7 day(s) which contain
+> a total of 10 files changed, 66 insertions(+), 15 deletions(-).
+>
+> The main changes are:
+>
+> 1) Fix AF_UNIX splat from use after free in BPF sockmap, from John Fastab=
+end.
 
 
-> +		err = bpf_program__set_attach_target(prog, prev_fd, "recursive_attach");
-> +		if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
-> +			goto close_prog;
-> +
-> +		err = fentry_recursive__load(tracing_chain[i]);
-> +		if (!ASSERT_OK(err, "fentry_recursive__load"))
-> +			goto close_prog;
-> +
-> +		err = fentry_recursive__attach(tracing_chain[i]);
-> +		if (!ASSERT_OK(err, "fentry_recursive__attach"))
-> +			goto close_prog;
-> +	}
-> +
-> +	/* The next attachment would fail */
-> +	tracing_chain[ATTACH_DEPTH] = fentry_recursive__open();
-> +	if (!ASSERT_OK_PTR(tracing_chain[ATTACH_DEPTH], "last fentry_recursive__open"))
-> +		goto close_prog;
-> +
-> +	prog = tracing_chain[ATTACH_DEPTH]->progs.recursive_attach;
-> +	prev_fd = bpf_program__fd(tracing_chain[ATTACH_DEPTH - 1]->progs.recursive_attach);
-> +	err = bpf_program__set_attach_target(prog, prev_fd, "recursive_attach");
-> +	if (!ASSERT_OK(err, "last bpf_program__set_attach_target"))
-> +		goto close_prog;
-> +
-> +	err = fentry_recursive__load(tracing_chain[ATTACH_DEPTH]);
-> +	if (!ASSERT_ERR(err, "last fentry_recursive__load"))
-> +		goto close_prog;
-> +
-> +close_prog:
-> +	fentry_recursive_target__destroy(target_skel);
-> +	for (int i = 1; i < ATTACH_DEPTH + 1; i++) {
+syzbot is not happy with this patch.
 
-i = 0 ?
+Would the following fix make sense?
 
-jirka
+diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
+index 7ea7c3a0d0d06224f49ad5f073bf772b9528a30a..58e89361059fbf9d5942c6dd268=
+dd80ac4b57098
+100644
+--- a/net/unix/unix_bpf.c
++++ b/net/unix/unix_bpf.c
+@@ -168,7 +168,8 @@ int unix_stream_bpf_update_proto(struct sock *sk,
+struct sk_psock *psock, bool r
+        }
 
-> +		if (tracing_chain[i])
-> +			fentry_recursive__destroy(tracing_chain[i]);
-> +	}
-> +}
+        sk_pair =3D unix_peer(sk);
+-       sock_hold(sk_pair);
++       if (sk_pair)
++               sock_hold(sk_pair);
+        psock->sk_pair =3D sk_pair;
+        unix_stream_bpf_check_needs_rebuild(psock->sk_proto);
+        sock_replace_proto(sk, &unix_stream_bpf_prot);
 
-SNIP
+
+>
+> 2) Fix a syzkaller splat in netdevsim by properly handling offloaded prog=
+rams (and
+>    not device-bound ones), from Stanislav Fomichev.
+>
+> 3) Fix bpf_mem_cache_alloc_flags() to initialize the allocation hint, fro=
+m Hou Tao.
+>
+> 4) Fix netkit by rejecting IFLA_NETKIT_PEER_INFO in changelink, from Dani=
+el Borkmann.
+>
+> Please consider pulling these changes from:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netd=
+ev
+>
+> Thanks a lot!
+>
+> Also thanks to reporters, reviewers and testers of commits in this pull-r=
+equest:
+>
+> Jakub Kicinski, Jakub Sitnicki, Nikolay Aleksandrov, Yonghong Song
+>
+> ----------------------------------------------------------------
+>
+> The following changes since commit d3fa86b1a7b4cdc4367acacea16b72e0a200b3=
+d7:
+>
+>   Merge tag 'net-6.7-rc3' of git://git.kernel.org/pub/scm/linux/kernel/gi=
+t/netdev/net (2023-11-23 10:40:13 -0800)
+>
+> are available in the Git repository at:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-ne=
+tdev
+>
+> for you to fetch changes up to 51354f700d400e55b329361e1386b04695e6e5c1:
+>
+>   bpf, sockmap: Add af_unix test with both sockets in map (2023-11-30 00:=
+25:25 +0100)
+>
+> ----------------------------------------------------------------
+> bpf-for-netdev
+>
+> ----------------------------------------------------------------
+> Daniel Borkmann (1):
+>       netkit: Reject IFLA_NETKIT_PEER_INFO in netkit_change_link
+>
+> Hou Tao (1):
+>       bpf: Add missed allocation hint for bpf_mem_cache_alloc_flags()
+>
+> John Fastabend (2):
+>       bpf, sockmap: af_unix stream sockets need to hold ref for pair sock
+>       bpf, sockmap: Add af_unix test with both sockets in map
+>
+> Stanislav Fomichev (1):
+>       netdevsim: Don't accept device bound programs
+>
+>  drivers/net/netdevsim/bpf.c                        |  4 +-
+>  drivers/net/netkit.c                               |  6 +++
+>  include/linux/skmsg.h                              |  1 +
+>  include/net/af_unix.h                              |  1 +
+>  kernel/bpf/memalloc.c                              |  2 +
+>  net/core/skmsg.c                                   |  2 +
+>  net/unix/af_unix.c                                 |  2 -
+>  net/unix/unix_bpf.c                                |  5 +++
+>  .../selftests/bpf/prog_tests/sockmap_listen.c      | 51 ++++++++++++++++=
++-----
+>  .../selftests/bpf/progs/test_sockmap_listen.c      |  7 +++
+>  10 files changed, 66 insertions(+), 15 deletions(-)
 
