@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-16283-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16284-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF10D7FF456
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 17:05:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ACA67FF4AA
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 17:20:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC78B1C20C5E
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:05:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A38A1C20E51
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:20:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D935466A;
-	Thu, 30 Nov 2023 16:05:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1986954F8B;
+	Thu, 30 Nov 2023 16:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mDIdWTHr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F1uTRRu+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F0C10D5
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 08:05:05 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54b0c368d98so12591a12.1
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 08:05:05 -0800 (PST)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B1E2D64
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 08:19:48 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso12312a12.1
+        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 08:19:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701360304; x=1701965104; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1701361186; x=1701965986; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=py/UYRyeys28a8i4kga7u2wKQX1+4E1lmesjjnOgCD8=;
-        b=mDIdWTHrw9DVk7xHxd9mDRRWvuD7LLCYUjrdGPT38BJpuiNmarg0NRRigpmgK4wz6W
-         qgHv3RSgWdKIqrPxY0InFmI4Y/4E2xprCySyJgywcQgyj3avSVyvJoUeBB4e6kpwLjcV
-         +hCgaVz9n1rSoGkkDYXalCtK+vClpZBbV7vQQ8flIdCxrf/0OrnF9WNOrS5ct8Jn/obf
-         Fh5fMMA1KHTKkasOkEbiek5Vx4oJ7AxciMxjqxluRFy0/6HxcG+M1615a8gKpNMrNcCi
-         nnEoPArJYg7sMHiAzRp8DJOTL/P5XDYZrEu/etqU1nBWsSWz7HvQja/90R42zpdRGPWo
-         kfRQ==
+        bh=Is7F/Sfd9ylycia+YjUucPeLJuNyhVybVoiP5aPb4u4=;
+        b=F1uTRRu+qa/EMSoaLmpAJHcLnB5uJ6718savUC+1v16u2MwpX8PNWiWfRtCI/5dRA0
+         q86wvFMu/4tIMFdOS1KBlQbOlK4vGF1s+P9eBo3EDTWnIktfH/nRBsNwYmzuYzfP9nk0
+         t8mJ6Fg+AtYUhDO6WIEdg+rg0QttEbAhnhIVsm7/pMsxh4MoJ3rqPI1e0LFueJpw4A0K
+         wlR8Nd7Uf0M4RNAKT6jNy9hUrh/GaFnkumLMjKYlMe6iLcA+0OL1gZ8Ee3rnh3OcjlXu
+         tl/V2QClgsMBqusCKHZTIRcTPIZF6rKl45krIFO/zmzt6CkXkg7gROt8cuJNjGx6d8eG
+         RVHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701360304; x=1701965104;
+        d=1e100.net; s=20230601; t=1701361186; x=1701965986;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=py/UYRyeys28a8i4kga7u2wKQX1+4E1lmesjjnOgCD8=;
-        b=GoSQuJVoBRr04na+KigMGsP010bi+lX7doj+bxu3+SNQU2t42BcJmL+PDP/MLac1Mh
-         qaFA9En8Zmsjqk7Ofuymjp0EwiNsayLYL8cPQxOebJZeSmauqqEppwuX0403XyJGRZHX
-         u1ZFIe0PU7G79iBJrF12iK+Tufa15YGdo1i4/R7ixHvckdIS3pFB9F/V8v7oyTAOepHK
-         bmESu9YFJPsaC8T5Aco1/Mvz84c4ELMrDNeKzDMZ1k5oMFQg33tun1k2usGQQ0VLqmin
-         n4oGdpdYobMz8/3+TLtBHR0nOZ/KIaJb3x2M2wR8Dluhr++uDR2fNHRdtxbU790sgMTP
-         90fw==
-X-Gm-Message-State: AOJu0Yy3f0YPqFd982+rqeQxYNY5QoB0EFuL8An+RWNrcdnpDPd5kCbE
-	SkN7NlyxvrHH106ey5PYv/8Z1adh5aFQe7RexooREw==
-X-Google-Smtp-Source: AGHT+IHiX/yaU3mC6vkAZLouB0rZDjFCvjF0MByDKZWp9pOIJXPlUJogCYBhUQSR8ZGDMh5Fzb3+d+gtEkO0LjexB+A=
-X-Received: by 2002:a05:6402:1cae:b0:54b:81ba:93b2 with SMTP id
- cz14-20020a0564021cae00b0054b81ba93b2mr190505edb.2.1701360304140; Thu, 30 Nov
- 2023 08:05:04 -0800 (PST)
+        bh=Is7F/Sfd9ylycia+YjUucPeLJuNyhVybVoiP5aPb4u4=;
+        b=ZeCDlUwkmyg+jRmk3sfSsD7lrVJHRGWuJCrLNtsGgbzV6u41pUX2sHkXECF5LuGlF4
+         QB+hc+YHIZMJTslScQtHAZRlBJr+iQIUqmjeimpFXNm6xtud8FjWKs+dqeBZqbf7IrWk
+         ioz95bjkps0nED/yLT4bLy6S/nrYKMqSeZobVvtLNRw6dB76TARIcEqFI+9j2DGz7o2Y
+         BTu9mXM4aeuMDTf75vuawOHNi/OWrnHGQdqRNpJPr/CLWmZ89oYQzAxoidQgk4Ud8riP
+         CJMqEXMDV1Oo9SuDqv9VtVuFJNwb9EajP4s16/9H5ZuSyKOJhC/41pV80hR6oJkf5atb
+         AZWQ==
+X-Gm-Message-State: AOJu0Yyy03uN9jZ/LLLWFXZzvi+bMd8hnuX5IZXTQSTQDz8fIzFiYakb
+	KJ1n3PPCDP2XZYLcAkXoQwvuyKYh/CjIYrC9A68hbg==
+X-Google-Smtp-Source: AGHT+IEkIXZFjJZr/mqcoqsuXQvlwMcdbAprJKPrr9YE4lgr+ofCdqPVx1WKFdCWtM9jFqu/qUApE1ZClmbmWa3ddlM=
+X-Received: by 2002:a50:d098:0:b0:54b:6b3f:4aa8 with SMTP id
+ v24-20020a50d098000000b0054b6b3f4aa8mr181754edd.4.1701361186255; Thu, 30 Nov
+ 2023 08:19:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -58,10 +58,11 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231129234916.16128-1-daniel@iogearbox.net> <CANn89i+0UuXTYzBD1=zaWmvBKNtyriWQifOhQKF3Y7z4BWZhig@mail.gmail.com>
  <edef4d8b-8682-c23f-31c4-57546be97299@iogearbox.net> <6568b03cbceb7_1b8920827@john.notmuch>
-In-Reply-To: <6568b03cbceb7_1b8920827@john.notmuch>
+ <CANn89iK9VrbRJsF2KoLfArv5Eu5d7Hyq-pSO4hmWuS_PNsM8dQ@mail.gmail.com>
+In-Reply-To: <CANn89iK9VrbRJsF2KoLfArv5Eu5d7Hyq-pSO4hmWuS_PNsM8dQ@mail.gmail.com>
 From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 30 Nov 2023 17:04:50 +0100
-Message-ID: <CANn89iK9VrbRJsF2KoLfArv5Eu5d7Hyq-pSO4hmWuS_PNsM8dQ@mail.gmail.com>
+Date: Thu, 30 Nov 2023 17:19:35 +0100
+Message-ID: <CANn89iJUwnYGKW3mgCX8_9hFwwBeDXrbsk-XwOtsM2u0J7cyMw@mail.gmail.com>
 Subject: Re: pull-request: bpf 2023-11-30
 To: John Fastabend <john.fastabend@gmail.com>
 Cc: Daniel Borkmann <daniel@iogearbox.net>, davem@davemloft.net, kuba@kernel.org, 
@@ -70,76 +71,22 @@ Cc: Daniel Borkmann <daniel@iogearbox.net>, davem@davemloft.net, kuba@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 30, 2023 at 4:54=E2=80=AFPM John Fastabend <john.fastabend@gmai=
-l.com> wrote:
+On Thu, Nov 30, 2023 at 5:04=E2=80=AFPM Eric Dumazet <edumazet@google.com> =
+wrote:
 >
-> Daniel Borkmann wrote:
-> > On 11/30/23 3:53 PM, Eric Dumazet wrote:
-> > > On Thu, Nov 30, 2023 at 12:49=E2=80=AFAM Daniel Borkmann <daniel@ioge=
-arbox.net> wrote:
-> > >>
-> > >> Hi David, hi Jakub, hi Paolo, hi Eric,
-> > >>
-> > >> The following pull-request contains BPF updates for your *net* tree.
-> > >>
-> > >> We've added 5 non-merge commits during the last 7 day(s) which conta=
-in
-> > >> a total of 10 files changed, 66 insertions(+), 15 deletions(-).
-> > >>
-> > >> The main changes are:
-> > >>
-> > >> 1) Fix AF_UNIX splat from use after free in BPF sockmap, from John F=
-astabend.
-> > >
-> > > syzbot is not happy with this patch.
-> > >
-> > > Would the following fix make sense?
-> > >
-> > > diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
-> > > index 7ea7c3a0d0d06224f49ad5f073bf772b9528a30a..58e89361059fbf9d5942c=
-6dd268dd80ac4b57098
-> > > 100644
-> > > --- a/net/unix/unix_bpf.c
-> > > +++ b/net/unix/unix_bpf.c
-> > > @@ -168,7 +168,8 @@ int unix_stream_bpf_update_proto(struct sock *sk,
-> > > struct sk_psock *psock, bool r
-> > >          }
-> > >
-> > >          sk_pair =3D unix_peer(sk);
-> > > -       sock_hold(sk_pair);
-> > > +       if (sk_pair)
-> > > +               sock_hold(sk_pair);
-> > >          psock->sk_pair =3D sk_pair;
-> > >          unix_stream_bpf_check_needs_rebuild(psock->sk_proto);
-> > >          sock_replace_proto(sk, &unix_stream_bpf_prot);
-> > >
-> >
-> > Oh well :/ Above looks reasonable to me, thanks, but I'll defer to John=
- & Jakub (both Cc'ed)
-> > for a final look.
-> >
-> > Thanks,
-> > Daniel
+
+> Here is the repro:
 >
-> Is that sk in LISTEN state by any chance? I can't think why we even allow=
- such a
-> thing for af_unix sockets.  Another possible fix would be to block adding=
- these
-> to sockmap at all.
+> # See https://goo.gl/kgGztJ for information about syzkaller reproducers.
+> #{"procs":1,"slowdown":1,"sandbox":"","sandbox_arg":0,"close_fds":false}
+> r0 =3D socket(0x1, 0x1, 0x0)
+> r1 =3D bpf$MAP_CREATE(0x0, &(0x7f0000000200)=3D@base=3D{0xf, 0x4, 0x4, 0x=
+12}, 0x48)
+> bpf$MAP_UPDATE_ELEM(0x2, &(0x7f0000000140)=3D{r1, &(0x7f0000000000),
+> &(0x7f0000000100)=3D@tcp6=3Dr0}, 0x20)
 >
-> But, above should be fine as well so I would just go with that. Eric or D=
-aniel
-> would you like to submit a patch or I can if needed.
+> I will release the syzbot report, and send the patch, thanks.
 
-Here is the repro:
-
-# See https://goo.gl/kgGztJ for information about syzkaller reproducers.
-#{"procs":1,"slowdown":1,"sandbox":"","sandbox_arg":0,"close_fds":false}
-r0 =3D socket(0x1, 0x1, 0x0)
-r1 =3D bpf$MAP_CREATE(0x0, &(0x7f0000000200)=3D@base=3D{0xf, 0x4, 0x4, 0x12=
-}, 0x48)
-bpf$MAP_UPDATE_ELEM(0x2, &(0x7f0000000140)=3D{r1, &(0x7f0000000000),
-&(0x7f0000000100)=3D@tcp6=3Dr0}, 0x20)
-
-I will release the syzbot report, and send the patch, thanks.
+Actually I will release the syzbot report, and let you work on a fix,
+perhaps as you pointed out we could be more restrictive.
 
