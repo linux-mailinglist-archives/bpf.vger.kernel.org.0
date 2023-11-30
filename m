@@ -1,108 +1,188 @@
-Return-Path: <bpf+bounces-16278-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16279-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 945907FF328
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:04:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB73E7FF32F
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:07:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21AE1B21107
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:04:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06F5F1C20F6B
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249AD51C43;
-	Thu, 30 Nov 2023 15:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FDB451C43;
+	Thu, 30 Nov 2023 15:07:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Vq6gKddC"
+	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="I2l65Dyk"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D0A310D5;
-	Thu, 30 Nov 2023 07:04:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=DOYtruExIOZ/Nqp4nuzJftAqHrayrWEPpJP1gdM610U=; b=Vq6gKddCOYJxUGbWwZ73S6TXqI
-	9uaWnHIp0Tsib321eUDu6sAaSFkA4BN0Bk/gVByOga9jNsUG+raBnCKoArDe/fMbmAdUJgvtXxHBj
-	pp14v0p5JA9mXgcuRU/Nzi7gfdmkVKK1wJzReWRsD/lFI35QaJN5LOOszfcb5yUGFH1zDjaRufzgG
-	hgUQoTLvRrv4BWYDqNWnXMtd0LPiq2vIvk3SRJdfTGVbHaUAGnD+Zxgcm2hIcXgDqSm8fHFl3/2Xs
-	NzF8ch12UE7f0a++U96C0VotE11Z7IH2h6AY0lyCqR6v2G335DU1/5xoUr0a0lO7PJLyiw9zoNyw9
-	R2/3hfLg==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r8iaV-0000gY-JY; Thu, 30 Nov 2023 16:04:23 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r8iaU-000HcA-Vl; Thu, 30 Nov 2023 16:04:23 +0100
-Subject: Re: pull-request: bpf 2023-11-30
-To: Eric Dumazet <edumazet@google.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
- andrii@kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org,
- bpf@vger.kernel.org, john.fastabend@gmail.com, jakub@cloudflare.com
-References: <20231129234916.16128-1-daniel@iogearbox.net>
- <CANn89i+0UuXTYzBD1=zaWmvBKNtyriWQifOhQKF3Y7z4BWZhig@mail.gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <edef4d8b-8682-c23f-31c4-57546be97299@iogearbox.net>
-Date: Thu, 30 Nov 2023 16:04:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C585137
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 07:07:13 -0800 (PST)
+Received: from fencepost.gnu.org ([2001:470:142:3::e])
+	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.90_1)
+	(envelope-from <jemarch@gnu.org>)
+	id 1r8idD-0007pk-2U; Thu, 30 Nov 2023 10:07:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
+	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
+	From; bh=nnUw97kVtuJZVuBxbOc08Bhf73AoP06hn82YtP1Lp8Y=; b=I2l65DykED4ER0VQOVbI
+	kXwhG6lzhIu4JFiWURD7W3rIFK12tZe54v+E0IBlagVLIw8tRi7IMJsc4I2Ro/+yLgy55A0H837TQ
+	KLz610FNPK5pw8gwbDTshsv5U93nVrCx6V8OpjKm/ViD8/7E+cQur4KGlwq3pnZZJw5yCef+qWb/4
+	pDi2Pdc/UbuXm5+BS/umW8V9KUPhu1YMN3Gboeq7KQal7z4z0JI+llSSRiSDb4nz1zYa11ufowhGe
+	5aoN2itws3YAB1FGWSiOmCza5lpHSMqeL/w+0EVm08Mt5dGxTCmXvKVK0OT7YJJ3/2JZNR8XbPR2m
+	SlQVESKxek1K1A==;
+From: "Jose E. Marchesi" <jemarch@gnu.org>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>,  bpf@vger.kernel.org
+Subject: Re: BPF GCC status - Nov 2023
+In-Reply-To: <b1b003f0-dfa7-434f-a03a-1c9e2a21c3bf@linux.dev> (Yonghong Song's
+	message of "Thu, 30 Nov 2023 06:58:56 -0800")
+References: <87leahx2xh.fsf@oracle.com>
+	<3733942b-f0ef-4e71-8c49-aa4177e9433c@linux.dev>
+	<87jzq1t4sk.fsf@oracle.com>
+	<a1073bd0-9df2-4a9e-900c-7e8ac63ac464@linux.dev>
+	<87h6l3a16n.fsf@gnu.org>
+	<b1b003f0-dfa7-434f-a03a-1c9e2a21c3bf@linux.dev>
+Date: Thu, 30 Nov 2023 16:06:29 +0100
+Message-ID: <87v89j8emi.fsf@gnu.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CANn89i+0UuXTYzBD1=zaWmvBKNtyriWQifOhQKF3Y7z4BWZhig@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27109/Thu Nov 30 09:44:04 2023)
+Content-Type: text/plain
 
-On 11/30/23 3:53 PM, Eric Dumazet wrote:
-> On Thu, Nov 30, 2023 at 12:49 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>
->> Hi David, hi Jakub, hi Paolo, hi Eric,
->>
->> The following pull-request contains BPF updates for your *net* tree.
->>
->> We've added 5 non-merge commits during the last 7 day(s) which contain
->> a total of 10 files changed, 66 insertions(+), 15 deletions(-).
->>
->> The main changes are:
->>
->> 1) Fix AF_UNIX splat from use after free in BPF sockmap, from John Fastabend.
-> 
-> syzbot is not happy with this patch.
-> 
-> Would the following fix make sense?
-> 
-> diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
-> index 7ea7c3a0d0d06224f49ad5f073bf772b9528a30a..58e89361059fbf9d5942c6dd268dd80ac4b57098
-> 100644
-> --- a/net/unix/unix_bpf.c
-> +++ b/net/unix/unix_bpf.c
-> @@ -168,7 +168,8 @@ int unix_stream_bpf_update_proto(struct sock *sk,
-> struct sk_psock *psock, bool r
->          }
-> 
->          sk_pair = unix_peer(sk);
-> -       sock_hold(sk_pair);
-> +       if (sk_pair)
-> +               sock_hold(sk_pair);
->          psock->sk_pair = sk_pair;
->          unix_stream_bpf_check_needs_rebuild(psock->sk_proto);
->          sock_replace_proto(sk, &unix_stream_bpf_prot);
-> 
 
-Oh well :/ Above looks reasonable to me, thanks, but I'll defer to John & Jakub (both Cc'ed)
-for a final look.
+> On 11/30/23 7:13 AM, Jose E. Marchesi wrote:
+>>> On 11/29/23 2:08 AM, Jose E. Marchesi wrote:
+>>>>> On 11/28/23 11:23 AM, Jose E. Marchesi wrote:
+>>>>>> [During LPC 2023 we talked about improving communication between the GCC
+>>>>>>     BPF toolchain port and the kernel side.  This is the first periodical
+>>>>>>     report that we plan to publish in the GCC wiki and send to interested
+>>>>>>     parties.  Hopefully this will help.]
+>>>>>>
+>>>>>> GCC wiki page for the port: https://gcc.gnu.org/wiki/BPFBackEnd
+>>>>>> IRC channel: #gccbpf at irc.oftc.net.
+>>>>>> Help on using the port: gcc@gcc.gnu.org
+>>>>>> Patches and/or development discussions: gcc-patches@gnu.org
+>>>>> Thanks a lot for detailed report. Really helpful to nail down
+>>>>> issues facing one or both compilers. See comments below for
+>>>>> some mentioned issues.
+>>>>>
+>>>>>> Assembler
+>>>>>> =========
+>>>>> [...]
+>>>>>
+>>>>>> - In the Pseudo-C syntax register names are not preceded by % characters
+>>>>>>      nor any other prefix.  A consequence of that is that in contexts like
+>>>>>>      instruction operands, where both register names and expressions
+>>>>>>      involving symbols are expected, there is no way to disambiguate
+>>>>>>      between them.  GAS was allowing symbols like `w3' or `r5' in syntactic
+>>>>>>      contexts where no registers were expected, such as in:
+>>>>>>
+>>>>>>        r0 = w3 ll  ; GAS interpreted w3 as symbol, clang emits error
+>>>>>>
+>>>>>>      The clang assembler wasn't allowing that.  During LPC we agreed that
+>>>>>>      the simplest approach is to not allow any symbol to have the same name
+>>>>>>      than a register, in any context.  So we changed GAS so it now doesn't
+>>>>>>      allow to use register names as symbols in any expression, such as:
+>>>>>>
+>>>>>>        r0 = w3 + 1 ll  ; This now fails for both GAS and llvm.
+>>>>>>        r0 = 1 + w3 ll  ; NOTE this does not fail with llvm, but it should.
+>>>>> Could you provide a reproducible case above for llvm? llvm does not
+>>>>> support syntax like 'r0 = 1 + w3 ll'. For add, it only supports
+>>>>> 'r1 += r2' or 'r1 += 100' syntax.
+>>>> It is a 128-bit load with an expression.  In compiler explorer, clang:
+>>>>
+>>>>     int
+>>>>     foo ()
+>>>>     {
+>>>>       asm volatile ("r1 = 10 + w3 ll");
+>>>>       return 0;
+>>>>     }
+>>>>
+>>>> I get:
+>>>>
+>>>>     foo:                                    # @foo
+>>>>             r1 = 10+w3 ll
+>>>>             r0 = 0
+>>>>             exit
+>>>>
+>>>> i.e. `10 + w3' is interpreted as an expression with two operands: the
+>>>> literal number 10 and a symbol (not a register) `w3'.
+>>>>
+>>>> If the expression is `w3+10' instead, your parser recognizes the w3 as a
+>>>> register name and errors out, as expected.
+>>>>
+>>>> I suppose llvm allows to hook on the expression parser to handle
+>>>> individual operands.  That's how we handled this in GAS.
+>>> Thanks for the code. I can reproduce the result with compiler explorer.
+>>> The following is the link https://godbolt.org/z/GEGexf1Pj
+>>> where I added -grecord-gcc-switches to dump compilation flags
+>>> into .s file.
+>>>
+>>> The following is the compiler explorer compilation command line:
+>>> /opt/compiler-explorer/clang-trunk-20231129/bin/clang-18 -g -o /app/output.s \
+>>>    -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 \
+>>>    -g -grecord-command-line /app/example.c
+>>>
+>>> I then compile the above C code with
+>>>    clang -g -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 -g -grecord-command-line t.c
+>>> with identical flags.
+>>>
+>>> I tried locally with llvm16/17/18. They all failed compilation since
+>>> 'r1 = 10+w3 ll' cannot be recognized by the llvm.
+>>> We will investigate why llvm18 in compiler explorer compiles
+>>> differently from my local build.
+>> I updated git llvm master today and I managed to reproduce locally with:
+>>
+>> jemarch@termi:~/gnu/src/llvm-project/llvm/build$ clang --version
+>> clang version 18.0.0 (https://github.com/llvm/llvm-project.git 586986a063ee4b9a7490aac102e103bab121c764)
+>> Target: unknown
+>> Thread model: posix
+>> InstalledDir: /usr/local/bin
+>> $ cat foo.c
+>>      int
+>>      foo ()
+>>      {
+>>        asm volatile ("r1 = 10 + w3 ll");
+>>        return 0;
+>>      }
+>> $ clang -target bpf -c foo.c
+>> $ llvm-objdump -dr foo.o
+>>
+>> foo.o:	file format elf64-bpf
+>>
+>> Disassembly of section .text:
+>>
+>> 0000000000000000 <foo>:
+>>         0:	18 01 00 00 0a 00 00 00 00 00 00 00 00 00 00 00	r1 = 0xa ll
+>> 		0000000000000000:  R_BPF_64_64	w3
+>>         2:	b7 00 00 00 00 00 00 00	r0 = 0x0
+>>         3:	95 00 00 00 00 00 00 00	exit
+>
+> Could you share the cmake command line options when you build you clang?
+> My cmake command line looks like
+> cmake .. -DCMAKE_BUILD_TYPE=Release -G Ninja \
+>     -DLLVM_ENABLE_PROJECTS="clang;lld;compiler-rt" \
+>     -DLLVM_TARGETS_TO_BUILD="BPF;X86" \
+>     -DLLVM_ENABLE_ASSERTIONS=ON \
+>     -DLLVM_ENABLE_ZLIB=ON \
+>     -DCMAKE_INSTALL_PREFIX=$PWD/install
+>
+> and cannot reproduce the issue.
 
-Thanks,
-Daniel
+I don't have the original cmake command, I executed it long ago
+(rebuilding clang/llvm in my laptop takes three days or more so I do it
+incrementally.)
+
+I see this in my CMakeCache.txt:
+
+  LLVM_ENABLE_PROJECTS:STRING=clang
+  LLVM_TARGETS_TO_BUILD:STRING=BPF
+  LLVM_ENABLE_ASSERTIONS:BOOL=OFF
+  LLVM_ENABLE_ZLIB:STRING=ON
+  CMAKE_INSTALL_PREFIX:PATH=/usr/local
 
