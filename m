@@ -1,192 +1,309 @@
-Return-Path: <bpf+bounces-16299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 751D37FF9FA
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 19:49:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFD097FFA12
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 19:52:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99B8C1C21157
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 18:49:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D31261C20FCD
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 18:52:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9B854FAA;
-	Thu, 30 Nov 2023 18:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SQShjCmk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A22B5A0F5;
+	Thu, 30 Nov 2023 18:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3B510D1
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 10:49:14 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-2859447a409so1671261a91.2
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 10:49:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701370154; x=1701974954; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XJL3/xZlETlaSZxAbteHfIDjLP0TbdjMEyzT5VAw/Aw=;
-        b=SQShjCmkpS3myXcupF1sSNyN4lVv7f8sQbr4z47TNjayUfDnD6UAEU2jFxrQGvf/Zp
-         7r1c89jOvf+1Dws2ZI87DOvgNVaIeVcnOn0jvbIpM9GlOZX3DTV6jsgHOgGBM8flnqy5
-         wgd6Pin9H+Zzv4Kpw/IltQ3I7n4IY44IkGeGbCZCYwRzZLlDY9UiuJ/HRx8e7phyk8cV
-         xcgs9UQaxts6DdFF9aBxfgTgCXS2ImFD/pRnm2EsGhyUHtBD7t2fdDAprhulEvfnyHHr
-         sFOuHDEaZ6Ku6g0agsGQeC6v8zwoajfA3e1ltnZb5DKLJ3Fj0+Xfy63tcm1hNykNfyCM
-         xs0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701370154; x=1701974954;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XJL3/xZlETlaSZxAbteHfIDjLP0TbdjMEyzT5VAw/Aw=;
-        b=TTowVVKYcxajiDtM0Me1ScTBZTEY8rnw99CFI64xpTUrC3bpHu8uHYC4odwdNXqMmB
-         WyR8747BFxYduYIz6tkybdTuRxWBDJUvFzO6kQnk7FM46ggR2/sQO7qXCyNuWRjC4Y56
-         iWXzCrbbGW7oS0uCjBJfbWis20H+smdrYzRTtDTc0ugLdBTNzooxxwMy+1Hax0+Alp4y
-         4oVz/jn+LjiBU7C3ZIsHTlZdhXWFrDpg7vCuDR0QmUEdh67WBXtC8NHyzvztbGhbOroX
-         sg50hUobNEYCgtsql8mshoDmGNcbdH7+Ox/0ibK2cacfROZ782bT8gMuiFlECKL8c5V+
-         /D8w==
-X-Gm-Message-State: AOJu0Yy7+ZDOCVzmUC8fEV39qKGEInj8wVxxpADdRO6kMTFs9UR4Dv1m
-	JZsPvJwYMmIIfEwh+eAEl+ViYQw=
-X-Google-Smtp-Source: AGHT+IGyDyxAMwcoJS6sciBw/5vkzmmMOCxH2ARe2G7kvbgl3cR0YNiiHR7qICXmLsKg3A/6Wj9bU1U=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a17:90a:e011:b0:286:5274:8cab with SMTP id
- u17-20020a17090ae01100b0028652748cabmr78809pjy.1.1701370154197; Thu, 30 Nov
- 2023 10:49:14 -0800 (PST)
-Date: Thu, 30 Nov 2023 10:49:12 -0800
-In-Reply-To: <ZWhpGWDP6mrM-Y35@lore-desk>
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FD610DF
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 10:52:46 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUEeXC1020336
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 10:52:46 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3upeu66p3g-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 10:52:46 -0800
+Received: from twshared15991.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 30 Nov 2023 10:52:44 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id BDD663C60289A; Thu, 30 Nov 2023 10:52:29 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <paul@paul-moore.com>,
+        <brauner@kernel.org>
+CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
+        <keescook@chromium.org>, <kernel-team@meta.com>, <sargun@sargun.me>
+Subject: [PATCH v12 bpf-next 00/17] BPF token and BPF FS-based delegation
+Date: Thu, 30 Nov 2023 10:52:12 -0800
+Message-ID: <20231130185229.2688956-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: SsHfUqvCPGifhZPz2XD5quPuXJZ15JVo
+X-Proofpoint-ORIG-GUID: SsHfUqvCPGifhZPz2XD5quPuXJZ15JVo
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1701334869.git.lorenzo@kernel.org> <ce8cc5ce6e25d5e455704aa42fbf633be206ce85.1701334869.git.lorenzo@kernel.org>
- <f41935a3-790b-4d23-870c-a37b757aea99@kernel.org> <ZWhpGWDP6mrM-Y35@lore-desk>
-Message-ID: <ZWjZKPYCglmjFJUH@google.com>
-Subject: Re: [PATCH v2 net-next 2/2] xdp: add multi-buff support for xdp
- running in generic mode
-From: Stanislav Fomichev <sdf@google.com>
-To: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org, davem@davemloft.net, 
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	lorenzo.bianconi@redhat.com, bpf@vger.kernel.org, toke@redhat.com, 
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com, 
-	kernel-team <kernel-team@cloudflare.com>, Yan Zhai <yan@cloudflare.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_18,2023-11-30_01,2023-05-22_02
 
-On 11/30, Lorenzo Bianconi wrote:
-> > 
-> > 
-> > On 11/30/23 10:11, Lorenzo Bianconi wrote:
-> > > Similar to native xdp, do not always linearize the skb in
-> > > netif_receive_generic_xdp routine but create a non-linear xdp_buff to be
-> > > processed by the eBPF program. This allow to add  multi-buffer support
-> > > for xdp running in generic mode.
-> > > 
-> > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > > ---
-> > >   net/core/dev.c | 144 ++++++++++++++++++++++++++++++++++++++++---------
-> > >   1 file changed, 119 insertions(+), 25 deletions(-)
-> > > 
-> > > diff --git a/net/core/dev.c b/net/core/dev.c
-> > > index 4df68d7f04a2..0d08e755bb7f 100644
-> > > --- a/net/core/dev.c
-> > > +++ b/net/core/dev.c
-> > > @@ -4853,6 +4853,12 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
-> > >   	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
-> > >   	xdp_prepare_buff(xdp, hard_start, skb_headroom(skb) - mac_len,
-> > >   			 skb_headlen(skb) + mac_len, true);
-> > > +	if (skb_is_nonlinear(skb)) {
-> > > +		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
-> > > +		xdp_buff_set_frags_flag(xdp);
-> > > +	} else {
-> > > +		xdp_buff_clear_frags_flag(xdp);
-> > > +	}
-> > >   	orig_data_end = xdp->data_end;
-> > >   	orig_data = xdp->data;
-> > > @@ -4882,6 +4888,14 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
-> > >   		skb->len += off; /* positive on grow, negative on shrink */
-> > >   	}
-> > > +	/* XDP frag metadata (e.g. nr_frags) are updated in eBPF helpers
-> > > +	 * (e.g. bpf_xdp_adjust_tail), we need to update data_len here.
-> > > +	 */
-> > > +	if (xdp_buff_has_frags(xdp))
-> > > +		skb->data_len = skb_shinfo(skb)->xdp_frags_size;
-> > > +	else
-> > > +		skb->data_len = 0;
-> > > +
-> > >   	/* check if XDP changed eth hdr such SKB needs update */
-> > >   	eth = (struct ethhdr *)xdp->data;
-> > >   	if ((orig_eth_type != eth->h_proto) ||
-> > > @@ -4915,54 +4929,134 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
-> > >   	return act;
-> > >   }
-> > > -static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
-> > > -				     struct xdp_buff *xdp,
-> > > -				     struct bpf_prog *xdp_prog)
-> > > +static int netif_skb_check_for_generic_xdp(struct sk_buff **pskb,
-> > > +					   struct bpf_prog *prog)
-> > 
-> > I like this is split out into a check function.
-> > 
-> > >   {
-> > >   	struct sk_buff *skb = *pskb;
-> > > -	u32 act = XDP_DROP;
-> > > -
-> > > -	/* Reinjected packets coming from act_mirred or similar should
-> > > -	 * not get XDP generic processing.
-> > > -	 */
-> > > -	if (skb_is_redirected(skb))
-> > > -		return XDP_PASS;
-> > 
-> > (For other reviewers)
-> > This reinjected check is moved further down.
-> > 
-> > > +	int err;
-> > > -	/* XDP packets must be linear and must have sufficient headroom
-> > > -	 * of XDP_PACKET_HEADROOM bytes. This is the guarantee that also
-> > > -	 * native XDP provides, thus we need to do it here as well.
-> > > +	/* XDP does not support fraglist so we need to linearize
-> > > +	 * the skb.
-> > >   	 */
-> > > -	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
-> > > -	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
-> > > +	if (skb_has_frag_list(skb) || !prog->aux->xdp_has_frags) {
-> > >   		int hroom = XDP_PACKET_HEADROOM - skb_headroom(skb);
-> > >   		int troom = skb->tail + skb->data_len - skb->end;
-> > >   		/* In case we have to go down the path and also linearize,
-> > >   		 * then lets do the pskb_expand_head() work just once here.
-> > >   		 */
-> > > -		if (pskb_expand_head(skb,
-> > > -				     hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
-> > > -				     troom > 0 ? troom + 128 : 0, GFP_ATOMIC))
-> > > -			goto do_drop;
-> > > -		if (skb_linearize(skb))
-> > > -			goto do_drop;
-> > > +		err = pskb_expand_head(skb,
-> > > +				       hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
-> > > +				       troom > 0 ? troom + 128 : 0, GFP_ATOMIC);
-> > > +		if (err)
-> > > +			return err;
-> > > +
-> > > +		err = skb_linearize(skb);
-> > > +		if (err)
-> > > +			return err;
-> > > +
-> > > +		return 0;
-> > > +	}
-> > > +
-> > > +	/* XDP packets must have sufficient headroom of XDP_PACKET_HEADROOM
-> > > +	 * bytes. This is the guarantee that also native XDP provides,
-> > > +	 * thus we need to do it here as well.
-> > > +	 */
-> > > +	if (skb_cloned(skb) || skb_shinfo(skb)->nr_frags ||
-> > 
-> > I though we could allow a SKB with skb_shinfo(skb)->nr_frags (that isn't
-> > cloned or shared) to be processed by generic XDP without any reallocation?
-> 
-> I do not think so, we discussed about it with Jakub here [0]
-> 
-> [0] https://lore.kernel.org/netdev/20231128105145.7b39db7d@kernel.org/
+This patch set introduces an ability to delegate a subset of BPF subsystem
+functionality from privileged system-wide daemon (e.g., systemd or any other
+container manager) through special mount options for userns-bound BPF FS to
+a *trusted* unprivileged application. Trust is the key here. This
+functionality is not about allowing unconditional unprivileged BPF usage.
+Establishing trust, though, is completely up to the discretion of respective
+privileged application that would create and mount a BPF FS instance with
+delegation enabled, as different production setups can and do achieve it
+through a combination of different means (signing, LSM, code reviews, etc),
+and it's undesirable and infeasible for kernel to enforce any particular way
+of validating trustworthiness of particular process.
 
-Can this be done as an optimization later on? If, from the bpf side,
-the verifier can attest that the program is not calling
-bpf_xdp_{load,store}_bytes on the frags for example.
+The main motivation for this work is a desire to enable containerized BPF
+applications to be used together with user namespaces. This is currently
+impossible, as CAP_BPF, required for BPF subsystem usage, cannot be namespa=
+ced
+or sandboxed, as a general rule. E.g., tracing BPF programs, thanks to BPF
+helpers like bpf_probe_read_kernel() and bpf_probe_read_user() can safely r=
+ead
+arbitrary memory, and it's impossible to ensure that they only read memory =
+of
+processes belonging to any given namespace. This means that it's impossible=
+ to
+have a mechanically verifiable namespace-aware CAP_BPF capability, and as s=
+uch
+another mechanism to allow safe usage of BPF functionality is necessary.BPF=
+ FS
+delegation mount options and BPF token derived from such BPF FS instance is
+such a mechanism. Kernel makes no assumption about what "trusted" constitut=
+es
+in any particular case, and it's up to specific privileged applications and
+their surrounding infrastructure to decide that. What kernel provides is a =
+set
+of APIs to setup and mount special BPF FS instanecs and derive BPF tokens f=
+rom
+it. BPF FS and BPF token are both bound to its owning userns and in such a =
+way
+are constrained inside intended container. Users can then pass BPF token FD=
+ to
+privileged bpf() syscall commands, like BPF map creation and BPF program
+loading, to perform such operations without having init userns privileged.
+
+This version incorporates feedback and suggestions ([3]) received on v3 of
+this patch set, and instead of allowing to create BPF tokens directly assum=
+ing
+capable(CAP_SYS_ADMIN), we instead enhance BPF FS to accept a few new
+delegation mount options. If these options are used and BPF FS itself is
+properly created, set up, and mounted inside the user namespaced container,
+user application is able to derive a BPF token object from BPF FS instance,
+and pass that token to bpf() syscall. As explained in patch #3, BPF token
+itself doesn't grant access to BPF functionality, but instead allows kernel=
+ to
+do namespaced capabilities checks (ns_capable() vs capable()) for CAP_BPF,
+CAP_PERFMON, CAP_NET_ADMIN, and CAP_SYS_ADMIN, as applicable. So it forms o=
+ne
+half of a puzzle and allows container managers and sys admins to have safe =
+and
+flexible configuration options: determining which containers get delegation=
+ of
+BPF functionality through BPF FS, and then which applications within such
+containers are allowed to perform bpf() commands, based on namespaces
+capabilities.
+
+Previous attempt at addressing this very same problem ([0]) attempted to
+utilize authoritative LSM approach, but was conclusively rejected by upstre=
+am
+LSM maintainers. BPF token concept is not changing anything about LSM
+approach, but can be combined with LSM hooks for very fine-grained security
+policy. Some ideas about making BPF token more convenient to use with LSM (=
+in
+particular custom BPF LSM programs) was briefly described in recent LSF/MM/=
+BPF
+2023 presentation ([1]). E.g., an ability to specify user-provided data
+(context), which in combination with BPF LSM would allow implementing a very
+dynamic and fine-granular custom security policies on top of BPF token. In =
+the
+interest of minimizing API surface area and discussions this was relegated =
+to
+follow up patches, as it's not essential to the fundamental concept of
+delegatable BPF token.
+
+It should be noted that BPF token is conceptually quite similar to the idea=
+ of
+/dev/bpf device file, proposed by Song a while ago ([2]). The biggest
+difference is the idea of using virtual anon_inode file to hold BPF token a=
+nd
+allowing multiple independent instances of them, each (potentially) with its
+own set of restrictions. And also, crucially, BPF token approach is not usi=
+ng
+any special stateful task-scoped flags. Instead, bpf() syscall accepts
+token_fd parameters explicitly for each relevant BPF command. This addresses
+main concerns brought up during the /dev/bpf discussion, and fits better wi=
+th
+overall BPF subsystem design.
+
+This patch set adds a basic minimum of functionality to make BPF token idea
+useful and to discuss API and functionality. Currently only low-level libbpf
+APIs support creating and passing BPF token around, allowing to test kernel
+functionality, but for the most part is not sufficient for real-world
+applications, which typically use high-level libbpf APIs based on `struct
+bpf_object` type. This was done with the intent to limit the size of patch =
+set
+and concentrate on mostly kernel-side changes. All the necessary plumbing f=
+or
+libbpf will be sent as a separate follow up patch set kernel support makes =
+it
+upstream.
+
+Another part that should happen once kernel-side BPF token is established, =
+is
+a set of conventions between applications (e.g., systemd), tools (e.g.,
+bpftool), and libraries (e.g., libbpf) on exposing delegatable BPF FS
+instance(s) at well-defined locations to allow applications take advantage =
+of
+this in automatic fashion without explicit code changes on BPF application's
+side. But I'd like to postpone this discussion to after BPF token concept
+lands.
+
+  [0] https://lore.kernel.org/bpf/20230412043300.360803-1-andrii@kernel.org/
+  [1] http://vger.kernel.org/bpfconf2023_material/Trusted_unprivileged_BPF_=
+LSFMM2023.pdf
+  [2] https://lore.kernel.org/bpf/20190627201923.2589391-2-songliubraving@f=
+b.com/
+  [3] https://lore.kernel.org/bpf/20230704-hochverdient-lehne-eeb9eeef785e@=
+brauner/
+
+v11->v12:
+  - enforce exact userns match in bpf_token_capable() and
+    bpf_token_allow_cmd() checks, for added strictness (Christian);
+v10->v11:
+  - fix BPF FS root check to disallow using bind-mounted subdirectory of BPF
+    FS instance (Christian);
+  - further restrict BPF_TOKEN_CREATE command to be executed from inside
+    exactly the same user namespace as the one used to create BPF FS instan=
+ce
+    (Christian);
+v9->v10:
+  - slight adjustments in LSM parts (Paul);
+  - setting delegate_xxx  options require capable(CAP_SYS_ADMIN) (Christian=
+);
+  - simplify BPF_TOKEN_CREATE UAPI by accepting BPF FS FD directly (Christi=
+an);
+v8->v9:
+  - fix issue in selftests due to sys/mount.h header (Jiri);
+  - fix warning in doc comments in LSM hooks (kernel test robot);
+v7->v8:
+  - add bpf_token_allow_cmd and bpf_token_capable hooks (Paul);
+  - inline bpf_token_alloc() into bpf_token_create() to prevent accidental
+    divergence with security_bpf_token_create() hook (Paul);
+v6->v7:
+  - separate patches to refactor bpf_prog_alloc/bpf_map_alloc LSM hooks, as
+    discussed with Paul, and now they also accept struct bpf_token;
+  - added bpf_token_create/bpf_token_free to allow LSMs (SELinux,
+    specifically) to set up security LSM blob (Paul);
+  - last patch also wires bpf_security_struct setup by SELinux, similar to =
+how
+    it's done for BPF map/prog, though I'm not sure if that's enough, so wo=
+rst
+    case it's easy to drop this patch if more full fledged SELinux
+    implementation will be done separately;
+  - small fixes for issues caught by code reviews (Jiri, Hou);
+  - fix for test_maps test that doesn't use LIBBPF_OPTS() macro (CI);
+v5->v6:
+  - fix possible use of uninitialized variable in selftests (CI);
+  - don't use anon_inode, instead create one from BPF FS instance (Christia=
+n);
+  - don't store bpf_token inside struct bpf_map, instead pass it explicitly=
+ to
+    map_check_btf(). We do store bpf_token inside prog->aux, because it's u=
+sed
+    during verification and even can be checked during attach time for some
+    program types;
+  - LSM hooks are left intact pending the conclusion of discussion with Paul
+    Moore; I'd prefer to do LSM-related changes as a follow up patch set
+    anyways;
+v4->v5:
+  - add pre-patch unifying CAP_NET_ADMIN handling inside kernel/bpf/syscall=
+.c
+    (Paul Moore);
+  - fix build warnings and errors in selftests and kernel, detected by CI a=
+nd
+    kernel test robot;
+v3->v4:
+  - add delegation mount options to BPF FS;
+  - BPF token is derived from the instance of BPF FS and associates itself
+    with BPF FS' owning userns;
+  - BPF token doesn't grant BPF functionality directly, it just turns
+    capable() checks into ns_capable() checks within BPF FS' owning user;
+  - BPF token cannot be pinned;
+v2->v3:
+  - make BPF_TOKEN_CREATE pin created BPF token in BPF FS, and disallow
+    BPF_OBJ_PIN for BPF token;
+v1->v2:
+  - fix build failures on Kconfig with CONFIG_BPF_SYSCALL unset;
+  - drop BPF_F_TOKEN_UNKNOWN_* flags and simplify UAPI (Stanislav).
+
+Andrii Nakryiko (17):
+  bpf: align CAP_NET_ADMIN checks with bpf_capable() approach
+  bpf: add BPF token delegation mount options to BPF FS
+  bpf: introduce BPF token object
+  bpf: add BPF token support to BPF_MAP_CREATE command
+  bpf: add BPF token support to BPF_BTF_LOAD command
+  bpf: add BPF token support to BPF_PROG_LOAD command
+  bpf: take into account BPF token when fetching helper protos
+  bpf: consistently use BPF token throughout BPF verifier logic
+  bpf,lsm: refactor bpf_prog_alloc/bpf_prog_free LSM hooks
+  bpf,lsm: refactor bpf_map_alloc/bpf_map_free LSM hooks
+  bpf,lsm: add BPF token LSM hooks
+  libbpf: add bpf_token_create() API
+  libbpf: add BPF token support to bpf_map_create() API
+  libbpf: add BPF token support to bpf_btf_load() API
+  libbpf: add BPF token support to bpf_prog_load() API
+  selftests/bpf: add BPF token-enabled tests
+  bpf,selinux: allocate bpf_security_struct per BPF token
+
+ drivers/media/rc/bpf-lirc.c                   |   2 +-
+ include/linux/bpf.h                           |  83 ++-
+ include/linux/filter.h                        |   2 +-
+ include/linux/lsm_hook_defs.h                 |  15 +-
+ include/linux/security.h                      |  43 +-
+ include/uapi/linux/bpf.h                      |  42 ++
+ kernel/bpf/Makefile                           |   2 +-
+ kernel/bpf/arraymap.c                         |   2 +-
+ kernel/bpf/bpf_lsm.c                          |  15 +-
+ kernel/bpf/cgroup.c                           |   6 +-
+ kernel/bpf/core.c                             |   3 +-
+ kernel/bpf/helpers.c                          |   6 +-
+ kernel/bpf/inode.c                            | 101 ++-
+ kernel/bpf/syscall.c                          | 215 ++++--
+ kernel/bpf/token.c                            | 263 +++++++
+ kernel/bpf/verifier.c                         |  13 +-
+ kernel/trace/bpf_trace.c                      |   2 +-
+ net/core/filter.c                             |  36 +-
+ net/ipv4/bpf_tcp_ca.c                         |   2 +-
+ net/netfilter/nf_bpf_link.c                   |   2 +-
+ security/security.c                           | 101 ++-
+ security/selinux/hooks.c                      |  47 +-
+ tools/include/uapi/linux/bpf.h                |  42 ++
+ tools/lib/bpf/bpf.c                           |  28 +-
+ tools/lib/bpf/bpf.h                           |  35 +-
+ tools/lib/bpf/libbpf.map                      |   1 +
+ .../selftests/bpf/prog_tests/libbpf_probes.c  |   4 +
+ .../selftests/bpf/prog_tests/libbpf_str.c     |   6 +
+ .../testing/selftests/bpf/prog_tests/token.c  | 672 ++++++++++++++++++
+ 29 files changed, 1624 insertions(+), 167 deletions(-)
+ create mode 100644 kernel/bpf/token.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/token.c
+
+--=20
+2.34.1
+
 
