@@ -1,114 +1,164 @@
-Return-Path: <bpf+bounces-16256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 595D17FEE84
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 13:04:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E0F7FEEAE
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 13:14:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCB0BB20E1F
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 12:04:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15086281F5B
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 12:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2554503C;
-	Thu, 30 Nov 2023 12:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF2045C02;
+	Thu, 30 Nov 2023 12:14:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=novoserve.com header.i=@novoserve.com header.b="MtblwAJh"
+	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="IRBLcCvI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4117984
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 04:04:34 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50bc39dcbcbso1238719e87.1
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 04:04:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=novoserve.com; s=google; t=1701345872; x=1701950672; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=biKlA3SqBh1c2m8RfvMfF38GHC4RXRIIZ9C8YrbJL70=;
-        b=MtblwAJhghUmDoOdjGz+W2DqSYQW75yuOgstF6laCrMmUQApO70KhNqzZ7QJMIrbJF
-         dLjPzoAgB2hThG5UIIuVZTVYKv8bygeXWLmk8mNF0CZf4iGZklKK1XVFSDij8i7RD+Ql
-         B9Mgkax2K3z+1/r6w0/QQjSi0UcFH60SLJ1JBYZdeIjtsfvacpds0Skl+QvDl1Z0BXGO
-         eP4JOv54Pyiyo8o8jymDHpOu5DskbmFOIqf+40QFgjK+L9Pwc66Si8Tlr2bjnKcqd48c
-         oixz7fY/aGz3yssYnl6L0W9ZFGfQRnYzvFzWnIUcL/P9Llh74gr1gXCkKJFm4XWsphUK
-         lO5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701345872; x=1701950672;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=biKlA3SqBh1c2m8RfvMfF38GHC4RXRIIZ9C8YrbJL70=;
-        b=e5TIGFzxuUqCNNqU+flEeSe0TEWGL0Tl7jYeFNagC8ypNBg3hzT1rH2tgH0QmzG9Qi
-         Vb2gbaba94+HhIX102b4mhrBJnmMMFr7vcNiBAE4Y9HuyWsXLICp9QcqZtSGpDsyZ569
-         a7BPlEvC4kEqPGpXW3hBcQgXG+v8f38O/NrjwcdbpQf8SO6G9In+0Fs2ex9TpPPwT2ec
-         dB/75UQJyDIIehfB9I2gmF2rY/fevIw4zumGpmeW+Auobucy2QSIFyvBtHFOm0cg0Qdv
-         /rbz3BofxsjS2Gm0V4M7aVJuCpydM0kK76aXzPIc8jqS4fhbUKjz1WTH9ZHi6WaxH9jY
-         1zdQ==
-X-Gm-Message-State: AOJu0YyrdXy1jeBsYwTr0tHdMPaEnoiAc5C/+yAkKE0CtEXxpNyTPS8x
-	sxXeLTYFrtij1aa60rLqKc5D0QHxeOWrQj3WJNl2SQ==
-X-Google-Smtp-Source: AGHT+IHLrXhE7XsNRYFnjTrJqrrjbhok/37kXNcOgadEiZ8wrEfnmIVYnCaosz6cKPYW8WVg3m/S7w==
-X-Received: by 2002:a05:6512:acc:b0:50b:d103:2e3a with SMTP id n12-20020a0565120acc00b0050bd1032e3amr1152243lfu.10.1701345872386;
-        Thu, 30 Nov 2023 04:04:32 -0800 (PST)
-Received: from localhost.localdomain ([185.80.233.233])
-        by smtp.gmail.com with ESMTPSA id v9-20020aa7d9c9000000b0054b1fca00c7sm486052eds.74.2023.11.30.04.04.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 04:04:31 -0800 (PST)
-From: Jeroen van Ingen Schenau <jeroen.vaningenschenau@novoserve.com>
-To: bpf@vger.kernel.org
-Cc: maximmi@nvidia.com,
-	tariqt@nvidia.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	Jeroen van Ingen Schenau <jeroen.vaningenschenau@novoserve.com>,
-	Minh Le Hoang <minh.lehoang@novoserve.com>
-Subject: [PATCH] selftests/bpf: fix erroneous bitmask operation
-Date: Thu, 30 Nov 2023 13:03:53 +0100
-Message-Id: <20231130120353.3084-1-jeroen.vaningenschenau@novoserve.com>
-X-Mailer: git-send-email 2.34.1
+Received: from eggs.gnu.org (eggs.gnu.org [IPv6:2001:470:142:3::10])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EFED40
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 04:14:00 -0800 (PST)
+Received: from fencepost.gnu.org ([2001:470:142:3::e])
+	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.90_1)
+	(envelope-from <jemarch@gnu.org>)
+	id 1r8fvZ-0006Xb-FL; Thu, 30 Nov 2023 07:13:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
+	s=fencepost-gnu-org; h=MIME-Version:Date:References:In-Reply-To:Subject:To:
+	From; bh=OjCnAWlY+IhcfN6rSmOJvj3w+BhhZvhCFJQKf45s/Eo=; b=IRBLcCvIm+fEyMEAaDNP
+	7qcdWK5UQF39bL/DdQZKAv6H8zAuOAu2DwurqJJ2ABv3r2c7Qo7hDCX8pyoRIRImhoMbBCcBXRser
+	BLuWr9VG3hUzjB88yf7Kho0V+y9AHqsYfLdN/sL7MprT6pJtnzd4BRsWf2YC8WRSdzHsMDkpCDVIG
+	fRBRcwg23HIPWD7iU8RA0L5D9BrAm3WH0lQqItBno1bWZRX/ZaCQZ5L8aJ5G1S4w8ioipp0oh6PyQ
+	WrDmf70teLwVRFIjGz+3Ala3JayRbzm+WuV6N5cTn4omAbW+fWY/Nsf3daE21gl82WOcGkAnrMa1G
+	WQsMpvbo8SUHMQ==;
+From: "Jose E. Marchesi" <jemarch@gnu.org>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>,  bpf@vger.kernel.org
+Subject: Re: BPF GCC status - Nov 2023
+In-Reply-To: <a1073bd0-9df2-4a9e-900c-7e8ac63ac464@linux.dev> (Yonghong Song's
+	message of "Wed, 29 Nov 2023 08:44:28 -0800")
+References: <87leahx2xh.fsf@oracle.com>
+	<3733942b-f0ef-4e71-8c49-aa4177e9433c@linux.dev>
+	<87jzq1t4sk.fsf@oracle.com>
+	<a1073bd0-9df2-4a9e-900c-7e8ac63ac464@linux.dev>
+Date: Thu, 30 Nov 2023 13:13:52 +0100
+Message-ID: <87h6l3a16n.fsf@gnu.org>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-xdp_synproxy_kern.c is a BPF program that generates SYN cookies on
-allowed TCP ports and sends SYNACKs to clients, accelerating synproxy
-iptables module.
 
-Fix the bitmask operation when checking the status of an existing
-conntrack entry within tcp_lookup() function. Do not AND with the bit
-position number, but with the bitmask value to check whether the entry
-found has the IPS_CONFIRMED flag set.
+> On 11/29/23 2:08 AM, Jose E. Marchesi wrote:
+>>> On 11/28/23 11:23 AM, Jose E. Marchesi wrote:
+>>>> [During LPC 2023 we talked about improving communication between the GCC
+>>>>    BPF toolchain port and the kernel side.  This is the first periodical
+>>>>    report that we plan to publish in the GCC wiki and send to interested
+>>>>    parties.  Hopefully this will help.]
+>>>>
+>>>> GCC wiki page for the port: https://gcc.gnu.org/wiki/BPFBackEnd
+>>>> IRC channel: #gccbpf at irc.oftc.net.
+>>>> Help on using the port: gcc@gcc.gnu.org
+>>>> Patches and/or development discussions: gcc-patches@gnu.org
+>>> Thanks a lot for detailed report. Really helpful to nail down
+>>> issues facing one or both compilers. See comments below for
+>>> some mentioned issues.
+>>>
+>>>> Assembler
+>>>> =========
+>>> [...]
+>>>
+>>>> - In the Pseudo-C syntax register names are not preceded by % characters
+>>>>     nor any other prefix.  A consequence of that is that in contexts like
+>>>>     instruction operands, where both register names and expressions
+>>>>     involving symbols are expected, there is no way to disambiguate
+>>>>     between them.  GAS was allowing symbols like `w3' or `r5' in syntactic
+>>>>     contexts where no registers were expected, such as in:
+>>>>
+>>>>       r0 = w3 ll  ; GAS interpreted w3 as symbol, clang emits error
+>>>>
+>>>>     The clang assembler wasn't allowing that.  During LPC we agreed that
+>>>>     the simplest approach is to not allow any symbol to have the same name
+>>>>     than a register, in any context.  So we changed GAS so it now doesn't
+>>>>     allow to use register names as symbols in any expression, such as:
+>>>>
+>>>>       r0 = w3 + 1 ll  ; This now fails for both GAS and llvm.
+>>>>       r0 = 1 + w3 ll  ; NOTE this does not fail with llvm, but it should.
+>>> Could you provide a reproducible case above for llvm? llvm does not
+>>> support syntax like 'r0 = 1 + w3 ll'. For add, it only supports
+>>> 'r1 += r2' or 'r1 += 100' syntax.
+>> It is a 128-bit load with an expression.  In compiler explorer, clang:
+>>
+>>    int
+>>    foo ()
+>>    {
+>>      asm volatile ("r1 = 10 + w3 ll");
+>>      return 0;
+>>    }
+>>
+>> I get:
+>>
+>>    foo:                                    # @foo
+>>            r1 = 10+w3 ll
+>>            r0 = 0
+>>            exit
+>>
+>> i.e. `10 + w3' is interpreted as an expression with two operands: the
+>> literal number 10 and a symbol (not a register) `w3'.
+>>
+>> If the expression is `w3+10' instead, your parser recognizes the w3 as a
+>> register name and errors out, as expected.
+>>
+>> I suppose llvm allows to hook on the expression parser to handle
+>> individual operands.  That's how we handled this in GAS.
+>
+> Thanks for the code. I can reproduce the result with compiler explorer.
+> The following is the link https://godbolt.org/z/GEGexf1Pj
+> where I added -grecord-gcc-switches to dump compilation flags
+> into .s file.
+>
+> The following is the compiler explorer compilation command line:
+> /opt/compiler-explorer/clang-trunk-20231129/bin/clang-18 -g -o /app/output.s \
+>   -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 \
+>   -g -grecord-command-line /app/example.c
+>
+> I then compile the above C code with
+>   clang -g -S --target=bpf -fcolor-diagnostics -gen-reproducer=off -O2 -g -grecord-command-line t.c
+> with identical flags.
+>
+> I tried locally with llvm16/17/18. They all failed compilation since
+> 'r1 = 10+w3 ll' cannot be recognized by the llvm.
+> We will investigate why llvm18 in compiler explorer compiles
+> differently from my local build.
 
-Link: https://lore.kernel.org/xdp-newbies/CAAi1gX7owA+Tcxq-titC-h-KPM7Ri-6ZhTNMhrnPq5gmYYwKow@mail.gmail.com/T/#u
-Signed-off-by: Jeroen van Ingen Schenau <jeroen.vaningenschenau@novoserve.com>
-Tested-by: Minh Le Hoang <minh.lehoang@novoserve.com>
----
- tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I updated git llvm master today and I managed to reproduce locally with:
 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-index 80f620602d50..518329c666e9 100644
---- a/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_synproxy_kern.c
-@@ -467,13 +467,13 @@ static __always_inline int tcp_lookup(void *ctx, struct header_pointers *hdr, bo
- 		unsigned long status = ct->status;
- 
- 		bpf_ct_release(ct);
--		if (status & IPS_CONFIRMED_BIT)
-+		if (status & IPS_CONFIRMED)
- 			return XDP_PASS;
- 	} else if (ct_lookup_opts.error != -ENOENT) {
- 		return XDP_ABORTED;
- 	}
- 
--	/* error == -ENOENT || !(status & IPS_CONFIRMED_BIT) */
-+	/* error == -ENOENT || !(status & IPS_CONFIRMED) */
- 	return XDP_TX;
- }
- 
--- 
-2.34.1
+jemarch@termi:~/gnu/src/llvm-project/llvm/build$ clang --version
+clang version 18.0.0 (https://github.com/llvm/llvm-project.git 586986a063ee4b9a7490aac102e103bab121c764)
+Target: unknown
+Thread model: posix
+InstalledDir: /usr/local/bin
+$ cat foo.c
+    int
+    foo ()
+    {
+      asm volatile ("r1 = 10 + w3 ll");
+      return 0;
+    }
+$ clang -target bpf -c foo.c
+$ llvm-objdump -dr foo.o
 
+foo.o:	file format elf64-bpf
+
+Disassembly of section .text:
+
+0000000000000000 <foo>:
+       0:	18 01 00 00 0a 00 00 00 00 00 00 00 00 00 00 00	r1 = 0xa ll
+		0000000000000000:  R_BPF_64_64	w3
+       2:	b7 00 00 00 00 00 00 00	r0 = 0x0
+       3:	95 00 00 00 00 00 00 00	exit
 
