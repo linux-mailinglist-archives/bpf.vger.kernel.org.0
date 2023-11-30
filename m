@@ -1,69 +1,83 @@
-Return-Path: <bpf+bounces-16248-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16249-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2B27FEC89
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 11:09:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 704C97FEC92
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 11:11:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C924B20F89
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 10:09:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A12891C20EAC
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 10:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8EB3B2A7;
-	Thu, 30 Nov 2023 10:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FAFC3B7B3;
+	Thu, 30 Nov 2023 10:10:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ekx2Vemd"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Sb6wSiOh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB03110C2
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 02:08:54 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54bb5ebbb35so704158a12.1
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 02:08:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701338933; x=1701943733; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=pU1Dt1yyginx2DG4N136TqohymuHJi+12Xjms/nuiLY=;
-        b=Ekx2VemdmZp6eTTxlRsLU2vAJrKC8C/OFs0S8PIS53FGbYtQmm/ASKXPeXdv6MJ9uM
-         c6AF8qo+sU73IIG6Hd2FkRC1aLV5Sqgq1KuqILrVFg9Tw6CYBv81+AKTkv/3yNLXQlJV
-         vsrWLmWKt1KRMBHPskZkmgh6iNEH/028oTSze2s+igc+qP2eb0BNweGFQKmUuBV9Uv04
-         8aETz4ghcShgrG5CrZ+DOFSn9lN9J7BstpZdOB55GX9Sx/UKQEw3HEoXdMZ7ZRckjq8M
-         62BsKCOxEZVxMbAJx6XygKMQJQ5yVh5ANFGvzuVOykh2h97WnRXCN4I1QRSkjVyykOJP
-         0gxQ==
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CB110D1
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 02:10:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1701339051;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mog5a4tE2VffmSpLM7m0gtLx5poQ9B/lXLESgJQeZsA=;
+	b=Sb6wSiOhlHhO/qH1aKmh3dcYtmo+UCQcE+NBexFYZKpEaCFSaBiiiuK/OvPIpk+S53lP2+
+	qdwaj2/ikcX9yNiYsAW7xSVvfysrqnqsjiXgZ7lsYmxRsXl4XCqdmzZ2PY/lPZVLcA1MgO
+	5xvJ933XQqGKmmX1Xi/nvZPCdWeRYJQ=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-588-xRvVe51gPqOVvTl8jts8ig-1; Thu, 30 Nov 2023 05:10:49 -0500
+X-MC-Unique: xRvVe51gPqOVvTl8jts8ig-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-332fab597afso664660f8f.3
+        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 02:10:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701338933; x=1701943733;
+        d=1e100.net; s=20230601; t=1701339048; x=1701943848;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pU1Dt1yyginx2DG4N136TqohymuHJi+12Xjms/nuiLY=;
-        b=tpqCRESTqowUdnmFVn2l1n3osAVZ0iZkCUKcWH+nX8GbDljWpPy7XdaPddJM+YO/zp
-         z2MyqvCvUNZZLeEDEWmZK7DBqNv6Tdn7NgHPgxElnYVgHcH8lZvXN28tHRBdc/yyLGYq
-         gddJZMLKHeBixvLTgf2JwR20/s2ZbAfCsI6CqWVp4/UJiLUBXySAsy9rbysek7WUt394
-         th8lawunAfRLw7TdONQAEUouFIvjQvXlTiKviWKlIyrhZR9UkaLV2i75hBX7QkPuuVb4
-         vhvb4Y8xeSm5gAy4A6GcaD/jKjbhocIW8la5UuY+8CSpsYm+xKO8rr80G9jgcU40LKVJ
-         6RPw==
-X-Gm-Message-State: AOJu0YzIIRByDaq4txfvRsfqPN6RtaByU67qQjnp4Cutn0/UPiC9BVF4
-	PjVelUk6WYtjP8jfYccdAITryHZ12JGsFQ==
-X-Google-Smtp-Source: AGHT+IHpUGBNW5lgVlpjwbNAaeAraiY50dvIsawvGmWi7dIjUsAnE+x0JY+Of10FjKigZHt4vRX+qw==
-X-Received: by 2002:a17:906:b20a:b0:9e6:4410:2993 with SMTP id p10-20020a170906b20a00b009e644102993mr11501793ejz.18.1701338933034;
-        Thu, 30 Nov 2023 02:08:53 -0800 (PST)
-Received: from ddolgov.remote.csb (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
-        by smtp.gmail.com with ESMTPSA id my18-20020a1709065a5200b009f28db2b702sm497958ejc.209.2023.11.30.02.08.52
+        bh=mog5a4tE2VffmSpLM7m0gtLx5poQ9B/lXLESgJQeZsA=;
+        b=u23JeAFmb7hppybrYOl3fcmincBIAF8UtIsRnjhnTUdSFqmwgyjlTbUCPBEf0xYzjL
+         gKN/p3EmRdtt8wMVcOm5OlErSKvoVFQjwc3KnN/n2FecFTji3qv1y0fafhZ8f3WabPFI
+         42MHEhyn4ls5VHOT0xByPlKUkAzCTBnbOvAiYNMSNbcxCpbuCI+k/Z6r82gc6W0Jze3X
+         Ua+FcUEvm3L+R1unFP5w2jQ+iQj0HUzSyH+H1G3ucLcmIpEYjGCkAavgH7VRgjmNZnfK
+         dbn/EGwQmR6g2mojA8COLNZOL3wByWrnn1BBpbey29GF9pvx+AoGhmicT/47pJWS3BYS
+         SRKg==
+X-Gm-Message-State: AOJu0YxMzD9an+wU8xMWDMNFRTo97PXbRzmD0aj+POBAEd0Bin36hW7m
+	6cMXTPJekiM5uJZLy6CsDmR1tp4b2eyzVu7QXAwEl2iGUvLyXUqCM3wdo4JRfNVODtzIHQX3GOS
+	+yruhev2/K11H
+X-Received: by 2002:adf:b1d2:0:b0:332:d288:30de with SMTP id r18-20020adfb1d2000000b00332d28830demr11281968wra.6.1701339047934;
+        Thu, 30 Nov 2023 02:10:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEoDzxOJY6GbVA8OrUwNUrxvIoPjhP1/utIyFxQxHxsGwbyA0pb6sv8J5tkTTv7ZFjei6GKCg==
+X-Received: by 2002:adf:b1d2:0:b0:332:d288:30de with SMTP id r18-20020adfb1d2000000b00332d28830demr11281948wra.6.1701339047555;
+        Thu, 30 Nov 2023 02:10:47 -0800 (PST)
+Received: from redhat.com ([2.55.57.48])
+        by smtp.gmail.com with ESMTPSA id q3-20020adfcd83000000b00333085ceca5sm1082840wrj.64.2023.11.30.02.10.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 02:08:52 -0800 (PST)
-Date: Thu, 30 Nov 2023 11:08:51 +0100
-From: Dmitry Dolgov <9erthalion6@gmail.com>
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev,
-	dan.carpenter@linaro.org, olsajiri@gmail.com
-Subject: Re: [PATCH bpf-next v4 1/3] bpf: Relax tracing prog recursive attach
- rules
-Message-ID: <20231130100851.fymwxhwevd3t5d7m@ddolgov.remote.csb>
-References: <20231129195240.19091-1-9erthalion6@gmail.com>
- <20231129195240.19091-2-9erthalion6@gmail.com>
- <CAPhsuW6J+ZN7KQdxm+2=ZcGGkWohcQxeNS+nNjE5r0K-jdq=FQ@mail.gmail.com>
+        Thu, 30 Nov 2023 02:10:46 -0800 (PST)
+Date: Thu, 30 Nov 2023 05:10:42 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: virtualization@lists.linux-foundation.org,
+	Jason Wang <jasowang@redhat.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	bpf@vger.kernel.org, Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH vhost v13 11/12] virtio_ring: introduce dma sync api for
+ virtqueue
+Message-ID: <20231130050852-mutt-send-email-mst@kernel.org>
+References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
+ <20230810123057.43407-12-xuanzhuo@linux.alibaba.com>
+ <20231130044512-mutt-send-email-mst@kernel.org>
+ <1701337778.899533-1-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,66 +86,157 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAPhsuW6J+ZN7KQdxm+2=ZcGGkWohcQxeNS+nNjE5r0K-jdq=FQ@mail.gmail.com>
+In-Reply-To: <1701337778.899533-1-xuanzhuo@linux.alibaba.com>
 
-> On Wed, Nov 29, 2023 at 03:58:02PM -0800, Song Liu wrote:
-> We discussed this in earlier version:
->
-> "
-> > If prog B attached to prog A, and prog C attached to prog B, then we
-> > detach B. At this point, can we re-attach B to A?
->
-> Nope, with the proposed changes it still wouldn't be possible to
-> reattach B to A (if we're talking about tracing progs of course),
-> because this time B is an attachment target on its own.
-> "
->
-> I think this can be problematic for some users. Basically, doing
-> profiling on prog B can cause it to not work (cannot re-attach).
+On Thu, Nov 30, 2023 at 05:49:38PM +0800, Xuan Zhuo wrote:
+> On Thu, 30 Nov 2023 04:45:58 -0500, "Michael S. Tsirkin" <mst@redhat.com> wrote:
+> > On Thu, Aug 10, 2023 at 08:30:56PM +0800, Xuan Zhuo wrote:
+> > > These API has been introduced:
+> > >
+> > > * virtqueue_dma_need_sync
+> > > * virtqueue_dma_sync_single_range_for_cpu
+> > > * virtqueue_dma_sync_single_range_for_device
+> > >
+> > > These APIs can be used together with the premapped mechanism to sync the
+> > > DMA address.
+> > >
+> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > > ---
+> > >  drivers/virtio/virtio_ring.c | 76 ++++++++++++++++++++++++++++++++++++
+> > >  include/linux/virtio.h       |  8 ++++
+> > >  2 files changed, 84 insertions(+)
+> > >
+> > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > > index 916479c9c72c..81ecb29c88f1 100644
+> > > --- a/drivers/virtio/virtio_ring.c
+> > > +++ b/drivers/virtio/virtio_ring.c
+> > > @@ -3175,4 +3175,80 @@ int virtqueue_dma_mapping_error(struct virtqueue *_vq, dma_addr_t addr)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(virtqueue_dma_mapping_error);
+> > >
+> > > +/**
+> > > + * virtqueue_dma_need_sync - check a dma address needs sync
+> > > + * @_vq: the struct virtqueue we're talking about.
+> > > + * @addr: DMA address
+> > > + *
+> > > + * Check if the dma address mapped by the virtqueue_dma_map_* APIs needs to be
+> > > + * synchronized
+> > > + *
+> > > + * return bool
+> > > + */
+> > > +bool virtqueue_dma_need_sync(struct virtqueue *_vq, dma_addr_t addr)
+> > > +{
+> > > +	struct vring_virtqueue *vq = to_vvq(_vq);
+> > > +
+> > > +	if (!vq->use_dma_api)
+> > > +		return false;
+> > > +
+> > > +	return dma_need_sync(vring_dma_dev(vq), addr);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(virtqueue_dma_need_sync);
+> > > +
+> > > +/**
+> > > + * virtqueue_dma_sync_single_range_for_cpu - dma sync for cpu
+> > > + * @_vq: the struct virtqueue we're talking about.
+> > > + * @addr: DMA address
+> > > + * @offset: DMA address offset
+> > > + * @size: buf size for sync
+> > > + * @dir: DMA direction
+> > > + *
+> > > + * Before calling this function, use virtqueue_dma_need_sync() to confirm that
+> > > + * the DMA address really needs to be synchronized
+> > > + *
+> > > + */
+> > > +void virtqueue_dma_sync_single_range_for_cpu(struct virtqueue *_vq,
+> > > +					     dma_addr_t addr,
+> > > +					     unsigned long offset, size_t size,
+> > > +					     enum dma_data_direction dir)
+> > > +{
+> > > +	struct vring_virtqueue *vq = to_vvq(_vq);
+> > > +	struct device *dev = vring_dma_dev(vq);
+> > > +
+> > > +	if (!vq->use_dma_api)
+> > > +		return;
+> > > +
+> > > +	dma_sync_single_range_for_cpu(dev, addr, offset, size,
+> > > +				      DMA_BIDIRECTIONAL);
+> > > +}
+> >
+> >
+> > Why did you use DMA_BIDIRECTIONAL here?
+> > Why is "dir" ignored?
+> 
+> This is a mistake.
+> 
+> I see Jason has a fix patch.
 
-Sorry, I was probably not clear enough about this first time. Let me
-elaborate:
+the one he sent in response to the bug report? it's incomplete though.
 
-* The patch affects only tracing programs (only they can reach the
-  corresponding verifier change), so I assume in your example at least B
-  and A are fentry/fexit.
+> How can I help?
+> 
+> Thanks.
 
-* The patch is less restrictive than the current kernel implementation.
-  Currently, no attach of a tracing program to another tracing program is
-  possible, thus IIUC the case you describe (A, B: tracing, C -> B -> A,
-  then re-attach B -> A) is not possible without the patch (the first B
-  -> A is going to return a verifier error).
+develop a full patch with commit log, explanation of what
+the result of the bug is, Fixes tag etc, test
+in some environment where dir makes a difference and post.
 
-* I've also tried to reproduce this use case with the patch, and noticed
-  that link_detach is not supported for tracing progs. Which means the
-  re-attach part in (C -> B -> A) has to be done via unloading of prog B
-  and C, then reattaching them one-by-one back. This is another
-  limitation why the case above doesn't seem to be possible (attaching
-  one-by-one back would of course work without any issues even with the
-  patch).
 
-Does it all make sense to you, or am I missing something about the
-problem you describe?
+> 
+> >
+> >
+> > > +EXPORT_SYMBOL_GPL(virtqueue_dma_sync_single_range_for_cpu);
+> > > +
+> > > +/**
+> > > + * virtqueue_dma_sync_single_range_for_device - dma sync for device
+> > > + * @_vq: the struct virtqueue we're talking about.
+> > > + * @addr: DMA address
+> > > + * @offset: DMA address offset
+> > > + * @size: buf size for sync
+> > > + * @dir: DMA direction
+> > > + *
+> > > + * Before calling this function, use virtqueue_dma_need_sync() to confirm that
+> > > + * the DMA address really needs to be synchronized
+> > > + */
+> > > +void virtqueue_dma_sync_single_range_for_device(struct virtqueue *_vq,
+> > > +						dma_addr_t addr,
+> > > +						unsigned long offset, size_t size,
+> > > +						enum dma_data_direction dir)
+> > > +{
+> > > +	struct vring_virtqueue *vq = to_vvq(_vq);
+> > > +	struct device *dev = vring_dma_dev(vq);
+> > > +
+> > > +	if (!vq->use_dma_api)
+> > > +		return;
+> > > +
+> > > +	dma_sync_single_range_for_device(dev, addr, offset, size,
+> > > +					 DMA_BIDIRECTIONAL);
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(virtqueue_dma_sync_single_range_for_device);
+> > > +
+> > >  MODULE_LICENSE("GPL");
+> >
+> > same question here.
+> >
+> > > diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+> > > index 79e3c74391e0..1311a7fbe675 100644
+> > > --- a/include/linux/virtio.h
+> > > +++ b/include/linux/virtio.h
+> > > @@ -220,4 +220,12 @@ void virtqueue_dma_unmap_single_attrs(struct virtqueue *_vq, dma_addr_t addr,
+> > >  				      size_t size, enum dma_data_direction dir,
+> > >  				      unsigned long attrs);
+> > >  int virtqueue_dma_mapping_error(struct virtqueue *_vq, dma_addr_t addr);
+> > > +
+> > > +bool virtqueue_dma_need_sync(struct virtqueue *_vq, dma_addr_t addr);
+> > > +void virtqueue_dma_sync_single_range_for_cpu(struct virtqueue *_vq, dma_addr_t addr,
+> > > +					     unsigned long offset, size_t size,
+> > > +					     enum dma_data_direction dir);
+> > > +void virtqueue_dma_sync_single_range_for_device(struct virtqueue *_vq, dma_addr_t addr,
+> > > +						unsigned long offset, size_t size,
+> > > +						enum dma_data_direction dir);
+> > >  #endif /* _LINUX_VIRTIO_H */
+> > > --
+> > > 2.32.0.3.g01195cf9f
+> >
+> >
 
-> Given it is not possible to create a call circle, shall we remove
-> this issue?
-
-I was originally thinking about this when preparing the patch, even
-independently of the question above, simply remove verifier limitation
-for an impossible situation sounds interesting. I see the following
-pros/cons:
-
-* Just remove the verifier limitation on recursive attachment is of
-  course easier.
-
-* At the same time it makes the implementation less "defensive" against
-  future changes.
-
-* Tracking attachment depth & followers might be useful in some other
-  contexts.
-
-All in all I've decided that more elaborated approach is slightly
-better. But if everyone in the community agrees that less
-"defensiveness" is not an issue and verifier could be simply made less
-restrictive, I'm fine with that. What do you think?
 
