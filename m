@@ -1,92 +1,122 @@
-Return-Path: <bpf+bounces-16284-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16285-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2ACA67FF4AA
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 17:20:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53D517FF4B1
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 17:21:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A38A1C20E51
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:20:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3C83B20FF2
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1986954F8B;
-	Thu, 30 Nov 2023 16:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BE5654F92;
+	Thu, 30 Nov 2023 16:20:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F1uTRRu+"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mFzfS9av"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B1E2D64
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 08:19:48 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-548ae9a5eeaso12312a12.1
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 08:19:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701361186; x=1701965986; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Is7F/Sfd9ylycia+YjUucPeLJuNyhVybVoiP5aPb4u4=;
-        b=F1uTRRu+qa/EMSoaLmpAJHcLnB5uJ6718savUC+1v16u2MwpX8PNWiWfRtCI/5dRA0
-         q86wvFMu/4tIMFdOS1KBlQbOlK4vGF1s+P9eBo3EDTWnIktfH/nRBsNwYmzuYzfP9nk0
-         t8mJ6Fg+AtYUhDO6WIEdg+rg0QttEbAhnhIVsm7/pMsxh4MoJ3rqPI1e0LFueJpw4A0K
-         wlR8Nd7Uf0M4RNAKT6jNy9hUrh/GaFnkumLMjKYlMe6iLcA+0OL1gZ8Ee3rnh3OcjlXu
-         tl/V2QClgsMBqusCKHZTIRcTPIZF6rKl45krIFO/zmzt6CkXkg7gROt8cuJNjGx6d8eG
-         RVHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701361186; x=1701965986;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Is7F/Sfd9ylycia+YjUucPeLJuNyhVybVoiP5aPb4u4=;
-        b=ZeCDlUwkmyg+jRmk3sfSsD7lrVJHRGWuJCrLNtsGgbzV6u41pUX2sHkXECF5LuGlF4
-         QB+hc+YHIZMJTslScQtHAZRlBJr+iQIUqmjeimpFXNm6xtud8FjWKs+dqeBZqbf7IrWk
-         ioz95bjkps0nED/yLT4bLy6S/nrYKMqSeZobVvtLNRw6dB76TARIcEqFI+9j2DGz7o2Y
-         BTu9mXM4aeuMDTf75vuawOHNi/OWrnHGQdqRNpJPr/CLWmZ89oYQzAxoidQgk4Ud8riP
-         CJMqEXMDV1Oo9SuDqv9VtVuFJNwb9EajP4s16/9H5ZuSyKOJhC/41pV80hR6oJkf5atb
-         AZWQ==
-X-Gm-Message-State: AOJu0Yyy03uN9jZ/LLLWFXZzvi+bMd8hnuX5IZXTQSTQDz8fIzFiYakb
-	KJ1n3PPCDP2XZYLcAkXoQwvuyKYh/CjIYrC9A68hbg==
-X-Google-Smtp-Source: AGHT+IEkIXZFjJZr/mqcoqsuXQvlwMcdbAprJKPrr9YE4lgr+ofCdqPVx1WKFdCWtM9jFqu/qUApE1ZClmbmWa3ddlM=
-X-Received: by 2002:a50:d098:0:b0:54b:6b3f:4aa8 with SMTP id
- v24-20020a50d098000000b0054b6b3f4aa8mr181754edd.4.1701361186255; Thu, 30 Nov
- 2023 08:19:46 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2D1170B;
+	Thu, 30 Nov 2023 08:20:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701361250; x=1732897250;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Jmp58BhNqYVS6hDCJmPrbUZy8u/nlUohDAInUqFsi9A=;
+  b=mFzfS9avtitnCyffQHB9EyviOXf0yDOqiuomP1f2R47HuV6++ZtfRP7X
+   zGJ6RFq7QUQiZ8rl40qAXPJ6wG6tWkt0D1iyvJTBV3EyxU8CNd+TOMzR3
+   z/VZCmEkhKel84axCSOWs3YCjxHCfKOzX6NBXvk/fivEP9pZhkQGMfSl/
+   C4OeEks7WfpJmJbX6lU75mmtHLPTy274omq8fQ+mQLSwCmLPK01l2yBDL
+   PsJXcI+jcA/XIaYTWnB+MYI59yjjSMbv/ABnb40b55PbLNdd2vQicasSK
+   Q+OISi5n0xbrmH7BlOnCSg79c1ypGEJ7lGRZTOkT5EMXNUzF8Im8s9K5V
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383744345"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="383744345"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:20:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="803757991"
+X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
+   d="scan'208";a="803757991"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
+  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 08:20:40 -0800
+From: Song Yoong Siang <yoong.siang.song@intel.com>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@google.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	bpf@vger.kernel.org,
+	xdp-hints@xdp-project.net,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kselftest@vger.kernel.org,
+	Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH bpf-next 0/3] xsk: TX metadata launch time support
+Date: Fri,  1 Dec 2023 00:20:25 +0800
+Message-Id: <20231130162028.852006-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231129234916.16128-1-daniel@iogearbox.net> <CANn89i+0UuXTYzBD1=zaWmvBKNtyriWQifOhQKF3Y7z4BWZhig@mail.gmail.com>
- <edef4d8b-8682-c23f-31c4-57546be97299@iogearbox.net> <6568b03cbceb7_1b8920827@john.notmuch>
- <CANn89iK9VrbRJsF2KoLfArv5Eu5d7Hyq-pSO4hmWuS_PNsM8dQ@mail.gmail.com>
-In-Reply-To: <CANn89iK9VrbRJsF2KoLfArv5Eu5d7Hyq-pSO4hmWuS_PNsM8dQ@mail.gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 30 Nov 2023 17:19:35 +0100
-Message-ID: <CANn89iJUwnYGKW3mgCX8_9hFwwBeDXrbsk-XwOtsM2u0J7cyMw@mail.gmail.com>
-Subject: Re: pull-request: bpf 2023-11-30
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, davem@davemloft.net, kuba@kernel.org, 
-	pabeni@redhat.com, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, jakub@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 30, 2023 at 5:04=E2=80=AFPM Eric Dumazet <edumazet@google.com> =
-wrote:
->
+This series expands XDP TX metadata framework to include HW launch time offload.
 
-> Here is the repro:
->
-> # See https://goo.gl/kgGztJ for information about syzkaller reproducers.
-> #{"procs":1,"slowdown":1,"sandbox":"","sandbox_arg":0,"close_fds":false}
-> r0 =3D socket(0x1, 0x1, 0x0)
-> r1 =3D bpf$MAP_CREATE(0x0, &(0x7f0000000200)=3D@base=3D{0xf, 0x4, 0x4, 0x=
-12}, 0x48)
-> bpf$MAP_UPDATE_ELEM(0x2, &(0x7f0000000140)=3D{r1, &(0x7f0000000000),
-> &(0x7f0000000100)=3D@tcp6=3Dr0}, 0x20)
->
-> I will release the syzbot report, and send the patch, thanks.
+Song Yoong Siang (3):
+  xsk: add launch time support to XDP Tx metadata
+  net: stmmac: Add launch time support to XDP ZC
+  selftests/bpf: Add launch time to xdp_hw_metadata
 
-Actually I will release the syzbot report, and let you work on a fix,
-perhaps as you pointed out we could be more restrictive.
+ Documentation/netlink/specs/netdev.yaml        |  4 ++++
+ Documentation/networking/xsk-tx-metadata.rst   |  5 +++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h   |  2 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c  | 13 +++++++++++++
+ include/net/xdp_sock.h                         | 10 ++++++++++
+ include/net/xdp_sock_drv.h                     |  1 +
+ include/uapi/linux/if_xdp.h                    |  9 +++++++++
+ include/uapi/linux/netdev.h                    |  3 +++
+ net/core/netdev-genl.c                         |  2 ++
+ net/xdp/xsk.c                                  |  3 +++
+ tools/include/uapi/linux/if_xdp.h              |  9 +++++++++
+ tools/include/uapi/linux/netdev.h              |  3 +++
+ tools/net/ynl/generated/netdev-user.c          |  1 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c  | 18 +++++++++++++++++-
+ 14 files changed, 82 insertions(+), 1 deletion(-)
+
+-- 
+2.34.1
+
 
