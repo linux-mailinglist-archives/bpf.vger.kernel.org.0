@@ -1,31 +1,31 @@
-Return-Path: <bpf+bounces-16264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16269-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 599FD7FF10C
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:00:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B14DC7FF112
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 15:00:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 862451C20DE7
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 14:00:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6BFDD28260C
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 14:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A85487AF;
-	Thu, 30 Nov 2023 14:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEC7748CE3;
+	Thu, 30 Nov 2023 14:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFE419F
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 06:00:20 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SgyWN6N9Bz4f3k6G
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 22:00:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id CCE4B1A0FA2
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B33D1A3
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 06:00:21 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SgyWP3557z4f3jqr
 	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 22:00:17 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 5A8AC1A0B65
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 22:00:18 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgBXWhBslWhlJ5NxCQ--.49902S7;
-	Thu, 30 Nov 2023 22:00:17 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgBXWhBslWhlJ5NxCQ--.49902S8;
+	Thu, 30 Nov 2023 22:00:18 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -41,9 +41,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	houtao1@huawei.com
-Subject: [PATCH bpf v4 3/7] bpf: Set need_defer as false when clearing fd array during map free
-Date: Thu, 30 Nov 2023 22:01:16 +0800
-Message-Id: <20231130140120.1736235-4-houtao@huaweicloud.com>
+Subject: [PATCH bpf v4 4/7] bpf: Defer the free of inner map when necessary
+Date: Thu, 30 Nov 2023 22:01:17 +0800
+Message-Id: <20231130140120.1736235-5-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20231130140120.1736235-1-houtao@huaweicloud.com>
 References: <20231130140120.1736235-1-houtao@huaweicloud.com>
@@ -54,141 +54,153 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBXWhBslWhlJ5NxCQ--.49902S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw13trWDJFW7Zr4kAF1xuFg_yoWrAF4kpF
-	yktr4Uurs5Jr43Ww4rXa95W3s0yrs3X34UJF9Yy34YyFyfWr93ZF4xGa48KFn09a48XrnF
-	9F42y393Gay0krDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
+X-CM-TRANSID:cCh0CgBXWhBslWhlJ5NxCQ--.49902S8
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr4UGry7GFWkur4xXrWrXwb_yoWrtF15pF
+	Z8K34rCw40qr429rZxZa17ZrWYyw4fW34DGas5Ga4Yyrn8Wr9Fv3W0gFy5AF15Ar4kJrW2
+	vrnIg34FkayUZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
+	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
+	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
+	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU13l1DUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Both map deletion operation, map release and map free operation use
-fd_array_map_delete_elem() to remove the element from fd array and
-need_defer is always true in fd_array_map_delete_elem(). For the map
-deletion operation and map release operation, need_defer=true is
-necessary, because the bpf program, which accesses the element in fd
-array, may still alive. However for map free operation, it is certain
-that the bpf program which owns the fd array has already been exited, so
-setting need_defer as false is appropriate for map free operation.
+When updating or deleting an inner map in map array or map htab, the map
+may still be accessed by non-sleepable program or sleepable program.
+However bpf_map_fd_put_ptr() decreases the ref-counter of the inner map
+directly through bpf_map_put(), if the ref-counter is the last one
+(which is true for most cases), the inner map will be freed by
+ops->map_free() in a kworker. But for now, most .map_free() callbacks
+don't use synchronize_rcu() or its variants to wait for the elapse of a
+RCU grace period, so after the invocation of ops->map_free completes,
+the bpf program which is accessing the inner map may incur
+use-after-free problem.
 
-So fix it by adding need_defer parameter to bpf_fd_array_map_clear() and
-adding a new helper fd_array_map_delete_elem_with_deferred_free() to
-handle the map deletion, map release and map free operations
-correspondingly.
+Fix the free of inner map by invoking bpf_map_free_deferred() after both
+one RCU grace period and one tasks trace RCU grace period if the inner
+map has been removed from the outer map before. The deferment is
+accomplished by using call_rcu() or call_rcu_tasks_trace() when
+releasing the last ref-counter of bpf map. The newly-added rcu_head
+field in bpf_map shares the same storage space with work field to
+reduce the size of bpf_map.
 
+Fixes: bba1dc0b55ac ("bpf: Remove redundant synchronize_rcu.")
+Fixes: 638e4b825d52 ("bpf: Allows per-cpu maps and map-in-map in sleepable programs")
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/bpf/arraymap.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ include/linux/bpf.h     |  7 ++++++-
+ kernel/bpf/map_in_map.c | 11 ++++++++---
+ kernel/bpf/syscall.c    | 32 +++++++++++++++++++++++++++-----
+ 3 files changed, 41 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index f9aed5909d6e..fb0462b84ab6 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -871,7 +871,8 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
- 	return 0;
- }
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 6f68ac24bb9a..15a6bb951b70 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -276,7 +276,11 @@ struct bpf_map {
+ 	 */
+ 	atomic64_t refcnt ____cacheline_aligned;
+ 	atomic64_t usercnt;
+-	struct work_struct work;
++	/* rcu is used before freeing and work is only used during freeing */
++	union {
++		struct work_struct work;
++		struct rcu_head rcu;
++	};
+ 	struct mutex freeze_mutex;
+ 	atomic64_t writecnt;
+ 	/* 'Ownership' of program-containing map is claimed by the first program
+@@ -292,6 +296,7 @@ struct bpf_map {
+ 	} owner;
+ 	bool bypass_spec_v1;
+ 	bool frozen; /* write-once; write-protected by freeze_mutex */
++	bool free_after_mult_rcu_gp;
+ 	s64 __percpu *elem_count;
+ };
  
--static long fd_array_map_delete_elem(struct bpf_map *map, void *key)
-+static long fd_array_map_delete_elem_with_deferred_free(struct bpf_map *map, void *key,
-+							bool need_defer)
+diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
+index 2dfeb5835e16..3248ff5d8161 100644
+--- a/kernel/bpf/map_in_map.c
++++ b/kernel/bpf/map_in_map.c
+@@ -129,10 +129,15 @@ void *bpf_map_fd_get_ptr(struct bpf_map *map,
+ 
+ void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
  {
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	void *old_ptr;
-@@ -890,13 +891,18 @@ static long fd_array_map_delete_elem(struct bpf_map *map, void *key)
- 	}
+-	/* ptr->ops->map_free() has to go through one
+-	 * rcu grace period by itself.
++	struct bpf_map *inner_map = ptr;
++
++	/* The inner map may still be used by both non-sleepable and sleepable
++	 * bpf program, so free it after one RCU grace period and one tasks
++	 * trace RCU grace period.
+ 	 */
+-	bpf_map_put(ptr);
++	if (need_defer)
++		WRITE_ONCE(inner_map->free_after_mult_rcu_gp, true);
++	bpf_map_put(inner_map);
+ }
  
- 	if (old_ptr) {
--		map->ops->map_fd_put_ptr(map, old_ptr, true);
-+		map->ops->map_fd_put_ptr(map, old_ptr, need_defer);
- 		return 0;
- 	} else {
- 		return -ENOENT;
+ u32 bpf_map_fd_sys_lookup_elem(void *ptr)
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index a144eb286974..88882cb58121 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -718,6 +718,28 @@ static void bpf_map_put_uref(struct bpf_map *map)
  	}
  }
  
-+static long fd_array_map_delete_elem(struct bpf_map *map, void *key)
++static void bpf_map_free_in_work(struct bpf_map *map)
 +{
-+	return fd_array_map_delete_elem_with_deferred_free(map, key, true);
++	INIT_WORK(&map->work, bpf_map_free_deferred);
++	/* Avoid spawning kworkers, since they all might contend
++	 * for the same mutex like slab_mutex.
++	 */
++	queue_work(system_unbound_wq, &map->work);
 +}
 +
- static void *prog_fd_array_get_ptr(struct bpf_map *map,
- 				   struct file *map_file, int fd)
- {
-@@ -925,13 +931,13 @@ static u32 prog_fd_array_sys_lookup_elem(void *ptr)
- }
- 
- /* decrement refcnt of all bpf_progs that are stored in this map */
--static void bpf_fd_array_map_clear(struct bpf_map *map)
-+static void bpf_fd_array_map_clear(struct bpf_map *map, bool need_defer)
- {
- 	struct bpf_array *array = container_of(map, struct bpf_array, map);
- 	int i;
- 
- 	for (i = 0; i < array->map.max_entries; i++)
--		fd_array_map_delete_elem(map, &i);
-+		fd_array_map_delete_elem_with_deferred_free(map, &i, need_defer);
- }
- 
- static void prog_array_map_seq_show_elem(struct bpf_map *map, void *key,
-@@ -1110,7 +1116,7 @@ static void prog_array_map_clear_deferred(struct work_struct *work)
- {
- 	struct bpf_map *map = container_of(work, struct bpf_array_aux,
- 					   work)->map;
--	bpf_fd_array_map_clear(map);
-+	bpf_fd_array_map_clear(map, true);
- 	bpf_map_put(map);
- }
- 
-@@ -1260,7 +1266,7 @@ static void perf_event_fd_array_release(struct bpf_map *map,
- 	for (i = 0; i < array->map.max_entries; i++) {
- 		ee = READ_ONCE(array->ptrs[i]);
- 		if (ee && ee->map_file == map_file)
--			fd_array_map_delete_elem(map, &i);
-+			fd_array_map_delete_elem_with_deferred_free(map, &i, true);
++static void bpf_map_free_rcu_gp(struct rcu_head *rcu)
++{
++	bpf_map_free_in_work(container_of(rcu, struct bpf_map, rcu));
++}
++
++static void bpf_map_free_mult_rcu_gp(struct rcu_head *rcu)
++{
++	if (rcu_trace_implies_rcu_gp())
++		bpf_map_free_rcu_gp(rcu);
++	else
++		call_rcu(rcu, bpf_map_free_rcu_gp);
++}
++
+ /* decrement map refcnt and schedule it for freeing via workqueue
+  * (underlying map implementation ops->map_free() might sleep)
+  */
+@@ -727,11 +749,11 @@ void bpf_map_put(struct bpf_map *map)
+ 		/* bpf_map_free_id() must be called first */
+ 		bpf_map_free_id(map);
+ 		btf_put(map->btf);
+-		INIT_WORK(&map->work, bpf_map_free_deferred);
+-		/* Avoid spawning kworkers, since they all might contend
+-		 * for the same mutex like slab_mutex.
+-		 */
+-		queue_work(system_unbound_wq, &map->work);
++
++		if (READ_ONCE(map->free_after_mult_rcu_gp))
++			call_rcu_tasks_trace(&map->rcu, bpf_map_free_mult_rcu_gp);
++		else
++			bpf_map_free_in_work(map);
  	}
- 	rcu_read_unlock();
  }
-@@ -1268,7 +1274,7 @@ static void perf_event_fd_array_release(struct bpf_map *map,
- static void perf_event_fd_array_map_free(struct bpf_map *map)
- {
- 	if (map->map_flags & BPF_F_PRESERVE_ELEMS)
--		bpf_fd_array_map_clear(map);
-+		bpf_fd_array_map_clear(map, false);
- 	fd_array_map_free(map);
- }
- 
-@@ -1304,7 +1310,7 @@ static void cgroup_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_de
- 
- static void cgroup_fd_array_free(struct bpf_map *map)
- {
--	bpf_fd_array_map_clear(map);
-+	bpf_fd_array_map_clear(map, false);
- 	fd_array_map_free(map);
- }
- 
-@@ -1349,7 +1355,7 @@ static void array_of_map_free(struct bpf_map *map)
- 	 * is protected by fdget/fdput.
- 	 */
- 	bpf_map_meta_free(map->inner_map_meta);
--	bpf_fd_array_map_clear(map);
-+	bpf_fd_array_map_clear(map, false);
- 	fd_array_map_free(map);
- }
- 
+ EXPORT_SYMBOL_GPL(bpf_map_put);
 -- 
 2.29.2
 
