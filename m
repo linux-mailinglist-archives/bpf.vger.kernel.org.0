@@ -1,143 +1,154 @@
-Return-Path: <bpf+bounces-16325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D50D7FFC60
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 21:19:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 759187FFC74
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 21:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 174FF281AA7
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 20:19:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A77441C20C6C
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 20:28:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F414753E3C;
-	Thu, 30 Nov 2023 20:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A896D5917F;
+	Thu, 30 Nov 2023 20:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XmaWdTCS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lT+0NxUg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5925A53E07
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 20:19:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC052C433C9
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 20:19:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701375585;
-	bh=+fS8RcfDjMPugIkkMGCUp3Ki0/f74nwRw2JMTv9k2qk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XmaWdTCS9QQJsBrr07TUy3sqB7TL0syOWNpRymu86O1K2gDWao6nmTyh5Qmlkx99u
-	 tEqY0bQrHxTdlTMkTpH0h5ElbA0HDaqgmhTV3+1ErEWP8nNbFnNP9kFdaSc4+e42MH
-	 E2hdKXlpwNnnyOl7RIj/FKqy9hHnTciqH/i2s5I9y+VZi4Nyid0iVW5bAs4gKdoeib
-	 10f4aHcVpR2dIVUYFqT8fOVRRVUlMcieluU/+Kq7DrQn5MGuu1lDu5Z3R+ncIQTrbD
-	 de5o9iqyUuelV6vc7mHd0aUW6spoR1ZV0JHTMHAh3vtbgdp/XkFTm2LqlMfqpCYtsU
-	 KgTx6BELGGRhA==
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c9bd3ec4f6so17016031fa.2
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 12:19:45 -0800 (PST)
-X-Gm-Message-State: AOJu0YygiXVhPPSSo/vSrkSDku41oADukcuu/e3THreUqJYj0eYRZiwT
-	672hKFVzRCinZ/bGTcRIjasFnqR+yThGsCV87Js=
-X-Google-Smtp-Source: AGHT+IEi/OAHZCAK50knyHdBIWnA64vP+uXp1kOdLpPZqkw8Z+OTykgXO06m30tYu/guuOxiVRo0VyDYCg79kIm1XxU=
-X-Received: by 2002:a2e:8683:0:b0:2c9:cb22:2948 with SMTP id
- l3-20020a2e8683000000b002c9cb222948mr62314lji.8.1701375583900; Thu, 30 Nov
- 2023 12:19:43 -0800 (PST)
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3195106;
+	Thu, 30 Nov 2023 12:28:37 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso1449445276.2;
+        Thu, 30 Nov 2023 12:28:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701376117; x=1701980917; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YYgokxpdXnom83isGSeLIiEWyDvQWuc8uahFIcEFCiU=;
+        b=lT+0NxUgwEKXHXQwHxoAPu8UiUMQRKxIr/R2Wo/G87IfsGfZLZqqMfT/MAgw1agiY5
+         NbYzaAuSQXMqkwA/ZGRj9AAHLyI9HhXDxpk56CUrSFUurGa3Mm5YqPsJhZLW+rKGSEag
+         8d9ooJHB83tjWRd4eV85vB1r1g7G/K8N1aBTbz/TxYAu0aWmcoqUgdK4jN1gsrxcND79
+         CD1x9LP7qJYwP/5VAZMK6zqSClv7W/L78hfQe2yrEXO9XnR2qvL2pUz44VFG5Spb9gmj
+         leELW/F/dPzivqrVV+8ptS2aqMX4G1ccDrVXkzfB/7ixMa2dii/gsUzy237VCuZktGrN
+         o7Sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701376117; x=1701980917;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YYgokxpdXnom83isGSeLIiEWyDvQWuc8uahFIcEFCiU=;
+        b=jAriABDXGTvtxfziSgX8WzTBROg+F99vUmLUVwpjs9FDFIVRtlI70okz3Nd6HygIRG
+         gKQa2z0lmNGDaiZhhHum8Os8sln/kXSq8Yxwer5AsNcksrUgEaZ3v8SEpsyOF+jyrYfy
+         xcTFv73bCZQYf7c1wiursiLS0pYgzAC556iRfbdBXft2c0xAqnpmdmZH0Ps8WBhe8AxX
+         2b2h/V+Eyfz1wnXkUfumLaQYVet2lNSC5p4zBLFi5pxfYG6l9Eb5D1VoFj2SRGI23KwA
+         XCl9DjxgjIoocyT90eUvkjewsYA+RvIhg6WVbGSBTfemJje+Rk1P4ZlEXIAn4rwADHXu
+         ZMQw==
+X-Gm-Message-State: AOJu0YzG/k8xhQpOWbgfLgU3ni+kYhrO4IWcrfBER35PPr0b/jgP5bn2
+	RJaNN5C8ZMm3Zy0adOsw9mk=
+X-Google-Smtp-Source: AGHT+IHYZiQbkBLJ008rJXlLXZbrmVVGfJZyhDvQvrE7IAhJuIYy3iC3ruuDLfNDxv8+R4e1qKgz3Q==
+X-Received: by 2002:a25:268f:0:b0:db5:4938:483 with SMTP id m137-20020a25268f000000b00db549380483mr975627ybm.32.1701376116773;
+        Thu, 30 Nov 2023 12:28:36 -0800 (PST)
+Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
+        by smtp.gmail.com with ESMTPSA id q2-20020a0c9a42000000b00679d7e76b64sm800622qvd.126.2023.11.30.12.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 12:28:36 -0800 (PST)
+Date: Thu, 30 Nov 2023 15:28:36 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Song Yoong Siang <yoong.siang.song@intel.com>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Bjorn Topel <bjorn@kernel.org>, 
+ Magnus Karlsson <magnus.karlsson@intel.com>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Lorenzo Bianconi <lorenzo@kernel.org>, 
+ Tariq Toukan <tariqt@nvidia.com>, 
+ Willem de Bruijn <willemb@google.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Mykola Lysenko <mykolal@fb.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jose Abreu <joabreu@synopsys.com>
+Cc: netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ linux-doc@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ xdp-hints@xdp-project.net, 
+ linux-stm32@st-md-mailman.stormreply.com, 
+ linux-arm-kernel@lists.infradead.org, 
+ linux-kselftest@vger.kernel.org, 
+ Song Yoong Siang <yoong.siang.song@intel.com>
+Message-ID: <6568f07418508_fbb8229478@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20231130162028.852006-2-yoong.siang.song@intel.com>
+References: <20231130162028.852006-1-yoong.siang.song@intel.com>
+ <20231130162028.852006-2-yoong.siang.song@intel.com>
+Subject: Re: [PATCH bpf-next 1/3] xsk: add launch time support to XDP Tx
+ metadata
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231129195240.19091-1-9erthalion6@gmail.com> <20231129195240.19091-2-9erthalion6@gmail.com>
- <CAPhsuW6J+ZN7KQdxm+2=ZcGGkWohcQxeNS+nNjE5r0K-jdq=FQ@mail.gmail.com> <20231130100851.fymwxhwevd3t5d7m@ddolgov.remote.csb>
-In-Reply-To: <20231130100851.fymwxhwevd3t5d7m@ddolgov.remote.csb>
-From: Song Liu <song@kernel.org>
-Date: Thu, 30 Nov 2023 12:19:31 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7Yif_mhaUsiwSFyUD7Pv4sz163DBz73EDhnTGMhwdApg@mail.gmail.com>
-Message-ID: <CAPhsuW7Yif_mhaUsiwSFyUD7Pv4sz163DBz73EDhnTGMhwdApg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 1/3] bpf: Relax tracing prog recursive attach rules
-To: Dmitry Dolgov <9erthalion6@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev, 
-	dan.carpenter@linaro.org, olsajiri@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Nov 30, 2023 at 2:08=E2=80=AFAM Dmitry Dolgov <9erthalion6@gmail.co=
-m> wrote:
->
-> > On Wed, Nov 29, 2023 at 03:58:02PM -0800, Song Liu wrote:
-> > We discussed this in earlier version:
-> >
-> > "
-> > > If prog B attached to prog A, and prog C attached to prog B, then we
-> > > detach B. At this point, can we re-attach B to A?
-> >
-> > Nope, with the proposed changes it still wouldn't be possible to
-> > reattach B to A (if we're talking about tracing progs of course),
-> > because this time B is an attachment target on its own.
-> > "
-> >
-> > I think this can be problematic for some users. Basically, doing
-> > profiling on prog B can cause it to not work (cannot re-attach).
->
-> Sorry, I was probably not clear enough about this first time. Let me
-> elaborate:
->
-> * The patch affects only tracing programs (only they can reach the
->   corresponding verifier change), so I assume in your example at least B
->   and A are fentry/fexit.
->
-> * The patch is less restrictive than the current kernel implementation.
->   Currently, no attach of a tracing program to another tracing program is
->   possible, thus IIUC the case you describe (A, B: tracing, C -> B -> A,
->   then re-attach B -> A) is not possible without the patch (the first B
->   -> A is going to return a verifier error).
+Song Yoong Siang wrote:
+> This patch extends the XDP Tx metadata framework to include Time-Based
+> Scheduling (TBS) support where the NIC will schedule a packet for
+> transmission at a pre-determined time called launch time. The value of
+> launch time is communicated from user space to Ethernet driver via
+> launch_time field of struct xsk_tx_metadata.
+> 
+> Suggested-by: Stanislav Fomichev <sdf@google.com>
+> Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+> ---
+>  Documentation/netlink/specs/netdev.yaml      |  4 ++++
+>  Documentation/networking/xsk-tx-metadata.rst |  5 +++++
+>  include/net/xdp_sock.h                       | 10 ++++++++++
+>  include/net/xdp_sock_drv.h                   |  1 +
+>  include/uapi/linux/if_xdp.h                  |  9 +++++++++
+>  include/uapi/linux/netdev.h                  |  3 +++
+>  net/core/netdev-genl.c                       |  2 ++
+>  net/xdp/xsk.c                                |  3 +++
+>  tools/include/uapi/linux/if_xdp.h            |  9 +++++++++
+>  tools/include/uapi/linux/netdev.h            |  3 +++
+>  tools/net/ynl/generated/netdev-user.c        |  1 +
+>  11 files changed, 50 insertions(+)
+> 
+> diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+> index 00439bcbd2e3..a602776bbfb4 100644
+> --- a/Documentation/netlink/specs/netdev.yaml
+> +++ b/Documentation/netlink/specs/netdev.yaml
+> @@ -66,6 +66,10 @@ definitions:
+>          name: tx-checksum
+>          doc:
+>            L3 checksum HW offload is supported by the driver.
+> +      -
+> +        name: launch-time
+> +        doc:
+> +          HW Time-Based Scheduling (TBS) is supported by the driver.
 
-Yes, I was aware this is less restrictive than current rules, and I think
-this can be very useful.
+Can we avoid introducing another term? We already have too many:
+launchtime, earliest delivery time (EDT), SO_TXTIME,
+pacing offload, earliest txtime first (ETF).  
 
-> * I've also tried to reproduce this use case with the patch, and noticed
->   that link_detach is not supported for tracing progs. Which means the
->   re-attach part in (C -> B -> A) has to be done via unloading of prog B
->   and C, then reattaching them one-by-one back. This is another
->   limitation why the case above doesn't seem to be possible (attaching
->   one-by-one back would of course work without any issues even with the
->   patch).
 
-I think there is an issue without re-attach:
-1. Load program A, B, C;
-2. Attach C to B;
-3. Attach B to A will fail.
-
-> Does it all make sense to you, or am I missing something about the
-> problem you describe?
->
-> > Given it is not possible to create a call circle, shall we remove
-> > this issue?
->
-> I was originally thinking about this when preparing the patch, even
-> independently of the question above, simply remove verifier limitation
-> for an impossible situation sounds interesting. I see the following
-> pros/cons:
->
-> * Just remove the verifier limitation on recursive attachment is of
->   course easier.
->
-> * At the same time it makes the implementation less "defensive" against
->   future changes.
->
-> * Tracking attachment depth & followers might be useful in some other
->   contexts.
->
-> All in all I've decided that more elaborated approach is slightly
-> better. But if everyone in the community agrees that less
-> "defensiveness" is not an issue and verifier could be simply made less
-> restrictive, I'm fine with that. What do you think?
-
-I think the follower_cnt check is not necessary, and may cause confusions.
-For tracing programs, we are very specific on "which function(s) are we
-tracing". So I don't think circular attachment can be a real issue. Do we
-have potential use cases that make the circular attach possible?
-
-Thanks,
-Song
 
