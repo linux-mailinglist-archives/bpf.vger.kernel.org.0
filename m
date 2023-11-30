@@ -1,302 +1,143 @@
-Return-Path: <bpf+bounces-16324-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16325-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FBA47FFC14
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 21:12:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D50D7FFC60
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 21:19:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2DCFB210B1
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 20:12:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 174FF281AA7
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 20:19:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6C056459;
-	Thu, 30 Nov 2023 20:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F414753E3C;
+	Thu, 30 Nov 2023 20:19:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="M6KzEFPj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XmaWdTCS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16BA91710
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 12:12:26 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6cdd584591eso1366805b3a.2
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 12:12:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1701375145; x=1701979945; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3IEJcj+02yasaKEUc42BotZapgbr+U+1GTgkYNrat/0=;
-        b=M6KzEFPj1ASFT9ypGtIUDfUdu//+jEiRO2GNgJ9yr2GxKLeZ15pwnSvgE0PfPnzmFz
-         eX1WjXFhr+d/gXmfeXh5OaCVJetULE8LCPUIgiLayZcysTu1fKwUPEwibGNXrSpVw1Ub
-         EtcAFKFwC1BP6qI4yXM+/YzK9h5WFZY43ucZU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701375145; x=1701979945;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3IEJcj+02yasaKEUc42BotZapgbr+U+1GTgkYNrat/0=;
-        b=g4z0owJT29VzDO5ZFVrgldrUjA200aZzsHipLKqU3YlMOmIuLzxpDXheV4Mx1Xvzt5
-         P8GzINxnOoX6MTwQi1MWtvsRfL5X+mj1cblS4bjVCqdZdozTc16U9BYfSJs0+mzqNGBt
-         oX5rVnaej0rTQaZqDPPmmRl84EPs61k2SD/IVBWCsOByNLf+v7Fvk1xuAZZG/0uulVkv
-         ZAXpAUZV9xQNZucfNcU4LX0zUT/TlokmdMjA+79UADrIMnlWspGWjCQFJI6JDw6EDok9
-         ePc+eGdJC4jukFvWWBvlppxp3vWFs2K4LtwJbCLfAp/QMQNP601mn5zcRLOmY+lTDDAu
-         YApQ==
-X-Gm-Message-State: AOJu0YyQi7m7jNa7gK8zGkHRj9kTu1LdiLF+I9LSxjOjeIzsT+aPaNBV
-	9erT6zJs0M3YjLwsDZiBo5imbIuqfctQrO+umEg=
-X-Google-Smtp-Source: AGHT+IGmS512gLfjsiC23DOsNKs0FlGwweZbgWh3YqWfge+zfCU0ht7v1xSRmXV1rEL8ZTHooy6pjQ==
-X-Received: by 2002:a05:6a20:7350:b0:18d:4821:f754 with SMTP id v16-20020a056a20735000b0018d4821f754mr2376838pzc.55.1701375145632;
-        Thu, 30 Nov 2023 12:12:25 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id n7-20020a170902d2c700b001cc52ca2dfbsm1800902plc.120.2023.11.30.12.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 12:12:25 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Waiman Long <longman@redhat.com>,
-	cgroups@vger.kernel.org,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v2 3/3] kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to strscpy()
-Date: Thu, 30 Nov 2023 12:12:19 -0800
-Message-Id: <20231130201222.3613535-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130200937.it.424-kees@kernel.org>
-References: <20231130200937.it.424-kees@kernel.org>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5925A53E07
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 20:19:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC052C433C9
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 20:19:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701375585;
+	bh=+fS8RcfDjMPugIkkMGCUp3Ki0/f74nwRw2JMTv9k2qk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XmaWdTCS9QQJsBrr07TUy3sqB7TL0syOWNpRymu86O1K2gDWao6nmTyh5Qmlkx99u
+	 tEqY0bQrHxTdlTMkTpH0h5ElbA0HDaqgmhTV3+1ErEWP8nNbFnNP9kFdaSc4+e42MH
+	 E2hdKXlpwNnnyOl7RIj/FKqy9hHnTciqH/i2s5I9y+VZi4Nyid0iVW5bAs4gKdoeib
+	 10f4aHcVpR2dIVUYFqT8fOVRRVUlMcieluU/+Kq7DrQn5MGuu1lDu5Z3R+ncIQTrbD
+	 de5o9iqyUuelV6vc7mHd0aUW6spoR1ZV0JHTMHAh3vtbgdp/XkFTm2LqlMfqpCYtsU
+	 KgTx6BELGGRhA==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c9bd3ec4f6so17016031fa.2
+        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 12:19:45 -0800 (PST)
+X-Gm-Message-State: AOJu0YygiXVhPPSSo/vSrkSDku41oADukcuu/e3THreUqJYj0eYRZiwT
+	672hKFVzRCinZ/bGTcRIjasFnqR+yThGsCV87Js=
+X-Google-Smtp-Source: AGHT+IEi/OAHZCAK50knyHdBIWnA64vP+uXp1kOdLpPZqkw8Z+OTykgXO06m30tYu/guuOxiVRo0VyDYCg79kIm1XxU=
+X-Received: by 2002:a2e:8683:0:b0:2c9:cb22:2948 with SMTP id
+ l3-20020a2e8683000000b002c9cb222948mr62314lji.8.1701375583900; Thu, 30 Nov
+ 2023 12:19:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8106; i=keescook@chromium.org;
- h=from:subject; bh=ytYczlvWwngfOAhKBEd29zggKM1dZYUFgsNew6TNfcc=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlaOyjjwlnfJ6o+rRxKIqAd0jCo71AoDJUjPpjY
- YoJBoDBvPWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZWjsowAKCRCJcvTf3G3A
- JkPUD/90GudFsO1LYNdR1bciTGcerJiWBv2OIofG6858EQVJUxJIy77PoKrYXozBwoPcfnsC+GD
- zy7am0RcN4EDnQdqH8l+VezpYkFjVdhE3VTSEGyD37n5L90dTTf4Ko7u6pC+fWt0db5mTotni+L
- ozR/VRxweZuhlkxvb3pvfmBUF3qrnomBRIs6T3FFK3iy87pwtW7dDKpHs+AZNfopDZIrdxaXmGL
- H9yEGTdMxCk7RqGWS8ZPJBtMLtUuEGDmwpCiC9KcxIhMnKPx8J05OLUXizl38IrKn1me65Rqivv
- UUpZolnF6jUmpNvKLG/kn0KCZAqtZm74QZFet4VH/k+qsHfZv+gG5oBVDHUcuwhWrSbiTYEjRoH
- GoSqPQE4lwwx3p1I0xUa9samPc/0lnKVbi5O6TIIxjAa4HmO/KTDFOnZCHmbGJUfbjvMzKVEK9Y
- tJpiiqkWffLMWl4QrwD8+ws8E5HP3l3hRX6o58VH64Nb3hV8jlvZlt8tCKreY+gRsRNedQVvNgZ
- aOL8Tr7PqUhRqe95IHxKpun7DKTZrM6+0hWER/rHNQqtfIJueAMQMOrPyHwklNqZajUEjLr1UHe
- 32zNNc/W45HOmSB32VYD2gHGvlwnS1+jONUOIj9zOxZVr0hT9NMwZbKeW65j/9nD+WsAZdPHoFx MLC/0IKHoha7fNA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+References: <20231129195240.19091-1-9erthalion6@gmail.com> <20231129195240.19091-2-9erthalion6@gmail.com>
+ <CAPhsuW6J+ZN7KQdxm+2=ZcGGkWohcQxeNS+nNjE5r0K-jdq=FQ@mail.gmail.com> <20231130100851.fymwxhwevd3t5d7m@ddolgov.remote.csb>
+In-Reply-To: <20231130100851.fymwxhwevd3t5d7m@ddolgov.remote.csb>
+From: Song Liu <song@kernel.org>
+Date: Thu, 30 Nov 2023 12:19:31 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7Yif_mhaUsiwSFyUD7Pv4sz163DBz73EDhnTGMhwdApg@mail.gmail.com>
+Message-ID: <CAPhsuW7Yif_mhaUsiwSFyUD7Pv4sz163DBz73EDhnTGMhwdApg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 1/3] bpf: Relax tracing prog recursive attach rules
+To: Dmitry Dolgov <9erthalion6@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev, 
+	dan.carpenter@linaro.org, olsajiri@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-One of the last remaining users of strlcpy() in the kernel is
-kernfs_path_from_node_locked(), which passes back the problematic "length
-we _would_ have copied" return value to indicate truncation.  Convert the
-chain of all callers to use the negative return value (some of which
-already doing this explicitly). All callers were already also checking
-for negative return values, so the risk to missed checks looks very low.
+On Thu, Nov 30, 2023 at 2:08=E2=80=AFAM Dmitry Dolgov <9erthalion6@gmail.co=
+m> wrote:
+>
+> > On Wed, Nov 29, 2023 at 03:58:02PM -0800, Song Liu wrote:
+> > We discussed this in earlier version:
+> >
+> > "
+> > > If prog B attached to prog A, and prog C attached to prog B, then we
+> > > detach B. At this point, can we re-attach B to A?
+> >
+> > Nope, with the proposed changes it still wouldn't be possible to
+> > reattach B to A (if we're talking about tracing progs of course),
+> > because this time B is an attachment target on its own.
+> > "
+> >
+> > I think this can be problematic for some users. Basically, doing
+> > profiling on prog B can cause it to not work (cannot re-attach).
+>
+> Sorry, I was probably not clear enough about this first time. Let me
+> elaborate:
+>
+> * The patch affects only tracing programs (only they can reach the
+>   corresponding verifier change), so I assume in your example at least B
+>   and A are fentry/fexit.
+>
+> * The patch is less restrictive than the current kernel implementation.
+>   Currently, no attach of a tracing program to another tracing program is
+>   possible, thus IIUC the case you describe (A, B: tracing, C -> B -> A,
+>   then re-attach B -> A) is not possible without the patch (the first B
+>   -> A is going to return a verifier error).
 
-In this analysis, it was found that cgroup1_release_agent() actually
-didn't handle the "too large" condition, so this is technically also a
-bug fix. :)
+Yes, I was aware this is less restrictive than current rules, and I think
+this can be very useful.
 
-Here's the chain of callers, and resolution identifying each one as now
-handling the correct return value:
+> * I've also tried to reproduce this use case with the patch, and noticed
+>   that link_detach is not supported for tracing progs. Which means the
+>   re-attach part in (C -> B -> A) has to be done via unloading of prog B
+>   and C, then reattaching them one-by-one back. This is another
+>   limitation why the case above doesn't seem to be possible (attaching
+>   one-by-one back would of course work without any issues even with the
+>   patch).
 
-kernfs_path_from_node_locked()
-        kernfs_path_from_node()
-                pr_cont_kernfs_path()
-                        returns void
-                kernfs_path()
-                        sysfs_warn_dup()
-                                return value ignored
-                        cgroup_path()
-                                blkg_path()
-                                        bfq_bic_update_cgroup()
-                                                return value ignored
-                                TRACE_IOCG_PATH()
-                                        return value ignored
-                                TRACE_CGROUP_PATH()
-                                        return value ignored
-                                perf_event_cgroup()
-                                        return value ignored
-                                task_group_path()
-                                        return value ignored
-                                damon_sysfs_memcg_path_eq()
-                                        return value ignored
-                                get_mm_memcg_path()
-                                        return value ignored
-                                lru_gen_seq_show()
-                                        return value ignored
-                        cgroup_path_from_kernfs_id()
-                                return value ignored
-                cgroup_show_path()
-                        already converted "too large" error to negative value
-                cgroup_path_ns_locked()
-                        cgroup_path_ns()
-                                bpf_iter_cgroup_show_fdinfo()
-                                        return value ignored
-                                cgroup1_release_agent()
-                                        wasn't checking "too large" error
-                        proc_cgroup_show()
-                                already converted "too large" to negative value
+I think there is an issue without re-attach:
+1. Load program A, B, C;
+2. Attach C to B;
+3. Attach B to A will fail.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: cgroups@vger.kernel.org
-Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Link: https://lore.kernel.org/r/20231116192127.1558276-3-keescook@chromium.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/kernfs/dir.c           | 37 ++++++++++++++++++++-----------------
- kernel/cgroup/cgroup-v1.c |  2 +-
- kernel/cgroup/cgroup.c    |  4 ++--
- kernel/cgroup/cpuset.c    |  2 +-
- 4 files changed, 24 insertions(+), 21 deletions(-)
+> Does it all make sense to you, or am I missing something about the
+> problem you describe?
+>
+> > Given it is not possible to create a call circle, shall we remove
+> > this issue?
+>
+> I was originally thinking about this when preparing the patch, even
+> independently of the question above, simply remove verifier limitation
+> for an impossible situation sounds interesting. I see the following
+> pros/cons:
+>
+> * Just remove the verifier limitation on recursive attachment is of
+>   course easier.
+>
+> * At the same time it makes the implementation less "defensive" against
+>   future changes.
+>
+> * Tracking attachment depth & followers might be useful in some other
+>   contexts.
+>
+> All in all I've decided that more elaborated approach is slightly
+> better. But if everyone in the community agrees that less
+> "defensiveness" is not an issue and verifier could be simply made less
+> restrictive, I'm fine with that. What do you think?
 
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8c0e5442597e..183f353b3852 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
-  *
-  * [3] when @kn_to is %NULL result will be "(null)"
-  *
-- * Return: the length of the full path.  If the full length is equal to or
-+ * Return: the length of the constructed path.  If the path would have been
-  * greater than @buflen, @buf contains the truncated path with the trailing
-  * '\0'.  On error, -errno is returned.
-  */
-@@ -138,16 +138,17 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 	struct kernfs_node *kn, *common;
- 	const char parent_str[] = "/..";
- 	size_t depth_from, depth_to, len = 0;
-+	ssize_t copied;
- 	int i, j;
- 
- 	if (!kn_to)
--		return strlcpy(buf, "(null)", buflen);
-+		return strscpy(buf, "(null)", buflen);
- 
- 	if (!kn_from)
- 		kn_from = kernfs_root(kn_to)->kn;
- 
- 	if (kn_from == kn_to)
--		return strlcpy(buf, "/", buflen);
-+		return strscpy(buf, "/", buflen);
- 
- 	common = kernfs_common_ancestor(kn_from, kn_to);
- 	if (WARN_ON(!common))
-@@ -158,18 +159,22 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 
- 	buf[0] = '\0';
- 
--	for (i = 0; i < depth_from; i++)
--		len += strlcpy(buf + len, parent_str,
--			       len < buflen ? buflen - len : 0);
-+	for (i = 0; i < depth_from; i++) {
-+		copied = strscpy(buf + len, parent_str, buflen - len);
-+		if (copied < 0)
-+			return copied;
-+		len += copied;
-+	}
- 
- 	/* Calculate how many bytes we need for the rest */
- 	for (i = depth_to - 1; i >= 0; i--) {
- 		for (kn = kn_to, j = 0; j < i; j++)
- 			kn = kn->parent;
--		len += strlcpy(buf + len, "/",
--			       len < buflen ? buflen - len : 0);
--		len += strlcpy(buf + len, kn->name,
--			       len < buflen ? buflen - len : 0);
-+
-+		copied = scnprintf(buf + len, buflen - len, "/%s", kn->name);
-+		if (copied < 0)
-+			return copied;
-+		len += copied;
- 	}
- 
- 	return len;
-@@ -214,7 +219,7 @@ int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
-  * path (which includes '..'s) as needed to reach from @from to @to is
-  * returned.
-  *
-- * Return: the length of the full path.  If the full length is equal to or
-+ * Return: the length of the constructed path.  If the path would have been
-  * greater than @buflen, @buf contains the truncated path with the trailing
-  * '\0'.  On error, -errno is returned.
-  */
-@@ -265,12 +270,10 @@ void pr_cont_kernfs_path(struct kernfs_node *kn)
- 	sz = kernfs_path_from_node(kn, NULL, kernfs_pr_cont_buf,
- 				   sizeof(kernfs_pr_cont_buf));
- 	if (sz < 0) {
--		pr_cont("(error)");
--		goto out;
--	}
--
--	if (sz >= sizeof(kernfs_pr_cont_buf)) {
--		pr_cont("(name too long)");
-+		if (sz == -E2BIG)
-+			pr_cont("(name too long)");
-+		else
-+			pr_cont("(error)");
- 		goto out;
- 	}
- 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 76db6c67e39a..9cb00ebe9ac6 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -802,7 +802,7 @@ void cgroup1_release_agent(struct work_struct *work)
- 		goto out_free;
- 
- 	ret = cgroup_path_ns(cgrp, pathbuf, PATH_MAX, &init_cgroup_ns);
--	if (ret < 0 || ret >= PATH_MAX)
-+	if (ret < 0)
- 		goto out_free;
- 
- 	argv[0] = agentbuf;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4b9ff41ca603..8d2674c6aaef 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1893,7 +1893,7 @@ int cgroup_show_path(struct seq_file *sf, struct kernfs_node *kf_node,
- 	len = kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_MAX);
- 	spin_unlock_irq(&css_set_lock);
- 
--	if (len >= PATH_MAX)
-+	if (len == -E2BIG)
- 		len = -ERANGE;
- 	else if (len > 0) {
- 		seq_escape(sf, buf, " \t\n\\");
-@@ -6301,7 +6301,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
- 		if (cgroup_on_dfl(cgrp) || !(tsk->flags & PF_EXITING)) {
- 			retval = cgroup_path_ns_locked(cgrp, buf, PATH_MAX,
- 						current->nsproxy->cgroup_ns);
--			if (retval >= PATH_MAX)
-+			if (retval == -E2BIG)
- 				retval = -ENAMETOOLONG;
- 			if (retval < 0)
- 				goto out_unlock;
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 615daaf87f1f..fb29158ae825 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4941,7 +4941,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
- 	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
- 				current->nsproxy->cgroup_ns);
- 	css_put(css);
--	if (retval >= PATH_MAX)
-+	if (retval == -E2BIG)
- 		retval = -ENAMETOOLONG;
- 	if (retval < 0)
- 		goto out_free;
--- 
-2.34.1
+I think the follower_cnt check is not necessary, and may cause confusions.
+For tracing programs, we are very specific on "which function(s) are we
+tracing". So I don't think circular attachment can be a real issue. Do we
+have potential use cases that make the circular attach possible?
 
+Thanks,
+Song
 
