@@ -1,216 +1,168 @@
-Return-Path: <bpf+bounces-16288-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16289-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF93F7FF4C6
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 17:22:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A4F57FF563
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 17:28:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D204A1C20DA7
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:22:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E1ECB20EFC
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 16:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881C354FB9;
-	Thu, 30 Nov 2023 16:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zq/Y39Jf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B71F054FBF;
+	Thu, 30 Nov 2023 16:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FD85131;
-	Thu, 30 Nov 2023 08:22:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701361325; x=1732897325;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bXoVezPhVWKfoB3JGdgSXzPzDzpsCHhdUMolTMlscIk=;
-  b=Zq/Y39JfsSeJYxpFxFiHPGtupQT8jPxyiyLRxywhw6TIlwpqMM5KuBXa
-   12Qc95vP2U4dRt4nbzFjkc0cRjb3pQLo448DA1lrQ7Ea3Xe8tKTjWDuPZ
-   coStaEqSu/Q4SQrQP7DP8GVhlwMOuzJ4QmPE//5qcgkgFkfxnd4OGI+W6
-   8AhksZI3RVHkS1IIxOp4RXhUhqNXLrVRhPvVOZeV9y5Dtq6Zgrg6OT8cc
-   9Sty2fCBh9aBhYt/Rr/j6HdnqIGGM9/McXEI4b3oZMu4N3rNSQ5/OPzCE
-   PAyhA7EVmuThhLRpkttwQAuv5CAjReMJOwd+BAcQuviF03xUvE7BQhXhl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="383744636"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="383744636"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 08:22:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="803758703"
-X-IronPort-AV: E=Sophos;i="6.04,239,1695711600"; 
-   d="scan'208";a="803758703"
-Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
-  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 08:21:55 -0800
-From: Song Yoong Siang <yoong.siang.song@intel.com>
-To: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Bjorn Topel <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@google.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Tariq Toukan <tariqt@nvidia.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>
-Cc: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	bpf@vger.kernel.org,
-	xdp-hints@xdp-project.net,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kselftest@vger.kernel.org,
-	Song Yoong Siang <yoong.siang.song@intel.com>
-Subject: [PATCH bpf-next 3/3] selftests/bpf: Add launch time to xdp_hw_metadata
-Date: Fri,  1 Dec 2023 00:20:28 +0800
-Message-Id: <20231130162028.852006-4-yoong.siang.song@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231130162028.852006-1-yoong.siang.song@intel.com>
-References: <20231130162028.852006-1-yoong.siang.song@intel.com>
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431701AD
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 08:28:20 -0800 (PST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c624e68b45so863097a12.3
+        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 08:28:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701361700; x=1701966500;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QbtCAq5mjC8KNiC8wJoTaHulbhokeFhHKjqid/82Iuk=;
+        b=q4eiHowIOd5qZkGmzQS1SPWIwHbSbXY5LDi1ax0tkyCajObJ8Id7WHMnGLUaCoXiac
+         MwSKmp2esoandUp1HbCbjr9nt1fFEWZFYZDC2+HOO8M/86xbWIVBsa5Jbng5H0uOVhfP
+         Yh1qXCozgIw0FbPfvHjlybiXrp8VZqeM+dGypfLDVOer53ov3pzcjwJHj104JJUa9WiR
+         onTZG0aQV4k/mbvjzXm97VmTSwkkL6vGyRGJMLj2WgEuowYjRonypMqRnJbid2u4l+Rz
+         3V6sNdzOsOB90o+AykRAMz7DSpl3/165xERbmpWJC+lLXcwbAQsM/Ne8Iw+zYp3q6p+W
+         IOfA==
+X-Gm-Message-State: AOJu0YzVaTNiI4+x83EMEX+LGkyYEy/0MFGk9JjQZzqGNrTWBZzJb4/2
+	Ulc/f/JViXSJfuy54jpJBA4Kg/rJuGVhHlW58GdP4Y9lLgio
+X-Google-Smtp-Source: AGHT+IF/1TELdciRNYQBh/T8lPRx2GMSNFh8lX3VG61Sb/uKB+YGKNJ8pvGZ8XFesSWYVVtUL4Owr1zynZvaG8M9OaccmHN0wIFg
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a63:5864:0:b0:5bd:64f8:ca66 with SMTP id
+ i36-20020a635864000000b005bd64f8ca66mr3564659pgm.1.1701361699758; Thu, 30 Nov
+ 2023 08:28:19 -0800 (PST)
+Date: Thu, 30 Nov 2023 08:28:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bfae51060b6123ba@google.com>
+Subject: [syzbot] [bpf?] [net?] KASAN: null-ptr-deref Write in unix_stream_bpf_update_proto
+From: syzbot <syzbot+e8030702aefd3444fb9e@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-This patch adds launch time support to xdp_hw_metadata. User can configure
-the delta of HW launch time to HW RX-time by using "-l" argument.
+Hello,
 
-This patch is tested with stmmac on Intel Tiger Lake platform. Refer to
-result below, the delta between pre-determined launch time and actual
-transmit time is around 24 us.
+syzbot found the following issue on:
 
-$ sudo ./xdp_hw_metadata enp0s30f4
-...
-xsk_ring_cons__peek: 1
-0x55fcb80ce7a8: rx_desc[0]->addr=80100 addr=80100 comp_addr=80100 EoP
-No rx_hash err=-95
-HW RX-time:   1677764507059055964 (sec:1677764507.0591) delta to User RX-time sec:0.0002 (237.548 usec)
-XDP RX-time:   1677764507059280741 (sec:1677764507.0593) delta to User RX-time sec:0.0000 (12.771 usec)
-0x55fcb80ce7a8: ping-pong with csum=5619 (want 8626) csum_start=34 csum_offset=6
-HW RX-time:   1677764507059055964 (sec:1677764507.0591) delta to HW Launch-time sec:1.0000 (1000000.000 usec)
-0x55fcb80ce7a8: complete tx idx=0 addr=18
-HW Launch-time:   1677764508059055964 (sec:1677764508.0591) delta to HW TX-complete-time sec:0.0000 (24.235 usec)
-HW TX-complete-time:   1677764508059080199 (sec:1677764508.0591) delta to User TX-complete-time sec:0.0054 (5423.263 usec)
-XDP RX-time:   1677764507059280741 (sec:1677764507.0593) delta to User TX-complete-time sec:1.0052 (1005222.721 usec)
-HW RX-time:   1677764507059055964 (sec:1677764507.0591) delta to HW TX-complete-time sec:1.0000 (1000024.235 usec)
-0x55fcb80ce7a8: complete rx idx=128 addr=80100
+HEAD commit:    300fbb247eb3 Merge tag 'wireless-2023-11-29' of git://git...
+git tree:       net
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=115f1a54e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ae1a4ee971a7305
+dashboard link: https://syzkaller.appspot.com/bug?extid=e8030702aefd3444fb9e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16929b52e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=108a528ce80000
 
-$ sudo ./xdp_hw_metadata enp0s30f4 -l 10000000
-...
-xsk_ring_cons__peek: 1
-0x5626d54de7a8: rx_desc[0]->addr=80100 addr=80100 comp_addr=80100 EoP
-No rx_hash err=-95
-HW RX-time:   1677764655807717783 (sec:1677764655.8077) delta to User RX-time sec:0.0002 (240.571 usec)
-XDP RX-time:   1677764655807942983 (sec:1677764655.8079) delta to User RX-time sec:0.0000 (15.371 usec)
-0x5626d54de7a8: ping-pong with csum=5619 (want 8626) csum_start=34 csum_offset=6
-HW RX-time:   1677764655807717783 (sec:1677764655.8077) delta to HW Launch-time sec:0.0100 (10000.000 usec)
-0x5626d54de7a8: complete tx idx=0 addr=18
-HW Launch-time:   1677764655817717783 (sec:1677764655.8177) delta to HW TX-complete-time sec:0.0000 (23.965 usec)
-HW TX-complete-time:   1677764655817741748 (sec:1677764655.8177) delta to User TX-complete-time sec:0.0003 (291.792 usec)
-XDP RX-time:   1677764655807942983 (sec:1677764655.8079) delta to User TX-complete-time sec:0.0101 (10090.557 usec)
-HW RX-time:   1677764655807717783 (sec:1677764655.8077) delta to HW TX-complete-time sec:0.0100 (10023.965 usec)
-0x5626d54de7a8: complete rx idx=128 addr=80100
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/882903ce12c3/disk-300fbb24.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bd633c35425c/vmlinux-300fbb24.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e400d04e154e/bzImage-300fbb24.xz
 
-Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+The issue was bisected to:
+
+commit 8866730aed5100f06d3d965c22f1c61f74942541
+Author: John Fastabend <john.fastabend@gmail.com>
+Date:   Wed Nov 29 01:25:56 2023 +0000
+
+    bpf, sockmap: af_unix stream sockets need to hold ref for pair sock
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1635a52ce80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1535a52ce80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1135a52ce80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e8030702aefd3444fb9e@syzkaller.appspotmail.com
+Fixes: 8866730aed51 ("bpf, sockmap: af_unix stream sockets need to hold ref for pair sock")
+
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+BUG: KASAN: null-ptr-deref in atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
+BUG: KASAN: null-ptr-deref in __refcount_add include/linux/refcount.h:193 [inline]
+BUG: KASAN: null-ptr-deref in __refcount_inc include/linux/refcount.h:250 [inline]
+BUG: KASAN: null-ptr-deref in refcount_inc include/linux/refcount.h:267 [inline]
+BUG: KASAN: null-ptr-deref in sock_hold include/net/sock.h:777 [inline]
+BUG: KASAN: null-ptr-deref in unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+Write of size 4 at addr 0000000000000080 by task syz-executor360/5073
+
+CPU: 1 PID: 5073 Comm: syz-executor360 Not tainted 6.7.0-rc2-syzkaller-00143-g300fbb247eb3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ check_region_inline mm/kasan/generic.c:181 [inline]
+ kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
+ instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+ atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
+ __refcount_add include/linux/refcount.h:193 [inline]
+ __refcount_inc include/linux/refcount.h:250 [inline]
+ refcount_inc include/linux/refcount.h:267 [inline]
+ sock_hold include/net/sock.h:777 [inline]
+ unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+ sock_map_init_proto net/core/sock_map.c:190 [inline]
+ sock_map_link+0xb87/0x1100 net/core/sock_map.c:294
+ sock_map_update_common+0xf6/0x870 net/core/sock_map.c:483
+ sock_map_update_elem_sys+0x5b6/0x640 net/core/sock_map.c:577
+ bpf_map_update_value+0x3af/0x820 kernel/bpf/syscall.c:167
+ map_update_elem+0x622/0x890 kernel/bpf/syscall.c:1526
+ __sys_bpf+0x1bfb/0x4920 kernel/bpf/syscall.c:5371
+ __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+ __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5485
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f1c8f3fe369
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd877e4a58 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007ffd877e4c28 RCX: 00007f1c8f3fe369
+RDX: 0000000000000020 RSI: 0000000020000140 RDI: 0000000000000002
+RBP: 00007f1c8f471610 R08: 00007ffd877e4c28 R09: 00007ffd877e4c28
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007ffd877e4c18 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+==================================================================
+
+
 ---
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 3291625ba4fb..ff1b2e5b0fce 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -13,6 +13,7 @@
-  * - UDP 9091 packets trigger TX reply
-  * - TX HW timestamp is requested and reported back upon completion
-  * - TX checksum is requested
-+ * - HW launch time is set for transmission
-  */
- 
- #include <test_progs.h>
-@@ -61,6 +62,8 @@ int rxq;
- bool skip_tx;
- __u64 last_hw_rx_timestamp;
- __u64 last_xdp_rx_timestamp;
-+__u64 last_launch_time;
-+__u64 launch_time_offset = 1000000000; /* 1 second */
- 
- void test__fail(void) { /* for network_helpers.c */ }
- 
-@@ -274,6 +277,8 @@ static bool complete_tx(struct xsk *xsk, clockid_t clock_id)
- 	if (meta->completion.tx_timestamp) {
- 		__u64 ref_tstamp = gettime(clock_id);
- 
-+		print_tstamp_delta("HW Launch-time", "HW TX-complete-time",
-+				   last_launch_time, meta->completion.tx_timestamp);
- 		print_tstamp_delta("HW TX-complete-time", "User TX-complete-time",
- 				   meta->completion.tx_timestamp, ref_tstamp);
- 		print_tstamp_delta("XDP RX-time", "User TX-complete-time",
-@@ -371,6 +376,13 @@ static void ping_pong(struct xsk *xsk, void *rx_packet, clockid_t clock_id)
- 	       xsk, ntohs(udph->check), ntohs(want_csum),
- 	       meta->request.csum_start, meta->request.csum_offset);
- 
-+	/* Set launch time at launch_time_offset ns later than HW Rx-time */
-+	meta->flags |= XDP_TXMD_FLAGS_LAUNCH_TIME;
-+	last_launch_time = last_hw_rx_timestamp + launch_time_offset;
-+	meta->request.launch_time = last_launch_time;
-+	print_tstamp_delta("HW RX-time", "HW Launch-time",
-+			   last_hw_rx_timestamp, meta->request.launch_time);
-+
- 	memcpy(data, rx_packet, len); /* don't share umem chunk for simplicity */
- 	tx_desc->options |= XDP_TX_METADATA;
- 	tx_desc->len = len;
-@@ -595,6 +607,7 @@ static void print_usage(void)
- 		"  -h    Display this help and exit\n\n"
- 		"  -m    Enable multi-buffer XDP for larger MTU\n"
- 		"  -r    Don't generate AF_XDP reply (rx metadata only)\n"
-+		"  -l    Delta of HW launch time to HW RX-time in ns (default: 1s)\n"
- 		"Generate test packets on the other machine with:\n"
- 		"  echo -n xdp | nc -u -q1 <dst_ip> 9091\n";
- 
-@@ -605,7 +618,7 @@ static void read_args(int argc, char *argv[])
- {
- 	int opt;
- 
--	while ((opt = getopt(argc, argv, "chmr")) != -1) {
-+	while ((opt = getopt(argc, argv, "chmrl:")) != -1) {
- 		switch (opt) {
- 		case 'c':
- 			bind_flags &= ~XDP_USE_NEED_WAKEUP;
-@@ -621,6 +634,9 @@ static void read_args(int argc, char *argv[])
- 		case 'r':
- 			skip_tx = true;
- 			break;
-+		case 'l':
-+			launch_time_offset = atoll(optarg);
-+			break;
- 		case '?':
- 			if (isprint(optopt))
- 				fprintf(stderr, "Unknown option: -%c\n", optopt);
--- 
-2.34.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
