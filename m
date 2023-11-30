@@ -1,74 +1,96 @@
-Return-Path: <bpf+bounces-16220-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16221-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 974407FE685
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 03:12:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0AD57FE7C6
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 04:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96621B210B6
-	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 02:12:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EE601C20CE0
+	for <lists+bpf@lfdr.de>; Thu, 30 Nov 2023 03:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2411F9CE;
-	Thu, 30 Nov 2023 02:12:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 787A3134C6;
+	Thu, 30 Nov 2023 03:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NocDVQWu"
 X-Original-To: bpf@vger.kernel.org
-Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4971D1B3;
-	Wed, 29 Nov 2023 18:12:10 -0800 (PST)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-	id 1r8WWp-0057on-4e; Thu, 30 Nov 2023 10:11:48 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Thu, 30 Nov 2023 10:11:56 +0800
-Date: Thu, 30 Nov 2023 10:11:56 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Vadim Fedorenko <vadfed@meta.com>
-Cc: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, netdev@vger.kernel.org,
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v6 2/3] bpf: crypto: add skcipher to bpf crypto
-Message-ID: <ZWfvbHHXPMlddnGN@gondor.apana.org.au>
-References: <20231129173312.31008-1-vadfed@meta.com>
- <20231129173312.31008-2-vadfed@meta.com>
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF13C10C3;
+	Wed, 29 Nov 2023 19:44:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701315890; x=1732851890;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=/utSN1OR3/EBzwgfC3LaKdPzu0BgF9bHkLiCMUBUofc=;
+  b=NocDVQWuviovUPFiaqbaSmdDz03DUse0299YjCPORM+abZQnvdK4mYhs
+   K13hDzPEzgeyNhY3gZGHlp0jwA3vg/7PtE6QNXimvoU4jh867emnCW9vb
+   LruoaHkol5Rp1agDl5QigLWKh+m6bPPG0R4UGQX8SswhQWXrRsS5NAtai
+   rUCNbYLKLA4ASKgCTErKt0shZWtzclTpr3Io3hPOTtL0fbWh7kL0Wwun1
+   kGzMCePfuMRkqhbP22z39ATc14HltCXQwFfXqkIB6vyqEfvI9XSyc+iwD
+   pRNUb1mlhHrGG9falUUgphFa6Xv6Wf2zsf9CaOOIvWh3PQT0AcjjS9gVn
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="393007738"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="393007738"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 19:44:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="762546446"
+X-IronPort-AV: E=Sophos;i="6.04,237,1695711600"; 
+   d="scan'208";a="762546446"
+Received: from yujie-x299.sh.intel.com ([10.239.159.77])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 19:44:48 -0800
+From: Yujie Liu <yujie.liu@intel.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+	bpf@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] bpf/tests: Remove duplicate JSGT tests
+Date: Thu, 30 Nov 2023 11:40:18 +0800
+Message-Id: <20231130034018.2144963-1-yujie.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231129173312.31008-2-vadfed@meta.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 29, 2023 at 09:33:11AM -0800, Vadim Fedorenko wrote:
-> Implement skcipher crypto in BPF crypto framework.
-> 
-> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
-> ---
-> v6:
-> - make skcipher implementation in separate patch
-> ---
->  kernel/bpf/Makefile          |  3 ++
->  kernel/bpf/crypto_skcipher.c | 76 ++++++++++++++++++++++++++++++++++++
->  2 files changed, 79 insertions(+)
->  create mode 100644 kernel/bpf/crypto_skcipher.c
+It seems unnecessary that JSGT is tested twice (one before JSGE and one
+after JSGE) since others are tested only once. Remove the duplicate JSGT
+tests.
 
-I just made some adjustments to the lskcipher API so you may want
-to hold off for a bit:
+Fixes: 0bbaa02b4816 ("bpf/tests: Add tests to check source register zero-extension")
+Signed-off-by: Yujie Liu <yujie.liu@intel.com>
+---
+ lib/test_bpf.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-https://lore.kernel.org/linux-crypto/20231129210421.GD1174@sol.localdomain/T/#u
-
-Basically it adds the ability to process more than one piece of
-data for stream ciphers such as chacha.
-
-Thanks,
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index 7916503e6a6a..87a4ebcc65be 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -12215,7 +12215,6 @@ static struct bpf_test tests[] = {
+ 	BPF_JMP32_IMM_ZEXT(JLE),
+ 	BPF_JMP32_IMM_ZEXT(JSGT),
+ 	BPF_JMP32_IMM_ZEXT(JSGE),
+-	BPF_JMP32_IMM_ZEXT(JSGT),
+ 	BPF_JMP32_IMM_ZEXT(JSLT),
+ 	BPF_JMP32_IMM_ZEXT(JSLE),
+ #undef BPF_JMP2_IMM_ZEXT
+@@ -12251,7 +12250,6 @@ static struct bpf_test tests[] = {
+ 	BPF_JMP32_REG_ZEXT(JLE),
+ 	BPF_JMP32_REG_ZEXT(JSGT),
+ 	BPF_JMP32_REG_ZEXT(JSGE),
+-	BPF_JMP32_REG_ZEXT(JSGT),
+ 	BPF_JMP32_REG_ZEXT(JSLT),
+ 	BPF_JMP32_REG_ZEXT(JSLE),
+ #undef BPF_JMP2_REG_ZEXT
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.34.1
+
 
