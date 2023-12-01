@@ -1,91 +1,163 @@
-Return-Path: <bpf+bounces-16386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52757800DBD
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 15:52:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E1D5800DC1
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 15:53:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5B10B21469
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 14:52:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DED8A281720
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 14:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9239D3FE20;
-	Fri,  1 Dec 2023 14:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0C83E46C;
+	Fri,  1 Dec 2023 14:53:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQAySGvu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k10YZtxH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8591D1717
-	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 06:52:27 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-a02ba1f500fso333900966b.0
-        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 06:52:27 -0800 (PST)
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C80A10FA
+	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 06:52:56 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a196f84d217so164169566b.3
+        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 06:52:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701442346; x=1702047146; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4U9gUs4NepFjXFwsIXGj7p59LuX4HiL4KpczytFXBGA=;
-        b=AQAySGvuT7Q/0/SQ3wu297RaXsKpX9/6MD3N1xkU0BqJHHdW7AtcINrmpsMQ3JKwpH
-         8VIM5hP6CcUIPq9v37X0OUZ5ZsA0+49JlE0I5TTPP5pdg3R3WyIWdBLosfoGe6RAV8f/
-         qxnhWGPBnl053go5eMiLQX+JiU/0y8x77MwwlWRj6zSwxBYd3o0ogZAMt+CZRqnZpgeH
-         +XXYbfA6pYt/9mkdLl3UdPWW+yfPxABTGGu665KtKt4GsBM9DmTNpIQU9GeQvRYoQU8m
-         hXy0oYA4+bgVYEXzbmo5I4wXh0npgCiQnyrwWRNibOs7XEMpgp/ruUS6sphsw/1SQrCO
-         QkaQ==
+        d=gmail.com; s=20230601; t=1701442375; x=1702047175; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=9nFlIriU13YWR+IsyA3UjzLbMz/VibKu7Uw6owcv8E0=;
+        b=k10YZtxHrlujgWdwug6abYjSQDpWyKMZHMx0Ek+8xTwTYmHkeTJg1cSnfkgqqnjzEY
+         rBQi8Qc0ADKZ9iLGH70O2EUbpNKyeDDuTkD2mLjkZh1u2MaTSfVLuPOH58rMxB8/g3rN
+         MhtIPc1Qlq7epRFIpvmIuzX0b5hkhqZ6+QxZLRR+QPKYsgnjLOcu+gtBcjnEw554UJnS
+         91havkg5jf+y9vl6wWTdbaQ2/bgqzg6VPlR3rtgD1gW+H1fDG4cBu73Y3rmuTIIlhhkM
+         jjySyTPXtypxs/T7NR5J2mzQaHaqWCMCA7YUs9P2keKyk0O0Ed/BwS20Ry330WKJwIS6
+         P1fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701442346; x=1702047146;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4U9gUs4NepFjXFwsIXGj7p59LuX4HiL4KpczytFXBGA=;
-        b=LCMXAGKkx6eSImcB5nKBhzTjDtdSZNCbR9GbMqLEqxAPwAzUaEJp4GCsWYihzPGeI0
-         cJEEHB/ORURocUprRD/tnI03Rnn1Tp7gdQ58+tF1hqSvn9m+3AimQLD4LoQusSh092Tb
-         aenPEssAsezdglr+Sx13YDidaJri92rvLODBEOVN4Qta4bvYlu1upP5rlG2rll2IZKsD
-         jCw0Et3HIt+JFL8CvHKi3KCaAPtK5LlM7zNXYPa0NR1x4P5LWwC2DcPpU063LA+oOXPv
-         2DaZp2Qz+zL/ch3yZkWyMU7Yy6OBfn9cFOZBaeJlvKOA0mhPQwt6HCRrEi1tveEQefkN
-         0D2w==
-X-Gm-Message-State: AOJu0YzI+0Z5+W9XewYiqQEK0HlqFyO8JE/RAwyaYEmQXq7/W7T6CLJN
-	5a8IBTYGI8aTLaInd0/90+c=
-X-Google-Smtp-Source: AGHT+IH76EfXAUX6eskmyE9ubnBR1zqbQd22xbKwuyvWUAff76a13g3aXuS6dHXrwJK/2apVjgaaqg==
-X-Received: by 2002:a17:906:488c:b0:9df:bc8d:fbc8 with SMTP id v12-20020a170906488c00b009dfbc8dfbc8mr1028348ejq.37.1701442345419;
-        Fri, 01 Dec 2023 06:52:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701442375; x=1702047175;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9nFlIriU13YWR+IsyA3UjzLbMz/VibKu7Uw6owcv8E0=;
+        b=Rdfb8ZiJEvyZTRQPuWBygKzujRAFXLn7j8L33jjoXsiTpdRCjYSH6GPGInLTN9mIUl
+         yiZwVQsIn5jp5AFR8WtTJ5Bsk3aomy+Muwm0aaZ+miLtV3qklQvLpKCHJjbJRIHoeNLn
+         QafHGGe8GzLZU0fQan1gT7T7WDU3Jq9Qcib6QWIOs+XI0MCA+jt2x1Vn4HZVnJeMnBkv
+         vyfroiQQcGHUZ/Dg7nvuFyXX8QiDRxCK/2Gvfn//qOhTgqb1WJ/FK8VMHGPLkazawUwM
+         ffkBhP70f9EidZGg145kYXL5Dxk8PYk7U05ty82qC2UKLSiAbQU/CzqzXo0nf7tti7Em
+         8iKg==
+X-Gm-Message-State: AOJu0YzaE5osXn/VOe/5v2aX6m6F9RHsrddoneNs/jPVt2crcgF4YlHi
+	eiIVBMHVqxxKr0yRpDVcEZw=
+X-Google-Smtp-Source: AGHT+IFz2dN8BdjDNDgD9tvauIedjT1e3/K5ezdbW7UFfKJj7EQMlGb4knwcjafsR537Rs14EMAzZQ==
+X-Received: by 2002:a17:906:1953:b0:a19:a1ba:8cdc with SMTP id b19-20020a170906195300b00a19a1ba8cdcmr1032146eje.122.1701442374462;
+        Fri, 01 Dec 2023 06:52:54 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id j10-20020a170906050a00b00a0ac350fd57sm1975362eja.86.2023.12.01.06.52.24
+        by smtp.gmail.com with ESMTPSA id k11-20020a1709061c0b00b009be14e5cd54sm1969318ejg.57.2023.12.01.06.52.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 06:52:24 -0800 (PST)
+        Fri, 01 Dec 2023 06:52:54 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 1 Dec 2023 15:52:22 +0100
-To: Dmitry Dolgov <9erthalion6@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, yonghong.song@linux.dev, dan.carpenter@linaro.org
-Subject: Re: [PATCH bpf-next v4 3/3] bpf, selftest/bpf: Fix re-attachment
- branch in bpf_tracing_prog_attach
-Message-ID: <ZWnzJjne5oMuEHrA@krava>
-References: <20231129195240.19091-1-9erthalion6@gmail.com>
- <20231129195240.19091-4-9erthalion6@gmail.com>
- <ZWim7zRLA-cgVQpr@krava>
- <ZWkNBR-1RF8r4deG@krava>
- <20231201142143.i66qvk262a7zqg2h@erthalion>
+Date: Fri, 1 Dec 2023 15:52:51 +0100
+To: Ilya Leoshkevich <iii@linux.ibm.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Xu Kuohai <xukuohai@huawei.com>, Will Deacon <will@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Pu Lehui <pulehui@huawei.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Lee Jones <lee@kernel.org>
+Subject: Re: [PATCHv2 bpf 0/2] bpf: Fix prog_array_map_poke_run map poke
+ update
+Message-ID: <ZWnzQ6y98cBNAr7a@krava>
+References: <20231128092850.1545199-1-jolsa@kernel.org>
+ <22e3824bce10a895b1c9ce33ed7473561d288e69.camel@linux.ibm.com>
+ <ZWc7OHnLux47RpOr@krava>
+ <ZWnb8ptRW1DW6JLp@krava>
+ <a3e9cb8d96b663e9c110bdd6b90bdd37b92028d7.camel@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231201142143.i66qvk262a7zqg2h@erthalion>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a3e9cb8d96b663e9c110bdd6b90bdd37b92028d7.camel@linux.ibm.com>
 
-On Fri, Dec 01, 2023 at 03:21:43PM +0100, Dmitry Dolgov wrote:
-> > On Thu, Nov 30, 2023 at 11:30:29PM +0100, Jiri Olsa wrote:
-> > AFAICS we can't do anything here, because program was loaded for tgt_prog but we
-> > have no way to find out which one.. so return -EINVAL, like in the patch below
+On Fri, Dec 01, 2023 at 03:31:57PM +0100, Ilya Leoshkevich wrote:
+> On Fri, 2023-12-01 at 14:13 +0100, Jiri Olsa wrote:
+> > On Wed, Nov 29, 2023 at 02:23:04PM +0100, Jiri Olsa wrote:
+> > > On Tue, Nov 28, 2023 at 11:44:33PM +0100, Ilya Leoshkevich wrote:
+> > > > On Tue, 2023-11-28 at 10:28 +0100, Jiri Olsa wrote:
+> > > > > hi,
+> > > > > this patchset fixes the issue reported in [0].
+> > > > > 
+> > > > > For the actual fix in patch 2 I'm changing bpf_arch_text_poke
+> > > > > to
+> > > > > allow to skip
+> > > > > ip address check in patch 1. I considered adding separate
+> > > > > function
+> > > > > for that,
+> > > > > but because each arch implementation is bit different, adding
+> > > > > extra
+> > > > > arg seemed
+> > > > > like better option.
+> > > > > 
+> > > > > v2 changes:
+> > > > >   - make it work for other archs
+> > > > > 
+> > > > > thanks,
+> > > > > jirka
+> > > > > 
+> > > > > 
+> > > > > [0]
+> > > > > https://syzkaller.appspot.com/bug?extid=97a4fe20470e9bc30810
+> > > > > ---
+> > > > > Jiri Olsa (2):
+> > > > >       bpf: Add checkip argument to bpf_arch_text_poke
+> > > > >       bpf, x64: Fix prog_array_map_poke_run map poke update
+> > > > > 
+> > > > >  arch/arm64/net/bpf_jit_comp.c   |  3 ++-
+> > > > >  arch/riscv/net/bpf_jit_comp64.c |  5 +++--
+> > > > >  arch/s390/net/bpf_jit_comp.c    |  3 ++-
+> > > > >  arch/x86/net/bpf_jit_comp.c     | 24 +++++++++++++-----------
+> > > > >  include/linux/bpf.h             |  2 +-
+> > > > >  kernel/bpf/arraymap.c           | 31 +++++++++++--------------
+> > > > > ------
+> > > > >  kernel/bpf/core.c               |  2 +-
+> > > > >  kernel/bpf/trampoline.c         | 12 ++++++------
+> > > > >  8 files changed, 39 insertions(+), 43 deletions(-)
+> > > > 
+> > > > Would it be possible to add a minimized version of the reproducer
+> > > > as a
+> > > > testcase?
+> > > 
+> > > there's reproducer I used in here:
+> > >   https://syzkaller.appspot.com/text?tag=ReproC&x=1397180f680000
+> > > 
+> > > I can try, but not sure I'll be able to come up with something that
+> > > would fit as testcase.. I'll check
+> > 
+> > the test below reproduces it for me.. the only tricky part is that
+> > I need to repeat the loop 10 times to trigger that on my setup..
+> > which is not terrible, but not great for a test I think
+> > 
+> > jirka
 > 
-> Yep, makes sense. Is that fine if I include this patch into the series
-> with you as an author, with signed-off and everything?
+> The test looks useful to me. I think having magic repetition counts
+> like this 10 here is almost inevitable when trying to reproduce race
+> conditions. The test also runs quickly for me. You can have my
+> 
+> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> 
+> in case you decide to make a formal patch.
 
-sure, thanks
+great, thanks
 
 jirka
 
