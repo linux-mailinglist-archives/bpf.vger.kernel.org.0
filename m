@@ -1,113 +1,163 @@
-Return-Path: <bpf+bounces-16393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CF78800EA8
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 16:36:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A778800EB6
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 16:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 163C0281BA3
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 15:36:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24799281BEC
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 15:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0904AF81;
-	Fri,  1 Dec 2023 15:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2174B5A5;
+	Fri,  1 Dec 2023 15:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iVI9rFJz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TRASJF6O"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BA61A6;
-	Fri,  1 Dec 2023 07:36:09 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6cde11fb647so2243235b3a.1;
-        Fri, 01 Dec 2023 07:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701444969; x=1702049769; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hVOmWwUFFk1k8CyqT9WvwOoomf+HNNEr1YCh3lVCYfw=;
-        b=iVI9rFJz/orMjcMYSScp0qc7uY2X1fpAfjfoAe5MPq71Vk098KHs1gL9eo4fmumrzn
-         gpV5M3uNUOb3/gYcYUa/dQGn7GJeImZTFLG2RQFpeB1/IxNoXgP1GjOsMrMIb6o+emN/
-         D81tnrLEdJBNTo9vhxdFOorBRAOuEsJASvYBjZsIYhpXXVXCBvJjjf5+PM93FJ167Mg2
-         1TIC5D9V1jU4oNYKDfxrS44tpTtV1/KH7ZT+9q04tSKDcrLvvtFr7uvLGjCUOviaUwvL
-         F36+Goo5qTEAwbgCQn+Erc9MKfkp+10Nnt/T6Huuc4xRnaqylVLfTCV/RbOM17brth5S
-         yN2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701444969; x=1702049769;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hVOmWwUFFk1k8CyqT9WvwOoomf+HNNEr1YCh3lVCYfw=;
-        b=RDmX1vrei7UidOemfTuUx8h0R0Us4/sIiZFdWsr2pRQyC3a43hxNMsQftxdBMhFGK6
-         aVXsBChXQyrW97xSwuSFHur8SZI2HpoFG1+NFGJzkkzwry5a4ILhWaz/7pI2A0dIqIZO
-         Z7bpO5ksvNbd8Yix8mrmAsFJ0RiEj8OsYSvYsgN6FwDbtc8fZtG6tGqiGuAVz+LYED7v
-         DwW025q22IDoH65t9HbBOE4N1HupR9negNdXixmOeH1mu2IDDs83QMRM8UucjApY4RGT
-         vYFyhmw32H4MU/gy0nZPfrkX3/5SUVhLpNGLi4+KgR3dt/EJ49SAO4TEo4Gcjun+ECG+
-         8kCQ==
-X-Gm-Message-State: AOJu0Yw/1GRvKViIlMaoNUZmxmTRvGXKAsKoEiw61CLBPvkar1uTfrlO
-	r4B3hVScKJblaKIvPUwFwXr22F93id39hA==
-X-Google-Smtp-Source: AGHT+IEjm9oc+Rg9WTQ/4DP13kt1pnieell2yh3H92QLnT2Kvq5k2oDdLGPU9gyE1BqJZ97lOfSb5Q==
-X-Received: by 2002:a05:6a20:2446:b0:18c:23b0:3b16 with SMTP id t6-20020a056a20244600b0018c23b03b16mr23316339pzc.60.1701444968797;
-        Fri, 01 Dec 2023 07:36:08 -0800 (PST)
-Received: from localhost ([2605:59c8:148:ba10:7a9a:8993:d50f:aaa4])
-        by smtp.gmail.com with ESMTPSA id r27-20020aa78b9b000000b006900cb919b8sm3117653pfd.53.2023.12.01.07.36.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 07:36:08 -0800 (PST)
-Date: Fri, 01 Dec 2023 07:36:06 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: Jakub Sitnicki <jakub@cloudflare.com>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Eric Dumazet <edumazet@google.com>
-Cc: kuniyu@amazon.com, 
- bpf@vger.kernel.org, 
- netdev@vger.kernel.org
-Message-ID: <6569fd6649fc9_44402208de@john.notmuch>
-In-Reply-To: <87il5i2req.fsf@cloudflare.com>
-References: <20231201032316.183845-1-john.fastabend@gmail.com>
- <20231201032316.183845-2-john.fastabend@gmail.com>
- <CANn89iJahyHqkMsUMPoz0xPCKE9miy0AC-P_cBYKGnLWEWX3zw@mail.gmail.com>
- <87il5i2req.fsf@cloudflare.com>
-Subject: Re: [PATCH bpf 1/2] bpf: syzkaller found null ptr deref in unix_bpf
- proto add
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E441B4A9AA;
+	Fri,  1 Dec 2023 15:39:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EBDDC433C7;
+	Fri,  1 Dec 2023 15:39:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701445181;
+	bh=V7WtW43roNI+kWQ1jgxoaFh9ZbnjwKeONNImrea0QOQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=TRASJF6OIlc3u7XXuhbDaK4viFQJH7E7P4b0J4LqnZBm3T4XlnR3wBJcRPM9GJJO4
+	 4Y3WNVYM4egNGn7EKS+XOf7HsyIWWI1Ehnm+UycZlQSrC7GkVbPj/7oh4rYBe9Ht/3
+	 Q8rfJDaPym3mbS1oRuUcd7Vy4vu8MUT7Jlq0QsMl1UPCi5URZ2uu+0dCnh7/NJHdvr
+	 AOgvp6+9g5MBccZC9x5e2TXU8Eg2bC9bCY7IiiWlMjj1jU3MkU2p5RjuMLWiXpjfxN
+	 KoK0WQEMGg98VWuozPV8zRgNgzyxLI3luIXEVYj89SJnBDR6Vm0nnbrxcaIOf+rl7s
+	 FVxTlyu/GUKTA==
+Message-ID: <179a4581-f7df-4eb1-ab67-8d65f856a2fe@kernel.org>
+Date: Fri, 1 Dec 2023 16:39:32 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 0/3] xsk: TX metadata txtime support
+Content-Language: en-US
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "Song, Yoong Siang" <yoong.siang.song@intel.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Bjorn Topel <bjorn@kernel.org>, "Karlsson, Magnus"
+ <magnus.karlsson@intel.com>,
+ "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+ Jonathan Lemon <jonathan.lemon@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Willem de Bruijn <willemb@google.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Shuah Khan <shuah@kernel.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, Andre Fredette <afredette@redhat.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+ "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
+ "linux-stm32@st-md-mailman.stormreply.com"
+ <linux-stm32@st-md-mailman.stormreply.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
+ <d4f99931-442c-4cd7-b3cf-80d8681a2986@kernel.org>
+ <PH0PR11MB58306C2E50009A6E22F9DAD3D881A@PH0PR11MB5830.namprd11.prod.outlook.com>
+ <6569f71bad00d_138af5294d@willemb.c.googlers.com.notmuch>
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <6569f71bad00d_138af5294d@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Jakub Sitnicki wrote:
-> On Fri, Dec 01, 2023 at 10:24 AM +01, Eric Dumazet wrote:
-> > On Fri, Dec 1, 2023 at 4:23=E2=80=AFAM John Fastabend <john.fastabend=
-@gmail.com> wrote:
-> =
 
-> [...]
-> =
 
-> >> diff --git a/include/net/sock.h b/include/net/sock.h
-> >> index 1d6931caf0c3..ea1155d68f0b 100644
-> >> --- a/include/net/sock.h
-> >> +++ b/include/net/sock.h
-> >> @@ -2799,6 +2799,11 @@ static inline bool sk_is_tcp(const struct soc=
-k *sk)
-> >>         return sk->sk_type =3D=3D SOCK_STREAM && sk->sk_protocol =3D=
-=3D IPPROTO_TCP;
-> >>  }
-> >>
-> >> +static inline bool sk_is_unix(const struct sock *sk)
-> >
-> > Maybe sk_is_stream_unix() ?
-> >
-> =
+On 12/1/23 16:09, Willem de Bruijn wrote:
+> Song, Yoong Siang wrote:
+>> On Friday, December 1, 2023 6:46 PM, Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+>>> On 12/1/23 07:24, Song Yoong Siang wrote:
+>>>> This series expands XDP TX metadata framework to include ETF HW offload.
+>>>>
+>>>> Changes since v1:
+>>>> - rename Time-Based Scheduling (TBS) to Earliest TxTime First (ETF)
+>>>> - rename launch-time to txtime
+>>>>
+>>>
+>>> I strongly disagree with this renaming (sorry to disagree with Willem).
+>>>
+>>> The i210 and i225 chips call this LaunchTime in their programmers
+>>> datasheets, and even in the driver code[1].
+>>>
+>>> Using this "txtime" name in the code is also confusing, because how can
+>>> people reading the code know the difference between:
+>>>   - tmo_request_timestamp and tmo_request_txtime
+>>>
+>>
+>> Hi Jesper and Willem,
+>>
+>> How about using "launch_time" for the flag/variable and
+>> "Earliest TxTime First" for the description/comments?
+> 
 
-> +1. I found it confusing as well.
-> =
+I don't follow why you are calling the feature:
+  - "Earliest TxTime First" (ETF).
+  - AFAIK this just reference an qdisc name (that most don't know exists)
 
-> [...]
 
-OK will do v2 with sk_is_stream_unix() so it reads better. Thanks.=
+> I don't particularly care which term we use, as long as we're
+> consistent. Especially, don't keep introducing new synonyms.
+> 
+> The fact that one happens to be one vendor's marketing term does not
+> make it preferable, IMHO. On the contrary.
+>
+
+These kind of hardware features are defined as part of Time Sensitive
+Networking (TSN).
+I believe these TSN features are defined as part of IEEE 802.1Qbv (2015)
+and according to Wikipedia[2] incorporated into IEEE 802.1Q.
+
+[2] https://en.wikipedia.org/wiki/Time-Sensitive_Networking
+
+
+> SO_TXTIME is in the ABI, and EDT has been used publicly in kernel
+> patches and conference talks, e.g., Van Jacobson's Netdev 0x12
+> keynote. Those are vendor agnostic commonly used terms.
+> 
+
+I agree that EDT (Earliest Departure Time) have become a thing and term
+in our community.
+We could associate this feature with this.
+I do fear what hardware behavior will be it if I e.g. ask it to send a
+packet 2 sec in the future on i225 which max support 1 sec.
+Will hardware send it at 1 sec?
+Because then I'm violating the *Earliest* Departure Time.
+
+
+> But as long as Launch Time is not an Intel only trademark, fine to
+> select that.
+
+The IEEE 802.1Qbv is sometimes called Time-Aware Shaper (TAS), but I
+don't like to for us to name this after this.  This features is simply
+taking advantage of exposing one of the hardware building blocks
+(controlling/setting packet "launch time") that can be used for
+implementing a TAS.
+
+I like the name "launch time" because it doesn't get easily confused
+with other timestamps, and intuitively describes packet will be send at
+a specific time (likely in future).
+
+--Jesper
 
