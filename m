@@ -1,163 +1,176 @@
-Return-Path: <bpf+bounces-16394-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16395-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A778800EB6
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 16:39:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5330F800EC4
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 16:46:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24799281BEC
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 15:39:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EAB7281B30
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 15:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2174B5A5;
-	Fri,  1 Dec 2023 15:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1738F4AF9E;
+	Fri,  1 Dec 2023 15:46:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TRASJF6O"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="LW9AEKQH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E441B4A9AA;
-	Fri,  1 Dec 2023 15:39:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EBDDC433C7;
-	Fri,  1 Dec 2023 15:39:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701445181;
-	bh=V7WtW43roNI+kWQ1jgxoaFh9ZbnjwKeONNImrea0QOQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=TRASJF6OIlc3u7XXuhbDaK4viFQJH7E7P4b0J4LqnZBm3T4XlnR3wBJcRPM9GJJO4
-	 4Y3WNVYM4egNGn7EKS+XOf7HsyIWWI1Ehnm+UycZlQSrC7GkVbPj/7oh4rYBe9Ht/3
-	 Q8rfJDaPym3mbS1oRuUcd7Vy4vu8MUT7Jlq0QsMl1UPCi5URZ2uu+0dCnh7/NJHdvr
-	 AOgvp6+9g5MBccZC9x5e2TXU8Eg2bC9bCY7IiiWlMjj1jU3MkU2p5RjuMLWiXpjfxN
-	 KoK0WQEMGg98VWuozPV8zRgNgzyxLI3luIXEVYj89SJnBDR6Vm0nnbrxcaIOf+rl7s
-	 FVxTlyu/GUKTA==
-Message-ID: <179a4581-f7df-4eb1-ab67-8d65f856a2fe@kernel.org>
-Date: Fri, 1 Dec 2023 16:39:32 +0100
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1967A194;
+	Fri,  1 Dec 2023 07:46:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=Ju0e9bhxfFKrVDGBd6wlWel0hwJujeGJDjh5JGs5sw0=; b=LW9AEKQHAe6noKePc7zb4PRH5a
+	hEmImOySMLiJX+5dAlYVRQqNcxPuE3qUSVGFsrFvhEr4C8FQb9Lu1U5NhCDpxIOU/O6Z7mwclUjlz
+	qO8PmZ611TeNybfTpbwEM9QCKN9sBoa8oktEhrMKOSzqGuMzAWTl2xl20KBFzVMg4lVwVOnfyiiSE
+	NPndgckNLPpWdCJ2sjdbUkkysi/DoI3msjRE8Hr2/sEAA2TWborII+I8v0PJwsvvrGAjtjaO++wua
+	Iy+aF9g3SDcDx1K7mVKqDvy+eB/S/Y6/JashfGiQ9IZR/oKqUqjjsqr0r2yVVrSkUaCavtTPBRMrx
+	tCqNn3Bw==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1r95ih-0008Ky-Uc; Fri, 01 Dec 2023 16:46:23 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1r95ih-000Dhk-58; Fri, 01 Dec 2023 16:46:23 +0100
+Subject: Re: [PATCH] scripts/bpf_doc: add __main__ judgement before main code
+To: Hu Haowen <2023002089@link.tyut.edu.cn>, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, martin.lau@linux.dev
+Cc: ast@kernel.org, andrii@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20231130145746.23621-1-2023002089@link.tyut.edu.cn>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <e7286e2d-76ea-8b50-54bd-751b649f9a4e@iogearbox.net>
+Date: Fri, 1 Dec 2023 16:46:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 0/3] xsk: TX metadata txtime support
+In-Reply-To: <20231130145746.23621-1-2023002089@link.tyut.edu.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- "Song, Yoong Siang" <yoong.siang.song@intel.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Bjorn Topel <bjorn@kernel.org>, "Karlsson, Magnus"
- <magnus.karlsson@intel.com>,
- "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@google.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Willem de Bruijn <willemb@google.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Shuah Khan <shuah@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, Andre Fredette <afredette@redhat.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
- "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
- "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>,
- "linux-stm32@st-md-mailman.stormreply.com"
- <linux-stm32@st-md-mailman.stormreply.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
- <d4f99931-442c-4cd7-b3cf-80d8681a2986@kernel.org>
- <PH0PR11MB58306C2E50009A6E22F9DAD3D881A@PH0PR11MB5830.namprd11.prod.outlook.com>
- <6569f71bad00d_138af5294d@willemb.c.googlers.com.notmuch>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <6569f71bad00d_138af5294d@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27110/Fri Dec  1 09:44:56 2023)
 
+Hi Hu,
 
+On 11/30/23 3:57 PM, Hu Haowen wrote:
+> When doing Python programming it is a nice convention to insert the if
+> statement `if __name__ == "__main__":` before any main code that does
+> actual functionalities to ensure the code will be executed only as a
+> script rather than as an imported module.  Hence attach the missing
+> judgement to bpf_doc.py.
+> 
+> Signed-off-by: Hu Haowen <2023002089@link.tyut.edu.cn>
 
-On 12/1/23 16:09, Willem de Bruijn wrote:
-> Song, Yoong Siang wrote:
->> On Friday, December 1, 2023 6:46 PM, Jesper Dangaard Brouer <hawk@kernel.org> wrote:
->>> On 12/1/23 07:24, Song Yoong Siang wrote:
->>>> This series expands XDP TX metadata framework to include ETF HW offload.
->>>>
->>>> Changes since v1:
->>>> - rename Time-Based Scheduling (TBS) to Earliest TxTime First (ETF)
->>>> - rename launch-time to txtime
->>>>
->>>
->>> I strongly disagree with this renaming (sorry to disagree with Willem).
->>>
->>> The i210 and i225 chips call this LaunchTime in their programmers
->>> datasheets, and even in the driver code[1].
->>>
->>> Using this "txtime" name in the code is also confusing, because how can
->>> people reading the code know the difference between:
->>>   - tmo_request_timestamp and tmo_request_txtime
->>>
->>
->> Hi Jesper and Willem,
->>
->> How about using "launch_time" for the flag/variable and
->> "Earliest TxTime First" for the description/comments?
+Thanks for the patch. What's the concrete value of this one? Do you plan
+to distribute the bpf_docs.py outside of the kernel tree? If it's not
+needed feels somewhat too much churn/marginal value.
+
+>   scripts/bpf_doc.py | 81 +++++++++++++++++++++++-----------------------
+>   1 file changed, 41 insertions(+), 40 deletions(-)
+> 
+> diff --git a/scripts/bpf_doc.py b/scripts/bpf_doc.py
+> index 61b7dddedc46..af2a87d97832 100755
+> --- a/scripts/bpf_doc.py
+> +++ b/scripts/bpf_doc.py
+> @@ -851,43 +851,44 @@ class PrinterHelpers(Printer):
+>   
+>   ###############################################################################
+>   
+> -# If script is launched from scripts/ from kernel tree and can access
+> -# ../include/uapi/linux/bpf.h, use it as a default name for the file to parse,
+> -# otherwise the --filename argument will be required from the command line.
+> -script = os.path.abspath(sys.argv[0])
+> -linuxRoot = os.path.dirname(os.path.dirname(script))
+> -bpfh = os.path.join(linuxRoot, 'include/uapi/linux/bpf.h')
+> -
+> -printers = {
+> -        'helpers': PrinterHelpersRST,
+> -        'syscall': PrinterSyscallRST,
+> -}
+> -
+> -argParser = argparse.ArgumentParser(description="""
+> -Parse eBPF header file and generate documentation for the eBPF API.
+> -The RST-formatted output produced can be turned into a manual page with the
+> -rst2man utility.
+> -""")
+> -argParser.add_argument('--header', action='store_true',
+> -                       help='generate C header file')
+> -if (os.path.isfile(bpfh)):
+> -    argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h',
+> -                           default=bpfh)
+> -else:
+> -    argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h')
+> -argParser.add_argument('target', nargs='?', default='helpers',
+> -                       choices=printers.keys(), help='eBPF API target')
+> -args = argParser.parse_args()
+> -
+> -# Parse file.
+> -headerParser = HeaderParser(args.filename)
+> -headerParser.run()
+> -
+> -# Print formatted output to standard output.
+> -if args.header:
+> -    if args.target != 'helpers':
+> -        raise NotImplementedError('Only helpers header generation is supported')
+> -    printer = PrinterHelpers(headerParser)
+> -else:
+> -    printer = printers[args.target](headerParser)
+> -printer.print_all()
+> +if __name__ == "__main__":
+> +    # If script is launched from scripts/ from kernel tree and can access
+> +    # ../include/uapi/linux/bpf.h, use it as a default name for the file to parse,
+> +    # otherwise the --filename argument will be required from the command line.
+> +    script = os.path.abspath(sys.argv[0])
+> +    linuxRoot = os.path.dirname(os.path.dirname(script))
+> +    bpfh = os.path.join(linuxRoot, 'include/uapi/linux/bpf.h')
+> +
+> +    printers = {
+> +            'helpers': PrinterHelpersRST,
+> +            'syscall': PrinterSyscallRST,
+> +    }
+> +
+> +    argParser = argparse.ArgumentParser(description="""
+> +    Parse eBPF header file and generate documentation for the eBPF API.
+> +    The RST-formatted output produced can be turned into a manual page with the
+> +    rst2man utility.
+> +    """)
+> +    argParser.add_argument('--header', action='store_true',
+> +                           help='generate C header file')
+> +    if (os.path.isfile(bpfh)):
+> +        argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h',
+> +                               default=bpfh)
+> +    else:
+> +        argParser.add_argument('--filename', help='path to include/uapi/linux/bpf.h')
+> +    argParser.add_argument('target', nargs='?', default='helpers',
+> +                           choices=printers.keys(), help='eBPF API target')
+> +    args = argParser.parse_args()
+> +
+> +    # Parse file.
+> +    headerParser = HeaderParser(args.filename)
+> +    headerParser.run()
+> +
+> +    # Print formatted output to standard output.
+> +    if args.header:
+> +        if args.target != 'helpers':
+> +            raise NotImplementedError('Only helpers header generation is supported')
+> +        printer = PrinterHelpers(headerParser)
+> +    else:
+> +        printer = printers[args.target](headerParser)
+> +    printer.print_all()
 > 
 
-I don't follow why you are calling the feature:
-  - "Earliest TxTime First" (ETF).
-  - AFAIK this just reference an qdisc name (that most don't know exists)
-
-
-> I don't particularly care which term we use, as long as we're
-> consistent. Especially, don't keep introducing new synonyms.
-> 
-> The fact that one happens to be one vendor's marketing term does not
-> make it preferable, IMHO. On the contrary.
->
-
-These kind of hardware features are defined as part of Time Sensitive
-Networking (TSN).
-I believe these TSN features are defined as part of IEEE 802.1Qbv (2015)
-and according to Wikipedia[2] incorporated into IEEE 802.1Q.
-
-[2] https://en.wikipedia.org/wiki/Time-Sensitive_Networking
-
-
-> SO_TXTIME is in the ABI, and EDT has been used publicly in kernel
-> patches and conference talks, e.g., Van Jacobson's Netdev 0x12
-> keynote. Those are vendor agnostic commonly used terms.
-> 
-
-I agree that EDT (Earliest Departure Time) have become a thing and term
-in our community.
-We could associate this feature with this.
-I do fear what hardware behavior will be it if I e.g. ask it to send a
-packet 2 sec in the future on i225 which max support 1 sec.
-Will hardware send it at 1 sec?
-Because then I'm violating the *Earliest* Departure Time.
-
-
-> But as long as Launch Time is not an Intel only trademark, fine to
-> select that.
-
-The IEEE 802.1Qbv is sometimes called Time-Aware Shaper (TAS), but I
-don't like to for us to name this after this.  This features is simply
-taking advantage of exposing one of the hardware building blocks
-(controlling/setting packet "launch time") that can be used for
-implementing a TAS.
-
-I like the name "launch time" because it doesn't get easily confused
-with other timestamps, and intuitively describes packet will be send at
-a specific time (likely in future).
-
---Jesper
 
