@@ -1,162 +1,160 @@
-Return-Path: <bpf+bounces-16358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B94DE8006CC
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 10:25:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9DF58006EC
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 10:28:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 734462818E4
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 09:25:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87627B21300
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 09:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C466B1D52A;
-	Fri,  1 Dec 2023 09:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32821D543;
+	Fri,  1 Dec 2023 09:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GrTrde4t"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="FL6M1IVx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFC210FA
-	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 01:25:08 -0800 (PST)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so8566a12.0
-        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 01:25:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701422707; x=1702027507; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FpuHkvYIHjfaj/7wkuIRYM/5cAduhtZwoG9XtdjUr3E=;
-        b=GrTrde4t+GxAfF6RwGhlLm0/BMkAelaRyOC8F/SREsnaNffTb6QMeGZrQ8YO7pHpib
-         WDZcizWsjJG2uvzEtn5WV41bYM3WedM9LLv6Zc/xEx7PrcGUD8zH49Jhd1r4TX324Uzk
-         hnwYWsNXJU9BqQxKlXREOs0dkmeARcNqAqHkDgy5Fylb7mM/tQTQO6M6OkO0y2Jq6XXU
-         ihGlgeKjDiphCAZdDlem8MyuiU/eyl0np5JDMTxmdRq3oSr1EhF3b6XUX5vF30YgLyuI
-         kflobAQ1Tj6yVv3Sg+JsP8D43cyCJ4s9t1ThDvCClVkQ92viiNDRxBBuRlO5Jj+cO12D
-         jvHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701422707; x=1702027507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FpuHkvYIHjfaj/7wkuIRYM/5cAduhtZwoG9XtdjUr3E=;
-        b=VzNr8rIHeKZ7vl2Aevre5jHBGElhL/1TF1tvxtUCK1ylXDDnSZAtnZyGNPJaXtbMSM
-         Zy6cxTgJN/qjT3trQru/iscWRXqmnp6fSjpwqHbpYGzvTW3cD1aK6U7egT+O9sWJztzr
-         Tl4WuNG6nfovYyM5Wz3+qyofcJQjx7caNuVeUI3NhFcbfXR/5cBR+vEXvkKd4rkhTElI
-         wpyuMWFPNQ3T1z1dsi/wn0tLPT3I8fteN7wtD88yVb98yPoHxPikdbfoiNwtemT1HabD
-         1OYIhyolOlT77GoWmtH02EkI53cHvmksFfFyS8WGSEu8Yc45hnM2DCvJWflWRZfpMKHR
-         OEWw==
-X-Gm-Message-State: AOJu0YyfvEeXA7Oir8v2O44o6EQu/+D5xXrB+8wLGY2Xof/Xf924FH/g
-	omsGVfLBlBU2p2b0qtoMnklsCzjOi8jfBp9UizB+rg==
-X-Google-Smtp-Source: AGHT+IFg3+uQ3wCnfg5unmv42aiK8scgSNkfK+GcyeojlSOSE5Gca1udFD5HqBbv+gD7abSS4R4lI5Pb/m23JlUxqAs=
-X-Received: by 2002:a50:bb48:0:b0:54b:bf08:a95f with SMTP id
- y66-20020a50bb48000000b0054bbf08a95fmr118186ede.6.1701422706962; Fri, 01 Dec
- 2023 01:25:06 -0800 (PST)
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159B1326C;
+	Fri,  1 Dec 2023 01:28:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:Cc:From:To:References:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=hosGaHgn7Nx0kkivYehFzLNTC29CHl4XH0Uoe9fwnng=; b=FL6M1IVxSt+g4Puetdxv1NaFZx
+	pe6pQPnod/z2u3rH143po9eU88faq1Xb3iCuC1d4QWQY5Mttry189tq5ODsfZEVKjeRfVNF1Tz6y6
+	zTxmVfkuGxW+H0/N823ZY5aJYPlEVTpsuZrdPQMMdf/+zc+e9N52/T5hCWbbt6gb1B3pEpPz9X1HG
+	66pdhz+MB0YBuhquXdok0gb9eRkmZpGfTwzZoKpKj9c943/8SCS/AWb0fSQFFwlodB1tJ+66GMHuQ
+	RY3utoYYVmuzqQacdmUtgWXu/Twe/c38j1L6D1cwtgWSvf7L9mE4vK39nBHtNBLob3tqIIlRZSZ4o
+	Ks/OKRBg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1r8zoZ-000Cj4-T8; Fri, 01 Dec 2023 10:28:03 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1r8zoZ-000Hv4-HK; Fri, 01 Dec 2023 10:28:03 +0100
+Subject: FOSDEM 2024: Kernel Devroom CfP
+References: <20231130200641.GL636165@kernel.org>
+To: netdev@vger.kernel.org
+From: Daniel Borkmann <daniel@iogearbox.net>
+Cc: bpf@vger.kernel.org, xdp-newbies@vger.kernel.org, brauner@kernel.org,
+ rppt@kernel.org, stgraber@ubuntu.com
+X-Forwarded-Message-Id: <20231130200641.GL636165@kernel.org>
+Message-ID: <3c3f4b40-0fdc-86ae-c88e-29c1a39a6759@iogearbox.net>
+Date: Fri, 1 Dec 2023 10:28:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231201032316.183845-1-john.fastabend@gmail.com> <20231201032316.183845-2-john.fastabend@gmail.com>
-In-Reply-To: <20231201032316.183845-2-john.fastabend@gmail.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 1 Dec 2023 10:24:53 +0100
-Message-ID: <CANn89iJahyHqkMsUMPoz0xPCKE9miy0AC-P_cBYKGnLWEWX3zw@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: syzkaller found null ptr deref in unix_bpf
- proto add
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: kuniyu@amazon.com, jakub@cloudflare.com, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231130200641.GL636165@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27109/Thu Nov 30 09:44:04 2023)
 
-On Fri, Dec 1, 2023 at 4:23=E2=80=AFAM John Fastabend <john.fastabend@gmail=
-.com> wrote:
->
-> I added logic to track the sock pair for stream_unix sockets so that we
-> ensure lifetime of the sock matches the time a sockmap could reference
-> the sock (see fixes tag). I forgot though that we allow af_unix unconnect=
-ed
-> sockets into a sock{map|hash} map.
->
-> This is problematic because previous fixed expected sk_pair() to exist
-> and did not NULL check it. Because unconnected sockets have a NULL
-> sk_pair this resulted in the NULL ptr dereference found by syzkaller.
->
-> BUG: KASAN: null-ptr-deref in unix_stream_bpf_update_proto+0x72/0x430 net=
-/unix/unix_bpf.c:171
-> Write of size 4 at addr 0000000000000080 by task syz-executor360/5073
-> Call Trace:
->  <TASK>
->  ...
->  sock_hold include/net/sock.h:777 [inline]
->  unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
->  sock_map_init_proto net/core/sock_map.c:190 [inline]
->  sock_map_link+0xb87/0x1100 net/core/sock_map.c:294
->  sock_map_update_common+0xf6/0x870 net/core/sock_map.c:483
->  sock_map_update_elem_sys+0x5b6/0x640 net/core/sock_map.c:577
->  bpf_map_update_value+0x3af/0x820 kernel/bpf/syscall.c:167
->
-> We considered just checking for the null ptr and skipping taking a ref
-> on the NULL peer sock. But, if the socket is then connected() after
-> being added to the sockmap we can cause the original issue again. So
-> instead this patch blocks adding af_unix sockets that are not in the
-> ESTABLISHED state.
+Hi all,
 
+We are pleased to announce the Call for Participation (CfP) for the FOSDEM
+2024 Kernel Devroom.
 
-This (and the name chosen for sk_is_unix() helper) is a bit confusing ?
+FOSDEM 2024 will be over the weekend of the 3rd and 4th of February in
+Brussels, Belgium.  FOSDEM is a free and non-commercial event organised by
+the community for the community.  The goal is to provide free and open
+source software developers and communities a place to meet to:
 
-When you say "af_unix sockets" you seem to imply STREAM sockets.
+- get in touch with other developers and projects;
+- be informed about the latest developments in the free software world;
+- be informed about the latest developments in the open source world;
+- attend interesting talks and presentations on various topics by project
+   leaders and committers;
+- to promote the development and benefits of free software and open source
+   solutions.
+- Participation and attendance is totally free, though the organisers
+   gratefully accept donations and sponsorship.
 
+## Format
 
->
-> Reported-by: Eric Dumazet <edumazet@google.com>
-> Reported-by: syzbot+e8030702aefd3444fb9e@syzkaller.appspotmail.com
-> Fixes: 8866730aed51 ("bpf, sockmap: af_unix stream sockets need to hold r=
-ef for pair sock")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
-> ---
->  include/net/sock.h  | 5 +++++
->  net/core/sock_map.c | 2 ++
->  2 files changed, 7 insertions(+)
->
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 1d6931caf0c3..ea1155d68f0b 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -2799,6 +2799,11 @@ static inline bool sk_is_tcp(const struct sock *sk=
-)
->         return sk->sk_type =3D=3D SOCK_STREAM && sk->sk_protocol =3D=3D I=
-PPROTO_TCP;
->  }
->
-> +static inline bool sk_is_unix(const struct sock *sk)
+The Kernel Devroom will be running an all day, exact day and time will be
+clarified in the near future..
 
-Maybe sk_is_stream_unix() ?
+We’re looking for talk or demo proposals in one of the following 4 sizes:
 
-> +{
-> +       return sk->sk_family =3D=3D AF_UNIX && sk->sk_type =3D=3D SOCK_ST=
-REAM;
-> +}
-> +
->  /**
->   * sk_eat_skb - Release a skb if it is no longer needed
->   * @sk: socket to eat this skb from
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 4292c2ed1828..448aea066942 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -536,6 +536,8 @@ static bool sock_map_sk_state_allowed(const struct so=
-ck *sk)
->  {
->         if (sk_is_tcp(sk))
->                 return (1 << sk->sk_state) & (TCPF_ESTABLISHED | TCPF_LIS=
-TEN);
-> +       if (sk_is_unix(sk))
-> +               return (1 << sk->sk_state) & TCPF_ESTABLISHED;
->         return true;
->  }
->
-> --
-> 2.33.0
->
+- 10 minutes (e.g., a short demo)
+- 20 minutes (e.g., a project update)
+- 30 minutes (e.g., introduction to a new technology or a deep dive on a
+   complex feature)
+- 40 minutes (e.g., a deep dive on a complex feature)
+
+In all cases, please allow for at least 5 minutes of questions (10min
+preferred for the 30min slots).  In general, shorter content will be more
+likely to get approved as we want to cover a wide range of topics.
+
+## Proposals
+
+Proposals should be sent through the FOSDEM scheduling system at:
+https://pretalx.fosdem.org/fosdem-2024/cfp
+
+Please select the "Kernel" as the __track__ and ensure you include the
+following information when submitting a proposal:
+
+| Section |  Field       |  Notes                                                                             |
+| ------- | ------------ | ---------------------------------------------------------------------------------- |
+| Person  |  Name(s)     |  Your first, last and public names.                                                |
+| Person  |  Abstract    |  A short bio.                                                                      |
+| Person  |  Photo       |  Please provide a photo.                                                           |
+| Event   |  Event Title |  *This is the title of your talk* - please be descriptive to encourage attendance. |
+| Event   |  Abstract    |  Short abstract of one or two paragraphs.                                          |
+| Event   |  Duration    |  Please indicate the length of your talk; 10 min, 20 min, 30, or 40 min            |
+
+__The CfP deadline is Saturday, 10 December 2024.__
+
+## Topics
+
+The Kernel Devroom aims to cover a wide range of different topics so don't
+be shy. The following list should just serve as an inspiration:
+
+- Filesystems and Storage
+- io_uring
+- Tracing
+- eBPF
+- Fuzzing
+- System Boot
+- Security
+- Virtualization
+- Rust in the Linux Kernel
+
+## Code of Conduct
+
+We'd like to remind all speakers and attendees that all of the
+presentations and discussions in our devroom are held under the guidelines
+set in the [FOSDEM Code of
+Conduct](https://fosdem.org/2024/practical/conduct/) and we expect
+attendees, speakers, and volunteers to follow the CoC at all times.
+
+If you submit a proposal and it is accepted, you will be required to
+confirm that you accept the FOSDEM CoC. If you have any questions about the
+CoC or wish to have one of the devroom organizers review your presentation
+slides or any other content for CoC compliance, please email us and we will
+do our best to assist you.
+
+An up to date version of the CfP can always be found at
+https://uapi-group.org/docs/conferences/2024-02-04_fosdem-kernel-devroom/
+
+Thanks!
+Christian Brauner
+Daniel Borkmann
+Mike Rapoport
+Stéphane Graber
+
 
