@@ -1,159 +1,162 @@
-Return-Path: <bpf+bounces-16357-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D31280069C
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 10:10:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B94DE8006CC
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 10:25:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86CA0B2118C
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 09:10:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 734462818E4
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 09:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6351CAB1;
-	Fri,  1 Dec 2023 09:10:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C466B1D52A;
+	Fri,  1 Dec 2023 09:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zt5QYCLD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GrTrde4t"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24AC1728
-	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 01:10:24 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54c4433e98bso982425a12.3
-        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 01:10:24 -0800 (PST)
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFFC210FA
+	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 01:25:08 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so8566a12.0
+        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 01:25:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701421823; x=1702026623; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CVcOt623OVDpn2HnhSfZ6lST8HFzK1ptQ5GuXvnKug4=;
-        b=Zt5QYCLDN8CW/v0IDs5kbujiJJPJWD5NS5vqwyxru5DVjbtiyarbctnmWDpvwKNt86
-         FdyQ5xYcWCtL6lcTQvPmZfaIKSBEV3K4e6v1uwBHnWJr8pQzgb5OgsagCSk4THWf+OlF
-         bofqWJlelgh/ejgh3TqebSEpubwAXWkgH+HLm1HAs2tomRf3FopI8h7CExexlPdB60tn
-         qmXVkuSv01OEfFbRoglWa718DX9S1QcPYQT0GawrXM4V/WkOvk0AwoRkk5OdDdsp67f+
-         VGGNnHUoqTjlYYYYivTtofnki0NrDjkboFnHxiJGLjpZ8ZV9S2v71yp1K+4BAEjtq5zJ
-         7KKg==
+        d=google.com; s=20230601; t=1701422707; x=1702027507; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FpuHkvYIHjfaj/7wkuIRYM/5cAduhtZwoG9XtdjUr3E=;
+        b=GrTrde4t+GxAfF6RwGhlLm0/BMkAelaRyOC8F/SREsnaNffTb6QMeGZrQ8YO7pHpib
+         WDZcizWsjJG2uvzEtn5WV41bYM3WedM9LLv6Zc/xEx7PrcGUD8zH49Jhd1r4TX324Uzk
+         hnwYWsNXJU9BqQxKlXREOs0dkmeARcNqAqHkDgy5Fylb7mM/tQTQO6M6OkO0y2Jq6XXU
+         ihGlgeKjDiphCAZdDlem8MyuiU/eyl0np5JDMTxmdRq3oSr1EhF3b6XUX5vF30YgLyuI
+         kflobAQ1Tj6yVv3Sg+JsP8D43cyCJ4s9t1ThDvCClVkQ92viiNDRxBBuRlO5Jj+cO12D
+         jvHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701421823; x=1702026623;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVcOt623OVDpn2HnhSfZ6lST8HFzK1ptQ5GuXvnKug4=;
-        b=gcQMWRDhyDY2KhIzmNkwZ0Nx5XTVPuusWNB+/I7t4V7lPBNSg6jdJsdt+iTRbNrC6f
-         dbfMR9eiR2U3W+hEyH3NETCOxwcuGqc+jSlE9Vl+i6+yaFIbBYffUVYZJZl5NbPRV4tS
-         wR26TSyl6BXLCl/cqp0NBRbTfniFE3xs11xCxS22Nn7ncZwINJLaF3NPQbxw9RRLBizY
-         tcb8qNdvJ4iURSJKJQx08K7/c+Wyt6Akn0X+Y1mVZ2T4TLHYqDtwd1ZI1vfoKexV7Ww6
-         1fklnaM2tjmX9rtNFvwf1D8DouREqzrv3GqytmE1YOfUwxCKaX7jh49DKzpWc3XqyjZS
-         Vo6g==
-X-Gm-Message-State: AOJu0Ywy9vgD8Ul+UyHgbBX1EXFun64dcfcA0Q1rHx+0yyXkpbVBmFVm
-	RLPLoA7pWkilL280wunZTqg=
-X-Google-Smtp-Source: AGHT+IFYLRSEyZORSpzbWghEusUM49zJITV7erSMv02anexIoZLFDqsYhtwouYmhlYw7amoHLedtuA==
-X-Received: by 2002:a17:907:76fc:b0:a19:a1ba:bad9 with SMTP id kg28-20020a17090776fc00b00a19a1babad9mr347770ejc.127.1701421822591;
-        Fri, 01 Dec 2023 01:10:22 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id q14-20020a1709064c8e00b009fc42f37970sm1671143eju.171.2023.12.01.01.10.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 01:10:20 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 1 Dec 2023 10:10:18 +0100
-To: Stanislav Fomichev <sdf@google.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>,
-	Xu Kuohai <xukuohai@huawei.com>, Will Deacon <will@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Pu Lehui <pulehui@huawei.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>, Lee Jones <lee@kernel.org>
-Subject: Re: [PATCHv2 bpf 1/2] bpf: Add checkip argument to bpf_arch_text_poke
-Message-ID: <ZWmi-mMYqH_0n4av@krava>
-References: <20231128092850.1545199-1-jolsa@kernel.org>
- <20231128092850.1545199-2-jolsa@kernel.org>
- <ZWZafkt97qhgHynh@google.com>
- <ZWdFIUSXcZnCWax-@krava>
- <ZWdQywF4QnrnTc5P@krava>
- <CAKH8qBuz4XGfg+w7oitF9p_kW-+ycgwEoUTF8vw36u1-A_qnLg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1701422707; x=1702027507;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FpuHkvYIHjfaj/7wkuIRYM/5cAduhtZwoG9XtdjUr3E=;
+        b=VzNr8rIHeKZ7vl2Aevre5jHBGElhL/1TF1tvxtUCK1ylXDDnSZAtnZyGNPJaXtbMSM
+         Zy6cxTgJN/qjT3trQru/iscWRXqmnp6fSjpwqHbpYGzvTW3cD1aK6U7egT+O9sWJztzr
+         Tl4WuNG6nfovYyM5Wz3+qyofcJQjx7caNuVeUI3NhFcbfXR/5cBR+vEXvkKd4rkhTElI
+         wpyuMWFPNQ3T1z1dsi/wn0tLPT3I8fteN7wtD88yVb98yPoHxPikdbfoiNwtemT1HabD
+         1OYIhyolOlT77GoWmtH02EkI53cHvmksFfFyS8WGSEu8Yc45hnM2DCvJWflWRZfpMKHR
+         OEWw==
+X-Gm-Message-State: AOJu0YyfvEeXA7Oir8v2O44o6EQu/+D5xXrB+8wLGY2Xof/Xf924FH/g
+	omsGVfLBlBU2p2b0qtoMnklsCzjOi8jfBp9UizB+rg==
+X-Google-Smtp-Source: AGHT+IFg3+uQ3wCnfg5unmv42aiK8scgSNkfK+GcyeojlSOSE5Gca1udFD5HqBbv+gD7abSS4R4lI5Pb/m23JlUxqAs=
+X-Received: by 2002:a50:bb48:0:b0:54b:bf08:a95f with SMTP id
+ y66-20020a50bb48000000b0054bbf08a95fmr118186ede.6.1701422706962; Fri, 01 Dec
+ 2023 01:25:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKH8qBuz4XGfg+w7oitF9p_kW-+ycgwEoUTF8vw36u1-A_qnLg@mail.gmail.com>
+References: <20231201032316.183845-1-john.fastabend@gmail.com> <20231201032316.183845-2-john.fastabend@gmail.com>
+In-Reply-To: <20231201032316.183845-2-john.fastabend@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Fri, 1 Dec 2023 10:24:53 +0100
+Message-ID: <CANn89iJahyHqkMsUMPoz0xPCKE9miy0AC-P_cBYKGnLWEWX3zw@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: syzkaller found null ptr deref in unix_bpf
+ proto add
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: kuniyu@amazon.com, jakub@cloudflare.com, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 29, 2023 at 10:10:22AM -0800, Stanislav Fomichev wrote:
-> On Wed, Nov 29, 2023 at 6:55 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Wed, Nov 29, 2023 at 03:05:21PM +0100, Jiri Olsa wrote:
-> > > On Tue, Nov 28, 2023 at 01:24:14PM -0800, Stanislav Fomichev wrote:
-> > > > On 11/28, Jiri Olsa wrote:
-> > > > > We need to be able to skip ip address check for caller in following
-> > > > > changes. Adding checkip argument to allow that.
-> > > > >
-> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > ---
-> > > > >  arch/arm64/net/bpf_jit_comp.c   |  3 ++-
-> > > > >  arch/riscv/net/bpf_jit_comp64.c |  5 +++--
-> > > > >  arch/s390/net/bpf_jit_comp.c    |  3 ++-
-> > > > >  arch/x86/net/bpf_jit_comp.c     | 24 +++++++++++++-----------
-> > > > >  include/linux/bpf.h             |  2 +-
-> > > > >  kernel/bpf/arraymap.c           |  8 ++++----
-> > > > >  kernel/bpf/core.c               |  2 +-
-> > > > >  kernel/bpf/trampoline.c         | 12 ++++++------
-> > > > >  8 files changed, 32 insertions(+), 27 deletions(-)
-> > > > >
-> > > > > diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-> > > > > index 7d4af64e3982..b52549d18730 100644
-> > > > > --- a/arch/arm64/net/bpf_jit_comp.c
-> > > > > +++ b/arch/arm64/net/bpf_jit_comp.c
-> > > > > @@ -2167,7 +2167,8 @@ static int gen_branch_or_nop(enum aarch64_insn_branch_type type, void *ip,
-> > > > >   * locations during the patching process, making the patching process easier.
-> > > > >   */
-> > > > >  int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
-> > > > > -                void *old_addr, void *new_addr)
-> > > > > +                void *old_addr, void *new_addr,
-> > > >
-> > > > [..]
-> > > >
-> > > > > +                bool checkip __maybe_unused)
-> > > >
-> > > > Any idea why only riscv and x86 do this check?
-> > >
-> > > so arm does the check as well, but needs the data from the lookup
-> > > to patch things properly.. but IIUC it does not suffer the same
-> > > issue because it does not implement direct tail calls [1] which
-> > > is used only on x86
-> > >
-> > > >
-> > > > Asking because maybe it makes sense to move this check into some
-> > > > new generic bpf_text_poke and call it in the places where you currently
-> > > > call checkip=true (and keep using bpf_arch_text_poke for checkip=false
-> > > > case).
-> > > >
-> > > > (don't see any issues with the current approach btw, just interested..)
-> > >
-> > > I tried to add new function for that, but it did not look good for arm
-> > > because it needs to do the lookup anyway
-> > >
-> > > hm maybe we could use new arch function that would cover the single
-> > > tail call 'text poke' update in prog_array_map_poke_run and would be
-> > > implemented only on x86 ... using __bpf_arch_text_poke directly
-> >
-> > looks like below change would be enough, I'll test and send new version
-> 
-> sg. I'm still not 100% sure why it's x86 only, I was (probably
-> wrongly?) assuming that at least arm64 jit is mostly on par with x86
-> :-)
+On Fri, Dec 1, 2023 at 4:23=E2=80=AFAM John Fastabend <john.fastabend@gmail=
+.com> wrote:
+>
+> I added logic to track the sock pair for stream_unix sockets so that we
+> ensure lifetime of the sock matches the time a sockmap could reference
+> the sock (see fixes tag). I forgot though that we allow af_unix unconnect=
+ed
+> sockets into a sock{map|hash} map.
+>
+> This is problematic because previous fixed expected sk_pair() to exist
+> and did not NULL check it. Because unconnected sockets have a NULL
+> sk_pair this resulted in the NULL ptr dereference found by syzkaller.
+>
+> BUG: KASAN: null-ptr-deref in unix_stream_bpf_update_proto+0x72/0x430 net=
+/unix/unix_bpf.c:171
+> Write of size 4 at addr 0000000000000080 by task syz-executor360/5073
+> Call Trace:
+>  <TASK>
+>  ...
+>  sock_hold include/net/sock.h:777 [inline]
+>  unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+>  sock_map_init_proto net/core/sock_map.c:190 [inline]
+>  sock_map_link+0xb87/0x1100 net/core/sock_map.c:294
+>  sock_map_update_common+0xf6/0x870 net/core/sock_map.c:483
+>  sock_map_update_elem_sys+0x5b6/0x640 net/core/sock_map.c:577
+>  bpf_map_update_value+0x3af/0x820 kernel/bpf/syscall.c:167
+>
+> We considered just checking for the null ptr and skipping taking a ref
+> on the NULL peer sock. But, if the socket is then connected() after
+> being added to the sockmap we can cause the original issue again. So
+> instead this patch blocks adding af_unix sockets that are not in the
+> ESTABLISHED state.
 
-AFAICS the direct tail calls are on x86, CI also seems to be ok with
-that change.. I'll send it as formal patch
 
-jirka
+This (and the name chosen for sk_is_unix() helper) is a bit confusing ?
+
+When you say "af_unix sockets" you seem to imply STREAM sockets.
+
+
+>
+> Reported-by: Eric Dumazet <edumazet@google.com>
+> Reported-by: syzbot+e8030702aefd3444fb9e@syzkaller.appspotmail.com
+> Fixes: 8866730aed51 ("bpf, sockmap: af_unix stream sockets need to hold r=
+ef for pair sock")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  include/net/sock.h  | 5 +++++
+>  net/core/sock_map.c | 2 ++
+>  2 files changed, 7 insertions(+)
+>
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index 1d6931caf0c3..ea1155d68f0b 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -2799,6 +2799,11 @@ static inline bool sk_is_tcp(const struct sock *sk=
+)
+>         return sk->sk_type =3D=3D SOCK_STREAM && sk->sk_protocol =3D=3D I=
+PPROTO_TCP;
+>  }
+>
+> +static inline bool sk_is_unix(const struct sock *sk)
+
+Maybe sk_is_stream_unix() ?
+
+> +{
+> +       return sk->sk_family =3D=3D AF_UNIX && sk->sk_type =3D=3D SOCK_ST=
+REAM;
+> +}
+> +
+>  /**
+>   * sk_eat_skb - Release a skb if it is no longer needed
+>   * @sk: socket to eat this skb from
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index 4292c2ed1828..448aea066942 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -536,6 +536,8 @@ static bool sock_map_sk_state_allowed(const struct so=
+ck *sk)
+>  {
+>         if (sk_is_tcp(sk))
+>                 return (1 << sk->sk_state) & (TCPF_ESTABLISHED | TCPF_LIS=
+TEN);
+> +       if (sk_is_unix(sk))
+> +               return (1 << sk->sk_state) & TCPF_ESTABLISHED;
+>         return true;
+>  }
+>
+> --
+> 2.33.0
+>
 
