@@ -1,124 +1,104 @@
-Return-Path: <bpf+bounces-16350-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16351-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B58800391
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 07:11:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FC228003A4
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 07:20:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4D669B211E0
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 06:11:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C0642815B0
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 06:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEF5EC13F;
-	Fri,  1 Dec 2023 06:11:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8666BC155;
+	Fri,  1 Dec 2023 06:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j3IpWRwc"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Bu0gX/kZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93220D7D;
-	Thu, 30 Nov 2023 22:10:59 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6d7eca548ccso106415a34.3;
-        Thu, 30 Nov 2023 22:10:59 -0800 (PST)
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B61171B
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 22:20:42 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50bc8e37b5fso2524620e87.0
+        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 22:20:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701411059; x=1702015859; darn=vger.kernel.org;
-        h=user-agent:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EcGW2snvrekVzF3EzV8UgTK2J7ldfnV3vnpkmjMkLSI=;
-        b=j3IpWRwc8oT0M15H09FL4blCP6vakj8aa2HAKixTsvGUj3DwOXe4cLShYoTfhEuQ10
-         ymaIlA36RC8DSEAtGT/Yd2x6OPxAfr8th1Dzfq6wmb2UkXW4s2vKOR//Qz9h1Po8e4vz
-         kLJJe4RuIKmzLNWCCn95Cof8cZvt8QE4pIlwYLDr/HoFZ25jzum7fTefSNG3p3dKVJ0L
-         roBdBxHT3Ef1ZCUYMtWzOE+6yXTLbdARGeN161Ik8SoG/pwSe0p0NYcA0cugtkpPt748
-         D5bc832ki2cgKd2s+hKdV0s/2xXtkXE68tVp7DD6g5jlKuFMLd+3OqBCmxJ4HArhoeEd
-         QE5w==
+        d=cloudflare.com; s=google09082023; t=1701411641; x=1702016441; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lr1SxrxtjnBwIXeraWPTW6/ftY9gYyhFBASILs735gM=;
+        b=Bu0gX/kZUotT/KrYDuNZ3NzsN37pF0BHAOzjoWpopSbRfvPDIcRFVgyOdm/otM4Wei
+         iG55L/Na5euAxJ7oyL9iqcmiHveSU0mYkIQYUhT8I2J9D+tltAAlVfiqmvGd4n/OVejm
+         UntIlFRJXEaLjOldaO8ULaPUwvvr4ojFsevHQFZa8ZiLSejp2DfhPrRMoFXqM/YeG0mz
+         zwke6JmK8chAY0e7i9dMNe2Nm9+iIcsyQHf7SqEk5lAB2wcUslqvztOLiMXbzHCl5DQp
+         YoRZbvShS431w+olIGoZEEHpUI2cgQB6NgIU4nGrNOX/622OmsuF0pY4Cn9fg3itUtyV
+         YJew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701411059; x=1702015859;
-        h=user-agent:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EcGW2snvrekVzF3EzV8UgTK2J7ldfnV3vnpkmjMkLSI=;
-        b=mFwkocqehMn2lBf0IAyZcdofrTDIbVDPi7MeqWI0OzPUjMLIvOqam7mJwN8gVOCeoc
-         ENSFttcDEW1i3ZgAtrBvBz06b/5p8SIr6P3iWgzja/v60IBwN8wFVY1Q6kcKYnlCYv7o
-         pJq9ge+1FWNJsmd6JeHn3BfF1uPuEuXsLrcDmSB2qb/2EaxAw18UBFhWSJ7X3rWjzlxx
-         HNFhQOkTEOEKLeF5pXwswzjvqtEBkj+BtKhnyphD/0oUZ18FGt5cZA+5DI5L41C37Hfs
-         kbeSYWjQHb9IcfTvq37L/4X9sgeaIy4osv+KaFJdOar0qqDr4J0w+4t+33psaCURIJ6W
-         PViA==
-X-Gm-Message-State: AOJu0YxQ1qSYK1sMUWjeaMCGerO0RWlaNvVQMGKgITPDMuwCuXtIggac
-	jf1bGv2b4Q3zDJKxxLHvRG9lUtfRWXFtJQ==
-X-Google-Smtp-Source: AGHT+IF7eEa0FQ5QJc/9nVcOdakEOUnApQFTiz7lKHACn1kw2hkwvtk+iF8pHtDhShT6d3v5Uchbug==
-X-Received: by 2002:a05:6870:2189:b0:1fa:1719:dce2 with SMTP id l9-20020a056870218900b001fa1719dce2mr27978230oae.28.1701411058743;
-        Thu, 30 Nov 2023 22:10:58 -0800 (PST)
-Received: from libra05 ([143.248.188.128])
-        by smtp.gmail.com with ESMTPSA id i31-20020a63221f000000b005bd2b3a03eesm2259837pgi.6.2023.11.30.22.10.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 30 Nov 2023 22:10:58 -0800 (PST)
-Date: Fri, 1 Dec 2023 15:10:52 +0900
-From: Yewon Choi <woni9911@gmail.com>
-To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: threeearcat@gmail.com
-Subject: [PATCH bpf] xsk: skip polling event check for unbound socket
-Message-ID: <20231201061048.GA1510@libra05>
+        d=1e100.net; s=20230601; t=1701411641; x=1702016441;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lr1SxrxtjnBwIXeraWPTW6/ftY9gYyhFBASILs735gM=;
+        b=BBddS3fFLgQottXl//bBfm6e9bw3GtFFHKwF2t9wZeRwQHu8yHBb7FAGfcjC8ToZZf
+         zzphZ8mIGBF2OCwJ41NiLL0YALHiN4w7Xgip0uvbOC/jUEQbHHx4cPcy20OcglF5MGsB
+         IedIbetvYcQAJp5FHEL4lJd6n89nb1K/4cj0Sa0HDwfl2r6q+kIQqG9ZOaClmUnShIJf
+         mi3E7FX6wIufGXfShG9aZkj6F6pNl/Uwi0zH628PolTgJHJlGmtyFDAR7/bc5kQjmKvr
+         EnlFeIYxtO/iIw+3YKV95kdPNx4sym0tWTGpZ6L0co5xsML6UpjZPMwSmp3t8Ri5FLfh
+         bcZg==
+X-Gm-Message-State: AOJu0Yzqklw4AkaLe9o8EIx7LJAOqOJ2+KQZpo0G6NTIDUsGiBvagl+t
+	UktfTqLLi/eXi/CF9/jlG0YXSAEQWJM84NK1xH0BFw==
+X-Google-Smtp-Source: AGHT+IEuumCPkABaLV/MxgbmMcrswJVGbF+ByC+rsYSy+g2bl3UvowPLpycWs4tprIt/k5f+BCcYB+9a8tnOQdzATiY=
+X-Received: by 2002:a05:6512:2205:b0:50b:d764:76e7 with SMTP id
+ h5-20020a056512220500b0050bd76476e7mr503276lfu.118.1701411641008; Thu, 30 Nov
+ 2023 22:20:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <92a355bd-7105-4a17-9543-ba2d8ae36a37@kernel.org>
+ <21d05784-3cd7-4050-b66f-bad3eab73f4e@kernel.org> <7f48dc04-080d-f7e1-5e01-598a1ace2d37@iogearbox.net>
+ <87fs0qj61x.fsf@toke.dk> <0b0c6538-92a5-3041-bc48-d7286f1b873b@gmail.com>
+ <87plzsi5wj.fsf@toke.dk> <1ff5c528-79a8-fbb7-8083-668ca5086ecf@iogearbox.net>
+ <871qc72vmh.fsf@toke.dk> <8677db3e-5662-7ebe-5af0-e5a3ca60587f@iogearbox.net> <e3402045-a36f-461f-8eab-bbc51735492d@kernel.org>
+In-Reply-To: <e3402045-a36f-461f-8eab-bbc51735492d@kernel.org>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Fri, 1 Dec 2023 00:20:30 -0600
+Message-ID: <CAO3-PbrQ+LoPYZUN2kpvMHmwW-Opa3pX=g11gdNy1oaXPG6GAg@mail.gmail.com>
+Subject: Re: Does skb_metadata_differs really need to stop GRO aggregation?
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Edward Cree <ecree.xilinx@gmail.com>, Stanislav Fomichev <sdf@google.com>, Netdev <netdev@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	kernel-team <kernel-team@cloudflare.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Sitnicki <jakub@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In xsk_poll(), checking available events and setting mask bits should
-be executed only when a socket has been bound. Setting mask bits for
-unbound socket is meaningless.
-Currently, it checks events even when xsk_check_common() failed.
-To prevent this, we move goto location (skip_tx) after that checking.
+On Thu, Nov 30, 2023 at 2:35=E2=80=AFPM Jesper Dangaard Brouer <hawk@kernel=
+.org> wrote:
+>
+> We are exploring more options than only XDP metadata area to store
+> information.  I have suggested that once an SKB have a socket
+> associated, then we can switch into using BPF local socket storage
+> tricks. (The lifetime of XDP metadata is not 100% clear as e.g.
+> pskb_expand_head clears it via skb_metadata_clear).
+> All ideas are welcome, e.g. I'm also looking at ability to store
+> auxiliary/metadata data associated with a dst_entry. And SKB->mark is
+> already used for other use-cases and isn't big enough. (and then there
+> is fun crossing a netns boundry).
+>
+sk local storage might not work for the cases if packets are purely
+forwarded or end up with a tun/tap device. Can we make XDP metadata
+life time clear then? It would also be really interesting if we can
+sendmsg with metadata, too. We often have a hard time distinguishing
+if a kernel event like packet drop/retransmission correlates to a
+reported customer problem. It's hard because when the event happens,
+there isn't customer specific information in the context to correlate,
+usually only multiplexed sockets and the packet triggering such an
+event. Allowing carrying some extra information on the packet would
+definitely improve this a lot with BPF tracing.
 
-Fixes: 1596dae2f17e ("xsk: check IFF_UP earlier in Tx path")
-Signed-off-by: Yewon Choi <woni9911@gmail.com>
----
- net/xdp/xsk.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index ae9f8cb611f6..1e5a65326d1d 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -947,7 +947,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 
- 	rcu_read_lock();
- 	if (xsk_check_common(xs))
--		goto skip_tx;
-+		goto out;
- 
- 	pool = xs->pool;
- 
-@@ -959,12 +959,12 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
- 			xsk_generic_xmit(sk);
- 	}
- 
--skip_tx:
- 	if (xs->rx && !xskq_prod_is_empty(xs->rx))
- 		mask |= EPOLLIN | EPOLLRDNORM;
- 	if (xs->tx && xsk_tx_writeable(xs))
- 		mask |= EPOLLOUT | EPOLLWRNORM;
- 
-+out:
- 	rcu_read_unlock();
- 	return mask;
- }
--- 
-2.37.3
-
+Yan
 
