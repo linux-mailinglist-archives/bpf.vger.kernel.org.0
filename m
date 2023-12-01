@@ -1,149 +1,159 @@
-Return-Path: <bpf+bounces-16356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16357-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B78D3800614
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 09:43:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D31280069C
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 10:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61A811F20F65
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 08:43:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86CA0B2118C
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 09:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BAB81C2A0;
-	Fri,  1 Dec 2023 08:42:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6351CAB1;
+	Fri,  1 Dec 2023 09:10:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="kHYsiKrj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zt5QYCLD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD8110D7
-	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 00:42:49 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-28659348677so301312a91.0
-        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 00:42:49 -0800 (PST)
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B24AC1728
+	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 01:10:24 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-54c4433e98bso982425a12.3
+        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 01:10:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701420169; x=1702024969; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+BektOburQXG+cnVes1gG9CvIvVklrxBOP0251luLyc=;
-        b=kHYsiKrj19n2T9Kt0FmcQ0QcDbtiHorBeZoHw5NhUJoKIz09o3vkNMQ2QNq9U/323u
-         QdyJ8WGL9kY+CTx4572elOksuM/z5ekEeqeAVdRFdmWbxAnlumlBmJXsdmpoPUGOdJhR
-         Yxef/EEZy8gKa1WBikMrAC3cvQbbgOlTjs9M5XkyQr0TflQW0vvoxhEDIsQVvBSIZ94G
-         4gY/T7aW0bM1KnobZeNuckOYqc68QLS84MGmrEgPowJWd2kF3wyLolNyKh0123zp+Ov0
-         IjZfY3jl9oTPTnLVxWHiTupaNUJSq3nYsc4vGfZiFxvGNUSsZPbhLC7rvtE7OdHekS/8
-         4Wmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701420169; x=1702024969;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+        d=gmail.com; s=20230601; t=1701421823; x=1702026623; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=+BektOburQXG+cnVes1gG9CvIvVklrxBOP0251luLyc=;
-        b=tgk2CH12UO+QS6DF7jVw68d8qUXl5qhB3BzknzYtuuQ44w3E1KApU7rrUru26N6mal
-         QX41pVLFsouus8fa5WYkbL+ZYCGAiMcCnc7Szs4PMM4+np+MvzKNgZgESfXxJgRuKGk+
-         BwDzGxbB4eX7FzCdOLNoDcing6gsq/vVPj39KZkOV1gklPZV9VdTxv1YVZIcm8dPhfCB
-         M4bCEMauSkLXML26oslSZpkzWJ2EjUcoGCNjlQwruAuV4DbAsUtOq02YbMKwcvsSTLj8
-         JMIyHhJn6a2spS2Z4aVU+3SWqv1nrieT10BqffkrS+KcwvWmfVwN0jAsZujsSzfOxJT3
-         A6nA==
-X-Gm-Message-State: AOJu0YycO2cry3qu0pt7zo/3V4naRet9tOQAH3xR1sbrJ4gw6JGBrfbI
-	E8+BDjdfPvVgnxrRR16aFlQ/BQ==
-X-Google-Smtp-Source: AGHT+IHQlZQSaiA1mjh+Q6JoSIYJ8AxSKOD+/HgFMegaxFy19UtbZ/j6lBZcz5IClhqCixQds2+CYQ==
-X-Received: by 2002:a17:90b:3a90:b0:285:8cb6:6153 with SMTP id om16-20020a17090b3a9000b002858cb66153mr33062567pjb.17.1701420168679;
-        Fri, 01 Dec 2023 00:42:48 -0800 (PST)
-Received: from [10.84.154.115] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id o10-20020a170902d4ca00b001cfba9dac6esm2770341plg.115.2023.12.01.00.42.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Dec 2023 00:42:48 -0800 (PST)
-Message-ID: <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
-Date: Fri, 1 Dec 2023 16:42:42 +0800
+        bh=CVcOt623OVDpn2HnhSfZ6lST8HFzK1ptQ5GuXvnKug4=;
+        b=Zt5QYCLDN8CW/v0IDs5kbujiJJPJWD5NS5vqwyxru5DVjbtiyarbctnmWDpvwKNt86
+         FdyQ5xYcWCtL6lcTQvPmZfaIKSBEV3K4e6v1uwBHnWJr8pQzgb5OgsagCSk4THWf+OlF
+         bofqWJlelgh/ejgh3TqebSEpubwAXWkgH+HLm1HAs2tomRf3FopI8h7CExexlPdB60tn
+         qmXVkuSv01OEfFbRoglWa718DX9S1QcPYQT0GawrXM4V/WkOvk0AwoRkk5OdDdsp67f+
+         VGGNnHUoqTjlYYYYivTtofnki0NrDjkboFnHxiJGLjpZ8ZV9S2v71yp1K+4BAEjtq5zJ
+         7KKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701421823; x=1702026623;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CVcOt623OVDpn2HnhSfZ6lST8HFzK1ptQ5GuXvnKug4=;
+        b=gcQMWRDhyDY2KhIzmNkwZ0Nx5XTVPuusWNB+/I7t4V7lPBNSg6jdJsdt+iTRbNrC6f
+         dbfMR9eiR2U3W+hEyH3NETCOxwcuGqc+jSlE9Vl+i6+yaFIbBYffUVYZJZl5NbPRV4tS
+         wR26TSyl6BXLCl/cqp0NBRbTfniFE3xs11xCxS22Nn7ncZwINJLaF3NPQbxw9RRLBizY
+         tcb8qNdvJ4iURSJKJQx08K7/c+Wyt6Akn0X+Y1mVZ2T4TLHYqDtwd1ZI1vfoKexV7Ww6
+         1fklnaM2tjmX9rtNFvwf1D8DouREqzrv3GqytmE1YOfUwxCKaX7jh49DKzpWc3XqyjZS
+         Vo6g==
+X-Gm-Message-State: AOJu0Ywy9vgD8Ul+UyHgbBX1EXFun64dcfcA0Q1rHx+0yyXkpbVBmFVm
+	RLPLoA7pWkilL280wunZTqg=
+X-Google-Smtp-Source: AGHT+IFYLRSEyZORSpzbWghEusUM49zJITV7erSMv02anexIoZLFDqsYhtwouYmhlYw7amoHLedtuA==
+X-Received: by 2002:a17:907:76fc:b0:a19:a1ba:bad9 with SMTP id kg28-20020a17090776fc00b00a19a1babad9mr347770ejc.127.1701421822591;
+        Fri, 01 Dec 2023 01:10:22 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id q14-20020a1709064c8e00b009fc42f37970sm1671143eju.171.2023.12.01.01.10.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Dec 2023 01:10:20 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 1 Dec 2023 10:10:18 +0100
+To: Stanislav Fomichev <sdf@google.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>, Hao Luo <haoluo@google.com>,
+	Xu Kuohai <xukuohai@huawei.com>, Will Deacon <will@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Pu Lehui <pulehui@huawei.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>, Lee Jones <lee@kernel.org>
+Subject: Re: [PATCHv2 bpf 1/2] bpf: Add checkip argument to bpf_arch_text_poke
+Message-ID: <ZWmi-mMYqH_0n4av@krava>
+References: <20231128092850.1545199-1-jolsa@kernel.org>
+ <20231128092850.1545199-2-jolsa@kernel.org>
+ <ZWZafkt97qhgHynh@google.com>
+ <ZWdFIUSXcZnCWax-@krava>
+ <ZWdQywF4QnrnTc5P@krava>
+ <CAKH8qBuz4XGfg+w7oitF9p_kW-+ycgwEoUTF8vw36u1-A_qnLg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
- information to user
-To: Daniel Borkmann <daniel@iogearbox.net>,
- Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
- wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
-References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
- <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
- <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
- <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKH8qBuz4XGfg+w7oitF9p_kW-+ycgwEoUTF8vw36u1-A_qnLg@mail.gmail.com>
 
-在 2023/11/30 18:56, Daniel Borkmann 写道:
-> On 11/30/23 10:24 AM, Feng Zhou wrote:
->> 在 2023/11/30 17:06, Nikolay Aleksandrov 写道:
->>> On 11/30/23 09:58, Feng zhou wrote:
->>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>>
->>>> Add get_strings, get_sset_count, get_ethtool_stats to get peer
->>>> ifindex.
->>>> ethtool -S nk1
->>>> NIC statistics:
->>>>       peer_ifindex: 36
->>>>
->>>> Add get_link, get_link_ksettings to get link stat.
->>>> ethtool nk1
->>>> Settings for nk1:
->>>>     ...
->>>>     Link detected: yes
->>>>
->>>> Add get_ts_info.
->>>> ethtool -T nk1
->>>> Time stamping parameters for nk1:
->>>> ...
->>>>
->>>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>> ---
->>>>   drivers/net/netkit.c | 53 
->>>> ++++++++++++++++++++++++++++++++++++++++++++
->>>>   1 file changed, 53 insertions(+)
->>>>
->>>
->>> Hi,
->>> I don't see any point in sending peer_ifindex through ethtool, even
->>> worse through ethtool stats. That is definitely the wrong place for it.
->>> You can already retrieve that through netlink. About the speed/duplex
->>> this one makes more sense, but this is the wrong way to do it.
->>> See how we did it for virtio_net (you are free to set speed/duplex
->>> to anything to please bonding for example). Although I doubt anyone 
->>> will use netkit with bonding, so even that is questionable. :)
->>>
->>> Nacked-by: Nikolay Aleksandrov <razor@blackwall.org>
->>
->> We use netkit to replace veth to improve performance, veth can be used 
->> ethtool -S veth to get peer_ifindex, so this part is added, as long as 
->> it is to keep the netkit part and veth unified, to ensure the same 
->> usage habits, and to replace it without perception.
+On Wed, Nov 29, 2023 at 10:10:22AM -0800, Stanislav Fomichev wrote:
+> On Wed, Nov 29, 2023 at 6:55 AM Jiri Olsa <olsajiri@gmail.com> wrote:
+> >
+> > On Wed, Nov 29, 2023 at 03:05:21PM +0100, Jiri Olsa wrote:
+> > > On Tue, Nov 28, 2023 at 01:24:14PM -0800, Stanislav Fomichev wrote:
+> > > > On 11/28, Jiri Olsa wrote:
+> > > > > We need to be able to skip ip address check for caller in following
+> > > > > changes. Adding checkip argument to allow that.
+> > > > >
+> > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > > > > ---
+> > > > >  arch/arm64/net/bpf_jit_comp.c   |  3 ++-
+> > > > >  arch/riscv/net/bpf_jit_comp64.c |  5 +++--
+> > > > >  arch/s390/net/bpf_jit_comp.c    |  3 ++-
+> > > > >  arch/x86/net/bpf_jit_comp.c     | 24 +++++++++++++-----------
+> > > > >  include/linux/bpf.h             |  2 +-
+> > > > >  kernel/bpf/arraymap.c           |  8 ++++----
+> > > > >  kernel/bpf/core.c               |  2 +-
+> > > > >  kernel/bpf/trampoline.c         | 12 ++++++------
+> > > > >  8 files changed, 32 insertions(+), 27 deletions(-)
+> > > > >
+> > > > > diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> > > > > index 7d4af64e3982..b52549d18730 100644
+> > > > > --- a/arch/arm64/net/bpf_jit_comp.c
+> > > > > +++ b/arch/arm64/net/bpf_jit_comp.c
+> > > > > @@ -2167,7 +2167,8 @@ static int gen_branch_or_nop(enum aarch64_insn_branch_type type, void *ip,
+> > > > >   * locations during the patching process, making the patching process easier.
+> > > > >   */
+> > > > >  int bpf_arch_text_poke(void *ip, enum bpf_text_poke_type poke_type,
+> > > > > -                void *old_addr, void *new_addr)
+> > > > > +                void *old_addr, void *new_addr,
+> > > >
+> > > > [..]
+> > > >
+> > > > > +                bool checkip __maybe_unused)
+> > > >
+> > > > Any idea why only riscv and x86 do this check?
+> > >
+> > > so arm does the check as well, but needs the data from the lookup
+> > > to patch things properly.. but IIUC it does not suffer the same
+> > > issue because it does not implement direct tail calls [1] which
+> > > is used only on x86
+> > >
+> > > >
+> > > > Asking because maybe it makes sense to move this check into some
+> > > > new generic bpf_text_poke and call it in the places where you currently
+> > > > call checkip=true (and keep using bpf_arch_text_poke for checkip=false
+> > > > case).
+> > > >
+> > > > (don't see any issues with the current approach btw, just interested..)
+> > >
+> > > I tried to add new function for that, but it did not look good for arm
+> > > because it needs to do the lookup anyway
+> > >
+> > > hm maybe we could use new arch function that would cover the single
+> > > tail call 'text poke' update in prog_array_map_poke_run and would be
+> > > implemented only on x86 ... using __bpf_arch_text_poke directly
+> >
+> > looks like below change would be enough, I'll test and send new version
 > 
-> Could you elaborate some more on the use case why you need to retrieve it
-> via ethtool, what alternatives were tried and don't work?
-> 
-> Please also elaborate on the case for netkit_get_link_ksettings() and which
-> concrete problem you are trying to address with this extension?
-> 
-> The commit message only explains what is done but does not go into the 
-> detail
-> of _why_ you need it.
-> 
-> Thanks,
-> Daniel
+> sg. I'm still not 100% sure why it's x86 only, I was (probably
+> wrongly?) assuming that at least arm64 jit is mostly on par with x86
+> :-)
 
-In general, this information can be obtained through ip commands or 
-netlink, and netkit_get_link_ksettings really not necessary. The reason 
-why ethtool supports this is that when we use veth, our business 
-colleagues are used to using ethtool to obtain peer_ifindex, and then 
-replace netkit, found that it could not be used, resulting in their 
-script failure, so they asked us for a request.
+AFAICS the direct tail calls are on x86, CI also seems to be ok with
+that change.. I'll send it as formal patch
 
-
+jirka
 
