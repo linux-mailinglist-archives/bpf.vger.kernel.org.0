@@ -1,145 +1,159 @@
-Return-Path: <bpf+bounces-16456-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16457-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 577C680141A
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 21:12:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3A91801448
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 21:24:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 896BB1C20B34
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 20:12:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322401C209FE
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 20:24:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F20756B79;
-	Fri,  1 Dec 2023 20:12:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2790157866;
+	Fri,  1 Dec 2023 20:23:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LWynjeNB"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="k+GjMhwb";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YC5ec4jY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68F042715
-	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 12:11:50 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c9ccf36b25so28826711fa.3
-        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 12:11:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701461508; x=1702066308; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=co/GHwcxUv4oHVzXemq7VO4xd/jbxyrFPmlxL5yCYZw=;
-        b=LWynjeNBsOXCrx9VLtVHdOzkK1LDpWsyidwF6HAbO9AaUt0dYB824FS6ByAoBGUDrM
-         rRgvx9xr7bQ+WK688oY5WaUrja6v3k80YcnMHN4jgfkgMbmfD9tRIdPo9xeCB7qzG0It
-         VsfK7MCB3O1bOGr2y6g5QhMdX+t54jvmsiJB0GJ/ISNtCTVj9vMB1FHjUPPFaz+IvRFJ
-         5peYcWSiBOA0qaJUDkQyqsJ3BoEzH4i1yssPyOtVuCbBn3r7hCTak+jyNhMqsbrSbXPw
-         E/fFSktRyY3nOm+R2JM5ai9mN7dp1Uvu+Ze1aOZlExRKShVXyAaNmYqzdxFTzbVgDESw
-         cLAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701461508; x=1702066308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=co/GHwcxUv4oHVzXemq7VO4xd/jbxyrFPmlxL5yCYZw=;
-        b=C1Vyg+AhBWdpOItYMDV/WpYB1CF+qG2f4w8ksCNTu19NTpUFcJdb5aDJUZiRics9/e
-         k7kFnhsOu7yndktr+qUYtMF6njhJIrNEo9ZogX69cbKx66HnDkEWGsFxdASTpS46e4HN
-         RmJsXsrbxADVRHmdSMS9xz4dBEVYMwAejClyfCaKWhYeWPB60U2uDPNvTBWPL/rh40j9
-         u30Ch6cP6nQ6cTAeIpebZOFHiDnsHVxTmZnedNKlWrT5trt8CMXarYvXs/cClXj1JXoL
-         929Ul79xg1k0wc06FR7t3f87rgmYZICnM80TA9LCYkMbVbhPHdy7WE5Y0c1ZBA9v2Rb4
-         1KxA==
-X-Gm-Message-State: AOJu0YyaVw5KsXynrzNvhO4g8gsiLQ69p9b74BJGzeGRnUPQQmDrpYts
-	YI0ELyZlnRqMrQff04yimGJgRNiP0we6K449uvFxZ9YTmtY=
-X-Google-Smtp-Source: AGHT+IHh7XmhI6tQybgCta5Nai+DC6k5VPxmSLivdbLHck/Hbpc+oUQK49/OEvdRJS4AKOMa1gY5CRPnaYVmh9BUTGU=
-X-Received: by 2002:a2e:9bc8:0:b0:2c9:e540:666e with SMTP id
- w8-20020a2e9bc8000000b002c9e540666emr476294ljj.96.1701461507718; Fri, 01 Dec
- 2023 12:11:47 -0800 (PST)
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43F110C2;
+	Fri,  1 Dec 2023 12:23:52 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailout.nyi.internal (Postfix) with ESMTP id 1E64F5C01AE;
+	Fri,  1 Dec 2023 15:23:52 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Fri, 01 Dec 2023 15:23:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to; s=fm3; t=1701462232; x=1701548632; bh=v+Tu4Bv5Hn
+	sux9nKej021Clejo1i0m7B359jEiXfuUk=; b=k+GjMhwb4lBExMqHzvpS1DDiM9
+	xJpNzAiHkhGEm9hcPI6CkRPr2uD15m8gOTtr9NdHwNWJ2sY8XK8LDUihwz6v0ZXk
+	7396GWvonb1jA1BZYunU93pfw35hvrUAiNCxBc0XfLMalwVm2Q2NGoJdFLQMlVGS
+	UhETxmW/EkQ8gM8GS5pCJu6jEDwIffW5czb5dSVD0I9M783LaygiK1AFmYTmWAiG
+	xUo1y9LFZuONVGTV9Pdf+EWRSzD7tyB+QtpIzhVfyioI/MgUfjF769j0rSl62Amd
+	BRR/0HVWE/MFnRIyNQxLWiTXfEPxJ1FMqoD2QBpNDnOWMGkxc1rFtuH72GZg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm1; t=1701462232; x=1701548632; bh=v+Tu4Bv5Hnsux
+	9nKej021Clejo1i0m7B359jEiXfuUk=; b=YC5ec4jYHVz5viFxUXWS0vb0RUxYg
+	82WHiNgKXbfSwmmryzA2WB8uY5YV0IbhJBhHGMU+jtSOwnskOGE6hG/0cqbCa8zs
+	JSXWlo5cWJZY4zaLJ3i2wlAm0tK+ZlC5ORbOorBdBpJ+6Ak5n7Gqj5rpCPLCfk3Q
+	P5XR3KE8tnXLhQ5lA7mgz1u9YMDkoDzTkS5ReVYEFglkUeV2KdWGSA6uOla5/CH0
+	+LQf6xxrRBnGpNg9fLXeYy2FnV7UFkJVIYZTG7gUjX63m69PD0PHJq/3Z4W6+xBx
+	YBIf1z4tqeBu94l1wk0kvbt/4dhKNVHTWR/nAOUg9F3lByp5p3xEhuH2A==
+X-ME-Sender: <xms:10BqZU-5DD2Jd3lvUmWPBEI3bJBvidiFx1XQvtY1LvPLNNlLUkWhBA>
+    <xme:10BqZcv8sQvMd08J6QouebE7FPpy8n1vryna3ODlnALZ7NEEA2HaVYbPDyYREnj_G
+    79-bRGGLpyPiUqceA>
+X-ME-Received: <xmr:10BqZaBca_B1Ki24sM4eVqlSipvzFstDXAcxmFMnD5XghUdc-Si78M_8FYxa9s72YvoNPrnkJLBAtCcNmldvMS7QVVinROvAFbCxjr6_QeTEhw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudeiledgudefjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculddvfedmnecujfgurhephf
+    fvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
+    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeikeehudegteevuddthf
+    eilefhjefgueeuueffveevheeggfeufeejfeeuudekfeenucffohhmrghinhepihgvthhf
+    rdhorhhgpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:10BqZUecUTuIuTt5Gk6kKmrwLXMse3fbQDzYtiCtuGIV-92H4YFgXw>
+    <xmx:10BqZZMY33McqneU-XDqa-Bz1Gv-qxQyD-qIwDJ87T_xj-HBLtKD9w>
+    <xmx:10BqZekkfGjNtDwbYzf8ugwXFW5IiuuwLhttwJHY-ABk87PyONQaLg>
+    <xmx:2EBqZcpcMkAVoFiHty4ANJSo9ZfI5IiBQZozkxKWmuY6f_tkNfOFNw>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 1 Dec 2023 15:23:50 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	llvm@lists.linux.dev,
+	linux-kselftest@vger.kernel.org,
+	steffen.klassert@secunet.com,
+	antony.antony@secunet.com,
+	alexei.starovoitov@gmail.com,
+	yonghong.song@linux.dev,
+	eddyz87@gmail.com
+Cc: devel@linux-ipsec.org
+Subject: [PATCH ipsec-next v3 0/9] Add bpf_xdp_get_xfrm_state() kfunc
+Date: Fri,  1 Dec 2023 13:23:11 -0700
+Message-ID: <cover.1701462010.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231201183359.1769668-1-andrii@kernel.org>
-In-Reply-To: <20231201183359.1769668-1-andrii@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 1 Dec 2023 12:11:35 -0800
-Message-ID: <CAEf4BzYY4K96+B6wCrxVh7oapWb9Pe=Yt9bc59Bc=tyPuDXUxg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/11] BPF verifier retval logic fixes
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 1, 2023 at 10:34=E2=80=AFAM Andrii Nakryiko <andrii@kernel.org>=
- wrote:
->
-> This patch set fixes BPF verifier logic around validating and enforcing r=
-eturn
-> values for BPF programs that have specific range of expected return value=
-s.
-> Both sync and async callbacks have similar logic and are fixes as well.
-> A few tests are added that would fail without the fixes in this patch set=
-.
->
-> Also, while at it, we update retval checking logic to use smin/smax range
-> instead of tnum, avoiding future potential issues if expected range canno=
-t be
-> represented precisely by tnum (e.g., [0, 2] is not representable by tnum =
-and
-> is treated as [0, 3]).
->
-> There is a little bit of refactoring to unify async callback and program =
-exit
-> logic to avoid duplication of checks as much as possible.
->
-> v3->v4:
->   - add back bpf_func_state rearrangement patch;
->   - simplified patch #4 as suggested (Shung-Hsi);
-> v2->v3:
->   - more carefullly switch from umin/umax to smin/smax;
-> v1->v2:
->   - drop tnum from retval checks (Eduard);
->   - use smin/smax instead of umin/umax (Alexei).
+This patchset adds two kfunc helpers, bpf_xdp_get_xfrm_state() and
+bpf_xdp_xfrm_state_release() that wrap xfrm_state_lookup() and
+xfrm_state_put(). The intent is to support software RSS (via XDP) for
+the ongoing/upcoming ipsec pcpu work [0]. Recent experiments performed
+on (hopefully) reproducible AWS testbeds indicate that single tunnel
+pcpu ipsec can reach line rate on 100G ENA nics.
 
-This patch set must be cursed or something :) CI caught regression for
-no-alu32 test_progs variant in test_bad_ret:
+Note this patchset only tests/shows generic xfrm_state access. The
+"secret sauce" (if you can really even call it that) involves accessing
+a soon-to-be-upstreamed pcpu_num field in xfrm_state. Early example is
+available here [1].
 
-EXPECTED MSG: 'mark_precise: frame0: regs=3Dr0 stack=3D before 22: (b4) w0 =
-=3D 0'
+[0]: https://datatracker.ietf.org/doc/draft-ietf-ipsecme-multi-sa-performance/03/
+[1]: https://github.com/danobi/xdp-tools/blob/e89a1c617aba3b50d990f779357d6ce2863ecb27/xdp-bench/xdp_redirect_cpumap.bpf.c#L385-L406
 
-I'll check, fix, and will try again, maybe v5 will be luckier.
+Changes from v2:
+* Fix/simplify BPF_CORE_WRITE_BITFIELD() algorithm
+* Added verifier tests for bitfield writes
+* Fix state leakage across test_tunnel subtests
 
->
-> Andrii Nakryiko (11):
->   bpf: rearrange bpf_func_state fields to save a bit of memory
->   bpf: provide correct register name for exception callback retval check
->   bpf: enforce precision of R0 on callback return
->   bpf: enforce exact retval range on subprog/callback exit
->   selftests/bpf: add selftest validating callback result is enforced
->   bpf: enforce precise retval range on program exit
->   bpf: unify async callback and program retval checks
->   bpf: enforce precision of R0 on program/async callback return
->   selftests/bpf: validate async callback return value check correctness
->   selftests/bpf: adjust global_func15 test to validate prog exit
->     precision
->   bpf: simplify tnum output if a fully known constant
->
->  include/linux/bpf_verifier.h                  |   9 +-
->  kernel/bpf/log.c                              |  13 ++
->  kernel/bpf/tnum.c                             |   6 -
->  kernel/bpf/verifier.c                         | 120 ++++++++++--------
->  .../selftests/bpf/progs/exceptions_assert.c   |   2 +-
->  .../selftests/bpf/progs/exceptions_fail.c     |   2 +-
->  .../selftests/bpf/progs/test_global_func15.c  |  34 ++++-
->  .../selftests/bpf/progs/timer_failure.c       |  36 ++++--
->  .../selftests/bpf/progs/user_ringbuf_fail.c   |   2 +-
->  .../bpf/progs/verifier_cgroup_inv_retcode.c   |   8 +-
->  .../bpf/progs/verifier_direct_packet_access.c |   2 +-
->  .../selftests/bpf/progs/verifier_int_ptr.c    |   2 +-
->  .../bpf/progs/verifier_netfilter_retcode.c    |   2 +-
->  .../selftests/bpf/progs/verifier_stack_ptr.c  |   4 +-
->  .../bpf/progs/verifier_subprog_precision.c    |  50 ++++++++
->  15 files changed, 212 insertions(+), 80 deletions(-)
->
-> --
-> 2.34.1
->
+Changes from v1:
+* Move xfrm tunnel tests to test_progs
+* Fix writing to opts->error when opts is invalid
+* Use __bpf_kfunc_start_defs()
+* Remove unused vxlanhdr definition
+* Add and use BPF_CORE_WRITE_BITFIELD() macro
+* Make series bisect clean
+
+Changes from RFCv2:
+* Rebased to ipsec-next
+* Fix netns leak
+
+Changes from RFCv1:
+* Add Antony's commit tags
+* Add KF_ACQUIRE and KF_RELEASE semantics
+
+Daniel Xu (9):
+  bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+  bpf: xfrm: Add bpf_xdp_xfrm_state_release() kfunc
+  libbpf: Add BPF_CORE_WRITE_BITFIELD() macro
+  bpf: selftests: test_loader: Support __btf_path() annotation
+  libbpf: selftests: Add verifier tests for CO-RE bitfield writes
+  bpf: selftests: test_tunnel: Setup fresh topology for each subtest
+  bpf: selftests: test_tunnel: Use vmlinux.h declarations
+  bpf: selftests: Move xfrm tunnel test to test_progs
+  bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
+
+ include/net/xfrm.h                            |   9 +
+ net/xfrm/Makefile                             |   1 +
+ net/xfrm/xfrm_policy.c                        |   2 +
+ net/xfrm/xfrm_state_bpf.c                     | 128 ++++++++++++++
+ tools/lib/bpf/bpf_core_read.h                 |  34 ++++
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 162 +++++++++++++++++-
+ .../selftests/bpf/prog_tests/verifier.c       |   2 +
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |   1 +
+ .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+ .../selftests/bpf/progs/test_tunnel_kern.c    | 138 ++++++++-------
+ .../bpf/progs/verifier_bitfield_write.c       | 100 +++++++++++
+ tools/testing/selftests/bpf/test_loader.c     |   7 +
+ tools/testing/selftests/bpf/test_tunnel.sh    |  92 ----------
+ 13 files changed, 522 insertions(+), 155 deletions(-)
+ create mode 100644 net/xfrm/xfrm_state_bpf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_bitfield_write.c
+
+-- 
+2.42.1
+
 
