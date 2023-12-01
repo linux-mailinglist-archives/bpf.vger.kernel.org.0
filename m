@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-16429-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16432-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B3BA8012D9
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 19:34:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 106C78012DB
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 19:34:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 358022821D4
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 18:34:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0801282270
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 18:34:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447994F8BC;
-	Fri,  1 Dec 2023 18:34:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6C951035;
+	Fri,  1 Dec 2023 18:34:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492A5133
-	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 10:34:18 -0800 (PST)
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1IBZTL027008
-	for <bpf@vger.kernel.org>; Fri, 1 Dec 2023 10:34:17 -0800
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB644131
+	for <bpf@vger.kernel.org>; Fri,  1 Dec 2023 10:34:26 -0800 (PST)
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B1I9VcB017146
+	for <bpf@vger.kernel.org>; Fri, 1 Dec 2023 10:34:26 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uq7jsvgt9-13
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uqbjwkgwh-7
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 10:34:17 -0800
+	for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 10:34:26 -0800
 Received: from twshared15991.38.frc1.facebook.com (2620:10d:c085:208::f) by
  mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Fri, 1 Dec 2023 10:34:09 -0800
+ 15.1.2507.34; Fri, 1 Dec 2023 10:34:19 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 846443C6DB4A8; Fri,  1 Dec 2023 10:34:08 -0800 (PST)
+	id B97FC3C6DB4AF; Fri,  1 Dec 2023 10:34:10 -0800 (PST)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
@@ -36,9 +36,9 @@ CC: <andrii@kernel.org>, <kernel-team@meta.com>,
         Eduard Zingerman
 	<eddyz87@gmail.com>,
         Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: [PATCH v4 bpf-next 04/11] bpf: enforce exact retval range on subprog/callback exit
-Date: Fri, 1 Dec 2023 10:33:52 -0800
-Message-ID: <20231201183359.1769668-5-andrii@kernel.org>
+Subject: [PATCH v4 bpf-next 05/11] selftests/bpf: add selftest validating callback result is enforced
+Date: Fri, 1 Dec 2023 10:33:53 -0800
+Message-ID: <20231201183359.1769668-6-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231201183359.1769668-1-andrii@kernel.org>
 References: <20231201183359.1769668-1-andrii@kernel.org>
@@ -51,182 +51,92 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 9WbSCSR3jUTHTWeqIZZ3JkajMGjyhwcX
-X-Proofpoint-ORIG-GUID: 9WbSCSR3jUTHTWeqIZZ3JkajMGjyhwcX
+X-Proofpoint-GUID: M2mDDKDN6mcyUMJOv06BHZq-2SQ3s699
+X-Proofpoint-ORIG-GUID: M2mDDKDN6mcyUMJOv06BHZq-2SQ3s699
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-01_16,2023-11-30_01,2023-05-22_02
 
-Instead of relying on potentially imprecise tnum representation of
-expected return value range for callbacks and subprogs, validate that
-smin/smax range satisfy exact expected range of return values.
+BPF verifier expects callback subprogs to return values from specified
+range (typically [0, 1]). This requires that r0 at exit is both precise
+(because we rely on specific value range) and is marked as read
+(otherwise state comparison will ignore such register as unimportant).
 
-E.g., if callback would need to return [0, 2] range, tnum can't
-represent this precisely and instead will allow [0, 3] range. By
-checking smin/smax range, we can make sure that subprog/callback indeed
-returns only valid [0, 2] range.
+Add a simple test that validates that all these conditions are enforced.
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- include/linux/bpf_verifier.h |  7 ++++++-
- kernel/bpf/verifier.c        | 33 ++++++++++++++++++++++-----------
- 2 files changed, 28 insertions(+), 12 deletions(-)
+ .../bpf/progs/verifier_subprog_precision.c    | 50 +++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 0c0e1bccad45..3378cc753061 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -275,6 +275,11 @@ struct bpf_reference_state {
- 	int callback_ref;
- };
-=20
-+struct bpf_retval_range {
-+	s32 minval;
-+	s32 maxval;
-+};
-+
- /* state of the program:
-  * type of all registers and stack info
-  */
-@@ -297,7 +302,7 @@ struct bpf_func_state {
- 	 * void foo(void) { bpf_timer_set_callback(,foo); }
- 	 */
- 	u32 async_entry_cnt;
--	struct tnum callback_ret_range;
-+	struct bpf_retval_range callback_ret_range;
- 	bool in_callback_fn;
- 	bool in_async_callback_fn;
- 	bool in_exception_callback_fn;
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 849fbf47b5f3..f3d9d7de68da 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2305,6 +2305,11 @@ static void init_reg_state(struct bpf_verifier_env=
- *env,
- 	regs[BPF_REG_FP].frameno =3D state->frameno;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_subprog_precision=
+.c b/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
+index b5efcaeaa1ae..d41d2a8bb97e 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
++++ b/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
+@@ -117,6 +117,56 @@ __naked int global_subprog_result_precise(void)
+ 	);
  }
 =20
-+static struct bpf_retval_range retval_range(s32 minval, s32 maxval)
++__naked __noinline __used
++static unsigned long loop_callback_bad()
 +{
-+	return (struct bpf_retval_range){ minval, maxval };
++	/* bpf_loop() callback that can return values outside of [0, 1] range *=
+/
++	asm volatile (
++		"call %[bpf_get_prandom_u32];"
++		"if r0 s> 1000 goto 1f;"
++		"r0 =3D 0;"
++	"1:"
++		"goto +0;" /* checkpoint */
++		/* bpf_loop() expects [0, 1] values, so branch above skipping
++		 * r0 =3D 0; should lead to a failure, but if exit instruction
++		 * doesn't enforce r0's precision, this callback will be
++		 * successfully verified
++		 */
++		"exit;"
++		:
++		: __imm(bpf_get_prandom_u32)
++		: __clobber_common
++	);
 +}
 +
- #define BPF_MAIN_FUNC (-1)
- static void init_func_state(struct bpf_verifier_env *env,
- 			    struct bpf_func_state *state,
-@@ -2313,7 +2318,7 @@ static void init_func_state(struct bpf_verifier_env=
- *env,
- 	state->callsite =3D callsite;
- 	state->frameno =3D frameno;
- 	state->subprogno =3D subprogno;
--	state->callback_ret_range =3D tnum_range(0, 0);
-+	state->callback_ret_range =3D retval_range(0, 0);
- 	init_reg_state(env, state);
- 	mark_verifier_state_scratched(env);
- }
-@@ -9396,7 +9401,7 @@ static int set_map_elem_callback_state(struct bpf_v=
-erifier_env *env,
- 		return err;
-=20
- 	callee->in_callback_fn =3D true;
--	callee->callback_ret_range =3D tnum_range(0, 1);
-+	callee->callback_ret_range =3D retval_range(0, 1);
- 	return 0;
- }
-=20
-@@ -9418,7 +9423,7 @@ static int set_loop_callback_state(struct bpf_verif=
-ier_env *env,
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
-=20
- 	callee->in_callback_fn =3D true;
--	callee->callback_ret_range =3D tnum_range(0, 1);
-+	callee->callback_ret_range =3D retval_range(0, 1);
- 	return 0;
- }
-=20
-@@ -9448,7 +9453,7 @@ static int set_timer_callback_state(struct bpf_veri=
-fier_env *env,
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_4]);
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
- 	callee->in_async_callback_fn =3D true;
--	callee->callback_ret_range =3D tnum_range(0, 1);
-+	callee->callback_ret_range =3D retval_range(0, 1);
- 	return 0;
- }
-=20
-@@ -9476,7 +9481,7 @@ static int set_find_vma_callback_state(struct bpf_v=
-erifier_env *env,
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_4]);
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
- 	callee->in_callback_fn =3D true;
--	callee->callback_ret_range =3D tnum_range(0, 1);
-+	callee->callback_ret_range =3D retval_range(0, 1);
- 	return 0;
- }
-=20
-@@ -9499,7 +9504,7 @@ static int set_user_ringbuf_callback_state(struct b=
-pf_verifier_env *env,
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
-=20
- 	callee->in_callback_fn =3D true;
--	callee->callback_ret_range =3D tnum_range(0, 1);
-+	callee->callback_ret_range =3D retval_range(0, 1);
- 	return 0;
- }
-=20
-@@ -9531,7 +9536,7 @@ static int set_rbtree_add_callback_state(struct bpf=
-_verifier_env *env,
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_4]);
- 	__mark_reg_not_init(env, &callee->regs[BPF_REG_5]);
- 	callee->in_callback_fn =3D true;
--	callee->callback_ret_range =3D tnum_range(0, 1);
-+	callee->callback_ret_range =3D retval_range(0, 1);
- 	return 0;
- }
-=20
-@@ -9560,6 +9565,11 @@ static bool in_rbtree_lock_required_cb(struct bpf_=
-verifier_env *env)
- 	return is_rbtree_lock_required_kfunc(kfunc_btf_id);
- }
-=20
-+static bool retval_range_within(struct bpf_retval_range range, const str=
-uct bpf_reg_state *reg)
++SEC("?raw_tp")
++__failure __log_level(2)
++__flag(BPF_F_TEST_STATE_FREQ)
++/* check that fallthrough code path marks r0 as precise */
++__msg("mark_precise: frame1: regs=3Dr0 stack=3D before 11: (b7) r0 =3D 0=
+")
++/* check that we have branch code path doing its own validation */
++__msg("from 10 to 12: frame1: R0=3Dscalar(smin=3Dumin=3D1001")
++/* check that branch code path marks r0 as precise, before failing */
++__msg("mark_precise: frame1: regs=3Dr0 stack=3D before 9: (85) call bpf_=
+get_prandom_u32#7")
++__msg("At callback return the register R0 has value (0x0; 0x7fffffffffff=
+ffff) should have been in (0x0; 0x1)")
++__naked int callback_precise_return_fail(void)
 +{
-+	return range.minval <=3D reg->smin_value && reg->smax_value <=3D range.=
-maxval;
++	asm volatile (
++		"r1 =3D 1;"			/* nr_loops */
++		"r2 =3D %[loop_callback_bad];"	/* callback_fn */
++		"r3 =3D 0;"			/* callback_ctx */
++		"r4 =3D 0;"			/* flags */
++		"call %[bpf_loop];"
++
++		"r0 =3D 0;"
++		"exit;"
++		:
++		: __imm_ptr(loop_callback_bad),
++		  __imm(bpf_loop)
++		: __clobber_common
++	);
 +}
 +
- static int prepare_func_exit(struct bpf_verifier_env *env, int *insn_idx=
-)
- {
- 	struct bpf_verifier_state *state =3D env->cur_state, *prev_st;
-@@ -9583,9 +9593,6 @@ static int prepare_func_exit(struct bpf_verifier_en=
-v *env, int *insn_idx)
-=20
- 	caller =3D state->frame[state->curframe - 1];
- 	if (callee->in_callback_fn) {
--		/* enforce R0 return value range [0, 1]. */
--		struct tnum range =3D callee->callback_ret_range;
--
- 		if (r0->type !=3D SCALAR_VALUE) {
- 			verbose(env, "R0 not a scalar value\n");
- 			return -EACCES;
-@@ -9597,7 +9604,11 @@ static int prepare_func_exit(struct bpf_verifier_e=
-nv *env, int *insn_idx)
- 		if (err)
- 			return err;
-=20
--		if (!tnum_in(range, r0->var_off)) {
-+		/* enforce R0 return value range */
-+		if (!retval_range_within(callee->callback_ret_range, r0)) {
-+			struct tnum range =3D tnum_range(callee->callback_ret_range.minval,
-+						       callee->callback_ret_range.maxval);
-+
- 			verbose_invalid_scalar(env, r0, &range, "callback return", "R0");
- 			return -EINVAL;
- 		}
+ SEC("?raw_tp")
+ __success __log_level(2)
+ /* First simulated path does not include callback body,
 --=20
 2.34.1
 
