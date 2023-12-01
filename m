@@ -1,112 +1,93 @@
-Return-Path: <bpf+bounces-16342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 371EE8001BD
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 03:47:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7260480020A
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 04:23:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C0071C20EA6
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 02:47:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3470D2814A6
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 03:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1D417F7;
-	Fri,  1 Dec 2023 02:46:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A712566;
+	Fri,  1 Dec 2023 03:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hu1+ftry"
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C5910F0
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 18:46:54 -0800 (PST)
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 5D4E42AC33EF0; Thu, 30 Nov 2023 18:46:40 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf v3] bpf: Fix a verifier bug due to incorrect branch offset comparison with cpu=v4
-Date: Thu, 30 Nov 2023 18:46:40 -0800
-Message-Id: <20231201024640.3417057-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.34.1
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7598C12A;
+	Thu, 30 Nov 2023 19:23:23 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6d858670630so67245a34.0;
+        Thu, 30 Nov 2023 19:23:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701401003; x=1702005803; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WHfeAVzS+R3NVvCA9s4RnI0ZiifThPmQ+ZB1tziOX5w=;
+        b=Hu1+ftryIqYiiAQxFVjyppzsbRMMFg8w3ooGdm43+hz3PA6bgSl5gCXq3Ba8E4SsZV
+         Uy4zVYJe2PYXloL4FJURE4WeR3ClsBriLtQ0e3/XFoFFgRBMFzivFbC0lAnZDF0BP8mE
+         s3woJ+LY5cMq9kvKkgI0fGtlZ6xdbPMItCywVyY909iQP39fObstdOPzS36aD2OzA5MI
+         c8UwB8y1JWVzWzFdskCEjRmtCwocHkeTshGnAEu0tHlKmJ5eIyEDWREVCyixMrvUFaEP
+         HpVTghHd+XIBCvGswevifaD7g+aTs1dz4YetDF7NuTOVgo4qdowbyI+g2a06pPx5zRFL
+         ExXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701401003; x=1702005803;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WHfeAVzS+R3NVvCA9s4RnI0ZiifThPmQ+ZB1tziOX5w=;
+        b=mRPomSzeSj2EvI/ePj8Pykf704UXymE9Yab6Dwj1TEN7c77f8nkxiDThZqSfz5j5Da
+         gzLTgYJ4nUpUtS7NqAPp/8HrUum4Z1yY6nfNgM3/CtPKBnEYCIKZA+0cA3RvBa+XxA2E
+         It6vzehjLhZ1tr5fJmiLK+rmU2XHKar4OnP+eah4DxeqKnz2xQxDCtDuX7k0qZuu31IM
+         koxPyqLDEyorKiVm8fTjcPnGR+kNQV8iE1maYlOVm6PFtbGuT+2fWC9gNF2XZAF6UH6K
+         qUKZnFYRODRC30Yr87kh2ovlcrFUg5SrqxigadNbBU/ZfgsAHg52biCsVm1y45ym+OV9
+         HOXw==
+X-Gm-Message-State: AOJu0Yywclh5L2/3ehRVTb5SdzskLJAFLwgYPqdllLGs1PhzCpz6tEs0
+	uUqaN2hpguRwZY9JMuxiIFI=
+X-Google-Smtp-Source: AGHT+IFdxfHYbnvqG2xaoeBGJDItucKuZylymFlji0d94U7L69LnZVd8fPUounKa6OREtbaIxcnYTw==
+X-Received: by 2002:a05:6359:230b:b0:170:8f0:c6c2 with SMTP id lk11-20020a056359230b00b0017008f0c6c2mr878001rwb.21.1701401002656;
+        Thu, 30 Nov 2023 19:23:22 -0800 (PST)
+Received: from john.lan ([2605:59c8:148:ba10:1053:7b0:e3cc:7b48])
+        by smtp.gmail.com with ESMTPSA id a13-20020a65640d000000b005c60cdb08f0sm1768136pgv.0.2023.11.30.19.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 Nov 2023 19:23:22 -0800 (PST)
+From: John Fastabend <john.fastabend@gmail.com>
+To: kuniyu@amazon.com,
+	edumazet@google.com,
+	jakub@cloudflare.com
+Cc: john.fastabend@gmail.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH bpf 0/2] bpf fix for unconnect af_unix socket
+Date: Thu, 30 Nov 2023 19:23:14 -0800
+Message-Id: <20231201032316.183845-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Bpf cpu=3Dv4 support is introduced in [1] and Commit 4cd58e9af8b9
-("bpf: Support new 32bit offset jmp instruction") added support for new
-32bit offset jmp instruction. Unfortunately, in function
-bpf_adj_delta_to_off(), for new branch insn with 32bit offset, the offset
-(plus/minor a small delta) compares to 16-bit offset bound
-[S16_MIN, S16_MAX], which caused the following verification failure:
-  $ ./test_progs-cpuv4 -t verif_scale_pyperf180
-  ...
-  insn 10 cannot be patched due to 16-bit range
-  ...
-  libbpf: failed to load object 'pyperf180.bpf.o'
-  scale_test:FAIL:expect_success unexpected error: -12 (errno 12)
-  #405     verif_scale_pyperf180:FAIL
+Eric reported a syzbot splat from a null ptr deref from recent fix to
+resolve a use-after-free with af-unix stream sockets and BPF sockmap
+usage.
 
-Note that due to recent llvm18 development, the patch [2] (already applie=
-d
-in bpf-next) needs to be applied to bpf tree for testing purpose.
+The issue is I missed is we allow unconnected af_unix STREAM sockets to
+be added to the sockmap. Fix this by blocking unconnected sockets.
 
-The fix is rather simple. For 32bit offset branch insn, the adjusted
-offset compares to [S32_MIN, S32_MAX] and then verification succeeded.
+John Fastabend (2):
+  bpf: syzkaller found null ptr deref in unix_bpf proto add
+  bpf: sockmap, test for unconnected af_unix sock
 
-  [1] https://lore.kernel.org/all/20230728011143.3710005-1-yonghong.song@=
-linux.dev
-  [2] https://lore.kernel.org/bpf/20231110193644.3130906-1-yonghong.song@=
-linux.dev
+ include/net/sock.h                            |  5 +++
+ net/core/sock_map.c                           |  2 ++
+ .../selftests/bpf/prog_tests/sockmap_basic.c  | 34 +++++++++++++++++++
+ 3 files changed, 41 insertions(+)
 
-Fixes: 4cd58e9af8b9 ("bpf: Support new 32bit offset jmp instruction")
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- kernel/bpf/core.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-Changelogs:
-  v2 -> v3:
-    - not doing init for off_min/off_max at decl time and rather do
-      it at 'off' assignment time to make code better.
-  v1 -> v2:
-    - Change off from s32 to s64 to capture overflow case
-
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index cd3afe57ece3..e76762b5ad28 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -371,14 +371,19 @@ static int bpf_adj_delta_to_imm(struct bpf_insn *in=
-sn, u32 pos, s32 end_old,
- static int bpf_adj_delta_to_off(struct bpf_insn *insn, u32 pos, s32 end_=
-old,
- 				s32 end_new, s32 curr, const bool probe_pass)
- {
--	const s32 off_min =3D S16_MIN, off_max =3D S16_MAX;
-+	s64 off_min, off_max;
- 	s32 delta =3D end_new - end_old;
--	s32 off;
-+	s64 off;
-=20
--	if (insn->code =3D=3D (BPF_JMP32 | BPF_JA))
-+	if (insn->code =3D=3D (BPF_JMP32 | BPF_JA)) {
- 		off =3D insn->imm;
--	else
-+		off_min =3D S32_MIN;
-+		off_max =3D S32_MAX;
-+	} else {
- 		off =3D insn->off;
-+		off_min =3D S16_MIN;
-+		off_max =3D S16_MAX;
-+	}
-=20
- 	if (curr < pos && curr + off + 1 >=3D end_old)
- 		off +=3D delta;
---=20
-2.34.1
+-- 
+2.33.0
 
 
