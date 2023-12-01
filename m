@@ -1,83 +1,238 @@
-Return-Path: <bpf+bounces-16339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16340-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13ABA8000E6
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 02:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6088F800101
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 02:30:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D242F2815A6
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 01:20:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15351281619
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 01:30:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD9417D2;
-	Fri,  1 Dec 2023 01:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ryFmnlIn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20BCE17CF;
+	Fri,  1 Dec 2023 01:30:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E6363A;
-	Fri,  1 Dec 2023 01:20:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 17986C433C9;
-	Fri,  1 Dec 2023 01:20:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701393652;
-	bh=nFKftdJBJkkXnWh6TstAte2xl9IU8vEIseHhMgB1U74=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ryFmnlIn6mVhS3zoUaGbq7BXFuuYfznL96QsyMgFE+ETrgIx9IcD1UU6v3dzGL+EL
-	 5YU49yn8UXW84brJs3psNRB7E0PcMVr3KWi3rYLuZq0nkKaU2FbMd5I2MDQYHsYB2c
-	 55Or5KyMIeey5SCxSgcVmG0Rhjhe85QqdRsnh8te0B9+RPioAum2vjWB1+IqVrFiwu
-	 bw/+7PkfIhoGSFTaBV8vP3Joo+D8ajE4ZStcFUDSgDw6qlQD/NVuFgkD7ZiXzMee0n
-	 jbz2YDWJ9gMRGPcqkrwTv2fZ9OjB6nOFtSwBANXmLulyW/JM/BSoXHt0oNFgloM9OD
-	 aKlozyMbzp+IA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F0D37DFAA86;
-	Fri,  1 Dec 2023 01:20:51 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5450D10D1
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 17:30:15 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AUNKtDb023795
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 17:30:15 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uq3kq8sws-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 17:30:14 -0800
+Received: from twshared29647.38.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Thu, 30 Nov 2023 17:30:13 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 377613C644AC4; Thu, 30 Nov 2023 17:30:09 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next] selftests/bpf: validate eliminated global subprog is not freplaceable
+Date: Thu, 30 Nov 2023 17:30:06 -0800
+Message-ID: <20231201013006.910349-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf-next 2023-11-30
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170139365198.11061.17706181086269150529.git-patchwork-notify@kernel.org>
-Date: Fri, 01 Dec 2023 01:20:51 +0000
-References: <20231130145708.32573-1-daniel@iogearbox.net>
-In-Reply-To: <20231130145708.32573-1-daniel@iogearbox.net>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: Tp3THjinpGitGZhnQdYqFf-s3dGwndyL
+X-Proofpoint-GUID: Tp3THjinpGitGZhnQdYqFf-s3dGwndyL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-30_25,2023-11-30_01,2023-05-22_02
 
-Hello:
+Add selftest that establishes dead code-eliminated valid global subprog
+(global_dead) and makes sure that it's not possible to freplace it, as
+it's effectively not there. This test will fail with unexpected success
+before 2afae08c9dcb ("bpf: Validate global subprogs lazily").
 
-This pull request was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ .../bpf/prog_tests/global_func_dead_code.c    | 60 +++++++++++++++++++
+ .../bpf/progs/freplace_dead_global_func.c     | 11 ++++
+ .../bpf/progs/verifier_global_subprogs.c      | 32 ++++++----
+ 3 files changed, 92 insertions(+), 11 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/global_func_de=
+ad_code.c
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_dead_globa=
+l_func.c
 
-On Thu, 30 Nov 2023 15:57:08 +0100 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
-> 
-> The following pull-request contains BPF updates for your *net-next* tree.
-> 
-> We've added 30 non-merge commits during the last 7 day(s) which contain
-> a total of 58 files changed, 1598 insertions(+), 154 deletions(-).
-> 
-> [...]
-
-Here is the summary with links:
-  - pull-request: bpf-next 2023-11-30
-    https://git.kernel.org/netdev/net-next/c/0d47fa5cc91b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/tools/testing/selftests/bpf/prog_tests/global_func_dead_code=
+.c b/tools/testing/selftests/bpf/prog_tests/global_func_dead_code.c
+new file mode 100644
+index 000000000000..2716f6ccfe22
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/global_func_dead_code.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include <test_progs.h>
++#include "verifier_global_subprogs.skel.h"
++#include "freplace_dead_global_func.skel.h"
++
++void test_global_func_dead_code(void)
++{
++	struct verifier_global_subprogs *tgt_skel =3D NULL;
++	struct freplace_dead_global_func *skel =3D NULL;
++	char log_buf[4096];
++	int err, tgt_fd;
++
++	/* first, try to load target with good global subprog */
++	tgt_skel =3D verifier_global_subprogs__open();
++	if (!ASSERT_OK_PTR(tgt_skel, "tgt_skel_good_open"))
++		return;
++
++	bpf_program__set_autoload(tgt_skel->progs.chained_global_func_calls_suc=
+cess, true);
++
++	err =3D verifier_global_subprogs__load(tgt_skel);
++	if (!ASSERT_OK(err, "tgt_skel_good_load"))
++		goto out;
++
++	tgt_fd =3D bpf_program__fd(tgt_skel->progs.chained_global_func_calls_su=
+ccess);
++
++	/* Attach to good non-eliminated subprog */
++	skel =3D freplace_dead_global_func__open();
++	if (!ASSERT_OK_PTR(skel, "skel_good_open"))
++		goto out;
++
++	bpf_program__set_attach_target(skel->progs.freplace_prog, tgt_fd, "glob=
+al_good");
++	ASSERT_OK(err, "attach_target_good");
++=09
++	err =3D freplace_dead_global_func__load(skel);
++	if (!ASSERT_OK(err, "skel_good_load"))
++		goto out;
++
++	freplace_dead_global_func__destroy(skel);
++
++	/* Try attaching to dead code-eliminated subprog */
++	skel =3D freplace_dead_global_func__open();
++	if (!ASSERT_OK_PTR(skel, "skel_dead_open"))
++		goto out;
++
++	bpf_program__set_log_buf(skel->progs.freplace_prog, log_buf, sizeof(log=
+_buf));
++	err =3D bpf_program__set_attach_target(skel->progs.freplace_prog, tgt_f=
+d, "global_dead");
++	ASSERT_OK(err, "attach_target_dead");
++=09
++	err =3D freplace_dead_global_func__load(skel);
++	if (!ASSERT_ERR(err, "skel_dead_load"))
++		goto out;
++
++	ASSERT_HAS_SUBSTR(log_buf, "Subprog global_dead doesn't exist", "dead_s=
+ubprog_missing_msg");
++
++out:
++	verifier_global_subprogs__destroy(tgt_skel);
++	freplace_dead_global_func__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/freplace_dead_global_func.=
+c b/tools/testing/selftests/bpf/progs/freplace_dead_global_func.c
+new file mode 100644
+index 000000000000..808738eac578
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/freplace_dead_global_func.c
+@@ -0,0 +1,11 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++SEC("freplace")
++int freplace_prog(int x)
++{
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c=
+ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+index a0a5efd1caa1..7f9b21a1c5a7 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
++++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+@@ -10,25 +10,31 @@
+=20
+ int arr[1];
+ int unkn_idx;
++const volatile bool call_dead_subprog =3D false;
+=20
+-__noinline long global_bad(void)
++__noinline long global_bad(int x)
+ {
+-	return arr[unkn_idx]; /* BOOM */
++	return arr[unkn_idx] + x; /* BOOM */
+ }
+=20
+-__noinline long global_good(void)
++__noinline long global_good(int x)
+ {
+-	return arr[0];
++	return arr[0] + x;
+ }
+=20
+-__noinline long global_calls_bad(void)
++__noinline long global_calls_bad(int x)
+ {
+-	return global_good() + global_bad() /* does BOOM indirectly */;
++	return global_good(x) + global_bad(x) /* does BOOM indirectly */;
+ }
+=20
+-__noinline long global_calls_good_only(void)
++__noinline long global_calls_good_only(int x)
+ {
+-	return global_good();
++	return global_good(x);
++}
++
++__noinline long global_dead(int x)
++{
++	return x * 2;
+ }
+=20
+ SEC("?raw_tp")
+@@ -41,19 +47,23 @@ __msg("Validating global_good() func")
+ __msg("('global_good') is safe for any args that match its prototype")
+ int chained_global_func_calls_success(void)
+ {
+-	return global_calls_good_only();
++	int sum =3D 0;
++
++	if (call_dead_subprog)
++		sum +=3D global_dead(42);
++	return global_calls_good_only(42) + sum;
+ }
+=20
+ SEC("?raw_tp")
+ __failure __log_level(2)
+ /* main prog validated successfully first */
+-__msg("1: (95) exit")
++__msg("2: (95) exit")
+ /* eventually we validate global_bad() and fail */
+ __msg("Validating global_bad() func")
+ __msg("math between map_value pointer and register") /* BOOM */
+ int chained_global_func_calls_bad(void)
+ {
+-	return global_calls_bad();
++	return global_calls_bad(13);
+ }
+=20
+ /* do out of bounds access forcing verifier to fail verification if this
+--=20
+2.34.1
 
 
