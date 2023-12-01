@@ -1,160 +1,215 @@
-Return-Path: <bpf+bounces-16359-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16360-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9DF58006EC
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 10:28:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1FF80071B
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 10:34:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87627B21300
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 09:28:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6B88DB2116B
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 09:33:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E32821D543;
-	Fri,  1 Dec 2023 09:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533431DA4F;
+	Fri,  1 Dec 2023 09:33:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="FL6M1IVx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MJZPBSuc"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159B1326C;
-	Fri,  1 Dec 2023 01:28:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:Cc:From:To:References:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=hosGaHgn7Nx0kkivYehFzLNTC29CHl4XH0Uoe9fwnng=; b=FL6M1IVxSt+g4Puetdxv1NaFZx
-	pe6pQPnod/z2u3rH143po9eU88faq1Xb3iCuC1d4QWQY5Mttry189tq5ODsfZEVKjeRfVNF1Tz6y6
-	zTxmVfkuGxW+H0/N823ZY5aJYPlEVTpsuZrdPQMMdf/+zc+e9N52/T5hCWbbt6gb1B3pEpPz9X1HG
-	66pdhz+MB0YBuhquXdok0gb9eRkmZpGfTwzZoKpKj9c943/8SCS/AWb0fSQFFwlodB1tJ+66GMHuQ
-	RY3utoYYVmuzqQacdmUtgWXu/Twe/c38j1L6D1cwtgWSvf7L9mE4vK39nBHtNBLob3tqIIlRZSZ4o
-	Ks/OKRBg==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r8zoZ-000Cj4-T8; Fri, 01 Dec 2023 10:28:03 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1r8zoZ-000Hv4-HK; Fri, 01 Dec 2023 10:28:03 +0100
-Subject: FOSDEM 2024: Kernel Devroom CfP
-References: <20231130200641.GL636165@kernel.org>
-To: netdev@vger.kernel.org
-From: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, xdp-newbies@vger.kernel.org, brauner@kernel.org,
- rppt@kernel.org, stgraber@ubuntu.com
-X-Forwarded-Message-Id: <20231130200641.GL636165@kernel.org>
-Message-ID: <3c3f4b40-0fdc-86ae-c88e-29c1a39a6759@iogearbox.net>
-Date: Fri, 1 Dec 2023 10:28:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A58711D6A6;
+	Fri,  1 Dec 2023 09:33:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B551C433CB;
+	Fri,  1 Dec 2023 09:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701423228;
+	bh=anqnBg54UELl83MBkuAmSveambaO/XIBX7loJW294YA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MJZPBSuc23LMF9zSLvAReeULMT18p3PD8WQXxQiTJj1vXEg56cO2Mn844aEnxA/F8
+	 bC6OWUCNmlHGRxNimD/M8QqN70zCVkqG/SkIbXJtWH0ZpGvBqxrImLKQuywm9Ru0at
+	 s3TgPJFZNWuBOtmSKEumwkd2cAbIL1wFdK+WcSI+/2Po+5gftlW0rTss4n4tGBBXO+
+	 sQYa4PpyOeTVClC5MFpn4PnQdb21D3LlhRPtTRlQxHfILoIBYZaGBi4iFW+XNaDEdX
+	 FL0Oq5cfV5384hd8165ZOrmWb9NsxOeYbbuiXDsCTOLVO0L117R93epb8XVzC/6tFw
+	 uQdN/hqtixUFw==
+Date: Fri, 1 Dec 2023 10:33:43 +0100
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Stanislav Fomichev <sdf@google.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, netdev@vger.kernel.org,
+	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, lorenzo.bianconi@redhat.com, bpf@vger.kernel.org,
+	toke@redhat.com, willemdebruijn.kernel@gmail.com,
+	jasowang@redhat.com, kernel-team <kernel-team@cloudflare.com>,
+	Yan Zhai <yan@cloudflare.com>
+Subject: Re: [PATCH v2 net-next 2/2] xdp: add multi-buff support for xdp
+ running in generic mode
+Message-ID: <ZWmod5vq-txlGg5L@lore-desk>
+References: <cover.1701334869.git.lorenzo@kernel.org>
+ <ce8cc5ce6e25d5e455704aa42fbf633be206ce85.1701334869.git.lorenzo@kernel.org>
+ <f41935a3-790b-4d23-870c-a37b757aea99@kernel.org>
+ <ZWhpGWDP6mrM-Y35@lore-desk>
+ <ZWjZKPYCglmjFJUH@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231130200641.GL636165@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27109/Thu Nov 30 09:44:04 2023)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="VsjUZvWKa4NVqNYC"
+Content-Disposition: inline
+In-Reply-To: <ZWjZKPYCglmjFJUH@google.com>
 
-Hi all,
 
-We are pleased to announce the Call for Participation (CfP) for the FOSDEM
-2024 Kernel Devroom.
+--VsjUZvWKa4NVqNYC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-FOSDEM 2024 will be over the weekend of the 3rd and 4th of February in
-Brussels, Belgium.  FOSDEM is a free and non-commercial event organised by
-the community for the community.  The goal is to provide free and open
-source software developers and communities a place to meet to:
+> On 11/30, Lorenzo Bianconi wrote:
+> > >=20
+> > >=20
+> > > On 11/30/23 10:11, Lorenzo Bianconi wrote:
+> > > > Similar to native xdp, do not always linearize the skb in
+> > > > netif_receive_generic_xdp routine but create a non-linear xdp_buff =
+to be
+> > > > processed by the eBPF program. This allow to add  multi-buffer supp=
+ort
+> > > > for xdp running in generic mode.
+> > > >=20
+> > > > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > > > ---
+> > > >   net/core/dev.c | 144 ++++++++++++++++++++++++++++++++++++++++----=
+-----
+> > > >   1 file changed, 119 insertions(+), 25 deletions(-)
+> > > >=20
+> > > > diff --git a/net/core/dev.c b/net/core/dev.c
+> > > > index 4df68d7f04a2..0d08e755bb7f 100644
+> > > > --- a/net/core/dev.c
+> > > > +++ b/net/core/dev.c
+> > > > @@ -4853,6 +4853,12 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff =
+*skb, struct xdp_buff *xdp,
+> > > >   	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
+> > > >   	xdp_prepare_buff(xdp, hard_start, skb_headroom(skb) - mac_len,
+> > > >   			 skb_headlen(skb) + mac_len, true);
+> > > > +	if (skb_is_nonlinear(skb)) {
+> > > > +		skb_shinfo(skb)->xdp_frags_size =3D skb->data_len;
+> > > > +		xdp_buff_set_frags_flag(xdp);
+> > > > +	} else {
+> > > > +		xdp_buff_clear_frags_flag(xdp);
+> > > > +	}
+> > > >   	orig_data_end =3D xdp->data_end;
+> > > >   	orig_data =3D xdp->data;
+> > > > @@ -4882,6 +4888,14 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff =
+*skb, struct xdp_buff *xdp,
+> > > >   		skb->len +=3D off; /* positive on grow, negative on shrink */
+> > > >   	}
+> > > > +	/* XDP frag metadata (e.g. nr_frags) are updated in eBPF helpers
+> > > > +	 * (e.g. bpf_xdp_adjust_tail), we need to update data_len here.
+> > > > +	 */
+> > > > +	if (xdp_buff_has_frags(xdp))
+> > > > +		skb->data_len =3D skb_shinfo(skb)->xdp_frags_size;
+> > > > +	else
+> > > > +		skb->data_len =3D 0;
+> > > > +
+> > > >   	/* check if XDP changed eth hdr such SKB needs update */
+> > > >   	eth =3D (struct ethhdr *)xdp->data;
+> > > >   	if ((orig_eth_type !=3D eth->h_proto) ||
+> > > > @@ -4915,54 +4929,134 @@ u32 bpf_prog_run_generic_xdp(struct sk_buf=
+f *skb, struct xdp_buff *xdp,
+> > > >   	return act;
+> > > >   }
+> > > > -static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
+> > > > -				     struct xdp_buff *xdp,
+> > > > -				     struct bpf_prog *xdp_prog)
+> > > > +static int netif_skb_check_for_generic_xdp(struct sk_buff **pskb,
+> > > > +					   struct bpf_prog *prog)
+> > >=20
+> > > I like this is split out into a check function.
+> > >=20
+> > > >   {
+> > > >   	struct sk_buff *skb =3D *pskb;
+> > > > -	u32 act =3D XDP_DROP;
+> > > > -
+> > > > -	/* Reinjected packets coming from act_mirred or similar should
+> > > > -	 * not get XDP generic processing.
+> > > > -	 */
+> > > > -	if (skb_is_redirected(skb))
+> > > > -		return XDP_PASS;
+> > >=20
+> > > (For other reviewers)
+> > > This reinjected check is moved further down.
+> > >=20
+> > > > +	int err;
+> > > > -	/* XDP packets must be linear and must have sufficient headroom
+> > > > -	 * of XDP_PACKET_HEADROOM bytes. This is the guarantee that also
+> > > > -	 * native XDP provides, thus we need to do it here as well.
+> > > > +	/* XDP does not support fraglist so we need to linearize
+> > > > +	 * the skb.
+> > > >   	 */
+> > > > -	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
+> > > > -	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
+> > > > +	if (skb_has_frag_list(skb) || !prog->aux->xdp_has_frags) {
+> > > >   		int hroom =3D XDP_PACKET_HEADROOM - skb_headroom(skb);
+> > > >   		int troom =3D skb->tail + skb->data_len - skb->end;
+> > > >   		/* In case we have to go down the path and also linearize,
+> > > >   		 * then lets do the pskb_expand_head() work just once here.
+> > > >   		 */
+> > > > -		if (pskb_expand_head(skb,
+> > > > -				     hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
+> > > > -				     troom > 0 ? troom + 128 : 0, GFP_ATOMIC))
+> > > > -			goto do_drop;
+> > > > -		if (skb_linearize(skb))
+> > > > -			goto do_drop;
+> > > > +		err =3D pskb_expand_head(skb,
+> > > > +				       hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
+> > > > +				       troom > 0 ? troom + 128 : 0, GFP_ATOMIC);
+> > > > +		if (err)
+> > > > +			return err;
+> > > > +
+> > > > +		err =3D skb_linearize(skb);
+> > > > +		if (err)
+> > > > +			return err;
+> > > > +
+> > > > +		return 0;
+> > > > +	}
+> > > > +
+> > > > +	/* XDP packets must have sufficient headroom of XDP_PACKET_HEADRO=
+OM
+> > > > +	 * bytes. This is the guarantee that also native XDP provides,
+> > > > +	 * thus we need to do it here as well.
+> > > > +	 */
+> > > > +	if (skb_cloned(skb) || skb_shinfo(skb)->nr_frags ||
+> > >=20
+> > > I though we could allow a SKB with skb_shinfo(skb)->nr_frags (that is=
+n't
+> > > cloned or shared) to be processed by generic XDP without any realloca=
+tion?
+> >=20
+> > I do not think so, we discussed about it with Jakub here [0]
+> >=20
+> > [0] https://lore.kernel.org/netdev/20231128105145.7b39db7d@kernel.org/
+>=20
+> Can this be done as an optimization later on? If, from the bpf side,
+> the verifier can attest that the program is not calling
+> bpf_xdp_{load,store}_bytes on the frags for example.
 
-- get in touch with other developers and projects;
-- be informed about the latest developments in the free software world;
-- be informed about the latest developments in the open source world;
-- attend interesting talks and presentations on various topics by project
-   leaders and committers;
-- to promote the development and benefits of free software and open source
-   solutions.
-- Participation and attendance is totally free, though the organisers
-   gratefully accept donations and sponsorship.
+Yes, I think so. Moreover this would be useful for veth too.
 
-## Format
+Regards,
+Lorenzo
 
-The Kernel Devroom will be running an all day, exact day and time will be
-clarified in the near future..
 
-We’re looking for talk or demo proposals in one of the following 4 sizes:
+--VsjUZvWKa4NVqNYC
+Content-Type: application/pgp-signature; name="signature.asc"
 
-- 10 minutes (e.g., a short demo)
-- 20 minutes (e.g., a project update)
-- 30 minutes (e.g., introduction to a new technology or a deep dive on a
-   complex feature)
-- 40 minutes (e.g., a deep dive on a complex feature)
+-----BEGIN PGP SIGNATURE-----
 
-In all cases, please allow for at least 5 minutes of questions (10min
-preferred for the 30min slots).  In general, shorter content will be more
-likely to get approved as we want to cover a wide range of topics.
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZWmodwAKCRA6cBh0uS2t
+rKUJAP9HqqWOsznBBiNRXFbOxaz+9GCDdltRQnL+Qd2BgtFJDgEAuBbJa/QGObHd
+RPcxS1o4gkEIBiVudrqneDbzbQlnZgg=
+=UJez
+-----END PGP SIGNATURE-----
 
-## Proposals
-
-Proposals should be sent through the FOSDEM scheduling system at:
-https://pretalx.fosdem.org/fosdem-2024/cfp
-
-Please select the "Kernel" as the __track__ and ensure you include the
-following information when submitting a proposal:
-
-| Section |  Field       |  Notes                                                                             |
-| ------- | ------------ | ---------------------------------------------------------------------------------- |
-| Person  |  Name(s)     |  Your first, last and public names.                                                |
-| Person  |  Abstract    |  A short bio.                                                                      |
-| Person  |  Photo       |  Please provide a photo.                                                           |
-| Event   |  Event Title |  *This is the title of your talk* - please be descriptive to encourage attendance. |
-| Event   |  Abstract    |  Short abstract of one or two paragraphs.                                          |
-| Event   |  Duration    |  Please indicate the length of your talk; 10 min, 20 min, 30, or 40 min            |
-
-__The CfP deadline is Saturday, 10 December 2024.__
-
-## Topics
-
-The Kernel Devroom aims to cover a wide range of different topics so don't
-be shy. The following list should just serve as an inspiration:
-
-- Filesystems and Storage
-- io_uring
-- Tracing
-- eBPF
-- Fuzzing
-- System Boot
-- Security
-- Virtualization
-- Rust in the Linux Kernel
-
-## Code of Conduct
-
-We'd like to remind all speakers and attendees that all of the
-presentations and discussions in our devroom are held under the guidelines
-set in the [FOSDEM Code of
-Conduct](https://fosdem.org/2024/practical/conduct/) and we expect
-attendees, speakers, and volunteers to follow the CoC at all times.
-
-If you submit a proposal and it is accepted, you will be required to
-confirm that you accept the FOSDEM CoC. If you have any questions about the
-CoC or wish to have one of the devroom organizers review your presentation
-slides or any other content for CoC compliance, please email us and we will
-do our best to assist you.
-
-An up to date version of the CfP can always be found at
-https://uapi-group.org/docs/conferences/2024-02-04_fosdem-kernel-devroom/
-
-Thanks!
-Christian Brauner
-Daniel Borkmann
-Mike Rapoport
-Stéphane Graber
-
+--VsjUZvWKa4NVqNYC--
 
