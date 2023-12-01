@@ -1,104 +1,128 @@
-Return-Path: <bpf+bounces-16351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FC228003A4
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 07:20:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E56528003BE
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 07:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C0642815B0
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 06:20:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F45E2815A5
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 06:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8666BC155;
-	Fri,  1 Dec 2023 06:20:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2237D2FC;
+	Fri,  1 Dec 2023 06:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Bu0gX/kZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zag7mclo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B61171B
-	for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 22:20:42 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50bc8e37b5fso2524620e87.0
-        for <bpf@vger.kernel.org>; Thu, 30 Nov 2023 22:20:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1701411641; x=1702016441; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lr1SxrxtjnBwIXeraWPTW6/ftY9gYyhFBASILs735gM=;
-        b=Bu0gX/kZUotT/KrYDuNZ3NzsN37pF0BHAOzjoWpopSbRfvPDIcRFVgyOdm/otM4Wei
-         iG55L/Na5euAxJ7oyL9iqcmiHveSU0mYkIQYUhT8I2J9D+tltAAlVfiqmvGd4n/OVejm
-         UntIlFRJXEaLjOldaO8ULaPUwvvr4ojFsevHQFZa8ZiLSejp2DfhPrRMoFXqM/YeG0mz
-         zwke6JmK8chAY0e7i9dMNe2Nm9+iIcsyQHf7SqEk5lAB2wcUslqvztOLiMXbzHCl5DQp
-         YoRZbvShS431w+olIGoZEEHpUI2cgQB6NgIU4nGrNOX/622OmsuF0pY4Cn9fg3itUtyV
-         YJew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701411641; x=1702016441;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lr1SxrxtjnBwIXeraWPTW6/ftY9gYyhFBASILs735gM=;
-        b=BBddS3fFLgQottXl//bBfm6e9bw3GtFFHKwF2t9wZeRwQHu8yHBb7FAGfcjC8ToZZf
-         zzphZ8mIGBF2OCwJ41NiLL0YALHiN4w7Xgip0uvbOC/jUEQbHHx4cPcy20OcglF5MGsB
-         IedIbetvYcQAJp5FHEL4lJd6n89nb1K/4cj0Sa0HDwfl2r6q+kIQqG9ZOaClmUnShIJf
-         mi3E7FX6wIufGXfShG9aZkj6F6pNl/Uwi0zH628PolTgJHJlGmtyFDAR7/bc5kQjmKvr
-         EnlFeIYxtO/iIw+3YKV95kdPNx4sym0tWTGpZ6L0co5xsML6UpjZPMwSmp3t8Ri5FLfh
-         bcZg==
-X-Gm-Message-State: AOJu0Yzqklw4AkaLe9o8EIx7LJAOqOJ2+KQZpo0G6NTIDUsGiBvagl+t
-	UktfTqLLi/eXi/CF9/jlG0YXSAEQWJM84NK1xH0BFw==
-X-Google-Smtp-Source: AGHT+IEuumCPkABaLV/MxgbmMcrswJVGbF+ByC+rsYSy+g2bl3UvowPLpycWs4tprIt/k5f+BCcYB+9a8tnOQdzATiY=
-X-Received: by 2002:a05:6512:2205:b0:50b:d764:76e7 with SMTP id
- h5-20020a056512220500b0050bd76476e7mr503276lfu.118.1701411641008; Thu, 30 Nov
- 2023 22:20:41 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774FA1718;
+	Thu, 30 Nov 2023 22:24:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701411883; x=1732947883;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OrXONeV7YlBRhiTW3LB5rHkzQDQL8wPC8aPc0x4910w=;
+  b=Zag7mclosS6/OwdbIaP6Xff5DAUvlz5TUY5nFCBZrpRXDa1a/PhvjlYt
+   WSvVaAgfw1HJLiCrKcMyfTSYiztdJCuGxC6ga2XEseuX84lZy/yRxOHqS
+   dSjTlB/ZyvLRwd1St35D5gg7sdUCn+CO0wlgvYnd041kb84oGWQ2qpn/b
+   azFFCGJj0EPeVESlFvHQf/Ey2rhZRarQdwiVvmC6ebjRO34E9fpDKKyVM
+   d+aX3lpBp7sg/bLoaDCkiPQy2uKKZ4rnbC2jIe6xg2vLQpijy+sSJVDDo
+   tINh/0AgBbzRfn6o9UrENXwWM7JCO9LGn2pclK/H/OXyyQNuOvQd/8Yd+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="6722778"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="6722778"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 22:24:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="803945044"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="803945044"
+Received: from p12ill20yoongsia.png.intel.com ([10.88.227.28])
+  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2023 22:24:31 -0800
+From: Song Yoong Siang <yoong.siang.song@intel.com>
+To: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Bjorn Topel <bjorn@kernel.org>,
+	Magnus Karlsson <magnus.karlsson@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jonathan Lemon <jonathan.lemon@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@google.com>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	bpf@vger.kernel.org,
+	xdp-hints@xdp-project.net,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kselftest@vger.kernel.org,
+	Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH bpf-next v2 0/3] xsk: TX metadata txtime support
+Date: Fri,  1 Dec 2023 14:24:18 +0800
+Message-Id: <20231201062421.1074768-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <92a355bd-7105-4a17-9543-ba2d8ae36a37@kernel.org>
- <21d05784-3cd7-4050-b66f-bad3eab73f4e@kernel.org> <7f48dc04-080d-f7e1-5e01-598a1ace2d37@iogearbox.net>
- <87fs0qj61x.fsf@toke.dk> <0b0c6538-92a5-3041-bc48-d7286f1b873b@gmail.com>
- <87plzsi5wj.fsf@toke.dk> <1ff5c528-79a8-fbb7-8083-668ca5086ecf@iogearbox.net>
- <871qc72vmh.fsf@toke.dk> <8677db3e-5662-7ebe-5af0-e5a3ca60587f@iogearbox.net> <e3402045-a36f-461f-8eab-bbc51735492d@kernel.org>
-In-Reply-To: <e3402045-a36f-461f-8eab-bbc51735492d@kernel.org>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Fri, 1 Dec 2023 00:20:30 -0600
-Message-ID: <CAO3-PbrQ+LoPYZUN2kpvMHmwW-Opa3pX=g11gdNy1oaXPG6GAg@mail.gmail.com>
-Subject: Re: Does skb_metadata_differs really need to stop GRO aggregation?
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Edward Cree <ecree.xilinx@gmail.com>, Stanislav Fomichev <sdf@google.com>, Netdev <netdev@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	kernel-team <kernel-team@cloudflare.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Eric Dumazet <edumazet@google.com>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Sitnicki <jakub@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 30, 2023 at 2:35=E2=80=AFPM Jesper Dangaard Brouer <hawk@kernel=
-.org> wrote:
->
-> We are exploring more options than only XDP metadata area to store
-> information.  I have suggested that once an SKB have a socket
-> associated, then we can switch into using BPF local socket storage
-> tricks. (The lifetime of XDP metadata is not 100% clear as e.g.
-> pskb_expand_head clears it via skb_metadata_clear).
-> All ideas are welcome, e.g. I'm also looking at ability to store
-> auxiliary/metadata data associated with a dst_entry. And SKB->mark is
-> already used for other use-cases and isn't big enough. (and then there
-> is fun crossing a netns boundry).
->
-sk local storage might not work for the cases if packets are purely
-forwarded or end up with a tun/tap device. Can we make XDP metadata
-life time clear then? It would also be really interesting if we can
-sendmsg with metadata, too. We often have a hard time distinguishing
-if a kernel event like packet drop/retransmission correlates to a
-reported customer problem. It's hard because when the event happens,
-there isn't customer specific information in the context to correlate,
-usually only multiplexed sockets and the packet triggering such an
-event. Allowing carrying some extra information on the packet would
-definitely improve this a lot with BPF tracing.
+This series expands XDP TX metadata framework to include ETF HW offload.
 
-Yan
+Changes since v1:
+- rename Time-Based Scheduling (TBS) to Earliest TxTime First (ETF)
+- rename launch-time to txtime
+
+v1: https://patchwork.kernel.org/project/netdevbpf/cover/20231130162028.852006-1-yoong.siang.song@intel.com/
+
+Song Yoong Siang (3):
+  xsk: add ETF support to XDP Tx metadata
+  net: stmmac: Add txtime support to XDP ZC
+  selftests/bpf: Add txtime to xdp_hw_metadata
+
+ Documentation/netlink/specs/netdev.yaml        |  4 ++++
+ Documentation/networking/xsk-tx-metadata.rst   |  5 +++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h   |  2 ++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c  | 13 +++++++++++++
+ include/net/xdp_sock.h                         |  9 +++++++++
+ include/net/xdp_sock_drv.h                     |  1 +
+ include/uapi/linux/if_xdp.h                    |  9 +++++++++
+ include/uapi/linux/netdev.h                    |  3 +++
+ net/core/netdev-genl.c                         |  2 ++
+ net/xdp/xsk.c                                  |  3 +++
+ tools/include/uapi/linux/if_xdp.h              |  9 +++++++++
+ tools/include/uapi/linux/netdev.h              |  3 +++
+ tools/net/ynl/generated/netdev-user.c          |  1 +
+ tools/testing/selftests/bpf/xdp_hw_metadata.c  | 18 +++++++++++++++++-
+ 14 files changed, 81 insertions(+), 1 deletion(-)
+
+-- 
+2.34.1
+
 
