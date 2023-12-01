@@ -1,104 +1,74 @@
-Return-Path: <bpf+bounces-16392-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16393-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B763800E90
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 16:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CF78800EA8
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 16:36:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56DC7281BD1
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 15:27:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 163C0281BA3
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 15:36:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042AF4A9BA;
-	Fri,  1 Dec 2023 15:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD0904AF81;
+	Fri,  1 Dec 2023 15:36:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LlkAVm0E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iVI9rFJz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F76F103;
-	Fri,  1 Dec 2023 07:26:53 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-423f2d0c8baso13722541cf.2;
-        Fri, 01 Dec 2023 07:26:53 -0800 (PST)
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BA61A6;
+	Fri,  1 Dec 2023 07:36:09 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6cde11fb647so2243235b3a.1;
+        Fri, 01 Dec 2023 07:36:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701444412; x=1702049212; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701444969; x=1702049769; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Y5uUpKThH5AlPxwZK/+8ce/JS/o6enGufFaGhxrFrA=;
-        b=LlkAVm0E4GDkDf9KHlwLtfA44S2vZn7n7tu7k0Syq3g8Vy7TobnUZOEMLm+C4RRy5w
-         mFd5f2BdgT3QF0mYiEuaOH/AbRTq2kRppiB6v6aPkzRYSYjMlz3c2fKVjbhLtLcawuDG
-         qCafr0+1phPmkEYQt17zrgradddvlb5Zrg2LKgCmihhXFXJ3L2rtbtlRBjFEgpDFzINg
-         iRvfhULsQ4GW4+2ptSo2Jt3k1yuo2X6PFUin3PfbQZ4rQHAxT7AD8Y7eLAfGApwuoSl+
-         RMc+0TboXHMBzA9O2MmKiAXm0IBO3vRqUccFrZyekvQaZG1RIpGXmvcUWKAUHDVtYb61
-         qI8w==
+        bh=hVOmWwUFFk1k8CyqT9WvwOoomf+HNNEr1YCh3lVCYfw=;
+        b=iVI9rFJz/orMjcMYSScp0qc7uY2X1fpAfjfoAe5MPq71Vk098KHs1gL9eo4fmumrzn
+         gpV5M3uNUOb3/gYcYUa/dQGn7GJeImZTFLG2RQFpeB1/IxNoXgP1GjOsMrMIb6o+emN/
+         D81tnrLEdJBNTo9vhxdFOorBRAOuEsJASvYBjZsIYhpXXVXCBvJjjf5+PM93FJ167Mg2
+         1TIC5D9V1jU4oNYKDfxrS44tpTtV1/KH7ZT+9q04tSKDcrLvvtFr7uvLGjCUOviaUwvL
+         F36+Goo5qTEAwbgCQn+Erc9MKfkp+10Nnt/T6Huuc4xRnaqylVLfTCV/RbOM17brth5S
+         yN2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701444412; x=1702049212;
+        d=1e100.net; s=20230601; t=1701444969; x=1702049769;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=+Y5uUpKThH5AlPxwZK/+8ce/JS/o6enGufFaGhxrFrA=;
-        b=HcPi8dnQXOmRsVhxlXHKJHskiCTfmvgJV22pBv4v2n5Bt/mbJuzaJes8/chvDpypVG
-         KeqVR1gVjmUZuEDuo237m9s0sQ9HujJlzSH3dVYdg/ZfwHPLp09J7X2HT7Q/O64Em4by
-         H6JQUAkFoSRWDeC4zQnaxGxM0NTGZFo1XVl3bHXbOH8I9xkQ4hOL/u17V4eV/NQuTQqn
-         2l9F1m8BnphgYaSme3ZSV4wkav/Ib5dMfiiQHdL0EXGu5PM3/zi+R9HUdIQl1lWxMpGU
-         mXGR3Yu8Lb2YqdqPnfJiEtTSnGmFkaRO4mT6/3F7HWkxHFs6ftkbKrlIO7d7U0TNoQTh
-         vVyg==
-X-Gm-Message-State: AOJu0YwcAhuwBdJQHhh0nab/5S9BUd54E+dNPmXYVWHpesvCj5uX2p27
-	PoPpKwBkEGx4gSdgafvMD6s=
-X-Google-Smtp-Source: AGHT+IE7pPHWo5O6L0cGSE4Vt8ZBvbgF4ZpSTi5qSKV/OfAW0SLGDPjTMnoWDJPMCufOEPTxcgQJbA==
-X-Received: by 2002:a05:622a:1a89:b0:423:6e29:c149 with SMTP id s9-20020a05622a1a8900b004236e29c149mr30091182qtc.1.1701444412484;
-        Fri, 01 Dec 2023 07:26:52 -0800 (PST)
-Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
-        by smtp.gmail.com with ESMTPSA id w2-20020ac87182000000b00423de58d3d8sm1567519qto.40.2023.12.01.07.26.51
+        bh=hVOmWwUFFk1k8CyqT9WvwOoomf+HNNEr1YCh3lVCYfw=;
+        b=RDmX1vrei7UidOemfTuUx8h0R0Us4/sIiZFdWsr2pRQyC3a43hxNMsQftxdBMhFGK6
+         aVXsBChXQyrW97xSwuSFHur8SZI2HpoFG1+NFGJzkkzwry5a4ILhWaz/7pI2A0dIqIZO
+         Z7bpO5ksvNbd8Yix8mrmAsFJ0RiEj8OsYSvYsgN6FwDbtc8fZtG6tGqiGuAVz+LYED7v
+         DwW025q22IDoH65t9HbBOE4N1HupR9negNdXixmOeH1mu2IDDs83QMRM8UucjApY4RGT
+         vYFyhmw32H4MU/gy0nZPfrkX3/5SUVhLpNGLi4+KgR3dt/EJ49SAO4TEo4Gcjun+ECG+
+         8kCQ==
+X-Gm-Message-State: AOJu0Yw/1GRvKViIlMaoNUZmxmTRvGXKAsKoEiw61CLBPvkar1uTfrlO
+	r4B3hVScKJblaKIvPUwFwXr22F93id39hA==
+X-Google-Smtp-Source: AGHT+IEjm9oc+Rg9WTQ/4DP13kt1pnieell2yh3H92QLnT2Kvq5k2oDdLGPU9gyE1BqJZ97lOfSb5Q==
+X-Received: by 2002:a05:6a20:2446:b0:18c:23b0:3b16 with SMTP id t6-20020a056a20244600b0018c23b03b16mr23316339pzc.60.1701444968797;
+        Fri, 01 Dec 2023 07:36:08 -0800 (PST)
+Received: from localhost ([2605:59c8:148:ba10:7a9a:8993:d50f:aaa4])
+        by smtp.gmail.com with ESMTPSA id r27-20020aa78b9b000000b006900cb919b8sm3117653pfd.53.2023.12.01.07.36.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 07:26:51 -0800 (PST)
-Date: Fri, 01 Dec 2023 10:26:51 -0500
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>, 
- Song Yoong Siang <yoong.siang.song@intel.com>, 
- "David S . Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Bjorn Topel <bjorn@kernel.org>, 
- Magnus Karlsson <magnus.karlsson@intel.com>, 
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
- Jonathan Lemon <jonathan.lemon@gmail.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
+        Fri, 01 Dec 2023 07:36:08 -0800 (PST)
+Date: Fri, 01 Dec 2023 07:36:06 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Jakub Sitnicki <jakub@cloudflare.com>, 
  John Fastabend <john.fastabend@gmail.com>, 
- Stanislav Fomichev <sdf@google.com>, 
- Lorenzo Bianconi <lorenzo@kernel.org>, 
- Tariq Toukan <tariqt@nvidia.com>, 
- Willem de Bruijn <willemb@google.com>, 
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- KP Singh <kpsingh@kernel.org>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- Shuah Khan <shuah@kernel.org>, 
- Alexandre Torgue <alexandre.torgue@foss.st.com>, 
- Jose Abreu <joabreu@synopsys.com>
-Cc: netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, 
+ Eric Dumazet <edumazet@google.com>
+Cc: kuniyu@amazon.com, 
  bpf@vger.kernel.org, 
- xdp-hints@xdp-project.net, 
- linux-stm32@st-md-mailman.stormreply.com, 
- linux-arm-kernel@lists.infradead.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <6569fb3b31fb6_1396ec2948@willemb.c.googlers.com.notmuch>
-In-Reply-To: <5a660c0f-d3ed-47a2-b9be-098a224b8a12@kernel.org>
-References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
- <20231201062421.1074768-3-yoong.siang.song@intel.com>
- <5a660c0f-d3ed-47a2-b9be-098a224b8a12@kernel.org>
-Subject: Re: [PATCH bpf-next v2 2/3] net: stmmac: Add txtime support to XDP ZC
+ netdev@vger.kernel.org
+Message-ID: <6569fd6649fc9_44402208de@john.notmuch>
+In-Reply-To: <87il5i2req.fsf@cloudflare.com>
+References: <20231201032316.183845-1-john.fastabend@gmail.com>
+ <20231201032316.183845-2-john.fastabend@gmail.com>
+ <CANn89iJahyHqkMsUMPoz0xPCKE9miy0AC-P_cBYKGnLWEWX3zw@mail.gmail.com>
+ <87il5i2req.fsf@cloudflare.com>
+Subject: Re: [PATCH bpf 1/2] bpf: syzkaller found null ptr deref in unix_bpf
+ proto add
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -107,44 +77,37 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
  charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-Jesper Dangaard Brouer wrote:
-> 
-> 
-> On 12/1/23 07:24, Song Yoong Siang wrote:
-> > This patch enables txtime support to XDP zero copy via XDP Tx
-> > metadata framework.
-> > 
-> > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
-> > ---
-> >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
-> >   drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 13 +++++++++++++
-> >   2 files changed, 15 insertions(+)
-> 
-> I think we need to see other drivers using this new feature to evaluate
-> if API is sane.
-> 
-> I suggest implementing this for igc driver (chip i225) and also for igb
-> (i210 chip) that both support this kind of LaunchTime feature in HW.
-> 
-> The API and stmmac driver takes a u64 as time.
-> I'm wondering how this applies to i210 that[1] have 25-bit for
-> LaunchTime (with 32 nanosec granularity) limiting LaunchTime max 0.5
-> second into the future.
-> And i225 that [1] have 30-bit max 1 second into the future.
-> 
-> 
-> [1] 
-> https://github.com/xdp-project/xdp-project/blob/master/areas/tsn/code01_follow_qdisc_TSN_offload.org
+Jakub Sitnicki wrote:
+> On Fri, Dec 01, 2023 at 10:24 AM +01, Eric Dumazet wrote:
+> > On Fri, Dec 1, 2023 at 4:23=E2=80=AFAM John Fastabend <john.fastabend=
+@gmail.com> wrote:
+> =
 
-Good point Jesper.
+> [...]
+> =
 
-Can we also explicitly document what the type of the field is?
-Nanoseconds against the NIC hardware clock, it sounds like.
+> >> diff --git a/include/net/sock.h b/include/net/sock.h
+> >> index 1d6931caf0c3..ea1155d68f0b 100644
+> >> --- a/include/net/sock.h
+> >> +++ b/include/net/sock.h
+> >> @@ -2799,6 +2799,11 @@ static inline bool sk_is_tcp(const struct soc=
+k *sk)
+> >>         return sk->sk_type =3D=3D SOCK_STREAM && sk->sk_protocol =3D=
+=3D IPPROTO_TCP;
+> >>  }
+> >>
+> >> +static inline bool sk_is_unix(const struct sock *sk)
+> >
+> > Maybe sk_is_stream_unix() ?
+> >
+> =
 
-We have some experience with this, too. Something needs to do the
-conversion from host clock to NIC clock. It is not sufficent to just
-assume that the host clock is synced against the NIC clock by PTP.
+> +1. I found it confusing as well.
+> =
 
+> [...]
+
+OK will do v2 with sk_is_stream_unix() so it reads better. Thanks.=
 
