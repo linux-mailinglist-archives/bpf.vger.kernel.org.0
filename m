@@ -1,71 +1,73 @@
-Return-Path: <bpf+bounces-16345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D01A4800210
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 04:23:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ACA1800360
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 06:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5450FB20FAC
-	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 03:23:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE591B2109F
+	for <lists+bpf@lfdr.de>; Fri,  1 Dec 2023 05:53:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487E86AA2;
-	Fri,  1 Dec 2023 03:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3819BE7E;
+	Fri,  1 Dec 2023 05:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TXQKeXZw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MdBv04z6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1ADD12F;
-	Thu, 30 Nov 2023 19:23:30 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3b845ba9ba9so54540b6e.3;
-        Thu, 30 Nov 2023 19:23:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701401010; x=1702005810; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j1KKlbmNkIVtNCz66L83HhJjP14s5KgSvPUbznWB9zU=;
-        b=TXQKeXZwtUYwDt2voxFtPLNZrHQmKWv1ZP+yaaeUNnEgcWKdxwEaqgq+DWrq8bpELf
-         FNmmiOATEqJd/2JhN37Z5BVSDtCpwuNA8SDRMnYydlyPhqsfloiWjasgwpxzMm+y338Y
-         m2qBm9GQ+74c68sv04L8jsRVuic5j40s+hGn416TLb71tqR0A1C1EZJgS9+HV6eeTn9w
-         8i4HVte3LTZ/rXppbp3KKSVp8JNN63RXmeESmA1nzQjKO87xCX4aXShLwlGp3Kmcvt0s
-         xptQaWQlcitGOqh//UTkXi5iWaWpIriHrJkQPCW3QOJPrzduR8jU5d51OmWwv5TJZ7js
-         U9hA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701401010; x=1702005810;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j1KKlbmNkIVtNCz66L83HhJjP14s5KgSvPUbznWB9zU=;
-        b=T+xM3jjcYIy5xiABNgmGW0A7eEBdqph++LCTUW0guYuHLTfp/mMH+9htv3b5Byzh5M
-         nuNujNe0xJprFAbb55Ptj8m398IHC/TVtppxFh5tfrIySNnewBnd5n7AzJRUTR7SeeFL
-         EeqRlrc+rwkofnt8c0NHWypYuK72R2XDziWoZ4ASh0c5qJ2UBhxhjTl3dPnPhkrq5fHN
-         LOINKjLQMBcZN3Aj5XfhOAn98kiRuHfQ9tB4d1KBoaFOmIPdasYBs18OT5zRf3gsUadG
-         k4h5fxYgWsC6PfMpNYsDxBhHitkzvkXk4wNG54ZVLdL3DJQgE8L0M97rKB6gF8gptdcZ
-         QoxA==
-X-Gm-Message-State: AOJu0YxHuUJGUJDuixNKik6HLtZhjQq9SfGl/JjVV+TeZx8Z7FMH/rF3
-	8N5sROr4qKDvVYnPxyehbRUMYMYlyDXI4w==
-X-Google-Smtp-Source: AGHT+IHB+hIZdR+CAmBMF6QJH7q+WA6JlZaX/UGBw/jxt811v4MWZVS0oTC0oKXX3qqksfVc5S70hA==
-X-Received: by 2002:a05:6808:1b14:b0:3ad:c497:1336 with SMTP id bx20-20020a0568081b1400b003adc4971336mr1900545oib.16.1701401009938;
-        Thu, 30 Nov 2023 19:23:29 -0800 (PST)
-Received: from john.lan ([2605:59c8:148:ba10:1053:7b0:e3cc:7b48])
-        by smtp.gmail.com with ESMTPSA id a13-20020a65640d000000b005c60cdb08f0sm1768136pgv.0.2023.11.30.19.23.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Nov 2023 19:23:28 -0800 (PST)
-From: John Fastabend <john.fastabend@gmail.com>
-To: kuniyu@amazon.com,
-	edumazet@google.com,
-	jakub@cloudflare.com
-Cc: john.fastabend@gmail.com,
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F193170C;
+	Thu, 30 Nov 2023 21:53:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701409998; x=1732945998;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rNUFphnEkQB+qWot/63Nna2HVEbtWnhUjyaz1RNUd68=;
+  b=MdBv04z6GYo1k3KcUtbAdJL5Kj9svzrjZkJIjtE5NHWGcAZGQj/uhW0c
+   C0Yl8G9dWzyMvFwNPj6t6ml7eW+Nb0X8s5fZsXZaQclRd/Ha6yBfb1c2F
+   cFxYbti4N93Xjkl/PXJDu+IbFFVFVMM7Sg/Qa1ON7Yg5kzAXnoaKrsVt8
+   KeDjD+gNK1EMRhhgD3lQfoxdVcgC5N/fYj49tPgrbx/OjkKzB07ZsDuhU
+   NJ/nAHbEX6+1FnHyg1VKlMxgg68L7PUyMXuRA/3rJFStihcOFCIy8jK+P
+   dsnyoV795GBAZqofp0uOt26SYrRTo6ST36Kho0ycd6O5retooztXlLEUC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="373623981"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="373623981"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2023 21:53:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10910"; a="763004522"
+X-IronPort-AV: E=Sophos;i="6.04,241,1695711600"; 
+   d="scan'208";a="763004522"
+Received: from ppgyli0104.png.intel.com ([10.126.160.64])
+  by orsmga007.jf.intel.com with ESMTP; 30 Nov 2023 21:53:04 -0800
+From: Rohan G Thomas <rohan.g.thomas@intel.com>
+To: "David S . Miller" <davem@davemloft.net>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Serge Semin <fancer.lancer@gmail.com>
+Cc: netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH bpf 2/2] bpf: sockmap, test for unconnected af_unix sock
-Date: Thu, 30 Nov 2023 19:23:16 -0800
-Message-Id: <20231201032316.183845-3-john.fastabend@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20231201032316.183845-1-john.fastabend@gmail.com>
-References: <20231201032316.183845-1-john.fastabend@gmail.com>
+	Rohan G Thomas <rohan.g.thomas@intel.com>
+Subject: [PATCH net-next v2 0/3] net: stmmac: EST implementation
+Date: Fri,  1 Dec 2023 13:52:49 +0800
+Message-Id: <20231201055252.1302-1-rohan.g.thomas@intel.com>
+X-Mailer: git-send-email 2.26.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,66 +76,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add test to sockmap_basic to ensure af_unix sockets that are not connected
-can not be added to the map. Ensure we keep DGRAM sockets working however
-as these will not be connected typically.
+Hi,
+This patchset extends EST interrupt handling support to DWXGMAC IP
+followed by refactoring of EST implementation. Added a separate
+module for EST and moved all EST related functions to the new module.
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
+Also added support for EST cycle-time-extension.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index f75f84d0b3d7..ad96f4422def 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -524,6 +524,37 @@ static void test_sockmap_skb_verdict_peek(void)
- 	test_sockmap_pass_prog__destroy(pass);
- }
- 
-+static void test_sockmap_unconnected_unix(void)
-+{
-+	int err, map, stream = 0, dgram = 0, zero = 0;
-+	struct test_sockmap_pass_prog *skel;
-+
-+	skel = test_sockmap_pass_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	map = bpf_map__fd(skel->maps.sock_map_rx);
-+
-+	stream = xsocket(AF_UNIX, SOCK_STREAM, 0);
-+	if (!ASSERT_GT(stream, -1, "socket(AF_UNIX, SOCK_STREAM)"))
-+		return;
-+
-+	dgram = xsocket(AF_UNIX, SOCK_DGRAM, 0);
-+	if (!ASSERT_GT(dgram, -1, "socket(AF_UNIX, SOCK_DGRAM)")) {
-+		close(stream);
-+		return;
-+	}
-+
-+	err = bpf_map_update_elem(map, &zero, &stream, BPF_ANY);
-+	ASSERT_ERR(err, "bpf_map_update_elem(stream)");
-+
-+	err = bpf_map_update_elem(map, &zero, &dgram, BPF_ANY);
-+	ASSERT_OK(err, "bpf_map_update_elem(dgram)");
-+
-+	close(stream);
-+	close(dgram);
-+}
-+
- void test_sockmap_basic(void)
- {
- 	if (test__start_subtest("sockmap create_update_free"))
-@@ -566,4 +597,7 @@ void test_sockmap_basic(void)
- 		test_sockmap_skb_verdict_fionread(false);
- 	if (test__start_subtest("sockmap skb_verdict msg_f_peek"))
- 		test_sockmap_skb_verdict_peek();
-+
-+	if (test__start_subtest("sockmap unconnected af_unix"))
-+		test_sockmap_unconnected_unix();
- }
+changelog v2:
+* Refactor EST implementation as suggested by Serge and Jakub
+* Added support for EST cycle-time-extension
+
+Rohan G Thomas (3):
+  net: stmmac: xgmac: EST interrupts handling
+  net: stmmac: Refactor EST implementation
+  net: stmmac: Add support for EST cycle-time-extension
+
+ drivers/net/ethernet/stmicro/stmmac/Makefile  |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/common.h  |   1 +
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |   4 -
+ drivers/net/ethernet/stmicro/stmmac/dwmac5.c  | 137 ---------------
+ drivers/net/ethernet/stmicro/stmmac/dwmac5.h  |  51 ------
+ .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  16 --
+ .../ethernet/stmicro/stmmac/dwxgmac2_core.c   |  53 ------
+ drivers/net/ethernet/stmicro/stmmac/hwif.c    |  21 +++
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |  22 ++-
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   1 +
+ .../net/ethernet/stmicro/stmmac/stmmac_est.c  | 165 ++++++++++++++++++
+ .../net/ethernet/stmicro/stmmac/stmmac_est.h  |  64 +++++++
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  |   4 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_tc.c   |   8 +-
+ 15 files changed, 276 insertions(+), 275 deletions(-)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_est.c
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_est.h
+
 -- 
-2.33.0
+2.26.2
 
 
