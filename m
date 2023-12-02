@@ -1,134 +1,142 @@
-Return-Path: <bpf+bounces-16478-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16479-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89D46801854
-	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 01:01:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFC1F8018BE
+	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 01:11:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D2E1B210FB
-	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 00:01:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E103A1C2100A
+	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 00:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E39731F5F3;
-	Sat,  2 Dec 2023 00:01:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAC3EA8;
+	Sat,  2 Dec 2023 00:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WG206pCj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WP7q2qW1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369C7156DD
-	for <bpf@vger.kernel.org>; Sat,  2 Dec 2023 00:01:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 096A1C433C8
-	for <bpf@vger.kernel.org>; Sat,  2 Dec 2023 00:01:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701475284;
-	bh=PSzBP7MLc9Q49fpl0J02arECcyNgazsehz6aXXsXgj4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=WG206pCj5f+HIYeBTtwI199VUb+mpJd7rPr1S+30TktcCatjoM8JtUE2PN6zA+uhq
-	 WO0h0EAtYijywhzMVV4VLv0M4VpgxFHvYAWI21c6YnnrJqPa+SzGyj/K8ETgOlHVOg
-	 oH1iJLzDWBojLETS4CNKYPmYNWwcCp1mduyZ+s8ktdGrNa+ktyldTo9qSkCf/wPB0s
-	 CX74LujYIDU72+STaZYgU398zplHU30TaDqO7z+zvfNKbmjDo3eXSIB51bSPbT9cl2
-	 xHKAkPrZxcjF55YHlM4pNw4emseet8GHqeBpaprGeKw9u3DGIj0iY97pyqP6b2Eu0P
-	 qA/ylzsmmWSxw==
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-50bc8a9503fso3776116e87.3
-        for <bpf@vger.kernel.org>; Fri, 01 Dec 2023 16:01:23 -0800 (PST)
-X-Gm-Message-State: AOJu0YxCz4ExUX1Hh6orqIRVeGnwQ/u3fF38AYa6XijvohhNEFyu8cAG
-	Q2Tvawqg1dlX0YKMVXOX1XNaI6GKwbom+wKqvh0=
-X-Google-Smtp-Source: AGHT+IGwLJPTjIJK3ARqdOiAI7G3+BSPLENGsRSitJle0Fs6/v0gj2PGsaKsOZ0mYgqZlJ+fKEQmb/SNK5NhxY2ptZE=
-X-Received: by 2002:a19:a408:0:b0:50b:d764:8817 with SMTP id
- q8-20020a19a408000000b0050bd7648817mr1172033lfc.99.1701475282149; Fri, 01 Dec
- 2023 16:01:22 -0800 (PST)
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED03830F9;
+	Fri,  1 Dec 2023 16:10:31 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3331752d2b9so1900687f8f.3;
+        Fri, 01 Dec 2023 16:10:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701475830; x=1702080630; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qy+N5d1sKzj7I4P1vs4/0wYYWCdSwATy3bQ5v3nl6OA=;
+        b=WP7q2qW1NmijZu9TDdUHVQ2+PXdrdGIva85EC8TskC+4NQ+etjhNXPahFELL5p+qhE
+         1NpQvMUq+RB/KodXFgNHCmyT8NWicHl/u1OQl5RSS6KMdR75nwBFBy9AQnk5NcuWsE0p
+         +snmnhlYM7Ch7AO8fMT9irlBtUpbTfP5ps0ohaNh2p15yPP8qXOhlk3hVL8pWvos/5NW
+         waDl92cLCNwuao9rgxloma4ipPaBwe3ZDs+UZYu4x88mfg8NIDTDuHMfinTkMRXCBnER
+         ipy5wzx8cB3kJ14ex4sDOgQ7cPw4ef3mgJ3buk35zGpyMRyGDUI2MQkYIbORj0ptz8st
+         /YPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701475830; x=1702080630;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qy+N5d1sKzj7I4P1vs4/0wYYWCdSwATy3bQ5v3nl6OA=;
+        b=m2NjHrgUwMEUJ7FuIPaSrhMgGOsbgA4/YUdN7AKfeKjqhG4j5n8M5JR6lvWBUP2MJi
+         s772JGThVllQLXVIrpo7vK6kEBopB9zStiCi2rC73CMtJABVzPuAxzSJwk+vccAgtOTO
+         bHldPhafYAn5W2VwxWTEVxibudC1jbGLMOsjHJNPopNCZSnXmqrAfnKU0VtrGstYCgcW
+         YTI8nWW2EwXC/Vcv67DerhDt5rCBv37z+iN+0KndzE9GT3YiDRzsAZQCom9cIdmdpUZP
+         W1g+uE30bEIn0cSawcMbiHa6GA+Wx2OAy3+BoGxpeZANPG0NOs5V7yYi2fbZGoX4M54Y
+         zIWQ==
+X-Gm-Message-State: AOJu0YxbNY9P9CGaIEdKMbZfXyeGe4cxtkGSLt/BIOrCpbIvnmwzTtbU
+	qnnsxiCDg7Uf0pmTUKNhGLR2BVC2XLZgN8D7dK0McZhh
+X-Google-Smtp-Source: AGHT+IFAOMmgvWu3DQQ28rpPVUzjYgXwP1BC01OgX29gy1bHVz0AvsDA74t0tlgKWpBBV01cV96gd+OIS9DHf6mJv8E=
+X-Received: by 2002:a05:6000:bc2:b0:32d:9df1:6f68 with SMTP id
+ dm2-20020a0560000bc200b0032d9df16f68mr1430697wrb.22.1701475830145; Fri, 01
+ Dec 2023 16:10:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231201154734.8545-1-9erthalion6@gmail.com>
-In-Reply-To: <20231201154734.8545-1-9erthalion6@gmail.com>
-From: Song Liu <song@kernel.org>
-Date: Fri, 1 Dec 2023 16:01:10 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7_DQ5ttrT9AmcXO2__MN+Tman-mgbrJ=TG11r0SfPH-w@mail.gmail.com>
-Message-ID: <CAPhsuW7_DQ5ttrT9AmcXO2__MN+Tman-mgbrJ=TG11r0SfPH-w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 0/4] Relax tracing prog recursive attach rules
-To: Dmitrii Dolgov <9erthalion6@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev, 
-	dan.carpenter@linaro.org, olsajiri@gmail.com
+References: <cover.1701462010.git.dxu@dxuuu.xyz>
+In-Reply-To: <cover.1701462010.git.dxu@dxuuu.xyz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 1 Dec 2023 16:10:18 -0800
+Message-ID: <CAADnVQKWrvec6ap_7O0Z5uAJe-pdrhuJk8LRkmWvGMM4iF9Frg@mail.gmail.com>
+Subject: Re: [PATCH ipsec-next v3 0/9] Add bpf_xdp_get_xfrm_state() kfunc
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Steffen Klassert <steffen.klassert@secunet.com>, antony.antony@secunet.com, 
+	Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>, devel@linux-ipsec.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 1, 2023 at 7:51=E2=80=AFAM Dmitrii Dolgov <9erthalion6@gmail.co=
-m> wrote:
+On Fri, Dec 1, 2023 at 12:23=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> Currently, it's not allowed to attach an fentry/fexit prog to another
-> fentry/fexit. At the same time it's not uncommon to see a tracing
-> program with lots of logic in use, and the attachment limitation
-> prevents usage of fentry/fexit for performance analysis (e.g. with
-> "bpftool prog profile" command) in this case. An example could be
-> falcosecurity libs project that uses tp_btf tracing programs for
-> offloading certain part of logic into tail-called programs, but the
-> use-case is still generic enough -- a tracing program could be
-> complicated and heavy enough to warrant its profiling, yet frustratingly
-> it's not possible to do so use best tooling for that.
+> This patchset adds two kfunc helpers, bpf_xdp_get_xfrm_state() and
+> bpf_xdp_xfrm_state_release() that wrap xfrm_state_lookup() and
+> xfrm_state_put(). The intent is to support software RSS (via XDP) for
+> the ongoing/upcoming ipsec pcpu work [0]. Recent experiments performed
+> on (hopefully) reproducible AWS testbeds indicate that single tunnel
+> pcpu ipsec can reach line rate on 100G ENA nics.
 >
-> Following the corresponding discussion [1], the reason for that is to
-> avoid tracing progs call cycles without introducing more complex
-> solutions. But currently it seems impossible to load and attach tracing
-> programs in a way that will form such a cycle. Replace "no same type"
-> requirement with verification that no more than one level of attachment
-> nesting is allowed. In this way only one fentry/fexit program could be
-> attached to another fentry/fexit to cover profiling use case, and still
-> no cycle could be formed.
+> Note this patchset only tests/shows generic xfrm_state access. The
+> "secret sauce" (if you can really even call it that) involves accessing
+> a soon-to-be-upstreamed pcpu_num field in xfrm_state. Early example is
+> available here [1].
 >
-> The series contains a test for recursive attachment, as well as a fix +
-> test for an issue in re-attachment branch of bpf_tracing_prog_attach.
-> When preparing the test for the main change set, I've stumbled upon the
-> possibility to construct a sequence of events when attach_btf would be
-> NULL while computing a trampoline key. It doesn't look like this issue
-> is triggered by the main change, because the reproduces doesn't actually
-> need to have an fentry attachment chain.
+> [0]: https://datatracker.ietf.org/doc/draft-ietf-ipsecme-multi-sa-perform=
+ance/03/
+> [1]: https://github.com/danobi/xdp-tools/blob/e89a1c617aba3b50d990f779357=
+d6ce2863ecb27/xdp-bench/xdp_redirect_cpumap.bpf.c#L385-L406
+>
+> Changes from v2:
+> * Fix/simplify BPF_CORE_WRITE_BITFIELD() algorithm
+> * Added verifier tests for bitfield writes
+> * Fix state leakage across test_tunnel subtests
+>
+> Changes from v1:
+> * Move xfrm tunnel tests to test_progs
+> * Fix writing to opts->error when opts is invalid
+> * Use __bpf_kfunc_start_defs()
+> * Remove unused vxlanhdr definition
+> * Add and use BPF_CORE_WRITE_BITFIELD() macro
+> * Make series bisect clean
+>
+> Changes from RFCv2:
+> * Rebased to ipsec-next
+> * Fix netns leak
+>
+> Changes from RFCv1:
+> * Add Antony's commit tags
+> * Add KF_ACQUIRE and KF_RELEASE semantics
+>
+> Daniel Xu (9):
+>   bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+>   bpf: xfrm: Add bpf_xdp_xfrm_state_release() kfunc
+>   libbpf: Add BPF_CORE_WRITE_BITFIELD() macro
+>   bpf: selftests: test_loader: Support __btf_path() annotation
+>   libbpf: selftests: Add verifier tests for CO-RE bitfield writes
+>   bpf: selftests: test_tunnel: Setup fresh topology for each subtest
+>   bpf: selftests: test_tunnel: Use vmlinux.h declarations
+>   bpf: selftests: Move xfrm tunnel test to test_progs
+>   bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
+>
+>  include/net/xfrm.h                            |   9 +
+>  net/xfrm/Makefile                             |   1 +
+>  net/xfrm/xfrm_policy.c                        |   2 +
+>  net/xfrm/xfrm_state_bpf.c                     | 128 ++++++++++++++
+>  tools/lib/bpf/bpf_core_read.h                 |  34 ++++
+>  .../selftests/bpf/prog_tests/test_tunnel.c    | 162 +++++++++++++++++-
+>  .../selftests/bpf/prog_tests/verifier.c       |   2 +
+>  tools/testing/selftests/bpf/progs/bpf_misc.h  |   1 +
+>  .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+>  .../selftests/bpf/progs/test_tunnel_kern.c    | 138 ++++++++-------
+>  .../bpf/progs/verifier_bitfield_write.c       | 100 +++++++++++
+>  tools/testing/selftests/bpf/test_loader.c     |   7 +
+>  tools/testing/selftests/bpf/test_tunnel.sh    |  92 ----------
+>  13 files changed, 522 insertions(+), 155 deletions(-)
 
-It appears this set breaks test_progs/trace_ext:
-
-https://github.com/kernel-patches/bpf/actions/runs/7062243664/job/192258274=
-50
-
-Thanks,
-Song
-
->
-> [1]: https://lore.kernel.org/bpf/20191108064039.2041889-16-ast@kernel.org=
-/
->
-> Dmitrii Dolgov (3):
->   bpf: Relax tracing prog recursive attach rules
->   selftests/bpf: Add test for recursive attachment of tracing progs
->   selftests/bpf: Test re-attachment fix for bpf_tracing_prog_attach
->
-> Jiri Olsa (1):
->   bpf: Fix re-attachment branch in bpf_tracing_prog_attach
->
->  include/linux/bpf.h                           |   1 +
->  include/uapi/linux/bpf.h                      |   1 +
->  kernel/bpf/syscall.c                          |  16 +++
->  kernel/bpf/verifier.c                         |  33 ++---
->  tools/include/uapi/linux/bpf.h                |   1 +
->  .../bpf/prog_tests/recursive_attach.c         | 117 ++++++++++++++++++
->  .../selftests/bpf/progs/fentry_recursive.c    |  19 +++
->  .../bpf/progs/fentry_recursive_target.c       |  31 +++++
->  8 files changed, 205 insertions(+), 14 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/recursive_atta=
-ch.c
->  create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive.c
->  create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive_ta=
-rget.c
->
->
-> base-commit: 40d0eb0259ae77ace3e81d7454d1068c38bc95c2
-> --
-> 2.41.0
->
+I really think this should go via bpf-next tree.
+The bpf changes are much bigger than ipsec.
 
