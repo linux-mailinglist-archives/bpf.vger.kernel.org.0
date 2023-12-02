@@ -1,100 +1,137 @@
-Return-Path: <bpf+bounces-16496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89D5E801B1C
-	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 08:19:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D8A801C44
+	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 11:44:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3E891C20B7A
-	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 07:19:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A50A31C20B31
+	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 10:44:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD45BE64;
-	Sat,  2 Dec 2023 07:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D38715AF7;
+	Sat,  2 Dec 2023 10:44:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="bUN1wjHO";
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="uVp9Vc0/"
+	dkim=pass (1024-bit key) header.d=epfl.ch header.i=@epfl.ch header.b="W9xiqWwx"
 X-Original-To: bpf@vger.kernel.org
-X-Greylist: delayed 9838 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Dec 2023 23:19:40 PST
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E898C1B2;
-	Fri,  1 Dec 2023 23:19:40 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 108)
-	id 7E84BC01F; Sat,  2 Dec 2023 08:19:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1701501579; bh=uj47G2ezwiDNNC0q8ArJKjE+ShMruYh4/IQySt2Q1kU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bUN1wjHOSw5o0/eviawkv+AlSLeshOFFp3xAGtkACAOwmo7t1M0fMJhxN8e3x6d2K
-	 na9JJegTD/QySIbJlXHXg6BBdnqdBTeXozwO3byK+2+i9gZUlqbOl44hsZEHzSkLCa
-	 s4JCT5gLxtIikPOZ5kCYcaLrG9zTonkscSyAhGoDoFQ1KjCsxiBtAQWP2J9OJ785wk
-	 E75gu8ENQ9jw9hWTmGlzEIeXfHkF4mXVKqTuJqXF+qBUxaTt6RAAfFk6n+ukCfu3SX
-	 gwwTwIlAGPmo4WQrHEyqMVJIp5e5b9qPpmM6kRSXpC3v+C9xa+3+mVWVY0ycW3wlJq
-	 U0X0sdH6YNldg==
-X-Spam-Level: 
-Received: from gaia (localhost [127.0.0.1])
-	by nautica.notk.org (Postfix) with ESMTPS id 8F83FC009;
-	Sat,  2 Dec 2023 08:19:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1701501578; bh=uj47G2ezwiDNNC0q8ArJKjE+ShMruYh4/IQySt2Q1kU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uVp9Vc0/KRnvmopALf4G/0UPptouI1+n9IgRRlCjiQFAGQLv8nPyTNhRIsQsB2Oyp
-	 bGvszI4hInYNjSjOYoaktMrurw6RhrCZUul44kbFra3LtAb1FZpPBL9doWLuc2WqJP
-	 5H6oIqqd54rDAjJXJy5ix2xVqXC2vVHXGo3/u2fDhvjXFPpO2mgudjjXJ+nUz/4z23
-	 NuCGmOpEUR5wO33WZjuNeVFXQ07zRWsDx8FB2nzJyxJDFOfdyhGW4T7mxoj+7z24xm
-	 CrHJ3+u+OJqVk1SpPqSPGACMvlEyEoqwIFedua2m3u7lPjK8juhoyk9gbEH6Gwb4D7
-	 oZpnbuqgLYvqA==
-Received: from localhost (gaia [local])
-	by gaia (OpenSMTPD) with ESMTPA id 767761df;
-	Sat, 2 Dec 2023 07:19:31 +0000 (UTC)
-Date: Sat, 2 Dec 2023 16:19:16 +0900
-From: asmadeus@codewreck.org
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: ericvh@kernel.org, lucho@ionkov.net, linux_oss@crudebyte.com,
-	rostedt@goodmis.org, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, v9fs@lists.linux.dev,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH] 9p: prevent read overrun in protocol dump tracepoint
-Message-ID: <ZWradOa-e1SM8MDZ@codewreck.org>
-References: <20231202030410.61047-1-inwardvessel@gmail.com>
- <ZWq0BvPGYMTi-WfC@codewreck.org>
+Received: from smtp0.epfl.ch (smtp0.epfl.ch [IPv6:2001:620:618:1e0:1:80b2:e058:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B5F123
+	for <bpf@vger.kernel.org>; Sat,  2 Dec 2023 02:44:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=epfl.ch;
+      s=epfl; t=1701513856;
+      h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Content-Type;
+      bh=eX+al20/xtD+gaHQhh0TNlkAwRMGx6OKAt6J7zT0FNU=;
+      b=W9xiqWwxb7XVGCtiy6BzCvM6ezTBatcxw70Yr25kATiZ5xdu1eMt0ZCYyRSchSmiK
+        4ivOBWm8nGKoqot5pQddIcpXaDpcRJlD7pRMGALicT8b7ApKh9BpH8KlugjujdMtT
+        f2kWFQoFJk8bjxaOgxH1xeXddRmL5p766su0rqEoA=
+Received: (qmail 17951 invoked by uid 107); 2 Dec 2023 10:44:16 -0000
+Received: from ax-snat-224-178.epfl.ch (HELO ewa07.intranet.epfl.ch) (192.168.224.178) (TLS, ECDHE-RSA-AES256-GCM-SHA384 (P-256 curve) cipher)
+  by mail.epfl.ch (AngelmatoPhylax SMTP proxy) with ESMTPS; Sat, 02 Dec 2023 11:44:16 +0100
+X-EPFL-Auth: LA16NkJ7gVNvYXADlBRpPx7yC/HLWmDjRgeit9xn0oR2ey5EgVQ=
+Received: from rs3labsrv2.iccluster.epfl.ch (10.90.46.62) by
+ ewa07.intranet.epfl.ch (128.178.224.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sat, 2 Dec 2023 11:44:15 +0100
+From: Tao Lyu <tao.lyu@epfl.ch>
+To: <yonghong.song@linux.dev>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <haoluo@google.com>, <martin.lau@linux.dev>,
+	<song@kernel.org>, <tao.lyu@epfl.ch>
+Subject: [PATCH] C inlined assembly for reproducing max<min
+Date: Sat, 2 Dec 2023 11:44:03 +0100
+Message-ID: <20231202104403.715483-1-tao.lyu@epfl.ch>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <56c00185-0b14-40d8-b72b-5a79797b94c0@linux.dev>
+References: <56c00185-0b14-40d8-b72b-5a79797b94c0@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZWq0BvPGYMTi-WfC@codewreck.org>
+Content-Type: text/plain
+X-ClientProxiedBy: ewa02.intranet.epfl.ch (128.178.224.159) To
+ ewa07.intranet.epfl.ch (128.178.224.178)
 
-asmadeus@codewreck.org wrote on Sat, Dec 02, 2023 at 01:35:18PM +0900:
-> > diff --git a/include/trace/events/9p.h b/include/trace/events/9p.h
-> > index 4dfa6d7f83ba..8690a7086252 100644
-> > --- a/include/trace/events/9p.h
-> > +++ b/include/trace/events/9p.h
-> > @@ -185,7 +185,8 @@ TRACE_EVENT(9p_protocol_dump,
-> >  		    __entry->clnt   =  clnt;
-> >  		    __entry->type   =  pdu->id;
-> >  		    __entry->tag    =  pdu->tag;
-> > -		    memcpy(__entry->line, pdu->sdata, P9_PROTO_DUMP_SZ);
-> > +		    memcpy(__entry->line, pdu->sdata,
-> > +				min(pdu->capacity, P9_PROTO_DUMP_SZ));
+Hi,
 
-Building with W=1 yields a warning:
-./include/linux/minmax.h:21:35: warning: comparison of distinct pointer types lacks a cast
-...
-./include/trace/events/9p.h:189:33: note: in expansion of macro ‘min’
-  189 |                                 min(pdu->capacity, P9_PROTO_DUMP_SZ));
+We discussed the max<min issue in [1].
+But it cannot reproduced with a C inlined assembly test,
+as llvm doesn't support 'jset' assembly.
 
-I've updated the patch to:
-+				min_t(size_t, pdu->capacity, P9_PROTO_DUMP_SZ));
+Thanks to Yonghong's patch [2], 
+it is now supported in the latest llvm-18.
 
-and pushed to my -next branch:
-https://github.com/martinetd/linux/commits/9p-next
+So, I resubmit the C inlined assembly test for the max<min issue here again.
 
+[1] https://lore.kernel.org/bpf/20231121173206.3594040-1-tao.lyu@epfl.ch/
+[2] https://github.com/yonghong-song/llvm-project/commit/e247e6ff272ce70003ca67f62be178f332f9de0f
+
+Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
+---
+ .../selftests/bpf/prog_tests/verifier.c       |  2 ++
+ .../selftests/bpf/progs/verifier_range.c      | 29 +++++++++++++++++++
+ 2 files changed, 31 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_range.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
+index e5c61aa6604a..3a5d746f392d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -77,6 +77,7 @@
+ #include "verifier_xadd.skel.h"
+ #include "verifier_xdp.skel.h"
+ #include "verifier_xdp_direct_packet_access.skel.h"
++#include "verifier_range.skel.h"
+ 
+ #define MAX_ENTRIES 11
+ 
+@@ -184,6 +185,7 @@ void test_verifier_var_off(void)              { RUN(verifier_var_off); }
+ void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
+ void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
+ void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_direct_packet_access); }
++void test_verifier_range(void)                { RUN(verifier_range); }
+ 
+ static int init_test_val_map(struct bpf_object *obj, char *map_name)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/verifier_range.c b/tools/testing/selftests/bpf/progs/verifier_range.c
+new file mode 100644
+index 000000000000..affe09117b0f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_range.c
+@@ -0,0 +1,29 @@
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++#if __clang_major__ >= 18
++
++SEC("?tc")
++__log_level(2)
++int test_verifier_range(void)
++{
++    asm volatile (
++        "r5 = 100; \
++        r5 /= 3; \
++        w5 >>= 7; \
++        r5 &= -386969681; \
++        r5 -= -884670597; \
++        w0 = w5; \
++        if w0 & 0x894b6a55 goto +2; \
++        r2 = 1; \
++        r2 = 1; \
++        r0 = 0; \
++        "
++    );
++    return 0;
++}
++
++char _license[] SEC("license") = "GPL";
++
++#endif
 -- 
-Dominique Martinet | Asmadeus
+2.25.1
+
 
