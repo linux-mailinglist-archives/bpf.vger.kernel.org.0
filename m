@@ -1,137 +1,85 @@
-Return-Path: <bpf+bounces-16497-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16498-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D8A801C44
-	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 11:44:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D37B801C7C
+	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 13:00:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A50A31C20B31
-	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 10:44:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED7B21F21169
+	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 12:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D38715AF7;
-	Sat,  2 Dec 2023 10:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D28516434;
+	Sat,  2 Dec 2023 12:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=epfl.ch header.i=@epfl.ch header.b="W9xiqWwx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJSxB+6h"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp0.epfl.ch (smtp0.epfl.ch [IPv6:2001:620:618:1e0:1:80b2:e058:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B5F123
-	for <bpf@vger.kernel.org>; Sat,  2 Dec 2023 02:44:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=epfl.ch;
-      s=epfl; t=1701513856;
-      h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Transfer-Encoding:Content-Type;
-      bh=eX+al20/xtD+gaHQhh0TNlkAwRMGx6OKAt6J7zT0FNU=;
-      b=W9xiqWwxb7XVGCtiy6BzCvM6ezTBatcxw70Yr25kATiZ5xdu1eMt0ZCYyRSchSmiK
-        4ivOBWm8nGKoqot5pQddIcpXaDpcRJlD7pRMGALicT8b7ApKh9BpH8KlugjujdMtT
-        f2kWFQoFJk8bjxaOgxH1xeXddRmL5p766su0rqEoA=
-Received: (qmail 17951 invoked by uid 107); 2 Dec 2023 10:44:16 -0000
-Received: from ax-snat-224-178.epfl.ch (HELO ewa07.intranet.epfl.ch) (192.168.224.178) (TLS, ECDHE-RSA-AES256-GCM-SHA384 (P-256 curve) cipher)
-  by mail.epfl.ch (AngelmatoPhylax SMTP proxy) with ESMTPS; Sat, 02 Dec 2023 11:44:16 +0100
-X-EPFL-Auth: LA16NkJ7gVNvYXADlBRpPx7yC/HLWmDjRgeit9xn0oR2ey5EgVQ=
-Received: from rs3labsrv2.iccluster.epfl.ch (10.90.46.62) by
- ewa07.intranet.epfl.ch (128.178.224.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Sat, 2 Dec 2023 11:44:15 +0100
-From: Tao Lyu <tao.lyu@epfl.ch>
-To: <yonghong.song@linux.dev>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <haoluo@google.com>, <martin.lau@linux.dev>,
-	<song@kernel.org>, <tao.lyu@epfl.ch>
-Subject: [PATCH] C inlined assembly for reproducing max<min
-Date: Sat, 2 Dec 2023 11:44:03 +0100
-Message-ID: <20231202104403.715483-1-tao.lyu@epfl.ch>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <56c00185-0b14-40d8-b72b-5a79797b94c0@linux.dev>
-References: <56c00185-0b14-40d8-b72b-5a79797b94c0@linux.dev>
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F9A123
+	for <bpf@vger.kernel.org>; Sat,  2 Dec 2023 04:00:40 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-a00d5b0ec44so432501566b.0
+        for <bpf@vger.kernel.org>; Sat, 02 Dec 2023 04:00:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701518438; x=1702123238; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=C9DiFZj3v9xLYHP3w0wBrV0Lfs4wqpYH+DVaRtddtD8=;
+        b=RJSxB+6hHoV9ctvBw3WZhqb4GYef5kWEuRAG76GJD81PmcGtEUUnoaGPYeP8JyYpeu
+         pt+K8ajQXz7xbCUYqGJ+3GxEZKiqanDZ3BK3gGhQq0pVPUrudt2rFSar+zMrCCwm2ZIk
+         je+rivTXExV+xc+yMPr20+bWLxrgsK7Ad4GA2Y4rddfk428b2r8nScTOyVbq0VthcEN+
+         P/a4zS173QOFDs5huPgDIpUKwVRQntJ++1N7y6Nmz9EUuimfZd6rUajXU+mx4/065JjV
+         nE84nFTCNimHermteH7Wl65OLlSTBc33wxgPwdNEu1Zkg66upW2H3Vm6zxZubgf5F5tC
+         yDbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701518438; x=1702123238;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C9DiFZj3v9xLYHP3w0wBrV0Lfs4wqpYH+DVaRtddtD8=;
+        b=YNROdGzeRwGraFSq9eQSvtwfSvGUdRdIi6JiE/wCI1Wt8l4Caw2oJWCntUjYC80/ZA
+         jNdas8uFV5R9wYZ9qUHAnkCxNAGYl7Hau76rhb4HwVIjcJ4m4+9OUMk4ZJdz56TsB2i4
+         D2DASZjt3a0+nieZNWvjX/q1PTodVt7jK54yR682ccvYpKzpH3SoGfiMU/6GSUq7Mr0O
+         NrHaXe99fqHcsewAlYPeoZ4y7o67EcF/qO5LFfqjFRLnXc9sYcEuAyKo7mqe2/bIysy6
+         rZcuoD0ye9LyzFUPbPrsmm84PjxH/q+KU6sA8lBsIEAJH+MBfIwtA+mFf8rrf8L5rMuM
+         uHxw==
+X-Gm-Message-State: AOJu0YypDrhDKOB0jOVD4kO0sHJ7IrhZNe40h+7ilKe0OhcQQb9n21+F
+	7OylUyYpDPj9cX/s58YULFk=
+X-Google-Smtp-Source: AGHT+IGS6/+pAfM8kb4c2+Nz57Oxez6r5u1MAxOldrQEQn30FbJb+371M6y3m/rmCbdGh+g+qQkF/w==
+X-Received: by 2002:a17:906:e95:b0:a19:a19b:422e with SMTP id p21-20020a1709060e9500b00a19a19b422emr1111397ejf.153.1701518438328;
+        Sat, 02 Dec 2023 04:00:38 -0800 (PST)
+Received: from erthalion.local (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
+        by smtp.gmail.com with ESMTPSA id bs5-20020a170906d1c500b00a0bf09c9483sm2993421ejb.35.2023.12.02.04.00.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 04:00:38 -0800 (PST)
+Date: Sat, 2 Dec 2023 12:56:59 +0100
+From: Dmitry Dolgov <9erthalion6@gmail.com>
+To: Song Liu <song@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, yonghong.song@linux.dev,
+	dan.carpenter@linaro.org, olsajiri@gmail.com
+Subject: Re: [PATCH bpf-next v5 0/4] Relax tracing prog recursive attach rules
+Message-ID: <20231202115659.7ml2m2ibdh6q74fv@erthalion.local>
+References: <20231201154734.8545-1-9erthalion6@gmail.com>
+ <CAPhsuW7_DQ5ttrT9AmcXO2__MN+Tman-mgbrJ=TG11r0SfPH-w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ewa02.intranet.epfl.ch (128.178.224.159) To
- ewa07.intranet.epfl.ch (128.178.224.178)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPhsuW7_DQ5ttrT9AmcXO2__MN+Tman-mgbrJ=TG11r0SfPH-w@mail.gmail.com>
 
-Hi,
+> On Fri, Dec 01, 2023 at 04:01:10PM -0800, Song Liu wrote:
+> It appears this set breaks test_progs/trace_ext:
+>
+> https://github.com/kernel-patches/bpf/actions/runs/7062243664/job/19225827450
 
-We discussed the max<min issue in [1].
-But it cannot reproduced with a C inlined assembly test,
-as llvm doesn't support 'jset' assembly.
-
-Thanks to Yonghong's patch [2], 
-it is now supported in the latest llvm-18.
-
-So, I resubmit the C inlined assembly test for the max<min issue here again.
-
-[1] https://lore.kernel.org/bpf/20231121173206.3594040-1-tao.lyu@epfl.ch/
-[2] https://github.com/yonghong-song/llvm-project/commit/e247e6ff272ce70003ca67f62be178f332f9de0f
-
-Signed-off-by: Tao Lyu <tao.lyu@epfl.ch>
----
- .../selftests/bpf/prog_tests/verifier.c       |  2 ++
- .../selftests/bpf/progs/verifier_range.c      | 29 +++++++++++++++++++
- 2 files changed, 31 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_range.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index e5c61aa6604a..3a5d746f392d 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -77,6 +77,7 @@
- #include "verifier_xadd.skel.h"
- #include "verifier_xdp.skel.h"
- #include "verifier_xdp_direct_packet_access.skel.h"
-+#include "verifier_range.skel.h"
- 
- #define MAX_ENTRIES 11
- 
-@@ -184,6 +185,7 @@ void test_verifier_var_off(void)              { RUN(verifier_var_off); }
- void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
- void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
- void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_direct_packet_access); }
-+void test_verifier_range(void)                { RUN(verifier_range); }
- 
- static int init_test_val_map(struct bpf_object *obj, char *map_name)
- {
-diff --git a/tools/testing/selftests/bpf/progs/verifier_range.c b/tools/testing/selftests/bpf/progs/verifier_range.c
-new file mode 100644
-index 000000000000..affe09117b0f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_range.c
-@@ -0,0 +1,29 @@
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+#if __clang_major__ >= 18
-+
-+SEC("?tc")
-+__log_level(2)
-+int test_verifier_range(void)
-+{
-+    asm volatile (
-+        "r5 = 100; \
-+        r5 /= 3; \
-+        w5 >>= 7; \
-+        r5 &= -386969681; \
-+        r5 -= -884670597; \
-+        w0 = w5; \
-+        if w0 & 0x894b6a55 goto +2; \
-+        r2 = 1; \
-+        r2 = 1; \
-+        r0 = 0; \
-+        "
-+    );
-+    return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
-+#endif
--- 
-2.25.1
-
+Yeah, my bad. There was an issue in the original patch, the attach depth
+check was applied not only to "fentry->fentry" chains, but also to
+"fentry->extension". Reducing nesting level to one revealed the problem.
+I'm going to modify the attach function to maintain attach_depth only
+for fentry progs, this will resolve the problem. Thanks!
 
