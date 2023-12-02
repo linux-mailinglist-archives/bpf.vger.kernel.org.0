@@ -1,113 +1,223 @@
-Return-Path: <bpf+bounces-16499-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16500-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BE2801D27
-	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 14:48:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9D87801D34
+	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 15:15:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76ACB1C20927
-	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 13:48:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E61F1F211E0
+	for <lists+bpf@lfdr.de>; Sat,  2 Dec 2023 14:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165451865D;
-	Sat,  2 Dec 2023 13:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF19A18C3C;
+	Sat,  2 Dec 2023 14:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=crudebyte.com header.i=@crudebyte.com header.b="VmJxgIZo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XixYoi6g"
 X-Original-To: bpf@vger.kernel.org
-X-Greylist: delayed 2539 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 02 Dec 2023 05:48:05 PST
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A42107;
-	Sat,  2 Dec 2023 05:48:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Content-ID:Content-Description;
-	bh=vrA/Bsu18m2ZIdNoKhXm9iuia2igasRXnU26BS1yMLQ=; b=VmJxgIZo3RvcJSB9PQVIeyXX0z
-	6v0Y7/0qzTn5XFM1waGWXpe2MTjYmfhlBCQ+ETuA86F1xDHf2WHGyy5WiM3ZVw2OP94w6/PsHK6yH
-	v0y1E6BsJxhA3DuRqbw2Py81WlDygFp1OlacSPL+5GewB4r98+EUQiKFFABLHV+ZY7hRU2mZiQ+eb
-	F9Yg2drrwWzCjT1oM2nogxi+yfhObS/43JYgU/aNT2bq5ghtXNZpdspSxZOllLCYTXQqXMDpAHa95
-	bGBa6HB+EjUeI7n9sIKAnzXB+G90+3Z5suUmVBsglW3csewUK74/GC0pEl61sPwfT/2CYYbZp9ACl
-	1UKZWrgefXpMcmZptV0tICoDtXII0J7BW7TfPE5hbxRHljbu7dNeRWQHtl8tYHHRW3FClhXcJO4As
-	r/w1Ge2eHlXPhpMYKUpwTUa4+ALE3B7/TPKL5BnBBEqBMK7s7LdlJ+AJkiPQDuk00vdQIVMcBe9os
-	Dy3zqWQoyOmA60smpvBl4DIKAfT1ghEihPXzQgW/gEr6kUXL1HSkTWOGBYHP1pBMNpbW7KO+OCVtD
-	K19KWSAy3uq6izJUK00PEQu4u2U4l84bD1emFjho603PUVkGCyGASYVSQuF14wGJHs6O9Cy5YKfwa
-	yzU0Uu1E5zTl9FzOp1+wRCEK1BcU++YxJg8ni3YvE=;
-From: Christian Schoenebeck <linux_oss@crudebyte.com>
-To: JP Kobryn <inwardvessel@gmail.com>, asmadeus@codewreck.org
-Cc: ericvh@kernel.org, lucho@ionkov.net, rostedt@goodmis.org,
- mhiramat@kernel.org, mathieu.desnoyers@efficios.com, v9fs@lists.linux.dev,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH] 9p: prevent read overrun in protocol dump tracepoint
-Date: Sat, 02 Dec 2023 14:05:24 +0100
-Message-ID: <1881630.VfuOzHrogK@silver>
-In-Reply-To: <ZWq0BvPGYMTi-WfC@codewreck.org>
-References:
- <20231202030410.61047-1-inwardvessel@gmail.com>
- <ZWq0BvPGYMTi-WfC@codewreck.org>
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD8711C;
+	Sat,  2 Dec 2023 06:15:44 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77dc733b25cso181011485a.1;
+        Sat, 02 Dec 2023 06:15:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701526543; x=1702131343; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cHjT/29o2cHv+uPSUDloG/9K5z+4mwtqcKQnCHqcHPk=;
+        b=XixYoi6gWsVTI/OvkDXmzWnmpY0gqzoB5KNuJV9kiDvtTEuJHgp/FRlGCAuR/aj0h2
+         AL5pIF4AFVP3A58/hheKs0LCmimp6wUV6Hu1hMpFcpzq47k6SQGZrow6ZTNv3HlEsW+6
+         TtZIE/qt13UbV0X6BIhD9zQ+r4BFvUHWj7sNCVKyJIljmYyXmaMA4zGiXFU7sB395jUa
+         cTUvMSa4Gjgw4nc75EwNsJaWKOG4Das3FHdE8R4h0R/d/4NmBd9oHIscM4zCcMDE/sL2
+         bT06kZvqNtRMmOC02oXQvXfgUC+Kxt0u8a2fwwh1idNUUlc6bkgY5p5iBYBmGnsEy8M5
+         kvIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701526543; x=1702131343;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cHjT/29o2cHv+uPSUDloG/9K5z+4mwtqcKQnCHqcHPk=;
+        b=cBvm2KIqrTFjx0Pq3m7EBk98PEmOp+ByOr1sJbLbzZbkpaHvnSGAaaexJEaiwxhZvr
+         GgDcRCgU8MucLctsRXo2jk6PjpQ1UPPgvZqulm2uXKJn5ifsrLjzB+wavmCG91K+QUF4
+         ldrDttvfUAfLi++7hsZWcoYeYYTWV3cL6Z98K9EwCVNH+nlv4eP2RRjtIUuGj1Rm1865
+         6Hu1X6UKYbNPMWTJPqjEqmOiXyHhVC5hXyLGgK/N7DLHi+F1JRZBqlhgBZ0H57h3kKly
+         oBs81mp7maycHvvOyjOEHpPsKQbQqtMdmGoFTxoafidjX299oMZDLDinsCUWDhR8a/Es
+         QE+w==
+X-Gm-Message-State: AOJu0YxbJADUsIyeYh3IlK5D8kytigttcfLylkSj3RMzcg6w+bEhNDDI
+	ycvklnBfuMMT2m/6pgEAn6s=
+X-Google-Smtp-Source: AGHT+IFMroJHDqq6Ir9gZVJ3R728hRmkVYJHVfNaHzVnIzw/nmWz3p78L6RXN42OK1k/cU3B+r7M9w==
+X-Received: by 2002:ae9:f812:0:b0:77e:fba3:4f32 with SMTP id x18-20020ae9f812000000b0077efba34f32mr1152322qkh.136.1701526543353;
+        Sat, 02 Dec 2023 06:15:43 -0800 (PST)
+Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
+        by smtp.gmail.com with ESMTPSA id br30-20020a05620a461e00b0077d742fb27esm2452534qkb.49.2023.12.02.06.15.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Dec 2023 06:15:42 -0800 (PST)
+Date: Sat, 02 Dec 2023 09:15:42 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Jesper Dangaard Brouer <hawk@kernel.org>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ "Song, Yoong Siang" <yoong.siang.song@intel.com>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Bjorn Topel <bjorn@kernel.org>, 
+ "Karlsson, Magnus" <magnus.karlsson@intel.com>, 
+ "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Lorenzo Bianconi <lorenzo@kernel.org>, 
+ Tariq Toukan <tariqt@nvidia.com>, 
+ Willem de Bruijn <willemb@google.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Mykola Lysenko <mykolal@fb.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jose Abreu <joabreu@synopsys.com>, 
+ Andre Fredette <afredette@redhat.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+ "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>, 
+ "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, 
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Message-ID: <656b3c0ebb103_1a6a2c2947d@willemb.c.googlers.com.notmuch>
+In-Reply-To: <179a4581-f7df-4eb1-ab67-8d65f856a2fe@kernel.org>
+References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
+ <d4f99931-442c-4cd7-b3cf-80d8681a2986@kernel.org>
+ <PH0PR11MB58306C2E50009A6E22F9DAD3D881A@PH0PR11MB5830.namprd11.prod.outlook.com>
+ <6569f71bad00d_138af5294d@willemb.c.googlers.com.notmuch>
+ <179a4581-f7df-4eb1-ab67-8d65f856a2fe@kernel.org>
+Subject: Re: [PATCH bpf-next v2 0/3] xsk: TX metadata txtime support
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Saturday, December 2, 2023 5:35:18 AM CET asmadeus@codewreck.org wrote:
-> JP Kobryn wrote on Fri, Dec 01, 2023 at 07:04:10PM -0800:
-> > An out of bounds read can occur within the tracepoint 9p_protocol_dump().
-> > In the fast assign, there is a memcpy that uses a constant size of 32
-> > (macro definition as P9_PROTO_DUMP_SZ). When the copy is invoked, the
-> > source buffer is not guaranteed match this size. It was found that in some
-> > cases the source buffer size is less than 32, resulting in a read that
-> > overruns.
-> > 
-> > The size of the source buffer seems to be known at the time of the
-> > tracepoint being invoked. The allocations happen within p9_fcall_init(),
-> > where the capacity field is set to the allocated size of the payload
-> > buffer. This patch tries to fix the overrun by using the minimum of that
-> > field (size of source buffer) and the size of destination buffer when
-> > performing the copy.
+Jesper Dangaard Brouer wrote:
 > 
-> Good catch; this is a regression due to a semi-recent optimization in
-> commit 60ece0833b6c ("net/9p: allocate appropriate reduced message
-> buffers")
+> 
+> On 12/1/23 16:09, Willem de Bruijn wrote:
+> > Song, Yoong Siang wrote:
+> >> On Friday, December 1, 2023 6:46 PM, Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+> >>> On 12/1/23 07:24, Song Yoong Siang wrote:
+> >>>> This series expands XDP TX metadata framework to include ETF HW offload.
+> >>>>
+> >>>> Changes since v1:
+> >>>> - rename Time-Based Scheduling (TBS) to Earliest TxTime First (ETF)
+> >>>> - rename launch-time to txtime
+> >>>>
+> >>>
+> >>> I strongly disagree with this renaming (sorry to disagree with Willem).
+> >>>
+> >>> The i210 and i225 chips call this LaunchTime in their programmers
+> >>> datasheets, and even in the driver code[1].
+> >>>
+> >>> Using this "txtime" name in the code is also confusing, because how can
+> >>> people reading the code know the difference between:
+> >>>   - tmo_request_timestamp and tmo_request_txtime
+> >>>
+> >>
+> >> Hi Jesper and Willem,
+> >>
+> >> How about using "launch_time" for the flag/variable and
+> >> "Earliest TxTime First" for the description/comments?
+> > 
+> 
+> I don't follow why you are calling the feature:
+>   - "Earliest TxTime First" (ETF).
+>   - AFAIK this just reference an qdisc name (that most don't know exists)
+> 
+> 
+> > I don't particularly care which term we use, as long as we're
+> > consistent. Especially, don't keep introducing new synonyms.
+> > 
+> > The fact that one happens to be one vendor's marketing term does not
+> > make it preferable, IMHO. On the contrary.
+> >
+> 
+> These kind of hardware features are defined as part of Time Sensitive
+> Networking (TSN).
+> I believe these TSN features are defined as part of IEEE 802.1Qbv (2015)
+> and according to Wikipedia[2] incorporated into IEEE 802.1Q.
+> 
+> [2] https://en.wikipedia.org/wiki/Time-Sensitive_Networking
+> 
+> 
+> > SO_TXTIME is in the ABI, and EDT has been used publicly in kernel
+> > patches and conference talks, e.g., Van Jacobson's Netdev 0x12
+> > keynote. Those are vendor agnostic commonly used terms.
+> > 
+> 
+> I agree that EDT (Earliest Departure Time) have become a thing and term
+> in our community.
+> We could associate this feature with this.
+> I do fear what hardware behavior will be it if I e.g. ask it to send a
+> packet 2 sec in the future on i225 which max support 1 sec.
+> Will hardware send it at 1 sec?
+> Because then I'm violating the *Earliest* Departure Time.
 
-Indeed, didn't have this one on screen! Thanks!
+That should definitely not happen. At least not on a device that
+implements EDT semantics.
 
-> For some reason I thought we rounded up small messages alloc to 4k but
-> I've just confirmed we don't, so these overruns are quite frequent.
-> I'll add the fixes tag and cc to stable if there's no other comment.
+This relates to Jakub's question in the previous thread on whether
+this mechanism allows out-of-order transmission or maintains FIFO
+behavior. That really is device specific.
 
-Yeah, in p9_msg_buf_size() [net/9p/protocol.c] the smallest allocation size
-for message types known to be small (at compile-time) is hard coded to 4k.
+Older devices only support this for low rate (PTP) and with a small
+fixed number of outstanding requests. For pacing offload, devices need
+to support up to linerate and out-of-order.
 
-However for all variable-size message types the size is calculated at runtime
-exactly as needed for that particular message being sent. So these 9p message
-types can trigger this case (<32). They are currently never rounded up.
+I don't think we want to enforce either in software, as the hardware
+is already out there. But it would be good if drivers can somehow
+label these capabilities. Including programmable horizon.
 
-[...]
-> > diff --git a/include/trace/events/9p.h b/include/trace/events/9p.h
-> > index 4dfa6d7f83ba..8690a7086252 100644
-> > --- a/include/trace/events/9p.h
-> > +++ b/include/trace/events/9p.h
-> > @@ -185,7 +185,8 @@ TRACE_EVENT(9p_protocol_dump,
-> >  		    __entry->clnt   =  clnt;
-> >  		    __entry->type   =  pdu->id;
-> >  		    __entry->tag    =  pdu->tag;
-> > -		    memcpy(__entry->line, pdu->sdata, P9_PROTO_DUMP_SZ);
-> > +		    memcpy(__entry->line, pdu->sdata,
-> > +				min(pdu->capacity, P9_PROTO_DUMP_SZ));
-> >  		    ),
-> >  	    TP_printk("clnt %lu %s(tag = %d)\n%.3x: %16ph\n%.3x: %16ph\n",
-> >  		      (unsigned long)__entry->clnt, show_9p_op(__entry->type),
+It is up to the qdisc to ensure that it does not pass packets to the
+device beyond its horizon.
 
-AFAICS __entry is a local variable on stack, and array __entry->line not
-intialized with zeros, i.e. the dump would contain trash at the end. Maybe
-prepending memset() before memcpy()?
+ETF and FQ already have a concept of horizon. And a way to queue
+errors for packets out of bound (SO_EE_CODE_TXTIME_..).
 
-/Christian
+> 
+> > But as long as Launch Time is not an Intel only trademark, fine to
+> > select that.
+> 
+> The IEEE 802.1Qbv is sometimes called Time-Aware Shaper (TAS), but I
+> don't like to for us to name this after this.  This features is simply
+> taking advantage of exposing one of the hardware building blocks
+> (controlling/setting packet "launch time") that can be used for
+> implementing a TAS.
+> 
+> I like the name "launch time" because it doesn't get easily confused
+> with other timestamps, and intuitively describes packet will be send at
+> a specific time (likely in future).
+> 
+> --Jesper
 
+Understood on your point that txtime and tx_timestamp are too similar.
+As said, I don't care strongly. Launch time sounds fine to me. Others
+can speak up if they disagree.
 
+I take launch time as a less strict than EDT: it is a request to send
+at a certain time, with no strict definition on uncertainty. While EDT
+more strictly ensures that a packet is not sent before the timestamp.
 
