@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-16546-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16547-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 879DC802664
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 19:54:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D150802667
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 19:57:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F20C1C20963
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 18:54:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C93CF1F20FC2
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 18:57:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 044281798F;
-	Sun,  3 Dec 2023 18:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A833117993;
+	Sun,  3 Dec 2023 18:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cjEGhIFb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GHCusd2F"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACEFDA
-	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 10:54:48 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35d4fb17c68so18842615ab.1
-        for <bpf@vger.kernel.org>; Sun, 03 Dec 2023 10:54:48 -0800 (PST)
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BC2DA
+	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 10:57:28 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-35d597d333aso8747945ab.1
+        for <bpf@vger.kernel.org>; Sun, 03 Dec 2023 10:57:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701629688; x=1702234488; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701629847; x=1702234647; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KZw9hAdYVPBddfgnZXd6Nh3yi00a9wAOEXbMaa7Jkbg=;
-        b=cjEGhIFbQAyqHNC6hIALq7oJFxBzQLcX2ngNvdNohm7xKoIjgESWV0gfKELxzcMb/0
-         1aCsbGHDQgKwIchMEQDYHPg46nak04bWX9fJjY8kZQGDwapSjlqW5cZJ4Vao78cIDhSA
-         suAC7MqmxnHUEytl91foWZQs3EAWhiFl5XQHh9wVWH6n2nVesl/qoLND0dXoS9eywPrC
-         HZlkqhJrUJU9fWO4Z/uqa2laAe8Rr3f1ksFxDxvUr/hHflMuT8tA06h2jDC8K0v6udjf
-         8xsoZLKNCPFkw/9y1P19a19qNVbzOapUTC83ruSu+Qt6fSugl/Q9z6v4EQFCloHu4uDx
-         8dew==
+        bh=CrKgnoVXQsshyHlB7j2gCK3UlcQL9eYWwC2VP5ShIXU=;
+        b=GHCusd2FOkhuDYpuKZD1lMbVj8rY6ZdIV1POHyDbhDtRnz+3lu9dduMsRWwq78FmEP
+         nt3ncbTCiaqQvmv366YrdOA1KrzE2siv2PqBL1kv/675fCAHZB3J1H52EuDFcRbjISn4
+         3gxDjI7kG8GZkm4uQN1vhdw2RkRpzjNI2sA8beMgmwCQ2dM7lyY1ejiwiACTTJtJzxZA
+         CP+z0kMO4jZCoSO/RFTdYzpvYrhntuA8pyyBaUQvXEKLXjZODOXBR9fr1d14z4LqFtMU
+         e5FJBwG0zKLYoHlAirhmbDl5E0RTtUJ6/Tr79xl9rX9lh7cPcvp4xUE+HvmHUPUaDmLl
+         n05Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701629688; x=1702234488;
+        d=1e100.net; s=20230601; t=1701629847; x=1702234647;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KZw9hAdYVPBddfgnZXd6Nh3yi00a9wAOEXbMaa7Jkbg=;
-        b=iyEbwzeeY06X+ym845LyBWpGQgq6L0ZZkaX95QAFBFi3ky4UOKVpnREI53Rc7DPGV7
-         uCzhZTt2oNo1y8sYxlUx2s+dkto/ti2xYdiiuMwykYkFf1UNCr4OXV5jgQM8ameucEcc
-         SzKkDSax/DAGw4RSkvI9fhN/vTa08DISoGPQmFOkj/JZno9ZNS8f9LLMo2wDQHUO4EID
-         6XYv5MV5AN70WzX7ro4Z98g9toWMS1HLkH8Ql7OGagU1E6QswBFDyokevWyNCMXUrx1T
-         /tzMrC6fZwQiXt8ZvZs7NgFBdEZa13s+tbAvNzr2BYSz1VK3pFNtU5Lx6uKqDU5yBD5Y
-         yrpw==
-X-Gm-Message-State: AOJu0YwkU06ot5VVQt3pTVdTGFOKQcwre4xDQyoS1GadY49W+TPL/3Mf
-	6HP2J/zvdc3STjs3pOPYWfA=
-X-Google-Smtp-Source: AGHT+IE2V+VCBKKavx3T/hMBmVQ2/wUigy7hG+mPiAEYRc2QNpaLxgeNR1QFi1J2AqRUvasTj/dobw==
-X-Received: by 2002:a05:6e02:c63:b0:35d:6737:fb67 with SMTP id f3-20020a056e020c6300b0035d6737fb67mr2136100ilj.121.1701629687892;
-        Sun, 03 Dec 2023 10:54:47 -0800 (PST)
+        bh=CrKgnoVXQsshyHlB7j2gCK3UlcQL9eYWwC2VP5ShIXU=;
+        b=sGhwJbb5oK6XjjO7u+9t/VMjrzgaFWDg+Z62mLfMQl0SqCQmrkFR6r/jt/SFlmzjdY
+         A9K+joVRHNquf61KpTl3FZnmozqXC3QBBFvfIPpvC/5zPtEqGKQl+JXdQGIOJOH5Wcl4
+         ZD8/HsPOZ3i+2Z+069G8y2XBee9XRA+4DcsHueK0fDsbfvJYBlMcUubcMg3uvJ/G7/y6
+         JnUoxHipNjYQhq77Z+L0E7ypcYMbnIMiZ9htZU9rXjgyeWZ6YZTmB5zSObTxnHHiZGn7
+         9O0hxXSdrfgEwzGSUSMdjfxxhUozmlAcG9z7aP9uj96H25zD4t0gDORHOeL/kWAkizeG
+         DTzw==
+X-Gm-Message-State: AOJu0Yx7WbrM1J2aBU6GVKHr7iBfaqxXwg7GDXAgeMS7NoxYRX4YTa0s
+	c7e9fQob/ObFiu1xTfFz9IjcsbPxHPI=
+X-Google-Smtp-Source: AGHT+IFbB63fbKCDIHG6K6mAx8i+Gy4oeNoxFGP06jOg0IOTi0Fulnp0dtRr4FWZWuLceHRDkN15OA==
+X-Received: by 2002:a05:6e02:cc2:b0:35d:5f75:3651 with SMTP id c2-20020a056e020cc200b0035d5f753651mr3255288ilj.51.1701629847473;
+        Sun, 03 Dec 2023 10:57:27 -0800 (PST)
 Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:e741])
-        by smtp.gmail.com with ESMTPSA id c8-20020a17090ad90800b0028686583ed1sm1890896pjv.5.2023.12.03.10.54.46
+        by smtp.gmail.com with ESMTPSA id x21-20020a63b215000000b005c2422a1171sm475207pge.66.2023.12.03.10.57.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 10:54:47 -0800 (PST)
-Date: Sun, 3 Dec 2023 10:54:44 -0800
+        Sun, 03 Dec 2023 10:57:27 -0800 (PST)
+Date: Sun, 3 Dec 2023 10:57:24 -0800
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: Hou Tao <houtao@huaweicloud.com>
 Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
@@ -64,10 +64,11 @@ Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	"Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-Subject: Re: [PATCH bpf v4 5/7] bpf: Optimize the free of inner map
-Message-ID: <20231203185444.l3bip4fwfbqqn5oz@macbook-pro-49.dhcp.thefacebook.com>
+Subject: Re: [PATCH bpf v4 3/7] bpf: Set need_defer as false when clearing fd
+ array during map free
+Message-ID: <20231203185724.6a2kpsmesavozsrc@macbook-pro-49.dhcp.thefacebook.com>
 References: <20231130140120.1736235-1-houtao@huaweicloud.com>
- <20231130140120.1736235-6-houtao@huaweicloud.com>
+ <20231130140120.1736235-4-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,29 +77,15 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231130140120.1736235-6-houtao@huaweicloud.com>
+In-Reply-To: <20231130140120.1736235-4-houtao@huaweicloud.com>
 
-On Thu, Nov 30, 2023 at 10:01:18PM +0800, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> When removing the inner map from the outer map, the inner map will be
-> freed after one RCU grace period and one RCU tasks trace grace
-> period, so it is certain that the bpf program, which may access the
-> inner map, has exited before the inner map is freed.
-> 
-> However there is no need to wait for one RCU tasks trace grace period if
-> the outer map is only accessed by non-sleepable program. So adding
-> sleepable_refcnt in bpf_map and increasing sleepable_refcnt when adding
-> the outer map into env->used_maps for sleepable program. Considering the
-> max number of bpf program is INT_MAX - 1, atomic_t instead of atomic64_t
-> is used for sleepable_refcnt. When removing the inner map from the outer
-> map, using sleepable_refcnt to decide whether or not a RCU tasks trace
-> grace period is needed before freeing the inner map.
+On Thu, Nov 30, 2023 at 10:01:16PM +0800, Hou Tao wrote:
+>  
+> -static long fd_array_map_delete_elem(struct bpf_map *map, void *key)
+> +static long fd_array_map_delete_elem_with_deferred_free(struct bpf_map *map, void *key,
+> +							bool need_defer)
 
-Optimizing too soon as usual?
-I bet you saw that we use:
- atomic64_t refcnt
-for bpf_map, but you probably didn't dig into git history and
-missed commit 92117d8443bc ("bpf: fix refcnt overflow") ?
-
+way too verbose.
+Tomorrow we will add another bool and would have to rename it?
+Just use __fd_array_map_delete_elem().
 
