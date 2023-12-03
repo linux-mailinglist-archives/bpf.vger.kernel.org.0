@@ -1,95 +1,102 @@
-Return-Path: <bpf+bounces-16549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 297B280267F
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 20:04:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3053880268B
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 20:09:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE604B20A1F
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 19:04:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9AE0280DBE
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 19:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83E33179A6;
-	Sun,  3 Dec 2023 19:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F98179AC;
+	Sun,  3 Dec 2023 19:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GzUCkOmp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="w8AJALyp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B26A1
-	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 11:04:15 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5bdb0be3591so1898748a12.2
-        for <bpf@vger.kernel.org>; Sun, 03 Dec 2023 11:04:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701630254; x=1702235054; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UEbfCY8vD6iA2F/xfGfdbUjs657E7iNnhQC01c28xhY=;
-        b=GzUCkOmpF/18TT/e0OD3uPTY7hoCkvE3mMUmB+HGlZUJlZ7ZO10Wfu01Nmuu7unySC
-         8H1kkH2KCiTtPghez5aNoCXUcyVD2m1pgsuMCCEyy8Ysn6MuZWIalKHCmZioopFRbJSs
-         SO6uEpJf4343/7DlrK7fyk6BypZgR+fSFuSboZ9k4i8ylgww1ipz+A3lx4v/ZBGGw8jQ
-         BGrkG6Q7sxZvG7cP+buoyqRFI8pEDUPd0/KNRe8tBeEHCK1LG8RcsULaeFi5c7+u+eQ8
-         J1ivtiovLmfmqpSwO/jKRsmlykvplFe1SanXNRotLPeFdSz1zoK4IvTlI+2nC4rhOKCi
-         ANvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701630254; x=1702235054;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UEbfCY8vD6iA2F/xfGfdbUjs657E7iNnhQC01c28xhY=;
-        b=w49Bj1y889lZTALXQKsFTerQdwxRxpPuW0ejYfjPB4o2wIgOzTAl4cSOlUfoLw0tWL
-         xiBs5Y8b7meQuNouTk20rtCZBOV+QDGhcCeKOiKIG6GosJPXWRdD1c1ChSyxxCjLEStb
-         RyZZoUY9Pw2XR20ixWB6ae447B86jd+AqGvLX1JjkYx2Bpjl48jkathCyq5fvHD2ON9h
-         fllZE0hh/2cbM3UYhWTup0+DRvCLPm7g7a8OyFdmDCsIeqxIu8r9NiCqSK/h3DFKQQDy
-         wXr81AE+c6JG5o74jilcuNcXC/hsdmU2oJa8WWIxjsJ3c13UCjDTEGylHs0zn/lidLTC
-         7nkQ==
-X-Gm-Message-State: AOJu0YzR2zZi4c3UjVMyPir2IDyd1B0QpytlCAZ6cSUhLmXIkyH+NKtz
-	F0S9RHSgWkXL+JJmCqnolxo=
-X-Google-Smtp-Source: AGHT+IHUYDzsbyUP9Wpxm6mcheJCvQK+JVs77cLD7ng7PYj7Oa0sQCUm2ePZklKrfx5l/sGh+5Oxsw==
-X-Received: by 2002:a17:902:7485:b0:1cf:a2aa:23ae with SMTP id h5-20020a170902748500b001cfa2aa23aemr3024208pll.35.1701630254431;
-        Sun, 03 Dec 2023 11:04:14 -0800 (PST)
-Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::4:e741])
-        by smtp.gmail.com with ESMTPSA id l17-20020a170902eb1100b001d060d6cde0sm4255406plb.162.2023.12.03.11.04.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 11:04:14 -0800 (PST)
-Date: Sun, 3 Dec 2023 11:04:10 -0800
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-Subject: Re: [PATCH bpf v4 7/7] selftests/bpf: Test outer map update
- operations in syscall program
-Message-ID: <20231203190410.qcyu3qmdkxavim2t@macbook-pro-49.dhcp.thefacebook.com>
-References: <20231130140120.1736235-1-houtao@huaweicloud.com>
- <20231130140120.1736235-8-houtao@huaweicloud.com>
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [IPv6:2001:41d0:1004:224b::af])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6073ADA
+	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 11:09:02 -0800 (PST)
+Message-ID: <7ac7b494-2409-6f2d-b18a-ac5154545066@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701630540;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wq4rDgWW2SmuNmn6jKwaMqEYOLB2GQKsCbNg2kGA0U8=;
+	b=w8AJALypv0b/Q/gBNDOmGxnxkINypVNQzu/6pThMwUuyxASx5epojzqd/4aco1nZqo/d4U
+	FBvMvlppoIpxAcJUuu5aHseNpDz7+YTmSN/Vg7wzJEeGN8nW2DKDpDnqFge9W4zaih08/A
+	2+/bv8k4gvT19iv+hrm/wQuzw00+y4o=
+Date: Sun, 3 Dec 2023 19:08:58 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130140120.1736235-8-houtao@huaweicloud.com>
+Subject: Re: [PATCH bpf-next v7 1/3] bpf: make common crypto API for TC/XDP
+ programs
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>, Vadim Fedorenko <vadfed@meta.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, netdev@vger.kernel.org,
+ linux-crypto@vger.kernel.org, bpf@vger.kernel.org
+References: <20231202010604.1877561-1-vadfed@meta.com>
+ <20231203105748.GD50400@kernel.org>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <20231203105748.GD50400@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Nov 30, 2023 at 10:01:20PM +0800, Hou Tao wrote:
->  
-> -	prog_load_attr.license = (long) license;
-> -	prog_load_attr.insns = (long) insns;
-> +	prog_load_attr.license = (unsigned long)license;
-> +	prog_load_attr.insns = (unsigned long)insns;
+On 03.12.2023 10:57, Simon Horman wrote:
+> On Fri, Dec 01, 2023 at 05:06:02PM -0800, Vadim Fedorenko wrote:
+>> Add crypto API support to BPF to be able to decrypt or encrypt packets
+>> in TC/XDP BPF programs. Special care should be taken for initialization
+>> part of crypto algo because crypto alloc) doesn't work with preemtion
+>> disabled, it can be run only in sleepable BPF program. Also async crypto
+>> is not supported because of the very same issue - TC/XDP BPF programs
+>> are not sleepable.
+>>
+>> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+> 
+> ...
+> 
+>> +/**
+>> + * bpf_crypto_ctx_create() - Create a mutable BPF crypto context.
+>> + *
+>> + * Allocates a crypto context that can be used, acquired, and released by
+>> + * a BPF program. The crypto context returned by this function must either
+>> + * be embedded in a map as a kptr, or freed with bpf_crypto_ctx_release().
+>> + * As crypto API functions use GFP_KERNEL allocations, this function can
+>> + * only be used in sleepable BPF programs.
+>> + *
+>> + * bpf_crypto_ctx_create() allocates memory for crypto context.
+>> + * It may return NULL if no memory is available.
+>> + * @type__str: pointer to string representation of crypto type.
+>> + * @algo__str: pointer to string representation of algorithm.
+>> + * @pkey:      bpf_dynptr which holds cipher key to do crypto.
+> 
+> Hi Vadim,
+> 
+> a minor nit from my side: something about @authsize should go here.
+> 
+Hi Simon!
 
-Maybes keep it as (long) ?
-There are plenty of case where we cast a pointer to (long) because
-it's less verbose. Signedness shouldn't really matter.
-Or use ptr_to_u64().
+Good catch, I'll definitely add description to authsize, thanks!
 
-pw-bot: cr
+>> + * @err:       integer to store error code when NULL is returned
+>> + */
+>> +__bpf_kfunc struct bpf_crypto_ctx *
+>> +bpf_crypto_ctx_create(const char *type__str, const char *algo__str,
+>> +		      const struct bpf_dynptr_kern *pkey,
+>> +		      unsigned int authsize, int *err)
+> 
+> ...
+
 
