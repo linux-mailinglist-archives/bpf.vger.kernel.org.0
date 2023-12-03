@@ -1,84 +1,83 @@
-Return-Path: <bpf+bounces-16551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7799B80272C
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 21:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 56C4B80278B
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 21:49:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A84DD1C20986
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 20:01:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86E361C2097D
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 20:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90B2C18C27;
-	Sun,  3 Dec 2023 20:00:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047BE1799E;
+	Sun,  3 Dec 2023 20:48:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hDNVZNuf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j/icPfWI"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84E94A9;
-	Sun,  3 Dec 2023 12:00:52 -0800 (PST)
-Message-ID: <84d81e44-b3eb-c4d0-aad3-6014fd7cef43@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701633650;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WrcuaLhGqZyLcCzhjZbCK/3gCaj2ccG1Zvyabs5yjRI=;
-	b=hDNVZNufE6YSFIU1lV56tX4eUvDPKxP/PH9VGERwhswSJqv0lSXJkRriWUAYeArvbT2M4X
-	jTRb5nyR92hX7oJ0NpE4GXP/Ga0vyingFtx5RDfV8iZQ8dFxVwTzkzl35Tq6XV8ZohF4P6
-	8v01eZJEJAW/VWDohj5ljebycZTU5vg=
-Date: Sun, 3 Dec 2023 20:00:48 +0000
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB50DDCD
+	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 20:48:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E664C433C8;
+	Sun,  3 Dec 2023 20:48:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701636537;
+	bh=/5zreeq7QK1Ra/mJQixmlYHMxA2+MV9/meNc9OrdgGA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=j/icPfWIysFbTV/GCiZkC1h2THX9bRTYApSENUW6Ir0Lq20tCW8HRCcRstuwrSt/g
+	 C+lNtf8XJe4tQQSpW56cUISPzywhq2hML/2FIXGbnBtrxDyCsWdfHOxHgTQ3vhbCO3
+	 ddgxAWaJVrcAsNVMWefFd3ac/SrFjRnrxdDK71QBHPuUpscskqoudrvR9onZH6Y6ig
+	 QCuxS7SUQ6frnEgWhC/9rDaZ+zXDF+vWXtGEx9/iRwxyks/D4l7LlV0+FtXZF8AaF3
+	 Qml8i6hD65krYW/ATB/Do6ZrFpY9fzr00vpBLoY4CyrS6X3shnmW9q7W24UEaHeuLH
+	 tTHDgodigV3Sg==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>
+Subject: [PATCHv3 bpf 0/2] bpf: Fix map poke update
+Date: Sun,  3 Dec 2023 21:48:49 +0100
+Message-ID: <20231203204851.388654-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v7 2/3] bpf: crypto: add skcipher to bpf crypto
-Content-Language: en-US
-To: Herbert Xu <herbert@gondor.apana.org.au>,
- Vadim Fedorenko <vadfed@meta.com>
-Cc: Jakub Kicinski <kuba@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- netdev@vger.kernel.org, linux-crypto@vger.kernel.org, bpf@vger.kernel.org
-References: <20231202010604.1877561-1-vadfed@meta.com>
- <20231202010604.1877561-2-vadfed@meta.com>
- <ZWqp4VF+4rX/plpX@gondor.apana.org.au>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <ZWqp4VF+4rX/plpX@gondor.apana.org.au>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 02.12.2023 03:52, Herbert Xu wrote:
-> On Fri, Dec 01, 2023 at 05:06:03PM -0800, Vadim Fedorenko wrote:
->>
->> +static int bpf_crypto_lskcipher_encrypt(void *tfm, const u8 *src, u8 *dst,
->> +					unsigned int len, u8 *iv)
->> +{
->> +	return crypto_lskcipher_encrypt(tfm, src, dst, len, iv);
->> +}
-> 
-> Please note that the API has been updated and the iv field is now
-> the siv.  For algorithms with a non-zero statesize, that means that
-> the IV must be followed by enough memory to store the internal state,
-> i.e., crypto_lskcipher_statesize(tfm).
-> 
-> Thanks,
+hi,
+this patchset fixes the issue reported in [0].
 
-Hi Herbert!
+v3 changes:
+  - moving the update logic to arch function
+  - added test [Ilya]
 
-Thanks for the reminder. I have read v3 of your patchset and AFAIU only arc4
-is affected right now. All other algorithms still have statesize=0, so should
-work without any changes. I'll make a TODO note for myself to add state size
-check in bpf_crypto part once different trees are merged during merge window.
+thanks,
+jirka
 
-Am I right that it only affects skcipher and AEAD crypto will not be changed?
 
-Thanks,
-Vadim
+[0] https://syzkaller.appspot.com/bug?extid=97a4fe20470e9bc30810
+---
+Jiri Olsa (2):
+      bpf: Fix prog_array_map_poke_run map poke update
+      selftests/bpf: Add test for early update in prog_array_map_poke_run
+
+ arch/x86/net/bpf_jit_comp.c                            | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ kernel/bpf/arraymap.c                                  | 58 ++++++++++------------------------------------------------
+ tools/testing/selftests/bpf/prog_tests/tailcall_poke.c | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/tailcall_poke.c      | 32 ++++++++++++++++++++++++++++++++
+ 4 files changed, 162 insertions(+), 48 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_poke.c
 
