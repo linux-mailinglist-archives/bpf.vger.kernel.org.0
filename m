@@ -1,44 +1,42 @@
-Return-Path: <bpf+bounces-16553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16554-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FB4A80278C
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 21:49:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7AB80278E
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 21:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7688AB2098D
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 20:49:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B3A51C2099D
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 20:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 224ED18037;
-	Sun,  3 Dec 2023 20:49:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEC1618054;
+	Sun,  3 Dec 2023 20:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FWKcH/md"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mca7jgf2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFB9DDCD
-	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 20:49:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FCB9C433C8;
-	Sun,  3 Dec 2023 20:49:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F969DDCD
+	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 20:49:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3F6CC433C7;
+	Sun,  3 Dec 2023 20:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701636549;
-	bh=eVI1HiGAOurO/80lKYGHpATBfsHp9x5NrcB5QR40Gvo=;
+	s=k20201202; t=1701636560;
+	bh=kZPv8eEQRV/nxdvQLlKZGanrAVGrgcoeTB+PCQo8zjQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FWKcH/mdsZyIPN4Ss8O9vFj/3gulVUVXwh72jAmn9MCGB+Oyz8+aluy/pSeADBGOL
-	 mtzW4FXDgQImdbsZ/+USfj+1Dwt4f534oX5Vi3MJy6jkDFeLmy3NGm69iMlBwl1jao
-	 97P4N/iN7OpWYE8PXG7coOxM1K15a3stArXamFOZahVlv/nnT0+sszD3IbW8zbU6Zc
-	 ykMP+gBQXTRi6+qhrXuOsTGLqJ1nMOSW6cpRqZy77jUDzEfjon/bbg3Gcm/ICSvywt
-	 u+5OBUVy2K1TY7P8SDISc1glF1V4FwCE/sw2g7Do5UZojxI3Kd+0ghc5T6FJVDQFTV
-	 4git/FvzgbXvg==
+	b=mca7jgf2RWayf1tVvFTBYUwjHO78Vo7BJum08RPHcl3lg0YpBBPeleIpcNGD5P2dA
+	 J0S+SZlzxe4nq6tmhYl04/fiD3BtaVvId/QF/IKwLR5PltvUR3qhRlOVvyuJajnil2
+	 vX6I9NOpSGFsbTaYzZrcc/qElpbznq1wlU3ezSXJkY5hVelGyLdsDWl0B1c+ulTCU8
+	 GSExxR2bDMdwQkd4RSuUdmHQvlwbZ4MkLW4zCoU3Jxm1UVmMAxb2wrz/270IRNkdV5
+	 0vNUhONnw4lTPNjHEOXkTf76Y9f7+kKTCz7YazWI7Bv3TMFLsqZfaR2PlUppdVm2Fz
+	 06EydUij4oAAA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: Lee Jones <lee@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	syzbot+97a4fe20470e9bc30810@syzkaller.appspotmail.com,
+Cc: Ilya Leoshkevich <iii@linux.ibm.com>,
 	bpf@vger.kernel.org,
 	Martin KaFai Lau <kafai@fb.com>,
 	Song Liu <songliubraving@fb.com>,
@@ -47,9 +45,9 @@ Cc: Lee Jones <lee@kernel.org>,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>
-Subject: [PATCHv3 bpf 1/2] bpf: Fix prog_array_map_poke_run map poke update
-Date: Sun,  3 Dec 2023 21:48:50 +0100
-Message-ID: <20231203204851.388654-2-jolsa@kernel.org>
+Subject: [PATCHv3 bpf 2/2] selftests/bpf: Add test for early update in prog_array_map_poke_run
+Date: Sun,  3 Dec 2023 21:48:51 +0100
+Message-ID: <20231203204851.388654-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231203204851.388654-1-jolsa@kernel.org>
 References: <20231203204851.388654-1-jolsa@kernel.org>
@@ -61,212 +59,146 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Lee pointed out issue found by syscaller [0] hitting BUG in prog array
-map poke update in prog_array_map_poke_run function due to error value
-returned from bpf_arch_text_poke function.
+Adding test that tries to trigger the BUG_ON during early map update
+in prog_array_map_poke_run function.
 
-There's race window where bpf_arch_text_poke can fail due to missing
-bpf program kallsym symbols, which is accounted for with check for
--EINVAL in that BUG_ON call.
+The idea is to share prog array map between thread that constantly
+updates it and another one loading a program that uses that prog
+array.
 
-The problem is that in such case we won't update the tail call jump
-and cause imbalance for the next tail call update check which will
-fail with -EBUSY in bpf_arch_text_poke.
+Eventually we will hit a place where the program is ok to be updated
+(poke->tailcall_target_stable check) but the address is still not
+registered in kallsyms, so the bpf_arch_text_poke returns -EINVAL
+and cause imbalance for the next tail call update check, which will
+fail with -EBUSY in bpf_arch_text_poke as described in previous fix.
 
-I'm hitting following race during the program load:
-
-  CPU 0                             CPU 1
-
-  bpf_prog_load
-    bpf_check
-      do_misc_fixups
-        prog_array_map_poke_track
-
-                                    map_update_elem
-                                      bpf_fd_array_map_update_elem
-                                        prog_array_map_poke_run
-
-                                          bpf_arch_text_poke returns -EINVAL
-
-    bpf_prog_kallsyms_add
-
-After bpf_arch_text_poke (CPU 1) fails to update the tail call jump, the next
-poke update fails on expected jump instruction check in bpf_arch_text_poke
-with -EBUSY and triggers the BUG_ON in prog_array_map_poke_run.
-
-Similar race exists on the program unload.
-
-Fixing this by moving the update to bpf_arch_poke_desc_update function which
-makes sure we call __bpf_arch_text_poke that skips the bpf address check.
-
-Each architecture has slightly different approach wrt looking up bpf address
-in bpf_arch_text_poke, so instead of splitting the function or adding new
-'checkip' argument in previous version, it seems best to move the whole
-map_poke_run update as arch specific code.
-
-[0] https://syzkaller.appspot.com/bug?extid=97a4fe20470e9bc30810
-
-Cc: Lee Jones <lee@kernel.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
-Reported-by: syzbot+97a4fe20470e9bc30810@syzkaller.appspotmail.com
-Tested-by: Lee Jones <lee@kernel.org>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/net/bpf_jit_comp.c | 46 +++++++++++++++++++++++++++++
- kernel/bpf/arraymap.c       | 58 +++++++------------------------------
- 2 files changed, 56 insertions(+), 48 deletions(-)
+ .../selftests/bpf/prog_tests/tailcall_poke.c  | 74 +++++++++++++++++++
+ .../selftests/bpf/progs/tailcall_poke.c       | 32 ++++++++
+ 2 files changed, 106 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_poke.c
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 8c10d9abc239..e89e415aa743 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -3025,3 +3025,49 @@ void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp
- #endif
- 	WARN(1, "verification of programs using bpf_throw should have failed\n");
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c b/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+new file mode 100644
+index 000000000000..f7e2c09fd772
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <unistd.h>
++#include <test_progs.h>
++#include "tailcall_poke.skel.h"
 +
-+void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
-+			       struct bpf_prog *new, struct bpf_prog *old)
++#define JMP_TABLE "/sys/fs/bpf/jmp_table"
++
++static int thread_exit;
++
++static void *update(void *arg)
 +{
-+	u8 *old_addr, *new_addr, *old_bypass_addr;
-+	int ret;
++	__u32 zero = 0, prog1_fd, prog2_fd, map_fd;
++	struct tailcall_poke *call = arg;
 +
-+	old_bypass_addr = old ? NULL : poke->bypass_addr;
-+	old_addr = old ? (u8 *)old->bpf_func + poke->adj_off : NULL;
-+	new_addr = new ? (u8 *)new->bpf_func + poke->adj_off : NULL;
++	map_fd = bpf_map__fd(call->maps.jmp_table);
++	prog1_fd = bpf_program__fd(call->progs.call1);
++	prog2_fd = bpf_program__fd(call->progs.call2);
 +
-+	/*
-+	 * On program loading or teardown, the program's kallsym entry
-+	 * might not be in place, so we use __bpf_arch_text_poke to skip
-+	 * the kallsyms check.
-+	 */
-+	if (new) {
-+		ret = __bpf_arch_text_poke(poke->tailcall_target,
-+					   BPF_MOD_JUMP,
-+					   old_addr, new_addr);
-+		BUG_ON(ret < 0);
-+		if (!old) {
-+			ret = __bpf_arch_text_poke(poke->tailcall_bypass,
-+						   BPF_MOD_JUMP,
-+						   poke->bypass_addr,
-+						   NULL);
-+			BUG_ON(ret < 0);
-+		}
-+	} else {
-+		ret = __bpf_arch_text_poke(poke->tailcall_bypass,
-+					   BPF_MOD_JUMP,
-+					   old_bypass_addr,
-+					   poke->bypass_addr);
-+		BUG_ON(ret < 0);
-+		/* let other CPUs finish the execution of program
-+		 * so that it will not possible to expose them
-+		 * to invalid nop, stack unwind, nop state
-+		 */
-+		if (!ret)
-+			synchronize_rcu();
-+		ret = __bpf_arch_text_poke(poke->tailcall_target,
-+					   BPF_MOD_JUMP,
-+					   old_addr, NULL);
-+		BUG_ON(ret < 0);
++	while (!thread_exit) {
++		bpf_map_update_elem(map_fd, &zero, &prog1_fd, BPF_ANY);
++		bpf_map_update_elem(map_fd, &zero, &prog2_fd, BPF_ANY);
 +	}
-+}
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 2058e89b5ddd..c85ff9162a5c 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -1012,11 +1012,16 @@ static void prog_array_map_poke_untrack(struct bpf_map *map,
- 	mutex_unlock(&aux->poke_mutex);
- }
- 
-+void __weak bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
-+				      struct bpf_prog *new, struct bpf_prog *old)
-+{
-+	WARN_ON_ONCE(1);
++
++	return NULL;
 +}
 +
- static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
- 				    struct bpf_prog *old,
- 				    struct bpf_prog *new)
- {
--	u8 *old_addr, *new_addr, *old_bypass_addr;
- 	struct prog_poke_elem *elem;
- 	struct bpf_array_aux *aux;
- 
-@@ -1025,7 +1030,7 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
- 
- 	list_for_each_entry(elem, &aux->poke_progs, list) {
- 		struct bpf_jit_poke_descriptor *poke;
--		int i, ret;
-+		int i;
- 
- 		for (i = 0; i < elem->aux->size_poke_tab; i++) {
- 			poke = &elem->aux->poke_tab[i];
-@@ -1044,21 +1049,10 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
- 			 *    activated, so tail call updates can arrive from here
- 			 *    while JIT is still finishing its final fixup for
- 			 *    non-activated poke entries.
--			 * 3) On program teardown, the program's kallsym entry gets
--			 *    removed out of RCU callback, but we can only untrack
--			 *    from sleepable context, therefore bpf_arch_text_poke()
--			 *    might not see that this is in BPF text section and
--			 *    bails out with -EINVAL. As these are unreachable since
--			 *    RCU grace period already passed, we simply skip them.
--			 * 4) Also programs reaching refcount of zero while patching
-+			 * 3) Also programs reaching refcount of zero while patching
- 			 *    is in progress is okay since we're protected under
- 			 *    poke_mutex and untrack the programs before the JIT
--			 *    buffer is freed. When we're still in the middle of
--			 *    patching and suddenly kallsyms entry of the program
--			 *    gets evicted, we just skip the rest which is fine due
--			 *    to point 3).
--			 * 5) Any other error happening below from bpf_arch_text_poke()
--			 *    is a unexpected bug.
-+			 *    buffer is freed.
- 			 */
- 			if (!READ_ONCE(poke->tailcall_target_stable))
- 				continue;
-@@ -1068,39 +1062,7 @@ static void prog_array_map_poke_run(struct bpf_map *map, u32 key,
- 			    poke->tail_call.key != key)
- 				continue;
- 
--			old_bypass_addr = old ? NULL : poke->bypass_addr;
--			old_addr = old ? (u8 *)old->bpf_func + poke->adj_off : NULL;
--			new_addr = new ? (u8 *)new->bpf_func + poke->adj_off : NULL;
--
--			if (new) {
--				ret = bpf_arch_text_poke(poke->tailcall_target,
--							 BPF_MOD_JUMP,
--							 old_addr, new_addr);
--				BUG_ON(ret < 0 && ret != -EINVAL);
--				if (!old) {
--					ret = bpf_arch_text_poke(poke->tailcall_bypass,
--								 BPF_MOD_JUMP,
--								 poke->bypass_addr,
--								 NULL);
--					BUG_ON(ret < 0 && ret != -EINVAL);
--				}
--			} else {
--				ret = bpf_arch_text_poke(poke->tailcall_bypass,
--							 BPF_MOD_JUMP,
--							 old_bypass_addr,
--							 poke->bypass_addr);
--				BUG_ON(ret < 0 && ret != -EINVAL);
--				/* let other CPUs finish the execution of program
--				 * so that it will not possible to expose them
--				 * to invalid nop, stack unwind, nop state
--				 */
--				if (!ret)
--					synchronize_rcu();
--				ret = bpf_arch_text_poke(poke->tailcall_target,
--							 BPF_MOD_JUMP,
--							 old_addr, NULL);
--				BUG_ON(ret < 0 && ret != -EINVAL);
--			}
-+			bpf_arch_poke_desc_update(poke, new, old);
- 		}
- 	}
- }
++void test_tailcall_poke(void)
++{
++	struct tailcall_poke *call, *test;
++	int err, cnt = 10;
++	pthread_t thread;
++
++	unlink(JMP_TABLE);
++
++	call = tailcall_poke__open_and_load();
++	if (!ASSERT_OK_PTR(call, "tailcall_poke__open"))
++		return;
++
++	err = bpf_map__pin(call->maps.jmp_table, JMP_TABLE);
++	if (!ASSERT_OK(err, "bpf_map__pin"))
++		goto out;
++
++	err = pthread_create(&thread, NULL, update, call);
++	if (!ASSERT_OK(err, "new toggler"))
++		goto out;
++
++	while (cnt--) {
++		test = tailcall_poke__open();
++		if (!ASSERT_OK_PTR(test, "tailcall_poke__open"))
++			break;
++
++		err = bpf_map__set_pin_path(test->maps.jmp_table, JMP_TABLE);
++		if (!ASSERT_OK(err, "bpf_map__pin")) {
++			tailcall_poke__destroy(test);
++			break;
++		}
++
++		bpf_program__set_autoload(test->progs.test, true);
++		bpf_program__set_autoload(test->progs.call1, false);
++		bpf_program__set_autoload(test->progs.call2, false);
++
++		err = tailcall_poke__load(test);
++		tailcall_poke__destroy(test);
++		if (!ASSERT_OK(err, "tailcall_poke__load"))
++			break;
++	}
++
++	thread_exit = 1;
++	ASSERT_OK(pthread_join(thread, NULL), "pthread_join");
++
++out:
++	bpf_map__unpin(call->maps.jmp_table, JMP_TABLE);
++	tailcall_poke__destroy(call);
++}
+diff --git a/tools/testing/selftests/bpf/progs/tailcall_poke.c b/tools/testing/selftests/bpf/progs/tailcall_poke.c
+new file mode 100644
+index 000000000000..c78b94b75e83
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tailcall_poke.c
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++char _license[] SEC("license") = "GPL";
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
++	__uint(max_entries, 1);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(__u32));
++} jmp_table SEC(".maps");
++
++SEC("?fentry/bpf_fentry_test1")
++int BPF_PROG(test, int a)
++{
++	bpf_tail_call_static(ctx, &jmp_table, 0);
++	return 0;
++}
++
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(call1, int a)
++{
++	return 0;
++}
++
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(call2, int a)
++{
++	return 0;
++}
 -- 
 2.43.0
 
