@@ -1,134 +1,104 @@
-Return-Path: <bpf+bounces-16530-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16531-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5441802047
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 02:34:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84EA680207C
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 03:58:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C425280ED5
-	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 01:34:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F2F61F20F70
+	for <lists+bpf@lfdr.de>; Sun,  3 Dec 2023 02:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD9E65A;
-	Sun,  3 Dec 2023 01:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1730816;
+	Sun,  3 Dec 2023 02:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="dF+iWg1W";
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="2J/MlFY1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SWcMTMpF"
 X-Original-To: bpf@vger.kernel.org
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E55FB;
-	Sat,  2 Dec 2023 17:33:55 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 108)
-	id 924ACC01F; Sun,  3 Dec 2023 02:33:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1701567234; bh=ECgSr30p8KK6xp1lQByvmsYjnpt14zgJu5/41PhPXB4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dF+iWg1WlOt6+enLiLI3H4Qjsnshsqw7Q4XHjtf8E4pf+4m/XEnzfoZeCwNK4Bz65
-	 XGYGjtwkJFvjrsurRwBHt+URQMVGv+sFnCsFWzfR9onuEanSgKyWKzijjHtn1e152y
-	 u8TJPZXUf3i/Y7Wcx2EFCd+LfDPBnJvzRmx8BNw655DCZHGVZmgw3sJeJnntwJzME9
-	 nN9YIPycEBihrfy2dIlINKvFD1894Az0labxEjp/o9KjoVr+gZb4hqQHi7E31wdOk3
-	 dLMZ20DeUXRGr5nHb21dPEkItEKiSGQ9NYwlD5//0A6AS0LipMzoqza8PVKRSH6jbp
-	 W0JCk1AnxcaAQ==
-X-Spam-Level: 
-Received: from gaia (localhost [127.0.0.1])
-	by nautica.notk.org (Postfix) with ESMTPS id 7EF83C009;
-	Sun,  3 Dec 2023 02:33:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1701567233; bh=ECgSr30p8KK6xp1lQByvmsYjnpt14zgJu5/41PhPXB4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=2J/MlFY1zZTnaaeAiYHSQsIo249YUO3MmgdVkDwLdulVpdfdFI0ywkI+GqG3rd4ba
-	 qIH3qFFVFFPtrFLjCPPdDwrDUgUyvvumyCDczCH5aBsCtzBLJ3vU8xW7x+QRo2AMqv
-	 8pn7ELCiGo4YlElD2fpB350hVp6HltGNixDH1fnOdMzJpXCsl4djnAlHWZCqs8K8EK
-	 +SRBk2L8LnzS+XTOWDo32VihIdExN0KSs54Hx6fOlyVGrOGVGxp+sokz8P8sHs7vpm
-	 TGsQ+bEkYjrFDDIrZeiHvcmsMazZO76iR2tYu89nz8gnjdZ4z7Atefty0QTcF272Ix
-	 feF+FKr4Qh6ZA==
-Received: from localhost (gaia [local])
-	by gaia (OpenSMTPD) with ESMTPA id 575af7a3;
-	Sun, 3 Dec 2023 01:33:47 +0000 (UTC)
-Date: Sun, 3 Dec 2023 10:33:32 +0900
-From: Dominique Martinet <asmadeus@codewreck.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Christian Schoenebeck <linux_oss@crudebyte.com>,
-	JP Kobryn <inwardvessel@gmail.com>, ericvh@kernel.org,
-	lucho@ionkov.net, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, v9fs@lists.linux.dev,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH] 9p: prevent read overrun in protocol dump tracepoint
-Message-ID: <ZWva7DYTPUG95xv8@codewreck.org>
-References: <20231202030410.61047-1-inwardvessel@gmail.com>
- <ZWq0BvPGYMTi-WfC@codewreck.org>
- <1881630.VfuOzHrogK@silver>
- <20231202201409.10223677@rorschach.local.home>
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042ADFC;
+	Sat,  2 Dec 2023 18:58:25 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id d75a77b69052e-423e8145018so26275781cf.1;
+        Sat, 02 Dec 2023 18:58:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701572304; x=1702177104; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K5PSqWkt2q0NsH/cezKyOksOI/ZTMxsuCeNKgtqCwp4=;
+        b=SWcMTMpF4DAbotdE8b5BikvrvBbNEpPNSxRrcrsKEekNzkeZD59KNgz9GH2F5cziGb
+         8B7U+pL9brjPgQXIf475eXYPbBzsXlMJe2rAA51BP6b4CNlH+PIBGmbMjSVNuXRikDDC
+         JtotzRwtp6XXnUOZa/GXofQBZrgGDR/SrWwicZ9XJZR+HtsIhpIRscpKFk4lN71WNvRJ
+         H9jfrUg4K+i9hHxUmPcUYnYf0w0OU6HzuvIqCddLldYr5bYaYfvHibvI3yrFagCV83O2
+         /FUnAK8vpdNg8uKNuWqSWlPJ1Q6FA5vLSj3aU3E+Of2tEWm4VAsmHKkKlI4B6X+bEDRI
+         KGFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701572304; x=1702177104;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K5PSqWkt2q0NsH/cezKyOksOI/ZTMxsuCeNKgtqCwp4=;
+        b=JIS/4VUes6zXQW02mTEjXBMJQpxi1ZG6MqWTJVCvjVarxzdGHw33qnOX2lqNmKrrfj
+         /7FgJpbKexptEhenZ469BWgzQe6FKMk4S84Znwu92nXyKoc6y98esHta0Q7knxzHvYCK
+         DcygvqDY4C+99xzO1UevdP/cFtIAnAS5tTQ0Llq5nckqwEODUWmEGbAI1re0OCTyopmc
+         mrSLsBKtAQtGBD+n3QjB1E/PuVSvewZMaOjd7tWroBc04BLYJv+HALUrgF6mitOCmeLR
+         LFFw3uF+i2343K3UzmgGg22F437i1kuR4+hIzSM7PhXwzSIyRVFibo4vhRoENg3Yzs4U
+         12PQ==
+X-Gm-Message-State: AOJu0YyipjGTGjuWITuwLSoZpkwWd3uwbw773WG5dxWLtO0W/MqMbd00
+	n+Qbeh9lff/m2djFPYNsJwPhJFPAhLTgseOgF7E=
+X-Google-Smtp-Source: AGHT+IGpy+kyg7zdSUt8ZIPTYQVME98QFsfW9NcfwJPt7t+dpmTY/f9S3nLmw5jJawR9RxGQzVUJoIJXqhlpvLHOotE=
+X-Received: by 2002:ac8:6b0c:0:b0:423:9cca:66af with SMTP id
+ w12-20020ac86b0c000000b004239cca66afmr25529314qts.63.1701572304083; Sat, 02
+ Dec 2023 18:58:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231202201409.10223677@rorschach.local.home>
+References: <20231201094636.19770-1-laoar.shao@gmail.com> <20231201094636.19770-4-laoar.shao@gmail.com>
+ <20231201205039.GB109168@mail.hallyn.com>
+In-Reply-To: <20231201205039.GB109168@mail.hallyn.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Sun, 3 Dec 2023 10:57:47 +0800
+Message-ID: <CALOAHbDYg=Oi9BEiAiGaG+Qj3WQ27Ef4=Ox8i6vHwucGFpmARw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/7] mm, security: Fix missed security_task_movememory()
+To: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org, 
+	omosnace@redhat.com, mhocko@suse.com, ying.huang@intel.com, 
+	linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, ligang.bdlg@bytedance.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Steven Rostedt wrote on Sat, Dec 02, 2023 at 08:14:09PM -0500:
-> > AFAICS __entry is a local variable on stack, and array __entry->line not
-> > intialized with zeros, i.e. the dump would contain trash at the end. Maybe
-> > prepending memset() before memcpy()?
+On Sat, Dec 2, 2023 at 4:50=E2=80=AFAM Serge E. Hallyn <serge@hallyn.com> w=
+rote:
+>
+> On Fri, Dec 01, 2023 at 09:46:32AM +0000, Yafang Shao wrote:
+> > Considering that MPOL_F_NUMA_BALANCING or  mbind(2) using either
+> > MPOL_MF_MOVE or MPOL_MF_MOVE_ALL are capable of memory movement, it's
+> > essential to include security_task_movememory() to cover this
+> > functionality as well. It was identified during a code review.
+>
+> Hm - this doesn't have any bad side effects for you when using selinux?
+> The selinux_task_movememory() hook checks for PROCESS__SETSCHED privs.
+> The two existing security_task_movememory() calls are in cases where we
+> expect the caller to be affecting another task identified by pid, so
+> that makes sense.  Is an MPOL_MV_MOVE to move your own pages actually
+> analogous to that?
+>
+> Much like the concern you mentioned in your intro about requiring
+> CAP_SYS_NICE and thereby expanding its use, it seems that here you
+> will be regressing some mbind users unless the granting of PROCESS__SETSC=
+HED
+> is widened.
 
-Well spotted!
-Now I'm thinking about it we weren't initializing the source buffer
-either back when we had (>32) msize allocations, so these already had
-been printing garbage, but might as well get this sorted out while we're
-here.
+Ah, it appears that this change might lead to regression. I overlooked
+its association with the PROCESS__SETSCHED privilege. I'll exclude
+this patch from the upcoming version.
+Thanks for your review.
 
-> __entry is a macro that points into the ring buffer that gets allocated
-> before this is called. TRACE_EVENT() has a __dynamic_array() field that
-> can handle variable length arrays. What you can do is turn this into
-> something like:
-> 
-> TRACE_EVENT(9p_protocol_dump,
->             TP_PROTO(struct p9_client *clnt, struct p9_fcall *pdu),
-> 
->             TP_ARGS(clnt, pdu),
-> 
->             TP_STRUCT__entry(
->                     __field(    void *,         clnt                            )
->                     __field(    __u8,           type                            )
->                     __field(    __u16,          tag                             )
->                     __dynamic_array(unsigned char,  line, min(pdu->capacity, P9_PROTO_DUMP_SZ) )
->                     ),
-> 
->             TP_fast_assign(
->                     __entry->clnt   =  clnt;
->                     __entry->type   =  pdu->id;
->                     __entry->tag    =  pdu->tag;
->                     memcpy(__get_dynamic_array(line), pdu->sdata,
-> 			   min(pdu->capacity, P9_PROTO_DUMP_SZ));
->                     ),
->             TP_printk("clnt %lu %s(tag = %d)\n%.3x: %16ph\n%.3x: %16ph\n",
->                       (unsigned long)__entry->clnt, show_9p_op(__entry->type),
->                       __entry->tag, 0, __get_dynamic_array(line), 16,
-> 		      __get_dynamic_array(line) + 16)
-
-This was just printing garbage in the previous version but %16ph with a
-dynamic alloc would be out of range (even the start of the next buffer,
-_get_dynamic_array(line) + 16, can be out of range)
-
-Also, for custom tracepoints e.g. bpftrace the program needs to know how
-many bytes can be read safely even if it's just for dumping -- unless
-dynamic_array is a "fat pointer" that conveys its own size?
-(Sorry didn't take the time to check)
-
-So I see two ways forward:
- - We can give up on the 16 bytes split here, add the size in one of the
-fields, and print with %*ph using that size.
- - Or just give up and zero the tail; I'm surprised there's no "memcpy
-up to x bytes and zero up to y bytes if required" helper but Christian's
-suggestion of always doing memset first is probably not that bad
-performance-wise if someone's dumping these out already.
-
-I don't have a hard preference here, what do you think?
--- 
-Dominique Martinet | Asmadeus
+--=20
+Regards
+Yafang
 
