@@ -1,74 +1,96 @@
-Return-Path: <bpf+bounces-16559-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16560-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E4548029B8
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 02:11:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59ED78029B9
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 02:13:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC8DF280C62
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 01:11:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E803C1F20FCA
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 01:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7ABDA53;
-	Mon,  4 Dec 2023 01:11:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70ACA81E;
+	Mon,  4 Dec 2023 01:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aMXJTU0Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T44MvMZB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE64E4;
-	Sun,  3 Dec 2023 17:10:56 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c09d0b045so8376365e9.0;
-        Sun, 03 Dec 2023 17:10:56 -0800 (PST)
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC19CF
+	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 17:13:04 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6d8481094f9so2208227a34.3
+        for <bpf@vger.kernel.org>; Sun, 03 Dec 2023 17:13:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701652255; x=1702257055; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7z1N5dO8NDm/DCrI/ELJ3ueqyVV5fe5hp80A3mLNf8g=;
-        b=aMXJTU0QiWF/bPyMD+TlBDmXNrrLtvJPJjmS65i0njPkKJ/5iZr4fV1YkLxqgHVYq7
-         vugl8Rx2noow7iQiYiu14hpUQ0Uw+xS4XHHQkxgXoih/UjSMPT8RGNsLtVTmKUkccpHO
-         NEqpns+MlJcwtbl70ETAosh3q6cTEwIJqc/u+qQdMVjYQn/jDyhP2x2lgVXeUjeMImYu
-         rQiKCcX7mK0HTdGd499iy7M+BozSR/sG7wbqItXuVsrvpRRcF9AWltvoJ4p4DHTiJRYE
-         bD+vRXOu2y0QBeEDf5B34qq1nYNliqnJbrdQEiwR9anG/yxkmWfNSO/8AgsndRurI/6v
-         bixQ==
+        d=gmail.com; s=20230601; t=1701652383; x=1702257183; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FDXnBjtbC7OXz+KEjhRQvJJc0VVSLufkr3cTWwuURwI=;
+        b=T44MvMZB5KGne9q9BgFYtS7EodhQFOhtjpetbklbTY5OE0yfHGOxN+nUj/Q2/5RqXv
+         8qWbFOCmpiaVHDlTHvtMV1e3gUFDCkK60F4Fc1y2AzxStpQffBaoUz6SRI8JuVkQ+/1X
+         LSihTuM4MdMOlUiq7Er2ztLhYWqGFDq+VSzO4NsaxfJVwQ4VJ4zsuJDtKtU8e1+GbyEC
+         MP2SOhF2E0mplRhdRWOksVsiju+ZCIPWNrtfCneQYZzgSGIvSbgksTRNp99MNLNBMqtH
+         oMHo+ct4V5DsLjevaWC+jaasFKYUiJZphK6anLmyV8oicXsLP8PNKuJZWkI+fVqabVK7
+         58eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701652255; x=1702257055;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1701652383; x=1702257183;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7z1N5dO8NDm/DCrI/ELJ3ueqyVV5fe5hp80A3mLNf8g=;
-        b=wD5ZsT21f8iut+SI3ecSkxgF5/rJ7MoSAQhDw41EGWlWwK9l+zkb/sMAWymb0KEp7N
-         Wq5qSAQTfpFnOL7+7FFvwzBttmXlmilu9/TYX/a9y5bdLJ7vyend7OqVNNIUFD4iLdnh
-         yRS1pQ7pyUF+Nud57//IgM9TQmzAMTUzLaaFMgdFgoJtJPfwzlhfF39iYmAE63jVu5hl
-         PjVjslGNLrD8J7xlxVpWW7ZgZQnmK2S4z2SBmJTxrCyGPnyPy/TSPGZp9OG1/bif1fne
-         /TmskVV9X8XwbfW4dSabakrQswaqtMOaDxMmZxaOo63qmQI9/weLzgfOy41/XS44ynKF
-         Qk+Q==
-X-Gm-Message-State: AOJu0Ywjxz7RVj/V6vC1dwD8tPjiUMLhUd3pBfBHgV6VOy1tC68ljWzk
-	1QaNmFd8Tc0LRyx6QhLQ6p1G/bvos7gR2blQxiojiI7XIo+CdQ==
-X-Google-Smtp-Source: AGHT+IHbn6qn1Ma3CVdV3NIYkRzeuPMFp5sufb+8tQbZ6nBOrEWkpI/uAEFVTlCW1lU9CJ6dzRnY6SlSZAPvuSUjE/4=
-X-Received: by 2002:a05:600c:2286:b0:40b:5e59:99e2 with SMTP id
- 6-20020a05600c228600b0040b5e5999e2mr1408573wmf.258.1701652254691; Sun, 03 Dec
- 2023 17:10:54 -0800 (PST)
+        bh=FDXnBjtbC7OXz+KEjhRQvJJc0VVSLufkr3cTWwuURwI=;
+        b=q0SqvM/uHIjSHIxxucKoOr4PpRvV7uPBODmfyriGe/3KhdrYzdejG7hP4bip/FmKJY
+         mrBP4BHNnfWN5q8paY2Mb7Yz8XzvcGqj0HY//tqAyTQZSC2l6fp3XUBx8z4vjX8NS4Bg
+         6QNxTi3wg21iCVPFZtwiiyrEnRy8QySs7OHvLIN84XL5GU1Hvb1ClbMbpv86pipgQsZ9
+         SwT4DP08udCJ79vmB9EXkmXGyfHhWzeYsNm+NsVCLjCvBaSM1UiO/sCGf4mM7+doa4YM
+         v5vdP7hMRStdILZCXa/iljbw9fkr/pKE8Z18uk76WzIkvaynWPHuNeoU102YrogX15si
+         TkUA==
+X-Gm-Message-State: AOJu0YyjbF0sDvPyMF0AOzaEs0Yr+5G8UWKgJ6HDjSQeRqtNU7xnRWnC
+	HzwsVd8trhE06NcycTcqqSY3BDC/5+WHJw==
+X-Google-Smtp-Source: AGHT+IH8u7Sung5KSNHdqQUbAeMv9mo+Rd59pzKHsVIrSrEiSUkwUTGMyxN3uI12g+OKFJ3vwOywRw==
+X-Received: by 2002:a05:6830:1110:b0:6d9:a2e4:c5f1 with SMTP id w16-20020a056830111000b006d9a2e4c5f1mr538978otq.16.1701652383091;
+        Sun, 03 Dec 2023 17:13:03 -0800 (PST)
+Received: from andrei-framework.taildd130.ts.net ([2600:4041:599b:1100:b3d4:94c:3d56:e9ef])
+        by smtp.gmail.com with ESMTPSA id de16-20020ad45850000000b0067aab230ed9sm1836537qvb.21.2023.12.03.17.13.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Dec 2023 17:13:02 -0800 (PST)
+From: Andrei Matei <andreimatei1@gmail.com>
+To: bpf@vger.kernel.org
+Cc: Andrei Matei <andreimatei1@gmail.com>
+Subject: [PATCH bpf] bpf: minor logging improvement
+Date: Sun,  3 Dec 2023 20:12:48 -0500
+Message-Id: <20231204011248.2040084-1-andreimatei1@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CACkBjsZGEUaRCHsmaX=h-efVogsRfK1FPxmkgb0Os_frnHiNdw@mail.gmail.com>
- <CABWLseuvzphU7+1BxXnjdbBMbqYzvXH-OSX+2bKi6KMNnFiqcA@mail.gmail.com>
-In-Reply-To: <CABWLseuvzphU7+1BxXnjdbBMbqYzvXH-OSX+2bKi6KMNnFiqcA@mail.gmail.com>
-From: Andrei Matei <andreimatei1@gmail.com>
-Date: Sun, 3 Dec 2023 20:10:43 -0500
-Message-ID: <CABWLsetF=xAnL3go91u-J=uyZ_jf-TFrOPzSHt00DvJrKixymw@mail.gmail.com>
-Subject: Re: [Bug Report] bpf: zero access_size of stack causes array indix
- oob in check_stack_range_initialized()
-To: Hao Sun <sunhao.th@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Fixing in https://lore.kernel.org/bpf/20231204010139.2038464-1-andreimatei1@gmail.com/T/#u
+One place where we were logging a register was only logging the variable
+part, not also the fixed part.
 
-Thanks again for the report, Hao!
+Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+---
+ kernel/bpf/verifier.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index af2819d5c8ee..9cf410fd63f5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6834,8 +6834,8 @@ static int check_stack_access_within_bounds(
+ 			char tn_buf[48];
+ 
+ 			tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
+-			verbose(env, "invalid variable-offset%s stack R%d var_off=%s size=%d\n",
+-				err_extra, regno, tn_buf, access_size);
++			verbose(env, "invalid variable-offset%s stack R%d var_off=%s off=%d size=%d\n",
++				err_extra, regno, tn_buf, off, access_size);
+ 		}
+ 	}
+ 	return err;
+-- 
+2.40.1
+
 
