@@ -1,100 +1,163 @@
-Return-Path: <bpf+bounces-16566-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16567-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61535802DF5
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 10:12:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCF5A802E41
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 10:14:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9BC11F211F8
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 09:12:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74C0D280EA5
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 09:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F4414F94;
-	Mon,  4 Dec 2023 09:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D41F14F75;
+	Mon,  4 Dec 2023 09:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Oq2r/tZ4"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C0CD2
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 01:12:17 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SkHx52zLDz4f3mHR
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 17:12:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 148C21A076F
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 17:12:14 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgAHabfql21l18CnCg--.17454S2;
-	Mon, 04 Dec 2023 17:12:13 +0800 (CST)
-Subject: Re: [PATCH bpf v4 7/7] selftests/bpf: Test outer map update
- operations in syscall program
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E3CCD;
+	Mon,  4 Dec 2023 01:14:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=17YJ1z3ogS9ZFtbiaMgUZd7PQ1LHRkBWBWcBGoc/CJ8=; b=Oq2r/tZ4GMYvXmULCX+LD6Qfz7
+	HO9OVNz8XCXQMgxz/LWfORxgl/H3LTq81ngFJsgHC93qrKcMcjpBQX8v5qQhdci74NGvXZAJ/yVju
+	sK9gFvSFKKjG+KTta5qWhde5JaQQriDgSlX54kLf3MXV6oHLk1PYPA8HeGphIfHdNTawm8bbTLJrU
+	NgcMlwn6/lrZmRXbfPHQFRxpn4ftLCB5eM9fnRnJvlMZpH3BmDJrGqa4dnsA7VRIdxnJbQVajyNOi
+	Bn006jXGBXzTqb9dfS3GtKtm0DDTPpLydkfwONe+R1/uAJi3EvwQfUiJ18EbM5lGDJHCoVpl5xoSe
+	3fM7hPwA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rA51D-004JwZ-2M;
+	Mon, 04 Dec 2023 09:13:35 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 4D01F300472; Mon,  4 Dec 2023 10:13:34 +0100 (CET)
+Date: Mon, 4 Dec 2023 10:13:34 +0100
+From: Peter Zijlstra <peterz@infradead.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
-References: <20231130140120.1736235-1-houtao@huaweicloud.com>
- <20231130140120.1736235-8-houtao@huaweicloud.com>
- <20231203190410.qcyu3qmdkxavim2t@macbook-pro-49.dhcp.thefacebook.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <db491a00-81ad-9c9b-7ab1-e75742730994@huaweicloud.com>
-Date: Mon, 4 Dec 2023 17:12:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Cc: Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joao Moreira <joao@overdrivepizza.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231204091334.GM3818@noisy.programming.kicks-ass.net>
+References: <20231130133630.192490507@infradead.org>
+ <20231130134204.136058029@infradead.org>
+ <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231203190410.qcyu3qmdkxavim2t@macbook-pro-49.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgAHabfql21l18CnCg--.17454S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZr4UKr4UKFWrZr1UGryDJrb_yoWfAwc_uF
-	ykCr1kGrs8tryDtr15AF1kJF9rGasxuasrKFW8XFsrZr1DArWrZF9Y9ayDAw1xWw47JF9x
-	ZFs8twnIgr42gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbIkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
 
-Hi,
+On Sun, Dec 03, 2023 at 02:56:34PM -0800, Alexei Starovoitov wrote:
+> On Thu, Nov 30, 2023 at 5:43 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> >
+> >  void bpf_prog_kallsyms_del(struct bpf_prog *fp)
+> > @@ -691,6 +708,9 @@ void bpf_prog_kallsyms_del(struct bpf_pr
+> >                 return;
+> >
+> >         bpf_ksym_del(&fp->aux->ksym);
+> > +#ifdef CONFIG_FINEIBT
+> > +       bpf_ksym_del(&fp->aux->ksym_prefix);
+> > +#endif
+> >  }
+> 
+> Thank you for addressing all comments, but it panics during boot with:
+> 
+> [    3.109474] RIP: 0010:bpf_prog_kallsyms_del+0x10f/0x140
+> [    3.109867] Code: 26 e0 00 ff 05 32 dd dd 01 48 8d bb 80 03 00 00
+> 48 c7 c6 b8 b3 00 83 e8 ef 25 e0 00 48 8b 83 58 03 00 00 48 8b 8b 60
+> 03 00 00 <48> 89 48 08 48 89 01 4c 89 b3 60 03 00 00 48 c7 c7 10 0b 7b
+> 83 5b
+> [    3.111282] RSP: 0000:ffffc90000013e08 EFLAGS: 00010246
+> [    3.116968] Call Trace:
+> [    3.117163]  <TASK>
+> [    3.117328]  ? __die_body+0x68/0xb0
+> [    3.117599]  ? page_fault_oops+0x317/0x390
+> [    3.117909]  ? debug_objects_fill_pool+0x19/0x440
+> [    3.118283]  ? debug_objects_fill_pool+0x19/0x440
+> [    3.118715]  ? do_user_addr_fault+0x4cd/0x560
+> [    3.119045]  ? exc_page_fault+0x62/0x1c0
+> [    3.119350]  ? asm_exc_page_fault+0x26/0x30
+> [    3.119675]  ? bpf_prog_kallsyms_del+0x10f/0x140
+> [    3.120023]  ? bpf_prog_kallsyms_del+0x101/0x140
+> [    3.120381]  __bpf_prog_put_noref+0x12/0xf0
+> [    3.120704]  bpf_prog_put_deferred+0xe9/0x110
+> [    3.121035]  bpf_prog_put+0xbb/0xd0
+> [    3.121307]  bpf_prog_release+0x15/0x20
+> 
+> Adding the following:
+> 
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 5c84a935ba63..5013fd53adfd 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -709,6 +709,8 @@ void bpf_prog_kallsyms_del(struct bpf_prog *fp)
+> 
+>         bpf_ksym_del(&fp->aux->ksym);
+>  #ifdef CONFIG_FINEIBT
+> +       if (cfi_mode != CFI_FINEIBT)
+> +               return;
+>         bpf_ksym_del(&fp->aux->ksym_prefix);
+>  #endif
+>  }
+> 
+> fixes the boot issue, but test_progs is not happy.
 
-On 12/4/2023 3:04 AM, Alexei Starovoitov wrote:
-> On Thu, Nov 30, 2023 at 10:01:20PM +0800, Hou Tao wrote:
->>  
->> -	prog_load_attr.license = (long) license;
->> -	prog_load_attr.insns = (long) insns;
->> +	prog_load_attr.license = (unsigned long)license;
->> +	prog_load_attr.insns = (unsigned long)insns;
-> Maybes keep it as (long) ?
-> There are plenty of case where we cast a pointer to (long) because
-> it's less verbose. Signedness shouldn't really matter.
+Damn, I'm an idiot :-), I knew I should've boot tested all
+configurations again :/
 
-It matters for 32-bits host. Because insns and license are the pointers
-in kernel space, so the MSB of these pointer must be 1 under 32-bits
-host. Assuming the value of license is 0xc000-0000, if using (u64)(long)
-to cast the value of license, the final value will be
-0xffff-ffff-c000-0000, instead of 0x0000-0000-c000-0000.
+> Just running test_progs it splats right away:
+> 
+> [   74.047757] kmemleak: Found object by alias at 0xffffffffa0001d80
+> [   74.048272] CPU: 14 PID: 104 Comm: kworker/14:0 Tainted: G        W
+>  O       6.7.0-rc3-00702-g41c30fec304d-dirty #5241
+> [   74.049118] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [   74.050042] Workqueue: events bpf_prog_free_deferred
+> [   74.050448] Call Trace:
+> [   74.050663]  <TASK>
+> [   74.050841]  dump_stack_lvl+0x55/0x80
+> [   74.051141]  __find_and_remove_object+0xdb/0x110
+> [   74.051521]  kmemleak_free+0x41/0x70
+> [   74.051828]  vfree+0x36/0x130
 
-> Or use ptr_to_u64().
-
-Will add and use ptr_to_u64() in v5. Thanks for all these suggestions.
->
-> pw-bot: cr
-
+Durr, I'll see if I can get that stuff running locally, and otherwise
+play with the robot as you suggested. Thanks!
 
