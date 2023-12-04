@@ -1,265 +1,212 @@
-Return-Path: <bpf+bounces-16642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0D780409F
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 21:58:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CD978040EE
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 22:18:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4070B1C20AD8
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 20:58:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 481582810EA
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 21:18:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F293B292;
-	Mon,  4 Dec 2023 20:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDEF364D6;
+	Mon,  4 Dec 2023 21:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="fQoXufqY";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="a0G1dJFA"
+	dkim=pass (1024-bit key) header.d=fb.com header.i=@fb.com header.b="SPpGYPEa"
 X-Original-To: bpf@vger.kernel.org
-Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E456173B;
-	Mon,  4 Dec 2023 12:57:12 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 90418580A6A;
-	Mon,  4 Dec 2023 15:57:11 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 04 Dec 2023 15:57:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm3; t=1701723431; x=
-	1701730631; bh=Xy5DWhMcuaQWz9hFzj8IU9Hd0UISUG5+/EyW9nquCao=; b=f
-	QoXufqYcQIqHDb6el7DTUJd0fBEdJBUVU5fChFUUxqhhNptIPWA2GRfZjS5By+kM
-	TSZmQy0jNI4S4C3Xzcf3SQxzfJaIp/4rzSJwhtM3BLXoAcPtTYwhRdUtsc7Cq+YQ
-	/vNbJhiEN+Ih45VmOsGphKUYIfa4A4q/ZPylcUTjClRfYMa/DICvhVYDcC4HIZ8H
-	K8hgEexMFRkSPklKC373I8YYyKagom68fe9bWDqJZIEI3n92ydmOfPDPNJKSS9tb
-	e4gjLLKfV8FYwNwiYqCqvEtH5YJKa3aMV4e1WyPkqejMUzTinX5ew+VlBFTNVdSv
-	7Em7dEUtrLlCGLAo/lEkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1701723431; x=
-	1701730631; bh=Xy5DWhMcuaQWz9hFzj8IU9Hd0UISUG5+/EyW9nquCao=; b=a
-	0G1dJFA48CvQe6gUE0On96JanSsLf7wueO3F1B4613z0EoYzIg2yB63UoGRCsIsQ
-	NHF3yMLdOovVFVpDNXfv1ncdAlBYvn2Zns/c/XcqOYOc9+Z7y3YQYE9pvp6pVlhf
-	FYyPUI/egIzvJMLHKr/1/CPKLENAfHBOLsbJH5XcwoxrE+8u6du607mPmAE+3HLv
-	BzrhJinolZmi0agqWryGkTo/eGouP5Hzkhr6GJIjXTE4+HXreHRA6NVoIFWqMctv
-	gPaZFilQ9twbCtVNEIFHXehy43p3fzOp/Ryynnqo1IOhwaVTd0/X70xKevH4cZKD
-	mkJXAU7wBQtbF5mIEKDVw==
-X-ME-Sender: <xms:Jz1uZbbPJAWqw1hbkmdCf0OIc5cXLyn_tIjNkGvN7IdMolIJ0nQHKQ>
-    <xme:Jz1uZaYQCNvJrlAuauPZ8-Gl2lyEQM4sFCIiNi-SBtGpT8IrUT4d9Kgs_0kG480R1
-    a9pn8eCLfkLt3i3Iw>
-X-ME-Received: <xmr:Jz1uZd-SzMW3Gag7dTS2UNdDBlimaWKPgkpl-aeaIOCSICynrGW6bqvQXCsYv9PSrl7NOA_GG3laktaAgl3tPSnMMU8FPCuC3tiH6H6a4O8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejiedgudeggecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:Jz1uZRpPhhDVYqaEh3YnUGp3rYsAfraByBKMTWkzoCK6HD41pqIbow>
-    <xmx:Jz1uZWrOfGi_yx1eBdyltH_ddZPfrJRG8CMf-ebmYxHw1yD4YYeoQg>
-    <xmx:Jz1uZXS7NVV8FytT-dssTKaa9AlvgQaSEIx8k0D_KPPqIAQ5UhMphA>
-    <xmx:Jz1uZZ5L0Gpt67rr6UlJRtzZaa7l8ZKhmdZumwqyfXC4A2OaOy6g7A>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 4 Dec 2023 15:57:09 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: daniel@iogearbox.net,
-	ast@kernel.org,
-	davem@davemloft.net,
-	hawk@kernel.org,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	kuba@kernel.org,
-	shuah@kernel.org,
-	steffen.klassert@secunet.com,
-	antony.antony@secunet.com,
-	alexei.starovoitov@gmail.com,
-	yonghong.song@linux.dev,
-	eddyz87@gmail.com
-Cc: mykolal@fb.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devel@linux-ipsec.org
-Subject: [PATCH bpf-next v4 10/10] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-Date: Mon,  4 Dec 2023 13:56:30 -0700
-Message-ID: <ee451cb630f53ef9f71fed9af6fd516bc547468b.1701722991.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1701722991.git.dxu@dxuuu.xyz>
-References: <cover.1701722991.git.dxu@dxuuu.xyz>
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2980BAA
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 13:18:28 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4KH4gb011403
+	for <bpf@vger.kernel.org>; Mon, 4 Dec 2023 13:18:28 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=facebook; bh=0Zwehc64oEcwi2269R++Wz/d5uRyy4+/7iEKQpQpXjY=;
+ b=SPpGYPEas+A8C/8ZdT/x5Mjt3UeXSYkmgnpnaFxKYoe3s1kHGnCw2R8fpFJxT39ehKHp
+ m2lRJJkD5n1AVRXfkSz+6y7fxqGWWj0Swo4By9uLX48luvFoDlPP3hT6W0mXRRUaM6Of
+ Oz57RjgjZiUEZdXpmYUiVtVjMw4Dd7BQI7I= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3urm87b1nx-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 13:18:27 -0800
+Received: from twshared27564.02.ash8.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 4 Dec 2023 13:18:26 -0800
+Received: by devbig077.ldc1.facebook.com (Postfix, from userid 158236)
+	id 2BE5B284548A9; Mon,  4 Dec 2023 13:18:12 -0800 (PST)
+From: Dave Marchevsky <davemarchevsky@fb.com>
+To: <bpf@vger.kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann
+	<daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau
+	<martin.lau@kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Dave Marchevsky
+	<davemarchevsky@fb.com>
+Subject: [PATCH v1 bpf-next] selftests/bpf: Test bpf_kptr_xchg stashing of bpf_rb_root
+Date: Mon, 4 Dec 2023 13:17:22 -0800
+Message-ID: <20231204211722.571346-1-davemarchevsky@fb.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: Gnk36UcvhkNqmXZzC6bx4JNDvQck4cys
+X-Proofpoint-ORIG-GUID: Gnk36UcvhkNqmXZzC6bx4JNDvQck4cys
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_19,2023-12-04_01,2023-05-22_02
 
-This commit extends test_tunnel selftest to test the new XDP xfrm state
-lookup kfunc.
+There was some confusion amongst Meta sched_ext folks regarding whether
+stashing bpf_rb_root - the tree itself, rather than a single node - was
+supported. This patch adds a small test which demonstrates this
+functionality: a local kptr with rb_root is created, a node is created
+and added to the tree, then the tree is kptr_xchg'd into a mapval.
 
-Co-developed-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+Signed-off-by: Dave Marchevsky <davemarchevsky@fb.com>
 ---
- .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
- .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
- 2 files changed, 67 insertions(+), 4 deletions(-)
+ .../bpf/prog_tests/local_kptr_stash.c         | 23 ++++++++
+ .../selftests/bpf/progs/local_kptr_stash.c    | 53 +++++++++++++++++++
+ 2 files changed, 76 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-index 2d7f8fa82ebd..fc804095d578 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-@@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 1 mode tunnel "
-+			"spi %d reqid 1 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 2 mode tunnel "
-+			"spi %d reqid 2 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
- 	 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 1 mode tunnel "
-+		    "spi %d reqid 1 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
- 	/* root -> at_ns0 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 2 mode tunnel "
-+		    "spi %d reqid 2 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
- 			    .attach_point = BPF_TC_INGRESS);
-+	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
- 	struct test_tunnel_kern *skel = NULL;
- 	struct nstoken *nstoken;
-+	int xdp_prog_fd;
- 	int tc_prog_fd;
- 	int ifindex;
- 	int err;
-@@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
- 	if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
- 		goto done;
- 
-+	/* attach xdp prog to tunnel dev */
-+	xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-+	if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-+	if (!ASSERT_OK(err, "bpf_xdp_attach"))
-+		goto done;
-+
- 	/* ping from at_ns0 namespace test */
- 	nstoken = open_netns("at_ns0");
- 	err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-@@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
- 		goto done;
- 	if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
- 		goto done;
-+	if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-+		goto done;
- 
- done:
- 	delete_xfrm_tunnel();
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 3a59eb9c34de..c0dd38616562 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap) __ksym;
-+struct xfrm_state *
-+bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-+		       u32 opts__sz) __ksym;
-+void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
- 	return TC_ACT_OK;
+diff --git a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c b/=
+tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+index e6e50a394472..827e713f6cf1 100644
+--- a/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
++++ b/tools/testing/selftests/bpf/prog_tests/local_kptr_stash.c
+@@ -48,6 +48,27 @@ static void test_local_kptr_stash_plain(void)
+ 	local_kptr_stash__destroy(skel);
  }
- 
-+volatile int xfrm_replay_window = 0;
-+
-+SEC("xdp")
-+int xfrm_get_state_xdp(struct xdp_md *xdp)
+=20
++static void test_local_kptr_stash_local_with_root(void)
 +{
-+	struct bpf_xfrm_state_opts opts = {};
-+	struct xfrm_state *x = NULL;
-+	struct ip_esp_hdr *esph;
-+	struct bpf_dynptr ptr;
-+	u8 esph_buf[8] = {};
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+	u32 off;
++	LIBBPF_OPTS(bpf_test_run_opts, opts,
++		    .data_in =3D &pkt_v4,
++		    .data_size_in =3D sizeof(pkt_v4),
++		    .repeat =3D 1,
++	);
++	struct local_kptr_stash *skel;
++	int ret;
 +
-+	if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-+		goto out;
++	skel =3D local_kptr_stash__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "local_kptr_stash__open_and_load"))
++		return;
 +
-+	off = sizeof(struct ethhdr);
-+	iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-+	if (!iph || iph->protocol != IPPROTO_ESP)
-+		goto out;
++	ret =3D bpf_prog_test_run_opts(bpf_program__fd(skel->progs.stash_local_=
+with_root), &opts);
++	ASSERT_OK(ret, "local_kptr_stash_add_local_with_root run");
++	ASSERT_OK(opts.retval, "local_kptr_stash_add_local_with_root retval");
 +
-+	off += sizeof(struct iphdr);
-+	esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-+	if (!esph)
-+		goto out;
-+
-+	opts.netns_id = BPF_F_CURRENT_NETNS;
-+	opts.daddr.a4 = iph->daddr;
-+	opts.spi = esph->spi;
-+	opts.proto = IPPROTO_ESP;
-+	opts.family = AF_INET;
-+
-+	x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-+	if (!x || opts.error)
-+		goto out;
-+
-+	if (!x->replay_esn)
-+		goto out;
-+
-+	xfrm_replay_window = x->replay_esn->replay_window;
-+out:
-+	if (x)
-+		bpf_xdp_xfrm_state_release(x);
-+	return XDP_PASS;
++	local_kptr_stash__destroy(skel);
 +}
 +
- char _license[] SEC("license") = "GPL";
--- 
-2.42.1
+ static void test_local_kptr_stash_unstash(void)
+ {
+ 	LIBBPF_OPTS(bpf_test_run_opts, opts,
+@@ -115,6 +136,8 @@ void test_local_kptr_stash(void)
+ 		test_local_kptr_stash_simple();
+ 	if (test__start_subtest("local_kptr_stash_plain"))
+ 		test_local_kptr_stash_plain();
++	if (test__start_subtest("local_kptr_stash_local_with_root"))
++		test_local_kptr_stash_local_with_root();
+ 	if (test__start_subtest("local_kptr_stash_unstash"))
+ 		test_local_kptr_stash_unstash();
+ 	if (test__start_subtest("refcount_acquire_without_unstash"))
+diff --git a/tools/testing/selftests/bpf/progs/local_kptr_stash.c b/tools=
+/testing/selftests/bpf/progs/local_kptr_stash.c
+index 1769fdff6aea..75043ffc5dad 100644
+--- a/tools/testing/selftests/bpf/progs/local_kptr_stash.c
++++ b/tools/testing/selftests/bpf/progs/local_kptr_stash.c
+@@ -37,11 +37,18 @@ struct plain_local {
+ 	long data;
+ };
+=20
++struct local_with_root {
++	long key;
++	struct bpf_spin_lock l;
++	struct bpf_rb_root r __contains(node_data, node);
++};
++
+ struct map_value {
+ 	struct prog_test_ref_kfunc *not_kptr;
+ 	struct prog_test_ref_kfunc __kptr *val;
+ 	struct node_data __kptr *node;
+ 	struct plain_local __kptr *plain;
++	struct local_with_root __kptr *local_root;
+ };
+=20
+ /* This is necessary so that LLVM generates BTF for node_data struct
+@@ -65,6 +72,17 @@ struct {
+ 	__uint(max_entries, 2);
+ } some_nodes SEC(".maps");
+=20
++static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
++{
++	struct node_data *node_a;
++	struct node_data *node_b;
++
++	node_a =3D container_of(a, struct node_data, node);
++	node_b =3D container_of(b, struct node_data, node);
++
++	return node_a->key < node_b->key;
++}
++
+ static int create_and_stash(int idx, int val)
+ {
+ 	struct map_value *mapval;
+@@ -113,6 +131,41 @@ long stash_plain(void *ctx)
+ 	return 0;
+ }
+=20
++SEC("tc")
++long stash_local_with_root(void *ctx)
++{
++	struct local_with_root *res;
++	struct map_value *mapval;
++	struct node_data *n;
++	int idx =3D 0;
++
++	mapval =3D bpf_map_lookup_elem(&some_nodes, &idx);
++	if (!mapval)
++		return 1;
++
++	res =3D bpf_obj_new(typeof(*res));
++	if (!res)
++		return 2;
++	res->key =3D 41;
++
++	n =3D bpf_obj_new(typeof(*n));
++	if (!n) {
++		bpf_obj_drop(res);
++		return 3;
++	}
++
++	bpf_spin_lock(&res->l);
++	bpf_rbtree_add(&res->r, &n->node, less);
++	bpf_spin_unlock(&res->l);
++
++	res =3D bpf_kptr_xchg(&mapval->local_root, res);
++	if (res) {
++		bpf_obj_drop(res);
++		return 4;
++	}
++	return 0;
++}
++
+ SEC("tc")
+ long unstash_rb_node(void *ctx)
+ {
+--=20
+2.34.1
 
 
