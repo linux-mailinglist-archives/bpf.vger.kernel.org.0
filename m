@@ -1,160 +1,130 @@
-Return-Path: <bpf+bounces-16573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22E878031B1
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 12:43:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB1F8031C8
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 12:55:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF23AB20A3E
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 11:43:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1E8F1C20A35
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 11:55:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE3C22F18;
-	Mon,  4 Dec 2023 11:43:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CEDC2374B;
+	Mon,  4 Dec 2023 11:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=siemens.com header.i=florian.bezdeka@siemens.com header.b="ph2h0h5j"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEE3107;
-	Mon,  4 Dec 2023 03:43:26 -0800 (PST)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Vxp1Hac_1701690202;
-Received: from localhost(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0Vxp1Hac_1701690202)
-          by smtp.aliyun-inc.com;
-          Mon, 04 Dec 2023 19:43:24 +0800
-From: Philo Lu <lulie@linux.alibaba.com>
-To: netdev@vger.kernel.org
-Cc: edumazet@google.com,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	davem@davemloft.net,
-	dsahern@kernel.org,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	martin.lau@linux.dev,
-	linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	xuanzhuo@linux.alibaba.com,
-	dust.li@linux.alibaba.com,
-	alibuda@linux.alibaba.com,
-	guwen@linux.alibaba.com,
-	hengqi@linux.alibaba.com
-Subject: [PATCH net-next] tcp: add tracepoints for data send/recv/acked
-Date: Mon,  4 Dec 2023 19:43:22 +0800
-Message-Id: <20231204114322.9218-1-lulie@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+Received: from mta-65-227.siemens.flowmailer.net (mta-65-227.siemens.flowmailer.net [185.136.65.227])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAFD6D2
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 03:55:02 -0800 (PST)
+Received: by mta-65-227.siemens.flowmailer.net with ESMTPSA id 2023120411545905f032e4c8d49660ca
+        for <bpf@vger.kernel.org>;
+        Mon, 04 Dec 2023 12:55:00 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
+ d=siemens.com; i=florian.bezdeka@siemens.com;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
+ bh=DeAVJVh1/dmfA7n8KCr9e65gohS5SL4YYZz1yRamMmo=;
+ b=ph2h0h5jvGxuWKVsNS0TMd+fNjmiTxwfMkny+Ro6YD2+HKnOLi/CClvCRs5tLNpmSk0jh2
+ b2Xas1pUz9iB6dBJVNhJnkJ3JLnWbdX0OqFTVBA38AMksw93F1/n2DVd92g1cldYwMwE1iYt
+ KYrV+sFm2RBFyevOjoDdSCwH2EABY=;
+Message-ID: <8602c88c98fd722db8e164a1520c56aebfa64db7.camel@siemens.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
+ Time support to XDP ZC
+From: Florian Bezdeka <florian.bezdeka@siemens.com>
+To: Jesper Dangaard Brouer <hawk@kernel.org>, Song Yoong Siang
+ <yoong.siang.song@intel.com>, "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Bjorn Topel
+ <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>, Maciej
+ Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon
+ <jonathan.lemon@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
+ Tariq Toukan <tariqt@nvidia.com>, Willem de Bruijn <willemb@google.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Andrii Nakryiko
+ <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan
+ <shuah@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose
+ Abreu <joabreu@synopsys.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-doc@vger.kernel.org, bpf@vger.kernel.org, xdp-hints@xdp-project.net, 
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org,  linux-kselftest@vger.kernel.org
+Date: Mon, 04 Dec 2023 12:54:56 +0100
+In-Reply-To: <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
+References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
+	 <20231203165129.1740512-3-yoong.siang.song@intel.com>
+	 <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Flowmailer-Platform: Siemens
+Feedback-ID: 519:519-68982:519-21489:flowmailer
 
-Add 3 tracepoints, namely tcp_data_send/tcp_data_recv/tcp_data_acked,
-which will be called every time a tcp data packet is sent, received, and
-acked.
-tcp_data_send: called after a data packet is sent.
-tcp_data_recv: called after a data packet is receviced.
-tcp_data_acked: called after a valid ack packet is processed (some sent
-data are ackknowledged).
+On Mon, 2023-12-04 at 11:36 +0100, Jesper Dangaard Brouer wrote:
+> On 12/3/23 17:51, Song Yoong Siang wrote:
+> > This patch enables Launch Time (Time-Based Scheduling) support to XDP z=
+ero
+> > copy via XDP Tx metadata framework.
+> >=20
+> > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
+> > ---
+> >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
+>=20
+> As requested before, I think we need to see another driver implementing=
+=20
+> this.
+>=20
+> I propose driver igc and chip i225.
 
-We use these callbacks for fine-grained tcp monitoring, which collects
-and analyses every tcp request/response event information. The whole
-system has been described in SIGMOD'18 (see
-https://dl.acm.org/doi/pdf/10.1145/3183713.3190659 for details). To
-achieve this with bpf, we require hooks for data events that call bpf
-prog (1) when any data packet is sent/received/acked, and (2) after
-critical tcp state variables have been updated (e.g., snd_una, snd_nxt,
-rcv_nxt). However, existing bpf hooks cannot meet our requirements.
-Besides, these tracepoints help to debug tcp when data send/recv/acked.
+igc support would be really nice and highly appreciated. There are a
+lot of tests running here with that chip (i225/i226) / driver (igc)
+combination. Let me know if we can support somehow, testing included.
 
-Though kretprobe/fexit can also be used to collect these information,
-they will not work if the kernel functions get inlined. Considering the
-stability, we prefer tracepoint as the solution.
+>=20
+> The interesting thing for me is to see how the LaunchTime max 1 second
+> into the future[1] is handled code wise. One suggestion is to add a=20
+> section to Documentation/networking/xsk-tx-metadata.rst per driver that=
+=20
+> mentions/documents these different hardware limitations.  It is natural=
+=20
+> that different types of hardware have limitations.  This is a close-to=
+=20
+> hardware-level abstraction/API, and IMHO as long as we document the=20
+> limitations we can expose this API without too many limitations for more=
+=20
+> capable hardware.
+>=20
+>   [1]=20
+> https://github.com/xdp-project/xdp-project/blob/master/areas/tsn/code01_f=
+ollow_qdisc_TSN_offload.org#setup-code-driver-igb
+>=20
+> This stmmac driver and Intel Tiger Lake CPU must also have some limit on=
+=20
+> how long into the future it will/can schedule packets?
+>=20
+>=20
+> People from xdp-hints list must make their voice hear if they want i210=
+=20
+> and igb driver support, because it have even-more hardware limitations,=
+=20
+> see [1] (E.g. only TX queue 0 and 1 supports LaunchTime). BUT I know=20
+> some have this hardware in production and might be motivated to get a=20
+> functioning driver with this feature?
 
-Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
----
- include/trace/events/tcp.h | 21 +++++++++++++++++++++
- net/ipv4/tcp_input.c       |  4 ++++
- net/ipv4/tcp_output.c      |  2 ++
- 3 files changed, 27 insertions(+)
+i210 support would be nice, that would allow us to compare some test
+setups with different NICs. In addition it would simplify some test
+setups. For now, IMHO igc is more important.
 
-diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
-index 7b1ddffa3dfc..1423f7cb73f9 100644
---- a/include/trace/events/tcp.h
-+++ b/include/trace/events/tcp.h
-@@ -113,6 +113,13 @@ DEFINE_EVENT(tcp_event_sk_skb, tcp_send_reset,
- 	TP_ARGS(sk, skb)
- );
- 
-+DEFINE_EVENT(tcp_event_sk_skb, tcp_data_recv,
-+
-+	TP_PROTO(const struct sock *sk, const struct sk_buff *skb),
-+
-+	TP_ARGS(sk, skb)
-+);
-+
- /*
-  * tcp event with arguments sk
-  *
-@@ -187,6 +194,20 @@ DEFINE_EVENT(tcp_event_sk, tcp_rcv_space_adjust,
- 	TP_ARGS(sk)
- );
- 
-+DEFINE_EVENT(tcp_event_sk, tcp_data_send,
-+
-+	TP_PROTO(struct sock *sk),
-+
-+	TP_ARGS(sk)
-+);
-+
-+DEFINE_EVENT(tcp_event_sk, tcp_data_acked,
-+
-+	TP_PROTO(struct sock *sk),
-+
-+	TP_ARGS(sk)
-+);
-+
- TRACE_EVENT(tcp_retransmit_synack,
- 
- 	TP_PROTO(const struct sock *sk, const struct request_sock *req),
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index bcb55d98004c..edb1e24a3423 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -824,6 +824,8 @@ static void tcp_event_data_recv(struct sock *sk, struct sk_buff *skb)
- 
- 	now = tcp_jiffies32;
- 
-+	trace_tcp_data_recv(sk, skb);
-+
- 	if (!icsk->icsk_ack.ato) {
- 		/* The _first_ data packet received, initialize
- 		 * delayed ACK engine.
-@@ -3486,6 +3488,8 @@ static int tcp_clean_rtx_queue(struct sock *sk, const struct sk_buff *ack_skb,
- 		}
- 	}
- #endif
-+
-+	trace_tcp_data_acked(sk);
- 	return flag;
- }
- 
-diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
-index eb13a55d660c..cb6f2af55ce2 100644
---- a/net/ipv4/tcp_output.c
-+++ b/net/ipv4/tcp_output.c
-@@ -2821,6 +2821,8 @@ static bool tcp_write_xmit(struct sock *sk, unsigned int mss_now, int nonagle,
- 		/* Send one loss probe per tail loss episode. */
- 		if (push_one != 2)
- 			tcp_schedule_loss_probe(sk, false);
-+
-+		trace_tcp_data_send(sk);
- 		return false;
- 	}
- 	return !tp->packets_out && !tcp_write_queue_empty(sk);
--- 
-2.32.0.3.g01195cf9f
+>=20
+> --Jesper
 
 
