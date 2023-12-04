@@ -1,115 +1,112 @@
-Return-Path: <bpf+bounces-16571-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16572-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E33F3803075
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 11:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 013A680314E
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 12:12:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70034280F83
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 10:36:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AADD9280EA4
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 11:12:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9F97224EC;
-	Mon,  4 Dec 2023 10:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6DDA22EE7;
+	Mon,  4 Dec 2023 11:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TYuJbBEO"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SJZWmelL"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2402022333;
-	Mon,  4 Dec 2023 10:36:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B651CC433C7;
-	Mon,  4 Dec 2023 10:36:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701686198;
-	bh=+ErQN2WS12/khFYfpQDZFxvXogAuk59InCRmaNowfS4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=TYuJbBEOWc7KkHydu2jfldkno0up5yHsG0uUho4wBtYHENJrIhEzopw828B8nYR2y
-	 /Bq7E40/MYPd1WbSuMXOvrTR5LHNu4Nyf/Kw+gB/7gkQzftmk1CpVYV9eJwBzY35J7
-	 xEUZGCUu5mNhYCftzglLku0Qv8rqkxUO3hFH3lqEzc07PY3VLfg/jHqko9fsaF3gZi
-	 n60G9Q65Bc1Acq6pmo9DI1XvzmOdhIgAhp4s7D3JCsTjOCRoMf5DFu4Adbt8rs1jkb
-	 JUYwE//FlD7965G/pbx4+GWSA9D9XyXOvGaEDUVAyM3lQkuP2ld5EEhAtkvcn/6u8N
-	 p2QNPiNTkbN1g==
-Message-ID: <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
-Date: Mon, 4 Dec 2023 11:36:30 +0100
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA881CC;
+	Mon,  4 Dec 2023 03:12:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=57qN1iQssrdoPxO3vjOJxY+KkICDSFEOHy7vEhypSQY=; b=SJZWmelLjacxjQSc2rHFwC2yAL
+	jTj9QZTX0X4Po4XPpfbs7mcPqcRffTzF+bRxA6cc+E5pWWustakRYKEHFrKYdsNMy0O3vYtMgKPqD
+	g6mXsMan1PhPEuOos6p54MK0NRN6dhfjkQFxjjekcKPgEUo/P8hMw93tOmEpoCTiUedvGyLRD8Z9D
+	HLkoFDqCUrQBEg2UU8X7XyyVtMWxis4xqXdL5iszhpV2f0OjzCwzyI6Idp1VXXqqWoC3vZQiQNbY4
+	zqZ1Mcm2rpTcgt+Qe43CxSMZDe3gBiRFLdStRojeDIPpxLyqyFTKjjgekBA/xZqWFFnX93kfXBC7a
+	/EPIZEzw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rA6rJ-000b3j-D2; Mon, 04 Dec 2023 11:11:29 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 6305A3003F0; Mon,  4 Dec 2023 12:11:28 +0100 (CET)
+Date: Mon, 4 Dec 2023 12:11:28 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joao Moreira <joao@overdrivepizza.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231204111128.GV8262@noisy.programming.kicks-ass.net>
+References: <20231130133630.192490507@infradead.org>
+ <20231130134204.136058029@infradead.org>
+ <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
+ <20231204091334.GM3818@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch Time support to
- XDP ZC
-Content-Language: en-US
-To: Song Yoong Siang <yoong.siang.song@intel.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Bjorn Topel <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@google.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Willem de Bruijn <willemb@google.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Shuah Khan <shuah@kernel.org>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, bpf@vger.kernel.org, xdp-hints@xdp-project.net,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kselftest@vger.kernel.org
-References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
- <20231203165129.1740512-3-yoong.siang.song@intel.com>
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20231203165129.1740512-3-yoong.siang.song@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204091334.GM3818@noisy.programming.kicks-ass.net>
 
+On Mon, Dec 04, 2023 at 10:13:34AM +0100, Peter Zijlstra wrote:
 
-
-On 12/3/23 17:51, Song Yoong Siang wrote:
-> This patch enables Launch Time (Time-Based Scheduling) support to XDP zero
-> copy via XDP Tx metadata framework.
+> > Just running test_progs it splats right away:
+> > 
+> > [   74.047757] kmemleak: Found object by alias at 0xffffffffa0001d80
+> > [   74.048272] CPU: 14 PID: 104 Comm: kworker/14:0 Tainted: G        W
+> >  O       6.7.0-rc3-00702-g41c30fec304d-dirty #5241
+> > [   74.049118] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > [   74.050042] Workqueue: events bpf_prog_free_deferred
+> > [   74.050448] Call Trace:
+> > [   74.050663]  <TASK>
+> > [   74.050841]  dump_stack_lvl+0x55/0x80
+> > [   74.051141]  __find_and_remove_object+0xdb/0x110
+> > [   74.051521]  kmemleak_free+0x41/0x70
+> > [   74.051828]  vfree+0x36/0x130
 > 
-> Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
-> ---
->   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
+> Durr, I'll see if I can get that stuff running locally, and otherwise
+> play with the robot as you suggested. Thanks!
 
-As requested before, I think we need to see another driver implementing 
-this.
+I think it is bpf_jit_binary_pack_hdr(), which is using prog->bpf_func
+as a start address for the image, instead of jit_data->image.
 
-I propose driver igc and chip i225.
+This used to be true, but now it's offset.
 
-The interesting thing for me is to see how the LaunchTime max 1 second
-into the future[1] is handled code wise. One suggestion is to add a 
-section to Documentation/networking/xsk-tx-metadata.rst per driver that 
-mentions/documents these different hardware limitations.  It is natural 
-that different types of hardware have limitations.  This is a close-to 
-hardware-level abstraction/API, and IMHO as long as we document the 
-limitations we can expose this API without too many limitations for more 
-capable hardware.
-
-  [1] 
-https://github.com/xdp-project/xdp-project/blob/master/areas/tsn/code01_follow_qdisc_TSN_offload.org#setup-code-driver-igb
-
-This stmmac driver and Intel Tiger Lake CPU must also have some limit on 
-how long into the future it will/can schedule packets?
-
-
-People from xdp-hints list must make their voice hear if they want i210 
-and igb driver support, because it have even-more hardware limitations, 
-see [1] (E.g. only TX queue 0 and 1 supports LaunchTime). BUT I know 
-some have this hardware in production and might be motivated to get a 
-functioning driver with this feature?
-
---Jesper
+Let me see what to do about that...
 
