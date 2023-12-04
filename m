@@ -1,96 +1,117 @@
-Return-Path: <bpf+bounces-16560-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16561-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59ED78029B9
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 02:13:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BFFD802D1C
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 09:26:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E803C1F20FCA
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 01:13:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 305352809B1
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 08:26:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70ACA81E;
-	Mon,  4 Dec 2023 01:13:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22904E55F;
+	Mon,  4 Dec 2023 08:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T44MvMZB"
+	dkim=pass (2048-bit key) header.d=secunet.com header.i=@secunet.com header.b="KwWu3Bpt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC19CF
-	for <bpf@vger.kernel.org>; Sun,  3 Dec 2023 17:13:04 -0800 (PST)
-Received: by mail-ot1-x330.google.com with SMTP id 46e09a7af769-6d8481094f9so2208227a34.3
-        for <bpf@vger.kernel.org>; Sun, 03 Dec 2023 17:13:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701652383; x=1702257183; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FDXnBjtbC7OXz+KEjhRQvJJc0VVSLufkr3cTWwuURwI=;
-        b=T44MvMZB5KGne9q9BgFYtS7EodhQFOhtjpetbklbTY5OE0yfHGOxN+nUj/Q2/5RqXv
-         8qWbFOCmpiaVHDlTHvtMV1e3gUFDCkK60F4Fc1y2AzxStpQffBaoUz6SRI8JuVkQ+/1X
-         LSihTuM4MdMOlUiq7Er2ztLhYWqGFDq+VSzO4NsaxfJVwQ4VJ4zsuJDtKtU8e1+GbyEC
-         MP2SOhF2E0mplRhdRWOksVsiju+ZCIPWNrtfCneQYZzgSGIvSbgksTRNp99MNLNBMqtH
-         oMHo+ct4V5DsLjevaWC+jaasFKYUiJZphK6anLmyV8oicXsLP8PNKuJZWkI+fVqabVK7
-         58eQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701652383; x=1702257183;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FDXnBjtbC7OXz+KEjhRQvJJc0VVSLufkr3cTWwuURwI=;
-        b=q0SqvM/uHIjSHIxxucKoOr4PpRvV7uPBODmfyriGe/3KhdrYzdejG7hP4bip/FmKJY
-         mrBP4BHNnfWN5q8paY2Mb7Yz8XzvcGqj0HY//tqAyTQZSC2l6fp3XUBx8z4vjX8NS4Bg
-         6QNxTi3wg21iCVPFZtwiiyrEnRy8QySs7OHvLIN84XL5GU1Hvb1ClbMbpv86pipgQsZ9
-         SwT4DP08udCJ79vmB9EXkmXGyfHhWzeYsNm+NsVCLjCvBaSM1UiO/sCGf4mM7+doa4YM
-         v5vdP7hMRStdILZCXa/iljbw9fkr/pKE8Z18uk76WzIkvaynWPHuNeoU102YrogX15si
-         TkUA==
-X-Gm-Message-State: AOJu0YyjbF0sDvPyMF0AOzaEs0Yr+5G8UWKgJ6HDjSQeRqtNU7xnRWnC
-	HzwsVd8trhE06NcycTcqqSY3BDC/5+WHJw==
-X-Google-Smtp-Source: AGHT+IH8u7Sung5KSNHdqQUbAeMv9mo+Rd59pzKHsVIrSrEiSUkwUTGMyxN3uI12g+OKFJ3vwOywRw==
-X-Received: by 2002:a05:6830:1110:b0:6d9:a2e4:c5f1 with SMTP id w16-20020a056830111000b006d9a2e4c5f1mr538978otq.16.1701652383091;
-        Sun, 03 Dec 2023 17:13:03 -0800 (PST)
-Received: from andrei-framework.taildd130.ts.net ([2600:4041:599b:1100:b3d4:94c:3d56:e9ef])
-        by smtp.gmail.com with ESMTPSA id de16-20020ad45850000000b0067aab230ed9sm1836537qvb.21.2023.12.03.17.13.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Dec 2023 17:13:02 -0800 (PST)
-From: Andrei Matei <andreimatei1@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Andrei Matei <andreimatei1@gmail.com>
-Subject: [PATCH bpf] bpf: minor logging improvement
-Date: Sun,  3 Dec 2023 20:12:48 -0500
-Message-Id: <20231204011248.2040084-1-andreimatei1@gmail.com>
-X-Mailer: git-send-email 2.40.1
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320DFFE;
+	Mon,  4 Dec 2023 00:25:50 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+	by a.mx.secunet.com (Postfix) with ESMTP id E4AA3204D9;
+	Mon,  4 Dec 2023 09:25:47 +0100 (CET)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+	by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id hvPwaSxxYUiK; Mon,  4 Dec 2023 09:25:47 +0100 (CET)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by a.mx.secunet.com (Postfix) with ESMTPS id 4C40920078;
+	Mon,  4 Dec 2023 09:25:47 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 a.mx.secunet.com 4C40920078
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=secunet.com;
+	s=202301; t=1701678347;
+	bh=6LGB45I5byCoMEvvTmFWKfhjgGrm1+u7IAc5pF3fXcc=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+	b=KwWu3BptcKE5mMLWl8mHeIi9qJxIyxohZ3pyPiU8GufgBcZRy11AsRCirUPTY3RQ5
+	 VCuwAOdD4D+GLjwzzqx1CbPm/IV7UUyKjO5zDaHy7JJ76KnHdWhkYiJBa1+jQVCd8/
+	 WhCMr8qRJOI7Oe6Z6dM/unK4csL4qMFT2PaB9f4kbIaooD4Ks7XPzx6bo99hCXx/Pv
+	 B9U4v3BDF/XeDlHwKkMgRtWDKt0SX0DWReAbIC1e+0lAfqcmxD1TmpeUi6WkrEFUHl
+	 D0oGMrMRGiFTY9e/9xvWryQ0LkLVPlrF2/+GQIVr9TUbardkk3RRGkhURoBQiqNKzU
+	 5owz2QNMth0Qg==
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+	by mailout2.secunet.com (Postfix) with ESMTP id 164F580004A;
+	Mon,  4 Dec 2023 09:25:47 +0100 (CET)
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 4 Dec 2023 09:25:46 +0100
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.34; Mon, 4 Dec
+ 2023 09:25:46 +0100
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+	id 49F6131811E6; Mon,  4 Dec 2023 09:25:46 +0100 (CET)
+Date: Mon, 4 Dec 2023 09:25:46 +0100
+From: Steffen Klassert <steffen.klassert@secunet.com>
+To: Daniel Xu <dxu@dxuuu.xyz>
+CC: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Network Development
+	<netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, bpf
+	<bpf@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>, "open
+ list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+	<antony.antony@secunet.com>, Yonghong Song <yonghong.song@linux.dev>, Eddy Z
+	<eddyz87@gmail.com>, <devel@linux-ipsec.org>, Eyal Birger
+	<eyal.birger@gmail.com>
+Subject: Re: [PATCH ipsec-next v3 0/9] Add bpf_xdp_get_xfrm_state() kfunc
+Message-ID: <ZW2NCm/pIthdpNgF@gauss3.secunet.de>
+References: <cover.1701462010.git.dxu@dxuuu.xyz>
+ <CAADnVQKWrvec6ap_7O0Z5uAJe-pdrhuJk8LRkmWvGMM4iF9Frg@mail.gmail.com>
+ <dkzlpw6sj7we5xteyvbwxufqzg6axwlrvb4arq23ecaiy5ayok@jg52fqjr4ftf>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <dkzlpw6sj7we5xteyvbwxufqzg6axwlrvb4arq23ecaiy5ayok@jg52fqjr4ftf>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 
-One place where we were logging a register was only logging the variable
-part, not also the fixed part.
+On Fri, Dec 01, 2023 at 05:16:04PM -0700, Daniel Xu wrote:
+> On Fri, Dec 01, 2023 at 04:10:18PM -0800, Alexei Starovoitov wrote:
+> > On Fri, Dec 1, 2023 at 12:23 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > >
+> > >  include/net/xfrm.h                            |   9 +
+> > >  net/xfrm/Makefile                             |   1 +
+> > >  net/xfrm/xfrm_policy.c                        |   2 +
+> > >  net/xfrm/xfrm_state_bpf.c                     | 128 ++++++++++++++
+> > >  tools/lib/bpf/bpf_core_read.h                 |  34 ++++
+> > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 162 +++++++++++++++++-
+> > >  .../selftests/bpf/prog_tests/verifier.c       |   2 +
+> > >  tools/testing/selftests/bpf/progs/bpf_misc.h  |   1 +
+> > >  .../selftests/bpf/progs/bpf_tracing_net.h     |   1 +
+> > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 138 ++++++++-------
+> > >  .../bpf/progs/verifier_bitfield_write.c       | 100 +++++++++++
+> > >  tools/testing/selftests/bpf/test_loader.c     |   7 +
+> > >  tools/testing/selftests/bpf/test_tunnel.sh    |  92 ----------
+> > >  13 files changed, 522 insertions(+), 155 deletions(-)
+> > 
+> > I really think this should go via bpf-next tree.
+> > The bpf changes are much bigger than ipsec.
+> 
+> Ack. Ended up picking up a lot of stuff along the way.
 
-Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
----
- kernel/bpf/verifier.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'm fine with merging this via the bpf-next tree.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index af2819d5c8ee..9cf410fd63f5 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -6834,8 +6834,8 @@ static int check_stack_access_within_bounds(
- 			char tn_buf[48];
- 
- 			tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off);
--			verbose(env, "invalid variable-offset%s stack R%d var_off=%s size=%d\n",
--				err_extra, regno, tn_buf, access_size);
-+			verbose(env, "invalid variable-offset%s stack R%d var_off=%s off=%d size=%d\n",
-+				err_extra, regno, tn_buf, off, access_size);
- 		}
- 	}
- 	return err;
--- 
-2.40.1
+Please consider to merge the bpf hepler functions
+to one file. We have already xfrm_interface_bpf.c
+and now you introduce xfrm_state_bpf.c.
 
+Try to merge this into a single xfrm_bpf.c file.
 
