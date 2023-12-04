@@ -1,221 +1,100 @@
-Return-Path: <bpf+bounces-16565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC4D802DB3
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 09:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61535802DF5
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 10:12:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B28E1F21167
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 08:59:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9BC11F211F8
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 09:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D26C11722;
-	Mon,  4 Dec 2023 08:59:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jAYaC39+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90F4414F94;
+	Mon,  4 Dec 2023 09:12:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854C083;
-	Mon,  4 Dec 2023 00:59:28 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2ca0715f0faso5490491fa.0;
-        Mon, 04 Dec 2023 00:59:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701680367; x=1702285167; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zLkzq4LH7qNlQ4R2u0+qoSFWaByEk2XvcwE8gCptUKs=;
-        b=jAYaC39+pi18OkhVSnnxRUdhCOzE+J2SuWEAlT8EaKRILmEDV5T3cDhjhnyW2qSLvF
-         vWglB0wT6Hr7lnhFJZDG7pPXnWWp3pqsKtttW+W/Dj2LNOhffMNy8OGcGdySH+vlccIm
-         1ufzwPmBnCLEGy7JJgjdm3c53IRQ+N/rvFLvdoWuJ31HBY5TvoLP1i/dNt6K9ExYqk0T
-         c0bf5dIaEQih3M0mEsD259gqNcbnOHwUhQNVIlfXyl6G1ZdeZXx85IOgSzJqchCgPIbH
-         sgHC0fshUQ/JMjG6IAjCUQjYRbjmqWoUolkn5NncOMpxmN9UJ6mBZuwflAx8KXu8RkE8
-         Rzfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701680367; x=1702285167;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zLkzq4LH7qNlQ4R2u0+qoSFWaByEk2XvcwE8gCptUKs=;
-        b=Y3uCvIgKrgY6DW1SC8nMrCQhzWZ5Ia2NqY0ZkdlSwALj5xvKXv547eCLFRjPEn1Sce
-         4hKL8iKFBVO6dQftj8iirqHwqc3KDt0qLm/uqdbbUrivCYSg8LCp/+EIZd50r/6PMyRq
-         p+/L2X8jGoxcPj3f2J1F68iXT/5ribjD7iPs9TvG29q+nT8+Y/7/SC838ZMix5Ye2qIT
-         tZcZ45J99hzh0hkwNPXSkE5IRkgXUUeD/QdBlVmaszoRdlj3H90w706vilzSun3lOHAR
-         w8kZ9z7sXPWTLrYBIvFNrt/7F6QSlBRyl0noOPV/UpZtpnrEVfoqSShW5Y16kgjlrgGB
-         0aYw==
-X-Gm-Message-State: AOJu0Yz3/UK6+d4n+xLT5ZwwjTJqmiHJdAWD5Dgb/p+kSZtyQW8jTCFs
-	IgvITTMj3oASK9kiAW0GeNw=
-X-Google-Smtp-Source: AGHT+IE82gdSoQHkIX6sW/TGs1kWdZkYu7hNPBJN6aj+F37YHJCBIYDbXsGrUffPnYSoFa8FuAy5Sw==
-X-Received: by 2002:a2e:3814:0:b0:2c9:f71f:c00f with SMTP id f20-20020a2e3814000000b002c9f71fc00fmr1101183lja.30.1701680366458;
-        Mon, 04 Dec 2023 00:59:26 -0800 (PST)
-Received: from localhost.localdomain ([93.175.11.252])
-        by smtp.gmail.com with ESMTPSA id o5-20020a05651c050500b002ca0abab79bsm108294ljp.4.2023.12.04.00.59.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 00:59:26 -0800 (PST)
-From: Daniil Maximov <daniil31415it@gmail.com>
-To: Egor Pomozov <epomozov@marvell.com>
-Cc: Daniil Maximov <daniil31415it@gmail.com>,
-	Igor Russkikh <irusskikh@marvell.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Taehee Yoo <ap420073@gmail.com>,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] net: atlantic: Fix NULL dereference of skb pointer in
-Date: Mon,  4 Dec 2023 11:58:10 +0300
-Message-Id: <20231204085810.1681386-1-daniil31415it@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C0CD2
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 01:12:17 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SkHx52zLDz4f3mHR
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 17:12:09 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 148C21A076F
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 17:12:14 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgAHabfql21l18CnCg--.17454S2;
+	Mon, 04 Dec 2023 17:12:13 +0800 (CST)
+Subject: Re: [PATCH bpf v4 7/7] selftests/bpf: Test outer map update
+ operations in syscall program
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ "Paul E . McKenney" <paulmck@kernel.org>, houtao1@huawei.com
+References: <20231130140120.1736235-1-houtao@huaweicloud.com>
+ <20231130140120.1736235-8-houtao@huaweicloud.com>
+ <20231203190410.qcyu3qmdkxavim2t@macbook-pro-49.dhcp.thefacebook.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <db491a00-81ad-9c9b-7ab1-e75742730994@huaweicloud.com>
+Date: Mon, 4 Dec 2023 17:12:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231203190410.qcyu3qmdkxavim2t@macbook-pro-49.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgAHabfql21l18CnCg--.17454S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZr4UKr4UKFWrZr1UGryDJrb_yoWfAwc_uF
+	ykCr1kGrs8tryDtr15AF1kJF9rGasxuasrKFW8XFsrZr1DArWrZF9Y9ayDAw1xWw47JF9x
+	ZFs8twnIgr42gjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbIkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-If is_ptp_ring == true in the loop of __aq_ring_xdp_clean function,
-then a timestamp is stored from a packet in a field of skb object,
-which is not allocated at the moment of the call (skb == NULL).
+Hi,
 
-Generalize aq_ptp_extract_ts and other affected functions so they don't
-work with struct sk_buff*, but with struct skb_shared_hwtstamps*.
+On 12/4/2023 3:04 AM, Alexei Starovoitov wrote:
+> On Thu, Nov 30, 2023 at 10:01:20PM +0800, Hou Tao wrote:
+>>  
+>> -	prog_load_attr.license = (long) license;
+>> -	prog_load_attr.insns = (long) insns;
+>> +	prog_load_attr.license = (unsigned long)license;
+>> +	prog_load_attr.insns = (unsigned long)insns;
+> Maybes keep it as (long) ?
+> There are plenty of case where we cast a pointer to (long) because
+> it's less verbose. Signedness shouldn't really matter.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE
+It matters for 32-bits host. Because insns and license are the pointers
+in kernel space, so the MSB of these pointer must be 1 under 32-bits
+host. Assuming the value of license is 0xc000-0000, if using (u64)(long)
+to cast the value of license, the final value will be
+0xffff-ffff-c000-0000, instead of 0x0000-0000-c000-0000.
 
-Fixes: 26efaef759a1 ("net: atlantic: Implement xdp data plane")
-Signed-off-by: Daniil Maximov <daniil31415it@gmail.com>
----
- .../net/ethernet/aquantia/atlantic/aq_ptp.c    | 10 +++++-----
- .../net/ethernet/aquantia/atlantic/aq_ptp.h    |  4 ++--
- .../net/ethernet/aquantia/atlantic/aq_ring.c   | 18 ++++++++++++------
- 3 files changed, 19 insertions(+), 13 deletions(-)
+> Or use ptr_to_u64().
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-index 80b44043e6c5..28c9b6f1a54f 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.c
-@@ -553,17 +553,17 @@ void aq_ptp_tx_hwtstamp(struct aq_nic_s *aq_nic, u64 timestamp)
- 
- /* aq_ptp_rx_hwtstamp - utility function which checks for RX time stamp
-  * @adapter: pointer to adapter struct
-- * @skb: particular skb to send timestamp with
-+ * @shhwtstamps: particular skb_shared_hwtstamps to save timestamp
-  *
-  * if the timestamp is valid, we convert it into the timecounter ns
-  * value, then store that result into the hwtstamps structure which
-  * is passed up the network stack
-  */
--static void aq_ptp_rx_hwtstamp(struct aq_ptp_s *aq_ptp, struct sk_buff *skb,
-+static void aq_ptp_rx_hwtstamp(struct aq_ptp_s *aq_ptp, struct skb_shared_hwtstamps *shhwtstamps,
- 			       u64 timestamp)
- {
- 	timestamp -= atomic_read(&aq_ptp->offset_ingress);
--	aq_ptp_convert_to_hwtstamp(aq_ptp, skb_hwtstamps(skb), timestamp);
-+	aq_ptp_convert_to_hwtstamp(aq_ptp, shhwtstamps, timestamp);
- }
- 
- void aq_ptp_hwtstamp_config_get(struct aq_ptp_s *aq_ptp,
-@@ -639,7 +639,7 @@ bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring)
- 	       &aq_ptp->ptp_rx == ring || &aq_ptp->hwts_rx == ring;
- }
- 
--u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
-+u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
- 		      unsigned int len)
- {
- 	struct aq_ptp_s *aq_ptp = aq_nic->aq_ptp;
-@@ -648,7 +648,7 @@ u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
- 						   p, len, &timestamp);
- 
- 	if (ret > 0)
--		aq_ptp_rx_hwtstamp(aq_ptp, skb, timestamp);
-+		aq_ptp_rx_hwtstamp(aq_ptp, shhwtstamps, timestamp);
- 
- 	return ret;
- }
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
-index 28ccb7ca2df9..210b723f2207 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ptp.h
-@@ -67,7 +67,7 @@ int aq_ptp_hwtstamp_config_set(struct aq_ptp_s *aq_ptp,
- /* Return either ring is belong to PTP or not*/
- bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring);
- 
--u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct sk_buff *skb, u8 *p,
-+u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic, struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
- 		      unsigned int len);
- 
- struct ptp_clock *aq_ptp_get_ptp_clock(struct aq_ptp_s *aq_ptp);
-@@ -143,7 +143,7 @@ static inline bool aq_ptp_ring(struct aq_nic_s *aq_nic, struct aq_ring_s *ring)
- }
- 
- static inline u16 aq_ptp_extract_ts(struct aq_nic_s *aq_nic,
--				    struct sk_buff *skb, u8 *p,
-+				    struct skb_shared_hwtstamps *shhwtstamps, u8 *p,
- 				    unsigned int len)
- {
- 	return 0;
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-index 4de22eed099a..694daeaf3e61 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_ring.c
-@@ -647,7 +647,7 @@ static int __aq_ring_rx_clean(struct aq_ring_s *self, struct napi_struct *napi,
- 		}
- 		if (is_ptp_ring)
- 			buff->len -=
--				aq_ptp_extract_ts(self->aq_nic, skb,
-+				aq_ptp_extract_ts(self->aq_nic, skb_hwtstamps(skb),
- 						  aq_buf_vaddr(&buff->rxdata),
- 						  buff->len);
- 
-@@ -742,6 +742,8 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
- 		struct aq_ring_buff_s *buff = &rx_ring->buff_ring[rx_ring->sw_head];
- 		bool is_ptp_ring = aq_ptp_ring(rx_ring->aq_nic, rx_ring);
- 		struct aq_ring_buff_s *buff_ = NULL;
-+		u16 ptp_hwtstamp_len = 0;
-+		struct skb_shared_hwtstamps shhwtstamps;
- 		struct sk_buff *skb = NULL;
- 		unsigned int next_ = 0U;
- 		struct xdp_buff xdp;
-@@ -810,11 +812,12 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
- 		hard_start = page_address(buff->rxdata.page) +
- 			     buff->rxdata.pg_off - rx_ring->page_offset;
- 
--		if (is_ptp_ring)
--			buff->len -=
--				aq_ptp_extract_ts(rx_ring->aq_nic, skb,
--						  aq_buf_vaddr(&buff->rxdata),
--						  buff->len);
-+		if (is_ptp_ring) {
-+			ptp_hwtstamp_len = aq_ptp_extract_ts(rx_ring->aq_nic, &shhwtstamps,
-+							     aq_buf_vaddr(&buff->rxdata),
-+							     buff->len);
-+			buff->len -= ptp_hwtstamp_len;
-+		}
- 
- 		xdp_init_buff(&xdp, frame_sz, &rx_ring->xdp_rxq);
- 		xdp_prepare_buff(&xdp, hard_start, rx_ring->page_offset,
-@@ -834,6 +837,9 @@ static int __aq_ring_xdp_clean(struct aq_ring_s *rx_ring,
- 		if (IS_ERR(skb) || !skb)
- 			continue;
- 
-+		if (ptp_hwtstamp_len > 0)
-+			*skb_hwtstamps(skb) = shhwtstamps;
-+
- 		if (buff->is_vlan)
- 			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
- 					       buff->vlan_rx_tag);
--- 
-2.25.1
+Will add and use ptr_to_u64() in v5. Thanks for all these suggestions.
+>
+> pw-bot: cr
 
 
