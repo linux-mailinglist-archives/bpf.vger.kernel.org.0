@@ -1,115 +1,113 @@
-Return-Path: <bpf+bounces-16596-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16597-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F00628039A8
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 17:07:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20BE9803A13
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 17:21:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D0AB1C20BA7
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 16:07:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 215001F21298
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 16:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170512D62E;
-	Mon,  4 Dec 2023 16:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86B942DF73;
+	Mon,  4 Dec 2023 16:20:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="aL+XXb5Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O2M92TMU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CAACA;
-	Mon,  4 Dec 2023 08:07:39 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4CxuPc022087;
-	Mon, 4 Dec 2023 08:06:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pfpt0220;
- bh=UxGwEKMqb77hSj2gwUSJa6e+ATYUziz0FtksrLEqbDc=;
- b=aL+XXb5QHCpAsH44dhOEFE9kyihBRMnyEqQTS4uv+EVfGFJ5Pl55D0OMMantvZrk4aij
- MZLeQ8FZUuKO6IFisV+MG2QPPxgEnU6OXmPFvvtf1m403X85LT4KRcrRhz9DLus8PANI
- /s6il0mqas8CXq49KYf11D8E5WvamZr6lCF+jmzrMcCpsAAaQF2hhYWjK7vstV8fwQOM
- x1Map7hQpR0RiItiUz3vwHRfX4qcqyYudtDc/dVRLSh7J2MI6dF6mwLGBnr5dayFkz0Z
- ArUZ0FY96KIzXZ9rW9sfaKRe8V6DmAskD8O31FlAOLcxdE1JXUtDgxiRTz3uUIw2rx0p GQ== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3ur2tvdxt3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-	Mon, 04 Dec 2023 08:06:51 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 4 Dec
- 2023 08:06:50 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 4 Dec 2023 08:06:50 -0800
-Received: from [10.9.8.90] (OBi302.marvell.com [10.9.8.90])
-	by maili.marvell.com (Postfix) with ESMTP id DA6AA3F7057;
-	Mon,  4 Dec 2023 08:06:46 -0800 (PST)
-Message-ID: <08ae0a18-669e-b479-94d4-450a7a12efe9@marvell.com>
-Date: Mon, 4 Dec 2023 17:06:46 +0100
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EAD7CA;
+	Mon,  4 Dec 2023 08:20:48 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-35d74cf427cso2507415ab.1;
+        Mon, 04 Dec 2023 08:20:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701706847; x=1702311647; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Es+hCWrFXDwniwMcfM2dvcckNIuZXiwDz+UAIj8VFJA=;
+        b=O2M92TMUGKE1DanM/GbOZZ4lxIDTPN6TZQu6oU9/HeyvYo2SySowudkMdSWI7FQtnO
+         9u+dlFALkgTCXYct0UxItfoETbE+1hzcjRf6wjzcj4tddpcESU3VfEmd2sWf1YnLtHyw
+         gehBtvpQaZBgFtwrtY21YYvjj0CVU3AkpM4cG/yETUSuy+lZqGWCXTn0pwo8lNO0Uzyn
+         KLrr4RkQnjwAo3XWvsA/nWuw59kimzYksjlGdeb7+GpK7yklXrn7b193n4PN8V/jjIng
+         whNoNieAmyHKl5TDDfhhwtDjmT1q67hLDpBvsV61mG/3dzWFZT9GB3xBnL2X9ZN0pFZ8
+         9Qfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701706847; x=1702311647;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Es+hCWrFXDwniwMcfM2dvcckNIuZXiwDz+UAIj8VFJA=;
+        b=Chl+BPwUcELv318Xd2yMsmG1DN2Esl3/qxPfwpif2qEqoJDT3nkNISUPpUp4F7tWRs
+         PvwOho1T3hOfVa/wkHPOyARtuIrAZTyOxxz9ZETRhRXsOAJnSrAWXhpTyVNPpWIKeLka
+         JiE8fPcOE35CKk+yHrMAUoKXPJpAXNPYx/884f+zCejubrZMGmUYhv9S/SadWqyjU3iC
+         LMkYDmrPrawdChJPgJaNBhaHXX63Xd2dqshpBptoYtwbXnBbT0tzzVkSmcYott6qwppZ
+         u9XXQJczJVD5L73vayCygZvZz70tAUBvIStulG7iJvRykCNkcClN0bMrJu5lqZ88znrp
+         dI5Q==
+X-Gm-Message-State: AOJu0YwGWrm1yRvHvZUAOailUJdikR8dIPJIamdbSO2+75NPmBACt5vI
+	IoV1+OTuiv9dwuFQaoM5PZ34dt/zWDA=
+X-Google-Smtp-Source: AGHT+IEhr/y73+C8HGzgQnVsW0Y2ggL68hFdiBnBrbUv0IqcwH3zLyhK0X0PJii3PpbhwIeqJ1NM7A==
+X-Received: by 2002:a92:d082:0:b0:35d:59a2:6452 with SMTP id h2-20020a92d082000000b0035d59a26452mr4564300ilh.37.1701706847586;
+        Mon, 04 Dec 2023 08:20:47 -0800 (PST)
+Received: from localhost.localdomain ([2601:648:8900:1ba9:692:26ff:fed8:afdd])
+        by smtp.gmail.com with ESMTPSA id y24-20020a637d18000000b005742092c211sm2492261pgc.64.2023.12.04.08.20.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 08:20:47 -0800 (PST)
+Date: Mon, 4 Dec 2023 08:20:37 -0800
+From: JP Kobryn <inwardvessel@gmail.com>
+To: Dominique Martinet <asmadeus@codewreck.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>, ericvh@kernel.org,
+	lucho@ionkov.net, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, v9fs@lists.linux.dev,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH] 9p: prevent read overrun in protocol dump tracepoint
+Message-ID: <ZW38VTs2L4vbcJLO@localhost.localdomain>
+References: <20231202030410.61047-1-inwardvessel@gmail.com>
+ <ZWq0BvPGYMTi-WfC@codewreck.org>
+ <1881630.VfuOzHrogK@silver>
+ <20231202201409.10223677@rorschach.local.home>
+ <ZWva7DYTPUG95xv8@codewreck.org>
+ <20231202231524.4ce1d342@gandalf.local.home>
+ <ZWwS3_DGmqc73dxm@codewreck.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [EXT] [PATCH] net: atlantic: Fix NULL dereference of skb pointer
- in
-To: Daniil Maximov <daniil31415it@gmail.com>
-CC: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Alexei
- Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper
- Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Alexey Khoroshilov <khoroshilov@ispras.ru>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <lvc-project@linuxtesting.org>
-References: <20231204085810.1681386-1-daniil31415it@gmail.com>
-Content-Language: en-US
-From: Igor Russkikh <irusskikh@marvell.com>
-In-Reply-To: <20231204085810.1681386-1-daniil31415it@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-ORIG-GUID: 4kUdbOM2gkTdP-w4txwaAiQJ8EVdSGKm
-X-Proofpoint-GUID: 4kUdbOM2gkTdP-w4txwaAiQJ8EVdSGKm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-04_15,2023-12-04_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZWwS3_DGmqc73dxm@codewreck.org>
 
-
-Hi Daniil,
-
-> If is_ptp_ring == true in the loop of __aq_ring_xdp_clean function,
-> then a timestamp is stored from a packet in a field of skb object,
-> which is not allocated at the moment of the call (skb == NULL).
+On Sun, Dec 03, 2023 at 02:32:15PM +0900, Dominique Martinet wrote:
+> Steven Rostedt wrote on Sat, Dec 02, 2023 at 11:15:24PM -0500:
+> > > Also, for custom tracepoints e.g. bpftrace the program needs to know how
+> > > many bytes can be read safely even if it's just for dumping -- unless
+> > > dynamic_array is a "fat pointer" that conveys its own size?
+> > > (Sorry didn't take the time to check)
+> > 
+> > Yes, there's also a __get_dynamic_array_len(line) that will return the
+> > allocated length of the line. Is that what you need?
 > 
-> Generalize aq_ptp_extract_ts and other affected functions so they don't
-> work with struct sk_buff*, but with struct skb_shared_hwtstamps*.
+> Yes, thanks! So the lower two bytes of the field are its position in
+> the entry and the higher two bytes its size; ok.
+> It doesn't look like bpftrace has any helper for it but that can
+> probably be sorted out if someone wants to dump data there.
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE
+> 
+> Let's update the event to use a dynamic array and have printk fomrat to
+> use %*ph with that length.
+> 
+> JP Kobryn, does that sound good to you? I'm not sure what you were
+> trying to do in the first place.
+> Do you want to send a v2 or shall I?
 
-Thanks for finding this and working on this.
+Sounds good. I'll send out a v2. Thanks Steve for recommending the
+dynamic array macros.
 
-Have you reproduced it in wild, or this just comes out of static analysis?
-
-I'm asking because looking into the flow you described - it looks like XDP
-mode should immediately fail with null pointer access on any rx traffic.
-But that was never reported.
-
-I will try to debug and validate the fix, but this may take some time.
-
-So for now 
-
-Reviewed-by: Igor Russkikh <irusskikh@marvell.com>
-
-
-Thanks
-  Igor
+JP
+> 
+> -- 
+> Dominique Martinet | Asmadeus
 
