@@ -1,281 +1,174 @@
-Return-Path: <bpf+bounces-16576-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16577-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 902738032C1
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 13:32:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A04F780336A
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 13:53:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83D30B209F9
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 12:32:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BC58280F37
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 12:53:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B852420F;
-	Mon,  4 Dec 2023 12:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4EAC24212;
+	Mon,  4 Dec 2023 12:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BjbXncJD"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d69pQhr9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F60C90;
-	Mon,  4 Dec 2023 04:32:38 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-2868605fa4aso688659a91.0;
-        Mon, 04 Dec 2023 04:32:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701693158; x=1702297958; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FeUluZdbuz4qXykwEGYGUnpL1h98Vn/bpDODCjyLf2A=;
-        b=BjbXncJDE/ZZcGSsLuUtAapw2tHgNlX6wTf0UAflJVzdxqwC17ToGQCFEdpkSUsnJW
-         GhCSRJp3HtfEoJ18kFzonEg2OmP9ZnvISYuAU3bEw7yxiwFNFKnUpKcLhdB/1L+u6v+n
-         IaIL9vIPqrMjjXWuQG9IBI1/wNJQ/8KpV/6tlVgcPpRj9aigGspApyw1sWSl/VNczy2b
-         8OJsXl3ceTnOIo8zEANTPxpxu2XIJJMqWmZODy3H3EhUuOjrbIJNy/P8sl2eCr5dzMKH
-         EA5DejpXdmagB90aPIljYmLN2jHik9AbhA2TlX/Xd4k4gc3ov0stB/iZ499nsSyC2YcU
-         2HTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701693158; x=1702297958;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FeUluZdbuz4qXykwEGYGUnpL1h98Vn/bpDODCjyLf2A=;
-        b=XnUIBleR6CffTmepCznBZ+OhA1kIhsJne8YkJe4ZX8omGQHV2oG0igiXatyWaLRmRV
-         /L9Pf1fyzxLWL7FUrDMkh7fMApC6nWPrh82Wbm7zew2M4648axMrh0MXASnrpJBsxFTM
-         D4D/KWaxBx+WtWZwx29M8JxXOJKrObYsTAukNtYudWPelhXQEvv7XlefFB/wQZhrOKZf
-         G8stNemaQauekcx0Yvn0qO0+qFXCStAjQBrorggWTevW8r0tV8m2Zi0uqEIHp+/8/b09
-         aBstG0SHtSxBeK21Hcd2E3fjEm3m++12AEvGGBTaBjoEDnU/K/9DHNEHGNE+JHgw3bBw
-         ysaQ==
-X-Gm-Message-State: AOJu0YxLYQgLg1mzzfH2FX9XjQrUaZKk4D24FzOivOEPTvH6pGXe7CnV
-	wEi9Mvv7nlRut1nE2oBmq3ITuQyAmo+c1RT3//o=
-X-Google-Smtp-Source: AGHT+IHflUBHCU7Z+kqr/CgADB+8CLOedZMAabWjB5KJ3i5MqIup37UaaaUMVqaeL7qnekkRkNP+THq76UHB+VUfCaE=
-X-Received: by 2002:a17:90a:1d7:b0:286:b052:7ead with SMTP id
- 23-20020a17090a01d700b00286b0527eadmr727178pjd.95.1701693157822; Mon, 04 Dec
- 2023 04:32:37 -0800 (PST)
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 941B09C;
+	Mon,  4 Dec 2023 04:53:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=vNi4oarUMe/eI8dB061LbFrYbcwH4xzlO/UEVWvv3R8=; b=d69pQhr9LJbL/XW8eP8KAhPxm+
+	hqvraksWyptXL7ALZD+jvHNZ/30GsSeIaBl+DmcuM1PLSrXgx+IXGiI5iyxJ6yV/+rpoaUxsd4xbB
+	N+EOR2c3hgfm00+DPl8vWJviJCpVPMKRjo4iROkZWR/AU00dPd5WpXzVSwYgaPVIZ0s1p1UE7fi0x
+	fLBbTa79LgpBION1ZpAWLKG9b5h34Q2p3l6Hx72EKN9vF/wz+ufS3LeTb9NHAbGjGSTMkDGwvE/Qa
+	VkDMejEaj/8wUNXQhA0fLXKeizJxFYVT5JvepAsMFIRl9uQKZ5EPDl4oGPOEpZigR4KEhvcnxGAaN
+	RFFkSA1Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rA8RE-000h5B-Ai; Mon, 04 Dec 2023 12:52:40 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 4CE783003F0; Mon,  4 Dec 2023 13:52:39 +0100 (CET)
+Date: Mon, 4 Dec 2023 13:52:39 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joao Moreira <joao@overdrivepizza.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231204125239.GA1319@noisy.programming.kicks-ass.net>
+References: <20231130133630.192490507@infradead.org>
+ <20231130134204.136058029@infradead.org>
+ <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
+ <20231204091334.GM3818@noisy.programming.kicks-ass.net>
+ <20231204111128.GV8262@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: xingwei lee <xrivendell7@gmail.com>
-Date: Mon, 4 Dec 2023 20:32:24 +0800
-Message-ID: <CABOYnLykDP2YS5_8+BnT8psWOBEAsGJKq1C1c0TtRW0op07s+A@mail.gmail.com>
-Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in dev_watchdog
-To: syzbot+db9ad150a8969744d703@syzkaller.appspotmail.com
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, martin.lau@linux.dev, mhiramat@kernel.org, 
-	rostedt@goodmis.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204111128.GV8262@noisy.programming.kicks-ass.net>
 
-hello
-I reproduced this bug with repro.c and repro.txt
+On Mon, Dec 04, 2023 at 12:11:28PM +0100, Peter Zijlstra wrote:
+> On Mon, Dec 04, 2023 at 10:13:34AM +0100, Peter Zijlstra wrote:
+> 
+> > > Just running test_progs it splats right away:
+> > > 
+> > > [   74.047757] kmemleak: Found object by alias at 0xffffffffa0001d80
+> > > [   74.048272] CPU: 14 PID: 104 Comm: kworker/14:0 Tainted: G        W
+> > >  O       6.7.0-rc3-00702-g41c30fec304d-dirty #5241
+> > > [   74.049118] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> > > BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> > > [   74.050042] Workqueue: events bpf_prog_free_deferred
+> > > [   74.050448] Call Trace:
+> > > [   74.050663]  <TASK>
+> > > [   74.050841]  dump_stack_lvl+0x55/0x80
+> > > [   74.051141]  __find_and_remove_object+0xdb/0x110
+> > > [   74.051521]  kmemleak_free+0x41/0x70
+> > > [   74.051828]  vfree+0x36/0x130
+> > 
+> > Durr, I'll see if I can get that stuff running locally, and otherwise
+> > play with the robot as you suggested. Thanks!
+> 
+> I think it is bpf_jit_binary_pack_hdr(), which is using prog->bpf_func
+> as a start address for the image, instead of jit_data->image.
+> 
+> This used to be true, but now it's offset.
+> 
+> Let me see what to do about that...
 
-=* repro.txt =*
-r0 = syz_clone(0x0, 0x0, 0x0, 0x0, 0x0, 0x0)
-ptrace(0x10, r0)
-r1 = bpf$BPF_PROG_RAW_TRACEPOINT_LOAD(0x5, &(0x7f0000000200)={0x18,
-0x4, &(0x7f00000002c0)=ANY=[@ANYBLOB="180100001c00000000000000120000f1850000006d00000095"],
-&(0x7f0000000000)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0,
-0x2}, 0x80)
-bpf$BPF_RAW_TRACEPOINT_OPEN(0x11,
-&(0x7f0000000200)={&(0x7f0000000340)='kfree\x00', r1}, 0x10)
+Not the prettiest of things, but the below seems to make the thing
+happy...
 
-=* repro.c =*
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
-
-#include <dirent.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sched.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/prctl.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
-
-#ifndef __NR_bpf
-#define __NR_bpf 321
-#endif
-
-static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
-
-static uint64_t current_time_ms(void) {
-  struct timespec ts;
-  if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
-  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-}
-
-static bool write_file(const char* file, const char* what, ...) {
-  char buf[1024];
-  va_list args;
-  va_start(args, what);
-  vsnprintf(buf, sizeof(buf), what, args);
-  va_end(args);
-  buf[sizeof(buf) - 1] = 0;
-  int len = strlen(buf);
-  int fd = open(file, O_WRONLY | O_CLOEXEC);
-  if (fd == -1) return false;
-  if (write(fd, buf, len) != len) {
-    int err = errno;
-    close(fd);
-    errno = err;
-    return false;
-  }
-  close(fd);
-  return true;
-}
-
-static void kill_and_wait(int pid, int* status) {
-  kill(-pid, SIGKILL);
-  kill(pid, SIGKILL);
-  for (int i = 0; i < 100; i++) {
-    if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
-    usleep(1000);
-  }
-  DIR* dir = opendir("/sys/fs/fuse/connections");
-  if (dir) {
-    for (;;) {
-      struct dirent* ent = readdir(dir);
-      if (!ent) break;
-      if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-        continue;
-      char abort[300];
-      snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
-               ent->d_name);
-      int fd = open(abort, O_WRONLY);
-      if (fd == -1) {
-        continue;
-      }
-      if (write(fd, abort, 1) < 0) {
-      }
-      close(fd);
-    }
-    closedir(dir);
-  } else {
-  }
-  while (waitpid(-1, status, __WALL) != pid) {
-  }
-}
-
-static void setup_test() {
-  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-  setpgrp();
-  write_file("/proc/self/oom_score_adj", "1000");
-}
-
-#define USLEEP_FORKED_CHILD (3 * 50 * 1000)
-
-static long handle_clone_ret(long ret) {
-  if (ret != 0) {
-    return ret;
-  }
-  usleep(USLEEP_FORKED_CHILD);
-  syscall(__NR_exit, 0);
-  while (1) {
-  }
-}
-
-static long syz_clone(volatile long flags, volatile long stack,
-                      volatile long stack_len, volatile long ptid,
-                      volatile long ctid, volatile long tls) {
-  long sp = (stack + stack_len) & ~15;
-  long ret = (long)syscall(__NR_clone, flags & ~CLONE_VM, sp, ptid, ctid, tls);
-  return handle_clone_ret(ret);
-}
-
-static void execute_one(void);
-
-#define WAIT_FLAGS __WALL
-
-static void loop(void) {
-  int iter = 0;
-  for (;; iter++) {
-    int pid = fork();
-    if (pid < 0) exit(1);
-    if (pid == 0) {
-      setup_test();
-      execute_one();
-      exit(0);
-    }
-    int status = 0;
-    uint64_t start = current_time_ms();
-    for (;;) {
-      if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
-      sleep_ms(1);
-      if (current_time_ms() - start < 5000) continue;
-      kill_and_wait(pid, &status);
-      break;
-    }
-  }
-}
-
-uint64_t r[2] = {0x0, 0xffffffffffffffff};
-
-void execute_one(void) {
-  intptr_t res = 0;
-  res = -1;
-  res = syz_clone(/*flags=*/0, /*stack=*/0, /*stack_len=*/0, /*parentid=*/0,
-                  /*childtid=*/0, /*tls=*/0);
-  if (res != -1) r[0] = res;
-  syscall(__NR_ptrace, /*req=*/0x10ul, /*pid=*/r[0], 0, 0);
-  *(uint32_t*)0x20000200 = 0x18;
-  *(uint32_t*)0x20000204 = 4;
-  *(uint64_t*)0x20000208 = 0x200002c0;
-  memcpy((void*)0x200002c0,
-         "\x18\x01\x00\x00\x1c\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\xf1\x85"
-         "\x00\x00\x00\x6d\x00\x00\x00\x95",
-         25);
-  *(uint64_t*)0x20000210 = 0x20000000;
-  memcpy((void*)0x20000000, "GPL\000", 4);
-  *(uint32_t*)0x20000218 = 0;
-  *(uint32_t*)0x2000021c = 0;
-  *(uint64_t*)0x20000220 = 0;
-  *(uint32_t*)0x20000228 = 0;
-  *(uint32_t*)0x2000022c = 0;
-  memset((void*)0x20000230, 0, 16);
-  *(uint32_t*)0x20000240 = 0;
-  *(uint32_t*)0x20000244 = 2;
-  *(uint32_t*)0x20000248 = -1;
-  *(uint32_t*)0x2000024c = 8;
-  *(uint64_t*)0x20000250 = 0;
-  *(uint32_t*)0x20000258 = 0;
-  *(uint32_t*)0x2000025c = 0x10;
-  *(uint64_t*)0x20000260 = 0;
-  *(uint32_t*)0x20000268 = 0;
-  *(uint32_t*)0x2000026c = 0;
-  *(uint32_t*)0x20000270 = 0;
-  *(uint32_t*)0x20000274 = 0;
-  *(uint64_t*)0x20000278 = 0;
-  *(uint64_t*)0x20000280 = 0;
-  *(uint32_t*)0x20000288 = 0x10;
-  *(uint32_t*)0x2000028c = 0;
-  res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x20000200ul, /*size=*/0x80ul);
-  if (res != -1) r[1] = res;
-  *(uint64_t*)0x20000200 = 0x20000340;
-  memcpy((void*)0x20000340, "kfree\000", 6);
-  *(uint32_t*)0x20000208 = r[1];
-  syscall(__NR_bpf, /*cmd=*/0x11ul, /*arg=*/0x20000200ul, /*size=*/0x10ul);
-}
-int main(void) {
-  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  loop();
-  return 0;
-}
-
-and also https://gist.github.com/xrivendell7/569542ed0113dc5f98753ea8c5305912
+---
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 196cc1481dec..f4357c3211bc 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -3024,6 +3024,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 		prog->bpf_func = (void *)image + ctx.prog_offset;
+ 		prog->jited = 1;
+ 		prog->jited_len = proglen - ctx.prog_offset;
++		prog->aux->cfi_offset = ctx.prog_offset;
+ 	} else {
+ 		prog = orig_prog;
+ 	}
+@@ -3078,6 +3079,7 @@ void bpf_jit_free(struct bpf_prog *prog)
+ 			kvfree(jit_data->addrs);
+ 			kfree(jit_data);
+ 		}
++		prog->bpf_func = (void *)prog->bpf_func - prog->aux->cfi_offset;
+ 		hdr = bpf_jit_binary_pack_hdr(prog);
+ 		bpf_jit_binary_pack_free(hdr, NULL);
+ 		WARN_ON_ONCE(!bpf_prog_kallsyms_verify_off(prog));
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 8b725776e70a..e5fa0852a20f 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1483,6 +1483,7 @@ struct bpf_prog_aux {
+ 		struct work_struct work;
+ 		struct rcu_head	rcu;
+ 	};
++	u32 cfi_offset;
+ };
+ 
+ struct bpf_prog {
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 5c84a935ba63..763742f4740f 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -121,6 +121,9 @@ struct bpf_prog *bpf_prog_alloc_no_stats(unsigned int size, gfp_t gfp_extra_flag
+ #endif
+ 
+ 	INIT_LIST_HEAD_RCU(&fp->aux->ksym.lnode);
++#ifdef CONFIG_FINEIBT
++	INIT_LIST_HEAD_RCU(&fp->aux->ksym_prefix.lnode);
++#endif
+ 	mutex_init(&fp->aux->used_maps_mutex);
+ 	mutex_init(&fp->aux->dst_mutex);
+ 
+@@ -709,6 +712,8 @@ void bpf_prog_kallsyms_del(struct bpf_prog *fp)
+ 
+ 	bpf_ksym_del(&fp->aux->ksym);
+ #ifdef CONFIG_FINEIBT
++	if (cfi_mode != CFI_FINEIBT)
++		return;
+ 	bpf_ksym_del(&fp->aux->ksym_prefix);
+ #endif
+ }
 
