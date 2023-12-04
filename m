@@ -1,104 +1,142 @@
-Return-Path: <bpf+bounces-16614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53DEF803E3C
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 20:18:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71BAC803E56
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 20:26:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 943C1B20A18
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 19:18:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01F1E1F21162
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 19:26:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D3931727;
-	Mon,  4 Dec 2023 19:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ogvbZv28"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E7343173F;
+	Mon,  4 Dec 2023 19:26:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEB3D5
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 11:18:40 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6d852e06b07so1729139a34.3
-        for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 11:18:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701717520; x=1702322320; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VWNzZv699g9WmaMge8Xt2XGWr8M2fBvBoGU1E608xn8=;
-        b=ogvbZv288l9hOeOHP58Zsi8eOI/g8vnxaXwHTjoqELNgUGTZgezgFk8KTjOp/RoZmW
-         BUgwfSSHi+95sYPbKRxXNe3SBZHlJV5b8I4OyPrFAII4FClPXkyvp+sucAIs5ATbMw1p
-         m1iQJ/9Pl1KNn6Ye0XjtCFzhIKMLx6f5mF5bwrFR9dyEgPoq82kZzZiDmGuFFu/pOn2o
-         A+PcH7g7LKPt8qT+J2SAOxG5++6Iut2Fbt7iV71mBD2pOt2p3XqPEeexJiFraWg1/Wz7
-         bvsRLwqVld+vT2Z7FUQQlIFANn00FnRQ+2td9V1obTI2aXDM9boRIyJoNZGEaW3qlf7W
-         WrEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701717520; x=1702322320;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VWNzZv699g9WmaMge8Xt2XGWr8M2fBvBoGU1E608xn8=;
-        b=mMC5Xe1BiFsYmdsptKeG3ytTg+CFacRbnOfyCbt5Ae+xw8Q30/Cq4mytDQfOjVZo6x
-         Qi8iOB9EkHbKFXQjSyvXBudpPQQo3SMEe5tuQImZy8C+I+0N+l/i0/Iy1BQtS83Al+d5
-         J5VqNvpQT2cmBCuYJXmaehYh6ntk5Q7qsNVSRElBPSS+BBxR1aRFhxEblQfSaj0jS2nC
-         yQAjB7O1S5rNHtJ9oJorN22JnU5a5zy6XT+7KzoU0ucXS0MAHOUigNcF6V8QyE2rBoQ1
-         g4kaI9Aq8zFMEA2+W+YliHYQoKbordmkNv/8m5lQIOLRsM7acQbFVCSq1m9nnE2cxgJo
-         SJZA==
-X-Gm-Message-State: AOJu0YxMNrWSC0Q9+VrNDpON0OaCN6zLV5W748cDMZKnWGR3YrZK8zOo
-	Q5pXCrsBbDUYCgG3K7pqhxMixO2S07q4cBUhCxvdQQ==
-X-Google-Smtp-Source: AGHT+IHyqGlUNEc09zfk+7C7spFR2KrAlLytNjHQMZMVaTcBh0jkMo0aAva0Taxeji7L30FkvzDde4ybRx0p4piiiZw=
-X-Received: by 2002:a9d:4d02:0:b0:6d8:75a8:8455 with SMTP id
- n2-20020a9d4d02000000b006d875a88455mr2668679otf.50.1701717519644; Mon, 04 Dec
- 2023 11:18:39 -0800 (PST)
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42589CA
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 11:26:33 -0800 (PST)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+	by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 3B4JQSjp024219
+	for <bpf@vger.kernel.org>; Mon, 4 Dec 2023 11:26:32 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by m0089730.ppops.net (PPS) with ESMTPS id 3us9fbw31f-4
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 11:26:32 -0800
+Received: from twshared11278.41.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 4 Dec 2023 11:26:09 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 3855C3C94B7AF; Mon,  4 Dec 2023 11:26:02 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v3 bpf-next 00/10] Complete BPF verifier precision tracking support for register spills
+Date: Mon, 4 Dec 2023 11:25:51 -0800
+Message-ID: <20231204192601.2672497-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130133630.192490507@infradead.org> <20231130134204.026354676@infradead.org>
-In-Reply-To: <20231130134204.026354676@infradead.org>
-From: Sami Tolvanen <samitolvanen@google.com>
-Date: Mon, 4 Dec 2023 11:18:03 -0800
-Message-ID: <CABCJKufv1z0-+an7iws8J2v-c_Jg1Nfu47Um9rhCnVLxQfC6ug@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] cfi: Flip headers
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
-	davem@davemloft.net, dsahern@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	Arnd Bergmann <arnd@arndb.de>, keescook@chromium.org, nathan@kernel.org, 
-	ndesaulniers@google.com, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev, jpoimboe@kernel.org, 
-	joao@overdrivepizza.com, mark.rutland@arm.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: 6H-5_X96a6KLJZt8qP--wGksPtOKcb5X
+X-Proofpoint-GUID: 6H-5_X96a6KLJZt8qP--wGksPtOKcb5X
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-04_18,2023-12-04_01,2023-05-22_02
 
-On Thu, Nov 30, 2023 at 5:43=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> Normal include order is that linux/foo.h should include asm/foo.h, CFI ha=
-s it
-> the wrong way around.
->
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
->  arch/riscv/include/asm/cfi.h |    3 ++-
->  arch/riscv/kernel/cfi.c      |    2 +-
->  arch/x86/include/asm/cfi.h   |    3 ++-
->  arch/x86/kernel/cfi.c        |    4 ++--
->  include/asm-generic/Kbuild   |    1 +
->  include/asm-generic/cfi.h    |    5 +++++
->  include/linux/cfi.h          |    1 +
->  7 files changed, 14 insertions(+), 5 deletions(-)
+Add support to BPF verifier to track and support register spill/fill to/f=
+rom
+stack regardless if it was done through read-only R10 register (which is =
+the
+only form supported today), or through a general register after copying R=
+10
+into it, while also potentially modifying offset.
 
-Looks good to me, thanks!
+Once we add register this generic spill/fill support to precision
+backtracking, we can take advantage of it to stop doing eager STACK_ZERO
+conversion on register spill. Instead we can rely on (im)precision of spi=
+lled
+const zero register to improve verifier state pruning efficiency. This
+situation of using const zero register to initialize stack slots is very
+common with __builtin_memset() usage or just zero-initializing variables =
+on
+the stack, and it causes unnecessary state duplication, as that STACK_ZER=
+O
+knowledge is often not necessary for correctness, as those zero values ar=
+e
+never used in precise context. Thus, relying on register imprecision help=
+s
+tremendously, especially in real-world BPF programs.
 
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+To make spilled const zero register behave completely equivalently to
+STACK_ZERO, we need to improve few other small pieces, which is done in t=
+he
+second part of the patch set. See individual patches for details. There a=
+re
+also two small bug fixes spotted during STACK_ZERO debugging.
 
-Sami
+The patch set consists of logically three changes:
+  - patch #1 (and corresponding tests in patch #2) is fixing/impoving pre=
+cision
+    propagation for stack spills/fills. This can be landed as a stand-alo=
+ne
+    improvement;
+  - patches #3 through #9 is improving verification scalability by utiliz=
+ing
+    register (im)precision instead of eager STACK_ZERO. These changes dep=
+end
+    on patch #1.
+  - patch #10 is a memory efficiency improvement to how instruction/jump
+    history is tracked and maintained. It depends on patch #1, but is not
+    strictly speaking required, even though I believe it's a good long-te=
+rm
+    solution to have a path-dependent per-instruction information. Kind
+    of like a path-dependent counterpart to path-agnostic insn_aux array.
+
+v2->v3:
+  - BPF_ST instruction workaround (Eduard);
+  - force dereference in added tests to catch problems (Eduard);
+  - some commit message massaging (Alexei);
+v1->v2:
+  - clean ups, WARN_ONCE(), insn_flags helpers added (Eduard);
+  - added more selftests for STACK_ZERO/STACK_MISC cases (Eduard);
+  - a bit more detailed explanation of effect of avoiding STACK_ZERO in f=
+avor
+    of register spill in patch #8 commit (Alexei);
+  - global shared instruction history refactoring moved to be the last pa=
+tch
+    in the series to make it easier to revert it, if applied (Alexei).
+
+Andrii Nakryiko (10):
+  bpf: support non-r10 register spill/fill to/from stack in precision
+    tracking
+  selftests/bpf: add stack access precision test
+  bpf: fix check for attempt to corrupt spilled pointer
+  bpf: preserve STACK_ZERO slots on partial reg spills
+  selftests/bpf: validate STACK_ZERO is preserved on subreg spill
+  bpf: preserve constant zero when doing partial register restore
+  selftests/bpf: validate zero preservation for sub-slot loads
+  bpf: track aligned STACK_ZERO cases as imprecise spilled registers
+  selftests/bpf: validate precision logic in
+    partial_stack_load_preserves_zeros
+  bpf: use common instruction history across all states
+
+ include/linux/bpf_verifier.h                  |  42 ++-
+ kernel/bpf/verifier.c                         | 297 +++++++++++-------
+ .../selftests/bpf/progs/verifier_spill_fill.c | 124 ++++++++
+ .../bpf/progs/verifier_subprog_precision.c    |  87 ++++-
+ .../testing/selftests/bpf/verifier/precise.c  |  38 ++-
+ 5 files changed, 435 insertions(+), 153 deletions(-)
+
+--=20
+2.34.1
+
 
