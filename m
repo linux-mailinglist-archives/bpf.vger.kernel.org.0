@@ -1,153 +1,102 @@
-Return-Path: <bpf+bounces-16610-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16611-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C74E0803D26
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 19:34:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10690803D63
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 19:43:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E77C28117B
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 18:34:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 610BCB20AB0
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 18:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D4492FC2B;
-	Mon,  4 Dec 2023 18:34:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 786602F86D;
+	Mon,  4 Dec 2023 18:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="u2cVkyxL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XgmEJ98z"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E89FF;
-	Mon,  4 Dec 2023 10:34:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=yRxkmI4dXPVCTApSsXOOM346LAa1g76vwgSBu1bA/08=; b=u2cVkyxLqoUOqz1TA/dDurEImX
-	yd+RKQfGNzDw1nNzm7F9pDtqQt51c1WaOKmTKmAbAROOiek+hm8k6eZisRZ/QWEyDAbQFc+SykZth
-	yo1Jqw2hGSDZx0/kwV/QhUbR1CaOvc39CcdS6VXzjuqXt4HYSSGFkZCVv/chpwHXClxU600842aLI
-	poUrNAgUfXs1GTMxHRcsbo3DI/Uyx2B0XaXImtz+wS5a8oBto19jcxToog2JblpiSQQodC47SWxtq
-	uoUKbAOA8OTlQYtBciApJtmEJWfW4deFx0DxiGRyt/1iUxUN98T1XdrCmGbwL4cixtGF6odl8Z3oi
-	wU5Z7Stg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rADlT-000x6k-F8; Mon, 04 Dec 2023 18:33:56 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 5462830057C; Mon,  4 Dec 2023 19:33:54 +0100 (CET)
-Date: Mon, 4 Dec 2023 19:33:54 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
-	clang-built-linux <llvm@lists.linux.dev>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Joao Moreira <joao@overdrivepizza.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231204183354.GC7299@noisy.programming.kicks-ass.net>
-References: <20231130133630.192490507@infradead.org>
- <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9CCCA
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 10:43:44 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1b68ae4104so193490366b.3
+        for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 10:43:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701715423; x=1702320223; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4++Z2sNBabjPV0Q4Q9J34w4K444dMXDCFRsRIrazGs4=;
+        b=XgmEJ98zFdgE29FuJWzFLJd7nMFJsHRqQ2qDkJT2dGq+kdENxqpgmdDfI28R+GmaA0
+         UojzCtLfYbBiqJ7o4n3LmbRooVrYTp4mIkl7GrUJzqS3+6koEqAhamdg+ogdyxnC/Dii
+         wbB0yI2/8zP/ZS4QWTVSqPQkpTg5z32o+Dy+iNhyN6KK3t0YLBx1nDrAPL3WjONwv/LL
+         VmSKV6jDfIwvGcV6HD3X+GXgmvbwjHVpnvDYPkX8kxdEzlcIZ9rVnfWIOhmLmIDF19cu
+         jtLH9FLBPBVpTSodWgjnNNAT1GcLEU87AC3RC9+TPurh5ShiVAlTEL/9oa3VibD6FWzt
+         Zp4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701715423; x=1702320223;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4++Z2sNBabjPV0Q4Q9J34w4K444dMXDCFRsRIrazGs4=;
+        b=YWkX50v5cD+RP40eYvNXReYQt1qyxgq2LrpptstPRYoXoqPjml04eq+w5ffpiE/3JC
+         CGBFfzs1hnbkHA1caf1xvFl+JSHM2O46A3nFG2Pnt6FRWlQcIzPOMuUch8y5zxh04lGp
+         hB/2hjL2FSzuqmP/137u4WN6sEz0AkNKuBuR3g7n5xwBwe3VswAftQ2e5u7+EA2byHds
+         C87B4u1SeBGuEFEP+wA4UVY8m4nMnUVubB1fJIAO9qWm6KAoDhzhIsuBAeO3fu+3eBdC
+         nHEsrLUW8k7BtUxqSsJ/QHkDGTVq6HvoRD5RhTytCw5Pt5TPtB3xwHAQpHg/b3Jm6nHe
+         xRgA==
+X-Gm-Message-State: AOJu0YzZ+Odm+PGSrbnY38ETFLUAV9XRqW4lWQe1TakCwjE09nYp9TyQ
+	pdC5U3uf5UHHr20RXgOE0/A=
+X-Google-Smtp-Source: AGHT+IErqR6+Y2btI0AcVMiSdKFHkGViy88H/XagM0fFOzQJNleYwsA+z8CwsdjxrrDfLwcFPGC7zQ==
+X-Received: by 2002:a17:906:2207:b0:a16:9a60:1bdb with SMTP id s7-20020a170906220700b00a169a601bdbmr4178869ejs.39.1701715422872;
+        Mon, 04 Dec 2023 10:43:42 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id qc14-20020a170906d8ae00b009a9fbeb15f2sm5560306ejb.62.2023.12.04.10.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 10:43:42 -0800 (PST)
+Message-ID: <f3475cc9e9ee50a7fdbbfff353f07067537cf1fd.camel@gmail.com>
+Subject: Re: [PATCH bpf v3 3/3] bpf: minor cleanup around stack bounds
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Andrei Matei
+	 <andreimatei1@gmail.com>
+Cc: bpf@vger.kernel.org, sunhao.th@gmail.com, kernel-team@dataexmachina.dev
+Date: Mon, 04 Dec 2023 20:43:41 +0200
+In-Reply-To: <CAEf4BzbT-UBaigkGeimFOTUqadVMbUFJJ7g2gfR-Au3xxHd6Yg@mail.gmail.com>
+References: <20231202230558.1648708-1-andreimatei1@gmail.com>
+	 <20231202230558.1648708-4-andreimatei1@gmail.com>
+	 <CAEf4BzbT-UBaigkGeimFOTUqadVMbUFJJ7g2gfR-Au3xxHd6Yg@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204181614.GA7299@noisy.programming.kicks-ass.net>
 
-On Mon, Dec 04, 2023 at 07:16:14PM +0100, Peter Zijlstra wrote:
-> On Mon, Dec 04, 2023 at 06:25:34PM +0100, Jiri Olsa wrote:
-> 
-> > that boots properly for me but gives crash below when running bpf tests
-> 
-> OK, more funnies..
-> 
-> > [  482.145182][  T699] RIP: 0010:bpf_for_each_array_elem+0xbb/0x120
-> > [  482.145672][  T699] Code: 4c 01 f5 89 5c 24 04 4c 89 e7 48 8d 74 24 04 48 89 ea 4c 89 fd 4c 89 f9 45 31 c0 4d 89 eb 41 ba ef 86 cd 67 45 03 53 f1 74 02 <0f> 0b 41 ff d3 0f 1f 00 48 85 c0 75 0e 48 8d 43 01 41 8b 4c 24 24
-> > [  482.147221][  T699] RSP: 0018:ffffc900017e3e88 EFLAGS: 00010217
-> > [  482.147702][  T699] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffc900017e3ed8
-> > [  482.152162][  T699] RDX: ffff888152eb0210 RSI: ffffc900017e3e8c RDI: ffff888152eb0000
-> > [  482.152770][  T699] RBP: ffffc900017e3ed8 R08: 0000000000000000 R09: 0000000000000000
-> > [  482.153350][  T699] R10: 000000004704ef28 R11: ffffffffa0012774 R12: ffff888152eb0000
-> > [  482.153951][  T699] R13: ffffffffa0012774 R14: ffff888152eb0210 R15: ffffc900017e3ed8
-> > [  482.154554][  T699] FS:  00007fa60d4fdd00(0000) GS:ffff88846d200000(0000) knlGS:0000000000000000
-> > [  482.155138][  T699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  482.155564][  T699] CR2: 00007fa60d7d8000 CR3: 00000001502a2005 CR4: 0000000000770ef0
-> > [  482.156095][  T699] PKRU: 55555554
-> > [  482.156349][  T699] Call Trace:
-> > [  482.156596][  T699]  <TASK>
-> > [  482.156816][  T699]  ? __die_body+0x68/0xb0
-> > [  482.157138][  T699]  ? die+0xba/0xe0
-> > [  482.157456][  T699]  ? do_trap+0xa5/0x180
-> > [  482.157826][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.158277][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.158711][  T699]  ? do_error_trap+0xc4/0x140
-> > [  482.159052][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.159506][  T699]  ? handle_invalid_op+0x2c/0x40
-> > [  482.159906][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.160990][  T699]  ? exc_invalid_op+0x38/0x60
-> > [  482.161375][  T699]  ? asm_exc_invalid_op+0x1a/0x20
-> > [  482.161788][  T699]  ? 0xffffffffa0012774
-> > [  482.162149][  T699]  ? 0xffffffffa0012774
-> > [  482.162513][  T699]  ? bpf_for_each_array_elem+0xbb/0x120
-> > [  482.162905][  T699]  bpf_prog_ca45ea7f9cb8ac1a_inner_map+0x94/0x98
-> > [  482.163471][  T699]  bpf_trampoline_6442549234+0x47/0x1000
-> 
-> Looks like this trips an #UD, I'll go try and figure out what this
-> bpf_for_each_array_elem() does to cause this. Looks like it has an
-> indirect call, could be the callback_fn thing has a CFI mis-match.
+On Mon, 2023-12-04 at 10:19 -0800, Andrii Nakryiko wrote:
+[...]
+> > @@ -6828,7 +6831,10 @@ static int check_stack_access_within_bounds(
+> >                 return err;
+> >         }
+> >=20
+> > -       return grow_stack_state(env, state, round_up(-min_off, BPF_REG_=
+SIZE));
+> > +       /* Note that there is no stack access with offset zero, so the =
+needed stack
+> > +        * size is -min_off, not -min_off+1.
+> > +        */
+> > +       return grow_stack_state(env, state, -min_off /* size */);
+>=20
+> hmm.. there is still a grow_stack_state() call in
+> check_stack_write_fixed_off(), right? Which is not necessary because
+> we do check_stack_access_within_bounds() before that one. Can you drop
+> it as part of patch #2?
 
-So afaict this is used through bpf_for_each_map_elem(), where the
-argument still is properly callback_fn. However, in the desriptor
-bpf_for_each_map_elem_proto the argument gets described as:
-ARG_PTR_TO_FUNC, which in turn has a comment like:
-
-  ARG_PTR_TO_FUNC,        /* pointer to a bpf program function */
-
-Which to me sounds like there is definite type punning involved. The
-call in bpf_for_each_array_elem() is a regular C indirect call, which
-gets adorned with the kCFI magic.
-
-But I doubt the BPF function that gets used gets the correct matching
-bits on.
-
-TL;DR, I think this is a pre-existing problem with kCFI + eBPF and not
-caused by my patches.
-
-Could any of you bpf knowledgeable folks please explain me exactly what
-gets used as the function pointer in this case? -- I'm not sure I can
-follow along well enough to begin looking for a solution at this point
-:/
+I'm not sure I understand what you mean. Patch #2 (v3) drops
+grow_stack_state() from check_stack_write_fixed_off()
+so all seems good?
 
