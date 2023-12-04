@@ -1,267 +1,104 @@
-Return-Path: <bpf+bounces-16647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16648-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57811804167
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 23:15:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14CF280416D
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 23:15:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BBBC28105C
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 22:15:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 460B81C20C0E
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 22:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4406E3A8DC;
-	Mon,  4 Dec 2023 22:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1888D3A8F6;
+	Mon,  4 Dec 2023 22:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LBcrlt+M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S+BXNvkW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D560FF;
-	Mon,  4 Dec 2023 14:15:00 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a1a5772b8a5so363454966b.1;
-        Mon, 04 Dec 2023 14:14:59 -0800 (PST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18BD129
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 14:15:34 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50be3611794so3398626e87.0
+        for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 14:15:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701728098; x=1702332898; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cT5ING78Aw6QvaBr7RPKXeEm1alnh4pQOnp24KNcG6U=;
-        b=LBcrlt+MKjEO3c31uU2GKLPLSDABi1fW5KFcLhihgKg3/4NIz0K0I0sn0nT/sIiwe9
-         7KhY/zMJWyRWpoCxmZF6Sm84vz6Ie0tWoHIOSR1NVoWHB+8pTnhM+P4f1fkU0lt3qW6v
-         B/nMBm3PptrsYM3tlMp+JoK3BBC6d3VH9AP8visDYkeyFtFc0dUoaFpSQmGnOwYpgNmi
-         zm05yPVl2uyF1VcRUrUOj3u+Z7zXEO/0N4ZS/XzjfmO8yBIobBKlPV+3DDQs/EhxxqmF
-         c+aN7EkQarbEYUkvYqzRnjhlLi0K5I3JMlX720yy4wrh+R7/FrXzj7lFI5Yeeaqhcv5D
-         BULg==
+        d=gmail.com; s=20230601; t=1701728133; x=1702332933; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fdX8Bw7p/iJUenpaNo52GDnA8vcgwdEJZtchPUKoFhI=;
+        b=S+BXNvkWFHTDAkmGM11YeAeNKnyFr6Tw0FPtCw8vqONzW/XARK9qjJ8Yt4VlYgn5ha
+         vbjxjNIpkf1e6teve0YUIUyabrSIx2IiACKxJCwVO1DKnktcSoLY/53JFrn8tZvyePtu
+         EfPWg6r8c9tfOjbgOORlYD2Aks/G9FKTov+Yu0SmSb5XtRPcOC4uF7EVxmPkYR2IXMVN
+         ph7MvMhQaukfTkF6WaM8YrNetMClKLKGUsiDZjOtQ4LjHUgj53TqWjMY6mqlRJnVASA1
+         W0OmNXMJ645oabCc0F6z0jhGSakXcosQbu7lPbUVaNfzMugRqN5wLypLj8KX2rh4mMdI
+         mnAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701728098; x=1702332898;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cT5ING78Aw6QvaBr7RPKXeEm1alnh4pQOnp24KNcG6U=;
-        b=w/NrVxx3J3XPJaWwZmCON9oTi9CWh/jeaUiHtQmZY1T1GnvJ891gTD8IcY+ciCgLNh
-         cf+9srdRa5Rh5SVc1Bqrz8/SqTNaXL7Cql51jhT1BNUEiV6CtgwEW+P9efkOiirPXwbw
-         45klZb6z+H6IaAsWcsOO/0tOdEj8ehE65kDyCz+J7KvXDCi079LGueQ3VRDat5GoZjEO
-         6ElP++dhI8XBlBkrYhsvB5ThN5X3508SqREFs7hh0WN10VGlQHqaekjphT+LyxpURGET
-         jiwEPk1JOMyY9mGUxc642be2Dn3HYSZYhePap/4YONMwJKuFiDGxJTL0ICV5deHetAaW
-         dsZg==
-X-Gm-Message-State: AOJu0YyQXHWH+sBdOahJXXt2bYEgIkXH+n2Bj9zqG4kEidFejvjOUk22
-	F9eJvKylFq5m6FJDajGQTay3kDjf9mfmpi8EkGJWZ8YWyzk=
-X-Google-Smtp-Source: AGHT+IFoeGilC7KQ6Unb3jfilMiyCDHGb3JBCgBI+bgOUtA4U8OnYlGMdCUBhy2PrVAbC60n5Rk0rZxYScsgRykKnXE=
-X-Received: by 2002:a17:906:74c2:b0:a19:a19b:78ac with SMTP id
- z2-20020a17090674c200b00a19a19b78acmr2117622ejl.111.1701728098257; Mon, 04
- Dec 2023 14:14:58 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701728133; x=1702332933;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fdX8Bw7p/iJUenpaNo52GDnA8vcgwdEJZtchPUKoFhI=;
+        b=eiDnV1L/na6pd+ggyxH95TEWjzqgQa40QCkj5F2IEFMRqnd6W7GRQIuZ/GaflVVHhy
+         ocMwYmC0n4LMRQ7HqBfuk8UcwYRFBfGQR5cV/aDQC/A2c6Kg9x1KXj5b3FXqXxD9afH9
+         MV6ssO2w0F6S3q3i29qe9fazDqZqh8lBGfYjYy/5AOVE49GITzw8OY1wOh8pyBYnBkhz
+         PCFoKkMD9rxM/DPggkqjuvxwiNONS7nNKtD1upm0Zq27+Pw4vk5+aCIymhMy46zQraQi
+         0KrM0cOI+TL4gVI4zyDe1j5kH/h6uUpmOmrwx4d+pf8m4RFDNDkUuC0QTMMmTpyMxpmS
+         haTw==
+X-Gm-Message-State: AOJu0Yz4QYoLzCQ1hIX7/P/qhJiyiqY+iswVjt1IxKL5eH4oE2CYlz7u
+	iFj17GRbSN3eJ5LH9mnKIvk=
+X-Google-Smtp-Source: AGHT+IEgb8Oy1lhkx9/+U5ZMIFf/pIVZH8HDtp1TyBr4cw3wzKDDKc5wsuCya38u8V+1r2Q+AQ9o2w==
+X-Received: by 2002:a05:6512:92c:b0:50b:f380:c3b2 with SMTP id f12-20020a056512092c00b0050bf380c3b2mr1059132lft.46.1701728132686;
+        Mon, 04 Dec 2023 14:15:32 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id o25-20020a056402039900b0054ca5644e84sm273079edv.27.2023.12.04.14.15.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 14:15:32 -0800 (PST)
+Message-ID: <2574f94d97b57f1816af4ae33f2698cc9d2658dc.camel@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 03/10] bpf: fix check for attempt to corrupt
+ spilled pointer
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+Date: Tue, 05 Dec 2023 00:15:31 +0200
+In-Reply-To: <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com>
+References: <20231204192601.2672497-1-andrii@kernel.org>
+	 <20231204192601.2672497-4-andrii@kernel.org>
+	 <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-3-khuey@kylehuey.com>
-In-Reply-To: <20231204201406.341074-3-khuey@kylehuey.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 4 Dec 2023 14:14:46 -0800
-Message-ID: <CAEf4BzbDKiP7femK5DZ8jeyK0u63KrV+FogEDVPaYS7mc4if7g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
- program suppresses SIGIO.
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	"Robert O'Callahan" <robert@ocallahan.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 4, 2023 at 12:14=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
->
-> The test sets a hardware breakpoint and uses a bpf program to suppress th=
-e
-> I/O availability signal if the ip matches the expected value.
->
-> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> ---
->  .../selftests/bpf/prog_tests/perf_skip.c      | 95 +++++++++++++++++++
->  .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
->  2 files changed, 118 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
->  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/t=
-esting/selftests/bpf/prog_tests/perf_skip.c
-> new file mode 100644
-> index 000000000000..b269a31669b7
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-> @@ -0,0 +1,95 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define _GNU_SOURCE
-> +#include <test_progs.h>
-> +#include "test_perf_skip.skel.h"
-> +#include <linux/hw_breakpoint.h>
-> +#include <sys/mman.h>
-> +
-> +#define BPF_OBJECT            "test_perf_skip.bpf.o"
+On Tue, 2023-12-05 at 00:12 +0200, Eduard Zingerman wrote:
+[...]
+> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
+lftests/bpf/test_loader.c
+> index a350ecdfba4a..a5ad6b01175e 100644
+> --- a/tools/testing/selftests/bpf/test_loader.c
+> +++ b/tools/testing/selftests/bpf/test_loader.c
+> @@ -430,7 +430,7 @@ struct cap_state {
+>  static int drop_capabilities(struct cap_state *caps)
+>  {
+>         const __u64 caps_to_drop =3D (1ULL << CAP_SYS_ADMIN | 1ULL << CAP=
+_NET_ADMIN |
+> -                                   1ULL << CAP_PERFMON   | 1ULL << CAP_B=
+PF);
+> +                                   1ULL << CAP_PERFMON /*| 1ULL << CAP_B=
+PF */);
+>         int err;
+> =20
+>         err =3D cap_disable_effective(caps_to_drop, &caps->old_caps);
 
-leftover?
-
-> +
-> +static void handle_sig(int)
-> +{
-> +       ASSERT_OK(1, "perf event not skipped");
-> +}
-> +
-> +static noinline int test_function(void)
-> +{
-
-please add
-
-asm volatile ("");
-
-here to prevent compiler from actually inlining at the call site
-
-> +       return 0;
-> +}
-> +
-> +void serial_test_perf_skip(void)
-> +{
-> +       sighandler_t previous;
-> +       int duration =3D 0;
-> +       struct test_perf_skip *skel =3D NULL;
-> +       int map_fd =3D -1;
-> +       long page_size =3D sysconf(_SC_PAGE_SIZE);
-> +       uintptr_t *ip =3D NULL;
-> +       int prog_fd =3D -1;
-> +       struct perf_event_attr attr =3D {0};
-> +       int perf_fd =3D -1;
-> +       struct f_owner_ex owner;
-> +       int err;
-> +
-> +       previous =3D signal(SIGIO, handle_sig);
-> +
-> +       skel =3D test_perf_skip__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "skel_load"))
-> +               goto cleanup;
-> +
-> +       prog_fd =3D bpf_program__fd(skel->progs.handler);
-> +       if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
-> +               goto cleanup;
-> +
-> +       map_fd =3D bpf_map__fd(skel->maps.ip);
-> +       if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
-> +               goto cleanup;
-> +
-> +       ip =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, =
-map_fd, 0);
-> +       if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
-> +               goto cleanup;
-> +
-> +       *ip =3D (uintptr_t)test_function;
-> +
-> +       attr.type =3D PERF_TYPE_BREAKPOINT;
-> +       attr.size =3D sizeof(attr);
-> +       attr.bp_type =3D HW_BREAKPOINT_X;
-> +       attr.bp_addr =3D (uintptr_t)test_function;
-> +       attr.bp_len =3D sizeof(long);
-> +       attr.sample_period =3D 1;
-> +       attr.sample_type =3D PERF_SAMPLE_IP;
-> +       attr.pinned =3D 1;
-> +       attr.exclude_kernel =3D 1;
-> +       attr.exclude_hv =3D 1;
-> +       attr.precise_ip =3D 3;
-> +
-> +       perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-> +       if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
-
-please don't use CHECK() macro, stick to ASSERT_xxx()
-
-also, we are going to run all this on different hardware and VMs, see
-how we skip tests if hardware support is not there. See test__skip
-usage in prog_tests/perf_branches.c, as one example
-
-> +               goto cleanup;
-> +
-> +       err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
-
-I assume this is what will send SIGIO, right? Can you add a small
-comment explicitly saying this?
-
-> +       if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
-> +               goto cleanup;
-> +
-> +       owner.type =3D F_OWNER_TID;
-> +       owner.pid =3D gettid();
-> +       err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
-> +       if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
-> +               goto cleanup;
-> +
-> +       err =3D ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-> +       if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
-> +               goto cleanup;
-
-we have a better way to do this, please use
-bpf_program__attach_perf_event() instead
-
-> +
-> +       test_function();
-> +
-> +cleanup:
-> +       if (perf_fd >=3D 0)
-> +               close(perf_fd);
-> +       if (ip)
-> +               munmap(ip, page_size);
-> +       if (skel)
-> +               test_perf_skip__destroy(skel);
-> +
-> +       signal(SIGIO, previous);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/t=
-esting/selftests/bpf/progs/test_perf_skip.c
-> new file mode 100644
-> index 000000000000..ef01a9161afe
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-> @@ -0,0 +1,23 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +struct {
-> +       __uint(type, BPF_MAP_TYPE_ARRAY);
-> +       __uint(max_entries, 1);
-> +       __uint(map_flags, BPF_F_MMAPABLE);
-> +       __type(key, uint32_t);
-> +       __type(value, uintptr_t);
-> +} ip SEC(".maps");
-
-please use global variable:
-
-__u64 ip;
-
-and then access it from user-space side through skeleton
-
-skel->bss.ip =3D &test_function;
-
-> +
-> +SEC("perf_event")
-> +int handler(struct bpf_perf_event_data *data)
-> +{
-> +       const uint32_t index =3D 0;
-> +       uintptr_t *v =3D bpf_map_lookup_elem(&ip, &index);
-> +
-> +       return !(v && *v =3D=3D PT_REGS_IP(&data->regs));
-
-and so we the above global var suggestion this will be just:
-
-return ip =3D=3D PT_REGS_IP(&data->regs);
-
-> +}
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> --
-> 2.34.1
->
+(Here I hack test_loader so that unpriv run has CAP_BPF,
+ the test could be run as follows:
+ ./test_progs -vvv -a 'verifier_basic_stack/spill_lo32_write_hi32 @unpriv')
 
