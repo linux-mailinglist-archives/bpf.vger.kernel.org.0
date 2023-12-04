@@ -1,163 +1,109 @@
-Return-Path: <bpf+bounces-16567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCF5A802E41
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 10:14:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97F57802ECE
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 10:39:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74C0D280EA5
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 09:14:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 480521F211F8
+	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 09:39:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D41F14F75;
-	Mon,  4 Dec 2023 09:14:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 525D11C6B6;
+	Mon,  4 Dec 2023 09:39:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Oq2r/tZ4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CoFuB5nU"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E3CCD;
-	Mon,  4 Dec 2023 01:14:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=17YJ1z3ogS9ZFtbiaMgUZd7PQ1LHRkBWBWcBGoc/CJ8=; b=Oq2r/tZ4GMYvXmULCX+LD6Qfz7
-	HO9OVNz8XCXQMgxz/LWfORxgl/H3LTq81ngFJsgHC93qrKcMcjpBQX8v5qQhdci74NGvXZAJ/yVju
-	sK9gFvSFKKjG+KTta5qWhde5JaQQriDgSlX54kLf3MXV6oHLk1PYPA8HeGphIfHdNTawm8bbTLJrU
-	NgcMlwn6/lrZmRXbfPHQFRxpn4ftLCB5eM9fnRnJvlMZpH3BmDJrGqa4dnsA7VRIdxnJbQVajyNOi
-	Bn006jXGBXzTqb9dfS3GtKtm0DDTPpLydkfwONe+R1/uAJi3EvwQfUiJ18EbM5lGDJHCoVpl5xoSe
-	3fM7hPwA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rA51D-004JwZ-2M;
-	Mon, 04 Dec 2023 09:13:35 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 4D01F300472; Mon,  4 Dec 2023 10:13:34 +0100 (CET)
-Date: Mon, 4 Dec 2023 10:13:34 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Song Liu <song@kernel.org>, Song Liu <songliubraving@meta.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3086B2;
+	Mon,  4 Dec 2023 01:39:43 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40c09ba723eso11251645e9.2;
+        Mon, 04 Dec 2023 01:39:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701682782; x=1702287582; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=itnvq+P/Fjh6RP+B0+dY8QHorajZulYkmu3iW5W6GwY=;
+        b=CoFuB5nU6e31ISJXpMBxyiKWE8ME0yoRZlrS8DYOEhlP14xRysT5BPQ1zaKlVJkRkh
+         RWTkyHgh2rNT35F0yWexHGP3Puk939AkBnYihRc6q5aXdbtJQ51lsnde0RYAEoj34x1L
+         Al355chhLfeKHg59nxVWtG6bZKKwwWfCTn8/S+e1fcyLFl4TSu9oywM84I9PbOGSiQ9P
+         g6jTHkVmRwzXn24IHzD/+RhyMCx+CuJFUR7TRwmil+Ubuq0oldyG3/V9Mx2pjy1di8r4
+         PBhVAnF5SWGOqGpopJxZygsCkmxHg1u6Sm2NlsQbx+TXs1SWinASfhWPMfGoRcLgukM+
+         jlYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701682782; x=1702287582;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=itnvq+P/Fjh6RP+B0+dY8QHorajZulYkmu3iW5W6GwY=;
+        b=lqZhmGd5RlTi8S9CP++e9Cs89/mlhMhzAGwO25jZ4QZKEzjwpCb8JUBKHpzyUeBQxZ
+         UBh1uSxhZXm2iWHOyaiHwEzK9J/L9wBhPW5hOVyuO+9fYxHB/p5cdKohLqS3SvRuj2dj
+         sZ49m0GkqUrI3OsVUuX+On9YoDsgMWkOxX5phtSs0P1G+gjIgYylLHOJbcj/oXxIv6wY
+         G44IC7zGvTPzDlH+4fytdRQKzQFaQg2kgml9bnnvocDma/HFj8nZDFPcDTXDw5UwJzS+
+         IrzO0ZTiBOJnj09Yt/PHuSDzLnFioMCVnAmNPXekAxup5r+nc30yimP5Oxk+48U0U980
+         8mOw==
+X-Gm-Message-State: AOJu0Ywl+MvrBnkEYQgBTbL+e0kgCjSlSzPqIZPrvfeRHS31TUflC2PJ
+	x1HbEks8a29RBfIgLNJw9KQ=
+X-Google-Smtp-Source: AGHT+IEuktjrUxLdnaKY9QQMHGXtWDZAhW0oayMCNA5adoVDlXNkChDbLVtvMFBUY6gJCz8lY1y0og==
+X-Received: by 2002:a05:600c:3584:b0:408:5a1c:9de7 with SMTP id p4-20020a05600c358400b004085a1c9de7mr2136608wmq.7.1701682782129;
+        Mon, 04 Dec 2023 01:39:42 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id r1-20020a5d4e41000000b0033340c678ffsm4278525wrt.96.2023.12.04.01.39.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 01:39:41 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
-	clang-built-linux <llvm@lists.linux.dev>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Joao Moreira <joao@overdrivepizza.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231204091334.GM3818@noisy.programming.kicks-ass.net>
-References: <20231130133630.192490507@infradead.org>
- <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][NEXT] selftests/bpf: Fix spelling mistake "get_signaure_size" -> "get_signature_size"
+Date: Mon,  4 Dec 2023 09:39:40 +0000
+Message-Id: <20231204093940.2611954-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
 
-On Sun, Dec 03, 2023 at 02:56:34PM -0800, Alexei Starovoitov wrote:
-> On Thu, Nov 30, 2023 at 5:43 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> >
-> >  void bpf_prog_kallsyms_del(struct bpf_prog *fp)
-> > @@ -691,6 +708,9 @@ void bpf_prog_kallsyms_del(struct bpf_pr
-> >                 return;
-> >
-> >         bpf_ksym_del(&fp->aux->ksym);
-> > +#ifdef CONFIG_FINEIBT
-> > +       bpf_ksym_del(&fp->aux->ksym_prefix);
-> > +#endif
-> >  }
-> 
-> Thank you for addressing all comments, but it panics during boot with:
-> 
-> [    3.109474] RIP: 0010:bpf_prog_kallsyms_del+0x10f/0x140
-> [    3.109867] Code: 26 e0 00 ff 05 32 dd dd 01 48 8d bb 80 03 00 00
-> 48 c7 c6 b8 b3 00 83 e8 ef 25 e0 00 48 8b 83 58 03 00 00 48 8b 8b 60
-> 03 00 00 <48> 89 48 08 48 89 01 4c 89 b3 60 03 00 00 48 c7 c7 10 0b 7b
-> 83 5b
-> [    3.111282] RSP: 0000:ffffc90000013e08 EFLAGS: 00010246
-> [    3.116968] Call Trace:
-> [    3.117163]  <TASK>
-> [    3.117328]  ? __die_body+0x68/0xb0
-> [    3.117599]  ? page_fault_oops+0x317/0x390
-> [    3.117909]  ? debug_objects_fill_pool+0x19/0x440
-> [    3.118283]  ? debug_objects_fill_pool+0x19/0x440
-> [    3.118715]  ? do_user_addr_fault+0x4cd/0x560
-> [    3.119045]  ? exc_page_fault+0x62/0x1c0
-> [    3.119350]  ? asm_exc_page_fault+0x26/0x30
-> [    3.119675]  ? bpf_prog_kallsyms_del+0x10f/0x140
-> [    3.120023]  ? bpf_prog_kallsyms_del+0x101/0x140
-> [    3.120381]  __bpf_prog_put_noref+0x12/0xf0
-> [    3.120704]  bpf_prog_put_deferred+0xe9/0x110
-> [    3.121035]  bpf_prog_put+0xbb/0xd0
-> [    3.121307]  bpf_prog_release+0x15/0x20
-> 
-> Adding the following:
-> 
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index 5c84a935ba63..5013fd53adfd 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -709,6 +709,8 @@ void bpf_prog_kallsyms_del(struct bpf_prog *fp)
-> 
->         bpf_ksym_del(&fp->aux->ksym);
->  #ifdef CONFIG_FINEIBT
-> +       if (cfi_mode != CFI_FINEIBT)
-> +               return;
->         bpf_ksym_del(&fp->aux->ksym_prefix);
->  #endif
->  }
-> 
-> fixes the boot issue, but test_progs is not happy.
+There is a spelling mistake in an ASSERT_GT message. Fix it.
 
-Damn, I'm an idiot :-), I knew I should've boot tested all
-configurations again :/
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Just running test_progs it splats right away:
-> 
-> [   74.047757] kmemleak: Found object by alias at 0xffffffffa0001d80
-> [   74.048272] CPU: 14 PID: 104 Comm: kworker/14:0 Tainted: G        W
->  O       6.7.0-rc3-00702-g41c30fec304d-dirty #5241
-> [   74.049118] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> [   74.050042] Workqueue: events bpf_prog_free_deferred
-> [   74.050448] Call Trace:
-> [   74.050663]  <TASK>
-> [   74.050841]  dump_stack_lvl+0x55/0x80
-> [   74.051141]  __find_and_remove_object+0xdb/0x110
-> [   74.051521]  kmemleak_free+0x41/0x70
-> [   74.051828]  vfree+0x36/0x130
+diff --git a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+index 6c90372b772d..ab0f02faa80c 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
++++ b/tools/testing/selftests/bpf/prog_tests/verify_pkcs7_sig.c
+@@ -498,7 +498,7 @@ static void test_pkcs7_sig_fsverity(void)
+ 	if (!ASSERT_OK_PTR(skel, "test_sig_in_xattr__open"))
+ 		goto out;
+ 	ret = get_signature_size(sig_path);
+-	if (!ASSERT_GT(ret, 0, "get_signaure_size"))
++	if (!ASSERT_GT(ret, 0, "get_signature_size"))
+ 		goto out;
+ 	skel->bss->sig_size = ret;
+ 	skel->bss->user_keyring_serial = syscall(__NR_request_key, "keyring",
+-- 
+2.39.2
 
-Durr, I'll see if I can get that stuff running locally, and otherwise
-play with the robot as you suggested. Thanks!
 
