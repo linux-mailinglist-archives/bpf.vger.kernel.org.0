@@ -1,184 +1,270 @@
-Return-Path: <bpf+bounces-16672-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16673-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23B5A804341
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:23:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF2A804344
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:23:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2B612813DB
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 00:23:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93DF21C20C1A
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 00:23:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A641657;
-	Tue,  5 Dec 2023 00:23:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4418802;
+	Tue,  5 Dec 2023 00:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KN8xQa0P"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i0j3Ju91"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189FA101
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 16:23:35 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1b6b65923eso224419166b.3
-        for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 16:23:35 -0800 (PST)
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D038B109;
+	Mon,  4 Dec 2023 16:23:40 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c21e185df5so2776725a12.1;
+        Mon, 04 Dec 2023 16:23:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701735813; x=1702340613; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701735820; x=1702340620; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A4erl9rvYBJF7+GyfYDY+q6CMHyP6y+Fe0EYbR9pcIE=;
-        b=KN8xQa0PYCZyHDuqj9hLWJphctBXbem88BrVleqeTzO2Md2M19FH5htbhYF1JBGA0G
-         H4hZOT0W00hCSztax6Jc/sH8XegLtNKxQJxmiASkWPJns2lhANklWTeXCnzNjJ3RdTNM
-         vAEoFq9HsHkYZv41YxFeQgwVhKygsp95fjb1XWJg2tb4Zt7xKf43q9KSPtbpN3KcQ/mw
-         HAoRKeV5L1N0iJIppKlwdcrgs/1MIkxDJ0u0iga8qQceCzSFTu5n0tEuUNUQgWM+AhKy
-         WgMNtgoGO6HI0uy8M9Lf4rxU/KSretL55AmgOjNfF9fafreFzCU4yt1uDVvCizzhM7/r
-         kNDQ==
+        bh=HBlBHRLoC77S9p08O8sqxBJOBgbNm/0SvRxJBxYrhAk=;
+        b=i0j3Ju91+9IWfSGUlJ5k8HC3NXvY75ob69n81N9YoHB+O4PSs4SRUpIWWkpNMNVbSz
+         HvLvpxk09wdGw0vDkGPwN6c2N9vkQ5yS4ffQimutmgUzE9ytmSyftc2SqszimQZWS5/6
+         vXt7R/O8RFzZKDDmQU4mJAgFZ1bA6dVX7Y39QLKmfH+umHqgbI11IXca1z2xjDB0G9tf
+         xah5SWc8QgkaOPXpqc60ej7OrWGrOfRd0RpVJgLMniCTnIS/3O0fOqKGuMmveosFe7Jk
+         N3xqKDsOaNJlQGu7q7rYnKQrGzvdilwY1In7lmEw74F5P/V8u1XoP7r+IyuShB9bsUvT
+         tcrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701735813; x=1702340613;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A4erl9rvYBJF7+GyfYDY+q6CMHyP6y+Fe0EYbR9pcIE=;
-        b=V90KVGEMpRL4brM4UP5YbAgGpblaTTWM5l4cvD/cGSvLBMVcIs9d/bHFLSzW9zbWHp
-         lKMwtWg9F9NiBGNMmXAHjbv2zpmK6cIq+uDmpUxMLNL2O3WcPLbjROsRxbOyNbBSghCj
-         Icwsbr3H5ogQOuczfP4nH1lvxAgJ/tjpw6W5ZiE4twJmx3RjW8wVG082cTbXWM71lrqo
-         P0rkHC6PUukH8+cskzH9RYVBxOHe1TbZ96R9Tm/t4KeGjLr5R2+SWLPHSCrk0w9fbCCB
-         QqyDVUadJK9Go3MCO3YqbDcDkaYHN7QdWg4pPxjP8gkUwin+olwrXrml0ROWYAJn8I5O
-         /i/A==
-X-Gm-Message-State: AOJu0Yxu7NdG7Qxs1UZ0qgJv77C24vu68jJnt29z+MTDOi7LXIzrOHG5
-	MhdEFaCJMCi8qjzPsquauiPzczxaTunrBm3cbt8=
-X-Google-Smtp-Source: AGHT+IHO0/rYN51PVgVxFJWfUMp72ykCfMMVgJCzW1iSMfFI1bw3xoy73+hnkK21ZhdPEDs2Lp0Q1Ugm7amr80+NfmY=
-X-Received: by 2002:a17:906:f20c:b0:a19:a19b:4230 with SMTP id
- gt12-20020a170906f20c00b00a19a19b4230mr2460062ejb.155.1701735813449; Mon, 04
- Dec 2023 16:23:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701735820; x=1702340620;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=HBlBHRLoC77S9p08O8sqxBJOBgbNm/0SvRxJBxYrhAk=;
+        b=UI8UB5jR58e9pN8UlAdJIf7yQmYF2bQE8Lub05jxuSEhHKwaLkAhnaoj9McuISwI6M
+         YLAKcvZwxCeMsalAnSa7rOOBtf0SblESumNlyCyaQ1GHNCXRN3EiEoluZukxPDDhwC5Y
+         oVnsF/3+KfFm9SckfoGQxb7LYiCYenT8R+plPVtRofYnfHbVZiYc9//Qw5kpz+q0kjjn
+         JHXc6PHogIs3OUG8KwyaPMeUrolVeUXczT4fd9IFn+T+or1/tZ5vpvkkYnOffE+99FGA
+         8l4/aGRBGzIGWkoBLtF3qeQDb5C87kUqt7ugmxqULAnXzCr1mPc5LXNg7lN/muxtsSHj
+         GpmA==
+X-Gm-Message-State: AOJu0YyLJlr9g+lXRXJDZGEOpn2sHb3PM1CogaqQvWpGlsgk+P2qOaXb
+	reE/LPetaj2BS+sLNKaqSdz6I0gy4o94fQ==
+X-Google-Smtp-Source: AGHT+IH0FB1lPhJtaLAG7TkNGvlUylGmZaYyv2UkF5UxdPr188zLKdgs4TCFW8JPz9qVXxQigct5ZQ==
+X-Received: by 2002:a05:6a20:938e:b0:18f:97c:9775 with SMTP id x14-20020a056a20938e00b0018f097c9775mr7030595pzh.93.1701735820177;
+        Mon, 04 Dec 2023 16:23:40 -0800 (PST)
+Received: from localhost ([98.97.116.78])
+        by smtp.gmail.com with ESMTPSA id be5-20020a656e45000000b005897bfc2ed3sm7011411pgb.93.2023.12.04.16.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Dec 2023 16:23:39 -0800 (PST)
+Date: Mon, 04 Dec 2023 16:23:38 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Pengcheng Yang <yangpc@wangsu.com>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Jakub Sitnicki <jakub@cloudflare.com>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ bpf@vger.kernel.org, 
+ netdev@vger.kernel.org
+Cc: Pengcheng Yang <yangpc@wangsu.com>
+Message-ID: <656e6d8a5e592_1ee50208e1@john.notmuch>
+In-Reply-To: <1700565725-2706-2-git-send-email-yangpc@wangsu.com>
+References: <1700565725-2706-1-git-send-email-yangpc@wangsu.com>
+ <1700565725-2706-2-git-send-email-yangpc@wangsu.com>
+Subject: RE: [PATCH bpf-next v2 1/3] skmsg: Support to get the data length in
+ ingress_msg
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231204192601.2672497-1-andrii@kernel.org> <20231204192601.2672497-4-andrii@kernel.org>
- <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com>
-In-Reply-To: <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 4 Dec 2023 16:23:21 -0800
-Message-ID: <CAEf4BzZ0Ao7EF4PodPBxTdQphEt-_ezZyNDOzqds2XfXYpjsHg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 03/10] bpf: fix check for attempt to corrupt
- spilled pointer
-To: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, daniel@iogearbox.net, 
-	martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 4, 2023 at 2:12=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Mon, 2023-12-04 at 11:25 -0800, Andrii Nakryiko wrote:
-> [...]
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 4f8a3c77eb80..73315e2f20d9 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -4431,7 +4431,7 @@ static int check_stack_write_fixed_off(struct bpf=
-_verifier_env *env,
-> >        * so it's aligned access and [off, off + size) are within stack =
-limits
-> >        */
-> >       if (!env->allow_ptr_leaks &&
-> > -         state->stack[spi].slot_type[0] =3D=3D STACK_SPILL &&
-> > +         is_spilled_reg(&state->stack[spi]) &&
-> >           size !=3D BPF_REG_SIZE) {
-> >               verbose(env, "attempt to corrupt spilled pointer on stack=
-\n");
-> >               return -EACCES;
->
-> I think there is a small detail here.
-> slot_type[0] =3D=3D STACK_SPILL actually checks if a spill is 64-bit.
-
-Hm... I wonder if the check was written like this deliberately to
-prevent turning any spilled register into STACK_MISC?
-
-> Thus, with this patch applied the test below does not pass.
-> Log fragment:
->
->     1: (57) r0 &=3D 65535                   ; R0_w=3Dscalar(...,var_off=
-=3D(0x0; 0xffff))
->     2: (63) *(u32 *)(r10 -8) =3D r0
->     3: R0_w=3Dscalar(...,var_off=3D(0x0; 0xffff)) R10=3Dfp0 fp-8=3Dmmmmsc=
-alar(...,var_off=3D(0x0; 0xffff))
->     3: (b7) r0 =3D 42                       ; R0_w=3D42
->     4: (63) *(u32 *)(r10 -4) =3D r0
->     attempt to corrupt spilled pointer on stack
-
-What would happen if we have
-
-4: *(u16 *)(r10 - 8) =3D 123; ?
-
-and similarly
-
-4: *(u16 *)(r10 - 6) =3D 123; ?
-
-
-(16-bit overwrites of spilled 32-bit register)
-
-It should be rejected, can you please quickly check if they will be
-with the existing check?
-
-So it makes me feel like the intent was to reject any partial writes
-with spilled reg slots. We could probably improve that to just make
-sure that we don't turn spilled pointers into STACK_MISC in unpriv,
-but I'm not sure if it's worth doing that instead of keeping things
-simple?
-
-Alexei, do you remember what was the original intent?
-
->
-> Admittedly, this happens only when the only capability is CAP_BPF and
-> we don't test this configuration.
->
+Pengcheng Yang wrote:
+> Currently msg is queued in ingress_msg of the target psock
+> on ingress redirect, without increment rcv_nxt. The size
+> that user can read includes the data in receive_queue and
+> ingress_msg. So we introduce sk_msg_queue_len() helper to
+> get the data length in ingress_msg.
+> 
+> Note that the msg_len does not include the data length of
+> msg from recevive_queue via SK_PASS, as they increment rcv_nxt
+> when received.
+> 
+> Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
 > ---
->
-> iff --git a/tools/testing/selftests/bpf/progs/verifier_basic_stack.c b/to=
-ols/testing/selftests/bpf/progs/verifier_basic_stack.c
-> index 359df865a8f3..61ada86e84df 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_basic_stack.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_basic_stack.c
-> @@ -97,4 +97,20 @@ __naked void misaligned_read_from_stack(void)
->  "      ::: __clobber_all);
+>  include/linux/skmsg.h | 26 ++++++++++++++++++++++++--
+>  net/core/skmsg.c      | 10 +++++++++-
+>  2 files changed, 33 insertions(+), 3 deletions(-)
+> 
+
+This has two writers under different locks this looks insufficient
+to ensure correctness of the counter. Likely the consume can be
+moved into where the dequeue_msg happens? But, then its not always
+accurate which might break some applications doing buffer sizing.
+An example of this would be nginx.
+
+> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
+> index c1637515a8a4..423a5c28c606 100644
+> --- a/include/linux/skmsg.h
+> +++ b/include/linux/skmsg.h
+> @@ -47,6 +47,7 @@ struct sk_msg {
+>  	u32				apply_bytes;
+>  	u32				cork_bytes;
+>  	u32				flags;
+> +	bool				ingress_self;
+>  	struct sk_buff			*skb;
+>  	struct sock			*sk_redir;
+>  	struct sock			*sk;
+> @@ -82,6 +83,7 @@ struct sk_psock {
+>  	u32				apply_bytes;
+>  	u32				cork_bytes;
+>  	u32				eval;
+> +	u32				msg_len;
+>  	bool				redir_ingress; /* undefined if sk_redir is null */
+>  	struct sk_msg			*cork;
+>  	struct sk_psock_progs		progs;
+> @@ -311,9 +313,11 @@ static inline void sk_psock_queue_msg(struct sk_psock *psock,
+>  				      struct sk_msg *msg)
+>  {
+>  	spin_lock_bh(&psock->ingress_lock);
+> -	if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED))
+> +	if (sk_psock_test_state(psock, SK_PSOCK_TX_ENABLED)) {
+>  		list_add_tail(&msg->list, &psock->ingress_msg);
+> -	else {
+> +		if (!msg->ingress_self)
+> +			WRITE_ONCE(psock->msg_len, psock->msg_len + msg->sg.size);
+
+First writer here can be from
+
+  sk_psock_backlog()
+    mutex_lock(psock->work_mutex)
+    ...
+    sk_psock_handle_skb()
+      sk_psock_skb_ingress()
+        sk_psock_skb_ingress_enqueue()
+          sk_psock_queue_msg()
+             spin_lock_bh(psock->ingress_lock)
+               WRITE_ONCE(...)
+             spin_unlock_bh()
+
+> +	} else {
+>  		sk_msg_free(psock->sk, msg);
+>  		kfree(msg);
+>  	}
+> @@ -368,6 +372,24 @@ static inline void kfree_sk_msg(struct sk_msg *msg)
+>  	kfree(msg);
 >  }
->
-> +SEC("socket")
-> +__success_unpriv
-> +__naked void spill_lo32_write_hi32(void)
+>  
+> +static inline void sk_msg_queue_consumed(struct sk_psock *psock, u32 len)
 > +{
-> +       asm volatile ("                                 \
-> +       call %[bpf_get_prandom_u32];                    \
-> +       r0 &=3D 0xffff;                                   \
-> +       *(u32*)(r10 - 8) =3D r0;                          \
-> +       r0 =3D 42;                                        \
-> +       *(u32*)(r10 - 4) =3D r0;                          \
-> +       exit;                                           \
-> +"      :
-> +       : __imm(bpf_get_prandom_u32)
-> +       : __clobber_all);
+> +	WRITE_ONCE(psock->msg_len, psock->msg_len - len);
 > +}
 > +
->  char _license[] SEC("license") =3D "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
-lftests/bpf/test_loader.c
-> index a350ecdfba4a..a5ad6b01175e 100644
-> --- a/tools/testing/selftests/bpf/test_loader.c
-> +++ b/tools/testing/selftests/bpf/test_loader.c
-> @@ -430,7 +430,7 @@ struct cap_state {
->  static int drop_capabilities(struct cap_state *caps)
+> +static inline u32 sk_msg_queue_len(const struct sock *sk)
+> +{
+> +	struct sk_psock *psock;
+> +	u32 len = 0;
+> +
+> +	rcu_read_lock();
+> +	psock = sk_psock(sk);
+> +	if (psock)
+> +		len = READ_ONCE(psock->msg_len);
+> +	rcu_read_unlock();
+> +	return len;
+> +}
+> +
+>  static inline void sk_psock_report_error(struct sk_psock *psock, int err)
 >  {
->         const __u64 caps_to_drop =3D (1ULL << CAP_SYS_ADMIN | 1ULL << CAP=
-_NET_ADMIN |
-> -                                   1ULL << CAP_PERFMON   | 1ULL << CAP_B=
-PF);
-> +                                   1ULL << CAP_PERFMON /*| 1ULL << CAP_B=
-PF */);
->         int err;
->
->         err =3D cap_disable_effective(caps_to_drop, &caps->old_caps);
+>  	struct sock *sk = psock->sk;
+> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> index 6c31eefbd777..f46732a8ddc2 100644
+> --- a/net/core/skmsg.c
+> +++ b/net/core/skmsg.c
+> @@ -415,7 +415,7 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+>  	struct iov_iter *iter = &msg->msg_iter;
+>  	int peek = flags & MSG_PEEK;
+>  	struct sk_msg *msg_rx;
+> -	int i, copied = 0;
+> +	int i, copied = 0, msg_copied = 0;
+>  
+>  	msg_rx = sk_psock_peek_msg(psock);
+>  	while (copied != len) {
+> @@ -441,6 +441,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+>  			}
+>  
+>  			copied += copy;
+> +			if (!msg_rx->ingress_self)
+> +				msg_copied += copy;
+>  			if (likely(!peek)) {
+>  				sge->offset += copy;
+>  				sge->length -= copy;
+> @@ -481,6 +483,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *psock, struct msghdr *msg,
+>  		msg_rx = sk_psock_peek_msg(psock);
+>  	}
+>  out:
+> +	if (likely(!peek) && msg_copied)
+> +		sk_msg_queue_consumed(psock, msg_copied);
+
+Second writer,
+
+   tcp_bpf_recvmsg_parser()
+     lock_sock(sk)
+     sk_msg_recvmsg()
+       sk_psock_peek_msg()
+         spin_lock_bh(ingress_lock); <- lock held from first writer.
+         msg = list...
+         spin_unlock_bh()
+       sk_psock_Dequeue_msg(psock)
+         spin_lock_bh(ingress_lock)
+         msg = ....                     <- should call queue_consumed here
+         spin_unlock_bh()
+
+    out:
+      if (likely(!peek) && msg_copied)
+        sk_msg_queue_consumed(psock, msg_copied); <- here no lock?
+
+
+It looks like you could move the queue_consumed up into the dequeue_msg,
+but then you have some issue on partial reads I think? Basically the
+IOCTL might return more bytes than are actually in the ingress queue.
+Also it will look strange if the ioctl is called twice once before a read
+and again after a read and the byte count doesn't change.
+
+Maybe needs ingress queue lock wrapped around this queue consuned and
+leave it where it is? Couple ideas anyways, but I don't think its
+correct as is.
+       
+>  	return copied;
+>  }
+>  EXPORT_SYMBOL_GPL(sk_msg_recvmsg);
+> @@ -602,6 +606,7 @@ static int sk_psock_skb_ingress_self(struct sk_psock *psock, struct sk_buff *skb
+>  
+>  	if (unlikely(!msg))
+>  		return -EAGAIN;
+> +	msg->ingress_self = true;
+>  	skb_set_owner_r(skb, sk);
+>  	err = sk_psock_skb_ingress_enqueue(skb, off, len, psock, sk, msg);
+>  	if (err < 0)
+> @@ -771,9 +776,12 @@ static void __sk_psock_purge_ingress_msg(struct sk_psock *psock)
+>  
+
+purge doesn't use the ingress_lock because its cancelled and syncd the
+backlog and proto handlers have been swapped back to original handlers
+so there is no longer any way to get at the ingress queue from the socket
+side either.
+
+>  	list_for_each_entry_safe(msg, tmp, &psock->ingress_msg, list) {
+>  		list_del(&msg->list);
+> +		if (!msg->ingress_self)
+> +			sk_msg_queue_consumed(psock, msg->sg.size);
+>  		sk_msg_free(psock->sk, msg);
+>  		kfree(msg);
+>  	}
+> +	WARN_ON_ONCE(READ_ONCE(psock->msg_len) != 0);
+>  }
+>  
+>  static void __sk_psock_zap_ingress(struct sk_psock *psock)
+> -- 
+> 2.38.1
+> 
 
