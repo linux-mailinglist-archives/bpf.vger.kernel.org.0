@@ -1,68 +1,62 @@
-Return-Path: <bpf+bounces-16787-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16788-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFFD5805F4C
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 21:20:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6717F805F94
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 21:39:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DFA21C21075
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 20:20:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDC63B21134
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 20:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB2D6929F;
-	Tue,  5 Dec 2023 20:19:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B36686A009;
+	Tue,  5 Dec 2023 20:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k5eGPypx"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="EVhFXuQf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE938109;
-	Tue,  5 Dec 2023 12:19:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701807592; x=1733343592;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8Te1EPKT9Apvr/qvCbHF708uBV9mKYf+FGDtRDTDGng=;
-  b=k5eGPypxnV56D5OzumaA2i4tFC1Io64yY4TfE1QkbJN1dJmAA8RMMCX3
-   FjytbxjZ9roLOla+D9KFM4G/ytnyVn+PfjYVRxCYM326ogpafDaWLUXO6
-   MyoRW/Z4Se2Ty8ZDuUIY1y7pjb3mYgY1OrUMf/Ptqgw1m7Qbbq01KD+Hr
-   Fx+FtEn1AxkGwjA6g0080vxeMhGaYFW0hfrtK54qvhw69TUG0HhQG4LGH
-   RtYDhs2Ig5iWG6+AKs3BUVie3upr09+joJFX90rq8zZTQIBbHu83UOiC8
-   tCbufpy7HAwTw300ozGHGiXBhZx0wg9g00cKFyv2pDGWSC0c4wBlrRPr1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="849885"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="849885"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 12:19:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="841594336"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="841594336"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Dec 2023 12:19:47 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rAbtR-0009fL-18;
-	Tue, 05 Dec 2023 20:19:45 +0000
-Date: Wed, 6 Dec 2023 04:19:15 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vadim Fedorenko <vadfed@meta.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	netdev@vger.kernel.org, linux-crypto@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 1/3] bpf: make common crypto API for TC/XDP
- programs
-Message-ID: <202312060457.bRXN2xnb-lkp@intel.com>
-References: <20231202010604.1877561-1-vadfed@meta.com>
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C876181
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 12:39:01 -0800 (PST)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-7b37405f64aso234857439f.2
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 12:39:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1701808740; x=1702413540; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=A88fqGcX394h7YszYpVb7M+n3XIozf+iiWyPOataKGI=;
+        b=EVhFXuQfk51P0stuckFLKbCmFKz3qy8uWq0cWC3W/PUxCgDPEJYLiKplEP6y2YKust
+         0dk2Y/i8WE0sa1+etHkFsqjAz0v6ypLoAjPpRipk3LEXx694M7BFvyLoPt6cLjb53caj
+         nxHDtAHEvUaqCg6l34cLSPM6XtaJHNFpCnIImTzRTI3/wuC11TCUIhzD30rZVaRVISss
+         +A7QLE7BX/pmQskxKDnWDIzrMHoN/zjL0+hMFDKgQSVaUQm5hmStuBtQp/k2fO2RK084
+         JfqH2uidlnFPGOKl+7ET77M7oZ2VBRTKRNBApWGTfSH+ZjZKCDg82v11EUUDL1V165Jx
+         NovQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701808740; x=1702413540;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=A88fqGcX394h7YszYpVb7M+n3XIozf+iiWyPOataKGI=;
+        b=CO2rNzES+96b/vhYv554weVC7gqvPx4j0Aws+5Ip6S4z715O7Brebzo2FxpzTF5iXE
+         HTvUQxUDRmsz2LWaI/91tjlqHhM+PkLRvZYE/mLO39KCyKadilTxbP/hMWzqTVwXvmpO
+         FaQDymSBMPg20K+tgG/zMAWjqh1kjtuetW1fU0kK1sblTqdi5CCVqTpcqpzw6h5Ii0V6
+         VVug0yYJkHco6NdIASQzEH+wuQ/ePtvSQxR8XVCPJZwVXVHzcLhXnLW4tzOHtcPWmSgA
+         Q97Bnp89Ev6I5riNw1aliXQqsIpc5rIrXQzWGkFpN5L1qHgxNpFmBYNh7jLIGsja1G6f
+         4gOA==
+X-Gm-Message-State: AOJu0Yzl3VTun+/zEI/G3SfnHNgIRCLRXdoEo1X/EBQpk+mosgbju45k
+	AY9sonKKLbu5X7QQPeSVF8z3+A==
+X-Google-Smtp-Source: AGHT+IF9ggWhHxIX1Tx69AoCSkaaEv6I3eKEijYk6umVcDcZk5DvtB+84n4lSYjwKmWQ7NAmtaHkyA==
+X-Received: by 2002:a05:6602:36cf:b0:783:62d0:88c with SMTP id bg15-20020a05660236cf00b0078362d0088cmr10891254iob.19.1701808740405;
+        Tue, 05 Dec 2023 12:39:00 -0800 (PST)
+Received: from CMGLRV3 ([2a09:bac5:9478:4e6::7d:56])
+        by smtp.gmail.com with ESMTPSA id gn16-20020a056602641000b007b37a09d407sm3449818iob.14.2023.12.05.12.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 12:38:59 -0800 (PST)
+Date: Tue, 5 Dec 2023 14:38:57 -0600
+From: Frederick Lawler <fred@cloudflare.com>
+To: kpsingh@kernel.org, revest@chromium.org, jackmanb@chromium.org
+Cc: bpf@vger.kernel.org, kernel-team@cloudflare.com
+Subject: BPF LSM prevent program unload
+Message-ID: <ZW+KYViDT3HWtKI1@CMGLRV3>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,180 +65,53 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231202010604.1877561-1-vadfed@meta.com>
 
-Hi Vadim,
+Hi,
 
-kernel test robot noticed the following build warnings:
+IIUC, LSMs are supposed to give us the ability to design policy around
+unprivileged users and in addition to privileged users. As we expand
+our usage of BPF LSM's, there are cases where we want to restrict
+privileged users from unloading our progs. For instance, any privileged
+user that wants to remove restrictions we've placed on privileged users.
 
-[auto build test WARNING on bpf-next/master]
+We currently have a loader application doesn't leverage BPF skeletons. We
+instead load BPF object files, and then pin the progs to a mount point that
+is a bpf filesystem. On next run, if we have new policies, load in new
+policies, and finally unload the old.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vadim-Fedorenko/bpf-crypto-add-skcipher-to-bpf-crypto/20231202-091254
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231202010604.1877561-1-vadfed%40meta.com
-patch subject: [PATCH bpf-next v7 1/3] bpf: make common crypto API for TC/XDP programs
-config: x86_64-buildonly-randconfig-001-20231202 (https://download.01.org/0day-ci/archive/20231206/202312060457.bRXN2xnb-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231206/202312060457.bRXN2xnb-lkp@intel.com/reproduce)
+Here are some conditions a privileged user may unload programs:
+	
+	umount /sys/fs/bpf
+	rm -rf /sys/fs/bpf/lsm
+	rm /sys/fs/bpf/lsm/some_prog
+	unlink /sys/fs/bpf/lsm/some_prog
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312060457.bRXN2xnb-lkp@intel.com/
+This works because once we remove the last reference, the programs and
+pinned maps are cleaned up.
 
-All warnings (new ones prefixed by >>):
+Moving individual pins or moving the mount entirely with mount --move
+do not perform any clean up operations. Lastly, bpftool doesn't currently
+have the ability to unload LSM's AFAIK.
 
->> kernel/bpf/crypto.c:159:6: warning: variable 'ctx' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (!key) {
-               ^~~~
-   kernel/bpf/crypto.c:192:6: note: uninitialized use occurs here
-           if (ctx->tfm)
-               ^~~
-   kernel/bpf/crypto.c:159:2: note: remove the 'if' if its condition is always false
-           if (!key) {
-           ^~~~~~~~~~~
-   kernel/bpf/crypto.c:154:6: warning: variable 'ctx' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (!key_len) {
-               ^~~~~~~~
-   kernel/bpf/crypto.c:192:6: note: uninitialized use occurs here
-           if (ctx->tfm)
-               ^~~
-   kernel/bpf/crypto.c:154:2: note: remove the 'if' if its condition is always false
-           if (!key_len) {
-           ^~~~~~~~~~~~~~~
-   kernel/bpf/crypto.c:148:6: warning: variable 'ctx' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (authsize && !type->setauthsize) {
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/crypto.c:192:6: note: uninitialized use occurs here
-           if (ctx->tfm)
-               ^~~
-   kernel/bpf/crypto.c:148:2: note: remove the 'if' if its condition is always false
-           if (authsize && !type->setauthsize) {
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/crypto.c:143:6: warning: variable 'ctx' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (!authsize && type->setauthsize) {
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/crypto.c:192:6: note: uninitialized use occurs here
-           if (ctx->tfm)
-               ^~~
-   kernel/bpf/crypto.c:143:2: note: remove the 'if' if its condition is always false
-           if (!authsize && type->setauthsize) {
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/crypto.c:138:6: warning: variable 'ctx' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (!type->has_algo(algo__str)) {
-               ^~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/crypto.c:192:6: note: uninitialized use occurs here
-           if (ctx->tfm)
-               ^~~
-   kernel/bpf/crypto.c:138:2: note: remove the 'if' if its condition is always false
-           if (!type->has_algo(algo__str)) {
-           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   kernel/bpf/crypto.c:128:28: note: initialize the variable 'ctx' to silence this warning
-           struct bpf_crypto_ctx *ctx;
-                                     ^
-                                      = NULL
-   5 warnings generated.
+The few ideas I have floating around are:
 
+1. Leverage some LSM hooks (BPF or otherwise) to restrict on the functions
+   security_sb_umount(), security_path_unlink(), security_inode_unlink().
 
-vim +159 kernel/bpf/crypto.c
+   Both security_path_unlink() and security_inode_unlink() handle the
+   unlink/remove case, but not the umount case.
 
-   105	
-   106	/**
-   107	 * bpf_crypto_ctx_create() - Create a mutable BPF crypto context.
-   108	 *
-   109	 * Allocates a crypto context that can be used, acquired, and released by
-   110	 * a BPF program. The crypto context returned by this function must either
-   111	 * be embedded in a map as a kptr, or freed with bpf_crypto_ctx_release().
-   112	 * As crypto API functions use GFP_KERNEL allocations, this function can
-   113	 * only be used in sleepable BPF programs.
-   114	 *
-   115	 * bpf_crypto_ctx_create() allocates memory for crypto context.
-   116	 * It may return NULL if no memory is available.
-   117	 * @type__str: pointer to string representation of crypto type.
-   118	 * @algo__str: pointer to string representation of algorithm.
-   119	 * @pkey:      bpf_dynptr which holds cipher key to do crypto.
-   120	 * @err:       integer to store error code when NULL is returned
-   121	 */
-   122	__bpf_kfunc struct bpf_crypto_ctx *
-   123	bpf_crypto_ctx_create(const char *type__str, const char *algo__str,
-   124			      const struct bpf_dynptr_kern *pkey,
-   125			      unsigned int authsize, int *err)
-   126	{
-   127		const struct bpf_crypto_type *type = bpf_crypto_get_type(type__str);
-   128		struct bpf_crypto_ctx *ctx;
-   129		const u8 *key;
-   130		u32 key_len;
-   131	
-   132		type = bpf_crypto_get_type(type__str);
-   133		if (IS_ERR(type)) {
-   134			*err = PTR_ERR(type);
-   135			return NULL;
-   136		}
-   137	
-   138		if (!type->has_algo(algo__str)) {
-   139			*err = -EOPNOTSUPP;
-   140			goto err;
-   141		}
-   142	
-   143		if (!authsize && type->setauthsize) {
-   144			*err = -EOPNOTSUPP;
-   145			goto err;
-   146		}
-   147	
-   148		if (authsize && !type->setauthsize) {
-   149			*err = -EOPNOTSUPP;
-   150			goto err;
-   151		}
-   152	
-   153		key_len = __bpf_dynptr_size(pkey);
-   154		if (!key_len) {
-   155			*err = -EINVAL;
-   156			goto err;
-   157		}
-   158		key = __bpf_dynptr_data(pkey, key_len);
- > 159		if (!key) {
-   160			*err = -EINVAL;
-   161			goto err;
-   162		}
-   163	
-   164		ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-   165		if (!ctx) {
-   166			*err = -ENOMEM;
-   167			goto err;
-   168		}
-   169	
-   170		ctx->type = type;
-   171		ctx->tfm = type->alloc_tfm(algo__str);
-   172		if (IS_ERR(ctx->tfm)) {
-   173			*err = PTR_ERR(ctx->tfm);
-   174			ctx->tfm = NULL;
-   175			goto err;
-   176		}
-   177	
-   178		if (authsize) {
-   179			*err = type->setauthsize(ctx->tfm, authsize);
-   180			if (*err)
-   181				goto err;
-   182		}
-   183	
-   184		*err = type->setkey(ctx->tfm, key, key_len);
-   185		if (*err)
-   186			goto err;
-   187	
-   188		refcount_set(&ctx->usage, 1);
-   189	
-   190		return ctx;
-   191	err:
-   192		if (ctx->tfm)
-   193			type->free_tfm(ctx->tfm);
-   194		kfree(ctx);
-   195		module_put(type->owner);
-   196	
-   197		return NULL;
-   198	}
-   199	
+3. Leverage SELinux/Apparmor to possibly handle these cases.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+4. Introduce a security_bpf_prog_unload() to target hopefully the
+   umount and unlink cases at the same time.
+
+5. Possible moonshot idea: introduce a interface to pin _specifically_
+   BPF LSM's to the kernel, and avoid the bpf sysfs problems all
+   together.
+
+We're making the assumption this problem has been thought about before,
+and are wondering if there's anything obvious we're missing here.
+
+Fred
 
