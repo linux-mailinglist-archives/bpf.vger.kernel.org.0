@@ -1,239 +1,151 @@
-Return-Path: <bpf+bounces-16726-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16727-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8A5980530E
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 12:35:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B36D3805336
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 12:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7B021C208CA
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 11:35:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F5BB1F214CE
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 11:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5127959E38;
-	Tue,  5 Dec 2023 11:35:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8345786F;
+	Tue,  5 Dec 2023 11:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=crudebyte.com header.i=@crudebyte.com header.b="ipQCrbT6"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 821D8D53;
-	Tue,  5 Dec 2023 03:34:55 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Skyyz1RZQzrVDt;
-	Tue,  5 Dec 2023 19:31:07 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 5 Dec 2023 19:34:53 +0800
-From: Yunsheng Lin <linyunsheng@huawei.com>
-To: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Yunsheng Lin
-	<linyunsheng@huawei.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang
-	<jasowang@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, <kvm@vger.kernel.org>,
-	<virtualization@lists.linux.dev>, <bpf@vger.kernel.org>
-Subject: [PATCH net-next 4/6] vhost/net: remove vhost_net_page_frag_refill()
-Date: Tue, 5 Dec 2023 19:34:42 +0800
-Message-ID: <20231205113444.63015-5-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20231205113444.63015-1-linyunsheng@huawei.com>
-References: <20231205113444.63015-1-linyunsheng@huawei.com>
+Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587979A;
+	Tue,  5 Dec 2023 03:42:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
+	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
+	Content-ID:Content-Description;
+	bh=zwVfOTnPEwMgV+Q6MmlQtNUwKyYyS/fNwYtgjSme1Lg=; b=ipQCrbT6+r4M4gb9FBhdBPne78
+	+9Befd+d/sTIdIwcuYCPdQNiDNa/t93zfRQHdj6mdyL/9Nz38bFxxsZ1kwuoqW+zTFnyacw0yDUMZ
+	UgwcpQcYKUib7a35fJdtQTRkRtljJnkWtVfd3ZUMJLOBSgl1xl9E2Zg8f82RlCJiORmsLu3iFmFYZ
+	Z78vXT0qoaX4z7y4Orn5eTQEszzfQBKgHyGgjU/ww9Tr+3jofAD6gDOYhXRSNTIzpyyNNHcRZHK/I
+	/K4Gkfd9GL+1IYz6CzFxdMMgy/+rM93NDbRLH4vNOY/TezY8a9N9HYXDFCQmvAYxNBU9pRqfkrMEm
+	794jlWl8me9VrvL93e3oGCc3a+hcp6eN3mr9DS9O1HxSc6X9ADYFtpQjhx73OmXCl6isgcZs/jmfJ
+	a4xyk/ZfrE8EEhGwu+oeA7+VnF44hqWewQrnOzfH60RtHNcL3fmQTRI52BRxv8Hdn4uGhkX17IYPR
+	9sVByoButV6zZe3NoKlJWk7G+gYtxuev0xROyNQM6czLB6iEjyJocVG/eSowlc8K1Ef0H0e674fV9
+	ymCqhmNPl1npLw/xxBclISKhEVXv5lRislNBrw9s334umXEKETQw6mBhsR8ys17PYe04SkemZwDeY
+	bJT7yzNPpAJgZ8CmGnzBTeVemzPWYz6V/C8DFskOo=;
+From: Christian Schoenebeck <linux_oss@crudebyte.com>
+To: ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
+ rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
+ JP Kobryn <inwardvessel@gmail.com>
+Cc: v9fs@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v2] 9p: prevent read overrun in protocol dump tracepoint
+Date: Tue, 05 Dec 2023 12:41:49 +0100
+Message-ID: <8864880.fcQpaHM20G@silver>
+In-Reply-To: <20231204202321.22730-1-inwardvessel@gmail.com>
+References: <20231204202321.22730-1-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-The page frag in vhost_net_page_frag_refill() uses the
-'struct page_frag' from skb_page_frag_refill(), but it's
-implementation is similar to page_frag_alloc_align() now.
+On Monday, December 4, 2023 9:23:20 PM CET JP Kobryn wrote:
+> An out of bounds read can occur within the tracepoint 9p_protocol_dump. In
+> the fast assign, there is a memcpy that uses a constant size of 32 (macro
+> named P9_PROTO_DUMP_SZ). When the copy is invoked, the source buffer is not
+> guaranteed match this size.  It was found that in some cases the source
+> buffer size is less than 32, resulting in a read that overruns.
+> 
+> The size of the source buffer seems to be known at the time of the
+> tracepoint being invoked. The allocations happen within p9_fcall_init(),
+> where the capacity field is set to the allocated size of the payload
+> buffer. This patch tries to fix the overrun by changing the fixed array to
+> a dynamically sized array and using the minimum of the capacity value or
+> P9_PROTO_DUMP_SZ as its length. The trace log statement is adjusted to
+> account for this. Note that the trace log no longer splits the payload on
+> the first 16 bytes. The full payload is now logged to a single line.
+> 
+> To repro the orignal problem, operations to a plan 9 managed resource can
+> be used. The simplest approach might just be mounting a shared filesystem
+> (between host and guest vm) using the plan 9 protocol while the tracepoint
+> is enabled.
+> 
+> mount -t 9p -o trans=virtio <mount_tag> <mount_path>
+> 
+> The bpftrace program below can be used to show the out of bounds read.
+> Note that a recent version of bpftrace is needed for the raw tracepoint
+> support. The script was tested using v0.19.0.
+> 
+> /* from include/net/9p/9p.h */
+> struct p9_fcall {
+>     u32 size;
+>     u8 id;
+>     u16 tag;
+>     size_t offset;
+>     size_t capacity;
+>     struct kmem_cache *cache;
+>     u8 *sdata;
+>     bool zc;
+> };
+> 
+> tracepoint:9p:9p_protocol_dump
+> {
+>     /* out of bounds read can happen when this tracepoint is enabled */
+> }
+> 
+> rawtracepoint:9p_protocol_dump
+> {
+>     $pdu = (struct p9_fcall *)arg1;
+>     $dump_sz = (uint64)32;
+> 
+>     if ($dump_sz > $pdu->capacity) {
+>         printf("reading %zu bytes from src buffer of %zu bytes\n",
+>             $dump_sz, $pdu->capacity);
+>     }
+> }
+> 
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> ---
 
-This patch removes vhost_net_page_frag_refill() by using
-'struct page_frag_cache' instead of 'struct page_frag',
-and allocating frag using page_frag_alloc_align().
+Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
 
-The added benefit is that not only unifying the page frag
-implementation a little, but also having about 0.5% performance
-boost testing by using the vhost_net_test introduced in the
-last patch.
+>  include/trace/events/9p.h | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/trace/events/9p.h b/include/trace/events/9p.h
+> index 4dfa6d7f83ba..cd104a1343e2 100644
+> --- a/include/trace/events/9p.h
+> +++ b/include/trace/events/9p.h
+> @@ -178,18 +178,21 @@ TRACE_EVENT(9p_protocol_dump,
+>  		    __field(	void *,		clnt				)
+>  		    __field(	__u8,		type				)
+>  		    __field(	__u16,		tag				)
+> -		    __array(	unsigned char,	line,	P9_PROTO_DUMP_SZ	)
+> +		    __dynamic_array(unsigned char, line,
+> +				min_t(size_t, pdu->capacity, P9_PROTO_DUMP_SZ))
+>  		    ),
+>  
+>  	    TP_fast_assign(
+>  		    __entry->clnt   =  clnt;
+>  		    __entry->type   =  pdu->id;
+>  		    __entry->tag    =  pdu->tag;
+> -		    memcpy(__entry->line, pdu->sdata, P9_PROTO_DUMP_SZ);
+> +		    memcpy(__get_dynamic_array(line), pdu->sdata,
+> +				__get_dynamic_array_len(line));
+>  		    ),
+> -	    TP_printk("clnt %lu %s(tag = %d)\n%.3x: %16ph\n%.3x: %16ph\n",
+> +	    TP_printk("clnt %lu %s(tag = %d)\n%*ph\n",
+>  		      (unsigned long)__entry->clnt, show_9p_op(__entry->type),
+> -		      __entry->tag, 0, __entry->line, 16, __entry->line + 16)
+> +		      __entry->tag, __get_dynamic_array_len(line),
+> +		      __get_dynamic_array(line))
+>   );
+>  
+>  
+> 
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- drivers/vhost/net.c | 93 ++++++++++++++-------------------------------
- 1 file changed, 29 insertions(+), 64 deletions(-)
-
-diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index e574e21cc0ca..805e11d598e4 100644
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -141,10 +141,8 @@ struct vhost_net {
- 	unsigned tx_zcopy_err;
- 	/* Flush in progress. Protected by tx vq lock. */
- 	bool tx_flush;
--	/* Private page frag */
--	struct page_frag page_frag;
--	/* Refcount bias of page frag */
--	int refcnt_bias;
-+	/* Private page frag cache */
-+	struct page_frag_cache pf_cache;
- };
- 
- static unsigned vhost_net_zcopy_mask __read_mostly;
-@@ -655,41 +653,6 @@ static bool tx_can_batch(struct vhost_virtqueue *vq, size_t total_len)
- 	       !vhost_vq_avail_empty(vq->dev, vq);
- }
- 
--static bool vhost_net_page_frag_refill(struct vhost_net *net, unsigned int sz,
--				       struct page_frag *pfrag, gfp_t gfp)
--{
--	if (pfrag->page) {
--		if (pfrag->offset + sz <= pfrag->size)
--			return true;
--		__page_frag_cache_drain(pfrag->page, net->refcnt_bias);
--	}
--
--	pfrag->offset = 0;
--	net->refcnt_bias = 0;
--	if (SKB_FRAG_PAGE_ORDER) {
--		/* Avoid direct reclaim but allow kswapd to wake */
--		pfrag->page = alloc_pages((gfp & ~__GFP_DIRECT_RECLAIM) |
--					  __GFP_COMP | __GFP_NOWARN |
--					  __GFP_NORETRY | __GFP_NOMEMALLOC,
--					  SKB_FRAG_PAGE_ORDER);
--		if (likely(pfrag->page)) {
--			pfrag->size = PAGE_SIZE << SKB_FRAG_PAGE_ORDER;
--			goto done;
--		}
--	}
--	pfrag->page = alloc_page(gfp);
--	if (likely(pfrag->page)) {
--		pfrag->size = PAGE_SIZE;
--		goto done;
--	}
--	return false;
--
--done:
--	net->refcnt_bias = USHRT_MAX;
--	page_ref_add(pfrag->page, USHRT_MAX - 1);
--	return true;
--}
--
- #define VHOST_NET_RX_PAD (NET_IP_ALIGN + NET_SKB_PAD)
- 
- static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
-@@ -699,7 +662,6 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 	struct vhost_net *net = container_of(vq->dev, struct vhost_net,
- 					     dev);
- 	struct socket *sock = vhost_vq_get_backend(vq);
--	struct page_frag *alloc_frag = &net->page_frag;
- 	struct virtio_net_hdr *gso;
- 	struct xdp_buff *xdp = &nvq->xdp[nvq->batched_xdp];
- 	struct tun_xdp_hdr *hdr;
-@@ -710,6 +672,7 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 	int sock_hlen = nvq->sock_hlen;
- 	void *buf;
- 	int copied;
-+	int ret;
- 
- 	if (unlikely(len < nvq->sock_hlen))
- 		return -EFAULT;
-@@ -719,18 +682,17 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 		return -ENOSPC;
- 
- 	buflen += SKB_DATA_ALIGN(len + pad);
--	alloc_frag->offset = ALIGN((u64)alloc_frag->offset, SMP_CACHE_BYTES);
--	if (unlikely(!vhost_net_page_frag_refill(net, buflen,
--						 alloc_frag, GFP_KERNEL)))
-+	buf = page_frag_alloc_align(&net->pf_cache, buflen, GFP_KERNEL,
-+				    SMP_CACHE_BYTES);
-+	if (unlikely(!buf))
- 		return -ENOMEM;
- 
--	buf = (char *)page_address(alloc_frag->page) + alloc_frag->offset;
--	copied = copy_page_from_iter(alloc_frag->page,
--				     alloc_frag->offset +
--				     offsetof(struct tun_xdp_hdr, gso),
--				     sock_hlen, from);
--	if (copied != sock_hlen)
--		return -EFAULT;
-+	copied = copy_from_iter(buf + offsetof(struct tun_xdp_hdr, gso),
-+				sock_hlen, from);
-+	if (copied != sock_hlen) {
-+		ret = -EFAULT;
-+		goto err;
-+	}
- 
- 	hdr = buf;
- 	gso = &hdr->gso;
-@@ -743,27 +705,30 @@ static int vhost_net_build_xdp(struct vhost_net_virtqueue *nvq,
- 			       vhost16_to_cpu(vq, gso->csum_start) +
- 			       vhost16_to_cpu(vq, gso->csum_offset) + 2);
- 
--		if (vhost16_to_cpu(vq, gso->hdr_len) > len)
--			return -EINVAL;
-+		if (vhost16_to_cpu(vq, gso->hdr_len) > len) {
-+			ret = -EINVAL;
-+			goto err;
-+		}
- 	}
- 
- 	len -= sock_hlen;
--	copied = copy_page_from_iter(alloc_frag->page,
--				     alloc_frag->offset + pad,
--				     len, from);
--	if (copied != len)
--		return -EFAULT;
-+	copied = copy_from_iter(buf + pad, len, from);
-+	if (copied != len) {
-+		ret = -EFAULT;
-+		goto err;
-+	}
- 
- 	xdp_init_buff(xdp, buflen, NULL);
- 	xdp_prepare_buff(xdp, buf, pad, len, true);
- 	hdr->buflen = buflen;
- 
--	--net->refcnt_bias;
--	alloc_frag->offset += buflen;
--
- 	++nvq->batched_xdp;
- 
- 	return 0;
-+
-+err:
-+	page_frag_free(buf);
-+	return ret;
- }
- 
- static void handle_tx_copy(struct vhost_net *net, struct socket *sock)
-@@ -1353,8 +1318,7 @@ static int vhost_net_open(struct inode *inode, struct file *f)
- 			vqs[VHOST_NET_VQ_RX]);
- 
- 	f->private_data = n;
--	n->page_frag.page = NULL;
--	n->refcnt_bias = 0;
-+	n->pf_cache.va = NULL;
- 
- 	return 0;
- }
-@@ -1422,8 +1386,9 @@ static int vhost_net_release(struct inode *inode, struct file *f)
- 	kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
- 	kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
- 	kfree(n->dev.vqs);
--	if (n->page_frag.page)
--		__page_frag_cache_drain(n->page_frag.page, n->refcnt_bias);
-+	if (n->pf_cache.va)
-+		__page_frag_cache_drain(virt_to_head_page(n->pf_cache.va),
-+					n->pf_cache.pagecnt_bias);
- 	kvfree(n);
- 	return 0;
- }
--- 
-2.33.0
 
 
