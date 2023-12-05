@@ -1,117 +1,178 @@
-Return-Path: <bpf+bounces-16731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E04B805612
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 14:35:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA19C805644
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 14:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F1D1B20EB2
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 13:35:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38C171F215B1
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 13:44:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF3A5D916;
-	Tue,  5 Dec 2023 13:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4035D91D;
+	Tue,  5 Dec 2023 13:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KPPhkiy2"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="K3UTLyab"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867E3197
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 05:34:47 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c9f572c4c5so43716281fa.2
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 05:34:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701783286; x=1702388086; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=gniqLuA09yD/Ep8rxSgOfmD5DoHDPqmS+QioS7r8tDI=;
-        b=KPPhkiy2mbXNtanIpjXkTWJAE6+uoFyegPF/L9Qh0QPLreIeyKVDMJrZ9saO/hhxxU
-         3rDHyxhBiKjVGSuGZQSFzOuDfLL9wzmlxsh3I0UtSCBUmjoGjqOhHaLOdBc/Aux+P6AF
-         FUWIS1zhXETxBzwTyofnOmSQyA3NHvsIYOXozvf/hD1GHBUMT+j1H3AZPSdeEYBEjSQ2
-         t3d86bYV4ryvq+SluTk8cl3KLnnAvBU7DzvJSemhQgOZEmFPUOtXSQVgi2on+c3ZfyiN
-         Hk56W3cHJf8YpW84gcpCUlvqJmqehl6hUpSTJvvyuH3pLQf4E0N0Wp7AImwrzb0MrQqq
-         ZPEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701783286; x=1702388086;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gniqLuA09yD/Ep8rxSgOfmD5DoHDPqmS+QioS7r8tDI=;
-        b=KmnRBQ2kkX8dfU/kyM6jX4mBuLU4XdI62CSZLs8ULlEufdb6AGRzKrgE8VsLSbUUCA
-         ktWobrE4ySvNonpZHlDbw1YnfTcehzEzNeYHG4AkCigXlpke6m8VzSfpqPFtbbdt0qXR
-         2CfWIG3R9U092Cq4B66dYVgqqIIIzBcBGhOUgoo6XxBseNDMMdB0hR8a2IWzoKKd+fE/
-         LHSKPTo75dzHWUmVlwSFlrGp/kTFy0yl7t5enr6231mYqa1VFJT5vo217GYamjzULqa6
-         rHJriD9vX0svv1vlsurMrKaUdFP4/sKtuHtVf0cv6v+dcmlOPKjSF8VSVvPep6538lda
-         LOww==
-X-Gm-Message-State: AOJu0YyaIanEjAcANT1IofYF1LTpDukTEDP0kASSrkE6M/ECU/BYlN2Q
-	dZSNKJYb8Vkmow23pNS7phU=
-X-Google-Smtp-Source: AGHT+IEDUdzPFMqdh8TkGBGDVjVA0pH8SmvvrTjCL/SMpVtBh4ie2UWtN4aW7QYXoK8jrsKT8aiFZQ==
-X-Received: by 2002:a2e:9184:0:b0:2c9:f7d3:7d61 with SMTP id f4-20020a2e9184000000b002c9f7d37d61mr2247860ljg.82.1701783285414;
-        Tue, 05 Dec 2023 05:34:45 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id u28-20020a2eb81c000000b002ca0155b9e6sm764448ljo.81.2023.12.05.05.34.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 05:34:44 -0800 (PST)
-Message-ID: <7aa8af01db4fdcbedab376423d3960c22016aba3.camel@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 03/10] bpf: fix check for attempt to corrupt
- spilled pointer
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  bpf@vger.kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org,  kernel-team@meta.com
-Date: Tue, 05 Dec 2023 15:34:43 +0200
-In-Reply-To: <CAEf4Bzb8LouFSSX5DED_ucgq_xuhukE1BQ7y=hxY0c17Nq4T+Q@mail.gmail.com>
-References: <20231204192601.2672497-1-andrii@kernel.org>
-	 <20231204192601.2672497-4-andrii@kernel.org>
-	 <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com>
-	 <CAEf4BzZ0Ao7EF4PodPBxTdQphEt-_ezZyNDOzqds2XfXYpjsHg@mail.gmail.com>
-	 <6875401e502049bfdfa128fc7bf37fabe5314e2f.camel@gmail.com>
-	 <CAEf4Bzb8LouFSSX5DED_ucgq_xuhukE1BQ7y=hxY0c17Nq4T+Q@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EF3A8;
+	Tue,  5 Dec 2023 05:43:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=CejJeY0vLeqFQt+U97vqcKRuJ19+UmTHuWHOiR2dhE4=; b=K3UTLyabwZk4cmleWcOsKjpKtu
+	5hwIJiFgkj+40JUJdgOOsa1xiIS+uT8z6mKkzy0VAgzXNBPiix4GS8SI83kHKso6M6YMqY5vTg6c2
+	yptESCkQIfW4BVNZAhWkOlFs46bjYLR8jnSE/QzCUwJ45p7F6yD4FW3AMXBTPJWBtbcvwdpE6P97q
+	Zx5b1Cq4GYJ699Bfq9HsIynRSCCt8fy2b7tx/pOUT+twDLEERrOLLKXlbrjyQjtqdJALuniyBnhiR
+	qAiSDTghJt/MlY4JUEbrmaVNs1CL0ygfN9l5CGH2YV0/3Ag5JH/Z2+dHnle/8/fipwzKHUbCtWVGu
+	BLJH6xtg==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rAViA-000I01-B3; Tue, 05 Dec 2023 14:43:42 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rAVi9-000Ey1-7s; Tue, 05 Dec 2023 14:43:41 +0100
+Subject: Re: [PATCH net-next v9 15/15] p4tc: add P4 classifier
+To: John Fastabend <john.fastabend@gmail.com>,
+ Jamal Hadi Salim <jhs@mojatatu.com>, netdev@vger.kernel.org
+Cc: deb.chatterjee@intel.com, anjali.singhai@intel.com,
+ namrata.limaye@intel.com, mleitner@redhat.com, Mahesh.Shirshyad@amd.com,
+ tomasz.osinski@intel.com, jiri@resnulli.us, xiyou.wangcong@gmail.com,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com,
+ toke@redhat.com, bpf@vger.kernel.org
+References: <20231201182904.532825-1-jhs@mojatatu.com>
+ <20231201182904.532825-16-jhs@mojatatu.com>
+ <656e6f8d7c99f_207cb2087c@john.notmuch>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <2eb488f9-af4a-4e28-0de0-d4dbc1e166f5@iogearbox.net>
+Date: Tue, 5 Dec 2023 14:43:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <656e6f8d7c99f_207cb2087c@john.notmuch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27114/Tue Dec  5 09:39:00 2023)
 
-On Mon, 2023-12-04 at 19:56 -0800, Andrii Nakryiko wrote:
-[...]
-> > > So it makes me feel like the intent was to reject any partial writes
-> > > with spilled reg slots. We could probably improve that to just make
-> > > sure that we don't turn spilled pointers into STACK_MISC in unpriv,
-> > > but I'm not sure if it's worth doing that instead of keeping things
-> > > simple?
-> >=20
-> > You mean like below?
-> >=20
-> >         if (!env->allow_ptr_leaks &&
-> >             is_spilled_reg(&state->stack[spi]) &&
-> >             is_spillable_regtype(state->stack[spi].spilled_ptr.type) &&
->=20
-> Honestly, I wouldn't trust is_spillable_regtype() the way it's
-> written, it's too easy to forget to add a new register type to the
-> list. I think the only "safe to spill" register is probably
-> SCALAR_VALUE, so I'd just do `type !=3D SCALAR_VALUE`.
->=20
-> But yes, I think that's the right approach.
+On 12/5/23 1:32 AM, John Fastabend wrote:
+> Jamal Hadi Salim wrote:
+>> Introduce P4 tc classifier. A tc filter instantiated on this classifier
+>> is used to bind a P4 pipeline to one or more netdev ports. To use P4
+>> classifier you must specify a pipeline name that will be associated to
+>> this filter, a s/w parser and datapath ebpf program. The pipeline must have
+>> already been created via a template.
+>> For example, if we were to add a filter to ingress of network interface
+>> device $P0 and associate it to P4 pipeline simple_l3 we'd issue the
+>> following command:
+> 
+> In addition to my comments from last iteration.
+> 
+>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname simple_l3 \
+>>      action bpf obj $PARSER.o section prog/tc-parser \
+>>      action bpf obj $PROGNAME.o section prog/tc-ingress
+> 
+> Having multiple object files is a mistake IMO and will cost
+> performance. Have a single object file avoid stitching together
+> metadata and run to completion. And then run entirely from XDP
+> this is how we have been getting good performance numbers.
 
-'type !=3D SCALAR_VALUE' makes sense as well.
-Do you plan to add this check as a part of current patch?
++1, fully agree.
 
-> If we were being pedantic, though, we'd need to take into account
-> offset and see if [offset, offset + size) overlaps with any
-> STACK_SPILL/STACK_DYNPTR/STACK_ITER slots.
->=20
-> But tbh, given it's unpriv programs we are talking about, I probably
-> wouldn't bother extending this logic too much.
+>> $PROGNAME.o and $PARSER.o is a compilation of the eBPF programs generated
+>> by the P4 compiler and will be the representation of the P4 program.
+>> Note that filter understands that $PARSER.o is a parser to be loaded
+>> at the tc level. The datapath program is merely an eBPF action.
+>>
+>> Note we do support a distinct way of loading the parser as opposed to
+>> making it be an action, the above example would be:
+>>
+>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname simple_l3 \
+>>      prog type tc obj $PARSER.o ... \
+>>      action bpf obj $PROGNAME.o section prog/tc-ingress
+>>
+>> We support two types of loadings of these initial programs in the pipeline
+>> and differentiate between what gets loaded at tc vs xdp by using syntax of
+>>
+>> either "prog type tc obj" or "prog type xdp obj"
+>>
+>> For XDP:
+>>
+>> tc filter add dev $P0 ingress protocol all prio 1 p4 pname simple_l3 \
+>>      prog type xdp obj $PARSER.o section parser/xdp \
+>>      pinned_link /sys/fs/bpf/mylink \
+>>      action bpf obj $PROGNAME.o section prog/tc-ingress
+> 
+> I don't think tc should be loading xdp programs. XDP is not 'tc'.
 
-Yes, that's definitely is an ommission.
+For XDP, we do have a separate attach API, for BPF links we have bpf_xdp_link_attach()
+via bpf(2) and regular progs we have the classic way via dev_change_xdp_fd() with
+IFLA_XDP_* attributes. Mid-term we'll also add bpf_mprog support for XDP to allow
+multi-user attachment. tc kernel code should not add yet another way of attaching XDP,
+this should just reuse existing uapi infra instead from userspace control plane side.
+
+>> The theory of operations is as follows:
+>>
+>> ================================1. PARSING================================
+>>
+>> The packet first encounters the parser.
+>> The parser is implemented in ebpf residing either at the TC or XDP
+>> level. The parsed header values are stored in a shared eBPF map.
+>> When the parser runs at XDP level, we load it into XDP using tc filter
+>> command and pin it to a file.
+>>
+>> =============================2. ACTIONS=============================
+>>
+>> In the above example, the P4 program (minus the parser) is encoded in an
+>> action($PROGNAME.o). It should be noted that classical tc actions
+>> continue to work:
+>> IOW, someone could decide to add a mirred action to mirror all packets
+>> after or before the ebpf action.
+>>
+>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname simple_l3 \
+>>      prog type tc obj $PARSER.o section parser/tc-ingress \
+>>      action bpf obj $PROGNAME.o section prog/tc-ingress \
+>>      action mirred egress mirror index 1 dev $P1 \
+>>      action bpf obj $ANOTHERPROG.o section mysect/section-1
+>>
+>> It should also be noted that it is feasible to split some of the ingress
+>> datapath into XDP first and more into TC later (as was shown above for
+>> example where the parser runs at XDP level). YMMV.
+> 
+> Is there any performance value in partial XDP and partial TC? The main
+> wins we see in XDP are when we can drop, redirect, etc the packet
+> entirely in XDP and avoid skb altogether.
+> 
+>>
+>> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+>> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+>> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+>> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+>> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+
+The cls_p4 is roughly a copy of {cls,act}_bpf, and from a BPF community side
+we moved away from this some time ago for the benefit of a better management
+API for tc BPF programs via bpf(2) through bpf_mprog (see libbpf and BPF selftests
+around this), as mentioned earlier. Please use this instead for your userspace
+control plane, otherwise we are repeating the same mistakes from the past again
+that were already fixed. Therefore, from BPF side:
+
+Nacked-by: Daniel Borkmann <daniel@iogearbox.net>
+
+Cheers,
+Daniel
 
