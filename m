@@ -1,207 +1,124 @@
-Return-Path: <bpf+bounces-16716-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16717-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB0AC804CCF
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 09:43:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E31E8804D1D
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 10:03:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C8F281755
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 08:43:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C5C71F214B3
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 09:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53ABD2420B;
-	Tue,  5 Dec 2023 08:43:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E3E3D978;
+	Tue,  5 Dec 2023 09:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ahgHpv5e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DUAVM+3b"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B668C9C
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 00:43:08 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54c5ed26cf6so5116623a12.3
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 00:43:08 -0800 (PST)
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD15120;
+	Tue,  5 Dec 2023 01:03:44 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-da34f90f6e3so533404276.0;
+        Tue, 05 Dec 2023 01:03:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701765787; x=1702370587; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gHYXYfyLzptt927SH4oz/JSMbtWrTDQ+paj2UJBH7l8=;
-        b=ahgHpv5eU8WpXNmyeVaSK7X1tLa77HamBjuQrzEcjuBbXAHoOfPaDZkhR24y2mhJf6
-         O2EeZAEPww9GXr3DhV3TACR8ehjF9LuR+y1pAaSTwgSyK28XTLZSBxBaNiE7ZKF+c0Gf
-         jLax1w9ErL+JNx0CIuGvP/FLAmXIMDmS93veAs0t1pvSxiFSgJxrovNHJ6+hWhNWVK3a
-         zdTKFuG/VMUWlD6E7BGu4NJuyRER8bAxOqm4/1K6mzEX53X7j7rgjhdjZgQ8wcWAsdRN
-         As+vQbdqrAtXs6tveBehssAL0krRoXosPZXycF8smspBnmqZkvmpBNl5lvM8tv3H+QB5
-         U8zA==
+        d=gmail.com; s=20230601; t=1701767023; x=1702371823; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yrBMYfFc+7psr6y2xtQ4cvLevpqXl5CZRBrVSMY5Aaw=;
+        b=DUAVM+3bqNPPhEqWnBXwyXaSjXFWBzsYKsivbUA4AnpZ+5lL3jLkzVZnzRgXJznV/c
+         0/rmuWfi3i7Py7R2/oN/Vd7BdIfnGfbMrmmVnN3mZAM4cm5pckHjvzzyn7qVuLYlJ1Am
+         3oASudddx1qZkYbWYPydVx1cZTpqaaKtNAFKe21ACQg+BxvGFPXJ0g4eV54VZ2K/ePkZ
+         HbDbm+yB9YVXzMxL6Cj7Ku+MNirlXlmstmM43zg347fFGYqUUucne7DnSf3WsQXqAu57
+         KODpAb07SfueBhMFiCKys11co2Oy5/Bjp0JOtam5iubZ07wOYd4LxfY3tC3WBlMOTw2A
+         kHdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701765787; x=1702370587;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gHYXYfyLzptt927SH4oz/JSMbtWrTDQ+paj2UJBH7l8=;
-        b=n3ILwjJ34sliUl4gREC3dBzhMhAXqUgeXjKhB0/70ML6nHG7oxOZs6NFg638EIQKy+
-         M7RZgDA6BikW/xo3kkzlQgGVNMpMBvK8CP5T5oe50nj0yYkCUY5ZmUTZ6c8OgbXEzlsu
-         cpuBlMdciGF7fwNzKD4lH6ZCzdE1rC+4KWtcpycZe5b6j0yH0IQCKD6+Y/6A/0pHRWoM
-         98GKa0PqDF32/9VKAaVgpxwm2hP8CIFATcaCT3MHa+13OzDUxbicPQSPhj73bmqQKIz0
-         WJ6MVdecYjXbIAWlusqr7yo2CBIgYi5J0vD3/NC+XngVwoGYHJFNWPs8Qrn7Ljwef1lW
-         P/hA==
-X-Gm-Message-State: AOJu0Yx7icxew05s9YxDrWsWG7I19CWChkDnSYee35Mht7Kx3WfKqRzj
-	zggsn+P/0weQzE/iNo7MMvs=
-X-Google-Smtp-Source: AGHT+IFRHWqWZcsw8iaEb0MTgwzzwHNeuH2Ajm5HZrM/4+CFDx6jVj7RiI3VI3wTorc9HK+OGYVvRA==
-X-Received: by 2002:a50:d4c5:0:b0:54c:4837:81f9 with SMTP id e5-20020a50d4c5000000b0054c483781f9mr3754048edj.74.1701765786772;
-        Tue, 05 Dec 2023 00:43:06 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id b17-20020a05640202d100b0054cb316499dsm759935edx.10.2023.12.05.00.43.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 00:43:06 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 5 Dec 2023 09:43:04 +0100
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCHv3 bpf 2/2] selftests/bpf: Add test for early update in
- prog_array_map_poke_run
-Message-ID: <ZW7imIQDjdOFdlLn@krava>
-References: <20231203204851.388654-1-jolsa@kernel.org>
- <20231203204851.388654-3-jolsa@kernel.org>
- <0c2c5931-535c-49ab-86c4-275f64e5767c@linux.dev>
+        d=1e100.net; s=20230601; t=1701767023; x=1702371823;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yrBMYfFc+7psr6y2xtQ4cvLevpqXl5CZRBrVSMY5Aaw=;
+        b=l4G8K0D7MUiUhzmBvnUok2YoOZFJ9I7sohE3fAUMUf5GB7ow9pmtl0Ff6tBh7kCuuo
+         CS5b7vZYTSbAG+8IwUHDzXcFxellgAaizJFhR2X3c4BnqUvD++O5r46WLwdOa2Prk9Ir
+         smlPo23OXx/pjInB9eKUvZaskpyikIlcuj/nDOHylhvreFkfXCn50ucz7TTauAQSxr5E
+         bWltYEWDSlf32DC8JqYUlPBQ9Y/miAdFbpL1lTVmxo7kOiXsA79/Ppk0y2glS2W3zJnr
+         3LUD1Nr31i9vGUHElhvOAtcz4zeNczfGTKb4wHHsO/KNpm74HeDldXOp7y4Uss3t4yKu
+         ZNMg==
+X-Gm-Message-State: AOJu0YwE9odkZngnFJsXAmM9fBYFVMwldgRQidDBjnYMfPZYafToBI7c
+	9Ky8S1Ag1gwXE06kdct4bWAtAB9DdAhYf9QKzRE=
+X-Google-Smtp-Source: AGHT+IE4BwoGh4B5ISX9h0dKammlHixhugtXmkQkQ2GTJtBfk8ZnV6c3czl2nJMgLPbI5gogYVC9Z6fYXUhivcAcOUw=
+X-Received: by 2002:a25:ae02:0:b0:db5:49d7:1c3b with SMTP id
+ a2-20020a25ae02000000b00db549d71c3bmr8643178ybj.1.1701767023286; Tue, 05 Dec
+ 2023 01:03:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c2c5931-535c-49ab-86c4-275f64e5767c@linux.dev>
+References: <20231201061048.GA1510@libra05>
+In-Reply-To: <20231201061048.GA1510@libra05>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Tue, 5 Dec 2023 10:03:32 +0100
+Message-ID: <CAJ8uoz3HDEh-vH=hUGcBCDZQr8au2b5ZfM3gpc-Lw1oRr1QDGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] xsk: skip polling event check for unbound socket
+To: Yewon Choi <woni9911@gmail.com>
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, threeearcat@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Dec 04, 2023 at 09:16:52PM -0800, Yonghong Song wrote:
-> 
-> On 12/3/23 3:48 PM, Jiri Olsa wrote:
-> > Adding test that tries to trigger the BUG_ON during early map update
-> > in prog_array_map_poke_run function.
-> > 
-> > The idea is to share prog array map between thread that constantly
-> > updates it and another one loading a program that uses that prog
-> > array.
-> > 
-> > Eventually we will hit a place where the program is ok to be updated
-> > (poke->tailcall_target_stable check) but the address is still not
-> > registered in kallsyms, so the bpf_arch_text_poke returns -EINVAL
-> > and cause imbalance for the next tail call update check, which will
-> > fail with -EBUSY in bpf_arch_text_poke as described in previous fix.
-> > 
-> > Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >   .../selftests/bpf/prog_tests/tailcall_poke.c  | 74 +++++++++++++++++++
-> >   .../selftests/bpf/progs/tailcall_poke.c       | 32 ++++++++
-> >   2 files changed, 106 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/tailcall_poke.c
-> > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c b/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
-> > new file mode 100644
-> > index 000000000000..f7e2c09fd772
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
-> > @@ -0,0 +1,74 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <unistd.h>
-> > +#include <test_progs.h>
-> > +#include "tailcall_poke.skel.h"
-> > +
-> > +#define JMP_TABLE "/sys/fs/bpf/jmp_table"
-> > +
-> > +static int thread_exit;
-> > +
-> > +static void *update(void *arg)
-> > +{
-> > +	__u32 zero = 0, prog1_fd, prog2_fd, map_fd;
-> > +	struct tailcall_poke *call = arg;
-> > +
-> > +	map_fd = bpf_map__fd(call->maps.jmp_table);
-> > +	prog1_fd = bpf_program__fd(call->progs.call1);
-> > +	prog2_fd = bpf_program__fd(call->progs.call2);
-> > +
-> > +	while (!thread_exit) {
-> > +		bpf_map_update_elem(map_fd, &zero, &prog1_fd, BPF_ANY);
-> > +		bpf_map_update_elem(map_fd, &zero, &prog2_fd, BPF_ANY);
-> > +	}
-> > +
-> > +	return NULL;
-> > +}
-> > +
-> > +void test_tailcall_poke(void)
-> > +{
-> > +	struct tailcall_poke *call, *test;
-> > +	int err, cnt = 10;
-> > +	pthread_t thread;
-> > +
-> > +	unlink(JMP_TABLE);
-> > +
-> > +	call = tailcall_poke__open_and_load();
-> > +	if (!ASSERT_OK_PTR(call, "tailcall_poke__open"))
-> > +		return;
-> > +
-> > +	err = bpf_map__pin(call->maps.jmp_table, JMP_TABLE);
-> > +	if (!ASSERT_OK(err, "bpf_map__pin"))
-> > +		goto out;
-> 
-> Just curious. What is the reason having bpf_map__pin() here
-> and below? I tried and it looks like removing bpf_map__pin()
-> and below bpf_map__set_pin_path() will make reproducing
-> the failure hard/impossible.
+On Fri, 1 Dec 2023 at 07:11, Yewon Choi <woni9911@gmail.com> wrote:
+>
+> In xsk_poll(), checking available events and setting mask bits should
+> be executed only when a socket has been bound. Setting mask bits for
+> unbound socket is meaningless.
+> Currently, it checks events even when xsk_check_common() failed.
+> To prevent this, we move goto location (skip_tx) after that checking.
 
-yes, it's there to share the jmp_table map between the two
-skeleton instances, so the update thread changes the same
-jmp_table map that's used in the skeleton we load in the
-while loop below
+Thanks for the fix.
 
-I'll add some comments to the test
+Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 
-jirka
-
-> 
-> > +
-> > +	err = pthread_create(&thread, NULL, update, call);
-> > +	if (!ASSERT_OK(err, "new toggler"))
-> > +		goto out;
-> > +
-> > +	while (cnt--) {
-> > +		test = tailcall_poke__open();
-> > +		if (!ASSERT_OK_PTR(test, "tailcall_poke__open"))
-> > +			break;
-> > +
-> > +		err = bpf_map__set_pin_path(test->maps.jmp_table, JMP_TABLE);
-> > +		if (!ASSERT_OK(err, "bpf_map__pin")) {
-> > +			tailcall_poke__destroy(test);
-> > +			break;
-> > +		}
-> > +
-> > +		bpf_program__set_autoload(test->progs.test, true);
-> > +		bpf_program__set_autoload(test->progs.call1, false);
-> > +		bpf_program__set_autoload(test->progs.call2, false);
-> > +
-> > +		err = tailcall_poke__load(test);
-> > +		tailcall_poke__destroy(test);
-> > +		if (!ASSERT_OK(err, "tailcall_poke__load"))
-> > +			break;
-> > +	}
-> > +
-> > +	thread_exit = 1;
-> > +	ASSERT_OK(pthread_join(thread, NULL), "pthread_join");
-> > +
-> > +out:
-> > +	bpf_map__unpin(call->maps.jmp_table, JMP_TABLE);
-> > +	tailcall_poke__destroy(call);
-> > +}
-
-SNIP
+> Fixes: 1596dae2f17e ("xsk: check IFF_UP earlier in Tx path")
+> Signed-off-by: Yewon Choi <woni9911@gmail.com>
+> ---
+>  net/xdp/xsk.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+> index ae9f8cb611f6..1e5a65326d1d 100644
+> --- a/net/xdp/xsk.c
+> +++ b/net/xdp/xsk.c
+> @@ -947,7 +947,7 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>
+>         rcu_read_lock();
+>         if (xsk_check_common(xs))
+> -               goto skip_tx;
+> +               goto out;
+>
+>         pool = xs->pool;
+>
+> @@ -959,12 +959,12 @@ static __poll_t xsk_poll(struct file *file, struct socket *sock,
+>                         xsk_generic_xmit(sk);
+>         }
+>
+> -skip_tx:
+>         if (xs->rx && !xskq_prod_is_empty(xs->rx))
+>                 mask |= EPOLLIN | EPOLLRDNORM;
+>         if (xs->tx && xsk_tx_writeable(xs))
+>                 mask |= EPOLLOUT | EPOLLWRNORM;
+>
+> +out:
+>         rcu_read_unlock();
+>         return mask;
+>  }
+> --
+> 2.37.3
+>
+>
 
