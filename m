@@ -1,197 +1,241 @@
-Return-Path: <bpf+bounces-16678-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16679-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0D6E8043A0
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:55:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7858E8043EB
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:18:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84FB628148A
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 00:55:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32A63281365
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768AC1113;
-	Tue,  5 Dec 2023 00:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2851375;
+	Tue,  5 Dec 2023 01:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTPtJcu2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dRXiJkmM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08AC102
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 16:54:56 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54c1cd8d239so5784054a12.0
-        for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 16:54:56 -0800 (PST)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB27CAF;
+	Mon,  4 Dec 2023 17:18:44 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-3316bb1303bso3881382f8f.0;
+        Mon, 04 Dec 2023 17:18:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701737695; x=1702342495; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kw1eCdjrEw9P4QpBBCJg6B0nvB8pqfXw5q3/rvpkXXc=;
-        b=QTPtJcu2aIkYXy1a73lTWQDETJwvRfBFmCe2nEB/QCvkJeY7ZfNkWQFkWPPJwsJAUc
-         nKQIY2zpY58zz5KuCXDmOwRUiFCy03dTBq7HV4zH6Ve4YHgPVCr1fyOTtampfOzFMmLR
-         uRKx6hoCo82fChj9uiSVGFGCQmIUTSIhh+6W9/Z0d3sTe2eOgJo3OVNQWDwnZxrxkhkq
-         rCvdXoJGqMFhdbiQk/Hn0hMBqJplm7C3OZ3fSy/FM2/Ci/rxFUenr5z2WNe2WQCDtP7t
-         hyRym4GR158eXunmQQUQxZERURuLA966eAAS9wmkKj5Jaa57jU0wh5O1qFquoiMA0UKT
-         vv5A==
+        d=gmail.com; s=20230601; t=1701739123; x=1702343923; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7jf8j7x8KL5+FXfau2GI8WqRGtfi/ioqnUgDBbWrCwc=;
+        b=dRXiJkmMgX1yxKSrYMUOs+SPIgbQUY6dIghjFId5ulat6UOA4RkhMxc8WWqlPjT+Tu
+         PRtFxUUYvoKqwRsFygr2Xg2YyAuTyBrDvzDrtrdZLJTIk2w6QaIDzEZxbOVGu5pGNKl+
+         AaixBZtiyYkbRD1V5DzH+nR6VKQ6qtCnl5pCuwg8a6EdddLRnVbZ20CxeRmh1oMbwdhu
+         s0y4v4/U7vTUMjV/w7D67ZVAzH/Rue5SAHW92TNSDDk/vko1XpbMmv7JbllaVy6vkeR9
+         MMn7VoGYzNjjGLERnu08MGssvtMxqAFde4c/lRSEdkhj+43i/vzDiI6Vl+Gr+q/7r1q1
+         tCQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701737695; x=1702342495;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kw1eCdjrEw9P4QpBBCJg6B0nvB8pqfXw5q3/rvpkXXc=;
-        b=v98OdZdBn2rKJfGKQXHosOnuyC4vWnNF3hwvzby0K+1E6Qy1aimpVtMFcwdcM5fZBN
-         WHUbgluQ5u/Wd7XkcQD6ZvuhKmktd/qB9BiFxYFBv1sWkKycFOGLE2fCbmGZTH+TvbRr
-         FGp13qxl5ZKxMEzyNFrWX+Ws+fCziY/7Qpr2odVZ72tncVWs2eVygdJzafguKblbXilT
-         IhU957jmub2JMYLD1H8+n2t7eyvvgQGYLiDcKFVcPWj0yqQOivMAenEFya3LeOECo/yh
-         OVbKfaa/C2ycFpVac6A79etBr+b/HTL2ZCwCtWKq7qXtywxMuN0z12CcwHaqZtnsQdAS
-         ZUKg==
-X-Gm-Message-State: AOJu0Yx0Hrd3HoW5oZV6YL8l17K994x2b6zBt1xGxxlP1tw5r/XVJvJo
-	+SkEOkvmU9ftzgpg6T3rM5U=
-X-Google-Smtp-Source: AGHT+IHO1oTKxss4nDIRg6lklKtS0NbIt/6dMSm6JWMGUhzFKubhC9sKFlI/VivilIw1vJohs3L4Ig==
-X-Received: by 2002:a17:906:7e11:b0:a19:a1ba:badc with SMTP id e17-20020a1709067e1100b00a19a1babadcmr1310741ejr.130.1701737695158;
-        Mon, 04 Dec 2023 16:54:55 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id lc6-20020a170906dfe600b009ad7fc17b2asm5869583ejc.224.2023.12.04.16.54.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 16:54:54 -0800 (PST)
-Message-ID: <6875401e502049bfdfa128fc7bf37fabe5314e2f.camel@gmail.com>
-Subject: Re: [PATCH v3 bpf-next 03/10] bpf: fix check for attempt to corrupt
- spilled pointer
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov
-	 <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
-Date: Tue, 05 Dec 2023 02:54:53 +0200
-In-Reply-To: <CAEf4BzZ0Ao7EF4PodPBxTdQphEt-_ezZyNDOzqds2XfXYpjsHg@mail.gmail.com>
-References: <20231204192601.2672497-1-andrii@kernel.org>
-	 <20231204192601.2672497-4-andrii@kernel.org>
-	 <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com>
-	 <CAEf4BzZ0Ao7EF4PodPBxTdQphEt-_ezZyNDOzqds2XfXYpjsHg@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        d=1e100.net; s=20230601; t=1701739123; x=1702343923;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7jf8j7x8KL5+FXfau2GI8WqRGtfi/ioqnUgDBbWrCwc=;
+        b=oK5F5Kkfiq9l7d6DVdTSyHV4+lpdKKr4YKsmgFE9C7xYruzzcdno7K2rKQDI/gSgFL
+         B7JwXjJDPsL5mUUvWrBFUBghsegjNMUKYYeWBTDkh5MHPQCZsk5KR9pGwcOzJ2VxUpt8
+         Ao9DmvLIlkIF0ETCdM14bDT+ymtMWVfWbzhZaVxghn6QAH6eEt8e+AJ7Bs1a4muOIvXs
+         Cs3Kn0EH58KaZ6rpGaBI9gPHMLucVNAQ9MnG6vBusp7cs/Z2/sKlTjvYpw6Lz/9NIZxS
+         Ov7XrX8vMymFr3PCVQn6/irSwsh5yttOSVmvsL5SaVxMLpzRKCJKhQetUkB/4AhFW/cA
+         aGxw==
+X-Gm-Message-State: AOJu0Yz0LvDNEWrDgNTG9v9IO3FRv4R/zjSyKvz7P/rRJFc2hc4q5ehT
+	HgdL1depcnAvbaurrJI7Ub3rDthw90DjSLtJRxI=
+X-Google-Smtp-Source: AGHT+IGEc+RU3aLyo6G6cXdlO/5FlaIRSUm657pq4pWBz4aI+C9RHW2IiSzyw85KCLQaAJWMQI8ODuDVbfqFALf2YSA=
+X-Received: by 2002:adf:e78a:0:b0:333:2fd2:812c with SMTP id
+ n10-20020adfe78a000000b003332fd2812cmr3734853wrm.73.1701739122768; Mon, 04
+ Dec 2023 17:18:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231130133630.192490507@infradead.org> <20231130134204.136058029@infradead.org>
+ <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
+ <20231204091334.GM3818@noisy.programming.kicks-ass.net> <20231204111128.GV8262@noisy.programming.kicks-ass.net>
+ <20231204125239.GA1319@noisy.programming.kicks-ass.net> <ZW4LjmUKj1q6RWdL@krava>
+ <20231204181614.GA7299@noisy.programming.kicks-ass.net> <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 4 Dec 2023 17:18:31 -0800
+Message-ID: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>, 
+	Song Liu <songliubraving@meta.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
+	"H. Peter Anvin" <hpa@zytor.com>, "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Sami Tolvanen <samitolvanen@google.com>, 
+	Kees Cook <keescook@chromium.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, linux-riscv <linux-riscv@lists.infradead.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Joao Moreira <joao@overdrivepizza.com>, Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2023-12-04 at 16:23 -0800, Andrii Nakryiko wrote:
-[...]
-> > > @@ -4431,7 +4431,7 @@ static int check_stack_write_fixed_off(struct b=
-pf_verifier_env *env,
-> > >        * so it's aligned access and [off, off + size) are within stac=
-k limits
-> > >        */
-> > >       if (!env->allow_ptr_leaks &&
-> > > -         state->stack[spi].slot_type[0] =3D=3D STACK_SPILL &&
-> > > +         is_spilled_reg(&state->stack[spi]) &&
-> > >           size !=3D BPF_REG_SIZE) {
-> > >               verbose(env, "attempt to corrupt spilled pointer on sta=
-ck\n");
-> > >               return -EACCES;
-> >=20
-> > I think there is a small detail here.
-> > slot_type[0] =3D=3D STACK_SPILL actually checks if a spill is 64-bit.
->=20
-> Hm... I wonder if the check was written like this deliberately to
-> prevent turning any spilled register into STACK_MISC?
+On Mon, Dec 4, 2023 at 10:34=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+>
+> TL;DR, I think this is a pre-existing problem with kCFI + eBPF and not
+> caused by my patches.
 
-idk, the error is about pointers and forbidding turning pointers to
-STACK_MISC makes sense. Don't see why it would be useful to forbid
-this for scalars.
+It's an old issue indeed.
 
-> > Thus, with this patch applied the test below does not pass.
-> > Log fragment:
-> >=20
-> >     1: (57) r0 &=3D 65535                   ; R0_w=3Dscalar(...,var_off=
-=3D(0x0; 0xffff))
-> >     2: (63) *(u32 *)(r10 -8) =3D r0
-> >     3: R0_w=3Dscalar(...,var_off=3D(0x0; 0xffff)) R10=3Dfp0 fp-8=3Dmmmm=
-scalar(...,var_off=3D(0x0; 0xffff))
-> >     3: (b7) r0 =3D 42                       ; R0_w=3D42
-> >     4: (63) *(u32 *)(r10 -4) =3D r0
-> >     attempt to corrupt spilled pointer on stack
->=20
-> What would happen if we have
->=20
-> 4: *(u16 *)(r10 - 8) =3D 123; ?
+To workaround I just did:
++__nocfi
+ static long bpf_for_each_array_elem(struct bpf_map *map,
+bpf_callback_t callback_fn,
+                                    void *callback_ctx, u64 flags)
 
-w/o this patch:
+to proceed further.
+test_progs passed few more tests, but then it hit:
 
-  0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
-  1: (57) r0 &=3D 65535                   ; R0_w=3Dscalar(...,var_off=3D(0x=
-0; 0xffff))
-  2: (63) *(u32 *)(r10 -8) =3D r0         ; R0_w=3Dscalar(...,var_off=3D(0x=
-0; 0xffff))=20
-                                          R10=3Dfp0 fp-8=3Dmmmmscalar(...,v=
-ar_off=3D(0x0; 0xffff))
-  3: (b7) r0 =3D 123                      ; R0_w=3D123
-  4: (6b) *(u16 *)(r10 -8) =3D r0         ; R0_w=3D123 R10=3Dfp0 fp-8=3Dmmm=
-mmm123
-  5: (95) exit
+[   13.965472] CFI failure at tcp_set_ca_state+0x51/0xd0 (target:
+0xffffffffa02050d6; expected type: 0x3a47ac32)
+[   13.966351] invalid opcode: 0000 [#1] PREEMPT SMP PTI
+[   13.966752] CPU: 3 PID: 2142 Comm: test_progs Tainted: G
+O       6.7.0-rc3-00705-g421defd1bea0-dirty #5246
+[   13.967552] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+[   13.968421] RIP: 0010:tcp_set_ca_state+0x51/0xd0
+[   13.968751] Code: 70 40 ff 84 c0 74 49 48 8b 83 60 07 00 00 4c 8b
+58 10 4d 85 db 74 1b 40 0f b6 f5 48 89 df 41 ba ce 53 b8 c5 45 03 53
+f1 74 02 <0f> 0b 2e e8 c7 ee 31 00 0f b6 83 90 07 00 00 40 80 e5 1f 24
+e0 40
+[   13.975460] Call Trace:
+[   13.975640]  <IRQ>
+[   13.975791]  ? __die_body+0x68/0xb0
+[   13.976062]  ? die+0xa4/0xd0
+[   13.976273]  ? do_trap+0xa5/0x180
+[   13.976513]  ? tcp_set_ca_state+0x51/0xd0
+[   13.976800]  ? do_error_trap+0xb6/0x100
+[   13.977076]  ? tcp_set_ca_state+0x51/0xd0
+[   13.977360]  ? tcp_set_ca_state+0x51/0xd0
+[   13.977644]  ? handle_invalid_op+0x2c/0x40
+[   13.977934]  ? tcp_set_ca_state+0x51/0xd0
+[   13.978222]  ? exc_invalid_op+0x38/0x60
+[   13.978497]  ? asm_exc_invalid_op+0x1a/0x20
+[   13.978798]  ? tcp_set_ca_state+0x51/0xd0
+[   13.979087]  tcp_v6_syn_recv_sock+0x45c/0x6c0
+[   13.979401]  tcp_check_req+0x497/0x590
+[   13.979671]  tcp_v6_rcv+0x728/0xce0
+[   13.979923]  ? raw6_local_deliver+0x63/0x350
+[   13.980257]  ip6_protocol_deliver_rcu+0x2f6/0x560
+[   13.980596]  ? ip6_input_finish+0x59/0x140
+[   13.980887]  ? NF_HOOK+0x29/0x1d0
+[   13.981136]  ip6_input_finish+0xcb/0x140
+[   13.981415]  ? __cfi_ip6_input_finish+0x10/0x10
+[   13.981738]  NF_HOOK+0x177/0x1d0
+[   13.981970]  ? rcu_is_watching+0x10/0x40
+[   13.982279]  ? lock_release+0x35/0x2e0
+[   13.982547]  ? lock_release+0x35/0x2e0
+[   13.982822]  ? NF_HOOK+0x29/0x1d0
+[   13.983064]  ? __cfi_ip6_rcv_finish+0x10/0x10
+[   13.983409]  NF_HOOK+0x177/0x1d0
+[   13.983664]  ? ip6_rcv_core+0x50/0x6c0
+[   13.983956]  ? process_backlog+0x132/0x290
+[   13.984264]  ? process_backlog+0x132/0x290
+[   13.984557]  __netif_receive_skb+0x5c/0x160
+[   13.984856]  process_backlog+0x19e/0x290
+[   13.985140]  __napi_poll+0x3f/0x1f0
+[   13.985402]  net_rx_action+0x193/0x330
+[   13.985672]  __do_softirq+0x14d/0x3ea
+[   13.985963]  ? do_softirq+0x7f/0xb0
+[   13.986243]  ? __dev_queue_xmit+0x5b/0xd50
+[   13.986563]  ? ip6_finish_output2+0x222/0x7a0
+[   13.986906]  do_softirq+0x7f/0xb0
 
-with this patch:
+The stack trace doesn't have any bpf, but it's a bpf issue too.
+Here tcp_set_ca_state() calls
+icsk->icsk_ca_ops->set_state(sk, ca_state);
+which calls bpf prog via bpf trampoline.
 
-  0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
-  1: (57) r0 &=3D 65535                   ; R0_w=3Dscalar(...,var_off=3D(0x=
-0; 0xffff))
-  2: (63) *(u32 *)(r10 -8) =3D r0         ; R0_w=3Dscalar(...,var_off=3D(0x=
-0; 0xffff))
-                                          R10=3Dfp0 fp-8=3Dmmmmscalar(...,v=
-ar_off=3D(0x0; 0xffff))
-  3: (b7) r0 =3D 123                      ; R0_w=3D123
-  4: (6b) *(u16 *)(r10 -8) =3D r0
-  attempt to corrupt spilled pointer on stack
+re: bpf_jit_binary_pack_hdr().
 
-> and similarly
->=20
-> 4: *(u16 *)(r10 - 6) =3D 123; ?
+since cfi_mode is __ro_after_init we don't need to waste
+cfi_offset variable in prog->aux and in jit_context.
 
-w/o this patch:
+How about
++int get_cfi_offset(void)
++{
++       switch (cfi_mode) {
++       case CFI_FINEIBT:
++               return 16;
++       case CFI_KCFI:
++#ifdef CONFIG_CALL_PADDING
++               return 16;
++#else
++               return 5;
++#endif
++       default:
++               return 0;
++       }
++}
++
+ struct bpf_binary_header *
+ bpf_jit_binary_pack_hdr(const struct bpf_prog *fp)
+ {
+-       unsigned long real_start =3D (unsigned long)fp->bpf_func;
++       unsigned long real_start =3D (unsigned long)fp->bpf_func -
+get_cfi_offset();
 
-  0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
-  1: (57) r0 &=3D 65535                   ; R0_w=3Dscalar(...,var_off=3D(0x=
-0; 0xffff))
-  2: (63) *(u32 *)(r10 -8) =3D r0         ; R0_w=3Dscalar(....,var_off=3D(0=
-x0; 0xffff))
-                                          R10=3Dfp0 fp-8=3Dmmmmscalar(...,v=
-ar_off=3D(0x0; 0xffff))
-  3: (b7) r0 =3D 123                      ; R0_w=3D123
-  4: (6b) *(u16 *)(r10 -6) =3D r0         ; R0_w=3D123 R10=3Dfp0 fp-8=3Dmmm=
-mmmmm
-  5: (95) exit
+and have __weak version of get_cfi_offset() in bpf/core.c
+that returns 0 and non-weak in arch/x86 like above?
 
-with this patch:
+Similarly remove prog_offset from jit_context and undo:
 
-  0: (85) call bpf_get_prandom_u32#7    ; R0_w=3Dscalar()
-  1: (57) r0 &=3D 65535                   ; R0_w=3Dscalar(...,var_off=3D(0x=
-0; 0xffff))
-  2: (63) *(u32 *)(r10 -8) =3D r0         ; R0_w=3Dscalar(...,var_off=3D(0x=
-0; 0xffff))
-                                          R10=3Dfp0 fp-8=3Dmmmmscalar(...,v=
-ar_off=3D(0x0; 0xffff))
-  3: (b7) r0 =3D 123                      ; R0_w=3D123
-  4: (6b) *(u16 *)(r10 -6) =3D r0
-  attempt to corrupt spilled pointer on stack
+ctx->prog_offset =3D emit_prologue(...)
+to keep it as 'static void emit_prologue'
 
-> So it makes me feel like the intent was to reject any partial writes
-> with spilled reg slots. We could probably improve that to just make
-> sure that we don't turn spilled pointers into STACK_MISC in unpriv,
-> but I'm not sure if it's worth doing that instead of keeping things
-> simple?
+since cfi offset is fixed at early boot and the same for all progs.
 
-You mean like below?
+Separately we need to deal with bpf_for_each_array_elem()
+which doesn't look easy.
+And fix tcp_set_ca_state() as well (which is even harder).
 
-	if (!env->allow_ptr_leaks &&
-	    is_spilled_reg(&state->stack[spi]) &&
-	    is_spillable_regtype(state->stack[spi].spilled_ptr.type) &&
-	    size !=3D BPF_REG_SIZE) {
-		verbose(env, "attempt to corrupt spilled pointer on stack\n");
-		return -EACCES;
-	}
+Just to see where places like these are I did:
++__nocfi
+ BPF_CALL_4(bpf_loop, u32, nr_loops, void *, callback_fn, void *, callback_=
+ctx,
++__nocfi
+ static long bpf_for_each_hash_elem(struct bpf_map *map,
+bpf_callback_t callback_fn,
++__nocfi
+ static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
++__nocfi
+ static int __bpf_rbtree_add(struct bpf_rb_root *root,
++__nocfi
+ BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
++__nocfi
+ void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
++__nocfi
+ void tcp_init_congestion_control(struct sock *sk)
++__nocfi
+ void tcp_enter_loss(struct sock *sk)
++__nocfi
+ static void tcp_cong_avoid(struct sock *sk, u32 ack, u32 acked)
++__nocfi
+ static inline void tcp_in_ack_event(struct sock *sk, u32 flags)
+
+and more... Which is clearly not a direction to go.
+
+Instead of annotating callers is there a way to say that
+all bpf_callback_t calls are nocfi?
+
+I feel the patches scratched the iceberg.
 
