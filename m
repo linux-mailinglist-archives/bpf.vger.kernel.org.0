@@ -1,115 +1,132 @@
-Return-Path: <bpf+bounces-16718-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16719-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CF9D804D26
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 10:04:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 435AD804D48
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 10:11:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0AB4B1F21486
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 09:04:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 745A01C20B47
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 09:11:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454153D970;
-	Tue,  5 Dec 2023 09:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B7363DB95;
+	Tue,  5 Dec 2023 09:11:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EHj3iZc3"
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="oIqpz0ck";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="XzSMYI0b"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7556134
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 01:04:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701767072; x=1733303072;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MwJ/1yzGcUn98OKfx1bwlkwjcTxsSdQBbUnz3IRBTIk=;
-  b=EHj3iZc3u/CsdLkfJsdh7ZKZW+kGWFE2WYnpJSusR9cuxEAYzPoZSoxX
-   QWI6CNcUBLIyB+JNDAPNLCHhtjiG/ous10StGxhYr4g812ClulWmucQKJ
-   YXc5PE9uqqghbURXEi2RyH4/jIBMLQKvT93sd+Av6ELdpYy74jfT1N5Z7
-   9sUG5tPxN+ARToYJPVWeB1+Vwu4rebpBSQaNk5qaqljvnrQGSqh3O1XW2
-   mqtXz33++nZ57JtS2NIOJWcLszbknJmejIxEYuHcC/6jVJrEK+W9oy3GQ
-   tbsp8l0O1WVuT9eGnPoNGq/ow4H2KPEjyEWLa3dWjf7xYb8IbYSVrsAkH
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="926496"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="926496"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:04:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="799894385"
-X-IronPort-AV: E=Sophos;i="6.04,251,1695711600"; 
-   d="scan'208";a="799894385"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 05 Dec 2023 01:04:29 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rARLu-0008cO-24;
-	Tue, 05 Dec 2023 09:04:26 +0000
-Date: Tue, 5 Dec 2023 17:04:12 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, andrii@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 08/13] bpf: move subprog call logic back to
- verifier.c
-Message-ID: <202312051638.g1zvtUmv-lkp@intel.com>
-References: <20231204233931.49758-9-andrii@kernel.org>
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBA511F;
+	Tue,  5 Dec 2023 01:11:26 -0800 (PST)
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id A4DF8C009; Tue,  5 Dec 2023 10:11:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1701767484; bh=3iZ63APZbX61CIoo6gLzcv9i84+2PmzaZ9wPzVma8C0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=oIqpz0ckW2yM5dz1Eb84uzefLbmlslS3T8HBWGHYwytNSfBw7uX72y60wtA5R4F/e
+	 QiiYfCYVBU8ClgdWICRtFiDIaZtkuMNq4An4reGDHCNCrSK8h7XzwDx17gCe8GGbXU
+	 vMUNhKCTBHQK2Q2ofpRlmTj/pFDSVR2fXS6BaLEgJ75ftPdjFoo0mMq6SAVRyMiRIG
+	 uuUT7xHZVU2YZfaQAe34CRnTSNq5CMt9nSkhJL9uLjWvXJrdwDwZszF1Tk3v5wAktJ
+	 dBq99DGdKt0MTniutgIGt7JBaZegTrGXMB3WXc3FzkKRkn1GsoEjbbpJ0Eq5QX7ZnS
+	 BTX1zRae9D/ZQ==
+X-Spam-Level: 
+Received: from gaia (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id 86018C009;
+	Tue,  5 Dec 2023 10:11:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1701767483; bh=3iZ63APZbX61CIoo6gLzcv9i84+2PmzaZ9wPzVma8C0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XzSMYI0bof0n+WYjxYrYL6gOwmwkBPBUDi4iIqhYEJhiPNvvplUQbz6BGjUof3ZTJ
+	 40TKfb9qqi0LqG2SagX6rRgOUOUfLxUMqyViDSBtDOfTWy2TEFoTo5/w2x8rOHDiqE
+	 zmZJMfj2DCeVsbeJip84/EAXDm7sPkAVmaxHLehc76b7CQM702UxxkRm3pRzv4aRBQ
+	 LmF5zKHegx/GHRhGjwU4pdwnWNwDUZoblJiCMuuqc5Zh7JyR1dkys/twxRtZkx7Hwa
+	 T7fToNgHSZDwyCSuYBrhLfLHJ92nftiJFKEqtLQgR4npu+vMIeQ0WgVWOvowNo6W3W
+	 OzKv2QL1nHKBg==
+Received: from localhost (gaia [local])
+	by gaia (OpenSMTPD) with ESMTPA id 27fad260;
+	Tue, 5 Dec 2023 09:11:17 +0000 (UTC)
+Date: Tue, 5 Dec 2023 18:11:02 +0900
+From: asmadeus@codewreck.org
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: ericvh@kernel.org, lucho@ionkov.net, linux_oss@crudebyte.com,
+	rostedt@goodmis.org, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, v9fs@lists.linux.dev,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH v2] 9p: prevent read overrun in protocol dump tracepoint
+Message-ID: <ZW7pJvNLtObyglZW@codewreck.org>
+References: <20231204202321.22730-1-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231204233931.49758-9-andrii@kernel.org>
+In-Reply-To: <20231204202321.22730-1-inwardvessel@gmail.com>
 
-Hi Andrii,
+JP Kobryn wrote on Mon, Dec 04, 2023 at 12:23:20PM -0800:
+> An out of bounds read can occur within the tracepoint 9p_protocol_dump. In
+> the fast assign, there is a memcpy that uses a constant size of 32 (macro
+> named P9_PROTO_DUMP_SZ). When the copy is invoked, the source buffer is not
+> guaranteed match this size.  It was found that in some cases the source
+> buffer size is less than 32, resulting in a read that overruns.
+> 
+> The size of the source buffer seems to be known at the time of the
+> tracepoint being invoked. The allocations happen within p9_fcall_init(),
+> where the capacity field is set to the allocated size of the payload
+> buffer. This patch tries to fix the overrun by changing the fixed array to
+> a dynamically sized array and using the minimum of the capacity value or
+> P9_PROTO_DUMP_SZ as its length. The trace log statement is adjusted to
+> account for this. Note that the trace log no longer splits the payload on
+> the first 16 bytes. The full payload is now logged to a single line.
+> 
+> To repro the orignal problem, operations to a plan 9 managed resource can
+> be used. The simplest approach might just be mounting a shared filesystem
+> (between host and guest vm) using the plan 9 protocol while the tracepoint
+> is enabled.
+> 
+> mount -t 9p -o trans=virtio <mount_tag> <mount_path>
+> 
+> The bpftrace program below can be used to show the out of bounds read.
+> Note that a recent version of bpftrace is needed for the raw tracepoint
+> support. The script was tested using v0.19.0.
+> 
+> /* from include/net/9p/9p.h */
+> struct p9_fcall {
+>     u32 size;
+>     u8 id;
+>     u16 tag;
+>     size_t offset;
+>     size_t capacity;
+>     struct kmem_cache *cache;
+>     u8 *sdata;
+>     bool zc;
+> };
+> 
+> tracepoint:9p:9p_protocol_dump
+> {
+>     /* out of bounds read can happen when this tracepoint is enabled */
+> }
+> 
+> rawtracepoint:9p_protocol_dump
+> {
+>     $pdu = (struct p9_fcall *)arg1;
+>     $dump_sz = (uint64)32;
+> 
+>     if ($dump_sz > $pdu->capacity) {
+>         printf("reading %zu bytes from src buffer of %zu bytes\n",
+>             $dump_sz, $pdu->capacity);
+>     }
+> }
+> 
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-log-PTR_TO_MEM-memory-size-in-verifier-log/20231205-074451
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231204233931.49758-9-andrii%40kernel.org
-patch subject: [PATCH bpf-next 08/13] bpf: move subprog call logic back to verifier.c
-config: alpha-randconfig-r122-20231205 (https://download.01.org/0day-ci/archive/20231205/202312051638.g1zvtUmv-lkp@intel.com/config)
-compiler: alpha-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231205/202312051638.g1zvtUmv-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051638.g1zvtUmv-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> kernel/bpf/verifier.c:5083:5: sparse: sparse: symbol 'check_ptr_off_reg' was not declared. Should it be static?
->> kernel/bpf/verifier.c:7268:5: sparse: sparse: symbol 'check_mem_reg' was not declared. Should it be static?
->> kernel/bpf/verifier.c:8254:5: sparse: sparse: symbol 'check_func_arg_reg_off' was not declared. Should it be static?
-   kernel/bpf/verifier.c:19770:38: sparse: sparse: subtraction of functions? Share your drugs
-   kernel/bpf/verifier.c: note: in included file (through include/linux/bpf.h, include/linux/bpf-cgroup.h):
-   include/linux/bpfptr.h:65:40: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:65:40: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:65:40: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:65:40: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:65:40: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:65:40: sparse: sparse: cast from non-scalar
-   include/linux/bpfptr.h:65:40: sparse: sparse: cast to non-scalar
-   include/linux/bpfptr.h:65:40: sparse: sparse: cast from non-scalar
-
-vim +/check_ptr_off_reg +5083 kernel/bpf/verifier.c
-
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5082  
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15 @5083  int check_ptr_off_reg(struct bpf_verifier_env *env,
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5084  		      const struct bpf_reg_state *reg, int regno)
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5085  {
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5086  	return __check_ptr_off_reg(env, reg, regno, false);
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5087  }
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5088  
+Thanks, I've updated the patch locally; will push to -next after testing
+later tonight and to Linus next week.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Dominique Martinet | Asmadeus
 
