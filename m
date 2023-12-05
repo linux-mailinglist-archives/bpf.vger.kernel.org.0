@@ -1,140 +1,131 @@
-Return-Path: <bpf+bounces-16691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A7C780447F
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 03:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16FD4804463
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:59:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9EF2C1F213B6
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:11:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD72B1F213A6
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57ED946AD;
-	Tue,  5 Dec 2023 02:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6909F3D7C;
+	Tue,  5 Dec 2023 01:59:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L08xTNSk"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5A4107;
-	Mon,  4 Dec 2023 18:10:59 -0800 (PST)
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0VxsMv1R_1701742256;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VxsMv1R_1701742256)
-          by smtp.aliyun-inc.com;
-          Tue, 05 Dec 2023 10:10:56 +0800
-Message-ID: <1701740897.6795166-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next] tcp: add tracepoints for data send/recv/acked
-Date: Tue, 5 Dec 2023 09:48:17 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Eric Dumazet <edumazet@google.com>
-Cc: netdev@vger.kernel.org,
- rostedt@goodmis.org,
- mhiramat@kernel.org,
- mathieu.desnoyers@efficios.com,
- davem@davemloft.net,
- dsahern@kernel.org,
- kuba@kernel.org,
- pabeni@redhat.com,
- martin.lau@linux.dev,
- linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org,
- dust.li@linux.alibaba.com,
- alibuda@linux.alibaba.com,
- guwen@linux.alibaba.com,
- hengqi@linux.alibaba.com,
- Philo Lu <lulie@linux.alibaba.com>
-References: <20231204114322.9218-1-lulie@linux.alibaba.com>
- <CANn89iKUHQHA2wHw9k1SiazJf7ag7i4Tz+FPutgu870teVw_Bg@mail.gmail.com>
-In-Reply-To: <CANn89iKUHQHA2wHw9k1SiazJf7ag7i4Tz+FPutgu870teVw_Bg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B495B4;
+	Mon,  4 Dec 2023 17:59:08 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c0fc1cf3dso6016395e9.0;
+        Mon, 04 Dec 2023 17:59:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701741547; x=1702346347; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fDBKOw3s0R/x34Gl0DdYfEHhp4k1EOz2IyOuhxx/RDw=;
+        b=L08xTNSk5eQU3t+7yuY8dwHJdDqcp5qOVAX9qAPdQOSwnMydAxATTumbVZFOd1LZpk
+         r02QCDg1fTg1Df6oenFxYMTCgt7XJGwkCZPG7FSF/YMHRioeDLY2Ki0N/5Vju9iERrIE
+         xzZq7GI749vs977WligIkSl9yzhFPi7ZFgaJL6WaxGK7al7ZaNEIn5tc11ZLsIgkAQdP
+         YAIRZhwXsfH46ls8en6WagtJChHaClBOO7PQXiqyAWQ5zmof17sXgXqRRRoNi5ZHevqq
+         w/56GAH+2kjIYj1DNYaq8Rl9wnUngWNMdQzTKagxr0a1e00PNOlXGL/Vg6viuwhnvqOv
+         N/vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701741547; x=1702346347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fDBKOw3s0R/x34Gl0DdYfEHhp4k1EOz2IyOuhxx/RDw=;
+        b=HJVpVMBTspDPqLc2iozaFr23k9CsV4CMgIEGZsrNBTq3IroTKnEwCjK0iNl2Gj0Lo8
+         i8/czbeFjtwjo35g+ri/FEAWsThaK/jfXHvws2jeuMUUZCPwnjaMsqETsPkcD7lYUIIq
+         4KePO3CnMMkWkj/OmG7JEOScyLz2f5Q+QdFfNVavhNdXCQ5pxzUXO1mQjdsAzoq/hqNR
+         kh4WKhnMM4hyS6VCbF/a5c72K+C5Pnmx8oSQNxxjd6jHyHYSxhG/CTQHAV8RQfNIDEOW
+         bn5PRegh+ul4SFWIxKg3JV88N9OsX+w+cYsC7+JB/ta9l/1beZji/HTTtO01Ob92Fc5U
+         3b5Q==
+X-Gm-Message-State: AOJu0YyjWSKQgzs+qGx8XSzjGD0ezxrWl7kz0fgNwMf9hUXTAJoyx3Wl
+	MnZwB11yxWjOGEXgio9kRejknr1I79ajWlUg8gI=
+X-Google-Smtp-Source: AGHT+IH3pk98r8xDa4KBJTXsK/VMAwQZ79RDLUR+lRWE7jhLBQZJl49OL7x+1il/lGY6CVzmTDIbZ5teWIODtZG4zyg=
+X-Received: by 2002:a05:600c:444a:b0:40b:5e21:d36f with SMTP id
+ v10-20020a05600c444a00b0040b5e21d36fmr31135wmn.120.1701741546663; Mon, 04 Dec
+ 2023 17:59:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <cover.1701722991.git.dxu@dxuuu.xyz> <a385991bb4f36133e15d6eacb72ed22a3c02da16.1701722991.git.dxu@dxuuu.xyz>
+In-Reply-To: <a385991bb4f36133e15d6eacb72ed22a3c02da16.1701722991.git.dxu@dxuuu.xyz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 4 Dec 2023 17:58:55 -0800
+Message-ID: <CAADnVQJXtSNGuZGNfNSD2Or8hfhrxtO_cL1GckHMXc401Rg+kw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 01/10] xfrm: bpf: Move xfrm_interface_bpf.c to xfrm_bpf.c
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: "David S. Miller" <davem@davemloft.net>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Steffen Klassert <steffen.klassert@secunet.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>, antony.antony@secunet.com, 
+	Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Network Development <netdev@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, devel@linux-ipsec.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 4 Dec 2023 13:28:21 +0100, Eric Dumazet <edumazet@google.com> wrote:
-> On Mon, Dec 4, 2023 at 12:43=E2=80=AFPM Philo Lu <lulie@linux.alibaba.com=
-> wrote:
-> >
-> > Add 3 tracepoints, namely tcp_data_send/tcp_data_recv/tcp_data_acked,
-> > which will be called every time a tcp data packet is sent, received, and
-> > acked.
-> > tcp_data_send: called after a data packet is sent.
-> > tcp_data_recv: called after a data packet is receviced.
-> > tcp_data_acked: called after a valid ack packet is processed (some sent
-> > data are ackknowledged).
-> >
-> > We use these callbacks for fine-grained tcp monitoring, which collects
-> > and analyses every tcp request/response event information. The whole
-> > system has been described in SIGMOD'18 (see
-> > https://dl.acm.org/doi/pdf/10.1145/3183713.3190659 for details). To
-> > achieve this with bpf, we require hooks for data events that call bpf
-> > prog (1) when any data packet is sent/received/acked, and (2) after
-> > critical tcp state variables have been updated (e.g., snd_una, snd_nxt,
-> > rcv_nxt). However, existing bpf hooks cannot meet our requirements.
-> > Besides, these tracepoints help to debug tcp when data send/recv/acked.
+On Mon, Dec 4, 2023 at 12:56=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
-> This I do not understand.
+> This commit moves the contents of xfrm_interface_bpf.c into a new file,
+> xfrm_bpf.c This is in preparation for adding more xfrm kfuncs. We'd like
+> to keep all the bpf integrations in a single file.
 >
-> >
-> > Though kretprobe/fexit can also be used to collect these information,
-> > they will not work if the kernel functions get inlined. Considering the
-> > stability, we prefer tracepoint as the solution.
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  net/xfrm/Makefile                             |  7 +------
+>  net/xfrm/{xfrm_interface_bpf.c =3D> xfrm_bpf.c} | 12 ++++++++----
+>  2 files changed, 9 insertions(+), 10 deletions(-)
+>  rename net/xfrm/{xfrm_interface_bpf.c =3D> xfrm_bpf.c} (88%)
 >
-> I dunno, this seems quite weak to me. I see many patches coming to add
-> tracing in the stack, but no patches fixing any issues.
-
-
-We have implemented a mechanism to split the request and response from the =
-TCP
-connection using these "hookers", which can handle various protocols such as
-HTTP, HTTPS, Redis, and MySQL. This mechanism allows us to record important
-information about each request and response, including the amount of data
-uploaded, the time taken by the server to handle the request, and the time =
-taken
-for the client to receive the response. This mechanism has been running
-internally for many years and has proven to be very useful.
-
-One of the main benefits of this mechanism is that it helps in locating the
-source of any issues or problems that may arise. For example, if there is a
-problem with the network, the application, or the machine, we can use this
-mechanism to identify and isolate the issue.
-
-TCP has long been a challenge when it comes to tracking the transmission of=
- data
-on the network. The application can only confirm that it has sent a certain
-amount of data to the kernel, but it has limited visibility into whether the
-client has actually received this data. Our mechanism addresses this issue =
-by
-providing insights into the amount of data received by the client and the t=
-ime
-it was received. Furthermore, we can also detect any packet loss or delays
-caused by the server.
-
-https://help-static-aliyun-doc.aliyuncs.com/assets/img/zh-CN/7912288961/973=
-2df025beny.svg
-
-So, we do not want to add some tracepoint to do some unknow debug.
-We have a clear goal. debugging is just an incidental capability.
-
-Thanks.
-
-
+> diff --git a/net/xfrm/Makefile b/net/xfrm/Makefile
+> index cd47f88921f5..29fff452280d 100644
+> --- a/net/xfrm/Makefile
+> +++ b/net/xfrm/Makefile
+> @@ -5,12 +5,6 @@
 >
-> It really looks like : We do not know how TCP stack works, we do not
-> know if there is any issue,
-> let us add trace points to help us to make forward progress in our analys=
-is.
+>  xfrm_interface-$(CONFIG_XFRM_INTERFACE) +=3D xfrm_interface_core.o
 >
-> These tracepoints will not tell how many segments/bytes were
-> sent/acked/received, I really do not see
-> how we will avoid adding in the future more stuff, forcing the
-> compiler to save more state
-> just in case the tracepoint needs the info.
->
-> The argument of "add minimal info", so that we can silently add more
-> stuff in the future "for free" is not something I buy.
->
-> I very much prefer that you make sure the stuff you need is not
-> inlined, so that standard kprobe/kretprobe facility can be used.
+> -ifeq ($(CONFIG_XFRM_INTERFACE),m)
+> -xfrm_interface-$(CONFIG_DEBUG_INFO_BTF_MODULES) +=3D xfrm_interface_bpf.=
+o
+> -else ifeq ($(CONFIG_XFRM_INTERFACE),y)
+> -xfrm_interface-$(CONFIG_DEBUG_INFO_BTF) +=3D xfrm_interface_bpf.o
+> -endif
+> -
+>  obj-$(CONFIG_XFRM) :=3D xfrm_policy.o xfrm_state.o xfrm_hash.o \
+>                       xfrm_input.o xfrm_output.o \
+>                       xfrm_sysctl.o xfrm_replay.o xfrm_device.o
+> @@ -21,3 +15,4 @@ obj-$(CONFIG_XFRM_USER_COMPAT) +=3D xfrm_compat.o
+>  obj-$(CONFIG_XFRM_IPCOMP) +=3D xfrm_ipcomp.o
+>  obj-$(CONFIG_XFRM_INTERFACE) +=3D xfrm_interface.o
+>  obj-$(CONFIG_XFRM_ESPINTCP) +=3D espintcp.o
+> +obj-$(CONFIG_DEBUG_INFO_BTF) +=3D xfrm_bpf.o
+...
+> +#if IS_BUILTIN(CONFIG_XFRM_INTERFACE) || \
+> +    (IS_MODULE(CONFIG_XFRM_INTERFACE) && IS_ENABLED(CONFIG_DEBUG_INFO_BT=
+F_MODULES))
+> +
+>  /* bpf_xfrm_info - XFRM metadata information
+>   *
+>   * Members:
+> @@ -108,3 +110,5 @@ int __init register_xfrm_interface_bpf(void)
+>         return register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,
+>                                          &xfrm_interface_kfunc_set);
+>  }
+> +
+> +#endif /* xfrm interface */
+
+imo the original approach was cleaner.
+#ifdefs in .c should be avoided when possible.
+But I'm not going to insist.
+
+ipsec folks please ack the first 3 patches.
 
