@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-16804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16805-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D6CE806063
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 22:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB0F5806065
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 22:12:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48CA928200F
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 21:12:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84F74282097
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 21:12:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F11ED6F638;
-	Tue,  5 Dec 2023 21:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E510F6D1A1;
+	Tue,  5 Dec 2023 21:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WfZAnvZ0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j/OMiykf"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF75918F;
-	Tue,  5 Dec 2023 13:11:33 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705E11AA;
+	Tue,  5 Dec 2023 13:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701810693; x=1733346693;
+  t=1701810694; x=1733346694;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PzgpWzlBPks4Kx6qHpW0WR8MQUw4c4t005R0l2P5V9A=;
-  b=WfZAnvZ0ngkcSIWgBTbla4p0i8wS+AnJlcg1c7KpAwxMjawiMCI0uPkk
-   +ZJC71xJqWI1WqVbBlvoEVdEW6xsoieW7BwiAu4zBiiWt1W2b281SR9wa
-   1x74vlKfwSfrAQ92huaVPJhudcQjJjVNuqWgmn+y9mSez1NIFhXa9rGQm
-   IAFMqv8XrP4CztVLDYdjJJ49TaKSizl7kGkBC/PzUOhy/E+CSrr/dgRnX
-   HwCvG7qB8JiJJZg4VkbUtY/unjDqAkczz/Fx91afCIf6YlLgfclDtcEPD
-   dnLJrRdkX1fBahO3RVcdnZqbUcANtXf7WA4gKNja3nsFYC7GHaLbX4Llr
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="392827529"
+  bh=oFIEc+Yvqkty5GlVFkjBKio/4XCiyEws/++M7IFgm/A=;
+  b=j/OMiykfVucLM/ev2cZOor14UkkQR9KxIE5rr06wkwCblAidgHGejZmv
+   P/toC1///TVBugf3OASycWrqO8FJ/m8y1OyOLUvgWeVVTxG1gjYw8G/Ni
+   wGNQd1l6qfn8cbOLU8YW1SAZ6iS6noP/TzppUHftpqk+7Q8yUxipiwFVw
+   x6bauNKfA8g25giuFPhIJGg2CYbOXwObz1/2LU5oMefQ9HxbuX0y7sd88
+   i4TfHPORIpQGo4gqjzL82BBGa/NDpHQMDlO/YX524cC7O13xd+Omus2ta
+   Dry4ZOrr7uwTqOlpZ26ZYFT/mSLAC0u6Hg+ieNoUoWmAOzOHuZhO2RkI/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="392827543"
 X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="392827529"
+   d="scan'208";a="392827543"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:11:33 -0800
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:11:34 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="764464724"
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="764464726"
 X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="764464724"
+   d="scan'208";a="764464726"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga007.jf.intel.com with ESMTP; 05 Dec 2023 13:11:24 -0800
+  by orsmga007.jf.intel.com with ESMTP; 05 Dec 2023 13:11:27 -0800
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 5C4A634328;
-	Tue,  5 Dec 2023 21:11:22 +0000 (GMT)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 0BBCB3433C;
+	Tue,  5 Dec 2023 21:11:24 +0000 (GMT)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -73,11 +73,10 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Tariq Toukan <tariqt@mellanox.com>,
 	Saeed Mahameed <saeedm@mellanox.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Tariq Toukan <tariqt@nvidia.com>
-Subject: [PATCH bpf-next v8 14/18] mlx5: implement VLAN tag XDP hint
-Date: Tue,  5 Dec 2023 22:08:43 +0100
-Message-ID: <20231205210847.28460-15-larysa.zaremba@intel.com>
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Subject: [PATCH bpf-next v8 15/18] selftests/bpf: Allow VLAN packets in xdp_hw_metadata
+Date: Tue,  5 Dec 2023 22:08:44 +0100
+Message-ID: <20231205210847.28460-16-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231205210847.28460-1-larysa.zaremba@intel.com>
 References: <20231205210847.28460-1-larysa.zaremba@intel.com>
@@ -89,57 +88,66 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement the newly added .xmo_rx_vlan_tag() hint function.
+Make VLAN c-tag and s-tag XDP hint testing more convenient
+by not skipping VLAN-ed packets.
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Allow both 802.1ad and 802.1Q headers.
+
+Acked-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 15 +++++++++++++++
- include/linux/mlx5/device.h                      |  2 +-
- 2 files changed, 16 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/progs/xdp_hw_metadata.c | 10 +++++++++-
+ tools/testing/selftests/bpf/xdp_metadata.h          |  8 ++++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index e2e7d82cfca4..9e695ed122ee 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -256,9 +256,24 @@ static int mlx5e_xdp_rx_hash(const struct xdp_md *ctx, u32 *hash,
- 	return 0;
- }
- 
-+static int mlx5e_xdp_rx_vlan_tag(const struct xdp_md *ctx, __be16 *vlan_proto,
-+				 u16 *vlan_tci)
-+{
-+	const struct mlx5e_xdp_buff *_ctx = (void *)ctx;
-+	const struct mlx5_cqe64 *cqe = _ctx->cqe;
-+
-+	if (!cqe_has_vlan(cqe))
-+		return -ENODATA;
-+
-+	*vlan_proto = htons(ETH_P_8021Q);
-+	*vlan_tci = be16_to_cpu(cqe->vlan_info);
-+	return 0;
-+}
-+
- const struct xdp_metadata_ops mlx5e_xdp_metadata_ops = {
- 	.xmo_rx_timestamp		= mlx5e_xdp_rx_timestamp,
- 	.xmo_rx_hash			= mlx5e_xdp_rx_hash,
-+	.xmo_rx_vlan_tag		= mlx5e_xdp_rx_vlan_tag,
- };
- 
- struct mlx5e_xsk_tx_complete {
-diff --git a/include/linux/mlx5/device.h b/include/linux/mlx5/device.h
-index 820bca965fb6..01275c6e8468 100644
---- a/include/linux/mlx5/device.h
-+++ b/include/linux/mlx5/device.h
-@@ -918,7 +918,7 @@ static inline u8 get_cqe_tls_offload(struct mlx5_cqe64 *cqe)
- 	return (cqe->tls_outer_l3_tunneled >> 3) & 0x3;
- }
- 
--static inline bool cqe_has_vlan(struct mlx5_cqe64 *cqe)
-+static inline bool cqe_has_vlan(const struct mlx5_cqe64 *cqe)
+diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+index f6d1cc9ad892..8767d919c881 100644
+--- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
+@@ -26,15 +26,23 @@ int rx(struct xdp_md *ctx)
  {
- 	return cqe->l4_l3_hdr_type & 0x1;
- }
+ 	void *data, *data_meta, *data_end;
+ 	struct ipv6hdr *ip6h = NULL;
+-	struct ethhdr *eth = NULL;
+ 	struct udphdr *udp = NULL;
+ 	struct iphdr *iph = NULL;
+ 	struct xdp_meta *meta;
++	struct ethhdr *eth;
+ 	int err;
+ 
+ 	data = (void *)(long)ctx->data;
+ 	data_end = (void *)(long)ctx->data_end;
+ 	eth = data;
++
++	if (eth + 1 < data_end && (eth->h_proto == bpf_htons(ETH_P_8021AD) ||
++				   eth->h_proto == bpf_htons(ETH_P_8021Q)))
++		eth = (void *)eth + sizeof(struct vlan_hdr);
++
++	if (eth + 1 < data_end && eth->h_proto == bpf_htons(ETH_P_8021Q))
++		eth = (void *)eth + sizeof(struct vlan_hdr);
++
+ 	if (eth + 1 < data_end) {
+ 		if (eth->h_proto == bpf_htons(ETH_P_IP)) {
+ 			iph = (void *)(eth + 1);
+diff --git a/tools/testing/selftests/bpf/xdp_metadata.h b/tools/testing/selftests/bpf/xdp_metadata.h
+index 938a729bd307..6664893c2c77 100644
+--- a/tools/testing/selftests/bpf/xdp_metadata.h
++++ b/tools/testing/selftests/bpf/xdp_metadata.h
+@@ -9,6 +9,14 @@
+ #define ETH_P_IPV6 0x86DD
+ #endif
+ 
++#ifndef ETH_P_8021Q
++#define ETH_P_8021Q 0x8100
++#endif
++
++#ifndef ETH_P_8021AD
++#define ETH_P_8021AD 0x88A8
++#endif
++
+ struct xdp_meta {
+ 	__u64 rx_timestamp;
+ 	__u64 xdp_timestamp;
 -- 
 2.41.0
 
