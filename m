@@ -1,165 +1,244 @@
-Return-Path: <bpf+bounces-16700-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16701-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5922B804861
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 05:02:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97659804864
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 05:04:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14C4C281554
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 04:02:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AEAED1C20E8D
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 04:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564C2CA53;
-	Tue,  5 Dec 2023 04:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3EBCA57;
+	Tue,  5 Dec 2023 04:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bht1qm6e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P0+zuR9m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8463FD3;
-	Mon,  4 Dec 2023 20:02:31 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2c9f72176cfso28742961fa.2;
-        Mon, 04 Dec 2023 20:02:31 -0800 (PST)
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1818EC6;
+	Mon,  4 Dec 2023 20:04:09 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-54bf9a54fe3so6598862a12.3;
+        Mon, 04 Dec 2023 20:04:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701748950; x=1702353750; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/4qYujN8YUPBa0JNq4UyKlX+K5Ufzv+oENh6Wntp8sY=;
-        b=bht1qm6eBerJutEyflOG3GXNXxz+sYZR8/ArFmmHMsmQwSLI4HMgFYzD0toJWWt5hi
-         IMAljHPyT2ua53eGnawGvOYMdaKG+joWmgTg8Fna+OuspJ+BE0/jLsRpGJrQyUp55lRY
-         zaWv4CQiBKHbawfYXBE1zEoPUpLxKp2NtHiZRVt4rqnuzA3Iqwfdy5mN2//bOCaskWLb
-         3DlwglbHbozMMgpdQYYCVs2pMKjRCajajl512G4Ro/2ImlK+CVlA1bbDYqpXoXNxQnNb
-         4LUK8eIT3H6pH5GBpL+vUPygF808Vm7TEV8V9sgP8nxK/Uw8ui5mEnK/9WfSxJo7MS+s
-         kU4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701748950; x=1702353750;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1701749047; x=1702353847; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/4qYujN8YUPBa0JNq4UyKlX+K5Ufzv+oENh6Wntp8sY=;
-        b=Q6wkk4hZDGOvxIW2GC1rNamxCMg5sUh0NCQ62e8f2pr9j4T+tCzQnRsUYxaNaFAKaw
-         qzDYwY8VRkyVVCNttGltzsjqv+YHtHWuKPllQe/tROx7gLT0de3oB8bkKSstQtJEp37G
-         9ARtb0rcxhC4hsWDIr24D+pHSv7sIjf5A9UJe4BRu84o70z/KigfvsWrBmcXPkrmDd83
-         KaEc8Bzc/yfevMAiu4sh8piU27+iF6QjZTG6neqsGZL67Wo337TcaAtjqdHyg0wlA07V
-         9LFg0B8Py7IeFkT7sa/gwCSW0OLxqCBrsrjoqcywz0CSmGf5fN1CsqhG7M9Kgmel4N/n
-         huIQ==
-X-Gm-Message-State: AOJu0YzRqs4xRcO+SZDRA4JpszHrY1KZriTRf2BW+TXCA0GjYKtlPIGO
-	NyNW67TOiNB0k7xWc68eeUw=
-X-Google-Smtp-Source: AGHT+IHrIx2fsWidponzd79suuBm27EcmeV4zktJOvf/4l1bUyw4rU/TKKv5cOob2nfnnFf9tcKDNw==
-X-Received: by 2002:a2e:a1c5:0:b0:2c9:fde5:a359 with SMTP id c5-20020a2ea1c5000000b002c9fde5a359mr663370ljm.20.1701748949460;
-        Mon, 04 Dec 2023 20:02:29 -0800 (PST)
-Received: from mobilestation ([95.79.203.166])
-        by smtp.gmail.com with ESMTPSA id q8-20020a2e8748000000b002ca0a1f489asm384152ljj.52.2023.12.04.20.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Dec 2023 20:02:28 -0800 (PST)
-Date: Tue, 5 Dec 2023 07:02:26 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Rohan G Thomas <rohan.g.thomas@intel.com>
-Cc: "David S . Miller" <davem@davemloft.net>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Giuseppe Cavallaro <peppe.cavallaro@st.com>, Richard Cochran <richardcochran@gmail.com>, 
-	Russell King <linux@armlinux.org.uk>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v2 0/3] net: stmmac: EST implementation
-Message-ID: <d3e5i54yw5vqcnn67lw6jflgxgkqlsk3witwufoeqfqcf66p5u@7cnxjf2ddaf2>
-References: <20231201055252.1302-1-rohan.g.thomas@intel.com>
+        bh=uFi1KzwR2YOrUv7jhd8tU8M3SbznND0IRUD4tj9oA8M=;
+        b=P0+zuR9mhOIQhnB7yq+1BNIAdWArnUf7N2hGX6BAVSGHIAY0Znd+eNE/R0285ALnlm
+         Du322hMnyD/Qqc8IjsLTGsEnwIXe+gR9aJGZ7cOrW3Rvr+bQEB6W2NNpMIp21VnhoS4K
+         AsT3q7qLSjUlx46HAOZ7mY5iPuLewUoTKKW/iVNk7iSbzl2aEsPBhmM7y5tICx8gqVqN
+         Hog4GKFunVNuExCqnOQpSmLUB5a7Flvrw+8WwQih2KLsJMxhV2gUTnsq8N1Bv0KZ04BM
+         RmaTTKRbIt1xxm6J7IgYK/5ToKnILTxOsPHGw7ogxqz33svnQKTaaWYXMIhcG6yKssVO
+         xRHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701749047; x=1702353847;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uFi1KzwR2YOrUv7jhd8tU8M3SbznND0IRUD4tj9oA8M=;
+        b=RO9YJwTKT0X9LMgggRwddgUv2DgEZz232yW/T5jSUyL9ExfkPLffEkQ5R+AADRjgSL
+         NXE4VKb1Vo81/Iiu6fZ9pADpYgmPqlgyYOMX487rJczLwqh4ThTdVQrngBgiG9p801Aa
+         AiF2RQEVEOcLabrKJjMD+SeuM+K/PJAax1VeZXeXF3xb6aKa7wjhjEkR8kQTtzyMLVg1
+         iNkLLR5Ry/d9uocXa9HM/J1bgN/jNzZ9uBUDOre8M6jDgbnlhNlTNQ9hjH8ioVLs3hMM
+         bmfehZUiSmO2TzFMo8udaiBgrGY9atmo33VLqlFC/ykmrL9/hL+cj1OvRCMVxsHLna6l
+         HOPg==
+X-Gm-Message-State: AOJu0YwAaq+BruUtqAgR6WmenRkeccKcYfIcpe0B1yf3+NqLMGPU58rm
+	wBLjFEFfPBiOUbC+0mxPwQDZ70XrGLNRiYlF5P0=
+X-Google-Smtp-Source: AGHT+IHlElgymjUGnl2Tt5Nltm4vXZSUCl9EGHfjGEDPwuNWjQ08MgP9Y1yXwxvvpigxSnBa8Ix9uShVCy+CgeBCf8U=
+X-Received: by 2002:a17:906:f196:b0:a19:a1ba:8cf1 with SMTP id
+ gs22-20020a170906f19600b00a19a1ba8cf1mr3189378ejb.143.1701749047390; Mon, 04
+ Dec 2023 20:04:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231201055252.1302-1-rohan.g.thomas@intel.com>
+References: <cover.1701722991.git.dxu@dxuuu.xyz> <d213a6438f7f5db1014f6b41213b71851736d3bc.1701722991.git.dxu@dxuuu.xyz>
+In-Reply-To: <d213a6438f7f5db1014f6b41213b71851736d3bc.1701722991.git.dxu@dxuuu.xyz>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 4 Dec 2023 20:03:55 -0800
+Message-ID: <CAEf4BzZphyxnjmz+9FdsKst3WuaN7w5bSvX6szXic4gy-wfR_A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 04/10] libbpf: Add BPF_CORE_WRITE_BITFIELD() macro
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: daniel@iogearbox.net, ast@kernel.org, nathan@kernel.org, andrii@kernel.org, 
+	ndesaulniers@google.com, steffen.klassert@secunet.com, 
+	antony.antony@secunet.com, alexei.starovoitov@gmail.com, 
+	yonghong.song@linux.dev, eddyz87@gmail.com, martin.lau@linux.dev, 
+	song@kernel.org, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, trix@redhat.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, devel@linux-ipsec.org, 
+	netdev@vger.kernel.org, Jonathan Lemon <jlemon@aviatrix.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Rohan
-
-On Fri, Dec 01, 2023 at 01:52:49PM +0800, Rohan G Thomas wrote:
-> Hi,
-> This patchset extends EST interrupt handling support to DWXGMAC IP
-> followed by refactoring of EST implementation. Added a separate
-> module for EST and moved all EST related functions to the new module.
-> 
-> Also added support for EST cycle-time-extension.
-> 
-> changelog v2:
-> * Refactor EST implementation as suggested by Serge and Jakub
-> * Added support for EST cycle-time-extension
-
-Thanks for the update and especially for keeping your promise in
-refactoring the EST code. The series has already been merged in, but
-anyway here is my tag:
-
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-
-* which at least for Patch 1 you must have forgotten to add since v1
-* seeing the patch hasn't changed.
-
-Regarding the multiplier and the MTL_EST_Status.BTRL field width info
-you submitted earlier:
-
-On Fri, Dec 01, 2023 at 14:49:09PM +0800, Rohan G Thomas wrote:
-> Managed to get DWC_ether_qos_relnotes.pdf for v5.20a and v5.30a. But I couldn't
-> find anything related to this. So for refactoring, I'm keeping the logic as in
-> the upstream code to avoid any regression.
+On Mon, Dec 4, 2023 at 12:57=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
->>
->> Also please double check that your DW QoS Eth v5.30a for sure states that
->> MTL_EST_CONTROL.PTOV contains value multiplied by _6_. So we wouldn't
->> be wasting time trying to workaround a more complex problem than we
->> already have.
+> =3D=3D=3D Motivation =3D=3D=3D
 >
-> Yes, I checked this again. For DW QoS Eth v5.30a the multiplier for
-> MTL_EST_CONTROL.PTOV is _9_ as per the databook.
+> Similar to reading from CO-RE bitfields, we need a CO-RE aware bitfield
+> writing wrapper to make the verifier happy.
 >
-> Also noticed a similar difference for MTL_EST_Status.BTRL field length. As per
-> the upstream code and DW QoS Eth v5.10a databook this field covers bit 8 to bit
-> 11. But for the xgmac IP and DW QoS Eth v5.30a databook this field covers bit 8
-> to bit 15. Again nothing mentioned in the release notes. Here also I'm keeping
-> the logic as in the upstream code to avoid any regression.
+> Two alternatives to this approach are:
+>
+> 1. Use the upcoming `preserve_static_offset` [0] attribute to disable
+>    CO-RE on specific structs.
+> 2. Use broader byte-sized writes to write to bitfields.
+>
+> (1) is a bit hard to use. It requires specific and not-very-obvious
+> annotations to bpftool generated vmlinux.h. It's also not generally
+> available in released LLVM versions yet.
+>
+> (2) makes the code quite hard to read and write. And especially if
+> BPF_CORE_READ_BITFIELD() is already being used, it makes more sense to
+> to have an inverse helper for writing.
+>
+> =3D=3D=3D Implementation details =3D=3D=3D
+>
+> Since the logic is a bit non-obvious, I thought it would be helpful
+> to explain exactly what's going on.
+>
+> To start, it helps by explaining what LSHIFT_U64 (lshift) and RSHIFT_U64
+> (rshift) is designed to mean. Consider the core of the
+> BPF_CORE_READ_BITFIELD() algorithm:
+>
+>         val <<=3D __CORE_RELO(s, field, LSHIFT_U64);
+>         val =3D val >> __CORE_RELO(s, field, RSHIFT_U64);
+>
+> Basically what happens is we lshift to clear the non-relevant (blank)
+> higher order bits. Then we rshift to bring the relevant bits (bitfield)
+> down to LSB position (while also clearing blank lower order bits). To
+> illustrate:
+>
+>         Start:    ........XXX......
+>         Lshift:   XXX......00000000
+>         Rshift:   00000000000000XXX
+>
+> where `.` means blank bit, `0` means 0 bit, and `X` means bitfield bit.
+>
+> After the two operations, the bitfield is ready to be interpreted as a
+> regular integer.
+>
+> Next, we want to build an alternative (but more helpful) mental model
+> on lshift and rshift. That is, to consider:
+>
+> * rshift as the total number of blank bits in the u64
+> * lshift as number of blank bits left of the bitfield in the u64
+>
+> Take a moment to consider why that is true by consulting the above
+> diagram.
+>
+> With this insight, we can now define the following relationship:
+>
+>               bitfield
+>                  _
+>                 | |
+>         0.....00XXX0...00
+>         |      |   |    |
+>         |______|   |    |
+>          lshift    |    |
+>                    |____|
+>               (rshift - lshift)
+>
+> That is, we know the number of higher order blank bits is just lshift.
+> And the number of lower order blank bits is (rshift - lshift).
+>
+> Finally, we can examine the core of the write side algorithm:
+>
+>         mask =3D (~0ULL << rshift) >> lshift;              // 1
+>         val =3D (val & ~mask) | ((nval << rpad) & mask);   // 2
+>
+> 1. Compute a mask where the set bits are the bitfield bits. The first
+>    left shift zeros out exactly the number of blank bits, leaving a
+>    bitfield sized set of 1s. The subsequent right shift inserts the
+>    correct amount of higher order blank bits.
+>
+> 2. On the left of the `|`, mask out the bitfield bits. This creates
+>    0s where the new bitfield bits will go. On the right of the `|`,
+>    bring nval into the correct bit position and mask out any bits
+>    that fall outside of the bitfield. Finally, by bor'ing the two
+>    halves, we get the final set of bits to write back.
+>
+> [0]: https://reviews.llvm.org/D133361
+> Co-developed-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> Co-developed-by: Jonathan Lemon <jlemon@aviatrix.com>
+> Signed-off-by: Jonathan Lemon <jlemon@aviatrix.com>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  tools/lib/bpf/bpf_core_read.h | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>
 
-Thank you for digging into the problem. It's strange that Synopsys
-hasn't mentioned about so many EST CSRs changes in the Release Notes.
-Anyway if nothing in there my next step would have been to reach
-somebody from Synopsys to clarify the situation and find out the
-reason of the change. But seeing it's an additional burden and vendors
-reply not that swiftly as we would wish I guess the best choice would
-be indeed keeping the semantics as is, at least until somebody finds
-that problem critical.
+LGTM
 
--Serge(y)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-> 
-> Rohan G Thomas (3):
->   net: stmmac: xgmac: EST interrupts handling
->   net: stmmac: Refactor EST implementation
->   net: stmmac: Add support for EST cycle-time-extension
-> 
->  drivers/net/ethernet/stmicro/stmmac/Makefile  |   2 +-
->  drivers/net/ethernet/stmicro/stmmac/common.h  |   1 +
->  .../net/ethernet/stmicro/stmmac/dwmac4_core.c |   4 -
->  drivers/net/ethernet/stmicro/stmmac/dwmac5.c  | 137 ---------------
->  drivers/net/ethernet/stmicro/stmmac/dwmac5.h  |  51 ------
->  .../net/ethernet/stmicro/stmmac/dwxgmac2.h    |  16 --
->  .../ethernet/stmicro/stmmac/dwxgmac2_core.c   |  53 ------
->  drivers/net/ethernet/stmicro/stmmac/hwif.c    |  21 +++
->  drivers/net/ethernet/stmicro/stmmac/hwif.h    |  22 ++-
->  drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   1 +
->  .../net/ethernet/stmicro/stmmac/stmmac_est.c  | 165 ++++++++++++++++++
->  .../net/ethernet/stmicro/stmmac/stmmac_est.h  |  64 +++++++
->  .../net/ethernet/stmicro/stmmac/stmmac_main.c |   2 +-
->  .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  |   4 +-
->  .../net/ethernet/stmicro/stmmac/stmmac_tc.c   |   8 +-
->  15 files changed, 276 insertions(+), 275 deletions(-)
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_est.c
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_est.h
-> 
-> -- 
-> 2.26.2
-> 
+> diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.=
+h
+> index 1ac57bb7ac55..7325a12692a3 100644
+> --- a/tools/lib/bpf/bpf_core_read.h
+> +++ b/tools/lib/bpf/bpf_core_read.h
+> @@ -111,6 +111,38 @@ enum bpf_enum_value_kind {
+>         val;                                                             =
+     \
+>  })
+>
+> +/*
+> + * Write to a bitfield, identified by s->field.
+> + * This is the inverse of BPF_CORE_WRITE_BITFIELD().
+> + */
+> +#define BPF_CORE_WRITE_BITFIELD(s, field, new_val) ({                  \
+> +       void *p =3D (void *)s + __CORE_RELO(s, field, BYTE_OFFSET);      =
+ \
+> +       unsigned int byte_size =3D __CORE_RELO(s, field, BYTE_SIZE);     =
+ \
+> +       unsigned int lshift =3D __CORE_RELO(s, field, LSHIFT_U64);       =
+ \
+> +       unsigned int rshift =3D __CORE_RELO(s, field, RSHIFT_U64);       =
+ \
+> +       unsigned long long mask, val, nval =3D new_val;                  =
+ \
+> +       unsigned int rpad =3D rshift - lshift;                           =
+ \
+> +                                                                       \
+> +       asm volatile("" : "+r"(p));                                     \
+> +                                                                       \
+> +       switch (byte_size) {                                            \
+> +       case 1: val =3D *(unsigned char *)p; break;                      =
+ \
+> +       case 2: val =3D *(unsigned short *)p; break;                     =
+ \
+> +       case 4: val =3D *(unsigned int *)p; break;                       =
+ \
+> +       case 8: val =3D *(unsigned long long *)p; break;                 =
+ \
+> +       }                                                               \
+> +                                                                       \
+> +       mask =3D (~0ULL << rshift) >> lshift;                            =
+ \
+> +       val =3D (val & ~mask) | ((nval << rpad) & mask);                 =
+ \
+> +                                                                       \
+> +       switch (byte_size) {                                            \
+> +       case 1: *(unsigned char *)p      =3D val; break;                 =
+ \
+> +       case 2: *(unsigned short *)p     =3D val; break;                 =
+ \
+> +       case 4: *(unsigned int *)p       =3D val; break;                 =
+ \
+> +       case 8: *(unsigned long long *)p =3D val; break;                 =
+ \
+> +       }                                                               \
+> +})
+> +
+>  #define ___bpf_field_ref1(field)       (field)
+>  #define ___bpf_field_ref2(type, field) (((typeof(type) *)0)->field)
+>  #define ___bpf_field_ref(args...)                                       =
+   \
+> --
+> 2.42.1
+>
 
