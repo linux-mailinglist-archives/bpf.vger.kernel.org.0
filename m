@@ -1,127 +1,87 @@
-Return-Path: <bpf+bounces-16728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16729-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E941F805352
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 12:47:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44BE680552D
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 13:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 250EA1C20BB5
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 11:47:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76BA31C20CD5
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 12:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DFA58AA8;
-	Tue,  5 Dec 2023 11:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DEE4E1C7;
+	Tue,  5 Dec 2023 12:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PX2b4XNJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f4SvzZfU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA29C3
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 03:47:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701776858; x=1733312858;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Et+Xza31FNtHe5uhFOn7Lea9bEswFiKoJ5m6yuAIHhY=;
-  b=PX2b4XNJXUdaYPzmOYCCy7ZGt6FFxJY29XRHOUSfy+6pNF1KKNglESHk
-   0Wy6FE9u90CWSPK+Qe2mgwGzZAhBhuTW/nQDaTmv9ePGzSe8B2ZNr+rBc
-   kaUJ6mYvZjdXU1Rjjikw2ARGEPwulENu8lqDX0HHfnFTBpQMRL1cXzPF5
-   CbRE7V5UQQy2SrHgraC+OHG5sNb90Fm/+NjDQdAcrCa4YKn4TPs7FJLpW
-   Vdwq83QBsFzOUvyTQWbaEBBFo1tu9xmVCqUH5kSpA1MrQlQUSCs4l8N4X
-   bGYDL00jmdH7ySydEI2bU45PF7tJQ4tPmFcOBO+608zhxmRNW56yPNijE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="397778077"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="397778077"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 03:47:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764304062"
-X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
-   d="scan'208";a="764304062"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 05 Dec 2023 03:47:35 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rATtk-0008uS-34;
-	Tue, 05 Dec 2023 11:47:32 +0000
-Date: Tue, 5 Dec 2023 19:46:34 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, andrii@kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 08/13] bpf: move subprog call logic back to
- verifier.c
-Message-ID: <202312051900.XRWfHJW0-lkp@intel.com>
-References: <20231204233931.49758-9-andrii@kernel.org>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D433D3BC;
+	Tue,  5 Dec 2023 12:50:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1636EC433C7;
+	Tue,  5 Dec 2023 12:50:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701780624;
+	bh=c3K5tJw47+N/W1nF4uxZF7+ilrykgTTkPU8dcFu2UbE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=f4SvzZfULqqut3U6Jxms3i7pKTKrOt88dpqXigdH2cFkQ+S1e5KvSWxLOVHtu5IQy
+	 JT4qSqDpvcjT7oRc7HI2T/lvuaM234v0WIJzys1ryGpTVHAOiulV6EP/A3rNXBZExv
+	 s53hGnsVOUn37Qmk4MPoeobMtba3sDmaBUKweqZSFowMjt0Vv1dqAT7cEPaBQvJvIt
+	 VHImXnOur9e/nmsh0LhDiRY2lmm47/NBrjNMoy/aQKcv+cfBV2MRRBXxFMRbmxhgz2
+	 jim19dFINaI8eFR3kKAMIJ8DUA22zDkS7lEmH2WKbIH/ZK8gZkv5ohCHuu4ripKSfP
+	 IT2xJVXDelGYg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EE122C43170;
+	Tue,  5 Dec 2023 12:50:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204233931.49758-9-andrii@kernel.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] xsk: skip polling event check for unbound socket
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170178062397.423.16825004727771471084.git-patchwork-notify@kernel.org>
+Date: Tue, 05 Dec 2023 12:50:23 +0000
+References: <20231201061048.GA1510@libra05>
+In-Reply-To: <20231201061048.GA1510@libra05>
+To: Yewon Choi <woni9911@gmail.com>
+Cc: bjorn@kernel.org, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+ jonathan.lemon@gmail.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+ hawk@kernel.org, john.fastabend@gmail.com, netdev@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org, threeearcat@gmail.com
 
-Hi Andrii,
+Hello:
 
-kernel test robot noticed the following build warnings:
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-[auto build test WARNING on bpf-next/master]
+On Fri, 1 Dec 2023 15:10:52 +0900 you wrote:
+> In xsk_poll(), checking available events and setting mask bits should
+> be executed only when a socket has been bound. Setting mask bits for
+> unbound socket is meaningless.
+> Currently, it checks events even when xsk_check_common() failed.
+> To prevent this, we move goto location (skip_tx) after that checking.
+> 
+> Fixes: 1596dae2f17e ("xsk: check IFF_UP earlier in Tx path")
+> Signed-off-by: Yewon Choi <woni9911@gmail.com>
+> 
+> [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-log-PTR_TO_MEM-memory-size-in-verifier-log/20231205-074451
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231204233931.49758-9-andrii%40kernel.org
-patch subject: [PATCH bpf-next 08/13] bpf: move subprog call logic back to verifier.c
-config: x86_64-randconfig-004-20231205 (https://download.01.org/0day-ci/archive/20231205/202312051900.XRWfHJW0-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051900.XRWfHJW0-lkp@intel.com/reproduce)
+Here is the summary with links:
+  - [bpf] xsk: skip polling event check for unbound socket
+    https://git.kernel.org/bpf/bpf/c/e4d008d49a71
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312051900.XRWfHJW0-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/verifier.c:5083:5: warning: no previous prototype for function 'check_ptr_off_reg' [-Wmissing-prototypes]
-   int check_ptr_off_reg(struct bpf_verifier_env *env,
-       ^
-   kernel/bpf/verifier.c:5083:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int check_ptr_off_reg(struct bpf_verifier_env *env,
-   ^
-   static 
->> kernel/bpf/verifier.c:7268:5: warning: no previous prototype for function 'check_mem_reg' [-Wmissing-prototypes]
-   int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-       ^
-   kernel/bpf/verifier.c:7268:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
-   ^
-   static 
->> kernel/bpf/verifier.c:8254:5: warning: no previous prototype for function 'check_func_arg_reg_off' [-Wmissing-prototypes]
-   int check_func_arg_reg_off(struct bpf_verifier_env *env,
-       ^
-   kernel/bpf/verifier.c:8254:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   int check_func_arg_reg_off(struct bpf_verifier_env *env,
-   ^
-   static 
-   3 warnings generated.
-
-
-vim +/check_ptr_off_reg +5083 kernel/bpf/verifier.c
-
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5082  
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15 @5083  int check_ptr_off_reg(struct bpf_verifier_env *env,
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5084  		      const struct bpf_reg_state *reg, int regno)
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5085  {
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5086  	return __check_ptr_off_reg(env, reg, regno, false);
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5087  }
-e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5088  
-
+You are awesome, thank you!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
