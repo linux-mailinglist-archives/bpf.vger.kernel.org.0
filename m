@@ -1,106 +1,288 @@
-Return-Path: <bpf+bounces-16752-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16753-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D262A805AF9
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:15:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB335805C9E
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F7641C21088
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 17:15:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 721C21F2168F
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 17:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01610692B4;
-	Tue,  5 Dec 2023 17:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C26E6A32F;
+	Tue,  5 Dec 2023 17:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QbjHyCdi"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="KoXk7Z+f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E221A4;
-	Tue,  5 Dec 2023 09:15:50 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c66b093b86so2335285a12.0;
-        Tue, 05 Dec 2023 09:15:50 -0800 (PST)
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBA718F
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 09:52:13 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a00191363c1so819225366b.0
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 09:52:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701796549; x=1702401349; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HPp8UMYCoK8OfqAUwejxJ+kPtnbv2SL+QsIRvEkjCew=;
-        b=QbjHyCdifNEaHnI0f54JdByHJVJGTeopHzp/PSZ0DY/ReKxnh9Whn+9PtEOtnaF4z1
-         YI3mEu2j+nhNZHmRnlyjySlw+7vBGO3e7up9AL+aA/GQHs3GKxRtaz7jdmXJjFcnGKCf
-         daAMVsn27J32bnHurVBuHABK7JWp5c6oMwsGaZTmpcI01cwLZImI+oEhSPHn2WCVJMLj
-         waJfTea2GVj9LvC5Ur2n4Xd+Z8/n6zIEHN623wPixiAC19+HTC2RtylGZIAAkjvDPMKk
-         zfBWb712gwsU/2SvYxxDk6wmMKEiAsosSSKoH3blolMpHhrgxT7QX1ianBfeK538NaCD
-         ElSA==
+        d=kylehuey.com; s=google; t=1701798732; x=1702403532; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0rB5zy5FXc2Q0muVk5ePz1qdh/FmI9i/LZX5yd22+Lg=;
+        b=KoXk7Z+fzqGYfn0O/Ypf7YmO1vLrTZpWIHq3YD4wIGsCsD54TaQAtavyZdLC6g7pbD
+         zs7SBUJ+gBnZXER5o4oOHS+0MbFkf1z3hbFq2FwK7UglGcN2v7MfQ1xC5NM72ThXdeZG
+         hWXBWI9Ydkrg0zkzQsOdgq8kTVU1+UltqnmvKZqAad5Q0VZyhJ9VswratbNswP/+BgZw
+         0KlZf3MznVvdOhjbGXvsAamQCO31R3R/0kbwE1hKGgDLt6KRb+jRjxU2RQNIKvk2WJpD
+         40YDijUpsApDKJrbdjEwsE31oDKv0qwlk5f2ndaPWexzfYjgEm5tmh+tkG3KA6rYlPDT
+         otyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701796549; x=1702401349;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701798732; x=1702403532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HPp8UMYCoK8OfqAUwejxJ+kPtnbv2SL+QsIRvEkjCew=;
-        b=voRgE1g8CGs/aikOmnFVL+pYGghbZsVr11NRwA9gZghhevP5FjhOf2cKL/lgazpDK+
-         wav7Ok3DTP1ElGLMShf1v2W/b5FpJPF88spuUxmR6II5/3WjmQ3/wLHpatVTjrxf95JU
-         YbkwYN/flgCFOKu2ZVuB1r+xU/hBPTjV1Bnpme7F4YKw1SJDfl5QfbY3FvE+MYzvHPlg
-         pGYWM8LBscf8rRdfoS4+9YRBcpSRdjHxUcjDwdNFnU3wfyMu4xWYoCV7Ne7wyRmX4wAl
-         bzZPhWUqHQYXURN29PDh9Oa7S2i4vemEPKXvRaBIdLZTUXUKpCkxxInKK2mRmnF1Jdrs
-         fCuA==
-X-Gm-Message-State: AOJu0YwfKjjC0FFiPI0A/5crma/I60NrWbyg2WZsXiMU4D32eqKNAjYo
-	1/bWgul50lziZ0YkLWA+G7g=
-X-Google-Smtp-Source: AGHT+IGK8jkOPUjkiVnT9awlbjaR3p1cXJ709zxt2xafAqFrtx6tS4WepQoB2CTTqCKLPfr2A5Cczg==
-X-Received: by 2002:a17:90b:1e05:b0:286:fbb0:2cf2 with SMTP id pg5-20020a17090b1e0500b00286fbb02cf2mr254778pjb.20.1701796549474;
-        Tue, 05 Dec 2023 09:15:49 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::4:27ef])
-        by smtp.gmail.com with ESMTPSA id 13-20020a17090a034d00b0028656e226efsm8811443pjf.1.2023.12.05.09.15.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 09:15:49 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 5 Dec 2023 07:15:47 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: Expand bpf_cgrp_storage to support
- cgroup1 non-attach case
-Message-ID: <ZW9aw52vXIQTgq9A@slm.duckdns.org>
-References: <20231205143725.4224-1-laoar.shao@gmail.com>
+        bh=0rB5zy5FXc2Q0muVk5ePz1qdh/FmI9i/LZX5yd22+Lg=;
+        b=Ar+meZvvbr8kl2c8awoVa3ee/r8qNWQM1VZ23Nc4eK/do6CmGh37hc+5CTYSAEBrOI
+         FGsJXK6j81NMX2Q9405NCI72YHtGFzGWp4LXg5Zc+2aFRldWHnphndXyTzi7fUsoCDFg
+         m/PPO+XJxPf+Qj/XE+/inhHfpocBvslFFkjZHeWC3GeYnp65uxuztGL17PQtzArS0TMs
+         4AUZqehKvE1ygj463/77XZKxUjhohy7TyOK6Xs9lq66ebqvUkezrEYVPirlMKZqJlL0J
+         FDNKTVEJ5Lu2+s5aEOqKm9e/g1VYXoNPgkFguMOKJLKAPAbQMNpMwNafwFZQbgLwNQm2
+         CrVw==
+X-Gm-Message-State: AOJu0YyXfx1mPhrZz0pNV+8Xdx1z3HJSKiH5kNnsEzl92rlSD0sa+Smi
+	YxIAz9EkXu6rzVOwGJVSYlasqChOovRzd6JdUS4fng==
+X-Google-Smtp-Source: AGHT+IFVsyhC/+ujx3Ezt7cShACO7XA3ohblH2dRVEa35IHf+m7pxUMvMFRoZCGIAYeIT1NsOt3tn8dmN+Az1jIlAms=
+X-Received: by 2002:a17:907:7632:b0:a18:7e19:5347 with SMTP id
+ jy18-20020a170907763200b00a187e195347mr2274927ejc.47.1701798732114; Tue, 05
+ Dec 2023 09:52:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231205143725.4224-1-laoar.shao@gmail.com>
+References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-3-khuey@kylehuey.com>
+ <fb4b856d-601d-4aa9-8526-14e5682f6402@linux.dev>
+In-Reply-To: <fb4b856d-601d-4aa9-8526-14e5682f6402@linux.dev>
+From: Kyle Huey <me@kylehuey.com>
+Date: Tue, 5 Dec 2023 09:52:00 -0800
+Message-ID: <CAP045Aos_o2Smeo_9C_LJNvCTKAF5Usatt0RAF-NeL0SjNJEYQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
+ program suppresses SIGIO.
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
+	"Robert O'Callahan" <robert@ocallahan.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 05, 2023 at 02:37:22PM +0000, Yafang Shao wrote:
-> In the current cgroup1 environment, associating operations between a cgroup
-> and applications in a BPF program requires storing a mapping of cgroup_id
-> to application either in a hash map or maintaining it in userspace.
-> However, by enabling bpf_cgrp_storage for cgroup1, it becomes possible to
-> conveniently store application-specific information in cgroup-local storage
-> and utilize it within BPF programs. Furthermore, enabling this feature for
-> cgroup1 involves minor modifications for the non-attach case, streamlining
-> the process.
-> 
-> However, when it comes to enabling this functionality for the cgroup1
-> attach case, it presents challenges. Therefore, the decision is to focus on
-> enabling it solely for the cgroup1 non-attach case at present. If
-> attempting to attach to a cgroup1 fd, the operation will simply fail with
-> the error code -EBADF.
-> 
-> Yafang Shao (3):
->   bpf: Enable bpf_cgrp_storage for cgroup1 non-attach case
->   selftests/bpf: Add a new cgroup helper open_classid()
->   selftests/bpf: Add selftests for cgroup1 local storage
+On Tue, Dec 5, 2023 at 8:54=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
+ev> wrote:
+>
+>
+> On 12/4/23 3:14 PM, Kyle Huey wrote:
+> > The test sets a hardware breakpoint and uses a bpf program to suppress =
+the
+> > I/O availability signal if the ip matches the expected value.
+> >
+> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> > ---
+> >   .../selftests/bpf/prog_tests/perf_skip.c      | 95 ++++++++++++++++++=
++
+> >   .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
+> >   2 files changed, 118 insertions(+)
+> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> >   create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools=
+/testing/selftests/bpf/prog_tests/perf_skip.c
+> > new file mode 100644
+> > index 000000000000..b269a31669b7
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> > @@ -0,0 +1,95 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#define _GNU_SOURCE
+> > +#include <test_progs.h>
+> > +#include "test_perf_skip.skel.h"
+> > +#include <linux/hw_breakpoint.h>
+> > +#include <sys/mman.h>
+> > +
+> > +#define BPF_OBJECT            "test_perf_skip.bpf.o"
+> > +
+> > +static void handle_sig(int)
+>
+> I hit a warning here:
+> home/yhs/work/bpf-next/tools/testing/selftests/bpf/prog_tests/perf_skip.c=
+:10:27: error: omitting the parameter name in a function definition is a C2=
+3 extension [-Werror,-Wc23-extensions]
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Yeah, Meta's kernel-ci bot sent me off-list email about this one.
 
-Thanks.
+>
+>     10 | static void handle_sig(int)
+>        |
+>
+> Add a parameter and marked as unused can resolve the issue.
+>
+> #define __always_unused         __attribute__((__unused__))
+>
+> static void handle_sig(int unused __always_unused)
+> {
+>          ASSERT_OK(1, "perf event not skipped");
+> }
+>
+>
+> > +{
+> > +     ASSERT_OK(1, "perf event not skipped");
+> > +}
+> > +
+> > +static noinline int test_function(void)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> > +void serial_test_perf_skip(void)
+> > +{
+> > +     sighandler_t previous;
+> > +     int duration =3D 0;
+> > +     struct test_perf_skip *skel =3D NULL;
+> > +     int map_fd =3D -1;
+> > +     long page_size =3D sysconf(_SC_PAGE_SIZE);
+> > +     uintptr_t *ip =3D NULL;
+> > +     int prog_fd =3D -1;
+> > +     struct perf_event_attr attr =3D {0};
+> > +     int perf_fd =3D -1;
+> > +     struct f_owner_ex owner;
+> > +     int err;
+> > +
+> > +     previous =3D signal(SIGIO, handle_sig);
+> > +
+> > +     skel =3D test_perf_skip__open_and_load();
+> > +     if (!ASSERT_OK_PTR(skel, "skel_load"))
+> > +             goto cleanup;
+> > +
+> > +     prog_fd =3D bpf_program__fd(skel->progs.handler);
+> > +     if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
+> > +             goto cleanup;
+> > +
+> > +     map_fd =3D bpf_map__fd(skel->maps.ip);
+> > +     if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
+> > +             goto cleanup;
+> > +
+> > +     ip =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, =
+map_fd, 0);
+> > +     if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
+> > +             goto cleanup;
+> > +
+> > +     *ip =3D (uintptr_t)test_function;
+> > +
+> > +     attr.type =3D PERF_TYPE_BREAKPOINT;
+> > +     attr.size =3D sizeof(attr);
+> > +     attr.bp_type =3D HW_BREAKPOINT_X;
+> > +     attr.bp_addr =3D (uintptr_t)test_function;
+> > +     attr.bp_len =3D sizeof(long);
+> > +     attr.sample_period =3D 1;
+> > +     attr.sample_type =3D PERF_SAMPLE_IP;
+> > +     attr.pinned =3D 1;
+> > +     attr.exclude_kernel =3D 1;
+> > +     attr.exclude_hv =3D 1;
+> > +     attr.precise_ip =3D 3;
+> > +
+> > +     perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
+> > +     if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
+> > +             goto cleanup;
+> > +
+> > +     err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
+> > +     if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
+> > +             goto cleanup;
+> > +
+> > +     owner.type =3D F_OWNER_TID;
+> > +     owner.pid =3D gettid();
+>
+> I hit a compilation failure here:
+>
+> /home/yhs/work/bpf-next/tools/testing/selftests/bpf/prog_tests/perf_skip.=
+c:75:14: error: call to undeclared function 'gettid'; ISO C99 and later do =
+not support implicit function declarations [-Wimplicit-function-declaration=
+]
+>     75 |         owner.pid =3D gettid();
+>        |                     ^
+>
+> If you looked at some other examples, the common usage is do 'syscall(SYS=
+_gettid)'.
 
--- 
-tejun
+Not clear why this works for me but sure I'll change that.
+
+>
+> So the following patch should fix the compilation error:
+>
+> #include <sys/syscall.h>
+> ...
+>          owner.pid =3D syscall(SYS_gettid);
+> ...
+>
+> > +     err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
+> > +     if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
+> > +             goto cleanup;
+> > +
+> > +     err =3D ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
+> > +     if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
+> > +             goto cleanup;
+> > +
+> > +     test_function();
+>
+> As Andrii has mentioned in previous comments, we will have
+> issue is RELEASE version of selftest is built
+>    RELEASE=3D1 make ...
+>
+> See https://lore.kernel.org/bpf/20231127050342.1945270-1-yonghong.song@li=
+nux.dev
+
+Not sure I follow this one. Are you saying adding asm volatile ("") in
+test_function() is *not* sufficient?
+
+- Kyle
+
+>
+> > +
+> > +cleanup:
+> > +     if (perf_fd >=3D 0)
+> > +             close(perf_fd);
+> > +     if (ip)
+> > +             munmap(ip, page_size);
+> > +     if (skel)
+> > +             test_perf_skip__destroy(skel);
+> > +
+> > +     signal(SIGIO, previous);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools=
+/testing/selftests/bpf/progs/test_perf_skip.c
+> > new file mode 100644
+> > index 000000000000..ef01a9161afe
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> > @@ -0,0 +1,23 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include "vmlinux.h"
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +struct {
+> > +     __uint(type, BPF_MAP_TYPE_ARRAY);
+> > +     __uint(max_entries, 1);
+> > +     __uint(map_flags, BPF_F_MMAPABLE);
+> > +     __type(key, uint32_t);
+> > +     __type(value, uintptr_t);
+> > +} ip SEC(".maps");
+> > +
+> > +SEC("perf_event")
+> > +int handler(struct bpf_perf_event_data *data)
+> > +{
+> > +     const uint32_t index =3D 0;
+> > +     uintptr_t *v =3D bpf_map_lookup_elem(&ip, &index);
+> > +
+> > +     return !(v && *v =3D=3D PT_REGS_IP(&data->regs));
+> > +}
+> > +
+> > +char _license[] SEC("license") =3D "GPL";
 
