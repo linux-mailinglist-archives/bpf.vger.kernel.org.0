@@ -1,83 +1,142 @@
-Return-Path: <bpf+bounces-16761-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16762-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E2E1805D4E
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 19:26:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE0B0805D5A
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 19:29:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46086B21000
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:26:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8D85281CEF
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:29:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FC468EA7;
-	Tue,  5 Dec 2023 18:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C658868EA7;
+	Tue,  5 Dec 2023 18:28:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JHiriVMl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B32AC;
-	Tue,  5 Dec 2023 10:26:25 -0800 (PST)
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2865742e256so3025338a91.0;
-        Tue, 05 Dec 2023 10:26:25 -0800 (PST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BED710CA
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 10:28:54 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54c1cd8d239so6923416a12.0
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 10:28:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701800932; x=1702405732; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zciHMcY570pG2crMnGDJoJDQoI7U1ZG0eUYDkYh61pA=;
+        b=JHiriVMlRFAiwEo3ay/UYOmDS8YpL5lPEd7z+dcQFo5II1T1Q/haqN4SDAkqG3w1qi
+         k1NouhS52JzrMv6ofDUabMbrwnWNfxFvpH3xJ1fLP7e9P4Qb5beUrtsA9fn9E6vPjB/t
+         9HVZhmjV026A99SDmQzJ1HDKDU+T5LsN1gL8i6FOB4Z79H2i5btbTtCv5KZUcnEdHTJ0
+         Mp/3lZERc9/1tlv4E1yYo+qJ7TXpghEP/TJQWUUSJRAmjA59/OuWjzZI2eG4N5Jf6A+Q
+         tsGQas3D3Kj8f58Fy1iXUF+9QmsuZamSUFfoMQ162jFovhHruj4GXPDt084tkR5vyEP4
+         Ne3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701800785; x=1702405585;
+        d=1e100.net; s=20230601; t=1701800932; x=1702405732;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BuC/v2sY9q+7BmsyoScER9HwtOgHqYFm9Mniu3xB+pE=;
-        b=fI9RD+FN0ICx4LcM11uwEZK1rGLh5sWcJ4vomNNsxa9ghppC2lbzmrPnmeC/kV+AJW
-         Y+uZ8sIsWJxt4CRpDwZ5N1AFvfg4AIZum1cyxYzpMMAroAhZYlCp3xHLqxEy8qEV40Zt
-         nQjIHfovTUPwyzrVv753QWstyEJCmdN5fX+f0KXC4AoLE8b+w3XxjvhajGVzZSNIJ2kE
-         6d9WjghYkXTtjjaCGVTgIFj4m680uNtUMrBWP556CXfXyM6TS5Oj7bVt8a1qNtM+JPS8
-         VdnxIxT89Gq9jpD8yeqMvNtecL0l5zwcXvUiwgSzVo0pwZ6Wn9AoGNoQkOjODbxR9SG4
-         cWtQ==
-X-Gm-Message-State: AOJu0YwqCVry7a1F52YE6KiZEVp1ye807te7osJD7/zsgO55GppzfDL+
-	rqhyhOzKPsepkOi4EAno4bSm27KTQqO7akRpUyI=
-X-Google-Smtp-Source: AGHT+IGrutZXRZv9L+agGBJqSnJOcf+zoLdBUHMRmb18uXLyloUI+FGetLkmF9lx07o0sotKkRTw69XbKGEnKo0y6Vo=
-X-Received: by 2002:a17:90b:17d2:b0:286:8672:51e4 with SMTP id
- me18-20020a17090b17d200b00286867251e4mr1264633pjb.16.1701800785123; Tue, 05
- Dec 2023 10:26:25 -0800 (PST)
+        bh=zciHMcY570pG2crMnGDJoJDQoI7U1ZG0eUYDkYh61pA=;
+        b=PmsfPsuOrGfG2G6JYL0UozDZg6bbzAwnRLwOVbCCA8HcrRNBsylBzGZNaLgn61cKm7
+         bEngTqm1c7rPs86DCH1c+XWiKI6yfAuD2QmnjyBkdAtf8ZCE7aH/YBHFTslvT2LtidS4
+         p9BlzAWqXxHd+skoFEXW7ZG/zW8YC6D81VwS0naL386S7UltA/STzJCh/dV6DUW37vO6
+         +hyNmMQx+PhIdE08zi8k6dqU4H3QezXtA2D2ST2t2VVFrQQEfw1CssBAR2eQT21FmhZD
+         kkSto9uUZgPfyws1JftTkOGASIVNGn5obqB7DNL42eiWMEeBxPhn0e6MB2JYmxpFTaPX
+         Uh1g==
+X-Gm-Message-State: AOJu0Yy1XaaYN0DTRvUXfnwoN948tMkjMFuRX+fSQ7YpjDkFvVekR1U0
+	ANq3PsYdq+WRFKhiHSUTNVlsB88TGjmou9s9JKI=
+X-Google-Smtp-Source: AGHT+IHAnqm2h1vNYlZIjFTCQZOjaJ2e6cdX5HDPJSJ0p5jvJLlWj0lWSltcDpQmLPRTE2el4vgGmFGwaeNfD6hyz20=
+X-Received: by 2002:a17:907:7002:b0:a1d:4d2c:9bf7 with SMTP id
+ wr2-20020a170907700200b00a1d4d2c9bf7mr71817ejb.68.1701800931945; Tue, 05 Dec
+ 2023 10:28:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-2-khuey@kylehuey.com>
- <CAEf4BzYtSXtgdO9C2w9OOKni68H-7UOExFJRBEij3HG2Qwn1Rg@mail.gmail.com>
- <ZW8Gi2QI5ceAJfab@krava> <CAM9d7chztaCfDsxfyJ2q_UmD=y20BFikCUQhs=LR8wsNV6pMjg@mail.gmail.com>
- <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
-In-Reply-To: <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 5 Dec 2023 10:26:14 -0800
-Message-ID: <CAM9d7cgDOUbSS1NLO8C13+hi0KBZwQxh7jvz9p=i0gNf0N0zrg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf/bpf: Allow a bpf program to suppress I/O signals.
-To: Marco Elver <elver@google.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	"Robert O'Callahan" <robert@ocallahan.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20231201094729.1312133-1-jiejiang@chromium.org> <20231205-versorgen-funde-1184ee3f6aa4@brauner>
+In-Reply-To: <20231205-versorgen-funde-1184ee3f6aa4@brauner>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 5 Dec 2023 10:28:39 -0800
+Message-ID: <CAEf4BzZY=twEbSyE7cLee_aYcH3k8qxUEt6tBC_G-etU7E9JpA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Support uid and gid when mounting bpffs
+To: Christian Brauner <brauner@kernel.org>
+Cc: Jie Jiang <jiejiang@chromium.org>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
+	vapier@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 5, 2023 at 10:17=E2=80=AFAM Marco Elver <elver@google.com> wrot=
-e:
+On Tue, Dec 5, 2023 at 8:31=E2=80=AFAM Christian Brauner <brauner@kernel.or=
+g> wrote:
 >
-> On Tue, 5 Dec 2023 at 19:07, Namhyung Kim <namhyung@kernel.org> wrote:
-> > If we want to handle returning 0 from bpf as if the event didn't
-> > happen, I think SIGTRAP and event_limit logic should be done
-> > after the overflow handler depending on pending_kill or something.
+> On Fri, Dec 01, 2023 at 09:47:29AM +0000, Jie Jiang wrote:
+> > Parse uid and gid in bpf_parse_param() so that they can be passed in as
+> > the `data` parameter when mount() bpffs. This will be useful when we
+> > want to control which user/group has the control to the mounted bpffs,
+> > otherwise a separate chown() call will be needed.
+> >
+> > Signed-off-by: Jie Jiang <jiejiang@chromium.org>
+> > ---
 >
-> I'm not sure which kernel version this is for, but in recent kernels,
-> the SIGTRAP logic was changed to no longer "abuse" event_limit, and
-> uses its own "pending_sigtrap" + "pending_work" (on reschedule
-> transitions).
+> Sorry, I was asked to take a quick look at this. The patchset looks fine
+> overall but it will interact with Andrii's patchset which makes bpffs
+> mountable inside a user namespace (with caveats).
+>
+> At that point you need additional validation in bpf_parse_param(). The
+> simplest thing would probably to just put this into this series or into
+> @Andrii's series. It's basically a copy-pasta from what I did for tmpfs
+> (see below).
+>
+> I plan to move this validation into the VFS so that {g,u}id mount
+> options are validated consistenly for any such filesystem. There is just
+> some unpleasantness that I have to figure out first.
+>
+> @Andrii, with the {g,u}id mount option it means that userns root can
+>
+> fsconfig(..., FSCONFIG_SET_STRING, "uid", "1000", ...)
+> fsconfig(..., FSCONFIG_SET_STRING, "gid", "1000", ...)
+> fsconfig(..., FSCONFIG_CMD_CREATE, ...)
+>
+> If you delegate CAP_BPF in that userns to uid 1000 then an unpriv user
+> in that userns can create bpf tokens. Currently this would require
+> userns root to give both CAP_DAC_READ_SEARCH and CAP_BPF to such an
+> unprivileged user.
 
-Oh, I didn't mean SIGTRAP and event_limit together.
-Maybe they have an issue separately.
+This is probably fine. Basically the only difference is that BPF FS
+can be instantiated inside an unpriv namespace, instead of in a
+privileged parent namespace, right?
 
-Thanks,
-Namhyung
+But delegate_xxx options are still guarded by the explicit
+capable(CAP_SYS_ADMIN) check, so that unprivileged user won't be able
+to grant themselves BPF token-enabling capabilities without a
+privileged parent doing it on their behalf.
+
+Is my understanding correct or am I missing some nuance here?
+
+>
+> Depending on whether or not that's intended you might want to add an
+> additional check into bpf_token_create() to verify that the caller's
+> {g,u}id resolves to 0:
+>
+> if (from_kuid(current_user_ns(), current_fsuid()) !=3D 0)
+>         return -EINVAL;
+>
+> That's basically saying you're restricting this to userns root. Idk,
+> that's up to you. (Note that you currently enforce current_user_ns() =3D=
+=3D
+> token->user_ns =3D=3D s_user_ns which is why it doesn't matter what usern=
+s
+> you pass here. You'd just error out later.)
+>
+> >  kernel/bpf/inode.c | 33 +++++++++++++++++++++++++++++++--
+> >  1 file changed, 31 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+> > index 1aafb2ff2e953..826fe48745ee2 100644
+> > --- a/kernel/bpf/inode.c
+> > +++ b/kernel/bpf/inode.c
+
+[...]
 
