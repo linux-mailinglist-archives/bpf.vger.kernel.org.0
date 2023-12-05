@@ -1,49 +1,76 @@
-Return-Path: <bpf+bounces-16715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95BF5804C81
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 09:34:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB0AC804CCF
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 09:43:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4142F1F21502
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 08:34:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C8F281755
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 08:43:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD823C689;
-	Tue,  5 Dec 2023 08:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53ABD2420B;
+	Tue,  5 Dec 2023 08:43:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EWk68OgC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ahgHpv5e"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EF03D970;
-	Tue,  5 Dec 2023 08:34:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A38ACC433C7;
-	Tue,  5 Dec 2023 08:34:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701765260;
-	bh=S+jEnDi0DYvRicPHFkbDYYg7tscTh0rePei/TRXtL1U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=EWk68OgCMcIzQjusJMpMiQc3iNYpt50iIcoH/RrCoIZbjt3/+l1WgSM3adTU/TmpY
-	 1hEiyxDCKdpY7832J6k5NtCdAxmB5v7DYOvN7cyl9uaidtbZSZN1lGJy1t/KxfzgoZ
-	 IH+j8nykya/tFwzt7alyVVg/gZpRPzgC2SuZp4R8rfUFIwhtimVYrl49oTe99rqmZa
-	 9y8jMGeOaudT9pN4rYTo+MezQsy/bQvq5Az3dhJp6hVR5dqCQpZvI+PBqokSqbfPcX
-	 Afm5EYzneVJNQzhUDyS40vN8y5SGGkwm3iFBEhqmQTa1xPVIZZfrvyx8Q+n6JlWrbu
-	 EhftncYt8TjOw==
-Date: Tue, 5 Dec 2023 08:34:15 +0000
-From: Simon Horman <horms@kernel.org>
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de, dxu@dxuuu.xyz,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, coreteam@netfilter.org,
-	netfilter-devel@vger.kernel.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	ast@kernel.org
-Subject: Re: [PATCH net] net/netfilter: bpf: fix bad registration on nf_defrag
-Message-ID: <20231205083415.GQ50400@kernel.org>
-References: <1701329003-14564-1-git-send-email-alibuda@linux.alibaba.com>
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B668C9C
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 00:43:08 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-54c5ed26cf6so5116623a12.3
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 00:43:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701765787; x=1702370587; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gHYXYfyLzptt927SH4oz/JSMbtWrTDQ+paj2UJBH7l8=;
+        b=ahgHpv5eU8WpXNmyeVaSK7X1tLa77HamBjuQrzEcjuBbXAHoOfPaDZkhR24y2mhJf6
+         O2EeZAEPww9GXr3DhV3TACR8ehjF9LuR+y1pAaSTwgSyK28XTLZSBxBaNiE7ZKF+c0Gf
+         jLax1w9ErL+JNx0CIuGvP/FLAmXIMDmS93veAs0t1pvSxiFSgJxrovNHJ6+hWhNWVK3a
+         zdTKFuG/VMUWlD6E7BGu4NJuyRER8bAxOqm4/1K6mzEX53X7j7rgjhdjZgQ8wcWAsdRN
+         As+vQbdqrAtXs6tveBehssAL0krRoXosPZXycF8smspBnmqZkvmpBNl5lvM8tv3H+QB5
+         U8zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701765787; x=1702370587;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gHYXYfyLzptt927SH4oz/JSMbtWrTDQ+paj2UJBH7l8=;
+        b=n3ILwjJ34sliUl4gREC3dBzhMhAXqUgeXjKhB0/70ML6nHG7oxOZs6NFg638EIQKy+
+         M7RZgDA6BikW/xo3kkzlQgGVNMpMBvK8CP5T5oe50nj0yYkCUY5ZmUTZ6c8OgbXEzlsu
+         cpuBlMdciGF7fwNzKD4lH6ZCzdE1rC+4KWtcpycZe5b6j0yH0IQCKD6+Y/6A/0pHRWoM
+         98GKa0PqDF32/9VKAaVgpxwm2hP8CIFATcaCT3MHa+13OzDUxbicPQSPhj73bmqQKIz0
+         WJ6MVdecYjXbIAWlusqr7yo2CBIgYi5J0vD3/NC+XngVwoGYHJFNWPs8Qrn7Ljwef1lW
+         P/hA==
+X-Gm-Message-State: AOJu0Yx7icxew05s9YxDrWsWG7I19CWChkDnSYee35Mht7Kx3WfKqRzj
+	zggsn+P/0weQzE/iNo7MMvs=
+X-Google-Smtp-Source: AGHT+IFRHWqWZcsw8iaEb0MTgwzzwHNeuH2Ajm5HZrM/4+CFDx6jVj7RiI3VI3wTorc9HK+OGYVvRA==
+X-Received: by 2002:a50:d4c5:0:b0:54c:4837:81f9 with SMTP id e5-20020a50d4c5000000b0054c483781f9mr3754048edj.74.1701765786772;
+        Tue, 05 Dec 2023 00:43:06 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id b17-20020a05640202d100b0054cb316499dsm759935edx.10.2023.12.05.00.43.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 00:43:06 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 5 Dec 2023 09:43:04 +0100
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Ilya Leoshkevich <iii@linux.ibm.com>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCHv3 bpf 2/2] selftests/bpf: Add test for early update in
+ prog_array_map_poke_run
+Message-ID: <ZW7imIQDjdOFdlLn@krava>
+References: <20231203204851.388654-1-jolsa@kernel.org>
+ <20231203204851.388654-3-jolsa@kernel.org>
+ <0c2c5931-535c-49ab-86c4-275f64e5767c@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,64 +79,129 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1701329003-14564-1-git-send-email-alibuda@linux.alibaba.com>
+In-Reply-To: <0c2c5931-535c-49ab-86c4-275f64e5767c@linux.dev>
 
-On Thu, Nov 30, 2023 at 03:23:23PM +0800, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Mon, Dec 04, 2023 at 09:16:52PM -0800, Yonghong Song wrote:
 > 
-> We should pass a pointer to global_hook to the get_proto_defrag_hook()
-> instead of its value, since the passed value won't be updated even if
-> the request module was loaded successfully.
+> On 12/3/23 3:48 PM, Jiri Olsa wrote:
+> > Adding test that tries to trigger the BUG_ON during early map update
+> > in prog_array_map_poke_run function.
+> > 
+> > The idea is to share prog array map between thread that constantly
+> > updates it and another one loading a program that uses that prog
+> > array.
+> > 
+> > Eventually we will hit a place where the program is ok to be updated
+> > (poke->tailcall_target_stable check) but the address is still not
+> > registered in kallsyms, so the bpf_arch_text_poke returns -EINVAL
+> > and cause imbalance for the next tail call update check, which will
+> > fail with -EBUSY in bpf_arch_text_poke as described in previous fix.
+> > 
+> > Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >   .../selftests/bpf/prog_tests/tailcall_poke.c  | 74 +++++++++++++++++++
+> >   .../selftests/bpf/progs/tailcall_poke.c       | 32 ++++++++
+> >   2 files changed, 106 insertions(+)
+> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+> >   create mode 100644 tools/testing/selftests/bpf/progs/tailcall_poke.c
+> > 
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c b/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+> > new file mode 100644
+> > index 000000000000..f7e2c09fd772
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+> > @@ -0,0 +1,74 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <unistd.h>
+> > +#include <test_progs.h>
+> > +#include "tailcall_poke.skel.h"
+> > +
+> > +#define JMP_TABLE "/sys/fs/bpf/jmp_table"
+> > +
+> > +static int thread_exit;
+> > +
+> > +static void *update(void *arg)
+> > +{
+> > +	__u32 zero = 0, prog1_fd, prog2_fd, map_fd;
+> > +	struct tailcall_poke *call = arg;
+> > +
+> > +	map_fd = bpf_map__fd(call->maps.jmp_table);
+> > +	prog1_fd = bpf_program__fd(call->progs.call1);
+> > +	prog2_fd = bpf_program__fd(call->progs.call2);
+> > +
+> > +	while (!thread_exit) {
+> > +		bpf_map_update_elem(map_fd, &zero, &prog1_fd, BPF_ANY);
+> > +		bpf_map_update_elem(map_fd, &zero, &prog2_fd, BPF_ANY);
+> > +	}
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> > +void test_tailcall_poke(void)
+> > +{
+> > +	struct tailcall_poke *call, *test;
+> > +	int err, cnt = 10;
+> > +	pthread_t thread;
+> > +
+> > +	unlink(JMP_TABLE);
+> > +
+> > +	call = tailcall_poke__open_and_load();
+> > +	if (!ASSERT_OK_PTR(call, "tailcall_poke__open"))
+> > +		return;
+> > +
+> > +	err = bpf_map__pin(call->maps.jmp_table, JMP_TABLE);
+> > +	if (!ASSERT_OK(err, "bpf_map__pin"))
+> > +		goto out;
 > 
-> Log:
-> 
-> [   54.915713] nf_defrag_ipv4 has bad registration
-> [   54.915779] WARNING: CPU: 3 PID: 6323 at net/netfilter/nf_bpf_link.c:62 get_proto_defrag_hook+0x137/0x160
-> [   54.915835] CPU: 3 PID: 6323 Comm: fentry Kdump: loaded Tainted: G            E      6.7.0-rc2+ #35
-> [   54.915839] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-> [   54.915841] RIP: 0010:get_proto_defrag_hook+0x137/0x160
-> [   54.915844] Code: 4f 8c e8 2c cf 68 ff 80 3d db 83 9a 01 00 0f 85 74 ff ff ff 48 89 ee 48 c7 c7 8f 12 4f 8c c6 05 c4 83 9a 01 01 e8 09 ee 5f ff <0f> 0b e9 57 ff ff ff 49 8b 3c 24 4c 63 e5 e8 36 28 6c ff 4c 89 e0
-> [   54.915849] RSP: 0018:ffffb676003fbdb0 EFLAGS: 00010286
-> [   54.915852] RAX: 0000000000000023 RBX: ffff9596503d5600 RCX: ffff95996fce08c8
-> [   54.915854] RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff95996fce08c0
-> [   54.915855] RBP: ffffffff8c4f12de R08: 0000000000000000 R09: 00000000fffeffff
-> [   54.915859] R10: ffffb676003fbc70 R11: ffffffff8d363ae8 R12: 0000000000000000
-> [   54.915861] R13: ffffffff8e1f75c0 R14: ffffb676003c9000 R15: 00007ffd15e78ef0
-> [   54.915864] FS:  00007fb6e9cab740(0000) GS:ffff95996fcc0000(0000) knlGS:0000000000000000
-> [   54.915867] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   54.915868] CR2: 00007ffd15e75c40 CR3: 0000000101e62006 CR4: 0000000000360ef0
-> [   54.915870] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   54.915871] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   54.915873] Call Trace:
-> [   54.915891]  <TASK>
-> [   54.915894]  ? __warn+0x84/0x140
-> [   54.915905]  ? get_proto_defrag_hook+0x137/0x160
-> [   54.915908]  ? __report_bug+0xea/0x100
-> [   54.915925]  ? report_bug+0x2b/0x80
-> [   54.915928]  ? handle_bug+0x3c/0x70
-> [   54.915939]  ? exc_invalid_op+0x18/0x70
-> [   54.915942]  ? asm_exc_invalid_op+0x1a/0x20
-> [   54.915948]  ? get_proto_defrag_hook+0x137/0x160
-> [   54.915950]  bpf_nf_link_attach+0x1eb/0x240
-> [   54.915953]  link_create+0x173/0x290
-> [   54.915969]  __sys_bpf+0x588/0x8f0
-> [   54.915974]  __x64_sys_bpf+0x20/0x30
-> [   54.915977]  do_syscall_64+0x45/0xf0
-> [   54.915989]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> [   54.915998] RIP: 0033:0x7fb6e9daa51d
-> [   54.916001] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 2b 89 0c 00 f7 d8 64 89 01 48
-> [   54.916003] RSP: 002b:00007ffd15e78ed8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-> [   54.916006] RAX: ffffffffffffffda RBX: 00007ffd15e78fc0 RCX: 00007fb6e9daa51d
-> [   54.916007] RDX: 0000000000000040 RSI: 00007ffd15e78ef0 RDI: 000000000000001c
-> [   54.916009] RBP: 000000000000002d R08: 00007fb6e9e73a60 R09: 0000000000000001
-> [   54.916010] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000006
-> [   54.916012] R13: 0000000000000006 R14: 0000000000000000 R15: 0000000000000000
-> [   54.916014]  </TASK>
-> [   54.916015] ---[ end trace 0000000000000000 ]---
-> 
-> Fixes: 91721c2d02d3 ("netfilter: bpf: Support BPF_F_NETFILTER_IP_DEFRAG in netfilter link")
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> Just curious. What is the reason having bpf_map__pin() here
+> and below? I tried and it looks like removing bpf_map__pin()
+> and below bpf_map__set_pin_path() will make reproducing
+> the failure hard/impossible.
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+yes, it's there to share the jmp_table map between the two
+skeleton instances, so the update thread changes the same
+jmp_table map that's used in the skeleton we load in the
+while loop below
 
+I'll add some comments to the test
+
+jirka
+
+> 
+> > +
+> > +	err = pthread_create(&thread, NULL, update, call);
+> > +	if (!ASSERT_OK(err, "new toggler"))
+> > +		goto out;
+> > +
+> > +	while (cnt--) {
+> > +		test = tailcall_poke__open();
+> > +		if (!ASSERT_OK_PTR(test, "tailcall_poke__open"))
+> > +			break;
+> > +
+> > +		err = bpf_map__set_pin_path(test->maps.jmp_table, JMP_TABLE);
+> > +		if (!ASSERT_OK(err, "bpf_map__pin")) {
+> > +			tailcall_poke__destroy(test);
+> > +			break;
+> > +		}
+> > +
+> > +		bpf_program__set_autoload(test->progs.test, true);
+> > +		bpf_program__set_autoload(test->progs.call1, false);
+> > +		bpf_program__set_autoload(test->progs.call2, false);
+> > +
+> > +		err = tailcall_poke__load(test);
+> > +		tailcall_poke__destroy(test);
+> > +		if (!ASSERT_OK(err, "tailcall_poke__load"))
+> > +			break;
+> > +	}
+> > +
+> > +	thread_exit = 1;
+> > +	ASSERT_OK(pthread_join(thread, NULL), "pthread_join");
+> > +
+> > +out:
+> > +	bpf_map__unpin(call->maps.jmp_table, JMP_TABLE);
+> > +	tailcall_poke__destroy(call);
+> > +}
+
+SNIP
 
