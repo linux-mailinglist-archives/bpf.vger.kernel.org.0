@@ -1,159 +1,186 @@
-Return-Path: <bpf+bounces-16746-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16747-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E54248058D7
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 16:34:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34575805954
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 17:01:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AA00B210DD
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 15:34:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65ABA1C21120
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 16:01:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62A735F1EA;
-	Tue,  5 Dec 2023 15:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0E360BA4;
+	Tue,  5 Dec 2023 16:01:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=siemens.com header.i=florian.bezdeka@siemens.com header.b="J+8+bbFX"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cs2DaqGJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mta-64-225.siemens.flowmailer.net (mta-64-225.siemens.flowmailer.net [185.136.64.225])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B977985
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 07:34:35 -0800 (PST)
-Received: by mta-64-225.siemens.flowmailer.net with ESMTPSA id 20231205153432d9f55ee9b458923d65
-        for <bpf@vger.kernel.org>;
-        Tue, 05 Dec 2023 16:34:33 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
- d=siemens.com; i=florian.bezdeka@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
- bh=QLrrt7aQd3uFEGTkO/x97Sh3we90ObbwSexb6iVGv7A=;
- b=J+8+bbFXw8iqevTZ/1LFxb77bPK9BAi2TmeskopxbHBkn5POqgmVNCOYGcqwEep7uOPJpl
- zj+FDvGwqPNeHsljWo0kiWzfDFu9PDhQN6eGhzaJB7XFPDStPDo9SmhEyvxSfz3Nw8ezFswW
- bfVo1XvFDjaGtWxsO3vjq4Ss0mo2w=;
-Message-ID: <5a0faf8cc9ec3ab0d5082c66b909c582c8f1eae6.camel@siemens.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
- Time support to XDP ZC
-From: Florian Bezdeka <florian.bezdeka@siemens.com>
-To: "Song, Yoong Siang" <yoong.siang.song@intel.com>, Willem de Bruijn
- <willemdebruijn.kernel@gmail.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Bjorn Topel
- <bjorn@kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>,
- "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Jonathan Lemon
- <jonathan.lemon@gmail.com>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
- Stanislav Fomichev <sdf@google.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
- Tariq Toukan <tariqt@nvidia.com>, Willem de Bruijn <willemb@google.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Andrii Nakryiko
- <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan
- <shuah@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose
- Abreu <joabreu@synopsys.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org"
-	 <linux-kernel@vger.kernel.org>, "linux-doc@vger.kernel.org"
-	 <linux-doc@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"xdp-hints@xdp-project.net"
-	 <xdp-hints@xdp-project.net>, "linux-stm32@st-md-mailman.stormreply.com"
-	 <linux-stm32@st-md-mailman.stormreply.com>, 
-	"linux-arm-kernel@lists.infradead.org"
-	 <linux-arm-kernel@lists.infradead.org>, "linux-kselftest@vger.kernel.org"
-	 <linux-kselftest@vger.kernel.org>
-Date: Tue, 05 Dec 2023 16:34:29 +0100
-In-Reply-To: <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
-References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
-	 <20231203165129.1740512-3-yoong.siang.song@intel.com>
-	 <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
-	 <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
-	 <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C33C122
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 08:00:58 -0800 (PST)
+Message-ID: <f18d75bc-1d1c-4391-b006-308568de10bf@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701792056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NJTO8wMrK790FDv4HSOkTuMetExnK8uHfiEqavRRpVw=;
+	b=cs2DaqGJ1haVGhCP1nMeSTK6br0L3hylb7mlpg75wy0tw8OlV2xMK3I62HRueC6t99O1xo
+	MP7cBD+wSMZqy5+OVkMIllwFwK4fMdFogt+YveDsQ/v2kRisaTltgMIY7WrzG0aFpIGEwq
+	O2a6AGmBEaBqpeQgHSiflHX6snFTET8=
+Date: Tue, 5 Dec 2023 08:00:48 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Flowmailer-Platform: Siemens
-Feedback-ID: 519:519-68982:519-21489:flowmailer
+Subject: Re: [PATCHv3 bpf 2/2] selftests/bpf: Add test for early update in
+ prog_array_map_poke_run
+Content-Language: en-GB
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Ilya Leoshkevich <iii@linux.ibm.com>, bpf@vger.kernel.org,
+ Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+ Yonghong Song <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@chromium.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>
+References: <20231203204851.388654-1-jolsa@kernel.org>
+ <20231203204851.388654-3-jolsa@kernel.org>
+ <0c2c5931-535c-49ab-86c4-275f64e5767c@linux.dev> <ZW7imIQDjdOFdlLn@krava>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <ZW7imIQDjdOFdlLn@krava>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, 2023-12-05 at 15:25 +0000, Song, Yoong Siang wrote:
-> On Monday, December 4, 2023 10:55 PM, Willem de Bruijn wrote:
-> > Jesper Dangaard Brouer wrote:
-> > >=20
-> > >=20
-> > > On 12/3/23 17:51, Song Yoong Siang wrote:
-> > > > This patch enables Launch Time (Time-Based Scheduling) support to X=
-DP zero
-> > > > copy via XDP Tx metadata framework.
-> > > >=20
-> > > > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
-> > > > ---
-> > > >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
-> > >=20
-> > > As requested before, I think we need to see another driver implementi=
-ng
-> > > this.
-> > >=20
-> > > I propose driver igc and chip i225.
->=20
-> Sure. I will include igc patches in next version.
->=20
-> > >=20
-> > > The interesting thing for me is to see how the LaunchTime max 1 secon=
-d
-> > > into the future[1] is handled code wise. One suggestion is to add a
-> > > section to Documentation/networking/xsk-tx-metadata.rst per driver th=
-at
-> > > mentions/documents these different hardware limitations.  It is natur=
-al
-> > > that different types of hardware have limitations.  This is a close-t=
-o
-> > > hardware-level abstraction/API, and IMHO as long as we document the
-> > > limitations we can expose this API without too many limitations for m=
-ore
-> > > capable hardware.
->=20
-> Sure. I will try to add hardware limitations in documentation.=20
->=20
-> >=20
-> > I would assume that the kfunc will fail when a value is passed that
-> > cannot be programmed.
-> >=20
->=20
-> In current design, the xsk_tx_metadata_request() dint got return value.=
-=20
-> So user won't know if their request is fail.=20
-> It is complex to inform user which request is failing.=20
-> Therefore, IMHO, it is good that we let driver handle the error silently.
->=20
 
-If the programmed value is invalid, the packet will be "dropped" / will
-never make it to the wire, right?
+On 12/5/23 3:43 AM, Jiri Olsa wrote:
+> On Mon, Dec 04, 2023 at 09:16:52PM -0800, Yonghong Song wrote:
+>> On 12/3/23 3:48 PM, Jiri Olsa wrote:
+>>> Adding test that tries to trigger the BUG_ON during early map update
+>>> in prog_array_map_poke_run function.
+>>>
+>>> The idea is to share prog array map between thread that constantly
+>>> updates it and another one loading a program that uses that prog
+>>> array.
+>>>
+>>> Eventually we will hit a place where the program is ok to be updated
+>>> (poke->tailcall_target_stable check) but the address is still not
+>>> registered in kallsyms, so the bpf_arch_text_poke returns -EINVAL
+>>> and cause imbalance for the next tail call update check, which will
+>>> fail with -EBUSY in bpf_arch_text_poke as described in previous fix.
+>>>
+>>> Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+>>> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+>>> ---
+>>>    .../selftests/bpf/prog_tests/tailcall_poke.c  | 74 +++++++++++++++++++
+>>>    .../selftests/bpf/progs/tailcall_poke.c       | 32 ++++++++
+>>>    2 files changed, 106 insertions(+)
+>>>    create mode 100644 tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+>>>    create mode 100644 tools/testing/selftests/bpf/progs/tailcall_poke.c
+>>>
+>>> diff --git a/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c b/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+>>> new file mode 100644
+>>> index 000000000000..f7e2c09fd772
+>>> --- /dev/null
+>>> +++ b/tools/testing/selftests/bpf/prog_tests/tailcall_poke.c
+>>> @@ -0,0 +1,74 @@
+>>> +// SPDX-License-Identifier: GPL-2.0
+>>> +#include <unistd.h>
+>>> +#include <test_progs.h>
+>>> +#include "tailcall_poke.skel.h"
+>>> +
+>>> +#define JMP_TABLE "/sys/fs/bpf/jmp_table"
+>>> +
+>>> +static int thread_exit;
+>>> +
+>>> +static void *update(void *arg)
+>>> +{
+>>> +	__u32 zero = 0, prog1_fd, prog2_fd, map_fd;
+>>> +	struct tailcall_poke *call = arg;
+>>> +
+>>> +	map_fd = bpf_map__fd(call->maps.jmp_table);
+>>> +	prog1_fd = bpf_program__fd(call->progs.call1);
+>>> +	prog2_fd = bpf_program__fd(call->progs.call2);
+>>> +
+>>> +	while (!thread_exit) {
+>>> +		bpf_map_update_elem(map_fd, &zero, &prog1_fd, BPF_ANY);
+>>> +		bpf_map_update_elem(map_fd, &zero, &prog2_fd, BPF_ANY);
+>>> +	}
+>>> +
+>>> +	return NULL;
+>>> +}
+>>> +
+>>> +void test_tailcall_poke(void)
+>>> +{
+>>> +	struct tailcall_poke *call, *test;
+>>> +	int err, cnt = 10;
+>>> +	pthread_t thread;
+>>> +
+>>> +	unlink(JMP_TABLE);
+>>> +
+>>> +	call = tailcall_poke__open_and_load();
+>>> +	if (!ASSERT_OK_PTR(call, "tailcall_poke__open"))
+>>> +		return;
+>>> +
+>>> +	err = bpf_map__pin(call->maps.jmp_table, JMP_TABLE);
+>>> +	if (!ASSERT_OK(err, "bpf_map__pin"))
+>>> +		goto out;
+>> Just curious. What is the reason having bpf_map__pin() here
+>> and below? I tried and it looks like removing bpf_map__pin()
+>> and below bpf_map__set_pin_path() will make reproducing
+>> the failure hard/impossible.
+> yes, it's there to share the jmp_table map between the two
+> skeleton instances, so the update thread changes the same
+> jmp_table map that's used in the skeleton we load in the
+> while loop below
 
-That is clearly a situation that the user should be informed about. For
-RT systems this normally means that something is really wrong regarding
-timing / cycle overflow. Such systems have to react on that situation.
+This does make sense.
 
-> =20
->=20
-> > What is being implemented here already exists for qdiscs. The FQ
-> > qdisc takes a horizon attribute and
-> >=20
-> >    "
-> >    when a packet is beyond the horizon
-> >        at enqueue() time:
-> >        - either drop the packet (default policy)
-> >        - or cap its delivery time to the horizon.
-> >    "
-> >    commit 39d010504e6b ("net_sched: sch_fq: add horizon attribute")
-> >=20
-> > Having the admin manually configure this on the qdisc based on
-> > off-line knowledge of the device is more fragile than if the device
-> > would somehow signal its limit to the stack.
-> >=20
-> > But I don't think we should add enforcement of that as a requirement
-> > for this xdp extension of pacing.
+>
+> I'll add some comments to the test
 
+Thanks for explanation. Some comments are definitely helpful!
+
+>
+> jirka
+>
+>>> +
+>>> +	err = pthread_create(&thread, NULL, update, call);
+>>> +	if (!ASSERT_OK(err, "new toggler"))
+>>> +		goto out;
+>>> +
+>>> +	while (cnt--) {
+>>> +		test = tailcall_poke__open();
+>>> +		if (!ASSERT_OK_PTR(test, "tailcall_poke__open"))
+>>> +			break;
+>>> +
+>>> +		err = bpf_map__set_pin_path(test->maps.jmp_table, JMP_TABLE);
+>>> +		if (!ASSERT_OK(err, "bpf_map__pin")) {
+>>> +			tailcall_poke__destroy(test);
+>>> +			break;
+>>> +		}
+>>> +
+>>> +		bpf_program__set_autoload(test->progs.test, true);
+>>> +		bpf_program__set_autoload(test->progs.call1, false);
+>>> +		bpf_program__set_autoload(test->progs.call2, false);
+>>> +
+>>> +		err = tailcall_poke__load(test);
+>>> +		tailcall_poke__destroy(test);
+>>> +		if (!ASSERT_OK(err, "tailcall_poke__load"))
+>>> +			break;
+>>> +	}
+>>> +
+>>> +	thread_exit = 1;
+>>> +	ASSERT_OK(pthread_join(thread, NULL), "pthread_join");
+>>> +
+>>> +out:
+>>> +	bpf_map__unpin(call->maps.jmp_table, JMP_TABLE);
+>>> +	tailcall_poke__destroy(call);
+>>> +}
+> SNIP
 
