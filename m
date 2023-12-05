@@ -1,150 +1,288 @@
-Return-Path: <bpf+bounces-16758-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16759-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 869AA805D0F
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 19:17:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF368805D2F
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 19:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA1EC1C21160
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:17:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74AB9B21072
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:21:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0D068B70;
-	Tue,  5 Dec 2023 18:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4D268B9B;
+	Tue,  5 Dec 2023 18:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T5zedPar"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="W32wTH4h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8F0122
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 10:17:17 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id 5614622812f47-3b83fc26e4cso3358699b6e.2
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 10:17:17 -0800 (PST)
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4BB618C
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 10:21:38 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-a186e5d1056so762594366b.0
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 10:21:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701800237; x=1702405037; darn=vger.kernel.org;
+        d=kylehuey.com; s=google; t=1701800497; x=1702405297; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rDi8w67oLrCVnWUnDYFdDwzLTH62p8zVTFKrJGR7vTA=;
-        b=T5zedPartWcsSubHoFT0v9EkdqfSoBTx4JJjvCaW6LJyr1VJGToiDW5yiki1CiuIqk
-         rp+3A3RN+mULd1/avj0jZ/h9a31Ekl2Jnd1SRladgxSe6eMJHqc757INfvoj4WcYK47H
-         fIcoSBSrNlTpVInIYRwpQ+NJQwTXyHltRdJ60EScLgGPYQ+gL8DKAYZUl9qanLJ1gR86
-         eHywPwoOCGh3ncpyH7/SBS7xSkVSqRjfrWQoyxnKGq8OJhZr6K/W4uWysims260yfa+h
-         tocvC57EMWZoIYxaPqGXq5eQQkKU3HvaDcZ9+S6BLjiwBHj1NzFHXAmKOILZ4jwz9kmk
-         CvrA==
+        bh=T+nkDPugKKNNkRBSOn2CVgjn9FjQf79ux7IfHoEDnOg=;
+        b=W32wTH4h5PuyCsKJT+O5qeimqf9gUO1Bi9ihc/ahqaX6CWx/Um5+clPktn1WLKCSKd
+         GEkmI8TkBaVSIerOmjdFO15b+QoGblnZelT6abp218oD7+W63lXYZnsjFmksee8Ob3sR
+         XDpO3G+ttuAFW0Oq0IjW/BsePkoQZYVRPJw/0RTykBaLtzDrSnOLhtbWW+eOJDyeMNaM
+         ic7f4tpPurSLzGUvvHHwE5m1w3irhGiuVjSOY1FQpwuAvaV6r+vbzI8mRSTov1EJ1kw/
+         x16swUkx+HSiU2Z83/vF3CKKeJCJg4Cl/WofC9T3EeZspHJ6qBbm6JM0/Ot8H0wY/CLI
+         5N5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701800237; x=1702405037;
+        d=1e100.net; s=20230601; t=1701800497; x=1702405297;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rDi8w67oLrCVnWUnDYFdDwzLTH62p8zVTFKrJGR7vTA=;
-        b=P+u5vKRUcPrFi5fM1UYhxRjh7+77sZdjmVpVdmv91g9IDQtgo0qcuGZJ3V8Jfn/RZN
-         Ch7GnjSGi81DmUxXV5R1wrb5OZCdJ0zGWL89gcPWaaOIwZGcGKC69vRZg1T2AThAek6K
-         WzaCL/DEthTinuakhqsSKD77+giSHsIjjv71JC6Z4B6WvsXXaDwblmjnWeIbGBUZF5Ya
-         Gjiwrlcmoy+sTozEABbm+KsDChyjzSgQWoBJTfYeGIwPaXiOmB5gHP2eH7FVSJ0TnnTy
-         YWVcqg06/apnvgcplZP9lH6F+Ajo3Yy0PrANlXSjfmpRRokElmDk5MOKeVXk7IFZF8/v
-         9HcQ==
-X-Gm-Message-State: AOJu0YzZ+ZqZe+u6cFyiSozKGVBnVNgSflK+09GkBRn5qWXEM7ezcSJA
-	mD9Tzf1ndZvTFFwLRj8PnT9bZ36Gsew2GDxVEy+Gqw==
-X-Google-Smtp-Source: AGHT+IFVPtycg0dL10C+0thiptzxicQhELMBG95r/Ap4aYVMCRYNBG6hTGKCzlb6QEEknzdZvnI7OFwLD7ptlaTRwLc=
-X-Received: by 2002:a05:6870:9d9b:b0:1fa:1355:da45 with SMTP id
- pv27-20020a0568709d9b00b001fa1355da45mr7508586oab.11.1701800236823; Tue, 05
- Dec 2023 10:17:16 -0800 (PST)
+        bh=T+nkDPugKKNNkRBSOn2CVgjn9FjQf79ux7IfHoEDnOg=;
+        b=TNkNCQVZzuf2Q1MSiPZonqr4BQb0AAM2lzKGmJ2yIO/MQB61qyeRTkg2H1UetXlkWr
+         KqxpJ5AqRRBUtDINvBXnaneqhKbXRLi749IfaICfyTNKSMsN5dN3Ll9QsUiGCL5dn79u
+         o7p/qT60Mm4nXNxbRf51U7wO6oR6tbzqPrzZ2GgLG5JZrOPlk0PplN3HaYxxYJ97lz8g
+         ojZqDE+SzgFv09IEeaQ/sfPXMPd6kdjhRdPSJhGOYO8gw9satX7Te9WhvddQYDvb1JqL
+         c6LooZzgsEL/j54SgcibC5PKrT4IFWBX58OcmnZw7QXz0IuhgDfBpA8HPDdS4PFuQixj
+         Lx/g==
+X-Gm-Message-State: AOJu0YwGi7CcPSMEobrl5STtSIh8OD6Mb85pSbSd7l8AjETwr6kfuYRS
+	Hy0CZaviyzCHBV6xjoTmwUbriS5WUUUCw7yH1oRmCA==
+X-Google-Smtp-Source: AGHT+IFAN1L/kvER1ufG3on6wWYdyv6ejtbTg8SseJjhbevswgH/r5YufXiyrXeH+9/nPN+BLLF/ykvExC2TujbviVw=
+X-Received: by 2002:a17:906:2241:b0:a19:a19b:5605 with SMTP id
+ 1-20020a170906224100b00a19a19b5605mr892974ejr.149.1701800497041; Tue, 05 Dec
+ 2023 10:21:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-2-khuey@kylehuey.com>
- <CAEf4BzYtSXtgdO9C2w9OOKni68H-7UOExFJRBEij3HG2Qwn1Rg@mail.gmail.com>
- <ZW8Gi2QI5ceAJfab@krava> <CAM9d7chztaCfDsxfyJ2q_UmD=y20BFikCUQhs=LR8wsNV6pMjg@mail.gmail.com>
-In-Reply-To: <CAM9d7chztaCfDsxfyJ2q_UmD=y20BFikCUQhs=LR8wsNV6pMjg@mail.gmail.com>
-From: Marco Elver <elver@google.com>
-Date: Tue, 5 Dec 2023 19:16:38 +0100
-Message-ID: <CANpmjNPfoLX=HPy0MhbGqMmGT4jE0Ky29cx5QP_8tJ2u=1ju_Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf/bpf: Allow a bpf program to suppress I/O signals.
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	"Robert O'Callahan" <robert@ocallahan.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-3-khuey@kylehuey.com>
+ <CAEf4BzbDKiP7femK5DZ8jeyK0u63KrV+FogEDVPaYS7mc4if7g@mail.gmail.com>
+In-Reply-To: <CAEf4BzbDKiP7femK5DZ8jeyK0u63KrV+FogEDVPaYS7mc4if7g@mail.gmail.com>
+From: Kyle Huey <me@kylehuey.com>
+Date: Tue, 5 Dec 2023 10:21:25 -0800
+Message-ID: <CAP045ArrF81xNqRZcW=8Uw7R2Vvgman1QODbt7wgL_U6HKQ6Mg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
+ program suppresses SIGIO.
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
+	"Robert O'Callahan" <robert@ocallahan.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, 5 Dec 2023 at 19:07, Namhyung Kim <namhyung@kernel.org> wrote:
+On Mon, Dec 4, 2023 at 2:14=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> Hello,
->
-> Add Marco Elver to CC.
->
-> On Tue, Dec 5, 2023 at 3:16=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
-te:
+> On Mon, Dec 4, 2023 at 12:14=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote=
+:
 > >
-> > On Mon, Dec 04, 2023 at 02:18:49PM -0800, Andrii Nakryiko wrote:
-> > > On Mon, Dec 4, 2023 at 12:14=E2=80=AFPM Kyle Huey <me@kylehuey.com> w=
-rote:
-> > > >
-> > > > Returning zero from a bpf program attached to a perf event already
-> > > > suppresses any data output. This allows it to suppress I/O availabi=
-lity
-> > > > signals too.
-> > >
-> > > make sense, just one question below
-> > >
-> > > >
-> > > > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> > The test sets a hardware breakpoint and uses a bpf program to suppress =
+the
+> > I/O availability signal if the ip matches the expected value.
 > >
-> > Acked-by: Jiri Olsa <jolsa@kernel.org>
+> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> > ---
+> >  .../selftests/bpf/prog_tests/perf_skip.c      | 95 +++++++++++++++++++
+> >  .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
+> >  2 files changed, 118 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
 > >
-> > > > ---
-> > > >  kernel/events/core.c | 4 +++-
-> > > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > > > index b704d83a28b2..34d7b19d45eb 100644
-> > > > --- a/kernel/events/core.c
-> > > > +++ b/kernel/events/core.c
-> > > > @@ -10417,8 +10417,10 @@ static void bpf_overflow_handler(struct pe=
-rf_event *event,
-> > > >         rcu_read_unlock();
-> > > >  out:
-> > > >         __this_cpu_dec(bpf_prog_active);
-> > > > -       if (!ret)
-> > > > +       if (!ret) {
-> > > > +               event->pending_kill =3D 0;
-> > > >                 return;
-> > > > +       }
-> > >
-> > > What's the distinction between event->pending_kill and
-> > > event->pending_wakeup? Should we do something about pending_wakeup?
-> > > Asking out of complete ignorance of all these perf specifics.
-> > >
-> >
-> > I think zeroing pending_kill is enough.. when it's set the perf code
-> > sets pending_wakeup to call perf_event_wakeup in irq code that wakes
-> > up event's ring buffer readers and sends sigio if pending_kill is set
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools=
+/testing/selftests/bpf/prog_tests/perf_skip.c
+> > new file mode 100644
+> > index 000000000000..b269a31669b7
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> > @@ -0,0 +1,95 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#define _GNU_SOURCE
+> > +#include <test_progs.h>
+> > +#include "test_perf_skip.skel.h"
+> > +#include <linux/hw_breakpoint.h>
+> > +#include <sys/mman.h>
+> > +
+> > +#define BPF_OBJECT            "test_perf_skip.bpf.o"
 >
-> Right, IIUC pending_wakeup is set by the ring buffer code when
-> a task is waiting for events and it gets enough events (watermark).
-> So I think it's good for ring buffer to manage the pending_wakeup.
->
-> And pending_kill is set when a task wants a signal delivery even
-> without getting enough events.  Clearing pending_kill looks ok
-> to suppress normal signals but I'm not sure if it's ok for SIGTRAP.
->
-> If we want to handle returning 0 from bpf as if the event didn't
-> happen, I think SIGTRAP and event_limit logic should be done
-> after the overflow handler depending on pending_kill or something.
+> leftover?
 
-I'm not sure which kernel version this is for, but in recent kernels,
-the SIGTRAP logic was changed to no longer "abuse" event_limit, and
-uses its own "pending_sigtrap" + "pending_work" (on reschedule
-transitions).
+Indeed. Fixed.
 
-Thanks,
--- Marco
+> > +
+> > +static void handle_sig(int)
+> > +{
+> > +       ASSERT_OK(1, "perf event not skipped");
+> > +}
+> > +
+> > +static noinline int test_function(void)
+> > +{
+>
+> please add
+>
+> asm volatile ("");
+>
+> here to prevent compiler from actually inlining at the call site
+
+Ok.
+
+> > +       return 0;
+> > +}
+> > +
+> > +void serial_test_perf_skip(void)
+> > +{
+> > +       sighandler_t previous;
+> > +       int duration =3D 0;
+> > +       struct test_perf_skip *skel =3D NULL;
+> > +       int map_fd =3D -1;
+> > +       long page_size =3D sysconf(_SC_PAGE_SIZE);
+> > +       uintptr_t *ip =3D NULL;
+> > +       int prog_fd =3D -1;
+> > +       struct perf_event_attr attr =3D {0};
+> > +       int perf_fd =3D -1;
+> > +       struct f_owner_ex owner;
+> > +       int err;
+> > +
+> > +       previous =3D signal(SIGIO, handle_sig);
+> > +
+> > +       skel =3D test_perf_skip__open_and_load();
+> > +       if (!ASSERT_OK_PTR(skel, "skel_load"))
+> > +               goto cleanup;
+> > +
+> > +       prog_fd =3D bpf_program__fd(skel->progs.handler);
+> > +       if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
+> > +               goto cleanup;
+> > +
+> > +       map_fd =3D bpf_map__fd(skel->maps.ip);
+> > +       if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
+> > +               goto cleanup;
+> > +
+> > +       ip =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED=
+, map_fd, 0);
+> > +       if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
+> > +               goto cleanup;
+> > +
+> > +       *ip =3D (uintptr_t)test_function;
+> > +
+> > +       attr.type =3D PERF_TYPE_BREAKPOINT;
+> > +       attr.size =3D sizeof(attr);
+> > +       attr.bp_type =3D HW_BREAKPOINT_X;
+> > +       attr.bp_addr =3D (uintptr_t)test_function;
+> > +       attr.bp_len =3D sizeof(long);
+> > +       attr.sample_period =3D 1;
+> > +       attr.sample_type =3D PERF_SAMPLE_IP;
+> > +       attr.pinned =3D 1;
+> > +       attr.exclude_kernel =3D 1;
+> > +       attr.exclude_hv =3D 1;
+> > +       attr.precise_ip =3D 3;
+> > +
+> > +       perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
+> > +       if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
+>
+> please don't use CHECK() macro, stick to ASSERT_xxx()
+
+Done.
+
+> also, we are going to run all this on different hardware and VMs, see
+> how we skip tests if hardware support is not there. See test__skip
+> usage in prog_tests/perf_branches.c, as one example
+
+Hmm I suppose it should be conditioned on CONFIG_HAVE_HW_BREAKPOINT.
+
+> > +               goto cleanup;
+> > +
+> > +       err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
+>
+> I assume this is what will send SIGIO, right? Can you add a small
+> comment explicitly saying this?
+
+Done.
+
+> > +       if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
+> > +               goto cleanup;
+> > +
+> > +       owner.type =3D F_OWNER_TID;
+> > +       owner.pid =3D gettid();
+> > +       err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
+> > +       if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
+> > +               goto cleanup;
+> > +
+> > +       err =3D ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
+> > +       if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
+> > +               goto cleanup;
+>
+> we have a better way to do this, please use
+> bpf_program__attach_perf_event() instead
+
+Done.
+
+> > +
+> > +       test_function();
+> > +
+> > +cleanup:
+> > +       if (perf_fd >=3D 0)
+> > +               close(perf_fd);
+> > +       if (ip)
+> > +               munmap(ip, page_size);
+> > +       if (skel)
+> > +               test_perf_skip__destroy(skel);
+> > +
+> > +       signal(SIGIO, previous);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools=
+/testing/selftests/bpf/progs/test_perf_skip.c
+> > new file mode 100644
+> > index 000000000000..ef01a9161afe
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> > @@ -0,0 +1,23 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include "vmlinux.h"
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +struct {
+> > +       __uint(type, BPF_MAP_TYPE_ARRAY);
+> > +       __uint(max_entries, 1);
+> > +       __uint(map_flags, BPF_F_MMAPABLE);
+> > +       __type(key, uint32_t);
+> > +       __type(value, uintptr_t);
+> > +} ip SEC(".maps");
+>
+> please use global variable:
+>
+> __u64 ip;
+>
+> and then access it from user-space side through skeleton
+>
+> skel->bss.ip =3D &test_function;
+
+Done.
+
+> > +
+> > +SEC("perf_event")
+> > +int handler(struct bpf_perf_event_data *data)
+> > +{
+> > +       const uint32_t index =3D 0;
+> > +       uintptr_t *v =3D bpf_map_lookup_elem(&ip, &index);
+> > +
+> > +       return !(v && *v =3D=3D PT_REGS_IP(&data->regs));
+>
+> and so we the above global var suggestion this will be just:
+>
+> return ip =3D=3D PT_REGS_IP(&data->regs);
+>
+> > +}
+> > +
+> > +char _license[] SEC("license") =3D "GPL";
+> > --
+> > 2.34.1
+> >
+
+- Kyle
 
