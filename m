@@ -1,204 +1,197 @@
-Return-Path: <bpf+bounces-16681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF00C804413
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:31:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C63D80441B
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:34:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E6F8B20BE9
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:31:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 962FE281426
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE4E517D4;
-	Tue,  5 Dec 2023 01:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEE7217F1;
+	Tue,  5 Dec 2023 01:34:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="jJK3P93c"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D43A4
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 17:31:15 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Skjfh0PF9z4f3lgS
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 09:31:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id B63211A017F
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 09:31:12 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgCnCLddfW5l9TjmCg--.32717S2;
-	Tue, 05 Dec 2023 09:31:12 +0800 (CST)
-Subject: Re: [PATCH bpf] bpf: Fix a race condition between btf_put() and
- map_free()
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231204173946.3066377-1-yonghong.song@linux.dev>
- <CAEf4BzbPtSZxJ16E+gQnw7sgfqwJVYsnkUZaxdk=c+65KWgnTg@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <81d00866-7824-18e5-af71-e0a15a03e84f@huaweicloud.com>
-Date: Tue, 5 Dec 2023 09:31:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1ADE6;
+	Mon,  4 Dec 2023 17:34:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701740080; x=1733276080;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=CNNn3oivT0S6iVFYdJSNlkD6B+hNxxWE7qHC4YwOYGM=;
+  b=jJK3P93cXfTN3GLjXNyc2pO7RRxFWp9LxPuTEzPuMA3SAkgW54Er8vtQ
+   EW6zHRxrz3j5H/nBaPRpEg5XGJLaG36oK/P3k9n/GvTAgzJ5BKVdc3qsN
+   nu0jo6nvYuTYqncb6aVofT+tat4xPzfs/g11PrIutwZDuKlAPM/r++p91
+   g=;
+X-IronPort-AV: E=Sophos;i="6.04,251,1695686400"; 
+   d="scan'208";a="48251684"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-e651a362.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:34:37 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+	by email-inbound-relay-iad-1d-m6i4x-e651a362.us-east-1.amazon.com (Postfix) with ESMTPS id C7380804E1;
+	Tue,  5 Dec 2023 01:34:35 +0000 (UTC)
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:40959]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.48.37:2525] with esmtp (Farcaster)
+ id c8add414-9cbb-4ecb-82d0-a8a90d30dbdd; Tue, 5 Dec 2023 01:34:34 +0000 (UTC)
+X-Farcaster-Flow-ID: c8add414-9cbb-4ecb-82d0-a8a90d30dbdd
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 5 Dec 2023 01:34:34 +0000
+Received: from 88665a182662.ant.amazon.com (10.119.0.105) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 5 Dec 2023 01:34:30 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: Eric Dumazet <edumazet@google.com>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>
+CC: Kuniyuki Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima
+	<kuni1840@gmail.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: [PATCH v4 bpf-next 0/3] bpf: tcp: Support arbitrary SYN Cookie at TC.
+Date: Tue, 5 Dec 2023 10:34:17 +0900
+Message-ID: <20231205013420.88067-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzbPtSZxJ16E+gQnw7sgfqwJVYsnkUZaxdk=c+65KWgnTg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgCnCLddfW5l9TjmCg--.32717S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WFWfZr18Wr1Duw45ZrW7twb_yoW7XF43pF
-	WfJa12kr4kXr1UursIqay8WrySyrW5t34UGwn5Ka4F9ry5WrykKr109FW5uFW5Ars5Gw4I
-	vw4qga45u34kZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D038UWC004.ant.amazon.com (10.13.139.229) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
 
-Hi,
+Under SYN Flood, the TCP stack generates SYN Cookie to remain stateless
+for the connection request until a valid ACK is responded to the SYN+ACK.
 
-On 12/5/2023 8:42 AM, Andrii Nakryiko wrote:
-> On Mon, Dec 4, 2023 at 9:40 AM Yonghong Song <yonghong.song@linux.dev> wrote:
->> When running `./test_progs -j` in my local vm with latest kernel,
->> I once hit a kasan error like below:
+The cookie contains two kinds of host-specific bits, a timestamp and
+secrets, so only can it be validated by the generator.  It means SYN
+Cookie consumes network resources between the client and the server;
+intermediate nodes must remember which nodes to route ACK for the cookie.
 
-SNIP
->>
->>
->> So the problem is at rec->refcount_off in the above.
->>
->> I did some source code analysis and find the reason.
->>                                   CPU A                        CPU B
->>   bpf_map_put:
->>     ...
->>     btf_put with rcu callback
->>     ...
->>     bpf_map_free_deferred
->>       with system_unbound_wq
->>     ...                          ...                           ...
->>     ...                          btf_free_rcu:                 ...
->>     ...                          ...                           bpf_map_free_deferred:
->>     ...                          ...
->>     ...         --------->       btf_struct_metas_free()
->>     ...         | race condition ...
->>     ...         --------->                                     map->ops->map_free()
->>     ...
->>     ...                          btf->struct_meta_tab = NULL
->>
->> In the above, map_free() corresponds to array_map_free() and eventually
->> calling bpf_rb_root_free() which calls:
->>   ...
->>   __bpf_obj_drop_impl(obj, field->graph_root.value_rec, false);
->>   ...
->>
->> Here, 'value_rec' is assigned in btf_check_and_fixup_fields() with following code:
->>
->>   meta = btf_find_struct_meta(btf, btf_id);
->>   if (!meta)
->>     return -EFAULT;
->>   rec->fields[i].graph_root.value_rec = meta->record;
->>
->> So basically, 'value_rec' is a pointer to the record in struct_metas_tab.
->> And it is possible that that particular record has been freed by
->> btf_struct_metas_free() and hence we have a kasan error here.
->>
->> Actually it is very hard to reproduce the failure with current bpf/bpf-next
->> code, I only got the above error once. To increase reproducibility, I added
->> a delay in bpf_map_free_deferred() to delay map->ops->map_free(), which
->> significantly increased reproducibility.
+SYN Proxy reduces such unwanted resource allocation by handling 3WHS at
+the edge network.  After SYN Proxy completes 3WHS, it forwards SYN to the
+backend server and completes another 3WHS.  However, since the server's
+ISN differs from the cookie, the proxy must manage the ISN mappings and
+fix up SEQ/ACK numbers in every packet for each connection.  If a proxy
+node goes down, all the connections through it are terminated.  Keeping
+a state at proxy is painful from that perspective.
 
-Also found the problem when developing the "fix the release of inner
-map" patch-set. I have written a selftest which could reliably reproduce
-the problem by using map-in-map + bpf_list_head. The reason of using
-map-in-map is to delay the release of inner map by using call_rcu() as
-well, so the free of bpf_map happens after the release of btf. Will post
-it later.
->>
->>   diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->>   index 5e43ddd1b83f..aae5b5213e93 100644
->>   --- a/kernel/bpf/syscall.c
->>   +++ b/kernel/bpf/syscall.c
->>   @@ -695,6 +695,7 @@ static void bpf_map_free_deferred(struct work_struct *work)
->>         struct bpf_map *map = container_of(work, struct bpf_map, work);
->>         struct btf_record *rec = map->record;
->>
->>   +     mdelay(100);
->>         security_bpf_map_free(map);
->>         bpf_map_release_memcg(map);
->>         /* implementation dependent freeing */
->>
->> To fix the problem, I moved btf_put() after map->ops->map_free() to ensure
->> struct_metas available during map_free(). Rerun './test_progs -j' with the
->> above mdelay() hack for a couple of times and didn't observe the error.
->>
->> Fixes: 958cf2e273f0 ("bpf: Introduce bpf_obj_new")
->> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
->> ---
->>  kernel/bpf/syscall.c | 6 +++++-
->>  1 file changed, 5 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index 0ed286b8a0f0..9c6c3738adfe 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -694,11 +694,16 @@ static void bpf_map_free_deferred(struct work_struct *work)
->>  {
->>         struct bpf_map *map = container_of(work, struct bpf_map, work);
->>         struct btf_record *rec = map->record;
->> +       struct btf *btf = map->btf;
->>
->>         security_bpf_map_free(map);
->>         bpf_map_release_memcg(map);
->>         /* implementation dependent freeing */
->>         map->ops->map_free(map);
->> +       /* Delay freeing of btf for maps, as map_free callback may need
->> +        * struct_meta info which will be freed with btf_put().
->> +        */
->> +       btf_put(btf);
-> The change makes sense to me, but logically I'd put it after
-> btf_record_free(rec), just in case if some of btf records ever refer
-> back to map's BTF or something (and just in general to keep it the
-> very last thing that's happening).
->
->
-> But it also seems like CI is not happy ([0]), please take a look, thanks!
->
->   [0] https://github.com/kernel-patches/bpf/actions/runs/7090474333/job/19297672532
+At AWS, we use a dirty hack to build truly stateless SYN Proxy at scale.
+Our SYN Proxy consists of the front proxy layer and the backend kernel
+module.  (See slides of LPC2023 [0], p37 - p48)
 
-The patch delays the release of BTF id of bpf map, so test_btf_id
-failed. Can we fix the problem by optionally pinning the btf in
-btf_field_graph_root just like btf_field_kptr, so the map BTF will still
-be alive before the invocation of btf_record_free() ? We need to do the
-pinning optionally, because btf_record may be contained in btf directly
-(namely btf->struct_meta_tab) and is freed through btf_free().
->
->
->>         /* Delay freeing of btf_record for maps, as map_free
->>          * callback usually needs access to them. It is better to do it here
->>          * than require each callback to do the free itself manually.
->> @@ -727,7 +732,6 @@ void bpf_map_put(struct bpf_map *map)
->>         if (atomic64_dec_and_test(&map->refcnt)) {
->>                 /* bpf_map_free_id() must be called first */
->>                 bpf_map_free_id(map);
->> -               btf_put(map->btf);
->>                 INIT_WORK(&map->work, bpf_map_free_deferred);
->>                 /* Avoid spawning kworkers, since they all might contend
->>                  * for the same mutex like slab_mutex.
->> --
->> 2.34.1
->>
-> .
+The cookie that SYN Proxy generates differs from the kernel's cookie in
+that it contains a secret (called rolling salt) (i) shared by all the proxy
+nodes so that any node can validate ACK and (ii) updated periodically so
+that old cookies cannot be validated and we need not encode a timestamp for
+the cookie.  Also, ISN contains WScale, SACK, and ECN, not in TS val.  This
+is not to sacrifice any connection quality, where some customers turn off
+TCP timestamps option due to retro CVE.
+
+After 3WHS, the proxy restores SYN, encapsulates ACK into SYN, and forward
+the TCP-in-TCP packet to the backend server.  Our kernel module works at
+Netfilter input/output hooks and first feeds SYN to the TCP stack to
+initiate 3WHS.  When the module is triggered for SYN+ACK, it looks up the
+corresponding request socket and overwrites tcp_rsk(req)->snt_isn with the
+proxy's cookie.  Then, the module can complete 3WHS with the original ACK
+as is.
+
+This way, our SYN Proxy does not manage the ISN mappings nor wait for
+SYN+ACK from the backend thus can remain stateless.  It's working very
+well for high-bandwidth services like multiple Tbps, but we are looking
+for a way to drop the dirty hack and further optimise the sequences.
+
+If we could validate an arbitrary SYN Cookie on the backend server with
+BPF, the proxy would need not restore SYN nor pass it.  After validating
+ACK, the proxy node just needs to forward it, and then the server can do
+the lightweight validation (e.g. check if ACK came from proxy nodes, etc)
+and create a connection from the ACK.
+
+This series adds a new kfunc available on TC to create a reqsk and
+configure it based on the argument populated from SYN Cookie.
+
+    Usage:
+
+    struct tcp_cookie_attributes attr = {
+        .tcp_opt = {
+            .mss_clamp = mss,
+            .wscale_ok = wscale_ok,
+            .rcv_scale = recv_scale, /* Server's WScale < 15 */
+            .snd_scale = send_scale, /* Client's WScale < 15 */
+            .tstamp_ok = tstamp_ok,
+            .sack_ok = sack_ok,
+        },
+        .ecn_ok = ecn_ok,
+        .usec_ts_ok = usec_ts_ok,
+    };
+
+    skc = bpf_skc_lookup_tcp(...);
+    sk = (struct sock *)bpf_skc_to_tcp_sock(skc);
+    bpf_sk_assign_tcp_reqsk(skb, sk, attr, sizeof(attr));
+    bpf_sk_release(skc);
+
+[0]: https://lpc.events/event/17/contributions/1645/attachments/1350/2701/SYN_Proxy_at_Scale_with_BPF.pdf
+
+
+Changes:
+  v4:
+    * Patch 1 & 2
+      * s/CONFIG_SYN_COOKIE/CONFIG_SYN_COOKIES/
+    * Patch 1
+      * Don't set rcv_wscale for BPF SYN Cookie case.
+    * Patch 2
+      * Add test for tcp_opt.{unused,rcv_wscale} in kfunc
+      * Modify skb_steal_sock() to avoid resetting skb-sk
+      * Support SO_REUSEPORT lookup
+    * Patch 3
+      * Add CONFIG_SYN_COOKIES to Kconfig for CI
+      * Define BPF_F_CURRENT_NETNS
+
+  v3: https://lore.kernel.org/netdev/20231121184245.69569-1-kuniyu@amazon.com/
+    * Guard kfunc and req->syncookie part in inet6?_steal_sock() with
+      CONFIG_SYN_COOKIE
+
+  v2: https://lore.kernel.org/netdev/20231120222341.54776-1-kuniyu@amazon.com/
+    * Drop SOCK_OPS and move SYN Cookie validation logic to TC with kfunc.
+    * Add cleanup patches to reduce discrepancy between cookie_v[46]_check()
+
+  v1: https://lore.kernel.org/bpf/20231013220433.70792-1-kuniyu@amazon.com/
+
+
+Kuniyuki Iwashima (3):
+  bpf: tcp: Handle BPF SYN Cookie in cookie_v[46]_check().
+  bpf: tcp: Support arbitrary SYN Cookie.
+  selftest: bpf: Test bpf_sk_assign_tcp_reqsk().
+
+ include/net/request_sock.h                    |  35 ++
+ include/net/sock.h                            |  25 -
+ include/net/tcp.h                             |  27 +
+ net/core/filter.c                             | 102 +++-
+ net/core/sock.c                               |  14 +-
+ net/ipv4/syncookies.c                         |  62 +-
+ net/ipv6/syncookies.c                         |   9 +-
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  10 +
+ tools/testing/selftests/bpf/config            |   1 +
+ .../bpf/prog_tests/tcp_custom_syncookie.c     | 163 +++++
+ .../selftests/bpf/progs/test_siphash.h        |  64 ++
+ .../bpf/progs/test_tcp_custom_syncookie.c     | 573 ++++++++++++++++++
+ .../bpf/progs/test_tcp_custom_syncookie.h     | 162 +++++
+ 13 files changed, 1214 insertions(+), 33 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tcp_custom_syncookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_siphash.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
+
+-- 
+2.30.2
 
 
