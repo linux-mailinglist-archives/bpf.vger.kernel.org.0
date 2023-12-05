@@ -1,139 +1,128 @@
-Return-Path: <bpf+bounces-16722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E02A8051D7
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 12:16:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 102968051E5
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 12:17:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 138E71F2149A
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 11:16:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 420D81C20CB0
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 11:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C917456B68;
-	Tue,  5 Dec 2023 11:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FA95677A;
+	Tue,  5 Dec 2023 11:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IQrS/Mt0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dP4HIHup"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4121A1;
-	Tue,  5 Dec 2023 03:16:31 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-a1c890f9b55so54542266b.1;
-        Tue, 05 Dec 2023 03:16:31 -0800 (PST)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58962184;
+	Tue,  5 Dec 2023 03:17:43 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50bfa5a6cffso2337583e87.0;
+        Tue, 05 Dec 2023 03:17:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701774990; x=1702379790; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ti0EygLrXL1ybJV+2IwmkNvjqyvD5l8XhA94fC+ez5I=;
-        b=IQrS/Mt0jalyQNPuEp2OHaRHpB+o3D5drxbQ6PP53lztG2e5uxf8MsVeDS8D7+7PMn
-         8RkYZuwcad3Zup11PLM40MxhZOu8TFn9ysQgTePyFlajE0GR7pwgLzzxcpNRGDkbitwR
-         DFYLhBtBbb0Xm4L3rrZXgB9xwz0KkOXRwVdT+ijQvLHVh9zc7irbpVAPvitlUG5Qs7vW
-         VIskrv2HQpxj8GqfyZqoagKiIqshdz5Zwq8o70x5X9633myNWRvmbCizrLyGWZRE/Zdo
-         CBR2t4MrAizAT7E3ScKhKlpI1xK84/9hIFJiZFYmFA6J0bwG00adoTGKYus83Fa1mKkn
-         72+w==
+        d=gmail.com; s=20230601; t=1701775061; x=1702379861; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iI7MNYltXP/pFO87Lkqjtj0O5CyAgLwLAo0fkrJE6Hk=;
+        b=dP4HIHupoDaUrRdXC6/3nhxStEoAGkfozR7nMkZtdng+eB+A5PgdBy9gzD5A1b3FSF
+         EmVCp7aRzQbnCN20lKjaz9IAOT9eB6i7JbFLJyEvl8Fo3a2Hz+tv9dr6lwuCubVv0fVp
+         vObs1xqCl3urp4Ea5jrK+/VKR8rLCOvGDee2wF781mjNA1hy4fuLqKwPJj70ituzoDgu
+         +iUuqZQGl59e4EuRrXP0RfcMVZ/kmZmMr+jsIom3Y14mxQu2Xx94eKWJWQk2CFRRhkZD
+         VYI+OJtKAVo3qhRj3m09fTRXYHN1wXBy32jRq50qWTWidBczklwITM++GDpi2awQ9Clk
+         9JEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701774990; x=1702379790;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ti0EygLrXL1ybJV+2IwmkNvjqyvD5l8XhA94fC+ez5I=;
-        b=NRcqOpYH8QpYbB0OPfVvzMa81SoTTvUmvMsdYmVs9rk319j7YrIv+UGd3GdrS4oLls
-         MvBuDZb9f87FB8CK6Dd4o0S23PyrJtmiaktOdDwOK9m3yapGdHFAX6V/5xhWfUnC4jjz
-         dXF5cjDVbU8j6jWXRjaN6+cWKhzPFmyvWyHQaexeEUFg8BPb1B8hG4KEQqL9dwjNb9R9
-         AmZ2FnTrrDXiPxPh13PagHXKFSMtRfeN2H83HOD0rvobpsFCZtpVsQXtvI5cZOYtXIw+
-         6WJd7fNYxxY9ejhjLCQ38YE88EI2h1c6QkApkGeuKPK4DN1hCfqOpk/8jRMVnQA8QDmI
-         vEWg==
-X-Gm-Message-State: AOJu0Yxvqt9Ze4jWmzsIcgB+8l0h06gqjqkuEMQAgbPi3jwXoOchJS1Y
-	nULef01jJGpzyO79r8eBD1Q=
-X-Google-Smtp-Source: AGHT+IF3d9WCZ91k4YmR1hipO6U/99Y2ij76ZhU4TAQ7trpVtzdBDgNbaHMOf5TbJRmoNAyGVk54Zg==
-X-Received: by 2002:a17:906:dc:b0:a01:9d8b:db17 with SMTP id 28-20020a17090600dc00b00a019d8bdb17mr4727373eji.15.1701774990161;
-        Tue, 05 Dec 2023 03:16:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701775061; x=1702379861;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iI7MNYltXP/pFO87Lkqjtj0O5CyAgLwLAo0fkrJE6Hk=;
+        b=msAt2mlxO2Yfv9RjAx3Je1dnUYGhr7RR2xzVaC1RpYS++5a8jmnUhjQgWFkkDJcdDa
+         /3Wnk3bSD67Urbn+Vp8Ztc1ri1G4Mux4ainJEYch0R8cTrHH6v36cohFdj62aKr4Onso
+         S35HIaHtJ4496ipGH7Ov1KoCJfZPmk7tH4xHmrcqKORFOpyykT1qfnvVgLDrGD++wpnt
+         vxLLiL9ZZXCj+w0uzjfUdM+cX8zXpG0qe46B4Ene2PhROGNqGPOFl2YghAOs/X5KVW/g
+         OtZhEojAAetcguuZWV3vm1PWDOGOCXTARhqF1rsmweYEkm0Fkw0Ug/Me5GR1Cs3f6Hv3
+         HN/w==
+X-Gm-Message-State: AOJu0Yz+0N8fjhUDDQ0Bnn09UBHgDGeA/IwFSJqycxv70e7drF+nj/Nb
+	G1/wjoEZAn/AlIf35Gm4jRc=
+X-Google-Smtp-Source: AGHT+IHEN61nwDvELtOai4WeGBT9eS7LRDhWTpi6AarU8d/CaG3ducgh6GQhHOrB3Cg4T2+3Gc6DXw==
+X-Received: by 2002:a19:c507:0:b0:50b:feb2:dac9 with SMTP id w7-20020a19c507000000b0050bfeb2dac9mr873236lfe.2.1701775061066;
+        Tue, 05 Dec 2023 03:17:41 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170906194600b00a1712cbddebsm1761143eje.187.2023.12.05.03.16.29
+        by smtp.gmail.com with ESMTPSA id a15-20020aa7cf0f000000b0054ca7afdf35sm936627edy.86.2023.12.05.03.17.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 03:16:29 -0800 (PST)
+        Tue, 05 Dec 2023 03:17:40 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 5 Dec 2023 12:16:27 +0100
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>,
-	linux-kernel@vger.kernel.org,
+Date: Tue, 5 Dec 2023 12:17:38 +0100
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
 	Robert O'Callahan <robert@ocallahan.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH 1/2] perf/bpf: Allow a bpf program to suppress I/O
- signals.
-Message-ID: <ZW8Gi2QI5ceAJfab@krava>
+	Andrii Nakryiko <andrii@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
+ program suppresses SIGIO.
+Message-ID: <ZW8G0muteKBhP18a@krava>
 References: <20231204201406.341074-1-khuey@kylehuey.com>
- <20231204201406.341074-2-khuey@kylehuey.com>
- <CAEf4BzYtSXtgdO9C2w9OOKni68H-7UOExFJRBEij3HG2Qwn1Rg@mail.gmail.com>
+ <20231204201406.341074-3-khuey@kylehuey.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYtSXtgdO9C2w9OOKni68H-7UOExFJRBEij3HG2Qwn1Rg@mail.gmail.com>
+In-Reply-To: <20231204201406.341074-3-khuey@kylehuey.com>
 
-On Mon, Dec 04, 2023 at 02:18:49PM -0800, Andrii Nakryiko wrote:
-> On Mon, Dec 4, 2023 at 12:14 PM Kyle Huey <me@kylehuey.com> wrote:
-> >
-> > Returning zero from a bpf program attached to a perf event already
-> > suppresses any data output. This allows it to suppress I/O availability
-> > signals too.
+On Mon, Dec 04, 2023 at 12:14:06PM -0800, Kyle Huey wrote:
+> The test sets a hardware breakpoint and uses a bpf program to suppress the
+> I/O availability signal if the ip matches the expected value.
 > 
-> make sense, just one question below
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> ---
+>  .../selftests/bpf/prog_tests/perf_skip.c      | 95 +++++++++++++++++++
+>  .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
+>  2 files changed, 118 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
 > 
-> >
-> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> new file mode 100644
+> index 000000000000..b269a31669b7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> @@ -0,0 +1,95 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define _GNU_SOURCE
+> +#include <test_progs.h>
+> +#include "test_perf_skip.skel.h"
+> +#include <linux/hw_breakpoint.h>
+> +#include <sys/mman.h>
+> +
+> +#define BPF_OBJECT            "test_perf_skip.bpf.o"
+> +
+> +static void handle_sig(int)
+> +{
+> +	ASSERT_OK(1, "perf event not skipped");
+> +}
+> +
+> +static noinline int test_function(void)
+> +{
+> +	return 0;
+> +}
+> +
+> +void serial_test_perf_skip(void)
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-> > ---
-> >  kernel/events/core.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index b704d83a28b2..34d7b19d45eb 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -10417,8 +10417,10 @@ static void bpf_overflow_handler(struct perf_event *event,
-> >         rcu_read_unlock();
-> >  out:
-> >         __this_cpu_dec(bpf_prog_active);
-> > -       if (!ret)
-> > +       if (!ret) {
-> > +               event->pending_kill = 0;
-> >                 return;
-> > +       }
-> 
-> What's the distinction between event->pending_kill and
-> event->pending_wakeup? Should we do something about pending_wakeup?
-> Asking out of complete ignorance of all these perf specifics.
-> 
-
-I think zeroing pending_kill is enough.. when it's set the perf code
-sets pending_wakeup to call perf_event_wakeup in irq code that wakes
-up event's ring buffer readers and sends sigio if pending_kill is set
+does it need to be serial?
 
 jirka
-
-> 
-> >
-> >         event->orig_overflow_handler(event, data, regs);
-> >  }
-> > --
-> > 2.34.1
-> >
-> >
 
