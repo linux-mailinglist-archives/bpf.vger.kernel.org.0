@@ -1,262 +1,184 @@
-Return-Path: <bpf+bounces-16671-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16672-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F2F38042FD
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 00:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 23B5A804341
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:23:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C452E2813A8
-	for <lists+bpf@lfdr.de>; Mon,  4 Dec 2023 23:59:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2B612813DB
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 00:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8785F3B7A8;
-	Mon,  4 Dec 2023 23:59:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A641657;
+	Tue,  5 Dec 2023 00:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LfOOk2/+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KN8xQa0P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE5A129
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 15:59:04 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-a184d717de1so688925066b.1
-        for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 15:59:04 -0800 (PST)
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189FA101
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 16:23:35 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a1b6b65923eso224419166b.3
+        for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 16:23:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701734343; x=1702339143; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701735813; x=1702340613; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zPgou9vD0tKvAxW1dRyorH2kvaOsLo7T8wI0brMMyPg=;
-        b=LfOOk2/+Z/6An9MxSGYv1VtWGgWzGg5+B1X/oSyhuxoRDIIFxlzMyAIzTmtpl1KJXl
-         /35lQJOg0RmXoDzo+PvsiLZgePaFkIfl4Pd1vTGIWDC1mp+GP9+fGcj+Umyl680r5LF5
-         I+lYU5yxA8kL2/F605YbcvYcSamgDHG0tc4sLnR8C8218ZzPvq8Bi7G4pYoKukYhAloQ
-         EqMv701ccw0pOXWaLN6E20q4t+Cl6L9BChlPzaoNFqPR/str7BxHwkYIrSUUntYXJh7E
-         GDU71SXDIyrjcIQxZVV560/MS58Y7t8lVYwOLfLY8xA4lnMXR5HvZwwoaj8EtXK6Tx3Z
-         1lpg==
+        bh=A4erl9rvYBJF7+GyfYDY+q6CMHyP6y+Fe0EYbR9pcIE=;
+        b=KN8xQa0PYCZyHDuqj9hLWJphctBXbem88BrVleqeTzO2Md2M19FH5htbhYF1JBGA0G
+         H4hZOT0W00hCSztax6Jc/sH8XegLtNKxQJxmiASkWPJns2lhANklWTeXCnzNjJ3RdTNM
+         vAEoFq9HsHkYZv41YxFeQgwVhKygsp95fjb1XWJg2tb4Zt7xKf43q9KSPtbpN3KcQ/mw
+         HAoRKeV5L1N0iJIppKlwdcrgs/1MIkxDJ0u0iga8qQceCzSFTu5n0tEuUNUQgWM+AhKy
+         WgMNtgoGO6HI0uy8M9Lf4rxU/KSretL55AmgOjNfF9fafreFzCU4yt1uDVvCizzhM7/r
+         kNDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701734343; x=1702339143;
+        d=1e100.net; s=20230601; t=1701735813; x=1702340613;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zPgou9vD0tKvAxW1dRyorH2kvaOsLo7T8wI0brMMyPg=;
-        b=MIsxojrTPZNZNH/E3GbvhjnweF4KeSkXCLjH+FHayHGvIIx+9UVXFreDiQLN44jbF5
-         W7S5QUMhLbZlplzV6OODB8ZujDMR8phWCHgJB318W9RCx9KlR96HO5qmsAkHzuxLqph1
-         iy0Ye/WyPaZ9HoN31yCiBt8jvB8A7LjRRx6NVcv1lutElgMdiH45zKUyAa6+xptyL6Ud
-         ZbD9Mp/sjP+0LxUovkj6G7CUHzOtyYyOMjdsMapr1iKMNZgmXFdWYphxoTjyzW4X94X3
-         qmJYXbJJkm+WQ9F5jd0k9sq1wnTdVIkVfGJxH1TadK5d8X6n9LR6JYYZptYHm0M7+PFe
-         RqtA==
-X-Gm-Message-State: AOJu0YzdlpgDXxHG+fyDMDRL3ZE9W9P/cMHrLhJOlq3tz2tM/pGaVan1
-	R6/JlO4IKUhWe4S37mAyRcyl2Nobx/nd8vSdjKtVvOYKrWA=
-X-Google-Smtp-Source: AGHT+IECVmEysWl3mGZdWNhCZ0kf7SNhN9EyEKa0hZjTYd1o0QqjzXjjo7fcLShReZn09rp5NFGnM2ktOe4MsQ7vgUA=
-X-Received: by 2002:a17:906:378a:b0:a19:a19b:4235 with SMTP id
- n10-20020a170906378a00b00a19a19b4235mr2383143ejc.160.1701734342498; Mon, 04
- Dec 2023 15:59:02 -0800 (PST)
+        bh=A4erl9rvYBJF7+GyfYDY+q6CMHyP6y+Fe0EYbR9pcIE=;
+        b=V90KVGEMpRL4brM4UP5YbAgGpblaTTWM5l4cvD/cGSvLBMVcIs9d/bHFLSzW9zbWHp
+         lKMwtWg9F9NiBGNMmXAHjbv2zpmK6cIq+uDmpUxMLNL2O3WcPLbjROsRxbOyNbBSghCj
+         Icwsbr3H5ogQOuczfP4nH1lvxAgJ/tjpw6W5ZiE4twJmx3RjW8wVG082cTbXWM71lrqo
+         P0rkHC6PUukH8+cskzH9RYVBxOHe1TbZ96R9Tm/t4KeGjLr5R2+SWLPHSCrk0w9fbCCB
+         QqyDVUadJK9Go3MCO3YqbDcDkaYHN7QdWg4pPxjP8gkUwin+olwrXrml0ROWYAJn8I5O
+         /i/A==
+X-Gm-Message-State: AOJu0Yxu7NdG7Qxs1UZ0qgJv77C24vu68jJnt29z+MTDOi7LXIzrOHG5
+	MhdEFaCJMCi8qjzPsquauiPzczxaTunrBm3cbt8=
+X-Google-Smtp-Source: AGHT+IHO0/rYN51PVgVxFJWfUMp72ykCfMMVgJCzW1iSMfFI1bw3xoy73+hnkK21ZhdPEDs2Lp0Q1Ugm7amr80+NfmY=
+X-Received: by 2002:a17:906:f20c:b0:a19:a19b:4230 with SMTP id
+ gt12-20020a170906f20c00b00a19a19b4230mr2460062ejb.155.1701735813449; Mon, 04
+ Dec 2023 16:23:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231204153919.11967-1-andreimatei1@gmail.com>
- <CAEf4BzZ57kAWYDBwpxxAsWRyo5fvnHf5-R+OZuPSd1L-viQDig@mail.gmail.com>
- <CABWLsetTu3fBcJaVhC8D-ZDBR0n4HM5xkhk1pA9KA+_-nZy9cw@mail.gmail.com>
- <CAEf4BzYhn7wD102_5E0jqiP4yH7prb-RyTTHaF_3fuVPVN--Og@mail.gmail.com> <CABWLses4A1W4kMAqiEd8drL6PKiK7egk_btT7OH3C=LxC4vefQ@mail.gmail.com>
-In-Reply-To: <CABWLses4A1W4kMAqiEd8drL6PKiK7egk_btT7OH3C=LxC4vefQ@mail.gmail.com>
+References: <20231204192601.2672497-1-andrii@kernel.org> <20231204192601.2672497-4-andrii@kernel.org>
+ <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com>
+In-Reply-To: <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 4 Dec 2023 15:58:50 -0800
-Message-ID: <CAEf4Bzb6+dF5r4rvcPakoVS_+GOXVs=3wgPEvFMoiGxwB0evqA@mail.gmail.com>
-Subject: Re: [PATCH bpf V2 1/1] bpf: fix verification of indirect var-off
- stack access
-To: Andrei Matei <andreimatei1@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, sunhao.th@gmail.com
+Date: Mon, 4 Dec 2023 16:23:21 -0800
+Message-ID: <CAEf4BzZ0Ao7EF4PodPBxTdQphEt-_ezZyNDOzqds2XfXYpjsHg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 03/10] bpf: fix check for attempt to corrupt
+ spilled pointer
+To: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 4, 2023 at 3:28=E2=80=AFPM Andrei Matei <andreimatei1@gmail.com=
-> wrote:
+On Mon, Dec 4, 2023 at 2:12=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> On Mon, Dec 4, 2023 at 5:05=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Mon, Dec 4, 2023 at 11:52=E2=80=AFAM Andrei Matei <andreimatei1@gmai=
-l.com> wrote:
-> > >
-> > > [...]
-> > >
-> > > > >
-> > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > > index af2819d5c8ee..b646bdde09cd 100644
-> > > > > --- a/kernel/bpf/verifier.c
-> > > > > +++ b/kernel/bpf/verifier.c
-> > > > > @@ -6816,10 +6816,9 @@ static int check_stack_access_within_bound=
-s(
-> > > > >                         return -EACCES;
-> > > > >                 }
-> > > > >                 min_off =3D reg->smin_value + off;
-> > > > > +               max_off =3D reg->smax_value + off;
-> > > > >                 if (access_size > 0)
-> > > > > -                       max_off =3D reg->smax_value + off + acces=
-s_size - 1;
-> > > > > -               else
-> > > > > -                       max_off =3D min_off;
-> > > > > +                       max_off +=3D access_size - 1;
-> > > >
-> > > > this special casing of access_size =3D=3D 0 feels wrong (and I mean=
- before
-> > > > your patch as well).
-> > > >
-> > > > Looking at the code, we only really calculate max_off to check that=
- we
-> > > > don't go to a non-negative stack offset, e.g., r10+0 or r10+1 (and
-> > > > beyond).
-> > > >
-> > > > So given that, I propose to calculate max_off as an exclusive bound=
-,
-> > > > and instead of doing a mostly useless check_stack_slot_within_bound=
-s()
-> > > > call for it, just check that max_off is <=3D 0.
-> > > >
-> > > > Something like this:
-> > > >
-> > > > min_off =3D reg->smin_value + off;
-> > > > max_off =3D reg->smax_value + off + access_size;
-> > > > err =3D check_stack_slot_within_bounds(min_off, state, type);
-> > > > if (!err && max_off > 0)
-> > > >     err =3D -EINVAL; /* out of stack access into non-negative offse=
-ts */
-> > >
-> > > Dealing with access_size =3D=3D 0 indeed feels dubious to me, but I'm=
- not entirely
-> > > sure that your suggested code is better. min_off being inclusive and
-> > > max_off being
-> > > exclusive seems surprising. I'll do it if you want, I don't care too =
-much.
-> > > We could keep max_off exclusive, and still not call
-> > > check_stack_slot_within_bounds() for it:
-> > >
-> > >  min_off =3D reg->smin_value + off;
-> > >  max_off =3D reg->smax_value + off + access_size - 1;
-> > >  err =3D check_stack_slot_within_bounds(min_off, state, type);
-> > >  if (!err && max_off >=3D 0)
-> > >      err =3D -EINVAL; /* out of stack access into non-negative offset=
-s */
-> > >
-> >
-> > Yeah, we can do that. The reason I go for max_off being exclusive is
-> > because using half-opened ranges is very convenient [start, end) (end
-> > exclusive) is much more uniform and natural to handle compared to
-> > closed [start, end] (end inclusive), in all sorts of checks, including
-> > handling empty ranges. The math just works out better and more
-> > naturally. And it's not like this will be the first time where in BPF
-> > we have half-open ranges.
+> On Mon, 2023-12-04 at 11:25 -0800, Andrii Nakryiko wrote:
+> [...]
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 4f8a3c77eb80..73315e2f20d9 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -4431,7 +4431,7 @@ static int check_stack_write_fixed_off(struct bpf=
+_verifier_env *env,
+> >        * so it's aligned access and [off, off + size) are within stack =
+limits
+> >        */
+> >       if (!env->allow_ptr_leaks &&
+> > -         state->stack[spi].slot_type[0] =3D=3D STACK_SPILL &&
+> > +         is_spilled_reg(&state->stack[spi]) &&
+> >           size !=3D BPF_REG_SIZE) {
+> >               verbose(env, "attempt to corrupt spilled pointer on stack=
+\n");
+> >               return -EACCES;
 >
-> Yeah, after hitting send, I was also thinking that half-open is the more =
-common
-> interval representation; it just wasn't how this code right here was writ=
-ten.
-> Will do.
->
-> >
-> > > But now max_off can be below min_off, which again seems confusing.
-> >
-> > That's ok, the point here is to validate that we don't access stack
-> > out of bounds.
-> >
-> > >
-> > > What I'd really like to know is whether this whole zero access_size b=
-usiness
-> > > deserves to exist. Do you know what the point of verifying a zero-siz=
-ed access
-> > > is exactly / could we turn 0-byte access into 1-byte accesses and
-> > > verify that instead?
-> > > Because then there'd be no more special case to consider.
-> > >
-> >
-> >
-> > I think zero is a natural case that can come up, at least with
-> > helpers. As we have ARG_CONST_SIZE_OR_ZERO. So yeah, I wouldn't treat
-> > zero-sized access as 1-byte access, that seems to be more confusing
-> > and potentially broken.
->
-> Ack. Still, if you don't mind entertaining me further, two more questions=
-:
->
-> 1. What do you make of the code in check_mem_size_reg() [1] where we do
->
-> if (reg->umin_value =3D=3D 0) {
->   err =3D check_helper_mem_access(env, regno - 1, 0,
->         zero_size_allowed,
->         meta);
->
-> followed by
->
-> err =3D check_helper_mem_access(env, regno - 1,
->       reg->umax_value,
->       zero_size_allowed, meta);
->
-> [1] https://github.com/torvalds/linux/blob/bee0e7762ad2c6025b9f5245c040fc=
-c36ef2bde8/kernel/bpf/verifier.c#L7486-L7489
->
-> What's the point of the first check_helper_mem_access() call - the
-> zero-sized one
-> (given that we also have the second, broader, check)? Could it be
-> simply replaced by a
->
-> if (reg->umin_value =3D=3D 0 && !zero_sized_allowed)
->     err =3D no_bueno;
->
+> I think there is a small detail here.
+> slot_type[0] =3D=3D STACK_SPILL actually checks if a spill is 64-bit.
 
-Maybe Kumar (cc'ed) can chime in as well, but I suspect that's exactly
-this, and kind of similar to the min_off/max_off discussion we had. So
-yes, I suspect the above simple and straightforward check would be
-much more meaningful and targeted.
+Hm... I wonder if the check was written like this deliberately to
+prevent turning any spilled register into STACK_MISC?
 
-I gotta say that the reg->smin_value < 0 check is confusing, though,
-I'm not sure why we are mixing smin and umin/umax in this change...
-
-> ?
+> Thus, with this patch applied the test below does not pass.
+> Log fragment:
 >
-> 2. I believe you're saying that, if we were to verify zero-sized
-> accesses as 1-byte-sized accesses, we
-> might refuse some accesses that we permit today, and that wouldn't be
-> good. But what about
-> permitting zero-sized accesses with no further checks - i.e.
-> considering *any* pointer value to
-> be ok when the access_size =3D=3D 0 ? Would that be bad? The question is,
-> morally, what checks are
-> important (if any) when the size of access is zero?
-> Or to phrase another way - when a helper is called with a zero access
-> size, do we expect the helper
-> to do anything with that pointer, or do we expect the helper to be a no-o=
-p?
+>     1: (57) r0 &=3D 65535                   ; R0_w=3Dscalar(...,var_off=
+=3D(0x0; 0xffff))
+>     2: (63) *(u32 *)(r10 -8) =3D r0
+>     3: R0_w=3Dscalar(...,var_off=3D(0x0; 0xffff)) R10=3Dfp0 fp-8=3Dmmmmsc=
+alar(...,var_off=3D(0x0; 0xffff))
+>     3: (b7) r0 =3D 42                       ; R0_w=3D42
+>     4: (63) *(u32 *)(r10 -4) =3D r0
+>     attempt to corrupt spilled pointer on stack
 
-Helper itself might not be a no-op, but it should not write back to
-that pointer for sure. But I'd hate to have more special casing for
-zero-size read/write than necessary. So if we can structure the logic
-in a way that zero is a natural extension, I'd do that.
+What would happen if we have
+
+4: *(u16 *)(r10 - 8) =3D 123; ?
+
+and similarly
+
+4: *(u16 *)(r10 - 6) =3D 123; ?
+
+
+(16-bit overwrites of spilled 32-bit register)
+
+It should be rejected, can you please quickly check if they will be
+with the existing check?
+
+So it makes me feel like the intent was to reject any partial writes
+with spilled reg slots. We could probably improve that to just make
+sure that we don't turn spilled pointers into STACK_MISC in unpriv,
+but I'm not sure if it's worth doing that instead of keeping things
+simple?
+
+Alexei, do you remember what was the original intent?
 
 >
-> Thank you!
+> Admittedly, this happens only when the only capability is CAP_BPF and
+> we don't test this configuration.
 >
+> ---
 >
-> >
-> > > >
-> > > >
-> > > > Now, one more issue that jumped out at me is that we calculate min/=
-max
-> > > > off as a sum of smin/smax values (which are checked to be within
-> > > > +/-1<<29, all good so far) *and* insn->off, which can be a full s32=
-,
-> > > > it seems. So we are running into overflow/underflow territory with
-> > > > using int for min_off/max_off.
-> > > >
-> > > > While you are at it, can you please use s64 for all these calculati=
-ons? Thanks!
-> > > >
-> > > >
-> > > > >         }
-> > > > >
-> > > > >         err =3D check_stack_slot_within_bounds(min_off, state, ty=
-pe);
-> > >
-> > > Will do.
+> iff --git a/tools/testing/selftests/bpf/progs/verifier_basic_stack.c b/to=
+ols/testing/selftests/bpf/progs/verifier_basic_stack.c
+> index 359df865a8f3..61ada86e84df 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_basic_stack.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_basic_stack.c
+> @@ -97,4 +97,20 @@ __naked void misaligned_read_from_stack(void)
+>  "      ::: __clobber_all);
+>  }
+>
+> +SEC("socket")
+> +__success_unpriv
+> +__naked void spill_lo32_write_hi32(void)
+> +{
+> +       asm volatile ("                                 \
+> +       call %[bpf_get_prandom_u32];                    \
+> +       r0 &=3D 0xffff;                                   \
+> +       *(u32*)(r10 - 8) =3D r0;                          \
+> +       r0 =3D 42;                                        \
+> +       *(u32*)(r10 - 4) =3D r0;                          \
+> +       exit;                                           \
+> +"      :
+> +       : __imm(bpf_get_prandom_u32)
+> +       : __clobber_all);
+> +}
+> +
+>  char _license[] SEC("license") =3D "GPL";
+> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
+lftests/bpf/test_loader.c
+> index a350ecdfba4a..a5ad6b01175e 100644
+> --- a/tools/testing/selftests/bpf/test_loader.c
+> +++ b/tools/testing/selftests/bpf/test_loader.c
+> @@ -430,7 +430,7 @@ struct cap_state {
+>  static int drop_capabilities(struct cap_state *caps)
+>  {
+>         const __u64 caps_to_drop =3D (1ULL << CAP_SYS_ADMIN | 1ULL << CAP=
+_NET_ADMIN |
+> -                                   1ULL << CAP_PERFMON   | 1ULL << CAP_B=
+PF);
+> +                                   1ULL << CAP_PERFMON /*| 1ULL << CAP_B=
+PF */);
+>         int err;
+>
+>         err =3D cap_disable_effective(caps_to_drop, &caps->old_caps);
 
