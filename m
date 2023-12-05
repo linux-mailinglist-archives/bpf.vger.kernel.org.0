@@ -1,41 +1,77 @@
-Return-Path: <bpf+bounces-16735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52B28805716
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 15:20:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D3A1805776
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 15:37:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AC0FB20FDF
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 14:20:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 028091F21669
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 14:37:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC92565EAF;
-	Tue,  5 Dec 2023 14:20:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0DC5C8F2;
+	Tue,  5 Dec 2023 14:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YJVcJ0+I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HqjOdgX+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286795FF19;
-	Tue,  5 Dec 2023 14:20:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 90A0FC433C9;
-	Tue,  5 Dec 2023 14:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701786023;
-	bh=j6sTm6b/Klclmr/o77Mk8GQ3vewqy41L7xq9hXsGFxk=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=YJVcJ0+IWFOWe1pz/PVHCsdv++Kr50PwY8bluCaOeYykcQ048c7UYyAFgPD2ky1Ue
-	 ws9GQ9rOlmUUvWDLW1+GF51s0H4xcX+v+9eqbxhLXzb/AOKCm3hfImooOTlK/oSwdq
-	 s+u5dKrnPyvRWD3FldwHSkV+Jl0Pz6tQmGZbVqzG4e0SGwq0jZB3/9NMJdIm46S/jf
-	 4D69x8/Zz7+vlDv8JRp2QOaLMGM6+4noe/57hRbDfE9dHghEhUfU+VrEDYomQAwvZk
-	 ocS/NIVDIPE5nq802RrTzYkGvi+alfMK9Nk5QQ3lUVrrG5XIhZJyPB61G+23cRunMQ
-	 4XQNqFxiqWGUg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7991CC40C5E;
-	Tue,  5 Dec 2023 14:20:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930941B2;
+	Tue,  5 Dec 2023 06:37:36 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5c6734e0c22so1254618a12.0;
+        Tue, 05 Dec 2023 06:37:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701787056; x=1702391856; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=k5h/SbuONP4wuPNwT27Ivx9IPZWnlYKk8b9xx0pCx94=;
+        b=HqjOdgX+UawD2cLcIr+Agwt3R0cV4PCQ/Jrz3Te+NP07c3LGnKKhBKhGK0wFJVKQ66
+         ed8KeFbW/pnh85ZX/C4iDzrbTQEwy95siEVvwWv61A0HwjCJXiim/O3F2aQQ2ixSzOa4
+         PY8xLGa7wUsX//QlcJXhmyKCFtHrzoPhrMvb0RqwReqTXVpltblLbeWM1WjetSqbnhlg
+         x6BOJKT658Q9d9ZxcpyketTcYoNJMsYE4LMkO0jTDXjOR7fGi2unnaWf+XO3iVx6YJNu
+         Jj/q1m0GU7wAgcOxrBCefQ2Qy5xwQIrzJQWjMFCXxxxNJjKAi5SYd+40OuTHD2J9N0HJ
+         fUqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701787056; x=1702391856;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k5h/SbuONP4wuPNwT27Ivx9IPZWnlYKk8b9xx0pCx94=;
+        b=TZKFrasa7kfQ3mY84r2e85NlFuL4Ay1p4uSAdUB1XcayaQPb4m5XKsFfakUM3HfHHq
+         5eLos5vPxhbgj+q7deHqtzjUtexnnUZ6UVRiL6wbtc8OKD2fkOqlMJ95lvKaSvqr8axW
+         yoa4kuf87dppD95dB3E0T3qyewCEu+HF533KypoJyJ7f5U5AI9WMAkivbRtCU00p0PYh
+         lM9gydklz4bNjmTa7+US4pqYcJDhQJvQTdC02dDvnNYAHb+/Vxez/3u8QaAPg668ghSk
+         ZilfBFuzGLadIm2dbwc5crL8cHJJr4AdsQjFUwgKL+4GS7VulVd72mCx0k0s+mXCO+Xb
+         ITNA==
+X-Gm-Message-State: AOJu0YxaWFjpIi7k/rd8CUYkKfKw6GQtV1vbVEAlA+R7bSKLCd/nEEnx
+	ztfm1WugWlrh32dNmJuOUfA=
+X-Google-Smtp-Source: AGHT+IEBhvtfry3nDq6e2KJgymolBNDGUAKDmFRILeSMjKJjyJZluXTuAzOOUh6UyBL8gQ9GTdfcDA==
+X-Received: by 2002:a17:90b:1a86:b0:286:a454:6b44 with SMTP id ng6-20020a17090b1a8600b00286a4546b44mr1170570pjb.27.1701787055880;
+        Tue, 05 Dec 2023 06:37:35 -0800 (PST)
+Received: from vultr.guest ([149.28.194.201])
+        by smtp.gmail.com with ESMTPSA id g9-20020a1709026b4900b001a9b29b6759sm10286502plt.183.2023.12.05.06.37.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 06:37:35 -0800 (PST)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	tj@kernel.org
+Cc: bpf@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [RFC PATCH bpf-next 0/3] bpf: Expand bpf_cgrp_storage to support cgroup1 non-attach case 
+Date: Tue,  5 Dec 2023 14:37:22 +0000
+Message-Id: <20231205143725.4224-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -43,43 +79,37 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: Make sure we trigger metadata kfuncs
- for dst 8080
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170178602349.20405.10934749603735242016.git-patchwork-notify@kernel.org>
-Date: Tue, 05 Dec 2023 14:20:23 +0000
-References: <20231204174423.3460052-1-sdf@google.com>
-In-Reply-To: <20231204174423.3460052-1-sdf@google.com>
-To: Stanislav Fomichev <sdf@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
- jolsa@kernel.org, netdev@vger.kernel.org
 
-Hello:
+In the current cgroup1 environment, associating operations between a cgroup
+and applications in a BPF program requires storing a mapping of cgroup_id
+to application either in a hash map or maintaining it in userspace.
+However, by enabling bpf_cgrp_storage for cgroup1, it becomes possible to
+conveniently store application-specific information in cgroup-local storage
+and utilize it within BPF programs. Furthermore, enabling this feature for
+cgroup1 involves minor modifications for the non-attach case, streamlining
+the process.
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+However, when it comes to enabling this functionality for the cgroup1
+attach case, it presents challenges. Therefore, the decision is to focus on
+enabling it solely for the cgroup1 non-attach case at present. If
+attempting to attach to a cgroup1 fd, the operation will simply fail with
+the error code -EBADF.
 
-On Mon,  4 Dec 2023 09:44:23 -0800 you wrote:
-> xdp_metadata test if flaky sometimes:
-> verify_xsk_metadata:FAIL:rx_hash_type unexpected rx_hash_type: actual 8 != expected 0
-> 
-> Where 8 means XDP_RSS_TYPE_L4_ANY and is exported from veth driver
-> only when 'skb->l4_hash' condition is met. This makes me think
-> that the program is triggering again for some other packet.
-> 
-> [...]
+Yafang Shao (3):
+  bpf: Enable bpf_cgrp_storage for cgroup1 non-attach case
+  selftests/bpf: Add a new cgroup helper open_classid()
+  selftests/bpf: Add selftests for cgroup1 local storage
 
-Here is the summary with links:
-  - [bpf-next] selftests/bpf: Make sure we trigger metadata kfuncs for dst 8080
-    https://git.kernel.org/bpf/bpf-next/c/5ffb260f754b
+ kernel/bpf/bpf_cgrp_storage.c                      |  6 +-
+ tools/testing/selftests/bpf/cgroup_helpers.c       | 16 ++++
+ tools/testing/selftests/bpf/cgroup_helpers.h       |  1 +
+ .../selftests/bpf/prog_tests/cgrp_local_storage.c  | 92 +++++++++++++++++++++-
+ .../selftests/bpf/progs/cgrp_ls_recursion.c        | 84 ++++++++++++++++----
+ .../selftests/bpf/progs/cgrp_ls_sleepable.c        | 67 ++++++++++++++--
+ tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c | 82 +++++++++++++------
+ 7 files changed, 298 insertions(+), 50 deletions(-)
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+1.8.3.1
 
 
