@@ -1,629 +1,256 @@
-Return-Path: <bpf+bounces-16739-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16740-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55ECB80577D
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 15:38:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 473748057A9
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 15:43:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F497B20E6D
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 14:37:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F18192825FF
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 14:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FF5B5C8F2;
-	Tue,  5 Dec 2023 14:37:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B2465EC7;
+	Tue,  5 Dec 2023 14:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a83sCJQL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AjqocZkj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81165129;
-	Tue,  5 Dec 2023 06:37:40 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1d06d42a58aso30676605ad.0;
-        Tue, 05 Dec 2023 06:37:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701787060; x=1702391860; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jLNlcnn6IIodVjt3HMRzPbHdYWplCsrOQ7VtLRR6mVg=;
-        b=a83sCJQLHpQ1uzVTa8lZrurtu0L1sq3glO37l+i+5wE2PdhwZpGV3UPaZL98gRBSAl
-         HsVBdbP93qaHqFzjyW0R5TPhdiuackioqcWAN1QGTsbBZCuW1Ml29Yz0mVOZ/YC01078
-         KzuMRg81f7tHyQhtAOpD7M6czLygIdkVNl0gIr/soeFtLT3YD/LQTfLMgA1cq0Ezla1A
-         wP7alv2L/9uUyRJ1fKA+t9BZnkJYzEMd5+3rJm0kzA1MEHSAoEUgZAS9vni5Z/w3KA/U
-         wdEMy4bXq2JXyOAUluOOG9wZLQJvdDr7meXgs+q3ORR5vltAW8XHe52FVz2F2NluTgf7
-         wdCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701787060; x=1702391860;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jLNlcnn6IIodVjt3HMRzPbHdYWplCsrOQ7VtLRR6mVg=;
-        b=clfUvZ2klsSHUtT3T3nr/IpcqZxh5lpSkCbCZ4JJXdxDz+X+9k3UKRQSmHqlIyUXDe
-         w0cFl8yrUEoLddA12NaqoTTN+cnNyXvdTwMJqFN5n46yT5Jy4TJiuVnq+fhEjH9F04YP
-         mxV2F3NXXMHSm49wtXI0prfe7wtymlHT94mwzBbKnzfq+9hpiiNTdwWvHBMV6kyo7Axw
-         AW1rHgf8Nb9Ei9TOIFoTDdh1igL/F7KTX6EgLsM9+qkp1Nv9RDVlqzkhQQtPzjaFCUTG
-         jU3Z3BdQoNay7yP8aAot7BcudzxJ8mDhFHJNjCmPBOKXXYn4Tdur6bQnO+ltkVFdT7Bj
-         X+pw==
-X-Gm-Message-State: AOJu0YyuiqHDm4RaECFaNt3CqBWw4we+4tqL20fby5nbaDfuNZllc40N
-	Ja/vtMs6sctBVYOVpN80WV0=
-X-Google-Smtp-Source: AGHT+IGmbEHmldbToIktb5FJ3SQRRwB1TrI9XPo1StGNNewhXokPfTo4pg2XGVmQK73kxUCQOzVu/w==
-X-Received: by 2002:a17:902:a603:b0:1d0:6ffd:e2eb with SMTP id u3-20020a170902a60300b001d06ffde2ebmr5057080plq.133.1701787059874;
-        Tue, 05 Dec 2023 06:37:39 -0800 (PST)
-Received: from vultr.guest ([149.28.194.201])
-        by smtp.gmail.com with ESMTPSA id g9-20020a1709026b4900b001a9b29b6759sm10286502plt.183.2023.12.05.06.37.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 06:37:39 -0800 (PST)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	tj@kernel.org
-Cc: bpf@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [RFC PATCH bpf-next 3/3] selftests/bpf: Add selftests for cgroup1 local storage
-Date: Tue,  5 Dec 2023 14:37:25 +0000
-Message-Id: <20231205143725.4224-4-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20231205143725.4224-1-laoar.shao@gmail.com>
-References: <20231205143725.4224-1-laoar.shao@gmail.com>
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6EDD1B3;
+	Tue,  5 Dec 2023 06:43:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701787418; x=1733323418;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=2UGO64/TKU1y+jVPuWZMbdNxXeq7w/QiSBLabURT1UQ=;
+  b=AjqocZkjfhkH7m9yNW36OgEJlYIbF107401qlB3lyzNbtMFcRMZGBruy
+   /71cP0gdLDfo3Dt1l0pdcmElQoibf/GLRuQRYVRdaBEWrAwZAC0AU7XYN
+   SOybLvXgrOIjaRgCFxhGKtxoRRP1rXZKw4RtKL/tcg10hN2YxFVtBqP6J
+   cIHuTwK8xWCqxaExh4RAiURj837Iy98rcYXgNsYuHymvpo0ERW37QYQdw
+   N38vfsoohRKNzs8moHbNlYR7dqIdYMqnVkpAaz5s2Peftw3QQZwfkJEfv
+   q6aHDFbkfPqUOrLlvHARBcghiVrtnJOYiZwi7z16dDdoJkys4H9vlqMiY
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="7247817"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="7247817"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 06:43:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="888957767"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="888957767"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Dec 2023 06:43:35 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 06:43:35 -0800
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 5 Dec 2023 06:43:34 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 5 Dec 2023 06:43:34 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Tue, 5 Dec 2023 06:43:34 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Apx8ehq9i9fUM3SK6jhfO/O4CICeAYffak/JhFKbTE1C7mM3GWQwzCpvWbLsXq2FauV3FmTrtLW2KYV+VHZz3q4srC3FnIqbPtLAOLFVMbSwyVIgZfd1JAvg/bzdnB+TosFRKFVL6Kt/xSiCC1ek330YiYY0bf2AlLiZQ5IvuqJ9gM3CUXa1tKjiB1p+4w6lPQvypeB+X0eikHadNLusvXY5UaYEkpDy8ngM40DCpAo6CGKcQRhufKFyTuf+yfGibTpD7Ef7SK0tURIw1johs8isr3tOpOYzNRyzxzA/1JCC+OTaGsrGfBAARf+HCYj2BMk38u/jcAIWgnYuGagjWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2UGO64/TKU1y+jVPuWZMbdNxXeq7w/QiSBLabURT1UQ=;
+ b=MQp/+AyELo1aOeyXeO3S+3p0ADlVRTw4hmspXKFN3/smdHi7bCFIWM2dkA3ikGLABUxdt1R5nEf6d0yEyVLyVNNHpJMF8lxG0CUIcGph2sL+QplkbzjHpbxGko+QGt4V/fGAW7rm1kfOcifpO1sNydqD1ns54C0J53MswCI7as8oGjW4kn8Fc2ZQ1YlFpeQ0rDbrISD2K1FXvUszfqWWJwwq7gdPjssH6XqmHqbk07vdS63S1JFAxb4XtljfLt0YqYplOGxLpJF8b0D6zCCPoatmhorqRqN0dlRAEAwENl4Vyz9Ow4T374/GUfliXrCjHNjiqwCO5SNfvib2TTo8/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from PH0PR11MB5830.namprd11.prod.outlook.com (2603:10b6:510:129::20)
+ by DS7PR11MB7783.namprd11.prod.outlook.com (2603:10b6:8:e1::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.34; Tue, 5 Dec
+ 2023 14:43:31 +0000
+Received: from PH0PR11MB5830.namprd11.prod.outlook.com
+ ([fe80::6ffc:93a3:6d7f:383c]) by PH0PR11MB5830.namprd11.prod.outlook.com
+ ([fe80::6ffc:93a3:6d7f:383c%6]) with mapi id 15.20.7046.034; Tue, 5 Dec 2023
+ 14:43:31 +0000
+From: "Song, Yoong Siang" <yoong.siang.song@intel.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jesper Dangaard Brouer
+	<hawk@kernel.org>, "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Bjorn Topel
+	<bjorn@kernel.org>, "Karlsson, Magnus" <magnus.karlsson@intel.com>,
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Jonathan Lemon
+	<jonathan.lemon@gmail.com>, Alexei Starovoitov <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@google.com>, Lorenzo Bianconi <lorenzo@kernel.org>,
+	Tariq Toukan <tariqt@nvidia.com>, Willem de Bruijn <willemb@google.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau
+	<martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan
+	<shuah@kernel.org>, Alexandre Torgue <alexandre.torgue@foss.st.com>, "Jose
+ Abreu" <joabreu@synopsys.com>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "xdp-hints@xdp-project.net"
+	<xdp-hints@xdp-project.net>, "linux-stm32@st-md-mailman.stormreply.com"
+	<linux-stm32@st-md-mailman.stormreply.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>
+Subject: RE: [PATCH bpf-next v2 2/3] net: stmmac: Add txtime support to XDP ZC
+Thread-Topic: [PATCH bpf-next v2 2/3] net: stmmac: Add txtime support to XDP
+ ZC
+Thread-Index: AQHaJB8y3IJpv0o6sk+7VcjRfinq5bCUhocAgALJsHCAAewHgIABi3dQ
+Date: Tue, 5 Dec 2023 14:43:31 +0000
+Message-ID: <PH0PR11MB58305C7D394FD264F1634819D885A@PH0PR11MB5830.namprd11.prod.outlook.com>
+References: <20231201062421.1074768-1-yoong.siang.song@intel.com>
+ <20231201062421.1074768-3-yoong.siang.song@intel.com>
+ <5a660c0f-d3ed-47a2-b9be-098a224b8a12@kernel.org>
+ <PH0PR11MB5830F08AC202C42501D986C0D887A@PH0PR11MB5830.namprd11.prod.outlook.com>
+ <656de8eb14c24_2e983e29435@willemb.c.googlers.com.notmuch>
+In-Reply-To: <656de8eb14c24_2e983e29435@willemb.c.googlers.com.notmuch>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR11MB5830:EE_|DS7PR11MB7783:EE_
+x-ms-office365-filtering-correlation-id: f275083c-0dab-430f-53a8-08dbf5a08d59
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: eB146ooX5W9ZpE1g9+IzjfP3eANOdxx/1VP0P3XPKExLsyl3OaqXh9HjZEJbTxlVVxos4gyotx9Y4JqaoNXPiWOdfkUNPwDWe9UraJeqEIIzGdcikwMZ6LbEF/SNFg0BtPOg3hO45BiMzQ5h6BU9/If9Xq6AkEqZqnMQ3/6w4OufPNBxeWJU2AGLCVOudiSqis9hftNY/y4SwNZQjoJLxeyZqVDE84CoKcpuj3bywZrdvxse1O0zeN3MXK4udUQrQcrVf6O6aaLkywQ2ikadK0eQm42rr6PNm85bVM4Pliic4NtXkpu0njnZPlMzPB7IFzl1pLGhW1bWOg7vODcR9EcDTUravz/xbkegVpCPv4Ec7LcVgJYpMLDbv5qYxlqYNeJ05VcuegLfTFzdQ0LWwyw5Cpf+zyf1fu2HW7MYMlyj0QK8vr+MxQhv87FcthcupLnKoDHJevWIlWX12Zp8ns5/20j2KGwB5cCTmKrvxqtBrWinGcpXMH6ybYbRqrgFOUIKCkvuzkb5fsGHmYnFfLpNa+LGhnomXtmXMQI0c8G0grvaTQGegSONoSyNQKXgEWaVuBTVLraJHZvpt238JPIxm1g8yj5EztyMaIJB/GJYHanyCoJdRtjMkGg0JZXT
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5830.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(396003)(346002)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(54906003)(33656002)(316002)(76116006)(66446008)(64756008)(66476007)(66556008)(110136005)(66946007)(478600001)(71200400001)(5660300002)(7406005)(7416002)(38070700009)(2906002)(8676002)(52536014)(4326008)(8936002)(921008)(86362001)(82960400001)(83380400001)(55016003)(38100700002)(26005)(41300700001)(122000001)(6506007)(53546011)(7696005)(9686003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?M2JaMUwybGtORVhWbmJRZFN0WTFrcVBVRGVxd1NORERjNCtxdWpVdXJPcEtm?=
+ =?utf-8?B?WW8vZ3lIREQ0ZElsY01SN2I2dzczWjI1UVBsZ3hacER2cU81Z1F1NkJYK25n?=
+ =?utf-8?B?K1VBMzBXVnhwd3Zwd2tKYVliejZwQVd0MStnU29HRklMd2dNSVpSS0ZmRnRO?=
+ =?utf-8?B?SHVoWkhJMjk1azFvcDA4S3ZCMHExanlFTHhYNjczbU8wTWVES01aazR1ek1Q?=
+ =?utf-8?B?Y2Y0Tnd3cG5tVWdWL0d4NnIxb3lTdW5HQ0E1T2ZpRTN5UlBDaVFvYTJJd1JF?=
+ =?utf-8?B?VWZNaXZuOGtZWC9tdXRjd3hPbElqalpnQXFKNnhXOS9JT3JWTGoxZE1aQ3Bq?=
+ =?utf-8?B?Wkdla0RjT1pZNlhJZWlGZWNXN1lGaDhyUk1PcnNQNWZEektSMVQ2YnNSMnk4?=
+ =?utf-8?B?bHZHVFVLaFcyZ3Y3cWRVWDhqWnNhb2FIMDJXVnM2NFNkN3NqQzNIS3VQbng2?=
+ =?utf-8?B?dE40ckU2aFNzSUVXNXRiQTFMRW51ZkFtK0h0cTFVRXF1My9VTFZDaUdhTXQ2?=
+ =?utf-8?B?VVpVWWtnSWl5UUZxZVY1UVlmajlHUVdYYzIyR3JQaUZoRDJwQlhvVVM2Um9y?=
+ =?utf-8?B?dWRBSTZJREpEMlZyQkhsWnd2OUMzM0pjcXJsYjBvU291N3NEK0JCdmVQT3JT?=
+ =?utf-8?B?dWZtRE9XK28wU2NzRk81bUtVL2U2cThDaEFtVzdIbytvZlNXVW1DU3hCNER3?=
+ =?utf-8?B?RGtjZm1NRlQ5d0xVWXR0K3VBbFRKQjBaYWRlUjdNRVdpRks5VlhhQkxwRXNy?=
+ =?utf-8?B?eWw1LzJlUHRTcHlheW5CT1BPQXg0NC9GNjhQVU9ZK3p6MmtERWFUazc0eTNy?=
+ =?utf-8?B?SEgyRlphTkxweFl2UVdPaVhZUkZVZ1ZlVHdnT01xeW8wYzBmbmZqRWtsamhi?=
+ =?utf-8?B?TXRTSXdrcjB0MFFRWUp0cjMwZ1pTMlpXckVTVU1FSGdaREtlM0xqMm9OVmVh?=
+ =?utf-8?B?bTJjYzdodThvdmZqM2kyS1hKMi9rWkp4VFZPZk16VzY2bGR2dmdZZWRtb2xB?=
+ =?utf-8?B?UlpMK0M0Q1V5dkt2aG9WZEdwWFgvUjNiWDQvbUNQajh5NGxSQzJzTll2TGFO?=
+ =?utf-8?B?U2Z5VG1HZmgySlVCYU5WSE9hQjNwdjBvOC9Pcm9qTE9RNmEvUmo2WC9ZRktz?=
+ =?utf-8?B?c1Z6L1QzVlc4cXQyNFJEVHFBenB4UEJ5bnJkMldyRWwyQjlQVGR6REtUV1Bn?=
+ =?utf-8?B?UzM3cXpabEczakFiTWhKdnZBdVFoOFhKU3hkcXRWay9QQTFNaE96dXlKZ0Vy?=
+ =?utf-8?B?aGdXYlRqV0ZqMUt0VmVYUnZEbG9pNE1EU1FUWE9qTGI3dE5xbnYwZENhUDlI?=
+ =?utf-8?B?TCtVMTV4RWxDWlJaNkQvTDVoTDY0UzVwZXRDeGRqcDhHMFZaWmVFQ3l0YVR5?=
+ =?utf-8?B?bE5ZWkYrdDI2bm1uODloMGZEUGhNVDRic05BNkV4YnNnQlJzTEhqTXZ1WTFj?=
+ =?utf-8?B?YUFMVkNucGkzeHJSNlI5Vk9UNVQ3YTZtYmszU3p5MnlDL1FRbzdGYjVPSlYz?=
+ =?utf-8?B?b3BBUlcwUFVkcVQwcWVMeTRRQ0JtdTBIaEk3OVUrQjlwcW81ZUliSmVRV1VX?=
+ =?utf-8?B?UFZCR2xYSVBnaXJ0VVZqODNJc2gva0poN0ZkQzZlS0psdllxYTFEMHFZV0c2?=
+ =?utf-8?B?dU85NWNzR0IxT3g4aDJyU3BOVE1jbms2Y25SY24vYkI1TDZwNlZCZDZWc1VM?=
+ =?utf-8?B?ZlBPaS9IUlZYb2dFMGljd21xN3JXUDRiMUMwRmlaeVQ0ckNoWGNnUjRhRHBr?=
+ =?utf-8?B?WDZyaW9ySlRweXYyNkVUWEVWNjNVdzUyTVBtSUdMalozVFVFSzdXWWVTaFgy?=
+ =?utf-8?B?NW45L2Zmb1Jvald5TE40ZXRQUm9YM3NVYlMxRjVWQ1VwMFBuN25xV3RoWGx1?=
+ =?utf-8?B?ai9kaUFrYXg5eWlZVjgrMTB0cDFvUkZ2RVAydWtFdS9PZko0T2NQL0RMVVFs?=
+ =?utf-8?B?bWhidlllMlIrT1NWVnUrWXE2YVFTVEQramNJQWpuWmt0TFJNYWc2djJYN0Z5?=
+ =?utf-8?B?TUZNTUFuQUFuU01lSHVJZ1ZnWmliNnJvVlVjTFE5c3Y5V2RwMklwOWk3VDVJ?=
+ =?utf-8?B?TENmdlcramhIRVFxc0dreDNSelF5K0hUcGQ4d1lVcnZ3NElKRCtiN2d0RlRz?=
+ =?utf-8?B?Zi8vSE5Tbk1OYU4xV24walJsYkRKc3hsaytuWTNVckNwNGVYRGhiS2JzM2da?=
+ =?utf-8?B?a0E9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5830.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f275083c-0dab-430f-53a8-08dbf5a08d59
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2023 14:43:31.7785
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: MUP9lNVWNHec81oKlKUWkWX+Y8gV3NCgoK65bDA+IhbiIwx7P6IXlcqMcc/ef6/oU53hnSmPd/g0IUWkfrtPzmlsCiIz2F1yuuk05gxTz/0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB7783
+X-OriginatorOrg: intel.com
 
-Expanding the test coverage from cgroup2 to include cgroup1. The result
-as follows,
-
-Already existing test cases for cgroup2:
-  #48/1    cgrp_local_storage/tp_btf:OK
-  #48/2    cgrp_local_storage/attach_cgroup:OK
-  #48/3    cgrp_local_storage/recursion:OK
-  #48/4    cgrp_local_storage/negative:OK
-  #48/5    cgrp_local_storage/cgroup_iter_sleepable:OK
-  #48/6    cgrp_local_storage/yes_rcu_lock:OK
-  #48/7    cgrp_local_storage/no_rcu_lock:OK
-
-Expanded test cases for cgroup1:
-  #48/8    cgrp_local_storage/cgrp1_tp_btf:OK
-  #48/9    cgrp_local_storage/cgrp1_recursion:OK
-  #48/10   cgrp_local_storage/cgrp1_negative:OK
-  #48/11   cgrp_local_storage/cgrp1_iter_sleepable:OK
-  #48/12   cgrp_local_storage/cgrp1_yes_rcu_lock:OK
-  #48/13   cgrp_local_storage/cgrp1_no_rcu_lock:OK
-
-Summary:
-  #48      cgrp_local_storage:OK
-  Summary: 1/13 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- .../bpf/prog_tests/cgrp_local_storage.c       | 92 ++++++++++++++++++-
- .../selftests/bpf/progs/cgrp_ls_recursion.c   | 84 +++++++++++++----
- .../selftests/bpf/progs/cgrp_ls_sleepable.c   | 67 ++++++++++++--
- .../selftests/bpf/progs/cgrp_ls_tp_btf.c      | 82 ++++++++++++-----
- 4 files changed, 278 insertions(+), 47 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c b/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-index 63e776f4176e..9524cde4cbf6 100644
---- a/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-@@ -19,6 +19,9 @@ struct socket_cookie {
- 	__u64 cookie_value;
- };
- 
-+bool is_cgroup1;
-+int target_hid;
-+
- static void test_tp_btf(int cgroup_fd)
- {
- 	struct cgrp_ls_tp_btf *skel;
-@@ -29,6 +32,9 @@ static void test_tp_btf(int cgroup_fd)
- 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
- 		return;
- 
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+	skel->bss->target_hid = target_hid;
-+
- 	/* populate a value in map_b */
- 	err = bpf_map_update_elem(bpf_map__fd(skel->maps.map_b), &cgroup_fd, &val1, BPF_ANY);
- 	if (!ASSERT_OK(err, "map_update_elem"))
-@@ -130,6 +136,9 @@ static void test_recursion(int cgroup_fd)
- 	if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
- 		return;
- 
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+
- 	err = cgrp_ls_recursion__attach(skel);
- 	if (!ASSERT_OK(err, "skel_attach"))
- 		goto out;
-@@ -165,6 +174,9 @@ static void test_cgroup_iter_sleepable(int cgroup_fd, __u64 cgroup_id)
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
- 		return;
- 
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+
- 	bpf_program__set_autoload(skel->progs.cgroup_iter, true);
- 	err = cgrp_ls_sleepable__load(skel);
- 	if (!ASSERT_OK(err, "skel_load"))
-@@ -202,6 +214,8 @@ static void test_yes_rcu_lock(__u64 cgroup_id)
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
- 		return;
- 
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
- 	skel->bss->target_pid = syscall(SYS_gettid);
- 
- 	bpf_program__set_autoload(skel->progs.yes_rcu_lock, true);
-@@ -229,6 +243,9 @@ static void test_no_rcu_lock(void)
- 	if (!ASSERT_OK_PTR(skel, "skel_open"))
- 		return;
- 
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+
- 	bpf_program__set_autoload(skel->progs.no_rcu_lock, true);
- 	err = cgrp_ls_sleepable__load(skel);
- 	ASSERT_ERR(err, "skel_load");
-@@ -236,7 +253,26 @@ static void test_no_rcu_lock(void)
- 	cgrp_ls_sleepable__destroy(skel);
- }
- 
--void test_cgrp_local_storage(void)
-+static void test_cgrp1_no_rcu_lock(void)
-+{
-+	struct cgrp_ls_sleepable *skel;
-+	int err;
-+
-+	skel = cgrp_ls_sleepable__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	skel->bss->target_hid = target_hid;
-+	skel->bss->is_cgroup1 = is_cgroup1;
-+
-+	bpf_program__set_autoload(skel->progs.cgrp1_no_rcu_lock, true);
-+	err = cgrp_ls_sleepable__load(skel);
-+	ASSERT_OK(err, "skel_load");
-+
-+	cgrp_ls_sleepable__destroy(skel);
-+}
-+
-+void cgrp2_local_storage(void)
- {
- 	__u64 cgroup_id;
- 	int cgroup_fd;
-@@ -245,6 +281,8 @@ void test_cgrp_local_storage(void)
- 	if (!ASSERT_GE(cgroup_fd, 0, "join_cgroup /cgrp_local_storage"))
- 		return;
- 
-+	is_cgroup1 = 0;
-+	target_hid = -1;
- 	cgroup_id = get_cgroup_id("/cgrp_local_storage");
- 	if (test__start_subtest("tp_btf"))
- 		test_tp_btf(cgroup_fd);
-@@ -263,3 +301,55 @@ void test_cgrp_local_storage(void)
- 
- 	close(cgroup_fd);
- }
-+
-+void cgrp1_local_storage(void)
-+{
-+	int cgrp1_fd, cgrp1_hid, cgrp1_id, err;
-+
-+	/* Setup cgroup1 hierarchy */
-+	err = setup_classid_environment();
-+	if (!ASSERT_OK(err, "setup_classid_environment"))
-+		return;
-+
-+	err = join_classid();
-+	if (!ASSERT_OK(err, "join_cgroup1"))
-+		goto cleanup;
-+
-+	cgrp1_fd = open_classid();
-+	if (!ASSERT_GE(cgrp1_fd, 0, "cgroup1 fd"))
-+		goto cleanup;
-+
-+	cgrp1_id = get_classid_cgroup_id();
-+	if (!ASSERT_GE(cgrp1_id, 0, "cgroup1 id"))
-+		goto close_fd;
-+
-+	cgrp1_hid = get_cgroup1_hierarchy_id("net_cls");
-+	if (!ASSERT_GE(cgrp1_hid, 0, "cgroup1 hid"))
-+		goto close_fd;
-+	target_hid = cgrp1_hid;
-+	is_cgroup1 = 1;
-+
-+	if (test__start_subtest("cgrp1_tp_btf"))
-+		test_tp_btf(cgrp1_fd);
-+	if (test__start_subtest("cgrp1_recursion"))
-+		test_recursion(cgrp1_fd);
-+	if (test__start_subtest("cgrp1_negative"))
-+		test_negative();
-+	if (test__start_subtest("cgrp1_iter_sleepable"))
-+		test_cgroup_iter_sleepable(cgrp1_fd, cgrp1_id);
-+	if (test__start_subtest("cgrp1_yes_rcu_lock"))
-+		test_yes_rcu_lock(cgrp1_id);
-+	if (test__start_subtest("cgrp1_no_rcu_lock"))
-+		test_cgrp1_no_rcu_lock();
-+
-+close_fd:
-+	close(cgrp1_fd);
-+cleanup:
-+	cleanup_classid_environment();
-+}
-+
-+void test_cgrp_local_storage(void)
-+{
-+	cgrp2_local_storage();
-+	cgrp1_local_storage();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-index a043d8fefdac..610c2427fd93 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-+++ b/tools/testing/selftests/bpf/progs/cgrp_ls_recursion.c
-@@ -21,50 +21,100 @@ struct {
- 	__type(value, long);
- } map_b SEC(".maps");
- 
-+int target_hid = 0;
-+bool is_cgroup1 = 0;
-+
-+struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id) __ksym;
-+void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
-+
-+static void __on_lookup(struct cgroup *cgrp)
-+{
-+	bpf_cgrp_storage_delete(&map_a, cgrp);
-+	bpf_cgrp_storage_delete(&map_b, cgrp);
-+}
-+
- SEC("fentry/bpf_local_storage_lookup")
- int BPF_PROG(on_lookup)
- {
- 	struct task_struct *task = bpf_get_current_task_btf();
-+	struct cgroup *cgrp;
-+
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
- 
--	bpf_cgrp_storage_delete(&map_a, task->cgroups->dfl_cgrp);
--	bpf_cgrp_storage_delete(&map_b, task->cgroups->dfl_cgrp);
-+		__on_lookup(cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_lookup(task->cgroups->dfl_cgrp);
- 	return 0;
- }
- 
--SEC("fentry/bpf_local_storage_update")
--int BPF_PROG(on_update)
-+static void __on_update(struct cgroup *cgrp)
- {
--	struct task_struct *task = bpf_get_current_task_btf();
- 	long *ptr;
- 
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (ptr)
- 		*ptr += 1;
- 
--	ptr = bpf_cgrp_storage_get(&map_b, task->cgroups->dfl_cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	ptr = bpf_cgrp_storage_get(&map_b, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (ptr)
- 		*ptr += 1;
-+}
- 
-+SEC("fentry/bpf_local_storage_update")
-+int BPF_PROG(on_update)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+	struct cgroup *cgrp;
-+
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
-+
-+		__on_update(cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_update(task->cgroups->dfl_cgrp);
- 	return 0;
- }
- 
--SEC("tp_btf/sys_enter")
--int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+static void __on_enter(struct pt_regs *regs, long id, struct cgroup *cgrp)
- {
--	struct task_struct *task;
- 	long *ptr;
- 
--	task = bpf_get_current_task_btf();
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (ptr)
- 		*ptr = 200;
- 
--	ptr = bpf_cgrp_storage_get(&map_b, task->cgroups->dfl_cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	ptr = bpf_cgrp_storage_get(&map_b, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (ptr)
- 		*ptr = 100;
-+}
-+
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task = bpf_get_current_task_btf();
-+	struct cgroup *cgrp;
-+
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
-+
-+		__on_enter(regs, id, cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_enter(regs, id, task->cgroups->dfl_cgrp);
- 	return 0;
- }
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c b/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-index 4c7844e1dbfa..985ff419249c 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-+++ b/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-@@ -17,7 +17,11 @@ struct {
- 
- __u32 target_pid;
- __u64 cgroup_id;
-+int target_hid;
-+bool is_cgroup1;
- 
-+struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id) __ksym;
-+void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
- void bpf_rcu_read_lock(void) __ksym;
- void bpf_rcu_read_unlock(void) __ksym;
- 
-@@ -37,23 +41,56 @@ int cgroup_iter(struct bpf_iter__cgroup *ctx)
- 	return 0;
- }
- 
-+static void __no_rcu_lock(struct cgroup *cgrp)
-+{
-+	long *ptr;
-+
-+	/* Note that trace rcu is held in sleepable prog, so we can use
-+	 * bpf_cgrp_storage_get() in sleepable prog.
-+	 */
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
-+				   BPF_LOCAL_STORAGE_GET_F_CREATE);
-+	if (ptr)
-+		cgroup_id = cgrp->kn->id;
-+}
-+
- SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
--int no_rcu_lock(void *ctx)
-+int cgrp1_no_rcu_lock(void *ctx)
- {
- 	struct task_struct *task;
- 	struct cgroup *cgrp;
--	long *ptr;
-+
-+	if (!is_cgroup1)
-+		return 0;
-+
-+	task = bpf_get_current_task_btf();
-+	if (task->pid != target_pid)
-+		return 0;
-+
-+	/* bpf_task_get_cgroup1 can work in sleepable prog */
-+	cgrp = bpf_task_get_cgroup1(task, target_hid);
-+	if (!cgrp)
-+		return 0;
-+
-+	__no_rcu_lock(cgrp);
-+	bpf_cgroup_release(cgrp);
-+	return 0;
-+}
-+
-+SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-+int no_rcu_lock(void *ctx)
-+{
-+	struct task_struct *task;
-+
-+	if (is_cgroup1)
-+		return 0;
- 
- 	task = bpf_get_current_task_btf();
- 	if (task->pid != target_pid)
- 		return 0;
- 
- 	/* task->cgroups is untrusted in sleepable prog outside of RCU CS */
--	cgrp = task->cgroups->dfl_cgrp;
--	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
--				   BPF_LOCAL_STORAGE_GET_F_CREATE);
--	if (ptr)
--		cgroup_id = cgrp->kn->id;
-+	__no_rcu_lock(task->cgroups->dfl_cgrp);
- 	return 0;
- }
- 
-@@ -68,6 +105,22 @@ int yes_rcu_lock(void *ctx)
- 	if (task->pid != target_pid)
- 		return 0;
- 
-+	if (is_cgroup1) {
-+		bpf_rcu_read_lock();
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp) {
-+			bpf_rcu_read_unlock();
-+			return 0;
-+		}
-+
-+		ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
-+		if (ptr)
-+			cgroup_id = cgrp->kn->id;
-+		bpf_cgroup_release(cgrp);
-+		bpf_rcu_read_unlock();
-+		return 0;
-+	}
-+
- 	bpf_rcu_read_lock();
- 	cgrp = task->cgroups->dfl_cgrp;
- 	/* cgrp is trusted under RCU CS */
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c b/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
-index 9ebb8e2fe541..1c348f000f38 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
-+++ b/tools/testing/selftests/bpf/progs/cgrp_ls_tp_btf.c
-@@ -27,62 +27,100 @@ pid_t target_pid = 0;
- int mismatch_cnt = 0;
- int enter_cnt = 0;
- int exit_cnt = 0;
-+int target_hid = 0;
-+bool is_cgroup1 = 0;
- 
--SEC("tp_btf/sys_enter")
--int BPF_PROG(on_enter, struct pt_regs *regs, long id)
-+struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id) __ksym;
-+void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
-+
-+static void __on_enter(struct pt_regs *regs, long id, struct cgroup *cgrp)
- {
--	struct task_struct *task;
- 	long *ptr;
- 	int err;
- 
--	task = bpf_get_current_task_btf();
--	if (task->pid != target_pid)
--		return 0;
--
- 	/* populate value 0 */
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
- 				   BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (!ptr)
--		return 0;
-+		return;
- 
- 	/* delete value 0 */
--	err = bpf_cgrp_storage_delete(&map_a, task->cgroups->dfl_cgrp);
-+	err = bpf_cgrp_storage_delete(&map_a, cgrp);
- 	if (err)
--		return 0;
-+		return;
- 
- 	/* value is not available */
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0, 0);
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0, 0);
- 	if (ptr)
--		return 0;
-+		return;
- 
- 	/* re-populate the value */
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
- 				   BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (!ptr)
--		return 0;
-+		return;
- 	__sync_fetch_and_add(&enter_cnt, 1);
- 	*ptr = MAGIC_VALUE + enter_cnt;
--
--	return 0;
- }
- 
--SEC("tp_btf/sys_exit")
--int BPF_PROG(on_exit, struct pt_regs *regs, long id)
-+SEC("tp_btf/sys_enter")
-+int BPF_PROG(on_enter, struct pt_regs *regs, long id)
- {
- 	struct task_struct *task;
--	long *ptr;
-+	struct cgroup *cgrp;
- 
- 	task = bpf_get_current_task_btf();
- 	if (task->pid != target_pid)
- 		return 0;
- 
--	ptr = bpf_cgrp_storage_get(&map_a, task->cgroups->dfl_cgrp, 0,
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
-+
-+		__on_enter(regs, id, cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_enter(regs, id, task->cgroups->dfl_cgrp);
-+	return 0;
-+}
-+
-+static void __on_exit(struct pt_regs *regs, long id, struct cgroup *cgrp)
-+{
-+	long *ptr;
-+
-+	ptr = bpf_cgrp_storage_get(&map_a, cgrp, 0,
- 				   BPF_LOCAL_STORAGE_GET_F_CREATE);
- 	if (!ptr)
--		return 0;
-+		return;
- 
- 	__sync_fetch_and_add(&exit_cnt, 1);
- 	if (*ptr != MAGIC_VALUE + exit_cnt)
- 		__sync_fetch_and_add(&mismatch_cnt, 1);
-+}
-+
-+SEC("tp_btf/sys_exit")
-+int BPF_PROG(on_exit, struct pt_regs *regs, long id)
-+{
-+	struct task_struct *task;
-+	struct cgroup *cgrp;
-+
-+	task = bpf_get_current_task_btf();
-+	if (task->pid != target_pid)
-+		return 0;
-+
-+	if (is_cgroup1) {
-+		cgrp = bpf_task_get_cgroup1(task, target_hid);
-+		if (!cgrp)
-+			return 0;
-+
-+		__on_exit(regs, id, cgrp);
-+		bpf_cgroup_release(cgrp);
-+		return 0;
-+	}
-+
-+	__on_exit(regs, id, task->cgroups->dfl_cgrp);
- 	return 0;
- }
--- 
-2.30.1 (Apple Git-130)
-
+T24gTW9uZGF5LCBEZWNlbWJlciA0LCAyMDIzIDEwOjU4IFBNLCBXaWxsZW0gZGUgQnJ1aWpuIHdy
+b3RlOg0KPlNvbmcsIFlvb25nIFNpYW5nIHdyb3RlOg0KPj4gT24gRnJpZGF5LCBEZWNlbWJlciAx
+LCAyMDIzIDExOjAyIFBNLCBKZXNwZXIgRGFuZ2FhcmQgQnJvdWVyIHdyb3RlOg0KPj4gPk9uIDEy
+LzEvMjMgMDc6MjQsIFNvbmcgWW9vbmcgU2lhbmcgd3JvdGU6DQo+PiA+PiBUaGlzIHBhdGNoIGVu
+YWJsZXMgdHh0aW1lIHN1cHBvcnQgdG8gWERQIHplcm8gY29weSB2aWEgWERQIFR4DQo+PiA+PiBt
+ZXRhZGF0YSBmcmFtZXdvcmsuDQo+PiA+Pg0KPj4gPj4gU2lnbmVkLW9mZi1ieTogU29uZyBZb29u
+ZyBTaWFuZzx5b29uZy5zaWFuZy5zb25nQGludGVsLmNvbT4NCj4+ID4+IC0tLQ0KPj4gPj4gICBk
+cml2ZXJzL25ldC9ldGhlcm5ldC9zdG1pY3JvL3N0bW1hYy9zdG1tYWMuaCAgICAgIHwgIDIgKysN
+Cj4+ID4+ICAgZHJpdmVycy9uZXQvZXRoZXJuZXQvc3RtaWNyby9zdG1tYWMvc3RtbWFjX21haW4u
+YyB8IDEzICsrKysrKysrKysrKysNCj4+ID4+ICAgMiBmaWxlcyBjaGFuZ2VkLCAxNSBpbnNlcnRp
+b25zKCspDQo+PiA+DQo+PiA+SSB0aGluayB3ZSBuZWVkIHRvIHNlZSBvdGhlciBkcml2ZXJzIHVz
+aW5nIHRoaXMgbmV3IGZlYXR1cmUgdG8gZXZhbHVhdGUNCj4+ID5pZiBBUEkgaXMgc2FuZS4NCj4+
+ID4NCj4+ID5JIHN1Z2dlc3QgaW1wbGVtZW50aW5nIHRoaXMgZm9yIGlnYyBkcml2ZXIgKGNoaXAg
+aTIyNSkgYW5kIGFsc28gZm9yIGlnYg0KPj4gPihpMjEwIGNoaXApIHRoYXQgYm90aCBzdXBwb3J0
+IHRoaXMga2luZCBvZiBMYXVuY2hUaW1lIGZlYXR1cmUgaW4gSFcuDQo+PiA+DQo+PiA+VGhlIEFQ
+SSBhbmQgc3RtbWFjIGRyaXZlciB0YWtlcyBhIHU2NCBhcyB0aW1lLg0KPj4gPkknbSB3b25kZXJp
+bmcgaG93IHRoaXMgYXBwbGllcyB0byBpMjEwIHRoYXRbMV0gaGF2ZSAyNS1iaXQgZm9yDQo+PiA+
+TGF1bmNoVGltZSAod2l0aCAzMiBuYW5vc2VjIGdyYW51bGFyaXR5KSBsaW1pdGluZyBMYXVuY2hU
+aW1lIG1heCAwLjUNCj4+ID5zZWNvbmQgaW50byB0aGUgZnV0dXJlLg0KPj4gPkFuZCBpMjI1IHRo
+YXQgWzFdIGhhdmUgMzAtYml0IG1heCAxIHNlY29uZCBpbnRvIHRoZSBmdXR1cmUuDQo+PiA+DQo+
+PiA+DQo+PiA+WzFdDQo+PiA+aHR0cHM6Ly9naXRodWIuY29tL3hkcC1wcm9qZWN0L3hkcC0NCj4+
+ID5wcm9qZWN0L2Jsb2IvbWFzdGVyL2FyZWFzL3Rzbi9jb2RlMDFfZm9sbG93X3FkaXNjX1RTTl9v
+ZmZsb2FkLm9yZw0KPj4NCj4+IEkgYW0gdXNpbmcgdTY0IGZvciBsYXVuY2ggdGltZSBiZWNhdXNl
+IGV4aXN0aW5nIEVEVCBmcmFtZXdvcmsgaXMgdXNpbmcgaXQuDQo+PiBSZWZlciB0byBzdHJ1Y3Qg
+c2tfYnVmZiBiZWxvdy4gQm90aCB1NjQgYW5kIGt0aW1lX3QgY2FuIGJlIHVzZWQgYXMgbGF1bmNo
+IHRpbWUuDQo+PiBJIGNob29zZSB1NjQgYmVjYXVzZSBrdGltZV90IG9mdGVuIHJlcXVpcmVzIGFk
+ZGl0aW9uYWwgdHlwZSBjb252ZXJzaW9uIGFuZA0KPj4gd2UgZGlkbid0IGV4cGVjdCBuZWdhdGl2
+ZSB2YWx1ZSBvZiB0aW1lLg0KPj4NCj4+IGluY2x1ZGUvbGludXgvc2tidWZmLmgtNzQ0LSAqICAg
+QHRzdGFtcDogVGltZSB3ZSBhcnJpdmVkL2xlZnQNCj4+IGluY2x1ZGUvbGludXgvc2tidWZmLmg6
+NzQ1LSAqICAgQHNrYl9tc3RhbXBfbnM6IChha2EgQHRzdGFtcCkgZWFybGllc3QgZGVwYXJ0dXJl
+DQo+dGltZTsgc3RhcnQgcG9pbnQNCj4+IGluY2x1ZGUvbGludXgvc2tidWZmLmgtNzQ2LSAqICAg
+ICAgICAgICBmb3IgcmV0cmFuc21pdCB0aW1lcg0KPj4gLS0NCj4+IGluY2x1ZGUvbGludXgvc2ti
+dWZmLmgtODgwLSAgICAgdW5pb24gew0KPj4gaW5jbHVkZS9saW51eC9za2J1ZmYuaC04ODEtICAg
+ICAgICAgICAgIGt0aW1lX3QgICAgICAgICB0c3RhbXA7DQo+PiBpbmNsdWRlL2xpbnV4L3NrYnVm
+Zi5oOjg4Mi0gICAgICAgICAgICAgdTY0ICAgICAgICAgICAgIHNrYl9tc3RhbXBfbnM7IC8qIGVh
+cmxpZXN0IGRlcGFydHVyZQ0KPnRpbWUgKi8NCj4+IGluY2x1ZGUvbGludXgvc2tidWZmLmgtODgz
+LSAgICAgfTsNCj4+DQo+PiB0c3RhbXAvc2tiX21zdGFtcF9ucyBhcmUgdXNlZCBieSB2YXJpb3Vz
+IGRyaXZlcnMgZm9yIGxhdW5jaCB0aW1lIHN1cHBvcnQNCj4+IG9uIG5vcm1hbCBwYWNrZXQsIHNv
+IEkgdGhpbmsgdTY0IHNob3VsZCBiZSAiZnJpZW5kbHkiIHRvIGFsbCB0aGUgZHJpdmVycy4gRm9y
+IGFuDQo+PiBleGFtcGxlLCBpZ2MgZHJpdmVyIHdpbGwgdGFrZSBsYXVuY2ggdGltZSBmcm9tIHRz
+dGFtcCBhbmQgcmVjYWxjdWxhdGUgaXQNCj4+IGFjY29yZGluZ2x5IChpMjI1IGV4cGVjdCB1c2Vy
+IHRvIHByb2dyYW0gImRlbHRhIHRpbWUiIGluc3RlYWQgb2YgInRpbWUiIGludG8NCj4+IEhXIHJl
+Z2lzdGVyKS4NCj4+DQo+PiBkcml2ZXJzL25ldC9ldGhlcm5ldC9pbnRlbC9pZ2MvaWdjX21haW4u
+Yy0xNjAyLSB0eHRpbWUgPSBza2ItPnRzdGFtcDsNCj4+IGRyaXZlcnMvbmV0L2V0aGVybmV0L2lu
+dGVsL2lnYy9pZ2NfbWFpbi5jLTE2MDMtIHNrYi0+dHN0YW1wID0ga3RpbWVfc2V0KDAsIDApOw0K
+Pj4gZHJpdmVycy9uZXQvZXRoZXJuZXQvaW50ZWwvaWdjL2lnY19tYWluLmM6MTYwNC0gbGF1bmNo
+X3RpbWUgPQ0KPmlnY190eF9sYXVuY2h0aW1lKHR4X3JpbmcsIHR4dGltZSwgJmZpcnN0X2ZsYWcs
+ICZpbnNlcnRfZW1wdHkpOw0KPj4NCj4+IERvIHlvdSB0aGluayB0aGlzIGlzIGVub3VnaCB0byBz
+YXkgdGhlIEFQSSBpcyBzYW5lPw0KPg0KPnU2NCBuc2VjIHNvdW5kcyBzYW5lIHRvIGJlLiBJdCBt
+dXN0IGJlIG1hZGUgZXhwbGljaXQgd2l0aCBjbG9jayBzb3VyY2UNCj5pdCBpcyBhZ2FpbnN0Lg0K
+Pg0KDQpUaGUgdTY0IGxhdW5jaCB0aW1lIHNob3VsZCBiYXNlIG9uIE5JQyBQVFAgaGFyZHdhcmUg
+Y2xvY2sgKFBIQykuDQpJIHdpbGwgYWRkIGRvY3VtZW50YXRpb24gc2F5aW5nIHdoaWNoIGNsb2Nr
+IHNvdXJjZSBpdCBpcyBhZ2FpbnN0DQoNCj5Tb21lIGFwcGxpY2F0aW9ucyBjb3VsZCB3YW50IHRv
+IGRvIHRoZSBjb252ZXJzaW9uIGZyb20gYSBjbG9jayBzb3VyY2UNCj50byByYXcgTklDIGN5Y2xl
+IGNvdW50ZXIgaW4gdXNlcnNwYWNlIG9yIEJQRiBhbmQgcHJvZ3JhbSB0aGUgcmF3DQo+dmFsdWUu
+IFNvIGl0IG1heSBiZSB3b3J0aHdoaWxlIHRvIGFkZCBhbiBjbG9jayBzb3VyY2UgYXJndW1lbnQg
+LS0gZXZlbg0KPmlmIGluaXRpYWxseSBvbmx5IENMT0NLX01PTk9UT05JQyBpcyBzdXBwb3J0ZWQu
+DQoNClNvcnJ5LCBub3Qgc28gdW5kZXJzdGFuZCB5b3VyIHN1Z2dlc3Rpb24gb24gYWRkaW5nIGNs
+b2NrIHNvdXJjZSBhcmd1bWVudC4NCkFyZSB5b3Ugc3VnZ2VzdGluZyB0byBhZGQgY2xvY2sgc291
+cmNlIGZvciB0aGUgc2VsZnRlc3QgeGRwX2h3X21ldGFkYXRhIGFwcHM/DQpJTUhPLCBubyBuZWVk
+IHRvIGFkZCBjbG9jayBzb3VyY2UgYXMgdGhlIGNsb2NrIHNvdXJjZSBmb3IgbGF1bmNoIHRpbWUN
+CnNob3VsZCBhbHdheXMgYmFzZSBvbiBOSUMgUEhDLg0KDQo+DQo+U2VlIHRvb2xzL3Rlc3Rpbmcv
+c2VsZnRlc3RzL25ldC9zb190eHRpbWUuc2ggZm9yIGhvdyB0aGUgRlEgYW5kIEVURg0KPnFkaXNj
+cyBhbHJlYWR5IGRpc2FncmVlIG9uIHRoZSBjbG9jayBzb3VyY2UgdGhhdCB0aGV5IHVzZS4NCj4N
+Cg0KDQogDQo=
 
