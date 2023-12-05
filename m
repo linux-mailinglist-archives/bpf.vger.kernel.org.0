@@ -1,163 +1,236 @@
-Return-Path: <bpf+bounces-16754-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16755-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7002805C9F
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:53:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 686FA805CCF
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 19:04:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D09B1F2163D
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 17:53:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88D0E1C20FA2
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:03:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3806A33F;
-	Tue,  5 Dec 2023 17:53:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A916A355;
+	Tue,  5 Dec 2023 18:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jDzxqxX4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9753F129
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 09:53:26 -0800 (PST)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d87607d2c2so5971355a34.1
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 09:53:26 -0800 (PST)
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C127490;
+	Tue,  5 Dec 2023 10:03:47 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id af79cd13be357-77d8f9159fbso323096485a.2;
+        Tue, 05 Dec 2023 10:03:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701799427; x=1702404227; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mtqmpldzJhepZSlcxwawCnd6BYpTKMMQiQbo2+VQqDs=;
+        b=jDzxqxX48qnzrFkI2Mjy7S6pIDdUytPY6+SEGY+S+x2V9kGMfDzFyXLXZs9BlnmsA9
+         Mli8NEPpO2jZJRt/4iv8Yf75m38V4e8GvnL1tdjTPdR20nQ055CnxD51xsTvB6ksf7QG
+         B/iBw15ASauQj4bNLB8gfQp0CaeTr7rOv3nuNqP4Se1cyxZMPRC7bNdN9MnwZ8vh0chv
+         SYuTwk0nO/PzfRsjv7/7L+AXIsKhkRSITyPdzq4bhekioT88dDteUowXa6UlocvEGiJg
+         WnmFBq1zwoSu/+pn0D8jLltI5RMj8d6PAEpnjyHKbnF/uFA6q8+5L16chsvxrjnjzZRC
+         Bcpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701798806; x=1702403606;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mmF1E4cgql5JMVIjcXLrnsYwldekR7/sa+hhIzCwXi0=;
-        b=CzEEjqJgEBsCuGTFsKzhIyEQabnE0r/3wlKlehnxNdIJOt29E0OXHDGu3VBzVBMGZ+
-         N+xlVp5QvdUKxMt0iRrujhdfqtNsTwwqPl+7DmkWvDvOVaIFf9GqJgAV7UPH1lpV9JxJ
-         m+R9e9bGOqmnQaVbWtNHxQuoGO5iLn5KoL7FkLNW3dkrOsB7ZmSPxifdrpyyKYC0B34A
-         VyXUq/8sKfbaYKUj6dSp/Wu2+Z76CHX94TLtxZeINAGt6jnvDq7DOpTmJ/8UmTtEtvMJ
-         NAfM0E9ZSbrzg/KovF9nSkZ/UK4cdWdH2D8dxGCCPrVB1KNH9wcEflPISiDU2LgOSg+7
-         /guA==
-X-Gm-Message-State: AOJu0YwihUKHis3lxWNtDT+uarZD2lemFEwHRpQXWpo/w8tGk6g1k6rY
-	W9iX6xN26W4NqAH8WWV+6Dav4nb4fpAnNgkHwX261uLgM/W4
-X-Google-Smtp-Source: AGHT+IH/l4O9QOjC5H0eyORFG6DTQAO/7Nwr/Ft8BfBYchS8c0cPKHLrsH+MlzGJV9cmRIVOUbZZxQBNymoyDWNOKyWVP9RUfuNU
+        d=1e100.net; s=20230601; t=1701799427; x=1702404227;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mtqmpldzJhepZSlcxwawCnd6BYpTKMMQiQbo2+VQqDs=;
+        b=p4p2R5pERSh7xbYoQmwvHaQ88y89dLEw3r7/fFQDWxx26yJeS/LibxmS02hZxqSREZ
+         6+8NBljyS+q0svZzoTDFXJQNOn8ktBGMZ3gEelUa7j+hiY6DdSy5fF7H5/MGAwdVoR1P
+         T8K9ohgp+DJwzbAH/zMy9gOfeIkI527+Lkj+CyfG5EIYuxInks+Jl1odDFcqz8g0bpHd
+         Do+sRZqse49gCFra9bKe0mK1zsGUaC7bXDHPLHg7sUAes+O9eI/0VNqc/cRxzl+WLVOe
+         5JAztn+lObC6fDFpuUdLNZYQlVeYWLjeyMRMR+X7z7WkQZuhV3MKL3m1VlQOkSo6l568
+         EcJg==
+X-Gm-Message-State: AOJu0Yy4Fej501A++wEO5E8Iy9CZ5DWXOEnQByevhBdbxwJbW3/fxKnG
+	AO8efFiAyQ81jbuIrgOAIZI=
+X-Google-Smtp-Source: AGHT+IH5nvUqAJXOSA/slhx2XextBvezJuOqw3B1kWvu8x7p9HMI0Usz1QLdc8DahjbJUTB515nU3A==
+X-Received: by 2002:a05:620a:349:b0:77e:fba3:7574 with SMTP id t9-20020a05620a034900b0077efba37574mr1530842qkm.108.1701799426793;
+        Tue, 05 Dec 2023 10:03:46 -0800 (PST)
+Received: from localhost (114.66.194.35.bc.googleusercontent.com. [35.194.66.114])
+        by smtp.gmail.com with ESMTPSA id qh13-20020a05620a668d00b0077d85d22e89sm5264273qkn.63.2023.12.05.10.03.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 10:03:46 -0800 (PST)
+Date: Tue, 05 Dec 2023 13:03:46 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Stanislav Fomichev <sdf@google.com>, 
+ Florian Bezdeka <florian.bezdeka@siemens.com>
+Cc: "Song, Yoong Siang" <yoong.siang.song@intel.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Bjorn Topel <bjorn@kernel.org>, 
+ "Karlsson, Magnus" <magnus.karlsson@intel.com>, 
+ "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Lorenzo Bianconi <lorenzo@kernel.org>, 
+ Tariq Toukan <tariqt@nvidia.com>, 
+ Willem de Bruijn <willemb@google.com>, 
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Mykola Lysenko <mykolal@fb.com>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+ Jose Abreu <joabreu@synopsys.com>, 
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+ "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, 
+ "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+ "xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>, 
+ "linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, 
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Message-ID: <656f66023f7bd_3dd6422942a@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAKH8qBuXL8bOYtfKKPS8y=KJqouDptyciCjr0wNKVHtNj6BmqA@mail.gmail.com>
+References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
+ <20231203165129.1740512-3-yoong.siang.song@intel.com>
+ <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
+ <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
+ <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
+ <5a0faf8cc9ec3ab0d5082c66b909c582c8f1eae6.camel@siemens.com>
+ <CAKH8qBuXL8bOYtfKKPS8y=KJqouDptyciCjr0wNKVHtNj6BmqA@mail.gmail.com>
+Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
+ Time support to XDP ZC
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:aca:1909:0:b0:3b8:752e:ca8b with SMTP id
- l9-20020aca1909000000b003b8752eca8bmr3730765oii.11.1701798805977; Tue, 05 Dec
- 2023 09:53:25 -0800 (PST)
-Date: Tue, 05 Dec 2023 09:53:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004f438d060bc6e988@google.com>
-Subject: [syzbot] [net?] WARNING in tcp_recvmsg_locked (2)
-From: syzbot <syzbot+06dbd397158ec0ea4983@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	cong.wang@bytedance.com, daniel@iogearbox.net, davem@davemloft.net, 
-	dsahern@kernel.org, edumazet@google.com, john.fastabend@gmail.com, 
-	kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org, 
-	ndesaulniers@google.com, netdev@vger.kernel.org, pabeni@redhat.com, 
-	songliubraving@fb.com, syzkaller-bugs@googlegroups.com, trix@redhat.com, 
-	yhs@fb.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Level: ***
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Stanislav Fomichev wrote:
+> On Tue, Dec 5, 2023 at 7:34=E2=80=AFAM Florian Bezdeka
+> <florian.bezdeka@siemens.com> wrote:
+> >
+> > On Tue, 2023-12-05 at 15:25 +0000, Song, Yoong Siang wrote:
+> > > On Monday, December 4, 2023 10:55 PM, Willem de Bruijn wrote:
+> > > > Jesper Dangaard Brouer wrote:
+> > > > >
+> > > > >
+> > > > > On 12/3/23 17:51, Song Yoong Siang wrote:
+> > > > > > This patch enables Launch Time (Time-Based Scheduling) suppor=
+t to XDP zero
+> > > > > > copy via XDP Tx metadata framework.
+> > > > > >
+> > > > > > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
+> > > > > > ---
+> > > > > >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
+> > > > >
+> > > > > As requested before, I think we need to see another driver impl=
+ementing
+> > > > > this.
+> > > > >
+> > > > > I propose driver igc and chip i225.
+> > >
+> > > Sure. I will include igc patches in next version.
+> > >
+> > > > >
+> > > > > The interesting thing for me is to see how the LaunchTime max 1=
+ second
+> > > > > into the future[1] is handled code wise. One suggestion is to a=
+dd a
+> > > > > section to Documentation/networking/xsk-tx-metadata.rst per dri=
+ver that
+> > > > > mentions/documents these different hardware limitations.  It is=
+ natural
+> > > > > that different types of hardware have limitations.  This is a c=
+lose-to
+> > > > > hardware-level abstraction/API, and IMHO as long as we document=
+ the
+> > > > > limitations we can expose this API without too many limitations=
+ for more
+> > > > > capable hardware.
+> > >
+> > > Sure. I will try to add hardware limitations in documentation.
+> > >
+> > > >
+> > > > I would assume that the kfunc will fail when a value is passed th=
+at
+> > > > cannot be programmed.
+> > > >
+> > >
+> > > In current design, the xsk_tx_metadata_request() dint got return va=
+lue.
+> > > So user won't know if their request is fail.
+> > > It is complex to inform user which request is failing.
+> > > Therefore, IMHO, it is good that we let driver handle the error sil=
+ently.
+> > >
+> >
+> > If the programmed value is invalid, the packet will be "dropped" / wi=
+ll
+> > never make it to the wire, right?
 
-syzbot found the following issue on:
+Programmable behavior is to either drop or cap to some boundary
+value, such as the farthest programmable time in the future: the
+horizon. In fq:
 
-HEAD commit:    8470e4368b0f Merge branch 'net-cacheline-optimizations'
-git tree:       net-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12094286e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8715b6ede5c4b90
-dashboard link: https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1247bee2e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1285243ce80000
+                /* Check if packet timestamp is too far in the future. */=
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/90007d08e178/disk-8470e436.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b55270de1cdc/vmlinux-8470e436.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2237d34b6fec/bzImage-8470e436.xz
+                if (fq_packet_beyond_horizon(skb, q, now)) {
+                        if (q->horizon_drop) {
+                                        q->stat_horizon_drops++;
+                                        return qdisc_drop(skb, sch, to_fr=
+ee);
+                        }
+                        q->stat_horizon_caps++;
+                        skb->tstamp =3D now + q->horizon;
+                }
+                fq_skb_cb(skb)->time_to_send =3D skb->tstamp;
 
-The issue was bisected to:
+Drop is the more obviously correct mode.
 
-commit 965b57b469a589d64d81b1688b38dcb537011bb0
-Author: Cong Wang <cong.wang@bytedance.com>
-Date:   Wed Jun 15 16:20:12 2022 +0000
+Programming with a clock source that the driver does not support will
+then be a persistent failure.
 
-    net: Introduce a new proto_ops ->read_skb()
+Preferably, this driver capability can be queried beforehand (rather
+than only through reading error counters afterwards).
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1087c0d4e80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1287c0d4e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1487c0d4e80000
+Perhaps it should not be a driver task to convert from possibly
+multiple clock sources to the device native clock. Right now, we do
+use per-device timecounters for this, implemented in the driver.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+06dbd397158ec0ea4983@syzkaller.appspotmail.com
-Fixes: 965b57b469a5 ("net: Introduce a new proto_ops ->read_skb()")
+As for which clocks are relevant. For PTP, I suppose the device PHC,
+converted to nsec. For pacing offload, TCP uses CLOCK_MONOTONIC.
 
-WARNING: CPU: 1 PID: 5130 at net/ipv4/tcp.c:2396 tcp_recvmsg_locked+0xa54/0x2490 net/ipv4/tcp.c:2396
-Modules linked in:
-CPU: 1 PID: 5130 Comm: syz-executor313 Not tainted 6.7.0-rc3-syzkaller-00690-g8470e4368b0f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:tcp_recvmsg_locked+0xa54/0x2490 net/ipv4/tcp.c:2396
-Code: 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 70 18 00 00 48 8b 04 24 89 da 48 c7 c7 a0 b0 f4 8b 44 8b 44 24 30 8b 30 e8 ad 69 57 f8 90 <0f> 0b 90 90 e9 62 fa ff ff e8 7e 4b 91 f8 49 8d 5f 60 be 08 00 00
-RSP: 0018:ffffc90003acf290 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 000000000618aefc RCX: ffffffff814db209
-RDX: ffff8880259e9dc0 RSI: ffffffff814db216 RDI: 0000000000000001
-RBP: ffff8880250b7024 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000004 R12: dffffc0000000000
-R13: ffff8880250b6ff0 R14: 0000000000000001 R15: ffff8880250b7018
-FS:  0000555556ebf380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fff3dd9f6f8 CR3: 000000002534d000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- receive_fallback_to_copy+0x1d5/0x7a0 net/ipv4/tcp.c:1866
- tcp_zerocopy_receive+0x110b/0x2110 net/ipv4/tcp.c:2099
- do_tcp_getsockopt+0x1ae0/0x27b0 net/ipv4/tcp.c:4257
- tcp_getsockopt net/ipv4/tcp.c:4342 [inline]
- tcp_getsockopt+0xd1/0xf0 net/ipv4/tcp.c:4333
- do_sock_getsockopt+0x2e1/0x6c0 net/socket.c:2373
- __sys_getsockopt+0x1a3/0x270 net/socket.c:2402
- __do_sys_getsockopt net/socket.c:2412 [inline]
- __se_sys_getsockopt net/socket.c:2409 [inline]
- __x64_sys_getsockopt+0xbd/0x150 net/socket.c:2409
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fcd44438c59
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff3dd9f7f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000037
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fcd44438c59
-RDX: 0000000000000023 RSI: 0000000000000006 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 00000000200004c0 R09: 0000000100000000
-R10: 0000000020000380 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+> >
+> > That is clearly a situation that the user should be informed about. F=
+or
+> > RT systems this normally means that something is really wrong regardi=
+ng
+> > timing / cycle overflow. Such systems have to react on that situation=
+.
+> =
 
+> In general, af_xdp is a bit lacking in this 'notify the user that they
+> somehow messed up' area :-(
+> For example, pushing a tx descriptor with a wrong addr/len in zc mode
+> will not give any visible signal back (besides driver potentially
+> spilling something into dmesg as it was in the mlx case).
+> We can probably start with having some counters for these events?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+This is because the AF_XDP completion queue descriptor format is only
+a u64 address?
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Could error conditions be reported on tx completion in the metadata,
+using xsk_tx_metadata_complete?
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
