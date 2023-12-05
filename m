@@ -1,194 +1,102 @@
-Return-Path: <bpf+bounces-16808-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16809-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7553780606F
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 22:13:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FE2680607B
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 22:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 307D6282076
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 21:13:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19C061F21701
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 21:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDC96E585;
-	Tue,  5 Dec 2023 21:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11AA96E591;
+	Tue,  5 Dec 2023 21:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K5JRDYaE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IOGKuxpc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF73818F;
-	Tue,  5 Dec 2023 13:11:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701810704; x=1733346704;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=kPavmjuINRjBV2TzGkXgCw1OWnVnrP33kqFdft92jD8=;
-  b=K5JRDYaEWdfW7kRWD2LvBQVNg1OgHPh23HLQFCpWVa/27lIL8sjud6Hh
-   VTANaLAqLx5zt/3cG4NxD35s1c37atYylZim1uzAeKHlHi8EWom7HhpAK
-   WCw425PD5HiwoAMcmoTdvB08giiNCFHBRHx0Ip1xUuCcNT+CVXIKkMiRO
-   42dyzCaG3jtf4FfRffHFIjh73TUM+6ZWyCM5+U76JQ8//FCiuKDgVUee9
-   JiS/oqju5HgsJ9CIJZ+GNpLU325UoAMz1S2ojG7Y/tG084z0NPdWX60Q0
-   CwN8SmWsiQgOA0d4QaVPZ11TLF1GQc87Z9PdJfLxlRmIHv6gi6BSUqPoC
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="392827585"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="392827585"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:11:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="764464740"
-X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="764464740"
-Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga007.jf.intel.com with ESMTP; 05 Dec 2023 13:11:38 -0800
-Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 2A16534328;
-	Tue,  5 Dec 2023 21:11:36 +0000 (GMT)
-From: Larysa Zaremba <larysa.zaremba@intel.com>
-To: bpf@vger.kernel.org
-Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yhs@fb.com,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	David Ahern <dsahern@gmail.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Willem de Bruijn <willemb@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Anatoly Burakov <anatoly.burakov@intel.com>,
-	Alexander Lobakin <alexandr.lobakin@intel.com>,
-	Magnus Karlsson <magnus.karlsson@gmail.com>,
-	Maryam Tahhan <mtahhan@redhat.com>,
-	xdp-hints@xdp-project.net,
-	netdev@vger.kernel.org,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Tariq Toukan <tariqt@mellanox.com>,
-	Saeed Mahameed <saeedm@mellanox.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next v8 18/18] selftests/bpf: Check VLAN tag and proto in xdp_metadata
-Date: Tue,  5 Dec 2023 22:08:47 +0100
-Message-ID: <20231205210847.28460-19-larysa.zaremba@intel.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231205210847.28460-1-larysa.zaremba@intel.com>
-References: <20231205210847.28460-1-larysa.zaremba@intel.com>
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE1821A4
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 13:13:45 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c09dfa03cso31865195e9.2
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 13:13:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701810824; x=1702415624; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J9L3RVugjgAL99sYPgnC57uxin41KuGE2l8+V1gUqGg=;
+        b=IOGKuxpcI0o0+6TBCbTJCZTMsoEfCT0s0KYnqe/N1zIXTLe+un3nKNoIeT/L3NbG/5
+         HnpOqwfoOu/zxjJM/9U2kABXDK2ey8D7RyskyqNPw8etiZT6HjX7KZZI49qKofVZN1cm
+         O+0MHrJuBhLqhALEt/vmGx9+bQ/5IxYMi9BW6oOMlKLGhoUFpgeMoNB11GpG8WeHtZEY
+         jmQ1VaxZObMx0abkAAHo2wUYZ5By2cznMJrHvEWkebFKdPx05GH20b98G3+h/UVFPdxb
+         bpmhUEOBmZ+pkX0vZLScoT51KLioj5DVNVfCVeOBVvLGir4Ea8qdX4jM9roze/h0gSZI
+         lOTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701810824; x=1702415624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=J9L3RVugjgAL99sYPgnC57uxin41KuGE2l8+V1gUqGg=;
+        b=eKSbdlkEiiH+wv45xfmKA9yJlOgcp3eRjlJBmCmxz6rxglhqUAqTgCq7L+75fRe/1I
+         7LxO0xdUSU2y0RmVhIc7JXtRKYIrh09iCOyCgDbyMbORyawrHJk7IvvXWBS7Z6+PZt5D
+         bEZGqwewEfwjzB0sDuZv9gyKjnEIcy/31pPXdH794PC8r62nyH5pkuPBAZ4gVl8kmx18
+         p9aGzj0RBLySEMz87VILoQjDAKbhowzAccyz2nmcLB7r7e5teqzHrCVajy0T5VBzhQnm
+         W/HV8YbnWsmwV183o8FTg4eBIk8diXOVXpToTvyBOLMNLW8PhxYRWFhJKdC2PwjB6FiE
+         b84Q==
+X-Gm-Message-State: AOJu0Yw73lnP2zcsPoBTZ/ieuR4Oeym7GfknBfJaLGK6Uxu+Z8euyTa/
+	ZYWpdbAYpIt3MaUqCJXA1v3WTk7xjPGPz3JhLVfgmcyTbr0=
+X-Google-Smtp-Source: AGHT+IFVuJ+dyyBT3TJMcc+Bbl4odc11hnoJIYSlz1vRFzDnhh026IkpWS4mnJcfyPlU3/tryAsHhdBVn1ny/xk+hyM=
+X-Received: by 2002:a05:600c:3154:b0:40b:578d:2487 with SMTP id
+ h20-20020a05600c315400b0040b578d2487mr902105wmo.38.1701810823947; Tue, 05 Dec
+ 2023 13:13:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231204173946.3066377-1-yonghong.song@linux.dev>
+ <CAEf4BzbPtSZxJ16E+gQnw7sgfqwJVYsnkUZaxdk=c+65KWgnTg@mail.gmail.com>
+ <81d00866-7824-18e5-af71-e0a15a03e84f@huaweicloud.com> <513bafac-03fa-4c2f-ba7f-67de96f79a10@linux.dev>
+ <6e6feeef-9d81-38c3-4426-42ab12dc9ad3@huaweicloud.com> <9a308dc5-6765-4dcb-ba2b-43d257534ca0@linux.dev>
+In-Reply-To: <9a308dc5-6765-4dcb-ba2b-43d257534ca0@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 5 Dec 2023 13:13:31 -0800
+Message-ID: <CAADnVQL+uc6VV65_Ezgzw3WH=ME9z1Fdy8Pd6xd0oOq8rgwh7g@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Fix a race condition between btf_put() and map_free()
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Hou Tao <houtao@huaweicloud.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Verify, whether VLAN tag and proto are set correctly.
+On Mon, Dec 4, 2023 at 11:01=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+> > Er, it is not what I want, although I have written a similar patch in
+> > which bpf_map_put() will call btf_put() and set map->btf as NULL if
+> > there is no BPF_LIST_HEAD and BPF_RB_ROOT fields in map->record,
+> > otherwise calling bpf_put() in bpf_put_free_deferred(). What I have
+> > suggested is to optionally pin btf in graph_root.btf just like
+> > btf_field_kptr does.
+>
+> Okay, I see what you mean. This is actually what I kind of think
+> as well in below to identify *all* cases btf data might be accessed.
+> I didn't explicitly mention this approach in detail but the idea is
+> to get a reference count for btf and later release it during btf_record_f=
+ree.
+> I think this should work. I need to do an audit then to find other potent=
+ial
+> places, if exists, to do similar things. The current approach
+> is simpler but looks like we can do better with existing
+> btf_field_kptr approach.
 
-To simulate "stripped" VLAN tag on veth, send test packet from VLAN
-interface.
-
-Also, add TO_STR() macro for convenience.
-
-Acked-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
----
- .../selftests/bpf/prog_tests/xdp_metadata.c   | 20 +++++++++++++++++--
- .../selftests/bpf/progs/xdp_metadata.c        |  5 +++++
- tools/testing/selftests/bpf/testing_helpers.h |  3 +++
- 3 files changed, 26 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-index e7f06cbdd845..05edcf32f528 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
-@@ -38,7 +38,13 @@
- #define TX_MAC "00:00:00:00:00:01"
- #define RX_MAC "00:00:00:00:00:02"
- 
-+#define VLAN_ID 59
-+#define VLAN_PROTO "802.1Q"
-+#define VLAN_PID htons(ETH_P_8021Q)
-+#define TX_NAME_VLAN TX_NAME "." TO_STR(VLAN_ID)
-+
- #define XDP_RSS_TYPE_L4 BIT(3)
-+#define VLAN_VID_MASK 0xfff
- 
- struct xsk {
- 	void *umem_area;
-@@ -323,6 +329,12 @@ static int verify_xsk_metadata(struct xsk *xsk, bool sent_from_af_xdp)
- 	if (!sent_from_af_xdp) {
- 		if (!ASSERT_NEQ(meta->rx_hash_type & XDP_RSS_TYPE_L4, 0, "rx_hash_type"))
- 			return -1;
-+
-+		if (!ASSERT_EQ(meta->rx_vlan_tci & VLAN_VID_MASK, VLAN_ID, "rx_vlan_tci"))
-+			return -1;
-+
-+		if (!ASSERT_EQ(meta->rx_vlan_proto, VLAN_PID, "rx_vlan_proto"))
-+			return -1;
- 		goto done;
- 	}
- 
-@@ -378,10 +390,14 @@ void test_xdp_metadata(void)
- 
- 	SYS(out, "ip link set dev " TX_NAME " address " TX_MAC);
- 	SYS(out, "ip link set dev " TX_NAME " up");
--	SYS(out, "ip addr add " TX_ADDR "/" PREFIX_LEN " dev " TX_NAME);
-+
-+	SYS(out, "ip link add link " TX_NAME " " TX_NAME_VLAN
-+		 " type vlan proto " VLAN_PROTO " id " TO_STR(VLAN_ID));
-+	SYS(out, "ip link set dev " TX_NAME_VLAN " up");
-+	SYS(out, "ip addr add " TX_ADDR "/" PREFIX_LEN " dev " TX_NAME_VLAN);
- 
- 	/* Avoid ARP calls */
--	SYS(out, "ip -4 neigh add " RX_ADDR " lladdr " RX_MAC " dev " TX_NAME);
-+	SYS(out, "ip -4 neigh add " RX_ADDR " lladdr " RX_MAC " dev " TX_NAME_VLAN);
- 
- 	switch_ns_to_rx(&tok);
- 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_metadata.c b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-index 5d6c1245c310..31ca229bb3c0 100644
---- a/tools/testing/selftests/bpf/progs/xdp_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_metadata.c
-@@ -23,6 +23,9 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
- 				    enum xdp_rss_hash_type *rss_type) __ksym;
-+extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
-+					__be16 *vlan_proto,
-+					__u16 *vlan_tci) __ksym;
- 
- SEC("xdp")
- int rx(struct xdp_md *ctx)
-@@ -86,6 +89,8 @@ int rx(struct xdp_md *ctx)
- 		meta->rx_timestamp = 1;
- 
- 	bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
-+	bpf_xdp_metadata_rx_vlan_tag(ctx, &meta->rx_vlan_proto,
-+				     &meta->rx_vlan_tci);
- 
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
- }
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index 5b7a55136741..35284faff4f2 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -9,6 +9,9 @@
- #include <bpf/libbpf.h>
- #include <time.h>
- 
-+#define __TO_STR(x) #x
-+#define TO_STR(x) __TO_STR(x)
-+
- int parse_num_list(const char *s, bool **set, int *set_len);
- __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info);
- int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
--- 
-2.41.0
-
+imo that would be the only correct way to fix it.
+we btf_get(kptr_btf) before saving it kptr.btf in btf_parse_kptr() and
+btf_put() it eventually in btf_record_free().
+graph_root looks buggy.
+It saved the btf pointer in btf_parse_graph_root() without taking refcnt.
 
