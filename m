@@ -1,154 +1,157 @@
-Return-Path: <bpf+bounces-16820-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16821-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 788168062DA
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 00:21:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03EFD8062DC
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 00:21:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30D79281EDE
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 23:21:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E6D4B210C8
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 23:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 734AD41204;
-	Tue,  5 Dec 2023 23:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45574120D;
+	Tue,  5 Dec 2023 23:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aAXnoi5o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hCcUK0zA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE5B122
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 15:20:54 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-a19ce1404e1so24919966b.3
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 15:20:54 -0800 (PST)
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EBDAC
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 15:21:37 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c9ef682264so49636281fa.3
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 15:21:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701818453; x=1702423253; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QbCHyU0oVlhTTs42jDkdQgpCv09NwfXdCFyrLr9gjlo=;
-        b=aAXnoi5oyTe5yBes0WG9FA9gvU+9ksnuds1052q4oAtbCyz9+31Rnr7+Es5gna5MPd
-         YCq/p/US64UC8e7rHIrwLpQDVDxPHV2u50MM/e5NeQccoRhBmtQRnIFSrTkrAWPb0KUT
-         fu3cvqQYd1TqVUGFEGSX0maSoGlA4xNI92gN4ZU+vujSo42MvCnyCUsxoj7vnwNSrJqs
-         bInhMj7U1kUQAYK9aXjhtwh8Zw69II3OkSiVGW7OtuI8RRsh3m9CLw4u+KS2i5yYjwu9
-         ZZtiLRtMsgBkgQ1T8hadn+F+VUTlfCYsKIRdPpmXi7voSo3v+2oGAgSCEopQEzr+mZnu
-         OtZw==
+        d=gmail.com; s=20230601; t=1701818496; x=1702423296; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Z0O+ItMeI2z+ukv4UmC9KrTHTOZmWlK9YUX6TCmv7/4=;
+        b=hCcUK0zAcEXiMuzkPhfMj6wTHCn65uVsNZtQSRwWMUsZR8JLgGX0pgBPYJrv5eEdJ3
+         1D8PFf2r6Mg8dQ4hWrw9pfKGX3GmYV6QMnU1ugZtkUdVCMXaZDzi3YKi436ODH9SEMjV
+         hiI6jV9hl/CBVSEanpK9IWd+S1akLk1PyHJMog4oJXwI4Cue3uCC0Tt+Sbf7xYnUZcuQ
+         PEMaidNGVJapsgRvZbYxRRAwLk/C/STjLaBjNGSh9bCCn7Jy1lcdspD16p5Mx2i8Oc/7
+         ochydYQ5zbkhBKYanj0XwH5D0IQphLT+7umz0wXdv8PCUXBtz2mZ6ZQ55SErKNQiM5VC
+         /WDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701818453; x=1702423253;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QbCHyU0oVlhTTs42jDkdQgpCv09NwfXdCFyrLr9gjlo=;
-        b=m++At8TzxxbBVILdb5eJGUbFPTXVXoMNVNV06uCAD2hU9mA0DUleT5wnzaPMBQAwzA
-         20aH47C3rA4C0JL8TzkzUCzuYA1nwrKF4s0ERkkAITKjy4CRqOs+82LwXss1plzwUuS1
-         QIY1mgp3qujqFfbGaq3F94SyHUrZpjW+R89VNiUvw3WMy5DE7wL92garySyNC2Qa1Z5N
-         GMDmwsdLzUun4lkGPh/LG4XbIOBqA0C0LKtzCux3gtM/eJjhmevzBi5wDLKkAq4j1ZkU
-         rUgRk0ybXdQJHFtA3zMxPj4XB6qDH0JncPpTA4AH1CYo0QOv8Zc/mMdpROYhG/a5Z40j
-         EPaA==
-X-Gm-Message-State: AOJu0YzqdOFSC0rmr1QNBgi7YOCQ11tGNVwVTQNeuEZ4Cr/peSWnQ/Dl
-	s9+OX/A1svRBH8lTso9ySmwtvnr/jeJCcztTHGMu8CJ3
-X-Google-Smtp-Source: AGHT+IHX+gw/BeF/RdztaN6LJywai9q/jm7h1Tf0zd2rRZ5iTmA7tke9TDtl/Zhx8rmKVZDagLD53KErnETmDVOyGdI=
-X-Received: by 2002:a17:906:fa9a:b0:a01:811c:ce9 with SMTP id
- lt26-20020a170906fa9a00b00a01811c0ce9mr25832ejb.0.1701818452891; Tue, 05 Dec
- 2023 15:20:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701818496; x=1702423296;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z0O+ItMeI2z+ukv4UmC9KrTHTOZmWlK9YUX6TCmv7/4=;
+        b=HK5/v9JzV6mUw17Du9MauITV38duuE1oIFMMJe8nvQkrytvzy+cmxYxJZDjANvvuZC
+         zjK23BT383wJ78aqVzFRRH69mDxEtQ8pO2yYjKwphn6Ti426wpo81l7uA779BdElu8Aa
+         wQPMvIjpb+fJbb2NkZVhTKhv9OxHxH+kox2hGZptBT5pVn8T+ok7p/jjLnzzxRLmTCDo
+         fq+JZUUj2/6NsF7GjEvpKckhpO9OdMKIs5igCrgE3u5NWWi3lvy65r9P0/KyjIiYFk7v
+         7PIi3BoALVugU6s/GtRF8IPzOttJOBB80KsdyllSoRzgTM6aJMYEPBKRK0qvWNagm7t2
+         B3BA==
+X-Gm-Message-State: AOJu0YwcAL0ZhvqpibRThIfm4lk6tyL153wbxGKcGFC8uw1eHG70Cnwd
+	N8KoPWYZrnZBtKuK9M87pAagtQEESOQ=
+X-Google-Smtp-Source: AGHT+IGIPTqneYg02Q0+uK4Ffk+kt2QnMOn3/on3uuoMfkxKTCg/lHEo4OPge6+wQ5uHxw60Pa11Rw==
+X-Received: by 2002:a2e:a7cf:0:b0:2ca:227a:ebb2 with SMTP id x15-20020a2ea7cf000000b002ca227aebb2mr2136ljp.0.1701818495883;
+        Tue, 05 Dec 2023 15:21:35 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id g18-20020a2eb5d2000000b002ca013cb05csm922433ljn.79.2023.12.05.15.21.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 15:21:35 -0800 (PST)
+Message-ID: <cfea7e70b26e7b11c989d162c2217f5fb3e13b0b.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 05/13] bpf: abstract away global subprog arg
+ preparation logic from reg state setup
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+Date: Wed, 06 Dec 2023 01:21:34 +0200
+In-Reply-To: <20231204233931.49758-6-andrii@kernel.org>
+References: <20231204233931.49758-1-andrii@kernel.org>
+	 <20231204233931.49758-6-andrii@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205184248.1502704-1-andrii@kernel.org> <20231205184248.1502704-11-andrii@kernel.org>
- <CAADnVQJQU6_16nc1PHUnMH3AK9NRLSfaXZwiueKG-ROK_Km-2g@mail.gmail.com>
-In-Reply-To: <CAADnVQJQU6_16nc1PHUnMH3AK9NRLSfaXZwiueKG-ROK_Km-2g@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 5 Dec 2023 15:20:40 -0800
-Message-ID: <CAEf4BzatLqKviHZ1+Q3xeJxOpPTUhaasw0wo_n0m8tqE6O=KXQ@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 10/10] bpf: use common instruction history
- across all states
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Eduard Zingerman <eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 5, 2023 at 2:01=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Tue, Dec 5, 2023 at 10:43=E2=80=AFAM Andrii Nakryiko <andrii@kernel.or=
-g> wrote:
-> >
-> > Instead of allocating and copying instruction history each time we
-> > enqueue child verifier state, switch to a model where we use one common
-> > dynamically sized array of instruction history entries across all state=
-s.
-> >
-> > The key observation for proving this is correct is that instruction
-> > history is only relevant while state is active, which means it either i=
-s
-> > a current state (and thus we are actively modifying instruction history
-> > and no other state can interfere with us) or we are checkpointed state
-> > with some children still active (either enqueued or being current).
-> >
-> > In the latter case our portion of instruction history is finalized and
-> > won't change or grow, so as long as we keep it immutable until the stat=
-e
-> > is finalized, we are good.
-> >
-> > Now, when state is finalized and is put into state hash for potentially
-> > future pruning lookups, instruction history is not used anymore. This i=
-s
-> > because instruction history is only used by precision marking logic, an=
-d
-> > we never modify precision markings for finalized states.
-> >
-> > So, instead of each state having its own small instruction history, we
-> > keep a global dynamically-sized instruction history, where each state i=
-n
-> > current DFS path from root to active state remembers its portion of
-> > instruction history.  Current state can append to this history, but
-> > cannot modify any of its parent histories.
-> >
-> > Because the insn_hist array can be grown through realloc, states don't
-> > keep pointers, they instead maintain two indices, [start, end), into
-> > global instruction history array. End is exclusive index, so
-> > `start =3D=3D end` means there is no relevant instruction history.
-> >
-> > This eliminates a lot of allocations and minimizes overall memory usage=
-.
->
-> I still think it's too dangerous to rely on DFS here.
-> The algo would certainly save allocs, but to save memory we can simply do=
-:
->
-> @@ -16128,6 +16128,7 @@ static void clean_verifier_state(struct
-> bpf_verifier_env *env,
->                 /* all regs in this state in all frames were already mark=
-ed */
->                 return;
->
-> +       clear_jmp_history(st);
->         for (i =3D 0; i <=3D st->curframe; i++)
->                 clean_func_state(env, st->frame[i]);
->  }
->
-> to achieve the same effect (it seems to work fine in tests).
-> I'm not sure how much memory it actually saves
-> (both above hack and this algo).
-> We probably need to augment veristat with cgroup memory.peak numbers
-> the way benchs/bench_htab_mem.c does.
+On Mon, 2023-12-04 at 15:39 -0800, Andrii Nakryiko wrote:
 
-yep, would definitely be useful to know overall memory usage for verificati=
-on
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-> This will give us a clear signal whether we're saving any memory or not.
->
-> Reusing the jmp history array this way also has a negative effect on kasa=
-n.
-> When arrays are separate any UAF or out-of-bounds are easier to catch.
->
-> So I pushed the first 9 patches to bpf-next.
+[...]
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 379ac0a28405..c3a5d0fe3cdf 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -704,6 +704,7 @@ enum bpf_arg_type {
+> =20
+>  	ARG_PTR_TO_CTX,		/* pointer to context */
+>  	ARG_ANYTHING,		/* any (initialized) argument is ok */
+> +	ARG_SCALAR =3D ARG_ANYTHING, /* scalar value */
 
-thanks. I'll keep the patch around, and if/when we add memory stats to
-veristat, I'd be curious to measure the difference
+Nit: I agree that use of ARG_ANYTHING to denote scalars is confusing,
+     but having two names for the same thing seems even more confusing.
+
+[...]
+
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index d56433bf8aba..33a62df9c5a8 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6955,9 +6955,9 @@ int btf_check_subprog_call(struct bpf_verifier_env =
+*env, int subprog,
+>   * 0 - Successfully converted BTF into bpf_reg_state
+>   * (either PTR_TO_CTX or SCALAR_VALUE).
+>   */
+> -int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog,
+> -			  struct bpf_reg_state *regs, u32 *arg_cnt)
+> +int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
+
+Could you please also update the comment above this function?
+It currently says: "Convert BTF of a function into bpf_reg_state if possibl=
+e".
+
+[...]
+
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ee707736ce6b..16d5550eda4d 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+[...]
+> @@ -19860,33 +19855,44 @@ static int do_check_common(struct bpf_verifier_=
+env *env, int subprog)
+[...]
+>  		for (i =3D BPF_REG_1; i <=3D BPF_REG_5; i++) {
+> -			if (regs[i].type =3D=3D PTR_TO_CTX)
+> +			arg =3D &sub->args[i - BPF_REG_1];
+> +			reg =3D &regs[i];
+> +
+> +			if (arg->arg_type =3D=3D ARG_PTR_TO_CTX) {
+> +				reg->type =3D PTR_TO_CTX;
+>  				mark_reg_known_zero(env, regs, i);
+> -			else if (regs[i].type =3D=3D SCALAR_VALUE)
+> +			} else if (arg->arg_type =3D=3D ARG_SCALAR) {
+> +				reg->type =3D SCALAR_VALUE;
+>  				mark_reg_unknown(env, regs, i);
+> -			else if (base_type(regs[i].type) =3D=3D PTR_TO_MEM) {
+> -				const u32 mem_size =3D regs[i].mem_size;
+> -
+> +			} else if (base_type(arg->arg_type) =3D=3D ARG_PTR_TO_MEM) {
+> +				reg->type =3D PTR_TO_MEM;
+> +				if (arg->arg_type & PTR_MAYBE_NULL)
+> +					reg->type |=3D PTR_MAYBE_NULL;
+>  				mark_reg_known_zero(env, regs, i);
+> -				regs[i].mem_size =3D mem_size;
+> -				regs[i].id =3D ++env->id_gen;
+> +				reg->mem_size =3D arg->mem_size;
+> +				reg->id =3D ++env->id_gen;
+>  			}
+
+Nit: maybe add an else branch here and report an error if unexpected
+     argument type is returned by btf_prepare_func_args()?
+
+
 
