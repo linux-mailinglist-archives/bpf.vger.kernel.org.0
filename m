@@ -1,50 +1,50 @@
-Return-Path: <bpf+bounces-16806-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16807-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33E37806068
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 22:12:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A24D580606D
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 22:13:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE503281C30
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 21:12:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ECB7B20EDF
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 21:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34E476EB44;
-	Tue,  5 Dec 2023 21:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237546EB7E;
+	Tue,  5 Dec 2023 21:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y9AF1b/9"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Aq6xX5QP"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BC418B;
-	Tue,  5 Dec 2023 13:11:38 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1525D18B;
+	Tue,  5 Dec 2023 13:11:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701810698; x=1733346698;
+  t=1701810704; x=1733346704;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+jzH3bj9QgSXh85bw5eoc4UHZ7Qw6bymnQFHtlbxsrI=;
-  b=Y9AF1b/90KyF3T1lrnxrjWSFpc7ghBmvvK7UNRq5HwPJDai/APY2Y1q9
-   zI2dE7gXmVztWsX3h58KlYYqO+Jg09tCKHKqTRUHYDcQhNpuorK4Q8vnn
-   RbC4RAXIGCaElXBoJvcS/o6vQR7yP7otaKJ/VFsm31WJxFGMtdtaXSwUs
-   8kuPD4PC8i/TwMdE+uO4vEfQqrRoYACy0B1qn/pmQ75Sl5mE5rjtE7//f
-   L3kIfuy2RzMooyEK1A5pfg0T/WCzeIhnDivdBWkIsj8hblKAU64sMFyKd
-   1LhuwDVBfCNb/VDtT8hobY/x2r+6TFsSb6GaiBKyGLrKkWMYdhK/pV4+o
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="392827560"
+  bh=fGTg7YmMfMOidynl6KXHw7rlhjLfYy4M2maVRiVxOcY=;
+  b=Aq6xX5QPftlIXFyez35JvatxTJx9C7CV1SqkyP/eWoTtww6crk2aXwhu
+   TGLyMi+jrNXwEqRnPdQkS9xHL5xqsN9uSKDDOfDyhyo6Pd6Jui1g++GcL
+   c51YooQ0K+O0b13tNeRg0xfWY3RCGSag/nro2+/KnWxa/+jP9dNF+2Xgx
+   a/MwZW4f7PCP4k3M8AgNbQPtmEoab4wJCKe/hIoh9C0kjZ/drDNToMGkX
+   MLoiSSEgEzvgLGwip5Rqj4bWMf8PKqIMBiDGGSf7+OP1dRyxwvYEQOhiA
+   evis3jtNC2Q94toRXc7MY9POmnTPZTDfqlGqGF/tZaYd0B7BdaEuzywXq
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="392827576"
 X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="392827560"
+   d="scan'208";a="392827576"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:11:38 -0800
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 13:11:43 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="764464731"
+X-IronPort-AV: E=McAfee;i="6600,9927,10915"; a="764464738"
 X-IronPort-AV: E=Sophos;i="6.04,253,1695711600"; 
-   d="scan'208";a="764464731"
+   d="scan'208";a="764464738"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
-  by orsmga007.jf.intel.com with ESMTP; 05 Dec 2023 13:11:32 -0800
+  by orsmga007.jf.intel.com with ESMTP; 05 Dec 2023 13:11:35 -0800
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id 4507C34338;
-	Tue,  5 Dec 2023 21:11:29 +0000 (GMT)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id BBD603433E;
+	Tue,  5 Dec 2023 21:11:32 +0000 (GMT)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: bpf@vger.kernel.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -74,9 +74,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	Tariq Toukan <tariqt@mellanox.com>,
 	Saeed Mahameed <saeedm@mellanox.com>,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Subject: [PATCH bpf-next v8 16/18] selftests/bpf: Add flags and VLAN hint to xdp_hw_metadata
-Date: Tue,  5 Dec 2023 22:08:45 +0100
-Message-ID: <20231205210847.28460-17-larysa.zaremba@intel.com>
+Subject: [PATCH bpf-next v8 17/18] selftests/bpf: Add AF_INET packet generation to xdp_metadata
+Date: Tue,  5 Dec 2023 22:08:46 +0100
+Message-ID: <20231205210847.28460-18-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231205210847.28460-1-larysa.zaremba@intel.com>
 References: <20231205210847.28460-1-larysa.zaremba@intel.com>
@@ -88,178 +88,243 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add VLAN hint to the xdp_hw_metadata program.
+The easiest way to simulate stripped VLAN tag in veth is to send a packet
+from VLAN interface, attached to veth. Unfortunately, this approach is
+incompatible with AF_XDP on TX side, because VLAN interfaces do not have
+such feature.
 
-Also, to make metadata layout more straightforward, add flags field
-to pass information about validity of every separate hint separately.
+Check both packets sent via AF_XDP TX and regular socket.
 
-Acked-by: Stanislav Fomichev <sdf@google.com>
+AF_INET packet will also have a filled-in hash type (XDP_RSS_TYPE_L4),
+unlike AF_XDP packet, so more values can be checked.
+
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
- .../selftests/bpf/progs/xdp_hw_metadata.c     | 28 +++++++++++----
- tools/testing/selftests/bpf/xdp_hw_metadata.c | 34 ++++++++++++++++---
- tools/testing/selftests/bpf/xdp_metadata.h    | 26 +++++++++++++-
- 3 files changed, 76 insertions(+), 12 deletions(-)
+ .../selftests/bpf/prog_tests/xdp_metadata.c   | 116 +++++++++++++++---
+ 1 file changed, 97 insertions(+), 19 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-index 8767d919c881..330ece2eabdb 100644
---- a/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/progs/xdp_hw_metadata.c
-@@ -20,6 +20,9 @@ extern int bpf_xdp_metadata_rx_timestamp(const struct xdp_md *ctx,
- 					 __u64 *timestamp) __ksym;
- extern int bpf_xdp_metadata_rx_hash(const struct xdp_md *ctx, __u32 *hash,
- 				    enum xdp_rss_hash_type *rss_type) __ksym;
-+extern int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
-+					__be16 *vlan_proto,
-+					__u16 *vlan_tci) __ksym;
+diff --git a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+index 33cdf88efa6b..e7f06cbdd845 100644
+--- a/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
++++ b/tools/testing/selftests/bpf/prog_tests/xdp_metadata.c
+@@ -20,7 +20,7 @@
  
- SEC("xdp.frags")
- int rx(struct xdp_md *ctx)
-@@ -84,15 +87,28 @@ int rx(struct xdp_md *ctx)
- 		return XDP_PASS;
- 	}
+ #define UDP_PAYLOAD_BYTES 4
  
-+	meta->hint_valid = 0;
+-#define AF_XDP_SOURCE_PORT 1234
++#define UDP_SOURCE_PORT 1234
+ #define AF_XDP_CONSUMER_PORT 8080
+ 
+ #define UMEM_NUM 16
+@@ -33,6 +33,12 @@
+ #define RX_ADDR "10.0.0.2"
+ #define PREFIX_LEN "8"
+ #define FAMILY AF_INET
++#define TX_NETNS_NAME "xdp_metadata_tx"
++#define RX_NETNS_NAME "xdp_metadata_rx"
++#define TX_MAC "00:00:00:00:00:01"
++#define RX_MAC "00:00:00:00:00:02"
 +
-+	meta->xdp_timestamp = bpf_ktime_get_tai_ns();
- 	err = bpf_xdp_metadata_rx_timestamp(ctx, &meta->rx_timestamp);
--	if (!err)
--		meta->xdp_timestamp = bpf_ktime_get_tai_ns();
-+	if (err)
-+		meta->rx_timestamp_err = err;
-+	else
-+		meta->hint_valid |= XDP_META_FIELD_TS;
-+
-+	err = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash,
-+				       &meta->rx_hash_type);
-+	if (err)
-+		meta->rx_hash_err = err;
- 	else
--		meta->rx_timestamp = 0; /* Used by AF_XDP as not avail signal */
-+		meta->hint_valid |= XDP_META_FIELD_RSS;
++#define XDP_RSS_TYPE_L4 BIT(3)
  
--	err = bpf_xdp_metadata_rx_hash(ctx, &meta->rx_hash, &meta->rx_hash_type);
--	if (err < 0)
--		meta->rx_hash_err = err; /* Used by AF_XDP as no hash signal */
-+	err = bpf_xdp_metadata_rx_vlan_tag(ctx, &meta->rx_vlan_proto,
-+					   &meta->rx_vlan_tci);
-+	if (err)
-+		meta->rx_vlan_tag_err = err;
-+	else
-+		meta->hint_valid |= XDP_META_FIELD_VLAN_TAG;
+ struct xsk {
+ 	void *umem_area;
+@@ -181,7 +187,7 @@ static int generate_packet(struct xsk *xsk, __u16 dst_port)
+ 	ASSERT_EQ(inet_pton(FAMILY, RX_ADDR, &iph->daddr), 1, "inet_pton(RX_ADDR)");
+ 	ip_csum(iph);
  
- 	__sync_add_and_fetch(&pkts_redir, 1);
- 	return bpf_redirect_map(&xsk, ctx->rx_queue_index, XDP_PASS);
-diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-index 3291625ba4fb..e3ad74eca8ec 100644
---- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
-+++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
-@@ -21,6 +21,9 @@
- #include "xsk.h"
- 
- #include <error.h>
-+#include <linux/kernel.h>
-+#include <linux/bits.h>
-+#include <linux/bitfield.h>
- #include <linux/errqueue.h>
- #include <linux/if_link.h>
- #include <linux/net_tstamp.h>
-@@ -182,19 +185,31 @@ static void print_tstamp_delta(const char *name, const char *refname,
- 	       (double)delta / 1000);
+-	udph->source = htons(AF_XDP_SOURCE_PORT);
++	udph->source = htons(UDP_SOURCE_PORT);
+ 	udph->dest = htons(dst_port);
+ 	udph->len = htons(sizeof(*udph) + UDP_PAYLOAD_BYTES);
+ 	udph->check = ~csum_tcpudp_magic(iph->saddr, iph->daddr,
+@@ -204,6 +210,30 @@ static int generate_packet(struct xsk *xsk, __u16 dst_port)
+ 	return 0;
  }
  
-+#define VLAN_PRIO_MASK		GENMASK(15, 13) /* Priority Code Point */
-+#define VLAN_DEI_MASK		GENMASK(12, 12) /* Drop Eligible Indicator */
-+#define VLAN_VID_MASK		GENMASK(11, 0)	/* VLAN Identifier */
-+static void print_vlan_tci(__u16 tag)
++static int generate_packet_inet(void)
 +{
-+	__u16 vlan_id = FIELD_GET(VLAN_VID_MASK, tag);
-+	__u8 pcp = FIELD_GET(VLAN_PRIO_MASK, tag);
-+	bool dei = FIELD_GET(VLAN_DEI_MASK, tag);
++	char udp_payload[UDP_PAYLOAD_BYTES];
++	struct sockaddr_in rx_addr;
++	int sock_fd, err = 0;
 +
-+	printf("PCP=%u, DEI=%d, VID=0x%X\n", pcp, dei, vlan_id);
++	/* Build a packet */
++	memset(udp_payload, 0xAA, UDP_PAYLOAD_BYTES);
++	rx_addr.sin_addr.s_addr = inet_addr(RX_ADDR);
++	rx_addr.sin_family = AF_INET;
++	rx_addr.sin_port = htons(AF_XDP_CONSUMER_PORT);
++
++	sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
++	if (!ASSERT_GE(sock_fd, 0, "socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)"))
++		return sock_fd;
++
++	err = sendto(sock_fd, udp_payload, UDP_PAYLOAD_BYTES, MSG_DONTWAIT,
++		     (void *)&rx_addr, sizeof(rx_addr));
++	ASSERT_GE(err, 0, "sendto");
++
++	close(sock_fd);
++	return err;
 +}
 +
- static void verify_xdp_metadata(void *data, clockid_t clock_id)
+ static void complete_tx(struct xsk *xsk)
  {
- 	struct xdp_meta *meta;
- 
- 	meta = data - sizeof(*meta);
- 
--	if (meta->rx_hash_err < 0)
--		printf("No rx_hash err=%d\n", meta->rx_hash_err);
--	else
-+	if (meta->hint_valid & XDP_META_FIELD_RSS)
- 		printf("rx_hash: 0x%X with RSS type:0x%X\n",
- 		       meta->rx_hash, meta->rx_hash_type);
-+	else
-+		printf("No rx_hash, err=%d\n", meta->rx_hash_err);
- 
--	if (meta->rx_timestamp) {
-+	if (meta->hint_valid & XDP_META_FIELD_TS) {
- 		__u64 ref_tstamp = gettime(clock_id);
- 
- 		/* store received timestamps to calculate a delta at tx */
-@@ -206,7 +221,16 @@ static void verify_xdp_metadata(void *data, clockid_t clock_id)
- 		print_tstamp_delta("XDP RX-time", "User RX-time",
- 				   meta->xdp_timestamp, ref_tstamp);
- 	} else {
--		printf("No rx_timestamp\n");
-+		printf("No rx_timestamp, err=%d\n", meta->rx_timestamp_err);
-+	}
-+
-+	if (meta->hint_valid & XDP_META_FIELD_VLAN_TAG) {
-+		printf("rx_vlan_proto: 0x%X\n", ntohs(meta->rx_vlan_proto));
-+		printf("rx_vlan_tci: ");
-+		print_vlan_tci(meta->rx_vlan_tci);
-+	} else {
-+		printf("No rx_vlan_tci or rx_vlan_proto, err=%d\n",
-+		       meta->rx_vlan_tag_err);
+ 	struct xsk_tx_metadata *meta;
+@@ -236,7 +266,7 @@ static void refill_rx(struct xsk *xsk, __u64 addr)
  	}
  }
  
-diff --git a/tools/testing/selftests/bpf/xdp_metadata.h b/tools/testing/selftests/bpf/xdp_metadata.h
-index 6664893c2c77..87318ad1117a 100644
---- a/tools/testing/selftests/bpf/xdp_metadata.h
-+++ b/tools/testing/selftests/bpf/xdp_metadata.h
-@@ -17,12 +17,36 @@
- #define ETH_P_8021AD 0x88A8
- #endif
+-static int verify_xsk_metadata(struct xsk *xsk)
++static int verify_xsk_metadata(struct xsk *xsk, bool sent_from_af_xdp)
+ {
+ 	const struct xdp_desc *rx_desc;
+ 	struct pollfd fds = {};
+@@ -290,17 +320,36 @@ static int verify_xsk_metadata(struct xsk *xsk)
+ 	if (!ASSERT_NEQ(meta->rx_hash, 0, "rx_hash"))
+ 		return -1;
  
-+#ifndef BIT
-+#define BIT(nr)			(1 << (nr))
-+#endif
++	if (!sent_from_af_xdp) {
++		if (!ASSERT_NEQ(meta->rx_hash_type & XDP_RSS_TYPE_L4, 0, "rx_hash_type"))
++			return -1;
++		goto done;
++	}
 +
-+/* Non-existent checksum status */
-+#define XDP_CHECKSUM_MAGIC	BIT(2)
+ 	ASSERT_EQ(meta->rx_hash_type, 0, "rx_hash_type");
+ 
+ 	/* checksum offload */
+ 	ASSERT_EQ(udph->check, htons(0x721c), "csum");
+ 
++done:
+ 	xsk_ring_cons__release(&xsk->rx, 1);
+ 	refill_rx(xsk, comp_addr);
+ 
+ 	return 0;
+ }
+ 
++static void switch_ns_to_rx(struct nstoken **tok)
++{
++	close_netns(*tok);
++	*tok = open_netns(RX_NETNS_NAME);
++}
 +
-+enum xdp_meta_field {
-+	XDP_META_FIELD_TS	= BIT(0),
-+	XDP_META_FIELD_RSS	= BIT(1),
-+	XDP_META_FIELD_VLAN_TAG	= BIT(2),
-+};
++static void switch_ns_to_tx(struct nstoken **tok)
++{
++	close_netns(*tok);
++	*tok = open_netns(TX_NETNS_NAME);
++}
 +
- struct xdp_meta {
--	__u64 rx_timestamp;
-+	union {
-+		__u64 rx_timestamp;
-+		__s32 rx_timestamp_err;
-+	};
- 	__u64 xdp_timestamp;
- 	__u32 rx_hash;
- 	union {
- 		__u32 rx_hash_type;
- 		__s32 rx_hash_err;
- 	};
-+	union {
-+		struct {
-+			__be16 rx_vlan_proto;
-+			__u16 rx_vlan_tci;
-+		};
-+		__s32 rx_vlan_tag_err;
-+	};
-+	enum xdp_meta_field hint_valid;
- };
+ void test_xdp_metadata(void)
+ {
+ 	struct xdp_metadata2 *bpf_obj2 = NULL;
+@@ -318,27 +367,31 @@ void test_xdp_metadata(void)
+ 	int sock_fd;
+ 	int ret;
+ 
+-	/* Setup new networking namespace, with a veth pair. */
++	/* Setup new networking namespaces, with a veth pair. */
++	SYS(out, "ip netns add " TX_NETNS_NAME);
++	SYS(out, "ip netns add " RX_NETNS_NAME);
+ 
+-	SYS(out, "ip netns add xdp_metadata");
+-	tok = open_netns("xdp_metadata");
++	tok = open_netns(TX_NETNS_NAME);
+ 	SYS(out, "ip link add numtxqueues 1 numrxqueues 1 " TX_NAME
+ 	    " type veth peer " RX_NAME " numtxqueues 1 numrxqueues 1");
+-	SYS(out, "ip link set dev " TX_NAME " address 00:00:00:00:00:01");
+-	SYS(out, "ip link set dev " RX_NAME " address 00:00:00:00:00:02");
++	SYS(out, "ip link set " RX_NAME " netns " RX_NETNS_NAME);
++
++	SYS(out, "ip link set dev " TX_NAME " address " TX_MAC);
+ 	SYS(out, "ip link set dev " TX_NAME " up");
+-	SYS(out, "ip link set dev " RX_NAME " up");
+ 	SYS(out, "ip addr add " TX_ADDR "/" PREFIX_LEN " dev " TX_NAME);
++
++	/* Avoid ARP calls */
++	SYS(out, "ip -4 neigh add " RX_ADDR " lladdr " RX_MAC " dev " TX_NAME);
++
++	switch_ns_to_rx(&tok);
++
++	SYS(out, "ip link set dev " RX_NAME " address " RX_MAC);
++	SYS(out, "ip link set dev " RX_NAME " up");
+ 	SYS(out, "ip addr add " RX_ADDR "/" PREFIX_LEN " dev " RX_NAME);
+ 
+ 	rx_ifindex = if_nametoindex(RX_NAME);
+-	tx_ifindex = if_nametoindex(TX_NAME);
+ 
+-	/* Setup separate AF_XDP for TX and RX interfaces. */
+-
+-	ret = open_xsk(tx_ifindex, &tx_xsk);
+-	if (!ASSERT_OK(ret, "open_xsk(TX_NAME)"))
+-		goto out;
++	/* Setup separate AF_XDP for RX interface. */
+ 
+ 	ret = open_xsk(rx_ifindex, &rx_xsk);
+ 	if (!ASSERT_OK(ret, "open_xsk(RX_NAME)"))
+@@ -379,18 +432,38 @@ void test_xdp_metadata(void)
+ 	if (!ASSERT_GE(ret, 0, "bpf_map_update_elem"))
+ 		goto out;
+ 
+-	/* Send packet destined to RX AF_XDP socket. */
++	switch_ns_to_tx(&tok);
++
++	/* Setup separate AF_XDP for TX interface nad send packet to the RX socket. */
++	tx_ifindex = if_nametoindex(TX_NAME);
++	ret = open_xsk(tx_ifindex, &tx_xsk);
++	if (!ASSERT_OK(ret, "open_xsk(TX_NAME)"))
++		goto out;
++
+ 	if (!ASSERT_GE(generate_packet(&tx_xsk, AF_XDP_CONSUMER_PORT), 0,
+ 		       "generate AF_XDP_CONSUMER_PORT"))
+ 		goto out;
+ 
+-	/* Verify AF_XDP RX packet has proper metadata. */
+-	if (!ASSERT_GE(verify_xsk_metadata(&rx_xsk), 0,
++	switch_ns_to_rx(&tok);
++
++	/* Verify packet sent from AF_XDP has proper metadata. */
++	if (!ASSERT_GE(verify_xsk_metadata(&rx_xsk, true), 0,
+ 		       "verify_xsk_metadata"))
+ 		goto out;
+ 
++	switch_ns_to_tx(&tok);
+ 	complete_tx(&tx_xsk);
+ 
++	/* Now check metadata of packet, generated with network stack */
++	if (!ASSERT_GE(generate_packet_inet(), 0, "generate UDP packet"))
++		goto out;
++
++	switch_ns_to_rx(&tok);
++
++	if (!ASSERT_GE(verify_xsk_metadata(&rx_xsk, false), 0,
++		       "verify_xsk_metadata"))
++		goto out;
++
+ 	/* Make sure freplace correctly picks up original bound device
+ 	 * and doesn't crash.
+ 	 */
+@@ -408,11 +481,15 @@ void test_xdp_metadata(void)
+ 	if (!ASSERT_OK(xdp_metadata2__attach(bpf_obj2), "attach freplace"))
+ 		goto out;
+ 
++	switch_ns_to_tx(&tok);
++
+ 	/* Send packet to trigger . */
+ 	if (!ASSERT_GE(generate_packet(&tx_xsk, AF_XDP_CONSUMER_PORT), 0,
+ 		       "generate freplace packet"))
+ 		goto out;
+ 
++	switch_ns_to_rx(&tok);
++
+ 	while (!retries--) {
+ 		if (bpf_obj2->bss->called)
+ 			break;
+@@ -427,5 +504,6 @@ void test_xdp_metadata(void)
+ 	xdp_metadata__destroy(bpf_obj);
+ 	if (tok)
+ 		close_netns(tok);
+-	SYS_NOFAIL("ip netns del xdp_metadata");
++	SYS_NOFAIL("ip netns del " RX_NETNS_NAME);
++	SYS_NOFAIL("ip netns del " TX_NETNS_NAME);
+ }
 -- 
 2.41.0
 
