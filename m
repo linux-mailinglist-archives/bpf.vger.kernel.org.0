@@ -1,288 +1,163 @@
-Return-Path: <bpf+bounces-16753-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16754-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB335805C9E
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7002805C9F
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 18:53:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 721C21F2168F
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 17:52:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D09B1F2163D
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 17:53:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C26E6A32F;
-	Tue,  5 Dec 2023 17:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="KoXk7Z+f"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3806A33F;
+	Tue,  5 Dec 2023 17:53:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBA718F
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 09:52:13 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-a00191363c1so819225366b.0
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 09:52:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1701798732; x=1702403532; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0rB5zy5FXc2Q0muVk5ePz1qdh/FmI9i/LZX5yd22+Lg=;
-        b=KoXk7Z+fzqGYfn0O/Ypf7YmO1vLrTZpWIHq3YD4wIGsCsD54TaQAtavyZdLC6g7pbD
-         zs7SBUJ+gBnZXER5o4oOHS+0MbFkf1z3hbFq2FwK7UglGcN2v7MfQ1xC5NM72ThXdeZG
-         hWXBWI9Ydkrg0zkzQsOdgq8kTVU1+UltqnmvKZqAad5Q0VZyhJ9VswratbNswP/+BgZw
-         0KlZf3MznVvdOhjbGXvsAamQCO31R3R/0kbwE1hKGgDLt6KRb+jRjxU2RQNIKvk2WJpD
-         40YDijUpsApDKJrbdjEwsE31oDKv0qwlk5f2ndaPWexzfYjgEm5tmh+tkG3KA6rYlPDT
-         otyg==
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9753F129
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 09:53:26 -0800 (PST)
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d87607d2c2so5971355a34.1
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 09:53:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701798732; x=1702403532;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0rB5zy5FXc2Q0muVk5ePz1qdh/FmI9i/LZX5yd22+Lg=;
-        b=Ar+meZvvbr8kl2c8awoVa3ee/r8qNWQM1VZ23Nc4eK/do6CmGh37hc+5CTYSAEBrOI
-         FGsJXK6j81NMX2Q9405NCI72YHtGFzGWp4LXg5Zc+2aFRldWHnphndXyTzi7fUsoCDFg
-         m/PPO+XJxPf+Qj/XE+/inhHfpocBvslFFkjZHeWC3GeYnp65uxuztGL17PQtzArS0TMs
-         4AUZqehKvE1ygj463/77XZKxUjhohy7TyOK6Xs9lq66ebqvUkezrEYVPirlMKZqJlL0J
-         FDNKTVEJ5Lu2+s5aEOqKm9e/g1VYXoNPgkFguMOKJLKAPAbQMNpMwNafwFZQbgLwNQm2
-         CrVw==
-X-Gm-Message-State: AOJu0YyXfx1mPhrZz0pNV+8Xdx1z3HJSKiH5kNnsEzl92rlSD0sa+Smi
-	YxIAz9EkXu6rzVOwGJVSYlasqChOovRzd6JdUS4fng==
-X-Google-Smtp-Source: AGHT+IFVsyhC/+ujx3Ezt7cShACO7XA3ohblH2dRVEa35IHf+m7pxUMvMFRoZCGIAYeIT1NsOt3tn8dmN+Az1jIlAms=
-X-Received: by 2002:a17:907:7632:b0:a18:7e19:5347 with SMTP id
- jy18-20020a170907763200b00a187e195347mr2274927ejc.47.1701798732114; Tue, 05
- Dec 2023 09:52:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701798806; x=1702403606;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mmF1E4cgql5JMVIjcXLrnsYwldekR7/sa+hhIzCwXi0=;
+        b=CzEEjqJgEBsCuGTFsKzhIyEQabnE0r/3wlKlehnxNdIJOt29E0OXHDGu3VBzVBMGZ+
+         N+xlVp5QvdUKxMt0iRrujhdfqtNsTwwqPl+7DmkWvDvOVaIFf9GqJgAV7UPH1lpV9JxJ
+         m+R9e9bGOqmnQaVbWtNHxQuoGO5iLn5KoL7FkLNW3dkrOsB7ZmSPxifdrpyyKYC0B34A
+         VyXUq/8sKfbaYKUj6dSp/Wu2+Z76CHX94TLtxZeINAGt6jnvDq7DOpTmJ/8UmTtEtvMJ
+         NAfM0E9ZSbrzg/KovF9nSkZ/UK4cdWdH2D8dxGCCPrVB1KNH9wcEflPISiDU2LgOSg+7
+         /guA==
+X-Gm-Message-State: AOJu0YwihUKHis3lxWNtDT+uarZD2lemFEwHRpQXWpo/w8tGk6g1k6rY
+	W9iX6xN26W4NqAH8WWV+6Dav4nb4fpAnNgkHwX261uLgM/W4
+X-Google-Smtp-Source: AGHT+IH/l4O9QOjC5H0eyORFG6DTQAO/7Nwr/Ft8BfBYchS8c0cPKHLrsH+MlzGJV9cmRIVOUbZZxQBNymoyDWNOKyWVP9RUfuNU
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231204201406.341074-1-khuey@kylehuey.com> <20231204201406.341074-3-khuey@kylehuey.com>
- <fb4b856d-601d-4aa9-8526-14e5682f6402@linux.dev>
-In-Reply-To: <fb4b856d-601d-4aa9-8526-14e5682f6402@linux.dev>
-From: Kyle Huey <me@kylehuey.com>
-Date: Tue, 5 Dec 2023 09:52:00 -0800
-Message-ID: <CAP045Aos_o2Smeo_9C_LJNvCTKAF5Usatt0RAF-NeL0SjNJEYQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
- program suppresses SIGIO.
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	"Robert O'Callahan" <robert@ocallahan.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-Received: by 2002:aca:1909:0:b0:3b8:752e:ca8b with SMTP id
+ l9-20020aca1909000000b003b8752eca8bmr3730765oii.11.1701798805977; Tue, 05 Dec
+ 2023 09:53:25 -0800 (PST)
+Date: Tue, 05 Dec 2023 09:53:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004f438d060bc6e988@google.com>
+Subject: [syzbot] [net?] WARNING in tcp_recvmsg_locked (2)
+From: syzbot <syzbot+06dbd397158ec0ea4983@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	cong.wang@bytedance.com, daniel@iogearbox.net, davem@davemloft.net, 
+	dsahern@kernel.org, edumazet@google.com, john.fastabend@gmail.com, 
+	kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org, 
+	ndesaulniers@google.com, netdev@vger.kernel.org, pabeni@redhat.com, 
+	songliubraving@fb.com, syzkaller-bugs@googlegroups.com, trix@redhat.com, 
+	yhs@fb.com, yoshfuji@linux-ipv6.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Spam-Level: ***
 
-On Tue, Dec 5, 2023 at 8:54=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
->
->
-> On 12/4/23 3:14 PM, Kyle Huey wrote:
-> > The test sets a hardware breakpoint and uses a bpf program to suppress =
-the
-> > I/O availability signal if the ip matches the expected value.
-> >
-> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> > ---
-> >   .../selftests/bpf/prog_tests/perf_skip.c      | 95 ++++++++++++++++++=
-+
-> >   .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
-> >   2 files changed, 118 insertions(+)
-> >   create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
-> >   create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools=
-/testing/selftests/bpf/prog_tests/perf_skip.c
-> > new file mode 100644
-> > index 000000000000..b269a31669b7
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-> > @@ -0,0 +1,95 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#define _GNU_SOURCE
-> > +#include <test_progs.h>
-> > +#include "test_perf_skip.skel.h"
-> > +#include <linux/hw_breakpoint.h>
-> > +#include <sys/mman.h>
-> > +
-> > +#define BPF_OBJECT            "test_perf_skip.bpf.o"
-> > +
-> > +static void handle_sig(int)
->
-> I hit a warning here:
-> home/yhs/work/bpf-next/tools/testing/selftests/bpf/prog_tests/perf_skip.c=
-:10:27: error: omitting the parameter name in a function definition is a C2=
-3 extension [-Werror,-Wc23-extensions]
+Hello,
 
-Yeah, Meta's kernel-ci bot sent me off-list email about this one.
+syzbot found the following issue on:
 
->
->     10 | static void handle_sig(int)
->        |
->
-> Add a parameter and marked as unused can resolve the issue.
->
-> #define __always_unused         __attribute__((__unused__))
->
-> static void handle_sig(int unused __always_unused)
-> {
->          ASSERT_OK(1, "perf event not skipped");
-> }
->
->
-> > +{
-> > +     ASSERT_OK(1, "perf event not skipped");
-> > +}
-> > +
-> > +static noinline int test_function(void)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +void serial_test_perf_skip(void)
-> > +{
-> > +     sighandler_t previous;
-> > +     int duration =3D 0;
-> > +     struct test_perf_skip *skel =3D NULL;
-> > +     int map_fd =3D -1;
-> > +     long page_size =3D sysconf(_SC_PAGE_SIZE);
-> > +     uintptr_t *ip =3D NULL;
-> > +     int prog_fd =3D -1;
-> > +     struct perf_event_attr attr =3D {0};
-> > +     int perf_fd =3D -1;
-> > +     struct f_owner_ex owner;
-> > +     int err;
-> > +
-> > +     previous =3D signal(SIGIO, handle_sig);
-> > +
-> > +     skel =3D test_perf_skip__open_and_load();
-> > +     if (!ASSERT_OK_PTR(skel, "skel_load"))
-> > +             goto cleanup;
-> > +
-> > +     prog_fd =3D bpf_program__fd(skel->progs.handler);
-> > +     if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
-> > +             goto cleanup;
-> > +
-> > +     map_fd =3D bpf_map__fd(skel->maps.ip);
-> > +     if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
-> > +             goto cleanup;
-> > +
-> > +     ip =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, =
-map_fd, 0);
-> > +     if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
-> > +             goto cleanup;
-> > +
-> > +     *ip =3D (uintptr_t)test_function;
-> > +
-> > +     attr.type =3D PERF_TYPE_BREAKPOINT;
-> > +     attr.size =3D sizeof(attr);
-> > +     attr.bp_type =3D HW_BREAKPOINT_X;
-> > +     attr.bp_addr =3D (uintptr_t)test_function;
-> > +     attr.bp_len =3D sizeof(long);
-> > +     attr.sample_period =3D 1;
-> > +     attr.sample_type =3D PERF_SAMPLE_IP;
-> > +     attr.pinned =3D 1;
-> > +     attr.exclude_kernel =3D 1;
-> > +     attr.exclude_hv =3D 1;
-> > +     attr.precise_ip =3D 3;
-> > +
-> > +     perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-> > +     if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
-> > +             goto cleanup;
-> > +
-> > +     err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
-> > +     if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
-> > +             goto cleanup;
-> > +
-> > +     owner.type =3D F_OWNER_TID;
-> > +     owner.pid =3D gettid();
->
-> I hit a compilation failure here:
->
-> /home/yhs/work/bpf-next/tools/testing/selftests/bpf/prog_tests/perf_skip.=
-c:75:14: error: call to undeclared function 'gettid'; ISO C99 and later do =
-not support implicit function declarations [-Wimplicit-function-declaration=
-]
->     75 |         owner.pid =3D gettid();
->        |                     ^
->
-> If you looked at some other examples, the common usage is do 'syscall(SYS=
-_gettid)'.
+HEAD commit:    8470e4368b0f Merge branch 'net-cacheline-optimizations'
+git tree:       net-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12094286e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8715b6ede5c4b90
+dashboard link: https://syzkaller.appspot.com/bug?extid=06dbd397158ec0ea4983
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1247bee2e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1285243ce80000
 
-Not clear why this works for me but sure I'll change that.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/90007d08e178/disk-8470e436.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b55270de1cdc/vmlinux-8470e436.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/2237d34b6fec/bzImage-8470e436.xz
 
->
-> So the following patch should fix the compilation error:
->
-> #include <sys/syscall.h>
-> ...
->          owner.pid =3D syscall(SYS_gettid);
-> ...
->
-> > +     err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
-> > +     if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
-> > +             goto cleanup;
-> > +
-> > +     err =3D ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
-> > +     if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
-> > +             goto cleanup;
-> > +
-> > +     test_function();
->
-> As Andrii has mentioned in previous comments, we will have
-> issue is RELEASE version of selftest is built
->    RELEASE=3D1 make ...
->
-> See https://lore.kernel.org/bpf/20231127050342.1945270-1-yonghong.song@li=
-nux.dev
+The issue was bisected to:
 
-Not sure I follow this one. Are you saying adding asm volatile ("") in
-test_function() is *not* sufficient?
+commit 965b57b469a589d64d81b1688b38dcb537011bb0
+Author: Cong Wang <cong.wang@bytedance.com>
+Date:   Wed Jun 15 16:20:12 2022 +0000
 
-- Kyle
+    net: Introduce a new proto_ops ->read_skb()
 
->
-> > +
-> > +cleanup:
-> > +     if (perf_fd >=3D 0)
-> > +             close(perf_fd);
-> > +     if (ip)
-> > +             munmap(ip, page_size);
-> > +     if (skel)
-> > +             test_perf_skip__destroy(skel);
-> > +
-> > +     signal(SIGIO, previous);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools=
-/testing/selftests/bpf/progs/test_perf_skip.c
-> > new file mode 100644
-> > index 000000000000..ef01a9161afe
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-> > @@ -0,0 +1,23 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +struct {
-> > +     __uint(type, BPF_MAP_TYPE_ARRAY);
-> > +     __uint(max_entries, 1);
-> > +     __uint(map_flags, BPF_F_MMAPABLE);
-> > +     __type(key, uint32_t);
-> > +     __type(value, uintptr_t);
-> > +} ip SEC(".maps");
-> > +
-> > +SEC("perf_event")
-> > +int handler(struct bpf_perf_event_data *data)
-> > +{
-> > +     const uint32_t index =3D 0;
-> > +     uintptr_t *v =3D bpf_map_lookup_elem(&ip, &index);
-> > +
-> > +     return !(v && *v =3D=3D PT_REGS_IP(&data->regs));
-> > +}
-> > +
-> > +char _license[] SEC("license") =3D "GPL";
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1087c0d4e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1287c0d4e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1487c0d4e80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+06dbd397158ec0ea4983@syzkaller.appspotmail.com
+Fixes: 965b57b469a5 ("net: Introduce a new proto_ops ->read_skb()")
+
+WARNING: CPU: 1 PID: 5130 at net/ipv4/tcp.c:2396 tcp_recvmsg_locked+0xa54/0x2490 net/ipv4/tcp.c:2396
+Modules linked in:
+CPU: 1 PID: 5130 Comm: syz-executor313 Not tainted 6.7.0-rc3-syzkaller-00690-g8470e4368b0f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+RIP: 0010:tcp_recvmsg_locked+0xa54/0x2490 net/ipv4/tcp.c:2396
+Code: 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 70 18 00 00 48 8b 04 24 89 da 48 c7 c7 a0 b0 f4 8b 44 8b 44 24 30 8b 30 e8 ad 69 57 f8 90 <0f> 0b 90 90 e9 62 fa ff ff e8 7e 4b 91 f8 49 8d 5f 60 be 08 00 00
+RSP: 0018:ffffc90003acf290 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 000000000618aefc RCX: ffffffff814db209
+RDX: ffff8880259e9dc0 RSI: ffffffff814db216 RDI: 0000000000000001
+RBP: ffff8880250b7024 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000004 R12: dffffc0000000000
+R13: ffff8880250b6ff0 R14: 0000000000000001 R15: ffff8880250b7018
+FS:  0000555556ebf380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fff3dd9f6f8 CR3: 000000002534d000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ receive_fallback_to_copy+0x1d5/0x7a0 net/ipv4/tcp.c:1866
+ tcp_zerocopy_receive+0x110b/0x2110 net/ipv4/tcp.c:2099
+ do_tcp_getsockopt+0x1ae0/0x27b0 net/ipv4/tcp.c:4257
+ tcp_getsockopt net/ipv4/tcp.c:4342 [inline]
+ tcp_getsockopt+0xd1/0xf0 net/ipv4/tcp.c:4333
+ do_sock_getsockopt+0x2e1/0x6c0 net/socket.c:2373
+ __sys_getsockopt+0x1a3/0x270 net/socket.c:2402
+ __do_sys_getsockopt net/socket.c:2412 [inline]
+ __se_sys_getsockopt net/socket.c:2409 [inline]
+ __x64_sys_getsockopt+0xbd/0x150 net/socket.c:2409
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7fcd44438c59
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff3dd9f7f8 EFLAGS: 00000246 ORIG_RAX: 0000000000000037
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fcd44438c59
+RDX: 0000000000000023 RSI: 0000000000000006 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00000000200004c0 R09: 0000000100000000
+R10: 0000000020000380 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
