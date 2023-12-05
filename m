@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-16684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4A09804423
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:35:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A5E804425
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:36:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 122801C20C58
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:35:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE69E281463
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1B81184E;
-	Tue,  5 Dec 2023 01:35:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5492A184E;
+	Tue,  5 Dec 2023 01:36:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="poaD6X/A"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="BhpTj734"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9B4102;
-	Mon,  4 Dec 2023 17:35:38 -0800 (PST)
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D490E6;
+	Mon,  4 Dec 2023 17:36:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1701740139; x=1733276139;
+  t=1701740160; x=1733276160;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=oI6Tock4vyiMgrEo2VFazTzVSGzICIUnmtDP4s4yEow=;
-  b=poaD6X/ApANhtsgXUBpWcpqxy0avvsV822OjOIxN6a4lJcmhOuR74Dyt
-   VtziyHvGjRaWhQe8hwOwAebT04+oaFvZKER5DY5Uh8I5c54pNefvuG3LS
-   LbLWgU3GtU8qwAtnh7DXQwGFzfBWkj6E6OJgw3GFqhFlQw+m29BYiYxf0
-   E=;
+  bh=ERJ94gnqNeCu52I9uOvt95eUngUsxy4hziM/+MJ0IrY=;
+  b=BhpTj734EEymsi6SZlh8MtziBJE09ny7+pWyduypxj7xCFlXBxKUfEoe
+   YlVcY4EmYI5OLIELJGxmp+v/AJDk7zCO5oyZqtEn1HP6gFasBtLoLd0XU
+   0x+K2+L0fNoeUAAxQ61kiWaX+ckluAFdCyQmSZRFp07sw+zYxEiz9YKMb
+   Y=;
 X-IronPort-AV: E=Sophos;i="6.04,251,1695686400"; 
-   d="scan'208";a="315701169"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f323d91c.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:35:32 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan2.pdx.amazon.com [10.39.38.66])
-	by email-inbound-relay-pdx-2b-m6i4x-f323d91c.us-west-2.amazon.com (Postfix) with ESMTPS id 84F4240DB0;
-	Tue,  5 Dec 2023 01:35:28 +0000 (UTC)
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.38.20:52199]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.12.176:2525] with esmtp (Farcaster)
- id aa1b22d1-6495-4ccf-a387-ba6f042a98ed; Tue, 5 Dec 2023 01:35:27 +0000 (UTC)
-X-Farcaster-Flow-ID: aa1b22d1-6495-4ccf-a387-ba6f042a98ed
+   d="scan'208";a="623270439"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 01:35:58 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+	by email-inbound-relay-iad-1e-m6i4x-9694bb9e.us-east-1.amazon.com (Postfix) with ESMTPS id DBCE380C2A;
+	Tue,  5 Dec 2023 01:35:55 +0000 (UTC)
+Received: from EX19MTAUWB001.ant.amazon.com [10.0.21.151:59364]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.31.8:2525] with esmtp (Farcaster)
+ id 82b24f55-2295-4161-947e-a4797ca77017; Tue, 5 Dec 2023 01:35:54 +0000 (UTC)
+X-Farcaster-Flow-ID: 82b24f55-2295-4161-947e-a4797ca77017
 Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 5 Dec 2023 01:35:27 +0000
+ 15.2.1118.39; Tue, 5 Dec 2023 01:35:54 +0000
 Received: from 88665a182662.ant.amazon.com (10.119.0.105) by
  EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 5 Dec 2023 01:35:23 +0000
+ 15.2.1118.40; Tue, 5 Dec 2023 01:35:50 +0000
 From: Kuniyuki Iwashima <kuniyu@amazon.com>
 To: Eric Dumazet <edumazet@google.com>, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>
 CC: Kuniyuki Iwashima <kuniyu@amazon.com>, Kuniyuki Iwashima
 	<kuni1840@gmail.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: [PATCH v4 bpf-next 2/3] bpf: tcp: Support arbitrary SYN Cookie.
-Date: Tue, 5 Dec 2023 10:34:19 +0900
-Message-ID: <20231205013420.88067-3-kuniyu@amazon.com>
+Subject: [PATCH v4 bpf-next 3/3] selftest: bpf: Test bpf_sk_assign_tcp_reqsk().
+Date: Tue, 5 Dec 2023 10:34:20 +0900
+Message-ID: <20231205013420.88067-4-kuniyu@amazon.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20231205013420.88067-1-kuniyu@amazon.com>
 References: <20231205013420.88067-1-kuniyu@amazon.com>
@@ -71,321 +71,1067 @@ X-ClientProxiedBy: EX19D044UWB002.ant.amazon.com (10.13.139.188) To
  EX19D004ANA001.ant.amazon.com (10.37.240.138)
 Precedence: Bulk
 
-This patch adds a new kfunc available at TC hook to support arbitrary
-SYN Cookie.
+This commit adds a sample selftest to demonstrate how we can use
+bpf_sk_assign_tcp_reqsk() as the backend of SYN Proxy.
 
-The basic usage is as follows:
+The test creates IPv4/IPv6 x TCP/MPTCP connections and transfer
+messages over them on lo with BPF tc prog attached.
 
-    struct tcp_cookie_attributes attr = {
-        .tcp_opt = {
-            .mss_clamp = mss,
-            .wscale_ok = wscale_ok,
-            .rcv_scale = recv_scale, /* Server's WScale < 15 */
-            .snd_scale = send_scale, /* Client's WScale < 15 */
-            .tstamp_ok = tstamp_ok,
-            .sack_ok = sack_ok,
-        },
-        .ecn_ok = ecn_ok,
-        .usec_ts_ok = usec_ts_ok,
-    };
+The tc prog will process SYN and returns SYN+ACK with the following
+ISN and TS.  In a real use case, this part will be done by other
+hosts.
 
-    skc = bpf_skc_lookup_tcp(...);
-    sk = (struct sock *)bpf_skc_to_tcp_sock(skc);
-    bpf_sk_assign_tcp_reqsk(skb, sk, attr, sizeof(attr));
-    bpf_sk_release(skc);
+        MSB                                   LSB
+  ISN:  | 31 ... 8 | 7 6 |   5 |    4 | 3 2 1 0 |
+        |   Hash_1 | MSS | ECN | SACK |  WScale |
 
-bpf_sk_assign_tcp_reqsk() takes skb, a listener sk, and struct
-tcp_cookie_attributes and allocates reqsk and configures it.  Then,
-bpf_sk_assign_tcp_reqsk() links reqsk with skb and the listener.
+  TS:   | 31 ... 8 |          7 ... 0           |
+        |   Random |           Hash_2           |
 
-The notable thing here is that we do not hold refcnt for both reqsk
-and listener.  To differentiate that, we mark reqsk->syncookie, which
-is only used in TX for now.  So, if reqsk->syncookie is 1 in RX, it
-means that the reqsk is allocated by kfunc.
+  WScale in SYN is reused in SYN+ACK.
 
-When skb is freed, sock_pfree() checks if reqsk->syncookie is 1,
-and in that case, we set NULL to reqsk->rsk_listener before calling
-reqsk_free() as reqsk does not hold a refcnt of the listener.
+The client returns ACK, and tc prog will recalculate ISN and TS
+from ACK and validate SYN Cookie.
 
-When the TCP stack looks up a socket from the skb, we return
-inet_reqsk(skb->sk)->rsk_listener in skb_steal_sock().  However,
-we do not clear skb->sk and skb->destructor so that we can carry
-the reqsk to cookie_v[46]_check().
+If it's valid, the prog calls kfunc to allocate a reqsk for skb and
+configure the reqsk based on the argument created from SYN Cookie.
 
-The refcnt of reqsk will finally be set to 1 in tcp_get_cookie_sock()
-after creating a full sk.
-
-Note that we can use the unused bits in struct tcp_options_received
-and extend struct tcp_cookie_attributes in the future when we add a
-new attribute that is determined in 3WHS.
+Later, the reqsk will be processed in cookie_v[46]_check() to create
+a connection.
 
 Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
 ---
- include/net/request_sock.h |  35 +++++++++++++
- include/net/sock.h         |  25 ---------
- include/net/tcp.h          |   6 +++
- net/core/filter.c          | 102 ++++++++++++++++++++++++++++++++++++-
- net/core/sock.c            |  14 ++++-
- 5 files changed, 153 insertions(+), 29 deletions(-)
+ tools/testing/selftests/bpf/bpf_kfuncs.h      |  10 +
+ tools/testing/selftests/bpf/config            |   1 +
+ .../bpf/prog_tests/tcp_custom_syncookie.c     | 163 +++++
+ .../selftests/bpf/progs/test_siphash.h        |  64 ++
+ .../bpf/progs/test_tcp_custom_syncookie.c     | 573 ++++++++++++++++++
+ .../bpf/progs/test_tcp_custom_syncookie.h     | 162 +++++
+ 6 files changed, 973 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/tcp_custom_syncookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_siphash.h
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
 
-diff --git a/include/net/request_sock.h b/include/net/request_sock.h
-index 144c39db9898..2efffe2c05d0 100644
---- a/include/net/request_sock.h
-+++ b/include/net/request_sock.h
-@@ -83,6 +83,41 @@ static inline struct sock *req_to_sk(struct request_sock *req)
- 	return (struct sock *)req;
- }
+diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
+index b4e78c1eb37b..e2a1651851cf 100644
+--- a/tools/testing/selftests/bpf/bpf_kfuncs.h
++++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
+@@ -51,6 +51,16 @@ extern int bpf_dynptr_clone(const struct bpf_dynptr *ptr, struct bpf_dynptr *clo
+ extern int bpf_sock_addr_set_sun_path(struct bpf_sock_addr_kern *sa_kern,
+ 				      const __u8 *sun_path, __u32 sun_path__sz) __ksym;
  
-+/**
-+ * skb_steal_sock - steal a socket from an sk_buff
-+ * @skb: sk_buff to steal the socket from
-+ * @refcounted: is set to true if the socket is reference-counted
-+ * @prefetched: is set to true if the socket was assigned from bpf
++/* Description
++ *  Allocate and configure a reqsk and link it with a listener and skb.
++ * Returns
++ *  Error code
 + */
-+static inline struct sock *
-+skb_steal_sock(struct sk_buff *skb, bool *refcounted, bool *prefetched)
-+{
-+	struct sock *sk = skb->sk;
++struct sock;
++struct tcp_cookie_attributes;
++extern int bpf_sk_assign_tcp_reqsk(struct __sk_buff *skb, struct sock *sk,
++				   struct tcp_cookie_attributes *attr, int attr__sz) __ksym;
 +
-+	if (!skb->sk) {
-+		*prefetched = false;
-+		*refcounted = false;
-+		return NULL;
-+	}
+ void *bpf_cast_to_kern_ctx(void *) __ksym;
+ 
+ void *bpf_rdonly_cast(void *obj, __u32 btf_id) __ksym;
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index c125c441abc7..01f241ea2c67 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -81,6 +81,7 @@ CONFIG_NF_NAT=y
+ CONFIG_RC_CORE=y
+ CONFIG_SECURITY=y
+ CONFIG_SECURITYFS=y
++CONFIG_SYN_COOKIES=y
+ CONFIG_TEST_BPF=m
+ CONFIG_USERFAULTFD=y
+ CONFIG_VSOCKETS=y
+diff --git a/tools/testing/selftests/bpf/prog_tests/tcp_custom_syncookie.c b/tools/testing/selftests/bpf/prog_tests/tcp_custom_syncookie.c
+new file mode 100644
+index 000000000000..fefb52d8222c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/tcp_custom_syncookie.c
+@@ -0,0 +1,163 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright Amazon.com Inc. or its affiliates. */
 +
-+	*prefetched = skb_sk_is_prefetched(skb);
-+	if (*prefetched) {
-+#if IS_ENABLED(CONFIG_SYN_COOKIES)
-+		if (sk->sk_state == TCP_NEW_SYN_RECV && inet_reqsk(sk)->syncookie) {
-+			*refcounted = false;
-+			return inet_reqsk(sk)->rsk_listener;
-+		}
++#define _GNU_SOURCE
++#include <sched.h>
++#include <stdlib.h>
++#include <net/if.h>
++
++#include "test_progs.h"
++#include "cgroup_helpers.h"
++#include "network_helpers.h"
++#include "test_tcp_custom_syncookie.skel.h"
++
++#ifndef IPPROTO_MPTCP
++#define IPPROTO_MPTCP 262
 +#endif
-+		*refcounted = sk_is_refcounted(sk);
-+	} else {
-+		*refcounted = true;
-+	}
 +
-+	skb->destructor = NULL;
-+	skb->sk = NULL;
-+	return sk;
-+}
-+
- static inline struct request_sock *
- reqsk_alloc(const struct request_sock_ops *ops, struct sock *sk_listener,
- 	    bool attach_listener)
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 1d6931caf0c3..0ed77af38000 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2838,31 +2838,6 @@ sk_is_refcounted(struct sock *sk)
- 	return !sk_fullsock(sk) || !sock_flag(sk, SOCK_RCU_FREE);
- }
- 
--/**
-- * skb_steal_sock - steal a socket from an sk_buff
-- * @skb: sk_buff to steal the socket from
-- * @refcounted: is set to true if the socket is reference-counted
-- * @prefetched: is set to true if the socket was assigned from bpf
-- */
--static inline struct sock *
--skb_steal_sock(struct sk_buff *skb, bool *refcounted, bool *prefetched)
--{
--	if (skb->sk) {
--		struct sock *sk = skb->sk;
--
--		*refcounted = true;
--		*prefetched = skb_sk_is_prefetched(skb);
--		if (*prefetched)
--			*refcounted = sk_is_refcounted(sk);
--		skb->destructor = NULL;
--		skb->sk = NULL;
--		return sk;
--	}
--	*prefetched = false;
--	*refcounted = false;
--	return NULL;
--}
--
- /* Checks if this SKB belongs to an HW offloaded socket
-  * and whether any SW fallbacks are required based on dev.
-  * Check decrypted mark in case skb_orphan() cleared socket.
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 842791997f30..373afcfaefa6 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -591,6 +591,12 @@ static inline bool cookie_ecn_ok(const struct net *net, const struct dst_entry *
- }
- 
- #if IS_ENABLED(CONFIG_BPF)
-+struct tcp_cookie_attributes {
-+	struct tcp_options_received tcp_opt;
-+	bool ecn_ok;
-+	bool usec_ts_ok;
-+} __packed;
-+
- static inline bool cookie_bpf_ok(struct sk_buff *skb)
- {
- 	return skb->sk;
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 0adaa4afa35f..a43f7627c5fd 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -11816,6 +11816,94 @@ __bpf_kfunc int bpf_sock_addr_set_sun_path(struct bpf_sock_addr_kern *sa_kern,
- 
- 	return 0;
- }
-+
-+__bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct sk_buff *skb, struct sock *sk,
-+					struct tcp_cookie_attributes *attr,
-+					int attr__sz)
-+{
-+#if IS_ENABLED(CONFIG_SYN_COOKIES)
-+	const struct request_sock_ops *ops;
-+	struct inet_request_sock *ireq;
-+	struct tcp_request_sock *treq;
-+	struct request_sock *req;
-+	__u16 min_mss;
-+
-+	if (attr__sz != sizeof(*attr) || attr->tcp_opt.unused)
-+		return -EINVAL;
-+
-+	if (!sk)
-+		return -EINVAL;
-+
-+	if (!skb_at_tc_ingress(skb))
-+		return -EINVAL;
-+
-+	if (dev_net(skb->dev) != sock_net(sk))
-+		return -ENETUNREACH;
-+
-+	switch (skb->protocol) {
-+	case htons(ETH_P_IP):
-+		ops = &tcp_request_sock_ops;
-+		min_mss = 536;
-+		break;
-+#if IS_BUILTIN(CONFIG_IPV6)
-+	case htons(ETH_P_IPV6):
-+		ops = &tcp6_request_sock_ops;
-+		min_mss = IPV6_MIN_MTU - 60;
-+		break;
-+#endif
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (sk->sk_type != SOCK_STREAM || sk->sk_state != TCP_LISTEN)
-+		return -EINVAL;
-+
-+	if (attr->tcp_opt.mss_clamp < min_mss) {
-+		__NET_INC_STATS(sock_net(sk), LINUX_MIB_SYNCOOKIESFAILED);
-+		return -EINVAL;
-+	}
-+
-+	if (attr->tcp_opt.wscale_ok &&
-+	    (attr->tcp_opt.snd_wscale > TCP_MAX_WSCALE ||
-+	     attr->tcp_opt.rcv_wscale > TCP_MAX_WSCALE)) {
-+		__NET_INC_STATS(sock_net(sk), LINUX_MIB_SYNCOOKIESFAILED);
-+		return -EINVAL;
-+	}
-+
-+	if (sk_is_mptcp(sk))
-+		req = mptcp_subflow_reqsk_alloc(ops, sk, false);
-+	else
-+		req = inet_reqsk_alloc(ops, sk, false);
-+
-+	if (!req)
-+		return -ENOMEM;
-+
-+	ireq = inet_rsk(req);
-+	treq = tcp_rsk(req);
-+
-+	req->syncookie = 1;
-+	req->rsk_listener = sk;
-+	req->mss = attr->tcp_opt.mss_clamp;
-+
-+	ireq->snd_wscale = attr->tcp_opt.snd_wscale;
-+	ireq->rcv_wscale = attr->tcp_opt.rcv_wscale;
-+	ireq->wscale_ok = attr->tcp_opt.wscale_ok;
-+	ireq->tstamp_ok	= attr->tcp_opt.tstamp_ok;
-+	ireq->sack_ok = attr->tcp_opt.sack_ok;
-+	ireq->ecn_ok = attr->ecn_ok;
-+
-+	treq->req_usec_ts = attr->usec_ts_ok;
-+
-+	skb_orphan(skb);
-+	skb->sk = req_to_sk(req);
-+	skb->destructor = sock_pfree;
-+
-+	return 0;
-+#else
-+	return -EOPNOTSUPP;
-+#endif
-+}
-+
- __bpf_kfunc_end_defs();
- 
- int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
-@@ -11844,6 +11932,10 @@ BTF_SET8_START(bpf_kfunc_check_set_sock_addr)
- BTF_ID_FLAGS(func, bpf_sock_addr_set_sun_path)
- BTF_SET8_END(bpf_kfunc_check_set_sock_addr)
- 
-+BTF_SET8_START(bpf_kfunc_check_set_tcp_reqsk)
-+BTF_ID_FLAGS(func, bpf_sk_assign_tcp_reqsk)
-+BTF_SET8_END(bpf_kfunc_check_set_tcp_reqsk)
-+
- static const struct btf_kfunc_id_set bpf_kfunc_set_skb = {
- 	.owner = THIS_MODULE,
- 	.set = &bpf_kfunc_check_set_skb,
-@@ -11859,6 +11951,11 @@ static const struct btf_kfunc_id_set bpf_kfunc_set_sock_addr = {
- 	.set = &bpf_kfunc_check_set_sock_addr,
- };
- 
-+static const struct btf_kfunc_id_set bpf_kfunc_set_tcp_reqsk = {
-+	.owner = THIS_MODULE,
-+	.set = &bpf_kfunc_check_set_tcp_reqsk,
++static struct test_tcp_custom_syncookie_case {
++	int family, type, protocol;
++	char addr[16];
++	char name[10];
++} test_cases[] = {
++	{
++		.name = "IPv4 TCP  ",
++		.family = AF_INET,
++		.type = SOCK_STREAM,
++		.addr = "127.0.0.1",
++	},
++	{
++		.name = "IPv6 TCP  ",
++		.family = AF_INET6,
++		.type = SOCK_STREAM,
++		.addr = "::1",
++	},
++	{
++		.name = "IPv4 MPTCP",
++		.family = AF_INET,
++		.type = SOCK_STREAM,
++		.protocol = IPPROTO_MPTCP,
++		.addr = "127.0.0.1",
++	},
++	{
++		.name = "IPv6 MPTCP",
++		.family = AF_INET6,
++		.type = SOCK_STREAM,
++		.protocol = IPPROTO_MPTCP,
++		.addr = "::1",
++	},
 +};
 +
- static int __init bpf_kfunc_init(void)
- {
- 	int ret;
-@@ -11874,8 +11971,9 @@ static int __init bpf_kfunc_init(void)
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_SEG6LOCAL, &bpf_kfunc_set_skb);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_NETFILTER, &bpf_kfunc_set_skb);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &bpf_kfunc_set_xdp);
--	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
--						&bpf_kfunc_set_sock_addr);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
-+					       &bpf_kfunc_set_sock_addr);
-+	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_kfunc_set_tcp_reqsk);
- }
- late_initcall(bpf_kfunc_init);
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index fef349dd72fa..998950e97dfe 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2579,8 +2579,18 @@ EXPORT_SYMBOL(sock_efree);
- #ifdef CONFIG_INET
- void sock_pfree(struct sk_buff *skb)
- {
--	if (sk_is_refcounted(skb->sk))
--		sock_gen_put(skb->sk);
-+	struct sock *sk = skb->sk;
++static int setup_netns(void)
++{
++	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
++		return -1;
 +
-+	if (!sk_is_refcounted(sk))
++	if (!ASSERT_OK(system("ip link set dev lo up"), "ip"))
++		goto err;
++
++	if (!ASSERT_OK(write_sysctl("/proc/sys/net/ipv4/tcp_ecn", "1"),
++		       "write_sysctl"))
++		goto err;
++
++	return 0;
++err:
++	return -1;
++}
++
++static int setup_tc(struct test_tcp_custom_syncookie *skel)
++{
++	LIBBPF_OPTS(bpf_tc_hook, qdisc_lo, .attach_point = BPF_TC_INGRESS);
++	LIBBPF_OPTS(bpf_tc_opts, tc_attach,
++		    .prog_fd = bpf_program__fd(skel->progs.tcp_custom_syncookie));
++
++	qdisc_lo.ifindex = if_nametoindex("lo");
++	if (!ASSERT_OK(bpf_tc_hook_create(&qdisc_lo), "qdisc add dev lo clsact"))
++		goto err;
++
++	if (!ASSERT_OK(bpf_tc_attach(&qdisc_lo, &tc_attach),
++		       "filter add dev lo ingress"))
++		goto err;
++
++	return 0;
++err:
++	return -1;
++}
++
++#define msg "Hello World"
++#define msglen 11
++
++static void transfer_message(int sender, int receiver)
++{
++	char buf[msglen];
++	int ret;
++
++	ret = send(sender, msg, msglen, 0);
++	if (!ASSERT_EQ(ret, msglen, "send"))
 +		return;
 +
-+	if (sk->sk_state == TCP_NEW_SYN_RECV && inet_reqsk(sk)->syncookie) {
-+		inet_reqsk(sk)->rsk_listener = NULL;
-+		reqsk_free(inet_reqsk(sk));
++	memset(buf, 0, sizeof(buf));
++
++	ret = recv(receiver, buf, msglen, 0);
++	if (!ASSERT_EQ(ret, msglen, "recv"))
 +		return;
++
++	ret = strncmp(buf, msg, msglen);
++	if (!ASSERT_EQ(ret, 0, "strncmp"))
++		return;
++}
++
++static void create_connection(struct test_tcp_custom_syncookie_case *test_case)
++{
++	int server, client, child;
++
++	if (test_case->protocol == IPPROTO_MPTCP)
++		server = start_mptcp_server(test_case->family, test_case->addr, 0, 0);
++	else
++		server = start_server(test_case->family, test_case->type, test_case->addr, 0, 0);
++	if (!ASSERT_NEQ(server, -1, "start_server"))
++		return;
++
++	client = connect_to_fd(server, 0);
++	if (!ASSERT_NEQ(client, -1, "connect_to_fd"))
++		goto close_server;
++
++	child = accept(server, NULL, 0);
++	if (!ASSERT_NEQ(child, -1, "accept"))
++		goto close_client;
++
++	transfer_message(client, child);
++	transfer_message(child, client);
++
++	close(child);
++close_client:
++	close(client);
++close_server:
++	close(server);
++}
++
++void test_tcp_custom_syncookie(void)
++{
++	struct test_tcp_custom_syncookie *skel;
++	int i;
++
++	if (setup_netns())
++		return;
++
++	skel = test_tcp_custom_syncookie__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open_and_load"))
++		return;
++
++	if (setup_tc(skel))
++		goto destroy_skel;
++
++	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
++		test__start_subtest(test_cases[i].name);
++		create_connection(&test_cases[i]);
 +	}
 +
-+	sock_gen_put(sk);
- }
- EXPORT_SYMBOL(sock_pfree);
- #endif /* CONFIG_INET */
++destroy_skel:
++	system("tc qdisc del dev lo clsact");
++
++	test_tcp_custom_syncookie__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_siphash.h b/tools/testing/selftests/bpf/progs/test_siphash.h
+new file mode 100644
+index 000000000000..25334079f8be
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_siphash.h
+@@ -0,0 +1,64 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright Amazon.com Inc. or its affiliates. */
++
++#ifndef _TEST_SIPHASH_H
++#define _TEST_SIPHASH_H
++
++/* include/linux/bitops.h */
++static __always_inline __u64 rol64(__u64 word, unsigned int shift)
++{
++	return (word << (shift & 63)) | (word >> ((-shift) & 63));
++}
++
++/* include/linux/siphash.h */
++#define SIPHASH_PERMUTATION(a, b, c, d) ( \
++	(a) += (b), (b) = rol64((b), 13), (b) ^= (a), (a) = rol64((a), 32), \
++	(c) += (d), (d) = rol64((d), 16), (d) ^= (c), \
++	(a) += (d), (d) = rol64((d), 21), (d) ^= (a), \
++	(c) += (b), (b) = rol64((b), 17), (b) ^= (c), (c) = rol64((c), 32))
++
++#define SIPHASH_CONST_0 0x736f6d6570736575ULL
++#define SIPHASH_CONST_1 0x646f72616e646f6dULL
++#define SIPHASH_CONST_2 0x6c7967656e657261ULL
++#define SIPHASH_CONST_3 0x7465646279746573ULL
++
++/* lib/siphash.c */
++#define SIPROUND SIPHASH_PERMUTATION(v0, v1, v2, v3)
++
++#define PREAMBLE(len) \
++	u64 v0 = SIPHASH_CONST_0; \
++	u64 v1 = SIPHASH_CONST_1; \
++	u64 v2 = SIPHASH_CONST_2; \
++	u64 v3 = SIPHASH_CONST_3; \
++	u64 b = ((u64)(len)) << 56; \
++	v3 ^= key->key[1]; \
++	v2 ^= key->key[0]; \
++	v1 ^= key->key[1]; \
++	v0 ^= key->key[0];
++
++#define POSTAMBLE \
++	v3 ^= b; \
++	SIPROUND; \
++	SIPROUND; \
++	v0 ^= b; \
++	v2 ^= 0xff; \
++	SIPROUND; \
++	SIPROUND; \
++	SIPROUND; \
++	SIPROUND; \
++	return (v0 ^ v1) ^ (v2 ^ v3);
++
++static inline u64 siphash_2u64(const u64 first, const u64 second, const siphash_key_t *key)
++{
++	PREAMBLE(16)
++	v3 ^= first;
++	SIPROUND;
++	SIPROUND;
++	v0 ^= first;
++	v3 ^= second;
++	SIPROUND;
++	SIPROUND;
++	v0 ^= second;
++	POSTAMBLE
++}
++#endif
+diff --git a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
+new file mode 100644
+index 000000000000..9a6e2fc1379c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
+@@ -0,0 +1,573 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright Amazon.com Inc. or its affiliates. */
++
++#include "vmlinux.h"
++
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++#include "bpf_kfuncs.h"
++#include "test_siphash.h"
++#include "test_tcp_custom_syncookie.h"
++
++/* Hash is calculated for each client and split into ISN and TS.
++ *
++ *       MSB                                   LSB
++ * ISN:  | 31 ... 8 | 7 6 |   5 |    4 | 3 2 1 0 |
++ *       |   Hash_1 | MSS | ECN | SACK |  WScale |
++ *
++ * TS:   | 31 ... 8 |          7 ... 0           |
++ *       |   Random |           Hash_2           |
++ */
++#define COOKIE_BITS	8
++#define COOKIE_MASK	(((__u32)1 << COOKIE_BITS) - 1)
++
++enum {
++	/* 0xf is invalid thus means that SYN did not have WScale. */
++	BPF_SYNCOOKIE_WSCALE_MASK	= (1 << 4) - 1,
++	BPF_SYNCOOKIE_SACK		= (1 << 4),
++	BPF_SYNCOOKIE_ECN		= (1 << 5),
++};
++
++#define MSS_LOCAL_IPV4	65495
++#define MSS_LOCAL_IPV6	65476
++
++const __u16 msstab4[] = {
++	536,
++	1300,
++	1460,
++	MSS_LOCAL_IPV4,
++};
++
++const __u16 msstab6[] = {
++	1280 - 60, /* IPV6_MIN_MTU - 60 */
++	1480 - 60,
++	9000 - 60,
++	MSS_LOCAL_IPV6,
++};
++
++static siphash_key_t test_key_siphash = {
++	{ 0x0706050403020100ULL, 0x0f0e0d0c0b0a0908ULL }
++};
++
++struct tcp_syncookie {
++	struct __sk_buff *skb;
++	void *data_end;
++	struct ethhdr *eth;
++	struct iphdr *ipv4;
++	struct ipv6hdr *ipv6;
++	struct tcphdr *tcp;
++	union {
++		char *ptr;
++		__be32 *ptr32;
++	};
++	struct tcp_cookie_attributes attr;
++	u32 cookie;
++	u64 first;
++};
++
++static __always_inline int tcp_load_headers(struct tcp_syncookie *ctx)
++{
++	ctx->data_end = (void *)(long)ctx->skb->data_end;
++	ctx->eth = (struct ethhdr *)(long)ctx->skb->data;
++
++	if (ctx->eth + 1 > ctx->data_end)
++		goto err;
++
++	switch (bpf_ntohs(ctx->eth->h_proto)) {
++	case ETH_P_IP:
++		ctx->ipv4 = (struct iphdr *)(ctx->eth + 1);
++
++		if (ctx->ipv4 + 1 > ctx->data_end)
++			goto err;
++
++		if (ctx->ipv4->ihl != sizeof(*ctx->ipv4) / 4)
++			goto err;
++
++		if (ctx->ipv4->version != 4)
++			goto err;
++
++		if (ctx->ipv4->protocol != IPPROTO_TCP)
++			goto err;
++
++		ctx->tcp = (struct tcphdr *)(ctx->ipv4 + 1);
++		break;
++	case ETH_P_IPV6:
++		ctx->ipv6 = (struct ipv6hdr *)(ctx->eth + 1);
++
++		if (ctx->ipv6 + 1 > ctx->data_end)
++			goto err;
++
++		if (ctx->ipv6->version != 6)
++			goto err;
++
++		if (ctx->ipv6->nexthdr != NEXTHDR_TCP)
++			goto err;
++
++		ctx->tcp = (struct tcphdr *)(ctx->ipv6 + 1);
++		break;
++	default:
++		goto err;
++	}
++
++	if (ctx->tcp + 1 > ctx->data_end)
++		goto err;
++
++	return 0;
++err:
++	return -1;
++}
++
++static __always_inline int tcp_reload_headers(struct tcp_syncookie *ctx)
++{
++	/* Without volatile,
++	 * R3 32-bit pointer arithmetic prohibited
++	 */
++	volatile u64 data_len = ctx->skb->data_end - ctx->skb->data;
++
++	if (ctx->tcp->doff < sizeof(*ctx->tcp) / 4)
++		goto err;
++
++	/* Needed to calculate csum and parse TCP options. */
++	if (bpf_skb_change_tail(ctx->skb, data_len + 60 - ctx->tcp->doff * 4, 0))
++		goto err;
++
++	ctx->data_end = (void *)(long)ctx->skb->data_end;
++	ctx->eth = (struct ethhdr *)(long)ctx->skb->data;
++	if (ctx->ipv4) {
++		ctx->ipv4 = (struct iphdr *)(ctx->eth + 1);
++		ctx->ipv6 = NULL;
++		ctx->tcp = (struct tcphdr *)(ctx->ipv4 + 1);
++	} else {
++		ctx->ipv4 = NULL;
++		ctx->ipv6 = (struct ipv6hdr *)(ctx->eth + 1);
++		ctx->tcp = (struct tcphdr *)(ctx->ipv6 + 1);
++	}
++
++	if ((void *)ctx->tcp + 60 > ctx->data_end)
++		goto err;
++
++	return 0;
++err:
++	return -1;
++}
++
++static __always_inline __sum16 tcp_v4_csum(struct tcp_syncookie *ctx, __wsum csum)
++{
++	return csum_tcpudp_magic(ctx->ipv4->saddr, ctx->ipv4->daddr,
++				 ctx->tcp->doff * 4, IPPROTO_TCP, csum);
++}
++
++static __always_inline __sum16 tcp_v6_csum(struct tcp_syncookie *ctx, __wsum csum)
++{
++	return csum_ipv6_magic(&ctx->ipv6->saddr, &ctx->ipv6->daddr,
++			       ctx->tcp->doff * 4, IPPROTO_TCP, csum);
++}
++
++static __always_inline int tcp_validate_header(struct tcp_syncookie *ctx)
++{
++	s64 csum;
++
++	if (tcp_reload_headers(ctx))
++		goto err;
++
++	csum = bpf_csum_diff(0, 0, (void *)ctx->tcp, ctx->tcp->doff * 4, 0);
++	if (csum < 0)
++		goto err;
++
++	if (ctx->ipv4) {
++		/* check tcp_v4_csum(csum) is 0 if not on lo. */
++
++		csum = bpf_csum_diff(0, 0, (void *)ctx->ipv4, ctx->ipv4->ihl * 4, 0);
++		if (csum < 0)
++			goto err;
++
++		if (csum_fold(csum) != 0)
++			goto err;
++	} else if (ctx->ipv6) {
++		/* check tcp_v6_csum(csum) is 0 if not on lo. */
++	}
++
++	return 0;
++err:
++	return -1;
++}
++
++static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
++{
++	struct tcp_options_received *tcp_opt = &ctx->attr.tcp_opt;
++	char opcode, opsize;
++
++	if (ctx->ptr + 1 > ctx->data_end)
++		goto stop;
++
++	opcode = *ctx->ptr++;
++
++	if (opcode == TCPOPT_EOL)
++		goto stop;
++
++	if (opcode == TCPOPT_NOP)
++		goto next;
++
++	if (ctx->ptr + 1 > ctx->data_end)
++		goto stop;
++
++	opsize = *ctx->ptr++;
++
++	if (opsize < 2)
++		goto stop;
++
++	switch (opcode) {
++	case TCPOPT_MSS:
++		if (opsize == TCPOLEN_MSS && ctx->tcp->syn &&
++		    ctx->ptr + (TCPOLEN_MSS - 2) < ctx->data_end)
++			tcp_opt->mss_clamp = get_unaligned_be16(ctx->ptr);
++		break;
++	case TCPOPT_WINDOW:
++		if (opsize == TCPOLEN_WINDOW && ctx->tcp->syn &&
++		    ctx->ptr + (TCPOLEN_WINDOW - 2) < ctx->data_end) {
++			tcp_opt->wscale_ok = 1;
++			tcp_opt->snd_wscale = *ctx->ptr;
++		}
++		break;
++	case TCPOPT_TIMESTAMP:
++		if (opsize == TCPOLEN_TIMESTAMP &&
++		    ctx->ptr + (TCPOLEN_TIMESTAMP - 2) < ctx->data_end) {
++			tcp_opt->saw_tstamp = 1;
++			tcp_opt->rcv_tsval = get_unaligned_be32(ctx->ptr);
++			tcp_opt->rcv_tsecr = get_unaligned_be32(ctx->ptr + 4);
++
++			if (ctx->tcp->syn && tcp_opt->rcv_tsecr)
++				tcp_opt->tstamp_ok = 0;
++			else
++				tcp_opt->tstamp_ok = 1;
++		}
++		break;
++	case TCPOPT_SACK_PERM:
++		if (opsize == TCPOLEN_SACK_PERM && ctx->tcp->syn &&
++		    ctx->ptr + (TCPOLEN_SACK_PERM - 2) < ctx->data_end)
++			tcp_opt->sack_ok = 1;
++		break;
++	}
++
++	ctx->ptr += opsize - 2;
++next:
++	return 0;
++stop:
++	return 1;
++}
++
++static __always_inline void tcp_parse_options(struct tcp_syncookie *ctx)
++{
++	ctx->ptr = (char *)(ctx->tcp + 1);
++
++	bpf_loop(40, tcp_parse_option, ctx, 0);
++}
++
++static __always_inline int tcp_validate_sysctl(struct tcp_syncookie *ctx)
++{
++	struct tcp_options_received *tcp_opt = &ctx->attr.tcp_opt;
++
++	if ((ctx->ipv4 && tcp_opt->mss_clamp != MSS_LOCAL_IPV4) ||
++	    (ctx->ipv6 && tcp_opt->mss_clamp != MSS_LOCAL_IPV6))
++		goto err;
++
++	if (!tcp_opt->wscale_ok || tcp_opt->snd_wscale != 7)
++		goto err;
++
++	if (!tcp_opt->tstamp_ok)
++		goto err;
++
++	if (!tcp_opt->sack_ok)
++		goto err;
++
++	if (!ctx->tcp->ece || !ctx->tcp->cwr)
++		goto err;
++
++	return 0;
++err:
++	return -1;
++}
++
++static __always_inline void tcp_prepare_cookie(struct tcp_syncookie *ctx)
++{
++	struct tcp_options_received *tcp_opt = &ctx->attr.tcp_opt;
++	u32 seq = bpf_ntohl(ctx->tcp->seq);
++	u64 first = 0, second;
++	int mssind = 0;
++	u32 hash;
++
++	if (ctx->ipv4) {
++		for (mssind = ARRAY_SIZE(msstab4) - 1; mssind; mssind--)
++			if (tcp_opt->mss_clamp >= msstab4[mssind])
++				break;
++
++		tcp_opt->mss_clamp = msstab4[mssind];
++
++		first = (u64)ctx->ipv4->saddr << 32 | ctx->ipv4->daddr;
++	} else if (ctx->ipv6) {
++		for (mssind = ARRAY_SIZE(msstab6) - 1; mssind; mssind--)
++			if (tcp_opt->mss_clamp >= msstab6[mssind])
++				break;
++
++		tcp_opt->mss_clamp = msstab6[mssind];
++
++		first = (u64)ctx->ipv6->saddr.in6_u.u6_addr8[0] << 32 |
++			ctx->ipv6->daddr.in6_u.u6_addr32[0];
++	}
++
++	second = (u64)seq << 32 | ctx->tcp->source << 16 | ctx->tcp->dest;
++	hash = siphash_2u64(first, second, &test_key_siphash);
++
++	if (tcp_opt->tstamp_ok) {
++		tcp_opt->rcv_tsecr = bpf_get_prandom_u32();
++		tcp_opt->rcv_tsecr &= ~COOKIE_MASK;
++		tcp_opt->rcv_tsecr |= hash & COOKIE_MASK;
++	}
++
++	hash &= ~COOKIE_MASK;
++	hash |= mssind << 6;
++
++	if (tcp_opt->wscale_ok)
++		hash |= tcp_opt->snd_wscale & BPF_SYNCOOKIE_WSCALE_MASK;
++
++	if (tcp_opt->sack_ok)
++		hash |= BPF_SYNCOOKIE_SACK;
++
++	if (tcp_opt->tstamp_ok && ctx->tcp->ece && ctx->tcp->cwr)
++		hash |= BPF_SYNCOOKIE_ECN;
++
++	ctx->cookie = hash;
++}
++
++static __always_inline void tcp_write_options(struct tcp_syncookie *ctx)
++{
++	struct tcp_options_received *tcp_opt = &ctx->attr.tcp_opt;
++
++	ctx->ptr32 = (__be32 *)(ctx->tcp + 1);
++
++	*ctx->ptr32++ = bpf_htonl(TCPOPT_MSS << 24 | TCPOLEN_MSS << 16 |
++				  tcp_opt->mss_clamp);
++
++	if (tcp_opt->wscale_ok)
++		*ctx->ptr32++ = bpf_htonl(TCPOPT_NOP << 24 |
++					  TCPOPT_WINDOW << 16 |
++					  TCPOLEN_WINDOW << 8 |
++					  tcp_opt->snd_wscale);
++
++	if (tcp_opt->tstamp_ok) {
++		if (tcp_opt->sack_ok)
++			*ctx->ptr32++ = bpf_htonl(TCPOPT_SACK_PERM << 24 |
++						  TCPOLEN_SACK_PERM << 16 |
++						  TCPOPT_TIMESTAMP << 8 |
++						  TCPOLEN_TIMESTAMP);
++		else
++			*ctx->ptr32++ = bpf_htonl(TCPOPT_NOP << 24 |
++						  TCPOPT_NOP << 16 |
++						  TCPOPT_TIMESTAMP << 8 |
++						  TCPOLEN_TIMESTAMP);
++
++		*ctx->ptr32++ = bpf_htonl(tcp_opt->rcv_tsecr);
++		*ctx->ptr32++ = bpf_htonl(tcp_opt->rcv_tsval);
++	} else if (tcp_opt->sack_ok) {
++		*ctx->ptr32++ = bpf_htonl(TCPOPT_NOP << 24 |
++					  TCPOPT_NOP << 16 |
++					  TCPOPT_SACK_PERM << 8 |
++					  TCPOLEN_SACK_PERM);
++	}
++}
++
++static __always_inline int tcp_handle_syn(struct tcp_syncookie *ctx)
++{
++	s64 csum;
++
++	if (tcp_validate_header(ctx))
++		goto err;
++
++	tcp_parse_options(ctx);
++
++	if (tcp_validate_sysctl(ctx))
++		goto err;
++
++	tcp_prepare_cookie(ctx);
++	tcp_write_options(ctx);
++
++	swap(ctx->tcp->source, ctx->tcp->dest);
++	ctx->tcp->check = 0;
++	ctx->tcp->ack_seq = bpf_htonl(bpf_ntohl(ctx->tcp->seq) + 1);
++	ctx->tcp->seq = bpf_htonl(ctx->cookie);
++	ctx->tcp->doff = ((long)ctx->ptr32 - (long)ctx->tcp) >> 2;
++	ctx->tcp->ack = 1;
++	if (!ctx->attr.tcp_opt.tstamp_ok || !ctx->tcp->ece || !ctx->tcp->cwr)
++		ctx->tcp->ece = 0;
++	ctx->tcp->cwr = 0;
++
++	csum = bpf_csum_diff(0, 0, (void *)ctx->tcp, ctx->tcp->doff * 4, 0);
++	if (csum < 0)
++		goto err;
++
++	if (ctx->ipv4) {
++		swap(ctx->ipv4->saddr, ctx->ipv4->daddr);
++		ctx->tcp->check = tcp_v4_csum(ctx, csum);
++
++		ctx->ipv4->check = 0;
++		ctx->ipv4->tos = 0;
++		ctx->ipv4->tot_len = bpf_htons((long)ctx->ptr32 - (long)ctx->ipv4);
++		ctx->ipv4->id = 0;
++		ctx->ipv4->ttl = 64;
++
++		csum = bpf_csum_diff(0, 0, (void *)ctx->ipv4, sizeof(*ctx->ipv4), 0);
++		if (csum < 0)
++			goto err;
++
++		ctx->ipv4->check = csum_fold(csum);
++	} else if (ctx->ipv6) {
++		swap(ctx->ipv6->saddr, ctx->ipv6->daddr);
++		ctx->tcp->check = tcp_v6_csum(ctx, csum);
++
++		*(__be32 *)ctx->ipv6 = bpf_htonl(0x60000000);
++		ctx->ipv6->payload_len = bpf_htons((long)ctx->ptr32 - (long)ctx->tcp);
++		ctx->ipv6->hop_limit = 64;
++	}
++
++	swap_array(ctx->eth->h_source, ctx->eth->h_dest);
++
++	if (bpf_skb_change_tail(ctx->skb, (long)ctx->ptr32 - (long)ctx->eth, 0))
++		goto err;
++
++	return bpf_redirect(ctx->skb->ifindex, 0);
++err:
++	return TC_ACT_SHOT;
++}
++
++static __always_inline int tcp_validate_cookie(struct tcp_syncookie *ctx)
++{
++	struct tcp_options_received *tcp_opt = &ctx->attr.tcp_opt;
++	u32 cookie = bpf_ntohl(ctx->tcp->ack_seq) - 1;
++	u32 seq = bpf_ntohl(ctx->tcp->seq) - 1;
++	u64 first = 0, second;
++	int mssind;
++	u32 hash;
++
++	if (ctx->ipv4)
++		first = (u64)ctx->ipv4->saddr << 32 | ctx->ipv4->daddr;
++	else if (ctx->ipv6)
++		first = (u64)ctx->ipv6->saddr.in6_u.u6_addr8[0] << 32 |
++			ctx->ipv6->daddr.in6_u.u6_addr32[0];
++
++	second = (u64)seq << 32 | ctx->tcp->source << 16 | ctx->tcp->dest;
++	hash = siphash_2u64(first, second, &test_key_siphash);
++
++	if (tcp_opt->saw_tstamp)
++		hash -= tcp_opt->rcv_tsecr & COOKIE_MASK;
++	else
++		hash &= ~COOKIE_MASK;
++
++	hash -= cookie & ~COOKIE_MASK;
++	if (hash)
++		goto err;
++
++	mssind = (cookie & (3 << 6)) >> 6;
++	if (ctx->ipv4) {
++		if (mssind > ARRAY_SIZE(msstab4))
++			goto err;
++
++		tcp_opt->mss_clamp = msstab4[mssind];
++	} else {
++		if (mssind > ARRAY_SIZE(msstab6))
++			goto err;
++
++		tcp_opt->mss_clamp = msstab6[mssind];
++	}
++
++	tcp_opt->snd_wscale = cookie & BPF_SYNCOOKIE_WSCALE_MASK;
++	tcp_opt->rcv_wscale = tcp_opt->snd_wscale;
++	tcp_opt->wscale_ok = tcp_opt->snd_wscale == BPF_SYNCOOKIE_WSCALE_MASK;
++	tcp_opt->sack_ok = cookie & BPF_SYNCOOKIE_SACK;
++	ctx->attr.ecn_ok = cookie & BPF_SYNCOOKIE_ECN;
++
++	return 0;
++err:
++	return -1;
++}
++
++static __always_inline int tcp_handle_ack(struct tcp_syncookie *ctx)
++{
++	struct bpf_sock_tuple tuple;
++	struct bpf_sock *skc;
++	int ret = TC_ACT_OK;
++	struct sock *sk;
++	u32 tuple_size;
++
++	if (ctx->ipv4) {
++		tuple.ipv4.saddr = ctx->ipv4->saddr;
++		tuple.ipv4.daddr = ctx->ipv4->daddr;
++		tuple.ipv4.sport = ctx->tcp->source;
++		tuple.ipv4.dport = ctx->tcp->dest;
++		tuple_size = sizeof(tuple.ipv4);
++	} else if (ctx->ipv6) {
++		__builtin_memcpy(tuple.ipv6.saddr, &ctx->ipv6->saddr, sizeof(tuple.ipv6.saddr));
++		__builtin_memcpy(tuple.ipv6.daddr, &ctx->ipv6->daddr, sizeof(tuple.ipv6.daddr));
++		tuple.ipv6.sport = ctx->tcp->source;
++		tuple.ipv6.dport = ctx->tcp->dest;
++		tuple_size = sizeof(tuple.ipv6);
++	} else {
++		goto out;
++	}
++
++	skc = bpf_skc_lookup_tcp(ctx->skb, &tuple, tuple_size, BPF_F_CURRENT_NETNS, 0);
++	if (!skc)
++		goto out;
++
++	if (skc->state != TCP_LISTEN)
++		goto release;
++
++	sk = (struct sock *)bpf_skc_to_tcp_sock(skc);
++	if (!sk)
++		goto err;
++
++	if (tcp_validate_header(ctx))
++		goto err;
++
++	tcp_parse_options(ctx);
++
++	if (tcp_validate_cookie(ctx))
++		goto err;
++
++	ret = bpf_sk_assign_tcp_reqsk(ctx->skb, sk, &ctx->attr, sizeof(ctx->attr));
++	if (ret < 0)
++		goto err;
++
++release:
++	bpf_sk_release(skc);
++out:
++	return ret;
++
++err:
++	ret = TC_ACT_SHOT;
++	goto release;
++}
++
++SEC("tc")
++int tcp_custom_syncookie(struct __sk_buff *skb)
++{
++	struct tcp_syncookie ctx = {
++		.skb = skb,
++	};
++
++	if (tcp_load_headers(&ctx))
++		return TC_ACT_OK;
++
++	if (ctx.tcp->rst)
++		return TC_ACT_OK;
++
++	if (ctx.tcp->syn) {
++		if (ctx.tcp->ack)
++			return TC_ACT_OK;
++
++		return tcp_handle_syn(&ctx);
++	}
++
++	return tcp_handle_ack(&ctx);
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
+new file mode 100644
+index 000000000000..a401f59e46d8
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
+@@ -0,0 +1,162 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright Amazon.com Inc. or its affiliates. */
++
++#ifndef _TEST_TCP_SYNCOOKIE_H
++#define _TEST_TCP_SYNCOOKIE_H
++
++#define TC_ACT_OK	0
++#define TC_ACT_SHOT	2
++
++#define ETH_ALEN	6
++#define ETH_P_IP	0x0800
++#define ETH_P_IPV6	0x86DD
++
++#define NEXTHDR_TCP	6
++
++#define TCPOPT_NOP		1
++#define TCPOPT_EOL		0
++#define TCPOPT_MSS		2
++#define TCPOPT_WINDOW		3
++#define TCPOPT_TIMESTAMP	8
++#define TCPOPT_SACK_PERM	4
++
++#define TCPOLEN_MSS		4
++#define TCPOLEN_WINDOW		3
++#define TCPOLEN_TIMESTAMP	10
++#define TCPOLEN_SACK_PERM	2
++#define BPF_F_CURRENT_NETNS	(-1)
++
++#define __packed __attribute__((__packed__))
++#define __force
++
++#define ARRAY_SIZE(arr)	(sizeof(arr) / sizeof((arr)[0]))
++
++#define swap(a, b)				\
++	do {					\
++		typeof(a) __tmp = (a);		\
++		(a) = (b);			\
++		(b) = __tmp;			\
++	} while (0)
++
++#define swap_array(a, b)				\
++	do {						\
++		typeof(a) __tmp[sizeof(a)];		\
++		__builtin_memcpy(__tmp, a, sizeof(a));	\
++		__builtin_memcpy(a, b, sizeof(a));	\
++		__builtin_memcpy(b, __tmp, sizeof(a));	\
++	} while (0)
++
++/* asm-generic/unaligned.h */
++#define __get_unaligned_t(type, ptr) ({						\
++	const struct { type x; } __packed * __pptr = (typeof(__pptr))(ptr);	\
++	__pptr->x;								\
++})
++
++#define get_unaligned(ptr) __get_unaligned_t(typeof(*(ptr)), (ptr))
++
++static inline u16 get_unaligned_be16(const void *p)
++{
++	return bpf_ntohs(__get_unaligned_t(__be16, p));
++}
++
++static inline u32 get_unaligned_be32(const void *p)
++{
++	return bpf_ntohl(__get_unaligned_t(__be32, p));
++}
++
++/* lib/checksum.c */
++static inline u32 from64to32(u64 x)
++{
++	/* add up 32-bit and 32-bit for 32+c bit */
++	x = (x & 0xffffffff) + (x >> 32);
++	/* add up carry.. */
++	x = (x & 0xffffffff) + (x >> 32);
++	return (u32)x;
++}
++
++static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
++					__u32 len, __u8 proto, __wsum sum)
++{
++	unsigned long long s = (__force u32)sum;
++
++	s += (__force u32)saddr;
++	s += (__force u32)daddr;
++#ifdef __BIG_ENDIAN
++	s += proto + len;
++#else
++	s += (proto + len) << 8;
++#endif
++	return (__force __wsum)from64to32(s);
++}
++
++/* asm-generic/checksum.h */
++static inline __sum16 csum_fold(__wsum csum)
++{
++	u32 sum = (__force u32)csum;
++
++	sum = (sum & 0xffff) + (sum >> 16);
++	sum = (sum & 0xffff) + (sum >> 16);
++	return (__force __sum16)~sum;
++}
++
++static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr, __u32 len,
++					__u8 proto, __wsum sum)
++{
++	return csum_fold(csum_tcpudp_nofold(saddr, daddr, len, proto, sum));
++}
++
++/* net/ipv6/ip6_checksum.c */
++static inline __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
++				      const struct in6_addr *daddr,
++				      __u32 len, __u8 proto, __wsum csum)
++{
++	int carry;
++	__u32 ulen;
++	__u32 uproto;
++	__u32 sum = (__force u32)csum;
++
++	sum += (__force u32)saddr->in6_u.u6_addr32[0];
++	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[0]);
++	sum += carry;
++
++	sum += (__force u32)saddr->in6_u.u6_addr32[1];
++	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[1]);
++	sum += carry;
++
++	sum += (__force u32)saddr->in6_u.u6_addr32[2];
++	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[2]);
++	sum += carry;
++
++	sum += (__force u32)saddr->in6_u.u6_addr32[3];
++	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[3]);
++	sum += carry;
++
++	sum += (__force u32)daddr->in6_u.u6_addr32[0];
++	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[0]);
++	sum += carry;
++
++	sum += (__force u32)daddr->in6_u.u6_addr32[1];
++	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[1]);
++	sum += carry;
++
++	sum += (__force u32)daddr->in6_u.u6_addr32[2];
++	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[2]);
++	sum += carry;
++
++	sum += (__force u32)daddr->in6_u.u6_addr32[3];
++	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[3]);
++	sum += carry;
++
++	ulen = (__force u32)bpf_htonl((__u32)len);
++	sum += ulen;
++	carry = (sum < ulen);
++	sum += carry;
++
++	uproto = (__force u32)bpf_htonl(proto);
++	sum += uproto;
++	carry = (sum < uproto);
++	sum += carry;
++
++	return csum_fold((__force __wsum)sum);
++}
++#endif
 -- 
 2.30.2
 
