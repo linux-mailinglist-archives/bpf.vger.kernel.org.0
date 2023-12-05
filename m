@@ -1,230 +1,189 @@
-Return-Path: <bpf+bounces-16784-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16785-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79734805EB6
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 20:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D509805EBC
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 20:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B30911C21095
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 19:39:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CF1A1C210AE
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 19:39:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B256AB99;
-	Tue,  5 Dec 2023 19:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A276ABA7;
+	Tue,  5 Dec 2023 19:39:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qLk7Pqh4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qqoSx7pP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A278A5
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 11:39:30 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5c65e666609so3701877a12.1
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 11:39:30 -0800 (PST)
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BEE01B5
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 11:39:44 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so1983a12.0
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 11:39:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701805170; x=1702409970; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xfq67iLmriDqfduTRY0M8dju8QhNwul2zcs5mKn+Qdk=;
-        b=qLk7Pqh4Pd9QsKsbP60577NqraCUiybzAGtjqVrmb3yTT0fZZDlCA6TsvS3vuT2iOB
-         hky+24GulvywVn0x1HL0oSBsjpNVQ04MJOgVctAytLuBKCC0A+y/Pt0g3bt4ATD3Vxaj
-         IcbSQMiQdvW4I+bTkBHWzxKZH+AsfGiDp0HuTB9q4TGD6VMcyVNzi/Goy5jxmvjqGVXx
-         kxC+Po70jB5erw0iT79pdQ4U6jxwvQ2TenwMOfhXivYl6F34MyiOQ7l76PMAKah8nfri
-         p66f0Nqqyb4v0l4v+r1q7uTuDTZij81VAvwIiwgqeG280+UTiohhLakX5684GNT0y4w1
-         Po8A==
+        d=google.com; s=20230601; t=1701805182; x=1702409982; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+2ld4m3MhERUPzTktQlQjP4JXlULIXkqWAkTLoxmcz0=;
+        b=qqoSx7pPuMdeAzs9JxbtFBD0v093lEMUT1P/ZtAu0eiWoUZSH8FIyGh3+CLK5MDIWZ
+         5RV1yDLoppjAjXJLjMz2YWiTLGVfeXvQZ/wyEf6hQYP9hDq/Mr5Vew8aAb2Lmg0/FvbV
+         lV76DnrtMLKRksRhUHALcJD/kRIkPIWHJKu29qh17wN+dDqtoC06KqD86gMwYpaAco5B
+         gLCZrObSEyI3CsXRjCIt85IormIACHEPcHYNMbM84PbjEdWMFCM2OZAaMNXQAI5yP6YF
+         h/0k2GRf0CFN9pYLY/M7YZgsZ6qBw5mWGcnLpZAcjua9WnazcqCVfywU3PG7OLF25JiB
+         5QDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701805170; x=1702409970;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xfq67iLmriDqfduTRY0M8dju8QhNwul2zcs5mKn+Qdk=;
-        b=tBLJcdQ9P68NO4WNQZYiBXDIoiMD6EQ/4kzol36eeLYKdFu9AjJy1r8OzXnVzIWQnF
-         8qYP01q0SbVby0R+1W+rK8TOpc/glXuljT0yoqohnJ3ptc9O+F1cKq89mAIGfRVna/gF
-         g0c2VJPdyZiYCHnqpINfv6X62/dM9gZPOirLqFeC7urcFum9+U/xIZe6C4XDSOn8a5AH
-         YYfpT24deGAqb9ZZFJjnPiwthaHR9OWUs3awSZ+/4/CdKTEei7Kik22fOre5GTQRNnnx
-         9HAsz9zNee7Kla/QzVfljHr6+3TGsH/RH4r44KfLTsSAom0++95BpftnwSXUSps1vd8I
-         NvCQ==
-X-Gm-Message-State: AOJu0Yz6yGyPT1wS7IJMyjmHL5biUS2eOXJOwfLIsVz+pLodCczWL1Z6
-	WTR7rn/undO3pRl9sRcM5w7voUw=
-X-Google-Smtp-Source: AGHT+IFIztxj2eUKXZ2GS1Ca6Xtk1G+ZaZVM3GaQJJGqcaBfxYyvfWdWIYuJqHVvsmWQlJgRFVSGrCQ=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:1220:0:b0:5c2:2f9:c374 with SMTP id
- h32-20020a631220000000b005c202f9c374mr4433763pgl.9.1701805169961; Tue, 05 Dec
- 2023 11:39:29 -0800 (PST)
-Date: Tue, 5 Dec 2023 11:39:28 -0800
-In-Reply-To: <656f66023f7bd_3dd6422942a@willemb.c.googlers.com.notmuch>
+        d=1e100.net; s=20230601; t=1701805182; x=1702409982;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+2ld4m3MhERUPzTktQlQjP4JXlULIXkqWAkTLoxmcz0=;
+        b=jG+OU+8BPdzfAxyzaQsoIN9Wg9QDVQf/kuoblKyY9futWNSTjghYUrIEb09qqHdwu8
+         KRcvJ9/cdg4lxJ6AyWfQSEWQ8RT796rJ/6zJOtkNov0eyekf+V+B24e97aV8512PUXO5
+         1ox7ARQG4ItVR1HQVu/CtHWoy9RJ8f3/CuPbjlKqVQ+moTuAFzv2BVbfZS5BlEVSesDj
+         26DPDCMHuVRGlH6yVlU7aF38sDZo+v+W6dA18jbpob1rSsJwiZ5to73/hP4EfK0nMsK0
+         bzCPxkYCWRXTG8naOLMZOHvAZEdOhLIuBhiS+okfY42UXNqszLpwG9VOHvdLQjwdEDxy
+         loOA==
+X-Gm-Message-State: AOJu0YzCp9SNoLLbeDaB6YqqkwS+2deDjD+bn0ETKGwF62PdlOEPxYK7
+	LW0nxjYaX2TEvi4p/rbyagZyimcyddQ7f9uCjSc8Rw==
+X-Google-Smtp-Source: AGHT+IG22KQbpxLNZILlyWiioOluPpeZuIABSGkhe5oy2RfeUiCtalpZlaYUFGxQsY9Z2DSP5cxTPadCnBZ25d1mRUo=
+X-Received: by 2002:a50:c35d:0:b0:54a:ee8b:7a8c with SMTP id
+ q29-20020a50c35d000000b0054aee8b7a8cmr12527edb.0.1701805182213; Tue, 05 Dec
+ 2023 11:39:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
- <20231203165129.1740512-3-yoong.siang.song@intel.com> <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
- <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
- <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
- <5a0faf8cc9ec3ab0d5082c66b909c582c8f1eae6.camel@siemens.com>
- <CAKH8qBuXL8bOYtfKKPS8y=KJqouDptyciCjr0wNKVHtNj6BmqA@mail.gmail.com> <656f66023f7bd_3dd6422942a@willemb.c.googlers.com.notmuch>
-Message-ID: <ZW98UW033wCy9vI-@google.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
- Time support to XDP ZC
-From: Stanislav Fomichev <sdf@google.com>
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: Florian Bezdeka <florian.bezdeka@siemens.com>, yoong.siang.song@intel.com, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, davem@davemloft.net, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Bjorn Topel <bjorn@kernel.org>, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	Jonathan Lemon <jonathan.lemon@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
-	Willem de Bruijn <willemb@google.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>, 
-	"linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20231204114322.9218-1-lulie@linux.alibaba.com>
+ <CANn89iKUHQHA2wHw9k1SiazJf7ag7i4Tz+FPutgu870teVw_Bg@mail.gmail.com> <1701740897.6795166-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <1701740897.6795166-1-xuanzhuo@linux.alibaba.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 5 Dec 2023 20:39:28 +0100
+Message-ID: <CANn89i+Xs3sSDQcub9p=YGUp1_XainGQpS=0RVpYTiDjvRN1rw@mail.gmail.com>
+Subject: Re: [PATCH net-next] tcp: add tracepoints for data send/recv/acked
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, rostedt@goodmis.org, mhiramat@kernel.org, 
+	mathieu.desnoyers@efficios.com, davem@davemloft.net, dsahern@kernel.org, 
+	kuba@kernel.org, pabeni@redhat.com, martin.lau@linux.dev, 
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	dust.li@linux.alibaba.com, alibuda@linux.alibaba.com, guwen@linux.alibaba.com, 
+	hengqi@linux.alibaba.com, Philo Lu <lulie@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 12/05, Willem de Bruijn wrote:
-> Stanislav Fomichev wrote:
-> > On Tue, Dec 5, 2023 at 7:34=E2=80=AFAM Florian Bezdeka
-> > <florian.bezdeka@siemens.com> wrote:
+On Tue, Dec 5, 2023 at 3:11=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.co=
+m> wrote:
+>
+> On Mon, 4 Dec 2023 13:28:21 +0100, Eric Dumazet <edumazet@google.com> wro=
+te:
+> > On Mon, Dec 4, 2023 at 12:43=E2=80=AFPM Philo Lu <lulie@linux.alibaba.c=
+om> wrote:
 > > >
-> > > On Tue, 2023-12-05 at 15:25 +0000, Song, Yoong Siang wrote:
-> > > > On Monday, December 4, 2023 10:55 PM, Willem de Bruijn wrote:
-> > > > > Jesper Dangaard Brouer wrote:
-> > > > > >
-> > > > > >
-> > > > > > On 12/3/23 17:51, Song Yoong Siang wrote:
-> > > > > > > This patch enables Launch Time (Time-Based Scheduling) suppor=
-t to XDP zero
-> > > > > > > copy via XDP Tx metadata framework.
-> > > > > > >
-> > > > > > > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.com>
-> > > > > > > ---
-> > > > > > >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 ++
-> > > > > >
-> > > > > > As requested before, I think we need to see another driver impl=
-ementing
-> > > > > > this.
-> > > > > >
-> > > > > > I propose driver igc and chip i225.
-> > > >
-> > > > Sure. I will include igc patches in next version.
-> > > >
-> > > > > >
-> > > > > > The interesting thing for me is to see how the LaunchTime max 1=
- second
-> > > > > > into the future[1] is handled code wise. One suggestion is to a=
-dd a
-> > > > > > section to Documentation/networking/xsk-tx-metadata.rst per dri=
-ver that
-> > > > > > mentions/documents these different hardware limitations.  It is=
- natural
-> > > > > > that different types of hardware have limitations.  This is a c=
-lose-to
-> > > > > > hardware-level abstraction/API, and IMHO as long as we document=
- the
-> > > > > > limitations we can expose this API without too many limitations=
- for more
-> > > > > > capable hardware.
-> > > >
-> > > > Sure. I will try to add hardware limitations in documentation.
-> > > >
-> > > > >
-> > > > > I would assume that the kfunc will fail when a value is passed th=
-at
-> > > > > cannot be programmed.
-> > > > >
-> > > >
-> > > > In current design, the xsk_tx_metadata_request() dint got return va=
-lue.
-> > > > So user won't know if their request is fail.
-> > > > It is complex to inform user which request is failing.
-> > > > Therefore, IMHO, it is good that we let driver handle the error sil=
-ently.
-> > > >
+> > > Add 3 tracepoints, namely tcp_data_send/tcp_data_recv/tcp_data_acked,
+> > > which will be called every time a tcp data packet is sent, received, =
+and
+> > > acked.
+> > > tcp_data_send: called after a data packet is sent.
+> > > tcp_data_recv: called after a data packet is receviced.
+> > > tcp_data_acked: called after a valid ack packet is processed (some se=
+nt
+> > > data are ackknowledged).
 > > >
-> > > If the programmed value is invalid, the packet will be "dropped" / wi=
-ll
-> > > never make it to the wire, right?
->=20
-> Programmable behavior is to either drop or cap to some boundary
-> value, such as the farthest programmable time in the future: the
-> horizon. In fq:
->=20
->                 /* Check if packet timestamp is too far in the future. */
->                 if (fq_packet_beyond_horizon(skb, q, now)) {
->                         if (q->horizon_drop) {
->                                         q->stat_horizon_drops++;
->                                         return qdisc_drop(skb, sch, to_fr=
-ee);
->                         }
->                         q->stat_horizon_caps++;
->                         skb->tstamp =3D now + q->horizon;
->                 }
->                 fq_skb_cb(skb)->time_to_send =3D skb->tstamp;
->=20
-> Drop is the more obviously correct mode.
->=20
-> Programming with a clock source that the driver does not support will
-> then be a persistent failure.
->=20
-> Preferably, this driver capability can be queried beforehand (rather
-> than only through reading error counters afterwards).
->=20
-> Perhaps it should not be a driver task to convert from possibly
-> multiple clock sources to the device native clock. Right now, we do
-> use per-device timecounters for this, implemented in the driver.
->=20
-> As for which clocks are relevant. For PTP, I suppose the device PHC,
-> converted to nsec. For pacing offload, TCP uses CLOCK_MONOTONIC.
+> > > We use these callbacks for fine-grained tcp monitoring, which collect=
+s
+> > > and analyses every tcp request/response event information. The whole
+> > > system has been described in SIGMOD'18 (see
+> > > https://dl.acm.org/doi/pdf/10.1145/3183713.3190659 for details). To
+> > > achieve this with bpf, we require hooks for data events that call bpf
+> > > prog (1) when any data packet is sent/received/acked, and (2) after
+> > > critical tcp state variables have been updated (e.g., snd_una, snd_nx=
+t,
+> > > rcv_nxt). However, existing bpf hooks cannot meet our requirements.
+> > > Besides, these tracepoints help to debug tcp when data send/recv/acke=
+d.
+> >
+> > This I do not understand.
+> >
+> > >
+> > > Though kretprobe/fexit can also be used to collect these information,
+> > > they will not work if the kernel functions get inlined. Considering t=
+he
+> > > stability, we prefer tracepoint as the solution.
+> >
+> > I dunno, this seems quite weak to me. I see many patches coming to add
+> > tracing in the stack, but no patches fixing any issues.
+>
+>
+> We have implemented a mechanism to split the request and response from th=
+e TCP
+> connection using these "hookers", which can handle various protocols such=
+ as
+> HTTP, HTTPS, Redis, and MySQL. This mechanism allows us to record importa=
+nt
+> information about each request and response, including the amount of data
+> uploaded, the time taken by the server to handle the request, and the tim=
+e taken
+> for the client to receive the response. This mechanism has been running
+> internally for many years and has proven to be very useful.
+>
+> One of the main benefits of this mechanism is that it helps in locating t=
+he
+> source of any issues or problems that may arise. For example, if there is=
+ a
+> problem with the network, the application, or the machine, we can use thi=
+s
+> mechanism to identify and isolate the issue.
+>
+> TCP has long been a challenge when it comes to tracking the transmission =
+of data
+> on the network. The application can only confirm that it has sent a certa=
+in
+> amount of data to the kernel, but it has limited visibility into whether =
+the
+> client has actually received this data. Our mechanism addresses this issu=
+e by
+> providing insights into the amount of data received by the client and the=
+ time
+> it was received. Furthermore, we can also detect any packet loss or delay=
+s
+> caused by the server.
+>
+> https://help-static-aliyun-doc.aliyuncs.com/assets/img/zh-CN/7912288961/9=
+732df025beny.svg
+>
+> So, we do not want to add some tracepoint to do some unknow debug.
+> We have a clear goal. debugging is just an incidental capability.
+>
 
-Do we need to expose some generic netdev netlink apis to query/adjust
-nic clock sources (or maybe there is something existing already)?
-Then the userspace can be responsible for syncing/converting the
-timestamps to the internal nic clocks. +1 to trying to avoid doing
-this in the drivers.
+We have powerful mechanisms in the stack already that ordinary (no
+privilege requested) applications can readily use.
 
-> > > That is clearly a situation that the user should be informed about. F=
-or
-> > > RT systems this normally means that something is really wrong regardi=
-ng
-> > > timing / cycle overflow. Such systems have to react on that situation=
-.
-> >=20
-> > In general, af_xdp is a bit lacking in this 'notify the user that they
-> > somehow messed up' area :-(
-> > For example, pushing a tx descriptor with a wrong addr/len in zc mode
-> > will not give any visible signal back (besides driver potentially
-> > spilling something into dmesg as it was in the mlx case).
-> > We can probably start with having some counters for these events?
->=20
-> This is because the AF_XDP completion queue descriptor format is only
-> a u64 address?
+We have been using them for a while.
 
-Yeah. XDP_COPY mode has the descriptor validation which is exported via
-recvmsg errno, but zerocopy path seems to be too deep in the stack
-to report something back. And there is no place, as you mention,
-in the completion ring to report the status.
+If existing mechanisms are missing something you need, please expand them.
 
-> Could error conditions be reported on tx completion in the metadata,
-> using xsk_tx_metadata_complete?
+For reference, start looking at tcp_get_timestamping_opt_stats() history.
 
-That would be one way to do it, yes. But then the error reporting depends
-on the metadata opt-in. Having a separate ring to export the errors,
-or having a v2 tx-completions layout with extra 'status' field would also
-work.
+Sender side can for instance get precise timestamps.
 
-But this seems like something that should be handled separately? Because
-we'd have to teach all existing zc drivers to report those errors back
-instead of dropping these descriptors..
+Combinations of these timestamps reveal different parts of the overall
+network latency,
+
+T0: sendmsg() enters TCP
+T1: first byte enters qdisc
+T2: first byte sent to the NIC
+T3: first byte ACKed in TCP
+T4: last byte sent to the NIC
+T5: last byte ACKed
+T1 - T0: how long the first byte was blocked in the TCP layer ("Head
+of Line Blocking" latency).
+T2 - T1: how long the first byte was blocked in the Linux traffic
+shaping layer (known as QDisc).
+T3 - T2: the network =E2=80=98distance=E2=80=99 (propagation delay + curren=
+t queuing
+delay along the network path and at the receiver).
+T5 - T2: how fast the sent chunk was delivered.
+Message Size / (T5 - T0): goodput (from application=E2=80=99s perspective)
 
