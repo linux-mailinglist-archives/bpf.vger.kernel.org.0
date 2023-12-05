@@ -1,200 +1,242 @@
-Return-Path: <bpf+bounces-16749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C30A08059F9
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 17:31:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 984F1805A89
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 17:54:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3D5A1C211B4
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 16:31:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9B511C21250
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 16:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9046675C7;
-	Tue,  5 Dec 2023 16:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF2260BBE;
+	Tue,  5 Dec 2023 16:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ehh4DRYF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EhGU4wmC"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A947675C6
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 16:31:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E2C1C433C7;
-	Tue,  5 Dec 2023 16:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701793893;
-	bh=ktrEWZOjnqQzAUHeJFjl/mC2yymCstVvDAJMXrepafc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ehh4DRYFznqN6fwLF6WVYrzl9dpVJBBd+r0HWLs6KRPJwLK6/wwM85M+zUirDrap/
-	 JGcHn1YFdIBS/ZXDPIftZMXV0UMidvGE4APB9O2uWfsQ5I8t0fqT4JFrnhfizgCV8t
-	 3/R2pIkhSilWJIXmAPJdeyx+NxzPXRn+dypfnKbvN7greIrC3lwaPtE+TGdMn1qdmk
-	 sQUt1iV5AYDhXiyhuEPtiT+3aEciMI1Cls4ndArNYn5iRO4zt0AcjVko8W5FCx7iHb
-	 qoBLqwgOXdeEYBKno9ZLTvkoG6JgwjF5epohKwpxzIoZm5Qy4lQReSyU6Y8BhaJLj6
-	 3N3HKSVxpf9JQ==
-Date: Tue, 5 Dec 2023 17:31:28 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jie Jiang <jiejiang@chromium.org>, Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, vapier@chromium.org
-Subject: Re: [PATCH bpf-next] bpf: Support uid and gid when mounting bpffs
-Message-ID: <20231205-versorgen-funde-1184ee3f6aa4@brauner>
-References: <20231201094729.1312133-1-jiejiang@chromium.org>
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2E6A268F
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 08:54:12 -0800 (PST)
+Message-ID: <fb4b856d-601d-4aa9-8526-14e5682f6402@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701795250;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZF3HKdpkUYHivvRpAHFn3rEF2x4jY5PYbwjx9JOVu3E=;
+	b=EhGU4wmCYyp07Ts+1DE5grTY3Sa7dC6p4b+M8EA50s/cqLKx/tNEewXo2w34DMYWAjXRiG
+	dC4LRQhfb7+SuHDbRr+yB8fzOzg6gRYClNgAsob/ctKQNZJbRn9c+Od1gtaJGP3SQEYgVr
+	WvgAQYh4Ky+LRbsixpHMKTFloYpDy7Q=
+Date: Tue, 5 Dec 2023 08:54:02 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231201094729.1312133-1-jiejiang@chromium.org>
+Subject: Re: [PATCH 2/2] selftest/bpf: Test returning zero from a perf bpf
+ program suppresses SIGIO.
+Content-Language: en-GB
+To: Kyle Huey <me@kylehuey.com>, Kyle Huey <khuey@kylehuey.com>,
+ linux-kernel@vger.kernel.org
+Cc: Robert O'Callahan <robert@ocallahan.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20231204201406.341074-1-khuey@kylehuey.com>
+ <20231204201406.341074-3-khuey@kylehuey.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231204201406.341074-3-khuey@kylehuey.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Dec 01, 2023 at 09:47:29AM +0000, Jie Jiang wrote:
-> Parse uid and gid in bpf_parse_param() so that they can be passed in as
-> the `data` parameter when mount() bpffs. This will be useful when we
-> want to control which user/group has the control to the mounted bpffs,
-> otherwise a separate chown() call will be needed.
-> 
-> Signed-off-by: Jie Jiang <jiejiang@chromium.org>
+
+On 12/4/23 3:14 PM, Kyle Huey wrote:
+> The test sets a hardware breakpoint and uses a bpf program to suppress the
+> I/O availability signal if the ip matches the expected value.
+>
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
 > ---
-
-Sorry, I was asked to take a quick look at this. The patchset looks fine
-overall but it will interact with Andrii's patchset which makes bpffs
-mountable inside a user namespace (with caveats).
-
-At that point you need additional validation in bpf_parse_param(). The
-simplest thing would probably to just put this into this series or into
-@Andrii's series. It's basically a copy-pasta from what I did for tmpfs
-(see below).
-
-I plan to move this validation into the VFS so that {g,u}id mount
-options are validated consistenly for any such filesystem. There is just
-some unpleasantness that I have to figure out first.
-
-@Andrii, with the {g,u}id mount option it means that userns root can
-
-fsconfig(..., FSCONFIG_SET_STRING, "uid", "1000", ...)
-fsconfig(..., FSCONFIG_SET_STRING, "gid", "1000", ...)
-fsconfig(..., FSCONFIG_CMD_CREATE, ...)
-
-If you delegate CAP_BPF in that userns to uid 1000 then an unpriv user
-in that userns can create bpf tokens. Currently this would require
-userns root to give both CAP_DAC_READ_SEARCH and CAP_BPF to such an
-unprivileged user.
-
-Depending on whether or not that's intended you might want to add an
-additional check into bpf_token_create() to verify that the caller's
-{g,u}id resolves to 0:
-
-if (from_kuid(current_user_ns(), current_fsuid()) != 0)
-        return -EINVAL;
-
-That's basically saying you're restricting this to userns root. Idk,
-that's up to you. (Note that you currently enforce current_user_ns() ==
-token->user_ns == s_user_ns which is why it doesn't matter what userns
-you pass here. You'd just error out later.)
-
->  kernel/bpf/inode.c | 33 +++++++++++++++++++++++++++++++--
->  1 file changed, 31 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-> index 1aafb2ff2e953..826fe48745ee2 100644
-> --- a/kernel/bpf/inode.c
-> +++ b/kernel/bpf/inode.c
-> @@ -599,8 +599,15 @@ EXPORT_SYMBOL(bpf_prog_get_type_path);
->   */
->  static int bpf_show_options(struct seq_file *m, struct dentry *root)
->  {
-> -	umode_t mode = d_inode(root)->i_mode & S_IALLUGO & ~S_ISVTX;
-> -
-> +	struct inode *inode = d_inode(root);
-> +	umode_t mode = inode->i_mode & S_IALLUGO & ~S_ISVTX;
+>   .../selftests/bpf/prog_tests/perf_skip.c      | 95 +++++++++++++++++++
+>   .../selftests/bpf/progs/test_perf_skip.c      | 23 +++++
+>   2 files changed, 118 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> new file mode 100644
+> index 000000000000..b269a31669b7
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> @@ -0,0 +1,95 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#define _GNU_SOURCE
+> +#include <test_progs.h>
+> +#include "test_perf_skip.skel.h"
+> +#include <linux/hw_breakpoint.h>
+> +#include <sys/mman.h>
 > +
-> +	if (!uid_eq(inode->i_uid, GLOBAL_ROOT_UID))
-> +		seq_printf(m, ",uid=%u",
-> +			   from_kuid_munged(&init_user_ns, inode->i_uid));
-> +	if (!gid_eq(inode->i_gid, GLOBAL_ROOT_GID))
-> +		seq_printf(m, ",gid=%u",
-> +			   from_kgid_munged(&init_user_ns, inode->i_gid));
->  	if (mode != S_IRWXUGO)
->  		seq_printf(m, ",mode=%o", mode);
->  	return 0;
-> @@ -625,15 +632,21 @@ static const struct super_operations bpf_super_ops = {
->  };
->  
->  enum {
-> +	OPT_UID,
-> +	OPT_GID,
->  	OPT_MODE,
->  };
->  
->  static const struct fs_parameter_spec bpf_fs_parameters[] = {
-> +	fsparam_u32	("gid",				OPT_GID),
->  	fsparam_u32oct	("mode",			OPT_MODE),
-> +	fsparam_u32	("uid",				OPT_UID),
->  	{}
->  };
->  
->  struct bpf_mount_opts {
-> +	kuid_t uid;
-> +	kgid_t gid;
->  	umode_t mode;
->  };
->  
-> @@ -641,6 +654,8 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  {
->  	struct bpf_mount_opts *opts = fc->fs_private;
->  	struct fs_parse_result result;
-> +	kuid_t uid;
-> +	kgid_t gid;
->  	int opt;
->  
->  	opt = fs_parse(fc, bpf_fs_parameters, param, &result);
-> @@ -662,6 +677,18 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
->  	}
->  
->  	switch (opt) {
-> +	case OPT_UID:
-> +		uid = make_kuid(current_user_ns(), result.uint_32);
-> +		if (!uid_valid(uid))
-> +			return invalf(fc, "Unknown uid");
+> +#define BPF_OBJECT            "test_perf_skip.bpf.o"
+> +
+> +static void handle_sig(int)
 
-		/*
-		 * The requested uid must be representable in the
-		 * filesystem's idmapping.
-		 */
-		if (!kuid_has_mapping(fc->user_ns, kuid))
-			goto bad_value;
+I hit a warning here:
+home/yhs/work/bpf-next/tools/testing/selftests/bpf/prog_tests/perf_skip.c:10:27: error: omitting the parameter name in a function definition is a C23 extension [-Werror,-Wc23-extensions]
+    10 | static void handle_sig(int)
+       |
 
-> +		opts->uid = uid;
-> +		break;
-> +	case OPT_GID:
-> +		gid = make_kgid(current_user_ns(), result.uint_32);
-> +		if (!gid_valid(gid))
-> +			return invalf(fc, "Unknown gid");
+Add a parameter and marked as unused can resolve the issue.
 
-		/*
-		 * The requested gid must be representable in the
-		 * filesystem's idmapping.
-		 */
-		if (!kgid_has_mapping(fc->user_ns, kgid))
-			goto bad_value;
+#define __always_unused         __attribute__((__unused__))
 
-> +		opts->gid = gid;
-> +		break;
->  	case OPT_MODE:
->  		opts->mode = result.uint_32 & S_IALLUGO;
->  		break;
-> @@ -750,6 +777,8 @@ static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
->  	sb->s_op = &bpf_super_ops;
->  
->  	inode = sb->s_root->d_inode;
-> +	inode->i_uid = opts->uid;
-> +	inode->i_gid = opts->gid;
->  	inode->i_op = &bpf_dir_iops;
->  	inode->i_mode &= ~S_IALLUGO;
->  	populate_bpffs(sb->s_root);
-> -- 
-> 2.43.0.rc2.451.g8631bc7472-goog
-> 
+static void handle_sig(int unused __always_unused)
+{
+         ASSERT_OK(1, "perf event not skipped");
+}
+
+
+> +{
+> +	ASSERT_OK(1, "perf event not skipped");
+> +}
+> +
+> +static noinline int test_function(void)
+> +{
+> +	return 0;
+> +}
+> +
+> +void serial_test_perf_skip(void)
+> +{
+> +	sighandler_t previous;
+> +	int duration = 0;
+> +	struct test_perf_skip *skel = NULL;
+> +	int map_fd = -1;
+> +	long page_size = sysconf(_SC_PAGE_SIZE);
+> +	uintptr_t *ip = NULL;
+> +	int prog_fd = -1;
+> +	struct perf_event_attr attr = {0};
+> +	int perf_fd = -1;
+> +	struct f_owner_ex owner;
+> +	int err;
+> +
+> +	previous = signal(SIGIO, handle_sig);
+> +
+> +	skel = test_perf_skip__open_and_load();
+> +	if (!ASSERT_OK_PTR(skel, "skel_load"))
+> +		goto cleanup;
+> +
+> +	prog_fd = bpf_program__fd(skel->progs.handler);
+> +	if (!ASSERT_OK(prog_fd < 0, "bpf_program__fd"))
+> +		goto cleanup;
+> +
+> +	map_fd = bpf_map__fd(skel->maps.ip);
+> +	if (!ASSERT_OK(map_fd < 0, "bpf_map__fd"))
+> +		goto cleanup;
+> +
+> +	ip = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, map_fd, 0);
+> +	if (!ASSERT_OK_PTR(ip, "mmap bpf map"))
+> +		goto cleanup;
+> +
+> +	*ip = (uintptr_t)test_function;
+> +
+> +	attr.type = PERF_TYPE_BREAKPOINT;
+> +	attr.size = sizeof(attr);
+> +	attr.bp_type = HW_BREAKPOINT_X;
+> +	attr.bp_addr = (uintptr_t)test_function;
+> +	attr.bp_len = sizeof(long);
+> +	attr.sample_period = 1;
+> +	attr.sample_type = PERF_SAMPLE_IP;
+> +	attr.pinned = 1;
+> +	attr.exclude_kernel = 1;
+> +	attr.exclude_hv = 1;
+> +	attr.precise_ip = 3;
+> +
+> +	perf_fd = syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
+> +	if (CHECK(perf_fd < 0, "perf_event_open", "err %d\n", perf_fd))
+> +		goto cleanup;
+> +
+> +	err = fcntl(perf_fd, F_SETFL, O_ASYNC);
+> +	if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
+> +		goto cleanup;
+> +
+> +	owner.type = F_OWNER_TID;
+> +	owner.pid = gettid();
+
+I hit a compilation failure here:
+
+/home/yhs/work/bpf-next/tools/testing/selftests/bpf/prog_tests/perf_skip.c:75:14: error: call to undeclared function 'gettid'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+    75 |         owner.pid = gettid();
+       |                     ^
+
+If you looked at some other examples, the common usage is do 'syscall(SYS_gettid)'.
+So the following patch should fix the compilation error:
+
+#include <sys/syscall.h>
+...
+         owner.pid = syscall(SYS_gettid);
+...
+
+> +	err = fcntl(perf_fd, F_SETOWN_EX, &owner);
+> +	if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
+> +		goto cleanup;
+> +
+> +	err = ioctl(perf_fd, PERF_EVENT_IOC_SET_BPF, prog_fd);
+> +	if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_SET_BPF)"))
+> +		goto cleanup;
+> +
+> +	test_function();
+
+As Andrii has mentioned in previous comments, we will have
+issue is RELEASE version of selftest is built
+   RELEASE=1 make ...
+
+See https://lore.kernel.org/bpf/20231127050342.1945270-1-yonghong.song@linux.dev
+
+> +
+> +cleanup:
+> +	if (perf_fd >= 0)
+> +		close(perf_fd);
+> +	if (ip)
+> +		munmap(ip, page_size);
+> +	if (skel)
+> +		test_perf_skip__destroy(skel);
+> +
+> +	signal(SIGIO, previous);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> new file mode 100644
+> index 000000000000..ef01a9161afe
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> @@ -0,0 +1,23 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include "vmlinux.h"
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_ARRAY);
+> +	__uint(max_entries, 1);
+> +	__uint(map_flags, BPF_F_MMAPABLE);
+> +	__type(key, uint32_t);
+> +	__type(value, uintptr_t);
+> +} ip SEC(".maps");
+> +
+> +SEC("perf_event")
+> +int handler(struct bpf_perf_event_data *data)
+> +{
+> +	const uint32_t index = 0;
+> +	uintptr_t *v = bpf_map_lookup_elem(&ip, &index);
+> +
+> +	return !(v && *v == PT_REGS_IP(&data->regs));
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
 
