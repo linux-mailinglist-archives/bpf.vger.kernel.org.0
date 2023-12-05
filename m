@@ -1,151 +1,127 @@
-Return-Path: <bpf+bounces-16727-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B36D3805336
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 12:42:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E941F805352
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 12:47:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F5BB1F214CE
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 11:42:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 250EA1C20BB5
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 11:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8345786F;
-	Tue,  5 Dec 2023 11:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44DFA58AA8;
+	Tue,  5 Dec 2023 11:47:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=crudebyte.com header.i=@crudebyte.com header.b="ipQCrbT6"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PX2b4XNJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from kylie.crudebyte.com (kylie.crudebyte.com [5.189.157.229])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 587979A;
-	Tue,  5 Dec 2023 03:42:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=crudebyte.com; s=kylie; h=Content-Type:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Content-ID:Content-Description;
-	bh=zwVfOTnPEwMgV+Q6MmlQtNUwKyYyS/fNwYtgjSme1Lg=; b=ipQCrbT6+r4M4gb9FBhdBPne78
-	+9Befd+d/sTIdIwcuYCPdQNiDNa/t93zfRQHdj6mdyL/9Nz38bFxxsZ1kwuoqW+zTFnyacw0yDUMZ
-	UgwcpQcYKUib7a35fJdtQTRkRtljJnkWtVfd3ZUMJLOBSgl1xl9E2Zg8f82RlCJiORmsLu3iFmFYZ
-	Z78vXT0qoaX4z7y4Orn5eTQEszzfQBKgHyGgjU/ww9Tr+3jofAD6gDOYhXRSNTIzpyyNNHcRZHK/I
-	/K4Gkfd9GL+1IYz6CzFxdMMgy/+rM93NDbRLH4vNOY/TezY8a9N9HYXDFCQmvAYxNBU9pRqfkrMEm
-	794jlWl8me9VrvL93e3oGCc3a+hcp6eN3mr9DS9O1HxSc6X9ADYFtpQjhx73OmXCl6isgcZs/jmfJ
-	a4xyk/ZfrE8EEhGwu+oeA7+VnF44hqWewQrnOzfH60RtHNcL3fmQTRI52BRxv8Hdn4uGhkX17IYPR
-	9sVByoButV6zZe3NoKlJWk7G+gYtxuev0xROyNQM6czLB6iEjyJocVG/eSowlc8K1Ef0H0e674fV9
-	ymCqhmNPl1npLw/xxBclISKhEVXv5lRislNBrw9s334umXEKETQw6mBhsR8ys17PYe04SkemZwDeY
-	bJT7yzNPpAJgZ8CmGnzBTeVemzPWYz6V/C8DFskOo=;
-From: Christian Schoenebeck <linux_oss@crudebyte.com>
-To: ericvh@kernel.org, lucho@ionkov.net, asmadeus@codewreck.org,
- rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
- JP Kobryn <inwardvessel@gmail.com>
-Cc: v9fs@lists.linux.dev, linux-trace-kernel@vger.kernel.org,
- bpf@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2] 9p: prevent read overrun in protocol dump tracepoint
-Date: Tue, 05 Dec 2023 12:41:49 +0100
-Message-ID: <8864880.fcQpaHM20G@silver>
-In-Reply-To: <20231204202321.22730-1-inwardvessel@gmail.com>
-References: <20231204202321.22730-1-inwardvessel@gmail.com>
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA29C3
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 03:47:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1701776858; x=1733312858;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Et+Xza31FNtHe5uhFOn7Lea9bEswFiKoJ5m6yuAIHhY=;
+  b=PX2b4XNJXUdaYPzmOYCCy7ZGt6FFxJY29XRHOUSfy+6pNF1KKNglESHk
+   0Wy6FE9u90CWSPK+Qe2mgwGzZAhBhuTW/nQDaTmv9ePGzSe8B2ZNr+rBc
+   kaUJ6mYvZjdXU1Rjjikw2ARGEPwulENu8lqDX0HHfnFTBpQMRL1cXzPF5
+   CbRE7V5UQQy2SrHgraC+OHG5sNb90Fm/+NjDQdAcrCa4YKn4TPs7FJLpW
+   Vdwq83QBsFzOUvyTQWbaEBBFo1tu9xmVCqUH5kSpA1MrQlQUSCs4l8N4X
+   bGYDL00jmdH7ySydEI2bU45PF7tJQ4tPmFcOBO+608zhxmRNW56yPNijE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="397778077"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="397778077"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Dec 2023 03:47:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10914"; a="764304062"
+X-IronPort-AV: E=Sophos;i="6.04,252,1695711600"; 
+   d="scan'208";a="764304062"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 05 Dec 2023 03:47:35 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rATtk-0008uS-34;
+	Tue, 05 Dec 2023 11:47:32 +0000
+Date: Tue, 5 Dec 2023 19:46:34 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, andrii@kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 08/13] bpf: move subprog call logic back to
+ verifier.c
+Message-ID: <202312051900.XRWfHJW0-lkp@intel.com>
+References: <20231204233931.49758-9-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204233931.49758-9-andrii@kernel.org>
 
-On Monday, December 4, 2023 9:23:20 PM CET JP Kobryn wrote:
-> An out of bounds read can occur within the tracepoint 9p_protocol_dump. In
-> the fast assign, there is a memcpy that uses a constant size of 32 (macro
-> named P9_PROTO_DUMP_SZ). When the copy is invoked, the source buffer is not
-> guaranteed match this size.  It was found that in some cases the source
-> buffer size is less than 32, resulting in a read that overruns.
-> 
-> The size of the source buffer seems to be known at the time of the
-> tracepoint being invoked. The allocations happen within p9_fcall_init(),
-> where the capacity field is set to the allocated size of the payload
-> buffer. This patch tries to fix the overrun by changing the fixed array to
-> a dynamically sized array and using the minimum of the capacity value or
-> P9_PROTO_DUMP_SZ as its length. The trace log statement is adjusted to
-> account for this. Note that the trace log no longer splits the payload on
-> the first 16 bytes. The full payload is now logged to a single line.
-> 
-> To repro the orignal problem, operations to a plan 9 managed resource can
-> be used. The simplest approach might just be mounting a shared filesystem
-> (between host and guest vm) using the plan 9 protocol while the tracepoint
-> is enabled.
-> 
-> mount -t 9p -o trans=virtio <mount_tag> <mount_path>
-> 
-> The bpftrace program below can be used to show the out of bounds read.
-> Note that a recent version of bpftrace is needed for the raw tracepoint
-> support. The script was tested using v0.19.0.
-> 
-> /* from include/net/9p/9p.h */
-> struct p9_fcall {
->     u32 size;
->     u8 id;
->     u16 tag;
->     size_t offset;
->     size_t capacity;
->     struct kmem_cache *cache;
->     u8 *sdata;
->     bool zc;
-> };
-> 
-> tracepoint:9p:9p_protocol_dump
-> {
->     /* out of bounds read can happen when this tracepoint is enabled */
-> }
-> 
-> rawtracepoint:9p_protocol_dump
-> {
->     $pdu = (struct p9_fcall *)arg1;
->     $dump_sz = (uint64)32;
-> 
->     if ($dump_sz > $pdu->capacity) {
->         printf("reading %zu bytes from src buffer of %zu bytes\n",
->             $dump_sz, $pdu->capacity);
->     }
-> }
-> 
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> ---
+Hi Andrii,
 
-Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
+kernel test robot noticed the following build warnings:
 
->  include/trace/events/9p.h | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/trace/events/9p.h b/include/trace/events/9p.h
-> index 4dfa6d7f83ba..cd104a1343e2 100644
-> --- a/include/trace/events/9p.h
-> +++ b/include/trace/events/9p.h
-> @@ -178,18 +178,21 @@ TRACE_EVENT(9p_protocol_dump,
->  		    __field(	void *,		clnt				)
->  		    __field(	__u8,		type				)
->  		    __field(	__u16,		tag				)
-> -		    __array(	unsigned char,	line,	P9_PROTO_DUMP_SZ	)
-> +		    __dynamic_array(unsigned char, line,
-> +				min_t(size_t, pdu->capacity, P9_PROTO_DUMP_SZ))
->  		    ),
->  
->  	    TP_fast_assign(
->  		    __entry->clnt   =  clnt;
->  		    __entry->type   =  pdu->id;
->  		    __entry->tag    =  pdu->tag;
-> -		    memcpy(__entry->line, pdu->sdata, P9_PROTO_DUMP_SZ);
-> +		    memcpy(__get_dynamic_array(line), pdu->sdata,
-> +				__get_dynamic_array_len(line));
->  		    ),
-> -	    TP_printk("clnt %lu %s(tag = %d)\n%.3x: %16ph\n%.3x: %16ph\n",
-> +	    TP_printk("clnt %lu %s(tag = %d)\n%*ph\n",
->  		      (unsigned long)__entry->clnt, show_9p_op(__entry->type),
-> -		      __entry->tag, 0, __entry->line, 16, __entry->line + 16)
-> +		      __entry->tag, __get_dynamic_array_len(line),
-> +		      __get_dynamic_array(line))
->   );
->  
->  
-> 
+[auto build test WARNING on bpf-next/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Andrii-Nakryiko/bpf-log-PTR_TO_MEM-memory-size-in-verifier-log/20231205-074451
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20231204233931.49758-9-andrii%40kernel.org
+patch subject: [PATCH bpf-next 08/13] bpf: move subprog call logic back to verifier.c
+config: x86_64-randconfig-004-20231205 (https://download.01.org/0day-ci/archive/20231205/202312051900.XRWfHJW0-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231205/202312051900.XRWfHJW0-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312051900.XRWfHJW0-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/bpf/verifier.c:5083:5: warning: no previous prototype for function 'check_ptr_off_reg' [-Wmissing-prototypes]
+   int check_ptr_off_reg(struct bpf_verifier_env *env,
+       ^
+   kernel/bpf/verifier.c:5083:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int check_ptr_off_reg(struct bpf_verifier_env *env,
+   ^
+   static 
+>> kernel/bpf/verifier.c:7268:5: warning: no previous prototype for function 'check_mem_reg' [-Wmissing-prototypes]
+   int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+       ^
+   kernel/bpf/verifier.c:7268:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int check_mem_reg(struct bpf_verifier_env *env, struct bpf_reg_state *reg,
+   ^
+   static 
+>> kernel/bpf/verifier.c:8254:5: warning: no previous prototype for function 'check_func_arg_reg_off' [-Wmissing-prototypes]
+   int check_func_arg_reg_off(struct bpf_verifier_env *env,
+       ^
+   kernel/bpf/verifier.c:8254:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   int check_func_arg_reg_off(struct bpf_verifier_env *env,
+   ^
+   static 
+   3 warnings generated.
 
 
+vim +/check_ptr_off_reg +5083 kernel/bpf/verifier.c
+
+e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5082  
+e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15 @5083  int check_ptr_off_reg(struct bpf_verifier_env *env,
+e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5084  		      const struct bpf_reg_state *reg, int regno)
+e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5085  {
+e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5086  	return __check_ptr_off_reg(env, reg, regno, false);
+e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5087  }
+e9147b4422e1f3 Kumar Kartikeya Dwivedi 2022-04-15  5088  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
