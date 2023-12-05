@@ -1,106 +1,93 @@
-Return-Path: <bpf+bounces-16686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96716804427
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:37:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5318D804436
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 02:45:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5272F281418
-	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:37:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843C71C2095F
+	for <lists+bpf@lfdr.de>; Tue,  5 Dec 2023 01:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C06C17E4;
-	Tue,  5 Dec 2023 01:37:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E1D1870;
+	Tue,  5 Dec 2023 01:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iZDFPaH4"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E95F0
-	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 17:36:56 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SkjnF0tSFz4f3l1r
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 09:36:49 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C6E451A0282
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 09:36:53 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgB3hUWxfm5lOCFmCw--.2625S2;
-	Tue, 05 Dec 2023 09:36:51 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-Subject: Re: [PATCH bpf-next 0/2] bpf: Use GFP_KERNEL in bpf_event_entry_gen()
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- "houtao1@huawei.com" <houtao1@huawei.com>
-References: <20231113141207.1459002-1-houtao@huaweicloud.com>
-Message-ID: <b02930cf-9e0f-a842-1031-bbf8b948bfdf@huaweicloud.com>
-Date: Tue, 5 Dec 2023 09:36:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B254EFA
+	for <bpf@vger.kernel.org>; Mon,  4 Dec 2023 17:45:15 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c05ce04a8so29206285e9.0
+        for <bpf@vger.kernel.org>; Mon, 04 Dec 2023 17:45:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701740714; x=1702345514; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d4sCiXj4uQsZvPOAk43Dhw4LS2zzRif5vtRBkw4UQN4=;
+        b=iZDFPaH4CP07k6OUuSEm0xK6iy7zveA9ZoUjMDVHE56HzT2AUQxPxvihLv2tpf5DEM
+         1qq2VRB9RovVZe/APZz/T28/D9XzoFNa8aZERz1SG0Gy8OLczG/TxB8TTZMwudou4C4O
+         m3ePAvv3BWsRlxiVo8Wvx1ZbrdleAWdvEJ9gGe84r6gx5dJAVAyOBbvasj3OtjH3N9a2
+         Kp6mJweqqAsBIgYwVybSruUk2fEMcJw6rStK4bgqzJtQUAmHhVUEnTrYkXPvc1fbeCPw
+         ExsaZc3ie2zNIR4xKSon5i9p/vauwXRpVuu/ZcqyExMk2nLvIgqm6iMfLwU5/IbhIQmI
+         ev6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701740714; x=1702345514;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d4sCiXj4uQsZvPOAk43Dhw4LS2zzRif5vtRBkw4UQN4=;
+        b=Mn+zSZ3Lzl1oB36F7fNEhla2yhzIPfKdP6k2Rcw4xync45HL7QmgqUrKuyP3IfvoVQ
+         HrBgSss7ziXN+d8vWyH4QcPqp4tKdJkHioAC6GEfY8wgQhNnxs0F1RLHd6sjkieGZg2H
+         8UFnRB+rcbgYxd333mku9sIHZbb4P6KzU81V0FSrptgXs9BSspHAWTTlhmP+ZtlM1id/
+         hxtTw8c/PCQ9SepoeROM3Mue+MDWGPZRfmcYqsGrhDqfrH6qfyNkXHwI63v19orZVsVA
+         RLJAF/2xUMLC2hWVx0N1GT3M3hFSIVSIsNk+Xj7sYcMxq6k/NnmyczPc9d7XP+M89S1e
+         XtiA==
+X-Gm-Message-State: AOJu0Yx314nIw5NA5d5TSLb9b2A4pZKG4GIn/4gO691aBxFsSN+S+Ezb
+	Ezh7mAcKx/yFJAwdJNBTP6Y8e9pcgRRvoVDjoofMzJPbX0c=
+X-Google-Smtp-Source: AGHT+IG1Kh5XmosyXFS+/iNqPVv80eBYe4PEsVsIXdqVwmrjj+cpvAhF93vjWmnVYDtNCpBjcqLGsbjbZAkEymutv0Y=
+X-Received: by 2002:a05:600c:4d02:b0:40b:5e22:2f7 with SMTP id
+ u2-20020a05600c4d0200b0040b5e2202f7mr1587100wmp.99.1701740713845; Mon, 04 Dec
+ 2023 17:45:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231113141207.1459002-1-houtao@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgB3hUWxfm5lOCFmCw--.2625S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKF4UWr1rKryxJF4UZrW7XFb_yoWfZFX_Ww
-	4IkFy5Grs8J3Waqa109rs5Wrs3Kry8X3WDA3yUtrW2qr15Zan3ZrsY9FyfuryDXas7uF95
-	trn3XwsFvr45ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbIkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UQzVbUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231204192601.2672497-1-andrii@kernel.org> <20231204192601.2672497-4-andrii@kernel.org>
+ <3fca38fdfd975f735e3dd31930637cfbc70948f4.camel@gmail.com> <CAEf4BzZ0Ao7EF4PodPBxTdQphEt-_ezZyNDOzqds2XfXYpjsHg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ0Ao7EF4PodPBxTdQphEt-_ezZyNDOzqds2XfXYpjsHg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 4 Dec 2023 17:45:02 -0800
+Message-ID: <CAADnVQJRdu69g4nXRXNopDLBPxw=aA7p1NakOwhvsgF8PKYqqw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 03/10] bpf: fix check for attempt to corrupt
+ spilled pointer
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-ping ?
+On Mon, Dec 4, 2023 at 4:23=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> Alexei, do you remember what was the original intent?
 
-On 11/13/2023 10:12 PM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
->
-> Hi,
->
-> The simple patchset aims to replace GFP_ATOMIC in bpf_event_entry_gen().
-> These two patches in the patchset were preparatory patches in "Fix the
-> release of inner map" patchset [1] and are not needed for v2, so re-post
-> it to bpf-next tree.
->
-> Patch #1 reduces the scope of rcu_read_lock when updating fd map and
-> patch #2 replaces GFP_ATOMIC by GFP_KERNEL. Please see individual
-> patches for more details.
->
-> Comments are always welcome.
->
-> Regards,
-> Tao
->
-> [1]: https://lore.kernel.org/bpf/20231107140702.1891778-1-houtao@huaweicloud.com
->
-> Hou Tao (2):
->   bpf: Reduce the scope of rcu_read_lock when updating fd map
->   bpf: Use GFP_KERNEL in bpf_event_entry_gen()
->
->  kernel/bpf/arraymap.c | 2 +-
->  kernel/bpf/hashtab.c  | 2 ++
->  kernel/bpf/syscall.c  | 4 ----
->  3 files changed, 3 insertions(+), 5 deletions(-)
->
+Commit 27113c59b6d0 ("bpf: Check the other end of slot_type for STACK_SPILL=
+")
+introduced is_spilled_reg() and at that time it tried to convert
+all slot_type[0] to slot_type[7] checks.
 
+Looks like this one was simply missed.
+
+The fixes tag you have:
+Fixes: 638f5b90d460 ("bpf: reduce verifier memory consumption")
+is much older than the introduction of is_spilled_reg.
+At that time everything was checking slot_type[0].
+So this fixes tag is somewhat wrong.
+Probably Fixes: 27113c59b6d0 would be more correct.
 
