@@ -1,125 +1,171 @@
-Return-Path: <bpf+bounces-16864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 147A1806B0B
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 10:49:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3581806B19
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 10:56:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EA781C209DF
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 09:49:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 549D91F21215
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 09:56:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1288E1C6A0;
-	Wed,  6 Dec 2023 09:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D4F20307;
+	Wed,  6 Dec 2023 09:56:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="JfWYiQXZ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FKeU3LMZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37A2FA
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 01:49:16 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1da1017a09so52261766b.3
-        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 01:49:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1701856155; x=1702460955; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=YqYYX+lt5EEif67Rak16lbjAMvNYu8HrLB23eU/ToBo=;
-        b=JfWYiQXZ92tpoJbVCHo0SvWosvx0WAmO7f7km1kq0zQjcQuP6nfZlQLztKJjZqjwL5
-         yLc5jjRCktX8PLw56ZTstdFsRR5bnDsJ9BQd7o6Ds8AvhMqSHaoWqJ8AqKm86SIKitCd
-         C7YRipj7h6ntR4x2P8bfgsfgaxhMEM0ILi4g0Eyx1AfMxDeGw46sOw/+B/z6sjEQ1ewn
-         /1o5sT31Zhwwvx7vPCoZg1Qa/7eqyGHeUybucTR4mKBSE7Ot1u9HkF46RVew5/DmhorW
-         doV2bWOhmKUPaVJFx3GCMdXMmFqyVvpOPa9KBgBImJ32treSNn8pMEBBEROO1ZLVNZHA
-         f68g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701856155; x=1702460955;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YqYYX+lt5EEif67Rak16lbjAMvNYu8HrLB23eU/ToBo=;
-        b=UsYCwAkzivukgM2+ycQoCQjMMhe7pm5i4V2KSmplAn7vkRk3IUlXlYb53RXsl6xYyU
-         pdrjcRfYEt6R242XVoFqYkNDO+awBkZnOdoKahGN6L8AMDQtqDu3X4DnJDJkRyxgoq4K
-         ZGS8pOASLMVgmS+Tz5VxcX1v56rbtJeBpcTxh4Ywmtu2psOnPmfQjF4YyRyJKuePsWUD
-         toqNmWjwXmutAkowGpXByqVvBuLFKJX2j+cTok3ZWlUh4+nW4GHpr9T8vbKQAUrsNH4i
-         D9sWB6piQy3YHhg3+XJD9jWnHHf+DGRcOo1d45K2foRb4vDOay4fIdk8SjOyjY1RBb4N
-         Xivw==
-X-Gm-Message-State: AOJu0YxKGwN74xQLh9ER+tr7zGqt51cRaPnRke0mKu1EciGbPYbAynnD
-	9pdq1uZGfOctYfyREYJ2XrLi9VYKZcX0zKW1bFpzBA==
-X-Google-Smtp-Source: AGHT+IGZeR8QUNsrYHhXWge70KGc2wwspw1S8hno2oOMEQME2GZL7Ls8H9AMKGFkLdbdniUdMXYORw==
-X-Received: by 2002:a17:906:fc03:b0:a19:a19b:7892 with SMTP id ov3-20020a170906fc0300b00a19a19b7892mr376544ejb.85.1701856155371;
-        Wed, 06 Dec 2023 01:49:15 -0800 (PST)
-Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:cb])
-        by smtp.gmail.com with ESMTPSA id t9-20020a170906178900b00a1b65249053sm4515395eje.128.2023.12.06.01.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 01:49:14 -0800 (PST)
-References: <20231201180139.328529-2-john.fastabend@gmail.com>
- <20231201211453.27432-1-kuniyu@amazon.com>
- <656e4758675b9_1bd6e2086f@john.notmuch>
-User-agent: mu4e 1.6.10; emacs 28.3
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: bpf@vger.kernel.org, edumazet@google.com, martin.lau@kernel.org,
- netdev@vger.kernel.org, kuniyu@amazon.com
-Subject: Re: [PATCH bpf v2 1/2] bpf: syzkaller found null ptr deref in
- unix_bpf proto add
-Date: Wed, 06 Dec 2023 10:47:42 +0100
-In-reply-to: <656e4758675b9_1bd6e2086f@john.notmuch>
-Message-ID: <87msunslt2.fsf@cloudflare.com>
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C24109;
+	Wed,  6 Dec 2023 01:56:03 -0800 (PST)
+Received: from relay2.suse.de (unknown [149.44.160.134])
+	by smtp-out1.suse.de (Postfix) with ESMTP id 42E7E21F3E;
+	Wed,  6 Dec 2023 09:55:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701856557; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=38oqPwid60kS6euzFAYt5HgeBK7Z4xKSWiLADq6sPMY=;
+	b=FKeU3LMZDT6YmQll0fLvK+UGD/SN8T7VGmFqsMDJZ9gc7NNDpRzn0VjFzbOasPnTTTwXm8
+	xPVqFHyCbTZoR93GW8VwteHKafJJLTvb8OSsW9IsNoI+X0Eqqx1X8Q9Bl9H/XbIz9boQoX
+	ZDeYZXSjELH22O3pRsNY1WMUbqC3LoU=
+Received: from suse.cz (unknown [10.100.201.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by relay2.suse.de (Postfix) with ESMTPS id 2839E2C153;
+	Wed,  6 Dec 2023 09:55:51 +0000 (UTC)
+Date: Wed, 6 Dec 2023 10:55:51 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+	josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Iurii Zaikin <yzaikin@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+	Andy Lutomirski <luto@amacapital.net>,
+	Will Drewry <wad@chromium.org>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Balbir Singh <bsingharora@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH 07/10] printk: Remove the now superfluous sentinel
+ elements from ctl_table array
+Message-ID: <ZXBFJ3G9ERfI55Sc@alley>
+References: <20231107-jag-sysctl_remove_empty_elem_kernel-v1-0-e4ce1388dfa0@samsung.com>
+ <20231107-jag-sysctl_remove_empty_elem_kernel-v1-7-e4ce1388dfa0@samsung.com>
+ <CGME20231128140754eucas1p2cf2c17554954e94d0dc14967e1f5e750@eucas1p2.samsung.com>
+ <ZWX0L4lV8TWOgcpv@alley>
+ <20231204085628.pf7yxppacf4pm2cv@localhost>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231204085628.pf7yxppacf4pm2cv@localhost>
+X-Spam-Score: 22.12
+X-Spamd-Result: default: False [22.12 / 50.00];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[149.44.160.134:from];
+	 RDNS_NONE(1.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RWL_MAILSPIKE_GOOD(0.00)[149.44.160.134:from];
+	 HFILTER_HELO_IP_A(1.00)[relay2.suse.de];
+	 HFILTER_HELO_NORES_A_OR_MX(0.30)[relay2.suse.de];
+	 MX_GOOD(-0.01)[];
+	 RCVD_NO_TLS_LAST(0.10)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FORGED_RECIPIENTS(2.00)[m:mgorman@suse.de,s:mgorman@imap.suse.de];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RDNS_DNSFAIL(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_SPF_FAIL(1.00)[-all];
+	 FROM_HAS_DN(0.00)[];
+	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 NEURAL_SPAM_SHORT(2.12)[0.707];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 VIOLATED_DIRECT_SPF(3.50)[];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 RCPT_COUNT_TWELVE(0.00)[46];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,infradead.org,joshtriplett.org,chromium.org,xmission.com,google.com,goodmis.org,arm.com,linutronix.de,amacapital.net,redhat.com,linaro.org,suse.de,linux.ibm.com,intel.com,davemloft.net,gmail.com,iogearbox.net,linux.dev,vger.kernel.org,lists.infradead.org];
+	 HFILTER_HOSTNAME_UNKNOWN(2.50)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RCVD_COUNT_TWO(0.00)[2]
+X-Spamd-Bar: ++++++++++++++++++++++
+X-Rspamd-Server: rspamd1
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none;
+	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
+	spf=fail (smtp-out1.suse.de: domain of pmladek@suse.com does not designate 149.44.160.134 as permitted sender) smtp.mailfrom=pmladek@suse.com
+X-Rspamd-Queue-Id: 42E7E21F3E
 
-On Mon, Dec 04, 2023 at 01:40 PM -08, John Fastabend wrote:
-> Kuniyuki Iwashima wrote:
->> From: John Fastabend <john.fastabend@gmail.com>
->> Date: Fri,  1 Dec 2023 10:01:38 -0800
->> > I added logic to track the sock pair for stream_unix sockets so that we
->> > ensure lifetime of the sock matches the time a sockmap could reference
->> > the sock (see fixes tag). I forgot though that we allow af_unix unconnected
->> > sockets into a sock{map|hash} map.
->> > 
->> > This is problematic because previous fixed expected sk_pair() to exist
->> > and did not NULL check it. Because unconnected sockets have a NULL
->> > sk_pair this resulted in the NULL ptr dereference found by syzkaller.
->> > 
->> > BUG: KASAN: null-ptr-deref in unix_stream_bpf_update_proto+0x72/0x430
->> > net/unix/unix_bpf.c:171
->> > Write of size 4 at addr 0000000000000080 by task syz-executor360/5073
->> > Call Trace:
->> >  <TASK>
->> >  ...
->> >  sock_hold include/net/sock.h:777 [inline]
->> >  unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
->> >  sock_map_init_proto net/core/sock_map.c:190 [inline]
->> >  sock_map_link+0xb87/0x1100 net/core/sock_map.c:294
->> >  sock_map_update_common+0xf6/0x870 net/core/sock_map.c:483
->> >  sock_map_update_elem_sys+0x5b6/0x640 net/core/sock_map.c:577
->> >  bpf_map_update_value+0x3af/0x820 kernel/bpf/syscall.c:167
->> > 
->> > We considered just checking for the null ptr and skipping taking a ref
->> > on the NULL peer sock. But, if the socket is then connected() after
->> > being added to the sockmap we can cause the original issue again. So
->> > instead this patch blocks adding af_unix sockets that are not in the
->> > ESTABLISHED state.
->> 
->> I'm not sure if someone has the unconnected stream socket use case
->> though, can't we call additional sock_hold() in connect() by checking
->> sk_prot under sk_callback_lock ?
->
-> Could be done I guess yes. I'm not sure the utility of it though. I
-> thought above patch was the simplest solution and didn't require touching
-> main af_unix code. I don't actually use the sockmap with af_unix
-> sockets anywhere so maybe someone who is using this can comment if
-> unconnected is needed?
->
-> From rcu and locking side looks like holding sk_callback_lock would
-> be sufficient. I was thinking it would require a rcu grace period
-> or something but seems not.
+On Mon 2023-12-04 09:56:28, Joel Granados wrote:
+> Hey Petr
+> 
+> I missed this message somehow....
+> 
+> On Tue, Nov 28, 2023 at 03:07:43PM +0100, Petr Mladek wrote:
+> > On Tue 2023-11-07 14:45:07, Joel Granados via B4 Relay wrote:
+> > > From: Joel Granados <j.granados@samsung.com>
+> > > 
+> > > This commit comes at the tail end of a greater effort to remove the
+> > > empty elements at the end of the ctl_table arrays (sentinels) which
+> > > will reduce the overall build time size of the kernel and run time
+> > > memory bloat by ~64 bytes per sentinel (further information Link :
+> > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> > > 
+> > > rm sentinel element from printk_sysctls
+> > > 
+> > > Signed-off-by: Joel Granados <j.granados@samsung.com>
+> > 
+> > I am a bit sceptical if the size and time reduction is worth the
+> > effort. I feel that this change makes the access a bit less secure.
+> In what way "less secure"? Can you expand on that?
+> 
+> Notice that if you pass a pointer to the register functions, you will
+> get a warning/error on compilation.
 
-I'd revist the option of grabbing an skpair ref in unix_stream_sendmsg.
+I have vague memories that some arrays were not static or the length
+has been somehow manipulated. But I might be wrong.
 
+You are right that it should be safe with the static arrays.
+And the NULL sentinel might be more error-prone after all.
+
+Let's forget my mumbles.
+
+Best Regards,
+Petr
 
