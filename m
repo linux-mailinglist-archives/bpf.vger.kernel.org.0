@@ -1,218 +1,193 @@
-Return-Path: <bpf+bounces-16851-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16852-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FEFD8066CB
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:56:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A168D8066D8
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:59:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15A0F281E82
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 05:56:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D669281E82
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 05:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A85C610978;
-	Wed,  6 Dec 2023 05:56:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C481096A;
+	Wed,  6 Dec 2023 05:58:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="eYZn90gG"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="A5+x/R5Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1183D44
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 21:56:11 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-33334480eb4so477223f8f.0
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 21:56:11 -0800 (PST)
+Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC71F18F;
+	Tue,  5 Dec 2023 21:58:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701842170; x=1702446970; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YX4MAqN/nDup4qMOCc0EzTmKzTOsFfxIwVqJEAFEG5A=;
-        b=eYZn90gGb5jE3i8EoAGo8TxzxZD18cZ2Cjp7tpqEy89liY2VdXEw6AnDuUw9NNoUyH
-         KU2nnNwP+hOFAIMDsTNyksxZLevmMhf7WRB50WZX8rl/MEZoRSVnZoAMl2u9WtbOMxKM
-         r+jO/t6v89WmLKmAt1a+GNpauXFYOtIk3Vqd2ndto0QAbCd+eycPN95TyI6sx2zSwKW4
-         YYbZrCCsh1OF5cZ4FkI2XuIAkmjKYrdSre67XuSUtkHKuhHNzWjR7YQIQF6/rHXIXLtm
-         fRlP6FJ4tNwcFRRrZ4U9kDh27/mXjkZu4meviuRkhWxq+gT6BQJWO5OXez9uJzAXs9H8
-         7GsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701842170; x=1702446970;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YX4MAqN/nDup4qMOCc0EzTmKzTOsFfxIwVqJEAFEG5A=;
-        b=La0sYJXbiBAHAbJK1pQSR0VBQk0khr3VRo5i5IVyiD8627ySudTEMYfnogYo/BfWhD
-         JnEn50BVUh63JQRzB9prLdlF61v2qPNEeVp/GL4QTmtEkBsBfoD29F+ikYKEdhzk1SjZ
-         PPYLkftgDnmXbuG0BnaH/g1L0ruTiyOvZvNqLsXdQ1vZtCLzHNiH1gqs9AceIePL9EkJ
-         o7Iz2jjF7gzaKos5KDnOJyqC7ayl+5Uig8WdtXWSnXlu7lcSpue4fv/QhG2svF4/Hsn0
-         8K8phnCfGo1RS7MgUSHHbRluzfuxQcnwyir5uxEvVw1285a1b1nOYDbDcQiCd3S1WNRS
-         Vjrg==
-X-Gm-Message-State: AOJu0YztZhZGIyG0ZYTpPy2lR30gMlYZrkrYY3v0Elb8m+vAM2AVRArW
-	wt7mF4exWE2LnAk0QPJrIkRveQ==
-X-Google-Smtp-Source: AGHT+IHFQh+8y+KuZlMbCBdzapy61giA82q8qO6dwkp1UqO1DqLHlNlScuxD+uGU1Zzj3WZhPzOYjA==
-X-Received: by 2002:a05:6000:c4:b0:333:3ead:54c3 with SMTP id q4-20020a05600000c400b003333ead54c3mr147557wrx.97.1701842170341;
-        Tue, 05 Dec 2023 21:56:10 -0800 (PST)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id e2-20020adf9bc2000000b003332fa77a0fsm13990491wrc.21.2023.12.05.21.56.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 21:56:10 -0800 (PST)
-Date: Wed, 6 Dec 2023 08:56:06 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Vadim Fedorenko <vadfed@meta.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v7 1/3] bpf: make common crypto API for TC/XDP
- programs
-Message-ID: <dc0e2f8e-f82b-4439-b61a-9ab0be9f4e6b@suswa.mountain>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1701842335; x=1733378335;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Jiid3VnmgO38FuDauqCHNE+JsaMyjWrVFplJsd8HSpk=;
+  b=A5+x/R5Qf9Hz0bjoLDd+qf2MKYttoghSudBUT4WstlG1zZTkVsGiuArZ
+   g712ZkzW9FUtaopidMnCkZh8NgcFSzCkc1CYVclIoj60+pq5xYer/r6+G
+   pnoALrEssIE4f/dHRA2lR2qplflTg6JM3FHCm2oUjUtzUEiPj3j4ky3D0
+   E=;
+X-IronPort-AV: E=Sophos;i="6.04,254,1695686400"; 
+   d="scan'208";a="372081276"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-94edd59b.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 05:58:53 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+	by email-inbound-relay-pdx-2c-m6i4x-94edd59b.us-west-2.amazon.com (Postfix) with ESMTPS id 6DA5440DBC;
+	Wed,  6 Dec 2023 05:58:50 +0000 (UTC)
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.38.20:30386]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.214:2525] with esmtp (Farcaster)
+ id 74751930-acda-40ce-8760-80c1a50a4208; Wed, 6 Dec 2023 05:58:49 +0000 (UTC)
+X-Farcaster-Flow-ID: 74751930-acda-40ce-8760-80c1a50a4208
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 05:58:44 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.119.13.242) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Wed, 6 Dec 2023 05:58:40 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <martin.lau@linux.dev>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <edumazet@google.com>, <kuni1840@gmail.com>,
+	<kuniyu@amazon.com>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v4 bpf-next 1/3] bpf: tcp: Handle BPF SYN Cookie in cookie_v[46]_check().
+Date: Wed, 6 Dec 2023 14:58:31 +0900
+Message-ID: <20231206055831.37584-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <48a54674-3e96-4a35-89d9-d726608fb8c5@linux.dev>
+References: <48a54674-3e96-4a35-89d9-d726608fb8c5@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231202010604.1877561-1-vadfed@meta.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D046UWB004.ant.amazon.com (10.13.139.164) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
 
-Hi Vadim,
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Date: Tue, 5 Dec 2023 19:11:17 -0800
+> On 12/5/23 5:29 PM, Kuniyuki Iwashima wrote:
+> > From: Martin KaFai Lau <martin.lau@linux.dev>
+> > Date: Tue, 5 Dec 2023 16:19:20 -0800
+> >> On 12/4/23 5:34 PM, Kuniyuki Iwashima wrote:
+> >>> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+> >>> index 61f1c96cfe63..0f9c3aed2014 100644
+> >>> --- a/net/ipv4/syncookies.c
+> >>> +++ b/net/ipv4/syncookies.c
+> >>> @@ -304,6 +304,59 @@ static int cookie_tcp_reqsk_init(struct sock *sk, struct sk_buff *skb,
+> >>>    	return 0;
+> >>>    }
+> >>>    
+> >>> +#if IS_ENABLED(CONFIG_BPF)
+> >>> +struct request_sock *cookie_bpf_check(struct net *net, struct sock *sk,
+> >>> +				      struct sk_buff *skb)
+> >>> +{
+> >>> +	struct request_sock *req = inet_reqsk(skb->sk);
+> >>> +	struct inet_request_sock *ireq = inet_rsk(req);
+> >>> +	struct tcp_request_sock *treq = tcp_rsk(req);
+> >>> +	struct tcp_options_received tcp_opt;
+> >>> +	int ret;
+> >>> +
+> >>> +	skb->sk = NULL;
+> >>> +	skb->destructor = NULL;
+> >>> +	req->rsk_listener = NULL;
+> >>> +
+> >>> +	memset(&tcp_opt, 0, sizeof(tcp_opt));
+> >>> +	tcp_parse_options(net, skb, &tcp_opt, 0, NULL);
+> >>
+> >> In patch 2, the bpf prog is passing the tcp_opt to the kfunc. The selftest in
+> >> patch 3 is also parsing the tcp-options.
+> >>
+> >> The kernel parses the tcp-option here again to do some checking and req's member
+> >> initialization. Can these checking and initialization be done in the
+> >> bpf_sk_assign_tcp_reqsk() kfunc instead to avoid the double tcp-option parsing?
+> > 
+> > If TS is not used as a cookie storage, bpf prog need not parse it.
+> > OTOH, if a value is encoded into TS, bpf prog need to parse it.
+> > In that case, we cannot avoid parsing options in bpf prog.
+> 
+> If I read patch 2 correctly, the ireq->tstamp_ok is set by the kfunc, so I 
+> assume that the bpf prog has to parse the tcp-option.
+> 
+> Like the "if (ireq->tstamp_ok ^ tcp_opt.saw_tstamp)" test below, ireq->tstamp_ok 
+> will always be 0 if the bpf prog did not parse the tcp-option.
 
-kernel test robot noticed the following build warnings:
+Ah sorry, I assumed TS bit was encoded in SYN as disabled.
+TCP option parsing is needed at least once for SYN, but we
+need not do so for SYN+ACK if TS bit is in ISN.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vadim-Fedorenko/bpf-crypto-add-skcipher-to-bpf-crypto/20231202-091254
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231202010604.1877561-1-vadfed%40meta.com
-patch subject: [PATCH bpf-next v7 1/3] bpf: make common crypto API for TC/XDP programs
-config: x86_64-randconfig-161-20231202 (https://download.01.org/0day-ci/archive/20231206/202312060647.2JfAE3rk-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce: (https://download.01.org/0day-ci/archive/20231206/202312060647.2JfAE3rk-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202312060647.2JfAE3rk-lkp@intel.com/
+> 
+> > 
+> > The parsing here comes from my paranoia, so.. probably we can drop it
+> > and the first test below, and rely on bpf prog's tcp_opt, especially
+> > tstamp_ok, rcv_tsval, and rcv_tsecr ?
+> 
+> My preference is that it is clearer to allow the bpf prog to initialize all 
+> tcp_opt instead of only taking the tcp_opt.tstamp_ok from bpf_prog but ignore 
+> the tcp_opt.rcv_tsval/tsecr. The kfunc will then use the tcp_opt to initialize 
+> the req.
 
-smatch warnings:
-kernel/bpf/crypto.c:192 bpf_crypto_ctx_create() error: we previously assumed 'ctx' could be null (see line 165)
-kernel/bpf/crypto.c:192 bpf_crypto_ctx_create() error: potentially dereferencing uninitialized 'ctx'.
+I'll drop the option parsing in kernel and allow bpf prog to fully
+initialise tcp_opt.
 
-vim +/ctx +192 kernel/bpf/crypto.c
 
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  122  __bpf_kfunc struct bpf_crypto_ctx *
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  123  bpf_crypto_ctx_create(const char *type__str, const char *algo__str,
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  124  		      const struct bpf_dynptr_kern *pkey,
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  125  		      unsigned int authsize, int *err)
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  126  {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  127  	const struct bpf_crypto_type *type = bpf_crypto_get_type(type__str);
+> 
+> It is also better to detect the following error cases as much as possible in the 
+> kfunc instead of failing later in the tcp stack. e.g. checking the sysctl should 
+> be doable in the kfunc.
 
-Delete this assignment.  (Duplicated).
+Ok, I'll move the sysctl tests and ts_off init to kfunc.
 
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  128  	struct bpf_crypto_ctx *ctx;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  129  	const u8 *key;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  130  	u32 key_len;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  131  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  132  	type = bpf_crypto_get_type(type__str);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  133  	if (IS_ERR(type)) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  134  		*err = PTR_ERR(type);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  135  		return NULL;
 
-Why doesn't this function just return error pointers?
-
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  136  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  137  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  138  	if (!type->has_algo(algo__str)) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  139  		*err = -EOPNOTSUPP;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  140  		goto err;
-
-ctx is uninitialized on this path.
-
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  141  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  142  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  143  	if (!authsize && type->setauthsize) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  144  		*err = -EOPNOTSUPP;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  145  		goto err;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  146  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  147  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  148  	if (authsize && !type->setauthsize) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  149  		*err = -EOPNOTSUPP;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  150  		goto err;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  151  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  152  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  153  	key_len = __bpf_dynptr_size(pkey);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  154  	if (!key_len) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  155  		*err = -EINVAL;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  156  		goto err;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  157  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  158  	key = __bpf_dynptr_data(pkey, key_len);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  159  	if (!key) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  160  		*err = -EINVAL;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  161  		goto err;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  162  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  163  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  164  	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01 @165  	if (!ctx) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  166  		*err = -ENOMEM;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  167  		goto err;
-
-ctx is NULL here.
-
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  168  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  169  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  170  	ctx->type = type;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  171  	ctx->tfm = type->alloc_tfm(algo__str);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  172  	if (IS_ERR(ctx->tfm)) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  173  		*err = PTR_ERR(ctx->tfm);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  174  		ctx->tfm = NULL;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  175  		goto err;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  176  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  177  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  178  	if (authsize) {
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  179  		*err = type->setauthsize(ctx->tfm, authsize);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  180  		if (*err)
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  181  			goto err;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  182  	}
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  183  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  184  	*err = type->setkey(ctx->tfm, key, key_len);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  185  	if (*err)
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  186  		goto err;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  187  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  188  	refcount_set(&ctx->usage, 1);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  189  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  190  	return ctx;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  191  err:
-0c47cb96ac404e Vadim Fedorenko 2023-12-01 @192  	if (ctx->tfm)
-                                                            ^^^^^^^^
-NULL dereference.  These two error handling bugs in three lines of code
-are canonical One Err Label type bugs.  Better to do a ladder where each
-error label frees the last thing that was allocated.  Easier to review.
-Then you could delete the "ctx->tfm = NULL;" assignment on line 174.
-
-	return ctx;
-
-err_free_tfm:
-	type->free_tfm(ctx->tfm);
-err_free_ctx:
-	kfree(ctx);
-err_module_put:
-	module_put(type->owner);
-
-	return NULL;
-
-I have written about this at length on my blog:
-https://staticthinking.wordpress.com/2022/04/28/free-the-last-thing-style/
-
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  193  		type->free_tfm(ctx->tfm);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  194  	kfree(ctx);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  195  	module_put(type->owner);
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  196  
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  197  	return NULL;
-0c47cb96ac404e Vadim Fedorenko 2023-12-01  198  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+> 
+> > 
+> > I placed other tests here to align with the normal cookie flow, but
+> > they can be moved to kfunc.  However, initialisation assuems skb
+> > points to TCP header, so here would be better place, I think.
+> > 
+> > 
+> >>
+> >>> +
+> >>> +	if (ireq->tstamp_ok ^ tcp_opt.saw_tstamp) {
+> >>> +		__NET_INC_STATS(net, LINUX_MIB_SYNCOOKIESFAILED);
+> >>> +		goto reset;
+> >>> +	}
+> >>> +
+> >>> +	__NET_INC_STATS(net, LINUX_MIB_SYNCOOKIESRECV);
+> >>> +
+> >>> +	if (ireq->tstamp_ok) {
+> >>> +		if (!READ_ONCE(net->ipv4.sysctl_tcp_timestamps))
+> >>> +			goto reset;
+> >>> +
+> >>> +		req->ts_recent = tcp_opt.rcv_tsval;
+> >>> +		treq->ts_off = tcp_opt.rcv_tsecr - tcp_ns_to_ts(false, tcp_clock_ns());
+> >>> +	}
+> >>> +
+> >>> +	if (ireq->sack_ok && !READ_ONCE(net->ipv4.sysctl_tcp_sack))
+> >>> +		goto reset;
+> >>> +
+> >>> +	if (ireq->wscale_ok && !READ_ONCE(net->ipv4.sysctl_tcp_window_scaling))
+> >>> +		goto reset;
+> >>> +
+> >>> +	ret = cookie_tcp_reqsk_init(sk, skb, req);
+> >>> +	if (ret) {
+> >>> +		reqsk_free(req);
+> >>> +		req = NULL;
+> >>> +	}
+> >>> +
+> >>> +	return req;
+> >>> +
+> >>> +reset:
+> >>> +	reqsk_free(req);
+> >>> +	return ERR_PTR(-EINVAL);
+> >>> +}
+> >>> +EXPORT_SYMBOL_GPL(cookie_bpf_check);
+> >>> +#endif
 
