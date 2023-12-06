@@ -1,683 +1,358 @@
-Return-Path: <bpf+bounces-16886-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16887-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD5548071FE
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 15:14:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D22F80732E
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 15:59:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E3342816CF
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 14:14:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CBBD1F21837
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 14:59:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609673E489;
-	Wed,  6 Dec 2023 14:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BCB3EA8B;
+	Wed,  6 Dec 2023 14:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="YsV7ns1X"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="13hkpvIC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A84B1A2
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 06:13:54 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c0e7b8a9bso38812955e9.3
-        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 06:13:54 -0800 (PST)
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88C059A
+	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 06:59:27 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5d3efc071e2so63637287b3.0
+        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 06:59:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1701872032; x=1702476832; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1701874767; x=1702479567; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H/mil66XVycPGDyt1s26xPsBfGVLnvx73zPTwd81ej8=;
-        b=YsV7ns1X4v2IKhSRToEwRAhf/y1SDtr1SZw5DubOCnueM8Ca9lznyi8Ih/dy1lzNjE
-         dRuLke5/2cfpEJiITbbnZvD7/K6/uigOEytY9zaU5GDbShwQHRzz/1FKw1LZ03d6wgMD
-         KpczoT7ptTO4kiasYdLd47aMcDO59K2UlHWoetHZkbkVrT9EuACu+K2oWtzbf1/HF/m6
-         rS0aJnPK8D1D3dS5HdrC9ojhlZKPQnEI889Gzn43nJO7OdurvO6Di/uUfY6N8rxEcc5w
-         EKRb+tUqRX5okZz+g2bU9iWGijRUDiAa/Y/vra4HHd7FGn5Czbo3MOQE6MBtOXkAoDFB
-         1zOQ==
+        bh=cGSoMqUMkYvVS+AiSljh5y4/XTemq0cyBuGBsxoL0EI=;
+        b=13hkpvICUtO5jmVS4Yj3Pq9xVXpk8y2a8Im7TYD0PQPUBF09L1dUHTvodDcRveW8RR
+         7NtufWymCyyyJoci3rwMMK99zVw9XyjzWHWU6Z9alSHTkPrPPD8E1sBHLUo6wTDAPQGb
+         O+/ODNFhZwDV2EA/N8Rm63bhFT04aTCljqyTml2r+sqsRFyLnzYTTdrbuupnBrPqWgsk
+         OSIS8ilHTkjlxgj5qf5h3eKFP12/zitIXliCuHazEppjg1jlLHDIN4Cjg8Ik2p+ETqAQ
+         0z0im+HcxXKHk7GoX0kmPvnuFfTUF7QKDTRp0rnG1JWJH2tuXrqP9uWXGa5JDu9bH6IN
+         9Xtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701872032; x=1702476832;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701874767; x=1702479567;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=H/mil66XVycPGDyt1s26xPsBfGVLnvx73zPTwd81ej8=;
-        b=Ir5m0zdXPT5Prdbm+4flJYvYT6CH/dZlYfSIBUjxoJIAdB7j5jMQJmZiN3hKYO8xks
-         lHdPMRSllfafT8utYVMrEMlLp34mC6CltOiYGozB+i3OBwZ61SXXuIDlCSD/HmamPzeu
-         dJUQjCFUTvdqX7oYg9+4KEkZt7v6lk1Btzjgjre6XGHQD8JeAFIjPPtx3QV+gBm+sEng
-         nRrYxe0eR1pMJxWjqJupPJh37+zXPx/KOyFSZaoBWFnAZWSe2fhhmrq2DHjypVef66Zq
-         MXCLigqQMzGxku/c1uI790rLBR43O+1djOtSLKB1umVvMVKMCCZjIDsmFDXbjbV+XIlG
-         VRIQ==
-X-Gm-Message-State: AOJu0YxwtQZBVMKZvB1okLrcSz1WiyI9iyQP3IooHbMlQ2pBOmLcsNPi
-	RtjQ0bvdCZfCopBkrYHs17WcdQ==
-X-Google-Smtp-Source: AGHT+IGGgzhxTp5n/3v+rAeYU7skWgWjS5zMTHjt+sFv+USt0/X5XY34li4ssrJNbWaWKrdESQ4F/Q==
-X-Received: by 2002:a05:600c:16d3:b0:40b:5e59:ccbd with SMTP id l19-20020a05600c16d300b0040b5e59ccbdmr639416wmn.158.1701872032656;
-        Wed, 06 Dec 2023 06:13:52 -0800 (PST)
-Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05600c311200b0040b42df75fcsm22140330wmo.39.2023.12.06.06.13.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 06:13:52 -0800 (PST)
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Stanislav Fomichev <sdf@google.com>,
-	bpf@vger.kernel.org
-Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH bpf-next 7/7] selftests/bpf: Add tests for BPF Static Keys
-Date: Wed,  6 Dec 2023 14:10:30 +0000
-Message-Id: <20231206141030.1478753-8-aspsk@isovalent.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231206141030.1478753-1-aspsk@isovalent.com>
-References: <20231206141030.1478753-1-aspsk@isovalent.com>
+        bh=cGSoMqUMkYvVS+AiSljh5y4/XTemq0cyBuGBsxoL0EI=;
+        b=qd1Bwc3Ir9LbQhmtnGisvcL55HRGobn3H1GgrxxXHpSi9kAlcFdlyJbq2mYIi6Yfde
+         Y16paS346QDBwghjrOVd057KjpCr/BOFDioQuSv88QgtcIJyTdsnLdPBEi9L+uZQVWNy
+         IYHuol5v+8uetUxJYzo+HENexsiRSiQ5JIj9AQVlBJoRfMaSxq04OKdzv+X3Lmyx4mPz
+         WanEyw57h+YDq/6yYYDJw5eZlKb8ZrmH6B9V+R9gBm1CzSs/9NVdlZDMfMRcq/71MEop
+         aiXA6pY3LOvxxcqUVt1sNRCCE52eQQaGcdmuhfKQ2sSJN0M9QWNyFFJSuCPx3lycRmKN
+         Wriw==
+X-Gm-Message-State: AOJu0YyPJKBWVicYvTIZClkcgIeV6E+NFUC3pG5ZOsOpY9/h/dE/igrh
+	GezBdw15IYk3EVbaNnovNKJcbJONxqHl6ZipchBuAQ==
+X-Google-Smtp-Source: AGHT+IFXVYHPaxbV+qR6B03/9foFUcebXO4Iz9RYl3YOiFIqtc7cvmWTL8KtguizFKFX4e6votQFujvkqgbLGT4d4eM=
+X-Received: by 2002:a81:99d7:0:b0:5cd:c7a3:6cb3 with SMTP id
+ q206-20020a8199d7000000b005cdc7a36cb3mr793295ywg.37.1701874766647; Wed, 06
+ Dec 2023 06:59:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231201182904.532825-1-jhs@mojatatu.com> <20231201182904.532825-16-jhs@mojatatu.com>
+ <656e6f8d7c99f_207cb2087c@john.notmuch> <2eb488f9-af4a-4e28-0de0-d4dbc1e166f5@iogearbox.net>
+ <CAM0EoM=MJJH9zNdiEHYpkYYQ_7WqobGv_v8wp04R7HhdPW8TxA@mail.gmail.com> <50b4dd0b-94fe-36b2-9a69-51847f8a7712@iogearbox.net>
+In-Reply-To: <50b4dd0b-94fe-36b2-9a69-51847f8a7712@iogearbox.net>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Wed, 6 Dec 2023 09:59:15 -0500
+Message-ID: <CAM0EoMmQpiiEZw_QfXMzWfbb=6_MkLTasjwjL1MVy0nBvMJCsg@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 15/15] p4tc: add P4 classifier
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
+	deb.chatterjee@intel.com, anjali.singhai@intel.com, namrata.limaye@intel.com, 
+	mleitner@redhat.com, Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com, 
+	jiri@resnulli.us, xiyou.wangcong@gmail.com, davem@davemloft.net, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, vladbu@nvidia.com, 
+	horms@kernel.org, khalidm@nvidia.com, toke@redhat.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add several self-tests to test the new BPF Static Key feature. Selftests
-include the following tests:
+On Tue, Dec 5, 2023 at 5:32=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.ne=
+t> wrote:
+>
+> On 12/5/23 5:23 PM, Jamal Hadi Salim wrote:
+> > On Tue, Dec 5, 2023 at 8:43=E2=80=AFAM Daniel Borkmann <daniel@iogearbo=
+x.net> wrote:
+> >> On 12/5/23 1:32 AM, John Fastabend wrote:
+> >>> Jamal Hadi Salim wrote:
+> >>>> Introduce P4 tc classifier. A tc filter instantiated on this classif=
+ier
+> >>>> is used to bind a P4 pipeline to one or more netdev ports. To use P4
+> >>>> classifier you must specify a pipeline name that will be associated =
+to
+> >>>> this filter, a s/w parser and datapath ebpf program. The pipeline mu=
+st have
+> >>>> already been created via a template.
+> >>>> For example, if we were to add a filter to ingress of network interf=
+ace
+> >>>> device $P0 and associate it to P4 pipeline simple_l3 we'd issue the
+> >>>> following command:
+> >>>
+> >>> In addition to my comments from last iteration.
+> >>>
+> >>>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname simp=
+le_l3 \
+> >>>>       action bpf obj $PARSER.o section prog/tc-parser \
+> >>>>       action bpf obj $PROGNAME.o section prog/tc-ingress
+> >>>
+> >>> Having multiple object files is a mistake IMO and will cost
+> >>> performance. Have a single object file avoid stitching together
+> >>> metadata and run to completion. And then run entirely from XDP
+> >>> this is how we have been getting good performance numbers.
+> >>
+> >> +1, fully agree.
+> >
+> > As I stated earlier: while performance is important it is not the
+> > highest priority for what we are doing, rather correctness is. We dont
+> > want to be wrestling with the verifier or some other limitation like
+> > tail call limits to gain some increase in a few kkps. We are taking a
+> > gamble with the parser which is not using any kfuncs at the moment.
+> > Putting them all in one program will increase the risk.
+>
+> I don't think this is a good reason, this corners you into UAPI which
+> later on cannot be changed anymore. If you encounter such issues, then
+> why not bringing up actual concrete examples / limitations you run into
+> to the BPF community and help one way or another to get the verifier
+> improved instead? (Again, see sched_ext as one example improving verifier=
+,
+> but also concrete example bug reports, etc could help.)
+>
 
-  * check that one key works for one program
-  * check that one key works for multiple programs
-  * check that static keys work with 2 and 5 bytes jumps
-  * check that multiple keys works for one program
-  * check that static keys work for base program and a BPF-to-BPF call
-  * check that static keys can't be used as normal maps
-  * check that passing incorrect parameters on map creation fails
-  * check that passing incorrect parameters on program load fails
+Which uapi are you talking about? The eBPF code gets generated by the
+compiler. Whether we generate one or 10 programs or where we place
+them is up to the compiler.
+We choose today to generate the parser separately - but we can change
+it in a heartbeat with zero kernel changes.
 
-Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
----
- MAINTAINERS                                   |   1 +
- .../bpf/prog_tests/bpf_static_keys.c          | 436 ++++++++++++++++++
- .../selftests/bpf/progs/bpf_static_keys.c     | 120 +++++
- 3 files changed, 557 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_static_keys.c
+> > As i responded to you earlier,  we just dont want to lose
+> > functionality, some sample space:
+> > - we could have multiple pipelines with different priorities - and
+> > each pipeline may have its own logic with many tables etc (and the
+> > choice to iterate the next one is essentially encoded in the tc action
+> > codes)
+> > - we want to be able to split the pipeline into parts that can run _in
+> > unison_ in h/w, xdp, and tc
+>
+> So parser at XDP, but then you push it up the stack (instead of staying
+> only at XDP layer) just to reach into tc layer to perform a corresponding
+> action.. and this just to work around verifier as you say?
+>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e2f655980c6c..81a040d66af6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3892,6 +3892,7 @@ M:	Anton Protopopov <aspsk@isovalent.com>
- L:	bpf@vger.kernel.org
- S:	Maintained
- F:	kernel/bpf/skey.c
-+F:	tools/testing/selftests/bpf/*/*bpf_static_key*
- 
- BROADCOM ASP 2.0 ETHERNET DRIVER
- M:	Justin Chen <justin.chen@broadcom.com>
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c b/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
-new file mode 100644
-index 000000000000..37b2da247869
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
-@@ -0,0 +1,436 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+
-+#include <test_progs.h>
-+#include "bpf_static_keys.skel.h"
-+
-+#define set_static_key(map_fd, val)						\
-+	do {									\
-+		__u32 map_value = (val);					\
-+		__u32 zero_key = 0;						\
-+		int ret;							\
-+										\
-+		ret = bpf_map_update_elem(map_fd, &zero_key, &map_value, 0);	\
-+		ASSERT_EQ(ret, 0, "bpf_map_update_elem");			\
-+	} while (0)
-+
-+static void check_one_key(struct bpf_static_keys *skel)
-+{
-+	struct bpf_link *link;
-+	int map_fd;
-+
-+	link = bpf_program__attach(skel->progs.check_one_key);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	map_fd = bpf_map__fd(skel->maps.key1);
-+	ASSERT_GT(map_fd, 0, "skel->maps.key1");
-+
-+	set_static_key(map_fd, 0);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 4, "skel->bss->ret_user");
-+
-+	set_static_key(map_fd, 1);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 3, "skel->bss->ret_user");
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void check_multiple_progs(struct bpf_static_keys *skel)
-+{
-+	struct bpf_link *link1;
-+	struct bpf_link *link2;
-+	struct bpf_link *link3;
-+	int map_fd;
-+
-+	link1 = bpf_program__attach(skel->progs.check_one_key);
-+	if (!ASSERT_OK_PTR(link1, "link1"))
-+		return;
-+
-+	link2 = bpf_program__attach(skel->progs.check_one_key_another_prog);
-+	if (!ASSERT_OK_PTR(link2, "link2"))
-+		return;
-+
-+	link3 = bpf_program__attach(skel->progs.check_one_key_yet_another_prog);
-+	if (!ASSERT_OK_PTR(link3, "link3"))
-+		return;
-+
-+	map_fd = bpf_map__fd(skel->maps.key1);
-+	ASSERT_GT(map_fd, 0, "skel->maps.key1");
-+
-+	set_static_key(map_fd, 0);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 444, "skel->bss->ret_user");
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 888, "skel->bss->ret_user");
-+
-+	set_static_key(map_fd, 1);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 333, "skel->bss->ret_user");
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 666, "skel->bss->ret_user");
-+
-+	bpf_link__destroy(link3);
-+	bpf_link__destroy(link2);
-+	bpf_link__destroy(link1);
-+}
-+
-+static void check_multiple_keys(struct bpf_static_keys *skel)
-+{
-+	struct bpf_link *link;
-+	int map_fd1;
-+	int map_fd2;
-+	int map_fd3;
-+	int i;
-+
-+	link = bpf_program__attach(skel->progs.check_multiple_keys_unlikely);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	map_fd1 = bpf_map__fd(skel->maps.key1);
-+	ASSERT_GT(map_fd1, 0, "skel->maps.key1");
-+
-+	map_fd2 = bpf_map__fd(skel->maps.key2);
-+	ASSERT_GT(map_fd2, 0, "skel->maps.key2");
-+
-+	map_fd3 = bpf_map__fd(skel->maps.key3);
-+	ASSERT_GT(map_fd3, 0, "skel->maps.key3");
-+
-+	for (i = 0; i < 8; i++) {
-+		set_static_key(map_fd1, i & 1);
-+		set_static_key(map_fd2, i & 2);
-+		set_static_key(map_fd3, i & 4);
-+
-+		usleep(1);
-+		ASSERT_EQ(skel->bss->ret_user, i, "skel->bss->ret_user");
-+	}
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void check_one_key_long_jump(struct bpf_static_keys *skel)
-+{
-+	struct bpf_link *link;
-+	int map_fd;
-+
-+	link = bpf_program__attach(skel->progs.check_one_key_long_jump);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	map_fd = bpf_map__fd(skel->maps.key1);
-+	ASSERT_GT(map_fd, 0, "skel->maps.key1");
-+
-+	set_static_key(map_fd, 0);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 2256, "skel->bss->ret_user");
-+
-+	set_static_key(map_fd, 1);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 1256, "skel->bss->ret_user");
-+
-+	bpf_link__destroy(link);
-+}
-+
-+static void check_bpf_to_bpf_call(struct bpf_static_keys *skel)
-+{
-+	struct bpf_link *link;
-+	int map_fd1;
-+	int map_fd2;
-+
-+	link = bpf_program__attach(skel->progs.check_bpf_to_bpf_call);
-+	if (!ASSERT_OK_PTR(link, "link"))
-+		return;
-+
-+	map_fd1 = bpf_map__fd(skel->maps.key1);
-+	ASSERT_GT(map_fd1, 0, "skel->maps.key1");
-+
-+	map_fd2 = bpf_map__fd(skel->maps.key2);
-+	ASSERT_GT(map_fd2, 0, "skel->maps.key2");
-+
-+	set_static_key(map_fd1, 0);
-+	set_static_key(map_fd2, 0);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 0, "skel->bss->ret_user");
-+
-+	set_static_key(map_fd1, 1);
-+	set_static_key(map_fd2, 0);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 101, "skel->bss->ret_user");
-+
-+	set_static_key(map_fd1, 0);
-+	set_static_key(map_fd2, 1);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 1010, "skel->bss->ret_user");
-+
-+	set_static_key(map_fd1, 1);
-+	set_static_key(map_fd2, 1);
-+	skel->bss->ret_user = 0;
-+	usleep(1);
-+	ASSERT_EQ(skel->bss->ret_user, 1111, "skel->bss->ret_user");
-+
-+
-+	bpf_link__destroy(link);
-+}
-+
-+#define FIXED_MAP_FD 666
-+
-+static void check_use_key_as_map(struct bpf_static_keys *skel)
-+{
-+	struct bpf_insn insns[] = {
-+		BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
-+		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
-+		BPF_LD_MAP_FD(BPF_REG_1, FIXED_MAP_FD),
-+		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+	union bpf_attr attr = {
-+		.prog_type = BPF_PROG_TYPE_XDP,
-+		.insns     = ptr_to_u64(insns),
-+		.insn_cnt  = ARRAY_SIZE(insns),
-+		.license   = ptr_to_u64("GPL"),
-+	};
-+	int map_fd;
-+	int ret;
-+
-+	/* first check that prog loads ok */
-+
-+	map_fd = bpf_map__fd(skel->maps.just_map);
-+	ASSERT_GT(map_fd, 0, "skel->maps.just_map");
-+
-+	ret = dup2(map_fd, FIXED_MAP_FD);
-+	ASSERT_EQ(ret, FIXED_MAP_FD, "dup2");
-+
-+	strncpy(attr.prog_name, "prog", sizeof(attr.prog_name));
-+	ret = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_GT(ret, 0, "BPF_PROG_LOAD");
-+	close(ret);
-+	close(FIXED_MAP_FD);
-+
-+	/* now the incorrect map (static key as normal map) */
-+
-+	map_fd = bpf_map__fd(skel->maps.key1);
-+	ASSERT_GT(map_fd, 0, "skel->maps.key1");
-+
-+	ret = dup2(map_fd, FIXED_MAP_FD);
-+	ASSERT_EQ(ret, FIXED_MAP_FD, "dup2");
-+
-+	ret = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(ret, -1, "BPF_PROG_LOAD");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD");
-+	close(ret);
-+	close(FIXED_MAP_FD);
-+}
-+
-+static void map_create_incorrect(void)
-+{
-+	union bpf_attr attr = {
-+		.map_type = BPF_MAP_TYPE_ARRAY,
-+		.key_size = 4,
-+		.value_size = 4,
-+		.max_entries = 1,
-+		.map_flags = BPF_F_STATIC_KEY,
-+	};
-+	int map_fd;
-+
-+	/* The first call should be ok */
-+
-+	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
-+	ASSERT_GT(map_fd, 0, "BPF_MAP_CREATE");
-+	close(map_fd);
-+
-+	/* All the rest calls should fail */
-+
-+	attr.map_type = BPF_MAP_TYPE_HASH;
-+	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
-+	ASSERT_EQ(map_fd, -1, "BPF_MAP_CREATE");
-+	attr.map_type = BPF_MAP_TYPE_ARRAY;
-+
-+	attr.key_size = 8;
-+	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
-+	ASSERT_EQ(map_fd, -1, "BPF_MAP_CREATE");
-+	attr.key_size = 4;
-+
-+	attr.value_size = 8;
-+	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
-+	ASSERT_EQ(map_fd, -1, "BPF_MAP_CREATE");
-+	attr.value_size = 4;
-+
-+	attr.max_entries = 2;
-+	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
-+	ASSERT_EQ(map_fd, -1, "BPF_MAP_CREATE");
-+	attr.max_entries = 1;
-+}
-+
-+static void prog_load_incorrect_branches(struct bpf_static_keys *skel)
-+{
-+	int key_fd, map_fd, prog_fd;
-+
-+	/*
-+	 *                 KEY=OFF               KEY=ON
-+	 * <prog>:
-+	 *        0:       r0 = 0x0              r0 = 0x0
-+	 *        1:       goto +0x0 <1>         goto +0x1 <2>
-+	 * <1>:
-+	 *        2:       exit                  exit
-+	 * <2>:
-+	 *        3:       r0 = 0x1              r0 = 0x1
-+	 *        4:       goto -0x3 <1>         goto -0x3 <1>
-+	 */
-+	struct bpf_insn insns[] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_JMP_IMM(BPF_JA, 0, 0, 0),
-+		BPF_EXIT_INSN(),
-+		BPF_MOV64_IMM(BPF_REG_0, 1),
-+		BPF_JMP_IMM(BPF_JA, 0, 0, -3),
-+	};
-+	struct bpf_static_branch_info static_branches_info[] = {
-+		{
-+			.map_fd = -1,
-+			.insn_offset = 8,
-+			.jump_target = 24,
-+			.flags = 0,
-+		},
-+	};
-+	union bpf_attr attr = {
-+		.prog_type = BPF_PROG_TYPE_XDP,
-+		.insns     = ptr_to_u64(insns),
-+		.insn_cnt  = ARRAY_SIZE(insns),
-+		.license   = ptr_to_u64("GPL"),
-+		.static_branches_info = ptr_to_u64(static_branches_info),
-+		.static_branches_info_size = sizeof(static_branches_info),
-+	};
-+
-+	key_fd = bpf_map__fd(skel->maps.key1);
-+	ASSERT_GT(key_fd, 0, "skel->maps.key1");
-+
-+	map_fd = bpf_map__fd(skel->maps.just_map);
-+	ASSERT_GT(map_fd, 0, "skel->maps.just_map");
-+
-+	strncpy(attr.prog_name, "prog", sizeof(attr.prog_name));
-+
-+	/* The first two loads should be ok, correct parameters */
-+
-+	static_branches_info[0].map_fd = key_fd;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_GT(prog_fd, 0, "BPF_PROG_LOAD");
-+	close(prog_fd);
-+
-+	static_branches_info[0].flags = BPF_F_INVERSE_BRANCH;
-+	insns[1] = BPF_JMP_IMM(BPF_JA, 0, 0, 1); /* inverse branch expects non-zero offset */
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_GT(prog_fd, 0, "BPF_PROG_LOAD");
-+	close(prog_fd);
-+	static_branches_info[0].flags = 0;
-+	insns[1] = BPF_JMP_IMM(BPF_JA, 0, 0, 0);
-+
-+	/* All other loads should fail with -EINVAL */
-+
-+	static_branches_info[0].map_fd = map_fd;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: incorrect map fd");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: incorrect map fd");
-+	static_branches_info[0].map_fd = key_fd;
-+
-+	attr.static_branches_info = 0;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: info is NULL, but size is not zero");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: info is NULL, but size is not zero");
-+	attr.static_branches_info = ptr_to_u64(static_branches_info);
-+
-+	attr.static_branches_info_size = 0;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: info is not NULL, but size is zero");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: info is not NULL, but size is zero");
-+	attr.static_branches_info_size = sizeof(static_branches_info);
-+
-+	attr.static_branches_info_size = 1;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: size not divisible by item size");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: size not divisible by item size");
-+	attr.static_branches_info_size = sizeof(static_branches_info);
-+
-+	static_branches_info[0].flags = 0xbeef;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: incorrect flags");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: incorrect flags");
-+	static_branches_info[0].flags = 0;
-+
-+	static_branches_info[0].insn_offset = 1;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: incorrect insn_offset");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: incorrect insn_offset");
-+	static_branches_info[0].insn_offset = 8;
-+
-+	static_branches_info[0].insn_offset = 64;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: insn_offset outside of prgoram");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: insn_offset outside of prgoram");
-+	static_branches_info[0].insn_offset = 8;
-+
-+	static_branches_info[0].jump_target = 1;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: incorrect jump_target");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: incorrect jump_target");
-+	static_branches_info[0].jump_target = 8;
-+
-+	static_branches_info[0].jump_target = 64;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: jump_target outside of prgoram");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: jump_target outside of prgoram");
-+	static_branches_info[0].jump_target = 8;
-+
-+	static_branches_info[0].insn_offset = 0;
-+	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
-+	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: patching not a JA");
-+	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: patching not a JA");
-+	static_branches_info[0].insn_offset = 8;
-+}
-+
-+void test_bpf_static_keys(void)
-+{
-+	struct bpf_static_keys *skel;
-+
-+	skel = bpf_static_keys__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "bpf_static_keys__open_and_load"))
-+		return;
-+
-+	if (test__start_subtest("check_one_key"))
-+		check_one_key(skel);
-+
-+	if (test__start_subtest("check_multiple_keys"))
-+		check_multiple_keys(skel);
-+
-+	if (test__start_subtest("check_multiple_progs"))
-+		check_multiple_progs(skel);
-+
-+	if (test__start_subtest("check_one_key_long_jump"))
-+		check_one_key_long_jump(skel);
-+
-+	if (test__start_subtest("check_bpf_to_bpf_call"))
-+		check_bpf_to_bpf_call(skel);
-+
-+	/* Negative tests */
-+
-+	if (test__start_subtest("check_use_key_as_map"))
-+		check_use_key_as_map(skel);
-+
-+	if (test__start_subtest("map_create_incorrect"))
-+		map_create_incorrect();
-+
-+	if (test__start_subtest("prog_load_incorrect_branches"))
-+		prog_load_incorrect_branches(skel);
-+
-+	bpf_static_keys__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_static_keys.c b/tools/testing/selftests/bpf/progs/bpf_static_keys.c
-new file mode 100644
-index 000000000000..e47a34df469b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_static_keys.c
-@@ -0,0 +1,120 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2023 Isovalent */
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+DEFINE_STATIC_KEY(key1);
-+DEFINE_STATIC_KEY(key2);
-+DEFINE_STATIC_KEY(key3);
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, u32);
-+	__type(value, u32);
-+} just_map SEC(".maps");
-+
-+int ret_user;
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_one_key(void *ctx)
-+{
-+	if (bpf_static_branch_likely(&key1))
-+		ret_user += 3;
-+	else
-+		ret_user += 4;
-+
-+	return 0;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_one_key_another_prog(void *ctx)
-+{
-+	if (bpf_static_branch_unlikely(&key1))
-+		ret_user += 30;
-+	else
-+		ret_user += 40;
-+
-+	return 0;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_one_key_yet_another_prog(void *ctx)
-+{
-+	if (bpf_static_branch_unlikely(&key1))
-+		ret_user += 300;
-+	else
-+		ret_user += 400;
-+
-+	return 0;
-+}
-+
-+static __always_inline int big_chunk_of_code(volatile int *x)
-+{
-+	#pragma clang loop unroll_count(256)
-+	for (int i = 0; i < 256; i++)
-+		*x += 1;
-+
-+	return *x;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_one_key_long_jump(void *ctx)
-+{
-+	int x;
-+
-+	if (bpf_static_branch_likely(&key1)) {
-+		x = 1000;
-+		big_chunk_of_code(&x);
-+		ret_user = x;
-+	} else {
-+		x = 2000;
-+		big_chunk_of_code(&x);
-+		ret_user = x;
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_multiple_keys_unlikely(void *ctx)
-+{
-+	ret_user = (bpf_static_branch_unlikely(&key1) << 0) |
-+		   (bpf_static_branch_unlikely(&key2) << 1) |
-+		   (bpf_static_branch_unlikely(&key3) << 2);
-+
-+	return 0;
-+}
-+
-+int __noinline patch(int x)
-+{
-+	if (bpf_static_branch_likely(&key1))
-+		x += 100;
-+	if (bpf_static_branch_unlikely(&key2))
-+		x += 1000;
-+
-+	return x;
-+}
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int check_bpf_to_bpf_call(void *ctx)
-+{
-+	__u64 j = bpf_jiffies64();
-+
-+	bpf_printk("%lu\n", j);
-+
-+	ret_user = 0;
-+
-+	if (bpf_static_branch_likely(&key1))
-+		ret_user += 1;
-+	if (bpf_static_branch_unlikely(&key2))
-+		ret_user += 10;
-+
-+	ret_user = patch(ret_user);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.34.1
+You are mixing things. The idea of being able to split a pipeline into
+hw:xdp:tc is a requirement.  You can run the pipeline fully in XDP  or
+fully in tc or split it when it makes sense.
+The idea of splitting the parser from the main p4 control block is for
+two reasons 1) someone else can generate or handcode the parser if
+they need to - we feel this is an area that may need to take advantage
+of features like dynptr etc in the future 2) as a precaution to ensure
+all P4 programs load. We have no problem putting both in one ebpf prog
+when we gain confidence that it will _always_ work - it is a mere
+change to what the compiler generates.
 
+> > - we use tc block to map groups of ports heavily
+> > - we use netlink as our control API
+> >
+> >>>> $PROGNAME.o and $PARSER.o is a compilation of the eBPF programs gene=
+rated
+> >>>> by the P4 compiler and will be the representation of the P4 program.
+> >>>> Note that filter understands that $PARSER.o is a parser to be loaded
+> >>>> at the tc level. The datapath program is merely an eBPF action.
+> >>>>
+> >>>> Note we do support a distinct way of loading the parser as opposed t=
+o
+> >>>> making it be an action, the above example would be:
+> >>>>
+> >>>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname simp=
+le_l3 \
+> >>>>       prog type tc obj $PARSER.o ... \
+> >>>>       action bpf obj $PROGNAME.o section prog/tc-ingress
+> >>>>
+> >>>> We support two types of loadings of these initial programs in the pi=
+peline
+> >>>> and differentiate between what gets loaded at tc vs xdp by using syn=
+tax of
+> >>>>
+> >>>> either "prog type tc obj" or "prog type xdp obj"
+> >>>>
+> >>>> For XDP:
+> >>>>
+> >>>> tc filter add dev $P0 ingress protocol all prio 1 p4 pname simple_l3=
+ \
+> >>>>       prog type xdp obj $PARSER.o section parser/xdp \
+> >>>>       pinned_link /sys/fs/bpf/mylink \
+> >>>>       action bpf obj $PROGNAME.o section prog/tc-ingress
+> >>>
+> >>> I don't think tc should be loading xdp programs. XDP is not 'tc'.
+> >>
+> >> For XDP, we do have a separate attach API, for BPF links we have bpf_x=
+dp_link_attach()
+> >> via bpf(2) and regular progs we have the classic way via dev_change_xd=
+p_fd() with
+> >> IFLA_XDP_* attributes. Mid-term we'll also add bpf_mprog support for X=
+DP to allow
+> >> multi-user attachment. tc kernel code should not add yet another way o=
+f attaching XDP,
+> >> this should just reuse existing uapi infra instead from userspace cont=
+rol plane side.
+> >
+> > I am probably missing something. We are not loading the XDP program -
+> > it is preloaded, the only thing the filter does above is grabbing a
+> > reference to it. The P4 pipeline in this case is split into a piece
+> > (the parser) that runs on XDP and some that runs on tc. And as i
+> > mentioned earlier we could go further another piece which is part of
+> > the pipeline may run in hw. And infact in the future a compiler will
+> > be able to generate code that is split across machines. For our s/w
+> > datapath on the same node the only split is between tc and XDP.
+>
+> So it is even worse from a design PoV.
+
+So from a wild accusation that we are loading the program to now a
+condescending remark we have a bad design.
+
+> The kernel side allows XDP program
+> to be passed to cls_p4, but then it's not doing anything but holding a
+> reference to that BPF program. Iow, you need anyway to go the regular way
+> of bpf_xdp_link_attach() or dev_change_xdp_fd() to install XDP. Why is th=
+e
+> reference even needed here, why it cannot be done in user space from your
+> control plane? This again, feels like a shim layer which should live in
+> user space instead.
+>
+
+Our control path goes through tc - where we instantiate the pipeline
+on typically a tc block. Note: there could be many pipeline instances
+of the same set of ebpf programs. We need to know which ebpf programs
+are bound to which pipelines. When a pipeline is instantiated or
+destroyed it sends (netlink) events to user space. It is only natural
+to reference the programs which are part of the pipeline at that point
+i.e loading for tc progs and referencing for xdp. The control is
+already in user space to create bpf links etc.
+
+Our concern was (if you looked at the RFC discussions earlier on) a)
+we dont want anyone removing or replacing the XDP program that is part
+of a P4 pipeline b) we wanted to ensure in the case of a split
+pipeline that the XDP code that ran before tc part of the pipeline was
+infact the one that we wanted to run. The original code (before Toke
+made a suggestion to use bpf links) was passing a cookie from XDP to
+tc which we would use to solve these concerns. By creating the link in
+user space we can pass the fd - which is what you are seeing here.
+That solves both #a and #b.
+Granted we may be a little paranoid but operationally an important
+detail is:  if one dumps the tc filter with this approach they know
+what progs compose the pipeline.
+
+> >>>> The theory of operations is as follows:
+> >>>>
+> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D1. PARSING=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>
+> >>>> The packet first encounters the parser.
+> >>>> The parser is implemented in ebpf residing either at the TC or XDP
+> >>>> level. The parsed header values are stored in a shared eBPF map.
+> >>>> When the parser runs at XDP level, we load it into XDP using tc filt=
+er
+> >>>> command and pin it to a file.
+> >>>>
+> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D2. ACTIONS=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>
+> >>>> In the above example, the P4 program (minus the parser) is encoded i=
+n an
+> >>>> action($PROGNAME.o). It should be noted that classical tc actions
+> >>>> continue to work:
+> >>>> IOW, someone could decide to add a mirred action to mirror all packe=
+ts
+> >>>> after or before the ebpf action.
+> >>>>
+> >>>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname simp=
+le_l3 \
+> >>>>       prog type tc obj $PARSER.o section parser/tc-ingress \
+> >>>>       action bpf obj $PROGNAME.o section prog/tc-ingress \
+> >>>>       action mirred egress mirror index 1 dev $P1 \
+> >>>>       action bpf obj $ANOTHERPROG.o section mysect/section-1
+> >>>>
+> >>>> It should also be noted that it is feasible to split some of the ing=
+ress
+> >>>> datapath into XDP first and more into TC later (as was shown above f=
+or
+> >>>> example where the parser runs at XDP level). YMMV.
+> >>>
+> >>> Is there any performance value in partial XDP and partial TC? The mai=
+n
+> >>> wins we see in XDP are when we can drop, redirect, etc the packet
+> >>> entirely in XDP and avoid skb altogether.
+> >>>
+> >>>> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+> >>>> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> >>>> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+> >>>> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> >>>> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> >>
+> >> The cls_p4 is roughly a copy of {cls,act}_bpf, and from a BPF communit=
+y side
+> >> we moved away from this some time ago for the benefit of a better mana=
+gement
+> >> API for tc BPF programs via bpf(2) through bpf_mprog (see libbpf and B=
+PF selftests
+> >> around this), as mentioned earlier. Please use this instead for your u=
+serspace
+> >> control plane, otherwise we are repeating the same mistakes from the p=
+ast again
+> >> that were already fixed.
+> >
+> > Sorry, that is your use case for kubernetes and not ours. We want to
+>
+> There is nothing specific to k8s, it's generic infrastructure for tc BPF
+> and also used outside of k8s scope; please double-check the selftests to
+> get a picture of the API and libbpf integration.
+>
+
+I did and i couldnt see how we can do any of the tcx/mprog using tc to
+meet our requirements. I may be missing something very obvious but it
+was why i said it was for your use case not ours. I would be willing
+to look again if you say it works with tc but do note that I am fine
+with tc infra where i can add actions, all composed of different
+programs if i wanted to; and add addendums to use other tc existing
+(non-ebpf) actions if i needed to. We have what we need working fine,
+so there has to be a compelling reason to change.
+I asked you a question earlier whether in your view tc use of ebpf is
+deprecated. I have seen you make a claim in the past that sched_act
+was useless and that everyone needs to use sched_cls and you went on
+to say nobody needs priorities. TBH, that is _your view for your use
+case_.
+
+> > use the tc infra. We want to use netlink. I could be misreading what
+> > you are saying but it seems that you are suggesting that tc infra is
+> > now obsolete as far as ebpf is concerned? Overall: It is a bit selfish
+> > to say your use case dictates how other people use ebpf. ebpf is just
+> > a means to an end for us and _is not the end goal_ - just an infra
+> > toolset.
+>
+> Not really, the infrastructure is already there and ready to be used and
+> it supports basic building blocks such as BPF links, relative prog/link
+> dependency resolution, etc, where none of it can be found here. The
+> problem is "we want to use netlink" which is even why you need to push
+> down things like XDP prog, but it's broken by design, really. You are
+> trying to push down a control plane into netlink which should have been
+> a framework in user space.
+>
+
+The netlink part is not negotiable - the cover letter says why and i
+have explained it 10K times in these threads. You are listing all
+these tcx features like relativeness for which i have no use for.
+OTOH, like i said if it works with tc then i would be willing to look
+at it but there need to be compelling reasons to move to that shiny
+new infra.
+
+cheers,
+jamal
 
