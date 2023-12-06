@@ -1,109 +1,193 @@
-Return-Path: <bpf+bounces-16855-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16856-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A38EE8067DE
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 07:59:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B6A2806880
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 08:36:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5A821C21255
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:59:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9132B20FA1
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 07:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7BF12E75;
-	Wed,  6 Dec 2023 06:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23FC1774C;
+	Wed,  6 Dec 2023 07:36:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="fUSpwS4e"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="akgJFUuk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42925D65
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 22:59:26 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b9b90f8708so1787256b6e.2
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 22:59:26 -0800 (PST)
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD4112F
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 23:36:42 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b8b782e142so2712315b6e.1
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 23:36:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1701845965; x=1702450765; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sfqEHLbUHYLDNr52xzISlLf7TCD393bK+BO/LsCYG3E=;
-        b=fUSpwS4eOnOAGq42BJJsGCIFQ/B9Irk8wkv2pvh7rJyakFee1e4KO8DdtpUFyjdN+r
-         sdVnELKBo3QYdv7oJNjDF+4agJYjC6tatCCmFX6PtdIO4rNeVxwMLE5Kw3QAV8rz0nJY
-         beM8rT1Vpqtn4aQtoa1uEPj0RtXgzU8LBT4FI2djrk7E40kGkpuU1A9K4LtS6P4NazX2
-         HTC4oHMjiQfOdXlXuL1GU+bOWZHjNz1ZNMVUsPWoa7ZKeeznBEHD8bamwsBaZT4eam/O
-         9CWxePrrvOcflLCX95Fna7WJP6HCkGFxQiIeAjgzk5J19coUht5SLUeubOGVKSMS1l28
-         XPmQ==
+        d=chromium.org; s=google; t=1701848202; x=1702453002; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=53xT+tACp9bpHBMupfbbNcF0fz1mPBkKr9Ih+WmgKHs=;
+        b=akgJFUukuj/gpLAbGAhJMpmzOlv+II6Kmy5bHgz7D89Xyyf6//syVXewuG2Nd7mg/s
+         1Uahz5KRLtjgFDR5ZrKIkB5Mo0bVe+1eYNkXhsyIaOsQJci0gt4AF+UhReSJklSy5sKt
+         gSfkcYj9rSUYggtrvfRrMM0QdZCOSE4bl6Ic4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701845965; x=1702450765;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=sfqEHLbUHYLDNr52xzISlLf7TCD393bK+BO/LsCYG3E=;
-        b=I2JZHVyxJlt8k8kPf2uestQr/1D0p79tbS8NVK0qXnsZ7hpZgQT5mISh3vn2ItREyv
-         5DqzH5tRBVrhk43YXp4ozYlyZKsLWAQ9FZEfQ8RzvdUBjb2cAoaPI4gsEfEHn0yPBxj0
-         5r5iLY/Yst/dEd+2+o8Qz+y8IikRX34PeK4FVlQOiDrsU2/WQIEcv8J6tuMHFjAlhpgj
-         lJjzx2hmWuSEXg+HGagBeUI6ASrSz5FmETfu6UgL97Q2fZoKBXthnmeDN4Vvs19vFvt5
-         Vpv05ia38ZrNdqsRjtEcWLMLMZjGmuCIgg1nVRsAmZdJWu9YJPZXMctWN7QoMVC/NGV1
-         C6oA==
-X-Gm-Message-State: AOJu0YzbjD8Bqi5wezQM/C9ToLekYu+ekG89eXMRuLCeRTnbTOoOhLXh
-	idR/YXYWPO0ei5qjFXLHtLBI6A==
-X-Google-Smtp-Source: AGHT+IEe1DCMs1vCS65e5ggb9jvVWH07VbtqqRGVbP9+tHVKJFmcpLj5v7Cl/x3LWwioPRdxmFGjsw==
-X-Received: by 2002:a05:6808:1494:b0:3b8:b4c6:ce0d with SMTP id e20-20020a056808149400b003b8b4c6ce0dmr729443oiw.81.1701845965611;
-        Tue, 05 Dec 2023 22:59:25 -0800 (PST)
-Received: from [10.84.153.17] ([203.208.167.146])
-        by smtp.gmail.com with ESMTPSA id e15-20020aa78c4f000000b006ce5f2996d4sm3967316pfd.143.2023.12.05.22.59.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 22:59:25 -0800 (PST)
-Message-ID: <b7053425-65eb-46a0-abd9-59ade5e78211@bytedance.com>
-Date: Wed, 6 Dec 2023 14:59:18 +0800
+        d=1e100.net; s=20230601; t=1701848202; x=1702453002;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=53xT+tACp9bpHBMupfbbNcF0fz1mPBkKr9Ih+WmgKHs=;
+        b=cCurGfpZWYuGXR+8nW9M4wz2+kc1ozETuE8uRa7Kt5MSg7mgN5O9A8IEMQzh2oFawv
+         hINODHLYkFwvyjYjjhiZpDcUSCBRn1rVsz8YraBTu+PS6oVSbKMc6FK0jhVGwl0v+GCm
+         LonDQRQEMFo7ktAUuu98wOfiV8gHYz5WwRjmwJkE8J412kT5EMoE0f9hg1UM/z12+sJr
+         KWPym4umKL2nJuzBnUZB15iqs75Rupj0FNJYUDLGDuOT1o5hStAITtoWQLgIpNA9yCgY
+         wBiDWvAzFWg880rNCaaiFfRqYXKnDwtLMT2hSsvLafq+Rs1Hn3ZSpaioGZIF/Ozoz41u
+         APig==
+X-Gm-Message-State: AOJu0Yy64AORw5e9cFYp+g3y2rQ/8F8Eb2MQHeCXe+0UZgRmsoGt/vVt
+	bQBVZsJL32p1SsuPTSXoE2Z6J7THtHkbU+fT+VD2Tg==
+X-Google-Smtp-Source: AGHT+IFE4NmNEQQQlJ0+b/Jzlkz+gCIJ96U3CDpu7OFoA9cydGlVxHU0j62KilTOufc6C6dWjOkFnw==
+X-Received: by 2002:a05:6808:1203:b0:3b8:b063:ae03 with SMTP id a3-20020a056808120300b003b8b063ae03mr812621oil.96.1701848202009;
+        Tue, 05 Dec 2023 23:36:42 -0800 (PST)
+Received: from jiejiang.c.googlers.com.com (148.175.199.104.bc.googleusercontent.com. [104.199.175.148])
+        by smtp.gmail.com with ESMTPSA id q7-20020a056a0002a700b00688435a9915sm6224675pfs.189.2023.12.05.23.36.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Dec 2023 23:36:41 -0800 (PST)
+From: Jie Jiang <jiejiang@chromium.org>
+To: bpf@vger.kernel.org
+Cc: jiejiang@chromium.org,
+	vapier@chromium.org,
+	brauner@kernel.org,
+	andrii@kernel.org
+Subject: [PATCH bpf-next v2] bpf: Support uid and gid when mounting bpffs
+Date: Wed,  6 Dec 2023 07:36:24 +0000
+Message-ID: <20231206073624.149124-1-jiejiang@chromium.org>
+X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
- information to user
-To: Daniel Borkmann <daniel@iogearbox.net>,
- Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
- wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
-References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
- <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
- <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
- <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
- <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
- <2a829a9c-69a6-695d-d3df-59190b161787@iogearbox.net>
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
-In-Reply-To: <2a829a9c-69a6-695d-d3df-59190b161787@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-在 2023/12/4 23:22, Daniel Borkmann 写道:
-> Thanks, so the netkit_get_link_ksettings is optional. 
+Parse uid and gid in bpf_parse_param() so that they can be passed in as
+the `data` parameter when mount() bpffs. This will be useful when we
+want to control which user/group has the control to the mounted bpffs,
+otherwise a separate chown() call will be needed.
 
-Yes, netkit_get_link_ksettings really not necessary, I just added it in 
-line with veth.
+Signed-off-by: Jie Jiang <jiejiang@chromium.org>
+---
+v1 -> v2: Add additional validation in bpf_parse_param() for if the
+  requested uid/gid is representable in the fs's idmapping.
 
-I don't quite
-> follow what you
-> mean with regards to your business logic in veth to obtain peer ifindex. 
-> What does
-> the script do exactly with the peer ifindex (aka /why/ is it needed), 
-> could you
-> elaborate some more - it's still somewhat too vague? 🙂 E.g. why it does 
-> not suffice
-> to look at the device type or other kind of attributes?
+ kernel/bpf/inode.c | 52 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 50 insertions(+), 2 deletions(-)
 
 
-The scripting logic of the business colleagues should just be simple 
-logging records, using ethtool. Then they saw that netkit has this 
-missing, so raised this requirement, so I sent this patch, wanting to 
-hear your opinions. If you don't think it's necessary, let the business 
-colleagues modify it.
-
-Thanks.
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 1aafb2ff2e953..5bc79535d3357 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -599,8 +599,15 @@ EXPORT_SYMBOL(bpf_prog_get_type_path);
+  */
+ static int bpf_show_options(struct seq_file *m, struct dentry *root)
+ {
+-	umode_t mode = d_inode(root)->i_mode & S_IALLUGO & ~S_ISVTX;
+-
++	struct inode *inode = d_inode(root);
++	umode_t mode = inode->i_mode & S_IALLUGO & ~S_ISVTX;
++
++	if (!uid_eq(inode->i_uid, GLOBAL_ROOT_UID))
++		seq_printf(m, ",uid=%u",
++			   from_kuid_munged(&init_user_ns, inode->i_uid));
++	if (!gid_eq(inode->i_gid, GLOBAL_ROOT_GID))
++		seq_printf(m, ",gid=%u",
++			   from_kgid_munged(&init_user_ns, inode->i_gid));
+ 	if (mode != S_IRWXUGO)
+ 		seq_printf(m, ",mode=%o", mode);
+ 	return 0;
+@@ -625,15 +632,21 @@ static const struct super_operations bpf_super_ops = {
+ };
+ 
+ enum {
++	OPT_UID,
++	OPT_GID,
+ 	OPT_MODE,
+ };
+ 
+ static const struct fs_parameter_spec bpf_fs_parameters[] = {
++	fsparam_u32	("gid",				OPT_GID),
+ 	fsparam_u32oct	("mode",			OPT_MODE),
++	fsparam_u32	("uid",				OPT_UID),
+ 	{}
+ };
+ 
+ struct bpf_mount_opts {
++	kuid_t uid;
++	kgid_t gid;
+ 	umode_t mode;
+ };
+ 
+@@ -641,6 +654,8 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ {
+ 	struct bpf_mount_opts *opts = fc->fs_private;
+ 	struct fs_parse_result result;
++	kuid_t uid;
++	kgid_t gid;
+ 	int opt;
+ 
+ 	opt = fs_parse(fc, bpf_fs_parameters, param, &result);
+@@ -662,12 +677,43 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	}
+ 
+ 	switch (opt) {
++	case OPT_UID:
++		uid = make_kuid(current_user_ns(), result.uint_32);
++		if (!uid_valid(uid))
++			goto bad_value;
++
++		/*
++		 * The requested uid must be representable in the
++		 * filesystem's idmapping.
++		 */
++		if (!kuid_has_mapping(fc->user_ns, uid))
++			goto bad_value;
++
++		opts->uid = uid;
++		break;
++	case OPT_GID:
++		gid = make_kgid(current_user_ns(), result.uint_32);
++		if (!gid_valid(gid))
++			goto bad_value;
++
++		/*
++		 * The requested gid must be representable in the
++		 * filesystem's idmapping.
++		 */
++		if (!kgid_has_mapping(fc->user_ns, gid))
++			goto bad_value;
++
++		opts->gid = gid;
++		break;
+ 	case OPT_MODE:
+ 		opts->mode = result.uint_32 & S_IALLUGO;
+ 		break;
+ 	}
+ 
+ 	return 0;
++
++bad_value:
++	return invalfc(fc, "Bad value for '%s'", param->key);
+ }
+ 
+ struct bpf_preload_ops *bpf_preload_ops;
+@@ -750,6 +796,8 @@ static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	sb->s_op = &bpf_super_ops;
+ 
+ 	inode = sb->s_root->d_inode;
++	inode->i_uid = opts->uid;
++	inode->i_gid = opts->gid;
+ 	inode->i_op = &bpf_dir_iops;
+ 	inode->i_mode &= ~S_IALLUGO;
+ 	populate_bpffs(sb->s_root);
+-- 
+2.43.0.rc2.451.g8631bc7472-goog
 
 
