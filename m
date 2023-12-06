@@ -1,152 +1,74 @@
-Return-Path: <bpf+bounces-16890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C4F98073C7
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 16:36:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 960D7807474
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 17:03:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B6741C209F9
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 15:36:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F4E8281ECD
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 16:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 402F0405F9;
-	Wed,  6 Dec 2023 15:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A1446454;
+	Wed,  6 Dec 2023 16:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gTruqnlu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J29pp0lg"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39B4112;
-	Wed,  6 Dec 2023 07:36:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=34JGkeDw2fzo5aYJ5fytyFCmmA2EAJ4M9xy4pwn6wrM=; b=gTruqnlu8eDmXa3L0iyeSD2Nnn
-	ePXXo7+GcN32qytdrXaWYSLANmme4ALZxhg0JQlNFwM/MH4cviy77G8UNNHVpyThWd9OSqLjvfyjH
-	n+hvMI4zCb/iJgc+nB2YqllaE+P53evNS/9fuIg8TOPrU7vxPv0Z2HgxAq+kGffHXcdGVjW87Znxc
-	j4vkPvTk0bS8qgVSzZs8fcJ4jZGSyPTxTSPz0Q2sEpN7Cn7GkfA4d44EOHD4gLC5FjiKQEaNcynfB
-	DtD725Qv+e8+0LnA0+qRxiZ5Qcjpt7or8VjiV6p28m3HroSjoRF0w57Lro7i//DTiB2B6gCrZJ6mU
-	cXJtqFlQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rAtw5-0031PW-8d; Wed, 06 Dec 2023 15:35:41 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 36B6E300451; Wed,  6 Dec 2023 16:35:40 +0100 (CET)
-Date: Wed, 6 Dec 2023 16:35:40 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-	Song Liu <songliubraving@meta.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
-	clang-built-linux <llvm@lists.linux.dev>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Joao Moreira <joao@overdrivepizza.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231206153540.GA36423@noisy.programming.kicks-ass.net>
-References: <20231130133630.192490507@infradead.org>
- <20231130134204.136058029@infradead.org>
- <CAADnVQJqE=aE7mHVS54pnwwnDS0b67iJbr+t4j5F4HRyJSTOHw@mail.gmail.com>
- <20231204091334.GM3818@noisy.programming.kicks-ass.net>
- <20231204111128.GV8262@noisy.programming.kicks-ass.net>
- <20231204125239.GA1319@noisy.programming.kicks-ass.net>
- <ZW4LjmUKj1q6RWdL@krava>
- <20231204181614.GA7299@noisy.programming.kicks-ass.net>
- <20231204183354.GC7299@noisy.programming.kicks-ass.net>
- <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF06546442;
+	Wed,  6 Dec 2023 16:03:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD65DC433C8;
+	Wed,  6 Dec 2023 16:03:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1701878615;
+	bh=vObJhLoKALa74LDdbO34u/eNDIMLI/8gkU8atqCzgN8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=J29pp0lgof+Ag0+mouVgNwPS5wInBeWGhP6g8kK4c69UOezk9GVEaQOIUHel7IDiK
+	 kydy0qP0gayMGlX/sYeNN50Yl+19Fot/D7cvkqCOizilnzQSufbgRIK5ZtA1inyWlL
+	 6/DOBxKilQDgbf2FZX/GtJaXt5kLC4BcnMRLf5NFGp2myW/3i4Vb9uFecaNPwbUI0l
+	 7HQhWHotTaBZlBzC7UF/A5JKZFr+k/eCi62ock4fTMey786KVfIq2lev3yPlg01rZN
+	 Lrf5JuvtNLrNdNptTv0dBRStCedA/Lnf15kn5csvnfl/umzis2+W6hBogUWxDi6g0K
+	 ehZPg30y4pHYQ==
+Date: Wed, 6 Dec 2023 08:03:33 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Lorenzo Bianconi <lorenzo@kernel.org>, aleksander.lobakin@intel.com,
+ netdev@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ pabeni@redhat.com, lorenzo.bianconi@redhat.com, bpf@vger.kernel.org,
+ toke@redhat.com, willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+ sdf@google.com
+Subject: Re: [PATCH v3 net-next 2/2] xdp: add multi-buff support for xdp
+ running in generic mode
+Message-ID: <20231206080333.0aa23754@kernel.org>
+In-Reply-To: <4b9804e2-42f0-4aed-b191-2abe24390e37@kernel.org>
+References: <cover.1701437961.git.lorenzo@kernel.org>
+	<c9ee1db92c8baa7806f8949186b43ffc13fa01ca.1701437962.git.lorenzo@kernel.org>
+	<20231201194829.428a96da@kernel.org>
+	<ZW3zvEbI6o4ydM_N@lore-desk>
+	<20231204120153.0d51729a@kernel.org>
+	<ZW-tX9EAnbw9a2lF@lore-desk>
+	<20231205155849.49af176c@kernel.org>
+	<4b9804e2-42f0-4aed-b191-2abe24390e37@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Dec 04, 2023 at 05:18:31PM -0800, Alexei Starovoitov wrote:
+On Wed, 6 Dec 2023 13:41:49 +0100 Jesper Dangaard Brouer wrote:
+> BUT then I realized that PP have a weakness, which is the return/free
+> path that need to take a normal spin_lock, as that can be called from
+> any CPU (unlike the RX/alloc case).  Thus, I fear that making multiple
+> devices share a page_pool via softnet_data, increase the chance of lock
+> contention when packets are "freed" returned/recycled.
 
-> How about
-
-> +int get_cfi_offset(void)
-> +{
-> +       switch (cfi_mode) {
-> +       case CFI_FINEIBT:
-> +               return 16;
-> +       case CFI_KCFI:
-> +#ifdef CONFIG_CALL_PADDING
-> +               return 16;
-> +#else
-> +               return 5;
-> +#endif
-> +       default:
-> +               return 0;
-> +       }
-> +}
-
-Yeah, that works. I'll go make it happen.
-
-> Separately we need to deal with bpf_for_each_array_elem()
-> which doesn't look easy.
-> And fix tcp_set_ca_state() as well (which is even harder).
-> 
-> Just to see where places like these are I did:
-> +__nocfi
->  BPF_CALL_4(bpf_loop, u32, nr_loops, void *, callback_fn, void *, callback_ctx,
-> +__nocfi
->  static long bpf_for_each_hash_elem(struct bpf_map *map,
-> bpf_callback_t callback_fn,
-> +__nocfi
->  static enum hrtimer_restart bpf_timer_cb(struct hrtimer *hrtimer)
-> +__nocfi
->  static int __bpf_rbtree_add(struct bpf_rb_root *root,
-> +__nocfi
->  BPF_CALL_4(bpf_user_ringbuf_drain, struct bpf_map *, map,
-> +__nocfi
->  void tcp_set_ca_state(struct sock *sk, const u8 ca_state)
-> +__nocfi
->  void tcp_init_congestion_control(struct sock *sk)
-> +__nocfi
->  void tcp_enter_loss(struct sock *sk)
-> +__nocfi
->  static void tcp_cong_avoid(struct sock *sk, u32 ack, u32 acked)
-> +__nocfi
->  static inline void tcp_in_ack_event(struct sock *sk, u32 flags)
-> 
-> and more... Which is clearly not a direction to go.
-> 
-> Instead of annotating callers is there a way to say that
-> all bpf_callback_t calls are nocfi?
-
-Well, ideally they would all actually use CFI, I'll go figure out how
-all this works and think about it. Thanks!
-
-> I feel the patches scratched the iceberg.
-
-Yeah, clearly :/ I'll go stare at it all.
+I was thinking we can add a pcpu CPU ID to page pool so that
+napi_pp_put_page() has a chance to realize that its on the "right CPU"
+and feed the cache directly.
 
