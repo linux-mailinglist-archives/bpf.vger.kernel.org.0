@@ -1,301 +1,241 @@
-Return-Path: <bpf+bounces-16853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A51B8067A7
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 07:40:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E97C08067C7
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 07:51:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F135B1C211E5
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:40:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 187071C21137
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2CA111A4;
-	Wed,  6 Dec 2023 06:39:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056E112B6A;
+	Wed,  6 Dec 2023 06:51:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ki/USa01"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dKCfP0Bg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C59410C3
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 22:39:43 -0800 (PST)
-Message-ID: <7e04fc5f-30a9-468e-bf07-49b00040b6db@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1701844781;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C+rRkxEDsRVqGW4fFbNq980n2/wUjGiwZBnVQet7ykY=;
-	b=Ki/USa01yldyhh07jb4x9NHYDor2c2d7nolGuPt9yRBjrQPd8PF4iZHIh2zrZUbbWCsZie
-	UXfaQtHxhjxWg3WTFkKpVEhzYTiBGVN5I3RwR0Ag8rk5uCNEYKHW8XkhqyCpQwQTEJok5L
-	FPovi2gESwwTCpm0eIq6EN6On0KGp+I=
-Date: Tue, 5 Dec 2023 22:39:33 -0800
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED00D40
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 22:51:33 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6ce7c1b07e1so963412b3a.2
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 22:51:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701845492; x=1702450292; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=12LlbwNI7dE8ECdDBVsUSYIcKCDjkooqiSmizmFjh0o=;
+        b=dKCfP0BgX77mVoKGPy61HOHIJyRsqrS2Bg+hsoBm5MkJkKNGKi8bukqlBRE8qSoMuc
+         cZq2ZBCCu2pgFC1v5/6dMG1QcF1eq17tThtj0Hl/tGfXz8LqvJ3+yH6eeklGws8lQaLe
+         LWX/sXaBVWQKusMvM/mJg3NgE6R3xdnomSg1crtap30gUIJYi0wVsNXFf0RmKHv4Hqyv
+         1qxSMLwGDvjFtGzNGtuxzA1hC27wFamaLvshcXHR7toquEmliqXvLq7vusUQNMGaLHVI
+         sGIo62emptTTHwGtNquHsxxGdybKrDBDWyMVU2ivRvgrndrn/m8BHCAyLl1rnibStz5M
+         e9VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701845492; x=1702450292;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=12LlbwNI7dE8ECdDBVsUSYIcKCDjkooqiSmizmFjh0o=;
+        b=oFl6s3k/G9km2oGCIwsoe7ZKCZi/upUZB51UosYbMJYYUroSEDeMYJDJa7hBjF9mEa
+         eCYYYdThSl8a6LSpk7WmJscS5qiZy5CdZsnedRaDcjCuV1qOsimko6M8POy4V/bo23GK
+         +L7oelVlUrXy6OzDBz3lQOZAH2616537f+b1A5BLoyPhyS0IKJqiqqHews/3hN5DAbcD
+         70YzhdOrIXz7lbIw2/QnD7iq5+xhx2/twAzN9aXWwH0XAddMuSEHwophzWERVpbBZ9AV
+         8Ev7gQfSGwJIlhOPwY+jUKbc0nMTVJtfFUB+I6CiZ8FChte21BDM0jzBYT5hfVMDL3v6
+         Hr2Q==
+X-Gm-Message-State: AOJu0YzeCmxJArwlf1j/kuYCs+D28++bP/jDKv+b7i/SJRNHtC2DaZox
+	8p4bhjzDXO6Sa+Tv8KLvfHc=
+X-Google-Smtp-Source: AGHT+IE/NHKfaUWk2vYOjCWgJcioHORuOD+dRcke4kvBjlZAc1GBa33DwI6aZ8SEnyDD3lxtGGQmxw==
+X-Received: by 2002:a05:6a20:4284:b0:18c:f42c:d558 with SMTP id o4-20020a056a20428400b0018cf42cd558mr624197pzj.28.1701845492414;
+        Tue, 05 Dec 2023 22:51:32 -0800 (PST)
+Received: from [10.22.68.68] ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id 20-20020a170902c25400b001cfc170c0cfsm7496793plg.119.2023.12.05.22.51.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Dec 2023 22:51:31 -0800 (PST)
+Message-ID: <d144dda7-a90c-4a40-9caa-a48c0e7e7fae@gmail.com>
+Date: Wed, 6 Dec 2023 14:51:28 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 bpf-next 3/3] selftest: bpf: Test
- bpf_sk_assign_tcp_reqsk().
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v2 2/4] bpf, x64: Fix tailcall hierarchy
 Content-Language: en-US
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-References: <20231205013420.88067-1-kuniyu@amazon.com>
- <20231205013420.88067-4-kuniyu@amazon.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231205013420.88067-4-kuniyu@amazon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, jakub@cloudflare.com, iii@linux.ibm.com,
+ hengqi.chen@gmail.com
+References: <20231011152725.95895-1-hffilwlqm@gmail.com>
+ <20231011152725.95895-3-hffilwlqm@gmail.com> <ZW+sNudwg5Bc0Gbl@boxer>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <ZW+sNudwg5Bc0Gbl@boxer>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 12/4/23 5:34 PM, Kuniyuki Iwashima wrote:
-> This commit adds a sample selftest to demonstrate how we can use
-> bpf_sk_assign_tcp_reqsk() as the backend of SYN Proxy.
+
+
+On 6/12/23 07:03, Maciej Fijalkowski wrote:
+> On Wed, Oct 11, 2023 at 11:27:23PM +0800, Leon Hwang wrote:
+>> From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
+>> handling in JIT"), the tailcall on x64 works better than before.
+>>
+>> From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprograms
+>> for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
+>>
+>> How about:
+>>
+>> 1. More than 1 subprograms are called in a bpf program.
+>> 2. The tailcalls in the subprograms call the bpf program.
+>>
+>> Because of missing tail_call_cnt back-propagation, a tailcall hierarchy
+>> comes up. And MAX_TAIL_CALL_CNT limit does not work for this case.
+>>
+>> As we know, in tail call context, the tail_call_cnt propagates by stack
+>> and rax register between BPF subprograms. So, propagating tail_call_cnt
+>> pointer by stack and rax register makes tail_call_cnt as like a global
+>> variable, in order to make MAX_TAIL_CALL_CNT limit works for tailcall
+>> hierarchy cases.
+>>
+>> Before jumping to other bpf prog, load tail_call_cnt from the pointer
+>> and then compare with MAX_TAIL_CALL_CNT. Finally, increment
+>> tail_call_cnt by its pointer.
+>>
+>> But, where does tail_call_cnt store?
+>>
+>> It stores on the stack of bpf prog's caller, like
+>>
+>>     |  STACK  |
+>>     |         |
+>>     |   rip   |
+>>  +->|   tcc   |
+>>  |  |   rip   |
+>>  |  |   rbp   |
+>>  |  +---------+ RBP
+>>  |  |         |
+>>  |  |         |
+>>  |  |         |
+>>  +--| tcc_ptr |
+>>     |   rbx   |
+>>     +---------+ RSP
+>>
+>> And tcc_ptr is unnecessary to be popped from stack at the epilogue of bpf
+>> prog, like the way of commit d207929d97ea028f ("bpf, x64: Drop "pop %rcx"
+>> instruction on BPF JIT epilogue").
+>>
+>> Why not back-propagate tail_call_cnt?
+>>
+>> It's because it's vulnerable to back-propagate it. It's unable to work
+>> well with the following case.
+>>
+>> int prog1();
+>> int prog2();
+>>
+>> prog1 is tail caller, and prog2 is tail callee. If we do back-propagate
+>> tail_call_cnt at the epilogue of prog2, can prog2 run standalone at the
+>> same time? The answer is NO. Otherwise, there will be a register to be
+>> polluted, which will make kernel crash.
 > 
-> The test creates IPv4/IPv6 x TCP/MPTCP connections and transfer
-> messages over them on lo with BPF tc prog attached.
+> Sorry but I keep on reading this explanation and I'm lost what is being
+> fixed here> 
+> You want to limit the total amount of tail calls that entry prog can do to
+> MAX_TAIL_CALL_CNT. Although I was working on that, my knowledge here is
+> rusty, therefore my view might be distorted :) to me MAX_TAIL_CALL_CNT is
+> to protect us from overflowing kernel stack and endless loops. As long a
+> single call chain doesn't go over 8kB program is fine. Verifier has a
+> limit of 256 subprogs from what I see.
+
+I try to resolve the following-like cases here.
+
+          +--------- tailcall --+
+          |                     |
+          V       --> subprog1 -+
+ entry bpf prog <
+          A       --> subprog2 -+
+          |                     |
+          +--------- tailcall --+
+
+Without this fixing, the CPU will be stalled because of too many tailcalls.
+
 > 
-> The tc prog will process SYN and returns SYN+ACK with the following
-> ISN and TS.  In a real use case, this part will be done by other
-> hosts.
+> Can you elaborate a bit more about the kernel crash you mention in the
+> last paragraph?
+
+We have progs, prog1, prog2, prog3 and prog4, and the scenario:
+
+case1: kprobe1 --> prog1 --> subprog1 --tailcall-> prog2 --> subprog2 --tailcall-> prog3
+case2: kprobe2 --> prog2 --> subprog2 --tailcall-> prog3
+case3: kprobe3 --> prog4 --> subprog3 --tailcall-> prog3
+                         --> subprog4 --tailcall-> prog4
+
+How does prog2 back-propagate tail_call_cnt to prog1?
+
+Possible way 1:
+When prog2 and prog3 are added to PROG_ARRAY, poke their epilogues to
+back-propagate tail_call_cnt by RCX register. It seems OK because kprobes do
+not handle the value in RCX register, like case2.
+
+Possible way 2:
+Can back-propagate tail_call_cnt with RCX register by checking tail_call_cnt != 0
+at epilogue when current prog has tailcall?
+No. As for case1, prog2 handles the value in RCX register, which is not tail_call_cnt,
+because prog3 has no tailcall and won't populate RCX register with tail_call_cnt.
+
+However, I don't like the back-propagating way. Then, I "burn" my brain to figure
+out pointer propagating ways.
+
+RFC PATCH v1 way:
+Propagate tail_call_cnt and its pointer together. Then, the pointer is used to
+check MAX_TAIL_CALL_CNT and increment tail_call_cnt.
+
+    |  STACK  |
+    +---------+ RBP
+    |         |
+    |         |
+    |         |
+ +--| tcc_ptr |
+ +->|   tcc   |
+    |   rbx   |
+    +---------+ RSP
+
+RFC PATCH v2 way (current patchset):
+Propagate tail_call_cnt pointer only. Then, the pointer is used to check
+MAX_TAIL_CALL_CNT and increment tail_call_cnt.
+
+    |  STACK  |
+    |         |
+    |   rip   |
+ +->|   tcc   |
+ |  |   rip   |
+ |  |   rbp   |
+ |  +---------+ RBP
+ |  |         |
+ |  |         |
+ |  |         |
+ +--| tcc_ptr |
+    |   rbx   |
+    +---------+ RSP
+
 > 
->          MSB                                   LSB
->    ISN:  | 31 ... 8 | 7 6 |   5 |    4 | 3 2 1 0 |
->          |   Hash_1 | MSS | ECN | SACK |  WScale |
-> 
->    TS:   | 31 ... 8 |          7 ... 0           |
->          |   Random |           Hash_2           |
+> I also realized that verifier assumes MAX_TAIL_CALL_CNT as 32 which has
+> changed in the meantime to 33 and we should adjust the max allowed stack
+> depth of subprogs? I believe this was brought up at LPC?
 
-Thanks for the details. It is helpful.
+There's following code snippet in verifier.c:
 
-> 
->    WScale in SYN is reused in SYN+ACK.
-> 
-> The client returns ACK, and tc prog will recalculate ISN and TS
-> from ACK and validate SYN Cookie.
-> 
-> If it's valid, the prog calls kfunc to allocate a reqsk for skb and
-> configure the reqsk based on the argument created from SYN Cookie.
-> 
-> Later, the reqsk will be processed in cookie_v[46]_check() to create
-> a connection.
-> 
+	/* protect against potential stack overflow that might happen when
+	 * bpf2bpf calls get combined with tailcalls. Limit the caller's stack
+	 * depth for such case down to 256 so that the worst case scenario
+	 * would result in 8k stack size (32 which is tailcall limit * 256 =
+	 * 8k).
 
-[ ... ]
+But, MAX_TAIL_CALL_CNT is 33.
 
-> +SEC("tc")
-> +int tcp_custom_syncookie(struct __sk_buff *skb)
-> +{
-> +	struct tcp_syncookie ctx = {
-> +		.skb = skb,
-> +	};
-> +
-> +	if (tcp_load_headers(&ctx))
-> +		return TC_ACT_OK;
-> +
-> +	if (ctx.tcp->rst)
-> +		return TC_ACT_OK;
-> +
-> +	if (ctx.tcp->syn) {
-> +		if (ctx.tcp->ack)
-> +			return TC_ACT_OK;
-> +
-> +		return tcp_handle_syn(&ctx);
-> +	}
-> +
-> +	return tcp_handle_ack(&ctx);
+This was not brought up at LPC 2022&2023. I don't know whether this was
+brought up at previous LPCs.
 
-It may be useful to ensure tcp_handle_{syn,ack} is executed instead of the 
-kernel doing the regular syncookie. A global variable (bool or counter) can be 
-used by the prog_tests to check.
-
-> +}
-> +
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
-> new file mode 100644
-> index 000000000000..a401f59e46d8
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
-> @@ -0,0 +1,162 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright Amazon.com Inc. or its affiliates. */
-> +
-> +#ifndef _TEST_TCP_SYNCOOKIE_H
-> +#define _TEST_TCP_SYNCOOKIE_H
-> +
-> +#define TC_ACT_OK	0
-> +#define TC_ACT_SHOT	2
-> +
-> +#define ETH_ALEN	6
-> +#define ETH_P_IP	0x0800
-> +#define ETH_P_IPV6	0x86DD
-> +
-> +#define NEXTHDR_TCP	6
-> +
-> +#define TCPOPT_NOP		1
-> +#define TCPOPT_EOL		0
-> +#define TCPOPT_MSS		2
-> +#define TCPOPT_WINDOW		3
-> +#define TCPOPT_TIMESTAMP	8
-> +#define TCPOPT_SACK_PERM	4
-> +
-> +#define TCPOLEN_MSS		4
-> +#define TCPOLEN_WINDOW		3
-> +#define TCPOLEN_TIMESTAMP	10
-> +#define TCPOLEN_SACK_PERM	2
-
-Some of the above is already in the bpf_tracing_net.h. Move the non-existing 
-ones to bpf_tracing_net.h also.
-
-> +#define BPF_F_CURRENT_NETNS	(-1)
-
-This should be already in the vmlinux.h
-
-> +
-> +#define __packed __attribute__((__packed__))
-> +#define __force
-> +
-> +#define ARRAY_SIZE(arr)	(sizeof(arr) / sizeof((arr)[0]))
-> +
-> +#define swap(a, b)				\
-> +	do {					\
-> +		typeof(a) __tmp = (a);		\
-> +		(a) = (b);			\
-> +		(b) = __tmp;			\
-> +	} while (0)
-> +
-> +#define swap_array(a, b)				\
-> +	do {						\
-> +		typeof(a) __tmp[sizeof(a)];		\
-> +		__builtin_memcpy(__tmp, a, sizeof(a));	\
-> +		__builtin_memcpy(a, b, sizeof(a));	\
-> +		__builtin_memcpy(b, __tmp, sizeof(a));	\
-> +	} while (0)
-> +
-> +/* asm-generic/unaligned.h */
-> +#define __get_unaligned_t(type, ptr) ({						\
-> +	const struct { type x; } __packed * __pptr = (typeof(__pptr))(ptr);	\
-> +	__pptr->x;								\
-> +})
-> +
-> +#define get_unaligned(ptr) __get_unaligned_t(typeof(*(ptr)), (ptr))
-> +
-> +static inline u16 get_unaligned_be16(const void *p)
-> +{
-> +	return bpf_ntohs(__get_unaligned_t(__be16, p));
-> +}
-> +
-> +static inline u32 get_unaligned_be32(const void *p)
-> +{
-> +	return bpf_ntohl(__get_unaligned_t(__be32, p));
-> +}
-> +
-> +/* lib/checksum.c */
-> +static inline u32 from64to32(u64 x)
-> +{
-> +	/* add up 32-bit and 32-bit for 32+c bit */
-> +	x = (x & 0xffffffff) + (x >> 32);
-> +	/* add up carry.. */
-> +	x = (x & 0xffffffff) + (x >> 32);
-> +	return (u32)x;
-> +}
-> +
-> +static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
-> +					__u32 len, __u8 proto, __wsum sum)
-> +{
-> +	unsigned long long s = (__force u32)sum;
-> +
-> +	s += (__force u32)saddr;
-> +	s += (__force u32)daddr;
-> +#ifdef __BIG_ENDIAN
-> +	s += proto + len;
-> +#else
-> +	s += (proto + len) << 8;
-> +#endif
-> +	return (__force __wsum)from64to32(s);
-> +}
-> +
-> +/* asm-generic/checksum.h */
-> +static inline __sum16 csum_fold(__wsum csum)
-> +{
-> +	u32 sum = (__force u32)csum;
-> +
-> +	sum = (sum & 0xffff) + (sum >> 16);
-> +	sum = (sum & 0xffff) + (sum >> 16);
-> +	return (__force __sum16)~sum;
-> +}
-> +
-> +static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr, __u32 len,
-> +					__u8 proto, __wsum sum)
-> +{
-> +	return csum_fold(csum_tcpudp_nofold(saddr, daddr, len, proto, sum));
-> +}
-> +
-> +/* net/ipv6/ip6_checksum.c */
-> +static inline __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
-> +				      const struct in6_addr *daddr,
-> +				      __u32 len, __u8 proto, __wsum csum)
-> +{
-> +	int carry;
-> +	__u32 ulen;
-> +	__u32 uproto;
-> +	__u32 sum = (__force u32)csum;
-> +
-> +	sum += (__force u32)saddr->in6_u.u6_addr32[0];
-> +	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[0]);
-> +	sum += carry;
-> +
-> +	sum += (__force u32)saddr->in6_u.u6_addr32[1];
-> +	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[1]);
-> +	sum += carry;
-> +
-> +	sum += (__force u32)saddr->in6_u.u6_addr32[2];
-> +	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[2]);
-> +	sum += carry;
-> +
-> +	sum += (__force u32)saddr->in6_u.u6_addr32[3];
-> +	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[3]);
-> +	sum += carry;
-> +
-> +	sum += (__force u32)daddr->in6_u.u6_addr32[0];
-> +	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[0]);
-> +	sum += carry;
-> +
-> +	sum += (__force u32)daddr->in6_u.u6_addr32[1];
-> +	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[1]);
-> +	sum += carry;
-> +
-> +	sum += (__force u32)daddr->in6_u.u6_addr32[2];
-> +	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[2]);
-> +	sum += carry;
-> +
-> +	sum += (__force u32)daddr->in6_u.u6_addr32[3];
-> +	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[3]);
-> +	sum += carry;
-> +
-> +	ulen = (__force u32)bpf_htonl((__u32)len);
-> +	sum += ulen;
-> +	carry = (sum < ulen);
-> +	sum += carry;
-> +
-> +	uproto = (__force u32)bpf_htonl(proto);
-> +	sum += uproto;
-> +	carry = (sum < uproto);
-> +	sum += carry;
-> +
-> +	return csum_fold((__force __wsum)sum);
-> +}
-
-The above helpers are useful for other tests, so make sense to stay in 
-test_tcp_custom_syncookie.h. e.g. In the future, some of the duplicated helpers 
-in xdp_synproxy_kern.c can be removed.
-
-> +#endif
-
+Thanks,
+Leon
 
