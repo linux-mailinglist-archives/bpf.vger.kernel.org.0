@@ -1,193 +1,301 @@
-Return-Path: <bpf+bounces-16852-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16853-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A168D8066D8
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:59:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A51B8067A7
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 07:40:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D669281E82
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 05:59:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F135B1C211E5
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:40:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C481096A;
-	Wed,  6 Dec 2023 05:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F2CA111A4;
+	Wed,  6 Dec 2023 06:39:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="A5+x/R5Q"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ki/USa01"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-6002.amazon.com (smtp-fw-6002.amazon.com [52.95.49.90])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC71F18F;
-	Tue,  5 Dec 2023 21:58:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1701842335; x=1733378335;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Jiid3VnmgO38FuDauqCHNE+JsaMyjWrVFplJsd8HSpk=;
-  b=A5+x/R5Qf9Hz0bjoLDd+qf2MKYttoghSudBUT4WstlG1zZTkVsGiuArZ
-   g712ZkzW9FUtaopidMnCkZh8NgcFSzCkc1CYVclIoj60+pq5xYer/r6+G
-   pnoALrEssIE4f/dHRA2lR2qplflTg6JM3FHCm2oUjUtzUEiPj3j4ky3D0
-   E=;
-X-IronPort-AV: E=Sophos;i="6.04,254,1695686400"; 
-   d="scan'208";a="372081276"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2c-m6i4x-94edd59b.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6002.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Dec 2023 05:58:53 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
-	by email-inbound-relay-pdx-2c-m6i4x-94edd59b.us-west-2.amazon.com (Postfix) with ESMTPS id 6DA5440DBC;
-	Wed,  6 Dec 2023 05:58:50 +0000 (UTC)
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.38.20:30386]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.56.214:2525] with esmtp (Farcaster)
- id 74751930-acda-40ce-8760-80c1a50a4208; Wed, 6 Dec 2023 05:58:49 +0000 (UTC)
-X-Farcaster-Flow-ID: 74751930-acda-40ce-8760-80c1a50a4208
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 6 Dec 2023 05:58:44 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.119.13.242) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Wed, 6 Dec 2023 05:58:40 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <martin.lau@linux.dev>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <edumazet@google.com>, <kuni1840@gmail.com>,
-	<kuniyu@amazon.com>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 bpf-next 1/3] bpf: tcp: Handle BPF SYN Cookie in cookie_v[46]_check().
-Date: Wed, 6 Dec 2023 14:58:31 +0900
-Message-ID: <20231206055831.37584-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <48a54674-3e96-4a35-89d9-d726608fb8c5@linux.dev>
-References: <48a54674-3e96-4a35-89d9-d726608fb8c5@linux.dev>
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C59410C3
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 22:39:43 -0800 (PST)
+Message-ID: <7e04fc5f-30a9-468e-bf07-49b00040b6db@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701844781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C+rRkxEDsRVqGW4fFbNq980n2/wUjGiwZBnVQet7ykY=;
+	b=Ki/USa01yldyhh07jb4x9NHYDor2c2d7nolGuPt9yRBjrQPd8PF4iZHIh2zrZUbbWCsZie
+	UXfaQtHxhjxWg3WTFkKpVEhzYTiBGVN5I3RwR0Ag8rk5uCNEYKHW8XkhqyCpQwQTEJok5L
+	FPovi2gESwwTCpm0eIq6EN6On0KGp+I=
+Date: Tue, 5 Dec 2023 22:39:33 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D046UWB004.ant.amazon.com (10.13.139.164) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
-
+Subject: Re: [PATCH v4 bpf-next 3/3] selftest: bpf: Test
+ bpf_sk_assign_tcp_reqsk().
+Content-Language: en-US
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>
+References: <20231205013420.88067-1-kuniyu@amazon.com>
+ <20231205013420.88067-4-kuniyu@amazon.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Martin KaFai Lau <martin.lau@linux.dev>
-Date: Tue, 5 Dec 2023 19:11:17 -0800
-> On 12/5/23 5:29 PM, Kuniyuki Iwashima wrote:
-> > From: Martin KaFai Lau <martin.lau@linux.dev>
-> > Date: Tue, 5 Dec 2023 16:19:20 -0800
-> >> On 12/4/23 5:34 PM, Kuniyuki Iwashima wrote:
-> >>> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
-> >>> index 61f1c96cfe63..0f9c3aed2014 100644
-> >>> --- a/net/ipv4/syncookies.c
-> >>> +++ b/net/ipv4/syncookies.c
-> >>> @@ -304,6 +304,59 @@ static int cookie_tcp_reqsk_init(struct sock *sk, struct sk_buff *skb,
-> >>>    	return 0;
-> >>>    }
-> >>>    
-> >>> +#if IS_ENABLED(CONFIG_BPF)
-> >>> +struct request_sock *cookie_bpf_check(struct net *net, struct sock *sk,
-> >>> +				      struct sk_buff *skb)
-> >>> +{
-> >>> +	struct request_sock *req = inet_reqsk(skb->sk);
-> >>> +	struct inet_request_sock *ireq = inet_rsk(req);
-> >>> +	struct tcp_request_sock *treq = tcp_rsk(req);
-> >>> +	struct tcp_options_received tcp_opt;
-> >>> +	int ret;
-> >>> +
-> >>> +	skb->sk = NULL;
-> >>> +	skb->destructor = NULL;
-> >>> +	req->rsk_listener = NULL;
-> >>> +
-> >>> +	memset(&tcp_opt, 0, sizeof(tcp_opt));
-> >>> +	tcp_parse_options(net, skb, &tcp_opt, 0, NULL);
-> >>
-> >> In patch 2, the bpf prog is passing the tcp_opt to the kfunc. The selftest in
-> >> patch 3 is also parsing the tcp-options.
-> >>
-> >> The kernel parses the tcp-option here again to do some checking and req's member
-> >> initialization. Can these checking and initialization be done in the
-> >> bpf_sk_assign_tcp_reqsk() kfunc instead to avoid the double tcp-option parsing?
-> > 
-> > If TS is not used as a cookie storage, bpf prog need not parse it.
-> > OTOH, if a value is encoded into TS, bpf prog need to parse it.
-> > In that case, we cannot avoid parsing options in bpf prog.
-> 
-> If I read patch 2 correctly, the ireq->tstamp_ok is set by the kfunc, so I 
-> assume that the bpf prog has to parse the tcp-option.
-> 
-> Like the "if (ireq->tstamp_ok ^ tcp_opt.saw_tstamp)" test below, ireq->tstamp_ok 
-> will always be 0 if the bpf prog did not parse the tcp-option.
+In-Reply-To: <20231205013420.88067-4-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Ah sorry, I assumed TS bit was encoded in SYN as disabled.
-TCP option parsing is needed at least once for SYN, but we
-need not do so for SYN+ACK if TS bit is in ISN.
+On 12/4/23 5:34 PM, Kuniyuki Iwashima wrote:
+> This commit adds a sample selftest to demonstrate how we can use
+> bpf_sk_assign_tcp_reqsk() as the backend of SYN Proxy.
+> 
+> The test creates IPv4/IPv6 x TCP/MPTCP connections and transfer
+> messages over them on lo with BPF tc prog attached.
+> 
+> The tc prog will process SYN and returns SYN+ACK with the following
+> ISN and TS.  In a real use case, this part will be done by other
+> hosts.
+> 
+>          MSB                                   LSB
+>    ISN:  | 31 ... 8 | 7 6 |   5 |    4 | 3 2 1 0 |
+>          |   Hash_1 | MSS | ECN | SACK |  WScale |
+> 
+>    TS:   | 31 ... 8 |          7 ... 0           |
+>          |   Random |           Hash_2           |
 
+Thanks for the details. It is helpful.
 
 > 
-> > 
-> > The parsing here comes from my paranoia, so.. probably we can drop it
-> > and the first test below, and rely on bpf prog's tcp_opt, especially
-> > tstamp_ok, rcv_tsval, and rcv_tsecr ?
+>    WScale in SYN is reused in SYN+ACK.
 > 
-> My preference is that it is clearer to allow the bpf prog to initialize all 
-> tcp_opt instead of only taking the tcp_opt.tstamp_ok from bpf_prog but ignore 
-> the tcp_opt.rcv_tsval/tsecr. The kfunc will then use the tcp_opt to initialize 
-> the req.
-
-I'll drop the option parsing in kernel and allow bpf prog to fully
-initialise tcp_opt.
-
-
+> The client returns ACK, and tc prog will recalculate ISN and TS
+> from ACK and validate SYN Cookie.
 > 
-> It is also better to detect the following error cases as much as possible in the 
-> kfunc instead of failing later in the tcp stack. e.g. checking the sysctl should 
-> be doable in the kfunc.
-
-Ok, I'll move the sysctl tests and ts_off init to kfunc.
-
-
+> If it's valid, the prog calls kfunc to allocate a reqsk for skb and
+> configure the reqsk based on the argument created from SYN Cookie.
 > 
-> > 
-> > I placed other tests here to align with the normal cookie flow, but
-> > they can be moved to kfunc.  However, initialisation assuems skb
-> > points to TCP header, so here would be better place, I think.
-> > 
-> > 
-> >>
-> >>> +
-> >>> +	if (ireq->tstamp_ok ^ tcp_opt.saw_tstamp) {
-> >>> +		__NET_INC_STATS(net, LINUX_MIB_SYNCOOKIESFAILED);
-> >>> +		goto reset;
-> >>> +	}
-> >>> +
-> >>> +	__NET_INC_STATS(net, LINUX_MIB_SYNCOOKIESRECV);
-> >>> +
-> >>> +	if (ireq->tstamp_ok) {
-> >>> +		if (!READ_ONCE(net->ipv4.sysctl_tcp_timestamps))
-> >>> +			goto reset;
-> >>> +
-> >>> +		req->ts_recent = tcp_opt.rcv_tsval;
-> >>> +		treq->ts_off = tcp_opt.rcv_tsecr - tcp_ns_to_ts(false, tcp_clock_ns());
-> >>> +	}
-> >>> +
-> >>> +	if (ireq->sack_ok && !READ_ONCE(net->ipv4.sysctl_tcp_sack))
-> >>> +		goto reset;
-> >>> +
-> >>> +	if (ireq->wscale_ok && !READ_ONCE(net->ipv4.sysctl_tcp_window_scaling))
-> >>> +		goto reset;
-> >>> +
-> >>> +	ret = cookie_tcp_reqsk_init(sk, skb, req);
-> >>> +	if (ret) {
-> >>> +		reqsk_free(req);
-> >>> +		req = NULL;
-> >>> +	}
-> >>> +
-> >>> +	return req;
-> >>> +
-> >>> +reset:
-> >>> +	reqsk_free(req);
-> >>> +	return ERR_PTR(-EINVAL);
-> >>> +}
-> >>> +EXPORT_SYMBOL_GPL(cookie_bpf_check);
-> >>> +#endif
+> Later, the reqsk will be processed in cookie_v[46]_check() to create
+> a connection.
+> 
+
+[ ... ]
+
+> +SEC("tc")
+> +int tcp_custom_syncookie(struct __sk_buff *skb)
+> +{
+> +	struct tcp_syncookie ctx = {
+> +		.skb = skb,
+> +	};
+> +
+> +	if (tcp_load_headers(&ctx))
+> +		return TC_ACT_OK;
+> +
+> +	if (ctx.tcp->rst)
+> +		return TC_ACT_OK;
+> +
+> +	if (ctx.tcp->syn) {
+> +		if (ctx.tcp->ack)
+> +			return TC_ACT_OK;
+> +
+> +		return tcp_handle_syn(&ctx);
+> +	}
+> +
+> +	return tcp_handle_ack(&ctx);
+
+It may be useful to ensure tcp_handle_{syn,ack} is executed instead of the 
+kernel doing the regular syncookie. A global variable (bool or counter) can be 
+used by the prog_tests to check.
+
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
+> new file mode 100644
+> index 000000000000..a401f59e46d8
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
+> @@ -0,0 +1,162 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright Amazon.com Inc. or its affiliates. */
+> +
+> +#ifndef _TEST_TCP_SYNCOOKIE_H
+> +#define _TEST_TCP_SYNCOOKIE_H
+> +
+> +#define TC_ACT_OK	0
+> +#define TC_ACT_SHOT	2
+> +
+> +#define ETH_ALEN	6
+> +#define ETH_P_IP	0x0800
+> +#define ETH_P_IPV6	0x86DD
+> +
+> +#define NEXTHDR_TCP	6
+> +
+> +#define TCPOPT_NOP		1
+> +#define TCPOPT_EOL		0
+> +#define TCPOPT_MSS		2
+> +#define TCPOPT_WINDOW		3
+> +#define TCPOPT_TIMESTAMP	8
+> +#define TCPOPT_SACK_PERM	4
+> +
+> +#define TCPOLEN_MSS		4
+> +#define TCPOLEN_WINDOW		3
+> +#define TCPOLEN_TIMESTAMP	10
+> +#define TCPOLEN_SACK_PERM	2
+
+Some of the above is already in the bpf_tracing_net.h. Move the non-existing 
+ones to bpf_tracing_net.h also.
+
+> +#define BPF_F_CURRENT_NETNS	(-1)
+
+This should be already in the vmlinux.h
+
+> +
+> +#define __packed __attribute__((__packed__))
+> +#define __force
+> +
+> +#define ARRAY_SIZE(arr)	(sizeof(arr) / sizeof((arr)[0]))
+> +
+> +#define swap(a, b)				\
+> +	do {					\
+> +		typeof(a) __tmp = (a);		\
+> +		(a) = (b);			\
+> +		(b) = __tmp;			\
+> +	} while (0)
+> +
+> +#define swap_array(a, b)				\
+> +	do {						\
+> +		typeof(a) __tmp[sizeof(a)];		\
+> +		__builtin_memcpy(__tmp, a, sizeof(a));	\
+> +		__builtin_memcpy(a, b, sizeof(a));	\
+> +		__builtin_memcpy(b, __tmp, sizeof(a));	\
+> +	} while (0)
+> +
+> +/* asm-generic/unaligned.h */
+> +#define __get_unaligned_t(type, ptr) ({						\
+> +	const struct { type x; } __packed * __pptr = (typeof(__pptr))(ptr);	\
+> +	__pptr->x;								\
+> +})
+> +
+> +#define get_unaligned(ptr) __get_unaligned_t(typeof(*(ptr)), (ptr))
+> +
+> +static inline u16 get_unaligned_be16(const void *p)
+> +{
+> +	return bpf_ntohs(__get_unaligned_t(__be16, p));
+> +}
+> +
+> +static inline u32 get_unaligned_be32(const void *p)
+> +{
+> +	return bpf_ntohl(__get_unaligned_t(__be32, p));
+> +}
+> +
+> +/* lib/checksum.c */
+> +static inline u32 from64to32(u64 x)
+> +{
+> +	/* add up 32-bit and 32-bit for 32+c bit */
+> +	x = (x & 0xffffffff) + (x >> 32);
+> +	/* add up carry.. */
+> +	x = (x & 0xffffffff) + (x >> 32);
+> +	return (u32)x;
+> +}
+> +
+> +static inline __wsum csum_tcpudp_nofold(__be32 saddr, __be32 daddr,
+> +					__u32 len, __u8 proto, __wsum sum)
+> +{
+> +	unsigned long long s = (__force u32)sum;
+> +
+> +	s += (__force u32)saddr;
+> +	s += (__force u32)daddr;
+> +#ifdef __BIG_ENDIAN
+> +	s += proto + len;
+> +#else
+> +	s += (proto + len) << 8;
+> +#endif
+> +	return (__force __wsum)from64to32(s);
+> +}
+> +
+> +/* asm-generic/checksum.h */
+> +static inline __sum16 csum_fold(__wsum csum)
+> +{
+> +	u32 sum = (__force u32)csum;
+> +
+> +	sum = (sum & 0xffff) + (sum >> 16);
+> +	sum = (sum & 0xffff) + (sum >> 16);
+> +	return (__force __sum16)~sum;
+> +}
+> +
+> +static inline __sum16 csum_tcpudp_magic(__be32 saddr, __be32 daddr, __u32 len,
+> +					__u8 proto, __wsum sum)
+> +{
+> +	return csum_fold(csum_tcpudp_nofold(saddr, daddr, len, proto, sum));
+> +}
+> +
+> +/* net/ipv6/ip6_checksum.c */
+> +static inline __sum16 csum_ipv6_magic(const struct in6_addr *saddr,
+> +				      const struct in6_addr *daddr,
+> +				      __u32 len, __u8 proto, __wsum csum)
+> +{
+> +	int carry;
+> +	__u32 ulen;
+> +	__u32 uproto;
+> +	__u32 sum = (__force u32)csum;
+> +
+> +	sum += (__force u32)saddr->in6_u.u6_addr32[0];
+> +	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[0]);
+> +	sum += carry;
+> +
+> +	sum += (__force u32)saddr->in6_u.u6_addr32[1];
+> +	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[1]);
+> +	sum += carry;
+> +
+> +	sum += (__force u32)saddr->in6_u.u6_addr32[2];
+> +	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[2]);
+> +	sum += carry;
+> +
+> +	sum += (__force u32)saddr->in6_u.u6_addr32[3];
+> +	carry = (sum < (__force u32)saddr->in6_u.u6_addr32[3]);
+> +	sum += carry;
+> +
+> +	sum += (__force u32)daddr->in6_u.u6_addr32[0];
+> +	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[0]);
+> +	sum += carry;
+> +
+> +	sum += (__force u32)daddr->in6_u.u6_addr32[1];
+> +	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[1]);
+> +	sum += carry;
+> +
+> +	sum += (__force u32)daddr->in6_u.u6_addr32[2];
+> +	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[2]);
+> +	sum += carry;
+> +
+> +	sum += (__force u32)daddr->in6_u.u6_addr32[3];
+> +	carry = (sum < (__force u32)daddr->in6_u.u6_addr32[3]);
+> +	sum += carry;
+> +
+> +	ulen = (__force u32)bpf_htonl((__u32)len);
+> +	sum += ulen;
+> +	carry = (sum < ulen);
+> +	sum += carry;
+> +
+> +	uproto = (__force u32)bpf_htonl(proto);
+> +	sum += uproto;
+> +	carry = (sum < uproto);
+> +	sum += carry;
+> +
+> +	return csum_fold((__force __wsum)sum);
+> +}
+
+The above helpers are useful for other tests, so make sense to stay in 
+test_tcp_custom_syncookie.h. e.g. In the future, some of the duplicated helpers 
+in xdp_synproxy_kern.c can be removed.
+
+> +#endif
+
 
