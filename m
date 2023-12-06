@@ -1,248 +1,125 @@
-Return-Path: <bpf+bounces-16863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AA5F806A8E
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 10:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 147A1806B0B
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 10:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64C801C20873
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 09:19:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EA781C209DF
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 09:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C921F1A596;
-	Wed,  6 Dec 2023 09:19:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1288E1C6A0;
+	Wed,  6 Dec 2023 09:49:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V+/x+gJe"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="JfWYiQXZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8358A7692;
-	Wed,  6 Dec 2023 01:00:46 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-67adaacd943so11245806d6.0;
-        Wed, 06 Dec 2023 01:00:46 -0800 (PST)
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37A2FA
+	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 01:49:16 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-a1da1017a09so52261766b.3
+        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 01:49:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701853245; x=1702458045; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y0DKAYeWHrIOHg+OJus+i9Ob39IuHW/MVdjVCMWpwqY=;
-        b=V+/x+gJevNYOdHv3Lz5sC4zY9sdP5JXN8Z/p8vIgkUQ51rRse1RJ+qOz1NHIPg7rW2
-         WMGVZL0uCLxjWGK+C4q2GFzn4LNqWutDMIOElYg6TmTBLuFMLxORUmy4PujAR4aCF22V
-         YFJyMS6U5i/9WFWNGH6Fu4YzKHjk768UX2dzsp+CdwOKW7/qHVBu8T60JWLfdn6v8gEb
-         OlLtTpMNbq51IGeJ3KESschoGBpNdwNJnep1adTz6oQQ/MVTkaiVx4Nr6/ziOqtQXzRM
-         jlEeTBxh4GJZueKt54V9SOVQ+urCmxyeczWSB+GnvIaQ9pJ5CdotkS5FBwYOB3H1ssmV
-         V14Q==
+        d=cloudflare.com; s=google09082023; t=1701856155; x=1702460955; darn=vger.kernel.org;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
+        bh=YqYYX+lt5EEif67Rak16lbjAMvNYu8HrLB23eU/ToBo=;
+        b=JfWYiQXZ92tpoJbVCHo0SvWosvx0WAmO7f7km1kq0zQjcQuP6nfZlQLztKJjZqjwL5
+         yLc5jjRCktX8PLw56ZTstdFsRR5bnDsJ9BQd7o6Ds8AvhMqSHaoWqJ8AqKm86SIKitCd
+         C7YRipj7h6ntR4x2P8bfgsfgaxhMEM0ILi4g0Eyx1AfMxDeGw46sOw/+B/z6sjEQ1ewn
+         /1o5sT31Zhwwvx7vPCoZg1Qa/7eqyGHeUybucTR4mKBSE7Ot1u9HkF46RVew5/DmhorW
+         doV2bWOhmKUPaVJFx3GCMdXMmFqyVvpOPa9KBgBImJ32treSNn8pMEBBEROO1ZLVNZHA
+         f68g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701853245; x=1702458045;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y0DKAYeWHrIOHg+OJus+i9Ob39IuHW/MVdjVCMWpwqY=;
-        b=TEmQvWvCqxzFmvsGmFapartYKbaUMQH8x5YahP/YyqT8rTXPmIbuJMLWCgih9QlsWW
-         vJHqGQCCLAONXU05Gw6ugQNML3jH6Uk77kOSy0zqhYDHFg3CCbIPeib/axeAjRNW9s6w
-         kSw/Ir+UCHI9DQlJSWW4N6JuZJ9YIEWgI9vM3s7zZGTR8w5ch1vcsDx1dF5i0ssWFi5A
-         huMkYgb3xxeenfMFBp+qmQ24RphOcl2ZzSc0BSwl7wpC27QmjCijnif8qProrr33zRbl
-         qiV3QrI661htVbvX4wgYdaLfr1DUsVThoMQQkrAk7PSJRZdAz0Aynn/p7F+oRzbQKQoH
-         jQ8w==
-X-Gm-Message-State: AOJu0YwQchCBMFmKqmxNcXTEOc1vWfdxy/T7q0kWYdw8uBuGbzLX0i4E
-	00B82xGmLvJpF28pBg1SzWTvCQTaFy0uYeEyHFI=
-X-Google-Smtp-Source: AGHT+IFvAqF9AW6SExsbhpu/ZZ3fLsIv7ocpZIS4TTUS1V8wVtqpcNjk6nQpxh3D2sbtEH0V0gqczcm7aApY0v8mpxs=
-X-Received: by 2002:a05:6214:584e:b0:67a:a721:82ec with SMTP id
- ml14-20020a056214584e00b0067aa72182ecmr525991qvb.70.1701853245441; Wed, 06
- Dec 2023 01:00:45 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701856155; x=1702460955;
+        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
+         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YqYYX+lt5EEif67Rak16lbjAMvNYu8HrLB23eU/ToBo=;
+        b=UsYCwAkzivukgM2+ycQoCQjMMhe7pm5i4V2KSmplAn7vkRk3IUlXlYb53RXsl6xYyU
+         pdrjcRfYEt6R242XVoFqYkNDO+awBkZnOdoKahGN6L8AMDQtqDu3X4DnJDJkRyxgoq4K
+         ZGS8pOASLMVgmS+Tz5VxcX1v56rbtJeBpcTxh4Ywmtu2psOnPmfQjF4YyRyJKuePsWUD
+         toqNmWjwXmutAkowGpXByqVvBuLFKJX2j+cTok3ZWlUh4+nW4GHpr9T8vbKQAUrsNH4i
+         D9sWB6piQy3YHhg3+XJD9jWnHHf+DGRcOo1d45K2foRb4vDOay4fIdk8SjOyjY1RBb4N
+         Xivw==
+X-Gm-Message-State: AOJu0YxKGwN74xQLh9ER+tr7zGqt51cRaPnRke0mKu1EciGbPYbAynnD
+	9pdq1uZGfOctYfyREYJ2XrLi9VYKZcX0zKW1bFpzBA==
+X-Google-Smtp-Source: AGHT+IGZeR8QUNsrYHhXWge70KGc2wwspw1S8hno2oOMEQME2GZL7Ls8H9AMKGFkLdbdniUdMXYORw==
+X-Received: by 2002:a17:906:fc03:b0:a19:a19b:7892 with SMTP id ov3-20020a170906fc0300b00a19a19b7892mr376544ejb.85.1701856155371;
+        Wed, 06 Dec 2023 01:49:15 -0800 (PST)
+Received: from cloudflare.com ([2a09:bac5:5064:2dc::49:cb])
+        by smtp.gmail.com with ESMTPSA id t9-20020a170906178900b00a1b65249053sm4515395eje.128.2023.12.06.01.49.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 01:49:14 -0800 (PST)
+References: <20231201180139.328529-2-john.fastabend@gmail.com>
+ <20231201211453.27432-1-kuniyu@amazon.com>
+ <656e4758675b9_1bd6e2086f@john.notmuch>
+User-agent: mu4e 1.6.10; emacs 28.3
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: bpf@vger.kernel.org, edumazet@google.com, martin.lau@kernel.org,
+ netdev@vger.kernel.org, kuniyu@amazon.com
+Subject: Re: [PATCH bpf v2 1/2] bpf: syzkaller found null ptr deref in
+ unix_bpf proto add
+Date: Wed, 06 Dec 2023 10:47:42 +0100
+In-reply-to: <656e4758675b9_1bd6e2086f@john.notmuch>
+Message-ID: <87msunslt2.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205143725.4224-1-laoar.shao@gmail.com> <20231205143725.4224-4-laoar.shao@gmail.com>
- <0aba58ed-e3bd-4698-9e7d-e68b03573361@linux.dev>
-In-Reply-To: <0aba58ed-e3bd-4698-9e7d-e68b03573361@linux.dev>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 6 Dec 2023 17:00:09 +0800
-Message-ID: <CALOAHbD00WQTo166rFRG+KwNDh=fv0AiRGhYPPKkOHfoGzo-DQ@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/3] selftests/bpf: Add selftests for cgroup1
- local storage
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org, 
-	bpf@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Wed, Dec 6, 2023 at 12:24=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
+On Mon, Dec 04, 2023 at 01:40 PM -08, John Fastabend wrote:
+> Kuniyuki Iwashima wrote:
+>> From: John Fastabend <john.fastabend@gmail.com>
+>> Date: Fri,  1 Dec 2023 10:01:38 -0800
+>> > I added logic to track the sock pair for stream_unix sockets so that we
+>> > ensure lifetime of the sock matches the time a sockmap could reference
+>> > the sock (see fixes tag). I forgot though that we allow af_unix unconnected
+>> > sockets into a sock{map|hash} map.
+>> > 
+>> > This is problematic because previous fixed expected sk_pair() to exist
+>> > and did not NULL check it. Because unconnected sockets have a NULL
+>> > sk_pair this resulted in the NULL ptr dereference found by syzkaller.
+>> > 
+>> > BUG: KASAN: null-ptr-deref in unix_stream_bpf_update_proto+0x72/0x430
+>> > net/unix/unix_bpf.c:171
+>> > Write of size 4 at addr 0000000000000080 by task syz-executor360/5073
+>> > Call Trace:
+>> >  <TASK>
+>> >  ...
+>> >  sock_hold include/net/sock.h:777 [inline]
+>> >  unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+>> >  sock_map_init_proto net/core/sock_map.c:190 [inline]
+>> >  sock_map_link+0xb87/0x1100 net/core/sock_map.c:294
+>> >  sock_map_update_common+0xf6/0x870 net/core/sock_map.c:483
+>> >  sock_map_update_elem_sys+0x5b6/0x640 net/core/sock_map.c:577
+>> >  bpf_map_update_value+0x3af/0x820 kernel/bpf/syscall.c:167
+>> > 
+>> > We considered just checking for the null ptr and skipping taking a ref
+>> > on the NULL peer sock. But, if the socket is then connected() after
+>> > being added to the sockmap we can cause the original issue again. So
+>> > instead this patch blocks adding af_unix sockets that are not in the
+>> > ESTABLISHED state.
+>> 
+>> I'm not sure if someone has the unconnected stream socket use case
+>> though, can't we call additional sock_hold() in connect() by checking
+>> sk_prot under sk_callback_lock ?
 >
+> Could be done I guess yes. I'm not sure the utility of it though. I
+> thought above patch was the simplest solution and didn't require touching
+> main af_unix code. I don't actually use the sockmap with af_unix
+> sockets anywhere so maybe someone who is using this can comment if
+> unconnected is needed?
 >
-> On 12/5/23 9:37 AM, Yafang Shao wrote:
-> > Expanding the test coverage from cgroup2 to include cgroup1. The result
-> > as follows,
-> >
-> > Already existing test cases for cgroup2:
-> >    #48/1    cgrp_local_storage/tp_btf:OK
-> >    #48/2    cgrp_local_storage/attach_cgroup:OK
-> >    #48/3    cgrp_local_storage/recursion:OK
-> >    #48/4    cgrp_local_storage/negative:OK
-> >    #48/5    cgrp_local_storage/cgroup_iter_sleepable:OK
-> >    #48/6    cgrp_local_storage/yes_rcu_lock:OK
-> >    #48/7    cgrp_local_storage/no_rcu_lock:OK
-> >
-> > Expanded test cases for cgroup1:
-> >    #48/8    cgrp_local_storage/cgrp1_tp_btf:OK
-> >    #48/9    cgrp_local_storage/cgrp1_recursion:OK
-> >    #48/10   cgrp_local_storage/cgrp1_negative:OK
-> >    #48/11   cgrp_local_storage/cgrp1_iter_sleepable:OK
-> >    #48/12   cgrp_local_storage/cgrp1_yes_rcu_lock:OK
-> >    #48/13   cgrp_local_storage/cgrp1_no_rcu_lock:OK
-> >
-> > Summary:
-> >    #48      cgrp_local_storage:OK
-> >    Summary: 1/13 PASSED, 0 SKIPPED, 0 FAILED
-> >
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
->
-> LGTM with a few nits below.
->
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->
-> > ---
-> >   .../bpf/prog_tests/cgrp_local_storage.c       | 92 ++++++++++++++++++=
--
-> >   .../selftests/bpf/progs/cgrp_ls_recursion.c   | 84 +++++++++++++----
-> >   .../selftests/bpf/progs/cgrp_ls_sleepable.c   | 67 ++++++++++++--
-> >   .../selftests/bpf/progs/cgrp_ls_tp_btf.c      | 82 ++++++++++++-----
-> >   4 files changed, 278 insertions(+), 47 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.=
-c b/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-> > index 63e776f4176e..9524cde4cbf6 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/cgrp_local_storage.c
-> > @@ -19,6 +19,9 @@ struct socket_cookie {
-> >       __u64 cookie_value;
-> >   };
-> >
-> > +bool is_cgroup1;
-> > +int target_hid;
-> > +
-> >   static void test_tp_btf(int cgroup_fd)
-> >   {
-> >       struct cgrp_ls_tp_btf *skel;
-> > @@ -29,6 +32,9 @@ static void test_tp_btf(int cgroup_fd)
-> >       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-> >               return;
-> >
-> > +     skel->bss->is_cgroup1 =3D is_cgroup1;
-> > +     skel->bss->target_hid =3D target_hid;
->
-> Let reverse the order like below to be consistent with other code pattern=
-s:
+> From rcu and locking side looks like holding sk_callback_lock would
+> be sufficient. I was thinking it would require a rcu grace period
+> or something but seems not.
 
-will change it.
+I'd revist the option of grabbing an skpair ref in unix_stream_sendmsg.
 
-> +       skel->bss->target_hid =3D target_hid;
-> +       skel->bss->is_cgroup1 =3D is_cgroup1;
->
-> > +
-> >       /* populate a value in map_b */
-> >       err =3D bpf_map_update_elem(bpf_map__fd(skel->maps.map_b), &cgrou=
-p_fd, &val1, BPF_ANY);
-> >       if (!ASSERT_OK(err, "map_update_elem"))
-> > @@ -130,6 +136,9 @@ static void test_recursion(int cgroup_fd)
-> >       if (!ASSERT_OK_PTR(skel, "skel_open_and_load"))
-> >               return;
-> >
-> > +     skel->bss->target_hid =3D target_hid;
-> > +     skel->bss->is_cgroup1 =3D is_cgroup1;
-> > +
-> >       err =3D cgrp_ls_recursion__attach(skel);
-> >       if (!ASSERT_OK(err, "skel_attach"))
-> >               goto out;
-> > [...]
-> > diff --git a/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c b/to=
-ols/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-> > index 4c7844e1dbfa..985ff419249c 100644
-> > --- a/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-> > +++ b/tools/testing/selftests/bpf/progs/cgrp_ls_sleepable.c
-> > @@ -17,7 +17,11 @@ struct {
-> >
-> >   __u32 target_pid;
-> >   __u64 cgroup_id;
-> > +int target_hid;
-> > +bool is_cgroup1;
-> >
-> > +struct cgroup *bpf_task_get_cgroup1(struct task_struct *task, int hier=
-archy_id) __ksym;
-> > +void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
-> >   void bpf_rcu_read_lock(void) __ksym;
-> >   void bpf_rcu_read_unlock(void) __ksym;
-> >
-> > @@ -37,23 +41,56 @@ int cgroup_iter(struct bpf_iter__cgroup *ctx)
-> >       return 0;
-> >   }
-> >
-> > +static void __no_rcu_lock(struct cgroup *cgrp)
-> > +{
-> > +     long *ptr;
-> > +
-> > +     /* Note that trace rcu is held in sleepable prog, so we can use
-> > +      * bpf_cgrp_storage_get() in sleepable prog.
-> > +      */
-> > +     ptr =3D bpf_cgrp_storage_get(&map_a, cgrp, 0,
-> > +                                BPF_LOCAL_STORAGE_GET_F_CREATE);
-> > +     if (ptr)
-> > +             cgroup_id =3D cgrp->kn->id;
-> > +}
-> > +
-> >   SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> > -int no_rcu_lock(void *ctx)
-> > +int cgrp1_no_rcu_lock(void *ctx)
-> >   {
-> >       struct task_struct *task;
-> >       struct cgroup *cgrp;
-> > -     long *ptr;
-> > +
-> > +     if (!is_cgroup1)
-> > +             return 0;
->
-> Do we need this check? Looks like the user space controls whether it will
-> be loaded or not depending on whether it is cgrp1.
-
-will remove this check.
-
->
-> > +
-> > +     task =3D bpf_get_current_task_btf();
-> > +     if (task->pid !=3D target_pid)
-> > +             return 0;
-> > +
-> > +     /* bpf_task_get_cgroup1 can work in sleepable prog */
-> > +     cgrp =3D bpf_task_get_cgroup1(task, target_hid);
-> > +     if (!cgrp)
-> > +             return 0;
-> > +
-> > +     __no_rcu_lock(cgrp);
-> > +     bpf_cgroup_release(cgrp);
-> > +     return 0;
-> > +}
-> > +
-> > +SEC("?fentry.s/" SYS_PREFIX "sys_getpgid")
-> > +int no_rcu_lock(void *ctx)
-> > +{
-> > +     struct task_struct *task;
-> > +
-> > +     if (is_cgroup1)
-> > +             return 0;
->
-> Same here, check is not needed.
-
-will remove it.
-
-Thanks for your review.
-
---=20
-Regards
-Yafang
 
