@@ -1,134 +1,103 @@
-Return-Path: <bpf+bounces-16924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16925-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 447558078B0
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 20:34:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F366680793F
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 21:16:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87089282158
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 19:34:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6FF41F21237
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 20:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3913B47F56;
-	Wed,  6 Dec 2023 19:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7096F60D;
+	Wed,  6 Dec 2023 20:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QksY5fA5"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="seUOAm2E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70DC98E
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 11:34:02 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-333630e9e43so155546f8f.2
-        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 11:34:02 -0800 (PST)
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6CBD1
+	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 12:16:40 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce3efb78e2so208394b3a.1
+        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 12:16:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701891241; x=1702496041; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=v5e7Kyl9THdXz4ba1pKlKGv7cbWKsAgyo45L0ZqiBKo=;
-        b=QksY5fA5ZQ8exXkXH1Lt9Jga1ckSvWSqVCRFjDH/Z1MmPbJLAeU2/0FUoWjzCjIS+c
-         WqLfwyyliC2u+v9oj08XfSUbJvcFQ4cvkizTJ9LGXp6NrrB1trgmVglYfQ93V+RtfDoO
-         h1ARQSM+seZSfJmLI/laVYOaTo4XuEPAwHv3oswC4lBaJyXhh7uGNiiWwiSxCDzcX4W4
-         GT37at/i06eFaNFcO2o4DJBXtxJrqJPETZ97irzvGFPEp39rrNW3tDYNnHwY6kigF8G4
-         QRsxFwRLXhGTNfbIdV+Q7ayLUnTRqt0rHBT/9l+kTpurn5fiTNT0gFgmln4hpGEg7Mew
-         rB+g==
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1701893800; x=1702498600; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qHDdFruPzZ1Pb4ZidhpAKqlDu1RUv7Xj40kMDRXWKOw=;
+        b=seUOAm2EBwc/WuIGST4vJT01SqITGy+RszSSQlP4KcbRIiehIyjU/Nal2SAsPI7KN7
+         1h26ZqnBXZyIPFAjkPLag2VLXOhVqf5K+7onpVUjH9ShcM0kShN+Iuu2tP+dhV9C3BN7
+         zdhd6ynJxvxUtFI/I6s7erTPndlmgkBd9nyhYP8SEvwT7OyMlAp2ha+zfRfgddO/L5cA
+         hvi0AMOnvPM3Ws2zgbQjSAVnLWO8g8tKkP9nUd+9kH/lX039CJvuEH25QOl1AIvnLfgt
+         ddY9DsFYaDMTROMVIiPcnCcKltKA41a5HXIX03CxnWb8jGQjZVhskeIlVjQW/P0MGNVb
+         C6BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701891241; x=1702496041;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=v5e7Kyl9THdXz4ba1pKlKGv7cbWKsAgyo45L0ZqiBKo=;
-        b=BhkDEb9/aMoQt5EARPeAGlG8UKOdXoRp6HSzATGMnuUVv98nSaxWDK02YPlJhXOjkC
-         nwnHAFG/pmKdKJulOTl++fvG4e67n4JcmYac5Z/rqVYKu2CoP+9JCltHaCjKbhzueBB0
-         Yizg5EIxnWl/ZGe7+swk2JI4cueaRj93WgroG8tfGV7cU9J1XLo/mBFp4lHivr+jqFd4
-         3Mm7iaQCP8oKh6HXYaUn2Tsufdy0ENV4+RhbG38bGfk5biqtv/sDg8MOTDTLcIdOKADS
-         YaLEL3yFBAxJ4vMrMVaq8k1k0DiNgqjIRHFAEUhSI9mlnmeuYKQZw46jToa9hHRw3G2y
-         B+aQ==
-X-Gm-Message-State: AOJu0YzcUIRp+cWJXUGUqCVIkd11zrRVCFeiS87mR5RgXwCcIbMpkp0f
-	lir24FKaWRLLvNV06bjPqa26kARR/PrQX94AFLpKcQXHHps=
-X-Google-Smtp-Source: AGHT+IGKuyQl3Z3i40zZiaeZpxvZdR9kdnkIRdm6iXo6BY5lhtyOHBxYgvcpyFWgKoeKnZTHHDspH0e1cocaIHn/io0=
-X-Received: by 2002:a05:6000:10c1:b0:333:2fd2:3bfe with SMTP id
- b1-20020a05600010c100b003332fd23bfemr603699wrx.183.1701891240674; Wed, 06 Dec
- 2023 11:34:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701893800; x=1702498600;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qHDdFruPzZ1Pb4ZidhpAKqlDu1RUv7Xj40kMDRXWKOw=;
+        b=tFYmBl9+kBKukgMxNrKmu5TlmiLb8ZqzmcsRRUw3H+IF202tstzm4BhvCxNXhywOg1
+         /qF/nn2vDZYTgjCkWKGTvDc7JNZjAPuwF62QrhQFHBaCKW7RCqPIQsV9ic2PEO3P5oe7
+         uQaajLDq5dGueTDKkxA5IWH3cbYHhjdAGccbXH6QQU1arTKdsI+mdqff0H1QwuImez//
+         XUHgw/vQjesGJBkx41tJjUje/oC45o92Iu5ZZ76n3t4rAQ7TLBSxWfWPyidyDJuvYBxs
+         OId3bnSb8Y+OchgPNUShgL0M8qW7XMSNxvyzJiUUoqR41qr9DDSHWIcu515B2sVpWSQM
+         KP8g==
+X-Gm-Message-State: AOJu0YxNTvwDrDjfeit+pjU3HslBH69CNx4BbeA0efQ35TAugef8NK0U
+	GFEGYbqH4BUtYmtG6RD7UGvIUg==
+X-Google-Smtp-Source: AGHT+IEJjGg7cjU8bDiExvmdFdxPzabdESP6PC+IZS/5jqk/UWm39U57AGakQVtdh8kYN2CMcrru8A==
+X-Received: by 2002:a05:6a00:430f:b0:6ce:7631:8d7f with SMTP id cb15-20020a056a00430f00b006ce76318d7fmr1579922pfb.51.1701893799957;
+        Wed, 06 Dec 2023 12:16:39 -0800 (PST)
+Received: from [192.168.50.25] ([201.17.86.134])
+        by smtp.gmail.com with ESMTPSA id b3-20020aa78ec3000000b006cb60b188bdsm348444pfr.196.2023.12.06.12.16.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Dec 2023 12:16:39 -0800 (PST)
+Message-ID: <7789659d-b3c5-4eef-af86-540f970102a4@mojatatu.com>
+Date: Wed, 6 Dec 2023 17:16:28 -0300
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231201190654.1233153-1-song@kernel.org> <20231201190654.1233153-6-song@kernel.org>
-In-Reply-To: <20231201190654.1233153-6-song@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 6 Dec 2023 11:33:49 -0800
-Message-ID: <CAADnVQ+_XZMVegPSN_xmA6C9Tx9UTQ0J-q=N6pv6RzbkVwBCEg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 5/7] bpf: Add arch_bpf_trampoline_size()
-To: Song Liu <song@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@meta.com>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Jiri Olsa <jolsa@kernel.org>, 
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] net/sched: Load modules via alias
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ cake@lists.bufferbloat.net
+Cc: "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jamal Hadi Salim <jhs@mojatatu.com>,
+ Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?=
+ <toke@toke.dk>, Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+ Stephen Hemminger <stephen@networkplumber.org>, Petr Pavlu <ppavlu@suse.cz>,
+ Michal Kubecek <mkubecek@suse.cz>, Martin Wilck <mwilck@suse.com>
+References: <20231206192752.18989-1-mkoutny@suse.com>
+Content-Language: en-US
+From: Pedro Tammela <pctammela@mojatatu.com>
+In-Reply-To: <20231206192752.18989-1-mkoutny@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 01, 2023 at 11:06:52AM -0800, Song Liu wrote:
-> +int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-> +                          struct bpf_tramp_links *tlinks, void *func_addr)
-> +{
-> +     struct bpf_tramp_image im;
-> +     void *image;
-> +     int ret;
-> +
-> +     /* Allocate a temporary buffer for __arch_prepare_bpf_trampoline().
-> +      * This will NOT cause fragmentation in direct map, as we do not
-> +      * call set_memory_*() on this buffer.
-> +      */
-> +     image = bpf_jit_alloc_exec(PAGE_SIZE);
-> +     if (!image)
-> +             return -ENOMEM;
-> +
-> +     ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, m, flags,
-> +                                         tlinks, func_addr);
-> +     bpf_jit_free_exec(image);
-> +     return ret;
-> +}
+On 06/12/2023 16:27, Michal Koutný wrote:
+> These modules may be loaded lazily without user's awareness and
+> control. Add respective aliases to modules and request them under these
+> aliases so that modprobe's blacklisting mechanism (through aliases)
+> works for them. (The same pattern exists e.g. for filesystem
+> modules.)
+> 
+> Original module names remain unchanged.
+> 
 
-There is no need to allocate an executable page just to compute the size, right?
-Instead of bpf_jit_alloc_exec() it should work with alloc_page() ?
+Can't you just keep the sch-, cls-, act- prefixes for the aliases?
+They look odd in the current patchset TBH
 
-Similar in patch 7:
-int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void
-*image, void *image_end,
-                                const struct btf_func_model *m, u32 flags,
-                                struct bpf_tramp_links *tlinks,
-                                void *func_addr)
- {
--       return __arch_prepare_bpf_trampoline(im, image, image_end, m,
-flags, tlinks, func_addr);
-+       void *rw_image, *tmp;
-+       int ret;
-+       u32 size = image_end - image;
-+
-+       rw_image = bpf_jit_alloc_exec(size);
-+       if (!rw_image)
-+               return -ENOMEM;
-+
-+       ret = __arch_prepare_bpf_trampoline(im, rw_image, rw_image +
-size, image, m,
-+                                           flags, tlinks, func_addr);
-+       if (ret < 0)
-+               goto out;
-+
-+       tmp = bpf_arch_text_copy(image, rw_image, size);
-+       if (IS_ERR(tmp))
-+               ret = PTR_ERR(tmp);
-+out:
-+       bpf_jit_free_exec(rw_image);
-+       return ret;
- }
-
-In the above only 'image' has to be ROX. rw_image can be allocated
-with kvmalloc().
-Just like it's done in the main loop of JIT via
-bpf_jit_binary_pack_alloc() -> kvmalloc() -> rw_header.
-
-pw-bot: cr
 
