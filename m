@@ -1,331 +1,137 @@
-Return-Path: <bpf+bounces-16945-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16946-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BE46807B92
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 23:42:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B774807BA9
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 23:49:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1265EB210CA
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 22:42:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 410282824DD
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 22:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D6221945E;
-	Wed,  6 Dec 2023 22:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718281A709;
+	Wed,  6 Dec 2023 22:49:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cmCaJx5y"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nexB1Co3"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A5718D;
+	Wed,  6 Dec 2023 14:49:18 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73AA655
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 22:42:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 631A7C433C8;
-	Wed,  6 Dec 2023 22:42:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701902528;
-	bh=UctZrG96HNUNaOACWtPReTxDHpVtujACExH0M6jY0Mo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cmCaJx5yoiTo4iOFopa0Lm+lTpS6IYbWQiImPU571rkwc3Ip26wQOK1LG1iojuoOg
-	 p+jLV0BIgBJRcmUwb/9kZeBQe5sSQsTJkIBUn9ppSQrH/99j68b2tKj0dPYPaIsTwo
-	 oJZlfNUkC3Df67BaQy6pLT42J3XeHSgebS9xycyFWiViW6DeW+b6n7G6oqsdDNXFKT
-	 ThJBYypRY5vQSQtp+NkI0VvTru0TJPkmESg2bDvCSNCAVDUvZI83qbqG5IEuHd5gYi
-	 2v4Zhu3sMZOMdwKWjbsJCNv/IkyZ/ySijR4q6P2gWCT6jtIvFmz+R16GizVUYIELJa
-	 SlRHgSn3DQuDg==
-From: Song Liu <song@kernel.org>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	kernel-team@meta.com,
-	Song Liu <song@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH v7 bpf-next 7/7] x86, bpf: Use bpf_prog_pack for bpf trampoline
-Date: Wed,  6 Dec 2023 14:40:54 -0800
-Message-Id: <20231206224054.492250-8-song@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231206224054.492250-1-song@kernel.org>
-References: <20231206224054.492250-1-song@kernel.org>
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5D79221D58;
+	Wed,  6 Dec 2023 22:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701902957; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XDqpg+LUdyOlEWaBHsub44B0wZvESYFrEQIjfsMYOcQ=;
+	b=nexB1Co3kCo16eDdcRZbb3sDYY7j4Z69EWGxdzZAgFwlsNG4nCUKukmwMMoezEqTacJFC/
+	cal/QC5PdQXJxX4IMpYvSGkyV83dGAwRAgVOKecuLfvRVBZAagyGtrRcXejEz8xa5AAcVU
+	y8XM2i6nkKOkooimHA7rzwv/RuBIt/U=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E01313403;
+	Wed,  6 Dec 2023 22:49:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id yN7CEGz6cGWIDAAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Wed, 06 Dec 2023 22:49:16 +0000
+Date: Wed, 6 Dec 2023 23:49:14 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: Pedro Tammela <pctammela@mojatatu.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, cake@lists.bufferbloat.net, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>, 
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>, Petr Pavlu <ppavlu@suse.cz>, Michal Kubecek <mkubecek@suse.cz>, 
+	Martin Wilck <mwilck@suse.com>
+Subject: Re: [PATCH 0/3] net/sched: Load modules via alias
+Message-ID: <53ohvb547tegxv2vuvurhuwqunamfiy22sonog7gll54h3czht@3dnijc44xilq>
+References: <20231206192752.18989-1-mkoutny@suse.com>
+ <7789659d-b3c5-4eef-af86-540f970102a4@mojatatu.com>
+ <vk6uhf4r2turfxt2aokp66x5exzo5winal55253czkl2pmkkuu@77bhdfwfk5y3>
+ <20231206142857.38403344@hermes.local>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="66n2qidccontofol"
+Content-Disposition: inline
+In-Reply-To: <20231206142857.38403344@hermes.local>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.45
+X-Spamd-Result: default: False [-1.45 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.05)[59.33%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 RCPT_COUNT_TWELVE(0.00)[29];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[mojatatu.com,vger.kernel.org,lists.bufferbloat.net,davemloft.net,google.com,kernel.org,redhat.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,suse.cz,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-There are three major changes here:
 
-1. Add arch_[alloc|free]_bpf_trampoline based on bpf_prog_pack;
-2. Let arch_prepare_bpf_trampoline handle ROX input image, this requires
-   arch_prepare_bpf_trampoline allocating a temporary RW buffer;
-3. Update __arch_prepare_bpf_trampoline() to handle a RW buffer (rw_image)
-   and a ROX buffer (image). This part is similar to the image/rw_image
-   logic in bpf_int_jit_compile().
+--66n2qidccontofol
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Song Liu <song@kernel.org>
-Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
----
- arch/x86/net/bpf_jit_comp.c | 98 +++++++++++++++++++++++++++----------
- 1 file changed, 72 insertions(+), 26 deletions(-)
+On Wed, Dec 06, 2023 at 02:28:57PM -0800, Stephen Hemminger <stephen@networkplumber.org> wrote:
+> It is not clear to me what this patchset is trying to fix.
+> Autoloading happens now, but it does depend on the name not alias.
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 5d75069fdcc2..af4a5de7d93a 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2198,7 +2198,8 @@ static void restore_regs(const struct btf_func_model *m, u8 **prog,
- 
- static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 			   struct bpf_tramp_link *l, int stack_size,
--			   int run_ctx_off, bool save_ret)
-+			   int run_ctx_off, bool save_ret,
-+			   void *image, void *rw_image)
- {
- 	u8 *prog = *pprog;
- 	u8 *jmp_insn;
-@@ -2226,7 +2227,7 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 	else
- 		EMIT4(0x48, 0x8D, 0x75, -run_ctx_off);
- 
--	if (emit_rsb_call(&prog, bpf_trampoline_enter(p), prog))
-+	if (emit_rsb_call(&prog, bpf_trampoline_enter(p), image + (prog - (u8 *)rw_image)))
- 		return -EINVAL;
- 	/* remember prog start time returned by __bpf_prog_enter */
- 	emit_mov_reg(&prog, true, BPF_REG_6, BPF_REG_0);
-@@ -2250,7 +2251,7 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 			       (long) p->insnsi >> 32,
- 			       (u32) (long) p->insnsi);
- 	/* call JITed bpf program or interpreter */
--	if (emit_rsb_call(&prog, p->bpf_func, prog))
-+	if (emit_rsb_call(&prog, p->bpf_func, image + (prog - (u8 *)rw_image)))
- 		return -EINVAL;
- 
- 	/*
-@@ -2277,7 +2278,7 @@ static int invoke_bpf_prog(const struct btf_func_model *m, u8 **pprog,
- 		EMIT3_off32(0x48, 0x8D, 0x95, -run_ctx_off);
- 	else
- 		EMIT4(0x48, 0x8D, 0x55, -run_ctx_off);
--	if (emit_rsb_call(&prog, bpf_trampoline_exit(p), prog))
-+	if (emit_rsb_call(&prog, bpf_trampoline_exit(p), image + (prog - (u8 *)rw_image)))
- 		return -EINVAL;
- 
- 	*pprog = prog;
-@@ -2312,14 +2313,15 @@ static int emit_cond_near_jump(u8 **pprog, void *func, void *ip, u8 jmp_cond)
- 
- static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
- 		      struct bpf_tramp_links *tl, int stack_size,
--		      int run_ctx_off, bool save_ret)
-+		      int run_ctx_off, bool save_ret,
-+		      void *image, void *rw_image)
- {
- 	int i;
- 	u8 *prog = *pprog;
- 
- 	for (i = 0; i < tl->nr_links; i++) {
- 		if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size,
--				    run_ctx_off, save_ret))
-+				    run_ctx_off, save_ret, image, rw_image))
- 			return -EINVAL;
- 	}
- 	*pprog = prog;
-@@ -2328,7 +2330,8 @@ static int invoke_bpf(const struct btf_func_model *m, u8 **pprog,
- 
- static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
- 			      struct bpf_tramp_links *tl, int stack_size,
--			      int run_ctx_off, u8 **branches)
-+			      int run_ctx_off, u8 **branches,
-+			      void *image, void *rw_image)
- {
- 	u8 *prog = *pprog;
- 	int i;
-@@ -2339,7 +2342,8 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
- 	emit_mov_imm32(&prog, false, BPF_REG_0, 0);
- 	emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
- 	for (i = 0; i < tl->nr_links; i++) {
--		if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size, run_ctx_off, true))
-+		if (invoke_bpf_prog(m, &prog, tl->links[i], stack_size, run_ctx_off, true,
-+				    image, rw_image))
- 			return -EINVAL;
- 
- 		/* mod_ret prog stored return value into [rbp - 8]. Emit:
-@@ -2422,7 +2426,8 @@ static int invoke_bpf_mod_ret(const struct btf_func_model *m, u8 **pprog,
-  * add rsp, 8                      // skip eth_type_trans's frame
-  * ret                             // return to its caller
-  */
--static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
-+static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *rw_image,
-+					 void *rw_image_end, void *image,
- 					 const struct btf_func_model *m, u32 flags,
- 					 struct bpf_tramp_links *tlinks,
- 					 void *func_addr)
-@@ -2521,7 +2526,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
- 		orig_call += X86_PATCH_SIZE;
- 	}
- 
--	prog = image;
-+	prog = rw_image;
- 
- 	EMIT_ENDBR();
- 	/*
-@@ -2563,7 +2568,8 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
- 		/* arg1: mov rdi, im */
- 		emit_mov_imm64(&prog, BPF_REG_1, (long) im >> 32, (u32) (long) im);
--		if (emit_rsb_call(&prog, __bpf_tramp_enter, prog)) {
-+		if (emit_rsb_call(&prog, __bpf_tramp_enter,
-+				  image + (prog - (u8 *)rw_image))) {
- 			ret = -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2571,7 +2577,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
- 
- 	if (fentry->nr_links)
- 		if (invoke_bpf(m, &prog, fentry, regs_off, run_ctx_off,
--			       flags & BPF_TRAMP_F_RET_FENTRY_RET))
-+			       flags & BPF_TRAMP_F_RET_FENTRY_RET, image, rw_image))
- 			return -EINVAL;
- 
- 	if (fmod_ret->nr_links) {
-@@ -2581,7 +2587,7 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
- 			return -ENOMEM;
- 
- 		if (invoke_bpf_mod_ret(m, &prog, fmod_ret, regs_off,
--				       run_ctx_off, branches)) {
-+				       run_ctx_off, branches, image, rw_image)) {
- 			ret = -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2602,14 +2608,14 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
- 			EMIT2(0xff, 0xd3); /* call *rbx */
- 		} else {
- 			/* call original function */
--			if (emit_rsb_call(&prog, orig_call, prog)) {
-+			if (emit_rsb_call(&prog, orig_call, image + (prog - (u8 *)rw_image))) {
- 				ret = -EINVAL;
- 				goto cleanup;
- 			}
- 		}
- 		/* remember return value in a stack for bpf prog to access */
- 		emit_stx(&prog, BPF_DW, BPF_REG_FP, BPF_REG_0, -8);
--		im->ip_after_call = prog;
-+		im->ip_after_call = image + (prog - (u8 *)rw_image);
- 		memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
- 		prog += X86_PATCH_SIZE;
- 	}
-@@ -2625,12 +2631,13 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
- 		 * aligned address of do_fexit.
- 		 */
- 		for (i = 0; i < fmod_ret->nr_links; i++)
--			emit_cond_near_jump(&branches[i], prog, branches[i],
--					    X86_JNE);
-+			emit_cond_near_jump(&branches[i], image + (prog - (u8 *)rw_image),
-+					    image + (branches[i] - (u8 *)rw_image), X86_JNE);
- 	}
- 
- 	if (fexit->nr_links)
--		if (invoke_bpf(m, &prog, fexit, regs_off, run_ctx_off, false)) {
-+		if (invoke_bpf(m, &prog, fexit, regs_off, run_ctx_off,
-+			       false, image, rw_image)) {
- 			ret = -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2643,10 +2650,10 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
- 	 * restored to R0.
- 	 */
- 	if (flags & BPF_TRAMP_F_CALL_ORIG) {
--		im->ip_epilogue = prog;
-+		im->ip_epilogue = image + (prog - (u8 *)rw_image);
- 		/* arg1: mov rdi, im */
- 		emit_mov_imm64(&prog, BPF_REG_1, (long) im >> 32, (u32) (long) im);
--		if (emit_rsb_call(&prog, __bpf_tramp_exit, prog)) {
-+		if (emit_rsb_call(&prog, __bpf_tramp_exit, image + (prog - (u8 *)rw_image))) {
- 			ret = -EINVAL;
- 			goto cleanup;
- 		}
-@@ -2665,25 +2672,64 @@ static int __arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image
- 	if (flags & BPF_TRAMP_F_SKIP_FRAME)
- 		/* skip our return address and return to parent */
- 		EMIT4(0x48, 0x83, 0xC4, 8); /* add rsp, 8 */
--	emit_return(&prog, prog);
-+	emit_return(&prog, image + (prog - (u8 *)rw_image));
- 	/* Make sure the trampoline generation logic doesn't overflow */
--	if (WARN_ON_ONCE(prog > (u8 *)image_end - BPF_INSN_SAFETY)) {
-+	if (WARN_ON_ONCE(prog > (u8 *)rw_image_end - BPF_INSN_SAFETY)) {
- 		ret = -EFAULT;
- 		goto cleanup;
- 	}
--	ret = prog - (u8 *)image + BPF_INSN_SAFETY;
-+	ret = prog - (u8 *)rw_image + BPF_INSN_SAFETY;
- 
- cleanup:
- 	kfree(branches);
- 	return ret;
- }
- 
-+void *arch_alloc_bpf_trampoline(unsigned int size)
-+{
-+	return bpf_prog_pack_alloc(size, jit_fill_hole);
-+}
-+
-+void arch_free_bpf_trampoline(void *image, unsigned int size)
-+{
-+	bpf_prog_pack_free(image, size);
-+}
-+
-+void arch_protect_bpf_trampoline(void *image, unsigned int size)
-+{
-+}
-+
-+void arch_unprotect_bpf_trampoline(void *image, unsigned int size)
-+{
-+}
-+
- int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
- 				const struct btf_func_model *m, u32 flags,
- 				struct bpf_tramp_links *tlinks,
- 				void *func_addr)
- {
--	return __arch_prepare_bpf_trampoline(im, image, image_end, m, flags, tlinks, func_addr);
-+	void *rw_image, *tmp;
-+	int ret;
-+	u32 size = image_end - image;
-+
-+	/* rw_image doesn't need to be in module memory range, so we can
-+	 * use kvmalloc.
-+	 */
-+	rw_image = kvmalloc(size, GFP_KERNEL);
-+	if (!rw_image)
-+		return -ENOMEM;
-+
-+	ret = __arch_prepare_bpf_trampoline(im, rw_image, rw_image + size, image, m,
-+					    flags, tlinks, func_addr);
-+	if (ret < 0)
-+		goto out;
-+
-+	tmp = bpf_arch_text_copy(image, rw_image, size);
-+	if (IS_ERR(tmp))
-+		ret = PTR_ERR(tmp);
-+out:
-+	kvfree(rw_image);
-+	return ret;
- }
- 
- int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-@@ -2704,8 +2750,8 @@ int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 	if (!image)
- 		return -ENOMEM;
- 
--	ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, m, flags,
--					    tlinks, func_addr);
-+	ret = __arch_prepare_bpf_trampoline(&im, image, image + PAGE_SIZE, image,
-+					    m, flags, tlinks, func_addr);
- 	bpf_jit_free_exec(image);
- 	return ret;
- }
--- 
-2.34.1
+There are some more details in the thread of v1 [1] [2].
+Does it clarify?
 
+Thanks,
+Michal
+
+[1] https://lore.kernel.org/r/yerqczxbz6qlrslkfbu6u2emb5esqe7tkrexdbneite2ah2a6i@l6arp7nzyj75/
+[2] Oh, I realize I forgot to add v2 to today's posting.
+
+
+
+--66n2qidccontofol
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZXD6YQAKCRAGvrMr/1gc
+jqKFAQDa7o9BcCuJ6Pa60x4aCDwIHPwW8c0plGxYwzl/GytgSwEA69HAX+Do+75V
+ojElrep1jaK+lwg9eIeAo2Oof7/dTwM=
+=i4t/
+-----END PGP SIGNATURE-----
+
+--66n2qidccontofol--
 
