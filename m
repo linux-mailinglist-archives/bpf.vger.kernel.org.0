@@ -1,99 +1,126 @@
-Return-Path: <bpf+bounces-16835-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23093806332
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 01:09:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BD58806350
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 01:19:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE3DA1F21736
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 00:09:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 233C31F2174F
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 00:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7887D365;
-	Wed,  6 Dec 2023 00:09:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD80536A;
+	Wed,  6 Dec 2023 00:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iyG/Fih2"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vrubHhhR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47CAC18F
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 16:09:00 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-33318b866a0so201662f8f.3
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 16:09:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701821339; x=1702426139; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=U63cnjF4FfQSCR7WvcWQI1rKIKB/p93R/Gvh6D5MjLk=;
-        b=iyG/Fih2C9QKtKFaC+cc2Jcp2ncrucS8IFVCG2ftKIxXqxcIxziaFaFxu29QLp/54E
-         dl7NCAQNm0MrhB8otbefy2ZXuoqnk87qGXZdFDn3p3R6fCFprWMwr6iHyQHHqSfgep13
-         Y7VFWrlBPVlOonlMDVfg8+B2JPckZQNpRtPfACyXqbSwWEKKUFblkJGuvK2ETenDln9V
-         fBNK/slkQ0PHLUOpwKSOh2fJWlFcS3GZXaD5enxRkLA/PobvOj81bfa2J0rQbUBOW2yC
-         xfBaaDXM8Cb4G+npr665a9aMtPyZDaXsmj7OgPUZ9erbhao17lNr+WH1oO2LnHqCfBE8
-         W7Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701821339; x=1702426139;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=U63cnjF4FfQSCR7WvcWQI1rKIKB/p93R/Gvh6D5MjLk=;
-        b=sAoFtCyz40UWI6wmy6sVsZtXqC+ui7VAKv4y8QAnSwhCx2I4WoPfjJUlRXwTOXimmq
-         W9CXH99NbOQX2UTbqJI3ej9mCxFV6JTZiiY0SUWyAXdSAKQivA4KAOIpgOdDHm7mt432
-         FTU39bBsuR8+beW1pxvfTB9aV74NwZMwcfg56QicdBoCZOrgcBUWPTAbD1je7dk2tUWO
-         YCdZrVfV6yMIX2SnaAvyABrO3zhe0X2aZbuWyoYzRVXRXitnqUI2sHyGm4OTDUiHnl1D
-         I28/du6D18KWlofXjjp9JfekrTkt7Bb6jkCIuIJTPB0upRMJcETaK6A66kIdVvG0Fj58
-         SJrg==
-X-Gm-Message-State: AOJu0YyJIZRY0kJwlVfdj+LQtmNWvBB5WJxEDjT8XU31x18feLrYHgHI
-	N70UcvQetMXJqjQrbEVaHE7v2tGCmvg/JbQiUpbjx6bi
-X-Google-Smtp-Source: AGHT+IGR17k7jSAAL0C3/9c5+mVxMpxMH/RSzq0/8pUHnJyftI3MXKdjBtWGHlZJgi9DupMkwTPsar9RVNvFjMq9nTM=
-X-Received: by 2002:a5d:510d:0:b0:333:3fc5:dced with SMTP id
- s13-20020a5d510d000000b003333fc5dcedmr3187169wrt.64.1701821338572; Tue, 05
- Dec 2023 16:08:58 -0800 (PST)
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECC9FA
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 16:19:29 -0800 (PST)
+Message-ID: <8bd1d595-4bb3-44d1-a9c3-2d9c0c960bcb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1701821967;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FDi2GR+fCgeL6g64+LyWBiWncmrcFqQFI6ly1vYBOLE=;
+	b=vrubHhhR+3gKDTzdbUH8sRkx0vSczF/ZoFZZy5nAxYK4VEsmlMdInBYRpxPJqPBe5+jerG
+	BcfIS00Zb7j5XgcPhhAVOAA6Rz6XnIC5GIdJLAPzscC64wSYSjTEJoMI/wk2e4KK9Xbl7j
+	/rjKLVk2DIQuk3avtwJXyUW+Lr9f3+0=
+Date: Tue, 5 Dec 2023 16:19:20 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205193250.260862-1-andreimatei1@gmail.com> <e3787b1d4c2d7a6b02ca6561edad92fbc27cb6ba.camel@gmail.com>
-In-Reply-To: <e3787b1d4c2d7a6b02ca6561edad92fbc27cb6ba.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 5 Dec 2023 16:08:47 -0800
-Message-ID: <CAADnVQKAT-bP7ozVxKqon5rOE25AuBjSHsU9Tx3v+Ar4nKaF5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf v3 0/2] bpf: fix verification of indirect var-off
- stack access
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Andrei Matei <andreimatei1@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Hao Sun <sunhao.th@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v4 bpf-next 1/3] bpf: tcp: Handle BPF SYN Cookie in
+ cookie_v[46]_check().
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>
+References: <20231205013420.88067-1-kuniyu@amazon.com>
+ <20231205013420.88067-2-kuniyu@amazon.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231205013420.88067-2-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 5, 2023 at 3:35=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Tue, 2023-12-05 at 14:32 -0500, Andrei Matei wrote:
-> > V2 to V3:
-> >   - simplify checks for max_off (don't call
-> >     check_stack_slot_within_bounds for it)
-> >   - append a commit to protect against overflow in the addition of the
-> >     register and the offset
-> >
-> > V1 to V2:
-> >   - fix max_off calculation for access size =3D 0
-> >
-> > Andrei Matei (2):
-> >   bpf: fix verification of indirect var-off stack access
-> >   bpf: guard stack limits against 32bit overflow
-> >
-> >  kernel/bpf/verifier.c | 20 +++++++-------------
-> >  1 file changed, 7 insertions(+), 13 deletions(-)
-> >
->
-> I think we also need a selftest, at-least for patch #1.
+On 12/4/23 5:34 PM, Kuniyuki Iwashima wrote:
+> diff --git a/net/ipv4/syncookies.c b/net/ipv4/syncookies.c
+> index 61f1c96cfe63..0f9c3aed2014 100644
+> --- a/net/ipv4/syncookies.c
+> +++ b/net/ipv4/syncookies.c
+> @@ -304,6 +304,59 @@ static int cookie_tcp_reqsk_init(struct sock *sk, struct sk_buff *skb,
+>   	return 0;
+>   }
+>   
+> +#if IS_ENABLED(CONFIG_BPF)
+> +struct request_sock *cookie_bpf_check(struct net *net, struct sock *sk,
+> +				      struct sk_buff *skb)
+> +{
+> +	struct request_sock *req = inet_reqsk(skb->sk);
+> +	struct inet_request_sock *ireq = inet_rsk(req);
+> +	struct tcp_request_sock *treq = tcp_rsk(req);
+> +	struct tcp_options_received tcp_opt;
+> +	int ret;
+> +
+> +	skb->sk = NULL;
+> +	skb->destructor = NULL;
+> +	req->rsk_listener = NULL;
+> +
+> +	memset(&tcp_opt, 0, sizeof(tcp_opt));
+> +	tcp_parse_options(net, skb, &tcp_opt, 0, NULL);
 
-Also pls target bpf-next.
-It's a fix, but it's getting non obvious.
-We only push absolutely necessary fixes to bpf tree.
-Everything non trivial goes via bpf-next to prove itself.
+In patch 2, the bpf prog is passing the tcp_opt to the kfunc. The selftest in 
+patch 3 is also parsing the tcp-options.
+
+The kernel parses the tcp-option here again to do some checking and req's member 
+initialization. Can these checking and initialization be done in the 
+bpf_sk_assign_tcp_reqsk() kfunc instead to avoid the double tcp-option parsing?
+
+> +
+> +	if (ireq->tstamp_ok ^ tcp_opt.saw_tstamp) {
+> +		__NET_INC_STATS(net, LINUX_MIB_SYNCOOKIESFAILED);
+> +		goto reset;
+> +	}
+> +
+> +	__NET_INC_STATS(net, LINUX_MIB_SYNCOOKIESRECV);
+> +
+> +	if (ireq->tstamp_ok) {
+> +		if (!READ_ONCE(net->ipv4.sysctl_tcp_timestamps))
+> +			goto reset;
+> +
+> +		req->ts_recent = tcp_opt.rcv_tsval;
+> +		treq->ts_off = tcp_opt.rcv_tsecr - tcp_ns_to_ts(false, tcp_clock_ns());
+> +	}
+> +
+> +	if (ireq->sack_ok && !READ_ONCE(net->ipv4.sysctl_tcp_sack))
+> +		goto reset;
+> +
+> +	if (ireq->wscale_ok && !READ_ONCE(net->ipv4.sysctl_tcp_window_scaling))
+> +		goto reset;
+> +
+> +	ret = cookie_tcp_reqsk_init(sk, skb, req);
+> +	if (ret) {
+> +		reqsk_free(req);
+> +		req = NULL;
+> +	}
+> +
+> +	return req;
+> +
+> +reset:
+> +	reqsk_free(req);
+> +	return ERR_PTR(-EINVAL);
+> +}
+> +EXPORT_SYMBOL_GPL(cookie_bpf_check);
+> +#endif
+
 
