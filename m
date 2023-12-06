@@ -1,275 +1,129 @@
-Return-Path: <bpf+bounces-16918-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16919-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D468680785B
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 20:06:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4FCE807865
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 20:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1332E282065
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 19:06:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3E101C20F44
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 19:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC8636D1C7;
-	Wed,  6 Dec 2023 19:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a/b5xmrK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF7E675D7;
+	Wed,  6 Dec 2023 19:09:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BBDE193
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 11:06:08 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5c69bf92447so50874a12.2
-        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 11:06:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701889567; x=1702494367; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I409PBeV0vI0BSi/sNEko+BMZt4s00+VHGZ9Cxi/uGs=;
-        b=a/b5xmrKgk/7uyzJAxjbIr2Xb7wyTKzTfLsjFb6oWW05EP6YlIjaNmUcBT0I1x8yq5
-         TEXhXYDpVmPJELmA6eoz0fCoelVWgMttaxPwpp2tsf+r+jVlJvsoeSEE54lur5ShfBs9
-         vWWXsgclEYLdYu/0MGT2L1AoCRq8ijqhLD8eQUf69H0NWlAR3WSH6EujcCYZmMaQNSsA
-         RxiBPVWWa8zcJmmenYgCRNJWLyyIt8hm1H/4IR5q36cszbwoBHZzPaCwcWVv4MYTSRth
-         RnwkyJJdnvKS5+Pj+G0Re10FUOBe8MuenPHZF2JltBxQGtxDUfQclF6ORuX7TPEyRPZK
-         KxSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701889567; x=1702494367;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I409PBeV0vI0BSi/sNEko+BMZt4s00+VHGZ9Cxi/uGs=;
-        b=Z4GzSsgdmLHki4rFHPrfJefhYyG+CBkH7BSXHi9ft6qQO/Q4JJB0MzZcE3fq38rmxw
-         9gscDMeetoxGNsa0xjb8gEqq8pF/gbE3NTjx+PcJj1792ILY5Qk+7nN0KkoEyGDJjLf2
-         CXp+GYygvqdRf+XzpSCXr8A3JCcGWBJ8Yjrf/IT6GWcNO3SxWdEbmENyk3Q05MgUGcK2
-         qoBZ40ZO9TcM1K741rUkICOT7Ywm+3ITzVLDBiXLtixQaInQBVZud98goAhUbeeeLVc7
-         eeCITNodbN9AqulwgOIznUu5ptxUSow0uIWFuYC8qqu8UP66hcnMWjtD1QsKZX9hqP6a
-         rWKg==
-X-Gm-Message-State: AOJu0YwTXFZmcd5ehiGOBvoToKDCoYScG/YnTWzdNFsx3huvBKZKmQtD
-	UVgTbCYykuHnPAhj8kmPcnq2ITg=
-X-Google-Smtp-Source: AGHT+IEqS0IGgMlSKmdLV1hbJusVKwZ8hKL8byL5eF/gGsSa+b+3KizaW4xrrV9KIs8i0M+jEvdFFF0=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a65:67d2:0:b0:5c6:a4e5:2d6a with SMTP id
- b18-20020a6567d2000000b005c6a4e52d6amr14804pgs.7.1701889567399; Wed, 06 Dec
- 2023 11:06:07 -0800 (PST)
-Date: Wed, 6 Dec 2023 11:06:05 -0800
-In-Reply-To: <CAJ8uoz3_XqavGt1DyFoQAuKS8Faa1Lc85b2t+whc-f6GN1Pvzw@mail.gmail.com>
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C686D193
+	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 11:09:31 -0800 (PST)
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B6IgiUm031662
+	for <bpf@vger.kernel.org>; Wed, 6 Dec 2023 11:09:30 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3utd1ceyug-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 11:09:30 -0800
+Received: from twshared51573.38.frc1.facebook.com (2620:10d:c0a8:1b::2d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 6 Dec 2023 11:09:28 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id EE1F63CB26C09; Wed,  6 Dec 2023 11:09:21 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next] bpf: rename MAX_BPF_LINK_TYPE into __MAX_BPF_LINK_TYPE for consistency
+Date: Wed, 6 Dec 2023 11:09:20 -0800
+Message-ID: <20231206190920.1651226-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231203165129.1740512-1-yoong.siang.song@intel.com>
- <20231203165129.1740512-3-yoong.siang.song@intel.com> <43b01013-e78b-417e-b169-91909c7309b1@kernel.org>
- <656de830e8d70_2e983e294ca@willemb.c.googlers.com.notmuch>
- <PH0PR11MB583000826591093B98BA841DD885A@PH0PR11MB5830.namprd11.prod.outlook.com>
- <5a0faf8cc9ec3ab0d5082c66b909c582c8f1eae6.camel@siemens.com>
- <CAKH8qBuXL8bOYtfKKPS8y=KJqouDptyciCjr0wNKVHtNj6BmqA@mail.gmail.com>
- <656f66023f7bd_3dd6422942a@willemb.c.googlers.com.notmuch>
- <ZW98UW033wCy9vI-@google.com> <CAJ8uoz3_XqavGt1DyFoQAuKS8Faa1Lc85b2t+whc-f6GN1Pvzw@mail.gmail.com>
-Message-ID: <ZXDGHThTynXbSTJG@google.com>
-Subject: Re: [xdp-hints] Re: [PATCH bpf-next v3 2/3] net: stmmac: add Launch
- Time support to XDP ZC
-From: Stanislav Fomichev <sdf@google.com>
-To: Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-	Florian Bezdeka <florian.bezdeka@siemens.com>, yoong.siang.song@intel.com, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, davem@davemloft.net, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Bjorn Topel <bjorn@kernel.org>, magnus.karlsson@intel.com, maciej.fijalkowski@intel.com, 
-	Jonathan Lemon <jonathan.lemon@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Tariq Toukan <tariqt@nvidia.com>, 
-	Willem de Bruijn <willemb@google.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"xdp-hints@xdp-project.net" <xdp-hints@xdp-project.net>, 
-	"linux-stm32@st-md-mailman.stormreply.com" <linux-stm32@st-md-mailman.stormreply.com>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: dkvfZzgITx9fwnkVRPrNOpVNCMijSRsr
+X-Proofpoint-ORIG-GUID: dkvfZzgITx9fwnkVRPrNOpVNCMijSRsr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-06_16,2023-12-06_01,2023-05-22_02
 
-On 12/06, Magnus Karlsson wrote:
-> On Tue, 5 Dec 2023 at 20:39, Stanislav Fomichev <sdf@google.com> wrote:
-> >
-> > On 12/05, Willem de Bruijn wrote:
-> > > Stanislav Fomichev wrote:
-> > > > On Tue, Dec 5, 2023 at 7:34=E2=80=AFAM Florian Bezdeka
-> > > > <florian.bezdeka@siemens.com> wrote:
-> > > > >
-> > > > > On Tue, 2023-12-05 at 15:25 +0000, Song, Yoong Siang wrote:
-> > > > > > On Monday, December 4, 2023 10:55 PM, Willem de Bruijn wrote:
-> > > > > > > Jesper Dangaard Brouer wrote:
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > On 12/3/23 17:51, Song Yoong Siang wrote:
-> > > > > > > > > This patch enables Launch Time (Time-Based Scheduling) su=
-pport to XDP zero
-> > > > > > > > > copy via XDP Tx metadata framework.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Song Yoong Siang<yoong.siang.song@intel.co=
-m>
-> > > > > > > > > ---
-> > > > > > > > >   drivers/net/ethernet/stmicro/stmmac/stmmac.h      |  2 =
-++
-> > > > > > > >
-> > > > > > > > As requested before, I think we need to see another driver =
-implementing
-> > > > > > > > this.
-> > > > > > > >
-> > > > > > > > I propose driver igc and chip i225.
-> > > > > >
-> > > > > > Sure. I will include igc patches in next version.
-> > > > > >
-> > > > > > > >
-> > > > > > > > The interesting thing for me is to see how the LaunchTime m=
-ax 1 second
-> > > > > > > > into the future[1] is handled code wise. One suggestion is =
-to add a
-> > > > > > > > section to Documentation/networking/xsk-tx-metadata.rst per=
- driver that
-> > > > > > > > mentions/documents these different hardware limitations.  I=
-t is natural
-> > > > > > > > that different types of hardware have limitations.  This is=
- a close-to
-> > > > > > > > hardware-level abstraction/API, and IMHO as long as we docu=
-ment the
-> > > > > > > > limitations we can expose this API without too many limitat=
-ions for more
-> > > > > > > > capable hardware.
-> > > > > >
-> > > > > > Sure. I will try to add hardware limitations in documentation.
-> > > > > >
-> > > > > > >
-> > > > > > > I would assume that the kfunc will fail when a value is passe=
-d that
-> > > > > > > cannot be programmed.
-> > > > > > >
-> > > > > >
-> > > > > > In current design, the xsk_tx_metadata_request() dint got retur=
-n value.
-> > > > > > So user won't know if their request is fail.
-> > > > > > It is complex to inform user which request is failing.
-> > > > > > Therefore, IMHO, it is good that we let driver handle the error=
- silently.
-> > > > > >
-> > > > >
-> > > > > If the programmed value is invalid, the packet will be "dropped" =
-/ will
-> > > > > never make it to the wire, right?
-> > >
-> > > Programmable behavior is to either drop or cap to some boundary
-> > > value, such as the farthest programmable time in the future: the
-> > > horizon. In fq:
-> > >
-> > >                 /* Check if packet timestamp is too far in the future=
-. */
-> > >                 if (fq_packet_beyond_horizon(skb, q, now)) {
-> > >                         if (q->horizon_drop) {
-> > >                                         q->stat_horizon_drops++;
-> > >                                         return qdisc_drop(skb, sch, t=
-o_free);
-> > >                         }
-> > >                         q->stat_horizon_caps++;
-> > >                         skb->tstamp =3D now + q->horizon;
-> > >                 }
-> > >                 fq_skb_cb(skb)->time_to_send =3D skb->tstamp;
-> > >
-> > > Drop is the more obviously correct mode.
-> > >
-> > > Programming with a clock source that the driver does not support will
-> > > then be a persistent failure.
-> > >
-> > > Preferably, this driver capability can be queried beforehand (rather
-> > > than only through reading error counters afterwards).
-> > >
-> > > Perhaps it should not be a driver task to convert from possibly
-> > > multiple clock sources to the device native clock. Right now, we do
-> > > use per-device timecounters for this, implemented in the driver.
-> > >
-> > > As for which clocks are relevant. For PTP, I suppose the device PHC,
-> > > converted to nsec. For pacing offload, TCP uses CLOCK_MONOTONIC.
-> >
-> > Do we need to expose some generic netdev netlink apis to query/adjust
-> > nic clock sources (or maybe there is something existing already)?
-> > Then the userspace can be responsible for syncing/converting the
-> > timestamps to the internal nic clocks. +1 to trying to avoid doing
-> > this in the drivers.
-> >
-> > > > > That is clearly a situation that the user should be informed abou=
-t. For
-> > > > > RT systems this normally means that something is really wrong reg=
-arding
-> > > > > timing / cycle overflow. Such systems have to react on that situa=
-tion.
-> > > >
-> > > > In general, af_xdp is a bit lacking in this 'notify the user that t=
-hey
-> > > > somehow messed up' area :-(
-> > > > For example, pushing a tx descriptor with a wrong addr/len in zc mo=
-de
-> > > > will not give any visible signal back (besides driver potentially
-> > > > spilling something into dmesg as it was in the mlx case).
-> > > > We can probably start with having some counters for these events?
-> > >
-> > > This is because the AF_XDP completion queue descriptor format is only
-> > > a u64 address?
-> >
-> > Yeah. XDP_COPY mode has the descriptor validation which is exported via
-> > recvmsg errno, but zerocopy path seems to be too deep in the stack
-> > to report something back. And there is no place, as you mention,
-> > in the completion ring to report the status.
-> >
-> > > Could error conditions be reported on tx completion in the metadata,
-> > > using xsk_tx_metadata_complete?
-> >
-> > That would be one way to do it, yes. But then the error reporting depen=
-ds
-> > on the metadata opt-in. Having a separate ring to export the errors,
-> > or having a v2 tx-completions layout with extra 'status' field would al=
-so
-> > work.
->=20
-> There are error counters for the non-metadata and offloading cases
-> above that can be retrieved with the XDP_STATISTICS getsockopt(). From
-> if_xdp.h:
->=20
-> struct xdp_statistics {
->         __u64 rx_dropped; /* Dropped for other reasons */
->         __u64 rx_invalid_descs; /* Dropped due to invalid descriptor */
->         __u64 tx_invalid_descs; /* Dropped due to invalid descriptor */
->         __u64 rx_ring_full; /* Dropped due to rx ring being full */
->         __u64 rx_fill_ring_empty_descs; /* Failed to retrieve item
-> from fill ring */
->         __u64 tx_ring_empty_descs; /* Failed to retrieve item from tx rin=
-g */
-> };
->=20
-> Albeit, these are aggregate statistics and do not say anything about
-> which packet that caused it. Works well for things that are
-> programming bugs that should not occur (such as rx_invalid_descs and
-> tx_invalid_descs) and requires the programmer to debug and fix his or
-> her program, but it does not work for requests that might fail even
-> though the program is correct and need to be handled on a packet by
-> packet basis. So something needs to be added for that as you both say.
->=20
-> Would prefer if we could avoid a v2 completion descriptor format or
-> another ring that needs to be checked all the time, so if we could
-> live with providing the error status in the metadata field of the
-> packet at completion time, that would be good. Though having the error
-> status in the completion ring would be faster as that cache line is
-> hot, while the metadata section of the packet is likely not at
-> completion time. So that speaks for a v2 completion ring format. Just
-> thinking out loud here.
+To stay consistent with the naming pattern used for similar cases in BPF
+UAPI (__MAX_BPF_ATTACH_TYPE, etc), rename MAX_BPF_LINK_TYPE into
+__MAX_BPF_LINK_TYPE.
 
-In this case, maybe adding tx_over_horizon_dropped to XDP_STATISTICS
-is all we need here? We can have some new api to query this horizon
-per netdev.
+Also similar to MAX_BPF_ATTACH_TYPE and MAX_BPF_REG, add:
+
+  #define MAX_BPF_LINK_TYPE __MAX_BPF_LINK_TYPE
+
+Not all __MAX_xxx enums have such #define, so I'm not sure if we should
+add it or not, but I figured I'll start with a completely backwards
+compatible way, and we can drop that, if necessary.
+
+Also adjust a selftest that used MAX_BPF_LINK_TYPE enum.
+
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ include/uapi/linux/bpf.h                            | 4 +++-
+ tools/include/uapi/linux/bpf.h                      | 4 +++-
+ tools/testing/selftests/bpf/prog_tests/libbpf_str.c | 2 +-
+ 3 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 4df2d025c784..e0545201b55f 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1108,9 +1108,11 @@ enum bpf_link_type {
+ 	BPF_LINK_TYPE_TCX =3D 11,
+ 	BPF_LINK_TYPE_UPROBE_MULTI =3D 12,
+ 	BPF_LINK_TYPE_NETKIT =3D 13,
+-	MAX_BPF_LINK_TYPE,
++	__MAX_BPF_LINK_TYPE,
+ };
+=20
++#define MAX_BPF_LINK_TYPE __MAX_BPF_LINK_TYPE
++
+ enum bpf_perf_event_type {
+ 	BPF_PERF_EVENT_UNSPEC =3D 0,
+ 	BPF_PERF_EVENT_UPROBE =3D 1,
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+index 4df2d025c784..e0545201b55f 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1108,9 +1108,11 @@ enum bpf_link_type {
+ 	BPF_LINK_TYPE_TCX =3D 11,
+ 	BPF_LINK_TYPE_UPROBE_MULTI =3D 12,
+ 	BPF_LINK_TYPE_NETKIT =3D 13,
+-	MAX_BPF_LINK_TYPE,
++	__MAX_BPF_LINK_TYPE,
+ };
+=20
++#define MAX_BPF_LINK_TYPE __MAX_BPF_LINK_TYPE
++
+ enum bpf_perf_event_type {
+ 	BPF_PERF_EVENT_UNSPEC =3D 0,
+ 	BPF_PERF_EVENT_UPROBE =3D 1,
+diff --git a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c b/tools/=
+testing/selftests/bpf/prog_tests/libbpf_str.c
+index 384bc1f7a65e..62ea855ec4d0 100644
+--- a/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
++++ b/tools/testing/selftests/bpf/prog_tests/libbpf_str.c
+@@ -87,7 +87,7 @@ static void test_libbpf_bpf_link_type_str(void)
+ 		const char *link_type_str;
+ 		char buf[256];
+=20
+-		if (link_type =3D=3D MAX_BPF_LINK_TYPE)
++		if (link_type =3D=3D __MAX_BPF_LINK_TYPE)
+ 			continue;
+=20
+ 		link_type_name =3D btf__str_by_offset(btf, e->name_off);
+--=20
+2.34.1
+
 
