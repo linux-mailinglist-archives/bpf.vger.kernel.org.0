@@ -1,55 +1,56 @@
-Return-Path: <bpf+bounces-16879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA8878071F7
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 15:13:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66DEB8071F8
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 15:13:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57D13B20EE2
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 14:13:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4448B1C20C47
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 14:13:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0886C3DBA5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00023DBAF;
 	Wed,  6 Dec 2023 14:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="KD0QpYg9"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="Rs6CoZ5U"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E8D10C6
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 06:13:45 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c09d62b70so42270155e9.1
-        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 06:13:45 -0800 (PST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888C2D64
+	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 06:13:46 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40c039e9719so50776185e9.1
+        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 06:13:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1701872023; x=1702476823; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iHqimM7Us6ovxnXsTLw9h2o99DZirqxax9hElWLgFg4=;
-        b=KD0QpYg9219MdrJjspgg1M0B6pcOrElD2Cq1bcnzx7v7xQhir4JMkTkLUspS7j+Cfo
-         6rITrNu2n9N8iPrEo9UjRtftHwN99IDbUIFMzUaAB7QgVj5L+wOyQI417eyeDVF+2rMp
-         xHr0h1CbPHoqXV6OSxy78FalvxYWmXcVIxmMDHeQKYny0uGt6chNijTBsurYTfvNmaxs
-         Hkk808yjwyERj4u7NomI/QvBfHpNiu0PdsWMPkQhK9pwMab57CdzF/BezP5rcRkIeF0O
-         LvNTdqzoKE6lNy9rPyXIbsF9zHLlPsd4bLhlSiwhC1KrTuz6f2JwpHtY9xdX09QhEY6A
-         7/Iw==
+        d=isovalent.com; s=google; t=1701872025; x=1702476825; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SvykMix2y/s2nVs/JtoBvl97FF1Y8Yf3PLdO8JbbZe4=;
+        b=Rs6CoZ5UE9jva99W5OLW4YD5sxSi9GcgKkp1iW1Ycv94FHFSdi+SpuxLAdVd87dvUI
+         eja0Q7YXCjhiXJrK1mn4OSjhHUHL7Ix1AGnbBuXEUyy8rTiR6MQ3WNpdh8FPOM68GJr4
+         2dU34DVMTVvntmssPErW9GHSl+uqzcsuNOXD5XtEhANmqyRF9JF30c/rob3rzIXqy3mx
+         CLS+MD736sUzNxKW6WbJhLJopU9Pefashz4OX0JyG6Yxa23nbpmixdJjvHKGD9C2IzEA
+         8IbEAnLrMygsGKhQD88QDu6WHxC5BnlBB/Cltoen0pI7HpcUr3Hm+sOeOYrN5r0BS7M/
+         yaqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701872023; x=1702476823;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iHqimM7Us6ovxnXsTLw9h2o99DZirqxax9hElWLgFg4=;
-        b=boHLwmKbJ3tNrJcp/9kp1yrM20V+xnRQAFs8JxK0sTVFQ5y+uSZ62DN0LMmvWReKPQ
-         rPxAj/axqVXdtXxtqse9c3p2v5Ywdtzw54Qr13J7fuEzTG6/j47eSohPg3Q1vpviYWCD
-         q80kYlr36pUVHKG1D5EUxKZ8Wt/kAR562DUOapDG8ZPCNPH+Qqmcp1oE1EndRO/CvSWA
-         8J6PmLth38eT/Qvzx1V6IaUiVCZIS6Ipwc3ikj4IySS2VtwIu+8Rrv9M9+y06S0LxAur
-         68CgTEz/ioRM04RgeE2ci97lvS0ZiaoYr7ewsj14aG32q2NK7x1GAHtYFAyqMhkoPjlr
-         JSvA==
-X-Gm-Message-State: AOJu0YzlQDlezbB1Ms4XUg12Oea0mP1owLAa6x7UCLJiuwghlHVhYGds
-	xek1Z+gSGAa8nh5YVuL/gAGCyQ==
-X-Google-Smtp-Source: AGHT+IHgu9au9WC1aoxZYHTRRlUA4kMwGjVDqO8fXv8Klhe8+kQM8UN1ORRhkmkLjJXCH3pBtMNlvQ==
-X-Received: by 2002:a05:600c:3b19:b0:40b:5e21:c5c0 with SMTP id m25-20020a05600c3b1900b0040b5e21c5c0mr451034wms.142.1701872023482;
-        Wed, 06 Dec 2023 06:13:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701872025; x=1702476825;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SvykMix2y/s2nVs/JtoBvl97FF1Y8Yf3PLdO8JbbZe4=;
+        b=PqN2Gf4x4kYf0Y6Ctz8D+MwXZsn8AokQwU93AqYJdw6EKZFq3Jq2SzTIWZbs+VnVRO
+         Lo8Ug76a5fHrd0GpAQxtXCZhO/cq7fA1lU0s5ILsYxoiqiAurz2NmiIdZ+3RUkFiFrlM
+         6Nmfn45lPOE5UQqAcYcGMGzGODhX+RqPnmO8uDKBra+a4CMOgQpz3a/fOWfIB9NcbtpE
+         JPx7xFTFNaXtsTFtyokl+sPPXdVp7NcEJIENfWlJKeMMJ5cyHhND4jCCXQdoA0+lAgqr
+         OE/l4ebwMCeQO0Sg/KvdsbW022cphe2cDRS942pcEIVmXZAqG4Lxv22ge+Hok7vGIGOh
+         H22Q==
+X-Gm-Message-State: AOJu0YzdKXhPZQshsEfLKxaeyF33ANoOiSna2yAZv1XJDk+z8rX0jIqN
+	8JWhd7woQCki1gvax8syqiK4aw==
+X-Google-Smtp-Source: AGHT+IHJ7azeEp7QtYQ5l0uQFMCbC0alzcXxcidhuHD1h2OSTvfbRcT8xgRuHe7VJRP4VLNKUocauA==
+X-Received: by 2002:a05:600c:45d5:b0:40b:5e21:ec37 with SMTP id s21-20020a05600c45d500b0040b5e21ec37mr676160wmo.105.1701872024920;
+        Wed, 06 Dec 2023 06:13:44 -0800 (PST)
 Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05600c311200b0040b42df75fcsm22140330wmo.39.2023.12.06.06.13.42
+        by smtp.gmail.com with ESMTPSA id g18-20020a05600c311200b0040b42df75fcsm22140330wmo.39.2023.12.06.06.13.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Wed, 06 Dec 2023 06:13:43 -0800 (PST)
 From: Anton Protopopov <aspsk@isovalent.com>
@@ -61,10 +62,12 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	bpf@vger.kernel.org
 Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH bpf-next 0/7] BPF Static Keys
-Date: Wed,  6 Dec 2023 14:10:23 +0000
-Message-Id: <20231206141030.1478753-1-aspsk@isovalent.com>
+Subject: [PATCH bpf-next 1/7] bpf: extract bpf_prog_bind_map logic into an inline helper
+Date: Wed,  6 Dec 2023 14:10:24 +0000
+Message-Id: <20231206141030.1478753-2-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231206141030.1478753-1-aspsk@isovalent.com>
+References: <20231206141030.1478753-1-aspsk@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,56 +76,102 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series adds new BPF Static Keys API and implements it for X86.
+Add a new inline function __bpf_prog_bind_map() which adds a new map to
+prog->aux->used_maps. This new helper will be used in a consequent patch.
+(This change also simplifies the code of the bpf_prog_bind_map() function.)
 
-The first three patches are preparatory to make main changes simpler. 
+Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+---
+ kernel/bpf/syscall.c | 58 ++++++++++++++++++++++----------------------
+ 1 file changed, 29 insertions(+), 29 deletions(-)
 
-The fourth patch adds kernel API which allows to pass a list of "static
-branches" to kernel. A static branch is JA instruction which can be patched
-runtime by setting controlling map, aka static key, value to zero/non-zero.
-
-The fifth patch adds arch support for static keys on x86.
-
-The sixth patch adds libbpf support for static keys, which is more
-user-friendly than just passing a list of branches.
-
-Finally, the seventh patch adds some self-tests.
-
-See the Plumbers talk [1] for more details on the design.
-
-Anton Protopopov (7):
-  bpf: extract bpf_prog_bind_map logic into an inline helper
-  bpf: rename and export a struct definition
-  bpf: adjust functions offsets when patching progs
-  bpf: implement BPF Static Keys support
-  bpf: x86: implement static keys support
-  libbpf: BPF Static Keys support
-  selftests/bpf: Add tests for BPF Static Keys
-
- MAINTAINERS                                   |   7 +
- arch/x86/net/bpf_jit_comp.c                   |  72 +++
- include/linux/bpf.h                           |  34 ++
- include/uapi/linux/bpf.h                      |  18 +
- kernel/bpf/Makefile                           |   2 +
- kernel/bpf/arraymap.c                         |  15 +-
- kernel/bpf/core.c                             |   9 +
- kernel/bpf/skey.c                             | 306 ++++++++++++
- kernel/bpf/syscall.c                          | 100 ++--
- kernel/bpf/verifier.c                         | 103 ++++-
- tools/include/uapi/linux/bpf.h                |  18 +
- tools/lib/bpf/bpf.c                           |   5 +-
- tools/lib/bpf/bpf.h                           |   4 +-
- tools/lib/bpf/bpf_helpers.h                   |  64 +++
- tools/lib/bpf/libbpf.c                        | 273 ++++++++++-
- tools/lib/bpf/libbpf_internal.h               |   3 +
- tools/lib/bpf/linker.c                        |   8 +-
- .../bpf/prog_tests/bpf_static_keys.c          | 436 ++++++++++++++++++
- .../selftests/bpf/progs/bpf_static_keys.c     | 120 +++++
- 19 files changed, 1542 insertions(+), 55 deletions(-)
- create mode 100644 kernel/bpf/skey.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_static_keys.c
-
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 0ed286b8a0f0..81625ef98a7d 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -2366,6 +2366,28 @@ struct bpf_prog *bpf_prog_get_type_dev(u32 ufd, enum bpf_prog_type type,
+ }
+ EXPORT_SYMBOL_GPL(bpf_prog_get_type_dev);
+ 
++static int __bpf_prog_bind_map(struct bpf_prog *prog, struct bpf_map *map)
++{
++	struct bpf_map **used_maps_new;
++	int i;
++
++	for (i = 0; i < prog->aux->used_map_cnt; i++)
++		if (prog->aux->used_maps[i] == map)
++			return -EEXIST;
++
++	used_maps_new = krealloc_array(prog->aux->used_maps,
++				       prog->aux->used_map_cnt + 1,
++				       sizeof(used_maps_new[0]),
++				       GFP_KERNEL);
++	if (!used_maps_new)
++		return -ENOMEM;
++
++	prog->aux->used_maps = used_maps_new;
++	prog->aux->used_maps[prog->aux->used_map_cnt++] = map;
++
++	return 0;
++}
++
+ /* Initially all BPF programs could be loaded w/o specifying
+  * expected_attach_type. Later for some of them specifying expected_attach_type
+  * at load time became required so that program could be validated properly.
+@@ -5285,8 +5307,7 @@ static int bpf_prog_bind_map(union bpf_attr *attr)
+ {
+ 	struct bpf_prog *prog;
+ 	struct bpf_map *map;
+-	struct bpf_map **used_maps_old, **used_maps_new;
+-	int i, ret = 0;
++	int ret = 0;
+ 
+ 	if (CHECK_ATTR(BPF_PROG_BIND_MAP))
+ 		return -EINVAL;
+@@ -5305,37 +5326,16 @@ static int bpf_prog_bind_map(union bpf_attr *attr)
+ 	}
+ 
+ 	mutex_lock(&prog->aux->used_maps_mutex);
+-
+-	used_maps_old = prog->aux->used_maps;
+-
+-	for (i = 0; i < prog->aux->used_map_cnt; i++)
+-		if (used_maps_old[i] == map) {
+-			bpf_map_put(map);
+-			goto out_unlock;
+-		}
+-
+-	used_maps_new = kmalloc_array(prog->aux->used_map_cnt + 1,
+-				      sizeof(used_maps_new[0]),
+-				      GFP_KERNEL);
+-	if (!used_maps_new) {
+-		ret = -ENOMEM;
+-		goto out_unlock;
+-	}
+-
+-	memcpy(used_maps_new, used_maps_old,
+-	       sizeof(used_maps_old[0]) * prog->aux->used_map_cnt);
+-	used_maps_new[prog->aux->used_map_cnt] = map;
+-
+-	prog->aux->used_map_cnt++;
+-	prog->aux->used_maps = used_maps_new;
+-
+-	kfree(used_maps_old);
+-
+-out_unlock:
++	ret = __bpf_prog_bind_map(prog, map);
+ 	mutex_unlock(&prog->aux->used_maps_mutex);
+ 
+ 	if (ret)
+ 		bpf_map_put(map);
++
++	/* This map was already bound to the program */
++	if (ret == -EEXIST)
++		ret = 0;
++
+ out_prog_put:
+ 	bpf_prog_put(prog);
+ 	return ret;
 -- 
 2.34.1
 
