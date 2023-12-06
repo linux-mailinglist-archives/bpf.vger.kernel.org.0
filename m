@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-16854-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16855-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E97C08067C7
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 07:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A38EE8067DE
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 07:59:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 187071C21137
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:51:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5A821C21255
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 06:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056E112B6A;
-	Wed,  6 Dec 2023 06:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7BF12E75;
+	Wed,  6 Dec 2023 06:59:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dKCfP0Bg"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="fUSpwS4e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ED00D40
-	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 22:51:33 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6ce7c1b07e1so963412b3a.2
-        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 22:51:33 -0800 (PST)
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42925D65
+	for <bpf@vger.kernel.org>; Tue,  5 Dec 2023 22:59:26 -0800 (PST)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3b9b90f8708so1787256b6e.2
+        for <bpf@vger.kernel.org>; Tue, 05 Dec 2023 22:59:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701845492; x=1702450292; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=12LlbwNI7dE8ECdDBVsUSYIcKCDjkooqiSmizmFjh0o=;
-        b=dKCfP0BgX77mVoKGPy61HOHIJyRsqrS2Bg+hsoBm5MkJkKNGKi8bukqlBRE8qSoMuc
-         cZq2ZBCCu2pgFC1v5/6dMG1QcF1eq17tThtj0Hl/tGfXz8LqvJ3+yH6eeklGws8lQaLe
-         LWX/sXaBVWQKusMvM/mJg3NgE6R3xdnomSg1crtap30gUIJYi0wVsNXFf0RmKHv4Hqyv
-         1qxSMLwGDvjFtGzNGtuxzA1hC27wFamaLvshcXHR7toquEmliqXvLq7vusUQNMGaLHVI
-         sGIo62emptTTHwGtNquHsxxGdybKrDBDWyMVU2ivRvgrndrn/m8BHCAyLl1rnibStz5M
-         e9VA==
+        d=bytedance.com; s=google; t=1701845965; x=1702450765; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sfqEHLbUHYLDNr52xzISlLf7TCD393bK+BO/LsCYG3E=;
+        b=fUSpwS4eOnOAGq42BJJsGCIFQ/B9Irk8wkv2pvh7rJyakFee1e4KO8DdtpUFyjdN+r
+         sdVnELKBo3QYdv7oJNjDF+4agJYjC6tatCCmFX6PtdIO4rNeVxwMLE5Kw3QAV8rz0nJY
+         beM8rT1Vpqtn4aQtoa1uEPj0RtXgzU8LBT4FI2djrk7E40kGkpuU1A9K4LtS6P4NazX2
+         HTC4oHMjiQfOdXlXuL1GU+bOWZHjNz1ZNMVUsPWoa7ZKeeznBEHD8bamwsBaZT4eam/O
+         9CWxePrrvOcflLCX95Fna7WJP6HCkGFxQiIeAjgzk5J19coUht5SLUeubOGVKSMS1l28
+         XPmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701845492; x=1702450292;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=12LlbwNI7dE8ECdDBVsUSYIcKCDjkooqiSmizmFjh0o=;
-        b=oFl6s3k/G9km2oGCIwsoe7ZKCZi/upUZB51UosYbMJYYUroSEDeMYJDJa7hBjF9mEa
-         eCYYYdThSl8a6LSpk7WmJscS5qiZy5CdZsnedRaDcjCuV1qOsimko6M8POy4V/bo23GK
-         +L7oelVlUrXy6OzDBz3lQOZAH2616537f+b1A5BLoyPhyS0IKJqiqqHews/3hN5DAbcD
-         70YzhdOrIXz7lbIw2/QnD7iq5+xhx2/twAzN9aXWwH0XAddMuSEHwophzWERVpbBZ9AV
-         8Ev7gQfSGwJIlhOPwY+jUKbc0nMTVJtfFUB+I6CiZ8FChte21BDM0jzBYT5hfVMDL3v6
-         Hr2Q==
-X-Gm-Message-State: AOJu0YzeCmxJArwlf1j/kuYCs+D28++bP/jDKv+b7i/SJRNHtC2DaZox
-	8p4bhjzDXO6Sa+Tv8KLvfHc=
-X-Google-Smtp-Source: AGHT+IE/NHKfaUWk2vYOjCWgJcioHORuOD+dRcke4kvBjlZAc1GBa33DwI6aZ8SEnyDD3lxtGGQmxw==
-X-Received: by 2002:a05:6a20:4284:b0:18c:f42c:d558 with SMTP id o4-20020a056a20428400b0018cf42cd558mr624197pzj.28.1701845492414;
-        Tue, 05 Dec 2023 22:51:32 -0800 (PST)
-Received: from [10.22.68.68] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id 20-20020a170902c25400b001cfc170c0cfsm7496793plg.119.2023.12.05.22.51.29
+        d=1e100.net; s=20230601; t=1701845965; x=1702450765;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sfqEHLbUHYLDNr52xzISlLf7TCD393bK+BO/LsCYG3E=;
+        b=I2JZHVyxJlt8k8kPf2uestQr/1D0p79tbS8NVK0qXnsZ7hpZgQT5mISh3vn2ItREyv
+         5DqzH5tRBVrhk43YXp4ozYlyZKsLWAQ9FZEfQ8RzvdUBjb2cAoaPI4gsEfEHn0yPBxj0
+         5r5iLY/Yst/dEd+2+o8Qz+y8IikRX34PeK4FVlQOiDrsU2/WQIEcv8J6tuMHFjAlhpgj
+         lJjzx2hmWuSEXg+HGagBeUI6ASrSz5FmETfu6UgL97Q2fZoKBXthnmeDN4Vvs19vFvt5
+         Vpv05ia38ZrNdqsRjtEcWLMLMZjGmuCIgg1nVRsAmZdJWu9YJPZXMctWN7QoMVC/NGV1
+         C6oA==
+X-Gm-Message-State: AOJu0YzbjD8Bqi5wezQM/C9ToLekYu+ekG89eXMRuLCeRTnbTOoOhLXh
+	idR/YXYWPO0ei5qjFXLHtLBI6A==
+X-Google-Smtp-Source: AGHT+IEe1DCMs1vCS65e5ggb9jvVWH07VbtqqRGVbP9+tHVKJFmcpLj5v7Cl/x3LWwioPRdxmFGjsw==
+X-Received: by 2002:a05:6808:1494:b0:3b8:b4c6:ce0d with SMTP id e20-20020a056808149400b003b8b4c6ce0dmr729443oiw.81.1701845965611;
+        Tue, 05 Dec 2023 22:59:25 -0800 (PST)
+Received: from [10.84.153.17] ([203.208.167.146])
+        by smtp.gmail.com with ESMTPSA id e15-20020aa78c4f000000b006ce5f2996d4sm3967316pfd.143.2023.12.05.22.59.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 22:51:31 -0800 (PST)
-Message-ID: <d144dda7-a90c-4a40-9caa-a48c0e7e7fae@gmail.com>
-Date: Wed, 6 Dec 2023 14:51:28 +0800
+        Tue, 05 Dec 2023 22:59:25 -0800 (PST)
+Message-ID: <b7053425-65eb-46a0-abd9-59ade5e78211@bytedance.com>
+Date: Wed, 6 Dec 2023 14:59:18 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,180 +62,48 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v2 2/4] bpf, x64: Fix tailcall hierarchy
-Content-Language: en-US
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, jakub@cloudflare.com, iii@linux.ibm.com,
- hengqi.chen@gmail.com
-References: <20231011152725.95895-1-hffilwlqm@gmail.com>
- <20231011152725.95895-3-hffilwlqm@gmail.com> <ZW+sNudwg5Bc0Gbl@boxer>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <ZW+sNudwg5Bc0Gbl@boxer>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: Re: [PATCH bpf-next] netkit: Add some ethtool ops to provide
+ information to user
+To: Daniel Borkmann <daniel@iogearbox.net>,
+ Nikolay Aleksandrov <razor@blackwall.org>, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yangzhenze@bytedance.com,
+ wangdongdong.6@bytedance.com, tangchen.1@bytedance.com
+References: <20231130075844.52932-1-zhoufeng.zf@bytedance.com>
+ <51dd35c9-ff5b-5b11-04d1-9a5ae9466780@blackwall.org>
+ <16b4d42d-2d62-460e-912f-6e3b86f3004d@bytedance.com>
+ <94e335d4-ec90-ba78-b2b4-8419b25bfa88@iogearbox.net>
+ <57587b74-f865-4b56-8d65-a5cbc6826079@bytedance.com>
+ <2a829a9c-69a6-695d-d3df-59190b161787@iogearbox.net>
+From: Feng Zhou <zhoufeng.zf@bytedance.com>
+In-Reply-To: <2a829a9c-69a6-695d-d3df-59190b161787@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+在 2023/12/4 23:22, Daniel Borkmann 写道:
+> Thanks, so the netkit_get_link_ksettings is optional. 
+
+Yes, netkit_get_link_ksettings really not necessary, I just added it in 
+line with veth.
+
+I don't quite
+> follow what you
+> mean with regards to your business logic in veth to obtain peer ifindex. 
+> What does
+> the script do exactly with the peer ifindex (aka /why/ is it needed), 
+> could you
+> elaborate some more - it's still somewhat too vague? 🙂 E.g. why it does 
+> not suffice
+> to look at the device type or other kind of attributes?
 
 
+The scripting logic of the business colleagues should just be simple 
+logging records, using ethtool. Then they saw that netkit has this 
+missing, so raised this requirement, so I sent this patch, wanting to 
+hear your opinions. If you don't think it's necessary, let the business 
+colleagues modify it.
 
-On 6/12/23 07:03, Maciej Fijalkowski wrote:
-> On Wed, Oct 11, 2023 at 11:27:23PM +0800, Leon Hwang wrote:
->> From commit ebf7d1f508a73871 ("bpf, x64: rework pro/epilogue and tailcall
->> handling in JIT"), the tailcall on x64 works better than before.
->>
->> From commit e411901c0b775a3a ("bpf: allow for tailcalls in BPF subprograms
->> for x64 JIT"), tailcall is able to run in BPF subprograms on x64.
->>
->> How about:
->>
->> 1. More than 1 subprograms are called in a bpf program.
->> 2. The tailcalls in the subprograms call the bpf program.
->>
->> Because of missing tail_call_cnt back-propagation, a tailcall hierarchy
->> comes up. And MAX_TAIL_CALL_CNT limit does not work for this case.
->>
->> As we know, in tail call context, the tail_call_cnt propagates by stack
->> and rax register between BPF subprograms. So, propagating tail_call_cnt
->> pointer by stack and rax register makes tail_call_cnt as like a global
->> variable, in order to make MAX_TAIL_CALL_CNT limit works for tailcall
->> hierarchy cases.
->>
->> Before jumping to other bpf prog, load tail_call_cnt from the pointer
->> and then compare with MAX_TAIL_CALL_CNT. Finally, increment
->> tail_call_cnt by its pointer.
->>
->> But, where does tail_call_cnt store?
->>
->> It stores on the stack of bpf prog's caller, like
->>
->>     |  STACK  |
->>     |         |
->>     |   rip   |
->>  +->|   tcc   |
->>  |  |   rip   |
->>  |  |   rbp   |
->>  |  +---------+ RBP
->>  |  |         |
->>  |  |         |
->>  |  |         |
->>  +--| tcc_ptr |
->>     |   rbx   |
->>     +---------+ RSP
->>
->> And tcc_ptr is unnecessary to be popped from stack at the epilogue of bpf
->> prog, like the way of commit d207929d97ea028f ("bpf, x64: Drop "pop %rcx"
->> instruction on BPF JIT epilogue").
->>
->> Why not back-propagate tail_call_cnt?
->>
->> It's because it's vulnerable to back-propagate it. It's unable to work
->> well with the following case.
->>
->> int prog1();
->> int prog2();
->>
->> prog1 is tail caller, and prog2 is tail callee. If we do back-propagate
->> tail_call_cnt at the epilogue of prog2, can prog2 run standalone at the
->> same time? The answer is NO. Otherwise, there will be a register to be
->> polluted, which will make kernel crash.
-> 
-> Sorry but I keep on reading this explanation and I'm lost what is being
-> fixed here> 
-> You want to limit the total amount of tail calls that entry prog can do to
-> MAX_TAIL_CALL_CNT. Although I was working on that, my knowledge here is
-> rusty, therefore my view might be distorted :) to me MAX_TAIL_CALL_CNT is
-> to protect us from overflowing kernel stack and endless loops. As long a
-> single call chain doesn't go over 8kB program is fine. Verifier has a
-> limit of 256 subprogs from what I see.
+Thanks.
 
-I try to resolve the following-like cases here.
-
-          +--------- tailcall --+
-          |                     |
-          V       --> subprog1 -+
- entry bpf prog <
-          A       --> subprog2 -+
-          |                     |
-          +--------- tailcall --+
-
-Without this fixing, the CPU will be stalled because of too many tailcalls.
-
-> 
-> Can you elaborate a bit more about the kernel crash you mention in the
-> last paragraph?
-
-We have progs, prog1, prog2, prog3 and prog4, and the scenario:
-
-case1: kprobe1 --> prog1 --> subprog1 --tailcall-> prog2 --> subprog2 --tailcall-> prog3
-case2: kprobe2 --> prog2 --> subprog2 --tailcall-> prog3
-case3: kprobe3 --> prog4 --> subprog3 --tailcall-> prog3
-                         --> subprog4 --tailcall-> prog4
-
-How does prog2 back-propagate tail_call_cnt to prog1?
-
-Possible way 1:
-When prog2 and prog3 are added to PROG_ARRAY, poke their epilogues to
-back-propagate tail_call_cnt by RCX register. It seems OK because kprobes do
-not handle the value in RCX register, like case2.
-
-Possible way 2:
-Can back-propagate tail_call_cnt with RCX register by checking tail_call_cnt != 0
-at epilogue when current prog has tailcall?
-No. As for case1, prog2 handles the value in RCX register, which is not tail_call_cnt,
-because prog3 has no tailcall and won't populate RCX register with tail_call_cnt.
-
-However, I don't like the back-propagating way. Then, I "burn" my brain to figure
-out pointer propagating ways.
-
-RFC PATCH v1 way:
-Propagate tail_call_cnt and its pointer together. Then, the pointer is used to
-check MAX_TAIL_CALL_CNT and increment tail_call_cnt.
-
-    |  STACK  |
-    +---------+ RBP
-    |         |
-    |         |
-    |         |
- +--| tcc_ptr |
- +->|   tcc   |
-    |   rbx   |
-    +---------+ RSP
-
-RFC PATCH v2 way (current patchset):
-Propagate tail_call_cnt pointer only. Then, the pointer is used to check
-MAX_TAIL_CALL_CNT and increment tail_call_cnt.
-
-    |  STACK  |
-    |         |
-    |   rip   |
- +->|   tcc   |
- |  |   rip   |
- |  |   rbp   |
- |  +---------+ RBP
- |  |         |
- |  |         |
- |  |         |
- +--| tcc_ptr |
-    |   rbx   |
-    +---------+ RSP
-
-> 
-> I also realized that verifier assumes MAX_TAIL_CALL_CNT as 32 which has
-> changed in the meantime to 33 and we should adjust the max allowed stack
-> depth of subprogs? I believe this was brought up at LPC?
-
-There's following code snippet in verifier.c:
-
-	/* protect against potential stack overflow that might happen when
-	 * bpf2bpf calls get combined with tailcalls. Limit the caller's stack
-	 * depth for such case down to 256 so that the worst case scenario
-	 * would result in 8k stack size (32 which is tailcall limit * 256 =
-	 * 8k).
-
-But, MAX_TAIL_CALL_CNT is 33.
-
-This was not brought up at LPC 2022&2023. I don't know whether this was
-brought up at previous LPCs.
-
-Thanks,
-Leon
 
