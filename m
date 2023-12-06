@@ -1,37 +1,48 @@
-Return-Path: <bpf+bounces-16922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E0A0807896
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 20:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 637D5807899
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 20:28:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B18001C20F5C
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 19:28:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 498A51C20F0B
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 19:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4CCD6DCFE;
-	Wed,  6 Dec 2023 19:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95FDA6EB76;
+	Wed,  6 Dec 2023 19:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oMF0cV5R"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F51D67;
-	Wed,  6 Dec 2023 11:27:58 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 272CED68;
+	Wed,  6 Dec 2023 11:27:59 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2667221DE0;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 91D2921DE2;
 	Wed,  6 Dec 2023 19:27:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1701890877; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=W3rOG8tNDrz/UaTONHfRc+U+0BGGNGTWzhshWawNXhg=;
+	b=oMF0cV5Rhta4SMfHiTrwLB7eI/pQqg5yr/1SOZQZ8OAC4jHOHVP/625pEYGBeNKblXXcpl
+	uK/FwaYGNdV1lUmW5TRubeGPgrlD6KJBcXBhp6OlqCEqnKuK1JyJBA6Aa8G/YOq1ilbu8m
+	JHRV0VUgMB3SrfmdFKI2Ye87lTCELPA=
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5895513403;
-	Wed,  6 Dec 2023 19:27:56 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 2BBEE13B6F;
+	Wed,  6 Dec 2023 19:27:57 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id wDzMEzzLcGUeYAAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Wed, 06 Dec 2023 19:27:56 +0000
+	id aH+lCT3LcGUeYAAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Wed, 06 Dec 2023 19:27:57 +0000
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To: netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
@@ -61,9 +72,9 @@ Cc: "David S . Miller" <davem@davemloft.net>,
 	Petr Pavlu <ppavlu@suse.cz>,
 	Michal Kubecek <mkubecek@suse.cz>,
 	Martin Wilck <mwilck@suse.com>
-Subject: [PATCH 2/3] net/sched: sch: Load qdisc modules via alias
-Date: Wed,  6 Dec 2023 20:27:51 +0100
-Message-ID: <20231206192752.18989-3-mkoutny@suse.com>
+Subject: [PATCH 3/3] net/sched: act: Load TC action modules via alias
+Date: Wed,  6 Dec 2023 20:27:52 +0100
+Message-ID: <20231206192752.18989-4-mkoutny@suse.com>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <20231206192752.18989-1-mkoutny@suse.com>
 References: <20231206192752.18989-1-mkoutny@suse.com>
@@ -75,43 +86,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 2667221DE0
-X-Spam-Score: 15.00
-X-Spamd-Result: default: False [15.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_SPF_FAIL(1.00)[-all];
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.80
+X-Spamd-Result: default: False [-1.80 / 50.00];
 	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
 	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 TAGGED_RCPT(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_POLICY_QUARANTINE(1.50)[suse.com : No valid SPF, No valid DKIM,quarantine];
-	 BAYES_HAM(-3.00)[100.00%];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCPT_COUNT_TWELVE(0.00)[28];
 	 MID_CONTAINS_FROM(1.00)[];
 	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
 	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spamd-Bar: +++++++++++++++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=none;
-	dmarc=fail reason="No valid SPF, No valid DKIM" header.from=suse.com (policy=quarantine);
-	spf=fail (smtp-out1.suse.de: domain of mkoutny@suse.com does not designate 2a07:de40:b281:104:10:150:64:98 as permitted sender) smtp.mailfrom=mkoutny@suse.com
-X-Rspamd-Server: rspamd1
-X-Spam: Yes
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-The qdisc modules may be loaded lazily without user's awareness and
+The action modules may be loaded lazily without user's awareness and
 control. Add respective aliases to modules and request them under these
 aliases so that modprobe's blacklisting mechanism works also for
 these modules. (The same pattern exists e.g. for filesystem
@@ -121,393 +124,302 @@ Original module names remain unchanged.
 
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- include/net/pkt_sched.h  | 1 +
- net/sched/sch_api.c      | 2 +-
- net/sched/sch_cake.c     | 1 +
- net/sched/sch_cbs.c      | 1 +
- net/sched/sch_choke.c    | 1 +
- net/sched/sch_codel.c    | 1 +
- net/sched/sch_drr.c      | 1 +
- net/sched/sch_etf.c      | 1 +
- net/sched/sch_ets.c      | 1 +
- net/sched/sch_fq.c       | 1 +
- net/sched/sch_fq_codel.c | 1 +
- net/sched/sch_gred.c     | 1 +
- net/sched/sch_hfsc.c     | 1 +
- net/sched/sch_hhf.c      | 1 +
- net/sched/sch_htb.c      | 1 +
- net/sched/sch_ingress.c  | 2 ++
- net/sched/sch_mqprio.c   | 1 +
- net/sched/sch_multiq.c   | 1 +
- net/sched/sch_netem.c    | 1 +
- net/sched/sch_pie.c      | 1 +
- net/sched/sch_plug.c     | 1 +
- net/sched/sch_prio.c     | 1 +
- net/sched/sch_qfq.c      | 1 +
- net/sched/sch_red.c      | 1 +
- net/sched/sch_sfb.c      | 1 +
- net/sched/sch_sfq.c      | 1 +
- net/sched/sch_skbprio.c  | 1 +
- net/sched/sch_taprio.c   | 1 +
- net/sched/sch_tbf.c      | 1 +
- 29 files changed, 30 insertions(+), 1 deletion(-)
+ include/net/act_api.h      | 1 +
+ net/sched/act_api.c        | 2 +-
+ net/sched/act_bpf.c        | 1 +
+ net/sched/act_connmark.c   | 1 +
+ net/sched/act_csum.c       | 1 +
+ net/sched/act_ct.c         | 1 +
+ net/sched/act_ctinfo.c     | 1 +
+ net/sched/act_gact.c       | 1 +
+ net/sched/act_gate.c       | 1 +
+ net/sched/act_ife.c        | 1 +
+ net/sched/act_ipt.c        | 2 ++
+ net/sched/act_mirred.c     | 1 +
+ net/sched/act_mpls.c       | 1 +
+ net/sched/act_nat.c        | 1 +
+ net/sched/act_pedit.c      | 1 +
+ net/sched/act_police.c     | 1 +
+ net/sched/act_sample.c     | 1 +
+ net/sched/act_simple.c     | 1 +
+ net/sched/act_skbedit.c    | 1 +
+ net/sched/act_skbmod.c     | 1 +
+ net/sched/act_tunnel_key.c | 1 +
+ net/sched/act_vlan.c       | 1 +
+ 22 files changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/pkt_sched.h b/include/net/pkt_sched.h
-index 9fa1d0794dfa..cfa1b58bf7ec 100644
---- a/include/net/pkt_sched.h
-+++ b/include/net/pkt_sched.h
-@@ -100,6 +100,7 @@ struct Qdisc *fifo_create_dflt(struct Qdisc *sch, struct Qdisc_ops *ops,
- 
- int register_qdisc(struct Qdisc_ops *qops);
- void unregister_qdisc(struct Qdisc_ops *qops);
-+#define MODULE_ALIAS_QD(id)	MODULE_ALIAS("qd-" __stringify(id))
- void qdisc_get_default(char *id, size_t len);
- int qdisc_set_default(const char *id);
- 
-diff --git a/net/sched/sch_api.c b/net/sched/sch_api.c
-index e9eaf637220e..c822eda7d331 100644
---- a/net/sched/sch_api.c
-+++ b/net/sched/sch_api.c
-@@ -1246,7 +1246,7 @@ static struct Qdisc *qdisc_create(struct net_device *dev,
- 			 * go away in the mean time.
- 			 */
+diff --git a/include/net/act_api.h b/include/net/act_api.h
+index 4ae0580b63ca..c8bd834f963f 100644
+--- a/include/net/act_api.h
++++ b/include/net/act_api.h
+@@ -200,6 +200,7 @@ int tcf_idr_release(struct tc_action *a, bool bind);
+ int tcf_register_action(struct tc_action_ops *a, struct pernet_operations *ops);
+ int tcf_unregister_action(struct tc_action_ops *a,
+ 			  struct pernet_operations *ops);
++#define MODULE_ALIAS_TCA(kind)	MODULE_ALIAS("tca-" __stringify(kind))
+ int tcf_action_destroy(struct tc_action *actions[], int bind);
+ int tcf_action_exec(struct sk_buff *skb, struct tc_action **actions,
+ 		    int nr_actions, struct tcf_result *res);
+diff --git a/net/sched/act_api.c b/net/sched/act_api.c
+index c39252d61ebb..1775b3ad5200 100644
+--- a/net/sched/act_api.c
++++ b/net/sched/act_api.c
+@@ -1331,7 +1331,7 @@ struct tc_action_ops *tc_action_load_ops(struct nlattr *nla, bool police,
+ #ifdef CONFIG_MODULES
+ 		if (rtnl_held)
  			rtnl_unlock();
--			request_module("sch_%s", name);
-+			request_module("qd-%s", name);
+-		request_module("act_%s", act_name);
++		request_module("tca-%s", act_name);
+ 		if (rtnl_held)
  			rtnl_lock();
- 			ops = qdisc_lookup_ops(kind);
- 			if (ops != NULL) {
-diff --git a/net/sched/sch_cake.c b/net/sched/sch_cake.c
-index 9cff99558694..7b5f2c64a90d 100644
---- a/net/sched/sch_cake.c
-+++ b/net/sched/sch_cake.c
-@@ -3103,6 +3103,7 @@ static struct Qdisc_ops cake_qdisc_ops __read_mostly = {
- 	.dump_stats	=	cake_dump_stats,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_QD("cake");
  
- static int __init cake_module_init(void)
+diff --git a/net/sched/act_bpf.c b/net/sched/act_bpf.c
+index b0455fda7d0b..76a4bbad3d0d 100644
+--- a/net/sched/act_bpf.c
++++ b/net/sched/act_bpf.c
+@@ -401,6 +401,7 @@ static struct tc_action_ops act_bpf_ops __read_mostly = {
+ 	.init		=	tcf_bpf_init,
+ 	.size		=	sizeof(struct tcf_bpf),
+ };
++MODULE_ALIAS_TCA("bpf");
+ 
+ static __net_init int bpf_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_cbs.c b/net/sched/sch_cbs.c
-index 9a0b85190a2c..c640b55145b7 100644
---- a/net/sched/sch_cbs.c
-+++ b/net/sched/sch_cbs.c
-@@ -546,6 +546,7 @@ static struct Qdisc_ops cbs_qdisc_ops __read_mostly = {
- 	.dump		=	cbs_dump,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_connmark.c b/net/sched/act_connmark.c
+index 0d7aee8933c5..3fed64024035 100644
+--- a/net/sched/act_connmark.c
++++ b/net/sched/act_connmark.c
+@@ -242,6 +242,7 @@ static struct tc_action_ops act_connmark_ops = {
+ 	.cleanup	=	tcf_connmark_cleanup,
+ 	.size		=	sizeof(struct tcf_connmark_info),
  };
-+MODULE_ALIAS_QD("cbs");
++MODULE_ALIAS_TCA("connmark");
  
- static struct notifier_block cbs_device_notifier = {
- 	.notifier_call = cbs_dev_notifier,
-diff --git a/net/sched/sch_choke.c b/net/sched/sch_choke.c
-index ae1da08e268f..684a4c0c06ef 100644
---- a/net/sched/sch_choke.c
-+++ b/net/sched/sch_choke.c
-@@ -498,6 +498,7 @@ static struct Qdisc_ops choke_qdisc_ops __read_mostly = {
- 	.dump_stats	=	choke_dump_stats,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_QD("choke");
- 
- static int __init choke_module_init(void)
+ static __net_init int connmark_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_codel.c b/net/sched/sch_codel.c
-index d7a4874543de..8694a45dd659 100644
---- a/net/sched/sch_codel.c
-+++ b/net/sched/sch_codel.c
-@@ -287,6 +287,7 @@ static struct Qdisc_ops codel_qdisc_ops __read_mostly = {
- 	.dump_stats	=	codel_dump_stats,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_csum.c b/net/sched/act_csum.c
+index 8ed285023a40..6cb090a966ad 100644
+--- a/net/sched/act_csum.c
++++ b/net/sched/act_csum.c
+@@ -709,6 +709,7 @@ static struct tc_action_ops act_csum_ops = {
+ 	.offload_act_setup = tcf_csum_offload_act_setup,
+ 	.size		= sizeof(struct tcf_csum),
  };
-+MODULE_ALIAS_QD("codel");
++MODULE_ALIAS_TCA("csum");
  
- static int __init codel_module_init(void)
+ static __net_init int csum_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_drr.c b/net/sched/sch_drr.c
-index 097740a9afea..271672fbbb8c 100644
---- a/net/sched/sch_drr.c
-+++ b/net/sched/sch_drr.c
-@@ -481,6 +481,7 @@ static struct Qdisc_ops drr_qdisc_ops __read_mostly = {
- 	.destroy	= drr_destroy_qdisc,
- 	.owner		= THIS_MODULE,
+diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
+index b3f4a503ee2b..21e535fb3ab7 100644
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -1578,6 +1578,7 @@ static struct tc_action_ops act_ct_ops = {
+ 	.offload_act_setup =	tcf_ct_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_ct),
  };
-+MODULE_ALIAS_QD("drr");
++MODULE_ALIAS_TCA("ct");
  
- static int __init drr_init(void)
+ static __net_init int ct_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_etf.c b/net/sched/sch_etf.c
-index 4808159a5466..291a60968ec0 100644
---- a/net/sched/sch_etf.c
-+++ b/net/sched/sch_etf.c
-@@ -500,6 +500,7 @@ static struct Qdisc_ops etf_qdisc_ops __read_mostly = {
- 	.dump		=	etf_dump,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_ctinfo.c b/net/sched/act_ctinfo.c
+index 4d15b6a6169c..9fb55b9b79fe 100644
+--- a/net/sched/act_ctinfo.c
++++ b/net/sched/act_ctinfo.c
+@@ -363,6 +363,7 @@ static struct tc_action_ops act_ctinfo_ops = {
+ 	.cleanup= tcf_ctinfo_cleanup,
+ 	.size	= sizeof(struct tcf_ctinfo),
  };
-+MODULE_ALIAS_QD("etf");
++MODULE_ALIAS_TCA("ctinfo");
  
- static int __init etf_module_init(void)
+ static __net_init int ctinfo_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_ets.c b/net/sched/sch_ets.c
-index f7c88495946b..c386359930ac 100644
---- a/net/sched/sch_ets.c
-+++ b/net/sched/sch_ets.c
-@@ -812,6 +812,7 @@ static struct Qdisc_ops ets_qdisc_ops __read_mostly = {
- 	.dump		= ets_qdisc_dump,
- 	.owner		= THIS_MODULE,
+diff --git a/net/sched/act_gact.c b/net/sched/act_gact.c
+index 904ab3d457ef..d69fc861854e 100644
+--- a/net/sched/act_gact.c
++++ b/net/sched/act_gact.c
+@@ -296,6 +296,7 @@ static struct tc_action_ops act_gact_ops = {
+ 	.offload_act_setup =	tcf_gact_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_gact),
  };
-+MODULE_ALIAS_QD("ets");
++MODULE_ALIAS_TCA("gact");
  
- static int __init ets_init(void)
+ static __net_init int gact_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_fq.c b/net/sched/sch_fq.c
-index 3a31c47fea9b..91f735aec93d 100644
---- a/net/sched/sch_fq.c
-+++ b/net/sched/sch_fq.c
-@@ -1264,6 +1264,7 @@ static struct Qdisc_ops fq_qdisc_ops __read_mostly = {
- 	.dump_stats	=	fq_dump_stats,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_gate.c b/net/sched/act_gate.c
+index 393b78729216..4fdb293c71f5 100644
+--- a/net/sched/act_gate.c
++++ b/net/sched/act_gate.c
+@@ -645,6 +645,7 @@ static struct tc_action_ops act_gate_ops = {
+ 	.offload_act_setup =	tcf_gate_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_gate),
  };
-+MODULE_ALIAS_QD("fq");
++MODULE_ALIAS_TCA("gate");
  
- static int __init fq_module_init(void)
+ static __net_init int gate_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_fq_codel.c b/net/sched/sch_fq_codel.c
-index 8c4fee063436..63e15c29e740 100644
---- a/net/sched/sch_fq_codel.c
-+++ b/net/sched/sch_fq_codel.c
-@@ -717,6 +717,7 @@ static struct Qdisc_ops fq_codel_qdisc_ops __read_mostly = {
- 	.dump_stats =	fq_codel_dump_stats,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_ife.c b/net/sched/act_ife.c
+index bc7611b0744c..44657978e2b0 100644
+--- a/net/sched/act_ife.c
++++ b/net/sched/act_ife.c
+@@ -889,6 +889,7 @@ static struct tc_action_ops act_ife_ops = {
+ 	.init = tcf_ife_init,
+ 	.size =	sizeof(struct tcf_ife_info),
  };
-+MODULE_ALIAS_QD("fq_codel");
++MODULE_ALIAS_TCA("ife");
  
- static int __init fq_codel_module_init(void)
+ static __net_init int ife_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_gred.c b/net/sched/sch_gred.c
-index 8c61eb3dc943..a405fa2f44ee 100644
---- a/net/sched/sch_gred.c
-+++ b/net/sched/sch_gred.c
-@@ -930,6 +930,7 @@ static struct Qdisc_ops gred_qdisc_ops __read_mostly = {
- 	.dump		=	gred_dump,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_ipt.c b/net/sched/act_ipt.c
+index 598d6e299152..d3b6a9a1d310 100644
+--- a/net/sched/act_ipt.c
++++ b/net/sched/act_ipt.c
+@@ -381,6 +381,7 @@ static struct tc_action_ops act_ipt_ops = {
+ 	.init		=	tcf_ipt_init,
+ 	.size		=	sizeof(struct tcf_ipt),
  };
-+MODULE_ALIAS_QD("gred");
++MODULE_ALIAS_TCA("ipt");
  
- static int __init gred_module_init(void)
+ static __net_init int ipt_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_hfsc.c b/net/sched/sch_hfsc.c
-index 16c45da4036a..505d3cf3be7c 100644
---- a/net/sched/sch_hfsc.c
-+++ b/net/sched/sch_hfsc.c
-@@ -1679,6 +1679,7 @@ static struct Qdisc_ops hfsc_qdisc_ops __read_mostly = {
- 	.priv_size	= sizeof(struct hfsc_sched),
- 	.owner		= THIS_MODULE
+@@ -411,6 +412,7 @@ static struct tc_action_ops act_xt_ops = {
+ 	.init		=	tcf_xt_init,
+ 	.size		=	sizeof(struct tcf_ipt),
  };
-+MODULE_ALIAS_QD("hfsc");
++MODULE_ALIAS_TCA("xt");
  
- static int __init
- hfsc_init(void)
-diff --git a/net/sched/sch_hhf.c b/net/sched/sch_hhf.c
-index d26cd436cbe3..c5eb6c460141 100644
---- a/net/sched/sch_hhf.c
-+++ b/net/sched/sch_hhf.c
-@@ -702,6 +702,7 @@ static struct Qdisc_ops hhf_qdisc_ops __read_mostly = {
- 	.dump_stats	=	hhf_dump_stats,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_QD("hhf");
- 
- static int __init hhf_module_init(void)
+ static __net_init int xt_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_htb.c b/net/sched/sch_htb.c
-index 7349233eaa9b..aa869443ba58 100644
---- a/net/sched/sch_htb.c
-+++ b/net/sched/sch_htb.c
-@@ -2166,6 +2166,7 @@ static struct Qdisc_ops htb_qdisc_ops __read_mostly = {
- 	.dump		=	htb_dump,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_mirred.c b/net/sched/act_mirred.c
+index 0a711c184c29..be98e3882cb2 100644
+--- a/net/sched/act_mirred.c
++++ b/net/sched/act_mirred.c
+@@ -505,6 +505,7 @@ static struct tc_action_ops act_mirred_ops = {
+ 	.size		=	sizeof(struct tcf_mirred),
+ 	.get_dev	=	tcf_mirred_get_dev,
  };
-+MODULE_ALIAS_QD("htb");
++MODULE_ALIAS_TCA("mirred");
  
- static int __init htb_module_init(void)
+ static __net_init int mirred_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_ingress.c b/net/sched/sch_ingress.c
-index 5fa9eaa79bfc..b29cae932a09 100644
---- a/net/sched/sch_ingress.c
-+++ b/net/sched/sch_ingress.c
-@@ -168,6 +168,7 @@ static struct Qdisc_ops ingress_qdisc_ops __read_mostly = {
- 	.ingress_block_get	=	ingress_ingress_block_get,
- 	.owner			=	THIS_MODULE,
+diff --git a/net/sched/act_mpls.c b/net/sched/act_mpls.c
+index 1010dc632874..2ac73889f826 100644
+--- a/net/sched/act_mpls.c
++++ b/net/sched/act_mpls.c
+@@ -452,6 +452,7 @@ static struct tc_action_ops act_mpls_ops = {
+ 	.offload_act_setup =	tcf_mpls_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_mpls),
  };
-+MODULE_ALIAS_QD("ingress");
++MODULE_ALIAS_TCA("mpls");
  
- struct clsact_sched_data {
- 	struct tcf_block *ingress_block;
-@@ -344,6 +345,7 @@ static struct Qdisc_ops clsact_qdisc_ops __read_mostly = {
- 	.egress_block_get	=	clsact_egress_block_get,
- 	.owner			=	THIS_MODULE,
- };
-+MODULE_ALIAS_QD("clsact");
- 
- static int __init ingress_module_init(void)
+ static __net_init int mpls_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_mqprio.c b/net/sched/sch_mqprio.c
-index 43e53ee00a56..3cc0dd80d8d3 100644
---- a/net/sched/sch_mqprio.c
-+++ b/net/sched/sch_mqprio.c
-@@ -774,6 +774,7 @@ static struct Qdisc_ops mqprio_qdisc_ops __read_mostly = {
- 	.dump		= mqprio_dump,
- 	.owner		= THIS_MODULE,
+diff --git a/net/sched/act_nat.c b/net/sched/act_nat.c
+index 4184af5abbf3..7f5b0d5f53a3 100644
+--- a/net/sched/act_nat.c
++++ b/net/sched/act_nat.c
+@@ -324,6 +324,7 @@ static struct tc_action_ops act_nat_ops = {
+ 	.cleanup	=	tcf_nat_cleanup,
+ 	.size		=	sizeof(struct tcf_nat),
  };
-+MODULE_ALIAS_QD("mqprio");
++MODULE_ALIAS_TCA("nat");
  
- static int __init mqprio_module_init(void)
+ static __net_init int nat_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_multiq.c b/net/sched/sch_multiq.c
-index d66d5f0ec080..8fb642710c2b 100644
---- a/net/sched/sch_multiq.c
-+++ b/net/sched/sch_multiq.c
-@@ -395,6 +395,7 @@ static struct Qdisc_ops multiq_qdisc_ops __read_mostly = {
- 	.dump		=	multiq_dump,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_pedit.c b/net/sched/act_pedit.c
+index 1ef8fcfa9997..15902d378ceb 100644
+--- a/net/sched/act_pedit.c
++++ b/net/sched/act_pedit.c
+@@ -620,6 +620,7 @@ static struct tc_action_ops act_pedit_ops = {
+ 	.offload_act_setup =	tcf_pedit_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_pedit),
  };
-+MODULE_ALIAS_QD("multiq");
++MODULE_ALIAS_TCA("pedit");
  
- static int __init multiq_module_init(void)
+ static __net_init int pedit_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_netem.c b/net/sched/sch_netem.c
-index fa678eb88528..f6757227ab4c 100644
---- a/net/sched/sch_netem.c
-+++ b/net/sched/sch_netem.c
-@@ -1293,6 +1293,7 @@ static struct Qdisc_ops netem_qdisc_ops __read_mostly = {
- 	.dump		=	netem_dump,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_police.c b/net/sched/act_police.c
+index f3121c5a85e9..e386f326408f 100644
+--- a/net/sched/act_police.c
++++ b/net/sched/act_police.c
+@@ -502,6 +502,7 @@ static struct tc_action_ops act_police_ops = {
+ 	.offload_act_setup =	tcf_police_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_police),
  };
-+MODULE_ALIAS_QD("netem");
++MODULE_ALIAS_TCA("police");
  
- 
- static int __init netem_module_init(void)
-diff --git a/net/sched/sch_pie.c b/net/sched/sch_pie.c
-index 2da6250ec346..897cfec42231 100644
---- a/net/sched/sch_pie.c
-+++ b/net/sched/sch_pie.c
-@@ -556,6 +556,7 @@ static struct Qdisc_ops pie_qdisc_ops __read_mostly = {
- 	.dump_stats	= pie_dump_stats,
- 	.owner		= THIS_MODULE,
- };
-+MODULE_ALIAS_QD("pie");
- 
- static int __init pie_module_init(void)
+ static __net_init int police_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_plug.c b/net/sched/sch_plug.c
-index 992f0c8d7988..9e33f638a85d 100644
---- a/net/sched/sch_plug.c
-+++ b/net/sched/sch_plug.c
-@@ -213,6 +213,7 @@ static struct Qdisc_ops plug_qdisc_ops __read_mostly = {
- 	.reset       =	     qdisc_reset_queue,
- 	.owner       =       THIS_MODULE,
+diff --git a/net/sched/act_sample.c b/net/sched/act_sample.c
+index 4c670e7568dc..92ba9e0fc98d 100644
+--- a/net/sched/act_sample.c
++++ b/net/sched/act_sample.c
+@@ -316,6 +316,7 @@ static struct tc_action_ops act_sample_ops = {
+ 	.offload_act_setup    = tcf_sample_offload_act_setup,
+ 	.size	  = sizeof(struct tcf_sample),
  };
-+MODULE_ALIAS_QD("plug");
++MODULE_ALIAS_TCA("sample");
  
- static int __init plug_module_init(void)
+ static __net_init int sample_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_prio.c b/net/sched/sch_prio.c
-index 8ecdd3ef6f8e..319c7e01cf31 100644
---- a/net/sched/sch_prio.c
-+++ b/net/sched/sch_prio.c
-@@ -418,6 +418,7 @@ static struct Qdisc_ops prio_qdisc_ops __read_mostly = {
- 	.dump		=	prio_dump,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_simple.c b/net/sched/act_simple.c
+index 4b84514534f3..61f06ad03e1c 100644
+--- a/net/sched/act_simple.c
++++ b/net/sched/act_simple.c
+@@ -209,6 +209,7 @@ static struct tc_action_ops act_simp_ops = {
+ 	.init		=	tcf_simp_init,
+ 	.size		=	sizeof(struct tcf_defact),
  };
-+MODULE_ALIAS_QD("prio");
++MODULE_ALIAS_TCA("simple");
  
- static int __init prio_module_init(void)
+ static __net_init int simp_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_qfq.c b/net/sched/sch_qfq.c
-index 48a604c320c7..1cb67c68071a 100644
---- a/net/sched/sch_qfq.c
-+++ b/net/sched/sch_qfq.c
-@@ -1521,6 +1521,7 @@ static struct Qdisc_ops qfq_qdisc_ops __read_mostly = {
- 	.destroy	= qfq_destroy_qdisc,
- 	.owner		= THIS_MODULE,
+diff --git a/net/sched/act_skbedit.c b/net/sched/act_skbedit.c
+index ce7008cf291c..fb5c09ab6718 100644
+--- a/net/sched/act_skbedit.c
++++ b/net/sched/act_skbedit.c
+@@ -426,6 +426,7 @@ static struct tc_action_ops act_skbedit_ops = {
+ 	.offload_act_setup =	tcf_skbedit_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_skbedit),
  };
-+MODULE_ALIAS_QD("qfq");
++MODULE_ALIAS_TCA("skbedit");
  
- static int __init qfq_init(void)
+ static __net_init int skbedit_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_red.c b/net/sched/sch_red.c
-index 607b6c8b3a9b..1bf42089b081 100644
---- a/net/sched/sch_red.c
-+++ b/net/sched/sch_red.c
-@@ -548,6 +548,7 @@ static struct Qdisc_ops red_qdisc_ops __read_mostly = {
- 	.dump_stats	=	red_dump_stats,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_skbmod.c b/net/sched/act_skbmod.c
+index dffa990a9629..468bc230d278 100644
+--- a/net/sched/act_skbmod.c
++++ b/net/sched/act_skbmod.c
+@@ -287,6 +287,7 @@ static struct tc_action_ops act_skbmod_ops = {
+ 	.cleanup	=	tcf_skbmod_cleanup,
+ 	.size		=	sizeof(struct tcf_skbmod),
  };
-+MODULE_ALIAS_QD("red");
++MODULE_ALIAS_TCA("skbmod");
  
- static int __init red_module_init(void)
+ static __net_init int skbmod_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_sfb.c b/net/sched/sch_sfb.c
-index 1871a1c0224d..5d43a105b351 100644
---- a/net/sched/sch_sfb.c
-+++ b/net/sched/sch_sfb.c
-@@ -709,6 +709,7 @@ static struct Qdisc_ops sfb_qdisc_ops __read_mostly = {
- 	.dump_stats	=	sfb_dump_stats,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_tunnel_key.c b/net/sched/act_tunnel_key.c
+index 0c8aa7e686ea..43d3e250277f 100644
+--- a/net/sched/act_tunnel_key.c
++++ b/net/sched/act_tunnel_key.c
+@@ -842,6 +842,7 @@ static struct tc_action_ops act_tunnel_key_ops = {
+ 	.offload_act_setup =	tcf_tunnel_key_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_tunnel_key),
  };
-+MODULE_ALIAS_QD("sfb");
++MODULE_ALIAS_TCA("tunnel_key");
  
- static int __init sfb_module_init(void)
+ static __net_init int tunnel_key_init_net(struct net *net)
  {
-diff --git a/net/sched/sch_sfq.c b/net/sched/sch_sfq.c
-index eb77558fa367..410f4b0a9e72 100644
---- a/net/sched/sch_sfq.c
-+++ b/net/sched/sch_sfq.c
-@@ -925,6 +925,7 @@ static struct Qdisc_ops sfq_qdisc_ops __read_mostly = {
- 	.dump		=	sfq_dump,
- 	.owner		=	THIS_MODULE,
+diff --git a/net/sched/act_vlan.c b/net/sched/act_vlan.c
+index 0251442f5f29..e7424ca0af95 100644
+--- a/net/sched/act_vlan.c
++++ b/net/sched/act_vlan.c
+@@ -427,6 +427,7 @@ static struct tc_action_ops act_vlan_ops = {
+ 	.offload_act_setup =	tcf_vlan_offload_act_setup,
+ 	.size		=	sizeof(struct tcf_vlan),
  };
-+MODULE_ALIAS_QD("sfq");
++MODULE_ALIAS_TCA("vlan");
  
- static int __init sfq_module_init(void)
- {
-diff --git a/net/sched/sch_skbprio.c b/net/sched/sch_skbprio.c
-index 28beb11762d8..9e00d64d6e3b 100644
---- a/net/sched/sch_skbprio.c
-+++ b/net/sched/sch_skbprio.c
-@@ -292,6 +292,7 @@ static struct Qdisc_ops skbprio_qdisc_ops __read_mostly = {
- 	.destroy	=	skbprio_destroy,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_QD("skbprio");
- 
- static int __init skbprio_module_init(void)
- {
-diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
-index 31a8252bd09c..204992bad59a 100644
---- a/net/sched/sch_taprio.c
-+++ b/net/sched/sch_taprio.c
-@@ -2548,6 +2548,7 @@ static struct Qdisc_ops taprio_qdisc_ops __read_mostly = {
- 	.dump_stats	= taprio_dump_stats,
- 	.owner		= THIS_MODULE,
- };
-+MODULE_ALIAS_QD("taprio");
- 
- static struct notifier_block taprio_device_notifier = {
- 	.notifier_call = taprio_dev_notifier,
-diff --git a/net/sched/sch_tbf.c b/net/sched/sch_tbf.c
-index dd6b1a723bf7..84ffe6c7f3e7 100644
---- a/net/sched/sch_tbf.c
-+++ b/net/sched/sch_tbf.c
-@@ -608,6 +608,7 @@ static struct Qdisc_ops tbf_qdisc_ops __read_mostly = {
- 	.dump		=	tbf_dump,
- 	.owner		=	THIS_MODULE,
- };
-+MODULE_ALIAS_QD("tbf");
- 
- static int __init tbf_module_init(void)
+ static __net_init int vlan_init_net(struct net *net)
  {
 -- 
 2.42.1
