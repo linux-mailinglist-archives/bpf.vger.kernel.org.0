@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-16884-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16886-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92AC58071FC
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 15:14:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5548071FE
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 15:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCF10B20FAD
-	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 14:14:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E3342816CF
+	for <lists+bpf@lfdr.de>; Wed,  6 Dec 2023 14:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045C23E49F;
-	Wed,  6 Dec 2023 14:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609673E489;
+	Wed,  6 Dec 2023 14:14:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="HLrsHCqv"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="YsV7ns1X"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269DFD59
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 06:13:53 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c0e7b8a9bso38812625e9.3
-        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 06:13:53 -0800 (PST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A84B1A2
+	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 06:13:54 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c0e7b8a9bso38812955e9.3
+        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 06:13:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1701872031; x=1702476831; darn=vger.kernel.org;
+        d=isovalent.com; s=google; t=1701872032; x=1702476832; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=odAFtJgnDKyW71MhMDCtnqE2RXd+U86YhVhwvCqb1Po=;
-        b=HLrsHCqvqVff0YoguYSonIepat+ztUox07eACcjaI84I7xWIIgwoz+NG6gXDCIm6Z9
-         JBw+gO3ckATR4EXuvOXDIvW+cVFEI3JcZbmfQccBvRxGVupsUFg1HXqMDadk3YwFHfHe
-         Heg3RYoiIvlv4s4tL561ja2Qs4ahjwnGtQnvbl5by9gdC+TsyvTQOofU/Oth+er+Pa70
-         Yi5ukQ3jJEvyBjtGnMjAxbGF1uSG88dmT1HJZZWgzaVxIQiEUF/wfj00cELPHnfvcpnB
-         qtkV1U5XloiGqzvwkkYDSUadYLGaoCQqaQShX35SyGFdxQKxM7BEFO3d5gI3khd63IX1
-         kWmQ==
+        bh=H/mil66XVycPGDyt1s26xPsBfGVLnvx73zPTwd81ej8=;
+        b=YsV7ns1X4v2IKhSRToEwRAhf/y1SDtr1SZw5DubOCnueM8Ca9lznyi8Ih/dy1lzNjE
+         dRuLke5/2cfpEJiITbbnZvD7/K6/uigOEytY9zaU5GDbShwQHRzz/1FKw1LZ03d6wgMD
+         KpczoT7ptTO4kiasYdLd47aMcDO59K2UlHWoetHZkbkVrT9EuACu+K2oWtzbf1/HF/m6
+         rS0aJnPK8D1D3dS5HdrC9ojhlZKPQnEI889Gzn43nJO7OdurvO6Di/uUfY6N8rxEcc5w
+         EKRb+tUqRX5okZz+g2bU9iWGijRUDiAa/Y/vra4HHd7FGn5Czbo3MOQE6MBtOXkAoDFB
+         1zOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701872031; x=1702476831;
+        d=1e100.net; s=20230601; t=1701872032; x=1702476832;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=odAFtJgnDKyW71MhMDCtnqE2RXd+U86YhVhwvCqb1Po=;
-        b=L7z8rOKY3DbWZVPd/5+oxOZ+EuF1huzuvRlF78U4sIjGoTw5ffw37TrTBIPrG5dHwP
-         7avHyWfc9rBskx54XtlmASqi/hP4evXNStXFqtSHBDt9fE8m2OfKIor0/PrZwSbHbOaZ
-         xhowLQcx1i9L4MwrNWXlmsjOE7JGZG+ZT3/shiT3gcfAgHn7dwx1Eo9b7XzyWnybD3ck
-         6y0M2nsC/d1Cf4MBskdZTMp5kz2khU1xRDlXodxev+P70LuwXba/prvLeAvRmMN6YpBM
-         25N25367c6s0VRvzFpNWfsgNTtybZ1atVLkmIrCV53LbIIgLYbHz42CKOvaZqY4ZdT9h
-         NO5Q==
-X-Gm-Message-State: AOJu0YzaRoSsejIm41vF+qpJJ3qiBDq5f4DxKS7D1nAu/Y6HSOXL8cAq
-	C+wWhfO7l+gmA1mJ38g0YbgWng==
-X-Google-Smtp-Source: AGHT+IEtkF9XGNFu3RKEA0GQS0zifyYyuxm6CaV3YIYKVfxLzoF56EHv+dhr2W+2ZHRBQ8AMDJnY/w==
-X-Received: by 2002:a05:600c:358a:b0:40b:51cc:b98 with SMTP id p10-20020a05600c358a00b0040b51cc0b98mr704561wmq.9.1701872031180;
-        Wed, 06 Dec 2023 06:13:51 -0800 (PST)
+        bh=H/mil66XVycPGDyt1s26xPsBfGVLnvx73zPTwd81ej8=;
+        b=Ir5m0zdXPT5Prdbm+4flJYvYT6CH/dZlYfSIBUjxoJIAdB7j5jMQJmZiN3hKYO8xks
+         lHdPMRSllfafT8utYVMrEMlLp34mC6CltOiYGozB+i3OBwZ61SXXuIDlCSD/HmamPzeu
+         dJUQjCFUTvdqX7oYg9+4KEkZt7v6lk1Btzjgjre6XGHQD8JeAFIjPPtx3QV+gBm+sEng
+         nRrYxe0eR1pMJxWjqJupPJh37+zXPx/KOyFSZaoBWFnAZWSe2fhhmrq2DHjypVef66Zq
+         MXCLigqQMzGxku/c1uI790rLBR43O+1djOtSLKB1umVvMVKMCCZjIDsmFDXbjbV+XIlG
+         VRIQ==
+X-Gm-Message-State: AOJu0YxwtQZBVMKZvB1okLrcSz1WiyI9iyQP3IooHbMlQ2pBOmLcsNPi
+	RtjQ0bvdCZfCopBkrYHs17WcdQ==
+X-Google-Smtp-Source: AGHT+IGGgzhxTp5n/3v+rAeYU7skWgWjS5zMTHjt+sFv+USt0/X5XY34li4ssrJNbWaWKrdESQ4F/Q==
+X-Received: by 2002:a05:600c:16d3:b0:40b:5e59:ccbd with SMTP id l19-20020a05600c16d300b0040b5e59ccbdmr639416wmn.158.1701872032656;
+        Wed, 06 Dec 2023 06:13:52 -0800 (PST)
 Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id g18-20020a05600c311200b0040b42df75fcsm22140330wmo.39.2023.12.06.06.13.49
+        by smtp.gmail.com with ESMTPSA id g18-20020a05600c311200b0040b42df75fcsm22140330wmo.39.2023.12.06.06.13.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 06:13:50 -0800 (PST)
+        Wed, 06 Dec 2023 06:13:52 -0800 (PST)
 From: Anton Protopopov <aspsk@isovalent.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -62,9 +62,9 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	bpf@vger.kernel.org
 Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [PATCH bpf-next 6/7] libbpf: BPF Static Keys support
-Date: Wed,  6 Dec 2023 14:10:29 +0000
-Message-Id: <20231206141030.1478753-7-aspsk@isovalent.com>
+Subject: [PATCH bpf-next 7/7] selftests/bpf: Add tests for BPF Static Keys
+Date: Wed,  6 Dec 2023 14:10:30 +0000
+Message-Id: <20231206141030.1478753-8-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231206141030.1478753-1-aspsk@isovalent.com>
 References: <20231206141030.1478753-1-aspsk@isovalent.com>
@@ -76,598 +76,607 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce the DEFINE_STATIC_KEY() and bpf_static_branch_{unlikely,likely}
-macros to mimic Linux Kernel Static Keys API in BPF. Example of usage would
-be as follows:
+Add several self-tests to test the new BPF Static Key feature. Selftests
+include the following tests:
 
-    DEFINE_STATIC_KEY(key);
-
-    void prog(void)
-    {
-            if (bpf_static_branch_unlikely(&key))
-                    /* rarely used code */
-            else
-                    /* default hot path code */
-    }
-
-or, using the likely variant:
-
-    void prog2(void)
-    {
-            if (bpf_static_branch_likely(&key))
-                    /* default hot path code */
-            else
-                    /* rarely used code */
-    }
-
-The "unlikely" version of macro compiles in the code where the else-branch
-(key is off) is fall-through, the "likely" macro prioritises the if-branch.
-
-Both macros push an entry in a new ".jump_table" section which contains the
-following information:
-
-               32 bits                   32 bits           64 bits
-    offset of jump instruction | offset of jump target |    flags
-
-The corresponding ".rel.jump_table" relocations table entry contains the
-base section name and the static key (map) name. The bigger portion of this
-patch works on parsing, relocating and sending this information to kernel
-via the static_branches_info and static_branches_info_size attributes of
-the BPF_PROG_LOAD syscall.
-
-The same key may be used multiple times in one program and can be used by
-multiple BPF programs. BPF doesn't provide guarantees on order in which
-static branches controlled by one key are patched.
+  * check that one key works for one program
+  * check that one key works for multiple programs
+  * check that static keys work with 2 and 5 bytes jumps
+  * check that multiple keys works for one program
+  * check that static keys work for base program and a BPF-to-BPF call
+  * check that static keys can't be used as normal maps
+  * check that passing incorrect parameters on map creation fails
+  * check that passing incorrect parameters on program load fails
 
 Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
 ---
- tools/lib/bpf/bpf.c             |   5 +-
- tools/lib/bpf/bpf.h             |   4 +-
- tools/lib/bpf/bpf_helpers.h     |  64 ++++++++
- tools/lib/bpf/libbpf.c          | 273 +++++++++++++++++++++++++++++++-
- tools/lib/bpf/libbpf_internal.h |   3 +
- tools/lib/bpf/linker.c          |   8 +-
- 6 files changed, 351 insertions(+), 6 deletions(-)
+ MAINTAINERS                                   |   1 +
+ .../bpf/prog_tests/bpf_static_keys.c          | 436 ++++++++++++++++++
+ .../selftests/bpf/progs/bpf_static_keys.c     | 120 +++++
+ 3 files changed, 557 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_static_keys.c
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 9dc9625651dc..f67d6a4dac05 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -232,7 +232,7 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
- 		  const struct bpf_insn *insns, size_t insn_cnt,
- 		  struct bpf_prog_load_opts *opts)
- {
--	const size_t attr_sz = offsetofend(union bpf_attr, log_true_size);
-+	const size_t attr_sz = offsetofend(union bpf_attr, static_branches_info_size);
- 	void *finfo = NULL, *linfo = NULL;
- 	const char *func_info, *line_info;
- 	__u32 log_size, log_level, attach_prog_fd, attach_btf_obj_fd;
-@@ -262,6 +262,9 @@ int bpf_prog_load(enum bpf_prog_type prog_type,
- 	attr.prog_ifindex = OPTS_GET(opts, prog_ifindex, 0);
- 	attr.kern_version = OPTS_GET(opts, kern_version, 0);
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e2f655980c6c..81a040d66af6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3892,6 +3892,7 @@ M:	Anton Protopopov <aspsk@isovalent.com>
+ L:	bpf@vger.kernel.org
+ S:	Maintained
+ F:	kernel/bpf/skey.c
++F:	tools/testing/selftests/bpf/*/*bpf_static_key*
  
-+	attr.static_branches_info = ptr_to_u64(OPTS_GET(opts, static_branches_info, NULL));
-+	attr.static_branches_info_size = OPTS_GET(opts, static_branches_info_size, 0);
+ BROADCOM ASP 2.0 ETHERNET DRIVER
+ M:	Justin Chen <justin.chen@broadcom.com>
+diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c b/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
+new file mode 100644
+index 000000000000..37b2da247869
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/bpf_static_keys.c
+@@ -0,0 +1,436 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Isovalent */
 +
- 	if (prog_name && kernel_supports(NULL, FEAT_PROG_NAME))
- 		libbpf_strlcpy(attr.prog_name, prog_name, sizeof(attr.prog_name));
- 	attr.license = ptr_to_u64(license);
-diff --git a/tools/lib/bpf/bpf.h b/tools/lib/bpf/bpf.h
-index d0f53772bdc0..ec6d4b955fb8 100644
---- a/tools/lib/bpf/bpf.h
-+++ b/tools/lib/bpf/bpf.h
-@@ -102,9 +102,11 @@ struct bpf_prog_load_opts {
- 	 * If kernel doesn't support this feature, log_size is left unchanged.
- 	 */
- 	__u32 log_true_size;
-+	struct bpf_static_branch_info *static_branches_info;
-+	__u32 static_branches_info_size;
- 	size_t :0;
- };
--#define bpf_prog_load_opts__last_field log_true_size
-+#define bpf_prog_load_opts__last_field static_branches_info_size
- 
- LIBBPF_API int bpf_prog_load(enum bpf_prog_type prog_type,
- 			     const char *prog_name, const char *license,
-diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-index 77ceea575dc7..e3bfa0697304 100644
---- a/tools/lib/bpf/bpf_helpers.h
-+++ b/tools/lib/bpf/bpf_helpers.h
-@@ -400,4 +400,68 @@ extern void bpf_iter_num_destroy(struct bpf_iter_num *it) __weak __ksym;
- )
- #endif /* bpf_repeat */
- 
-+#define DEFINE_STATIC_KEY(NAME)									\
-+	struct {										\
-+		__uint(type, BPF_MAP_TYPE_ARRAY);						\
-+		__type(key, __u32);								\
-+		__type(value, __u32);								\
-+		__uint(map_flags, BPF_F_STATIC_KEY);						\
-+		__uint(max_entries, 1);								\
-+	} NAME SEC(".maps")
++#include <test_progs.h>
++#include "bpf_static_keys.skel.h"
 +
-+#ifndef likely
-+#define likely(x)	(__builtin_expect(!!(x), 1))
-+#endif
++#define set_static_key(map_fd, val)						\
++	do {									\
++		__u32 map_value = (val);					\
++		__u32 zero_key = 0;						\
++		int ret;							\
++										\
++		ret = bpf_map_update_elem(map_fd, &zero_key, &map_value, 0);	\
++		ASSERT_EQ(ret, 0, "bpf_map_update_elem");			\
++	} while (0)
 +
-+#ifndef unlikely
-+#define unlikely(x)	(__builtin_expect(!!(x), 0))
-+#endif
-+
-+static __always_inline int __bpf_static_branch_nop(void *static_key)
++static void check_one_key(struct bpf_static_keys *skel)
 +{
-+	asm goto("1:\n\t"
-+		"goto +0\n\t"
-+		".pushsection .jump_table, \"aw\"\n\t"
-+		".balign 8\n\t"
-+		".long 1b - .\n\t"
-+		".long %l[l_yes] - .\n\t"
-+		".quad %c0 - .\n\t"
-+		".popsection\n\t"
-+		:: "i" (static_key)
-+		:: l_yes);
-+	return 0;
-+l_yes:
-+	return 1;
++	struct bpf_link *link;
++	int map_fd;
++
++	link = bpf_program__attach(skel->progs.check_one_key);
++	if (!ASSERT_OK_PTR(link, "link"))
++		return;
++
++	map_fd = bpf_map__fd(skel->maps.key1);
++	ASSERT_GT(map_fd, 0, "skel->maps.key1");
++
++	set_static_key(map_fd, 0);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 4, "skel->bss->ret_user");
++
++	set_static_key(map_fd, 1);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 3, "skel->bss->ret_user");
++
++	bpf_link__destroy(link);
 +}
 +
-+static __always_inline int __bpf_static_branch_jump(void *static_key)
++static void check_multiple_progs(struct bpf_static_keys *skel)
 +{
-+	asm goto("1:\n\t"
-+		"goto %l[l_yes]\n\t"
-+		".pushsection .jump_table, \"aw\"\n\t"
-+		".balign 8\n\t"
-+		".long 1b - .\n\t"
-+		".long %l[l_yes] - .\n\t"
-+		".quad %c0 - . + 1\n\t"
-+		".popsection\n\t"
-+		:: "i" (static_key)
-+		:: l_yes);
-+	return 0;
-+l_yes:
-+	return 1;
++	struct bpf_link *link1;
++	struct bpf_link *link2;
++	struct bpf_link *link3;
++	int map_fd;
++
++	link1 = bpf_program__attach(skel->progs.check_one_key);
++	if (!ASSERT_OK_PTR(link1, "link1"))
++		return;
++
++	link2 = bpf_program__attach(skel->progs.check_one_key_another_prog);
++	if (!ASSERT_OK_PTR(link2, "link2"))
++		return;
++
++	link3 = bpf_program__attach(skel->progs.check_one_key_yet_another_prog);
++	if (!ASSERT_OK_PTR(link3, "link3"))
++		return;
++
++	map_fd = bpf_map__fd(skel->maps.key1);
++	ASSERT_GT(map_fd, 0, "skel->maps.key1");
++
++	set_static_key(map_fd, 0);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 444, "skel->bss->ret_user");
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 888, "skel->bss->ret_user");
++
++	set_static_key(map_fd, 1);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 333, "skel->bss->ret_user");
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 666, "skel->bss->ret_user");
++
++	bpf_link__destroy(link3);
++	bpf_link__destroy(link2);
++	bpf_link__destroy(link1);
 +}
 +
-+/*
-+ * The bpf_static_branch_{unlikely,likely} macros provide a way to utilize BPF
-+ * Static Keys in BPF programs in exactly the same manner this is done in the
-+ * Linux Kernel.  The "unlikely" macro compiles in the code where the else-branch
-+ * (key is off) is prioritized, the "likely" macro prioritises the if-branch.
-+ */
++static void check_multiple_keys(struct bpf_static_keys *skel)
++{
++	struct bpf_link *link;
++	int map_fd1;
++	int map_fd2;
++	int map_fd3;
++	int i;
 +
-+#define bpf_static_branch_unlikely(static_key) \
-+	unlikely(__bpf_static_branch_nop(static_key))
++	link = bpf_program__attach(skel->progs.check_multiple_keys_unlikely);
++	if (!ASSERT_OK_PTR(link, "link"))
++		return;
 +
-+#define bpf_static_branch_likely(static_key) \
-+	likely(!__bpf_static_branch_jump(static_key))
++	map_fd1 = bpf_map__fd(skel->maps.key1);
++	ASSERT_GT(map_fd1, 0, "skel->maps.key1");
 +
- #endif
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e067be95da3c..92620717abda 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -391,6 +391,13 @@ struct bpf_sec_def {
- 	libbpf_prog_attach_fn_t prog_attach_fn;
- };
- 
-+struct static_branch_info {
-+	struct bpf_map *map;
-+	__u32 insn_offset;
-+	__u32 jump_target;
-+	__u32 flags;
-+};
++	map_fd2 = bpf_map__fd(skel->maps.key2);
++	ASSERT_GT(map_fd2, 0, "skel->maps.key2");
 +
- /*
-  * bpf_prog should be a better name but it has been used in
-  * linux/filter.h.
-@@ -463,6 +470,9 @@ struct bpf_program {
- 	__u32 line_info_rec_size;
- 	__u32 line_info_cnt;
- 	__u32 prog_flags;
++	map_fd3 = bpf_map__fd(skel->maps.key3);
++	ASSERT_GT(map_fd3, 0, "skel->maps.key3");
 +
-+	struct static_branch_info *static_branches_info;
-+	__u32 static_branches_info_size;
- };
- 
- struct bpf_struct_ops {
-@@ -493,6 +503,7 @@ struct bpf_struct_ops {
- #define KSYMS_SEC ".ksyms"
- #define STRUCT_OPS_SEC ".struct_ops"
- #define STRUCT_OPS_LINK_SEC ".struct_ops.link"
-+#define STATIC_JUMPS_SEC ".jump_table"
- 
- enum libbpf_map_type {
- 	LIBBPF_MAP_UNSPEC,
-@@ -624,6 +635,7 @@ struct elf_state {
- 	Elf_Data *symbols;
- 	Elf_Data *st_ops_data;
- 	Elf_Data *st_ops_link_data;
-+	Elf_Data *static_branches_data;
- 	size_t shstrndx; /* section index for section name strings */
- 	size_t strtabidx;
- 	struct elf_sec_desc *secs;
-@@ -634,6 +646,7 @@ struct elf_state {
- 	int symbols_shndx;
- 	int st_ops_shndx;
- 	int st_ops_link_shndx;
-+	int static_branches_shndx;
- };
- 
- struct usdt_manager;
-@@ -715,6 +728,7 @@ void bpf_program__unload(struct bpf_program *prog)
- 
- 	zfree(&prog->func_info);
- 	zfree(&prog->line_info);
-+	zfree(&prog->static_branches_info);
- }
- 
- static void bpf_program__exit(struct bpf_program *prog)
-@@ -3605,6 +3619,9 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
- 			} else if (strcmp(name, STRUCT_OPS_LINK_SEC) == 0) {
- 				obj->efile.st_ops_link_data = data;
- 				obj->efile.st_ops_link_shndx = idx;
-+			} else if (strcmp(name, STATIC_JUMPS_SEC) == 0) {
-+				obj->efile.static_branches_data = data;
-+				obj->efile.static_branches_shndx = idx;
- 			} else {
- 				pr_info("elf: skipping unrecognized data section(%d) %s\n",
- 					idx, name);
-@@ -3620,7 +3637,8 @@ static int bpf_object__elf_collect(struct bpf_object *obj)
- 			if (!section_have_execinstr(obj, targ_sec_idx) &&
- 			    strcmp(name, ".rel" STRUCT_OPS_SEC) &&
- 			    strcmp(name, ".rel" STRUCT_OPS_LINK_SEC) &&
--			    strcmp(name, ".rel" MAPS_ELF_SEC)) {
-+			    strcmp(name, ".rel" MAPS_ELF_SEC) &&
-+			    strcmp(name, ".rel" STATIC_JUMPS_SEC)) {
- 				pr_info("elf: skipping relo section(%d) %s for section(%d) %s\n",
- 					idx, name, targ_sec_idx,
- 					elf_sec_name(obj, elf_sec_by_idx(obj, targ_sec_idx)) ?: "<?>");
-@@ -4422,6 +4440,189 @@ bpf_object__collect_prog_relos(struct bpf_object *obj, Elf64_Shdr *shdr, Elf_Dat
- 	return 0;
- }
- 
-+struct jump_table_entry {
-+	__u32 insn_offset;
-+	__u32 jump_target;
-+	union {
-+		__u64 map_ptr;	/* map_ptr is always zero, as it is relocated */
-+		__u64 flags;	/* so we can reuse it to store flags */
++	for (i = 0; i < 8; i++) {
++		set_static_key(map_fd1, i & 1);
++		set_static_key(map_fd2, i & 2);
++		set_static_key(map_fd3, i & 4);
++
++		usleep(1);
++		ASSERT_EQ(skel->bss->ret_user, i, "skel->bss->ret_user");
++	}
++
++	bpf_link__destroy(link);
++}
++
++static void check_one_key_long_jump(struct bpf_static_keys *skel)
++{
++	struct bpf_link *link;
++	int map_fd;
++
++	link = bpf_program__attach(skel->progs.check_one_key_long_jump);
++	if (!ASSERT_OK_PTR(link, "link"))
++		return;
++
++	map_fd = bpf_map__fd(skel->maps.key1);
++	ASSERT_GT(map_fd, 0, "skel->maps.key1");
++
++	set_static_key(map_fd, 0);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 2256, "skel->bss->ret_user");
++
++	set_static_key(map_fd, 1);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 1256, "skel->bss->ret_user");
++
++	bpf_link__destroy(link);
++}
++
++static void check_bpf_to_bpf_call(struct bpf_static_keys *skel)
++{
++	struct bpf_link *link;
++	int map_fd1;
++	int map_fd2;
++
++	link = bpf_program__attach(skel->progs.check_bpf_to_bpf_call);
++	if (!ASSERT_OK_PTR(link, "link"))
++		return;
++
++	map_fd1 = bpf_map__fd(skel->maps.key1);
++	ASSERT_GT(map_fd1, 0, "skel->maps.key1");
++
++	map_fd2 = bpf_map__fd(skel->maps.key2);
++	ASSERT_GT(map_fd2, 0, "skel->maps.key2");
++
++	set_static_key(map_fd1, 0);
++	set_static_key(map_fd2, 0);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 0, "skel->bss->ret_user");
++
++	set_static_key(map_fd1, 1);
++	set_static_key(map_fd2, 0);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 101, "skel->bss->ret_user");
++
++	set_static_key(map_fd1, 0);
++	set_static_key(map_fd2, 1);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 1010, "skel->bss->ret_user");
++
++	set_static_key(map_fd1, 1);
++	set_static_key(map_fd2, 1);
++	skel->bss->ret_user = 0;
++	usleep(1);
++	ASSERT_EQ(skel->bss->ret_user, 1111, "skel->bss->ret_user");
++
++
++	bpf_link__destroy(link);
++}
++
++#define FIXED_MAP_FD 666
++
++static void check_use_key_as_map(struct bpf_static_keys *skel)
++{
++	struct bpf_insn insns[] = {
++		BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++		BPF_MOV64_REG(BPF_REG_2, BPF_REG_10),
++		BPF_ALU64_IMM(BPF_ADD, BPF_REG_2, -8),
++		BPF_LD_MAP_FD(BPF_REG_1, FIXED_MAP_FD),
++		BPF_RAW_INSN(BPF_JMP | BPF_CALL, 0, 0, 0, BPF_FUNC_map_lookup_elem),
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_EXIT_INSN(),
 +	};
-+};
++	union bpf_attr attr = {
++		.prog_type = BPF_PROG_TYPE_XDP,
++		.insns     = ptr_to_u64(insns),
++		.insn_cnt  = ARRAY_SIZE(insns),
++		.license   = ptr_to_u64("GPL"),
++	};
++	int map_fd;
++	int ret;
 +
-+static struct bpf_program *shndx_to_prog(struct bpf_object *obj,
-+					 size_t sec_idx,
-+					 struct jump_table_entry *entry)
-+{
-+	__u32 insn_offset = entry->insn_offset / 8;
-+	__u32 jump_target = entry->jump_target / 8;
-+	struct bpf_program *prog;
-+	size_t i;
++	/* first check that prog loads ok */
 +
-+	for (i = 0; i < obj->nr_programs; i++) {
-+		prog = &obj->programs[i];
-+		if (prog->sec_idx != sec_idx)
-+			continue;
++	map_fd = bpf_map__fd(skel->maps.just_map);
++	ASSERT_GT(map_fd, 0, "skel->maps.just_map");
 +
-+		if (insn_offset < prog->sec_insn_off ||
-+		    insn_offset >= prog->sec_insn_off + prog->sec_insn_cnt)
-+			continue;
++	ret = dup2(map_fd, FIXED_MAP_FD);
++	ASSERT_EQ(ret, FIXED_MAP_FD, "dup2");
 +
-+		if (jump_target < prog->sec_insn_off ||
-+		    jump_target >= prog->sec_insn_off + prog->sec_insn_cnt) {
-+			pr_warn("static branch: offset %u is in boundaries, target %u is not\n",
-+				insn_offset, jump_target);
-+			return NULL;
-+		}
++	strncpy(attr.prog_name, "prog", sizeof(attr.prog_name));
++	ret = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_GT(ret, 0, "BPF_PROG_LOAD");
++	close(ret);
++	close(FIXED_MAP_FD);
 +
-+		return prog;
-+	}
++	/* now the incorrect map (static key as normal map) */
 +
-+	return NULL;
++	map_fd = bpf_map__fd(skel->maps.key1);
++	ASSERT_GT(map_fd, 0, "skel->maps.key1");
++
++	ret = dup2(map_fd, FIXED_MAP_FD);
++	ASSERT_EQ(ret, FIXED_MAP_FD, "dup2");
++
++	ret = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(ret, -1, "BPF_PROG_LOAD");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD");
++	close(ret);
++	close(FIXED_MAP_FD);
 +}
 +
-+static struct bpf_program *find_prog_for_jump_entry(struct bpf_object *obj,
-+						    int nrels,
-+						    Elf_Data *relo_data,
-+						    __u32 entry_offset,
-+						    struct jump_table_entry *entry)
++static void map_create_incorrect(void)
 +{
-+	struct bpf_program *prog;
-+	Elf64_Rel *rel;
-+	Elf64_Sym *sym;
-+	int i;
++	union bpf_attr attr = {
++		.map_type = BPF_MAP_TYPE_ARRAY,
++		.key_size = 4,
++		.value_size = 4,
++		.max_entries = 1,
++		.map_flags = BPF_F_STATIC_KEY,
++	};
++	int map_fd;
 +
-+	for (i = 0; i < nrels; i++) {
-+		rel = elf_rel_by_idx(relo_data, i);
-+		if (!rel) {
-+			pr_warn("static branch: relo #%d: failed to get ELF relo\n", i);
-+			return ERR_PTR(-LIBBPF_ERRNO__FORMAT);
-+		}
++	/* The first call should be ok */
 +
-+		if ((__u32)rel->r_offset != entry_offset)
-+			continue;
++	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
++	ASSERT_GT(map_fd, 0, "BPF_MAP_CREATE");
++	close(map_fd);
 +
-+		sym = elf_sym_by_idx(obj, ELF64_R_SYM(rel->r_info));
-+		if (!sym) {
-+			pr_warn("static branch: .maps relo #%d: symbol %zx not found\n",
-+				i, (size_t)ELF64_R_SYM(rel->r_info));
-+			return ERR_PTR(-LIBBPF_ERRNO__FORMAT);
-+		}
++	/* All the rest calls should fail */
 +
-+		prog = shndx_to_prog(obj, sym->st_shndx, entry);
-+		if (!prog) {
-+			pr_warn("static branch: .maps relo #%d: program %zx not found\n",
-+				i, (size_t)sym->st_shndx);
-+			return ERR_PTR(-LIBBPF_ERRNO__FORMAT);
-+		}
-+		return prog;
-+	}
-+	return ERR_PTR(-LIBBPF_ERRNO__FORMAT);
++	attr.map_type = BPF_MAP_TYPE_HASH;
++	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
++	ASSERT_EQ(map_fd, -1, "BPF_MAP_CREATE");
++	attr.map_type = BPF_MAP_TYPE_ARRAY;
++
++	attr.key_size = 8;
++	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
++	ASSERT_EQ(map_fd, -1, "BPF_MAP_CREATE");
++	attr.key_size = 4;
++
++	attr.value_size = 8;
++	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
++	ASSERT_EQ(map_fd, -1, "BPF_MAP_CREATE");
++	attr.value_size = 4;
++
++	attr.max_entries = 2;
++	map_fd = syscall(__NR_bpf, BPF_MAP_CREATE, &attr, sizeof(attr));
++	ASSERT_EQ(map_fd, -1, "BPF_MAP_CREATE");
++	attr.max_entries = 1;
 +}
 +
-+static struct bpf_map *find_map_for_jump_entry(struct bpf_object *obj,
-+					       int nrels,
-+					       Elf_Data *relo_data,
-+					       __u32 entry_offset)
++static void prog_load_incorrect_branches(struct bpf_static_keys *skel)
 +{
-+	struct bpf_map *map;
-+	const char *name;
-+	Elf64_Rel *rel;
-+	Elf64_Sym *sym;
-+	int i;
++	int key_fd, map_fd, prog_fd;
 +
-+	for (i = 0; i < nrels; i++) {
-+		rel = elf_rel_by_idx(relo_data, i);
-+		if (!rel) {
-+			pr_warn("static branch: relo #%d: failed to get ELF relo\n", i);
-+			return NULL;
-+		}
++	/*
++	 *                 KEY=OFF               KEY=ON
++	 * <prog>:
++	 *        0:       r0 = 0x0              r0 = 0x0
++	 *        1:       goto +0x0 <1>         goto +0x1 <2>
++	 * <1>:
++	 *        2:       exit                  exit
++	 * <2>:
++	 *        3:       r0 = 0x1              r0 = 0x1
++	 *        4:       goto -0x3 <1>         goto -0x3 <1>
++	 */
++	struct bpf_insn insns[] = {
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_JMP_IMM(BPF_JA, 0, 0, 0),
++		BPF_EXIT_INSN(),
++		BPF_MOV64_IMM(BPF_REG_0, 1),
++		BPF_JMP_IMM(BPF_JA, 0, 0, -3),
++	};
++	struct bpf_static_branch_info static_branches_info[] = {
++		{
++			.map_fd = -1,
++			.insn_offset = 8,
++			.jump_target = 24,
++			.flags = 0,
++		},
++	};
++	union bpf_attr attr = {
++		.prog_type = BPF_PROG_TYPE_XDP,
++		.insns     = ptr_to_u64(insns),
++		.insn_cnt  = ARRAY_SIZE(insns),
++		.license   = ptr_to_u64("GPL"),
++		.static_branches_info = ptr_to_u64(static_branches_info),
++		.static_branches_info_size = sizeof(static_branches_info),
++	};
 +
-+		if ((__u32)rel->r_offset != entry_offset)
-+			continue;
++	key_fd = bpf_map__fd(skel->maps.key1);
++	ASSERT_GT(key_fd, 0, "skel->maps.key1");
 +
-+		sym = elf_sym_by_idx(obj, ELF64_R_SYM(rel->r_info));
-+		if (!sym) {
-+			pr_warn(".maps relo #%d: symbol %zx not found\n",
-+				i, (size_t)ELF64_R_SYM(rel->r_info));
-+			return NULL;
-+		}
++	map_fd = bpf_map__fd(skel->maps.just_map);
++	ASSERT_GT(map_fd, 0, "skel->maps.just_map");
 +
-+		name = elf_sym_str(obj, sym->st_name) ?: "<?>";
-+		if (!name || !strcmp(name, "")) {
-+			pr_warn(".maps relo #%d: symbol name is zero or empty\n", i);
-+			return NULL;
-+		}
++	strncpy(attr.prog_name, "prog", sizeof(attr.prog_name));
 +
-+		map = bpf_object__find_map_by_name(obj, name);
-+		if (!map)
-+			return NULL;
-+		return map;
-+	}
-+	return NULL;
++	/* The first two loads should be ok, correct parameters */
++
++	static_branches_info[0].map_fd = key_fd;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_GT(prog_fd, 0, "BPF_PROG_LOAD");
++	close(prog_fd);
++
++	static_branches_info[0].flags = BPF_F_INVERSE_BRANCH;
++	insns[1] = BPF_JMP_IMM(BPF_JA, 0, 0, 1); /* inverse branch expects non-zero offset */
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_GT(prog_fd, 0, "BPF_PROG_LOAD");
++	close(prog_fd);
++	static_branches_info[0].flags = 0;
++	insns[1] = BPF_JMP_IMM(BPF_JA, 0, 0, 0);
++
++	/* All other loads should fail with -EINVAL */
++
++	static_branches_info[0].map_fd = map_fd;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: incorrect map fd");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: incorrect map fd");
++	static_branches_info[0].map_fd = key_fd;
++
++	attr.static_branches_info = 0;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: info is NULL, but size is not zero");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: info is NULL, but size is not zero");
++	attr.static_branches_info = ptr_to_u64(static_branches_info);
++
++	attr.static_branches_info_size = 0;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: info is not NULL, but size is zero");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: info is not NULL, but size is zero");
++	attr.static_branches_info_size = sizeof(static_branches_info);
++
++	attr.static_branches_info_size = 1;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: size not divisible by item size");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: size not divisible by item size");
++	attr.static_branches_info_size = sizeof(static_branches_info);
++
++	static_branches_info[0].flags = 0xbeef;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: incorrect flags");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: incorrect flags");
++	static_branches_info[0].flags = 0;
++
++	static_branches_info[0].insn_offset = 1;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: incorrect insn_offset");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: incorrect insn_offset");
++	static_branches_info[0].insn_offset = 8;
++
++	static_branches_info[0].insn_offset = 64;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: insn_offset outside of prgoram");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: insn_offset outside of prgoram");
++	static_branches_info[0].insn_offset = 8;
++
++	static_branches_info[0].jump_target = 1;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: incorrect jump_target");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: incorrect jump_target");
++	static_branches_info[0].jump_target = 8;
++
++	static_branches_info[0].jump_target = 64;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: jump_target outside of prgoram");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: jump_target outside of prgoram");
++	static_branches_info[0].jump_target = 8;
++
++	static_branches_info[0].insn_offset = 0;
++	prog_fd = syscall(__NR_bpf, BPF_PROG_LOAD, &attr, sizeof(attr));
++	ASSERT_EQ(prog_fd, -1, "BPF_PROG_LOAD: patching not a JA");
++	ASSERT_EQ(errno, EINVAL, "BPF_PROG_LOAD: patching not a JA");
++	static_branches_info[0].insn_offset = 8;
 +}
 +
-+static int add_static_branch(struct bpf_program *prog,
-+			     struct jump_table_entry *entry,
-+			     struct bpf_map *map)
++void test_bpf_static_keys(void)
 +{
-+	__u32 size_old = prog->static_branches_info_size;
-+	__u32 size_new = size_old + sizeof(struct static_branch_info);
-+	struct static_branch_info *info;
-+	void *x;
++	struct bpf_static_keys *skel;
 +
-+	x = realloc(prog->static_branches_info, size_new);
-+	if (!x)
-+		return -ENOMEM;
++	skel = bpf_static_keys__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "bpf_static_keys__open_and_load"))
++		return;
 +
-+	info = x + size_old;
-+	info->insn_offset = entry->insn_offset - prog->sec_insn_off * 8;
-+	info->jump_target = entry->jump_target - prog->sec_insn_off * 8;
-+	info->flags = (__u32) entry->flags;
-+	info->map = map;
++	if (test__start_subtest("check_one_key"))
++		check_one_key(skel);
 +
-+	prog->static_branches_info = x;
-+	prog->static_branches_info_size = size_new;
++	if (test__start_subtest("check_multiple_keys"))
++		check_multiple_keys(skel);
++
++	if (test__start_subtest("check_multiple_progs"))
++		check_multiple_progs(skel);
++
++	if (test__start_subtest("check_one_key_long_jump"))
++		check_one_key_long_jump(skel);
++
++	if (test__start_subtest("check_bpf_to_bpf_call"))
++		check_bpf_to_bpf_call(skel);
++
++	/* Negative tests */
++
++	if (test__start_subtest("check_use_key_as_map"))
++		check_use_key_as_map(skel);
++
++	if (test__start_subtest("map_create_incorrect"))
++		map_create_incorrect();
++
++	if (test__start_subtest("prog_load_incorrect_branches"))
++		prog_load_incorrect_branches(skel);
++
++	bpf_static_keys__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_static_keys.c b/tools/testing/selftests/bpf/progs/bpf_static_keys.c
+new file mode 100644
+index 000000000000..e47a34df469b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/bpf_static_keys.c
+@@ -0,0 +1,120 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Isovalent */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++DEFINE_STATIC_KEY(key1);
++DEFINE_STATIC_KEY(key2);
++DEFINE_STATIC_KEY(key3);
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, u32);
++	__type(value, u32);
++} just_map SEC(".maps");
++
++int ret_user;
++
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int check_one_key(void *ctx)
++{
++	if (bpf_static_branch_likely(&key1))
++		ret_user += 3;
++	else
++		ret_user += 4;
 +
 +	return 0;
 +}
 +
-+static int
-+bpf_object__collect_static_branches_relos(struct bpf_object *obj,
-+					  Elf64_Shdr *shdr,
-+					  Elf_Data *relo_data)
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int check_one_key_another_prog(void *ctx)
 +{
-+	Elf_Data *branches_data = obj->efile.static_branches_data;
-+	int nrels = shdr->sh_size / shdr->sh_entsize;
-+	struct jump_table_entry *entries;
-+	size_t i;
-+	int err;
++	if (bpf_static_branch_unlikely(&key1))
++		ret_user += 30;
++	else
++		ret_user += 40;
 +
-+	if (!branches_data)
-+		return 0;
++	return 0;
++}
 +
-+	entries = (void *)branches_data->d_buf;
-+	for (i = 0; i < branches_data->d_size / sizeof(struct jump_table_entry); i++) {
-+		__u32 entry_offset = i * sizeof(struct jump_table_entry);
-+		struct bpf_program *prog;
-+		struct bpf_map *map;
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int check_one_key_yet_another_prog(void *ctx)
++{
++	if (bpf_static_branch_unlikely(&key1))
++		ret_user += 300;
++	else
++		ret_user += 400;
 +
-+		prog = find_prog_for_jump_entry(obj, nrels, relo_data, entry_offset, &entries[i]);
-+		if (IS_ERR(prog))
-+			return PTR_ERR(prog);
++	return 0;
++}
 +
-+		map = find_map_for_jump_entry(obj, nrels, relo_data,
-+				entry_offset + offsetof(struct jump_table_entry, map_ptr));
-+		if (!map)
-+			return -EINVAL;
++static __always_inline int big_chunk_of_code(volatile int *x)
++{
++	#pragma clang loop unroll_count(256)
++	for (int i = 0; i < 256; i++)
++		*x += 1;
 +
-+		err = add_static_branch(prog, &entries[i], map);
-+		if (err)
-+			return err;
++	return *x;
++}
++
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int check_one_key_long_jump(void *ctx)
++{
++	int x;
++
++	if (bpf_static_branch_likely(&key1)) {
++		x = 1000;
++		big_chunk_of_code(&x);
++		ret_user = x;
++	} else {
++		x = 2000;
++		big_chunk_of_code(&x);
++		ret_user = x;
 +	}
 +
 +	return 0;
 +}
 +
- static int map_fill_btf_type_info(struct bpf_object *obj, struct bpf_map *map)
- {
- 	int id;
-@@ -6298,10 +6499,44 @@ static struct reloc_desc *find_prog_insn_relo(const struct bpf_program *prog, si
- 		       sizeof(*prog->reloc_desc), cmp_relo_by_insn_idx);
- }
- 
-+static int append_subprog_static_branches(struct bpf_program *main_prog,
-+					  struct bpf_program *subprog)
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int check_multiple_keys_unlikely(void *ctx)
 +{
-+	size_t subprog_size = subprog->static_branches_info_size;
-+	size_t main_size = main_prog->static_branches_info_size;
-+	size_t entry_size = sizeof(struct static_branch_info);
-+	void *old_info = main_prog->static_branches_info;
-+	int n_entries = subprog_size / entry_size;
-+	struct static_branch_info *branch;
-+	void *new_info;
-+	int i;
-+
-+	if (!subprog_size)
-+		return 0;
-+
-+	new_info = realloc(old_info, subprog_size + main_size);
-+	if (!new_info)
-+		return -ENOMEM;
-+
-+	memcpy(new_info + main_size, subprog->static_branches_info, subprog_size);
-+
-+	for (i = 0; i < n_entries; i++) {
-+		branch = new_info + main_size + i * entry_size;
-+		branch->insn_offset += subprog->sub_insn_off * 8;
-+		branch->jump_target += subprog->sub_insn_off * 8;
-+	}
-+
-+	main_prog->static_branches_info = new_info;
-+	main_prog->static_branches_info_size += subprog_size;
++	ret_user = (bpf_static_branch_unlikely(&key1) << 0) |
++		   (bpf_static_branch_unlikely(&key2) << 1) |
++		   (bpf_static_branch_unlikely(&key3) << 2);
 +
 +	return 0;
 +}
 +
- static int append_subprog_relos(struct bpf_program *main_prog, struct bpf_program *subprog)
- {
- 	int new_cnt = main_prog->nr_reloc + subprog->nr_reloc;
- 	struct reloc_desc *relos;
-+	int err;
- 	int i;
- 
- 	if (main_prog == subprog)
-@@ -6324,6 +6559,11 @@ static int append_subprog_relos(struct bpf_program *main_prog, struct bpf_progra
- 	 */
- 	main_prog->reloc_desc = relos;
- 	main_prog->nr_reloc = new_cnt;
-+
-+	err = append_subprog_static_branches(main_prog, subprog);
-+	if (err)
-+		return err;
-+
- 	return 0;
- }
- 
-@@ -6879,6 +7119,8 @@ static int bpf_object__collect_relos(struct bpf_object *obj)
- 			err = bpf_object__collect_st_ops_relos(obj, shdr, data);
- 		else if (idx == obj->efile.btf_maps_shndx)
- 			err = bpf_object__collect_map_relos(obj, shdr, data);
-+		else if (idx == obj->efile.static_branches_shndx)
-+			err = bpf_object__collect_static_branches_relos(obj, shdr, data);
- 		else
- 			err = bpf_object__collect_prog_relos(obj, shdr, data);
- 		if (err)
-@@ -7002,6 +7244,30 @@ static int libbpf_prepare_prog_load(struct bpf_program *prog,
- 
- static void fixup_verifier_log(struct bpf_program *prog, char *buf, size_t buf_sz);
- 
-+static struct bpf_static_branch_info *
-+convert_branch_info(struct static_branch_info *info, size_t size)
++int __noinline patch(int x)
 +{
-+	size_t n = size/sizeof(struct static_branch_info);
-+	struct bpf_static_branch_info *bpf_info;
-+	size_t i;
++	if (bpf_static_branch_likely(&key1))
++		x += 100;
++	if (bpf_static_branch_unlikely(&key2))
++		x += 1000;
 +
-+	if (!info)
-+		return NULL;
-+
-+	bpf_info = calloc(n, sizeof(struct bpf_static_branch_info));
-+	if (!bpf_info)
-+		return NULL;
-+
-+	for (i = 0; i < n; i++) {
-+		bpf_info[i].insn_offset = info[i].insn_offset;
-+		bpf_info[i].jump_target = info[i].jump_target;
-+		bpf_info[i].flags = info[i].flags;
-+		bpf_info[i].map_fd = info[i].map->fd;
-+	}
-+
-+	return bpf_info;
++	return x;
 +}
 +
- static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog,
- 				struct bpf_insn *insns, int insns_cnt,
- 				const char *license, __u32 kern_version, int *prog_fd)
-@@ -7106,6 +7372,11 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
- 	load_attr.log_size = log_buf_size;
- 	load_attr.log_level = log_level;
- 
-+	load_attr.static_branches_info = convert_branch_info(prog->static_branches_info,
-+							     prog->static_branches_info_size);
-+	load_attr.static_branches_info_size = prog->static_branches_info_size /
-+			sizeof(struct static_branch_info) * sizeof(struct bpf_static_branch_info);
++SEC("fentry/" SYS_PREFIX "sys_nanosleep")
++int check_bpf_to_bpf_call(void *ctx)
++{
++	__u64 j = bpf_jiffies64();
 +
- 	ret = bpf_prog_load(prog->type, prog_name, license, insns, insns_cnt, &load_attr);
- 	if (ret >= 0) {
- 		if (log_level && own_log_buf) {
-diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
-index f0f08635adb0..62020e7a58b0 100644
---- a/tools/lib/bpf/libbpf_internal.h
-+++ b/tools/lib/bpf/libbpf_internal.h
-@@ -40,6 +40,9 @@
- #ifndef R_BPF_64_ABS32
- #define R_BPF_64_ABS32 3
- #endif
-+#ifndef R_BPF_64_NODYLD32
-+#define R_BPF_64_NODYLD32 4
-+#endif
- #ifndef R_BPF_64_32
- #define R_BPF_64_32 10
- #endif
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 5ced96d99f8c..47b343e2813e 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -22,6 +22,7 @@
- #include "strset.h"
- 
- #define BTF_EXTERN_SEC ".extern"
-+#define STATIC_JUMPS_REL_SEC ".rel.jump_table"
- 
- struct src_sec {
- 	const char *sec_name;
-@@ -888,8 +889,9 @@ static int linker_sanity_check_elf_relos(struct src_obj *obj, struct src_sec *se
- 		size_t sym_type = ELF64_R_TYPE(relo->r_info);
- 
- 		if (sym_type != R_BPF_64_64 && sym_type != R_BPF_64_32 &&
--		    sym_type != R_BPF_64_ABS64 && sym_type != R_BPF_64_ABS32) {
--			pr_warn("ELF relo #%d in section #%zu has unexpected type %zu in %s\n",
-+		    sym_type != R_BPF_64_ABS64 && sym_type != R_BPF_64_ABS32 &&
-+		    sym_type != R_BPF_64_NODYLD32 && strcmp(sec->sec_name, STATIC_JUMPS_REL_SEC)) {
-+			pr_warn("ELF relo #%d in section #%zu unexpected type %zu in %s\n",
- 				i, sec->sec_idx, sym_type, obj->filename);
- 			return -EINVAL;
- 		}
-@@ -2087,7 +2089,7 @@ static int linker_append_elf_relos(struct bpf_linker *linker, struct src_obj *ob
- 						insn->imm += sec->dst_off / sizeof(struct bpf_insn);
- 					else
- 						insn->imm += sec->dst_off;
--				} else {
-+				} else if (strcmp(src_sec->sec_name, STATIC_JUMPS_REL_SEC)) {
- 					pr_warn("relocation against STT_SECTION in non-exec section is not supported!\n");
- 					return -EINVAL;
- 				}
++	bpf_printk("%lu\n", j);
++
++	ret_user = 0;
++
++	if (bpf_static_branch_likely(&key1))
++		ret_user += 1;
++	if (bpf_static_branch_unlikely(&key2))
++		ret_user += 10;
++
++	ret_user = patch(ret_user);
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.34.1
 
