@@ -1,38 +1,67 @@
-Return-Path: <bpf+bounces-16983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE5CD807F6C
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 05:09:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D771B807F6D
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 05:12:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61FEB1F21170
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 04:09:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED6E62821DD
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 04:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F2D5682;
-	Thu,  7 Dec 2023 04:09:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9695A5682;
+	Thu,  7 Dec 2023 04:12:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c1c7Kbnv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63D13D73;
-	Wed,  6 Dec 2023 20:08:59 -0800 (PST)
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8BxIvBZRXFlqoY_AA--.60736S3;
-	Thu, 07 Dec 2023 12:08:57 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxK9xYRXFltidXAA--.61203S2;
-	Thu, 07 Dec 2023 12:08:57 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Puranjay Mohan <puranjay12@gmail.com>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND bpf-next v1] test_bpf: Rename second ALU64_SMOD_X to ALU64_SMOD_K
-Date: Thu,  7 Dec 2023 12:08:51 +0800
-Message-ID: <20231207040851.19730-1-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2331ED73
+	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 20:12:09 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id 6a1803df08f44-67abaab0bc7so3240556d6.2
+        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 20:12:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701922327; x=1702527127; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vn6lBK3+Aw3ObPlUimPue3j773eIEiOpnQMBhHdMn6M=;
+        b=c1c7Kbnv2igY6Ew7Za1LJTwnIIztzkNUyhtautrUbdTaR5bxKZ7sMMdagNN6EsevKg
+         klj77/LBtHUeopIL0+CdoA7kc/wzc5T7HpBmGqX4OVNvsUaFgQUtaadGU/UjFotVC0cz
+         iGta7MqaBqhwbG2IQruz5+rpj6KoaQsasrigLkIIBPXCni3E1A/b/27V2Kjahfs3OVSV
+         HzkxP8/NS1z+9GoIqkGGhyn7ILsrz9V40hti1OCm8I6fqdlrnT22JHwADk8dysqJ3M8i
+         30oq4LJUOowBKjrR7kvRoKA2RvfAxoHy2jNG4sP86FXMYM+2odLju/9dLovdbvycUiI0
+         eF5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701922327; x=1702527127;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vn6lBK3+Aw3ObPlUimPue3j773eIEiOpnQMBhHdMn6M=;
+        b=fylny74YUeYhh9gwNN1zR+DpC5KBvgPTzwwyX8GIJipuCgoNkJq2jpjPlJlKjz0ywf
+         CSZQD0dtuQUA4GyqqJ8mD2UMgCul1yip9B77RNvsqRzdYGd0YcMWdAIvShk9ZrFe2Agt
+         ePEjkxWHiLN18Morsop/AYcle3AZhUOp6JmxfIquw413/ywLSOkrmERgRS9knpHRwWoL
+         MbWuYz3mfhTLgkCsHKUPucTI21v1/ytPXdc4qecxEz+bRMR11PTgg7vocAhvacDwgsLT
+         zoJP/MgF+8Nm34fwAbDvE0IApz4GLju9Diz4B+bGt6MKcYLrKwMfGCsLGq9KI707oLBy
+         YFpw==
+X-Gm-Message-State: AOJu0YzU4ysRVRITU/yj58BGAP19sRRjLDlyfcpkbfSHof3tF406fwSq
+	peSXiO63mfgQHH0ZE1eIdmZQrqQ4ObxxBg==
+X-Google-Smtp-Source: AGHT+IGEB3hVrG8VA/TN5B7kNJch3rR0ZPLtaL64WeS+iu923+JP+UJpU8V+FYArYKlfgQ2tvJYnIg==
+X-Received: by 2002:a0c:ef8c:0:b0:67a:4da4:e23c with SMTP id w12-20020a0cef8c000000b0067a4da4e23cmr1695517qvr.56.1701922327407;
+        Wed, 06 Dec 2023 20:12:07 -0800 (PST)
+Received: from andrei-framework.verizon.net ([2600:4041:599b:1100:225d:9ebb:8c9b:7326])
+        by smtp.gmail.com with ESMTPSA id o6-20020a056214108600b0066cf4fa7b47sm172808qvr.4.2023.12.06.20.12.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 20:12:06 -0800 (PST)
+From: Andrei Matei <andreimatei1@gmail.com>
+To: bpf@vger.kernel.org
+Cc: sunhao.th@gmail.com,
+	andrii.nakryiko@gmail.com,
+	eddyz87@gmail.com,
+	Andrei Matei <andreimatei1@gmail.com>
+Subject: [PATCH bpf-next v5 0/3] bpf: fix verification of indirect var-off stack access
+Date: Wed,  6 Dec 2023 23:11:47 -0500
+Message-Id: <20231207041150.229139-1-andreimatei1@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -40,62 +69,35 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxK9xYRXFltidXAA--.61203S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7XFyrArWfZw1rWr48trWkuFX_yoWDKwcE9a
-	18AF9rAF15uFyYvw4SgFWDKrs29F4Dt3WxCr1DuFWDGay5Jry5Cr4kZr1Uua45WrZav3ZF
-	v3WDt3ZrGwnYkosvyTuYvTs0mTUanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb3AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r12
-	6r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-	vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-	AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-	cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-	IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIev
-	Ja73UjIFyTuYvjxU2rgADUUUU
 
-Currently, there are two test cases with same name
-"ALU64_SMOD_X: -7 % 2 = -1", the first one is right,
-the second one should be ALU64_SMOD_K because its
-code is BPF_ALU64 | BPF_MOD | BPF_K.
+V4 to V5:
+  - split the test into a separate patch
 
-Before:
-test_bpf: #170 ALU64_SMOD_X: -7 % 2 = -1 jited:1 4 PASS
-test_bpf: #171 ALU64_SMOD_X: -7 % 2 = -1 jited:1 4 PASS
+V3 to V4:
+  - include a test per Eduard's request
+  - target bpf-next per Alexei's request (patches didn't change)
 
-After:
-test_bpf: #170 ALU64_SMOD_X: -7 % 2 = -1 jited:1 4 PASS
-test_bpf: #171 ALU64_SMOD_K: -7 % 2 = -1 jited:1 4 PASS
 
-Fixes: daabb2b098e0 ("bpf/tests: add tests for cpuv4 instructions")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
+V2 to V3:
+  - simplify checks for max_off (don't call
+    check_stack_slot_within_bounds for it)
+  - append a commit to protect against overflow in the addition of the
+    register and the offset
 
-Add "bpf-next" in the patch subject, sorry for that
+V1 to V2:
+  - fix max_off calculation for access size = 0
 
- lib/test_bpf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 7916503e6a6a..3c5a1ca06219 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -6293,7 +6293,7 @@ static struct bpf_test tests[] = {
- 	},
- 	/* BPF_ALU64 | BPF_MOD | BPF_K off=1 (SMOD64) */
- 	{
--		"ALU64_SMOD_X: -7 % 2 = -1",
-+		"ALU64_SMOD_K: -7 % 2 = -1",
- 		.u.insns_int = {
- 			BPF_LD_IMM64(R0, -7),
- 			BPF_ALU64_IMM_OFF(BPF_MOD, R0, 2, 1),
+Andrei Matei (3):
+  bpf: fix verification of indirect var-off stack access
+  bpf: add verifier regression test for previous patch
+  bpf: guard stack limits against 32bit overflow
+
+ kernel/bpf/verifier.c                         | 20 +++++--------
+ .../selftests/bpf/progs/verifier_var_off.c    | 29 +++++++++++++++++++
+ 2 files changed, 36 insertions(+), 13 deletions(-)
+
 -- 
-2.42.0
+2.40.1
 
 
