@@ -1,67 +1,68 @@
-Return-Path: <bpf+bounces-16986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16987-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9542C807F71
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 05:12:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C520807F73
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 05:12:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDD241F212F3
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 04:12:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F4BBB20DA6
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 04:12:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA6F5685;
-	Thu,  7 Dec 2023 04:12:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E476F8498;
+	Thu,  7 Dec 2023 04:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pnypx7Hr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Eu70WAmz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 328A9D73
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 20:12:17 -0800 (PST)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5d3644ca426so2462467b3.1
-        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 20:12:17 -0800 (PST)
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72271D5C
+	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 20:12:18 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-77ecedad216so13038885a.3
+        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 20:12:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701922335; x=1702527135; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1701922337; x=1702527137; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7ZVIPLfCvSCDiu0dICZQDlpADC4uzsTyBFadpnSqTwA=;
-        b=Pnypx7Hri02a4JysVga44JLmb0+CNoTqM9ShhFdS8hNy3SbtOibQTogIGgMzaFRm2I
-         iWa/8xQftdLZ5bGPvKsbiEozb+0/JmQ/hx2s72VXdfmGwSTwsfgaHGw/FRx4J3s6TkNn
-         0LgZBYcWt7aWIB2q1vH6UXIplWc/Vgkdtogm3jrCBBOvoVZeTYBrjic2LgHSu3SwstqR
-         +rZasw1IzaYblMQsxGPRPUeEoV/ghoY8rB9jBu6oCc1R4gIU79oPUTWbniEJuA+TqLTb
-         W1IbKjRyNwGey6um5dhI1059nQQAfSQK0ejDsGMU95VLrRZczyXR/6l8W5S4ML6xqItU
-         rmIw==
+        bh=JJNOZXW/19vdyac9iHcxbBhS2H5cmLHne945AbcBJZg=;
+        b=Eu70WAmzwT2TMGY0rU/OkBChP3/qM5dfFatpieBMjRl63i6si7pnqjc50YxzZdm/LB
+         GgAdvy83GJRUkaNtUfejXMDnbVxGeh9aPd0JkTW+MXZ2HxNkt52XW7KdnecO4Ly0tKZd
+         V+Y9aCCcDPIpwFgiMeZSM43mcWj0XHWi7EhECBKZ3el9RoCxQeZ0ebTINSnrvBJNo39D
+         8rzuf1jyy5HSWcEEMyw2MSOf+txKRge4+dwYIfeNQ9IKm+3yVUnB5/alx2b/5m4J2W7l
+         un6Y+eoo2zwGw6M0JCBwjvcmSnw4UFNBwB64fZ02HlfShoQM8IOHlt9ScQaXFl8QkR2t
+         eyww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701922335; x=1702527135;
+        d=1e100.net; s=20230601; t=1701922337; x=1702527137;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7ZVIPLfCvSCDiu0dICZQDlpADC4uzsTyBFadpnSqTwA=;
-        b=UTL6v4nGoQJTjEv7+DGGVJBJ0Wbnckq9RaRf06tH43NuUAGYA7J+l4t/gXoPpvFRp7
-         z+z0Q8JTMALOfQ24z1Yl+mkJ6iMsQqbUj4rm9B2dBZjsM5MQqXv1nEOZbp0BN/37O2yP
-         JPKN1jW2epdtWjW9/HQ0r1sY2b7WE6wUhcybOI45YhAJ2Muf0Our1LX54t5ueK/dwF/M
-         38gDPL5KtuY34jWaP8iYvZLAcobN4Um1ZgLJqPvuQ03/DM90kHnIRdZXD/yo+5J8GGxx
-         J2mL0HqnlVACLhBaGFjvqcqKvkdzWDJ441tqSTBsVLKFNT+GUSr3zWuPzp2/xRyvwdm2
-         dGCA==
-X-Gm-Message-State: AOJu0YxIQUGi1YSFPZvFvm0vlWFe8iFOP9RHL98FntDZ3Ct5DDfPwGF1
-	+hnMu0cPAEejQl0Jw7AxjNAh3A92nVRbLQ==
-X-Google-Smtp-Source: AGHT+IHXtdXdFYbMFeEKI8PVSssNtX2wDSrXHajQQ6upbi2X0ByU8vqyiOPkvW/kP/qfvEV+pHbC0A==
-X-Received: by 2002:a81:b71f:0:b0:5d8:17bf:c50f with SMTP id v31-20020a81b71f000000b005d817bfc50fmr1826619ywh.5.1701922335273;
-        Wed, 06 Dec 2023 20:12:15 -0800 (PST)
+        bh=JJNOZXW/19vdyac9iHcxbBhS2H5cmLHne945AbcBJZg=;
+        b=QnbeVXf28bsVoGhSQjjoRjBdsNWMSf03IzLmmAhOlemdeidHb+rXoPco5gsiTB11uP
+         oz9GdvltI3D/efATabp2F2XTUZ2eE8c/Z2DSx/iLM/eca49DQVsPLD0vE+JAZIxRrOxB
+         uc3VKKfO1pPiS6bk0/C6YHuFvYHhPY8d0JFcYTg/xp0FJMvBdm+iG3ZDClo5UGyu4oLK
+         5zQVUoGSqqj1kl6EjkIKPh6TpM9v/k7vRMwzVAVcme7xDy3xMxswYtKqjsYLFr9JM5gM
+         sKI86/3rK24sY+EmY5ToaqGrLa1r13MCxfv7WLB6MAjOd/vmQlQb3g7jFTxJQKFSEyZV
+         joLA==
+X-Gm-Message-State: AOJu0Yxo4pbP20KmfEPhqCr7qfVaEVIT0GzJETXXCU4FYzhaFi+BbZ5k
+	WRQTipCUzZdKTNkA24J//UCrtqPX1KQHzw==
+X-Google-Smtp-Source: AGHT+IHisPmqs1x1oPJg1GBYRGZ69mGfuA81o+/VccNwrbkIY+LmTPOEWZbxSikb/voJl2tG+KAX1Q==
+X-Received: by 2002:a05:6214:805:b0:67a:b459:b594 with SMTP id df5-20020a056214080500b0067ab459b594mr1983322qvb.119.1701922336610;
+        Wed, 06 Dec 2023 20:12:16 -0800 (PST)
 Received: from andrei-framework.verizon.net ([2600:4041:599b:1100:225d:9ebb:8c9b:7326])
-        by smtp.gmail.com with ESMTPSA id o6-20020a056214108600b0066cf4fa7b47sm172808qvr.4.2023.12.06.20.12.14
+        by smtp.gmail.com with ESMTPSA id o6-20020a056214108600b0066cf4fa7b47sm172808qvr.4.2023.12.06.20.12.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Dec 2023 20:12:14 -0800 (PST)
+        Wed, 06 Dec 2023 20:12:16 -0800 (PST)
 From: Andrei Matei <andreimatei1@gmail.com>
 To: bpf@vger.kernel.org
 Cc: sunhao.th@gmail.com,
 	andrii.nakryiko@gmail.com,
 	eddyz87@gmail.com,
-	Andrei Matei <andreimatei1@gmail.com>
-Subject: [PATCH bpf-next v5 2/3] bpf: add verifier regression test for previous patch
-Date: Wed,  6 Dec 2023 23:11:49 -0500
-Message-Id: <20231207041150.229139-3-andreimatei1@gmail.com>
+	Andrei Matei <andreimatei1@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next v5 3/3] bpf: guard stack limits against 32bit overflow
+Date: Wed,  6 Dec 2023 23:11:50 -0500
+Message-Id: <20231207041150.229139-4-andreimatei1@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231207041150.229139-1-andreimatei1@gmail.com>
 References: <20231207041150.229139-1-andreimatei1@gmail.com>
@@ -73,53 +74,59 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a regression test for var-off zero-sized reads.
+This patch promotes the arithmetic around checking stack bounds to be
+done in the 64-bit domain, instead of the current 32bit. The arithmetic
+implies adding together a 64-bit register with a int offset. The
+register was checked to be below 1<<29 when it was variable, but not
+when it was fixed. The offset either comes from an instruction (in which
+case it is 16 bit), from another register (in which case the caller
+checked it to be below 1<<29 [1]), or from the size of an argument to a
+kfunc (in which case it can be a u32 [2]). Between the register being
+inconsistently checked to be below 1<<29, and the offset being up to an
+u32, it appears that we were open to overflowing the `int`s which were
+currently used for arithmetic.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+[1] https://github.com/torvalds/linux/blob/815fb87b753055df2d9e50f6cd80eb10235fe3e9/kernel/bpf/verifier.c#L7494-L7498
+[2] https://github.com/torvalds/linux/blob/815fb87b753055df2d9e50f6cd80eb10235fe3e9/kernel/bpf/verifier.c#L11904
+
+Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/progs/verifier_var_off.c    | 29 +++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ kernel/bpf/verifier.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_var_off.c b/tools/testing/selftests/bpf/progs/verifier_var_off.c
-index 83a90afba785..b7bdd7db3a35 100644
---- a/tools/testing/selftests/bpf/progs/verifier_var_off.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_var_off.c
-@@ -224,6 +224,35 @@ __naked void access_max_out_of_bound(void)
- 	: __clobber_all);
- }
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 137240681fa9..6832ed743765 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6577,7 +6577,7 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
+  * The minimum valid offset is -MAX_BPF_STACK for writes, and
+  * -state->allocated_stack for reads.
+  */
+-static int check_stack_slot_within_bounds(int off,
++static int check_stack_slot_within_bounds(s64 off,
+ 					  struct bpf_func_state *state,
+ 					  enum bpf_access_type t)
+ {
+@@ -6606,7 +6606,7 @@ static int check_stack_access_within_bounds(
+ 	struct bpf_reg_state *regs = cur_regs(env);
+ 	struct bpf_reg_state *reg = regs + regno;
+ 	struct bpf_func_state *state = func(env, reg);
+-	int min_off, max_off;
++	s64 min_off, max_off;
+ 	int err;
+ 	char *err_extra;
  
-+/* Similar to the test above, but this time check the special case of a
-+ * zero-sized stack access. We used to have a bug causing crashes for zero-sized
-+ * out-of-bounds accesses.
-+ */
-+SEC("socket")
-+__description("indirect variable-offset stack access, zero-sized, max out of bound")
-+__failure __msg("invalid variable-offset indirect access to stack R1")
-+__naked void zero_sized_access_max_out_of_bound(void)
-+{
-+	asm volatile ("                      \
-+	r0 = 0;                              \
-+	/* Fill some stack */                \
-+	*(u64*)(r10 - 16) = r0;              \
-+	*(u64*)(r10 - 8) = r0;               \
-+	/* Get an unknown value */           \
-+	r1 = *(u32*)(r1 + 0);                \
-+	r1 &= 63;                            \
-+	r1 += -16;                           \
-+	/* r1 is now anywhere in [-16,48) */ \
-+	r1 += r10;                           \
-+	r2 = 0;                              \
-+	r3 = 0;                              \
-+	call %[bpf_probe_read_kernel];       \
-+	exit;                                \
-+"	:
-+	: __imm(bpf_probe_read_kernel)
-+	: __clobber_all);
-+}
-+
- SEC("lwt_in")
- __description("indirect variable-offset stack access, min out of bound")
- __failure __msg("invalid variable-offset indirect access to stack R2")
+@@ -6619,7 +6619,7 @@ static int check_stack_access_within_bounds(
+ 		err_extra = " write to";
+ 
+ 	if (tnum_is_const(reg->var_off)) {
+-		min_off = reg->var_off.value + off;
++		min_off = (s64)reg->var_off.value + off;
+ 		max_off = min_off + access_size;
+ 	} else {
+ 		if (reg->smax_value >= BPF_MAX_VAR_OFF ||
 -- 
 2.40.1
 
