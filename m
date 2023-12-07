@@ -1,57 +1,58 @@
-Return-Path: <bpf+bounces-17015-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17016-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9782808D7C
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 17:35:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A35BE808D7E
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 17:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84A0628228F
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 16:35:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D7E7282200
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 16:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6261246B9F;
-	Thu,  7 Dec 2023 16:35:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E3E481A4;
+	Thu,  7 Dec 2023 16:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="EvNyROlM"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="VVwDBW55"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E275312D
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 08:35:10 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1d048c171d6so9640375ad.1
-        for <bpf@vger.kernel.org>; Thu, 07 Dec 2023 08:35:10 -0800 (PST)
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75C6BA
+	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 08:35:14 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1d06d42a58aso9565145ad.0
+        for <bpf@vger.kernel.org>; Thu, 07 Dec 2023 08:35:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1701966910; x=1702571710; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xogDwySrHiRFAfCXEnCaVWOOT+dvRIT71JwIoqFZVtE=;
-        b=EvNyROlMdIw6MNUH1GZ8AGOS2+s0uTw1QVqATc5+52zV4QJbOMhAvINSslxxGT+dWX
-         ERKSagQJmdK27Ss4Xjf+iALF3GVnFnOjXO7CP4x+mQjZWiVcfm8X2+d8FnT7Tr4i2JLQ
-         WiGlx5TrDJTYq6oa/ERU1wbHrkRnSHtAzI9Jqx3Z/3OFkrbg33Xs0/+xFIs85Je+3tw5
-         hrkDgd5d8R4rvmxblbs0G5TBoUXbdsdkx7XwiKhVEYSETsIlZYDWKSaQMS8UQ3ZolQ8H
-         b436MQZM8hJVNAqvAR0KphhM/mtRxzbfRSDp6KSrGgRcX9vVnWaPtoShI8PtEXol2n3/
-         HyVw==
+        d=kylehuey.com; s=google; t=1701966914; x=1702571714; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dWj1IWQKQUAn53hJd+8gzkbOyC7Uc3/+Xnz5vVEOJAM=;
+        b=VVwDBW55m0+CDPNtEo5vhp4IUC/kBBuTg9UYkGBv86g2h2uAjCqobJRyhnpOQVvSbG
+         qATy2zfqJ6o4+Kkj5+W9rp2Rdv2C7Hsx86tKWmsJTlH3we8umq9P5y+/kqoQn8xTMFSS
+         3TSpknLzz1YrQRWyRl7xdHsCusaNWCrP+5IfhGReajs7G54gnc+u+TaBrmUz0vlTH08O
+         iUec9Ff9BoKUu3RpIG1XVYA7Fns4e0RAKZB9lk2TWN1yOssf/JchcpWxGguZj1Vo+9Xl
+         l1bYLVMtDf5CSkPUtmEsqBWmkLfP47Q6G8AEaXrhQJieSN0+JyOiNTYU5JmQs8r9nBwQ
+         ffpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701966910; x=1702571710;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xogDwySrHiRFAfCXEnCaVWOOT+dvRIT71JwIoqFZVtE=;
-        b=moIyYYn3NJZGuoHODqjTqFMREamSk6ZA28tr4W8QVapFd1yjApRqP9lRxnwTSkOTtx
-         So9zlz+s8JeOiyCzskrp0wm9INTJQ+0J0A/5sR8O6J3wauHrgdnP234aIXWd7iVqVkJP
-         A9U7l/bQTQt8qdrC5myEr7LW1O/BJsJye47L7xTSX4XIavYVWZKsPizM+4N6SqRzTXtg
-         xMtvgv8fV8Gw+WA2l4wzAMHIJVU+gwZTg+ux/Pz6M2vwqdKYFn/v5jJoTwNe2CiVp0JT
-         XMTK4gp0JNbHYs2LywVFvgYkbRVUhLXaZfl3SZEfEWzB3/BYy1yuumHIHquYYZXcPbux
-         lHEA==
-X-Gm-Message-State: AOJu0YyOdLsM3CE6Xgm/aQxoqnfXEwJ4Ja0pdxNFoqWvo5zSCiOqSdJl
-	z4LrXa0bY6IWGKsT1GQwc9eUyg==
-X-Google-Smtp-Source: AGHT+IHDpr3J9ROCjcF7G8HNLiXYI3MOZmTU2nKq/6Yj5bUt+LRMeq4AgUhu5fv1ZeE2pDR+CZuKZw==
-X-Received: by 2002:a17:902:a711:b0:1d0:6ffd:9e2e with SMTP id w17-20020a170902a71100b001d06ffd9e2emr2493195plq.128.1701966910194;
-        Thu, 07 Dec 2023 08:35:10 -0800 (PST)
+        d=1e100.net; s=20230601; t=1701966914; x=1702571714;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dWj1IWQKQUAn53hJd+8gzkbOyC7Uc3/+Xnz5vVEOJAM=;
+        b=l5w0UK0v0I6vZabUuf4j7kFpLFQjbcIi16DWLxL0HZmTrRpMQsx67xpb360NkVYNIr
+         LPGYXTN43nbx5qDgiC3Bc9vRWzO3btDynE7Ebqk2C2e00+GObShOYKLf9/9htlySDgk0
+         Tr/M2hPpGKsCzxJriAKA7vN8k4dTRa1T4n4Atz2AFTjkigptEGOYjcS7GuHvvQCVQ+/n
+         DYpuffc4FWpDpd5vsfjo6iXGfu4Wh264ylpP/tMdH7YENSMGTbMKa/6mnhwics9tpTc1
+         +o/EQFuISjiNKV/HejVMx9UF+VFhOkEH8LqaDVL+43m+x8wi/og7ed5yC/Q78QETun6R
+         Ge2w==
+X-Gm-Message-State: AOJu0YxE268PCyAPtfA3/uLWrXCwDhwbnamOGHCpgsqkYm08kkeB4k4z
+	c9yT/Ao/wvPoD9aSItYbc6FsFw==
+X-Google-Smtp-Source: AGHT+IH0TFiITQTxzBEHpxgF8GFh3P2TkSCdMsEPDdMQqCIAwlhGDm2o/wCZc9VUC6HmQ/5p2aYgcw==
+X-Received: by 2002:a17:902:b48d:b0:1d0:6ffd:e2ef with SMTP id y13-20020a170902b48d00b001d06ffde2efmr2666645plr.137.1701966914046;
+        Thu, 07 Dec 2023 08:35:14 -0800 (PST)
 Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
-        by smtp.gmail.com with ESMTPSA id iw15-20020a170903044f00b001d1cd7e4acfsm6143plb.201.2023.12.07.08.35.08
+        by smtp.gmail.com with ESMTPSA id iw15-20020a170903044f00b001d1cd7e4acfsm6143plb.201.2023.12.07.08.35.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 08:35:09 -0800 (PST)
+        Thu, 07 Dec 2023 08:35:13 -0800 (PST)
 From: Kyle Huey <me@kylehuey.com>
 X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
 To: Kyle Huey <khuey@kylehuey.com>,
@@ -62,11 +63,21 @@ To: Kyle Huey <khuey@kylehuey.com>,
 	Marco Elver <elver@google.com>,
 	Yonghong Song <yonghong.song@linux.dev>
 Cc: Robert O'Callahan <robert@ocallahan.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH v2 0/3] Combine perf and bpf for fast eval of hw breakpoint conditions
-Date: Thu,  7 Dec 2023 08:34:55 -0800
-Message-Id: <20231207163458.5554-1-khuey@kylehuey.com>
+Subject: [PATCH v2 2/3] perf/bpf: Allow a bpf program to suppress all sample side effects.
+Date: Thu,  7 Dec 2023 08:34:57 -0800
+Message-Id: <20231207163458.5554-3-khuey@kylehuey.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231207163458.5554-1-khuey@kylehuey.com>
+References: <20231207163458.5554-1-khuey@kylehuey.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,47 +86,33 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-rr, a userspace record and replay debugger[0], replays asynchronous events
-such as signals and context switches by essentially[1] setting a breakpoint
-at the address where the asynchronous event was delivered during recording
-with a condition that the program state matches the state when the event
-was delivered.
+Returning zero from a bpf program attached to a perf event already
+suppresses any data output. By clearing pending_kill, returning zero from a
+bpf program will effectively pretend the sample never happened for all
+userspace purposes.
 
-Currently, rr uses software breakpoints that trap (via ptrace) to the
-supervisor, and evaluates the condition from the supervisor. If the
-asynchronous event is delivered in a tight loop (thus requiring the
-breakpoint condition to be repeatedly evaluated) the overhead can be
-immense. A patch to rr that uses hardware breakpoints via perf events with
-an attached BPF program to reject breakpoint hits where the condition is
-not satisfied reduces rr's replay overhead by 94% on a pathological (but a
-real customer-provided, not contrived) rr trace.
+Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+---
+ kernel/events/core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-The only obstacle to this approach is that while the kernel allows a BPF
-program to suppress sample output when a perf event overflows it does not
-suppress signalling the perf event fd. This appears to be a simple
-oversight in the code. This patch set reorders the overflow handler
-callback and the side effects of perf event overflow to allow an overflow
-handler to suppress all side effects, changes bpf_overflow_handler() to
-suppress those side effects if the BPF program returns zero, and adds a
-selftest.
-
-The previous version of this patchset can be found at
-https://lore.kernel.org/linux-kernel/20231204201406.341074-1-khuey@kylehuey.com/
-
-Changes since v1:
-
-Patch 1 was added so that a sample suppressed by this mechanism will also
-not generate SIGTRAPs nor count against the event limit.
-
-Patch 2 is v1's patch 1.
-
-Patch 3 is v1's patch 2, and addresses a number of review comments about
-the self test and adds testing for the behavior introduced by patch 1.
-
-[0] https://rr-project.org/
-[1] Various optimizations exist to skip as much as execution as possible
-before setting a breakpoint, and to determine a set of program state that
-is practical to check and verify.
-
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 19fddfc27a4a..6cda05a4969d 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -10421,8 +10421,10 @@ static void bpf_overflow_handler(struct perf_event *event,
+ 	rcu_read_unlock();
+ out:
+ 	__this_cpu_dec(bpf_prog_active);
+-	if (!ret)
++	if (!ret) {
++		event->pending_kill = 0;
+ 		return;
++	}
+ 
+ 	event->orig_overflow_handler(event, data, regs);
+ }
+-- 
+2.34.1
 
 
