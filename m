@@ -1,163 +1,255 @@
-Return-Path: <bpf+bounces-17043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71ECE80931E
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 22:09:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09E88809336
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 22:21:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA56CB20E76
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 21:09:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 081AFB20DCC
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 21:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C0056395;
-	Thu,  7 Dec 2023 21:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92CD856395;
+	Thu,  7 Dec 2023 21:21:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GoPSG3d3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F03E9;
-	Thu,  7 Dec 2023 13:08:59 -0800 (PST)
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-7b6fe5d67d4so31815339f.3;
-        Thu, 07 Dec 2023 13:08:59 -0800 (PST)
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D11271738;
+	Thu,  7 Dec 2023 13:21:23 -0800 (PST)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-46480378d3dso286649137.3;
+        Thu, 07 Dec 2023 13:21:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701984083; x=1702588883; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=agnhrmqSR7tb+iq61mPw7X3g8ZtAUzTPmU+U4K1bhIk=;
+        b=GoPSG3d3NG3aGllRgxl6uQccXjJoj8PRRokPjPJgPg4fxK3ownZ6L5QWcTUN/upQPE
+         b5b28ljejjThUYVtmuO3YD3vp1NN0ddttNmsjnWLK0vvhCgEmA4jVtcBAm188WmX5R0G
+         I7cWL8K3rflLBNX2pQ1cIW7FB3g+UjzAyMfaSbXlowZwCEd8B6yGgT/vbkcpmn3RhCwC
+         j5lgDrM77qp/Ph8ja7EICr8mn4/G2Jq5YiGe7D2vSZXTvF4sJBUxTMNigp4oCPWjMQSa
+         AVX47rtmhj3+uqVauddEIOWPxSDWaONd+5kAHd+vxEwS9VknYaIjGDKndpMhPTVJpsab
+         ZlmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701983338; x=1702588138;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701984083; x=1702588883;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9U46t7VRKkzRri+us8kqzfYBSLxC0cBypP0Rhwiulss=;
-        b=JKfR4YEDy4v1K5xE6KDhWJXOLK59xw7pgUDObgM5XjeijOTuGeQ64sOjpCwA6sr9WK
-         QGeqw3ucscEb/UUSX1YKjh5h7qDclRCqW8sAKj51pCKEhGxjZhGdxzU1LL8UOJgm/Nyy
-         342GtBN1XywZQ1SihxepR6sCrLtIUZwGG2HUrwuuToqcpUyKqIEa271AJsv3Ry5Ey9gu
-         q8gT9IWMd+iMucJfhai6UY2LAbWnmDUi6vZ817/+kOJQbqZUJjJtNgXgZnY3AVWdrnsv
-         NcyAsJ7bjkMLqNT0Nui4N86SgWVn0IgICz/dp/Vupbo/vEWgV6z5GAwPbPb2PkwKKG45
-         bZpw==
-X-Gm-Message-State: AOJu0YxSt033rAQ83AlaZxvNs99XyNC75wJqupWyKo4PGy7R8thJDS9l
-	RN9lsmP3YJjAumLgoe5S4fUYozQhqzIsfr57
-X-Google-Smtp-Source: AGHT+IFYYCyWTIi4d9eKIBiaWLyNDTli9Yl/aUGYGxCHdfpzst91EtyP3AdYmx0GXlZDFT2yjx5OSg==
-X-Received: by 2002:a5d:9ec2:0:b0:77e:3598:e516 with SMTP id a2-20020a5d9ec2000000b0077e3598e516mr3701688ioe.2.1701983338323;
-        Thu, 07 Dec 2023 13:08:58 -0800 (PST)
-Received: from localhost (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id v3-20020a023843000000b00466b43f6b54sm117902jae.156.2023.12.07.13.08.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 13:08:57 -0800 (PST)
-From: David Vernet <void@manifault.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test for bpf_cpumask_weight() kfunc
-Date: Thu,  7 Dec 2023 15:08:43 -0600
-Message-ID: <20231207210843.168466-3-void@manifault.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231207210843.168466-1-void@manifault.com>
-References: <20231207210843.168466-1-void@manifault.com>
+        bh=agnhrmqSR7tb+iq61mPw7X3g8ZtAUzTPmU+U4K1bhIk=;
+        b=RovHFKvE314ucBsN1UKI5DkV5HjBWClOw8UrMa+mDJbJKInGtN6H2C4h4tH/1RWDwR
+         eOXEdAfqVMqWPbX7weVk3oKhiEsZZ4NNXTjQ4uHv+4y3wcWZwtehRCvxqqMcIH196Zir
+         MlX6EKhBwIrm/yeZjx/vJ8JZJ5vMyLzkLh0J5AQ3x1MTp5yRQosfIbhn3AIZKPMVa+tV
+         Gv8q6c76mYL9cHYNDyDxvmK7ESQXgVqjAujBQacEABPvENvF6HbUA9Ln2AwIjGvGr3f1
+         OoGk9XRaprLuehRsnigRwodKSCgmIz3Ftg0iHhI2K0zXVwkrz/sOn+kiU3PRtChPVohZ
+         yThA==
+X-Gm-Message-State: AOJu0Yy15x9ZwFn8ppJZgh9K2x3L25kuM0N6wqz1I2B1EKVIAC2kZ6g7
+	PN0YGIXKv2EBPjq2SPkXgih7vDJEhnGTDDxSJN6QQz4eyXwksg==
+X-Google-Smtp-Source: AGHT+IGRskXcZML/yJS0bDD/sW0Pt8jLIUd/ELooW+Kd0ODnx7ev/qCRFgQI9LyUQshang1PM7bzggm4evxzqiHs53E=
+X-Received: by 2002:a05:6102:e08:b0:464:7c8d:d139 with SMTP id
+ o8-20020a0561020e0800b004647c8dd139mr2614217vst.16.1701984082925; Thu, 07 Dec
+ 2023 13:21:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1701722991.git.dxu@dxuuu.xyz> <e0e2fc6161ceccfbb1075d367bcc37871012072d.1701722991.git.dxu@dxuuu.xyz>
+In-Reply-To: <e0e2fc6161ceccfbb1075d367bcc37871012072d.1701722991.git.dxu@dxuuu.xyz>
+From: Eyal Birger <eyal.birger@gmail.com>
+Date: Thu, 7 Dec 2023 13:21:11 -0800
+Message-ID: <CAHsH6GvRtFRRhjLoVL6HqmthGVY4KEb8EOzT61ofWyXgocD4NA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 02/10] bpf: xfrm: Add bpf_xdp_get_xfrm_state() kfunc
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
+	Herbert Xu <herbert@gondor.apana.org.au>, steffen.klassert@secunet.com, 
+	pabeni@redhat.com, hawk@kernel.org, john.fastabend@gmail.com, kuba@kernel.org, 
+	edumazet@google.com, antony.antony@secunet.com, alexei.starovoitov@gmail.com, 
+	yonghong.song@linux.dev, eddyz87@gmail.com, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, devel@linux-ipsec.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The new bpf_cpumask_weight() kfunc can be used to count the number of
-bits that are set in a struct cpumask* kptr. Let's add a selftest to
-verify its behavior.
+On Mon, Dec 4, 2023 at 12:57=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> This commit adds an unstable kfunc helper to access internal xfrm_state
+> associated with an SA. This is intended to be used for the upcoming
+> IPsec pcpu work to assign special pcpu SAs to a particular CPU. In other
+> words: for custom software RSS.
+>
+> That being said, the function that this kfunc wraps is fairly generic
+> and used for a lot of xfrm tasks. I'm sure people will find uses
+> elsewhere over time.
+>
+> Co-developed-by: Antony Antony <antony.antony@secunet.com>
+> Signed-off-by: Antony Antony <antony.antony@secunet.com>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  include/net/xfrm.h     |   9 ++++
+>  net/xfrm/xfrm_bpf.c    | 102 +++++++++++++++++++++++++++++++++++++++++
+>  net/xfrm/xfrm_policy.c |   2 +
+>  3 files changed, 113 insertions(+)
+>
+> diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+> index c9bb0f892f55..1d107241b901 100644
+> --- a/include/net/xfrm.h
+> +++ b/include/net/xfrm.h
+> @@ -2190,4 +2190,13 @@ static inline int register_xfrm_interface_bpf(void=
+)
+>
+>  #endif
+>
+> +#if IS_ENABLED(CONFIG_DEBUG_INFO_BTF)
+> +int register_xfrm_state_bpf(void);
+> +#else
+> +static inline int register_xfrm_state_bpf(void)
+> +{
+> +       return 0;
+> +}
+> +#endif
+> +
+>  #endif /* _NET_XFRM_H */
+> diff --git a/net/xfrm/xfrm_bpf.c b/net/xfrm/xfrm_bpf.c
+> index 3d3018b87f96..3d6cac7345ca 100644
+> --- a/net/xfrm/xfrm_bpf.c
+> +++ b/net/xfrm/xfrm_bpf.c
+> @@ -6,9 +6,11 @@
+>   */
+>
+>  #include <linux/bpf.h>
+> +#include <linux/btf.h>
+>  #include <linux/btf_ids.h>
+>
+>  #include <net/dst_metadata.h>
+> +#include <net/xdp.h>
+>  #include <net/xfrm.h>
+>
+>  #if IS_BUILTIN(CONFIG_XFRM_INTERFACE) || \
+> @@ -112,3 +114,103 @@ int __init register_xfrm_interface_bpf(void)
+>  }
+>
+>  #endif /* xfrm interface */
+> +
+> +/* bpf_xfrm_state_opts - Options for XFRM state lookup helpers
+> + *
+> + * Members:
+> + * @error      - Out parameter, set for any errors encountered
+> + *              Values:
+> + *                -EINVAL - netns_id is less than -1
+> + *                -EINVAL - opts__sz isn't BPF_XFRM_STATE_OPTS_SZ
+> + *                -ENONET - No network namespace found for netns_id
+> + * @netns_id   - Specify the network namespace for lookup
+> + *              Values:
+> + *                BPF_F_CURRENT_NETNS (-1)
+> + *                  Use namespace associated with ctx
+> + *                [0, S32_MAX]
+> + *                  Network Namespace ID
+> + * @mark       - XFRM mark to match on
+> + * @daddr      - Destination address to match on
+> + * @spi                - Security parameter index to match on
+> + * @proto      - L3 protocol to match on
+> + * @family     - L3 protocol family to match on
+> + */
+> +struct bpf_xfrm_state_opts {
+> +       s32 error;
+> +       s32 netns_id;
+> +       u32 mark;
+> +       xfrm_address_t daddr;
+> +       __be32 spi;
+> +       u8 proto;
+> +       u16 family;
+> +};
+> +
+> +enum {
+> +       BPF_XFRM_STATE_OPTS_SZ =3D sizeof(struct bpf_xfrm_state_opts),
+> +};
+> +
+> +__bpf_kfunc_start_defs();
+> +
+> +/* bpf_xdp_get_xfrm_state - Get XFRM state
+> + *
+> + * Parameters:
+> + * @ctx        - Pointer to ctx (xdp_md) in XDP program
+> + *                 Cannot be NULL
+> + * @opts       - Options for lookup (documented above)
+> + *                 Cannot be NULL
+> + * @opts__sz   - Length of the bpf_xfrm_state_opts structure
+> + *                 Must be BPF_XFRM_STATE_OPTS_SZ
+> + */
+> +__bpf_kfunc struct xfrm_state *
+> +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *o=
+pts, u32 opts__sz)
+> +{
+> +       struct xdp_buff *xdp =3D (struct xdp_buff *)ctx;
+> +       struct net *net =3D dev_net(xdp->rxq->dev);
+> +       struct xfrm_state *x;
+> +
+> +       if (!opts || opts__sz < sizeof(opts->error))
+> +               return NULL;
+> +
+> +       if (opts__sz !=3D BPF_XFRM_STATE_OPTS_SZ) {
+> +               opts->error =3D -EINVAL;
+> +               return NULL;
+> +       }
+> +
+> +       if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS)) {
+> +               opts->error =3D -EINVAL;
+> +               return NULL;
+> +       }
+> +
+> +       if (opts->netns_id >=3D 0) {
+> +               net =3D get_net_ns_by_id(net, opts->netns_id);
+> +               if (unlikely(!net)) {
+> +                       opts->error =3D -ENONET;
+> +                       return NULL;
+> +               }
+> +       }
+> +
+> +       x =3D xfrm_state_lookup(net, opts->mark, &opts->daddr, opts->spi,
+> +                             opts->proto, opts->family);
+> +
+> +       if (opts->netns_id >=3D 0)
+> +               put_net(net);
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../selftests/bpf/prog_tests/cpumask.c        |  1 +
- .../selftests/bpf/progs/cpumask_common.h      |  1 +
- .../selftests/bpf/progs/cpumask_success.c     | 43 +++++++++++++++++++
- 3 files changed, 45 insertions(+)
+Maybe opts->error should be set to something like -ENOENT if x =3D=3D NULL?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask.c b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-index 756ea8b590b6..c2e886399e3c 100644
---- a/tools/testing/selftests/bpf/prog_tests/cpumask.c
-+++ b/tools/testing/selftests/bpf/prog_tests/cpumask.c
-@@ -18,6 +18,7 @@ static const char * const cpumask_success_testcases[] = {
- 	"test_insert_leave",
- 	"test_insert_remove_release",
- 	"test_global_mask_rcu",
-+	"test_cpumask_weight",
- };
- 
- static void verify_success(const char *prog_name)
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_common.h b/tools/testing/selftests/bpf/progs/cpumask_common.h
-index b15c588ace15..0cd4aebb97cf 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_common.h
-+++ b/tools/testing/selftests/bpf/progs/cpumask_common.h
-@@ -54,6 +54,7 @@ bool bpf_cpumask_full(const struct cpumask *cpumask) __ksym;
- void bpf_cpumask_copy(struct bpf_cpumask *dst, const struct cpumask *src) __ksym;
- u32 bpf_cpumask_any_distribute(const struct cpumask *src) __ksym;
- u32 bpf_cpumask_any_and_distribute(const struct cpumask *src1, const struct cpumask *src2) __ksym;
-+u32 bpf_cpumask_weight(const struct cpumask *cpumask) __ksym;
- 
- void bpf_rcu_read_lock(void) __ksym;
- void bpf_rcu_read_unlock(void) __ksym;
-diff --git a/tools/testing/selftests/bpf/progs/cpumask_success.c b/tools/testing/selftests/bpf/progs/cpumask_success.c
-index 674a63424dee..fc3666edf456 100644
---- a/tools/testing/selftests/bpf/progs/cpumask_success.c
-+++ b/tools/testing/selftests/bpf/progs/cpumask_success.c
-@@ -460,6 +460,49 @@ int BPF_PROG(test_global_mask_rcu, struct task_struct *task, u64 clone_flags)
- 	return 0;
- }
- 
-+SEC("tp_btf/task_newtask")
-+int BPF_PROG(test_cpumask_weight, struct task_struct *task, u64 clone_flags)
-+{
-+	struct bpf_cpumask *local;
-+
-+	if (!is_test_task())
-+		return 0;
-+
-+	local = create_cpumask();
-+	if (!local)
-+		return 0;
-+
-+	if (bpf_cpumask_weight(cast(local)) != 0) {
-+		err = 3;
-+		goto out;
-+	}
-+
-+	bpf_cpumask_set_cpu(0, local);
-+	if (bpf_cpumask_weight(cast(local)) != 1) {
-+		err = 4;
-+		goto out;
-+	}
-+
-+	/*
-+	 * Make sure that adding additional CPUs changes the weight. Test to
-+	 * see whether the CPU was set to account for running on UP machines.
-+	 */
-+	bpf_cpumask_set_cpu(1, local);
-+	if (bpf_cpumask_test_cpu(1, cast(local)) && bpf_cpumask_weight(cast(local)) != 2) {
-+		err = 5;
-+		goto out;
-+	}
-+
-+	bpf_cpumask_clear(local);
-+	if (bpf_cpumask_weight(cast(local)) != 0) {
-+		err = 6;
-+		goto out;
-+	}
-+out:
-+	bpf_cpumask_release(local);
-+	return 0;
-+}
-+
- SEC("tp_btf/task_newtask")
- __success
- int BPF_PROG(test_refcount_null_tracking, struct task_struct *task, u64 clone_flags)
--- 
-2.42.1
-
+> +
+> +       return x;
+> +}
+> +
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_SET8_START(xfrm_state_kfunc_set)
+> +BTF_ID_FLAGS(func, bpf_xdp_get_xfrm_state, KF_RET_NULL | KF_ACQUIRE)
+> +BTF_SET8_END(xfrm_state_kfunc_set)
+> +
+> +static const struct btf_kfunc_id_set xfrm_state_xdp_kfunc_set =3D {
+> +       .owner =3D THIS_MODULE,
+> +       .set   =3D &xfrm_state_kfunc_set,
+> +};
+> +
+> +int __init register_xfrm_state_bpf(void)
+> +{
+> +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP,
+> +                                        &xfrm_state_xdp_kfunc_set);
+> +}
+> diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+> index c13dc3ef7910..1b7e75159727 100644
+> --- a/net/xfrm/xfrm_policy.c
+> +++ b/net/xfrm/xfrm_policy.c
+> @@ -4218,6 +4218,8 @@ void __init xfrm_init(void)
+>  #ifdef CONFIG_XFRM_ESPINTCP
+>         espintcp_init();
+>  #endif
+> +
+> +       register_xfrm_state_bpf();
+>  }
+>
+>  #ifdef CONFIG_AUDITSYSCALL
+> --
+> 2.42.1
+>
+>
 
