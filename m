@@ -1,160 +1,118 @@
-Return-Path: <bpf+bounces-17012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDD22808B59
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 16:04:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82B2808BCD
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 16:28:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29E761C20AD9
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 15:04:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76B8CB20E54
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 15:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8A6344394;
-	Thu,  7 Dec 2023 15:04:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 076B244C92;
+	Thu,  7 Dec 2023 15:28:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0+PC0jS"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="snOb9ecv"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60B0935288
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 15:04:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCAD9C433C8
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 15:04:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701961476;
-	bh=gGsBBUdzE4uPOpF7BY4qUy3f50uGrvZiodpR1CVRjcE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=n0+PC0jS30Fb0BpUMMXcHc7RKr4RjJ7PSwTBa/VM0zy4bRvjhWHQx5ddIb41lHPJO
-	 6gcqHmuHn00CnzQRBkd/EoxbZqNRrx9YfTsh9iFANkBkERw0ZRlnQYMAU80447u2Xk
-	 ygWJ/qjUX7G84K56Md/4pSpFgB2AyWZKjE8R0VrH1a+Kzzqvk5+/2ZocuYaCcmmPj4
-	 mPVhcxFlAQoTgOxQ9o2AjOXK2yZKTKfOS/Kz0zIIBEIP54qALGpzV0dh3ceOnr6DZ1
-	 U+/8ry3g8q22bk9GUMugYeM6ab0mJt2mcf62KcyDqLs3HwARNEu3zJybjcJUZGYlmy
-	 mWc8Itx2PG70g==
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-54c671acd2eso1332661a12.1
-        for <bpf@vger.kernel.org>; Thu, 07 Dec 2023 07:04:36 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy5hd820Lf2ZAfqttVFOXmU9kZeok4c3q1ULdjbHLfHcaIi+wzG
-	IyBlSVGKthKCnHN7wVfoTDbKipC6IV9F6xt6icPiVA==
-X-Google-Smtp-Source: AGHT+IGOhALX3ZlyCyf0/AtmMA/4f/5le2SnLZ+FOxKMUEKhniGDdAdpyJ1k7cNP1/FwdL4rdt6F+HE89OcfyHR/1qQ=
-X-Received: by 2002:a05:6402:cac:b0:54a:ff96:2cba with SMTP id
- cn12-20020a0564020cac00b0054aff962cbamr1564176edb.33.1701961475327; Thu, 07
- Dec 2023 07:04:35 -0800 (PST)
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8177C10CA;
+	Thu,  7 Dec 2023 07:28:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=oSO91Zjek++1IKXEdE5RYlis15XBD+gc14pgxk+BMSU=; b=snOb9ecvdpUafV+1Kv8SNC57GJ
+	x7/AZCiAkpE/XzFrf7+piCHYMPszK6iqkhe3XvlRx2yU5gcjm088FMML13QyMxSmUZgSzqvUmcNsI
+	KZITbZYDmXgsQqEqy+L60UfhISdR1Cn92aavH1IjrN8ZR7hRCibS76yLWVKjjZLLvurs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rBGHc-002KGh-Uo; Thu, 07 Dec 2023 16:27:24 +0100
+Date: Thu, 7 Dec 2023 16:27:24 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: justinstitt@google.com
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Shay Agroskin <shayagr@amazon.com>,
+	Arthur Kiyanovski <akiyano@amazon.com>,
+	David Arinzon <darinzon@amazon.com>, Noam Dagan <ndagan@amazon.com>,
+	Saeed Bishara <saeedb@amazon.com>, Rasesh Mody <rmody@marvell.com>,
+	Sudarsana Kalluru <skalluru@marvell.com>,
+	GR-Linux-NIC-Dev@marvell.com,
+	Dimitris Michailidis <dmichail@fungible.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Louis Peens <louis.peens@corigine.com>,
+	Shannon Nelson <shannon.nelson@amd.com>,
+	Brett Creeley <brett.creeley@amd.com>, drivers@pensando.io,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Ronak Doshi <doshir@vmware.com>,
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+	Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+	Dwaipayan Ray <dwaipayanray1@gmail.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Hauke Mehrtens <hauke@hauke-m.de>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	Vladimir Oltean <olteanv@gmail.com>,
+	=?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+	Daniel Golle <daniel@makrotopia.org>,
+	Landen Chao <Landen.Chao@mediatek.com>,
+	DENG Qingfang <dqfext@gmail.com>,
+	Sean Wang <sean.wang@mediatek.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>,
+	Clark Wang <xiaoning.wang@nxp.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Lars Povlsen <lars.povlsen@microchip.com>,
+	Steen Hegelund <Steen.Hegelund@microchip.com>,
+	Daniel Machon <daniel.machon@microchip.com>,
+	UNGLinuxDriver@microchip.com, Jiawen Wu <jiawenwu@trustnetic.com>,
+	Mengyuan Lou <mengyuanlou@net-swift.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Kees Cook <keescook@chromium.org>, intel-wired-lan@lists.osuosl.org,
+	oss-drivers@corigine.com, linux-hyperv@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v5 1/3] ethtool: Implement ethtool_puts()
+Message-ID: <6a0340d5-20e0-40ab-822e-d9fc1ce360d9@lunn.ch>
+References: <20231206-ethtool_puts_impl-v5-0-5a2528e17bf8@google.com>
+ <20231206-ethtool_puts_impl-v5-1-5a2528e17bf8@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZW+KYViDT3HWtKI1@CMGLRV3> <CACYkzJ5iyiUi_3r439ZMRnjM2f9Wd0XYoGJYQY=aXJ4QmX7e-A@mail.gmail.com>
- <CALOAHbDjdNhtkTdimkQaqrPOX2gOxao9Z_udjyPsfhPfu=+vKA@mail.gmail.com>
- <CACYkzJ6fgjMHvyUt0v5Z_-_uSKPu-zdKu+iXDZBNQZWsVc2WXQ@mail.gmail.com> <CALOAHbC3b9scsysawvAQ5Pq2igaxdvCdeL4=2LdKQn5TVWgY6w@mail.gmail.com>
-In-Reply-To: <CALOAHbC3b9scsysawvAQ5Pq2igaxdvCdeL4=2LdKQn5TVWgY6w@mail.gmail.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Thu, 7 Dec 2023 16:04:24 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ4QpQZ8JmdNXKWeSh8oc=jAyRh4Zj98Z+TG37Ce=cfE0w@mail.gmail.com>
-Message-ID: <CACYkzJ4QpQZ8JmdNXKWeSh8oc=jAyRh4Zj98Z+TG37Ce=cfE0w@mail.gmail.com>
-Subject: Re: BPF LSM prevent program unload
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Frederick Lawler <fred@cloudflare.com>, revest@chromium.org, jackmanb@chromium.org, 
-	bpf@vger.kernel.org, kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231206-ethtool_puts_impl-v5-1-5a2528e17bf8@google.com>
 
-On Thu, Dec 7, 2023 at 3:56=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
-rote:
->
-> On Thu, Dec 7, 2023 at 10:39=E2=80=AFPM KP Singh <kpsingh@kernel.org> wro=
-te:
-> >
-> > > >
-> > > > IMHO this is the best option. Here:
-> > > >
-> > > > * BPF LSM Program =3D MAC Policy
-> > > > * Removing / detaching / updating programs =3D Updating MAC policy
-> > >
-> > > What happens if a privileged user terminates the BPF LSM task and
-> > > deletes any pinned BPF files that might exist?
-> >
-> > The LSM program is pinned, so it does not matter if the task is termina=
-ted.
-> >
-> > > We can apply specific capabilities to restrict access, but it's
-> > > important to note that privileged users might also possess these
-> >
-> > That depends on how you implement your restriction logic. If your LSM
-> > program says, check CAP_MAC_ADMIN -> Allow removal, then your logic
-> > explicitly grants the privilege. If your LSM hook denies all
-> > privileged users the ability to remove the program, then no privileged
-> > user can remove the LSM program.
->
-> If it's impossible for any privileged user to remove the LSM program,
-> this brings up another question: how can we stop this program?
+On Wed, Dec 06, 2023 at 11:16:10PM +0000, justinstitt@google.com wrote:
+> Use strscpy() to implement ethtool_puts().
+> 
+> Functionally the same as ethtool_sprintf() when it's used with two
+> arguments or with just "%s" format specifier.
+> 
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-Again, it depends on how you implement the logic in the LSM hook, few ideas=
-:
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-* Layout xattr based policy that allows one particular binary running
-as one particular user to remove the program
-* Come up with your own rules that, e.g. say allows the system to boot
-in a "privileged / un-enforced mode" which allows CAP_MAC_ADMIN to
-update the policy.
-* A really terrible way. All odd user IDs with MAC_ADMIN are allowed
-to remove the program.
-
-The point here is to further fine grain the concept of administrative
-"privilege" for accessing specific resources, LSM programs being a
-resource and BPF LSM programs is one way.
-
-What I would encourage you to look at is how other LSM programs allow
-dynamic updates to their LSM policy and the same mechanisms should be
-usable in BPF.
-
-
-> However, if a privileged user does have the capability to remove it,
-> then the individual capable of doing so might possess these
-> privileges.
->
-> >
-> > The whole point here is to restrict privileged users from doing stuff.
-> >
-> > - KP
-> >
-> > > capabilities.
-> > >
-> > > >
-> > > > The decision around who can update MAC policy can be governed by th=
-e
-> > > > policy itself a.k.a. implemented with BPF LSM programs.  So we can
-> > > > update hooks (as suggested here inode_unlink, sb_unmount, path_unli=
-nk)
-> > > > to only allow this action for a subset of users (e.g. CAP_MAC_ADMIN=
- or
-> > > > even further restricted)
-> > > >
-> > > > While, I think this may be doable with existing LSM hooks but we ne=
-ed
-> > > > to probably have to cover multiple hook points needed to prevent on=
-e
-> > > > action which makes a good case for another LSM hook, perhaps someth=
-ing
-> > > > in the link->ops->detach path like
-> > > > https://elixir.bootlin.com/linux/latest/source/kernel/bpf/syscall.c=
-#L5074
-> > > >
-> > > > What do you think?
-> > > >
-> > > > - KP
-> >
-> > >
-> > >
-> > > --
-> > > Regards
-> > > Yafang
->
->
->
-> --
-> Regards
-> Yafang
+    Andrew
 
