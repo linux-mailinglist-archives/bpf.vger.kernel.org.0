@@ -1,200 +1,250 @@
-Return-Path: <bpf+bounces-17050-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9729D809550
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 23:28:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FAD6809569
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 23:32:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C86891C20B91
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 22:28:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262501F211BE
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 22:32:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EAE556442;
-	Thu,  7 Dec 2023 22:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF2157315;
+	Thu,  7 Dec 2023 22:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jVgyz74E"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D91199E
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 14:28:10 -0800 (PST)
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B7JqbN2012075
-	for <bpf@vger.kernel.org>; Thu, 7 Dec 2023 14:28:10 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uudj5vntn-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 07 Dec 2023 14:28:10 -0800
-Received: from twshared4634.37.frc1.facebook.com (2620:10d:c0a8:1b::30) by
- mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 7 Dec 2023 14:28:07 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id B9B4A3CC5459E; Thu,  7 Dec 2023 14:28:01 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <netdev@vger.kernel.org>, <paul@paul-moore.com>,
-        <brauner@kernel.org>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-security-module@vger.kernel.org>,
-        <keescook@chromium.org>, <kernel-team@meta.com>, <sargun@sargun.me>
-Subject: [PATCH RFC bpf-next 3/3] selftests/bpf: utilize string values for delegate_xxx mount options
-Date: Thu, 7 Dec 2023 14:27:55 -0800
-Message-ID: <20231207222755.3920286-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231207222755.3920286-1-andrii@kernel.org>
-References: <20231207222755.3920286-1-andrii@kernel.org>
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F26A4;
+	Thu,  7 Dec 2023 14:32:20 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-6cebbf51742so700864b3a.1;
+        Thu, 07 Dec 2023 14:32:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701988340; x=1702593140; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FMK5oBL7ZRsz2fIyOpAup+LzkwMHF1v8UfcRl/00pW4=;
+        b=jVgyz74EA9YH/e4wrnkTRiHle/tsmvlkMVnLqgH1lxIVScjA3FikU1u43v3s/EzfQq
+         Zr/ecCxEnYHKU/nXMEX5gA4Fq5EYYvmFzrGxfEyFwPjbEGwYevQj5rePgrd8knjYMmf2
+         q9yt8xDujDUoDO28aDKxtZni5kEQpQJuoxA0wSZRI2QliMncJCQELAmTBn3/l9eAQJv6
+         3hY69XiCZgS247+wfWC143F4KKR9rgFKKBoiPkxkT1uxROf2HW6HNhTr+8McNJ31fN/b
+         TCC5vr5GK72isb8xmBs+IRjrXXDghPD6CAv0BvKUR3naFmm6rq3jQaQ9yvU3ZlnZ32gG
+         VjZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701988340; x=1702593140;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FMK5oBL7ZRsz2fIyOpAup+LzkwMHF1v8UfcRl/00pW4=;
+        b=ACFE++F2HEFynL4/M62Vr9U2xW2Myx1UkqEuIZ7KJOKIC+Y2nhLC9waVl95MoCj354
+         +fbWH680PZnfiu3/FeYY6h528CrBJ0JFEt1tOUlJ70303bSJzdwYCJRDl9EWUL2M7dGq
+         YRav+LrpWclHGn/usLia4PMZ6j9b69ihMMwMYj+tQe4BI8Jwzn5B/2fJKRzmzTWelZUM
+         QRdBiGbSpJ07Kp+YTHf9A3f7zryvcvWm/bsHpvif1ilKmNWaHMMgNNSZXq20NWN04El2
+         h6Mp1qv06JGZ+r8Suv01GJMDdDC06bQgi2rew7qwLNBbkKT5I/wt6yOwwleiuIDpmp5P
+         2y+Q==
+X-Gm-Message-State: AOJu0YzLOYZ8ssCNt9PbIeYotQJ/XEkkjZcKAzmu9VydgmBs0yrC+eUp
+	Rq/E6HkGYS++6FugHAAYCKU=
+X-Google-Smtp-Source: AGHT+IGjndnK2BCYLCyacoFwmyubc38b0BJwGWZc02r4foqXNC19yYWn9LMik7KGPp42sJmibTCaIg==
+X-Received: by 2002:a05:6a00:238c:b0:6ce:939e:bed6 with SMTP id f12-20020a056a00238c00b006ce939ebed6mr3760900pfc.34.1701988340144;
+        Thu, 07 Dec 2023 14:32:20 -0800 (PST)
+Received: from MacBook-Pro-49.local ([2620:10d:c090:500::7:6fe4])
+        by smtp.gmail.com with ESMTPSA id gx4-20020a056a001e0400b006cbb71186f7sm286775pfb.29.2023.12.07.14.32.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 14:32:19 -0800 (PST)
+Date: Thu, 7 Dec 2023 14:32:12 -0800
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>, 
+	Song Liu <songliubraving@meta.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, 
+	"David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Sami Tolvanen <samitolvanen@google.com>, 
+	Kees Cook <keescook@chromium.org>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, linux-riscv <linux-riscv@lists.infradead.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, 
+	clang-built-linux <llvm@lists.linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Joao Moreira <joao@overdrivepizza.com>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+References: <20231204111128.GV8262@noisy.programming.kicks-ass.net>
+ <20231204125239.GA1319@noisy.programming.kicks-ass.net>
+ <ZW4LjmUKj1q6RWdL@krava>
+ <20231204181614.GA7299@noisy.programming.kicks-ass.net>
+ <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+ <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+ <20231206163814.GB36423@noisy.programming.kicks-ass.net>
+ <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: ugK2Oha5SqPziVfi_QIKZcFTbsGWeQQd
-X-Proofpoint-ORIG-GUID: ugK2Oha5SqPziVfi_QIKZcFTbsGWeQQd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-07_17,2023-12-07_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207093105.GA28727@noisy.programming.kicks-ass.net>
 
-Use both hex-based and string-based way to specify delegate mount
-options for BPF FS.
+On Thu, Dec 07, 2023 at 10:31:05AM +0100, Peter Zijlstra wrote:
+> On Wed, Dec 06, 2023 at 01:39:43PM -0800, Alexei Starovoitov wrote:
+> 
+> 
+> > All is ok until kCFI comes into picture.
+> > Here we probably need to teach arch_prepare_bpf_trampoline() to emit
+> > different __kcfi_typeid depending on kernel function proto,
+> > so that caller hash checking logic won't be tripped.
+> > I suspect that requires to reverse engineer an algorithm of computing kcfi from clang.
+> > other ideas?
+> 
+> I was going to try and extend bpf_struct_ops with a pointer, this
+> pointer will point to a struct of the right type with all ops filled out
+> as stubs.
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/token.c  | 43 +++++++++++--------
- 1 file changed, 26 insertions(+), 17 deletions(-)
+Right. Something like this, but it's more nuanced.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testi=
-ng/selftests/bpf/prog_tests/token.c
-index dc03790c6272..ec59c81c54b5 100644
---- a/tools/testing/selftests/bpf/prog_tests/token.c
-+++ b/tools/testing/selftests/bpf/prog_tests/token.c
-@@ -55,14 +55,22 @@ static int restore_priv_caps(__u64 old_caps)
- 	return cap_enable_effective(old_caps, NULL);
- }
-=20
--static int set_delegate_mask(int fs_fd, const char *key, __u64 mask)
-+static int set_delegate_mask(int fs_fd, const char *key, __u64 mask, con=
-st char *mask_str)
- {
- 	char buf[32];
- 	int err;
-=20
--	snprintf(buf, sizeof(buf), "0x%llx", (unsigned long long)mask);
-+	if (!mask_str) {
-+		if (mask =3D=3D ~0ULL) {
-+			mask_str =3D "any";
-+		} else {
-+			snprintf(buf, sizeof(buf), "0x%llx", (unsigned long long)mask);
-+			mask_str =3D buf;
-+		}
-+	}
-+
- 	err =3D sys_fsconfig(fs_fd, FSCONFIG_SET_STRING, key,
--			   mask =3D=3D ~0ULL ? "any" : buf, 0);
-+			   mask_str, 0);
- 	if (err < 0)
- 		err =3D -errno;
- 	return err;
-@@ -72,6 +80,7 @@ static int set_delegate_mask(int fs_fd, const char *key=
-, __u64 mask)
-=20
- struct bpffs_opts {
- 	__u64 cmds;
-+	const char *cmds_str;
- 	__u64 maps;
- 	__u64 progs;
- 	__u64 attachs;
-@@ -93,16 +102,16 @@ static int materialize_bpffs_fd(int fs_fd, struct bp=
-ffs_opts *opts)
- 	int mnt_fd, err;
-=20
- 	/* set up token delegation mount options */
--	err =3D set_delegate_mask(fs_fd, "delegate_cmds", opts->cmds);
-+	err =3D set_delegate_mask(fs_fd, "delegate_cmds", opts->cmds, opts->cmd=
-s_str);
- 	if (!ASSERT_OK(err, "fs_cfg_cmds"))
- 		return err;
--	err =3D set_delegate_mask(fs_fd, "delegate_maps", opts->maps);
-+	err =3D set_delegate_mask(fs_fd, "delegate_maps", opts->maps, NULL);
- 	if (!ASSERT_OK(err, "fs_cfg_maps"))
- 		return err;
--	err =3D set_delegate_mask(fs_fd, "delegate_progs", opts->progs);
-+	err =3D set_delegate_mask(fs_fd, "delegate_progs", opts->progs, NULL);
- 	if (!ASSERT_OK(err, "fs_cfg_progs"))
- 		return err;
--	err =3D set_delegate_mask(fs_fd, "delegate_attachs", opts->attachs);
-+	err =3D set_delegate_mask(fs_fd, "delegate_attachs", opts->attachs, NUL=
-L);
- 	if (!ASSERT_OK(err, "fs_cfg_attachs"))
- 		return err;
-=20
-@@ -284,13 +293,13 @@ static void child(int sock_fd, struct bpffs_opts *o=
-pts, child_callback_fn callba
- 	}
-=20
- 	/* ensure unprivileged child cannot set delegation options */
--	err =3D set_delegate_mask(fs_fd, "delegate_cmds", 0x1);
-+	err =3D set_delegate_mask(fs_fd, "delegate_cmds", 0x1, NULL);
- 	ASSERT_EQ(err, -EPERM, "delegate_cmd_eperm");
--	err =3D set_delegate_mask(fs_fd, "delegate_maps", 0x1);
-+	err =3D set_delegate_mask(fs_fd, "delegate_maps", 0x1, NULL);
- 	ASSERT_EQ(err, -EPERM, "delegate_maps_eperm");
--	err =3D set_delegate_mask(fs_fd, "delegate_progs", 0x1);
-+	err =3D set_delegate_mask(fs_fd, "delegate_progs", 0x1, NULL);
- 	ASSERT_EQ(err, -EPERM, "delegate_progs_eperm");
--	err =3D set_delegate_mask(fs_fd, "delegate_attachs", 0x1);
-+	err =3D set_delegate_mask(fs_fd, "delegate_attachs", 0x1, NULL);
- 	ASSERT_EQ(err, -EPERM, "delegate_attachs_eperm");
-=20
- 	/* pass BPF FS context object to parent */
-@@ -314,22 +323,22 @@ static void child(int sock_fd, struct bpffs_opts *o=
-pts, child_callback_fn callba
- 	}
-=20
- 	/* ensure unprivileged child cannot reconfigure to set delegation optio=
-ns */
--	err =3D set_delegate_mask(fs_fd, "delegate_cmds", ~0ULL);
-+	err =3D set_delegate_mask(fs_fd, "delegate_cmds", 0, "any");
- 	if (!ASSERT_EQ(err, -EPERM, "delegate_cmd_eperm_reconfig")) {
- 		err =3D -EINVAL;
- 		goto cleanup;
- 	}
--	err =3D set_delegate_mask(fs_fd, "delegate_maps", ~0ULL);
-+	err =3D set_delegate_mask(fs_fd, "delegate_maps", 0, "any");
- 	if (!ASSERT_EQ(err, -EPERM, "delegate_maps_eperm_reconfig")) {
- 		err =3D -EINVAL;
- 		goto cleanup;
- 	}
--	err =3D set_delegate_mask(fs_fd, "delegate_progs", ~0ULL);
-+	err =3D set_delegate_mask(fs_fd, "delegate_progs", 0, "any");
- 	if (!ASSERT_EQ(err, -EPERM, "delegate_progs_eperm_reconfig")) {
- 		err =3D -EINVAL;
- 		goto cleanup;
- 	}
--	err =3D set_delegate_mask(fs_fd, "delegate_attachs", ~0ULL);
-+	err =3D set_delegate_mask(fs_fd, "delegate_attachs", 0, "any");
- 	if (!ASSERT_EQ(err, -EPERM, "delegate_attachs_eperm_reconfig")) {
- 		err =3D -EINVAL;
- 		goto cleanup;
-@@ -647,7 +656,7 @@ void test_token(void)
- {
- 	if (test__start_subtest("map_token")) {
- 		struct bpffs_opts opts =3D {
--			.cmds =3D 1ULL << BPF_MAP_CREATE,
-+			.cmds_str =3D "BPF_MAP_CREATE",
- 			.maps =3D 1ULL << BPF_MAP_TYPE_STACK,
- 		};
-=20
-@@ -662,7 +671,7 @@ void test_token(void)
- 	}
- 	if (test__start_subtest("prog_token")) {
- 		struct bpffs_opts opts =3D {
--			.cmds =3D 1ULL << BPF_PROG_LOAD,
-+			.cmds_str =3D "BPF_PROG_LOAD",
- 			.progs =3D 1ULL << BPF_PROG_TYPE_XDP,
- 			.attachs =3D 1ULL << BPF_XDP,
- 		};
---=20
-2.34.1
+The bpf_struct_ops concept is a generic mechanism to provide bpf-based callback
+to any set of kernel callbacks.
 
+bpf tcp CC plugs into:
+struct tcp_congestion_ops {
+        /* do new cwnd calculation (required) */
+        void (*cong_avoid)(struct sock *sk, u32 ack, u32 acked);
+
+        /* call before changing ca_state (optional) */
+        void (*set_state)(struct sock *sk, u8 new_state);
+
+        /* call when cwnd event occurs (optional) */
+        void (*cwnd_event)(struct sock *sk, enum tcp_ca_event ev);
+  ...
+};
+
+and from bpf side we don't touch tcp kernel bits at all.
+tcp stack doesn't know whether it's calling bpf based CC or builtin CC or CC provided by kernel module.
+
+bpf struct_ops mechanim is a zero cost extension to potentially any kernel mechanism
+that is already setup with callbacks. tcp_congestion_ops is one of them.
+
+The allowlisting of tcp_congestion_ops for bpf use is done in net/ipv4/bpf_tcp_ca.c via:
+
+struct bpf_struct_ops bpf_tcp_congestion_ops = {
+        ...
+        .reg = bpf_tcp_ca_reg,
+        .unreg = bpf_tcp_ca_unreg,
+        ...
+        .name = "tcp_congestion_ops",
+};
+static int bpf_tcp_ca_reg(void *kdata)
+{
+        return tcp_register_congestion_control(kdata);
+}
+and
+ int tcp_register_congestion_control(struct tcp_congestion_ops *type);
+is a normal TCP CC registration routine that is used by all CCs.
+
+The bpf struct_ops infra prepares everything inside
+'struct tcp_congestion_ops' that makes it indistinguishable from normal kernel CC,
+except kCFI part. sadly.
+
+The kCFI challenge is that clang may not generate any __cfi + __kcfi_typeid at all.
+Like if vmlinux doesn't have any TCP CCs built-in there will be no kCFI hashes
+in the kernel that represent a required hash to call cong_avoid, set_state, cwnd_event.
+
+At the callsite like in net/ipv4/tcp_input.c
+  icsk->icsk_ca_ops->cong_avoid(sk, ack, acked);
+the clang will compute the kcfi hash, but there will be no __cfi symbol in vmlinux.
+
+If there was one we could teach the verifier to look for __kcfi...cong_avoid
+in kallsyms, then read cfi hash from there and populate it into generated asm
+in arch_prepare_bpf_trampoline.
+
+So I'm thinking to do this:
+
+diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
+index c7bbd8f3c708..afaadc2c0827 100644
+--- a/net/ipv4/bpf_tcp_ca.c
++++ b/net/ipv4/bpf_tcp_ca.c
+@@ -283,6 +283,12 @@ struct bpf_struct_ops bpf_tcp_congestion_ops = {
+        .name = "tcp_congestion_ops",
+ };
+
++/* never accessed, here for clang kCFI only */
++extern void __kcfi_cong_avoid(struct sock *sk, u32 ack, u32 acked);
++__ADDRESSABLE(__kcfi_cong_avoid);
++extern void __kcfi_set_state(struct sock *sk, u8 new_state);
++__ADDRESSABLE(__kcfi_set_state);
+
+To force kcfi generation and then teach struct_ops infra to look
+for __kcfi_typeid___kcfi_##callbackname in kallsyms,
+read kcfi from there and populate into bpf trampoline.
+
+Since kcfi and bpf are not working well, I believe it's bpf folks job to fix it.
+Especially since it's starting to look bpf infra heavy.
+
+If you're interested I can, of course, point to relevant bits in kernel/bpf/bpf_struct_ops.c
+that would need to be extended to support such kcfi_typeid search,
+but I think it's my job to fix it.
+
+If I get stuck, I'll ask for help.
+
+I also researched a different approach.
+llvm does the following to compute the kcfi hash:
+
+llvm::ConstantInt *CodeGenModule::CreateKCFITypeId(QualType T) {
+  if (auto *FnType = T->getAs<FunctionProtoType>())
+    T = getContext().getFunctionType(
+        FnType->getReturnType(), FnType->getParamTypes(),
+        FnType->getExtProtoInfo().withExceptionSpec(EST_None));
+
+  std::string OutName;
+  llvm::raw_string_ostream Out(OutName);
+  getCXXABI().getMangleContext().mangleCanonicalTypeName(
+      T, Out, getCodeGenOpts().SanitizeCfiICallNormalizeIntegers);
+
+  if (getCodeGenOpts().SanitizeCfiICallNormalizeIntegers)
+    Out << ".normalized";
+
+  return llvm::ConstantInt::get(Int32Ty,
+                                static_cast<uint32_t>(llvm::xxHash64(OutName)));
+}
+
+xxhash is already available in the kernel.
+We can add type mangling logic and convert prototype of cong_avoid, set_state, etc
+(that are already available in vmlinux BTF) into a mangled string and
+apply xxhash on that string.
+This way we wouldn't need to add __kcfi stubs to net/ipv4/bpf_tcp_ca.c.
+kcfi will be computed on demand.
+
+> > 
+> > This case is easier to make work with kCFI.
+> > The JIT will use:
+> > cfi_bpf_hash:
+> >       .long   __kcfi_typeid___bpf_prog_runX  
+> > like your patch already does.
+> > And will use
+> > extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+> > cfi_bpf_subprog_hash:
+> >       .long   __kcfi_typeid___bpf_callback_fn
+> > to JIT all subprogs. See bpf_is_subprog().
+> 
+> Aaah!, yes it should be trivial to use another hash value when
+> is_subprog in emit_prologue().
+
+Great. I'll wait for your respin and then will start building "kcfi for struct-ops"
+via one of the two approaches above.
+
+> Yes, we can do that. Plans have changed on my side too -- I'm taking a 6
+> week break soon, so I'll do whatever I can before I'm out, and then
+> continue from whatever state I find when I get back.
+
+6 weeks! Nice. Enjoy the long break.
+Last time I took 3 week PTO in a row I got bored after week 2 and went back to hacking :)
 
