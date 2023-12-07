@@ -1,374 +1,181 @@
-Return-Path: <bpf+bounces-17038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C6B0809146
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 20:29:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8D1480920D
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 21:06:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7269BB20D8C
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 19:29:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A1C1281AA5
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 20:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD7E4F882;
-	Thu,  7 Dec 2023 19:28:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23AA4F8B9;
+	Thu,  7 Dec 2023 20:06:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="urv7ZZg+"
+	dkim=pass (2048-bit key) header.d=yahoo.com header.i=@yahoo.com header.b="jDs5idTg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 981674F5F7;
-	Thu,  7 Dec 2023 19:28:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8C1C433C8;
-	Thu,  7 Dec 2023 19:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701977334;
-	bh=eMusVwTrdgEkt+KFoA8JGId1Q66EYgkk/hlk2YotBiU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=urv7ZZg+lBPXYlMuNl62mPHHXQR8TyOplw8R2R3NJSsBSOcyBOMa7xStG2xZ4IAH2
-	 aUUFkt09CHZk1ABjw9k1pedXaUho/13b0BkIJ+rQDRbyAi1KtP1/BEXeI5RmkW2L29
-	 bCf9AG3pjbXA/ypr7cPbkvQmCHUAEv+EavE4OGE60AJLRvYHBY1iqADZooRRyWAat1
-	 zBc5XnKUgp/K0eaEFW1zPxLbF/Ph9N/b3cxCLMgvdrvlfmwgcNVWPD2fTfWkKvFnlE
-	 skLi3WMegYOwPODPwk5y+X0bhaOkFoR6mcUuc7kz2Yo0+4msqrRGWAPtjnWAOS/Pmc
-	 PZwv7ZimkMTIQ==
-From: Jakub Kicinski <kuba@kernel.org>
-To: torvalds@linux-foundation.org
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	pabeni@redhat.com,
-	bpf@vger.kernel.org
-Subject: [GIT PULL] Networking for v6.7-rc5
-Date: Thu,  7 Dec 2023 11:28:53 -0800
-Message-ID: <20231207192853.448914-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.42.0
+Received: from sonic306-27.consmr.mail.ne1.yahoo.com (sonic306-27.consmr.mail.ne1.yahoo.com [66.163.189.89])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE421710
+	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 12:05:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701979554; bh=2vIBjQ6c5xsdyPwgowuEmLGRFGRA+K0326reMW6mRSg=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=jDs5idTg0CkqtlzpAAvAKczdDjH0VotayNrM6tuJpS3h0nerPZkAKbmIG02pKc9alzdSzQGtymoXBJehI/NDQp8//ZWjzVKqGOmyW5U3UPBg86U6E41N5kzIat2F6xJ2lRjZAZfwFaTdQzOqHK8H9rjDzcbuhnYNBz1rRrwd6UZZdB+VSu4sxZA9ttQDRvaT2cKLRUojhyw+VN5cE90oOvgXrTzGMvKslpCDB6laGsQTR0r5CXj3XmoUJnWcF+NNrbnNWGpKxXboD5lPlTSgVHxjKbJ3Ja+vgch4OnkwT4c2vSzZjIsH4IXqLrGSIXtD6R84qin90zCvqVVX4GCo3g==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1701979554; bh=AaIex4BnQUSuiJI+ZBs79PKFWlwVLgV75XKrnBqFnAh=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=tNKa3WdlJpuJdN41g/hH38rtEnO9pDYxcs5aTiE3iCdrpAJpd9lisKXT5r3Q8DsW3UYMe8/zWwLSYyBbZArzbNJAHhpHgHsIYOwkZ0rM336iigmcJIclT/s0KMkZozSFkk/ULl0N8UGbQ3WUa55vTR76/8s1T4bT+FyVhTcEpG+PwpffE+xVgJCE6M3lJPGh8jlHNqPLNhCHzSA53kPmPZMfyVqQnq9PP20XPAlOWDRcPXu66GXwg4qPp/hzFXJWTBazHtb4cLn9rsECgE+vuZ6Bv9WGbJdklZdcWnsXGusvM+Xs3KrnqdjDJ9TMiZ4H5fy0pdg0i4Votqf11DzNdA==
+X-YMail-OSG: jc9L4kQVM1laSGIcjZxC5H7Ko6HUymRcgejmpGnjGFhuo69N1kUE9NyxclbJvuy
+ w1RTniCilEOBLmaCkirjFBQjOlSIZu_w1HYJMSvHA3mgZ.Ey6hXqKsGAn2ZdTAxC9wEfQsfuO6GR
+ 7omtg3aISk9fdozLUCN8YiaDIlqMgDnjBV1DwyeIqCktTqhVyE6iro6CJ82RtaLdyM0WyxKPTRVX
+ b3va7qWJgbt8aqmBpTrMDubP0GHsX41qYc06.vAsrRGPqRgLwoGbxcPGdNJxPg4phlv1bYlBxUE_
+ GxFiHgyH3Og79aS9oZQ6RWad.kApDeNKUpiu5WsF1UQ4OLz9rL..72wCKKPGwLvzpqHlMjq5372i
+ 4mQUUqoy2XwmbWs5Hk4bNNZq9ykB30skW.9mOcioSkuG9gXqSHrldw8A9cjCzugR7Su4U_NNm1fv
+ bO02nUfPu4BOgRvNyhSvER1VsuB7GcSIgAXvGiJUEhKeWshL9z25i.0MFul2MpBW2nX5oAEs61qR
+ rH.3QqXprNbodzk4GtD.LFQ_Of7KexjkaMzMYdlKhYrwRbPQlgapDOE4GBIiWOw2kFvAr07HmciM
+ w7Xsj0oMb3RcOj28FJQwujH9dG3bxgTBBRZ.BMNcS1ItHebHO04eNphLJMiwY2lNo4xH9QXuEI1I
+ sHaT_VRVoiW9wV.S.jMhqkryuOKyCQ93cXxUbOnf_10dFc5WOPNtL0vyKd23ihMF2gYUJ2aN2GF9
+ DGW7KQlSLBCKZDALTYI6wQCL1GYfsrD.BnqKMmmQ2Tx0USxDiVbL.xdslk1vpiy0Jg56Dc33UtEA
+ ShyLXVL1nZcMurneBhNCDVUuYvlw6IcqXa4zXMxpG1URYg_Xfi0XnHIRnKNWeAWhy8CyDNw.Rigq
+ 9qN_HG_PkW_64XALV3Mr2v8mOK4wR1Pea2RvsS.64tlQdUkn4bEXxP8RgX6bWEc9RDueq0oSJOVd
+ tMiMkAzb1uCFc08nWwt_ys6psRJVtES77Ab3NNYPSPO9oaKqC7dVTv1132LlWGN5ia9BHZSXrsP4
+ vO7AjtOV2.B.AxOHlhZXv8N7jjdMugigAgsH6B0agDneqUfM_xG4Cd7dSyXxwN1uYQbtFgP44UQV
+ ilIFgmCoal1wvNXkes0sdQLCq9vJNw_VElcdLcqMbIrV6F.rHlX.ssXWJc4lX2S_HCpzN8As8T83
+ ypj6MuMoX4fbqnpeSedVCl9P9tDFa2jgGqAFLl.OTMppDVPjQImvLEBCTnCUKOXr5PTbZziCdZX6
+ .FNV158SpF2P4E8t8rMahs7O3H9sPaGzApnxz6ouQ_IUFMm1yIwzU60agRdu51Gyogh88S4zHVLc
+ msIO9_z_rDqg563ImhKD7hVHvzgO2PDt7KnKBY1RA3OXMYCNmq7GYDkFQAYtjstwi7tjTukCeg7f
+ G1qjW.MfarSVyRL7k1hf4.OOc2UQfumksV4B6Dq96SZK3Gr8LPbM3iejdWMZ46Teqb6Xls5PXgOI
+ rkYZWBVyGVXHsaUaeR7ec0wbxDuSKjiGSnuWMbVXKWxcns0tdw.gdxhXMBQ2seCr5NDUatvSPOmI
+ z9bih_ov5kZM_RnsZ3MA8SOLk7FYRrwljuP2KIn5dD1aQGdrpvTMw46in3rp.D3m4a1rul1nCysb
+ YiiEEB8h0zEJkpPg6gk00tViQ3iA3wBbxX61b4OMQ305_HaZZuoT2_4b44o5MdpoxlWDTixQ_u32
+ L0q3TTLziP9FOSEbeRbEXDQP3IfK3I1cRpltRGssPNX78AM0SkBZVa6u89vHnq3xYUv0FXVxvzVn
+ iOSXR5ZjT63DxKT3dNCERP3.8P4kBsqusRqidnachubgZP3F9D3yZQxoLAW7Z.KpTRbkBAs3GRVk
+ hsvhSX_rbRrzrqpuRtAze2wV4YJxWoKyIprMtoRxXaQLS7cf5K4CiE1K3r_fAFeygChraLaEX7f4
+ DbPswoJYTvwJHk4EOqR.H3TPp6bpemcAzy0nr70..ed0mYgsX2WGT0Hm3mE7al4Cid8lTtAoM1np
+ Il6wsR70AGkj4mPp4DUvagwXJgqsh7oS_.3e5CZK1RXaUoi.jP2Mq.vxy2R9qUcbP0vYH8TjqX_d
+ vJvYaTdDPxExQooTp.LsU0ysG7n_akqaUQXjVFVTDFfDOPVGvYxMwyrlwnEgoIujfqaue4vxrzln
+ umVlOsIIh2q3o5CE9aXaVqNdYdxzqVhuBdCW..4bt0cYWegnMShIaaJGeacuAW7it9igTyPAWndp
+ HNV7q5d9UN3eIfTnSbbcylNUs0PCqyV1W0hQzVfnXPj6FWKkR.BKKInhdGtzjpaeOnXiUweCjv3.
+ 5lw--
+X-Sonic-MF: <casey@schaufler-ca.com>
+X-Sonic-ID: 12d689c9-e4b5-498b-925f-5c4ace69434b
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic306.consmr.mail.ne1.yahoo.com with HTTP; Thu, 7 Dec 2023 20:05:54 +0000
+Received: by hermes--production-gq1-64499dfdcc-n9q5p (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 086ad280866278b9c0561f092de55781;
+          Thu, 07 Dec 2023 20:05:52 +0000 (UTC)
+Message-ID: <e01701ef-99c4-4b51-a8b6-6d9ad4d4c5a9@schaufler-ca.com>
+Date: Thu, 7 Dec 2023 12:05:51 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: BPF LSM prevent program unload
+Content-Language: en-US
+To: Paul Moore <paul@paul-moore.com>, Yafang Shao <laoar.shao@gmail.com>
+Cc: Frederick Lawler <fred@cloudflare.com>, jmorris@namei.org,
+ "Serge E. Hallyn" <serge@hallyn.com>, kpsingh@kernel.org,
+ revest@chromium.org, jackmanb@chromium.org, bpf@vger.kernel.org,
+ kernel-team@cloudflare.com, linux-security-module@vger.kernel.org,
+ Casey Schaufler <casey@schaufler-ca.com>
+References: <ZW+KYViDT3HWtKI1@CMGLRV3>
+ <CALOAHbANu2tq73bBRrGBAGq9ioTixqKgzpMyOPS3NMPXMg+pwA@mail.gmail.com>
+ <ZXCNC8nJZryEy+VR@CMGLRV3>
+ <CALOAHbAfixyvA5HpOXgqS32G-5p4Z=OXRso7_isz2fNKk76mmg@mail.gmail.com>
+ <CAHC9VhSRdXLeJvS3tOmAAat+h8G7_cvAYnFvbrTwgG+sC+PRYg@mail.gmail.com>
+From: Casey Schaufler <casey@schaufler-ca.com>
+In-Reply-To: <CAHC9VhSRdXLeJvS3tOmAAat+h8G7_cvAYnFvbrTwgG+sC+PRYg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Mailer: WebService/1.1.21952 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+
+On 12/7/2023 9:34 AM, Paul Moore wrote:
+> On Wed, Dec 6, 2023 at 9:28 PM Yafang Shao <laoar.shao@gmail.com> wrote:
+>> On Wed, Dec 6, 2023 at 11:02 PM Frederick Lawler <fred@cloudflare.com> wrote:
+>>> On Wed, Dec 06, 2023 at 10:42:50AM +0800, Yafang Shao wrote:
+>>>> On Wed, Dec 6, 2023 at 4:39 AM Frederick Lawler wrote:
+>>>>> Hi,
+>>>>>
+>>>>> IIUC, LSMs are supposed to give us the ability to design policy around
+>>>>> unprivileged users and in addition to privileged users. As we expand
+>>>>> our usage of BPF LSM's, there are cases where we want to restrict
+>>>>> privileged users from unloading our progs. For instance, any privileged
+>>>>> user that wants to remove restrictions we've placed on privileged users.
+>>>>>
+>>>>> We currently have a loader application doesn't leverage BPF skeletons. We
+>>>>> instead load BPF object files, and then pin the progs to a mount point that
+>>>>> is a bpf filesystem. On next run, if we have new policies, load in new
+>>>>> policies, and finally unload the old.
+>>>>>
+>>>>> Here are some conditions a privileged user may unload programs:
+>>>>>
+>>>>>         umount /sys/fs/bpf
+>>>>>         rm -rf /sys/fs/bpf/lsm
+>>>>>         rm /sys/fs/bpf/lsm/some_prog
+>>>>>         unlink /sys/fs/bpf/lsm/some_prog
+>>>>>
+>>>>> This works because once we remove the last reference, the programs and
+>>>>> pinned maps are cleaned up.
+>>>>>
+>>>>> Moving individual pins or moving the mount entirely with mount --move
+>>>>> do not perform any clean up operations. Lastly, bpftool doesn't currently
+>>>>> have the ability to unload LSM's AFAIK.
+> If you haven't already, I would suggest talking with KP Singh as he is
+> the BPF LSM maintainer; I see him on the To/CC line so I'm sure he'll
+> comment when he has the chance to do so.
+>
+>>>>> The few ideas I have floating around are:
+>>>>>
+>>>>> 1. Leverage some LSM hooks (BPF or otherwise) to restrict on the functions
+>>>>>    security_sb_umount(), security_path_unlink(), security_inode_unlink().
+>>>>>
+>>>>>    Both security_path_unlink() and security_inode_unlink() handle the
+>>>>>    unlink/remove case, but not the umount case.
+> I'm not a BPF expert, but this seems like the most obvious solution,
+> although as Tetsuo already mentioned you probably don't want to block
+> all unmount operations as that would be bad for obvious reasons.  I'm
+> guessing that a BPF LSM would have access to things like the current
+> task credentials and enough of the mounted filesystem's state (BPF
+> prog pinning?) to make a reasonable decision about granting or denying
+> the umount operation request.
+>
+>>>>> 3. Leverage SELinux/Apparmor to possibly handle these cases.
+> SELinux has support for restricting unmount operations as well BPF
+> program loading.  I see that AppArmor also has controls around
+> unmount, but I am less familiar with how that works.  It is also worth
+> mentioning that Tomoyo and Landlock provide unmount hook
+> implementations although both LSMs are fairly unique so I can't say if
+> they would be a good fit for your proposed use case.
+>
+>>>>> 4. Introduce a security_bpf_prog_unload() to target hopefully the
+>>>>>    umount and unlink cases at the same time.
+> At first glance that seems reasonable, but I guess we would need to
+> see it discussed a bit before I could promise to commit to that.
+>
+> As a FYI, we have some documented guidelines on creating new LSM
+> hooks; it's worth a quick read if you haven't seen it already.
+>
+> https://github.com/LinuxSecurityModule/kernel?tab=readme-ov-file#new-lsm-hook-guidelines
+>
+>>>> All the above programs can also be removed by privileged users.
+>>>>
+>>> I should probably clarify the "BPF or otherwise" a bit better. Even a
+>>> compiled in LSM module? If so, where can I find a bit more information
+>>> about that?
+> I'm not quite sure what you are asking about here, but we don't
+> currently support "unloading" built-in LSM modules and I don't see us
+> changing that anytime soon.  The closest one could get would be with a
+> LSM that supports runtime configuration of its security policy; one
+> could go from a restrictive or an allow-all, permissive policy
+> effectively disabling the LSM from an access control standpoint.
+>
+> I don't want to speak for all the LSMs here, but at least SELinux has
+> the ability to restrict policy loading so that one could prevent
+> replacing a relatively strict policy with a more permissive policy.
+> Although it is worth noting that enabling this restriction has a
+> number of caveats, i.e. policy updates require a reboot, and isn't
+> something I would recommend for a general purpose system.
+
+You can prevent Smack from making policy changes using the "onlycap"
+mechanism. It restricts what process labels can use CAP_MAC_ADMIN,
+which is required to update Smack rules. As with SELinux, it isn't
+recommended for general use.
 
-Hi Linus!
 
-The following changes since commit 6172a5180fcc65170bfa2d49e55427567860f2a7:
-
-  Merge tag 'net-6.7-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2023-12-01 08:24:46 +0900)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.7-rc5
-
-for you to fetch changes up to b0a930e8d90caf66a94fee7a9d0b8472bc3e7561:
-
-  vsock/virtio: fix "comparison of distinct pointer types lacks a cast" warning (2023-12-07 10:12:34 -0800)
-
-----------------------------------------------------------------
-Including fixes from bpf and netfilter.
-
-Current release - regressions:
-
- - veth: fix packet segmentation in veth_convert_skb_to_xdp_buff
-
-Current release - new code bugs:
-
- - tcp: assorted fixes to the new Auth Option support
-
-Older releases - regressions:
-
- - tcp: fix mid stream window clamp
-
- - tls: fix incorrect splice handling
-
- - ipv4: ip_gre: handle skb_pull() failure in ipgre_xmit()
-
- - dsa: mv88e6xxx: restore USXGMII support for 6393X
-
- - arcnet: restore support for multiple Sohard Arcnet cards
-
-Older releases - always broken:
-
- - tcp: do not accept ACK of bytes we never sent
-
- - require admin privileges to receive packet traces via netlink
-
- - packet: move reference count in packet_sock to atomic_long_t
-
- - bpf:
-   - fix incorrect branch offset comparison with cpu=v4
-   - fix prog_array_map_poke_run map poke update
-
- - netfilter:
-   - 3 fixes for crashes on bad admin commands
-   - xt_owner: fix race accessing sk->sk_socket, TOCTOU null-deref
-   - nf_tables: fix 'exist' matching on bigendian arches
-
- - leds: netdev: fix RTNL handling to prevent potential deadlock
-
- - eth: tg3: prevent races in error/reset handling
-
- - eth: r8169: fix rtl8125b PAUSE storm when suspended
-
- - eth: r8152: improve reset and surprise removal handling
-
- - eth: hns: fix race between changing features and sending
-
- - eth: nfp: fix sleep in atomic for bonding offload
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Brett Creeley (1):
-      ionic: Fix dim work handling in split interrupt mode
-
-ChunHao Lin (1):
-      r8169: fix rtl8125b PAUSE frames blasting when suspended
-
-D. Wythe (1):
-      netfilter: bpf: fix bad registration on nf_defrag
-
-Daniel Borkmann (1):
-      packet: Move reference count in packet_sock to atomic_long_t
-
-Daniil Maximov (1):
-      net: atlantic: Fix NULL dereference of skb pointer in
-
-Dinghao Liu (1):
-      net: bnxt: fix a potential use-after-free in bnxt_init_tc
-
-Dmitry Safonov (5):
-      Documentation/tcp: Fix an obvious typo
-      net/tcp: Consistently align TCP-AO option in the header
-      net/tcp: Limit TCP_AO_REPAIR to non-listen sockets
-      net/tcp: Don't add key with non-matching VRF on connected sockets
-      net/tcp: Don't store TCP-AO maclen on reqsk
-
-Douglas Anderson (5):
-      r8152: Hold the rtnl_lock for all of reset
-      r8152: Add RTL8152_INACCESSIBLE checks to more loops
-      r8152: Add RTL8152_INACCESSIBLE to r8156b_wait_loading_flash()
-      r8152: Add RTL8152_INACCESSIBLE to r8153_pre_firmware_1()
-      r8152: Add RTL8152_INACCESSIBLE to r8153_aldps_en()
-
-Eric Dumazet (2):
-      ipv6: fix potential NULL deref in fib6_add()
-      tcp: do not accept ACK of bytes we never sent
-
-Florian Westphal (2):
-      netfilter: nft_set_pipapo: skip inactive elements during set walk
-      netfilter: nf_tables: fix 'exist' matching on bigendian arches
-
-Geetha sowjanya (3):
-      octeontx2-af: Fix mcs sa cam entries size
-      octeontx2-af: Fix mcs stats register address
-      octeontx2-af: Add missing mcs flr handler call
-
-Heiner Kallweit (1):
-      leds: trigger: netdev: fix RTNL handling to prevent potential deadlock
-
-Hui Zhou (1):
-      nfp: flower: fix for take a mutex lock in soft irq context and rcu lock
-
-Ido Schimmel (2):
-      psample: Require 'CAP_NET_ADMIN' when joining "packets" group
-      drop_monitor: Require 'CAP_SYS_ADMIN' when joining "events" group
-
-Ivan Vecera (1):
-      i40e: Fix unexpected MFS warning message
-
-Jacob Keller (1):
-      iavf: validate tx_coalesce_usecs even if rx_coalesce_usecs is zero
-
-Jakub Kicinski (7):
-      MAINTAINERS: exclude 9p from networking
-      Merge branch 'ionic-small-driver-fixes'
-      Merge branch '100GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
-      Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-      Merge tag 'nf-23-12-06' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
-      Merge branch 'fixes-for-ktls'
-      Merge branch 'generic-netlink-multicast-fixes'
-
-Jianheng Zhang (1):
-      net: stmmac: fix FPE events losing
-
-Jiri Olsa (2):
-      bpf: Fix prog_array_map_poke_run map poke update
-      selftests/bpf: Add test for early update in prog_array_map_poke_run
-
-John Fastabend (2):
-      net: tls, update curr on splice as well
-      bpf: sockmap, updating the sg structure should also update curr
-
-Kelly Kane (1):
-      r8152: add vendor/device ID pair for ASUS USB-C2500
-
-Lorenzo Bianconi (1):
-      net: veth: fix packet segmentation in veth_convert_skb_to_xdp_buff
-
-Marcin Szycik (1):
-      ice: Restore fix disabling RX VLAN filtering
-
-Michal Swiatkowski (1):
-      ice: change vfs.num_msix_per to vf->num_msix
-
-Naveen Mamindlapalli (1):
-      octeontx2-pf: consider both Rx and Tx packet stats for adaptive interrupt coalescing
-
-Nithin Dabilpuram (1):
-      octeontx2-af: Adjust Tx credits when MCS external bypass is disabled
-
-Pablo Neira Ayuso (2):
-      netfilter: nf_tables: bail out on mismatching dynset and set expressions
-      netfilter: nf_tables: validate family when identifying table via handle
-
-Paolo Abeni (4):
-      tcp: fix mid stream window clamp.
-      Merge branch 'there-are-some-bugfix-for-the-hns-ethernet-driver'
-      Merge branch 'tcp-ao-fixes'
-      Merge branch 'octeontx2-af-miscellaneous-fixes'
-
-Phil Sutter (1):
-      netfilter: xt_owner: Fix for unsafe access of sk->sk_socket
-
-Rahul Bhansali (1):
-      octeontx2-af: Update Tx link register range
-
-Randy Dunlap (1):
-      hv_netvsc: rndis_filter needs to select NLS
-
-Sean Nyekjaer (1):
-      net: dsa: microchip: provide a list of valid protocols for xmit handler
-
-Shannon Nelson (1):
-      ionic: fix snprintf format length warning
-
-Shigeru Yoshida (1):
-      ipv4: ip_gre: Avoid skb_pull() failure in ipgre_xmit()
-
-Stefano Garzarella (1):
-      vsock/virtio: fix "comparison of distinct pointer types lacks a cast" warning
-
-Subbaraya Sundeep (2):
-      octeontx2-pf: Add missing mutex lock in otx2_get_pauseparam
-      octeontx2-af: Check return value of nix_get_nixlf before using nixlf
-
-Thinh Tran (1):
-      net/tg3: fix race condition in tg3_reset_task()
-
-Thomas Reichinger (1):
-      arcnet: restoring support for multiple Sohard Arcnet cards
-
-Tobias Waldekranz (1):
-      net: dsa: mv88e6xxx: Restore USXGMII support for 6393X
-
-Wen Gu (1):
-      net/smc: fix missing byte order conversion in CLC handshake
-
-Yewon Choi (1):
-      xsk: Skip polling event check for unbound socket
-
-Yonghong Song (1):
-      bpf: Fix a verifier bug due to incorrect branch offset comparison with cpu=v4
-
-Yonglong Liu (2):
-      net: hns: fix wrong head when modify the tx feature when sending packets
-      net: hns: fix fake link up on xge port
-
-Zhipeng Lu (1):
-      octeontx2-af: fix a use-after-free in rvu_npa_register_reporters
-
- Documentation/networking/tcp_ao.rst                |   2 +-
- MAINTAINERS                                        |   1 +
- arch/x86/net/bpf_jit_comp.c                        |  46 ++++++++
- drivers/leds/trigger/ledtrig-netdev.c              |  11 +-
- drivers/net/arcnet/arcdevice.h                     |   2 +
- drivers/net/arcnet/com20020-pci.c                  |  89 ++++++++-------
- drivers/net/dsa/microchip/ksz_common.c             |  16 ++-
- drivers/net/dsa/mv88e6xxx/pcs-639x.c               |  31 ++++-
- drivers/net/ethernet/aquantia/atlantic/aq_ptp.c    |  10 +-
- drivers/net/ethernet/aquantia/atlantic/aq_ptp.h    |   4 +-
- drivers/net/ethernet/aquantia/atlantic/aq_ring.c   |  18 ++-
- drivers/net/ethernet/broadcom/bnxt/bnxt_tc.c       |   1 +
- drivers/net/ethernet/broadcom/tg3.c                |  11 +-
- drivers/net/ethernet/hisilicon/hns/hns_dsaf_mac.c  |  29 +++++
- drivers/net/ethernet/hisilicon/hns/hns_enet.c      |  53 +++++----
- drivers/net/ethernet/hisilicon/hns/hns_enet.h      |   3 +-
- drivers/net/ethernet/intel/i40e/i40e_main.c        |   2 +-
- drivers/net/ethernet/intel/iavf/iavf_ethtool.c     |  12 +-
- drivers/net/ethernet/intel/iavf/iavf_txrx.h        |   1 -
- drivers/net/ethernet/intel/ice/ice_sriov.c         |   7 +-
- .../net/ethernet/intel/ice/ice_vf_vsi_vlan_ops.c   |  11 +-
- drivers/net/ethernet/intel/ice/ice_virtchnl.c      |   5 +-
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |   2 +-
- drivers/net/ethernet/marvell/octeontx2/af/mcs.c    |  18 ++-
- drivers/net/ethernet/marvell/octeontx2/af/mcs.h    |   2 +
- .../net/ethernet/marvell/octeontx2/af/mcs_reg.h    |  31 ++++-
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c    |   3 +
- drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |   1 +
- .../ethernet/marvell/octeontx2/af/rvu_devlink.c    |   5 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    |   8 ++
- .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    |   8 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_reg.c    |   4 +-
- .../net/ethernet/marvell/octeontx2/af/rvu_reg.h    |   1 +
- .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  |   6 +-
- .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   9 ++
- .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c |  20 ++--
- .../ethernet/netronome/nfp/flower/tunnel_conf.c    | 127 +++++++++++++++------
- drivers/net/ethernet/pensando/ionic/ionic_dev.h    |   2 +-
- drivers/net/ethernet/pensando/ionic/ionic_lif.c    |  16 +--
- drivers/net/ethernet/realtek/r8169_main.c          |   7 +-
- drivers/net/ethernet/stmicro/stmmac/dwmac5.c       |  45 +++-----
- drivers/net/ethernet/stmicro/stmmac/dwmac5.h       |   4 +-
- .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    |   3 +-
- drivers/net/ethernet/stmicro/stmmac/hwif.h         |   4 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |   8 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c    |   1 +
- drivers/net/hyperv/Kconfig                         |   1 +
- drivers/net/usb/r8152.c                            |  28 ++++-
- drivers/net/veth.c                                 |   3 +-
- include/linux/bpf.h                                |   3 +
- include/linux/stmmac.h                             |   1 +
- include/linux/tcp.h                                |   8 +-
- include/linux/usb/r8152.h                          |   1 +
- include/net/genetlink.h                            |   2 +
- include/net/tcp.h                                  |   9 +-
- include/net/tcp_ao.h                               |   6 +
- kernel/bpf/arraymap.c                              |  58 ++--------
- kernel/bpf/core.c                                  |  12 +-
- net/core/drop_monitor.c                            |   4 +-
- net/core/filter.c                                  |  19 +++
- net/ipv4/ip_gre.c                                  |  11 +-
- net/ipv4/tcp.c                                     |  28 ++++-
- net/ipv4/tcp_ao.c                                  |  17 ++-
- net/ipv4/tcp_input.c                               |  11 +-
- net/ipv4/tcp_ipv4.c                                |   4 +-
- net/ipv4/tcp_minisocks.c                           |   2 +-
- net/ipv4/tcp_output.c                              |  15 +--
- net/ipv6/ip6_fib.c                                 |   6 +-
- net/ipv6/tcp_ipv6.c                                |   2 +-
- net/netfilter/nf_bpf_link.c                        |  10 +-
- net/netfilter/nf_tables_api.c                      |   5 +-
- net/netfilter/nft_dynset.c                         |  13 ++-
- net/netfilter/nft_exthdr.c                         |   4 +-
- net/netfilter/nft_fib.c                            |   8 +-
- net/netfilter/nft_set_pipapo.c                     |   3 +
- net/netfilter/xt_owner.c                           |  16 ++-
- net/netlink/genetlink.c                            |   3 +
- net/packet/af_packet.c                             |  16 +--
- net/packet/internal.h                              |   2 +-
- net/psample/psample.c                              |   3 +-
- net/smc/af_smc.c                                   |   4 +-
- net/smc/smc_clc.c                                  |   9 +-
- net/smc/smc_clc.h                                  |   4 +-
- net/tls/tls_sw.c                                   |   2 +
- net/vmw_vsock/virtio_transport_common.c            |   3 +-
- net/xdp/xsk.c                                      |   5 +-
- tools/testing/selftests/bpf/prog_tests/tailcalls.c |  84 ++++++++++++++
- tools/testing/selftests/bpf/progs/tailcall_poke.c  |  32 ++++++
- 88 files changed, 821 insertions(+), 356 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_poke.c
 
