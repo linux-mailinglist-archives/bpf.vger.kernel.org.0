@@ -1,329 +1,128 @@
-Return-Path: <bpf+bounces-16975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2206807E17
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 02:47:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16CAB807E2C
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 03:05:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C7FC1F21A29
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 01:47:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C747B1C20B10
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 02:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534B615C6;
-	Thu,  7 Dec 2023 01:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F54D15C9;
+	Thu,  7 Dec 2023 02:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="enIuM9wn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZljeI4uY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170EDD4B
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 17:47:00 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5d032ab478fso2255647b3.0
-        for <bpf@vger.kernel.org>; Wed, 06 Dec 2023 17:47:00 -0800 (PST)
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D8BC3;
+	Wed,  6 Dec 2023 18:05:23 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-286f8ee27aeso465977a91.3;
+        Wed, 06 Dec 2023 18:05:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1701913619; x=1702518419; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=mhFfuQwYJMUx0Y0TtkV7gyw+ZTlie2ofJkVeioffDkg=;
-        b=enIuM9wnFydiqseNlpfJiHcPRlrzxC11aWokEvNEvESERTbGwul/A3Am+NRDCHI0Ax
-         Zkw3n0zgVc4mAhzKjGjE/iKaDLLB6VHoMMoNkisUxCdW4kdLPyHV+Oi5/KACvCaE4xkF
-         6lrpFcYw6Rsyf07tuWsp292nUZPm3mLSn9ZF6mhvfXOwoimO35RuJzpeZRk6Lvw4VgFA
-         Rx+W02GCOA8xTf0rcn3oAwk1+h2o8XKPJcEN3o42+EJAMSU2WzrEQGASy4pZmV4NsaKh
-         2ibrvMdrrFEi4mCSwTUSAW+58Z+WNqmjfv4/P+9p4Nv65DxGk1yOvunH2NoVdp+CPDVr
-         V0rw==
+        d=gmail.com; s=20230601; t=1701914722; x=1702519522; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Qo8WdwTNE01KEbEBjzPvpUi0RD4zLVV6lNkHFrnKZ1g=;
+        b=ZljeI4uYnVtEXHqiSv3/Exuoi+H8AEOOYQFeHqagHw8gJWMAgNixFhgNbQyyb61Gib
+         yjyc+8uHFZNUl4JctNEJWWAEjASH0x8epGFro4Vyeyrg92OVl6zkMcQY4GDw2MBghktV
+         S4Ghzqc7LKZNPHhBuCnTudm6qun43eilYyC+Etd6rxvFlwqRLxA4BQ5igydUGK5lCSTy
+         3gd5inubmVmkzeUAXZG0tfSxCQQApfBsgx1hOq9lWSEQqKCTnGYQjYmcNOawvvo+PscB
+         sQXTWZWZrUyDbawdee5ZEtYnjF0KtJFSL+R/1brPUJJB92kQPJqdMKDol1wooOGdBbPH
+         NJdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701913619; x=1702518419;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mhFfuQwYJMUx0Y0TtkV7gyw+ZTlie2ofJkVeioffDkg=;
-        b=acsGNC2txg5msh4oLcoU9X4KCxFxk2aeyzmjrxOPBKPBtnhrT1PxTYUzYMGqpDcEz3
-         eG/vQrtjfzyJpUpSHH/8iULE6V7CCjdoXaHXgUIEA3oSJVPGa+N5qUr84yc7PMhfUktM
-         vwf2vF6huYaNO4hPEOur4S9Ht6Dbo6YcfUK9nCc3S2c7YAMEqjhs+bo4XtVu4crW5Cy4
-         KB5X7nU/ncZgzvAe10BC7kQVjM+GbY090dlGmpGuOV7IjGkJYckfECOTVyws3ZPJLfFe
-         zBGpGdq3LRChVEi6a3IZ3crPRB+Eg+wgArj+aZW8ywJy23N8zJFtqPZjctq91Y+1l2Bv
-         9S9Q==
-X-Gm-Message-State: AOJu0Yzs6254ICzbVOZcDlPoFWrcZp52ZS6fiVMvHJ5VUDqzgi0xlIPo
-	zMEeyMLc0uJDFYAVMz0o+VqRWbgjKz8E
-X-Google-Smtp-Source: AGHT+IG9KpMTYzzaqe/x0vlLtIZT1sWmkKld593a1HFjOVfiTtGjfMw4X66u7MHITkjIAWFRtn8Cxl3zL8Gg
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:35bf:293e:7696:34e9])
- (user=irogers job=sendgmr) by 2002:a81:be18:0:b0:5d0:a744:719d with SMTP id
- i24-20020a81be18000000b005d0a744719dmr30456ywn.1.1701913619019; Wed, 06 Dec
- 2023 17:46:59 -0800 (PST)
-Date: Wed,  6 Dec 2023 17:46:55 -0800
-Message-Id: <20231207014655.1252484-1-irogers@google.com>
+        d=1e100.net; s=20230601; t=1701914722; x=1702519522;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Qo8WdwTNE01KEbEBjzPvpUi0RD4zLVV6lNkHFrnKZ1g=;
+        b=mnJwkQmFY2Q4ImbPJM7Gfw9s3j3AAmTvdGlW6uu3Td9vyo1kcO1ulWRtz/mkbgs62a
+         EzCu66Ofzjl3S7nNWfmet4q+o5I5I6rRNd8qG/uzN2s0ldz+fdtP/ZCCl7uPg4cDntL1
+         T4B3BM0TtSmR9MoOmWDF/vko5R8nwrnaaxwv+VDc2CWR6BJM46X8Zv+83/k+c/U17qDK
+         nSmg/F9DoA2grMp/N4AHVV88ARbk7Yl9mgw0YwiBzpjA9Awj+Rl2dY06/Z4m7HpH0l+J
+         SJoRwZEXVJjUYcZfnJoHD3I/ovQnbkLV/vjhmNk/sWcOAflN2OxsYn9xCHFc1Du/z84j
+         grvw==
+X-Gm-Message-State: AOJu0Yyjf0ZlNgNjL8qN+5LRyLB+LbM05+PcfQAd8pG8VzWjnCfJ+FHK
+	3L99+RmoS5dJBbWtG5CkHyM=
+X-Google-Smtp-Source: AGHT+IGYMVeRpcfNi8Y9ulOlJdsx/6z+qzU68LCGzzsOZ4/4C8xe5yon3k5U17LOU/GKs+aa3ZG2sQ==
+X-Received: by 2002:a17:90b:4a4f:b0:285:ada5:956 with SMTP id lb15-20020a17090b4a4f00b00285ada50956mr1986916pjb.42.1701914722434;
+        Wed, 06 Dec 2023 18:05:22 -0800 (PST)
+Received: from localhost.localdomain ([61.253.179.202])
+        by smtp.googlemail.com with ESMTPSA id u64-20020a17090a51c600b0028672a85808sm99011pjh.35.2023.12.06.18.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Dec 2023 18:05:22 -0800 (PST)
+From: Changwoo Min <multics69@gmail.com>
+X-Google-Original-From: Changwoo Min <changwoo@igalia.com>
+To: tj@kernel.org
+Cc: kernel-dev@igalia.com,
+	andrea.righi@canonical.com,
+	andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	brho@google.com,
+	bristot@redhat.com,
+	bsegall@google.com,
+	changwoo@igalia.com,
+	daniel@iogearbox.net,
+	derkling@google.com,
+	dietmar.eggemann@arm.com,
+	dschatzberg@meta.com,
+	dskarlat@cs.cmu.edu,
+	dvernet@meta.com,
+	haoluo@google.com,
+	himadrics@inria.fr,
+	joshdon@google.com,
+	juri.lelli@redhat.com,
+	kernel-team@meta.com,
+	linux-kernel@vger.kernel.org,
+	martin.lau@kernel.org,
+	memxor@gmail.com,
+	mgorman@suse.de,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	pjt@google.com,
+	riel@surriel.com,
+	rostedt@goodmis.org,
+	torvalds@linux-foundation.org,
+	vincent.guittot@linaro.org,
+	vschneid@redhat.com
+Subject: [PATCH] scx: set p->scx.ops_state using atomic_long_set_release
+Date: Thu,  7 Dec 2023 11:04:59 +0900
+Message-ID: <20231207020459.117365-1-changwoo@igalia.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231111024835.2164816-13-tj@kernel.org>
+References: <20231111024835.2164816-13-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.rc2.451.g8631bc7472-goog
-Subject: [PATCH v1] perf env: Avoid recursively taking env->bpf_progs.lock
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Song Liu <song@kernel.org>, 
-	Ming Wang <wangming01@loongson.cn>, Ravi Bangoria <ravi.bangoria@amd.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, Kan Liang <kan.liang@linux.intel.com>, 
-	K Prateek Nayak <kprateek.nayak@amd.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Add variants of perf_env__insert_bpf_prog_info, perf_env__insert_btf
-and perf_env__find_btf prefixed with __ to indicate the
-env->bpf_progs.lock is assumed held. Call these variants when the lock
-is held to avoid recursively taking it and potentially having a thread
-deadlock with itself.
-
-Signed-off-by: Ian Rogers <irogers@google.com>
+p->scx.ops_state should be updated using the release semantics,
+atomic_long_set_release(), because it is read using
+atomic_long_read_acquire() at ops_dequeue() and wait_ops_state().
 ---
-Previously this patch was part of a larger set:
-https://lore.kernel.org/lkml/20231127220902.1315692-51-irogers@google.com/
----
- tools/perf/util/bpf-event.c |  8 +++---
- tools/perf/util/bpf-event.h | 12 ++++-----
- tools/perf/util/env.c       | 53 +++++++++++++++++++++++--------------
- tools/perf/util/env.h       |  4 +++
- tools/perf/util/header.c    |  8 +++---
- 5 files changed, 51 insertions(+), 34 deletions(-)
+ kernel/sched/ext.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/bpf-event.c b/tools/perf/util/bpf-event.c
-index 830711cae30d..3573e0b7ef3e 100644
---- a/tools/perf/util/bpf-event.c
-+++ b/tools/perf/util/bpf-event.c
-@@ -545,9 +545,9 @@ int evlist__add_bpf_sb_event(struct evlist *evlist, struct perf_env *env)
- 	return evlist__add_sb_event(evlist, &attr, bpf_event__sb_cb, env);
- }
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 53ee906aa2b6..3a40ca2007b6 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -881,7 +881,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
+ 	qseq = rq->scx.ops_qseq++ << SCX_OPSS_QSEQ_SHIFT;
  
--void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
--				    struct perf_env *env,
--				    FILE *fp)
-+void __bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-+				      struct perf_env *env,
-+				      FILE *fp)
- {
- 	__u32 *prog_lens = (__u32 *)(uintptr_t)(info->jited_func_lens);
- 	__u64 *prog_addrs = (__u64 *)(uintptr_t)(info->jited_ksyms);
-@@ -563,7 +563,7 @@ void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
- 	if (info->btf_id) {
- 		struct btf_node *node;
+ 	WARN_ON_ONCE(atomic_long_read(&p->scx.ops_state) != SCX_OPSS_NONE);
+-	atomic_long_set(&p->scx.ops_state, SCX_OPSS_QUEUEING | qseq);
++	atomic_long_set_release(&p->scx.ops_state, SCX_OPSS_QUEUEING | qseq);
  
--		node = perf_env__find_btf(env, info->btf_id);
-+		node = __perf_env__find_btf(env, info->btf_id);
- 		if (node)
- 			btf = btf__new((__u8 *)(node->data),
- 				       node->data_size);
-diff --git a/tools/perf/util/bpf-event.h b/tools/perf/util/bpf-event.h
-index 1bcbd4fb6c66..e2f0420905f5 100644
---- a/tools/perf/util/bpf-event.h
-+++ b/tools/perf/util/bpf-event.h
-@@ -33,9 +33,9 @@ struct btf_node {
- int machine__process_bpf(struct machine *machine, union perf_event *event,
- 			 struct perf_sample *sample);
- int evlist__add_bpf_sb_event(struct evlist *evlist, struct perf_env *env);
--void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
--				    struct perf_env *env,
--				    FILE *fp);
-+void __bpf_event__print_bpf_prog_info(struct bpf_prog_info *info,
-+				      struct perf_env *env,
-+				      FILE *fp);
- #else
- static inline int machine__process_bpf(struct machine *machine __maybe_unused,
- 				       union perf_event *event __maybe_unused,
-@@ -50,9 +50,9 @@ static inline int evlist__add_bpf_sb_event(struct evlist *evlist __maybe_unused,
- 	return 0;
- }
- 
--static inline void bpf_event__print_bpf_prog_info(struct bpf_prog_info *info __maybe_unused,
--						  struct perf_env *env __maybe_unused,
--						  FILE *fp __maybe_unused)
-+static inline void __bpf_event__print_bpf_prog_info(struct bpf_prog_info *info __maybe_unused,
-+						    struct perf_env *env __maybe_unused,
-+						    FILE *fp __maybe_unused)
- {
- 
- }
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index c68b7a004f29..cfdacbf29456 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -22,15 +22,20 @@ struct perf_env perf_env;
- #include "bpf-utils.h"
- #include <bpf/libbpf.h>
- 
--void perf_env__insert_bpf_prog_info(struct perf_env *env,
--				    struct bpf_prog_info_node *info_node)
-+void perf_env__insert_bpf_prog_info(struct perf_env *env, struct bpf_prog_info_node *info_node)
-+{
-+	down_write(&env->bpf_progs.lock);
-+	__perf_env__insert_bpf_prog_info(env, info_node);
-+	up_write(&env->bpf_progs.lock);
-+}
-+
-+void __perf_env__insert_bpf_prog_info(struct perf_env *env, struct bpf_prog_info_node *info_node)
- {
- 	__u32 prog_id = info_node->info_linear->info.id;
- 	struct bpf_prog_info_node *node;
- 	struct rb_node *parent = NULL;
- 	struct rb_node **p;
- 
--	down_write(&env->bpf_progs.lock);
- 	p = &env->bpf_progs.infos.rb_node;
- 
- 	while (*p != NULL) {
-@@ -42,15 +47,13 @@ void perf_env__insert_bpf_prog_info(struct perf_env *env,
- 			p = &(*p)->rb_right;
- 		} else {
- 			pr_debug("duplicated bpf prog info %u\n", prog_id);
--			goto out;
-+			return;
- 		}
- 	}
- 
- 	rb_link_node(&info_node->rb_node, parent, p);
- 	rb_insert_color(&info_node->rb_node, &env->bpf_progs.infos);
- 	env->bpf_progs.infos_cnt++;
--out:
--	up_write(&env->bpf_progs.lock);
- }
- 
- struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
-@@ -79,14 +82,22 @@ struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
- }
- 
- bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
-+{
-+	bool ret;
-+
-+	down_write(&env->bpf_progs.lock);
-+	ret = __perf_env__insert_btf(env, btf_node);
-+	up_write(&env->bpf_progs.lock);
-+	return ret;
-+}
-+
-+bool __perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
- {
- 	struct rb_node *parent = NULL;
- 	__u32 btf_id = btf_node->id;
- 	struct btf_node *node;
- 	struct rb_node **p;
--	bool ret = true;
- 
--	down_write(&env->bpf_progs.lock);
- 	p = &env->bpf_progs.btfs.rb_node;
- 
- 	while (*p != NULL) {
-@@ -98,25 +109,31 @@ bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node)
- 			p = &(*p)->rb_right;
- 		} else {
- 			pr_debug("duplicated btf %u\n", btf_id);
--			ret = false;
--			goto out;
-+			return false;
- 		}
- 	}
- 
- 	rb_link_node(&btf_node->rb_node, parent, p);
- 	rb_insert_color(&btf_node->rb_node, &env->bpf_progs.btfs);
- 	env->bpf_progs.btfs_cnt++;
--out:
--	up_write(&env->bpf_progs.lock);
--	return ret;
-+	return true;
- }
- 
- struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id)
-+{
-+	struct btf_node *res;
-+
-+	down_read(&env->bpf_progs.lock);
-+	res = __perf_env__find_btf(env, btf_id);
-+	up_read(&env->bpf_progs.lock);
-+	return res;
-+}
-+
-+struct btf_node *__perf_env__find_btf(struct perf_env *env, __u32 btf_id)
- {
- 	struct btf_node *node = NULL;
- 	struct rb_node *n;
- 
--	down_read(&env->bpf_progs.lock);
- 	n = env->bpf_progs.btfs.rb_node;
- 
- 	while (n) {
-@@ -126,13 +143,9 @@ struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id)
- 		else if (btf_id > node->id)
- 			n = n->rb_right;
- 		else
--			goto out;
-+			return node;
- 	}
--	node = NULL;
--
--out:
--	up_read(&env->bpf_progs.lock);
--	return node;
-+	return NULL;
- }
- 
- /* purge data in bpf_progs.infos tree */
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index bf7e3c4c211f..7c527e65c186 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -175,12 +175,16 @@ const char *perf_env__raw_arch(struct perf_env *env);
- int perf_env__nr_cpus_avail(struct perf_env *env);
- 
- void perf_env__init(struct perf_env *env);
-+void __perf_env__insert_bpf_prog_info(struct perf_env *env,
-+				      struct bpf_prog_info_node *info_node);
- void perf_env__insert_bpf_prog_info(struct perf_env *env,
- 				    struct bpf_prog_info_node *info_node);
- struct bpf_prog_info_node *perf_env__find_bpf_prog_info(struct perf_env *env,
- 							__u32 prog_id);
- bool perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
-+bool __perf_env__insert_btf(struct perf_env *env, struct btf_node *btf_node);
- struct btf_node *perf_env__find_btf(struct perf_env *env, __u32 btf_id);
-+struct btf_node *__perf_env__find_btf(struct perf_env *env, __u32 btf_id);
- 
- int perf_env__numa_node(struct perf_env *env, struct perf_cpu cpu);
- char *perf_env__find_pmu_cap(struct perf_env *env, const char *pmu_name,
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 08cc2febabde..02bf9d8b5f74 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -1849,8 +1849,8 @@ static void print_bpf_prog_info(struct feat_fd *ff, FILE *fp)
- 		node = rb_entry(next, struct bpf_prog_info_node, rb_node);
- 		next = rb_next(&node->rb_node);
- 
--		bpf_event__print_bpf_prog_info(&node->info_linear->info,
--					       env, fp);
-+		__bpf_event__print_bpf_prog_info(&node->info_linear->info,
-+						 env, fp);
- 	}
- 
- 	up_read(&env->bpf_progs.lock);
-@@ -3188,7 +3188,7 @@ static int process_bpf_prog_info(struct feat_fd *ff, void *data __maybe_unused)
- 		/* after reading from file, translate offset to address */
- 		bpil_offs_to_addr(info_linear);
- 		info_node->info_linear = info_linear;
--		perf_env__insert_bpf_prog_info(env, info_node);
-+		__perf_env__insert_bpf_prog_info(env, info_node);
- 	}
- 
- 	up_write(&env->bpf_progs.lock);
-@@ -3235,7 +3235,7 @@ static int process_bpf_btf(struct feat_fd *ff, void *data __maybe_unused)
- 		if (__do_read(ff, node->data, data_size))
- 			goto out;
- 
--		perf_env__insert_btf(env, node);
-+		__perf_env__insert_btf(env, node);
- 		node = NULL;
- 	}
- 
+ 	ddsp_taskp = this_cpu_ptr(&direct_dispatch_task);
+ 	WARN_ON_ONCE(*ddsp_taskp);
 -- 
-2.43.0.rc2.451.g8631bc7472-goog
+2.43.0
 
 
