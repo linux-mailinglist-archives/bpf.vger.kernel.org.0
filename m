@@ -1,419 +1,188 @@
-Return-Path: <bpf+bounces-16977-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-16979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95D1D807E2F
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 03:06:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D68F807E96
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 03:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0061F1F21A27
-	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 02:06:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DD841F21ACC
+	for <lists+bpf@lfdr.de>; Thu,  7 Dec 2023 02:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2172615CE;
-	Thu,  7 Dec 2023 02:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4FD1846;
+	Thu,  7 Dec 2023 02:33:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567DFC3
-	for <bpf@vger.kernel.org>; Wed,  6 Dec 2023 18:06:15 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SlyL94bbmz4f3l6w
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 10:06:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id E1DA01A0377
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 10:06:11 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgDnSLeOKHFlsaeeCw--.37345S2;
-	Thu, 07 Dec 2023 10:06:09 +0800 (CST)
-Subject: Re: [PATCH bpf-next] selftests/bpf: Test the release of map btf
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Daniel Borkmann <daniel@iogearbox.net>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- houtao1@huawei.com
-References: <20231206110625.3188975-1-houtao@huaweicloud.com>
- <274e98da-9f9e-4828-8a8f-7891c6775770@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <81c277e9-856c-7763-8e76-7b76aa39d1dc@huaweicloud.com>
-Date: Thu, 7 Dec 2023 10:06:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1314D4B;
+	Wed,  6 Dec 2023 18:33:35 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Vy-5ywS_1701916412;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0Vy-5ywS_1701916412)
+          by smtp.aliyun-inc.com;
+          Thu, 07 Dec 2023 10:33:33 +0800
+Message-ID: <1701916081.917355-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next] tcp: add tracepoints for data send/recv/acked
+Date: Thu, 7 Dec 2023 10:28:01 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Eric Dumazet <edumazet@google.com>
+Cc: netdev@vger.kernel.org,
+ rostedt@goodmis.org,
+ mhiramat@kernel.org,
+ mathieu.desnoyers@efficios.com,
+ davem@davemloft.net,
+ dsahern@kernel.org,
+ kuba@kernel.org,
+ pabeni@redhat.com,
+ martin.lau@linux.dev,
+ linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org,
+ dust.li@linux.alibaba.com,
+ alibuda@linux.alibaba.com,
+ guwen@linux.alibaba.com,
+ hengqi@linux.alibaba.com,
+ Philo Lu <lulie@linux.alibaba.com>
+References: <20231204114322.9218-1-lulie@linux.alibaba.com>
+ <CANn89iKUHQHA2wHw9k1SiazJf7ag7i4Tz+FPutgu870teVw_Bg@mail.gmail.com>
+ <1701740897.6795166-1-xuanzhuo@linux.alibaba.com>
+ <CANn89i+Xs3sSDQcub9p=YGUp1_XainGQpS=0RVpYTiDjvRN1rw@mail.gmail.com>
+In-Reply-To: <CANn89i+Xs3sSDQcub9p=YGUp1_XainGQpS=0RVpYTiDjvRN1rw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <274e98da-9f9e-4828-8a8f-7891c6775770@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgDnSLeOKHFlsaeeCw--.37345S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3uw15uF1DAF45WrWrGFWDtwb_yoWkury7pF
-	Z5JFWYkFy8Jrn3Jr1Utay5CFySyw48J3WDtr1Fqa4jyrZFvr1Igr10gFyqgF15Ar48Jr4j
-	yr1jqrs7u39rJrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
+On Tue, 5 Dec 2023 20:39:28 +0100, Eric Dumazet <edumazet@google.com> wrote:
+> On Tue, Dec 5, 2023 at 3:11=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibaba.=
+com> wrote:
+> >
+> > On Mon, 4 Dec 2023 13:28:21 +0100, Eric Dumazet <edumazet@google.com> w=
+rote:
+> > > On Mon, Dec 4, 2023 at 12:43=E2=80=AFPM Philo Lu <lulie@linux.alibaba=
+.com> wrote:
+> > > >
+> > > > Add 3 tracepoints, namely tcp_data_send/tcp_data_recv/tcp_data_acke=
+d,
+> > > > which will be called every time a tcp data packet is sent, received=
+, and
+> > > > acked.
+> > > > tcp_data_send: called after a data packet is sent.
+> > > > tcp_data_recv: called after a data packet is receviced.
+> > > > tcp_data_acked: called after a valid ack packet is processed (some =
+sent
+> > > > data are ackknowledged).
+> > > >
+> > > > We use these callbacks for fine-grained tcp monitoring, which colle=
+cts
+> > > > and analyses every tcp request/response event information. The whole
+> > > > system has been described in SIGMOD'18 (see
+> > > > https://dl.acm.org/doi/pdf/10.1145/3183713.3190659 for details). To
+> > > > achieve this with bpf, we require hooks for data events that call b=
+pf
+> > > > prog (1) when any data packet is sent/received/acked, and (2) after
+> > > > critical tcp state variables have been updated (e.g., snd_una, snd_=
+nxt,
+> > > > rcv_nxt). However, existing bpf hooks cannot meet our requirements.
+> > > > Besides, these tracepoints help to debug tcp when data send/recv/ac=
+ked.
+> > >
+> > > This I do not understand.
+> > >
+> > > >
+> > > > Though kretprobe/fexit can also be used to collect these informatio=
+n,
+> > > > they will not work if the kernel functions get inlined. Considering=
+ the
+> > > > stability, we prefer tracepoint as the solution.
+> > >
+> > > I dunno, this seems quite weak to me. I see many patches coming to add
+> > > tracing in the stack, but no patches fixing any issues.
+> >
+> >
+> > We have implemented a mechanism to split the request and response from =
+the TCP
+> > connection using these "hookers", which can handle various protocols su=
+ch as
+> > HTTP, HTTPS, Redis, and MySQL. This mechanism allows us to record impor=
+tant
+> > information about each request and response, including the amount of da=
+ta
+> > uploaded, the time taken by the server to handle the request, and the t=
+ime taken
+> > for the client to receive the response. This mechanism has been running
+> > internally for many years and has proven to be very useful.
+> >
+> > One of the main benefits of this mechanism is that it helps in locating=
+ the
+> > source of any issues or problems that may arise. For example, if there =
+is a
+> > problem with the network, the application, or the machine, we can use t=
+his
+> > mechanism to identify and isolate the issue.
+> >
+> > TCP has long been a challenge when it comes to tracking the transmissio=
+n of data
+> > on the network. The application can only confirm that it has sent a cer=
+tain
+> > amount of data to the kernel, but it has limited visibility into whethe=
+r the
+> > client has actually received this data. Our mechanism addresses this is=
+sue by
+> > providing insights into the amount of data received by the client and t=
+he time
+> > it was received. Furthermore, we can also detect any packet loss or del=
+ays
+> > caused by the server.
+> >
+> > https://help-static-aliyun-doc.aliyuncs.com/assets/img/zh-CN/7912288961=
+/9732df025beny.svg
+> >
+> > So, we do not want to add some tracepoint to do some unknow debug.
+> > We have a clear goal. debugging is just an incidental capability.
+> >
+>
+> We have powerful mechanisms in the stack already that ordinary (no
+> privilege requested) applications can readily use.
+>
+> We have been using them for a while.
+>
+> If existing mechanisms are missing something you need, please expand them.
+>
+> For reference, start looking at tcp_get_timestamping_opt_stats() history.
+>
+> Sender side can for instance get precise timestamps.
+>
+> Combinations of these timestamps reveal different parts of the overall
+> network latency,
+>
+> T0: sendmsg() enters TCP
+> T1: first byte enters qdisc
+> T2: first byte sent to the NIC
+> T3: first byte ACKed in TCP
+> T4: last byte sent to the NIC
+> T5: last byte ACKed
+> T1 - T0: how long the first byte was blocked in the TCP layer ("Head
+> of Line Blocking" latency).
+> T2 - T1: how long the first byte was blocked in the Linux traffic
+> shaping layer (known as QDisc).
+> T3 - T2: the network =E2=80=98distance=E2=80=99 (propagation delay + curr=
+ent queuing
+> delay along the network path and at the receiver).
+> T5 - T2: how fast the sent chunk was delivered.
+> Message Size / (T5 - T0): goodput (from application=E2=80=99s perspective)
 
-On 12/7/2023 7:16 AM, Yonghong Song wrote:
->
-> On 12/6/23 6:06 AM, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> When there is bpf_list_head or bpf_rb_root field in map value, the free
->> of map btf and the free of map value may run concurrently and there may
->> be use-after-free problem, so add two test cases to demonstrate it.
->>
->> The first test case tests the racing between the free of map btf and the
->> free of array map. It constructs the racing by releasing the array
->> map in
->> the end after other ref-counter of map btf has been released. But it is
->> still hard to reproduce the UAF problem, and I managed to reproduce it
->> by queuing multiple kworkers to stress system_unbound_wq concurrently.
->
-> Thanks a lot for your test cases! I tried your patch on top of bpf-next
-> and run over 20 times and still cannot reproduce the issue.
-> Based on your description, you need to do
-> "
-> queuing multiple kworkers to stress system_unbound_wq concurrently
-> "
-> What specific steps you are doing here to stree system_unbound_wq?
-> I guess we have to have some kind of logic in the patch to stree
-> system_unbound_wq to trigger a failure?
->
 
-I used a kernel module in which it queued multiple kworkers to
-system_unbound_wq repeatedly, so the running of bpf_map_free_deferred
-will be delayed. The reason I kept the test here is for completeness,
-but I think I could try to stress system_unbound_wq in test case by
-creating and destroying multiple array map concurrently.
->>
->> The second case tests the racing between the free of map btf and the
->> free of inner map. Beside using the similar method as the first one
->> does, it uses bpf_map_delete_elem() to delete the inner map and to defer
->> the release of inner map after one RCU grace period. The UAF problem can
->> been easily reproduced by using bpf_next tree and a KASAN-enabled
->> kernel.
->
-> This test is solid and I can reproduce it easily and with my patch
->  
-> https://lore.kernel.org/bpf/20231206210959.1035724-1-yonghong.song@linux.dev/
-> the test can run successfully.
->
->>
->> The reason for using two skeletons is to prevent the release of outer
->> map and inner map in map_in_map_btf.c interfering the release of bpf
->> map in normal_map_btf.c.
->>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->> Hi,
->>
->> I was also working on the UAF problem caused by the racing between the
->> free map btf and the free map value. However considering Yonghong posted
->> the patch first [1], I decided to post the selftest for the problem. The
->> reliable reproduce of the problem depends on the "Fix the release of
->> inner map" patch-set in bpf-next.
->>
->> [1]:
->> https://lore.kernel.org/bpf/20231205224812.813224-1-yonghong.song@linux.dev/
->>
->>   .../selftests/bpf/prog_tests/map_btf.c        | 88 +++++++++++++++++++
->>   .../selftests/bpf/progs/map_in_map_btf.c      | 73 +++++++++++++++
->>   .../selftests/bpf/progs/normal_map_btf.c      | 56 ++++++++++++
->>   3 files changed, 217 insertions(+)
->>   create mode 100644 tools/testing/selftests/bpf/prog_tests/map_btf.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/map_in_map_btf.c
->>   create mode 100644 tools/testing/selftests/bpf/progs/normal_map_btf.c
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/map_btf.c
->> b/tools/testing/selftests/bpf/prog_tests/map_btf.c
->> new file mode 100644
->> index 000000000000..5304eee0e8f8
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/map_btf.c
->> @@ -0,0 +1,88 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
->> +#define _GNU_SOURCE
->> +#include <sched.h>
->> +#include <pthread.h>
->> +#include <stdbool.h>
->> +#include <bpf/btf.h>
->> +#include <test_progs.h>
->> +
->> +#include "normal_map_btf.skel.h"
->> +#include "map_in_map_btf.skel.h"
->> +
->> +static void do_test_normal_map_btf(void)
->> +{
->> +    struct normal_map_btf *skel;
->> +    int err, new_fd = -1;
->> +
->> +    skel = normal_map_btf__open_and_load();
->> +    if (!ASSERT_OK_PTR(skel, "open_load"))
->> +        return;
->> +
->> +    err = normal_map_btf__attach(skel);
->> +    if (!ASSERT_OK(err, "attach"))
->> +        goto out;
->> +
->> +    skel->bss->pid = getpid();
->> +    usleep(1);
->> +    ASSERT_TRUE(skel->bss->done, "done");
->> +
->> +    /* Close array fd later */
->> +    new_fd = dup(bpf_map__fd(skel->maps.array));
->> +out:
->> +    normal_map_btf__destroy(skel);
->> +    if (new_fd < 0)
->> +        return;
->> +    /* Use kern_sync_rcu() to wait for the start of the free of the bpf
->> +     * program and use an assumed delay to wait for the release of
->> the map
->> +     * btf which is held by other maps (e.g, bss). After that, array
->> map
->> +     * holds the last reference of map btf.
->> +     */
->> +    kern_sync_rcu();
->> +    usleep(2000);
->
-> I tried 2000/20000/200000 and all of them cannot reproduce the issue.
-> I guess this usleep will not only delay freeing the map, but also
-> delaying some other system activity, e.g., freeing the btf?
+The key point is that using our mechanism, the application does not need to=
+ be
+modified.
 
-As said in the comments, the delay here is only used to wait for the
-release of map btf held in bss map. Increasing the delay can not
-reproduce the problem because the last ref-counter of map btf will only
-be released after closing the array map. The reproduce depends on
-btf_free_rcu() runs before bpf_map_free_deferred().
->
->> +    close(new_fd);
->> +}
->> +
->> +static void do_test_map_in_map_btf(void)
->> +{
->> +    int err, zero = 0, new_fd = -1;
->> +    struct map_in_map_btf *skel;
->> +
->> +    skel = map_in_map_btf__open_and_load();
->> +    if (!ASSERT_OK_PTR(skel, "open_load"))
->> +        return;
->> +
->> +    err = map_in_map_btf__attach(skel);
->> +    if (!ASSERT_OK(err, "attach"))
->> +        goto out;
->> +
->> +    skel->bss->pid = getpid();
->> +    usleep(1);
->> +    ASSERT_TRUE(skel->bss->done, "done");
->> +
->> +    /* Close inner_array fd later */
->> +    new_fd = dup(bpf_map__fd(skel->maps.inner_array));
->> +    /* Defer the free of inner_array */
->> +    err = bpf_map__delete_elem(skel->maps.outer_array, &zero,
->> sizeof(zero), 0);
->> +    ASSERT_OK(err, "delete inner map");
->> +out:
->> +    map_in_map_btf__destroy(skel);
->> +    if (new_fd < 0)
->> +        return;
->> +    /* Use kern_sync_rcu() to wait for the start of the free of the bpf
->> +     * program and use an assumed delay to wait for the free of the
->> outer
->> +     * map and the release of map btf. After that, array map holds
->> the last
->
-> array map refers to inner map, right? It would be good to be explicit
-> to use 'inner' map?
+As long as the app's network protocol is request-response, we can trace tcp
+connection at any time to analyze the request and response. And record the =
+start
+and end times of request and response. Of course there is some ttl and other
+information.
 
-Yes. Will update.
->
->> +     * reference of map btf.
->> +     */
->> +    kern_sync_rcu();
->> +    usleep(10000);
->> +    close(new_fd);
->> +}
->> +
->> +void test_map_btf(void)
->> +{
->> +    if (test__start_subtest("array_btf"))
->> +        do_test_normal_map_btf();
->> +    if (test__start_subtest("inner_array_btf"))
->> +        do_test_map_in_map_btf();
->> +}
->> diff --git a/tools/testing/selftests/bpf/progs/map_in_map_btf.c
->> b/tools/testing/selftests/bpf/progs/map_in_map_btf.c
->> new file mode 100644
->> index 000000000000..6a000dd789d3
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/map_in_map_btf.c
->> @@ -0,0 +1,73 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
->> +#include <vmlinux.h>
->> +#include <bpf/bpf_tracing.h>
->> +#include <bpf/bpf_helpers.h>
->> +
->> +#include "bpf_misc.h"
->> +#include "bpf_experimental.h"
->> +
->> +struct node_data {
->> +    __u64 data;
->> +    struct bpf_list_node node;
->> +};
->> +
->> +struct map_value {
->> +    struct bpf_list_head head __contains(node_data, node);
->> +    struct bpf_spin_lock lock;
->> +};
->> +
->> +struct inner_array_type {
->> +    __uint(type, BPF_MAP_TYPE_ARRAY);
->> +    __type(key, int);
->> +    __type(value, struct map_value);
->> +    __uint(max_entries, 1);
->> +} inner_array SEC(".maps");
->> +
->> +struct {
->> +    __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
->> +    __uint(key_size, 4);
->> +    __uint(value_size, 4);
->> +    __uint(max_entries, 1);
->> +    __array(values, struct inner_array_type);
->> +} outer_array SEC(".maps") = {
->> +    .values = {
->> +        [0] = &inner_array,
->> +    },
->> +};
->> +
->> +char _license[] SEC("license") = "GPL";
->> +
->> +int pid = 0;
->> +bool done = false;
->> +
->> +SEC("fentry/" SYS_PREFIX "sys_nanosleep")
->> +int add_to_list_in_inner_array(void *ctx)
->> +{
->> +    struct map_value *value;
->> +    struct node_data *new;
->> +    struct bpf_map *map;
->> +    int zero = 0;
->> +
->
-> If 'done' is true here we can just return, right?
-
-Yes. It is assumed the bpf program will be called once for the target
-pid, but it doesn't incur any harm to ensure that.
->
->> +    if ((u32)bpf_get_current_pid_tgid() != pid)
->> +        return 0;
->> +
->> +    map = bpf_map_lookup_elem(&outer_array, &zero);
->> +    if (!map)
->> +        return 0;
->> +
->> +    value = bpf_map_lookup_elem(map, &zero);
->> +    if (!value)
->> +        return 0;
->> +
->> +    new = bpf_obj_new(typeof(*new));
->> +    if (!new)
->> +        return 0;
->> +
->> +    bpf_spin_lock(&value->lock);
->> +    bpf_list_push_back(&value->head, &new->node);
->> +    bpf_spin_unlock(&value->lock);
->> +    done = true;
->> +
->> +    return 0;
->> +}
->> diff --git a/tools/testing/selftests/bpf/progs/normal_map_btf.c
->> b/tools/testing/selftests/bpf/progs/normal_map_btf.c
->> new file mode 100644
->> index 000000000000..c8a19e30f8a9
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/progs/normal_map_btf.c
->> @@ -0,0 +1,56 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
->> +#include <vmlinux.h>
->> +#include <bpf/bpf_tracing.h>
->> +#include <bpf/bpf_helpers.h>
->> +
->> +#include "bpf_misc.h"
->> +#include "bpf_experimental.h"
->> +
->> +struct node_data {
->> +    __u64 data;
->> +    struct bpf_list_node node;
->> +};
->> +
->> +struct map_value {
->> +    struct bpf_list_head head __contains(node_data, node);
->> +    struct bpf_spin_lock lock;
->> +};
->> +
->> +struct {
->> +    __uint(type, BPF_MAP_TYPE_ARRAY);
->> +    __type(key, int);
->> +    __type(value, struct map_value);
->> +    __uint(max_entries, 1);
->> +} array SEC(".maps");
->> +
->> +char _license[] SEC("license") = "GPL";
->> +
->> +int pid = 0;
->> +bool done = false;
->> +
->> +SEC("fentry/" SYS_PREFIX "sys_nanosleep")
->> +int add_to_list_in_array(void *ctx)
->> +{
->> +    struct map_value *value;
->> +    struct node_data *new;
->> +    int zero = 0;
->> +
->
-> The same here. If 'done' is true, we can return, right?
-
-Will add.
->
->> +    if ((u32)bpf_get_current_pid_tgid() != pid)
->> +        return 0;
->> +
->> +    value = bpf_map_lookup_elem(&array, &zero);
->> +    if (!value)
->> +        return 0;
->> +
->> +    new = bpf_obj_new(typeof(*new));
->> +    if (!new)
->> +        return 0;
->> +
->> +    bpf_spin_lock(&value->lock);
->> +    bpf_list_push_back(&value->head, &new->node);
->> +    bpf_spin_unlock(&value->lock);
->> +    done = true;
->> +
->> +    return 0;
->> +}
-> .
-
+Thanks.
 
