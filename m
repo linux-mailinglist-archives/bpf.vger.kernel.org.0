@@ -1,391 +1,270 @@
-Return-Path: <bpf+bounces-17266-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1406680AFFC
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 23:56:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 383DE80AFF4
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 23:56:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3813B1C20D1D
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:56:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93918B20BDC
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:56:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAEF55AB8F;
-	Fri,  8 Dec 2023 22:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725655A0E6;
+	Fri,  8 Dec 2023 22:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VyEEsyaO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IciT/WQG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3D410D2;
-	Fri,  8 Dec 2023 14:56:21 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3333fbbeab9so2436427f8f.2;
-        Fri, 08 Dec 2023 14:56:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702076180; x=1702680980; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Lb6bW5/0tabUFZtl8Q33e8tjxN2YuHNYvOt9IYVdZ58=;
-        b=VyEEsyaOsdK3V5TsMSY8116TErO/nhbRQoPhTjLkn7QcU2yMHIDR0Vuiflo03oxlb7
-         d7+4FHgEZJrxELOlgQPMIGS6dti6lRCG1+po93ZrQQerJpwk5+cyK5CTJnfrdyTVFqKh
-         dlX7BRD8Judy6o9UBLw97uQ1WXGF3qOoCBB57FUMLOqun+oOVI/IY1udyKAZXwiOylRe
-         Uk8vH90YhRNLwSfGR6fzzUsDO2DzLzmr37AXOesspcw9FuhFgDNl+Vam/JV1JkQVCBht
-         JGsWErbI3U7TCduBKTUeJMVxEcLshIMWxpVJWH1gJ2WeH1TorkM5UGyvtAqx8xUWzFr9
-         QX+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702076180; x=1702680980;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lb6bW5/0tabUFZtl8Q33e8tjxN2YuHNYvOt9IYVdZ58=;
-        b=loB02cijMsUJaptJU/9pF2KshE9vdhVIcUZYlFuOfBrt4mfD0szmrJmD+khoRaHyPt
-         LrBt8IrTXrhZ6rD+mB+jo5DB1Kw8+q4r45ew2iJDXq9m0NQeXn9SQJq79lhi8odkw97V
-         fyyHLkvNScYtD1nlMJjJJq91cqahY6j4VyUfeRZMGI779kA5M+jo4YtyvPrWKnQdRdKV
-         RS1o+kVZvIk256RwWpoQGm68U+jrMh7wBdCLfL2EqC8jGqiFXE1dr384WJgp7cy28WFw
-         BAbAbCk+jd7eK5ocr3k5rvwiKqcK2chMGv8/GQ86LaAOPjY/eWSbO7es/RZbW45xX3Wg
-         E5iA==
-X-Gm-Message-State: AOJu0YzPtAI7WfPa2rR2v1nCigiDsSLofqg71JZ9YjVKuOax6/Q38Tr/
-	BykcLrNVcd8mjFdg4FPubEE=
-X-Google-Smtp-Source: AGHT+IFAmrtgnNNek+1m8q51NDmIrFuDjToi+3B5bJWseuGhKrVhDjl0ENoSpKj3SUNwgp1Op3PP5Q==
-X-Received: by 2002:a5d:5255:0:b0:333:2fd2:68bb with SMTP id k21-20020a5d5255000000b003332fd268bbmr490933wrc.78.1702076179579;
-        Fri, 08 Dec 2023 14:56:19 -0800 (PST)
-Received: from [192.168.8.100] ([85.255.236.117])
-        by smtp.gmail.com with ESMTPSA id n11-20020a5d4c4b000000b0033326e90496sm2902430wrt.18.2023.12.08.14.56.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Dec 2023 14:56:19 -0800 (PST)
-Message-ID: <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
-Date: Fri, 8 Dec 2023 22:48:39 +0000
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b6])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CABA810D2
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 14:55:51 -0800 (PST)
+Message-ID: <35510021-8c55-455b-894f-6b7656f8b8d4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702076150;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hYZ6wUpAA2diajEV+4wVlpbop/QH8EhfTAWtI/yI1M0=;
+	b=IciT/WQGN12cl3mzUMYuhUrJQTp1IOr+UCv4AdWowNSJJBmKLnOOEnhQRf+8Cdd4lP7zvl
+	WK/ZZIvBsYcNKKVeIq34J0kwE20P3s5HuTmgIz/7EN8Qxn48lBNYafIH7+WfuOOCVEZISQ
+	cHKYXQdhOoj6DAlZk+uBSZ1XcKt4ZJE=
+Date: Fri, 8 Dec 2023 14:55:42 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
- provider
-Content-Language: en-US
-To: Mina Almasry <almasrymina@google.com>,
- Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Jeroen de Borst <jeroendb@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann
- <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Yunsheng Lin <linyunsheng@huawei.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com>
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20231208005250.2910004-9-almasrymina@google.com>
+Subject: Re: [PATCH bpf-next 6/7] bpf: Only call maybe_wait_bpf_programs()
+ when at least one map operation succeeds
+Content-Language: en-GB
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ houtao1@huawei.com
+References: <20231208102355.2628918-1-houtao@huaweicloud.com>
+ <20231208102355.2628918-7-houtao@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231208102355.2628918-7-houtao@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 12/8/23 00:52, Mina Almasry wrote:
-> Implement a memory provider that allocates dmabuf devmem page_pool_iovs.
-> 
-> The provider receives a reference to the struct netdev_dmabuf_binding
-> via the pool->mp_priv pointer. The driver needs to set this pointer for
-> the provider in the page_pool_params.
-> 
-> The provider obtains a reference on the netdev_dmabuf_binding which
-> guarantees the binding and the underlying mapping remains alive until
-> the provider is destroyed.
-> 
-> Usage of PP_FLAG_DMA_MAP is required for this memory provide such that
-> the page_pool can provide the driver with the dma-addrs of the devmem.
-> 
-> Support for PP_FLAG_DMA_SYNC_DEV is omitted for simplicity.
-> 
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
+
+On 12/8/23 2:23 AM, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+>
+> There is no need to call maybe_wait_bpf_programs() if all operations in
+> batched update, deletion, or lookup_and_deletion fail. So only call
+> maybe_wait_bpf_programs() if at least one map operation succeeds.
+>
+> Similar with uattr->batch.count which is used to return the number of
+> succeeded map operations to userspace application, use attr->batch.count
+> to record the number of succeeded map operations in kernel. Sometimes
+> these two number may be different. For example, in
+> __htab_map_lookup_and_delete_batch(do_delete=true), it is possible that
+> 10 items in current bucket have been successfully deleted, but copying
+> the deleted keys to userspace application fails, attr->batch.count will
+> be 10 but uattr->batch.count will be 0 instead.
+>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 > ---
-> 
-> v1:
-> - static_branch check in page_is_page_pool_iov() (Willem & Paolo).
-> - PP_DEVMEM -> PP_IOV (David).
-> - Require PP_FLAG_DMA_MAP (Jakub).
-> 
-> ---
->   include/net/page_pool/helpers.h | 47 +++++++++++++++++
->   include/net/page_pool/types.h   |  9 ++++
->   net/core/page_pool.c            | 89 ++++++++++++++++++++++++++++++++-
->   3 files changed, 144 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
-> index 8bfc2d43efd4..00197f14aa87 100644
-> --- a/include/net/page_pool/helpers.h
-> +++ b/include/net/page_pool/helpers.h
-> @@ -53,6 +53,8 @@
->   #define _NET_PAGE_POOL_HELPERS_H
+>   include/linux/bpf.h  | 14 +++++++-------
+>   kernel/bpf/hashtab.c | 20 +++++++++++---------
+>   kernel/bpf/syscall.c | 21 ++++++++++++++-------
+>   3 files changed, 32 insertions(+), 23 deletions(-)
+>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index f7aa255c634f..a0c4d696a231 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -81,17 +81,17 @@ struct bpf_map_ops {
+>   	int (*map_get_next_key)(struct bpf_map *map, void *key, void *next_key);
+>   	void (*map_release_uref)(struct bpf_map *map);
+>   	void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void *key);
+> -	int (*map_lookup_batch)(struct bpf_map *map, const union bpf_attr *attr,
+> +	int (*map_lookup_batch)(struct bpf_map *map, union bpf_attr *attr,
+>   				union bpf_attr __user *uattr);
+>   	int (*map_lookup_and_delete_elem)(struct bpf_map *map, void *key,
+>   					  void *value, u64 flags);
+>   	int (*map_lookup_and_delete_batch)(struct bpf_map *map,
+> -					   const union bpf_attr *attr,
+> +					   union bpf_attr *attr,
+>   					   union bpf_attr __user *uattr);
+>   	int (*map_update_batch)(struct bpf_map *map, struct file *map_file,
+> -				const union bpf_attr *attr,
+> +				union bpf_attr *attr,
+>   				union bpf_attr __user *uattr);
+> -	int (*map_delete_batch)(struct bpf_map *map, const union bpf_attr *attr,
+> +	int (*map_delete_batch)(struct bpf_map *map, union bpf_attr *attr,
+>   				union bpf_attr __user *uattr);
 >   
->   #include <net/page_pool/types.h>
-> +#include <net/net_debug.h>
-> +#include <net/devmem.h>
+>   	/* funcs callable from userspace and from eBPF programs */
+> @@ -2095,13 +2095,13 @@ void bpf_map_area_free(void *base);
+>   bool bpf_map_write_active(const struct bpf_map *map);
+>   void bpf_map_init_from_attr(struct bpf_map *map, union bpf_attr *attr);
+>   int  generic_map_lookup_batch(struct bpf_map *map,
+> -			      const union bpf_attr *attr,
+> +			      union bpf_attr *attr,
+>   			      union bpf_attr __user *uattr);
+>   int  generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+> -			      const union bpf_attr *attr,
+> +			      union bpf_attr *attr,
+>   			      union bpf_attr __user *uattr);
+>   int  generic_map_delete_batch(struct bpf_map *map,
+> -			      const union bpf_attr *attr,
+> +			      union bpf_attr *attr,
+>   			      union bpf_attr __user *uattr);
+>   struct bpf_map *bpf_map_get_curr_or_next(u32 *id);
+>   struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id);
+> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> index 5b9146fa825f..b777bd8d4f8d 100644
+> --- a/kernel/bpf/hashtab.c
+> +++ b/kernel/bpf/hashtab.c
+> @@ -1673,7 +1673,7 @@ static int htab_lru_percpu_map_lookup_and_delete_elem(struct bpf_map *map,
 >   
->   #ifdef CONFIG_PAGE_POOL_STATS
->   /* Deprecated driver-facing API, use netlink instead */
-> @@ -92,6 +94,11 @@ static inline unsigned int page_pool_iov_idx(const struct page_pool_iov *ppiov)
->   	return ppiov - page_pool_iov_owner(ppiov)->ppiovs;
->   }
+>   static int
+>   __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+> -				   const union bpf_attr *attr,
+> +				   union bpf_attr *attr,
+>   				   union bpf_attr __user *uattr,
+>   				   bool do_delete, bool is_lru_map,
+>   				   bool is_percpu)
+> @@ -1708,6 +1708,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>   	if (!max_count)
+>   		return 0;
 >   
-> +static inline u32 page_pool_iov_binding_id(const struct page_pool_iov *ppiov)
-> +{
-> +	return page_pool_iov_owner(ppiov)->binding->id;
-> +}
-> +
->   static inline dma_addr_t
->   page_pool_iov_dma_addr(const struct page_pool_iov *ppiov)
->   {
-> @@ -107,6 +114,46 @@ page_pool_iov_binding(const struct page_pool_iov *ppiov)
->   	return page_pool_iov_owner(ppiov)->binding;
->   }
+> +	attr->batch.count = 0;
+>   	if (put_user(0, &uattr->batch.count))
+>   		return -EFAULT;
 >   
-> +static inline int page_pool_iov_refcount(const struct page_pool_iov *ppiov)
-> +{
-> +	return refcount_read(&ppiov->refcount);
-> +}
-> +
-> +static inline void page_pool_iov_get_many(struct page_pool_iov *ppiov,
-> +					  unsigned int count)
-> +{
-> +	refcount_add(count, &ppiov->refcount);
-> +}
-> +
-> +void __page_pool_iov_free(struct page_pool_iov *ppiov);
-> +
-> +static inline void page_pool_iov_put_many(struct page_pool_iov *ppiov,
-> +					  unsigned int count)
-> +{
-> +	if (!refcount_sub_and_test(count, &ppiov->refcount))
-> +		return;
-> +
-> +	__page_pool_iov_free(ppiov);
-> +}
-> +
-> +/* page pool mm helpers */
-> +
-> +DECLARE_STATIC_KEY_FALSE(page_pool_mem_providers);
-> +static inline bool page_is_page_pool_iov(const struct page *page)
-> +{
-> +	return static_branch_unlikely(&page_pool_mem_providers) &&
-> +	       (unsigned long)page & PP_IOV;
-> +}
-> +
-> +static inline struct page_pool_iov *page_to_page_pool_iov(struct page *page)
-> +{
-> +	if (page_is_page_pool_iov(page))
-> +		return (struct page_pool_iov *)((unsigned long)page & ~PP_IOV);
-> +
-> +	DEBUG_NET_WARN_ON_ONCE(true);
-> +	return NULL;
-> +}
-> +
->   /**
->    * page_pool_dev_alloc_pages() - allocate a page.
->    * @pool:	pool from which to allocate
-> diff --git a/include/net/page_pool/types.h b/include/net/page_pool/types.h
-> index 44faee7a7b02..136930a238de 100644
-> --- a/include/net/page_pool/types.h
-> +++ b/include/net/page_pool/types.h
-> @@ -134,8 +134,15 @@ struct memory_provider_ops {
->   	bool (*release_page)(struct page_pool *pool, struct page *page);
->   };
->   
-> +extern const struct memory_provider_ops dmabuf_devmem_ops;
-> +
->   /* page_pool_iov support */
->   
-> +/*  We overload the LSB of the struct page pointer to indicate whether it's
-> + *  a page or page_pool_iov.
-> + */
-> +#define PP_IOV 0x01UL
-> +
->   /* Owner of the dma-buf chunks inserted into the gen pool. Each scatterlist
->    * entry from the dmabuf is inserted into the genpool as a chunk, and needs
->    * this owner struct to keep track of some metadata necessary to create
-> @@ -159,6 +166,8 @@ struct page_pool_iov {
->   	struct dmabuf_genpool_chunk_owner *owner;
->   
->   	refcount_t refcount;
-> +
-> +	struct page_pool *pp;
->   };
->   
->   struct page_pool {
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index f5c84d2a4510..423c88564a00 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -12,6 +12,7 @@
->   
->   #include <net/page_pool/helpers.h>
->   #include <net/xdp.h>
-> +#include <net/netdev_rx_queue.h>
->   
->   #include <linux/dma-direction.h>
->   #include <linux/dma-mapping.h>
-> @@ -20,12 +21,15 @@
->   #include <linux/poison.h>
->   #include <linux/ethtool.h>
->   #include <linux/netdevice.h>
-> +#include <linux/genalloc.h>
-> +#include <net/devmem.h>
->   
->   #include <trace/events/page_pool.h>
->   
->   #include "page_pool_priv.h"
->   
-> -static DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
-> +DEFINE_STATIC_KEY_FALSE(page_pool_mem_providers);
-> +EXPORT_SYMBOL(page_pool_mem_providers);
->   
->   #define DEFER_TIME (msecs_to_jiffies(1000))
->   #define DEFER_WARN_INTERVAL (60 * HZ)
-> @@ -175,6 +179,7 @@ static void page_pool_producer_unlock(struct page_pool *pool,
->   static int page_pool_init(struct page_pool *pool,
->   			  const struct page_pool_params *params)
->   {
-> +	struct netdev_dmabuf_binding *binding = NULL;
->   	unsigned int ring_qsize = 1024; /* Default */
->   	int err;
->   
-> @@ -237,6 +242,14 @@ static int page_pool_init(struct page_pool *pool,
->   	/* Driver calling page_pool_create() also call page_pool_destroy() */
->   	refcount_set(&pool->user_cnt, 1);
->   
-> +	if (pool->p.queue)
-> +		binding = READ_ONCE(pool->p.queue->binding);
-> +
-> +	if (binding) {
-> +		pool->mp_ops = &dmabuf_devmem_ops;
-> +		pool->mp_priv = binding;
-> +	}
-
-Hmm, I don't understand why would we replace a nice transparent
-api with page pool relying on a queue having devmem specific
-pointer? It seemed more flexible and cleaner in the last RFC.
-
-> +
->   	if (pool->mp_ops) {
->   		err = pool->mp_ops->init(pool);
->   		if (err) {
-> @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+> @@ -1845,6 +1846,7 @@ __htab_map_lookup_and_delete_batch(struct bpf_map *map,
+>   		}
+>   		dst_key += key_size;
+>   		dst_val += value_size;
+> +		attr->batch.count++;
 >   	}
+>   
+>   	htab_unlock_bucket(htab, b, batch, flags);
+
+[...]
+
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index efda2353a7d5..d2641e51a1a7 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -1695,7 +1695,7 @@ static int map_get_next_key(union bpf_attr *attr)
 >   }
->   EXPORT_SYMBOL(page_pool_update_nid);
+>   
+>   int generic_map_delete_batch(struct bpf_map *map,
+> -			     const union bpf_attr *attr,
+> +			     union bpf_attr *attr,
+>   			     union bpf_attr __user *uattr)
+>   {
+>   	void __user *keys = u64_to_user_ptr(attr->batch.keys);
+> @@ -1715,6 +1715,7 @@ int generic_map_delete_batch(struct bpf_map *map,
+>   	if (!max_count)
+>   		return 0;
+>   
+> +	attr->batch.count = 0;
+>   	if (put_user(0, &uattr->batch.count))
+>   		return -EFAULT;
+>   
+> @@ -1742,6 +1743,8 @@ int generic_map_delete_batch(struct bpf_map *map,
+>   			break;
+>   		cond_resched();
+>   	}
 > +
-> +void __page_pool_iov_free(struct page_pool_iov *ppiov)
-> +{
-> +	if (WARN_ON(ppiov->pp->mp_ops != &dmabuf_devmem_ops))
-> +		return;
-> +
-> +	netdev_free_dmabuf(ppiov);
-> +}
-> +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
+> +	attr->batch.count = cp;
+>   	if (copy_to_user(&uattr->batch.count, &cp, sizeof(cp)))
+>   		err = -EFAULT;
+>   
+> @@ -1751,7 +1754,7 @@ int generic_map_delete_batch(struct bpf_map *map,
+>   }
+>   
+>   int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+> -			     const union bpf_attr *attr,
+> +			     union bpf_attr *attr,
+>   			     union bpf_attr __user *uattr)
+>   {
+>   	void __user *values = u64_to_user_ptr(attr->batch.values);
+> @@ -1774,6 +1777,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   	if (!max_count)
+>   		return 0;
+>   
+> +	attr->batch.count = 0;
+>   	if (put_user(0, &uattr->batch.count))
+>   		return -EFAULT;
+>   
+> @@ -1802,6 +1806,7 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   		cond_resched();
+>   	}
+>   
+> +	attr->batch.count = cp;
+>   	if (copy_to_user(&uattr->batch.count, &cp, sizeof(cp)))
+>   		err = -EFAULT;
+>   
+> @@ -1813,9 +1818,8 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
+>   
+>   #define MAP_LOOKUP_RETRIES 3
+>   
+> -int generic_map_lookup_batch(struct bpf_map *map,
+> -				    const union bpf_attr *attr,
+> -				    union bpf_attr __user *uattr)
+> +int generic_map_lookup_batch(struct bpf_map *map, union bpf_attr *attr,
+> +			     union bpf_attr __user *uattr)
+>   {
+>   	void __user *uobatch = u64_to_user_ptr(attr->batch.out_batch);
+>   	void __user *ubatch = u64_to_user_ptr(attr->batch.in_batch);
+> @@ -1838,6 +1842,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
+>   	if (!max_count)
+>   		return 0;
+>   
+> +	attr->batch.count = 0;
+>   	if (put_user(0, &uattr->batch.count))
+>   		return -EFAULT;
+>   
+> @@ -1903,6 +1908,7 @@ int generic_map_lookup_batch(struct bpf_map *map,
+>   	if (err == -EFAULT)
+>   		goto free_buf;
+>   
+> +	attr->batch.count = cp;
 
-I didn't look too deep but I don't think I immediately follow
-the pp refcounting. It increments pages_state_hold_cnt on
-allocation, but IIUC doesn't mark skbs for recycle? Then, they all
-will be put down via page_pool_iov_put_many() bypassing
-page_pool_return_page() and friends. That will call
-netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
+You don't need to change generic_map_lookup_batch() here. It won't trigger
+maybe_wait_bpf_programs().
 
-At least I couldn't make it work with io_uring, and for my purposes,
-I forced all puts to go through page_pool_return_page(), which calls
-the ->release_page callback. The callback will put the reference and
-ask its page pool to account release_cnt. It also gets rid of
-__page_pool_iov_free(), as we'd need to add a hook there for
-customization otherwise.
+>   	if ((copy_to_user(&uattr->batch.count, &cp, sizeof(cp)) ||
+>   		    (cp && copy_to_user(uobatch, prev_key, map->key_size))))
+>   		err = -EFAULT;
+> @@ -4926,7 +4932,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+>   		err = fn(__VA_ARGS__);		\
+>   	} while (0)
+>   
+> -static int bpf_map_do_batch(const union bpf_attr *attr,
+> +static int bpf_map_do_batch(union bpf_attr *attr,
+>   			    union bpf_attr __user *uattr,
+>   			    int cmd)
+>   {
+> @@ -4966,7 +4972,8 @@ static int bpf_map_do_batch(const union bpf_attr *attr,
+>   		BPF_DO_BATCH(map->ops->map_delete_batch, map, attr, uattr);
+>   err_put:
+>   	if (has_write) {
+> -		maybe_wait_bpf_programs(map);
+> +		if (attr->batch.count)
+> +			maybe_wait_bpf_programs(map);
 
-I didn't care about overhead because the hot path for me is getting
-buffers from a ring, which is somewhat analogous to sock_devmem_dontneed(),
-but done on pp allocations under napi, and it's done separately.
+Your code logic sounds correct but I feel you are optimizing for extreme
+corner cases. In really esp production environment, a fault with something
+like copy_to_user() should be extremely rare. So in my opinion, this optimization
+is not needed.
 
-Completely untested with TCP devmem:
-
-https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c79ac92ae2d8
-
-> +
-> +/*** "Dmabuf devmem memory provider" ***/
-> +
-> +static int mp_dmabuf_devmem_init(struct page_pool *pool)
-> +{
-> +	struct netdev_dmabuf_binding *binding = pool->mp_priv;
-> +
-> +	if (!binding)
-> +		return -EINVAL;
-> +
-> +	if (!(pool->p.flags & PP_FLAG_DMA_MAP))
-> +		return -EOPNOTSUPP;
-> +
-> +	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> +		return -EOPNOTSUPP;
-> +
-> +	netdev_dmabuf_binding_get(binding);
-> +	return 0;
-> +}
-> +
-> +static struct page *mp_dmabuf_devmem_alloc_pages(struct page_pool *pool,
-> +						 gfp_t gfp)
-> +{
-> +	struct netdev_dmabuf_binding *binding = pool->mp_priv;
-> +	struct page_pool_iov *ppiov;
-> +
-> +	ppiov = netdev_alloc_dmabuf(binding);
-> +	if (!ppiov)
-> +		return NULL;
-> +
-> +	ppiov->pp = pool;
-> +	pool->pages_state_hold_cnt++;
-> +	trace_page_pool_state_hold(pool, (struct page *)ppiov,
-> +				   pool->pages_state_hold_cnt);
-> +	return (struct page *)((unsigned long)ppiov | PP_IOV);
-> +}
-> +
-> +static void mp_dmabuf_devmem_destroy(struct page_pool *pool)
-> +{
-> +	struct netdev_dmabuf_binding *binding = pool->mp_priv;
-> +
-> +	netdev_dmabuf_binding_put(binding);
-> +}
-> +
-> +static bool mp_dmabuf_devmem_release_page(struct page_pool *pool,
-> +					  struct page *page)
-> +{
-> +	struct page_pool_iov *ppiov;
-> +
-> +	if (WARN_ON_ONCE(!page_is_page_pool_iov(page)))
-> +		return false;
-> +
-> +	ppiov = page_to_page_pool_iov(page);
-> +	page_pool_iov_put_many(ppiov, 1);
-> +	/* We don't want the page pool put_page()ing our page_pool_iovs. */
-> +	return false;
-> +}
-> +
-> +const struct memory_provider_ops dmabuf_devmem_ops = {
-> +	.init			= mp_dmabuf_devmem_init,
-> +	.destroy		= mp_dmabuf_devmem_destroy,
-> +	.alloc_pages		= mp_dmabuf_devmem_alloc_pages,
-> +	.release_page		= mp_dmabuf_devmem_release_page,
-> +};
-> +EXPORT_SYMBOL(dmabuf_devmem_ops);
-
--- 
-Pavel Begunkov
+>   		bpf_map_write_active_dec(map);
+>   	}
+>   	fdput(f);
 
