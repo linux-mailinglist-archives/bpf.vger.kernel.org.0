@@ -1,112 +1,119 @@
-Return-Path: <bpf+bounces-17201-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17202-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70F2680AA8A
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:20:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0A5980AAA5
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:22:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AA0428199C
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:19:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5513DB20B7E
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:22:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88BD38FBE;
-	Fri,  8 Dec 2023 17:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7A339863;
+	Fri,  8 Dec 2023 17:22:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WXNmNox/"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UbHNqkRu"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bb])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7AF213F
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 09:19:16 -0800 (PST)
-Message-ID: <9e4e70d9-aeda-4100-a879-1b7413db567d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702055947;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Nk40iqcg9q9a5ygXVdmw68sO1dMfcLiviOJRYvD9RU=;
-	b=WXNmNox/pKzYbTno78gwg8kESC9CdQNZpQrJabV4HidPHapCCdUF52iANWkN+CSf47Vr4S
-	TmlcVyNn47FauFBvfE602ixPcmbAu5QMyeHmjhzIkAaBMHQOX+EdalqXXlmTeYweQocDmI
-	gQnM0lItmWBYNbi35R+jWWm3BmDqOEg=
-Date: Fri, 8 Dec 2023 09:19:02 -0800
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D58419A2;
+	Fri,  8 Dec 2023 09:22:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=V28FqpOL+oZWPnnuXFJFyawoJ5nIS3QYSrjANXac/eI=; b=UbHNqkRus+VeXqxGP09vb359cH
+	2Q/ZEqAjQU4IsYvHCMQxbyYEYrxhTuo3gNlyMc13ZpTy7FurwxlfYnyeyVDkDjthklMDFdHv1pk2O
+	iWXktzpJ3MHht6J+8CJzFNs4XhJWPpe7r1gsueyYfHT+aGpqaquovUgnsujDTcrKtmsVXQZhAkhX3
+	MSmklMcr0V/IrT3Kb9WlygDyHLhiA9akWeqV9GmCO7S6JlbTqOHzZSk9q8AEFWqokE4RFo3ShjLBN
+	Wc6sCSMhme6ocjs7BtVEOFRgo4Ltt1gOhE8YN6Q1c3Mrfepb5uEV/MLWuqzaQ0TRqBEzEgKeY6qtL
+	tiKWKUbQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rBeXw-0069mX-TN; Fri, 08 Dec 2023 17:21:53 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 89F2A3003F0; Fri,  8 Dec 2023 18:21:52 +0100 (CET)
+Date: Fri, 8 Dec 2023 18:21:52 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+	Song Liu <songliubraving@meta.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joao Moreira <joao@overdrivepizza.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231208172152.GD36716@noisy.programming.kicks-ass.net>
+References: <20231204181614.GA7299@noisy.programming.kicks-ass.net>
+ <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+ <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+ <20231206163814.GB36423@noisy.programming.kicks-ass.net>
+ <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net>
+ <20231208134041.GD28727@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 0/1] use preserve_static_offset in bpf uapi
- headers
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- kernel-team@fb.com, jose.marchesi@oracle.com
-References: <20231208000531.19179-1-eddyz87@gmail.com>
- <012efc61-e067-4c21-8cab-47dec9bbaf0c@linux.dev>
- <0275c6985bcb299890da7ea7fb96642802cdcdbe.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <0275c6985bcb299890da7ea7fb96642802cdcdbe.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208134041.GD28727@noisy.programming.kicks-ass.net>
 
+On Fri, Dec 08, 2023 at 02:40:41PM +0100, Peter Zijlstra wrote:
+> On Fri, Dec 08, 2023 at 11:29:40AM +0100, Peter Zijlstra wrote:
+> > The only problem I now have is the one XXX, I'm not entirely sure what
+> > signature to use there.
+> 
+> > @@ -119,6 +119,7 @@ int bpf_struct_ops_test_run(struct bpf_p
+> >  	op_idx = prog->expected_attach_type;
+> >  	err = bpf_struct_ops_prepare_trampoline(tlinks, link,
+> >  						&st_ops->func_models[op_idx],
+> > +						/* XXX */ NULL,
+> >  						image, image + PAGE_SIZE);
+> >  	if (err < 0)
+> >  		goto out;
+> 
+> Duh, that should ofcourse be something of dummy_ops_test_ret_fn type.
+> Let me go fix that.
 
-On 12/8/23 6:34 AM, Eduard Zingerman wrote:
-> On Thu, 2023-12-07 at 18:28 -0800, Yonghong Song wrote:
-> [...]
->> All context types are defined in include/linux/bpf_types.h.
->> The context type bpf_nf_ctx is missing.
-> convert_ctx_access() is not applied for bpf_nf_ctx. Searching through
-> kernel code shows that BPF programs access this structure directly
-> (net/netfilter/nf_bpf_link.c):
->
->      static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
->                          const struct nf_hook_state *s)
->      {
->          const struct bpf_prog *prog = bpf_prog;
->          struct bpf_nf_ctx ctx = {
->              .state = s,
->              .skb = skb,
->          };
->
->          return bpf_prog_run(prog, &ctx);
->      }
->
-> I added __bpf_ctx only for types that are subject to convert_ctx_access()
-> transformation. On the other hand, applying it to each context type
-> should not hurt either. Which way would you prefer?
->
-> [...]
+Next one.. bpf_obj_free_fields: field->kptr.dtor(xchg_field);
 
-The error message should happen here:
+The one that trips is bpf_cgroup_release().
 
-check_mem_access
-  ...
-  } else if (reg->type == PTR_TO_CTX) {
-   check_ptr_off_reg
-    __check_ptr_off_reg
-         if (!fixed_off_ok && reg->off) {
-                 verbose(env, "dereference of modified %s ptr R%d off=%d disallowed\n",
-                         reg_type_str(env, reg->type), regno, reg->off);
-                 return -EACCES;
-         }
-   ...
+objtool doesn't think the address of that function 'escapes' and
+'helpfully' seals that function, and then BPF thinks it does escape and
+manages the above indirect call and *boom*.
 
-So the verification error message will be emitted earlier, before convert_ctx_access.
-Could you double check?
-
->
->>> How to add the same definitions in vmlinux.h is an open question,
->>> and most likely requires bpftool modification:
->>> - Hard code generation of __bpf_ctx based on type names?
->>> - Mark context types with some special
->>>     __attribute__((btf_decl_tag("preserve_static_offset")))
->>>     and convert it to __attribute__((preserve_static_offset))?
->> The number of context types is limited, I would just go through
->> the first approach with hard coding the list of ctx types and
->> mark them with preserve_static_offset attribute in vmlinux.h.
-> Tbh, I'm with Alan here, generic approach seems a tad nicer.
-> Lets collect some more votes :)
+How can I tell which functions escape according to BPF such that I might
+teach objtool this?
 
