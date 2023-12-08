@@ -1,143 +1,140 @@
-Return-Path: <bpf+bounces-17246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17247-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2321180AE6A
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:58:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC2D580AE77
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5414B1C20CA3
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:58:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30C01B20C06
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9008E57309;
-	Fri,  8 Dec 2023 20:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77DD5731B;
+	Fri,  8 Dec 2023 21:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G2bPEZZY"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="H0nb6f5x";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NiM7ifui"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E851720;
-	Fri,  8 Dec 2023 12:58:14 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c317723a8so14801395e9.3;
-        Fri, 08 Dec 2023 12:58:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702069093; x=1702673893; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jPbPGj/N+kFsGtRBn7sHjIbGBUsdMj/nlx3HBVB+JYE=;
-        b=G2bPEZZYSb2B5Lgnfk/xinK7luuV5ZwdA1w3m5wHamNXH8qJjF+Z1tM9OTX62/HnOE
-         OhV8zvE56h0DgRyx+VDqnobABGyRfCwYI5bQaCrCcVvTydUbvZHZlNWwOoDEeo0S6XMJ
-         WpKPxdPDoitky7AgxAH5ogKWjpbBgV7sx7paOModJ4beN2iXcrA3zzSN/MFQFnydjWpT
-         ANWz/022lm6+6EVc9JyMwTFRHw/+rlnuE9sFPbRvEhHg6a2sgh3KA83eOnlUan8qr4fD
-         egHzRbSF6k0V3veNl7t0Fxm5lhk/OKwTpHIYwts6XaninN+0oI71FYKK3eY6uHjoV8fe
-         INuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702069093; x=1702673893;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jPbPGj/N+kFsGtRBn7sHjIbGBUsdMj/nlx3HBVB+JYE=;
-        b=AvNZLiFpSt0Ht7fXUVHyJCixbhks+NWEq1RlfzmivUqCr6SKBAaD9SG3vrMa9D20pw
-         ciG/N3DUdILP88kw8Cyfky8RzXvahRLECChjJIufXjBHA5MG6mJulTVkvYNQ70Z6ciPr
-         E87/q6K5fTF/3Ak2oxU/HLYMdtBc3YD205JGokSelfRebozgF0xtptq8uFLKnagLCV6t
-         yJxIG8+SXahF02lZvhPqbs9O0Vbn8thTKovdk7ckBTHyQ5LCf9yr25dR/4xvy8OzW4Ax
-         vTxRkdOgb0muAlagBroFywnSysvOBWTRJny1jBkOISx2a4IoF6//OrFwq6q60fG6dB9Y
-         d7gA==
-X-Gm-Message-State: AOJu0YxlCU5TPiSwiw65RSIdjuQ37fpxLkvWHMhRfX/EhcQGfFRtSpEg
-	1owx+hvaMnvpKkoxKEh/cs4W76C4+TEovppWB5A=
-X-Google-Smtp-Source: AGHT+IHEvTazMB26cXxqydUXzZjQ0E1EF3LcABQy94WqsbsZZavl6RKIzemfxTaf1pZCNseT7Ws4y7rzsk2OXl7MDFE=
-X-Received: by 2002:a05:600c:2947:b0:40c:2954:5ad7 with SMTP id
- n7-20020a05600c294700b0040c29545ad7mr288834wmd.120.1702069092800; Fri, 08 Dec
- 2023 12:58:12 -0800 (PST)
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810A3BD;
+	Fri,  8 Dec 2023 13:01:18 -0800 (PST)
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1702069276;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fyZSQoqP0KRSQHqIRkZ+i+MZQFCaydm1eRetmruXsTc=;
+	b=H0nb6f5x8zjNy08JE0H4JgU/rFJEaHUSvv5NQfmzxOe/rMD6OBP3CcO10v+t0zUpLhahem
+	HQGtFA/zNFLQHuQHBWtTw0ljsY9glhc+T+9PjcqZHtUYGxn3uS1Jcs88qzEI1LkUWdA86I
+	7sJi6kRvoVH/F/Ik7epzxJWvixDK3ppyrgM5rPgpn/jjBHGl+souvMkFSxVRvXDfZR9OL2
+	H131Mf5X49ys0HNOZ3DGbmhh/Rcx079VQ5t5Onq/1xbxiLG6iCLCMVJj+jseDW7szgGh3K
+	8RI+OQA0WhuXttk/1iXqcG3czStGFqOIwuqr8qX1OtJqhPR3BK1iL1iFN2Z7Ag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1702069276;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fyZSQoqP0KRSQHqIRkZ+i+MZQFCaydm1eRetmruXsTc=;
+	b=NiM7ifuiSbI+Rm3HwjTlX129NUk69XhGtFXl946ccUOzRa728TtxtZp9vsSE3tqMqEHLxk
+	2krhN6K0fHBigCBA==
+To: Jann Horn <jannh@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
+ <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>
+Cc: syzbot <syzbot+72aa0161922eba61b50e@syzkaller.appspotmail.com>,
+ akpm@linux-foundation.org, bp@alien8.de, bp@suse.de,
+ dave.hansen@linux.intel.com, hpa@zytor.com, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, luto@kernel.org, mingo@redhat.com,
+ netdev@vger.kernel.org, peterz@infradead.org,
+ syzkaller-bugs@googlegroups.com, x86@kernel.org
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ copy_from_kernel_nofault
+In-Reply-To: <CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com>
+References: <000000000000c84343060a850bd0@google.com> <87jzqb1133.ffs@tglx>
+ <CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com>
+Date: Fri, 08 Dec 2023 22:01:16 +0100
+Message-ID: <87r0jwquhv.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net> <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net> <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <20231208172152.GD36716@noisy.programming.kicks-ass.net> <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
- <20231208203535.GG36716@noisy.programming.kicks-ass.net> <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
- <20231208205241.GK28727@noisy.programming.kicks-ass.net>
-In-Reply-To: <20231208205241.GK28727@noisy.programming.kicks-ass.net>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 8 Dec 2023 12:58:01 -0800
-Message-ID: <CAADnVQL3KsJONShsstDq5jrpbc_4FOU-VQPJgDCt50N9asoFzA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>, 
-	Song Liu <songliubraving@meta.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Sami Tolvanen <samitolvanen@google.com>, 
-	Kees Cook <keescook@chromium.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, linux-riscv <linux-riscv@lists.infradead.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>, 
-	clang-built-linux <llvm@lists.linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Joao Moreira <joao@overdrivepizza.com>, Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 8, 2023 at 12:52=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
+On Fri, Dec 08 2023 at 15:11, Jann Horn wrote:
+> On Tue, Nov 21, 2023 at 6:13=E2=80=AFPM Thomas Gleixner <tglx@linutronix.=
+de> wrote:
+>> > BUG: unable to handle page fault for address: ffffffffff600000
+>>
+>> This is VSYSCALL_ADDR.
+>>
+>> So the real question is why the BPF program tries to copy from the
+>> VSYSCALL page, which is not mapped.
 >
-> On Fri, Dec 08, 2023 at 12:41:03PM -0800, Alexei Starovoitov wrote:
-> > On Fri, Dec 8, 2023 at 12:35=E2=80=AFPM Peter Zijlstra <peterz@infradea=
-d.org> wrote:
+> The linked syz repro is:
 >
-> > > -__bpf_kfunc void bpf_task_release(struct task_struct *p)
-> > > +__bpf_kfunc void bpf_task_release(void *p)
-> >
-> > Yeah. That won't work. We need a wrapper.
-> > Since bpf prog is also calling it directly.
-> > In progs/task_kfunc_common.h
-> > void bpf_task_release(struct task_struct *p) __ksym;
-> >
-> > than later both libbpf and the verifier check that
-> > what bpf prog is calling actually matches the proto
-> > of what is in the kernel.
-> > Effectively we're doing strong prototype check at load time.
+> r0 =3D bpf$PROG_LOAD(0x5, &(0x7f00000000c0)=3D{0x11, 0xb,
+> &(0x7f0000000180)=3D@framed=3D{{}, [@printk=3D{@integer, {}, {}, {}, {},
+> {0x7, 0x0, 0xb, 0x3, 0x0, 0x0, 0xff600000}, {0x85, 0x0, 0x0, 0x71}}]},
+> &(0x7f0000000200)=3D'GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0,
+> 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
+> 0x90)
+> bpf$BPF_RAW_TRACEPOINT_OPEN(0x11,
+> &(0x7f0000000540)=3D{&(0x7f0000000000)=3D'kfree\x00', r0}, 0x10)
 >
-> I'm still somewhat confused on how this works, where does BPF get the
-> address of the function from? and what should I call the wrapper?
-
-It starts with
-register_btf_id_dtor_kfuncs() that takes a set of btf_ids:
-{btf_id_of_type, btf_id_of_dtor_function}, ...
-
-Then based on btf_id_of_dtor_function we find its type proto, name, do chec=
-ks,
-and eventually:
-addr =3D kallsyms_lookup_name(dtor_func_name);
-field->kptr.dtor =3D (void *)addr;
-
-bpf_task_release(struct task_struct *p) would need to stay as-is,
-but we can have a wrapper
-void bpf_task_release_dtor(void *p)
-{
-  bpf_task_release(p);
-}
-
-And adjust the above lookup with extra "_dtor" suffix.
-
-> > btw instead of EXPORT_SYMBOL_GPL(bpf_task_release)
-> > can __ADDRESSABLE be used ?
-> > Since it's not an export symbol.
+> So syzkaller generated a BPF tracing program. 0x85 is BPF_JMP |
+> BPF_CALL, which is used to invoke BPF helpers; 0x71 is 113, which is
+> the number of the probe_read_kernel helper, which basically takes
+> arbitrary values as input and casts them to kernel pointers, and then
+> probe-reads them. And before that is some kinda ALU op with 0xff600000
+> as immediate.
 >
-> No __ADDRESSABLE() is expressly ignored, but we have IBT_NOSEAL() that
-> should do it. I'll rename the thing and lift it out of x86 to avoid
-> breaking all other arch builds.
+> So it looks like the answer to that question is "the BPF program tries
+> to copy from the VSYSCALL page because syzkaller decided to write BPF
+> code that does specifically that, and the BPF helper let it do that".
 
-Makes sense.
+Indeed.
+
+> copy_from_kernel_nofault() does check
+> copy_from_kernel_nofault_allowed() to make sure the pointer really is
+> a kernel pointer, and the X86 version of that rejects anything in the
+> userspace part of the address space. But it does not know about the
+> vsyscall area.
+
+That's cureable. Untested fix below.
+
+Thanks for the explanation!
+
+       tglx
+
+---
+diff --git a/arch/x86/mm/maccess.c b/arch/x86/mm/maccess.c
+index 6993f026adec..8e846833aa37 100644
+--- a/arch/x86/mm/maccess.c
++++ b/arch/x86/mm/maccess.c
+@@ -3,6 +3,8 @@
+ #include <linux/uaccess.h>
+ #include <linux/kernel.h>
+=20
++#include <uapi/asm/vsyscall.h>
++
+ #ifdef CONFIG_X86_64
+ bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
+ {
+@@ -15,6 +17,9 @@ bool copy_from_kernel_nofault_allowed(const void *unsafe_=
+src, size_t size)
+ 	if (vaddr < TASK_SIZE_MAX + PAGE_SIZE)
+ 		return false;
+=20
++	if ((vaddr & PAGE_MASK) =3D=3D VSYSCALL_ADDR)
++		return false;
++
+ 	/*
+ 	 * Allow everything during early boot before 'x86_virt_bits'
+ 	 * is initialized.  Needed for instruction decoding in early
 
