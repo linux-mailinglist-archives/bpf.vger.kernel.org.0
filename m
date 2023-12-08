@@ -1,410 +1,124 @@
-Return-Path: <bpf+bounces-17105-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17106-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CE9A809AEF
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 05:18:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2743809AF2
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 05:20:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86982B20E25
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 04:18:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 104361C20CB6
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 04:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D193E522A;
-	Fri,  8 Dec 2023 04:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 735695255;
+	Fri,  8 Dec 2023 04:20:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oPTb7W/S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IggVgGwP"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ED31718
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 20:18:06 -0800 (PST)
-Message-ID: <2a1a6ba0-0fd9-43f8-ab85-164cb56a54a2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702009084;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=a2bmslYVhj8Re8cHU6f4dO05bPqmO2/NXLAnYrWh2lw=;
-	b=oPTb7W/SzW9WS8T2QG102g3eSuuz3G4xVrE3UI5zUS31bcXa3N2yzD3VjeBG8vDWnUsBSH
-	pi9EbTWao/52I06KW53IXxxxMct9LbR1rgrfWFuFLOJKq/o1nodQGqqhDXtwYCSV/5ZnvW
-	D/KDKmAk8HU3mtBC/75maAfkj+EDN8g=
-Date: Thu, 7 Dec 2023 20:18:00 -0800
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AFD171C;
+	Thu,  7 Dec 2023 20:19:57 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1ce28faa92dso12571605ad.2;
+        Thu, 07 Dec 2023 20:19:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702009196; x=1702613996; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=GKFRLwSxv1vJ4nhOqNlCSQcP54rZnxuYa97Rugmsvrg=;
+        b=IggVgGwP+HH44pT5JSqVYrBoPYVUbeDVrHV/LRkO7Ogx3fAW7caMCQzmoSCTvdZdeD
+         nl5k3G195/0M0j/Qa502ICkKWvr8WQFQY0X0URl/RLn001u8ImENMAT4GEEfHcwDop/T
+         mxbgyY6oPNLZ+IwMx/xYlS/oT7/rQ7qkDusmMroVbIw8sMVw5frap1k8nOkEPetO8wGq
+         3sal/oTP6ZblBR2fG+SRWO1DfX1cINe4UCDrfjFh24yZYvX86TgdqYIbiP9LwHYC2pFh
+         Ecfu+g6I13fx/bZD4hYdBwsVsS3K0tqh+aHXValBYAIoUkozaVVu+BS0VSwfNPM/sCVJ
+         e/DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702009196; x=1702613996;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GKFRLwSxv1vJ4nhOqNlCSQcP54rZnxuYa97Rugmsvrg=;
+        b=GngnwaQWK+nBRGAuq1MOpCfuVmN6qGnbFEGzLJB8ddXx+LwPMUDZYMUYUxFSgfI+uZ
+         dUjYXZikYKfBqNWk42eyPIOeyIdoEZRKY/1WONnhNkKMXlupEDRBBe5hcbpPxr4k/4KA
+         b0Qeu8ljfFaipmSk4G8Xf9k5P7y52ZJmbYUD4f9+cwhalddbb6QSCdG7xGs6em+Mm7R/
+         /uN6KvnoClW56kVCpqTdItNyAGfGmWrbovKwP3l/KQAOe8xgWi2n005Eio2vvhcALz/a
+         Kg4/5nuyIuUGG6R6xOCORihZkvGmfHgHUJ5FzDE0m3B5aenG4Qdas87VpfNgXSmX7uap
+         WBwQ==
+X-Gm-Message-State: AOJu0YxtB97ulCpM4aAVilGXN7uUdvRAJ8nU+Sxtt+dRYm2yvQcC1QRG
+	i/jwJY9UCYYD96WZ3BwqQXM=
+X-Google-Smtp-Source: AGHT+IEPStiPwIuC2knFZwYV9zbYDtl5HZW3T/BSaLsxQVHZ8lxrS4BxdwsdCt2RF0mu/w5F0TNfQA==
+X-Received: by 2002:a17:902:ee4d:b0:1ca:86b:7ed9 with SMTP id 13-20020a170902ee4d00b001ca086b7ed9mr3139371plo.40.1702009196525;
+        Thu, 07 Dec 2023 20:19:56 -0800 (PST)
+Received: from localhost ([2601:647:5b81:12a0:4a12:bf1a:86b1:d99d])
+        by smtp.gmail.com with ESMTPSA id ja17-20020a170902efd100b001bf8779e051sm622269plb.289.2023.12.07.20.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 20:19:55 -0800 (PST)
+Date: Thu, 7 Dec 2023 20:19:55 -0800
+From: Cong Wang <xiyou.wangcong@gmail.com>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>, bpf@vger.kernel.org,
+	edumazet@google.com, jakub@cloudflare.com, martin.lau@kernel.org,
+	netdev@vger.kernel.org, amery.hung@bytedance.com
+Subject: Re: [PATCH bpf v2 1/2] bpf: syzkaller found null ptr deref in
+ unix_bpf proto add
+Message-ID: <ZXKZa4RRmK2M6iHT@pop-os.localdomain>
+References: <20231201180139.328529-2-john.fastabend@gmail.com>
+ <20231201211453.27432-1-kuniyu@amazon.com>
+ <656e4758675b9_1bd6e2086f@john.notmuch>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5] bpf: Fix a race condition between btf_put()
- and map_free()
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>, Hou Tao <houtao@huaweicloud.com>
-References: <20231208041621.2968241-1-yonghong.song@linux.dev>
-In-Reply-To: <20231208041621.2968241-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <656e4758675b9_1bd6e2086f@john.notmuch>
 
+On Mon, Dec 04, 2023 at 01:40:40PM -0800, John Fastabend wrote:
+> Kuniyuki Iwashima wrote:
+> > From: John Fastabend <john.fastabend@gmail.com>
+> > Date: Fri,  1 Dec 2023 10:01:38 -0800
+> > > I added logic to track the sock pair for stream_unix sockets so that we
+> > > ensure lifetime of the sock matches the time a sockmap could reference
+> > > the sock (see fixes tag). I forgot though that we allow af_unix unconnected
+> > > sockets into a sock{map|hash} map.
+> > > 
+> > > This is problematic because previous fixed expected sk_pair() to exist
+> > > and did not NULL check it. Because unconnected sockets have a NULL
+> > > sk_pair this resulted in the NULL ptr dereference found by syzkaller.
+> > > 
+> > > BUG: KASAN: null-ptr-deref in unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+> > > Write of size 4 at addr 0000000000000080 by task syz-executor360/5073
+> > > Call Trace:
+> > >  <TASK>
+> > >  ...
+> > >  sock_hold include/net/sock.h:777 [inline]
+> > >  unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+> > >  sock_map_init_proto net/core/sock_map.c:190 [inline]
+> > >  sock_map_link+0xb87/0x1100 net/core/sock_map.c:294
+> > >  sock_map_update_common+0xf6/0x870 net/core/sock_map.c:483
+> > >  sock_map_update_elem_sys+0x5b6/0x640 net/core/sock_map.c:577
+> > >  bpf_map_update_value+0x3af/0x820 kernel/bpf/syscall.c:167
+> > > 
+> > > We considered just checking for the null ptr and skipping taking a ref
+> > > on the NULL peer sock. But, if the socket is then connected() after
+> > > being added to the sockmap we can cause the original issue again. So
+> > > instead this patch blocks adding af_unix sockets that are not in the
+> > > ESTABLISHED state.
+> > 
+> > I'm not sure if someone has the unconnected stream socket use case
+> > though, can't we call additional sock_hold() in connect() by checking
+> > sk_prot under sk_callback_lock ?
+> 
+> Could be done I guess yes. I'm not sure the utility of it though. I
+> thought above patch was the simplest solution and didn't require touching
+> main af_unix code. I don't actually use the sockmap with af_unix
+> sockets anywhere so maybe someone who is using this can comment if
+> unconnected is needed?
+> 
 
-On 12/7/23 8:16 PM, Yonghong Song wrote:
-> When running `./test_progs -j` in my local vm with latest kernel,
-> I once hit a kasan error like below:
->
->    [ 1887.184724] BUG: KASAN: slab-use-after-free in bpf_rb_root_free+0x1f8/0x2b0
->    [ 1887.185599] Read of size 4 at addr ffff888106806910 by task kworker/u12:2/2830
->    [ 1887.186498]
->    [ 1887.186712] CPU: 3 PID: 2830 Comm: kworker/u12:2 Tainted: G           OEL     6.7.0-rc3-00699-g90679706d486-dirty #494
->    [ 1887.188034] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->    [ 1887.189618] Workqueue: events_unbound bpf_map_free_deferred
->    [ 1887.190341] Call Trace:
->    [ 1887.190666]  <TASK>
->    [ 1887.190949]  dump_stack_lvl+0xac/0xe0
->    [ 1887.191423]  ? nf_tcp_handle_invalid+0x1b0/0x1b0
->    [ 1887.192019]  ? panic+0x3c0/0x3c0
->    [ 1887.192449]  print_report+0x14f/0x720
->    [ 1887.192930]  ? preempt_count_sub+0x1c/0xd0
->    [ 1887.193459]  ? __virt_addr_valid+0xac/0x120
->    [ 1887.194004]  ? bpf_rb_root_free+0x1f8/0x2b0
->    [ 1887.194572]  kasan_report+0xc3/0x100
->    [ 1887.195085]  ? bpf_rb_root_free+0x1f8/0x2b0
->    [ 1887.195668]  bpf_rb_root_free+0x1f8/0x2b0
->    [ 1887.196183]  ? __bpf_obj_drop_impl+0xb0/0xb0
->    [ 1887.196736]  ? preempt_count_sub+0x1c/0xd0
->    [ 1887.197270]  ? preempt_count_sub+0x1c/0xd0
->    [ 1887.197802]  ? _raw_spin_unlock+0x1f/0x40
->    [ 1887.198319]  bpf_obj_free_fields+0x1d4/0x260
->    [ 1887.198883]  array_map_free+0x1a3/0x260
->    [ 1887.199380]  bpf_map_free_deferred+0x7b/0xe0
->    [ 1887.199943]  process_scheduled_works+0x3a2/0x6c0
->    [ 1887.200549]  worker_thread+0x633/0x890
->    [ 1887.201047]  ? __kthread_parkme+0xd7/0xf0
->    [ 1887.201574]  ? kthread+0x102/0x1d0
->    [ 1887.202020]  kthread+0x1ab/0x1d0
->    [ 1887.202447]  ? pr_cont_work+0x270/0x270
->    [ 1887.202954]  ? kthread_blkcg+0x50/0x50
->    [ 1887.203444]  ret_from_fork+0x34/0x50
->    [ 1887.203914]  ? kthread_blkcg+0x50/0x50
->    [ 1887.204397]  ret_from_fork_asm+0x11/0x20
->    [ 1887.204913]  </TASK>
->    [ 1887.204913]  </TASK>
->    [ 1887.205209]
->    [ 1887.205416] Allocated by task 2197:
->    [ 1887.205881]  kasan_set_track+0x3f/0x60
->    [ 1887.206366]  __kasan_kmalloc+0x6e/0x80
->    [ 1887.206856]  __kmalloc+0xac/0x1a0
->    [ 1887.207293]  btf_parse_fields+0xa15/0x1480
->    [ 1887.207836]  btf_parse_struct_metas+0x566/0x670
->    [ 1887.208387]  btf_new_fd+0x294/0x4d0
->    [ 1887.208851]  __sys_bpf+0x4ba/0x600
->    [ 1887.209292]  __x64_sys_bpf+0x41/0x50
->    [ 1887.209762]  do_syscall_64+0x4c/0xf0
->    [ 1887.210222]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
->    [ 1887.210868]
->    [ 1887.211074] Freed by task 36:
->    [ 1887.211460]  kasan_set_track+0x3f/0x60
->    [ 1887.211951]  kasan_save_free_info+0x28/0x40
->    [ 1887.212485]  ____kasan_slab_free+0x101/0x180
->    [ 1887.213027]  __kmem_cache_free+0xe4/0x210
->    [ 1887.213514]  btf_free+0x5b/0x130
->    [ 1887.213918]  rcu_core+0x638/0xcc0
->    [ 1887.214347]  __do_softirq+0x114/0x37e
->
-> The error happens at bpf_rb_root_free+0x1f8/0x2b0:
->
->    00000000000034c0 <bpf_rb_root_free>:
->    ; {
->      34c0: f3 0f 1e fa                   endbr64
->      34c4: e8 00 00 00 00                callq   0x34c9 <bpf_rb_root_free+0x9>
->      34c9: 55                            pushq   %rbp
->      34ca: 48 89 e5                      movq    %rsp, %rbp
->    ...
->    ;       if (rec && rec->refcount_off >= 0 &&
->      36aa: 4d 85 ed                      testq   %r13, %r13
->      36ad: 74 a9                         je      0x3658 <bpf_rb_root_free+0x198>
->      36af: 49 8d 7d 10                   leaq    0x10(%r13), %rdi
->      36b3: e8 00 00 00 00                callq   0x36b8 <bpf_rb_root_free+0x1f8>
->                                          <==== kasan function
->      36b8: 45 8b 7d 10                   movl    0x10(%r13), %r15d
->                                          <==== use-after-free load
->      36bc: 45 85 ff                      testl   %r15d, %r15d
->      36bf: 78 8c                         js      0x364d <bpf_rb_root_free+0x18d>
->
-> So the problem is at rec->refcount_off in the above.
->
-> I did some source code analysis and find the reason.
->                                    CPU A                        CPU B
->    bpf_map_put:
->      ...
->      btf_put with rcu callback
->      ...
->      bpf_map_free_deferred
->        with system_unbound_wq
->      ...                          ...                           ...
->      ...                          btf_free_rcu:                 ...
->      ...                          ...                           bpf_map_free_deferred:
->      ...                          ...
->      ...         --------->       btf_struct_metas_free()
->      ...         | race condition ...
->      ...         --------->                                     map->ops->map_free()
->      ...
->      ...                          btf->struct_meta_tab = NULL
->
-> In the above, map_free() corresponds to array_map_free() and eventually
-> calling bpf_rb_root_free() which calls:
->    ...
->    __bpf_obj_drop_impl(obj, field->graph_root.value_rec, false);
->    ...
->
-> Here, 'value_rec' is assigned in btf_check_and_fixup_fields() with following code:
->
->    meta = btf_find_struct_meta(btf, btf_id);
->    if (!meta)
->      return -EFAULT;
->    rec->fields[i].graph_root.value_rec = meta->record;
->
-> So basically, 'value_rec' is a pointer to the record in struct_metas_tab.
-> And it is possible that that particular record has been freed by
-> btf_struct_metas_free() and hence we have a kasan error here.
->
-> Actually it is very hard to reproduce the failure with current bpf/bpf-next
-> code, I only got the above error once. To increase reproducibility, I added
-> a delay in bpf_map_free_deferred() to delay map->ops->map_free(), which
-> significantly increased reproducibility.
->
->    diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->    index 5e43ddd1b83f..aae5b5213e93 100644
->    --- a/kernel/bpf/syscall.c
->    +++ b/kernel/bpf/syscall.c
->    @@ -695,6 +695,7 @@ static void bpf_map_free_deferred(struct work_struct *work)
->          struct bpf_map *map = container_of(work, struct bpf_map, work);
->          struct btf_record *rec = map->record;
->
->    +     mdelay(100);
->          security_bpf_map_free(map);
->          bpf_map_release_memcg(map);
->          /* implementation dependent freeing */
->
-> To fix the problem, we need to have a reference on btf in order to
-> safeguard accessing field->graph_root.value_rec in map->ops->map_free().
-> The function btf_parse_graph_root() is the place to get a btf reference.
-> The following are rough call stacks reaching bpf_parse_graph_root():
->
->     btf_parse
->       ...
->         btf_parse_fields
->           ...
->             btf_parse_graph_root
->
->     map_check_btf
->       btf_parse_fields
->         ...
->           btf_parse_graph_root
->
-> Looking at the above call stack, the btf_parse_graph_root() is indirectly
-> called from btf_parse() or map_check_btf().
->
-> We cannot take a reference in btf_parse() case since at that moment,
-> btf is still in the middle to self-validation and initial reference
-> (refcount_set(&btf->refcnt, 1)) has not been triggered yet.
-> But even if refcount_set() is moved earlier, taking reference
-> will have other issues at btf_put() stage.
->    btf_put <== to start destruction process unless refcount == 0
->      ...
->      btf_record_free <== in which if graph_root, a btf reference will be hold
->                      <== reference is taken during btf_parse()
-> In order to free the reference taken during btf_parse(), we need to
-> have refcount 0 in btf_put(), but this is impossible since we need to
-> free the reference taken during btf_parse() in order to get refcount 0
-> for btf_put(). So the end result is btf_put() will not be able to
-> free btf-related memories and we have memory leak here.
-> Luckily, there is no need to take a btf reference during btf_parse()
-> since eventually graph_root.value_rec will refer to the rec in btf
-> struct_meta_tab.
->
-> But we do need to take a reference for map_check_btf() case as
-> the value_rec refers to a record in struct_meta_tab and we want
-> to make sure btf is not freed until value_rec usage at map_free
-> is done.
->
-> So the fix is to get a btf reference for map_check_btf() case
-> whenever a graph_root is found. A boolean field 'has_btf_ref' is added to
-> struct btf_field_graph_root so later the btf reference can be properly
-> released.
->
-> Rerun './test_progs -j' with the above mdelay() hack for a couple
-> of times and didn't observe the error.
-> Running Hou's test ([1]) is also successful.
->
->    [1] https://lore.kernel.org/bpf/20231206110625.3188975-1-houtao@huaweicloud.com/
->
-> Cc: Hou Tao <houtao@huaweicloud.com>
-> Fixes: 958cf2e273f0 ("bpf: Introduce bpf_obj_new")
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Our use case is also connected unix stream socket, as demonstrated in
+the selftest unix_redir_to_connected().
 
-Forgot to add Hou's ack from v4. Since there is no code change, here the 
-ack is:
-
-Acked-by: Hou Tao<houtao1@huawei.com>
-
-> ---
->   include/linux/bpf.h  |  1 +
->   include/linux/btf.h  |  2 +-
->   kernel/bpf/btf.c     | 27 ++++++++++++++++++---------
->   kernel/bpf/syscall.c | 12 +++++++++---
->   4 files changed, 29 insertions(+), 13 deletions(-)
->
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index c1a06263a4f3..cdeb0c95ec74 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -216,6 +216,7 @@ struct btf_field_graph_root {
->   	u32 value_btf_id;
->   	u32 node_offset;
->   	struct btf_record *value_rec;
-> +	bool has_btf_ref;
->   };
->   
->   struct btf_field {
-> diff --git a/include/linux/btf.h b/include/linux/btf.h
-> index 59d404e22814..f7d4f6594308 100644
-> --- a/include/linux/btf.h
-> +++ b/include/linux/btf.h
-> @@ -217,7 +217,7 @@ bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
->   			   const struct btf_member *m,
->   			   u32 expected_offset, u32 expected_size);
->   struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type *t,
-> -				    u32 field_mask, u32 value_size);
-> +				    u32 field_mask, u32 value_size, bool from_map_check);
->   int btf_check_and_fixup_fields(const struct btf *btf, struct btf_record *rec);
->   bool btf_type_is_void(const struct btf_type *t);
->   s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind);
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 63cf4128fc05..f23d6a7b8b93 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -3665,7 +3665,8 @@ static int btf_parse_graph_root(const struct btf *btf,
->   				struct btf_field *field,
->   				struct btf_field_info *info,
->   				const char *node_type_name,
-> -				size_t node_type_align)
-> +				size_t node_type_align,
-> +				bool from_map_check)
->   {
->   	const struct btf_type *t, *n = NULL;
->   	const struct btf_member *member;
-> @@ -3696,6 +3697,9 @@ static int btf_parse_graph_root(const struct btf *btf,
->   		if (offset % node_type_align)
->   			return -EINVAL;
->   
-> +		if (from_map_check)
-> +			btf_get((struct btf *)btf);
-> +		field->graph_root.has_btf_ref = from_map_check;
->   		field->graph_root.btf = (struct btf *)btf;
->   		field->graph_root.value_btf_id = info->graph_root.value_btf_id;
->   		field->graph_root.node_offset = offset;
-> @@ -3706,17 +3710,19 @@ static int btf_parse_graph_root(const struct btf *btf,
->   }
->   
->   static int btf_parse_list_head(const struct btf *btf, struct btf_field *field,
-> -			       struct btf_field_info *info)
-> +			       struct btf_field_info *info, bool from_map_check)
->   {
->   	return btf_parse_graph_root(btf, field, info, "bpf_list_node",
-> -					    __alignof__(struct bpf_list_node));
-> +				    __alignof__(struct bpf_list_node),
-> +				    from_map_check);
->   }
->   
->   static int btf_parse_rb_root(const struct btf *btf, struct btf_field *field,
-> -			     struct btf_field_info *info)
-> +			     struct btf_field_info *info, bool from_map_check)
->   {
->   	return btf_parse_graph_root(btf, field, info, "bpf_rb_node",
-> -					    __alignof__(struct bpf_rb_node));
-> +				    __alignof__(struct bpf_rb_node),
-> +				    from_map_check);
->   }
->   
->   static int btf_field_cmp(const void *_a, const void *_b, const void *priv)
-> @@ -3732,7 +3738,7 @@ static int btf_field_cmp(const void *_a, const void *_b, const void *priv)
->   }
->   
->   struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type *t,
-> -				    u32 field_mask, u32 value_size)
-> +				    u32 field_mask, u32 value_size, bool from_map_check)
->   {
->   	struct btf_field_info info_arr[BTF_FIELDS_MAX];
->   	u32 next_off = 0, field_type_size;
-> @@ -3798,12 +3804,14 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
->   				goto end;
->   			break;
->   		case BPF_LIST_HEAD:
-> -			ret = btf_parse_list_head(btf, &rec->fields[i], &info_arr[i]);
-> +			ret = btf_parse_list_head(btf, &rec->fields[i], &info_arr[i],
-> +						  from_map_check);
->   			if (ret < 0)
->   				goto end;
->   			break;
->   		case BPF_RB_ROOT:
-> -			ret = btf_parse_rb_root(btf, &rec->fields[i], &info_arr[i]);
-> +			ret = btf_parse_rb_root(btf, &rec->fields[i], &info_arr[i],
-> +						from_map_check);
->   			if (ret < 0)
->   				goto end;
->   			break;
-> @@ -5390,7 +5398,8 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
->   		type = &tab->types[tab->cnt];
->   		type->btf_id = i;
->   		record = btf_parse_fields(btf, t, BPF_SPIN_LOCK | BPF_LIST_HEAD | BPF_LIST_NODE |
-> -						  BPF_RB_ROOT | BPF_RB_NODE | BPF_REFCOUNT, t->size);
-> +						  BPF_RB_ROOT | BPF_RB_NODE | BPF_REFCOUNT, t->size,
-> +					  false);
->   		/* The record cannot be unset, treat it as an error if so */
->   		if (IS_ERR_OR_NULL(record)) {
->   			ret = PTR_ERR_OR_ZERO(record) ?: -EFAULT;
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index aff045eed375..bdc81221baf7 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -521,8 +521,11 @@ void btf_record_free(struct btf_record *rec)
->   			btf_put(rec->fields[i].kptr.btf);
->   			break;
->   		case BPF_LIST_HEAD:
-> -		case BPF_LIST_NODE:
->   		case BPF_RB_ROOT:
-> +			if (rec->fields[i].graph_root.has_btf_ref)
-> +				btf_put(rec->fields[i].graph_root.btf);
-> +			break;
-> +		case BPF_LIST_NODE:
->   		case BPF_RB_NODE:
->   		case BPF_SPIN_LOCK:
->   		case BPF_TIMER:
-> @@ -570,8 +573,11 @@ struct btf_record *btf_record_dup(const struct btf_record *rec)
->   			}
->   			break;
->   		case BPF_LIST_HEAD:
-> -		case BPF_LIST_NODE:
->   		case BPF_RB_ROOT:
-> +			if (fields[i].graph_root.has_btf_ref)
-> +				btf_get(fields[i].graph_root.btf);
-> +			break;
-> +		case BPF_LIST_NODE:
->   		case BPF_RB_NODE:
->   		case BPF_SPIN_LOCK:
->   		case BPF_TIMER:
-> @@ -1034,7 +1040,7 @@ static int map_check_btf(struct bpf_map *map, struct bpf_token *token,
->   	map->record = btf_parse_fields(btf, value_type,
->   				       BPF_SPIN_LOCK | BPF_TIMER | BPF_KPTR | BPF_LIST_HEAD |
->   				       BPF_RB_ROOT | BPF_REFCOUNT,
-> -				       map->value_size);
-> +				       map->value_size, true);
->   	if (!IS_ERR_OR_NULL(map->record)) {
->   		int i;
->   
+Thanks.
 
