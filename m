@@ -1,255 +1,203 @@
-Return-Path: <bpf+bounces-17273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B78480B08F
-	for <lists+bpf@lfdr.de>; Sat,  9 Dec 2023 00:25:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A42BF80B092
+	for <lists+bpf@lfdr.de>; Sat,  9 Dec 2023 00:28:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 218E7281B8B
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 23:25:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 543C21F2139A
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 23:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655155B5A7;
-	Fri,  8 Dec 2023 23:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C169D5ABAB;
+	Fri,  8 Dec 2023 23:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rMZfsgNf"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="Brkh3f+S"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFEF41732
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 15:25:14 -0800 (PST)
-Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-4b2e0492fffso724806e0c.0
-        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 15:25:14 -0800 (PST)
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C941A1720
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 15:28:04 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso2959599276.3
+        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 15:28:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702077914; x=1702682714; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1702078084; x=1702682884; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Q3tzRei4DqUvL1gHDjLu5ZyN+XyR0fbOVm4A1dgKAmU=;
-        b=rMZfsgNfIBlVfmM5BMuu6izhjLw8tf7OSVrlq0XQSrKAUbMtEZwkGdm7NJcvUIjkhO
-         MfpUNlwFIx72pvw2FXHUJpoB6FAlp2euk5EegmEwpR2XJxbQpf4lj5bozkprsajrDVle
-         xZLduQ/F9vZaZhiIPXIUMAJxIMjaReoTuotPoKPcKLKaXxQktW0iuRymQ/TNsNNQCW5X
-         mWboT2jI90M3URdy+mwzZcYMTCRt++z3e9zdn3P1TAbqiwREVutMY7Ate6kU2Iq4G4SR
-         R7lgPkuJW+rgGlXIrKNlOAegF/GyvJVbKWH4A570ClOYyRscr/vX5LNs/bUtGInjdlro
-         Cthg==
+        bh=fFuACjQl1hcwplPr8cKbq94/IvpQ2wdBnShKIuIIGdo=;
+        b=Brkh3f+S837+e+9N021C1giyslzOBmZn0fMtXGGaaMGYr1OvjNiTs8SGbXgoNzXMiZ
+         GMgmC/dOCgAH0bzzQFHFrhv90V44EDl5ICbSfoYitMPI15Tf1OfdEOc7pyahnkX9DSZC
+         0VV95Xexqfde6lfbvXoCJeiU0OZBCwiyzevNsz9fUtqcSVlAW/HQ8pYBBvWRLUd2ejpi
+         7uBq3uu89SnNpYPgoyfTNEIJX7TJtvxwtsOd8PDtEbgN731BxXfvyhJxE0XE5IcpTBpA
+         URw7r23WYoLOvj0RghNm2PoVazQ3DViipVudRPc1ySr5i8wfrWzTnKIqwP1FjRCoR/Nz
+         6oFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702077914; x=1702682714;
+        d=1e100.net; s=20230601; t=1702078084; x=1702682884;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Q3tzRei4DqUvL1gHDjLu5ZyN+XyR0fbOVm4A1dgKAmU=;
-        b=rB8sk92DKnHVmuUwAaUkynXJkm3mwHMs+4G3r0JtmTSOvmK9p5sYTFG6XJaDAH3eVa
-         gRbwIoKTpsisynuh+hGcoRlweKA/DAn5rma7brpoo8qLOzgvyJA69cmQYYYYnR0uKUXZ
-         HpxBOFv1BqOTna/+04dbFSIIq2hwEuKtiaYUHYOYEoAAKmFR38XAX5daDpJFK2rXzqqF
-         WmnQy+jhOMfe5jy8Sx6OyzLsrAihy3T2z/x/wq24fpsGqzcw3thVJbFKU/ETxrP1MQ1S
-         ncbL7Rg+01krnVOBVRIHsDpAT7C4rOUgjwiP3YsrBtAcGXREJMwyzokUlD84NsKpnTis
-         MP2w==
-X-Gm-Message-State: AOJu0YxaRmN7RHVGnF+/2LoKtspwdZacXgUsHuGm1TOEUBOhMTuLTek3
-	izxpDjUVITRm7zRyGEgnfjSpbCz85DPX9uDjJt+cOA==
-X-Google-Smtp-Source: AGHT+IEFKUc5exoP0JWsRvhqP/54jx/lwOw3AZl/60NefSo43kRLaVvc1XrXulWzYoWwJeZdst7FzfPYeaWKAp2Juns=
-X-Received: by 2002:a05:6102:3f0a:b0:464:5036:fb69 with SMTP id
- k10-20020a0561023f0a00b004645036fb69mr858666vsv.30.1702077913540; Fri, 08 Dec
- 2023 15:25:13 -0800 (PST)
+        bh=fFuACjQl1hcwplPr8cKbq94/IvpQ2wdBnShKIuIIGdo=;
+        b=s/LXIpewgCpXLdFZatEPFl/mBc0Px1eS/jEZ6ew00btlVhbPNwS0A6L+tLrWGc87Ck
+         /lz0K2mGXUb5dfYbU1JWVhIji8p0mzPOtlQfJTeY7knYTvOA2a5bfAtGL21X1kmumBK/
+         Trz9IJ2Xk2a40wdiN9wQ43gkt1MOSE0eC8b4xm5iL1Ea8WxJi5Au5FFgRu8S4lndPsUH
+         QzXVPtwzGv6I7RwkB5VRVYP78FEzGPxq/IXK7WhPAEcZ/nvwfgl8a8Lo7XZ48tl1Ii9b
+         9/nJc+mQw9fA0AKtTs3U6FZ/XKiXis2jcmIonGOD5iSH2pEy0PxQetmQJPM3oN8w3UDa
+         mNOA==
+X-Gm-Message-State: AOJu0Yy8aGPQSsny6Jzc4lIwYWMPcY3PBL+lnatmSCDcQ2TXQDcgUBhn
+	JHP7gzwtS4owSuLV1lkb+L1GS/S3hVS+m3H9j898
+X-Google-Smtp-Source: AGHT+IGOrf2bAf1uilqGwZx9oJnrTo5PSMMq3fMnfkKwvF/+RSbHeq73+Wt/Eyveg1DeFc8tXAi2EwYbWJKEfd5gw+c=
+X-Received: by 2002:a25:8a0a:0:b0:db7:dacf:ed87 with SMTP id
+ g10-20020a258a0a000000b00db7dacfed87mr602524ybl.104.1702078083930; Fri, 08
+ Dec 2023 15:28:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com> <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
-In-Reply-To: <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 8 Dec 2023 15:25:00 -0800
-Message-ID: <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	David Ahern <dsahern@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-	Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231110222038.1450156-1-kpsingh@kernel.org> <20231110222038.1450156-6-kpsingh@kernel.org>
+ <202312080934.6D172E5@keescook> <CAHC9VhTOze46yxPUURQ+4F1XiSEVhrTsZvYfVAZGLgXj0F9jOA@mail.gmail.com>
+ <CAHC9VhRguzX9gfuxW3oC0pOpttJ+xE6Q84Y70njjchJGawpXdg@mail.gmail.com>
+ <202312081019.C174F3DDE5@keescook> <CAHC9VhRNSonUXwneN1j0gpO-ky_YOzWsiJo_g+b0P86c9Am8WQ@mail.gmail.com>
+ <202312081302.323CBB189@keescook> <CAHC9VhQ2VxM=WWL_jpoELu=dHuiF3Pk=bxNrpfctc7Q0K2DUfA@mail.gmail.com>
+ <202312081352.6587C77@keescook> <CACYkzJ7TbwNOmSeYFANMK86wDx+0yyFgJGM6rp8ZXvQz+pxQrg@mail.gmail.com>
+ <CAHC9VhQPc4k9iAXuifsWzAdkrWghyUh9NF6P0-oSD=5ZccpaLA@mail.gmail.com> <CACYkzJ5TaTXMKfadqcmXDwd6-EbexLAQsRHR-3buKN8GLPrNxw@mail.gmail.com>
+In-Reply-To: <CACYkzJ5TaTXMKfadqcmXDwd6-EbexLAQsRHR-3buKN8GLPrNxw@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 8 Dec 2023 18:27:53 -0500
+Message-ID: <CAHC9VhRFSXoQSr9H04wcOmCs-jJOwW13hjiPWuUcNvb_BB-R+A@mail.gmail.com>
+Subject: Re: [PATCH v8 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
+To: KP Singh <kpsingh@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, casey@schaufler-ca.com, song@kernel.org, 
+	daniel@iogearbox.net, ast@kernel.org, renauld@google.com, pabeni@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 8, 2023 at 2:56=E2=80=AFPM Pavel Begunkov <asml.silence@gmail.c=
-om> wrote:
+On Fri, Dec 8, 2023 at 6:06=E2=80=AFPM KP Singh <kpsingh@kernel.org> wrote:
+> On Fri, Dec 8, 2023 at 11:59=E2=80=AFPM Paul Moore <paul@paul-moore.com> =
+wrote:
+> > On Fri, Dec 8, 2023 at 5:40=E2=80=AFPM KP Singh <kpsingh@kernel.org> wr=
+ote:
+> > > On Fri, Dec 8, 2023 at 11:05=E2=80=AFPM Kees Cook <keescook@chromium.=
+org> wrote:
+> > > > On Fri, Dec 08, 2023 at 04:43:57PM -0500, Paul Moore wrote:
+> > > > > On Fri, Dec 8, 2023 at 4:13=E2=80=AFPM Kees Cook <keescook@chromi=
+um.org> wrote:
+> > > > > > On Fri, Dec 08, 2023 at 03:51:47PM -0500, Paul Moore wrote:
+> > > > > > > Hopefully by repeating the important bits of the conversation=
+ you now
+> > > > > > > understand that there is nothing you can do at this moment to=
+ speed my
+> > > > > > > review of this patchset, but there are things you, and KP, ca=
+n do in
+> > > > > > > the future if additional respins are needed.  However, if you=
+ are
+> > > > > > > still confused, it may be best to go do something else for a =
+bit and
+> > > > > > > then revisit this email because there is nothing more that I =
+can say
+> > > > > > > on this topic at this point in time.
+> > > > > >
+> > > > > > I moved to the list because off-list discussions (that I got in=
+voluntarily
+> > > > > > CCed into and never replied to at all) tend to be unhelpful as =
+no one else
+> > > > > > can share in any context they may provide. And I'm not trying t=
+o rush
+> > > > > > you; I'm trying to make review easier.
+> > > > >
+> > > > > From my perspective whatever good intentions you had at the start=
+ were
+> > > > > completely lost when you asked "What's the right direction forwar=
+d?"
+> > > > > after I had already explained things multiple times *today*.  Tha=
+t's
+> > > > > the sort of thing that drives really bothers me.
+> > > >
+> > > > Okay, I understand now. Sorry for frustrating you! By "way forward"=
+,
+> > > > I meant I didn't understand how to address what looked like conflic=
+ting
+> > > > feedback. I think my confusion was over separating the goal ("this
+> > > > feature should be automatically enabled when it is known to be usef=
+ul")
+> > > > from an interpretation of earlier feedback as "I don't want a CONFI=
+G [that
+> > > > leaves this up to the user]", when what you really wanted understoo=
+d was
+> > > > "I don't want a CONFIG *ever*, regardless of whether it picks the c=
+orrect
+> > > > setting automatically".
+> > > >
+> > > > >
+> > > > > > While looking at the v8 again I
+> > > > > > saw an obvious problem with it, so I commented on it so that it=
+'s clear
+> > > > > > to you that it'll need work when you do get around to the revie=
+w.
+> > > > >
+> > > > > That's fair.  The Kconfig patch shouldn't have even been part of =
+the
+> > > > > v8 patchset as far as I'm concerned, both because I explained I d=
+idn't
+> > > > > want to merge something like that (and was ignored) and because i=
+t
+> > > > > doesn't appear to do anything.  From where I sit this was, and
+> > > > > remains, equally parts comical and frustrating.
+> > >
+> > >
+> > > Paul, as I said I will include it in v3 and we can drop it if that's
+> > > the consensus.
+> > >
+> > > https://lore.kernel.org/bpf/CACYkzJ7KBBJV-CWPkMCqT6rK6yVEOJzhqUjvWzp9=
+BAm-rx3Gsg@mail.gmail.com/
+> > >
+> > > Following that, I received Acks on the patch, so I kept it. I wasn't
+> > > sure if this was going to be perceived as "ignoring your feedback".
+> > > Definitely not my intention. I was just giving an option for folks wh=
+o
+> > > wanted to test the patch so that we get the defaults right. I am
+> > > totally okay with us dropping the config patch.
+> >
+> > <heavy sarcasm>I'm glad you're okay with dropping a patch I said I
+> > wasn't going to merge three months ago.  I'm also glad you're okay
+> > with dropping a patch that does absolutely nothing.</heavy sarcasm>
 >
-> On 12/8/23 00:52, Mina Almasry wrote:
-...
-> > +     if (pool->p.queue)
-> > +             binding =3D READ_ONCE(pool->p.queue->binding);
-> > +
-> > +     if (binding) {
-> > +             pool->mp_ops =3D &dmabuf_devmem_ops;
-> > +             pool->mp_priv =3D binding;
-> > +     }
+> The patch does something (it's in the patch description). But it's
+> something that you don't think is worth tweaking and that's fine.
 >
-> Hmm, I don't understand why would we replace a nice transparent
-> api with page pool relying on a queue having devmem specific
-> pointer? It seemed more flexible and cleaner in the last RFC.
+> > Come on KP, you're better than this.  Continuing to carry a patch that
+> > I've said I'm not going to merge only creates confusion about what
+> > will be accepted/supported (see today's exchange as a perfect
+> > example).  There is no need to keep the patch going "for reference",
 >
+> Okay, I won't. I honestly did not think this was that big a deal and
+> would bother you so much and, please do assume good intent, I did not
+> want to create confusion here.
 
-Jakub requested this change and may chime in, but I suspect it's to
-further abstract the devmem changes from driver. In this iteration,
-the driver grabs the netdev_rx_queue and passes it to the page_pool,
-and any future configurations between the net stack and page_pool can
-be passed this way with the driver unbothered.
+The patch itself isn't the problem, it's at the end of the patchset
+and easily dropped.  The problem is that you pinged me off-list to try
+and get me to move your patchset up the review queue, which isn't
+something I appreciate, especially when the feedback I provided
+previously was not acted upon ... and yes, I've heard your arguments
+about why you continued to carry the patch, but please understand when
+I explicitly say "no thank you" to a patch, I want you to drop that
+patch; "no thank you" shouldn't be ambiguous.
 
-> > +
-> >       if (pool->mp_ops) {
-> >               err =3D pool->mp_ops->init(pool);
-> >               if (err) {
-> > @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *pool=
-, int new_nid)
-> >       }
-> >   }
-> >   EXPORT_SYMBOL(page_pool_update_nid);
-> > +
-> > +void __page_pool_iov_free(struct page_pool_iov *ppiov)
-> > +{
-> > +     if (WARN_ON(ppiov->pp->mp_ops !=3D &dmabuf_devmem_ops))
-> > +             return;
-> > +
-> > +     netdev_free_dmabuf(ppiov);
-> > +}
-> > +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
->
-> I didn't look too deep but I don't think I immediately follow
-> the pp refcounting. It increments pages_state_hold_cnt on
-> allocation, but IIUC doesn't mark skbs for recycle? Then, they all
-> will be put down via page_pool_iov_put_many() bypassing
-> page_pool_return_page() and friends. That will call
-> netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
->
-> At least I couldn't make it work with io_uring, and for my purposes,
-> I forced all puts to go through page_pool_return_page(), which calls
-> the ->release_page callback. The callback will put the reference and
-> ask its page pool to account release_cnt. It also gets rid of
-> __page_pool_iov_free(), as we'd need to add a hook there for
-> customization otherwise.
->
-> I didn't care about overhead because the hot path for me is getting
-> buffers from a ring, which is somewhat analogous to sock_devmem_dontneed(=
-),
-> but done on pp allocations under napi, and it's done separately.
->
-> Completely untested with TCP devmem:
->
-> https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c79a=
-c92ae2d8
->
+To summarize:
+1. Don't ping me off-list to review patchsets.  I personally find that
+incredibly annoying and it guarantees that the patchset gets pushed to
+the end of the list (spiteful? sure, but it helps soothe the jagged
+nerves of this haggard maintainer).
+2. Take maintainer feedback seriously.  If you ignore feedback,
+providing a proper review tends to be a waste of time; there are
+plenty of other patchsets with authors who are receptive to comments.
 
-This was a mistake in the last RFC, which should be fixed in v1. In
-the RFC I was not marking the skbs as skb_mark_for_recycle(), so the
-unreffing path wasn't as expected.
-
-In this iteration, that should be completely fixed. I suspect since I
-just posted this you're actually referring to the issue tested on the
-last RFC? Correct me if wrong.
-
-In this iteration, the reffing story:
-
-- memory provider allocs ppiov and returns it to the page pool with
-ppiov->refcount =3D=3D 1.
-- The page_pool gives the page to the driver. The driver may
-obtain/release references with page_pool_page_[get|put]_many(), but
-the driver is likely not doing that unless it's doing its own page
-recycling.
-- The net stack obtains references via skb_frag_ref() ->
-page_pool_page_get_many()
-- The net stack drops references via skb_frag_unref() ->
-napi_pp_put_page() -> page_pool_return_page() and friends.
-
-Thus, the issue where the unref path was skipping
-page_pool_return_page() and friends should be resolved in this
-iteration, let me know if you think otherwise, but I think this was an
-issue limited to the last RFC.
-
-> > +
-> > +/*** "Dmabuf devmem memory provider" ***/
-> > +
-> > +static int mp_dmabuf_devmem_init(struct page_pool *pool)
-> > +{
-> > +     struct netdev_dmabuf_binding *binding =3D pool->mp_priv;
-> > +
-> > +     if (!binding)
-> > +             return -EINVAL;
-> > +
-> > +     if (!(pool->p.flags & PP_FLAG_DMA_MAP))
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     netdev_dmabuf_binding_get(binding);
-> > +     return 0;
-> > +}
-> > +
-> > +static struct page *mp_dmabuf_devmem_alloc_pages(struct page_pool *poo=
-l,
-> > +                                              gfp_t gfp)
-> > +{
-> > +     struct netdev_dmabuf_binding *binding =3D pool->mp_priv;
-> > +     struct page_pool_iov *ppiov;
-> > +
-> > +     ppiov =3D netdev_alloc_dmabuf(binding);
-> > +     if (!ppiov)
-> > +             return NULL;
-> > +
-> > +     ppiov->pp =3D pool;
-> > +     pool->pages_state_hold_cnt++;
-> > +     trace_page_pool_state_hold(pool, (struct page *)ppiov,
-> > +                                pool->pages_state_hold_cnt);
-> > +     return (struct page *)((unsigned long)ppiov | PP_IOV);
-> > +}
-> > +
-> > +static void mp_dmabuf_devmem_destroy(struct page_pool *pool)
-> > +{
-> > +     struct netdev_dmabuf_binding *binding =3D pool->mp_priv;
-> > +
-> > +     netdev_dmabuf_binding_put(binding);
-> > +}
-> > +
-> > +static bool mp_dmabuf_devmem_release_page(struct page_pool *pool,
-> > +                                       struct page *page)
-> > +{
-> > +     struct page_pool_iov *ppiov;
-> > +
-> > +     if (WARN_ON_ONCE(!page_is_page_pool_iov(page)))
-> > +             return false;
-> > +
-> > +     ppiov =3D page_to_page_pool_iov(page);
-> > +     page_pool_iov_put_many(ppiov, 1);
-> > +     /* We don't want the page pool put_page()ing our page_pool_iovs. =
-*/
-> > +     return false;
-> > +}
-> > +
-> > +const struct memory_provider_ops dmabuf_devmem_ops =3D {
-> > +     .init                   =3D mp_dmabuf_devmem_init,
-> > +     .destroy                =3D mp_dmabuf_devmem_destroy,
-> > +     .alloc_pages            =3D mp_dmabuf_devmem_alloc_pages,
-> > +     .release_page           =3D mp_dmabuf_devmem_release_page,
-> > +};
-> > +EXPORT_SYMBOL(dmabuf_devmem_ops);
->
-> --
-> Pavel Begunkov
-
-
+Anyway, go enjoy your weekend and just do better next time.  What's
+done is done.
 
 --=20
-Thanks,
-Mina
+paul-moore.com
 
