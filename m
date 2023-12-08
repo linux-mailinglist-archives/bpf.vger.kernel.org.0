@@ -1,87 +1,101 @@
-Return-Path: <bpf+bounces-17250-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17251-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8E380AE98
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:11:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EF1180AE9F
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:13:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98E3B1C20CA6
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:11:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F65AB20B7B
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 657015733B;
-	Fri,  8 Dec 2023 21:11:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9830457881;
+	Fri,  8 Dec 2023 21:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Geb0MCUv"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bDeI84bt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20396BA
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 13:11:02 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c09dfd82aso33146685e9.0
-        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 13:11:02 -0800 (PST)
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B5ABA
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 13:13:34 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-35d5b30eb85so8246425ab.3
+        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 13:13:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702069860; x=1702674660; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Vgux4IsC7X1KkRPDhjlOVf47aRdhBTeE2BVZVi56QhI=;
-        b=Geb0MCUvrvc271XCHF+QK+PmJON5APkesuv9GuPhxOopB1hPMCY4ThpEQeLf2VXpVJ
-         EhkwOrZ4Oquf+8V7iRu5mzcarlM5IKoY07+/m+OUBphdyRwCjnJFejDuZKANNs7LOMK0
-         UZNBkeYPhX5Z+u9EuO8pP3bX/wdwvE2UQolLpAbgj1F6RhC/TrFGb20Ws/gPgTbljIyM
-         L92SeX9fH/9cUb9Ub+2Xr0TpkuLD9dpZNsToKS5VwLm4xgTlJ8M4cBbXKZdWQ5RFRLyM
-         8tKi7frZahcX4MT9EkPQ3wmXURAp6mqXAUZ3xl5WN+AdNID+knkOyhMIFHYfljMFjy7c
-         wGog==
+        d=chromium.org; s=google; t=1702070013; x=1702674813; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mpntkCfQwDaAgbaJaTI4iT/n+8OOJsz8SUdIGxRKoCo=;
+        b=bDeI84btSsYxUVrOO3AVmLizwS9V+guO5WR8MwuD0DBZUOW3CtNpDxr9nTQayz7gkd
+         Err2Ackqn5HhsmeVIVBx2SS+fWf/amoCpanTep0g8u6yhPEWrMsU7ZxZn0P2da38Jduu
+         QhdB66CIfZMkvsNvdNI8ZbVzHqa6vle7/tekI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702069860; x=1702674660;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vgux4IsC7X1KkRPDhjlOVf47aRdhBTeE2BVZVi56QhI=;
-        b=PI6LCGoTGbLOl6rMM0YqV8ku/dycAsbmtaZ8QylIKstKSi3BTdeETS6Yx8z9ZS+110
-         uBGTKFYNO2J0t5JNqA1YbFncfZ1OnZzZl3lLa9NyBdr25qJrk6sLjXHch09kffrzTLiu
-         r93fxK9vhDw0RMHgMlS3AHbdz6Ws+m6SZawcI/ST23cpQerpUuX1F1R9RUE7Zlmjnp63
-         zYhrf5bRfLdiB7EIavhQQ3MOUYtIqj+VZGqmfiC8meL+dUaxfJQGlN4Wjolk4Di0yod6
-         vvMze3PQWjnk4w9KToNDpCP9FX37i1VzQyRw8vT4WaGF4KKcv7xQ8h23LO7bZWZ0T9Sp
-         yh0A==
-X-Gm-Message-State: AOJu0YwVGNs/75Z+1FsFyWKfL3IwF8cIK7QEUnJCms18nq8WfUJ370W7
-	czObchcpiz5ASQCRFZWKeVPg0QZykA7Pxg==
-X-Google-Smtp-Source: AGHT+IFHW8J2un81ADBi4jyvtJ/qCTxYmfbvbAjGF9S/xv0AfiiBR06zmtn8/oLHMTEiWhGZzf2v6w==
-X-Received: by 2002:a05:600c:492f:b0:40c:2d50:badc with SMTP id f47-20020a05600c492f00b0040c2d50badcmr341431wmp.2.1702069860468;
-        Fri, 08 Dec 2023 13:11:00 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id o9-20020a05600c4fc900b004094d4292aesm3911996wmq.18.2023.12.08.13.10.59
+        d=1e100.net; s=20230601; t=1702070013; x=1702674813;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mpntkCfQwDaAgbaJaTI4iT/n+8OOJsz8SUdIGxRKoCo=;
+        b=BoFs7K9JHMFJPzotMXn2oAvI1QIwH/AYc+iB5TSgOYE/fCiqzyJUI/Egsta1IK1qcV
+         /iPBnMKY4Gf5oFPVNVE6/xjCG1COsNZ+yqihbFPIlwz6McZjpoMnyZzaKBxeYJDtfHJ4
+         IpC0mvJ2zLeZ4jgD7FtmaDELcxr6xQ0gr5wQi5qSb/SXNXysRX5S4SUIsSTpxet174bL
+         7ycKab9jOr/6aVDtpof6OxKKWRc51Zr5UTzbQvsH+RhQfO2ArOdYV/Qt5w4m+mOYngUZ
+         hsb+ibODqL23PxOH/DEf3xHHSJadyEDRSZtJ/Qn89oSMo7vTqlKQZt7FGDutQqX1Vr2+
+         u2mA==
+X-Gm-Message-State: AOJu0Yy5dBs34IMDsbm0QQsNL/q5TY175cpnbrT19Cj3T4jxPzrpEEwS
+	QgmKVCPvnp+YZ9t+pKdXmgAWZQ==
+X-Google-Smtp-Source: AGHT+IG+5kvteZ8JpbXWSobQV/zCyZcte6WZM3+VssRgy6WXu8EFGkOQuad9kjeMkOkWqOGsejW8ig==
+X-Received: by 2002:a92:ca07:0:b0:35d:59a2:a32f with SMTP id j7-20020a92ca07000000b0035d59a2a32fmr993717ils.49.1702070013688;
+        Fri, 08 Dec 2023 13:13:33 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id c11-20020a63d50b000000b005ab281d0777sm2013165pgg.20.2023.12.08.13.13.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 13:11:00 -0800 (PST)
-Message-ID: <f07985f79330ea475c1a6cb2a20b9772e5a65e1e.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v5 3/3] bpf: minor cleanup around stack bounds
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrei Matei <andreimatei1@gmail.com>, bpf@vger.kernel.org
-Cc: sunhao.th@gmail.com, andrii.nakryiko@gmail.com
-Date: Fri, 08 Dec 2023 23:10:59 +0200
-In-Reply-To: <20231208032519.260451-4-andreimatei1@gmail.com>
-References: <20231208032519.260451-1-andreimatei1@gmail.com>
-	 <20231208032519.260451-4-andreimatei1@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        Fri, 08 Dec 2023 13:13:32 -0800 (PST)
+Date: Fri, 8 Dec 2023 13:13:32 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Paul Moore <paul@paul-moore.com>
+Cc: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org, casey@schaufler-ca.com, song@kernel.org,
+	daniel@iogearbox.net, ast@kernel.org, renauld@google.com,
+	pabeni@redhat.com
+Subject: Re: [PATCH v8 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
+Message-ID: <202312081302.323CBB189@keescook>
+References: <20231110222038.1450156-1-kpsingh@kernel.org>
+ <20231110222038.1450156-6-kpsingh@kernel.org>
+ <202312080934.6D172E5@keescook>
+ <CAHC9VhTOze46yxPUURQ+4F1XiSEVhrTsZvYfVAZGLgXj0F9jOA@mail.gmail.com>
+ <CAHC9VhRguzX9gfuxW3oC0pOpttJ+xE6Q84Y70njjchJGawpXdg@mail.gmail.com>
+ <202312081019.C174F3DDE5@keescook>
+ <CAHC9VhRNSonUXwneN1j0gpO-ky_YOzWsiJo_g+b0P86c9Am8WQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhRNSonUXwneN1j0gpO-ky_YOzWsiJo_g+b0P86c9Am8WQ@mail.gmail.com>
 
-On Thu, 2023-12-07 at 22:25 -0500, Andrei Matei wrote:
-> Push the rounding up of stack offsets into the function responsible for
-> growing the stack, rather than relying on all the callers to do it.
-> Uncertainty about whether the callers did it or not tripped up people in
-> a previous review.
->=20
-> Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+On Fri, Dec 08, 2023 at 03:51:47PM -0500, Paul Moore wrote:
+> Hopefully by repeating the important bits of the conversation you now
+> understand that there is nothing you can do at this moment to speed my
+> review of this patchset, but there are things you, and KP, can do in
+> the future if additional respins are needed.  However, if you are
+> still confused, it may be best to go do something else for a bit and
+> then revisit this email because there is nothing more that I can say
+> on this topic at this point in time.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+I moved to the list because off-list discussions (that I got involuntarily
+CCed into and never replied to at all) tend to be unhelpful as no one else
+can share in any context they may provide. And I'm not trying to rush
+you; I'm trying to make review easier. While looking at the v8 again I
+saw an obvious problem with it, so I commented on it so that it's clear
+to you that it'll need work when you do get around to the review.
+
+As far as the CONFIG topic, I think we're talking past each other (it IS
+figuring out the correct value, but it looks like you don't want it even
+to be a choice at all), but we can discuss that more when this series
+bubbles up your list.
+
+-- 
+Kees Cook
 
