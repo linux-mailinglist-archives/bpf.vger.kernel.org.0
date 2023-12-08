@@ -1,159 +1,122 @@
-Return-Path: <bpf+bounces-17100-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17101-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 452B6809AA0
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 04:45:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DF37809AA4
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 04:47:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA7951F213CA
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 03:45:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F92B1C20D46
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 03:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFBC046B3;
-	Fri,  8 Dec 2023 03:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36B304C6D;
+	Fri,  8 Dec 2023 03:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UFMvOyl7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y8auVz02"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B50510F9
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 19:45:46 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3332fc9b9b2so1549566f8f.1
-        for <bpf@vger.kernel.org>; Thu, 07 Dec 2023 19:45:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702007144; x=1702611944; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c7z6l3loiW7m2DPnvX6IwqTRmAPATQpT7WWi5StzfTE=;
-        b=UFMvOyl7fcpxtEywAw5uByMuluTv7Lj0nlSdqrVUiYzgKRYy98oP+bQgApPXiEqX1A
-         v8fz/19Cxoz606PHruQyRz25m/d7dDl3zfBMnQz4f5U27ECo1UaWi0Br4sUYajHMdX09
-         kiBcpmJDFiT7YRD7WsSVzbhEb2fi6lDtylZejGzeu0+r2APgFvDrDkSRyhVsqlys/JqC
-         MpfX2Hsk04NVMZOtLDhmc8ukVJsIvuBQQBD7Gu52o9c6wO2Wk6/YQkQEXofMuJlV1Zq5
-         dLV4pySltT80UTWUNxY7agQ4noKO9g6luW1DRMHmPDjLR63r5JcfatwYvrUyVDG93ZJs
-         aLmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702007144; x=1702611944;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c7z6l3loiW7m2DPnvX6IwqTRmAPATQpT7WWi5StzfTE=;
-        b=HxZyWiAsznlrn5j3p/2HqB9P4PXeUDIf6YOBRK1D3/ychQdGyyM1lo95vRH+qnrDGV
-         M7CQqbIGeJICv6+NTnacPlMuA3Rtm5DdxZV3FvVoQukhECtAq13+8ql+dtOaCrjM3HwJ
-         IFvNxM4W5oW/8/REAdlI/u037JkxmYmDADVxhsWw/U1xc5lw914pasUoG4sRJGKyIeVZ
-         IqxSzpZv9aajThNKrNALG4RuhsiK9kvlTARocdjjwKZIZK6IDnd/6CbJlUtR7eQn1RAh
-         r/xiVkbVIawuHkccfwatFFu1SrZliqiuqzRIjVKapkgJ8PWAS+46/cTGpHgraZhqtioA
-         +kiA==
-X-Gm-Message-State: AOJu0YzBd7HhWrtt81jnYEHaf0LjfhodbMBcrOw36a+PCYhCDobQvBzG
-	Sc7ILJrmbkEyRLAEHRJ2tLwKkMZGjukiw4s+ULs=
-X-Google-Smtp-Source: AGHT+IG1XXcj590dzKdvRfYmJwUGhl6bvqs7i5ZgNcDasywgaia5TBi/p/YXIh2vV8tUtRs5anSmfHGtz9o+VcXmuDA=
-X-Received: by 2002:adf:ffcd:0:b0:333:49a8:73e4 with SMTP id
- x13-20020adfffcd000000b0033349a873e4mr989811wrs.201.1702007144374; Thu, 07
- Dec 2023 19:45:44 -0800 (PST)
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 700BA10FC;
+	Thu,  7 Dec 2023 19:47:06 -0800 (PST)
+Message-ID: <620df220-4b82-4102-ba56-1ed348c2f8cb@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702007224;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LRG1tZ4BUZmjduFYGxdtrgVWOq3VdOKTbXXj+ZyvQXQ=;
+	b=Y8auVz02tjoEIUc5pIn0TwqMEITXkgCR9ncdXJWR54TcaBEplXik5NNufV91wm50W4GLzw
+	7VVbQZlJ09/QB7mFD9brVfMbAbi69T7TzFW+6IeSyhOq0FQYFgWkUJTQx0mrIQiA2K16J1
+	6fAg53MbC+XKopi+b74uquU794C1NYc=
+Date: Thu, 7 Dec 2023 19:46:56 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231206141030.1478753-1-aspsk@isovalent.com> <20231206141030.1478753-7-aspsk@isovalent.com>
-In-Reply-To: <20231206141030.1478753-7-aspsk@isovalent.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 7 Dec 2023 19:45:32 -0800
-Message-ID: <CAADnVQ+BRbJN1A9_fjDTXh0=VM5x6oGVgtcB1JB7K8TM5+6i5Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/7] libbpf: BPF Static Keys support
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 3/3] selftest/bpf: Test a perf bpf program that
+ suppresses side effects.
+Content-Language: en-GB
+To: Kyle Huey <me@kylehuey.com>, Marco Elver <elver@google.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Robert O'Callahan <robert@ocallahan.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20231207163458.5554-1-khuey@kylehuey.com>
+ <20231207163458.5554-4-khuey@kylehuey.com>
+ <CAEf4Bzbt1abnfj2w6Hmp2w8SqVkQiCW=SimY6ss_Jp_325QyoA@mail.gmail.com>
+ <CANpmjNOLojXk64jvwD+m19B+FsR5MuBwWKv95uakq-Dp1_AGXA@mail.gmail.com>
+ <CAP045AoeVP=n5K+0jt2ddBspif7kx4hzOdBM86CuxNGRCgx4VA@mail.gmail.com>
+ <CAP045ArdMgodyOTs_m6-99FxrqUJzRjDth8epkaa69YQtNeSMw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAP045ArdMgodyOTs_m6-99FxrqUJzRjDth8epkaa69YQtNeSMw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 6, 2023 at 6:13=E2=80=AFAM Anton Protopopov <aspsk@isovalent.co=
-m> wrote:
+
+On 12/7/23 5:08 PM, Kyle Huey wrote:
+> On Thu, Dec 7, 2023 at 2:56 PM Kyle Huey <me@kylehuey.com> wrote:
+>> On Thu, Dec 7, 2023 at 11:20 AM Marco Elver <elver@google.com> wrote:
+>>> On Thu, 7 Dec 2023 at 20:12, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>>>> On Thu, Dec 7, 2023 at 8:35 AM Kyle Huey <me@kylehuey.com> wrote:
+>>>>> The test sets a hardware breakpoint and uses a bpf program to suppress the
+>>>>> side effects of a perf event sample, including I/O availability signals,
+>>>>> SIGTRAPs, and decrementing the event counter limit, if the ip matches the
+>>>>> expected value. Then the function with the breakpoint is executed multiple
+>>>>> times to test that all effects behave as expected.
+>>>>>
+>>>>> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+>>>>> ---
+>>>>>   .../selftests/bpf/prog_tests/perf_skip.c      | 145 ++++++++++++++++++
+>>>>>   .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
+>>>>>   2 files changed, 160 insertions(+)
+>>>>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>>>>>   create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
+>>>>>
+>>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>>>>> new file mode 100644
+>>>>> index 000000000000..f6fa9bfd9efa
+>>>>> --- /dev/null
+>>>>> +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+>>>>> @@ -0,0 +1,145 @@
+>>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>>> +#define _GNU_SOURCE
+>>>>> +
+>>>>> +/* We need the latest siginfo from the kernel repo. */
+>>>>> +#include <asm/siginfo.h>
+>>>> selftests are built with UAPI headers' copies under tools/include, so
+>>>> CI did catch a real issue, I think. Try copying
+>>>> include/uapi/asm-generic/siginfo.h into
+>>>> tools/include/uapi/asm-generic/siginfo.h ?
+>>> I believe parts of this were inspired by
+>>> tools/testing/selftests/perf_events/sigtrap_threads.c - getting the
+>>> kernel headers is allowed, as long as $(KHDR_INCLUDES) is added to
+>>> CFLAGS. See tools/testing/selftests/perf_events/Makefile. Not sure
+>>> it's appropriate for this test though, if you don't want to add
+>>> KHDR_INCLUDES for everything.
+>> Yes, that's right. Namhyung's commit message for 91c97b36bd69 leads me
+>> to believe that I should copy siginfo.h over into tools/include and
+>> fix the perf_events self tests too.
+>>
+>> - Kyle
+> That doesn't really help (though perhaps it should be done anyway so
+> the selftests aren't reaching into include/) because the glibc headers
+> still redefine a ton of stuff in asm-generic/siginfo.h.
+
+Just for testing purpose, I think you can avoid includeasm/siginfo.h and directly define necessary structures in the C file 
+directly, right?
+
 >
-> +
-> +static __always_inline int __bpf_static_branch_jump(void *static_key)
-> +{
-> +       asm goto("1:\n\t"
-> +               "goto %l[l_yes]\n\t"
-> +               ".pushsection .jump_table, \"aw\"\n\t"
-> +               ".balign 8\n\t"
-> +               ".long 1b - .\n\t"
-> +               ".long %l[l_yes] - .\n\t"
-> +               ".quad %c0 - . + 1\n\t"
-> +               ".popsection\n\t"
-> +               :: "i" (static_key)
-> +               :: l_yes);
-> +       return 0;
-> +l_yes:
-> +       return 1;
-> +}
-
-Could you add a test to patch 7 where the same subprog is
-used by multiple main progs and another test where a prog
-with static_keys is statically linked by libbpf into another prog?
-I suspect these cases are not handled by libbpf in the series.
-The adjustment of insn offsets is tricky and I don't see this logic
-in patch 5.
-
-The special handling of JA insn (if it's listed in
-static_branches_info[]) is fragile. The check_cfg() and the verifier
-main loop are two places so far, but JA is an unconditional jump.
-Every tool that understands BPF ISA would have to treat JA as "maybe
-it's not a jump in this case" and that is concerning.
-
-I certainly see the appeal of copy-pasting kernel's static_branch logic,
-but we can do better since we're not bound by x86 ISA.
-
-How about we introduce a new insn JA_MAYBE insn, and check_cfg and
-the verifier will process it as insn_idx +=3D insn->off/imm _or_ insn_idx +=
-=3D 1.
-The new instruction will indicate that it may jump or fall through.
-Another bit could be used to indicate a "default" action (jump vs
-fallthrough) which will be used by JITs to translate into nop or jmp.
-Once it's a part of the instruction stream we can have bpf prog callable
-kfunc that can flip JA_MAYBE target
-(I think this feature is missing in the patch set. It's necessary
-to add an ability for bpf prog to flip static_branch. Currently
-you're proposing to do it from user space only),
-and there will be no need to supply static_branches_info[] at prog load tim=
-e.
-The libbpf static linking will work as-is without extra code.
-
-JA_MAYBE will also remove the need for extra bpf map type.
-The bpf prog can _optionally_ do '.long 1b - .' asm trick and
-store the address of JA_MAYBE insn into an arbitrary 8 byte value
-(either in a global variable, a section or somewhere else).
-I think it's necessary to decouple patching of JA_MAYBE vs naming
-the location.
-The ".pushsection .jump_table" should be optional.
-The kernel's static_key approach hard codes them together, but
-it's due to x86 limitations.
-We can introduce JA_MAYBE and use it everywhere in the bpf prog and
-do not add names or addresses next to them. Then 'bpftool prog dump' can
-retrieve the insn stream and another command can patch a specific
-instruction (because JA_MAYBE is easy to spot vs regular JA).
-At the end it's just a text_poke_bp() to convert
-a target of JA_MAYBE.
-The bpf prog can be written with
- asm goto("go_maybe +0, %l[l_yes]")
-without names and maps, and the jumps will follow the indicated
-'default' branch (how about, the 1st listed is default, the 2nd is
-maybe).
-The kernel static keys cannot be flipped atomically anyway,
-so multiple branches using the same static key is equivalent to an
-array of addresses that are flipped one by one.
-
-I suspect the main use case for isovalent is to compile a bpf prog
-with debug code that is not running by default and then flip
-various parts when debugging is necessary.
-With JA_MAYBE it's still going to be bpf_static_branch_[un]likely(),
-but no extra map and the prog will load fine. Then you can patch
-all of such insns or subset of them on demand.
-(The verifier will allow patching of JA_MAYBE only between two targets,
-so no safety issues).
-I think it's more flexible than the new map type and static_branches_info[]=
-.
-wdyt?
+> - Kyle
 
