@@ -1,142 +1,120 @@
-Return-Path: <bpf+bounces-17242-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB5680AE4A
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:52:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6268580AE4F
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:53:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 986D51C20898
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:52:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CDFD281B54
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E7B46BBF;
-	Fri,  8 Dec 2023 20:52:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17F7747A5F;
+	Fri,  8 Dec 2023 20:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="ORyh82rA"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="WKHjeQTz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D1D1720
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 12:51:59 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso2521714276.2
-        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 12:51:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1702068719; x=1702673519; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q69Rd2ZLQxWoA6Uc/juMGm2JEJPvLMOIaXgd+4m95hQ=;
-        b=ORyh82rAIo4e/3YM9ItpbAdt50d4vdwXDCfyhjQyKklbZJhNHw6O8a9knj1eB/r5eM
-         GxVRqoJPHhK/qonWey5K+QyOxKOAJ1NXT2HmJPcyrINCdqdqRpMzBP6Ym80LhDPF7+yw
-         C/+Eg7qXhkEgsaiJyjk3QW9cXF8jUTd/vWDzBnRttJSfXeoEbjjTaGF6Af/jdB+W4RVu
-         elKRZeSUdR96cgbdU+q6B1WWe8sfT0bvlXoH+nD9coy9U/ZF++r4r9y8Oe0JAdL3GLpn
-         DyzTCY5Vjyg8u15zPiPPdFr/zprs3O5+p2sMtUwPs8Uyb3S8gJKVWZZ6kdlovPtgt30S
-         WNdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702068719; x=1702673519;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q69Rd2ZLQxWoA6Uc/juMGm2JEJPvLMOIaXgd+4m95hQ=;
-        b=P42TQt1P88nfRnVLnNv16kag9fjGRjnY3J3gh/hAfd6WqKG6mHhG/rIe3VdpEj98Gb
-         03pnALF8Xo2nuzE0pZDj2aV5ExnzEVNqn18AOTOMBBTgJlRT3YmDlhIHRvDi4qsnnCYK
-         QvgxSdbaIgd7QqfZQDHCBsMB/sSUykcVAYSze8VWHGpaJRWQVC4YDm6mTo6AUOVel6a4
-         AcO12KdAlTXyWofLuZMbTIssHr8ZbHTnQ7vZwDgQnbk3trZARodfxH+i2EcLFc4snaxJ
-         WtP/eNWU96XPopVSQ8dtoMNbbVh4U2Q413vFflAhtWVHowbqrUEIuOx9YwrqEhqXAWZJ
-         +2sQ==
-X-Gm-Message-State: AOJu0YzgNZSkOmFpDpbbDEfzqs/YZWmFOYJjg0kYRESAK0v3QXe5apcT
-	53fprYVIPX36F//9V81fBn/uDRt//26mKYIHI5Ng
-X-Google-Smtp-Source: AGHT+IGTzCymo9qSR91Ej0WgrRFEVb3pLiDK8nnRh5O5xjOkCCKtblU91SjomPzBo+3IFIf6dg+ncqRXupj58wTpqgY=
-X-Received: by 2002:a5b:70d:0:b0:db5:3b54:5de7 with SMTP id
- g13-20020a5b070d000000b00db53b545de7mr493619ybq.3.1702068718762; Fri, 08 Dec
- 2023 12:51:58 -0800 (PST)
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1220F1723;
+	Fri,  8 Dec 2023 12:53:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=pY+mb/Qrc+JbGWeBCz5TAVT1HMlwaTqQprEMIVZfjU8=; b=WKHjeQTzRtUa3ehjWvBb5ptG7x
+	X1dzOuu693YBY+CQHFy/qT0nKn2Rtrtilph4cDyUU95v7EfqZRN2J48VaQYxXO0T2gVnhWOXhE0VX
+	e2RDNVyYfmERESlMze5ErEsZUmhi6JjG7R/f/Vilowo8kJYPyH89aai/nLxwgQEOZlMZyyOpI1eXu
+	DOzbxNOqNhOZOlEiS95uxa0YfL8TLyAQ7SdFLWthPC+S3ZJZgmHNShsBWly0Hkz8oEDrmkn8W7jWu
+	YwyK0LGYygYKKTgAEZ6IwlF4vKmbPECNkW13Q8NQI00pRT9EhYDKxuM6/3XNX7QDU331UhZ7nZZAG
+	F0Y1aysQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rBhpx-006ZJN-SO; Fri, 08 Dec 2023 20:52:42 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 28FDA3003F0; Fri,  8 Dec 2023 21:52:41 +0100 (CET)
+Date: Fri, 8 Dec 2023 21:52:41 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+	Song Liu <songliubraving@meta.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joao Moreira <joao@overdrivepizza.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231208205241.GK28727@noisy.programming.kicks-ass.net>
+References: <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net>
+ <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+ <20231208172152.GD36716@noisy.programming.kicks-ass.net>
+ <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
+ <20231208203535.GG36716@noisy.programming.kicks-ass.net>
+ <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231110222038.1450156-1-kpsingh@kernel.org> <20231110222038.1450156-6-kpsingh@kernel.org>
- <202312080934.6D172E5@keescook> <CAHC9VhTOze46yxPUURQ+4F1XiSEVhrTsZvYfVAZGLgXj0F9jOA@mail.gmail.com>
- <CAHC9VhRguzX9gfuxW3oC0pOpttJ+xE6Q84Y70njjchJGawpXdg@mail.gmail.com> <202312081019.C174F3DDE5@keescook>
-In-Reply-To: <202312081019.C174F3DDE5@keescook>
-From: Paul Moore <paul@paul-moore.com>
-Date: Fri, 8 Dec 2023 15:51:47 -0500
-Message-ID: <CAHC9VhRNSonUXwneN1j0gpO-ky_YOzWsiJo_g+b0P86c9Am8WQ@mail.gmail.com>
-Subject: Re: [PATCH v8 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
-To: Kees Cook <keescook@chromium.org>
-Cc: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, 
-	bpf@vger.kernel.org, casey@schaufler-ca.com, song@kernel.org, 
-	daniel@iogearbox.net, ast@kernel.org, renauld@google.com, pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQJzCw=qcG+jHBYG0q0SxLPkwghni0wpgV4A4PkpgVbGPw@mail.gmail.com>
 
-On Fri, Dec 8, 2023 at 1:22=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
-ote:
-> On Fri, Dec 08, 2023 at 12:55:16PM -0500, Paul Moore wrote:
-> > On Fri, Dec 8, 2023 at 12:46=E2=80=AFPM Paul Moore <paul@paul-moore.com=
-> wrote:
-> > > On Fri, Dec 8, 2023 at 12:36=E2=80=AFPM Kees Cook <keescook@chromium.=
-org> wrote:
-> > > > On Fri, Nov 10, 2023 at 11:20:37PM +0100, KP Singh wrote:
-> > > > > [...]
-> > > > > ---
-> > > > >  security/Kconfig | 11 +++++++++++
-> > > > >  1 file changed, 11 insertions(+)
-> > > >
-> > > > Did something go missing from this patch? I don't see anything depe=
-nding
-> > > > on CONFIG_SECURITY_HOOK_LIKELY (I think this was working in v7, tho=
-ugh?)
-> >
-> > I guess while I'm at it, and for the sake of the mailing list, it is
-> > worth mentioning that I voiced my dislike of the
-> > CONFIG_SECURITY_HOOK_LIKELY Kconfig option earlier this year yet it
-> > continues to appear in the patchset.  It's hard to give something
-> > priority when I do provide some feedback and it is apparently ignored.
->
-> The CONFIG was created specifically to address earlier concerns about
-> not being able to choose whether to use this performance improvement. :P
-> What's the right direction forward?
+On Fri, Dec 08, 2023 at 12:41:03PM -0800, Alexei Starovoitov wrote:
+> On Fri, Dec 8, 2023 at 12:35 PM Peter Zijlstra <peterz@infradead.org> wrote:
 
-Are you honestly uncertain after our discussions today?  I'll be
-honest and say that I'm a little confused as I thought I made it very
-clear when I told you to just be patient off-list, and reminded you in
-this thread that the patchset was in my review queue and I will get to
-it once it bubbles to the top.  I don't know what else to say here ...
-?
+> > -__bpf_kfunc void bpf_task_release(struct task_struct *p)
+> > +__bpf_kfunc void bpf_task_release(void *p)
+> 
+> Yeah. That won't work. We need a wrapper.
+> Since bpf prog is also calling it directly.
+> In progs/task_kfunc_common.h
+> void bpf_task_release(struct task_struct *p) __ksym;
+> 
+> than later both libbpf and the verifier check that
+> what bpf prog is calling actually matches the proto
+> of what is in the kernel.
+> Effectively we're doing strong prototype check at load time.
 
-As far as the CONFIG_SECURITY_HOOK_LIKELY patch, looking back at my
-comments from September [1] there is a clear statement that I am not
-in favor of this patch along with a brief explanation as to why:
+I'm still somewhat confused on how this works, where does BPF get the
+address of the function from? and what should I call the wrapper?
 
- "I'm not in favor of adding a Kconfig option for something
-  like this.  If you have an extremely well defined use case
-  then you can probably do the work to figure out the
-  "correct" value for the tunable, but for a general purpose
-  kernel build that will have different LSMs active, a
-  variety of different BPF LSM hook implementations at
-  different times, etc. there is little hope to getting this
-  right."
+> btw instead of EXPORT_SYMBOL_GPL(bpf_task_release)
+> can __ADDRESSABLE be used ?
+> Since it's not an export symbol.
 
-... and that was back when the knob actually did something, as you
-pointed out in this thread, the v8 version of this patch doesn't
-appear to do anything, which is really baffling and not a good sign.
-As far as what to do about this patch, in our off-list discussion I
-asked you and KP to refrain from respinning the patchset just to get
-rid of this patch, but keep it in mind for future submissions.
+No __ADDRESSABLE() is expressly ignored, but we have IBT_NOSEAL() that
+should do it. I'll rename the thing and lift it out of x86 to avoid
+breaking all other arch builds.
 
-Hopefully by repeating the important bits of the conversation you now
-understand that there is nothing you can do at this moment to speed my
-review of this patchset, but there are things you, and KP, can do in
-the future if additional respins are needed.  However, if you are
-still confused, it may be best to go do something else for a bit and
-then revisit this email because there is nothing more that I can say
-on this topic at this point in time.
-
-[1] https://lore.kernel.org/linux-security-module/CAHC9VhSSX0KRuWRURUmt2tUi=
-s6fbbmozUbcoeAPkLRmfR2jqAg@mail.gmail.com/
-
---=20
-paul-moore.com
 
