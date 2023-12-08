@@ -1,86 +1,108 @@
-Return-Path: <bpf+bounces-17183-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17185-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60E6C80A44B
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 14:16:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6944380A498
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 14:41:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF3B0B20C91
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 13:16:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54D471C20E19
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 13:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829181C6BF;
-	Fri,  8 Dec 2023 13:16:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4555F1D556;
+	Fri,  8 Dec 2023 13:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UZDv1w4D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55D91724
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 05:16:30 -0800 (PST)
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6d83f218157so2722161a34.1
-        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 05:16:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702041390; x=1702646190;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y1ZnogWDCGCEoUA9e+jdzgHOyFmOK6aq9lqo84rsReo=;
-        b=bvy/aBIjG0Q758247XK0XcB+/FcjDAiNVnH+4H8yMYdctnP8wBIq4lyoPbjtgZdVrP
-         HGS0zSEHIL3dZKSReVGXAg6fMVd3S3RfVsWz4s/LpaX5zHg8xk7Mw7+jzOVC2/Ec7MGF
-         wAjz9cQlla8vmdvgX4PHToCy2KmPSmn3Gf8d6lA6D8bBX6Z2BaJVJ4Lr1OFTWmOUQ1KI
-         dHl4P7CiVg4YWHUF1qobOglJZoUodymcoISw1qPPCyBKUWhcoMROOj32eyrPxYJjYivi
-         xMGPCYlHgJavqBia6Z6tkQArFUlIgjIy20MN/gjxIvKC6shPTaWBhRfZD0YA0hCy+zXR
-         CzlA==
-X-Gm-Message-State: AOJu0YxyyPES7O7NGjbT/LG+w+p1qydTVS+r8HaVBTkf9yBnjbPSPCQS
-	0C0Lv4CPrbDFEjGx0A+rqeDFzoYUm2upt12/cCzSb9thaDR/
-X-Google-Smtp-Source: AGHT+IFm89qWspx5hE1KkOqbc5xL8CVQegKBBnrK/YE6EPOpmiRKLhqfxYTT/RI+RD6RFqa8oV9hi/uPIONbkPgWG85/BxYpnF+a
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 229EC1998;
+	Fri,  8 Dec 2023 05:41:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=mEwzSQj49+1V+0OqU5JPdRDMA9pBIqO9QxdbK1+psok=; b=UZDv1w4D/0pm8nMQazAuCgRLvP
+	kUoVvd6ilj8Hjwd0Y5fIUgaEUgLc20msRFexR7C9e/R5jJFuu7bZjqIgiL/klT2qwoH/SACGyjE5D
+	pIY+B9k0Lyqc1ioJ98358Ce9+VsG8tCGQG0nIhqFli9RrusQihcQTNhejxgQ19eW4p1pvj3KvnFig
+	MMidSdAN6qqBAZeYoFmUr/sVh9/o3dTb62t0uTDjAvWYahnB8nERNNsZtaGrTwGnY2ZzvDdXs6hji
+	c+xdyrIm44MYQPUN7hS1K511Z1iwDJHo+/f6P9zSOKIaQo/HioUiRcnxmR7aXAYVsIuA48UUj04b+
+	r9rIzZCQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rBb5u-006bFJ-00;
+	Fri, 08 Dec 2023 13:40:42 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id A3EDA3003F0; Fri,  8 Dec 2023 14:40:41 +0100 (CET)
+Date: Fri, 8 Dec 2023 14:40:41 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+	Song Liu <songliubraving@meta.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joao Moreira <joao@overdrivepizza.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+References: <ZW4LjmUKj1q6RWdL@krava>
+ <20231204181614.GA7299@noisy.programming.kicks-ass.net>
+ <20231204183354.GC7299@noisy.programming.kicks-ass.net>
+ <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
+ <20231206163814.GB36423@noisy.programming.kicks-ass.net>
+ <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6830:33e7:b0:6d9:e9da:d786 with SMTP id
- i7-20020a05683033e700b006d9e9dad786mr710228otu.3.1702041390080; Fri, 08 Dec
- 2023 05:16:30 -0800 (PST)
-Date: Fri, 08 Dec 2023 05:16:30 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000072e8c7060bff64cf@google.com>
-Subject: [syzbot] Monthly bpf report (Dec 2023)
-From: syzbot <syzbot+listfafd4fe0e0bf9b4d93f3@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208102940.GB28727@noisy.programming.kicks-ass.net>
 
-Hello bpf maintainers/developers,
+On Fri, Dec 08, 2023 at 11:29:40AM +0100, Peter Zijlstra wrote:
+> The only problem I now have is the one XXX, I'm not entirely sure what
+> signature to use there.
 
-This is a 31-day syzbot report for the bpf subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bpf
+> @@ -119,6 +119,7 @@ int bpf_struct_ops_test_run(struct bpf_p
+>  	op_idx = prog->expected_attach_type;
+>  	err = bpf_struct_ops_prepare_trampoline(tlinks, link,
+>  						&st_ops->func_models[op_idx],
+> +						/* XXX */ NULL,
+>  						image, image + PAGE_SIZE);
+>  	if (err < 0)
+>  		goto out;
 
-During the period, 4 new issues were detected and 0 were fixed.
-In total, 10 issues are still open and 199 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 14      Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
-                  https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
-<2> 2       Yes   INFO: rcu detected stall in sys_newfstatat (4)
-                  https://syzkaller.appspot.com/bug?extid=1c02a56102605204445c
-<3> 1       Yes   INFO: rcu detected stall in sys_unshare (9)
-                  https://syzkaller.appspot.com/bug?extid=872bccd9a68c6ba47718
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Duh, that should ofcourse be something of dummy_ops_test_ret_fn type.
+Let me go fix that.
 
