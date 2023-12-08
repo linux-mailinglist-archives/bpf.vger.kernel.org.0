@@ -1,389 +1,118 @@
-Return-Path: <bpf+bounces-17061-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17062-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 381C88096E7
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 01:06:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15184809706
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 01:17:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B09E1C20C32
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 00:06:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD9D2282081
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 00:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0390641;
-	Fri,  8 Dec 2023 00:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 096E7372;
+	Fri,  8 Dec 2023 00:17:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IdV7Mw6I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WIh5cGTz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65561BC7
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 16:05:51 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c317723a8so4126175e9.3
-        for <bpf@vger.kernel.org>; Thu, 07 Dec 2023 16:05:51 -0800 (PST)
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083EF30F3;
+	Thu,  7 Dec 2023 16:16:32 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c66418decaso1123416a12.3;
+        Thu, 07 Dec 2023 16:16:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701993950; x=1702598750; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jrfS17JyIXMdqIDGH+wbH7f7qlX1YCYE1xJKLOhq1Gc=;
-        b=IdV7Mw6ICpXtQkLxzDQKQj2TPHp3oGv4P/PdKL6LLScCuzj/s0iyl5XyyltW9i5Tsf
-         qplwbb+fo1ivYRopdhiwb4+hWPNODsxRIHY4Us7o8husQTmrAAhX0Lzx+3fjpQZzHK2J
-         oxh0QvJXoB2pVrLe3ptNS6JAIl+YbDHkoHDJjGldDDHs48ckMi+OJWYmhUhzqY/51XUu
-         crMaNDZLsMaCa2aHVWi69brukEBQXBegfisAU5Y2W+QbekHaF3zZ+M6A5S8aOrOqzpRP
-         wK9X/78Xs3firZhylUzKHHTcvLpG2J0lDQKmryqww/AeoMAawNWcTTeY4CxRFGBXItZ7
-         fmjQ==
+        d=gmail.com; s=20230601; t=1701994592; x=1702599392; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fYaCvNQnFX8gSshhD0U4TjEw0tlZoDuU2wJUbPArFf8=;
+        b=WIh5cGTz09wSE4+SUXHkBH+VTwBndYOxGzkeozcvyKdfK/K3Fsu0armv9KwvSU+vYW
+         Uk7gEKBCTVZVBqnDIFp72D4fB1eBzO6FfQa2N+2AUMNai86Wogqznr/AkKTqgqe5wmwI
+         Wqj4VIjlNyCz5uVP+USRejBrsW75pY4YVNNEM7DPOnx7LhFGBMg/UFf3+FBc8cUzgtRU
+         as7lglpHrB7/0l/ehUbCYm5ibcQLtBzTpPCQNx6y79yV5Cz0LuN10CQamYsD0vYGqJiY
+         3mLp58cVQ2QnhWC2ZeGSNwb+g+S3lmYmgC7Jy70JjTMdhGiF6iD+50bEG9e7GuUZTKPG
+         Bwmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701993950; x=1702598750;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1701994592; x=1702599392;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jrfS17JyIXMdqIDGH+wbH7f7qlX1YCYE1xJKLOhq1Gc=;
-        b=TS2CtlLT5gXSvA31KLVQu6YmNnG31YcC/FJuaXEZrPY2dXhbExYHUYtL5Cm6q+9oMm
-         +o6MAVJPduMoUj+vWJux9kTloU1j/VMO97gODGwbcVGyophnTfhgWw6xUjoty5uTDXKZ
-         g+JlY32YoZHjuXQWmSwTC2SFa9jKwcYLqFg93TkU5cBmh5+70phvEMMTLqKfG2egXur/
-         aJZt1tbrP1WVo7A1Gj+tASmTtAuD78BgmZMdYJjGvY3DsnYoXj+mPDbChXYbiCQ+6s4m
-         uhIa2DhO5UA58C3zgW8awwSzOn4BmcNN6F8HCU3TzJoA+l196gwotbQmwRqMWK7ICInP
-         qyyg==
-X-Gm-Message-State: AOJu0Ywd+ClmNVvXlUBnAi6UpDzCkfOoLpu+JWJLP1Qzik1B/IbcjCeG
-	IPCnT9CjXDXTpNFTyDhVB4Zw+EyZjb9RKQ==
-X-Google-Smtp-Source: AGHT+IFOYckOipM/gt688RDbP5YMzy8IYKL3K/xLHoX/9JhdcbLFFcoGU23xqdlM2zZ7ykcrwpP5FQ==
-X-Received: by 2002:a7b:ce94:0:b0:408:575e:f24f with SMTP id q20-20020a7bce94000000b00408575ef24fmr2179428wmj.28.1701993949815;
-        Thu, 07 Dec 2023 16:05:49 -0800 (PST)
-Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id g12-20020a05600c310c00b00406408dc788sm3279155wmo.44.2023.12.07.16.05.48
+        bh=fYaCvNQnFX8gSshhD0U4TjEw0tlZoDuU2wJUbPArFf8=;
+        b=w6XjlQtxBkiQZhKs1cunCI1AKhoGNv2mACktOFhN/quAb/g9eXpuvKHDkzyKH+39u7
+         4qa1rKlJGEsQ9Hd0101F3kERG+5J5msZgS++Wmls+If1l2z2tiGjP78ry9bKkEhLjFoj
+         1pdLi1UL24QtuN6b+ZU/upMt1agy25PCkj1acaCAugp6CbS3tTYg2i9NlQLfCgIn4Uik
+         UggcBAL1HIi7zwAyBWTBmMKGWnpk3uOQ8qBPDQ2FFFCC5pIB5/T74MNB0mkhO3hw5gto
+         /zE5u+cPhYkNd1/ayxPfbThxCi5ZFJnWdYLTpqrQhX5JsU+e1mSvurBL3rfRGX2vn2ac
+         1UuQ==
+X-Gm-Message-State: AOJu0Yx9pLpVC7DqHUqob5eCwQ44Sj4oX/VYdSrhjLAS+MlPzGOlHHyv
+	HZI47Zw4wXGpJUjl3jp4Ar0=
+X-Google-Smtp-Source: AGHT+IFy9HbQWTNcyN32kK0LC8FOvXZMYftP3rKNMYn/O6vKj3WIQqEzLjU+hOsNMtxdAsDBVSv4eA==
+X-Received: by 2002:a17:903:191:b0:1d0:a53e:263a with SMTP id z17-20020a170903019100b001d0a53e263amr3271941plg.109.1701994592059;
+        Thu, 07 Dec 2023 16:16:32 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id ba1-20020a170902720100b001d09c539c95sm403131plb.90.2023.12.07.16.16.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Dec 2023 16:05:49 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	jose.marchesi@oracle.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next 1/1] bpf: Mark virtual BPF context structures as preserve_static_offset
-Date: Fri,  8 Dec 2023 02:05:31 +0200
-Message-ID: <20231208000531.19179-2-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231208000531.19179-1-eddyz87@gmail.com>
-References: <20231208000531.19179-1-eddyz87@gmail.com>
+        Thu, 07 Dec 2023 16:16:31 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 7 Dec 2023 14:16:30 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Changwoo Min <multics69@gmail.com>
+Cc: kernel-dev@igalia.com, andrea.righi@canonical.com, andrii@kernel.org,
+	ast@kernel.org, bpf@vger.kernel.org, brho@google.com,
+	bristot@redhat.com, bsegall@google.com, changwoo@igalia.com,
+	daniel@iogearbox.net, derkling@google.com, dietmar.eggemann@arm.com,
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, dvernet@meta.com,
+	haoluo@google.com, himadrics@inria.fr, joshdon@google.com,
+	juri.lelli@redhat.com, kernel-team@meta.com,
+	linux-kernel@vger.kernel.org, martin.lau@kernel.org,
+	memxor@gmail.com, mgorman@suse.de, mingo@redhat.com,
+	peterz@infradead.org, pjt@google.com, riel@surriel.com,
+	rostedt@goodmis.org, torvalds@linux-foundation.org,
+	vincent.guittot@linaro.org, vschneid@redhat.com
+Subject: Re: [PATCH] scx: set p->scx.ops_state using atomic_long_set_release
+Message-ID: <ZXJgXqQlHc1mgd1m@slm.duckdns.org>
+References: <20231111024835.2164816-13-tj@kernel.org>
+ <20231207020459.117365-1-changwoo@igalia.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231207020459.117365-1-changwoo@igalia.com>
 
-Add __attribute__((preserve_static_offset)) for the following BPF
-related structures:
-- __sk_buff
-- bpf_cgroup_dev_ctx
-- bpf_perf_event_data
-- bpf_sk_lookup
-- bpf_sock
-- bpf_sock_addr
-- bpf_sock_ops
-- bpf_sockopt
-- bpf_sysctl
-- sk_msg_md
-- sk_reuseport_md
-- xdp_md
+Hello,
 
-Access to these structures is rewritten by BPF verifier.
-(See verifier.c:convert_ctx_access).
-The rewrite requires that offsets used in access to fields of these
-structures are constant values. __attribute__((preserve_static_offset))
-is a hint to clang that ensures that constant offsets are used.
-(See https://reviews.llvm.org/D133361 for details).
+On Thu, Dec 07, 2023 at 11:04:59AM +0900, Changwoo Min wrote:
+> p->scx.ops_state should be updated using the release semantics,
+> atomic_long_set_release(), because it is read using
+> atomic_long_read_acquire() at ops_dequeue() and wait_ops_state().
+> ---
+>  kernel/sched/ext.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+> index 53ee906aa2b6..3a40ca2007b6 100644
+> --- a/kernel/sched/ext.c
+> +++ b/kernel/sched/ext.c
+> @@ -881,7 +881,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
+>  	qseq = rq->scx.ops_qseq++ << SCX_OPSS_QSEQ_SHIFT;
+>  
+>  	WARN_ON_ONCE(atomic_long_read(&p->scx.ops_state) != SCX_OPSS_NONE);
+> -	atomic_long_set(&p->scx.ops_state, SCX_OPSS_QUEUEING | qseq);
+> +	atomic_long_set_release(&p->scx.ops_state, SCX_OPSS_QUEUEING | qseq);
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
----
- include/uapi/linux/bpf.h                  | 28 ++++++++++++++---------
- include/uapi/linux/bpf_perf_event.h       |  8 ++++++-
- tools/include/uapi/linux/bpf.h            | 28 ++++++++++++++---------
- tools/include/uapi/linux/bpf_perf_event.h |  8 ++++++-
- 4 files changed, 48 insertions(+), 24 deletions(-)
+atomic_long_load_acquire() are used when waiting the transitions out of
+QUEUEING and DISPATCHING states. ie. the interlocking between writer and
+reader is necessary only when transitioning out of those states. In the
+above, @p is going into QUEUEING and release/acquire isn't necessary.
+Selectively using them is kinda subtle but it's less confusing to keep it
+that way, I think.
 
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index e0545201b55f..75eee56ed732 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -69,6 +69,12 @@ enum {
- /* BPF has 10 general purpose 64-bit registers and stack frame. */
- #define MAX_BPF_REG	__MAX_BPF_REG
- 
-+#if __has_attribute(preserve_static_offset) && defined(__bpf__)
-+#define __bpf_ctx __attribute__((preserve_static_offset))
-+#else
-+#define __bpf_ctx
-+#endif
-+
- struct bpf_insn {
- 	__u8	code;		/* opcode */
- 	__u8	dst_reg:4;	/* dest register */
-@@ -6190,7 +6196,7 @@ struct __sk_buff {
- 	__u8  tstamp_type;
- 	__u32 :24;		/* Padding, future use. */
- 	__u64 hwtstamp;
--};
-+} __bpf_ctx;
- 
- struct bpf_tunnel_key {
- 	__u32 tunnel_id;
-@@ -6271,7 +6277,7 @@ struct bpf_sock {
- 	__u32 dst_ip6[4];
- 	__u32 state;
- 	__s32 rx_queue_mapping;
--};
-+} __bpf_ctx;
- 
- struct bpf_tcp_sock {
- 	__u32 snd_cwnd;		/* Sending congestion window		*/
-@@ -6379,7 +6385,7 @@ struct xdp_md {
- 	__u32 rx_queue_index;  /* rxq->queue_index  */
- 
- 	__u32 egress_ifindex;  /* txq->dev->ifindex */
--};
-+} __bpf_ctx;
- 
- /* DEVMAP map-value layout
-  *
-@@ -6429,7 +6435,7 @@ struct sk_msg_md {
- 	__u32 size;		/* Total size of sk_msg */
- 
- 	__bpf_md_ptr(struct bpf_sock *, sk); /* current socket */
--};
-+} __bpf_ctx;
- 
- struct sk_reuseport_md {
- 	/*
-@@ -6468,7 +6474,7 @@ struct sk_reuseport_md {
- 	 */
- 	__bpf_md_ptr(struct bpf_sock *, sk);
- 	__bpf_md_ptr(struct bpf_sock *, migrating_sk);
--};
-+} __bpf_ctx;
- 
- #define BPF_TAG_SIZE	8
- 
-@@ -6678,7 +6684,7 @@ struct bpf_sock_addr {
- 				 * Stored in network byte order.
- 				 */
- 	__bpf_md_ptr(struct bpf_sock *, sk);
--};
-+} __bpf_ctx;
- 
- /* User bpf_sock_ops struct to access socket values and specify request ops
-  * and their replies.
-@@ -6761,7 +6767,7 @@ struct bpf_sock_ops {
- 				 * been written yet.
- 				 */
- 	__u64 skb_hwtstamp;
--};
-+} __bpf_ctx;
- 
- /* Definitions for bpf_sock_ops_cb_flags */
- enum {
-@@ -7034,7 +7040,7 @@ struct bpf_cgroup_dev_ctx {
- 	__u32 access_type;
- 	__u32 major;
- 	__u32 minor;
--};
-+} __bpf_ctx;
- 
- struct bpf_raw_tracepoint_args {
- 	__u64 args[0];
-@@ -7245,7 +7251,7 @@ struct bpf_sysctl {
- 	__u32	file_pos;	/* Sysctl file position to read from, write to.
- 				 * Allows 1,2,4-byte read an 4-byte write.
- 				 */
--};
-+} __bpf_ctx;
- 
- struct bpf_sockopt {
- 	__bpf_md_ptr(struct bpf_sock *, sk);
-@@ -7256,7 +7262,7 @@ struct bpf_sockopt {
- 	__s32	optname;
- 	__s32	optlen;
- 	__s32	retval;
--};
-+} __bpf_ctx;
- 
- struct bpf_pidns_info {
- 	__u32 pid;
-@@ -7280,7 +7286,7 @@ struct bpf_sk_lookup {
- 	__u32 local_ip6[4];	/* Network byte order */
- 	__u32 local_port;	/* Host byte order */
- 	__u32 ingress_ifindex;		/* The arriving interface. Determined by inet_iif. */
--};
-+} __bpf_ctx;
- 
- /*
-  * struct btf_ptr is used for typed pointer representation; the
-diff --git a/include/uapi/linux/bpf_perf_event.h b/include/uapi/linux/bpf_perf_event.h
-index eb1b9d21250c..cf614ddf0381 100644
---- a/include/uapi/linux/bpf_perf_event.h
-+++ b/include/uapi/linux/bpf_perf_event.h
-@@ -10,10 +10,16 @@
- 
- #include <asm/bpf_perf_event.h>
- 
-+#if __has_attribute(preserve_static_offset) && defined(__bpf__)
-+#define __bpf_ctx __attribute__((preserve_static_offset))
-+#else
-+#define __bpf_ctx
-+#endif
-+
- struct bpf_perf_event_data {
- 	bpf_user_pt_regs_t regs;
- 	__u64 sample_period;
- 	__u64 addr;
--};
-+} __bpf_ctx;
- 
- #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index e0545201b55f..75eee56ed732 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -69,6 +69,12 @@ enum {
- /* BPF has 10 general purpose 64-bit registers and stack frame. */
- #define MAX_BPF_REG	__MAX_BPF_REG
- 
-+#if __has_attribute(preserve_static_offset) && defined(__bpf__)
-+#define __bpf_ctx __attribute__((preserve_static_offset))
-+#else
-+#define __bpf_ctx
-+#endif
-+
- struct bpf_insn {
- 	__u8	code;		/* opcode */
- 	__u8	dst_reg:4;	/* dest register */
-@@ -6190,7 +6196,7 @@ struct __sk_buff {
- 	__u8  tstamp_type;
- 	__u32 :24;		/* Padding, future use. */
- 	__u64 hwtstamp;
--};
-+} __bpf_ctx;
- 
- struct bpf_tunnel_key {
- 	__u32 tunnel_id;
-@@ -6271,7 +6277,7 @@ struct bpf_sock {
- 	__u32 dst_ip6[4];
- 	__u32 state;
- 	__s32 rx_queue_mapping;
--};
-+} __bpf_ctx;
- 
- struct bpf_tcp_sock {
- 	__u32 snd_cwnd;		/* Sending congestion window		*/
-@@ -6379,7 +6385,7 @@ struct xdp_md {
- 	__u32 rx_queue_index;  /* rxq->queue_index  */
- 
- 	__u32 egress_ifindex;  /* txq->dev->ifindex */
--};
-+} __bpf_ctx;
- 
- /* DEVMAP map-value layout
-  *
-@@ -6429,7 +6435,7 @@ struct sk_msg_md {
- 	__u32 size;		/* Total size of sk_msg */
- 
- 	__bpf_md_ptr(struct bpf_sock *, sk); /* current socket */
--};
-+} __bpf_ctx;
- 
- struct sk_reuseport_md {
- 	/*
-@@ -6468,7 +6474,7 @@ struct sk_reuseport_md {
- 	 */
- 	__bpf_md_ptr(struct bpf_sock *, sk);
- 	__bpf_md_ptr(struct bpf_sock *, migrating_sk);
--};
-+} __bpf_ctx;
- 
- #define BPF_TAG_SIZE	8
- 
-@@ -6678,7 +6684,7 @@ struct bpf_sock_addr {
- 				 * Stored in network byte order.
- 				 */
- 	__bpf_md_ptr(struct bpf_sock *, sk);
--};
-+} __bpf_ctx;
- 
- /* User bpf_sock_ops struct to access socket values and specify request ops
-  * and their replies.
-@@ -6761,7 +6767,7 @@ struct bpf_sock_ops {
- 				 * been written yet.
- 				 */
- 	__u64 skb_hwtstamp;
--};
-+} __bpf_ctx;
- 
- /* Definitions for bpf_sock_ops_cb_flags */
- enum {
-@@ -7034,7 +7040,7 @@ struct bpf_cgroup_dev_ctx {
- 	__u32 access_type;
- 	__u32 major;
- 	__u32 minor;
--};
-+} __bpf_ctx;
- 
- struct bpf_raw_tracepoint_args {
- 	__u64 args[0];
-@@ -7245,7 +7251,7 @@ struct bpf_sysctl {
- 	__u32	file_pos;	/* Sysctl file position to read from, write to.
- 				 * Allows 1,2,4-byte read an 4-byte write.
- 				 */
--};
-+} __bpf_ctx;
- 
- struct bpf_sockopt {
- 	__bpf_md_ptr(struct bpf_sock *, sk);
-@@ -7256,7 +7262,7 @@ struct bpf_sockopt {
- 	__s32	optname;
- 	__s32	optlen;
- 	__s32	retval;
--};
-+} __bpf_ctx;
- 
- struct bpf_pidns_info {
- 	__u32 pid;
-@@ -7280,7 +7286,7 @@ struct bpf_sk_lookup {
- 	__u32 local_ip6[4];	/* Network byte order */
- 	__u32 local_port;	/* Host byte order */
- 	__u32 ingress_ifindex;		/* The arriving interface. Determined by inet_iif. */
--};
-+} __bpf_ctx;
- 
- /*
-  * struct btf_ptr is used for typed pointer representation; the
-diff --git a/tools/include/uapi/linux/bpf_perf_event.h b/tools/include/uapi/linux/bpf_perf_event.h
-index eb1b9d21250c..cf614ddf0381 100644
---- a/tools/include/uapi/linux/bpf_perf_event.h
-+++ b/tools/include/uapi/linux/bpf_perf_event.h
-@@ -10,10 +10,16 @@
- 
- #include <asm/bpf_perf_event.h>
- 
-+#if __has_attribute(preserve_static_offset) && defined(__bpf__)
-+#define __bpf_ctx __attribute__((preserve_static_offset))
-+#else
-+#define __bpf_ctx
-+#endif
-+
- struct bpf_perf_event_data {
- 	bpf_user_pt_regs_t regs;
- 	__u64 sample_period;
- 	__u64 addr;
--};
-+} __bpf_ctx;
- 
- #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
+Thanks.
+
 -- 
-2.42.1
-
+tejun
 
