@@ -1,115 +1,184 @@
-Return-Path: <bpf+bounces-17084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17086-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF1C8098C6
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 02:47:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39C5D80992F
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 03:28:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60C241C20CA3
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 01:47:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2C181F213A6
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 02:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 044EF1C35;
-	Fri,  8 Dec 2023 01:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6112B1FC4;
+	Fri,  8 Dec 2023 02:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BvbnBT/j"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZZQArNUj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF031721
-	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 17:47:34 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-db3a09e96daso1905390276.3
-        for <bpf@vger.kernel.org>; Thu, 07 Dec 2023 17:47:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702000053; x=1702604853; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QasjkTvE12oeIkeDPIYBXwIAiruihNVVX4fkQH8L17I=;
-        b=BvbnBT/jCw/UUnZgs0UH+5sifjP4Ni5A0uCwDWSA08tYT8kQE0Rke9gqi6DMjXSugm
-         hIADFMw1HFyj6rbRK/EGrGdq9McVURKMPTVPpCBTH9C0b7bNKpyWvI819pvo8ywfiMgR
-         pDL3r+43rIS20Q0og4yBM7i0mjzBM/mCH/kmsEsULve5DqpWbWFNoGFltr0be8Ln6HcG
-         2vwP7GXJfZK6Ov4V1k6ts55liIt6EsxjzGidH6MG95edz3LKdQIJmzc/RAmulZ+Z4zMi
-         I3JrAll0CHg1LSmnqLFFMAggHkvoAIJGv3aZmbd563cTKNirj7ZqUGiQBhOomg+JGhle
-         ku7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702000053; x=1702604853;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QasjkTvE12oeIkeDPIYBXwIAiruihNVVX4fkQH8L17I=;
-        b=JHnuJPyy5deQ7WY7EiXDYi45GmmhIPy/UrC5f3hBAj8qZ6WCHyyu5uhFVWCi3KNtXh
-         rUg8pSaiGLi7JfozKFgj5Epqs1f3e6CUMdG1XrtzXOxMLJ3lMRev5fDfwxrjS66u8P7F
-         zpyOR5/6T8vZ7xaTjxnxeOK5JVRYc6lhUpM7TuWNnY6cynM8wnBObzppxT5/CbZjdzKv
-         NqOXVVKAnOXr0Ve5WaaGR5NvrMXLE77kM0rX1coDT2uDQS5oGcatxL++YpLwCt41BWfE
-         aw2DjL2i8vNGhLv+ytAfCRrOo+XiYFaCgxVL26uG8xWoSCMTTYkZ1lTHABQ454w26iSC
-         MswA==
-X-Gm-Message-State: AOJu0YzX727s5rLSR0bBPd88B/SCI048vdO1k2CUlzYxEIX7nrzP1lzB
-	uNCNnGcdyLCRtccHvspzkQs+LbF0Z2bU7iyIzqxhVQ==
-X-Google-Smtp-Source: AGHT+IGkcaN4vvcrb8T5smexqtqjrDfI96Nzc421af0VFhb8gbbvwzsJEs/NJAkNTu4GFPThK+R150NgDMf09+eZHpo=
-X-Received: by 2002:a05:6902:18ca:b0:db7:dad0:60d7 with SMTP id
- ck10-20020a05690218ca00b00db7dad060d7mr4259393ybb.100.1702000052997; Thu, 07
- Dec 2023 17:47:32 -0800 (PST)
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [IPv6:2001:41d0:203:375::b0])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2981709
+	for <bpf@vger.kernel.org>; Thu,  7 Dec 2023 18:28:15 -0800 (PST)
+Message-ID: <012efc61-e067-4c21-8cab-47dec9bbaf0c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702002493;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wuHkWy8I1lI+lrVrcgZoC/SBsb3WNxA1HleX5TCv51A=;
+	b=ZZQArNUjfH2B0VPRToyL4j+DVoxvvR/5J+wP1wD5GqOZoH7i7zqdwu8fYxjW369QPpWujo
+	z6B5hspwLN1TJIwLBisvfeUuWTR6zOSaBuShDWsndtAQ8P5fhMQ/HPowpbjOQ5Fc0xOipT
+	FVKdOFB6Or6W0fsQbSKK4caNXkTuUno=
+Date: Thu, 7 Dec 2023 18:28:06 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
-In-Reply-To: <20231208005250.2910004-1-almasrymina@google.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 7 Dec 2023 17:47:19 -0800
-Message-ID: <CAHS8izPitBiASmmdZQ91HRmK33YBZJXOmmCybgeuGYTjP231ug@mail.gmail.com>
-Subject: Re: [net-next v1 00/16] Device Memory TCP
-To: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, David Wei <dw@davidwei.uk>, 
-	Pavel Begunkov <asml.silence@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Arnd Bergmann <arnd@arndb.de>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 0/1] use preserve_static_offset in bpf uapi
+ headers
+To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
+Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
+ kernel-team@fb.com, jose.marchesi@oracle.com
+References: <20231208000531.19179-1-eddyz87@gmail.com>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231208000531.19179-1-eddyz87@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Dec 7, 2023 at 4:52=E2=80=AFPM Mina Almasry <almasrymina@google.com=
-> wrote:
->
-> Major changes in v1:
-> --------------
->
-> 1. Implemented MVP queue API ndos to remove the userspace-visible
->    driver reset.
->
-> 2. Fixed issues in the napi_pp_put_page() devmem frag unref path.
->
-> 3. Removed RFC tag.
->
-> Many smaller addressed comments across all the patches (patches have
-> individual change log).
->
-> Full tree including the rest of the GVE driver changes:
-> https://github.com/mina/linux/commits/tcpdevmem-v1
->
-> Cc: Yunsheng Lin <linyunsheng@huawei.com>
-> Cc: Shailend Chand <shailend@google.com>
-> Cc: Harshitha Ramamurthy <hramamurthy@google.com>
->
 
-Welp, I messed up the subject line. It should say [PATCH net-next...]
-across all the patches. This may trip up bots and email filters. If
-this is annoying, I'll resend with the fixed subject line after the
-24hr cooldown period. Sorry about that.
+On 12/7/23 4:05 PM, Eduard Zingerman wrote:
+> For certain program context types, the verifier applies the
+> verifier.c:convert_ctx_access() transformation.
+> It modifies ST/STX/LDX instructions that access program context.
+> convert_ctx_access() updates the offset field of these instructions
+> changing "virtual" offset by offset corresponding to data
+> representation in the running kernel.
+>
+> For this transformation to be applicable access to the context field
+> shouldn't use pointer arithmetics. For example, consider the read of
+> __sk_buff->pkt_type field.
+> If translated as a single ST instruction:
+>
+>      r0 = *(u32 *)(r1 + 4);
+>
+> The verifier would accept such code and patch the offset in the
+> instruction, however, if translated as a pair of instructions:
+>
+>      r1 += 4;
+>      r0 = *(u32 *)(r1 + 0);
+>
+> The verifier would reject such code.
+>
+> Occasionally clang shuffling code during compilation might break
+> verifier expectations and cause verification errors, e.g. as in [0].
+> Technically, this happens because each field read/write represented in
+> LLVM IR as two operations: address lookup + memory access,
+> and the compiler is free to move and substitute those independently.
+> For example, LLVM can rewrite C code below:
+>
+>      __u32 v;
+>      if (...)
+>        v = sk_buff->pkt_type;
+>      else
+>        v = sk_buff->mark;
+>
+> As if it was written as so:
+>
+>      __u32 v, *p;
+>      if (...)
+>        p = &sk_buff->pkt_type;  // r0 = 4; (offset of pkt_type)
+>      else
+>        p = &sk_buff->mark;      // r0 = 8; (offset of mark)
+>      v = *p;                    // r1 += r0;
+>                                 // r0 = *(u32 *)(r1 + 0)
+>
+> Which is a valid rewrite from the point of view of C semantics but won't
+> pass verification, because convert_ctx_access() can no longer replace
+> offset in 'r0 = *(u32 *)(r1 + 0)' with a constant.
+>
+> Recently, attribute preserve_static_offset was added to
+> clang [1] to tackle this problem. From its documentation:
+>
+>    Clang supports the ``__attribute__((preserve_static_offset))``
+>    attribute for the BPF target. This attribute may be attached to a
+>    struct or union declaration. Reading or writing fields of types having
+>    such annotation is guaranteed to generate LDX/ST/STX instruction with
+>    an offset corresponding to the field.
+>
+> The convert_ctx_access() transformation is applied when the context
+> parameter has one of the following types:
+> - __sk_buff
+> - bpf_cgroup_dev_ctx
+> - bpf_perf_event_data
+> - bpf_sk_lookup
+> - bpf_sock
+> - bpf_sock_addr
+> - bpf_sock_ops
+> - bpf_sockopt
+> - bpf_sysctl
+> - sk_msg_md
+> - sk_reuseport_md
+> - xdp_md
 
---=20
-Thanks,
-Mina
+All context types are defined in include/linux/bpf_types.h.
+The context type bpf_nf_ctx is missing.
+
+>
+>  From my understanding, BPF programs typically access definitions of
+> these types in two ways:
+> - via uapi headers linux/bpf.h and linux/bpf_perf_event.h;
+
+and bpf_nf_ctx is defined in include/net/netfilter/nf_bpf_link.h
+and rely on vmlinux.h to provide the ctx struct definition.
+
+> - via vmlinux.h.
+>
+> This RFC seeks to mark with preserve_static_offset the definitions of
+> the relevant context types within uapi headers.
+>
+> The attribute is abstracted by '__bpf_ctx' macro.
+> As bpf.h and bpf_perf_event.h do not share any common include files,
+> this RFC opts to copy the same definition of '__bpf_ctx' in both
+> headers to avoid adding a new uapi header.
+> (Another tempting location for '__bpf_ctx' is compiler_types.h /
+>   compiler-clang.h, but these headers are not exported as uapi).
+
+Previously I think we might use similar mechanism like vmlinux.h
+with push/pop preserve_static_offset attributes. But looks like
+there are many other structures in uapi bpf.h do not need
+preserve_static_offset. So I think your approach sounds okay.
+
+>
+> How to add the same definitions in vmlinux.h is an open question,
+> and most likely requires bpftool modification:
+> - Hard code generation of __bpf_ctx based on type names?
+> - Mark context types with some special
+>    __attribute__((btf_decl_tag("preserve_static_offset")))
+>    and convert it to __attribute__((preserve_static_offset))?
+
+The number of context types is limited, I would just go through
+the first approach with hard coding the list of ctx types and
+mark them with preserve_static_offset attribute in vmlinux.h.
+
+>
+> Please suggest if any of the options above sound reasonable.
+>
+> [0] https://lore.kernel.org/bpf/CAA-VZPmxh8o8EBcJ=m-DH4ytcxDFmo0JKsm1p1gf40kS0CE3NQ@mail.gmail.com/T/#m4b9ce2ce73b34f34172328f975235fc6f19841b6
+> [1] 030b8cb1561d ("[BPF] Attribute preserve_static_offset for structs")
+>      git@github.com:llvm/llvm-project.git
+>
+> Eduard Zingerman (1):
+>    bpf: Mark virtual BPF context structures as preserve_static_offset
+>
+>   include/uapi/linux/bpf.h                  | 28 ++++++++++++++---------
+>   include/uapi/linux/bpf_perf_event.h       |  8 ++++++-
+>   tools/include/uapi/linux/bpf.h            | 28 ++++++++++++++---------
+>   tools/include/uapi/linux/bpf_perf_event.h |  8 ++++++-
+>   4 files changed, 48 insertions(+), 24 deletions(-)
+>
 
