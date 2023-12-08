@@ -1,116 +1,150 @@
-Return-Path: <bpf+bounces-17211-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA7380AB2C
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:52:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E4680AACC
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:30:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B119DB20BA4
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:52:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C8EC28193A
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F8923B797;
-	Fri,  8 Dec 2023 17:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF1D3A268;
+	Fri,  8 Dec 2023 17:30:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=codethink.co.uk header.i=@codethink.co.uk header.b="eiU8Meoa"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PRQFkbvp"
 X-Original-To: bpf@vger.kernel.org
-X-Greylist: delayed 1562 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 08 Dec 2023 09:52:19 PST
-Received: from imap4.hz.codethink.co.uk (imap4.hz.codethink.co.uk [188.40.203.114])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B7CB5;
-	Fri,  8 Dec 2023 09:52:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codethink.co.uk; s=imap4-20230908; h=Sender:Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=wxy3xgRhrj6UTc1QdokBgbslL2XzW+nP8ePfpGtcYTA=; b=eiU8Meoae3JM9r80l579F6nCF8
-	MCned7VaOC0Yg+//GegbbQnsWnv7YGDrdxD2IHSEt1vvfqbb0SShBJr8tQa/chDOh4jOm1FrOfRk5
-	jK5T2zXXMpaX1zDv2uUa0gwVhAuIBqTYS9F/srhAiXv94784tPQd3oOQUehLLnQ+mHEkkV+raselG
-	Sydqx5tBswMpExkLsi6ap6XWV38EapmlxO9pKur0J7CJPTVUPKt6meFd8pMkU4T2QWZP1YwFU01SM
-	KkiJrZx2W9xYN86G8VunVHxelSCJaJsH/q4ZkzhNURBv3pqioJ6uH+nOHiNMrwJEyRyhBVCfZPTrm
-	9beKPMVQ==;
-Received: from [167.98.27.226] (helo=[10.35.4.236])
-	by imap4.hz.codethink.co.uk with esmtpsa  (Exim 4.94.2 #2 (Debian))
-	id 1rBec9-00DYnt-G4; Fri, 08 Dec 2023 17:26:14 +0000
-Message-ID: <948c34c3-bbbe-484c-892e-cd67abe3ce30@codethink.co.uk>
-Date: Fri, 8 Dec 2023 17:26:13 +0000
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8667E121;
+	Fri,  8 Dec 2023 09:30:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702056616; x=1733592616;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+gB2Q0J8HX6MQGePWap2KwWwhmh91nZTU2F3h3jDrQg=;
+  b=PRQFkbvp2z3GeXIPrT5nKHzF/QnUTbxW6mF/eWWdFTijcgLZz+wp4SL8
+   3kpLmPCKoxYNMnhbpmYLF4l5Hju50oTtJeIZLY6hwpGwT9U9Ls3VMiju9
+   vGfO19TsdoXx3cE+6/yevmGPBC7Vxm6htinRyCWo97n9w8QiuYL1tKpC9
+   ig1N3sfr15iTM3V8EFy0u/JjlBRcUtqqtZES0dKgSqj2Ysiazyt8wQWME
+   vCSPh4iLLwBBXMwRlz/71ri/7gszn7FohTKrY5YqNqa/e4evW/E5XRr4+
+   D4iutKMzMpC4QnPSIq1HVlWkLinsL6F0xgnqY4vJ/kSE0GiWvo/qmEv2+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="13132794"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="13132794"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Dec 2023 09:30:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10918"; a="806467994"
+X-IronPort-AV: E=Sophos;i="6.04,261,1695711600"; 
+   d="scan'208";a="806467994"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 08 Dec 2023 09:30:12 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rBefy-000E6q-1w;
+	Fri, 08 Dec 2023 17:30:10 +0000
+Date: Sat, 9 Dec 2023 01:29:32 +0800
+From: kernel test robot <lkp@intel.com>
+To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, bpf@vger.kernel.org,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
+	maciej.fijalkowski@intel.com, echaudro@redhat.com,
+	lorenzo@kernel.org
+Subject: Re: [PATCH bpf 2/3] net: fix usage of multi-buffer BPF helper for ZC
+ AF_XDP
+Message-ID: <202312090104.6EOsoGVa-lkp@intel.com>
+References: <20231208112945.313687-3-maciej.fijalkowski@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf: add __printf() to for printf fmt strings
-To: Alan Maguire <alan.maguire@oracle.com>, bpf@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-References: <20231122133656.290475-1-ben.dooks@codethink.co.uk>
- <8a713266-777f-099c-2eed-7ac13b7b72a6@oracle.com>
-Content-Language: en-GB
-From: Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-In-Reply-To: <8a713266-777f-099c-2eed-7ac13b7b72a6@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Sender: ben.dooks@codethink.co.uk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208112945.313687-3-maciej.fijalkowski@intel.com>
 
-On 22/11/2023 16:44, Alan Maguire wrote:
-> On 22/11/2023 13:36, Ben Dooks wrote:
->> The btf_seq_show() and btf_snprintf_show() take a printk format
->> string so add a __printf() to these two functions. This fixes the
->> following extended warnings:
->>
->> kernel/bpf/btf.c:7094:29: error: function ‘btf_seq_show’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
->> kernel/bpf/btf.c:7131:9: error: function ‘btf_snprintf_show’ might be a candidate for ‘gnu_printf’ format attribute [-Werror=suggest-attribute=format]
->>
->> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-> 
-> Looks good to me, thanks for fixing! Could also add a
-> 
-> Fixes: eb411377aed9 ("bpf: Add bpf_seq_printf_btf helper")
-> 
-> Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+Hi Maciej,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on bpf/master]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Maciej-Fijalkowski/xsk-recycle-buffer-in-case-Rx-queue-was-full/20231208-193306
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+patch link:    https://lore.kernel.org/r/20231208112945.313687-3-maciej.fijalkowski%40intel.com
+patch subject: [PATCH bpf 2/3] net: fix usage of multi-buffer BPF helper for ZC AF_XDP
+config: i386-buildonly-randconfig-003-20231208 (https://download.01.org/0day-ci/archive/20231209/202312090104.6EOsoGVa-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231209/202312090104.6EOsoGVa-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312090104.6EOsoGVa-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> net/core/filter.c:4102:3: error: call to undeclared function 'xsk_buff_get_tail'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                   xsk_buff_get_tail(xdp)->data_end -= shrink;
+                   ^
+   net/core/filter.c:4102:3: note: did you mean 'xsk_buff_get_frag'?
+   include/net/xdp_sock_drv.h:324:32: note: 'xsk_buff_get_frag' declared here
+   static inline struct xdp_buff *xsk_buff_get_frag(struct xdp_buff *first)
+                                  ^
+>> net/core/filter.c:4102:27: error: member reference type 'int' is not a pointer
+                   xsk_buff_get_tail(xdp)->data_end -= shrink;
+                   ~~~~~~~~~~~~~~~~~~~~~~  ^
+   net/core/filter.c:4115:14: error: call to undeclared function 'xsk_buff_get_tail'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                           zc_frag = xsk_buff_get_tail(xdp);
+                                     ^
+>> net/core/filter.c:4115:12: error: incompatible integer to pointer conversion assigning to 'struct xdp_buff *' from 'int' [-Wint-conversion]
+                           zc_frag = xsk_buff_get_tail(xdp);
+                                   ^ ~~~~~~~~~~~~~~~~~~~~~~
+>> net/core/filter.c:4117:4: error: call to undeclared function 'xsk_buff_tail_del'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+                           xsk_buff_tail_del(zc_frag);
+                           ^
+   5 errors generated.
 
 
-Thanks, looks like the test robot found some issues so will
-go back and look at those as soon as I can.
+vim +/xsk_buff_get_tail +4102 net/core/filter.c
 
->> ---
->>   kernel/bpf/btf.c | 6 +++---
->>   1 file changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
->> index 15d71d2986d3..46c2e87c383d 100644
->> --- a/kernel/bpf/btf.c
->> +++ b/kernel/bpf/btf.c
->> @@ -7088,8 +7088,8 @@ static void btf_type_show(const struct btf *btf, u32 type_id, void *obj,
->>   	btf_type_ops(t)->show(btf, t, type_id, obj, 0, show);
->>   }
->>   
->> -static void btf_seq_show(struct btf_show *show, const char *fmt,
->> -			 va_list args)
->> +static __printf(2,0) void btf_seq_show(struct btf_show *show, const char *fmt,
->> +				       va_list args)
->>   {
->>   	seq_vprintf((struct seq_file *)show->target, fmt, args);
->>   }
->> @@ -7122,7 +7122,7 @@ struct btf_show_snprintf {
->>   	int len;		/* length we would have written */
->>   };
->>   
->> -static void btf_snprintf_show(struct btf_show *show, const char *fmt,
->> +static __printf(2,0) void btf_snprintf_show(struct btf_show *show, const char *fmt,
->>   			      va_list args)
->>   {
->>   	struct btf_show_snprintf *ssnprintf = (struct btf_show_snprintf *)show;
-> 
+  4097	
+  4098	static void __shrink_data(struct xdp_buff *xdp, struct xdp_mem_info *mem_info,
+  4099				  skb_frag_t *frag, int shrink)
+  4100	{
+  4101		if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL)
+> 4102			xsk_buff_get_tail(xdp)->data_end -= shrink;
+  4103		skb_frag_size_sub(frag, shrink);
+  4104	}
+  4105	
+  4106	static bool shrink_data(struct xdp_buff *xdp, skb_frag_t *frag, int shrink)
+  4107	{
+  4108		struct xdp_mem_info *mem_info = &xdp->rxq->mem;
+  4109	
+  4110		if (skb_frag_size(frag) == shrink) {
+  4111			struct page *page = skb_frag_page(frag);
+  4112			struct xdp_buff *zc_frag = NULL;
+  4113	
+  4114			if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
+> 4115				zc_frag = xsk_buff_get_tail(xdp);
+  4116				xdp_buff_clear_frags_flag(zc_frag);
+> 4117				xsk_buff_tail_del(zc_frag);
+  4118			}
+  4119	
+  4120			__xdp_return(page_address(page), mem_info, false, zc_frag);
+  4121			return true;
+  4122		}
+  4123		__shrink_data(xdp, mem_info, frag, shrink);
+  4124		return false;
+  4125	}
+  4126	
 
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
