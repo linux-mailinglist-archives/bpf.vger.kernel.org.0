@@ -1,138 +1,143 @@
-Return-Path: <bpf+bounces-17261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17262-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9EE880AFC1
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 23:40:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4036580AFC5
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 23:40:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A512B281C1D
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:40:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE2C51F213EA
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:40:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFD259B7F;
-	Fri,  8 Dec 2023 22:40:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDCF59B7E;
+	Fri,  8 Dec 2023 22:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XX6UcXvx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UuWnAG+Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1446AC3;
-	Fri,  8 Dec 2023 14:40:10 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-a1da1017a09so311125366b.3;
-        Fri, 08 Dec 2023 14:40:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702075208; x=1702680008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HYNkiFjVXQKwdJFtKs4YwTgHxo/04KOB0mrqRod0x5w=;
-        b=XX6UcXvxAxRtffKuxKTX8HsoN06x02cASaf5p7TqYFqGjlvuTIiSRDNKP9K7GsR6zU
-         lSKOIIFJy4QADe/wr3t4RXdOpd0TpqcH0QhWpzcy8M7uTN4drGgM6/CX9n1qEhrE8tkB
-         Cxu2iJqYJtWuSK4nrSHUjg741m10WXArswUIz4F8m9mbS/RiBcxasY/U3CR03vBCuRUJ
-         8nxWs5evWKJW4MroDXK/GFSj9ZbvpBGUZzFCWFCZdHAMSJXdaClNMlTmIviCUVPyvRJD
-         5ju/FlJvY77dhu2ZbSb06TeVSqFhVHzArab1+iK3yhq8g2DG+vxNm4eEeuY3u9hrEmBm
-         F2jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702075208; x=1702680008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HYNkiFjVXQKwdJFtKs4YwTgHxo/04KOB0mrqRod0x5w=;
-        b=NQ2iYt0Ejjb99aKA00LSJ93TofzYnjK46bmXZKuY1Eq7exFz8r124AR5bPiW9TibWv
-         ik9Un0oXz+mIxYSf5mqAhj60+jrWnEaiLaVEZzBXp+1aZYroTVJwqeA5e+dq0t/aii68
-         QsaZIUBHgoRywtb/hWRJbv1z5Mse32aaxf89bMlmHz4PXLdW0PHLoHMzCya3uZUfeTAb
-         E10vZPCpFKfjUmeIKa2X8IkHAKR3IP1EXQDWQkUwL8ajNyytPrT1ZeLGuVyg5jCz+VKA
-         YQVp+DZ4VUWuVUKJroEie7i0tqyQCDrDT63nrzszJT2GQAeRM5hNYkmRs2Nra/Sj9k0e
-         KhOw==
-X-Gm-Message-State: AOJu0Yx4k8NaOyqaeGszT0oOhB4uT4NGHd6pr/HklHVjTixZjkRc2MaH
-	X/Ycyg18YuHTGn3lsdp1tSF0LHVkY0SGowa1Dbg=
-X-Google-Smtp-Source: AGHT+IHKjPU34+PthheSZ4vlLXX8zzmlKZvkxUxPxvkXiGlk9AaeBlroiLMo628HbNHn2jSnSul3yna1RU7fsbEm4ms=
-X-Received: by 2002:a17:907:7206:b0:9fe:a881:81ab with SMTP id
- dr6-20020a170907720600b009fea88181abmr363065ejc.53.1702075208436; Fri, 08 Dec
- 2023 14:40:08 -0800 (PST)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A6759B7D
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 22:40:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DD7EC43395
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 22:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702075243;
+	bh=gBe4Yw3lJK9hMOBvE55lhceshoFtlvq72WCe6hZXMOM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=UuWnAG+YtwT78nSPUrNKoYh4B2Fd66BTdA6BfLlcYKlOpvKug/1QpYABEYQMxDWJS
+	 DkHWWjAe4al2qRaEIMDIgjWPueUCysLMRD371nvTLPDDlTrmGPBcHyFfRi4FyCvmC0
+	 NhbRYYg24SLRDnx3SVJfdO9epElDahZZS/xN/3+XUlAPVagCBDRKP1A91K5wlTNydz
+	 lNrAGlfx9x0VaBF0XHPmKVdkYWQZfXjDNfN6xt1OpJoinLe1a+fpEDmZSv/ypnQsKu
+	 gQil0dpLcp2Ae3yxowU4lN+/5nzzpq4DY0CkbIRl7/gRRYEM34bR2y8eLPiQtlRtVT
+	 sqQkk4wQkKzCw==
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-54cdef4c913so7576882a12.1
+        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 14:40:43 -0800 (PST)
+X-Gm-Message-State: AOJu0YyOkpO5dovfCc4oe06g2QQyjsTpLlOmovpvFtJCkEC0DViLrPwE
+	evpO+CUUFevjrLejrglGC8nLdyQ28sFOOfGw0jVi/A==
+X-Google-Smtp-Source: AGHT+IHw0G0EIse1yGYFFFpdV5UP4PTKWTtl5We9VjFVy52nNEQTh2JVJULrmuUOEeTTNz4RJCeXyzGziUKOfDUoJLo=
+X-Received: by 2002:aa7:c542:0:b0:54c:973e:6783 with SMTP id
+ s2-20020aa7c542000000b0054c973e6783mr1565025edr.3.1702075241744; Fri, 08 Dec
+ 2023 14:40:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130185229.2688956-1-andrii@kernel.org> <20231130185229.2688956-4-andrii@kernel.org>
- <20231208-besessen-vibrieren-4e963e3ca3ba@brauner>
-In-Reply-To: <20231208-besessen-vibrieren-4e963e3ca3ba@brauner>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 8 Dec 2023 14:39:56 -0800
-Message-ID: <CAEf4BzbRKxBCzKbOWg0sWMzWurF5RvF5OwizXi7tSC2vM4Zi_w@mail.gmail.com>
-Subject: Re: [PATCH v12 bpf-next 03/17] bpf: introduce BPF token object
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	paul@paul-moore.com, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	kernel-team@meta.com, sargun@sargun.me
+References: <20231110222038.1450156-1-kpsingh@kernel.org> <20231110222038.1450156-6-kpsingh@kernel.org>
+ <202312080934.6D172E5@keescook> <CAHC9VhTOze46yxPUURQ+4F1XiSEVhrTsZvYfVAZGLgXj0F9jOA@mail.gmail.com>
+ <CAHC9VhRguzX9gfuxW3oC0pOpttJ+xE6Q84Y70njjchJGawpXdg@mail.gmail.com>
+ <202312081019.C174F3DDE5@keescook> <CAHC9VhRNSonUXwneN1j0gpO-ky_YOzWsiJo_g+b0P86c9Am8WQ@mail.gmail.com>
+ <202312081302.323CBB189@keescook> <CAHC9VhQ2VxM=WWL_jpoELu=dHuiF3Pk=bxNrpfctc7Q0K2DUfA@mail.gmail.com>
+ <202312081352.6587C77@keescook>
+In-Reply-To: <202312081352.6587C77@keescook>
+From: KP Singh <kpsingh@kernel.org>
+Date: Fri, 8 Dec 2023 23:40:20 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7TbwNOmSeYFANMK86wDx+0yyFgJGM6rp8ZXvQz+pxQrg@mail.gmail.com>
+Message-ID: <CACYkzJ7TbwNOmSeYFANMK86wDx+0yyFgJGM6rp8ZXvQz+pxQrg@mail.gmail.com>
+Subject: Re: [PATCH v8 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
+To: Kees Cook <keescook@chromium.org>
+Cc: Paul Moore <paul@paul-moore.com>, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, casey@schaufler-ca.com, song@kernel.org, 
+	daniel@iogearbox.net, ast@kernel.org, renauld@google.com, pabeni@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 8, 2023 at 5:41=E2=80=AFAM Christian Brauner <brauner@kernel.or=
-g> wrote:
+On Fri, Dec 8, 2023 at 11:05=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
+rote:
 >
-> On Thu, Nov 30, 2023 at 10:52:15AM -0800, Andrii Nakryiko wrote:
-> > Add new kind of BPF kernel object, BPF token. BPF token is meant to
-> > allow delegating privileged BPF functionality, like loading a BPF
-> > program or creating a BPF map, from privileged process to a *trusted*
-> > unprivileged process, all while having a good amount of control over wh=
-ich
-> > privileged operations could be performed using provided BPF token.
+> On Fri, Dec 08, 2023 at 04:43:57PM -0500, Paul Moore wrote:
+> > On Fri, Dec 8, 2023 at 4:13=E2=80=AFPM Kees Cook <keescook@chromium.org=
+> wrote:
+> > > On Fri, Dec 08, 2023 at 03:51:47PM -0500, Paul Moore wrote:
+> > > > Hopefully by repeating the important bits of the conversation you n=
+ow
+> > > > understand that there is nothing you can do at this moment to speed=
+ my
+> > > > review of this patchset, but there are things you, and KP, can do i=
+n
+> > > > the future if additional respins are needed.  However, if you are
+> > > > still confused, it may be best to go do something else for a bit an=
+d
+> > > > then revisit this email because there is nothing more that I can sa=
+y
+> > > > on this topic at this point in time.
+> > >
+> > > I moved to the list because off-list discussions (that I got involunt=
+arily
+> > > CCed into and never replied to at all) tend to be unhelpful as no one=
+ else
+> > > can share in any context they may provide. And I'm not trying to rush
+> > > you; I'm trying to make review easier.
 > >
-> > This is achieved through mounting BPF FS instance with extra delegation
-> > mount options, which determine what operations are delegatable, and als=
-o
-> > constraining it to the owning user namespace (as mentioned in the
-> > previous patch).
-> >
-> > BPF token itself is just a derivative from BPF FS and can be created
-> > through a new bpf() syscall command, BPF_TOKEN_CREATE, which accepts BP=
-F
-> > FS FD, which can be attained through open() API by opening BPF FS mount
-> > point. Currently, BPF token "inherits" delegated command, map types,
-> > prog type, and attach type bit sets from BPF FS as is. In the future,
-> > having an BPF token as a separate object with its own FD, we can allow
-> > to further restrict BPF token's allowable set of things either at the
-> > creation time or after the fact, allowing the process to guard itself
-> > further from unintentionally trying to load undesired kind of BPF
-> > programs. But for now we keep things simple and just copy bit sets as i=
-s.
-> >
-> > When BPF token is created from BPF FS mount, we take reference to the
-> > BPF super block's owning user namespace, and then use that namespace fo=
-r
-> > checking all the {CAP_BPF, CAP_PERFMON, CAP_NET_ADMIN, CAP_SYS_ADMIN}
-> > capabilities that are normally only checked against init userns (using
-> > capable()), but now we check them using ns_capable() instead (if BPF
-> > token is provided). See bpf_token_capable() for details.
-> >
-> > Such setup means that BPF token in itself is not sufficient to grant BP=
-F
-> > functionality. User namespaced process has to *also* have necessary
-> > combination of capabilities inside that user namespace. So while
-> > previously CAP_BPF was useless when granted within user namespace, now
-> > it gains a meaning and allows container managers and sys admins to have
-> > a flexible control over which processes can and need to use BPF
-> > functionality within the user namespace (i.e., container in practice).
-> > And BPF FS delegation mount options and derived BPF tokens serve as
-> > a per-container "flag" to grant overall ability to use bpf() (plus furt=
-her
-> > restrict on which parts of bpf() syscalls are treated as namespaced).
-> >
-> > Note also, BPF_TOKEN_CREATE command itself requires ns_capable(CAP_BPF)
-> > within the BPF FS owning user namespace, rounding up the ns_capable()
-> > story of BPF token.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
+> > From my perspective whatever good intentions you had at the start were
+> > completely lost when you asked "What's the right direction forward?"
+> > after I had already explained things multiple times *today*.  That's
+> > the sort of thing that drives really bothers me.
 >
-> Same concerns as in the other mail. For the bpf_token_create() code,
-> Acked-by: Christian Brauner <brauner@kernel.org>
+> Okay, I understand now. Sorry for frustrating you! By "way forward",
+> I meant I didn't understand how to address what looked like conflicting
+> feedback. I think my confusion was over separating the goal ("this
+> feature should be automatically enabled when it is known to be useful")
+> from an interpretation of earlier feedback as "I don't want a CONFIG [tha=
+t
+> leaves this up to the user]", when what you really wanted understood was
+> "I don't want a CONFIG *ever*, regardless of whether it picks the correct
+> setting automatically".
+>
+> >
+> > > While looking at the v8 again I
+> > > saw an obvious problem with it, so I commented on it so that it's cle=
+ar
+> > > to you that it'll need work when you do get around to the review.
+> >
+> > That's fair.  The Kconfig patch shouldn't have even been part of the
+> > v8 patchset as far as I'm concerned, both because I explained I didn't
+> > want to merge something like that (and was ignored) and because it
+> > doesn't appear to do anything.  From where I sit this was, and
+> > remains, equally parts comical and frustrating.
 
-This patch set has landed in bpf-next and there are a bunch of other
-patches after it, so I presume it will be a bit problematic to add ack
-after the fact. But thanks for taking another look and acking!
+
+Paul, as I said I will include it in v3 and we can drop it if that's
+the consensus.
+
+https://lore.kernel.org/bpf/CACYkzJ7KBBJV-CWPkMCqT6rK6yVEOJzhqUjvWzp9BAm-rx=
+3Gsg@mail.gmail.com/
+
+Following that, I received Acks on the patch, so I kept it. I wasn't
+sure if this was going to be perceived as "ignoring your feedback".
+Definitely not my intention. I was just giving an option for folks who
+wanted to test the patch so that we get the defaults right. I am
+totally okay with us dropping the config patch.
+
+
+>
+> Agreed. :) Anyway, when you do review it, I think you can just ignore
+> patch 5, and if a v9 isn't needed, a brand new patch for that logic can
+> be created later.
+>
+> --
+> Kees Cook
 
