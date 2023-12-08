@@ -1,115 +1,108 @@
-Return-Path: <bpf+bounces-17244-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17245-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8B580AE52
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:55:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2897180AE63
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:57:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A73FB20B25
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:54:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4AF3281B33
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:57:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76ABC46BBF;
-	Fri,  8 Dec 2023 20:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E47F4D581;
+	Fri,  8 Dec 2023 20:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ACqkbmLn"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nka5h3yC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D6C3198A
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 12:54:48 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c19f5f822so14307125e9.1
-        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 12:54:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702068887; x=1702673687; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5URQpBfpvhJb95He/3/e48fBeQtPA7dq38FeTTEwlJI=;
-        b=ACqkbmLn8QBQrGiZ2V4gEe8xS72nWIxLc4eRU6volb75f3XGLX4zZbnwEMWywygkcy
-         mAU5E2jDAF+nqswh84iirU0BGH0BScguIBgwVpXca8t244JXRteZ8DZKvl+VyLZDjmMT
-         mJdgBd/JUuGZrqxKoNgEMOixP37FUVdHUNqz8GCMZ5c3Ht/0blAVy2mQhVqodIFvmbH+
-         bvqsI+y/NWWcoBOpUVvkXumx3USvnB5dYMkz5JaCDFyqqPqP1yC5MnT9w/thFNRA2dg6
-         Qn81lUAfYm23HbrtN8GwmvPReCdgPmC+0/Bn5p/f0Ld2zuVzke1h+7m20PQWme0LQ8gT
-         vYcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702068887; x=1702673687;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5URQpBfpvhJb95He/3/e48fBeQtPA7dq38FeTTEwlJI=;
-        b=Pej63ZTg3HOgbkqMojkuDggrg1vEoca3mEa+KwGGEYQT/sVUuABxC2yiy14guuqeMR
-         hsPhYBDMzn5Z6V2qfdWqPzAoTqjgQkXcG/49nNBFbgzsCLbXDoM4+CpH46CtEm9OLY7Q
-         da2ZjqdZezgqtnuHaFGvPTvN/s2rQWH2wXbQj3NowxiLdnPtyMMC7a5mP474SzqCDm+H
-         e/yK4leRYR2EL7cOp4Jk7xD+cBJm51LOj2ZWnzvzf3a875qAoC1A5OKzwQuwNB/fllkM
-         DWfh3XD1awNe1Mj1czLGLeqLRFA1L/bCSG/dhTAqjMmUHGyQdYqc4vUqKnAZh3uBbr2n
-         Ml5g==
-X-Gm-Message-State: AOJu0YyVSPMNbInMhVM54H+iWXFN+Ehe9XsalvblQCzUdqy7Jh7wV3Ks
-	iJF8iKmV+iEt1fKKWRyMF7hxjuebbj6BuQ==
-X-Google-Smtp-Source: AGHT+IG+U81Vc2OAWuOWuJeaArjSRjYeX2phelud/vY4giLXeBNomxy7Rg3P4mIIX29lKJ2K9O7uYw==
-X-Received: by 2002:a05:600c:287:b0:40b:5e4a:2379 with SMTP id 7-20020a05600c028700b0040b5e4a2379mr371829wmk.123.1702068886668;
-        Fri, 08 Dec 2023 12:54:46 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id c1-20020a5d4cc1000000b0033350f5f94dsm2741038wrt.101.2023.12.08.12.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Dec 2023 12:54:46 -0800 (PST)
-Message-ID: <dca277be58dc7e86ffd16e10c1e49370aa48eda2.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 0/1] use preserve_static_offset in bpf uapi
- headers
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
-	ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	kernel-team@fb.com, jose.marchesi@oracle.com
-Date: Fri, 08 Dec 2023 22:54:45 +0200
-In-Reply-To: <9e4e70d9-aeda-4100-a879-1b7413db567d@linux.dev>
-References: <20231208000531.19179-1-eddyz87@gmail.com>
-	 <012efc61-e067-4c21-8cab-47dec9bbaf0c@linux.dev>
-	 <0275c6985bcb299890da7ea7fb96642802cdcdbe.camel@gmail.com>
-	 <9e4e70d9-aeda-4100-a879-1b7413db567d@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8CA61AD;
+	Fri,  8 Dec 2023 12:57:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=tsh6SZmjsiAnQNburkJFUqIGTSKo136cXIGADj2mGbk=; b=nka5h3yCL1hCZw1C09D5tWSVAL
+	4oQHmkY/q1dbCaw6qBSKd5XLLGIKuHgbyn9RktMJngKJ2sNKt79QXC0EcciTcnntYjAWwUABeK5Jc
+	DXBmAfjnz63AvHfOOdBAkoCfu6fYm4SLROgyQzZJIPKCJ/YGV8KMZtE/W3z86PxOEWqPjYFsjhXup
+	Kspp6P26tuanNWKE+ldEJoXw8TQwn787U5ABY5A4BGUxEueMUccx2IZDmrEMBfPmXxeM7u22FagVf
+	jk4SlD2jX4uZ6J5wYWrTcUhKwtVQtreODt+nuVfdAs2I6RbfoJuSeyqbH1OGoM94umgRc/l/HKq95
+	UUw+dgnA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rBhtv-006ZnV-M1; Fri, 08 Dec 2023 20:56:48 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 534BF3003F0; Fri,  8 Dec 2023 21:56:47 +0100 (CET)
+Date: Fri, 8 Dec 2023 21:56:47 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
+	Song Liu <songliubraving@meta.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
+	clang-built-linux <llvm@lists.linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Joao Moreira <joao@overdrivepizza.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
+Message-ID: <20231208205647.GL28727@noisy.programming.kicks-ass.net>
+References: <20231206163814.GB36423@noisy.programming.kicks-ass.net>
+ <20231206183713.GA35897@noisy.programming.kicks-ass.net>
+ <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
+ <20231207093105.GA28727@noisy.programming.kicks-ass.net>
+ <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
+ <20231208102940.GB28727@noisy.programming.kicks-ass.net>
+ <20231208134041.GD28727@noisy.programming.kicks-ass.net>
+ <CAADnVQJFB_CPtFS3=VV=RwnP=EQRL3yEsR8wXVcicb07P8NODw@mail.gmail.com>
+ <20231208201819.GE36716@noisy.programming.kicks-ass.net>
+ <CAADnVQ+1nVBuKkjdvh0eu19p+J0UqbO9mcCf3yzVeQtALxzQ+Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQ+1nVBuKkjdvh0eu19p+J0UqbO9mcCf3yzVeQtALxzQ+Q@mail.gmail.com>
 
-On Fri, 2023-12-08 at 09:19 -0800, Yonghong Song wrote:
-> On 12/8/23 6:34 AM, Eduard Zingerman wrote:
-> > On Thu, 2023-12-07 at 18:28 -0800, Yonghong Song wrote:
-> > [...]
-> > > All context types are defined in include/linux/bpf_types.h.
-> > > The context type bpf_nf_ctx is missing.
-[...]
-> The error message should happen here:
->=20
-> check_mem_access
->   ...
->   } else if (reg->type =3D=3D PTR_TO_CTX) {
->    check_ptr_off_reg
->     __check_ptr_off_reg
->          if (!fixed_off_ok && reg->off) {
->                  verbose(env, "dereference of modified %s ptr R%d off=3D%=
-d disallowed\n",
->                          reg_type_str(env, reg->type), regno, reg->off);
->                  return -EACCES;
->          }
->    ...
->=20
-> So the verification error message will be emitted earlier, before convert=
-_ctx_access.
-> Could you double check?
+On Fri, Dec 08, 2023 at 12:45:51PM -0800, Alexei Starovoitov wrote:
 
-You are correct and I was unaware of this check. A simple test
-"r1 +=3D 8; r0 =3D *(u64 *)(r1 + 0);" does indeed report an error.
-I'll make sure that every context type is annotated with
-preserve static offset, thank you for pointing this out.
+> I mean we don't need to store a pointer to a func in stubs.
+> Can it be, roughly:
+> 
+> extern void bpf_tcp_ca_cong_avoid(struct sock *sk, u32 ack, u32 acked);
+> KCFI_MACRO(hash_of_cong_avoid, bpf_tcp_ca_cong_avoid);
+> u32 __array_of_kcfi_hash[] = {hash_of_cong_avoid, hash_of_set_state,...};
+>       .bpf_ops_stubs = __array_of_kcfi_hash,
 
-[...]
+But then how do I index this array? The bpf_ops_stubs thing having the
+same layout at the target struct made it easy and we could use 'moff'
+for both.
+
+That also remains working if someone adds a member to the struct or
+moves some members around.
 
