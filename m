@@ -1,143 +1,109 @@
-Return-Path: <bpf+bounces-17262-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4036580AFC5
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 23:40:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA6C080AFC9
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 23:42:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE2C51F213EA
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:40:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B7ABB20BCE
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 22:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FDCF59B7E;
-	Fri,  8 Dec 2023 22:40:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131A65A0E6;
+	Fri,  8 Dec 2023 22:42:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UuWnAG+Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YD+JEL4R"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A6759B7D
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 22:40:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DD7EC43395
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 22:40:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702075243;
-	bh=gBe4Yw3lJK9hMOBvE55lhceshoFtlvq72WCe6hZXMOM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=UuWnAG+YtwT78nSPUrNKoYh4B2Fd66BTdA6BfLlcYKlOpvKug/1QpYABEYQMxDWJS
-	 DkHWWjAe4al2qRaEIMDIgjWPueUCysLMRD371nvTLPDDlTrmGPBcHyFfRi4FyCvmC0
-	 NhbRYYg24SLRDnx3SVJfdO9epElDahZZS/xN/3+XUlAPVagCBDRKP1A91K5wlTNydz
-	 lNrAGlfx9x0VaBF0XHPmKVdkYWQZfXjDNfN6xt1OpJoinLe1a+fpEDmZSv/ypnQsKu
-	 gQil0dpLcp2Ae3yxowU4lN+/5nzzpq4DY0CkbIRl7/gRRYEM34bR2y8eLPiQtlRtVT
-	 sqQkk4wQkKzCw==
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-54cdef4c913so7576882a12.1
-        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 14:40:43 -0800 (PST)
-X-Gm-Message-State: AOJu0YyOkpO5dovfCc4oe06g2QQyjsTpLlOmovpvFtJCkEC0DViLrPwE
-	evpO+CUUFevjrLejrglGC8nLdyQ28sFOOfGw0jVi/A==
-X-Google-Smtp-Source: AGHT+IHw0G0EIse1yGYFFFpdV5UP4PTKWTtl5We9VjFVy52nNEQTh2JVJULrmuUOEeTTNz4RJCeXyzGziUKOfDUoJLo=
-X-Received: by 2002:aa7:c542:0:b0:54c:973e:6783 with SMTP id
- s2-20020aa7c542000000b0054c973e6783mr1565025edr.3.1702075241744; Fri, 08 Dec
- 2023 14:40:41 -0800 (PST)
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8FA910CA;
+	Fri,  8 Dec 2023 14:42:41 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9fa2714e828so335348066b.1;
+        Fri, 08 Dec 2023 14:42:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702075360; x=1702680160; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TeRi2RzPavt7MiOm/u+S/euZwULbAuM0F2k9JFYP/T0=;
+        b=YD+JEL4RBIqytoXy6eTlujXpC1PmKY+z8md8Re04D+DJBZHEfDi0h0BhRDZ9r2km75
+         Ex7yeY3CZMmiLoirhgd9TL2OM7bKAj1WSjTTALS2saoCN/S7dGLu7zmBJgLbjc9ny30W
+         +o6FzRUZRGnmhBY+51EeQivt7Ih70fkhY366Dh0e9Kfsot+Gfm8eMvzU0bVBcAMCaLW6
+         i4xeE/yAQsw5GqSkp2pP3NPIH38s5Q3SukSQ/E5ZsSqVqSpLmAlavsA9EtVlfyrz/YRM
+         r3ZAwGBSdu78vjd2Lv+WrRq4M5WJqAkzCYnchnGPZ6DKIuGouVkzCoh3m54g3UEu+IKf
+         17OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702075360; x=1702680160;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TeRi2RzPavt7MiOm/u+S/euZwULbAuM0F2k9JFYP/T0=;
+        b=jOdNL3Og7jqPMwqPdbfMUfJCzznPnKBSHhYWxUeal4bkFP83sEwbJ36BT1viMR5vmQ
+         Avl9mU2x/bHuPreq7YnKiSWjIiT8/oLsSzd/Q8gnaXRldTtXQJAkoMVB8DCZtj3Qf8zf
+         mhgcGYI2z2a9HD/X5cHPTjB28ubuwzZ9BUiNtWuBqBxaj1oktoM7thD2+Ss/s4CI55N3
+         0ic87ssJO2G0XDlKdegROct+jWTkT+9puud2BfrS9pk8IvW/O3xlBrHm3kA1rHJa53UU
+         sAA3E3k6ojLfL6gSjnfvBEWGOXDI0DvWwaZI0X5yReWA2HTmt69fLMwAo+K9SB3SB9oR
+         Yrqw==
+X-Gm-Message-State: AOJu0Yx9nDJBHGLjOUbpMUS09w7U+alDytKhR3jPOd5Rx4viopJpULOR
+	HaXiNpVn6A2pogzkfrgUQsrWwzAk4uWiskQTyCs=
+X-Google-Smtp-Source: AGHT+IEgLjlBPvK/C3mhbmysRfyejLFP+XOCizODYZ06oxPi7vpNPQr7ZjkldJ0lsIXKQbkmnGvuZu1oi8yHImC1ov8=
+X-Received: by 2002:a17:906:74cf:b0:a19:532c:7678 with SMTP id
+ z15-20020a17090674cf00b00a19532c7678mr350197ejl.30.1702075360276; Fri, 08 Dec
+ 2023 14:42:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231110222038.1450156-1-kpsingh@kernel.org> <20231110222038.1450156-6-kpsingh@kernel.org>
- <202312080934.6D172E5@keescook> <CAHC9VhTOze46yxPUURQ+4F1XiSEVhrTsZvYfVAZGLgXj0F9jOA@mail.gmail.com>
- <CAHC9VhRguzX9gfuxW3oC0pOpttJ+xE6Q84Y70njjchJGawpXdg@mail.gmail.com>
- <202312081019.C174F3DDE5@keescook> <CAHC9VhRNSonUXwneN1j0gpO-ky_YOzWsiJo_g+b0P86c9Am8WQ@mail.gmail.com>
- <202312081302.323CBB189@keescook> <CAHC9VhQ2VxM=WWL_jpoELu=dHuiF3Pk=bxNrpfctc7Q0K2DUfA@mail.gmail.com>
- <202312081352.6587C77@keescook>
-In-Reply-To: <202312081352.6587C77@keescook>
-From: KP Singh <kpsingh@kernel.org>
-Date: Fri, 8 Dec 2023 23:40:20 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7TbwNOmSeYFANMK86wDx+0yyFgJGM6rp8ZXvQz+pxQrg@mail.gmail.com>
-Message-ID: <CACYkzJ7TbwNOmSeYFANMK86wDx+0yyFgJGM6rp8ZXvQz+pxQrg@mail.gmail.com>
-Subject: Re: [PATCH v8 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
-To: Kees Cook <keescook@chromium.org>
-Cc: Paul Moore <paul@paul-moore.com>, linux-security-module@vger.kernel.org, 
-	bpf@vger.kernel.org, casey@schaufler-ca.com, song@kernel.org, 
-	daniel@iogearbox.net, ast@kernel.org, renauld@google.com, pabeni@redhat.com
+References: <20231207185443.2297160-1-andrii@kernel.org> <20231207185443.2297160-2-andrii@kernel.org>
+ <20231208-pocken-flugverbindung-0e4b956cd089@brauner>
+In-Reply-To: <20231208-pocken-flugverbindung-0e4b956cd089@brauner>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 8 Dec 2023 14:42:28 -0800
+Message-ID: <CAEf4BzZh9FJAXEfR4F+e30xwSigPdgzmErVxgpeMFjHwoScx1A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/8] bpf: fail BPF_TOKEN_CREATE if no delegation
+ option was set on BPF FS
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	paul@paul-moore.com, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	kernel-team@meta.com, sargun@sargun.me
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 8, 2023 at 11:05=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
+On Fri, Dec 8, 2023 at 1:49=E2=80=AFPM Christian Brauner <brauner@kernel.or=
+g> wrote:
 >
-> On Fri, Dec 08, 2023 at 04:43:57PM -0500, Paul Moore wrote:
-> > On Fri, Dec 8, 2023 at 4:13=E2=80=AFPM Kees Cook <keescook@chromium.org=
-> wrote:
-> > > On Fri, Dec 08, 2023 at 03:51:47PM -0500, Paul Moore wrote:
-> > > > Hopefully by repeating the important bits of the conversation you n=
-ow
-> > > > understand that there is nothing you can do at this moment to speed=
- my
-> > > > review of this patchset, but there are things you, and KP, can do i=
-n
-> > > > the future if additional respins are needed.  However, if you are
-> > > > still confused, it may be best to go do something else for a bit an=
-d
-> > > > then revisit this email because there is nothing more that I can sa=
-y
-> > > > on this topic at this point in time.
-> > >
-> > > I moved to the list because off-list discussions (that I got involunt=
-arily
-> > > CCed into and never replied to at all) tend to be unhelpful as no one=
- else
-> > > can share in any context they may provide. And I'm not trying to rush
-> > > you; I'm trying to make review easier.
+> On Thu, Dec 07, 2023 at 10:54:36AM -0800, Andrii Nakryiko wrote:
+> > It's quite confusing in practice when it's possible to successfully
+> > create a BPF token from BPF FS that didn't have any of delegate_xxx
+> > mount options set up. While it's not wrong, it's actually more
+> > meaningful to reject BPF_TOKEN_CREATE with specific error code (-ENOENT=
+)
+> > to let user-space know that no token delegation is setup up.
 > >
-> > From my perspective whatever good intentions you had at the start were
-> > completely lost when you asked "What's the right direction forward?"
-> > after I had already explained things multiple times *today*.  That's
-> > the sort of thing that drives really bothers me.
->
-> Okay, I understand now. Sorry for frustrating you! By "way forward",
-> I meant I didn't understand how to address what looked like conflicting
-> feedback. I think my confusion was over separating the goal ("this
-> feature should be automatically enabled when it is known to be useful")
-> from an interpretation of earlier feedback as "I don't want a CONFIG [tha=
-t
-> leaves this up to the user]", when what you really wanted understood was
-> "I don't want a CONFIG *ever*, regardless of whether it picks the correct
-> setting automatically".
->
+> > So, instead of creating empty BPF token that will be always ignored
+> > because it doesn't have any of the allow_xxx bits set, reject it with
+> > -ENOENT. If we ever need empty BPF token to be possible, we can support
+> > that with extra flag passed into BPF_TOKEN_CREATE.
 > >
-> > > While looking at the v8 again I
-> > > saw an obvious problem with it, so I commented on it so that it's cle=
-ar
-> > > to you that it'll need work when you do get around to the review.
-> >
-> > That's fair.  The Kconfig patch shouldn't have even been part of the
-> > v8 patchset as far as I'm concerned, both because I explained I didn't
-> > want to merge something like that (and was ignored) and because it
-> > doesn't appear to do anything.  From where I sit this was, and
-> > remains, equally parts comical and frustrating.
-
-
-Paul, as I said I will include it in v3 and we can drop it if that's
-the consensus.
-
-https://lore.kernel.org/bpf/CACYkzJ7KBBJV-CWPkMCqT6rK6yVEOJzhqUjvWzp9BAm-rx=
-3Gsg@mail.gmail.com/
-
-Following that, I received Acks on the patch, so I kept it. I wasn't
-sure if this was going to be perceived as "ignoring your feedback".
-Definitely not my intention. I was just giving an option for folks who
-wanted to test the patch so that we get the defaults right. I am
-totally okay with us dropping the config patch.
-
-
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
 >
-> Agreed. :) Anyway, when you do review it, I think you can just ignore
-> patch 5, and if a v9 isn't needed, a brand new patch for that logic can
-> be created later.
->
-> --
-> Kees Cook
+> Might consider EOPNOTSUPP (or whatever the correct way of spelling this
+
+I thought about that, but it felt wrong to return "unsupported" error
+code, because BPF token is supported, it's just not setup/delegated on
+that particular instance of BPF FS. So in that sense it felt like "BPF
+token is not there" is more appropriate, which is why I went with
+-ENOENT. And also I was worried that we might add -EOPNOTSUPP for some
+unsupported combinations of flags or something, and then it will
+become confusing to detect when some functionality is really not
+supported, or if BPF token delegation isn't set on BPF FS. I hope that
+makes sense and is not too contrived an argument.
+
+
+> is). Otherwise,
+> Acked-by: Christian Brauner <brauner@kernel.org>
 
