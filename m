@@ -1,122 +1,146 @@
-Return-Path: <bpf+bounces-17109-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17110-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2844C809BA0
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 06:17:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F9E8809C46
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 07:17:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFDBC1F21350
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 05:17:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 913001C20CB3
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 06:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B9675681;
-	Fri,  8 Dec 2023 05:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uRVHqwbC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2BFD748E;
+	Fri,  8 Dec 2023 06:17:19 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5BD0523B;
-	Fri,  8 Dec 2023 05:17:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 351DBC433CB;
-	Fri,  8 Dec 2023 05:17:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702012649;
-	bh=hRWbP7/xJGbm5NF7uXfhaVnWOsOWa1f9qdHFS+DBVzE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=uRVHqwbCELIzfEftwQCjXNkbDnJqNjFnjxfM9kj8R/GO8Q6F039rnVwisIh+rw/pS
-	 0pMLgvXhnSC+a+POPoF0UsG2sVGp7Mf4O4lAm76Hxtxlt51P3HVFyh3+TvYo1PqaJj
-	 KtWzY8BG+dJSTKxL3yQZBojKYdSdQoh067zuZ+H2Ck3KVbbCWr0pbM18RlQeDT5vsY
-	 rv6xTcRQNsC2QgYeQ2ygqyAHqz1WWgNLw/w0Oj3dgveqHLwXSnhYXbjplvSEMwU5dN
-	 Eg/joHxcbKQmZg/KJtSaq4VNYkV9mM8NuTBptFnuH6RgdpxhTkvgVME20i2In+xJ+R
-	 4hlWRa2ib5tOA==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50c0f6b1015so1808434e87.3;
-        Thu, 07 Dec 2023 21:17:29 -0800 (PST)
-X-Gm-Message-State: AOJu0YwVZqZTH8EW8uHcJP4DuD/zfX4jmZ0jIBEeXCHSOLUUByUk3h8a
-	FCJkRLrOIM6eqaeXwSK3eStV3rimrGJ1io09q8k=
-X-Google-Smtp-Source: AGHT+IHhtf5M0C/Qw6yEOPkHWeNfJyuSWqXtrSsQHv9+RaQk6TESdkOAcIfCcITP00Mel3wpKINLoROlUIx6vRFmA9I=
-X-Received: by 2002:a05:6512:3b06:b0:50c:20f3:e7cd with SMTP id
- f6-20020a0565123b0600b0050c20f3e7cdmr1033075lfv.18.1702012647390; Thu, 07 Dec
- 2023 21:17:27 -0800 (PST)
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C35710FC;
+	Thu,  7 Dec 2023 22:17:15 -0800 (PST)
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7b6eb711498so60222739f.3;
+        Thu, 07 Dec 2023 22:17:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702016234; x=1702621034;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+rljey37reCyDrPkcI18g/IC3m4eCS+5k4TU+Pl3Hf0=;
+        b=l1F4N9UGpY0fhs3T4NXrYCnXmS/nhNlY8peQ9uf3GN+zfCE24HKpnoR1yq30eCQ9ma
+         TA3Xy2TmOsOGtfjahVd1kBsLiiIs+XUbe+WnheJTC1pMezDh/dO4h58LhBnVj5Ry6RPx
+         DMdo2lYXDcaxde3npPa5bf5JRZJH8Wfy3a8NPJUB8JVdZSbkUXeSM0KAK9fqo4933dc0
+         dGaGYtF0rFa2DSCyCAzahqeCUIMJX/aQtFgDs3qiuOeA7hAuzA/2xIwAzo/bpk5zkFjF
+         6hSan9y2Y9alUUmOmJxBzWAY23nE7Anw8BeQ0in2y6iNz00vt8HmbdXLeZobSxMzAoda
+         qPdQ==
+X-Gm-Message-State: AOJu0YyF3VOyIssDQRo+NlCrnu9dYOWDCm2tbkARl6NqUB9FYqowyCWk
+	lNapWoxStW3JDHfWHOOgaqltKpo0DvpBLLiB
+X-Google-Smtp-Source: AGHT+IE0jZdYYI9gDsK4y0ZZ8A3iH59mtOw95l8DlTZs0o/W4Aqp3ghdtqrsv3wkfIDYx89/7KQq9Q==
+X-Received: by 2002:a05:6e02:1a44:b0:35d:59a2:332b with SMTP id u4-20020a056e021a4400b0035d59a2332bmr5204188ilv.47.1702016234149;
+        Thu, 07 Dec 2023 22:17:14 -0800 (PST)
+Received: from localhost (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id bu13-20020a056e02350d00b0035d70b70d1csm214118ilb.2.2023.12.07.22.17.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Dec 2023 22:17:13 -0800 (PST)
+From: David Vernet <void@manifault.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com,
+	tj@kernel.org
+Subject: [PATCH bpf-next] bpf: Load vmlinux btf for any struct_ops map
+Date: Fri,  8 Dec 2023 00:17:03 -0600
+Message-ID: <20231208061704.400463-1-void@manifault.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZW+KYViDT3HWtKI1@CMGLRV3> <CACYkzJ5iyiUi_3r439ZMRnjM2f9Wd0XYoGJYQY=aXJ4QmX7e-A@mail.gmail.com>
- <ZXJViQDsdj7Bg4e9@CMGLRV3> <CAPhsuW6dib__mB8RJUPQGz_f+NLKmdVE3HsZ1JTy6_Ga7ysViw@mail.gmail.com>
- <ZXJhbHpIC3zHIYXs@CMGLRV3>
-In-Reply-To: <ZXJhbHpIC3zHIYXs@CMGLRV3>
-From: Song Liu <song@kernel.org>
-Date: Thu, 7 Dec 2023 21:17:15 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW75dNUW_ssWxsUjwnuV1W9QjX5nMEw0jwWrjG4wvYQu6w@mail.gmail.com>
-Message-ID: <CAPhsuW75dNUW_ssWxsUjwnuV1W9QjX5nMEw0jwWrjG4wvYQu6w@mail.gmail.com>
-Subject: Re: BPF LSM prevent program unload
-To: Frederick Lawler <fred@cloudflare.com>
-Cc: KP Singh <kpsingh@kernel.org>, revest@chromium.org, jackmanb@chromium.org, 
-	bpf@vger.kernel.org, kernel-team@cloudflare.com, 
-	linux-security-module@vger.kernel.org, paul@paul-moore.com, 
-	laoar.shao@gmail.com, casey@schaufler-ca.com, 
-	penguin-kernel@i-love.sakura.ne.jp
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Frederick,
+In libbpf, when determining whether we need to load vmlinux btf, we're
+currently (among other things) checking whether there is any struct_ops
+program present in the object. This works for most realistic struct_ops
+maps, as a struct_ops map is of course typically composed of one or more
+struct_ops programs. However, that technically need not be the case. A
+struct_ops interface could be defined which allows a map to be specified
+which one or more non-prog fields, and which provides default behavior
+if no struct_ops progs is actually provided otherwise. For sched_ext,
+for example, you technically only need to specify the name of the
+scheduler in the struct_ops map, with the core scheduler logic providing
+default behavior if no prog is actually specified.
 
-On Thu, Dec 7, 2023 at 4:21=E2=80=AFPM Frederick Lawler <fred@cloudflare.co=
-m> wrote:
->
-> On Thu, Dec 07, 2023 at 03:42:49PM -0800, Song Liu wrote:
-> > Hi Frederick,
-> >
-> > On Thu, Dec 7, 2023 at 3:30=E2=80=AFPM Frederick Lawler <fred@cloudflar=
-e.com> wrote:
-> > >
-[...]
-> > Trying to understand the solution here. Does load-policies add multiple
-> > policies to stop different ways to unload the LSM BPF program (unpin,
-> > umount, etc.)? So the only way to unload these policies is reboot. If t=
-his
-> > is the case, could you please share the list of hooks needed to achieve=
- a
-> > secure result?
->
-> ./load-policies loads multiple BPF object files (policy) each containing
-> N programs. Then for each program, pin it to the bpffs and terminate.
-> There's more there for atomic loads etc... but not relevant
-> for answering the question. For this hack, I created a bpf object file
-> with two programs:
->
->         - lsm/sb_umount
->         - lsm/inode_unlink
+If we were to define and try to load such a struct_ops map, we would
+crash in libbpf when initializing it as obj->btf_vmlinux will be NULL:
 
-Thanks for the information. This seems easy enough.
+Reading symbols from minimal...
+(gdb) r
+Starting program: minimal_example
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/usr/lib/libthread_db.so.1".
 
-> More could be added to this list as necessary depending on finding other
-> ways to unload. I've only found the filesystem to be the most consistent
-> way so far. libbpf's unpin functions seem to be also trapped by the
-> inode_unlink program, but more exploration syscalls is on my
-> TODO list.
->
-> And added the object file along with the rest to load in.
->
-> > If the list is really long, we should probably add an option to
-> > permanently load and attach a program (until reboot).
->
-> This is an interesting thought as well. I think that would fall under
-> idea (5) [1]. But the list isn't that long, and lonterm, I'd like the loa=
-der
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555558308c in btf__type_cnt (btf=0x0) at btf.c:612
+612             return btf->start_id + btf->nr_types;
+(gdb) bt
+    type_name=0x5555555d99e3 "sched_ext_ops", kind=4) at btf.c:914
+    kind=4) at btf.c:942
+    type=0x7fffffffe558, type_id=0x7fffffffe548, ...
+    data_member=0x7fffffffe568) at libbpf.c:948
+    kern_btf=0x0) at libbpf.c:1017
+    at libbpf.c:8059
 
-Agreed this falls under idea (5).
+So as to account for such bare-bones struct_ops maps, let's update
+obj_needs_vmlinux_btf() to also iterate over an obj's maps and check
+whether any of them are struct_ops maps.
 
-> to have permission to load/unload BPF LSM progs. But, this won't help fol=
-ks that
-> leverage BPF's skeleton loading methods and users that rely on anon
-> inodes tied to the task. I think KP offered some ideas there [2].
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ tools/lib/bpf/libbpf.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Thanks,
-Song
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index ea9b8158c20d..ac54ebc0629f 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -3054,9 +3054,15 @@ static bool prog_needs_vmlinux_btf(struct bpf_program *prog)
+ 	return false;
+ }
+ 
++static bool map_needs_vmlinux_btf(struct bpf_map *map)
++{
++	return bpf_map__is_struct_ops(map);
++}
++
+ static bool obj_needs_vmlinux_btf(const struct bpf_object *obj)
+ {
+ 	struct bpf_program *prog;
++	struct bpf_map *map;
+ 	int i;
+ 
+ 	/* CO-RE relocations need kernel BTF, only when btf_custom_path
+@@ -3081,6 +3087,11 @@ static bool obj_needs_vmlinux_btf(const struct bpf_object *obj)
+ 			return true;
+ 	}
+ 
++	bpf_object__for_each_map(map, obj) {
++		if (map_needs_vmlinux_btf(map))
++			return true;
++	}
++
+ 	return false;
+ }
+ 
+-- 
+2.42.1
+
 
