@@ -1,117 +1,104 @@
-Return-Path: <bpf+bounces-17214-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17215-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B458980AB54
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:55:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7F9E80AB5A
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:55:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E42881C20A8B
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:55:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57825B20BD6
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 703C441758;
-	Fri,  8 Dec 2023 17:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055D34175C;
+	Fri,  8 Dec 2023 17:55:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffQMD2au"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="cQ6Zq6L5"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF7103A262;
-	Fri,  8 Dec 2023 17:55:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16C37C433C8;
-	Fri,  8 Dec 2023 17:55:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702058106;
-	bh=JgZX3IUxr5QjMN2L4CfeQWIXpX0PnQ2euhMWDoEDapU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ffQMD2auV5w+fsPXOpLjjMdU1ohOWFKct2g6oLxTffd+jY0euyAOdzi/eqD61jlc+
-	 HQog2qKV7NuXXul2OZwYKSbvrILIZs0XzeLqtAvKUA4/XQKUYj0GCwO8BZEcxFJAZ4
-	 GLm3pcSpziEsxyQImevNBJZiHEQ8JkkB+a9n6UqqffPLT5eqXSY4Nx6h0P0+mdoyhV
-	 1yb+zJMYP0R8FKtdnus7PhqoTZwJkmDhleXYtnwpOHALRaHKPwGAKUXVLbVD89Ec0l
-	 fXneCel4rLSIqmz3W4sSAXZ8gZYi+HGbH/qhPlVwKwHjNEGwB5ADQloXnigiu+qOwX
-	 MSXnnWbvmdStw==
-Message-ID: <dd47a2a4-cb80-4164-8855-045999931a8e@kernel.org>
-Date: Fri, 8 Dec 2023 10:55:04 -0700
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55EF81BE7
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 09:55:28 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-dafe04717baso2395323276.1
+        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 09:55:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1702058127; x=1702662927; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DCroPR9ZSP2l8V1Q6/VGHsN/VoOs8Z300HzuyHm+39A=;
+        b=cQ6Zq6L5gSnO1NLAqIyLI6mWxq33kqfysEs7JIDaaAEQI0o0r0j677TC0fFCwTMedh
+         Pi/85w9K+uwLhjyKQ8+AESs4Fw2xDSkkkirLmB7Dw3jntBhyJiuhMp2cw4LOQSon0ttE
+         PnrFC38DXVfCJ1ikcQkznGisfcGJzzNMHkOKSg6lpkj2oWCA3yMqAfS50HqhjecE2OGL
+         T4tdIeZyyHCUormqPMZyW9H8O6RbRJSC0iMQF1skUN7oZFH/o3GLPpf3UK9c/ZpCfUra
+         7rYek0OmY3gZ/gxxpShSj8nzN9uQbb6qckzORI9bqeCox6NsqjGLh9nB8yMq1QPV+oja
+         xTWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702058127; x=1702662927;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DCroPR9ZSP2l8V1Q6/VGHsN/VoOs8Z300HzuyHm+39A=;
+        b=llD+ah7YggC69vM3wDv3KbIVd1eJk6TenmxCQFus/hgH/gVBtbhsiXCNlZjM2wbO57
+         KmtXCV+l2R32eLkbKekmBCGv6UuozRSsNcYDG4DAMwGDLvii29wtT91xJDMQpb5y5Vd+
+         B0+QXCASBUPfonTj/gdpj1KAiADivLpeqVmtyLhzu7EeMlF/pwZw1W4s7m6NJLEjkuW+
+         /v/5QLFUmhhMxJJy4AOYTPh/w9TL/V4Q9cRBf4CUuEcVIoJSr4R/M5WeWPotXE/jpEnR
+         hILWBanW6vy6MiY11IKhmQ4Uvi0zhzhrxFJ5M3tBCpb1jSRfd8ihrnSjFqxS2A7r7j7d
+         CLwQ==
+X-Gm-Message-State: AOJu0YyhGG5uPYMoR7oiE6XV6KwTSakkQiWcztm65935PP52XRgGvflZ
+	vT8fpojiHYgWN3gLCOzUvQdg/t0KzrhzlGOd57v/
+X-Google-Smtp-Source: AGHT+IEzwsy0AZ74EL4/wTJn0JdgikevOqFD/o+di1wOmB2RJdQnLNT09F7tlAh0y6LFyfimUSDSndbsxLSTFXKTKHE=
+X-Received: by 2002:a25:ae4f:0:b0:db7:dacf:6fdf with SMTP id
+ g15-20020a25ae4f000000b00db7dacf6fdfmr390213ybe.103.1702058127436; Fri, 08
+ Dec 2023 09:55:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next v1 13/16] tcp: RX path for devmem TCP
-Content-Language: en-US
-To: Mina Almasry <almasrymina@google.com>,
- Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Jeroen de Borst <jeroendb@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann
- <arnd@arndb.de>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Yunsheng Lin <linyunsheng@huawei.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-14-almasrymina@google.com>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20231208005250.2910004-14-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231110222038.1450156-1-kpsingh@kernel.org> <20231110222038.1450156-6-kpsingh@kernel.org>
+ <202312080934.6D172E5@keescook> <CAHC9VhTOze46yxPUURQ+4F1XiSEVhrTsZvYfVAZGLgXj0F9jOA@mail.gmail.com>
+In-Reply-To: <CAHC9VhTOze46yxPUURQ+4F1XiSEVhrTsZvYfVAZGLgXj0F9jOA@mail.gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 8 Dec 2023 12:55:16 -0500
+Message-ID: <CAHC9VhRguzX9gfuxW3oC0pOpttJ+xE6Q84Y70njjchJGawpXdg@mail.gmail.com>
+Subject: Re: [PATCH v8 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
+To: Kees Cook <keescook@chromium.org>
+Cc: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, casey@schaufler-ca.com, song@kernel.org, 
+	daniel@iogearbox.net, ast@kernel.org, renauld@google.com, pabeni@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/7/23 5:52 PM, Mina Almasry wrote:
-> In tcp_recvmsg_locked(), detect if the skb being received by the user
-> is a devmem skb. In this case - if the user provided the MSG_SOCK_DEVMEM
-> flag - pass it to tcp_recvmsg_devmem() for custom handling.
-> 
-> tcp_recvmsg_devmem() copies any data in the skb header to the linear
-> buffer, and returns a cmsg to the user indicating the number of bytes
-> returned in the linear buffer.
-> 
-> tcp_recvmsg_devmem() then loops over the unaccessible devmem skb frags,
-> and returns to the user a cmsg_devmem indicating the location of the
-> data in the dmabuf device memory. cmsg_devmem contains this information:
-> 
-> 1. the offset into the dmabuf where the payload starts. 'frag_offset'.
-> 2. the size of the frag. 'frag_size'.
-> 3. an opaque token 'frag_token' to return to the kernel when the buffer
-> is to be released.
-> 
-> The pages awaiting freeing are stored in the newly added
-> sk->sk_user_pages, and each page passed to userspace is get_page()'d.
-> This reference is dropped once the userspace indicates that it is
-> done reading this page.  All pages are released when the socket is
-> destroyed.
-> 
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> 
-> ---
-> 
-> Changes in v1:
-> - Added dmabuf_id to dmabuf_cmsg (David/Stan).
-> - Devmem -> dmabuf (David).
-> - Change tcp_recvmsg_dmabuf() check to skb->dmabuf (Paolo).
-> - Use __skb_frag_ref() & napi_pp_put_page() for refcounting (Yunsheng).
-> 
-> RFC v3:
-> - Fixed issue with put_cmsg() failing silently.
-> 
+On Fri, Dec 8, 2023 at 12:46=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
+ote:
+> On Fri, Dec 8, 2023 at 12:36=E2=80=AFPM Kees Cook <keescook@chromium.org>=
+ wrote:
+> > On Fri, Nov 10, 2023 at 11:20:37PM +0100, KP Singh wrote:
+> > > [...]
+> > > ---
+> > >  security/Kconfig | 11 +++++++++++
+> > >  1 file changed, 11 insertions(+)
+> >
+> > Did something go missing from this patch? I don't see anything dependin=
+g
+> > on CONFIG_SECURITY_HOOK_LIKELY (I think this was working in v7, though?=
+)
 
-What happens if a retransmitted packet is received or an rx window is
-closed and a probe is received where the kernel drops the skb - is the
-iov reference(s) in the skb returned to the pool by the stack and ready
-for use again?
+I guess while I'm at it, and for the sake of the mailing list, it is
+worth mentioning that I voiced my dislike of the
+CONFIG_SECURITY_HOOK_LIKELY Kconfig option earlier this year yet it
+continues to appear in the patchset.  It's hard to give something
+priority when I do provide some feedback and it is apparently ignored.
+
+> > Regardless, Paul, please take patches 1-4, they bring us measurable
+> > speed-ups across the board.
+>
+> As I mentioned when you were poking me off-list, this is in my review
+> queue and I will get to it when it reaches the top.  I can promise you
+> that continued nudging doesn't move the patchset further up in the
+> queue, it actually has the opposite effect.
+
+--=20
+paul-moore.com
 
