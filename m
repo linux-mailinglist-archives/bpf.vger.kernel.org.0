@@ -1,227 +1,105 @@
-Return-Path: <bpf+bounces-17237-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17238-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E6A280ADE7
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:32:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BEA080ADEF
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E2FAB20BD5
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:32:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6F921F21237
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560D25733A;
-	Fri,  8 Dec 2023 20:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B1914EB27;
+	Fri,  8 Dec 2023 20:35:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OT9qNTkt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hGPxUwt6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A8410E0
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 12:32:34 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-35d55c8ab0cso9022795ab.2
-        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 12:32:34 -0800 (PST)
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61ECB10F8
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 12:35:16 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-334b2ffaa3eso2379475f8f.0
+        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 12:35:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702067554; x=1702672354; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WhBb1HqSAqTrwRbd+v/ErOl81Ub5hOYpEU76T44IBUo=;
-        b=OT9qNTktmyhac+err3AygALM8976BIJr8UonNCPVRMCqs3h4+xubBNlTSEgTBgkxfn
-         s8jGYjnLDJRxTlEccGT/09BeEKv2cOrpL7UwAy44AoFjtidczLhujT53Pidz0PD8Ode/
-         ZewIA+kNlhiP1FDq4a6AbDkYKqPZgPJ8mvM5R9gGlHiZqg58xds0N7FOUaCb6Cj2pVF7
-         nWDi3la8GPw7jc1SmohTpbQQ5smxCIWTw7yt+aDPR5kP4kq+UbHdoBCR6gxgrM5Jdi0I
-         7VC/YNMH0+Q6RiDlyOaxr+LZr/4ejjk/+VTePwKHRBi+kp+CuGPMA6EIG7MZ84CTlpjH
-         wuhw==
+        d=gmail.com; s=20230601; t=1702067715; x=1702672515; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OYYae8DXniaRIprPWza7LS/hFmwBtNWP/caM8io3n30=;
+        b=hGPxUwt65eYG5bJzAbN27F7ZNF2zHvEYSqiFWwkQnNQOREXJnVU9fAh4wNC87hJ1QL
+         3pnUrGBqGdMsegMQ92CAPjSq5A7EZ3ZidlNygd2evxNmMhebtLKKpu6ZpGoJK7sRcAAH
+         qRBrYTQsrRWF/2jiXLkdvI1pTT3jljUfza/X2BP2KzMTwRZOASa1JCHPH9wVhlcmvw+D
+         +OxvkhuuNRCRc2J7nn3j5EELKFdggt/dal32tcTXNwbr1jOrDJvYJELDt4jPADq1Wu2C
+         xwhCnc4JDSNley9M7ZeYFqtm/KXZ/5w7J/MZ9tIKfnrCAk8IzntZWGUL7ea7jz0DXuvS
+         gg1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702067554; x=1702672354;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WhBb1HqSAqTrwRbd+v/ErOl81Ub5hOYpEU76T44IBUo=;
-        b=MAlVlExYF2HTXIonCE1Y23P6Vo98pCHfhOFtEDXphz8mquePHbXfxuQQUT3K9hDui4
-         nfxr9lO3BhvKH5rM2J7i7MmY7e3Hv3IM0XSXatifai2gkI4/1CYKoXx9Wii618vp4mhW
-         OLVhXUGLZENGEDI6G32hsIn4JF9wPbm7+Z7DQ9oOcAwypTmbEZUwof1KNEkV9O3zAxIw
-         h6l/OmEtuNEWb/HIvuHimhjYSGe80RYmmIsFA/yKU1sZQGwRoJVm71U0O3X9jMzVG5dl
-         76KJorgSM5hO/eLW3XWS76hsXd338icwqTQk6Z2Xp4nWEEUqAEtir/8FGdKliBBelOjP
-         wiXQ==
-X-Gm-Message-State: AOJu0YxXB03Jrag0kh3BHjqo4h6QJOISy+eBQNwOPepcE3B4Ka01d2UI
-	oTh0KAOXxdINAICBgeuV1OBdJsOiDgWtXl+Ly/5YJg==
-X-Google-Smtp-Source: AGHT+IG9JHOMDiMtvPVJkg2EdX8pFgSL5xbwUORKO76ChzHaeIYv3+ZS8mk+kxtsayRFdEIS46pfgO5uRe5PxVO24Xs=
-X-Received: by 2002:a05:6e02:184b:b0:35d:51de:bae2 with SMTP id
- b11-20020a056e02184b00b0035d51debae2mr913106ilv.24.1702067553659; Fri, 08 Dec
- 2023 12:32:33 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702067715; x=1702672515;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OYYae8DXniaRIprPWza7LS/hFmwBtNWP/caM8io3n30=;
+        b=mPeSbUCU5+ovO6Aqrf0WQwDJtAXUkLbvG7JeZ+Qk7uWzVWixQNQCbF7lcTnYLC5eUR
+         hDM19acdSynwhO43U7sUaJN7cJoWnkyI52LPQ3HXQHC+sQq9W3x0Gp22lm/Duw5OvtAN
+         +BpjauY5ZEmQk1FlEGZkSH3iRDwZJSdGmvYa3LTILlqIbTCYLuS4bD9JME8odkTHHBns
+         04sJ+1haCkOW6BtUYYIhAmhHJHVFhUMI0vNaksaP/me6RDankcWJRHgfrz+h0xUOlYnq
+         jqn8TfnUYcN5mQqsnK+vM59u2IUhqKscRmCzOZmZQfth8qF0MUJCAGyAJ6hqLMkkiWqG
+         Powg==
+X-Gm-Message-State: AOJu0YxLnW48h7ElAB1nEvX6kEU3jd1BanBnWJnWnf2b5W2yCE3ovk08
+	kO2MFv/gZ4b1kyGENwnXwXo=
+X-Google-Smtp-Source: AGHT+IGbYfJzpQ9pLgegBPpP8AC5N6BhaQiXRLpypMhVDQpgi/qVoUOU9os/s8OMMCnTd5kok/TvRg==
+X-Received: by 2002:adf:e302:0:b0:32f:6fc3:7963 with SMTP id b2-20020adfe302000000b0032f6fc37963mr264288wrj.15.1702067714503;
+        Fri, 08 Dec 2023 12:35:14 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id a11-20020adfeecb000000b00333b17432c0sm2743450wrp.28.2023.12.08.12.35.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 12:35:13 -0800 (PST)
+Message-ID: <7cd973c016a422f9a27f58f85799dcdf4bcfe71c.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 0/1] use preserve_static_offset in bpf uapi
+ headers
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Yonghong Song
+	 <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
+ "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Date: Fri, 08 Dec 2023 22:35:12 +0200
+In-Reply-To: <CAADnVQK-RP-rOq2cGOSRt614td536Kp+9c=moNH_pen0EY2FUA@mail.gmail.com>
+References: <20231208000531.19179-1-eddyz87@gmail.com>
+	 <012efc61-e067-4c21-8cab-47dec9bbaf0c@linux.dev>
+	 <0275c6985bcb299890da7ea7fb96642802cdcdbe.camel@gmail.com>
+	 <85a5312a-ba79-4e1d-b1be-434a7fe64cf0@linux.dev>
+	 <CAADnVQK-RP-rOq2cGOSRt614td536Kp+9c=moNH_pen0EY2FUA@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-7-almasrymina@google.com> <5752508c-f7bc-44ac-8778-c807b2ee5831@kernel.org>
- <CAHS8izPsQ2XoJy-vYWkn051Yc=D_kSprtQcG4mmPutf1G3+-aw@mail.gmail.com>
-In-Reply-To: <CAHS8izPsQ2XoJy-vYWkn051Yc=D_kSprtQcG4mmPutf1G3+-aw@mail.gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 8 Dec 2023 12:32:21 -0800
-Message-ID: <CAHS8izNuhFpoLVB_03i3G5-GoHqPJ5Gz_-5JzQ8UsNF=TkR9Cg@mail.gmail.com>
-Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
-To: David Ahern <dsahern@kernel.org>
-Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 8, 2023 at 11:22=E2=80=AFAM Mina Almasry <almasrymina@google.co=
-m> wrote:
->
-> On Fri, Dec 8, 2023 at 9:48=E2=80=AFAM David Ahern <dsahern@kernel.org> w=
-rote:
-> >
-> > On 12/7/23 5:52 PM, Mina Almasry wrote:
-> ...
-> > > +
-> > > +     xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
-> > > +             if (rxq->binding =3D=3D binding) {
-> > > +                     /* We hold the rtnl_lock while binding/unbindin=
-g
-> > > +                      * dma-buf, so we can't race with another threa=
-d that
-> > > +                      * is also modifying this value. However, the d=
-river
-> > > +                      * may read this config while it's creating its
-> > > +                      * rx-queues. WRITE_ONCE() here to match the
-> > > +                      * READ_ONCE() in the driver.
-> > > +                      */
-> > > +                     WRITE_ONCE(rxq->binding, NULL);
-> > > +
-> > > +                     rxq_idx =3D get_netdev_rx_queue_index(rxq);
-> > > +
-> > > +                     netdev_restart_rx_queue(binding->dev, rxq_idx);
-> >
-> > Blindly restarting a queue when a dmabuf is heavy handed. If the dmabuf
-> > has no outstanding references (ie., no references in the RxQ), then no
-> > restart is needed.
-> >
->
-> I think I need to stop the queue while binding to a dmabuf for the
-> sake of concurrency, no? I.e. the softirq thread may be delivering a
-> packet, and in parallel a separate thread holds rtnl_lock and tries to
-> bind the dma-buf. At that point the page_pool recreation will race
-> with the driver doing page_pool_alloc_page(). I don't think I can
-> insert a lock to handle this into the rx fast path, no?
->
-> Also, this sounds like it requires (lots of) more changes. The
-> page_pool + driver need to report how many pending references there
-> are (with locking so we don't race with incoming packets), and have
-> them reported via an ndo so that we can skip restarting the queue.
-> Implementing the changes in to a huge issue but handling the
-> concurrency may be a genuine blocker. Not sure it's worth the upside
-> of not restarting the single rx queue?
->
-> > > +             }
-> > > +     }
-> > > +
-> > > +     xa_erase(&netdev_dmabuf_bindings, binding->id);
-> > > +
-> > > +     netdev_dmabuf_binding_put(binding);
-> > > +}
-> > > +
-> > > +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
-> > > +                             struct netdev_dmabuf_binding *binding)
-> > > +{
-> > > +     struct netdev_rx_queue *rxq;
-> > > +     u32 xa_idx;
-> > > +     int err;
-> > > +
-> > > +     rxq =3D __netif_get_rx_queue(dev, rxq_idx);
-> > > +
-> > > +     if (rxq->binding)
-> > > +             return -EEXIST;
-> > > +
-> > > +     err =3D xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_lim=
-it_32b,
-> > > +                    GFP_KERNEL);
-> > > +     if (err)
-> > > +             return err;
-> > > +
-> > > +     /* We hold the rtnl_lock while binding/unbinding dma-buf, so we=
- can't
-> > > +      * race with another thread that is also modifying this value. =
-However,
-> > > +      * the driver may read this config while it's creating its * rx=
--queues.
-> > > +      * WRITE_ONCE() here to match the READ_ONCE() in the driver.
-> > > +      */
-> > > +     WRITE_ONCE(rxq->binding, binding);
-> > > +
-> > > +     err =3D netdev_restart_rx_queue(dev, rxq_idx);
-> >
-> > Similarly, here binding a dmabuf to a queue. I was expecting the dmabuf
-> > binding to add entries to the page pool for the queue.
->
-> To be honest, I think maybe there's a slight disconnect between how
-> you think the page_pool works, and my primitive understanding of how
-> it works. Today, I see a 1:1 mapping between rx-queue and page_pool in
-> the code. I don't see 1:many or many:1 mappings.
->
-> In theory mapping 1 rx-queue to n page_pools is trivial: the driver
-> can call page_pool_create() multiple times to generate n queues and
-> decide for incoming packets which one to use.
->
-> However, mapping n rx-queues to 1 page_pool seems like a can of worms.
-> I see code in the page_pool that looks to me (and Willem) like it's
-> safe only because the page_pool is used from the same napi context.
-> with a n rx-queueue: 1 page_pool mapping, that is no longer true, no?
-> There is a tail end of issues to resolve to be able to map 1 page_pool
-> to n queues as I understand and even if resolved I'm not sure the
-> maintainers are interested in taking the code.
->
-> So, per my humble understanding there is no such thing as "add entries
-> to the page pool for the (specific) queue", the page_pool is always
-> used by 1 queue.
->
-> Note that even though this limitation exists, we still support binding
-> 1 dma-buf to multiple queues, because multiple page pools can use the
-> same netdev_dmabuf_binding. I should add that to the docs.
->
-> > If the pool was
-> > previously empty, then maybe the queue needs to be "started" in the
-> > sense of creating with h/w or just pushing buffers into the queue and
-> > moving the pidx.
-> >
-> >
->
-> I don't think it's enough to add buffers to the page_pool, no? The
-> existing buffers in the page_pool (host mem) must be purged. I think
-> maybe the queue needs to be stopped as well so that we don't race with
-> incoming packets and end up with skbs with devmem and non-devmem frags
-> (unless you're thinking it becomes a requirement to support that, I
-> think things are complicated as-is and it's a good simplification).
-> When we already purge the existing buffers & restart the queue, it's
-> little effort to migrate this to become in line with Jakub's queue-api
-> that he also wants to use for per-queue configuration & ndo_stop/open.
->
+On Fri, 2023-12-08 at 09:46 -0800, Alexei Starovoitov wrote:
+[...]
+> > I just want to propose to have less work :-) since we are only dealing
+> > with a few structs in bpf domain. Note that eventually generated
+> > vmlinux.h will be the same whether we use 'hard code' approach or the
+> > decl_tag approach. The difference is just how to do it: - dwarf/btf wit=
+h
+> > decl tag -> bpftool vmlinux.h gen, or - dwarf/btf without decl tag +
+> > hardcoded bpf ctx info -> bpftool vmlinux.h gen If we intends to cover
+> > all uapi data structures (to prevent unnecessary CORE relocation, esp.
+> > for troublesome bitfield operations), hardcoded approach won't work and
+> > we may have to go to decl tag approach.
+>=20
+> +1 for simplicity of "hard code" approach.
+> We've stopped adding new uapi "mirror" structs like __sk_buff long ago.
+> The number of structs that need ctx rewrite will not increase.
 
-FWIW what i'm referring to with Jakub's queue-api is here:
-https://lore.kernel.org/netdev/20230815171638.4c057dcd@kernel.org/
-
-I made some simplifications, vis-a-vis passing the queue idx for the
-driver to extract the config from rather than the 'cfg' param Jakub
-outlined, and again passed the queue idx instead of the 'queue info'
-(the API currently assumes RX, and can be extended later for TX use
-cases).
---=20
-Thanks,
-Mina
+Ok, I'll submit V2 with changes in libbpf/bpftool to emit
+preserve_static_offset for predefined set of types.
 
