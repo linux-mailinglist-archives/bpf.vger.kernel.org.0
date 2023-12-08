@@ -1,154 +1,133 @@
-Return-Path: <bpf+bounces-17222-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17223-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C0B80AC08
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 19:26:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FEBC80AC8F
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:00:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 964091C20B30
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:26:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A455281A1D
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 19:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F20347A66;
-	Fri,  8 Dec 2023 18:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D6A481A1;
+	Fri,  8 Dec 2023 19:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bjfS7dlI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a7hO20nf"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [IPv6:2001:41d0:1004:224b::bc])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9123990
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 10:26:41 -0800 (PST)
-Message-ID: <80439854-29ed-41f1-855b-d0cf91c07b8d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702059998;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+mysBcGb/P1HG/nItSRanrsAjUUSC0dSKoI6qQolZcA=;
-	b=bjfS7dlIdO1GXVz/tG2ysjT8YrBKNsNG0b9C8ThVyqba/QWIST9KoDui3ZEVp9y9WIz3oS
-	/f7HcCn6HtkAKnrHqU6TViDSyrWlal1lh8Rcix9faLA1+opS7ZsBEGzbpq/IKNXXA43NCK
-	nTpvH9+zU/OT3MKLpkhvzV2bjLXO86E=
-Date: Fri, 8 Dec 2023 10:26:34 -0800
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7A510DA
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 10:59:57 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-a1f0616a15bso241879766b.2
+        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 10:59:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702061995; x=1702666795; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fRwEX9nnHrjqtpXbTvdXXmY5o6VMC/wtGkG1FenJnbk=;
+        b=a7hO20nfeE65kzcdNEYDa6UWsM2LwVvh9WEe4MWP8+7yx4LyKgOfJcaZ18vCJAVdsA
+         T8faUMWm2Owsy7Jq4OB0LXDyQyUHr2ORzxdeWqXNL0ZQdJ2mpeWabvJWstDfO4X5HvEZ
+         SMHe2gflcKqKf+i3CFo0kgvxOZGaz861jH1WGwxLCyGLOtJXP8iOxcMo7ZcKQr76OFRf
+         uKG1hRwShr9KS0W5OCrjdGbDtzZ5MDqFq284QM1qYZtKLydPxTaDwMB54QWYP5cbfv64
+         +fnCmBehRceyTMgjS2+yUy4AbBT5iCKPNM7sSRlpH928voJWidzar5cy+Ngy815Xthtu
+         +6gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702061995; x=1702666795;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fRwEX9nnHrjqtpXbTvdXXmY5o6VMC/wtGkG1FenJnbk=;
+        b=CW17OuanhXdgEa9MAf0kUp9RGV3rhLaCb1K84HiXHUKzcqd6rQmWg+q3Ygod+ly99U
+         GcU32LWA72Di7gOjwRDdBYEs4dL10VMcqw/bZLLK4EGFIIzXQS+26LLWsMxGc5lEqdMJ
+         t6GN3RSHaavwtxnCkdyblI71CB5EnQiojkvQwY2NL5Ar0eEY7qn9U5nIPsKvTYA/MkNp
+         uDwLY+zV206Q/bvXqU44clEFhJBLfonYpItnAiCwsf6kg56iV1JXxMtS75TKDqU2Kq/D
+         ms1KciyobBB51DzlNvwU9g2oqJbqmVwPVrU2tqIRpZhYqDqqoMrH3KRxduq7nwFv1fnX
+         lHUg==
+X-Gm-Message-State: AOJu0YyiMiMnAlw+F6ofoN9bHv3w61Ba+QXio/naT1VIAB7VGfNQF6PR
+	Hl0DYBd7yxlxSE9eBDKVKGYCnoun2RCKBQ==
+X-Google-Smtp-Source: AGHT+IGUBk6s1jhWcqXFWGAVbPEJ08OjymzQz6UYzlKhFdM8SMK7zSqfYHyHj0Oig8b6I21wZ9ylOw==
+X-Received: by 2002:a17:906:4559:b0:a18:8b15:4d3d with SMTP id s25-20020a170906455900b00a188b154d3dmr249469ejq.77.1702061995186;
+        Fri, 08 Dec 2023 10:59:55 -0800 (PST)
+Received: from erthalion.local (dslb-178-005-231-183.178.005.pools.vodafone-ip.de. [178.5.231.183])
+        by smtp.gmail.com with ESMTPSA id le9-20020a170907170900b00a1e2aa3d090sm1295702ejc.206.2023.12.08.10.59.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 10:59:54 -0800 (PST)
+From: Dmitrii Dolgov <9erthalion6@gmail.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	dan.carpenter@linaro.org,
+	olsajiri@gmail.com,
+	asavkov@redhat.com,
+	Dmitrii Dolgov <9erthalion6@gmail.com>
+Subject: [PATCH bpf-next v7 0/4] Relax tracing prog recursive attach rules
+Date: Fri,  8 Dec 2023 19:55:52 +0100
+Message-ID: <20231208185557.8477-1-9erthalion6@gmail.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4] bpf: Fix a race condition between btf_put()
- and map_free()
-Content-Language: en-US
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>, Hou Tao <houtao@huaweicloud.com>,
- bpf@vger.kernel.org
-References: <20231206210959.1035724-1-yonghong.song@linux.dev>
- <d1c0232c-a41c-4cce-9bdf-3a1e8850ed05@linux.dev>
- <969852f3-34f8-45d9-bf2d-f6a4d5167e55@linux.dev>
- <cf59ff24-5c29-4c5e-951c-3c67927cf058@linux.dev>
- <ba220781-3be6-4788-8765-f2868e97e126@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <ba220781-3be6-4788-8765-f2868e97e126@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 12/8/23 8:45 AM, Yonghong Song wrote:
-> 
-> On 12/8/23 12:16 AM, Martin KaFai Lau wrote:
->> On 12/7/23 7:59 PM, Yonghong Song wrote:
->>>>
->>>> I am trying to avoid making a special case for "bool has_btf_ref;" and "bool 
->>>> from_map_check". It seems to a bit too much to deal with the error path for 
->>>> btf_parse().
->>>>
->>>> Would doing the refcount_set(&btf->refcnt, 1) earlier in btf_parse help?
->>>
->>> No, it does not. The core reason is what Hao is mentioned in
->>> https://lore.kernel.org/bpf/47ee3265-23f7-2130-ff28-27bfaf3f7877@huaweicloud.com/
->>> We simply cannot take btf reference if called from btf_parse().
->>> Let us say we move refcount_set(&btf->refcnt, 1) earlier in btf_parse()
->>> so we take ref for btf during btf_parse_fields(), then we have
->>>       btf_put <=== expect refcount == 0 to start the destruction process
->>>         ...
->>>           btf_record_free <=== in which if graph_root, a btf reference will 
->>> be hold
->>> so btf_put will never be able to actually free btf data.
->>
->> ah. There is a loop like btf->struct_meta_tab->...btf.
->>
->>> Yes, the kasan problem will be resolved but we leak memory.
->>>
->>>>
->>>>> It is also unnecessary to take a reference since the value_rec is
->>>>> referring to a record in struct_meta_tab.
->>>>
->>>> If we optimize for not taking a refcnt, how about not taking a refcnt for 
->>>> all cases and postpone the btf_put(), instead of taking refcnt in one case 
->>>> but not another. Like your fix in v1. The failed selftest can be changed or 
->>>> even removed if it does not make sense anymore.
->>>
->>> After a couple of iterations, I think taking necessary reference approach 
->>> sounds better
->>> and this will be consistent with how kptr is handled. For kptr, btf_parse 
->>> will ignore it.
->>
->> Got it. It is why kptr.btf got away with the loop.
->>
->> On the other hand, am I reading it correctly that kptr.btf only needs to take 
->> the refcnt for btf that is btf_is_kernel()?
-> 
-> No. besides vmlinux and module btf, it also takes reference for prog btf, see
-> 
-> static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
->                            struct btf_field_info *info)
-> {
-> ...
->          if (id == -ENOENT) {
->                  /* btf_parse_kptr should only be called w/ btf = program BTF */
->                  WARN_ON_ONCE(btf_is_kernel(btf));
->                  /* Type exists only in program BTF. Assume that it's a MEM_ALLOC
->                   * kptr allocated via bpf_obj_new
->                   */
->                  field->kptr.dtor = NULL;
->                  id = info->kptr.type_id;
->                  kptr_btf = (struct btf *)btf;
->                  btf_get(kptr_btf);
+Currently, it's not allowed to attach an fentry/fexit prog to another
+fentry/fexit. At the same time it's not uncommon to see a tracing
+program with lots of logic in use, and the attachment limitation
+prevents usage of fentry/fexit for performance analysis (e.g. with
+"bpftool prog profile" command) in this case. An example could be
+falcosecurity libs project that uses tp_btf tracing programs for
+offloading certain part of logic into tail-called programs, but the
+use-case is still generic enough -- a tracing program could be
+complicated and heavy enough to warrant its profiling, yet frustratingly
+it's not possible to do so use best tooling for that.
 
-I meant only kernel/module btf needs to take the refcnt, so there is no need to 
-take the refcnt here for the (it)self btf. Sorry that I was not clear in my 
-earlier comment.
+Following the corresponding discussion [1], the reason for that is to
+avoid tracing progs call cycles without introducing more complex
+solutions. But currently it seems impossible to load and attach tracing
+programs in a way that will form such a cycle. Replace "no same type"
+requirement with verification that no more than one level of attachment
+nesting is allowed. In this way only one fentry/fexit program could be
+attached to another fentry/fexit to cover profiling use case, and still
+no cycle could be formed.
 
-The record is capturing something either in the self btf or something in the 
-kernel btf. The field->kptr.kptr is the one that may either point to a kernel or 
-self btf, so it should be the only case that needs to check the following in 
-btf_record_free():
+The series contains a test for recursive attachment, as well as a fix +
+test for an issue in re-attachment branch of bpf_tracing_prog_attach.
+When preparing the test for the main change set, I've stumbled upon the
+possibility to construct a sequence of events when attach_btf would be
+NULL while computing a trampoline key. It doesn't look like this issue
+is triggered by the main change, because the reproduces doesn't actually
+need to have an fentry attachment chain.
 
-	if (btf_is_kernel(rec->fields[i].kptr.btf))
-		btf_put(rec->fields[i].kptr.btf);
+[1]: https://lore.kernel.org/bpf/20191108064039.2041889-16-ast@kernel.org/
 
-All other cases the record has a self btf (including field->graph_root.btf). The 
-owner (map here) needs to ensure the self btf is freed after the record is freed.
+Dmitrii Dolgov (3):
+  bpf: Relax tracing prog recursive attach rules
+  selftests/bpf: Add test for recursive attachment of tracing progs
+  selftests/bpf: Test re-attachment fix for bpf_tracing_prog_attach
 
-I was thinking if it can avoid doing different things based on where 
-btf_parse_fields() is called by separating what type of btf always needs refcnt 
-or not. Agree the approach in this patch will fix the issue also and I have 
-acked v5. Thanks for the fix.
+Jiri Olsa (1):
+  bpf: Fix re-attachment branch in bpf_tracing_prog_attach
 
->                  goto found_dtor;
->          }
-> ...
-> }
-> 
->>
->>> Unfortunately, for graph_root (list_head, rb_root), btf_parse and map_check 
->>> will both
->>> process it and that adds a little bit complexity.
->>> Alexei also suggested the same taking reference approach:
->>> https://lore.kernel.org/bpf/CAADnVQL+uc6VV65_Ezgzw3WH=ME9z1Fdy8Pd6xd0oOq8rgwh7g@mail.gmail.com/
->>
+ include/linux/bpf.h                           |   1 +
+ kernel/bpf/syscall.c                          |  16 +++
+ kernel/bpf/verifier.c                         |  39 +++---
+ .../bpf/prog_tests/recursive_attach.c         | 117 ++++++++++++++++++
+ .../selftests/bpf/progs/fentry_recursive.c    |  19 +++
+ .../bpf/progs/fentry_recursive_target.c       |  31 +++++
+ 6 files changed, 209 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/recursive_attach.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive.c
+ create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive_target.c
+
+
+base-commit: 40d0eb0259ae77ace3e81d7454d1068c38bc95c2
+-- 
+2.41.0
 
 
