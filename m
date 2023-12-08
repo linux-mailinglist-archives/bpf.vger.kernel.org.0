@@ -1,105 +1,116 @@
-Return-Path: <bpf+bounces-17205-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17206-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C296780AAD2
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:31:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7430680AADD
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:36:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C059E1C20432
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:31:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF0FD1C20AEF
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D743C3A27E;
-	Fri,  8 Dec 2023 17:31:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6B03A26E;
+	Fri,  8 Dec 2023 17:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qHOH+oWq"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="W8jvXcuV"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8021FE0
-	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 09:30:55 -0800 (PST)
-Message-ID: <85a5312a-ba79-4e1d-b1be-434a7fe64cf0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702056653;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W3LSIJ5MOo+V2yKmlGwqREu13pcbpdr4OK9OsDJ1Brs=;
-	b=qHOH+oWqGIgZFnQbDG6bzwJKJGd5rW073ih8YZnjihSTvyCKzlcnejtfp2TZATqBGC8/bD
-	uu9P6xxkZIuO0c/MkalUQzXxWxnhsf/dmix9ROJ78RGHzngWOIs9oO7HPsA44HNV20chbY
-	GZQs34oxpWQkgoJLLDGy6OTjzZbgndU=
-Date: Fri, 8 Dec 2023 09:30:49 -0800
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D97285
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 09:36:06 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1d048c171d6so21420365ad.1
+        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 09:36:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1702056966; x=1702661766; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7HSNZHOju8hpOrntNygE/eIZPol1N9ffLpPl4Rg7zEI=;
+        b=W8jvXcuVbAC1oUPpxfzfrjvOSzglR5lNYEjnlM2rEGVpCQpAD/UTTs6SpbC6aIm029
+         Wj/mNifzUZrYp9Q5FHUTybwudRg3gzHyNyjx7pRkHcfpl6P6YKr84V8IrzFon/TzfVp3
+         ZAjV10+lfDR4+/h39+RNnvxE0XLbaIP65Z3d4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702056966; x=1702661766;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7HSNZHOju8hpOrntNygE/eIZPol1N9ffLpPl4Rg7zEI=;
+        b=V5qfagekYpRQGVv1e68fkXe8cOD2z0Xhrj5MUXcCuKoYqkfsMsXsDUkHdbOQrJ0F47
+         fPIZnUe1zcZ/Al+21ndKt3Okz1/UrvK8HRghVHLS5hsnb/r6oe0W0CrN97jTn5fyJgHi
+         P16vh79dFJze6inMcBhDmc0JEfYXlH8lmanJxAP/owea6BbwuD6chcmnVBFd9NhZYI0o
+         fDs6PAxMyhOGz2j+srvR9v4q5cFr7b/Kxsaq2SymsVgjzd03l+KDjJESY/X3FrZvFVHw
+         QA+qN0txr8iyj5JSe/r3bY9yZP1CaGPtV8yzt6DWDYafHQNmOyBHlurZcMyOGV8nhXO4
+         PD5Q==
+X-Gm-Message-State: AOJu0YxDQH7wjbFVxDL1vCWJbRVtHm3QoUzukxtDLBs8vBfs+xZZHzrs
+	/hCdHg+FpO034mXYJ9HlfgG29bWw578gExNKEBA=
+X-Google-Smtp-Source: AGHT+IHxQc38xaqFtxteKnGXqtS4Iokq2hriYY7PcPCuC9PkObHcOWIxyx8llEN3YoWlhlGbGPJb4g==
+X-Received: by 2002:a17:903:1205:b0:1d0:af43:9354 with SMTP id l5-20020a170903120500b001d0af439354mr377168plh.100.1702056966093;
+        Fri, 08 Dec 2023 09:36:06 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id jf18-20020a170903269200b001d087d2c42fsm1961961plb.24.2023.12.08.09.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 09:36:05 -0800 (PST)
+Date: Fri, 8 Dec 2023 09:36:05 -0800
+From: Kees Cook <keescook@chromium.org>
+To: KP Singh <kpsingh@kernel.org>
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+	paul@paul-moore.com, casey@schaufler-ca.com, song@kernel.org,
+	daniel@iogearbox.net, ast@kernel.org, renauld@google.com,
+	pabeni@redhat.com
+Subject: Re: [PATCH v8 5/5] security: Add CONFIG_SECURITY_HOOK_LIKELY
+Message-ID: <202312080934.6D172E5@keescook>
+References: <20231110222038.1450156-1-kpsingh@kernel.org>
+ <20231110222038.1450156-6-kpsingh@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 0/1] use preserve_static_offset in bpf uapi
- headers
-Content-Language: en-GB
-To: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, ast@kernel.org
-Cc: andrii@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
- kernel-team@fb.com, jose.marchesi@oracle.com
-References: <20231208000531.19179-1-eddyz87@gmail.com>
- <012efc61-e067-4c21-8cab-47dec9bbaf0c@linux.dev>
- <0275c6985bcb299890da7ea7fb96642802cdcdbe.camel@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <0275c6985bcb299890da7ea7fb96642802cdcdbe.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231110222038.1450156-6-kpsingh@kernel.org>
 
-
-On 12/8/23 6:34 AM, Eduard Zingerman wrote:
-> On Thu, 2023-12-07 at 18:28 -0800, Yonghong Song wrote:
+On Fri, Nov 10, 2023 at 11:20:37PM +0100, KP Singh wrote:
 > [...]
->> All context types are defined in include/linux/bpf_types.h.
->> The context type bpf_nf_ctx is missing.
-> convert_ctx_access() is not applied for bpf_nf_ctx. Searching through
-> kernel code shows that BPF programs access this structure directly
-> (net/netfilter/nf_bpf_link.c):
->
->      static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
->                          const struct nf_hook_state *s)
->      {
->          const struct bpf_prog *prog = bpf_prog;
->          struct bpf_nf_ctx ctx = {
->              .state = s,
->              .skb = skb,
->          };
->
->          return bpf_prog_run(prog, &ctx);
->      }
->
-> I added __bpf_ctx only for types that are subject to convert_ctx_access()
-> transformation. On the other hand, applying it to each context type
-> should not hurt either. Which way would you prefer?
->
-> [...]
->
->>> How to add the same definitions in vmlinux.h is an open question,
->>> and most likely requires bpftool modification:
->>> - Hard code generation of __bpf_ctx based on type names?
->>> - Mark context types with some special
->>>     __attribute__((btf_decl_tag("preserve_static_offset")))
->>>     and convert it to __attribute__((preserve_static_offset))?
->> The number of context types is limited, I would just go through
->> the first approach with hard coding the list of ctx types and
->> mark them with preserve_static_offset attribute in vmlinux.h.
-> Tbh, I'm with Alan here, generic approach seems a tad nicer.
-> Lets collect some more votes :)
+> ---
+>  security/Kconfig | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 
-I just want to propose to have less work :-) since we are only dealing 
-with a few structs in bpf domain. Note that eventually generated 
-vmlinux.h will be the same whether we use 'hard code' approach or the 
-decl_tag approach. The difference is just how to do it: - dwarf/btf with 
-decl tag -> bpftool vmlinux.h gen, or - dwarf/btf without decl tag + 
-hardcoded bpf ctx info -> bpftool vmlinux.h gen If we intends to cover 
-all uapi data structures (to prevent unnecessary CORE relocation, esp. 
-for troublesome bitfield operations), hardcoded approach won't work and 
-we may have to go to decl tag approach.
+Did something go missing from this patch? I don't see anything depending
+on CONFIG_SECURITY_HOOK_LIKELY (I think this was working in v7, though?)
 
+Regardless, Paul, please take patches 1-4, they bring us measurable
+speed-ups across the board.
+
+-Kees
+
+> 
+> diff --git a/security/Kconfig b/security/Kconfig
+> index 52c9af08ad35..317018dcbc67 100644
+> --- a/security/Kconfig
+> +++ b/security/Kconfig
+> @@ -32,6 +32,17 @@ config SECURITY
+>  
+>  	  If you are unsure how to answer this question, answer N.
+>  
+> +config SECURITY_HOOK_LIKELY
+> +	bool "LSM hooks are likely to be initialized"
+> +	depends on SECURITY && EXPERT
+> +	default SECURITY_SELINUX || SECURITY_SMACK || SECURITY_TOMOYO || SECURITY_APPARMOR
+> +	help
+> +	  This controls the behaviour of the static keys that guard LSM hooks.
+> +	  If LSM hooks are likely to be initialized by LSMs, then one gets
+> +	  better performance by enabling this option. However, if the system is
+> +	  using an LSM where hooks are much likely to be disabled, one gets
+> +	  better performance by disabling this config.
+> +
+>  config SECURITYFS
+>  	bool "Enable the securityfs filesystem"
+>  	help
+> -- 
+> 2.42.0.869.gea05f2083d-goog
+> 
+
+-- 
+Kees Cook
 
