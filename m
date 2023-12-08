@@ -1,117 +1,227 @@
-Return-Path: <bpf+bounces-17236-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17237-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB9880ADD4
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:28:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E6A280ADE7
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 21:32:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F3481C20CB3
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:28:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E2FAB20BD5
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 20:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6403F57876;
-	Fri,  8 Dec 2023 20:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560D25733A;
+	Fri,  8 Dec 2023 20:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oz3bCKHb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OT9qNTkt"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725F110DA;
-	Fri,  8 Dec 2023 12:28:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=JEaruMuB4Tlqt0BFZFCjzDOPeC0+ZhBXuiC6tNuESkE=; b=oz3bCKHbBr+1i7AwlkU2bW8Cqa
-	fholQKO6Zp3YpCPRXSWI5rxDyivDmwxbDxZBBDM2Ssv89zNbOFqaWoxUsLTzzOAnNUgyvJ4g4USwF
-	eG+movaebo/2MUs/btQCZ2t/mvdVUv6L7vmw4/fSiDopqEA+7Frtmtsnjlaa2orWePsxhlpt73OLE
-	elw/iRqBA0vjTIbd3gZIWPVL2BQTI8M3iA1KA7pJQIA2V17zdx3Y/BEG41NFkgHe6O622279bc1h6
-	8DrPXnGmpn+YHXoYZtSJoiHBNcAr+At1J1GbouwOpW7CY3gCF3VAvkm+ERrBWLaTXxrto7kX4kVqM
-	XnUF7hpQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rBhRb-006Vhh-O8; Fri, 08 Dec 2023 20:27:31 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 5B7EB3003F0; Fri,  8 Dec 2023 21:27:31 +0100 (CET)
-Date: Fri, 8 Dec 2023 21:27:31 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Song Liu <song@kernel.org>,
-	Song Liu <songliubraving@meta.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Arnd Bergmann <arnd@arndb.de>,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>, linux-arch <linux-arch@vger.kernel.org>,
-	clang-built-linux <llvm@lists.linux.dev>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Joao Moreira <joao@overdrivepizza.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 2/2] x86/cfi,bpf: Fix BPF JIT call
-Message-ID: <20231208202731.GF36716@noisy.programming.kicks-ass.net>
-References: <CAADnVQJwU5fCLcjBWM9zBY6jUcnME3+p=vvdgKK9FiLPWvXozg@mail.gmail.com>
- <20231206163814.GB36423@noisy.programming.kicks-ass.net>
- <20231206183713.GA35897@noisy.programming.kicks-ass.net>
- <zu5eb2robdqnp2ojwaxjhnglcummrnjaqbw6krdds6qac3bql2@5zx46c2s6ez4>
- <20231207093105.GA28727@noisy.programming.kicks-ass.net>
- <ivhrgimonsvy3tyj5iidoqmlcyqvtsh2ay3cm3ouemsdbvjzs4@6jlt6zv55tgh>
- <20231208102940.GB28727@noisy.programming.kicks-ass.net>
- <20231208134041.GD28727@noisy.programming.kicks-ass.net>
- <20231208172152.GD36716@noisy.programming.kicks-ass.net>
- <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A8410E0
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 12:32:34 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id e9e14a558f8ab-35d55c8ab0cso9022795ab.2
+        for <bpf@vger.kernel.org>; Fri, 08 Dec 2023 12:32:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702067554; x=1702672354; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WhBb1HqSAqTrwRbd+v/ErOl81Ub5hOYpEU76T44IBUo=;
+        b=OT9qNTktmyhac+err3AygALM8976BIJr8UonNCPVRMCqs3h4+xubBNlTSEgTBgkxfn
+         s8jGYjnLDJRxTlEccGT/09BeEKv2cOrpL7UwAy44AoFjtidczLhujT53Pidz0PD8Ode/
+         ZewIA+kNlhiP1FDq4a6AbDkYKqPZgPJ8mvM5R9gGlHiZqg58xds0N7FOUaCb6Cj2pVF7
+         nWDi3la8GPw7jc1SmohTpbQQ5smxCIWTw7yt+aDPR5kP4kq+UbHdoBCR6gxgrM5Jdi0I
+         7VC/YNMH0+Q6RiDlyOaxr+LZr/4ejjk/+VTePwKHRBi+kp+CuGPMA6EIG7MZ84CTlpjH
+         wuhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702067554; x=1702672354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WhBb1HqSAqTrwRbd+v/ErOl81Ub5hOYpEU76T44IBUo=;
+        b=MAlVlExYF2HTXIonCE1Y23P6Vo98pCHfhOFtEDXphz8mquePHbXfxuQQUT3K9hDui4
+         nfxr9lO3BhvKH5rM2J7i7MmY7e3Hv3IM0XSXatifai2gkI4/1CYKoXx9Wii618vp4mhW
+         OLVhXUGLZENGEDI6G32hsIn4JF9wPbm7+Z7DQ9oOcAwypTmbEZUwof1KNEkV9O3zAxIw
+         h6l/OmEtuNEWb/HIvuHimhjYSGe80RYmmIsFA/yKU1sZQGwRoJVm71U0O3X9jMzVG5dl
+         76KJorgSM5hO/eLW3XWS76hsXd338icwqTQk6Z2Xp4nWEEUqAEtir/8FGdKliBBelOjP
+         wiXQ==
+X-Gm-Message-State: AOJu0YxXB03Jrag0kh3BHjqo4h6QJOISy+eBQNwOPepcE3B4Ka01d2UI
+	oTh0KAOXxdINAICBgeuV1OBdJsOiDgWtXl+Ly/5YJg==
+X-Google-Smtp-Source: AGHT+IG9JHOMDiMtvPVJkg2EdX8pFgSL5xbwUORKO76ChzHaeIYv3+ZS8mk+kxtsayRFdEIS46pfgO5uRe5PxVO24Xs=
+X-Received: by 2002:a05:6e02:184b:b0:35d:51de:bae2 with SMTP id
+ b11-20020a056e02184b00b0035d51debae2mr913106ilv.24.1702067553659; Fri, 08 Dec
+ 2023 12:32:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQKsnZfFomQ4wTZz=jMZW5QCV2XiXVsi64bghHkAjJtcmA@mail.gmail.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-7-almasrymina@google.com> <5752508c-f7bc-44ac-8778-c807b2ee5831@kernel.org>
+ <CAHS8izPsQ2XoJy-vYWkn051Yc=D_kSprtQcG4mmPutf1G3+-aw@mail.gmail.com>
+In-Reply-To: <CAHS8izPsQ2XoJy-vYWkn051Yc=D_kSprtQcG4mmPutf1G3+-aw@mail.gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Fri, 8 Dec 2023 12:32:21 -0800
+Message-ID: <CAHS8izNuhFpoLVB_03i3G5-GoHqPJ5Gz_-5JzQ8UsNF=TkR9Cg@mail.gmail.com>
+Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+To: David Ahern <dsahern@kernel.org>
+Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 08, 2023 at 11:40:27AM -0800, Alexei Starovoitov wrote:
+On Fri, Dec 8, 2023 at 11:22=E2=80=AFAM Mina Almasry <almasrymina@google.co=
+m> wrote:
+>
+> On Fri, Dec 8, 2023 at 9:48=E2=80=AFAM David Ahern <dsahern@kernel.org> w=
+rote:
+> >
+> > On 12/7/23 5:52 PM, Mina Almasry wrote:
+> ...
+> > > +
+> > > +     xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
+> > > +             if (rxq->binding =3D=3D binding) {
+> > > +                     /* We hold the rtnl_lock while binding/unbindin=
+g
+> > > +                      * dma-buf, so we can't race with another threa=
+d that
+> > > +                      * is also modifying this value. However, the d=
+river
+> > > +                      * may read this config while it's creating its
+> > > +                      * rx-queues. WRITE_ONCE() here to match the
+> > > +                      * READ_ONCE() in the driver.
+> > > +                      */
+> > > +                     WRITE_ONCE(rxq->binding, NULL);
+> > > +
+> > > +                     rxq_idx =3D get_netdev_rx_queue_index(rxq);
+> > > +
+> > > +                     netdev_restart_rx_queue(binding->dev, rxq_idx);
+> >
+> > Blindly restarting a queue when a dmabuf is heavy handed. If the dmabuf
+> > has no outstanding references (ie., no references in the RxQ), then no
+> > restart is needed.
+> >
+>
+> I think I need to stop the queue while binding to a dmabuf for the
+> sake of concurrency, no? I.e. the softirq thread may be delivering a
+> packet, and in parallel a separate thread holds rtnl_lock and tries to
+> bind the dma-buf. At that point the page_pool recreation will race
+> with the driver doing page_pool_alloc_page(). I don't think I can
+> insert a lock to handle this into the rx fast path, no?
+>
+> Also, this sounds like it requires (lots of) more changes. The
+> page_pool + driver need to report how many pending references there
+> are (with locking so we don't race with incoming packets), and have
+> them reported via an ndo so that we can skip restarting the queue.
+> Implementing the changes in to a huge issue but handling the
+> concurrency may be a genuine blocker. Not sure it's worth the upside
+> of not restarting the single rx queue?
+>
+> > > +             }
+> > > +     }
+> > > +
+> > > +     xa_erase(&netdev_dmabuf_bindings, binding->id);
+> > > +
+> > > +     netdev_dmabuf_binding_put(binding);
+> > > +}
+> > > +
+> > > +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> > > +                             struct netdev_dmabuf_binding *binding)
+> > > +{
+> > > +     struct netdev_rx_queue *rxq;
+> > > +     u32 xa_idx;
+> > > +     int err;
+> > > +
+> > > +     rxq =3D __netif_get_rx_queue(dev, rxq_idx);
+> > > +
+> > > +     if (rxq->binding)
+> > > +             return -EEXIST;
+> > > +
+> > > +     err =3D xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_lim=
+it_32b,
+> > > +                    GFP_KERNEL);
+> > > +     if (err)
+> > > +             return err;
+> > > +
+> > > +     /* We hold the rtnl_lock while binding/unbinding dma-buf, so we=
+ can't
+> > > +      * race with another thread that is also modifying this value. =
+However,
+> > > +      * the driver may read this config while it's creating its * rx=
+-queues.
+> > > +      * WRITE_ONCE() here to match the READ_ONCE() in the driver.
+> > > +      */
+> > > +     WRITE_ONCE(rxq->binding, binding);
+> > > +
+> > > +     err =3D netdev_restart_rx_queue(dev, rxq_idx);
+> >
+> > Similarly, here binding a dmabuf to a queue. I was expecting the dmabuf
+> > binding to add entries to the page pool for the queue.
+>
+> To be honest, I think maybe there's a slight disconnect between how
+> you think the page_pool works, and my primitive understanding of how
+> it works. Today, I see a 1:1 mapping between rx-queue and page_pool in
+> the code. I don't see 1:many or many:1 mappings.
+>
+> In theory mapping 1 rx-queue to n page_pools is trivial: the driver
+> can call page_pool_create() multiple times to generate n queues and
+> decide for incoming packets which one to use.
+>
+> However, mapping n rx-queues to 1 page_pool seems like a can of worms.
+> I see code in the page_pool that looks to me (and Willem) like it's
+> safe only because the page_pool is used from the same napi context.
+> with a n rx-queueue: 1 page_pool mapping, that is no longer true, no?
+> There is a tail end of issues to resolve to be able to map 1 page_pool
+> to n queues as I understand and even if resolved I'm not sure the
+> maintainers are interested in taking the code.
+>
+> So, per my humble understanding there is no such thing as "add entries
+> to the page pool for the (specific) queue", the page_pool is always
+> used by 1 queue.
+>
+> Note that even though this limitation exists, we still support binding
+> 1 dma-buf to multiple queues, because multiple page pools can use the
+> same netdev_dmabuf_binding. I should add that to the docs.
+>
+> > If the pool was
+> > previously empty, then maybe the queue needs to be "started" in the
+> > sense of creating with h/w or just pushing buffers into the queue and
+> > moving the pidx.
+> >
+> >
+>
+> I don't think it's enough to add buffers to the page_pool, no? The
+> existing buffers in the page_pool (host mem) must be purged. I think
+> maybe the queue needs to be stopped as well so that we don't race with
+> incoming packets and end up with skbs with devmem and non-devmem frags
+> (unless you're thinking it becomes a requirement to support that, I
+> think things are complicated as-is and it's a good simplification).
+> When we already purge the existing buffers & restart the queue, it's
+> little effort to migrate this to become in line with Jakub's queue-api
+> that he also wants to use for per-queue configuration & ndo_stop/open.
+>
 
-> What is "sealing" by objtool?
+FWIW what i'm referring to with Jakub's queue-api is here:
+https://lore.kernel.org/netdev/20230815171638.4c057dcd@kernel.org/
 
-Ah, LTO like pass that tries to determine if a function ever gets it's
-address taken.
-
-The basic problem is that the compiler (barring its own LTO pass) must
-emit CFI for every non-local symbol in a translation unit. This means
-that a ton of functions will have CFI on, even if they're never
-indirectly called.
-
-So objtool collects all functions that have CFI but do not get their
-address taken, and sticks their address in a .discard section, then at
-boot time we iterate this section and scribble the CFI state for all
-these functions, making them invalid to be called indirectly.
-
-For one this avoids malicious code from finding a function address in
-the symbol table and indirectly calling it anyway as a means to
-circumvent the EXPORT symbols.
-
-So objtool does not think bpf_cgroup_release() gets its address taken,
-specifically it does not find it's address in a section it knows about.
-And hence it goes on the list and we scribble it and the indirect call
-goes *boom*.
+I made some simplifications, vis-a-vis passing the queue idx for the
+driver to extract the config from rather than the 'cfg' param Jakub
+outlined, and again passed the queue idx instead of the 'queue info'
+(the API currently assumes RX, and can be extended later for TX use
+cases).
+--=20
+Thanks,
+Mina
 
