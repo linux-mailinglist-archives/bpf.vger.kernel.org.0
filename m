@@ -1,92 +1,78 @@
-Return-Path: <bpf+bounces-17217-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17218-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CE0D80AB77
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C154180AB80
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 19:00:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD0D51F21330
-	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 17:58:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 698F01F2134C
+	for <lists+bpf@lfdr.de>; Fri,  8 Dec 2023 18:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB2E441C9B;
-	Fri,  8 Dec 2023 17:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E28041C8E;
+	Fri,  8 Dec 2023 18:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrhW+No2"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YVRI/OVg"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4392539AF3;
-	Fri,  8 Dec 2023 17:57:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D37FC433C8;
-	Fri,  8 Dec 2023 17:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702058269;
-	bh=MZC8OXd/xhYpQFY9QXSMpIHOKQcKILf1nuFEeLx1Z1k=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=IrhW+No2LIvscdmhlUWqrjJiqbzeddYeZMlOvgrxLv9Pp/gv65XNGK+d/kQvyt9F8
-	 eWeHCO3AAqSqLgKmc7Ik62hbdVifPyu/Z9BpeaTSYwEumWm4CM5RdsEVq3wTqAc8Yt
-	 0Mtxfy6ckCdT2CkRx53DyJYDR5tIlMzrGiRqLFkqVd6vRp5p0uaNNgnc/icx60AhME
-	 T4jAdjX/YdISDa0zROBRF880qcvvvYg4KCcH3HTEvBilmN+djnGudGA6yjwLQu61zC
-	 QQA9Js/3CQoJWElJJO/mXVHwonG1Z2FbVz8Cwm/aqWQC4pxhlM1WCn1Hu4n/x0J3l+
-	 Hql17ZKbnZbkA==
-Message-ID: <3fea9ae9-e9e6-4ba5-812b-2775a6ed9e6a@kernel.org>
-Date: Fri, 8 Dec 2023 10:57:47 -0700
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 015AFF9
+	for <bpf@vger.kernel.org>; Fri,  8 Dec 2023 10:00:21 -0800 (PST)
+Message-ID: <ffbf2ab9-91c6-4fb9-9f56-533d6c85dd91@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702058420;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mgjY9jJN9jmuhTIpwU+oAxTTmRdACbqy9UaZxPdYkDM=;
+	b=YVRI/OVg5gewIj1NZMqXw2o1V5aKHRe4LAxsqgQ9t39qAagcIerOxBHiRtfeZ3vwY0xajd
+	8tdfgp8ziKFMJh8GGK7eF+3MwkpOQEZBQR0afhEzpm/SaXqnLZA8gYWvwZB3lJ51BwMIA7
+	u82xg9Jw8E4noiilAM7/RqYi9wDMjwM=
+Date: Fri, 8 Dec 2023 10:00:14 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next v1 00/16] Device Memory TCP
-Content-Language: en-US
-To: Mina Almasry <almasrymina@google.com>,
- Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Jeroen de Borst <jeroendb@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann
- <arnd@arndb.de>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Yunsheng Lin <linyunsheng@huawei.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeelb@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20231208005250.2910004-1-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH RESEND bpf-next 1/2] bpf: Reduce the scope of
+ rcu_read_lock when updating fd map
+Content-Language: en-GB
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Daniel Borkmann <daniel@iogearbox.net>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ houtao1@huawei.com
+References: <20231208103357.2637299-1-houtao@huaweicloud.com>
+ <20231208103357.2637299-2-houtao@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231208103357.2637299-2-houtao@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 12/7/23 5:52 PM, Mina Almasry wrote:
-> Major changes in v1:
-> --------------
-> 
-> 1. Implemented MVP queue API ndos to remove the userspace-visible
->    driver reset.
-> 
-> 2. Fixed issues in the napi_pp_put_page() devmem frag unref path.
-> 
-> 3. Removed RFC tag.
-> 
-> Many smaller addressed comments across all the patches (patches have
-> individual change log).
-> 
-> Full tree including the rest of the GVE driver changes:
-> https://github.com/mina/linux/commits/tcpdevmem-v1
-> 
 
-Still a lot of DEVMEM references (e.g., socket API). Any reason not to
-move those to DMABUF?
+On 12/8/23 2:33 AM, Hou Tao wrote:
+> From: Hou Tao <houtao1@huawei.com>
+>
+> There is no rcu-read-lock requirement for ops->map_fd_get_ptr() or
+> ops->map_fd_put_ptr(), so doesn't use rcu-read-lock for these two
+> callbacks.
+>
+> For bpf_fd_array_map_update_elem(), accessing array->ptrs doesn't need
+> rcu-read-lock because array->ptrs will not be freed until the map-in-map
+> is released. For bpf_fd_htab_map_update_elem(), htab_map_update_elem()
+> requires rcu-read-lock to be held, so only use rcu_read_lock() during
+> the invocation of htab_map_update_elem().
+>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
 
 
