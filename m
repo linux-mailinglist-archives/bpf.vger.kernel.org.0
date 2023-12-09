@@ -1,421 +1,108 @@
-Return-Path: <bpf+bounces-17314-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17315-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C5980B342
-	for <lists+bpf@lfdr.de>; Sat,  9 Dec 2023 09:28:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 261ED80B561
+	for <lists+bpf@lfdr.de>; Sat,  9 Dec 2023 18:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFC0128111F
-	for <lists+bpf@lfdr.de>; Sat,  9 Dec 2023 08:28:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C12BA1F21283
+	for <lists+bpf@lfdr.de>; Sat,  9 Dec 2023 17:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D276679C1;
-	Sat,  9 Dec 2023 08:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BDE18048;
+	Sat,  9 Dec 2023 17:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bQRxeXQA"
 X-Original-To: bpf@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A009610C9
-	for <bpf@vger.kernel.org>; Sat,  9 Dec 2023 00:28:13 -0800 (PST)
-Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 3B98SBW9009671;
-	Sat, 9 Dec 2023 17:28:11 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
- Sat, 09 Dec 2023 17:28:11 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 3B98S66N009631
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 9 Dec 2023 17:28:06 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <09e4992c-9def-41b5-a806-2978b3ae35c6@I-love.SAKURA.ne.jp>
-Date: Sat, 9 Dec 2023 17:28:04 +0900
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E8E1700
+	for <bpf@vger.kernel.org>; Sat,  9 Dec 2023 09:06:02 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c38de1ee4so12554785e9.0
+        for <bpf@vger.kernel.org>; Sat, 09 Dec 2023 09:06:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702141561; x=1702746361; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fsixEpQQNMjcc2BGwviasbpmwlPiTHvX8TquKcxAEd0=;
+        b=bQRxeXQABg+v/2AuDfdnqPrCTQfHoxVqXbNXHPhseiMothgVCVh2Zuzzt3rc67lTdE
+         /NlKRgV1OZOa6uIoEe2BCf6CSPyRbt6wu3/spodKaYNCl2Rv5WRWp8/XFRXBhatgKZJa
+         XLB/bvLxurejwx980CkqLb++gPdI6mZMLGi1R0L8sjAo8tH6v9XPQvC/su475xLLYMSE
+         qm4vnVerh3InuQTT6/JWgVPYn3WyLG6OxRJ4sasgDoDWYCeFg/fyQC626P1xu+55fc9R
+         U4PkOruplUq7vfMcLKweZa7R9FPU/RJ/Opi+jQm0CRABv5JDiiZ/zI5hgneC5wuMdSAE
+         m33A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702141561; x=1702746361;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fsixEpQQNMjcc2BGwviasbpmwlPiTHvX8TquKcxAEd0=;
+        b=XlqgGWnwZPQYz1mDSXCyONeBZiSPcowkq3Wv6ZJR1Qmi0d6j5icEM7eOHZrs5CVCJ3
+         4nOLKOTqDblALHOwJyyVBGUajXIHZKF6+jmLm1Ov2YlxrA+gbJ3cUi9e9oWoe29c1XA8
+         j9cGCOGrxG9jesOVibwCGYVWxvmpAKgjzwdEBaQvtWTRSqHXz8LR5LyFHMPGj3m2hwnI
+         UDqdSPkElZIvMw1fswskwmm86V7dwvQ75Uz9NsLbfqFk7wzCoLhIZUUh1dHZKS4EM07F
+         vHWNTCwPl+OHuG/vGRq6UNE80puPGpcZe0Y1Y2jdUluFMpmv9nr6VQj3CAsicG27cMvJ
+         /kGw==
+X-Gm-Message-State: AOJu0Yx/zhALKS8AhwKAiJaH8M9hz6SkAXXUkCVlPvqD+/sIgS7jRFuR
+	wqjUhsy3WZeBYVPc9ybo4RE=
+X-Google-Smtp-Source: AGHT+IFqVHgPII5PFZZWpwNX4wOdEJK2DkyavW+UC7ZgnHhzin1aMAGgnFkilnjr+NsOrDB8jT6KrQ==
+X-Received: by 2002:a05:600c:501e:b0:40b:5e21:ec0d with SMTP id n30-20020a05600c501e00b0040b5e21ec0dmr956681wmr.63.1702141560439;
+        Sat, 09 Dec 2023 09:06:00 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id l39-20020a05600c1d2700b0040c2c5f5844sm7066435wms.21.2023.12.09.09.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Dec 2023 09:05:59 -0800 (PST)
+Message-ID: <bd8a244d3c1ffb3c6e9860346e90eac7eb2a181d.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: handle fake register spill to stack
+ with BPF_ST_MEM instruction
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org,
+ kernel-team@meta.com
+Date: Sat, 09 Dec 2023 19:05:58 +0200
+In-Reply-To: <CAEf4BzaE6TiThSaq7+=KERW=zP4G6vJz1nQ6-EWQrpnF4Np=-w@mail.gmail.com>
+References: <20231209010958.66758-1-andrii@kernel.org>
+	 <bff7a93dc02d42f71882d023179a1b481f5c884b.camel@gmail.com>
+	 <CAEf4BzaE6TiThSaq7+=KERW=zP4G6vJz1nQ6-EWQrpnF4Np=-w@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-security-module <linux-security-module@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, KP Singh <kpsingh@kernel.org>,
-        Paul Moore <paul@paul-moore.com>, Kees Cook <keescook@chromium.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc: song@kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <ast@kernel.org>, renauld@google.com,
-        Paolo Abeni <pabeni@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [RFC PATCH v3] LSM: Officially support appending LSM hooks after
- boot.
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-Commit 20510f2f4e2d ("security: Convert LSM into a static interface") has
-unexported register_security()/unregister_security(), with the reasoning
-that the ability to unload an LSM module is not required by in-tree users
-and potentially complicates the overall security architecture.
+On Fri, 2023-12-08 at 18:15 -0800, Andrii Nakryiko wrote:
+[...]
+> Now, the subtle thing here is that this doesn't happen with STACK_ZERO
+> or STACK_MISC. Let's look at STACK_MISC/STACK_INVALID case.
+>=20
+> 1: *(u8 *)(r10 -1) =3D 123; /* now fp-8=3Dm??????? */
+> 2: r1 =3D *(u64 *)(r10 - 8); /* STACK_MISC read, r1 is set to unknown sca=
+lar */
+> 3: if r1 =3D=3D 123 goto +10;
+>=20
+> Let's do analysis again. At 3: we mark r1 as precise, go back to 2:.
+> Here 2: instruction is not marked as INSN_F_STACK_ACCESS because it
+> wasn't stack fill due to STACK_MISC (that's handled in
+> check_read_fixed_off logic). So mark_chain_precision() stops here
+> because that instruction is resetting r1, so we clear r1 from the
+> mask, but this instruction isn't STACK_ACCESS, so we don't look for
+> fp-8 here.
 
-After that commit, many LSM modules have been proposed and some of them
-have succeeded in becoming in-tree users. Also, Linux distributors started
-enabling some of in-tree LSM modules in their distribution kernels.
+Ok, so STACK_MISC does not actually leak any information, when misc
+byte read it's still full range. Makes sense.
+I think STACK_ZERO handling is fine, there is no need remember it as
+stack access, as it marks precision right away.
 
-But due to that commit, currently in order to officially use an LSM
-module, that LSM module has to be built into vmlinux. And this limitation
-has been a big barrier for allowing distribution kernel users to use LSM
-modules which the organization who builds that distribution kernel cannot
-afford supporting.
+Thank you for explanation and sorry for false alarm.
 
-Therefore, as one of in-tree users, I've been asking for ability to append
-LSM hooks from LKM-based LSMs (i.e. re-export register_security()) so that
-distribution kernel users can use LSMs which the organization who builds
-that distribution kernel cannot afford supporting.
-
-Paul Moore believes that we don't need to support appending LSM hooks from
-LKM-based LSMs because anyone who wants to use an LSM module can recompile
-distributor kernels with that LSM enabled. But recompiling kernels is not
-a viable option for regular developers/users [1]; the burden of
-distributing rebuilt kernels is not acceptable for individual LSM authors
-and majority of Linux users, and the risk of replacing known distributor's
-prebuilt kernels with unknown individual's rebuilt kernels is not
-acceptable for majority of distributor kernel users. If Endpoint Detection
-and Response software (including Antivirus software) could not be used
-without replacing distributor's prebuilt kernels, Linux would not have been
-chosen as a platform. Being able to use whatever functionality using
-prebuilt distribution kernel packages and prebuilt kernel-debuginfo
-packages is the mandatory baseline. Therefore, in order to unofficially use
-LSMs which are not built into vmlinux, I've been maintaining AKARI (which
-is a pure LKM version of TOMOYO) as an LKM-based LSM which can run on
-kernels between 2.6.0 and 6.6.
-
-I was planning to propose ability to append LSM hooks from LKM-based LSMs
-(i.e. re-export register_security()) so that distribution kernel users can
-use LSMs which the organization who builds that distribution kernel cannot
-afford supporting, after Casey Schaufler finishes his work for making it
-possible to enable arbitrary LSM combinations. But before Casey's work
-finishes, KP Singh started proposing "Reduce overhead of LSMs with static
-calls" which will make AKARI more difficult to run because it removes
-security_hook_heads. Therefore, reviving ability to officially append LSM
-hooks from LKM-based LSMs became an urgent matter.
-
-KP Singh suggested me to try eBPF programs because BPF LSM is enabled in
-distributor's prebuilt kernels. But the result was that eBPF is too
-restricted to emulate TOMOYO. Therefore, I still need ability to append
-LSM hooks from LKM-based LSMs.
-
-Since it seems that nobody has objection on not using an LSM module which
-calls LSM hooks in the LKM-based LSMs [2], this version directly appended
-the linked list into individual callbacks. KP Singh's "Reduce overhead of
-LSMs with static calls" proposal will replace security_hook_heads with
-array of static call slots, and mod_security_hook_heads will remain
-untouched.
-
-This patch implements only ability to add LSM modules after boot, for
-as far as we know, we haven't heard of requests for reviving the ability
-to remove LSM modules after boot.
-
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Link: https://lkml.kernel.org/r/d759146e-5d74-4782-931b-adda33b125d4@I-love.SAKURA.ne.jp [1]
-Link: https://lkml.kernel.org/r/93b5e861-c1ec-417c-b21e-56d0c4a3ae79@I-love.SAKURA.ne.jp [2]
----
- include/linux/lsm_hooks.h |   9 +++
- security/security.c       | 134 ++++++++++++++++++++++++++++++++++++++
- 2 files changed, 143 insertions(+)
-
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index dcb5e5b5eb13..de83740f81a5 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -97,6 +97,7 @@ static inline struct xattr *lsm_get_xattr_slot(struct xattr *xattrs,
-  * care of the common case and reduces the amount of
-  * text involved.
-  */
-+#ifndef MODULE
- #define LSM_HOOK_INIT(HEAD, HOOK) \
- 	{ .head = &security_hook_heads.HEAD, .hook = { .HEAD = HOOK } }
- 
-@@ -105,6 +106,14 @@ extern char *lsm_names;
- 
- extern void security_add_hooks(struct security_hook_list *hooks, int count,
- 				const char *lsm);
-+#else
-+#define LSM_HOOK_INIT(HEAD, HOOK) \
-+	{ .head = &mod_security_hook_heads.HEAD, .hook = { .HEAD = HOOK } }
-+
-+extern struct security_hook_heads mod_security_hook_heads;
-+extern int mod_security_add_hooks(struct security_hook_list *hooks, int count, const char *lsm);
-+#endif
-+
- 
- #define LSM_FLAG_LEGACY_MAJOR	BIT(0)
- #define LSM_FLAG_EXCLUSIVE	BIT(1)
-diff --git a/security/security.c b/security/security.c
-index dcb3e7014f9b..bd033cd5e89a 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -74,6 +74,9 @@ const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX + 1] = {
- };
- 
- struct security_hook_heads security_hook_heads __ro_after_init;
-+static DEFINE_STATIC_KEY_FALSE_RO(mod_security_enabled);
-+struct security_hook_heads mod_security_hook_heads;
-+EXPORT_SYMBOL_GPL(mod_security_hook_heads);
- static BLOCKING_NOTIFIER_HEAD(blocking_lsm_notifier_chain);
- 
- static struct kmem_cache *lsm_file_cache;
-@@ -407,6 +410,10 @@ int __init early_security_init(void)
- #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
- 	INIT_HLIST_HEAD(&security_hook_heads.NAME);
- #include "linux/lsm_hook_defs.h"
-+#undef LSM_HOOK
-+#define LSM_HOOK(RET, DEFAULT, NAME, ...) \
-+	INIT_HLIST_HEAD(&mod_security_hook_heads.NAME);
-+#include "linux/lsm_hook_defs.h"
- #undef LSM_HOOK
- 
- 	for (lsm = __start_early_lsm_info; lsm < __end_early_lsm_info; lsm++) {
-@@ -465,6 +472,13 @@ static int __init choose_lsm_order(char *str)
- }
- __setup("lsm=", choose_lsm_order);
- 
-+static int __init enable_mod_security(char *str)
-+{
-+	static_branch_enable(&mod_security_enabled);
-+	return 1;
-+}
-+__setup("lsm.modular", enable_mod_security);
-+
- /* Enable LSM order debugging. */
- static int __init enable_debug(char *str)
- {
-@@ -537,6 +551,23 @@ void __init security_add_hooks(struct security_hook_list *hooks, int count,
- 	}
- }
- 
-+int mod_security_add_hooks(struct security_hook_list *hooks, int count, const char *lsm)
-+{
-+	int i;
-+
-+	if (!static_branch_unlikely(&mod_security_enabled)) {
-+		pr_info("Modular LSM support is not enabled.\n");
-+		return -EINVAL;
-+	}
-+	pr_info("Registering modular LSM: %s\n", lsm);
-+	for (i = 0; i < count; i++) {
-+		hooks[i].lsm = lsm;
-+		hlist_add_tail_rcu(&hooks[i].list, hooks[i].head);
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mod_security_add_hooks);
-+
- int call_blocking_lsm_notifier(enum lsm_event event, void *data)
- {
- 	return blocking_notifier_call_chain(&blocking_lsm_notifier_chain,
-@@ -769,6 +800,10 @@ static int lsm_superblock_alloc(struct super_block *sb)
- 								\
- 		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) \
- 			P->hook.FUNC(__VA_ARGS__);		\
-+		if (static_branch_unlikely(&mod_security_enabled)) {			\
-+			hlist_for_each_entry(P, &mod_security_hook_heads.FUNC, list) \
-+				P->hook.FUNC(__VA_ARGS__);	\
-+		}						\
- 	} while (0)
- 
- #define call_int_hook(FUNC, IRC, ...) ({			\
-@@ -781,6 +816,13 @@ static int lsm_superblock_alloc(struct super_block *sb)
- 			if (RC != 0)				\
- 				break;				\
- 		}						\
-+		if (static_branch_unlikely(&mod_security_enabled)) {			\
-+			hlist_for_each_entry(P, &mod_security_hook_heads.FUNC, list) { \
-+				RC = P->hook.FUNC(__VA_ARGS__);	\
-+				if (RC != 0)			\
-+					break;			\
-+			}					\
-+		}						\
- 	} while (0);						\
- 	RC;							\
- })
-@@ -1038,6 +1080,15 @@ int security_vm_enough_memory_mm(struct mm_struct *mm, long pages)
- 			break;
- 		}
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled) && cap_sys_admin) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.vm_enough_memory, list) {
-+			rc = hp->hook.vm_enough_memory(mm, pages);
-+			if (rc <= 0) {
-+				cap_sys_admin = 0;
-+				break;
-+			}
-+		}
-+	}
- 	return __vm_enough_memory(mm, pages, cap_sys_admin);
- }
- 
-@@ -1196,6 +1247,15 @@ int security_fs_context_parse_param(struct fs_context *fc,
- 		else if (trc != -ENOPARAM)
- 			return trc;
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.fs_context_parse_param, list) {
-+			trc = hp->hook.fs_context_parse_param(fc, param);
-+			if (trc == 0)
-+				rc = 0;
-+			else if (trc != -ENOPARAM)
-+				return trc;
-+		}
-+	}
- 	return rc;
- }
- 
-@@ -1566,6 +1626,14 @@ int security_dentry_init_security(struct dentry *dentry, int mode,
- 		if (rc != LSM_RET_DEFAULT(dentry_init_security))
- 			return rc;
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.dentry_init_security, list) {
-+			rc = hp->hook.dentry_init_security(dentry, mode, name,
-+							   xattr_name, ctx, ctxlen);
-+			if (rc != LSM_RET_DEFAULT(dentry_init_security))
-+				return rc;
-+		}
-+	}
- 	return LSM_RET_DEFAULT(dentry_init_security);
- }
- EXPORT_SYMBOL(security_dentry_init_security);
-@@ -1656,6 +1724,14 @@ int security_inode_init_security(struct inode *inode, struct inode *dir,
- 		 * the remaining LSMs.
- 		 */
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.inode_init_security, list) {
-+			ret = hp->hook.inode_init_security(inode, dir, qstr, new_xattrs,
-+							   &xattr_count);
-+			if (ret && ret != -EOPNOTSUPP)
-+				goto out;
-+		}
-+	}
- 
- 	/* If initxattrs() is NULL, xattr_count is zero, skip the call. */
- 	if (!xattr_count)
-@@ -2419,6 +2495,13 @@ int security_inode_getsecurity(struct mnt_idmap *idmap,
- 		if (rc != LSM_RET_DEFAULT(inode_getsecurity))
- 			return rc;
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.inode_getsecurity, list) {
-+			rc = hp->hook.inode_getsecurity(idmap, inode, name, buffer, alloc);
-+			if (rc != LSM_RET_DEFAULT(inode_getsecurity))
-+				return rc;
-+		}
-+	}
- 	return LSM_RET_DEFAULT(inode_getsecurity);
- }
- 
-@@ -2454,6 +2537,13 @@ int security_inode_setsecurity(struct inode *inode, const char *name,
- 		if (rc != LSM_RET_DEFAULT(inode_setsecurity))
- 			return rc;
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.inode_setsecurity, list) {
-+			rc = hp->hook.inode_setsecurity(inode, name, value, size, flags);
-+			if (rc != LSM_RET_DEFAULT(inode_setsecurity))
-+				return rc;
-+		}
-+	}
- 	return LSM_RET_DEFAULT(inode_setsecurity);
- }
- 
-@@ -2538,6 +2628,13 @@ int security_inode_copy_up_xattr(const char *name)
- 		if (rc != LSM_RET_DEFAULT(inode_copy_up_xattr))
- 			return rc;
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.inode_copy_up_xattr, list) {
-+			rc = hp->hook.inode_copy_up_xattr(name);
-+			if (rc != LSM_RET_DEFAULT(inode_copy_up_xattr))
-+				return rc;
-+		}
-+	}
- 
- 	return LSM_RET_DEFAULT(inode_copy_up_xattr);
- }
-@@ -3424,6 +3521,16 @@ int security_task_prctl(int option, unsigned long arg2, unsigned long arg3,
- 				break;
- 		}
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.task_prctl, list) {
-+			thisrc = hp->hook.task_prctl(option, arg2, arg3, arg4, arg5);
-+			if (thisrc != LSM_RET_DEFAULT(task_prctl)) {
-+				rc = thisrc;
-+				if (thisrc != 0)
-+					break;
-+			}
-+		}
-+	}
- 	return rc;
- }
- 
-@@ -3821,6 +3928,13 @@ int security_getprocattr(struct task_struct *p, const char *lsm,
- 			continue;
- 		return hp->hook.getprocattr(p, name, value);
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.getprocattr, list) {
-+			if (lsm != NULL && strcmp(lsm, hp->lsm))
-+				continue;
-+			return hp->hook.getprocattr(p, name, value);
-+		}
-+	}
- 	return LSM_RET_DEFAULT(getprocattr);
- }
- 
-@@ -3846,6 +3960,13 @@ int security_setprocattr(const char *lsm, const char *name, void *value,
- 			continue;
- 		return hp->hook.setprocattr(name, value, size);
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.setprocattr, list) {
-+			if (lsm != NULL && strcmp(lsm, hp->lsm))
-+				continue;
-+			return hp->hook.setprocattr(name, value, size);
-+		}
-+	}
- 	return LSM_RET_DEFAULT(setprocattr);
- }
- 
-@@ -3908,6 +4029,13 @@ int security_secid_to_secctx(u32 secid, char **secdata, u32 *seclen)
- 		if (rc != LSM_RET_DEFAULT(secid_to_secctx))
- 			return rc;
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.secid_to_secctx, list) {
-+			rc = hp->hook.secid_to_secctx(secid, secdata, seclen);
-+			if (rc != LSM_RET_DEFAULT(secid_to_secctx))
-+				return rc;
-+		}
-+	}
- 
- 	return LSM_RET_DEFAULT(secid_to_secctx);
- }
-@@ -4964,6 +5092,12 @@ int security_xfrm_state_pol_flow_match(struct xfrm_state *x,
- 		rc = hp->hook.xfrm_state_pol_flow_match(x, xp, flic);
- 		break;
- 	}
-+	if (static_branch_unlikely(&mod_security_enabled)) {
-+		hlist_for_each_entry(hp, &mod_security_hook_heads.xfrm_state_pol_flow_match, list) {
-+			rc = hp->hook.xfrm_state_pol_flow_match(x, xp, flic);
-+			break;
-+		}
-+	}
- 	return rc;
- }
- 
--- 
-2.34.1
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
