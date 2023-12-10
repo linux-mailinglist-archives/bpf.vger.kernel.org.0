@@ -1,219 +1,193 @@
-Return-Path: <bpf+bounces-17325-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17326-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBA8080B881
-	for <lists+bpf@lfdr.de>; Sun, 10 Dec 2023 04:05:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8695280B883
+	for <lists+bpf@lfdr.de>; Sun, 10 Dec 2023 04:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A5061C20928
-	for <lists+bpf@lfdr.de>; Sun, 10 Dec 2023 03:05:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 118981F21048
+	for <lists+bpf@lfdr.de>; Sun, 10 Dec 2023 03:11:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E726D17D9;
-	Sun, 10 Dec 2023 03:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7285415AC;
+	Sun, 10 Dec 2023 03:10:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LoxyH//m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YmlbCcXS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0379B3;
-	Sat,  9 Dec 2023 19:05:01 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40c1e3ea2f2so36402845e9.2;
-        Sat, 09 Dec 2023 19:05:01 -0800 (PST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3AAEFD
+	for <bpf@vger.kernel.org>; Sat,  9 Dec 2023 19:10:46 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so20705115e9.3
+        for <bpf@vger.kernel.org>; Sat, 09 Dec 2023 19:10:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702177500; x=1702782300; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wxl9nnVIfiBOr8Rw+j4D/uD/Nj3r0oHUhj6QGiUGdeU=;
-        b=LoxyH//m1WFoAMXNwx3y8v+IwHs6ATUWaj36ukRaIT4y83df4SPIPRUfmUMMy8R3XX
-         Ues1NiyS+Q+YNwVa9L6lXBfKABFGkF/c7+RzNIrE4X7aySTz+KqMNMmNfdDWXqX45VtW
-         B0yzygKqaqRG7mw1i1q5E32ybQ93m3CP1PEx0mF5GTk9Bdd3c+L/QlBbV20FiPyDTsJ0
-         MGdB+RQ1lz0r6WSkSO1QDdXgfIQ7GYhzH9S73cyFLo8mtRkfznLYVt58V0kHpXXsuQdN
-         iiY7kS0/HZWZbMzKKiEPRGgRcdjQDpSDueXV+1Zq6Wwh4z926z5fObOSIqdqEnqEO2SO
-         o+nQ==
+        d=gmail.com; s=20230601; t=1702177845; x=1702782645; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hIksy3SQTBUBARta9D9fpak30NF+hUQgyMPS+9iDm/8=;
+        b=YmlbCcXSAbZTSTw7uGmxQ6NzsAq5ht6Z5VDK4NVDG7BDf1pZ1WHyz8++mGov5PKCFE
+         jtM6mLVi4Kk0JotPq+HFy0pfsmWdfFPfYl86kfIyIlHSGAab2YBzPRjqocVnrdfJ8ma6
+         scDwr3yxPH0YP+ciZruyzNyvj8R7uqPbxBoCsgPJuRhHYX31bTUpg5haQP3QVJCxDbAV
+         ftz0yqIjNiu8qI/BED+CfDsQGmfzq21lQlEdwecI8ARtyZihPWWnEWgNFSEu/suJEySC
+         HYP9+h6E7ccto3iTH+3MWeLKD2cmY1E3oRobWPjxBFzxMstoZ1kKHWIn3lEwvBH1JFqj
+         CAzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702177500; x=1702782300;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wxl9nnVIfiBOr8Rw+j4D/uD/Nj3r0oHUhj6QGiUGdeU=;
-        b=P8ar+Epx4ClcZp/udhkseNpty+T5ylx98BzwMkuiFHBnX6doNdPxGB9Nv2buqIWAcI
-         Bknpum3/GXCx8m+gQDVHXHXx5i7IQ84/cd1XfQfKJrY4e16fx8cRFmwNs3W89zMJU2gv
-         ivc2xBip95ONWt7/CrHEpVy94SdA0H/RpsqkCrfS2VNOV3boBZOGYf+o6MKiL9eyJIqo
-         XAAjswsdRiKK0FYLh5BgFkTf+v/v0T9e31NCuSoaYlspuPWkIuXizduIpYl+wUFU63OX
-         bb4LOUdonodr04UoRF3elaaKYLE5zJ4NXN/6ZS9aH13cteitMGEsLu6JntvZjS+6Fs7u
-         /DCA==
-X-Gm-Message-State: AOJu0YwJ0zpnSO4XgLAscswxIqDppGM0aic2MHJj2t2sH1CpKY+YRpel
-	MSTKgtb3g2pfXJ/AxZqqDFg=
-X-Google-Smtp-Source: AGHT+IHJipyQW4yFkljRQowJvIeShM9YAuwDKB6t4bKW0HKwLGG9Hrotr1J6QPfjejCHHrlkaexSCA==
-X-Received: by 2002:adf:e282:0:b0:332:ef1e:bb88 with SMTP id v2-20020adfe282000000b00332ef1ebb88mr1266810wri.33.1702177500084;
-        Sat, 09 Dec 2023 19:05:00 -0800 (PST)
-Received: from [192.168.8.100] ([85.255.236.102])
-        by smtp.gmail.com with ESMTPSA id fm21-20020a05600c0c1500b0040c03c3289bsm8341129wmb.37.2023.12.09.19.04.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Dec 2023 19:04:59 -0800 (PST)
-Message-ID: <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
-Date: Sun, 10 Dec 2023 03:03:37 +0000
+        d=1e100.net; s=20230601; t=1702177845; x=1702782645;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hIksy3SQTBUBARta9D9fpak30NF+hUQgyMPS+9iDm/8=;
+        b=LtTlxCzhy29HIEFXtqfpScjAjVIelAXJDmMH0zt+DQVLeWsxK0zU4y9SLdrgHiEVS8
+         GAgQwAZUn8FaEfqOQo4iFooC/UMaQzu8wIz3jeGBPdyjd4NBkLPWTkGTUF5DvSbN9hT/
+         TU3jBX5vxSzAs+Y0VW9SO5z7W+o98i6gmNDV0mu5NfWnsFzPkN4TWRDhxqK1I7zLlg7a
+         57lBKWxMhK+2w150Oy+7jPIL3Z5Da8AM01btAXYQiT45/iXy0yvCjP1/PpZXjp7anZgG
+         axx/8HNi/8Q497IymmXgb/XEnhtntS9FHFPxR83D8lipo1dfiyzCxTzd5KTOpucwfBdu
+         9qzQ==
+X-Gm-Message-State: AOJu0YwHccRQ07K2ikVZ+QUCdKaCPa4rBv/QQYyqLSBOs5rR5Qeer1wl
+	On3KBMbpxWhaFfDLObJlUOniBjfTN3BqVVbtA6s=
+X-Google-Smtp-Source: AGHT+IHG7+fwvr9GYUZJ4DPY02szyiNOUhDwcZzNYUye5guoD8UtqXxCrgnYb32ceF/YYe/ZxuY/PC+5zbP7xynHSA8=
+X-Received: by 2002:a05:600c:3784:b0:40b:5e21:e27b with SMTP id
+ o4-20020a05600c378400b0040b5e21e27bmr1234528wmr.104.1702177845234; Sat, 09
+ Dec 2023 19:10:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
- provider
-Content-Language: en-US
-To: Mina Almasry <almasrymina@google.com>
-Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Jeroen de Borst <jeroendb@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann
- <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Yunsheng Lin <linyunsheng@huawei.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com>
- <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
- <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20231127201817.GB5421@maniforge> <072101da2558$fe5f5020$fb1df060$@gmail.com>
+ <20231207215152.GA168514@maniforge>
+In-Reply-To: <20231207215152.GA168514@maniforge>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 9 Dec 2023 19:10:33 -0800
+Message-ID: <CAADnVQ+Mhe6ean6J3vH1ugTyrgWNxupLoFfwKu6-U=3R8i1TNQ@mail.gmail.com>
+Subject: Re: [Bpf] BPF ISA conformance groups
+To: David Vernet <void@manifault.com>
+Cc: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>, 
+	Christoph Hellwig <hch@infradead.org>, bpf@ietf.org, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/8/23 23:25, Mina Almasry wrote:
-> On Fri, Dec 8, 2023 at 2:56 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> On 12/8/23 00:52, Mina Almasry wrote:
-> ...
->>> +     if (pool->p.queue)
->>> +             binding = READ_ONCE(pool->p.queue->binding);
->>> +
->>> +     if (binding) {
->>> +             pool->mp_ops = &dmabuf_devmem_ops;
->>> +             pool->mp_priv = binding;
->>> +     }
->>
->> Hmm, I don't understand why would we replace a nice transparent
->> api with page pool relying on a queue having devmem specific
->> pointer? It seemed more flexible and cleaner in the last RFC.
->>
-> 
-> Jakub requested this change and may chime in, but I suspect it's to
-> further abstract the devmem changes from driver. In this iteration,
-> the driver grabs the netdev_rx_queue and passes it to the page_pool,
-> and any future configurations between the net stack and page_pool can
-> be passed this way with the driver unbothered.
+On Thu, Dec 7, 2023 at 1:51=E2=80=AFPM David Vernet <void@manifault.com> wr=
+ote:
+>
+> On Sat, Dec 02, 2023 at 11:51:50AM -0800, dthaler1968=3D40googlemail.com@=
+dmarc.ietf.org wrote:
+> > >From David Vernet's WG summary:
+> > > After this update, the discussion moved to a topic for the BPF ISA
+> > document that has yet to be resolved:
+> > > ISA RFC compliance. Dave pointed out that we still need to specify wh=
+ich
+> > instructions in the ISA are
+> > > MUST, SHOULD, etc, to ensure interoperability.  Several different opt=
+ions
+> > were presented, including
+> > >  having individual-instruction granularity, following the clang CPU
+> > versioning convention, and grouping
+> > > instructions by logical functionality.
+> > >
+> > > We did not obtain consensus at the conference on which was the best w=
+ay
+> > forward. Some of the points raised include the following:
+> > >
+> > > - Following the clang CPU versioning labels is somewhat arbitrary. It
+> > >   may not be appropriate to standardize around grouping that is a res=
+ult
+> > >   of largely organic historical artifacts.
+> > > - If we decide to do logical grouping, there is a danger of
+> > >   bikeshedding. Looking at anecdotes from industry, some vendors such=
+ as
+> > >   Netronome elected to not support particular instructions for
+> > >   performance reasons.
+> >
+> > My sense of the feedback in general was to group instructions by logica=
+l
+> > functionality, and only create separate
+> > conformance groups where there is some legitimate technical reason that=
+ a
+> > runtime might not want to support
+> > a given set of instructions.  Based on discussion during the meeting, h=
+ere's
+> > a strawman set of conformance
+> > groups to kick off discussion.  I've tried to use short (like 6 charact=
+ers
+> > or fewer) names for ease of display in
+> > document tables, and potentially in command line options to tools that =
+might
+> > want to use them.
+> >
+> > A given runtime platform would be compliant to some set of the followin=
+g
+> > conformance groups:
+> >
+> > 1. "basic": all instructions not covered by another group below.
+> > 2. "atomic": all Atomic operations.  I think Christoph argued for this =
+one
+> > in the meeting.
+> > 3. "divide": all division and modulo operations.  Alexei said in the me=
+eting
+> > that he'd heard demand for this one.
+> > 4. "legacy": all legacy packet access instructions (deprecated).
+> > 5. "map": 64-bit immediate instructions that deal with map fds or map
+> > indices.
+> > 6. "code": 64-bit immediate instruction that has a "code pointer" type.
+> > 7. "func": program-local functions.
+>
+> I thought for a while about whether this should be part of the basic
+> conformance group, and talked through it with Jakub Kicinski. I do think
+> it makes sense to keep it separate like this. For e.g. devices with
+> Harvard architectures, it could get quite non-trivial for the verifier
+> to determine whether accesses to arguments stored in special register
+> are safe. Definitely not impossible, and overall very useful to support
+> this, but in order to ease vendor adoption it's probably best to keep
+> this separate.
+>
+> > Things that I *think* don't need a separate conformance group (can just=
+ be
+> > in "basic") include:
+> > a. Call helper function by address or BTF ID.  A runtime that doesn't
+> > support these simply won't expose any
+> >     such helper functions to BPF programs.
+> > b. Platform variable instructions (dst =3D var_addr(imm)).  A runtime t=
+hat
+> > doesn't support this simply won't
+> >     expose any platform variables to BPF programs.
+> >
+> > Comments? (Let the bikeshedding begin...)
+>
+> This list seems logical to me,
 
-Ok, that makes sense, but even if passed via an rx queue I'd
-at least hope it keeping abstract provider parameters, e.g.
-ops, but not hard coded with devmem specific code.
+I think we should do just two categories: legacy and the rest,
+since any scheme will be flawed and infinite bikeshedding will ensue.
+For example, let's take a look at #2 atomic...
+Should it include or exclude atomic_add insn ? It was added
+at the very beginning of BPF ISA and was used from day one.
+Without it it's impossible to count stats. The typical network or
+tracing use case needs to count events and one cannot do it without
+atomic increment. Eventually per-cpu maps were added as an alternative.
+I suspect any platform that supports #1 basic insn without
+atomic_add will not be practically useful.
+Should atomic_add be a part of "basic" then? But it's atomic.
+Then what about atomic_fetch_add insn? It's pretty close semantically.
+Part of atomic or part of basic?
 
-It might even be better done with a helper like
-create_page_pool_from_queue(), unless there is some deeper
-interaction b/w pp and rx queues is predicted.
+Another example, #3 divide. bpf cpu=3Dv1 ISA only has unsigned div/mod.
+Eventually we added a signed version. Integer division is one of the
+slowest operations in a HW. Different cpus have different flavors
+of them 64/32 64/64 32/32, etc. All with different quirks.
+cpu=3Dv1 had modulo insn because in tracing one often needs to do it
+to select a slot in a table, but in networking there is rarely a need.
+So bpf offload into netronome HW doesn't support it (iirc).
+Should div/mod signed/unsigned be a part of basic? or separate?
+Only 32 or 64 bit?
 
->>> +
->>>        if (pool->mp_ops) {
->>>                err = pool->mp_ops->init(pool);
->>>                if (err) {
->>> @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
->>>        }
->>>    }
->>>    EXPORT_SYMBOL(page_pool_update_nid);
->>> +
->>> +void __page_pool_iov_free(struct page_pool_iov *ppiov)
->>> +{
->>> +     if (WARN_ON(ppiov->pp->mp_ops != &dmabuf_devmem_ops))
->>> +             return;
->>> +
->>> +     netdev_free_dmabuf(ppiov);
->>> +}
->>> +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
->>
->> I didn't look too deep but I don't think I immediately follow
->> the pp refcounting. It increments pages_state_hold_cnt on
->> allocation, but IIUC doesn't mark skbs for recycle? Then, they all
->> will be put down via page_pool_iov_put_many() bypassing
->> page_pool_return_page() and friends. That will call
->> netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
->>
->> At least I couldn't make it work with io_uring, and for my purposes,
->> I forced all puts to go through page_pool_return_page(), which calls
->> the ->release_page callback. The callback will put the reference and
->> ask its page pool to account release_cnt. It also gets rid of
->> __page_pool_iov_free(), as we'd need to add a hook there for
->> customization otherwise.
->>
->> I didn't care about overhead because the hot path for me is getting
->> buffers from a ring, which is somewhat analogous to sock_devmem_dontneed(),
->> but done on pp allocations under napi, and it's done separately.
->>
->> Completely untested with TCP devmem:
->>
->> https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c79ac92ae2d8
->>
-> 
-> This was a mistake in the last RFC, which should be fixed in v1. In
-> the RFC I was not marking the skbs as skb_mark_for_recycle(), so the
-> unreffing path wasn't as expected.
-> 
-> In this iteration, that should be completely fixed. I suspect since I
-> just posted this you're actually referring to the issue tested on the
-> last RFC? Correct me if wrong.
-
-Right, it was with RFCv3
-
-> In this iteration, the reffing story:
-> 
-> - memory provider allocs ppiov and returns it to the page pool with
-> ppiov->refcount == 1.
-> - The page_pool gives the page to the driver. The driver may
-> obtain/release references with page_pool_page_[get|put]_many(), but
-> the driver is likely not doing that unless it's doing its own page
-> recycling.
-> - The net stack obtains references via skb_frag_ref() ->
-> page_pool_page_get_many()
-> - The net stack drops references via skb_frag_unref() ->
-> napi_pp_put_page() -> page_pool_return_page() and friends.
-> 
-> Thus, the issue where the unref path was skipping
-> page_pool_return_page() and friends should be resolved in this
-> iteration, let me know if you think otherwise, but I think this was an
-> issue limited to the last RFC.
-
-Then page_pool_iov_put_many() should and supposedly would never be
-called by non devmap code because all puts must circle back into
-->release_page. Why adding it to into page_pool_page_put_many()?
-
-@@ -731,6 +731,29 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
-+	if (page_is_page_pool_iov(page)) {
-...
-+		page_pool_page_put_many(page, 1);
-+		return NULL;
-+	}
-
-Well, I'm looking at this new branch from Patch 10, it can put
-the buffer, but what if we race at it's actually the final put?
-Looks like nobody is going to to bump up pages_state_release_cnt
-
-If you remove the branch, let it fall into ->release and rely
-on refcounting there, then the callback could also fix up
-release_cnt or ask pp to do it, like in the patch I linked above
-
--- 
-Pavel Begunkov
+Hence my point: legacy and the rest (as of cpu=3Dv4) are the only two categ=
+ories
+we should have in _this_ version of the standard.
+Rest assured we will add new insn in the coming months.
+I suggest we figure out conformance groups for future insns at that time.
+That would be the time to argue and actually extract value out of discussio=
+n.
+Retroactive bike shedding is a bike shedding and nothing else.
 
