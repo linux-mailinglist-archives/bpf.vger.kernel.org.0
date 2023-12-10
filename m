@@ -1,94 +1,210 @@
-Return-Path: <bpf+bounces-17342-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17343-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9E0D80BC03
-	for <lists+bpf@lfdr.de>; Sun, 10 Dec 2023 16:31:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22CD980BC36
+	for <lists+bpf@lfdr.de>; Sun, 10 Dec 2023 17:42:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 390271F210E9
-	for <lists+bpf@lfdr.de>; Sun, 10 Dec 2023 15:31:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1D34B20986
+	for <lists+bpf@lfdr.de>; Sun, 10 Dec 2023 16:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A40171B2;
-	Sun, 10 Dec 2023 15:31:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF82D18622;
+	Sun, 10 Dec 2023 16:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R1HU4EBJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I7umxsAr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDD993;
-	Sun, 10 Dec 2023 07:31:43 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-33349b3f99aso3474282f8f.0;
-        Sun, 10 Dec 2023 07:31:43 -0800 (PST)
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E30F5;
+	Sun, 10 Dec 2023 08:41:58 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40c0fc1cf3dso39652215e9.0;
+        Sun, 10 Dec 2023 08:41:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702222302; x=1702827102; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=GF8i3poUteh3o919bjsXzMrd6WqhLvjOQXB7N4HHdfQ=;
-        b=R1HU4EBJwvaasSQhRKioWHxk/YFYad9sd1U4NaIxcXj9qbQ5ioqU0aVKHPnzA42V2T
-         du7WJ6UieDPtNbPHpe6Bdooqqti7l4C3h9FwQhbLYb+QyPImj2JC8DzOFF72+toVu2O7
-         pyjbqQ+KWeccn44aUteDBzZad//+s5znEqAvjZTDkvQtgGse+ufYIKJSkNsDtM2OqeUy
-         uDGi3dCjXNgIJtyy9hibrSMyAOfS9c4xGE9SwhoVzOa4puAOr7J5qqm+ZGfDkREhEHyo
-         OvXl8rHzl1XHQwNDjIznR34FdtnJ1UshDXPA9tdj+6pM2EVy6txojDuaiVW6mxbeDRnc
-         Zkrw==
+        d=gmail.com; s=20230601; t=1702226516; x=1702831316; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gJeCoIM6sopy1ZIAZXFBf/8md9S3R0TEu08Qyg0rNas=;
+        b=I7umxsArahJ5nA3JPcG5eFf9XmLRqiWMC/keGMo0xOFi/cedDPmT4bXblqT8JDGBaR
+         2+rVN5KuNBUiTzi7fcCADQji5Vy8KVw9uXMgxthiePxNaFYfx1aQNeLi6khJSf/EKGSk
+         udz46ZgHF5Xcr2IAL1j5bTQLb0fGbq+9nLilcBv//2UvygQgH1MLvTR9q+vJc0+WWT30
+         +F9jk6l/0bGxe0xB3XzSLYQoxjvgAnxK/UzFjVfqgAv39xYPaq7nRlHAUwB4tiCX7R2G
+         KPSxAiRz/EGwFixhZAm+smD7uHmcMz6CY/9TJZCzksYoDnfEfrIBbuyD40qp9lDaWg/f
+         5HfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702222302; x=1702827102;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GF8i3poUteh3o919bjsXzMrd6WqhLvjOQXB7N4HHdfQ=;
-        b=M/P4YocnJiu0K1TTfhXqArDD1kneAYwNBCnc/YqfsFQ5BGa3mmLpdLu5n7cVFJwjKS
-         Ie2effs/Fw02TcRw9AvmGh2MDUaofv3cxoGFgv+p0CP5h03QXYEx+HWltnxEchlXtFYo
-         ZSeCIPwmBRxUYtr+6OoHC2gEeV2FxYCqn5TWQRisiENOT9jEM7xy5qZQywATEa+f3U61
-         hVeV4F8wby2yCcrt2JgjwPUARTVWoi6oQpK0R+KVrhLkX2eDQBU2RhTVaBMXZkomYlee
-         hpCJbOU8bnT0vMRebyvbA3ulVeTbtu1UnQhW5IQCwu58V8gjoH/2JcjOlKkHI0MbIKaO
-         9vvw==
-X-Gm-Message-State: AOJu0YxZEU2s7ytFQ7F6LgaLUpohIkPmiCPolJdkH/yQJkjFlgtvGLiX
-	+UiwagZ2LCUeo0cgTbSrpIk=
-X-Google-Smtp-Source: AGHT+IE3R74vScOl5coFe9Lm7wXjc0ov+CrKHcfP0Z7APVRBXVfi9GKJi/TlS2jtn0nIPOU0Q+TsAw==
-X-Received: by 2002:a05:6000:4c4:b0:333:28f6:d9e3 with SMTP id h4-20020a05600004c400b0033328f6d9e3mr1568200wri.33.1702222301651;
-        Sun, 10 Dec 2023 07:31:41 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id o10-20020a5d58ca000000b0033338c3ba42sm6554854wrf.111.2023.12.10.07.31.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Dec 2023 07:31:41 -0800 (PST)
-Message-ID: <bbf5098d5ff81bf9d65315522e9999a818ae25a3.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 3/8] libbpf: further decouple feature checking
- logic from bpf_object
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, paul@paul-moore.com, brauner@kernel.org
-Cc: linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	keescook@chromium.org, kernel-team@meta.com, sargun@sargun.me
-Date: Sun, 10 Dec 2023 17:31:40 +0200
-In-Reply-To: <20231207185443.2297160-4-andrii@kernel.org>
-References: <20231207185443.2297160-1-andrii@kernel.org>
-	 <20231207185443.2297160-4-andrii@kernel.org>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+        d=1e100.net; s=20230601; t=1702226516; x=1702831316;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gJeCoIM6sopy1ZIAZXFBf/8md9S3R0TEu08Qyg0rNas=;
+        b=uJcWy0iv8zva0aOhxyCZMC1glD8dobKCt15djNRepPfLZeCdm97Gt4BPzRU/GEVwjt
+         s8MFLl7udnVqDRUAp/W4btHK04TteLCG3I0bPVzxdixEBL2mToz3nSR2vlEvHXcgy3R5
+         w8Wgg3kdUB1/GSRoMMD1KQfUGkv0mhJr2PnF9LnT+7hNTw9Nn7GKmQUk3EXxGdW3JLHy
+         nPRz0EZYnU6Uy8znKqZPCBGCcL3551TsYtgX4Lz9L+hY1A6AiwbOmN1L/XPZqIMSzegc
+         7LArC2J4wiykdd5D/5dhtbFN8q4xgas7nQBEusgqnIEWqbB8R9tov1TzT9byiWl/3OWz
+         ZzeQ==
+X-Gm-Message-State: AOJu0Yx8wMfd0HA4fipXP6n6HIlRt/P19+Fw3EdnRs2LzvgTZts6xtBc
+	XFoUQVxOQ+/eXVC2JMfEUvPoATs5e7bZ0tv4GMQ=
+X-Google-Smtp-Source: AGHT+IEOYIwbRJUSP0+OU5IcvcWX8fC0lcjyh0FLRopjZWwuzvuolRVoJ37IfW/qCal4i/SfpHD0ohL8h5DTDN850rE=
+X-Received: by 2002:a7b:c455:0:b0:40c:2871:9727 with SMTP id
+ l21-20020a7bc455000000b0040c28719727mr1495617wmi.150.1702226516307; Sun, 10
+ Dec 2023 08:41:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <00000000000016fb59060c26b03e@google.com>
+In-Reply-To: <00000000000016fb59060c26b03e@google.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Sun, 10 Dec 2023 08:41:43 -0800
+Message-ID: <CAEf4BzbRzb0B-Wy-fZ05bUHn5UXXoiL5yO2yP_CKyciCFf9yWA@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] WARNING in __mark_chain_precision (3)
+To: syzbot <syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index a6b8d6f70918..af5e777efcbd 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -637,6 +637,7 @@ struct elf_state {
->  };
-> =20
->  struct usdt_manager;
-> +struct kern_feature_cache;
+On Sun, Dec 10, 2023 at 4:09=E2=80=AFAM syzbot
+<syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    577a4ee0b96f Add linux-next specific files for 20231206
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D16eee286e8000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Da3081237da77b=
+539
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D4d6330e14407721=
+955eb
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
+ebian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D16a19474e80=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D11abb46ae8000=
+0
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/14bcd8d77be7/dis=
+k-577a4ee0.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/9f03a87f3ac1/vmlinu=
+x-577a4ee0.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/0c655bc6a307/b=
+zImage-577a4ee0.xz
+>
+> The issue was bisected to:
+>
+> commit 41f6f64e6999a837048b1bd13a2f8742964eca6b
+> Author: Andrii Nakryiko <andrii@kernel.org>
+> Date:   Tue Dec 5 18:42:39 2023 +0000
+>
+>     bpf: support non-r10 register spill/fill to/from stack in precision t=
+racking
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D10a03302e8=
+0000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D12a03302e8=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D14a03302e8000=
+0
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com
+> Fixes: 41f6f64e6999 ("bpf: support non-r10 register spill/fill to/from st=
+ack in precision tracking")
+>
+> ------------[ cut here ]------------
+> verifier backtracking bug (stack slot out of bounds)
+> WARNING: CPU: 0 PID: 5066 at kernel/bpf/verifier.c:4266 __mark_chain_prec=
+ision+0x2a84/0x4d60 kernel/bpf/verifier.c:4266
+> Modules linked in:
+> CPU: 0 PID: 5066 Comm: syz-executor245 Not tainted 6.7.0-rc4-next-2023120=
+6-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 11/10/2023
+> RIP: 0010:__mark_chain_precision+0x2a84/0x4d60 kernel/bpf/verifier.c:4266
+> Code: ff 89 de e8 8e e5 ec ff 84 db 0f 85 2c e1 ff ff e8 51 ea ec ff c6 0=
+5 60 54 88 0d 01 90 48 c7 c7 a0 4b d4 8a e8 2d d9 b2 ff 90 <0f> 0b 90 90 e9=
+ 09 e1 ff ff e8 2e ea ec ff 48 8d 7b 04 48 b8 00 00
+> RSP: 0018:ffffc90003abf2e8 EFLAGS: 00010282
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff814e05d9
+> RDX: ffff888024c3bb80 RSI: ffffffff814e05e6 RDI: 0000000000000001
+> RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801b2e0000
+> R13: 0000000000000000 R14: 0000000000000001 R15: dffffc0000000000
+> FS:  0000555556ba0380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f6c37df1b10 CR3: 0000000074a2e000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  mark_chain_precision kernel/bpf/verifier.c:4314 [inline]
+>  check_cond_jmp_op+0xea0/0x72b0 kernel/bpf/verifier.c:14724
+>  do_check kernel/bpf/verifier.c:17516 [inline]
+>  do_check_common+0x8cbc/0xe8e0 kernel/bpf/verifier.c:19955
+>  do_check_main kernel/bpf/verifier.c:20046 [inline]
+>  bpf_check+0x5129/0xa420 kernel/bpf/verifier.c:20683
+>  bpf_prog_load+0x1533/0x2200 kernel/bpf/syscall.c:2742
+>  __sys_bpf+0xbf7/0x49d0 kernel/bpf/syscall.c:5414
+>  __do_sys_bpf kernel/bpf/syscall.c:5518 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:5516 [inline]
+>  __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5516
+>  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+>  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+>  entry_SYSCALL_64_after_hwframe+0x62/0x6a
+> RIP: 0033:0x7f3f5a049af9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffcd0ae5d58 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f3f5a049af9
+> RDX: 0000000000000048 RSI: 00000000200017c0 RDI: 0000000000000005
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000006
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+>  </TASK>
+>
+>
 
-Nit: this forward declaration is not necessary.
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+482d548d40b0af9af730e4869903d4433e44f014
 
-
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
 
