@@ -1,101 +1,210 @@
-Return-Path: <bpf+bounces-17362-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17363-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A08C80BF8A
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 04:03:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 940F280BFEA
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 04:33:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C81801C20895
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 03:03:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4BA21C2090C
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 03:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45B6515AF8;
-	Mon, 11 Dec 2023 03:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264321641D;
+	Mon, 11 Dec 2023 03:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MbZb+O/5"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B2BDA
-	for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 19:03:11 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpRQ24y91z4f3jqh
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 11:03:06 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id D710A1A0366
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 11:03:07 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgC3uQ_qe3Zlc55GDQ--.7189S2;
-	Mon, 11 Dec 2023 11:03:07 +0800 (CST)
-Subject: Re: [PATCH bpf-next 7/7] bpf: Wait for sleepable BPF program in
- maybe_wait_bpf_programs()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
-References: <20231208102355.2628918-1-houtao@huaweicloud.com>
- <20231208102355.2628918-8-houtao@huaweicloud.com>
- <CAADnVQKZfvDQUuzJ98n5Q6a1xU5XBxFGi0PeEnmRxj_TFKoW1A@mail.gmail.com>
- <bcaeae84-766c-5e3c-d444-70015ada7765@huaweicloud.com>
- <CAADnVQKev7805QuyZA1yq_N3Ljg+X5vZqscRpCSHS2NV3AdMgw@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <3af83be7-8370-c0e6-3915-ffb443ea9907@huaweicloud.com>
-Date: Mon, 11 Dec 2023 11:03:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89DF7EA
+	for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 19:33:44 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-33340c50af9so4201739f8f.3
+        for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 19:33:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702265623; x=1702870423; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2sKK04kxxzdNmn7VQGcn2hkwY/961fnw/HrZCIZ/nUM=;
+        b=MbZb+O/5dTfc3f51stis7/yxUAL9xUTXAPsIbXnqnYaxY70B7gp8EJsGRc1umjZH52
+         YxPulMZ0VS27gu0usF/MoRE8oFHHWFLbx0v4jZO1Pzm+AZgyGuSX6uWUGievgTFskdrh
+         STzvWzPip/lw4KBB4XvzYW+Rs9WrNjHoYuLQbFLH32XxW6/r1sHpcXG+W5dlA2FZ4jNt
+         umC8DdQ9ptHMWhpYhW1ihc0IMsx9cib0hSEjIXpTLvrH9p6aXm2c2qrGoRjLQvxmMoY1
+         OACJQ8wDWB3xNjFDU9DUGAEfHYsqmBZ3HTIazzqpNVR3xCAi1tMlpq+hAjFpCJho10PU
+         oMuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702265623; x=1702870423;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2sKK04kxxzdNmn7VQGcn2hkwY/961fnw/HrZCIZ/nUM=;
+        b=u3YlclcHss0A+uTc8pF+JdnYZjalvhsPZcgTGMVb1gw6AxS77D7rJQknJo5Uc0cNhN
+         9Sz4WcAU1XszwERxHiE7ryJq1cU4jMtBpB0vPlQaE7bIjJEGl66Dcv+NWD58HX8yKPXt
+         LoB8dl2FM2MhzDbRcwILFQhdHxFxV81VxYPxlXDuQiXFVWz4OVNsFj65cQECm9kVviwv
+         xowDyuZnqy94BmtvJofGfzUAkedyqHvrbWjbn31oFVlYzLfao+L9BKhbd4GbGYF5eaN1
+         8MaP2H8hTz/gv4Wyy53WMLMcCh/dJd4KSkqzxdx5M2OZNffBXNkrx75Wkfom8Rul5FXI
+         X9BA==
+X-Gm-Message-State: AOJu0YwQOqxQUxxSYDUL8c8FAmqFvVtb0RBsANDSEVjMbRCceqnYMbLa
+	ewlffT+R4Yqp7xXwGIMmA+wDpVWzqe11xa7ur5Y=
+X-Google-Smtp-Source: AGHT+IFphaTetg1O6j7pYPLQeI41RsIjaONUR9HBrhJdv99OlWdpOWU4YN1+kYK7Ac7yQOCrkN8t/Sps6tHM/76/ikc=
+X-Received: by 2002:a05:600c:518e:b0:40c:4292:1e59 with SMTP id
+ fa14-20020a05600c518e00b0040c42921e59mr605347wmb.117.1702265622837; Sun, 10
+ Dec 2023 19:33:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQKev7805QuyZA1yq_N3Ljg+X5vZqscRpCSHS2NV3AdMgw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgC3uQ_qe3Zlc55GDQ--.7189S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7GF4xGw4DGF1kWr4DAFW8Zwb_yoW8JrWDpF
-	9Y9a4DKr4qyrs09Fn2vr48X348Wr4SgrW7trs5Kr4FvF15uF95KrWxKFs8uFnYyw4xt342
-	qrWUZ3Z5CF1Yv37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231206141030.1478753-1-aspsk@isovalent.com> <20231206141030.1478753-7-aspsk@isovalent.com>
+ <CAADnVQ+BRbJN1A9_fjDTXh0=VM5x6oGVgtcB1JB7K8TM5+6i5Q@mail.gmail.com>
+ <ZXNCB5sEendzNj6+@zh-lab-node-5> <CAEf4Bzai9X2xQGjEOZvkSkx7ZB9CSSk4oTxoksTVSBoEvR4UsA@mail.gmail.com>
+ <CAADnVQJtWVE9+rA2232P4g7ktUJ_+Nfwo+MYpv=6p7+Z9J20hw@mail.gmail.com>
+ <bef79c65-e89a-4219-8c8b-750c60e1f2b4@linux.dev> <CAADnVQJd1aUFzznLhwNvkN+zot-u3=4A16utY93HoLJrP_vo3w@mail.gmail.com>
+ <85aa91f9-d5c0-4e7b-950d-475da7787f64@linux.dev> <CAADnVQKZjmwxo0cBiHcp3FkAAmJT850qQJ5_=fAhfOKniJM2Kw@mail.gmail.com>
+ <3682c649-6a6a-4f66-b4fa-fbcbb774ae94@linux.dev> <8e45c28fa0827be2b01a7cd36aa68750ceff69f5.camel@gmail.com>
+In-Reply-To: <8e45c28fa0827be2b01a7cd36aa68750ceff69f5.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 10 Dec 2023 19:33:31 -0800
+Message-ID: <CAADnVQ+RhX-QY1b5ewNp_K9b+X96PZNbxG8GSpC2xfhwULRNqA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 6/7] libbpf: BPF Static Keys support
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Anton Protopopov <aspsk@isovalent.com>, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Sun, Dec 10, 2023 at 2:30=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> How about a slightly different modification of the Anton's idea.
+> Suppose that, as before, there is a special map type:
+>
+>     struct {
+>         __uint(type, BPF_MAP_TYPE_ARRAY);
+>         __type(key, __u32);
+>         __type(value, __u32);
+>         __uint(map_flags, BPF_F_STATIC_KEY);
+>         __uint(max_entries, 1);
+>     } skey1 SEC(".maps")
 
-On 12/11/2023 10:56 AM, Alexei Starovoitov wrote:
-> On Sun, Dec 10, 2023 at 6:07 PM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi Alexei,
->>
->> On 12/10/2023 10:11 AM, Alexei Starovoitov wrote:
->>> On Fri, Dec 8, 2023 at 2:22 AM Hou Tao <houtao@huaweicloud.com> wrote:
->>>> +       /* Wait for any running non-sleepable and sleepable BPF programs to
->>>> +        * complete, so that userspace, when we return to it, knows that all
->>>> +        * programs that could be running use the new map value.
->>> which could be forever... and the user space task doing simple map update
->>> will never know why it got stuck in syscall waiting... forever...
->>> synchronous waiting for tasks_trace is never an option.
->> Could you please elaborate the reason why there is dead-lock problem ?
->> In my naive understanding, synchronize_rcu_tasks_trace() only waits for
->> the end of rcu_read_lock_trace()/rcu_read_unlock_trace(), if there is no
->> rcu_read_lock_trace being held, there will be no dead-lock.
-> I didn't say it's dead-lock. rcu_read_lock_trace() section can last
-> for a very long time. The user space shouldn't be exposed to such delays.
+Instead of special map that the kernel has to know about
+the same intent can be expressed with:
+int skey1;
+r0 =3D %[skey1] ll;
+and then the kernel needs no extra map type while the user space
+can collect all static_branches that use &skey1 by
+iterating insn stream and comparing addresses.
 
-I see. Thanks for the explanation. Will update the comments in
-maybe_wait_bpf_programs() in a new patch.
-> .
+> Which is used as below:
+>
+>     __attribute__((naked))
+>     int foo(void) {
+>       asm volatile (
+>                     "r0 =3D %[skey1] ll;"
+>                     "if r0 !=3D r0 goto 1f;"
+>                     "r1 =3D r10;"
+>                     "r1 +=3D -8;"
+>                     "r2 =3D 1;"
+>                     "call %[bpf_trace_printk];"
+>             "1:"
+>                     "exit;"
+>                     :: __imm_addr(skey1),
+>                        __imm(bpf_trace_printk)
+>                     : __clobber_all
+>       );
+>     }
+>
+> Disassembly of section .text:
+>
+> 0000000000000000 <foo>:
+>        0:   r0 =3D 0x0 ll
+>         0000000000000000:  R_BPF_64_64  skey1  ;; <---- Map relocation as=
+ usual
+>        2:   if r0 =3D=3D r0 goto +0x4 <foo+0x38>   ;; <---- Note conditio=
+n
+>        3:   r1 =3D r10
+>        4:   r1 +=3D -0x8
+>        5:   r2 =3D 0x1
+>        6:   call 0x6
+>        7:   exit
+>
+> And suppose that verifier is modified in the following ways:
+> - treat instructions "if rX =3D=3D rX" / "if rX !=3D rX" (when rX points =
+to
+>   static key map) in a special way:
+>   - when program is verified, the jump is considered non deterministic;
+>   - when program is jitted, the jump is compiled as nop for "!=3D" and as
+>     unconditional jump for "=3D=3D";
+> - build a table of static keys based on a specific map referenced in
+>   condition, e.g. for the example above it can be inferred that insn 2
+>   associates with map skey1 because "r0" points to "skey1";
+> - jit "rX =3D <static key> ll;" as nop;
+>
+> On the plus side:
+> - any kinds of jump tables are omitted from system call;
+> - no new instruction is needed;
+> - almost no modifications to libbpf are necessary (only a helper macro
+>   to convince clang to keep "if rX =3D=3D rX");
 
+Reusing existing insn means that we're giving it new meaning
+and that always comes with danger of breaking existing progs.
+In this case if rX =3D=3D rX isn't very meaningful and new semantics
+shouldn't break anything, but it's a danger zone.
+
+If we treat:
+if r0 =3D=3D r0
+as JA
+then we have to treat
+if r1 =3D=3D r1
+as JA as well and it becomes ambiguous when prog_info needs
+to return the insns back to user space.
+
+If we go with rX =3D=3D rX approach we should probably limit it
+to one specific register. r0, r10, r11 can be considered
+and they have their own pros and cons.
+
+Additional:
+r0 =3D %[skey1] ll
+in front of JE/JNE is a waste. If we JIT it to useless native insn
+we will be burning cpu for no reason. So we should probably
+optimize it out. If we do so, then this inline insn becomes a nop and
+it's effectively a relocation. The insn stream will carry this
+rX =3D 64bit_const insn to indicate the scope of the next insn.
+It's pretty much like Anton's idea of using extra bits in JA
+to encode an integer key_id.
+With ld_imm64 we will encode 64-bit key_id.
+Another insn with more bits to burn that has no effect on execution.
+
+It doesn't look clean to encode so much extra metadata into instructions
+that JITs and the interpreter have to ignore.
+If we go this route:
+  r11 =3D 64bit_const
+  if r11 =3D=3D r11 goto
+is a lesser evil.
+Still, it's not as clean as JA with extra bits in src_reg.
+We already optimize JA +0 into a nop. See opt_remove_nops().
+So a flavor of JA insn looks the most natural fit for a selectable
+JA +xx or JA +0.
+
+And the special map really doesn't fit.
+Whatever we do, let's keep text_poke-able insn logic separate
+from bookkeeping of addresses of those insns.
+I think a special prefixed section that is understood by libbpf
+(like what I proposed with "name.static_branch") will do fine.
+If it's not good enough we can add a "set" map type
+that will be a generic set of values.
+It can be a set of 8-byte addresses to keep locations of static_branches,
+but let's keep it generic.
+I think it's fine to add:
+__uint(type, BPF_MAP_TYPE_SET)
+and let libbpf populate it with addresses of insns,
+or address of variables, or other values
+when it prepares a program for loading.
+But map_update_elem should never be doing text_poke on insns.
+We added prog_array map type is the past, but that was done
+during the early days. If we were designing bpf today we would have
+gone a different route.
 
