@@ -1,90 +1,273 @@
-Return-Path: <bpf+bounces-17357-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17358-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3338480BEE6
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 03:07:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D815580BF05
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 03:20:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1C6F280CA0
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 02:07:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BC21280CCA
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 02:20:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDD511C81;
-	Mon, 11 Dec 2023 02:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F21513ACD;
+	Mon, 11 Dec 2023 02:19:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KDno01d7"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA09F1
-	for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 18:07:18 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SpQ9X45qZz4f3kFp
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 10:07:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id EF2241A01A5
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 10:07:14 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgAnibfPbnZlKMQNDQ--.29334S2;
-	Mon, 11 Dec 2023 10:07:14 +0800 (CST)
-Subject: Re: [PATCH bpf-next 7/7] bpf: Wait for sleepable BPF program in
- maybe_wait_bpf_programs()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
-References: <20231208102355.2628918-1-houtao@huaweicloud.com>
- <20231208102355.2628918-8-houtao@huaweicloud.com>
- <CAADnVQKZfvDQUuzJ98n5Q6a1xU5XBxFGi0PeEnmRxj_TFKoW1A@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <bcaeae84-766c-5e3c-d444-70015ada7765@huaweicloud.com>
-Date: Mon, 11 Dec 2023 10:07:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A6DF2
+	for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 18:19:45 -0800 (PST)
+Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-4b2c34bcc1eso1206845e0c.3
+        for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 18:19:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702261183; x=1702865983; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XKXPy8iwxJNjhTZTw+LJ8Vv0y/XagWuzrwhYe/uRc+M=;
+        b=KDno01d75+zS4pjfKWKOC9dAezwDOu/J7edfZ8RjonSYjckTSYHquV0lK6Mcw8WZuk
+         ODYUSm58Yr5rRs4hW2FB4dXzn+zzC6MoTADOyE2d7cYFaqG3eoH+c0exuXuVhF0azbBz
+         nngL8Ujwvr6JzAdblvnxQm1mN5kUfWqS2RVuhohJXSaRBAFoyZxXtArAghmTdEF6Qslo
+         EEiq9cBHumbvYvnTjWOSTY9PXIwANV8orhBREH6y2i5C5cHlBXvxFBquDz4eum/rDZpH
+         PTdTI7Pu0ep25NABQXrNiEMd12UzinfvSz30molHN5tK8wa+34XZcO+ZoF/EYcoeYdkh
+         hurg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702261183; x=1702865983;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XKXPy8iwxJNjhTZTw+LJ8Vv0y/XagWuzrwhYe/uRc+M=;
+        b=LygA3VsStfczAJJRId57IB3LuwPVRj3SBqWGxZyZoPJkqWV3B4TPMOV2jZYILvNYz0
+         He1u+In+g9eChlbM2Z4lt/Wr/O8orsVOosOrJS9qQs7MecZtSNISx7qZAsTwCNdfyhil
+         tOvo6QFp4akfUhB2fA6K3QyhST8oS6JuVBM97lvpIjTMC2G/XiIuZtiqW4SbNh2BEJmn
+         MXUAPk50wUCpVHUejD7ddMlWSAjYjLIPMqniANf7+j3WsBO3na5ofWuc/J93WJbBjED2
+         P0zXkiuh94kiy/J5YQo0gmCTYd+Muo5Ix77UNVp81PS+R1T2cwjbM19Eg+7egF/Koo9v
+         UGQg==
+X-Gm-Message-State: AOJu0YzFvvGOoFqpALGwkrtVrwonb3ZR0AngWGhhnjnRh6kK2H2urUkv
+	+nslKywbmapMz45GQEphCHkIvaUB/jVSmGrufGxNvA==
+X-Google-Smtp-Source: AGHT+IHqLx2W8x28H6bfMYCWIzb2TuVsmrzJ0q8h3BKh//7HaVRT5Wf6V41+Foj3np3oJjncompRN0RZYYzrciFWAyY=
+X-Received: by 2002:a67:ef44:0:b0:464:77f2:557 with SMTP id
+ k4-20020a67ef44000000b0046477f20557mr2151093vsr.41.1702261183358; Sun, 10 Dec
+ 2023 18:19:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAADnVQKZfvDQUuzJ98n5Q6a1xU5XBxFGi0PeEnmRxj_TFKoW1A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgAnibfPbnZlKMQNDQ--.29334S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruFyrCr4fKF1xGr4fKFyfWFg_yoW3Krb_J3
-	92vw1kGwn3G393AanxGF45tr4fGFZY9F1DKrWUWrZIkryfZ3s5WF4kuryfC343KFWUXFn8
-	Gry3Ja4xCrnIqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbIkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-7-almasrymina@google.com> <5752508c-f7bc-44ac-8778-c807b2ee5831@kernel.org>
+ <CAHS8izPsQ2XoJy-vYWkn051Yc=D_kSprtQcG4mmPutf1G3+-aw@mail.gmail.com> <279a2999-3c0a-4839-aa2e-602864197410@kernel.org>
+In-Reply-To: <279a2999-3c0a-4839-aa2e-602864197410@kernel.org>
+From: Mina Almasry <almasrymina@google.com>
+Date: Sun, 10 Dec 2023 18:19:29 -0800
+Message-ID: <CAHS8izOJ4jTrq9AD5fe3ZY9veU5NP6dFkXGPRw7yz2uMCMGDTg@mail.gmail.com>
+Subject: Re: [net-next v1 06/16] netdev: support binding dma-buf to netdevice
+To: David Ahern <dsahern@kernel.org>
+Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>, 
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Alexei,
+On Sat, Dec 9, 2023 at 3:29=E2=80=AFPM David Ahern <dsahern@kernel.org> wro=
+te:
+>
+> On 12/8/23 12:22 PM, Mina Almasry wrote:
+> > On Fri, Dec 8, 2023 at 9:48=E2=80=AFAM David Ahern <dsahern@kernel.org>=
+ wrote:
+> >>
+> >> On 12/7/23 5:52 PM, Mina Almasry wrote:
+> > ...
+> >>> +
+> >>> +     xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
+> >>> +             if (rxq->binding =3D=3D binding) {
+> >>> +                     /* We hold the rtnl_lock while binding/unbindin=
+g
+> >>> +                      * dma-buf, so we can't race with another threa=
+d that
+> >>> +                      * is also modifying this value. However, the d=
+river
+> >>> +                      * may read this config while it's creating its
+> >>> +                      * rx-queues. WRITE_ONCE() here to match the
+> >>> +                      * READ_ONCE() in the driver.
+> >>> +                      */
+> >>> +                     WRITE_ONCE(rxq->binding, NULL);
+> >>> +
+> >>> +                     rxq_idx =3D get_netdev_rx_queue_index(rxq);
+> >>> +
+> >>> +                     netdev_restart_rx_queue(binding->dev, rxq_idx);
+> >>
+> >> Blindly restarting a queue when a dmabuf is heavy handed. If the dmabu=
+f
+> >> has no outstanding references (ie., no references in the RxQ), then no
+> >> restart is needed.
+> >>
+> >
+> > I think I need to stop the queue while binding to a dmabuf for the
+> > sake of concurrency, no? I.e. the softirq thread may be delivering a
+> > packet, and in parallel a separate thread holds rtnl_lock and tries to
+> > bind the dma-buf. At that point the page_pool recreation will race
+> > with the driver doing page_pool_alloc_page(). I don't think I can
+> > insert a lock to handle this into the rx fast path, no?
+>
+> I think it depends on the details of how entries are added and removed
+> from the pool. I am behind on the pp details at this point, so I do need
+> to do some homework.
+>
 
-On 12/10/2023 10:11 AM, Alexei Starovoitov wrote:
-> On Fri, Dec 8, 2023 at 2:22 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> +       /* Wait for any running non-sleepable and sleepable BPF programs to
->> +        * complete, so that userspace, when we return to it, knows that all
->> +        * programs that could be running use the new map value.
-> which could be forever... and the user space task doing simple map update
-> will never know why it got stuck in syscall waiting... forever...
-> synchronous waiting for tasks_trace is never an option.
+I think it also depends on the details of how to invalidate buffers
+posted to the rx queue of a particular driver. For GVE as far as I
+understands when the queue is started I believe it allocates a bunch
+of buffers and posts them to the rx queue. Then it processes the
+completion descriptors from the hardware and posts new buffers to
+replace the ones consumed, so any started queue would have postesd
+buffers in it.
 
-Could you please elaborate the reason why there is dead-lock problem ? 
-In my naive understanding, synchronize_rcu_tasks_trace() only waits for
-the end of rcu_read_lock_trace()/rcu_read_unlock_trace(), if there is no
-rcu_read_lock_trace being held, there will be no dead-lock.
+As far as I know we also don't support invalidating posted buffers
+without first stopping the queue, replacing the buffers, and starting
+again. But I don't think these are limitations overly specific to GVE,
+I believe non-RDMA NICs work similarly?
 
+But I'd stress that what I'm proposing here should be extensible to
+capabilities of specific drivers. If one has a driver that allows them
+to invalidate posted buffers on the fly, I imagine they can extend the
+queue API to declare that support to the netstack in a genric way, and
+the net stack can invalidate buffers from the previous page pool and
+supply the new one.
+
+> >
+> > Also, this sounds like it requires (lots of) more changes. The
+> > page_pool + driver need to report how many pending references there
+> > are (with locking so we don't race with incoming packets), and have
+> > them reported via an ndo so that we can skip restarting the queue.
+> > Implementing the changes in to a huge issue but handling the
+> > concurrency may be a genuine blocker. Not sure it's worth the upside
+> > of not restarting the single rx queue?
+>
+> It has to do with the usability of this overall solution. As I mentioned
+> most ML use cases can (and will want to) use many memory allocations for
+> receiving packets - e.g., allocations per message and receiving multiple
+> messages per socket connection.
+>
+
+We support that by flow steering different flows to different RX
+queues. Our NICs don't support smart choosing of which page_pool to
+place the packet in (based on ntuple rule or what not). So flows that
+must land on a given dmabuf are flow steered to that dmabuf, and flows
+that need to land host memory and not flow steered and are RSS'd to
+the non-dmabuf bound queues. This should also be extensible by folks
+that have NICs with the appropriate support.
+
+> >
+> >>> +             }
+> >>> +     }
+> >>> +
+> >>> +     xa_erase(&netdev_dmabuf_bindings, binding->id);
+> >>> +
+> >>> +     netdev_dmabuf_binding_put(binding);
+> >>> +}
+> >>> +
+> >>> +int netdev_bind_dmabuf_to_queue(struct net_device *dev, u32 rxq_idx,
+> >>> +                             struct netdev_dmabuf_binding *binding)
+> >>> +{
+> >>> +     struct netdev_rx_queue *rxq;
+> >>> +     u32 xa_idx;
+> >>> +     int err;
+> >>> +
+> >>> +     rxq =3D __netif_get_rx_queue(dev, rxq_idx);
+> >>> +
+> >>> +     if (rxq->binding)
+> >>> +             return -EEXIST;
+> >>> +
+> >>> +     err =3D xa_alloc(&binding->bound_rxq_list, &xa_idx, rxq, xa_lim=
+it_32b,
+> >>> +                    GFP_KERNEL);
+> >>> +     if (err)
+> >>> +             return err;
+> >>> +
+> >>> +     /* We hold the rtnl_lock while binding/unbinding dma-buf, so we=
+ can't
+> >>> +      * race with another thread that is also modifying this value. =
+However,
+> >>> +      * the driver may read this config while it's creating its * rx=
+-queues.
+> >>> +      * WRITE_ONCE() here to match the READ_ONCE() in the driver.
+> >>> +      */
+> >>> +     WRITE_ONCE(rxq->binding, binding);
+> >>> +
+> >>> +     err =3D netdev_restart_rx_queue(dev, rxq_idx);
+> >>
+> >> Similarly, here binding a dmabuf to a queue. I was expecting the dmabu=
+f
+> >> binding to add entries to the page pool for the queue.
+> >
+> > To be honest, I think maybe there's a slight disconnect between how
+> > you think the page_pool works, and my primitive understanding of how
+> > it works. Today, I see a 1:1 mapping between rx-queue and page_pool in
+> > the code. I don't see 1:many or many:1 mappings.
+>
+> I am not referring to 1:N or N:1 for page pool and queues. I am
+> referring to entries within a single page pool for a single Rx queue.
+>
+>
+
+Thanks, glad to hear that. I was afraid there is a miscommunication here.
+
+> >
+> > In theory mapping 1 rx-queue to n page_pools is trivial: the driver
+> > can call page_pool_create() multiple times to generate n queues and
+> > decide for incoming packets which one to use.
+> >
+> > However, mapping n rx-queues to 1 page_pool seems like a can of worms.
+> > I see code in the page_pool that looks to me (and Willem) like it's
+> > safe only because the page_pool is used from the same napi context.
+> > with a n rx-queueue: 1 page_pool mapping, that is no longer true, no?
+> > There is a tail end of issues to resolve to be able to map 1 page_pool
+> > to n queues as I understand and even if resolved I'm not sure the
+> > maintainers are interested in taking the code.
+> >
+> > So, per my humble understanding there is no such thing as "add entries
+> > to the page pool for the (specific) queue", the page_pool is always
+> > used by 1 queue.
+> >
+> > Note that even though this limitation exists, we still support binding
+> > 1 dma-buf to multiple queues, because multiple page pools can use the
+> > same netdev_dmabuf_binding. I should add that to the docs.
+> >
+> >> If the pool was
+> >> previously empty, then maybe the queue needs to be "started" in the
+> >> sense of creating with h/w or just pushing buffers into the queue and
+> >> moving the pidx.
+> >>
+> >>
+> >
+> > I don't think it's enough to add buffers to the page_pool, no? The
+> > existing buffers in the page_pool (host mem) must be purged. I think
+> > maybe the queue needs to be stopped as well so that we don't race with
+> > incoming packets and end up with skbs with devmem and non-devmem frags
+> > (unless you're thinking it becomes a requirement to support that, I
+> > think things are complicated as-is and it's a good simplification).
+> > When we already purge the existing buffers & restart the queue, it's
+> > little effort to migrate this to become in line with Jakub's queue-api
+> > that he also wants to use for per-queue configuration & ndo_stop/open.
+> >
+>
+
+
+--=20
+Thanks,
+Mina
 
