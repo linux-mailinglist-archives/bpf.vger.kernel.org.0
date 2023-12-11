@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-17457-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17458-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9CB880DD61
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 22:42:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C320A80DD6E
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 22:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 739421F21BD5
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 21:42:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D3AB281786
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 21:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BA554FAA;
-	Mon, 11 Dec 2023 21:41:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A138B54FB1;
+	Mon, 11 Dec 2023 21:44:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BWIOKCpj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EiZO2+tg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBA091;
-	Mon, 11 Dec 2023 13:41:50 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d06819a9cbso29516075ad.1;
-        Mon, 11 Dec 2023 13:41:50 -0800 (PST)
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C05DB;
+	Mon, 11 Dec 2023 13:44:12 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6ce9e897aeaso4261615b3a.2;
+        Mon, 11 Dec 2023 13:44:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702330910; x=1702935710; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702331052; x=1702935852; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JwLQENTdPffBkpFzdzONQopDme87OdDEkg8KOD7qZcw=;
-        b=BWIOKCpj9TSD72QBM+kpKDtbTMQLChK7WRMKNSwrwXbmsaXUkMFukL9TiJr0t5790V
-         JHRGzHnt+uyWhK5rvHRsixcH7LtCbhVnQY4ujYrYXBt/uLgrTqbh0Sy17mHEUKtRmIGL
-         UKTN9Vk9/m1nxpPPnQvbrKe2uogTH5E7Zw5xQBIhY4fV7iNIt7TvzCh9BnleFqeZeBBe
-         8Fbgn3POUn7n9g7iCfmIdv+liAKh28TQe7ChdLionyEgN4iHavIjwnPu97/3gwYy6XzP
-         BnE16aNdcr9L6c7uvkTiOjUFELezVIBeSUrmFQz0z18QHJq59JMpf/SZFFTVk7BxLX/v
-         kdIw==
+        bh=N7imiHd03OeHfJqIYuOPkDI+twRgYtwGYnCJrI3xJS8=;
+        b=EiZO2+tgoXFuj04IBU4brCZTyaGhsHBb3IkKe4ItBRxunGYynvMp2iq6pq35D/FuJB
+         o93CLmDsCmBpi1kAenvoVtR/VBauS3L4VynD49HldaxtwU+x28D7CsQw0B6CV9tYT/Ez
+         85ucDr5UM9+xJnI5tvV+elVu/JGBWX0DgfT7V3Pvy1im8ykbP9auv9/gzAaR71S0JOr7
+         S2Utf7lZdrrWRSvoou2utoNqDJyFJ0pUu9qiYYonHyF0EHyJDFCkPb7xPJsBGosS/XsK
+         qQhd4/pClvsfxQK5DY5knjMtnWA6Fp+Fg/xhi29aKuY+kGDXhmuskLeX+bX7l+iRwMtC
+         gnpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702330910; x=1702935710;
+        d=1e100.net; s=20230601; t=1702331052; x=1702935852;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=JwLQENTdPffBkpFzdzONQopDme87OdDEkg8KOD7qZcw=;
-        b=FF0V4oAE5Bguxzun2Po2A3tjP3Iz+o367GrJmjxzn6Q/HkyKwmLof8tlJSdbhgMsmI
-         EkahYIPUC77n6U9xd/rsqSCqKhC8zfXbgkwriDMkbu9O9n5+faDvLxISFuewWAhUkqZK
-         n4MorGMfXHbw9q2+p/7HrUzzcvnb+zTUTb8YylC+Zi6Rjzf6Q44Htqqh2kzDKI8sMX0F
-         SfpiIt10APvW3zs+itYzYPhWuA+wonOxFctiYMYxkeSU9xBVsCP32aJAOFX5Lnfim6+N
-         cjmbx/ldCED1DYRqYWCTCXs5oKgROUIJEQhDZboSPfvIoTZDBWgR1sO5SvTP90xC6LA7
-         wBwg==
-X-Gm-Message-State: AOJu0Ywy3TcUomnes/aLLAu6rmGe7FaQiatNEYUxgspjKu5551jXasUq
-	OPPYD/pWamM3Z2DNk7fWsZ0=
-X-Google-Smtp-Source: AGHT+IEeVr/GDnsmgh2icFesJUABi9RlgouwJNRHVFKdCi31zyBc8B30a0lY4gCWixwMMJy68PcyjA==
-X-Received: by 2002:a17:903:190:b0:1d0:6ffd:ae0d with SMTP id z16-20020a170903019000b001d06ffdae0dmr2454556plg.116.1702330910099;
-        Mon, 11 Dec 2023 13:41:50 -0800 (PST)
+        bh=N7imiHd03OeHfJqIYuOPkDI+twRgYtwGYnCJrI3xJS8=;
+        b=O6evDE4wnuNYwDP6/vZ8YO9Xv8a9Mgkkq6aymD5e7141DTlQX7/mnwZgWI8+kRyMUv
+         poU12iljOYkCSE2DZNbGjQ1gMpcD67K3G61E2BP0GhYLhIwf4Kq6RZcVc2qbaI/0HJWZ
+         iHTUehw4k4PV4hCqWmy4cRGb6lDQQQ321XF4MjQN5I8pqjDOrUXn/DaIv5Sfrikta5XG
+         NxSdVjG0zUT+wT+E4i1/oa2w3DmqPpKu8mh7MXnAcnYn+QAT7f4Hqt1WeCpZTbYWQrd3
+         1BupUpbH3g8+ceqEur10oGnL0B1zx7q6AY/6DvXJDLK+gxNAtOnjts6qhsNXfbEEIvCT
+         2Hmw==
+X-Gm-Message-State: AOJu0Ywn4SuigVJihsaugvoIax9eIg2+mITIt6tbJ6YFRXjr4sUclK1w
+	vgr8kXMeqUV31PaVAaPBcMc=
+X-Google-Smtp-Source: AGHT+IFbVv36A2VqNl+2IvsIVy/Yz+3YEOynOdb/vNyi2F2LF05fq0tsf0OjqKG98n3VcV01c4DgpA==
+X-Received: by 2002:a05:6a20:3942:b0:18f:d416:55fd with SMTP id r2-20020a056a20394200b0018fd41655fdmr6605835pzg.100.1702331052027;
+        Mon, 11 Dec 2023 13:44:12 -0800 (PST)
 Received: from localhost ([98.97.32.4])
-        by smtp.gmail.com with ESMTPSA id q15-20020a170902dacf00b001cfcd2fb7b0sm7144800plx.285.2023.12.11.13.41.49
+        by smtp.gmail.com with ESMTPSA id v188-20020a632fc5000000b005c66a7d70fdsm6664319pgv.61.2023.12.11.13.44.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 13:41:49 -0800 (PST)
-Date: Mon, 11 Dec 2023 13:41:48 -0800
+        Mon, 11 Dec 2023 13:44:11 -0800 (PST)
+Date: Mon, 11 Dec 2023 13:44:10 -0800
 From: John Fastabend <john.fastabend@gmail.com>
 To: Andrii Nakryiko <andrii@kernel.org>, 
  bpf@vger.kernel.org, 
@@ -65,12 +65,12 @@ Cc: linux-fsdevel@vger.kernel.org,
  keescook@chromium.org, 
  kernel-team@meta.com, 
  sargun@sargun.me
-Message-ID: <6577821c86fab_edaa208bb@john.notmuch>
-In-Reply-To: <20231207185443.2297160-5-andrii@kernel.org>
+Message-ID: <657782aa61b9e_edaa2082b@john.notmuch>
+In-Reply-To: <20231207185443.2297160-6-andrii@kernel.org>
 References: <20231207185443.2297160-1-andrii@kernel.org>
- <20231207185443.2297160-5-andrii@kernel.org>
-Subject: RE: [PATCH bpf-next 4/8] libbpf: move feature detection code into its
- own file
+ <20231207185443.2297160-6-andrii@kernel.org>
+Subject: RE: [PATCH bpf-next 5/8] libbpf: wire up token_fd into feature
+ probing logic
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,19 +82,22 @@ Content-Type: text/plain;
 Content-Transfer-Encoding: 7bit
 
 Andrii Nakryiko wrote:
-> It's quite a lot of well isolated code, so it seems like a good
-> candidate to move it out of libbpf.c to reduce its size.
+> Adjust feature probing callbacks to take into account optional token_fd.
+> In unprivileged contexts, some feature detectors would fail to detect
+> kernel support just because BPF program, BPF map, or BTF object can't be
+> loaded due to privileged nature of those operations. So when BPF object
+> is loaded with BPF token, this token should be used for feature probing.
+> 
+> This patch is setting support for this scenario, but we don't yet pass
+> non-zero token FD. This will be added in the next patch.
+> 
+> We also switched BPF cookie detector from using kprobe program to
+> tracepoint one, as tracepoint is somewhat less dangerous BPF program
+> type and has higher likelihood of being allowed through BPF token in the
+> future. This change has no effect on detection behavior.
 > 
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  tools/lib/bpf/Build             |   2 +-
->  tools/lib/bpf/elf.c             |   2 -
->  tools/lib/bpf/features.c        | 473 ++++++++++++++++++++++++++++++++
->  tools/lib/bpf/libbpf.c          | 463 +------------------------------
->  tools/lib/bpf/libbpf_internal.h |   2 +
->  tools/lib/bpf/str_error.h       |   3 +
->  6 files changed, 480 insertions(+), 465 deletions(-)
->  create mode 100644 tools/lib/bpf/features.c
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
 
