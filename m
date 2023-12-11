@@ -1,266 +1,280 @@
-Return-Path: <bpf+bounces-17448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06A2380DB86
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 21:21:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54ADC80DBB9
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 21:37:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CE2C1F21C6C
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 20:21:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 788EC1C216AA
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 20:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067D254FAB;
-	Mon, 11 Dec 2023 20:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA64253E3C;
+	Mon, 11 Dec 2023 20:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="aeW1ti57";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="088O33oF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V6q1zdkV"
 X-Original-To: bpf@vger.kernel.org
-Received: from new1-smtp.messagingengine.com (new1-smtp.messagingengine.com [66.111.4.221])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AD4EA;
-	Mon, 11 Dec 2023 12:20:50 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 32F8A580969;
-	Mon, 11 Dec 2023 15:20:49 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 11 Dec 2023 15:20:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to; s=fm3; t=1702326049; x=
-	1702333249; bh=Xy5DWhMcuaQWz9hFzj8IU9Hd0UISUG5+/EyW9nquCao=; b=a
-	eW1ti57qzoaxP6yiQ6R8Uzqrl/PgidoKozz4Oi4F0HhFC6v/EYY8CEv6EnN+19tt
-	WMDFRVTyeSRIFMTUiDOeDiNKa5bVQ4xMdGqANf35W6qPGQWo1dNtTMpBaG+oR1Mg
-	uz+xCU5+YccjVRyzqf9KAZo3C3cZmmx5GZpoDpwzJ+X1CDt+SAPbFyeYuu1Ohbqd
-	6U9L5ECSjewM1QqaOLS9J8Ns85jcDi8btJAhwaPLTXXIK2Hm7wsEp+pbVrifkAk3
-	A9FBJln3a9zOzgytPqA2C9aa+EyE7lRF99TzFVGkx+fcX8qxH+4E/dmeIrdW6k+c
-	r6deCuRVQTwQ743QpxRUA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702326049; x=
-	1702333249; bh=Xy5DWhMcuaQWz9hFzj8IU9Hd0UISUG5+/EyW9nquCao=; b=0
-	88O33oFs9OE2kSeXuCcfbIPuXTF08SvbIK63kJo7adenS35G5cIJ1X8sIgt5ENGs
-	RDi5fyMwE5T4IZmUUCiEHSJ1iNRytRRA3/llORpNphsG1AxpLsvyilZb1wbWLzgb
-	4vZcFZqo0B8IUT7j2oEXvlI9w5Jy7bdiCxmBdUkHz2ijSVLgrbpfPjSMi+90DC/s
-	2U4B61+4CqxluOoHWBIFiRtCxQsF/0QXVF1Bs02xBf8ymzDAnHcdBQiaZFd9GGzs
-	rynoEhHPfuLFjv6LrQ6XVRTvOY+wGSh7ngrYn250BAZuOSRc1DJGWSyQBugvkluX
-	Vi0SBk94P5EykoLKvlI4Q==
-X-ME-Sender: <xms:IG93ZflDiZHZu17F1siOQ3VKnF7SzkZgZn6pYC0TJ-zNI7SjBlGSXA>
-    <xme:IG93ZS3DBSofpNMRclotQiNLlfNvnNIkDRz5ibPawVVVuAnXvU99OQalhTxeociOG
-    kdSqY7WX06ZYrV2oQ>
-X-ME-Received: <xmr:IG93ZVrgqvwHp_WPvd_RsUPkKQP57JPzijk06MAHqHKeAgAbtUrZuH6IZJgCC2bV8hiyeSUcV3qYKAHs94qbuF6EBHRem0HHtYEx_l1xcCE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelvddgudefkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
-    fvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcu
-    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpefgfefggeejhfduie
-    ekvdeuteffleeifeeuvdfhheejleejjeekgfffgefhtddtteenucevlhhushhtvghrufhi
-    iigvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:IW93ZXnOLT6Vwk8S9VkBL1Aufd1VnURaJLkiUqt0XNxEkOlCUU_y_Q>
-    <xmx:IW93Zd1j0SJNITU2HkKjR5bQb83dGRcEmmzKB5RfY8fMWPH9KVAcdg>
-    <xmx:IW93ZWuvgimhpgg7RijojC_Tfcjuo8WKSxid7fE-Nt5dtDM9joje5A>
-    <xmx:IW93ZYH32qoE11hM9hbqa8-cMM6TJzfV5Vz70FHhPfqafmYVjkWR7w>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 11 Dec 2023 15:20:47 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: daniel@iogearbox.net,
-	davem@davemloft.net,
-	shuah@kernel.org,
-	ast@kernel.org,
-	john.fastabend@gmail.com,
-	kuba@kernel.org,
-	andrii@kernel.org,
-	hawk@kernel.org,
-	steffen.klassert@secunet.com,
-	antony.antony@secunet.com,
-	alexei.starovoitov@gmail.com,
-	yonghong.song@linux.dev,
-	eddyz87@gmail.com,
-	eyal.birger@gmail.com
-Cc: mykolal@fb.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devel@linux-ipsec.org
-Subject: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-Date: Mon, 11 Dec 2023 13:20:13 -0700
-Message-ID: <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1702325874.git.dxu@dxuuu.xyz>
-References: <cover.1702325874.git.dxu@dxuuu.xyz>
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DBDD6;
+	Mon, 11 Dec 2023 12:37:18 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3332e351670so4516544f8f.0;
+        Mon, 11 Dec 2023 12:37:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702327037; x=1702931837; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5mREG4zmhlrjDE364pycILMuHT3yybZyzypq/2nes4o=;
+        b=V6q1zdkV+wxIKXpM7DWq66B2NPzZBUPK4hr3WRtG+MTVSfExKywo7PK4Bt3nluEqDT
+         MkYrCuuDgvHFyqtkeTL5EVEmHFlAqoCG4wzA1E0AOVgzV7GgxwkQ9vs2R6aGYX15ri2/
+         sp1/AuQvVGRbOCriyt32YoOicKW7+0NZ50d5dTXoKn41lk//umXIHVlwVFUrW8yo+vYp
+         lrn9Cd0RaMPdIaG8HHIVCsPOhnrT3YGAomYLF9MeJLVuBcHmmXArVou5P2kL/Ae82RHR
+         ZnSLIq6BPwppSyaCaayBA0PoehLyk2aJOEhKI7Uz3FPmnyjCKCcFU5bviWtGyL9hN/ou
+         07XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702327037; x=1702931837;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5mREG4zmhlrjDE364pycILMuHT3yybZyzypq/2nes4o=;
+        b=XUGOs0D1C5EKC/b3Z0mxu1ogVHxrWSHJxBA65PBIYaZiH9yi8GafUYjsyV8T4DwD50
+         iI/eYdSCMb2iXzA3PXMw5XKi5yiYfZAet5sASmkxXIgBAHe7dc7e+81MnVu4zONtwbgJ
+         e9xqoQTLS1VsUyMbW8DnbrP/FQ/3S73ZrSodhoH31n3CPmfICPsRdUav5uIZ0y+l2p2f
+         BseSMW0UlBock5k7uzKK3pN9UsOmxf/FSvZP268P+JIQRei1jaSBheA1/uU9tAhth7Dp
+         fvX9tXjqjGZbrnAh1rP5Lge2WvBvNqA5x/tTQ4UEppdSvJroTP+V//2x/hUYGgTp/CUf
+         WKGg==
+X-Gm-Message-State: AOJu0YxI/1+RqepqcdtaXs8ZPwTXd9Ha46KBp8URvAL6Hv6fQJGeJM1S
+	HOj5ktQZ5YXRgkSxBIL4Nfo=
+X-Google-Smtp-Source: AGHT+IEzTCISh0ruDu6vYmjO9E9rylweqKZzQOVwuAulm2hyYEqdn+X3sTHJGxJeaYXMVcOHEARlYA==
+X-Received: by 2002:adf:a198:0:b0:333:38eb:8947 with SMTP id u24-20020adfa198000000b0033338eb8947mr1043696wru.275.1702327036762;
+        Mon, 11 Dec 2023 12:37:16 -0800 (PST)
+Received: from [192.168.8.100] ([85.255.234.108])
+        by smtp.gmail.com with ESMTPSA id o4-20020a5d58c4000000b0033333bee379sm9328312wrf.107.2023.12.11.12.37.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Dec 2023 12:37:16 -0800 (PST)
+Message-ID: <661c1bae-d7d3-457e-b545-5f67b9ef4197@gmail.com>
+Date: Mon, 11 Dec 2023 20:35:54 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
+ provider
+To: Mina Almasry <almasrymina@google.com>
+Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann
+ <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>,
+ Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com>
+ <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
+ <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
+ <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
+ <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-This commit extends test_tunnel selftest to test the new XDP xfrm state
-lookup kfunc.
+On 12/11/23 02:30, Mina Almasry wrote:
+> On Sat, Dec 9, 2023 at 7:05 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 12/8/23 23:25, Mina Almasry wrote:
+>>> On Fri, Dec 8, 2023 at 2:56 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>>
+>>>> On 12/8/23 00:52, Mina Almasry wrote:
+>>> ...
+>>>>> +     if (pool->p.queue)
+>>>>> +             binding = READ_ONCE(pool->p.queue->binding);
+>>>>> +
+>>>>> +     if (binding) {
+>>>>> +             pool->mp_ops = &dmabuf_devmem_ops;
+>>>>> +             pool->mp_priv = binding;
+>>>>> +     }
+>>>>
+>>>> Hmm, I don't understand why would we replace a nice transparent
+>>>> api with page pool relying on a queue having devmem specific
+>>>> pointer? It seemed more flexible and cleaner in the last RFC.
+>>>>
+>>>
+>>> Jakub requested this change and may chime in, but I suspect it's to
+>>> further abstract the devmem changes from driver. In this iteration,
+>>> the driver grabs the netdev_rx_queue and passes it to the page_pool,
+>>> and any future configurations between the net stack and page_pool can
+>>> be passed this way with the driver unbothered.
+>>
+>> Ok, that makes sense, but even if passed via an rx queue I'd
+>> at least hope it keeping abstract provider parameters, e.g.
+>> ops, but not hard coded with devmem specific code.
+>>
+>> It might even be better done with a helper like
+>> create_page_pool_from_queue(), unless there is some deeper
+>> interaction b/w pp and rx queues is predicted.
+>>
+> 
+> Off hand I don't see the need for a new create_page_pool_from_queue().
+> page_pool_create() already takes in a param arg that lets us pass in
+> the queue as well as any other params.
+> 
+>>>>> +
+>>>>>         if (pool->mp_ops) {
+>>>>>                 err = pool->mp_ops->init(pool);
+>>>>>                 if (err) {
+>>>>> @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *pool, int new_nid)
+>>>>>         }
+>>>>>     }
+>>>>>     EXPORT_SYMBOL(page_pool_update_nid);
+>>>>> +
+>>>>> +void __page_pool_iov_free(struct page_pool_iov *ppiov)
+>>>>> +{
+>>>>> +     if (WARN_ON(ppiov->pp->mp_ops != &dmabuf_devmem_ops))
+>>>>> +             return;
+>>>>> +
+>>>>> +     netdev_free_dmabuf(ppiov);
+>>>>> +}
+>>>>> +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
+>>>>
+>>>> I didn't look too deep but I don't think I immediately follow
+>>>> the pp refcounting. It increments pages_state_hold_cnt on
+>>>> allocation, but IIUC doesn't mark skbs for recycle? Then, they all
+>>>> will be put down via page_pool_iov_put_many() bypassing
+>>>> page_pool_return_page() and friends. That will call
+>>>> netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
+>>>>
+>>>> At least I couldn't make it work with io_uring, and for my purposes,
+>>>> I forced all puts to go through page_pool_return_page(), which calls
+>>>> the ->release_page callback. The callback will put the reference and
+>>>> ask its page pool to account release_cnt. It also gets rid of
+>>>> __page_pool_iov_free(), as we'd need to add a hook there for
+>>>> customization otherwise.
+>>>>
+>>>> I didn't care about overhead because the hot path for me is getting
+>>>> buffers from a ring, which is somewhat analogous to sock_devmem_dontneed(),
+>>>> but done on pp allocations under napi, and it's done separately.
+>>>>
+>>>> Completely untested with TCP devmem:
+>>>>
+>>>> https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c79ac92ae2d8
+>>>>
+>>>
+>>> This was a mistake in the last RFC, which should be fixed in v1. In
+>>> the RFC I was not marking the skbs as skb_mark_for_recycle(), so the
+>>> unreffing path wasn't as expected.
+>>>
+>>> In this iteration, that should be completely fixed. I suspect since I
+>>> just posted this you're actually referring to the issue tested on the
+>>> last RFC? Correct me if wrong.
+>>
+>> Right, it was with RFCv3
+>>
+>>> In this iteration, the reffing story:
+>>>
+>>> - memory provider allocs ppiov and returns it to the page pool with
+>>> ppiov->refcount == 1.
+>>> - The page_pool gives the page to the driver. The driver may
+>>> obtain/release references with page_pool_page_[get|put]_many(), but
+>>> the driver is likely not doing that unless it's doing its own page
+>>> recycling.
+>>> - The net stack obtains references via skb_frag_ref() ->
+>>> page_pool_page_get_many()
+>>> - The net stack drops references via skb_frag_unref() ->
+>>> napi_pp_put_page() -> page_pool_return_page() and friends.
+>>>
+>>> Thus, the issue where the unref path was skipping
+>>> page_pool_return_page() and friends should be resolved in this
+>>> iteration, let me know if you think otherwise, but I think this was an
+>>> issue limited to the last RFC.
+>>
+>> Then page_pool_iov_put_many() should and supposedly would never be
+>> called by non devmap code because all puts must circle back into
+>> ->release_page. Why adding it to into page_pool_page_put_many()?
+>>
+>> @@ -731,6 +731,29 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+>> +       if (page_is_page_pool_iov(page)) {
+>> ...
+>> +               page_pool_page_put_many(page, 1);
+>> +               return NULL;
+>> +       }
+>>
+>> Well, I'm looking at this new branch from Patch 10, it can put
+>> the buffer, but what if we race at it's actually the final put?
+>> Looks like nobody is going to to bump up pages_state_release_cnt
+>>
+> 
+> Good catch, I think indeed the release_cnt would be incorrect in this
+> case. I think the race is benign in the sense that the ppiov will be
+> freed correctly and available for allocation when the page_pool next
+> needs it; the issue is with the stats AFAICT.
 
-Co-developed-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Antony Antony <antony.antony@secunet.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
- .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
- 2 files changed, 67 insertions(+), 4 deletions(-)
+hold_cnt + release_cnt serves is used for refcounting. In this case
+it'll leak the pool when you try to destroy it.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-index 2d7f8fa82ebd..fc804095d578 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-@@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 1 mode tunnel "
-+			"spi %d reqid 1 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
- 	SYS(fail,
- 	    "ip netns exec at_ns0 "
- 		"ip xfrm state add src %s dst %s proto esp "
--			"spi %d reqid 2 mode tunnel "
-+			"spi %d reqid 2 mode tunnel replay-window 42 "
- 			"auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
- 	 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 1 mode tunnel "
-+		    "spi %d reqid 1 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
- 	/* root -> at_ns0 */
- 	SYS(fail,
- 	    "ip xfrm state add src %s dst %s proto esp "
--		    "spi %d reqid 2 mode tunnel "
-+		    "spi %d reqid 2 mode tunnel replay-window 42 "
- 		    "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
- 	    IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
- 	SYS(fail,
-@@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
- 			    .attach_point = BPF_TC_INGRESS);
-+	LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
- 	struct test_tunnel_kern *skel = NULL;
- 	struct nstoken *nstoken;
-+	int xdp_prog_fd;
- 	int tc_prog_fd;
- 	int ifindex;
- 	int err;
-@@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
- 	if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
- 		goto done;
- 
-+	/* attach xdp prog to tunnel dev */
-+	xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-+	if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-+		goto done;
-+	err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-+	if (!ASSERT_OK(err, "bpf_xdp_attach"))
-+		goto done;
-+
- 	/* ping from at_ns0 namespace test */
- 	nstoken = open_netns("at_ns0");
- 	err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-@@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
- 		goto done;
- 	if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
- 		goto done;
-+	if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-+		goto done;
- 
- done:
- 	delete_xfrm_tunnel();
-diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-index 3a59eb9c34de..c0dd38616562 100644
---- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-+++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-@@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap, int type) __ksym;
- int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 			  struct bpf_fou_encap *encap) __ksym;
-+struct xfrm_state *
-+bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-+		       u32 opts__sz) __ksym;
-+void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
-@@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
- 	return TC_ACT_OK;
- }
- 
-+volatile int xfrm_replay_window = 0;
-+
-+SEC("xdp")
-+int xfrm_get_state_xdp(struct xdp_md *xdp)
-+{
-+	struct bpf_xfrm_state_opts opts = {};
-+	struct xfrm_state *x = NULL;
-+	struct ip_esp_hdr *esph;
-+	struct bpf_dynptr ptr;
-+	u8 esph_buf[8] = {};
-+	u8 iph_buf[20] = {};
-+	struct iphdr *iph;
-+	u32 off;
-+
-+	if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-+		goto out;
-+
-+	off = sizeof(struct ethhdr);
-+	iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-+	if (!iph || iph->protocol != IPPROTO_ESP)
-+		goto out;
-+
-+	off += sizeof(struct iphdr);
-+	esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-+	if (!esph)
-+		goto out;
-+
-+	opts.netns_id = BPF_F_CURRENT_NETNS;
-+	opts.daddr.a4 = iph->daddr;
-+	opts.spi = esph->spi;
-+	opts.proto = IPPROTO_ESP;
-+	opts.family = AF_INET;
-+
-+	x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-+	if (!x || opts.error)
-+		goto out;
-+
-+	if (!x->replay_esn)
-+		goto out;
-+
-+	xfrm_replay_window = x->replay_esn->replay_window;
-+out:
-+	if (x)
-+		bpf_xdp_xfrm_state_release(x);
-+	return XDP_PASS;
-+}
-+
- char _license[] SEC("license") = "GPL";
+
+>> If you remove the branch, let it fall into ->release and rely
+>> on refcounting there, then the callback could also fix up
+>> release_cnt or ask pp to do it, like in the patch I linked above
+>>
+> 
+> Sadly I don't think this is possible due to the reasons I mention in
+> the commit message of that patch. Prematurely releasing ppiov and not
+> having them be candidates for recycling shows me a 4-5x degradation in
+> performance.
+
+I don't think I follow. The concept is to only recycle a buffer (i.e.
+make it available for allocation) when its refs drop to zero, which is
+IMHO the only way it can work, and IIUC what this patchset is doing.
+
+That's also I suggest to do, but through a slightly different path.
+Let's say at some moment there are 2 refs (e.g. 1 for an skb and
+1 for userspace/xarray).
+
+Say it first puts the skb:
+
+napi_pp_put_page()
+   -> page_pool_return_page()
+     -> mp_ops->release_page()
+        -> need_to_free = put_buf()
+           // not last ref, need_to_free==false,
+           // don't recycle, don't increase release_cnt
+
+Then you put the last ref:
+
+page_pool_iov_put_many()
+   -> page_pool_return_page()
+     -> mp_ops->release_page()
+        -> need_to_free = put_buf()
+           // last ref, need_to_free==true,
+           // recycle and release_cnt++
+
+And that last put can even be recycled right into the
+pp / ptr_ring, in which case it doesn't need to touch
+release_cnt. Does it make sense? I don't see where
+4-5x degradation would come from
+
+
+> What I could do here is detect that the refcount was dropped to 0 and
+> fix up the stats in that case.
+
 -- 
-2.42.1
-
+Pavel Begunkov
 
