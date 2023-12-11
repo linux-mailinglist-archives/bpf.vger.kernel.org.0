@@ -1,187 +1,117 @@
-Return-Path: <bpf+bounces-17396-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17397-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E23D480C9CD
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 13:30:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25FF880C9FB
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 13:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C8E4281E5B
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 12:30:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE8CB281F23
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 12:39:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1CB3B7A9;
-	Mon, 11 Dec 2023 12:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gvAw4cuE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1C93B7B9;
+	Mon, 11 Dec 2023 12:39:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953E9DF
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:30:46 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-40c25973988so46720425e9.2
-        for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:30:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702297845; x=1702902645; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W4cJhFzjC8+j3oUxHH97gxDoE2G0Phu0klYF0+0STEk=;
-        b=gvAw4cuEPq1DMkUYS473FER7JgGvrij+NSfojrlpU5FMed4GQAZ4eBzqSQ4dquy3F6
-         fuSmyHHDZ6sSQI73nf/EXAWxstVDfhXqmO8NZQYw5P26K/jS6ke2h+j5WVJ7LM/sX5Fs
-         Aru6zTUePMpwYFgYrabRkVOTu8Plbb8KU4gEYEzfRDY2Ud1eMAOiJP1TeFO32IGromBb
-         InFqci74l8G/Sk6/0eGF3R6vZ9SGfGTSiXhl9n5j4L2eVgB/NXPNSxtgJW7BrCDkEZma
-         zCYP1k5fkDqeQnGF2RSEdFaNGRTZlJuplgo4KxnMO5zESos8usTBV/XsiWIFDxnBqv5S
-         ji8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702297845; x=1702902645;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W4cJhFzjC8+j3oUxHH97gxDoE2G0Phu0klYF0+0STEk=;
-        b=Al8fP7AxQ+TV3zYL0L77TypkLgTpuUzM0Y2DMUPgj6tx0B+1dvpBccsiMY9Un6vJ1X
-         rcdlUF3L4Ipg2ywxV6Y5HIUUpnAKQuKsOxLU+phgih2QJZEpF1JehWDmEtRBXjU5zF+M
-         XqkigQP6oIjw4c/EcOJKumdr+dy/tmXhvNoTGpMplcd3YoRHQIXiBAXumSE1Pmyusamn
-         jzWS2oPUEkNaPA+d1LNTKXI/YELtsq34gzKtwlOXtiORPJdSV9YVKFsNIjfg4QOgt6Ia
-         k7PLE7EV8wcPJEfkvpQfGio3eKbkiCKTB1g8Jq7gMOX5hRR7j4mbU6cb9Fj1Dm9DNcHr
-         9Hmw==
-X-Gm-Message-State: AOJu0YxXkKsQTt6OmhZwGu7Ar4Gm/yWgxfAcPrVnZKV629roTJG+zuL0
-	VEmcuTgjF4inACHn9cXoKsE=
-X-Google-Smtp-Source: AGHT+IGIrW8bJwcVc4D1roQ7BFROEPdipPYmhYFXOwB5jS2mhiiJ7v1UQ1CkKZpb3O0GAhdrRQxF6w==
-X-Received: by 2002:a05:600c:331b:b0:40b:5e59:da79 with SMTP id q27-20020a05600c331b00b0040b5e59da79mr2262471wmp.140.1702297844602;
-        Mon, 11 Dec 2023 04:30:44 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id m27-20020a05600c3b1b00b0040b38292253sm15100757wms.30.2023.12.11.04.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 04:30:44 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 11 Dec 2023 13:30:42 +0100
-To: Dmitrii Dolgov <9erthalion6@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-	yonghong.song@linux.dev, dan.carpenter@linaro.org,
-	olsajiri@gmail.com, asavkov@redhat.com
-Subject: Re: [PATCH bpf-next v7 4/4] selftests/bpf: Test re-attachment fix
- for bpf_tracing_prog_attach
-Message-ID: <ZXcAi9Hmdtu5Hfbh@krava>
-References: <20231208185557.8477-1-9erthalion6@gmail.com>
- <20231208185557.8477-5-9erthalion6@gmail.com>
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E500DA1
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:39:41 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VyI4rE3_1702298378;
+Received: from 30.221.128.158(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0VyI4rE3_1702298378)
+          by smtp.aliyun-inc.com;
+          Mon, 11 Dec 2023 20:39:39 +0800
+Message-ID: <23691bb5-9688-4e93-a98c-1024e8a8fc62@linux.alibaba.com>
+Date: Mon, 11 Dec 2023 20:39:34 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208185557.8477-5-9erthalion6@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Question about bpf perfbuf/ringbuf: pinned in backend with
+ overwriting
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, song@kernel.org, andrii@kernel.org, ast@kernel.org,
+ Daniel Borkmann <daniel@iogearbox.net>, xuanzhuo@linux.alibaba.com,
+ dust.li@linux.alibaba.com, guwen@linux.alibaba.com,
+ alibuda@linux.alibaba.com, hengqi@linux.alibaba.com,
+ Nathan Slingerland <slinger@meta.com>, "rihams@meta.com" <rihams@meta.com>,
+ Alan Maguire <alan.maguire@oracle.com>
+References: <3dd9114c-599f-46b2-84b9-abcfd2dcbe33@linux.alibaba.com>
+ <c3c47250-2923-c376-4f5e-ddaf148bbf32@oracle.com>
+ <CAEf4BzZOBdV9vxV6Gr9b5pQ8+M6tPVnHdmELWqOd5jdcL=KpiA@mail.gmail.com>
+From: Philo Lu <lulie@linux.alibaba.com>
+In-Reply-To: <CAEf4BzZOBdV9vxV6Gr9b5pQ8+M6tPVnHdmELWqOd5jdcL=KpiA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 08, 2023 at 07:55:56PM +0100, Dmitrii Dolgov wrote:
-> Add a test case to verify the fix for "prog->aux->dst_trampoline and
-> tgt_prog is NULL" branch in bpf_tracing_prog_attach. The sequence of
-> events:
+
+
+On 2023/12/9 06:32, Andrii Nakryiko wrote:
+> On Thu, Dec 7, 2023 at 6:49 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+>>
+>> On 07/12/2023 13:15, Philo Lu wrote:
+>>> Hi all. I have a question when using perfbuf/ringbuf in bpf. I will
+>>> appreciate it if you give me any advice.
+>>>
+>>> Imagine a simple case: the bpf program output a log (some tcp
+>>> statistics) to user every time a packet is received, and the user
+>>> actively read the logs if he wants. I do not want to keep a user process
+>>> alive, waiting for outputs of the buffer. User can read the buffer as
+>>> need. BTW, the order does not matter.
+>>>
+>>> To conclude, I hope the buffer performs like relayfs: (1) no need for
+>>> user process to receive logs, and the user may read at any time (and no
+>>> wakeup would be better); (2) old data can be overwritten by new ones.
+>>>
+>>> Currently, it seems that perfbuf and ringbuf cannot satisfy both: (i)
+>>> ringbuf: only satisfies (1). However, if data arrive when the buffer is
+>>> full, the new data will be lost, until the buffer is consumed. (ii)
+>>> perfbuf: only satisfies (2). But user cannot access the buffer after the
+>>> process who creates it (including perf_event.rb via mmap) exits.
+>>> Specifically, I can use BPF_F_PRESERVE_ELEMS flag to keep the
+>>> perf_events, but I do not know how to get the buffer again in a new
+>>> process.
+>>>
+>>> In my opinion, this can be solved by either of the following: (a) add
+>>> overwrite support in ringbuf (maybe a new flag for reserve), but we have
+>>> to address synchronization between kernel and user, especially under
+>>> variable data size, because when overwriting occurs, kernel has to
+>>> update the consumer posi too; (b) implement map_fd_sys_lookup_elem for
+>>> perfbuf to expose fds to user via map_lookup_elem syscall, and a
+>>> mechanism is need to preserve perf_event->rb when process exits
+>>> (otherwise the buffer will be freed by perf_mmap_close). I am not sure
+>>> if they are feasible, and which is better. If not, perhaps we can
+>>> develop another mechanism to achieve this?
+>>>
+>>
+>> There was an RFC a while back focused on supporting BPF ringbuf
+>> over-writing [1]; at the time, Andrii noted some potential issues that
+>> might be exposed by doing multiple ringbuf reserves to overfill the
+>> buffer within the same program.
+>>
 > 
-> 1. load rawtp program
-> 2. load fentry program with rawtp as target_fd
-> 3. create tracing link for fentry program with target_fd = 0
-> 4. repeat 3
+> Correct. I don't think it's possible to correctly and safely support
+> overwriting with BPF ringbuf that has variable-sized elements.
 > 
-> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
-> ---
->  .../bpf/prog_tests/recursive_attach.c         | 48 +++++++++++++++++++
->  .../bpf/progs/fentry_recursive_target.c       | 11 +++++
->  2 files changed, 59 insertions(+)
+> We'll need to implement MPMC ringbuf (probably with fixed sized
+> element size) to be able to support this.
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-> index 7248d0661ee9..6296bcf95481 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-> @@ -67,3 +67,51 @@ void test_recursive_fentry_attach(void)
->  			fentry_recursive__destroy(tracing_chain[i]);
->  	}
->  }
-> +
-> +/*
-> + * Test that a tracing prog reattachment (when we land in
-> + * "prog->aux->dst_trampoline and tgt_prog is NULL" branch in
-> + * bpf_tracing_prog_attach) does not lead to a crash due to missing attach_btf
-> + */
-> +void test_fentry_attach_btf_presence(void)
-> +{
-> +	struct fentry_recursive_target *target_skel = NULL;
-> +	struct fentry_recursive *tracing_skel = NULL;
-> +	struct bpf_program *prog;
-> +	int err, link_fd, tgt_prog_fd;
-> +
-> +	target_skel = fentry_recursive_target__open_and_load();
-> +	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
-> +		goto close_prog;
-> +
-> +	tracing_skel = fentry_recursive__open();
-> +	if (!ASSERT_OK_PTR(tracing_skel, "fentry_recursive__open"))
-> +		goto close_prog;
-> +
-> +	prog = tracing_skel->progs.recursive_attach;
-> +	tgt_prog_fd = bpf_program__fd(target_skel->progs.fentry_target);
-> +	err = bpf_program__set_attach_target(prog, tgt_prog_fd, "fentry_target");
-> +	if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
-> +		goto close_prog;
-> +
-> +	err = fentry_recursive__load(tracing_skel);
-> +	if (!ASSERT_OK(err, "fentry_recursive__load"))
-> +		goto close_prog;
-> +
-> +	LIBBPF_OPTS(bpf_link_create_opts, link_opts);
 
-we don't need link_opts, you can pass NULL to below bpf_link_create call
+Thank you very much!
 
-> +
-> +	link_fd = bpf_link_create(bpf_program__fd(tracing_skel->progs.recursive_attach),
-> +							  0, BPF_TRACE_FENTRY, &link_opts);
+If it is indeed difficult with ringbuf, maybe I can implement a new type 
+of bpf map based on relay interface [1]? e.g., init relay during map 
+creating, write into it with bpf helper, and then user can access to it 
+in filesystem. I think it will be a simple but useful map for 
+overwritable data transfer.
 
-wrong indentation
+[1]
+https://github.com/torvalds/linux/blob/master/Documentation/filesystems/relay.rst
 
-> +	if (!ASSERT_GE(link_fd, 0, "link_fd"))
-> +		goto close_prog;
-> +
-> +	fentry_recursive__detach(tracing_skel);
-> +
-> +	err = fentry_recursive__attach(tracing_skel);
-> +	if (!ASSERT_ERR(err, "fentry_recursive__attach"))
-> +		goto close_prog;
-
-no need to call goto in here, let's just have ASSERT_ERR without the if
-
-> +
-> +close_prog:
-> +	fentry_recursive_target__destroy(target_skel);
-> +	fentry_recursive__destroy(tracing_skel);
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-> index b6fb8ebd598d..f812d2de0c3c 100644
-> --- a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-> +++ b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-> @@ -18,3 +18,14 @@ int BPF_PROG(test1, int a)
->  	test1_result = a == 1;
->  	return 0;
->  }
-> +
-> +/*
-> + * Dummy bpf prog for testing attach_btf presence when attaching an fentry
-> + * program.
-> + */
-> +SEC("raw_tp/sys_enter")
-> +int BPF_PROG(fentry_target, struct pt_regs *regs, long id)
-> +{
-> +	test1_result = id == 1;
-
-please remove test1_result
-
-thanks,
-jirka
-
-> +	return 0;
-> +}
-> -- 
-> 2.41.0
-> 
+>> Alan
+>>
+>> [1]
+>> https://lore.kernel.org/lkml/20220906195656.33021-2-flaniel@linux.microsoft.com/
 
