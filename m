@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-17401-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17402-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21AF980CA50
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 13:56:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0420A80CA51
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 13:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5DEBB20F75
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 12:56:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADF481F2181A
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 12:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047AE3C078;
-	Mon, 11 Dec 2023 12:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A793C074;
+	Mon, 11 Dec 2023 12:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JDzinYdn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MR5O7z8s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B333FAF
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:56:16 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so30600735e9.3
-        for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:56:16 -0800 (PST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B32BA
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:56:23 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c0e7b8a9bso56830765e9.3
+        for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:56:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702299375; x=1702904175; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702299382; x=1702904182; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KLvj/GVrkSA8DHWJQJ160yZDzLtUmybGw5DElE1H1ro=;
-        b=JDzinYdn9/Fg1z6sddNKoI5mFd30cOFTWpkyFOyRPFvbcWye30BeyjKV28weRX4FGE
-         DIA8t8Bg6x6ZYIOiJqE/gzmxJIFfu/YuAMZ0BLJ1M/JltyBbHVDz0WgAwHd0D1/3vOZH
-         qYCFW0usp+VyE/7HIuMubaqt8aRNAZGI9diykJm/1Z5r5Ulwgz6IyN37rr6eB8qODdjq
-         XCQtQlK0roiNwlPXoVzg0UlR7cOHpe8iS70io0QdabMdE2CCxmPsl0fMxtL1errRNtgT
-         4IBb6nYXb1Qr8SZeJHCfswhD/JURO3djjcpe7vG4AgWhrp3jQzQgWioijNEsPHMJZQn7
-         5WuA==
+        bh=mHN4Sy2kbsrk/6RC1XC3Xil6aAj8Uqiv2z072Yz3VFM=;
+        b=MR5O7z8s3kfnlOEvc4+puyrwaVoJorLRMYtrWJWNBQZ7ZQe5Hjhh/e5hQSulgddBNN
+         2+cJS9/gjCjeDHYS6xdEXZmrCef10utvplHPIybO2Z2kUStwLU1TbwcfCrwXSRTAtznh
+         wnRutUsIbPE8xcRsgzyeZWAhpteJaccbZAEUpz2R4JIr5d/dd72dhb0C9Qk/wbycQUwx
+         KG2tZVvFp9UaGYAA0cUWC6LMu5VGX5d5f79M8NLRGJekqURl4mzYrzylx5NNJIbOJnxX
+         Y2B0akBwmNVgAl8xN9wzkWMW/gOlDRu8qETOSR0GYsTw77g9epe/UDgj2meNAP11tfTu
+         Vutw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702299375; x=1702904175;
+        d=1e100.net; s=20230601; t=1702299382; x=1702904182;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KLvj/GVrkSA8DHWJQJ160yZDzLtUmybGw5DElE1H1ro=;
-        b=FXwA/a7jjdNhSBCq2WKROaM2nijhnppaf4rvyC8Qi1lIvp7qE7I6mpU8IZcudThiPv
-         2vZp0lRT06HhjzOSgKAo4M97GDZMxJ9VfhfHDD27o4+/f0tbRK0QSL7NBsDOnZOYvMZC
-         npUFpj2LRviw5+eDXg9ZYK1sRt4a25wn//wCW7PbP115sGyUh14V8p8arjlJdbuSIfkj
-         pveIdMbtaFklMdo5oFtmPUU8Fa7cS/+FuepCPNGsiMU0UuavyBpfvbf1nx1jbJOklTn4
-         i1ed7me+DiHQS+NPZ65DxZR45KLo8IH3xPL/isnQWP3V7LFkA8QX8KZURO+DCJlWwrbO
-         1CNQ==
-X-Gm-Message-State: AOJu0Yxgs7OyWJ4y3PA4wS0xO9PqONFIVOKua9fvgcZECEIhnOjcXxFI
-	/eVdBRbVQaS1sn2zSK+vspc=
-X-Google-Smtp-Source: AGHT+IFaLKxzw1M5COqQJAQ35/mxDpgqEqq+1AoTLm02A9tJXdXZwFxHOtxyrSQ5l43MxjXr4IhZSQ==
-X-Received: by 2002:a05:600c:3516:b0:40b:5e21:e25b with SMTP id h22-20020a05600c351600b0040b5e21e25bmr2094456wmq.72.1702299374920;
-        Mon, 11 Dec 2023 04:56:14 -0800 (PST)
+        bh=mHN4Sy2kbsrk/6RC1XC3Xil6aAj8Uqiv2z072Yz3VFM=;
+        b=fJuSzTWbAql5Xx29VhMl/30YpZni1xIoLN4oXTGRGT+49HyABxqYZFkWlEtbkhNsN6
+         0v+3j5H2Ll0n8OfSpm6BqoSkDj8UoSAsUd6y6GvJEq2TL1ys5/AEIysSfHrvPVq/3/jH
+         Vlb+940SyNJLwxtH3rAFkr2IpAe+nvEVyEFXa512u12sotP9AZdNDe/nUkjcOlU1bbci
+         DBWjB073rfX9rVYiMvrxr+sJKMAseUAX71SprV+c9IZveOUIdAZqOfl11MbbmVKCkPhC
+         bR2PrLb6C4Mh/iuCYAv1eVyMj8B5+vSRYphcYbgM490dcrPj1Q4M4joD/13E7o1bJ0ko
+         K7hA==
+X-Gm-Message-State: AOJu0Yz/4adXiFol2QYFICdAE29WPzeCrSrB7vaimP1NU/YFtXY8aW6z
+	VYIh8hlZb02UpJ4vWy2ZuDAp1/GGFSg=
+X-Google-Smtp-Source: AGHT+IHT8CQddn2KoymuIZUCrLmFNlNG+e0TsJY87UxBGG3T5L7JVPPEiCHFesqLdlbrZFlcWmI1JA==
+X-Received: by 2002:a7b:c3d3:0:b0:40b:4520:45c9 with SMTP id t19-20020a7bc3d3000000b0040b452045c9mr2528092wmj.36.1702299381680;
+        Mon, 11 Dec 2023 04:56:21 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id o3-20020a05600c4fc300b004042dbb8925sm15137441wmq.38.2023.12.11.04.56.14
+        by smtp.gmail.com with ESMTPSA id d12-20020a05600c3acc00b0040b5377cf03sm15159389wms.1.2023.12.11.04.56.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 04:56:14 -0800 (PST)
+        Mon, 11 Dec 2023 04:56:21 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 11 Dec 2023 13:56:12 +0100
+Date: Mon, 11 Dec 2023 13:56:19 +0100
 To: Hou Tao <houtao@huaweicloud.com>
 Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
 	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
@@ -65,11 +65,11 @@ Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	xingwei lee <xrivendell7@gmail.com>, houtao1@huawei.com
-Subject: Re: [PATCH bpf-next 4/4] selftests/bpf: Add test for abnormal cnt
- during multi-uprobe attachment
-Message-ID: <ZXcG7FQLi08Eojjy@krava>
+Subject: Re: [PATCH bpf-next 3/4] selftests/bpf: Add test for abnormal cnt
+ during multi-kprobe attachment
+Message-ID: <ZXcG85qIqxsDfxKi@krava>
 References: <20231211112843.4147157-1-houtao@huaweicloud.com>
- <20231211112843.4147157-5-houtao@huaweicloud.com>
+ <20231211112843.4147157-4-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -78,117 +78,71 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231211112843.4147157-5-houtao@huaweicloud.com>
+In-Reply-To: <20231211112843.4147157-4-houtao@huaweicloud.com>
 
-On Mon, Dec 11, 2023 at 07:28:43PM +0800, Hou Tao wrote:
+On Mon, Dec 11, 2023 at 07:28:42PM +0800, Hou Tao wrote:
 > From: Hou Tao <houtao1@huawei.com>
 > 
-> If an abnormally huge cnt is used for multi-uprobes attachment, the
+> If an abnormally huge cnt is used for multi-kprobes attachment, the
 > following warning will be reported:
 > 
 >   ------------[ cut here ]------------
->   WARNING: CPU: 7 PID: 406 at mm/util.c:632 kvmalloc_node+0xd9/0xe0
+>   WARNING: CPU: 1 PID: 392 at mm/util.c:632 kvmalloc_node+0xd9/0xe0
 >   Modules linked in: bpf_testmod(O)
->   CPU: 7 PID: 406 Comm: test_progs Tainted: G ...... 6.7.0-rc3+ #32
->   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
->   RIP: 0010:kvmalloc_node+0xd9/0xe0
+>   CPU: 1 PID: 392 Comm: test_progs Tainted: G ...... 6.7.0-rc3+ #32
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
 >   ......
->   Call Trace:
->    <TASK>
+>   RIP: 0010:kvmalloc_node+0xd9/0xe0
 >    ? __warn+0x89/0x150
 >    ? kvmalloc_node+0xd9/0xe0
->    bpf_uprobe_multi_link_attach+0x14a/0x480
->    __sys_bpf+0x14a9/0x2bc0
+>    bpf_kprobe_multi_link_attach+0x87/0x670
+>    __sys_bpf+0x2a28/0x2bc0
+>    __x64_sys_bpf+0x1a/0x30
 >    do_syscall_64+0x36/0xb0
 >    entry_SYSCALL_64_after_hwframe+0x6e/0x76
->    ......
+>   RIP: 0033:0x7fbe067f0e0d
+>   ......
 >    </TASK>
 >   ---[ end trace 0000000000000000 ]---
 > 
 > So add a test to ensure the warning is fixed.
 > 
 > Signed-off-by: Hou Tao <houtao1@huawei.com>
-> ---
->  .../bpf/prog_tests/uprobe_multi_test.c        | 43 ++++++++++++++++++-
->  1 file changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index ece260cf2c0b..379ee9cc6221 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -234,6 +234,45 @@ static void test_attach_api_syms(void)
->  	test_attach_api("/proc/self/exe", NULL, &opts);
->  }
->  
-> +static void test_failed_link_api(void)
-> +{
-> +	LIBBPF_OPTS(bpf_link_create_opts, opts);
-> +	const char *path = "/proc/self/exe";
-> +	struct uprobe_multi *skel = NULL;
-> +	unsigned long *offsets = NULL;
-> +	const char *syms[3] = {
-> +		"uprobe_multi_func_1",
-> +		"uprobe_multi_func_2",
-> +		"uprobe_multi_func_3",
-> +	};
-> +	int link_fd = -1, err;
-> +
-> +	err = elf_resolve_syms_offsets(path, 3, syms, (unsigned long **) &offsets, STT_FUNC);
-> +	if (!ASSERT_OK(err, "elf_resolve_syms_offsets"))
-> +		return;
 
-we should not need any symbols/offset for this tests right?
-
-the allocation takes place before the offsets are checked,
-so I think using just some pointer != NULL should be enough?
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
 thanks,
 jirka
 
-> +
-> +	skel = uprobe_multi__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
-> +		goto cleanup;
-> +
-> +	/* abnormal cnt */
-> +	opts.uprobe_multi.path = path;
-> +	opts.uprobe_multi.offsets = offsets;
-> +	opts.uprobe_multi.cnt = INT_MAX;
-> +	opts.kprobe_multi.flags = 0;
-> +	link_fd = bpf_link_create(bpf_program__fd(skel->progs.uprobe), 0,
-> +				  BPF_TRACE_UPROBE_MULTI, &opts);
-> +	if (!ASSERT_ERR(link_fd, "link_fd"))
-> +		goto cleanup;
-> +	if (!ASSERT_EQ(link_fd, -ENOMEM, "no mem fail"))
-> +		goto cleanup;
-> +cleanup:
-> +	if (link_fd >= 0)
-> +		close(link_fd);
-> +	uprobe_multi__destroy(skel);
-> +	free(offsets);
-> +}
-> +
->  static void __test_link_api(struct child *child)
->  {
->  	int prog_fd, link1_fd = -1, link2_fd = -1, link3_fd = -1, link4_fd = -1;
-> @@ -311,7 +350,7 @@ static void __test_link_api(struct child *child)
->  	free(offsets);
->  }
+> ---
+>  .../selftests/bpf/prog_tests/kprobe_multi_test.c   | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> index 4041cfa670eb..a340b6047657 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> @@ -300,6 +300,20 @@ static void test_attach_api_fails(void)
+>  	if (!ASSERT_EQ(libbpf_get_error(link), -EINVAL, "fail_5_error"))
+>  		goto cleanup;
 >  
-> -void test_link_api(void)
-> +static void test_link_api(void)
->  {
->  	struct child *child;
->  
-> @@ -408,6 +447,8 @@ void test_uprobe_multi_test(void)
->  		test_attach_api_syms();
->  	if (test__start_subtest("link_api"))
->  		test_link_api();
-> +	if (test__start_subtest("failed_link_api"))
-> +		test_failed_link_api();
->  	if (test__start_subtest("bench_uprobe"))
->  		test_bench_attach_uprobe();
->  	if (test__start_subtest("bench_usdt"))
+> +	/* fail_6 - abnormal cnt */
+> +	opts.addrs = (const unsigned long *) addrs;
+> +	opts.syms = NULL;
+> +	opts.cnt = INT_MAX;
+> +	opts.cookies = NULL;
+> +
+> +	link = bpf_program__attach_kprobe_multi_opts(skel->progs.test_kprobe_manual,
+> +						     NULL, &opts);
+> +	if (!ASSERT_ERR_PTR(link, "fail_6"))
+> +		goto cleanup;
+> +
+> +	if (!ASSERT_EQ(libbpf_get_error(link), -ENOMEM, "fail_6_error"))
+> +		goto cleanup;
+> +
+>  cleanup:
+>  	bpf_link__destroy(link);
+>  	kprobe_multi__destroy(skel);
 > -- 
 > 2.29.2
 > 
