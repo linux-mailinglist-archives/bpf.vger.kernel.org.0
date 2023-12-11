@@ -1,186 +1,262 @@
-Return-Path: <bpf+bounces-17392-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17393-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FF4B80C7FD
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 12:29:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A14AF80C926
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 13:12:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 591F628180A
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 11:29:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2200E1F21845
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 12:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D0A37168;
-	Mon, 11 Dec 2023 11:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34183A26F;
+	Mon, 11 Dec 2023 12:12:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B9C4B8;
-	Mon, 11 Dec 2023 03:29:49 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpffY5cv3z4f3lVy;
-	Mon, 11 Dec 2023 19:29:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id A7C131A0713;
-	Mon, 11 Dec 2023 19:29:46 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgBX+0mk8nZlT0rRDQ--.30712S2;
-	Mon, 11 Dec 2023 19:29:44 +0800 (CST)
-Subject: Re: WARNING: kmalloc bug in bpf_uprobe_multi_link_attach
-To: xingwei lee <xrivendell7@gmail.com>, ast@kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- rostedt@goodmis.org, mhiramat@kernel.org, mathieu.desnoyers@efficios.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-References: <CABOYnLwwJY=yFAGie59LFsUsBAgHfroVqbzZ5edAXbFE3YiNVA@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <689db41e-90f5-c5ba-b690-00586f22d616@huaweicloud.com>
-Date: Mon, 11 Dec 2023 19:29:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+X-Greylist: delayed 1228 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 04:12:16 PST
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0B4F2;
+	Mon, 11 Dec 2023 04:12:16 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Spg7z2kdDz1vnkK;
+	Mon, 11 Dec 2023 19:51:43 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 759501A016F;
+	Mon, 11 Dec 2023 19:51:46 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 11 Dec
+ 2023 19:51:46 +0800
+Subject: Re: [net-next v1 09/16] page_pool: device memory support
+To: Mina Almasry <almasrymina@google.com>
+CC: Shailend Chand <shailend@google.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+	<linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
+	<dri-devel@lists.freedesktop.org>, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst
+	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
+	<ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, David Ahern
+	<dsahern@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Harshitha
+ Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeelb@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-10-almasrymina@google.com>
+ <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
+ <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
+ <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
+ <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
+ <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com>
+Date: Mon, 11 Dec 2023 19:51:45 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CABOYnLwwJY=yFAGie59LFsUsBAgHfroVqbzZ5edAXbFE3YiNVA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-X-CM-TRANSID:Syh0CgBX+0mk8nZlT0rRDQ--.30712S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr1UWr13ur4DWFWkCFyDZFb_yoW7Gryrpr
-	WrJF4YkrW8JryxJF17ta15trZxArZ8C3WDJwsrGFyFvF18WFyjqF4qqw1F9ry5JrWvyr13
-	tF1DXr4jvr1UW3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE
-	14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUFDGOUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-Hi,
+On 2023/12/11 12:04, Mina Almasry wrote:
+> On Sun, Dec 10, 2023 at 6:26 PM Mina Almasry <almasrymina@google.com> wrote:
+>>
+>> On Sun, Dec 10, 2023 at 6:04 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>
+>>> On 2023/12/9 0:05, Mina Almasry wrote:
+>>>> On Fri, Dec 8, 2023 at 1:30 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>>
+>>>>>
+>>>>> As mentioned before, it seems we need to have the above checking every
+>>>>> time we need to do some per-page handling in page_pool core, is there
+>>>>> a plan in your mind how to remove those kind of checking in the future?
+>>>>>
+>>>>
+>>>> I see 2 ways to remove the checking, both infeasible:
+>>>>
+>>>> 1. Allocate a wrapper struct that pulls out all the fields the page pool needs:
+>>>>
+>>>> struct netmem {
+>>>>         /* common fields */
+>>>>         refcount_t refcount;
+>>>>         bool is_pfmemalloc;
+>>>>         int nid;
+>>>>         ...
+>>>>         union {
+>>>>                 struct dmabuf_genpool_chunk_owner *owner;
+>>>>                 struct page * page;
+>>>>         };
+>>>> };
+>>>>
+>>>> The page pool can then not care if the underlying memory is iov or
+>>>> page. However this introduces significant memory bloat as this struct
+>>>> needs to be allocated for each page or ppiov, which I imagine is not
+>>>> acceptable for the upside of removing a few static_branch'd if
+>>>> statements with no performance cost.
+>>>>
+>>>> 2. Create a unified struct for page and dmabuf memory, which the mm
+>>>> folks have repeatedly nacked, and I imagine will repeatedly nack in
+>>>> the future.
+>>>>
+>>>> So I imagine the special handling of ppiov in some form is critical
+>>>> and the checking may not be removable.
+>>>
+>>> If the above is true, perhaps devmem is not really supposed to be intergated
+>>> into page_pool.
+>>>
+>>> Adding a checking for every per-page handling in page_pool core is just too
+>>> hacky to be really considerred a longterm solution.
+>>>
+>>
+>> The only other option is to implement another page_pool for ppiov and
+>> have the driver create page_pool or ppiov_pool depending on the state
+>> of the netdev_rx_queue (or some helper in the net stack to do that for
+>> the driver). This introduces some code duplication. The ppiov_pool &
+>> page_pool would look similar in implementation.
 
-On 12/11/2023 4:12 PM, xingwei lee wrote:
-> Sorry for containing HTML part, repeat the mail
-> Hello I found a bug in net/bpf in the lastest upstream linux and
-> lastest net tree.
-> WARNING: kmalloc bug in bpf_uprobe_multi_link_attach
->
-> kernel: net 28a7cb045ab700de5554193a1642917602787784
-> Kernel config: https://github.com/google/syzkaller/commits/fc59b78e3174009510ed15f20665e7ab2435ebee
->
-> in the lastest net tree, the crash like:
->
-> [   68.363836][ T8223] ------------[ cut here ]------------
-> [   68.364967][ T8223] WARNING: CPU: 2 PID: 8223 at mm/util.c:632
-> kvmalloc_node+0x18a/0x1a0
-> [   68.366527][ T8223] Modules linked in:
-> [   68.367882][ T8223] CPU: 2 PID: 8223 Comm: 36d Not tainted
-> 6.7.0-rc4-00146-g28a7cb045ab7 #2
-> [   68.369260][ T8223] Hardware name: QEMU Standard PC (i440FX + PIIX,
-> 1996), BIOS 1.16.2-1.fc38 04/014
-> [   68.370811][ T8223] RIP: 0010:kvmalloc_node+0x18a/0x1a0
-> [   68.371689][ T8223] Code: dc 1c 00 eb aa e8 86 33 c6 ff 41 81 e4 00
-> 20 00 00 31 ff 44 89 e6 e8 e5 20
-> [   68.375001][ T8223] RSP: 0018:ffffc9001088fb68 EFLAGS: 00010293
-> [   68.375989][ T8223] RAX: 0000000000000000 RBX: 00000037ffffcec8
-> RCX: ffffffff81c1a32b
-> [   68.377154][ T8223] RDX: ffff88802cc00040 RSI: ffffffff81c1a339
-> RDI: 0000000000000005
-> [   68.377950][ T8223] RBP: 0000000000000400 R08: 0000000000000005
-> R09: 0000000000000000
-> [   68.378744][ T8223] R10: 0000000000000000 R11: 0000000000000000
-> R12: 0000000000000000
-> [   68.379523][ T8223] R13: 00000000ffffffff R14: ffff888017eb4a28
-> R15: 0000000000000000
-> [   68.380307][ T8223] FS:  0000000000827380(0000)
-> GS:ffff8880b9900000(0000) knlGS:0000000000000000
-> [   68.381185][ T8223] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   68.381843][ T8223] CR2: 0000000020000140 CR3: 00000000204d2000
-> CR4: 0000000000750ef0
-> [   68.382624][ T8223] PKRU: 55555554
-> [   68.382978][ T8223] Call Trace:
-> [   68.383312][ T8223]  <TASK>
-> [   68.383608][ T8223]  ? show_regs+0x8f/0xa0
-> [   68.384052][ T8223]  ? __warn+0xe6/0x390
-> [   68.384470][ T8223]  ? kvmalloc_node+0x18a/0x1a0
-> [   68.385111][ T8223]  ? report_bug+0x3b9/0x580
-> [   68.385585][ T8223]  ? handle_bug+0x67/0x90
-> [   68.386032][ T8223]  ? exc_invalid_op+0x17/0x40
-> [   68.386503][ T8223]  ? asm_exc_invalid_op+0x1a/0x20
-> [   68.387065][ T8223]  ? kvmalloc_node+0x17b/0x1a0
-> [   68.387551][ T8223]  ? kvmalloc_node+0x189/0x1a0
-> [   68.388051][ T8223]  ? kvmalloc_node+0x18a/0x1a0
-> [   68.388537][ T8223]  ? kvmalloc_node+0x189/0x1a0
-> [   68.389038][ T8223]  bpf_uprobe_multi_link_attach+0x436/0xfb0
+I think there is a design pattern already to deal with this kind of problem,
+refactoring common code used by both page_pool and ppiov into a library to
+aovid code duplication if most of them have similar implementation.
 
-It seems a big attr->link_create.uprobe_multi.cnt is passed to
-bpf_uprobe_multi_link_attach(). Could you please try the first patch in
-the following patch set ?
+>>
+>> But this was all discussed in detail in RFC v2 and the last response I
+>> heard from Jesper was in favor if this approach, if I understand
+>> correctly:
+>>
+>> https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@redhat.com/
+>>
+>> Would love to have the maintainer weigh in here.
+>>
+> 
+> I should note we may be able to remove some of the checking, but maybe not all.
+> 
+> - Checks that disable page fragging for ppiov can be removed once
+> ppiov has frag support (in this series or follow up).
+> 
+> - If we use page->pp_frag_count (or page->pp_ref_count) for
+> refcounting ppiov, we can remove the if checking in the refcounting.
+> 
+> - We may be able to store the dma_addr of the ppiov in page->dma_addr,
+> but I'm unsure if that actually works, because the dma_buf dmaddr is
+> dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
+> I think). But if it works for pages I may be able to make it work for
+> ppiov as well.
+> 
+> - Checks that obtain the page->pp can work with ppiov if we align the
+> offset of page->pp and ppiov->pp.
+> 
+> - Checks around page->pp_magic can be removed if we also have offset
+> aligned ppiov->pp_magic.
+> 
+> Sadly I don't see us removing the checking for these other cases:
+> 
+> - page_is_pfmemalloc(): I'm not allowed to pass a non-struct page into
+> that helper.
 
-https://lore.kernel.org/bpf/20231211112843.4147157-1-houtao@huaweicloud.com/T/#t
-> [   68.389633][ T8223]  ? __might_fault+0x13f/0x1a0
-> [   68.390129][ T8223]  ? bpf_kprobe_multi_link_attach+0x10/0x10
+We can do similar trick like above as bit 1 of page->pp_magic is used to
+indicate that if it is a pfmemalloc page.
 
-SNIP
->   res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x20000140ul, /*size=*/0x90ul);
->   if (res != -1) r[0] = res;
->   memcpy((void*)0x20000000, "./file0\000", 8);
->   syscall(__NR_creat, /*file=*/0x20000000ul, /*mode=*/0ul);
->   *(uint32_t*)0x20000340 = r[0];
->   *(uint32_t*)0x20000344 = 0;
->   *(uint32_t*)0x20000348 = 0x30;
->   *(uint32_t*)0x2000034c = 0;
->   *(uint64_t*)0x20000350 = 0x20000080;
->   memcpy((void*)0x20000080, "./file0\000", 8);
+> 
+> - page_to_nid(): I'm not allowed to pass a non-struct page into that helper.
 
-0x20000350 is the address of attr->link_create.uprobe_multi.path.
->   *(uint64_t*)0x20000358 = 0x200000c0;
->   *(uint64_t*)0x200000c0 = 0;
->   *(uint64_t*)0x20000360 = 0;
->   *(uint64_t*)0x20000368 = 0;
->   *(uint32_t*)0x20000370 = 0xffffff1f;
+Yes, this one need special case.
 
-The value of attr->link_create.uprobe_multi.cnt is 0xffffff1f, so 
-0xffffff1f * sizeof(bpf_uprobe) will be greater than INT_MAX, and
-triggers the warning in mm/util.c:
+> 
+> - page_pool_free_va(): ppiov have no va.
 
-        /* Don't even allow crazy sizes */
-        if (unlikely(size > INT_MAX)) {
-                WARN_ON_ONCE(!(flags & __GFP_NOWARN));
-                return NULL;
-        }
+Doesn't the skb_frags_readable() checking will protect the page_pool_free_va()
+from being called on devmem?
 
-Adding __GFP_NOWARN when doing kvcalloc() can fix the warning.
->   *(uint32_t*)0x20000374 = 0;
->   *(uint32_t*)0x20000378 = 0;
->   syscall(__NR_bpf, /*cmd=*/0x1cul, /*arg=*/0x20000340ul, /*size=*/0x40ul);
->   return 0;
-> }
->
-> =* repro.txt =*
-> r0 = bpf$PROG_LOAD(0x5, &(0x7f0000000140)={0x2, 0x3,
-> &(0x7f0000000200)=@framed, &(0x7f0000000240)='GPL\x00', 0x0, 0x0, 0x0,
-> 0x0, 0x0, '\x00', 0x0, 0x30, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
-> 0x0, 0x0, 0x0, 0x0, 0x0}, 0x90)
-> creat(&(0x7f0000000000)='./file0\x00', 0x0)
-> bpf$BPF_LINK_CREATE_XDP(0x1c, &(0x7f0000000340)={r0, 0x0, 0x30, 0x0,
-> @val=@uprobe_multi={&(0x7f0000000080)='./file0\x00',
-> &(0x7f00000000c0)=[0x0], 0x0, 0x0, 0xffffff1f}}, 0x40
->
->
-> See aslo https://gist.github.com/xrivendell7/15d43946c73aa13247b4b20b68798aaa
->
-> .
+> 
+> - page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
+> fundamentally can't get mapped again.
 
+Can we just fail the page_pool creation with PP_FLAG_DMA_MAP and
+DMA_ATTR_SKIP_CPU_SYNC flags for devmem provider?
+
+> 
+> Are the removal (or future removal) of these checks enough to resolve this?
+
+Yes, that is somewhat similar to my proposal, the biggest objection seems to
+be that we need to have a safe type checking for it to work correctly.
+
+> 
+>>> It is somewhat ironical that devmem is using static_branch to alliviate the
+>>> performance impact for normal memory at the possible cost of performance
+>>> degradation for devmem, does it not defeat some purpose of intergating devmem
+>>> to page_pool?
+>>>
+>>
+>> I don't see the issue. The static branch sets the non-ppiov path as
+>> default if no memory providers are in use, and flips it when they are,
+>> making the default branch prediction ideal in both cases.
+
+You are assuming the we are not using page pool for both normal memory and
+devmem at the same. But a generic solution should not have that assumption
+as my understanding.
+
+>>
+>>>>
+>>>>> Even though a static_branch check is added in page_is_page_pool_iov(), it
+>>>>> does not make much sense that a core has tow different 'struct' for its
+>>>>> most basic data.
+>>>>>
+>>>>> IMHO, the ppiov for dmabuf is forced fitting into page_pool without much
+>>>>> design consideration at this point.
+>>>>>
+>>>> ...
+>>>>>
+>>>>> For now, the above may work for the the rx part as it seems that you are
+>>>>> only enabling rx for dmabuf for now.
+>>>>>
+>>>>> What is the plan to enable tx for dmabuf? If it is also intergrated into
+>>>>> page_pool? There was a attempt to enable page_pool for tx, Eric seemed to
+>>>>> have some comment about this:
+>>>>> https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
+>>>>>
+>>>>> If tx is not intergrated into page_pool, do we need to create a new layer for
+>>>>> the tx dmabuf?
+>>>>>
+>>>>
+>>>> I imagine the TX path will reuse page_pool_iov, page_pool_iov_*()
+>>>> helpers, and page_pool_page_*() helpers, but will not need any core
+>>>> page_pool changes. This is because the TX path will have to piggyback
+>>>
+>>> We may need another bit/flags checking to demux between page_pool owned
+>>> devmem and non-page_pool owned devmem.
+>>>
+>>
+>> The way I'm imagining the support, I don't see the need for such
+>> flags. We'd be re-using generic helpers like
+>> page_pool_iov_get_dma_address() and what not that don't need that
+>> checking.
+>>
+>>> Also calling page_pool_*() on non-page_pool owned devmem is confusing
+>>> enough that we may need a thin layer handling non-page_pool owned devmem
+>>> in the end.
+>>>
+>>
+>> The page_pool_page* & page_pool_iov* functions can be renamed if
+>> confusing. I would think that's no issue (note that the page_pool_*
+
+When you rename those functions, you will have a thin layer automatically.
+
+>> functions need not be called for TX path).
+>>
+>>>> on MSG_ZEROCOPY (devmem is not copyable), so no memory allocation from
+>>>> the page_pool (or otherwise) is needed or possible. RFCv1 had a TX
+>>>> implementation based on dmabuf pages without page_pool involvement, I
+>>>> imagine I'll do something similar.
+>>> It would be good to have a tx implementation for the next version, so
+>>> that we can have a whole picture of devmem.
 
