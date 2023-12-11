@@ -1,147 +1,121 @@
-Return-Path: <bpf+bounces-17406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C553780CE78
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 15:34:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF49080CEC0
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 15:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FE50281B06
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 14:34:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFC0D1C20971
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 14:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A1248CF6;
-	Mon, 11 Dec 2023 14:34:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C7C495F3;
+	Mon, 11 Dec 2023 14:56:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mFghgW5Z"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="grfgRxvN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBAB2D6;
-	Mon, 11 Dec 2023 06:34:39 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c9f7fe6623so55901661fa.3;
-        Mon, 11 Dec 2023 06:34:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702305278; x=1702910078; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tiX/dpMN3v7eu8p1bMl5yjJ/dzRHBAIxjhFcaH8YSfs=;
-        b=mFghgW5ZH8IQCbYTp9AMKDwgfQhX4w3ER8HnwItJSkyj5sOcEZyqskAyeyjaeavyfB
-         qTYwe/r0nezQ6OdTzvjBLFisCVnk2DjL9pekw6lgBHj8bEDJi2Kbu2wWfmjerI+cB8IF
-         0HX/UxTIieMzdGW82cOH0sycex6ZqTXiE56Z1+IHjBmiDhojpHlw6gFnYKI32fncEJWB
-         rZATXtzQrtw1vU2xsM4Euul6UkHF2hDNwo3avxfKpmxmZXxBhDaJPPchhZnasL5lnJw8
-         veFtVUVM+LUSNaDtz4w+5EE6auHgR3ncoD6mveeXGlA0TAaqe5GrIwkYfiv6x1IRqZmN
-         kh8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702305278; x=1702910078;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tiX/dpMN3v7eu8p1bMl5yjJ/dzRHBAIxjhFcaH8YSfs=;
-        b=jWVEEypkaTph79HxcF+ED06yjbYFd8VHt2JIu8bUk8ihcK5o9Yr1TkSNeFlYmro+Lu
-         Zb61BHeEPjGusozewoxnwzXuw0rQTPiGw/J9ccd51boR1F65GzLCHAiqUxFzM4TT0Z0r
-         Iru/0dAYrqS8i6j0cvWUELoyruT7Ilnz0JoRUIpqgK13CtTpOHq1RW29O+m3wxuwFU2a
-         5+A/FfiuORADEmrMOKCUPZTCRuKSh/+B3yVhim/lqIs19LQr0UBTY6Da4qnPLvvUXMAA
-         Zk4NzO/6dkm23UQ3eRthMb5WCCC0D0DbEWQKmY8l4CxAVcjloYD9/fuKFBVLVzpwws/b
-         jvSw==
-X-Gm-Message-State: AOJu0YzbH0gobSXba3pncseAKULE3mOT9m9UxUlXAHL0YmtVXtBHfn75
-	gpRFwst/R1kJm5m6Z2y5Lzc=
-X-Google-Smtp-Source: AGHT+IFJ662sze6P6FXjb3itAgJ2Il9SUQ02ZJ3x3wK3HC95jjrbQQ6mk1Z4uxxTPawqRvBGBgMY5g==
-X-Received: by 2002:a05:6512:39c9:b0:50b:fe38:53fe with SMTP id k9-20020a05651239c900b0050bfe3853femr1612043lfu.5.1702305277605;
-        Mon, 11 Dec 2023 06:34:37 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id e10-20020adffd0a000000b003334675634bsm8733512wrr.29.2023.12.11.06.34.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 06:34:37 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 11 Dec 2023 15:34:35 +0100
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Hou Tao <houtao@huaweicloud.com>, mhiramat@kernel.org,
-	xingwei lee <xrivendell7@gmail.com>, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org
-Subject: Re: WARNING: kmalloc bug in bpf_uprobe_multi_link_attach
-Message-ID: <ZXcd-_lVhoiWBh-4@krava>
-References: <CABOYnLwwJY=yFAGie59LFsUsBAgHfroVqbzZ5edAXbFE3YiNVA@mail.gmail.com>
- <689db41e-90f5-c5ba-b690-00586f22d616@huaweicloud.com>
- <ZXcIN-odFOCWX8Ox@krava>
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6D6AB;
+	Mon, 11 Dec 2023 06:56:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=+f/7NOz/Mkinrg40jIZrImE4IcPtyVXDHo7HHDIl+Oc=; b=grfgRxvNOoeNJHlhYOYT6AGeuw
+	reCThwNxC5osNKWYsW2Hh8ugetWUcTAVy1y/qNJbrqRA4k1LVW1OcSr1BFQOdJoEcFJKKAVDMPyHh
+	Qr0iHKK8THwqXYXTqo3YNFUR6xJ55NxWM8tgU58OtJo21PZYyyNJjGJnFaewKhW5pjZkwLXUmDL5I
+	mzPxvKmGuKH3l86z1telgLYmkSLiGAEZIh/U1rSgHQgtnS8CoeaTMWUuOv+k/AZUrAwQVLxN039ZR
+	jh+UOVaKGxb4QwCAaLXgoBs2+eEuUqe37oxtWI1cVzQ41X1kw0uw+kW3e3BLK8xzLYm998SA5M7Ns
+	+Y/bEFEg==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rChhV-0002DT-Iy; Mon, 11 Dec 2023 15:56:05 +0100
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rChhV-000JV5-2T; Mon, 11 Dec 2023 15:56:05 +0100
+Subject: Re: [PATCH bpf v2 1/2] bpf: syzkaller found null ptr deref in
+ unix_bpf proto add
+To: Cong Wang <xiyou.wangcong@gmail.com>,
+ John Fastabend <john.fastabend@gmail.com>
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>, bpf@vger.kernel.org,
+ edumazet@google.com, jakub@cloudflare.com, martin.lau@kernel.org,
+ netdev@vger.kernel.org, amery.hung@bytedance.com
+References: <20231201180139.328529-2-john.fastabend@gmail.com>
+ <20231201211453.27432-1-kuniyu@amazon.com>
+ <656e4758675b9_1bd6e2086f@john.notmuch> <ZXKZa4RRmK2M6iHT@pop-os.localdomain>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <5c20a29a-ac9f-da0a-01dc-2278d7ae386a@iogearbox.net>
+Date: Mon, 11 Dec 2023 15:56:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZXcIN-odFOCWX8Ox@krava>
+In-Reply-To: <ZXKZa4RRmK2M6iHT@pop-os.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27120/Mon Dec 11 10:44:34 2023)
 
-On Mon, Dec 11, 2023 at 02:01:43PM +0100, Jiri Olsa wrote:
-> On Mon, Dec 11, 2023 at 07:29:40PM +0800, Hou Tao wrote:
+On 12/8/23 5:19 AM, Cong Wang wrote:
+> On Mon, Dec 04, 2023 at 01:40:40PM -0800, John Fastabend wrote:
+>> Kuniyuki Iwashima wrote:
+>>> From: John Fastabend <john.fastabend@gmail.com>
+>>> Date: Fri,  1 Dec 2023 10:01:38 -0800
+>>>> I added logic to track the sock pair for stream_unix sockets so that we
+>>>> ensure lifetime of the sock matches the time a sockmap could reference
+>>>> the sock (see fixes tag). I forgot though that we allow af_unix unconnected
+>>>> sockets into a sock{map|hash} map.
+>>>>
+>>>> This is problematic because previous fixed expected sk_pair() to exist
+>>>> and did not NULL check it. Because unconnected sockets have a NULL
+>>>> sk_pair this resulted in the NULL ptr dereference found by syzkaller.
+>>>>
+>>>> BUG: KASAN: null-ptr-deref in unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+>>>> Write of size 4 at addr 0000000000000080 by task syz-executor360/5073
+>>>> Call Trace:
+>>>>   <TASK>
+>>>>   ...
+>>>>   sock_hold include/net/sock.h:777 [inline]
+>>>>   unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+>>>>   sock_map_init_proto net/core/sock_map.c:190 [inline]
+>>>>   sock_map_link+0xb87/0x1100 net/core/sock_map.c:294
+>>>>   sock_map_update_common+0xf6/0x870 net/core/sock_map.c:483
+>>>>   sock_map_update_elem_sys+0x5b6/0x640 net/core/sock_map.c:577
+>>>>   bpf_map_update_value+0x3af/0x820 kernel/bpf/syscall.c:167
+>>>>
+>>>> We considered just checking for the null ptr and skipping taking a ref
+>>>> on the NULL peer sock. But, if the socket is then connected() after
+>>>> being added to the sockmap we can cause the original issue again. So
+>>>> instead this patch blocks adding af_unix sockets that are not in the
+>>>> ESTABLISHED state.
+>>>
+>>> I'm not sure if someone has the unconnected stream socket use case
+>>> though, can't we call additional sock_hold() in connect() by checking
+>>> sk_prot under sk_callback_lock ?
+>>
+>> Could be done I guess yes. I'm not sure the utility of it though. I
+>> thought above patch was the simplest solution and didn't require touching
+>> main af_unix code. I don't actually use the sockmap with af_unix
+>> sockets anywhere so maybe someone who is using this can comment if
+>> unconnected is needed?
 > 
-> SNIP
-> 
-> > 
-> > It seems a big attr->link_create.uprobe_multi.cnt is passed to
-> > bpf_uprobe_multi_link_attach(). Could you please try the first patch in
-> > the following patch set ?
-> > 
-> > https://lore.kernel.org/bpf/20231211112843.4147157-1-houtao@huaweicloud.com/T/#t
-> > > [   68.389633][ T8223]  ? __might_fault+0x13f/0x1a0
-> > > [   68.390129][ T8223]  ? bpf_kprobe_multi_link_attach+0x10/0x10
-> > 
-> > SNIP
-> > >   res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x20000140ul, /*size=*/0x90ul);
-> > >   if (res != -1) r[0] = res;
-> > >   memcpy((void*)0x20000000, "./file0\000", 8);
-> > >   syscall(__NR_creat, /*file=*/0x20000000ul, /*mode=*/0ul);
-> > >   *(uint32_t*)0x20000340 = r[0];
-> > >   *(uint32_t*)0x20000344 = 0;
-> > >   *(uint32_t*)0x20000348 = 0x30;
-> > >   *(uint32_t*)0x2000034c = 0;
-> > >   *(uint64_t*)0x20000350 = 0x20000080;
-> > >   memcpy((void*)0x20000080, "./file0\000", 8);
-> > 
-> > 0x20000350 is the address of attr->link_create.uprobe_multi.path.
-> > >   *(uint64_t*)0x20000358 = 0x200000c0;
-> > >   *(uint64_t*)0x200000c0 = 0;
-> > >   *(uint64_t*)0x20000360 = 0;
-> > >   *(uint64_t*)0x20000368 = 0;
-> > >   *(uint32_t*)0x20000370 = 0xffffff1f;
-> > 
-> > The value of attr->link_create.uprobe_multi.cnt is 0xffffff1f, so 
-> > 0xffffff1f * sizeof(bpf_uprobe) will be greater than INT_MAX, and
-> > triggers the warning in mm/util.c:
-> > 
-> >         /* Don't even allow crazy sizes */
-> >         if (unlikely(size > INT_MAX)) {
-> >                 WARN_ON_ONCE(!(flags & __GFP_NOWARN));
-> >                 return NULL;
-> >         }
-> > 
-> > Adding __GFP_NOWARN when doing kvcalloc() can fix the warning.
-> 
-> hi,
-> looks like that's the case.. thanks for fixing that
-> 
-> btw while checking on that I found kprobe_multi bench attach test
-> takes forever on latest bpf-next/master
-> 
-> 	test_kprobe_multi_bench_attach:PASS:bpf_program__attach_kprobe_multi_opts 0 nsec
-> 	test_kprobe_multi_bench_attach: found 56140 functions
-> 	test_kprobe_multi_bench_attach: attached in  89.174s
-> 	test_kprobe_multi_bench_attach: detached in  13.245s
-> 	#113/1   kprobe_multi_bench_attach/kernel:OK
-> 
-> Masami,
-> any idea of any change on fprobe/ftrace side recently? I'm going to check ;-)
+> Our use case is also connected unix stream socket, as demonstrated in
+> the selftest unix_redir_to_connected().
 
-nah sry, I had IBT enabled.. forgot the reason, but it's slow ;-)
+Great, is everyone good to move this fix forward then? Would be great if
+this receives at least one ack if the latter is indeed the case.
 
-jirka
+Thanks,
+Daniel
 
