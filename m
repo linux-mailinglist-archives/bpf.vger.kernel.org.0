@@ -1,150 +1,179 @@
-Return-Path: <bpf+bounces-17462-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17463-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D872180DE90
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 23:50:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E5B880DEA3
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 23:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FDF81C215C0
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 22:50:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E24B1C214FA
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 22:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABF455C3D;
-	Mon, 11 Dec 2023 22:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E38E156440;
+	Mon, 11 Dec 2023 22:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BiM3KdWY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ih1jYK+T"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B93CB8;
-	Mon, 11 Dec 2023 14:50:22 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54f4f7d082cso5136357a12.0;
-        Mon, 11 Dec 2023 14:50:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702335021; x=1702939821; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y2M/QtM4srk5RtLbPaKHdlp0MRAZCUQFxeHkHv+g5gA=;
-        b=BiM3KdWYfmckd/UVNUdRdZJYUdL+2s2+pvVIdd6TbMMJ9SIamRQWqCWLfMcJQGmTpd
-         VgvOu7mZvuKiRVPuteRc4RhQol3mGBxXtY6bvB5zkBHwl12RNvFHBzGrdmWbN7Cun8f+
-         PRC/xn571c7NMe1opK3bxE1TlZKxNs977oU5r63B6zb4/htBG2kzcP9MI98AFtztyzZv
-         68wuQ43KZSNYP+pLln+UWEj8impAsNfee6l6lt9LmOpAU8LcTOQQDUAEIrm3HLmB8ZVM
-         MsiUXyfJ5pN/H75Kqh+7qS5/QXL5Z5KDXekRocLXgblwcFbyqwGOBFSwQFPsriUc9OJ3
-         pJdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702335021; x=1702939821;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y2M/QtM4srk5RtLbPaKHdlp0MRAZCUQFxeHkHv+g5gA=;
-        b=v/LFq/i7W8tBJ2C+ZSEjDpnbMJ1SDEO4xndC3In3HTsrkfzIN0GDpf72GbJjb/XPyq
-         2AAEpLAXuGPRiQCCJQIOXLJX6/LuN6Hs7qHPnoi5YoBMZ6adWCkIE2oB/56sRM/0XTMT
-         Tn25IcCbkIjjV7vYMpXgQ08NiSRCCsvXZznbbQgx47q+qit8noU09u5umiv2/kq/rj5A
-         baHwB2gffT2eELovYuGqUhp3NwUCtyGb0MTHYgTHeOYbru7oxA0afz/FyG2nQriRyz2Q
-         Uo636qV2D3V56TJEksbPXDqZaG+Eupj1QR4foTn19YC8L2bpKS5y+4vaFdKB50aCOZr9
-         hZdg==
-X-Gm-Message-State: AOJu0YwsefTaQoiwEMmATA/4XyLY49BoohiEXeOvBLtm7/hHTpeqqRwc
-	mUTTFF3ywxhypiiobuLVJtnICkGOER3ZBCh6FsI=
-X-Google-Smtp-Source: AGHT+IEl7LLXN0ptIhesaEPKAxJzCshfTvbMLJ0xi6Dkzcss2G7d2XM76ZzbLJvOATg2ZmA/J2KgZLy6deCMQm8GDk4=
-X-Received: by 2002:a17:906:69d5:b0:a19:a19b:78a4 with SMTP id
- g21-20020a17090669d500b00a19a19b78a4mr2636059ejs.103.1702335020465; Mon, 11
- Dec 2023 14:50:20 -0800 (PST)
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [IPv6:2001:41d0:203:375::b5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02553E8
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 14:52:32 -0800 (PST)
+Message-ID: <030c3d51-ddf2-4f36-8e08-09d553b452a2@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702335150;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ja/cP9bxLwnj9EIO0rZH+wq1pyg/Lorh7Mq0kBB1mGo=;
+	b=Ih1jYK+TVrW6toBk55NJW35WQkgBAst4plV797R2n3rDmrfaoQLjQXoWIqxk+yVqBry1He
+	kJldKb/KmQsLCZj7nCMskmb36CK1WlDwolm2eqX4oBnYYYflcfYc2Wybr1Y8tUfhr+6/zo
+	7GmqpmTZ4wf1cIHUpSYY2zZTKkybAe4=
+Date: Mon, 11 Dec 2023 14:52:23 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231207185443.2297160-1-andrii@kernel.org> <20231207185443.2297160-4-andrii@kernel.org>
- <657781ec1712_edaa208f5@john.notmuch>
-In-Reply-To: <657781ec1712_edaa208f5@john.notmuch>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 11 Dec 2023 14:50:08 -0800
-Message-ID: <CAEf4BzYmZjBd5ps-iKjyxLvQ=iD3z092+M_deV5ze0eJXGoFsg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 3/8] libbpf: further decouple feature checking
- logic from bpf_object
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	paul@paul-moore.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, keescook@chromium.org, 
-	kernel-team@meta.com, sargun@sargun.me
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next 6/7] libbpf: BPF Static Keys support
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+To: Anton Protopopov <aspsk@isovalent.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev
+ <sdf@google.com>, bpf <bpf@vger.kernel.org>
+References: <20231206141030.1478753-7-aspsk@isovalent.com>
+ <CAADnVQ+BRbJN1A9_fjDTXh0=VM5x6oGVgtcB1JB7K8TM5+6i5Q@mail.gmail.com>
+ <ZXNCB5sEendzNj6+@zh-lab-node-5>
+ <CAEf4Bzai9X2xQGjEOZvkSkx7ZB9CSSk4oTxoksTVSBoEvR4UsA@mail.gmail.com>
+ <CAADnVQJtWVE9+rA2232P4g7ktUJ_+Nfwo+MYpv=6p7+Z9J20hw@mail.gmail.com>
+ <bef79c65-e89a-4219-8c8b-750c60e1f2b4@linux.dev>
+ <CAADnVQJd1aUFzznLhwNvkN+zot-u3=4A16utY93HoLJrP_vo3w@mail.gmail.com>
+ <85aa91f9-d5c0-4e7b-950d-475da7787f64@linux.dev>
+ <CAADnVQKZjmwxo0cBiHcp3FkAAmJT850qQJ5_=fAhfOKniJM2Kw@mail.gmail.com>
+ <3682c649-6a6a-4f66-b4fa-fbcbb774ae94@linux.dev>
+ <ZXdHc7xoAVf1g4a9@zh-lab-node-5>
+ <3589068d-7787-4584-8911-e57c380dd09b@linux.dev>
+In-Reply-To: <3589068d-7787-4584-8911-e57c380dd09b@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Dec 11, 2023 at 1:41=E2=80=AFPM John Fastabend <john.fastabend@gmai=
-l.com> wrote:
->
-> Andrii Nakryiko wrote:
-> > Add feat_supported() helper that accepts feature cache instead of
-> > bpf_object. This allows low-level code in bpf.c to not know or care
-> > about higher-level concept of bpf_object, yet it will be able to utiliz=
-e
-> > custom feature checking in cases where BPF token might influence the
-> > outcome.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
->
-> ...
->
-> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> > index a6b8d6f70918..af5e777efcbd 100644
-> > --- a/tools/lib/bpf/libbpf.c
-> > +++ b/tools/lib/bpf/libbpf.c
-> > @@ -637,6 +637,7 @@ struct elf_state {
-> >  };
-> >
-> >  struct usdt_manager;
-> > +struct kern_feature_cache;
-> >
-> >  struct bpf_object {
-> >       char name[BPF_OBJ_NAME_LEN];
-> > @@ -5063,17 +5064,14 @@ static struct kern_feature_desc {
-> >       },
-> >  };
-> >
-> > -bool kernel_supports(const struct bpf_object *obj, enum kern_feature_i=
-d feat_id)
-> > +bool feat_supported(struct kern_feature_cache *cache, enum kern_featur=
-e_id feat_id)
-> >  {
-> >       struct kern_feature_desc *feat =3D &feature_probes[feat_id];
-> > -     struct kern_feature_cache *cache =3D &feature_cache;
-> >       int ret;
-> >
-> > -     if (obj && obj->gen_loader)
-> > -             /* To generate loader program assume the latest kernel
-> > -              * to avoid doing extra prog_load, map_create syscalls.
-> > -              */
-> > -             return true;
-> > +     /* assume global feature cache, unless custom one is provided */
-> > +     if (!cache)
-> > +             cache =3D &feature_cache;
->
-> Why expose a custom cache at all? Where would that be used? I guess we ar=
-e
-> looking at libbpf_internal APIs so maybe not a big deal.
 
-bpf_object with token_fd set will have to use a separate non-global
-feature cache. Couple that with me moving this code into a separate
-features.c file in one of the next patches, we need to have some
-internal interface to make this happen.
+On 12/11/23 1:51 PM, Yonghong Song wrote:
+>
+> On 12/11/23 9:31 AM, Anton Protopopov wrote:
+>> On Sat, Dec 09, 2023 at 10:32:42PM -0800, Yonghong Song wrote:
+>>> On 12/9/23 9:18 AM, Alexei Starovoitov wrote:
+>>>> On Fri, Dec 8, 2023 at 9:05 PM Yonghong Song 
+>>>> <yonghong.song@linux.dev> wrote:
+>>>>> On 12/8/23 8:25 PM, Alexei Starovoitov wrote:
+>>>>>> On Fri, Dec 8, 2023 at 8:15 PM Yonghong Song 
+>>>>>> <yonghong.song@linux.dev> wrote:
+>>>>>>> On 12/8/23 8:05 PM, Alexei Starovoitov wrote:
+>>>>>>>> On Fri, Dec 8, 2023 at 2:04 PM Andrii Nakryiko
+>>>>>>>> <andrii.nakryiko@gmail.com> wrote:
+>>>>>>>>> I feel like embedding some sort of ID inside the instruction 
+>>>>>>>>> is very..
+>>>>>>>>> unusual, shall we say?
+>>>>>>>> yeah. no magic numbers inside insns pls.
+>>>>>>>>
+>>>>>>>> I don't like JA_CFG name, since I read CFG as control flow graph,
+>>>>>>>> while you probably meant CFG as configurable.
+>>>>>>>> How about BPF_JA_OR_NOP ?
+>>>>>>>> Then in combination with BPF_JMP or BPF_JMP32 modifier
+>>>>>>>> the insn->off|imm will be used.
+>>>>>>>> 1st bit in src_reg can indicate the default action: nop or jmp.
+>>>>>>>> In asm it may look like asm("goto_or_nop +5")
+>>>>>>> How does the C source code looks like in order to generate
+>>>>>>> BPF_JA_OR_NOP insn? Any source examples?
+>>>>>> It will be in inline asm only. The address of that insn will
+>>>>>> be taken either via && or via asm (".long %l[label]").
+>>>>>>    From llvm pov both should go through the same relo creation 
+>>>>>> logic. I hope :)
+>>>>> A hack in llvm below with an example, could you check whether the C
+>>>>> syntax and object dump result
+>>>>> is what you want to see?
+[...]
+>>>> Thank you for the ultra quick llvm diff!
+>>>> I was thinking of burning the new 0xE opcode for it,
+>>>> but you're right. It's a flavor of existing JA insn and it's indeed
+>>>> better to just use src_reg=1 bit to indicate so.
+>>> Right, using src_reg to indicate a new flavor of JA insn sounds
+>>> a good idea. My previously-used 'imm' field is a pure hack.
+>>>
+>>>> We probably need to use the 2nd bit of src_reg to indicate its 
+>>>> default state
+>>>> (jmp or fallthrough).
+>>> Good point.
+>>>
+>>>>>            asm volatile goto ("r0 = 0; \
+>>>>>                                goto_or_nop %l[label]; \
+>>>>>                                r2 = 2; \
+>>>>>                                r3 = 3; \
+>>>> Not sure how to represent the default state in assembly though.
+>>>> "goto_or_nop" defaults to goto
+>>>> "nop_or_goto" default to nop
+>>>> ?
+>>>>
+>>>> Do we need "gotol" for imm32 or will it be automatic?
+>>> It won't be automatic.
+>>>
+>>> At the end of this email, I will show the new change
+>>> to have gotol_or_nop and nop_or_gotol insn and an example
+>> Thanks a lot Yonghong! May I ask you to send a full patch for LLVM
+>> (with gotol) so that I can test it?
+>
+> Okay, I will send a RFC patch to llvm-project so you can do 'git fetch'
+> to get the patch into your local llvm-project repo and build a compiler
+> to test.
 
-Also, bpf.c is also using feature detectors, but today they all use
-unprivileged program types, so I didn't add custom feature_cache there
-just yet. But if in the future we have more complicated feature
-detectors that will rely on privileged programs/maps, we'd need to
-pass custom feature_cache from bpf.c as well.
+Okay, the following is the llvm-project diff:
+
+https://github.com/llvm/llvm-project/pull/75110
+
+I added a label in inline asm like below:
+|asm volatile goto ("r0 = 0; \ static_key_loc_1: \ gotol_or_nop 
+%l[label]; \ r2 = 2; \ r3 = 3; \ ":: : "r0", "r2", "r3" :label); to 
+identify the location of a gotol_or_nop/nop_or_gotol insn and the label '||||static_key_loc_1|' is in ELF symbol table
+can be easily searched and validated (the location is
+a gotol_or_nop/nop_or_gotol insn).
 
 >
-> >
-> >       if (READ_ONCE(cache->res[feat_id]) =3D=3D FEAT_UNKNOWN) {
-> >               ret =3D feat->probe();
-> > @@ -5090,6 +5088,17 @@ bool kernel_supports(const struct bpf_object *ob=
-j, enum kern_feature_id feat_id)
-> >       return READ_ONCE(cache->res[feat_id]) =3D=3D FEAT_SUPPORTED;
-> >  }
+>>
+>> Overall, I think that JA + flags in SRC_REG is indeed better than a
+>> new instruction, as a new code is not used.
+>>
+>> This looks for me that two bits aren't enough, and the third is
+>> required, as the second bit seems to be overloaded:
+>>
+>>    * bit 1 indicates that this is a "JA_MAYBE"
+>>    * bit 2 indicates a jump or nop (i.e., the current state)
+>>
+>> However, we also need another bit which indicates what to do with the
+>> instruction when we issue [an abstract] command
+>>
+>>    flip_branch_on_or_off(branch, 0/1)
+>>
+>> Without this information (and in the absense of external meta-data on
+>> how to patch the branch) we can't determine what a given (BPF, not
+>> jitted) program currently does. For example, if we issue
+>>
+>>    flip_branch_on_or_off(branch, 0)
+>>
+>> then we can't reflect this in the xlated program by setting the second
+>> bit to jmp/off. Again, JITted program is fine, but it will be
+>> desynchronized from xlated in term of logic (some instructions will be
+>> mapped as NOP -> x86_JUMP, others as NOP -> x86_NOP).
+>>
+>> In my original patch we kept this triplet as
+>>
+>>    (offset to indicate a "special jump", JA+0/JA+OFF, Normal/Inverse)
+> [...]
 >
-> Acked-by: John Fastabend <john.fastabend@gmail.com>
 
