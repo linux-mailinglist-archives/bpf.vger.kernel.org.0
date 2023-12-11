@@ -1,157 +1,227 @@
-Return-Path: <bpf+bounces-17421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17423-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47FA480D439
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 18:40:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B2D780D446
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 18:41:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 792841C216B8
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 17:40:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8FA92820FB
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 17:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553D94EB29;
-	Mon, 11 Dec 2023 17:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILT7ZiPQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A48B4E633;
+	Mon, 11 Dec 2023 17:41:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A21D4E601;
-	Mon, 11 Dec 2023 17:40:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28A99C433C8;
-	Mon, 11 Dec 2023 17:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702316424;
-	bh=hOU4jYl2zjD7dm4WiF388gDlJNEcYLRmL4FrrPgk5yA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ILT7ZiPQGYhBDRi5b3lf2uIdYB4fRbuh2WtUGL5lqBhOSH9SQvJlRI4vIBz2v17S+
-	 blGaty3kzjUowjXu+vwC+cpgSyt00WKM35hBVSFNoLhiDqRYp1qNOKsm9iz9+8yiST
-	 Q7K6KPtg6FMORGKJpZx3r5qFsWADIKZ7z27AI70Za4hAoGh4qLSigaBPpfhbzDtG4B
-	 WegId6wDnidKSJcRZAEmY6Gsyb2qXOjKSyhqb3S+T2soCbbL8ZCGJnTGo/vdm3VtFH
-	 5din7ZlxT5L0DDzybGDn3dJwXQ4AqFpESE3FPPogtTM2eGc+sDPJnDgua4TycmkKSN
-	 p4xYROwwpkw+g==
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50bef9b7a67so5378236e87.1;
-        Mon, 11 Dec 2023 09:40:24 -0800 (PST)
-X-Gm-Message-State: AOJu0YzJcd3YEJQ+ACZdrqlHk0GTTyqjPJZRsUdvkqqPNe2zlYKaxz51
-	2qxhxzSHuFpFiIVtjJjx7ryxgkkPkIYrvW+S2VY=
-X-Google-Smtp-Source: AGHT+IFTGNQtSpFmM7O8UeOW1n7sWiGpQ/OA3GeoRRIZNv3WRNPCLATv59ZjIlJ2ZFi1fcYwSJZuwHeltryOcI6rOhc=
-X-Received: by 2002:a2e:b046:0:b0:2ca:34cd:77e4 with SMTP id
- d6-20020a2eb046000000b002ca34cd77e4mr1895908ljl.103.1702316422374; Mon, 11
- Dec 2023 09:40:22 -0800 (PST)
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93409E8
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 09:41:46 -0800 (PST)
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBEMpE2006734
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 09:41:46 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uvmepdn2a-5
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 09:41:45 -0800
+Received: from twshared19982.14.prn3.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 11 Dec 2023 09:41:42 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id B196E3CF72064; Mon, 11 Dec 2023 09:41:32 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>,
+        Eduard Zingerman
+	<eddyz87@gmail.com>,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v3 bpf-next] selftests/bpf: validate eliminated global subprog is not freplaceable
+Date: Mon, 11 Dec 2023 09:41:31 -0800
+Message-ID: <20231211174131.2324306-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231015141644.260646-1-akihiko.odaki@daynix.com>
- <CAADnVQLfUDmgYng8Cw1hiZOMfWNWLjbn7ZGc4yOEz-XmeFEz5Q@mail.gmail.com>
- <2594bb24-74dc-4785-b46d-e1bffcc3e7ed@daynix.com> <CAADnVQ+J+bOtvEfdvgUse_Rr07rM5KOZ5DtAmHDgRmi70W68+g@mail.gmail.com>
- <CACGkMEs22078F7rSLEz6eQabkZZ=kujSONUNMThZz5Gp=YiidQ@mail.gmail.com>
- <CAADnVQLt8NWvP8qGWMPx=12PwWWE69P7aS2dbm=khAJkCnJEoQ@mail.gmail.com>
- <9a4853ad-5ef4-4b15-a49e-9edb5ae4468e@daynix.com> <6253fb6b-9a53-484a-9be5-8facd46c051e@daynix.com>
- <CAPhsuW5JYoM-Mkehdy=FQsG1nvjbYGzwRZx8BkpG1P7cHdD=eQ@mail.gmail.com>
- <dba89d4b-84aa-4c9f-b016-56fd3ade04b2@daynix.com> <CAPhsuW5KLgt_gsih7zi+T99iYVbt7hk7=OCwYzin-H3=OhF54Q@mail.gmail.com>
- <a1f09866-a443-4f74-8025-6cdb32eb1d2c@daynix.com> <CAPhsuW4o5o41a+jVjgGP+Ck3eUD8w6coLXMTYewXKJYmciLLnQ@mail.gmail.com>
- <664003d3-aadb-4938-80f6-67fab1c9dcdd@daynix.com> <d30a038b-d10f-468d-8879-478a6c5b814b@daynix.com>
- <CAPhsuW5CMYiOMUDCgfQyo=K31igZZ+BgXyL6yfq1OG3r2CzQ4g@mail.gmail.com> <49a5b971-ae97-4118-ae20-f651ad14bed7@daynix.com>
-In-Reply-To: <49a5b971-ae97-4118-ae20-f651ad14bed7@daynix.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 11 Dec 2023 09:40:10 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7E6Dyp8VTiuwbreB18Lt93n9Fa2hdd2sEschUDzgQiSg@mail.gmail.com>
-Message-ID: <CAPhsuW7E6Dyp8VTiuwbreB18Lt93n9Fa2hdd2sEschUDzgQiSg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/7] bpf: Introduce BPF_PROG_TYPE_VNET_HASH
-To: Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jason Wang <jasowang@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, kvm@vger.kernel.org, 
-	virtualization@lists.linux-foundation.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	Yuri Benditovich <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: Ha30t2o5qmE7AsIg3B2_SmZ5Rcp10Pkp
+X-Proofpoint-GUID: Ha30t2o5qmE7AsIg3B2_SmZ5Rcp10Pkp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-11_07,2023-12-07_01,2023-05-22_02
 
-On Sun, Dec 10, 2023 at 9:04=E2=80=AFPM Akihiko Odaki <akihiko.odaki@daynix=
-.com> wrote:
->
-[...]
-> >
-> > I don't think we can provide stability guarantees before seeing somethi=
-ng
-> > being used in the field. How do we know it will be useful forever? If a
-> > couple years later, there is only one person using it somewhere in the
-> > world, why should we keep supporting it? If there are millions of virtu=
-al
-> > machines using it, why would you worry about it being removed?
->
-> I have a different opinion about providing stability guarantees; I
-> believe it is safe to provide such a guarantee without actual use in a
-> field. We develop features expecting there are real uses, and if it
-> turns out otherwise, we can break the stated guarantee since there is no
-> real use cases anyway. It is fine even breaking UAPIs in such a case,
-> which is stated in Documentation/admin-guide/reporting-regressions.rst.
->
-> So I rather feel easy about guaranteeing UAPI stability; we can just
-> guarantee the UAPI-level stability for a particular kfunc and use it
-> from QEMU expecting the stability. If the feature is found not useful,
-> QEMU and the kernel can just remove it.
+Add selftest that establishes dead code-eliminated valid global subprog
+(global_dead) and makes sure that it's not possible to freplace it, as
+it's effectively not there. This test will fail with unexpected success
+before 2afae08c9dcb ("bpf: Validate global subprogs lazily").
 
-It appears that we more or less agree that this feature may not be
-something we will support forever.
+v2->v3:
+  - add missing err assignment (Alan);
+  - undo unnecessary signature changes in verifier_global_subprogs.c (Edu=
+ard);
+v1->v2:
+  - don't rely on assembly output in verifier log, which changes between
+    compiler versions (CI).
 
-> I'm more concerned about the other case, which means that there will be
-> wide uses of this feature. A kernel developer may assume the stability
-> of the interface is like one of kernel internal APIs
-> (Documentation/bpf/kfuncs.rst says kfuncs are like EXPORT_SYMBOL_GPL)
-> and decide to change it, breaking old QEMU binaries and that's something
-> I would like to avoid.
->
-> Regarding the breakage scenario, I think we can avoid the kfuncs removal
-> just by saying "we won't remove them". I'm more worried the case that a
-> change in the BPF kfunc infrastucture requires to recompile the binary.
->
-> So, in short, I don't think we can say "kfuncs are like
-> EXPORT_SYMBOL_GPL" and "you can freely use kfuncs in a normal userspace
-> application like QEMU" at the same time.
->
-> >
-[...]
->
-> >
-> > I would recommend you give option 2 a try and share the code. This is
-> > probably the best way to move the discussion forward.
->
-> I'd like to add a documentation change to say the added kfuncs are
-> exceptional cases that are not like EXPORT_SYMBOL_GPL in that case. Will
-> it work?
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+Suggested-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ .../bpf/prog_tests/global_func_dead_code.c    | 60 +++++++++++++++++++
+ .../bpf/progs/freplace_dead_global_func.c     | 11 ++++
+ .../bpf/progs/verifier_global_subprogs.c      | 15 ++++-
+ 3 files changed, 83 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/global_func_de=
+ad_code.c
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_dead_globa=
+l_func.c
 
-It will not.
+diff --git a/tools/testing/selftests/bpf/prog_tests/global_func_dead_code=
+.c b/tools/testing/selftests/bpf/prog_tests/global_func_dead_code.c
+new file mode 100644
+index 000000000000..65309894b27a
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/global_func_dead_code.c
+@@ -0,0 +1,60 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
++
++#include <test_progs.h>
++#include "verifier_global_subprogs.skel.h"
++#include "freplace_dead_global_func.skel.h"
++
++void test_global_func_dead_code(void)
++{
++	struct verifier_global_subprogs *tgt_skel =3D NULL;
++	struct freplace_dead_global_func *skel =3D NULL;
++	char log_buf[4096];
++	int err, tgt_fd;
++
++	/* first, try to load target with good global subprog */
++	tgt_skel =3D verifier_global_subprogs__open();
++	if (!ASSERT_OK_PTR(tgt_skel, "tgt_skel_good_open"))
++		return;
++
++	bpf_program__set_autoload(tgt_skel->progs.chained_global_func_calls_suc=
+cess, true);
++
++	err =3D verifier_global_subprogs__load(tgt_skel);
++	if (!ASSERT_OK(err, "tgt_skel_good_load"))
++		goto out;
++
++	tgt_fd =3D bpf_program__fd(tgt_skel->progs.chained_global_func_calls_su=
+ccess);
++
++	/* Attach to good non-eliminated subprog */
++	skel =3D freplace_dead_global_func__open();
++	if (!ASSERT_OK_PTR(skel, "skel_good_open"))
++		goto out;
++
++	err =3D bpf_program__set_attach_target(skel->progs.freplace_prog, tgt_f=
+d, "global_good");
++	ASSERT_OK(err, "attach_target_good");
++
++	err =3D freplace_dead_global_func__load(skel);
++	if (!ASSERT_OK(err, "skel_good_load"))
++		goto out;
++
++	freplace_dead_global_func__destroy(skel);
++
++	/* Try attaching to dead code-eliminated subprog */
++	skel =3D freplace_dead_global_func__open();
++	if (!ASSERT_OK_PTR(skel, "skel_dead_open"))
++		goto out;
++
++	bpf_program__set_log_buf(skel->progs.freplace_prog, log_buf, sizeof(log=
+_buf));
++	err =3D bpf_program__set_attach_target(skel->progs.freplace_prog, tgt_f=
+d, "global_dead");
++	ASSERT_OK(err, "attach_target_dead");
++
++	err =3D freplace_dead_global_func__load(skel);
++	if (!ASSERT_ERR(err, "skel_dead_load"))
++		goto out;
++
++	ASSERT_HAS_SUBSTR(log_buf, "Subprog global_dead doesn't exist", "dead_s=
+ubprog_missing_msg");
++
++out:
++	verifier_global_subprogs__destroy(tgt_skel);
++	freplace_dead_global_func__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/freplace_dead_global_func.=
+c b/tools/testing/selftests/bpf/progs/freplace_dead_global_func.c
+new file mode 100644
+index 000000000000..e6a75f86cac6
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/freplace_dead_global_func.c
+@@ -0,0 +1,11 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++
++SEC("freplace")
++int freplace_prog(void)
++{
++	return 0;
++}
++
++char _license[] SEC("license") =3D "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c=
+ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+index a0a5efd1caa1..bd696a431244 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
++++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+@@ -10,6 +10,7 @@
+=20
+ int arr[1];
+ int unkn_idx;
++const volatile bool call_dead_subprog =3D false;
+=20
+ __noinline long global_bad(void)
+ {
+@@ -31,23 +32,31 @@ __noinline long global_calls_good_only(void)
+ 	return global_good();
+ }
+=20
++__noinline long global_dead(void)
++{
++	return arr[0] * 2;
++}
++
+ SEC("?raw_tp")
+ __success __log_level(2)
+ /* main prog is validated completely first */
+ __msg("('global_calls_good_only') is global and assumed valid.")
+-__msg("1: (95) exit")
+ /* eventually global_good() is transitively validated as well */
+ __msg("Validating global_good() func")
+ __msg("('global_good') is safe for any args that match its prototype")
+ int chained_global_func_calls_success(void)
+ {
+-	return global_calls_good_only();
++	int sum =3D 0;
++
++	if (call_dead_subprog)
++		sum +=3D global_dead();
++	return global_calls_good_only() + sum;
+ }
+=20
+ SEC("?raw_tp")
+ __failure __log_level(2)
+ /* main prog validated successfully first */
+-__msg("1: (95) exit")
++__msg("('global_calls_bad') is global and assumed valid.")
+ /* eventually we validate global_bad() and fail */
+ __msg("Validating global_bad() func")
+ __msg("math between map_value pointer and register") /* BOOM */
+--=20
+2.34.1
 
-The BPF community had a lot of discussions about the stability of BPF APIs,=
- for
-example in [1]. Therefore, this is not a light decision.
-
-AFAICT, what is being proposed in this RFC is way less stable than many kfu=
-ncs
-we added recently. We are not changing the stability guarantee for this. Le=
-t's
-invest our time wisely and work on more meaningful things, for example, a
-prototype that may actually get accepted.
-
-Thanks,
-Song
-
-[1] https://lore.kernel.org/bpf/20221207205537.860248-1-joannelkoong@gmail.=
-com/
 
