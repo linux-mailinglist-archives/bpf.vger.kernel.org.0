@@ -1,362 +1,574 @@
-Return-Path: <bpf+bounces-17416-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF91B80CF93
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 16:31:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A080780CFDC
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 16:44:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94E07281AAA
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 15:31:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16A92B21572
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 15:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1CBE4B5C5;
-	Mon, 11 Dec 2023 15:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E3C34BAA1;
+	Mon, 11 Dec 2023 15:44:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DZ2vTxdk"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="pSIKgpOj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8580BE8;
-	Mon, 11 Dec 2023 07:31:28 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-db8892a5f96so4299088276.2;
-        Mon, 11 Dec 2023 07:31:28 -0800 (PST)
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC1DBD
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 07:44:04 -0800 (PST)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5df4993c25dso22181587b3.2
+        for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 07:44:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702308688; x=1702913488; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=CEhWuihaJ1mm2Ofkvr3IMNsaBmNLx1/iTtyp+xC8zlg=;
-        b=DZ2vTxdkRUi7QYVqAh2d5mlNQs22GIxOWwynTxxH4HpKgvmgWjQHgzt/z/m6Gz2PZM
-         YVWPqe7xKL/SM8Eqsdiqen7L4QYBlx0R7+BnEkTBuaTmpaUrHtxb4SMg2h1W9obOiTjJ
-         EoVMp4M/Bj0T7ZSKANjdCGDYCGsbgxyV1KQNv6XdjTMvZem6I2c6dVBLYjr7bCM5v06Y
-         XXErDpHxRbMIYyBQw3tl4FdtoKzGpcHth+Ap7TTAfg5Ip7jAyjqgb6Gg379+GiGTZh5V
-         uTPONbZVGl93Tkw5nUjDd9ZuzWCBXJ15+5qIRz2He5U66NdymldU9WFKnZCU5xsJg8DV
-         G0mg==
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1702309443; x=1702914243; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y5KHiq4EycRpHs2tj/zpIOtz9qz6mDbZjykiPiWiWjw=;
+        b=pSIKgpOjuTtDNJCjJFlbvdYeyuDH99eVfYCKtpyFWJbfOOYwdAJBg1+jORtW77kV8a
+         C4gevzAbSd+62aH8dTuTrfBAb6DlWWwzp2FzdRmm1a5VRiHXAhd4Hyb3p57HdpFsrMoW
+         VtCFuq4Q30Mj/AzsM4Vh9JuxH6H0TMREj3viUUH6D7DXnxxF1/N9cpAm75hNDL7GbSyw
+         YMZy6g+9MqQnCSlx2fgFEHiUx3+OxKpZ8vVc92pj5LmyoCVan6OkRchPgMs7nAzO0o/1
+         NFff17BOFDObjZa+QbEQn0RmCewqJdFZI6j31skj5eKZTBYTeUivaEZGe0W6uH6nlfyc
+         S/sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702308688; x=1702913488;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CEhWuihaJ1mm2Ofkvr3IMNsaBmNLx1/iTtyp+xC8zlg=;
-        b=NlKr+MLAwO6fwBaSYPN/2Y5CFuZmlqvfZ7UO7HR4ANxmQGLFt06yV6zm7sKr1/hGer
-         dZ4KWoEfsXruLPv2triWHol1cxubxHBjRYnnDdot5LUeyAQyg+ZHSnnHi3mIq7yObwoz
-         cK+yi7vCra9RzkQ1/7QlrqGYWTvsFH5QjzHmvhG09mOn1o/anS5I+xsg28r7PYmV+9b7
-         /QMMCCe99ERGSPH/axmY1xfic9pFqjtZwwqssEfXoIHOrRuUspdvVhjTvY58TZ6g799H
-         deqV5oE7r8AXd6IqEkto6P8seOksEKyRAwnP95sgD3ky+/BLADswhCqdd7uQzH5QzbSE
-         CnPw==
-X-Gm-Message-State: AOJu0YzBPScknGBZMtwLMOAi8bqiunMNjJ/H0eahlgY3eQYV/vV7onVX
-	S8aYB7WS8ouMuXABTn+eNS4ov0Y7rD+aMBfrMWeUTcD5rQ==
-X-Google-Smtp-Source: AGHT+IFUOI0znCcfv80KSUJ9i/zGSe3JbVSfhldQt3kesmcBJACiFkxN/65aWKU3jjlmAER04eZsmoZ8UVypvgzRYY8=
-X-Received: by 2002:a25:a481:0:b0:db7:dacf:620a with SMTP id
- g1-20020a25a481000000b00db7dacf620amr2269476ybi.92.1702308687517; Mon, 11 Dec
- 2023 07:31:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702309443; x=1702914243;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y5KHiq4EycRpHs2tj/zpIOtz9qz6mDbZjykiPiWiWjw=;
+        b=PiYJym7iVvVtCQtv8o5SZvhRGE1HkGwP43VuzLIuXlwh13P1bApJUJ2mqnuXtsLBx7
+         mIU6pOnq9r5IlJfZ7dQu3q7UfAPLNqtFCJ5T92macMkHdC/uNS0rvwPsAyOatuxXVqXA
+         qqt2Zi2fHEc066h/2mHDsXDayoZJO3krpq/XV9wI9+BtGE6e8rnxCeOW6bd7MnsHRD4f
+         0g9PKbV1la5/1zVeBpX0A3U9l0DoavtPTm3AQJhT6KvQG5uSLqaE6Hi58TTK41raar9b
+         DsVM/DSj/2wm3LBNvOde4R8bWbv47Y6P0VlruuCAaYfZjm3TYxaTFN6Vp2hJx9BpQ5tp
+         HlBg==
+X-Gm-Message-State: AOJu0Yx1c5/WQBcnpQ+ZCmRhiIQrXaord2tRDXOg6TK4TgiaIiUc02pY
+	jhIvcwwMARtinXEDFXxxFWBBlfryaoGgweI9SQUKNbVpcO9wzQgE0dw5cw==
+X-Google-Smtp-Source: AGHT+IHyG2pB49xAd8X1R7y7X3RMLyYfpnq5laUHNZQc7KB1TmMmX4oTwgnVPiT+ohg2zslIeu0yurFlFEL/hMkEW3A=
+X-Received: by 2002:a0d:f9c1:0:b0:5d7:1940:f3dd with SMTP id
+ j184-20020a0df9c1000000b005d71940f3ddmr3568957ywf.69.1702309443267; Mon, 11
+ Dec 2023 07:44:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Hao Sun <sunhao.th@gmail.com>
-Date: Mon, 11 Dec 2023 16:31:16 +0100
-Message-ID: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
-Subject: [Bug Report] bpf: incorrectly pruning runtime execution path
-To: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20231201182904.532825-1-jhs@mojatatu.com> <20231201182904.532825-16-jhs@mojatatu.com>
+ <656e6f8d7c99f_207cb2087c@john.notmuch> <2eb488f9-af4a-4e28-0de0-d4dbc1e166f5@iogearbox.net>
+ <CAM0EoM=MJJH9zNdiEHYpkYYQ_7WqobGv_v8wp04R7HhdPW8TxA@mail.gmail.com>
+ <50b4dd0b-94fe-36b2-9a69-51847f8a7712@iogearbox.net> <CAM0EoMmQpiiEZw_QfXMzWfbb=6_MkLTasjwjL1MVy0nBvMJCsg@mail.gmail.com>
+ <c9a53369-b895-d79e-7cc4-ea5663de2d4b@iogearbox.net>
+In-Reply-To: <c9a53369-b895-d79e-7cc4-ea5663de2d4b@iogearbox.net>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Mon, 11 Dec 2023 10:43:49 -0500
+Message-ID: <CAM0EoMmm6SZawXy4wc=_LFKJFP6TFSKXQdCfRD4XrSON_AqDTA@mail.gmail.com>
+Subject: Re: [PATCH net-next v9 15/15] p4tc: add P4 classifier
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, 
+	"Chatterjee, Deb" <deb.chatterjee@intel.com>, Anjali Singhai Jain <anjali.singhai@intel.com>, 
+	"Limaye, Namrata" <namrata.limaye@intel.com>, Marcelo Ricardo Leitner <mleitner@redhat.com>, 
+	"Shirshyad, Mahesh" <Mahesh.Shirshyad@amd.com>, "Osinski, Tomasz" <tomasz.osinski@intel.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Cong Wang <xiyou.wangcong@gmail.com>, davem@davemloft.net, 
+	Eric Dumazet <edumazet@google.com>, kuba@kernel.org, Paolo Abeni <pabeni@redhat.com>, 
+	Vlad Buslov <vladbu@nvidia.com>, Simon Horman <horms@kernel.org>, Khalid Manaa <khalidm@nvidia.com>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, Dec 8, 2023 at 5:06=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
+t> wrote:
+>
+> On 12/6/23 3:59 PM, Jamal Hadi Salim wrote:
+> > On Tue, Dec 5, 2023 at 5:32=E2=80=AFPM Daniel Borkmann <daniel@iogearbo=
+x.net> wrote:
+> >> On 12/5/23 5:23 PM, Jamal Hadi Salim wrote:
+> >>> On Tue, Dec 5, 2023 at 8:43=E2=80=AFAM Daniel Borkmann <daniel@iogear=
+box.net> wrote:
+> >>>> On 12/5/23 1:32 AM, John Fastabend wrote:
+> >>>>> Jamal Hadi Salim wrote:
+> >>>>>> Introduce P4 tc classifier. A tc filter instantiated on this class=
+ifier
+> >>>>>> is used to bind a P4 pipeline to one or more netdev ports. To use =
+P4
+> >>>>>> classifier you must specify a pipeline name that will be associate=
+d to
+> >>>>>> this filter, a s/w parser and datapath ebpf program. The pipeline =
+must have
+> >>>>>> already been created via a template.
+> >>>>>> For example, if we were to add a filter to ingress of network inte=
+rface
+> >>>>>> device $P0 and associate it to P4 pipeline simple_l3 we'd issue th=
+e
+> >>>>>> following command:
+> >>>>>
+> >>>>> In addition to my comments from last iteration.
+> >>>>>
+> >>>>>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname si=
+mple_l3 \
+> >>>>>>        action bpf obj $PARSER.o section prog/tc-parser \
+> >>>>>>        action bpf obj $PROGNAME.o section prog/tc-ingress
+> >>>>>
+> >>>>> Having multiple object files is a mistake IMO and will cost
+> >>>>> performance. Have a single object file avoid stitching together
+> >>>>> metadata and run to completion. And then run entirely from XDP
+> >>>>> this is how we have been getting good performance numbers.
+> >>>>
+> >>>> +1, fully agree.
+> >>>
+> >>> As I stated earlier: while performance is important it is not the
+> >>> highest priority for what we are doing, rather correctness is. We don=
+t
+> >>> want to be wrestling with the verifier or some other limitation like
+> >>> tail call limits to gain some increase in a few kkps. We are taking a
+> >>> gamble with the parser which is not using any kfuncs at the moment.
+> >>> Putting them all in one program will increase the risk.
+> >>
+> >> I don't think this is a good reason, this corners you into UAPI which
+> >> later on cannot be changed anymore. If you encounter such issues, then
+> >> why not bringing up actual concrete examples / limitations you run int=
+o
+> >> to the BPF community and help one way or another to get the verifier
+> >> improved instead? (Again, see sched_ext as one example improving verif=
+ier,
+> >> but also concrete example bug reports, etc could help.)
+> >
+> > Which uapi are you talking about? The eBPF code gets generated by the
+> > compiler. Whether we generate one or 10 programs or where we place
+> > them is up to the compiler.
+> > We choose today to generate the parser separately - but we can change
+> > it in a heartbeat with zero kernel changes.
+>
+> With UAPI I mean to even have this parser separation. Ideally, this shoul=
+d
+> just naturally be a single program as in XDP layer itself. You mentioned
+> below you could run the pipeline just in XDP..
+>
 
-The verifier incorrectly prunes a path expected to be executed at
-runtime. In the following program, the execution path is:
-    from 6 to 8 (taken) -> from 11 to 15 (taken) -> from 18 to 22
-(taken) -> from 26 to 27 (fall-through) -> from 29 to 30
-(fall-through)
-The verifier prunes the checking path at #26, skipping the actual
-execution path.
+Yes we can - but it doesnt break uapi. The simplest thing to do is to
+place the pipeline either at TC or XDP fully.  Caveat being not
+everything can run on XDP.
 
-   0: (18) r2 = 0x1a000000be
-   2: (bf) r5 = r1
-   3: (bf) r8 = r2
-   4: (bc) w4 = w5
-   5: (85) call bpf_get_current_cgroup_id#680112
-   6: (36) if w8 >= 0x69 goto pc+1
-   7: (95) exit
-   8: (18) r4 = 0x52
-  10: (84) w4 = -w4
-  11: (45) if r0 & 0xfffffffe goto pc+3
-  12: (1f) r8 -= r4
-  13: (0f) r0 += r0
-  14: (2f) r4 *= r4
-  15: (18) r3 = 0x1f00000034
-  17: (c4) w4 s>>= 29
-  18: (56) if w8 != 0xf goto pc+3
-  19: r3 = bswap32 r3
-  20: (18) r2 = 0x1c
-  22: (67) r4 <<= 2
-  23: (bf) r5 = r8
-  24: (18) r2 = 0x4
-  26: (7e) if w8 s>= w0 goto pc+5
-  27: (4f) r8 |= r8
-  28: (0f) r8 += r8
-  29: (d6) if w5 s<= 0x1d goto pc+2
-  30: (18) r0 = 0x4 ; incorrectly pruned here
-  32: (95) exit
+Probably showing XDP running the parser was not a good example - and i
+think we should remove it from the commit messages to avoid confusion.
+The intent there was to show that  XDP,  given its speed advantages,
+can do the parsing faster and infact reject anything early if thats
+what the P4 programm deemed it do; if it likes something then the tc
+layer handles the rest of the pipeline processing. It is really p4
+program dependent. Consider another example which is more sensible:
+XDP has a fast path  (pipeline branching based on runtime conditions
+works well in P4) and if there were exceptions to the fast path (maybe
+a cache miss) then processing in the tc layer, etc.
 
--------- Verifier Log --------
-func#0 @0
-0: R1=ctx() R10=fp0
-0: (18) r2 = 0x1a000000be             ; R2_w=0x1a000000be
-2: (bf) r5 = r1                       ; R1=ctx() R5_w=ctx()
-3: (bf) r8 = r2                       ; R2_w=0x1a000000be R8_w=0x1a000000be
-4: (bc) w4 = w5                       ;
-R4_w=scalar(smin=0,smax=umax=0xffffffff,var_off=(0x0; 0xffffffff))
-R5_w=ctx()
-5: (85) call bpf_get_current_cgroup_id#80     ; R0_w=scalar()
-6: (36) if w8 >= 0x69 goto pc+1
-mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
-mark_precise: frame0: regs=r8 stack= before 5: (85) call
-bpf_get_current_cgroup_id#80
-mark_precise: frame0: regs=r8 stack= before 4: (bc) w4 = w5
-mark_precise: frame0: regs=r8 stack= before 3: (bf) r8 = r2
-mark_precise: frame0: regs=r2 stack= before 2: (bf) r5 = r1
-mark_precise: frame0: regs=r2 stack= before 0: (18) r2 = 0x1a000000be
-6: R8_w=0x1a000000be
-8: (18) r4 = 0x52                     ; R4_w=82
-10: (84) w4 = -w4                     ; R4=scalar()
-11: (45) if r0 & 0xfffffffe goto pc+3         ;
-R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=1,var_off=(0x0; 0x1))
-12: (1f) r8 -= r4                     ; R4=scalar() R8_w=scalar()
-13: (0f) r0 += r0                     ;
-R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3))
-14: (2f) r4 *= r4                     ; R4_w=scalar()
-15: (18) r3 = 0x1f00000034            ; R3_w=0x1f00000034
-17: (c4) w4 s>>= 29                   ;
-R4_w=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
-0xffffffff))
-18: (56) if w8 != 0xf goto pc+3       ;
-R8_w=scalar(smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
-0xffffffff00000000))
-19: (d7) r3 = bswap32 r3              ; R3_w=scalar()
-20: (18) r2 = 0x1c                    ; R2=28
-22: (67) r4 <<= 2                     ;
-R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
-0x3fffffffc))
-23: (bf) r5 = r8                      ;
-R5_w=scalar(id=1,smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
-0xffffffff00000000))
-R8=scalar(id=1,smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
-0xffffffff00000000))
-24: (18) r2 = 0x4                     ; R2_w=4
-26: (7e) if w8 s>= w0 goto pc+5
-mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-mark_precise: frame0: regs=r5,r8 stack= before 24: (18) r2 = 0x4
-mark_precise: frame0: regs=r5,r8 stack= before 23: (bf) r5 = r8
-mark_precise: frame0: regs=r8 stack= before 22: (67) r4 <<= 2
-mark_precise: frame0: parent state regs=r8 stack=:
-R0_rw=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R2_w=28 R3_w=scalar()
-R4_rw=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
-0xffffffff)) R8_rw=Pscalar(smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
-0xffffffff00000000)) R10=fp0
-mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
-mark_precise: frame0: regs=r8 stack= before 20: (18) r2 = 0x1c
-mark_precise: frame0: regs=r8 stack= before 19: (d7) r3 = bswap32 r3
-mark_precise: frame0: regs=r8 stack= before 18: (56) if w8 != 0xf goto pc+3
-mark_precise: frame0: regs=r8 stack= before 17: (c4) w4 s>>= 29
-mark_precise: frame0: regs=r8 stack= before 15: (18) r3 = 0x1f00000034
-mark_precise: frame0: regs=r8 stack= before 14: (2f) r4 *= r4
-mark_precise: frame0: regs=r8 stack= before 13: (0f) r0 += r0
-mark_precise: frame0: regs=r8 stack= before 12: (1f) r8 -= r4
-mark_precise: frame0: regs=r4,r8 stack= before 11: (45) if r0 &
-0xfffffffe goto pc+3
-mark_precise: frame0: parent state regs=r4,r8 stack=:  R0_rw=scalar()
-R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
-mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
-mark_precise: frame0: regs=r4,r8 stack= before 10: (84) w4 = -w4
-mark_precise: frame0: regs=r4,r8 stack= before 8: (18) r4 = 0x52
-mark_precise: frame0: regs=r8 stack= before 6: (36) if w8 >= 0x69 goto pc+1
-mark_precise: frame0: regs=r8 stack= before 5: (85) call
-bpf_get_current_cgroup_id#80
-mark_precise: frame0: regs=r8 stack= before 4: (bc) w4 = w5
-mark_precise: frame0: regs=r8 stack= before 3: (bf) r8 = r2
-mark_precise: frame0: regs=r2 stack= before 2: (bf) r5 = r1
-mark_precise: frame0: regs=r2 stack= before 0: (18) r2 = 0x1a000000be
-mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
-mark_precise: frame0: regs=r0 stack= before 24: (18) r2 = 0x4
-mark_precise: frame0: regs=r0 stack= before 23: (bf) r5 = r8
-mark_precise: frame0: regs=r0 stack= before 22: (67) r4 <<= 2
-mark_precise: frame0: parent state regs=r0 stack=:
-R0_rw=Pscalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R2_w=28 R3_w=scalar()
-R4_rw=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
-0xffffffff)) R8_rw=Pscalar(smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
-0xffffffff00000000)) R10=fp0
-mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
-mark_precise: frame0: regs=r0 stack= before 20: (18) r2 = 0x1c
-mark_precise: frame0: regs=r0 stack= before 19: (d7) r3 = bswap32 r3
-mark_precise: frame0: regs=r0 stack= before 18: (56) if w8 != 0xf goto pc+3
-mark_precise: frame0: regs=r0 stack= before 17: (c4) w4 s>>= 29
-mark_precise: frame0: regs=r0 stack= before 15: (18) r3 = 0x1f00000034
-mark_precise: frame0: regs=r0 stack= before 14: (2f) r4 *= r4
-mark_precise: frame0: regs=r0 stack= before 13: (0f) r0 += r0
-mark_precise: frame0: regs=r0 stack= before 12: (1f) r8 -= r4
-mark_precise: frame0: regs=r0 stack= before 11: (45) if r0 &
-0xfffffffe goto pc+3
-mark_precise: frame0: parent state regs=r0 stack=:  R0_rw=Pscalar()
-R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
-mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
-mark_precise: frame0: regs=r0 stack= before 10: (84) w4 = -w4
-mark_precise: frame0: regs=r0 stack= before 8: (18) r4 = 0x52
-mark_precise: frame0: regs=r0 stack= before 6: (36) if w8 >= 0x69 goto pc+1
-mark_precise: frame0: regs=r0 stack= before 5: (85) call
-bpf_get_current_cgroup_id#80
-26: R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R8=scalar(id=1,smin=0x800000000000000f,smax=0x7fffffff0000000f,umin=smin32=umin32=15,umax=0xffffffff0000000f,smax32=umax32=15,var_off=(0xf;
-0xffffffff00000000))
-32: (95) exit
+I think we'll just remove such examples in the commit.
 
-from 18 to 22: R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R3_w=0x1f00000034
-R4_w=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
-0xffffffff)) R8_w=scalar() R10=fp0
-22: R0_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R3_w=0x1f00000034
-R4_w=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
-0xffffffff)) R8_w=scalar() R10=fp0
-22: (67) r4 <<= 2                     ;
-R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
-0x3fffffffc))
-23: (bf) r5 = r8                      ; R5_w=scalar(id=2) R8_w=scalar(id=2)
-24: (18) r2 = 0x4                     ; R2=4
-26: (7e) if w8 s>= w0 goto pc+5       ;
-R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0; 0x3))
-R8=scalar(id=2,smax32=1)
-27: (4f) r8 |= r8                     ; R8_w=scalar()
-28: (0f) r8 += r8                     ; R8_w=scalar()
-29: (d6) if w5 s<= 0x1d goto pc+2
-mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
-mark_precise: frame0: regs=r5 stack= before 28: (0f) r8 += r8
-mark_precise: frame0: regs=r5 stack= before 27: (4f) r8 |= r8
-mark_precise: frame0: regs=r5 stack= before 26: (7e) if w8 s>= w0 goto pc+5
-mark_precise: frame0: parent state regs=r5 stack=:
-R0_rw=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R2_w=4 R3_w=0x1f00000034
-R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
-0x3fffffffc)) R5_rw=Pscalar(id=2) R8_rw=scalar(id=2) R10=fp0
-mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
-mark_precise: frame0: regs=r5,r8 stack= before 24: (18) r2 = 0x4
-mark_precise: frame0: regs=r5,r8 stack= before 23: (bf) r5 = r8
-mark_precise: frame0: regs=r8 stack= before 22: (67) r4 <<= 2
-mark_precise: frame0: regs=r8 stack= before 18: (56) if w8 != 0xf goto pc+3
-mark_precise: frame0: regs=r8 stack= before 17: (c4) w4 s>>= 29
-mark_precise: frame0: regs=r8 stack= before 15: (18) r3 = 0x1f00000034
-mark_precise: frame0: regs=r8 stack= before 14: (2f) r4 *= r4
-mark_precise: frame0: regs=r8 stack= before 13: (0f) r0 += r0
-mark_precise: frame0: regs=r8 stack= before 12: (1f) r8 -= r4
-mark_precise: frame0: regs=r4,r8 stack= before 11: (45) if r0 &
-0xfffffffe goto pc+3
-mark_precise: frame0: parent state regs= stack=:  R0_rw=Pscalar()
-R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
-29: R5=scalar(id=2,smax32=1)
-32: (95) exit
+For the multi-prog-per level: If for a given P4 program the compiler
+(v1) generates two separate ebpf programs(as we do in this case) and
+then the next version of the compiler(v2) puts all the logic in one
+ebpf program at XDP only - nothing breaks. i.e both V1 and V2 output
+continue to work; maybe the V2 output could end up being more
+efficient, etc.
 
-from 26 to 32: R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R2=4 R3=0x1f00000034
-R4=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
-0x3fffffffc)) R5=scalar(id=2,smax=0x7fffffff7fffffff,umax=0xffffffff7fffffff,smin32=0,umax32=0x7fffffff,var_off=(0x0;
-0xffffffff7fffffff))
-R8=scalar(id=2,smax=0x7fffffff7fffffff,umax=0xffffffff7fffffff,smin32=0,umax32=0x7fffffff,var_off=(0x0;
-0xffffffff7fffffff)) R10=fp0
-32: R0=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R2=4 R3=0x1f00000034
-R4=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
-0x3fffffffc)) R5=scalar(id=2,smax=0x7fffffff7fffffff,umax=0xffffffff7fffffff,smin32=0,umax32=0x7fffffff,var_off=(0x0;
-0xffffffff7fffffff))
-R8=scalar(id=2,smax=0x7fffffff7fffffff,umax=0xffffffff7fffffff,smin32=0,umax32=0x7fffffff,var_off=(0x0;
-0xffffffff7fffffff)) R10=fp0
-32: (95) exit
+> >>> As i responded to you earlier,  we just dont want to lose
+> >>> functionality, some sample space:
+> >>> - we could have multiple pipelines with different priorities - and
+> >>> each pipeline may have its own logic with many tables etc (and the
+> >>> choice to iterate the next one is essentially encoded in the tc actio=
+n
+> >>> codes)
+> >>> - we want to be able to split the pipeline into parts that can run _i=
+n
+> >>> unison_ in h/w, xdp, and tc
+> >>
+> >> So parser at XDP, but then you push it up the stack (instead of stayin=
+g
+> >> only at XDP layer) just to reach into tc layer to perform a correspond=
+ing
+> >> action.. and this just to work around verifier as you say?
+> >
+> > You are mixing things. The idea of being able to split a pipeline into
+> > hw:xdp:tc is a requirement.  You can run the pipeline fully in XDP  or
+> > fully in tc or split it when it makes sense.
+> > The idea of splitting the parser from the main p4 control block is for
+> > two reasons 1) someone else can generate or handcode the parser if
+> > they need to - we feel this is an area that may need to take advantage
+> > of features like dynptr etc in the future 2) as a precaution to ensure
+> > all P4 programs load. We have no problem putting both in one ebpf prog
+> > when we gain confidence that it will _always_ work - it is a mere
+> > change to what the compiler generates.
+>
+> The cooperation between BPF progs at different layers (e.g. nfp allowed t=
+hat
+> nicely from a BPF offload PoV) makes sense, just less to split the action=
+s
+> within a given layer into multiple units where state needs to be transfer=
+red,
+>
 
-from 11 to 15: R0=scalar() R4=scalar() R8=0x1a000000be R10=fp0
-15: R0=scalar() R4=scalar() R8=0x1a000000be R10=fp0
-15: (18) r3 = 0x1f00000034            ; R3_w=0x1f00000034
-17: (c4) w4 s>>= 29                   ;
-R4=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
-0xffffffff))
-18: (56) if w8 != 0xf goto pc+3
-mark_precise: frame0: last_idx 18 first_idx 18 subseq_idx -1
-mark_precise: frame0: parent state regs=r8 stack=:  R0=scalar()
-R3_w=0x1f00000034
-R4_w=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
-0xffffffff)) R8_r=P0x1a000000be R10=fp0
-mark_precise: frame0: last_idx 17 first_idx 11 subseq_idx 18
-mark_precise: frame0: regs=r8 stack= before 17: (c4) w4 s>>= 29
-mark_precise: frame0: regs=r8 stack= before 15: (18) r3 = 0x1f00000034
-mark_precise: frame0: regs=r8 stack= before 11: (45) if r0 &
-0xfffffffe goto pc+3
-mark_precise: frame0: parent state regs= stack=:  R0_rw=Pscalar()
-R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
-18: R8=0x1a000000be
-22: (67) r4 <<= 2                     ;
-R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
-0x3fffffffc))
-23: (bf) r5 = r8                      ; R5_w=0x1a000000be R8=0x1a000000be
-24: (18) r2 = 0x4
-frame 0: propagating r5
-mark_precise: frame0: last_idx 26 first_idx 18 subseq_idx -1
-mark_precise: frame0: regs=r5 stack= before 24: (18) r2 = 0x4
-mark_precise: frame0: regs=r5 stack= before 23: (bf) r5 = r8
-mark_precise: frame0: regs=r8 stack= before 22: (67) r4 <<= 2
-mark_precise: frame0: regs=r8 stack= before 18: (56) if w8 != 0xf goto pc+3
-mark_precise: frame0: parent state regs= stack=:  R0_r=scalar()
-R3_w=0x1f00000034
-R4_rw=scalar(smin=0,smax=umax=0xffffffff,smin32=-4,smax32=3,var_off=(0x0;
-0xffffffff)) R8_r=P0x1a000000be R10=fp0
-26: safe
-processed 38 insns (limit 1000000) max_states_per_insn 1 total_states
-4 peak_states 4 mark_read 2
+For the parser split, one motivation was: there are other tools that
+are very specialized on parsers (see Tom) and as long as that tool can
+read P4 and conform to our expectations, we should be able to use that
+parser as a replacement. Maybe that example is too specific and doesnt
+apply in the larger picture but like i said we can change it with a
+compiler mod. No rush - we'll see where this goes.
 
--------- End of Verifier Log --------
+> packets reparsed, etc. When you say that "we have no problem putting both=
+ in
+> one ebpf prog when we gain confidence that it will _always_ work", then s=
+hould
+> this not be the goal to start with? How do you quantify "gain confidence"=
+?
+> Test/conformance suite? It would be better to start out with this in the =
+first
+> place and fix or collaborate with whatever limits get encountered along t=
+he
+> way. This would be the case for XDP anyway given you mention you want to
+> support this layer.
 
-When the verifier backtracks from #29, I expected w0 at #26 (if w8 s>=
-w0 goto pc+5) to be marked as precise since R8 and R5 share the same
-id:
+It's just bad experience with the eBPF tooling that drove us in this
+path (path explosions, pointer trickery, tail call limits, etc). Our
+goal is to not require eBPF expertise for tc people (who are the main
+consumers of this); things have to _just work_ after the compiler
+emits them. We dont want to maintain a bag of tricks which may work
+some of the time. For our audience a goal is to lower the barrier for
+them and reduce dependence on "you must now be a guru at eBPF".
+For now we are in a grace period with the compiler (even for the
+parser separation, which we could end up removing) and over time
+feedback for usability and optimization will keep improving generated
+code and hopefully using new eBPF features more effectively. So i am
+not very concerned about this.
 
-29: (d6) if w5 s<= 0x1d goto pc+2
-mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
-mark_precise: frame0: regs=r5 stack= before 28: (0f) r8 += r8
-mark_precise: frame0: regs=r5 stack= before 27: (4f) r8 |= r8
-mark_precise: frame0: regs=r5 stack= before 26: (7e) if w8 s>= w0 goto pc+5
-mark_precise: frame0: parent state regs=r5 stack=:
-R0_rw=scalar(smin=smin32=0,smax=umax=smax32=umax32=2,var_off=(0x0;
-0x3)) R2_w=4 R3_w=0x1f00000034
-R4_w=scalar(smin=0,smax=umax=0x3fffffffc,smax32=0x7ffffffc,umax32=0xfffffffc,var_off=(0x0;
-0x3fffffffc)) R5_rw=Pscalar(id=2) R8_rw=scalar(id=2) R10=fp0
-mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
-mark_precise: frame0: regs=r5,r8 stack= before 24: (18) r2 = 0x4
-mark_precise: frame0: regs=r5,r8 stack= before 23: (bf) r5 = r8
-mark_precise: frame0: regs=r8 stack= before 22: (67) r4 <<= 2
-mark_precise: frame0: regs=r8 stack= before 18: (56) if w8 != 0xf goto pc+3
-mark_precise: frame0: regs=r8 stack= before 17: (c4) w4 s>>= 29
-mark_precise: frame0: regs=r8 stack= before 15: (18) r3 = 0x1f00000034
-mark_precise: frame0: regs=r8 stack= before 14: (2f) r4 *= r4
-mark_precise: frame0: regs=r8 stack= before 13: (0f) r0 += r0
-mark_precise: frame0: regs=r8 stack= before 12: (1f) r8 -= r4
-mark_precise: frame0: regs=r4,r8 stack= before 11: (45) if r0 &
-0xfffffffe goto pc+3
-mark_precise: frame0: parent state regs= stack=:  R0_rw=Pscalar()
-R4_rw=Pscalar() R8_rw=P0x1a000000be R10=fp0
-29: R5=scalar(id=2,smax32=1)
+> >>> - we use tc block to map groups of ports heavily
+> >>> - we use netlink as our control API
+> >>>
+> >>>>>> $PROGNAME.o and $PARSER.o is a compilation of the eBPF programs ge=
+nerated
+> >>>>>> by the P4 compiler and will be the representation of the P4 progra=
+m.
+> >>>>>> Note that filter understands that $PARSER.o is a parser to be load=
+ed
+> >>>>>> at the tc level. The datapath program is merely an eBPF action.
+> >>>>>>
+> >>>>>> Note we do support a distinct way of loading the parser as opposed=
+ to
+> >>>>>> making it be an action, the above example would be:
+> >>>>>>
+> >>>>>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname si=
+mple_l3 \
+> >>>>>>        prog type tc obj $PARSER.o ... \
+> >>>>>>        action bpf obj $PROGNAME.o section prog/tc-ingress
+> >>>>>>
+> >>>>>> We support two types of loadings of these initial programs in the =
+pipeline
+> >>>>>> and differentiate between what gets loaded at tc vs xdp by using s=
+yntax of
+> >>>>>>
+> >>>>>> either "prog type tc obj" or "prog type xdp obj"
+> >>>>>>
+> >>>>>> For XDP:
+> >>>>>>
+> >>>>>> tc filter add dev $P0 ingress protocol all prio 1 p4 pname simple_=
+l3 \
+> >>>>>>        prog type xdp obj $PARSER.o section parser/xdp \
+> >>>>>>        pinned_link /sys/fs/bpf/mylink \
+> >>>>>>        action bpf obj $PROGNAME.o section prog/tc-ingress
+> >>>>>
+> >>>>> I don't think tc should be loading xdp programs. XDP is not 'tc'.
+> >>>>
+> >>>> For XDP, we do have a separate attach API, for BPF links we have bpf=
+_xdp_link_attach()
+> >>>> via bpf(2) and regular progs we have the classic way via dev_change_=
+xdp_fd() with
+> >>>> IFLA_XDP_* attributes. Mid-term we'll also add bpf_mprog support for=
+ XDP to allow
+> >>>> multi-user attachment. tc kernel code should not add yet another way=
+ of attaching XDP,
+> >>>> this should just reuse existing uapi infra instead from userspace co=
+ntrol plane side.
+> >>>
+> >>> I am probably missing something. We are not loading the XDP program -
+> >>> it is preloaded, the only thing the filter does above is grabbing a
+> >>> reference to it. The P4 pipeline in this case is split into a piece
+> >>> (the parser) that runs on XDP and some that runs on tc. And as i
+> >>> mentioned earlier we could go further another piece which is part of
+> >>> the pipeline may run in hw. And infact in the future a compiler will
+> >>> be able to generate code that is split across machines. For our s/w
+> >>> datapath on the same node the only split is between tc and XDP.
+> >>
+> >> So it is even worse from a design PoV.
+> >
+> > So from a wild accusation that we are loading the program to now a
+> > condescending remark we have a bad design.
+>
+> It's my opinion, yes, because all the pieces don't really fit naturally
+> together. It's all centered around the netlink layer which you call out
+> as 'non-negotiable', whereas this would have a better fit for a s/w-based
+> solution where you provide a framework for developers from user space.
+> Why do you even need an XDP reference in tc layer? Even though the XDP
+> loading happens through the regular path anyway.. just to knit the
+> different pieces artificially together despite the different existing
+> layers & APIs.
 
-However, seems it's not, so the next time when the verifier checks
-#26, R0 is incorrectly ignored.
-We have mark_precise_scalar_ids(), but it's called before calculating
-the mask once.
-I investigated for quite a while, but mark_chain_pricision() is really
-hard to follow.
+The P4 abstraction is a pipeline - to give analogy with current tc
+offloads (such as flower): the pipeline placement could be split
+between h/w and s/w (or be entirely in one or other),
+So the placement idea is already cooked in the TC psyche. And the
+control to all that happens at the tc layer. I can send a netlink
+message and it will tell me which part is in h/w and s/w. We are just
+following a similar thought process here: The pipeline is owned by TC
+and therefore its management and control (and source of truth) sits at
+TC. True, XDP is a different layer - but from an engineering
+perspective, I dont see this as this layer violation rather it is
+something pragmatic to do.
 
-Here is a reduced C repro, maybe someone else can shed some light on this.
-C repro: https://pastebin.com/raw/chrshhGQ
+> What should actually sit in user space and orchestrate
+> the different generic pieces of the kernel toolbox together, you now try
+> to artificially move one one layer down in a /non-generic/ way. Given thi=
+s
+> is trying to target a s/w datapath, I just don't follow why the building
+> blocks of this work cannot be done in a /generic/ way. Meaning, generic
+> extensions to the kernel infra in a p4-agnostic way, so they are also
+> useful and consumable outside of it for tc BPF or XDP users, and then in
+> user space the control plane picks all the necessary pieces it needs. (Th=
+ink
+> of an analogy to containers today.. there is no such notion in the kernel
+> and the user space infra picks all the necessary pieces such as netns,
+> cgroups, etc to flexibly assemble this higher level concept.)
+>
 
-Thanks
-Hao
+If there are alternative ways to load the programs and define their
+dependency that would work with tc, then it should be sufficient to
+just feed the fds to the p4 classifier when we instantiate a p4
+pipeline (or may not even be needed depending on what that stiching
+infra is). I did look at tcx hard after my last response and i am
+afraid, Daniel, that you divorced us and our status right now is we
+are your "ex" ;-> (is that what x means in tcx?). But if such a scheme
+exists, the eBPF progs can still call the exposed kfuncs meaning it
+will continue to work in the TC realm...
+
+> >> The kernel side allows XDP program
+> >> to be passed to cls_p4, but then it's not doing anything but holding a
+> >> reference to that BPF program. Iow, you need anyway to go the regular =
+way
+> >> of bpf_xdp_link_attach() or dev_change_xdp_fd() to install XDP. Why is=
+ the
+> >> reference even needed here, why it cannot be done in user space from y=
+our
+> >> control plane? This again, feels like a shim layer which should live i=
+n
+> >> user space instead.
+> >
+> > Our control path goes through tc - where we instantiate the pipeline
+> > on typically a tc block. Note: there could be many pipeline instances
+> > of the same set of ebpf programs. We need to know which ebpf programs
+> > are bound to which pipelines. When a pipeline is instantiated or
+> > destroyed it sends (netlink) events to user space. It is only natural
+> > to reference the programs which are part of the pipeline at that point
+> > i.e loading for tc progs and referencing for xdp. The control is
+> > already in user space to create bpf links etc.
+> >
+> > Our concern was (if you looked at the RFC discussions earlier on) a)
+> > we dont want anyone removing or replacing the XDP program that is part
+> > of a P4 pipeline b) we wanted to ensure in the case of a split
+> > pipeline that the XDP code that ran before tc part of the pipeline was
+> > infact the one that we wanted to run. The original code (before Toke
+> > made a suggestion to use bpf links) was passing a cookie from XDP to
+> > tc which we would use to solve these concerns. By creating the link in
+> > user space we can pass the fd - which is what you are seeing here.
+> > That solves both #a and #b.
+> > Granted we may be a little paranoid but operationally an important
+> > detail is:  if one dumps the tc filter with this approach they know
+> > what progs compose the pipeline.
+>
+> But just holding the reference in the tc cls_p4 code on the XDP program
+> doesn't automatically mean that this blocks anything else from happening.
+> You still need a user space control plane which creates the link, maybe
+> pins it somewhere, and when you need to update the program at the XDP
+> layer, then that user space control plane updates the prog @ XDP link. At
+> that point the dump in tc has a window of inconsistency given this is
+> non-atomic, and given this two-step approach.. what happens when the
+> control plane crashesin the middle in the worst case, then would you
+> take the XDP link info as source of truth or the cls_p4 dump? Just
+> operating on the XDP link without this two-step detour is a much more
+> robust approach given you avoid this race altogether.
+
+See my comment above on tcx on splitting the loading from tc runtime.
+My experience in SDN is that you want the kernel to be the source of
+truth. i.e.  if i want to know which progs are running for a given p4
+pipeline, at what level, putting this info on some user space daemon
+which - as you point out may crush - is not the most robust. I should
+be able to just use a cli to find out the truth.
+I didnt quiet follow your comment above on the XDP prog being replaced
+which a dump is going on... Am i mistaken in thinking that as long as
+i hold the refcount, you cant just swap things out from underneath me?
+
+> >>>>>> The theory of operations is as follows:
+> >>>>>>
+> >>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D1. PARSING=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>>>
+> >>>>>> The packet first encounters the parser.
+> >>>>>> The parser is implemented in ebpf residing either at the TC or XDP
+> >>>>>> level. The parsed header values are stored in a shared eBPF map.
+> >>>>>> When the parser runs at XDP level, we load it into XDP using tc fi=
+lter
+> >>>>>> command and pin it to a file.
+> >>>>>>
+> >>>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D2. ACTIONS=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>>>
+> >>>>>> In the above example, the P4 program (minus the parser) is encoded=
+ in an
+> >>>>>> action($PROGNAME.o). It should be noted that classical tc actions
+> >>>>>> continue to work:
+> >>>>>> IOW, someone could decide to add a mirred action to mirror all pac=
+kets
+> >>>>>> after or before the ebpf action.
+> >>>>>>
+> >>>>>> tc filter add dev $P0 parent ffff: protocol all prio 6 p4 pname si=
+mple_l3 \
+> >>>>>>        prog type tc obj $PARSER.o section parser/tc-ingress \
+> >>>>>>        action bpf obj $PROGNAME.o section prog/tc-ingress \
+> >>>>>>        action mirred egress mirror index 1 dev $P1 \
+> >>>>>>        action bpf obj $ANOTHERPROG.o section mysect/section-1
+> >>>>>>
+> >>>>>> It should also be noted that it is feasible to split some of the i=
+ngress
+> >>>>>> datapath into XDP first and more into TC later (as was shown above=
+ for
+> >>>>>> example where the parser runs at XDP level). YMMV.
+> >>>>>
+> >>>>> Is there any performance value in partial XDP and partial TC? The m=
+ain
+> >>>>> wins we see in XDP are when we can drop, redirect, etc the packet
+> >>>>> entirely in XDP and avoid skb altogether.
+> >>>>>
+> >>>>>> Co-developed-by: Victor Nogueira <victor@mojatatu.com>
+> >>>>>> Signed-off-by: Victor Nogueira <victor@mojatatu.com>
+> >>>>>> Co-developed-by: Pedro Tammela <pctammela@mojatatu.com>
+> >>>>>> Signed-off-by: Pedro Tammela <pctammela@mojatatu.com>
+> >>>>>> Signed-off-by: Jamal Hadi Salim <jhs@mojatatu.com>
+> >>>>
+> >>>> The cls_p4 is roughly a copy of {cls,act}_bpf, and from a BPF commun=
+ity side
+> >>>> we moved away from this some time ago for the benefit of a better ma=
+nagement
+> >>>> API for tc BPF programs via bpf(2) through bpf_mprog (see libbpf and=
+ BPF selftests
+> >>>> around this), as mentioned earlier. Please use this instead for your=
+ userspace
+> >>>> control plane, otherwise we are repeating the same mistakes from the=
+ past again
+> >>>> that were already fixed.
+> >>>
+> >>> Sorry, that is your use case for kubernetes and not ours. We want to
+> >>
+> >> There is nothing specific to k8s, it's generic infrastructure for tc B=
+PF
+> >> and also used outside of k8s scope; please double-check the selftests =
+to
+> >> get a picture of the API and libbpf integration.
+> >
+> > I did and i couldnt see how we can do any of the tcx/mprog using tc to
+> > meet our requirements. I may be missing something very obvious but it
+> > was why i said it was for your use case not ours. I would be willing
+> > to look again if you say it works with tc but do note that I am fine
+> > with tc infra where i can add actions, all composed of different
+> > programs if i wanted to; and add addendums to use other tc existing
+> > (non-ebpf) actions if i needed to. We have what we need working fine,
+> > so there has to be a compelling reason to change.
+> > I asked you a question earlier whether in your view tc use of ebpf is
+> > deprecated. I have seen you make a claim in the past that sched_act
+> > was useless and that everyone needs to use sched_cls and you went on
+> > to say nobody needs priorities. TBH, that is _your view for your use
+> > case_.
+>
+> I do see act_bpf as redundant given the cls_bpf with the direct
+> action mode can do everything that is needed with BPF, and whenever
+> something was needed, extensions to verifier/helpers/kfuncs/etc were
+> sufficient. We've been using this for years this way in production
+> with complex programs and never saw a need to utilize any of the
+> remaining actions outside of BPF or to have a split of parser/action
+> as mentioned above.
+
+When you have a very specific use case you can fix things as needed as
+you described a lot easier;  we have a large permutation of potential
+progs and pipeline flows to be dictated by P4 progs. We want to make
+sure things work all the time without someone calling us to say "how
+come this doesnt load?". For that we are willing to sacrifice some
+performance and i am sure we'll get better over time. So if it is
+multi-action so be it, at least for now. Definitely, we would not have
+wanted to go the eBPF path without kfuncs (and XDP plays a nice role)
+- so i feel we are in a good place.
+My thinking process has been converted from prioritizing "let me
+squeeze those cycles by skipping a memset" to "lets make this thing
+usable by other people" and if  i loose a few kpps because i have two
+actions instead of one, no big deal - we'll get better over time.
+
+> The additional machinery would also add overhead
+> in s/w fast path which can be avoided (if it were e.g. cls_matchall +
+> act_bpf). That said, people use cls_bpf in multi-user mode where
+> different progs get attached. The priorities was collective BPF
+> community feedback that these are hard to use due to the seen
+> collisions in practice which led to various hard to debug incidents.
+> While this was not my view initially, I agree that the new design
+> with before/after and relative prog/link reference is a better ux.
+>
+
+I empathize with the situation you faced (i note that motivation was a
+multi user food fight). We dont have that "collision" problem in our
+use cases. TBH, TC priorities and chains (which i can jump to) are
+sufficient for what we do. Note: I am also not objecting to getting
+better performance  (which i am sure we'll get better over time) or
+finding a common ground for how to specify the collection of programs
+(as long as it serves our needs as well i.e tc, netlink).
+
+cheers,
+jamal
+
+
+> >>> use the tc infra. We want to use netlink. I could be misreading what
+> >>> you are saying but it seems that you are suggesting that tc infra is
+> >>> now obsolete as far as ebpf is concerned? Overall: It is a bit selfis=
+h
+> >>> to say your use case dictates how other people use ebpf. ebpf is just
+> >>> a means to an end for us and _is not the end goal_ - just an infra
+> >>> toolset.
+> >>
+> >> Not really, the infrastructure is already there and ready to be used a=
+nd
+> >> it supports basic building blocks such as BPF links, relative prog/lin=
+k
+> >> dependency resolution, etc, where none of it can be found here. The
+> >> problem is "we want to use netlink" which is even why you need to push
+> >> down things like XDP prog, but it's broken by design, really. You are
+> >> trying to push down a control plane into netlink which should have bee=
+n
+> >> a framework in user space.
+> >
+> > The netlink part is not negotiable - the cover letter says why and i
+> > have explained it 10K times in these threads. You are listing all
+> > these tcx features like relativeness for which i have no use for.
+> > OTOH, like i said if it works with tc then i would be willing to look
+> > at it but there need to be compelling reasons to move to that shiny
+> > new infra.
+>
+> If you don't have a particular case for multi-prog, that is totally
+> fine. You mentioned earlier on "we dont want anyone removing or replacing
+> the XDP program that is part of a P4 pipeline", and that you are using
+> BPF links to solve it, so I presume it would be equally important case
+> for the tc BPF program of your P4 pipeline. I presume you use libbpf, so
+> here the controller would do exact similar steps on tcx that you do for
+> XDP to set up BPF links. But again, my overall comment comes down to
+> why it cannot be broken into generic extensions as mentioned above given
+> XDP/tc infra is in place.
+
+
+> Thanks,
+> Daniel
 
