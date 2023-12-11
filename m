@@ -1,315 +1,308 @@
-Return-Path: <bpf+bounces-17420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA47C80D3EE
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 18:35:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05FAF80D43E
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 18:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EEF0282020
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 17:35:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3A511F21A21
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 17:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8C04E605;
-	Mon, 11 Dec 2023 17:35:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A93374E634;
+	Mon, 11 Dec 2023 17:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="IDD5FiNd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nmaE1o1g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81945EA
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 09:34:58 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2ca00dffc23so59265101fa.2
-        for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 09:34:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1702316096; x=1702920896; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=NdntKpoFqEp565dhKg1sipm9uz6YZ2T0KuB0vGO17X4=;
-        b=IDD5FiNdk8G5ShXCcmbO74sNPQt6a6KAwiVf+jV0aaXrTVT3t1sLoWqPSkK4kQ5FPa
-         LDCImOtpdxH7u4j8/dPFfij99W2uIgZV/nyAwutwHL2ZXmg6blCl1BsH5Zyzx958ksoD
-         2eSqH6i7B7/T+lulICxjx3PyBdLiDm+QxEQc+HIokH+I2xMPWW+a50K1tiWaxdVFzJ0t
-         ohTlZTPADKQSanTCSK3I30odqjSYBsTdEtkSIn/mxBMy5GIyLbmLsWyUBpSwUEL8lZF/
-         jzbF/8M9e7RUY8dgGBsF8ocmsZ/cYcuWt2bokQkKqhAiz8n2d7zoIjJPMVP3xtl5nv9j
-         dZyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702316096; x=1702920896;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NdntKpoFqEp565dhKg1sipm9uz6YZ2T0KuB0vGO17X4=;
-        b=Iwdrz399U460ZPiQsPWJ5It6k/meKUGv4eTcyoJvzQnVUxJfQgp3NFr+zsTg1DY008
-         7QF2/PaJ8frcD6IHdqaWmNLl0dWDPULrlGaCFTN/VIdYNfs9c+q/sKJ/LTpjQyEYkVGB
-         IdBaYb3szZosMz0aZVuE21TBnlfah9HuV5qUe4YimQBKL3LR36m5KsBfpcp8X8C6p0qx
-         9fOG0u3sp3pnYZob1jncbMpxdykVOSOQLZ+eEu0/M4K0L+s2x3UsS3RdZ0zN9VvkNiok
-         eyqYLaPz4+EXYpjWgmD0hkHYLUhxbjt8CQkofb6n5ahIlBpNtf7NeGGlQCu0gtTuqjdN
-         tTxQ==
-X-Gm-Message-State: AOJu0YxFOO8y6DmInkNZBVlt6QoNYanqqNtXF28JgrwV7Q9DQwjdetEC
-	B4ztiFDaSYCTbD4OzGF5LJcJ2Q==
-X-Google-Smtp-Source: AGHT+IEUifuKCuhx+BOn5jaBiE7KhjVAiRTio474dljS05Eg0bsVyB9zQoitCqgX1srL22+FbFYf7A==
-X-Received: by 2002:a19:6555:0:b0:50b:fa2e:4bce with SMTP id c21-20020a196555000000b0050bfa2e4bcemr2079599lfj.9.1702316096512;
-        Mon, 11 Dec 2023 09:34:56 -0800 (PST)
-Received: from zh-lab-node-5 ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id th19-20020a1709078e1300b00a1bda8db043sm5027770ejc.120.2023.12.11.09.34.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 09:34:55 -0800 (PST)
-Date: Mon, 11 Dec 2023 17:31:31 +0000
-From: Anton Protopopov <aspsk@isovalent.com>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 6/7] libbpf: BPF Static Keys support
-Message-ID: <ZXdHc7xoAVf1g4a9@zh-lab-node-5>
-References: <20231206141030.1478753-7-aspsk@isovalent.com>
- <CAADnVQ+BRbJN1A9_fjDTXh0=VM5x6oGVgtcB1JB7K8TM5+6i5Q@mail.gmail.com>
- <ZXNCB5sEendzNj6+@zh-lab-node-5>
- <CAEf4Bzai9X2xQGjEOZvkSkx7ZB9CSSk4oTxoksTVSBoEvR4UsA@mail.gmail.com>
- <CAADnVQJtWVE9+rA2232P4g7ktUJ_+Nfwo+MYpv=6p7+Z9J20hw@mail.gmail.com>
- <bef79c65-e89a-4219-8c8b-750c60e1f2b4@linux.dev>
- <CAADnVQJd1aUFzznLhwNvkN+zot-u3=4A16utY93HoLJrP_vo3w@mail.gmail.com>
- <85aa91f9-d5c0-4e7b-950d-475da7787f64@linux.dev>
- <CAADnVQKZjmwxo0cBiHcp3FkAAmJT850qQJ5_=fAhfOKniJM2Kw@mail.gmail.com>
- <3682c649-6a6a-4f66-b4fa-fbcbb774ae94@linux.dev>
+X-Greylist: delayed 520 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 09:40:32 PST
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [IPv6:2001:41d0:203:375::b4])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2699110F
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 09:40:31 -0800 (PST)
+Message-ID: <45878586-cc5f-435f-83fb-9a3c39824550@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702315909;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=arKj2pScXciLPB4FC62c69xlYWgQBEV3vC7GVugQsh8=;
+	b=nmaE1o1gBp4Mw2z/NsShDbasXGYN6M6wY4L/GObmys5pRHebg/IJG2Od5xW415GHIRPww/
+	wiFOINv/JkrGr8nesveid7Oai8N+9rE/+WyCsfWCUVejOhIk0j10GViD2SexCWcazxRuEM
+	25yW8QVUh9QozJWsMOQ+fXtOA6uVaB4=
+Date: Mon, 11 Dec 2023 12:31:46 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [PATCH v1 bpf-next 1/2] bpf: Support BPF_F_MMAPABLE task_local
+ storage
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Tejun Heo <tj@kernel.org>,
+ David Vernet <void@manifault.com>
+Cc: David Marchevsky <david.marchevsky@linux.dev>,
+ Dave Marchevsky <davemarchevsky@fb.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@kernel.org>, Kernel Team <kernel-team@fb.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, bpf <bpf@vger.kernel.org>
+References: <20231120175925.733167-1-davemarchevsky@fb.com>
+ <20231120175925.733167-2-davemarchevsky@fb.com>
+ <9b037dde-e65c-4d1a-8295-68d51ac3ce25@linux.dev>
+ <3dd86df3-0692-42d8-b075-f79c5dc052be@linux.dev>
+ <f4d7f72d-1ba2-49dc-b4e0-03289393d436@linux.dev>
+ <CAADnVQK6c8chC1E6_O8bncncBuiscdFrKk6EgPbBC_WyVoj=9w@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: David Marchevsky <david.marchevsky@linux.dev>
+In-Reply-To: <CAADnVQK6c8chC1E6_O8bncncBuiscdFrKk6EgPbBC_WyVoj=9w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3682c649-6a6a-4f66-b4fa-fbcbb774ae94@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Dec 09, 2023 at 10:32:42PM -0800, Yonghong Song wrote:
-> 
-> On 12/9/23 9:18 AM, Alexei Starovoitov wrote:
-> > On Fri, Dec 8, 2023 at 9:05 PM Yonghong Song <yonghong.song@linux.dev> wrote:
-> > > 
-> > > On 12/8/23 8:25 PM, Alexei Starovoitov wrote:
-> > > > On Fri, Dec 8, 2023 at 8:15 PM Yonghong Song <yonghong.song@linux.dev> wrote:
-> > > > > On 12/8/23 8:05 PM, Alexei Starovoitov wrote:
-> > > > > > On Fri, Dec 8, 2023 at 2:04 PM Andrii Nakryiko
-> > > > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > > > > I feel like embedding some sort of ID inside the instruction is very..
-> > > > > > > unusual, shall we say?
-> > > > > > yeah. no magic numbers inside insns pls.
-> > > > > > 
-> > > > > > I don't like JA_CFG name, since I read CFG as control flow graph,
-> > > > > > while you probably meant CFG as configurable.
-> > > > > > How about BPF_JA_OR_NOP ?
-> > > > > > Then in combination with BPF_JMP or BPF_JMP32 modifier
-> > > > > > the insn->off|imm will be used.
-> > > > > > 1st bit in src_reg can indicate the default action: nop or jmp.
-> > > > > > In asm it may look like asm("goto_or_nop +5")
-> > > > > How does the C source code looks like in order to generate
-> > > > > BPF_JA_OR_NOP insn? Any source examples?
-> > > > It will be in inline asm only. The address of that insn will
-> > > > be taken either via && or via asm (".long %l[label]").
-> > > >   From llvm pov both should go through the same relo creation logic. I hope :)
-> > > A hack in llvm below with an example, could you check whether the C
-> > > syntax and object dump result
-> > > is what you want to see?
-> > Thank you for the ultra quick llvm diff!
-> > 
-> > > diff --git a/llvm/lib/Target/BPF/AsmParser/BPFAsmParser.cpp
-> > > b/llvm/lib/Target/BPF/AsmParser/BPFAsmParser.cpp
-> > > index 90697c6645be..38b1cbc31f9a 100644
-> > > --- a/llvm/lib/Target/BPF/AsmParser/BPFAsmParser.cpp
-> > > +++ b/llvm/lib/Target/BPF/AsmParser/BPFAsmParser.cpp
-> > > @@ -231,6 +231,7 @@ public:
-> > >            .Case("call", true)
-> > >            .Case("goto", true)
-> > >            .Case("gotol", true)
-> > > +        .Case("goto_or_nop", true)
-> > >            .Case("*", true)
-> > >            .Case("exit", true)
-> > >            .Case("lock", true)
-> > > @@ -259,6 +260,7 @@ public:
-> > >            .Case("bswap64", true)
-> > >            .Case("goto", true)
-> > >            .Case("gotol", true)
-> > > +        .Case("goto_or_nop", true)
-> > >            .Case("ll", true)
-> > >            .Case("skb", true)
-> > >            .Case("s", true)
-> > > diff --git a/llvm/lib/Target/BPF/BPFInstrInfo.td
-> > > b/llvm/lib/Target/BPF/BPFInstrInfo.td
-> > > index 5972c9d49c51..a953d10429bf 100644
-> > > --- a/llvm/lib/Target/BPF/BPFInstrInfo.td
-> > > +++ b/llvm/lib/Target/BPF/BPFInstrInfo.td
-> > > @@ -592,6 +592,19 @@ class BRANCH<BPFJumpOp Opc, string OpcodeStr,
-> > > list<dag> Pattern>
-> > >      let BPFClass = BPF_JMP;
-> > >    }
-> > > 
-> > > +class BRANCH_OR_NOP<BPFJumpOp Opc, string OpcodeStr, list<dag> Pattern>
-> > > +    : TYPE_ALU_JMP<Opc.Value, BPF_K.Value,
-> > > +                   (outs),
-> > > +                   (ins brtarget:$BrDst),
-> > > +                   !strconcat(OpcodeStr, " $BrDst"),
-> > > +                   Pattern> {
-> > > +  bits<16> BrDst;
-> > > +
-> > > +  let Inst{47-32} = BrDst;
-> > > +  let Inst{31-0} = 1;
-> > > +  let BPFClass = BPF_JMP;
-> > > +}
-> > > +
-> > >    class BRANCH_LONG<BPFJumpOp Opc, string OpcodeStr, list<dag> Pattern>
-> > >        : TYPE_ALU_JMP<Opc.Value, BPF_K.Value,
-> > >                       (outs),
-> > > @@ -632,6 +645,7 @@ class CALLX<string OpcodeStr>
-> > >    let isBranch = 1, isTerminator = 1, hasDelaySlot=0, isBarrier = 1 in {
-> > >      def JMP : BRANCH<BPF_JA, "goto", [(br bb:$BrDst)]>;
-> > >      def JMPL : BRANCH_LONG<BPF_JA, "gotol", []>;
-> > > +  def JMP_OR_NOP : BRANCH_OR_NOP<BPF_JA, "goto_or_nop", []>;
-> > I was thinking of burning the new 0xE opcode for it,
-> > but you're right. It's a flavor of existing JA insn and it's indeed
-> > better to just use src_reg=1 bit to indicate so.
-> 
-> Right, using src_reg to indicate a new flavor of JA insn sounds
-> a good idea. My previously-used 'imm' field is a pure hack.
-> 
-> > 
-> > We probably need to use the 2nd bit of src_reg to indicate its default state
-> > (jmp or fallthrough).
-> 
-> Good point.
-> 
-> > 
-> > >           asm volatile goto ("r0 = 0; \
-> > >                               goto_or_nop %l[label]; \
-> > >                               r2 = 2; \
-> > >                               r3 = 3; \
-> > Not sure how to represent the default state in assembly though.
-> > "goto_or_nop" defaults to goto
-> > "nop_or_goto" default to nop
-> > ?
-> > 
-> > Do we need "gotol" for imm32 or will it be automatic?
-> 
-> It won't be automatic.
-> 
-> At the end of this email, I will show the new change
-> to have gotol_or_nop and nop_or_gotol insn and an example
 
-Thanks a lot Yonghong! May I ask you to send a full patch for LLVM
-(with gotol) so that I can test it?
 
-Overall, I think that JA + flags in SRC_REG is indeed better than a
-new instruction, as a new code is not used.
-
-This looks for me that two bits aren't enough, and the third is
-required, as the second bit seems to be overloaded:
-
-  * bit 1 indicates that this is a "JA_MAYBE"
-  * bit 2 indicates a jump or nop (i.e., the current state)
-
-However, we also need another bit which indicates what to do with the
-instruction when we issue [an abstract] command
-
-  flip_branch_on_or_off(branch, 0/1)
-
-Without this information (and in the absense of external meta-data on
-how to patch the branch) we can't determine what a given (BPF, not
-jitted) program currently does. For example, if we issue
-
-  flip_branch_on_or_off(branch, 0)
-
-then we can't reflect this in the xlated program by setting the second
-bit to jmp/off. Again, JITted program is fine, but it will be
-desynchronized from xlated in term of logic (some instructions will be
-mapped as NOP -> x86_JUMP, others as NOP -> x86_NOP).
-
-In my original patch we kept this triplet as
-
-  (offset to indicate a "special jump", JA+0/JA+OFF, Normal/Inverse)
-
-> to show it in asm. But there is an issue here.
-> In my example, the compiler (more specifically
-> the InstCombine pass) moved some code after
-> the 'label' to before the 'label'. Not exactly
-> sure how to prevent this. Maybe current
-> 'asm goto' already have a way to handle
-> this. Will investigate this later.
+On 11/21/23 2:49 PM, Alexei Starovoitov wrote:
+> On Tue, Nov 21, 2023 at 11:27 AM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 11/20/23 10:11 PM, David Marchevsky wrote:
+>>>
+>>>
+>>> On 11/20/23 7:42 PM, Martin KaFai Lau wrote:
+>>>> On 11/20/23 9:59 AM, Dave Marchevsky wrote:
+>>>>> diff --git a/include/linux/bpf_local_storage.h b/include/linux/bpf_local_storage.h
+>>>>> index 173ec7f43ed1..114973f925ea 100644
+>>>>> --- a/include/linux/bpf_local_storage.h
+>>>>> +++ b/include/linux/bpf_local_storage.h
+>>>>> @@ -69,7 +69,17 @@ struct bpf_local_storage_data {
+>>>>>         * the number of cachelines accessed during the cache hit case.
+>>>>>         */
+>>>>>        struct bpf_local_storage_map __rcu *smap;
+>>>>> -    u8 data[] __aligned(8);
+>>>>> +    /* Need to duplicate smap's map_flags as smap may be gone when
+>>>>> +     * it's time to free bpf_local_storage_data
+>>>>> +     */
+>>>>> +    u64 smap_map_flags;
+>>>>> +    /* If BPF_F_MMAPABLE, this is a void * to separately-alloc'd data
+>>>>> +     * Otherwise the actual mapval data lives here
+>>>>> +     */
+>>>>> +    union {
+>>>>> +        DECLARE_FLEX_ARRAY(u8, data) __aligned(8);
+>>>>> +        void *actual_data __aligned(8);
+>>>>
+>>>> The pages (that can be mmap'ed later) feel like a specific kind of kptr.
+>>>>
+>>>> Have you thought about allowing a kptr (pointing to some pages that can be mmap'ed later) to be stored as one of the members of the map's value as a kptr. bpf_local_storage_map is one of the maps that supports kptr.
+>>>>
+>>>> struct normal_and_mmap_value {
+>>>>      int some_int;
+>>>>      int __percpu_kptr *some_cnts;
+>>>>
+>>>>      struct bpf_mmap_page __kptr *some_stats;
+>>>> };
+>>>>
+>>>> struct mmap_only_value {
+>>>>      struct bpf_mmap_page __kptr *some_stats;
+>>>> };
+>>>>
+>>>> [ ... ]
+>>>>
+>>>
+>>> This is an intriguing idea. For conciseness I'll call this specific
+>>> kind of kptr 'mmapable kptrs' for the rest of this message. Below is
+>>> more of a brainstorming dump than a cohesive response, separate trains
+>>> of thought are separated by two newlines.
+>>
+>> Thanks for bearing with me while some ideas could be crazy. I am trying to see
+>> how this would look like for other local storage, sk and inode. Allocating a
+>> page for each sk will not be nice for server with half a million sk(s). e.g.
+>> half a million sk(s) sharing a few bandwidth policies or a few tuning
+>> parameters. Creating something mmap'able to the user space and also sharable
+>> among many sk(s) will be useful.
+>>
+>>>
+>>>
+>>> My initial thought upon seeing struct normal_and_mmap_value was to note
+>>> that we currently don't support mmaping for map_value types with _any_
+>>> special fields ('special' as determined by btf_parse_fields). But IIUC
+>>> you're actually talking about exposing the some_stats pointee memory via
+>>> mmap, not the containing struct with kptr fields. That is, for maps that
+>>> support these kptrs, mmap()ing a map with value type struct
+>>> normal_and_mmap_value would return the some_stats pointer value, and
+>>> likely initialize the pointer similarly to BPF_LOCAL_STORAGE_GET_F_CREATE
+>>> logic in this patch. We'd only be able to support one such mmapable kptr
+>>> field per mapval type, but that isn't a dealbreaker.
+>>>
+>>> Some maps, like task_storage, would only support mmap() on a map_value
+>>> with mmapable kptr field, as mmap()ing the mapval itself doesn't make
+>>> sense or is unsafe. Seems like arraymap would do the opposite, only
+>>
+>> Changing direction a bit since arraymap is brought up. :)
+>>
+>> arraymap supports BPF_F_MMAPABLE. If the local storage map's value can store an
+>> arraymap as kptr, the bpf prog should be able to access it as a map. More like
+>> the current map-in-map setup. The arraymap can be used as regular map in the
+>> user space also (like pinning). It may need some btf plumbing to tell the value
+>> type of the arrayamp to the verifier.
+>>
+>> The syscall bpf_map_update_elem(task_storage_map_fd, &task_pidfd, &value, flags)
+>> can be used where the value->array_mmap initialized as an arraymap_fd. This will
+>> limit the arraymap kptr update only from the syscall side which seems to be your
+>> usecase also? Allocating the arraymap from the bpf prog side needs some thoughts
+>> and need a whitelist.
+>>
+>> The same goes for the syscall bpf_map_lookup_elem(task_storage_map_fd,
+>> &task_pidfd, &value). The kernel can return a fd in value->array_mmap. May be we
+>> can create a libbpf helper to free the fd(s) resources held in the looked-up
+>> value by using the value's btf.
+>>
+>> The bpf_local_storage_map side probably does not need to support mmap() then.
 > 
+> Martin,
+> that's an interesting idea!
+> I kinda like it and I think it's worth exploring further.
 > 
-> =========================
+> I think the main quirk of the proposed mmap-of-task-local-storage
+> is using 'current' task as an implicit 'key' in task local storage map.
+> It fits here, but I'm not sure it addresses sched-ext use case.
 > 
-> $ cat t.c
-> int bar(void);
-> int foo1()
-> {
->         int a, b;
->         asm volatile goto ("r0 = 0; \
->                             gotol_or_nop %l[label]; \
->                             r2 = 2; \
->                             r3 = 3; \
->                            "::::label);
->         a = bar();
-> label:
->         b = 20 * a;
->         return b;
-> }
-> int foo2()
-> {
->         int a, b;
->         asm volatile goto ("r0 = 0; \
->                             nop_or_gotol %l[label]; \
->                             r2 = 2; \
->                             r3 = 3; \
->                            "::::label);
->         a = bar();
-> label:
->         b = 20 * a;
->         return b;
-> }
-> $ clang --target=bpf -O2 -g -c t.c
-> $ llvm-objdump -S t.o
+> Tejun, David,
+> could you please chime in ?
+> Do you think mmap(..., task_local_storage_map_fd, ...)
+> that returns a page that belongs to current task only is enough ?
 > 
-> t.o:    file format elf64-bpf
+> If not we need to think through how to mmap local storage of other
+> tasks. One proposal was to use pgoff to carry the key somehow
+> like io-uring does, but if we want to generalize that the pgoff approach
+> falls apart if we want __mmapable_kptr to work like Martin is proposing above,
+> since the key will not fit in 64-bit of pgoff.
 > 
-> Disassembly of section .text:
-> 
-> 0000000000000000 <foo1>:
-> ; {
->        0:       b7 00 00 00 00 00 00 00 r0 = 0x0
-> ;       asm volatile goto ("r0 = 0; \
->        1:       b7 00 00 00 00 00 00 00 r0 = 0x0
->        2:       06 10 00 00 04 00 00 00 gotol_or_nop +0x4 <LBB0_2>
->        3:       b7 02 00 00 02 00 00 00 r2 = 0x2
->        4:       b7 03 00 00 03 00 00 00 r3 = 0x3
-> ;       a = bar();
->        5:       85 10 00 00 ff ff ff ff call -0x1
-> ;       b = 20 * a;
->        6:       27 00 00 00 14 00 00 00 r0 *= 0x14
-> 
-> 0000000000000038 <LBB0_2>:
-> ;       return b;
->        7:       95 00 00 00 00 00 00 00 exit
-> 
-> 0000000000000040 <foo2>:
-> ; {
->        8:       b7 00 00 00 00 00 00 00 r0 = 0x0
-> ;       asm volatile goto ("r0 = 0; \
->        9:       b7 00 00 00 00 00 00 00 r0 = 0x0
->       10:       06 20 00 00 04 00 00 00 nop_or_gotol +0x4 <LBB1_2>
->       11:       b7 02 00 00 02 00 00 00 r2 = 0x2
->       12:       b7 03 00 00 03 00 00 00 r3 = 0x3
-> ;       a = bar();
->       13:       85 10 00 00 ff ff ff ff call -0x1
-> ;       b = 20 * a;
->       14:       27 00 00 00 14 00 00 00 r0 *= 0x14
-> 
-> 0000000000000078 <LBB1_2>:
-> ;       return b;
->       15:       95 00 00 00 00 00 00 00 exit
-> 
+> Maybe we need an office hours slot to discuss. This looks to be a big
+> topic. Not sure we can converge over email.
+> Just getting everyone on the same page will take a lot of email reading.
+
+Meta BPF folks were all in one place for reasons unrelated to this
+thread, and decided to have a design discussion regarding this mmapable
+task_local storage implementation and other implementation ideas
+discussed in this thread. I will summarize the discussion below. We
+didn't arrive at a confident conclusion, though, so plenty of time for
+others to chime in and for proper office hours discussion to happen if
+necessary. Below, anything attributed to a specific person is
+paraphrased from my notes, there will certainly be errors /
+misrememberings.
+
+
+
+mmapable task_local storage design discussion 11/29
+
+We first summarized approaches that were discussed in this thread:
+
+1) Current implementation in this series
+
+2) pseudo-map_in_map, kptr arraymap type:
+
+  struct mmapable_data_map {
+          __uint(type, BPF_MAP_TYPE_ARRAY);
+          __uint(map_flags, BPF_F_MMAPABLE);
+          __uint(max_entries, 1);
+          __type(key, __u32);
+          __type(value, __u64);
+  };
+
+  struct my_mapval {
+    int whatever;
+    struct bpf_arraymap __kptr __arraymap_type(mmapable_data_map) *m;
+    /* Need special logic to support getting / updating above field from userspace (as fd) */
+  };
+
+3) "mmapable page" kptr type, or "mmapable kptr" tag
+
+  struct my_mapval {
+    int whatever;
+    struct bpf_mmapable_page *m;
+  };
+  
+  struct my_mapval2 { /* Separate approach than my_mapval above */
+    struct bpf_spin_lock l;
+    int some_int;
+    struct my_type __mmapable_kptr *some_stats;
+  };
+
+Points of consideration regardless of implementation approach:
+  * mmap() syscall's return address must be page-aligned. If we want to
+    reduce / eliminate wasted memory by supporting packing of multiple
+    mapvals onto single page, need to be able to return non-page-aligned
+    addr. Using a BPF syscall subcommand in lieu of or in addition to
+    mmap() syscall would be a way to support this.
+    * Dave wants to avoid implementing packing at all, but having a
+      reasonable path forward would be nice in case actual usecase
+      arises.
+    * Andrii suggested a new actual mmap syscall supporting passing of
+      custom params, useful for any subsystem using mmap in
+      nontraditional ways. This was initially a response to "use offset
+      to pass task id" discussion re: selecting non-current task.
+
+   * How orthogonal is Martin's "kptr to arraymap" suggestion from the
+     general mmapable local_storage goal? Is there a world where we
+     choose a different approach for this work, and then to "kptr to
+     arraymap" independently later?
+
+The above was mostly summary of existing discussion in this thread. Rest
+of discussion flowed from there.
+
+Q&A:
+
+- Do we need to be able to query other tasks' mapvals? (for David Vernet
+  / Tejun Heo)
+
+TJ had a usecase where this might've been necessary, but rewrote.
+David: Being able to do this in general, aside from TJ's specific case,
+would be useful. David provided an example from ghOSt project - central
+scheduling. Another example: Folly runtime framework, farms out work to
+worker threads, might want to tag them.
+
+- Which usecases actually care about avoiding syscall overhead?
+
+Alexei: Most services that would want to use this functionality to tag
+their tasks don't need it, as they just set the value once.
+Dave: Some tracing usecases (e.g. strobemeta) need it.
+
+- Do we want to use mmap() in current-task-only limited way, or do BPF
+  subcommand or something more exotic?
+
+TJ: What if bpf subcommand returns FD that can be mmap'd. fd identifies
+which task_local storage elem is mmap'd. Subcommand:
+bpf_map_lookup_elem_fd(map *, u64 elem_id).
+Alexei: Such a thing should return fd to arbitrary mapval, and should
+support other common ops (open, close, etc.).
+David: What's the problem w/ having fd that only supports mmap for now?
+TJ: 'Dangling' fds exist in some usecases already
+
+Discussion around the bpf_map_lookup_elem_fd idea continued for quite a
+while. Folks liked that it avoids the "can only have one mmapable field"
+issue from proposal (3) above, without making any implicit assumptions.
+
+Alexei: Can we instead have pointer to userspace blob - similar to rseq
+- to avoid wasting most of page?
+
+TJ: My instinct is to stick to something more generic, would rather pay
+4k.
+
+Discussion around userspace pointer continued for a while as well,
+ending in the conclusion that we should take a look at using
+get_user_pages, perhaps wrapping such functionality in a 'guppable' kptr
+type. Folks liked the 'guppable' idea as it sort-of avoids the wasted
+memory issue, pushing the details to userspace, and punts on working out
+a path forward for mmap interface, which other implementation ideas
+require.
+
+Action items based on convo, priority order:
+
+  - Think more about / prototype 'guppable' kptr idea
+  - If the above has issues, try bpf_map_lookup_elem_fd
+  - If both above have issues, consider earlier approaches
+
+I will start tackling these soon.
 
