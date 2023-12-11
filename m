@@ -1,237 +1,101 @@
-Return-Path: <bpf+bounces-17360-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17361-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1EAE80BF26
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 03:30:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AB0780BF7D
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 03:56:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C86828029B
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 02:30:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0BA3280C83
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 02:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF8E633;
-	Mon, 11 Dec 2023 02:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0827E156E2;
+	Mon, 11 Dec 2023 02:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kfkHS50p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lS9eiXzp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147C6100
-	for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 18:30:44 -0800 (PST)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5d3efc071e2so37177047b3.0
-        for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 18:30:44 -0800 (PST)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F21CCE
+	for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 18:56:25 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-33349b3f99aso3725585f8f.0
+        for <bpf@vger.kernel.org>; Sun, 10 Dec 2023 18:56:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702261843; x=1702866643; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702263384; x=1702868184; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TAtSrNzMXsIYIDI7PZZlxLCtSwOpIMs+ASH6ed+/tjA=;
-        b=kfkHS50p/4DfNP73jFkplJQx4+JWvLxxa4LNvTSeGoobcrko2XLvH/NZ6quTsMZOab
-         NdmWYAdwVF5MHT60/4DLYtOy/Mnc6lgNY5mRQRi9VN+MeHEjJn6W2Nu7My0R/qMau35o
-         ZGeLxcxNzIt6VNoq6m66hbN4DOADYj6G1N1sQLZNH6L83ux1jH7ZPP/ng7Nzbx+oFzOs
-         B/FYaffWCTuNe3H+AgTPhV+T83nDHYMsEmdMmzfrStfzLvqsqDQPt7MTUaVyRjg1gyTr
-         4xAR8TXLHR0iX6iGwEDVYqFq2zs52meOjlTYsps2O2U7TXT5bJFrOft9um4vkdwyxILq
-         PQPw==
+        bh=nCasKs1gtBF9db0gzJ3JIU1JoaQ/4U4s8i2ZkTyzVNc=;
+        b=lS9eiXzp4hzNgqol33+XkyJ8oAizBQxa8+mevwp3A4hKs9oumsifP082MWx1VM5dPx
+         tjnUaBZYt3IDQBnqjHYpYiB/xzOJnb+G7/Y3axWx++Dg/pP54XFVVQfCEiT6vLU1OxOm
+         7C9Mfu0C+me9L7aSnophgW+XwCzL7jWv4XWGg6I45KdP7V95Y4xL/ysiAO08EaSuj7UA
+         DrElCsXUIB0qzvergBzj5FoZZuoLfqtqcf0rvkvZb/Vzzxcs5NWhOxcPfP14WTHRApcs
+         2maytOVU6bSyd5VDo8M8binHw8VUcMhDpU2MBEYWpFqqPNSL/EUageUXiSW1rM2wnJmI
+         pm9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702261843; x=1702866643;
+        d=1e100.net; s=20230601; t=1702263384; x=1702868184;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TAtSrNzMXsIYIDI7PZZlxLCtSwOpIMs+ASH6ed+/tjA=;
-        b=a4EZji6MnNoOBkIQ+PlZCD1ycOuhRb9gzwYKjAMXsnr2qrZpxqNEMpfi3HFDc9Rdys
-         +FC5hmTWxbzYdb8HlTYXDvB13HoC9wEr6yFNFjSvzR1/3ItOiWJqc81hQPUCW4ULXc9g
-         gbQZb6fPSHE+rN+6XvVJ4csstKA+sdLO7frzpaQXy2zGQrdZbQ6LecO/L8F9gGFOeGTV
-         6m4rNr3PZ/A57V2NJ+sLA2IzeIHAbttkoXiiEQ59JuoqWt5FpKNPQryeAzUgdsFMNRcy
-         DZm2H2SRcbheqqIL2oeMT1tFACbMzsA0U+JpS2T5b0inHrZGg5eStRtVr3zqI/ksBDLo
-         mdgQ==
-X-Gm-Message-State: AOJu0YzdV3xcAp6XtA2WA4EPj+E7V5rpSZAVOmckFG7yo3i02Oh7UAFM
-	ux2hn6aoEMjibJGgRxL1C7TMb+GBAOP8e8tcwXv3uQ==
-X-Google-Smtp-Source: AGHT+IGGqMlSPjDVYieXAFXfTdaTOxuiJ3lLEL51+OWjNcqSXuTv2PUuu9mIj5zJTvIoqC0km/gDSIto1RwhSwcpwjo=
-X-Received: by 2002:a0d:ef46:0:b0:5d7:1941:2c26 with SMTP id
- y67-20020a0def46000000b005d719412c26mr2628477ywe.83.1702261842924; Sun, 10
- Dec 2023 18:30:42 -0800 (PST)
+        bh=nCasKs1gtBF9db0gzJ3JIU1JoaQ/4U4s8i2ZkTyzVNc=;
+        b=b6MiKJ5gSLCuLRFVzDVzdm7J4nPoRcGtc8Am35D51p669RdpEsrzUtacI4ygQ1fdRP
+         ICQWOzPuIkVpotwGY9a9Gzl13KdxooZByrJzYvrF4yZoSXU+GI7//9A8G7bdc1+HDbuR
+         6V0mFz429LoWuRWi4KaKFbWaif5p5+rhYM1i1YgxNc3SfSapJvDXJ3pWqGfTTttHyAG6
+         SiXu3LB43lSZQuwmK5RDnfJSYh7ry5pb5HyDx4lbQwfKOGDqcj5I15V/5cTpM/HGlXRU
+         w4BYm8tre7ikE2p/IC8+87YGqCdqaJSg0EAXvdWWHMneXO7X0syDR4cQvWQ1wVxCblMb
+         6L3A==
+X-Gm-Message-State: AOJu0YynApj3bljOkNksIK8HH+Vy0kIZ3SNyrrvArDTmXL/LAuavmG8Z
+	MnB5CDygEfu5eC9HBLeXYx9qYoou75JydgW2r0w=
+X-Google-Smtp-Source: AGHT+IEzPl8KNfv4Jr8bQWMExi1dwrn+YsI7oU0GPIL6kLDxyMBwBR9+REAEpsbO+DsPEIcpDCdMslnILfV5STQ04iI=
+X-Received: by 2002:adf:fe85:0:b0:333:50e2:557a with SMTP id
+ l5-20020adffe85000000b0033350e2557amr1782217wrr.89.1702263383511; Sun, 10 Dec
+ 2023 18:56:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com> <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
- <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com> <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
-In-Reply-To: <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Sun, 10 Dec 2023 18:30:31 -0800
-Message-ID: <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	David Ahern <dsahern@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-	Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231208102355.2628918-1-houtao@huaweicloud.com>
+ <20231208102355.2628918-8-houtao@huaweicloud.com> <CAADnVQKZfvDQUuzJ98n5Q6a1xU5XBxFGi0PeEnmRxj_TFKoW1A@mail.gmail.com>
+ <bcaeae84-766c-5e3c-d444-70015ada7765@huaweicloud.com>
+In-Reply-To: <bcaeae84-766c-5e3c-d444-70015ada7765@huaweicloud.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 10 Dec 2023 18:56:12 -0800
+Message-ID: <CAADnVQKev7805QuyZA1yq_N3Ljg+X5vZqscRpCSHS2NV3AdMgw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 7/7] bpf: Wait for sleepable BPF program in maybe_wait_bpf_programs()
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 9, 2023 at 7:05=E2=80=AFPM Pavel Begunkov <asml.silence@gmail.c=
-om> wrote:
+On Sun, Dec 10, 2023 at 6:07=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
 >
-> On 12/8/23 23:25, Mina Almasry wrote:
-> > On Fri, Dec 8, 2023 at 2:56=E2=80=AFPM Pavel Begunkov <asml.silence@gma=
-il.com> wrote:
-> >>
-> >> On 12/8/23 00:52, Mina Almasry wrote:
-> > ...
-> >>> +     if (pool->p.queue)
-> >>> +             binding =3D READ_ONCE(pool->p.queue->binding);
-> >>> +
-> >>> +     if (binding) {
-> >>> +             pool->mp_ops =3D &dmabuf_devmem_ops;
-> >>> +             pool->mp_priv =3D binding;
-> >>> +     }
-> >>
-> >> Hmm, I don't understand why would we replace a nice transparent
-> >> api with page pool relying on a queue having devmem specific
-> >> pointer? It seemed more flexible and cleaner in the last RFC.
-> >>
-> >
-> > Jakub requested this change and may chime in, but I suspect it's to
-> > further abstract the devmem changes from driver. In this iteration,
-> > the driver grabs the netdev_rx_queue and passes it to the page_pool,
-> > and any future configurations between the net stack and page_pool can
-> > be passed this way with the driver unbothered.
+> Hi Alexei,
 >
-> Ok, that makes sense, but even if passed via an rx queue I'd
-> at least hope it keeping abstract provider parameters, e.g.
-> ops, but not hard coded with devmem specific code.
+> On 12/10/2023 10:11 AM, Alexei Starovoitov wrote:
+> > On Fri, Dec 8, 2023 at 2:22=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> >> +       /* Wait for any running non-sleepable and sleepable BPF progra=
+ms to
+> >> +        * complete, so that userspace, when we return to it, knows th=
+at all
+> >> +        * programs that could be running use the new map value.
+> > which could be forever... and the user space task doing simple map upda=
+te
+> > will never know why it got stuck in syscall waiting... forever...
+> > synchronous waiting for tasks_trace is never an option.
 >
-> It might even be better done with a helper like
-> create_page_pool_from_queue(), unless there is some deeper
-> interaction b/w pp and rx queues is predicted.
->
+> Could you please elaborate the reason why there is dead-lock problem ?
+> In my naive understanding, synchronize_rcu_tasks_trace() only waits for
+> the end of rcu_read_lock_trace()/rcu_read_unlock_trace(), if there is no
+> rcu_read_lock_trace being held, there will be no dead-lock.
 
-Off hand I don't see the need for a new create_page_pool_from_queue().
-page_pool_create() already takes in a param arg that lets us pass in
-the queue as well as any other params.
-
-> >>> +
-> >>>        if (pool->mp_ops) {
-> >>>                err =3D pool->mp_ops->init(pool);
-> >>>                if (err) {
-> >>> @@ -1020,3 +1033,77 @@ void page_pool_update_nid(struct page_pool *po=
-ol, int new_nid)
-> >>>        }
-> >>>    }
-> >>>    EXPORT_SYMBOL(page_pool_update_nid);
-> >>> +
-> >>> +void __page_pool_iov_free(struct page_pool_iov *ppiov)
-> >>> +{
-> >>> +     if (WARN_ON(ppiov->pp->mp_ops !=3D &dmabuf_devmem_ops))
-> >>> +             return;
-> >>> +
-> >>> +     netdev_free_dmabuf(ppiov);
-> >>> +}
-> >>> +EXPORT_SYMBOL_GPL(__page_pool_iov_free);
-> >>
-> >> I didn't look too deep but I don't think I immediately follow
-> >> the pp refcounting. It increments pages_state_hold_cnt on
-> >> allocation, but IIUC doesn't mark skbs for recycle? Then, they all
-> >> will be put down via page_pool_iov_put_many() bypassing
-> >> page_pool_return_page() and friends. That will call
-> >> netdev_free_dmabuf(), which doesn't bump pages_state_release_cnt.
-> >>
-> >> At least I couldn't make it work with io_uring, and for my purposes,
-> >> I forced all puts to go through page_pool_return_page(), which calls
-> >> the ->release_page callback. The callback will put the reference and
-> >> ask its page pool to account release_cnt. It also gets rid of
-> >> __page_pool_iov_free(), as we'd need to add a hook there for
-> >> customization otherwise.
-> >>
-> >> I didn't care about overhead because the hot path for me is getting
-> >> buffers from a ring, which is somewhat analogous to sock_devmem_dontne=
-ed(),
-> >> but done on pp allocations under napi, and it's done separately.
-> >>
-> >> Completely untested with TCP devmem:
-> >>
-> >> https://github.com/isilence/linux/commit/14bd56605183dc80b540999e8058c=
-79ac92ae2d8
-> >>
-> >
-> > This was a mistake in the last RFC, which should be fixed in v1. In
-> > the RFC I was not marking the skbs as skb_mark_for_recycle(), so the
-> > unreffing path wasn't as expected.
-> >
-> > In this iteration, that should be completely fixed. I suspect since I
-> > just posted this you're actually referring to the issue tested on the
-> > last RFC? Correct me if wrong.
->
-> Right, it was with RFCv3
->
-> > In this iteration, the reffing story:
-> >
-> > - memory provider allocs ppiov and returns it to the page pool with
-> > ppiov->refcount =3D=3D 1.
-> > - The page_pool gives the page to the driver. The driver may
-> > obtain/release references with page_pool_page_[get|put]_many(), but
-> > the driver is likely not doing that unless it's doing its own page
-> > recycling.
-> > - The net stack obtains references via skb_frag_ref() ->
-> > page_pool_page_get_many()
-> > - The net stack drops references via skb_frag_unref() ->
-> > napi_pp_put_page() -> page_pool_return_page() and friends.
-> >
-> > Thus, the issue where the unref path was skipping
-> > page_pool_return_page() and friends should be resolved in this
-> > iteration, let me know if you think otherwise, but I think this was an
-> > issue limited to the last RFC.
->
-> Then page_pool_iov_put_many() should and supposedly would never be
-> called by non devmap code because all puts must circle back into
-> ->release_page. Why adding it to into page_pool_page_put_many()?
->
-> @@ -731,6 +731,29 @@ __page_pool_put_page(struct page_pool *pool, struct =
-page *page,
-> +       if (page_is_page_pool_iov(page)) {
-> ...
-> +               page_pool_page_put_many(page, 1);
-> +               return NULL;
-> +       }
->
-> Well, I'm looking at this new branch from Patch 10, it can put
-> the buffer, but what if we race at it's actually the final put?
-> Looks like nobody is going to to bump up pages_state_release_cnt
->
-
-Good catch, I think indeed the release_cnt would be incorrect in this
-case. I think the race is benign in the sense that the ppiov will be
-freed correctly and available for allocation when the page_pool next
-needs it; the issue is with the stats AFAICT.
-
-> If you remove the branch, let it fall into ->release and rely
-> on refcounting there, then the callback could also fix up
-> release_cnt or ask pp to do it, like in the patch I linked above
->
-
-Sadly I don't think this is possible due to the reasons I mention in
-the commit message of that patch. Prematurely releasing ppiov and not
-having them be candidates for recycling shows me a 4-5x degradation in
-performance.
-
-What I could do here is detect that the refcount was dropped to 0 and
-fix up the stats in that case.
-
---=20
-Thanks,
-Mina
+I didn't say it's dead-lock. rcu_read_lock_trace() section can last
+for a very long time. The user space shouldn't be exposed to such delays.
 
