@@ -1,271 +1,180 @@
-Return-Path: <bpf+bounces-17467-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17468-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABEFA80DF46
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 00:13:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C09FB80DF5D
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 00:18:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE84D1C214CA
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 23:13:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 264F628266D
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 23:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E3756747;
-	Mon, 11 Dec 2023 23:13:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D5C556747;
+	Mon, 11 Dec 2023 23:18:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m2BaB0nX"
+	dkim=pass (1024-bit key) header.d=uminho365.onmicrosoft.com header.i=@uminho365.onmicrosoft.com header.b="NBqaE5pM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 510D6CD;
-	Mon, 11 Dec 2023 15:13:20 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-590bb31ccf5so1666215eaf.3;
-        Mon, 11 Dec 2023 15:13:20 -0800 (PST)
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2066.outbound.protection.outlook.com [40.107.6.66])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D93B9A
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 15:18:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZQU0TaAuOyRoemHefWPut8bMb6CNJIfeV6hlkKd5BFjwyg4TIw7m4zrNwqiJTucJXxGY80YftDTvHQ++RtKnR4Fzaxu0TLMuExx1uJfuBfhhx+SfLeBJPK0BDu1E8nC9nS6/wYnG414F0WyXuf65KeLCKX6VqMovY3zHPryTMPApJEDtrlze/b1RLGfCxeyiWoA3mxEL5zEeITUXx/wM3h1XK7OwNWUS5zBLHSEDZpxUyZJzLfcdqsO/g3UMqBlrRre76G1QImgf0jTK0U9X0uZXVgC1jTAETho8xLzx4T093DHgQrUwF9hkQitmE/70JjffVCQQVTVWFhGpdem6Iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UNrXER+j/K5WNMx0FM5cYb9u1N/1vmw/cLtlDvuThs0=;
+ b=aUWlA83RXH+rkUpFTQvn6UG5FMHmrrABCc0YZLWcijzQPsstN1NPc1Ek/pbL5a85kajjqjV8R37ERI26a6HS/WbAglZ9eA/RqjEnrPYqpG/09G08UzkBL6LAP+Xagid2EmcXf1SwEsXi0v/DZYEmDoDdVEYGmh+FkW6MXBf90itUj5lpF5zpqglz25zmQBC/LJqucjWFnk/RvPMPU/eG1vakG0xox+/MJ7JyaBoq5e2rbzdw1lVbJAcfQSB6FvyOGwXR/qZXZk7mijJ7r58sCwF5NmAVHIekmbOxW9gbceLkadsxd/hbGkrp/gLEvyiH8x/o7oXp6q3mdqH15fup6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=alunos.uminho.pt; dmarc=pass action=none
+ header.from=alunos.uminho.pt; dkim=pass header.d=alunos.uminho.pt; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702336399; x=1702941199; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xubElgI4Z56aixIPByeWysvBwAoYQd2kSEQW2+R/bzE=;
-        b=m2BaB0nX9CcWyDNId/hrYcLMRpPGJurHtazB4F8WRzEpB6f8aXwxQSyk6gAGMik6LG
-         VxgvZ5Lg8j0qQ3Gc5oWoozsqza67RAHkadQBBsy/Zlf6Oq5HZ/PwZU0uBGXGP2FNWuE6
-         wbA04uKRktB5t8w6sPp9epFKmPTXib299XDAMbBRkeO8IvBx0FdHNesPwg8zbDoQjHDV
-         lvGzrZZxTE7VwEkXeamz6R20p0hiOibl1icPP4QhLg0CrxoZ8Up/zVDYxlGBovs7WkiA
-         RJrDBMvkrkd+JGDHeF3VtVPPfU7FjEQvQsy4TaPC2ZuyJkrSHrKYnHpFHDYD+PQVTbll
-         ES5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702336399; x=1702941199;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xubElgI4Z56aixIPByeWysvBwAoYQd2kSEQW2+R/bzE=;
-        b=H8fpWQvMRsRks9i41VDq5OjqXTLlhT4s+DrXppCpagT+LzsQ2N760jL+i4jFYXnLn+
-         rO6KwlM+3vgXuY01qck2te3b8662fgSc7HErDSaiSc/C7NedonsJHGVQdCVvY++YY9mE
-         OE8OcdlCN/g5Ln7cfzbWsVvjv30T0j2URQM9PPpcy0VnHmYkqhsy7ICNEbLgT4ocgVWI
-         SnGiOez0vhkDWfFWvZk/QcXbfRQ1Wu41VRSCW9W1iXpr+utr7d911RyIqXFrohkb6c10
-         yZKhi7T7PjqB+kXZqcHFFOfmE0chufmpVbsStCJFIiuNH2T8tGa0AYkIoWqjjEpx3jLF
-         ZrjA==
-X-Gm-Message-State: AOJu0YyL2+2nHiOzpcAcZXYa1UxFSHfFAPMIaVpcML3hnvYWILZHLCoo
-	EUNSlj5a3lL+kdM30P+AMLYAg+lDKJlxr6lTGxA=
-X-Google-Smtp-Source: AGHT+IHdPeLx0zfH/6+KNsgpXh0zWHoT8Dqe3uFCxj/4RnAWzc8/3vZC2f0d6d0EWMBgLZoVh86YLlH/joKhYG7Yjpg=
-X-Received: by 2002:a4a:5507:0:b0:591:203b:c1d6 with SMTP id
- e7-20020a4a5507000000b00591203bc1d6mr977454oob.15.1702336399455; Mon, 11 Dec
- 2023 15:13:19 -0800 (PST)
+ d=uminho365.onmicrosoft.com; s=selector2-uminho365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UNrXER+j/K5WNMx0FM5cYb9u1N/1vmw/cLtlDvuThs0=;
+ b=NBqaE5pMlUiTemBYJS6JTTnHLxG/f/xwhWh4pPh+nACW+yqEmcIdu7PW6hLHC5KClYOKkaVKt3LkB8zoS1CkzG373mxF7rDSJd3CgoVpSWhtLgLPTVPOlcFG62LtPWrOWMGVxUvBOwZdYYRF3khMRXzD/OrZXN1M7Fl+CUPWnc0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=alunos.uminho.pt;
+Received: from PA4PR04MB7678.eurprd04.prod.outlook.com (2603:10a6:102:ec::18)
+ by AS8PR04MB8531.eurprd04.prod.outlook.com (2603:10a6:20b:422::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7068.33; Mon, 11 Dec
+ 2023 23:18:28 +0000
+Received: from PA4PR04MB7678.eurprd04.prod.outlook.com
+ ([fe80::d7b2:a00f:bfee:de4d]) by PA4PR04MB7678.eurprd04.prod.outlook.com
+ ([fe80::d7b2:a00f:bfee:de4d%7]) with mapi id 15.20.7068.031; Mon, 11 Dec 2023
+ 23:18:28 +0000
+Date: Mon, 11 Dec 2023 23:18:25 +0000
+From: Bruno Dias da =?utf-8?B?R2nDo28=?= <a96544@alunos.uminho.pt>
+To: bpf@vger.kernel.org
+Subject: libbpf/BPF-CORE kprobe arguments
+Message-ID: <ZXeYweVsl9BOvfyZ@alunos.uminho.pt>
+Mail-Followup-To: bpf@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Description: msg
+Content-Disposition: inline
+X-ClientProxiedBy: MR1P264CA0074.FRAP264.PROD.OUTLOOK.COM
+ (2603:10a6:501:3f::29) To PA4PR04MB7678.eurprd04.prod.outlook.com
+ (2603:10a6:102:ec::18)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1702325874.git.dxu@dxuuu.xyz> <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
- <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com> <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
-In-Reply-To: <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
-From: Eyal Birger <eyal.birger@gmail.com>
-Date: Mon, 11 Dec 2023 15:13:07 -0800
-Message-ID: <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for bpf_xdp_get_xfrm_state()
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: daniel@iogearbox.net, davem@davemloft.net, shuah@kernel.org, 
-	ast@kernel.org, john.fastabend@gmail.com, kuba@kernel.org, andrii@kernel.org, 
-	hawk@kernel.org, steffen.klassert@secunet.com, antony.antony@secunet.com, 
-	alexei.starovoitov@gmail.com, yonghong.song@linux.dev, eddyz87@gmail.com, 
-	mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, devel@linux-ipsec.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PA4PR04MB7678:EE_|AS8PR04MB8531:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6834d60c-5e20-4326-f19d-08dbfa9f7b95
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	/PpNR58WMXua82NWCgKndokh2A9AuaBL1RPwmEaAD5nPq1Lio770yvdwdYsZ6ShYCbhgSIMUtDRXiIm/J36j6HUYlfK28z7nQai92DWmpXatFKZD5aUNDqA7G6ZOuMulmtaHbN9dBZLGSkFJepesTq4F+/T88zDhp7yXn+QD0TP9s7ilkWpjfIFfpZvQC5cgjlfiX0UFvxMMcQoE9H6XBfjFegQa4uIm2qXchXgPh4+wmM4WyQi4McthiNNGQZfZj9aHod1ENl74boXHGgx8Hxv+Ao3iA6rRnIUtE3czzmN37pFVRzAr04+CyTe6ltK2gB3CKQL3hkJo2aofiK5jJTyOQNOCW6gXskklOfUeEFCB3C4CdWhKC5rNi53pv+E6Aesg9ibaAOSZtI5geOO/tQfSWE2Eda0ZqtPcWGAxFqtSY+Z+mZGgEPgIJEjzHUfLspHHWpq8lJguQ5vHDBZl0AWAsZhW5Zz2H2Luus93VwwECvYsa8Xa4SmQQZluhp0BR5+keFkC68uNfT1QAFVVVIcGyT8bT4JUmlUdCDdRGRLTI8lmDUf5DjxCFAKh45JE
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7678.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(376002)(396003)(136003)(230922051799003)(451199024)(186009)(1800799012)(64100799003)(6486002)(478600001)(2616005)(6512007)(6666004)(52116002)(6506007)(3480700007)(38100700002)(86362001)(85182001)(85202003)(41300700001)(5660300002)(6916009)(66476007)(66556008)(2906002)(83380400001)(66946007)(316002)(786003)(8676002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VmNpcWYyekcvY3FuVkRjVFU3eXBLV1R4UjB1cUszdUp6UFI2cGF2RmZIYm1T?=
+ =?utf-8?B?WHdEZ2pXSHVTS2k0QWpHN2dDSDlOUk05ZThPODJmSm5oTmtFRFFwa3pzb2Ns?=
+ =?utf-8?B?QitlSXJ0eEFpTkY0WndDYnd0RStTRHNmbkErR205OVVyOXpGVjIrdlQ4UWlx?=
+ =?utf-8?B?bUdhSEJxa2U4VzA5UFdQQjFXM2ZhTHZDYWJnd0s5QlplZkRLRWlDOVJlMGJT?=
+ =?utf-8?B?UElqR2NFdGZNRWY0MDZLTjluTTN0aWVQU2ZBUXdCWktqbi9uNlpZcmUwTHFu?=
+ =?utf-8?B?V1l5SW8wT3kzVXF1Umloazk0MjU1WHAzTitVT1A0UDdRN2lNcUxxR3VsRnZU?=
+ =?utf-8?B?enhJRGRPQWlidzBkWlo1WGJSQkdFSFN3azhZU3Mrem1tWXAyYUVCRVEwZWhT?=
+ =?utf-8?B?LzA5VXYyeFBUbGxxTUIxZTdHWHE3Ri9yNWgrRWNmSThuNSt5M1FkanNOdmNV?=
+ =?utf-8?B?UVB6TmFaQnFJWU1lYTN0ak11MXhlbC93V0NuYk9Gc1VLQ24xYmVtaUp5WEdF?=
+ =?utf-8?B?aDh1QjF0RVZxbUloYjJaYThlYm1WT211dmR5VU5JcFFjRzQyb0RQYWh2SDR1?=
+ =?utf-8?B?Q1IwYlZLVE5lcC9JVnJBOVZTVHh0NjZIMmV6QkloNFdIVzQ5b2o0VHhZUUJq?=
+ =?utf-8?B?bDNkMU1HaGpZWEZMNi9Lc3NkWHE2SlhITTlWRjBPais3eG1meGswWDNqbG1n?=
+ =?utf-8?B?Vk5UdXhUWkpSWFdZNHV4Z0w1OGtnUU0vY0thK29EbXhhT2IwaFpjcWtINXNB?=
+ =?utf-8?B?N0MvWEY2WXlTdHJuZHlSbXBnVWRzYXRSK0xpVERkY2J0Zi9xNGc1aTlzbVhJ?=
+ =?utf-8?B?Q3VFYTVNREp5bFBlSWY4NnZVME9hOEJJRVVZaGw1YTdwZ3plWTh0VmplMzBQ?=
+ =?utf-8?B?U2VTTWsybCswYnVXYXd3dEp0cUNWWXloT1RCZkU4QlFLekQ2cDFwampVNmZM?=
+ =?utf-8?B?eWtBOXVHZEN2eWlsdDRHZnpTR01OSFRDeVNXSDE0anpKeFBtMmFkOWxGRmEy?=
+ =?utf-8?B?YWZVVnVLZFdPc2p4c2ZrY0NmdVo4enBiN01HT0hPMUk2YjIweXRqMlJNREdL?=
+ =?utf-8?B?YWhtZXNkVkgxK1hENExNSVUvTFJldG1pbUZRc0QvUWJTQ3lRVVA5N3ZHeE44?=
+ =?utf-8?B?K0RFZUpoRHZMUHFScTNCajQyUy9Kbzhsc0VzTVdwY3VEbG5vNjlyWEhwaXZs?=
+ =?utf-8?B?WElrdVFzbGxuanYyTUZvT0dSNVpqNGlmaGYxeWlYSzVQMVh2aGRZUnVubzRw?=
+ =?utf-8?B?WGdWVjlpbDVLNFhZejUwL3JtcTZxb1NLM1RvOHVOVllYUHRDTG9KT29TWEx4?=
+ =?utf-8?B?a0I1VHNERmg1QjVRVS8rd3dQTmtEVnJYKzlEMFp2TW1VdGhsaXBkNjl4WWI3?=
+ =?utf-8?B?OHI3bzJ3UkZxd24wN0ptMTE5SEF5NWIrUGN1MStrVzFrZlRQNkEzYWU0THVp?=
+ =?utf-8?B?T2ljRmZwVlNaMDhtTm5yYnVrRUs2RW52a09yV1BmY0RldG5kWGlQMWpVM3J5?=
+ =?utf-8?B?aVVTNFArWjRXcEJnRkxOSnZDSkQ5VUxjdHpxNjhWRlRQTUFwenRmME1RNEFa?=
+ =?utf-8?B?L0tpTmZ2MklHaG44WGFmNDhiT1ZDdmtRTFI3TXFmVlVlK3dQU1p6ckdiZ2I2?=
+ =?utf-8?B?eG15UXZYOXNaS1krWjdsL0k4UlBIUUQxZXAvZk4zVHdldmFNanRMN0hIMlcw?=
+ =?utf-8?B?akxYays1VXphZmdvUEZNeUNsT0FsNk5jZzVpOHlMR3RuQ055S2YvM3VTRkJO?=
+ =?utf-8?B?MU1iWm1HYWNiZm1XVUIxdllzSnlhaHAxTU1uaUNjTVBKUHJndm1tM1c2Qmkx?=
+ =?utf-8?B?NG13QTVpZHBMSUl0ZXBqMkhWbk1CMFdSTTF1OEw3SjNkSnhZbk1YbzZkc2ZO?=
+ =?utf-8?B?WDdoYVdZS2JlSkxHUklEMXBXZDNmYnJ3SURmQXA0VG9qVkMwRnVpU0hIOGw4?=
+ =?utf-8?B?OC9PTHdJQWo5V1BSNkN0aXNQNGdXUHg3ZVg0U3dndnl6ZUdueDgzSTNNbWNi?=
+ =?utf-8?B?aDJXeUZJWFUrS3FJcExBOERTZ0h3Z2htTEZRZjVReU42SzI5QTc1YjJHSFA2?=
+ =?utf-8?B?RFd5N0VhaXJXcWNZSUpLaGdITzFuMnpEY0ZuRDFCQ3VLeE84SXRNYU9EQU5X?=
+ =?utf-8?B?WkdvYzdTMmVRN0F5dlJIY2lqbFJwQlVOUXR0Ri9CMzNzSno3RjNKZTYrR1V3?=
+ =?utf-8?Q?pZymIMfFSeD41X0F6abjYFSl1g6Iueuf45b/ItdimFrq?=
+X-OriginatorOrg: alunos.uminho.pt
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6834d60c-5e20-4326-f19d-08dbfa9f7b95
+X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7678.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Dec 2023 23:18:28.5377
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d05d4c80-da1e-4cd7-83a6-0d2094b20418
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cCOZBTwGJM6v4mMokjrBZ6ArUU2i4LucioWy1z64ot5ZqovMtSJIKk/QXBtOa8V8Wm+LBG33USs0e8ffrxnWHw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8531
 
-On Mon, Dec 11, 2023 at 2:31=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
-> > Hi Daniel,
-> >
-> > Tiny nits below in case you respin this for other reasons:
-> >
-> > On Mon, Dec 11, 2023 at 12:20=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrot=
-e:
-> > >
-> > > This commit extends test_tunnel selftest to test the new XDP xfrm sta=
-te
-> > > lookup kfunc.
-> > >
-> > > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
-> > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++=
-++
-> > >  2 files changed, 67 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/t=
-ools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > index 2d7f8fa82ebd..fc804095d578 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
-> > >         SYS(fail,
-> > >             "ip netns exec at_ns0 "
-> > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > -                       "spi %d reqid 1 mode tunnel "
-> > > +                       "spi %d reqid 1 mode tunnel replay-window 42 =
-"
-> > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)'=
- %s",
-> > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM=
-_AUTH, XFRM_ENC);
-> > >         SYS(fail,
-> > > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
-> > >         SYS(fail,
-> > >             "ip netns exec at_ns0 "
-> > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > -                       "spi %d reqid 2 mode tunnel "
-> > > +                       "spi %d reqid 2 mode tunnel replay-window 42 =
-"
-> >
-> > nit: why do you need to set the replay-window in both directions?
->
-> No reason - probably just careless here.
->
-> >
-> > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)'=
- %s",
-> > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM=
-_AUTH, XFRM_ENC);
-> > >         SYS(fail,
-> > > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
-> > >          */
-> > >         SYS(fail,
-> > >             "ip xfrm state add src %s dst %s proto esp "
-> > > -                   "spi %d reqid 1 mode tunnel "
-> > > +                   "spi %d reqid 1 mode tunnel replay-window 42 "
-> > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s=
-",
-> > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM=
-_AUTH, XFRM_ENC);
-> > >         SYS(fail,
-> > > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
-> > >         /* root -> at_ns0 */
-> > >         SYS(fail,
-> > >             "ip xfrm state add src %s dst %s proto esp "
-> > > -                   "spi %d reqid 2 mode tunnel "
-> > > +                   "spi %d reqid 2 mode tunnel replay-window 42 "
-> > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s=
-",
-> > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM=
-_AUTH, XFRM_ENC);
-> > >         SYS(fail,
-> > > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
-> > >  {
-> > >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-> > >                             .attach_point =3D BPF_TC_INGRESS);
-> > > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> > >         struct test_tunnel_kern *skel =3D NULL;
-> > >         struct nstoken *nstoken;
-> > > +       int xdp_prog_fd;
-> > >         int tc_prog_fd;
-> > >         int ifindex;
-> > >         int err;
-> > > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
-> > >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
-> > >                 goto done;
-> > >
-> > > +       /* attach xdp prog to tunnel dev */
-> > > +       xdp_prog_fd =3D bpf_program__fd(skel->progs.xfrm_get_state_xd=
-p);
-> > > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-> > > +               goto done;
-> > > +       err =3D bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLAC=
-E, &opts);
-> > > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
-> > > +               goto done;
-> > > +
-> > >         /* ping from at_ns0 namespace test */
-> > >         nstoken =3D open_netns("at_ns0");
-> > >         err =3D test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-> > > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
-> > >                 goto done;
-> > >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote=
-_ip"))
-> > >                 goto done;
-> > > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_win=
-dow"))
-> > > +               goto done;
-> > >
-> > >  done:
-> > >         delete_xfrm_tunnel();
-> > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/t=
-ools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > index 3a59eb9c34de..c0dd38616562 100644
-> > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ct=
-x,
-> > >                           struct bpf_fou_encap *encap, int type) __ks=
-ym;
-> > >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-> > >                           struct bpf_fou_encap *encap) __ksym;
-> > > +struct xfrm_state *
-> > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opt=
-s *opts,
-> > > +                      u32 opts__sz) __ksym;
-> > > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
-> > >
-> > >  struct {
-> > >         __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
-> > >         return TC_ACT_OK;
-> > >  }
-> > >
-> > > +volatile int xfrm_replay_window =3D 0;
-> > > +
-> > > +SEC("xdp")
-> > > +int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > +{
-> > > +       struct bpf_xfrm_state_opts opts =3D {};
-> > > +       struct xfrm_state *x =3D NULL;
-> > > +       struct ip_esp_hdr *esph;
-> > > +       struct bpf_dynptr ptr;
-> > > +       u8 esph_buf[8] =3D {};
-> > > +       u8 iph_buf[20] =3D {};
-> > > +       struct iphdr *iph;
-> > > +       u32 off;
-> > > +
-> > > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-> > > +               goto out;
-> > > +
-> > > +       off =3D sizeof(struct ethhdr);
-> > > +       iph =3D bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf))=
-;
-> > > +       if (!iph || iph->protocol !=3D IPPROTO_ESP)
-> > > +               goto out;
-> > > +
-> > > +       off +=3D sizeof(struct iphdr);
-> > > +       esph =3D bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_bu=
-f));
-> > > +       if (!esph)
-> > > +               goto out;
-> > > +
-> > > +       opts.netns_id =3D BPF_F_CURRENT_NETNS;
-> > > +       opts.daddr.a4 =3D iph->daddr;
-> > > +       opts.spi =3D esph->spi;
-> > > +       opts.proto =3D IPPROTO_ESP;
-> > > +       opts.family =3D AF_INET;
-> > > +
-> > > +       x =3D bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > +       if (!x || opts.error)
-> >
-> > nit: how can opts.error be non zero if x =3D=3D NULL?
->
-> Ignoring the new -ENOENT case, it can't. Which is why I'm testing that
-> behavior here.
+Hello,
+I read in one of Andrii Nakryiko's blogs that this was the best place to
+ask questions, sorry if not up to all standards.
 
-I'm sorry, I don't understand.
+I have been working on some bcc -> libbpf conversions and have halted
+entirely when I reached working with kprobes.
 
-AFAICT, regardless of the -ENOENT change, I don't see
-how (!x) is false and (opt.error) is true, and so
-"if (!x || opts.error)" is always equivalent to "if (!x)".
+In the following code I attempt to pass to user space the parameters
+passed to the system call.
 
-What am I missing?
-Eyal.
+SEC("kprobe/__x64_sys_openat")
+int BPF_KPROBE(kprobe__x64_sys_openat, int dfd, const char * path,
+	       int flags, unsigned short mode)
+{
+	struct event *ev;
+	ev = bpf_ringbuf_reserve(&rb, sizeof(*ev), 0);
+	if (!ev) {
+		return 1;
+	}
+	ev->pid = bpf_get_current_pid_tgid() >> 32;
+	bpf_get_current_comm(&ev->comm, sizeof(ev->comm));
+	ev->ts = bpf_ktime_get_ns();
+	ev->dfd = dfd;
+	ev->flags = flags;
+	ev->mode = mode;
+	bpf_probe_read_user_str(&ev->buffer,
+			   sizeof(ev->buffer),
+			   (void *)path);
+	//bpf_printk("%d %d %s", ev->pid, ev->df, ev->buffer);
+	bpf_ringbuf_submit(ev, 0);
+	return 0;
+}
+
+However the output of this function (both printk and ringbuf) returns
+values that are either close to 2^32, for ev->df, or downright 0, for
+ev->buffer.
+
+Note that this works very cleanly when attaching instead with
+tracepoints but simply using tracepoints and not touching kprobes is not
+really an alternative for what I want.
+
+The result is also the same when using PT_REGS_PARM* or even explicit
+ctx->di/ctx->si (etc etc);
+
+So I wonder if the pt regs are actually being filled with wrong information,
+if I have an incorrect way of accessing the values of the registers.
+I did search online for information on these kinds of outputs but did
+not find any solutions.
+
+Again, sorry if there's clutter or if this message should not be sent
+here.
+-- 
+Regards,
+bdg
 
