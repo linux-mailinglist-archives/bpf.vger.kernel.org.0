@@ -1,261 +1,150 @@
-Return-Path: <bpf+bounces-17461-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17462-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC77B80DE48
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 23:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D872180DE90
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 23:50:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA4571C21588
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 22:31:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FDF81C215C0
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 22:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F87754665;
-	Mon, 11 Dec 2023 22:31:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AABF455C3D;
+	Mon, 11 Dec 2023 22:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="MEVPiR4D";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LjmlzvY1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BiM3KdWY"
 X-Original-To: bpf@vger.kernel.org
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F18E3;
-	Mon, 11 Dec 2023 14:31:33 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id 99F445808E5;
-	Mon, 11 Dec 2023 17:31:32 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 11 Dec 2023 17:31:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-	1702333892; x=1702341092; bh=noYVecovZCVYjE2fXj6XIEKWxth/MKVOHai
-	tOHJtIuo=; b=MEVPiR4DhVa93P6GQTLGR172fnYPLABhsrjTKoprx1/W/9u/yvv
-	8bKL+Hbj6UIt5vT0mLKwmdp0hoFF3VHaT1yoxlmxT7Fx4xczlg24qwcVZxzl3JZA
-	J2WyBOi/9HKtS948GcVt+JxewijiM4N9Pu7QKa3pkSpAApzBPtf22dlK0PdcyV9u
-	uwU+gQKIywVSAYIIxMx4GSTlZy10ICuUJ/WlT3+YVHpYvIhr7HaL0BLQsbPBGm+G
-	GGvqEnmgfZrxmgTjl0KIyEPzA4Hep+6Lz+B6DvF/4VAOCqaKGi5jL4YF8Juu2dLQ
-	MaB8cHXgOm47pRLvogS3QsDCq2NxzIrCUIA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:sender:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1702333892; x=1702341092; bh=noYVecovZCVYjE2fXj6XIEKWxth/MKVOHai
-	tOHJtIuo=; b=LjmlzvY1/Fb+wcqkJenetBnlsZ67SYBcLkgOmljkwCcpExYkAXp
-	CjWuhP6k4c6NVTOPOr8eTDbki/QCSdwQnKINyqelqZKmvpJCEFMka8b6urbEzMxu
-	W3mnw16JLls8MlPLzRXf76kPgWqa0qHXsu+00uuWV+OQKITMPlN36boGMqCLNcPz
-	ej7a5swG3eNB2d2ObGIZBVXjxW4lZhmAAWb45G+lN9/cYSqbRV/uODkY+8ymZ5zM
-	FSZiuVuBCPtTIrkJyflXdcJNfXni/dDEyah2ABZu8xlFpZ3MxPZHgm+IaC6leVBg
-	bEUq2xlifsHY6CrdQaAim1blxlZLcgd+Xwg==
-X-ME-Sender: <xms:xI13ZeEHkH8i6x3QkJnGzdd5ArImUKK9FPd73JMAwcRd6thuj8qxtA>
-    <xme:xI13ZfWcyWATzR3TEc6E5B6rJKxKy9dFp-Ilnz0Yccn2Gxonv5IjhEkPUpvjvBsd2
-    WrgyH48pzLLLCb8xQ>
-X-ME-Received: <xmr:xI13ZYJKGHhMjt5IA2RxEALGZAbOVDLtT_PzITBNV4-V8l9hmyY7Hxg6lTKv32B5noOo9Swo5Y2R7CXw-CdjvP4eXTOIDBa10kyK>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelvddgudeigecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
-    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:xI13ZYHxA6YU4n1HJbFaUNGs6jgFIvPUOv97eJsegB0ObPaKAD3Esw>
-    <xmx:xI13ZUV-1_fVRZKtoV-K1sHUXCoOTtkggv2fMd4L8EPuGpnzuX1iZQ>
-    <xmx:xI13ZbNdteCOTxMvNZyGXUA_n4ktcpeCWlzfsEZfgMCUn5lcxFGgtg>
-    <xmx:xI13ZamVUEDkfoTYdv-m_Z_vx4gs6L4tFl0Hj16fZj41uHWlDngQFQ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 11 Dec 2023 17:31:30 -0500 (EST)
-Date: Mon, 11 Dec 2023 15:31:29 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: daniel@iogearbox.net, davem@davemloft.net, shuah@kernel.org, 
-	ast@kernel.org, john.fastabend@gmail.com, kuba@kernel.org, andrii@kernel.org, 
-	hawk@kernel.org, steffen.klassert@secunet.com, antony.antony@secunet.com, 
-	alexei.starovoitov@gmail.com, yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com, 
-	martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
-References: <cover.1702325874.git.dxu@dxuuu.xyz>
- <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
- <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B93CB8;
+	Mon, 11 Dec 2023 14:50:22 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-54f4f7d082cso5136357a12.0;
+        Mon, 11 Dec 2023 14:50:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702335021; x=1702939821; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y2M/QtM4srk5RtLbPaKHdlp0MRAZCUQFxeHkHv+g5gA=;
+        b=BiM3KdWYfmckd/UVNUdRdZJYUdL+2s2+pvVIdd6TbMMJ9SIamRQWqCWLfMcJQGmTpd
+         VgvOu7mZvuKiRVPuteRc4RhQol3mGBxXtY6bvB5zkBHwl12RNvFHBzGrdmWbN7Cun8f+
+         PRC/xn571c7NMe1opK3bxE1TlZKxNs977oU5r63B6zb4/htBG2kzcP9MI98AFtztyzZv
+         68wuQ43KZSNYP+pLln+UWEj8impAsNfee6l6lt9LmOpAU8LcTOQQDUAEIrm3HLmB8ZVM
+         MsiUXyfJ5pN/H75Kqh+7qS5/QXL5Z5KDXekRocLXgblwcFbyqwGOBFSwQFPsriUc9OJ3
+         pJdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702335021; x=1702939821;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y2M/QtM4srk5RtLbPaKHdlp0MRAZCUQFxeHkHv+g5gA=;
+        b=v/LFq/i7W8tBJ2C+ZSEjDpnbMJ1SDEO4xndC3In3HTsrkfzIN0GDpf72GbJjb/XPyq
+         2AAEpLAXuGPRiQCCJQIOXLJX6/LuN6Hs7qHPnoi5YoBMZ6adWCkIE2oB/56sRM/0XTMT
+         Tn25IcCbkIjjV7vYMpXgQ08NiSRCCsvXZznbbQgx47q+qit8noU09u5umiv2/kq/rj5A
+         baHwB2gffT2eELovYuGqUhp3NwUCtyGb0MTHYgTHeOYbru7oxA0afz/FyG2nQriRyz2Q
+         Uo636qV2D3V56TJEksbPXDqZaG+Eupj1QR4foTn19YC8L2bpKS5y+4vaFdKB50aCOZr9
+         hZdg==
+X-Gm-Message-State: AOJu0YwsefTaQoiwEMmATA/4XyLY49BoohiEXeOvBLtm7/hHTpeqqRwc
+	mUTTFF3ywxhypiiobuLVJtnICkGOER3ZBCh6FsI=
+X-Google-Smtp-Source: AGHT+IEl7LLXN0ptIhesaEPKAxJzCshfTvbMLJ0xi6Dkzcss2G7d2XM76ZzbLJvOATg2ZmA/J2KgZLy6deCMQm8GDk4=
+X-Received: by 2002:a17:906:69d5:b0:a19:a19b:78a4 with SMTP id
+ g21-20020a17090669d500b00a19a19b78a4mr2636059ejs.103.1702335020465; Mon, 11
+ Dec 2023 14:50:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
+References: <20231207185443.2297160-1-andrii@kernel.org> <20231207185443.2297160-4-andrii@kernel.org>
+ <657781ec1712_edaa208f5@john.notmuch>
+In-Reply-To: <657781ec1712_edaa208f5@john.notmuch>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 11 Dec 2023 14:50:08 -0800
+Message-ID: <CAEf4BzYmZjBd5ps-iKjyxLvQ=iD3z092+M_deV5ze0eJXGoFsg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/8] libbpf: further decouple feature checking
+ logic from bpf_object
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	paul@paul-moore.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
-> Hi Daniel,
-> 
-> Tiny nits below in case you respin this for other reasons:
-> 
-> On Mon, Dec 11, 2023 at 12:20 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Mon, Dec 11, 2023 at 1:41=E2=80=AFPM John Fastabend <john.fastabend@gmai=
+l.com> wrote:
+>
+> Andrii Nakryiko wrote:
+> > Add feat_supported() helper that accepts feature cache instead of
+> > bpf_object. This allows low-level code in bpf.c to not know or care
+> > about higher-level concept of bpf_object, yet it will be able to utiliz=
+e
+> > custom feature checking in cases where BPF token might influence the
+> > outcome.
 > >
-> > This commit extends test_tunnel selftest to test the new XDP xfrm state
-> > lookup kfunc.
-> >
-> > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > > ---
-> >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
-> >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
-> >  2 files changed, 67 insertions(+), 4 deletions(-)
+>
+> ...
+>
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index a6b8d6f70918..af5e777efcbd 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -637,6 +637,7 @@ struct elf_state {
+> >  };
 > >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > index 2d7f8fa82ebd..fc804095d578 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
-> >         SYS(fail,
-> >             "ip netns exec at_ns0 "
-> >                 "ip xfrm state add src %s dst %s proto esp "
-> > -                       "spi %d reqid 1 mode tunnel "
-> > +                       "spi %d reqid 1 mode tunnel replay-window 42 "
-> >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> >         SYS(fail,
-> > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
-> >         SYS(fail,
-> >             "ip netns exec at_ns0 "
-> >                 "ip xfrm state add src %s dst %s proto esp "
-> > -                       "spi %d reqid 2 mode tunnel "
-> > +                       "spi %d reqid 2 mode tunnel replay-window 42 "
-> 
-> nit: why do you need to set the replay-window in both directions?
-
-No reason - probably just careless here.
-
-> 
-> >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> >         SYS(fail,
-> > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
-> >          */
-> >         SYS(fail,
-> >             "ip xfrm state add src %s dst %s proto esp "
-> > -                   "spi %d reqid 1 mode tunnel "
-> > +                   "spi %d reqid 1 mode tunnel replay-window 42 "
-> >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> >         SYS(fail,
-> > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
-> >         /* root -> at_ns0 */
-> >         SYS(fail,
-> >             "ip xfrm state add src %s dst %s proto esp "
-> > -                   "spi %d reqid 2 mode tunnel "
-> > +                   "spi %d reqid 2 mode tunnel replay-window 42 "
-> >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> >         SYS(fail,
-> > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
+> >  struct usdt_manager;
+> > +struct kern_feature_cache;
+> >
+> >  struct bpf_object {
+> >       char name[BPF_OBJ_NAME_LEN];
+> > @@ -5063,17 +5064,14 @@ static struct kern_feature_desc {
+> >       },
+> >  };
+> >
+> > -bool kernel_supports(const struct bpf_object *obj, enum kern_feature_i=
+d feat_id)
+> > +bool feat_supported(struct kern_feature_cache *cache, enum kern_featur=
+e_id feat_id)
 > >  {
-> >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-> >                             .attach_point = BPF_TC_INGRESS);
-> > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> >         struct test_tunnel_kern *skel = NULL;
-> >         struct nstoken *nstoken;
-> > +       int xdp_prog_fd;
-> >         int tc_prog_fd;
-> >         int ifindex;
-> >         int err;
-> > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
-> >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
-> >                 goto done;
+> >       struct kern_feature_desc *feat =3D &feature_probes[feat_id];
+> > -     struct kern_feature_cache *cache =3D &feature_cache;
+> >       int ret;
 > >
-> > +       /* attach xdp prog to tunnel dev */
-> > +       xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-> > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-> > +               goto done;
-> > +       err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-> > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
-> > +               goto done;
-> > +
-> >         /* ping from at_ns0 namespace test */
-> >         nstoken = open_netns("at_ns0");
-> >         err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-> > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
-> >                 goto done;
-> >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
-> >                 goto done;
-> > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-> > +               goto done;
+> > -     if (obj && obj->gen_loader)
+> > -             /* To generate loader program assume the latest kernel
+> > -              * to avoid doing extra prog_load, map_create syscalls.
+> > -              */
+> > -             return true;
+> > +     /* assume global feature cache, unless custom one is provided */
+> > +     if (!cache)
+> > +             cache =3D &feature_cache;
+>
+> Why expose a custom cache at all? Where would that be used? I guess we ar=
+e
+> looking at libbpf_internal APIs so maybe not a big deal.
+
+bpf_object with token_fd set will have to use a separate non-global
+feature cache. Couple that with me moving this code into a separate
+features.c file in one of the next patches, we need to have some
+internal interface to make this happen.
+
+Also, bpf.c is also using feature detectors, but today they all use
+unprivileged program types, so I didn't add custom feature_cache there
+just yet. But if in the future we have more complicated feature
+detectors that will rely on privileged programs/maps, we'd need to
+pass custom feature_cache from bpf.c as well.
+
+>
 > >
-> >  done:
-> >         delete_xfrm_tunnel();
-> > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > index 3a59eb9c34de..c0dd38616562 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
-> >                           struct bpf_fou_encap *encap, int type) __ksym;
-> >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-> >                           struct bpf_fou_encap *encap) __ksym;
-> > +struct xfrm_state *
-> > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-> > +                      u32 opts__sz) __ksym;
-> > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
-> >
-> >  struct {
-> >         __uint(type, BPF_MAP_TYPE_ARRAY);
-> > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
-> >         return TC_ACT_OK;
+> >       if (READ_ONCE(cache->res[feat_id]) =3D=3D FEAT_UNKNOWN) {
+> >               ret =3D feat->probe();
+> > @@ -5090,6 +5088,17 @@ bool kernel_supports(const struct bpf_object *ob=
+j, enum kern_feature_id feat_id)
+> >       return READ_ONCE(cache->res[feat_id]) =3D=3D FEAT_SUPPORTED;
 > >  }
-> >
-> > +volatile int xfrm_replay_window = 0;
-> > +
-> > +SEC("xdp")
-> > +int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > +{
-> > +       struct bpf_xfrm_state_opts opts = {};
-> > +       struct xfrm_state *x = NULL;
-> > +       struct ip_esp_hdr *esph;
-> > +       struct bpf_dynptr ptr;
-> > +       u8 esph_buf[8] = {};
-> > +       u8 iph_buf[20] = {};
-> > +       struct iphdr *iph;
-> > +       u32 off;
-> > +
-> > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-> > +               goto out;
-> > +
-> > +       off = sizeof(struct ethhdr);
-> > +       iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-> > +       if (!iph || iph->protocol != IPPROTO_ESP)
-> > +               goto out;
-> > +
-> > +       off += sizeof(struct iphdr);
-> > +       esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-> > +       if (!esph)
-> > +               goto out;
-> > +
-> > +       opts.netns_id = BPF_F_CURRENT_NETNS;
-> > +       opts.daddr.a4 = iph->daddr;
-> > +       opts.spi = esph->spi;
-> > +       opts.proto = IPPROTO_ESP;
-> > +       opts.family = AF_INET;
-> > +
-> > +       x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > +       if (!x || opts.error)
-> 
-> nit: how can opts.error be non zero if x == NULL?
-
-Ignoring the new -ENOENT case, it can't. Which is why I'm testing that
-behavior here.
-
-[...]
-
-Thanks,
-Daniel
+>
+> Acked-by: John Fastabend <john.fastabend@gmail.com>
 
