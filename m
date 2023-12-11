@@ -1,118 +1,204 @@
-Return-Path: <bpf+bounces-17383-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8359F80C34E
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 09:33:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 604FB80C4D9
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 10:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 369D41F20F33
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 08:33:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F395E281693
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 09:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4BD20DE2;
-	Mon, 11 Dec 2023 08:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5149C21377;
+	Mon, 11 Dec 2023 09:39:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Abto7qIi"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDB9A0
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 00:33:47 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SpZlW5JtCz4f3kKH
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 16:33:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E64C71A0B7B
-	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 16:33:44 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgCnqxFlyXZlGf5bDQ--.5149S4;
-	Mon, 11 Dec 2023 16:33:43 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf-next v2] bpf: Update the comments in maybe_wait_bpf_programs()
-Date: Mon, 11 Dec 2023 16:34:47 +0800
-Message-Id: <20231211083447.1921178-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+Received: from mail-yw1-x1144.google.com (mail-yw1-x1144.google.com [IPv6:2607:f8b0:4864:20::1144])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58637CE;
+	Mon, 11 Dec 2023 01:39:52 -0800 (PST)
+Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-5d40c728fc4so30926507b3.1;
+        Mon, 11 Dec 2023 01:39:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702287591; x=1702892391; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2/PILXw+sfhUyZ9V8GULOr4bqu2Prc7VK3XM3govllA=;
+        b=Abto7qIif+7Nnjp5qHSn01Rv/nK1cidsFPW8W5thIf4wEleR/BirTS1K5NJ8ZSFXop
+         jFodXpz5zTwEAqW+P1/Q+rqYbiBhF/ssTLS57H+leiRvtQ+qFWbQSPeztnhP2CTzfbJu
+         A628P9ZyK9fBIkxU6+p1l1WvxuB50Jm5xeZ+89ktAXDSBzu/CPZI45/W4kUaskobbnlK
+         GgPYXtuBkfRIajIWB8zJTDaSxB1heNf/aX+se/9n0ovFEq+LmTj1Et6A++TT822GiaZk
+         qo2arHkJpiHcNUjTgEaE8/JKIQFVOrzgyHYgWtOYFP8QSUtjnoM+42fCQn1NUiaLVHiP
+         pdvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702287591; x=1702892391;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2/PILXw+sfhUyZ9V8GULOr4bqu2Prc7VK3XM3govllA=;
+        b=lgrvRDshJWaCk1Izho5KvPbk3wV2DYFwn2tX7JY7rsXx4BYq9PSeO3YQQOK44vGNDV
+         9VnxGwSWcXHoJMrkNvNP+YaIjWiAJ6jTRMOZDL5Q7GL4Bin7ylQ92O8bniUNvqG0WhT5
+         j/46065p+vrfqeIfalOl4RmvmWXxvFiItVnfZP0/BT2XoNxPfMQXCKGcAZycX39Lz1EQ
+         IfYfugMbAxnwrbuSgt+6Xeuk0TyTBMQAaBQa0Ts7Tergz+Q0ZCJZDvdzsWnXmU+LnzRb
+         rOP/J5Y1+IkgvV9ekpjM5OHudRU17FbIG1JwqrA5MVBxGlWTTkgSZcG4DpKp7/Yr0eVm
+         sQdg==
+X-Gm-Message-State: AOJu0YwyP6Ks+qAy8cCWaZVYPY+3YPI74nxaaZw3W6D5MVvN12YycfL2
+	sE66fzJxjLzryg6R0i6khgvoGRSpjdp156m8D2Y=
+X-Google-Smtp-Source: AGHT+IHWXV1aFeHBoOIC2oRFWxaeE8TReO+CB83PEsQT8b6QoYhLkVki7spj4oL79aW6VkprG1mY32hPRJlcnXs+GL0=
+X-Received: by 2002:a0d:d743:0:b0:5d3:6042:ced9 with SMTP id
+ z64-20020a0dd743000000b005d36042ced9mr2712396ywd.5.1702287591324; Mon, 11 Dec
+ 2023 01:39:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCnqxFlyXZlGf5bDQ--.5149S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF1xuw1xWF1rWrWDZrW7XFb_yoW8ur4rpF
-	ZIk34UGrs8Xrs2kw1qg3y8Z345tr95Gw17Gr1rKryFy3W3Wr909ryfKa15uF1avrs2grWI
-	vryvyF9agF45ArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-	IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-	z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231210130001.2050847-1-menglong8.dong@gmail.com> <4457e84f-4417-4a60-a814-9288b0756d91@linux.dev>
+In-Reply-To: <4457e84f-4417-4a60-a814-9288b0756d91@linux.dev>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Mon, 11 Dec 2023 17:39:40 +0800
+Message-ID: <CADxym3bNJXWZRfcGWpD7YW1rFe93vSOastmGrLvAcG3U2SaUdg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: make the verifier trace the "not qeual" for regs
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Hou Tao <houtao1@huawei.com>
+Hello,
 
-Since commit 638e4b825d52 ("bpf: Allows per-cpu maps and map-in-map in
-sleepable programs"), sleepable BPF program can also use map-in-map, but
-maybe_wait_bpf_programs() doesn't handle it accordingly. The main reason
-is that using synchronize_rcu_tasks_trace() to wait for the completions
-of these sleepable BPF programs may incur a very long delay and
-userspace may think it is hung, so the wait for sleepable BPF programs
-is skipped. Update the comments in maybe_wait_bpf_programs() to reflect
-the reason.
+On Mon, Dec 11, 2023 at 1:09=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
+>
+> On 12/10/23 5:00 AM, Menglong Dong wrote:
+> > We can derive some new information for BPF_JNE in regs_refine_cond_op()=
+.
+> > Take following code for example:
+> >
+> >    /* The type of "a" is u16 */
+> >    if (a > 0 && a < 100) {
+> >      /* the range of the register for a is [0, 99], not [1, 99],
+> >       * and will cause the following error:
+> >       *
+> >       *   invalid zero-sized read
+> >       *
+> >       * as a can be 0.
+> >       */
+> >      bpf_skb_store_bytes(skb, xx, xx, a, 0);
+> >    }
+>
+> Could you have a C test to demonstrate this example?
+> Also, you should have a set of inline asm code (progs/verifier*.c)
+> to test various cases as in mark_reg32_not_equal() and
+> mark_reg_not_equal().
+>
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
-v2:
-  * Don't handle sleepable BPF programs due to the potential long delay
-  * Update the comments in maybe_wait_bpf_programs() accordingly
+Yeah! I found that this part is tested in the test_progs/reg_bounds_crafted
+too, and this commit failed that test case, which I should fix in the next
+version.
 
-v1: https://lore.kernel.org/bpf/20231208102355.2628918-8-houtao@huaweicloud.com/
-  * Handle sleepable BPF programs in maybe_wait_bpf_programs()
+> >
+> > In the code above, "a > 0" will be compiled to "jmp xxx if a =3D=3D 0".=
+ In the
+> > TRUE branch, the dst_reg will be marked as known to 0. However, in the
+> > fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
+> > the [min, max] for a is [0, 99], not [1, 99].
+> >
+> > For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
+> > const and is exactly the edge of the dst reg.
+> >
+> > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> > ---
+> >   kernel/bpf/verifier.c | 45 ++++++++++++++++++++++++++++++++++++++++++=
+-
+> >   1 file changed, 44 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 727a59e4a647..7b074ac93190 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -1764,6 +1764,40 @@ static void __mark_reg_const_zero(struct bpf_reg=
+_state *reg)
+> >       reg->type =3D SCALAR_VALUE;
+> >   }
+> >
+> > +#define CHECK_REG_MIN(value)                 \
+> > +do {                                         \
+> > +     if ((value) =3D=3D (typeof(value))imm)      \
+> > +             value++;                        \
+> > +} while (0)
+> > +
+> > +#define CHECK_REG_MAX(value)                 \
+> > +do {                                         \
+> > +     if ((value) =3D=3D (typeof(value))imm)      \
+> > +             value--;                        \
+> > +} while (0)
+> > +
+> > +static void mark_reg32_not_equal(struct bpf_reg_state *reg, u64 imm)
+> > +{
+>
+> What if reg->s32_min_value =3D=3D imm and reg->s32_max_value =3D=3D imm?
+> Has this been handled in previous verifier logic?
 
- kernel/bpf/syscall.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+Will such a case happen? In current code path, the src reg is a const,
+and the is_branch_taken() will return 0 or 1 if the
+dst_reg->s32_min_value =3D=3D dst_reg->s32_max_value.
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0496b78b80f7..3fcf7741146a 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -142,9 +142,13 @@ static u32 bpf_map_value_size(const struct bpf_map *map)
- 
- static void maybe_wait_bpf_programs(struct bpf_map *map)
- {
--	/* Wait for any running BPF programs to complete so that
--	 * userspace, when we return to it, knows that all programs
--	 * that could be running use the new map value.
-+	/* Wait for any running non-sleepable BPF programs to complete so that
-+	 * userspace, when we return to it, knows that all non-sleepable
-+	 * programs that could be running use the new map value. For sleepable
-+	 * BPF programs, synchronize_rcu_tasks_trace() should be used to wait
-+	 * for the completions of these programs, but considering the waiting
-+	 * time can be very long and userspace may think it will hang forever,
-+	 * so don't handle sleepable BPF programs now.
- 	 */
- 	if (map->map_type == BPF_MAP_TYPE_HASH_OF_MAPS ||
- 	    map->map_type == BPF_MAP_TYPE_ARRAY_OF_MAPS)
--- 
-2.29.2
+Enn......maybe we can do more checking here in case that someone
+calls this function in another place.
 
+Thanks!
+Menglong Dong
+
+>
+> > +             CHECK_REG_MIN(reg->s32_min_value);
+> > +             CHECK_REG_MAX(reg->s32_max_value);
+> > +             CHECK_REG_MIN(reg->u32_min_value);
+> > +             CHECK_REG_MAX(reg->u32_max_value);
+> > +}
+> > +
+> > +static void mark_reg_not_equal(struct bpf_reg_state *reg, u64 imm)
+> > +{
+> > +             CHECK_REG_MIN(reg->smin_value);
+> > +             CHECK_REG_MAX(reg->smax_value);
+> > +
+> > +             CHECK_REG_MIN(reg->umin_value);
+> > +             CHECK_REG_MAX(reg->umax_value);
+> > +
+> > +             CHECK_REG_MIN(reg->s32_min_value);
+> > +             CHECK_REG_MAX(reg->s32_max_value);
+> > +             CHECK_REG_MIN(reg->u32_min_value);
+> > +             CHECK_REG_MAX(reg->u32_max_value);
+> > +}
+> > +
+> >   static void mark_reg_known_zero(struct bpf_verifier_env *env,
+> >                               struct bpf_reg_state *regs, u32 regno)
+> >   {
+> > @@ -14332,7 +14366,16 @@ static void regs_refine_cond_op(struct bpf_reg=
+_state *reg1, struct bpf_reg_state
+> >               }
+> >               break;
+> >       case BPF_JNE:
+> > -             /* we don't derive any new information for inequality yet=
+ */
+> > +             /* try to recompute the bound of reg1 if reg2 is a const =
+and
+> > +              * is exactly the edge of reg1.
+> > +              */
+> > +             if (is_reg_const(reg2, is_jmp32)) {
+> > +                     val =3D reg_const_value(reg2, is_jmp32);
+> > +                     if (is_jmp32)
+> > +                             mark_reg32_not_equal(reg1, val);
+> > +                     else
+> > +                             mark_reg_not_equal(reg1, val);
+> > +             }
+> >               break;
+> >       case BPF_JSET:
+> >               if (!is_reg_const(reg2, is_jmp32))
 
