@@ -1,262 +1,196 @@
-Return-Path: <bpf+bounces-17393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A14AF80C926
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 13:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 267F780C9CA
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 13:30:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2200E1F21845
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 12:12:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C55B01F217A0
+	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 12:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F34183A26F;
-	Mon, 11 Dec 2023 12:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 902BB3B2B7;
+	Mon, 11 Dec 2023 12:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DS0NQpvf"
 X-Original-To: bpf@vger.kernel.org
-X-Greylist: delayed 1228 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 11 Dec 2023 04:12:16 PST
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0B4F2;
-	Mon, 11 Dec 2023 04:12:16 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Spg7z2kdDz1vnkK;
-	Mon, 11 Dec 2023 19:51:43 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 759501A016F;
-	Mon, 11 Dec 2023 19:51:46 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 11 Dec
- 2023 19:51:46 +0800
-Subject: Re: [net-next v1 09/16] page_pool: device memory support
-To: Mina Almasry <almasrymina@google.com>
-CC: Shailend Chand <shailend@google.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst
-	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
-	<ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, David Ahern
-	<dsahern@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeelb@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-10-almasrymina@google.com>
- <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
- <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
- <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
- <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
- <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com>
-Date: Mon, 11 Dec 2023 19:51:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061AEDF
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:30:29 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3333074512bso2837385f8f.1
+        for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 04:30:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702297827; x=1702902627; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RRCMYK+/Bhjt8nlJGO02P/XmLptibZwCl1CrdIbpCUc=;
+        b=DS0NQpvfsJmR6LIYuFPqJIXSAio7hmyv75IJiA+TJTxXlbNfGSp4y2zAwJxAlrXPuu
+         5oAHbJ1jp5w8gI8mG08x1Tm/DTx+yni+qS6AqCipJtvKhkGb6yv2aZgzcZlc4SQPPl4f
+         NwigXLqSb3I+YsBQjq0AxXeC6DlsfOQiT+vc4pdBvdF3fJGtUmuyDlPupqLOSbsUhcVq
+         ubZtF/aJ3oe455D9VfEh/uA2QRFX0v/GIuDkcLgtGUlNcsxJs+CyVz2O8tm0WQh4WLdT
+         g0vz+lD9CiCJ9CWY6zBNkVFvq9y2ydZpPWyjkB1HUsvIIhYM24weztnNr/v0Gb3PRSOp
+         3o3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702297827; x=1702902627;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RRCMYK+/Bhjt8nlJGO02P/XmLptibZwCl1CrdIbpCUc=;
+        b=dErmKsfuHss7kqMCevN0xp/toepOxLrDOkCEO1D8bIdjWy2rFhuPLlVUCldumkWYPn
+         b+ZpNO+qxpsSss+HsFJMW6U/1OcokYyH1XI8k1j+MjHxBC+IrJQ2EJjBPesvMirG9l9M
+         mX4lb+gCRsx2LMJgEv3pDF/9gWddU9Q05bAz2TpYV/C9NL4s6JQ6Owo0QYcch+KIOnzy
+         /i9ZPNFUAmpfnEIrODJo5jPinXc/O+Vgg/jbdjW+9E87KGUK5uC+UBbGgDgzq7yQobSY
+         5rj0fWtA8XPDI+8uFZbrmkR0ZyaZbYc7p3RU9j2cgYz5jRM4SMwgdz30BA7cDLWm97Xx
+         pdQQ==
+X-Gm-Message-State: AOJu0YzMhMB+zcBtwbt0AWrOljY0iQlEwwgNXgkp+hG8t7IMfgdtaS+f
+	zeLzmjg0RwhEid4i60ot8WVofXPX94o=
+X-Google-Smtp-Source: AGHT+IHGK2vCDjBanh4z3RE3BiwPj9anGzQPJlWFbW9SjxJLr1y27C2MGJigIBnsYe97+e55jhIQ1Q==
+X-Received: by 2002:a05:600c:4e0c:b0:40c:3dac:817f with SMTP id b12-20020a05600c4e0c00b0040c3dac817fmr1585997wmq.73.1702297826973;
+        Mon, 11 Dec 2023 04:30:26 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id n10-20020a05600c500a00b004094e565e71sm12846011wmr.23.2023.12.11.04.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Dec 2023 04:30:26 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 11 Dec 2023 13:30:24 +0100
+To: Dmitrii Dolgov <9erthalion6@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, dan.carpenter@linaro.org,
+	olsajiri@gmail.com, asavkov@redhat.com
+Subject: Re: [PATCH bpf-next v7 1/4] bpf: Relax tracing prog recursive attach
+ rules
+Message-ID: <ZXcA4KxoaDagJPjc@krava>
+References: <20231208185557.8477-1-9erthalion6@gmail.com>
+ <20231208185557.8477-2-9erthalion6@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208185557.8477-2-9erthalion6@gmail.com>
 
-On 2023/12/11 12:04, Mina Almasry wrote:
-> On Sun, Dec 10, 2023 at 6:26 PM Mina Almasry <almasrymina@google.com> wrote:
->>
->> On Sun, Dec 10, 2023 at 6:04 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>
->>> On 2023/12/9 0:05, Mina Almasry wrote:
->>>> On Fri, Dec 8, 2023 at 1:30 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>>
->>>>>
->>>>> As mentioned before, it seems we need to have the above checking every
->>>>> time we need to do some per-page handling in page_pool core, is there
->>>>> a plan in your mind how to remove those kind of checking in the future?
->>>>>
->>>>
->>>> I see 2 ways to remove the checking, both infeasible:
->>>>
->>>> 1. Allocate a wrapper struct that pulls out all the fields the page pool needs:
->>>>
->>>> struct netmem {
->>>>         /* common fields */
->>>>         refcount_t refcount;
->>>>         bool is_pfmemalloc;
->>>>         int nid;
->>>>         ...
->>>>         union {
->>>>                 struct dmabuf_genpool_chunk_owner *owner;
->>>>                 struct page * page;
->>>>         };
->>>> };
->>>>
->>>> The page pool can then not care if the underlying memory is iov or
->>>> page. However this introduces significant memory bloat as this struct
->>>> needs to be allocated for each page or ppiov, which I imagine is not
->>>> acceptable for the upside of removing a few static_branch'd if
->>>> statements with no performance cost.
->>>>
->>>> 2. Create a unified struct for page and dmabuf memory, which the mm
->>>> folks have repeatedly nacked, and I imagine will repeatedly nack in
->>>> the future.
->>>>
->>>> So I imagine the special handling of ppiov in some form is critical
->>>> and the checking may not be removable.
->>>
->>> If the above is true, perhaps devmem is not really supposed to be intergated
->>> into page_pool.
->>>
->>> Adding a checking for every per-page handling in page_pool core is just too
->>> hacky to be really considerred a longterm solution.
->>>
->>
->> The only other option is to implement another page_pool for ppiov and
->> have the driver create page_pool or ppiov_pool depending on the state
->> of the netdev_rx_queue (or some helper in the net stack to do that for
->> the driver). This introduces some code duplication. The ppiov_pool &
->> page_pool would look similar in implementation.
+On Fri, Dec 08, 2023 at 07:55:53PM +0100, Dmitrii Dolgov wrote:
 
-I think there is a design pattern already to deal with this kind of problem,
-refactoring common code used by both page_pool and ppiov into a library to
-aovid code duplication if most of them have similar implementation.
+SNIP
 
->>
->> But this was all discussed in detail in RFC v2 and the last response I
->> heard from Jesper was in favor if this approach, if I understand
->> correctly:
->>
->> https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@redhat.com/
->>
->> Would love to have the maintainer weigh in here.
->>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index eb447b0a9423..e7393674ab94 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1414,6 +1414,7 @@ struct bpf_prog_aux {
+>  	bool dev_bound; /* Program is bound to the netdev. */
+>  	bool offload_requested; /* Program is bound and offloaded to the netdev. */
+>  	bool attach_btf_trace; /* true if attaching to BTF-enabled raw tp */
+> +	bool attach_tracing_prog; /* true if tracing another tracing program */
+>  	bool func_proto_unreliable;
+>  	bool sleepable;
+>  	bool tail_call_reachable;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 5e43ddd1b83f..d5470a5c8c6d 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -3039,6 +3039,7 @@ static void bpf_tracing_link_release(struct bpf_link *link)
+>  
+>  	bpf_trampoline_put(tr_link->trampoline);
+>  
+> +	link->prog->aux->attach_tracing_prog = false;
+
+I think it'd be better to have this as part of the 'if (tr_link->tgt_prog)'
+path below, because it's set only for that case
+
+>  	/* tgt_prog is NULL if target is a kernel function */
+>  	if (tr_link->tgt_prog)
+>  		bpf_prog_put(tr_link->tgt_prog);
+> @@ -3243,6 +3244,12 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  		goto out_unlock;
+>  	}
+>  
+> +	/* Bookkeeping for managing the prog attachment chain */
+> +	if (tgt_prog &&
+> +		prog->type == BPF_PROG_TYPE_TRACING &&
+> +		tgt_prog->type == BPF_PROG_TYPE_TRACING)
+> +		prog->aux->attach_tracing_prog = true;
+
+wrong indentation in here, please check the if conditions around
+
+thanks,
+jirka
+
+> +
+>  	link->tgt_prog = tgt_prog;
+>  	link->trampoline = tr;
+>  
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 8e7b6072e3f4..f8c15ce8fd05 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20077,6 +20077,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  			    struct bpf_attach_target_info *tgt_info)
+>  {
+>  	bool prog_extension = prog->type == BPF_PROG_TYPE_EXT;
+> +	bool prog_tracing = prog->type == BPF_PROG_TYPE_TRACING;
+>  	const char prefix[] = "btf_trace_";
+>  	int ret = 0, subprog = -1, i;
+>  	const struct btf_type *t;
+> @@ -20147,10 +20148,21 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  			bpf_log(log, "Can attach to only JITed progs\n");
+>  			return -EINVAL;
+>  		}
+> -		if (tgt_prog->type == prog->type) {
+> -			/* Cannot fentry/fexit another fentry/fexit program.
+> -			 * Cannot attach program extension to another extension.
+> -			 * It's ok to attach fentry/fexit to extension program.
+> +		if (prog_tracing) {
+> +			if (aux->attach_tracing_prog) {
+> +				/*
+> +				 * Target program is an fentry/fexit which is already attached
+> +				 * to another tracing program. More levels of nesting
+> +				 * attachment are not allowed.
+> +				 */
+> +				bpf_log(log, "Cannot nest tracing program attach more than once\n");
+> +				return -EINVAL;
+> +			}
+> +		} else if (tgt_prog->type == prog->type) {
+> +			/*
+> +			 * To avoid potential call chain cycles, prevent attaching of a
+> +			 * program extension to another extension. It's ok to attach
+> +			 * fentry/fexit to extension program.
+>  			 */
+>  			bpf_log(log, "Cannot recursively attach\n");
+>  			return -EINVAL;
+> @@ -20163,16 +20175,15 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  			 * except fentry/fexit. The reason is the following.
+>  			 * The fentry/fexit programs are used for performance
+>  			 * analysis, stats and can be attached to any program
+> -			 * type except themselves. When extension program is
+> -			 * replacing XDP function it is necessary to allow
+> -			 * performance analysis of all functions. Both original
+> -			 * XDP program and its program extension. Hence
+> -			 * attaching fentry/fexit to BPF_PROG_TYPE_EXT is
+> -			 * allowed. If extending of fentry/fexit was allowed it
+> -			 * would be possible to create long call chain
+> -			 * fentry->extension->fentry->extension beyond
+> -			 * reasonable stack size. Hence extending fentry is not
+> -			 * allowed.
+> +			 * type. When extension program is replacing XDP function
+> +			 * it is necessary to allow performance analysis of all
+> +			 * functions. Both original XDP program and its program
+> +			 * extension. Hence attaching fentry/fexit to
+> +			 * BPF_PROG_TYPE_EXT is allowed. If extending of
+> +			 * fentry/fexit was allowed it would be possible to create
+> +			 * long call chain fentry->extension->fentry->extension
+> +			 * beyond reasonable stack size. Hence extending fentry
+> +			 * is not allowed.
+>  			 */
+>  			bpf_log(log, "Cannot extend fentry/fexit\n");
+>  			return -EINVAL;
+> -- 
+> 2.41.0
 > 
-> I should note we may be able to remove some of the checking, but maybe not all.
-> 
-> - Checks that disable page fragging for ppiov can be removed once
-> ppiov has frag support (in this series or follow up).
-> 
-> - If we use page->pp_frag_count (or page->pp_ref_count) for
-> refcounting ppiov, we can remove the if checking in the refcounting.
-> 
-> - We may be able to store the dma_addr of the ppiov in page->dma_addr,
-> but I'm unsure if that actually works, because the dma_buf dmaddr is
-> dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
-> I think). But if it works for pages I may be able to make it work for
-> ppiov as well.
-> 
-> - Checks that obtain the page->pp can work with ppiov if we align the
-> offset of page->pp and ppiov->pp.
-> 
-> - Checks around page->pp_magic can be removed if we also have offset
-> aligned ppiov->pp_magic.
-> 
-> Sadly I don't see us removing the checking for these other cases:
-> 
-> - page_is_pfmemalloc(): I'm not allowed to pass a non-struct page into
-> that helper.
-
-We can do similar trick like above as bit 1 of page->pp_magic is used to
-indicate that if it is a pfmemalloc page.
-
-> 
-> - page_to_nid(): I'm not allowed to pass a non-struct page into that helper.
-
-Yes, this one need special case.
-
-> 
-> - page_pool_free_va(): ppiov have no va.
-
-Doesn't the skb_frags_readable() checking will protect the page_pool_free_va()
-from being called on devmem?
-
-> 
-> - page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
-> fundamentally can't get mapped again.
-
-Can we just fail the page_pool creation with PP_FLAG_DMA_MAP and
-DMA_ATTR_SKIP_CPU_SYNC flags for devmem provider?
-
-> 
-> Are the removal (or future removal) of these checks enough to resolve this?
-
-Yes, that is somewhat similar to my proposal, the biggest objection seems to
-be that we need to have a safe type checking for it to work correctly.
-
-> 
->>> It is somewhat ironical that devmem is using static_branch to alliviate the
->>> performance impact for normal memory at the possible cost of performance
->>> degradation for devmem, does it not defeat some purpose of intergating devmem
->>> to page_pool?
->>>
->>
->> I don't see the issue. The static branch sets the non-ppiov path as
->> default if no memory providers are in use, and flips it when they are,
->> making the default branch prediction ideal in both cases.
-
-You are assuming the we are not using page pool for both normal memory and
-devmem at the same. But a generic solution should not have that assumption
-as my understanding.
-
->>
->>>>
->>>>> Even though a static_branch check is added in page_is_page_pool_iov(), it
->>>>> does not make much sense that a core has tow different 'struct' for its
->>>>> most basic data.
->>>>>
->>>>> IMHO, the ppiov for dmabuf is forced fitting into page_pool without much
->>>>> design consideration at this point.
->>>>>
->>>> ...
->>>>>
->>>>> For now, the above may work for the the rx part as it seems that you are
->>>>> only enabling rx for dmabuf for now.
->>>>>
->>>>> What is the plan to enable tx for dmabuf? If it is also intergrated into
->>>>> page_pool? There was a attempt to enable page_pool for tx, Eric seemed to
->>>>> have some comment about this:
->>>>> https://lkml.kernel.org/netdev/2cf4b672-d7dc-db3d-ce90-15b4e91c4005@huawei.com/T/#mb6ab62dc22f38ec621d516259c56dd66353e24a2
->>>>>
->>>>> If tx is not intergrated into page_pool, do we need to create a new layer for
->>>>> the tx dmabuf?
->>>>>
->>>>
->>>> I imagine the TX path will reuse page_pool_iov, page_pool_iov_*()
->>>> helpers, and page_pool_page_*() helpers, but will not need any core
->>>> page_pool changes. This is because the TX path will have to piggyback
->>>
->>> We may need another bit/flags checking to demux between page_pool owned
->>> devmem and non-page_pool owned devmem.
->>>
->>
->> The way I'm imagining the support, I don't see the need for such
->> flags. We'd be re-using generic helpers like
->> page_pool_iov_get_dma_address() and what not that don't need that
->> checking.
->>
->>> Also calling page_pool_*() on non-page_pool owned devmem is confusing
->>> enough that we may need a thin layer handling non-page_pool owned devmem
->>> in the end.
->>>
->>
->> The page_pool_page* & page_pool_iov* functions can be renamed if
->> confusing. I would think that's no issue (note that the page_pool_*
-
-When you rename those functions, you will have a thin layer automatically.
-
->> functions need not be called for TX path).
->>
->>>> on MSG_ZEROCOPY (devmem is not copyable), so no memory allocation from
->>>> the page_pool (or otherwise) is needed or possible. RFCv1 had a TX
->>>> implementation based on dmabuf pages without page_pool involvement, I
->>>> imagine I'll do something similar.
->>> It would be good to have a tx implementation for the next version, so
->>> that we can have a whole picture of devmem.
 
