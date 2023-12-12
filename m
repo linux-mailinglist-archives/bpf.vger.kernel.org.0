@@ -1,285 +1,379 @@
-Return-Path: <bpf+bounces-17469-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17470-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00B7080DFB2
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 00:49:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A7480DFD1
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 01:05:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C0C3B214E9
-	for <lists+bpf@lfdr.de>; Mon, 11 Dec 2023 23:49:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDC7C281598
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 00:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78B5C56B79;
-	Mon, 11 Dec 2023 23:49:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D6428E1;
+	Tue, 12 Dec 2023 00:05:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="OptCZHrx";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NQXpTp09"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GEGQGlbk"
 X-Original-To: bpf@vger.kernel.org
-Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BEBACF;
-	Mon, 11 Dec 2023 15:49:17 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.nyi.internal (Postfix) with ESMTP id B5459580994;
-	Mon, 11 Dec 2023 18:49:13 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 11 Dec 2023 18:49:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1702338553;
-	 x=1702345753; bh=HWPAz2nCkWGZyq/beiz/8uDXQkbh79+aEadSAl4i9y8=; b=
-	OptCZHrxeLXQfAdEfJeHVi+oOkdF/a4ixxaaN3yevGaoUsvdDcELzKOXK0uSqkBZ
-	cfimgB4CRGpWX6OMOBzt+uRV1r7DCMQptH6HlLOmvQaSgANmq5n43k4t+8sJeTJt
-	y6iH04Ib92mpF1HeDdw8Mg4TqhRSWh58uAqBYMyhZaTX5cGJxpEHUq1joRWR4AVg
-	qcS2Y6nx+H5K5qEGR2onLOHWOcRa34nYUq7ma8iR9E9mjQwNvFuxQCC/iys6kxxj
-	Bw7TkWPVzVgn2PnUj00FrhnpgLfTZ7vjU7ixLS2uzGQaTHoB0iAocrwJJPbw5gwY
-	bL4MEDVQvGGZMrdb/0I3Ew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702338553; x=
-	1702345753; bh=HWPAz2nCkWGZyq/beiz/8uDXQkbh79+aEadSAl4i9y8=; b=N
-	QXpTp09t6VN8GS0chO4/lsb3JtvAfXT1GC3j+/XX0NJL084/2vuzQ40qnkyb6Mi8
-	exiBivDvxwdW6259Otz0lVGvLVao3Bh28OXUkVcP/vRogGZ2d/b/WCupST7R6qBL
-	Tx0Kl1tO3QYTH1AuqkERjESvt7fEJEHiZlkOGX14FrlPeSGoqaYhIZnTqABzgQa5
-	++xHuFYkTjOMB1L5blAmo+V0T8fWK1Z/QXEXp+b5idFxCPIRCq+9WQrfbYXuzO30
-	mBBt6VrbTOlB1mh57m5MsUsbLnYafX4nyBPNXVI74QpBDL75qS8VaVBrvTr23cNQ
-	ZYZj+FZtvngxqUuWR0w4A==
-X-ME-Sender: <xms:-Z93ZW8lYC7ahV45NVa1G6PuttHFKdp1PUmE-Z7tvq0wjibix1t8FQ>
-    <xme:-Z93ZWvG2ywaA_6Hfoa_f67uddgHTlo5jyt464MAXx9rwjLwDLMOJRwpR85B0IAza
-    _AGRJWUdzrZmj51EA>
-X-ME-Received: <xmr:-Z93ZcD12zlBvnqpudeO4pAaDEP_VIX4N9C0hNOXv0iCdpNr87GWmQAjDQe8C6GL5YkOpvCzbPnCMuFlngGQ-kDPeChCVWt2--Xa>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelfedgudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:-Z93ZeeOVZP6_icXTPcbjO74MO8wtoF9mRklUzIPRuWYy16bZo0GgA>
-    <xmx:-Z93ZbMmCeXCIYIwYT4p11sgrnuV_SR5diBRxQtoYD1L3HAE49a_tQ>
-    <xmx:-Z93ZYnolCW3YO8ID_c7unclVVnjmgndkNUP15LgnXUC8B4CAh-isw>
-    <xmx:-Z93Zee3sKGp8y11YQH1e7ZVKElCnYj7cou50Ae4ztuS1g-y_pwvJw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 11 Dec 2023 18:49:10 -0500 (EST)
-Date: Mon, 11 Dec 2023 16:49:09 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Eyal Birger <eyal.birger@gmail.com>
-Cc: daniel@iogearbox.net, davem@davemloft.net, shuah@kernel.org, 
-	ast@kernel.org, john.fastabend@gmail.com, kuba@kernel.org, andrii@kernel.org, 
-	hawk@kernel.org, steffen.klassert@secunet.com, antony.antony@secunet.com, 
-	alexei.starovoitov@gmail.com, yonghong.song@linux.dev, eddyz87@gmail.com, mykolal@fb.com, 
-	martin.lau@linux.dev, song@kernel.org, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
-References: <cover.1702325874.git.dxu@dxuuu.xyz>
- <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
- <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
- <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
- <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0CCB5;
+	Mon, 11 Dec 2023 16:05:39 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c39ef63d9so27538285e9.3;
+        Mon, 11 Dec 2023 16:05:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702339538; x=1702944338; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fJqm47oqUAVnwI0gY1OnvcZG19zRvJLcZGKPSZ1E03Y=;
+        b=GEGQGlbkE/9YJtCnfwCBzLVV0KrsKMQhm1yyS3lQu2MFyxjcl35vTlxqYD59b3SdYI
+         TCrSpdU7c+Zhfg8YY31KzDaxXXDH0OHwpUp6eypMmnOdiB1oHl/tCLJZyecMvAfzUUDl
+         cqWTEIygdUJUZmN6vViMa9PJjZBWl7HfT5haBISNW9PHeoTzEqTG7xZdRFl5G4Yjpa3I
+         xtCRtWTaDd9HZcOyfPhtToQ21+n1uxL1syF8GtV9J9+uC/ab1/KXA32PVZxAWHHgRgWf
+         LuTyCR0n50UwAwKT02IdzXMWfZ+yyW90f9tUKTHZ32Wk3WJdwHP+RR+dm1+CMH3UhDfB
+         1gXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702339538; x=1702944338;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fJqm47oqUAVnwI0gY1OnvcZG19zRvJLcZGKPSZ1E03Y=;
+        b=vNLxlgn8bPH3IActdnpKOYrtiL69xg0vO7VcAB+XJxbKXmqbjlK32DMBNasjl+3fFz
+         /YPkhh4slr++qh25XzOtkCVGxf9xDLgK7/XDilICUWjWfeyI+q92oEbaxkmgT3qTswQa
+         wnS0I3ZFZAjcIzHLyUgn+KDtMkUvASg+IV9aVSrmT5oSetbGXBV3kPBLR9TaShnXQAvv
+         fda/eztR4SV66tLqclB8rcHFKIwREImfQeklh+lOupI6QXg06n2UfWXKAHGXrvkJPH3r
+         Wx7TVdMMo90/6HuD1xH7v3EHaZOrHyN1exOi9Zf1Q883ShvnyVgUoNWBO5NKnlHZFEl5
+         Q43g==
+X-Gm-Message-State: AOJu0Yx7RpoLIxvPNDd2TRRbvPWC42Yizlzqg0kVOrhsPWcHYNRe+rTD
+	zViES9fkkqDF4q7uuLA6iw0yAnElEVq36xjSL84=
+X-Google-Smtp-Source: AGHT+IHBooLx9JZdnzqTgpOW1++87YfMPROsWkvI+ymWpFlksGqOsrK4I+NSJlBRspuQp2tNC+WUceA43OZfE/1K+Z8=
+X-Received: by 2002:a05:600c:204b:b0:40c:38dc:f6c8 with SMTP id
+ p11-20020a05600c204b00b0040c38dcf6c8mr2788461wmg.172.1702339537910; Mon, 11
+ Dec 2023 16:05:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+References: <20231207185443.2297160-1-andrii@kernel.org> <20231207185443.2297160-7-andrii@kernel.org>
+ <657793942699a_edaa208bc@john.notmuch>
+In-Reply-To: <657793942699a_edaa208bc@john.notmuch>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 11 Dec 2023 16:05:25 -0800
+Message-ID: <CAEf4BzYZ0Xkme8pwWoXE5wvQhp+DzUixn3ueJMFmDqUk9Dox7A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 6/8] libbpf: wire up BPF token support at BPF
+ object level
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	paul@paul-moore.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, keescook@chromium.org, 
+	kernel-team@meta.com, sargun@sargun.me
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 11, 2023 at 03:13:07PM -0800, Eyal Birger wrote:
-> On Mon, Dec 11, 2023 at 2:31 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Mon, Dec 11, 2023 at 2:56=E2=80=AFPM John Fastabend <john.fastabend@gmai=
+l.com> wrote:
+>
+> Andrii Nakryiko wrote:
+> > Add BPF token support to BPF object-level functionality.
 > >
-> > On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
-> > > Hi Daniel,
-> > >
-> > > Tiny nits below in case you respin this for other reasons:
-> > >
-> > > On Mon, Dec 11, 2023 at 12:20 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > >
-> > > > This commit extends test_tunnel selftest to test the new XDP xfrm state
-> > > > lookup kfunc.
-> > > >
-> > > > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > > > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > > ---
-> > > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
-> > > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
-> > > >  2 files changed, 67 insertions(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > index 2d7f8fa82ebd..fc804095d578 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
-> > > >         SYS(fail,
-> > > >             "ip netns exec at_ns0 "
-> > > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > > -                       "spi %d reqid 1 mode tunnel "
-> > > > +                       "spi %d reqid 1 mode tunnel replay-window 42 "
-> > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> > > >         SYS(fail,
-> > > > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
-> > > >         SYS(fail,
-> > > >             "ip netns exec at_ns0 "
-> > > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > > -                       "spi %d reqid 2 mode tunnel "
-> > > > +                       "spi %d reqid 2 mode tunnel replay-window 42 "
-> > >
-> > > nit: why do you need to set the replay-window in both directions?
+> > BPF token is supported by BPF object logic either as an explicitly
+> > provided BPF token from outside (through BPF FS path or explicit BPF
+> > token FD), or implicitly (unless prevented through
+> > bpf_object_open_opts).
 > >
-> > No reason - probably just careless here.
+> > Implicit mode is assumed to be the most common one for user namespaced
+> > unprivileged workloads. The assumption is that privileged container
+> > manager sets up default BPF FS mount point at /sys/fs/bpf with BPF toke=
+n
+> > delegation options (delegate_{cmds,maps,progs,attachs} mount options).
+> > BPF object during loading will attempt to create BPF token from
+> > /sys/fs/bpf location, and pass it for all relevant operations
+> > (currently, map creation, BTF load, and program load).
 > >
-> > >
-> > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> > > >         SYS(fail,
-> > > > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
-> > > >          */
-> > > >         SYS(fail,
-> > > >             "ip xfrm state add src %s dst %s proto esp "
-> > > > -                   "spi %d reqid 1 mode tunnel "
-> > > > +                   "spi %d reqid 1 mode tunnel replay-window 42 "
-> > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> > > >         SYS(fail,
-> > > > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
-> > > >         /* root -> at_ns0 */
-> > > >         SYS(fail,
-> > > >             "ip xfrm state add src %s dst %s proto esp "
-> > > > -                   "spi %d reqid 2 mode tunnel "
-> > > > +                   "spi %d reqid 2 mode tunnel replay-window 42 "
-> > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> > > >         SYS(fail,
-> > > > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
-> > > >  {
-> > > >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-> > > >                             .attach_point = BPF_TC_INGRESS);
-> > > > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> > > >         struct test_tunnel_kern *skel = NULL;
-> > > >         struct nstoken *nstoken;
-> > > > +       int xdp_prog_fd;
-> > > >         int tc_prog_fd;
-> > > >         int ifindex;
-> > > >         int err;
-> > > > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
-> > > >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
-> > > >                 goto done;
-> > > >
-> > > > +       /* attach xdp prog to tunnel dev */
-> > > > +       xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-> > > > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-> > > > +               goto done;
-> > > > +       err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-> > > > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
-> > > > +               goto done;
-> > > > +
-> > > >         /* ping from at_ns0 namespace test */
-> > > >         nstoken = open_netns("at_ns0");
-> > > >         err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-> > > > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
-> > > >                 goto done;
-> > > >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
-> > > >                 goto done;
-> > > > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-> > > > +               goto done;
-> > > >
-> > > >  done:
-> > > >         delete_xfrm_tunnel();
-> > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > index 3a59eb9c34de..c0dd38616562 100644
-> > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
-> > > >                           struct bpf_fou_encap *encap, int type) __ksym;
-> > > >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-> > > >                           struct bpf_fou_encap *encap) __ksym;
-> > > > +struct xfrm_state *
-> > > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-> > > > +                      u32 opts__sz) __ksym;
-> > > > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
-> > > >
-> > > >  struct {
-> > > >         __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
-> > > >         return TC_ACT_OK;
-> > > >  }
-> > > >
-> > > > +volatile int xfrm_replay_window = 0;
-> > > > +
-> > > > +SEC("xdp")
-> > > > +int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > > +{
-> > > > +       struct bpf_xfrm_state_opts opts = {};
-> > > > +       struct xfrm_state *x = NULL;
-> > > > +       struct ip_esp_hdr *esph;
-> > > > +       struct bpf_dynptr ptr;
-> > > > +       u8 esph_buf[8] = {};
-> > > > +       u8 iph_buf[20] = {};
-> > > > +       struct iphdr *iph;
-> > > > +       u32 off;
-> > > > +
-> > > > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-> > > > +               goto out;
-> > > > +
-> > > > +       off = sizeof(struct ethhdr);
-> > > > +       iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-> > > > +       if (!iph || iph->protocol != IPPROTO_ESP)
-> > > > +               goto out;
-> > > > +
-> > > > +       off += sizeof(struct iphdr);
-> > > > +       esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-> > > > +       if (!esph)
-> > > > +               goto out;
-> > > > +
-> > > > +       opts.netns_id = BPF_F_CURRENT_NETNS;
-> > > > +       opts.daddr.a4 = iph->daddr;
-> > > > +       opts.spi = esph->spi;
-> > > > +       opts.proto = IPPROTO_ESP;
-> > > > +       opts.family = AF_INET;
-> > > > +
-> > > > +       x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > > +       if (!x || opts.error)
-> > >
-> > > nit: how can opts.error be non zero if x == NULL?
+> > In this implicit mode, if BPF token creation fails due to whatever
+> > reason (BPF FS is not mounted, or kernel doesn't support BPF token,
+> > etc), this is not considered an error. BPF object loading sequence will
+> > proceed with no BPF token.
 > >
-> > Ignoring the new -ENOENT case, it can't. Which is why I'm testing that
-> > behavior here.
-> 
-> I'm sorry, I don't understand.
-> 
-> AFAICT, regardless of the -ENOENT change, I don't see
-> how (!x) is false and (opt.error) is true, and so
-> "if (!x || opts.error)" is always equivalent to "if (!x)".
-> 
-> What am I missing?
-> Eyal.
+> > In explicit BPF token mode, user provides explicitly either custom BPF
+> > FS mount point path or creates BPF token on their own and just passes
+> > token FD directly. In such case, BPF object will either dup() token FD
+> > (to not require caller to hold onto it for entire duration of BPF objec=
+t
+> > lifetime) or will attempt to create BPF token from provided BPF FS
+> > location. If BPF token creation fails, that is considered a critical
+> > error and BPF object load fails with an error.
+> >
+> > Libbpf provides a way to disable implicit BPF token creation, if it
+> > causes any troubles (BPF token is designed to be completely optional an=
+d
+> > shouldn't cause any problems even if provided, but in the world of BPF
+> > LSM, custom security logic can be installed that might change outcome
+> > dependin on the presence of BPF token). To disable libbpf's default BPF
+> > token creation behavior user should provide either invalid BPF token FD
+> > (negative), or empty bpf_token_path option.
+> >
+> > BPF token presence can influence libbpf's feature probing, so if BPF
+> > object has associated BPF token, feature probing is instructed to use
+> > BPF object-specific feature detection cache and token FD.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/lib/bpf/btf.c             |   7 +-
+> >  tools/lib/bpf/libbpf.c          | 120 ++++++++++++++++++++++++++++++--
+> >  tools/lib/bpf/libbpf.h          |  28 +++++++-
+> >  tools/lib/bpf/libbpf_internal.h |  17 ++++-
+> >  4 files changed, 160 insertions(+), 12 deletions(-)
+> >
+>
+> ...
+>
+> >
+> > +static int bpf_object_prepare_token(struct bpf_object *obj)
+> > +{
+> > +     const char *bpffs_path;
+> > +     int bpffs_fd =3D -1, token_fd, err;
+> > +     bool mandatory;
+> > +     enum libbpf_print_level level =3D LIBBPF_DEBUG;
+>
+> redundant set on level?
+>
 
-The selftests are tests so my intention was to check edge cases here.
-In normal operation it shouldn't be possible that
-bpf_xdp_get_xfrm_state() returns non-NULL and also an error. Maybe
-another way of writing this would be:
+yep, removed initialization
 
-        if (!x)
-                goto out;
-        assert(opts.error == 0);
+> > +
+> > +     /* token is already set up */
+> > +     if (obj->token_fd > 0)
+> > +             return 0;
+> > +     /* token is explicitly prevented */
+> > +     if (obj->token_fd < 0) {
+> > +             pr_debug("object '%s': token is prevented, skipping...\n"=
+, obj->name);
+> > +             /* reset to zero to avoid extra checks during map_create =
+and prog_load steps */
+> > +             obj->token_fd =3D 0;
+> > +             return 0;
+> > +     }
+> > +
+> > +     mandatory =3D obj->token_path !=3D NULL;
+> > +     level =3D mandatory ? LIBBPF_WARN : LIBBPF_DEBUG;
+> > +
+> > +     bpffs_path =3D obj->token_path ?: BPF_FS_DEFAULT_PATH;
+> > +     bpffs_fd =3D open(bpffs_path, O_DIRECTORY, O_RDWR);
+> > +     if (bpffs_fd < 0) {
+> > +             err =3D -errno;
+> > +             __pr(level, "object '%s': failed (%d) to open BPF FS moun=
+t at '%s'%s\n",
+> > +                  obj->name, err, bpffs_path,
+> > +                  mandatory ? "" : ", skipping optional step...");
+> > +             return mandatory ? err : 0;
+> > +     }
+> > +
+> > +     token_fd =3D bpf_token_create(bpffs_fd, 0);
+>
+> Did this get tested on older kernels? In that case TOKEN_CREATE will
+> fail with -EINVAL.
 
-If I'm trying to be too clever (or maybe just wrong) or it's pointless,
-I can remove the `opts.error` condition.
+yep, I did actually test, it will generate expected *debug*-level
+"failed to create BPF token" message
 
-Thanks,
-Daniel
+>
+> > +     close(bpffs_fd);
+> > +     if (token_fd < 0) {
+> > +             if (!mandatory && token_fd =3D=3D -ENOENT) {
+> > +                     pr_debug("object '%s': BPF FS at '%s' doesn't hav=
+e BPF token delegation set up, skipping...\n",
+> > +                              obj->name, bpffs_path);
+> > +                     return 0;
+> > +             }
+>
+> Isn't there a case here we should give a warning about?  If BPF_TOKEN_CRE=
+ATE
+> exists and !mandatory, but default BPFFS failed for enomem, or eperm reas=
+ons?
+> If the user reall/y doesn't want tokens here they should maybe override w=
+ith
+> -1 token? My thought is if you have delegations set up then something on =
+the
+> system is trying to configure this and an error might be ok? I'm asking j=
+ust
+> because I paused on it for a bit not sure either way at the moment. I mig=
+ht
+> imagine a lazy program not specifying the default bpffs, but also really
+> thinking its going to get a valid token.
+
+Interesting perspective! I actually came from the direction that BPF
+token is not really all that common and expected thing, and so in
+majority of cases (at least for some time) we won't be expecting to
+have BPF FS with delegation options. So emitting a warning that
+"something something BPF token failed" would be disconcerting to most
+users.
+
+What's the worst that would happen if BPF token was expected but we
+failed to instantiate it? You'll get a BPF object load failure with
+-EPERM, so it will be a pretty clear signal that whatever delegation
+was supposed to happen didn't happen.
+
+Also, if a user wants a BPF token for sure, they can explicitly set
+bpf_token_path =3D "/sys/fs/bpf" and then it becomes mandatory.
+
+So tl;dr, my perspective is that most users won't know or care about
+BPF tokens. If sysadmin set up BPF FS correctly, it should just work
+without the BPF application being aware. But for those rare cases
+where a BPF token is expected and necessary, explicit bpf_token_path
+or bpf_token_fd is the way to fail early, if something is not set up
+the way it is expected.
+
+>
+>
+> > +             __pr(level, "object '%s': failed (%d) to create BPF token=
+ from '%s'%s\n",
+> > +                  obj->name, token_fd, bpffs_path,
+> > +                  mandatory ? "" : ", skipping optional step...");
+> > +             return mandatory ? token_fd : 0;
+> > +     }
+> > +
+> > +     obj->feat_cache =3D calloc(1, sizeof(*obj->feat_cache));
+> > +     if (!obj->feat_cache) {
+> > +             close(token_fd);
+> > +             return -ENOMEM;
+> > +     }
+> > +
+> > +     obj->token_fd =3D token_fd;
+> > +     obj->feat_cache->token_fd =3D token_fd;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> >  static int
+> >  bpf_object__probe_loading(struct bpf_object *obj)
+> >  {
+> > @@ -4601,6 +4664,7 @@ bpf_object__probe_loading(struct bpf_object *obj)
+> >               BPF_EXIT_INSN(),
+> >       };
+> >       int ret, insn_cnt =3D ARRAY_SIZE(insns);
+> > +     LIBBPF_OPTS(bpf_prog_load_opts, opts, .token_fd =3D obj->token_fd=
+);
+> >
+> >       if (obj->gen_loader)
+> >               return 0;
+> > @@ -4610,9 +4674,9 @@ bpf_object__probe_loading(struct bpf_object *obj)
+> >               pr_warn("Failed to bump RLIMIT_MEMLOCK (err =3D %d), you =
+might need to do it explicitly!\n", ret);
+> >
+> >       /* make sure basic loading works */
+> > -     ret =3D bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL", i=
+nsns, insn_cnt, NULL);
+> > +     ret =3D bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, NULL, "GPL", i=
+nsns, insn_cnt, &opts);
+> >       if (ret < 0)
+> > -             ret =3D bpf_prog_load(BPF_PROG_TYPE_TRACEPOINT, NULL, "GP=
+L", insns, insn_cnt, NULL);
+> > +             ret =3D bpf_prog_load(BPF_PROG_TYPE_TRACEPOINT, NULL, "GP=
+L", insns, insn_cnt, &opts);
+> >       if (ret < 0) {
+> >               ret =3D errno;
+> >               cp =3D libbpf_strerror_r(ret, errmsg, sizeof(errmsg));
+> > @@ -4635,6 +4699,9 @@ bool kernel_supports(const struct bpf_object *obj=
+, enum kern_feature_id feat_id)
+> >                */
+> >               return true;
+> >
+> > +     if (obj->token_fd)
+> > +             return feat_supported(obj->feat_cache, feat_id);
+>
+> OK that answers feat_supported() non null from earlier patch. Just
+> was reading in order.
+>
+
+yep, no worries, that's what I assumed :)
+
+> > +
+> >       return feat_supported(NULL, feat_id);
+> >  }
+>
+> ...
+>
+> >       btf_fd =3D bpf_object__btf_fd(obj);
+> > @@ -7050,10 +7119,10 @@ static int bpf_object_init_progs(struct bpf_obj=
+ect *obj, const struct bpf_object
+> >  static struct bpf_object *bpf_object_open(const char *path, const void=
+ *obj_buf, size_t obj_buf_sz,
+> >                                         const struct bpf_object_open_op=
+ts *opts)
+> >  {
+> > -     const char *obj_name, *kconfig, *btf_tmp_path;
+> > +     const char *obj_name, *kconfig, *btf_tmp_path, *token_path;
+> >       struct bpf_object *obj;
+> >       char tmp_name[64];
+> > -     int err;
+> > +     int err, token_fd;
+> >       char *log_buf;
+> >       size_t log_size;
+> >       __u32 log_level;
+> > @@ -7087,6 +7156,20 @@ static struct bpf_object *bpf_object_open(const =
+char *path, const void *obj_buf,
+> >       if (log_size && !log_buf)
+> >               return ERR_PTR(-EINVAL);
+> >
+> > +     token_path =3D OPTS_GET(opts, bpf_token_path, NULL);
+> > +     token_fd =3D OPTS_GET(opts, bpf_token_fd, -1);
+> > +     /* non-empty token path can't be combined with invalid token FD *=
+/
+> > +     if (token_path && token_path[0] !=3D '\0' && token_fd < 0)
+> > +             return ERR_PTR(-EINVAL);
+> > +     if (token_path && token_path[0] =3D=3D '\0') {
+> > +             /* empty token path can't be combined with valid token FD=
+ */
+> > +             if (token_fd > 0)
+> > +                     return ERR_PTR(-EINVAL);
+> > +             /* empty token_path is equivalent to invalid token_fd */
+> > +             token_path =3D NULL;
+> > +             token_fd =3D -1;
+> > +     }
+> > +
+> >       obj =3D bpf_object__new(path, obj_buf, obj_buf_sz, obj_name);
+> >       if (IS_ERR(obj))
+> >               return obj;
+> > @@ -7095,6 +7178,23 @@ static struct bpf_object *bpf_object_open(const =
+char *path, const void *obj_buf,
+> >       obj->log_size =3D log_size;
+> >       obj->log_level =3D log_level;
+> >
+> > +     obj->token_fd =3D token_fd <=3D 0 ? token_fd : dup_good_fd(token_=
+fd);
+> > +     if (token_fd > 0 && obj->token_fd < 0) {
+> > +             err =3D -errno;
+> > +             goto out;
+> > +     }
+> > +     if (token_path) {
+> > +             if (strlen(token_path) >=3D PATH_MAX) {
+>
+> small nit, might be cleaner to just have this up where the other sanity
+> checks are done? e.g.
+>
+>    `token_path[0] !=3D` `\0` && token_path(token_path) < PATH_MAX`
+>
+> just to abort earlier. But not sure I care much.
+
+yep, makes sense, I'll move ENAMETOOLONG up
+
+>
+> > +                     err =3D -ENAMETOOLONG;
+> > +                     goto out;
+> > +             }
+> > +             obj->token_path =3D strdup(token_path);
+> > +             if (!obj->token_path) {
+> > +                     err =3D -ENOMEM;
+> > +                     goto out;
+> > +             }
+> > +     }
+> > +
+> >       btf_tmp_path =3D OPTS_GET(opts, btf_custom_path, NULL);
+> >       if (btf_tmp_path) {
+> >               if (strlen(btf_tmp_path) >=3D PATH_MAX) {
+
+[...]
 
