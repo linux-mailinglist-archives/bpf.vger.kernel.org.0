@@ -1,88 +1,124 @@
-Return-Path: <bpf+bounces-17572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17573-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AC3580F5A0
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 19:45:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57BA180F5F1
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 20:00:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBE251C20C6C
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 18:45:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 87D6F1C20DD1
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 19:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DF75FF17;
-	Tue, 12 Dec 2023 18:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B6EC8004F;
+	Tue, 12 Dec 2023 19:00:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VghkGZ4q"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="fJWcEKim";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cbVgQ2bD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0286D10F5
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 18:45:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95F9CC433CA
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 18:45:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702406720;
-	bh=XjyTKUdgW3EiE27WtUS33647UzbGgC30E2uPAZW3u00=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=VghkGZ4q2md/c6uOKmnpuQbTzj9RQQEwZsqPW/Tsb8LAhC7whQbk4FGmWIw59EFyS
-	 1RTHSIs9MGa5cY7SNe/Xjglv+jrUtJOF7/Ib4GEsdhAIEC9QdF4vlC7mpOSPPyD8Bo
-	 tk9KsZWlkoQRudexehC2AGtRAeeGVpkhNGds/EtzXC8svS/7ot0WpSSJm1MlG+YetT
-	 cq9Vfospbx5LT7q6PIJuyxBmMrYDxrAzcG72ETPguoEJwwbopcYWmiVGHrm5lcejW5
-	 VCUtVRLP32W7UX8bqFJm+kK/Gjh7q2Qk7LiFjIBtVY7Y9gWRYN6CbQnaFnJ4xVZZS7
-	 4YLWo65iFMpxA==
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so8492359a12.2
-        for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 10:45:20 -0800 (PST)
-X-Gm-Message-State: AOJu0YzkowjHdnXzphRDyJWms4icOb+j1eK62u0f2NrItIh5b3pFrk2k
-	iwk225Wy7oG2y+Pz58vx4NJFt6p1ZBYLTw8vQpOlRQ==
-X-Google-Smtp-Source: AGHT+IEQNCvXMz5noH2o9RYFzukaov7TXCVPVRFqA0hRV8k12WB0736VrSbsfjg506r+MQ5dQQriDEhOnewHoNbARqE=
-X-Received: by 2002:a50:9b55:0:b0:54c:6b61:4352 with SMTP id
- a21-20020a509b55000000b0054c6b614352mr2417239edj.18.1702406719067; Tue, 12
- Dec 2023 10:45:19 -0800 (PST)
+Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA647F5;
+	Tue, 12 Dec 2023 11:00:19 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailnew.west.internal (Postfix) with ESMTP id DC7D12B00324;
+	Tue, 12 Dec 2023 14:00:16 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 12 Dec 2023 14:00:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1702407616;
+	 x=1702414816; bh=mkQgKltTP5G+DPU34il+RvyvNIX4AiTMdSuv1wgyTCs=; b=
+	fJWcEKimbASXhvV2Y/u0MJ78svo+WEkATOLi4dOjMTJl34I+28RO6i2vxF8vBxXh
+	jsbmdZ4CZZ3oJ0xuCFVmtmz0iN6NZN490VBweoWK0dziivbpcE0EtUMAeEIciL/R
+	+D+IlrTyEMR032DiKExWbeQLGl0EHepFzcM9oN/2/ylsF8jJc6Pev2gO1ky9dcWu
+	ECeZJ1ERoohvZvfHjllChUutXddvQlzoGvGUGkTHZPhpBQNlMVNxiVb9F51l4EVl
+	xpmyxS4Ve70UewVgveHc5z95UkFMU7l7BXAxJXvH2MkCGbWlYVI423oPKYmwb5MW
+	3ojHrD+5mip5w6kwCQ4FOA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702407616; x=
+	1702414816; bh=mkQgKltTP5G+DPU34il+RvyvNIX4AiTMdSuv1wgyTCs=; b=c
+	bVgQ2bDrismRt/s9rEJ7L8njdhlUd9ehE9q2nUNlkqM5tU0Zdb28XirF+GNNFJgK
+	QGD6CAdH4+xkV+I2dGTf6x1mnzvFqB8eCvv3nw30VMPppuU1SlTqvzcpBpWQC+RV
+	rtN+rqLwlhFtmAF69aVziglCNyeSmhNjq8w8jPiHu7c6a0zwJSymjnxekk97tOd5
+	1ry6hUEkPvJ6//Fxbvjl9ne61C4CL6pzlahAnbAGJ6k/rvR/HP4/YJvN+TgMwGN0
+	XU2PeD7N46LosjFryxWsg4qkwDIfnxMGZbGttHLHA2wuRmHBqAf561NeXE5z3LLD
+	jTX/JrIU85031qi8sBtQA==
+X-ME-Sender: <xms:v614ZdNfI9-uA0PK0QDYer2BsPagbyWLZCLz-v2dCoFjaA2F_-kHYA>
+    <xme:v614Zf96oWJysoaTeYx3VOho0uu_GXGvTdUiKCg6hUg1c_NRjRx60kKgG3xKXVuor
+    B7vXwkNK1NZnJUhKQ>
+X-ME-Received: <xmr:v614ZcTQto9pOgbB7OCKQqX68JRxvTP1wQAkxjjEZgeN09Sj-U_PjPe-QiTlTq83lRqWQ4mNryKm7on5Y-FsdtiWsuAOygvqn5Cd>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelgedguddujecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:v614ZZtn-iEtijrnnfd_gIrwezZGZLhKx2rX_xMDQZJme2y_5j0sxQ>
+    <xmx:v614ZVcj25nt5Bc0ewmlh-SqrlLvJuSRuPVIXROMiUuMHGU_J-2evg>
+    <xmx:v614ZV3SKOsS48sIkeGi0PTU1DkrmTd1ab3KcGdPw9tOTPey6q-TOA>
+    <xmx:wK14Zetkyeho1ahXdowo8kPL8mJXZyr8HfYclHZYOVWMJv1dO0NaKiku2s0>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 12 Dec 2023 14:00:13 -0500 (EST)
+Date: Tue, 12 Dec 2023 12:00:12 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eyal Birger <eyal.birger@gmail.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Steffen Klassert <steffen.klassert@secunet.com>, antony.antony@secunet.com, 
+	Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, devel@linux-ipsec.org
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
+ bpf_xdp_get_xfrm_state()
+Message-ID: <kj5zxyxf3edmz3uyjanxukdiysagu5f6mkneq64yyqgfzp4lsd@7glieqovplgd>
+References: <cover.1702325874.git.dxu@dxuuu.xyz>
+ <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
+ <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
+ <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
+ <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+ <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
+ <CAADnVQKpXpqMr9jmc8RKLcL822ir0wA7bEN2h6dEo=6Y60qgWQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXM3IHHXpNY9y82a@google.com>
-In-Reply-To: <ZXM3IHHXpNY9y82a@google.com>
-From: KP Singh <kpsingh@kernel.org>
-Date: Tue, 12 Dec 2023 19:45:08 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ50OoQMcqC5ywVsZxNYhRaVPovQ_ecODctc9v-v=Uc7eQ@mail.gmail.com>
-Message-ID: <CACYkzJ50OoQMcqC5ywVsZxNYhRaVPovQ_ecODctc9v-v=Uc7eQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: add small subset of SECURITY_PATH hooks to
- BPF sleepable_lsm_hooks list
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: ast@kernel.org, andrii@kernel.org, revest@chromium.org, 
-	jackmanb@chromium.org, yonghong.song@linux.dev, bpf@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAADnVQKpXpqMr9jmc8RKLcL822ir0wA7bEN2h6dEo=6Y60qgWQ@mail.gmail.com>
 
-On Fri, Dec 8, 2023 at 4:32=E2=80=AFPM Matt Bobrowski <mattbobrowski@google=
-.com> wrote:
->
-> security_path_* based LSM hooks appear to be generally missing from
-> the sleepable_lsm_hooks list. Initially add a small subset of them to
-> the preexisting sleepable_lsm_hooks list so that sleepable BPF helpers
-> like bpf_d_path() can be used from sleepable BPF LSM based programs.
->
-> The security_path_* hooks added in this patch are similar to the
-> security_inode_* counterparts that already exist in the
-> sleepable_lsm_hooks list, and are called in roughly similar points and
-> contexts. Presumably, making them OK to be also annotated as
-> sleepable.
->
-> Building a kernel with DEBUG_ATOMIC_SLEEP options enabled and running
-> reasonable workloads stimulating activity that would be intercepted by
-> such security hooks didn't show any splats.
->
-> Notably, I haven't added all the security_path_* LSM hooks that are
-> available as I don't need them at this point in time.
->
-> Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
+On Tue, Dec 12, 2023 at 08:44:42AM -0800, Alexei Starovoitov wrote:
+> On Tue, Dec 12, 2023 at 8:17 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> >
+> > If you don't mind (and there no more comments), I would prefer to send a
+> > follow up fixing the nits in this revision. So that I stop blasting the
+> > list (as well as people who may not be as concerned with these details).
+> 
+> Resending patches is little effort while follow up patches
+> double the commits, more code churn, increase in code reviews, etc.
+> Always address feedback by resending.
 
-Acked-by: KP Singh <kpsingh@kernel.org>
+Got it; will keep that in mind.
+
+Thanks,
+Daniel
 
