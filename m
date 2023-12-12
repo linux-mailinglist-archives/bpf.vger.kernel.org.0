@@ -1,521 +1,159 @@
-Return-Path: <bpf+bounces-17514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 860EC80EAB9
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 12:44:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E2FA80EBB8
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 13:25:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 073BD1F21E6F
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 11:44:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 535AC1F213CD
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 12:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AB25DF09;
-	Tue, 12 Dec 2023 11:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E130A5EE79;
+	Tue, 12 Dec 2023 12:25:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="HTeGupEZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 85A35CD;
-	Tue, 12 Dec 2023 03:44:14 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9426A143D;
-	Tue, 12 Dec 2023 03:45:00 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 31EF83F762;
-	Tue, 12 Dec 2023 03:44:09 -0800 (PST)
-Message-ID: <2e2f9859-a53f-f7a2-1e2b-6a3e0f2ed7db@arm.com>
-Date: Tue, 12 Dec 2023 11:44:05 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2061.outbound.protection.outlook.com [40.107.96.61])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62AECF7;
+	Tue, 12 Dec 2023 04:25:39 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RKq3zlj5S4iCpO418DUSLR5VmI8iFb21MYYdlux1UPrRN3mVE/TRusXiZWNIqrrOgK2mG5/i5zHStWICBc68OSBIy0q9nnqfczhWPawbEATnz7ldQvRWbh643K7ujRBXykiV5TquIDZeSiUgy67ZlsA0ReBfrZpA0xlRiY82vrtR41taqVjkNpG2BJ19KVyC9+OC1WI5ibNXXWibDCJXrMIZ2ezgk3CFEG8Iu6fcv2jzgd0C3yHA9B65NdE/eH42z/qRobiA078wVJtZIcWM3ZwNUffK3HrSMSTpUfOCAEhVbgORPtfdthE4G0vieIIOh5u+7AMVSfuZYCAmdlcD0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/NrrWAlQ7ILJL5VW/t+qCUR/J5lO8tq4fOuYTDBK4v4=;
+ b=cmv2kkKWJGeLWTMFShpQHNSSj9uWaw2CwKlzhj3BB6gj+cpJCVOqd4FOrmvxvM3zIdniGzHLfyu/S1bVTvnfc6q6E4FPc6YfOWIfdp3XpWDJk/AZj69986K0ogmAljCnFAdelEsEKS3sCk0wP60eiVB8cWIZAW1fGgSdLWHqxKkoxOVwi0atXw2ZqR2VA2oqUhdz+7fmmFXS885yKOspZGiXsPYOTE5AK0Ba6TKN+IZilgK2AbU6Zczi7ysiEV5G4ah9Rhowou5KMVXD04JpcbaKF3/pWeUBBU0XfDRvmDAIDizzyVHL/XmsXr4YVl2UUnTc/ae7EY7ahCMYDrIXoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/NrrWAlQ7ILJL5VW/t+qCUR/J5lO8tq4fOuYTDBK4v4=;
+ b=HTeGupEZqN+e3/D/wlg9RYpVk+9yy88BlwcOdJWm7DOPWkOuL2GlzDSQdyRcW+SI/uiQJdo1+CJew5lrnlmyLb0qlGBQ6fjZnucCCXrHY2Xp2F3spS6NY9e3X51r9XDkLtOmv3dGtLoDgfm+gaNDjmJPduHSGfWI0rGDlTHgc5Qrz/91C/43+7J/VXZ49cmRvPI+5rurU21covq85ENUCtwmpHDKFRhLkzDPeynHB5NJMQTghf2JF6lEyPvgsZzWfimqaBsFvJ0A0+HD+Tp2p/A+tFX7kU35t/ZltAcRr9L6AyhTainuI4bulU4v68Azqy8WVFlPmJngz1P1y7vEMg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by DM4PR12MB6256.namprd12.prod.outlook.com (2603:10b6:8:a3::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7091.26; Tue, 12 Dec 2023 12:25:36 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
+ 12:25:36 +0000
+Date: Tue, 12 Dec 2023 08:25:35 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeelb@google.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
+ provider
+Message-ID: <20231212122535.GA3029808@nvidia.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231208005250.2910004-9-almasrymina@google.com>
+X-ClientProxiedBy: BL1PR13CA0085.namprd13.prod.outlook.com
+ (2603:10b6:208:2b8::30) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 04/14] libperf cpumap: Replace usage of
- perf_cpu_map__new(NULL)
-Content-Language: en-US
-To: Ian Rogers <irogers@google.com>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-5-irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
- John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>,
- Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=c3=a9_Almeida?=
- <andrealmeid@igalia.com>, Kan Liang <kan.liang@linux.intel.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
- Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
- Andrew Jones <ajones@ventanamicro.com>,
- Alexandre Ghiti <alexghiti@rivosinc.com>, Atish Patra <atishp@rivosinc.com>,
- "Steinar H. Gunderson" <sesse@google.com>,
- Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>,
- Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>,
- Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>,
- Nick Desaulniers <ndesaulniers@google.com>,
- Huacai Chen <chenhuacai@kernel.org>, Yanteng Si <siyanteng@loongson.cn>,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- bpf@vger.kernel.org
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <20231129060211.1890454-5-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|DM4PR12MB6256:EE_
+X-MS-Office365-Filtering-Correlation-Id: 31487c9e-7413-40e2-fc23-08dbfb0d71c3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	dr3LnQeG7pKa2o1xRmhtmeZvzytY3pzh+BCptlMfPF3UetOkAOdQiRRGXXEnBUlL2FCMm8A45MVcu/Zal4J/kgCSpUENIlmaT2DbH/FOZycE++0aehcKWmyGL9r1LIG901qINk2xywrZ688YnX1dE8sOx0hUz8TpetZ+Rtnvk5Np/3tuK5FPwEIZG3/SVgrKcYAba4eA9JPMfTcPwI3CI3iTiLornqivhKxktL6u0si32e/F0HUPAbdw4iE0KCwfa5xf3/fWgOhldrkdiLqahwdnHwsctXcJwH8iLSFibvqXani6HhJTudhdRwyp2M9jWTNnykqGS5lkdpVq+u7FaGWu/Q+Pw2WLEb1qTBe3ZrGR0wQe/SuF21tSmMS/gb0lkDNCuG+Ya3JVPX+hHdojftmOY9pgflGayc+A9NCyYCbHJm45xQY+bcpqNZsiRlU0w9MuSjrfyAO45IY3RrXCbwb4uM3L1r6L6MEmhqko8UTb++c/Q+n7NM8QTmh2WmoKmlhi7nWUq3ikUAVJAjxk9wAC2yPfFAGzC/mZmYjaKqo6r0l8EJfzCO4UzBf96IZM
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(346002)(366004)(136003)(39860400002)(230922051799003)(451199024)(1800799012)(64100799003)(186009)(26005)(6506007)(6512007)(2616005)(1076003)(5660300002)(4326008)(8936002)(7406005)(8676002)(41300700001)(7416002)(4744005)(2906002)(6486002)(478600001)(38100700002)(316002)(6916009)(66476007)(54906003)(66556008)(66946007)(33656002)(36756003)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?FNzvK+ZPaUM4zj+4pHalQiAz7Hb9dYLj2YtCoSZw4B82oIueziOpU3RHpqZY?=
+ =?us-ascii?Q?0QW0Ycjp1c5NL+dLkHzwC9F4m8SCRf3rU8Antxatx7bn4e242n2vioDRex0T?=
+ =?us-ascii?Q?e8IexuY08eR5iExMWAnM8z3ZtK+eZVw3EzKozvx7VK6yvJRvDlR/sVLkot4l?=
+ =?us-ascii?Q?nibKfJHzwcUmLizjCn6XS2rkb/qo33Q0jcuytw/mz39qgx9aAaZdIWQQz4lY?=
+ =?us-ascii?Q?uzyxkyu+4iaM+Ixm2FQPVHs7o99dlDWkJaU49HfaXNngX7mIJ/3LYBraTeqF?=
+ =?us-ascii?Q?9+6wPw62EKu7VRo7w//svTA3fHCmo7cX6UgNSC+Ljmioam4+BCvEuODG82Ai?=
+ =?us-ascii?Q?FLuU2x34+M1yq1sOFTC96O3MDgtfAcq0jnBxM428I1J+PioHQLKqjVWhk6Xw?=
+ =?us-ascii?Q?WY79EY9KOV4V2VUv+fepzxqctqM5vSNKSG7Uwv1Wf3BevrgEl3mRfaA4ZrzK?=
+ =?us-ascii?Q?dBcB+FaB9hZDHbw5gs3+eKRqbA1EMpgC5plRJh5M8qipNialIxP+0tZdnPV/?=
+ =?us-ascii?Q?cfcLR84KlBs7snZb1pJa0p3aj9QIZM8cdyRtjwYGfsF3Q9PK5tgZSkFtWLmG?=
+ =?us-ascii?Q?Dlg8I9b6gbPWDd8GoeH6Wt8pVI0LuKxzFQ/5NCTddajmFqh3Ltzfaus5QQ9X?=
+ =?us-ascii?Q?CiRb6ymtM1hTlo/h3AB+XAk5gezU2rubZ7IVV7PPxQ6tWRYn6NEGIIhwJ6V1?=
+ =?us-ascii?Q?AW8yvNQkVUieCYHx1qUhH2jviNXlBjnpCeU/e7W+cFABU5Bk5BH0uDgODVTb?=
+ =?us-ascii?Q?e0SoBcysDyirqGWh2Ktkw2eeIHbcO2JFy4rFthxhwEUnBvNgDCozHe4hE/54?=
+ =?us-ascii?Q?UNZBBOGhiIcQDSjmfXBSxNevKOeNvhRSslTeK9OAdhsdXvv1uTLnXDFkZsVw?=
+ =?us-ascii?Q?5QrAkkaBwIn6W//kWY08HRuS+GSypDyxDwjeq3ZKzTUTXa6AD4BUCXIWeSbZ?=
+ =?us-ascii?Q?8rMg1UI2s4gn6o20hras3fDZtY1MA699v2tjvOtvrWA2wAI3+e3VGqVt5a7M?=
+ =?us-ascii?Q?l223Wgm5tg/JcJGd01qP12LHBGPyby0PAEXak+5kKYypgbAOg0EvJC/u7Igu?=
+ =?us-ascii?Q?V+vSFEg1lOSw4F5xcrG72ARg3o0gtIG/cWhSbcDqu+Up1SoVapr2DPXEqwgr?=
+ =?us-ascii?Q?LBVpgV4kS0TgNYfXvah0QlaokksmxfA+GrNkgQNLLSkeHS174qQFjyl8KACb?=
+ =?us-ascii?Q?M2hK4awM+r5Jj8mVDb7ELws+/GI6KWDWBLnqXSFZXrEHXIFAdnMY2+qYGhlf?=
+ =?us-ascii?Q?2UAcapyFU0MTjyrcEjUsD/Ce43ePmeR/gB5vVzLZZyntM2FNvd6konGf+ydl?=
+ =?us-ascii?Q?A/JjWCtdZXfbYCJM0tSYIMRA+fjbEqgjtQQg0wssenlQXKy/FVXbs3AbXm5c?=
+ =?us-ascii?Q?ut0iyXixtF22UUj9q79DUs7aMSWgddRHOOkK4TOWCfZpTXy2EP4ULJ+YsXrV?=
+ =?us-ascii?Q?OQ9PY0Z66D3TUXiGx4tq59++rdxmJWYLf/BBiuRYiSzGjyt8iOGkg9ya4zY1?=
+ =?us-ascii?Q?2b7717rZDdeCOncf4MkrSTBqNQBKsQeIZkP/j6W3/wxD74zjF6zLsHyph9+X?=
+ =?us-ascii?Q?A9p4O3FI0RbMbdtRhcxRw999f0Okszs2zeZ8TL8B?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31487c9e-7413-40e2-fc23-08dbfb0d71c3
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 12:25:36.7674
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3Q5gs0AcAc1Bx/5MQ0/EIYWiX/LAV6vqMpVkY4v0SjKi8VYIOm6Wy2akKsUVRlTX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6256
 
+On Thu, Dec 07, 2023 at 04:52:39PM -0800, Mina Almasry wrote:
 
+> +static inline struct page_pool_iov *page_to_page_pool_iov(struct page *page)
+> +{
+> +	if (page_is_page_pool_iov(page))
+> +		return (struct page_pool_iov *)((unsigned long)page & ~PP_IOV);
+> +
+> +	DEBUG_NET_WARN_ON_ONCE(true);
+> +	return NULL;
+> +}
 
-On 29/11/2023 06:02, Ian Rogers wrote:
-> Passing NULL to perf_cpu_map__new performs
-> perf_cpu_map__new_online_cpus, just directly call
-> perf_cpu_map__new_online_cpus to be more intention revealing.
+We already asked not to do this, please do not allocate weird things
+can call them 'struct page' when they are not. It undermines the
+maintainability of the mm to have things mis-typed like
+this. Introduce a new type for your thing so the compiler can check it
+properly.
 
-If it's not too much effort I would make perf_cpu_map__new() assert if
-it's called with NULL now, to avoid any future divergance or hidden
-behavior again.
-
-Either way:
-
-Reviewed-by: James Clark <james.clark@arm.com>
-
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/lib/perf/Documentation/examples/sampling.c  | 2 +-
->  tools/lib/perf/Documentation/libperf-sampling.txt | 2 +-
->  tools/lib/perf/evlist.c                           | 2 +-
->  tools/lib/perf/tests/test-evlist.c                | 4 ++--
->  tools/lib/perf/tests/test-evsel.c                 | 2 +-
->  tools/perf/arch/arm/util/cs-etm.c                 | 6 +++---
->  tools/perf/arch/arm64/util/header.c               | 2 +-
->  tools/perf/bench/epoll-ctl.c                      | 2 +-
->  tools/perf/bench/epoll-wait.c                     | 2 +-
->  tools/perf/bench/futex-hash.c                     | 2 +-
->  tools/perf/bench/futex-lock-pi.c                  | 2 +-
->  tools/perf/bench/futex-requeue.c                  | 2 +-
->  tools/perf/bench/futex-wake-parallel.c            | 2 +-
->  tools/perf/bench/futex-wake.c                     | 2 +-
->  tools/perf/builtin-ftrace.c                       | 2 +-
->  tools/perf/tests/code-reading.c                   | 2 +-
->  tools/perf/tests/keep-tracking.c                  | 2 +-
->  tools/perf/tests/mmap-basic.c                     | 2 +-
->  tools/perf/tests/openat-syscall-all-cpus.c        | 2 +-
->  tools/perf/tests/perf-time-to-tsc.c               | 2 +-
->  tools/perf/tests/switch-tracking.c                | 2 +-
->  tools/perf/tests/topology.c                       | 2 +-
->  tools/perf/util/bpf_counter.c                     | 2 +-
->  tools/perf/util/cpumap.c                          | 2 +-
->  tools/perf/util/cputopo.c                         | 2 +-
->  tools/perf/util/evlist.c                          | 2 +-
->  tools/perf/util/perf_api_probe.c                  | 4 ++--
->  tools/perf/util/record.c                          | 2 +-
->  28 files changed, 32 insertions(+), 32 deletions(-)
-> 
-> diff --git a/tools/lib/perf/Documentation/examples/sampling.c b/tools/lib/perf/Documentation/examples/sampling.c
-> index 8e1a926a9cfe..bc142f0664b5 100644
-> --- a/tools/lib/perf/Documentation/examples/sampling.c
-> +++ b/tools/lib/perf/Documentation/examples/sampling.c
-> @@ -39,7 +39,7 @@ int main(int argc, char **argv)
->  
->  	libperf_init(libperf_print);
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (!cpus) {
->  		fprintf(stderr, "failed to create cpus\n");
->  		return -1;
-> diff --git a/tools/lib/perf/Documentation/libperf-sampling.txt b/tools/lib/perf/Documentation/libperf-sampling.txt
-> index d6ca24f6ef78..2378980fab8a 100644
-> --- a/tools/lib/perf/Documentation/libperf-sampling.txt
-> +++ b/tools/lib/perf/Documentation/libperf-sampling.txt
-> @@ -97,7 +97,7 @@ In this case we will monitor all the available CPUs:
->  
->  [source,c]
->  --
-> - 42         cpus = perf_cpu_map__new(NULL);
-> + 42         cpus = perf_cpu_map__new_online_cpus();
->   43         if (!cpus) {
->   44                 fprintf(stderr, "failed to create cpus\n");
->   45                 return -1;
-> diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-> index 75f36218fdd9..058e3ff10f9b 100644
-> --- a/tools/lib/perf/evlist.c
-> +++ b/tools/lib/perf/evlist.c
-> @@ -39,7 +39,7 @@ static void __perf_evlist__propagate_maps(struct perf_evlist *evlist,
->  	if (evsel->system_wide) {
->  		/* System wide: set the cpu map of the evsel to all online CPUs. */
->  		perf_cpu_map__put(evsel->cpus);
-> -		evsel->cpus = perf_cpu_map__new(NULL);
-> +		evsel->cpus = perf_cpu_map__new_online_cpus();
->  	} else if (evlist->has_user_cpus && evsel->is_pmu_core) {
->  		/*
->  		 * User requested CPUs on a core PMU, ensure the requested CPUs
-> diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
-> index ab63878bacb9..10f70cb41ff1 100644
-> --- a/tools/lib/perf/tests/test-evlist.c
-> +++ b/tools/lib/perf/tests/test-evlist.c
-> @@ -46,7 +46,7 @@ static int test_stat_cpu(void)
->  	};
->  	int err, idx;
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	__T("failed to create cpus", cpus);
->  
->  	evlist = perf_evlist__new();
-> @@ -350,7 +350,7 @@ static int test_mmap_cpus(void)
->  
->  	attr.config = id;
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	__T("failed to create cpus", cpus);
->  
->  	evlist = perf_evlist__new();
-> diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
-> index a11fc51bfb68..545ec3150546 100644
-> --- a/tools/lib/perf/tests/test-evsel.c
-> +++ b/tools/lib/perf/tests/test-evsel.c
-> @@ -27,7 +27,7 @@ static int test_stat_cpu(void)
->  	};
->  	int err, idx;
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	__T("failed to create cpus", cpus);
->  
->  	evsel = perf_evsel__new(&attr);
-> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-> index c6b7b3066324..77e6663c1703 100644
-> --- a/tools/perf/arch/arm/util/cs-etm.c
-> +++ b/tools/perf/arch/arm/util/cs-etm.c
-> @@ -199,7 +199,7 @@ static int cs_etm_validate_config(struct auxtrace_record *itr,
->  {
->  	int i, err = -EINVAL;
->  	struct perf_cpu_map *event_cpus = evsel->evlist->core.user_requested_cpus;
-> -	struct perf_cpu_map *online_cpus = perf_cpu_map__new(NULL);
-> +	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
->  
->  	/* Set option of each CPU we have */
->  	for (i = 0; i < cpu__max_cpu().cpu; i++) {
-> @@ -536,7 +536,7 @@ cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
->  	int i;
->  	int etmv3 = 0, etmv4 = 0, ete = 0;
->  	struct perf_cpu_map *event_cpus = evlist->core.user_requested_cpus;
-> -	struct perf_cpu_map *online_cpus = perf_cpu_map__new(NULL);
-> +	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
->  
->  	/* cpu map is not empty, we have specific CPUs to work with */
->  	if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
-> @@ -802,7 +802,7 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
->  	u64 nr_cpu, type;
->  	struct perf_cpu_map *cpu_map;
->  	struct perf_cpu_map *event_cpus = session->evlist->core.user_requested_cpus;
-> -	struct perf_cpu_map *online_cpus = perf_cpu_map__new(NULL);
-> +	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
->  	struct cs_etm_recording *ptr =
->  			container_of(itr, struct cs_etm_recording, itr);
->  	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
-> diff --git a/tools/perf/arch/arm64/util/header.c b/tools/perf/arch/arm64/util/header.c
-> index a2eef9ec5491..97037499152e 100644
-> --- a/tools/perf/arch/arm64/util/header.c
-> +++ b/tools/perf/arch/arm64/util/header.c
-> @@ -57,7 +57,7 @@ static int _get_cpuid(char *buf, size_t sz, struct perf_cpu_map *cpus)
->  
->  int get_cpuid(char *buf, size_t sz)
->  {
-> -	struct perf_cpu_map *cpus = perf_cpu_map__new(NULL);
-> +	struct perf_cpu_map *cpus = perf_cpu_map__new_online_cpus();
->  	int ret;
->  
->  	if (!cpus)
-> diff --git a/tools/perf/bench/epoll-ctl.c b/tools/perf/bench/epoll-ctl.c
-> index 6bfffe83dde9..d3db73dac66a 100644
-> --- a/tools/perf/bench/epoll-ctl.c
-> +++ b/tools/perf/bench/epoll-ctl.c
-> @@ -330,7 +330,7 @@ int bench_epoll_ctl(int argc, const char **argv)
->  	act.sa_sigaction = toggle_done;
->  	sigaction(SIGINT, &act, NULL);
->  
-> -	cpu = perf_cpu_map__new(NULL);
-> +	cpu = perf_cpu_map__new_online_cpus();
->  	if (!cpu)
->  		goto errmem;
->  
-> diff --git a/tools/perf/bench/epoll-wait.c b/tools/perf/bench/epoll-wait.c
-> index cb5174b53940..06bb3187660a 100644
-> --- a/tools/perf/bench/epoll-wait.c
-> +++ b/tools/perf/bench/epoll-wait.c
-> @@ -444,7 +444,7 @@ int bench_epoll_wait(int argc, const char **argv)
->  	act.sa_sigaction = toggle_done;
->  	sigaction(SIGINT, &act, NULL);
->  
-> -	cpu = perf_cpu_map__new(NULL);
-> +	cpu = perf_cpu_map__new_online_cpus();
->  	if (!cpu)
->  		goto errmem;
->  
-> diff --git a/tools/perf/bench/futex-hash.c b/tools/perf/bench/futex-hash.c
-> index 2005a3fa3026..0c69d20efa32 100644
-> --- a/tools/perf/bench/futex-hash.c
-> +++ b/tools/perf/bench/futex-hash.c
-> @@ -138,7 +138,7 @@ int bench_futex_hash(int argc, const char **argv)
->  		exit(EXIT_FAILURE);
->  	}
->  
-> -	cpu = perf_cpu_map__new(NULL);
-> +	cpu = perf_cpu_map__new_online_cpus();
->  	if (!cpu)
->  		goto errmem;
->  
-> diff --git a/tools/perf/bench/futex-lock-pi.c b/tools/perf/bench/futex-lock-pi.c
-> index 092cbd52db82..7a4973346180 100644
-> --- a/tools/perf/bench/futex-lock-pi.c
-> +++ b/tools/perf/bench/futex-lock-pi.c
-> @@ -172,7 +172,7 @@ int bench_futex_lock_pi(int argc, const char **argv)
->  	if (argc)
->  		goto err;
->  
-> -	cpu = perf_cpu_map__new(NULL);
-> +	cpu = perf_cpu_map__new_online_cpus();
->  	if (!cpu)
->  		err(EXIT_FAILURE, "calloc");
->  
-> diff --git a/tools/perf/bench/futex-requeue.c b/tools/perf/bench/futex-requeue.c
-> index c0035990a33c..d9ad736c1a3e 100644
-> --- a/tools/perf/bench/futex-requeue.c
-> +++ b/tools/perf/bench/futex-requeue.c
-> @@ -174,7 +174,7 @@ int bench_futex_requeue(int argc, const char **argv)
->  	if (argc)
->  		goto err;
->  
-> -	cpu = perf_cpu_map__new(NULL);
-> +	cpu = perf_cpu_map__new_online_cpus();
->  	if (!cpu)
->  		err(EXIT_FAILURE, "cpu_map__new");
->  
-> diff --git a/tools/perf/bench/futex-wake-parallel.c b/tools/perf/bench/futex-wake-parallel.c
-> index 5ab0234d74e6..b66df553e561 100644
-> --- a/tools/perf/bench/futex-wake-parallel.c
-> +++ b/tools/perf/bench/futex-wake-parallel.c
-> @@ -264,7 +264,7 @@ int bench_futex_wake_parallel(int argc, const char **argv)
->  			err(EXIT_FAILURE, "mlockall");
->  	}
->  
-> -	cpu = perf_cpu_map__new(NULL);
-> +	cpu = perf_cpu_map__new_online_cpus();
->  	if (!cpu)
->  		err(EXIT_FAILURE, "calloc");
->  
-> diff --git a/tools/perf/bench/futex-wake.c b/tools/perf/bench/futex-wake.c
-> index 18a5894af8bb..690fd6d3da13 100644
-> --- a/tools/perf/bench/futex-wake.c
-> +++ b/tools/perf/bench/futex-wake.c
-> @@ -149,7 +149,7 @@ int bench_futex_wake(int argc, const char **argv)
->  		exit(EXIT_FAILURE);
->  	}
->  
-> -	cpu = perf_cpu_map__new(NULL);
-> +	cpu = perf_cpu_map__new_online_cpus();
->  	if (!cpu)
->  		err(EXIT_FAILURE, "calloc");
->  
-> diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
-> index ac2e6c75f912..eb30c8eca488 100644
-> --- a/tools/perf/builtin-ftrace.c
-> +++ b/tools/perf/builtin-ftrace.c
-> @@ -333,7 +333,7 @@ static int set_tracing_func_irqinfo(struct perf_ftrace *ftrace)
->  
->  static int reset_tracing_cpu(void)
->  {
-> -	struct perf_cpu_map *cpumap = perf_cpu_map__new(NULL);
-> +	struct perf_cpu_map *cpumap = perf_cpu_map__new_online_cpus();
->  	int ret;
->  
->  	ret = set_tracing_cpumask(cpumap);
-> diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
-> index 8620146d0378..7a3a7bbbec71 100644
-> --- a/tools/perf/tests/code-reading.c
-> +++ b/tools/perf/tests/code-reading.c
-> @@ -610,7 +610,7 @@ static int do_test_code_reading(bool try_kcore)
->  		goto out_put;
->  	}
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (!cpus) {
->  		pr_debug("perf_cpu_map__new failed\n");
->  		goto out_put;
-> diff --git a/tools/perf/tests/keep-tracking.c b/tools/perf/tests/keep-tracking.c
-> index 8f4f9b632e1e..5a3b2bed07f3 100644
-> --- a/tools/perf/tests/keep-tracking.c
-> +++ b/tools/perf/tests/keep-tracking.c
-> @@ -81,7 +81,7 @@ static int test__keep_tracking(struct test_suite *test __maybe_unused, int subte
->  	threads = thread_map__new(-1, getpid(), UINT_MAX);
->  	CHECK_NOT_NULL__(threads);
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	CHECK_NOT_NULL__(cpus);
->  
->  	evlist = evlist__new();
-> diff --git a/tools/perf/tests/mmap-basic.c b/tools/perf/tests/mmap-basic.c
-> index 886a13a77a16..012c8ae439fd 100644
-> --- a/tools/perf/tests/mmap-basic.c
-> +++ b/tools/perf/tests/mmap-basic.c
-> @@ -52,7 +52,7 @@ static int test__basic_mmap(struct test_suite *test __maybe_unused, int subtest
->  		return -1;
->  	}
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (cpus == NULL) {
->  		pr_debug("perf_cpu_map__new\n");
->  		goto out_free_threads;
-> diff --git a/tools/perf/tests/openat-syscall-all-cpus.c b/tools/perf/tests/openat-syscall-all-cpus.c
-> index f3275be83a33..fb114118c876 100644
-> --- a/tools/perf/tests/openat-syscall-all-cpus.c
-> +++ b/tools/perf/tests/openat-syscall-all-cpus.c
-> @@ -37,7 +37,7 @@ static int test__openat_syscall_event_on_all_cpus(struct test_suite *test __mayb
->  		return -1;
->  	}
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (cpus == NULL) {
->  		pr_debug("perf_cpu_map__new\n");
->  		goto out_thread_map_delete;
-> diff --git a/tools/perf/tests/perf-time-to-tsc.c b/tools/perf/tests/perf-time-to-tsc.c
-> index efcd71c2738a..bbe2ddeb9b74 100644
-> --- a/tools/perf/tests/perf-time-to-tsc.c
-> +++ b/tools/perf/tests/perf-time-to-tsc.c
-> @@ -93,7 +93,7 @@ static int test__perf_time_to_tsc(struct test_suite *test __maybe_unused, int su
->  	threads = thread_map__new(-1, getpid(), UINT_MAX);
->  	CHECK_NOT_NULL__(threads);
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	CHECK_NOT_NULL__(cpus);
->  
->  	evlist = evlist__new();
-> diff --git a/tools/perf/tests/switch-tracking.c b/tools/perf/tests/switch-tracking.c
-> index e52b031bedc5..5cab17a1942e 100644
-> --- a/tools/perf/tests/switch-tracking.c
-> +++ b/tools/perf/tests/switch-tracking.c
-> @@ -351,7 +351,7 @@ static int test__switch_tracking(struct test_suite *test __maybe_unused, int sub
->  		goto out_err;
->  	}
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (!cpus) {
->  		pr_debug("perf_cpu_map__new failed!\n");
->  		goto out_err;
-> diff --git a/tools/perf/tests/topology.c b/tools/perf/tests/topology.c
-> index 9dee63734e66..2a842f53fbb5 100644
-> --- a/tools/perf/tests/topology.c
-> +++ b/tools/perf/tests/topology.c
-> @@ -215,7 +215,7 @@ static int test__session_topology(struct test_suite *test __maybe_unused, int su
->  	if (session_write_header(path))
->  		goto free_path;
->  
-> -	map = perf_cpu_map__new(NULL);
-> +	map = perf_cpu_map__new_online_cpus();
->  	if (map == NULL) {
->  		pr_debug("failed to get system cpumap\n");
->  		goto free_path;
-> diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-> index 7f9b0e46e008..7a8af60e0f51 100644
-> --- a/tools/perf/util/bpf_counter.c
-> +++ b/tools/perf/util/bpf_counter.c
-> @@ -455,7 +455,7 @@ static int bperf__load(struct evsel *evsel, struct target *target)
->  		return -1;
->  
->  	if (!all_cpu_map) {
-> -		all_cpu_map = perf_cpu_map__new(NULL);
-> +		all_cpu_map = perf_cpu_map__new_online_cpus();
->  		if (!all_cpu_map)
->  			return -1;
->  	}
-> diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
-> index 0e090e8bc334..0581ee0fa5f2 100644
-> --- a/tools/perf/util/cpumap.c
-> +++ b/tools/perf/util/cpumap.c
-> @@ -672,7 +672,7 @@ struct perf_cpu_map *cpu_map__online(void) /* thread unsafe */
->  	static struct perf_cpu_map *online;
->  
->  	if (!online)
-> -		online = perf_cpu_map__new(NULL); /* from /sys/devices/system/cpu/online */
-> +		online = perf_cpu_map__new_online_cpus(); /* from /sys/devices/system/cpu/online */
->  
->  	return online;
->  }
-> diff --git a/tools/perf/util/cputopo.c b/tools/perf/util/cputopo.c
-> index 81cfc85f4668..8bbeb2dc76fd 100644
-> --- a/tools/perf/util/cputopo.c
-> +++ b/tools/perf/util/cputopo.c
-> @@ -267,7 +267,7 @@ struct cpu_topology *cpu_topology__new(void)
->  	ncpus = cpu__max_present_cpu().cpu;
->  
->  	/* build online CPU map */
-> -	map = perf_cpu_map__new(NULL);
-> +	map = perf_cpu_map__new_online_cpus();
->  	if (map == NULL) {
->  		pr_debug("failed to get system cpumap\n");
->  		return NULL;
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index ff7f85ded89d..0ed3ce2aa8eb 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -1352,7 +1352,7 @@ static int evlist__create_syswide_maps(struct evlist *evlist)
->  	 * error, and we may not want to do that fallback to a
->  	 * default cpu identity map :-\
->  	 */
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (!cpus)
->  		goto out;
->  
-> diff --git a/tools/perf/util/perf_api_probe.c b/tools/perf/util/perf_api_probe.c
-> index e1e2d701599c..1de3b69cdf4a 100644
-> --- a/tools/perf/util/perf_api_probe.c
-> +++ b/tools/perf/util/perf_api_probe.c
-> @@ -64,7 +64,7 @@ static bool perf_probe_api(setup_probe_fn_t fn)
->  	struct perf_cpu cpu;
->  	int ret, i = 0;
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (!cpus)
->  		return false;
->  	cpu = perf_cpu_map__cpu(cpus, 0);
-> @@ -140,7 +140,7 @@ bool perf_can_record_cpu_wide(void)
->  	struct perf_cpu cpu;
->  	int fd;
->  
-> -	cpus = perf_cpu_map__new(NULL);
-> +	cpus = perf_cpu_map__new_online_cpus();
->  	if (!cpus)
->  		return false;
->  
-> diff --git a/tools/perf/util/record.c b/tools/perf/util/record.c
-> index 40290382b2d7..87e817b3cf7e 100644
-> --- a/tools/perf/util/record.c
-> +++ b/tools/perf/util/record.c
-> @@ -238,7 +238,7 @@ bool evlist__can_select_event(struct evlist *evlist, const char *str)
->  	evsel = evlist__last(temp_evlist);
->  
->  	if (!evlist || perf_cpu_map__has_any_cpu_or_is_empty(evlist->core.user_requested_cpus)) {
-> -		struct perf_cpu_map *cpus = perf_cpu_map__new(NULL);
-> +		struct perf_cpu_map *cpus = perf_cpu_map__new_online_cpus();
->  
->  		if (cpus)
->  			cpu =  perf_cpu_map__cpu(cpus, 0);
+Jason
 
