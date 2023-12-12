@@ -1,187 +1,178 @@
-Return-Path: <bpf+bounces-17605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B11EF80FA96
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 23:55:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD61080FB14
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 00:11:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17615B20E13
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 22:55:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0962B1C20DCA
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 23:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 415B254649;
-	Tue, 12 Dec 2023 22:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCEDD64717;
+	Tue, 12 Dec 2023 23:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="k+w/R+2a";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="k+w/R+2a";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SYLXmKGC"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jpv3krVS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF4FAD
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 14:55:34 -0800 (PST)
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 9F5ACC14CF18
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 14:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1702421734; bh=yIGkXVO1OrVViXgMBxBYu+otzoLmIcR5deGDLyRkzzY=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=k+w/R+2a4KJirNHaA+vtUvIhD/7d/bFiLoDNbos+KjlZS5v701803aRG9HTb7qKvX
-	 GtXOxFw4PKqR7oNgesejLqBnOg/mtxKKGf/18JPon7wjvra+brA75lWO33f7d4K9jK
-	 FSLzKVvdBnL6ufXFa5LOQsxgFDZifSRWoPmHTTs4=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Dec 12 14:55:34 2023
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 7B2ACC14F61A;
-	Tue, 12 Dec 2023 14:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1702421734; bh=yIGkXVO1OrVViXgMBxBYu+otzoLmIcR5deGDLyRkzzY=;
-	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=k+w/R+2a4KJirNHaA+vtUvIhD/7d/bFiLoDNbos+KjlZS5v701803aRG9HTb7qKvX
-	 GtXOxFw4PKqR7oNgesejLqBnOg/mtxKKGf/18JPon7wjvra+brA75lWO33f7d4K9jK
-	 FSLzKVvdBnL6ufXFa5LOQsxgFDZifSRWoPmHTTs4=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id DC4B9C14F61A
- for <bpf@ietfa.amsl.com>; Tue, 12 Dec 2023 14:55:32 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Score: -2.108
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
- header.d=gmail.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 8EJi3zwCfq1D for <bpf@ietfa.amsl.com>;
- Tue, 12 Dec 2023 14:55:32 -0800 (PST)
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com
- [IPv6:2a00:1450:4864:20::433])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 706A2C14F60E
- for <bpf@ietf.org>; Tue, 12 Dec 2023 14:55:32 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id
- ffacd0b85a97d-33635d11d92so537305f8f.1
- for <bpf@ietf.org>; Tue, 12 Dec 2023 14:55:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=gmail.com; s=20230601; t=1702421731; x=1703026531; darn=ietf.org;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:from:to:cc:subject:date
- :message-id:reply-to;
- bh=+QrupQaeoS+38stqe0rx4IUeHo/JZH/ATfJZajGunkM=;
- b=SYLXmKGC0gaLQJxrC3z+t/Cv+Naf4+oQpb0kAUZQcKvv7f80uqtqLKAhTtMaU1TI1y
- ioqUCWFeKy7aaj4Z7M4rBhqtLavnbZRmD53sWRZ+fyeavTy/RmUJrSdu6Xa6yB5Rs8wm
- gaxaEJtsjwEkkVtVVk5fJhsBjOUwbSiMCg5rr3Uqfb/QeR6QcLF2eHwa2NlY4m0xTNwY
- 9R1kNmF//XcouzHyf227LJdGuNiQG38s9IOWmfYsuRd+rDJJITdVfoYVp5xAqvTwsCXv
- rADHS1iM9gQZ5lejvV4YMqxfrseZ4r1lfPJOxfsoCwnV425wWZq3q9QQtXb30zNeM8QK
- 3oXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1702421731; x=1703026531;
- h=content-transfer-encoding:cc:to:subject:message-id:date:from
- :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
- :subject:date:message-id:reply-to;
- bh=+QrupQaeoS+38stqe0rx4IUeHo/JZH/ATfJZajGunkM=;
- b=TfhFw6fN7pdJfQJGHD7sxSwuHNZ7SI1WmwpuIemmmg6fK+M8c0bWTfhmSV2BHPzjxR
- HzUNmNzhUUH1KewReWixGJyJVNg+Cz1y9feQYYhjzu8l59taJvz90ktPRH+9nrCzq9Se
- OWgcEosecn1uf+kl/XEEC0LZgnD83vvs7KN2LflW090758+Q9Xm6gfmajEihrch0XNRg
- 8XYfFpOXF6NXPdqMS9O1GcVcz6KGEVMtVg7hDYXuUguWEa4gRDMh8/kU/o5aZH8DZsRa
- zwdcJl4iY++L7yIXZFhBJU4U6ASOZWWnCNQf8q5RxH2EGUGnU9K/KgzZm3VifE2DxOkw
- bo3g==
-X-Gm-Message-State: AOJu0YwEJvFwt5qc7/Ygfw9a4o9U0qzUIjyT/li9PCmuBt9oMTqUtDUU
- Hdy28+8vjPeQEJGfk1csmSqjBN+Qg4lMZ2yc680=
-X-Google-Smtp-Source: AGHT+IFl7uVE8lfqRpvw/tVlmkOdwmiy5BKsVB9SxreXbHkbVDa3mjdqpYBW/MD5G7KzXwHuIkhSwJ+RbLDgkOazz7Q=
-X-Received: by 2002:a5d:6310:0:b0:333:2fd2:8141 with SMTP id
- i16-20020a5d6310000000b003332fd28141mr4077635wru.94.1702421730563; Tue, 12
- Dec 2023 14:55:30 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CACAAA;
+	Tue, 12 Dec 2023 15:11:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702422676; x=1733958676;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Kd4RqJif4k/V976t9s7NhBzcyfdHKz5t8C7L6lzC9BM=;
+  b=Jpv3krVS9bTnlrKW6VCDi1zd0HC8FD9GPLsq9FeIXM4pw/FN/3xCuvjl
+   lrGUpsVeMXRuKNf/vFsVIZV+HTc9HzqWaW+7xcnShUX3D2umu25bz7xHq
+   ltFlHrJPyaTC+wiZPgjOuqEnq7nyuBovBZzEN7OW/FupY6Nn+CCgcTLzD
+   S87bnCSBatuh8bojCHPL6tu+0tK/coFjgMmk7IuLvOw9X2M4gEYKbNcUX
+   ODyH3mcBQ9ivvwslh4glP/WbxLHHgEDWYIsYJ89DEQKOwDVOU5ZuNQkIA
+   DHfFOZ1wxvNSVTPv4SSxJJtKC6avJ9Q+Bxjg35+bN4gIz0cTJqr9rwGXG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="426007631"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="426007631"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Dec 2023 15:11:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="766990162"
+X-IronPort-AV: E=Sophos;i="6.04,271,1695711600"; 
+   d="scan'208";a="766990162"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 12 Dec 2023 15:11:11 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rDBu9-000JqF-17;
+	Tue, 12 Dec 2023 23:11:09 +0000
+Date: Wed, 13 Dec 2023 07:10:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Lorenzo Bianconi <lorenzo@kernel.org>, netdev@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, lorenzo.bianconi@redhat.com,
+	davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+	pabeni@redhat.com, bpf@vger.kernel.org, hawk@kernel.org,
+	toke@redhat.com, willemdebruijn.kernel@gmail.com,
+	jasowang@redhat.com, sdf@google.com
+Subject: Re: [PATCH v4 net-next 3/3] xdp: add multi-buff support for xdp
+ running in generic mode
+Message-ID: <202312130625.4PfR5846-lkp@intel.com>
+References: <2d0f9388c6509192d88e359a402517a73124b50e.1702375338.git.lorenzo@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231127201817.GB5421@maniforge>
- <072101da2558$fe5f5020$fb1df060$@gmail.com>
- <20231207215152.GA168514@maniforge>
- <CAADnVQ+Mhe6ean6J3vH1ugTyrgWNxupLoFfwKu6-U=3R8i1TNQ@mail.gmail.com>
- <20231212214532.GB1222@maniforge> <157b01da2d46$b7453e20$25cfba60$@gmail.com>
-In-Reply-To: <157b01da2d46$b7453e20$25cfba60$@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 12 Dec 2023 14:55:19 -0800
-Message-ID: <CAADnVQKd7X1v6CwCa2MyJjQkN8hKsHJ_g9Kk5CwWSbp9+1_3zw@mail.gmail.com>
-To: Dave Thaler <dthaler1968@googlemail.com>
-Cc: David Vernet <void@manifault.com>, bpf@ietf.org, bpf <bpf@vger.kernel.org>
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/iErNXUA9tyikb_FeZ1uHz7s30vw>
-Subject: Re: [Bpf] BPF ISA conformance groups
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d0f9388c6509192d88e359a402517a73124b50e.1702375338.git.lorenzo@kernel.org>
 
-T24gVHVlLCBEZWMgMTIsIDIwMjMgYXQgMjowMeKAr1BNIDxkdGhhbGVyMTk2OEBnb29nbGVtYWls
-LmNvbT4gd3JvdGU6Cj4KPiA+ID4gRm9yIGV4YW1wbGUsIGxldCdzIHRha2UgYSBsb29rIGF0ICMy
-IGF0b21pYy4uLgo+ID4gPiBTaG91bGQgaXQgaW5jbHVkZSBvciBleGNsdWRlIGF0b21pY19hZGQg
-aW5zbiA/IEl0IHdhcyBhZGRlZCBhdCB0aGUKPiA+ID4gdmVyeSBiZWdpbm5pbmcgb2YgQlBGIElT
-QSBhbmQgd2FzIHVzZWQgZnJvbSBkYXkgb25lLgo+ID4gPiBXaXRob3V0IGl0IGl0J3MgaW1wb3Nz
-aWJsZSB0byBjb3VudCBzdGF0cy4gVGhlIHR5cGljYWwgbmV0d29yayBvcgo+ID4gPiB0cmFjaW5n
-IHVzZSBjYXNlIG5lZWRzIHRvIGNvdW50IGV2ZW50cyBhbmQgb25lIGNhbm5vdCBkbyBpdCB3aXRo
-b3V0Cj4gPiA+IGF0b21pYyBpbmNyZW1lbnQuIEV2ZW50dWFsbHkgcGVyLWNwdSBtYXBzIHdlcmUg
-YWRkZWQgYXMgYW4gYWx0ZXJuYXRpdmUuCj4gPiA+IEkgc3VzcGVjdCBhbnkgcGxhdGZvcm0gdGhh
-dCBzdXBwb3J0cyAjMSBiYXNpYyBpbnNuIHdpdGhvdXQgYXRvbWljX2FkZAo+ID4gPiB3aWxsIG5v
-dCBiZSBwcmFjdGljYWxseSB1c2VmdWwuCj4gPiA+IFNob3VsZCBhdG9taWNfYWRkIGJlIGEgcGFy
-dCBvZiAiYmFzaWMiIHRoZW4/IEJ1dCBpdCdzIGF0b21pYy4KPiA+ID4gVGhlbiB3aGF0IGFib3V0
-IGF0b21pY19mZXRjaF9hZGQgaW5zbj8gSXQncyBwcmV0dHkgY2xvc2Ugc2VtYW50aWNhbGx5Lgo+
-ID4gPiBQYXJ0IG9mIGF0b21pYyBvciBwYXJ0IG9mIGJhc2ljPwo+ID4KPiA+IEkgdGhpbmsgaXQn
-cyByZWFzb25hYmxlIHRvIGV4cGVjdCB0aGF0IGlmIHlvdSByZXF1aXJlIGFuIGF0b21pYyBhZGQs
-IHRoYXQgeW91Cj4gPiBtYXkgYWxzbyByZXF1aXJlIHRoZSBvdGhlciBhdG9taWMgaW5zdHJ1Y3Rp
-b25zIGFzIHdlbGwgYW5kIHRoYXQgaXQgd291bGQgYmUKPiA+IGxvZ2ljYWwgdG8gZ3JvdXAgdGhl
-bSB0b2dldGhlciwgeWVzLiBJIGJlbGlldmUgdGhhdCBOZXRyb25vbWUgc3VwcG9ydHMgYWxsIG9m
-Cj4gPiB0aGUgYXRvbWljIGluc3RydWN0aW9ucywgYXMgb25lIGV4YW1wbGUuIElmIHlvdSdyZSBw
-cm92aWRpbmcgYSBCUEYgcnVudGltZSBpbgo+ID4gYW4gZW52aXJvbm1lbnQgd2hlcmUgYXRvbWlj
-IGFkZHMgYXJlIHJlcXVpcmVkLCBJIHRoaW5rIGl0IHN0YW5kcyB0byByZWFzb24KPiA+IHRoYXQg
-eW91IHNob3VsZCBwcm9iYWJseSBzdXBwb3J0IHRoZSBvdGhlciBhdG9taWNzIGFzIHdlbGwsIG5v
-Pwo+Cj4gSSBhZ3JlZS4KCllvdXIgbG9naWNhbCByZWFzb25pbmcgaXMgaW5kZWVkIGNvcnJlY3Qg
-YW5kCkkgYWdyZWUgd2l0aCBpdCwKYnV0IHJlYWxpdHkgaXMgZGlmZmVyZW50IDopCgpkcml2ZXJz
-L25ldC9ldGhlcm5ldC9uZXRyb25vbWUvbmZwL2JwZi9qaXQuYzoKc3RhdGljIGludCBtZW1fYXRv
-bWljOChzdHJ1Y3QgbmZwX3Byb2cgKm5mcF9wcm9nLCBzdHJ1Y3QgbmZwX2luc25fbWV0YSAqbWV0
-YSkKewogICAgICAgIGlmIChtZXRhLT5pbnNuLmltbSAhPSBCUEZfQUREKQogICAgICAgICAgICAg
-ICAgcmV0dXJuIC1FT1BOT1RTVVBQOwoKICAgICAgICByZXR1cm4gbWVtX3hhZGQobmZwX3Byb2cs
-IG1ldGEsIHRydWUpOwp9CgpJdCBvbmx5IHN1cHBvcnRzIGF0b21pY19hZGQgYW5kIG5vIG90aGVy
-IGF0b21pY3MuCgo+ID4gPiBBbm90aGVyIGV4YW1wbGUsICMzIGRpdmlkZS4gYnBmIGNwdT12MSBJ
-U0Egb25seSBoYXMgdW5zaWduZWQgZGl2L21vZC4KPiA+ID4gRXZlbnR1YWxseSB3ZSBhZGRlZCBh
-IHNpZ25lZCB2ZXJzaW9uLiBJbnRlZ2VyIGRpdmlzaW9uIGlzIG9uZSBvZiB0aGUKPiA+ID4gc2xv
-d2VzdCBvcGVyYXRpb25zIGluIGEgSFcuIERpZmZlcmVudCBjcHVzIGhhdmUgZGlmZmVyZW50IGZs
-YXZvcnMgb2YKPiA+ID4gdGhlbSA2NC8zMiA2NC82NCAzMi8zMiwgZXRjLiBBbGwgd2l0aCBkaWZm
-ZXJlbnQgcXVpcmtzLgo+ID4gPiBjcHU9djEgaGFkIG1vZHVsbyBpbnNuIGJlY2F1c2UgaW4gdHJh
-Y2luZyBvbmUgb2Z0ZW4gbmVlZHMgdG8gZG8gaXQgdG8KPiA+ID4gc2VsZWN0IGEgc2xvdCBpbiBh
-IHRhYmxlLCBidXQgaW4gbmV0d29ya2luZyB0aGVyZSBpcyByYXJlbHkgYSBuZWVkLgo+ID4gPiBT
-byBicGYgb2ZmbG9hZCBpbnRvIG5ldHJvbm9tZSBIVyBkb2Vzbid0IHN1cHBvcnQgaXQgKGlpcmMp
-Lgo+ID4KPiA+IENvcnJlY3QsIG15IHVuZGVyc3RhbmRpbmcgaXMgdGhhdCBCUEYgb2ZmbG9hZCBp
-biBuZXRyb25vbWUgc3VwcG9ydHMgbmVpdGhlcgo+ID4gZGl2aXNpb24gbm9yIG1vZHVsby4KPgo+
-IEluIG15IG9waW5pb24sIHRoaXMgaXMgYSB2YWxpZCB0ZWNobmljYWwgcmVhc29uIHRvIHB1dCB0
-aGVtIGludG8gYSBzZXBhcmF0ZQo+IGNvbmZvcm1hbmNlIGdyb3VwLCB0byBhbGxvdyBoYXJkd2Fy
-ZSBvZmZsb2FkIGNhcmRzIHRvIHN1cHBvcnQgQlBGIHdpdGhvdXQKPiByZXF1aXJpbmcgZGl2aXNp
-b24vbW9kdWxvIHdoaWNoIHRoZXkgbWlnaHQgbm90IGhhdmUgc3BhY2Ugb3Igb3RoZXIgYnVkZ2V0
-IGZvci4KCkFsc28gbG9naWNhbGx5IGNvcnJlY3QgYW5kIEkgYWdyZWUgd2l0aCwgYnV0IHJlYWxp
-dHkgcHJvdmVzIGFsbCBvZiB1cyB3cm9uZy4KbmV0cm9ub21lIGRvZXNuJ3Qgc3VwcG9ydCBtb2R1
-bG8sCmJ1dCBpdCBzdXBwb3J0cyBpbnRlZ2VyIGRpdmlzaW9uIHdoZW4gdGhlIHZlcmlmaWVyIGNh
-biBkZXRlcm1pbmUKcHJvcGVydHkgb2YgdGhlIGNvbnN0YW50LgpCUEZfQUxVNjQgfCBCUEZfRElW
-IHwgQlBGX0sgd29ya3MgZm9yIHBvc2l0aXZlIGltbTMyLApidXQgQlBGX1ggd29ya3Mgd2hlbiB0
-aGUgdmVyaWZpZXIgaXMgc21hcnQgd2l0aCBwbGVudHkgb2YgcXVpcmtzCmFuZCBzdWJ0bGUgY29u
-ZGl0aW9ucy4KSXQgd29ya3Mgd2l0aCB0aGUgaGVscCBvZiBjb29sIG1hdGggcmVjaXByb2NhbF92
-YWx1ZV9hZHYoKQppbiBpbmNsdWRlL2xpbnV4L3JlY2lwcm9jYWxfZGl2LmgKd2hpY2ggY29udmVy
-dHMgZGl2IHRvIHNoaWZ0cyBhbmQgbXVscy4KClNvIHNob3VsZCBkaXZfSyBhbmQgZGl2X1ggYmUg
-aW4gc2VwYXJhdGUgZ3JvdXBzID8KU2hvdWxkIG1vZF9bS3xYXSBiZSB0aGVyZSBhcyB3ZWxsIG9y
-IG5vdD8KClRvIGRldGVybWluZSB0aGUgZ3JvdXBpbmcgc2hvdWxkIHdlIHVzZSBsb2dpYyBvciBy
-ZWFsaXR5PwoKSSdtIGFyZ3VpbmcgdGhhdCB3aGF0ZXZlciBjbGVhbiBhbmQgbG9naWNhbCBncm91
-cGluZyB3ZSBjYW4gY29tZSB1cCB3aXRoCml0IHdvbid0IHN0YW5kIGEgdGVzdCBvZiByZWFsIHVz
-ZS4KCi0tIApCcGYgbWFpbGluZyBsaXN0CkJwZkBpZXRmLm9yZwpodHRwczovL3d3dy5pZXRmLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2JwZgo=
+Hi Lorenzo,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on net-next/main]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Lorenzo-Bianconi/net-introduce-page_pool-pointer-in-softnet_data-percpu-struct/20231212-181103
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/2d0f9388c6509192d88e359a402517a73124b50e.1702375338.git.lorenzo%40kernel.org
+patch subject: [PATCH v4 net-next 3/3] xdp: add multi-buff support for xdp running in generic mode
+config: sh-edosk7760_defconfig (https://download.01.org/0day-ci/archive/20231213/202312130625.4PfR5846-lkp@intel.com/config)
+compiler: sh4-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231213/202312130625.4PfR5846-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312130625.4PfR5846-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   sh4-linux-ld: net/core/dev.o: in function `netif_skb_segment_for_xdp':
+>> net/core/dev.c:5003:(.text+0x2860): undefined reference to `page_pool_alloc_frag'
+>> sh4-linux-ld: net/core/dev.c:5003:(.text+0x28fc): undefined reference to `page_pool_alloc_pages'
+   sh4-linux-ld: net/core/dev.o: in function `net_dev_init':
+   net/core/dev.c:11882:(.init.text+0x198): undefined reference to `page_pool_create'
+
+
+vim +5003 net/core/dev.c
+
+  4932	
+  4933	static int netif_skb_segment_for_xdp(struct sk_buff **pskb)
+  4934	{
+  4935		struct softnet_data *sd = this_cpu_ptr(&softnet_data);
+  4936		u32 size, truesize, len, max_head_size, off;
+  4937		struct sk_buff *skb = *pskb, *nskb;
+  4938		int err, i, head_off;
+  4939		void *data;
+  4940	
+  4941		max_head_size = SKB_WITH_OVERHEAD(PAGE_SIZE - XDP_PACKET_HEADROOM);
+  4942		if (skb->len > max_head_size + MAX_SKB_FRAGS * PAGE_SIZE)
+  4943			return -ENOMEM;
+  4944	
+  4945		size = min_t(u32, skb->len, max_head_size);
+  4946		truesize = SKB_HEAD_ALIGN(size) + XDP_PACKET_HEADROOM;
+  4947		data = page_pool_dev_alloc_va(sd->page_pool, &truesize);
+  4948		if (!data)
+  4949			return -ENOMEM;
+  4950	
+  4951		nskb = napi_build_skb(data, truesize);
+  4952		if (!nskb) {
+  4953			page_pool_free_va(sd->page_pool, data, true);
+  4954			return -ENOMEM;
+  4955		}
+  4956	
+  4957		skb_reserve(nskb, XDP_PACKET_HEADROOM);
+  4958		skb_copy_header(nskb, skb);
+  4959		skb_mark_for_recycle(nskb);
+  4960	
+  4961		err = skb_copy_bits(skb, 0, nskb->data, size);
+  4962		if (err) {
+  4963			consume_skb(nskb);
+  4964			return err;
+  4965		}
+  4966		skb_put(nskb, size);
+  4967	
+  4968		head_off = skb_headroom(nskb) - skb_headroom(skb);
+  4969		skb_headers_offset_update(nskb, head_off);
+  4970	
+  4971		off = size;
+  4972		len = skb->len - off;
+  4973		for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
+  4974			struct page *page;
+  4975			u32 page_off;
+  4976	
+  4977			size = min_t(u32, len, PAGE_SIZE);
+  4978			truesize = size;
+  4979	
+  4980			page = page_pool_dev_alloc(sd->page_pool, &page_off,
+  4981						   &truesize);
+  4982			if (!data) {
+  4983				consume_skb(nskb);
+  4984				return -ENOMEM;
+  4985			}
+  4986	
+  4987			skb_add_rx_frag(nskb, i, page, page_off, size, truesize);
+  4988			err = skb_copy_bits(skb, off, page_address(page) + page_off,
+  4989					    size);
+  4990			if (err) {
+  4991				consume_skb(nskb);
+  4992				return err;
+  4993			}
+  4994	
+  4995			len -= size;
+  4996			off += size;
+  4997		}
+  4998	
+  4999		consume_skb(skb);
+  5000		*pskb = nskb;
+  5001	
+  5002		return 0;
+> 5003	}
+  5004	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
