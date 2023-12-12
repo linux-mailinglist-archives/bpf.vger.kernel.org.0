@@ -1,57 +1,58 @@
-Return-Path: <bpf+bounces-17480-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 525E680E1EA
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 03:33:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65ED580E1E8
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 03:33:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08CAD28276B
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 02:33:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12E562827E2
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 02:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520D31FCF;
-	Tue, 12 Dec 2023 02:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB17635;
+	Tue, 12 Dec 2023 02:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aG/kfzl4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nVigoiXO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17BF2132
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D79268C
 	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 18:32:49 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-336166b8143so2618399f8f.3
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-40c2d50bfbfso24391735e9.0
         for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 18:32:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702348339; x=1702953139; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RpYJFVRPKcoumNOI7sbxOJ0way3A03nHX5bM9O5R3qo=;
-        b=aG/kfzl4tGhFuBNs/32sDxusOnmfBWE2JKm8R3B7SZfF/fs8cOV9JGjNEh1FMsIWY3
-         r6IxmRlQhRS+Rb78OS8FuLDhaAU/7OioF6Oraq+lwkKapdVG5BB6CRrClK9F7M+bDiDm
-         LBwyjbIqfuLOgGupvw1HBJBLbLBVyUdjUb+AapRiiGiG2QkkPEqqLUmH54eNoU5Cxr4x
-         rq8KmEi0PqKnJcaLfedjPp7PEQrm4HOJn8jKxZwDUmcy2tQatgpTwKQRZ7AQDV3CWBHo
-         K5wu+1e1J4tnc+R4xfRHu+2z06CtMyKu2FMtIEqraTKAznYrXHqjqrVWUy84RG4mtaq0
-         /edw==
+        d=gmail.com; s=20230601; t=1702348340; x=1702953140; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Oqxt9UpM3lXEQA9Ql/9MZ7PSiBm36QeDH3GLKGuDpKA=;
+        b=nVigoiXOQAU+TUEVozvMSl+sna8SJZmbh4OoIIDyVEBR3QY7xnp77KFgxekZXWDkBN
+         tRhv04+ccfEOS99Cb8stqKaSt5GvY23hesluVkjhjEX5ICVbKjUDB33rEB67NTLUUpjR
+         Jg9j/+b/RcV/GT3OiR3iMV3yRXsKb1GoG7kKeyllHWwIf1u67LqqRjCkMVsgY+1sOg4N
+         CRXzOOSV5omHe6EhsJZLzqdgk7/DbZNQemxJ5MOZ2nbp3W7oSZ+rFgxzgMS6bQsMyqvj
+         xQfqtFSOpPy/fKHKzyr0FsIScaoJ8Vc0fxxPS/5EHCfT/ChO/jxjCE2hAO1UXs+va+R3
+         GfTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702348339; x=1702953139;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RpYJFVRPKcoumNOI7sbxOJ0way3A03nHX5bM9O5R3qo=;
-        b=ELYz6XUwJ9C8TSqnhEAIB+xF3QlfDQIHqUBxZfwF7sb4+TZzGoLu6FlYh+ZC+yq6gY
-         ufjQz79GpQypdsj25CL3JZ5+UrSv68O31VjO1EM05hje4LXJ2b3S/FlfONi/t1IEfj46
-         +UvMCUv0s5uLcK7qw3PaW5OjvBOKWvP2DHgGr7lLGzHLbjSalYqMXCJM44OVn8aolr00
-         rf0mHo1pnYmyyly6icfWnoYoemV6MWSEsd2EFAGvPuKMI3monLvtZg9VkDUbNIxPjd+B
-         gs80vmRfL/NeoOcek266jjoRnptJhfsHLVdxWAOgmqj2AbTqCNGT6ui5O6gjM5RXTisD
-         kW7Q==
-X-Gm-Message-State: AOJu0Ywi2boSy35ExUlnDx3FWT2BmvKnYHyS76x9rGxHUG99jbIM9KB9
-	xwTChL53tb1xN63kFVTLNjCGZyvfOIE=
-X-Google-Smtp-Source: AGHT+IHenEh3t3hLK+VBLYw1dZiDtIrHRnGpuyQWanQJh2BYMot5JGo9TUL1haWXQ/MpgwE5QaFE5Q==
-X-Received: by 2002:adf:f68b:0:b0:333:39a8:bddd with SMTP id v11-20020adff68b000000b0033339a8bdddmr3193221wrp.117.1702348338615;
-        Mon, 11 Dec 2023 18:32:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702348340; x=1702953140;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Oqxt9UpM3lXEQA9Ql/9MZ7PSiBm36QeDH3GLKGuDpKA=;
+        b=PkSCiu14LcWpSS2s1u8QBwf7DEw/ED5oQzjR31cWxo/ZOPQhmjCgZYqQylsGwc/wsp
+         tajD7HsP6inDAdmkDA0o1+v9/7KMzEZ/n06TaxOmHyX+zB54NwDp0vpaC5pLRlyFQhP8
+         RJkO+oIgneJMlMYT+znIMKC8mqdOsw2H47y6qXHQN+19rL4owP8uBcvSSfDMIIu6Huz8
+         gl9KTK4DNfYae0z45ne7S8BCQCR9qdbO7U6hDPjU2ZE/WXH8u6q9WXo+iWLRzZIkkqvu
+         t3lIhbyDcvSOF7f9U0QV6pQetQ9UgHCRbCKLRhmE0CKU3UQ0R+ynyB1dkpG7srR72cqV
+         yHVA==
+X-Gm-Message-State: AOJu0Yxi4Nz8jfB8tgRzg93gMwNEocE7B3Xm8wXJ15zGlVjFGFWkLia8
+	R0SG1AZPHDCKpim5XgK2jTmd/xd6tD4=
+X-Google-Smtp-Source: AGHT+IEIkgKglFHV6nuHuBoE6qvejl+RsIgDB7k3M93t2DutSWl2jUxcNDjEUEL2tXf3Yxw0nFEd9g==
+X-Received: by 2002:a05:600c:1910:b0:40c:2654:5704 with SMTP id j16-20020a05600c191000b0040c26545704mr2720719wmq.20.1702348339706;
+        Mon, 11 Dec 2023 18:32:19 -0800 (PST)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id e12-20020adfe38c000000b003332fa77a0fsm9659900wrm.21.2023.12.11.18.32.17
+        by smtp.gmail.com with ESMTPSA id e12-20020adfe38c000000b003332fa77a0fsm9659900wrm.21.2023.12.11.18.32.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Dec 2023 18:32:17 -0800 (PST)
+        Mon, 11 Dec 2023 18:32:19 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -63,10 +64,12 @@ Cc: andrii@kernel.org,
 	quentin@isovalent.com,
 	alan.maguire@oracle.com,
 	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC v2 0/2] use preserve_static_offset in bpf uapi headers
-Date: Tue, 12 Dec 2023 04:31:33 +0200
-Message-ID: <20231212023136.7021-1-eddyz87@gmail.com>
+Subject: [RFC v2 1/3] bpf: Mark virtual BPF context structures as preserve_static_offset
+Date: Tue, 12 Dec 2023 04:31:34 +0200
+Message-ID: <20231212023136.7021-2-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.42.1
+In-Reply-To: <20231212023136.7021-1-eddyz87@gmail.com>
+References: <20231212023136.7021-1-eddyz87@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,171 +78,383 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For certain program context types, the verifier applies the
-verifier.c:convert_ctx_access() transformation.
-It modifies ST/STX/LDX instructions that access program context.
-convert_ctx_access() updates the offset field of these instructions
-changing "virtual" offset by offset corresponding to data
-representation in the running kernel.
-
-For this transformation to be applicable access to the context field
-shouldn't use pointer arithmetics. For example, consider the read of
-__sk_buff->pkt_type field.
-If translated as a single ST instruction:
-
-    r0 = *(u32 *)(r1 + 4);
-
-The verifier would accept such code and patch the offset in the
-instruction, however, if translated as a pair of instructions:
-
-    r1 += 4;
-    r0 = *(u32 *)(r1 + 0);
-
-The verifier would reject such code.
-
-Occasionally clang shuffling code during compilation might break
-verifier expectations and cause verification errors, e.g. as in [0].
-Technically, this happens because each field read/write represented in
-LLVM IR as two operations: address lookup + memory access,
-and the compiler is free to move and substitute those independently.
-For example, LLVM can rewrite C code below:
-
-    __u32 v;
-    if (...)
-      v = sk_buff->pkt_type;
-    else
-      v = sk_buff->mark;
-
-As if it was written as so:
-
-    __u32 v, *p;
-    if (...)
-      p = &sk_buff->pkt_type;  // r0 = 4; (offset of pkt_type)
-    else
-      p = &sk_buff->mark;      // r0 = 8; (offset of mark)
-    v = *p;                    // r1 += r0;
-                               // r0 = *(u32 *)(r1 + 0)
-
-Which is a valid rewrite from the point of view of C semantics but won't
-pass verification, because convert_ctx_access() can no longer replace
-offset in 'r0 = *(u32 *)(r1 + 0)' with a constant.
-
-Recently, attribute preserve_static_offset was added to
-clang [1] to tackle this problem. From its documentation:
-
-  Clang supports the ``__attribute__((preserve_static_offset))``
-  attribute for the BPF target. This attribute may be attached to a
-  struct or union declaration. Reading or writing fields of types having
-  such annotation is guaranteed to generate LDX/ST/STX instruction with
-  an offset corresponding to the field.
-
-The convert_ctx_access() transformation is applied when the context
-parameter has one of the following types:
-- __sk_buff
-- bpf_cgroup_dev_ctx
-- bpf_perf_event_data
-- bpf_sk_lookup
-- bpf_sock
-- bpf_sock_addr
-- bpf_sock_ops
-- bpf_sockopt
-- bpf_sysctl
-- sk_msg_md
-- sk_reuseport_md
-- xdp_md
-
-For context types that are not subject of the
-convert_ctx_access(), namely:
+Add __attribute__((preserve_static_offset)) for the following BPF
+related structures:
+- __sk_buff (*)
+- bpf_cgroup_dev_ctx (*)
 - bpf_nf_ctx
+- bpf_perf_event_data (*)
 - bpf_raw_tracepoint_args
-- pt_regs
+- bpf_sk_lookup (*)
+- bpf_sock (*)
+- bpf_sock_addr (*)
+- bpf_sock_ops (*)
+- bpf_sockopt (*)
+- bpf_sysctl (*)
+- sk_msg_md (*)
+- sk_reuseport_md (*)
+- xdp_md (*)
 
-Verifier simply denies access via modified pointer in
-__check_ptr_off_reg() function with error message:
-"dereference of modified %s ptr R%d off=%d disallowed\n".
+Access to structures marked with (*) is rewritten by BPF verifier.
+(See verifier.c:convert_ctx_access). The rewrite requires that offsets
+used in access to fields of these structures are constant values.
+For the rest of the structures verifier just disallows access
+via modified context pointer in the following code path:
 
-From my understanding, BPF programs typically access definitions of
-these types in two ways:
-- via uapi headers linux/bpf.h and linux/bpf_perf_event.h;
-- via header include/net/netfilter/nf_bpf_link.h;
-- via vmlinux.h.
+  check_mem_access
+    check_ptr_off_reg
+      __check_ptr_off_reg
+        if (!fixed_off_ok && reg->off)
+          "dereference of modified %s ptr R%d off=%d disallowed\n"
 
-This RFC seeks to mark with preserve_static_offset the definitions of
-the relevant context types within uapi headers, and modify bpftool to
-emit said attribute in generated vmlinux.h.
+Attribute preserve_static_offset [0] is a hint to clang that
+ensures that constant offsets are used.
 
-In headers the attribute is abstracted by '__bpf_ctx' macro.
-As bpf.h and bpf_perf_event.h do not share any common include files,
-this RFC opts to copy the same definition of '__bpf_ctx' in both
-headers to avoid adding a new uapi header.
+Type 'pt_regs' is not handled yet.
 
-Note:
-This RFC does not handle type pt_regs used for kprobes/
-This type is defined in architecture specific headers like
-arch/x86/include/asm/ptrace.h and is hidden behind typedef
-bpf_user_pt_regs_t in include/uapi/asm-generic/bpf_perf_event.h.
-There are two ways to handle struct pt_regs:
-1. Modify all architecture specific ptrace.h files to use __bpf_ctx;
-2. Add annotated forward declaration for pt_regs in
-   include/uapi/asm-generic/bpf_perf_event.h, e.g. as follows:
+[0] https://clang.llvm.org/docs/AttributeReference.html#preserve-static-offset
 
-    #if __has_attribute(preserve_static_offset) && defined(__bpf__)
-    #define __bpf_ctx __attribute__((preserve_static_offset))
-    #else
-    #define __bpf_ctx
-    #endif
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+---
+ include/net/netfilter/nf_bpf_link.h       | 10 ++++++-
+ include/uapi/linux/bpf.h                  | 32 ++++++++++++++---------
+ include/uapi/linux/bpf_perf_event.h       | 10 ++++++-
+ tools/include/uapi/linux/bpf.h            | 32 ++++++++++++++---------
+ tools/include/uapi/linux/bpf_perf_event.h | 10 ++++++-
+ 5 files changed, 67 insertions(+), 27 deletions(-)
 
-    struct __bpf_ctx pt_regs;
-
-    #undef __bpf_ctx
-
-    #include <linux/ptrace.h>
-
-    /* Export kernel pt_regs structure */
-    typedef struct pt_regs bpf_user_pt_regs_t;
-
-Unfortunately, it might be the case that option (2) is not sufficient,
-as at-least BPF selftests access pt_regs either via vmlinux.h or by
-directly including ptrace.h.
-
-If option (1) is to be implemented, it feels unreasonable to continue
-copying definition of __bpf_ctx macro from file to file.
-Given absence of common uapi exported headers between bpf.h and
-bpf_perf_event.h/ptrace.h, it looks like a new uapi header would have
-to be added, e.g. include/uapi/bpf_compiler.h.
-For the moment this header would contain only the definition for
-__bpf_ctx, and would be included in bpf.h, nf_bpf_link.h and
-architecture specific ptrace.h.
-
-Please advise.
-
-Changelog:
-- V1 [2] -> V2:
-  - changes to bpftool to generate preserve_static_offset
-    (by hard-coding context type names as suggested by Yonghong
-     and Alexei, including BPF_NO_PRESERVE_STATIC_OFFSET
-     option suggested by Alan);
-  - added "#undef __bpf_ctx" in relevant headers (Yonghong);
-  - added __bpf_ctx for the missing context types (Yonghong);
-
-Eduard Zingerman (3):
-  bpf: Mark virtual BPF context structures as preserve_static_offset
-  bpftool: add attribute preserve_static_offset for context types
-  selftests/bpf: verify bpftool emits preserve_static_offset
-
- include/net/netfilter/nf_bpf_link.h           |  10 +-
- include/uapi/linux/bpf.h                      |  32 +++--
- include/uapi/linux/bpf_perf_event.h           |  10 +-
- tools/bpf/bpftool/btf.c                       | 131 ++++++++++++++++--
- tools/include/uapi/linux/bpf.h                |  32 +++--
- tools/include/uapi/linux/bpf_perf_event.h     |  10 +-
- .../bpf/progs/dummy_no_context_btf.c          |  12 ++
- .../selftests/bpf/progs/dummy_sk_buff_user.c  |  14 ++
- tools/testing/selftests/bpf/test_bpftool.py   |  61 ++++++++
- 9 files changed, 270 insertions(+), 42 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/dummy_no_context_btf.c
- create mode 100644 tools/testing/selftests/bpf/progs/dummy_sk_buff_user.c
-
---
+diff --git a/include/net/netfilter/nf_bpf_link.h b/include/net/netfilter/nf_bpf_link.h
+index 6c984b0ea838..e5555b1ac55d 100644
+--- a/include/net/netfilter/nf_bpf_link.h
++++ b/include/net/netfilter/nf_bpf_link.h
+@@ -1,9 +1,15 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ 
++#if __has_attribute(preserve_static_offset) && defined(__bpf__)
++#define __bpf_ctx __attribute__((preserve_static_offset))
++#else
++#define __bpf_ctx
++#endif
++
+ struct bpf_nf_ctx {
+ 	const struct nf_hook_state *state;
+ 	struct sk_buff *skb;
+-};
++} __bpf_ctx;
+ 
+ #if IS_ENABLED(CONFIG_NETFILTER_BPF_LINK)
+ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
+@@ -13,3 +19,5 @@ static inline int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog
+ 	return -EOPNOTSUPP;
+ }
+ #endif
++
++#undef __bpf_ctx
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index e0545201b55f..f533301de5e4 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -69,6 +69,12 @@ enum {
+ /* BPF has 10 general purpose 64-bit registers and stack frame. */
+ #define MAX_BPF_REG	__MAX_BPF_REG
+ 
++#if __has_attribute(preserve_static_offset) && defined(__bpf__)
++#define __bpf_ctx __attribute__((preserve_static_offset))
++#else
++#define __bpf_ctx
++#endif
++
+ struct bpf_insn {
+ 	__u8	code;		/* opcode */
+ 	__u8	dst_reg:4;	/* dest register */
+@@ -6190,7 +6196,7 @@ struct __sk_buff {
+ 	__u8  tstamp_type;
+ 	__u32 :24;		/* Padding, future use. */
+ 	__u64 hwtstamp;
+-};
++} __bpf_ctx;
+ 
+ struct bpf_tunnel_key {
+ 	__u32 tunnel_id;
+@@ -6271,7 +6277,7 @@ struct bpf_sock {
+ 	__u32 dst_ip6[4];
+ 	__u32 state;
+ 	__s32 rx_queue_mapping;
+-};
++} __bpf_ctx;
+ 
+ struct bpf_tcp_sock {
+ 	__u32 snd_cwnd;		/* Sending congestion window		*/
+@@ -6379,7 +6385,7 @@ struct xdp_md {
+ 	__u32 rx_queue_index;  /* rxq->queue_index  */
+ 
+ 	__u32 egress_ifindex;  /* txq->dev->ifindex */
+-};
++} __bpf_ctx;
+ 
+ /* DEVMAP map-value layout
+  *
+@@ -6429,7 +6435,7 @@ struct sk_msg_md {
+ 	__u32 size;		/* Total size of sk_msg */
+ 
+ 	__bpf_md_ptr(struct bpf_sock *, sk); /* current socket */
+-};
++} __bpf_ctx;
+ 
+ struct sk_reuseport_md {
+ 	/*
+@@ -6468,7 +6474,7 @@ struct sk_reuseport_md {
+ 	 */
+ 	__bpf_md_ptr(struct bpf_sock *, sk);
+ 	__bpf_md_ptr(struct bpf_sock *, migrating_sk);
+-};
++} __bpf_ctx;
+ 
+ #define BPF_TAG_SIZE	8
+ 
+@@ -6678,7 +6684,7 @@ struct bpf_sock_addr {
+ 				 * Stored in network byte order.
+ 				 */
+ 	__bpf_md_ptr(struct bpf_sock *, sk);
+-};
++} __bpf_ctx;
+ 
+ /* User bpf_sock_ops struct to access socket values and specify request ops
+  * and their replies.
+@@ -6761,7 +6767,7 @@ struct bpf_sock_ops {
+ 				 * been written yet.
+ 				 */
+ 	__u64 skb_hwtstamp;
+-};
++} __bpf_ctx;
+ 
+ /* Definitions for bpf_sock_ops_cb_flags */
+ enum {
+@@ -7034,11 +7040,11 @@ struct bpf_cgroup_dev_ctx {
+ 	__u32 access_type;
+ 	__u32 major;
+ 	__u32 minor;
+-};
++} __bpf_ctx;
+ 
+ struct bpf_raw_tracepoint_args {
+ 	__u64 args[0];
+-};
++} __bpf_ctx;
+ 
+ /* DIRECT:  Skip the FIB rules and go to FIB table associated with device
+  * OUTPUT:  Do lookup from egress perspective; default is ingress
+@@ -7245,7 +7251,7 @@ struct bpf_sysctl {
+ 	__u32	file_pos;	/* Sysctl file position to read from, write to.
+ 				 * Allows 1,2,4-byte read an 4-byte write.
+ 				 */
+-};
++} __bpf_ctx;
+ 
+ struct bpf_sockopt {
+ 	__bpf_md_ptr(struct bpf_sock *, sk);
+@@ -7256,7 +7262,7 @@ struct bpf_sockopt {
+ 	__s32	optname;
+ 	__s32	optlen;
+ 	__s32	retval;
+-};
++} __bpf_ctx;
+ 
+ struct bpf_pidns_info {
+ 	__u32 pid;
+@@ -7280,7 +7286,7 @@ struct bpf_sk_lookup {
+ 	__u32 local_ip6[4];	/* Network byte order */
+ 	__u32 local_port;	/* Host byte order */
+ 	__u32 ingress_ifindex;		/* The arriving interface. Determined by inet_iif. */
+-};
++} __bpf_ctx;
+ 
+ /*
+  * struct btf_ptr is used for typed pointer representation; the
+@@ -7406,4 +7412,6 @@ struct bpf_iter_num {
+ 	__u64 __opaque[1];
+ } __attribute__((aligned(8)));
+ 
++#undef __bpf_ctx
++
+ #endif /* _UAPI__LINUX_BPF_H__ */
+diff --git a/include/uapi/linux/bpf_perf_event.h b/include/uapi/linux/bpf_perf_event.h
+index eb1b9d21250c..608e366877fc 100644
+--- a/include/uapi/linux/bpf_perf_event.h
++++ b/include/uapi/linux/bpf_perf_event.h
+@@ -10,10 +10,18 @@
+ 
+ #include <asm/bpf_perf_event.h>
+ 
++#if __has_attribute(preserve_static_offset) && defined(__bpf__)
++#define __bpf_ctx __attribute__((preserve_static_offset))
++#else
++#define __bpf_ctx
++#endif
++
+ struct bpf_perf_event_data {
+ 	bpf_user_pt_regs_t regs;
+ 	__u64 sample_period;
+ 	__u64 addr;
+-};
++} __bpf_ctx;
++
++#undef __bpf_ctx
+ 
+ #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index e0545201b55f..f533301de5e4 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -69,6 +69,12 @@ enum {
+ /* BPF has 10 general purpose 64-bit registers and stack frame. */
+ #define MAX_BPF_REG	__MAX_BPF_REG
+ 
++#if __has_attribute(preserve_static_offset) && defined(__bpf__)
++#define __bpf_ctx __attribute__((preserve_static_offset))
++#else
++#define __bpf_ctx
++#endif
++
+ struct bpf_insn {
+ 	__u8	code;		/* opcode */
+ 	__u8	dst_reg:4;	/* dest register */
+@@ -6190,7 +6196,7 @@ struct __sk_buff {
+ 	__u8  tstamp_type;
+ 	__u32 :24;		/* Padding, future use. */
+ 	__u64 hwtstamp;
+-};
++} __bpf_ctx;
+ 
+ struct bpf_tunnel_key {
+ 	__u32 tunnel_id;
+@@ -6271,7 +6277,7 @@ struct bpf_sock {
+ 	__u32 dst_ip6[4];
+ 	__u32 state;
+ 	__s32 rx_queue_mapping;
+-};
++} __bpf_ctx;
+ 
+ struct bpf_tcp_sock {
+ 	__u32 snd_cwnd;		/* Sending congestion window		*/
+@@ -6379,7 +6385,7 @@ struct xdp_md {
+ 	__u32 rx_queue_index;  /* rxq->queue_index  */
+ 
+ 	__u32 egress_ifindex;  /* txq->dev->ifindex */
+-};
++} __bpf_ctx;
+ 
+ /* DEVMAP map-value layout
+  *
+@@ -6429,7 +6435,7 @@ struct sk_msg_md {
+ 	__u32 size;		/* Total size of sk_msg */
+ 
+ 	__bpf_md_ptr(struct bpf_sock *, sk); /* current socket */
+-};
++} __bpf_ctx;
+ 
+ struct sk_reuseport_md {
+ 	/*
+@@ -6468,7 +6474,7 @@ struct sk_reuseport_md {
+ 	 */
+ 	__bpf_md_ptr(struct bpf_sock *, sk);
+ 	__bpf_md_ptr(struct bpf_sock *, migrating_sk);
+-};
++} __bpf_ctx;
+ 
+ #define BPF_TAG_SIZE	8
+ 
+@@ -6678,7 +6684,7 @@ struct bpf_sock_addr {
+ 				 * Stored in network byte order.
+ 				 */
+ 	__bpf_md_ptr(struct bpf_sock *, sk);
+-};
++} __bpf_ctx;
+ 
+ /* User bpf_sock_ops struct to access socket values and specify request ops
+  * and their replies.
+@@ -6761,7 +6767,7 @@ struct bpf_sock_ops {
+ 				 * been written yet.
+ 				 */
+ 	__u64 skb_hwtstamp;
+-};
++} __bpf_ctx;
+ 
+ /* Definitions for bpf_sock_ops_cb_flags */
+ enum {
+@@ -7034,11 +7040,11 @@ struct bpf_cgroup_dev_ctx {
+ 	__u32 access_type;
+ 	__u32 major;
+ 	__u32 minor;
+-};
++} __bpf_ctx;
+ 
+ struct bpf_raw_tracepoint_args {
+ 	__u64 args[0];
+-};
++} __bpf_ctx;
+ 
+ /* DIRECT:  Skip the FIB rules and go to FIB table associated with device
+  * OUTPUT:  Do lookup from egress perspective; default is ingress
+@@ -7245,7 +7251,7 @@ struct bpf_sysctl {
+ 	__u32	file_pos;	/* Sysctl file position to read from, write to.
+ 				 * Allows 1,2,4-byte read an 4-byte write.
+ 				 */
+-};
++} __bpf_ctx;
+ 
+ struct bpf_sockopt {
+ 	__bpf_md_ptr(struct bpf_sock *, sk);
+@@ -7256,7 +7262,7 @@ struct bpf_sockopt {
+ 	__s32	optname;
+ 	__s32	optlen;
+ 	__s32	retval;
+-};
++} __bpf_ctx;
+ 
+ struct bpf_pidns_info {
+ 	__u32 pid;
+@@ -7280,7 +7286,7 @@ struct bpf_sk_lookup {
+ 	__u32 local_ip6[4];	/* Network byte order */
+ 	__u32 local_port;	/* Host byte order */
+ 	__u32 ingress_ifindex;		/* The arriving interface. Determined by inet_iif. */
+-};
++} __bpf_ctx;
+ 
+ /*
+  * struct btf_ptr is used for typed pointer representation; the
+@@ -7406,4 +7412,6 @@ struct bpf_iter_num {
+ 	__u64 __opaque[1];
+ } __attribute__((aligned(8)));
+ 
++#undef __bpf_ctx
++
+ #endif /* _UAPI__LINUX_BPF_H__ */
+diff --git a/tools/include/uapi/linux/bpf_perf_event.h b/tools/include/uapi/linux/bpf_perf_event.h
+index eb1b9d21250c..608e366877fc 100644
+--- a/tools/include/uapi/linux/bpf_perf_event.h
++++ b/tools/include/uapi/linux/bpf_perf_event.h
+@@ -10,10 +10,18 @@
+ 
+ #include <asm/bpf_perf_event.h>
+ 
++#if __has_attribute(preserve_static_offset) && defined(__bpf__)
++#define __bpf_ctx __attribute__((preserve_static_offset))
++#else
++#define __bpf_ctx
++#endif
++
+ struct bpf_perf_event_data {
+ 	bpf_user_pt_regs_t regs;
+ 	__u64 sample_period;
+ 	__u64 addr;
+-};
++} __bpf_ctx;
++
++#undef __bpf_ctx
+ 
+ #endif /* _UAPI__LINUX_BPF_PERF_EVENT_H__ */
+-- 
 2.42.1
+
 
