@@ -1,89 +1,131 @@
-Return-Path: <bpf+bounces-17483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17484-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E47B80E2A4
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 04:20:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89D0980E2E5
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 04:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 489D72823D5
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 03:20:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A86CBB216FB
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 03:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879D17484;
-	Tue, 12 Dec 2023 03:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hzmHp7K+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103298F77;
+	Tue, 12 Dec 2023 03:44:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F14266AB3
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 03:20:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5CC96C433C9;
-	Tue, 12 Dec 2023 03:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702351223;
-	bh=iie8KqJTKp4ymrWk27S5Rr2bKyW+K5mSbJKkEhjuS3U=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hzmHp7K+a9+Ban8X2h6oJY20xHdDXxlasRJr5HjCtMxnwonlbRORP+4TiYqLxKtBc
-	 rrQ4VJw7qNFfpmkgaYd0vVkJDOiMHb5civKc6JeHNTNw7p5IhZ+3vh1+kdbTeqO3a2
-	 KYtNVi0X693eRdwRrKKOajkAclyqQh4ZUzVk9jn0v3aSBDm2vNOQnN/tFDIvSv4waM
-	 XVVi8vkLPRC3MCDmMkk5oBMW5kgxvymEodD2Yy75okevtzkbh2zY+Tth0jDMkvnW71
-	 CczZAH6mwSTqpqPLbbwXHnI/BQKXe8k/s71DLPRG/x35RdpOn3QDJGYF2FvG4Cw4ti
-	 AZmXkZs6wH5Vw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 44A3DC04DD9;
-	Tue, 12 Dec 2023 03:20:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4910FB4
+	for <bpf@vger.kernel.org>; Mon, 11 Dec 2023 19:44:44 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sq4HS3LZgz4f3jJH
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 11:44:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 6312F1A0380
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 11:44:41 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgBXrUsi13dlEGMSDg--.32317S2;
+	Tue, 12 Dec 2023 11:44:38 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+Subject: Re: [PATCH bpf-next 1/4] bpf: Use __GFP_NOWARN for kvcalloc when
+ attaching multiple uprobes
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Jiri Olsa <jolsa@kernel.org>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>,
+ John Fastabend <john.fastabend@gmail.com>,
+ xingwei lee <xrivendell7@gmail.com>, Hou Tao <houtao1@huawei.com>
+References: <20231211112843.4147157-1-houtao@huaweicloud.com>
+ <20231211112843.4147157-2-houtao@huaweicloud.com>
+ <CAADnVQKYE7ijTtcWrdsGpTNvS0r-TTXgkw8-R5U7rWTj+-kqAA@mail.gmail.com>
+Message-ID: <8d17436c-66ea-dea0-38e5-6edcea6c1eea@huaweicloud.com>
+Date: Tue, 12 Dec 2023 11:44:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAADnVQKYE7ijTtcWrdsGpTNvS0r-TTXgkw8-R5U7rWTj+-kqAA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 bpf-next] selftests/bpf: validate eliminated global subprog
- is not freplaceable
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170235122327.10568.5726324397309497701.git-patchwork-notify@kernel.org>
-Date: Tue, 12 Dec 2023 03:20:23 +0000
-References: <20231211174131.2324306-1-andrii@kernel.org>
-In-Reply-To: <20231211174131.2324306-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com, eddyz87@gmail.com,
- alan.maguire@oracle.com
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgBXrUsi13dlEGMSDg--.32317S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7trWrGw45Kr17ArW8CF1kAFb_yoW8KF13pa
+	97GF1UtFn5JFyYv3Wvva1SgFy2yw4kW3y7GanFvry3Zrs8ZrWkKrs7KFW8uFnY9rWvkFWS
+	qr1DKFyjv3yDZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hello:
+Hi,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+On 12/12/2023 12:50 AM, Alexei Starovoitov wrote:
+> On Mon, Dec 11, 2023 at 3:27 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> An abnormally big cnt may be passed to link_create.uprobe_multi.cnt,
+>> and it will trigger the following warning in kvmalloc_node():
+>>
+>>         if (unlikely(size > INT_MAX)) {
+>>                 WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+>>                 return NULL;
+>>         }
+>>
+>> Fix the warning by using __GFP_NOWARN when invoking kvzalloc() in
+>> bpf_uprobe_multi_link_attach().
+>>
+>> Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
+>> Reported-by: xingwei lee <xrivendell7@gmail.com>
+>> Closes: https://lore.kernel.org/bpf/CABOYnLwwJY=yFAGie59LFsUsBAgHfroVqbzZ5edAXbFE3YiNVA@mail.gmail.com
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>  kernel/trace/bpf_trace.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index 774cf476a892..07b9b5896d6c 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -3378,7 +3378,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>>         err = -ENOMEM;
+>>
+>>         link = kzalloc(sizeof(*link), GFP_KERNEL);
+>> -       uprobes = kvcalloc(cnt, sizeof(*uprobes), GFP_KERNEL);
+>> +       uprobes = kvcalloc(cnt, sizeof(*uprobes), GFP_KERNEL | __GFP_NOWARN);
+> __GFP_NOWARN will hide actual malloc failures.
+> Let's limit cnt instead. Both for k and u multi probes.
 
-On Mon, 11 Dec 2023 09:41:31 -0800 you wrote:
-> Add selftest that establishes dead code-eliminated valid global subprog
-> (global_dead) and makes sure that it's not possible to freplace it, as
-> it's effectively not there. This test will fail with unexpected success
-> before 2afae08c9dcb ("bpf: Validate global subprogs lazily").
-> 
-> v2->v3:
->   - add missing err assignment (Alan);
->   - undo unnecessary signature changes in verifier_global_subprogs.c (Eduard);
-> v1->v2:
->   - don't rely on assembly output in verifier log, which changes between
->     compiler versions (CI).
-> 
-> [...]
+Do you mean there will be no warning messages when the malloc request
+can not be fulfilled, right ?  Because kvcalloc() will still return
+-ENOMEM when __GFP_NOWARN is used, so the userspace knows the malloc
+failed. And I also found out that __GFP_NOWARN only effect the
+invocation of vmalloc(), because kvmalloc_node() enable __GFP_NOWARN for
+kmalloc() by default when the passed size is greater than PAGE_SIZE.
 
-Here is the summary with links:
-  - [v3,bpf-next] selftests/bpf: validate eliminated global subprog is not freplaceable
-    https://git.kernel.org/bpf/bpf-next/c/e72c1ccfd449
+I also though about fixing the problem by limitation, but I could not
+get good reference values for these limitations. For multiple kprobe,
+maybe the number of kallsyms can be used as an anchor (e.g, the number
+is 207617 on my local dev machine), how about using 
+__roundup_pow_of_two(207617 * 4) = 1 << 20 for multiple kprobes ? For
+multiple uprobes, maybe (1<<20) is also suitable.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
 
