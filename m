@@ -1,43 +1,41 @@
-Return-Path: <bpf+bounces-17616-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17619-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B0BC80FB53
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 00:26:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AAA8880FB56
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 00:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C91F3280EB5
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 23:26:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65AC8281103
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 23:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0ED745C4;
-	Tue, 12 Dec 2023 23:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C99B364CE7;
+	Tue, 12 Dec 2023 23:26:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670D09B
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 15:26:02 -0800 (PST)
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCLfWht030379
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 15:26:02 -0800
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B29DB2
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 15:26:12 -0800 (PST)
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 3BCLfTIR009891
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 15:26:11 -0800
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uxx6818jv-20
+	by m0001303.ppops.net (PPS) with ESMTPS id 3uxq0ucsbv-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 15:26:01 -0800
-Received: from twshared34392.14.frc2.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 15:26:11 -0800
+Received: from twshared51573.38.frc1.facebook.com (2620:10d:c085:108::4) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 12 Dec 2023 15:25:57 -0800
+ 15.1.2507.34; Tue, 12 Dec 2023 15:26:09 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 166F93D0C8A60; Tue, 12 Dec 2023 15:25:56 -0800 (PST)
+	id 2EF613D0C8A6F; Tue, 12 Dec 2023 15:25:58 -0800 (PST)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>,
-        Eduard Zingerman
-	<eddyz87@gmail.com>
-Subject: [PATCH v2 bpf-next 09/10] selftests/bpf: add global subprog annotation tests
-Date: Tue, 12 Dec 2023 15:25:34 -0800
-Message-ID: <20231212232535.1875938-10-andrii@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v2 bpf-next 10/10] selftests/bpf: add freplace of BTF-unreliable main prog test
+Date: Tue, 12 Dec 2023 15:25:35 -0800
+Message-ID: <20231212232535.1875938-11-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231212232535.1875938-1-andrii@kernel.org>
 References: <20231212232535.1875938-1-andrii@kernel.org>
@@ -50,145 +48,154 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-GUID: 7xM47ifhn_2eG-tKuujM0QHqyB3AOOch
-X-Proofpoint-ORIG-GUID: 7xM47ifhn_2eG-tKuujM0QHqyB3AOOch
+X-Proofpoint-GUID: UnhgE0KkhLTeGHEexe4Fr_oIna1zih1I
+X-Proofpoint-ORIG-GUID: UnhgE0KkhLTeGHEexe4Fr_oIna1zih1I
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-12_12,2023-12-12_01,2023-05-22_02
 
-Add test cases to validate semantics of global subprog argument
-annotations:
-  - non-null pointers;
-  - context argument;
-  - const dynptr passing;
-  - packet pointers (data, metadata, end).
+Add a test validating that freplace'ing another main (entry) BPF program
+fails if the target BPF program doesn't have valid/expected func proto BT=
+F.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../bpf/progs/verifier_global_subprogs.c      | 99 ++++++++++++++++++-
- 1 file changed, 95 insertions(+), 4 deletions(-)
+ .../selftests/bpf/prog_tests/fexit_bpf2bpf.c  | 14 +++++++++++++
+ .../selftests/bpf/prog_tests/verifier.c       |  2 ++
+ .../bpf/progs/freplace_unreliable_prog.c      | 20 +++++++++++++++++++
+ .../bpf/progs/verifier_btf_unreliable_prog.c  | 20 +++++++++++++++++++
+ 4 files changed, 56 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/freplace_unreliable=
+_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_btf_unreli=
+able_prog.c
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c=
- b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-index bd696a431244..9eeb2d89cda8 100644
---- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-@@ -1,12 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c b/too=
+ls/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+index 8ec73fdfcdab..39ce45337e7d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+@@ -374,6 +374,9 @@ static void test_obj_load_failure_common(const char *=
+obj_file,
+ 	err =3D bpf_program__set_attach_target(prog, pkt_fd, NULL);
+ 	ASSERT_OK(err, "set_attach_target");
 =20
--#include <stdbool.h>
--#include <errno.h>
--#include <string.h>
--#include <linux/bpf.h>
-+#include <vmlinux.h>
- #include <bpf/bpf_helpers.h>
- #include "bpf_misc.h"
-+#include "xdp_metadata.h"
-+#include "bpf_kfuncs.h"
-=20
- int arr[1];
- int unkn_idx;
-@@ -98,4 +97,96 @@ int unguarded_unsupp_global_called(void)
- 	return global_unsupp(&x);
++	if (env.verbosity > VERBOSE_NONE)
++		bpf_program__set_log_level(prog, 2);
++
+ 	/* It should fail to load the program */
+ 	err =3D bpf_object__load(obj);
+ 	if (CHECK(!err, "bpf_obj_load should fail", "err %d\n", err))
+@@ -398,6 +401,15 @@ static void test_func_map_prog_compatibility(void)
+ 				     "./test_attach_probe.bpf.o");
  }
 =20
-+long stack[128];
-+
-+__weak int subprog_nullable_ptr_bad(int *p)
++static void test_func_replace_unreliable(void)
 +{
-+	return (*p) * 2; /* bad, missing null check */
++	/* freplace'ing unreliable main prog should fail with error
++	 * "Cannot replace static functions"
++	 */
++	test_obj_load_failure_common("freplace_unreliable_prog.bpf.o",
++				     "./verifier_btf_unreliable_prog.bpf.o");
 +}
 +
-+SEC("?raw_tp")
-+__failure __log_level(2)
-+__msg("invalid mem access 'mem_or_null'")
-+int arg_tag_nullable_ptr_fail(void *ctx)
-+{
-+	int x =3D 42;
+ static void test_func_replace_global_func(void)
+ {
+ 	const char *prog_name[] =3D {
+@@ -563,6 +575,8 @@ void serial_test_fexit_bpf2bpf(void)
+ 		test_func_replace_return_code();
+ 	if (test__start_subtest("func_map_prog_compatibility"))
+ 		test_func_map_prog_compatibility();
++	if (test__start_subtest("func_replace_unreliable"))
++		test_func_replace_unreliable();
+ 	if (test__start_subtest("func_replace_multi"))
+ 		test_func_replace_multi();
+ 	if (test__start_subtest("fmod_ret_freplace"))
+diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
+sting/selftests/bpf/prog_tests/verifier.c
+index 8d746642cbd7..1174a303e075 100644
+--- a/tools/testing/selftests/bpf/prog_tests/verifier.c
++++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
+@@ -13,6 +13,7 @@
+ #include "verifier_bpf_get_stack.skel.h"
+ #include "verifier_bswap.skel.h"
+ #include "verifier_btf_ctx_access.skel.h"
++#include "verifier_btf_unreliable_prog.skel.h"
+ #include "verifier_cfg.skel.h"
+ #include "verifier_cgroup_inv_retcode.skel.h"
+ #include "verifier_cgroup_skb.skel.h"
+@@ -123,6 +124,7 @@ void test_verifier_bounds_mix_sign_unsign(void) { RUN=
+(verifier_bounds_mix_sign_u
+ void test_verifier_bpf_get_stack(void)        { RUN(verifier_bpf_get_sta=
+ck); }
+ void test_verifier_bswap(void)                { RUN(verifier_bswap); }
+ void test_verifier_btf_ctx_access(void)       { RUN(verifier_btf_ctx_acc=
+ess); }
++void test_verifier_btf_unreliable_prog(void)  { RUN(verifier_btf_unrelia=
+ble_prog); }
+ void test_verifier_cfg(void)                  { RUN(verifier_cfg); }
+ void test_verifier_cgroup_inv_retcode(void)   { RUN(verifier_cgroup_inv_=
+retcode); }
+ void test_verifier_cgroup_skb(void)           { RUN(verifier_cgroup_skb)=
+; }
+diff --git a/tools/testing/selftests/bpf/progs/freplace_unreliable_prog.c=
+ b/tools/testing/selftests/bpf/progs/freplace_unreliable_prog.c
+new file mode 100644
+index 000000000000..624078abf3de
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/freplace_unreliable_prog.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2020 Facebook
 +
-+	return subprog_nullable_ptr_bad(&x);
-+}
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
 +
-+__noinline __weak int subprog_nonnull_ptr_good(int *p1 __arg_nonnull, in=
-t *p2 __arg_nonnull)
-+{
-+	return (*p1) * (*p2); /* good, no need for NULL checks */
-+}
-+
-+int x =3D 47;
-+
-+SEC("?raw_tp")
-+__success __log_level(2)
-+int arg_tag_nonnull_ptr_good(void *ctx)
-+{
-+	int y =3D 74;
-+
-+	return subprog_nonnull_ptr_good(&x, &y);
-+}
-+
-+/* this global subprog can be now called from many types of entry progs,=
- each
-+ * with different context type
++SEC("freplace/btf_unreliable_kprobe")
++/* context type is what BPF verifier expects for kprobe context, but tar=
+get
++ * program has `stuct whatever *ctx` argument, so freplace operation wil=
+l be
++ * rejected with the following message:
++ *
++ * arg0 replace_btf_unreliable_kprobe(struct pt_regs *) doesn't match bt=
+f_unreliable_kprobe(struct whatever *)
 + */
-+__weak int subprog_ctx_tag(void *ctx __arg_ctx)
++int replace_btf_unreliable_kprobe(bpf_user_pt_regs_t *ctx)
 +{
-+	return bpf_get_stack(ctx, stack, sizeof(stack), 0);
++	return 0;
 +}
 +
-+SEC("?raw_tp")
++char _license[] SEC("license") =3D "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/verifier_btf_unreliable_pr=
+og.c b/tools/testing/selftests/bpf/progs/verifier_btf_unreliable_prog.c
+new file mode 100644
+index 000000000000..36e033a2e02c
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/verifier_btf_unreliable_prog.c
+@@ -0,0 +1,20 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2017 Facebook
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_misc.h"
++
++struct whatever {};
++
++SEC("kprobe")
 +__success __log_level(2)
-+int arg_tag_ctx_raw_tp(void *ctx)
++/* context type is wrong, making it impossible to freplace this program =
+*/
++int btf_unreliable_kprobe(struct whatever *ctx)
 +{
-+	return subprog_ctx_tag(ctx);
++	return 0;
 +}
 +
-+SEC("?tp")
-+__success __log_level(2)
-+int arg_tag_ctx_tp(void *ctx)
-+{
-+	return subprog_ctx_tag(ctx);
-+}
-+
-+SEC("?kprobe")
-+__success __log_level(2)
-+int arg_tag_ctx_kprobe(void *ctx)
-+{
-+	return subprog_ctx_tag(ctx);
-+}
-+
-+__weak int subprog_dynptr(struct bpf_dynptr *dptr)
-+{
-+	long *d, t, buf[1] =3D {};
-+
-+	d =3D bpf_dynptr_data(dptr, 0, sizeof(long));
-+	if (!d)
-+		return 0;
-+
-+	t =3D *d + 1;
-+
-+	d =3D bpf_dynptr_slice(dptr, 0, &buf, sizeof(long));
-+	if (!d)
-+		return t;
-+
-+	t =3D *d + 2;
-+
-+	return t;
-+}
-+
-+SEC("?xdp")
-+__success __log_level(2)
-+int arg_tag_dynptr(struct xdp_md *ctx)
-+{
-+	struct bpf_dynptr dptr;
-+
-+	bpf_dynptr_from_xdp(ctx, 0, &dptr);
-+
-+	return subprog_dynptr(&dptr);
-+}
-+
- char _license[] SEC("license") =3D "GPL";
++char _license[] SEC("license") =3D "GPL";
 --=20
 2.34.1
 
