@@ -1,36 +1,42 @@
-Return-Path: <bpf+bounces-17601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CD8980FA4F
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 23:31:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F21D80FA90
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 23:54:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57F3C2819D8
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 22:31:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20D57B20F82
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 22:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 818ED66117;
-	Tue, 12 Dec 2023 22:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C211446A0;
+	Tue, 12 Dec 2023 22:54:02 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F54AA
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 14:31:17 -0800 (PST)
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 2EF392B68D7E5; Tue, 12 Dec 2023 14:31:06 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Cope with 512 bytes limit with bpf_global_percpu_ma
-Date: Tue, 12 Dec 2023 14:31:06 -0800
-Message-Id: <20231212223106.2138881-1-yonghong.song@linux.dev>
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6407AA
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 14:53:59 -0800 (PST)
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BCLg7f5002091
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 14:53:59 -0800
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uxkk95hg9-6
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 14:53:59 -0800
+Received: from twshared10507.42.prn1.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Tue, 12 Dec 2023 14:53:58 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id F3BDE3D0C37DB; Tue, 12 Dec 2023 14:53:44 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH bpf-next] selftests/bpf: fix compiler warnings in RELEASE=1 mode
+Date: Tue, 12 Dec 2023 14:53:43 -0800
+Message-ID: <20231212225343.1723081-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212223040.2135547-1-yonghong.song@linux.dev>
-References: <20231212223040.2135547-1-yonghong.song@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -38,90 +44,53 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: t7cPptOUgieUpsKjLqZne9qtVJM4__9t
+X-Proofpoint-ORIG-GUID: t7cPptOUgieUpsKjLqZne9qtVJM4__9t
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_12,2023-12-12_01,2023-05-22_02
 
-In the previous patch, the maximum data size for bpf_global_percpu_ma
-is 512 bytes. This breaks selftest test_bpf_ma. Let us adjust it
-accordingly. Also added a selftest to capture the verification failure
-when the allocation size (adjusted by memory allocator) is greater than 5=
-12.
+When compiling BPF selftests with RELEASE=3D1, we get two new
+warnings, which are treated as errors. Fix them.
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../selftests/bpf/progs/percpu_alloc_fail.c    | 18 ++++++++++++++++++
- .../testing/selftests/bpf/progs/test_bpf_ma.c  |  9 ---------
- 2 files changed, 18 insertions(+), 9 deletions(-)
+ tools/testing/selftests/bpf/veristat.c        | 2 +-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c b/tool=
-s/testing/selftests/bpf/progs/percpu_alloc_fail.c
-index 1a891d30f1fe..d4c8a924e875 100644
---- a/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
-+++ b/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
-@@ -17,6 +17,10 @@ struct val_with_rb_root_t {
- 	struct bpf_spin_lock lock;
- };
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selft=
+ests/bpf/veristat.c
+index 1d418d66e375..244d4996e06e 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -1254,7 +1254,7 @@ static int cmp_join_stat(const struct verif_stats_j=
+oin *s1,
+ 			 bool asc, bool abs)
+ {
+ 	const char *str1 =3D NULL, *str2 =3D NULL;
+-	double v1, v2;
++	double v1 =3D 0.0, v2 =3D 0.0;
+ 	int cmp =3D 0;
 =20
-+struct val_600b_t {
-+	char b[600];
-+};
-+
- struct elem {
- 	long sum;
- 	struct val_t __percpu_kptr *pc;
-@@ -161,4 +165,18 @@ int BPF_PROG(test_array_map_7)
- 	return 0;
- }
-=20
-+SEC("?fentry.s/bpf_fentry_test1")
-+__failure __msg("bpf_percpu_obj_new type size (600) is greater than 504"=
-)
-+int BPF_PROG(test_array_map_8)
-+{
-+	struct val_600b_t __percpu_kptr *p;
-+
-+	p =3D bpf_percpu_obj_new(struct val_600b_t);
-+	if (!p)
-+		return 0;
-+
-+	bpf_percpu_obj_drop(p);
-+	return 0;
-+}
-+
- char _license[] SEC("license") =3D "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/test_bpf_ma.c b/tools/test=
-ing/selftests/bpf/progs/test_bpf_ma.c
-index b685a4aba6bd..68cba55eb828 100644
---- a/tools/testing/selftests/bpf/progs/test_bpf_ma.c
-+++ b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
-@@ -188,9 +188,6 @@ DEFINE_ARRAY_WITH_PERCPU_KPTR(128);
- DEFINE_ARRAY_WITH_PERCPU_KPTR(192);
- DEFINE_ARRAY_WITH_PERCPU_KPTR(256);
- DEFINE_ARRAY_WITH_PERCPU_KPTR(512);
--DEFINE_ARRAY_WITH_PERCPU_KPTR(1024);
--DEFINE_ARRAY_WITH_PERCPU_KPTR(2048);
--DEFINE_ARRAY_WITH_PERCPU_KPTR(4096);
-=20
- SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
- int test_batch_alloc_free(void *ctx)
-@@ -259,9 +256,6 @@ int test_batch_percpu_alloc_free(void *ctx)
- 	CALL_BATCH_PERCPU_ALLOC_FREE(192, 128, 6);
- 	CALL_BATCH_PERCPU_ALLOC_FREE(256, 128, 7);
- 	CALL_BATCH_PERCPU_ALLOC_FREE(512, 64, 8);
--	CALL_BATCH_PERCPU_ALLOC_FREE(1024, 32, 9);
--	CALL_BATCH_PERCPU_ALLOC_FREE(2048, 16, 10);
--	CALL_BATCH_PERCPU_ALLOC_FREE(4096, 8, 11);
-=20
- 	return 0;
- }
-@@ -283,9 +277,6 @@ int test_percpu_free_through_map_free(void *ctx)
- 	CALL_BATCH_PERCPU_ALLOC(192, 128, 6);
- 	CALL_BATCH_PERCPU_ALLOC(256, 128, 7);
- 	CALL_BATCH_PERCPU_ALLOC(512, 64, 8);
--	CALL_BATCH_PERCPU_ALLOC(1024, 32, 9);
--	CALL_BATCH_PERCPU_ALLOC(2048, 16, 10);
--	CALL_BATCH_PERCPU_ALLOC(4096, 8, 11);
-=20
- 	return 0;
- }
+ 	fetch_join_stat_value(s1, id, var, &str1, &v1);
+diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testin=
+g/selftests/bpf/xdp_hw_metadata.c
+index 3291625ba4fb..c69c08933fdd 100644
+--- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+@@ -79,7 +79,7 @@ static int open_xsk(int ifindex, struct xsk *xsk, __u32=
+ queue_id)
+ 		.flags =3D XSK_UMEM__DEFAULT_FLAGS,
+ 		.tx_metadata_len =3D sizeof(struct xsk_tx_metadata),
+ 	};
+-	__u32 idx;
++	__u32 idx =3D 0;
+ 	u64 addr;
+ 	int ret;
+ 	int i;
 --=20
 2.34.1
 
