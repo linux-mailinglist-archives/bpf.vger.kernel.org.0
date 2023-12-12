@@ -1,236 +1,266 @@
-Return-Path: <bpf+bounces-17507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 544A180EA31
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 12:17:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDC6B80EA43
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 12:21:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09310281FAF
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 11:17:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7422B281F18
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 11:21:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033385D481;
-	Tue, 12 Dec 2023 11:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB425D483;
+	Tue, 12 Dec 2023 11:20:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD5EBE;
-	Tue, 12 Dec 2023 03:17:24 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SqGKp54dqzZcl2;
-	Tue, 12 Dec 2023 19:17:18 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4699618005A;
-	Tue, 12 Dec 2023 19:17:22 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 12 Dec
- 2023 19:17:21 +0800
-Subject: Re: [net-next v1 09/16] page_pool: device memory support
-To: Mina Almasry <almasrymina@google.com>
-CC: Shailend Chand <shailend@google.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-arch@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <linux-media@vger.kernel.org>,
-	<dri-devel@lists.freedesktop.org>, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst
-	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
-	<ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, David Ahern
-	<dsahern@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeelb@google.com>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-10-almasrymina@google.com>
- <32211cbf-3a4e-8a86-6214-4304ddb18a98@huawei.com>
- <CAHS8izOQcuLPwvDff96fuNB7r6EU9OWt3ShueQp=u7wat3L5LA@mail.gmail.com>
- <92e30bd9-6df4-b72f-7bcd-f4fe5670eba2@huawei.com>
- <CAHS8izPEFsqw50qgM+sPot6XVvOExpd+DrwrmPSR3zsWGLysRw@mail.gmail.com>
- <CAHS8izN6Cbjy0FCYhJyNsP396XfgJ_nTFXWuHb5QWNct=PifAg@mail.gmail.com>
- <59e07233-24cb-7fb2-1aee-e1cf7eb72fa9@huawei.com>
- <CAHS8izMdpo0D7GYzMkOtg1ueCODAVNxtwSP_qPseSYXNMhPGCw@mail.gmail.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <2cdf173c-95e4-2141-56f7-0761705cd737@huawei.com>
-Date: Tue, 12 Dec 2023 19:17:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 78F64D3;
+	Tue, 12 Dec 2023 03:20:54 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 830C6143D;
+	Tue, 12 Dec 2023 03:21:40 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A8BA3F762;
+	Tue, 12 Dec 2023 03:20:49 -0800 (PST)
+Message-ID: <8b398a96-8c75-93fb-b315-2da4b016c9c3@arm.com>
+Date: Tue, 12 Dec 2023 11:20:45 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izMdpo0D7GYzMkOtg1ueCODAVNxtwSP_qPseSYXNMhPGCw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1 01/14] libperf cpumap: Rename perf_cpu_map__dummy_new
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+To: Ian Rogers <irogers@google.com>
+References: <20231129060211.1890454-1-irogers@google.com>
+ <20231129060211.1890454-2-irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
+ John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>,
+ Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=c3=a9_Almeida?=
+ <andrealmeid@igalia.com>, Kan Liang <kan.liang@linux.intel.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ Sean Christopherson <seanjc@google.com>, Paolo Bonzini
+ <pbonzini@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
+ Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+ Andrew Jones <ajones@ventanamicro.com>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>, Atish Patra <atishp@rivosinc.com>,
+ "Steinar H. Gunderson" <sesse@google.com>,
+ Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>,
+ Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>,
+ Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>,
+ Nick Desaulniers <ndesaulniers@google.com>,
+ Huacai Chen <chenhuacai@kernel.org>, Yanteng Si <siyanteng@loongson.cn>,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ bpf@vger.kernel.org
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <20231129060211.1890454-2-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 2023/12/12 2:14, Mina Almasry wrote:
-> On Mon, Dec 11, 2023 at 3:51 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>
->> On 2023/12/11 12:04, Mina Almasry wrote:
->>> On Sun, Dec 10, 2023 at 6:26 PM Mina Almasry <almasrymina@google.com> wrote:
->>>>
->>>> On Sun, Dec 10, 2023 at 6:04 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>>
->>>>> On 2023/12/9 0:05, Mina Almasry wrote:
->>>>>> On Fri, Dec 8, 2023 at 1:30 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>>>>>
->>>>>>>
->>>>>>> As mentioned before, it seems we need to have the above checking every
->>>>>>> time we need to do some per-page handling in page_pool core, is there
->>>>>>> a plan in your mind how to remove those kind of checking in the future?
->>>>>>>
->>>>>>
->>>>>> I see 2 ways to remove the checking, both infeasible:
->>>>>>
->>>>>> 1. Allocate a wrapper struct that pulls out all the fields the page pool needs:
->>>>>>
->>>>>> struct netmem {
->>>>>>         /* common fields */
->>>>>>         refcount_t refcount;
->>>>>>         bool is_pfmemalloc;
->>>>>>         int nid;
->>>>>>         ...
->>>>>>         union {
->>>>>>                 struct dmabuf_genpool_chunk_owner *owner;
->>>>>>                 struct page * page;
->>>>>>         };
->>>>>> };
->>>>>>
->>>>>> The page pool can then not care if the underlying memory is iov or
->>>>>> page. However this introduces significant memory bloat as this struct
->>>>>> needs to be allocated for each page or ppiov, which I imagine is not
->>>>>> acceptable for the upside of removing a few static_branch'd if
->>>>>> statements with no performance cost.
->>>>>>
->>>>>> 2. Create a unified struct for page and dmabuf memory, which the mm
->>>>>> folks have repeatedly nacked, and I imagine will repeatedly nack in
->>>>>> the future.
->>>>>>
->>>>>> So I imagine the special handling of ppiov in some form is critical
->>>>>> and the checking may not be removable.
->>>>>
->>>>> If the above is true, perhaps devmem is not really supposed to be intergated
->>>>> into page_pool.
->>>>>
->>>>> Adding a checking for every per-page handling in page_pool core is just too
->>>>> hacky to be really considerred a longterm solution.
->>>>>
->>>>
->>>> The only other option is to implement another page_pool for ppiov and
->>>> have the driver create page_pool or ppiov_pool depending on the state
->>>> of the netdev_rx_queue (or some helper in the net stack to do that for
->>>> the driver). This introduces some code duplication. The ppiov_pool &
->>>> page_pool would look similar in implementation.
->>
->> I think there is a design pattern already to deal with this kind of problem,
->> refactoring common code used by both page_pool and ppiov into a library to
->> aovid code duplication if most of them have similar implementation.
->>
-> 
-> Code can be refactored if it's identical, not if it is similar. I
 
-Similarity indicates an opportunity to the refactor out the common
-code, like the page_frag case below:
-https://patchwork.kernel.org/project/netdevbpf/cover/20231205113444.63015-1-linyunsheng@huawei.com/
 
-But untill we do a proof of concept implemention, it is hard to tell if
-it is feasiable or not.
+On 29/11/2023 06:01, Ian Rogers wrote:
+> Rename perf_cpu_map__dummy_new to perf_cpu_map__new_any_cpu to better
+> indicate this is creating a CPU map for the perf_event_open "any" CPU
+> case.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-> suspect the page_pools will be only similar, and if you're not willing
-> to take devmem handling into the page pool then refactoring page_pool
-> code into helpers that do devmem handling may also not be an option.
-> 
->>>>
->>>> But this was all discussed in detail in RFC v2 and the last response I
->>>> heard from Jesper was in favor if this approach, if I understand
->>>> correctly:
->>>>
->>>> https://lore.kernel.org/netdev/7aedc5d5-0daf-63be-21bc-3b724cc1cab9@redhat.com/
->>>>
->>>> Would love to have the maintainer weigh in here.
->>>>
->>>
->>> I should note we may be able to remove some of the checking, but maybe not all.
->>>
->>> - Checks that disable page fragging for ppiov can be removed once
->>> ppiov has frag support (in this series or follow up).
->>>
->>> - If we use page->pp_frag_count (or page->pp_ref_count) for
->>> refcounting ppiov, we can remove the if checking in the refcounting.
->>>
-> 
-> I'm not sure this is actually possible in the short term. The
-> page_pool uses both page->_refcount and page->pp_frag_count for
-> refcounting, and I will not be able to remove the special handling
-> around page->_refcount as i'm not allowed to call page_ref_*() APIs on
-> a non-struct page.
+Reviewed-by: James Clark <james.clark@arm.com>
 
-the page_ref_*() API may be avoided using the below patch:
-https://patchwork.kernel.org/project/netdevbpf/patch/20231113130041.58124-7-linyunsheng@huawei.com/
-
-But I am not sure how to do that for tx part if devmem for tx is not
-intergating into page_pool, that is why I suggest having a tx implementation
-for the next version, so that we can have a whole picture of devmem.
-
+> ---
+>  tools/lib/perf/Documentation/libperf.txt | 2 +-
+>  tools/lib/perf/cpumap.c                  | 4 ++--
+>  tools/lib/perf/evsel.c                   | 2 +-
+>  tools/lib/perf/include/perf/cpumap.h     | 4 ++--
+>  tools/lib/perf/libperf.map               | 2 +-
+>  tools/lib/perf/tests/test-cpumap.c       | 2 +-
+>  tools/lib/perf/tests/test-evlist.c       | 2 +-
+>  tools/perf/tests/cpumap.c                | 2 +-
+>  tools/perf/tests/sw-clock.c              | 2 +-
+>  tools/perf/tests/task-exit.c             | 2 +-
+>  tools/perf/util/evlist.c                 | 2 +-
+>  tools/perf/util/evsel.c                  | 2 +-
+>  12 files changed, 14 insertions(+), 14 deletions(-)
 > 
->>> - We may be able to store the dma_addr of the ppiov in page->dma_addr,
->>> but I'm unsure if that actually works, because the dma_buf dmaddr is
->>> dma_addr_t (u32 or u64), but page->dma_addr is unsigned long (4 bytes
->>> I think). But if it works for pages I may be able to make it work for
->>> ppiov as well.
->>>
->>> - Checks that obtain the page->pp can work with ppiov if we align the
->>> offset of page->pp and ppiov->pp.
->>>
->>> - Checks around page->pp_magic can be removed if we also have offset
->>> aligned ppiov->pp_magic.
->>>
->>> Sadly I don't see us removing the checking for these other cases:
->>>
->>> - page_is_pfmemalloc(): I'm not allowed to pass a non-struct page into
->>> that helper.
->>
->> We can do similar trick like above as bit 1 of page->pp_magic is used to
->> indicate that if it is a pfmemalloc page.
->>
-> 
-> Likely yes.
-> 
->>>
->>> - page_to_nid(): I'm not allowed to pass a non-struct page into that helper.
->>
->> Yes, this one need special case.
->>
->>>
->>> - page_pool_free_va(): ppiov have no va.
->>
->> Doesn't the skb_frags_readable() checking will protect the page_pool_free_va()
->> from being called on devmem?
->>
-> 
-> This function seems to be only called from veth which doesn't support
-> devmem. I can remove the handling there.
-> 
->>>
->>> - page_pool_sync_for_dev/page_pool_dma_map: ppiov backed by dma-buf
->>> fundamentally can't get mapped again.
->>
->> Can we just fail the page_pool creation with PP_FLAG_DMA_MAP and
->> DMA_ATTR_SKIP_CPU_SYNC flags for devmem provider?
->>
-> 
-> Jakub says PP_FLAG_DMA_MAP must be enabled for devmem, such that the
-> page_pool handles the dma mapping of the devmem and the driver doesn't
-> use it on its own.
-
-I am not sure what benefit does it bring by enabling the DMA_MAP for devmem,
-as devmem seems to call dma_buf_map_attachment() in netdev_bind_dmabuf(), it
-does not really need enabling PP_FLAG_DMA_MAP to get the dma addr for the
-devmem chunk.
+> diff --git a/tools/lib/perf/Documentation/libperf.txt b/tools/lib/perf/Documentation/libperf.txt
+> index a8f1a237931b..a256a26598b0 100644
+> --- a/tools/lib/perf/Documentation/libperf.txt
+> +++ b/tools/lib/perf/Documentation/libperf.txt
+> @@ -37,7 +37,7 @@ SYNOPSIS
+>  
+>    struct perf_cpu_map;
+>  
+> -  struct perf_cpu_map *perf_cpu_map__dummy_new(void);
+> +  struct perf_cpu_map *perf_cpu_map__new_any_cpu(void);
+>    struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
+>    struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+>    struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
+> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> index 2a5a29217374..2bd6aba3d8c9 100644
+> --- a/tools/lib/perf/cpumap.c
+> +++ b/tools/lib/perf/cpumap.c
+> @@ -27,7 +27,7 @@ struct perf_cpu_map *perf_cpu_map__alloc(int nr_cpus)
+>  	return result;
+>  }
+>  
+> -struct perf_cpu_map *perf_cpu_map__dummy_new(void)
+> +struct perf_cpu_map *perf_cpu_map__new_any_cpu(void)
+>  {
+>  	struct perf_cpu_map *cpus = perf_cpu_map__alloc(1);
+>  
+> @@ -271,7 +271,7 @@ struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list)
+>  	else if (*cpu_list != '\0')
+>  		cpus = cpu_map__default_new();
+>  	else
+> -		cpus = perf_cpu_map__dummy_new();
+> +		cpus = perf_cpu_map__new_any_cpu();
+>  invalid:
+>  	free(tmp_cpus);
+>  out:
+> diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> index 8b51b008a81f..c07160953224 100644
+> --- a/tools/lib/perf/evsel.c
+> +++ b/tools/lib/perf/evsel.c
+> @@ -120,7 +120,7 @@ int perf_evsel__open(struct perf_evsel *evsel, struct perf_cpu_map *cpus,
+>  		static struct perf_cpu_map *empty_cpu_map;
+>  
+>  		if (empty_cpu_map == NULL) {
+> -			empty_cpu_map = perf_cpu_map__dummy_new();
+> +			empty_cpu_map = perf_cpu_map__new_any_cpu();
+>  			if (empty_cpu_map == NULL)
+>  				return -ENOMEM;
+>  		}
+> diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+> index e38d859a384d..d0bf218ada11 100644
+> --- a/tools/lib/perf/include/perf/cpumap.h
+> +++ b/tools/lib/perf/include/perf/cpumap.h
+> @@ -19,9 +19,9 @@ struct perf_cache {
+>  struct perf_cpu_map;
+>  
+>  /**
+> - * perf_cpu_map__dummy_new - a map with a singular "any CPU"/dummy -1 value.
+> + * perf_cpu_map__new_any_cpu - a map with a singular "any CPU"/dummy -1 value.
+>   */
+> -LIBPERF_API struct perf_cpu_map *perf_cpu_map__dummy_new(void);
+> +LIBPERF_API struct perf_cpu_map *perf_cpu_map__new_any_cpu(void);
+>  LIBPERF_API struct perf_cpu_map *perf_cpu_map__default_new(void);
+>  LIBPERF_API struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
+>  LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+> diff --git a/tools/lib/perf/libperf.map b/tools/lib/perf/libperf.map
+> index 190b56ae923a..a8ff64baea3e 100644
+> --- a/tools/lib/perf/libperf.map
+> +++ b/tools/lib/perf/libperf.map
+> @@ -1,7 +1,7 @@
+>  LIBPERF_0.0.1 {
+>  	global:
+>  		libperf_init;
+> -		perf_cpu_map__dummy_new;
+> +		perf_cpu_map__new_any_cpu;
+>  		perf_cpu_map__default_new;
+>  		perf_cpu_map__get;
+>  		perf_cpu_map__put;
+> diff --git a/tools/lib/perf/tests/test-cpumap.c b/tools/lib/perf/tests/test-cpumap.c
+> index 87b0510a556f..2c359bdb951e 100644
+> --- a/tools/lib/perf/tests/test-cpumap.c
+> +++ b/tools/lib/perf/tests/test-cpumap.c
+> @@ -21,7 +21,7 @@ int test_cpumap(int argc, char **argv)
+>  
+>  	libperf_init(libperf_print);
+>  
+> -	cpus = perf_cpu_map__dummy_new();
+> +	cpus = perf_cpu_map__new_any_cpu();
+>  	if (!cpus)
+>  		return -1;
+>  
+> diff --git a/tools/lib/perf/tests/test-evlist.c b/tools/lib/perf/tests/test-evlist.c
+> index ed616fc19b4f..ab63878bacb9 100644
+> --- a/tools/lib/perf/tests/test-evlist.c
+> +++ b/tools/lib/perf/tests/test-evlist.c
+> @@ -261,7 +261,7 @@ static int test_mmap_thread(void)
+>  	threads = perf_thread_map__new_dummy();
+>  	__T("failed to create threads", threads);
+>  
+> -	cpus = perf_cpu_map__dummy_new();
+> +	cpus = perf_cpu_map__new_any_cpu();
+>  	__T("failed to create cpus", cpus);
+>  
+>  	perf_thread_map__set_pid(threads, 0, pid);
+> diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
+> index 7730fc2ab40b..bd8e396f3e57 100644
+> --- a/tools/perf/tests/cpumap.c
+> +++ b/tools/perf/tests/cpumap.c
+> @@ -213,7 +213,7 @@ static int test__cpu_map_intersect(struct test_suite *test __maybe_unused,
+>  
+>  static int test__cpu_map_equal(struct test_suite *test __maybe_unused, int subtest __maybe_unused)
+>  {
+> -	struct perf_cpu_map *any = perf_cpu_map__dummy_new();
+> +	struct perf_cpu_map *any = perf_cpu_map__new_any_cpu();
+>  	struct perf_cpu_map *one = perf_cpu_map__new("1");
+>  	struct perf_cpu_map *two = perf_cpu_map__new("2");
+>  	struct perf_cpu_map *empty = perf_cpu_map__intersect(one, two);
+> diff --git a/tools/perf/tests/sw-clock.c b/tools/perf/tests/sw-clock.c
+> index 4d7493fa0105..290716783ac6 100644
+> --- a/tools/perf/tests/sw-clock.c
+> +++ b/tools/perf/tests/sw-clock.c
+> @@ -62,7 +62,7 @@ static int __test__sw_clock_freq(enum perf_sw_ids clock_id)
+>  	}
+>  	evlist__add(evlist, evsel);
+>  
+> -	cpus = perf_cpu_map__dummy_new();
+> +	cpus = perf_cpu_map__new_any_cpu();
+>  	threads = thread_map__new_by_tid(getpid());
+>  	if (!cpus || !threads) {
+>  		err = -ENOMEM;
+> diff --git a/tools/perf/tests/task-exit.c b/tools/perf/tests/task-exit.c
+> index 968dddde6dda..d33d0952025c 100644
+> --- a/tools/perf/tests/task-exit.c
+> +++ b/tools/perf/tests/task-exit.c
+> @@ -70,7 +70,7 @@ static int test__task_exit(struct test_suite *test __maybe_unused, int subtest _
+>  	 * evlist__prepare_workload we'll fill in the only thread
+>  	 * we're monitoring, the one forked there.
+>  	 */
+> -	cpus = perf_cpu_map__dummy_new();
+> +	cpus = perf_cpu_map__new_any_cpu();
+>  	threads = thread_map__new_by_tid(-1);
+>  	if (!cpus || !threads) {
+>  		err = -ENOMEM;
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index e36da58522ef..ff7f85ded89d 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -1056,7 +1056,7 @@ int evlist__create_maps(struct evlist *evlist, struct target *target)
+>  		return -1;
+>  
+>  	if (target__uses_dummy_map(target))
+> -		cpus = perf_cpu_map__dummy_new();
+> +		cpus = perf_cpu_map__new_any_cpu();
+>  	else
+>  		cpus = perf_cpu_map__new(target->cpu_list);
+>  
+> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> index a5da74e3a517..76ef3ab488a2 100644
+> --- a/tools/perf/util/evsel.c
+> +++ b/tools/perf/util/evsel.c
+> @@ -1801,7 +1801,7 @@ static int __evsel__prepare_open(struct evsel *evsel, struct perf_cpu_map *cpus,
+>  
+>  	if (cpus == NULL) {
+>  		if (empty_cpu_map == NULL) {
+> -			empty_cpu_map = perf_cpu_map__dummy_new();
+> +			empty_cpu_map = perf_cpu_map__new_any_cpu();
+>  			if (empty_cpu_map == NULL)
+>  				return -ENOMEM;
+>  		}
 
