@@ -1,79 +1,166 @@
-Return-Path: <bpf+bounces-17489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EAB580E419
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 06:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D39AF80E56D
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 09:05:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E75211F21F29
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 05:58:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F2881F21967
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 08:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7301115AC8;
-	Tue, 12 Dec 2023 05:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BE618636;
+	Tue, 12 Dec 2023 08:05:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YhOHsMUx"
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="k4ms8joL"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2451DA1;
-	Mon, 11 Dec 2023 21:58:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=lgLwTEhQVr7SeOkAbXZIpqhiCYecdKkb92XRhk3Nnto=; b=YhOHsMUxRMFey39Ub+BOoHUSpN
-	6MD2YvGw42vNtElnYki1NxJH9KlY8dt3Xm1HkV2P6cve8n0OT2lWYfK3Du2qGpAm+OR+Cys5wPkIf
-	LE4znGLFwFzfwfuhB6/ZRcFvqHR3KNSaEVVBM4sFec7GGKvkoEBEVIp1GDKF6IeHVHVxytGCrpZCx
-	1faM9v6zX2g+69mh7wf3OyXFWKq/ZNrIB+bGXJyrwEC02dodJ4tmwi4CT68czYOjwgp+Y+4GW16Am
-	Y55OjcCnUTKf5hamO76diNt+t88idSnTc+d8igc/Ad7wSE/4sh15ZHLMvQYX/GREDrEwnDJrL70OT
-	pMrg2+hQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rCvmR-00ApZl-36;
-	Tue, 12 Dec 2023 05:58:07 +0000
-Date: Mon, 11 Dec 2023 21:58:07 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	bpf@vger.kernel.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeelb@google.com>,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [net-next v1 00/16] Device Memory TCP
-Message-ID: <ZXf2b/Bmupwm9LaD@infradead.org>
-References: <20231208005250.2910004-1-almasrymina@google.com>
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EE43CD
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 00:05:23 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5c6ce4dffb5so2683718a12.0
+        for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 00:05:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1702368322; x=1702973122; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xyrJ/oaF1a1+OdMWUr85QqR8PoKu+Afm3G/pEUOxUgM=;
+        b=k4ms8joLRiz69TcncnStNynkMWeX1AAk+q95UPMY08nbTrIPCfAcvMGA8aCj+ZU+lq
+         FYvkGgoDgIU/D4aSbpnM88tWrC11CVQxtjE2ovvCGfndzEoXVZ/PJP58dSUZ0/VVQ2cF
+         HzP8xylyMNogQxZO9AgOervvJOBMCzrSnGRwEwxoIFm8/RYYUpa2UUK8Pm/OICIt+giu
+         bsaKrXXR1NPcxwT6ywFNalqw665P7aKMwEflfMTJcNjakqvAXzd5D0VR86398MrWmMpO
+         UEf1PyoKtz+iIIakiuo0G3cV/+GD+35l5W6HFbkN01kyduWl/MALvQ1uuCT49p7RhReC
+         gzbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702368322; x=1702973122;
+        h=content-transfer-encoding:cc:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xyrJ/oaF1a1+OdMWUr85QqR8PoKu+Afm3G/pEUOxUgM=;
+        b=QGAXl64Cz/DFYn1mLfQJn5i3368tMt5vsccxs48ANNt/t1KsYmQHRKcF9AcVw8SVNb
+         wHZ13Pa7w5Hj/T70h/icO+qzI5sqDnpPTFchUnJQ2HJkFJUToIdhFfZIU3KZmpjQmkvR
+         N4ic5MUPY/k1qhzS2hxz8P+OQYBKe5QOkjLqLzchoJzP6LCA6TuyQbD7pKhpxT9DNZYN
+         XyfRLVigBiWMKR0knToIt+Way2ojqRB+RqEiCHExadiyb7IZsvBEVuX2g8snfXVRYP5a
+         MfvuMe36+XNH13aelMVFLz0He7AiiKY9+SAkHcSC4lyclItB7/VazZX8vWzBmyS/1don
+         a7fg==
+X-Gm-Message-State: AOJu0YxMJNkqFJQBfy4msdpv0zMGC1+qiQvz2aCu8KMz6viobcLuVMVL
+	IKWAB7yJjODZ5ZrbIsJnLh9OmQ==
+X-Google-Smtp-Source: AGHT+IEql1gIzfMgiC3uwAyX05ccRP/TJmlVXqhwk7OLXHzm7HuO8eWQfZEt37CKdp9jdfYH1gF7Bw==
+X-Received: by 2002:a05:6a21:999d:b0:18f:fb0d:e961 with SMTP id ve29-20020a056a21999d00b0018ffb0de961mr3147656pzb.60.1702368322598;
+        Tue, 12 Dec 2023 00:05:22 -0800 (PST)
+Received: from [157.82.205.15] ([157.82.205.15])
+        by smtp.gmail.com with ESMTPSA id j17-20020a056a00175100b006ce6bf5491dsm7531509pfc.198.2023.12.12.00.05.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Dec 2023 00:05:22 -0800 (PST)
+Message-ID: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
+Date: Tue, 12 Dec 2023 17:05:15 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231208005250.2910004-1-almasrymina@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Jason Wang <jasowang@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Yuri Benditovich
+ <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>,
+ Benjamin Tissoires <bentiss@kernel.org>
+From: Akihiko Odaki <akihiko.odaki@daynix.com>
+Subject: Should I add BPF kfuncs for userspace apps? And how?
+Cc: bpf <bpf@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, kvm@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>,
+ virtualization@lists.linux-foundation.org,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Please don't spread scatterlists further.  They are a bad data structure
-that mix input data (page, offset, len) and output data (phys_addr,
-dma_offset, dma_len), and do in a horrible way for iommmu mappings that
-can coalesce.  Jason and coworkers have been looking into the long
-overdue API to better support batch mapping of better data structures,
-and this is a prime example of new code that should be using.
+Hi,
+
+It is said eBPF is a safe way to extend kernels and that is very 
+attarctive, but we need to use kfuncs to add new usage of eBPF and 
+kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to ask 
+some questions:
+
+1) Which should I choose, BPF kfuncs or ioctl, when adding a new feature 
+for userspace apps?
+2) How should I use BPF kfuncs from userspace apps if I add them?
+
+Here, a "userspace app" means something not like a system-wide daemon 
+like systemd (particularly, I have QEMU in mind). I'll describe the 
+context more below:
+
+---
+
+I'm working on a new feature that aids virtio-net implementations using 
+tuntap virtual network device. You can see [1] for details, but 
+basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four more 
+bytes.
+
+However, with long discussions we have confirmed extending 
+BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfuncs is 
+the way forward. So I decided how to add kfuncs to the kernel and how to 
+use it. There are rich documentations for the kernel side, but I found 
+little about the userspace. The best I could find is a systemd change 
+proposal that is based on WIP kernel changes[2].
+
+So now I'm wondering how I should use BPF kfuncs from userspace apps if 
+I add them. In the systemd discussion, it is told that Linus said it's 
+fine to use BPF kfuncs in a private infrastructure big companies own, or 
+in systemd as those users know well about the system[3]. Indeed, those 
+users should be able to make more assumptions on the kernel than 
+"normal" userspace applications can.
+
+Returning to my proposal, I'm proposing a new feature to be used by QEMU 
+or other VMM applications. QEMU is more like a normal userspace 
+application, and usually does not make much assumptions on the kernel it 
+runs on. For example, it's generally safe to run a Debian container 
+including QEMU installed with apt on Fedora. BPF kfuncs may work even in 
+such a situation thanks to CO-RE, but it sounds like *accidentally* 
+creating UAPIs.
+
+Considering all above, how can I integrate BPF kfuncs to the application?
+
+If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle them 
+is to think of BPF programs as some sort of kernel modules and 
+incorporate logic that behaves like modprobe. More concretely, I can put 
+eBPF binaries to a directory like:
+/usr/local/share/qemu/ebpf/$KERNEL_RELEASE
+
+Then, QEMU can uname() and get the path to the binary. It will give an 
+error if it can't find the binary for the current kernel so that it 
+won't create accidental UAPIs.
+
+The obvious downside of this is that it complicates packaging a lot; it 
+requires packaging QEMU eBPF binaries each time a new kernel comes up. 
+This complexity is centrally managed by modprobe for kernel modules, but 
+apparently each application needs to take care of it for BPF programs.
+
+In conclusion, I see too much complexity to use BPF in a userspace 
+application, which we didn't have to care for 
+BPF_PROG_TYPE_SOCKET_FILTER. Isn't there a better way? Or shouldn't I 
+use BPF in my case in the first place?
+
+Thanks,
+Akihiko Odaki
+
+[1] 
+https://lore.kernel.org/all/20231015141644.260646-1-akihiko.odaki@daynix.com/
+[2] https://github.com/systemd/systemd/pull/29797
+[3] https://github.com/systemd/systemd/pull/29797#discussion_r1384637939
 
