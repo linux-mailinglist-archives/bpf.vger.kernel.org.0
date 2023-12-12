@@ -1,280 +1,200 @@
-Return-Path: <bpf+bounces-17539-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17540-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AB5180EEE8
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 15:36:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 004BC80EEFD
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 15:40:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25B3DB20DD4
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 14:36:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9E9328184B
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 14:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F975745C0;
-	Tue, 12 Dec 2023 14:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A268C745DD;
+	Tue, 12 Dec 2023 14:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="lXhvQM4U"
 X-Original-To: bpf@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 808608E;
-	Tue, 12 Dec 2023 06:36:26 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55E94143D;
-	Tue, 12 Dec 2023 06:37:12 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2BB023F738;
-	Tue, 12 Dec 2023 06:36:21 -0800 (PST)
-Message-ID: <2adf8e9c-e08d-a772-bfe2-378d6759721f@arm.com>
-Date: Tue, 12 Dec 2023 14:36:21 +0000
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2058.outbound.protection.outlook.com [40.107.96.58])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEDDD2;
+	Tue, 12 Dec 2023 06:39:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JGWKSkukbtknhxGOtHugGyz8SJYWAZxF1MbG3h6d4X/eXQ8Qr4pDf5DzWzWRLQMLSCyrvfwApGC8V2FJJTqwbeJ2GfYeI79aOUoTuY1c65dl6VnI5SlDvNr4vsoeQ+h+0/iOpsEb0ImIv/c3rRkBlBeR6Ixp8eSkb/okoWRWGk1EPtXnUHrx507iropkTJDJ6S4Wz4kU+2uzPjgo8/i8CTp/UTjx4A/2m0pQFXWNIk/wkfKSjvgvZdatOV1ocqvYc6Unm5gwTtQIFhcHP/jWw+jFIU8vbDaaQmskL2GV26TpUYDlll4QXdYomVxd4dQudGGtAVwaykDZfQd1xf/4Dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=60HBBWINjhv3np+zHYZFIeDsai/Y2e+4IoMDbnDWuoc=;
+ b=YIC4ufIZ7S5SL2Ee/NjpnfzL6TF79NoD4Ts1ZXQkBrHgyuqmniOPXrGuSDoJLfPchHomqpvwZRBzexa14SQWA3c95KuHIr/ly7MVVGzkw4hgboOhRNsLUYa4wmpygFq5JlAil2eMjVV+GSDplWV78BectsSleUCYRMAL+v/A8Ajz//Z86gP+0pB61shnXTeZPwyDakI/lLi5L625/Uk8AI1bLBFmG0CcQGTjJ5CRK1x8EcV2mGqIBSjK3j29ELnSBQpE1zJtIhB8zclX5yrruWThYMnhxs4UVDbWBUJaRTyIr9eNhySnJg+gJbzI33yuR8WqyjtPk4CZ1KX/DjD/ZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=60HBBWINjhv3np+zHYZFIeDsai/Y2e+4IoMDbnDWuoc=;
+ b=lXhvQM4UWNBxe01wW9kR8JC3GPJ3NMYcdb8QbhNsGgfj/KDrLEdEq2j9JCwdofLIpoiGJYJdkhQlEkS0Czn1+QbtQlM5Y9A4d6BV+mzJG3ulnf1SqSgulKXzTEbQsWc3IFZPNCJdjWktRujU/s8/Q93p4EPOjyaYGTb5D8aAffR7whsQ9loBODfvT5BCiZn0PGbY2zDuQ8jsSGTRk2w8rMPL3LlRIgvPPTArQ4MdO5yqEQt/SRXKu9mvBM46wHJUwAtD7NDPjKBtByOwKbMMEIPn9smMS6m+biE6Opl8G8J2GDWejh30Q6NPfL5dhkcAYHuw+m7OpFrUTbpom3GEgA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by PH7PR12MB7889.namprd12.prod.outlook.com (2603:10b6:510:27f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Tue, 12 Dec
+ 2023 14:39:44 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.7091.022; Tue, 12 Dec 2023
+ 14:39:44 +0000
+Date: Tue, 12 Dec 2023 10:39:42 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	bpf@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeelb@google.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christoph Hellwig <hch@infradead.org>
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
+ provider
+Message-ID: <20231212143942.GF3014157@nvidia.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com>
+ <20231212122535.GA3029808@nvidia.com>
+ <CAHS8izMVMx0fpT=dWsnD7piqs1g7Fam8Xf5dK3iOFNxeOQD9vQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHS8izMVMx0fpT=dWsnD7piqs1g7Fam8Xf5dK3iOFNxeOQD9vQ@mail.gmail.com>
+X-ClientProxiedBy: MN2PR20CA0021.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::34) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 07/14] perf arm-spe/cs-etm: Directly iterate CPU maps
-Content-Language: en-US
-From: James Clark <james.clark@arm.com>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, John Garry <john.g.garry@oracle.com>,
- Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Darren Hart <dvhart@infradead.org>, Davidlohr Bueso <dave@stgolabs.net>,
- =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
- Kan Liang <kan.liang@linux.intel.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
- Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
- Andrew Jones <ajones@ventanamicro.com>,
- Alexandre Ghiti <alexghiti@rivosinc.com>, Atish Patra <atishp@rivosinc.com>,
- "Steinar H. Gunderson" <sesse@google.com>,
- Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>,
- Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>,
- Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>,
- Nick Desaulniers <ndesaulniers@google.com>,
- Huacai Chen <chenhuacai@kernel.org>, Yanteng Si <siyanteng@loongson.cn>,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- bpf@vger.kernel.org, Leo Yan <leo.yan@linaro.org>
-References: <20231129060211.1890454-1-irogers@google.com>
- <20231129060211.1890454-8-irogers@google.com>
- <e3a01313-ed03-bc54-0260-5445fb2c15ee@arm.com>
-In-Reply-To: <e3a01313-ed03-bc54-0260-5445fb2c15ee@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|PH7PR12MB7889:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5680d03c-e323-4f5b-7afb-08dbfb202e7c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UuIYqwdDMapiqaAI841n5k2jvrudkwDIgnYHWPZxTfVMmUjFJj9cyAVWy4NP2CkYl7Onm2TocgQqRvyltAsswnRV/k1FvWckTdLe+TFu7vnRBu/btHqeLwXO95Ei8/JcKHEAoLZw1U1aBnFUn3BlEIl9IB/PBdvoZRFI3loZipW8bCzYnZzt5kR4umA8d+x8I4jlulPLxCFf5i8iV8P0US0/YrZUJAw6ow7EEvIU1h8bRx5dikzUSPtnQKTsFj83dJNBjd7PpnWT2B3i7vdfPydL96BWkQ/2p5IncrNmXoukNdoAzzN9u6deJ+iIp70X4iP1YAsBjPENLpqll+5H1+i9Xs51f4+x+BEM5NXNP781oY+7Q4qg4uPeA55nEwDO8074v1zjT3WdDCUneXgrUkW31QkFKvQsCXiVL3TgOmvcITXf1nqcXViLcEdcP9CjlgXlpBNwL/JSKX2y59c1UD9iU/Zfnxs25CzBbc5MrctdL6PwugaedwaoNmK55cuOLHS44lXV4atsOzmVa/GFSzhN/Ox9mWdTE+Fh9DOyEhhBnRA0oGUyngcAZJpJGfAV
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(366004)(396003)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(2906002)(8676002)(8936002)(316002)(5660300002)(7416002)(7406005)(4326008)(6512007)(6506007)(6486002)(2616005)(478600001)(54906003)(86362001)(33656002)(36756003)(66946007)(66556008)(66476007)(6916009)(38100700002)(53546011)(26005)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bTA2TnpCMjVPaHVZTWJnaWo5RmJ2UlZleEhyOUNXYWtRN2U0dzFDeHpldXlj?=
+ =?utf-8?B?b1dUOVJWU1F2dm9obmUwRVJrWUZCUmtSeGJmNjk5RGhISTYyNjdNTXovYkJz?=
+ =?utf-8?B?TXcyNFc0YXFUd3pNK0xzZ1h1VzJMakZuSUUxcEJsdjhvV1YvOHJlU1hCRjhL?=
+ =?utf-8?B?cmV3UG1DWVIwRHdBL3luUG9BMk5LWitSZGZIWGdic2VCeEpKV0NBeE50bHRs?=
+ =?utf-8?B?bFRWdDZuZHkwNnJrR3JHemRubk9PZFdyVGVtM3A0YVM3TkZtaXRjQUNBVjlK?=
+ =?utf-8?B?SFdQeGZpRCtFdmpHT2NXTlhBTHlwaW54UkNBd0lHdXdwTFh2SUYwT0poUEJX?=
+ =?utf-8?B?NnNVSkhoSVJSMll3OTREZGRvYXR3dVFXSHRnMXFVM3gyL0xTQ1lzZllNRlBn?=
+ =?utf-8?B?cjQwUEJLc3lETmJMN1J0bkt3WG50N3RiZ1R3MlhyZk9CYXJ6R3AwcnFtd2oz?=
+ =?utf-8?B?ckl4aUVkNEZHV0hEZHVmcXBkZldtekFKQjZxWDZuczdsamIweDlDQ2xwaFFK?=
+ =?utf-8?B?WlErb3lYeTM2TXVweVAzRkRQcnNEdzhjUXpRY3JCeVdJN2NnWHpBekJVL1FR?=
+ =?utf-8?B?WncrOWo3TUxrZDlYMU5ObVRMa29nblViVFFMN0tGQmk1bHVpWThDM3VnTG5h?=
+ =?utf-8?B?R3pWSTJpdndKTXVXendHeXlkVXpPdk5BdGJIUG96cUt3ZFV5Ri9oK09JTkVQ?=
+ =?utf-8?B?YVU0SEhGUUdUcGRqN1plNjJWUzZTTmgyK1dvYklYS3l1QVFvY0pPSWt1QXVX?=
+ =?utf-8?B?TURhUkFSN1ZRcExUOXUvcmF3cWtKbDRmdG1rTVp3ckp3S3p2NlNrZjVQNkVu?=
+ =?utf-8?B?YXRHaFg1czZSSlQrUW1DcU1ZVzhwRFlyWWxjcXE1S05NTXV5UjJjS3pvZFJC?=
+ =?utf-8?B?eUJra3lOa3ZkdVVKaUlCbzF4WlBxU3E5WTZWZDlTdzRsa20wc1hTSkNTTDRq?=
+ =?utf-8?B?OFV6d2VFczQxdzg5VkJmK3JXbkc1YTdQSWt5eUdjVVQ0WU5lNmc0Unpncmlk?=
+ =?utf-8?B?SVdXTlJuMm5wUmRwZzFwSWNiTjcrZGJnNDVOdWJZYTkwd3VFaExRWk1PV1F1?=
+ =?utf-8?B?R2tEenFMc2poQWJDdnhtZDhOLzk1TVBDNVZGK0ZSd25pTk1oM0ZkSnVOVHo2?=
+ =?utf-8?B?cnFVSkJVb29qeGhBdzhvbnlZNVhrYWc3RkVKZDVjSWREQ0ZudGRQaXBKZllk?=
+ =?utf-8?B?NzhWYnA0cTc2U1UzRlNoQkdXNm9EajZ4ek0rTjdVZkMvYTdHalAySHFqcVVX?=
+ =?utf-8?B?VWU5SGpoLzlZc25qa3FzZkZrc3lnSHF6RFRDbzVFUTBPU1FHRGkxTTBqTGVN?=
+ =?utf-8?B?YXdjQkZnQ3pzVUlJWG9HWHZMTVI0N0hxSUVDbEI2WXcxZFJtNHpadjZ5RlA4?=
+ =?utf-8?B?VC9NQXl2STFXaHkwNmdFRzVaMDMyZzBBQTN5NUZodFFuVTRPZWI4QUhzdENK?=
+ =?utf-8?B?OWQ0WUc0K01mVE5mRXNBUWlhd3NYVUE5bUMzb1krUEFOeHFBdDVoV1JvN0RF?=
+ =?utf-8?B?aW42QVBCUUk1bGtTTUU4b056SXJseVNSVU5hMlZ4MHRSYmc3THplaFNhRXlB?=
+ =?utf-8?B?QXlTOTRNU2NKL1liMVBSYU9iT1daYXliOU4xY0VIYytzU2xjQk9HYlArODRZ?=
+ =?utf-8?B?SWczOTd6NHNVVW56YmtHRTZ5QngrMVZBUXh6R1hxbTJmNm5IK0NnRWJaSVk4?=
+ =?utf-8?B?UHFnaW1WWHV3S2EyK0ZKWjZMd1NKbUI0ck5WRDEvbUdId256MnNjUnBFVGFu?=
+ =?utf-8?B?OHArYXgwUGxRcFQ5NlZnZFBYNUlBQzV5Sml0NUI1V1ZrMG0yM2lQRU9Sdkhi?=
+ =?utf-8?B?TzFzeEZ3UU5HSVlpOG9xMXQ3UzRxRnhST0tDcnZOS2NNaVBJUVoxTHpNQnJQ?=
+ =?utf-8?B?bUtuc2NERFRLb3M4L1lvWVc4M25WNS9mVkoya05TOUc5bUNzWjBlNlF2VnRT?=
+ =?utf-8?B?alc3bklYN0tsWXlRcEdsdlRJR05teWxnMmNBeVlQbGtZL1RhQzlUbW1lbGl2?=
+ =?utf-8?B?MlZicHRKY3krcHZCaUNSLy9VbkJuL284ZE1iYkJIQTQxNzFPUDdxbXlLY2px?=
+ =?utf-8?B?REZweFRzc2lnMGEydDFHTWp0cElJbEsxUGNoVklwVEVvTWpuVFArbUppWVhx?=
+ =?utf-8?Q?VaUq6bnBhoGbuM0LBLJFvV3iZ?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5680d03c-e323-4f5b-7afb-08dbfb202e7c
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2023 14:39:44.2602
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F+AmbUoeP0zhwQ8FxJf57G0tD0LUPLeDwMN9DgfIKdBe5xIHaAAYBvGyeVIBWV9B
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7889
 
-
-
-On 12/12/2023 14:17, James Clark wrote:
+On Tue, Dec 12, 2023 at 06:26:51AM -0800, Mina Almasry wrote:
+> On Tue, Dec 12, 2023 at 4:25 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >
+> > On Thu, Dec 07, 2023 at 04:52:39PM -0800, Mina Almasry wrote:
+> >
+> > > +static inline struct page_pool_iov *page_to_page_pool_iov(struct page *page)
+> > > +{
+> > > +     if (page_is_page_pool_iov(page))
+> > > +             return (struct page_pool_iov *)((unsigned long)page & ~PP_IOV);
+> > > +
+> > > +     DEBUG_NET_WARN_ON_ONCE(true);
+> > > +     return NULL;
+> > > +}
+> >
+> > We already asked not to do this, please do not allocate weird things
+> > can call them 'struct page' when they are not. It undermines the
+> > maintainability of the mm to have things mis-typed like
+> > this. Introduce a new type for your thing so the compiler can check it
+> > properly.
+> >
 > 
-> 
-> On 29/11/2023 06:02, Ian Rogers wrote:
->> Rather than iterate all CPUs and see if they are in CPU maps, directly
->> iterate the CPU map. Similarly make use of the intersect
->> function. Switch perf_cpu_map__has_any_cpu_or_is_empty to more
->> appropriate alternatives.
->>
->> Signed-off-by: Ian Rogers <irogers@google.com>
->> ---
->>  tools/perf/arch/arm/util/cs-etm.c    | 77 ++++++++++++----------------
->>  tools/perf/arch/arm64/util/arm-spe.c |  4 +-
->>  2 files changed, 34 insertions(+), 47 deletions(-)
->>
->> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
->> index 77e6663c1703..a68a72f2f668 100644
->> --- a/tools/perf/arch/arm/util/cs-etm.c
->> +++ b/tools/perf/arch/arm/util/cs-etm.c
->> @@ -197,38 +197,32 @@ static int cs_etm_validate_timestamp(struct auxtrace_record *itr,
->>  static int cs_etm_validate_config(struct auxtrace_record *itr,
->>  				  struct evsel *evsel)
->>  {
->> -	int i, err = -EINVAL;
->> +	int idx, err = -EINVAL;
->>  	struct perf_cpu_map *event_cpus = evsel->evlist->core.user_requested_cpus;
->>  	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
->> +	struct perf_cpu_map *intersect_cpus = perf_cpu_map__intersect(event_cpus, online_cpus);
->> +	struct perf_cpu cpu;
->>  
->> -	/* Set option of each CPU we have */
->> -	for (i = 0; i < cpu__max_cpu().cpu; i++) {
->> -		struct perf_cpu cpu = { .cpu = i, };
->> -
->> -		/*
->> -		 * In per-cpu case, do the validation for CPUs to work with.
->> -		 * In per-thread case, the CPU map is empty.  Since the traced
->> -		 * program can run on any CPUs in this case, thus don't skip
->> -		 * validation.
->> -		 */
->> -		if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus) &&
->> -		    !perf_cpu_map__has(event_cpus, cpu))
->> -			continue;
-> 
-> This has broken validation for per-thread sessions.
-> perf_cpu_map__intersect() doesn't seem to be able to handle the case
-> where an 'any' map intersected with an online map should return the
-> online map. Or at least it should for this to work, and it seems to make
-> sense for it to work that way.
-> 
-> At least that was my initial impression, but I only debugged it and saw
-> that the loop is now skipped entirely.
-> 
->> -
->> -		if (!perf_cpu_map__has(online_cpus, cpu))
->> -			continue;
->> +	perf_cpu_map__put(online_cpus);
->>  
->> -		err = cs_etm_validate_context_id(itr, evsel, i);
->> +	/*
->> +	 * Set option of each CPU we have. In per-cpu case, do the validation
->> +	 * for CPUs to work with.  In per-thread case, the CPU map is empty.
->> +	 * Since the traced program can run on any CPUs in this case, thus don't
->> +	 * skip validation.
->> +	 */
->> +	perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
->> +		err = cs_etm_validate_context_id(itr, evsel, cpu.cpu);
->>  		if (err)
->>  			goto out;
->> -		err = cs_etm_validate_timestamp(itr, evsel, i);
->> +		err = cs_etm_validate_timestamp(itr, evsel, idx);
->>  		if (err)
->>  			goto out;
->>  	}
->>  
->>  	err = 0;
->>  out:
->> -	perf_cpu_map__put(online_cpus);
->> +	perf_cpu_map__put(intersect_cpus);
->>  	return err;
->>  }
->>  
->> @@ -435,7 +429,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
->>  	 * Also the case of per-cpu mmaps, need the contextID in order to be notified
->>  	 * when a context switch happened.
->>  	 */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
->>  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
->>  					   "timestamp", 1);
->>  		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
->> @@ -461,7 +455,7 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
->>  	evsel->core.attr.sample_period = 1;
->>  
->>  	/* In per-cpu case, always need the time of mmap events etc */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus))
->> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus))
->>  		evsel__set_sample_bit(evsel, TIME);
->>  
->>  	err = cs_etm_validate_config(itr, cs_etm_evsel);
->> @@ -533,38 +527,32 @@ static size_t
->>  cs_etm_info_priv_size(struct auxtrace_record *itr __maybe_unused,
->>  		      struct evlist *evlist __maybe_unused)
->>  {
->> -	int i;
->> +	int idx;
->>  	int etmv3 = 0, etmv4 = 0, ete = 0;
->>  	struct perf_cpu_map *event_cpus = evlist->core.user_requested_cpus;
->>  	struct perf_cpu_map *online_cpus = perf_cpu_map__new_online_cpus();
->> +	struct perf_cpu cpu;
->>  
->>  	/* cpu map is not empty, we have specific CPUs to work with */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
->> -		for (i = 0; i < cpu__max_cpu().cpu; i++) {
->> -			struct perf_cpu cpu = { .cpu = i, };
->> -
->> -			if (!perf_cpu_map__has(event_cpus, cpu) ||
->> -			    !perf_cpu_map__has(online_cpus, cpu))
->> -				continue;
->> +	if (!perf_cpu_map__is_empty(event_cpus)) {
->> +		struct perf_cpu_map *intersect_cpus =
->> +			perf_cpu_map__intersect(event_cpus, online_cpus);
->>  
->> -			if (cs_etm_is_ete(itr, i))
->> +		perf_cpu_map__for_each_cpu_skip_any(cpu, idx, intersect_cpus) {
->> +			if (cs_etm_is_ete(itr, cpu.cpu))
+> There is a new type introduced, it's the page_pool_iov. We set the LSB
+> on page_pool_iov* and cast it to page* only to avoid the churn of
+> renaming page* to page_pool_iov* in the page_pool and all the net
+> drivers using it. Is that not a reasonable compromise in your opinion?
+> Since the LSB is set on the resulting page pointers, they are not
+> actually usuable as pages, and are never passed to mm APIs per your
+> requirement.
 
-Similar problem here. For a per-thread session, the CPU map is not empty
-(it's an 'any' map, presumably length 1), so it comes into this first
-if, rather than the else below which is for the 'any' scenario.
+There were two asks, the one you did was to never pass this non-struct
+page memory to the mm, which is great.
 
-Then the intersect with online CPUs results in an empty map, so no CPU
-metadata is recorded, then the session fails.
+The other was to not mistype things, and don't type something as
+struct page when it is, in fact, not.
 
-If you made the intersect work in the way I mentioned above we could
-also delete the else below, because that's just another way to convert
-from 'any' to 'all online'.
+I fear what you've done is make it so only one driver calls these
+special functions and left the other drivers passing the struct page
+directly to the mm and sort of obfuscating why it is OK based on this
+netdev knowledge of not enabling/using the static branch in the other
+cases.
 
->>  				ete++;
->> -			else if (cs_etm_is_etmv4(itr, i))
->> +			else if (cs_etm_is_etmv4(itr, cpu.cpu))
->>  				etmv4++;
->>  			else
->>  				etmv3++;
->>  		}
->> +		perf_cpu_map__put(intersect_cpus);
->>  	} else {
->>  		/* get configuration for all CPUs in the system */
->> -		for (i = 0; i < cpu__max_cpu().cpu; i++) {
->> -			struct perf_cpu cpu = { .cpu = i, };
->> -
->> -			if (!perf_cpu_map__has(online_cpus, cpu))
->> -				continue;
->> -
->> -			if (cs_etm_is_ete(itr, i))
->> +		perf_cpu_map__for_each_cpu(cpu, idx, online_cpus) {
->> +			if (cs_etm_is_ete(itr, cpu.cpu))
->>  				ete++;
->> -			else if (cs_etm_is_etmv4(itr, i))
->> +			else if (cs_etm_is_etmv4(itr, cpu.cpu))
->>  				etmv4++;
->>  			else
->>  				etmv3++;
->> @@ -814,15 +802,14 @@ static int cs_etm_info_fill(struct auxtrace_record *itr,
->>  		return -EINVAL;
->>  
->>  	/* If the cpu_map is empty all online CPUs are involved */
->> -	if (perf_cpu_map__has_any_cpu_or_is_empty(event_cpus)) {
->> +	if (perf_cpu_map__is_empty(event_cpus)) {
->>  		cpu_map = online_cpus;
->>  	} else {
->>  		/* Make sure all specified CPUs are online */
->> -		for (i = 0; i < perf_cpu_map__nr(event_cpus); i++) {
->> -			struct perf_cpu cpu = { .cpu = i, };
->> +		struct perf_cpu cpu;
->>  
->> -			if (perf_cpu_map__has(event_cpus, cpu) &&
->> -			    !perf_cpu_map__has(online_cpus, cpu))
->> +		perf_cpu_map__for_each_cpu(cpu, i, event_cpus) {
->> +			if (!perf_cpu_map__has(online_cpus, cpu))
->>  				return -EINVAL;
->>  		}
->>  
->> diff --git a/tools/perf/arch/arm64/util/arm-spe.c b/tools/perf/arch/arm64/util/arm-spe.c
->> index 51ccbfd3d246..0b52e67edb3b 100644
->> --- a/tools/perf/arch/arm64/util/arm-spe.c
->> +++ b/tools/perf/arch/arm64/util/arm-spe.c
->> @@ -232,7 +232,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->>  	 * In the case of per-cpu mmaps, sample CPU for AUX event;
->>  	 * also enable the timestamp tracing for samples correlation.
->>  	 */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
->>  		evsel__set_sample_bit(arm_spe_evsel, CPU);
->>  		evsel__set_config_if_unset(arm_spe_pmu, arm_spe_evsel,
->>  					   "ts_enable", 1);
->> @@ -265,7 +265,7 @@ static int arm_spe_recording_options(struct auxtrace_record *itr,
->>  	tracking_evsel->core.attr.sample_period = 1;
->>  
->>  	/* In per-cpu case, always need the time of mmap events etc */
->> -	if (!perf_cpu_map__has_any_cpu_or_is_empty(cpus)) {
->> +	if (!perf_cpu_map__is_any_cpu_or_is_empty(cpus)) {
->>  		evsel__set_sample_bit(tracking_evsel, TIME);
->>  		evsel__set_sample_bit(tracking_evsel, CPU);
->>  
+Perhaps you can simply avoid this by arranging for this driver to also
+exclusively use some special type to indicate the dual nature of the
+pointer and leave the other drivers as using the struct page version.
+
+Jason
 
