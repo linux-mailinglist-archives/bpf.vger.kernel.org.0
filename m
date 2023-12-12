@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-17583-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17584-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF5580F763
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 21:03:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F071480F7E7
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 21:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19E9D281FD6
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 20:03:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BC481F21789
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 20:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6100452773;
-	Tue, 12 Dec 2023 20:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1E363C12;
+	Tue, 12 Dec 2023 20:27:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zMnWj8Xh"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XeI+ATa+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A96FB9
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 12:03:06 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-551d5cd1c42so2447a12.0
-        for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 12:03:06 -0800 (PST)
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED94D3
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 12:27:25 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50bf1de91c6so772e87.1
+        for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 12:27:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702411384; x=1703016184; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702412843; x=1703017643; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Bv1+Mtk2Gb5EiPRPIvE+IzzrHt4kY36IyFcki/03XAg=;
-        b=zMnWj8XhLMYtIWUzrVfUFw1V40ASR+nE/TEu1+mMnvXF6w0Tm3h0WG3Fu62WhqMLNn
-         AKcd4Bk2Z5Wontkn5TniSMfooYhR8b7s3z5FApYJX/ZyNg/am3lWmEtY8fY8xhtw1TPg
-         TjViyhOqjyAejoa2oZOkTi+8if4XWHBZ4nNRv/3gXvKV+r7OQW0tkqkj1t7DkfEDoRPv
-         R/mNPSHbdqfbH894ku7wqn/0jFpHkSm0iCb7NhbRbOb8KMseBZ4BiOrMyPuTbF5gLjWX
-         2m11eIrM90jtI+fZpqS2xzcyrlUqDKLzi+ufrktfk92qR+l9MiBCTlcbxOJG97BoZGlw
-         oizQ==
+        bh=1r0l9UDH82X/QRijiq/v0dYWas+IVhPxoge2Q6dptEs=;
+        b=XeI+ATa+LdAkHqn1BjFTeJsitxU1zxpjBgkEu8WDKbZNjPhNQtcp57vQoaVKy0kVg8
+         EkFa9fjlHwGU3mvHzRftpGIcAG1ucOaUu6a3rukDYzYIQzBotRmViaGf5Dh2UmLcxSKZ
+         HS38soueUWtlavoqmdkkl+Zm1h8x7D5LwKO5GCgp18xmtIBK7BtJxvYb0oxLzkLYQNXb
+         ZdpeUxBGOA2uS6BrvctKMJKTMR9RVgx5qGmoZ/cN/9yEc3RjxC4KCSqyF2E6Q6z7tmKT
+         ntSzFy0YlgAvbTSZ9SYl8Qqf5cyC1AzJGURXdWDOPnA0JP6FywFNJ4JWkdJ7MQtUU9LH
+         dncg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702411384; x=1703016184;
+        d=1e100.net; s=20230601; t=1702412843; x=1703017643;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Bv1+Mtk2Gb5EiPRPIvE+IzzrHt4kY36IyFcki/03XAg=;
-        b=vXEQ+YplYK+GsFFGRGAIjG0Pmpdxi5cHrCXIObX8f/jfCNsp7xZ+d/R9NIQf/6aLm/
-         Drt8R2qU7owSKEt0ErnzH+r6wxumH4/yFpP5Wk+a9Yr2DCNNwLzJxpzwwU/DTkxHPhFF
-         W4XFCFFs/MqtBgrJWRUAjowqOAsjv5e2K8Ysp0HfKAZLUUOnZ9gd7kjtp5f+GbGSXcqU
-         XDyCYN2Kw5cZ5q6fMT99LnyVlTS78pksNELX8kiLIMC1iwQjjBhy5pdiErthJJDhVWPe
-         HMH/Z/ZUYWIbHuxV30ucg7mSLjMLxxET5mLum4O4b7SVPPVzyv+UfUmpoxK09gYSuzL5
-         fYWg==
-X-Gm-Message-State: AOJu0YyaPrYjA4VHtNVRvxr8dcRUBqcX5aEwOCggJubLJsUpo9Lg0MkR
-	7yztFsoPSIDZ0L4dSFs1FH/Cy935tJvjz+RPuUBuwQ==
-X-Google-Smtp-Source: AGHT+IFxty5Rwnq+BtDPrniM4NJu3mhBKPuQvOaZ2F5HMTUvDhuTrhmlfn2DE5f/6qdWo9MdtqjM8mJL+S15eFV00h4=
-X-Received: by 2002:a50:d7c3:0:b0:54a:ee8b:7a99 with SMTP id
- m3-20020a50d7c3000000b0054aee8b7a99mr392000edj.0.1702411384344; Tue, 12 Dec
- 2023 12:03:04 -0800 (PST)
+        bh=1r0l9UDH82X/QRijiq/v0dYWas+IVhPxoge2Q6dptEs=;
+        b=FixQ7iB1SpbnP5KQ1D/jUCxOmQgZ5dKF4uOtee8TAPLbVMjSHlzT+JKKxFG/Oe+Lqk
+         QwnolCypasXvXhDcQj7Kbv1fIKF6BZId/j8f05oJOYlyY5uWzgJfOe0wT3SxQuzX3L3Z
+         D/a6qCynLaBWxoOL2vV4cYYKmAMVKjUq1PDP2uvpiQ7CKZzYygyCgmGS/WsrxfU2y7Qa
+         98DNNA9nGLBKhWs117a82Sh7KQ7cmgcfgaCuXqRZxk1/JzqKZGHgNV/iNNmS2P3ynhIV
+         teMbo5u5555Vcbbgl62gMnIMLGgDVBg3agdl37EHIWaLIltOnOO1CwExwDm5bdDgPFv9
+         GVeg==
+X-Gm-Message-State: AOJu0Yzx/fsrX1YAEwjdKex80bBrLfR3ygvidok5kDxtywCz1Cd4DDWk
+	KI2G33A9VxddpQES6+CUMsvi8mWwxJXS1RzXqWZwUA==
+X-Google-Smtp-Source: AGHT+IFoY3ALLkdAR2gE36RzhwyUHqDnvxbMLYh3kdlzIKhmBLpUUVJzQp4hNvBUkf9+POe7DeKZkWl1v5OD3OMGjW0=
+X-Received: by 2002:a19:4f07:0:b0:50b:fcb7:15af with SMTP id
+ d7-20020a194f07000000b0050bfcb715afmr233274lfb.3.1702412843308; Tue, 12 Dec
+ 2023 12:27:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,11 +57,11 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20231129060211.1890454-1-irogers@google.com> <20231129060211.1890454-7-irogers@google.com>
- <63d7fe55-719e-43f8-531c-eb7fa30c473a@arm.com>
-In-Reply-To: <63d7fe55-719e-43f8-531c-eb7fa30c473a@arm.com>
+ <94e3745c-8c2b-bdf3-f331-1cbe56574d48@arm.com>
+In-Reply-To: <94e3745c-8c2b-bdf3-f331-1cbe56574d48@arm.com>
 From: Ian Rogers <irogers@google.com>
-Date: Tue, 12 Dec 2023 12:02:52 -0800
-Message-ID: <CAP-5=fXenjeSDcOiQPq0xUyZSpb9PiQ_W7=FVx5oYNYd--RqCA@mail.gmail.com>
+Date: Tue, 12 Dec 2023 12:27:11 -0800
+Message-ID: <CAP-5=fUWtgNMGWowN2+qnV5FV3viHd=kPqiwXUeEtkQAzabLGw@mail.gmail.com>
 Subject: Re: [PATCH v1 06/14] libperf cpumap: Add any, empty and min helpers
 To: James Clark <james.clark@arm.com>
 Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
@@ -87,7 +87,7 @@ Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 6:01=E2=80=AFAM James Clark <james.clark@arm.com> w=
+On Tue, Dec 12, 2023 at 7:06=E2=80=AFAM James Clark <james.clark@arm.com> w=
 rote:
 >
 >
@@ -121,28 +121,62 @@ ap)
 > > +     return __perf_cpu_map__nr(map) =3D=3D 1 && __perf_cpu_map__cpu(ma=
 p, 0).cpu =3D=3D -1;
 > > +}
+>
+> I'm struggling to understand the relevance of the difference between
+> has_any and is_any I see that there is a slight difference, but could it
+> not be refactored out so we only need one?
+
+Yep, that's what these changes are working toward. For has any the set
+{-1, 0, 1} would return true while is any will return false.
+Previously the has any behavior was called "empty" which I think is
+actively misleading.
+
+> Do you ever get an 'any' map that has more than 1 entry? It's quite a
+> subtle difference that is_any returns false if the first one is 'any'
+> but then there are subsequent entries. Whereas has_any would return
+> true. I'm not sure if future readers would be able to appreciate that.
+>
+> I see has_any is only used twice, both on evlist->all_cpus. Is there
+> something about that member that means it could have a map that has an
+> 'any' mixed with CPUs? Wouldn't that have the same result as a normal
+> 'any' anyway?
+
+The dummy event may be opened on any CPU but then a particular event
+may be opened on certain CPUs. We merge CPU maps in places like evlist
+so that we can iterate the appropriate CPUs for events and
+open/enable/disable/close all events on a certain CPU at the same time
+(we also set the affinity to that CPU to avoid IPIs). What I'm hoping
+to do in these changes is reduce the ambiguity, the corner cases are
+by their nature unusual.
+
+An example of a corner case is, uncore events often get opened just on
+CPU 0 but on a multi-socket system you may have a CPU 32 that also
+needs to open the event. Previous code treated the CPU map index and
+value it contained pretty interchangeably. This is often fine for the
+core PMU but is clearly wrong in this uncore case, {0, 32} has indexes
+0 and 1 but those indexes don't match the CPU numbers. The case of -1
+has often previously been called dummy but I'm trying to call it the
+"any CPU" case to match the perf_event_open man page (I'm hoping it
+also makes it less ambiguous with any CPU being used with a particular
+event like cycles, calling it dummy makes the event sound like it may
+have sideband data). The difference between "all CPUs" and "any CPU"
+is that an evsel for all CPUs would need the event opening
+individually on each CPU, while any CPU events are a single open call.
+Any CPU is only valid to perf_event_open if a PID is specified.
+Depending on the set up there could be overlaps in what they count but
+hopefully it is clearer what the distinction is. I believe the case of
+"any CPU" and specific CPU numbers is more common with aux buffers and
+Adrian has mentioned needing it for intel-pt.
+
+Thanks,
+Ian
+
 > > +
 > > +bool perf_cpu_map__is_empty(const struct perf_cpu_map *map)
 > > +{
 > > +     return map =3D=3D NULL;
 > > +}
 > > +
->
-> Maybe it doesn't currently happen, but it seems a bit weird that the
-> 'new' function can create a map of length 0 which would return empty =3D=
-=3D
-> false here.
->
-> Could we either make this check also return true for maps with length 0,
-> or prevent the new function from returning a map of 0 length?
-
-We can add an assert or return NULL for size 0 in alloc. I think I
-prefer the return NULL option. It should never happen but it feels the
-right defensive thing to do.
-
-Thanks,
-Ian
-
 > >  int perf_cpu_map__idx(const struct perf_cpu_map *cpus, struct perf_cpu=
  cpu)
 > >  {
