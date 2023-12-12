@@ -1,53 +1,53 @@
-Return-Path: <bpf+bounces-17588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17587-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37C9B80F901
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 22:18:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C96DB80F900
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 22:18:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC2C11F21767
-	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 21:18:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C487B20F49
+	for <lists+bpf@lfdr.de>; Tue, 12 Dec 2023 21:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CFAE65A9F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0976B6414E;
 	Tue, 12 Dec 2023 21:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WOZlfRw9"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IdqF6PJi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 191DEDB
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 13:17:44 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c66e7eafabso5134241a12.0
-        for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 13:17:44 -0800 (PST)
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B87CD
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 13:17:43 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5c66988c2eeso4519304a12.1
+        for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 13:17:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702415864; x=1703020664; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1702415862; x=1703020662; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=f0qCHVo7XzgiM/gOkeUKMtC009iJZbF6DLauLv10AR0=;
-        b=WOZlfRw9wQcJVZU/DcREddJjA4kuDbVQF2DFHbCFVR9mI7ZlShplJ0MQo8eOvD8B/p
-         hD+hgaEgYfIlJXfDf0IJUF+OWGiCFz3h/TKZ8EV61Pz/sg3alLeUsJV6UdZGWx2PP1rI
-         63gDiQTni9P+W5M4ftrKbVUksn0xHUKES0A+A=
+        bh=OxiCx504yHLmFes8dR2H4gaz2egSElvJRBaPgOOtpHk=;
+        b=IdqF6PJiZgqoOF91vWkL9uv6tUIpcXv1DXnHvXWpQB8m5+BNDhZ6YJV13mIh/F4muk
+         gpm+FM+y6gpy8b6eC6AxF8ckl4O+zv0SbDTwYolCQMp6dP0jC3UNVqWAFaTo4wYHoStB
+         qhUIcaKRPNERf6kVb02TsoFI3QXDHgS0YuJjs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702415864; x=1703020664;
+        d=1e100.net; s=20230601; t=1702415862; x=1703020662;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=f0qCHVo7XzgiM/gOkeUKMtC009iJZbF6DLauLv10AR0=;
-        b=IBrU4MP3p9a5LK57Eog+isONkXAtiDQLmQZ1sQBqxnu8BcvnORXQaX43iOvuBkttOF
-         E5V/M9h9lmzZEhC6NnTmYvoEv79wtfl4/Rjempp0/EUartLyLKH4TJRo/+lNM77yusOP
-         Vg7/UlVjkrvrDMTY4Wm1s3q69QM8DqaigRxpxUlZq5aj1ax0cjY4nKaCSNaOlGj0RU3p
-         pULVPF3iTjvQdA3Jrv+g6vcgUbG4WV5p0rENUfqrBhI1Sv1mqOt9wJ/xOXOeDK+7Imim
-         xqpm50gC9oB0buiQaM44dNmGaJLWEDWf0vttdyQTpQ8ooaHuQJJLilcbSM7PZG6qDz/D
-         vZYg==
-X-Gm-Message-State: AOJu0YyDATF4Nq2WndqbojvqCEdc+v+zrTw+SDqHPv2fzjpeUshWjCEM
-	lXu62jRPv/IEoU+xb0fYQKniNw==
-X-Google-Smtp-Source: AGHT+IH0jtWZUf2hGPaaxQrJqxuBCy5YRYRX5P8B4FrkUSNzU8QibCISdfs+bItVAVMNJIeIAj6vqQ==
-X-Received: by 2002:a05:6a20:1483:b0:18c:9855:e949 with SMTP id o3-20020a056a20148300b0018c9855e949mr5672480pzi.15.1702415864415;
-        Tue, 12 Dec 2023 13:17:44 -0800 (PST)
+        bh=OxiCx504yHLmFes8dR2H4gaz2egSElvJRBaPgOOtpHk=;
+        b=cr9jkCuFCHIpkiBNBAxVgXy0yl4Wi9vrZ4+HBbrIRsspkol1sink0/SM2ql/FO0Jpf
+         yqeRx0RQZqDsSqDxJVaznJIGrfuldgvjx/UxZVu2SXwB+4GraTgfi3TreDRo6eYGxWSI
+         u4ut9Sq+hZZheoUt/Qzv11HKhDCjmY57seciZdRGS2U+4PO77XoGlwhp239/hts6hRBr
+         3qGq+Mr05tlJIBu1ZG1TxAFVNUZ7mHnKSrC6wvZoUCtOUFz3kk3R3ha6bli+r9FxnOas
+         D1MNAehAqZ0jcU6aqL4egLM4K4Gvn/v7il+92aPJ4rnySIT1i+viIJgp1lcKUcm4kzdC
+         D33w==
+X-Gm-Message-State: AOJu0Yzc49UfW4mA6xsQTHYzQ56oR3SUXqakElXsaimMj/ZrWw13z69b
+	gqyqYnxzFofngHOwMZecWmPcVw==
+X-Google-Smtp-Source: AGHT+IFZhYAnfJATAp5f8kNXN8iWkuiSMleFokPSoTjfG2AtdN5pQcDE9+7YEKuV8bBVd3VgTPcxlg==
+X-Received: by 2002:a05:6a20:54a5:b0:187:4118:140 with SMTP id i37-20020a056a2054a500b0018741180140mr11548864pzk.24.1702415862593;
+        Tue, 12 Dec 2023 13:17:42 -0800 (PST)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t14-20020a63eb0e000000b005ac384b71cbsm8583878pgh.60.2023.12.12.13.17.41
+        by smtp.gmail.com with ESMTPSA id t18-20020aa79392000000b006ce2e163776sm8602974pfe.106.2023.12.12.13.17.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 12 Dec 2023 13:17:41 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
@@ -63,9 +63,9 @@ Cc: Kees Cook <keescook@chromium.org>,
 	cgroups@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH v3 1/3] kernfs: Convert kernfs_walk_ns() from strlcpy() to strscpy()
-Date: Tue, 12 Dec 2023 13:17:38 -0800
-Message-Id: <20231212211741.164376-1-keescook@chromium.org>
+Subject: [PATCH v3 2/3] kernfs: Convert kernfs_name_locked() from strlcpy() to strscpy()
+Date: Tue, 12 Dec 2023 13:17:39 -0800
+Message-Id: <20231212211741.164376-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231212211606.make.155-kees@kernel.org>
 References: <20231212211606.make.155-kees@kernel.org>
@@ -75,19 +75,19 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1627; i=keescook@chromium.org;
- h=from:subject; bh=KaMikVVf9IlMYxhWSymwvYJ80Grx9jhkkXD92Gcwols=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBleM3zg8fq+Kgz91M5MgN0iGKTEy9c1pTW6k2g3
- Om7gwyq3vSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZXjN8wAKCRCJcvTf3G3A
- JiEbD/9sPG6e4XUmGL/t2yQxqs/Tot72LHnqAm/mN/d6Ly5AAAqHsoFvek/mQG8wTg0lCNknNj1
- YF1q7adAapgFepvZU8OXC+tWuPzPLcG3o8K6Sgkeir5yl9fwIzvjt/J0dJZoYYENLHghz4BAKXi
- rzcIQJGt+KoQ1kgGjloXVMlL9LG0DZtXjSoBCd9a5u77yL2JMD/XxJt/ttDsxn52o+ts7JLolAo
- YKyCkIpgJbBrALTTmUjiOCIh1UJzxnQFkN2EtES96fjl+CVDIg/8tmBk5AZZDTh66MQ75dbLi6I
- +1n+T71e3pcJDw97P1Hfd7QmLBAQSSNgTD8DemX7IVA52zA01seskFB9mwF/8GYRzvm1TJisAqM
- PeNcVIyvLDfy1ahMBfJszaBkCqnOmmwjVGfSLGhtq93fVgtjaD4zfyP0UtsNFTVVbjQ9tU84hev
- 7dd6XddCX4RE6UvGt8qoPYZRUlkfb84C+zWvymEA2Gn/eaq8y5odSWRlXl3WFPW3XDvilS4fER6
- qrMi85l+bsuNtfTSIwl/x6YCRX3j3zmPwmaI6n8VA3xjMNARhArAAAdpCpG2TjocSWY1ZOID5OX
- xUkJTCaX7P1h/qoC1gVn2OIdWrbRnbsAXSNrAplbX1sBjWSnBCAUqNNmxw93lDSSn/pSyBZGigO UaMJYSmjnQJhdiw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2637; i=keescook@chromium.org;
+ h=from:subject; bh=JAJdaxInWUYVNuwIwA8b/GPyHonLetqQSJoS2H+M0wM=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBleM3zBNLwq83oMtldatGW+UhXwbgyaP8FTFySX
+ SrtWyh/9ueJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZXjN8wAKCRCJcvTf3G3A
+ JibgD/4ufESExpzCqMOVFpDS9aGRGAsdrjazCpf2iQUYdg+lI0jphQkKsm1h7avlTW9hQbHum6L
+ XIDQ9PZDb5lLDOIrjLmhf+1t7dFf2HgZDEIL9C1UB40I4ze6I2zfTCPr2rv8KLL0jQEAk/HF/kD
+ KBPvKK8EjofpwVMA4R4UkK3MSVft3BwsaFymv8tPSnP28RqgaQuGyk8s0zXZQhgnhPyCwkDppqf
+ d95VD7b1tomfnFI6BYSAVEQHrqgDQnsPn3M6mCHHHexOvtBkfDk4zqvVq6BsLavJz8cBTGpl5h6
+ vxv838RYpK/CzhAc+7h/dvNtSXfZ4DADXAYimQlIwpLns6ovAhAtiGPrfqQ7i86/H40wiFiPnaG
+ +rH5o5weDvcjdYHfuJlPCkyF5Y+dzImoFy2JZRb1JppWutCqQbNlDaL7lsICz7Qlx+q85h+3qJd
+ 2lCyNhZz4U+/Wd94y0/qO/r45w3UZU7w268hZ2/cHdHl8TUENeOm6mtDtw6IGfMrIMlgvWv0mY7
+ w/YnvghTBDpffCRAyaI3Hd26Wo1a8mN2xSSugompKNDzZFvwfsz01buF6HmE2hHT77Zn+Qzg5Uf
+ MFVhfxh2inSL/3Epv/vGCB8mXxgG2gV5JfEib/uhKFmdmTC84lECXJlavTsoFplQXRWLyHkCIvc LPtZ/+CnQncuMaQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
@@ -98,41 +98,62 @@ Additionally, it returns the size of the source string, not the
 resulting size of the destination string. In an effort to remove strlcpy()
 completely[2], replace strlcpy() here with strscpy().
 
+Nothing actually checks the return value coming from kernfs_name_locked(),
+so this has no impact on error paths. The caller hierarchy is:
+
+kernfs_name_locked()
+        kernfs_name()
+                pr_cont_kernfs_name()
+                        return value ignored
+                cgroup_name()
+                        current_css_set_cg_links_read()
+                                return value ignored
+                        print_page_owner_memcg()
+                                return value ignored
+
 Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy [1]
 Link: https://github.com/KSPP/linux/issues/89 [2]
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Tejun Heo <tj@kernel.org>
 Cc: Azeem Shaikh <azeemshaikh38@gmail.com>
-Link: https://lore.kernel.org/r/20231116192127.1558276-1-keescook@chromium.org
+Link: https://lore.kernel.org/r/20231116192127.1558276-2-keescook@chromium.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/kernfs/dir.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/kernfs/dir.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8b2bd65d70e7..37353901ede1 100644
+index 37353901ede1..8c0e5442597e 100644
 --- a/fs/kernfs/dir.c
 +++ b/fs/kernfs/dir.c
-@@ -850,16 +850,16 @@ static struct kernfs_node *kernfs_walk_ns(struct kernfs_node *parent,
- 					  const unsigned char *path,
- 					  const void *ns)
+@@ -54,9 +54,9 @@ static bool kernfs_lockdep(struct kernfs_node *kn)
+ static int kernfs_name_locked(struct kernfs_node *kn, char *buf, size_t buflen)
  {
--	size_t len;
-+	ssize_t len;
- 	char *p, *name;
+ 	if (!kn)
+-		return strlcpy(buf, "(null)", buflen);
++		return strscpy(buf, "(null)", buflen);
  
- 	lockdep_assert_held_read(&kernfs_root(parent)->kernfs_rwsem);
+-	return strlcpy(buf, kn->parent ? kn->name : "/", buflen);
++	return strscpy(buf, kn->parent ? kn->name : "/", buflen);
+ }
  
- 	spin_lock_irq(&kernfs_pr_cont_lock);
- 
--	len = strlcpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
-+	len = strscpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
- 
--	if (len >= sizeof(kernfs_pr_cont_buf)) {
-+	if (len < 0) {
- 		spin_unlock_irq(&kernfs_pr_cont_lock);
- 		return NULL;
- 	}
+ /* kernfs_node_depth - compute depth from @from to @to */
+@@ -182,12 +182,12 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+  * @buflen: size of @buf
+  *
+  * Copies the name of @kn into @buf of @buflen bytes.  The behavior is
+- * similar to strlcpy().
++ * similar to strscpy().
+  *
+  * Fills buffer with "(null)" if @kn is %NULL.
+  *
+- * Return: the length of @kn's name and if @buf isn't long enough,
+- * it's filled up to @buflen-1 and nul terminated.
++ * Return: the resulting length of @buf. If @buf isn't long enough,
++ * it's filled up to @buflen-1 and nul terminated, and returns -E2BIG.
+  *
+  * This function can be called from any context.
+  */
 -- 
 2.34.1
 
