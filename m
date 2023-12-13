@@ -1,209 +1,182 @@
-Return-Path: <bpf+bounces-17724-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17725-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3188381215F
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 23:24:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23DBA812164
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 23:24:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A951B2825BA
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 22:24:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F36C6B21281
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 22:24:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F6C81829;
-	Wed, 13 Dec 2023 22:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228C581831;
+	Wed, 13 Dec 2023 22:24:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFEEE4
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 14:24:01 -0800 (PST)
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDLi0dc014092
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 14:24:00 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uxx6qgqdd-4
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 14:24:00 -0800
-Received: from twshared29647.38.frc1.facebook.com (2620:10d:c0a8:1b::2d) by
- mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 13 Dec 2023 14:23:57 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 892EF3D1AF801; Wed, 13 Dec 2023 14:23:44 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>
-Subject: [PATCH bpf-next 2/2] selftests/bpf: utilize string values for delegate_xxx mount options
-Date: Wed, 13 Dec 2023 14:23:27 -0800
-Message-ID: <20231213222327.934981-3-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231213222327.934981-1-andrii@kernel.org>
-References: <20231213222327.934981-1-andrii@kernel.org>
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416CBBD;
+	Wed, 13 Dec 2023 14:24:19 -0800 (PST)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1rDXeJ-0003ip-4L; Wed, 13 Dec 2023 23:24:15 +0100
+Date: Wed, 13 Dec 2023 23:24:15 +0100
+From: Florian Westphal <fw@strlen.de>
+To: "D. Wythe" <alibuda@linux.alibaba.com>
+Cc: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, coreteam@netfilter.org,
+	netfilter-devel@vger.kernel.org, davem@davemloft.net,
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+	ast@kernel.org
+Subject: Re: [RFC nf-next 1/2] netfilter: bpf: support prog update
+Message-ID: <20231213222415.GA13818@breakpoint.cc>
+References: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
+ <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: lCCxDewoGmgWbvpgCF57TLUxgcJQPPZ9
-X-Proofpoint-GUID: lCCxDewoGmgWbvpgCF57TLUxgcJQPPZ9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-13_14,2023-12-13_01,2023-05-22_02
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Use both hex-based and string-based way to specify delegate mount
-options for BPF FS.
+D. Wythe <alibuda@linux.alibaba.com> wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> To support the prog update, we need to ensure that the prog seen
+> within the hook is always valid. Considering that hooks are always
+> protected by rcu_read_lock(), which provide us the ability to use a
+> new RCU-protected context to access the prog.
+> 
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+>  net/netfilter/nf_bpf_link.c | 124 +++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 111 insertions(+), 13 deletions(-)
+> 
+> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+> index e502ec0..918c470 100644
+> --- a/net/netfilter/nf_bpf_link.c
+> +++ b/net/netfilter/nf_bpf_link.c
+> @@ -8,17 +8,11 @@
+>  #include <net/netfilter/nf_bpf_link.h>
+>  #include <uapi/linux/netfilter_ipv4.h>
+>  
+> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
+> -				    const struct nf_hook_state *s)
+> +struct bpf_nf_hook_ctx
+>  {
+> -	const struct bpf_prog *prog = bpf_prog;
+> -	struct bpf_nf_ctx ctx = {
+> -		.state = s,
+> -		.skb = skb,
+> -	};
+> -
+> -	return bpf_prog_run(prog, &ctx);
+> -}
+> +	struct bpf_prog *prog;
+> +	struct rcu_head rcu;
+> +};
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../testing/selftests/bpf/prog_tests/token.c  | 52 ++++++++++++-------
- 1 file changed, 32 insertions(+), 20 deletions(-)
+I don't understand the need for this structure.  AFAICS bpf_prog_put()
+will always release the program via call_rcu()?
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/token.c b/tools/testi=
-ng/selftests/bpf/prog_tests/token.c
-index dc03790c6272..90ca7ae9649a 100644
---- a/tools/testing/selftests/bpf/prog_tests/token.c
-+++ b/tools/testing/selftests/bpf/prog_tests/token.c
-@@ -55,14 +55,22 @@ static int restore_priv_caps(__u64 old_caps)
- 	return cap_enable_effective(old_caps, NULL);
- }
-=20
--static int set_delegate_mask(int fs_fd, const char *key, __u64 mask)
-+static int set_delegate_mask(int fs_fd, const char *key, __u64 mask, con=
-st char *mask_str)
- {
- 	char buf[32];
- 	int err;
-=20
--	snprintf(buf, sizeof(buf), "0x%llx", (unsigned long long)mask);
-+	if (!mask_str) {
-+		if (mask =3D=3D ~0ULL) {
-+			mask_str =3D "any";
-+		} else {
-+			snprintf(buf, sizeof(buf), "0x%llx", (unsigned long long)mask);
-+			mask_str =3D buf;
-+		}
-+	}
-+
- 	err =3D sys_fsconfig(fs_fd, FSCONFIG_SET_STRING, key,
--			   mask =3D=3D ~0ULL ? "any" : buf, 0);
-+			   mask_str, 0);
- 	if (err < 0)
- 		err =3D -errno;
- 	return err;
-@@ -75,6 +83,10 @@ struct bpffs_opts {
- 	__u64 maps;
- 	__u64 progs;
- 	__u64 attachs;
-+	const char *cmds_str;
-+	const char *maps_str;
-+	const char *progs_str;
-+	const char *attachs_str;
- };
-=20
- static int create_bpffs_fd(void)
-@@ -93,16 +105,16 @@ static int materialize_bpffs_fd(int fs_fd, struct bp=
-ffs_opts *opts)
- 	int mnt_fd, err;
-=20
- 	/* set up token delegation mount options */
--	err =3D set_delegate_mask(fs_fd, "delegate_cmds", opts->cmds);
-+	err =3D set_delegate_mask(fs_fd, "delegate_cmds", opts->cmds, opts->cmd=
-s_str);
- 	if (!ASSERT_OK(err, "fs_cfg_cmds"))
- 		return err;
--	err =3D set_delegate_mask(fs_fd, "delegate_maps", opts->maps);
-+	err =3D set_delegate_mask(fs_fd, "delegate_maps", opts->maps, opts->map=
-s_str);
- 	if (!ASSERT_OK(err, "fs_cfg_maps"))
- 		return err;
--	err =3D set_delegate_mask(fs_fd, "delegate_progs", opts->progs);
-+	err =3D set_delegate_mask(fs_fd, "delegate_progs", opts->progs, opts->p=
-rogs_str);
- 	if (!ASSERT_OK(err, "fs_cfg_progs"))
- 		return err;
--	err =3D set_delegate_mask(fs_fd, "delegate_attachs", opts->attachs);
-+	err =3D set_delegate_mask(fs_fd, "delegate_attachs", opts->attachs, opt=
-s->attachs_str);
- 	if (!ASSERT_OK(err, "fs_cfg_attachs"))
- 		return err;
-=20
-@@ -284,13 +296,13 @@ static void child(int sock_fd, struct bpffs_opts *o=
-pts, child_callback_fn callba
- 	}
-=20
- 	/* ensure unprivileged child cannot set delegation options */
--	err =3D set_delegate_mask(fs_fd, "delegate_cmds", 0x1);
-+	err =3D set_delegate_mask(fs_fd, "delegate_cmds", 0x1, NULL);
- 	ASSERT_EQ(err, -EPERM, "delegate_cmd_eperm");
--	err =3D set_delegate_mask(fs_fd, "delegate_maps", 0x1);
-+	err =3D set_delegate_mask(fs_fd, "delegate_maps", 0x1, NULL);
- 	ASSERT_EQ(err, -EPERM, "delegate_maps_eperm");
--	err =3D set_delegate_mask(fs_fd, "delegate_progs", 0x1);
-+	err =3D set_delegate_mask(fs_fd, "delegate_progs", 0x1, NULL);
- 	ASSERT_EQ(err, -EPERM, "delegate_progs_eperm");
--	err =3D set_delegate_mask(fs_fd, "delegate_attachs", 0x1);
-+	err =3D set_delegate_mask(fs_fd, "delegate_attachs", 0x1, NULL);
- 	ASSERT_EQ(err, -EPERM, "delegate_attachs_eperm");
-=20
- 	/* pass BPF FS context object to parent */
-@@ -314,22 +326,22 @@ static void child(int sock_fd, struct bpffs_opts *o=
-pts, child_callback_fn callba
- 	}
-=20
- 	/* ensure unprivileged child cannot reconfigure to set delegation optio=
-ns */
--	err =3D set_delegate_mask(fs_fd, "delegate_cmds", ~0ULL);
-+	err =3D set_delegate_mask(fs_fd, "delegate_cmds", 0, "any");
- 	if (!ASSERT_EQ(err, -EPERM, "delegate_cmd_eperm_reconfig")) {
- 		err =3D -EINVAL;
- 		goto cleanup;
- 	}
--	err =3D set_delegate_mask(fs_fd, "delegate_maps", ~0ULL);
-+	err =3D set_delegate_mask(fs_fd, "delegate_maps", 0, "any");
- 	if (!ASSERT_EQ(err, -EPERM, "delegate_maps_eperm_reconfig")) {
- 		err =3D -EINVAL;
- 		goto cleanup;
- 	}
--	err =3D set_delegate_mask(fs_fd, "delegate_progs", ~0ULL);
-+	err =3D set_delegate_mask(fs_fd, "delegate_progs", 0, "any");
- 	if (!ASSERT_EQ(err, -EPERM, "delegate_progs_eperm_reconfig")) {
- 		err =3D -EINVAL;
- 		goto cleanup;
- 	}
--	err =3D set_delegate_mask(fs_fd, "delegate_attachs", ~0ULL);
-+	err =3D set_delegate_mask(fs_fd, "delegate_attachs", 0, "any");
- 	if (!ASSERT_EQ(err, -EPERM, "delegate_attachs_eperm_reconfig")) {
- 		err =3D -EINVAL;
- 		goto cleanup;
-@@ -647,8 +659,8 @@ void test_token(void)
- {
- 	if (test__start_subtest("map_token")) {
- 		struct bpffs_opts opts =3D {
--			.cmds =3D 1ULL << BPF_MAP_CREATE,
--			.maps =3D 1ULL << BPF_MAP_TYPE_STACK,
-+			.cmds_str =3D "BPF_MAP_CREATE",
-+			.maps_str =3D "BPF_MAP_TYPE_STACK",
- 		};
-=20
- 		subtest_userns(&opts, userns_map_create);
-@@ -662,9 +674,9 @@ void test_token(void)
- 	}
- 	if (test__start_subtest("prog_token")) {
- 		struct bpffs_opts opts =3D {
--			.cmds =3D 1ULL << BPF_PROG_LOAD,
--			.progs =3D 1ULL << BPF_PROG_TYPE_XDP,
--			.attachs =3D 1ULL << BPF_XDP,
-+			.cmds_str =3D "BPF_PROG_LOAD",
-+			.progs_str =3D "BPF_PROG_TYPE_XDP",
-+			.attachs_str =3D "BPF_XDP",
- 		};
-=20
- 		subtest_userns(&opts, userns_prog_load);
---=20
-2.34.1
+If it doesn't, we are probably already in trouble as-is without this
+patch, I don't think anything that prevents us from ending up calling already
+released bpf prog, or releasing it while another cpu is still running it
+if bpf_prog_put releases the actual underlying prog instantly.
 
+A BPF expert could confirm bpf-prog-put-is-call-rcu.
+
+>  struct bpf_nf_link {
+>  	struct bpf_link link;
+> @@ -26,8 +20,59 @@ struct bpf_nf_link {
+>  	struct net *net;
+>  	u32 dead;
+>  	const struct nf_defrag_hook *defrag_hook;
+> +	/* protect link update in parallel */
+> +	struct mutex update_lock;
+> +	struct bpf_nf_hook_ctx __rcu *hook_ctx;
+
+What kind of replacements-per-second rate are you aiming for?
+I think
+
+static DEFINE_MUTEX(bpf_nf_mutex);
+
+is enough.
+
+Then bpf_nf_link gains
+
+	struct bpf_prog __rcu *prog
+
+and possibly a trailing struct rcu_head, see below.
+
+> +static void bpf_nf_hook_ctx_free_rcu(struct bpf_nf_hook_ctx *hook_ctx)
+> +{
+> +	call_rcu(&hook_ctx->rcu, __bpf_nf_hook_ctx_free_rcu);
+> +}
+
+Don't understand the need for call_rcu either, see below.
+
+> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
+> +				    const struct nf_hook_state *s)
+> +{
+> +	const struct bpf_nf_link *link = bpf_link;
+> +	struct bpf_nf_hook_ctx *hook_ctx;
+> +	struct bpf_nf_ctx ctx = {
+> +		.state = s,
+> +		.skb = skb,
+> +	};
+> +
+> +	hook_ctx = rcu_dereference(link->hook_ctx);
+
+This could then just rcu_deref link->prog.
+
+> +	return bpf_prog_run(hook_ctx->prog, &ctx);
+> +}
+> +
+>  #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+>  static const struct nf_defrag_hook *
+>  get_proto_defrag_hook(struct bpf_nf_link *link,
+> @@ -120,6 +165,10 @@ static void bpf_nf_link_release(struct bpf_link *link)
+>  	if (!cmpxchg(&nf_link->dead, 0, 1)) {
+>  		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
+>  		bpf_nf_disable_defrag(nf_link);
+> +		/* Wait for outstanding hook to complete before the
+> +		 * link gets released.
+> +		 */
+> +		synchronize_rcu();
+>  	}
+
+Could you convert bpf_nf_link_dealloc to release via kfree_rcu instead?
+
+> @@ -162,7 +212,42 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
+>  static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
+>  			      struct bpf_prog *old_prog)
+>  {
+> -	return -EOPNOTSUPP;
+> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
+> +	struct bpf_nf_hook_ctx *hook_ctx;
+> +	int err = 0;
+> +
+> +	mutex_lock(&nf_link->update_lock);
+> +
+
+I think you need to check link->dead here too.
+
+> +	/* bpf_nf_link_release() ensures that after its execution, there will be
+> +	 * no ongoing or upcoming execution of nf_hook_run_bpf() within any context.
+> +	 * Therefore, within nf_hook_run_bpf(), the link remains valid at all times."
+> +	 */
+> +	link->hook_ops.priv = link;
+
+ATM we only need to make sure the bpf prog itself stays alive until after
+all concurrent rcu critical sections have completed.
+
+After this change, struct bpf_link gets passed instead, so we need to
+keep that alive too.
+
+Which works with synchronize_rcu, sure, but that seems a bit overkill here.
 
