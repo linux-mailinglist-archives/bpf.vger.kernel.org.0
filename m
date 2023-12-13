@@ -1,301 +1,195 @@
-Return-Path: <bpf+bounces-17684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18726811ACE
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 18:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B8801811AEA
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 18:26:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69CD2B2112D
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 17:21:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51728B20480
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 17:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1210954BEF;
-	Wed, 13 Dec 2023 17:21:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42BBC56B7A;
+	Wed, 13 Dec 2023 17:26:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="o34PlFeP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="v4U3soXs"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [IPv6:2001:41d0:203:375::ae])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E67C9
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 09:21:08 -0800 (PST)
-Message-ID: <7aaee542-78e9-4b6b-a2ee-1f47d431f8e3@linux.dev>
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D84199
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 09:26:00 -0800 (PST)
+Message-ID: <b917b011-545a-4804-b8b4-06b412e16610@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702488066;
+	t=1702488358;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3+/o6LAnz0WQvUU6i1ydt6wPeU/5JU5d/nnHSS3qmgc=;
-	b=o34PlFePXQeFg5dCRsgB83QX1wPMRGms/HqjmoaUXsqR6O3NyEeqFtaVC6g5oOVUeXIZGL
-	ws/+qamOeed2QyoUfRBiF48l0cYe2EBtpFxV9TzjFSi++TVkyjqSM0hWqeC0MhC/7nTqai
-	Bk5Do63sE+iQXDimsaKn7RusKmxpUu4=
-Date: Wed, 13 Dec 2023 09:20:59 -0800
+	bh=uqhYE0qRPS5MXnIouVC995+UobHLK6bjkNXqr+QueAM=;
+	b=v4U3soXs9D53txzuFvc5w0/MH0FAHPtrpTzdtCQ3YottBrMDpzJPzd7P87/3SC2RfmAU/5
+	35FixLA/iXaYMMdUzlRWVXX1Y2aIhppcWU7xG6BVwAUt2ivfpChHn5qGuFyrSXbaQ+ZlWA
+	ixelzo2U+iADre/J5FAgtfmn12QbHOU=
+Date: Wed, 13 Dec 2023 09:25:55 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 4/5] bpf: Limit up to 512 bytes for
- bpf_global_percpu_ma allocation
+Subject: Re: [PATCH bpf-next 2/5] bpf: Allow per unit prefill for non-fix-size
+ percpu memory allocator
 Content-Language: en-GB
-To: kernel test robot <lkp@intel.com>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231212223100.2138537-1-yonghong.song@linux.dev>
- <202312131731.Yh7iYbJG-lkp@intel.com>
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231212223040.2135547-1-yonghong.song@linux.dev>
+ <20231212223050.2137647-1-yonghong.song@linux.dev>
+ <ab1146fa-db28-c1a3-bfef-3dc7b1575738@huaweicloud.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <202312131731.Yh7iYbJG-lkp@intel.com>
+In-Reply-To: <ab1146fa-db28-c1a3-bfef-3dc7b1575738@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 12/13/23 2:15 AM, kernel test robot wrote:
-> Hi Yonghong,
+On 12/13/23 3:03 AM, Hou Tao wrote:
+> Hi,
 >
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on bpf-next/master]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Yonghong-Song/bpf-Refactor-to-have-a-memalloc-cache-destroying-function/20231213-063401
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-> patch link:    https://lore.kernel.org/r/20231212223100.2138537-1-yonghong.song%40linux.dev
-> patch subject: [PATCH bpf-next 4/5] bpf: Limit up to 512 bytes for bpf_global_percpu_ma allocation
-> config: m68k-defconfig (https://download.01.org/0day-ci/archive/20231213/202312131731.Yh7iYbJG-lkp@intel.com/config)
-> compiler: m68k-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231213/202312131731.Yh7iYbJG-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202312131731.Yh7iYbJG-lkp@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
->     kernel/bpf/verifier.c: In function 'check_kfunc_call':
->>> kernel/bpf/verifier.c:12082:115: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'unsigned int' [-Wformat=]
->     12082 |                                                 verbose(env, "bpf_percpu_obj_new type size (%d) is greater than %lu\n",
->           |                                                                                                                 ~~^
->           |                                                                                                                   |
->           |                                                                                                                   long unsigned int
->           |                                                                                                                 %u
->
->
-> vim +12082 kernel/bpf/verifier.c
+> On 12/13/2023 6:30 AM, Yonghong Song wrote:
+>> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem allocation")
+>> added support for non-fix-size percpu memory allocation.
+>> Such allocation will allocate percpu memory for all buckets on all
+>> cpus and the memory consumption is in the order to quadratic.
+>> For example, let us say, 4 cpus, unit size 16 bytes, so each
+>> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256 bytes.
+>> Then let us say, 8 cpus with the same unit size, each cpu
+>> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024 bytes.
+>> So if the number of cpus doubles, the number of memory consumption
+>> will be 4 times. So for a system with large number of cpus, the
+>> memory consumption goes up quickly with quadratic order.
+>> For example, for 4KB percpu allocation, 128 cpus. The total memory
+>> consumption will 4KB * 128 * 128 = 64MB. Things will become
+>> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
+>>
+>> In Commit 41a5db8d8161, the non-fix-size percpu memory allocation is
+>> done in boot time, so for system with large number of cpus, the initial
+>> percpu memory consumption is very visible. For example, for 128 cpu
+>> system, the total percpu memory allocation will be at least
+>> (16 + 32 + 64 + 96 + 128 + 196 + 256 + 512 + 1024 + 2048 + 4096)
+>>    * 128 * 128 = ~138MB.
+>> which is pretty big. It will be even bigger for larger number of cpus.
+>>
+>> Note that the current prefill also allocates 4 entries if the unit size
+>> is less than 256. So on top of 138MB memory consumption, this will
+>> add more consumption with
+>> 3 * (16 + 32 + 64 + 96 + 128 + 196 + 256) * 128 * 128 = ~38MB.
+>> Next patch will try to reduce this memory consumption.
+>>
+>> Later on, Commit 1fda5bb66ad8 ("bpf: Do not allocate percpu memory
+>> at init stage") moved the non-fix-size percpu memory allocation
+>> to bpf verificaiton stage. Once a particular bpf_percpu_obj_new()
+>> is called by bpf program, the memory allocator will try to fill in
+>> the cache with all sizes, causing the same amount of percpu memory
+>> consumption as in the boot stage.
+>>
+>> To reduce the initial percpu memory consumption for non-fix-size
+>> percpu memory allocation, instead of filling the cache with all
+>> supported allocation sizes, this patch intends to fill the cache
+>> only for the requested size. As typically users will not use large
+>> percpu data structure, this can save memory significantly.
+>> For example, the allocation size is 64 bytes with 128 cpus.
+>> Then total percpu memory amount will be 64 * 128 * 128 = 1MB,
+>> much less than previous 138MB.
+>>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   include/linux/bpf_mem_alloc.h |  5 +++
+>>   kernel/bpf/memalloc.c         | 62 +++++++++++++++++++++++++++++++++++
+>>   kernel/bpf/verifier.c         | 23 +++++--------
+>>   3 files changed, 75 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/include/linux/bpf_mem_alloc.h b/include/linux/bpf_mem_alloc.h
+>> index bb1223b21308..b049c580e7fb 100644
+>> --- a/include/linux/bpf_mem_alloc.h
+>> +++ b/include/linux/bpf_mem_alloc.h
+>> @@ -21,8 +21,13 @@ struct bpf_mem_alloc {
+>>    * 'size = 0' is for bpf_mem_alloc which manages many fixed-size objects.
+>>    * Alloc and free are done with bpf_mem_{alloc,free}() and the size of
+>>    * the returned object is given by the size argument of bpf_mem_alloc().
+>> + * If percpu equals true, error will be returned in order to avoid
+>> + * large memory consumption and the below bpf_mem_alloc_percpu_unit_init()
+>> + * should be used to do on-demand per-cpu allocation for each size.
+>>    */
+>>   int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu);
+>> +/* The percpu allocation is allowed for different unit size. */
+>> +int bpf_mem_alloc_percpu_unit_init(struct bpf_mem_alloc *ma, int size);
+>>   void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
+>>   
+>>   /* kmalloc/kfree equivalent: */
+>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>> index 75068167e745..84987e97fd0a 100644
+>> --- a/kernel/bpf/memalloc.c
+>> +++ b/kernel/bpf/memalloc.c
+>> @@ -526,6 +526,9 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+>>   	struct bpf_mem_cache *c, __percpu *pc;
+>>   	struct obj_cgroup *objcg = NULL;
+>>   
+>> +	if (percpu && size == 0)
+>> +		return -EINVAL;
+>> +
+>>   	/* room for llist_node and per-cpu pointer */
+>>   	if (percpu)
+>>   		percpu_size = LLIST_NODE_SZ + sizeof(void *);
+>> @@ -625,6 +628,65 @@ static void bpf_mem_alloc_destroy_cache(struct bpf_mem_cache *c)
+>>   	drain_mem_cache(c);
+>>   }
+>>   
+>> +int bpf_mem_alloc_percpu_unit_init(struct bpf_mem_alloc *ma, int size)
+>> +{
+>> +	static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+> Why duplicate the sizes array ? It is better to move it out of these
+> functions and share it between both bpf_mem_alloc_ini() and
+> bpf_mem_alloc_percpu_unit_init().
 
-Okay, seems '%lu' not portable. Will fix with '%zu' if the code roughly stay the same in the next revision.
+Good point. Will do in the next revision.
 
 >
->   11885	
->   11886	static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->   11887				    int *insn_idx_p)
->   11888	{
->   11889		const struct btf_type *t, *ptr_type;
->   11890		u32 i, nargs, ptr_type_id, release_ref_obj_id;
->   11891		struct bpf_reg_state *regs = cur_regs(env);
->   11892		const char *func_name, *ptr_type_name;
->   11893		bool sleepable, rcu_lock, rcu_unlock;
->   11894		struct bpf_kfunc_call_arg_meta meta;
->   11895		struct bpf_insn_aux_data *insn_aux;
->   11896		int err, insn_idx = *insn_idx_p;
->   11897		const struct btf_param *args;
->   11898		const struct btf_type *ret_t;
->   11899		struct btf *desc_btf;
->   11900	
->   11901		/* skip for now, but return error when we find this in fixup_kfunc_call */
->   11902		if (!insn->imm)
->   11903			return 0;
->   11904	
->   11905		err = fetch_kfunc_meta(env, insn, &meta, &func_name);
->   11906		if (err == -EACCES && func_name)
->   11907			verbose(env, "calling kernel function %s is not allowed\n", func_name);
->   11908		if (err)
->   11909			return err;
->   11910		desc_btf = meta.btf;
->   11911		insn_aux = &env->insn_aux_data[insn_idx];
->   11912	
->   11913		insn_aux->is_iter_next = is_iter_next_kfunc(&meta);
->   11914	
->   11915		if (is_kfunc_destructive(&meta) && !capable(CAP_SYS_BOOT)) {
->   11916			verbose(env, "destructive kfunc calls require CAP_SYS_BOOT capability\n");
->   11917			return -EACCES;
->   11918		}
->   11919	
->   11920		sleepable = is_kfunc_sleepable(&meta);
->   11921		if (sleepable && !env->prog->aux->sleepable) {
->   11922			verbose(env, "program must be sleepable to call sleepable kfunc %s\n", func_name);
->   11923			return -EACCES;
->   11924		}
->   11925	
->   11926		/* Check the arguments */
->   11927		err = check_kfunc_args(env, &meta, insn_idx);
->   11928		if (err < 0)
->   11929			return err;
->   11930	
->   11931		if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_add_impl]) {
->   11932			err = push_callback_call(env, insn, insn_idx, meta.subprogno,
->   11933						 set_rbtree_add_callback_state);
->   11934			if (err) {
->   11935				verbose(env, "kfunc %s#%d failed callback verification\n",
->   11936					func_name, meta.func_id);
->   11937				return err;
->   11938			}
->   11939		}
->   11940	
->   11941		rcu_lock = is_kfunc_bpf_rcu_read_lock(&meta);
->   11942		rcu_unlock = is_kfunc_bpf_rcu_read_unlock(&meta);
->   11943	
->   11944		if (env->cur_state->active_rcu_lock) {
->   11945			struct bpf_func_state *state;
->   11946			struct bpf_reg_state *reg;
->   11947			u32 clear_mask = (1 << STACK_SPILL) | (1 << STACK_ITER);
->   11948	
->   11949			if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_unlock)) {
->   11950				verbose(env, "Calling bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
->   11951				return -EACCES;
->   11952			}
->   11953	
->   11954			if (rcu_lock) {
->   11955				verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
->   11956				return -EINVAL;
->   11957			} else if (rcu_unlock) {
->   11958				bpf_for_each_reg_in_vstate_mask(env->cur_state, state, reg, clear_mask, ({
->   11959					if (reg->type & MEM_RCU) {
->   11960						reg->type &= ~(MEM_RCU | PTR_MAYBE_NULL);
->   11961						reg->type |= PTR_UNTRUSTED;
->   11962					}
->   11963				}));
->   11964				env->cur_state->active_rcu_lock = false;
->   11965			} else if (sleepable) {
->   11966				verbose(env, "kernel func %s is sleepable within rcu_read_lock region\n", func_name);
->   11967				return -EACCES;
->   11968			}
->   11969		} else if (rcu_lock) {
->   11970			env->cur_state->active_rcu_lock = true;
->   11971		} else if (rcu_unlock) {
->   11972			verbose(env, "unmatched rcu read unlock (kernel function %s)\n", func_name);
->   11973			return -EINVAL;
->   11974		}
->   11975	
->   11976		/* In case of release function, we get register number of refcounted
->   11977		 * PTR_TO_BTF_ID in bpf_kfunc_arg_meta, do the release now.
->   11978		 */
->   11979		if (meta.release_regno) {
->   11980			err = release_reference(env, regs[meta.release_regno].ref_obj_id);
->   11981			if (err) {
->   11982				verbose(env, "kfunc %s#%d reference has not been acquired before\n",
->   11983					func_name, meta.func_id);
->   11984				return err;
->   11985			}
->   11986		}
->   11987	
->   11988		if (meta.func_id == special_kfunc_list[KF_bpf_list_push_front_impl] ||
->   11989		    meta.func_id == special_kfunc_list[KF_bpf_list_push_back_impl] ||
->   11990		    meta.func_id == special_kfunc_list[KF_bpf_rbtree_add_impl]) {
->   11991			release_ref_obj_id = regs[BPF_REG_2].ref_obj_id;
->   11992			insn_aux->insert_off = regs[BPF_REG_2].off;
->   11993			insn_aux->kptr_struct_meta = btf_find_struct_meta(meta.arg_btf, meta.arg_btf_id);
->   11994			err = ref_convert_owning_non_owning(env, release_ref_obj_id);
->   11995			if (err) {
->   11996				verbose(env, "kfunc %s#%d conversion of owning ref to non-owning failed\n",
->   11997					func_name, meta.func_id);
->   11998				return err;
->   11999			}
->   12000	
->   12001			err = release_reference(env, release_ref_obj_id);
->   12002			if (err) {
->   12003				verbose(env, "kfunc %s#%d reference has not been acquired before\n",
->   12004					func_name, meta.func_id);
->   12005				return err;
->   12006			}
->   12007		}
->   12008	
->   12009		if (meta.func_id == special_kfunc_list[KF_bpf_throw]) {
->   12010			if (!bpf_jit_supports_exceptions()) {
->   12011				verbose(env, "JIT does not support calling kfunc %s#%d\n",
->   12012					func_name, meta.func_id);
->   12013				return -ENOTSUPP;
->   12014			}
->   12015			env->seen_exception = true;
->   12016	
->   12017			/* In the case of the default callback, the cookie value passed
->   12018			 * to bpf_throw becomes the return value of the program.
->   12019			 */
->   12020			if (!env->exception_callback_subprog) {
->   12021				err = check_return_code(env, BPF_REG_1, "R1");
->   12022				if (err < 0)
->   12023					return err;
->   12024			}
->   12025		}
->   12026	
->   12027		for (i = 0; i < CALLER_SAVED_REGS; i++)
->   12028			mark_reg_not_init(env, regs, caller_saved[i]);
->   12029	
->   12030		/* Check return type */
->   12031		t = btf_type_skip_modifiers(desc_btf, meta.func_proto->type, NULL);
->   12032	
->   12033		if (is_kfunc_acquire(&meta) && !btf_type_is_struct_ptr(meta.btf, t)) {
->   12034			/* Only exception is bpf_obj_new_impl */
->   12035			if (meta.btf != btf_vmlinux ||
->   12036			    (meta.func_id != special_kfunc_list[KF_bpf_obj_new_impl] &&
->   12037			     meta.func_id != special_kfunc_list[KF_bpf_percpu_obj_new_impl] &&
->   12038			     meta.func_id != special_kfunc_list[KF_bpf_refcount_acquire_impl])) {
->   12039				verbose(env, "acquire kernel function does not return PTR_TO_BTF_ID\n");
->   12040				return -EINVAL;
->   12041			}
->   12042		}
->   12043	
->   12044		if (btf_type_is_scalar(t)) {
->   12045			mark_reg_unknown(env, regs, BPF_REG_0);
->   12046			mark_btf_func_reg_size(env, BPF_REG_0, t->size);
->   12047		} else if (btf_type_is_ptr(t)) {
->   12048			ptr_type = btf_type_skip_modifiers(desc_btf, t->type, &ptr_type_id);
->   12049	
->   12050			if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
->   12051				if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] ||
->   12052				    meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->   12053					struct btf_struct_meta *struct_meta;
->   12054					struct btf *ret_btf;
->   12055					u32 ret_btf_id;
->   12056	
->   12057					if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
->   12058						return -ENOMEM;
->   12059	
->   12060					if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
->   12061						verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
->   12062						return -EINVAL;
->   12063					}
->   12064	
->   12065					ret_btf = env->prog->aux->btf;
->   12066					ret_btf_id = meta.arg_constant.value;
->   12067	
->   12068					/* This may be NULL due to user not supplying a BTF */
->   12069					if (!ret_btf) {
->   12070						verbose(env, "bpf_obj_new/bpf_percpu_obj_new requires prog BTF\n");
->   12071						return -EINVAL;
->   12072					}
->   12073	
->   12074					ret_t = btf_type_by_id(ret_btf, ret_btf_id);
->   12075					if (!ret_t || !__btf_type_is_struct(ret_t)) {
->   12076						verbose(env, "bpf_obj_new/bpf_percpu_obj_new type ID argument must be of a struct\n");
->   12077						return -EINVAL;
->   12078					}
->   12079	
->   12080					if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->   12081						if (ret_t->size > BPF_GLOBAL_PERCPU_MA_MAX_SIZE) {
->   12082							verbose(env, "bpf_percpu_obj_new type size (%d) is greater than %lu\n",
->   12083								ret_t->size, BPF_GLOBAL_PERCPU_MA_MAX_SIZE);
->   12084							return -EINVAL;
->   12085						}
->   12086						mutex_lock(&bpf_percpu_ma_lock);
->   12087						err = bpf_mem_alloc_percpu_unit_init(&bpf_global_percpu_ma, ret_t->size);
->   12088						mutex_unlock(&bpf_percpu_ma_lock);
->   12089						if (err)
->   12090							return err;
->   12091					}
->   12092	
+>> +	int cpu, i, err, unit_size, percpu_size = 0;
+>> +	struct bpf_mem_caches *cc, __percpu *pcc;
+>> +	struct obj_cgroup *objcg = NULL;
+>> +	struct bpf_mem_cache *c;
+>> +
+>> +	/* room for llist_node and per-cpu pointer */
+>> +	percpu_size = LLIST_NODE_SZ + sizeof(void *);
+>> +
+>> +	if (ma->caches) {
+>> +		pcc = ma->caches;
+>> +	} else {
+>> +		ma->percpu = true;
+>> +		pcc = __alloc_percpu_gfp(sizeof(*cc), 8, GFP_KERNEL | __GFP_ZERO);
+>> +		if (!pcc)
+>> +			return -ENOMEM;
+>> +		ma->caches = pcc;
+>> +	}
+> It is a little weird to me that a single API does two things:
+> initialization and incremental refill. How about introducing two APIs to
+> reduce the memory usage of global per-cpu ma: one API to initialize the
+> global per-cpu ma in bpf_global_ma_init(), and another API to
+> incremental refill global per-cpu ma accordingly ?
+
+This can ineed to make semantics and code easy to understand.
+Will make the change in the next revision.
+
+>> +
+>> +	err = 0;
+>> +	i = bpf_mem_cache_idx(size + LLIST_NODE_SZ);
+>> +	if (i < 0) {
+>> +		err = -EINVAL;
+>> +		goto out;
+>> +	}
+>> +	unit_size = sizes[i];
+>> +
 [...]
 
