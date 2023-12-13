@@ -1,215 +1,150 @@
-Return-Path: <bpf+bounces-17704-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C9A811D9E
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 19:56:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25D9C811E37
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 20:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98F7228208A
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 18:56:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A217B2827EF
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 19:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BAC5FEF7;
-	Wed, 13 Dec 2023 18:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF4342F503;
+	Wed, 13 Dec 2023 19:09:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 723FCC9
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 10:56:07 -0800 (PST)
-Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7b7039d30acso422297539f.3
-        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 10:56:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702493766; x=1703098566;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k4dDdZ3MKuRAACo1naFZHHAvTOHd+AvXat8Uq/sNsq0=;
-        b=vEmvn5y+uhuR4l39vtuCqg51TjQ7t1jUR91WU7sSGs2hy2c2QlhuI/tfmtr497eKzD
-         Nt2IsYrtgSCLbj4KBk0+E9WuDS/5NetYO6vsMrMwZkZJvRtVcY6MEVIVjXmbnudUWew1
-         TDTBD6ZffeBTPNkOVKPII1jySb1kSlUzydKOEUdNYxHr7PqbGJPM7YtncRTFyT869iv4
-         ahkn87xHZf0i7myjUbJYYgSr9wSV/CENACmGIE2mL2jXbOmdxm8xcHg7DUYKrNb59+jf
-         812l3KULHeGAzJYMUSElByScX7LA0PF8FG+yOL6H05umY93uc0zr/m812V3tJ2W9PME/
-         m7cA==
-X-Gm-Message-State: AOJu0Yw5CK6+3Uhg5+DmOw/PLoJU8xJluRjJb9CMzgHPa9S0Z+9YOYMb
-	/PoaiLLbiJyrCYQRl8JyLwY=
-X-Google-Smtp-Source: AGHT+IEvsx9f9koojouFaKcQ8ym/9GHGPcuuLFRWVvlRKQS8cOUORmQk5n2VpotqdCBSnZxfpx8FkQ==
-X-Received: by 2002:a05:6e02:1a06:b0:35d:59a2:2a2 with SMTP id s6-20020a056e021a0600b0035d59a202a2mr12936277ild.66.1702493766332;
-        Wed, 13 Dec 2023 10:56:06 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id s2-20020a92cb02000000b0035f54df2401sm1820381ilo.72.2023.12.13.10.56.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 10:56:05 -0800 (PST)
-Date: Wed, 13 Dec 2023 12:56:03 -0600
-From: David Vernet <void@manifault.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Dave Thaler <dthaler1968@googlemail.com>, bpf@ietf.org,
-	bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [Bpf] BPF ISA conformance groups
-Message-ID: <20231213185603.GA1968@maniforge>
-References: <20231127201817.GB5421@maniforge>
- <072101da2558$fe5f5020$fb1df060$@gmail.com>
- <20231207215152.GA168514@maniforge>
- <CAADnVQ+Mhe6ean6J3vH1ugTyrgWNxupLoFfwKu6-U=3R8i1TNQ@mail.gmail.com>
- <20231212214532.GB1222@maniforge>
- <157b01da2d46$b7453e20$25cfba60$@gmail.com>
- <CAADnVQKd7X1v6CwCa2MyJjQkN8hKsHJ_g9Kk5CwWSbp9+1_3zw@mail.gmail.com>
- <20231212233555.GA53579@maniforge>
- <CAADnVQJ-JwNTY5fW-oXdTur9aDrv2NQoreTH3yYZemVBVtq9fQ@mail.gmail.com>
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1309C1726
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 11:08:53 -0800 (PST)
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BDIXs7M031323
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 11:08:53 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3uxx6qfh1f-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 11:08:53 -0800
+Received: from twshared4634.37.frc1.facebook.com (2620:10d:c0a8:1c::1b) by
+ mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 13 Dec 2023 11:08:51 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 2FBB33D1859ED; Wed, 13 Dec 2023 11:08:46 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>
+Subject: [PATCH v3 bpf-next 00/10] BPF token support in libbpf's BPF object
+Date: Wed, 13 Dec 2023 11:08:32 -0800
+Message-ID: <20231213190842.3844987-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="RepyZayjlgm3zbRA"
-Content-Disposition: inline
-In-Reply-To: <CAADnVQJ-JwNTY5fW-oXdTur9aDrv2NQoreTH3yYZemVBVtq9fQ@mail.gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-
-
---RepyZayjlgm3zbRA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: EG00MlUlR4kn58N53DqDQw3LHjumnlAL
+X-Proofpoint-GUID: EG00MlUlR4kn58N53DqDQw3LHjumnlAL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-13_12,2023-12-13_01,2023-05-22_02
 
-On Tue, Dec 12, 2023 at 05:32:33PM -0800, Alexei Starovoitov wrote:
-> On Tue, Dec 12, 2023 at 3:36=E2=80=AFPM David Vernet <void@manifault.com>=
- wrote:
-> >
-> > > It only supports atomic_add and no other atomics.
-> >
-> > Ahh, I misunderstood when I discussed with Kuba. I guess they supported
-> > only atomic_add because packets can be delivered out of order.
->=20
-> Not sure why it has anything to do with packets.
+Add fuller support for BPF token in high-level BPF object APIs. This is t=
+he
+most frequently used way to work with BPF using libbpf, so supporting BPF
+token there is critical.
 
-My understanding is that the ordering of packets is an impedance with
-the host's ordering model. If you offload a BPF program from the host
-which expects to see packets in order, and then issues some atomics
-which process the packets in order, it won't work on the device because
-the packets are delivered out of order. Kuba (cc'd) can give more
-details if he wants, but it doesn't really matter. The salient point is
-that the chip could have done all of the BPF atomic instructions and it
-wouldn't have been much more work to implement them.
+Patch #1 is improving kernel-side BPF_TOKEN_CREATE behavior by rejecting =
+to
+create "empty" BPF token with no delegation. This seems like saner behavi=
+or
+which also makes libbpf's caching better overall. If we ever want to crea=
+te
+BPF token with no delegate_xxx options set on BPF FS, we can use a new fl=
+ag to
+enable that.
 
-> > So fair
-> > enough on that point, but I still stand by the claim though that if you
-> > need one type of atomic, it's reasonable to infer that you may need all
-> > of them. I would be curious to hear how much work it would have been to
-> > add support for the others. If there was an atomic conformance group,
-> > maybe they would have.
->=20
-> The netronome wasn't trying to offload this or that insn to be
-> in compliance. Together, netronome and bpf folks decided to focus
-> on a set of real XDP applications and try to offload as much as practical.
-> At that time there were -mcpu=3Dv1 and v2 insn sets only and offloading
-> wasn't really working well. alu32 in llvm, verifier and nfp was added
-> to make offload practical. Eventually it became -mcpu=3Dv3.
-> So compliance with any future group (basic, atomic, etc) in ISA cannot
-> be evaluated in isolation, because nfp is not compliant with -mcpu=3Dv4
-> and not compliant with -mcpu=3Dv1,
-> but works well with -mcpu=3Dv3 while v3 is an extension of v1 and v2.
-> Which is nonsensical from standard compliance pov.
-> netronome offload is a success because it demonstrated
-> how real production XDP applications can run in a NIC at speeds
-> that traditional CPUs cannot dream of.
-> It's a success despite the complexity and ugliness of BPF ISA.
-> It's working because practical applications compiled with -mcpu=3Dv3 prod=
-uce
-> "compliant enough" bpf code.
+Patches #2-#5 refactor libbpf internals, mostly feature detection code, t=
+o
+prepare it from BPF token FD.
 
-Something I want to make sure is clearly spelled out: are you of the
-opinion that a program written for offload to a Netronome device cannot
-and should not ever be able to run on any other NIC with BPF offload?
+Patch #6 adds options to pass BPF token into BPF object open options. It =
+also
+adds implicit BPF token creation logic to BPF object load step, even with=
+out
+any explicit involvement of the user. If the environment is setup properl=
+y,
+BPF token will be created transparently and used implicitly. This allows =
+for
+all existing application to gain BPF token support by just linking with
+latest version of libbpf library. No source code modifications are requir=
+ed.
+All that under assumption that privileged container management agent prop=
+erly
+set up default BPF FS instance at /sys/bpf/fs to allow BPF token creation=
+.
 
-> > Well, maybe not for Netronome, or maybe not even for any vendor (though
-> > we have no way of knowing that yet), but what about for other contexts
-> > like Windows / Linux cross-platform compat?
->=20
-> bpf on windows started similar to netronome. The goal was to
-> demonstrate real cilium progs running on windows. And it was done.
-> Since windows is a software there was no need to add or remove anything
-> from ISA, but due to licensing the prevail verifier had to be used which
-> doesn't support a whole bunch of things.
-> This software deficiencies of non-linux verifier shouldn't be
-> dictating grouping of the insns in the standard.
->
-> If linux can do it, windows should be able to do it just as well.
-> So I see no problem saying that bpf on windows will be non-compliant
-> until they support all of -mcpu=3Dv4 insns. It's a software project
-> with a deterministic timeline.
->
-> The standard should focus on compatibility between
-> HW-ish offloads where no amount of software can add support for
-> all of -mcpu=3Dv4.
+Patches #7-#8 adds more selftests, validating BPF object APIs work as exp=
+ected
+under unprivileged user namespaced conditions in the presence of BPF toke=
+n.
 
-I don't agree that there's no value in standardizing for the sake of
-software as well, but yes it's different than what we're trying to
-accomplish for hardware, and I agree that hardware is the main customer
-here.
+Patch #9 extends libbpf with LIBBPF_BPF_TOKEN_PATH envvar knowledge, whic=
+h can
+be used to override custom BPF FS location used for implicit BPF token
+creation logic without needing to adjust application code. This allows ad=
+mins
+or container managers to mount BPF token-enabled BPF FS at non-standard
+location without the need to coordinate with applications.
+LIBBPF_BPF_TOKEN_PATH can also be used to disable BPF token implicit crea=
+tion
+by setting it to an empty value. Patch #10 tests this new envvar function=
+ality.
 
-Even if you assume that we should completely ignore software and focus
-on hardware compatibility though, that seems to be orthogonal to what
-you're proposing here. What compatibility are we guaranteeing if there's
-no compliance?
+v2->v3:
+  - move some stray feature cache refactorings into patch #4 (Alexei);
+  - add LIBBPF_BPF_TOKEN_PATH envvar support (Alexei);
+v1->v2:
+  - remove minor code redundancies (Eduard, John);
+  - add acks and rebase.
 
-> And here I believe compliance with "basic" is not practical.
-> When nvme HW architects will get to implement "basic" ISA they might
-> realize that it has too much.
-> Producing "conformance groups" without HW folks thinking through the
-> implementation is not going to be a success.
-> I worry that it will have the opposite effect.
-> We'll have a standard with basic, atomic, etc.
-> Then folks will deliver this standard on the desk of HW architects.
-> They will give it a try and will reject the idea of implementing BPF in H=
-W,
-> because not implementing "basic" would mean that this vendor
-> is not in compliance which means no business.
+Andrii Nakryiko (10):
+  bpf: fail BPF_TOKEN_CREATE if no delegation option was set on BPF FS
+  libbpf: split feature detectors definitions from cached results
+  libbpf: further decouple feature checking logic from bpf_object
+  libbpf: move feature detection code into its own file
+  libbpf: wire up token_fd into feature probing logic
+  libbpf: wire up BPF token support at BPF object level
+  selftests/bpf: add BPF object loading tests with explicit token
+    passing
+  selftests/bpf: add tests for BPF object load with implicit token
+  libbpf: support BPF token path setting through LIBBPF_BPF_TOKEN_PATH
+    envvar
+  selftests/bpf: add tests for LIBBPF_BPF_TOKEN_PATH envvar
 
-I don't know enough about how compliance informs the cost-calculus and
-decision making of HW vendors to really make an intelligent point here,
-but I have to imagine that there's an equally plausible scenario where a
-vendor will look at the non-legacy instructions and think, "There's no
-possible way we could support all of these instructions", and make the
-same decision? Why else would they be asking for a standard if not to
-have some guidelines of what to implement?
+ kernel/bpf/token.c                            |  10 +-
+ tools/lib/bpf/Build                           |   2 +-
+ tools/lib/bpf/bpf.c                           |   9 +-
+ tools/lib/bpf/btf.c                           |   7 +-
+ tools/lib/bpf/elf.c                           |   2 -
+ tools/lib/bpf/features.c                      | 478 +++++++++++++++
+ tools/lib/bpf/libbpf.c                        | 573 ++++--------------
+ tools/lib/bpf/libbpf.h                        |  37 +-
+ tools/lib/bpf/libbpf_internal.h               |  36 +-
+ tools/lib/bpf/libbpf_probes.c                 |   8 +-
+ tools/lib/bpf/str_error.h                     |   3 +
+ .../testing/selftests/bpf/prog_tests/token.c  | 347 +++++++++++
+ tools/testing/selftests/bpf/progs/priv_map.c  |  13 +
+ tools/testing/selftests/bpf/progs/priv_prog.c |  13 +
+ 14 files changed, 1065 insertions(+), 473 deletions(-)
+ create mode 100644 tools/lib/bpf/features.c
+ create mode 100644 tools/testing/selftests/bpf/progs/priv_map.c
+ create mode 100644 tools/testing/selftests/bpf/progs/priv_prog.c
 
-> Hence the standard shouldn't overfocus on compliance and groups.
-> Just legacy and the rest will do for nvme.
-> legacy means "don't bother looking at those".
-> the rest means "pls implement these insns because they are useful,
-> their semantics and encoding is standardized,
-> but pick what makes sense for your use case and your HW".
+--=20
+2.34.1
 
-How do we know the semantics of the instructions won't be prohibitively
-expensive or impractical for certain vendors? What value do we get out
-of dictating semantics in the standard if we're not expecting any of
-these programs to be cross-compatible anyways?
-
-> And to make such HW offload a success we'd need to work together.
-> compiler, kernel, run-time, hw folks.
-
-Which kernel? Which compiler? If we all need to be in the room every
-time a decision is made by any vendor, then what value is the standard
-even providing?
-
-> "Here is a standard. Go implement it" won't work.
-
-What is the point of a standard if not to say, "Here's what you should
-go implement"?
-
---RepyZayjlgm3zbRA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZXn+QwAKCRBZ5LhpZcTz
-ZBCwAQDLCeqxnDkHfUas7TH8y8NUkQcskNVSWc5JoSjJ/XsugAEAkfOnRmMXixza
-HxJYomL3bUfNHvEzuU6+5TxY8X9P3A0=
-=sKrs
------END PGP SIGNATURE-----
-
---RepyZayjlgm3zbRA--
 
