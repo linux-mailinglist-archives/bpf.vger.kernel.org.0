@@ -1,78 +1,130 @@
-Return-Path: <bpf+bounces-17636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17637-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B16638107BA
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 02:38:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66FF38107C2
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 02:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1E351C20E37
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 01:38:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D1161F21C4F
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 01:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A969917C8;
-	Wed, 13 Dec 2023 01:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="E032alIf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5A0EDF;
+	Wed, 13 Dec 2023 01:38:49 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBF5BE
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 17:37:58 -0800 (PST)
-Message-ID: <b683d150-5fa0-4bec-af07-c709ee4781d6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702431476;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QR2VSsFCexoYoHMfOMQBYvflj8tNx0RG9xJyXqIMWgg=;
-	b=E032alIfX9+oqA1vQ8NPUQP8BXQQdd4z0effO2ed7bpJU4KR6h1Dx+vF0XiNgeJUw+F0Au
-	4rHGpNUz8ct/ep1PdVyRqCFl8WZ0jZHxHFhqCGit52bEPaixmZGbpz6zzQTVAaCL62FMeI
-	qjw1ZHb0Vek67tpczRcmr59hXttBQvo=
-Date: Tue, 12 Dec 2023 17:37:47 -0800
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB3DDC;
+	Tue, 12 Dec 2023 17:38:45 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6d855efb920so5079384a34.1;
+        Tue, 12 Dec 2023 17:38:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702431525; x=1703036325;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YIWyx+xVFC2u/BA+JksVQths0h28NvpxYOOQa54kPF4=;
+        b=EFGQfdiiwRYwCoFGDdwWFDPhVvXuqtpK/4c+YrkBGlUdNMn3AzZTac1zEleEFCf6aY
+         CG0oT5mypW+NZCNRiTDgj6HxB4R8pOQw1hgeH9HyqafgLcGWns1egL8BK5lfgmPEQX6H
+         RC5700fwaRQ7ScFJGBwvHhaT+zlKj3dMhcsCeSIkqN2nYHlMvCAw92sVTxlM6yxcr2xJ
+         T/Z9rwLWyrtB0hTgtyz8fifxhVMn8BuNUTb9Wh9ArooLfUPUeFntFZgAOj1xGoCoIDIM
+         0fK+nPK9NpyIc14UiPZiAYBBi3y24Djz/CBGgqHE5AIlBJ9czMdUsU4ttAOgWDIXb4H8
+         baTw==
+X-Gm-Message-State: AOJu0YxurFebBOG1eT4G+UHREMKsUX8TA+QX6wMASPXzG5fkmHdj8478
+	03W4k6xIyLeZYj7bN0E/O+xQV2OGo5UbBbme6OY=
+X-Google-Smtp-Source: AGHT+IGlZ816ibGJ8fDaIkml7iSqJhiWarKEM7x1sTAEAA3o0fynxk7QISFQW23IR7l5lf+U58/lXVVtZGhr9A5i4Hg=
+X-Received: by 2002:a9d:6349:0:b0:6d9:d567:7c36 with SMTP id
+ y9-20020a9d6349000000b006d9d5677c36mr7620957otk.71.1702431525092; Tue, 12 Dec
+ 2023 17:38:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC bpf-next 1/3] bpf: add mapper macro for bpf_cmd enum
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>,
- Paul Moore <paul@paul-moore.com>, Christian Brauner <brauner@kernel.org>,
- Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
- LSM List <linux-security-module@vger.kernel.org>,
- Kees Cook <keescook@chromium.org>, Kernel Team <kernel-team@meta.com>,
- Sargun Dhillon <sargun@sargun.me>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231207222755.3920286-1-andrii@kernel.org>
- <20231207222755.3920286-2-andrii@kernel.org>
- <CAADnVQK6WWcgKtPNQrGe9dM7x1iMOyL943PVrJjT6ueBDFRyQw@mail.gmail.com>
- <CAEf4BzYHHdQsaGBFXnY8omP4hv_tUjqxHWTNoEugi3acrE5q=A@mail.gmail.com>
- <CAADnVQLoZpugU6gexuD4ru6VCZ8iQMoLWLByjHA6hush5hUwug@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAADnVQLoZpugU6gexuD4ru6VCZ8iQMoLWLByjHA6hush5hUwug@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20231211045543.31741-1-khuey@kylehuey.com>
+In-Reply-To: <20231211045543.31741-1-khuey@kylehuey.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 12 Dec 2023 17:38:34 -0800
+Message-ID: <CAM9d7ciZaK5=TkX8RhmszKKYP12k4k6A1monOP7vJJ+ivZG_bQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/4] Combine perf and bpf for fast eval of hw
+ breakpoint conditions
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Marco Elver <elver@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	"Robert O'Callahan" <robert@ocallahan.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/11/23 8:06 PM, Alexei Starovoitov wrote:
-> On Mon, Dec 11, 2023 at 8:01 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->>
->>
->>> While I can preemptively answer that in the case vmlinux BTF
->>> is not available it's fine not to parse names and rely on hex.
->>
->> It's fine, I can do optional BTF-based parsing, if that's what you prefer.
-> 
-> I prefer to keep uapi/bpf.h as-is and use BTF.
-> But I'd like to hear what Daniel's and Martin's preferences are.
+Hello,
 
-I think user will find it useful to have a more readable uapi header file. It 
-would be nice to keep the current uapi/bpf.h form if there is another solution.
+On Sun, Dec 10, 2023 at 8:55=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
+>
+> rr, a userspace record and replay debugger[0], replays asynchronous event=
+s
+> such as signals and context switches by essentially[1] setting a breakpoi=
+nt
+> at the address where the asynchronous event was delivered during recordin=
+g
+> with a condition that the program state matches the state when the event
+> was delivered.
+>
+> Currently, rr uses software breakpoints that trap (via ptrace) to the
+> supervisor, and evaluates the condition from the supervisor. If the
+> asynchronous event is delivered in a tight loop (thus requiring the
+> breakpoint condition to be repeatedly evaluated) the overhead can be
+> immense. A patch to rr that uses hardware breakpoints via perf events wit=
+h
+> an attached BPF program to reject breakpoint hits where the condition is
+> not satisfied reduces rr's replay overhead by 94% on a pathological (but =
+a
+> real customer-provided, not contrived) rr trace.
+>
+> The only obstacle to this approach is that while the kernel allows a BPF
+> program to suppress sample output when a perf event overflows it does not
+> suppress signalling the perf event fd or sending the perf event's SIGTRAP=
+.
+> This patch set redesigns __perf_overflow_handler() and
+> bpf_overflow_handler() so that the former invokes the latter directly whe=
+n
+> appropriate rather than through the generic overflow handler machinery,
+> passes the return code of the BPF program back to __perf_overflow_handler=
+()
+> to allow it to decide whether to execute the regular overflow handler,
+> reorders bpf_overflow_handler() and the side effects of perf event
+> overflow, changes __perf_overflow_handler() to suppress those side effect=
+s
+> if the BPF program returns zero, and adds a selftest.
+>
+> The previous version of this patchset can be found at
+> https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey=
+.com/
+>
+> Changes since v2:
+>
+> Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
+> this code to implement this feature in a cleaner way. Patch 2 is separate=
+d
+> for the benefit of the ARM arch maintainers.
+>
+> Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
+> implementation thanks to the earlier refactoring.
+>
+> Patch 4 is v2's patch 3, and addresses review comments about C++ style
+> comments, getting a TRAP_PERF definition into the test, and unnecessary
+> NULL checks.
+
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks,
+Namhyung
+
+>
+> [0] https://rr-project.org/
+> [1] Various optimizations exist to skip as much as execution as possible
+> before setting a breakpoint, and to determine a set of program state that
+> is practical to check and verify.
+>
+>
 
