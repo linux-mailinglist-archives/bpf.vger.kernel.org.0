@@ -1,118 +1,113 @@
-Return-Path: <bpf+bounces-17660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53194810F7F
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 12:09:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14223810FCD
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 12:24:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8236B1C20AAC
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 11:09:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C55F4281D35
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 11:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4108C23753;
-	Wed, 13 Dec 2023 11:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7F82377E;
+	Wed, 13 Dec 2023 11:24:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04BCEB
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 03:09:47 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sqt6b1mGnz4f3jHZ
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 19:09:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 77FB81A036D
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 19:09:44 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgAXvEr1kHllz_qODg--.37860S2;
-	Wed, 13 Dec 2023 19:09:44 +0800 (CST)
-Subject: Re: [PATCH bpf-next 4/5] bpf: Limit up to 512 bytes for
- bpf_global_percpu_ma allocation
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231212223040.2135547-1-yonghong.song@linux.dev>
- <20231212223100.2138537-1-yonghong.song@linux.dev>
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371D0A0
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 03:24:33 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SqtRY1z9Sz4f3l1X
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 19:24:25 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 404B11A0800
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 19:24:30 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP1 (Coremail) with SMTP id cCh0CgA3OhBqlHllBOIgDg--.15138S4;
+	Wed, 13 Dec 2023 19:24:28 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <d44e41c2-9c59-c7a3-87a4-bf20ce779b6a@huaweicloud.com>
-Date: Wed, 13 Dec 2023 19:09:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	xingwei lee <xrivendell7@gmail.com>,
+	houtao1@huawei.com
+Subject: [PATCH bpf-next v2 0/4] bpf: Fix warnings in kvmalloc_node()
+Date: Wed, 13 Dec 2023 19:25:27 +0800
+Message-Id: <20231213112531.3775079-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231212223100.2138537-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgAXvEr1kHllz_qODg--.37860S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw1xWrW5uw1DGFWkCr17ZFb_yoW8ZFWUp3
-	97GF90yF1qvrsxWw13ta17Ary5X3y0g3W7K3y5A34ayrsaqwn2gF4vkry5Zry5Kr48Ga1I
-	yryjvrWav3y7ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgA3OhBqlHllBOIgDg--.15138S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wr4UJr1UGF43ZFW7JryfCrg_yoW8JrWDpF
+	Wvq3W5tr4rJF9rtan3A3yxWryFqan3GrW7Xr17Jw1rArs8J3W8GFZ7Kw45X3s5u398tF1a
+	ywnrtr98Ga48Za7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU189N3UUUUU==
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+	87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+
+From: Hou Tao <houtao1@huawei.com>
 
 Hi,
 
-On 12/13/2023 6:31 AM, Yonghong Song wrote:
-> For percpu data structure allocation with bpf_global_percpu_ma,
-> the maximum data size is 4K. But for a system with large
-> number of cpus, bigger data size (e.g., 2K, 4K) might consume
-> a lot of memory. For example, the percpu memory consumption
-> with unit size 2K and 1024 cpus will be 2K * 1K * 1k = 2GB
-> memory.
->
-> We should discourage such usage. Let us limit the maximum data
-> size to be 512 for bpf_global_percpu_ma allocation.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  kernel/bpf/verifier.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 0c55fe4451e1..e5cb6b7526b6 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -43,6 +43,8 @@ static const struct bpf_verifier_ops * const bpf_verifier_ops[] = {
->  };
->  
->  struct bpf_mem_alloc bpf_global_percpu_ma;
-> +#define LLIST_NODE_SZ sizeof(struct llist_node)
-> +#define BPF_GLOBAL_PERCPU_MA_MAX_SIZE  (512 - LLIST_NODE_SZ)
+The patch set aims to fix the warnings in kvmalloc_node() when passing
+an abnormally big cnt during multiple kprobes/uprobes attachment.
 
-It seems for per-cpu allocation the extra subtraction is not needed, we
-could use all allocated space in per-cpu pointer. Maybe we could update
-bpf_mem_alloc() firstly to use size instead of size + sizeof(void *) to
-select cache.
->  
->  /* bpf_check() is a static code analyzer that walks eBPF program
->   * instruction by instruction and updates register/stack state.
-> @@ -12091,6 +12093,11 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->  				}
->  
->  				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
-> +					if (ret_t->size > BPF_GLOBAL_PERCPU_MA_MAX_SIZE) {
-> +						verbose(env, "bpf_percpu_obj_new type size (%d) is greater than %lu\n",
-> +							ret_t->size, BPF_GLOBAL_PERCPU_MA_MAX_SIZE);
-> +						return -EINVAL;
-> +					}
->  					mutex_lock(&bpf_percpu_ma_lock);
->  					err = bpf_mem_alloc_percpu_unit_init(&bpf_global_percpu_ma, ret_t->size);
->  					mutex_unlock(&bpf_percpu_ma_lock);
+Patch #1 and #2 fix the warning by limiting the maximal number of
+uprobes/kprobes. Patch #3 and #4 add tests to ensure these warnings are
+fixed.
+
+Please see individual patches for more details. Comments are always
+welcome.
+
+Change Log:
+v2:
+  * limit the number of uprobes/kprobes instead of suppressing the
+    out-of-memory warning message (Alexei)
+  * provide a faked non-zero offsets to simplify the multiple uprobe
+    test (Jiri)
+
+v1: https://lore.kernel.org/bpf/20231211112843.4147157-1-houtao@huaweicloud.com/
+  
+Hou Tao (4):
+  bpf: Limit the number of uprobes when attaching program to multiple
+    uprobes
+  bpf: Limit the number of kprobes when attaching program to multiple
+    kprobes
+  selftests/bpf: Add test for abnormal cnt during multi-uprobe
+    attachment
+  selftests/bpf: Add test for abnormal cnt during multi-kprobe
+    attachment
+
+ kernel/trace/bpf_trace.c                      |  7 ++--
+ .../bpf/prog_tests/kprobe_multi_test.c        | 14 ++++++++
+ .../bpf/prog_tests/uprobe_multi_test.c        | 33 ++++++++++++++++++-
+ 3 files changed, 51 insertions(+), 3 deletions(-)
+
+-- 
+2.29.2
 
 
