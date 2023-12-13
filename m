@@ -1,411 +1,199 @@
-Return-Path: <bpf+bounces-17633-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17635-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C9CB81079B
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 02:25:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB72B8107AD
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 02:32:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 589971C208B7
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 01:25:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC8B51C20E62
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 01:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4797EB8;
-	Wed, 13 Dec 2023 01:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AAA31109;
+	Wed, 13 Dec 2023 01:32:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LLIQ0aB6"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="J27kcE73";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="J27kcE73";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mt/G5TLP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB19A7
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 17:25:15 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-54c7744a93fso8829517a12.2
-        for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 17:25:15 -0800 (PST)
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B9DB7
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 17:32:50 -0800 (PST)
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 8E7C9C15C28C
+	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 17:32:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1702431170; bh=aARpjDakdCAF1a7XknnrY/4e+GpLUlLrOL29MsQvu84=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=J27kcE73XtNoQBFSdI46qRzfQl4fgi3V87Avh8qeDHyg3vYLa+yXfP6ypZRsggYed
+	 K+rZbl0T8+lg/5J0mowfWQ0N/ZCyx0JyM2WMIu8UDPGFHrLhUcA4F4re0eDCOprmMC
+	 1lFzXdfrnhEHw4B1eCCooCAFjk7GKwQ5emuJJ2eQ=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Dec 12 17:32:50 2023
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 647FFC151079;
+	Tue, 12 Dec 2023 17:32:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1702431170; bh=aARpjDakdCAF1a7XknnrY/4e+GpLUlLrOL29MsQvu84=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=J27kcE73XtNoQBFSdI46qRzfQl4fgi3V87Avh8qeDHyg3vYLa+yXfP6ypZRsggYed
+	 K+rZbl0T8+lg/5J0mowfWQ0N/ZCyx0JyM2WMIu8UDPGFHrLhUcA4F4re0eDCOprmMC
+	 1lFzXdfrnhEHw4B1eCCooCAFjk7GKwQ5emuJJ2eQ=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 88345C151079
+ for <bpf@ietfa.amsl.com>; Tue, 12 Dec 2023 17:32:49 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Score: -2.108
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Giejo_aeqchv for <bpf@ietfa.amsl.com>;
+ Tue, 12 Dec 2023 17:32:47 -0800 (PST)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com
+ [IPv6:2a00:1450:4864:20::430])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 398EAC14CE24
+ for <bpf@ietf.org>; Tue, 12 Dec 2023 17:32:47 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id
+ ffacd0b85a97d-336221efdceso2194558f8f.3
+ for <bpf@ietf.org>; Tue, 12 Dec 2023 17:32:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702430714; x=1703035514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sN2v7dJ/iX7V0YdkGPKOzvebwdO81HG2XZDWKfG5VGw=;
-        b=LLIQ0aB629TkUcp7huYEnD751LPtTqBj2WXhn7KiR2sKaGWRkJPvogzXHm9/VOpf4J
-         Qek3sGAYyvKxDIyCj8tAHccxEma+1YOL7tJe+b34kBurIos1YVweVnW3dp/kYeYLncit
-         CzZYTzk/6XvYHtkX3j2SE0+YV+8TUHDE7yhfU2YmIiY7vcLnLS5Um58yol2maCBnsmQ2
-         6+0hHpemHQnZGgGIULEmQRUXetwrVhdG+A9+6Bzw+ba9gMkfAI0jfvtA4qHnZAOl0OZM
-         f86gdWHxjKsNPJYdRZ+oj8vc22caJJC92OaFYgtIJjd6LuV5enEjW8VBPHFHWSpcV63o
-         zFXw==
+ d=gmail.com; s=20230601; t=1702431165; x=1703035965; darn=ietf.org;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=QGTpQmu3GXE7DHNoF7J3vSFJThQGo8kjepksHBry8bc=;
+ b=mt/G5TLP4sBfbb8lHn9OqNHMs0DRZ1XBjXx+85dzuGsRXtNtLJq2jY5fCl/73aibV3
+ MYssFq+s1AWGfdYQZAP27jt7dLwHDd0zzvNAZs5jYjkAqnS8hTPloftm7+8fqQQZYefi
+ SC/+yDminkzDJDf/Q15O5Q/Jb5t9KfYyxAlEvT/JX9mgCte19n0SMsQJ31GjoYQoKZbl
+ PFcVK/t3gUugS41hdblmnbVebgYS57erAW6VRY2QWHP0NoLy3mR4FgpO0Ky8tmnHfCRW
+ 4GU8hMtYf74dutoER8p2jaD1vNRGYfza68V0fdITXCofXeCqIoTI6R2+uSptGpM8ElEU
+ R5aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702430714; x=1703035514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sN2v7dJ/iX7V0YdkGPKOzvebwdO81HG2XZDWKfG5VGw=;
-        b=pgOZeEA847uv3WJ9W6H3tzuEs4swKDaWhu3gi5hovhC79bJ4fht0vTb+FOeZSErSEJ
-         LCaoBKkR247153MUeGjfLCRJen/4nYfsi0d0c64yfkVpEeb2N9K3D4W2hrr5iweeICeQ
-         DmeYBVoC91hA4Qy/pQFdmmxnbfDVjROxaMmQSXSZ4M8aGoPsDIebegJ6I1/iv9AF5mhS
-         k91eTUIo7BdaYHpmOb4uBOFLCthgAq+O3SfkgraE4TV4h5KrxPFtusQnxFt3cNjhVodc
-         RmA8oTOPl8K1WRKmedSr/oPPvnZH+XKyG1x603rGrPMY0xDXzKPB3yjNNCnse5pYa3h+
-         R3JA==
-X-Gm-Message-State: AOJu0Yz+KyOwg1CSyAxtCtPidyyTHxoKlv8EPGChxUoeI2yMBa94Gula
-	U5w2fTklnrKzW/0yikpR/hkdSctmxAHQyBnM0Mr/PBgB6sE=
-X-Google-Smtp-Source: AGHT+IFIop3oANTms2wAmy9Rby10IoO/X+DUsB/ASg8D6GQMLrT4pUFffNqr/WFQarJySR3wYNWoOL8vOaDl2CWT528=
-X-Received: by 2002:a17:907:7f26:b0:a19:a1ba:8cba with SMTP id
- qf38-20020a1709077f2600b00a19a1ba8cbamr3917051ejc.88.1702430713748; Tue, 12
- Dec 2023 17:25:13 -0800 (PST)
+ d=1e100.net; s=20230601; t=1702431165; x=1703035965;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=QGTpQmu3GXE7DHNoF7J3vSFJThQGo8kjepksHBry8bc=;
+ b=oH2/8JhqnkaPWPiRvToHXIM3SHPJq3UntNJPtPWnQkwmLv9q3cfd48YuIHwnWPO9ky
+ Rc6TeUlRkoql6m6awbK/V4DBa8dFI0SiWPY+m6vwrMwlAys551vwvRPJfhaJfMcGxYbX
+ SptL/Sff+kfT41/WaLAE25vNH69N2IFFhdRDWgEyxzXhghI1BmCv4x+TW+Op5zpnBoyP
+ WUKQRDpp7KTjfjowp5RgKmRyH3GuIUu1dGUWC7ZhOSDAC8ySaCVQEfjSPRhvUtvBzYFU
+ IsOLMPla6YQf+UhF9k6M3mEFIUvZNqg/UCijdcz5s6UCFiDFtzKNLHuFoEoyr6OySX5a
+ Hrfg==
+X-Gm-Message-State: AOJu0YwA37FVu+6xOBGXoQ8dJKGOBa/GT6IOtdUsxS/hQjMsx/0J7v11
+ 6rG1gxh+qyaWdQMlLwUoJHQ/jAzilRG4+WaTLGo=
+X-Google-Smtp-Source: AGHT+IFsJBK3NJijxkElIbph59esV9Ms4A/ssi/wmtpGUnUY07juV0rmchatiXkFT22EiVOk8mPyrEzs79FblC7YMXI=
+X-Received: by 2002:adf:fb49:0:b0:333:53b9:441b with SMTP id
+ c9-20020adffb49000000b0033353b9441bmr2138961wrs.47.1702431165398; Tue, 12 Dec
+ 2023 17:32:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231210225536.70322-1-andreimatei1@gmail.com>
- <CAEf4BzZ+LYPacn5hKCo+EK31NQu+p6iNFx42PdQZHu1hxSMZBQ@mail.gmail.com> <CABWLsevXw+1VY+tH-_oGJdWTCFOWXKLLiuzkWCC2wo2OmB1u3A@mail.gmail.com>
-In-Reply-To: <CABWLsevXw+1VY+tH-_oGJdWTCFOWXKLLiuzkWCC2wo2OmB1u3A@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 12 Dec 2023 17:25:01 -0800
-Message-ID: <CAEf4Bza7TkhaOZN1Pc2ktomBD7bCGPpM3tg3_5OmetF6utOGQA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Simplify checking size of helper accesses
-To: Andrei Matei <andreimatei1@gmail.com>
-Cc: bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20231127201817.GB5421@maniforge>
+ <072101da2558$fe5f5020$fb1df060$@gmail.com>
+ <20231207215152.GA168514@maniforge>
+ <CAADnVQ+Mhe6ean6J3vH1ugTyrgWNxupLoFfwKu6-U=3R8i1TNQ@mail.gmail.com>
+ <20231212214532.GB1222@maniforge> <157b01da2d46$b7453e20$25cfba60$@gmail.com>
+ <CAADnVQKd7X1v6CwCa2MyJjQkN8hKsHJ_g9Kk5CwWSbp9+1_3zw@mail.gmail.com>
+ <20231212233555.GA53579@maniforge>
+In-Reply-To: <20231212233555.GA53579@maniforge>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 12 Dec 2023 17:32:33 -0800
+Message-ID: <CAADnVQJ-JwNTY5fW-oXdTur9aDrv2NQoreTH3yYZemVBVtq9fQ@mail.gmail.com>
+To: David Vernet <void@manifault.com>
+Cc: Dave Thaler <dthaler1968@googlemail.com>, bpf@ietf.org,
+ bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/rmADK_FvNRDFF3pPuRjgPLsHY20>
+Subject: Re: [Bpf] BPF ISA conformance groups
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 
-On Tue, Dec 12, 2023 at 4:22=E2=80=AFPM Andrei Matei <andreimatei1@gmail.co=
-m> wrote:
->
-> On Tue, Dec 12, 2023 at 6:47=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Sun, Dec 10, 2023 at 2:55=E2=80=AFPM Andrei Matei <andreimatei1@gmai=
-l.com> wrote:
-> > >
-> > > This patch simplifies the verification of size arguments associated t=
-o
-> > > pointer arguments to helpers and kfuncs. Many helpers take a pointer
-> > > argument followed by the size of the memory access performed to be
-> > > performed through that pointer. Before this patch, the handling of th=
-e
-> > > size argument in check_mem_size_reg() was confusing and wasteful: if =
-the
-> > > size register's lower bound was 0, then the verification was done twi=
-ce:
-> > > once considering the size of the access to be the lower-bound of the
-> > > respective argument, and once considering the upper bound (even if th=
-e
-> > > two are the same). The upper bound checking is a super-set of the
-> > > lower-bound checking(*), except: the only point of the lower-bound ch=
-eck
-> > > is to handle the case where zero-sized-accesses are explicitly not
-> > > allowed and the lower-bound is zero. This static condition is now
-> > > checked explicitly, replacing a much more complex, expensive and
-> > > confusing verification call to check_helper_mem_access().
-> > >
-> > > Now that check_mem_size_reg() deals directly with the zero_size_allow=
-ed
-> > > checking, the single remaining call to check_helper_mem_access() can
-> > > pass a static value for the zero_size_allowed arg, instead of
-> > > propagating a dynamic one. I think this is an improvement, as trackin=
-g
-> > > the wide propagation of zero_sized_allowed is already complicated.
-> > >
-> > > This patch also results in better error messages for rejected zero-si=
-ze
-> > > reads. Before, the message one would get depended on the type of the
-> > > pointer and on other conditions, and sometimes the message was plain
-> > > wrong: in some tests that changed you'll see that the old message was
-> > > something like "R1 min value is outside of the allowed memory range",
-> > > where R1 is the pointer register; the error was wrongly claiming that
-> > > the pointer was bad instead of the size being bad. Other times the
-> > > information that the size came for a register with a possible range o=
-f
-> > > values was wrong, and the error presented the size as a fixed zero.
-> > >
-> > > (*) Besides standing to reason that the checks for a bigger size acce=
-ss
-> > > are a super-set of the checks for a smaller size access, I have also
-> > > mechanically verified this by reading the code for all types of
-> > > pointers. I could convince myself that it's true for all but
-> > > PTR_TO_BTF_ID (check_ptr_to_btf_access). There, simply looking
-> > > line-by-line does not immediately prove what we want. If anyone has a=
-ny
-> > > qualms, let me know.
-> >
-> > yeah, I think for PTR_TO_BTF_ID (at least conceptually, I don't know
-> > if we support this now or not) actual range is important, we can't
-> > just assume [0, umax] range. [umin, umax] might be valid if it falls
-> > completely inside, say, array, but if it crosses two fields, then it
-> > would be rejected. Again, not saying we do these checks today, but
-> > this is where I see the problem. Simplifying [umin, umax] into [0,
-> > umax] will be valid only for dumb opaque memory regions, which
-> > PTR_TO_BTF_ID isn't really
->
-> I'm not sure I know how to interpret what you're saying here :). I think =
-you're
-> saying that... patch is OK, right?
-> There are two ranges at play - the offset range and the size range - and =
-I'm
-> not entirely sure which one you're talking about. So, before, for PTR_TO_=
-BTF_ID
-> (just like for every other kind of pointer) we were doing two checks:
-> 1. offset: [range from regno-1], size: 0
-> 2. offset: [range from @regno-1], size: umax of @regno
-> This patch removes check 1.
-> Note that the umin for @regno never came into play - neither before this =
-patch,
-> nor after this patch.
->
-> For PTR_TO_BTF_ID, just like for every other kind of pointer, I think usi=
-ng
-> (umax of @regno) for the size is enough. I imagine that the consideration=
-s are
-> about whether the read can potentially cross fields, like you're saying. =
-But
-> considering the maximum possible size I think is enough for that check --=
- I
-> don't think we should take the minimum possible size into consideration. =
-So,
-> the range to check would be [minimum possible offset + maximum possible s=
-ize,
-> maximum possible offset + maximum possible size]. In other words, given a
-> certain offset, there's no such thing as a read that's "too small", only =
-a read
-> that's "too large", correct?
-
-Yeah, you are right, I completely mixed offset range and size range
-together here. So yeah, I think just checking umax using
-check_helper_mem_access() should be enough if we handle
-zero_sized_allowed properly. Let's just drop tnum and try to not
-reduce useful information returned in verifier log messages?
-
->
->
->
-> >
-> > >
-> > > Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
-> > > ---
-> > >  kernel/bpf/verifier.c                         | 34 ++++++++++----
-> > >  .../bpf/progs/verifier_helper_value_access.c  | 45 +++++++++++++++++=
---
-> > >  .../selftests/bpf/progs/verifier_raw_stack.c  |  2 +-
-> > >  3 files changed, 68 insertions(+), 13 deletions(-)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index fb690539d5f6..022833903157 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -7258,6 +7258,7 @@ static int check_mem_size_reg(struct bpf_verifi=
-er_env *env,
-> > >                               struct bpf_call_arg_meta *meta)
-> > >  {
-> > >         int err;
-> > > +       const bool size_is_const =3D tnum_is_const(reg->var_off);
-> > >
-> > >         /* This is used to refine r0 return value bounds for helpers
-> > >          * that enforce this value as an upper bound on return values=
-.
-> > > @@ -7272,7 +7273,7 @@ static int check_mem_size_reg(struct bpf_verifi=
-er_env *env,
-> > >         /* The register is SCALAR_VALUE; the access check
-> > >          * happens using its boundaries.
-> > >          */
-> > > -       if (!tnum_is_const(reg->var_off))
-> > > +       if (!size_is_const)
-> > >                 /* For unprivileged variable accesses, disable raw
-> > >                  * mode so that the program is required to
-> > >                  * initialize all the memory that the helper could
-> > > @@ -7286,12 +7287,17 @@ static int check_mem_size_reg(struct bpf_veri=
-fier_env *env,
-> > >                 return -EACCES;
-> > >         }
-> > >
-> > > -       if (reg->umin_value =3D=3D 0) {
-> > > -               err =3D check_helper_mem_access(env, regno - 1, 0,
-> > > -                                             zero_size_allowed,
-> > > -                                             meta);
-> > > -               if (err)
-> > > -                       return err;
-> > > +       if (reg->umin_value =3D=3D 0 && !zero_size_allowed) {
-> > > +               if (size_is_const) {
-> > > +                       verbose(env, "R%d invalid zero-sized read\n",=
- regno);
-> > > +               } else {
-> > > +                       char tn_buf[48];
-> > > +
-> > > +                       tnum_strn(tn_buf, sizeof(tn_buf), reg->var_of=
-f);
-> > > +                       verbose(env, "R%d invalid possibly-zero-sized=
- read: u64=3D[%#llx, %#llx] var_off=3D%s\n",
-> > > +                               regno, reg->umin_value, reg->umax_val=
-ue, tn_buf);
-> >
-> > for retval checks we decided to not care about tnum at all, so I think
-> > it makes sense to do that here as well. tnum provides no benefits in
-> > range checking and will be just an eye sore for users
-> >
-> >
-> > > +               }
-> > > +               return -EACCES;
-> > >         }
-> > >
-> > >         if (reg->umax_value >=3D BPF_MAX_VAR_SIZ) {
-> > > @@ -7299,9 +7305,21 @@ static int check_mem_size_reg(struct bpf_verif=
-ier_env *env,
-> > >                         regno);
-> > >                 return -EACCES;
-> > >         }
-> > > +       /* If !zero_size_allowed, we already checked that umin_value =
-> 0, so
-> > > +        * umax_value should also be > 0.
-> > > +        */
-> > > +       if (reg->umax_value =3D=3D 0 && !zero_size_allowed) {
-> > > +               verbose(env, "verifier bug: !zero_size_allowed should=
- have been handled already\n");
-> > > +               return -EFAULT;
-> > > +       }
-> > >         err =3D check_helper_mem_access(env, regno - 1,
-> > >                                       reg->umax_value,
-> > > -                                     zero_size_allowed, meta);
-> > > +                                     /* zero_size_allowed: we assert=
-ed above that umax_value is
-> > > +                                      * not zero if !zero_size_allow=
-ed, so we don't need any
-> > > +                                      * further checks.
-> > > +                                      */
-> > > +                                     true ,
-> > > +                                     meta);
-> > >         if (!err)
-> > >                 err =3D mark_chain_precision(env, regno);
-> > >         return err;
-> > > diff --git a/tools/testing/selftests/bpf/progs/verifier_helper_value_=
-access.c b/tools/testing/selftests/bpf/progs/verifier_helper_value_access.c
-> > > index 692216c0ad3d..7c99c7bae09e 100644
-> > > --- a/tools/testing/selftests/bpf/progs/verifier_helper_value_access.=
-c
-> > > +++ b/tools/testing/selftests/bpf/progs/verifier_helper_value_access.=
-c
-> > > @@ -89,9 +89,14 @@ l0_%=3D:       exit;                              =
-             \
-> > >         : __clobber_all);
-> > >  }
-> > >
-> > > +/* Call a function taking a pointer and a size which doesn't allow t=
-he size to
-> > > + * be zero (i.e. bpf_trace_printk() declares the second argument to =
-be
-> > > + * ARG_CONST_SIZE, not ARG_CONST_SIZE_OR_ZERO). We attempt to pass z=
-ero for the
-> > > + * size and expect to fail.
-> > > + */
-> > >  SEC("tracepoint")
-> > >  __description("helper access to map: empty range")
-> > > -__failure __msg("invalid access to map value, value_size=3D48 off=3D=
-0 size=3D0")
-> > > +__failure __msg("R2 invalid zero-sized read")
-> > >  __naked void access_to_map_empty_range(void)
-> > >  {
-> > >         asm volatile ("                                 \
-> > > @@ -113,6 +118,38 @@ l0_%=3D:     exit;                              =
-             \
-> > >         : __clobber_all);
-> > >  }
-> > >
-> > > +/* Like the test above, but this time the size register is not known=
- to be zero;
-> > > + * its lower-bound is zero though, which is still unacceptible.
-> > > + */
-> > > +SEC("tracepoint")
-> > > +__description("helper access to map: possibly-empty range")
-> > > +__failure __msg("R2 invalid possibly-zero-sized read: u64=3D[0x0, 0x=
-4] var_off=3D(0x0; 0x4)")
-> > > +__naked void access_to_map_possibly_empty_range(void)
-> > > +{
-> > > +       asm volatile ("                                         \
-> > > +       r2 =3D r10;                                               \
-> > > +       r2 +=3D -8;                                               \
-> > > +       r1 =3D 0;                                                 \
-> > > +       *(u64*)(r2 + 0) =3D r1;                                   \
-> > > +       r1 =3D %[map_hash_48b] ll;                                \
-> > > +       call %[bpf_map_lookup_elem];                            \
-> > > +       if r0 =3D=3D 0 goto l0_%=3D;                                 =
- \
-> > > +       r1 =3D r0;                                                \
-> > > +       /* Read an unknown value */                             \
-> > > +       r7 =3D *(u64*)(r0 + 0);                                   \
-> > > +       /* Make it small and positive, to avoid other errors */ \
-> > > +       r7 &=3D 4;                                                \
-> > > +       r2 =3D 0;                                                 \
-> > > +       r2 +=3D r7;                                               \
-> > > +       call %[bpf_trace_printk];                               \
-> > > +l0_%=3D: exit;                                               \
-> > > +"      :
-> > > +       : __imm(bpf_map_lookup_elem),
-> > > +         __imm(bpf_trace_printk),
-> > > +         __imm_addr(map_hash_48b)
-> > > +       : __clobber_all);
-> > > +}
-> > > +
-> > >  SEC("tracepoint")
-> > >  __description("helper access to map: out-of-bound range")
-> > >  __failure __msg("invalid access to map value, value_size=3D48 off=3D=
-0 size=3D56")
-> > > @@ -221,7 +258,7 @@ l0_%=3D:      exit;                              =
-             \
-> > >
-> > >  SEC("tracepoint")
-> > >  __description("helper access to adjusted map (via const imm): empty =
-range")
-> > > -__failure __msg("invalid access to map value, value_size=3D48 off=3D=
-4 size=3D0")
-> > > +__failure __msg("R2 invalid zero-sized read")
-> >
-> > I wouldn't say this the new message is strictly an improvement, tbh.
-> > Offset is definitely useful, value_size is a nice hint as well. So I
-> > personally would prefer details in the original message
-> >
-> > >  __naked void via_const_imm_empty_range(void)
-> > >  {
-> > >         asm volatile ("                                 \
-> > > @@ -386,7 +423,7 @@ l0_%=3D:      exit;                              =
-             \
-> > >
-> > >  SEC("tracepoint")
-> > >  __description("helper access to adjusted map (via const reg): empty =
-range")
-> > > -__failure __msg("R1 min value is outside of the allowed memory range=
-")
-> > > +__failure __msg("R2 invalid zero-sized read")
-> > >  __naked void via_const_reg_empty_range(void)
-> > >  {
-> > >         asm volatile ("                                 \
-> > > @@ -556,7 +593,7 @@ l0_%=3D:      exit;                              =
-             \
-> > >
-> > >  SEC("tracepoint")
-> > >  __description("helper access to adjusted map (via variable): empty r=
-ange")
-> > > -__failure __msg("R1 min value is outside of the allowed memory range=
-")
-> > > +__failure __msg("R2 invalid zero-sized read")
-> >
-> > btw, it's "*possible" zero-sized read", right?
-> >
-> > >  __naked void map_via_variable_empty_range(void)
-> > >  {
-> > >         asm volatile ("                                 \
-> > > diff --git a/tools/testing/selftests/bpf/progs/verifier_raw_stack.c b=
-/tools/testing/selftests/bpf/progs/verifier_raw_stack.c
-> > > index f67390224a9c..3dbda85e2997 100644
-> > > --- a/tools/testing/selftests/bpf/progs/verifier_raw_stack.c
-> > > +++ b/tools/testing/selftests/bpf/progs/verifier_raw_stack.c
-> > > @@ -64,7 +64,7 @@ __naked void load_bytes_negative_len_2(void)
-> > >
-> > >  SEC("tc")
-> > >  __description("raw_stack: skb_load_bytes, zero len")
-> > > -__failure __msg("invalid zero-sized read")
-> > > +__failure __msg("R4 invalid zero-sized read")
-> > >  __naked void skb_load_bytes_zero_len(void)
-> > >  {
-> > >         asm volatile ("                                 \
-> > > --
-> > > 2.40.1
-> > >
+T24gVHVlLCBEZWMgMTIsIDIwMjMgYXQgMzozNuKAr1BNIERhdmlkIFZlcm5ldCA8dm9pZEBtYW5p
+ZmF1bHQuY29tPiB3cm90ZToKPgo+ID4gSXQgb25seSBzdXBwb3J0cyBhdG9taWNfYWRkIGFuZCBu
+byBvdGhlciBhdG9taWNzLgo+Cj4gQWhoLCBJIG1pc3VuZGVyc3Rvb2Qgd2hlbiBJIGRpc2N1c3Nl
+ZCB3aXRoIEt1YmEuIEkgZ3Vlc3MgdGhleSBzdXBwb3J0ZWQKPiBvbmx5IGF0b21pY19hZGQgYmVj
+YXVzZSBwYWNrZXRzIGNhbiBiZSBkZWxpdmVyZWQgb3V0IG9mIG9yZGVyLgoKTm90IHN1cmUgd2h5
+IGl0IGhhcyBhbnl0aGluZyB0byBkbyB3aXRoIHBhY2tldHMuCgo+IFNvIGZhaXIKPiBlbm91Z2gg
+b24gdGhhdCBwb2ludCwgYnV0IEkgc3RpbGwgc3RhbmQgYnkgdGhlIGNsYWltIHRob3VnaCB0aGF0
+IGlmIHlvdQo+IG5lZWQgb25lIHR5cGUgb2YgYXRvbWljLCBpdCdzIHJlYXNvbmFibGUgdG8gaW5m
+ZXIgdGhhdCB5b3UgbWF5IG5lZWQgYWxsCj4gb2YgdGhlbS4gSSB3b3VsZCBiZSBjdXJpb3VzIHRv
+IGhlYXIgaG93IG11Y2ggd29yayBpdCB3b3VsZCBoYXZlIGJlZW4gdG8KPiBhZGQgc3VwcG9ydCBm
+b3IgdGhlIG90aGVycy4gSWYgdGhlcmUgd2FzIGFuIGF0b21pYyBjb25mb3JtYW5jZSBncm91cCwK
+PiBtYXliZSB0aGV5IHdvdWxkIGhhdmUuCgpUaGUgbmV0cm9ub21lIHdhc24ndCB0cnlpbmcgdG8g
+b2ZmbG9hZCB0aGlzIG9yIHRoYXQgaW5zbiB0byBiZQppbiBjb21wbGlhbmNlLiBUb2dldGhlciwg
+bmV0cm9ub21lIGFuZCBicGYgZm9sa3MgZGVjaWRlZCB0byBmb2N1cwpvbiBhIHNldCBvZiByZWFs
+IFhEUCBhcHBsaWNhdGlvbnMgYW5kIHRyeSB0byBvZmZsb2FkIGFzIG11Y2ggYXMgcHJhY3RpY2Fs
+LgpBdCB0aGF0IHRpbWUgdGhlcmUgd2VyZSAtbWNwdT12MSBhbmQgdjIgaW5zbiBzZXRzIG9ubHkg
+YW5kIG9mZmxvYWRpbmcKd2Fzbid0IHJlYWxseSB3b3JraW5nIHdlbGwuIGFsdTMyIGluIGxsdm0s
+IHZlcmlmaWVyIGFuZCBuZnAgd2FzIGFkZGVkCnRvIG1ha2Ugb2ZmbG9hZCBwcmFjdGljYWwuIEV2
+ZW50dWFsbHkgaXQgYmVjYW1lIC1tY3B1PXYzLgpTbyBjb21wbGlhbmNlIHdpdGggYW55IGZ1dHVy
+ZSBncm91cCAoYmFzaWMsIGF0b21pYywgZXRjKSBpbiBJU0EgY2Fubm90CmJlIGV2YWx1YXRlZCBp
+biBpc29sYXRpb24sIGJlY2F1c2UgbmZwIGlzIG5vdCBjb21wbGlhbnQgd2l0aCAtbWNwdT12NAph
+bmQgbm90IGNvbXBsaWFudCB3aXRoIC1tY3B1PXYxLApidXQgd29ya3Mgd2VsbCB3aXRoIC1tY3B1
+PXYzIHdoaWxlIHYzIGlzIGFuIGV4dGVuc2lvbiBvZiB2MSBhbmQgdjIuCldoaWNoIGlzIG5vbnNl
+bnNpY2FsIGZyb20gc3RhbmRhcmQgY29tcGxpYW5jZSBwb3YuCm5ldHJvbm9tZSBvZmZsb2FkIGlz
+IGEgc3VjY2VzcyBiZWNhdXNlIGl0IGRlbW9uc3RyYXRlZApob3cgcmVhbCBwcm9kdWN0aW9uIFhE
+UCBhcHBsaWNhdGlvbnMgY2FuIHJ1biBpbiBhIE5JQyBhdCBzcGVlZHMKdGhhdCB0cmFkaXRpb25h
+bCBDUFVzIGNhbm5vdCBkcmVhbSBvZi4KSXQncyBhIHN1Y2Nlc3MgZGVzcGl0ZSB0aGUgY29tcGxl
+eGl0eSBhbmQgdWdsaW5lc3Mgb2YgQlBGIElTQS4KSXQncyB3b3JraW5nIGJlY2F1c2UgcHJhY3Rp
+Y2FsIGFwcGxpY2F0aW9ucyBjb21waWxlZCB3aXRoIC1tY3B1PXYzIHByb2R1Y2UKImNvbXBsaWFu
+dCBlbm91Z2giIGJwZiBjb2RlLgoKPiBXZWxsLCBtYXliZSBub3QgZm9yIE5ldHJvbm9tZSwgb3Ig
+bWF5YmUgbm90IGV2ZW4gZm9yIGFueSB2ZW5kb3IgKHRob3VnaAo+IHdlIGhhdmUgbm8gd2F5IG9m
+IGtub3dpbmcgdGhhdCB5ZXQpLCBidXQgd2hhdCBhYm91dCBmb3Igb3RoZXIgY29udGV4dHMKPiBs
+aWtlIFdpbmRvd3MgLyBMaW51eCBjcm9zcy1wbGF0Zm9ybSBjb21wYXQ/CgpicGYgb24gd2luZG93
+cyBzdGFydGVkIHNpbWlsYXIgdG8gbmV0cm9ub21lLiBUaGUgZ29hbCB3YXMgdG8KZGVtb25zdHJh
+dGUgcmVhbCBjaWxpdW0gcHJvZ3MgcnVubmluZyBvbiB3aW5kb3dzLiBBbmQgaXQgd2FzIGRvbmUu
+ClNpbmNlIHdpbmRvd3MgaXMgYSBzb2Z0d2FyZSB0aGVyZSB3YXMgbm8gbmVlZCB0byBhZGQgb3Ig
+cmVtb3ZlIGFueXRoaW5nCmZyb20gSVNBLCBidXQgZHVlIHRvIGxpY2Vuc2luZyB0aGUgcHJldmFp
+bCB2ZXJpZmllciBoYWQgdG8gYmUgdXNlZCB3aGljaApkb2Vzbid0IHN1cHBvcnQgYSB3aG9sZSBi
+dW5jaCBvZiB0aGluZ3MuClRoaXMgc29mdHdhcmUgZGVmaWNpZW5jaWVzIG9mIG5vbi1saW51eCB2
+ZXJpZmllciBzaG91bGRuJ3QgYmUKZGljdGF0aW5nIGdyb3VwaW5nIG9mIHRoZSBpbnNucyBpbiB0
+aGUgc3RhbmRhcmQuCklmIGxpbnV4IGNhbiBkbyBpdCwgd2luZG93cyBzaG91bGQgYmUgYWJsZSB0
+byBkbyBpdCBqdXN0IGFzIHdlbGwuClNvIEkgc2VlIG5vIHByb2JsZW0gc2F5aW5nIHRoYXQgYnBm
+IG9uIHdpbmRvd3Mgd2lsbCBiZSBub24tY29tcGxpYW50CnVudGlsIHRoZXkgc3VwcG9ydCBhbGwg
+b2YgLW1jcHU9djQgaW5zbnMuIEl0J3MgYSBzb2Z0d2FyZSBwcm9qZWN0CndpdGggYSBkZXRlcm1p
+bmlzdGljIHRpbWVsaW5lLgoKVGhlIHN0YW5kYXJkIHNob3VsZCBmb2N1cyBvbiBjb21wYXRpYmls
+aXR5IGJldHdlZW4KSFctaXNoIG9mZmxvYWRzIHdoZXJlIG5vIGFtb3VudCBvZiBzb2Z0d2FyZSBj
+YW4gYWRkIHN1cHBvcnQgZm9yCmFsbCBvZiAtbWNwdT12NC4KQW5kIGhlcmUgSSBiZWxpZXZlIGNv
+bXBsaWFuY2Ugd2l0aCAiYmFzaWMiIGlzIG5vdCBwcmFjdGljYWwuCldoZW4gbnZtZSBIVyBhcmNo
+aXRlY3RzIHdpbGwgZ2V0IHRvIGltcGxlbWVudCAiYmFzaWMiIElTQSB0aGV5IG1pZ2h0CnJlYWxp
+emUgdGhhdCBpdCBoYXMgdG9vIG11Y2guClByb2R1Y2luZyAiY29uZm9ybWFuY2UgZ3JvdXBzIiB3
+aXRob3V0IEhXIGZvbGtzIHRoaW5raW5nIHRocm91Z2ggdGhlCmltcGxlbWVudGF0aW9uIGlzIG5v
+dCBnb2luZyB0byBiZSBhIHN1Y2Nlc3MuCkkgd29ycnkgdGhhdCBpdCB3aWxsIGhhdmUgdGhlIG9w
+cG9zaXRlIGVmZmVjdC4KV2UnbGwgaGF2ZSBhIHN0YW5kYXJkIHdpdGggYmFzaWMsIGF0b21pYywg
+ZXRjLgpUaGVuIGZvbGtzIHdpbGwgZGVsaXZlciB0aGlzIHN0YW5kYXJkIG9uIHRoZSBkZXNrIG9m
+IEhXIGFyY2hpdGVjdHMuClRoZXkgd2lsbCBnaXZlIGl0IGEgdHJ5IGFuZCB3aWxsIHJlamVjdCB0
+aGUgaWRlYSBvZiBpbXBsZW1lbnRpbmcgQlBGIGluIEhXLApiZWNhdXNlIG5vdCBpbXBsZW1lbnRp
+bmcgImJhc2ljIiB3b3VsZCBtZWFuIHRoYXQgdGhpcyB2ZW5kb3IKaXMgbm90IGluIGNvbXBsaWFu
+Y2Ugd2hpY2ggbWVhbnMgbm8gYnVzaW5lc3MuCkhlbmNlIHRoZSBzdGFuZGFyZCBzaG91bGRuJ3Qg
+b3ZlcmZvY3VzIG9uIGNvbXBsaWFuY2UgYW5kIGdyb3Vwcy4KSnVzdCBsZWdhY3kgYW5kIHRoZSBy
+ZXN0IHdpbGwgZG8gZm9yIG52bWUuCmxlZ2FjeSBtZWFucyAiZG9uJ3QgYm90aGVyIGxvb2tpbmcg
+YXQgdGhvc2UiLgp0aGUgcmVzdCBtZWFucyAicGxzIGltcGxlbWVudCB0aGVzZSBpbnNucyBiZWNh
+dXNlIHRoZXkgYXJlIHVzZWZ1bCwKdGhlaXIgc2VtYW50aWNzIGFuZCBlbmNvZGluZyBpcyBzdGFu
+ZGFyZGl6ZWQsCmJ1dCBwaWNrIHdoYXQgbWFrZXMgc2Vuc2UgZm9yIHlvdXIgdXNlIGNhc2UgYW5k
+IHlvdXIgSFciLgoKQW5kIHRvIG1ha2Ugc3VjaCBIVyBvZmZsb2FkIGEgc3VjY2VzcyB3ZSdkIG5l
+ZWQgdG8gd29yayB0b2dldGhlci4KY29tcGlsZXIsIGtlcm5lbCwgcnVuLXRpbWUsIGh3IGZvbGtz
+LgoiSGVyZSBpcyBhIHN0YW5kYXJkLiBHbyBpbXBsZW1lbnQgaXQiIHdvbid0IHdvcmsuCgotLSAK
+QnBmIG1haWxpbmcgbGlzdApCcGZAaWV0Zi5vcmcKaHR0cHM6Ly93d3cuaWV0Zi5vcmcvbWFpbG1h
+bi9saXN0aW5mby9icGYK
 
