@@ -1,381 +1,509 @@
-Return-Path: <bpf+bounces-17630-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17631-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E83F381066F
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 01:22:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D87B8106FE
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 01:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12E021C20E36
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 00:22:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F0F4D1F21014
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 00:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035CC65C;
-	Wed, 13 Dec 2023 00:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4D1A50;
+	Wed, 13 Dec 2023 00:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ezGFcGWS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kw4SI5Gu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8E3DCD
-	for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 16:22:46 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-54c5d041c23so8536820a12.2
-        for <bpf@vger.kernel.org>; Tue, 12 Dec 2023 16:22:46 -0800 (PST)
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4FD99;
+	Tue, 12 Dec 2023 16:51:23 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-a22deb95d21so209129766b.3;
+        Tue, 12 Dec 2023 16:51:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702426965; x=1703031765; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702428682; x=1703033482; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3FR1naq6Z+RrrMx00aigIudaAUitrhDt2htrcqGO7UM=;
-        b=ezGFcGWSYhfSgyvO2FJ/v/q1lCyAaaEoo7rcjBlLF5bIUM+TpIWGBP+Jqssj9Mwi1A
-         w4ZI7GUrxRv+nHZJTBQvlafKZxnjohLpU4/eCJH/q+P9m9bwq0gnz+Siemok9b24qIgm
-         o7cfJOom9VymS1+n5+yaTuxGMobG+L1gGqTbmhaid8Exw7drwMo4uJR1SMpZwjpgn7PA
-         xZKPPounbo6D+pttYvdOAzTOB2EdNzZTHX9SVuyh7iNvDAcTHmJyfV9YqjtpRiFA23dD
-         GKYF23gRbqqo/PJ0xrdzViiVXABaym5HVFEbV68c24KvIEF9y0YpYtdm+3tnxBVMtLgc
-         SWKQ==
+        bh=2Fn4dIieffXe82QLNlOEsFLE86XtEp23WlsGE5l8aYI=;
+        b=Kw4SI5GuWzh1VnW5wVYf/f/h4SpCwzEgnJxoY2Gye10ZT4ncQdRApcZkWV7xJbDIIU
+         pCtckCO1WTVik5dIp3cP0bQWnVPM9MCZOp14Cnlt1iAJVFJTRwf91Uxxxm7/sVjpU2+F
+         TtlkkFK5yqjv2T5FUXc9uFceKpc07/tgZ2d2cUd7kzE4rxgFF4xKuarxh57JtZPL5EGv
+         aii9ykIQUc/EtM+Da6lt+MsngvuZy8KKJe4onZP+qeT/l/vdMBW3eExSjuQLFt3/bGWi
+         RKrz2vLZxDRKbSnQw2ysjtOJAkLm1zFyXhaTCZzciZbl94RTG1EuIPh7j1in9DUqfEC4
+         JqGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702426965; x=1703031765;
+        d=1e100.net; s=20230601; t=1702428682; x=1703033482;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3FR1naq6Z+RrrMx00aigIudaAUitrhDt2htrcqGO7UM=;
-        b=dtNp/VuVb2KA3a/g2fj3ACO/Zo+heYrZQsREHDbhmTnllshFxUwxOO9vxkcVtVzPUU
-         vLHWFrnuZWHEh807no7dTCxgVdY8ZbzY+Vxkm+N/4rhbStzJ7CtGL+8kQ6sAWYdWvYjb
-         5Y7mPHkMY87AmF/WqeX+jRhC7IQqIpiYxlcVXWU+no5+3u6dwnJvJeRXBRPQmW5h2bDV
-         BXQDN4LW8LT4gzTzQ9/0b5QBnSpRv0EpR9gyuhmW/mUbJHRIZ60aPOc7vxpvJAwfSASy
-         Htj/p48wQDUDPtKdLt76PsCGejmkiXxi2OxOmVVq2NKq6h7rJs8+Udgp1iR2lu0Ihd8V
-         EAYg==
-X-Gm-Message-State: AOJu0Yw5n71IDlOE7SWOeOtxgtlYDcLuWBt4oWEaeivghCTTY760pV5p
-	RCUKdkfdA6+ohDfh77Ju/h7ea5LmF9ffJS5AZcDDS43IyUdnHw==
-X-Google-Smtp-Source: AGHT+IHJ6kHva3nks3UJlPVpxVes/dHW1XmfWuFPNq0S2450cJ0VRU5fbVBMlzIflJYBTAPacur9AHLPzrfP3gIKvWA=
-X-Received: by 2002:a17:906:10c4:b0:a00:185a:a12b with SMTP id
- v4-20020a17090610c400b00a00185aa12bmr1564534ejv.34.1702426964718; Tue, 12 Dec
- 2023 16:22:44 -0800 (PST)
+        bh=2Fn4dIieffXe82QLNlOEsFLE86XtEp23WlsGE5l8aYI=;
+        b=H3qQy6l/JecBTv3YuZ8uxI8/dh9DfABx6SaOoM0mkSLF31wryoH7hxoSf95uNwmWLu
+         RnkNT0AOHIGoWBLOdVfTze1M94EP/vW1PPiH3uPuLQuEp4TZVYnvsmpf5jJfXw3zMGIL
+         OVlk1j1ykt2MjWTo6lnrF7R+vI5aKBfmatczFTu0QQaWuMdQIUdVGHGRjz8KBH5V4Lfx
+         /yeXcR96bdBK9BsMsPIJJKqOAl4C9onA6ONUtz/k4fnnfQ3hm2jDpAWtW8z0Qru7RBW+
+         p8aa+c4rVyXdc8PWG9MNaNNssRLAm81DG7NRWYUv7WMD6M0K4GhhxIBnyRz03L2u0z1d
+         bvsg==
+X-Gm-Message-State: AOJu0YwoN8NGTOpVn3YC8Nk5H0WKzOirhPZU87hO8o5Ip0p57VMPkvg4
+	2FbsEKppQTW/G3lnoagmdn3z7XKH3+7qgsjvd7KWcZRF4nw=
+X-Google-Smtp-Source: AGHT+IHl2jtvOwzlrdeIC6yqzwyXZjjfFHtJ0qILCq6p+swNVxfgwBa8pUXB0GGoYCrPgksc6z/BG/d54SYqGC2AppE=
+X-Received: by 2002:a17:906:181:b0:9ff:7164:c20a with SMTP id
+ 1-20020a170906018100b009ff7164c20amr3347154ejb.21.1702428681549; Tue, 12 Dec
+ 2023 16:51:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231210225536.70322-1-andreimatei1@gmail.com> <CAEf4BzZ+LYPacn5hKCo+EK31NQu+p6iNFx42PdQZHu1hxSMZBQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzZ+LYPacn5hKCo+EK31NQu+p6iNFx42PdQZHu1hxSMZBQ@mail.gmail.com>
-From: Andrei Matei <andreimatei1@gmail.com>
-Date: Tue, 12 Dec 2023 19:22:33 -0500
-Message-ID: <CABWLsevXw+1VY+tH-_oGJdWTCFOWXKLLiuzkWCC2wo2OmB1u3A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Simplify checking size of helper accesses
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+In-Reply-To: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 12 Dec 2023 16:51:09 -0800
+Message-ID: <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+To: Hao Sun <sunhao.th@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 6:47=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sun, Dec 10, 2023 at 2:55=E2=80=AFPM Andrei Matei <andreimatei1@gmail.=
-com> wrote:
-> >
-> > This patch simplifies the verification of size arguments associated to
-> > pointer arguments to helpers and kfuncs. Many helpers take a pointer
-> > argument followed by the size of the memory access performed to be
-> > performed through that pointer. Before this patch, the handling of the
-> > size argument in check_mem_size_reg() was confusing and wasteful: if th=
-e
-> > size register's lower bound was 0, then the verification was done twice=
+On Mon, Dec 11, 2023 at 7:31=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wrote=
 :
-> > once considering the size of the access to be the lower-bound of the
-> > respective argument, and once considering the upper bound (even if the
-> > two are the same). The upper bound checking is a super-set of the
-> > lower-bound checking(*), except: the only point of the lower-bound chec=
-k
-> > is to handle the case where zero-sized-accesses are explicitly not
-> > allowed and the lower-bound is zero. This static condition is now
-> > checked explicitly, replacing a much more complex, expensive and
-> > confusing verification call to check_helper_mem_access().
-> >
-> > Now that check_mem_size_reg() deals directly with the zero_size_allowed
-> > checking, the single remaining call to check_helper_mem_access() can
-> > pass a static value for the zero_size_allowed arg, instead of
-> > propagating a dynamic one. I think this is an improvement, as tracking
-> > the wide propagation of zero_sized_allowed is already complicated.
-> >
-> > This patch also results in better error messages for rejected zero-size
-> > reads. Before, the message one would get depended on the type of the
-> > pointer and on other conditions, and sometimes the message was plain
-> > wrong: in some tests that changed you'll see that the old message was
-> > something like "R1 min value is outside of the allowed memory range",
-> > where R1 is the pointer register; the error was wrongly claiming that
-> > the pointer was bad instead of the size being bad. Other times the
-> > information that the size came for a register with a possible range of
-> > values was wrong, and the error presented the size as a fixed zero.
-> >
-> > (*) Besides standing to reason that the checks for a bigger size access
-> > are a super-set of the checks for a smaller size access, I have also
-> > mechanically verified this by reading the code for all types of
-> > pointers. I could convince myself that it's true for all but
-> > PTR_TO_BTF_ID (check_ptr_to_btf_access). There, simply looking
-> > line-by-line does not immediately prove what we want. If anyone has any
-> > qualms, let me know.
 >
-> yeah, I think for PTR_TO_BTF_ID (at least conceptually, I don't know
-> if we support this now or not) actual range is important, we can't
-> just assume [0, umax] range. [umin, umax] might be valid if it falls
-> completely inside, say, array, but if it crosses two fields, then it
-> would be rejected. Again, not saying we do these checks today, but
-> this is where I see the problem. Simplifying [umin, umax] into [0,
-> umax] will be valid only for dumb opaque memory regions, which
-> PTR_TO_BTF_ID isn't really
-
-I'm not sure I know how to interpret what you're saying here :). I think yo=
-u're
-saying that... patch is OK, right?
-There are two ranges at play - the offset range and the size range - and I'=
-m
-not entirely sure which one you're talking about. So, before, for PTR_TO_BT=
-F_ID
-(just like for every other kind of pointer) we were doing two checks:
-1. offset: [range from regno-1], size: 0
-2. offset: [range from @regno-1], size: umax of @regno
-This patch removes check 1.
-Note that the umin for @regno never came into play - neither before this pa=
-tch,
-nor after this patch.
-
-For PTR_TO_BTF_ID, just like for every other kind of pointer, I think using
-(umax of @regno) for the size is enough. I imagine that the considerations =
-are
-about whether the read can potentially cross fields, like you're saying. Bu=
-t
-considering the maximum possible size I think is enough for that check -- I
-don't think we should take the minimum possible size into consideration. So=
-,
-the range to check would be [minimum possible offset + maximum possible siz=
-e,
-maximum possible offset + maximum possible size]. In other words, given a
-certain offset, there's no such thing as a read that's "too small", only a =
-read
-that's "too large", correct?
+> Hi,
+>
+> The verifier incorrectly prunes a path expected to be executed at
+> runtime. In the following program, the execution path is:
+>     from 6 to 8 (taken) -> from 11 to 15 (taken) -> from 18 to 22
+> (taken) -> from 26 to 27 (fall-through) -> from 29 to 30
+> (fall-through)
+> The verifier prunes the checking path at #26, skipping the actual
+> execution path.
+>
+>    0: (18) r2 =3D 0x1a000000be
+>    2: (bf) r5 =3D r1
+>    3: (bf) r8 =3D r2
+>    4: (bc) w4 =3D w5
+>    5: (85) call bpf_get_current_cgroup_id#680112
+>    6: (36) if w8 >=3D 0x69 goto pc+1
+>    7: (95) exit
+>    8: (18) r4 =3D 0x52
+>   10: (84) w4 =3D -w4
+>   11: (45) if r0 & 0xfffffffe goto pc+3
+>   12: (1f) r8 -=3D r4
+>   13: (0f) r0 +=3D r0
+>   14: (2f) r4 *=3D r4
+>   15: (18) r3 =3D 0x1f00000034
+>   17: (c4) w4 s>>=3D 29
+>   18: (56) if w8 !=3D 0xf goto pc+3
+>   19: r3 =3D bswap32 r3
+>   20: (18) r2 =3D 0x1c
+>   22: (67) r4 <<=3D 2
+>   23: (bf) r5 =3D r8
+>   24: (18) r2 =3D 0x4
+>   26: (7e) if w8 s>=3D w0 goto pc+5
+>   27: (4f) r8 |=3D r8
+>   28: (0f) r8 +=3D r8
+>   29: (d6) if w5 s<=3D 0x1d goto pc+2
+>   30: (18) r0 =3D 0x4 ; incorrectly pruned here
 
 
 
+>   32: (95) exit
 >
-> >
-> > Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c                         | 34 ++++++++++----
-> >  .../bpf/progs/verifier_helper_value_access.c  | 45 +++++++++++++++++--
-> >  .../selftests/bpf/progs/verifier_raw_stack.c  |  2 +-
-> >  3 files changed, 68 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index fb690539d5f6..022833903157 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -7258,6 +7258,7 @@ static int check_mem_size_reg(struct bpf_verifier=
-_env *env,
-> >                               struct bpf_call_arg_meta *meta)
-> >  {
-> >         int err;
-> > +       const bool size_is_const =3D tnum_is_const(reg->var_off);
-> >
-> >         /* This is used to refine r0 return value bounds for helpers
-> >          * that enforce this value as an upper bound on return values.
-> > @@ -7272,7 +7273,7 @@ static int check_mem_size_reg(struct bpf_verifier=
-_env *env,
-> >         /* The register is SCALAR_VALUE; the access check
-> >          * happens using its boundaries.
-> >          */
-> > -       if (!tnum_is_const(reg->var_off))
-> > +       if (!size_is_const)
-> >                 /* For unprivileged variable accesses, disable raw
-> >                  * mode so that the program is required to
-> >                  * initialize all the memory that the helper could
-> > @@ -7286,12 +7287,17 @@ static int check_mem_size_reg(struct bpf_verifi=
-er_env *env,
-> >                 return -EACCES;
-> >         }
-> >
-> > -       if (reg->umin_value =3D=3D 0) {
-> > -               err =3D check_helper_mem_access(env, regno - 1, 0,
-> > -                                             zero_size_allowed,
-> > -                                             meta);
-> > -               if (err)
-> > -                       return err;
-> > +       if (reg->umin_value =3D=3D 0 && !zero_size_allowed) {
-> > +               if (size_is_const) {
-> > +                       verbose(env, "R%d invalid zero-sized read\n", r=
-egno);
-> > +               } else {
-> > +                       char tn_buf[48];
-> > +
-> > +                       tnum_strn(tn_buf, sizeof(tn_buf), reg->var_off)=
-;
-> > +                       verbose(env, "R%d invalid possibly-zero-sized r=
-ead: u64=3D[%#llx, %#llx] var_off=3D%s\n",
-> > +                               regno, reg->umin_value, reg->umax_value=
-, tn_buf);
+> -------- Verifier Log --------
+> func#0 @0
+> 0: R1=3Dctx() R10=3Dfp0
+> 0: (18) r2 =3D 0x1a000000be             ; R2_w=3D0x1a000000be
+> 2: (bf) r5 =3D r1                       ; R1=3Dctx() R5_w=3Dctx()
+> 3: (bf) r8 =3D r2                       ; R2_w=3D0x1a000000be R8_w=3D0x1a=
+000000be
+> 4: (bc) w4 =3D w5                       ;
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xfffffff=
+f))
+> R5_w=3Dctx()
+> 5: (85) call bpf_get_current_cgroup_id#80     ; R0_w=3Dscalar()
+> 6: (36) if w8 >=3D 0x69 goto pc+1
+> mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
+> mark_precise: frame0: regs=3Dr8 stack=3D before 5: (85) call
+> bpf_get_current_cgroup_id#80
+> mark_precise: frame0: regs=3Dr8 stack=3D before 4: (bc) w4 =3D w5
+> mark_precise: frame0: regs=3Dr8 stack=3D before 3: (bf) r8 =3D r2
+> mark_precise: frame0: regs=3Dr2 stack=3D before 2: (bf) r5 =3D r1
+> mark_precise: frame0: regs=3Dr2 stack=3D before 0: (18) r2 =3D 0x1a000000=
+be
+> 6: R8_w=3D0x1a000000be
+> 8: (18) r4 =3D 0x52                     ; R4_w=3D82
+> 10: (84) w4 =3D -w4                     ; R4=3Dscalar()
+> 11: (45) if r0 & 0xfffffffe goto pc+3         ;
+> R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D1,var_off=
+=3D(0x0; 0x1))
+> 12: (1f) r8 -=3D r4                     ; R4=3Dscalar() R8_w=3Dscalar()
+> 13: (0f) r0 +=3D r0                     ;
+> R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=
+=3D(0x0;
+> 0x3))
+> 14: (2f) r4 *=3D r4                     ; R4_w=3Dscalar()
+> 15: (18) r3 =3D 0x1f00000034            ; R3_w=3D0x1f00000034
+> 17: (c4) w4 s>>=3D 29                   ;
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,va=
+r_off=3D(0x0;
+> 0xffffffff))
+> 18: (56) if w8 !=3D 0xf goto pc+3       ;
+> R8_w=3Dscalar(smin=3D0x800000000000000f,smax=3D0x7fffffff0000000f,umin=3D=
+smin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D15,var_off=
+=3D(0xf;
+> 0xffffffff00000000))
+> 19: (d7) r3 =3D bswap32 r3              ; R3_w=3Dscalar()
+> 20: (18) r2 =3D 0x1c                    ; R2=3D28
+> 22: (67) r4 <<=3D 2                     ;
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
+32=3D0xfffffffc,var_off=3D(0x0;
+> 0x3fffffffc))
+> 23: (bf) r5 =3D r8                      ;
+> R5_w=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff0000000f,=
+umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D15,=
+var_off=3D(0xf;
+> 0xffffffff00000000))
+> R8=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff0000000f,um=
+in=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D15,va=
+r_off=3D(0xf;
+> 0xffffffff00000000))
+> 24: (18) r2 =3D 0x4                     ; R2_w=3D4
+> 26: (7e) if w8 s>=3D w0 goto pc+5
+
+so here w8=3D15 and w0=3D[0,2], always taken, right?
+
+> mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+> mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
+> mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
+> mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+> mark_precise: frame0: parent state regs=3Dr8 stack=3D:
+> R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_of=
+f=3D(0x0;
+> 0x3)) R2_w=3D28 R3_w=3Dscalar()
+> R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,v=
+ar_off=3D(0x0;
+> 0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7fffffff0=
+000000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax=
+32=3D15,var_off=3D(0xf;
+> 0xffffffff00000000)) R10=3Dfp0
+> mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
+> mark_precise: frame0: regs=3Dr8 stack=3D before 20: (18) r2 =3D 0x1c
+> mark_precise: frame0: regs=3Dr8 stack=3D before 19: (d7) r3 =3D bswap32 r=
+3
+> mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf g=
+oto pc+3
+> mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
+> mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f00000=
+034
+> mark_precise: frame0: regs=3Dr8 stack=3D before 14: (2f) r4 *=3D r4
+> mark_precise: frame0: regs=3Dr8 stack=3D before 13: (0f) r0 +=3D r0
+> mark_precise: frame0: regs=3Dr8 stack=3D before 12: (1f) r8 -=3D r4
+> mark_precise: frame0: regs=3Dr4,r8 stack=3D before 11: (45) if r0 &
+> 0xfffffffe goto pc+3
+> mark_precise: frame0: parent state regs=3Dr4,r8 stack=3D:  R0_rw=3Dscalar=
+()
+> R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
+> mark_precise: frame0: regs=3Dr4,r8 stack=3D before 10: (84) w4 =3D -w4
+> mark_precise: frame0: regs=3Dr4,r8 stack=3D before 8: (18) r4 =3D 0x52
+> mark_precise: frame0: regs=3Dr8 stack=3D before 6: (36) if w8 >=3D 0x69 g=
+oto pc+1
+> mark_precise: frame0: regs=3Dr8 stack=3D before 5: (85) call
+> bpf_get_current_cgroup_id#80
+> mark_precise: frame0: regs=3Dr8 stack=3D before 4: (bc) w4 =3D w5
+> mark_precise: frame0: regs=3Dr8 stack=3D before 3: (bf) r8 =3D r2
+> mark_precise: frame0: regs=3Dr2 stack=3D before 2: (bf) r5 =3D r1
+> mark_precise: frame0: regs=3Dr2 stack=3D before 0: (18) r2 =3D 0x1a000000=
+be
+> mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+> mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
+> mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
+> mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
+> mark_precise: frame0: parent state regs=3Dr0 stack=3D:
+> R0_rw=3DPscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_o=
+ff=3D(0x0;
+> 0x3)) R2_w=3D28 R3_w=3Dscalar()
+> R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,v=
+ar_off=3D(0x0;
+> 0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7fffffff0=
+000000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax=
+32=3D15,var_off=3D(0xf;
+> 0xffffffff00000000)) R10=3Dfp0
+> mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
+> mark_precise: frame0: regs=3Dr0 stack=3D before 20: (18) r2 =3D 0x1c
+> mark_precise: frame0: regs=3Dr0 stack=3D before 19: (d7) r3 =3D bswap32 r=
+3
+> mark_precise: frame0: regs=3Dr0 stack=3D before 18: (56) if w8 !=3D 0xf g=
+oto pc+3
+> mark_precise: frame0: regs=3Dr0 stack=3D before 17: (c4) w4 s>>=3D 29
+> mark_precise: frame0: regs=3Dr0 stack=3D before 15: (18) r3 =3D 0x1f00000=
+034
+> mark_precise: frame0: regs=3Dr0 stack=3D before 14: (2f) r4 *=3D r4
+> mark_precise: frame0: regs=3Dr0 stack=3D before 13: (0f) r0 +=3D r0
+> mark_precise: frame0: regs=3Dr0 stack=3D before 12: (1f) r8 -=3D r4
+> mark_precise: frame0: regs=3Dr0 stack=3D before 11: (45) if r0 &
+> 0xfffffffe goto pc+3
+> mark_precise: frame0: parent state regs=3Dr0 stack=3D:  R0_rw=3DPscalar()
+> R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
+> mark_precise: frame0: regs=3Dr0 stack=3D before 10: (84) w4 =3D -w4
+> mark_precise: frame0: regs=3Dr0 stack=3D before 8: (18) r4 =3D 0x52
+> mark_precise: frame0: regs=3Dr0 stack=3D before 6: (36) if w8 >=3D 0x69 g=
+oto pc+1
+> mark_precise: frame0: regs=3Dr0 stack=3D before 5: (85) call
+> bpf_get_current_cgroup_id#80
+> 26: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_o=
+ff=3D(0x0;
+> 0x3)) R8=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff00000=
+00f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=
+=3D15,var_off=3D(0xf;
+> 0xffffffff00000000))
+> 32: (95) exit
 >
-> for retval checks we decided to not care about tnum at all, so I think
-> it makes sense to do that here as well. tnum provides no benefits in
-> range checking and will be just an eye sore for users
+> from 18 to 22: R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Duma=
+x32=3D2,var_off=3D(0x0;
+> 0x3)) R3_w=3D0x1f00000034
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,va=
+r_off=3D(0x0;
+> 0xffffffff)) R8_w=3Dscalar() R10=3Dfp0
+> 22: R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
+_off=3D(0x0;
+> 0x3)) R3_w=3D0x1f00000034
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,va=
+r_off=3D(0x0;
+> 0xffffffff)) R8_w=3Dscalar() R10=3Dfp0
+> 22: (67) r4 <<=3D 2                     ;
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
+32=3D0xfffffffc,var_off=3D(0x0;
+> 0x3fffffffc))
+> 23: (bf) r5 =3D r8                      ; R5_w=3Dscalar(id=3D2) R8_w=3Dsc=
+alar(id=3D2)
+> 24: (18) r2 =3D 0x4                     ; R2=3D4
+> 26: (7e) if w8 s>=3D w0 goto pc+5       ;
+> R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=
+=3D(0x0; 0x3))
+> R8=3Dscalar(id=3D2,smax32=3D1)
+
+we didn't prune here, assuming w8 < w0, so w8=3Dw5 is at most 1 (because
+r0 is [0, 2])
+
+> 27: (4f) r8 |=3D r8                     ; R8_w=3Dscalar()
+
+here r5 and r8 are disassociated
+
+> 28: (0f) r8 +=3D r8                     ; R8_w=3Dscalar()
+> 29: (d6) if w5 s<=3D 0x1d goto pc+2
+
+w5 is at most 1 (signed), so this is always true, so we just to exit,
+30: is still never visited
+
+> mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
+> mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
+> mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
+> mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0 g=
+oto pc+5
+> mark_precise: frame0: parent state regs=3Dr5 stack=3D:
+> R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_of=
+f=3D(0x0;
+> 0x3)) R2_w=3D4 R3_w=3D0x1f00000034
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
+32=3D0xfffffffc,var_off=3D(0x0;
+> 0x3fffffffc)) R5_rw=3DPscalar(id=3D2) R8_rw=3Dscalar(id=3D2) R10=3Dfp0
+> mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
+> mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
+> mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
+> mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+> mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf g=
+oto pc+3
+> mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
+> mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f00000=
+034
+> mark_precise: frame0: regs=3Dr8 stack=3D before 14: (2f) r4 *=3D r4
+> mark_precise: frame0: regs=3Dr8 stack=3D before 13: (0f) r0 +=3D r0
+> mark_precise: frame0: regs=3Dr8 stack=3D before 12: (1f) r8 -=3D r4
+> mark_precise: frame0: regs=3Dr4,r8 stack=3D before 11: (45) if r0 &
+> 0xfffffffe goto pc+3
+> mark_precise: frame0: parent state regs=3D stack=3D:  R0_rw=3DPscalar()
+> R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> 29: R5=3Dscalar(id=3D2,smax32=3D1)
+> 32: (95) exit
 >
+> from 26 to 32: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax3=
+2=3D2,var_off=3D(0x0;
+> 0x3)) R2=3D4 R3=3D0x1f00000034
+> R4=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax32=
+=3D0xfffffffc,var_off=3D(0x0;
+> 0x3fffffffc)) R5=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xfffff=
+fff7fffffff,smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
+> 0xffffffff7fffffff))
+> R8=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xffffffff7fffffff,sm=
+in32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
+> 0xffffffff7fffffff)) R10=3Dfp0
+> 32: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_o=
+ff=3D(0x0;
+> 0x3)) R2=3D4 R3=3D0x1f00000034
+> R4=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax32=
+=3D0xfffffffc,var_off=3D(0x0;
+> 0x3fffffffc)) R5=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xfffff=
+fff7fffffff,smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
+> 0xffffffff7fffffff))
+> R8=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xffffffff7fffffff,sm=
+in32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
+> 0xffffffff7fffffff)) R10=3Dfp0
+> 32: (95) exit
+
+here we also skipped 30:, and w8 was in [0,0x7fffffff] range, r0 is
+[0,2], but it's precision doesn't matter as we didn't do any pruning
+
+NOTE this one.
+
 >
-> > +               }
-> > +               return -EACCES;
-> >         }
-> >
-> >         if (reg->umax_value >=3D BPF_MAX_VAR_SIZ) {
-> > @@ -7299,9 +7305,21 @@ static int check_mem_size_reg(struct bpf_verifie=
-r_env *env,
-> >                         regno);
-> >                 return -EACCES;
-> >         }
-> > +       /* If !zero_size_allowed, we already checked that umin_value > =
-0, so
-> > +        * umax_value should also be > 0.
-> > +        */
-> > +       if (reg->umax_value =3D=3D 0 && !zero_size_allowed) {
-> > +               verbose(env, "verifier bug: !zero_size_allowed should h=
-ave been handled already\n");
-> > +               return -EFAULT;
-> > +       }
-> >         err =3D check_helper_mem_access(env, regno - 1,
-> >                                       reg->umax_value,
-> > -                                     zero_size_allowed, meta);
-> > +                                     /* zero_size_allowed: we asserted=
- above that umax_value is
-> > +                                      * not zero if !zero_size_allowed=
-, so we don't need any
-> > +                                      * further checks.
-> > +                                      */
-> > +                                     true ,
-> > +                                     meta);
-> >         if (!err)
-> >                 err =3D mark_chain_precision(env, regno);
-> >         return err;
-> > diff --git a/tools/testing/selftests/bpf/progs/verifier_helper_value_ac=
-cess.c b/tools/testing/selftests/bpf/progs/verifier_helper_value_access.c
-> > index 692216c0ad3d..7c99c7bae09e 100644
-> > --- a/tools/testing/selftests/bpf/progs/verifier_helper_value_access.c
-> > +++ b/tools/testing/selftests/bpf/progs/verifier_helper_value_access.c
-> > @@ -89,9 +89,14 @@ l0_%=3D:       exit;                                =
-           \
-> >         : __clobber_all);
-> >  }
-> >
-> > +/* Call a function taking a pointer and a size which doesn't allow the=
- size to
-> > + * be zero (i.e. bpf_trace_printk() declares the second argument to be
-> > + * ARG_CONST_SIZE, not ARG_CONST_SIZE_OR_ZERO). We attempt to pass zer=
-o for the
-> > + * size and expect to fail.
-> > + */
-> >  SEC("tracepoint")
-> >  __description("helper access to map: empty range")
-> > -__failure __msg("invalid access to map value, value_size=3D48 off=3D0 =
-size=3D0")
-> > +__failure __msg("R2 invalid zero-sized read")
-> >  __naked void access_to_map_empty_range(void)
-> >  {
-> >         asm volatile ("                                 \
-> > @@ -113,6 +118,38 @@ l0_%=3D:     exit;                                =
-           \
-> >         : __clobber_all);
-> >  }
-> >
-> > +/* Like the test above, but this time the size register is not known t=
-o be zero;
-> > + * its lower-bound is zero though, which is still unacceptible.
-> > + */
-> > +SEC("tracepoint")
-> > +__description("helper access to map: possibly-empty range")
-> > +__failure __msg("R2 invalid possibly-zero-sized read: u64=3D[0x0, 0x4]=
- var_off=3D(0x0; 0x4)")
-> > +__naked void access_to_map_possibly_empty_range(void)
-> > +{
-> > +       asm volatile ("                                         \
-> > +       r2 =3D r10;                                               \
-> > +       r2 +=3D -8;                                               \
-> > +       r1 =3D 0;                                                 \
-> > +       *(u64*)(r2 + 0) =3D r1;                                   \
-> > +       r1 =3D %[map_hash_48b] ll;                                \
-> > +       call %[bpf_map_lookup_elem];                            \
-> > +       if r0 =3D=3D 0 goto l0_%=3D;                                  \
-> > +       r1 =3D r0;                                                \
-> > +       /* Read an unknown value */                             \
-> > +       r7 =3D *(u64*)(r0 + 0);                                   \
-> > +       /* Make it small and positive, to avoid other errors */ \
-> > +       r7 &=3D 4;                                                \
-> > +       r2 =3D 0;                                                 \
-> > +       r2 +=3D r7;                                               \
-> > +       call %[bpf_trace_printk];                               \
-> > +l0_%=3D: exit;                                               \
-> > +"      :
-> > +       : __imm(bpf_map_lookup_elem),
-> > +         __imm(bpf_trace_printk),
-> > +         __imm_addr(map_hash_48b)
-> > +       : __clobber_all);
-> > +}
-> > +
-> >  SEC("tracepoint")
-> >  __description("helper access to map: out-of-bound range")
-> >  __failure __msg("invalid access to map value, value_size=3D48 off=3D0 =
-size=3D56")
-> > @@ -221,7 +258,7 @@ l0_%=3D:      exit;                                =
-           \
-> >
-> >  SEC("tracepoint")
-> >  __description("helper access to adjusted map (via const imm): empty ra=
-nge")
-> > -__failure __msg("invalid access to map value, value_size=3D48 off=3D4 =
-size=3D0")
-> > +__failure __msg("R2 invalid zero-sized read")
+> from 11 to 15: R0=3Dscalar() R4=3Dscalar() R8=3D0x1a000000be R10=3Dfp0
+> 15: R0=3Dscalar() R4=3Dscalar() R8=3D0x1a000000be R10=3Dfp0
+> 15: (18) r3 =3D 0x1f00000034            ; R3_w=3D0x1f00000034
+> 17: (c4) w4 s>>=3D 29                   ;
+> R4=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,var_=
+off=3D(0x0;
+> 0xffffffff))
+> 18: (56) if w8 !=3D 0xf goto pc+3
+
+known true, always taken
+
+> mark_precise: frame0: last_idx 18 first_idx 18 subseq_idx -1
+> mark_precise: frame0: parent state regs=3Dr8 stack=3D:  R0=3Dscalar()
+> R3_w=3D0x1f00000034
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,va=
+r_off=3D(0x0;
+> 0xffffffff)) R8_r=3DP0x1a000000be R10=3Dfp0
+> mark_precise: frame0: last_idx 17 first_idx 11 subseq_idx 18
+> mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
+> mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f00000=
+034
+> mark_precise: frame0: regs=3Dr8 stack=3D before 11: (45) if r0 &
+> 0xfffffffe goto pc+3
+> mark_precise: frame0: parent state regs=3D stack=3D:  R0_rw=3DPscalar()
+> R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> 18: R8=3D0x1a000000be
+> 22: (67) r4 <<=3D 2                     ;
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
+32=3D0xfffffffc,var_off=3D(0x0;
+> 0x3fffffffc))
+> 23: (bf) r5 =3D r8                      ; R5_w=3D0x1a000000be R8=3D0x1a00=
+0000be
+> 24: (18) r2 =3D 0x4
+> frame 0: propagating r5
+> mark_precise: frame0: last_idx 26 first_idx 18 subseq_idx -1
+> mark_precise: frame0: regs=3Dr5 stack=3D before 24: (18) r2 =3D 0x4
+> mark_precise: frame0: regs=3Dr5 stack=3D before 23: (bf) r5 =3D r8
+> mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+> mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf g=
+oto pc+3
+> mark_precise: frame0: parent state regs=3D stack=3D:  R0_r=3Dscalar()
+> R3_w=3D0x1f00000034
+> R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,v=
+ar_off=3D(0x0;
+> 0xffffffff)) R8_r=3DP0x1a000000be R10=3Dfp0
+> 26: safe
+
+and here we basically need to evaluate
+
+if w8 s>=3D w0 goto pc+5
+
+w8 is precisely known to be 0x000000be, while w0 is unknown. Now go
+back to "NOTE this one" mark above. w8 is inside [0, 0xffffffff]
+range, right? And w0 is unknown, while up in "NOTE this one" w0 didn't
+matter, so it stayed imprecise. This is a match. It seems correct.
+
+
+> processed 38 insns (limit 1000000) max_states_per_insn 1 total_states
+> 4 peak_states 4 mark_read 2
 >
-> I wouldn't say this the new message is strictly an improvement, tbh.
-> Offset is definitely useful, value_size is a nice hint as well. So I
-> personally would prefer details in the original message
+> -------- End of Verifier Log --------
 >
-> >  __naked void via_const_imm_empty_range(void)
-> >  {
-> >         asm volatile ("                                 \
-> > @@ -386,7 +423,7 @@ l0_%=3D:      exit;                                =
-           \
-> >
-> >  SEC("tracepoint")
-> >  __description("helper access to adjusted map (via const reg): empty ra=
-nge")
-> > -__failure __msg("R1 min value is outside of the allowed memory range")
-> > +__failure __msg("R2 invalid zero-sized read")
-> >  __naked void via_const_reg_empty_range(void)
-> >  {
-> >         asm volatile ("                                 \
-> > @@ -556,7 +593,7 @@ l0_%=3D:      exit;                                =
-           \
-> >
-> >  SEC("tracepoint")
-> >  __description("helper access to adjusted map (via variable): empty ran=
-ge")
-> > -__failure __msg("R1 min value is outside of the allowed memory range")
-> > +__failure __msg("R2 invalid zero-sized read")
+> When the verifier backtracks from #29, I expected w0 at #26 (if w8 s>=3D
+> w0 goto pc+5) to be marked as precise since R8 and R5 share the same
+> id:
+
+r0 is marked precise at 26:
+
+mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
+mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
+mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
+mark_precise: frame0: parent state regs=3Dr0 stack=3D:
+R0_rw=3DPscalar(smin=3Dsmin32=3D0,sm
+ax=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=3D(0x0;
+0x3)) R2_w=3D28 R3_w=3Dscalar()
+R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,var=
+_off=3D(0x0;
+0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7fffffff000=
+0000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=
+=3D15,var_off=3D(0xf;
+0xffffffff00000000)) R10=3Dfp0
+
 >
-> btw, it's "*possible" zero-sized read", right?
+> 29: (d6) if w5 s<=3D 0x1d goto pc+2
+> mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
+> mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
+> mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
+> mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0 g=
+oto pc+5
+> mark_precise: frame0: parent state regs=3Dr5 stack=3D:
+> R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_of=
+f=3D(0x0;
+> 0x3)) R2_w=3D4 R3_w=3D0x1f00000034
+> R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
+32=3D0xfffffffc,var_off=3D(0x0;
+> 0x3fffffffc)) R5_rw=3DPscalar(id=3D2) R8_rw=3Dscalar(id=3D2) R10=3Dfp0
+> mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
+> mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
+> mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
+> mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+> mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf g=
+oto pc+3
+> mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
+> mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f00000=
+034
+> mark_precise: frame0: regs=3Dr8 stack=3D before 14: (2f) r4 *=3D r4
+> mark_precise: frame0: regs=3Dr8 stack=3D before 13: (0f) r0 +=3D r0
+> mark_precise: frame0: regs=3Dr8 stack=3D before 12: (1f) r8 -=3D r4
+> mark_precise: frame0: regs=3Dr4,r8 stack=3D before 11: (45) if r0 &
+> 0xfffffffe goto pc+3
+> mark_precise: frame0: parent state regs=3D stack=3D:  R0_rw=3DPscalar()
+> R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> 29: R5=3Dscalar(id=3D2,smax32=3D1)
 >
-> >  __naked void map_via_variable_empty_range(void)
-> >  {
-> >         asm volatile ("                                 \
-> > diff --git a/tools/testing/selftests/bpf/progs/verifier_raw_stack.c b/t=
-ools/testing/selftests/bpf/progs/verifier_raw_stack.c
-> > index f67390224a9c..3dbda85e2997 100644
-> > --- a/tools/testing/selftests/bpf/progs/verifier_raw_stack.c
-> > +++ b/tools/testing/selftests/bpf/progs/verifier_raw_stack.c
-> > @@ -64,7 +64,7 @@ __naked void load_bytes_negative_len_2(void)
-> >
-> >  SEC("tc")
-> >  __description("raw_stack: skb_load_bytes, zero len")
-> > -__failure __msg("invalid zero-sized read")
-> > +__failure __msg("R4 invalid zero-sized read")
-> >  __naked void skb_load_bytes_zero_len(void)
-> >  {
-> >         asm volatile ("                                 \
-> > --
-> > 2.40.1
-> >
+> However, seems it's not, so the next time when the verifier checks
+> #26, R0 is incorrectly ignored.
+> We have mark_precise_scalar_ids(), but it's called before calculating
+> the mask once.
+
+I'm not following the remark about mark_precise_scalar_ids(). That
+works fine, but has nothing to do with r0. mark_precise_scalar_ids()
+identifies that r8 and r5 are linked together, and you can see from
+the log that we mark both r5 and r8 as precise.
+
+> I investigated for quite a while, but mark_chain_pricision() is really
+> hard to follow.
+>
+> Here is a reduced C repro, maybe someone else can shed some light on this=
+.
+> C repro: https://pastebin.com/raw/chrshhGQ
+
+So you claim is that
+
+30: (18) r0 =3D 0x4 ; incorrectly pruned here
+
+
+Can you please show a detailed code patch in which we do reach 30
+actually? I might have missed it, but so far it look like verifier is
+doing everything right.
+
+>
+> Thanks
+> Hao
 
