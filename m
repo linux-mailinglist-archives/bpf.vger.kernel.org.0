@@ -1,106 +1,127 @@
-Return-Path: <bpf+bounces-17640-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17641-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB14C810817
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 03:19:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA682810849
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 03:36:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60A031F2158A
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 02:19:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 820411F21AE8
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 02:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270FC20F2;
-	Wed, 13 Dec 2023 02:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC8FD186C;
+	Wed, 13 Dec 2023 02:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DyCeS9Gm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aBFPN/zP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61FAB1C01;
-	Wed, 13 Dec 2023 02:19:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBD23C433C8;
-	Wed, 13 Dec 2023 02:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702433950;
-	bh=DQPF3GcanIRKcaZKx1G5ZSV6kAy0I6t5QN8G9OuMZdM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=DyCeS9GmtbFGFSsFn5YSGcJgY03zFug1iziwTrwVmg/ZlNI8m4c58IveouykxEdqa
-	 EMnEhzuZ63StLiesj5cSjbJf4TmG4ZBa1yJ7JCzsdawYg44TMs0dyNRoLJ1GELn1tz
-	 mZ0ttW2DALNof274ibmywvx6VjyQmwZ21hJje2+EzxdBAhAbf2HCJYKHiiZ+1qP7MN
-	 awBRzsmBQJpRFMscNENawsc7TC/PSZAjpMEzMokycEPjSXZZ9oUEEmo+Oekfpv6dsz
-	 Lulob+ZQQMb5SPxcQHqSMtRg1Oa5btnY+jl5DG0GR/t04qzTQhWGqHRNhfn4l51+iE
-	 FdNU7DP2aIKOg==
-Message-ID: <cd464bae-af47-42f1-ac9f-9620137ede89@kernel.org>
-Date: Tue, 12 Dec 2023 18:19:09 -0800
+Received: from mail-yw1-x1141.google.com (mail-yw1-x1141.google.com [IPv6:2607:f8b0:4864:20::1141])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C31CA1;
+	Tue, 12 Dec 2023 18:36:06 -0800 (PST)
+Received: by mail-yw1-x1141.google.com with SMTP id 00721157ae682-5d8a772157fso56587947b3.3;
+        Tue, 12 Dec 2023 18:36:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702434965; x=1703039765; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MJCQcb7r494aGVz60o0o8lOol7lfH2OBzDJuV+HIrIs=;
+        b=aBFPN/zPIPhezYfvxBP1sc6QWOXjVt3sWHr91leIxMSKbwJtuEDA88qbyHMEg40C3I
+         +UfA8TBqvuMHAWKUZPvrjrBpSyWJ5rEIwGmbx2Wh1l32LMn2T0ztpYLF8WcynL2r4C+n
+         WjsPntLaXxGUI3E5DSgqUCR1RtLRh2ampd5RC2ZUdRcsBQHiSswPUMNkIxbAPGW8VWYJ
+         6pjT9qbF/D1283HdH2ud5H2TBP8yrQEritkPFW7xPZcn9DEezePaibW9YUcF0N0pTsue
+         XGC0JIeNWM/jm2Rtj2D6v5eanCqhd+8WAK1CNgsN0G/X8S0jGMlzWiPwloXAMLG3jZkE
+         7sCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702434965; x=1703039765;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MJCQcb7r494aGVz60o0o8lOol7lfH2OBzDJuV+HIrIs=;
+        b=FWE2biN+yNbA2s6nQ1pZDNZq+hIciUl0uWh84LPmlbzGU6Xf+KCN2PtJ/2u1HDkztg
+         cUpNji+vFJ38L3j6UHJpoDwNIAbPdAZWB+Lm6fJfrbNewltVZ9iGI8DrP5zNk4E429TE
+         VZdjVNd6aLkbLlQKtImhtyTfiiWWy7o6z/jq6OMSBYJElZHvyyv2eyWefIOosQpEU9mp
+         ZGezSI1fQNyJQMFFJbMwQP9ZStnzuiH/zWt0n9vKPwmRr1oUeTJxH8rJjxIx2C4mFdmZ
+         6TvhSagfdKZrmM4+YC0sndvHrKTHbhIvH8MSK3YOlyZBYn0bxPA9TIB1xPgAIG0I8yJu
+         6cRw==
+X-Gm-Message-State: AOJu0YzchfqKu9rsHh4ovgWQ1kOi3DZPbcodzrWqQ8kBjQ/pqWwKGqQZ
+	NNo15PkttjMxwzCnqbtcC+c483RoN+1og1py9ik=
+X-Google-Smtp-Source: AGHT+IGExh+LXLHKcZjoOkrvuGXryYNCk7SRjtX37wejssSN167lT12Y7mnTyKRoDddeChmH3/xUNSBlFtfMRPWYy5M=
+X-Received: by 2002:a81:524f:0:b0:5e2:b0a0:d7e2 with SMTP id
+ g76-20020a81524f000000b005e2b0a0d7e2mr201923ywb.41.1702434965401; Tue, 12 Dec
+ 2023 18:36:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
- provider
-Content-Language: en-US
-To: Mina Almasry <almasrymina@google.com>, Jason Gunthorpe <jgg@nvidia.com>
-Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
- bpf@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Jeroen de Borst <jeroendb@google.com>,
- Praveen Kaligineedi <pkaligineedi@google.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann
- <arnd@arndb.de>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Yunsheng Lin <linyunsheng@huawei.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>, Christoph Hellwig <hch@infradead.org>
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com>
- <20231212122535.GA3029808@nvidia.com>
- <CAHS8izMVMx0fpT=dWsnD7piqs1g7Fam8Xf5dK3iOFNxeOQD9vQ@mail.gmail.com>
- <20231212143942.GF3014157@nvidia.com>
- <CAHS8izNHtemjjkMf43grCHP1RZ=2UFiMtgea0M6+PaAgC=DDMQ@mail.gmail.com>
- <20231212150834.GI3014157@nvidia.com>
- <CAHS8izMdKYyjE9bdcFDWWPWECwVZL7XQjtjOFoTq5_bEEJvN6w@mail.gmail.com>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <CAHS8izMdKYyjE9bdcFDWWPWECwVZL7XQjtjOFoTq5_bEEJvN6w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20231212131031.3088661-1-menglong8.dong@gmail.com>
+ <20231212131031.3088661-3-menglong8.dong@gmail.com> <8a9d03eb74918123615cc3579cefc484566cad5d.camel@gmail.com>
+In-Reply-To: <8a9d03eb74918123615cc3579cefc484566cad5d.camel@gmail.com>
+From: Menglong Dong <menglong8.dong@gmail.com>
+Date: Wed, 13 Dec 2023 10:35:53 +0800
+Message-ID: <CADxym3a58ALYnJH5HdVZEfgBUeKH3+mH9mHGf6SijxCOzFjD3g@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 2/2] selftests/bpf: activate the OP_NE login
+ in range_cond()
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: andrii@kernel.org, yonghong.song@linux.dev, ast@kernel.org, 
+	daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev, 
+	song@kernel.org, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
+	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 12/12/23 6:09 PM, Mina Almasry wrote:
-> OK, I imagine this is not that hard to implement - it's really whether
-> the change is acceptable to reviewers.
-> 
-> I figure I can start by implementing a no-op abstraction to page*:
-> 
-> typedef struct page netmem_t
-> 
-> and replace the page* in the following places with netmem_t*:
-> 
-> 1. page_pool API (not internals)
-> 2. drivers using the page_pool.
-> 3. skb_frag_t.
-> 
+Hello,
 
-accessors to skb_frag_t field are now consolidated to
-include/linux/skbuff.h (the one IB driver was fixed in Sept by
-4ececeb83986), so changing skb_frag_t from bio_vec to something like:
+On Wed, Dec 13, 2023 at 7:37=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Tue, 2023-12-12 at 21:10 +0800, Menglong Dong wrote:
+> > The edge range checking for the registers is supported by the verifier
+> > now, so we can activate the extended login in
+> > tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to tes=
+t
+> > such logic.
+> >
+> > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> > ---
+> >  tools/testing/selftests/bpf/prog_tests/reg_bounds.c | 7 +------
+> >  1 file changed, 1 insertion(+), 6 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tool=
+s/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > index 0c9abd279e18..49d8d4bafe99 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+> > @@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range =
+x, struct range y,
+> >               *newy =3D range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b)=
+);
+> >               break;
+> >       case OP_NE:
+> > -             /* generic case, can't derive more information */
+> > -             *newx =3D range(t, x.a, x.b);
+> > -             *newy =3D range(t, y.a, y.b);
+> > -             break;
+> > -
+> > -             /* below extended logic is not supported by verifier just=
+ yet */
+> > +             /* below logic is supported by the verifier now */
+> >               if (x.a =3D=3D x.b && x.a =3D=3D y.a) {
+> >                       /* X is a constant matching left side of Y */
+> >                       *newx =3D range(t, x.a, x.b);
+>
+> I think that some crafted tests have to be added.
+> Note that reg_bounds only runs a subset of tests during CI
+> (controlled by variable SLOW_TESTS).
+> By default only randomized and crafted tests are run.
+> It appears to me that probability of randomly generating specific
+> ranges explored by this series is quite low.
 
-typedef struct skb_frag {
-	void *addr;
-	unsigned int length;
-	unsigned int offset;
-};
+You are right, I'll add some cases to the "crafted_cases" for
+this logic.
 
-is trivial. From there, addr can default to `struct page *`. If LSB is
-set, strip it and return `struct page_pool_iov *` or `struct buffer_pool *`
+Thanks!
+Menglong Dong
 
