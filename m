@@ -1,68 +1,70 @@
-Return-Path: <bpf+bounces-17638-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17639-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA8028107F2
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 03:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1FED810801
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 03:11:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C27A282426
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 02:06:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D581282457
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 02:11:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3457E10EA;
-	Wed, 13 Dec 2023 02:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99BEB10EA;
+	Wed, 13 Dec 2023 02:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YmBq69xj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f/R/JS8z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-x1144.google.com (mail-yw1-x1144.google.com [IPv6:2607:f8b0:4864:20::1144])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A6EAA;
-	Tue, 12 Dec 2023 18:06:03 -0800 (PST)
-Received: by mail-yw1-x1144.google.com with SMTP id 00721157ae682-5c85e8fdd2dso62557197b3.2;
-        Tue, 12 Dec 2023 18:06:03 -0800 (PST)
+Received: from mail-yw1-x1141.google.com (mail-yw1-x1141.google.com [IPv6:2607:f8b0:4864:20::1141])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693B8CD;
+	Tue, 12 Dec 2023 18:11:49 -0800 (PST)
+Received: by mail-yw1-x1141.google.com with SMTP id 00721157ae682-5c85e8fdd2dso62594137b3.2;
+        Tue, 12 Dec 2023 18:11:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702433163; x=1703037963; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702433508; x=1703038308; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Wre/byWt1ayktHNpAoL/v4hhza7PbfuLtf7/RBkwTuo=;
-        b=YmBq69xjH2lvuyEz+yQQE9kEm8QH9zF11jrqLCDfX+UmJbFmtaRFzjluHfN6deHtx2
-         gizrhMCGlOFExCzNRacGtaxV4PsIat3otgh5lN0YymLmw7nlxl82c+FV3NAZpmt897bQ
-         NmNJSC2+tmxKQzvPjBn/E4HLFaQlZ/hBkVoj0sqUKSKD0QDnpld5exqWBzPlKlTsCQHe
-         WyjmfMBf3u8rrZp7NkSIOxs4dcBYLXNWQRmxf++TOrxZRLr52c6Sp+hZaLicccDfefFV
-         TlbGvy8XdJf3mRIOinWRPJfV/RQa2yWn0BEdqgCv4vNZQaiIR1DxEln19ZR/f8vnMmG3
-         0DRw==
+        bh=NjrnQeaFObARf6rt/zsrrtTxUbhD/ynal+Up2fZC/58=;
+        b=f/R/JS8z5Tg5/my9XH70L3izyHbk5vk3FS1jmCqlHmM2DwWNODb3Tq4ZIww7UW4thY
+         fhnkz7qfL5p9XbkT70WEwAWR+5V9hHzfPiD29my7bQH/sGor26vKuQC+RItKT4KS9UM+
+         us7L2NVLRsvhFG7YH/UuVg+qcvYBB3VfrtGI4DwCJw0BqCSe3HKIvrTSCOLzHwXE3EDc
+         rd9ktstl+PomEBK70NI7cI9Mv8IfFiTqper8QBL/xM831sWgnl5g0HfVTECTJhGs7g9F
+         YGxoa27jHatb6DUxdjhk2BjSHDdrHDLNNWcMtEaitu8ZdFEFpLeWVDqCk7OzL9jtELoH
+         pw5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702433163; x=1703037963;
+        d=1e100.net; s=20230601; t=1702433508; x=1703038308;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Wre/byWt1ayktHNpAoL/v4hhza7PbfuLtf7/RBkwTuo=;
-        b=qDpq/6jI8D7krQeg904Q+gjP2p64O+z9RMivOqcH+bHaLfaAM//MOlPWnnoCV5joKF
-         2Apslmd6sOmjI56bDCD37XgEw7e2CTjNiEdRJ/KjhRtqcllwh8gN2pUw1SuvmwB3NwsV
-         JLoisBVXFVJNt7gOnKwNZLO9knvhQADM4h9yOsP11Imjs+cawxfr8XcyJZrtUlfFn6lW
-         8f+ZTLVMwwG81hutwNuQQS+8X7CzNzocbizUyHLToFvM8nhba7mJjdEJ3FadUFq/BuQ5
-         H5gYFRhmYWhv79YUoFZtOz0QIg3Sz9XyUg/zJDi011OXFmH8ICmtFtaEKUYmMKOwW2gR
-         iKLw==
-X-Gm-Message-State: AOJu0Ywb3LhBJPokgSFtY344jj1IU9yvBm8MaG+uOOEbD8CExfubAslj
-	lhbyq1QX3/5s2qUW3Pq0ZMJRNV7qqfGzCy2YQOQ=
-X-Google-Smtp-Source: AGHT+IEGFnJQpcNXmXOrtocX0aqjnxWuz4DLGX2XXh5pckHNLlGHFXQY8eroAQE4bAWgzT4zGyTnpdLsz/M+sfMfMmU=
-X-Received: by 2002:a5b:d44:0:b0:dbc:cc94:1dd7 with SMTP id
- f4-20020a5b0d44000000b00dbccc941dd7mr389999ybr.56.1702433162899; Tue, 12 Dec
- 2023 18:06:02 -0800 (PST)
+        bh=NjrnQeaFObARf6rt/zsrrtTxUbhD/ynal+Up2fZC/58=;
+        b=h5lZHY22oNkJJLMtiW6rlLfadRqV4wiuO79/wqt+PPc7EV0js6cLMTyVO3KFkHg24p
+         ntDureyg7nfVKxrRnCV674PtDSCYy3/EuBzWRzEg2vadWwhqiRVGFUOPZO7Igpb9dPyE
+         prhWj8/HM7rQPEholRQP4Ax9QxTug2wWuryB/f5ODenaZ4xDRao3skMlA4xDUV398mKr
+         8yS0YA9SwcEEKzzV8dvY7sYHxIW3ZPG8iVOw6oGiEVnmrttoBhDBPGmuE5+YS+rgDpqY
+         dkpi9FrsSVbHyQgvhnSW1ZUw2MC3APAgySxIwKaSwRcIfhK21XAeVkf75M0AsFxm+4m9
+         qONg==
+X-Gm-Message-State: AOJu0YxSz4C7lXyTEuIGC79Au1tqzBGYtkdd2vmWq/rFZXt4g6rfZYel
+	S5na78jbcrJMvJF089bRd/uaF7gPlMQn/+WwGTY=
+X-Google-Smtp-Source: AGHT+IHOWJSSwQ+pQAnYQEZZ/JkGrpS93hgBLF+xROV7nHJqz+dnzeze5BT3T5f1/YMcga8FUF+24enD3fZFe9pmJdY=
+X-Received: by 2002:a0d:d8d6:0:b0:5e2:cfac:6492 with SMTP id
+ a205-20020a0dd8d6000000b005e2cfac6492mr58513ywe.41.1702433508532; Tue, 12 Dec
+ 2023 18:11:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231212131031.3088661-1-menglong8.dong@gmail.com> <CAEf4BzavDwxD3=c6Gxo6N9OjN95Bf0bKZ0xMPGCq=nCm8jPzGg@mail.gmail.com>
-In-Reply-To: <CAEf4BzavDwxD3=c6Gxo6N9OjN95Bf0bKZ0xMPGCq=nCm8jPzGg@mail.gmail.com>
+References: <20231212131031.3088661-1-menglong8.dong@gmail.com>
+ <20231212131031.3088661-2-menglong8.dong@gmail.com> <a7fa57335aa302898044207431e81f5f455e4971.camel@gmail.com>
+In-Reply-To: <a7fa57335aa302898044207431e81f5f455e4971.camel@gmail.com>
 From: Menglong Dong <menglong8.dong@gmail.com>
-Date: Wed, 13 Dec 2023 10:05:51 +0800
-Message-ID: <CADxym3bSfUCJNXHrDkQ1xq=8juxdkuyiAOasqo3FM0hqO1hxBA@mail.gmail.com>
-Subject: Re: [PATCH net-next v2 0/2] bpf: support to trace BPF_JNE
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 13 Dec 2023 10:11:37 +0800
+Message-ID: <CADxym3a357bCbUgMgocv2ywHb9ZKEmNT3j3ico7AXWZD3r99kQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/2] bpf: make the verifier trace the "not
+ qeual" for regs
+To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: andrii@kernel.org, yonghong.song@linux.dev, ast@kernel.org, 
 	daniel@iogearbox.net, john.fastabend@gmail.com, martin.lau@linux.dev, 
 	song@kernel.org, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
@@ -70,15 +72,13 @@ Cc: andrii@kernel.org, yonghong.song@linux.dev, ast@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 13, 2023 at 8:00=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, Dec 13, 2023 at 7:23=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Tue, Dec 12, 2023 at 5:15=E2=80=AFAM Menglong Dong <menglong8.dong@gma=
-il.com> wrote:
-> >
-> > For now, the reg bounds is not handled for BPF_JNE case, which can caus=
-e
-> > the failure of following case:
+> On Tue, 2023-12-12 at 21:10 +0800, Menglong Dong wrote:
+> > We can derive some new information for BPF_JNE in regs_refine_cond_op()=
+.
+> > Take following code for example:
 > >
 > >   /* The type of "a" is u16 */
 > >   if (a > 0 && a < 100) {
@@ -98,48 +98,56 @@ e
 > > fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
 > > the [min, max] for a is [0, 99], not [1, 99].
 > >
-> > In the 1st patch, we reduce the range of the dst reg if the src reg is =
-a
-> > const and is exactly the edge of the dst reg For BPF_JNE.
+> > For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
+> > const and is exactly the edge of the dst reg.
 > >
-> > In the 2nd patch, we just activate the test case for this logic in
-> > range_cond(), which is committed by Andrii in the
-> > commit 8863238993e2 ("selftests/bpf: BPF register range bounds tester")=
-.
-> >
-> > Changes since v1:
-> > - simplify the code in the 1st patch
-> > - introduce the 2nd patch for the testing
-> >
-> > Menglong Dong (2):
-> >   bpf: make the verifier trace the "not qeual" for regs
-> >   selftests/bpf: activate the OP_NE login in range_cond()
-> >
-> >  kernel/bpf/verifier.c                         | 29 ++++++++++++++++++-
-> >  .../selftests/bpf/prog_tests/reg_bounds.c     |  7 +----
-> >  2 files changed, 29 insertions(+), 7 deletions(-)
-> >
-> > --
-> > 2.39.2
-> >
+> > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
+> > ---
 >
-> +1 to all the feedback from Eduard. Besides that, please target
-> bpf-next tree (so, [PATH bpf-next] for subject prefix), thanks!
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 >
-
-Opps, sorry that I offered a wrong tag......:/
-
-> Also, instead of "verifier traces", I think "verifier tracks" is less
-> confusing wording. Tracing within the BPF ecosystem is usually used
-> for a completely different meaning.
+> >  kernel/bpf/verifier.c | 29 ++++++++++++++++++++++++++++-
+> >  1 file changed, 28 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 727a59e4a647..08ee0e02df96 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -14332,7 +14332,34 @@ static void regs_refine_cond_op(struct bpf_reg=
+_state *reg1, struct bpf_reg_state
+> >               }
+> >               break;
+> >       case BPF_JNE:
+> > -             /* we don't derive any new information for inequality yet=
+ */
+> > +             if (!is_reg_const(reg2, is_jmp32))
+> > +                     swap(reg1, reg2);
+> > +             if (!is_reg_const(reg2, is_jmp32))
+> > +                     break;
+> > +
+> > +             /* try to recompute the bound of reg1 if reg2 is a const =
+and
+> > +              * is exactly the edge of reg1.
+> > +              */
+> > +             val =3D reg_const_value(reg2, is_jmp32);
+> > +             if (is_jmp32) {
+> > +                     if (reg1->u32_min_value =3D=3D (u32)val)
+> > +                             reg1->u32_min_value++;
 >
+> Nit: I spent an unreasonable amount of time trying to figure out if
+>      overflow might be an issue here. Would it be helpful to add a
+>      comment like below? (not sure, maybe it's obvious and I'm being slow=
+)
+>
+>      /* u32_min_value is not equal to 0xffffffff at this point,
+>       * because otherwise u32_max_value is 0xffffffff as well,
+>       * in such a case both reg1 and reg2 would be constants,
+>       * jump would be predicted and reg_set_min_max() won't
+>       * be called.
+>       * Same reasoning works for all {u,s}{min,max}{32,64} cases below.
+>       */
 
-Yeah, sounds better.
-
-> Oh, and just to keep feedback in one place. In patch #2 you have a
-> typo in the subject "not qeual" -> "not equal".
-
-Ok, I'll fix it in the next version.
+Okay, I'll add this comment in the next version.
 
 Thanks!
 Menglong Dong
