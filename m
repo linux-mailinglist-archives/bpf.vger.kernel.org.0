@@ -1,182 +1,181 @@
-Return-Path: <bpf+bounces-17725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23DBA812164
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 23:24:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 500D4812209
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 23:49:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F36C6B21281
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 22:24:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61CC91C21326
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 22:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228C581831;
-	Wed, 13 Dec 2023 22:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A4581856;
+	Wed, 13 Dec 2023 22:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gVj4xVTD"
 X-Original-To: bpf@vger.kernel.org
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416CBBD;
-	Wed, 13 Dec 2023 14:24:19 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1rDXeJ-0003ip-4L; Wed, 13 Dec 2023 23:24:15 +0100
-Date: Wed, 13 Dec 2023 23:24:15 +0100
-From: Florian Westphal <fw@strlen.de>
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, coreteam@netfilter.org,
-	netfilter-devel@vger.kernel.org, davem@davemloft.net,
-	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-	ast@kernel.org
-Subject: Re: [RFC nf-next 1/2] netfilter: bpf: support prog update
-Message-ID: <20231213222415.GA13818@breakpoint.cc>
-References: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
- <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD9DDC
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 14:48:59 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-50be3611794so8812891e87.0
+        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 14:48:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702507737; x=1703112537; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tQr29YZZ51KQ1t+eZTxCeGRB8QI/s5D+k5OzaA8loWE=;
+        b=gVj4xVTDGw7VlcVxy1IjFde2KgUr9xxIj0PySU08gOkjGidSPmMK/pAbMVKdVlRUkL
+         doo8vH6+Srw99DPs2jSirXYr0pHLugZt01jCCAAF6bku86MTNn7GXY9n1ePwV3tOwKVA
+         3zXZ5Z4tpsmakvLwB5yS8u3hzqQYYpF9C/kP67OqD5Eus/4ZgFB8sMdgoCEE7ky/o/4v
+         XT3Othg3zI7TXA9i3DZcKlK483KaadZ3ZB6o3od2TCndOos5l9TwpdVPdnpuDxQh37Bn
+         ULd0cWiMjLTpfRZNLgp50IiuF8z6YsuP5H7rrORaq+ryjr4nGUTkQfVHjb91g6766bUH
+         aIrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702507737; x=1703112537;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tQr29YZZ51KQ1t+eZTxCeGRB8QI/s5D+k5OzaA8loWE=;
+        b=gnoKMUYyfX2hY6JtN0NaY7MNSLYI1GYrU/mD9VzHFV11RfhFWJOgkwlKR1ITWAuNXX
+         myF5IvkrkAx2g/9VUoWu1wXr3fdPebAptj2m9P4EXgpAFR9Duskf46EoT7j/7a87XGa/
+         PuycZGySWHApMYCLRJpBU6p6tnhXiKq4l/8JyVqD8+tf8rASqdI3qiMTTlUcjMypXTjB
+         jazBuQjfC/EGB5Oaw9AerBrHQp3UYVUdrV11jDr7vy55rWHAZ0Uvff6iENqU6eAA+ZY2
+         2upeEqLD5UiTblLOZvLXziWjHxMwgGcfEC8b9NSEIqEO32NUVSy+aZpJ0N9f8oPdJvLh
+         2qmA==
+X-Gm-Message-State: AOJu0YwVXHDi4hoAg3Tf0++qgo6qwQa6euGjC5FqxZdW5h1TjCGfDgkR
+	buoswf3BvCDy6djkjwlkiRR8BEJZ7NfZMJiHp3w=
+X-Google-Smtp-Source: AGHT+IGk81P7bauFbjl2ypclBbwXy1TbCn5tAHwxCe/qTx/hqqAvNY5aZBqaPjGBHgbRUD8qsJmJf5ODNxBoJ6rKH2Q=
+X-Received: by 2002:a05:6512:b0d:b0:50c:bd0:870f with SMTP id
+ w13-20020a0565120b0d00b0050c0bd0870fmr5173847lfu.73.1702507736945; Wed, 13
+ Dec 2023 14:48:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20231212232535.1875938-1-andrii@kernel.org> <20231212232535.1875938-11-andrii@kernel.org>
+ <f94dd0e3404253936b7489ea9aee3a530749c633.camel@gmail.com>
+ <CAEf4BzaeEhfFB=ZSQO=i8hT6OP1bkT4b2pzHoViFA4Q_Vju1tA@mail.gmail.com> <795bfa3fef7bb0252d5e1d7fd721880ddfae0ecc.camel@gmail.com>
+In-Reply-To: <795bfa3fef7bb0252d5e1d7fd721880ddfae0ecc.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 13 Dec 2023 14:48:44 -0800
+Message-ID: <CAEf4BzZz2cMf787nu9Ldz2YwuZRSF9w9fCmJT=E=+=t99BiZMA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 10/10] selftests/bpf: add freplace of
+ BTF-unreliable main prog test
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-D. Wythe <alibuda@linux.alibaba.com> wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> To support the prog update, we need to ensure that the prog seen
-> within the hook is always valid. Considering that hooks are always
-> protected by rcu_read_lock(), which provide us the ability to use a
-> new RCU-protected context to access the prog.
-> 
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->  net/netfilter/nf_bpf_link.c | 124 +++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 111 insertions(+), 13 deletions(-)
-> 
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index e502ec0..918c470 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -8,17 +8,11 @@
->  #include <net/netfilter/nf_bpf_link.h>
->  #include <uapi/linux/netfilter_ipv4.h>
->  
-> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
-> -				    const struct nf_hook_state *s)
-> +struct bpf_nf_hook_ctx
->  {
-> -	const struct bpf_prog *prog = bpf_prog;
-> -	struct bpf_nf_ctx ctx = {
-> -		.state = s,
-> -		.skb = skb,
-> -	};
-> -
-> -	return bpf_prog_run(prog, &ctx);
-> -}
-> +	struct bpf_prog *prog;
-> +	struct rcu_head rcu;
-> +};
+On Wed, Dec 13, 2023 at 12:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Wed, 2023-12-13 at 11:25 -0800, Andrii Nakryiko wrote:
+> [...]
+> > Yes, if we add a bunch of extra log grabbing and matching logic to
+> > fexit_bpf2bpf test. Which, honestly, I just didn't want to touch more
+> > than I absolutely needed to. So I'll use your permission to ignore
+> > this.
+>
+> Still think it's useful and diff is not that big:
+> https://gist.github.com/eddyz87/5f518b96eb4188dd1afd436e811bbef9
 
-I don't understand the need for this structure.  AFAICS bpf_prog_put()
-will always release the program via call_rcu()?
+Ok, Eduard, ok, I'll add it in this patch in the next revision. It can
+be done a bit simpler than in your example, though.
 
-If it doesn't, we are probably already in trouble as-is without this
-patch, I don't think anything that prevents us from ending up calling already
-released bpf prog, or releasing it while another cpu is still running it
-if bpf_prog_put releases the actual underlying prog instantly.
+$ git diff
+diff --git a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+index 39ce45337e7d..f29fc789c14b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
++++ b/tools/testing/selftests/bpf/prog_tests/fexit_bpf2bpf.c
+@@ -348,7 +348,8 @@ static void test_func_sockmap_update(void)
+ }
 
-A BPF expert could confirm bpf-prog-put-is-call-rcu.
+ static void test_obj_load_failure_common(const char *obj_file,
+-                                        const char *target_obj_file)
++                                        const char *target_obj_file,
++                                        const char *exp_msg)
+ {
+        /*
+         * standalone test that asserts failure to load freplace prog
+@@ -356,6 +357,7 @@ static void test_obj_load_failure_common(const
+char *obj_file,
+         */
+        struct bpf_object *obj =3D NULL, *pkt_obj;
+        struct bpf_program *prog;
++       char log_buf[64 * 1024];
+        int err, pkt_fd;
+        __u32 duration =3D 0;
 
->  struct bpf_nf_link {
->  	struct bpf_link link;
-> @@ -26,8 +20,59 @@ struct bpf_nf_link {
->  	struct net *net;
->  	u32 dead;
->  	const struct nf_defrag_hook *defrag_hook;
-> +	/* protect link update in parallel */
-> +	struct mutex update_lock;
-> +	struct bpf_nf_hook_ctx __rcu *hook_ctx;
+@@ -374,14 +376,21 @@ static void test_obj_load_failure_common(const
+char *obj_file,
+        err =3D bpf_program__set_attach_target(prog, pkt_fd, NULL);
+        ASSERT_OK(err, "set_attach_target");
 
-What kind of replacements-per-second rate are you aiming for?
-I think
++       log_buf[0] =3D '\0';
++       if (exp_msg)
++               bpf_program__set_log_buf(prog, log_buf, sizeof(log_buf));
+        if (env.verbosity > VERBOSE_NONE)
+                bpf_program__set_log_level(prog, 2);
 
-static DEFINE_MUTEX(bpf_nf_mutex);
+        /* It should fail to load the program */
+        err =3D bpf_object__load(obj);
++       if (env.verbosity > VERBOSE_NONE && exp_msg) /* we overtook log */
++               printf("VERIFIER
+LOG:\n=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D\n%s\n=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D\n", log_buf);
+        if (CHECK(!err, "bpf_obj_load should fail", "err %d\n", err))
+                goto close_prog;
 
-is enough.
++       if (exp_msg)
++               ASSERT_HAS_SUBSTR(log_buf, exp_msg, "fail_msg");
+ close_prog:
+        bpf_object__close(obj);
+        bpf_object__close(pkt_obj);
+@@ -391,14 +400,14 @@ static void test_func_replace_return_code(void)
+ {
+        /* test invalid return code in the replaced program */
+        test_obj_load_failure_common("./freplace_connect_v4_prog.bpf.o",
+-                                    "./connect4_prog.bpf.o");
++                                    "./connect4_prog.bpf.o", NULL);
+ }
 
-Then bpf_nf_link gains
+ static void test_func_map_prog_compatibility(void)
+ {
+        /* test with spin lock map value in the replaced program */
+        test_obj_load_failure_common("./freplace_attach_probe.bpf.o",
+-                                    "./test_attach_probe.bpf.o");
++                                    "./test_attach_probe.bpf.o", NULL);
+ }
 
-	struct bpf_prog __rcu *prog
+ static void test_func_replace_unreliable(void)
+@@ -407,7 +416,8 @@ static void test_func_replace_unreliable(void)
+         * "Cannot replace static functions"
+         */
+        test_obj_load_failure_common("freplace_unreliable_prog.bpf.o",
+-                                    "./verifier_btf_unreliable_prog.bpf.o"=
+);
++                                    "./verifier_btf_unreliable_prog.bpf.o"=
+,
++                                    "Cannot replace static functions");
+ }
 
-and possibly a trailing struct rcu_head, see below.
+ static void test_func_replace_global_func(void)
 
-> +static void bpf_nf_hook_ctx_free_rcu(struct bpf_nf_hook_ctx *hook_ctx)
-> +{
-> +	call_rcu(&hook_ctx->rcu, __bpf_nf_hook_ctx_free_rcu);
-> +}
-
-Don't understand the need for call_rcu either, see below.
-
-> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
-> +				    const struct nf_hook_state *s)
-> +{
-> +	const struct bpf_nf_link *link = bpf_link;
-> +	struct bpf_nf_hook_ctx *hook_ctx;
-> +	struct bpf_nf_ctx ctx = {
-> +		.state = s,
-> +		.skb = skb,
-> +	};
-> +
-> +	hook_ctx = rcu_dereference(link->hook_ctx);
-
-This could then just rcu_deref link->prog.
-
-> +	return bpf_prog_run(hook_ctx->prog, &ctx);
-> +}
-> +
->  #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
->  static const struct nf_defrag_hook *
->  get_proto_defrag_hook(struct bpf_nf_link *link,
-> @@ -120,6 +165,10 @@ static void bpf_nf_link_release(struct bpf_link *link)
->  	if (!cmpxchg(&nf_link->dead, 0, 1)) {
->  		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
->  		bpf_nf_disable_defrag(nf_link);
-> +		/* Wait for outstanding hook to complete before the
-> +		 * link gets released.
-> +		 */
-> +		synchronize_rcu();
->  	}
-
-Could you convert bpf_nf_link_dealloc to release via kfree_rcu instead?
-
-> @@ -162,7 +212,42 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
->  static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
->  			      struct bpf_prog *old_prog)
->  {
-> -	return -EOPNOTSUPP;
-> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
-> +	struct bpf_nf_hook_ctx *hook_ctx;
-> +	int err = 0;
-> +
-> +	mutex_lock(&nf_link->update_lock);
-> +
-
-I think you need to check link->dead here too.
-
-> +	/* bpf_nf_link_release() ensures that after its execution, there will be
-> +	 * no ongoing or upcoming execution of nf_hook_run_bpf() within any context.
-> +	 * Therefore, within nf_hook_run_bpf(), the link remains valid at all times."
-> +	 */
-> +	link->hook_ops.priv = link;
-
-ATM we only need to make sure the bpf prog itself stays alive until after
-all concurrent rcu critical sections have completed.
-
-After this change, struct bpf_link gets passed instead, so we need to
-keep that alive too.
-
-Which works with synchronize_rcu, sure, but that seems a bit overkill here.
+>
+> > > Also, maybe kernel should be tweaked to be a bit more informative,
+> > > as message about static function is confusing, wdyt?
+> > >
+> >
+> > Currently the verifier doesn't distinguish between reasons for
+> > "unreliable". Not sure if it's worth tracking more information just
+> > for this. Certainly that feels like an orthogonal to this series
+> > improvement.
+>
+> Fair enough.
 
