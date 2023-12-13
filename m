@@ -1,438 +1,512 @@
-Return-Path: <bpf+bounces-17655-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17656-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 507B0810E49
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 11:22:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90E0C810E5D
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 11:25:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 756581C20A2D
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 10:22:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07305B20CA2
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 10:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6330225CC;
-	Wed, 13 Dec 2023 10:22:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8C20224EF;
+	Wed, 13 Dec 2023 10:25:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IBKVZcNG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VqI5qNGq"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C69B3
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 02:22:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702462943;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fKZ/Lgffh6YItnjPVn4vBB8RPVFHrOo+shUDIGrxj94=;
-	b=IBKVZcNGq0xHiL/dqnzc/+KRtgrfPeEyAs4iHqNWfJYjsusG2IGBgQkfBzzAGf4ZJTb8wX
-	WhtMKzJWzz5emxYf7+SDhvGEnThhX3/LClihQ1MNIcN/9ugUoyt7PZkhr8eqhmhjv/BIX0
-	lsRUlwIjvgXulQ/NkpGtAsRylVtem80=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-533-Ok_eZcwyMmyuTpCA_0WgQw-1; Wed, 13 Dec 2023 05:22:20 -0500
-X-MC-Unique: Ok_eZcwyMmyuTpCA_0WgQw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a0c510419caso149389966b.1
-        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 02:22:20 -0800 (PST)
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3416A7;
+	Wed, 13 Dec 2023 02:25:20 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id 3f1490d57ef6-db4422fff15so5565239276.1;
+        Wed, 13 Dec 2023 02:25:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702463120; x=1703067920; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x4MCw2YC7I/1qOaN5GQmrfRmc1eHOmDUJJZ7I0ZkK4U=;
+        b=VqI5qNGqblV9VjGSBdVElqRtWfTIj8u85Rcb8IBk76FxasHzr8VZzS2geH/SvIdakW
+         C3tO1q8iWH+9A+le1pZ1+EZPQdkG3AXqnonTq34DlSuCKMKyxXv3r3rCqLvIKw++tnQ1
+         pzlKCeXm9EmXwNbdtMox/yotoVqaL5ZCIEBx+7dvRA275RLHpPAdViYIbmNv5qrWoVcz
+         yxVoRejYtc0CPwT9YU5sgRHguIgFywnzy+ugeLihnDRimONWQkQur2CcF3VFZOwDRTGk
+         It2H53ktZ1LDHNPkT/jj6pY3nv3AUIlkc9aw9x0sqcWzVa8C9jR2ZEXclSIch809ezDv
+         OCfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702462939; x=1703067739;
+        d=1e100.net; s=20230601; t=1702463120; x=1703067920;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fKZ/Lgffh6YItnjPVn4vBB8RPVFHrOo+shUDIGrxj94=;
-        b=d2KSY9U3anaeI7mt4BXRfhhxkWCmEIY+b2eWn3Kh2jjxR3yGs34PBVjvEFwYADmZVH
-         p6BvoMNTENkg9d8NcDW81fZmS17nkpkb+iosOUrmnN8SI8LukfahKj6628stqFX87RPF
-         se9pL8b7PwOMtNzwD+VYxPD9DLikJhbhqCdT7eYuytkQjePUMUa9u/tcLEc+37JdVP/7
-         iD6VFDxsPLQu7apH2Jct3gaimdA0Un1ggcmtcsFazVllsxN8qI/T+zs+1OSvw0YiUh1y
-         VKCWV80UXS50YL2xgRAvkyu6KexyQ5M6nBeBnP0XxNEnxiZfLCRSbMyJZTfhh0HZVW+A
-         8hvQ==
-X-Gm-Message-State: AOJu0YwK8dBJfWRLb1srIv4Mq2/3434xtz7E0bQEpQv1VgJTgqQ5Zl/A
-	e/ZSisHvurVSOYacWZbsi471i67oPMjwIDarcmsdDqbhVMcWmx4kcpuOB94yiIr5i/oUmZ5k+Xf
-	w2GOBlmgZF3prgNG6bz6u8/1JklMm
-X-Received: by 2002:a17:906:225a:b0:a1d:14a6:2f6e with SMTP id 26-20020a170906225a00b00a1d14a62f6emr2930344ejr.56.1702462939391;
-        Wed, 13 Dec 2023 02:22:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG+jZ3nrLP+Wa+070vj84Vz+sqk6KDzCdmeuCiXsoUH30QJib9E+95nujJxOKEw6sQZT25ubnuLQgdExHfby+c=
-X-Received: by 2002:a17:906:225a:b0:a1d:14a6:2f6e with SMTP id
- 26-20020a170906225a00b00a1d14a62f6emr2930335ejr.56.1702462938844; Wed, 13 Dec
- 2023 02:22:18 -0800 (PST)
+        bh=x4MCw2YC7I/1qOaN5GQmrfRmc1eHOmDUJJZ7I0ZkK4U=;
+        b=QhyaDtu8EfjNaLGkOyHVFVeh/Jw5kicPGcSqEn5hs2NNf3I1nX2EyYA74KyifuN6ps
+         0TzN4+imW2875yNith20IosfzkILc16Q51kYGEG/B9bn0yPwICfmIBsotmQrSsFqDdJ0
+         iYj970vT1IUPaho2YmtXryIYXgivX6JBJZSqLzPhDcm5DgEMrQM24xx0lJ+4RyYkSQpn
+         kWNrqjpHsQQ67UPgsS6atmCbAFA/RrMKXa4zfJSGieZkFCzE2PI8RV8uo4NFQU7YuOG4
+         D5v9gnxsO8BOpk9v0LurYuF1Hg8eygrlwyjhODgVUSzXpTYwup4Jir/M7WHwqhCm7PGC
+         KIQA==
+X-Gm-Message-State: AOJu0Yx2Tot+/jmR7PSMmGlCxryoQDV/vwdr2/CHNPm5sT0ab1ZLIltR
+	7IIH6ZtwnK1V8fk9nKDCDr4yIt2diG9GXJII6DpZjzn9hQ==
+X-Google-Smtp-Source: AGHT+IGsp8CnBmu9gktPPbpU5B1/sHwo7J5nU7bURRButUIRmRr1gETos923pzp0mzuKlbEtqym7OEJ86QLztt5hwnI=
+X-Received: by 2002:a5b:20b:0:b0:db7:d700:3c0e with SMTP id
+ z11-20020a5b020b000000b00db7d7003c0emr4465711ybl.39.1702463119971; Wed, 13
+ Dec 2023 02:25:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
- <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com> <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
-In-Reply-To: <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
-From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date: Wed, 13 Dec 2023 11:22:06 +0100
-Message-ID: <CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
-Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
-To: Akihiko Odaki <akihiko.odaki@daynix.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jason Wang <jasowang@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Yuri Benditovich <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>, 
-	Benjamin Tissoires <bentiss@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, kvm@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, virtualization@lists.linux-foundation.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+ <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+In-Reply-To: <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+From: Hao Sun <sunhao.th@gmail.com>
+Date: Wed, 13 Dec 2023 11:25:08 +0100
+Message-ID: <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 1:41=E2=80=AFPM Akihiko Odaki <akihiko.odaki@daynix=
-.com> wrote:
+On Wed, Dec 13, 2023 at 1:51=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On 2023/12/12 19:39, Benjamin Tissoires wrote:
+> On Mon, Dec 11, 2023 at 7:31=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> wro=
+te:
+> >
 > > Hi,
 > >
-> > On Tue, Dec 12, 2023 at 9:11=E2=80=AFAM Akihiko Odaki <akihiko.odaki@da=
-ynix.com> wrote:
-> >>
-> >> Hi,
->
-> Hi,
->
-> Thanks for reply.
->
-> >>
-> >> It is said eBPF is a safe way to extend kernels and that is very
-> >> attarctive, but we need to use kfuncs to add new usage of eBPF and
-> >> kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to a=
-sk
-> >> some questions:
-> >>
-> >> 1) Which should I choose, BPF kfuncs or ioctl, when adding a new featu=
-re
-> >> for userspace apps?
-> >> 2) How should I use BPF kfuncs from userspace apps if I add them?
-> >>
-> >> Here, a "userspace app" means something not like a system-wide daemon
-> >> like systemd (particularly, I have QEMU in mind). I'll describe the
-> >> context more below:
+> > The verifier incorrectly prunes a path expected to be executed at
+> > runtime. In the following program, the execution path is:
+> >     from 6 to 8 (taken) -> from 11 to 15 (taken) -> from 18 to 22
+> > (taken) -> from 26 to 27 (fall-through) -> from 29 to 30
+> > (fall-through)
+> > The verifier prunes the checking path at #26, skipping the actual
+> > execution path.
 > >
-> > I'm probably not the best person in the world to answer your
-> > questions, Alexei and others from the BPF core group are, but given
-> > that you pointed at a thread I was involved in, I feel I can give you
-> > a few pointers.
+> >    0: (18) r2 =3D 0x1a000000be
+> >    2: (bf) r5 =3D r1
+> >    3: (bf) r8 =3D r2
+> >    4: (bc) w4 =3D w5
+> >    5: (85) call bpf_get_current_cgroup_id#680112
+> >    6: (36) if w8 >=3D 0x69 goto pc+1
+> >    7: (95) exit
+> >    8: (18) r4 =3D 0x52
+> >   10: (84) w4 =3D -w4
+> >   11: (45) if r0 & 0xfffffffe goto pc+3
+> >   12: (1f) r8 -=3D r4
+> >   13: (0f) r0 +=3D r0
+> >   14: (2f) r4 *=3D r4
+> >   15: (18) r3 =3D 0x1f00000034
+> >   17: (c4) w4 s>>=3D 29
+> >   18: (56) if w8 !=3D 0xf goto pc+3
+> >   19: r3 =3D bswap32 r3
+> >   20: (18) r2 =3D 0x1c
+> >   22: (67) r4 <<=3D 2
+> >   23: (bf) r5 =3D r8
+> >   24: (18) r2 =3D 0x4
+> >   26: (7e) if w8 s>=3D w0 goto pc+5
+> >   27: (4f) r8 |=3D r8
+> >   28: (0f) r8 +=3D r8
+> >   29: (d6) if w5 s<=3D 0x1d goto pc+2
+> >   30: (18) r0 =3D 0x4 ; incorrectly pruned here
+>
+>
+>
+> >   32: (95) exit
 > >
-> > But first and foremost, I encourage you to schedule an agenda item in
-> > the BPF office hour[4]. Being able to talk with the core people
-> > directly was tremendously helpful to me to understand their point.
+> > -------- Verifier Log --------
+> > func#0 @0
+> > 0: R1=3Dctx() R10=3Dfp0
+> > 0: (18) r2 =3D 0x1a000000be             ; R2_w=3D0x1a000000be
+> > 2: (bf) r5 =3D r1                       ; R1=3Dctx() R5_w=3Dctx()
+> > 3: (bf) r8 =3D r2                       ; R2_w=3D0x1a000000be R8_w=3D0x=
+1a000000be
+> > 4: (bc) w4 =3D w5                       ;
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,var_off=3D(0x0; 0xfffff=
+fff))
+> > R5_w=3Dctx()
+> > 5: (85) call bpf_get_current_cgroup_id#80     ; R0_w=3Dscalar()
+> > 6: (36) if w8 >=3D 0x69 goto pc+1
+> > mark_precise: frame0: last_idx 6 first_idx 0 subseq_idx -1
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 5: (85) call
+> > bpf_get_current_cgroup_id#80
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 4: (bc) w4 =3D w5
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 3: (bf) r8 =3D r2
+> > mark_precise: frame0: regs=3Dr2 stack=3D before 2: (bf) r5 =3D r1
+> > mark_precise: frame0: regs=3Dr2 stack=3D before 0: (18) r2 =3D 0x1a0000=
+00be
+> > 6: R8_w=3D0x1a000000be
+> > 8: (18) r4 =3D 0x52                     ; R4_w=3D82
+> > 10: (84) w4 =3D -w4                     ; R4=3Dscalar()
+> > 11: (45) if r0 & 0xfffffffe goto pc+3         ;
+> > R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D1,var_off=
+=3D(0x0; 0x1))
+> > 12: (1f) r8 -=3D r4                     ; R4=3Dscalar() R8_w=3Dscalar()
+> > 13: (0f) r0 +=3D r0                     ;
+> > R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_o=
+ff=3D(0x0;
+> > 0x3))
+> > 14: (2f) r4 *=3D r4                     ; R4_w=3Dscalar()
+> > 15: (18) r3 =3D 0x1f00000034            ; R3_w=3D0x1f00000034
+> > 17: (c4) w4 s>>=3D 29                   ;
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,=
+var_off=3D(0x0;
+> > 0xffffffff))
+> > 18: (56) if w8 !=3D 0xf goto pc+3       ;
+> > R8_w=3Dscalar(smin=3D0x800000000000000f,smax=3D0x7fffffff0000000f,umin=
+=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D15,var_=
+off=3D(0xf;
+> > 0xffffffff00000000))
+> > 19: (d7) r3 =3D bswap32 r3              ; R3_w=3Dscalar()
+> > 20: (18) r2 =3D 0x1c                    ; R2=3D28
+> > 22: (67) r4 <<=3D 2                     ;
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,um=
+ax32=3D0xfffffffc,var_off=3D(0x0;
+> > 0x3fffffffc))
+> > 23: (bf) r5 =3D r8                      ;
+> > R5_w=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff0000000=
+f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D1=
+5,var_off=3D(0xf;
+> > 0xffffffff00000000))
+> > R8=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff0000000f,=
+umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=3D15,=
+var_off=3D(0xf;
+> > 0xffffffff00000000))
+> > 24: (18) r2 =3D 0x4                     ; R2_w=3D4
+> > 26: (7e) if w8 s>=3D w0 goto pc+5
 >
-> I prefer emails because I'm not very fluent when speaking in English and
-> may have a difficultly to listen to other people, but I may try it in
-> future.
+> so here w8=3D15 and w0=3D[0,2], always taken, right?
+>
+> > mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+> > mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
+> > mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+> > mark_precise: frame0: parent state regs=3Dr8 stack=3D:
+> > R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_=
+off=3D(0x0;
+> > 0x3)) R2_w=3D28 R3_w=3Dscalar()
+> > R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3=
+,var_off=3D(0x0;
+> > 0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7ffffff=
+f0000000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dum=
+ax32=3D15,var_off=3D(0xf;
+> > 0xffffffff00000000)) R10=3Dfp0
+> > mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 20: (18) r2 =3D 0x1c
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 19: (d7) r3 =3D bswap32=
+ r3
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf=
+ goto pc+3
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f000=
+00034
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 14: (2f) r4 *=3D r4
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 13: (0f) r0 +=3D r0
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 12: (1f) r8 -=3D r4
+> > mark_precise: frame0: regs=3Dr4,r8 stack=3D before 11: (45) if r0 &
+> > 0xfffffffe goto pc+3
+> > mark_precise: frame0: parent state regs=3Dr4,r8 stack=3D:  R0_rw=3Dscal=
+ar()
+> > R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> > mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
+> > mark_precise: frame0: regs=3Dr4,r8 stack=3D before 10: (84) w4 =3D -w4
+> > mark_precise: frame0: regs=3Dr4,r8 stack=3D before 8: (18) r4 =3D 0x52
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 6: (36) if w8 >=3D 0x69=
+ goto pc+1
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 5: (85) call
+> > bpf_get_current_cgroup_id#80
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 4: (bc) w4 =3D w5
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 3: (bf) r8 =3D r2
+> > mark_precise: frame0: regs=3Dr2 stack=3D before 2: (bf) r5 =3D r1
+> > mark_precise: frame0: regs=3Dr2 stack=3D before 0: (18) r2 =3D 0x1a0000=
+00be
+> > mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
+> > mark_precise: frame0: parent state regs=3Dr0 stack=3D:
+> > R0_rw=3DPscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
+_off=3D(0x0;
+> > 0x3)) R2_w=3D28 R3_w=3Dscalar()
+> > R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3=
+,var_off=3D(0x0;
+> > 0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7ffffff=
+f0000000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dum=
+ax32=3D15,var_off=3D(0xf;
+> > 0xffffffff00000000)) R10=3Dfp0
+> > mark_precise: frame0: last_idx 20 first_idx 11 subseq_idx 22
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 20: (18) r2 =3D 0x1c
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 19: (d7) r3 =3D bswap32=
+ r3
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 18: (56) if w8 !=3D 0xf=
+ goto pc+3
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 17: (c4) w4 s>>=3D 29
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 15: (18) r3 =3D 0x1f000=
+00034
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 14: (2f) r4 *=3D r4
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 13: (0f) r0 +=3D r0
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 12: (1f) r8 -=3D r4
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 11: (45) if r0 &
+> > 0xfffffffe goto pc+3
+> > mark_precise: frame0: parent state regs=3Dr0 stack=3D:  R0_rw=3DPscalar=
+()
+> > R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> > mark_precise: frame0: last_idx 10 first_idx 0 subseq_idx 11
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 10: (84) w4 =3D -w4
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 8: (18) r4 =3D 0x52
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 6: (36) if w8 >=3D 0x69=
+ goto pc+1
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 5: (85) call
+> > bpf_get_current_cgroup_id#80
+> > 26: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
+_off=3D(0x0;
+> > 0x3)) R8=3Dscalar(id=3D1,smin=3D0x800000000000000f,smax=3D0x7fffffff000=
+0000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax32=
+=3D15,var_off=3D(0xf;
+> > 0xffffffff00000000))
+> > 32: (95) exit
+> >
+> > from 18 to 22: R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Du=
+max32=3D2,var_off=3D(0x0;
+> > 0x3)) R3_w=3D0x1f00000034
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,=
+var_off=3D(0x0;
+> > 0xffffffff)) R8_w=3Dscalar() R10=3Dfp0
+> > 22: R0_w=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,v=
+ar_off=3D(0x0;
+> > 0x3)) R3_w=3D0x1f00000034
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,=
+var_off=3D(0x0;
+> > 0xffffffff)) R8_w=3Dscalar() R10=3Dfp0
+> > 22: (67) r4 <<=3D 2                     ;
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,um=
+ax32=3D0xfffffffc,var_off=3D(0x0;
+> > 0x3fffffffc))
+> > 23: (bf) r5 =3D r8                      ; R5_w=3Dscalar(id=3D2) R8_w=3D=
+scalar(id=3D2)
+> > 24: (18) r2 =3D 0x4                     ; R2=3D4
+> > 26: (7e) if w8 s>=3D w0 goto pc+5       ;
+> > R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=
+=3D(0x0; 0x3))
+> > R8=3Dscalar(id=3D2,smax32=3D1)
+>
+> we didn't prune here, assuming w8 < w0, so w8=3Dw5 is at most 1 (because
+> r0 is [0, 2])
+>
+> > 27: (4f) r8 |=3D r8                     ; R8_w=3Dscalar()
+>
+> here r5 and r8 are disassociated
+>
+> > 28: (0f) r8 +=3D r8                     ; R8_w=3Dscalar()
+> > 29: (d6) if w5 s<=3D 0x1d goto pc+2
+>
+> w5 is at most 1 (signed), so this is always true, so we just to exit,
+> 30: is still never visited
+>
+> > mark_precise: frame0: last_idx 29 first_idx 26 subseq_idx -1
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 28: (0f) r8 +=3D r8
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 27: (4f) r8 |=3D r8
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 26: (7e) if w8 s>=3D w0=
+ goto pc+5
+> > mark_precise: frame0: parent state regs=3Dr5 stack=3D:
+> > R0_rw=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var_=
+off=3D(0x0;
+> > 0x3)) R2_w=3D4 R3_w=3D0x1f00000034
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,um=
+ax32=3D0xfffffffc,var_off=3D(0x0;
+> > 0x3fffffffc)) R5_rw=3DPscalar(id=3D2) R8_rw=3Dscalar(id=3D2) R10=3Dfp0
+> > mark_precise: frame0: last_idx 24 first_idx 11 subseq_idx 26
+> > mark_precise: frame0: regs=3Dr5,r8 stack=3D before 24: (18) r2 =3D 0x4
+> > mark_precise: frame0: regs=3Dr5,r8 stack=3D before 23: (bf) r5 =3D r8
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf=
+ goto pc+3
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f000=
+00034
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 14: (2f) r4 *=3D r4
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 13: (0f) r0 +=3D r0
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 12: (1f) r8 -=3D r4
+> > mark_precise: frame0: regs=3Dr4,r8 stack=3D before 11: (45) if r0 &
+> > 0xfffffffe goto pc+3
+> > mark_precise: frame0: parent state regs=3D stack=3D:  R0_rw=3DPscalar()
+> > R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> > 29: R5=3Dscalar(id=3D2,smax32=3D1)
+> > 32: (95) exit
+> >
+> > from 26 to 32: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Duma=
+x32=3D2,var_off=3D(0x0;
+> > 0x3)) R2=3D4 R3=3D0x1f00000034
+> > R4=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
+32=3D0xfffffffc,var_off=3D(0x0;
+> > 0x3fffffffc)) R5=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xfff=
+fffff7fffffff,smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
+> > 0xffffffff7fffffff))
+> > R8=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xffffffff7fffffff,=
+smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
+> > 0xffffffff7fffffff)) R10=3Dfp0
+> > 32: R0=3Dscalar(smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D2,var=
+_off=3D(0x0;
+> > 0x3)) R2=3D4 R3=3D0x1f00000034
+> > R4=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,umax=
+32=3D0xfffffffc,var_off=3D(0x0;
+> > 0x3fffffffc)) R5=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xfff=
+fffff7fffffff,smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
+> > 0xffffffff7fffffff))
+> > R8=3Dscalar(id=3D2,smax=3D0x7fffffff7fffffff,umax=3D0xffffffff7fffffff,=
+smin32=3D0,umax32=3D0x7fffffff,var_off=3D(0x0;
+> > 0xffffffff7fffffff)) R10=3Dfp0
+> > 32: (95) exit
+>
+> here we also skipped 30:, and w8 was in [0,0x7fffffff] range, r0 is
+> [0,2], but it's precision doesn't matter as we didn't do any pruning
+>
+> NOTE this one.
 >
 > >
+> > from 11 to 15: R0=3Dscalar() R4=3Dscalar() R8=3D0x1a000000be R10=3Dfp0
+> > 15: R0=3Dscalar() R4=3Dscalar() R8=3D0x1a000000be R10=3Dfp0
+> > 15: (18) r3 =3D 0x1f00000034            ; R3_w=3D0x1f00000034
+> > 17: (c4) w4 s>>=3D 29                   ;
+> > R4=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,va=
+r_off=3D(0x0;
+> > 0xffffffff))
+> > 18: (56) if w8 !=3D 0xf goto pc+3
+>
+> known true, always taken
+>
+> > mark_precise: frame0: last_idx 18 first_idx 18 subseq_idx -1
+> > mark_precise: frame0: parent state regs=3Dr8 stack=3D:  R0=3Dscalar()
+> > R3_w=3D0x1f00000034
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,=
+var_off=3D(0x0;
+> > 0xffffffff)) R8_r=3DP0x1a000000be R10=3Dfp0
+> > mark_precise: frame0: last_idx 17 first_idx 11 subseq_idx 18
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 17: (c4) w4 s>>=3D 29
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 15: (18) r3 =3D 0x1f000=
+00034
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 11: (45) if r0 &
+> > 0xfffffffe goto pc+3
+> > mark_precise: frame0: parent state regs=3D stack=3D:  R0_rw=3DPscalar()
+> > R4_rw=3DPscalar() R8_rw=3DP0x1a000000be R10=3Dfp0
+> > 18: R8=3D0x1a000000be
+> > 22: (67) r4 <<=3D 2                     ;
+> > R4_w=3Dscalar(smin=3D0,smax=3Dumax=3D0x3fffffffc,smax32=3D0x7ffffffc,um=
+ax32=3D0xfffffffc,var_off=3D(0x0;
+> > 0x3fffffffc))
+> > 23: (bf) r5 =3D r8                      ; R5_w=3D0x1a000000be R8=3D0x1a=
+000000be
+> > 24: (18) r2 =3D 0x4
+> > frame 0: propagating r5
+> > mark_precise: frame0: last_idx 26 first_idx 18 subseq_idx -1
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 24: (18) r2 =3D 0x4
+> > mark_precise: frame0: regs=3Dr5 stack=3D before 23: (bf) r5 =3D r8
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 22: (67) r4 <<=3D 2
+> > mark_precise: frame0: regs=3Dr8 stack=3D before 18: (56) if w8 !=3D 0xf=
+ goto pc+3
+> > mark_precise: frame0: parent state regs=3D stack=3D:  R0_r=3Dscalar()
+> > R3_w=3D0x1f00000034
+> > R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3=
+,var_off=3D(0x0;
+> > 0xffffffff)) R8_r=3DP0x1a000000be R10=3Dfp0
+> > 26: safe
+>
+> and here we basically need to evaluate
+>
+> if w8 s>=3D w0 goto pc+5
+>
+> w8 is precisely known to be 0x000000be, while w0 is unknown. Now go
+> back to "NOTE this one" mark above. w8 is inside [0, 0xffffffff]
+> range, right? And w0 is unknown, while up in "NOTE this one" w0 didn't
+> matter, so it stayed imprecise. This is a match. It seems correct.
+>
+
+Thanks for the detailed explanation.
+This is the exact point where I got confused. w8 and w5 share the same id
+at this point, the range of w5 is also updated according to w0. Even though
+r5 and r8 are disassociated later, w0 actually matters.
+
+Assume the verifier does not prune at this point, then w5 would be unknown
+after this point, and #30 will be explored. The branch "from 29 to 30" is t=
+he
+taken path at runtime, see below.
+
+>
+[...]
+>
+> r0 is marked precise at 26:
+>
+> mark_precise: frame0: last_idx 26 first_idx 22 subseq_idx -1
+> mark_precise: frame0: regs=3Dr0 stack=3D before 24: (18) r2 =3D 0x4
+> mark_precise: frame0: regs=3Dr0 stack=3D before 23: (bf) r5 =3D r8
+> mark_precise: frame0: regs=3Dr0 stack=3D before 22: (67) r4 <<=3D 2
+> mark_precise: frame0: parent state regs=3Dr0 stack=3D:
+> R0_rw=3DPscalar(smin=3Dsmin32=3D0,sm
+> ax=3Dumax=3Dsmax32=3Dumax32=3D2,var_off=3D(0x0;
+> 0x3)) R2_w=3D28 R3_w=3Dscalar()
+> R4_rw=3Dscalar(smin=3D0,smax=3Dumax=3D0xffffffff,smin32=3D-4,smax32=3D3,v=
+ar_off=3D(0x0;
+> 0xffffffff)) R8_rw=3DPscalar(smin=3D0x800000000000000f,smax=3D0x7fffffff0=
+000000f,umin=3Dsmin32=3Dumin32=3D15,umax=3D0xffffffff0000000f,smax32=3Dumax=
+32=3D15,var_off=3D(0xf;
+> 0xffffffff00000000)) R10=3Dfp0
+>
+[...]
+> > However, seems it's not, so the next time when the verifier checks
+> > #26, R0 is incorrectly ignored.
+> > We have mark_precise_scalar_ids(), but it's called before calculating
+> > the mask once.
+>
+> I'm not following the remark about mark_precise_scalar_ids(). That
+> works fine, but has nothing to do with r0. mark_precise_scalar_ids()
+> identifies that r8 and r5 are linked together, and you can see from
+> the log that we mark both r5 and r8 as precise.
+>
+> > I investigated for quite a while, but mark_chain_pricision() is really
+> > hard to follow.
 > >
-> >>
-> >> ---
-> >>
-> >> I'm working on a new feature that aids virtio-net implementations usin=
-g
-> >> tuntap virtual network device. You can see [1] for details, but
-> >> basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four mo=
-re
-> >> bytes.
-> >>
-> >> However, with long discussions we have confirmed extending
-> >> BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfuncs =
-is
-> >> the way forward. So I decided how to add kfuncs to the kernel and how =
-to
-> >> use it. There are rich documentations for the kernel side, but I found
-> >> little about the userspace. The best I could find is a systemd change
-> >> proposal that is based on WIP kernel changes[2].
-> >
-> > Yes, as Alexei already replied, BPF is not adding new stable APIs,
-> > only kfuncs. The reason being that once it's marked as stable, you
-> > can't really remove it, even if you think it's badly designed and
-> > useless.
-> >
-> > Kfuncs, OTOH are "unstable" by default meaning that the constraints
-> > around it are more relaxed.
-> >
-> > However, "unstable" doesn't mean "unusable". It just means that the
-> > kernel might or might not have the function when you load your program
-> > in userspace. So you have to take that fact into account from day one,
-> > both from the kernel side and the userspace side. The kernel docs have
-> > a nice paragraph explaining that situation and makes the distinction
-> > between relatively unused kfuncs, and well known established ones.
-> >
-> > Regarding the systemd discussion you are mentioning ([2]), this is
-> > something that I have on my plate for a long time. I think I even
-> > mentioned it to Alexei at Kernel Recipes this year, and he frowned his
-> > eyebrows when I mentioned it. And looking at the systemd code and the
-> > benefits over a plain ioctl, it is clearer that in that case, a plain
-> > ioctl is better, mostly because we already know the API and the
-> > semantic.
-> >
-> > A kfunc would be interesting in cases where you are not sure about the
-> > overall design, and so you can give a shot at various API solutions
-> > without having to keep your bad v1 design forever.
-> >
-> >>
-> >> So now I'm wondering how I should use BPF kfuncs from userspace apps i=
-f
-> >> I add them. In the systemd discussion, it is told that Linus said it's
-> >> fine to use BPF kfuncs in a private infrastructure big companies own, =
-or
-> >> in systemd as those users know well about the system[3]. Indeed, those
-> >> users should be able to make more assumptions on the kernel than
-> >> "normal" userspace applications can.
-> >>
-> >> Returning to my proposal, I'm proposing a new feature to be used by QE=
-MU
-> >> or other VMM applications. QEMU is more like a normal userspace
-> >> application, and usually does not make much assumptions on the kernel =
-it
-> >> runs on. For example, it's generally safe to run a Debian container
-> >> including QEMU installed with apt on Fedora. BPF kfuncs may work even =
-in
-> >> such a situation thanks to CO-RE, but it sounds like *accidentally*
-> >> creating UAPIs.
-> >>
-> >> Considering all above, how can I integrate BPF kfuncs to the applicati=
-on?
-> >
-> > FWIW, I'm not sure you can rely on BPF calls from a container. There
-> > is a high chance the syscall gets disabled by the runtime.
+> > Here is a reduced C repro, maybe someone else can shed some light on th=
+is.
+> > C repro: https://pastebin.com/raw/chrshhGQ
 >
-> Right. Container runtimes will not pass CAP_BPF by default, but that
-> restriction can be lifted and I think that's a valid scenario.
+> So you claim is that
 >
-> >
-> >>
-> >> If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle th=
-em
-> >> is to think of BPF programs as some sort of kernel modules and
-> >> incorporate logic that behaves like modprobe. More concretely, I can p=
-ut
-> >> eBPF binaries to a directory like:
-> >> /usr/local/share/qemu/ebpf/$KERNEL_RELEASE
-> >
-> > I would advise against that (one program per kernel release). Simply
-> > because your kfunc may or may not have been backported to kernel
-> > release v6.X.Y+1 while it was not there when v6.X.Y was out. So
-> > relying on the kernel number is just going to be a headache.
-> >
-> > As I understand it, the way forward is to rely on the kernel, libbpf
-> > and CO-RE: if the function is not available, the program will simply
-> > not load, and you'll know that this version of the code is not
-> > available (or has changed API).
-> >
-> > So what I would do if some kfunc API is becoming deprecated, is
-> > embedding both code paths in the same BPF unit, but marking them as
-> > not loaded by libppf. Then I can load the compilation unit, try v2 of
-> > the API, and if it's not available, try v1, and if not, then mention
-> > that I can not rely on BPF. Of course, this can also be done with
-> > separate compilation units.
+> 30: (18) r0 =3D 0x4 ; incorrectly pruned here
 >
-> Doesn't it mean that the kernel is free to break old versions of QEMU
-> including BPF programs? That's something I'd like to avoid.
-
-Couple of points here:
-- when you say "the kernel", it feels like you are talking about an
-external actor tampering with your code. But if you submit a kernel
-patch with a specific use case and get yourself involved in the
-community, why would anybody change your kfunc API without you knowing
-it?
-- the whole warning about "unstable" policy means that the user space
-component should not take for granted the capability. So if the kfunc
-changes/disappears for good reasons (because it was marked as well
-used and deprecated for quite some time), qemu should not *break*, it
-should not provide the functionality, or have a secondary plan.
-
-But even if you are encountering such issues, in case of a change in
-the ABI of your kfunc, it should be easy enough to backport the bpf
-changes to your old QEMUs and ask users to upgrade the user space if
-they upgrade their kernel.
-
-AFAIU, it is as unstable as you want it to be. It's just that we are
-not in the "we don't break user space" contract, because we are
-talking about adding a kernel functionality from userspace, which
-requires knowing the kernel intrinsics.
-
 >
-> >
-> >>
-> >> Then, QEMU can uname() and get the path to the binary. It will give an
-> >> error if it can't find the binary for the current kernel so that it
-> >> won't create accidental UAPIs.
-> >>
-> >> The obvious downside of this is that it complicates packaging a lot; i=
-t
-> >> requires packaging QEMU eBPF binaries each time a new kernel comes up.
-> >> This complexity is centrally managed by modprobe for kernel modules, b=
-ut
-> >> apparently each application needs to take care of it for BPF programs.
-> >
-> > For my primary use case: HID-BPF, I put kfuncs in kernel v6.3 and
-> > given that I haven't touch this part of the API, the same compilation
-> > unit compiled in the v6.3 era still works on a v6.7-rcx, so no, IMO
-> > it's not complex and doesn't require to follow the kernel releases
-> > (which is the whole point of HID-BPF FWIW).
->
-> I also expect BPF kfuncs will work well for long if I introduce its
-> usage to QEMU in practice. That said, the interface stability is about
-> when something unexpected happens. What if the interface QEMU relies on
-> is deemed sub-optimal? Without following kernel releases, QEMU may
-> accidentally lose the feature relying on eBPF.
-
-In the same way, anybody can tamper with your ioctl or syscall without
-QEMU knowing it.
-And what you need to follow is not the kernel *releases*, but the
-changes in the kfuncs you are interested in.
-
->
-> >
-> >>
-> >> In conclusion, I see too much complexity to use BPF in a userspace
-> >> application, which we didn't have to care for
-> >> BPF_PROG_TYPE_SOCKET_FILTER. Isn't there a better way? Or shouldn't I
-> >> use BPF in my case in the first place?
-> >
-> > Given that I'm not a network person, I'm not sure about your use case,
-> > but I would make my decision based on:
-> > - do I know exactly what I want to achieve and I'm confident that I'll
-> > write the proper kernel API from day one? (if not then kfuncs is
-> > appealing because  it's less workload in the long run, but userspace
-> > needs to be slightly smarter)
->
-> Personally I'm confident that the initial UAPI design will not do a bad
-> thing at least. However, there is a high chance that the design needs to
-> be extended to accommodate new features.
-
-Not trying to offend you or anything, but designs can change for
-multiple reasons. Floppy disks were a good design at the time, and it
-took decades to remove support for it in the kernel. In the same way,
-removing an architecture from the kernel is hard, because even if you
-can not run a new kernel on those architectures, "we do not break
-userspace".
-
-The whole BPF approach is to say that users of BPF are not plain
-random users, and they have to know a little bit of the kernel, and
-they know that once the kfunc is here, it doesn't mean it'll stay here
-forever.
-
->
-> > - are all of my use cases covered by using BPF? (what happens if I run
-> > QEMU in a container?) -> BPF might or might not be a solution
->
-> Yes. Containers can be used to 1) have a different userspace or 2)
-> isolate things for security.
->
-> Regarding 2), QEMU and libvirt has sandbox mechanisms so we can rely on
-> them instead of containers so we can just pass capabilities to the
-> container. At least, we can always have a setuid helper outside
-> container, and pass around file descriptors it generates.
->
-> So 1) is the only problem that matters.
->
-> >
-> > But the nice thing about using BPF kfuncs is that it allows you to
-> > have a testing (not-)UAPI kernel interface. You can then implement the
-> > userspace changes and see how it behaves. And then, once you got the
-> > right design, you can decide to promote it to a proper syscall or
-> > ioctl if you want.
->
-> I expect it's possible to have testing ioctls. Quickly searching online,
-> there are experimental ioctls[1][2]. I also know DRM has a relaxed
-> policy for closed-source userspace[3].
-
-Sure, but handling a change in the API in those cases is tough in the
-kernel. You probably need to bump versions, return different values
-depending on how many parameters you are given, and you are never sure
-the caller is using the right parameters. BPF simplifies this by
-actually checking the types of the caller, and if there is a
-discrepancy, it'll notify userspace that it is doing something bad.
-
->
-> So I'm seeing the distinction of UAPI/kfunc even less definitive; UAPIs
-> can also be broken if the subsystem maintainers agree and there is no
-> real user. I also think it's natural to say a kfunc will be stable as
-> long as there is a user, but it contradicts with the current situation.
-
-Please read more carefully the kernel docs [4] (just quoting here the
-beginning):
-
-"""
-Like any other change to the kernel, maintainers will not change or
-remove a kfunc without having a reasonable justification. Whether or
-not they'll choose to change a kfunc will ultimately depend on a
-variety of factors, such as how widely used the kfunc is, how long the
-kfunc has been in the kernel, whether an alternative kfunc exists,
-what the norm is in terms of stability for the subsystem in question,
-and of course what the technical cost is of continuing to support the
-kfunc.
-"""
-
-> kfunc is expressed as EXPORT_SYMBOL_GPL in the documentation, and Linus
-> expects kfunc is for users like big companies or systemd, which closely
-> follow the kernel, according to the systemd discussion I cited in the
-> last email.
-
-Please re-read the doc[4], it's not a 1-to-1 matching to EXPORT_SYMBOL_GPL.
-And being the one who reported Linus' words in that systemd thread,
-Linus was not concerned about "potential situations that may or may
-not happen", because he expected the people who use kfunc to do the
-right thing. Because they are not average programmers. And QEMU
-developers would definitely fit in that category IMO.
-
-And the whole "you can consider kfunc similar to EXPORT_SYMBOL_GPL" is
-just a warning for user space that the kfunc will never be kept only
-for stability reasons. So when you want to use a kfunc, you need to be
-aware of it and not segfault if it's not there (which can not happen
-TBH unless you don't check that your program was correctly loaded).
-
->
-> According to the discussion above, it may be better off abandoning BPF
-> and implementing all in kernel, with ioctl as I have a (hopefully) sound
-> idea of UAPI design. But I'll also continue considering the BPF option;
-> BPF is still attractive due to its extensibility and safety.
-
-We can not tell you to choose one solution over the other. The choice
-is yours. I personally find BPF more appealing because it allows the
-user space application to define its own kernel API for its own needs
-while relying on just a few defined kfuncs.
-
-But again, sometimes it doesn't work, like the systemd thread you
-linked, it's too big overhead for little gain compared to an ioctl in
-that particular case.
-
-IMO the biggest issue for you is not the stability of the API, but the
-container capabilities. Because allowing CAP_BPF allows for a whole
-lot of nasty things to happen :)
-
-Cheers,
-Benjamin
-
->
-> Regards,
-> Akihiko Odaki
->
-> [1]
-> https://www.kernel.org/doc/html/v6.6/userspace-api/media/v4l/hist-v4l2.ht=
-ml?highlight=3Dexperimental#experimental-api-elements
-> [2]
-> https://www.kernel.org/doc/html/v6.6/userspace-api/media/dvb/dmx-expbuf.h=
-tml?highlight=3Dexperimental
-> [3]
-> https://www.kernel.org/doc/html/v6.6/gpu/drm-uapi.html#open-source-usersp=
-ace-requirements
+> Can you please show a detailed code patch in which we do reach 30
+> actually? I might have missed it, but so far it look like verifier is
+> doing everything right.
 >
 
-[4] https://www.kernel.org/doc/html/latest/bpf/kfuncs.html?highlight=3Dbpf#=
-kfunc-lifecycle-expectations
+I tried to convert the repro to a valid test case in inline asm, but seems
+JSET (if r0 & 0xfffffffe goto pc+3) is currently not supported in clang-17.
+Will try after clang-18 is released.
 
+#30 is expected to be executed, see below where everything after ";" is
+the runtime value:
+   ...
+   6: (36) if w8 >=3D 0x69 goto pc+1    ; w8 =3D 0xbe, always taken
+   ...
+  11: (45) if r0 & 0xfffffffe goto pc+3  ; r0 =3D 0x616, taken
+  ...
+  18: (56) if w8 !=3D 0xf goto pc+3     ; w8 not touched, taken
+  ...
+  23: (bf) r5 =3D r8     ; w5 =3D 0xbe
+  24: (18) r2 =3D 0x4
+  26: (7e) if w8 s>=3D w0 goto pc+5    ; non-taken
+  27: (4f) r8 |=3D r8
+  28: (0f) r8 +=3D r8
+  29: (d6) if w5 s<=3D 0x1d goto pc+2  ; non-taken
+  30: (18) r0 =3D 0x4      ; executed
+
+Since the verifier prunes at #26, #30 is dead and eliminated. So, #30
+is executed after manually commenting out the dead code rewrite pass.
+
+From my understanding, I think r0 should be marked as precise when
+first backtrack from #29, because r5 range at this point depends on w0
+as r8 and r5 share the same id at #26.
 
