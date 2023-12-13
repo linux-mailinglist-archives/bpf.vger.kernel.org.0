@@ -1,503 +1,438 @@
-Return-Path: <bpf+bounces-17654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80D33810E28
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 11:16:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 507B0810E49
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 11:22:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A662F1C20A92
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 10:16:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 756581C20A2D
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 10:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3660B224E5;
-	Wed, 13 Dec 2023 10:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6330225CC;
+	Wed, 13 Dec 2023 10:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g+9xJWOZ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IBKVZcNG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30771A5
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 02:15:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702462552; x=1733998552;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=OXsVz8JkSr4ek8h2g/jUDQEgmcN2V5v5DKuQrFzHTsc=;
-  b=g+9xJWOZRImPcNdF6L5Wpk1vRgyMMT0cgDH3H7AyOKO5eNlrppl+gjGt
-   4FU/v+ZNdOBxmmLmaYvktFZJpVvDOx9MZsDFReUOMVFNzCe1e8bxGuQK/
-   mR3+dTW/JW2OPI7IEP6/YgYk4ojHeqRhDqvjtbiE7Wty//WrQlUJ1/qOD
-   1DbeH3u75xfA75+B4b+ZTeZhmUuZGQ7L8GOVA6RO2B4XbNbxvbUxUHsCf
-   BY39yhJgQ3uBLNuYAL0J7ZPKgsbtggKm1hQ9Ye/sN+nrYKP0CJlnr4ot8
-   ENJmFlQbsPiWtQWKdcgXaKemyzoovMTarXhP9GdHdfZkevFTFzLmH7DNn
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="459262222"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="459262222"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 02:15:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10922"; a="777442934"
-X-IronPort-AV: E=Sophos;i="6.04,272,1695711600"; 
-   d="scan'208";a="777442934"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Dec 2023 02:15:48 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rDMHK-000KOh-2P;
-	Wed, 13 Dec 2023 10:15:46 +0000
-Date: Wed, 13 Dec 2023 18:15:35 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH bpf-next 4/5] bpf: Limit up to 512 bytes for
- bpf_global_percpu_ma allocation
-Message-ID: <202312131731.Yh7iYbJG-lkp@intel.com>
-References: <20231212223100.2138537-1-yonghong.song@linux.dev>
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C69B3
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 02:22:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702462943;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fKZ/Lgffh6YItnjPVn4vBB8RPVFHrOo+shUDIGrxj94=;
+	b=IBKVZcNGq0xHiL/dqnzc/+KRtgrfPeEyAs4iHqNWfJYjsusG2IGBgQkfBzzAGf4ZJTb8wX
+	WhtMKzJWzz5emxYf7+SDhvGEnThhX3/LClihQ1MNIcN/9ugUoyt7PZkhr8eqhmhjv/BIX0
+	lsRUlwIjvgXulQ/NkpGtAsRylVtem80=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-533-Ok_eZcwyMmyuTpCA_0WgQw-1; Wed, 13 Dec 2023 05:22:20 -0500
+X-MC-Unique: Ok_eZcwyMmyuTpCA_0WgQw-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a0c510419caso149389966b.1
+        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 02:22:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702462939; x=1703067739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fKZ/Lgffh6YItnjPVn4vBB8RPVFHrOo+shUDIGrxj94=;
+        b=d2KSY9U3anaeI7mt4BXRfhhxkWCmEIY+b2eWn3Kh2jjxR3yGs34PBVjvEFwYADmZVH
+         p6BvoMNTENkg9d8NcDW81fZmS17nkpkb+iosOUrmnN8SI8LukfahKj6628stqFX87RPF
+         se9pL8b7PwOMtNzwD+VYxPD9DLikJhbhqCdT7eYuytkQjePUMUa9u/tcLEc+37JdVP/7
+         iD6VFDxsPLQu7apH2Jct3gaimdA0Un1ggcmtcsFazVllsxN8qI/T+zs+1OSvw0YiUh1y
+         VKCWV80UXS50YL2xgRAvkyu6KexyQ5M6nBeBnP0XxNEnxiZfLCRSbMyJZTfhh0HZVW+A
+         8hvQ==
+X-Gm-Message-State: AOJu0YwK8dBJfWRLb1srIv4Mq2/3434xtz7E0bQEpQv1VgJTgqQ5Zl/A
+	e/ZSisHvurVSOYacWZbsi471i67oPMjwIDarcmsdDqbhVMcWmx4kcpuOB94yiIr5i/oUmZ5k+Xf
+	w2GOBlmgZF3prgNG6bz6u8/1JklMm
+X-Received: by 2002:a17:906:225a:b0:a1d:14a6:2f6e with SMTP id 26-20020a170906225a00b00a1d14a62f6emr2930344ejr.56.1702462939391;
+        Wed, 13 Dec 2023 02:22:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG+jZ3nrLP+Wa+070vj84Vz+sqk6KDzCdmeuCiXsoUH30QJib9E+95nujJxOKEw6sQZT25ubnuLQgdExHfby+c=
+X-Received: by 2002:a17:906:225a:b0:a1d:14a6:2f6e with SMTP id
+ 26-20020a170906225a00b00a1d14a62f6emr2930335ejr.56.1702462938844; Wed, 13 Dec
+ 2023 02:22:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231212223100.2138537-1-yonghong.song@linux.dev>
+References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
+ <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com> <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
+In-Reply-To: <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Wed, 13 Dec 2023 11:22:06 +0100
+Message-ID: <CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
+Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
+To: Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Jason Wang <jasowang@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo <xuanzhuo@linux.alibaba.com>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Yuri Benditovich <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>, 
+	Benjamin Tissoires <bentiss@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, kvm@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, virtualization@lists.linux-foundation.org, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Yonghong,
+On Tue, Dec 12, 2023 at 1:41=E2=80=AFPM Akihiko Odaki <akihiko.odaki@daynix=
+.com> wrote:
+>
+> On 2023/12/12 19:39, Benjamin Tissoires wrote:
+> > Hi,
+> >
+> > On Tue, Dec 12, 2023 at 9:11=E2=80=AFAM Akihiko Odaki <akihiko.odaki@da=
+ynix.com> wrote:
+> >>
+> >> Hi,
+>
+> Hi,
+>
+> Thanks for reply.
+>
+> >>
+> >> It is said eBPF is a safe way to extend kernels and that is very
+> >> attarctive, but we need to use kfuncs to add new usage of eBPF and
+> >> kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to a=
+sk
+> >> some questions:
+> >>
+> >> 1) Which should I choose, BPF kfuncs or ioctl, when adding a new featu=
+re
+> >> for userspace apps?
+> >> 2) How should I use BPF kfuncs from userspace apps if I add them?
+> >>
+> >> Here, a "userspace app" means something not like a system-wide daemon
+> >> like systemd (particularly, I have QEMU in mind). I'll describe the
+> >> context more below:
+> >
+> > I'm probably not the best person in the world to answer your
+> > questions, Alexei and others from the BPF core group are, but given
+> > that you pointed at a thread I was involved in, I feel I can give you
+> > a few pointers.
+> >
+> > But first and foremost, I encourage you to schedule an agenda item in
+> > the BPF office hour[4]. Being able to talk with the core people
+> > directly was tremendously helpful to me to understand their point.
+>
+> I prefer emails because I'm not very fluent when speaking in English and
+> may have a difficultly to listen to other people, but I may try it in
+> future.
+>
+> >
+> >
+> >>
+> >> ---
+> >>
+> >> I'm working on a new feature that aids virtio-net implementations usin=
+g
+> >> tuntap virtual network device. You can see [1] for details, but
+> >> basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four mo=
+re
+> >> bytes.
+> >>
+> >> However, with long discussions we have confirmed extending
+> >> BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfuncs =
+is
+> >> the way forward. So I decided how to add kfuncs to the kernel and how =
+to
+> >> use it. There are rich documentations for the kernel side, but I found
+> >> little about the userspace. The best I could find is a systemd change
+> >> proposal that is based on WIP kernel changes[2].
+> >
+> > Yes, as Alexei already replied, BPF is not adding new stable APIs,
+> > only kfuncs. The reason being that once it's marked as stable, you
+> > can't really remove it, even if you think it's badly designed and
+> > useless.
+> >
+> > Kfuncs, OTOH are "unstable" by default meaning that the constraints
+> > around it are more relaxed.
+> >
+> > However, "unstable" doesn't mean "unusable". It just means that the
+> > kernel might or might not have the function when you load your program
+> > in userspace. So you have to take that fact into account from day one,
+> > both from the kernel side and the userspace side. The kernel docs have
+> > a nice paragraph explaining that situation and makes the distinction
+> > between relatively unused kfuncs, and well known established ones.
+> >
+> > Regarding the systemd discussion you are mentioning ([2]), this is
+> > something that I have on my plate for a long time. I think I even
+> > mentioned it to Alexei at Kernel Recipes this year, and he frowned his
+> > eyebrows when I mentioned it. And looking at the systemd code and the
+> > benefits over a plain ioctl, it is clearer that in that case, a plain
+> > ioctl is better, mostly because we already know the API and the
+> > semantic.
+> >
+> > A kfunc would be interesting in cases where you are not sure about the
+> > overall design, and so you can give a shot at various API solutions
+> > without having to keep your bad v1 design forever.
+> >
+> >>
+> >> So now I'm wondering how I should use BPF kfuncs from userspace apps i=
+f
+> >> I add them. In the systemd discussion, it is told that Linus said it's
+> >> fine to use BPF kfuncs in a private infrastructure big companies own, =
+or
+> >> in systemd as those users know well about the system[3]. Indeed, those
+> >> users should be able to make more assumptions on the kernel than
+> >> "normal" userspace applications can.
+> >>
+> >> Returning to my proposal, I'm proposing a new feature to be used by QE=
+MU
+> >> or other VMM applications. QEMU is more like a normal userspace
+> >> application, and usually does not make much assumptions on the kernel =
+it
+> >> runs on. For example, it's generally safe to run a Debian container
+> >> including QEMU installed with apt on Fedora. BPF kfuncs may work even =
+in
+> >> such a situation thanks to CO-RE, but it sounds like *accidentally*
+> >> creating UAPIs.
+> >>
+> >> Considering all above, how can I integrate BPF kfuncs to the applicati=
+on?
+> >
+> > FWIW, I'm not sure you can rely on BPF calls from a container. There
+> > is a high chance the syscall gets disabled by the runtime.
+>
+> Right. Container runtimes will not pass CAP_BPF by default, but that
+> restriction can be lifted and I think that's a valid scenario.
+>
+> >
+> >>
+> >> If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle th=
+em
+> >> is to think of BPF programs as some sort of kernel modules and
+> >> incorporate logic that behaves like modprobe. More concretely, I can p=
+ut
+> >> eBPF binaries to a directory like:
+> >> /usr/local/share/qemu/ebpf/$KERNEL_RELEASE
+> >
+> > I would advise against that (one program per kernel release). Simply
+> > because your kfunc may or may not have been backported to kernel
+> > release v6.X.Y+1 while it was not there when v6.X.Y was out. So
+> > relying on the kernel number is just going to be a headache.
+> >
+> > As I understand it, the way forward is to rely on the kernel, libbpf
+> > and CO-RE: if the function is not available, the program will simply
+> > not load, and you'll know that this version of the code is not
+> > available (or has changed API).
+> >
+> > So what I would do if some kfunc API is becoming deprecated, is
+> > embedding both code paths in the same BPF unit, but marking them as
+> > not loaded by libppf. Then I can load the compilation unit, try v2 of
+> > the API, and if it's not available, try v1, and if not, then mention
+> > that I can not rely on BPF. Of course, this can also be done with
+> > separate compilation units.
+>
+> Doesn't it mean that the kernel is free to break old versions of QEMU
+> including BPF programs? That's something I'd like to avoid.
 
-kernel test robot noticed the following build warnings:
+Couple of points here:
+- when you say "the kernel", it feels like you are talking about an
+external actor tampering with your code. But if you submit a kernel
+patch with a specific use case and get yourself involved in the
+community, why would anybody change your kfunc API without you knowing
+it?
+- the whole warning about "unstable" policy means that the user space
+component should not take for granted the capability. So if the kfunc
+changes/disappears for good reasons (because it was marked as well
+used and deprecated for quite some time), qemu should not *break*, it
+should not provide the functionality, or have a secondary plan.
 
-[auto build test WARNING on bpf-next/master]
+But even if you are encountering such issues, in case of a change in
+the ABI of your kfunc, it should be easy enough to backport the bpf
+changes to your old QEMUs and ask users to upgrade the user space if
+they upgrade their kernel.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yonghong-Song/bpf-Refactor-to-have-a-memalloc-cache-destroying-function/20231213-063401
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231212223100.2138537-1-yonghong.song%40linux.dev
-patch subject: [PATCH bpf-next 4/5] bpf: Limit up to 512 bytes for bpf_global_percpu_ma allocation
-config: m68k-defconfig (https://download.01.org/0day-ci/archive/20231213/202312131731.Yh7iYbJG-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231213/202312131731.Yh7iYbJG-lkp@intel.com/reproduce)
+AFAIU, it is as unstable as you want it to be. It's just that we are
+not in the "we don't break user space" contract, because we are
+talking about adding a kernel functionality from userspace, which
+requires knowing the kernel intrinsics.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312131731.Yh7iYbJG-lkp@intel.com/
+>
+> >
+> >>
+> >> Then, QEMU can uname() and get the path to the binary. It will give an
+> >> error if it can't find the binary for the current kernel so that it
+> >> won't create accidental UAPIs.
+> >>
+> >> The obvious downside of this is that it complicates packaging a lot; i=
+t
+> >> requires packaging QEMU eBPF binaries each time a new kernel comes up.
+> >> This complexity is centrally managed by modprobe for kernel modules, b=
+ut
+> >> apparently each application needs to take care of it for BPF programs.
+> >
+> > For my primary use case: HID-BPF, I put kfuncs in kernel v6.3 and
+> > given that I haven't touch this part of the API, the same compilation
+> > unit compiled in the v6.3 era still works on a v6.7-rcx, so no, IMO
+> > it's not complex and doesn't require to follow the kernel releases
+> > (which is the whole point of HID-BPF FWIW).
+>
+> I also expect BPF kfuncs will work well for long if I introduce its
+> usage to QEMU in practice. That said, the interface stability is about
+> when something unexpected happens. What if the interface QEMU relies on
+> is deemed sub-optimal? Without following kernel releases, QEMU may
+> accidentally lose the feature relying on eBPF.
 
-All warnings (new ones prefixed by >>):
+In the same way, anybody can tamper with your ioctl or syscall without
+QEMU knowing it.
+And what you need to follow is not the kernel *releases*, but the
+changes in the kfuncs you are interested in.
 
-   kernel/bpf/verifier.c: In function 'check_kfunc_call':
->> kernel/bpf/verifier.c:12082:115: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'unsigned int' [-Wformat=]
-   12082 |                                                 verbose(env, "bpf_percpu_obj_new type size (%d) is greater than %lu\n",
-         |                                                                                                                 ~~^
-         |                                                                                                                   |
-         |                                                                                                                   long unsigned int
-         |                                                                                                                 %u
+>
+> >
+> >>
+> >> In conclusion, I see too much complexity to use BPF in a userspace
+> >> application, which we didn't have to care for
+> >> BPF_PROG_TYPE_SOCKET_FILTER. Isn't there a better way? Or shouldn't I
+> >> use BPF in my case in the first place?
+> >
+> > Given that I'm not a network person, I'm not sure about your use case,
+> > but I would make my decision based on:
+> > - do I know exactly what I want to achieve and I'm confident that I'll
+> > write the proper kernel API from day one? (if not then kfuncs is
+> > appealing because  it's less workload in the long run, but userspace
+> > needs to be slightly smarter)
+>
+> Personally I'm confident that the initial UAPI design will not do a bad
+> thing at least. However, there is a high chance that the design needs to
+> be extended to accommodate new features.
 
+Not trying to offend you or anything, but designs can change for
+multiple reasons. Floppy disks were a good design at the time, and it
+took decades to remove support for it in the kernel. In the same way,
+removing an architecture from the kernel is hard, because even if you
+can not run a new kernel on those architectures, "we do not break
+userspace".
 
-vim +12082 kernel/bpf/verifier.c
+The whole BPF approach is to say that users of BPF are not plain
+random users, and they have to know a little bit of the kernel, and
+they know that once the kfunc is here, it doesn't mean it'll stay here
+forever.
 
- 11885	
- 11886	static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 11887				    int *insn_idx_p)
- 11888	{
- 11889		const struct btf_type *t, *ptr_type;
- 11890		u32 i, nargs, ptr_type_id, release_ref_obj_id;
- 11891		struct bpf_reg_state *regs = cur_regs(env);
- 11892		const char *func_name, *ptr_type_name;
- 11893		bool sleepable, rcu_lock, rcu_unlock;
- 11894		struct bpf_kfunc_call_arg_meta meta;
- 11895		struct bpf_insn_aux_data *insn_aux;
- 11896		int err, insn_idx = *insn_idx_p;
- 11897		const struct btf_param *args;
- 11898		const struct btf_type *ret_t;
- 11899		struct btf *desc_btf;
- 11900	
- 11901		/* skip for now, but return error when we find this in fixup_kfunc_call */
- 11902		if (!insn->imm)
- 11903			return 0;
- 11904	
- 11905		err = fetch_kfunc_meta(env, insn, &meta, &func_name);
- 11906		if (err == -EACCES && func_name)
- 11907			verbose(env, "calling kernel function %s is not allowed\n", func_name);
- 11908		if (err)
- 11909			return err;
- 11910		desc_btf = meta.btf;
- 11911		insn_aux = &env->insn_aux_data[insn_idx];
- 11912	
- 11913		insn_aux->is_iter_next = is_iter_next_kfunc(&meta);
- 11914	
- 11915		if (is_kfunc_destructive(&meta) && !capable(CAP_SYS_BOOT)) {
- 11916			verbose(env, "destructive kfunc calls require CAP_SYS_BOOT capability\n");
- 11917			return -EACCES;
- 11918		}
- 11919	
- 11920		sleepable = is_kfunc_sleepable(&meta);
- 11921		if (sleepable && !env->prog->aux->sleepable) {
- 11922			verbose(env, "program must be sleepable to call sleepable kfunc %s\n", func_name);
- 11923			return -EACCES;
- 11924		}
- 11925	
- 11926		/* Check the arguments */
- 11927		err = check_kfunc_args(env, &meta, insn_idx);
- 11928		if (err < 0)
- 11929			return err;
- 11930	
- 11931		if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_add_impl]) {
- 11932			err = push_callback_call(env, insn, insn_idx, meta.subprogno,
- 11933						 set_rbtree_add_callback_state);
- 11934			if (err) {
- 11935				verbose(env, "kfunc %s#%d failed callback verification\n",
- 11936					func_name, meta.func_id);
- 11937				return err;
- 11938			}
- 11939		}
- 11940	
- 11941		rcu_lock = is_kfunc_bpf_rcu_read_lock(&meta);
- 11942		rcu_unlock = is_kfunc_bpf_rcu_read_unlock(&meta);
- 11943	
- 11944		if (env->cur_state->active_rcu_lock) {
- 11945			struct bpf_func_state *state;
- 11946			struct bpf_reg_state *reg;
- 11947			u32 clear_mask = (1 << STACK_SPILL) | (1 << STACK_ITER);
- 11948	
- 11949			if (in_rbtree_lock_required_cb(env) && (rcu_lock || rcu_unlock)) {
- 11950				verbose(env, "Calling bpf_rcu_read_{lock,unlock} in unnecessary rbtree callback\n");
- 11951				return -EACCES;
- 11952			}
- 11953	
- 11954			if (rcu_lock) {
- 11955				verbose(env, "nested rcu read lock (kernel function %s)\n", func_name);
- 11956				return -EINVAL;
- 11957			} else if (rcu_unlock) {
- 11958				bpf_for_each_reg_in_vstate_mask(env->cur_state, state, reg, clear_mask, ({
- 11959					if (reg->type & MEM_RCU) {
- 11960						reg->type &= ~(MEM_RCU | PTR_MAYBE_NULL);
- 11961						reg->type |= PTR_UNTRUSTED;
- 11962					}
- 11963				}));
- 11964				env->cur_state->active_rcu_lock = false;
- 11965			} else if (sleepable) {
- 11966				verbose(env, "kernel func %s is sleepable within rcu_read_lock region\n", func_name);
- 11967				return -EACCES;
- 11968			}
- 11969		} else if (rcu_lock) {
- 11970			env->cur_state->active_rcu_lock = true;
- 11971		} else if (rcu_unlock) {
- 11972			verbose(env, "unmatched rcu read unlock (kernel function %s)\n", func_name);
- 11973			return -EINVAL;
- 11974		}
- 11975	
- 11976		/* In case of release function, we get register number of refcounted
- 11977		 * PTR_TO_BTF_ID in bpf_kfunc_arg_meta, do the release now.
- 11978		 */
- 11979		if (meta.release_regno) {
- 11980			err = release_reference(env, regs[meta.release_regno].ref_obj_id);
- 11981			if (err) {
- 11982				verbose(env, "kfunc %s#%d reference has not been acquired before\n",
- 11983					func_name, meta.func_id);
- 11984				return err;
- 11985			}
- 11986		}
- 11987	
- 11988		if (meta.func_id == special_kfunc_list[KF_bpf_list_push_front_impl] ||
- 11989		    meta.func_id == special_kfunc_list[KF_bpf_list_push_back_impl] ||
- 11990		    meta.func_id == special_kfunc_list[KF_bpf_rbtree_add_impl]) {
- 11991			release_ref_obj_id = regs[BPF_REG_2].ref_obj_id;
- 11992			insn_aux->insert_off = regs[BPF_REG_2].off;
- 11993			insn_aux->kptr_struct_meta = btf_find_struct_meta(meta.arg_btf, meta.arg_btf_id);
- 11994			err = ref_convert_owning_non_owning(env, release_ref_obj_id);
- 11995			if (err) {
- 11996				verbose(env, "kfunc %s#%d conversion of owning ref to non-owning failed\n",
- 11997					func_name, meta.func_id);
- 11998				return err;
- 11999			}
- 12000	
- 12001			err = release_reference(env, release_ref_obj_id);
- 12002			if (err) {
- 12003				verbose(env, "kfunc %s#%d reference has not been acquired before\n",
- 12004					func_name, meta.func_id);
- 12005				return err;
- 12006			}
- 12007		}
- 12008	
- 12009		if (meta.func_id == special_kfunc_list[KF_bpf_throw]) {
- 12010			if (!bpf_jit_supports_exceptions()) {
- 12011				verbose(env, "JIT does not support calling kfunc %s#%d\n",
- 12012					func_name, meta.func_id);
- 12013				return -ENOTSUPP;
- 12014			}
- 12015			env->seen_exception = true;
- 12016	
- 12017			/* In the case of the default callback, the cookie value passed
- 12018			 * to bpf_throw becomes the return value of the program.
- 12019			 */
- 12020			if (!env->exception_callback_subprog) {
- 12021				err = check_return_code(env, BPF_REG_1, "R1");
- 12022				if (err < 0)
- 12023					return err;
- 12024			}
- 12025		}
- 12026	
- 12027		for (i = 0; i < CALLER_SAVED_REGS; i++)
- 12028			mark_reg_not_init(env, regs, caller_saved[i]);
- 12029	
- 12030		/* Check return type */
- 12031		t = btf_type_skip_modifiers(desc_btf, meta.func_proto->type, NULL);
- 12032	
- 12033		if (is_kfunc_acquire(&meta) && !btf_type_is_struct_ptr(meta.btf, t)) {
- 12034			/* Only exception is bpf_obj_new_impl */
- 12035			if (meta.btf != btf_vmlinux ||
- 12036			    (meta.func_id != special_kfunc_list[KF_bpf_obj_new_impl] &&
- 12037			     meta.func_id != special_kfunc_list[KF_bpf_percpu_obj_new_impl] &&
- 12038			     meta.func_id != special_kfunc_list[KF_bpf_refcount_acquire_impl])) {
- 12039				verbose(env, "acquire kernel function does not return PTR_TO_BTF_ID\n");
- 12040				return -EINVAL;
- 12041			}
- 12042		}
- 12043	
- 12044		if (btf_type_is_scalar(t)) {
- 12045			mark_reg_unknown(env, regs, BPF_REG_0);
- 12046			mark_btf_func_reg_size(env, BPF_REG_0, t->size);
- 12047		} else if (btf_type_is_ptr(t)) {
- 12048			ptr_type = btf_type_skip_modifiers(desc_btf, t->type, &ptr_type_id);
- 12049	
- 12050			if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
- 12051				if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] ||
- 12052				    meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
- 12053					struct btf_struct_meta *struct_meta;
- 12054					struct btf *ret_btf;
- 12055					u32 ret_btf_id;
- 12056	
- 12057					if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
- 12058						return -ENOMEM;
- 12059	
- 12060					if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
- 12061						verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
- 12062						return -EINVAL;
- 12063					}
- 12064	
- 12065					ret_btf = env->prog->aux->btf;
- 12066					ret_btf_id = meta.arg_constant.value;
- 12067	
- 12068					/* This may be NULL due to user not supplying a BTF */
- 12069					if (!ret_btf) {
- 12070						verbose(env, "bpf_obj_new/bpf_percpu_obj_new requires prog BTF\n");
- 12071						return -EINVAL;
- 12072					}
- 12073	
- 12074					ret_t = btf_type_by_id(ret_btf, ret_btf_id);
- 12075					if (!ret_t || !__btf_type_is_struct(ret_t)) {
- 12076						verbose(env, "bpf_obj_new/bpf_percpu_obj_new type ID argument must be of a struct\n");
- 12077						return -EINVAL;
- 12078					}
- 12079	
- 12080					if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
- 12081						if (ret_t->size > BPF_GLOBAL_PERCPU_MA_MAX_SIZE) {
- 12082							verbose(env, "bpf_percpu_obj_new type size (%d) is greater than %lu\n",
- 12083								ret_t->size, BPF_GLOBAL_PERCPU_MA_MAX_SIZE);
- 12084							return -EINVAL;
- 12085						}
- 12086						mutex_lock(&bpf_percpu_ma_lock);
- 12087						err = bpf_mem_alloc_percpu_unit_init(&bpf_global_percpu_ma, ret_t->size);
- 12088						mutex_unlock(&bpf_percpu_ma_lock);
- 12089						if (err)
- 12090							return err;
- 12091					}
- 12092	
- 12093					struct_meta = btf_find_struct_meta(ret_btf, ret_btf_id);
- 12094					if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
- 12095						if (!__btf_type_is_scalar_struct(env, ret_btf, ret_t, 0)) {
- 12096							verbose(env, "bpf_percpu_obj_new type ID argument must be of a struct of scalars\n");
- 12097							return -EINVAL;
- 12098						}
- 12099	
- 12100						if (struct_meta) {
- 12101							verbose(env, "bpf_percpu_obj_new type ID argument must not contain special fields\n");
- 12102							return -EINVAL;
- 12103						}
- 12104					}
- 12105	
- 12106					mark_reg_known_zero(env, regs, BPF_REG_0);
- 12107					regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC;
- 12108					regs[BPF_REG_0].btf = ret_btf;
- 12109					regs[BPF_REG_0].btf_id = ret_btf_id;
- 12110					if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl])
- 12111						regs[BPF_REG_0].type |= MEM_PERCPU;
- 12112	
- 12113					insn_aux->obj_new_size = ret_t->size;
- 12114					insn_aux->kptr_struct_meta = struct_meta;
- 12115				} else if (meta.func_id == special_kfunc_list[KF_bpf_refcount_acquire_impl]) {
- 12116					mark_reg_known_zero(env, regs, BPF_REG_0);
- 12117					regs[BPF_REG_0].type = PTR_TO_BTF_ID | MEM_ALLOC;
- 12118					regs[BPF_REG_0].btf = meta.arg_btf;
- 12119					regs[BPF_REG_0].btf_id = meta.arg_btf_id;
- 12120	
- 12121					insn_aux->kptr_struct_meta =
- 12122						btf_find_struct_meta(meta.arg_btf,
- 12123								     meta.arg_btf_id);
- 12124				} else if (meta.func_id == special_kfunc_list[KF_bpf_list_pop_front] ||
- 12125					   meta.func_id == special_kfunc_list[KF_bpf_list_pop_back]) {
- 12126					struct btf_field *field = meta.arg_list_head.field;
- 12127	
- 12128					mark_reg_graph_node(regs, BPF_REG_0, &field->graph_root);
- 12129				} else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
- 12130					   meta.func_id == special_kfunc_list[KF_bpf_rbtree_first]) {
- 12131					struct btf_field *field = meta.arg_rbtree_root.field;
- 12132	
- 12133					mark_reg_graph_node(regs, BPF_REG_0, &field->graph_root);
- 12134				} else if (meta.func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx]) {
- 12135					mark_reg_known_zero(env, regs, BPF_REG_0);
- 12136					regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_TRUSTED;
- 12137					regs[BPF_REG_0].btf = desc_btf;
- 12138					regs[BPF_REG_0].btf_id = meta.ret_btf_id;
- 12139				} else if (meta.func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
- 12140					ret_t = btf_type_by_id(desc_btf, meta.arg_constant.value);
- 12141					if (!ret_t || !btf_type_is_struct(ret_t)) {
- 12142						verbose(env,
- 12143							"kfunc bpf_rdonly_cast type ID argument must be of a struct\n");
- 12144						return -EINVAL;
- 12145					}
- 12146	
- 12147					mark_reg_known_zero(env, regs, BPF_REG_0);
- 12148					regs[BPF_REG_0].type = PTR_TO_BTF_ID | PTR_UNTRUSTED;
- 12149					regs[BPF_REG_0].btf = desc_btf;
- 12150					regs[BPF_REG_0].btf_id = meta.arg_constant.value;
- 12151				} else if (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice] ||
- 12152					   meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice_rdwr]) {
- 12153					enum bpf_type_flag type_flag = get_dynptr_type_flag(meta.initialized_dynptr.type);
- 12154	
- 12155					mark_reg_known_zero(env, regs, BPF_REG_0);
- 12156	
- 12157					if (!meta.arg_constant.found) {
- 12158						verbose(env, "verifier internal error: bpf_dynptr_slice(_rdwr) no constant size\n");
- 12159						return -EFAULT;
- 12160					}
- 12161	
- 12162					regs[BPF_REG_0].mem_size = meta.arg_constant.value;
- 12163	
- 12164					/* PTR_MAYBE_NULL will be added when is_kfunc_ret_null is checked */
- 12165					regs[BPF_REG_0].type = PTR_TO_MEM | type_flag;
- 12166	
- 12167					if (meta.func_id == special_kfunc_list[KF_bpf_dynptr_slice]) {
- 12168						regs[BPF_REG_0].type |= MEM_RDONLY;
- 12169					} else {
- 12170						/* this will set env->seen_direct_write to true */
- 12171						if (!may_access_direct_pkt_data(env, NULL, BPF_WRITE)) {
- 12172							verbose(env, "the prog does not allow writes to packet data\n");
- 12173							return -EINVAL;
- 12174						}
- 12175					}
- 12176	
- 12177					if (!meta.initialized_dynptr.id) {
- 12178						verbose(env, "verifier internal error: no dynptr id\n");
- 12179						return -EFAULT;
- 12180					}
- 12181					regs[BPF_REG_0].dynptr_id = meta.initialized_dynptr.id;
- 12182	
- 12183					/* we don't need to set BPF_REG_0's ref obj id
- 12184					 * because packet slices are not refcounted (see
- 12185					 * dynptr_type_refcounted)
- 12186					 */
- 12187				} else {
- 12188					verbose(env, "kernel function %s unhandled dynamic return type\n",
- 12189						meta.func_name);
- 12190					return -EFAULT;
- 12191				}
- 12192			} else if (!__btf_type_is_struct(ptr_type)) {
- 12193				if (!meta.r0_size) {
- 12194					__u32 sz;
- 12195	
- 12196					if (!IS_ERR(btf_resolve_size(desc_btf, ptr_type, &sz))) {
- 12197						meta.r0_size = sz;
- 12198						meta.r0_rdonly = true;
- 12199					}
- 12200				}
- 12201				if (!meta.r0_size) {
- 12202					ptr_type_name = btf_name_by_offset(desc_btf,
- 12203									   ptr_type->name_off);
- 12204					verbose(env,
- 12205						"kernel function %s returns pointer type %s %s is not supported\n",
- 12206						func_name,
- 12207						btf_type_str(ptr_type),
- 12208						ptr_type_name);
- 12209					return -EINVAL;
- 12210				}
- 12211	
- 12212				mark_reg_known_zero(env, regs, BPF_REG_0);
- 12213				regs[BPF_REG_0].type = PTR_TO_MEM;
- 12214				regs[BPF_REG_0].mem_size = meta.r0_size;
- 12215	
- 12216				if (meta.r0_rdonly)
- 12217					regs[BPF_REG_0].type |= MEM_RDONLY;
- 12218	
- 12219				/* Ensures we don't access the memory after a release_reference() */
- 12220				if (meta.ref_obj_id)
- 12221					regs[BPF_REG_0].ref_obj_id = meta.ref_obj_id;
- 12222			} else {
- 12223				mark_reg_known_zero(env, regs, BPF_REG_0);
- 12224				regs[BPF_REG_0].btf = desc_btf;
- 12225				regs[BPF_REG_0].type = PTR_TO_BTF_ID;
- 12226				regs[BPF_REG_0].btf_id = ptr_type_id;
- 12227			}
- 12228	
- 12229			if (is_kfunc_ret_null(&meta)) {
- 12230				regs[BPF_REG_0].type |= PTR_MAYBE_NULL;
- 12231				/* For mark_ptr_or_null_reg, see 93c230e3f5bd6 */
- 12232				regs[BPF_REG_0].id = ++env->id_gen;
- 12233			}
- 12234			mark_btf_func_reg_size(env, BPF_REG_0, sizeof(void *));
- 12235			if (is_kfunc_acquire(&meta)) {
- 12236				int id = acquire_reference_state(env, insn_idx);
- 12237	
- 12238				if (id < 0)
- 12239					return id;
- 12240				if (is_kfunc_ret_null(&meta))
- 12241					regs[BPF_REG_0].id = id;
- 12242				regs[BPF_REG_0].ref_obj_id = id;
- 12243			} else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_first]) {
- 12244				ref_set_non_owning(env, &regs[BPF_REG_0]);
- 12245			}
- 12246	
- 12247			if (reg_may_point_to_spin_lock(&regs[BPF_REG_0]) && !regs[BPF_REG_0].id)
- 12248				regs[BPF_REG_0].id = ++env->id_gen;
- 12249		} else if (btf_type_is_void(t)) {
- 12250			if (meta.btf == btf_vmlinux && btf_id_set_contains(&special_kfunc_set, meta.func_id)) {
- 12251				if (meta.func_id == special_kfunc_list[KF_bpf_obj_drop_impl] ||
- 12252				    meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_drop_impl]) {
- 12253					insn_aux->kptr_struct_meta =
- 12254						btf_find_struct_meta(meta.arg_btf,
- 12255								     meta.arg_btf_id);
- 12256				}
- 12257			}
- 12258		}
- 12259	
- 12260		nargs = btf_type_vlen(meta.func_proto);
- 12261		args = (const struct btf_param *)(meta.func_proto + 1);
- 12262		for (i = 0; i < nargs; i++) {
- 12263			u32 regno = i + 1;
- 12264	
- 12265			t = btf_type_skip_modifiers(desc_btf, args[i].type, NULL);
- 12266			if (btf_type_is_ptr(t))
- 12267				mark_btf_func_reg_size(env, regno, sizeof(void *));
- 12268			else
- 12269				/* scalar. ensured by btf_check_kfunc_arg_match() */
- 12270				mark_btf_func_reg_size(env, regno, t->size);
- 12271		}
- 12272	
- 12273		if (is_iter_next_kfunc(&meta)) {
- 12274			err = process_iter_next_call(env, insn_idx, &meta);
- 12275			if (err)
- 12276				return err;
- 12277		}
- 12278	
- 12279		return 0;
- 12280	}
- 12281	
+>
+> > - are all of my use cases covered by using BPF? (what happens if I run
+> > QEMU in a container?) -> BPF might or might not be a solution
+>
+> Yes. Containers can be used to 1) have a different userspace or 2)
+> isolate things for security.
+>
+> Regarding 2), QEMU and libvirt has sandbox mechanisms so we can rely on
+> them instead of containers so we can just pass capabilities to the
+> container. At least, we can always have a setuid helper outside
+> container, and pass around file descriptors it generates.
+>
+> So 1) is the only problem that matters.
+>
+> >
+> > But the nice thing about using BPF kfuncs is that it allows you to
+> > have a testing (not-)UAPI kernel interface. You can then implement the
+> > userspace changes and see how it behaves. And then, once you got the
+> > right design, you can decide to promote it to a proper syscall or
+> > ioctl if you want.
+>
+> I expect it's possible to have testing ioctls. Quickly searching online,
+> there are experimental ioctls[1][2]. I also know DRM has a relaxed
+> policy for closed-source userspace[3].
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Sure, but handling a change in the API in those cases is tough in the
+kernel. You probably need to bump versions, return different values
+depending on how many parameters you are given, and you are never sure
+the caller is using the right parameters. BPF simplifies this by
+actually checking the types of the caller, and if there is a
+discrepancy, it'll notify userspace that it is doing something bad.
+
+>
+> So I'm seeing the distinction of UAPI/kfunc even less definitive; UAPIs
+> can also be broken if the subsystem maintainers agree and there is no
+> real user. I also think it's natural to say a kfunc will be stable as
+> long as there is a user, but it contradicts with the current situation.
+
+Please read more carefully the kernel docs [4] (just quoting here the
+beginning):
+
+"""
+Like any other change to the kernel, maintainers will not change or
+remove a kfunc without having a reasonable justification. Whether or
+not they'll choose to change a kfunc will ultimately depend on a
+variety of factors, such as how widely used the kfunc is, how long the
+kfunc has been in the kernel, whether an alternative kfunc exists,
+what the norm is in terms of stability for the subsystem in question,
+and of course what the technical cost is of continuing to support the
+kfunc.
+"""
+
+> kfunc is expressed as EXPORT_SYMBOL_GPL in the documentation, and Linus
+> expects kfunc is for users like big companies or systemd, which closely
+> follow the kernel, according to the systemd discussion I cited in the
+> last email.
+
+Please re-read the doc[4], it's not a 1-to-1 matching to EXPORT_SYMBOL_GPL.
+And being the one who reported Linus' words in that systemd thread,
+Linus was not concerned about "potential situations that may or may
+not happen", because he expected the people who use kfunc to do the
+right thing. Because they are not average programmers. And QEMU
+developers would definitely fit in that category IMO.
+
+And the whole "you can consider kfunc similar to EXPORT_SYMBOL_GPL" is
+just a warning for user space that the kfunc will never be kept only
+for stability reasons. So when you want to use a kfunc, you need to be
+aware of it and not segfault if it's not there (which can not happen
+TBH unless you don't check that your program was correctly loaded).
+
+>
+> According to the discussion above, it may be better off abandoning BPF
+> and implementing all in kernel, with ioctl as I have a (hopefully) sound
+> idea of UAPI design. But I'll also continue considering the BPF option;
+> BPF is still attractive due to its extensibility and safety.
+
+We can not tell you to choose one solution over the other. The choice
+is yours. I personally find BPF more appealing because it allows the
+user space application to define its own kernel API for its own needs
+while relying on just a few defined kfuncs.
+
+But again, sometimes it doesn't work, like the systemd thread you
+linked, it's too big overhead for little gain compared to an ioctl in
+that particular case.
+
+IMO the biggest issue for you is not the stability of the API, but the
+container capabilities. Because allowing CAP_BPF allows for a whole
+lot of nasty things to happen :)
+
+Cheers,
+Benjamin
+
+>
+> Regards,
+> Akihiko Odaki
+>
+> [1]
+> https://www.kernel.org/doc/html/v6.6/userspace-api/media/v4l/hist-v4l2.ht=
+ml?highlight=3Dexperimental#experimental-api-elements
+> [2]
+> https://www.kernel.org/doc/html/v6.6/userspace-api/media/dvb/dmx-expbuf.h=
+tml?highlight=3Dexperimental
+> [3]
+> https://www.kernel.org/doc/html/v6.6/gpu/drm-uapi.html#open-source-usersp=
+ace-requirements
+>
+
+[4] https://www.kernel.org/doc/html/latest/bpf/kfuncs.html?highlight=3Dbpf#=
+kfunc-lifecycle-expectations
+
 
