@@ -1,392 +1,140 @@
-Return-Path: <bpf+bounces-17727-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17728-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938B88122BA
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 00:16:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 860748122C3
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 00:23:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B54D1F21A71
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 23:16:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0CCCDB21246
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 23:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E1B77B2D;
-	Wed, 13 Dec 2023 23:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EB2577B3D;
+	Wed, 13 Dec 2023 23:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="WyCWHYX4";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LlD5lYks"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="THhd50kO"
 X-Original-To: bpf@vger.kernel.org
-Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com [64.147.123.26])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68963B0;
-	Wed, 13 Dec 2023 15:15:50 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailnew.west.internal (Postfix) with ESMTP id B47952B002A4;
-	Wed, 13 Dec 2023 18:15:44 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 13 Dec 2023 18:15:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1702509344;
-	 x=1702516544; bh=qAygdCK51qJjDo5q40m5Ngxi6wos64jJBcQTm0MRQ0c=; b=
-	WyCWHYX46fcf4yRpB4QJF8XIu9nCBpIdTe5KOC6PjkAcRPI88VE3cCY59aI84tKk
-	lvWE8h/rmY43pbkmVkJgh9gWG4oyeYcy9RH+1p/e5VXx3drNzvnXi9gOG/zNan18
-	4SSBhHNJVJe9+vDi9EXkTtvHpdAReULbtXTBlfqoXM7D39kqQdvnd6TsW8FSth5Q
-	Z93ZqSUMOg0okGHAljNPDRohb0oCa9Zdvnu9k5C5zTZrc91nj/V8YpgIsg7fK9gH
-	gfAjVqvdylZg6MEXUCYwtskxgllXFRzMxF3UQblMWyPf4iTi6O+ia4bLSBa30kfd
-	uq8KdMsOgj687uzmyPAgLw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702509344; x=
-	1702516544; bh=qAygdCK51qJjDo5q40m5Ngxi6wos64jJBcQTm0MRQ0c=; b=L
-	lD5lYksSK8HvmEXhs2gUtGFFakszs6oEknc+mGml784n3MHyZpp9zRd+gDzBo54M
-	3eyDzyz2i5glDhFe8FMY9KEFIqGtAFdacOyZCfRhVVxgwF7rmgEAxqNwp8pUa554
-	XJglIGgM6RkHDoD4YdtsQi4Nsmu9AOxd27SUlqAFh9/DSxzSsow+2+gil+7VK0Y+
-	Xk+GekdtJGNSnyJjLF8pI+fd8WqQoi5GcXa1rtZb1iMJetO44lL7sxO02qDPA8rp
-	PEaBl48mFNa+aWj3C+OZgfY1OZi5yskTXr228Yl/9VKoqO2ZbbGN+q5mhK5Ghy1y
-	YxfjJY7rTxILo+nVipI+g==
-X-ME-Sender: <xms:Hzt6ZVGgze6jEjY3C4RKKdg7Bk_XkGSi2jvzS7juqn1P8ir2zABSOg>
-    <xme:Hzt6ZaUkOLxHqpTwyRH9Mayd-plccw8YkFq0nSQBraJC91UUQCVIcLlFxYnZjpCmh
-    DVjfSdh98yB8k66kg>
-X-ME-Received: <xmr:Hzt6ZXIwUGpjYDwL5Gin95yAGe8b44e1YrPpAtObC75gV8vugXdd372mKIriKSbW0WgpjRW0GnIF9JU_BnZm3aXEVme6Zk9VsKEY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelkedgtdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:Hzt6ZbF4phkG2YoxYQ20L_rzugm43vcZnxobc-X0_OiC7mb2OgMEfQ>
-    <xmx:Hzt6ZbUtwHkutoqyO_UgyshJ5ZW7gIfrDCzVrfmxLtWdpi4fV4DU0A>
-    <xmx:Hzt6ZWOwphn1uDbnQEDT6lZjbRQI8LS4gRKwzzYp9z_MtJhcPRxvOQ>
-    <xmx:IDt6ZR8rjYLPoDMtwDftVcVvP7ndnOtIxr9qAmwedJI46phtJ5aiF1eXAEk>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Dec 2023 18:15:41 -0500 (EST)
-Date: Wed, 13 Dec 2023 16:15:40 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net, 
-	davem@davemloft.net, shuah@kernel.org, ast@kernel.org, john.fastabend@gmail.com, 
-	kuba@kernel.org, andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com, 
-	antony.antony@secunet.com, alexei.starovoitov@gmail.com, yonghong.song@linux.dev, 
-	eddyz87@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
-References: <cover.1702325874.git.dxu@dxuuu.xyz>
- <8ec1b885d2e13fcd20944cce9edc0340d993d044.1702325874.git.dxu@dxuuu.xyz>
- <CAHsH6GsdqBN638uqUm+8QkP1_45coucSTL7o=D2wFW-gYjPaBw@mail.gmail.com>
- <7yjkfhrwdphtcljq3odv4jc6lucd32wcg277hfsf4ve2jbo7hp@vuqzwbq5nxjw>
- <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
- <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
- <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
- <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
- <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
- <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFAF7A3
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 15:23:23 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5e32af77f15so7035547b3.2
+        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 15:23:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1702509803; x=1703114603; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uVkNB32hd1iHEzvkeQh9LlJbSIwrHIrN9UnZLaDlQKA=;
+        b=THhd50kOnuvF+iBDetJfls019ZrA98VLgqPxtWHRzVve2Fz7hX9nDPWSQjWJNbE6i4
+         jrzmVd7ZLqVVF6KXeqK6bwjrxbWoCD7BO0pyMkyoK3WMok0d+O9mvscVNLNOwM2KjWIj
+         Oj8Ts9Y9W3NjyIEzCqqpEbwamANtjxOS5oSOwxliDL1N8BVT9SS/a2Hk2U0hlklJo+BG
+         PMkHTa7LpXDaEytVde9Es7wOmC5jptmjXQfK7b3YraCtjc5qXyThf4OtBRY9hfIt8zTw
+         Cf6W4Nr58CocfLSudYsoereYDfL3fEnF+4iEYBY0a51UxF2OaGYylSj5LKE0eZ0w2QDq
+         RAyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702509803; x=1703114603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uVkNB32hd1iHEzvkeQh9LlJbSIwrHIrN9UnZLaDlQKA=;
+        b=fw30VluPk/++9TRCpnPPYdcHWj+5r6PGf3cwSYgAGnvC3/kz1lvutB1QuqhKEaQjJl
+         KRlcFaduHB6hgpRFI21AKKNZSNEx8Ikq8j2tr4sLG2QU4DcfRdRzPU9Lo8w0If/cL89o
+         1tQy6YoSyBHUBj6LQHuj+H88emq5aJElRSAtJv5S0RHutyUBDDG17EHGQGjbdQqeuzuy
+         ZFJcNm3r7RtalEM5D6FY1kdqhFQvmge6HbA5q0hALcnDLpLLdTmtdf4J47/L3+4XAFC+
+         f7AVfsbIYOJ7j8wWs5lxlCbLOpu1XismH4LqmpkGgfGoESiBteQoCZKhcG3TrxJTagUh
+         vX8w==
+X-Gm-Message-State: AOJu0YzK8QMU7bLtn2F2PlWRY5jhOWZYLZfYV/Wl1bY7IUUcHTwSuqCW
+	hAKU335IA5eGJ2d+ogD09bZEITeUmPxHPqmcwLXTMA4a4+IG7h1bhDufyg==
+X-Google-Smtp-Source: AGHT+IHvksdDnxVQ/nYmkyCZ2hwd6b/7WpssRswsT5373vF36zQmClzFML6nBey+PcRwhJLGnLEOWrYopsDgnlNhtGA=
+X-Received: by 2002:a81:6c84:0:b0:5e2:9a9c:a18e with SMTP id
+ h126-20020a816c84000000b005e29a9ca18emr1956958ywc.23.1702509803090; Wed, 13
+ Dec 2023 15:23:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+References: <20231201180139.328529-2-john.fastabend@gmail.com>
+ <20231201211453.27432-1-kuniyu@amazon.com> <656e4758675b9_1bd6e2086f@john.notmuch>
+ <ZXKZa4RRmK2M6iHT@pop-os.localdomain> <5c20a29a-ac9f-da0a-01dc-2278d7ae386a@iogearbox.net>
+In-Reply-To: <5c20a29a-ac9f-da0a-01dc-2278d7ae386a@iogearbox.net>
+From: Amery Hung <amery.hung@bytedance.com>
+Date: Wed, 13 Dec 2023 15:23:12 -0800
+Message-ID: <CAONe227zBRfcadH22X1A=qRRqNszXFXT0N5Oqt692rcGbsrs9w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH bpf v2 1/2] bpf: syzkaller found null ptr
+ deref in unix_bpf proto add
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Kuniyuki Iwashima <kuniyu@amazon.com>, bpf@vger.kernel.org, edumazet@google.com, 
+	jakub@cloudflare.com, martin.lau@kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 13, 2023 at 12:13:51AM +0100, Kumar Kartikeya Dwivedi wrote:
-> On Tue, 12 Dec 2023 at 20:52, Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Mon, Dec 11, 2023 at 6:56=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+>
+> On 12/8/23 5:19 AM, Cong Wang wrote:
+> > On Mon, Dec 04, 2023 at 01:40:40PM -0800, John Fastabend wrote:
+> >> Kuniyuki Iwashima wrote:
+> >>> From: John Fastabend <john.fastabend@gmail.com>
+> >>> Date: Fri,  1 Dec 2023 10:01:38 -0800
+> >>>> I added logic to track the sock pair for stream_unix sockets so that=
+ we
+> >>>> ensure lifetime of the sock matches the time a sockmap could referen=
+ce
+> >>>> the sock (see fixes tag). I forgot though that we allow af_unix unco=
+nnected
+> >>>> sockets into a sock{map|hash} map.
+> >>>>
+> >>>> This is problematic because previous fixed expected sk_pair() to exi=
+st
+> >>>> and did not NULL check it. Because unconnected sockets have a NULL
+> >>>> sk_pair this resulted in the NULL ptr dereference found by syzkaller=
+.
+> >>>>
+> >>>> BUG: KASAN: null-ptr-deref in unix_stream_bpf_update_proto+0x72/0x43=
+0 net/unix/unix_bpf.c:171
+> >>>> Write of size 4 at addr 0000000000000080 by task syz-executor360/507=
+3
+> >>>> Call Trace:
+> >>>>   <TASK>
+> >>>>   ...
+> >>>>   sock_hold include/net/sock.h:777 [inline]
+> >>>>   unix_stream_bpf_update_proto+0x72/0x430 net/unix/unix_bpf.c:171
+> >>>>   sock_map_init_proto net/core/sock_map.c:190 [inline]
+> >>>>   sock_map_link+0xb87/0x1100 net/core/sock_map.c:294
+> >>>>   sock_map_update_common+0xf6/0x870 net/core/sock_map.c:483
+> >>>>   sock_map_update_elem_sys+0x5b6/0x640 net/core/sock_map.c:577
+> >>>>   bpf_map_update_value+0x3af/0x820 kernel/bpf/syscall.c:167
+> >>>>
+> >>>> We considered just checking for the null ptr and skipping taking a r=
+ef
+> >>>> on the NULL peer sock. But, if the socket is then connected() after
+> >>>> being added to the sockmap we can cause the original issue again. So
+> >>>> instead this patch blocks adding af_unix sockets that are not in the
+> >>>> ESTABLISHED state.
+> >>>
+> >>> I'm not sure if someone has the unconnected stream socket use case
+> >>> though, can't we call additional sock_hold() in connect() by checking
+> >>> sk_prot under sk_callback_lock ?
+> >>
+> >> Could be done I guess yes. I'm not sure the utility of it though. I
+> >> thought above patch was the simplest solution and didn't require touch=
+ing
+> >> main af_unix code. I don't actually use the sockmap with af_unix
+> >> sockets anywhere so maybe someone who is using this can comment if
+> >> unconnected is needed?
 > >
-> > cc Kumar
-> >
-> > On Tue, Dec 12, 2023 at 09:17:02AM -0700, Daniel Xu wrote:
-> > > On Mon, Dec 11, 2023 at 04:25:06PM -0800, Eyal Birger wrote:
-> > > > On Mon, Dec 11, 2023 at 3:49 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > >
-> > > > > On Mon, Dec 11, 2023 at 03:13:07PM -0800, Eyal Birger wrote:
-> > > > > > On Mon, Dec 11, 2023 at 2:31 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > > > >
-> > > > > > > On Mon, Dec 11, 2023 at 01:39:25PM -0800, Eyal Birger wrote:
-> > > > > > > > Hi Daniel,
-> > > > > > > >
-> > > > > > > > Tiny nits below in case you respin this for other reasons:
-> > > > > > > >
-> > > > > > > > On Mon, Dec 11, 2023 at 12:20 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > > > > > >
-> > > > > > > > > This commit extends test_tunnel selftest to test the new XDP xfrm state
-> > > > > > > > > lookup kfunc.
-> > > > > > > > >
-> > > > > > > > > Co-developed-by: Antony Antony <antony.antony@secunet.com>
-> > > > > > > > > Signed-off-by: Antony Antony <antony.antony@secunet.com>
-> > > > > > > > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > > > > > > > ---
-> > > > > > > > >  .../selftests/bpf/prog_tests/test_tunnel.c    | 20 ++++++--
-> > > > > > > > >  .../selftests/bpf/progs/test_tunnel_kern.c    | 51 +++++++++++++++++++
-> > > > > > > > >  2 files changed, 67 insertions(+), 4 deletions(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > > > > > > index 2d7f8fa82ebd..fc804095d578 100644
-> > > > > > > > > --- a/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > > > > > > +++ b/tools/testing/selftests/bpf/prog_tests/test_tunnel.c
-> > > > > > > > > @@ -278,7 +278,7 @@ static int add_xfrm_tunnel(void)
-> > > > > > > > >         SYS(fail,
-> > > > > > > > >             "ip netns exec at_ns0 "
-> > > > > > > > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > > > > > > > -                       "spi %d reqid 1 mode tunnel "
-> > > > > > > > > +                       "spi %d reqid 1 mode tunnel replay-window 42 "
-> > > > > > > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> > > > > > > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> > > > > > > > >         SYS(fail,
-> > > > > > > > > @@ -292,7 +292,7 @@ static int add_xfrm_tunnel(void)
-> > > > > > > > >         SYS(fail,
-> > > > > > > > >             "ip netns exec at_ns0 "
-> > > > > > > > >                 "ip xfrm state add src %s dst %s proto esp "
-> > > > > > > > > -                       "spi %d reqid 2 mode tunnel "
-> > > > > > > > > +                       "spi %d reqid 2 mode tunnel replay-window 42 "
-> > > > > > > >
-> > > > > > > > nit: why do you need to set the replay-window in both directions?
-> > > > > > >
-> > > > > > > No reason - probably just careless here.
-> > > > > > >
-> > > > > > > >
-> > > > > > > > >                         "auth-trunc 'hmac(sha1)' %s 96 enc 'cbc(aes)' %s",
-> > > > > > > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> > > > > > > > >         SYS(fail,
-> > > > > > > > > @@ -313,7 +313,7 @@ static int add_xfrm_tunnel(void)
-> > > > > > > > >          */
-> > > > > > > > >         SYS(fail,
-> > > > > > > > >             "ip xfrm state add src %s dst %s proto esp "
-> > > > > > > > > -                   "spi %d reqid 1 mode tunnel "
-> > > > > > > > > +                   "spi %d reqid 1 mode tunnel replay-window 42 "
-> > > > > > > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> > > > > > > > >             IP4_ADDR_VETH0, IP4_ADDR1_VETH1, XFRM_SPI_IN_TO_OUT, XFRM_AUTH, XFRM_ENC);
-> > > > > > > > >         SYS(fail,
-> > > > > > > > > @@ -325,7 +325,7 @@ static int add_xfrm_tunnel(void)
-> > > > > > > > >         /* root -> at_ns0 */
-> > > > > > > > >         SYS(fail,
-> > > > > > > > >             "ip xfrm state add src %s dst %s proto esp "
-> > > > > > > > > -                   "spi %d reqid 2 mode tunnel "
-> > > > > > > > > +                   "spi %d reqid 2 mode tunnel replay-window 42 "
-> > > > > > > > >                     "auth-trunc 'hmac(sha1)' %s 96  enc 'cbc(aes)' %s",
-> > > > > > > > >             IP4_ADDR1_VETH1, IP4_ADDR_VETH0, XFRM_SPI_OUT_TO_IN, XFRM_AUTH, XFRM_ENC);
-> > > > > > > > >         SYS(fail,
-> > > > > > > > > @@ -628,8 +628,10 @@ static void test_xfrm_tunnel(void)
-> > > > > > > > >  {
-> > > > > > > > >         DECLARE_LIBBPF_OPTS(bpf_tc_hook, tc_hook,
-> > > > > > > > >                             .attach_point = BPF_TC_INGRESS);
-> > > > > > > > > +       LIBBPF_OPTS(bpf_xdp_attach_opts, opts);
-> > > > > > > > >         struct test_tunnel_kern *skel = NULL;
-> > > > > > > > >         struct nstoken *nstoken;
-> > > > > > > > > +       int xdp_prog_fd;
-> > > > > > > > >         int tc_prog_fd;
-> > > > > > > > >         int ifindex;
-> > > > > > > > >         int err;
-> > > > > > > > > @@ -654,6 +656,14 @@ static void test_xfrm_tunnel(void)
-> > > > > > > > >         if (attach_tc_prog(&tc_hook, tc_prog_fd, -1))
-> > > > > > > > >                 goto done;
-> > > > > > > > >
-> > > > > > > > > +       /* attach xdp prog to tunnel dev */
-> > > > > > > > > +       xdp_prog_fd = bpf_program__fd(skel->progs.xfrm_get_state_xdp);
-> > > > > > > > > +       if (!ASSERT_GE(xdp_prog_fd, 0, "bpf_program__fd"))
-> > > > > > > > > +               goto done;
-> > > > > > > > > +       err = bpf_xdp_attach(ifindex, xdp_prog_fd, XDP_FLAGS_REPLACE, &opts);
-> > > > > > > > > +       if (!ASSERT_OK(err, "bpf_xdp_attach"))
-> > > > > > > > > +               goto done;
-> > > > > > > > > +
-> > > > > > > > >         /* ping from at_ns0 namespace test */
-> > > > > > > > >         nstoken = open_netns("at_ns0");
-> > > > > > > > >         err = test_ping(AF_INET, IP4_ADDR_TUNL_DEV1);
-> > > > > > > > > @@ -667,6 +677,8 @@ static void test_xfrm_tunnel(void)
-> > > > > > > > >                 goto done;
-> > > > > > > > >         if (!ASSERT_EQ(skel->bss->xfrm_remote_ip, 0xac100164, "remote_ip"))
-> > > > > > > > >                 goto done;
-> > > > > > > > > +       if (!ASSERT_EQ(skel->bss->xfrm_replay_window, 42, "replay_window"))
-> > > > > > > > > +               goto done;
-> > > > > > > > >
-> > > > > > > > >  done:
-> > > > > > > > >         delete_xfrm_tunnel();
-> > > > > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > > > index 3a59eb9c34de..c0dd38616562 100644
-> > > > > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > > > @@ -30,6 +30,10 @@ int bpf_skb_set_fou_encap(struct __sk_buff *skb_ctx,
-> > > > > > > > >                           struct bpf_fou_encap *encap, int type) __ksym;
-> > > > > > > > >  int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
-> > > > > > > > >                           struct bpf_fou_encap *encap) __ksym;
-> > > > > > > > > +struct xfrm_state *
-> > > > > > > > > +bpf_xdp_get_xfrm_state(struct xdp_md *ctx, struct bpf_xfrm_state_opts *opts,
-> > > > > > > > > +                      u32 opts__sz) __ksym;
-> > > > > > > > > +void bpf_xdp_xfrm_state_release(struct xfrm_state *x) __ksym;
-> > > > > > > > >
-> > > > > > > > >  struct {
-> > > > > > > > >         __uint(type, BPF_MAP_TYPE_ARRAY);
-> > > > > > > > > @@ -950,4 +954,51 @@ int xfrm_get_state(struct __sk_buff *skb)
-> > > > > > > > >         return TC_ACT_OK;
-> > > > > > > > >  }
-> > > > > > > > >
-> > > > > > > > > +volatile int xfrm_replay_window = 0;
-> > > > > > > > > +
-> > > > > > > > > +SEC("xdp")
-> > > > > > > > > +int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > > > > > > > +{
-> > > > > > > > > +       struct bpf_xfrm_state_opts opts = {};
-> > > > > > > > > +       struct xfrm_state *x = NULL;
-> > > > > > > > > +       struct ip_esp_hdr *esph;
-> > > > > > > > > +       struct bpf_dynptr ptr;
-> > > > > > > > > +       u8 esph_buf[8] = {};
-> > > > > > > > > +       u8 iph_buf[20] = {};
-> > > > > > > > > +       struct iphdr *iph;
-> > > > > > > > > +       u32 off;
-> > > > > > > > > +
-> > > > > > > > > +       if (bpf_dynptr_from_xdp(xdp, 0, &ptr))
-> > > > > > > > > +               goto out;
-> > > > > > > > > +
-> > > > > > > > > +       off = sizeof(struct ethhdr);
-> > > > > > > > > +       iph = bpf_dynptr_slice(&ptr, off, iph_buf, sizeof(iph_buf));
-> > > > > > > > > +       if (!iph || iph->protocol != IPPROTO_ESP)
-> > > > > > > > > +               goto out;
-> > > > > > > > > +
-> > > > > > > > > +       off += sizeof(struct iphdr);
-> > > > > > > > > +       esph = bpf_dynptr_slice(&ptr, off, esph_buf, sizeof(esph_buf));
-> > > > > > > > > +       if (!esph)
-> > > > > > > > > +               goto out;
-> > > > > > > > > +
-> > > > > > > > > +       opts.netns_id = BPF_F_CURRENT_NETNS;
-> > > > > > > > > +       opts.daddr.a4 = iph->daddr;
-> > > > > > > > > +       opts.spi = esph->spi;
-> > > > > > > > > +       opts.proto = IPPROTO_ESP;
-> > > > > > > > > +       opts.family = AF_INET;
-> > > > > > > > > +
-> > > > > > > > > +       x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > > > > > > > +       if (!x || opts.error)
-> > > > > > > >
-> > > > > > > > nit: how can opts.error be non zero if x == NULL?
-> > > > > > >
-> > > > > > > Ignoring the new -ENOENT case, it can't. Which is why I'm testing that
-> > > > > > > behavior here.
-> > > > > >
-> > > > > > I'm sorry, I don't understand.
-> > > > > >
-> > > > > > AFAICT, regardless of the -ENOENT change, I don't see
-> > > > > > how (!x) is false and (opt.error) is true, and so
-> > > > > > "if (!x || opts.error)" is always equivalent to "if (!x)".
-> > > > > >
-> > > > > > What am I missing?
-> > > > > > Eyal.
-> > > > >
-> > > > > The selftests are tests so my intention was to check edge cases here.
-> > > > > In normal operation it shouldn't be possible that
-> > > > > bpf_xdp_get_xfrm_state() returns non-NULL and also an error. Maybe
-> > > > > another way of writing this would be:
-> > > > >
-> > > > >         if (!x)
-> > > > >                 goto out;
-> > > > >         assert(opts.error == 0);
-> > > >
-> > > > I think this would convey the "edge case testing" notion better.
-> > > >
-> > > > >
-> > > > > If I'm trying to be too clever (or maybe just wrong) or it's pointless,
-> > > > > I can remove the `opts.error` condition.
-> > > >
-> > > > At least for me the tests also serve as references as to how the
-> > > > API is expected to be used, so I think it'd be clearer without
-> > > > signaling that opts.error could potentially be nonzero on success.
-> > > >
-> > > > An assertion would indeed make that clear.
-> > >
-> > > Sure, sounds good. I will check on the new bpf assert infra.
-> >
-> > Couldn't quite get bpf_assert() working. The following diff:
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > index c0dd38616562..f00dba85ac5d 100644
-> > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > @@ -8,8 +8,9 @@
-> >   */
-> >  #include "vmlinux.h"
-> >  #include <bpf/bpf_core_read.h>
-> > -#include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_endian.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +#include "bpf_experimental.h"
-> >  #include "bpf_kfuncs.h"
-> >  #include "bpf_tracing_net.h"
-> >
-> > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
-> >         opts.family = AF_INET;
-> >
-> >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > -       if (!x || opts.error)
-> > +       if (!x)
-> >                 goto out;
-> > +       bpf_assert_with(opts.error == 0, XDP_PASS);
-> >
-> >         if (!x->replay_esn)
-> >                 goto out;
-> >
-> > results in:
-> >
-> > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
-> > 58: (85) call bpf_throw#115436
-> > calling kernel function bpf_throw is not allowed
-> >
-> 
-> I think this might be because bpf_throw is not registered for use by
-> BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
-> this program type as well, since it's already done for TC.
+> > Our use case is also connected unix stream socket, as demonstrated in
+> > the selftest unix_redir_to_connected().
+>
+> Great, is everyone good to move this fix forward then? Would be great if
+> this receives at least one ack if the latter is indeed the case.
+>
+> Thanks,
+> Daniel
 
-Ah yeah, that was it.
-
-> 
-> > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
-> > but I can run the exceptions selftests just fine with the same bzImage.
-> > So I'm thinking it's not a kfunc registration or BTF issue.
-> >
-> > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
-> >
-> 
-> Yes, even once you enable this, this will fail for now. I am sending
-> out a series later this week that enables bpf_throw with acquired
-> references, but until then may I suggest the following:
-> 
-> #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
-> && !___j; bpf_throw(), ___i++)
-> 
-> This will allow you to insert some cleanup code with an assertion.
-> Then in my series, I will convert this temporary bpf_assert_if back to
-> the normal bpf_assert.
-> 
-> It would look like:
-> bpf_assert_if(opts.error == 0) {
->   // Execute if assertion failed
->   bpf_xdp_xfrm_state_release(x);
-> }
-> 
-> Likewise for bpf_assert_with_if, you get the idea.
-
-I gave it a try and I'm getting this compile error:
-
-        progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
-                bpf_assert_with_if(opts.error == 0, XDP_PASS) {
-                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
-                for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
-                                                    ^~~~      ~~~~
-        1 error generated.
-        make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
-
-Seems like the compiler is being clever.
-
-Thanks,
-Daniel
+I just want to ack that we are not inserting unconnected UDS to sockmap.
 
