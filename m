@@ -1,30 +1,30 @@
-Return-Path: <bpf+bounces-17661-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17662-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14223810FCD
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 12:24:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C65F4810FCF
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 12:24:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C55F4281D35
-	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 11:24:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 709711F2137B
+	for <lists+bpf@lfdr.de>; Wed, 13 Dec 2023 11:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7F82377E;
-	Wed, 13 Dec 2023 11:24:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 255B8241E9;
+	Wed, 13 Dec 2023 11:24:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371D0A0
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F3CB0
 	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 03:24:33 -0800 (PST)
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SqtRY1z9Sz4f3l1X
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SqtRY5p7zz4f3l1Z
 	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 19:24:25 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 404B11A0800
+	by mail.maildlp.com (Postfix) with ESMTP id C2C4A1A08A6
 	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 19:24:30 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgA3OhBqlHllBOIgDg--.15138S4;
-	Wed, 13 Dec 2023 19:24:28 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgA3OhBqlHllBOIgDg--.15138S5;
+	Wed, 13 Dec 2023 19:24:30 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -40,10 +40,12 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	xingwei lee <xrivendell7@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v2 0/4] bpf: Fix warnings in kvmalloc_node()
-Date: Wed, 13 Dec 2023 19:25:27 +0800
-Message-Id: <20231213112531.3775079-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v2 1/4] bpf: Limit the number of uprobes when attaching program to multiple uprobes
+Date: Wed, 13 Dec 2023 19:25:28 +0800
+Message-Id: <20231213112531.3775079-2-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20231213112531.3775079-1-houtao@huaweicloud.com>
+References: <20231213112531.3775079-1-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -51,62 +53,68 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgA3OhBqlHllBOIgDg--.15138S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Wr4UJr1UGF43ZFW7JryfCrg_yoW8JrWDpF
-	Wvq3W5tr4rJF9rtan3A3yxWryFqan3GrW7Xr17Jw1rArs8J3W8GFZ7Kw45X3s5u398tF1a
-	ywnrtr98Ga48Za7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
-	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
-	vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-	87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-TRANSID:cCh0CgA3OhBqlHllBOIgDg--.15138S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF18GrWUCFyDWw1fWr17KFg_yoW8WF48pa
+	yDtFyDtr1rtF4jqF4kZw1kWryjv395W3y7Ga929w13Aa17Xr43W3WIgr4S9w1YvrZ8ArW3
+	XrnFqryjvrW7uw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwI
+	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
+	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jn9N3UUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Hi,
+An abnormally big cnt may be passed to link_create.uprobe_multi.cnt,
+and it will trigger the following warning in kvmalloc_node():
 
-The patch set aims to fix the warnings in kvmalloc_node() when passing
-an abnormally big cnt during multiple kprobes/uprobes attachment.
+	if (unlikely(size > INT_MAX)) {
+		WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+		return NULL;
+	}
 
-Patch #1 and #2 fix the warning by limiting the maximal number of
-uprobes/kprobes. Patch #3 and #4 add tests to ensure these warnings are
-fixed.
+Fix the warning by limiting the maximal number of uprobes in
+bpf_uprobe_multi_link_attach().
 
-Please see individual patches for more details. Comments are always
-welcome.
+Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
+Reported-by: xingwei lee <xrivendell7@gmail.com>
+Closes: https://lore.kernel.org/bpf/CABOYnLwwJY=yFAGie59LFsUsBAgHfroVqbzZ5edAXbFE3YiNVA@mail.gmail.com
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ kernel/trace/bpf_trace.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Change Log:
-v2:
-  * limit the number of uprobes/kprobes instead of suppressing the
-    out-of-memory warning message (Alexei)
-  * provide a faked non-zero offsets to simplify the multiple uprobe
-    test (Jiri)
-
-v1: https://lore.kernel.org/bpf/20231211112843.4147157-1-houtao@huaweicloud.com/
-  
-Hou Tao (4):
-  bpf: Limit the number of uprobes when attaching program to multiple
-    uprobes
-  bpf: Limit the number of kprobes when attaching program to multiple
-    kprobes
-  selftests/bpf: Add test for abnormal cnt during multi-uprobe
-    attachment
-  selftests/bpf: Add test for abnormal cnt during multi-kprobe
-    attachment
-
- kernel/trace/bpf_trace.c                      |  7 ++--
- .../bpf/prog_tests/kprobe_multi_test.c        | 14 ++++++++
- .../bpf/prog_tests/uprobe_multi_test.c        | 33 ++++++++++++++++++-
- 3 files changed, 51 insertions(+), 3 deletions(-)
-
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 774cf476a892..2d1201f7b554 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -42,6 +42,8 @@
+ #define bpf_event_rcu_dereference(p)					\
+ 	rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
+ 
++#define MAX_UPROBE_MULTI_CNT (1U << 20)
++
+ #ifdef CONFIG_MODULES
+ struct bpf_trace_module {
+ 	struct module *module;
+@@ -3342,7 +3344,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 	uoffsets = u64_to_user_ptr(attr->link_create.uprobe_multi.offsets);
+ 	cnt = attr->link_create.uprobe_multi.cnt;
+ 
+-	if (!upath || !uoffsets || !cnt)
++	if (!upath || !uoffsets || !cnt || cnt > MAX_UPROBE_MULTI_CNT)
+ 		return -EINVAL;
+ 
+ 	uref_ctr_offsets = u64_to_user_ptr(attr->link_create.uprobe_multi.ref_ctr_offsets);
 -- 
 2.29.2
 
