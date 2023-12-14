@@ -1,179 +1,224 @@
-Return-Path: <bpf+bounces-17801-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17802-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9B8881295F
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 08:31:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D8648129BE
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 08:50:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4989AB2126A
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 07:31:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCEF528218F
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 07:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C7912E52;
-	Thu, 14 Dec 2023 07:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 381FC14A9C;
+	Thu, 14 Dec 2023 07:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="U6GGRGsM"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66A5FD66
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 23:31:18 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SrPD15y4Gz4f3jqN
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 15:31:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 181531A095B
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 15:31:15 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgC3Wkk_r3plrwXgDg--.12043S2;
-	Thu, 14 Dec 2023 15:31:14 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Reduce the scope of rcu_read_lock
- when updating fd map
-To: John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- xingwei lee <xrivendell7@gmail.com>, houtao1@huawei.com
-References: <20231214043010.3458072-1-houtao@huaweicloud.com>
- <20231214043010.3458072-2-houtao@huaweicloud.com>
- <657a9f1ea1ff4_48672208f0@john.notmuch>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <ba0e18ba-f6be-ceb9-412e-48e8e41cb5b6@huaweicloud.com>
-Date: Thu, 14 Dec 2023 15:31:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8310EA7;
+	Wed, 13 Dec 2023 23:50:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1702540215; x=1734076215;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=QnjOi8Ua0IYqOlrIRZ8rzIAdtwGZv4c9tt7NJaUKfu4=;
+  b=U6GGRGsMB96vQGeXWEAAzZqTJzoo/zrWwUw6zlG1YSoDxWnNQtdD1xS0
+   /stBWNChc4KSx+pl9gOOi+ogCk5RIQ+OJjZxeY6f1j2qYf9D9UGuDSFrE
+   RWCTNHyQguaZsuTXhvOLGsnOmvOdXjGT1QFQMWIg3OZ/MBpR1FYqGSta/
+   Q=;
+X-IronPort-AV: E=Sophos;i="6.04,274,1695686400"; 
+   d="scan'208";a="259645934"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 07:50:12 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+	by email-inbound-relay-iad-1e-m6i4x-3554bfcf.us-east-1.amazon.com (Postfix) with ESMTPS id A9E99805A3;
+	Thu, 14 Dec 2023 07:50:09 +0000 (UTC)
+Received: from EX19MTAUWA002.ant.amazon.com [10.0.38.20:43142]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.27.95:2525] with esmtp (Farcaster)
+ id 52d88965-49d3-48a2-a891-7ae61d45b2bc; Thu, 14 Dec 2023 07:50:08 +0000 (UTC)
+X-Farcaster-Flow-ID: 52d88965-49d3-48a2-a891-7ae61d45b2bc
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 07:50:08 +0000
+Received: from 88665a182662.ant.amazon.com (10.143.92.5) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 07:50:04 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <martin.lau@linux.dev>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <dxu@dxuuu.xyz>, <edumazet@google.com>,
+	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <netdev@vger.kernel.org>,
+	<yonghong.song@linux.dev>
+Subject: Re: [PATCH v5 bpf-next 6/6] selftest: bpf: Test bpf_sk_assign_tcp_reqsk().
+Date: Thu, 14 Dec 2023 16:49:55 +0900
+Message-ID: <20231214074955.10720-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <3186bf18-a8fd-4b30-a080-61beb13f19f7@linux.dev>
+References: <3186bf18-a8fd-4b30-a080-61beb13f19f7@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <657a9f1ea1ff4_48672208f0@john.notmuch>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgC3Wkk_r3plrwXgDg--.12043S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw4rCryxGw45ZryrtF4kXrb_yoWrCFW3pF
-	WvkFyUKw1vqanxZw12va1rKrW8Aw45Xw45tF4kXayrAr1DWw1fKry7tan3ZFyYkrnrAr48
-	Xa42v393C3y8ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvSb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43
-	ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D032UWB003.ant.amazon.com (10.13.139.165) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
 
-Hi,
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Date: Wed, 13 Dec 2023 22:46:11 -0800
+> On 12/13/23 7:18 PM, Kuniyuki Iwashima wrote:
+> >>> +static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
+> >>> +{
+> >>> +	struct tcp_options_received *tcp_opt = &ctx->attr.tcp_opt;
+> >>> +	char opcode, opsize;
+> >>> +
+> >>> +	if (ctx->ptr + 1 > ctx->data_end)
+> >>> +		goto stop;
+> >>> +
+> >>> +	opcode = *ctx->ptr++;
+> >>> +
+> >>> +	if (opcode == TCPOPT_EOL)
+> >>> +		goto stop;
+> >>> +
+> >>> +	if (opcode == TCPOPT_NOP)
+> >>> +		goto next;
+> >>> +
+> >>> +	if (ctx->ptr + 1 > ctx->data_end)
+> >>> +		goto stop;
+> >>> +
+> >>> +	opsize = *ctx->ptr++;
+> >>> +
+> >>> +	if (opsize < 2)
+> >>> +		goto stop;
+> >>> +
+> >>> +	switch (opcode) {
+> >>> +	case TCPOPT_MSS:
+> >>> +		if (opsize == TCPOLEN_MSS && ctx->tcp->syn &&
+> >>> +		    ctx->ptr + (TCPOLEN_MSS - 2) < ctx->data_end)
+> >>> +			tcp_opt->mss_clamp = get_unaligned_be16(ctx->ptr);
+> >>> +		break;
+> >>> +	case TCPOPT_WINDOW:
+> >>> +		if (opsize == TCPOLEN_WINDOW && ctx->tcp->syn &&
+> >>> +		    ctx->ptr + (TCPOLEN_WINDOW - 2) < ctx->data_end) {
+> >>> +			tcp_opt->wscale_ok = 1;
+> >>> +			tcp_opt->snd_wscale = *ctx->ptr;
+> >> When writing to a bitfield of "struct tcp_options_received" which is a kernel
+> >> struct, it needs to use the CO-RE api. The BPF_CORE_WRITE_BITFIELD has not been
+> >> landed yet:
+> >> https://lore.kernel.org/bpf/4d3dd215a4fd57d980733886f9c11a45e1a9adf3.1702325874.git.dxu@dxuuu.xyz/
+> >>
+> >> The same for reading bitfield but BPF_CORE_READ_BITFIELD() has already been
+> >> implemented in bpf_core_read.h
+> >>
+> >> Once the BPF_CORE_WRITE_BITFIELD is landed, this test needs to be changed to use
+> >> the BPF_CORE_{READ,WRITE}_BITFIELD.
+> > IIUC, the CO-RE api assumes that the offset of bitfields could be changed.
+> > 
+> > If the size of struct tcp_cookie_attributes is changed, kfunc will not work
+> > in this test.  So, BPF_CORE_WRITE_BITFIELD() works only when the size of
+> > tcp_cookie_attributes is unchanged but fields in tcp_options_received are
+> > rearranged or expanded to use the unused@ bits ?
+> 
+> Right, CO-RE helps to figure out the offset of a member in the running kernel.
+> 
+> > 
+> > Also, do we need to use BPF_CORE_READ() for other non-bitfields in
+> > strcut tcp_options_received (and ecn_ok in struct tcp_cookie_attributes
+> > just in case other fields are added to tcp_cookie_attributes and ecn_ok
+> > is rearranged) ?
+> 
+> BPF_CORE_READ is a CO-RE friendly macro for using bpf_probe_read_kernel(). 
+> bpf_probe_read_kernel() is mostly for the tracing use case where the ptr is not 
+> safe to read directly.
+> 
+> It is not the case for the tcp_options_received ptr in this tc-bpf use case or 
+> other stack allocated objects. In general, no need to use BPF_CORE_READ. The 
+> relocation will be done by the libbpf for tcp_opt->mss_clamp (e.g.).
+> 
+> Going back to bitfield, it needs BPF_CORE_*_BITFIELD because the offset may not 
+> be right after __attribute__((preserve_access_index)), cc: Yonghong and Andrii 
+> who know more details than I do.
+> 
+> A verifier error has been reported: 
+> https://lore.kernel.org/bpf/391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz/.
+> 
+> I also hit an error earlier in 
+> https://lore.kernel.org/all/20220817061847.4182339-1-kafai@fb.com/ when not 
+> using BPF_CORE_READ_BITFIELD. I don't exactly remember how the instruction looks 
+> like but it was reading a wrong value instead of verifier error.
 
-On 12/14/2023 2:22 PM, John Fastabend wrote:
-> Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> There is no rcu-read-lock requirement for ops->map_fd_get_ptr() or
->> ops->map_fd_put_ptr(), so doesn't use rcu-read-lock for these two
->> callbacks.
->>
->> For bpf_fd_array_map_update_elem(), accessing array->ptrs doesn't need
->> rcu-read-lock because array->ptrs must still be allocated. For
->> bpf_fd_htab_map_update_elem(), htab_map_update_elem() only requires
->> rcu-read-lock to be held to avoid the WARN_ON_ONCE(), so only use
->> rcu_read_lock() during the invocation of htab_map_update_elem().
->>
->> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  kernel/bpf/hashtab.c | 6 ++++++
->>  kernel/bpf/syscall.c | 4 ----
->>  2 files changed, 6 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
->> index 5b9146fa825f..ec3bdcc6a3cf 100644
->> --- a/kernel/bpf/hashtab.c
->> +++ b/kernel/bpf/hashtab.c
->> @@ -2523,7 +2523,13 @@ int bpf_fd_htab_map_update_elem(struct bpf_map *map, struct file *map_file,
->>  	if (IS_ERR(ptr))
->>  		return PTR_ERR(ptr);
->>  
->> +	/* The htab bucket lock is always held during update operations in fd
->> +	 * htab map, and the following rcu_read_lock() is only used to avoid
->> +	 * the WARN_ON_ONCE in htab_map_update_elem().
->> +	 */
->> +	rcu_read_lock();
->>  	ret = htab_map_update_elem(map, key, &ptr, map_flags);
->> +	rcu_read_unlock();
-> Did we consider dropping the WARN_ON_ONCE in htab_map_update_elem()? It
-> looks like there are two ways to get to htab_map_update_elem() either
-> through a syscall and the path here (bpf_fd_htab_map_update_elem) or
-> through a BPF program calling, bpf_update_elem()? In the BPF_CALL
-> case bpf_map_update_elem() already has,
->
->    WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held())
->
-> The htab_map_update_elem() has an additional check for
-> rcu_read_lock_trace_held(), but not sure where this is coming from
-> at the moment. Can that be added to the BPF caller side if needed?
->
-> Did I miss some caller path?
+Thank you so much for detailed explanation!
 
-No. But I think the main reason for the extra WARN in
-bpf_map_update_elem() is that bpf_map_update_elem() may be inlined by
-verifier in do_misc_fixups(), so the WARN_ON_ONCE in
-bpf_map_update_elem() will not be invoked ever. For
-rcu_read_lock_trace_held(), I have added the assertion in
-bpf_map_delete_elem() recently in commit 169410eba271 ("bpf: Check
-rcu_read_lock_trace_held() before calling bpf map helpers").
->  
->
->>  	if (ret)
->>  		map->ops->map_fd_put_ptr(map, ptr, false);
->>  
->> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
->> index d63c1ed42412..3fcf7741146a 100644
->> --- a/kernel/bpf/syscall.c
->> +++ b/kernel/bpf/syscall.c
->> @@ -184,15 +184,11 @@ static int bpf_map_update_value(struct bpf_map *map, struct file *map_file,
->>  		err = bpf_percpu_cgroup_storage_update(map, key, value,
->>  						       flags);
->>  	} else if (IS_FD_ARRAY(map)) {
->> -		rcu_read_lock();
->>  		err = bpf_fd_array_map_update_elem(map, map_file, key, value,
->>  						   flags);
->> -		rcu_read_unlock();
->>  	} else if (map->map_type == BPF_MAP_TYPE_HASH_OF_MAPS) {
->> -		rcu_read_lock();
->>  		err = bpf_fd_htab_map_update_elem(map, map_file, key, value,
->>  						  flags);
->> -		rcu_read_unlock();
->>  	} else if (map->map_type == BPF_MAP_TYPE_REUSEPORT_SOCKARRAY) {
->>  		/* rcu_read_lock() is not needed */
->>  		err = bpf_fd_reuseport_array_update_elem(map, key, value,
-> Any reason to leave the last rcu_read_lock() on the 'else{}' case? If
-> the rule is we have a reference to the map through the file fdget()? And
-> any concurrent runners need some locking, xchg, to handle the update a
-> rcu_read_lock() wont help there.
->
-> I didn't audit all the update flows tonight though.
 
-It seems it is still necessary for htab and local storage. For normal
-htab, it is possible the update is done without taking the bucket lock
-(in-place replace), so RCU CS is needed to guarantee the iteration is
-still safe. And for local storage (e.g. cgrp local storage) it may also
-do in-place update through lookup and then update. We could fold the
-calling of rcu_read_lock() into .map_update_elem() if it is necessary.
->
->
->> -- 
->> 2.29.2
->>
->>
+> 
+> ================
+> 
+> Going back to this patch set here.
+> 
+> After sleeping on it longer, I am thinking it is better not to reuse 'struct 
+> tcp_options_received' (meaning no bitfield) in the bpf_sk_assign_tcp_reqsk() 
+> kfunc API.
+> 
+> There is not much benefit in reusing 'tcp_options_received'. When new tcp option 
+> was ever added to tcp_options_received, it is not like bpf_sk_assign_tcp_reqsk 
+> will support it automatically. It needs to relay this new option back to the 
+> allocated req. Unlike tcp_sock or req which may have a lot of them such that it 
+> is useful to have a compact tcp_options_received, the tc-bpf use case here is to 
+> allocate it once in the stack. Also, not all the members in tcp_options_received 
+> is useful, e.g. num_sacks, ts_recent_stamp, and user_mss are not used. Leaving 
+> it there being ignored by bpf_sk_assign_tcp_reqsk is confusing.
+> 
+> How about using a full u8 for each necessary member and directly add them to 
+> struct tcp_cookie_attributes instead of nesting them into another struct. After 
+> taking out the unnecessary members, the size may not end up to be much bigger.
+> 
+> The bpf prog can then directly access attr->tstamp_ok more naturally. The 
+> changes to patch 5 and 6 should be mostly mechanical changes.
+> 
+> I would also rename s/tcp_cookie_attributes/bpf_tcp_req_attrs/.
+> 
+> wdyt?
 
+Totally agree.  I reused struct tcp_options_received but had a similar
+thought like unused fields, confusing fields (saw_tstamp vs tstamp_ok,
+user_mss vs clamp_mss), etc.
+
+And I like bpf_tcp_req_attrs, tcp_cookie_attributes was bit wordy :)
+
+So probably bpf_tcp_req_attrs would look like this ?
+
+struct bpf_tcp_req_attrs {
+	u32 rcv_tsval;
+	u32 rcv_tsecr;
+	u16 mss;
+	u8 rcv_scale;
+	u8 snd_scale;
+	bool ecn_ok;
+	bool wscale_ok;
+	bool sack_ok;
+	bool tstamp_ok;
+	bool usec_ts;
+} __packed;
+
+or you prefer u8 over bool and __packed ?
+
+struct bpf_tcp_req_attrs {
+	u32 rcv_tsval;
+	u32 rcv_tsecr;
+	u16 mss;
+	u8 rcv_scale;
+	u8 snd_scale;
+	u8 ecn_ok;
+	u8 wscale_ok;
+	u8 sack_ok;
+	u8 tstamp_ok;
+	u8 usec_ts;
+}
 
