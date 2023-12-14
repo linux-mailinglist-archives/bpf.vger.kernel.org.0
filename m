@@ -1,166 +1,117 @@
-Return-Path: <bpf+bounces-17779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9396C81265B
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 05:26:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D31D281266C
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 05:29:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F7AC28275D
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 04:26:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11E3F1C2143B
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 04:29:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A508E46AF;
-	Thu, 14 Dec 2023 04:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RSBwaoGI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93951610C;
+	Thu, 14 Dec 2023 04:29:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DF2B9
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:26:16 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-33646500f1aso298814f8f.1
-        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:26:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702527975; x=1703132775; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c37ofhDvRdm/Gg6mIeqm/gGPvt7pIQ59HTaD/jbm0eQ=;
-        b=RSBwaoGIz119f4HYfw6sj5OD1v/IwkynVT/4k0NHnC8XNILIykcXFhanI+VjpXQ1V3
-         eqKSJGA8EwWCFTC70RlYtrj6ijJP8s12tdhUjdm4lebazG/ocJgUNfSLWQFdPDfinRSr
-         hI470fUZifdkHUycuE5IirEsJQFBCsi3qa8rKCLW4tnLNXBlmfubyBHvjURzkvob/RFH
-         i6DY/RiPGO1I78ekhYp4JrrUZL20MG8/rcTkOqwfqENw0f09u96mZY43k4hdfJArYlyP
-         TsvenPBXCHmyNKkg1rI5ldAxVbTkITk54MsYE/rTQpcEzrXDuG+KuHiUiFBtuDhxZu1y
-         0kIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702527975; x=1703132775;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c37ofhDvRdm/Gg6mIeqm/gGPvt7pIQ59HTaD/jbm0eQ=;
-        b=r0t1SbuYy30qhd196/p9Aro3wt36o/Msdsdg432gjHWTC4c5kDx3ZmPqyBoG1scqwD
-         E1ZYFlzWkIDXWM+rDWsmVjIlI0beTReR1kqKCQdLV1N7XWrdEaE75pP6E+lIeFDWf+fT
-         9qNuU+ngmply15POtEQO9SniqrUe1Qy6SQ2mMA8Qn47ZjM/PiSnu7nRtrB+NxLwuQAjC
-         t/IN2wanYBjpxI50v8yr7U8hHMr9opKKpW3qh2kVbkoCOrpwmco9l9ubTRmSXIs9uQPE
-         /s2c0R9HGILJAuRmXWdhvyA/dJn9G16dxvfPCQVnsk2d+HVAMVlft8eKe/fs9A+1+I5a
-         iKiw==
-X-Gm-Message-State: AOJu0YwsmwAKjB947Z3IjjNmebJ7MXrPRd5+W2CvZmS3gy4TpxLXASDs
-	dvGm3i3Vls709dUI1EBOaAUZ3+inUEx/GaZBviU=
-X-Google-Smtp-Source: AGHT+IFciCPue3DHqGAkJ7/FjybKESdIeJtxMx6qRNzKpXZPnx/uSDycqqsEithw+bQzE5HukH1il1R5U6bBAvID+Yk=
-X-Received: by 2002:a05:600c:2048:b0:40c:5536:66da with SMTP id
- p8-20020a05600c204800b0040c553666damr1120616wmg.21.1702527974990; Wed, 13 Dec
- 2023 20:26:14 -0800 (PST)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB51106
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:29:13 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SrK9r3H51z4f3lD3
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 12:29:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 740DD1A09B8
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 12:29:09 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP1 (Coremail) with SMTP id cCh0CgCX5QuRhHplTSBjDg--.29483S4;
+	Thu, 14 Dec 2023 12:29:07 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	xingwei lee <xrivendell7@gmail.com>,
+	houtao1@huawei.com
+Subject: [PATCH bpf-next v3 0/2] bpf: Use GFP_KERNEL in bpf_event_entry_gen()
+Date: Thu, 14 Dec 2023 12:30:08 +0800
+Message-Id: <20231214043010.3458072-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213112531.3775079-1-houtao@huaweicloud.com>
- <20231213112531.3775079-5-houtao@huaweicloud.com> <CAEf4BzbHu3t+Bg3wA2ZMWzw3PTgMtaq0w-McjU3Hje=GUTYK8g@mail.gmail.com>
- <b34e560c-0b1f-4c7c-c96c-57a17aaeee7f@huaweicloud.com>
-In-Reply-To: <b34e560c-0b1f-4c7c-c96c-57a17aaeee7f@huaweicloud.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 13 Dec 2023 20:26:02 -0800
-Message-ID: <CAEf4BzahB2i7Y3M==N47XM3+s7jgT76pf3FwXyM7BM-D9cLYCA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Add test for abnormal cnt
- during multi-kprobe attachment
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, xingwei lee <xrivendell7@gmail.com>, houtao1@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCX5QuRhHplTSBjDg--.29483S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF4fKF17uw1DJw4xJrykuFg_yoW8Xr13pr
+	ZYka13Wr4UKrnrXwn3Kay7G3yUCws8GrnrJFn3Jw1FvFyUWF1xCF40gFsxZrWYqryakFWS
+	qw1akFn2ya48Xa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Wed, Dec 13, 2023 at 5:44=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> Hi,
->
-> On 12/14/2023 7:33 AM, Andrii Nakryiko wrote:
-> > On Wed, Dec 13, 2023 at 3:24=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> From: Hou Tao <houtao1@huawei.com>
-> >>
-> >> If an abnormally huge cnt is used for multi-kprobes attachment, the
-> >> following warning will be reported:
-> >>
-> >>   ------------[ cut here ]------------
-> >>   WARNING: CPU: 1 PID: 392 at mm/util.c:632 kvmalloc_node+0xd9/0xe0
-> >>   Modules linked in: bpf_testmod(O)
-> >>   CPU: 1 PID: 392 Comm: test_progs Tainted: G ...... 6.7.0-rc3+ #32
-> >>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
-> >>   ......
-> >>   RIP: 0010:kvmalloc_node+0xd9/0xe0
-> >>    ? __warn+0x89/0x150
-> >>    ? kvmalloc_node+0xd9/0xe0
-> >>    bpf_kprobe_multi_link_attach+0x87/0x670
-> >>    __sys_bpf+0x2a28/0x2bc0
-> >>    __x64_sys_bpf+0x1a/0x30
-> >>    do_syscall_64+0x36/0xb0
-> >>    entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> >>   RIP: 0033:0x7fbe067f0e0d
-> >>   ......
-> >>    </TASK>
-> >>   ---[ end trace 0000000000000000 ]---
-> >>
-> >> So add a test to ensure the warning is fixed.
-> >>
-> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
-> >> ---
-> >>  .../selftests/bpf/prog_tests/kprobe_multi_test.c   | 14 +++++++++++++=
-+
-> >>  1 file changed, 14 insertions(+)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.=
-c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> >> index 4041cfa670eb..802554d4ee24 100644
-> >> --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> >> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
-> >> @@ -300,6 +300,20 @@ static void test_attach_api_fails(void)
-> >>         if (!ASSERT_EQ(libbpf_get_error(link), -EINVAL, "fail_5_error"=
-))
-> >>                 goto cleanup;
-> >>
-> >> +       /* fail_6 - abnormal cnt */
-> >> +       opts.addrs =3D (const unsigned long *) addrs;
-> >> +       opts.syms =3D NULL;
-> >> +       opts.cnt =3D INT_MAX;
-> >> +       opts.cookies =3D NULL;
-> >> +
-> >> +       link =3D bpf_program__attach_kprobe_multi_opts(skel->progs.tes=
-t_kprobe_manual,
-> >> +                                                    NULL, &opts);
-> >> +       if (!ASSERT_ERR_PTR(link, "fail_6"))
-> >> +               goto cleanup;
-> >> +
-> >> +       if (!ASSERT_EQ(libbpf_get_error(link), -EINVAL, "fail_6_error"=
-))
-> > this is unreliable, store errno right after the operation before
-> > ASSERT_xxx() macros
->
-> I didn't fully follow the reason why it is unreliable. Do you mean
-> ASSERT_ERR_PTR() macro may overwrite errno, right ? But _CHECK() already
-> saves and restores errno before invoking fprintf(), so I think it is OK
-> to use libbpf_get_error() to get the errno here ?
+From: Hou Tao <houtao1@huawei.com>
 
-We shouldn't be using libbpf_get_error() in new code, it's legacy and
-not advised to be used. If ASSERT_xxx() macro guarantee to
-save/restore errno, then it might be actually fine, but it still feels
-better to save errno explicitly right after the operation, just like
-you'd do in normal code.
+Hi,
 
-> >
-> >> +               goto cleanup;
-> >> +
-> >>  cleanup:
-> >>         bpf_link__destroy(link);
-> >>         kprobe_multi__destroy(skel);
-> >> --
-> >> 2.29.2
-> >>
->
+The simple patch set aims to replace GFP_ATOMIC by GFP_KERNEL in
+bpf_event_entry_gen(). These two patches in the patch set were
+preparatory patches in "Fix the release of inner map" patchset [1] and
+are not needed for v2, so re-post it to bpf-next tree.
+
+Patch #1 reduces the scope of rcu_read_lock when updating fd map and
+patch #2 replaces GFP_ATOMIC by GFP_KERNEL. Please see individual
+patches for more details.
+
+Comments are always welcome.
+
+Change Log:
+v3:
+ * patch #1: fallback to patch #1 in v1. Update comments in
+             bpf_fd_htab_map_update_elem() to explain the reason for
+	     rcu_read_lock() (Alexei)
+
+v2: https://lore.kernel.org/bpf/20231211073843.1888058-1-houtao@huaweicloud.com/
+ * patch #1: add rcu_read_lock/unlock() for bpf_fd_array_map_update_elem
+             as well to make it consistent with
+	     bpf_fd_htab_map_update_elem and update commit message
+             accordingly (Alexei)
+ * patch #1/#2: collects ack tags from Yonghong
+
+v1: https://lore.kernel.org/bpf/20231208103357.2637299-1-houtao@huaweicloud.com/
+
+[1]: https://lore.kernel.org/bpf/20231107140702.1891778-1-houtao@huaweicloud.com/
+
+
+Hou Tao (2):
+  bpf: Reduce the scope of rcu_read_lock when updating fd map
+  bpf: Use GFP_KERNEL in bpf_event_entry_gen()
+
+ kernel/bpf/arraymap.c | 2 +-
+ kernel/bpf/hashtab.c  | 6 ++++++
+ kernel/bpf/syscall.c  | 4 ----
+ 3 files changed, 7 insertions(+), 5 deletions(-)
+
+-- 
+2.29.2
+
 
