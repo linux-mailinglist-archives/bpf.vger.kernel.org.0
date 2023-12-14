@@ -1,162 +1,150 @@
-Return-Path: <bpf+bounces-17832-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17833-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 472ED8132A2
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 15:11:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07CE88132EC
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 15:21:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CB573B210E5
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 14:11:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A3E71C21A0E
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 14:21:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0AB56473;
-	Thu, 14 Dec 2023 14:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE49759E44;
+	Thu, 14 Dec 2023 14:21:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dtucker.co.uk header.i=@dtucker.co.uk header.b="HDsdFmsT";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="p290s2GI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SO0PMO0M"
 X-Original-To: bpf@vger.kernel.org
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3AF9C
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 06:11:35 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id 66A173200C5A;
-	Thu, 14 Dec 2023 09:11:31 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 14 Dec 2023 09:11:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dtucker.co.uk;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1702563090; x=1702649490; bh=kcrX7JpmxQo51/yJIACKCi17I5nIWk5J
-	XDnp2tFfeRI=; b=HDsdFmsTEnbSHOGxqckOtCFckOMZsPBymGtXAG+X1ugADM5I
-	mrHnWyTt1nZeWnN7JsLvEBAGszPOw/UYEmrUl14kStyRS3p9+pLTFvrJqc3D098E
-	QxgLEuOYXVspOhycPGwVTUM/cvQWYc/AJKlgjNtaVk/koQBH5+sKDFdoz1eu7E3l
-	HF+0gdiih0vAI1G9KlKTPNFPQPej9FTkNkmX+6Fl18zF7XXEisNtn6petbPhP0aR
-	Bk3J/syNQydPHTN4LyXGve+YUIEfj8mupBoEaUpRvYG4NcjuHQtb4UaugG/EPdn0
-	G1yBzF5wSaEoFzSLRw5ek/YOWWY0imwTU/eBZw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702563090; x=
-	1702649490; bh=kcrX7JpmxQo51/yJIACKCi17I5nIWk5JXDnp2tFfeRI=; b=p
-	290s2GIi5PbTiEexZF3pIL9GyBjqmaDnMFa8AMlzauOOiCH+I1rLKjO/vaDgfMPG
-	MPOtiTkA1YscQm5X0eb+TbIPynv41PEIWptdgSv4Pppv37g9fpxNX5YCw61FTnr0
-	ljGmj3SzHMTCrBqW/ezd1/Qe8IK6PWDARXCF2uUKV/bup221pQO6B4qDplFinqEP
-	afBoQQZqr4goG0IhW7g67KXgOKoR/pw/QlET3DZa/UklDxDsgjdRyp05RmNu1vsN
-	gX4E9lEV0caIIxqcEh8Y6GjjxuABojcYWDxoBoGxS4HD3BjAC4C3V1cf2RvkQUTC
-	gUgfFwOM3rrFSi9zf4XGw==
-X-ME-Sender: <xms:Eg17ZfKtkJEZhRaZ611AFCleeOVVDyujdype0RgomWNWrqN5-vHWqg>
-    <xme:Eg17ZTKY73VUPpYHaC1jQ49yegtNbyS3UJGq90ix94ZvXLN58AhoMt5QnmQONw9ct
-    sVybOSeJX7kV7dy_g>
-X-ME-Received: <xmr:Eg17ZXsRORvxWyyhXzFdpjAQuCZbvGKxIl6jtHlYaaDi725f9lg1l2eCAR2TDyny0govOdmIy-0S7Z6-GIk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledgheelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurheptggguffhjgffvefgkfhfvffosehtqhhmtdhhtdejnecuhfhrohhmpeffrghv
-    vgcuvfhutghkvghruceouggrvhgvseguthhutghkvghrrdgtohdruhhkqeenucggtffrrg
-    htthgvrhhnpeeivefgueeijedtffelhfevleettdfgueetteekfeetvedtveeuteetheeu
-    hefggfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gurghvvgesughtuhgtkhgvrhdrtghordhukh
-X-ME-Proxy: <xmx:Eg17ZYZfSOkFFUfuz8JqMHm59gW7fYVdb-ioJqmxni8s-C0gUEO-Hw>
-    <xmx:Eg17ZWbUbtnKFeQseEXIe6b6UBK61uPx07AJTeJnR4Kj-Mhxqf9agg>
-    <xmx:Eg17ZcCv8ulP3rYeiSHn59fdsb0RwMyaMYTUXrXr-VRWWwlAcUfJoA>
-    <xmx:Eg17ZYAylC1cvN61KQuliVGRnrvbDSkuRQKHiPNnOEB4LPZIKjbMpA>
-Feedback-ID: i559945a3:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Dec 2023 09:11:28 -0500 (EST)
-Content-Type: text/plain;
-	charset=utf-8
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A1C9C
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 06:21:35 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50e0ba402b4so4159840e87.1
+        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 06:21:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702563694; x=1703168494; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/q+kOazTm7615E8pB4q67yWPah/yHlPryL6A2SBbNcM=;
+        b=SO0PMO0Myl1f/hQuvIp9GN1dytAGz2Ekx1Gd4Oj62+TDhl+CfoaVK1fru6F+JfZGSm
+         msvUYdfOqmvflmOFBDcNlmxHrk6GUBDSyBiB7si7M2gIGovx+U9up4QV8bQdxcJ6Is6n
+         UNgW1yxcNyydQXQTavPxK8POuOAKcNZDEwJ80zu169ppf8knvILPD2ZOf7n8POuDafZV
+         zgTjNR/O3F+BR2z+BiZjViSlgU4oXDfxBPJmO1WQocGOKPBlfa7ZNo4za7gb70g4igyz
+         BHLYgj/iBhg7Hxr0+68jbj5YpQuZMiIFUdbe7qiC4zZ+o2SGrQa5FRIe6YY2hZ54W8Ue
+         YpGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702563694; x=1703168494;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/q+kOazTm7615E8pB4q67yWPah/yHlPryL6A2SBbNcM=;
+        b=Bg1D6jNWXyBN84ML+oPjdwlHrOtsThPlPvaaYLx9Dy7HDdUxF2EC4gDHGJMM26SV+T
+         jMmcKGxyH6M7hbpRDVDXy2u8+0oLW0Ld4RONC4dQfwVvOVubxWqI6EgY7fZ4DMxetlGv
+         bWSL22DAZ3HKrEBr/5FmXfqfc6hmgWe1Bmzg8U9/6FeA+rCZwxtKo46HNlXBoqxvjHaH
+         fYcl+T2DYuEAOHiWe2kzL4RwuOHpzKrtRjV/2mY5pwC5XD0/qmcZvSXHHEksNP5uNxQg
+         WyGOt6bsJQODCLpFmrvtfmViVSyaRucHFzZ6+u3B7IuGYk1kY1PlAmbCy2KRN4c+DRWh
+         4z8Q==
+X-Gm-Message-State: AOJu0YwphAbk5NvtiSlN9md6xHeSihQaLs5v9D2CcErhgYVgWn0us+/S
+	De+K1p3vfb0paGwwfwrx6ws=
+X-Google-Smtp-Source: AGHT+IGRMfSPDUp44sd9xf+vc/3DwOU6EGU6S1QKCc9inlgBsOu7rqOpEQPHjAGxYamIiGpIxVrd+A==
+X-Received: by 2002:a19:2d45:0:b0:50d:180a:b800 with SMTP id t5-20020a192d45000000b0050d180ab800mr4583753lft.10.1702563693690;
+        Thu, 14 Dec 2023 06:21:33 -0800 (PST)
+Received: from localhost (tor-exit-8.zbau.f3netze.de. [185.220.100.247])
+        by smtp.gmail.com with ESMTPSA id ul5-20020a170907ca8500b00a1f7b445f5dsm8171506ejc.124.2023.12.14.06.21.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 06:21:33 -0800 (PST)
+Date: Thu, 14 Dec 2023 16:21:14 +0200
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com,
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: Re: [PATCH v4 bpf-next 09/10] selftests/bpf: validate precision
+ logic in partial_stack_load_preserves_zeros
+Message-ID: <ZXsPWvgt6xWtUizn@mail.gmail.com>
+References: <20231205184248.1502704-1-andrii@kernel.org>
+ <20231205184248.1502704-10-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: [PATCH bpf-next v1] bpf: Include pid, uid and comm in audit
- output
-From: Dave Tucker <dave@dtucker.co.uk>
-In-Reply-To: <CALOAHbARerbgJy-ujXwbD=f4mqmO1WXTk+33Qjkhqg4rn_6nzg@mail.gmail.com>
-Date: Thu, 14 Dec 2023 14:11:17 +0000
-Cc: bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <10E0052D-E706-4395-A2EE-C1BD0BE54DD0@dtucker.co.uk>
-References: <20231214120716.591528-1-dave@dtucker.co.uk>
- <CALOAHbDzZ_KU05jq+Z_j29gzfSFQTnspnGK3c0iH=4xRQ3ct8g@mail.gmail.com>
- <CALOAHbARerbgJy-ujXwbD=f4mqmO1WXTk+33Qjkhqg4rn_6nzg@mail.gmail.com>
-To: Yafang Shao <laoar.shao@gmail.com>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231205184248.1502704-10-andrii@kernel.org>
+X-Spam-Level: *
 
+Hi Andrii,
 
+I'm preparing a series for submission [1], and it started failing on
+this selftest on big endian after I rebased over your series. Can we
+discuss (see below) to figure out whether it's a bug in your patch or
+whether I'm missing something?
 
-> On 14 Dec 2023, at 13:21, Yafang Shao <laoar.shao@gmail.com> wrote:
->=20
-> On Thu, Dec 14, 2023 at 9:13=E2=80=AFPM Yafang Shao =
-<laoar.shao@gmail.com> wrote:
->>=20
->> On Thu, Dec 14, 2023 at 8:07=E2=80=AFPM Dave Tucker =
-<dave@dtucker.co.uk> wrote:
->>>=20
->>> Current output from auditd is as follows:
->>>=20
->>> time->Wed Dec 13 21:39:24 2023
->>> type=3DBPF msg=3Daudit(1702503564.519:11241): prog-id=3D439 op=3DLOAD
->>>=20
->>> This only tells you that a BPF program was loaded, but without
->>> any context. If we include the pid, uid and comm we get output as
->>> follows:
->>>=20
->>> time->Wed Dec 13 21:59:59 2023
->>> type=3DBPF msg=3Daudit(1702504799.156:99528): pid=3D27279 uid=3D0
->>>        comm=3D"new_name" prog-id=3D50092 op=3DUNLOAD
->>=20
->> Is it possible to integrate these common details like pid, uid, and
->> comm into the audit_log_format() function for automatic inclusion? Or
->> would it be more appropriate to create a new helper function like
->> audit_log_format_common() dedicated specifically to incorporating
->> these common details? What are your thoughts on this?
+On Tue, 05 Dec 2023 at 10:42:47 -0800, Andrii Nakryiko wrote:
+> Enhance partial_stack_load_preserves_zeros subtest with detailed
+> precision propagation log checks. We know expect fp-16 to be spilled,
+> initially imprecise, zero const register, which is later marked as
+> precise even when partial stack slot load is performed, even if it's not
+> a register fill (!).
+> 
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  .../selftests/bpf/progs/verifier_spill_fill.c    | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> index 41fd61299eab..df4920da3472 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> @@ -495,6 +495,22 @@ char single_byte_buf[1] SEC(".data.single_byte_buf");
+>  SEC("raw_tp")
+>  __log_level(2)
+>  __success
+> +/* make sure fp-8 is all STACK_ZERO */
+> +__msg("2: (7a) *(u64 *)(r10 -8) = 0          ; R10=fp0 fp-8_w=00000000")
+> +/* but fp-16 is spilled IMPRECISE zero const reg */
+> +__msg("4: (7b) *(u64 *)(r10 -16) = r0        ; R0_w=0 R10=fp0 fp-16_w=0")
+> +/* and now check that precision propagation works even for such tricky case */
+> +__msg("10: (71) r2 = *(u8 *)(r10 -9)         ; R2_w=P0 R10=fp0 fp-16_w=0")
 
-There's audit_log_task_info from audit.h which adds everything. My
-concern was that it is very verbose and doesn=E2=80=99t appear to be =
-widely
-used. I don=E2=80=99t think it warrants a helper function just yet since
-we=E2=80=99re only doing audit logging in this one function.
+Why do we require R2 to be precise at this point? It seems the only
+reason it's marked as precise here is because it was marked at line 6,
+and the mark was never cleared: when R2 was overwritten at line 10, only
+__mark_reg_const_zero was called, and no-one cleared the flag, although
+R2 was overwritten.
 
-That said, I=E2=80=99m working on a patch series to add audit logging to
-bpf_link attach and detach events. I=E2=80=99ll gladly turn that into a
-helper then since it would be used in more than one place.
+Moreover, if I replace r2 with r3 in this block, it doesn't get the
+precise mark, as I expect.
 
-> BTW, bpf prog can be unloaded in irq context. Therefore we can't do it
-> for BPF_AUDIT_UNLOAD.
+Preserving the flag looks like a bug to me, but I wanted to double-check
+with you.
 
-I=E2=80=99ve been running this locally, and occasionally I see unload =
-events
-where the comm is =E2=80=9Ckworker/0:0=E2=80=9D - I assume that those =
-are from within
-the irq context.
+The context why it's relevant to my series: after patch [3], this fill
+goes to the then-branch on big endian (not to the else-branch, as
+before), and I copy the register with copy_register_state, which
+preserves the precise flag from the stack, not from the old value of r2.
 
-type=3DBPF msg=3Daudit(1702504511.397:202): pid=3D1 uid=3D0
-    comm=3D"systemd" prog-id=3D75 op=3DLOAD
+> +__msg("11: (0f) r1 += r2")
+> +__msg("mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx -1")
+> +__msg("mark_precise: frame0: regs=r2 stack= before 10: (71) r2 = *(u8 *)(r10 -9)")
+> +__msg("mark_precise: frame0: regs= stack=-16 before 9: (bf) r1 = r6")
+> +__msg("mark_precise: frame0: regs= stack=-16 before 8: (73) *(u8 *)(r1 +0) = r2")
+> +__msg("mark_precise: frame0: regs= stack=-16 before 7: (0f) r1 += r2")
+> +__msg("mark_precise: frame0: regs= stack=-16 before 6: (71) r2 = *(u8 *)(r10 -1)")
+> +__msg("mark_precise: frame0: regs= stack=-16 before 5: (bf) r1 = r6")
+> +__msg("mark_precise: frame0: regs= stack=-16 before 4: (7b) *(u64 *)(r10 -16) = r0")
+> +__msg("mark_precise: frame0: regs=r0 stack= before 3: (b7) r0 = 0")
+>  __naked void partial_stack_load_preserves_zeros(void)
+>  {
+>  	asm volatile (
+> -- 
+> 2.34.1
+> 
+> 
 
-type=3DBPF msg=3Daudit(1702504541.516:213): pid=3D23152 uid=3D0
-    comm=3D"kworker/0:0" prog-id=3D75 op=3DUNLOAD
-
-That looks ok to me, but it wouldn=E2=80=99t be too hard to skip adding =
-this
-information in the irq context if you=E2=80=99d rather.
-
-- Dave=
+[1]: https://github.com/kernel-patches/bpf/pull/6132
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/bpf/verifier.c?id=c838fe1282df540ebf6e24e386ac34acb3ef3115#n4806
+[3]: https://github.com/kernel-patches/bpf/pull/6132/commits/0e72ee541180812e515b2bf3ebd127b6e670fd59
 
