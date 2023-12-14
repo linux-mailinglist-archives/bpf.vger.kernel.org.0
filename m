@@ -1,147 +1,149 @@
-Return-Path: <bpf+bounces-17897-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17898-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D02E9813E3E
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF5AA813E40
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:30:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74ECE2837F3
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 23:28:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B5E628356F
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 23:30:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 316046C6EA;
-	Thu, 14 Dec 2023 23:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 812856C6EA;
+	Thu, 14 Dec 2023 23:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NCLh/YYL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E8fb2Ucz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EEC6C6DC
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 23:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 731186C6C8
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 23:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-548ce39b101so72676a12.2
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 15:28:42 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40c3f68b69aso972805e9.1
+        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 15:30:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702596521; x=1703201321; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702596630; x=1703201430; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RWKAXIOm3JXittLsDKvD2E4nsAnKvy7ZC9+/oD5r0Zc=;
-        b=NCLh/YYL2fyOxVbBPhgm9H8TdxTlmyT2K/WH3eGjmbsCJztZtWoev5cDu3LsBY7eXh
-         HpT3HTtMiF+VA4yhhMsLvHifaJzMmDFIeTx6utCwhd9EmavRmhkkZtlp+fBVBcYVl9Iu
-         SmRvDzEnqMZ0V0LzTwbRDgmiriKi/K6Lig8hMgUFhnPjYtYF/j7KQ8aC3TfQhRw7a8kd
-         zC22ckqqkaHTs0XGVTDMbmVyJXuGOuQDgPR23H71OlXpis4mH8yRuWRGeFdd17VpCLap
-         G9lb6Bt9IbZ+AHaQ6p80yV7+q4DpXJoP7/NtJY8TO/x2qaviZEfUuNBuJOqRa0fUPG7c
-         p30w==
+        bh=dM7orxymmhC00cY97vonyrsJwbGRj6K3h87puM8HtEw=;
+        b=E8fb2UcznQiQL6oc7r6t4/ZP+sevda3Okm9+mnkn8iUH9tTnbgWogOmNomA3hpBaAJ
+         NuDs6R0IxIdCurf3w2cg7Su4SHLEdyFoRDmXoRT/7QvVj/9lkztVLiBVkueSLjFJFN+J
+         u4qbD3nrY0sIZxce08A0NzMphF2Io2sImSoj7ur4/rblMujV9PllWOgCoIV7xfDBJMGS
+         b5gbhQqFBz8oyl4VPVATd8czHgvo5Zgy+AHFqbnozFnZHHDpHusTx1l7XQX3M/oy00lr
+         Y70/knBSj5vlRefuyv5ELFh2NhwF6VJbDmkeVZxLnSsMaH02NCGL3BsVP9QnYH1Vg3TD
+         tA3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702596521; x=1703201321;
+        d=1e100.net; s=20230601; t=1702596630; x=1703201430;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RWKAXIOm3JXittLsDKvD2E4nsAnKvy7ZC9+/oD5r0Zc=;
-        b=LUq9FeltOQ7OXK1o5zMFJCIqN540d5K78fUK3buHR8KoMS+zURy3mJYo/wwGYW4yHX
-         e23o24Xm95kRnwis1UZLRHh2v6im/QzIPRCK9f9ZAYn9Cc1gmlaKXamk8MSJlLk2rf48
-         eIjdrQkGPHxog+Hqwz1zQQIwcm8otH0F7YEqCia/zi6bZRc/LvYgkkc+6aA06KRx8PUw
-         FORFOLb+fSNTLqd5vYuRgVR1JHnNCrt8id1cVc+pVrlmPEcYxyd1TjD8UdC8M+HNzZNU
-         7YqoD4YxdROt1OTjCk3WcVWrbqj+Oda9SUhokcQIAqftsMb65htipUkUQg6ABvWHRiB5
-         PXug==
-X-Gm-Message-State: AOJu0YyP7hkqt9XurHrEWtG+NFmIH5GyDnoRaHhiNwozsDMnx1QNJraw
-	BM4BqU9EFkZzOtyaFfm4HUYalNpxfem3D5G4gFs=
-X-Google-Smtp-Source: AGHT+IEp3vAy+lVqa8tSykG/o8wYsDTM4IBBGDYnD3eyZtizDRztWaIuEh2kt+XNfVtbTgs1VVMtx6Z4yLZGtTrXef8=
-X-Received: by 2002:a50:99d2:0:b0:552:a7e3:6e6a with SMTP id
- n18-20020a5099d2000000b00552a7e36e6amr49488edb.107.1702596521343; Thu, 14 Dec
- 2023 15:28:41 -0800 (PST)
+        bh=dM7orxymmhC00cY97vonyrsJwbGRj6K3h87puM8HtEw=;
+        b=UROPSNubaPH/tEmiHx0EjWbmWfGlUkNWYux+fSvoKpfYIxLmOtG/C7Yl3O71ffXV7Y
+         eKZey78YGMiro2GRVW5xEbR+aKR4goIZU7SSXJnB/Nt8wh+wHN2BAI/8ytckGgoGcK0O
+         4m24qSao2w//+Z8zH2lK70VTeuyWfU8LWQLJLLIGS+/Ulz7LUHX0vPdQNZbM4CeOR/yI
+         gK6MwovQxw1KernpFWJXwoqT1rFJmQrHg1a75rhfqa9K6rXLiSuJXV3FbdkwSSPofhhi
+         jo4Tk6zVSto+VgkU+/OA0KNcPdw0c6AzCDV7mvMemVgMrvgVnjrAGtYBfRKotPz9XEOY
+         ySGA==
+X-Gm-Message-State: AOJu0YzmOGJOhdvIjtXXV/EooYZmgDwCWgec5T3Y86+rfjSDVwVcMqSs
+	vS/nZlnxDdFP9fG+xit0iDyredmUJjl+CLA7E/w=
+X-Google-Smtp-Source: AGHT+IF2fRj8s4IqtGs+dV/lgBpYD7DE5sniUAgN18oTFTJz//NpGcXEk5yOXT18tLfTzmAtogsvMnkeHeL4X/13zuY=
+X-Received: by 2002:a05:6000:1e96:b0:336:4e1e:35e4 with SMTP id
+ dd22-20020a0560001e9600b003364e1e35e4mr181269wrb.83.1702596630588; Thu, 14
+ Dec 2023 15:30:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213141234.1210389-1-jolsa@kernel.org> <CAEf4BzbfdR+-ZXVvfmbc+Scb9i6SDqDG4C-4RvQE6vq8Pzcqow@mail.gmail.com>
- <ZXrF25fC4V8RtHqU@krava>
-In-Reply-To: <ZXrF25fC4V8RtHqU@krava>
+References: <20231214120716.591528-1-dave@dtucker.co.uk>
+In-Reply-To: <20231214120716.591528-1-dave@dtucker.co.uk>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Dec 2023 15:28:29 -0800
-Message-ID: <CAEf4BzYVPuokasyzT9hzLMdR6OvFYVADnDG+krFaGrk9Nx=LHQ@mail.gmail.com>
-Subject: Re: [RFC bpf-next 1/2] bpf: Fail uprobe multi link with negative offset
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Oleg Nesterov <oleg@redhat.com>
+Date: Thu, 14 Dec 2023 15:30:18 -0800
+Message-ID: <CAEf4BzaA9zzKrdybBxnpe=ErPx4=JNHYkozu_kKbYWjCQBS5ag@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] bpf: Include pid, uid and comm in audit output
+To: Dave Tucker <dave@dtucker.co.uk>
+Cc: bpf@vger.kernel.org, Dave Tucker <datucker@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 1:07=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Wed, Dec 13, 2023 at 03:43:04PM -0800, Andrii Nakryiko wrote:
-> > On Wed, Dec 13, 2023 at 6:12=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
+On Thu, Dec 14, 2023 at 4:07=E2=80=AFAM Dave Tucker <dave@dtucker.co.uk> wr=
 ote:
-> > >
-> > > Currently the __uprobe_register will return 0 (success) when called w=
-ith
-> > > negative offset. The reason is that the call to register_for_each_vma=
- and
-> > > then build_map_info won't return error for negative offset. They just=
- won't
-> > > do anything - no matching vma is found so there's no registered break=
-point
-> > > for the uprobe.
-> > >
-> > > I don't think we can change the behaviour of __uprobe_register and fa=
-il
-> > > for negative uprobe offset, because apps might depend on that already=
-.
-> > >
-> > > But I think we can still make the change and check for it on bpf mult=
-i
-> > > link syscall level.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  kernel/trace/bpf_trace.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > index 774cf476a892..0dbf8d9b3ace 100644
-> > > --- a/kernel/trace/bpf_trace.c
-> > > +++ b/kernel/trace/bpf_trace.c
-> > > @@ -3397,6 +3397,11 @@ int bpf_uprobe_multi_link_attach(const union b=
-pf_attr *attr, struct bpf_prog *pr
-> > >                         goto error_free;
-> > >                 }
-> > >
-> > > +               if (uprobes[i].offset < 0) {
-> >
-> > offset in UAPI is defined as unsigned, so how can it be negative?
 >
-> right, but then it's passed to uprobe_register_refctr as loff_t which is =
-'long long'
+> Current output from auditd is as follows:
+>
+> time->Wed Dec 13 21:39:24 2023
+> type=3DBPF msg=3Daudit(1702503564.519:11241): prog-id=3D439 op=3DLOAD
+>
+> This only tells you that a BPF program was loaded, but without
+> any context. If we include the pid, uid and comm we get output as
+> follows:
+>
+> time->Wed Dec 13 21:59:59 2023
+> type=3DBPF msg=3Daudit(1702504799.156:99528): pid=3D27279 uid=3D0
+>         comm=3D"new_name" prog-id=3D50092 op=3DUNLOAD
 
-ah, so it's not rejected because uprobe_register expects signed offset
-(for some reason...) and it only does
-
-if (offset > i_size_read(inode))
-
-got it, thanks.
+would emitting program name be useful as well?
 
 >
-> jirka
+> With pid, uid a system administrator has much better context
+> over which processes and user loaded which eBPF programs.
+> comm is useful since processes may be short-lived.
 >
-> >
-> > > +                       err =3D -EINVAL;
-> > > +                       goto error_free;
-> > > +               }
-> > > +
-> > >                 uprobes[i].link =3D link;
-> > >
-> > >                 if (flags & BPF_F_UPROBE_MULTI_RETURN)
-> > > --
-> > > 2.43.0
-> > >
+> Signed-off-by: Dave Tucker <dave@dtucker.co.uk>
+> ---
+>  kernel/bpf/syscall.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 06320d9abf33..71f418edc014 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -35,6 +35,7 @@
+>  #include <linux/rcupdate_trace.h>
+>  #include <linux/memcontrol.h>
+>  #include <linux/trace_events.h>
+> +#include <linux/uidgid.h>
+>
+>  #include <net/netfilter/nf_bpf_link.h>
+>  #include <net/netkit.h>
+> @@ -2110,6 +2111,8 @@ static void bpf_audit_prog(const struct bpf_prog *p=
+rog, unsigned int op)
+>  {
+>         struct audit_context *ctx =3D NULL;
+>         struct audit_buffer *ab;
+> +       const struct cred *cred;
+> +       char comm[sizeof(current->comm)];
+>
+>         if (WARN_ON_ONCE(op >=3D BPF_AUDIT_MAX))
+>                 return;
+> @@ -2120,7 +2123,14 @@ static void bpf_audit_prog(const struct bpf_prog *=
+prog, unsigned int op)
+>         ab =3D audit_log_start(ctx, GFP_ATOMIC, AUDIT_BPF);
+>         if (unlikely(!ab))
+>                 return;
+> -       audit_log_format(ab, "prog-id=3D%u op=3D%s",
+> +       cred =3D current_cred();
+> +
+> +       audit_log_format(ab, "pid=3D%u uid=3D%u",
+> +                        task_pid_nr(current),
+> +                        from_kuid(&init_user_ns, cred->uid));
+> +       audit_log_format(ab, " comm=3D");
+> +       audit_log_untrustedstring(ab, get_task_comm(comm, current));
+> +       audit_log_format(ab, " prog-id=3D%u op=3D%s",
+>                          prog->aux->id, bpf_audit_str[op]);
+>         audit_log_end(ab);
+>  }
+> --
+> 2.43.0
+>
 
