@@ -1,114 +1,126 @@
-Return-Path: <bpf+bounces-17749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17750-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB2588123D4
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 01:21:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 551CB8123E7
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 01:30:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2387BB21283
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 00:21:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA9EC1F21A8D
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 00:30:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69389390;
-	Thu, 14 Dec 2023 00:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C18644;
+	Thu, 14 Dec 2023 00:30:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="F4z/6gY1";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="1HSeLWX0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bmz6VBbo"
 X-Original-To: bpf@vger.kernel.org
-Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD37C9;
-	Wed, 13 Dec 2023 16:20:54 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailnew.west.internal (Postfix) with ESMTP id 432AF2B002DA;
-	Wed, 13 Dec 2023 19:20:51 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Wed, 13 Dec 2023 19:20:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1702513250; x=1702520450; bh=A2PcotebGi
-	6VLDzZX2wIz+tqypyvwDgsO7u1srRyogw=; b=F4z/6gY1J9/DjQJZ7WzBgfQnIA
-	3MxGdMgA616hpbu0+SvnCeTWya4Zz4ABDxjPuGA348CeMWn3tizJeMP0g2YT4E8U
-	IG9eSOIv64q1G2/5J+NPhJ2An8U6JkBmyY7jEQ24t8DMUgifv+0Bm8eshDY8DnK5
-	+FCq1KE0REluiG66OMb+r1BwQw33/mUIgH7Ub54SnOmFft2mbgROQPJedS/A6JDP
-	jl6B0e2Cgxlek37mhPyOLaojcR/n78w4hH5ZyvcFqCROYDXnTsCP2w7n1jQjsHAf
-	88ACr0HEQ/uNFeBIEidk60dg5hY51b7+YBEFvtZZBKRmVYxGHy95fLym0hVA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1702513250; x=1702520450; bh=A2PcotebGi6VLDzZX2wIz+tqypyv
-	wDgsO7u1srRyogw=; b=1HSeLWX04KCZqIHUNG/EtE3SvGqz5naqjcSTia60LrpB
-	Cw1pLt2We4hWHq2zVCLiFQ15gEj78aA+A6xgo70QxmOxQzh693g5ww2c6cT3eNST
-	FRgUpr/iSi2zVeuQSIheqknxIcKf8sXmJy3XBwqmLsFaH8AlW0Z6WrltTNgNGq1Q
-	LLGya9K1mhYsVe7NcTsyB4NGJRL/ZbK+M4XfQoEzIjNNbyGeMD+174xmoV81vCt3
-	rO2u0OmK0qu6yWw0wiwQJYuwqCcjIQ0EGOH/PhUH63YtIK1q6+LmRVpxtD1oshVY
-	ov2FyVnMomU7Z/HuSrKUpj6pVYqMRyff8BIhHFvYlA==
-X-ME-Sender: <xms:Ykp6ZabkOkPkyq-ckjqIqVkuHIUdLMQAWG8qVxRRBiQZ3fenNBOy2w>
-    <xme:Ykp6Zdaafo5szGuzYflYYFhUZXokE_EmECJOSXfWSewhWijmwXQAxCTp6KkgF_O-j
-    YB1sWGqhqq8Ll6FmA>
-X-ME-Received: <xmr:Ykp6ZU-JrLPO2pGTunjSWbCxphBNoQtzh63iBa51YfeFpG6lrZ8csIIeMiM1U51d3hxNmCn0aRBtVwRO0ASQB74Vegx9gn8buWwF>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelkedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepgfelteeuteekgeeikeehtefhffelteekieeigfeuffehvdev
-    ieetheekffegudevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
-    hiii
-X-ME-Proxy: <xmx:Ykp6Zcrcit-uNyfYtl8VniKKaDk_5H1JP-tJhdxfUiv4ON1f3Ivdkw>
-    <xmx:Ykp6ZVpC-eITjFHKVxLTuvxMKk9dv4VVcF-yGp1WkUmTbCMk1EyhOw>
-    <xmx:Ykp6ZaS4nE2_OIhtOZkhp7Bu0_N3m1hM4loh4S3_blq_wX83ILwnjA>
-    <xmx:Ykp6Zc6tx-p830khytyhDdSWCcgbQo-KjUrAnuH7aT276yb0q72vDxLJdOM>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 13 Dec 2023 19:20:48 -0500 (EST)
-Date: Wed, 13 Dec 2023 17:20:47 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: mykolal@fb.com, song@kernel.org, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	devel@linux-ipsec.org, netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	shuah@kernel.org, daniel@iogearbox.net, steffen.klassert@secunet.com, 
-	antony.antony@secunet.com, alexei.starovoitov@gmail.com, yonghong.song@linux.dev, 
-	eddyz87@gmail.com, eyal.birger@gmail.com, Kuniyuki Iwashima <kuniyu@amazon.com>, 
-	Kuniyuki Iwashima <kuni1840@gmail.com>
-Subject: Re: [PATCH bpf-next v5 5/9] bpf: selftests: Add verifier tests for
- CO-RE bitfield writes
-Message-ID: <qydvklkwevtrqhz5vyy2gwvdxc55hupvgan4l7nzoteo3cfudm@cr52rpydfzm4>
-References: <cover.1702325874.git.dxu@dxuuu.xyz>
- <72698a1080fa565f541d5654705255984ea2a029.1702325874.git.dxu@dxuuu.xyz>
- <85bb2e79-5b1a-41c1-972f-9f7f185fac88@linux.dev>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E6A389;
+	Thu, 14 Dec 2023 00:30:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 577F0C433C9;
+	Thu, 14 Dec 2023 00:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702513831;
+	bh=9g6Jw7jQMW4DBMMjTRFcmVDsDjXvxNPEQuKPf9QHE2k=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Bmz6VBboWEHTtU3pVIM7dxNdGivW22/D19THN3Jb0T4aFgyfl1cIr185XqhFcxyGo
+	 I6P6Qure3ZkiGC1YbTc+sL54SNMj17gyXkd3BLeMr58mBvQh6conSsbmjWGJ5MOlId
+	 XiXOXvk4L228blyxTrXrlJ86qrfe+i80y476FCDgK5/pxScDKtw6VNmXetJBR0EImr
+	 QvbMW1RRouilgLGyG+2s9RxbIW6/Wpn2j+I3uxkt0zbiWf6MP97oIApq7eHXHEFa7l
+	 gfKQcNw/qtZX8hb9Ni0GPlQcIQEvsMUFjFb48j2/2n+GqSVUIsVMn8v6orgqZNZ96o
+	 QmSFHSGHposkw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 377AFC4314C;
+	Thu, 14 Dec 2023 00:30:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85bb2e79-5b1a-41c1-972f-9f7f185fac88@linux.dev>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v8 00/18] XDP metadata via kfuncs for ice + VLAN hint
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170251383122.31876.14972412954023662585.git-patchwork-notify@kernel.org>
+Date: Thu, 14 Dec 2023 00:30:31 +0000
+References: <20231205210847.28460-1-larysa.zaremba@intel.com>
+In-Reply-To: <20231205210847.28460-1-larysa.zaremba@intel.com>
+To: Larysa Zaremba <larysa.zaremba@intel.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, dsahern@gmail.com, kuba@kernel.org,
+ willemb@google.com, hawk@kernel.org, anatoly.burakov@intel.com,
+ alexandr.lobakin@intel.com, magnus.karlsson@gmail.com, mtahhan@redhat.com,
+ xdp-hints@xdp-project.net, netdev@vger.kernel.org,
+ willemdebruijn.kernel@gmail.com, alexei.starovoitov@gmail.com,
+ tariqt@mellanox.com, saeedm@mellanox.com, maciej.fijalkowski@intel.com
 
-On Wed, Dec 13, 2023 at 03:58:39PM -0800, Martin KaFai Lau wrote:
-> On 12/11/23 12:20 PM, Daniel Xu wrote:
-> > Add some tests that exercise BPF_CORE_WRITE_BITFIELD() macro. Since some
-> > non-trivial bit fiddling is going on, make sure various edge cases (such
-> > as adjacent bitfields and bitfields at the edge of structs) are
-> > exercised.
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Tue,  5 Dec 2023 22:08:29 +0100 you wrote:
+> This series introduces XDP hints via kfuncs [0] to the ice driver.
 > 
-> Hi DanielXu, I have pushed the libbpf changes (adding
-> BPF_CORE_WRITE_BITFIELD) and verifier test in patch 3-5 which is useful by
-> itself. e.g. Another patchset can start using it also:
-> https://lore.kernel.org/bpf/8fccb066-6d17-4fa8-ba67-287042046ea4@linux.dev/
+> Series brings the following existing hints to the ice driver:
+>  - HW timestamp
+>  - RX hash with type
 > 
-> Thanks.
+> Series also introduces VLAN tag with protocol XDP hint, it now be accessed by
+> XDP and userspace (AF_XDP) programs. They can also be checked with xdp_metadata
+> test and xdp_hw_metadata program.
+> 
+> [...]
 
-Sounds good. I'll rebase my patchset on top of bpf-next.
+Here is the summary with links:
+  - [bpf-next,v8,01/18] ice: make RX hash reading code more reusable
+    https://git.kernel.org/bpf/bpf-next/c/9244384e811e
+  - [bpf-next,v8,02/18] ice: make RX HW timestamp reading code more reusable
+    https://git.kernel.org/bpf/bpf-next/c/3310aad20def
+  - [bpf-next,v8,03/18] ice: Make ptype internal to descriptor info processing
+    https://git.kernel.org/bpf/bpf-next/c/6b62a4214903
+  - [bpf-next,v8,04/18] ice: Introduce ice_xdp_buff
+    https://git.kernel.org/bpf/bpf-next/c/d951c14ad237
+  - [bpf-next,v8,05/18] ice: Support HW timestamp hint
+    https://git.kernel.org/bpf/bpf-next/c/9031d5f491b9
+  - [bpf-next,v8,06/18] ice: Support RX hash XDP hint
+    https://git.kernel.org/bpf/bpf-next/c/0e6a7b095970
+  - [bpf-next,v8,07/18] xsk: add functions to fill control buffer
+    https://git.kernel.org/bpf/bpf-next/c/b4e352ff1169
+  - [bpf-next,v8,08/18] ice: Support XDP hints in AF_XDP ZC mode
+    https://git.kernel.org/bpf/bpf-next/c/d68d707dcbbf
+  - [bpf-next,v8,09/18] xdp: Add VLAN tag hint
+    https://git.kernel.org/bpf/bpf-next/c/e6795330f88b
+  - [bpf-next,v8,10/18] ice: Implement VLAN tag hint
+    https://git.kernel.org/bpf/bpf-next/c/714ed949c6f3
+  - [bpf-next,v8,11/18] ice: use VLAN proto from ring packet context in skb path
+    https://git.kernel.org/bpf/bpf-next/c/b591137c4ec3
+  - [bpf-next,v8,12/18] veth: Implement VLAN tag XDP hint
+    https://git.kernel.org/bpf/bpf-next/c/fca783799f64
+  - [bpf-next,v8,13/18] net: make vlan_get_tag() return -ENODATA instead of -EINVAL
+    https://git.kernel.org/bpf/bpf-next/c/537fec0733c4
+  - [bpf-next,v8,14/18] mlx5: implement VLAN tag XDP hint
+    https://git.kernel.org/bpf/bpf-next/c/7978bad4b6b9
+  - [bpf-next,v8,15/18] selftests/bpf: Allow VLAN packets in xdp_hw_metadata
+    https://git.kernel.org/bpf/bpf-next/c/e71a9fa7fdb2
+  - [bpf-next,v8,16/18] selftests/bpf: Add flags and VLAN hint to xdp_hw_metadata
+    https://git.kernel.org/bpf/bpf-next/c/8e68a4beba94
+  - [bpf-next,v8,17/18] selftests/bpf: Add AF_INET packet generation to xdp_metadata
+    https://git.kernel.org/bpf/bpf-next/c/a3850af4ea25
+  - [bpf-next,v8,18/18] selftests/bpf: Check VLAN tag and proto in xdp_metadata
+    https://git.kernel.org/bpf/bpf-next/c/4c6612f6100c
 
-Thanks,
-Daniel
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
