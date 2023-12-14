@@ -1,223 +1,265 @@
-Return-Path: <bpf+bounces-17874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4794B813B78
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 21:25:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616B0813BA1
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 21:38:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1C68283114
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 20:25:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 84D781C21AF7
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 20:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842376A345;
-	Thu, 14 Dec 2023 20:25:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="XssIEsre";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="n7nuOxai"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1D26A35A;
+	Thu, 14 Dec 2023 20:38:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821AC675CD;
-	Thu, 14 Dec 2023 20:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailnew.west.internal (Postfix) with ESMTP id 346A72B007D8;
-	Thu, 14 Dec 2023 15:24:56 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 14 Dec 2023 15:24:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1702585495;
-	 x=1702592695; bh=+t4pVgVSi2R2QRypiJjLIGqmBMSDOZdJg7dHN9HfN3g=; b=
-	XssIEsreV4K1heTY+91HoJX52cZPmrrpOYEqSO83jF/mx/4N9g6qLaN67bxVdlrM
-	gbQLIWXkwxqDkExCf8o5OMz2J8aWyy3eOgm1UZAbT3sEUzWeIg63AmOvo1mD+Ef8
-	YaraA/fKVPL8YZWtMa3YKKNttWkdo6wQ7aXGywwsf7iOpRyH7G9U+PPe5vvu6GHq
-	irs0SMewZVr0KKLtdNWRV4ZGRD7QdMLFXE+Ih3ziDTtiJW+RaByNl4dKIcV8DRkF
-	rt77Mf8rw/d4C0CYFA1x/ugMUTFQoJJcv+AwFFJyP5dy8MUL/Wp1wvxPwkP9jTlK
-	cmq89oQMUShG6CPmvnovEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702585495; x=
-	1702592695; bh=+t4pVgVSi2R2QRypiJjLIGqmBMSDOZdJg7dHN9HfN3g=; b=n
-	7nuOxaiJegwukTTbdEOHgVrsaojYuvEbAZGMkrWLg+wxWGYwt2jmpak/zFoaI8Ei
-	Q9lqu2AD6MNZictbUqPH+/xqEex2VCRCAdbn7vbdeOwdo7Fl1VzXi932RL0xSw/L
-	xfa0lSqusL8YeIxoJ59m8H7fkOjd2gF4bHd+syamQJxseVcjrVbCANtuRLUBx1yR
-	tRDqKMyZg0APRmKHsmDleWuV0JbfVq2XsgYJGzLJlEZpuQqvF1AV9SZYkBR2Vd2W
-	PWnLCQUIHPOEVCkLIEjHCbMXEsSpc/c3ZaTso/55ETAE7/HG7ZfKiq9ii49VIZi0
-	ejkPVVzP93VFmU0MJviig==
-X-ME-Sender: <xms:l2R7ZVgsl6HJ6-vzvv9P299qixo0hDZrWux9ZFimb8nmjaEl6oHZOA>
-    <xme:l2R7ZaANSxi_Q1vKDkiWuou3LW3xVmvcbENZkWL3kNQjgwW92mwO7we1A0nBwrM4t
-    HbEamfBpngp50acQA>
-X-ME-Received: <xmr:l2R7ZVHlEg1prvGc6mN8Z4u_fhGuBIQTPhNS8M2GbWBsQYd1oTr2yHhMurLis6YKooJCxbJ9yGLDOO-FkYRKGjcRfVmBcHERfhGCrow>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledgudefhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
-    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:l2R7ZaTVoXTmId-GbkkIGRmhGaWXuWPcdD6_C5r1Hu-yzcXnl0jhyw>
-    <xmx:l2R7ZSwTTXZWGTwF7ArpmKY8WpeTsSmOHWfQXQhpPo7r_Me01b5Mfw>
-    <xmx:l2R7ZQ5OgfOSnYuoe3ksj1o7Dd0JMpmbtHTQ9R-kK5Ffh5jHP019EA>
-    <xmx:l2R7ZZL9cMn54QLmQHESJvSRjlZCbZr3vUZp3PiG4iUFJ6V_iIAg_jwyLRs>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Dec 2023 15:24:53 -0500 (EST)
-Date: Thu, 14 Dec 2023 13:24:51 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net, 
-	davem@davemloft.net, shuah@kernel.org, ast@kernel.org, john.fastabend@gmail.com, 
-	kuba@kernel.org, andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com, 
-	antony.antony@secunet.com, alexei.starovoitov@gmail.com, yonghong.song@linux.dev, 
-	eddyz87@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <i6kxylvo5hcttmjmhpjrmwdaxe4bi6cggk32js72ivr7qelknc@qnjkmr3df3b5>
-References: <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
- <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
- <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
- <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
- <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
- <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
- <CAHsH6Gu_c29Nc+cH-s3EeztwScL=A42wi_SuJD=WeYV0mtVxbA@mail.gmail.com>
- <CAP01T76ZtehyRidmnV5A0p3LCyjw6Q4sjRH6ZhczgGn1ap-x_g@mail.gmail.com>
- <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
- <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C477B3BB48
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 20:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 7DB9A2B83FEC9; Thu, 14 Dec 2023 12:38:15 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Hou Tao <houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v6 1/2] bpf: Fix a race condition between btf_put() and map_free()
+Date: Thu, 14 Dec 2023 12:38:15 -0800
+Message-Id: <20231214203815.1469107-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 11:23:02AM -0700, Daniel Xu wrote:
-> On Thu, Dec 14, 2023 at 05:16:08PM +0100, Kumar Kartikeya Dwivedi wrote:
-> > On Thu, 14 Dec 2023 at 17:08, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
-> > >
-> > > On Thu, 14 Dec 2023 at 00:49, Eyal Birger <eyal.birger@gmail.com> wrote:
-> > > >
-> > > > On Wed, Dec 13, 2023 at 3:15 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > > > > [...]
-> > > > > > >
-> > > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > index c0dd38616562..f00dba85ac5d 100644
-> > > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > > @@ -8,8 +8,9 @@
-> > > > > > >   */
-> > > > > > >  #include "vmlinux.h"
-> > > > > > >  #include <bpf/bpf_core_read.h>
-> > > > > > > -#include <bpf/bpf_helpers.h>
-> > > > > > >  #include <bpf/bpf_endian.h>
-> > > > > > > +#include <bpf/bpf_helpers.h>
-> > > > > > > +#include "bpf_experimental.h"
-> > > > > > >  #include "bpf_kfuncs.h"
-> > > > > > >  #include "bpf_tracing_net.h"
-> > > > > > >
-> > > > > > > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > > > > >         opts.family = AF_INET;
-> > > > > > >
-> > > > > > >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > > > > > -       if (!x || opts.error)
-> > > > > > > +       if (!x)
-> > > > > > >                 goto out;
-> > > > > > > +       bpf_assert_with(opts.error == 0, XDP_PASS);
-> > > > > > >
-> > > > > > >         if (!x->replay_esn)
-> > > > > > >                 goto out;
-> > > > > > >
-> > > > > > > results in:
-> > > > > > >
-> > > > > > > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
-> > > > > > > 58: (85) call bpf_throw#115436
-> > > > > > > calling kernel function bpf_throw is not allowed
-> > > > > > >
-> > > > > >
-> > > > > > I think this might be because bpf_throw is not registered for use by
-> > > > > > BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
-> > > > > > this program type as well, since it's already done for TC.
-> > > > >
-> > > > > Ah yeah, that was it.
-> > > > >
-> > > > > >
-> > > > > > > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
-> > > > > > > but I can run the exceptions selftests just fine with the same bzImage.
-> > > > > > > So I'm thinking it's not a kfunc registration or BTF issue.
-> > > > > > >
-> > > > > > > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
-> > > > > > >
-> > > > > >
-> > > > > > Yes, even once you enable this, this will fail for now. I am sending
-> > > > > > out a series later this week that enables bpf_throw with acquired
-> > > > > > references, but until then may I suggest the following:
-> > > > > >
-> > > > > > #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
-> > > > > > && !___j; bpf_throw(), ___i++)
-> > > > > >
-> > > > > > This will allow you to insert some cleanup code with an assertion.
-> > > > > > Then in my series, I will convert this temporary bpf_assert_if back to
-> > > > > > the normal bpf_assert.
-> > > > > >
-> > > > > > It would look like:
-> > > > > > bpf_assert_if(opts.error == 0) {
-> > > > > >   // Execute if assertion failed
-> > > > > >   bpf_xdp_xfrm_state_release(x);
-> > > > > > }
-> > > > > >
-> > > > > > Likewise for bpf_assert_with_if, you get the idea.
-> > > > >
-> > > > > I gave it a try and I'm getting this compile error:
-> > > > >
-> > > > >         progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
-> > > > >                 bpf_assert_with_if(opts.error == 0, XDP_PASS) {
-> > > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > > >         /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
-> > > > >                 for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
-> > > > >                                                     ^~~~      ~~~~
-> > > > >         1 error generated.
-> > > > >         make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
-> > > > >
-> > > > > Seems like the compiler is being clever.
-> > > >
-> > > > It looks like ___j is used twice - maybe it was meant to be ___i? i.e.:
-> > > >
-> > > >    for (int ___i = 0, ___j = (cond); !(___j) && !___i; bpf_throw(value), ___i++)
-> > > >
-> > >
-> > > Ah, yes, that's a typo. Eyal is right, it should be ___i.
-> > 
-> > Additionally, I would modify the macro to do ___j = !!(cond).
-> 
-> Makes sense. Will send out v6 with these fixes today.
-> 
+When running `./test_progs -j` in my local vm with latest kernel,
+I once hit a kasan error like below:
 
-Looks like only x86 supports exceptions (looking at
-bpf_jit_supports_exceptions()).
+  [ 1887.184724] BUG: KASAN: slab-use-after-free in bpf_rb_root_free+0x1f=
+8/0x2b0
+  [ 1887.185599] Read of size 4 at addr ffff888106806910 by task kworker/=
+u12:2/2830
+  [ 1887.186498]
+  [ 1887.186712] CPU: 3 PID: 2830 Comm: kworker/u12:2 Tainted: G         =
+  OEL     6.7.0-rc3-00699-g90679706d486-dirty #494
+  [ 1887.188034] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
+IOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+  [ 1887.189618] Workqueue: events_unbound bpf_map_free_deferred
+  [ 1887.190341] Call Trace:
+  [ 1887.190666]  <TASK>
+  [ 1887.190949]  dump_stack_lvl+0xac/0xe0
+  [ 1887.191423]  ? nf_tcp_handle_invalid+0x1b0/0x1b0
+  [ 1887.192019]  ? panic+0x3c0/0x3c0
+  [ 1887.192449]  print_report+0x14f/0x720
+  [ 1887.192930]  ? preempt_count_sub+0x1c/0xd0
+  [ 1887.193459]  ? __virt_addr_valid+0xac/0x120
+  [ 1887.194004]  ? bpf_rb_root_free+0x1f8/0x2b0
+  [ 1887.194572]  kasan_report+0xc3/0x100
+  [ 1887.195085]  ? bpf_rb_root_free+0x1f8/0x2b0
+  [ 1887.195668]  bpf_rb_root_free+0x1f8/0x2b0
+  [ 1887.196183]  ? __bpf_obj_drop_impl+0xb0/0xb0
+  [ 1887.196736]  ? preempt_count_sub+0x1c/0xd0
+  [ 1887.197270]  ? preempt_count_sub+0x1c/0xd0
+  [ 1887.197802]  ? _raw_spin_unlock+0x1f/0x40
+  [ 1887.198319]  bpf_obj_free_fields+0x1d4/0x260
+  [ 1887.198883]  array_map_free+0x1a3/0x260
+  [ 1887.199380]  bpf_map_free_deferred+0x7b/0xe0
+  [ 1887.199943]  process_scheduled_works+0x3a2/0x6c0
+  [ 1887.200549]  worker_thread+0x633/0x890
+  [ 1887.201047]  ? __kthread_parkme+0xd7/0xf0
+  [ 1887.201574]  ? kthread+0x102/0x1d0
+  [ 1887.202020]  kthread+0x1ab/0x1d0
+  [ 1887.202447]  ? pr_cont_work+0x270/0x270
+  [ 1887.202954]  ? kthread_blkcg+0x50/0x50
+  [ 1887.203444]  ret_from_fork+0x34/0x50
+  [ 1887.203914]  ? kthread_blkcg+0x50/0x50
+  [ 1887.204397]  ret_from_fork_asm+0x11/0x20
+  [ 1887.204913]  </TASK>
+  [ 1887.204913]  </TASK>
+  [ 1887.205209]
+  [ 1887.205416] Allocated by task 2197:
+  [ 1887.205881]  kasan_set_track+0x3f/0x60
+  [ 1887.206366]  __kasan_kmalloc+0x6e/0x80
+  [ 1887.206856]  __kmalloc+0xac/0x1a0
+  [ 1887.207293]  btf_parse_fields+0xa15/0x1480
+  [ 1887.207836]  btf_parse_struct_metas+0x566/0x670
+  [ 1887.208387]  btf_new_fd+0x294/0x4d0
+  [ 1887.208851]  __sys_bpf+0x4ba/0x600
+  [ 1887.209292]  __x64_sys_bpf+0x41/0x50
+  [ 1887.209762]  do_syscall_64+0x4c/0xf0
+  [ 1887.210222]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
+  [ 1887.210868]
+  [ 1887.211074] Freed by task 36:
+  [ 1887.211460]  kasan_set_track+0x3f/0x60
+  [ 1887.211951]  kasan_save_free_info+0x28/0x40
+  [ 1887.212485]  ____kasan_slab_free+0x101/0x180
+  [ 1887.213027]  __kmem_cache_free+0xe4/0x210
+  [ 1887.213514]  btf_free+0x5b/0x130
+  [ 1887.213918]  rcu_core+0x638/0xcc0
+  [ 1887.214347]  __do_softirq+0x114/0x37e
 
-This causes selftests in this patchset to fail on !x86, which is
-unfortunate. We probably want to be running these tests on all the major
-archs, so I will drop the assertion patches from this patchset.
+The error happens at bpf_rb_root_free+0x1f8/0x2b0:
 
-But since they're generally useful and I've already written the
-selftests for it, I could put them up in another patchset? Or maybe not
-cuz you're gonna fix it later anyways. WDYT?
+  00000000000034c0 <bpf_rb_root_free>:
+  ; {
+    34c0: f3 0f 1e fa                   endbr64
+    34c4: e8 00 00 00 00                callq   0x34c9 <bpf_rb_root_free+=
+0x9>
+    34c9: 55                            pushq   %rbp
+    34ca: 48 89 e5                      movq    %rsp, %rbp
+  ...
+  ;       if (rec && rec->refcount_off >=3D 0 &&
+    36aa: 4d 85 ed                      testq   %r13, %r13
+    36ad: 74 a9                         je      0x3658 <bpf_rb_root_free+=
+0x198>
+    36af: 49 8d 7d 10                   leaq    0x10(%r13), %rdi
+    36b3: e8 00 00 00 00                callq   0x36b8 <bpf_rb_root_free+=
+0x1f8>
+                                        <=3D=3D=3D=3D kasan function
+    36b8: 45 8b 7d 10                   movl    0x10(%r13), %r15d
+                                        <=3D=3D=3D=3D use-after-free load
+    36bc: 45 85 ff                      testl   %r15d, %r15d
+    36bf: 78 8c                         js      0x364d <bpf_rb_root_free+=
+0x18d>
 
-Thanks,
-Daniel
+So the problem is at rec->refcount_off in the above.
+
+I did some source code analysis and find the reason.
+                                  CPU A                        CPU B
+  bpf_map_put:
+    ...
+    btf_put with rcu callback
+    ...
+    bpf_map_free_deferred
+      with system_unbound_wq
+    ...                          ...                           ...
+    ...                          btf_free_rcu:                 ...
+    ...                          ...                           bpf_map_fr=
+ee_deferred:
+    ...                          ...
+    ...         --------->       btf_struct_metas_free()
+    ...         | race condition ...
+    ...         --------->                                     map->ops->=
+map_free()
+    ...
+    ...                          btf->struct_meta_tab =3D NULL
+
+In the above, map_free() corresponds to array_map_free() and eventually
+calling bpf_rb_root_free() which calls:
+  ...
+  __bpf_obj_drop_impl(obj, field->graph_root.value_rec, false);
+  ...
+
+Here, 'value_rec' is assigned in btf_check_and_fixup_fields() with follow=
+ing code:
+
+  meta =3D btf_find_struct_meta(btf, btf_id);
+  if (!meta)
+    return -EFAULT;
+  rec->fields[i].graph_root.value_rec =3D meta->record;
+
+So basically, 'value_rec' is a pointer to the record in struct_metas_tab.
+And it is possible that that particular record has been freed by
+btf_struct_metas_free() and hence we have a kasan error here.
+
+Actually it is very hard to reproduce the failure with current bpf/bpf-ne=
+xt
+code, I only got the above error once. To increase reproducibility, I add=
+ed
+a delay in bpf_map_free_deferred() to delay map->ops->map_free(), which
+significantly increased reproducibility.
+
+  diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+  index 5e43ddd1b83f..aae5b5213e93 100644
+  --- a/kernel/bpf/syscall.c
+  +++ b/kernel/bpf/syscall.c
+  @@ -695,6 +695,7 @@ static void bpf_map_free_deferred(struct work_struc=
+t *work)
+        struct bpf_map *map =3D container_of(work, struct bpf_map, work);
+        struct btf_record *rec =3D map->record;
+
+  +     mdelay(100);
+        security_bpf_map_free(map);
+        bpf_map_release_memcg(map);
+        /* implementation dependent freeing */
+
+Hao also provided test cases ([1]) for easily reproducing the above issue=
+.
+
+There are two ways to fix the issue, the v1 of the patch ([2]) moving
+btf_put() after map_free callback, and the v5 of the patch ([3]) using
+a kptr style fix which tries to get a btf reference during
+map_check_btf(). Each approach has its pro and cons. The first approach
+delays freeing btf while the second approach needs to acquire reference
+depending on context which makes logic not very elegant and may
+complicate things with future new data structures. Alexei
+suggested in [4] going back to v1 which is what this patch
+tries to do.
+
+Rerun './test_progs -j' with the above mdelay() hack for a couple
+of times and didn't observe the error for the above rb_root test cases.
+Running Hou's test ([1]) is also successful.
+
+  [1] https://lore.kernel.org/bpf/20231207141500.917136-1-houtao@huaweicl=
+oud.com/
+  [2] v1: https://lore.kernel.org/bpf/20231204173946.3066377-1-yonghong.s=
+ong@linux.dev/
+  [3] v5: https://lore.kernel.org/bpf/20231208041621.2968241-1-yonghong.s=
+ong@linux.dev/
+  [4] v4: https://lore.kernel.org/bpf/CAADnVQJ3FiXUhZJwX_81sjZvSYYKCFB3BT=
+6P8D59RS2Gu+0Z7g@mail.gmail.com/
+
+Cc: Hou Tao <houtao@huaweicloud.com>
+Fixes: 958cf2e273f0 ("bpf: Introduce bpf_obj_new")
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/bpf/syscall.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 3fcf7741146a..8faa1a20edf8 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -692,6 +692,7 @@ static void bpf_map_free_deferred(struct work_struct =
+*work)
+ {
+ 	struct bpf_map *map =3D container_of(work, struct bpf_map, work);
+ 	struct btf_record *rec =3D map->record;
++	struct btf *btf =3D map->btf;
+=20
+ 	security_bpf_map_free(map);
+ 	bpf_map_release_memcg(map);
+@@ -707,6 +708,10 @@ static void bpf_map_free_deferred(struct work_struct=
+ *work)
+ 	 * template bpf_map struct used during verification.
+ 	 */
+ 	btf_record_free(rec);
++	/* Delay freeing of btf for maps, as map_free callback may need
++	 * struct_meta info which will be freed with btf_put().
++	 */
++	btf_put(btf);
+ }
+=20
+ static void bpf_map_put_uref(struct bpf_map *map)
+@@ -747,7 +752,6 @@ void bpf_map_put(struct bpf_map *map)
+ 	if (atomic64_dec_and_test(&map->refcnt)) {
+ 		/* bpf_map_free_id() must be called first */
+ 		bpf_map_free_id(map);
+-		btf_put(map->btf);
+=20
+ 		WARN_ON_ONCE(atomic64_read(&map->sleepable_refcnt));
+ 		if (READ_ONCE(map->free_after_mult_rcu_gp))
+--=20
+2.34.1
+
 
