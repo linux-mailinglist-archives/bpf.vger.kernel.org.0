@@ -1,203 +1,115 @@
-Return-Path: <bpf+bounces-17890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17887-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C7DF813DF7
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:06:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A94F813DEB
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8063B1C21E2C
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 23:06:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7A782836E1
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 23:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FEE6E2C2;
-	Thu, 14 Dec 2023 23:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB41166AA9;
+	Thu, 14 Dec 2023 23:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Ylob5p1y";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Z8QNha96"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DUtNz1XM"
 X-Original-To: bpf@vger.kernel.org
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7749266AA4;
-	Thu, 14 Dec 2023 23:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id 3FEE73200B6C;
-	Thu, 14 Dec 2023 17:56:50 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 14 Dec 2023 17:56:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1702594609; x=
-	1702681009; bh=L/0CxpH+ItkIN3jpcTP0mXpLYvcBH1FSKHM4RQL+UFM=; b=Y
-	lob5p1y1K4j5mjBFalFycAkqaKaqz1FROzRP7NWkpEROFzy1e6SUuDGfMro/YXW7
-	FhjzgdFCa70PDXuds5aDqFaw53gjddDbSraAF+MhTKm+OBFDkEqWZYP1r6c891Eu
-	FJWJVU5C7/K2myRzOSiegHkravmvJMcDxiaXJ6CkUOmpjIBvUWg+7vPkUaNfMEKM
-	FuKCwOHLdM13dBAyjrwKm8RnC2fZ1umgcmm8JCbTaVGb3pocHmib/cVoNatQ+/Vz
-	vXFOKXun5v8LjJFAJfq/UncZ12je4stK9I/h1Nmdxj7tnM88vWM/U1eLll66IDan
-	9utJ5oH21kB+ke8oFAjbQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702594609; x=
-	1702681009; bh=L/0CxpH+ItkIN3jpcTP0mXpLYvcBH1FSKHM4RQL+UFM=; b=Z
-	8QNha96yOnxWRQSSo1nDSWCFHxIJmkn9MYYFdco3NpHSKLe7MimAxTTHpGymneOn
-	6MLJI4IF8TJ8zEAsdWP2cfpFR/ZM0Ylfphy0HLodutXTIGujX395+upYWsL81wjN
-	x4X1XBmlD06f2OGrC8XYdP/an6b2s7OxfZT2O0Tb4tc+slGTmn1JDgj3YXKCMSes
-	MmZy09onNnLpBo7i0Ymd/NPcL3o/jfSlfa/sSXXYhk5lntMpOwlYrHqd/HDTcvj2
-	dfV8Vt2frgzhmGOpTJc64fq1jV/Yfp5O90iOOTlcLZKNa3ErJgfCC8YgNbjUJNea
-	G6x1YfFa1llnZqwqWOQ9g==
-X-ME-Sender: <xms:MYh7ZQqLDB2aFxr89_HkEd6e3cq0Wq3s2oYc23imxhwnSxJyufausA>
-    <xme:MYh7ZWpLcMT2FG8HKhZtzDOZOnwTfYJ-Ehk5ypqMJDsLju30yDxuOsGtgvo3ZMp6N
-    XFyB7PHxhwllgh3NA>
-X-ME-Received: <xmr:MYh7ZVOwqfCC0ikk9qKO-0kxnNZA5yPPKhDlUlAElT3Ee86lUD1XZcLAvClPnryRyHO4dnSsmnLJkgIsBqJajer8jqxaEJFORjaY3chb12XbUg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddttddgtdefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
-    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
-    vgepudenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:MYh7ZX4RErih6CpEIXgwZdIR6kbw54fNJlOzLCY5goNPZdi2WZ2IeQ>
-    <xmx:MYh7Zf5q1Dtpd4DySwptq0vLjSXnv8SgsYGel5GxGz75mF5mrsOnyw>
-    <xmx:MYh7ZXheoLhmCso0xSoVNLdNqLXG-udhneYFW3JI2FM7EUIQuD9X1w>
-    <xmx:MYh7Zequa_MbO1bt_NrTOInc1lRx5EOcjMrxGTC9VeeL3mk--b8QXA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Dec 2023 17:56:48 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	shuah@kernel.org,
-	memxor@gmail.com
-Cc: mykolal@fb.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 3/3] bpf: selftests: Test bpf_assert_if() and bpf_assert_with_if()
-Date: Thu, 14 Dec 2023 15:56:27 -0700
-Message-ID: <b94a4280fb281f13cba3cc314f4c20a34138e6a6.1702594357.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1702594357.git.dxu@dxuuu.xyz>
-References: <cover.1702594357.git.dxu@dxuuu.xyz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9DF5671E0
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 23:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-54cde11d0f4so68425a12.2
+        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 15:05:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702595107; x=1703199907; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a7t0iV27Q3OZ8kjrArKj8L8QZ6ODP7+c57v6kVhZPOQ=;
+        b=DUtNz1XMSpkDZWRPgNpypU7J0YzC7bFr/D0Pa8Y8no9yCZz8cSjUWldOmS/ic/iEHf
+         xAWPMtKLtOEwxyxclbH5M8ht/k6UMt1eov12n9i2s9pguC0A4FnI2wEsWxRJtS1guAyg
+         kc4R8NAVql63lOBRybz/6rLbwOikprZKc48I/ulKxQudj7x+C/yW3PfIjsXqpBG7uBHY
+         ftYiqadm6g8XfcIBzrbxvd6NU8CPCCsQq9adQAOtzAWWA2m3Hi2u+bQUvJlOkSbf+NAz
+         PaG3zN+PevMAuv9qXK5cMTiKWxmnCCrWtlLLG41R/GmbDVeHtHJFwXLfQX8MJo0iDICE
+         /BwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702595107; x=1703199907;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a7t0iV27Q3OZ8kjrArKj8L8QZ6ODP7+c57v6kVhZPOQ=;
+        b=jTfqkteoEeptVJH5rkSWpM7m4XT9QJI5sXe2v+qTE3rTQzLeOEYAYYEKcWlxDI+z5z
+         XDdq9dw5KYHqoe0qKOsrTyAUd5BuSvJbqtOHAGkWsStFsNsVCV3bOEXZ6cdSzhykvD7a
+         g8n2/GIydxD21dytEkX4GWl6fzmbKfENKcDVkmvJYfJE1XDFo3HdRCRMJMxaRZHn1loo
+         i2EprjUq8HJ1btLX/zvyrxViSwbC6jF+i8YbjZnMQ8/kB5hGiOmjZ1yLUigKU1A89Jhy
+         tHfuf87+Dn0mU0qYZRGMS0u0lSFt+Tr0W0D4FDq/FQxKeQhqs7DRaS8eKiaazg+SfQCV
+         dAQQ==
+X-Gm-Message-State: AOJu0Yz3E9K9KsOZ511JJz8cSycbh2jZCoZ+spc8roHNoedZT1iDPv8i
+	AuOauszl0SY/2ywPEKuA3LXx6EjMr/uc2e5RV02r2Kw0
+X-Google-Smtp-Source: AGHT+IEec9mykCXNT9jo6pkNC4XRXpCoSeaP0Phs1VY8cSHwPmoJ9w0iUPY0/i75odRQ7/Y//fzIXDjUE3rih6o37zM=
+X-Received: by 2002:a05:6512:290:b0:50d:1557:f38b with SMTP id
+ j16-20020a056512029000b0050d1557f38bmr4948841lfp.38.1702594606333; Thu, 14
+ Dec 2023 14:56:46 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231214225016.1209867-1-andrii@kernel.org>
+In-Reply-To: <20231214225016.1209867-1-andrii@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 14 Dec 2023 14:56:34 -0800
+Message-ID: <CAEf4BzZVS-U28tswb8P5scO8aXKCd4cteS=-r4xHvyXb2XVz7A@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/2] BPF FS mount options parsing follow ups
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add some positive and negative test cases that exercise the "callback"
-semantics.
+On Thu, Dec 14, 2023 at 2:50=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+> Original BPF token patch set ([0]) added delegate_xxx mount options which
+> supported only special "any" value and hexadecimal bitmask. This patch se=
+t
+> attempts to make specifying and inspecting these mount options more
+> human-friendly by supporting string constants matching corresponding bpf_=
+cmd,
+> bpf_map_type, bpf_prog_type, and bpf_attach_type enumerators.
+>
+> This implementation relies on BTF information to find all supported symbo=
+lic
+> names. If kernel wasn't built with BTF, BPF FS will still support "any" a=
+nd
+> hex-based mask.
+>
+>   [0] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D80570=
+7&state=3D*
+>
+> v1->v2:
+>   - strip BPF_, BPF_MAP_TYPE_, and BPF_PROG_TYPE_ prefixes,
+>     do case-insensitive comparison, normalize to lower case (Alexei).
+>
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- .../selftests/bpf/prog_tests/exceptions.c     |  5 ++
- .../testing/selftests/bpf/progs/exceptions.c  | 61 +++++++++++++++++++
- 2 files changed, 66 insertions(+)
+Argh, patches are actually from v1, sorry, rebase troubles. Will send
+v3 with the proper version of the code.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/exceptions.c b/tools/testing/selftests/bpf/prog_tests/exceptions.c
-index 516f4a13013c..a41113d72d0d 100644
---- a/tools/testing/selftests/bpf/prog_tests/exceptions.c
-+++ b/tools/testing/selftests/bpf/prog_tests/exceptions.c
-@@ -83,6 +83,11 @@ static void test_exceptions_success(void)
- 	RUN_SUCCESS(exception_assert_range_with, 1);
- 	RUN_SUCCESS(exception_bad_assert_range, 0);
- 	RUN_SUCCESS(exception_bad_assert_range_with, 10);
-+	RUN_SUCCESS(exception_assert_if_body_not_executed, 2);
-+	RUN_SUCCESS(exception_bad_assert_if_body_executed, 1);
-+	RUN_SUCCESS(exception_bad_assert_if_throws, 0);
-+	RUN_SUCCESS(exception_assert_with_if_body_not_executed, 3);
-+	RUN_SUCCESS(exception_bad_assert_with_if_body_executed, 2);
- 
- #define RUN_EXT(load_ret, attach_err, expr, msg, after_link)			  \
- 	{									  \
-diff --git a/tools/testing/selftests/bpf/progs/exceptions.c b/tools/testing/selftests/bpf/progs/exceptions.c
-index 2811ee842b01..e61cb794a305 100644
---- a/tools/testing/selftests/bpf/progs/exceptions.c
-+++ b/tools/testing/selftests/bpf/progs/exceptions.c
-@@ -365,4 +365,65 @@ int exception_bad_assert_range_with(struct __sk_buff *ctx)
- 	return 1;
- }
- 
-+SEC("tc")
-+int exception_assert_if_body_not_executed(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+
-+	bpf_assert_if(time != 0) {
-+		return 1;
-+	}
-+
-+	return 2;
-+}
-+
-+SEC("tc")
-+int exception_bad_assert_if_body_executed(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+
-+	bpf_assert_if(time == 0) {
-+		return 1;
-+	}
-+
-+	return 2;
-+}
-+
-+SEC("tc")
-+int exception_bad_assert_if_throws(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+
-+	bpf_assert_if(time == 0) {
-+	}
-+
-+	return 2;
-+}
-+
-+SEC("tc")
-+int exception_assert_with_if_body_not_executed(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+	int ret = 1;
-+
-+	bpf_assert_with_if(time != 0, ret) {
-+		ret = 2;
-+	}
-+
-+	return 3;
-+}
-+
-+SEC("tc")
-+int exception_bad_assert_with_if_body_executed(struct __sk_buff *ctx)
-+{
-+	u64 time = bpf_ktime_get_ns();
-+	int ret = 1;
-+
-+	bpf_assert_with_if(time == 0, ret) {
-+		ret = 2;
-+	}
-+
-+	return 3;
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.42.1
 
+> Andrii Nakryiko (2):
+>   bpf: support symbolic BPF FS delegation mount options
+>   selftests/bpf: utilize string values for delegate_xxx mount options
+>
+>  kernel/bpf/inode.c                            | 249 +++++++++++++++---
+>  .../testing/selftests/bpf/prog_tests/token.c  |  52 ++--
+>  2 files changed, 243 insertions(+), 58 deletions(-)
+>
+> --
+> 2.34.1
+>
 
