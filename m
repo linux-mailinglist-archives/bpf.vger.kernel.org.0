@@ -1,103 +1,114 @@
-Return-Path: <bpf+bounces-17748-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17749-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D67028123BF
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 01:14:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB2588123D4
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 01:21:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78ECD1F21A07
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 00:14:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2387BB21283
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 00:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1009389;
-	Thu, 14 Dec 2023 00:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69389390;
+	Thu, 14 Dec 2023 00:20:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TMp32I6u"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="F4z/6gY1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="1HSeLWX0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCD8A93
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 16:14:30 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40c3fe6c08fso51674565e9.1
-        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 16:14:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702512869; x=1703117669; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=W0OcKAwifRqNmYgP1XgOh1G6q0pCOL0lDQbJED3LjLk=;
-        b=TMp32I6uTjvwaWUXHIPhjlRcaqE/5GfnJVW3AtDsa+GOJG3+OBk7LQPhi/PI1v8p14
-         qoXrrnxcVo5UsEhusGhzV8YiAEcyyTE9dXi+8iqI32uZIzLrE4Et8GrCpFwiWcn+z8os
-         ZTFZfP41+a0ReIc2SjQ+gdNWsyvLp4wqor9C7tJt+ufkZSPU3GK4+8j7s3/RutqT5/PX
-         NMB7lCfWE9+oeMylrpJfgySV16RS6545+DM3xIbVootT9Z6+pHjvne3pOhv9Nwe0zKsP
-         2pW6/HDi1f6UY0562N/W2/15YLf7sgZuthGMu8WUs0XyYmzabLkuKyzHbnTBYJ3Nak0y
-         pNQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702512869; x=1703117669;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W0OcKAwifRqNmYgP1XgOh1G6q0pCOL0lDQbJED3LjLk=;
-        b=Az0fRVmyV5/qxFY8aaPNmv/CEPQFUVYa0iuj64tjLfTMfy4t/gPqVtkA6ndu8DCPzr
-         yFqaFj6bfvb0jIg/BocP3Dp4dgiwmTJUu+mKgC+EuOHwsIMLdr0cYNQLVK+tt3eJa5hn
-         ZPAg0gArldZb3EPM7IeiH9SKe5Bw2jTan1QOw1EXj3cqgoruBHspK7v/rTyC3Ow1lo1R
-         7PKgYisBKbbp9oOCn0Hs0FIPdVm/QQrTW19BJGDQKRlQZbso3PZNuXDSqt8ZSnfqesHt
-         WFaVTx4Q46HPi0fA58m1rpUiqlDre5tQZMzrfva2O3i4twP6yRSVLRK7WUnn7JyeqBT4
-         K/GA==
-X-Gm-Message-State: AOJu0YwFmUYO2IU5tDOp1zTp7ipRxCm2BamVRgbnrYsFhFwOZXQ2OIUy
-	WT2ezArBxU/ALunfMOD8UXb4F62JyJBZ7g==
-X-Google-Smtp-Source: AGHT+IH00w/aphkxo1L/qfncHcYslksCIpRne2y24X+AeLrdAft6UzrJfl5A4e8ve4WKlU35I2IM+A==
-X-Received: by 2002:a05:600c:2111:b0:40c:3689:5cea with SMTP id u17-20020a05600c211100b0040c36895ceamr2990708wml.197.1702512868883;
-        Wed, 13 Dec 2023 16:14:28 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id iv20-20020a05600c549400b0040c4afa027csm11266674wmb.13.2023.12.13.16.14.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 16:14:28 -0800 (PST)
-Message-ID: <e04b9037317987f7f64eac7c6c2f469c50377284.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 10/10] selftests/bpf: add freplace of
- BTF-unreliable main prog test
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
- ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org,
- kernel-team@meta.com
-Date: Thu, 14 Dec 2023 02:14:27 +0200
-In-Reply-To: <CAEf4BzZz2cMf787nu9Ldz2YwuZRSF9w9fCmJT=E=+=t99BiZMA@mail.gmail.com>
-References: <20231212232535.1875938-1-andrii@kernel.org>
-	 <20231212232535.1875938-11-andrii@kernel.org>
-	 <f94dd0e3404253936b7489ea9aee3a530749c633.camel@gmail.com>
-	 <CAEf4BzaeEhfFB=ZSQO=i8hT6OP1bkT4b2pzHoViFA4Q_Vju1tA@mail.gmail.com>
-	 <795bfa3fef7bb0252d5e1d7fd721880ddfae0ecc.camel@gmail.com>
-	 <CAEf4BzZz2cMf787nu9Ldz2YwuZRSF9w9fCmJT=E=+=t99BiZMA@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD37C9;
+	Wed, 13 Dec 2023 16:20:54 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailnew.west.internal (Postfix) with ESMTP id 432AF2B002DA;
+	Wed, 13 Dec 2023 19:20:51 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Wed, 13 Dec 2023 19:20:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1702513250; x=1702520450; bh=A2PcotebGi
+	6VLDzZX2wIz+tqypyvwDgsO7u1srRyogw=; b=F4z/6gY1J9/DjQJZ7WzBgfQnIA
+	3MxGdMgA616hpbu0+SvnCeTWya4Zz4ABDxjPuGA348CeMWn3tizJeMP0g2YT4E8U
+	IG9eSOIv64q1G2/5J+NPhJ2An8U6JkBmyY7jEQ24t8DMUgifv+0Bm8eshDY8DnK5
+	+FCq1KE0REluiG66OMb+r1BwQw33/mUIgH7Ub54SnOmFft2mbgROQPJedS/A6JDP
+	jl6B0e2Cgxlek37mhPyOLaojcR/n78w4hH5ZyvcFqCROYDXnTsCP2w7n1jQjsHAf
+	88ACr0HEQ/uNFeBIEidk60dg5hY51b7+YBEFvtZZBKRmVYxGHy95fLym0hVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1702513250; x=1702520450; bh=A2PcotebGi6VLDzZX2wIz+tqypyv
+	wDgsO7u1srRyogw=; b=1HSeLWX04KCZqIHUNG/EtE3SvGqz5naqjcSTia60LrpB
+	Cw1pLt2We4hWHq2zVCLiFQ15gEj78aA+A6xgo70QxmOxQzh693g5ww2c6cT3eNST
+	FRgUpr/iSi2zVeuQSIheqknxIcKf8sXmJy3XBwqmLsFaH8AlW0Z6WrltTNgNGq1Q
+	LLGya9K1mhYsVe7NcTsyB4NGJRL/ZbK+M4XfQoEzIjNNbyGeMD+174xmoV81vCt3
+	rO2u0OmK0qu6yWw0wiwQJYuwqCcjIQ0EGOH/PhUH63YtIK1q6+LmRVpxtD1oshVY
+	ov2FyVnMomU7Z/HuSrKUpj6pVYqMRyff8BIhHFvYlA==
+X-ME-Sender: <xms:Ykp6ZabkOkPkyq-ckjqIqVkuHIUdLMQAWG8qVxRRBiQZ3fenNBOy2w>
+    <xme:Ykp6Zdaafo5szGuzYflYYFhUZXokE_EmECJOSXfWSewhWijmwXQAxCTp6KkgF_O-j
+    YB1sWGqhqq8Ll6FmA>
+X-ME-Received: <xmr:Ykp6ZU-JrLPO2pGTunjSWbCxphBNoQtzh63iBa51YfeFpG6lrZ8csIIeMiM1U51d3hxNmCn0aRBtVwRO0ASQB74Vegx9gn8buWwF>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelkedgvdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepgfelteeuteekgeeikeehtefhffelteekieeigfeuffehvdev
+    ieetheekffegudevnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdig
+    hiii
+X-ME-Proxy: <xmx:Ykp6Zcrcit-uNyfYtl8VniKKaDk_5H1JP-tJhdxfUiv4ON1f3Ivdkw>
+    <xmx:Ykp6ZVpC-eITjFHKVxLTuvxMKk9dv4VVcF-yGp1WkUmTbCMk1EyhOw>
+    <xmx:Ykp6ZaS4nE2_OIhtOZkhp7Bu0_N3m1hM4loh4S3_blq_wX83ILwnjA>
+    <xmx:Ykp6Zc6tx-p830khytyhDdSWCcgbQo-KjUrAnuH7aT276yb0q72vDxLJdOM>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 13 Dec 2023 19:20:48 -0500 (EST)
+Date: Wed, 13 Dec 2023 17:20:47 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: mykolal@fb.com, song@kernel.org, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	devel@linux-ipsec.org, netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	shuah@kernel.org, daniel@iogearbox.net, steffen.klassert@secunet.com, 
+	antony.antony@secunet.com, alexei.starovoitov@gmail.com, yonghong.song@linux.dev, 
+	eddyz87@gmail.com, eyal.birger@gmail.com, Kuniyuki Iwashima <kuniyu@amazon.com>, 
+	Kuniyuki Iwashima <kuni1840@gmail.com>
+Subject: Re: [PATCH bpf-next v5 5/9] bpf: selftests: Add verifier tests for
+ CO-RE bitfield writes
+Message-ID: <qydvklkwevtrqhz5vyy2gwvdxc55hupvgan4l7nzoteo3cfudm@cr52rpydfzm4>
+References: <cover.1702325874.git.dxu@dxuuu.xyz>
+ <72698a1080fa565f541d5654705255984ea2a029.1702325874.git.dxu@dxuuu.xyz>
+ <85bb2e79-5b1a-41c1-972f-9f7f185fac88@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <85bb2e79-5b1a-41c1-972f-9f7f185fac88@linux.dev>
 
-On Wed, 2023-12-13 at 14:48 -0800, Andrii Nakryiko wrote:
-> On Wed, Dec 13, 2023 at 12:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.=
-com> wrote:
-> >=20
-> > On Wed, 2023-12-13 at 11:25 -0800, Andrii Nakryiko wrote:
-> > [...]
-> > > Yes, if we add a bunch of extra log grabbing and matching logic to
-> > > fexit_bpf2bpf test. Which, honestly, I just didn't want to touch more
-> > > than I absolutely needed to. So I'll use your permission to ignore
-> > > this.
-> >=20
-> > Still think it's useful and diff is not that big:
-> > https://gist.github.com/eddyz87/5f518b96eb4188dd1afd436e811bbef9
->=20
-> Ok, Eduard, ok, I'll add it in this patch in the next revision. It can
-> be done a bit simpler than in your example, though.
+On Wed, Dec 13, 2023 at 03:58:39PM -0800, Martin KaFai Lau wrote:
+> On 12/11/23 12:20 PM, Daniel Xu wrote:
+> > Add some tests that exercise BPF_CORE_WRITE_BITFIELD() macro. Since some
+> > non-trivial bit fiddling is going on, make sure various edge cases (such
+> > as adjacent bitfields and bitfields at the edge of structs) are
+> > exercised.
+> 
+> Hi DanielXu, I have pushed the libbpf changes (adding
+> BPF_CORE_WRITE_BITFIELD) and verifier test in patch 3-5 which is useful by
+> itself. e.g. Another patchset can start using it also:
+> https://lore.kernel.org/bpf/8fccb066-6d17-4fa8-ba67-287042046ea4@linux.dev/
+> 
+> Thanks.
 
-Thank you. Your implementation is indeed cleaner.
+Sounds good. I'll rebase my patchset on top of bpf-next.
+
+Thanks,
+Daniel
 
