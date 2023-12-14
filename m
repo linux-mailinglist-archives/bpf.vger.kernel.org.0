@@ -1,209 +1,252 @@
-Return-Path: <bpf+bounces-17774-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17775-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 805C38125B7
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 04:05:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E668125D7
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 04:18:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E4C0B214E0
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 03:04:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2924C282B0B
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 03:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1ED1376;
-	Thu, 14 Dec 2023 03:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E0517F0;
+	Thu, 14 Dec 2023 03:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XzTBUYwA"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="PWAbJhjI"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b9])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E9AD0
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 19:04:46 -0800 (PST)
-Message-ID: <b0530d96-ab92-47e7-94e9-61b961a73557@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702523084;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WI7Hj39M13g6UnuEBYTxkATXZahu74DIbxQI/ilU9do=;
-	b=XzTBUYwAk8jstjc3/o2QzBvkp140+E+j6/1aPYwkNR9L6hR7ukqZjbMV0ZI2zUGPH3rYb1
-	wzIHScKXe9a/1b7LX0kmbNK99gXMIIy6I9MHSiTPkeZle3eShUyDb9XmLWWXhNhAsuYlQ3
-	v3HQ2LVSSL0r2heHWKZh+sliWVb0gvc=
-Date: Wed, 13 Dec 2023 19:04:33 -0800
+Received: from smtp-fw-6001.amazon.com (smtp-fw-6001.amazon.com [52.95.48.154])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D461F2;
+	Wed, 13 Dec 2023 19:18:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1702523918; x=1734059918;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=q3GxQVQ83igwdUeoDEPp3rCJLWJePuCTOinx/ponSu8=;
+  b=PWAbJhjIk8oczO4xJQun8tFJzZgE9fniBwIQVOkhlF5T8ZUYzZVaeLPH
+   feHkVrhWVAdsYtlQZqrBRkIjt63uTogGBp4PHFpVVyqtXWvZ8IBXKkv2y
+   Vqgsy1zR0fk4NVNZouBdVhPMmGxQCuQwp8m6ZlLrIhRIeVFvzDzSa48Rs
+   A=;
+X-IronPort-AV: E=Sophos;i="6.04,274,1695686400"; 
+   d="scan'208";a="376024089"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-14781fa4.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 03:18:35 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (pdx2-ws-svc-p26-lb5-vlan3.pdx.amazon.com [10.39.38.70])
+	by email-inbound-relay-pdx-2b-m6i4x-14781fa4.us-west-2.amazon.com (Postfix) with ESMTPS id DF66616006D;
+	Thu, 14 Dec 2023 03:18:33 +0000 (UTC)
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.21.151:41821]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.43.236:2525] with esmtp (Farcaster)
+ id 7ae6c683-c30b-440b-8a86-8aebb63243fe; Thu, 14 Dec 2023 03:18:33 +0000 (UTC)
+X-Farcaster-Flow-ID: 7ae6c683-c30b-440b-8a86-8aebb63243fe
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 14 Dec 2023 03:18:32 +0000
+Received: from 88665a182662.ant.amazon.com (10.119.13.146) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.40;
+ Thu, 14 Dec 2023 03:18:28 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <martin.lau@linux.dev>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <dxu@dxuuu.xyz>, <edumazet@google.com>,
+	<kuni1840@gmail.com>, <kuniyu@amazon.com>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v5 bpf-next 6/6] selftest: bpf: Test bpf_sk_assign_tcp_reqsk().
+Date: Thu, 14 Dec 2023 12:18:19 +0900
+Message-ID: <20231214031819.83105-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <8fccb066-6d17-4fa8-ba67-287042046ea4@linux.dev>
+References: <8fccb066-6d17-4fa8-ba67-287042046ea4@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 6/7] libbpf: BPF Static Keys support
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Anton Protopopov <aspsk@isovalent.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
- Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev
- <sdf@google.com>, bpf <bpf@vger.kernel.org>
-References: <ZXNCB5sEendzNj6+@zh-lab-node-5>
- <CAEf4Bzai9X2xQGjEOZvkSkx7ZB9CSSk4oTxoksTVSBoEvR4UsA@mail.gmail.com>
- <CAADnVQJtWVE9+rA2232P4g7ktUJ_+Nfwo+MYpv=6p7+Z9J20hw@mail.gmail.com>
- <bef79c65-e89a-4219-8c8b-750c60e1f2b4@linux.dev>
- <CAADnVQJd1aUFzznLhwNvkN+zot-u3=4A16utY93HoLJrP_vo3w@mail.gmail.com>
- <85aa91f9-d5c0-4e7b-950d-475da7787f64@linux.dev>
- <CAADnVQKZjmwxo0cBiHcp3FkAAmJT850qQJ5_=fAhfOKniJM2Kw@mail.gmail.com>
- <3682c649-6a6a-4f66-b4fa-fbcbb774ae94@linux.dev>
- <8e45c28fa0827be2b01a7cd36aa68750ceff69f5.camel@gmail.com>
- <CAADnVQ+RhX-QY1b5ewNp_K9b+X96PZNbxG8GSpC2xfhwULRNqA@mail.gmail.com>
- <ZXg1ApeYXi0g7WeM@zh-lab-node-5>
- <CAADnVQ+b3_5qzaR9pr6B23xDxCO10iz685tHfsakW3MnoVYMbg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQ+b3_5qzaR9pr6B23xDxCO10iz685tHfsakW3MnoVYMbg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D036UWC004.ant.amazon.com (10.13.139.205) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
+
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Date: Wed, 13 Dec 2023 12:44:42 -0800
+> On 12/10/23 11:36 PM, Kuniyuki Iwashima wrote:
+> > This commit adds a sample selftest to demonstrate how we can use
+> > bpf_sk_assign_tcp_reqsk() as the backend of SYN Proxy.
+> > 
+> > The test creates IPv4/IPv6 x TCP/MPTCP connections and transfer
+> > messages over them on lo with BPF tc prog attached.
+> > 
+> > The tc prog will process SYN and returns SYN+ACK with the following
+> > ISN and TS.  In a real use case, this part will be done by other
+> > hosts.
+> > 
+> >          MSB                                   LSB
+> >    ISN:  | 31 ... 8 | 7 6 |   5 |    4 | 3 2 1 0 |
+> >          |   Hash_1 | MSS | ECN | SACK |  WScale |
+> > 
+> >    TS:   | 31 ... 8 |          7 ... 0           |
+> >          |   Random |           Hash_2           |
+> > 
+> >    WScale in SYN is reused in SYN+ACK.
+> > 
+> > The client returns ACK, and tc prog will recalculate ISN and TS
+> > from ACK and validate SYN Cookie.
+> > 
+> > If it's valid, the prog calls kfunc to allocate a reqsk for skb and
+> > configure the reqsk based on the argument created from SYN Cookie.
+> > 
+> > Later, the reqsk will be processed in cookie_v[46]_check() to create
+> > a connection.
+> 
+> The patch set looks good.
+> 
+> One thing I just noticed is about writing/reading bits into/from "struct 
+> tcp_options_received". More on this below.
+> 
+> [ ... ]
+> 
+> > +void test_tcp_custom_syncookie(void)
+> > +{
+> > +	struct test_tcp_custom_syncookie *skel;
+> > +	int i;
+> > +
+> > +	if (setup_netns())
+> > +		return;
+> > +
+> > +	skel = test_tcp_custom_syncookie__open_and_load();
+> > +	if (!ASSERT_OK_PTR(skel, "open_and_load"))
+> > +		return;
+> > +
+> > +	if (setup_tc(skel))
+> > +		goto destroy_skel;
+> > +
+> > +	for (i = 0; i < ARRAY_SIZE(test_cases); i++) {
+> > +		skel->bss->handled_syn = false;
+> > +		skel->bss->handled_ack = false;
+> > +
+> > +		test__start_subtest(test_cases[i].name);
+> 
+> 
+> This should be tested with:
+> 
+> 	if (!test__start_subtest(test_cases[i].name))
+> 		continue;
+> 
+> to skip the create_connection(). Probably do it at the beginning of the for loop.
+
+Thanks for catching this!
+Will fix.
 
 
-On 12/13/23 6:15 PM, Alexei Starovoitov wrote:
-> On Tue, Dec 12, 2023 at 2:28 AM Anton Protopopov <aspsk@isovalent.com> wrote:
->>
->> This seems to have a benefit that there is no back compatibility issue
->> (if we use r1, because r0/r11 will be rejected by old verifiers). We
->> can have
->>
->>      r1 = 64bit_const
->>      if r1 == r1 goto
->>
->> and
->>
->>      r1 = 64bit_const
->>      if r1 != r1 goto
->>
->> and translate it on prog load to new instruction as JUMP_OF_NOP and
->> NOP_OR_JUMP, correspondingly. On older kernels it will have the
->> default (key is off) behaviour.
-> As Andrii pointed out any new insn either JA with extra bits
-> or special meaning if rX == rX can be sanitized by libbpf
-> into plain JA.
-> There will be no backward compat issues.
->
->> Ok, from BPF arch perspective this can work with two bits (not for
->> practical purposes though, IMO, see my next e-mail).
-> I read this email and I still don't understand why you need a 3rd bit.
->
->>> And the special map really doesn't fit.
->>> Whatever we do, let's keep text_poke-able insn logic separate
->>> from bookkeeping of addresses of those insns.
->>> I think a special prefixed section that is understood by libbpf
->>> (like what I proposed with "name.static_branch") will do fine.
->>> If it's not good enough we can add a "set" map type
->>> that will be a generic set of values.
->>> It can be a set of 8-byte addresses to keep locations of static_branches,
->>> but let's keep it generic.
->>> I think it's fine to add:
->>> __uint(type, BPF_MAP_TYPE_SET)
->>> and let libbpf populate it with addresses of insns,
->>> or address of variables, or other values
->>> when it prepares a program for loading.
->> What is the higher-level API in this case? The static_branch_set(branch,
->> bool on) is not enough because we want to distinguish between "normal"
->> and "inverse" branches (for unlikely/likely cases).
-> What is "likely/unlikely cases" ?
-> likely() is a hint to the compiler to order basic blocks in
-> a certain way. There is no likely/unlikely bit in the binary code
-> after compilation on x86 or other architectures.
->
-> There used to be a special bit on sparc64 that would mean
-> a default jmp|fallthrough action for a conditional jmp.
-> But that was before sparc became out of order and gained proper
-> branch predictor in HW.
->
->>   We can implement
->> this using something like this:
->>
->> static_key_set(key, bool new_value)
->> {
->>      /* true if we change key value */
->>      bool key_changed = key->old_value ^ new_value;
->>
->>      for_each_prog(prog, key)
->>          for_each_branch(branch, prog, key)
->>              static_branch_flip(prog, branch, key_changed)
->> }
->>
->> where static_branch_flip flips the second bit of SRC_REG.
-> I don't understand why you keep bringing up 'flip' use case.
-> The kernel doesn't have such an operation on static branches.
-> Which makes me believe that it wasn't necessary.
-> Why do we need one for the bpf static branch?
->
->> We need to
->> keep track of prog->branches and key->progs. How is this different
->> from what my patch implements?
-> What I'm proposing is to have a generic map __uint(type, BPF_MAP_TYPE_SET)
-> and by naming convention libbpf will populate it with addresses
-> of JA_OR_NOP from all progs.
-> In asm it could be:
-> asm volatile ("r0 = %[set_A] ll; goto_or_nop ...");
-> (and libbpf will remove ld_imm64 from the prog before loading.)
->
-> or via
-> asm volatile ("goto_or_nop ...; .pushsection set_A_name+suffix; .long");
-> (and libbpf will copy from the special section into a set and remove
-> special section).
+> 
+> > +		create_connection(&test_cases[i]);
+> > +
+> > +		ASSERT_EQ(skel->bss->handled_syn, true, "SYN is not handled at tc.");
+> > +		ASSERT_EQ(skel->bss->handled_ack, true, "ACK is not handled at tc");
+> > +	}
+> > +
+> > +destroy_skel:
+> > +	system("tc qdisc del dev lo clsact");
+> > +
+> > +	test_tcp_custom_syncookie__destroy(skel);
+> > +}
+> 
+> [ ... ]
+> 
+> > +static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
+> > +{
+> > +	struct tcp_options_received *tcp_opt = &ctx->attr.tcp_opt;
+> > +	char opcode, opsize;
+> > +
+> > +	if (ctx->ptr + 1 > ctx->data_end)
+> > +		goto stop;
+> > +
+> > +	opcode = *ctx->ptr++;
+> > +
+> > +	if (opcode == TCPOPT_EOL)
+> > +		goto stop;
+> > +
+> > +	if (opcode == TCPOPT_NOP)
+> > +		goto next;
+> > +
+> > +	if (ctx->ptr + 1 > ctx->data_end)
+> > +		goto stop;
+> > +
+> > +	opsize = *ctx->ptr++;
+> > +
+> > +	if (opsize < 2)
+> > +		goto stop;
+> > +
+> > +	switch (opcode) {
+> > +	case TCPOPT_MSS:
+> > +		if (opsize == TCPOLEN_MSS && ctx->tcp->syn &&
+> > +		    ctx->ptr + (TCPOLEN_MSS - 2) < ctx->data_end)
+> > +			tcp_opt->mss_clamp = get_unaligned_be16(ctx->ptr);
+> > +		break;
+> > +	case TCPOPT_WINDOW:
+> > +		if (opsize == TCPOLEN_WINDOW && ctx->tcp->syn &&
+> > +		    ctx->ptr + (TCPOLEN_WINDOW - 2) < ctx->data_end) {
+> > +			tcp_opt->wscale_ok = 1;
+> > +			tcp_opt->snd_wscale = *ctx->ptr;
+> 
+> When writing to a bitfield of "struct tcp_options_received" which is a kernel 
+> struct, it needs to use the CO-RE api. The BPF_CORE_WRITE_BITFIELD has not been 
+> landed yet: 
+> https://lore.kernel.org/bpf/4d3dd215a4fd57d980733886f9c11a45e1a9adf3.1702325874.git.dxu@dxuuu.xyz/
+> 
+> The same for reading bitfield but BPF_CORE_READ_BITFIELD() has already been 
+> implemented in bpf_core_read.h
+> 
+> Once the BPF_CORE_WRITE_BITFIELD is landed, this test needs to be changed to use 
+> the BPF_CORE_{READ,WRITE}_BITFIELD.
 
-This is one more alternative.
+IIUC, the CO-RE api assumes that the offset of bitfields could be changed.
 
-|asm volatile goto ("r0 = 0; \ static_key_loc_1: \ gotol_or_nop 
-%l[label]; \ r2 = 2; \ r3 = 3; \ ":: : "r0", "r2", "r3" :label);|
+If the size of struct tcp_cookie_attributes is changed, kfunc will not work
+in this test.  So, BPF_CORE_WRITE_BITFIELD() works only when the size of
+tcp_cookie_attributes is unchanged but fields in tcp_options_received are
+rearranged or expanded to use the unused@ bits ?
 
-User code can use libbpf API static_key_enable("|static_key_loc_1|")
-to enable the above gotol_or_nop. static_key_disable("static_key_loc_1")
-or static_key_enabled("static_key_loc_1") can be similary defined.
+Also, do we need to use BPF_CORE_READ() for other non-bitfields in
+strcut tcp_options_received (and ecn_ok in struct tcp_cookie_attributes
+just in case other fields are added to tcp_cookie_attributes and ecn_ok
+is rearranged) ?
 
-Inside the libbpf, it can look at ELF file, find label "static_key_loc_1",
-and also find label's corresponding insn index and verify that
-the insn with label "static_key_loc_1" must be a gotol_or_nop
-or nop_or_gotol insn. Eventually libbpf can call a bpf syscall
-e.g. sys_bpf(cmd=STATIC_KEY_ENABLE, prog_fd, insn_offset)
-to actually change the "current" state to gotol or nop depending
-on what ENABLE means.
+Just trying to understand when to use CO-RE api.
 
-For enable/disable static keys in the bpf program itself,
-similary, bpf program can have bpf_static_key_enable("static_key_loc_1"),
-the libbpf needs to change it to bpf_static_key_enable(insn_offset)
-and kernel verifier should process it properly.
+Btw, thanks for merging BPF_CORE_WRITE_BITFIELD patches!
 
-Slightly different from what Alexei proposed, but another approach
-for consideration and discussion.
 
->
-> It will be a libbpf convention and the kernel doesn't need
-> to know about a special static branch map type or array of addresses
-> in prog_load cmd.
-> Only JA insn is relevant to the verifier and JITs.
->
-> Ideally we don't need to introduce SET map type and
-> libbpf wouldn't need to populate it.
-> If we can make it work with an array of values that .pushsection + .long
-> automatically populates and libbpf treats it as a normal global data array
-> that would be ideal.
-> Insn addresses from all progs will be in that array after loading.
-> Sort of like ".kconfig" section that libbpf populates,
-> but it's a normal array underneath.
->
->> If this is implemented in userspace, then how we prevent synchronous
->> updates of the key (and a relocation variant doesn't seem to work from
->> userspace)? Or is this a new kfunc? If yes, then how is it
->> executed,
-> then user space can have small helper in libbpf that iterates
-> over SET (or array) and
-> calls sys_bpf(cmd=STATIC_BRANCH_ENABLE, one_value_from_set)
->
-> Similar in the kernel. When bpf progs want to enable a key it does
-> bpf_for_each(set) { // open coded iterator
->     bpf_static_branch_enable(addr); // kfunc call
-> }
+> 
+> > +		}
+> > +		break;
+> > +	case TCPOPT_TIMESTAMP:
+> > +		if (opsize == TCPOLEN_TIMESTAMP &&
+> > +		    ctx->ptr + (TCPOLEN_TIMESTAMP - 2) < ctx->data_end) {
+> > +			tcp_opt->saw_tstamp = 1;
+> > +			tcp_opt->rcv_tsval = get_unaligned_be32(ctx->ptr);
+> > +			tcp_opt->rcv_tsecr = get_unaligned_be32(ctx->ptr + 4);
+> > +
+> > +			if (ctx->tcp->syn && tcp_opt->rcv_tsecr)
+> > +				tcp_opt->tstamp_ok = 0;
+> > +			else
+> > +				tcp_opt->tstamp_ok = 1;
+> > +		}
+> > +		break;
+> > +	case TCPOPT_SACK_PERM:
+> > +		if (opsize == TCPOLEN_SACK_PERM && ctx->tcp->syn &&
+> > +		    ctx->ptr + (TCPOLEN_SACK_PERM - 2) < ctx->data_end)
+> > +			tcp_opt->sack_ok = 1;
+> > +		break;
+> > +	}
+> > +
+> > +	ctx->ptr += opsize - 2;
+> > +next:
+> > +	return 0;
+> > +stop:
+> > +	return 1;
+> > +}
 
