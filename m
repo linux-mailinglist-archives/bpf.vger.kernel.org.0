@@ -1,178 +1,352 @@
-Return-Path: <bpf+bounces-17755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D6B812439
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 02:02:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B63F9812441
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 02:04:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A38A72823B1
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 01:02:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAF181C21408
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 01:04:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE731644;
-	Thu, 14 Dec 2023 01:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DBD7644;
+	Thu, 14 Dec 2023 01:03:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DBntZ0O/"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4780ED0
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 17:02:27 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SrDbM0RtTz4f3jq6
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 09:02:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 4E28C1A0ADE
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 09:02:24 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgBXrUsdVHpl+TvGDg--.23799S2;
-	Thu, 14 Dec 2023 09:02:24 +0800 (CST)
-Subject: Re: [PATCH bpf-next v2 3/4] selftests/bpf: Add test for abnormal cnt
- during multi-uprobe attachment
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>,
- John Fastabend <john.fastabend@gmail.com>,
- xingwei lee <xrivendell7@gmail.com>, houtao1@huawei.com
-References: <20231213112531.3775079-1-houtao@huaweicloud.com>
- <20231213112531.3775079-4-houtao@huaweicloud.com> <ZXnC_utPtXeqAIs3@krava>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <44a3dc5c-da03-183c-789c-b37bc6a994b1@huaweicloud.com>
-Date: Thu, 14 Dec 2023 09:02:21 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3341BDD;
+	Wed, 13 Dec 2023 17:03:51 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a22ed5f0440so329238166b.1;
+        Wed, 13 Dec 2023 17:03:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702515829; x=1703120629; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m3SrlC+hYpSzPLFr5CjSsgsdPY2n8eJmYDX6I87pUTc=;
+        b=DBntZ0O/dXo5URmWdmvNcDuoMZUZkOvmo82um/rtkAgVQOiKk1IO4CrpymynbuMkdr
+         Tou9QUl6749O+gWBa2r+HDpszzpGs+v3XLzhi1QQtfZH3deT+Jsf3RY7F48OcYYmCxKA
+         HYDr4FWlUE0CK9sykxG4l1CnqyFDm/tjaMFhfkscz3MqICg36dsVGbjQd6RmHCCcf3/R
+         YjTRaGdrH82TAfWfqZTsR13AwOfPP5aiWXhYBUNLFKN3lr3FmfxiqjBP1fq5+8ZsdKOb
+         +ogug6gsdE2lSKXYIc2DmDmfuTdmArkJiGF9vBiaWjz4QuRhdIWgjy4RTACU+2TXDAZM
+         PQ4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702515829; x=1703120629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m3SrlC+hYpSzPLFr5CjSsgsdPY2n8eJmYDX6I87pUTc=;
+        b=PqbMj+hfxQhr2wOumKkRNkW2cFO+PQ5jXg6vq4XMLUPDm7FQ9k13gc1nbwn9zOJo5w
+         J4XRwXNZs41q9zT4OUyHxrdm6YWIk/KHmQXdsetbn3EBssI0tdi7cy/HrSKrtf/8ZR+o
+         WHGUuwF++Zi13jDU5K6lag5sLcyud66ldM4bE9jm3FQi2+Hl4ddJN+svOHelhe5O+AA8
+         mnQt88vsKjJDUGlfKOJ6Pv9nwQSVEOeQsbaJc5pXwgINn1CLGA+3yP8wFQ9Fg2IIXCFP
+         z9U6Y5FnLQjsRtnJokKSmKGJLsAbmlU8ZlZGTycKDU0czgtzC2Z6AaAFQpzlCaEuYGRN
+         +ZDw==
+X-Gm-Message-State: AOJu0YxMnXd1sqbgui9QTmFTFVmGfhCpibacc4tq1MEImTLAkU3gAshx
+	hvqfG/xqbNG2pZxNtzhFG6YQSutZh/LT/u08V2I=
+X-Google-Smtp-Source: AGHT+IHtdAC0Njvzbhql3hnkBalQDvwqLHHiYtb7gJxUQoTrEykoi/Iw+Z87qLn/YqRAsdlrl1ug0++YSdsDfz3utkI=
+X-Received: by 2002:a17:906:10cb:b0:a1f:99e1:8a65 with SMTP id
+ v11-20020a17090610cb00b00a1f99e18a65mr2364384ejv.155.1702515829319; Wed, 13
+ Dec 2023 17:03:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZXnC_utPtXeqAIs3@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgBXrUsdVHpl+TvGDg--.23799S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw47JrW3XFy7JrW7tFW5Wrg_yoW5uFW7pa
-	9YqFyakF4fXFyUXryavrWjgFyIvF4kur1UuryfWa43JrnFvFn7JF1kKr43CFn3ArZYvan3
-	Zw1Dtr9rG3yUXa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IUbPEf5UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <CACkBjsaecr+VjmfOHzaMbiei5G3WMDjvjp4kZVE79Bn8ib1-Rg@mail.gmail.com>
+ <CAEf4BzYVRwpP6TbXdJeFwMot80FodexyOk2_Y9H2tsJC-3FBUA@mail.gmail.com> <CACkBjsae4bwde6133GrUh-2EcdEhKjb9zj5baRyUxyxdhqQUfQ@mail.gmail.com>
+In-Reply-To: <CACkBjsae4bwde6133GrUh-2EcdEhKjb9zj5baRyUxyxdhqQUfQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 13 Dec 2023 17:03:37 -0800
+Message-ID: <CAEf4BzY=a==C3-ww4GxdLQa=mdCia7Yq+SD8t7B6Ak4oRf+vAg@mail.gmail.com>
+Subject: Re: [Bug Report] bpf: reg invariant voilation after JSLE
+To: Hao Sun <sunhao.th@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 12/13/2023 10:43 PM, Jiri Olsa wrote:
-> On Wed, Dec 13, 2023 at 07:25:30PM +0800, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> If an abnormally huge cnt is used for multi-uprobes attachment, the
->> following warning will be reported:
->>
->>   ------------[ cut here ]------------
->>   WARNING: CPU: 7 PID: 406 at mm/util.c:632 kvmalloc_node+0xd9/0xe0
->>   Modules linked in: bpf_testmod(O)
->>   CPU: 7 PID: 406 Comm: test_progs Tainted: G ...... 6.7.0-rc3+ #32
->>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
->>   RIP: 0010:kvmalloc_node+0xd9/0xe0
->>   ......
->>   Call Trace:
->>    <TASK>
->>    ? __warn+0x89/0x150
->>    ? kvmalloc_node+0xd9/0xe0
->>    bpf_uprobe_multi_link_attach+0x14a/0x480
->>    __sys_bpf+0x14a9/0x2bc0
->>    do_syscall_64+0x36/0xb0
->>    entry_SYSCALL_64_after_hwframe+0x6e/0x76
->>    ......
->>    </TASK>
->>   ---[ end trace 0000000000000000 ]---
->>
->> So add a test to ensure the warning is fixed.
->>
->> Signed-off-by: Hou Tao <houtao1@huawei.com>
->> ---
->>  .../bpf/prog_tests/uprobe_multi_test.c        | 33 ++++++++++++++++++-
->>  1 file changed, 32 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
->> index ece260cf2c0b..0d2a4510e6cf 100644
->> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
->> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
->> @@ -234,6 +234,35 @@ static void test_attach_api_syms(void)
->>  	test_attach_api("/proc/self/exe", NULL, &opts);
->>  }
->>  
->> +static void test_failed_link_api(void)
->> +{
->> +	LIBBPF_OPTS(bpf_link_create_opts, opts);
->> +	const char *path = "/proc/self/exe";
->> +	struct uprobe_multi *skel = NULL;
->> +	unsigned long offset = 0;
->> +	int link_fd = -1;
->> +
->> +	skel = uprobe_multi__open_and_load();
->> +	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
->> +		goto cleanup;
->> +
->> +	/* abnormal cnt */
->> +	opts.uprobe_multi.path = path;
->> +	opts.uprobe_multi.offsets = &offset;
->> +	opts.uprobe_multi.cnt = INT_MAX;
->> +	opts.kprobe_multi.flags = 0;
->      s/k/u/  ^^^ .. or best just remove the line
-
-My bad. Will remove it. Thanks for the ack.
+On Tue, Nov 28, 2023 at 11:44=E2=80=AFPM Hao Sun <sunhao.th@gmail.com> wrot=
+e:
 >
-> jirka
->
->> +	link_fd = bpf_link_create(bpf_program__fd(skel->progs.uprobe), 0,
->> +				  BPF_TRACE_UPROBE_MULTI, &opts);
->> +	if (!ASSERT_ERR(link_fd, "link_fd"))
->> +		goto cleanup;
->> +	if (!ASSERT_EQ(link_fd, -EINVAL, "invalid cnt"))
->> +		goto cleanup;
->> +cleanup:
->> +	if (link_fd >= 0)
->> +		close(link_fd);
->> +	uprobe_multi__destroy(skel);
->> +}
->> +
->>  static void __test_link_api(struct child *child)
->>  {
->>  	int prog_fd, link1_fd = -1, link2_fd = -1, link3_fd = -1, link4_fd = -1;
->> @@ -311,7 +340,7 @@ static void __test_link_api(struct child *child)
->>  	free(offsets);
->>  }
->>  
->> -void test_link_api(void)
->> +static void test_link_api(void)
->>  {
->>  	struct child *child;
->>  
->> @@ -408,6 +437,8 @@ void test_uprobe_multi_test(void)
->>  		test_attach_api_syms();
->>  	if (test__start_subtest("link_api"))
->>  		test_link_api();
->> +	if (test__start_subtest("failed_link_api"))
->> +		test_failed_link_api();
->>  	if (test__start_subtest("bench_uprobe"))
->>  		test_bench_attach_uprobe();
->>  	if (test__start_subtest("bench_usdt"))
->> -- 
->> 2.29.2
->>
+> On Wed, Nov 29, 2023 at 6:43=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Tue, Nov 21, 2023 at 7:08=E2=80=AFAM Hao Sun <sunhao.th@gmail.com> w=
+rote:
+> > >
+> > > Hi,
+> > >
+> > > The following program (reduced) breaks reg invariant:
+> > >
+> > > C Repro: https://pastebin.com/raw/SRQJYx91
+> > >
+> > > -------- Verifier Log --------
+> > > func#0 @0
+> > > 0: R1=3Dctx() R10=3Dfp0
+> > > 0: (b7) r0 =3D -2                       ; R0_w=3D-2
+> > > 1: (37) r0 /=3D 1                       ; R0_w=3Dscalar()
+> > > 2: (bf) r8 =3D r0                       ; R0_w=3Dscalar(id=3D1) R8_w=
+=3Dscalar(id=3D1)
+> > > 3: (56) if w8 !=3D 0xfffffffe goto pc+4         ;
+> > > R8_w=3Dscalar(id=3D1,smin=3D0x80000000fffffffe,smax=3D0x7ffffffffffff=
+ffe,umin=3Dumin32=3D0xfffffffe,umax=3D0xfffffffffffffffe,smin32=3D-2,smax32=
+=3D-2,umax32=3D0xfffffffe,var_off=3D(0xfffffffe;
+> > > 0xffffffff00000000))
+> >
+> > this part looks suspicious, I'll take a look a bit later
+> >
 
+No, it actually is fine. We know that lower 32 bits are exactly
+0xfffffffe (-2), and we propagate that into smin/smax, which are
+narrowed from [0x80....00, 0x7ffff...ff] to [0x80000000fffffffe,
+0x7ffffffffffffffe]. This all looks correct so far. This is not the
+issue.
+
+
+> > > 4: (65) if r8 s> 0xd goto pc+3        ;
+> > > R8_w=3Dscalar(id=3D1,smin=3D0x80000000fffffffe,smax=3D13,umin=3Dumin3=
+2=3D0xfffffffe,umax=3D0xfffffffffffffffe,smin32=3D-2,smax32=3D-2,umax32=3D0=
+xfffffffe,var_off=3D(0xfffffffe;
+> > > 0xffffffff00000000))
+> > > 5: (b7) r4 =3D 2                        ; R4_w=3D2
+> > > 6: (dd) if r8 s<=3D r4 goto pc+1
+> > > REG INVARIANTS VIOLATION (false_reg1): range bounds violation
+> > > u64=3D[0xfffffffe, 0xd] s64=3D[0xfffffffe, 0xd] u32=3D[0xfffffffe, 0x=
+d]
+> > > s32=3D[0x3, 0xfffffffe] var_off=3D(0xfffffffe, 0x0)
+> > > 6: R4_w=3D2 R8_w=3D0xfffffffe
+> > > 7: (cc) w8 s>>=3D w0                    ; R0=3D0xfffffffe R8=3Dscalar=
+()
+> > > 8: (77) r0 >>=3D 32                     ; R0_w=3D0
+> > > 9: (57) r0 &=3D 1                       ; R0_w=3D0
+> > > 10: (95) exit
+> > >
+> > > from 6 to 8: safe
+> > >
+> > > from 4 to 8: safe
+> > >
+> > > from 3 to 8: safe
+> > > processed 14 insns (limit 1000000) max_states_per_insn 0 total_states
+> > > 1 peak_states 1 mark_read 1
+> > >
+> > >
+> > > Besides, the verifier enforces the return value of some prog types to
+> > > be zero, the bug may lead to programs with arbitrary values loaded.
+> >
+> > Generally speaking, if the verifier reports "REG INVARIANTS VIOLATION"
+> > warning above, it doesn't necessarily mean that verifier has some bug.
+> > We do know that in some conditions verifier doesn't detect conditions
+> > that *will not* be taken, and in such cases we might get reg
+> > invariants violation. But in such case verifier will revert to
+> > conservative unknown scalar state, which is correct, even if
+> > potentially unnecessarily pessimistic.
+> >
+>
+> Yes, I'm aware of that, which is why I only selected two suspicious cases
+> to report. Also, this is true after the check (5f99f312bd3be: bpf: add
+> register bounds sanity checks and sanitization), but these cases may
+> cause some issues in the previous releases. Your recent improvement in
+> return value check also helps.
+>
+> I will see what I can do, maybe add more checks by using both tnum and
+> ranges information in is_scalar_branch_taken().
+>
+> Thanks!
+
+Ok, so I did take a look at this over last two days as well. There is
+indeed a problem, and it's basically another variation on the same
+issue: getting to the point of two disjoint ranges. Here's the repro
+program in the form that's easy to compile and work with with
+veristat:
+
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2023 SUSE LLC */
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_misc.h"
++
++SEC("?raw_tp")
++__success __log_level(2)
++__naked int bpf_blah(void)
++{
++       asm volatile (
++               "r0 =3D -2;"
++               "r0 /=3D 1;"
++               "r8 =3D r0;"
++               "if w8 !=3D 0xfffffffe goto 1f;"
++               "if r8 s> 0xd goto 1f;"
++               "r4 =3D 2;"
++               "if r8 s<=3D r4 goto 1f;"
++               "w8 s>>=3D w0;"
++       "1:"
++               "r0 >>=3D 32;"
++               "r0 &=3D 1;"
++               "exit;"
++               ::: __clobber_all);
++}
++
++char _license[] SEC("license") =3D "GPL";
+
+
+The problem here is that we end up with the state of r8 before `if r8
+s<=3D r4` (r4 is just 2, simple) where we estimate that 32-bit
+subregister is -2 (0xfffffffe), while full smin/smax is some
+0x8000....fffffe stuff. And so when we do comparison, we end up with
+smin/smax estimate that is disjoint with 0xfffffffe (it's [3, 13] or
+something like that in the fall through case). tnum is also
+interferes, btw.
+
+Anyways. I tried some ideas on how to prevent this. One of them is to
+forget about 32-bit and opposite signedness estimates and re-derive
+them in reg_bounds_sync(). The code below achieves this, but it breaks
+a ton of other tests that expect tighter bounds. So it's not really a
+solution, but I'll leave it below just to give an idea.
+
+In short, this simultaneous 5 domain representation we use in register
+state (tnum + s64 + u64 + s32 + u32) is really tricky to get right in
+*all* possible cases, there are highly non-trivial interactions.
+Perhaps someone can come up with the "unifying" implementation that
+will be perfect, but for now reg_bounds_sanity_check() gives us a bit
+of a safety net, at least.
+
+
+commit 285068a77ca4e856faf695b41d17d7b5347ded0d (HEAD -> bpf-reg-bounds-deb=
+ug)
+Author: Andrii Nakryiko <andrii@kernel.org>
+Date:   Wed Dec 13 09:27:22 2023 -0800
+
+    bpf: reset irrelevant numeric domains in inequality conditionals
+
+    Forfeit previous knowledge of other numeric domains, as they become
+    invalidated anyways. If we don't reset them, they can bite us back with
+    at best irrelevant and at worst wrong range estimates.
+
+    Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index bb64203c5d89..dc3aaed15940 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1911,6 +1911,34 @@ static void __mark_reg32_unbounded(struct
+bpf_reg_state *reg)
+        reg->u32_max_value =3D U32_MAX;
+ }
+
++static void __mark_reg32_signed_unbounded(struct bpf_reg_state *reg)
++{
++       reg->s32_min_value =3D S32_MIN;
++       reg->s32_max_value =3D S32_MAX;
++       reg->var_off =3D tnum_with_subreg(reg->var_off, tnum_unknown);
++}
++
++static void __mark_reg32_unsigned_unbounded(struct bpf_reg_state *reg)
++{
++       reg->u32_min_value =3D 0;
++       reg->u32_max_value =3D U32_MAX;
++       reg->var_off =3D tnum_with_subreg(reg->var_off, tnum_unknown);
++}
++
++static void __mark_reg64_signed_unbounded(struct bpf_reg_state *reg)
++{
++       reg->smin_value =3D S64_MIN;
++       reg->smax_value =3D S64_MAX;
++       reg->var_off =3D tnum_unknown;
++}
++
++static void __mark_reg64_unsigned_unbounded(struct bpf_reg_state *reg)
++{
++       reg->umin_value =3D 0;
++       reg->umax_value =3D U64_MAX;
++       reg->var_off =3D tnum_unknown;
++}
++
+ static void __update_reg32_bounds(struct bpf_reg_state *reg)
+ {
+        struct tnum var32_off =3D tnum_subreg(reg->var_off);
+@@ -14409,36 +14437,60 @@ static void regs_refine_cond_op(struct
+bpf_reg_state *reg1, struct bpf_reg_state
+                if (is_jmp32) {
+                        reg1->u32_max_value =3D min(reg1->u32_max_value,
+reg2->u32_max_value);
+                        reg2->u32_min_value =3D max(reg1->u32_min_value,
+reg2->u32_min_value);
++                       __mark_reg32_signed_unbounded(reg1);
++                       __mark_reg32_signed_unbounded(reg2);
+                } else {
+                        reg1->umax_value =3D min(reg1->umax_value,
+reg2->umax_value);
+                        reg2->umin_value =3D max(reg1->umin_value,
+reg2->umin_value);
++                       __mark_reg64_signed_unbounded(reg1);
++                       __mark_reg64_signed_unbounded(reg2);
++                       __mark_reg32_unbounded(reg1);
++                       __mark_reg32_unbounded(reg2);
+                }
+                break;
+        case BPF_JLT:
+                if (is_jmp32) {
+                        reg1->u32_max_value =3D min(reg1->u32_max_value,
+reg2->u32_max_value - 1);
+                        reg2->u32_min_value =3D max(reg1->u32_min_value
++ 1, reg2->u32_min_value);
++                       __mark_reg32_signed_unbounded(reg1);
++                       __mark_reg32_signed_unbounded(reg2);
+                } else {
+                        reg1->umax_value =3D min(reg1->umax_value,
+reg2->umax_value - 1);
+                        reg2->umin_value =3D max(reg1->umin_value + 1,
+reg2->umin_value);
++                       __mark_reg64_signed_unbounded(reg1);
++                       __mark_reg64_signed_unbounded(reg2);
++                       __mark_reg32_unbounded(reg1);
++                       __mark_reg32_unbounded(reg2);
+                }
+                break;
+        case BPF_JSLE:
+                if (is_jmp32) {
+                        reg1->s32_max_value =3D min(reg1->s32_max_value,
+reg2->s32_max_value);
+                        reg2->s32_min_value =3D max(reg1->s32_min_value,
+reg2->s32_min_value);
++                       __mark_reg32_unsigned_unbounded(reg1);
++                       __mark_reg32_unsigned_unbounded(reg2);
+                } else {
+                        reg1->smax_value =3D min(reg1->smax_value,
+reg2->smax_value);
+                        reg2->smin_value =3D max(reg1->smin_value,
+reg2->smin_value);
++                       __mark_reg64_unsigned_unbounded(reg1);
++                       __mark_reg64_unsigned_unbounded(reg2);
++                       __mark_reg32_unbounded(reg1);
++                       __mark_reg32_unbounded(reg2);
+                }
+                break;
+        case BPF_JSLT:
+                if (is_jmp32) {
+                        reg1->s32_max_value =3D min(reg1->s32_max_value,
+reg2->s32_max_value - 1);
+                        reg2->s32_min_value =3D max(reg1->s32_min_value
++ 1, reg2->s32_min_value);
++                       __mark_reg32_unsigned_unbounded(reg1);
++                       __mark_reg32_unsigned_unbounded(reg2);
+                } else {
+                        reg1->smax_value =3D min(reg1->smax_value,
+reg2->smax_value - 1);
+                        reg2->smin_value =3D max(reg1->smin_value + 1,
+reg2->smin_value);
++                       __mark_reg64_unsigned_unbounded(reg1);
++                       __mark_reg64_unsigned_unbounded(reg2);
++                       __mark_reg32_unbounded(reg1);
++                       __mark_reg32_unbounded(reg2);
+                }
+                break;
+        case BPF_JGE:
 
