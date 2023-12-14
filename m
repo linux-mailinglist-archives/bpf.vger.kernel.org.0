@@ -1,202 +1,166 @@
-Return-Path: <bpf+bounces-17778-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17779-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D936812655
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 05:18:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9396C81265B
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 05:26:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9B492827F5
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 04:18:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F7AC28275D
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 04:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF727469E;
-	Thu, 14 Dec 2023 04:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A508E46AF;
+	Thu, 14 Dec 2023 04:26:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="daK8LOgR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RSBwaoGI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3845EF4
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:17:59 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-334af3b3ddfso6832368f8f.3
-        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:17:59 -0800 (PST)
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DF2B9
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:26:16 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-33646500f1aso298814f8f.1
+        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:26:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702527477; x=1703132277; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702527975; x=1703132775; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sDUZR3Km74y9Sl5SQmAwbWzIp7aiwhFxGgDMcOhxNxE=;
-        b=daK8LOgR6ztIN3VWoYUMRxT7dQilskaOmpO60nkitWzLV3eonMlY2MUrwUadWDcTDs
-         OPI1FVl0VpjNn2myYZL0LFfyLZQjr6wAiaRR8i2vpcQVg1CSkySXLiqU/HnBF5htT5xH
-         67QT2DqjKe21l1Jq0XbUIk6kVGJhAKX4ebUBJwXt+H9hYy6mWHZHepiJM2ZESj5YQrtU
-         V96RlEy2gjcaP2XWW5ZRuqRWwG4I5vUphisecIpDJyd+knqhEbsiXEzAJ3bsArvoI+4X
-         TNtzT7znqluFZfZiVOOeZfUm0tgWvN/VtYgEIITzIIWsinsae1DENpMPzUUf+VWlRCWp
-         NPyA==
+        bh=c37ofhDvRdm/Gg6mIeqm/gGPvt7pIQ59HTaD/jbm0eQ=;
+        b=RSBwaoGIz119f4HYfw6sj5OD1v/IwkynVT/4k0NHnC8XNILIykcXFhanI+VjpXQ1V3
+         eqKSJGA8EwWCFTC70RlYtrj6ijJP8s12tdhUjdm4lebazG/ocJgUNfSLWQFdPDfinRSr
+         hI470fUZifdkHUycuE5IirEsJQFBCsi3qa8rKCLW4tnLNXBlmfubyBHvjURzkvob/RFH
+         i6DY/RiPGO1I78ekhYp4JrrUZL20MG8/rcTkOqwfqENw0f09u96mZY43k4hdfJArYlyP
+         TsvenPBXCHmyNKkg1rI5ldAxVbTkITk54MsYE/rTQpcEzrXDuG+KuHiUiFBtuDhxZu1y
+         0kIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702527477; x=1703132277;
+        d=1e100.net; s=20230601; t=1702527975; x=1703132775;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sDUZR3Km74y9Sl5SQmAwbWzIp7aiwhFxGgDMcOhxNxE=;
-        b=Eq5WnPX/VG7UhgSQqyHZK/4LXEmb9CJTZT13BgYVrYDRcSXOOBgqG9tGlKAGDkFhkt
-         OEfkKzjbMhZDRoRwRqsGoXkGUKSswJSPLTSFGfWHL8GHbgWPIwiHwqSM0vp6QArRR1qt
-         9vL4TgBPJQxSe/ar/PgYvXgnYPzrGBWV9wQ9F6/FMEXmMpGAY1DNX1D15szTClFE83gM
-         SEy3JPlprxTFC8Hza0ZsmTHByW5l8yo5jIgeQareq3FsSjWtW6H0StZXLmuAWzduKTQZ
-         WUYKFoKA6EL+5nShqtekqyq1aw40bqiSYS91GfgKmmkY5Gw1j+5iWg+UQp7UW8RRbvbW
-         KxqQ==
-X-Gm-Message-State: AOJu0Yzf8LfRwuj54nI6HCRXDz/0I0Zi464+CDZQ+32XMa/YwUu/bgC2
-	XMHtT7KmRvDU+ASd2KKB7TsKC8n/BDO9CcDhLTYcIFasGqo=
-X-Google-Smtp-Source: AGHT+IGu0nwokm0WrEBpVm2Ur5+U0KHNWpLSD9zb1TpyoGA8HSoh0zbqCa2ld6RHsv1ZL9HxR1KpzooGmwUUTkH7oK4=
-X-Received: by 2002:adf:e849:0:b0:336:43b0:33fc with SMTP id
- d9-20020adfe849000000b0033643b033fcmr718861wrn.36.1702527477444; Wed, 13 Dec
- 2023 20:17:57 -0800 (PST)
+        bh=c37ofhDvRdm/Gg6mIeqm/gGPvt7pIQ59HTaD/jbm0eQ=;
+        b=r0t1SbuYy30qhd196/p9Aro3wt36o/Msdsdg432gjHWTC4c5kDx3ZmPqyBoG1scqwD
+         E1ZYFlzWkIDXWM+rDWsmVjIlI0beTReR1kqKCQdLV1N7XWrdEaE75pP6E+lIeFDWf+fT
+         9qNuU+ngmply15POtEQO9SniqrUe1Qy6SQ2mMA8Qn47ZjM/PiSnu7nRtrB+NxLwuQAjC
+         t/IN2wanYBjpxI50v8yr7U8hHMr9opKKpW3qh2kVbkoCOrpwmco9l9ubTRmSXIs9uQPE
+         /s2c0R9HGILJAuRmXWdhvyA/dJn9G16dxvfPCQVnsk2d+HVAMVlft8eKe/fs9A+1+I5a
+         iKiw==
+X-Gm-Message-State: AOJu0YwsmwAKjB947Z3IjjNmebJ7MXrPRd5+W2CvZmS3gy4TpxLXASDs
+	dvGm3i3Vls709dUI1EBOaAUZ3+inUEx/GaZBviU=
+X-Google-Smtp-Source: AGHT+IFciCPue3DHqGAkJ7/FjybKESdIeJtxMx6qRNzKpXZPnx/uSDycqqsEithw+bQzE5HukH1il1R5U6bBAvID+Yk=
+X-Received: by 2002:a05:600c:2048:b0:40c:5536:66da with SMTP id
+ p8-20020a05600c204800b0040c553666damr1120616wmg.21.1702527974990; Wed, 13 Dec
+ 2023 20:26:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231206210959.1035724-1-yonghong.song@linux.dev>
- <d1c0232c-a41c-4cce-9bdf-3a1e8850ed05@linux.dev> <969852f3-34f8-45d9-bf2d-f6a4d5167e55@linux.dev>
- <ad71a99d-8b5f-44b4-99ee-5afb31c60bff@linux.dev> <0b3a96bd-4dfc-6d23-d473-f4351fbe84c2@huaweicloud.com>
- <0e657fc3-d932-4bd6-9d74-54eff22d3641@linux.dev>
-In-Reply-To: <0e657fc3-d932-4bd6-9d74-54eff22d3641@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 13 Dec 2023 20:17:46 -0800
-Message-ID: <CAADnVQJ3FiXUhZJwX_81sjZvSYYKCFB3BT6P8D59RS2Gu+0Z7g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4] bpf: Fix a race condition between btf_put()
- and map_free()
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Hou Tao <houtao@huaweicloud.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20231213112531.3775079-1-houtao@huaweicloud.com>
+ <20231213112531.3775079-5-houtao@huaweicloud.com> <CAEf4BzbHu3t+Bg3wA2ZMWzw3PTgMtaq0w-McjU3Hje=GUTYK8g@mail.gmail.com>
+ <b34e560c-0b1f-4c7c-c96c-57a17aaeee7f@huaweicloud.com>
+In-Reply-To: <b34e560c-0b1f-4c7c-c96c-57a17aaeee7f@huaweicloud.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 13 Dec 2023 20:26:02 -0800
+Message-ID: <CAEf4BzahB2i7Y3M==N47XM3+s7jgT76pf3FwXyM7BM-D9cLYCA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Add test for abnormal cnt
+ during multi-kprobe attachment
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, xingwei lee <xrivendell7@gmail.com>, houtao1@huawei.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 8, 2023 at 9:07=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
+On Wed, Dec 13, 2023 at 5:44=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
 >
+> Hi,
 >
-> On 12/8/23 12:30 AM, Hou Tao wrote:
-> > Hi,
+> On 12/14/2023 7:33 AM, Andrii Nakryiko wrote:
+> > On Wed, Dec 13, 2023 at 3:24=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
+> wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> If an abnormally huge cnt is used for multi-kprobes attachment, the
+> >> following warning will be reported:
+> >>
+> >>   ------------[ cut here ]------------
+> >>   WARNING: CPU: 1 PID: 392 at mm/util.c:632 kvmalloc_node+0xd9/0xe0
+> >>   Modules linked in: bpf_testmod(O)
+> >>   CPU: 1 PID: 392 Comm: test_progs Tainted: G ...... 6.7.0-rc3+ #32
+> >>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+> >>   ......
+> >>   RIP: 0010:kvmalloc_node+0xd9/0xe0
+> >>    ? __warn+0x89/0x150
+> >>    ? kvmalloc_node+0xd9/0xe0
+> >>    bpf_kprobe_multi_link_attach+0x87/0x670
+> >>    __sys_bpf+0x2a28/0x2bc0
+> >>    __x64_sys_bpf+0x1a/0x30
+> >>    do_syscall_64+0x36/0xb0
+> >>    entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> >>   RIP: 0033:0x7fbe067f0e0d
+> >>   ......
+> >>    </TASK>
+> >>   ---[ end trace 0000000000000000 ]---
+> >>
+> >> So add a test to ensure the warning is fixed.
+> >>
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >> ---
+> >>  .../selftests/bpf/prog_tests/kprobe_multi_test.c   | 14 +++++++++++++=
++
+> >>  1 file changed, 14 insertions(+)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.=
+c b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> >> index 4041cfa670eb..802554d4ee24 100644
+> >> --- a/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> >> +++ b/tools/testing/selftests/bpf/prog_tests/kprobe_multi_test.c
+> >> @@ -300,6 +300,20 @@ static void test_attach_api_fails(void)
+> >>         if (!ASSERT_EQ(libbpf_get_error(link), -EINVAL, "fail_5_error"=
+))
+> >>                 goto cleanup;
+> >>
+> >> +       /* fail_6 - abnormal cnt */
+> >> +       opts.addrs =3D (const unsigned long *) addrs;
+> >> +       opts.syms =3D NULL;
+> >> +       opts.cnt =3D INT_MAX;
+> >> +       opts.cookies =3D NULL;
+> >> +
+> >> +       link =3D bpf_program__attach_kprobe_multi_opts(skel->progs.tes=
+t_kprobe_manual,
+> >> +                                                    NULL, &opts);
+> >> +       if (!ASSERT_ERR_PTR(link, "fail_6"))
+> >> +               goto cleanup;
+> >> +
+> >> +       if (!ASSERT_EQ(libbpf_get_error(link), -EINVAL, "fail_6_error"=
+))
+> > this is unreliable, store errno right after the operation before
+> > ASSERT_xxx() macros
+>
+> I didn't fully follow the reason why it is unreliable. Do you mean
+> ASSERT_ERR_PTR() macro may overwrite errno, right ? But _CHECK() already
+> saves and restores errno before invoking fprintf(), so I think it is OK
+> to use libbpf_get_error() to get the errno here ?
+
+We shouldn't be using libbpf_get_error() in new code, it's legacy and
+not advised to be used. If ASSERT_xxx() macro guarantee to
+save/restore errno, then it might be actually fine, but it still feels
+better to save errno explicitly right after the operation, just like
+you'd do in normal code.
+
 > >
-> > On 12/8/2023 12:02 PM, Yonghong Song wrote:
-> >> On 12/7/23 7:59 PM, Yonghong Song wrote:
-> >>> On 12/7/23 5:23 PM, Martin KaFai Lau wrote:
-> >>>> On 12/6/23 1:09 PM, Yonghong Song wrote:
-> >>>>> When running `./test_progs -j` in my local vm with latest kernel,
-> >>>>> I once hit a kasan error like below:
-> >>>>>
-> >>>>>
-> > SNIP
-> >>>>> Here, 'value_rec' is assigned in btf_check_and_fixup_fields() with
-> >>>>> following code:
-> >>>>>
-> >>>>>     meta =3D btf_find_struct_meta(btf, btf_id);
-> >>>>>     if (!meta)
-> >>>>>       return -EFAULT;
-> >>>>>     rec->fields[i].graph_root.value_rec =3D meta->record;
-> >>>>>
-> >>>>> So basically, 'value_rec' is a pointer to the record in
-> >>>>> struct_metas_tab.
-> >>>>> And it is possible that that particular record has been freed by
-> >>>>> btf_struct_metas_free() and hence we have a kasan error here.
-> >>>>>
-> >>>>> Actually it is very hard to reproduce the failure with current
-> >>>>> bpf/bpf-next
-> >>>>> code, I only got the above error once. To increase reproducibility,
-> >>>>> I added
-> >>>>> a delay in bpf_map_free_deferred() to delay map->ops->map_free(),
-> >>>>> which
-> >>>>> significantly increased reproducibility.
-> >>>>>
-> >>>>>     diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> >>>>>     index 5e43ddd1b83f..aae5b5213e93 100644
-> >>>>>     --- a/kernel/bpf/syscall.c
-> >>>>>     +++ b/kernel/bpf/syscall.c
-> >>>>>     @@ -695,6 +695,7 @@ static void bpf_map_free_deferred(struct
-> >>>>> work_struct *work)
-> >>>>>           struct bpf_map *map =3D container_of(work, struct bpf_map=
-,
-> >>>>> work);
-> >>>>>           struct btf_record *rec =3D map->record;
-> >>>>>
-> >>>>>     +     mdelay(100);
-> >>>>>           security_bpf_map_free(map);
-> >>>>>           bpf_map_release_memcg(map);
-> >>>>>           /* implementation dependent freeing */
-> >>>>>
-> >>>>> To fix the problem, we need to have a reference on btf in order to
-> >>>>> safeguard accessing field->graph_root.value_rec in
-> >>>>> map->ops->map_free().
-> >>>>> The function btf_parse_graph_root() is the place to get a btf
-> >>>>> reference.
-> >>>>> The following are rough call stacks reaching bpf_parse_graph_root()=
-:
-> >>>>>
-> >>>>>      btf_parse
-> >>>>>        ...
-> >>>>>          btf_parse_fields
-> >>>>>            ...
-> >>>>>              btf_parse_graph_root
-> >>>>>
-> >>>>>      map_check_btf
-> >>>>>        btf_parse_fields
-> >>>>>          ...
-> >>>>>            btf_parse_graph_root
-> >>>>>
-> >>>>> Looking at the above call stack, the btf_parse_graph_root() is
-> >>>>> indirectly
-> >>>>> called from btf_parse() or map_check_btf().
-> >>>>>
-> >>>>> We cannot take a reference in btf_parse() case since at that moment=
-,
-> >>>>> btf is still in the middle to self-validation and initial reference
-> >>>>> (refcount_set(&btf->refcnt, 1)) has not been triggered yet.
-> >>>> Thanks for the details analysis and clear explanation. It helps a lo=
-t.
-> >>>>
-> >>>> Sorry for jumping in late.
-> >>>>
-> >>>> I am trying to avoid making a special case for "bool has_btf_ref;"
-> >>>> and "bool from_map_check". It seems to a bit too much to deal with
-> >>>> the error path for btf_parse().
-> > Maybe we could move the common btf used by kptr and graph_root into
-> > bpf_record and let the callers of btf_parse_fields()  and
-> > btf_record_free() to decide the life cycle of btf in btf_record, so
-> > there will be less intrusive and less special case. The following is th=
-e
+> >> +               goto cleanup;
+> >> +
+> >>  cleanup:
+> >>         bpf_link__destroy(link);
+> >>         kprobe_multi__destroy(skel);
+> >> --
+> >> 2.29.2
+> >>
 >
-> I didn't fully check the code but looks like we took a
-> btf reference at map_check_btf() and free it at the end
-> of bpf_map_free_deferred(). This is similar to my v1 patch,
-> not exactly the same but similar since they all do
-> btf_put() at the end of bpf_map_free_deferred().
->
-> Through discussion, doing on-demand btf_get()/btf_put()
-> approach, similar to kptr approach, seems more favored.
-> This also has advantage to free btf at its earlist possible
-> point.
-
-Sorry. Looks like I recommended the wrong path.
-
-The approach of btf_parse_fields(... false | true)
-depending on where it's called and whether returned struct btf_record *
-will be kept within a type or within a map
-is pushing complexity too far.
-A year from now we'll forget these subtle details.
-There is an advantage to do btf_put() earli in bpf_map_put(),
-but in the common case it would be delayed just after queue_work.
-Which is a minor time delay.
-And for free_after_mult_rcu_gp much longer,
-but saving from freeing btf are minor compared to the map itself.
-
-I think it's cleaner to go back to v1 and simply move btf_put
-to bpf_map_free_deferred().
-A lot less things to worry about.
-Especially considering that BPF_RB_ROOT may not be the last such special
-record keeping type and every new type would need to think
-hard whether it's BPF_RB_ROOT-like or BPF_LIST_NODE-like.
-v1 avoids this future complexity.
 
