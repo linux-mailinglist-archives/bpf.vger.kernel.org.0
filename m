@@ -1,202 +1,180 @@
-Return-Path: <bpf+bounces-17771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53E0E81251C
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 03:15:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 618EB812525
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 03:19:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA68E28244B
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 02:15:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A56C9B2124F
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 02:19:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B0C6808;
-	Thu, 14 Dec 2023 02:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF4A812;
+	Thu, 14 Dec 2023 02:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJLU/sZi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bjAggtNI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B4910F
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 18:15:34 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so61380025e9.3
-        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 18:15:34 -0800 (PST)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0E9BD
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 18:19:31 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c317723a8so66960635e9.3
+        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 18:19:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702520132; x=1703124932; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702520370; x=1703125170; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m28s3RzLB5fbgewnlSV/1cnF9y/loI3MsMlbPUB1xLg=;
-        b=LJLU/sZia3EIZz9ABiW0+xHueyyyDSKBw1ujozKLpRTs+koIzJuGl8Sci+vilXsqiB
-         iKaRYCYbqC3V65kCb6mYGsa87MOC9cm/N22u9GD7hmAH3RDq2L5ThI6GNmPPMt7+sn3/
-         gfo5wgmS4Q/iwSk73cwDANhX5sD5g7h7cyImppU49PqTVZkbXT61ISPE+QoOfP6boVkR
-         EqH7PYs/xIDXt3HjFs7IpE157P2RAqWtHPNa3/dWLDuqM4DbtGa0LadCJfwrA3upHXIe
-         6wl8crkPXDWA+U0kBx7PZXFDN7wDHPeyxAQiFVLNP2Evskz2CmNOy1X7A6PJseLQBITG
-         xAmA==
+        bh=Dg8XwWx79ndwQFXqVGIP8SFMxiBBc/y9D1kXEpPZFUw=;
+        b=bjAggtNIkW+1ZfkTu08B/nl28kYS1Sb/J8JWz5/3nJX2+RucGST01oWAL5X2bL1NAG
+         kvmhzTM0i55BHwv4NpqJUUw+/zW2mlH5edNl9fgJ1REUT3LmLTE1sPYBSm7KpOQ6MLNr
+         c5pAiZCwZ0DLEGpmGRYmahdZZLDoT1Q1XO86WTDDxI94bcFJYet5QGBmgCdRyMy7ZvKt
+         EAdLOeAdqt9WgyXeydkCerB6m/5jzpQ3f4DhlcnEk8gNICcHQ3Umxu8s6ctacZ3E9xWI
+         23lS9SOIc0OhZdvkpt9Eq/cM+Dhf4UPGpjb2x4t1mYC5NGMfDOhVdb3DWvU4y/Fg1zgX
+         G5NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702520132; x=1703124932;
+        d=1e100.net; s=20230601; t=1702520370; x=1703125170;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m28s3RzLB5fbgewnlSV/1cnF9y/loI3MsMlbPUB1xLg=;
-        b=EEmjQOVsPzeleQkk7OqHcwVsbXkuzMd2NfW3erIpeCIltFa8ZXPUtoEa2mX4jBB8kJ
-         VXqqupAFnn7oeVqvnmPe4Nr9U5MVk/p4IbqGgFMoR+ChG114K3Tg5HZZ9f2svzS98XDS
-         NRtJLMTxOZbUovoOz0NtlO1k2aXkpVccyZmO6dcZAdhIvCMEHbWM2YoIotTVP4usIkuB
-         8/jvPayxnQT/uCjd7S8fCppuWSLCtIBww7zxkVgVWai3nMbdsOhGoi2EE6OojHCenUzo
-         hxvsQ/9ZYpEzMRN2ehbDQcT7WCKdc9qPaKRta+gKJPGqAvxg2S8eBXRalhH8GjaNPv71
-         GYbg==
-X-Gm-Message-State: AOJu0YzcZmlisaNGSgKSLPG74lwBGO/XKD2Wfhz05Nm7AoFgXHL/HTEE
-	8M9c7TAIJ7f/bNJITRBf78Zi4tXc5KUyX6Cgpmk=
-X-Google-Smtp-Source: AGHT+IFMEhXdmUmv7ePzw2Xovts/8V2xpTdKLORoxBnkm0plTA13qLQtvrpmjm3PMAbMHgfrqYyFMzydwqLVKnpThZM=
-X-Received: by 2002:a05:600c:1503:b0:40c:3624:fc40 with SMTP id
- b3-20020a05600c150300b0040c3624fc40mr4811013wmg.15.1702520132205; Wed, 13 Dec
- 2023 18:15:32 -0800 (PST)
+        bh=Dg8XwWx79ndwQFXqVGIP8SFMxiBBc/y9D1kXEpPZFUw=;
+        b=ZiIYcQTU+Dq3ZNx7PnvTZs/x43borO9tYuxMXb2DXSwYtIoZWT3GQHvt4p9zmifdzg
+         d+Yh6nbN6qcq/R5CqwcA4E5yFbC9rKoocXVh8bBK3SfFepwqq3flMpXPtogcnFQpJ2vo
+         rxT13oJQD51h1HQAwXk82Oe5fSsxKOwyk4jvJrC5h2GfrWNwMfVoI5Wzb4aNIyTpGKcU
+         Hemy91+YeAXbKBoZDwHNLu3Bi4zHHOtYThb/CF66vIzF8iFDbkZITj5/RJdMcUMo+xdb
+         PmPOarN57NFYM2BFV/gjlZV2KiLwC6MqQdeFq6hSL8aeKRJCvxTyv5wyYNKUPu3NyT+D
+         UwPQ==
+X-Gm-Message-State: AOJu0YwT7FqsEewpPhgBlBAITiCzGviTFf3F+il/7hHcvHpoNP3Zuklm
+	WypvFlsUIo4KOtLkAAij4Hl0YBi7xR5x0W2xP8A=
+X-Google-Smtp-Source: AGHT+IGQUG9BgK2EJqOVMIQJpMRIkwJgPeNgO6EErYD25i8R+DpxE/0npt5vAhdwMXQGaYqzVDeykBynQScd8+9LzBM=
+X-Received: by 2002:a05:6000:881:b0:333:2fd2:5210 with SMTP id
+ cs1-20020a056000088100b003332fd25210mr3970203wrb.137.1702520369974; Wed, 13
+ Dec 2023 18:19:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXNCB5sEendzNj6+@zh-lab-node-5> <CAEf4Bzai9X2xQGjEOZvkSkx7ZB9CSSk4oTxoksTVSBoEvR4UsA@mail.gmail.com>
- <CAADnVQJtWVE9+rA2232P4g7ktUJ_+Nfwo+MYpv=6p7+Z9J20hw@mail.gmail.com>
- <bef79c65-e89a-4219-8c8b-750c60e1f2b4@linux.dev> <CAADnVQJd1aUFzznLhwNvkN+zot-u3=4A16utY93HoLJrP_vo3w@mail.gmail.com>
- <85aa91f9-d5c0-4e7b-950d-475da7787f64@linux.dev> <CAADnVQKZjmwxo0cBiHcp3FkAAmJT850qQJ5_=fAhfOKniJM2Kw@mail.gmail.com>
- <3682c649-6a6a-4f66-b4fa-fbcbb774ae94@linux.dev> <8e45c28fa0827be2b01a7cd36aa68750ceff69f5.camel@gmail.com>
- <CAADnVQ+RhX-QY1b5ewNp_K9b+X96PZNbxG8GSpC2xfhwULRNqA@mail.gmail.com> <ZXg1ApeYXi0g7WeM@zh-lab-node-5>
-In-Reply-To: <ZXg1ApeYXi0g7WeM@zh-lab-node-5>
+References: <20231211073843.1888058-1-houtao@huaweicloud.com>
+ <20231211073843.1888058-2-houtao@huaweicloud.com> <CAADnVQ+Tb9btofrgp41E+2RBEtpp_s5D2rPZjYx34XX=XY3BFw@mail.gmail.com>
+ <c4ff43a8-b2a1-16e9-d8a8-1ea8c629b4f6@huaweicloud.com>
+In-Reply-To: <c4ff43a8-b2a1-16e9-d8a8-1ea8c629b4f6@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 13 Dec 2023 18:15:20 -0800
-Message-ID: <CAADnVQ+b3_5qzaR9pr6B23xDxCO10iz685tHfsakW3MnoVYMbg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 6/7] libbpf: BPF Static Keys support
-To: Anton Protopopov <aspsk@isovalent.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jiri Olsa <jolsa@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Stanislav Fomichev <sdf@google.com>, bpf <bpf@vger.kernel.org>
+Date: Wed, 13 Dec 2023 18:19:18 -0800
+Message-ID: <CAADnVQL3X7igioj1sG-+F9Va=8Q7X+w1iaBn615aty6EYM48Bw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Reduce the scope of rcu_read_lock
+ when updating fd map
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 12, 2023 at 2:28=E2=80=AFAM Anton Protopopov <aspsk@isovalent.c=
-om> wrote:
+On Wed, Dec 13, 2023 at 5:57=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wr=
+ote:
 >
+> Hi,
 >
-> This seems to have a benefit that there is no back compatibility issue
-> (if we use r1, because r0/r11 will be rejected by old verifiers). We
-> can have
+> On 12/14/2023 9:10 AM, Alexei Starovoitov wrote:
+> > On Sun, Dec 10, 2023 at 11:37=E2=80=AFPM Hou Tao <houtao@huaweicloud.co=
+m> wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> There is no rcu-read-lock requirement for ops->map_fd_get_ptr() or
+> >> ops->map_fd_put_ptr(), so doesn't use rcu-read-lock for these two
+> >> callbacks and only uses rcu-read-lock for the underlying update
+> >> operations in bpf_fd_{array,htab}_map_update_elem().
+> >>
+> >> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >> ---
+> >>  kernel/bpf/arraymap.c | 2 ++
+> >>  kernel/bpf/hashtab.c  | 2 ++
+> >>  kernel/bpf/syscall.c  | 4 ----
+> >>  3 files changed, 4 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> >> index 8d365bda9a8b..6cf47bcb7b83 100644
+> >> --- a/kernel/bpf/arraymap.c
+> >> +++ b/kernel/bpf/arraymap.c
+> >> @@ -863,7 +863,9 @@ int bpf_fd_array_map_update_elem(struct bpf_map *m=
+ap, struct file *map_file,
+> >>                 map->ops->map_poke_run(map, index, old_ptr, new_ptr);
+> >>                 mutex_unlock(&array->aux->poke_mutex);
+> >>         } else {
+> >> +               rcu_read_lock();
+> >>                 old_ptr =3D xchg(array->ptrs + index, new_ptr);
+> >> +               rcu_read_unlock();
+> >>         }
+> >>
+> >>         if (old_ptr)
+> >> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> >> index 5b9146fa825f..4c28fd51ac01 100644
+> >> --- a/kernel/bpf/hashtab.c
+> >> +++ b/kernel/bpf/hashtab.c
+> >> @@ -2523,7 +2523,9 @@ int bpf_fd_htab_map_update_elem(struct bpf_map *=
+map, struct file *map_file,
+> >>         if (IS_ERR(ptr))
+> >>                 return PTR_ERR(ptr);
+> >>
+> >> +       rcu_read_lock();
+> >>         ret =3D htab_map_update_elem(map, key, &ptr, map_flags);
+> >> +       rcu_read_unlock();
+> >>         if (ret)
+> >>                 map->ops->map_fd_put_ptr(map, ptr, false);
+> >>
+> >> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> >> index a76467fda558..019d18d33d63 100644
+> >> --- a/kernel/bpf/syscall.c
+> >> +++ b/kernel/bpf/syscall.c
+> >> @@ -183,15 +183,11 @@ static int bpf_map_update_value(struct bpf_map *=
+map, struct file *map_file,
+> >>                 err =3D bpf_percpu_cgroup_storage_update(map, key, val=
+ue,
+> >>                                                        flags);
+> >>         } else if (IS_FD_ARRAY(map)) {
+> >> -               rcu_read_lock();
+> >>                 err =3D bpf_fd_array_map_update_elem(map, map_file, ke=
+y, value,
+> >>                                                    flags);
+> >> -               rcu_read_unlock();
+> >>         } else if (map->map_type =3D=3D BPF_MAP_TYPE_HASH_OF_MAPS) {
+> >> -               rcu_read_lock();
+> >>                 err =3D bpf_fd_htab_map_update_elem(map, map_file, key=
+, value,
+> >>                                                   flags);
+> >> -               rcu_read_unlock();
+> > Sorry. I misunderstood the previous diff.
+> > Dropping rcu_read_lock() around bpf_fd_array_map_update_elem()
+> > is actually mandatory, since it may do mutex_lock
+> > which will splat under rcu CS.
 >
->     r1 =3D 64bit_const
->     if r1 =3D=3D r1 goto
+> Acquiring mutex_lock is only possible for program fd array, but
+> bpf_fd_array_map_update_elem() has already been called above to handle
+> program fd array and there is no rcu_read_lock() being acquired.
+
+ahh. right. That explains why we don't have a splat now. good.
+
+> >
+> > Adding rcu_read_lock() to bpf_fd_htab_map_update_elem()
+> > is necessary just to avoid the WARN.
+> > The RCU CS doesn't provide any protection to any pointer.
+> > It's worth adding a comment.
 >
-> and
+> Yes. There is no spin-lock support in fd htab, the update operation for
+> fd htab is taken under bucket lock. So the RCU CS is only to make the
+> WARN_ON_ONCE() in htab_map_update_elem() happy.
 >
->     r1 =3D 64bit_const
->     if r1 !=3D r1 goto
->
-> and translate it on prog load to new instruction as JUMP_OF_NOP and
-> NOP_OR_JUMP, correspondingly. On older kernels it will have the
-> default (key is off) behaviour.
+> To ensure I fully understand what you mean, let me rephrase the things
+> that need to done:
+> 1) Repost v3 based on v1
+> 2) In v3, add comments in bpf_fd_htab_map_update_elem() to explain why
+> the RCU CS is needed. Is that correct ?
 
-As Andrii pointed out any new insn either JA with extra bits
-or special meaning if rX =3D=3D rX can be sanitized by libbpf
-into plain JA.
-There will be no backward compat issues.
-
-> Ok, from BPF arch perspective this can work with two bits (not for
-> practical purposes though, IMO, see my next e-mail).
-
-I read this email and I still don't understand why you need a 3rd bit.
-
->
-> > And the special map really doesn't fit.
-> > Whatever we do, let's keep text_poke-able insn logic separate
-> > from bookkeeping of addresses of those insns.
-> > I think a special prefixed section that is understood by libbpf
-> > (like what I proposed with "name.static_branch") will do fine.
-> > If it's not good enough we can add a "set" map type
-> > that will be a generic set of values.
-> > It can be a set of 8-byte addresses to keep locations of static_branche=
-s,
-> > but let's keep it generic.
-> > I think it's fine to add:
-> > __uint(type, BPF_MAP_TYPE_SET)
-> > and let libbpf populate it with addresses of insns,
-> > or address of variables, or other values
-> > when it prepares a program for loading.
->
-> What is the higher-level API in this case? The static_branch_set(branch,
-> bool on) is not enough because we want to distinguish between "normal"
-> and "inverse" branches (for unlikely/likely cases).
-
-What is "likely/unlikely cases" ?
-likely() is a hint to the compiler to order basic blocks in
-a certain way. There is no likely/unlikely bit in the binary code
-after compilation on x86 or other architectures.
-
-There used to be a special bit on sparc64 that would mean
-a default jmp|fallthrough action for a conditional jmp.
-But that was before sparc became out of order and gained proper
-branch predictor in HW.
-
->  We can implement
-> this using something like this:
->
-> static_key_set(key, bool new_value)
-> {
->     /* true if we change key value */
->     bool key_changed =3D key->old_value ^ new_value;
->
->     for_each_prog(prog, key)
->         for_each_branch(branch, prog, key)
->             static_branch_flip(prog, branch, key_changed)
-> }
->
-> where static_branch_flip flips the second bit of SRC_REG.
-
-I don't understand why you keep bringing up 'flip' use case.
-The kernel doesn't have such an operation on static branches.
-Which makes me believe that it wasn't necessary.
-Why do we need one for the bpf static branch?
-
-> We need to
-> keep track of prog->branches and key->progs. How is this different
-> from what my patch implements?
-
-What I'm proposing is to have a generic map __uint(type, BPF_MAP_TYPE_SET)
-and by naming convention libbpf will populate it with addresses
-of JA_OR_NOP from all progs.
-In asm it could be:
-asm volatile ("r0 =3D %[set_A] ll; goto_or_nop ...");
-(and libbpf will remove ld_imm64 from the prog before loading.)
-
-or via
-asm volatile ("goto_or_nop ...; .pushsection set_A_name+suffix; .long");
-(and libbpf will copy from the special section into a set and remove
-special section).
-
-It will be a libbpf convention and the kernel doesn't need
-to know about a special static branch map type or array of addresses
-in prog_load cmd.
-Only JA insn is relevant to the verifier and JITs.
-
-Ideally we don't need to introduce SET map type and
-libbpf wouldn't need to populate it.
-If we can make it work with an array of values that .pushsection + .long
-automatically populates and libbpf treats it as a normal global data array
-that would be ideal.
-Insn addresses from all progs will be in that array after loading.
-Sort of like ".kconfig" section that libbpf populates,
-but it's a normal array underneath.
-
-> If this is implemented in userspace, then how we prevent synchronous
-> updates of the key (and a relocation variant doesn't seem to work from
-> userspace)? Or is this a new kfunc? If yes, then how is it
-> executed,
-
-then user space can have small helper in libbpf that iterates
-over SET (or array) and
-calls sys_bpf(cmd=3DSTATIC_BRANCH_ENABLE, one_value_from_set)
-
-Similar in the kernel. When bpf progs want to enable a key it does
-bpf_for_each(set) { // open coded iterator
-   bpf_static_branch_enable(addr); // kfunc call
-}
+Yes.
+Thanks
 
