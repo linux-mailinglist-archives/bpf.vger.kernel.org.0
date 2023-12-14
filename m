@@ -1,180 +1,223 @@
-Return-Path: <bpf+bounces-17873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4ECE813B31
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 21:03:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4794B813B78
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 21:25:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E74CE1C20EC9
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 20:03:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1C68283114
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 20:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0196A028;
-	Thu, 14 Dec 2023 20:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842376A345;
+	Thu, 14 Dec 2023 20:25:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DcctqYnl"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="XssIEsre";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="n7nuOxai"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA53D6A00C
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 20:03:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3333131e08dso8956037f8f.2
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 12:03:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702584207; x=1703189007; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3t3FbK18GrHFwKE4zIkpGcLL7FiHaNow8xNq3R4/QdI=;
-        b=DcctqYnloBXyzr6/icFJ5nrbeI/fwc45lTK7zT/zDqs/kq2mNANjqfq2WI1CPbOIkl
-         3zpygJURz7qkPfte+tjx80A6gdM+O1FTYI2VvL7SuLYcjzd7H6DpQfdwmDLV9+nXMrPb
-         7dTw0mVB00N20UiuwNWRNzFDHCuBoP+J6TIeAJfZc3sS1MAXMzL9Z0GoRoatm7TLOu8j
-         8ZZNvlX+vs9HJuG2Y82vknoMM3anREwfsFsat4CTGetqMhnBOOAiPMlJfT5NqSfpdkqn
-         3Qd8clBnVZm39r28lU0UGMK8yIuIf8HPnzkmKCt9BujWkP4WutaWkmQdw0Vrw4Oq2nII
-         J76Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702584207; x=1703189007;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3t3FbK18GrHFwKE4zIkpGcLL7FiHaNow8xNq3R4/QdI=;
-        b=PykEk47cZ51eGDFEtRe6mNliUb/HVU//ozAGvMla5gORJpOhLp6a+wrMATPVkV+8nP
-         +zHLZ+6fcKDDeiNpmHEg68+zKQ5gcSLnl60YOX1fj8C+s1NgvJBAboyLBs+cOZQREL7Z
-         GhhUnG5Z1JBOFfPbGng76b2zSvOTbhYlaKnwidLeXpuBFqYwLNba1jIC3ZdM2GXZqUwS
-         FoKH+t0cpgRal37KQ2RHsJTS8+855O3AnKQeTL01pTpLX2jS0CjVqXnBQGy+2GEg/d0f
-         QW8QY8x5hHcJUBEHOftjeyQ1AF87F2z0J7vmrc9qjXcIyhED0//zrNflQsCTy8lPDI7I
-         kgog==
-X-Gm-Message-State: AOJu0YwvvjBqrkX4lbRd3v1F7C4aMb3zBLbk1qRgaTXhzT9jBg7wfX26
-	MrvYcw+7ormsVeU7i4o8tZy8gWNZsvrLJ+8jBAhCuQ==
-X-Google-Smtp-Source: AGHT+IFJxGuMnKvxp55N7GC1tz5/h738b4XoM+FeA8fRtBht8xQJ/kBDFL2qAi3ZYkZt7idruFgudyPvdRKWDedOoVg=
-X-Received: by 2002:a05:600c:2313:b0:40c:3e43:4183 with SMTP id
- 19-20020a05600c231300b0040c3e434183mr4682976wmo.5.1702584207011; Thu, 14 Dec
- 2023 12:03:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821AC675CD;
+	Thu, 14 Dec 2023 20:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailnew.west.internal (Postfix) with ESMTP id 346A72B007D8;
+	Thu, 14 Dec 2023 15:24:56 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 14 Dec 2023 15:24:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1702585495;
+	 x=1702592695; bh=+t4pVgVSi2R2QRypiJjLIGqmBMSDOZdJg7dHN9HfN3g=; b=
+	XssIEsreV4K1heTY+91HoJX52cZPmrrpOYEqSO83jF/mx/4N9g6qLaN67bxVdlrM
+	gbQLIWXkwxqDkExCf8o5OMz2J8aWyy3eOgm1UZAbT3sEUzWeIg63AmOvo1mD+Ef8
+	YaraA/fKVPL8YZWtMa3YKKNttWkdo6wQ7aXGywwsf7iOpRyH7G9U+PPe5vvu6GHq
+	irs0SMewZVr0KKLtdNWRV4ZGRD7QdMLFXE+Ih3ziDTtiJW+RaByNl4dKIcV8DRkF
+	rt77Mf8rw/d4C0CYFA1x/ugMUTFQoJJcv+AwFFJyP5dy8MUL/Wp1wvxPwkP9jTlK
+	cmq89oQMUShG6CPmvnovEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702585495; x=
+	1702592695; bh=+t4pVgVSi2R2QRypiJjLIGqmBMSDOZdJg7dHN9HfN3g=; b=n
+	7nuOxaiJegwukTTbdEOHgVrsaojYuvEbAZGMkrWLg+wxWGYwt2jmpak/zFoaI8Ei
+	Q9lqu2AD6MNZictbUqPH+/xqEex2VCRCAdbn7vbdeOwdo7Fl1VzXi932RL0xSw/L
+	xfa0lSqusL8YeIxoJ59m8H7fkOjd2gF4bHd+syamQJxseVcjrVbCANtuRLUBx1yR
+	tRDqKMyZg0APRmKHsmDleWuV0JbfVq2XsgYJGzLJlEZpuQqvF1AV9SZYkBR2Vd2W
+	PWnLCQUIHPOEVCkLIEjHCbMXEsSpc/c3ZaTso/55ETAE7/HG7ZfKiq9ii49VIZi0
+	ejkPVVzP93VFmU0MJviig==
+X-ME-Sender: <xms:l2R7ZVgsl6HJ6-vzvv9P299qixo0hDZrWux9ZFimb8nmjaEl6oHZOA>
+    <xme:l2R7ZaANSxi_Q1vKDkiWuou3LW3xVmvcbENZkWL3kNQjgwW92mwO7we1A0nBwrM4t
+    HbEamfBpngp50acQA>
+X-ME-Received: <xmr:l2R7ZVHlEg1prvGc6mN8Z4u_fhGuBIQTPhNS8M2GbWBsQYd1oTr2yHhMurLis6YKooJCxbJ9yGLDOO-FkYRKGjcRfVmBcHERfhGCrow>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledgudefhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:l2R7ZaTVoXTmId-GbkkIGRmhGaWXuWPcdD6_C5r1Hu-yzcXnl0jhyw>
+    <xmx:l2R7ZSwTTXZWGTwF7ArpmKY8WpeTsSmOHWfQXQhpPo7r_Me01b5Mfw>
+    <xmx:l2R7ZQ5OgfOSnYuoe3ksj1o7Dd0JMpmbtHTQ9R-kK5Ffh5jHP019EA>
+    <xmx:l2R7ZZL9cMn54QLmQHESJvSRjlZCbZr3vUZp3PiG4iUFJ6V_iIAg_jwyLRs>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Dec 2023 15:24:53 -0500 (EST)
+Date: Thu, 14 Dec 2023 13:24:51 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net, 
+	davem@davemloft.net, shuah@kernel.org, ast@kernel.org, john.fastabend@gmail.com, 
+	kuba@kernel.org, andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com, 
+	antony.antony@secunet.com, alexei.starovoitov@gmail.com, yonghong.song@linux.dev, 
+	eddyz87@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, devel@linux-ipsec.org
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
+ bpf_xdp_get_xfrm_state()
+Message-ID: <i6kxylvo5hcttmjmhpjrmwdaxe4bi6cggk32js72ivr7qelknc@qnjkmr3df3b5>
+References: <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
+ <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
+ <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+ <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
+ <CAHsH6Gu_c29Nc+cH-s3EeztwScL=A42wi_SuJD=WeYV0mtVxbA@mail.gmail.com>
+ <CAP01T76ZtehyRidmnV5A0p3LCyjw6Q4sjRH6ZhczgGn1ap-x_g@mail.gmail.com>
+ <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
+ <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231208005250.2910004-1-almasrymina@google.com>
- <20231208005250.2910004-9-almasrymina@google.com> <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
- <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
- <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com> <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
- <661c1bae-d7d3-457e-b545-5f67b9ef4197@gmail.com>
-In-Reply-To: <661c1bae-d7d3-457e-b545-5f67b9ef4197@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Thu, 14 Dec 2023 12:03:15 -0800
-Message-ID: <CAHS8izOY9xm=LBEN8sYwEa3aFB4GWDvJVacom3o4mHZPdHzTUg@mail.gmail.com>
-Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory provider
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	David Ahern <dsahern@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-	Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
 
-On Mon, Dec 11, 2023 at 12:37=E2=80=AFPM Pavel Begunkov <asml.silence@gmail=
-.com> wrote:
-...
-> >> If you remove the branch, let it fall into ->release and rely
-> >> on refcounting there, then the callback could also fix up
-> >> release_cnt or ask pp to do it, like in the patch I linked above
-> >>
-> >
-> > Sadly I don't think this is possible due to the reasons I mention in
-> > the commit message of that patch. Prematurely releasing ppiov and not
-> > having them be candidates for recycling shows me a 4-5x degradation in
-> > performance.
->
-> I don't think I follow. The concept is to only recycle a buffer (i.e.
-> make it available for allocation) when its refs drop to zero, which is
-> IMHO the only way it can work, and IIUC what this patchset is doing.
->
-> That's also I suggest to do, but through a slightly different path.
-> Let's say at some moment there are 2 refs (e.g. 1 for an skb and
-> 1 for userspace/xarray).
->
-> Say it first puts the skb:
->
-> napi_pp_put_page()
->    -> page_pool_return_page()
->      -> mp_ops->release_page()
->         -> need_to_free =3D put_buf()
->            // not last ref, need_to_free=3D=3Dfalse,
->            // don't recycle, don't increase release_cnt
->
-> Then you put the last ref:
->
-> page_pool_iov_put_many()
->    -> page_pool_return_page()
->      -> mp_ops->release_page()
->         -> need_to_free =3D put_buf()
->            // last ref, need_to_free=3D=3Dtrue,
->            // recycle and release_cnt++
->
-> And that last put can even be recycled right into the
-> pp / ptr_ring, in which case it doesn't need to touch
-> release_cnt. Does it make sense? I don't see where
-> 4-5x degradation would come from
->
->
+On Thu, Dec 14, 2023 at 11:23:02AM -0700, Daniel Xu wrote:
+> On Thu, Dec 14, 2023 at 05:16:08PM +0100, Kumar Kartikeya Dwivedi wrote:
+> > On Thu, 14 Dec 2023 at 17:08, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+> > >
+> > > On Thu, 14 Dec 2023 at 00:49, Eyal Birger <eyal.birger@gmail.com> wrote:
+> > > >
+> > > > On Wed, Dec 13, 2023 at 3:15 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > > > > [...]
+> > > > > > >
+> > > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > index c0dd38616562..f00dba85ac5d 100644
+> > > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > > @@ -8,8 +8,9 @@
+> > > > > > >   */
+> > > > > > >  #include "vmlinux.h"
+> > > > > > >  #include <bpf/bpf_core_read.h>
+> > > > > > > -#include <bpf/bpf_helpers.h>
+> > > > > > >  #include <bpf/bpf_endian.h>
+> > > > > > > +#include <bpf/bpf_helpers.h>
+> > > > > > > +#include "bpf_experimental.h"
+> > > > > > >  #include "bpf_kfuncs.h"
+> > > > > > >  #include "bpf_tracing_net.h"
+> > > > > > >
+> > > > > > > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
+> > > > > > >         opts.family = AF_INET;
+> > > > > > >
+> > > > > > >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
+> > > > > > > -       if (!x || opts.error)
+> > > > > > > +       if (!x)
+> > > > > > >                 goto out;
+> > > > > > > +       bpf_assert_with(opts.error == 0, XDP_PASS);
+> > > > > > >
+> > > > > > >         if (!x->replay_esn)
+> > > > > > >                 goto out;
+> > > > > > >
+> > > > > > > results in:
+> > > > > > >
+> > > > > > > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
+> > > > > > > 58: (85) call bpf_throw#115436
+> > > > > > > calling kernel function bpf_throw is not allowed
+> > > > > > >
+> > > > > >
+> > > > > > I think this might be because bpf_throw is not registered for use by
+> > > > > > BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
+> > > > > > this program type as well, since it's already done for TC.
+> > > > >
+> > > > > Ah yeah, that was it.
+> > > > >
+> > > > > >
+> > > > > > > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
+> > > > > > > but I can run the exceptions selftests just fine with the same bzImage.
+> > > > > > > So I'm thinking it's not a kfunc registration or BTF issue.
+> > > > > > >
+> > > > > > > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
+> > > > > > >
+> > > > > >
+> > > > > > Yes, even once you enable this, this will fail for now. I am sending
+> > > > > > out a series later this week that enables bpf_throw with acquired
+> > > > > > references, but until then may I suggest the following:
+> > > > > >
+> > > > > > #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
+> > > > > > && !___j; bpf_throw(), ___i++)
+> > > > > >
+> > > > > > This will allow you to insert some cleanup code with an assertion.
+> > > > > > Then in my series, I will convert this temporary bpf_assert_if back to
+> > > > > > the normal bpf_assert.
+> > > > > >
+> > > > > > It would look like:
+> > > > > > bpf_assert_if(opts.error == 0) {
+> > > > > >   // Execute if assertion failed
+> > > > > >   bpf_xdp_xfrm_state_release(x);
+> > > > > > }
+> > > > > >
+> > > > > > Likewise for bpf_assert_with_if, you get the idea.
+> > > > >
+> > > > > I gave it a try and I'm getting this compile error:
+> > > > >
+> > > > >         progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
+> > > > >                 bpf_assert_with_if(opts.error == 0, XDP_PASS) {
+> > > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > > >         /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
+> > > > >                 for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
+> > > > >                                                     ^~~~      ~~~~
+> > > > >         1 error generated.
+> > > > >         make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
+> > > > >
+> > > > > Seems like the compiler is being clever.
+> > > >
+> > > > It looks like ___j is used twice - maybe it was meant to be ___i? i.e.:
+> > > >
+> > > >    for (int ___i = 0, ___j = (cond); !(___j) && !___i; bpf_throw(value), ___i++)
+> > > >
+> > >
+> > > Ah, yes, that's a typo. Eyal is right, it should be ___i.
+> > 
+> > Additionally, I would modify the macro to do ___j = !!(cond).
+> 
+> Makes sense. Will send out v6 with these fixes today.
+> 
 
-Sorry for the late reply, I have been working on this locally.
+Looks like only x86 supports exceptions (looking at
+bpf_jit_supports_exceptions()).
 
-What you're saying makes sense, and I'm no longer sure why I was
-seeing a perf degradation without '[net-next v1 10/16] page_pool:
-don't release iov on elevanted refcount'. However, even though what
-you're saying is technically correct, AFAIU it's actually semantically
-wrong. When a page is released by the page_pool, we should call
-page_pool_clear_pp_info() and completely disconnect the page from the
-pool. If we call release_page() on a page and then the page pool sees
-it again in page_pool_return_page(), I think that is considered a bug.
-In fact I think what you're proposing is as a result of a bug because
-we don't call a page_pool_clear_pp_info() equivalent on releasing
-ppiov.
+This causes selftests in this patchset to fail on !x86, which is
+unfortunate. We probably want to be running these tests on all the major
+archs, so I will drop the assertion patches from this patchset.
 
-However, I'm reasonably confident I figured out the right thing to do
-here. The page_pool uses page->pp_frag_count for its refcounting.
-pp_frag_count is a misnomer, it's being renamed to pp_ref_count in
-Liang's series[1]). In this series I used a get_page/put_page
-equivalent for refcounting. Once I transitioned to using
-pp_[frag|ref]_count for refcounting inside the page_pool, the issue
-went away, and I no longer need the patch 'page_pool: don't release
-iov on elevanted refcount'.
+But since they're generally useful and I've already written the
+selftests for it, I could put them up in another patchset? Or maybe not
+cuz you're gonna fix it later anyways. WDYT?
 
-There is an additional upside, since pages and ppiovs are both being
-refcounted using pp_[frag|ref]_count, we get some unified handling for
-ppiov and we reduce the checks around ppiov. This should be fixed
-properly in the next series.
-
-I still need to do some work (~1 week) before I upload the next
-version as there is a new requirement from MM that we transition to a
-new type and not re-use page*, but I uploaded my changes github with
-the refcounting issues resolved in case they're useful to you. Sorry
-for the churn:
-
-https://github.com/mina/linux/commits/tcpdevmem-v1.5/
-
-[1] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D809049&st=
-ate=3D*
-
---=20
 Thanks,
-Mina
+Daniel
 
