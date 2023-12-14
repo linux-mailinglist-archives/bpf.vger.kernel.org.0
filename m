@@ -1,64 +1,76 @@
-Return-Path: <bpf+bounces-17815-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17816-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3440F813001
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 13:27:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13955813090
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 13:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E751F282DFC
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 12:27:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEAB31F22025
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 12:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEA14AF62;
-	Thu, 14 Dec 2023 12:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92554E624;
+	Thu, 14 Dec 2023 12:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="bRp0f9R2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="elxbenkZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3964F123;
-	Thu, 14 Dec 2023 04:27:08 -0800 (PST)
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA80115;
+	Thu, 14 Dec 2023 04:51:42 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1d34a6b3566so11717285ad.2;
+        Thu, 14 Dec 2023 04:51:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1702556829; x=1734092829;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WBZnqQidIdU+FmCjEo33kMaf6+8W5Ekd+I/lPMZWmqc=;
-  b=bRp0f9R2xTDpgBN85gY5QWPD9KFATrFRY8zKmm0HEeUxzmMkw1CLsHXA
-   sovUmNUYFjSs40g1jMgZqhTZa1Nce/pfq8r3d5AnaymZlRvqAAjQ4fKau
-   sewnGbca6XnRbYp+YMwe/a2zvIdRDZfINcH32QfbM6YFu0cVWT8btRWB1
-   M=;
-X-IronPort-AV: E=Sophos;i="6.04,275,1695686400"; 
-   d="scan'208";a="259705551"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 12:27:05 +0000
-Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
-	by email-inbound-relay-iad-1a-m6i4x-47cc8a4c.us-east-1.amazon.com (Postfix) with ESMTPS id 60A55161FC7;
-	Thu, 14 Dec 2023 12:27:01 +0000 (UTC)
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.21.151:41161]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.18.147:2525] with esmtp (Farcaster)
- id 5c963059-1839-4f7a-9376-02ee4d0c0e69; Thu, 14 Dec 2023 12:27:00 +0000 (UTC)
-X-Farcaster-Flow-ID: 5c963059-1839-4f7a-9376-02ee4d0c0e69
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 14 Dec 2023 12:26:59 +0000
-Received: from 88665a182662.ant.amazon.com (10.143.92.5) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.40;
- Thu, 14 Dec 2023 12:26:54 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <kuniyu@amazon.com>
-CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
-	<daniel@iogearbox.net>, <dxu@dxuuu.xyz>, <edumazet@google.com>,
-	<kuni1840@gmail.com>, <martin.lau@linux.dev>, <netdev@vger.kernel.org>,
-	<yonghong.song@linux.dev>
-Subject: Re: [PATCH v5 bpf-next 6/6] selftest: bpf: Test bpf_sk_assign_tcp_reqsk().
-Date: Thu, 14 Dec 2023 21:26:39 +0900
-Message-ID: <20231214122639.47782-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20231214074955.10720-1-kuniyu@amazon.com>
-References: <20231214074955.10720-1-kuniyu@amazon.com>
+        d=gmail.com; s=20230601; t=1702558301; x=1703163101; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oj0iJvkscsu8K8KTKJIWnYWXUHTwTNv0Yge5CoUg6vU=;
+        b=elxbenkZ39V/BVDtXBENcOxvQ7Qg24U/Zr4DJvk33OoIVYepvdqJT/vN69rqxM3pbN
+         nfwQtUf714P27+SAuCLmPrZJXLqAj6/kV/hPgQ94QioKv5FI5U5/MFtwd1j9jjEEolx6
+         V4eL+yKfVh7tt4mQY1LWNjFRwJi/h3naTn4/SDZpEm3/CNR4a/xB/PIk/I+gynyedrap
+         c4biU+vK6opQk6j/ehQJLuFFmmAhVGTY7G/9qTlWMQDDMWMeb2E8UcNVqDwbmtTlzm/Z
+         DQKDNsXSN0afV0ASGQShQsfmvIkMGIhiIB/IpPVHuderUqQfszka2sNCePOSdfPmBRcm
+         Dp9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702558301; x=1703163101;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oj0iJvkscsu8K8KTKJIWnYWXUHTwTNv0Yge5CoUg6vU=;
+        b=GiFcedw0MAiR4k1s9oA6wdLphdR0GzuTIifEXRorlTiGOe+xYgFwJIgwCCGwqt3YTL
+         uZwpny8BWeS7MRfAPbgACsWneMFKGWgprxL4EvdGuCRhSmyE3YLmcvvyLM8Fr2VC/npk
+         xCQpSm6GXifW8tQT238w/uWnzQFotd+irlAPhWY+naoeE5cBsTeRcER2CT2YacXqCJGk
+         xXoKqia4r/G7vGlfcb4d3BQUcZCrcyA0YBsfa2PBxO+Z1F4FTWNHBUf7jgZiwRVaS6nm
+         ZdyswrHteI/8O1UPgD1n0bcauALxJPkb2wBgQs2GnwvcwU7iPy3qoMQHxb2Fj89y1tDT
+         K4UQ==
+X-Gm-Message-State: AOJu0YzlLPp+JtLbjqJ+QPNDT+5sBZMH0BAnJqEAc4nuiFliciQrdFq9
+	xD3PruoAgwm4JKyeFt0/ZJg=
+X-Google-Smtp-Source: AGHT+IFs2hng0mwsEvoC+hm8RAbM12yZWcwi7bTtTSObTgxyW6oPlqzYS1I/1EkUf9p4JKo1OFsXzQ==
+X-Received: by 2002:a17:902:7004:b0:1d0:6ffd:ae23 with SMTP id y4-20020a170902700400b001d06ffdae23mr4335630plk.138.1702558301453;
+        Thu, 14 Dec 2023 04:51:41 -0800 (PST)
+Received: from vultr.guest ([149.28.194.201])
+        by smtp.gmail.com with ESMTPSA id jj17-20020a170903049100b001d36b2e3dddsm1184528plb.192.2023.12.14.04.51.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 04:51:40 -0800 (PST)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: akpm@linux-foundation.org,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	omosnace@redhat.com,
+	casey@schaufler-ca.com,
+	kpsingh@kernel.org,
+	mhocko@suse.com,
+	ying.huang@intel.com
+Cc: linux-mm@kvack.org,
+	linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org,
+	ligang.bdlg@bytedance.com,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v5 bpf-next 0/5] mm, security, bpf: Fine-grained control over memory policy adjustments with lsm bpf
+Date: Thu, 14 Dec 2023 12:50:28 +0000
+Message-Id: <20231214125033.4158-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,167 +78,103 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D036UWB004.ant.amazon.com (10.13.139.170) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
-Precedence: Bulk
 
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-Date: Thu, 14 Dec 2023 16:49:55 +0900
-> From: Martin KaFai Lau <martin.lau@linux.dev>
-> Date: Wed, 13 Dec 2023 22:46:11 -0800
-> > On 12/13/23 7:18 PM, Kuniyuki Iwashima wrote:
-> > >>> +static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
-> > >>> +{
-> > >>> +	struct tcp_options_received *tcp_opt = &ctx->attr.tcp_opt;
-> > >>> +	char opcode, opsize;
-> > >>> +
-> > >>> +	if (ctx->ptr + 1 > ctx->data_end)
-> > >>> +		goto stop;
-> > >>> +
-> > >>> +	opcode = *ctx->ptr++;
-> > >>> +
-> > >>> +	if (opcode == TCPOPT_EOL)
-> > >>> +		goto stop;
-> > >>> +
-> > >>> +	if (opcode == TCPOPT_NOP)
-> > >>> +		goto next;
-> > >>> +
-> > >>> +	if (ctx->ptr + 1 > ctx->data_end)
-> > >>> +		goto stop;
-> > >>> +
-> > >>> +	opsize = *ctx->ptr++;
-> > >>> +
-> > >>> +	if (opsize < 2)
-> > >>> +		goto stop;
-> > >>> +
-> > >>> +	switch (opcode) {
-> > >>> +	case TCPOPT_MSS:
-> > >>> +		if (opsize == TCPOLEN_MSS && ctx->tcp->syn &&
-> > >>> +		    ctx->ptr + (TCPOLEN_MSS - 2) < ctx->data_end)
-> > >>> +			tcp_opt->mss_clamp = get_unaligned_be16(ctx->ptr);
-> > >>> +		break;
-> > >>> +	case TCPOPT_WINDOW:
-> > >>> +		if (opsize == TCPOLEN_WINDOW && ctx->tcp->syn &&
-> > >>> +		    ctx->ptr + (TCPOLEN_WINDOW - 2) < ctx->data_end) {
-> > >>> +			tcp_opt->wscale_ok = 1;
-> > >>> +			tcp_opt->snd_wscale = *ctx->ptr;
-> > >> When writing to a bitfield of "struct tcp_options_received" which is a kernel
-> > >> struct, it needs to use the CO-RE api. The BPF_CORE_WRITE_BITFIELD has not been
-> > >> landed yet:
-> > >> https://lore.kernel.org/bpf/4d3dd215a4fd57d980733886f9c11a45e1a9adf3.1702325874.git.dxu@dxuuu.xyz/
-> > >>
-> > >> The same for reading bitfield but BPF_CORE_READ_BITFIELD() has already been
-> > >> implemented in bpf_core_read.h
-> > >>
-> > >> Once the BPF_CORE_WRITE_BITFIELD is landed, this test needs to be changed to use
-> > >> the BPF_CORE_{READ,WRITE}_BITFIELD.
-> > > IIUC, the CO-RE api assumes that the offset of bitfields could be changed.
-> > > 
-> > > If the size of struct tcp_cookie_attributes is changed, kfunc will not work
-> > > in this test.  So, BPF_CORE_WRITE_BITFIELD() works only when the size of
-> > > tcp_cookie_attributes is unchanged but fields in tcp_options_received are
-> > > rearranged or expanded to use the unused@ bits ?
-> > 
-> > Right, CO-RE helps to figure out the offset of a member in the running kernel.
-> > 
-> > > 
-> > > Also, do we need to use BPF_CORE_READ() for other non-bitfields in
-> > > strcut tcp_options_received (and ecn_ok in struct tcp_cookie_attributes
-> > > just in case other fields are added to tcp_cookie_attributes and ecn_ok
-> > > is rearranged) ?
-> > 
-> > BPF_CORE_READ is a CO-RE friendly macro for using bpf_probe_read_kernel(). 
-> > bpf_probe_read_kernel() is mostly for the tracing use case where the ptr is not 
-> > safe to read directly.
-> > 
-> > It is not the case for the tcp_options_received ptr in this tc-bpf use case or 
-> > other stack allocated objects. In general, no need to use BPF_CORE_READ. The 
-> > relocation will be done by the libbpf for tcp_opt->mss_clamp (e.g.).
-> > 
-> > Going back to bitfield, it needs BPF_CORE_*_BITFIELD because the offset may not 
-> > be right after __attribute__((preserve_access_index)), cc: Yonghong and Andrii 
-> > who know more details than I do.
-> > 
-> > A verifier error has been reported: 
-> > https://lore.kernel.org/bpf/391d524c496acc97a8801d8bea80976f58485810.1700676682.git.dxu@dxuuu.xyz/.
-> > 
-> > I also hit an error earlier in 
-> > https://lore.kernel.org/all/20220817061847.4182339-1-kafai@fb.com/ when not 
-> > using BPF_CORE_READ_BITFIELD. I don't exactly remember how the instruction looks 
-> > like but it was reading a wrong value instead of verifier error.
-> 
-> Thank you so much for detailed explanation!
-> 
-> 
-> > 
-> > ================
-> > 
-> > Going back to this patch set here.
-> > 
-> > After sleeping on it longer, I am thinking it is better not to reuse 'struct 
-> > tcp_options_received' (meaning no bitfield) in the bpf_sk_assign_tcp_reqsk() 
-> > kfunc API.
-> > 
-> > There is not much benefit in reusing 'tcp_options_received'. When new tcp option 
-> > was ever added to tcp_options_received, it is not like bpf_sk_assign_tcp_reqsk 
-> > will support it automatically. It needs to relay this new option back to the 
-> > allocated req. Unlike tcp_sock or req which may have a lot of them such that it 
-> > is useful to have a compact tcp_options_received, the tc-bpf use case here is to 
-> > allocate it once in the stack. Also, not all the members in tcp_options_received 
-> > is useful, e.g. num_sacks, ts_recent_stamp, and user_mss are not used. Leaving 
-> > it there being ignored by bpf_sk_assign_tcp_reqsk is confusing.
-> > 
-> > How about using a full u8 for each necessary member and directly add them to 
-> > struct tcp_cookie_attributes instead of nesting them into another struct. After 
-> > taking out the unnecessary members, the size may not end up to be much bigger.
-> > 
-> > The bpf prog can then directly access attr->tstamp_ok more naturally. The 
-> > changes to patch 5 and 6 should be mostly mechanical changes.
-> > 
-> > I would also rename s/tcp_cookie_attributes/bpf_tcp_req_attrs/.
-> > 
-> > wdyt?
-> 
-> Totally agree.  I reused struct tcp_options_received but had a similar
-> thought like unused fields, confusing fields (saw_tstamp vs tstamp_ok,
-> user_mss vs clamp_mss), etc.
-> 
-> And I like bpf_tcp_req_attrs, tcp_cookie_attributes was bit wordy :)
-> 
-> So probably bpf_tcp_req_attrs would look like this ?
-> 
-> struct bpf_tcp_req_attrs {
-> 	u32 rcv_tsval;
-> 	u32 rcv_tsecr;
-> 	u16 mss;
-> 	u8 rcv_scale;
-> 	u8 snd_scale;
-> 	bool ecn_ok;
-> 	bool wscale_ok;
-> 	bool sack_ok;
-> 	bool tstamp_ok;
-> 	bool usec_ts;
-> } __packed;
-> 
-> or you prefer u8 over bool and __packed ?
+Background
+==========
 
-Ah, bool and __packed will require BPF_CORE_(READ|WRITE)_BITFIELD().
-I'll use the following struct.
+In our containerized environment, we've identified unexpected OOM events
+where the OOM-killer terminates tasks despite having ample free memory.
+This anomaly is traced back to tasks within a container using mbind(2) to
+bind memory to a specific NUMA node. When the allocated memory on this node
+is exhausted, the OOM-killer, prioritizing tasks based on oom_score,
+indiscriminately kills tasks. 
 
-Thank you!
+The Challenge 
+=============
 
-> 
-> struct bpf_tcp_req_attrs {
-> 	u32 rcv_tsval;
-> 	u32 rcv_tsecr;
-> 	u16 mss;
-> 	u8 rcv_scale;
-> 	u8 snd_scale;
-> 	u8 ecn_ok;
-> 	u8 wscale_ok;
-> 	u8 sack_ok;
-> 	u8 tstamp_ok;
-> 	u8 usec_ts;
-> }
+In a containerized environment, independent memory binding by a user can
+lead to unexpected system issues or disrupt tasks being run by other users
+on the same server. If a user genuinely requires memory binding, we will
+allocate dedicated servers to them by leveraging kubelet deployment.
+
+Currently, users possess the ability to autonomously bind their memory to
+specific nodes without explicit agreement or authorization from our end.
+It's imperative that we establish a method to prevent this behavior.
+
+Proposed Solution
+=================
+
+- Capability
+  Currently, any task can perform MPOL_BIND without specific capabilities.
+  Enforcing CAP_SYS_RESOURCE or CAP_SYS_NICE could be an option, but this
+  may have unintended consequences. Capabilities, being broad, might grant
+  unnecessary privileges. We should explore alternatives to prevent
+  unexpected side effects.
+
+- LSM 
+  Introduce LSM hooks for syscalls such as mbind(2) and set_mempolicy(2)
+  to disable MPOL_BIND. This approach is more flexibility and allows for
+  fine-grained control without unintended consequences. A sample LSM BPF
+  program is included, demonstrating practical implementation in a
+  production environment.
+
+- seccomp
+  seccomp is relatively heavyweight, making it less suitable for
+  enabling in our production environment:
+  - Both kubelet and containers need adaptation to support it.
+  - Dynamically altering security policies for individual containers
+    without interrupting their operations isn't straightforward.
+
+Future Considerations
+=====================
+
+In addition, there's room for enhancement in the OOM-killer for cases
+involving CONSTRAINT_MEMORY_POLICY. It would be more beneficial to
+prioritize selecting a victim that has allocated memory on the same NUMA
+node. My exploration on the lore led me to a proposal[0] related to this
+matter, although consensus seems elusive at this point. Nevertheless,
+delving into this specific topic is beyond the scope of the current
+patchset.
+
+[0]. https://lore.kernel.org/lkml/20220512044634.63586-1-ligang.bdlg@bytedance.com/
+
+Changes:
+- v4 -> v5:
+  - Revise the commit log in patch #5. (KP)
+- v3 -> v4: https://lwn.net/Articles/954126/
+  - Drop the changes around security_task_movememory (Serge) 
+- RCC v2 -> v3: https://lwn.net/Articles/953526/
+  - Add MPOL_F_NUMA_BALANCING man-page (Ying)
+  - Fix bpf selftests error reported by bot+bpf-ci
+- RFC v1 -> RFC v2: https://lwn.net/Articles/952339/
+  - Refine the commit log to avoid misleading
+  - Use one common lsm hook instead and add comment for it
+  - Add selinux implementation
+  - Other improments in mempolicy
+- RFC v1: https://lwn.net/Articles/951188/
+
+Yafang Shao (5):
+  mm, doc: Add doc for MPOL_F_NUMA_BALANCING
+  mm: mempolicy: Revise comment regarding mempolicy mode flags
+  mm, security: Add lsm hook for memory policy adjustment
+  security: selinux: Implement set_mempolicy hook
+  selftests/bpf: Add selftests for set_mempolicy with a lsm prog
+
+ .../admin-guide/mm/numa_memory_policy.rst          | 27 +++++++
+ include/linux/lsm_hook_defs.h                      |  3 +
+ include/linux/security.h                           |  9 +++
+ include/uapi/linux/mempolicy.h                     |  2 +-
+ mm/mempolicy.c                                     |  8 +++
+ security/security.c                                | 13 ++++
+ security/selinux/hooks.c                           |  8 +++
+ security/selinux/include/classmap.h                |  2 +-
+ .../selftests/bpf/prog_tests/set_mempolicy.c       | 84 ++++++++++++++++++++++
+ .../selftests/bpf/progs/test_set_mempolicy.c       | 28 ++++++++
+ 10 files changed, 182 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/set_mempolicy.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_set_mempolicy.c
+
+-- 
+1.8.3.1
+
 
