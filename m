@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-17768-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17769-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A7858124EF
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 03:06:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ACE28124F2
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 03:06:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A66191F21052
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 02:06:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E69C281EDD
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 02:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 327881384;
-	Thu, 14 Dec 2023 02:05:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B05F184E;
+	Thu, 14 Dec 2023 02:05:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dvhIQC/v"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qW3vVudk"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDC7E4
-	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 18:05:39 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-daee86e2d70so8416084276.0
-        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 18:05:39 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B34E3
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 18:05:41 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-dbcb5eb96f7so3175162276.3
+        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 18:05:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702519539; x=1703124339; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702519541; x=1703124341; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KzTXKjA5KWsaYAjqKhDbOIpqWzWFT9AS368JXZ2MRs8=;
-        b=dvhIQC/v1AHHBiu9xhrWi4kRmfpWMCzJe4P5d7bNTHkaEX/Qw7QPHgnupS2yzV1Ca6
-         65rtV+JwRqEnrclvbw34QOSyjJxt76awp7bgZTZmjNT74uxiopeWERjDxZEksP540jFX
-         GCA+9GUSCr7ZRwCX03Nd1GUYiKKLj2IIZHiQJP6GlNIQMBVdSjUWp+HzDF8n4byMRohe
-         l7IMSOTHQSFM5q7BoHS+SwbLYc9SzcANV2njO7MSHovSofSXzA8sQW6gut83NShKcioj
-         g4OHMyif42YSMQysGddkTrRUGw0RA4XT2HZQR1i4ZAObE5pcSziEfhTUUOU7xfns0eCl
-         4JdA==
+        bh=dUMRyPJzc2KBqp9rlzOcicivZPWQYvb+p95UviyM3iw=;
+        b=qW3vVudkKPZkrIl4lSqOEBWzGXIXm+KfTxXAmnZOhyb+LVRpDJhL/I1/RWb3Hy78sB
+         KSX8LJbepxT0v0PNXcW8ObGJXbYtDniQJOKuqYsa9yR8Tp5MOcxe04Jp9Hq6EnWoz/lT
+         u6TSX1O2G1QAyhmTlKDVhxdFh8WdFCidIrTXAYup/2Lbz808ly+rcW3KbHNK7ZfEMj1v
+         +5RpvhhysARKAH9PGpsR+Xmt7hDVAQ3VB4Vn0dPqBBkWv85Jl+axtLFv87pdpz9ZPQc7
+         HgtFFAgnqhqZ6OamNPXa8CD0864tKU8ei4M+OGUCUu6l6X5YZSLKiIt4bHPMxgHzajDN
+         6dzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702519539; x=1703124339;
+        d=1e100.net; s=20230601; t=1702519541; x=1703124341;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KzTXKjA5KWsaYAjqKhDbOIpqWzWFT9AS368JXZ2MRs8=;
-        b=m1lCq66CFWUdSQZ2RvfUmEpDJDAcZ8JXFAR2lfGU9EZB/EzHd/PVJhDza3SqZBzVEH
-         Y/9hC66JbHnLJ8SaBLT6M+irCqL4RrameTnzJciEUEtw9Qwy3ywVou85LjqPFo88EdwZ
-         bs5pEK6WerurtjS5R8M0fh3ePdxj4TsgbUJ07PjnNfS8PXvTCBMS6E5zKhlFog4bvKub
-         1NR20z5Z/jjGrGHqofQnddbcVfqLstz5op9XVV9NfQd+f1K7+G/m4sR6J/l909gF0Q/V
-         iA0VVkeYn7M1HaqTkaNUvvUa3A/PqWvEkGs8DdnGcvv1FrkdxeROE7k0T3eQ+nyeAMti
-         Sveg==
-X-Gm-Message-State: AOJu0YyvybZE8QmKwui3AalbxtN0hlnibJ77q3lsEnaRcwNMkapnvbJ/
-	8kb/MrSjbOcpa6GLavMx6o61KOsnh25STvLlQA==
-X-Google-Smtp-Source: AGHT+IFvXUPRVjinne3eyeqMXrPSn27B36v8rluqCbSKO9WAxxureBDR9DLVkSWnv3Loqa1nvhzoL2hhHQkqKHt9JQ==
+        bh=dUMRyPJzc2KBqp9rlzOcicivZPWQYvb+p95UviyM3iw=;
+        b=nnBEOdkx2lRftbtlM3ch1gB8GATbTFZ6fZM5aveK3yFNApVlOWtJqAUbQSkC2izZQo
+         eUUmux8U/GNuyYC+5gpMimyLlqO2RAwjKXeoleRYKES5QY4PsoF73iK/47DylkPAm/tW
+         vJSFu5bj2DMD1SHzkubHm+4w/hFTo7m/UNZ60rCU9rfpeq0czat0BipWF7hWGZ1s6Qky
+         +WFwwjiQeBNCJI0QVnHEuuLUN3cMvXMsYxgeKxmXvpbQ58XUNIjP07JW9iC1JPF/20h4
+         GohGyA9scnFApVmzgfgxylfUDn4XpoJIkyxkUtQ3tPy2KacnVygcvr1h9ra0HsnU7LUE
+         vVLQ==
+X-Gm-Message-State: AOJu0YysTGM2lk1M1mOxf9I0cqx3+4EG0QzorFzdh7dKw/xQQr8sm/xF
+	jBZpFTDuOGKWV2u078tggCqnq4qUsPOLhRURkg==
+X-Google-Smtp-Source: AGHT+IET8r8BI9pfqS6KupRcShXv+0eu0hJA4DOJcShMg+bVFuCr5TXdWqpVc1aC50PtBVwEg1I8t4qSWt8xl7gpAg==
 X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:d31b:c1a:fb6a:2488])
- (user=almasrymina job=sendgmr) by 2002:a25:abeb:0:b0:db4:5eed:8907 with SMTP
- id v98-20020a25abeb000000b00db45eed8907mr77688ybi.8.1702519538827; Wed, 13
- Dec 2023 18:05:38 -0800 (PST)
-Date: Wed, 13 Dec 2023 18:05:25 -0800
+ (user=almasrymina job=sendgmr) by 2002:a25:c0d4:0:b0:dbc:b692:65a7 with SMTP
+ id c203-20020a25c0d4000000b00dbcb69265a7mr49497ybf.10.1702519540921; Wed, 13
+ Dec 2023 18:05:40 -0800 (PST)
+Date: Wed, 13 Dec 2023 18:05:26 -0800
 In-Reply-To: <20231214020530.2267499-1-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -59,8 +59,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20231214020530.2267499-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20231214020530.2267499-3-almasrymina@google.com>
-Subject: [RFC PATCH net-next v1 2/4] net: introduce abstraction for network memory
+Message-ID: <20231214020530.2267499-4-almasrymina@google.com>
+Subject: [RFC PATCH net-next v1 3/4] net: add netmem_t to skb_frag_t
 From: Mina Almasry <almasrymina@google.com>
 To: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org
 Cc: Mina Almasry <almasrymina@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
@@ -110,74 +110,84 @@ Cc: Mina Almasry <almasrymina@google.com>, Thomas Gleixner <tglx@linutronix.de>,
 	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add the netmem_t type, an abstraction for network memory.
+Use netmem_t instead of page directly in skb_frag_t. Currently netmem_t
+is always a struct page underneath, but the abstraction allows efforts
+to add support for skb frags not backed by pages.
 
-To add support for new memory types to the net stack, we must first
-abstract the current memory type from the net stack. Currently parts of
-the net stack use struct page directly:
-
-- page_pool
-- drivers
-- skb_frag_t
-
-Originally the plan was to reuse struct page* for the new memory types,
-and to set the LSB on the page* to indicate it's not really a page.
-However, for compiler type checking we need to introduce a new type.
-
-netmem_t is introduced to abstract the underlying memory type. Currently
-it's a no-op abstraction that is always a struct page underneath. In
-parallel there is an undergoing effort to add support for devmem to the
-net stack:
-
-https://lore.kernel.org/netdev/20231208005250.2910004-1-almasrymina@google.com/
+There is unfortunately 1 instance where the skb_frag_t is assumed to be
+a bio_vec in kcm. For this case, add a debug assert that the skb frag is
+indeed backed by a page, and do a cast.
 
 Signed-off-by: Mina Almasry <almasrymina@google.com>
 ---
- include/net/netmem.h | 35 +++++++++++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100644 include/net/netmem.h
+ include/linux/skbuff.h | 11 ++++++++---
+ net/kcm/kcmsock.c      |  9 +++++++--
+ 2 files changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/netmem.h b/include/net/netmem.h
-new file mode 100644
-index 000000000000..e4309242d8be
---- /dev/null
-+++ b/include/net/netmem.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * netmem.h
-+ *	Author:	Mina Almasry <almasrymina@google.com>
-+ *	Copyright (C) 2023 Google LLC
-+ */
-+
-+#ifndef _NET_NETMEM_H
-+#define _NET_NETMEM_H
-+
-+struct netmem {
-+	union {
-+		struct page page;
-+
-+		/* Stub to prevent compiler implicitly converting from page*
-+		 * to netmem_t* and vice versa.
-+		 *
-+		 * Other memory type(s) net stack would like to support
-+		 * can be added to this union.
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index b370eb8d70f7..6d681c40213c 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -37,6 +37,7 @@
+ #endif
+ #include <net/net_debug.h>
+ #include <net/dropreason-core.h>
++#include <net/netmem.h>
+ 
+ /**
+  * DOC: skb checksums
+@@ -359,7 +360,11 @@ extern int sysctl_max_skb_frags;
+  */
+ #define GSO_BY_FRAGS	0xFFFF
+ 
+-typedef struct bio_vec skb_frag_t;
++typedef struct skb_frag {
++	struct netmem *bv_page;
++	unsigned int bv_len;
++	unsigned int bv_offset;
++} skb_frag_t;
+ 
+ /**
+  * skb_frag_size() - Returns the size of a skb fragment
+@@ -2435,7 +2440,7 @@ static inline void skb_frag_fill_page_desc(skb_frag_t *frag,
+ 					   struct page *page,
+ 					   int off, int size)
+ {
+-	frag->bv_page = page;
++	frag->bv_page = page_to_netmem(page);
+ 	frag->bv_offset = off;
+ 	skb_frag_size_set(frag, size);
+ }
+@@ -3422,7 +3427,7 @@ static inline void skb_frag_off_copy(skb_frag_t *fragto,
+  */
+ static inline struct page *skb_frag_page(const skb_frag_t *frag)
+ {
+-	return frag->bv_page;
++	return netmem_to_page(frag->bv_page);
+ }
+ 
+ /**
+diff --git a/net/kcm/kcmsock.c b/net/kcm/kcmsock.c
+index 65d1f6755f98..926349eeeaf6 100644
+--- a/net/kcm/kcmsock.c
++++ b/net/kcm/kcmsock.c
+@@ -636,9 +636,14 @@ static int kcm_write_msgs(struct kcm_sock *kcm)
+ 		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++)
+ 			msize += skb_shinfo(skb)->frags[i].bv_len;
+ 
++		/* The cast to struct bio_vec* here assumes the frags are
++		 * struct page based.
 +		 */
-+		void *addr;
-+	};
-+};
++		DEBUG_NET_WARN_ON_ONCE(!skb_frag_page(&skb_shinfo(skb)->frags[0]));
 +
-+static inline struct page *netmem_to_page(struct netmem *netmem)
-+{
-+	return &netmem->page;
-+}
-+
-+static inline struct netmem *page_to_netmem(struct page *page)
-+{
-+	return (struct netmem *)page;
-+}
-+
-+#endif /* _NET_NETMEM_H */
+ 		iov_iter_bvec(&msg.msg_iter, ITER_SOURCE,
+-			      skb_shinfo(skb)->frags, skb_shinfo(skb)->nr_frags,
+-			      msize);
++			      (const struct bio_vec *)skb_shinfo(skb)->frags,
++			      skb_shinfo(skb)->nr_frags, msize);
+ 		iov_iter_advance(&msg.msg_iter, txm->frag_offset);
+ 
+ 		do {
 -- 
 2.43.0.472.g3155946c3a-goog
 
