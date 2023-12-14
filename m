@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-17889-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A19D813DF6
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:06:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37903813DFC
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CEF51C21D41
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 23:06:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D613E1F22952
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 23:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908BC6E2BE;
-	Thu, 14 Dec 2023 23:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39FEC6E5A7;
+	Thu, 14 Dec 2023 23:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="qw1HvdCM";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZDZ1H6Gk"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="ZaqCIeQG";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HL2/33ak"
 X-Original-To: bpf@vger.kernel.org
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7741F66AA2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 773BF671E0;
 	Thu, 14 Dec 2023 23:06:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id A3EC43200AC7;
-	Thu, 14 Dec 2023 17:56:42 -0500 (EST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 5C4013200B63;
+	Thu, 14 Dec 2023 17:56:46 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 14 Dec 2023 17:56:44 -0500
+  by compute5.internal (MEProxy); Thu, 14 Dec 2023 17:56:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1702594602; x=
-	1702681002; bh=j9Ha1GrnJezE3gDkgIKe3fTLm5nM7RqyU/VzWdgR9ds=; b=q
-	w1HvdCMhxFqoIWiBQ7RqO5XhjutACfA9pn5Sp3DAShbPXJmO/iOY4ZnKwx49xeoz
-	sCs4mI27pihMqKGADLlYZBit+2QJpRkD5i3V2rm4T2Ln975py8J4PZB9YROndd79
-	00l9fIi4zcjmLPc0jOsSXh8dzWZVeCAwJD8F8IxVreFOBvsjQd1/XiPA+y1z6Bo2
-	dPcA/m+CxMEONWV7KxNaBVpzCByBRCTn+c8GyiYgXJDS4nJlCMK3E5K8u8959xqO
-	ax0eg5iveTRk2G0Q8g9u/XOJkBFimGobyC79Vi6zdC62yA9lviD+xmJdMpDpYUOM
-	kAuHii98CtC4AhnU7Hsxg==
+	:reply-to:subject:subject:to:to; s=fm3; t=1702594605; x=
+	1702681005; bh=XQshBmyjBQf6RY2CAow1bMPPx+5T2NN0wUXPXm8LOKg=; b=Z
+	aqCIeQGurRCTM7hZ4iasVKc9O2LQIFe3ei2Nwew2C94utMf/LqvJBaqQXRpSIEgk
+	foprlzpuWhEp05gaiT8q4QVRqDiM6QbVuznut8EaFBCbDcwa8LiQGzSWcVoJbbuQ
+	sy8mNs4TkSXXZ5zyzzDJaW55lyeB3GpHckAZFYJAYDrm89soUw9wbdmPGTVy85Lm
+	XbeF5Y711R6W/m5BFmkkWusaW+xxEmFr7wZz6eOs4UaAlJ9BU/LPSlG/eKojVhwi
+	alqplz4xrwzNmSkgWGMBu1kslSoOxh6QR1m9w4biCkIRAHxSPVmnTOzC+jaiELjh
+	DJ01GHj9SQwi7cwyFDc4A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702594602; x=
-	1702681002; bh=j9Ha1GrnJezE3gDkgIKe3fTLm5nM7RqyU/VzWdgR9ds=; b=Z
-	DZ1H6Gk/IvJofYnIfaaitzCwf/JQXlJ/MlPeBGwXS/8TWgRkNQxP/njPMK+lOWpc
-	3vtTx4MFuz0Nbe4fQG2vvlVYuBbC3pk10tbRTSrBy2czyM+8BcWPAv9QjmJSoKCB
-	awmLoaYH5lUqSL0hbUCUjx0CkfFAiBIZ2EhdUcWlJE3aqATESwhMlvVurxsrkCZ1
-	3VSxH6zgI+pbT6J1NKOz5kxB5+go/ITKRxn5yY5wlI6LbuFNDMOjshjSCXEZrLPL
-	02kOPKJK9c7jpUuPo/jaNUzAAB5+nnZB8B0d+N4nJmfo+r9kWD+GmTN2TsDCSmQZ
-	muTIB/u/JHDRKyfpOO/RQ==
-X-ME-Sender: <xms:KYh7Zes3LzkLt3NgW61R1Rf3MhmFtVzDndKai34jSk6fd72u2ifgHg>
-    <xme:KYh7ZTcN8mOcpVdJJOqzpdN5rOhiSR5dIl_2PUAPlUVWRkoMYYXp5UErV9upTW6pV
-    JBoJoNHVrDxcXq6Jg>
-X-ME-Received: <xmr:KYh7ZZxiA959vEJnTRFQbAy5hTmnOaiiXAnwqkpROf2L2hrh-066Q3iNdugMBhiIU3NdAuJheGc7QHcb4kulxYYV_LytjB-zAKhK3WvKD1Hi9w>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702594605; x=
+	1702681005; bh=XQshBmyjBQf6RY2CAow1bMPPx+5T2NN0wUXPXm8LOKg=; b=H
+	L2/33akpJKh8LYF5lXkV20iIT64GK82zts3RPdoHgfTXn5QEyoRgN3kypilVZl3e
+	4JweKZNSf8eixcUGwZG+eRfpGCa4XREDl8EBUhitaDT9AVHJINRpy3lompY2rFjx
+	fW6fuMPKTbh2Xy8yEl6YZmsm4UbmAfkcPGVonCcRSZsPXu4iyIGaEjz00pbmalWD
+	bO3RtbRkM5a2S8zRlcksHCR6ObFTon5rNTPwDEuyYjh0qPsN5JYqXe0+eGkN4bCh
+	d4ZOTq+yUXhPbKnveTHHHL253UHad5815ixrPY+Ilq17j2DLSQqqIPRjR+oNqIzY
+	Vx4tGA+buvC+HzYrpUvTg==
+X-ME-Sender: <xms:LYh7ZcQ8b4ZcMEH_ADmm4j06O23hK7-bbJWcmXTV2qEBQ2S3_nbWAg>
+    <xme:LYh7ZZwTm3JKClqnlmQ9QROs2bcTv0HkZYVCR5BUua_Hfl2aNRPFhijvwCQZNheDV
+    UeQ8RjERl2_Ditj7A>
+X-ME-Received: <xmr:LYh7ZZ3Z1XIHDACbXx1D_6GzYpK7IwVURSBJxmBhWlSWSjU-GYJeAtPjfJk4N9TOC8Q286ImzHPDIXZq2WjgSf0kB8cz3Joe_07iV-kcIrs_MA>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddttddgtdefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
@@ -63,35 +63,34 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddttddgtdefucetufdoteggod
     ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
     dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
     vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:Koh7ZZOQvAYpW8D9a2qzSuE7prjDVf9BuwPthkD_WCcUtAUUfGgBLQ>
-    <xmx:Koh7Ze9k9UV_CLTtYSTOmc1uIsTWY6E_YteMm1dwZyrBjRZ1gJ3LvA>
-    <xmx:Koh7ZRVQZREUylOIDJ7E_-27qbzSDZBJxKJK17eUbEL_xpLOGAJF_w>
-    <xmx:Koh7ZeM0DDul-3JuICpLVygcKnNr57Vt3GutdwwJktETj_Yehghizg>
+X-ME-Proxy: <xmx:LYh7ZQAiMA5g8Z3Ssox1UQ_HXFkbX-6BnjyJxrPyhh7BlraicJCYzg>
+    <xmx:LYh7ZVg-Tt2-AcMQoqh3PG1hw9NaPq-bmOhqlshVL33htq-ubnCJcw>
+    <xmx:LYh7Zco3WtCCht2bPIxcNj9y6Dy4l6hIlHE2s7RILuU2E4f7ES525Q>
+    <xmx:LYh7ZdyLGIktnC7tRM1--jZX23KFULGj3K7hVn7uTcq16aPYG9qGcQ>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Dec 2023 17:56:40 -0500 (EST)
+ 14 Dec 2023 17:56:44 -0500 (EST)
 From: Daniel Xu <dxu@dxuuu.xyz>
-To: hawk@kernel.org,
-	ast@kernel.org,
+To: ast@kernel.org,
 	daniel@iogearbox.net,
-	kuba@kernel.org,
-	john.fastabend@gmail.com,
 	andrii@kernel.org,
-	davem@davemloft.net,
+	shuah@kernel.org,
 	memxor@gmail.com
 Cc: martin.lau@linux.dev,
 	song@kernel.org,
 	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
 	kpsingh@kernel.org,
 	sdf@google.com,
 	haoluo@google.com,
 	jolsa@kernel.org,
+	mykolal@fb.com,
 	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH bpf-next 1/3] bpf: xdp: Register generic_kfunc_set with XDP programs
-Date: Thu, 14 Dec 2023 15:56:25 -0700
-Message-ID: <d07d4614b81ca6aada44fcb89bb6b618fb66e4ca.1702594357.git.dxu@dxuuu.xyz>
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next 2/3] bpf: selftests: Add bpf_assert_if() and bpf_assert_with_if() macros
+Date: Thu, 14 Dec 2023 15:56:26 -0700
+Message-ID: <97ada80f3aaaeb16bf97e31a8fc204513b4fb6a9.1702594357.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.42.1
 In-Reply-To: <cover.1702594357.git.dxu@dxuuu.xyz>
 References: <cover.1702594357.git.dxu@dxuuu.xyz>
@@ -103,31 +102,55 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Registering generic_kfunc_set with XDP programs enables some of the
-newer BPF features inside XDP -- namely tree based data structures and
-BPF exceptions.
-
-The current motivation for this commit is to enable assertions inside
-XDP bpf progs. Assertions are a standard and useful tool to encode
-intent.
+These macros are a temporary stop-gap until bpf exceptions support
+unwinding acquired entities. Basically these macros act as if they take
+a callback which only get executed if the assertion fails.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- kernel/bpf/helpers.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../testing/selftests/bpf/bpf_experimental.h  | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index b3be5742d6f1..b0b485126a76 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2630,6 +2630,7 @@ static int __init kfunc_init(void)
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+index 1386baf9ae4a..d63f415bef26 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -263,6 +263,17 @@ extern void bpf_throw(u64 cookie) __ksym;
+  */
+ #define bpf_assert(cond) if (!(cond)) bpf_throw(0);
  
- 	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &generic_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &generic_kfunc_set);
-+	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &generic_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &generic_kfunc_set);
- 	ret = ret ?: register_btf_id_dtor_kfuncs(generic_dtors,
- 						  ARRAY_SIZE(generic_dtors),
++/* Description
++ *	Assert that a conditional expression is true. If false, runs code in the
++ *	body before throwing.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the value zero when the assertion fails.
++ */
++#define bpf_assert_if(cond) \
++	for (int ___i = 0, ___j = !!(cond); !(___j) && !___i; bpf_throw(0), ___i++)
++
+ /* Description
+  *	Assert that a conditional expression is true.
+  * Returns
+@@ -272,6 +283,17 @@ extern void bpf_throw(u64 cookie) __ksym;
+  */
+ #define bpf_assert_with(cond, value) if (!(cond)) bpf_throw(value);
+ 
++/* Description
++ *	Assert that a conditional expression is true. If false, runs code in the
++ *	body before throwing.
++ * Returns
++ *	Void.
++ * Throws
++ *	An exception with the given value when the assertion fails.
++ */
++#define bpf_assert_with_if(cond, value) \
++	for (int ___i = 0, ___j = !!(cond); !(___j) && !___i; bpf_throw(value), ___i++)
++
+ /* Description
+  *	Assert that LHS is equal to RHS. This statement updates the known value
+  *	of LHS during verification. Note that RHS must be a constant value, and
 -- 
 2.42.1
 
