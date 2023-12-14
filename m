@@ -1,241 +1,313 @@
-Return-Path: <bpf+bounces-17865-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17866-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A35E81383A
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 18:16:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B3B68138E0
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 18:41:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98182B21A38
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 17:16:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0738C1F21687
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 17:41:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A13F675A2;
-	Thu, 14 Dec 2023 17:16:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B6267B49;
+	Thu, 14 Dec 2023 17:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ApmZLNNP"
+	dkim=pass (2048-bit key) header.d=networkplumber-org.20230601.gappssmtp.com header.i=@networkplumber-org.20230601.gappssmtp.com header.b="HtpH4jdQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6499D65EB5;
-	Thu, 14 Dec 2023 17:16:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8915EC433C7;
-	Thu, 14 Dec 2023 17:16:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702574184;
-	bh=bwu2w4zW//jHMjIvWeXohjLIYznHWt798OK1QLHQP+E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=ApmZLNNPCWjt45Cil7/WhQKoCwSbzsvi+W1c94IM9h7LaLjgspNrA4/TR6wyhetnE
-	 NJbG7FZmQSKfYb6swKJgX336iWnfWym7mgtpNkiC20NVCsmZIssdB36Y2mvKyC6adK
-	 DaB/nskKji6OUqWtqRAzVlwSXAViL+YcT/f/x/JZ9lt6uJEJGmNxfmE4pna+KcP+BE
-	 ZHcfY5qd3B0kj8AYbWLcDa3rLEBmUytLP8/KvA5tSgZ76hRXZ/wBkX3S8aVjEZx75T
-	 bqMz3p+Y+p2eTbk02i/6RdSTLotxxvKOOV5IGfAkU4N5bgft7fCo/RkDXHtc2a/CpW
-	 sv38fX7s2KGDg==
-Date: Thu, 14 Dec 2023 11:16:22 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: bhelgaas@google.com, linux-pm@vger.kernel.org,
-	linux-mmc@vger.kernel.org, Ricky Wu <ricky_wu@realtek.com>,
-	Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
-	"Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org, bpf@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v2] PCI: Prevent device from doing RPM when it's unplugged
-Message-ID: <20231214171622.GA1023469@bhelgaas>
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F15AD10A
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 09:40:45 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6d089e8b1b2so3282586b3a.3
+        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 09:40:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1702575645; x=1703180445; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H40nK5IpwIy9PQlp7QwxJH6+lSaRPIO031fd0w6k2mM=;
+        b=HtpH4jdQ2kUP5QG5waUErTB6IWLsGrKrx4CbmWQVa43lgHvZxjD/UVJ/rpr3K2BCOb
+         +3cuMjQzv9Dc/4jMMOZP02NcDKFMu9koKgzs7SzzGlLzt5kFuH/XyUI9nXGN1Zm2HjOq
+         uYdoa6+E89rfKFTbOvyJzOnoPAAoR/3tOtfnyJWl24dw9G69nMUsE1xo+VVSKq8UtfOC
+         JT0WM2F7WewNqAdBcpMExKgn0A4YQmBiSNoc1z7nQsaYdKfNYL39m9Pnvr2xiGZNIUJX
+         ZNcuMdtDOffzl9Ca/ISyL30vRIdBD8YAKiR8PNTS/yXZelJWypowKiwqzKLzOXmDj3JP
+         Iv1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702575645; x=1703180445;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H40nK5IpwIy9PQlp7QwxJH6+lSaRPIO031fd0w6k2mM=;
+        b=cMIDiUovYiEtshB0GZnrqC5jSMlfBcCHK0H3iNOfZ6YU9wu2VFeXmm61EiSjXcogy7
+         bCNsEWJcqK4QDMPhVEEqpA01HJJcHxegS5lzzLYPIW/H0vh0sz3nVxdKMe4qL7gGFThJ
+         1nA2Gufxc93S9a7chKH8jQrc2AM6uTdrE9j0RhUlsrN8LbJezTBUUfSlHmptwUhX1jAa
+         132XdAAdzM9MTBEfoAVpxG9C/g+crUXvtSDzyfQAk9lJfGIb/KkTPnahTub6oreHO9oX
+         BlYcwqysi0izAaGHK0bqxunidh5saBbdnjRPLo3nO0A5HcWGynbrzqSmb86LT2+q4Lh0
+         Ap1g==
+X-Gm-Message-State: AOJu0Ywg/2LsiBr116qtULOPL8APj9u2m1EHiinSr1mgV+licAGjbYKu
+	yQ+W6aEJxCVv2Wb4MU8+rhVDOQ==
+X-Google-Smtp-Source: AGHT+IG7BgMGBuhTiCRVz5+mmRVftl5nKnTPsJ0urkZwVBwUIyjnJt5RfXGtkUUTbsy+ZMQJSeGPrg==
+X-Received: by 2002:a05:6a00:1381:b0:6ce:fa6e:5781 with SMTP id t1-20020a056a00138100b006cefa6e5781mr6017348pfg.45.1702575645311;
+        Thu, 14 Dec 2023 09:40:45 -0800 (PST)
+Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
+        by smtp.gmail.com with ESMTPSA id x26-20020a62fb1a000000b006ce48a0b7c6sm12066018pfm.109.2023.12.14.09.40.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 09:40:45 -0800 (PST)
+Date: Thu, 14 Dec 2023 09:40:42 -0800
+From: Stephen Hemminger <stephen@networkplumber.org>
+To: Akihiko Odaki <akihiko.odaki@daynix.com>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Jason Wang <jasowang@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Yonghong Song <yonghong.song@linux.dev>, John
+ Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>, Yuri Benditovich <yuri.benditovich@daynix.com>, Andrew
+ Melnychenko <andrew@daynix.com>, Benjamin Tissoires <bentiss@kernel.org>,
+ bpf <bpf@vger.kernel.org>, "open list:DOCUMENTATION"
+ <linux-doc@vger.kernel.org>, kvm@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, virtualization@lists.linux-foundation.org,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>
+Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
+Message-ID: <20231214094042.75f704f6@hermes.local>
+In-Reply-To: <0d68722c-9e29-407b-9ef0-331683c995d2@daynix.com>
+References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
+	<CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com>
+	<e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
+	<CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
+	<0d68722c-9e29-407b-9ef0-331683c995d2@daynix.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20231212043808.212754-1-kai.heng.feng@canonical.com>
 
-[+cc Rafael, runtime PM expert :)]
+On Thu, 14 Dec 2023 14:51:12 +0900
+Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
 
-On Tue, Dec 12, 2023 at 12:38:07PM +0800, Kai-Heng Feng wrote:
-> When inserting an SD7.0 card to Realtek card reader, the card reader
-> unplugs itself and morph into a NVMe device. The slot Link down on hot
-> unplugged can cause the following error:
-
-A page fault in a driver following a link down event sounds like
-either a driver defect or a PCI core defect that could affect any
-driver.  The rtsx power and ASPM management is very unusual, so I
-don't feel super confident in it.
-
-I guess the theory here is that while we're running
-rtsx_pci_runtime_idle(), the link down event happens and we run
-rtsx_pci_remove(), which unmaps the pcr->remap_addr page, and then
-rtsx_pci_readl(RTSX_HAIMR) in the rtsx_pci_runtime_idle() path
-references that unmapped page?
-
-I looked through other drivers that use runtime PM.  The typical
-pattern is:
-
-  *_probe()
-    pm_runtime_put
-    pm_runtime_allow
-
-  *_remove()
-    pm_runtime_forbid
-    pm_runtime_get
-
-rtsx does the put/allow and forbid/get in the reverse order:
-
-  rtsx_pci_probe()
-    pm_runtime_allow
-    pm_runtime_put
-
-  rtsx_pci_remove()
-    pm_runtime_get_sync
-    pm_runtime_forbid
-    iounmap(pcr->remap_addr)               # <-- unmap the page
-
-  rtsx_pci_runtime_idle()
-    ...
-      ioread32(pcr->remap_addr + reg)      # <-- read from unmapped page
-
-I don't know whether this is an issue, and isp_probe() and nhi_probe()
-also use this reverse order, so maybe it's all fine.  But I do wonder
-whether there's a reason to do it differently.
-
-> [   63.898861] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> [   63.912118] BUG: unable to handle page fault for address: ffffb24d403e=
-5010
-> [   63.912122] #PF: supervisor read access in kernel mode
-> [   63.912125] #PF: error_code(0x0000) - not-present page
-> [   63.912126] PGD 100000067 P4D 100000067 PUD 1001fe067 PMD 100d97067 PT=
-E 0
-> [   63.912131] Oops: 0000 [#1] PREEMPT SMP PTI
-> [   63.912134] CPU: 3 PID: 534 Comm: kworker/3:10 Not tainted 6.4.0 #6
-> [   63.912137] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.=
-M./H370M Pro4, BIOS P3.40 10/25/2018
-> [   63.912138] Workqueue: pm pm_runtime_work
-> [   63.912144] RIP: 0010:ioread32+0x2e/0x70
-> [   63.912148] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 08 d=
-9 54 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <=
-8b> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 98 6f 15 99 48
-> [   63.912150] RSP: 0018:ffffb24d40a5bd78 EFLAGS: 00010296
-> [   63.912152] RAX: ffffb24d403e5000 RBX: 0000000000000152 RCX: 000000000=
-000007f
-> [   63.912153] RDX: 000000000000ff00 RSI: ffffb24d403e5010 RDI: ffffb24d4=
-03e5010
-> [   63.912155] RBP: ffffb24d40a5bd98 R08: ffffb24d403e5010 R09: 000000000=
-0000000
-> [   63.912156] R10: ffff9074cd95e7f4 R11: 0000000000000003 R12: 000000000=
-000007f
-> [   63.912158] R13: ffff9074e1a68c00 R14: ffff9074e1a68d00 R15: 000000000=
-0009003
-> [   63.912159] FS:  0000000000000000(0000) GS:ffff90752a180000(0000) knlG=
-S:0000000000000000
-> [   63.912161] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   63.912162] CR2: ffffb24d403e5010 CR3: 0000000152832006 CR4: 000000000=
-03706e0
-> [   63.912164] Call Trace:
-> [   63.912165]  <TASK>
-> [   63.912167]  ? show_regs+0x68/0x70
-> [   63.912171]  ? __die_body+0x20/0x70
-> [   63.912173]  ? __die+0x2b/0x40
-> [   63.912175]  ? page_fault_oops+0x160/0x480
-> [   63.912177]  ? search_bpf_extables+0x63/0x90
-> [   63.912180]  ? ioread32+0x2e/0x70
-> [   63.912183]  ? search_exception_tables+0x5f/0x70
-> [   63.912186]  ? kernelmode_fixup_or_oops+0xa2/0x120
-> [   63.912189]  ? __bad_area_nosemaphore+0x179/0x230
-> [   63.912191]  ? bad_area_nosemaphore+0x16/0x20
-> [   63.912193]  ? do_kern_addr_fault+0x8b/0xa0
-> [   63.912195]  ? exc_page_fault+0xe5/0x180
-> [   63.912198]  ? asm_exc_page_fault+0x27/0x30
-> [   63.912203]  ? ioread32+0x2e/0x70
-> [   63.912206]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-> [   63.912217]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-> [   63.912226]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-> [   63.912234]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-> [   63.912243]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-> [   63.912246]  pci_pm_runtime_idle+0x34/0x70
-> [   63.912248]  rpm_idle+0xc4/0x2b0
-> [   63.912251]  pm_runtime_work+0x93/0xc0
-> [   63.912254]  process_one_work+0x21a/0x430
-> [   63.912258]  worker_thread+0x4a/0x3c0
-> [   63.912261]  ? __pfx_worker_thread+0x10/0x10
-> [   63.912263]  kthread+0x106/0x140
-> [   63.912266]  ? __pfx_kthread+0x10/0x10
-> [   63.912268]  ret_from_fork+0x29/0x50
-> [   63.912273]  </TASK>
-
-Can you strip out the call trace stuff that's not relevant so the call
-path is clear?  I'm guessing we're in ioread32(), and nothing above
-do_kern_addr_fault() or below worker_thread() is relevant.
-
-> [   63.912274] Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_s=
-of_pci_intel_cnl snd_sof_intel_hda_common snd_hda_codec_realtek snd_hda_cod=
-ec_generic snd_soc_hdac_hda soundwire_intel ledtrig_audio nls_iso8859_1 sou=
-ndwire_generic_allocation soundwire_cadence snd_sof_intel_hda_mlink snd_sof=
-_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext=
-_core snd_soc_acpi_intel_match snd_soc_acpi soundwire_bus snd_soc_core snd_=
-compress ac97_bus snd_pcm_dmaengine snd_hda_intel i915 snd_intel_dspcfg snd=
-_intel_sdw_acpi intel_rapl_msr snd_hda_codec intel_rapl_common snd_hda_core=
- x86_pkg_temp_thermal intel_powerclamp snd_hwdep coretemp snd_pcm kvm_intel=
- drm_buddy ttm mei_hdcp kvm drm_display_helper snd_seq_midi snd_seq_midi_ev=
-ent cec crct10dif_pclmul ghash_clmulni_intel sha512_ssse3 aesni_intel crypt=
-o_simd rc_core cryptd rapl snd_rawmidi drm_kms_helper binfmt_misc intel_cst=
-ate i2c_algo_bit joydev snd_seq snd_seq_device syscopyarea wmi_bmof snd_tim=
-er sysfillrect input_leds snd ee1004 sysimgblt mei_me soundcore
-> [   63.912324]  mei intel_pch_thermal mac_hid acpi_tad acpi_pad sch_fq_co=
-del msr parport_pc ppdev lp ramoops drm parport reed_solomon efi_pstore ip_=
-tables x_tables autofs4 hid_generic usbhid hid rtsx_pci_sdmmc crc32_pclmul =
-ahci e1000e i2c_i801 i2c_smbus rtsx_pci xhci_pci libahci xhci_pci_renesas v=
-ideo wmi
-
-The module list doesn't look relevant here.  Nor the timestamps.
-
-> [   63.912346] CR2: ffffb24d403e5010
-> [   63.912348] ---[ end trace 0000000000000000 ]---
+> On 2023/12/13 19:22, Benjamin Tissoires wrote:
+> > On Tue, Dec 12, 2023 at 1:41=E2=80=AFPM Akihiko Odaki <akihiko.odaki@da=
+ynix.com> wrote: =20
+> >>
+> >> On 2023/12/12 19:39, Benjamin Tissoires wrote: =20
+> >>> Hi,
+> >>>
+> >>> On Tue, Dec 12, 2023 at 9:11=E2=80=AFAM Akihiko Odaki <akihiko.odaki@=
+daynix.com> wrote: =20
+> >>>>
+> >>>> Hi, =20
+> >>
+> >> Hi,
+> >>
+> >> Thanks for reply.
+> >> =20
+> >>>>
+> >>>> It is said eBPF is a safe way to extend kernels and that is very
+> >>>> attarctive, but we need to use kfuncs to add new usage of eBPF and
+> >>>> kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to=
+ ask
+> >>>> some questions:
+> >>>>
+> >>>> 1) Which should I choose, BPF kfuncs or ioctl, when adding a new fea=
+ture
+> >>>> for userspace apps?
+> >>>> 2) How should I use BPF kfuncs from userspace apps if I add them?
+> >>>>
+> >>>> Here, a "userspace app" means something not like a system-wide daemon
+> >>>> like systemd (particularly, I have QEMU in mind). I'll describe the
+> >>>> context more below: =20
+> >>>
+> >>> I'm probably not the best person in the world to answer your
+> >>> questions, Alexei and others from the BPF core group are, but given
+> >>> that you pointed at a thread I was involved in, I feel I can give you
+> >>> a few pointers.
+> >>>
+> >>> But first and foremost, I encourage you to schedule an agenda item in
+> >>> the BPF office hour[4]. Being able to talk with the core people
+> >>> directly was tremendously helpful to me to understand their point. =20
+> >>
+> >> I prefer emails because I'm not very fluent when speaking in English a=
+nd
+> >> may have a difficultly to listen to other people, but I may try it in
+> >> future.
+> >> =20
+> >>>
+> >>> =20
+> >>>>
+> >>>> ---
+> >>>>
+> >>>> I'm working on a new feature that aids virtio-net implementations us=
+ing
+> >>>> tuntap virtual network device. You can see [1] for details, but
+> >>>> basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four =
+more
+> >>>> bytes.
+> >>>>
+> >>>> However, with long discussions we have confirmed extending
+> >>>> BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfunc=
+s is
+> >>>> the way forward. So I decided how to add kfuncs to the kernel and ho=
+w to
+> >>>> use it. There are rich documentations for the kernel side, but I fou=
+nd
+> >>>> little about the userspace. The best I could find is a systemd change
+> >>>> proposal that is based on WIP kernel changes[2]. =20
+> >>>
+> >>> Yes, as Alexei already replied, BPF is not adding new stable APIs,
+> >>> only kfuncs. The reason being that once it's marked as stable, you
+> >>> can't really remove it, even if you think it's badly designed and
+> >>> useless.
+> >>>
+> >>> Kfuncs, OTOH are "unstable" by default meaning that the constraints
+> >>> around it are more relaxed.
+> >>>
+> >>> However, "unstable" doesn't mean "unusable". It just means that the
+> >>> kernel might or might not have the function when you load your program
+> >>> in userspace. So you have to take that fact into account from day one,
+> >>> both from the kernel side and the userspace side. The kernel docs have
+> >>> a nice paragraph explaining that situation and makes the distinction
+> >>> between relatively unused kfuncs, and well known established ones.
+> >>>
+> >>> Regarding the systemd discussion you are mentioning ([2]), this is
+> >>> something that I have on my plate for a long time. I think I even
+> >>> mentioned it to Alexei at Kernel Recipes this year, and he frowned his
+> >>> eyebrows when I mentioned it. And looking at the systemd code and the
+> >>> benefits over a plain ioctl, it is clearer that in that case, a plain
+> >>> ioctl is better, mostly because we already know the API and the
+> >>> semantic.
+> >>>
+> >>> A kfunc would be interesting in cases where you are not sure about the
+> >>> overall design, and so you can give a shot at various API solutions
+> >>> without having to keep your bad v1 design forever.
+> >>> =20
+> >>>>
+> >>>> So now I'm wondering how I should use BPF kfuncs from userspace apps=
+ if
+> >>>> I add them. In the systemd discussion, it is told that Linus said it=
+'s
+> >>>> fine to use BPF kfuncs in a private infrastructure big companies own=
+, or
+> >>>> in systemd as those users know well about the system[3]. Indeed, tho=
+se
+> >>>> users should be able to make more assumptions on the kernel than
+> >>>> "normal" userspace applications can.
+> >>>>
+> >>>> Returning to my proposal, I'm proposing a new feature to be used by =
+QEMU
+> >>>> or other VMM applications. QEMU is more like a normal userspace
+> >>>> application, and usually does not make much assumptions on the kerne=
+l it
+> >>>> runs on. For example, it's generally safe to run a Debian container
+> >>>> including QEMU installed with apt on Fedora. BPF kfuncs may work eve=
+n in
+> >>>> such a situation thanks to CO-RE, but it sounds like *accidentally*
+> >>>> creating UAPIs.
+> >>>>
+> >>>> Considering all above, how can I integrate BPF kfuncs to the applica=
+tion? =20
+> >>>
+> >>> FWIW, I'm not sure you can rely on BPF calls from a container. There
+> >>> is a high chance the syscall gets disabled by the runtime. =20
+> >>
+> >> Right. Container runtimes will not pass CAP_BPF by default, but that
+> >> restriction can be lifted and I think that's a valid scenario.
+> >> =20
+> >>> =20
+> >>>>
+> >>>> If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle =
+them
+> >>>> is to think of BPF programs as some sort of kernel modules and
+> >>>> incorporate logic that behaves like modprobe. More concretely, I can=
+ put
+> >>>> eBPF binaries to a directory like:
+> >>>> /usr/local/share/qemu/ebpf/$KERNEL_RELEASE =20
+> >>>
+> >>> I would advise against that (one program per kernel release). Simply
+> >>> because your kfunc may or may not have been backported to kernel
+> >>> release v6.X.Y+1 while it was not there when v6.X.Y was out. So
+> >>> relying on the kernel number is just going to be a headache.
+> >>>
+> >>> As I understand it, the way forward is to rely on the kernel, libbpf
+> >>> and CO-RE: if the function is not available, the program will simply
+> >>> not load, and you'll know that this version of the code is not
+> >>> available (or has changed API).
+> >>>
+> >>> So what I would do if some kfunc API is becoming deprecated, is
+> >>> embedding both code paths in the same BPF unit, but marking them as
+> >>> not loaded by libppf. Then I can load the compilation unit, try v2 of
+> >>> the API, and if it's not available, try v1, and if not, then mention
+> >>> that I can not rely on BPF. Of course, this can also be done with
+> >>> separate compilation units. =20
+> >>
+> >> Doesn't it mean that the kernel is free to break old versions of QEMU
+> >> including BPF programs? That's something I'd like to avoid. =20
+> >=20
+> > Couple of points here:
+> > - when you say "the kernel", it feels like you are talking about an
+> > external actor tampering with your code. But if you submit a kernel
+> > patch with a specific use case and get yourself involved in the
+> > community, why would anybody change your kfunc API without you knowing
+> > it? =20
 >=20
-> This happens because scheduled pm_runtime_idle() is not cancelled.
+> You are right in the practical aspect.  I can pay efforts to keep kfunc=20
+> APIs alive and I'm also sure other developers would also try not to=20
+> break them for good.
 >=20
-> So before releasing the device, stop all runtime power managements by
-> using pm_runtime_barrier() to fix the issue.
->
-> Link: https://lore.kernel.org/all/2ce258f371234b1f8a1a470d5488d00e@realte=
-k.com/
-> Tested-by: Ricky Wu <ricky_wu@realtek.com>
-> ---
-> v2:
->   Cover more cases than just pciehp.
-> =20
->  drivers/pci/remove.c | 2 ++
->  1 file changed, 2 insertions(+)
+> Nevertheless I'm being careful to evaluate APIs from both of the kernel=20
+> and userspace (QEMU) viewpoints. If I fail to keep kfuncs stable because=
+=20
+> I die in an accident, for example, it's a poor excuse for other QEMU=20
+> developers that I intended to keep them stable with my personal effort.
 >=20
-> diff --git a/drivers/pci/remove.c b/drivers/pci/remove.c
-> index d749ea8250d6..c69b4ce5dbfd 100644
-> --- a/drivers/pci/remove.c
-> +++ b/drivers/pci/remove.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <linux/pci.h>
->  #include <linux/module.h>
-> +#include <linux/pm_runtime.h>
->  #include "pci.h"
-> =20
->  static void pci_free_resources(struct pci_dev *dev)
-> @@ -18,6 +19,7 @@ static void pci_stop_dev(struct pci_dev *dev)
->  	pci_pme_active(dev, false);
-> =20
->  	if (pci_dev_is_added(dev)) {
-> +		pm_runtime_barrier(&dev->dev);
+> > - the whole warning about "unstable" policy means that the user space
+> > component should not take for granted the capability. So if the kfunc
+> > changes/disappears for good reasons (because it was marked as well
+> > used and deprecated for quite some time), qemu should not *break*, it
+> > should not provide the functionality, or have a secondary plan.
+> >=20
+> > But even if you are encountering such issues, in case of a change in
+> > the ABI of your kfunc, it should be easy enough to backport the bpf
+> > changes to your old QEMUs and ask users to upgrade the user space if
+> > they upgrade their kernel.
+> >=20
+> > AFAIU, it is as unstable as you want it to be. It's just that we are
+> > not in the "we don't break user space" contract, because we are
+> > talking about adding a kernel functionality from userspace, which
+> > requires knowing the kernel intrinsics. =20
+>=20
+> I must admit I'm still not convinced the proposed BPF program=20
+> functionality needs to know internals of the kernel.
+>=20
+> The eBPF program QEMU carries is just to calculate hashes from packets.=20
+> It doesn't need to know the details of how the kernel handles packets.=20
+> It only needs to have an access to the packet content.
+>=20
+> It is exactly what BPF_PROG_TYPE_SOCKET_FILTER does, but it lacks a=20
+> mechanism to report hash values so I need to extend it or invent a new=20
+> method. Extending BPF_PROG_TYPE_SOCKET_FILTER is not a way forward since=
+=20
+> CO-RE is superior to the context rewrite it relies on. But apparently=20
+> adopting kfuncs and CO-RE also means to lose the "we don't break user=20
+> space" contract although I have no intention to expose kernel internals=20
+> to the eBPF program.
 
-If pm_runtime_barrier() is really the solution, it seems like this
-should go somewhere in pci-driver.c where we call the driver PM
-callbacks.
+An example is how one part of DPDK recomputes RSS over TAP.
 
->  		device_release_driver(&dev->dev);
->  		pci_proc_detach_device(dev);
-> --=20
-> 2.34.1
->=20
+https://git.dpdk.org/dpdk/tree/drivers/net/tap/bpf/tap_bpf_program.c
+
+This feature is likely to be removed, because it is not actively used
+and the changes in BPF program loading broke it on current kernel
+releases.  Which brings up the point that since the kernel does
+not have stable API/ABI for BPF program infrastructure, I would
+avoid it for projects that don't want to deal with that.
 
