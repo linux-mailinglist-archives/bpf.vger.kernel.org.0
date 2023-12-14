@@ -1,106 +1,153 @@
-Return-Path: <bpf+bounces-17829-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17830-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0C1A81321F
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 14:49:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F97E813243
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 14:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E15D1C20AB4
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 13:49:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29E262824E6
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 13:56:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A7C56B99;
-	Thu, 14 Dec 2023 13:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080AA5788F;
+	Thu, 14 Dec 2023 13:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gB8USD0I"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OmBuY5sq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD34137;
-	Thu, 14 Dec 2023 05:49:37 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-32f8441dfb5so7385829f8f.0;
-        Thu, 14 Dec 2023 05:49:37 -0800 (PST)
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E49912A
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 05:55:54 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-40c25973988so82832875e9.2
+        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 05:55:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702561776; x=1703166576; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702562153; x=1703166953; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fz4v/GlOIwynmVpkuyg76jXkQ9B94i1i3JqKLEq9zcc=;
-        b=gB8USD0I+8E+cTNHyWkIQsK7WBA9zT7EX84JKpexDj7gQ8jklrmyrWVV3evoHJ0BwP
-         6b2kURYOE4wtYSDct8K5Mq88TBCaYG727mELQz5raVoLQtJc9n00hGgBjPmxzZLUSYYS
-         QAK20MUtqKXeQO4+/uaL/SlvLaNaRdGBvkAIJJotpuAH6bI74cz7O1hHp3MrV8SAEvM6
-         kdJAD35T3hEmBMGp4r0voAPd0W3bUdcBUfup2QRJ4gBSVwSjMY4Qi4uQTl+FLBefFSRE
-         mVcvRFIGqQ0NZzCBmtLR1zWQlSqkS9991fNHO+tf8tf6fpt9iyesXrrhrxse5JN+lpR2
-         8uSw==
+        bh=pQ/H4h0v+ndVBNeMUZT5UjADC7Q0+Uq0HQxvs6V9X4c=;
+        b=OmBuY5sqvDLfiEVsQADMtHGqBt9geZQvLyVFjwciYh/NOXorywKrtBOOtxF38hdNgG
+         EyNrq9cc2DRru/qhJd96SjvvEtIR42iScmAWsuc0ay0maE5dzSLzfLjcxFBi33w70PaL
+         STvbj9tdjq7qRrv5sxkGrHY9PenLtYbcszV7DsUg4tOrqjScWUiktk42L8RQYbunekIi
+         c6IbMuhwSGVogR6ZrikY+HKsCs81c17tYTGpCkPTbXlj+pamHBN6h1TzXxmMBsfh1bqs
+         TcECAPbixaYhztomjQ9Fi+6hUU8AggyssRKI2/y/idOv1SmH9CzKbzITW0oH+dh8fhAy
+         Otjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702561776; x=1703166576;
+        d=1e100.net; s=20230601; t=1702562153; x=1703166953;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fz4v/GlOIwynmVpkuyg76jXkQ9B94i1i3JqKLEq9zcc=;
-        b=YZblfFNCFplLkG6Xkbt+zQQt5DE7rN+Fz/aPIwauDALKW4L44x9eswkADnqC8tl3pB
-         ERfh8au76IoP64QZmHrPBu9Scd0VulnAEpPDm6xDCh8r4yIUiygtWtcVlIC2RVY0UJSb
-         SMvf/+bJ7ED0y/ds4BfTm/Ru0ZbfRLQS/7RR5tRHCqXp6KhwrTm6AWU3BjNyazuGQVCu
-         gCNBnys5zgTXlIWreXEYVlNB+K3v6ZffI2InUmKIodWQ9wW9Uah9GOrm/7+Ljem8SUy9
-         R1GQk80Dsr7i5o6w1wQJOvheWeLUwsTz+9qGVoF4U7TqcTnMj+ME6BqxnmD872+gbgCJ
-         yscw==
-X-Gm-Message-State: AOJu0YyLDLkrD2RJ2ehiK5HuowZ7zVPPR46s5b7IqJH6b53ntUDxKC8i
-	NZnRfeDL+3iAZ+x0Sa+4kSyswVRtH1IfuGhOarQeTJbGLQs=
-X-Google-Smtp-Source: AGHT+IGLVNeGM1q3z2hDPkZO/p1o3AnImQuLmOEyFq36N4qnFj8I21f63DvWxhm0mct6WgUtBEp4QdiZrYPuZ8MmxkA=
-X-Received: by 2002:a5d:6208:0:b0:333:2fd2:6f54 with SMTP id
- y8-20020a5d6208000000b003332fd26f54mr4654191wru.94.1702561775638; Thu, 14 Dec
- 2023 05:49:35 -0800 (PST)
+        bh=pQ/H4h0v+ndVBNeMUZT5UjADC7Q0+Uq0HQxvs6V9X4c=;
+        b=jGT8IxCxA05vjTG8cI+BI9tm0BPjDhJ4ADSF9fwaCdwUqkVc+av03UE5ysu84YeBpa
+         pBMWtCErKad2dOY5/T5V408carQm6LRzg/z+57gl+pRnDizoBIU7+ERvPq6N1Qj07iqD
+         WVMqHWtVIDNkwNxwcRUSatb5eddIQNQ6JhTVfk7xgkFg4I2xYNNoamug/rzXa7hVSikK
+         q8uYCW+xUuRzolHc+/6HMttbKv4g8ghczn+px+s8rtusN2BpcyNhwMjNwceGlI/0ZhX+
+         KuOHjqdAPrt5e+mEszaCq7lqzBWEvepf4a8xo+pWEF4EeCPy0PnvwotdrmDd2zlf4/0/
+         QM5w==
+X-Gm-Message-State: AOJu0YwrBwZCYybkvKuc74lh9kSVWXIYACwlLaHvnj6VwiNPOLXvm1nh
+	FMXrXNJBpaP9n5/KgK9gaKmaaqam1GHM2oL2ezc=
+X-Google-Smtp-Source: AGHT+IEjQ7rTuWGyrLdeLqd6km/y26E8OzFMqmm7ZpupApqfDHQn5d+S0m2SK0hZwqizSrKVo5b+OzLIkQPtRfJbBms=
+X-Received: by 2002:a7b:ce0a:0:b0:40c:2a6c:8c57 with SMTP id
+ m10-20020a7bce0a000000b0040c2a6c8c57mr5346526wmc.70.1702562152977; Thu, 14
+ Dec 2023 05:55:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214062434.3565630-1-menglong8.dong@gmail.com> <20231214062434.3565630-2-menglong8.dong@gmail.com>
-In-Reply-To: <20231214062434.3565630-2-menglong8.dong@gmail.com>
+References: <20231214043010.3458072-1-houtao@huaweicloud.com>
+ <20231214043010.3458072-2-houtao@huaweicloud.com> <657a9f1ea1ff4_48672208f0@john.notmuch>
+ <ba0e18ba-f6be-ceb9-412e-48e8e41cb5b6@huaweicloud.com>
+In-Reply-To: <ba0e18ba-f6be-ceb9-412e-48e8e41cb5b6@huaweicloud.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 14 Dec 2023 05:49:24 -0800
-Message-ID: <CAADnVQ+kKxj2hg33CzH_iXdH5fs8wjwpkPP-Jjh41weqf9BEwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: make the verifier tracks the "not
- equal" for regs
-To: Menglong Dong <menglong8.dong@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Date: Thu, 14 Dec 2023 05:55:41 -0800
+Message-ID: <CAADnVQK+C+9BVowRxESJhuH7BM+SWn2u_fTU2wjH0YuA-N9egw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Reduce the scope of rcu_read_lock
+ when updating fd map
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: John Fastabend <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, xingwei lee <xrivendell7@gmail.com>, 
+	Hou Tao <houtao1@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 13, 2023 at 10:28=E2=80=AFPM Menglong Dong <menglong8.dong@gmai=
-l.com> wrote:
+On Wed, Dec 13, 2023 at 11:31=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> w=
+rote:
 >
-> We can derive some new information for BPF_JNE in regs_refine_cond_op().
-> Take following code for example:
+> Hi,
 >
->   /* The type of "a" is u16 */
->   if (a > 0 && a < 100) {
->     /* the range of the register for a is [0, 99], not [1, 99],
->      * and will cause the following error:
->      *
->      *   invalid zero-sized read
->      *
->      * as a can be 0.
->      */
->     bpf_skb_store_bytes(skb, xx, xx, a, 0);
->   }
+> On 12/14/2023 2:22 PM, John Fastabend wrote:
+> > Hou Tao wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> There is no rcu-read-lock requirement for ops->map_fd_get_ptr() or
+> >> ops->map_fd_put_ptr(), so doesn't use rcu-read-lock for these two
+> >> callbacks.
+> >>
+> >> For bpf_fd_array_map_update_elem(), accessing array->ptrs doesn't need
+> >> rcu-read-lock because array->ptrs must still be allocated. For
+> >> bpf_fd_htab_map_update_elem(), htab_map_update_elem() only requires
+> >> rcu-read-lock to be held to avoid the WARN_ON_ONCE(), so only use
+> >> rcu_read_lock() during the invocation of htab_map_update_elem().
+> >>
+> >> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> >> ---
+> >>  kernel/bpf/hashtab.c | 6 ++++++
+> >>  kernel/bpf/syscall.c | 4 ----
+> >>  2 files changed, 6 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> >> index 5b9146fa825f..ec3bdcc6a3cf 100644
+> >> --- a/kernel/bpf/hashtab.c
+> >> +++ b/kernel/bpf/hashtab.c
+> >> @@ -2523,7 +2523,13 @@ int bpf_fd_htab_map_update_elem(struct bpf_map =
+*map, struct file *map_file,
+> >>      if (IS_ERR(ptr))
+> >>              return PTR_ERR(ptr);
+> >>
+> >> +    /* The htab bucket lock is always held during update operations i=
+n fd
+> >> +     * htab map, and the following rcu_read_lock() is only used to av=
+oid
+> >> +     * the WARN_ON_ONCE in htab_map_update_elem().
+> >> +     */
+> >> +    rcu_read_lock();
+> >>      ret =3D htab_map_update_elem(map, key, &ptr, map_flags);
+> >> +    rcu_read_unlock();
+> > Did we consider dropping the WARN_ON_ONCE in htab_map_update_elem()? It
+> > looks like there are two ways to get to htab_map_update_elem() either
+> > through a syscall and the path here (bpf_fd_htab_map_update_elem) or
+> > through a BPF program calling, bpf_update_elem()? In the BPF_CALL
+> > case bpf_map_update_elem() already has,
+> >
+> >    WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held())
+> >
+> > The htab_map_update_elem() has an additional check for
+> > rcu_read_lock_trace_held(), but not sure where this is coming from
+> > at the moment. Can that be added to the BPF caller side if needed?
+> >
+> > Did I miss some caller path?
+>
+> No. But I think the main reason for the extra WARN in
+> bpf_map_update_elem() is that bpf_map_update_elem() may be inlined by
+> verifier in do_misc_fixups(), so the WARN_ON_ONCE in
+> bpf_map_update_elem() will not be invoked ever. For
+> rcu_read_lock_trace_held(), I have added the assertion in
+> bpf_map_delete_elem() recently in commit 169410eba271 ("bpf: Check
+> rcu_read_lock_trace_held() before calling bpf map helpers").
 
-Please craft a selftest from above with inline asm
-(C might not work as compiler might optimize it)
+Yep.
+We should probably remove WARN_ONs from
+bpf_map_update_elem() and others in kernel/bpf/helpers.c
+since they are inlined by the verifier with 99% probability
+and the WARNs are never called even in DEBUG kernels.
+And confusing developers. As this thread shows.
 
-Also we call:
-        /* fallthrough (FALSE) branch */
-        regs_refine_cond_op(false_reg1, false_reg2,
-rev_opcode(opcode), is_jmp32);
-        /* jump (TRUE) branch */
-        regs_refine_cond_op(true_reg1, true_reg2, opcode, is_jmp32);
-
-so despite BPF_JNE is not handled explicitly it still should have
-caught above due to rev_opcode() ?
+We can replace them with a comment that explains this inlining logic
+and where the real WARNs are.
 
