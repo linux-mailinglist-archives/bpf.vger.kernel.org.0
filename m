@@ -1,88 +1,127 @@
-Return-Path: <bpf+bounces-17753-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17754-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48F15812432
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 02:00:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D75812435
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 02:01:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 591D81C2148E
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 01:00:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7AF0282615
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 01:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B8F265B;
-	Thu, 14 Dec 2023 01:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qCBHqZf9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE7F645;
+	Thu, 14 Dec 2023 01:01:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D8A38E;
-	Thu, 14 Dec 2023 01:00:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E3A4CC433C7;
-	Thu, 14 Dec 2023 01:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702515623;
-	bh=6jmwql5g5U21XJnk9g8EAl84SFH9+WWqjHIygw+ORWA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=qCBHqZf9FWGI6P/tGO7EVVUzN+P/42eCJhYOu5cCQBVvBAOeBTEOuUPaav/2q4hnC
-	 QAqzsFGN9s/gOy6d53M3JMGmDxi1g9kEdbIO4WPJz10dQzsd+3bjd1tME0RjbT6PAU
-	 2uLZI1k/5PV2eD0bQh1ggWor29tOwq0yMyoV7ipIzkh2mQa1mwt9tp2hg9YL7Yd0qt
-	 RAEcXrNWcGAI5RlgGPlQJx7/po+qoW6QKi8SfANc2WOuwbH+E6nFE7p+Jtn98VPy8U
-	 xlFmFlGlPFh1DBraar2+JQTrItURxcHoTMUPXFxLxS4gvGaAx3wN8PJ2b4+sw086+e
-	 HDMF0yLGgOTiA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C97F7C4314C;
-	Thu, 14 Dec 2023 01:00:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61B4E0
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 17:01:04 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SrDYh2ntbz4f3lDG
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 09:00:56 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 612311A035B
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 09:01:01 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgBXpgzJU3plj7FVDg--.20307S2;
+	Thu, 14 Dec 2023 09:01:01 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 2/4] bpf: Limit the number of kprobes when
+ attaching program to multiple kprobes
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
+ Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
+ Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ xingwei lee <xrivendell7@gmail.com>, houtao1@huawei.com
+References: <20231213112531.3775079-1-houtao@huaweicloud.com>
+ <20231213112531.3775079-3-houtao@huaweicloud.com>
+ <CAEf4BzZerWpU-GW8iqZYHue5qbTrdWXZp1WKvrkxLkDj1y2Lww@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <faf3159c-7479-e2fb-e68b-b173a1cb8b88@huaweicloud.com>
+Date: Thu, 14 Dec 2023 09:00:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CAEf4BzZerWpU-GW8iqZYHue5qbTrdWXZp1WKvrkxLkDj1y2Lww@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: add small subset of SECURITY_PATH hooks to BPF
- sleepable_lsm_hooks list
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170251562381.14848.1101996884810955258.git-patchwork-notify@kernel.org>
-Date: Thu, 14 Dec 2023 01:00:23 +0000
-References: <ZXM3IHHXpNY9y82a@google.com>
-In-Reply-To: <ZXM3IHHXpNY9y82a@google.com>
-To: Matt Bobrowski <mattbobrowski@google.com>
-Cc: kpsingh@kernel.org, ast@kernel.org, andrii@kernel.org,
- revest@chromium.org, jackmanb@chromium.org, yonghong.song@linux.dev,
- bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgBXpgzJU3plj7FVDg--.20307S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ury7Cr4rJF15KF1rWr4kJFb_yoW8Wry5pF
+	ykJayDAr4rXF47K3Wqva1Fqry2vws0g3y7GF4qqr13ZF4UZrZ5Wr12gr4YvF1FvrZYkrWx
+	XFsFqryYvrW7ZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hello:
+Hi,
 
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+On 12/14/2023 7:32 AM, Andrii Nakryiko wrote:
+> On Wed, Dec 13, 2023 at 3:24 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> From: Hou Tao <houtao1@huawei.com>
+>>
+>> An abnormally big cnt may also be assigned to kprobe_multi.cnt when
+>> attaching multiple kprobes. It will trigger the following warning in
+>> kvmalloc_node():
+>>
+>>         if (unlikely(size > INT_MAX)) {
+>>             WARN_ON_ONCE(!(flags & __GFP_NOWARN));
+>>             return NULL;
+>>         }
+>>
+>> Fix the warning by limiting the maximal number of kprobes in
+>> bpf_kprobe_multi_link_attach().
+>>
+>> Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
+>> Signed-off-by: Hou Tao <houtao1@huawei.com>
+>> ---
+>>  kernel/trace/bpf_trace.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+>> index 2d1201f7b554..944678529f5c 100644
+>> --- a/kernel/trace/bpf_trace.c
+>> +++ b/kernel/trace/bpf_trace.c
+>> @@ -43,6 +43,7 @@
+>>         rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
+>>
+>>  #define MAX_UPROBE_MULTI_CNT (1U << 20)
+>> +#define MAX_KPROBE_MULTI_CNT (1U << 20)
+>>
+>>  #ifdef CONFIG_MODULES
+>>  struct bpf_trace_module {
+>> @@ -2970,7 +2971,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>>                 return -EINVAL;
+>>
+>>         cnt = attr->link_create.kprobe_multi.cnt;
+>> -       if (!cnt)
+>> +       if (!cnt || cnt > MAX_KPROBE_MULTI_CNT)
+>>                 return -EINVAL;
+> let's return -E2BIG for `cnt > MAX` cases? Same in another patch
 
-On Fri, 8 Dec 2023 15:32:48 +0000 you wrote:
-> security_path_* based LSM hooks appear to be generally missing from
-> the sleepable_lsm_hooks list. Initially add a small subset of them to
-> the preexisting sleepable_lsm_hooks list so that sleepable BPF helpers
-> like bpf_d_path() can be used from sleepable BPF LSM based programs.
-> 
-> The security_path_* hooks added in this patch are similar to the
-> security_inode_* counterparts that already exist in the
-> sleepable_lsm_hooks list, and are called in roughly similar points and
-> contexts. Presumably, making them OK to be also annotated as
-> sleepable.
-> 
-> [...]
-
-Here is the summary with links:
-  - [bpf-next] bpf: add small subset of SECURITY_PATH hooks to BPF sleepable_lsm_hooks list
-    https://git.kernel.org/bpf/bpf-next/c/b13cddf63356
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Good point. Will do in v3.
+>>         size = cnt * sizeof(*addrs);
+>> --
+>> 2.29.2
+>>
 
 
