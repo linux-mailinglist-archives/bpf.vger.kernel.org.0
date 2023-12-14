@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-17791-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17792-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53CE48127F1
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 07:28:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4D938127F2
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 07:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 094E41F21B16
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 06:28:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E5111F21A1E
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 06:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA88D276;
-	Thu, 14 Dec 2023 06:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35C7D263;
+	Thu, 14 Dec 2023 06:28:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FaKSQrnt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ajXqj6/e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9669B7;
-	Wed, 13 Dec 2023 22:28:42 -0800 (PST)
-Received: by mail-oo1-xc43.google.com with SMTP id 006d021491bc7-59064bca27dso4533860eaf.0;
-        Wed, 13 Dec 2023 22:28:42 -0800 (PST)
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1D4F4;
+	Wed, 13 Dec 2023 22:28:46 -0800 (PST)
+Received: by mail-io1-xd42.google.com with SMTP id ca18e2360f4ac-7b45ab9e084so325200139f.2;
+        Wed, 13 Dec 2023 22:28:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702535322; x=1703140122; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702535325; x=1703140125; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iFZu36W523M/IjZJ0zLsPRUfcorscyCpKb4i2bBi7JM=;
-        b=FaKSQrntyhylXGsU79tD73+19BuO7Vvk0fBFqzegmI+sHDskW7+1qTK+EzLpTotLD+
-         gxRFnMmOmoNgGiVP4HWmF3LF1+B/Sk4GRB528KPcgrpx31UFe4Y8ez5V+Ni3BqKrEKjN
-         UMVznNg0mMaCNmTBD/5ruOuqNZPA6kU4FC/VQKVAWtnD7qWW8Gn3ssPJlmmgxqXhsZEM
-         ViBm64hEWJOPdAKL3vK4M3VNvkzkhCmPOIntwTKjxORx6Hw1KaRrA81+eHU/OrSbvBzL
-         dH041L6B/cTY6NVo/g4dTTkMFysOZazywhKp+6utPMkL6rpmS6/0iKFNnLV8ha/59n4J
-         WB7A==
+        bh=lsGm+j7nwlGOQcDgyTd4xbThNMw0KWzAWGGOI0U9NQE=;
+        b=ajXqj6/eyuXW9Yvdyq1mzAlxNtyZ+Oq1xYBRrLe5mITwB3lO7mEWxLiaGqNTNyIVj+
+         T0eng5GwntVkJpNrM5InQMkmKE0SQrL4754u8NLuqIrDNOn+uuGB2KVbZSQqhcn2dkce
+         CJRyRtAxCxxuIrRbbZUWBMdh0mrvdwpSHu5SIFvP/SVOCmz3mTNOna5ufuF3n2kVn+Q0
+         Lzbm+K/S7ZCdBqgF6apWMt7zC6w462qwBHHP7OW/KmbrSPphQyiIwslZF1OCgI738zxm
+         N6TuvDd4uPNG3c6vmZqHfUKT7GgpiLoson7BVAxcvX/ljjgPHJuLW26cUfatKup3nR0t
+         aukQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702535322; x=1703140122;
+        d=1e100.net; s=20230601; t=1702535325; x=1703140125;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iFZu36W523M/IjZJ0zLsPRUfcorscyCpKb4i2bBi7JM=;
-        b=mLnjzbNNSpL1Hd7AIx68VMzea8MW/x2KmQaajv3575go5lpv7d5jZdZ7+woVOHuGV4
-         lgSkO96bOCpY5K3tlvXpEDwoB3nSSzClieWrezA8sCvi79z4grO7xrUEhmKXNktG0IzF
-         UnY8zvqYJ8Cbn2I6+9MDpCsXC/sYsrLyvsp0Po289NJPwqRqnQQB9auWWLFsaB3uUTJX
-         Q7PBErWM5vjWUkg7Oc1jLBMeyBZrSbwz/Z2bOXaCGqUvancHUVMnHUgAvTBmmhVTaKpr
-         czKQxCYYyRdgdvB8Z39JfxTMI9ZZdaZV5LPwDsWplAFT01OmmCer6DmMOm2ERqevkGUo
-         HA4Q==
-X-Gm-Message-State: AOJu0YymEH2zbzli3zg1wxA076GvR3kjevE/JWk0wRMeQIcGg1tV40/+
-	vzuo4MFZ5NzrqJCG/ZIUnjc=
-X-Google-Smtp-Source: AGHT+IH0Z8oklLoVwtqKng7fBpjEZuvK/ZBwtCGGOrBiqwXrujJe7Gm0MThqe/H5X7eJfEBPY6LK+g==
-X-Received: by 2002:a05:6358:9209:b0:170:1d30:56e0 with SMTP id d9-20020a056358920900b001701d3056e0mr10361590rwb.30.1702535321817;
-        Wed, 13 Dec 2023 22:28:41 -0800 (PST)
+        bh=lsGm+j7nwlGOQcDgyTd4xbThNMw0KWzAWGGOI0U9NQE=;
+        b=o4tMOSK0DVdKkboRAHDODeBiFjcl5o2jYpr8m0WN8gZLOv1TdlYpVF5rsnJy1DHpnJ
+         /wiu69b5oiHW8rQ76fuE0XEqsjv4phmvcRYneQa5wyvb8KdAK08KZZ+UEVw7KbK697Ek
+         WMfObou4Qj18FoyruWTdwz2ApznLythmFnHUSQ+ZyBBwRib2dYkc/H+IsbFZAzFOOEy9
+         ecE4HZJ6OZ81J+JlBgA9sLnH/+sF0yvrDk2TVSva23xWw8GN9G/BOYCeHj9PoSV22Kp9
+         IJZ0env/jkujnL/3tBzCLgfslimalVC7nQwYuz0ngTP2uqdgt382xv5h20Dy7+r6n2x/
+         XSuw==
+X-Gm-Message-State: AOJu0YyL5HYXcLBRG5ScM2OP/6p6EZDi9sEdXgO8hk8fVxEqJqfiRXhR
+	gx1Qo9y6DXUJBx25zMlEha0=
+X-Google-Smtp-Source: AGHT+IGlZg/DY0rf8exPQGNki32QDzNyU516U6ngtZG/Ojs4M0/ofTA4sp3X9XEO7x/gT3rDdLttWw==
+X-Received: by 2002:a05:6e02:1a44:b0:35d:59a2:332b with SMTP id u4-20020a056e021a4400b0035d59a2332bmr13251059ilv.47.1702535325386;
+        Wed, 13 Dec 2023 22:28:45 -0800 (PST)
 Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id z7-20020a63e107000000b005af08f65227sm10744770pgh.80.2023.12.13.22.28.38
+        by smtp.gmail.com with ESMTPSA id z7-20020a63e107000000b005af08f65227sm10744770pgh.80.2023.12.13.22.28.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 22:28:41 -0800 (PST)
+        Wed, 13 Dec 2023 22:28:45 -0800 (PST)
 From: Menglong Dong <menglong8.dong@gmail.com>
 To: andrii@kernel.org,
 	eddyz87@gmail.com,
@@ -69,9 +69,9 @@ Cc: ast@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Menglong Dong <menglong8.dong@gmail.com>
-Subject: [PATCH bpf-next v3 1/2] bpf: make the verifier tracks the "not equal" for regs
-Date: Thu, 14 Dec 2023 14:24:33 +0800
-Message-Id: <20231214062434.3565630-2-menglong8.dong@gmail.com>
+Subject: [PATCH bpf-next v3 2/2] selftests/bpf: activate the OP_NE login in range_cond()
+Date: Thu, 14 Dec 2023 14:24:34 +0800
+Message-Id: <20231214062434.3565630-3-menglong8.dong@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231214062434.3565630-1-menglong8.dong@gmail.com>
 References: <20231214062434.3565630-1-menglong8.dong@gmail.com>
@@ -83,87 +83,65 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We can derive some new information for BPF_JNE in regs_refine_cond_op().
-Take following code for example:
+The edge range checking for the registers is supported by the verifier
+now, so we can activate the extended login in
+tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
+such logic.
 
-  /* The type of "a" is u16 */
-  if (a > 0 && a < 100) {
-    /* the range of the register for a is [0, 99], not [1, 99],
-     * and will cause the following error:
-     *
-     *   invalid zero-sized read
-     *
-     * as a can be 0.
-     */
-    bpf_skb_store_bytes(skb, xx, xx, a, 0);
-  }
-
-In the code above, "a > 0" will be compiled to "jmp xxx if a == 0". In the
-TRUE branch, the dst_reg will be marked as known to 0. However, in the
-fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
-the [min, max] for a is [0, 99], not [1, 99].
-
-For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
-const and is exactly the edge of the dst reg.
+Besides, I added some cases to the "crafted_cases" array for this logic.
+These cases are mainly used to test the edge of the src reg and dst reg.
 
 Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
 ---
 v2:
-- fix a typo in the subject
-- add some comments, as Eduard advised
+- add some cases to the "crafted_cases"
 ---
- kernel/bpf/verifier.c | 38 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/reg_bounds.c     | 25 ++++++++++++++-----
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 727a59e4a647..9b1932e51823 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14332,7 +14332,43 @@ static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state
- 		}
+diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+index 0c9abd279e18..53b8711cfd2d 100644
+--- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+@@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x, struct range y,
+ 		*newy = range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b));
  		break;
- 	case BPF_JNE:
--		/* we don't derive any new information for inequality yet */
-+		if (!is_reg_const(reg2, is_jmp32))
-+			swap(reg1, reg2);
-+		if (!is_reg_const(reg2, is_jmp32))
-+			break;
+ 	case OP_NE:
+-		/* generic case, can't derive more information */
+-		*newx = range(t, x.a, x.b);
+-		*newy = range(t, y.a, y.b);
+-		break;
+-
+-		/* below extended logic is not supported by verifier just yet */
++		/* below logic is supported by the verifier now */
+ 		if (x.a == x.b && x.a == y.a) {
+ 			/* X is a constant matching left side of Y */
+ 			*newx = range(t, x.a, x.b);
+@@ -2101,6 +2096,24 @@ static struct subtest_case crafted_cases[] = {
+ 	{S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, 0}},
+ 	{S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
+ 	{S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
 +
-+		/* try to recompute the bound of reg1 if reg2 is a const and
-+		 * is exactly the edge of reg1.
-+		 */
-+		val = reg_const_value(reg2, is_jmp32);
-+		if (is_jmp32) {
-+			/* u32_min_value is not equal to 0xffffffff at this point,
-+			 * because otherwise u32_max_value is 0xffffffff as well,
-+			 * in such a case both reg1 and reg2 would be constants,
-+			 * jump would be predicted and reg_set_min_max() won't
-+			 * be called.
-+			 *
-+			 * Same reasoning works for all {u,s}{min,max}{32,64} cases
-+			 * below.
-+			 */
-+			if (reg1->u32_min_value == (u32)val)
-+				reg1->u32_min_value++;
-+			if (reg1->u32_max_value == (u32)val)
-+				reg1->u32_max_value--;
-+			if (reg1->s32_min_value == (s32)val)
-+				reg1->s32_min_value++;
-+			if (reg1->s32_max_value == (s32)val)
-+				reg1->s32_max_value--;
-+		} else {
-+			if (reg1->umin_value == (u64)val)
-+				reg1->umin_value++;
-+			if (reg1->umax_value == (u64)val)
-+				reg1->umax_value--;
-+			if (reg1->smin_value == (s64)val)
-+				reg1->smin_value++;
-+			if (reg1->smax_value == (s64)val)
-+				reg1->smax_value--;
-+		}
- 		break;
- 	case BPF_JSET:
- 		if (!is_reg_const(reg2, is_jmp32))
++	/* edge overlap testings for BPF_NE */
++	{U64, U64, {1, 1}, {1, 0x80000000}},
++	{U64, S64, {1, 1}, {1, 0x80000000}},
++	{U64, U32, {1, 1}, {1, 0x80000000}},
++	{U64, S32, {1, 1}, {1, 0x80000000}},
++	{U64, U64, {0x80000000, 0x80000000}, {1, 0x80000000}},
++	{U64, S64, {0x80000000, 0x80000000}, {1, 0x80000000}},
++	{U64, U32, {0x80000000, 0x80000000}, {1, 0x80000000}},
++	{U64, S32, {0x80000000, 0x80000000}, {1, 0x80000000}},
++	{U64, U64, {1, 0x80000000}, {1, 1}},
++	{U64, S64, {1, 0x80000000}, {1, 1}},
++	{U64, U32, {1, 0x80000000}, {1, 1}},
++	{U64, S32, {1, 0x80000000}, {1, 1}},
++	{U64, U64, {1, 0x80000000}, {0x80000000, 0x80000000}},
++	{U64, S64, {1, 0x80000000}, {0x80000000, 0x80000000}},
++	{U64, U32, {1, 0x80000000}, {0x80000000, 0x80000000}},
++	{U64, S32, {1, 0x80000000}, {0x80000000, 0x80000000}},
+ };
+ 
+ /* Go over crafted hard-coded cases. This is fast, so we do it as part of
 -- 
 2.39.2
 
