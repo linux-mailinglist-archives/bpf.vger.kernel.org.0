@@ -1,227 +1,111 @@
-Return-Path: <bpf+bounces-17900-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17901-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA6DB813E61
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:45:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A37E813E70
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC4141C21BBF
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 23:45:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2681283D2F
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 23:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EBDC6C6FD;
-	Thu, 14 Dec 2023 23:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9E882DB70;
+	Thu, 14 Dec 2023 23:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dO9++IK9"
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="XYU7jVEx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860BC6C6C3
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 23:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2ca02def690so740991fa.3
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 15:45:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702597519; x=1703202319; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KeVlmRGkarljEyU41X8OnHyMxY8bME/PwUk1mph45NQ=;
-        b=dO9++IK9nWzcVHQF8Geckg/QVmUUt4HuBwuDm9baYnQAyPc0iDiSBNk2Szpi3wpjgi
-         uNXkFeqeud/LBXjDGsDQWsuwbMhm5Lmhkj0AnsPCWVnr1y1Sy41hu21ytNbqCdVxjjFK
-         C7iBvBYN3FBjPx/f1CZvfYKNOr6duWD4s11m419dIoJraRXWesDDUvguQSdRfwng/zKT
-         ZzCGA/QYqVxRURf4aYJswXvYPsdWSFoF8HtMrjVClf9CCMnsSF3BoLOpsGE6s6ufHUWe
-         G+C0N95Urfq/JfNXUvWp/Z6E2jo5O5r4vF1SvzNikmhMTTZRSFB0uwZ9CSuaKExAUugm
-         O2sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702597519; x=1703202319;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KeVlmRGkarljEyU41X8OnHyMxY8bME/PwUk1mph45NQ=;
-        b=ulEoY+BTOVzniefwtXB/dxYwAVG1W8147w+t65CsQhfu2iBT8vTpcHuY3FsM85F+2x
-         J4kcLH7Rths+HgVxwtDk7ppCnJxzXcz5D8C9XjTcd3xnRvlu3r+quI5xkTBrVs6s9jNc
-         YQl69PSzT/qaDAqLmndzj9zm5HIz9c5qbqvD+UMTg0E6GZfx2AYdImV8Uqdmr9qCGmol
-         HgM/Qw9CMic/dy0U1VW84w4XADSXOp1JDfOz1MQCaWkG6JQPtVa+h6Kkk9cmx5eeFQfj
-         CTGt0lgsCc4ppWfRuoKwjtuKIjEklSQlox9ebPWEw+Fhvy5+TMxnCaSwXHckTcaVUcNX
-         m7jQ==
-X-Gm-Message-State: AOJu0Yzdg8MzFo98GIGVhkkcgtqKWCq8XpPPdl+rQSWuKlbiMVU2pI+5
-	qMWchiZMlwkbl9aEUhsptCXXjv1Yy/iFZuSUscSkBiyD0kg=
-X-Google-Smtp-Source: AGHT+IE1noNowFo5fMszlGDRjQDqu4nuEDSS0HSGSorXyl3YYgwDy74TZSTNo83/+a87awlfC9IDmzNXT47bd9oyrVA=
-X-Received: by 2002:a2e:ab09:0:b0:2cc:21fc:35eb with SMTP id
- ce9-20020a2eab09000000b002cc21fc35ebmr6005345ljb.54.1702597519468; Thu, 14
- Dec 2023 15:45:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 821712DB63;
+	Thu, 14 Dec 2023 23:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1702598212;
+	bh=kdaqb+qL+sKQKweMgh3BTaVI6c3ywDEdnrXH5XQmY9Q=;
+	h=Date:From:To:Cc:Subject:From;
+	b=XYU7jVExQdM6oeWGiq1bI3oV+raixNUkyDKqnsD+dkXsy2Wrv3DLPyx9dB/fu1zp5
+	 vbUqs22wcBs/ewf0Yd0g2cfrVa2P4l230BGzp69VDHNQZv8ycQi7GJ12vC4sSK9SMi
+	 RQAMmZqVpk+laso5ybeWpSjM48pCAF8chq/1hzapRXFE6uYUyzH4oKQlaNBqcxi2eg
+	 Cs0HylxUAQH63/BPVjxEddEiW3bXsQNUZNIrwIo46AJ7q14BE4Kq/7BCu98YvzJYT/
+	 b2M7sWJb0VHUBdNrbSaLQF5RydEyAKlUFAtvZhUVxH2RrdAMyMCS6noB2gzJQqFlwy
+	 OKzuybFZz73+A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Srq5J0W8jz4wcJ;
+	Fri, 15 Dec 2023 10:56:51 +1100 (AEDT)
+Date: Fri, 15 Dec 2023 10:56:50 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, David Miller
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>
+Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Larysa
+ Zaremba <larysa.zaremba@intel.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the bpf-next tree with the net-next
+ tree
+Message-ID: <20231215105650.5eb8d2a4@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231205184248.1502704-1-andrii@kernel.org> <20231205184248.1502704-10-andrii@kernel.org>
- <ZXsPWvgt6xWtUizn@mail.gmail.com>
-In-Reply-To: <ZXsPWvgt6xWtUizn@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 14 Dec 2023 15:45:07 -0800
-Message-ID: <CAEf4BzbqRO-JTEfZ83pxfGe+1ULCtuBarNbaWDOi4eTfju6YAg@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 09/10] selftests/bpf: validate precision logic
- in partial_stack_load_preserves_zeros
-To: Maxim Mikityanskiy <maxtram95@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
-	Eduard Zingerman <eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/CLPTXkepDjGLf88u5G7zcrp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/CLPTXkepDjGLf88u5G7zcrp
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 6:21=E2=80=AFAM Maxim Mikityanskiy <maxtram95@gmail=
-.com> wrote:
->
-> Hi Andrii,
->
-> I'm preparing a series for submission [1], and it started failing on
-> this selftest on big endian after I rebased over your series. Can we
-> discuss (see below) to figure out whether it's a bug in your patch or
-> whether I'm missing something?
->
-> On Tue, 05 Dec 2023 at 10:42:47 -0800, Andrii Nakryiko wrote:
-> > Enhance partial_stack_load_preserves_zeros subtest with detailed
-> > precision propagation log checks. We know expect fp-16 to be spilled,
-> > initially imprecise, zero const register, which is later marked as
-> > precise even when partial stack slot load is performed, even if it's no=
-t
-> > a register fill (!).
-> >
-> > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  .../selftests/bpf/progs/verifier_spill_fill.c    | 16 ++++++++++++++++
-> >  1 file changed, 16 insertions(+)
-> >
-> > diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/=
-tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-> > index 41fd61299eab..df4920da3472 100644
-> > --- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-> > +++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-> > @@ -495,6 +495,22 @@ char single_byte_buf[1] SEC(".data.single_byte_buf=
-");
-> >  SEC("raw_tp")
-> >  __log_level(2)
-> >  __success
-> > +/* make sure fp-8 is all STACK_ZERO */
-> > +__msg("2: (7a) *(u64 *)(r10 -8) =3D 0          ; R10=3Dfp0 fp-8_w=3D00=
-000000")
-> > +/* but fp-16 is spilled IMPRECISE zero const reg */
-> > +__msg("4: (7b) *(u64 *)(r10 -16) =3D r0        ; R0_w=3D0 R10=3Dfp0 fp=
--16_w=3D0")
-> > +/* and now check that precision propagation works even for such tricky=
- case */
-> > +__msg("10: (71) r2 =3D *(u8 *)(r10 -9)         ; R2_w=3DP0 R10=3Dfp0 f=
-p-16_w=3D0")
->
-> Why do we require R2 to be precise at this point? It seems the only
-> reason it's marked as precise here is because it was marked at line 6,
-> and the mark was never cleared: when R2 was overwritten at line 10, only
-> __mark_reg_const_zero was called, and no-one cleared the flag, although
-> R2 was overwritten.
->
-> Moreover, if I replace r2 with r3 in this block, it doesn't get the
-> precise mark, as I expect.
->
-> Preserving the flag looks like a bug to me, but I wanted to double-check
-> with you.
->
+Hi all,
 
+Today's linux-next merge of the bpf-next tree got a conflict in:
 
-So let's look at the relevant pieces of the code and the log.
+  tools/net/ynl/generated/netdev-user.c
 
-First, note that we set fp-16 slot to all zeroes by spilling register
-with known value zero (but not yet marked precise)
+between commit:
 
-3: (b7) r0 =3D 0                        ; R0_w=3D0
-4: (7b) *(u64 *)(r10 -16) =3D r0        ; R0_w=3D0 R10=3Dfp0 fp-16_w=3D0
+  f7c0e362a25f ("tools: ynl: remove generated user space code from git")
 
-then eventually we get to insns #11, which is using r2 as an offset
-into map_value pointer, so r2's value is important to know precisely,
-so we start precision back propagation:
+from the net-next tree and commit:
 
-8: (73) *(u8 *)(r1 +0) =3D r2           ;
-R1_w=3Dmap_value(map=3D.data.single_by,ks=3D4,vs=3D1) R2_w=3DP0
-9: (bf) r1 =3D r6                       ;
-R1_w=3Dmap_value(map=3D.data.single_by,ks=3D4,vs=3D1)
-R6_w=3Dmap_value(map=3D.data.single_by,ks=3D4,vs=3D1)
-10: (71) r2 =3D *(u8 *)(r10 -9)         ; R2_w=3DP0 R10=3Dfp0 fp-16_w=3D0
-11: (0f) r1 +=3D r2
-mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx -1
-mark_precise: frame0: regs=3Dr2 stack=3D before 10: (71) r2 =3D *(u8 *)(r10=
- -9)
+  e6795330f88b ("xdp: Add VLAN tag hint")
 
-^^ here r2 is assigned from fp-16 slot, so now we drop r2, but start
-tracking fp-16 to mark it as precise
+from the bpf-next tree.
 
-mark_precise: frame0: regs=3D stack=3D-16 before 9: (bf) r1 =3D r6
-mark_precise: frame0: regs=3D stack=3D-16 before 8: (73) *(u8 *)(r1 +0) =3D=
- r2
-mark_precise: frame0: regs=3D stack=3D-16 before 7: (0f) r1 +=3D r2
-mark_precise: frame0: regs=3D stack=3D-16 before 6: (71) r2 =3D *(u8 *)(r10=
- -1)
-mark_precise: frame0: regs=3D stack=3D-16 before 5: (bf) r1 =3D r6
+I fixed it up (I just removed the file) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
 
-^^ irrelevant instructions which we just skip
+--=20
+Cheers,
+Stephen Rothwell
 
-mark_precise: frame0: regs=3D stack=3D-16 before 4: (7b) *(u64 *)(r10 -16) =
-=3D r0
+--Sig_/CLPTXkepDjGLf88u5G7zcrp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-^^ here we notice that fp-16 was set by spilling r0 state, so we drop
-fp-16, start tracking r0
+-----BEGIN PGP SIGNATURE-----
 
-mark_precise: frame0: regs=3Dr0 stack=3D before 3: (b7) r0 =3D 0
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmV7lkIACgkQAVBC80lX
+0Gyv/QgAmdgxoieVX+RuS74JGn0oucUyO+YZNdN1+Q/Wx0quGXyfCus34AZzy8Wc
+/ng370Ky6puQEAPtv7p4ZdocU4kK7rBWyyqYzgDz6JcQ2rWaOXng4ClQ0cS1S8KU
+aOSTUcVnDWqCtoX04qw8qOGbKnD69T97Bc2UnBjrLpDrNdimXmBTQKbUjj9P6YuU
+hYDlCTK7KCwP+ZgpBKRZNLHBq62hjpTq1kh41+WCJmTPMt2NxXcYeeJlFi5y4ZSg
+CbZdaL5caMrU5UZ1qYDcP+KhhuUjIfWW/h1vD9rtE29EeJChd3Rt8hsrhftdIzkO
+M5qzya5888mLzxyOhw3ZABGcCHxFtQ==
+=QuYy
+-----END PGP SIGNATURE-----
 
-^^ and finally we arrive at r0 which was assigned 0 directly. We are done.
-
-
-All seems correct. Did you spot any problem in the logic?
-
-
-> The context why it's relevant to my series: after patch [3], this fill
-> goes to the then-branch on big endian (not to the else-branch, as
-> before), and I copy the register with copy_register_state, which
-> preserves the precise flag from the stack, not from the old value of r2.
->
-
-I haven't looked at your patches, sorry, let's try figuring out if the
-test's logic is broken, first.
-
-> > +__msg("11: (0f) r1 +=3D r2")
-> > +__msg("mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx -1")
-> > +__msg("mark_precise: frame0: regs=3Dr2 stack=3D before 10: (71) r2 =3D=
- *(u8 *)(r10 -9)")
-> > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 9: (bf) r1 =3D=
- r6")
-> > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 8: (73) *(u8 *=
-)(r1 +0) =3D r2")
-> > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 7: (0f) r1 +=
-=3D r2")
-> > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 6: (71) r2 =3D=
- *(u8 *)(r10 -1)")
-> > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 5: (bf) r1 =3D=
- r6")
-> > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 4: (7b) *(u64 =
-*)(r10 -16) =3D r0")
-> > +__msg("mark_precise: frame0: regs=3Dr0 stack=3D before 3: (b7) r0 =3D =
-0")
-> >  __naked void partial_stack_load_preserves_zeros(void)
-> >  {
-> >       asm volatile (
-> > --
-> > 2.34.1
-> >
-> >
->
-> [1]: https://github.com/kernel-patches/bpf/pull/6132
-> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tre=
-e/kernel/bpf/verifier.c?id=3Dc838fe1282df540ebf6e24e386ac34acb3ef3115#n4806
-> [3]: https://github.com/kernel-patches/bpf/pull/6132/commits/0e72ee541180=
-812e515b2bf3ebd127b6e670fd59
+--Sig_/CLPTXkepDjGLf88u5G7zcrp--
 
