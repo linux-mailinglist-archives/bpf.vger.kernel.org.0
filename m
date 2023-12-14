@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-17818-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17819-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ACDD813095
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 13:51:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C01EB813097
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 13:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26A8628318E
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 12:51:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A2C1F21E95
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 12:52:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08ECD4F5E4;
-	Thu, 14 Dec 2023 12:51:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523005103C;
+	Thu, 14 Dec 2023 12:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q/+tXeXa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lbj0UF/c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0317C11B;
-	Thu, 14 Dec 2023 04:51:45 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1d0ccda19eeso48529555ad.1;
-        Thu, 14 Dec 2023 04:51:44 -0800 (PST)
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8819511A;
+	Thu, 14 Dec 2023 04:51:46 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1d098b87eeeso72653015ad.0;
+        Thu, 14 Dec 2023 04:51:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702558304; x=1703163104; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702558306; x=1703163106; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xHJ+KYyJ1jZcwPU6L/9C8DimrQ09bt4oL7onSyu8iGg=;
-        b=Q/+tXeXaKkgpfcse1ngDpsoFbG7qOrPkhMmOP9qgaQazvFZwoAOhA+zORaPOlw5d2u
-         TVG4cHhbPoxqkoU6z01QTgidcZMSGcOFIALU41EsS4B6XfxjUxP1AcbiqjKoZU/yfbmd
-         ZaLCDxmyYfmNimsH+whNHB+Ox9cHTeyQwbCnrxKMV9bh9jgnYNLsQ6FhLaKpMu6myayM
-         5bTIUIw0/UaI5zZ/7VFtF8b/EHy8JMKpTNsty923bOnrQ54oVmGSpofQDWnx8mdz2ZRl
-         FoSbz5oUforam+LpZCAL0VprF9myubhSZKjQfTtihitwy9m0dh/XQI6Sx6uElufyfoVO
-         50+w==
+        bh=F5jNCiht2qhfhgmL/0QXVPaECx4NcLPjGSo+ppuw/OE=;
+        b=lbj0UF/czrwp8t93IhuIP3Tp59KiXHHqFe02TFhw9/YTCYda+hcaBy7dRQhn5dIAdO
+         b96mL778dDXIgvvkwxfEUmXe1HS0LEfjvKEebSNjcQV3EgA1ZViL9u0RFpayP03/t5e5
+         GG38BRpqgShy032YBa6CT45lV5HTEXSj3a1l5pjO7F6uMqgDgvB3J4Z0qdZIOd5rWCrt
+         w30ZZD0k+MBgiiWXRcREvLyMat3beG6eJyDYRMfDvBWsIJKCnqjjt+pMbaHL7nwQX+Gm
+         IYgGm9y1Y3NLn3/l3Q4blg8OO6hct5qVPGOhTb1/aKQGAaaturdOXaO5kica/US+YdRj
+         vGRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702558304; x=1703163104;
+        d=1e100.net; s=20230601; t=1702558306; x=1703163106;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xHJ+KYyJ1jZcwPU6L/9C8DimrQ09bt4oL7onSyu8iGg=;
-        b=ZQeFe2jjs63Cmsr7Xl6n3zyVZ9Tv5UKbL6px6IRp1wO+twSdMcamxPtTVAc+X+N0Ka
-         TPXH691YkbXLYk4MkudkHrmN1FzDZtswyOYS+y25shtxlgiQItL8177vk1veYzE34V9d
-         9TtvyHTQwX4E47p4CiaXqsEBZX6gsAXJtCrVjIWh46sJtOOSMLt3Xky4P9s4VY8L7sLV
-         89RtRGZd791grzrXuWweRkRGqp2ghWHel9Ii//8OcJ++pPe/sW0+rScmig+VXAFYbCjv
-         /tzekdN24UNOWJ/Fjxa4l8rsuwUNYXFRRrjAf2ZntRlgWHk0SHik+B+I4NC4cAFapLXf
-         oftg==
-X-Gm-Message-State: AOJu0YwcrbSJlLzWkVBpSySrFfptLS3/0cj0rf7JtCsp/i/BCXWdgfaE
-	R3EUVBjmF3PhnN3yf2UZgNY=
-X-Google-Smtp-Source: AGHT+IHJCfmGa/OQsAmV/JJqlMOqa+7hR321uAICGK3vb14T4CyiXYT6mtyWpONo4B+Q9E+Y2wuXOA==
-X-Received: by 2002:a17:903:2441:b0:1cf:aff5:8934 with SMTP id l1-20020a170903244100b001cfaff58934mr5418252pls.48.1702558304467;
-        Thu, 14 Dec 2023 04:51:44 -0800 (PST)
+        bh=F5jNCiht2qhfhgmL/0QXVPaECx4NcLPjGSo+ppuw/OE=;
+        b=ceC9OFq5mwPGzGeaL5xfzLcmDfnve44icPSK2v/K6c5xox7O/KWVvFjzHSS/xmSUZj
+         OP4ZpS3YEdIOAF2D7x448TEgJnYa2UbX3ESl+Bd4H8p5uouM9luZErs2IrQrhWROoa39
+         i6428L1uQlign26G7uINFdlf26MwiEzf+JsHZiCkqJkVrHyN/zDl+htLH1hsJks0Arp3
+         bKsJ1eAMeKtHBeIefKrlAQrtvf+ZlW9yujKn+c/hG+2/2WyxJUNeFE1wsddjjG3U/TXH
+         GaXob34tjlkeEM78cVxnOLdVVVhEy8GT8QjCM0l9hESOL5v0bn7Xy1tuWxWaxsCFpqUu
+         EfDQ==
+X-Gm-Message-State: AOJu0YxKroIB/ljMt6vSOubHyLL/jfYoo9GrcNAjWHL96bRkVYUVWfns
+	hOYzdIcPPh+WAlkBOXdsygw=
+X-Google-Smtp-Source: AGHT+IGpqBwIV6/Z1bJz2uXsgixmwbGfGPBUTyaTQL8gEPBIKToLlEPZWt43poMVRrkjwahDoJ6KPg==
+X-Received: by 2002:a17:903:22c1:b0:1d0:6ffd:9e2a with SMTP id y1-20020a17090322c100b001d06ffd9e2amr10329616plg.124.1702558305872;
+        Thu, 14 Dec 2023 04:51:45 -0800 (PST)
 Received: from vultr.guest ([149.28.194.201])
-        by smtp.gmail.com with ESMTPSA id jj17-20020a170903049100b001d36b2e3dddsm1184528plb.192.2023.12.14.04.51.43
+        by smtp.gmail.com with ESMTPSA id jj17-20020a170903049100b001d36b2e3dddsm1184528plb.192.2023.12.14.04.51.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 04:51:43 -0800 (PST)
+        Thu, 14 Dec 2023 04:51:45 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: akpm@linux-foundation.org,
 	paul@paul-moore.com,
@@ -67,11 +67,10 @@ Cc: linux-mm@kvack.org,
 	linux-security-module@vger.kernel.org,
 	bpf@vger.kernel.org,
 	ligang.bdlg@bytedance.com,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Eric Dumazet <edumazet@google.com>
-Subject: [PATCH v5 bpf-next 2/5] mm: mempolicy: Revise comment regarding mempolicy mode flags
-Date: Thu, 14 Dec 2023 12:50:30 +0000
-Message-Id: <20231214125033.4158-3-laoar.shao@gmail.com>
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v5 bpf-next 3/5] mm, security: Add lsm hook for memory policy adjustment
+Date: Thu, 14 Dec 2023 12:50:31 +0000
+Message-Id: <20231214125033.4158-4-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231214125033.4158-1-laoar.shao@gmail.com>
 References: <20231214125033.4158-1-laoar.shao@gmail.com>
@@ -83,37 +82,110 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-MPOL_F_STATIC_NODES, MPOL_F_RELATIVE_NODES, and MPOL_F_NUMA_BALANCING are
-mode flags applicable to both set_mempolicy(2) and mbind(2) system calls.
-It's worth noting that MPOL_F_NUMA_BALANCING was initially introduced in
-commit bda420b98505 ("numa balancing: migrate on fault among multiple bound
-nodes") exclusively for set_mempolicy(2). However, it was later made a
-shared flag for both set_mempolicy(2) and mbind(2) following
-commit 6d2aec9e123b ("mm/mempolicy: do not allow illegal
-MPOL_F_NUMA_BALANCING | MPOL_LOCAL in mbind()").
+In a containerized environment, independent memory binding by a user can
+lead to unexpected system issues or disrupt tasks being run by other users
+on the same server. If a user genuinely requires memory binding, we will
+allocate dedicated servers to them by leveraging kubelet deployment.
 
-This revised version aims to clarify the details regarding the mode flags.
+At present, users have the capability to bind their memory to a specific
+node without explicit agreement or authorization from us. Consequently, a
+new LSM hook is introduced to mitigate this. This implementation allows us
+to exercise fine-grained control over memory policy adjustments within our
+container environment
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Eric Dumazet <edumazet@google.com>
 ---
- include/uapi/linux/mempolicy.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/lsm_hook_defs.h |  3 +++
+ include/linux/security.h      |  9 +++++++++
+ mm/mempolicy.c                |  8 ++++++++
+ security/security.c           | 13 +++++++++++++
+ 4 files changed, 33 insertions(+)
 
-diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
-index a8963f7..afed4a4 100644
---- a/include/uapi/linux/mempolicy.h
-+++ b/include/uapi/linux/mempolicy.h
-@@ -26,7 +26,7 @@ enum {
- 	MPOL_MAX,	/* always last member of enum */
- };
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index ff217a5..5580127 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -419,3 +419,6 @@
+ LSM_HOOK(int, 0, uring_sqpoll, void)
+ LSM_HOOK(int, 0, uring_cmd, struct io_uring_cmd *ioucmd)
+ #endif /* CONFIG_IO_URING */
++
++LSM_HOOK(int, 0, set_mempolicy, unsigned long mode, unsigned short mode_flags,
++	 nodemask_t *nmask, unsigned int flags)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 1d1df326..cc4a19a 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -484,6 +484,8 @@ int security_setprocattr(const char *lsm, const char *name, void *value,
+ int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
+ int security_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen);
+ int security_locked_down(enum lockdown_reason what);
++int security_set_mempolicy(unsigned long mode, unsigned short mode_flags,
++			   nodemask_t *nmask, unsigned int flags);
+ #else /* CONFIG_SECURITY */
  
--/* Flags for set_mempolicy */
-+/* Flags for set_mempolicy() or mbind() */
- #define MPOL_F_STATIC_NODES	(1 << 15)
- #define MPOL_F_RELATIVE_NODES	(1 << 14)
- #define MPOL_F_NUMA_BALANCING	(1 << 13) /* Optimize with NUMA balancing if possible */
+ static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
+@@ -1395,6 +1397,13 @@ static inline int security_locked_down(enum lockdown_reason what)
+ {
+ 	return 0;
+ }
++
++static inline int
++security_set_mempolicy(unsigned long mode, unsigned short mode_flags,
++		       nodemask_t *nmask, unsigned int flags)
++{
++	return 0;
++}
+ #endif	/* CONFIG_SECURITY */
+ 
+ #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 10a590e..9535d9e 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1483,6 +1483,10 @@ static long kernel_mbind(unsigned long start, unsigned long len,
+ 	if (err)
+ 		return err;
+ 
++	err = security_set_mempolicy(lmode, mode_flags, &nodes, flags);
++	if (err)
++		return err;
++
+ 	return do_mbind(start, len, lmode, mode_flags, &nodes, flags);
+ }
+ 
+@@ -1577,6 +1581,10 @@ static long kernel_set_mempolicy(int mode, const unsigned long __user *nmask,
+ 	if (err)
+ 		return err;
+ 
++	err = security_set_mempolicy(lmode, mode_flags, &nodes, 0);
++	if (err)
++		return err;
++
+ 	return do_set_mempolicy(lmode, mode_flags, &nodes);
+ }
+ 
+diff --git a/security/security.c b/security/security.c
+index dcb3e70..685ad79 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -5337,3 +5337,16 @@ int security_uring_cmd(struct io_uring_cmd *ioucmd)
+ 	return call_int_hook(uring_cmd, 0, ioucmd);
+ }
+ #endif /* CONFIG_IO_URING */
++
++/**
++ * security_set_mempolicy() - Check if memory policy can be adjusted
++ * @mode: The memory policy mode to be set
++ * @mode_flags: optional mode flags
++ * @nmask: modemask to which the mode applies
++ * @flags: mode flags for mbind(2) only
++ */
++int security_set_mempolicy(unsigned long mode, unsigned short mode_flags,
++			   nodemask_t *nmask, unsigned int flags)
++{
++	return call_int_hook(set_mempolicy, 0, mode, mode_flags, nmask, flags);
++}
 -- 
 1.8.3.1
 
