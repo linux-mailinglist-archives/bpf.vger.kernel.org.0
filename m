@@ -1,284 +1,202 @@
-Return-Path: <bpf+bounces-17777-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84BE6812600
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 04:40:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D936812655
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 05:18:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E74CB20C6F
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 03:40:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9B492827F5
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 04:18:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30DF186F;
-	Thu, 14 Dec 2023 03:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF727469E;
+	Thu, 14 Dec 2023 04:18:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LCUCWiSE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="daK8LOgR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CEFA93;
-	Wed, 13 Dec 2023 19:40:21 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so150881b3a.1;
-        Wed, 13 Dec 2023 19:40:21 -0800 (PST)
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3845EF4
+	for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:17:59 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-334af3b3ddfso6832368f8f.3
+        for <bpf@vger.kernel.org>; Wed, 13 Dec 2023 20:17:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702525220; x=1703130020; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aEKOSge/hHdPwni+MLpXmsbRXBwIGAeAkdwDfsnV6NM=;
-        b=LCUCWiSEjKXQ85nf4vt76gA2BXUnPlz77ldT7k3Ut8bLk3DtyFFZa+ory2AOAn0Obs
-         zX5ULYbig23dKI8ZJ88PsJwyEdUEMEwNiAZPsAapHGYQuNA3LmMHNvv/OXrwr7BQ2TmP
-         NBZYvtNDBW6TaHzViYJ9LahTh1c+rloME+4l4+LPklWGg/unbNcA3el103/oYHNKRB36
-         3bXjVlgYo7etm5u8nYII5/KHfh0fNTYu06ovlujh9I5eKhuxruuxRE16HW6dfQNB+fq/
-         dBp8Cwbm5sg3DFfDAlI2CZgsnSwFT59p7Utr5PU2LaeZe07Gyi31DPh7ZbmI79yOWRIr
-         31FA==
+        d=gmail.com; s=20230601; t=1702527477; x=1703132277; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sDUZR3Km74y9Sl5SQmAwbWzIp7aiwhFxGgDMcOhxNxE=;
+        b=daK8LOgR6ztIN3VWoYUMRxT7dQilskaOmpO60nkitWzLV3eonMlY2MUrwUadWDcTDs
+         OPI1FVl0VpjNn2myYZL0LFfyLZQjr6wAiaRR8i2vpcQVg1CSkySXLiqU/HnBF5htT5xH
+         67QT2DqjKe21l1Jq0XbUIk6kVGJhAKX4ebUBJwXt+H9hYy6mWHZHepiJM2ZESj5YQrtU
+         V96RlEy2gjcaP2XWW5ZRuqRWwG4I5vUphisecIpDJyd+knqhEbsiXEzAJ3bsArvoI+4X
+         TNtzT7znqluFZfZiVOOeZfUm0tgWvN/VtYgEIITzIIWsinsae1DENpMPzUUf+VWlRCWp
+         NPyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702525220; x=1703130020;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aEKOSge/hHdPwni+MLpXmsbRXBwIGAeAkdwDfsnV6NM=;
-        b=TWoLNzGfkQKXuWQaQ4OwwzL3E6I2uncHUiq4D0ngJJ4jx+BFj8EcpA3tR/tugp4jaM
-         wZDXSDYHSnAIXmIpBzYmyQIlQw5yPdFs73ZMSy/D+OnAjI2hvA5P61Rq9wuYG1l8BDWX
-         KTcHgQVjrReF9yMAdlaQzOgEzZxtSc8bBIJH/bDEdaSlAARkePf2K83ZJzg4ErPZLoOS
-         jD2IGJnyWu+HIbv/miGh139dGHR+MPS0dZf72gHX9DfF5WQl/JzIpzgaEA++Aqec9w/y
-         hk14YmpYJVXxqFpOWYMGbffH9bNADDwj7ukS85LGwQ09aCNjI5P9muVmCFKmHONyd6ZO
-         mlXg==
-X-Gm-Message-State: AOJu0YwL/b4fJYa0Z0C6NyNMJFKxQlc601jfhoSLrM1WuBZaxWi+G+jG
-	vh2y4KELXheMbmnfovHllcoZMOkN9h2zTAOpgg4=
-X-Google-Smtp-Source: AGHT+IHpMqACgq9LHTiNZAwoi2J+cQEbi29OE/OcCzx7PB8GPG+1KZONttunx1czLApQqXingL0j6olWVkJimBVDRYc=
-X-Received: by 2002:a05:6a20:728b:b0:18c:5178:9649 with SMTP id
- o11-20020a056a20728b00b0018c51789649mr9914980pzk.14.1702525220260; Wed, 13
- Dec 2023 19:40:20 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702527477; x=1703132277;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sDUZR3Km74y9Sl5SQmAwbWzIp7aiwhFxGgDMcOhxNxE=;
+        b=Eq5WnPX/VG7UhgSQqyHZK/4LXEmb9CJTZT13BgYVrYDRcSXOOBgqG9tGlKAGDkFhkt
+         OEfkKzjbMhZDRoRwRqsGoXkGUKSswJSPLTSFGfWHL8GHbgWPIwiHwqSM0vp6QArRR1qt
+         9vL4TgBPJQxSe/ar/PgYvXgnYPzrGBWV9wQ9F6/FMEXmMpGAY1DNX1D15szTClFE83gM
+         SEy3JPlprxTFC8Hza0ZsmTHByW5l8yo5jIgeQareq3FsSjWtW6H0StZXLmuAWzduKTQZ
+         WUYKFoKA6EL+5nShqtekqyq1aw40bqiSYS91GfgKmmkY5Gw1j+5iWg+UQp7UW8RRbvbW
+         KxqQ==
+X-Gm-Message-State: AOJu0Yzf8LfRwuj54nI6HCRXDz/0I0Zi464+CDZQ+32XMa/YwUu/bgC2
+	XMHtT7KmRvDU+ASd2KKB7TsKC8n/BDO9CcDhLTYcIFasGqo=
+X-Google-Smtp-Source: AGHT+IGu0nwokm0WrEBpVm2Ur5+U0KHNWpLSD9zb1TpyoGA8HSoh0zbqCa2ld6RHsv1ZL9HxR1KpzooGmwUUTkH7oK4=
+X-Received: by 2002:adf:e849:0:b0:336:43b0:33fc with SMTP id
+ d9-20020adfe849000000b0033643b033fcmr718861wrn.36.1702527477444; Wed, 13 Dec
+ 2023 20:17:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: xingwei lee <xrivendell7@gmail.com>
-Date: Thu, 14 Dec 2023 11:40:07 +0800
-Message-ID: <CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com>
-Subject: BUG: unable to handle kernel paging request in bpf_probe_read_compat_str
-To: song@kernel.org
-Cc: ast@kernel.org, jolsa@kernel.org, daniel@iogearbox.net, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, rostedt@goodmis.org, mhiramat@kernel.org, 
-	mathieu.desnoyers@efficios.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20231206210959.1035724-1-yonghong.song@linux.dev>
+ <d1c0232c-a41c-4cce-9bdf-3a1e8850ed05@linux.dev> <969852f3-34f8-45d9-bf2d-f6a4d5167e55@linux.dev>
+ <ad71a99d-8b5f-44b4-99ee-5afb31c60bff@linux.dev> <0b3a96bd-4dfc-6d23-d473-f4351fbe84c2@huaweicloud.com>
+ <0e657fc3-d932-4bd6-9d74-54eff22d3641@linux.dev>
+In-Reply-To: <0e657fc3-d932-4bd6-9d74-54eff22d3641@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 13 Dec 2023 20:17:46 -0800
+Message-ID: <CAADnVQJ3FiXUhZJwX_81sjZvSYYKCFB3BT6P8D59RS2Gu+0Z7g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4] bpf: Fix a race condition between btf_put()
+ and map_free()
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Hou Tao <houtao@huaweicloud.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Kernel Team <kernel-team@fb.com>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello I found a bug in net/bpf in the lastest upstream linux and
-comfired in the lastest net tree and lastest net bpf titled BUG:
-unable to handle kernel paging request in bpf_probe_read_compat_str
+On Fri, Dec 8, 2023 at 9:07=E2=80=AFAM Yonghong Song <yonghong.song@linux.d=
+ev> wrote:
+>
+>
+> On 12/8/23 12:30 AM, Hou Tao wrote:
+> > Hi,
+> >
+> > On 12/8/2023 12:02 PM, Yonghong Song wrote:
+> >> On 12/7/23 7:59 PM, Yonghong Song wrote:
+> >>> On 12/7/23 5:23 PM, Martin KaFai Lau wrote:
+> >>>> On 12/6/23 1:09 PM, Yonghong Song wrote:
+> >>>>> When running `./test_progs -j` in my local vm with latest kernel,
+> >>>>> I once hit a kasan error like below:
+> >>>>>
+> >>>>>
+> > SNIP
+> >>>>> Here, 'value_rec' is assigned in btf_check_and_fixup_fields() with
+> >>>>> following code:
+> >>>>>
+> >>>>>     meta =3D btf_find_struct_meta(btf, btf_id);
+> >>>>>     if (!meta)
+> >>>>>       return -EFAULT;
+> >>>>>     rec->fields[i].graph_root.value_rec =3D meta->record;
+> >>>>>
+> >>>>> So basically, 'value_rec' is a pointer to the record in
+> >>>>> struct_metas_tab.
+> >>>>> And it is possible that that particular record has been freed by
+> >>>>> btf_struct_metas_free() and hence we have a kasan error here.
+> >>>>>
+> >>>>> Actually it is very hard to reproduce the failure with current
+> >>>>> bpf/bpf-next
+> >>>>> code, I only got the above error once. To increase reproducibility,
+> >>>>> I added
+> >>>>> a delay in bpf_map_free_deferred() to delay map->ops->map_free(),
+> >>>>> which
+> >>>>> significantly increased reproducibility.
+> >>>>>
+> >>>>>     diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> >>>>>     index 5e43ddd1b83f..aae5b5213e93 100644
+> >>>>>     --- a/kernel/bpf/syscall.c
+> >>>>>     +++ b/kernel/bpf/syscall.c
+> >>>>>     @@ -695,6 +695,7 @@ static void bpf_map_free_deferred(struct
+> >>>>> work_struct *work)
+> >>>>>           struct bpf_map *map =3D container_of(work, struct bpf_map=
+,
+> >>>>> work);
+> >>>>>           struct btf_record *rec =3D map->record;
+> >>>>>
+> >>>>>     +     mdelay(100);
+> >>>>>           security_bpf_map_free(map);
+> >>>>>           bpf_map_release_memcg(map);
+> >>>>>           /* implementation dependent freeing */
+> >>>>>
+> >>>>> To fix the problem, we need to have a reference on btf in order to
+> >>>>> safeguard accessing field->graph_root.value_rec in
+> >>>>> map->ops->map_free().
+> >>>>> The function btf_parse_graph_root() is the place to get a btf
+> >>>>> reference.
+> >>>>> The following are rough call stacks reaching bpf_parse_graph_root()=
+:
+> >>>>>
+> >>>>>      btf_parse
+> >>>>>        ...
+> >>>>>          btf_parse_fields
+> >>>>>            ...
+> >>>>>              btf_parse_graph_root
+> >>>>>
+> >>>>>      map_check_btf
+> >>>>>        btf_parse_fields
+> >>>>>          ...
+> >>>>>            btf_parse_graph_root
+> >>>>>
+> >>>>> Looking at the above call stack, the btf_parse_graph_root() is
+> >>>>> indirectly
+> >>>>> called from btf_parse() or map_check_btf().
+> >>>>>
+> >>>>> We cannot take a reference in btf_parse() case since at that moment=
+,
+> >>>>> btf is still in the middle to self-validation and initial reference
+> >>>>> (refcount_set(&btf->refcnt, 1)) has not been triggered yet.
+> >>>> Thanks for the details analysis and clear explanation. It helps a lo=
+t.
+> >>>>
+> >>>> Sorry for jumping in late.
+> >>>>
+> >>>> I am trying to avoid making a special case for "bool has_btf_ref;"
+> >>>> and "bool from_map_check". It seems to a bit too much to deal with
+> >>>> the error path for btf_parse().
+> > Maybe we could move the common btf used by kptr and graph_root into
+> > bpf_record and let the callers of btf_parse_fields()  and
+> > btf_record_free() to decide the life cycle of btf in btf_record, so
+> > there will be less intrusive and less special case. The following is th=
+e
+>
+> I didn't fully check the code but looks like we took a
+> btf reference at map_check_btf() and free it at the end
+> of bpf_map_free_deferred(). This is similar to my v1 patch,
+> not exactly the same but similar since they all do
+> btf_put() at the end of bpf_map_free_deferred().
+>
+> Through discussion, doing on-demand btf_get()/btf_put()
+> approach, similar to kptr approach, seems more favored.
+> This also has advantage to free btf at its earlist possible
+> point.
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: xingwei Lee <xrivendell7@gmail.com>
+Sorry. Looks like I recommended the wrong path.
 
-kernel: net 9702817384aa4a3700643d0b26e71deac0172cfd / bpf
-2f2fee2bf74a7e31d06fc6cb7ba2bd4dd7753c99
-Kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=b50bd31249191be8
+The approach of btf_parse_fields(... false | true)
+depending on where it's called and whether returned struct btf_record *
+will be kept within a type or within a map
+is pushing complexity too far.
+A year from now we'll forget these subtle details.
+There is an advantage to do btf_put() earli in bpf_map_put(),
+but in the common case it would be delayed just after queue_work.
+Which is a minor time delay.
+And for free_after_mult_rcu_gp much longer,
+but saving from freeing btf are minor compared to the map itself.
 
-in the lastest bpf tree, the crash like:
-
-TITLE: BUG: unable to handle kernel paging request in bpf_probe_read_compat_str
-CORRUPTED: false ()
-MAINTAINERS (TO): [akpm@linux-foundation.org linux-mm@kvack.org]
-MAINTAINERS (CC): [linux-kernel@vger.kernel.org]
-
-BUG: unable to handle page fault for address: ff0
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD cf7a067 P4D cf7a067 PUD cf7c067 PMD cf9f067 0
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8219 Comm: 9de Not tainted 6.7.0-rc41
-Hardware name: QEMU Standard PC (i440FX + PIIX, 4
-RIP: 0010:strncpy_from_kernel_nofault+0xc4/0x270 mm/maccess.c:91
-Code: 83 85 6c 17 00 00 01 48 8b 2c 24 eb 18 e8 0
-RSP: 0018:ffffc900114e7ac0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc900114e7b30 RCX:2
-RDX: ffff8880183abcc0 RSI: ffffffff81b8c9c4 RDI:c
-RBP: ffffffffff600000 R08: 0000000000000001 R09:0
-R10: 0000000000000001 R11: 0000000000000001 R12:8
-R13: ffffffffff600000 R14: 0000000000000008 R15:0
-FS:  0000000000000000(0000) GS:ffff88823bc00000(0
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffffffff600000 CR3: 000000000cf77000 CR4:0
-PKRU: 55555554
-Call Trace:
-<TASK>
-bpf_probe_read_kernel_str_common kernel/trace/bpf_trace.c:262 [inline]
-____bpf_probe_read_compat_str kernel/trace/bpf_trace.c:310 [inline]
-bpf_probe_read_compat_str+0x12f/0x170 kernel/trace/bpf_trace.c:303
-bpf_prog_f17ebaf3f5f7baf8+0x42/0x44
-bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
-__bpf_prog_run include/linux/filter.h:651 [inline]
-bpf_prog_run include/linux/filter.h:658 [inline]
-__bpf_trace_run kernel/trace/bpf_trace.c:2307 [inline]
-bpf_trace_run2+0x14e/0x410 kernel/trace/bpf_trace.c:2346
-trace_kfree include/trace/events/kmem.h:94 [inline]
-kfree+0xec/0x150 mm/slab_common.c:1043
-vma_numab_state_free include/linux/mm.h:638 [inline]
-__vm_area_free+0x3e/0x140 kernel/fork.c:525
-remove_vma+0x128/0x170 mm/mmap.c:146
-exit_mmap+0x453/0xa70 mm/mmap.c:3332
-__mmput+0x12a/0x4d0 kernel/fork.c:1349
-mmput+0x62/0x70 kernel/fork.c:1371
-exit_mm kernel/exit.c:567 [inline]
-do_exit+0x9aa/0x2ac0 kernel/exit.c:858
-do_group_exit+0xd4/0x2a0 kernel/exit.c:1021
-__do_sys_exit_group kernel/exit.c:1032 [inline]
-__se_sys_exit_group kernel/exit.c:1030 [inline]
-__x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1030
-do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-do_syscall_64+0x41/0x110 arch/x86/entry/common.c:83
-entry_SYSCALL_64_after_hwframe+0x63/0x6b
-
-
-=* repro.c =*
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
-
-#define _GNU_SOURCE
-
-#include <endian.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#ifndef __NR_bpf
-#define __NR_bpf 321
-#endif
-
-#define BITMASK(bf_off, bf_len) (((1ull << (bf_len)) - 1) << (bf_off))
-#define STORE_BY_BITMASK(type, htobe, addr, val, bf_off, bf_len)     \
- *(type*)(addr) =                                                   \
-     htobe((htobe(*(type*)(addr)) & ~BITMASK((bf_off), (bf_len))) | \
-           (((type)(val) << (bf_off)) & BITMASK((bf_off), (bf_len))))
-
-uint64_t r[1] = {0xffffffffffffffff};
-
-int main(void) {
- syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-         /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
- intptr_t res = 0;
- *(uint32_t*)0x200000c0 = 0x11;
- *(uint32_t*)0x200000c4 = 0xb;
- *(uint64_t*)0x200000c8 = 0x20000180;
- *(uint8_t*)0x20000180 = 0x18;
- STORE_BY_BITMASK(uint8_t, , 0x20000181, 0, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x20000181, 0, 4, 4);
- *(uint16_t*)0x20000182 = 0;
- *(uint32_t*)0x20000184 = 0;
- *(uint8_t*)0x20000188 = 0;
- *(uint8_t*)0x20000189 = 0;
- *(uint16_t*)0x2000018a = 0;
- *(uint32_t*)0x2000018c = 0;
- *(uint8_t*)0x20000190 = 0x18;
- STORE_BY_BITMASK(uint8_t, , 0x20000191, 1, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x20000191, 0, 4, 4);
- *(uint16_t*)0x20000192 = 0;
- *(uint32_t*)0x20000194 = 0x25702020;
- *(uint8_t*)0x20000198 = 0;
- *(uint8_t*)0x20000199 = 0;
- *(uint16_t*)0x2000019a = 0;
- *(uint32_t*)0x2000019c = 0x20202000;
- STORE_BY_BITMASK(uint8_t, , 0x200001a0, 3, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001a0, 3, 3, 2);
- STORE_BY_BITMASK(uint8_t, , 0x200001a0, 3, 5, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001a1, 0xa, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001a1, 1, 4, 4);
- *(uint16_t*)0x200001a2 = 0xfff8;
- *(uint32_t*)0x200001a4 = 0;
- STORE_BY_BITMASK(uint8_t, , 0x200001a8, 7, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001a8, 1, 3, 1);
- STORE_BY_BITMASK(uint8_t, , 0x200001a8, 0xb, 4, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001a9, 1, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001a9, 0xa, 4, 4);
- *(uint16_t*)0x200001aa = 0;
- *(uint32_t*)0x200001ac = 0;
- STORE_BY_BITMASK(uint8_t, , 0x200001b0, 7, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001b0, 0, 3, 1);
- STORE_BY_BITMASK(uint8_t, , 0x200001b0, 0, 4, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001b1, 1, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001b1, 0, 4, 4);
- *(uint16_t*)0x200001b2 = 0;
- *(uint32_t*)0x200001b4 = 0xfffffff8;
- STORE_BY_BITMASK(uint8_t, , 0x200001b8, 7, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001b8, 0, 3, 1);
- STORE_BY_BITMASK(uint8_t, , 0x200001b8, 0xb, 4, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001b9, 2, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001b9, 0, 4, 4);
- *(uint16_t*)0x200001ba = 0;
- *(uint32_t*)0x200001bc = 8;
- STORE_BY_BITMASK(uint8_t, , 0x200001c0, 7, 0, 3);
- STORE_BY_BITMASK(uint8_t, , 0x200001c0, 0, 3, 1);
- STORE_BY_BITMASK(uint8_t, , 0x200001c0, 0xb, 4, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001c1, 3, 0, 4);
- STORE_BY_BITMASK(uint8_t, , 0x200001c1, 0, 4, 4);
- *(uint16_t*)0x200001c2 = 0;
- *(uint32_t*)0x200001c4 = 0xff600000;
- *(uint8_t*)0x200001c8 = 0x85;
- *(uint8_t*)0x200001c9 = 0;
- *(uint16_t*)0x200001ca = 0;
- *(uint32_t*)0x200001cc = 0x2d;
- *(uint8_t*)0x200001d0 = 0x95;
- *(uint8_t*)0x200001d1 = 0;
- *(uint16_t*)0x200001d2 = 0;
- *(uint32_t*)0x200001d4 = 0;
- *(uint64_t*)0x200000d0 = 0x20000200;
- memcpy((void*)0x20000200, "GPL\000", 4);
- *(uint32_t*)0x200000d8 = 0;
- *(uint32_t*)0x200000dc = 0;
- *(uint64_t*)0x200000e0 = 0;
- *(uint32_t*)0x200000e8 = 0;
- *(uint32_t*)0x200000ec = 0;
- memset((void*)0x200000f0, 0, 16);
- *(uint32_t*)0x20000100 = 0;
- *(uint32_t*)0x20000104 = 0;
- *(uint32_t*)0x20000108 = 0;
- *(uint32_t*)0x2000010c = 0;
- *(uint64_t*)0x20000110 = 0;
- *(uint32_t*)0x20000118 = 0;
- *(uint32_t*)0x2000011c = 0;
- *(uint64_t*)0x20000120 = 0;
- *(uint32_t*)0x20000128 = 0;
- *(uint32_t*)0x2000012c = 0;
- *(uint32_t*)0x20000130 = 0;
- *(uint32_t*)0x20000134 = 0;
- *(uint64_t*)0x20000138 = 0;
- *(uint64_t*)0x20000140 = 0;
- *(uint32_t*)0x20000148 = 0;
- *(uint32_t*)0x2000014c = 0;
- res = syscall(__NR_bpf, /*cmd=*/5ul, /*arg=*/0x200000c0ul, /*size=*/0x90ul);
- if (res != -1) r[0] = res;
- *(uint64_t*)0x20000540 = 0x20000000;
- memcpy((void*)0x20000000, "kfree\000", 6);
- *(uint32_t*)0x20000548 = r[0];
- syscall(__NR_bpf, /*cmd=*/0x11ul, /*arg=*/0x20000540ul, /*size=*/0x10ul);
- return 0;
-}
-
-=* repro.txt =*
-r0 = bpf$PROG_LOAD(0x5, &(0x7f00000000c0)={0x11, 0xb,
-&(0x7f0000000180)=@framed={{}, [@printk={@p, {}, {}, {}, {}, {0x7,
-0x0, 0xb, 0x3, 0x0, 0x0, 0xff600000}, {0x85, 0x0, 0x0, 0x2d}}]},
-&(0x7f0000000200)='GPL\x00', 0x0, 0x0, 0x0, 0x0, 0x0, '\x00', 0x0,
-0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
-0x90)
-bpf$BPF_RAW_TRACEPOINT_OPEN(0x11,
-&(0x7f0000000540)={&(0x7f0000000000)='kfree\x00', r0}, 0x10)
-
-
-
-See aslo https://gist.github.com/xrivendell7/7bb1f0a30ccc2899fe7ea34bef882067
-I hope it helps.
-
-Best regards.
-xingwei Lee
+I think it's cleaner to go back to v1 and simply move btf_put
+to bpf_map_free_deferred().
+A lot less things to worry about.
+Especially considering that BPF_RB_ROOT may not be the last such special
+record keeping type and every new type would need to think
+hard whether it's BPF_RB_ROOT-like or BPF_LIST_NODE-like.
+v1 avoids this future complexity.
 
