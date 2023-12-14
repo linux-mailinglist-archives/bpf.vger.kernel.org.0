@@ -1,142 +1,113 @@
-Return-Path: <bpf+bounces-17838-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17839-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E79A813330
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 15:33:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A40B81343C
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 16:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 607D61C21B1D
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 14:33:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E80621F20F42
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 15:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3102959E5B;
-	Thu, 14 Dec 2023 14:33:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F04E85C8E3;
+	Thu, 14 Dec 2023 15:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W/5WFHy+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fsoWB1UD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3732E85
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 06:33:26 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-67ab16c38caso52082646d6.1
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 06:33:26 -0800 (PST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6AF7D4B;
+	Thu, 14 Dec 2023 07:10:35 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40c339d2b88so67437185e9.3;
+        Thu, 14 Dec 2023 07:10:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702564405; x=1703169205; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AuPJEXHG/T8+UZ7zLGzCD0eZ+te2AgjoCbRUxXHDBsM=;
-        b=W/5WFHy+374mrrmn6OUazZeZTn0z7n3ekquFM9zGboSAdwolP47mgBUMvy12k5dfnb
-         o5z3TN5Th/uelWq6FOB/Qm7LvzObXs+0RmCLYdhKGyrShJP6BtF4kS35107uR9+hAfF8
-         Fz49Bz/hD/gkyaiu71Df5FjIXsjX9W8XUxr9EQHF4LiJYzIPcoG4wlZW5+OlBLF2qDyg
-         pjPrCWszxWr74vvOfb8bdV4B3nNpjXCFTu5yqe7LFIt4RI2XsYxYvjuv6WdGYgKGUzbZ
-         tVAcvjWntSb6Ep5q2v/kGIoy/+gHW1MkH7DR09mBYFZ2HSwPyNOcIkEwHPHLRYmiF1VJ
-         1e6w==
+        d=gmail.com; s=20230601; t=1702566634; x=1703171434; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EvtzWefn1WPNp4reMmyULAN0Mj1CqMWBOzDb+RWo1TU=;
+        b=fsoWB1UD1b2sRnQ3Fg8FSVEDsxHRGO0CoBB3n58rA4LbezLBaTPjxl+04f52hPBvaK
+         FPU5Kj3ZYtjlVS6LCweW/GodbndGrtxLGxVec5w6e8CjOn6AY32GJlgBWN0JThvrOdMu
+         5GFhY5Wk84eIRkjfFh5XQB+4xmkQ94Dl6kuvQui+7n1CG4DE1IG74Qa0ABMXxKg+NO28
+         wkqFTvwOOJh18BZQRs3QGk3R6ZTvqhkNJbpo7NWoZ+nvGRGmDvIluJfXDrhO+aQfqIF4
+         hDKgfoR6JA+/vDKtSn2etwQv6Fz82gcagPf9xIy8jrP25ZVGb1V5voHZOeITNlw5yW7n
+         mUjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702564405; x=1703169205;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AuPJEXHG/T8+UZ7zLGzCD0eZ+te2AgjoCbRUxXHDBsM=;
-        b=iScdc6XN4dl9vA5SWqbch9qjrLUJ1fK/AFIzkqAIaYaqVJhhgtU95VNpd9xd0mt0NO
-         Do41EBNhSnE3ahT4jFC1E5Ui9oM78H7mzgFrDTlJfE0ZS7lejdYknps0OZUwCYzDYT/q
-         6PQqJpbP4aGhO1P/JURjvibZRZ3lPb8Dkt/3Y8S5MvkvrkQ6u7jT5IC4pBAuf34t2nZ/
-         ciNHqj05WgMlgWWCkmG2VS/dCfke5Dh3pGvvZvPoybnl+mjQjwYkvSTiioP0EiNenwa0
-         po0uDIgSahy2CIofrsGpH/7W/swBLIhoj6+ScpPUzXSepyNaYNHdpM3EGQhzDEnb9egp
-         WNRA==
-X-Gm-Message-State: AOJu0YwzAhxVvh8qkq+b6+G6/H+mEfy4PrmVJ6S+V7yU8sVBPOm7JCAe
-	Zxl6n3mewJDZEhn1ZsvIH5jObJn0PgkMFWXLvA0=
-X-Google-Smtp-Source: AGHT+IGZDkaPSE08Mg5khj5fiYP4/1T4OB66VghppvqzfYHasCs6f6NwjkrppTNTXA3GA/eRp76Ivaf2uo5dsy/ADVo=
-X-Received: by 2002:a05:6214:2aa3:b0:67f:f06:573c with SMTP id
- js3-20020a0562142aa300b0067f0f06573cmr740449qvb.26.1702564405315; Thu, 14 Dec
- 2023 06:33:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702566634; x=1703171434;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EvtzWefn1WPNp4reMmyULAN0Mj1CqMWBOzDb+RWo1TU=;
+        b=vNILBF22Z0DWFDWZfSfzn0/URkqngEcnE8efKaIsnzsGc955/zLfT1j+LPtDkN5xaJ
+         ubxoTRVFjRIlUp9ECJw/7ieFjXx79eHv3AZMOWX3WVTVwwZKLp2gNqAjXjF0U9q1IpJj
+         uT07RjruRDyZzeP39kwcnoLO9Hj35w18Ek2mCXohZLbUSBfVW0UlthaGQq840LDlMxMF
+         8OCJhqXQ/A9Do5SH3n2apvRGJACInUJO0O1DqrAbfOi/4qvIPb6sQjr6QrZSyws4JMsa
+         RRcAW7bs2ckM8Hf1O9KRC6yY4p22mcxDP8evdxcByEUNCqjnx9Owi6vO/r6Mu5vrJGxp
+         yIGA==
+X-Gm-Message-State: AOJu0YxEHaU0KrA7g9SZ45uJeuD/co6bONPKQxHPcJmbTM4a8oz7xUMs
+	zrLR3NxjQ/W9at88GkyoqMQ=
+X-Google-Smtp-Source: AGHT+IGZ8puUQcAZ8Zi5ZuXaAQ8xvw/HxS9GlZLfpUI2wiUByVxFBXkmzOrFaIy4zcQXitIiumQ/gg==
+X-Received: by 2002:a7b:c410:0:b0:40c:2ba6:81e with SMTP id k16-20020a7bc410000000b0040c2ba6081emr5135071wmi.121.1702566633586;
+        Thu, 14 Dec 2023 07:10:33 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id s7-20020a05600c45c700b0040c45071c18sm17016455wmo.39.2023.12.14.07.10.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 07:10:32 -0800 (PST)
+Message-ID: <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Hao Sun <sunhao.th@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>
+Date: Thu, 14 Dec 2023 17:10:31 +0200
+In-Reply-To: <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+References: 
+	<CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+	 <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+	 <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+	 <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+	 <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214120716.591528-1-dave@dtucker.co.uk> <CALOAHbDzZ_KU05jq+Z_j29gzfSFQTnspnGK3c0iH=4xRQ3ct8g@mail.gmail.com>
- <CALOAHbARerbgJy-ujXwbD=f4mqmO1WXTk+33Qjkhqg4rn_6nzg@mail.gmail.com> <10E0052D-E706-4395-A2EE-C1BD0BE54DD0@dtucker.co.uk>
-In-Reply-To: <10E0052D-E706-4395-A2EE-C1BD0BE54DD0@dtucker.co.uk>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 14 Dec 2023 22:32:46 +0800
-Message-ID: <CALOAHbAS4NZAdsx9ssurNsN+HLAitaETd50Ua5dOzP02KPRh0A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] bpf: Include pid, uid and comm in audit output
-To: Dave Tucker <dave@dtucker.co.uk>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 10:11=E2=80=AFPM Dave Tucker <dave@dtucker.co.uk> w=
-rote:
->
->
->
-> > On 14 Dec 2023, at 13:21, Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > On Thu, Dec 14, 2023 at 9:13=E2=80=AFPM Yafang Shao <laoar.shao@gmail.c=
-om> wrote:
-> >>
-> >> On Thu, Dec 14, 2023 at 8:07=E2=80=AFPM Dave Tucker <dave@dtucker.co.u=
-k> wrote:
-> >>>
-> >>> Current output from auditd is as follows:
-> >>>
-> >>> time->Wed Dec 13 21:39:24 2023
-> >>> type=3DBPF msg=3Daudit(1702503564.519:11241): prog-id=3D439 op=3DLOAD
-> >>>
-> >>> This only tells you that a BPF program was loaded, but without
-> >>> any context. If we include the pid, uid and comm we get output as
-> >>> follows:
-> >>>
-> >>> time->Wed Dec 13 21:59:59 2023
-> >>> type=3DBPF msg=3Daudit(1702504799.156:99528): pid=3D27279 uid=3D0
-> >>>        comm=3D"new_name" prog-id=3D50092 op=3DUNLOAD
-> >>
-> >> Is it possible to integrate these common details like pid, uid, and
-> >> comm into the audit_log_format() function for automatic inclusion? Or
-> >> would it be more appropriate to create a new helper function like
-> >> audit_log_format_common() dedicated specifically to incorporating
-> >> these common details? What are your thoughts on this?
->
-> There's audit_log_task_info from audit.h which adds everything. My
-> concern was that it is very verbose and doesn=E2=80=99t appear to be wide=
-ly
-> used. I don=E2=80=99t think it warrants a helper function just yet since
-> we=E2=80=99re only doing audit logging in this one function.
->
-> That said, I=E2=80=99m working on a patch series to add audit logging to
-> bpf_link attach and detach events. I=E2=80=99ll gladly turn that into a
-> helper then since it would be used in more than one place.
->
-> > BTW, bpf prog can be unloaded in irq context. Therefore we can't do it
-> > for BPF_AUDIT_UNLOAD.
->
-> I=E2=80=99ve been running this locally, and occasionally I see unload eve=
-nts
-> where the comm is =E2=80=9Ckworker/0:0=E2=80=9D - I assume that those are=
- from within
-> the irq context.
->
-> type=3DBPF msg=3Daudit(1702504511.397:202): pid=3D1 uid=3D0
->     comm=3D"systemd" prog-id=3D75 op=3DLOAD
->
-> type=3DBPF msg=3Daudit(1702504541.516:213): pid=3D23152 uid=3D0
->     comm=3D"kworker/0:0" prog-id=3D75 op=3DUNLOAD
->
-> That looks ok to me, but it wouldn=E2=80=99t be too hard to skip adding t=
-his
-> information in the irq context if you=E2=80=99d rather.
+[...]
+> The reason why retval checks fails is that the way you disable dead
+> code removal pass is not complete. Disable opt_remove_dead_code()
+> just prevent the instruction #30 from being removed, but also note
+> opt_hard_wire_dead_code_branches(), which convert conditional jump
+> into unconditional one, so #30 is still skipped.
+>=20
+> > Note that I tried this test with two functions:
+> > - bpf_get_current_cgroup_id, with this function I get retval 2, not 4 :=
+)
+> > - bpf_get_prandom_u32, with this function I get a random retval each ti=
+me.
+> >=20
+> > What is the expectation when 'bpf_get_current_cgroup_id' is used?
+> > That it is some known (to us) number, but verifier treats it as unknown=
+ scalar?
+> >=20
+>=20
+> Either one would work, but to make #30 always taken, r0 should be
+> non-zero.
 
-I believe we need to skip them. Including random task information
-could potentially lead to confusion.
+Oh, thank you, I made opt_hard_wire_dead_code_branches() a noop,
+replaced r0 =3D 0x4 by r0 /=3D 0 and see "divide error: 0000 [#1] PREEMPT S=
+MP NOPTI"
+error in the kernel log on every second or third run of the test
+(when using prandom).
 
---=20
-Regards
-Yafang
+Working to minimize the test case will share results a bit later.
 
