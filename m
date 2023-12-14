@@ -1,89 +1,202 @@
-Return-Path: <bpf+bounces-17783-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17784-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 361E28126CE
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 06:10:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4E4D8126EE
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 06:31:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69A931C214FC
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 05:10:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6F3B1C214CE
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 05:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 456E66116;
-	Thu, 14 Dec 2023 05:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nX7sVh6q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CDCC6AC0;
+	Thu, 14 Dec 2023 05:31:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905D763A0
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 05:10:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 0E007C433C7;
-	Thu, 14 Dec 2023 05:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702530626;
-	bh=kisNplcyw91Mk92n8f6EKBuYK0//DnEBkHg9IkfYd2M=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=nX7sVh6qbqKJgHB+6p4Q5ZSGUX3FKmSSdl/trqu1p24PSk5+Ji8l+l4NxqkaecNtM
-	 gZXWZizAwbAKd9ST+cIgEPjqT5/Cje2y/A9sbRF1DgKHR1DDy5yY1kZsCIlyeqfBSZ
-	 6uYrq/15+D16/PMVyCQpxRXFBIN/z5T/HOQwcXpcqYbAoCJzkRMqZqCyKHIC5rDgXd
-	 TI9+wT5+mJ1apiu+8nCQzeIzrLe+Fa1XIKDg5wmeOKilq8WNNlcLF/iPbf3w75pEeE
-	 qs2ZEZ1qO80ccPMxZPpTJ/AeIaXBdF14IM4u6dCJnkFxfj9fO3k3pXLctFPOTstxly
-	 tgkgTONBcqXLA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E77AEDFC906;
-	Thu, 14 Dec 2023 05:10:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12009BD;
+	Wed, 13 Dec 2023 21:31:26 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VyTFUF0_1702531882;
+Received: from 30.221.148.227(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VyTFUF0_1702531882)
+          by smtp.aliyun-inc.com;
+          Thu, 14 Dec 2023 13:31:24 +0800
+Message-ID: <0e94149a-05f1-3f98-3f75-ca74f364a45b@linux.alibaba.com>
+Date: Thu, 14 Dec 2023 13:31:22 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v3 0/2] bpf: Use GFP_KERNEL in bpf_event_entry_gen()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170253062594.9483.485230140941788020.git-patchwork-notify@kernel.org>
-Date: Thu, 14 Dec 2023 05:10:25 +0000
-References: <20231214043010.3458072-1-houtao@huaweicloud.com>
-In-Reply-To: <20231214043010.3458072-1-houtao@huaweicloud.com>
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, martin.lau@linux.dev, alexei.starovoitov@gmail.com,
- andrii@kernel.org, song@kernel.org, haoluo@google.com,
- yonghong.song@linux.dev, daniel@iogearbox.net, kpsingh@kernel.org,
- sdf@google.com, jolsa@kernel.org, john.fastabend@gmail.com,
- xrivendell7@gmail.com, houtao1@huawei.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [RFC nf-next 1/2] netfilter: bpf: support prog update
+Content-Language: en-US
+To: Florian Westphal <fw@strlen.de>
+Cc: pablo@netfilter.org, kadlec@netfilter.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, ast@kernel.org
+References: <1702467945-38866-1-git-send-email-alibuda@linux.alibaba.com>
+ <1702467945-38866-2-git-send-email-alibuda@linux.alibaba.com>
+ <20231213222415.GA13818@breakpoint.cc>
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <20231213222415.GA13818@breakpoint.cc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello:
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu, 14 Dec 2023 12:30:08 +0800 you wrote:
-> From: Hou Tao <houtao1@huawei.com>
-> 
-> Hi,
-> 
-> The simple patch set aims to replace GFP_ATOMIC by GFP_KERNEL in
-> bpf_event_entry_gen(). These two patches in the patch set were
-> preparatory patches in "Fix the release of inner map" patchset [1] and
-> are not needed for v2, so re-post it to bpf-next tree.
-> 
-> [...]
+On 12/14/23 6:24 AM, Florian Westphal wrote:
+> D. Wythe <alibuda@linux.alibaba.com> wrote:
+>> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>>
+>> To support the prog update, we need to ensure that the prog seen
+>> within the hook is always valid. Considering that hooks are always
+>> protected by rcu_read_lock(), which provide us the ability to use a
+>> new RCU-protected context to access the prog.
+>>
+>> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+>> ---
+>>   net/netfilter/nf_bpf_link.c | 124 +++++++++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 111 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+>> index e502ec0..918c470 100644
+>> --- a/net/netfilter/nf_bpf_link.c
+>> +++ b/net/netfilter/nf_bpf_link.c
+>> @@ -8,17 +8,11 @@
+>>   #include <net/netfilter/nf_bpf_link.h>
+>>   #include <uapi/linux/netfilter_ipv4.h>
+>>   
+>> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
+>> -				    const struct nf_hook_state *s)
+>> +struct bpf_nf_hook_ctx
+>>   {
+>> -	const struct bpf_prog *prog = bpf_prog;
+>> -	struct bpf_nf_ctx ctx = {
+>> -		.state = s,
+>> -		.skb = skb,
+>> -	};
+>> -
+>> -	return bpf_prog_run(prog, &ctx);
+>> -}
+>> +	struct bpf_prog *prog;
+>> +	struct rcu_head rcu;
+>> +};
+> I don't understand the need for this structure.  AFAICS bpf_prog_put()
+> will always release the program via call_rcu()?
+>
+> If it doesn't, we are probably already in trouble as-is without this
+> patch, I don't think anything that prevents us from ending up calling already
+> released bpf prog, or releasing it while another cpu is still running it
+> if bpf_prog_put releases the actual underlying prog instantly.
+>
+> A BPF expert could confirm bpf-prog-put-is-call-rcu.
 
-Here is the summary with links:
-  - [bpf-next,v3,1/2] bpf: Reduce the scope of rcu_read_lock when updating fd map
-    https://git.kernel.org/bpf/bpf-next/c/8f82583f9527
-  - [bpf-next,v3,2/2] bpf: Use GFP_KERNEL in bpf_event_entry_gen()
-    https://git.kernel.org/bpf/bpf-next/c/dc68540913ac
+Hi Florian,
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+I must admit that I did not realize that bpf_prog is released
+under RCU ...
 
+>>   struct bpf_nf_link {
+>>   	struct bpf_link link;
+>> @@ -26,8 +20,59 @@ struct bpf_nf_link {
+>>   	struct net *net;
+>>   	u32 dead;
+>>   	const struct nf_defrag_hook *defrag_hook;
+>> +	/* protect link update in parallel */
+>> +	struct mutex update_lock;
+>> +	struct bpf_nf_hook_ctx __rcu *hook_ctx;
+> What kind of replacements-per-second rate are you aiming for?
+> I think
+>
+> static DEFINE_MUTEX(bpf_nf_mutex);
+>
+> is enough.
+
+I'm okay with that.
+
+>
+> Then bpf_nf_link gains
+>
+> 	struct bpf_prog __rcu *prog
+>
+> and possibly a trailing struct rcu_head, see below.
+
+Yes, that's what we need.
+
+>> +static void bpf_nf_hook_ctx_free_rcu(struct bpf_nf_hook_ctx *hook_ctx)
+>> +{
+>> +	call_rcu(&hook_ctx->rcu, __bpf_nf_hook_ctx_free_rcu);
+>> +}
+> Don't understand the need for call_rcu either, see below.
+>
+>> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
+>> +				    const struct nf_hook_state *s)
+>> +{
+>> +	const struct bpf_nf_link *link = bpf_link;
+>> +	struct bpf_nf_hook_ctx *hook_ctx;
+>> +	struct bpf_nf_ctx ctx = {
+>> +		.state = s,
+>> +		.skb = skb,
+>> +	};
+>> +
+>> +	hook_ctx = rcu_dereference(link->hook_ctx);
+> This could then just rcu_deref link->prog.
+>
+>> +	return bpf_prog_run(hook_ctx->prog, &ctx);
+>> +}
+>> +
+>>   #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+>>   static const struct nf_defrag_hook *
+>>   get_proto_defrag_hook(struct bpf_nf_link *link,
+>> @@ -120,6 +165,10 @@ static void bpf_nf_link_release(struct bpf_link *link)
+>>   	if (!cmpxchg(&nf_link->dead, 0, 1)) {
+>>   		nf_unregister_net_hook(nf_link->net, &nf_link->hook_ops);
+>>   		bpf_nf_disable_defrag(nf_link);
+>> +		/* Wait for outstanding hook to complete before the
+>> +		 * link gets released.
+>> +		 */
+>> +		synchronize_rcu();
+>>   	}
+> Could you convert bpf_nf_link_dealloc to release via kfree_rcu instead?
+>
+Got it.
+>> @@ -162,7 +212,42 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
+>>   static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
+>>   			      struct bpf_prog *old_prog)
+>>   {
+>> -	return -EOPNOTSUPP;
+>> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
+>> +	struct bpf_nf_hook_ctx *hook_ctx;
+>> +	int err = 0;
+>> +
+>> +	mutex_lock(&nf_link->update_lock);
+>> +
+> I think you need to check link->dead here too.
+
+Got that.
+>
+>> +	/* bpf_nf_link_release() ensures that after its execution, there will be
+>> +	 * no ongoing or upcoming execution of nf_hook_run_bpf() within any context.
+>> +	 * Therefore, within nf_hook_run_bpf(), the link remains valid at all times."
+>> +	 */
+>> +	link->hook_ops.priv = link;
+> ATM we only need to make sure the bpf prog itself stays alive until after
+> all concurrent rcu critical sections have completed.
+>
+> After this change, struct bpf_link gets passed instead, so we need to
+> keep that alive too.
+>
+> Which works with synchronize_rcu, sure, but that seems a bit overkill here.
+
+Got it! Thank you very much for your suggestion.
+I will address those issues you mentioned in the next version.
+
+
+Best wishes,
+D. Wythe
 
 
