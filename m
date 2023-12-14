@@ -1,282 +1,142 @@
-Return-Path: <bpf+bounces-17837-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17838-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 391F0813323
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 15:30:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E79A813330
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 15:33:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6BCF31C21B96
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 14:30:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 607D61C21B1D
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 14:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE625B20C;
-	Thu, 14 Dec 2023 14:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3102959E5B;
+	Thu, 14 Dec 2023 14:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mr/YpALY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W/5WFHy+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79E205AB99;
-	Thu, 14 Dec 2023 14:30:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F03C4C433C8;
-	Thu, 14 Dec 2023 14:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702564216;
-	bh=pw/ETQHyVEVxwEjuc8c7QvVcme+8Y+ulFLNxSkR0o9g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Mr/YpALYoUVAAnicMsZvXdEDFQVsoh71z4dLGNuLthvCAYJaWNA/DgRqvLVIMZ+8C
-	 mi2V0wb222StDFmjCJstt3qCmxZ5u7khETVzqH0/sktYTibkndy9+vXWeoSalhWDeo
-	 Kywp3Mv8kO/u8XgUUWqAAozLaJONL/tmI2qepBrF/VV3c3J/ovW5d+VZe2ZGVRLZEA
-	 drZ+g55i8GyLBz+t7K9F4yRa7CSsRSu3m/Uk8kP5m7lMdxWlbC70nU/JEY01JO3qpr
-	 MtVVeBKWzEaIG2sQpxwRvP5X9XutaEXY9XwrNDc7MH/K2nJJO2gvY99gbXnvB98rZW
-	 Vu4holUfgqZgA==
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: netdev@vger.kernel.org
-Cc: lorenzo.bianconi@redhat.com,
-	davem@davemloft.net,
-	kuba@kernel.org,
-	edumazet@google.com,
-	pabeni@redhat.com,
-	bpf@vger.kernel.org,
-	hawk@kernel.org,
-	toke@redhat.com,
-	willemdebruijn.kernel@gmail.com,
-	jasowang@redhat.com,
-	sdf@google.com
-Subject: [PATCH v5 net-next 3/3] xdp: add multi-buff support for xdp running in generic mode
-Date: Thu, 14 Dec 2023 15:29:42 +0100
-Message-ID: <e73a75e0d0f81a3b20568675829df4763fa0d389.1702563810.git.lorenzo@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1702563810.git.lorenzo@kernel.org>
-References: <cover.1702563810.git.lorenzo@kernel.org>
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3732E85
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 06:33:26 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-67ab16c38caso52082646d6.1
+        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 06:33:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702564405; x=1703169205; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AuPJEXHG/T8+UZ7zLGzCD0eZ+te2AgjoCbRUxXHDBsM=;
+        b=W/5WFHy+374mrrmn6OUazZeZTn0z7n3ekquFM9zGboSAdwolP47mgBUMvy12k5dfnb
+         o5z3TN5Th/uelWq6FOB/Qm7LvzObXs+0RmCLYdhKGyrShJP6BtF4kS35107uR9+hAfF8
+         Fz49Bz/hD/gkyaiu71Df5FjIXsjX9W8XUxr9EQHF4LiJYzIPcoG4wlZW5+OlBLF2qDyg
+         pjPrCWszxWr74vvOfb8bdV4B3nNpjXCFTu5yqe7LFIt4RI2XsYxYvjuv6WdGYgKGUzbZ
+         tVAcvjWntSb6Ep5q2v/kGIoy/+gHW1MkH7DR09mBYFZ2HSwPyNOcIkEwHPHLRYmiF1VJ
+         1e6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702564405; x=1703169205;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AuPJEXHG/T8+UZ7zLGzCD0eZ+te2AgjoCbRUxXHDBsM=;
+        b=iScdc6XN4dl9vA5SWqbch9qjrLUJ1fK/AFIzkqAIaYaqVJhhgtU95VNpd9xd0mt0NO
+         Do41EBNhSnE3ahT4jFC1E5Ui9oM78H7mzgFrDTlJfE0ZS7lejdYknps0OZUwCYzDYT/q
+         6PQqJpbP4aGhO1P/JURjvibZRZ3lPb8Dkt/3Y8S5MvkvrkQ6u7jT5IC4pBAuf34t2nZ/
+         ciNHqj05WgMlgWWCkmG2VS/dCfke5Dh3pGvvZvPoybnl+mjQjwYkvSTiioP0EiNenwa0
+         po0uDIgSahy2CIofrsGpH/7W/swBLIhoj6+ScpPUzXSepyNaYNHdpM3EGQhzDEnb9egp
+         WNRA==
+X-Gm-Message-State: AOJu0YwzAhxVvh8qkq+b6+G6/H+mEfy4PrmVJ6S+V7yU8sVBPOm7JCAe
+	Zxl6n3mewJDZEhn1ZsvIH5jObJn0PgkMFWXLvA0=
+X-Google-Smtp-Source: AGHT+IGZDkaPSE08Mg5khj5fiYP4/1T4OB66VghppvqzfYHasCs6f6NwjkrppTNTXA3GA/eRp76Ivaf2uo5dsy/ADVo=
+X-Received: by 2002:a05:6214:2aa3:b0:67f:f06:573c with SMTP id
+ js3-20020a0562142aa300b0067f0f06573cmr740449qvb.26.1702564405315; Thu, 14 Dec
+ 2023 06:33:25 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231214120716.591528-1-dave@dtucker.co.uk> <CALOAHbDzZ_KU05jq+Z_j29gzfSFQTnspnGK3c0iH=4xRQ3ct8g@mail.gmail.com>
+ <CALOAHbARerbgJy-ujXwbD=f4mqmO1WXTk+33Qjkhqg4rn_6nzg@mail.gmail.com> <10E0052D-E706-4395-A2EE-C1BD0BE54DD0@dtucker.co.uk>
+In-Reply-To: <10E0052D-E706-4395-A2EE-C1BD0BE54DD0@dtucker.co.uk>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 14 Dec 2023 22:32:46 +0800
+Message-ID: <CALOAHbAS4NZAdsx9ssurNsN+HLAitaETd50Ua5dOzP02KPRh0A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] bpf: Include pid, uid and comm in audit output
+To: Dave Tucker <dave@dtucker.co.uk>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Similar to native xdp, do not always linearize the skb in
-netif_receive_generic_xdp routine but create a non-linear xdp_buff to be
-processed by the eBPF program. This allow to add  multi-buffer support
-for xdp running in generic mode.
+On Thu, Dec 14, 2023 at 10:11=E2=80=AFPM Dave Tucker <dave@dtucker.co.uk> w=
+rote:
+>
+>
+>
+> > On 14 Dec 2023, at 13:21, Yafang Shao <laoar.shao@gmail.com> wrote:
+> >
+> > On Thu, Dec 14, 2023 at 9:13=E2=80=AFPM Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> >>
+> >> On Thu, Dec 14, 2023 at 8:07=E2=80=AFPM Dave Tucker <dave@dtucker.co.u=
+k> wrote:
+> >>>
+> >>> Current output from auditd is as follows:
+> >>>
+> >>> time->Wed Dec 13 21:39:24 2023
+> >>> type=3DBPF msg=3Daudit(1702503564.519:11241): prog-id=3D439 op=3DLOAD
+> >>>
+> >>> This only tells you that a BPF program was loaded, but without
+> >>> any context. If we include the pid, uid and comm we get output as
+> >>> follows:
+> >>>
+> >>> time->Wed Dec 13 21:59:59 2023
+> >>> type=3DBPF msg=3Daudit(1702504799.156:99528): pid=3D27279 uid=3D0
+> >>>        comm=3D"new_name" prog-id=3D50092 op=3DUNLOAD
+> >>
+> >> Is it possible to integrate these common details like pid, uid, and
+> >> comm into the audit_log_format() function for automatic inclusion? Or
+> >> would it be more appropriate to create a new helper function like
+> >> audit_log_format_common() dedicated specifically to incorporating
+> >> these common details? What are your thoughts on this?
+>
+> There's audit_log_task_info from audit.h which adds everything. My
+> concern was that it is very verbose and doesn=E2=80=99t appear to be wide=
+ly
+> used. I don=E2=80=99t think it warrants a helper function just yet since
+> we=E2=80=99re only doing audit logging in this one function.
+>
+> That said, I=E2=80=99m working on a patch series to add audit logging to
+> bpf_link attach and detach events. I=E2=80=99ll gladly turn that into a
+> helper then since it would be used in more than one place.
+>
+> > BTW, bpf prog can be unloaded in irq context. Therefore we can't do it
+> > for BPF_AUDIT_UNLOAD.
+>
+> I=E2=80=99ve been running this locally, and occasionally I see unload eve=
+nts
+> where the comm is =E2=80=9Ckworker/0:0=E2=80=9D - I assume that those are=
+ from within
+> the irq context.
+>
+> type=3DBPF msg=3Daudit(1702504511.397:202): pid=3D1 uid=3D0
+>     comm=3D"systemd" prog-id=3D75 op=3DLOAD
+>
+> type=3DBPF msg=3Daudit(1702504541.516:213): pid=3D23152 uid=3D0
+>     comm=3D"kworker/0:0" prog-id=3D75 op=3DUNLOAD
+>
+> That looks ok to me, but it wouldn=E2=80=99t be too hard to skip adding t=
+his
+> information in the irq context if you=E2=80=99d rather.
 
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
----
- net/core/dev.c | 153 +++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 134 insertions(+), 19 deletions(-)
+I believe we need to skip them. Including random task information
+could potentially lead to confusion.
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index d7857de03dba..47164acc3268 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -4854,6 +4854,12 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- 	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
- 	xdp_prepare_buff(xdp, hard_start, skb_headroom(skb) - mac_len,
- 			 skb_headlen(skb) + mac_len, true);
-+	if (skb_is_nonlinear(skb)) {
-+		skb_shinfo(skb)->xdp_frags_size = skb->data_len;
-+		xdp_buff_set_frags_flag(xdp);
-+	} else {
-+		xdp_buff_clear_frags_flag(xdp);
-+	}
- 
- 	orig_data_end = xdp->data_end;
- 	orig_data = xdp->data;
-@@ -4883,6 +4889,14 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- 		skb->len += off; /* positive on grow, negative on shrink */
- 	}
- 
-+	/* XDP frag metadata (e.g. nr_frags) are updated in eBPF helpers
-+	 * (e.g. bpf_xdp_adjust_tail), we need to update data_len here.
-+	 */
-+	if (xdp_buff_has_frags(xdp))
-+		skb->data_len = skb_shinfo(skb)->xdp_frags_size;
-+	else
-+		skb->data_len = 0;
-+
- 	/* check if XDP changed eth hdr such SKB needs update */
- 	eth = (struct ethhdr *)xdp->data;
- 	if ((orig_eth_type != eth->h_proto) ||
-@@ -4916,12 +4930,118 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb, struct xdp_buff *xdp,
- 	return act;
- }
- 
-+static int netif_skb_segment_for_xdp(struct sk_buff **pskb,
-+				     struct bpf_prog *prog)
-+{
-+#if IS_ENABLED(CONFIG_PAGE_POOL)
-+	struct softnet_data *sd = this_cpu_ptr(&softnet_data);
-+	u32 size, truesize, len, max_head_size, off;
-+	struct sk_buff *skb = *pskb, *nskb;
-+	int err, i, head_off;
-+	void *data;
-+
-+	/* XDP does not support fraglist so we need to linearize
-+	 * the skb.
-+	 */
-+	if (skb_has_frag_list(skb) || !prog->aux->xdp_has_frags)
-+		return -EOPNOTSUPP;
-+
-+	max_head_size = SKB_WITH_OVERHEAD(PAGE_SIZE - XDP_PACKET_HEADROOM);
-+	if (skb->len > max_head_size + MAX_SKB_FRAGS * PAGE_SIZE)
-+		return -ENOMEM;
-+
-+	size = min_t(u32, skb->len, max_head_size);
-+	truesize = SKB_HEAD_ALIGN(size) + XDP_PACKET_HEADROOM;
-+	data = page_pool_dev_alloc_va(sd->page_pool, &truesize);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	nskb = napi_build_skb(data, truesize);
-+	if (!nskb) {
-+		page_pool_free_va(sd->page_pool, data, true);
-+		return -ENOMEM;
-+	}
-+
-+	skb_reserve(nskb, XDP_PACKET_HEADROOM);
-+	skb_copy_header(nskb, skb);
-+	skb_mark_for_recycle(nskb);
-+
-+	err = skb_copy_bits(skb, 0, nskb->data, size);
-+	if (err) {
-+		consume_skb(nskb);
-+		return err;
-+	}
-+	skb_put(nskb, size);
-+
-+	head_off = skb_headroom(nskb) - skb_headroom(skb);
-+	skb_headers_offset_update(nskb, head_off);
-+
-+	off = size;
-+	len = skb->len - off;
-+	for (i = 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
-+		struct page *page;
-+		u32 page_off;
-+
-+		size = min_t(u32, len, PAGE_SIZE);
-+		truesize = size;
-+
-+		page = page_pool_dev_alloc(sd->page_pool, &page_off,
-+					   &truesize);
-+		if (!data) {
-+			consume_skb(nskb);
-+			return -ENOMEM;
-+		}
-+
-+		skb_add_rx_frag(nskb, i, page, page_off, size, truesize);
-+		err = skb_copy_bits(skb, off, page_address(page) + page_off,
-+				    size);
-+		if (err) {
-+			consume_skb(nskb);
-+			return err;
-+		}
-+
-+		len -= size;
-+		off += size;
-+	}
-+
-+	consume_skb(skb);
-+	*pskb = nskb;
-+
-+	return 0;
-+#else
-+	return -EOPNOTSUPP;
-+#endif
-+}
-+
-+static int netif_skb_check_for_xdp(struct sk_buff **pskb,
-+				   struct bpf_prog *prog)
-+{
-+	struct sk_buff *skb = *pskb;
-+	int err, hroom, troom;
-+
-+	if (!netif_skb_segment_for_xdp(pskb, prog))
-+		return 0;
-+
-+	/* In case we have to go down the path and also linearize,
-+	 * then lets do the pskb_expand_head() work just once here.
-+	 */
-+	hroom = XDP_PACKET_HEADROOM - skb_headroom(skb);
-+	troom = skb->tail + skb->data_len - skb->end;
-+	err = pskb_expand_head(skb,
-+			       hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
-+			       troom > 0 ? troom + 128 : 0, GFP_ATOMIC);
-+	if (err)
-+		return err;
-+
-+	return skb_linearize(skb);
-+}
-+
- static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
- 				     struct xdp_buff *xdp,
- 				     struct bpf_prog *xdp_prog)
- {
- 	struct sk_buff *skb = *pskb;
--	u32 act = XDP_DROP;
-+	u32 mac_len, act = XDP_DROP;
- 
- 	/* Reinjected packets coming from act_mirred or similar should
- 	 * not get XDP generic processing.
-@@ -4929,41 +5049,36 @@ static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
- 	if (skb_is_redirected(skb))
- 		return XDP_PASS;
- 
--	/* XDP packets must be linear and must have sufficient headroom
--	 * of XDP_PACKET_HEADROOM bytes. This is the guarantee that also
--	 * native XDP provides, thus we need to do it here as well.
-+	/* XDP packets must have sufficient headroom of XDP_PACKET_HEADROOM
-+	 * bytes. This is the guarantee that also native XDP provides,
-+	 * thus we need to do it here as well.
- 	 */
-+	mac_len = skb->data - skb_mac_header(skb);
-+	__skb_push(skb, mac_len);
-+
- 	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
- 	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
--		int hroom = XDP_PACKET_HEADROOM - skb_headroom(skb);
--		int troom = skb->tail + skb->data_len - skb->end;
--
--		/* In case we have to go down the path and also linearize,
--		 * then lets do the pskb_expand_head() work just once here.
--		 */
--		if (pskb_expand_head(skb,
--				     hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
--				     troom > 0 ? troom + 128 : 0, GFP_ATOMIC))
--			goto do_drop;
--		if (skb_linearize(skb))
-+		if (netif_skb_check_for_xdp(pskb, xdp_prog))
- 			goto do_drop;
- 	}
- 
--	act = bpf_prog_run_generic_xdp(skb, xdp, xdp_prog);
-+	__skb_pull(*pskb, mac_len);
-+
-+	act = bpf_prog_run_generic_xdp(*pskb, xdp, xdp_prog);
- 	switch (act) {
- 	case XDP_REDIRECT:
- 	case XDP_TX:
- 	case XDP_PASS:
- 		break;
- 	default:
--		bpf_warn_invalid_xdp_action(skb->dev, xdp_prog, act);
-+		bpf_warn_invalid_xdp_action((*pskb)->dev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_ABORTED:
--		trace_xdp_exception(skb->dev, xdp_prog, act);
-+		trace_xdp_exception((*pskb)->dev, xdp_prog, act);
- 		fallthrough;
- 	case XDP_DROP:
- 	do_drop:
--		kfree_skb(skb);
-+		kfree_skb(*pskb);
- 		break;
- 	}
- 
--- 
-2.43.0
-
+--=20
+Regards
+Yafang
 
