@@ -1,166 +1,203 @@
-Return-Path: <bpf+bounces-17867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17869-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A3B7813906
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 18:44:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56F3C8139E3
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 19:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9081C20DF8
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 17:44:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE54AB2191B
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 18:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE642675CF;
-	Thu, 14 Dec 2023 17:44:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83D568B89;
+	Thu, 14 Dec 2023 18:23:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="LqG+BjVV";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Bpbf0Ttm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f47.google.com (mail-io1-f47.google.com [209.85.166.47])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5849CF
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 09:44:40 -0800 (PST)
-Received: by mail-io1-f47.google.com with SMTP id ca18e2360f4ac-7b79a23a075so21580039f.2
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 09:44:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702575880; x=1703180680;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jwOJSwoOAETLG1CfVjsu4xlvZ4N/JEMZJRthIWFpdFA=;
-        b=NqjGwaF2iBLiDSdMX/hPb8JI4vF9Jgv9vF1hXl5kbYyx7Mx25UydYf/if446OcQ69S
-         d1aW3wbNGISedJaBECeSytawREO3xmSHjIZK4L1pftPeFJZJq2Q/phbZ8+2tRWYgQC0z
-         WDuqSSQwXY2jGgZ/f8piR84F/N8DFFCsIPbf2zPSB9rdBvjolh5uPNx32DcKmL9DfsYa
-         T3fF6+vQe7ogr02Cz+bBftzlNKTGmBSopEWjHVCVgihVlVnQi+wnPD7tfJR6h+0G8epj
-         F1YKkwjbs2oU1cYWYF096H0SWGSb1QLPjfUmTcNYBgtrBMHHk9F6Y0dDNseTS67/2iFl
-         XdpA==
-X-Gm-Message-State: AOJu0YwrObO/PzhUP+t0UwwzMNU2fpiZIYSeHfTdp8XHyP4phQPi/riX
-	B35ityhxCD6cFJfe9ztWHqU=
-X-Google-Smtp-Source: AGHT+IEJ9ylaSdQqiLXKm3svLAs9z0lIgzQUDjNyKk9ELF+rfrkRkhw/nwi25m7cFHxvOLwgF3xhEA==
-X-Received: by 2002:a05:6602:2be4:b0:7b3:942e:2df9 with SMTP id d4-20020a0566022be400b007b3942e2df9mr11353648ioy.6.1702575879744;
-        Thu, 14 Dec 2023 09:44:39 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id gj2-20020a0566386a0200b004665ce094c4sm3589710jab.161.2023.12.14.09.44.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 09:44:39 -0800 (PST)
-Date: Thu, 14 Dec 2023 11:44:37 -0600
-From: David Vernet <void@manifault.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Dave Thaler <dthaler1968@googlemail.com>, bpf@ietf.org,
-	bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>
-Subject: Re: [Bpf] BPF ISA conformance groups
-Message-ID: <20231214174437.GA2853@maniforge>
-References: <072101da2558$fe5f5020$fb1df060$@gmail.com>
- <20231207215152.GA168514@maniforge>
- <CAADnVQ+Mhe6ean6J3vH1ugTyrgWNxupLoFfwKu6-U=3R8i1TNQ@mail.gmail.com>
- <20231212214532.GB1222@maniforge>
- <157b01da2d46$b7453e20$25cfba60$@gmail.com>
- <CAADnVQKd7X1v6CwCa2MyJjQkN8hKsHJ_g9Kk5CwWSbp9+1_3zw@mail.gmail.com>
- <20231212233555.GA53579@maniforge>
- <CAADnVQJ-JwNTY5fW-oXdTur9aDrv2NQoreTH3yYZemVBVtq9fQ@mail.gmail.com>
- <20231213185603.GA1968@maniforge>
- <CAADnVQLOjByUKJNyLdvDzwuegtjZFwrttHft_1o8BoyDCXQvDQ@mail.gmail.com>
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9923310A;
+	Thu, 14 Dec 2023 10:23:11 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailnew.west.internal (Postfix) with ESMTP id 022982B000CF;
+	Thu, 14 Dec 2023 13:23:06 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 14 Dec 2023 13:23:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1702578186;
+	 x=1702585386; bh=jO8QFkyxT8UnwR2dcix1epeyX1NgYymqMvBUkD8jyH4=; b=
+	LqG+BjVVn4Z890upuU+L9WS2St9a3ZnojxXfbpRBnK7O9s2AS1bMbGNSKHeOT/1w
+	SoCPQ+MBULtS7Es1+sV64ePILKocDVHsHh+rHbHd/2SpuFK9O3OLyRJMFKDWvgXM
+	v7lAPyYZ1l96d6ljhskKAmvwnt8kLfo6etclrSfWLi+dtnBbVeCFjTS6+pvNNDWD
+	ym391Yw+8+XG5bNc4vvQT5Rz/8mZ/iF3vlRrv/U14SshKjU/3UFHOQo6+3zLPXzA
+	rDdlBXQTNg5Nx/z5fB+XqvNGGW/ZDsTZwvhH3/wHRfq2KpRcNichLdVp9e+EDQYL
+	9cKCRRhJxfYQDGmZWpJHLA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702578186; x=
+	1702585386; bh=jO8QFkyxT8UnwR2dcix1epeyX1NgYymqMvBUkD8jyH4=; b=B
+	pbf0Ttm/qZDdaZfK8by5DZs02Zn4xHoqby1dDmnF+SD1Fe9pC5JjQ0/gez6wgo/i
+	fqqFihaMwY4HGlE6PyatQ9TPk4JzYHPtKJu4bjTMbL4XGMUM8yNHn7SQUmZAfRyY
+	4DH/spKE2Ddh+5J29by+fhiVIitOzsBS4Q9dZUbVF2dm+WgYFaANjQnYBTxBXj6d
+	EHvzAHb93C05ysNj/vymwaEfXmvXBrSqhR/MYkTeaIKMET1r8+sgUXvCXFdo0q7G
+	YppJqaaz/gk1RDvoCk3h2ex7u0ZLOrMQmE0PxpQ5Pkte5LWXvKphKobRFAg5rd16
+	58ww+AcHucbFNQsitTeKg==
+X-ME-Sender: <xms:CUh7ZXluxcKsKKaJRLO-eL7CHVajHOVe3-SJpW8YU0XUXVeDN6D5Tg>
+    <xme:CUh7Za3b0lzqga_v_Yu8H14V_ibdaIlFaRW22FvWXyqLlii6B8bUI5Gzo6kQGK2jn
+    xZKAeGbgUnRc4WOtg>
+X-ME-Received: <xmr:CUh7ZdpOAXiFqFBxOX81ivQmHkQUrh1nOQMDtgstUneRE0DMHvncLF1wnmuhydvzZwxqi-IE3JhDHPieZ13S-qId1vsyz5IY0ZLskhk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:CUh7ZfnaQUe6SAmGWExXbx3L-NoWo8Nfytc1BIUvogDtWqKWDF_ysQ>
+    <xmx:CUh7ZV22lYlqlf0yp219Uej1Z7r8hZF1i6jAdQ5emVc8mxroJbrSAg>
+    <xmx:CUh7ZevPOFt-EhzSk7f_HzRs3b20z5o2kfUB5AiEDinq80uz1hhS1Q>
+    <xmx:Ckh7ZWdRL25ZhskGJdEUsV97KpeqO1iTp-p8snaYoNjOKjX2qUXgmGh4Ebs>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 14 Dec 2023 13:23:03 -0500 (EST)
+Date: Thu, 14 Dec 2023 11:23:02 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Cc: Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net, 
+	davem@davemloft.net, shuah@kernel.org, ast@kernel.org, john.fastabend@gmail.com, 
+	kuba@kernel.org, andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com, 
+	antony.antony@secunet.com, alexei.starovoitov@gmail.com, yonghong.song@linux.dev, 
+	eddyz87@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, devel@linux-ipsec.org
+Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
+ bpf_xdp_get_xfrm_state()
+Message-ID: <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
+References: <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
+ <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
+ <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
+ <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
+ <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
+ <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
+ <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
+ <CAHsH6Gu_c29Nc+cH-s3EeztwScL=A42wi_SuJD=WeYV0mtVxbA@mail.gmail.com>
+ <CAP01T76ZtehyRidmnV5A0p3LCyjw6Q4sjRH6ZhczgGn1ap-x_g@mail.gmail.com>
+ <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="V4Dp/zrCXmcyzI53"
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLOjByUKJNyLdvDzwuegtjZFwrttHft_1o8BoyDCXQvDQ@mail.gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-
-
---V4Dp/zrCXmcyzI53
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
 
-On Wed, Dec 13, 2023 at 04:12:28PM -0800, Alexei Starovoitov wrote:
-> On Wed, Dec 13, 2023 at 10:56=E2=80=AFAM David Vernet <void@manifault.com=
-> wrote:
+On Thu, Dec 14, 2023 at 05:16:08PM +0100, Kumar Kartikeya Dwivedi wrote:
+> On Thu, 14 Dec 2023 at 17:08, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
 > >
-> > Something I want to make sure is clearly spelled out: are you of the
-> > opinion that a program written for offload to a Netronome device cannot
-> > and should not ever be able to run on any other NIC with BPF offload?
->=20
-> It's certainly fine for vendors to try to replicate Netronome offload.
-> The point is that it was done before any standard existed.
-> If we add compliance groups to the standard now they won't fit
-> netronome and won't help anyone trying to be compatible with it.
-> See the point about compatibility with -mcpu=3Dv3 and not v1.
-
-It's unfortunate that it would make Netronome non-compliant, but I think
-we should be looking more at what makes sense for future implementations
-when it comes to the standard. The claim is that future devices which
-are compliant would be able to have replicated offload implementations.
-
-> > Why else would they be asking for a standard if not to
-> > have some guidelines of what to implement?
->=20
-> Excellent question. I don't know why nvme folks need a standard.
-> Lack of standard didn't stop netronome.
-
-Christoph? Any chance you can shed some light here?
-
-> > How do we know the semantics of the instructions won't be prohibitively
-> > expensive or impractical for certain vendors? What value do we get out
-> > of dictating semantics in the standard if we're not expecting any of
-> > these programs to be cross-compatible anyways?
->=20
-> and that's a problem. hw folks are not participating in this discussion.
-> Without implementers there is little chance to have successful guidelines
-> for compatibility levels.
-> per-instruction compatibility is already accomplished.
-> We don't need groups for that.
-
-I definitely agree that it would be nice to have hw folks included in
-these discussions. What I don't quite understand though is why it would
-be necessary to have them included in the discussion to decide on
-conformance groups, but not on instruction semantics.
-
-> > > "Here is a standard. Go implement it" won't work.
+> > On Thu, 14 Dec 2023 at 00:49, Eyal Birger <eyal.birger@gmail.com> wrote:
+> > >
+> > > On Wed, Dec 13, 2023 at 3:15 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > > > > > [...]
+> > > > > >
+> > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > index c0dd38616562..f00dba85ac5d 100644
+> > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> > > > > > @@ -8,8 +8,9 @@
+> > > > > >   */
+> > > > > >  #include "vmlinux.h"
+> > > > > >  #include <bpf/bpf_core_read.h>
+> > > > > > -#include <bpf/bpf_helpers.h>
+> > > > > >  #include <bpf/bpf_endian.h>
+> > > > > > +#include <bpf/bpf_helpers.h>
+> > > > > > +#include "bpf_experimental.h"
+> > > > > >  #include "bpf_kfuncs.h"
+> > > > > >  #include "bpf_tracing_net.h"
+> > > > > >
+> > > > > > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
+> > > > > >         opts.family = AF_INET;
+> > > > > >
+> > > > > >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
+> > > > > > -       if (!x || opts.error)
+> > > > > > +       if (!x)
+> > > > > >                 goto out;
+> > > > > > +       bpf_assert_with(opts.error == 0, XDP_PASS);
+> > > > > >
+> > > > > >         if (!x->replay_esn)
+> > > > > >                 goto out;
+> > > > > >
+> > > > > > results in:
+> > > > > >
+> > > > > > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
+> > > > > > 58: (85) call bpf_throw#115436
+> > > > > > calling kernel function bpf_throw is not allowed
+> > > > > >
+> > > > >
+> > > > > I think this might be because bpf_throw is not registered for use by
+> > > > > BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
+> > > > > this program type as well, since it's already done for TC.
+> > > >
+> > > > Ah yeah, that was it.
+> > > >
+> > > > >
+> > > > > > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
+> > > > > > but I can run the exceptions selftests just fine with the same bzImage.
+> > > > > > So I'm thinking it's not a kfunc registration or BTF issue.
+> > > > > >
+> > > > > > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
+> > > > > >
+> > > > >
+> > > > > Yes, even once you enable this, this will fail for now. I am sending
+> > > > > out a series later this week that enables bpf_throw with acquired
+> > > > > references, but until then may I suggest the following:
+> > > > >
+> > > > > #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
+> > > > > && !___j; bpf_throw(), ___i++)
+> > > > >
+> > > > > This will allow you to insert some cleanup code with an assertion.
+> > > > > Then in my series, I will convert this temporary bpf_assert_if back to
+> > > > > the normal bpf_assert.
+> > > > >
+> > > > > It would look like:
+> > > > > bpf_assert_if(opts.error == 0) {
+> > > > >   // Execute if assertion failed
+> > > > >   bpf_xdp_xfrm_state_release(x);
+> > > > > }
+> > > > >
+> > > > > Likewise for bpf_assert_with_if, you get the idea.
+> > > >
+> > > > I gave it a try and I'm getting this compile error:
+> > > >
+> > > >         progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
+> > > >                 bpf_assert_with_if(opts.error == 0, XDP_PASS) {
+> > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > >         /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
+> > > >                 for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
+> > > >                                                     ^~~~      ~~~~
+> > > >         1 error generated.
+> > > >         make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
+> > > >
+> > > > Seems like the compiler is being clever.
+> > >
+> > > It looks like ___j is used twice - maybe it was meant to be ___i? i.e.:
+> > >
+> > >    for (int ___i = 0, ___j = (cond); !(___j) && !___i; bpf_throw(value), ___i++)
+> > >
 > >
-> > What is the point of a standard if not to say, "Here's what you should
-> > go implement"?
->=20
-> Rephrasing... "go implement it _all_" won't work.
-> The standard has value without insn groups.
-> Every instruction has specific meaning and encoding.
-> That's what compatibility is about. Both sw and hw need to
-> perform that operation.
+> > Ah, yes, that's a typo. Eyal is right, it should be ___i.
+> 
+> Additionally, I would modify the macro to do ___j = !!(cond).
 
-I agree that there's value in instructions having specific meaning and
-encodings, but my worry is that (for device offload) the value would be
-minimized quite a bit if a developer writing a BPF offload program
-doesn't also have some knowledge or guarantee of what instructions
-vendors have actually implemented.
-
-If we were to do away with conformance groups, then I as a BPF user
-would have the guarantee: "Any hw device which happens to implement the
-instructions in my program will behave in a predictable way". If that
-user doesn't know what instructions it can count on being actually
-available in devices, then they're going to end up just implementing the
-program for a single device anyways. At that point, how useful was it
-really to standardize on the semantics of the instructions? That user
-just as soon could have read the specifications for the device and
-implemented the prog according to the semantics that the vendor decided
-were most appropriate for them.
-
-That said, I definitely agree that there's value in standardizing the
-semantics for _software_, because as you said, software can eventually
-just be fully compliant. What's less clear to me is how useful it is for
-device offload without conformance groups.
-
---V4Dp/zrCXmcyzI53
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZXs/BQAKCRBZ5LhpZcTz
-ZC7/AP4oOsdUExch1h8gRtFLYWu5ZninBXad7des4ajkmg9xUAEAqnxMKE7bP+mw
-ZP+ZBM4R/5hZgi22NjptMEmSMejceQU=
-=ZElZ
------END PGP SIGNATURE-----
-
---V4Dp/zrCXmcyzI53--
+Makes sense. Will send out v6 with these fixes today.
 
