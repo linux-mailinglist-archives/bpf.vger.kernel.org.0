@@ -1,203 +1,196 @@
-Return-Path: <bpf+bounces-17869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56F3C8139E3
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 19:23:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE659813A87
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 20:15:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE54AB2191B
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 18:23:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A19861C20F29
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 19:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83D568B89;
-	Thu, 14 Dec 2023 18:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7317A692A0;
+	Thu, 14 Dec 2023 19:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="LqG+BjVV";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Bpbf0Ttm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y2vLiHn5"
 X-Original-To: bpf@vger.kernel.org
-Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9923310A;
-	Thu, 14 Dec 2023 10:23:11 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailnew.west.internal (Postfix) with ESMTP id 022982B000CF;
-	Thu, 14 Dec 2023 13:23:06 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 14 Dec 2023 13:23:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1702578186;
-	 x=1702585386; bh=jO8QFkyxT8UnwR2dcix1epeyX1NgYymqMvBUkD8jyH4=; b=
-	LqG+BjVVn4Z890upuU+L9WS2St9a3ZnojxXfbpRBnK7O9s2AS1bMbGNSKHeOT/1w
-	SoCPQ+MBULtS7Es1+sV64ePILKocDVHsHh+rHbHd/2SpuFK9O3OLyRJMFKDWvgXM
-	v7lAPyYZ1l96d6ljhskKAmvwnt8kLfo6etclrSfWLi+dtnBbVeCFjTS6+pvNNDWD
-	ym391Yw+8+XG5bNc4vvQT5Rz/8mZ/iF3vlRrv/U14SshKjU/3UFHOQo6+3zLPXzA
-	rDdlBXQTNg5Nx/z5fB+XqvNGGW/ZDsTZwvhH3/wHRfq2KpRcNichLdVp9e+EDQYL
-	9cKCRRhJxfYQDGmZWpJHLA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1702578186; x=
-	1702585386; bh=jO8QFkyxT8UnwR2dcix1epeyX1NgYymqMvBUkD8jyH4=; b=B
-	pbf0Ttm/qZDdaZfK8by5DZs02Zn4xHoqby1dDmnF+SD1Fe9pC5JjQ0/gez6wgo/i
-	fqqFihaMwY4HGlE6PyatQ9TPk4JzYHPtKJu4bjTMbL4XGMUM8yNHn7SQUmZAfRyY
-	4DH/spKE2Ddh+5J29by+fhiVIitOzsBS4Q9dZUbVF2dm+WgYFaANjQnYBTxBXj6d
-	EHvzAHb93C05ysNj/vymwaEfXmvXBrSqhR/MYkTeaIKMET1r8+sgUXvCXFdo0q7G
-	YppJqaaz/gk1RDvoCk3h2ex7u0ZLOrMQmE0PxpQ5Pkte5LWXvKphKobRFAg5rd16
-	58ww+AcHucbFNQsitTeKg==
-X-ME-Sender: <xms:CUh7ZXluxcKsKKaJRLO-eL7CHVajHOVe3-SJpW8YU0XUXVeDN6D5Tg>
-    <xme:CUh7Za3b0lzqga_v_Yu8H14V_ibdaIlFaRW22FvWXyqLlii6B8bUI5Gzo6kQGK2jn
-    xZKAeGbgUnRc4WOtg>
-X-ME-Received: <xmr:CUh7ZdpOAXiFqFBxOX81ivQmHkQUrh1nOQMDtgstUneRE0DMHvncLF1wnmuhydvzZwxqi-IE3JhDHPieZ13S-qId1vsyz5IY0ZLskhk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudelledguddutdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdefhedmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
-    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:CUh7ZfnaQUe6SAmGWExXbx3L-NoWo8Nfytc1BIUvogDtWqKWDF_ysQ>
-    <xmx:CUh7ZV22lYlqlf0yp219Uej1Z7r8hZF1i6jAdQ5emVc8mxroJbrSAg>
-    <xmx:CUh7ZevPOFt-EhzSk7f_HzRs3b20z5o2kfUB5AiEDinq80uz1hhS1Q>
-    <xmx:Ckh7ZWdRL25ZhskGJdEUsV97KpeqO1iTp-p8snaYoNjOKjX2qUXgmGh4Ebs>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 14 Dec 2023 13:23:03 -0500 (EST)
-Date: Thu, 14 Dec 2023 11:23:02 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Eyal Birger <eyal.birger@gmail.com>, daniel@iogearbox.net, 
-	davem@davemloft.net, shuah@kernel.org, ast@kernel.org, john.fastabend@gmail.com, 
-	kuba@kernel.org, andrii@kernel.org, hawk@kernel.org, steffen.klassert@secunet.com, 
-	antony.antony@secunet.com, alexei.starovoitov@gmail.com, yonghong.song@linux.dev, 
-	eddyz87@gmail.com, mykolal@fb.com, martin.lau@linux.dev, song@kernel.org, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, devel@linux-ipsec.org
-Subject: Re: [PATCH bpf-next v5 9/9] bpf: xfrm: Add selftest for
- bpf_xdp_get_xfrm_state()
-Message-ID: <idbmj3y65mi7isezhlq4lip54bbngoouv5hbai2xd7bqtv7dxy@qjcmln2ovmz2>
-References: <CAHsH6Gs1vUQnhR_a4qFnAF37Vx=68Do28sfVfFxQ9pVj9jSzjw@mail.gmail.com>
- <qiv464c4y43mo5rih5k6lgzkbpnj6wsrl52hrhgbxeqj45atun@szmqlmnccm52>
- <CAHsH6Gujycb9RBuRk7QHorLe0Q=Np_tb3uboQfp9KmJnegVXvw@mail.gmail.com>
- <fwadmdjjogp4ybfxfpwovnmnn36jigffopijsuqt4ly4vxqghm@ysqhd25mzylp>
- <fecc7tpmbnqxuxqqolm44ggyeomcr3piabsjkv3pgyzlhyonq6@iiaxf34erjzq>
- <CAP01T770poh_63vBC+Heb9ASJ9pDZd1wTDWAgm5KCYHK9GtE1g@mail.gmail.com>
- <yshbkwaiong7qq2rsgkpvvyvzefnwud5uywbea6ocfxxenzv6s@dn45gdaygaso>
- <CAHsH6Gu_c29Nc+cH-s3EeztwScL=A42wi_SuJD=WeYV0mtVxbA@mail.gmail.com>
- <CAP01T76ZtehyRidmnV5A0p3LCyjw6Q4sjRH6ZhczgGn1ap-x_g@mail.gmail.com>
- <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 794D469293
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 19:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d099d316a8so4659867b3a.0
+        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 11:15:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702581335; x=1703186135; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QMmu34dOJ60TG428lyxZnWyZxGAM75Uca7Pib30MkbA=;
+        b=Y2vLiHn5g3hpOLmjwTzeJ0Vuol36QfiHtz8yu/Gi889qOA06zX3cgEhf8A49gOonew
+         XlVyO7d8WsF2OLR9tZtuDwGpY/QvYLshXrDsZKuBdMaQ72pio3JZX0Ji40dYhulecDmp
+         qpmNtHF3mgrTnKGuVhawFR/9IiPB5mKzXn8RGIPJSa8Tz8p0dLYrYCXzuepyYUmowRvP
+         OBLFcP0DD7oBlKWEIoi2IvCPDru/p0uJjJZj50PG23kv1htFgcP6rwD3uGZIBrN5n2hl
+         mwPQm+1A5ahAeUGtwnFO0TVjLjvHB83UujnvBbVDLEa3TkE/Szr1doaE6swYPkZyjM2i
+         n7mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702581335; x=1703186135;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=QMmu34dOJ60TG428lyxZnWyZxGAM75Uca7Pib30MkbA=;
+        b=EKHM6fGN0MI/cIaWLOwqmFV4NyLIreax5du2SyuJ97jASCkCJc4DxQgZNVrt9PQjRO
+         MY0LODgib3Cy4HSeiyRSXT4alN95uYfUx/Pj0K+b1h25wPqPPsRwYVqs0f5bL3Kka00j
+         hvnbY/NKRd6MEqL23EYSo5MIYL5moFuB8opJUh6qUC1hO6OZ095DN4ATtgDhySIFKaNr
+         kJJn776/vN2+m3+Lh96dNmZV6BHzOesroRBi0ROG/unQzXlwWOD7jDQ0yiodn5YDlKMk
+         ginvb5yCHoQgjgk0F0cLubOWjXf5Pnq4B75Blwc4CR2Q2gMw2TnH5v+Aa0HHvjdq4Uow
+         Ju/A==
+X-Gm-Message-State: AOJu0YyXf7AQ4V9fJRhBP2pWLIFqCjx52VA8R/s1e6hRO2O2ELUMTrEb
+	j+UkGDD/7hLJXcZ2muvl0JE=
+X-Google-Smtp-Source: AGHT+IErId4+2xPG+fudbpHRCQqSfJ8BY2bmshNf/h+vJhzTAKx2aTxNcTlIgLcTa9F2fk7wW1e9Gg==
+X-Received: by 2002:a05:6a21:192:b0:18f:97c:614e with SMTP id le18-20020a056a21019200b0018f097c614emr11583403pzb.75.1702581334616;
+        Thu, 14 Dec 2023 11:15:34 -0800 (PST)
+Received: from localhost ([98.97.32.4])
+        by smtp.gmail.com with ESMTPSA id e4-20020aa79804000000b006d26b1c0848sm911561pfl.101.2023.12.14.11.15.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 11:15:33 -0800 (PST)
+Date: Thu, 14 Dec 2023 11:15:32 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+ Hou Tao <houtao@huaweicloud.com>
+Cc: John Fastabend <john.fastabend@gmail.com>, 
+ bpf <bpf@vger.kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Song Liu <song@kernel.org>, 
+ Hao Luo <haoluo@google.com>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ xingwei lee <xrivendell7@gmail.com>, 
+ Hou Tao <houtao1@huawei.com>
+Message-ID: <657b545493a0b_511332086@john.notmuch>
+In-Reply-To: <CAADnVQK+C+9BVowRxESJhuH7BM+SWn2u_fTU2wjH0YuA-N9egw@mail.gmail.com>
+References: <20231214043010.3458072-1-houtao@huaweicloud.com>
+ <20231214043010.3458072-2-houtao@huaweicloud.com>
+ <657a9f1ea1ff4_48672208f0@john.notmuch>
+ <ba0e18ba-f6be-ceb9-412e-48e8e41cb5b6@huaweicloud.com>
+ <CAADnVQK+C+9BVowRxESJhuH7BM+SWn2u_fTU2wjH0YuA-N9egw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Reduce the scope of rcu_read_lock
+ when updating fd map
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP01T74dKxYKM1GfTUJZ+G4+CKbRU=JLGoNcG6b8PMYcqUyEzQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 05:16:08PM +0100, Kumar Kartikeya Dwivedi wrote:
-> On Thu, 14 Dec 2023 at 17:08, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+Alexei Starovoitov wrote:
+> On Wed, Dec 13, 2023 at 11:31=E2=80=AFPM Hou Tao <houtao@huaweicloud.co=
+m> wrote:
 > >
-> > On Thu, 14 Dec 2023 at 00:49, Eyal Birger <eyal.birger@gmail.com> wrote:
-> > >
-> > > On Wed, Dec 13, 2023 at 3:15 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > > > > [...]
-> > > > > >
-> > > > > > diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > index c0dd38616562..f00dba85ac5d 100644
-> > > > > > --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> > > > > > @@ -8,8 +8,9 @@
-> > > > > >   */
-> > > > > >  #include "vmlinux.h"
-> > > > > >  #include <bpf/bpf_core_read.h>
-> > > > > > -#include <bpf/bpf_helpers.h>
-> > > > > >  #include <bpf/bpf_endian.h>
-> > > > > > +#include <bpf/bpf_helpers.h>
-> > > > > > +#include "bpf_experimental.h"
-> > > > > >  #include "bpf_kfuncs.h"
-> > > > > >  #include "bpf_tracing_net.h"
-> > > > > >
-> > > > > > @@ -988,8 +989,9 @@ int xfrm_get_state_xdp(struct xdp_md *xdp)
-> > > > > >         opts.family = AF_INET;
-> > > > > >
-> > > > > >         x = bpf_xdp_get_xfrm_state(xdp, &opts, sizeof(opts));
-> > > > > > -       if (!x || opts.error)
-> > > > > > +       if (!x)
-> > > > > >                 goto out;
-> > > > > > +       bpf_assert_with(opts.error == 0, XDP_PASS);
-> > > > > >
-> > > > > >         if (!x->replay_esn)
-> > > > > >                 goto out;
-> > > > > >
-> > > > > > results in:
-> > > > > >
-> > > > > > 57: (b7) r1 = 2                       ; R1_w=2 refs=5
-> > > > > > 58: (85) call bpf_throw#115436
-> > > > > > calling kernel function bpf_throw is not allowed
-> > > > > >
-> > > > >
-> > > > > I think this might be because bpf_throw is not registered for use by
-> > > > > BPF_PROG_TYPE_XDP. I would simply register the generic_kfunc_set for
-> > > > > this program type as well, since it's already done for TC.
-> > > >
-> > > > Ah yeah, that was it.
-> > > >
-> > > > >
-> > > > > > It looks like the above error comes from verifier.c:fetch_kfunc_meta,
-> > > > > > but I can run the exceptions selftests just fine with the same bzImage.
-> > > > > > So I'm thinking it's not a kfunc registration or BTF issue.
-> > > > > >
-> > > > > > Maybe it's cuz I'm holding onto KFUNC_ACQUIRE'd `x`? Not sure.
-> > > > > >
-> > > > >
-> > > > > Yes, even once you enable this, this will fail for now. I am sending
-> > > > > out a series later this week that enables bpf_throw with acquired
-> > > > > references, but until then may I suggest the following:
-> > > > >
-> > > > > #define bpf_assert_if(cond) for (int ___i = 0, ___j = (cond); !(___j) \
-> > > > > && !___j; bpf_throw(), ___i++)
-> > > > >
-> > > > > This will allow you to insert some cleanup code with an assertion.
-> > > > > Then in my series, I will convert this temporary bpf_assert_if back to
-> > > > > the normal bpf_assert.
-> > > > >
-> > > > > It would look like:
-> > > > > bpf_assert_if(opts.error == 0) {
-> > > > >   // Execute if assertion failed
-> > > > >   bpf_xdp_xfrm_state_release(x);
-> > > > > }
-> > > > >
-> > > > > Likewise for bpf_assert_with_if, you get the idea.
-> > > >
-> > > > I gave it a try and I'm getting this compile error:
-> > > >
-> > > >         progs/test_tunnel_kern.c:996:2: error: variable '___j' used in loop condition not modified in loop body [-Werror,-Wfor-loop-analysis]
-> > > >                 bpf_assert_with_if(opts.error == 0, XDP_PASS) {
-> > > >                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > > >         /home/dxu/dev/linux/tools/testing/selftests/bpf/bpf_experimental.h:295:38: note: expanded from macro 'bpf_assert_with_if'
-> > > >                 for (int ___i = 0, ___j = (cond); !(___j) && !___j; bpf_throw(value), ___i++)
-> > > >                                                     ^~~~      ~~~~
-> > > >         1 error generated.
-> > > >         make: *** [Makefile:618: /home/dxu/dev/linux/tools/testing/selftests/bpf/test_tunnel_kern.bpf.o] Error 1
-> > > >
-> > > > Seems like the compiler is being clever.
-> > >
-> > > It looks like ___j is used twice - maybe it was meant to be ___i? i.e.:
-> > >
-> > >    for (int ___i = 0, ___j = (cond); !(___j) && !___i; bpf_throw(value), ___i++)
-> > >
+> > Hi,
 > >
-> > Ah, yes, that's a typo. Eyal is right, it should be ___i.
-> 
-> Additionally, I would modify the macro to do ___j = !!(cond).
+> > On 12/14/2023 2:22 PM, John Fastabend wrote:
+> > > Hou Tao wrote:
+> > >> From: Hou Tao <houtao1@huawei.com>
+> > >>
+> > >> There is no rcu-read-lock requirement for ops->map_fd_get_ptr() or=
 
-Makes sense. Will send out v6 with these fixes today.
+> > >> ops->map_fd_put_ptr(), so doesn't use rcu-read-lock for these two
+> > >> callbacks.
+> > >>
+> > >> For bpf_fd_array_map_update_elem(), accessing array->ptrs doesn't =
+need
+> > >> rcu-read-lock because array->ptrs must still be allocated. For
+> > >> bpf_fd_htab_map_update_elem(), htab_map_update_elem() only require=
+s
+> > >> rcu-read-lock to be held to avoid the WARN_ON_ONCE(), so only use
+> > >> rcu_read_lock() during the invocation of htab_map_update_elem().
+> > >>
+> > >> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> > >> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> > >> ---
+> > >>  kernel/bpf/hashtab.c | 6 ++++++
+> > >>  kernel/bpf/syscall.c | 4 ----
+> > >>  2 files changed, 6 insertions(+), 4 deletions(-)
+> > >>
+> > >> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
+> > >> index 5b9146fa825f..ec3bdcc6a3cf 100644
+> > >> --- a/kernel/bpf/hashtab.c
+> > >> +++ b/kernel/bpf/hashtab.c
+> > >> @@ -2523,7 +2523,13 @@ int bpf_fd_htab_map_update_elem(struct bpf_=
+map *map, struct file *map_file,
+> > >>      if (IS_ERR(ptr))
+> > >>              return PTR_ERR(ptr);
+> > >>
+> > >> +    /* The htab bucket lock is always held during update operatio=
+ns in fd
+> > >> +     * htab map, and the following rcu_read_lock() is only used t=
+o avoid
+> > >> +     * the WARN_ON_ONCE in htab_map_update_elem().
+> > >> +     */
+
+Ah ok but isn't this comment wrong because you do need rcu read lock to d=
+o
+the walk with lookup_nulls_elem_raw where there is no lock being held? An=
+d
+then the subsequent copy in place is fine because you do have a lock.
+
+So its not just to appease the WARN_ON_ONCE here it has an actual real
+need?
+
+> > >> +    rcu_read_lock();
+> > >>      ret =3D htab_map_update_elem(map, key, &ptr, map_flags);
+> > >> +    rcu_read_unlock();
+> > > Did we consider dropping the WARN_ON_ONCE in htab_map_update_elem()=
+? It
+> > > looks like there are two ways to get to htab_map_update_elem() eith=
+er
+> > > through a syscall and the path here (bpf_fd_htab_map_update_elem) o=
+r
+> > > through a BPF program calling, bpf_update_elem()? In the BPF_CALL
+> > > case bpf_map_update_elem() already has,
+> > >
+> > >    WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held())
+> > >
+> > > The htab_map_update_elem() has an additional check for
+> > > rcu_read_lock_trace_held(), but not sure where this is coming from
+> > > at the moment. Can that be added to the BPF caller side if needed?
+> > >
+> > > Did I miss some caller path?
+> >
+> > No. But I think the main reason for the extra WARN in
+> > bpf_map_update_elem() is that bpf_map_update_elem() may be inlined by=
+
+> > verifier in do_misc_fixups(), so the WARN_ON_ONCE in
+> > bpf_map_update_elem() will not be invoked ever. For
+> > rcu_read_lock_trace_held(), I have added the assertion in
+> > bpf_map_delete_elem() recently in commit 169410eba271 ("bpf: Check
+> > rcu_read_lock_trace_held() before calling bpf map helpers").
+> =
+
+> Yep.
+> We should probably remove WARN_ONs from
+> bpf_map_update_elem() and others in kernel/bpf/helpers.c
+> since they are inlined by the verifier with 99% probability
+> and the WARNs are never called even in DEBUG kernels.
+> And confusing developers. As this thread shows.
+
+Agree. The rcu_read needs to be close as possible to where its actually
+needed and the WARN_ON_ONCE should be dropped if its going to be
+inlined.
+
+> =
+
+> We can replace them with a comment that explains this inlining logic
+> and where the real WARNs are.=
 
