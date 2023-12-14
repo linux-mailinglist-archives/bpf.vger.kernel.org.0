@@ -1,148 +1,134 @@
-Return-Path: <bpf+bounces-17792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17789-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4D938127F2
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 07:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D25788127ED
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 07:27:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E5111F21A1E
-	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 06:28:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79B391F21B0F
+	for <lists+bpf@lfdr.de>; Thu, 14 Dec 2023 06:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F35C7D263;
-	Thu, 14 Dec 2023 06:28:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E863DD26E;
+	Thu, 14 Dec 2023 06:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ajXqj6/e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OLfCLKMV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1D4F4;
-	Wed, 13 Dec 2023 22:28:46 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id ca18e2360f4ac-7b45ab9e084so325200139f.2;
-        Wed, 13 Dec 2023 22:28:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702535325; x=1703140125; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lsGm+j7nwlGOQcDgyTd4xbThNMw0KWzAWGGOI0U9NQE=;
-        b=ajXqj6/eyuXW9Yvdyq1mzAlxNtyZ+Oq1xYBRrLe5mITwB3lO7mEWxLiaGqNTNyIVj+
-         T0eng5GwntVkJpNrM5InQMkmKE0SQrL4754u8NLuqIrDNOn+uuGB2KVbZSQqhcn2dkce
-         CJRyRtAxCxxuIrRbbZUWBMdh0mrvdwpSHu5SIFvP/SVOCmz3mTNOna5ufuF3n2kVn+Q0
-         Lzbm+K/S7ZCdBqgF6apWMt7zC6w462qwBHHP7OW/KmbrSPphQyiIwslZF1OCgI738zxm
-         N6TuvDd4uPNG3c6vmZqHfUKT7GgpiLoson7BVAxcvX/ljjgPHJuLW26cUfatKup3nR0t
-         aukQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702535325; x=1703140125;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lsGm+j7nwlGOQcDgyTd4xbThNMw0KWzAWGGOI0U9NQE=;
-        b=o4tMOSK0DVdKkboRAHDODeBiFjcl5o2jYpr8m0WN8gZLOv1TdlYpVF5rsnJy1DHpnJ
-         /wiu69b5oiHW8rQ76fuE0XEqsjv4phmvcRYneQa5wyvb8KdAK08KZZ+UEVw7KbK697Ek
-         WMfObou4Qj18FoyruWTdwz2ApznLythmFnHUSQ+ZyBBwRib2dYkc/H+IsbFZAzFOOEy9
-         ecE4HZJ6OZ81J+JlBgA9sLnH/+sF0yvrDk2TVSva23xWw8GN9G/BOYCeHj9PoSV22Kp9
-         IJZ0env/jkujnL/3tBzCLgfslimalVC7nQwYuz0ngTP2uqdgt382xv5h20Dy7+r6n2x/
-         XSuw==
-X-Gm-Message-State: AOJu0YyL5HYXcLBRG5ScM2OP/6p6EZDi9sEdXgO8hk8fVxEqJqfiRXhR
-	gx1Qo9y6DXUJBx25zMlEha0=
-X-Google-Smtp-Source: AGHT+IGlZg/DY0rf8exPQGNki32QDzNyU516U6ngtZG/Ojs4M0/ofTA4sp3X9XEO7x/gT3rDdLttWw==
-X-Received: by 2002:a05:6e02:1a44:b0:35d:59a2:332b with SMTP id u4-20020a056e021a4400b0035d59a2332bmr13251059ilv.47.1702535325386;
-        Wed, 13 Dec 2023 22:28:45 -0800 (PST)
-Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id z7-20020a63e107000000b005af08f65227sm10744770pgh.80.2023.12.13.22.28.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Dec 2023 22:28:45 -0800 (PST)
-From: Menglong Dong <menglong8.dong@gmail.com>
-To: andrii@kernel.org,
-	eddyz87@gmail.com,
-	yonghong.song@linux.dev
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	john.fastabend@gmail.com,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Menglong Dong <menglong8.dong@gmail.com>
-Subject: [PATCH bpf-next v3 2/2] selftests/bpf: activate the OP_NE login in range_cond()
-Date: Thu, 14 Dec 2023 14:24:34 +0800
-Message-Id: <20231214062434.3565630-3-menglong8.dong@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231214062434.3565630-1-menglong8.dong@gmail.com>
-References: <20231214062434.3565630-1-menglong8.dong@gmail.com>
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD4A610B;
+	Thu, 14 Dec 2023 06:27:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 262DDC433C8;
+	Thu, 14 Dec 2023 06:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702535264;
+	bh=jCIF91qtDA+ZEemkBo11x9McQ7w6uFe00P7r8p+aNPc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OLfCLKMVmfm4FvlW6f9rzDdFrIJXc9NVwo8lyjxEmGPCLKMB+q5s5r8p04kk5BMJM
+	 N5inpFK7IRJjGnWpMJx5ekByzFuldxl12CU/nxmV3pDAzTKssl7WNNNp9+kJ4YDXNt
+	 zi7UWJW6klo9/1YSSrL31LbUcOqA46d7whIOxM0PvDpa5WH5162jXd9OFTDCe4GNJD
+	 1aaYbKJjaUVKgc2oP4/Uw9s9+5BLEKn4p1ODIv2MweI08wA5yzyLPMJI734I8L1QrQ
+	 +4YBCzIRwhns3lqdHyWUK26IabO7QJ0Rglu4Vj1ppOyVL8X8iPcdNvdNAn6Avzc2GK
+	 DCd4l/otJcPnw==
+Message-ID: <ecf4ec04-4ed6-483c-8ffe-1fc319ee6aa4@kernel.org>
+Date: Wed, 13 Dec 2023 22:27:40 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v1 1/4] vsock/virtio: use skb_frag_page()
+ helper
+Content-Language: en-US
+To: Mina Almasry <almasrymina@google.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Michael Chan <michael.chan@broadcom.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>,
+ Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>,
+ NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
+ Shailend Chand <shailend@google.com>, Yisen Zhuang
+ <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
+ Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Marcin Wojtas <mw@semihalf.com>, Russell King <linux@armlinux.org.uk>,
+ Sunil Goutham <sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>,
+ Subbaraya Sundeep <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>,
+ Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+ Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>,
+ Lorenzo Bianconi <lorenzo@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Siddharth Vadapalli <s-vadapalli@ti.com>,
+ Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>,
+ Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou
+ <mengyuanlou@net-swift.com>, Ronak Doshi <doshir@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+ Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>,
+ Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi <stefanha@redhat.com>,
+ Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Jason Gunthorpe <jgg@nvidia.com>, Shakeel Butt <shakeelb@google.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-2-almasrymina@google.com>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20231214020530.2267499-2-almasrymina@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The edge range checking for the registers is supported by the verifier
-now, so we can activate the extended login in
-tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
-such logic.
+On 12/13/23 7:05 PM, Mina Almasry wrote:
+> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+> index af5bab1acee1..bd0b413dfa3f 100644
+> --- a/net/vmw_vsock/virtio_transport.c
+> +++ b/net/vmw_vsock/virtio_transport.c
+> @@ -153,7 +153,7 @@ virtio_transport_send_pkt_work(struct work_struct *work)
+>  				 * 'virt_to_phys()' later to fill the buffer descriptor.
+>  				 * We don't touch memory at "virtual" address of this page.
+>  				 */
+> -				va = page_to_virt(skb_frag->bv_page);
+> +				va = page_to_virt(skb_frag_page(skb_frag));
+>  				sg_init_one(sgs[out_sg],
+>  					    va + skb_frag->bv_offset,
 
-Besides, I added some cases to the "crafted_cases" array for this logic.
-These cases are mainly used to test the edge of the src reg and dst reg.
+offset should not be open coded either.
 
-Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
----
-v2:
-- add some cases to the "crafted_cases"
----
- .../selftests/bpf/prog_tests/reg_bounds.c     | 25 ++++++++++++++-----
- 1 file changed, 19 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-index 0c9abd279e18..53b8711cfd2d 100644
---- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-+++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-@@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x, struct range y,
- 		*newy = range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b));
- 		break;
- 	case OP_NE:
--		/* generic case, can't derive more information */
--		*newx = range(t, x.a, x.b);
--		*newy = range(t, y.a, y.b);
--		break;
--
--		/* below extended logic is not supported by verifier just yet */
-+		/* below logic is supported by the verifier now */
- 		if (x.a == x.b && x.a == y.a) {
- 			/* X is a constant matching left side of Y */
- 			*newx = range(t, x.a, x.b);
-@@ -2101,6 +2096,24 @@ static struct subtest_case crafted_cases[] = {
- 	{S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, 0}},
- 	{S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
- 	{S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
-+
-+	/* edge overlap testings for BPF_NE */
-+	{U64, U64, {1, 1}, {1, 0x80000000}},
-+	{U64, S64, {1, 1}, {1, 0x80000000}},
-+	{U64, U32, {1, 1}, {1, 0x80000000}},
-+	{U64, S32, {1, 1}, {1, 0x80000000}},
-+	{U64, U64, {0x80000000, 0x80000000}, {1, 0x80000000}},
-+	{U64, S64, {0x80000000, 0x80000000}, {1, 0x80000000}},
-+	{U64, U32, {0x80000000, 0x80000000}, {1, 0x80000000}},
-+	{U64, S32, {0x80000000, 0x80000000}, {1, 0x80000000}},
-+	{U64, U64, {1, 0x80000000}, {1, 1}},
-+	{U64, S64, {1, 0x80000000}, {1, 1}},
-+	{U64, U32, {1, 0x80000000}, {1, 1}},
-+	{U64, S32, {1, 0x80000000}, {1, 1}},
-+	{U64, U64, {1, 0x80000000}, {0x80000000, 0x80000000}},
-+	{U64, S64, {1, 0x80000000}, {0x80000000, 0x80000000}},
-+	{U64, U32, {1, 0x80000000}, {0x80000000, 0x80000000}},
-+	{U64, S32, {1, 0x80000000}, {0x80000000, 0x80000000}},
- };
- 
- /* Go over crafted hard-coded cases. This is fast, so we do it as part of
--- 
-2.39.2
+>  					    skb_frag->bv_len);
 
 
