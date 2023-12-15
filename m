@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-17919-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E9D813F0F
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 02:14:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40C99813F0C
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 02:14:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514A91C22034
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 01:14:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A044FB21F30
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 01:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F22E7EA;
-	Fri, 15 Dec 2023 01:14:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7AEA624;
+	Fri, 15 Dec 2023 01:13:56 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B193A624
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 01:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280147E4
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 01:13:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
 Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BF0eIa2026727
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 17:14:02 -0800
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BF0eREL027647
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 17:13:54 -0800
 Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3v0cf8r6h7-12
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3v0cf8r6h5-3
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 17:14:01 -0800
-Received: from twshared19681.14.frc2.facebook.com (2620:10d:c0a8:1c::1b) by
- mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 17:13:54 -0800
+Received: from twshared10507.42.prn1.facebook.com (2620:10d:c0a8:1c::11) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 14 Dec 2023 17:13:56 -0800
+ 15.1.2507.34; Thu, 14 Dec 2023 17:13:51 -0800
 Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 967DC3D2CCF03; Thu, 14 Dec 2023 17:13:45 -0800 (PST)
+	id A4DFD3D2CCF2E; Thu, 14 Dec 2023 17:13:47 -0800 (PST)
 From: Andrii Nakryiko <andrii@kernel.org>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
         <martin.lau@kernel.org>
 CC: <andrii@kernel.org>, <kernel-team@meta.com>,
         Eduard Zingerman
 	<eddyz87@gmail.com>
-Subject: [PATCH v3 bpf-next 05/10] bpf: reuse subprog argument parsing logic for subprog call checks
-Date: Thu, 14 Dec 2023 17:13:29 -0800
-Message-ID: <20231215011334.2307144-6-andrii@kernel.org>
+Subject: [PATCH v3 bpf-next 06/10] bpf: support 'arg:xxx' btf_decl_tag-based hints for global subprog args
+Date: Thu, 14 Dec 2023 17:13:30 -0800
+Message-ID: <20231215011334.2307144-7-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231215011334.2307144-1-andrii@kernel.org>
 References: <20231215011334.2307144-1-andrii@kernel.org>
@@ -54,206 +54,181 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 4zfa1f1V8oivK5-qF7i9oMrV4Q39xZIP
-X-Proofpoint-GUID: 4zfa1f1V8oivK5-qF7i9oMrV4Q39xZIP
+X-Proofpoint-ORIG-GUID: Vvv0eX0-nSzSBQRVCwQQXZTh3m8hS0UY
+X-Proofpoint-GUID: Vvv0eX0-nSzSBQRVCwQQXZTh3m8hS0UY
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-14_17,2023-12-14_01,2023-05-22_02
 
-Remove duplicated BTF parsing logic when it comes to subprog call check.
-Instead, use (potentially cached) results of btf_prepare_func_args() to
-abstract away expectations of each subprog argument in generic terms
-(e.g., "this is pointer to context", or "this is a pointer to memory of
-size X"), and then use those simple high-level argument type
-expectations to validate actual register states to check if they match
-expectations.
+Add support for annotating global BPF subprog arguments to provide more
+information about expected semantics of the argument. Currently,
+verifier relies purely on argument's BTF type information, and supports
+three general use cases: scalar, pointer-to-context, and
+pointer-to-fixed-size-memory.
+
+Scalar and pointer-to-fixed-mem work well in practice and are quite
+natural to use. But pointer-to-context is a bit problematic, as typical
+BPF users don't realize that they need to use a special type name to
+signal to verifier that argument is not just some pointer, but actually
+a PTR_TO_CTX. Further, even if users do know which type to use, it is
+limiting in situations where the same BPF program logic is used across
+few different program types. Common case is kprobes, tracepoints, and
+perf_event programs having a helper to send some data over BPF perf
+buffer. bpf_perf_event_output() requires `ctx` argument, and so it's
+quite cumbersome to share such global subprog across few BPF programs of
+different types, necessitating extra static subprog that is context
+type-agnostic.
+
+Long story short, there is a need to go beyond types and allow users to
+add hints to global subprog arguments to define expectations.
+
+This patch adds such support for two initial special tags:
+  - pointer to context;
+  - non-null qualifier for generic pointer arguments.
+
+All of the above came up in practice already and seem generally useful
+additions. Non-null qualifier is an often requested feature, which
+currently has to be worked around by having unnecessary NULL checks
+inside subprogs even if we know that arguments are never NULL. Pointer
+to context was discussed earlier.
+
+As for implementation, we utilize btf_decl_tag attribute and set up an
+"arg:xxx" convention to specify argument hint. As such:
+  - btf_decl_tag("arg:ctx") is a PTR_TO_CTX hint;
+  - btf_decl_tag("arg:nonnull") marks pointer argument as not allowed to
+    be NULL, making NULL check inside global subprog unnecessary.
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/verifier.c                         | 110 +++++-------------
- .../selftests/bpf/progs/test_global_func5.c   |   2 +-
- 2 files changed, 31 insertions(+), 81 deletions(-)
+ kernel/bpf/btf.c      | 44 +++++++++++++++++++++++++++++++++++++------
+ kernel/bpf/verifier.c |  5 ++++-
+ 2 files changed, 42 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b5237ddb00bf..612e76a1034d 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9256,101 +9256,54 @@ static int setup_func_entry(struct bpf_verifier_=
-env *env, int subprog, int calls
- 	return err;
- }
-=20
--static int btf_check_func_arg_match(struct bpf_verifier_env *env,
--				    const struct btf *btf, u32 func_id,
--				    struct bpf_reg_state *regs,
--				    bool ptr_to_mem_ok)
-+static int btf_check_func_arg_match(struct bpf_verifier_env *env, int su=
-bprog,
-+				    const struct btf *btf,
-+				    struct bpf_reg_state *regs)
- {
--	enum bpf_prog_type prog_type =3D resolve_prog_type(env->prog);
-+	struct bpf_subprog_info *sub =3D subprog_info(env, subprog);
- 	struct bpf_verifier_log *log =3D &env->log;
--	const char *func_name, *ref_tname;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 341811bcca53..c0fc8977be97 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6782,7 +6782,7 @@ int btf_prepare_func_args(struct bpf_verifier_env *=
+env, int subprog)
+ 	enum bpf_prog_type prog_type =3D prog->type;
+ 	struct btf *btf =3D prog->aux->btf;
+ 	const struct btf_param *args;
 -	const struct btf_type *t, *ref_t;
--	const struct btf_param *args;
--	u32 i, nargs, ref_id;
-+	u32 i;
- 	int ret;
++	const struct btf_type *t, *ref_t, *fn_t;
+ 	u32 i, nargs, btf_id;
+ 	const char *tname;
 =20
--	t =3D btf_type_by_id(btf, func_id);
--	if (!t || !btf_type_is_func(t)) {
--		/* These checks were already done by the verifier while loading
--		 * struct bpf_func_info or in add_kfunc_call().
--		 */
--		bpf_log(log, "BTF of func_id %u doesn't point to KIND_FUNC\n",
--			func_id);
--		return -EFAULT;
--	}
--	func_name =3D btf_name_by_offset(btf, t->name_off);
--
--	t =3D btf_type_by_id(btf, t->type);
--	if (!t || !btf_type_is_func_proto(t)) {
--		bpf_log(log, "Invalid BTF of func %s\n", func_name);
--		return -EFAULT;
--	}
--	args =3D (const struct btf_param *)(t + 1);
--	nargs =3D btf_type_vlen(t);
--	if (nargs > MAX_BPF_FUNC_REG_ARGS) {
--		bpf_log(log, "Function %s has %d > %d args\n", func_name, nargs,
--			MAX_BPF_FUNC_REG_ARGS);
--		return -EINVAL;
--	}
-+	ret =3D btf_prepare_func_args(env, subprog);
-+	if (ret)
-+		return ret;
-=20
- 	/* check that BTF function arguments match actual types that the
- 	 * verifier sees.
- 	 */
--	for (i =3D 0; i < nargs; i++) {
--		enum bpf_arg_type arg_type =3D ARG_DONTCARE;
-+	for (i =3D 0; i < sub->arg_cnt; i++) {
- 		u32 regno =3D i + 1;
- 		struct bpf_reg_state *reg =3D &regs[regno];
-+		struct bpf_subprog_arg_info *arg =3D &sub->args[i];
-=20
--		t =3D btf_type_skip_modifiers(btf, args[i].type, NULL);
--		if (btf_type_is_scalar(t)) {
--			if (reg->type =3D=3D SCALAR_VALUE)
--				continue;
--			bpf_log(log, "R%d is not a scalar\n", regno);
--			return -EINVAL;
--		}
--
--		if (!btf_type_is_ptr(t)) {
--			bpf_log(log, "Unrecognized arg#%d type %s\n",
--				i, btf_type_str(t));
--			return -EINVAL;
--		}
--
--		ref_t =3D btf_type_skip_modifiers(btf, t->type, &ref_id);
--		ref_tname =3D btf_name_by_offset(btf, ref_t->name_off);
--
--		ret =3D check_func_arg_reg_off(env, reg, regno, arg_type);
--		if (ret < 0)
--			return ret;
--
--		if (btf_get_prog_ctx_type(log, btf, t, prog_type, i)) {
-+		if (arg->arg_type =3D=3D ARG_ANYTHING) {
-+			if (reg->type !=3D SCALAR_VALUE) {
-+				bpf_log(log, "R%d is not a scalar\n", regno);
-+				return -EINVAL;
-+			}
-+		} else if (arg->arg_type =3D=3D ARG_PTR_TO_CTX) {
-+			ret =3D check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
-+			if (ret < 0)
-+				return ret;
- 			/* If function expects ctx type in BTF check that caller
- 			 * is passing PTR_TO_CTX.
- 			 */
- 			if (reg->type !=3D PTR_TO_CTX) {
--				bpf_log(log,
--					"arg#%d expected pointer to ctx, but got %s\n",
--					i, btf_type_str(t));
--				return -EINVAL;
--			}
--		} else if (ptr_to_mem_ok) {
--			const struct btf_type *resolve_ret;
--			u32 type_size;
--
--			resolve_ret =3D btf_resolve_size(btf, ref_t, &type_size);
--			if (IS_ERR(resolve_ret)) {
--				bpf_log(log,
--					"arg#%d reference type('%s %s') size cannot be determined: %ld\n",
--					i, btf_type_str(ref_t), ref_tname,
--					PTR_ERR(resolve_ret));
-+				bpf_log(log, "arg#%d expects pointer to ctx\n", i);
- 				return -EINVAL;
- 			}
-+		} else if (base_type(arg->arg_type) =3D=3D ARG_PTR_TO_MEM) {
-+			ret =3D check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
-+			if (ret < 0)
-+				return ret;
-=20
--			if (check_mem_reg(env, reg, regno, type_size))
-+			if (check_mem_reg(env, reg, regno, arg->mem_size))
- 				return -EINVAL;
- 		} else {
--			bpf_log(log, "reg type unsupported for arg#%d function %s#%d\n", i,
--				func_name, func_id);
--			return -EINVAL;
-+			bpf_log(log, "verifier bug: unrecognized arg#%d type %d\n",
-+				i, arg->arg_type);
-+			return -EFAULT;
- 		}
+@@ -6802,8 +6802,8 @@ int btf_prepare_func_args(struct bpf_verifier_env *=
+env, int subprog)
+ 		return -EFAULT;
  	}
 =20
-@@ -9365,11 +9318,10 @@ static int btf_check_func_arg_match(struct bpf_ve=
-rifier_env *env,
-  * Only PTR_TO_CTX and SCALAR_VALUE states are recognized.
-  */
- static int btf_check_subprog_call(struct bpf_verifier_env *env, int subp=
-rog,
--			          struct bpf_reg_state *regs)
-+				  struct bpf_reg_state *regs)
- {
- 	struct bpf_prog *prog =3D env->prog;
- 	struct btf *btf =3D prog->aux->btf;
--	bool is_global;
- 	u32 btf_id;
- 	int err;
+-	t =3D btf_type_by_id(btf, btf_id);
+-	if (!t || !btf_type_is_func(t)) {
++	fn_t =3D btf_type_by_id(btf, btf_id);
++	if (!fn_t || !btf_type_is_func(fn_t)) {
+ 		/* These checks were already done by the verifier while loading
+ 		 * struct bpf_func_info
+ 		 */
+@@ -6811,7 +6811,7 @@ int btf_prepare_func_args(struct bpf_verifier_env *=
+env, int subprog)
+ 			subprog);
+ 		return -EFAULT;
+ 	}
+-	tname =3D btf_name_by_offset(btf, t->name_off);
++	tname =3D btf_name_by_offset(btf, fn_t->name_off);
 =20
-@@ -9383,9 +9335,7 @@ static int btf_check_subprog_call(struct bpf_verifi=
-er_env *env, int subprog,
- 	if (prog->aux->func_info_aux[subprog].unreliable)
+ 	if (prog->aux->func_info_aux[subprog].unreliable) {
+ 		bpf_log(log, "Verifier bug in function %s()\n", tname);
+@@ -6820,7 +6820,7 @@ int btf_prepare_func_args(struct bpf_verifier_env *=
+env, int subprog)
+ 	if (prog_type =3D=3D BPF_PROG_TYPE_EXT)
+ 		prog_type =3D prog->aux->dst_prog->type;
+=20
+-	t =3D btf_type_by_id(btf, t->type);
++	t =3D btf_type_by_id(btf, fn_t->type);
+ 	if (!t || !btf_type_is_func_proto(t)) {
+ 		bpf_log(log, "Invalid type of function %s()\n", tname);
+ 		return -EFAULT;
+@@ -6846,7 +6846,35 @@ int btf_prepare_func_args(struct bpf_verifier_env =
+*env, int subprog)
+ 	 * Only PTR_TO_CTX and SCALAR are supported atm.
+ 	 */
+ 	for (i =3D 0; i < nargs; i++) {
++		bool is_nonnull =3D false;
++		const char *tag;
++
+ 		t =3D btf_type_by_id(btf, args[i].type);
++
++		tag =3D btf_find_decl_tag_value(btf, fn_t, i, "arg:");
++		if (IS_ERR(tag) && PTR_ERR(tag) =3D=3D -ENOENT) {
++			tag =3D NULL;
++		} else if (IS_ERR(tag)) {
++			bpf_log(log, "arg#%d type's tag fetching failure: %ld\n", i, PTR_ERR(=
+tag));
++			return PTR_ERR(tag);
++		}
++		/* 'arg:<tag>' decl_tag takes precedence over derivation of
++		 * register type from BTF type itself
++		 */
++		if (tag) {
++			/* disallow arg tags in static subprogs */
++			if (!is_global) {
++				bpf_log(log, "arg#%d type tag is not supported in static functions\n=
+", i);
++				return -EOPNOTSUPP;
++			}
++			if (strcmp(tag, "ctx") =3D=3D 0) {
++				sub->args[i].arg_type =3D ARG_PTR_TO_CTX;
++				continue;
++			}
++			if (strcmp(tag, "nonnull") =3D=3D 0)
++				is_nonnull =3D true;
++		}
++
+ 		while (btf_type_is_modifier(t))
+ 			t =3D btf_type_by_id(btf, t->type);
+ 		if (btf_type_is_int(t) || btf_is_any_enum(t)) {
+@@ -6870,10 +6898,14 @@ int btf_prepare_func_args(struct bpf_verifier_env=
+ *env, int subprog)
+ 				return -EINVAL;
+ 			}
+=20
+-			sub->args[i].arg_type =3D ARG_PTR_TO_MEM_OR_NULL;
++			sub->args[i].arg_type =3D is_nonnull ? ARG_PTR_TO_MEM : ARG_PTR_TO_ME=
+M_OR_NULL;
+ 			sub->args[i].mem_size =3D mem_size;
+ 			continue;
+ 		}
++		if (is_nonnull) {
++			bpf_log(log, "arg#%d marked as non-null, but is not a pointer type\n"=
+, i);
++			return -EINVAL;
++		}
+ 		bpf_log(log, "Arg#%d type %s in %s() is not supported yet.\n",
+ 			i, btf_type_str(t), tname);
  		return -EINVAL;
-=20
--	is_global =3D prog->aux->func_info_aux[subprog].linkage =3D=3D BTF_FUNC=
-_GLOBAL;
--	err =3D btf_check_func_arg_match(env, btf, btf_id, regs, is_global);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 612e76a1034d..e64210d8c617 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -9297,9 +9297,12 @@ static int btf_check_func_arg_match(struct bpf_ver=
+ifier_env *env, int subprog,
+ 			ret =3D check_func_arg_reg_off(env, reg, regno, ARG_DONTCARE);
+ 			if (ret < 0)
+ 				return ret;
 -
-+	err =3D btf_check_func_arg_match(env, subprog, btf, regs);
- 	/* Compiler optimizations can remove arguments from static functions
- 	 * or mismatched type can be passed into a global function.
- 	 * In such cases mark the function as unreliable from BTF point of view=
-.
-diff --git a/tools/testing/selftests/bpf/progs/test_global_func5.c b/tool=
-s/testing/selftests/bpf/progs/test_global_func5.c
-index cc55aedaf82d..257c0569ff98 100644
---- a/tools/testing/selftests/bpf/progs/test_global_func5.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_func5.c
-@@ -26,7 +26,7 @@ int f3(int val, struct __sk_buff *skb)
- }
-=20
- SEC("tc")
--__failure __msg("expected pointer to ctx, but got PTR")
-+__failure __msg("expects pointer to ctx")
- int global_func5(struct __sk_buff *skb)
- {
- 	return f1(skb) + f2(2, skb) + f3(3, skb);
+ 			if (check_mem_reg(env, reg, regno, arg->mem_size))
+ 				return -EINVAL;
++			if (!(arg->arg_type & PTR_MAYBE_NULL) && (reg->type & PTR_MAYBE_NULL)=
+) {
++				bpf_log(log, "arg#%d is expected to be non-NULL\n", i);
++				return -EINVAL;
++			}
+ 		} else {
+ 			bpf_log(log, "verifier bug: unrecognized arg#%d type %d\n",
+ 				i, arg->arg_type);
 --=20
 2.34.1
 
