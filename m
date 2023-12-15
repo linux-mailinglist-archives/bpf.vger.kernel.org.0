@@ -1,141 +1,144 @@
-Return-Path: <bpf+bounces-17924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17925-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62FF8813F1B
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 02:20:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA13813F26
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 02:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBDD01F22CE6
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 01:20:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C511228382D
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 01:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10382650;
-	Fri, 15 Dec 2023 01:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A690B10EC;
+	Fri, 15 Dec 2023 01:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGkDmbZg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lKHmABRP"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947E236F
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 01:20:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 146C8C433C8;
-	Fri, 15 Dec 2023 01:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702603224;
-	bh=IR7rJ5syJepctSquiJfAfXTLyeEhyoANRGxLZuKj5wM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=fGkDmbZgI3yrWuSwR8d63t1FT1m+syKdnWug/7dhiDsNyodcBAYNgksdZ4tqlFVIM
-	 yb5bnCGuFMz4855gELlR4rKgTpHfkhOpLvSkRmqM2KWohXVYoUP0IciqbmQB04qLQi
-	 y6emgPKHtd0Uc5g6GWLNd/mOVqh/RRYyWrfBWleKoMANcx8HGu4s0CbTdBUu1kfuea
-	 uvJMnk6eaFPDh/fyvPghq5+U2SPvmLW1x0azhTJfuOs48fr9KjzScJcdvdQGfytDBV
-	 iTg2eQuogpcNnanQ8/ljDKstrO6PEsN9GW9GYVlfZVtHgeFL34oAJJld+jiICottwv
-	 Ltbty96iMiAeg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F1E74DD4EF9;
-	Fri, 15 Dec 2023 01:20:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94485ED4;
+	Fri, 15 Dec 2023 01:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-40c3ca9472dso1807475e9.2;
+        Thu, 14 Dec 2023 17:24:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702603484; x=1703208284; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sFwupamHMRnoWcSsE7g89K86fdj1VPwLpTC2Tjqs9Fs=;
+        b=lKHmABRPAI0PF4Svtm1EB1JvaSYirB79hgRGNACxXQ9cUJBYVXcdMWUy0tgpfT0LkU
+         r5BBAXk77j2EOyPxCoZY8TVpCUFrT5/mCilIcfYTw4jFHRbkzZ4emO6Nq+XngiAaEnrN
+         rdygUWx6wVOXuQD16VdBQTPnEk06CYvUV3XleZaxuNwinnUjn2yDczER9YPiXxVcJhSp
+         4ISgvpots9ECwlzv7xWooSCVhp7t6gE2i3GqdUX0Dm4ufyFM0jUj8HdSzfNN5yaMurJr
+         03gDFwX6kTzna8Lqryh/NCapEtbanwTzS0MWt/IUG1GuBSJnIsE5ZC/xdYB5HGA5oVZc
+         L8dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702603484; x=1703208284;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sFwupamHMRnoWcSsE7g89K86fdj1VPwLpTC2Tjqs9Fs=;
+        b=r9NxM+r78QQcsfgtfgZcEORjDL8fzl/h0ipla7XXIg9/D5lILqodPsqQpMFejIybgb
+         oLSQwUtF/IfwrCsUXglgnxbA9/wF5Tz7nyfh6UDiTYusOw3BXJW/KrJ9G9fEsfE+9eqw
+         l/AJ2IOdVbH8rWtU4hgiLFJjt+FqoloCE1N5ohgezeuC5tQjkEpyTnA9R0HB23STVxY2
+         ngNw1dk8d98+I4X0f4ww63IT2ZYGTY+P3Cggt5GxDRZaMHNLELjYZkQzEoct8Kz+8LHb
+         JmnQMfu7u1ZdVMvOsuc5tTzAU3p2n9WMVGPyMbYoObSy424xHQjd0+FCr5DRtOVogr0X
+         nrnQ==
+X-Gm-Message-State: AOJu0Yyyfwv66dxyoDh4oIHbUfUCW5CbvGHqGjBqxR3dBLNu3Jk1DLjZ
+	R1/z9JeyGpzu2uX7avPP34k=
+X-Google-Smtp-Source: AGHT+IF4RorCrtD+nwnHuisDKmQUg8rH8eyhl/Hl06c/bnhz7967oSmRICUzsaexW0gE+RKEQuWjwA==
+X-Received: by 2002:a1c:4b05:0:b0:40b:5e1a:db92 with SMTP id y5-20020a1c4b05000000b0040b5e1adb92mr3762342wma.51.1702603483768;
+        Thu, 14 Dec 2023 17:24:43 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id j17-20020a05600c1c1100b0040b48690c49sm26950842wms.6.2023.12.14.17.24.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Dec 2023 17:24:43 -0800 (PST)
+Message-ID: <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, Linux Kernel Mailing
+ List <linux-kernel@vger.kernel.org>
+Date: Fri, 15 Dec 2023 03:24:42 +0200
+In-Reply-To: <526d4ac8f6788d3323d29fdbad0e0e5d09a534db.camel@gmail.com>
+References: 
+	<CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+	 <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+	 <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+	 <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+	 <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
+	 <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+	 <73d021e3f77161668aae833e478b210ed5cd2f4d.camel@gmail.com>
+	 <CAEf4BzYuV3odyj8A77ZW8H9jyx_YLhAkSiM+1hkvtH=OYcHL3w@mail.gmail.com>
+	 <526d4ac8f6788d3323d29fdbad0e0e5d09a534db.camel@gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=mQGNBGKNNQEBDACwcUNXZOGTzn4rr7Sd18SA5Wv0Wna/ONE0ZwZEx+sIjyGrPOIhR14/DsOr3ZJer9UJ/WAJwbxOBj6E5Y2iF7grehljNbLr/jMjzPJ+hJpfOEAb5xjCB8xIqDoric1WRcCaRB+tDSk7jcsIIiMish0diTK3qTdu4MB6i/sh4aeFs2nifkNi3LdBuk8Xnk+RJHRoKFJ+C+EoSmQPuDQIRaF9N2m4yO0eG36N8jLwvUXnZzGvHkphoQ9ztbRJp58oh6xT7uH62m98OHbsVgzYKvHyBu/IU2ku5kVG9pLrFp25xfD4YdlMMkJH6l+jk+cpY0cvMTS1b6/g+1fyPM+uzD8Wy+9LtZ4PHwLZX+t4ONb/48i5AKq/jSsb5HWdciLuKEwlMyFAihZamZpEj+9n91NLPX4n7XeThXHaEvaeVVl4hfW/1Qsao7l1YjU/NCHuLaDeH4U1P59bagjwo9d1n5/PESeuD4QJFNqW+zkmE4tmyTZ6bPV6T5xdDRHeiITGc00AEQEAAbQkRWR1YXJkIFppbmdlcm1hbiA8ZWRkeXo4N0BnbWFpbC5jb20+iQHUBBMBCgA+FiEEx+6LrjApQyqnXCYELgxleklgRAkFAmKNNQECGwMFCQPCZwAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQLgxleklgRAlWZAv/cJ5v3zlEyP0/jMKQBqbVCCHTirPEw+nqxbkeSO6r2FUds0NnGA9a6NPOpBH+qW7a6+n6q3sIbvH7jlss4pzLI7LYlDC6z+egTv7KR5X1xFrY1uR5UGs1beAjnzYeV2hK4yqRUfygsT0Wk5e4FiNBv4+DUZ8r0cNDkO6swJxU55DO21mcteC147+4aDoHZ40R0tsAu+brDGSSoOPpb0RWVsEf9XOBJqWWA+T7mluw
+ nYzhLWGcczc6J71q1Dje0l5vIPaSFOgwmWD4DA+WvuxM/shH4rtWeodbv iCTce6yYIygHgUAtJcHozAlgRrL0jz44cggBTcoeXp/atckXK546OugZPnl00J3qmm5uWAznU6T5YDv2vCvAMEbz69ib+kHtnOSBvR0Jb86UZZqSb4ATfwMOWe9htGTjKMb0QQOLK0mTcrk/TtymaG+T4Fsos0kgrxqjgfrxxEhYcVNW8v8HISmFGFbqsJmFbVtgk68BcU0wgF8oFxo7u+XYQDdKbI1uQGNBGKNNQEBDADbQIdo8L3sdSWGQtu+LnFqCZoAbYurZCmUjLV3df1b+sg+GJZvVTmMZnzDP/ADufcbjopBBjGTRAY4L76T2niu2EpjclMMM3mtrOc738Kr3+RvPjUupdkZ1ZEZaWpf4cZm+4wH5GUfyu5pmD5WXX2i1r9XaUjeVtebvbuXWmWI1ZDTfOkiz/6Z0GDSeQeEqx2PXYBcepU7S9UNWttDtiZ0+IH4DZcvyKPUcK3tOj4u8GvO3RnOrglERzNCM/WhVdG1+vgU9fXO83TB/PcfAsvxYSie7u792s/I+yA4XKKh82PSTvTzg2/4vEDGpI9yubkfXRkQN28w+HKF5qoRB8/L1ZW/brlXkNzA6SveJhCnH7aOF0Yezl6TfX27w1CW5Xmvfi7X33V/SPvo0tY1THrO1c+bOjt5F+2/K3tvejmXMS/I6URwa8n1e767y5ErFKyXAYRweE9zarEgpNZTuSIGNNAqK+SiLLXt51G7P30TVavIeB6s2lCt1QKt62ccLqUAEQEAAYkBvAQYAQoAJhYhBMfui64wKUMqp1wmBC4MZXpJYEQJBQJijTUBAhsMBQkDwmcAAAoJEC4MZXpJYEQJkRAMAKNvWVwtXm/WxWoiLnXyF2WGXKoDe5+itTLvBmKcV/b1OKZF1s90V7WfSBz712eFAynEzyeezPbwU8QBiTpZcHXwQni3IYKvsh7s
+ t1iq+gsfnXbPz5AnS598ScZI1oP7OrPSFJkt/z4acEbOQDQs8aUqrd46PV jsdqGvKnXZxzylux29UTNby4jTlz9pNJM+wPrDRmGfchLDUmf6CffaUYCbu4FiId+9+dcTCDvxbABRy1C3OJ8QY7cxfJ+pEZW18fRJ0XCl/fiV/ecAOfB3HsqgTzAn555h0rkFgay0hAvMU/mAW/CFNSIxV397zm749ZNLA0L2dMy1AKuOqH+/B+/ImBfJMDjmdyJQ8WU/OFRuGLdqOd2oZrA1iuPIa+yUYyZkaZfz/emQwpIL1+Q4p1R/OplA4yc301AqruXXUcVDbEB+joHW3hy5FwK5t5OwTKatrSJBkydSF9zdXy98fYzGniRyRA65P0Ix/8J3BYB4edY2/w0Ip/mdYsYQljBY0A==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v6 1/2] bpf: Fix a race condition between btf_put()
- and map_free()
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170260322398.10731.15714047011878677066.git-patchwork-notify@kernel.org>
-Date: Fri, 15 Dec 2023 01:20:23 +0000
-References: <20231214203815.1469107-1-yonghong.song@linux.dev>
-In-Reply-To: <20231214203815.1469107-1-yonghong.song@linux.dev>
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kernel-team@fb.com, martin.lau@kernel.org,
- houtao@huaweicloud.com
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Thu, 14 Dec 2023 12:38:15 -0800 you wrote:
-> When running `./test_progs -j` in my local vm with latest kernel,
-> I once hit a kasan error like below:
-> 
->   [ 1887.184724] BUG: KASAN: slab-use-after-free in bpf_rb_root_free+0x1f8/0x2b0
->   [ 1887.185599] Read of size 4 at addr ffff888106806910 by task kworker/u12:2/2830
->   [ 1887.186498]
->   [ 1887.186712] CPU: 3 PID: 2830 Comm: kworker/u12:2 Tainted: G           OEL     6.7.0-rc3-00699-g90679706d486-dirty #494
->   [ 1887.188034] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
->   [ 1887.189618] Workqueue: events_unbound bpf_map_free_deferred
->   [ 1887.190341] Call Trace:
->   [ 1887.190666]  <TASK>
->   [ 1887.190949]  dump_stack_lvl+0xac/0xe0
->   [ 1887.191423]  ? nf_tcp_handle_invalid+0x1b0/0x1b0
->   [ 1887.192019]  ? panic+0x3c0/0x3c0
->   [ 1887.192449]  print_report+0x14f/0x720
->   [ 1887.192930]  ? preempt_count_sub+0x1c/0xd0
->   [ 1887.193459]  ? __virt_addr_valid+0xac/0x120
->   [ 1887.194004]  ? bpf_rb_root_free+0x1f8/0x2b0
->   [ 1887.194572]  kasan_report+0xc3/0x100
->   [ 1887.195085]  ? bpf_rb_root_free+0x1f8/0x2b0
->   [ 1887.195668]  bpf_rb_root_free+0x1f8/0x2b0
->   [ 1887.196183]  ? __bpf_obj_drop_impl+0xb0/0xb0
->   [ 1887.196736]  ? preempt_count_sub+0x1c/0xd0
->   [ 1887.197270]  ? preempt_count_sub+0x1c/0xd0
->   [ 1887.197802]  ? _raw_spin_unlock+0x1f/0x40
->   [ 1887.198319]  bpf_obj_free_fields+0x1d4/0x260
->   [ 1887.198883]  array_map_free+0x1a3/0x260
->   [ 1887.199380]  bpf_map_free_deferred+0x7b/0xe0
->   [ 1887.199943]  process_scheduled_works+0x3a2/0x6c0
->   [ 1887.200549]  worker_thread+0x633/0x890
->   [ 1887.201047]  ? __kthread_parkme+0xd7/0xf0
->   [ 1887.201574]  ? kthread+0x102/0x1d0
->   [ 1887.202020]  kthread+0x1ab/0x1d0
->   [ 1887.202447]  ? pr_cont_work+0x270/0x270
->   [ 1887.202954]  ? kthread_blkcg+0x50/0x50
->   [ 1887.203444]  ret_from_fork+0x34/0x50
->   [ 1887.203914]  ? kthread_blkcg+0x50/0x50
->   [ 1887.204397]  ret_from_fork_asm+0x11/0x20
->   [ 1887.204913]  </TASK>
->   [ 1887.204913]  </TASK>
->   [ 1887.205209]
->   [ 1887.205416] Allocated by task 2197:
->   [ 1887.205881]  kasan_set_track+0x3f/0x60
->   [ 1887.206366]  __kasan_kmalloc+0x6e/0x80
->   [ 1887.206856]  __kmalloc+0xac/0x1a0
->   [ 1887.207293]  btf_parse_fields+0xa15/0x1480
->   [ 1887.207836]  btf_parse_struct_metas+0x566/0x670
->   [ 1887.208387]  btf_new_fd+0x294/0x4d0
->   [ 1887.208851]  __sys_bpf+0x4ba/0x600
->   [ 1887.209292]  __x64_sys_bpf+0x41/0x50
->   [ 1887.209762]  do_syscall_64+0x4c/0xf0
->   [ 1887.210222]  entry_SYSCALL_64_after_hwframe+0x63/0x6b
->   [ 1887.210868]
->   [ 1887.211074] Freed by task 36:
->   [ 1887.211460]  kasan_set_track+0x3f/0x60
->   [ 1887.211951]  kasan_save_free_info+0x28/0x40
->   [ 1887.212485]  ____kasan_slab_free+0x101/0x180
->   [ 1887.213027]  __kmem_cache_free+0xe4/0x210
->   [ 1887.213514]  btf_free+0x5b/0x130
->   [ 1887.213918]  rcu_core+0x638/0xcc0
->   [ 1887.214347]  __do_softirq+0x114/0x37e
-> 
+On Fri, 2023-12-15 at 02:49 +0200, Eduard Zingerman wrote:
+> On Thu, 2023-12-14 at 16:06 -0800, Andrii Nakryiko wrote:
 > [...]
+> > If you agree with the analysis, we can start discussing what's the
+> > best way to fix this.
+>=20
+> Ok, yeap, I agree with you.=20
+> Backtracker marks both registers in 'if' statement if one of them is
+> tracked, but r8 is not marked at block entry and we miss r0.
 
-Here is the summary with links:
-  - [bpf-next,v6,1/2] bpf: Fix a race condition between btf_put() and map_free()
-    https://git.kernel.org/bpf/bpf-next/c/59e5791f59dd
-  - [bpf-next,v6,2/2] selftests/bpf: Remove flaky test_btf_id test
-    https://git.kernel.org/bpf/bpf-next/c/56925f389e15
+The brute-force solution is to keep a special mask for each
+conditional jump in jump history. In this mask, mark all registers and
+stack slots that gained range because of find_equal_scalars() executed
+for this conditional jump. Use this mask to extend precise registers set.
+However, such mask would be prohibitively large: (10+64)*8 bits.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+---
 
+Here is an option that would fix the test in question, but I'm not
+sure if it covers all cases:
+1. At the last instruction of each state (first instruction to be
+   backtracked) we know the set of IDs that should be tracked for
+   precision, as currently marked by mark_precise_scalar_ids().
+2. In jump history we can record IDs for src and dst registers when new
+   entry is pushed.
+3. While backtracking 'if' statement, if one of the recorded IDs is in
+   the set identified at (1), add src/dst regs to precise registers set.
 
+E.g. for the test-case at hand:
+
+  0: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+  1: (bf) r7 =3D r0                       ; R0=3Dscalar(id=3D1) R7_w=3Dscal=
+ar(id=3D1)
+  2: (bf) r8 =3D r0                       ; R0=3Dscalar(id=3D1) R8_w=3Dscal=
+ar(id=3D1)
+  3: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+  --- checkpoint #1 r7.id =3D 1, r8.id =3D 1 ---
+  4: (25) if r0 > 0x1 goto pc+0         ; R0=3Dscalar(smin=3Dsmin32=3D0,sma=
+x=3Dumax=3Dsmax32=3Dumax32=3D1,...)
+  --- checkpoint #2 r7.id =3D 1, r8.id =3D 1 ---
+  5: (3d) if r8 >=3D r0 goto pc+3         ; R0=3D1 R8=3D0 | record r8.id=3D=
+1 in jump history
+  6: (0f) r8 +=3D r8                      ; R8=3D0
+  --- checkpoint #3 r7.id =3D 1, r8.id =3D 0 ---
+  7: (15) if r7 =3D=3D 0x0 goto pc+1
+
+The precise set for checkpoint #3 state is {1}.
+When insn (5) is backtracked r8.id would be in jump history and in
+"precise set" =3D> r8 and r0 would be added to backtracker state.
+
+But this seems a bit ad-hoc.
 
