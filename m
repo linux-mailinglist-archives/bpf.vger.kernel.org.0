@@ -1,132 +1,158 @@
-Return-Path: <bpf+bounces-17979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17972-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CD83814490
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 10:35:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC10814455
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 10:16:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08350281D68
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 09:35:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1BAA1C2295D
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 09:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24C63250F3;
-	Fri, 15 Dec 2023 09:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7617117739;
+	Fri, 15 Dec 2023 09:16:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HnOlO/cK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UehA/93P"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061A917996;
-	Fri, 15 Dec 2023 09:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-	Subject:Cc:To:From:Date:Message-Id:Sender:Reply-To:Content-Transfer-Encoding:
-	Content-ID:Content-Description:In-Reply-To;
-	bh=cG37Lky4vNGjI+/dn78V8dged+rcVq6oxgHwY0WVgrM=; b=HnOlO/cKUyALtWFkVS+r+9xPPj
-	W8PtzBF/Ag2XAodU9cpkAPlJOKG6sCB7AjvimCTrEb5e15JI6mbhdhAuLXKjD4qhF67REnTRkcT5R
-	Q9F9ePvPqYS8n6SN/4cevBgqVZ0Sct1sdx5cs2oMDt6nEZLZlkzQ/Monzno8X29cLfBZhkWyB/OKW
-	S4Ywj+Bu2R6eV5V9m0DrxorpYikjPcmvTjIgwrJqLxZBLVz1t2BziAQ5XgunVD/XEU7gGG20fFUPk
-	eOYHdeaPSr2R1cqz/Gsr8qy5oAKCQpncNzmQuBU0ZaX4w6tudaj+eth8AK45GC4Snht/g5h+uQpB2
-	Ex/lSrZw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rE4ZF-009rG2-0y;
-	Fri, 15 Dec 2023 09:33:14 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-	id EB92A3006F6; Fri, 15 Dec 2023 10:33:11 +0100 (CET)
-Message-Id: <20231215092707.910319166@infradead.org>
-User-Agent: quilt/0.65
-Date: Fri, 15 Dec 2023 10:12:23 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: paul.walmsley@sifive.com,
- palmer@dabbelt.com,
- aou@eecs.berkeley.edu,
- tglx@linutronix.de,
- mingo@redhat.com,
- bp@alien8.de,
- dave.hansen@linux.intel.com,
- x86@kernel.org,
- hpa@zytor.com,
- davem@davemloft.net,
- dsahern@kernel.org,
- daniel@iogearbox.net,
- andrii@kernel.org,
- martin.lau@linux.dev,
- song@kernel.org,
- yonghong.song@linux.dev,
- john.fastabend@gmail.com,
- kpsingh@kernel.org,
- sdf@google.com,
- haoluo@google.com,
- jolsa@kernel.org,
- Arnd Bergmann <arnd@arndb.de>,
- samitolvanen@google.com,
- keescook@chromium.org,
- nathan@kernel.org,
- ndesaulniers@google.com,
- linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org,
- bpf@vger.kernel.org,
- linux-arch@vger.kernel.org,
- llvm@lists.linux.dev,
- jpoimboe@kernel.org,
- joao@overdrivepizza.com,
- mark.rutland@arm.com,
- peterz@infradead.org
-Subject: [PATCH v3 7/7] x86/cfi,bpf: Fix bpf_exception_cb() signature
-References: <20231215091216.135791411@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C86E182CC
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 09:16:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2c9f84533beso3807711fa.1
+        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 01:16:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702631790; x=1703236590; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/YfRGdicfy9JBm6ObkuIGDYLb98Vp1LWePHqgOXLGuA=;
+        b=UehA/93POJBis0iBOAHrSnxZcpDZ0fxAGu2Y9l9bEpH5XVr9Ocb5iLJySSXFwpLuaS
+         IfeuMSZ7qQA4Cxc0x8rKbeAE9s1XCFwgBGlLebHDGtXFzo6RzvHLsGc7ur2Ia3bMWWMu
+         ycMSlSU+ql/3k0XSlv6AZj+9dTK1WLvDI870ARcc6neE1MWPRI3e7fJuTILvsE0xYzBS
+         MkFgP+ZaxATkCKZGwyN36dXGI/ctzrSkFGxQANBnbVElvz9uaCviHC54C8hMQrpu6eRr
+         H2h23h9caFyuv7qEhsP8eFh8qclFuGMfA66nQV6a+A1rbfvXv6YzlIT2O43MsfONbr4+
+         8yIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702631790; x=1703236590;
+        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/YfRGdicfy9JBm6ObkuIGDYLb98Vp1LWePHqgOXLGuA=;
+        b=ev5+NJ9P0XNdGOa9mjxCRCSITfvkjWLSVjKlSV9NA7KzIAT26K69S7ej/LDQsBj/Y3
+         okC5AcN+lzydJMmcqU8hUZpeuM2Xa0CzYKT/vRFwk1JKI7yHiz42b2ojRLstTRRo8oIw
+         iG6xGMEntQa1k95aBKXG8/OvILj0ZelFZ5vLr5WD7LrQCCh17wxY+7y5rr2wIgRdsykg
+         Ry5LOzWzsL6b/M28Ud22OLj7kOn/3LEAJ1ooyruRURpYd5YaFMPG5m2ydhD0yd6CXDOA
+         CZICqjS7amrtFuJqUFjaSxWxI81YUvEshotbbjj14hpWYqEWTW3agv3iiGXxcKJnjSsg
+         b5+w==
+X-Gm-Message-State: AOJu0YznZGw142mPFb0Xoc+0G3iZgbgRj711OvJeMgRVUd9E4cJLGdOU
+	7c2kaCVBH87LaiGgieDIXJ4=
+X-Google-Smtp-Source: AGHT+IGxNaY/hyk+giP7XHajrjGBnXJDFjqmr4V7fXYY2Ilepl65b/Ur+mgdhwt086ChVoinE/qHaQ==
+X-Received: by 2002:a05:6512:10cf:b0:50e:1aac:ae47 with SMTP id k15-20020a05651210cf00b0050e1aacae47mr1088587lfg.63.1702631790177;
+        Fri, 15 Dec 2023 01:16:30 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id ti7-20020a170907c20700b00a1caa50feb3sm10415977ejc.40.2023.12.15.01.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 01:16:29 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 15 Dec 2023 10:16:27 +0100
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Subject: [RFC] bpf: Issue with bpf_fentry_test7 call
+Message-ID: <ZXwZa_eK7bWXjJk7@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+hi,   
+The bpf CI is broken due to clang emitting 2 functions for
+bpf_fentry_test7:
 
-As per the earlier patches, BPF sub-programs have bpf_callback_t
-signature and CFI expects callers to have matching signature. This is
-violated by bpf_prog_aux::bpf_exception_cb().
+  # cat available_filter_functions | grep bpf_fentry_test7
+  bpf_fentry_test7
+  bpf_fentry_test7.specialized.1
 
-[peterz: Changelog]
-Reported-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/CAADnVQ+Z7UcXXBBhMubhcMM=R-dExk-uHtfOLtoLxQ1XxEpqEA@mail.gmail.com
+The tests attach to 'bpf_fentry_test7' while the function with
+'.specialized.1' suffix is executed in bpf_prog_test_run_tracing.
+
+It looks like clang optimalization that comes from passing 0
+as argument and returning it directly in bpf_fentry_test7.
+
+I'm not sure there's a way to disable this, so far I came
+up with solution below that passes real pointer, but I think
+that was not the original intention for the test.
+
+We had issue with this function back in august:
+  32337c0a2824 bpf: Prevent inlining of bpf_fentry_test7()
+
+I'm not sure why it started to show now? was clang updated for CI?
+
+I'll try to find out more, but any clang ideas are welcome ;-)
+
+thanks,
+jirka
+
+
 ---
- include/linux/bpf.h  |    2 +-
- kernel/bpf/helpers.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1484,7 +1484,7 @@ struct bpf_prog_aux {
- 	int cgroup_atype; /* enum cgroup_bpf_attach_type */
- 	struct bpf_map *cgroup_storage[MAX_BPF_CGROUP_STORAGE_TYPE];
- 	char name[BPF_OBJ_NAME_LEN];
--	unsigned int (*bpf_exception_cb)(u64 cookie, u64 sp, u64 bp);
-+	u64 (*bpf_exception_cb)(u64 cookie, u64 sp, u64 bp, u64, u64);
- #ifdef CONFIG_SECURITY
- 	void *security;
- #endif
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2537,7 +2537,7 @@ __bpf_kfunc void bpf_throw(u64 cookie)
- 	 * which skips compiler generated instrumentation to do the same.
- 	 */
- 	kasan_unpoison_task_stack_below((void *)(long)ctx.sp);
--	ctx.aux->bpf_exception_cb(cookie, ctx.sp, ctx.bp);
-+	ctx.aux->bpf_exception_cb(cookie, ctx.sp, ctx.bp, 0, 0);
- 	WARN(1, "A call to BPF exception callback should never return\n");
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index c9fdcc5cdce1..33208eec9361 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -543,7 +543,7 @@ struct bpf_fentry_test_t {
+ int noinline bpf_fentry_test7(struct bpf_fentry_test_t *arg)
+ {
+ 	asm volatile ("");
+-	return (long)arg;
++	return 0;
  }
  
-
-
+ int noinline bpf_fentry_test8(struct bpf_fentry_test_t *arg)
+@@ -668,7 +668,7 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
+ 		    bpf_fentry_test4((void *)7, 8, 9, 10) != 34 ||
+ 		    bpf_fentry_test5(11, (void *)12, 13, 14, 15) != 65 ||
+ 		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111 ||
+-		    bpf_fentry_test7((struct bpf_fentry_test_t *)0) != 0 ||
++		    bpf_fentry_test7(&arg) != 0 ||
+ 		    bpf_fentry_test8(&arg) != 0 ||
+ 		    bpf_fentry_test9(&retval) != 0)
+ 			goto out;
+diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
+index 52a550d281d9..95c5c34ccaa8 100644
+--- a/tools/testing/selftests/bpf/progs/fentry_test.c
++++ b/tools/testing/selftests/bpf/progs/fentry_test.c
+@@ -64,7 +64,7 @@ __u64 test7_result = 0;
+ SEC("fentry/bpf_fentry_test7")
+ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+ {
+-	if (!arg)
++	if (arg)
+ 		test7_result = 1;
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/fexit_test.c b/tools/testing/selftests/bpf/progs/fexit_test.c
+index 8f1ccb7302e1..ffb30236ca02 100644
+--- a/tools/testing/selftests/bpf/progs/fexit_test.c
++++ b/tools/testing/selftests/bpf/progs/fexit_test.c
+@@ -65,7 +65,7 @@ __u64 test7_result = 0;
+ SEC("fexit/bpf_fentry_test7")
+ int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
+ {
+-	if (!arg)
++	if (arg)
+ 		test7_result = 1;
+ 	return 0;
+ }
 
