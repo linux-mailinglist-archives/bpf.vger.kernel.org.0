@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-17957-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17958-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06991814184
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 06:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB7CE814196
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 06:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA5C1283AF6
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 05:50:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82EB42824B8
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 05:54:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 840F9C8C7;
-	Fri, 15 Dec 2023 05:50:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732DD7470;
+	Fri, 15 Dec 2023 05:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="lRG3mKWA"
+	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="Hw7CJfrB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3746AA6
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 05:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=daynix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=daynix.com
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3b9dbbaa9a9so314591b6e.2
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 21:50:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2516CCA67
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 05:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d347b4d676so2297365ad.2
+        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 21:54:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1702619404; x=1703224204; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1702619643; x=1703224443; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xFKDorqrFC5bosM2lt/mDyJdprik2aA7TxjdYt0y1e4=;
-        b=lRG3mKWA3hLhxbJ++HHf2NQEw8lqXc4lAMsww+H2XM0tm7saisSRA+cLHbbE8/UDme
-         I+pd4IgdOJS51g9TaOsFo9DSUB1r1GPlU01PsitywapE+hKrxLQQL+q3VLcvpdAkp/we
-         v1jCBTl22HwIyhlBAvTLS5nfoCRqbCawuHUwNsOCeTT70UGUS1dl1pzIbeLUbo9iWDeW
-         U+lsTWy8I4z+1tfJYsac0MfM6wVmihVEHvFb6eNNfgqX3V8LymQ86PNGJjQV6KLRHvJS
-         +stmpcKGsrnM7ow/47GQHGZnjCEKU50wCskwqDxRPUIIq96wxE00q46nWVzTl/Nf6jMs
-         eBUQ==
+        bh=fOoHdM5h9bwf4FU75c9JhTdCin+GzT+LCK1gzu+NdQk=;
+        b=Hw7CJfrBf3WUSjkK5CZuMc/BhSZsIA/RxnkvygUJP/ZV9xDkojZuYc/mWFjRezZ7VR
+         CqgMh36SXnlbPle69g6fSf4lpnQJJQKsim2Hv372YcJTuHLiMOIcDdGV/FvCobPvAf/K
+         yA7eVXzgOyo+h3eZsOCXUc/ehSXRztSkLJLape2O3qfVscU0FlEiGFz22jxdNSKrY3q8
+         EnX9yfXBd/Ubv2BCI5+WYg3c1dBXCSgyPdm/GVGaJGk4mwFHLCFwnz+nbiYyT+ZTrGHv
+         2rCkEs8wsR3W1SjvnqQBqykwEg8LO5KiuoG0LiYkq76wXvwB1Oha9cTF2J3Wizss2Eur
+         tyaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702619404; x=1703224204;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1702619643; x=1703224443;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xFKDorqrFC5bosM2lt/mDyJdprik2aA7TxjdYt0y1e4=;
-        b=f3+hlIKW6z0rMz6cSTZp3hPHoLymukt3DjWt+PVsbakT5NxF975WQoX74NX90fobMB
-         M5CuT3SAOmL0y31BfwJvKx+Aq5rhzH/gBTBQbHuHp9tr/cWDrf0Crvx82apFPK8WFi0d
-         lM9HY4fhecJRun/U877yF2WvuEwjx6QeN/kMHHIS9WCW+fq6MvpAokCPPFfNM9rErRCX
-         uX8D04YX5mC923yhztziVHJI+fIPIMwh1kBHh1B/6pcomklKkSzBJPt9VWnZZNPNZvVQ
-         GC51yJ8nyh75AHPM0Pvu+0uX3qgFWUuwalOwSq3nAOXT6E6cBJaaUdBbbeq1vMi7nehe
-         lmJw==
-X-Gm-Message-State: AOJu0YxZuoir3hfdU0DWY0CHiSUE3AEKW5SdkAzL7CH8cX3RL8TPNeYT
-	lLtZhQcwkIH1Xa1M1vWYDeTKNQ==
-X-Google-Smtp-Source: AGHT+IGx2R7EsZiNCgpjAWLFVnSbXZ01T55zLVZoewTO79uTMzNCSJGSk/7hhmSoBW352drVsZLTPg==
-X-Received: by 2002:a05:6808:16a3:b0:3b9:e7e2:f30 with SMTP id bb35-20020a05680816a300b003b9e7e20f30mr13382782oib.7.1702619403985;
-        Thu, 14 Dec 2023 21:50:03 -0800 (PST)
-Received: from [157.82.205.15] ([157.82.205.15])
-        by smtp.gmail.com with ESMTPSA id q5-20020a170902bd8500b001c9d011581dsm13310686pls.164.2023.12.14.21.49.57
+        bh=fOoHdM5h9bwf4FU75c9JhTdCin+GzT+LCK1gzu+NdQk=;
+        b=Taadk5h8bByuSJyjBFr8UBo89KR5RkDNiSK4+EAB+6txQYDteKOYwpgB2BRPtRxh8W
+         +rlMWtVUVqIDQiSCK+YatnzhaENzDeHarlFuOYEG1LdkRtWlv6VJt2mu0QmXPQX+F4RI
+         ziw0h04NjaDaz20mrgQuEZxwc6ASG8Kob9imZ9SMp82UHfNDSlOrL7Xz+fRbZcDZkx3e
+         +ilkJeUAXlcKThnSu81rY2W0sSc7bczbSNmVu6/t7/Z3An8eFyfy4wgcrDr9UNCG4G+B
+         KxXbwd+hOg0G62gWq1/ompcxba+FP+cW9lqfURcZAdGvFR7K/ZYVeJhMntyRmcx9TN1p
+         w/vQ==
+X-Gm-Message-State: AOJu0YzWBxo74cBiljTMqyMm0MBNhd20AVNXjxhpjaPWgtH9NtelhQQs
+	yRI4UaewjG97bah8WUdQVaPviw==
+X-Google-Smtp-Source: AGHT+IHS5eNnx4eTODXiGFp6VCbig0GK/VsSwcRzlq6iv7RUQFpt8KHA6pNXx5viXRHJRzh+LVMaKQ==
+X-Received: by 2002:a17:903:2348:b0:1d0:6ffe:9ef with SMTP id c8-20020a170903234800b001d06ffe09efmr12532549plh.77.1702619643479;
+        Thu, 14 Dec 2023 21:54:03 -0800 (PST)
+Received: from ?IPV6:2620:10d:c085:21e1::122b? ([2620:10d:c090:400::4:bb0d])
+        by smtp.gmail.com with ESMTPSA id ix22-20020a170902f81600b001d37c19b759sm853058plb.160.2023.12.14.21.54.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 21:50:03 -0800 (PST)
-Message-ID: <72b8e198-7058-469a-a1e0-17f48330deca@daynix.com>
-Date: Fri, 15 Dec 2023 14:49:56 +0900
+        Thu, 14 Dec 2023 21:54:03 -0800 (PST)
+Message-ID: <e78e0343-6647-4918-bacf-c00abc01a2ba@davidwei.uk>
+Date: Thu, 14 Dec 2023 21:54:00 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,241 +66,103 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
-To: Stephen Hemminger <stephen@networkplumber.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Jason Wang <jasowang@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo
- <xuanzhuo@linux.alibaba.com>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, Yuri Benditovich
- <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>,
- Benjamin Tissoires <bentiss@kernel.org>, bpf <bpf@vger.kernel.org>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, kvm@vger.kernel.org,
- LKML <linux-kernel@vger.kernel.org>,
- virtualization@lists.linux-foundation.org,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>
-References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
- <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com>
- <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
- <CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
- <0d68722c-9e29-407b-9ef0-331683c995d2@daynix.com>
- <20231214094042.75f704f6@hermes.local>
-Content-Language: en-US
-From: Akihiko Odaki <akihiko.odaki@daynix.com>
-In-Reply-To: <20231214094042.75f704f6@hermes.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] bnxt_en: do not map packet buffers twice
+Content-Language: en-GB
+To: Michael Chan <michael.chan@broadcom.com>, davem@davemloft.net
+Cc: netdev@vger.kernel.org, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, bpf@vger.kernel.org, hawk@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, john.fastabend@gmail.com,
+ Andy Gospodarek <andrew.gospodarek@broadcom.com>,
+ Somnath Kotur <somnath.kotur@broadcom.com>
+References: <20231214213138.98095-1-michael.chan@broadcom.com>
+From: David Wei <dw@davidwei.uk>
+In-Reply-To: <20231214213138.98095-1-michael.chan@broadcom.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 2023/12/15 2:40, Stephen Hemminger wrote:
-> On Thu, 14 Dec 2023 14:51:12 +0900
-> Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
+On 2023-12-14 13:31, Michael Chan wrote:
+> From: Andy Gospodarek <andrew.gospodarek@broadcom.com>
 > 
->> On 2023/12/13 19:22, Benjamin Tissoires wrote:
->>> On Tue, Dec 12, 2023 at 1:41 PM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
->>>>
->>>> On 2023/12/12 19:39, Benjamin Tissoires wrote:
->>>>> Hi,
->>>>>
->>>>> On Tue, Dec 12, 2023 at 9:11 AM Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
->>>>>>
->>>>>> Hi,
->>>>
->>>> Hi,
->>>>
->>>> Thanks for reply.
->>>>   
->>>>>>
->>>>>> It is said eBPF is a safe way to extend kernels and that is very
->>>>>> attarctive, but we need to use kfuncs to add new usage of eBPF and
->>>>>> kfuncs are said as unstable as EXPORT_SYMBOL_GPL. So now I'd like to ask
->>>>>> some questions:
->>>>>>
->>>>>> 1) Which should I choose, BPF kfuncs or ioctl, when adding a new feature
->>>>>> for userspace apps?
->>>>>> 2) How should I use BPF kfuncs from userspace apps if I add them?
->>>>>>
->>>>>> Here, a "userspace app" means something not like a system-wide daemon
->>>>>> like systemd (particularly, I have QEMU in mind). I'll describe the
->>>>>> context more below:
->>>>>
->>>>> I'm probably not the best person in the world to answer your
->>>>> questions, Alexei and others from the BPF core group are, but given
->>>>> that you pointed at a thread I was involved in, I feel I can give you
->>>>> a few pointers.
->>>>>
->>>>> But first and foremost, I encourage you to schedule an agenda item in
->>>>> the BPF office hour[4]. Being able to talk with the core people
->>>>> directly was tremendously helpful to me to understand their point.
->>>>
->>>> I prefer emails because I'm not very fluent when speaking in English and
->>>> may have a difficultly to listen to other people, but I may try it in
->>>> future.
->>>>   
->>>>>
->>>>>   
->>>>>>
->>>>>> ---
->>>>>>
->>>>>> I'm working on a new feature that aids virtio-net implementations using
->>>>>> tuntap virtual network device. You can see [1] for details, but
->>>>>> basically it's to extend BPF_PROG_TYPE_SOCKET_FILTER to report four more
->>>>>> bytes.
->>>>>>
->>>>>> However, with long discussions we have confirmed extending
->>>>>> BPF_PROG_TYPE_SOCKET_FILTER is not going to happen, and adding kfuncs is
->>>>>> the way forward. So I decided how to add kfuncs to the kernel and how to
->>>>>> use it. There are rich documentations for the kernel side, but I found
->>>>>> little about the userspace. The best I could find is a systemd change
->>>>>> proposal that is based on WIP kernel changes[2].
->>>>>
->>>>> Yes, as Alexei already replied, BPF is not adding new stable APIs,
->>>>> only kfuncs. The reason being that once it's marked as stable, you
->>>>> can't really remove it, even if you think it's badly designed and
->>>>> useless.
->>>>>
->>>>> Kfuncs, OTOH are "unstable" by default meaning that the constraints
->>>>> around it are more relaxed.
->>>>>
->>>>> However, "unstable" doesn't mean "unusable". It just means that the
->>>>> kernel might or might not have the function when you load your program
->>>>> in userspace. So you have to take that fact into account from day one,
->>>>> both from the kernel side and the userspace side. The kernel docs have
->>>>> a nice paragraph explaining that situation and makes the distinction
->>>>> between relatively unused kfuncs, and well known established ones.
->>>>>
->>>>> Regarding the systemd discussion you are mentioning ([2]), this is
->>>>> something that I have on my plate for a long time. I think I even
->>>>> mentioned it to Alexei at Kernel Recipes this year, and he frowned his
->>>>> eyebrows when I mentioned it. And looking at the systemd code and the
->>>>> benefits over a plain ioctl, it is clearer that in that case, a plain
->>>>> ioctl is better, mostly because we already know the API and the
->>>>> semantic.
->>>>>
->>>>> A kfunc would be interesting in cases where you are not sure about the
->>>>> overall design, and so you can give a shot at various API solutions
->>>>> without having to keep your bad v1 design forever.
->>>>>   
->>>>>>
->>>>>> So now I'm wondering how I should use BPF kfuncs from userspace apps if
->>>>>> I add them. In the systemd discussion, it is told that Linus said it's
->>>>>> fine to use BPF kfuncs in a private infrastructure big companies own, or
->>>>>> in systemd as those users know well about the system[3]. Indeed, those
->>>>>> users should be able to make more assumptions on the kernel than
->>>>>> "normal" userspace applications can.
->>>>>>
->>>>>> Returning to my proposal, I'm proposing a new feature to be used by QEMU
->>>>>> or other VMM applications. QEMU is more like a normal userspace
->>>>>> application, and usually does not make much assumptions on the kernel it
->>>>>> runs on. For example, it's generally safe to run a Debian container
->>>>>> including QEMU installed with apt on Fedora. BPF kfuncs may work even in
->>>>>> such a situation thanks to CO-RE, but it sounds like *accidentally*
->>>>>> creating UAPIs.
->>>>>>
->>>>>> Considering all above, how can I integrate BPF kfuncs to the application?
->>>>>
->>>>> FWIW, I'm not sure you can rely on BPF calls from a container. There
->>>>> is a high chance the syscall gets disabled by the runtime.
->>>>
->>>> Right. Container runtimes will not pass CAP_BPF by default, but that
->>>> restriction can be lifted and I think that's a valid scenario.
->>>>   
->>>>>   
->>>>>>
->>>>>> If BPF kfuncs are like EXPORT_SYMBOL_GPL, the natural way to handle them
->>>>>> is to think of BPF programs as some sort of kernel modules and
->>>>>> incorporate logic that behaves like modprobe. More concretely, I can put
->>>>>> eBPF binaries to a directory like:
->>>>>> /usr/local/share/qemu/ebpf/$KERNEL_RELEASE
->>>>>
->>>>> I would advise against that (one program per kernel release). Simply
->>>>> because your kfunc may or may not have been backported to kernel
->>>>> release v6.X.Y+1 while it was not there when v6.X.Y was out. So
->>>>> relying on the kernel number is just going to be a headache.
->>>>>
->>>>> As I understand it, the way forward is to rely on the kernel, libbpf
->>>>> and CO-RE: if the function is not available, the program will simply
->>>>> not load, and you'll know that this version of the code is not
->>>>> available (or has changed API).
->>>>>
->>>>> So what I would do if some kfunc API is becoming deprecated, is
->>>>> embedding both code paths in the same BPF unit, but marking them as
->>>>> not loaded by libppf. Then I can load the compilation unit, try v2 of
->>>>> the API, and if it's not available, try v1, and if not, then mention
->>>>> that I can not rely on BPF. Of course, this can also be done with
->>>>> separate compilation units.
->>>>
->>>> Doesn't it mean that the kernel is free to break old versions of QEMU
->>>> including BPF programs? That's something I'd like to avoid.
->>>
->>> Couple of points here:
->>> - when you say "the kernel", it feels like you are talking about an
->>> external actor tampering with your code. But if you submit a kernel
->>> patch with a specific use case and get yourself involved in the
->>> community, why would anybody change your kfunc API without you knowing
->>> it?
->>
->> You are right in the practical aspect.  I can pay efforts to keep kfunc
->> APIs alive and I'm also sure other developers would also try not to
->> break them for good.
->>
->> Nevertheless I'm being careful to evaluate APIs from both of the kernel
->> and userspace (QEMU) viewpoints. If I fail to keep kfuncs stable because
->> I die in an accident, for example, it's a poor excuse for other QEMU
->> developers that I intended to keep them stable with my personal effort.
->>
->>> - the whole warning about "unstable" policy means that the user space
->>> component should not take for granted the capability. So if the kfunc
->>> changes/disappears for good reasons (because it was marked as well
->>> used and deprecated for quite some time), qemu should not *break*, it
->>> should not provide the functionality, or have a secondary plan.
->>>
->>> But even if you are encountering such issues, in case of a change in
->>> the ABI of your kfunc, it should be easy enough to backport the bpf
->>> changes to your old QEMUs and ask users to upgrade the user space if
->>> they upgrade their kernel.
->>>
->>> AFAIU, it is as unstable as you want it to be. It's just that we are
->>> not in the "we don't break user space" contract, because we are
->>> talking about adding a kernel functionality from userspace, which
->>> requires knowing the kernel intrinsics.
->>
->> I must admit I'm still not convinced the proposed BPF program
->> functionality needs to know internals of the kernel.
->>
->> The eBPF program QEMU carries is just to calculate hashes from packets.
->> It doesn't need to know the details of how the kernel handles packets.
->> It only needs to have an access to the packet content.
->>
->> It is exactly what BPF_PROG_TYPE_SOCKET_FILTER does, but it lacks a
->> mechanism to report hash values so I need to extend it or invent a new
->> method. Extending BPF_PROG_TYPE_SOCKET_FILTER is not a way forward since
->> CO-RE is superior to the context rewrite it relies on. But apparently
->> adopting kfuncs and CO-RE also means to lose the "we don't break user
->> space" contract although I have no intention to expose kernel internals
->> to the eBPF program.
+> Remove double-mapping of DMA buffers as it can prevent page pool entries
+> from being freed.  Mapping is managed by page pool infrastructure and
+> was previously managed by the driver in __bnxt_alloc_rx_page before
+> allowing the page pool infrastructure to manage it.
 > 
-> An example is how one part of DPDK recomputes RSS over TAP.
-> 
-> https://git.dpdk.org/dpdk/tree/drivers/net/tap/bpf/tap_bpf_program.c
-> 
-> This feature is likely to be removed, because it is not actively used
-> and the changes in BPF program loading broke it on current kernel
-> releases.  Which brings up the point that since the kernel does
-> not have stable API/ABI for BPF program infrastructure, I would
-> avoid it for projects that don't want to deal with that.
+> Fixes: 578fcfd26e2a ("bnxt_en: Let the page pool manage the DMA mapping")
+> Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
+> Signed-off-by: Andy Gospodarek <andrew.gospodarek@broadcom.com>
+> Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 
-It's unfortunate to hear that, but thanks for the information.
-I'll consider more about the option not using BPF (plain ioctl and 
-in-kernel implementation).
+Reviewed-by: David Wei <dw@davidwei.uk>
+
+> ---
+>  drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 11 ++---------
+>  1 file changed, 2 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+> index 96f5ca778c67..8cb9a99154aa 100644
+> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
+> @@ -59,7 +59,6 @@ struct bnxt_sw_tx_bd *bnxt_xmit_bd(struct bnxt *bp,
+>  	for (i = 0; i < num_frags ; i++) {
+>  		skb_frag_t *frag = &sinfo->frags[i];
+>  		struct bnxt_sw_tx_bd *frag_tx_buf;
+> -		struct pci_dev *pdev = bp->pdev;
+>  		dma_addr_t frag_mapping;
+>  		int frag_len;
+>  
+> @@ -73,16 +72,10 @@ struct bnxt_sw_tx_bd *bnxt_xmit_bd(struct bnxt *bp,
+>  		txbd = &txr->tx_desc_ring[TX_RING(prod)][TX_IDX(prod)];
+>  
+>  		frag_len = skb_frag_size(frag);
+> -		frag_mapping = skb_frag_dma_map(&pdev->dev, frag, 0,
+> -						frag_len, DMA_TO_DEVICE);
+
+I checked that skb_frag_dma_map() calls dma_map_page() with page set to
+skb_frag_page(frag) and offset set to skb_frag_off(frag) + offset where
+offset is 0. This is thus equivalent to the line added below:
+
+page_pool_get_dma_addr(skb_frag_page(frag)) + skb_frag_off(frag)
+
+> -
+> -		if (unlikely(dma_mapping_error(&pdev->dev, frag_mapping)))
+> -			return NULL;
+
+I checked that page_pool_get_dma_addr() cannot fail or return an invalid
+mapping. The DMA mapping happens when bulk allocating the pp alloc cache
+during __page_pool_alloc_pages_slow(). If DMA mapping fails during
+page_pool_dma_map() then the page is not stored in the cache. Therefore
+any pages allocated from the pp will have a valid DMA addr.
+
+> -
+> -		dma_unmap_addr_set(frag_tx_buf, mapping, frag_mapping);
+
+As discussed with Michael Chan, only XDP_TX will have multiple page
+frags. Presumably only XDP_TX will have num_frags > 0 and enter this for
+loop. Even though XDP_REDIRECT also calls bnxt_xmit_bd() from
+__bnxt_xmit_xdp_redirect(), I assume xdp_buff_has_frags() returns false.
+
+> -
+>  		flags = frag_len << TX_BD_LEN_SHIFT;
+>  		txbd->tx_bd_len_flags_type = cpu_to_le32(flags);
+> +		frag_mapping = page_pool_get_dma_addr(skb_frag_page(frag)) +
+> +			       skb_frag_off(frag);
+
+I trust that the page pool DMA mapping management is correct.
+
+Both skb_frag_dma_map() and page_pool_dma_map() call into
+dma_map_page_attrs(), but page_pool_dma_map() has flags
+DMA_ATTR_SKIP_CPU_SYNC and DMA_ATTR_WEAK_ORDERING set whereas
+skb_frag_dma_map() has no flags.
+
+DMA_ATTR_WEAK_ORDERING is optional and ignored for platforms that do not
+support it, therefore safe to use.
+
+DMA_ATTR_SKIP_CPU_SYNC is used since presumably there is no sharing of
+pages between multiple devices. IIRC there is a single page pool per Rx
+queue/NAPI context.
+
+>  		txbd->tx_bd_haddr = cpu_to_le64(frag_mapping);
+>  
+>  		len = frag_len;
 
