@@ -1,191 +1,127 @@
-Return-Path: <bpf+bounces-17982-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17983-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D771D8144C7
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 10:43:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05392814522
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 11:06:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93D2D284127
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 09:43:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38B2A1C22C6A
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 10:06:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093B21805D;
-	Fri, 15 Dec 2023 09:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FT3/E7qr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CC318C29;
+	Fri, 15 Dec 2023 10:06:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16D1F1A702
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 09:43:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-552d39ac3ccso426670a12.0
-        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 01:43:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702633418; x=1703238218; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8EGJXOp+glQ4ydyicykgyTEsUsGW/ARXwXuh1I5VSdg=;
-        b=FT3/E7qrfyzeWieoozUeTiLX0fsVT96umAHxDpoMNXyDmzBnR71VAHRgsT5WHI5hQs
-         OZnqcsRRmtRgnLHto5j4JhaUtCDWKdMr0Fh2ouVMJMrEBOBnn3TYHqqE5UgdRc2yFLfA
-         k1YaPgZfPRA51PhyMPV3kdSNOm/2/Z9T/7zOEydHMDn3OGcSS3ni8SsiYBwN057yKrMB
-         ZULXlHLfiYfZTBjIklFAaBVnE06VMtD1CTHf0Dlm91GSp8ynVpCs/fS1yQbRngSooH6w
-         AOO1gsIe69xL+E3oVYTPHW/I6vtNaUHs9y9teEX3hlDhGRCXazHj2YvJBR68vCXDZZkh
-         SlNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702633418; x=1703238218;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8EGJXOp+glQ4ydyicykgyTEsUsGW/ARXwXuh1I5VSdg=;
-        b=oPjs6ouzxbtd4iLKrzgF4y/vY/1WnTzfTMUc3q0bJZ/8yWI9C/UugRGLycJJmA1EN1
-         BxSFuYImxL0hDgMg8ArK1lwDK2X+ri+crIhCdirTtx+P+w3npEOL5RvC/Lq2gX3tTG5z
-         ReFprdtuIoe3RsKPHegmmxudlG48505eS8EleUVOUHu642dL/e4sEIfn8IJp0XVgQUol
-         ubXvcBq09g1jj0l0YK0xD2GwknLs//OsZdjB7fjsRn9p/0PR6W6QYiW6z0e4brE2c/UQ
-         uqRM2jWiwJZ/a5lm+GeewLmvHki3pj+GKukiGsp9ktw1G/mqJ/QRyHGcpUFhu+R/kSDZ
-         O5Yg==
-X-Gm-Message-State: AOJu0YwVZnQyaP0sVrlh8bzv/33hnlioR8OMnTOTVyhMUTb/nmrV1sQb
-	w7MQNatwMPTs7OO9417GxC4=
-X-Google-Smtp-Source: AGHT+IHd1dovmquicwsHI+Y+ySNozoasjRE/Y1hmmdMna2FP1oUxR7O4p7pdVwbSsDcQyQb9Op7EUQ==
-X-Received: by 2002:a17:906:af72:b0:9fa:d1df:c2c4 with SMTP id os18-20020a170906af7200b009fad1dfc2c4mr11275984ejb.36.1702633418054;
-        Fri, 15 Dec 2023 01:43:38 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ty6-20020a170907c70600b00a1d71c57cb1sm10595054ejc.68.2023.12.15.01.43.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 01:43:37 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 15 Dec 2023 10:43:36 +0100
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB1B18C01
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 10:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Ss4cJ25Nrz4f3kjg
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 18:06:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8E43B1A05EB
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 18:06:09 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP1 (Coremail) with SMTP id cCh0CgBHlQsLJXxlJTfVDg--.54090S4;
+	Fri, 15 Dec 2023 18:06:05 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: bpf@vger.kernel.org
+Cc: Martin KaFai Lau <martin.lau@linux.dev>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Song Liu <song@kernel.org>,
+	Hao Luo <haoluo@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>,
-	bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [RFC] bpf: Issue with bpf_fentry_test7 call
-Message-ID: <ZXwfyNCkkP_iAzkG@krava>
-References: <ZXwZa_eK7bWXjJk7@krava>
+	xingwei lee <xrivendell7@gmail.com>,
+	houtao1@huawei.com
+Subject: [PATCH bpf-next v3 0/5] bpf: Fix warnings in kvmalloc_node()
+Date: Fri, 15 Dec 2023 18:07:03 +0800
+Message-Id: <20231215100708.2265609-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXwZa_eK7bWXjJk7@krava>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHlQsLJXxlJTfVDg--.54090S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFy7JF4fZF1rWrW7AFW7XFb_yoW8AFy5pF
+	Wvq3W5Kr4rXF9xJan3C3s7WryFqws5GrW7XryxJw1rCrs8J3W8GFs7K3y5Wr95urZ0g3Wa
+	ywnrtr90ga4UZa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Fri, Dec 15, 2023 at 10:16:27AM +0100, Jiri Olsa wrote:
-> hi,   
-> The bpf CI is broken due to clang emitting 2 functions for
-> bpf_fentry_test7:
-> 
->   # cat available_filter_functions | grep bpf_fentry_test7
->   bpf_fentry_test7
->   bpf_fentry_test7.specialized.1
-> 
-> The tests attach to 'bpf_fentry_test7' while the function with
-> '.specialized.1' suffix is executed in bpf_prog_test_run_tracing.
-> 
-> It looks like clang optimalization that comes from passing 0
-> as argument and returning it directly in bpf_fentry_test7.
-> 
-> I'm not sure there's a way to disable this, so far I came
-> up with solution below that passes real pointer, but I think
-> that was not the original intention for the test.
-> 
-> We had issue with this function back in august:
->   32337c0a2824 bpf: Prevent inlining of bpf_fentry_test7()
-> 
-> I'm not sure why it started to show now? was clang updated for CI?
-> 
-> I'll try to find out more, but any clang ideas are welcome ;-)
+From: Hou Tao <houtao1@huawei.com>
 
-fyi also there's probably another related usse in global_func17 test:
+Hi,
 
-	run_subtest:FAIL:unexpected_load_success unexpected success: 0
-	#290/17  test_global_funcs/global_func17:FAIL
+The patch set aims to fix the warnings in kvmalloc_node() when passing
+an abnormally big cnt during multiple kprobes/uprobes attachment.
 
-looks like clang optimized the call out and returns the value directly:
+Patch #1 and #2 fix the warning by limiting the maximal number of
+uprobes/kprobes. Patch #3, #4, and #5 add tests to ensure these
+warnings are fixed.
 
-	Disassembly of section .text:
+Please see individual patches for more details. Comments are always
+welcome.
 
-	0000000000000000 <foo>:
-	       0:       b4 00 00 00 00 00 00 00 w0 = 0x0
-	       1:       15 01 02 00 00 00 00 00 if r1 == 0x0 goto +0x2 <LBB0_2>
-	       2:       b4 00 00 00 2a 00 00 00 w0 = 0x2a
-	       3:       63 01 00 00 00 00 00 00 *(u32 *)(r1 + 0x0) = r0
+Change Log:
+v3:
+  * add ack tags from Jiri
+  * return -E2BIG instead of -EINVAL for too-big cnt (Andrii)
+  * patch #3: rename the subtest from "failed_link_api" to
+              "attach_api_fails", so it is consistent with the naming
+	      convention in multi-kprobe test.
+  * patch #4: newly-added patch to remove libbpf_get_error() in
+              kprobe_multi_test (Andrii)
 
-	0000000000000020 <LBB0_2>:
-	       4:       95 00 00 00 00 00 00 00 exit
+v2: https://lore.kernel.org/bpf/20231213112531.3775079-1-houtao@huaweicloud.com/
+  * limit the number of uprobes/kprobes instead of suppressing the
+    out-of-memory warning message (Alexei)
+  * provide a faked non-zero offsets to simplify the multiple uprobe
+    test (Jiri)
 
-	Disassembly of section tc:
+v1: https://lore.kernel.org/bpf/20231211112843.4147157-1-houtao@huaweicloud.com/
 
-	0000000000000000 <global_func17>:
-	       0:       b4 00 00 00 2a 00 00 00 w0 = 0x2a
-	       1:       95 00 00 00 00 00 00 00 exit
+Hou Tao (5):
+  bpf: Limit the number of uprobes when attaching program to multiple
+    uprobes
+  bpf: Limit the number of kprobes when attaching program to multiple
+    kprobes
+  selftests/bpf: Add test for abnormal cnt during multi-uprobe
+    attachment
+  selftests/bpf: Don't use libbpf_get_error() in kprobe_multi_test
+  selftests/bpf: Add test for abnormal cnt during multi-kprobe
+    attachment
 
-jirka
+ kernel/trace/bpf_trace.c                      |  7 ++++
+ .../bpf/prog_tests/kprobe_multi_test.c        | 31 +++++++++++++++---
+ .../bpf/prog_tests/uprobe_multi_test.c        | 32 ++++++++++++++++++-
+ 3 files changed, 64 insertions(+), 6 deletions(-)
 
+-- 
+2.29.2
 
-> 
-> thanks,
-> jirka
-> 
-> 
-> ---
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index c9fdcc5cdce1..33208eec9361 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -543,7 +543,7 @@ struct bpf_fentry_test_t {
->  int noinline bpf_fentry_test7(struct bpf_fentry_test_t *arg)
->  {
->  	asm volatile ("");
-> -	return (long)arg;
-> +	return 0;
->  }
->  
->  int noinline bpf_fentry_test8(struct bpf_fentry_test_t *arg)
-> @@ -668,7 +668,7 @@ int bpf_prog_test_run_tracing(struct bpf_prog *prog,
->  		    bpf_fentry_test4((void *)7, 8, 9, 10) != 34 ||
->  		    bpf_fentry_test5(11, (void *)12, 13, 14, 15) != 65 ||
->  		    bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, 21) != 111 ||
-> -		    bpf_fentry_test7((struct bpf_fentry_test_t *)0) != 0 ||
-> +		    bpf_fentry_test7(&arg) != 0 ||
->  		    bpf_fentry_test8(&arg) != 0 ||
->  		    bpf_fentry_test9(&retval) != 0)
->  			goto out;
-> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/testing/selftests/bpf/progs/fentry_test.c
-> index 52a550d281d9..95c5c34ccaa8 100644
-> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
-> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
-> @@ -64,7 +64,7 @@ __u64 test7_result = 0;
->  SEC("fentry/bpf_fentry_test7")
->  int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
->  {
-> -	if (!arg)
-> +	if (arg)
->  		test7_result = 1;
->  	return 0;
->  }
-> diff --git a/tools/testing/selftests/bpf/progs/fexit_test.c b/tools/testing/selftests/bpf/progs/fexit_test.c
-> index 8f1ccb7302e1..ffb30236ca02 100644
-> --- a/tools/testing/selftests/bpf/progs/fexit_test.c
-> +++ b/tools/testing/selftests/bpf/progs/fexit_test.c
-> @@ -65,7 +65,7 @@ __u64 test7_result = 0;
->  SEC("fexit/bpf_fentry_test7")
->  int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
->  {
-> -	if (!arg)
-> +	if (arg)
->  		test7_result = 1;
->  	return 0;
->  }
 
