@@ -1,26 +1,26 @@
-Return-Path: <bpf+bounces-18016-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18019-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2B47814E1F
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 18:13:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1778D814E28
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 18:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21A1E1C23F7E
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 17:13:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EA751C23F82
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 17:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C3849F66;
-	Fri, 15 Dec 2023 17:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E25C563A1;
+	Fri, 15 Dec 2023 17:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="i1txzjU2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qpiqOMh1"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HqagrAq6";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5EEtusZ0"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E658246459;
-	Fri, 15 Dec 2023 17:10:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59EF4654A;
+	Fri, 15 Dec 2023 17:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -30,21 +30,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ttIXeZ1ovHzP3s4F4dQhi8p1AikC0DzBNJEl/q3oOFU=;
-	b=i1txzjU2KalZCJ8xYOeccEgh79T53JDMXo6hg9E0Mau+4g4nEzUiD/CU8QtNlcyNoMioNh
-	TxMQ6lCO2yFp+l4aRR42CeLo7AtXdM42ZZzsnfMKblwNsySw00E19iXVw2u5HXIlKMh1od
-	0Llrgx3TK8reem3ivDEKJy2UXYWWALyMSBMFYs9+zxL/HlBtrzIcUXm5m8ZZ/5YImNN7lO
-	cAGnMTMRhHeXvmYWjgB14T5Fcz6Y7eQAgy4ZqjE08SOVUO1jI2u1fAy/aFqNaScVh8B9jc
-	QCHYZ1d78L1SzqyNvK0hY0llM5vR2g43iaL1X+2sVIpumHkKDsIyh1k5X25prQ==
+	bh=CX4pb+3godYGbYL2L5DP5LSVnm+uYrRc03oRZsT6xW0=;
+	b=HqagrAq65uQAIAobjbUr4Dx14XchauBivPibNfYj2mQ5AwLbO3ALFUn+JieHhkpzNkVpsa
+	wxETScLpeyAo5czQVKHMZdSwWqVygfFhh9RwnF92sZu0e1qO3ZoDNEIeE2fq2DA5B56cqq
+	CHExNwPEs/JMbQbOjTmCvjRFEOdDfxOcP+q3GFe3PdTnvZvKT5/8eF8IYcwaJOmaDhd2cs
+	muBVpo1ENYqit4LqG7FAoxqsb0osvK99ozR6nykis0OTKU1Vj8weabfIgWmFEAUSrIWDrD
+	56OzsB21LEdNLlC3ZvA1LH5pRn9/c12AvqybfYZaSw42a9Cm5gmZP7Vo/yCQbA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1702660237;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ttIXeZ1ovHzP3s4F4dQhi8p1AikC0DzBNJEl/q3oOFU=;
-	b=qpiqOMh1zBcnXXLLLCyeEFb2GN33yYgr8NRbg0Pr11SJ8OU7LfkwcblN3sg2bH4nUYN3Sc
-	jk7theU4aQBFwpBA==
+	bh=CX4pb+3godYGbYL2L5DP5LSVnm+uYrRc03oRZsT6xW0=;
+	b=5EEtusZ07Rc3a5s2wX4WniJ1XNm1V1gXAbqutydc+D/8XbjphtsbP1gqjDLuGNtmutCDRS
+	qy1Kwlt1T/tt6kBA==
 To: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -63,6 +63,7 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Hao Luo <haoluo@google.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>,
@@ -71,9 +72,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Stanislav Fomichev <sdf@google.com>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next 13/24] net: Use nested-BH locking for bpf_scratchpad.
-Date: Fri, 15 Dec 2023 18:07:32 +0100
-Message-ID: <20231215171020.687342-14-bigeasy@linutronix.de>
+Subject: [PATCH net-next 14/24] net: Add a lock which held during the redirect process.
+Date: Fri, 15 Dec 2023 18:07:33 +0100
+Message-ID: <20231215171020.687342-15-bigeasy@linutronix.de>
 In-Reply-To: <20231215171020.687342-1-bigeasy@linutronix.de>
 References: <20231215171020.687342-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -84,17 +85,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-bpf_scratchpad is a per-CPU variable and relies on disabled BH for its
-locking. Without per-CPU locking in local_bh_disable() on PREEMPT_RT
-this data structure requires explicit locking.
+The XDP redirect process is two staged:
+- bpf_prog_run_xdp() is invoked to run a eBPF program which inspects the
+  packet and makes decisions. While doing that, the per-CPU variable
+  bpf_redirect_info is used.
 
-Add a local_lock_t to the data structure and use local_lock_nested_bh()
-for locking. This change adds only lockdep coverage and does not alter
-the functional behaviour for !PREEMPT_RT.
+- Afterwards xdp_do_redirect() is invoked and accesses bpf_redirect_info
+  and it may also access other per-CPU variables like xskmap_flush_list.
+
+At the very end of the NAPI callback, xdp_do_flush() is invoked which
+does not access bpf_redirect_info but will touch the individual per-CPU
+lists.
+
+The per-CPU variables are only used in the NAPI callback hence disabling
+bottom halves is the only protection mechanism. Users from preemptible
+context (like cpu_map_kthread_run()) explicitly disable bottom halves
+for protections reasons.
+Without locking in local_bh_disable() on PREEMPT_RT this data structure
+requires explicit locking.
+
+Introduce redirect_lock as a lock to be acquired when access to these
+per-CPU variables is performed. Usually the lock is part of the per-CPU
+variable which is about to be protected but since there are a few
+different per-CPU variables which need to be protected at the same
+time (and some of the variables depend on a CONFIG setting) a new
+per-CPU data structure with variable bpf_run_lock is used for this.
+
+The lock is a nested-BH lock meaning that on non-PREEMPT_RT kernels this
+simply results in a lockdep check and ensuring that bottom halves are
+disabled. On PREEMPT_RT kernels this will provide the needed
+synchronisation once local_bh_disable() does not act as per-CPU lock.
+
+This patch introduces the bpf_run_lock.redirect_lock lock. It will be
+used by drivers in the following patches.
+
+A follow-up step could be to keep bpf_prog_run_xdp() and the
+XDP_REDIRECT switch case (with xdp_do_redirect()) close together. That
+would allow a single scoped_guard() macro to cover the two required
+instaces that require locking instead the whole switch case.
 
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
 Cc: Hao Luo <haoluo@google.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: John Fastabend <john.fastabend@gmail.com>
 Cc: KP Singh <kpsingh@kernel.org>
@@ -105,36 +138,44 @@ Cc: Yonghong Song <yonghong.song@linux.dev>
 Cc: bpf@vger.kernel.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- net/core/filter.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/linux/bpf.h | 6 ++++++
+ net/core/filter.c   | 5 +++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index c8013f762524b..896aa3fa699f9 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -1652,9 +1652,12 @@ struct bpf_scratchpad {
- 		__be32 diff[MAX_BPF_STACK / sizeof(__be32)];
- 		u8     buff[MAX_BPF_STACK];
- 	};
-+	local_lock_t	lock;
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index cff5bb08820ec..6912b85209b12 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -291,6 +291,12 @@ struct bpf_map {
+ 	s64 __percpu *elem_count;
  };
 =20
--static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp);
-+static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp) =3D {
-+	.lock	=3D INIT_LOCAL_LOCK(lock),
++struct bpf_run_lock {
++	local_lock_t redirect_lock;
 +};
++
++DECLARE_PER_CPU(struct bpf_run_lock, bpf_run_lock);
++
+ static inline const char *btf_field_type_name(enum btf_field_type type)
+ {
+ 	switch (type) {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 896aa3fa699f9..7c9653734fb60 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -89,6 +89,11 @@
+ static const struct bpf_func_proto *
+ bpf_sk_base_func_proto(enum bpf_func_id func_id);
 =20
- static inline int __bpf_try_make_writable(struct sk_buff *skb,
- 					  unsigned int write_len)
-@@ -2023,6 +2026,7 @@ BPF_CALL_5(bpf_csum_diff, __be32 *, from, u32, from_s=
-ize,
- 		     diff_size > sizeof(sp->diff)))
- 		return -EINVAL;
-=20
-+	guard(local_lock_nested_bh)(&bpf_sp.lock);
- 	for (i =3D 0; i < from_size / sizeof(__be32); i++, j++)
- 		sp->diff[j] =3D ~from[i];
- 	for (i =3D 0; i <   to_size / sizeof(__be32); i++, j++)
++DEFINE_PER_CPU(struct bpf_run_lock, bpf_run_lock) =3D {
++	.redirect_lock =3D INIT_LOCAL_LOCK(redirect_lock),
++};
++EXPORT_PER_CPU_SYMBOL_GPL(bpf_run_lock);
++
+ int copy_bpf_fprog_from_user(struct sock_fprog *dst, sockptr_t src, int le=
+n)
+ {
+ 	if (in_compat_syscall()) {
 --=20
 2.43.0
 
