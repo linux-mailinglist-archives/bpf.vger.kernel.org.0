@@ -1,187 +1,122 @@
-Return-Path: <bpf+bounces-18043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A3BB8151E6
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 22:22:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF4AA8151E7
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 22:25:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C672F286F53
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 21:22:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E85C51C241D2
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 21:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2981C47F6C;
-	Fri, 15 Dec 2023 21:22:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6C647F6E;
+	Fri, 15 Dec 2023 21:25:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cMB4Q/c3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lL5Xiodo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 172BC48CE9
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 21:22:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF1282ED1
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 21:25:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e18689828so1278614e87.2
-        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 13:22:49 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-336447f240cso729710f8f.3
+        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 13:25:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702675368; x=1703280168; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jUC4sZcVntEgRTYSln5nwIUWkNKUOnNMg6g/NfAo9MM=;
-        b=cMB4Q/c34oTeic738S9jXygL2mLjuflKQk7CB7fCw4t1fTKHtFLFoP5dHLPH83fooO
-         zzrxdj/kIsioV9yhSD+EMCxT7Xk6kmZ8UmrVHTlzC6QMEXGfvBMSqJaGIkAYJuQLcQ8C
-         sVOHEMYWNFRCG/NUKd+xwjjBkPLoQrXwOoDyibNX/K1a7gZtA+5vy1t17+lHUzlcTa8x
-         j/rT6NtUyQncPFEgIp2A6IzmfeAEV/pQQWAS/beEK7BwqsyOGqR62yEkrM3fbGKL6o2L
-         JF2j6yGsqh4exM80fMt39QzqtyZyR2pBjl1Q1Y8smTy6H420XR4do/l2SFL4CZpklHsj
-         UuOA==
+        d=gmail.com; s=20230601; t=1702675547; x=1703280347; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qv6K56UfOA2v/91pnnPCmeRYUwRiLoxwDl7rRkRE1mk=;
+        b=lL5XiodoucXoMS4B1wKVMkEHqXHx5GDJJ4crMNJt7k5/qMnggPTguVhgNxj1yasoqz
+         V0au3uDbvZds+80WDFGOYWyxE5xbWSM1qRqqtekVirKB8GMpUY8brVUbkm0361ipClPt
+         en7qUauT26l2CUpFPxLK2+xn+fbDlrwxDwTfQManqzaej7exW06jHkPcndExzqxyjyCU
+         Rj0meb+QNZs+xf53AaRVlbZodUzfnxlvgSxRayJiMjxieWJRpTebejZQgCzNb44Dlwab
+         wsGZTp27UTdx+2QzVgYEFa9SsOij8t6l7/DBCS2xxzIagyea1tFDS3VF8fX41TlAMDij
+         4lsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702675368; x=1703280168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jUC4sZcVntEgRTYSln5nwIUWkNKUOnNMg6g/NfAo9MM=;
-        b=vstjCX4zkpx4mvtxSqtEi5jGeRkyq7sb+vNL+v2W0OJw67cbiKuiCJijl9Z/W/c7kA
-         tXR8YW8CdDLuYLv1r94S8uAvx0WxrNvr6PnPcMEKFfHONXzmrNWcRFU0rHogOAZ5aUfW
-         ffaMK2+kLUzaPwRCMCxflZ0FKLXL5K+AEV69ZmxMlKCHSdnSwUtuf5IG8xge49nkLsb6
-         jwkjhPVJTJfIduA2FIjq8PmxBZT2Koq+ruSMf0wophgWT7Qc5I4jX5XSKwdA7yI+skAM
-         86QUt5HKofXIzM4208jmWsr1o09PmDYMpEz5VVlbrptwLlfGIt7Ua/yvf4PSfbf2QFyc
-         TWIQ==
-X-Gm-Message-State: AOJu0Yzw6H+ROcd1Ee4EZBmhEOMhihF9/dFR/bG/XE0Y6A/w5ie7b73W
-	tzBH3SCJt93jGHMC1/XGHIa3LjW7s5Ddr3N6IJw=
-X-Google-Smtp-Source: AGHT+IGV73OEXCRgAVjZo6cD0m2mJ9rlbBhSJn66rmk3YhPMI2eLdnVQvZ7AF3usxtvRzCRO5svCUQ2sze5jK1TF6Sw=
-X-Received: by 2002:ac2:46c5:0:b0:50b:f0af:5605 with SMTP id
- p5-20020ac246c5000000b0050bf0af5605mr5561598lfo.102.1702675367395; Fri, 15
- Dec 2023 13:22:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702675547; x=1703280347;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qv6K56UfOA2v/91pnnPCmeRYUwRiLoxwDl7rRkRE1mk=;
+        b=r0TZ+zFSQfPt/LPX1H6vX0DeKQbbb0uz+cd/dSumaU08tCydgDTlwARLsyNC13rgVQ
+         SO2AJqgKKuhQaSptlJw2klN1nmbJAHmtUM8O4Q1rz7qd2avaCrxOmn4EkgsHjtNj7E6e
+         UdFwQFIYEtqOMkWOVnJS9nmU/PWl6cJ7oGMJcPb4lFWohzJT1xerjQKhdXyNAmIQgnlw
+         xwFoXiykeQ2YFZe+WIV3QZWxr7vmkDCFqN7TOkL982rkufqSziXOw4XfJQYU/NYNRsnj
+         KT2ynuKqTAncGVC2Qcjlw72ZERupuIMO/iNR8b7ayswacG4Uk6iDjoUGlB21hXOEFqLj
+         x6Ng==
+X-Gm-Message-State: AOJu0YyUuw28In9xcP0wPrFuctpX10Rk3URWD86hM6SOQ6QFO1hxGEPQ
+	HK4MxKjtJl4Zylr/sKupL2g=
+X-Google-Smtp-Source: AGHT+IEOxlBI/AXTFq+Ewh+jH4Rg827kK3li5kBPPxmR9HTcjZ+68LDFNZc1qXUjc1HHxfZMqTi7nw==
+X-Received: by 2002:a5d:474d:0:b0:336:48e3:8c7b with SMTP id o13-20020a5d474d000000b0033648e38c7bmr1931238wrs.140.1702675547131;
+        Fri, 15 Dec 2023 13:25:47 -0800 (PST)
+Received: from krava ([83.240.61.143])
+        by smtp.gmail.com with ESMTPSA id z1-20020a5d4d01000000b003365aa39d30sm1261486wrt.11.2023.12.15.13.25.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Dec 2023 13:25:46 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 15 Dec 2023 22:25:44 +0100
+To: Dmitry Dolgov <9erthalion6@gmail.com>
+Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+	song@kernel.org, yonghong.song@linux.dev, dan.carpenter@linaro.org,
+	asavkov@redhat.com
+Subject: Re: [PATCH bpf-next v8 1/4] bpf: Relax tracing prog recursive attach
+ rules
+Message-ID: <ZXzEWIDDKPmYRz06@krava>
+References: <20231212195413.23942-1-9erthalion6@gmail.com>
+ <20231212195413.23942-2-9erthalion6@gmail.com>
+ <ZXxnLzhAFxwepM_7@krava>
+ <20231215163621.np4kmz324opmopb6@erthalion.local>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZXwZa_eK7bWXjJk7@krava> <ZXxhlG2gndCZ71Ox@krava> <de0466f0-58af-4eab-bc31-0297eae744ce@linux.dev>
-In-Reply-To: <de0466f0-58af-4eab-bc31-0297eae744ce@linux.dev>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 15 Dec 2023 13:22:35 -0800
-Message-ID: <CAEf4BzZM3tnm_CB8DW5GMJw=0AVES-ouZS4B22Gy+HirdP+otQ@mail.gmail.com>
-Subject: Re: [RFC] bpf: Issue with bpf_fentry_test7 call
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yhs@fb.com>, 
-	bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215163621.np4kmz324opmopb6@erthalion.local>
 
-On Fri, Dec 15, 2023 at 6:42=E2=80=AFAM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
-> On 12/15/23 6:24 AM, Jiri Olsa wrote:
-> > On Fri, Dec 15, 2023 at 10:16:27AM +0100, Jiri Olsa wrote:
-> >> hi,
-> >> The bpf CI is broken due to clang emitting 2 functions for
-> >> bpf_fentry_test7:
-> >>
-> >>    # cat available_filter_functions | grep bpf_fentry_test7
-> >>    bpf_fentry_test7
-> >>    bpf_fentry_test7.specialized.1
-> >>
-> >> The tests attach to 'bpf_fentry_test7' while the function with
-> >> '.specialized.1' suffix is executed in bpf_prog_test_run_tracing.
-> >>
-> >> It looks like clang optimalization that comes from passing 0
-> >> as argument and returning it directly in bpf_fentry_test7.
-> >>
-> >> I'm not sure there's a way to disable this, so far I came
-> >> up with solution below that passes real pointer, but I think
-> >> that was not the original intention for the test.
-> >>
-> >> We had issue with this function back in august:
-> >>    32337c0a2824 bpf: Prevent inlining of bpf_fentry_test7()
-> >>
-> >> I'm not sure why it started to show now? was clang updated for CI?
-> >>
-> >> I'll try to find out more, but any clang ideas are welcome ;-)
-> >>
-> >> thanks,
-> >> jirka
+On Fri, Dec 15, 2023 at 05:36:21PM +0100, Dmitry Dolgov wrote:
+> > On Fri, Dec 15, 2023 at 03:48:15PM +0100, Jiri Olsa wrote:
+> > > +	/* Bookkeeping for managing the prog attachment chain */
+> > > +	if (tgt_prog &&
+> > > +		prog->type == BPF_PROG_TYPE_TRACING &&
+> > > +		tgt_prog->type == BPF_PROG_TYPE_TRACING)
+> > > +			prog->aux->attach_tracing_prog = true;
 > >
-> > hm, there seems to be fix in bpf-next for this one:
+> > hi,
+> > this still looks bad, I think it should be:
 > >
-> >    b16904fd9f01 bpf: Fix a few selftest failures due to llvm18 change
->
-> Maybe submit a patch to https://github.com/kernel-patches/vmtest/tree/mas=
-ter/ci/diffs?
-> That is typically the place to have temporary patches to workaround ci fa=
-ilures.
->
+> > +	if (tgt_prog &&
+> > +	    prog->type == BPF_PROG_TYPE_TRACING &&
+> > +	    tgt_prog->type == BPF_PROG_TYPE_TRACING)
+> > +		prog->aux->attach_tracing_prog = true;
+> >
+> > other than that the patchset looks good to me
+> 
+> Never thought I would have so many troubles with code formatting :) To
+> make sure I got it right this time, this is how it should be (with
+> explicit vim-style tabs and spaces, last tab for "if" predicates is
+> expanded with spaces), right?
 
-To get bpf/master back to green CI I did it meanwhile ([0]). Jiri,
-please check the PR to be familiar with the process for the future
-similar mitigations, thanks.
+right
 
-  [0] https://github.com/kernel-patches/vmtest/pull/258
+> 
+> +^Iif (tgt_prog &&
+> +^I    prog->type == BPF_PROG_TYPE_TRACING &&
+> +^I    tgt_prog->type == BPF_PROG_TYPE_TRACING)
+> +^I^Iprog->aux->attach_tracing_prog = true;
 
-> >
-> > jirka
-> >
-> >>
-> >> ---
-> >> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> >> index c9fdcc5cdce1..33208eec9361 100644
-> >> --- a/net/bpf/test_run.c
-> >> +++ b/net/bpf/test_run.c
-> >> @@ -543,7 +543,7 @@ struct bpf_fentry_test_t {
-> >>   int noinline bpf_fentry_test7(struct bpf_fentry_test_t *arg)
-> >>   {
-> >>      asm volatile ("");
-> >> -    return (long)arg;
-> >> +    return 0;
-> >>   }
-> >>
-> >>   int noinline bpf_fentry_test8(struct bpf_fentry_test_t *arg)
-> >> @@ -668,7 +668,7 @@ int bpf_prog_test_run_tracing(struct bpf_prog *pro=
-g,
-> >>                  bpf_fentry_test4((void *)7, 8, 9, 10) !=3D 34 ||
-> >>                  bpf_fentry_test5(11, (void *)12, 13, 14, 15) !=3D 65 =
-||
-> >>                  bpf_fentry_test6(16, (void *)17, 18, 19, (void *)20, =
-21) !=3D 111 ||
-> >> -                bpf_fentry_test7((struct bpf_fentry_test_t *)0) !=3D =
-0 ||
-> >> +                bpf_fentry_test7(&arg) !=3D 0 ||
-> >>                  bpf_fentry_test8(&arg) !=3D 0 ||
-> >>                  bpf_fentry_test9(&retval) !=3D 0)
-> >>                      goto out;
-> >> diff --git a/tools/testing/selftests/bpf/progs/fentry_test.c b/tools/t=
-esting/selftests/bpf/progs/fentry_test.c
-> >> index 52a550d281d9..95c5c34ccaa8 100644
-> >> --- a/tools/testing/selftests/bpf/progs/fentry_test.c
-> >> +++ b/tools/testing/selftests/bpf/progs/fentry_test.c
-> >> @@ -64,7 +64,7 @@ __u64 test7_result =3D 0;
-> >>   SEC("fentry/bpf_fentry_test7")
-> >>   int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
-> >>   {
-> >> -    if (!arg)
-> >> +    if (arg)
-> >>              test7_result =3D 1;
-> >>      return 0;
-> >>   }
-> >> diff --git a/tools/testing/selftests/bpf/progs/fexit_test.c b/tools/te=
-sting/selftests/bpf/progs/fexit_test.c
-> >> index 8f1ccb7302e1..ffb30236ca02 100644
-> >> --- a/tools/testing/selftests/bpf/progs/fexit_test.c
-> >> +++ b/tools/testing/selftests/bpf/progs/fexit_test.c
-> >> @@ -65,7 +65,7 @@ __u64 test7_result =3D 0;
-> >>   SEC("fexit/bpf_fentry_test7")
-> >>   int BPF_PROG(test7, struct bpf_fentry_test_t *arg)
-> >>   {
-> >> -    if (!arg)
-> >> +    if (arg)
-> >>              test7_result =3D 1;
-> >>      return 0;
-> >>   }
+yep ;-)
+
+> 
+> Thanks for the review and patience.
+
+thanks,
+jirka
 
