@@ -1,26 +1,26 @@
-Return-Path: <bpf+bounces-18023-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18024-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55A5A814E3F
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 18:16:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAD33814E40
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 18:16:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DA501C24042
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 17:16:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CECE21C23F87
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 17:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCBB6ABB5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF4F06BB2A;
 	Fri, 15 Dec 2023 17:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JtWcWrlR";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="NzCo4hAy"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2frKVfBu";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XDtMmiv9"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD1B59E59;
-	Fri, 15 Dec 2023 17:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC1261FD1;
+	Fri, 15 Dec 2023 17:10:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
@@ -30,21 +30,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zae3m1cO9fSJoSwUDjCnhvMwaD0Cp7wkXYtacLoccYI=;
-	b=JtWcWrlRr/Yw4kQ1UWySiE1WnFklIBcg9wCnilSSfcJDNnaXHknsfFQ2hm3Wg/ONikWDB+
-	WRxCE/Tc1oj8/5Vra+uDd80anJKj5JKArhylRiQWeqOiu9dGS2spg5Z1FiJFb7PYir9ZLl
-	YgPOBKKzrgsCa96PnNswic05kIQ/rUSbCdeqFC5thljdEb55zV5ywwfj1sceBkMTCRU0p4
-	y7xHwZ+cy0+IUt7MuLeHRIi5cN42VqdLlD8SLMT0QybC5HYV7wrPuUzJG43qDI9Xt9mesD
-	1NDCCGSXDR+g3yntLA8aFfivSR8gLveMOz0FQOgX4TMdKDdRnyy3zgJi+xJuvw==
+	bh=gJvqfL6kfGkcyInYfR34Y5EU2FsYBJr4oMNF68chbko=;
+	b=2frKVfBuTxNCn/YOdDqPDYZ2sctcTtOlZNN7VRsSx5KBQpwgvXQwFEfPLw6meL5XGoMXyu
+	odJ2LoMSj808d8L7BQNEdFJ8NhzX5yli372pUzzryRbWBt4dSR30SMD+us3HkuOsZNtGVl
+	7SRpX7+5b88RAWlQlXDnwKuY/Zj0drS4EEoNxIUi7s2x65k0c4nlfqbXq5mDT7SzgIUWEe
+	NrokjDvzRvF7PWAG18JNo/ICJZZUWcxpaAbRvrHklPDCkiwtsK3iSqWaTibdYV0L28kr2Q
+	xO7eKDxi7kmQetOaekHkCvzw5cICCTFsegmZRKB+5Q8GsqSAUsK/VJpQkBpBSg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
 	s=2020e; t=1702660241;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zae3m1cO9fSJoSwUDjCnhvMwaD0Cp7wkXYtacLoccYI=;
-	b=NzCo4hAyNx+4VtNSo05p7oXiKzL7azy7XiXo4Ljk4IPRdRDvvQB9bLy3+o8Xz+b/cRIMks
-	tfLo+tJk/hEPGUCQ==
+	bh=gJvqfL6kfGkcyInYfR34Y5EU2FsYBJr4oMNF68chbko=;
+	b=XDtMmiv9Gk7YQYNN+15d696JweHCRkGPHH6mhMrQi75BId2aTtnMH7bXiiai8t3OnICdC7
+	mpD1I/ZZkX+/hzDQ==
 To: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -60,32 +60,16 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Waiman Long <longman@redhat.com>,
 	Will Deacon <will@kernel.org>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
 	Alexei Starovoitov <ast@kernel.org>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Dexuan Cui <decui@microsoft.com>,
-	Dimitris Michailidis <dmichail@fungible.com>,
-	Felix Fietkau <nbd@nbd.name>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Horatiu Vultur <horatiu.vultur@microchip.com>,
-	Jeroen de Borst <jeroendb@google.com>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Crispin <john@phrozen.org>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
 	John Fastabend <john.fastabend@gmail.com>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Mark Lee <Mark-MC.Lee@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>,
-	Sean Wang <sean.wang@mediatek.com>,
-	Shailend Chand <shailend@google.com>,
-	UNGLinuxDriver@microchip.com,
-	Wei Liu <wei.liu@kernel.org>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	bpf@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH net-next 19/24] net: fungible, gve, mtk, microchip, mana: Use nested-BH locking for XDP redirect.
-Date: Fri, 15 Dec 2023 18:07:38 +0100
-Message-ID: <20231215171020.687342-20-bigeasy@linutronix.de>
+	intel-wired-lan@lists.osuosl.org
+Subject: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP redirect.
+Date: Fri, 15 Dec 2023 18:07:39 +0100
+Message-ID: <20231215171020.687342-21-bigeasy@linutronix.de>
 In-Reply-To: <20231215171020.687342-1-bigeasy@linutronix.de>
 References: <20231215171020.687342-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -119,119 +103,225 @@ xdp_do_redirect() and everything else (error recovery, DMA unmapping,
 free/ alloc of memory, =E2=80=A6) would happen outside of the locked sectio=
 n.
 
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>
 Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Dexuan Cui <decui@microsoft.com>
-Cc: Dimitris Michailidis <dmichail@fungible.com>
-Cc: Felix Fietkau <nbd@nbd.name>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc: Jeroen de Borst <jeroendb@google.com>
 Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Crispin <john@phrozen.org>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
 Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>
-Cc: Mark Lee <Mark-MC.Lee@mediatek.com>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Praveen Kaligineedi <pkaligineedi@google.com>
-Cc: Sean Wang <sean.wang@mediatek.com>
-Cc: Shailend Chand <shailend@google.com>
-Cc: UNGLinuxDriver@microchip.com
-Cc: Wei Liu <wei.liu@kernel.org>
-Cc: bpf@vger.kernel.org
-Cc: linux-hyperv@vger.kernel.org
-Cc: linux-mediatek@lists.infradead.org
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc: bpf@vger.kernel.org (open list:XDP
+Cc: intel-wired-lan@lists.osuosl.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- drivers/net/ethernet/fungible/funeth/funeth_rx.c     |  1 +
- drivers/net/ethernet/google/gve/gve_rx.c             | 12 +++++++-----
- drivers/net/ethernet/mediatek/mtk_eth_soc.c          |  1 +
- drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c |  1 +
- drivers/net/ethernet/microsoft/mana/mana_bpf.c       |  1 +
- 5 files changed, 11 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  1 +
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    | 22 +++++++++--------
+ drivers/net/ethernet/intel/ice/ice_txrx.c     |  1 +
+ drivers/net/ethernet/intel/ice/ice_xsk.c      | 21 ++++++++--------
+ drivers/net/ethernet/intel/igb/igb_main.c     |  1 +
+ drivers/net/ethernet/intel/igc/igc_main.c     |  5 +++-
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c |  1 +
+ drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c  | 24 ++++++++++---------
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c |  3 ++-
+ 9 files changed, 46 insertions(+), 33 deletions(-)
 
-diff --git a/drivers/net/ethernet/fungible/funeth/funeth_rx.c b/drivers/net=
-/ethernet/fungible/funeth/funeth_rx.c
-index 7e2584895de39..e7b1382545908 100644
---- a/drivers/net/ethernet/fungible/funeth/funeth_rx.c
-+++ b/drivers/net/ethernet/fungible/funeth/funeth_rx.c
-@@ -152,6 +152,7 @@ static void *fun_run_xdp(struct funeth_rxq *q, skb_frag=
-_t *frags, void *buf_va,
- 	xdp_prepare_buff(&xdp, buf_va, FUN_XDP_HEADROOM, skb_frag_size(frags) -
- 			 (FUN_RX_TAILROOM + FUN_XDP_HEADROOM), false);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethe=
+rnet/intel/i40e/i40e_txrx.c
+index dd410b15000f7..76e069ae2183a 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -2326,6 +2326,7 @@ static int i40e_run_xdp(struct i40e_ring *rx_ring, st=
+ruct xdp_buff *xdp, struct
+=20
+ 	prefetchw(xdp->data_hard_start); /* xdp_frame write */
 =20
 +	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
- 	xdp_prog =3D READ_ONCE(q->xdp_prog);
- 	act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
-=20
-diff --git a/drivers/net/ethernet/google/gve/gve_rx.c b/drivers/net/etherne=
-t/google/gve/gve_rx.c
-index 73655347902d2..504c8ef761a33 100644
---- a/drivers/net/ethernet/google/gve/gve_rx.c
-+++ b/drivers/net/ethernet/google/gve/gve_rx.c
-@@ -779,11 +779,13 @@ static void gve_rx(struct gve_rx_ring *rx, netdev_fea=
-tures_t feat,
- 				 page_info->page_offset, GVE_RX_PAD,
- 				 len, false);
- 		old_data =3D xdp.data;
--		xdp_act =3D bpf_prog_run_xdp(xprog, &xdp);
--		if (xdp_act !=3D XDP_PASS) {
--			gve_xdp_done(priv, rx, &xdp, xprog, xdp_act);
--			ctx->total_size +=3D frag_size;
--			goto finish_ok_pkt;
-+		scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock) {
-+			xdp_act =3D bpf_prog_run_xdp(xprog, &xdp);
-+			if (xdp_act !=3D XDP_PASS) {
-+				gve_xdp_done(priv, rx, &xdp, xprog, xdp_act);
-+				ctx->total_size +=3D frag_size;
-+				goto finish_ok_pkt;
-+			}
- 		}
-=20
- 		page_info->pad +=3D xdp.data - old_data;
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethe=
-rnet/mediatek/mtk_eth_soc.c
-index 3cf6589cfdacf..477a74ee18c0a 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -1946,6 +1946,7 @@ static u32 mtk_xdp_run(struct mtk_eth *eth, struct mt=
-k_rx_ring *ring,
- 	if (!prog)
- 		goto out;
-=20
-+	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
- 	act =3D bpf_prog_run_xdp(prog, xdp);
+ 	act =3D bpf_prog_run_xdp(xdp_prog, xdp);
  	switch (act) {
  	case XDP_PASS:
-diff --git a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c b/drivers=
-/net/ethernet/microchip/lan966x/lan966x_xdp.c
-index 9ee61db8690b4..026311af07f9e 100644
---- a/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-+++ b/drivers/net/ethernet/microchip/lan966x/lan966x_xdp.c
-@@ -84,6 +84,7 @@ int lan966x_xdp_run(struct lan966x_port *port, struct pag=
-e *page, u32 data_len)
- 	xdp_prepare_buff(&xdp, page_address(page),
- 			 IFH_LEN_BYTES + XDP_PACKET_HEADROOM,
- 			 data_len - IFH_LEN_BYTES, false);
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ether=
+net/intel/i40e/i40e_xsk.c
+index e99fa854d17f1..2b0c0c1f3ddc8 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -201,17 +201,19 @@ static int i40e_run_xdp_zc(struct i40e_ring *rx_ring,=
+ struct xdp_buff *xdp,
+ 	struct i40e_ring *xdp_ring;
+ 	u32 act;
+=20
+-	act =3D bpf_prog_run_xdp(xdp_prog, xdp);
++	scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock) {
++		act =3D bpf_prog_run_xdp(xdp_prog, xdp);
+=20
+-	if (likely(act =3D=3D XDP_REDIRECT)) {
+-		err =3D xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		if (!err)
+-			return I40E_XDP_REDIR;
+-		if (xsk_uses_need_wakeup(rx_ring->xsk_pool) && err =3D=3D -ENOBUFS)
+-			result =3D I40E_XDP_EXIT;
+-		else
+-			result =3D I40E_XDP_CONSUMED;
+-		goto out_failure;
++		if (likely(act =3D=3D XDP_REDIRECT)) {
++			err =3D xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
++			if (!err)
++				return I40E_XDP_REDIR;
++			if (xsk_uses_need_wakeup(rx_ring->xsk_pool) && err =3D=3D -ENOBUFS)
++				result =3D I40E_XDP_EXIT;
++			else
++				result =3D I40E_XDP_CONSUMED;
++			goto out_failure;
++		}
+ 	}
+=20
+ 	switch (act) {
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethern=
+et/intel/ice/ice_txrx.c
+index 9e97ea8630686..5d4cfa3455b37 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -571,6 +571,7 @@ ice_run_xdp(struct ice_rx_ring *rx_ring, struct xdp_buf=
+f *xdp,
+ 	if (!xdp_prog)
+ 		goto exit;
+=20
 +	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
- 	act =3D bpf_prog_run_xdp(xdp_prog, &xdp);
+ 	act =3D bpf_prog_run_xdp(xdp_prog, xdp);
  	switch (act) {
  	case XDP_PASS:
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_bpf.c b/drivers/net/e=
-thernet/microsoft/mana/mana_bpf.c
-index 23b1521c0df96..d465b1dd9fca0 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_bpf.c
-@@ -93,6 +93,7 @@ u32 mana_run_xdp(struct net_device *ndev, struct mana_rxq=
- *rxq,
- 	xdp_init_buff(xdp, PAGE_SIZE, &rxq->xdp_rxq);
- 	xdp_prepare_buff(xdp, buf_va, XDP_PACKET_HEADROOM, pkt_len, false);
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/etherne=
+t/intel/ice/ice_xsk.c
+index 99954508184f9..02f89c22d19e3 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -762,17 +762,18 @@ ice_run_xdp_zc(struct ice_rx_ring *rx_ring, struct xd=
+p_buff *xdp,
+ 	int err, result =3D ICE_XDP_PASS;
+ 	u32 act;
+=20
++	scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock) {
+ 	act =3D bpf_prog_run_xdp(xdp_prog, xdp);
+-
+-	if (likely(act =3D=3D XDP_REDIRECT)) {
+-		err =3D xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		if (!err)
+-			return ICE_XDP_REDIR;
+-		if (xsk_uses_need_wakeup(rx_ring->xsk_pool) && err =3D=3D -ENOBUFS)
+-			result =3D ICE_XDP_EXIT;
+-		else
+-			result =3D ICE_XDP_CONSUMED;
+-		goto out_failure;
++		if (likely(act =3D=3D XDP_REDIRECT)) {
++			err =3D xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
++			if (!err)
++				return ICE_XDP_REDIR;
++			if (xsk_uses_need_wakeup(rx_ring->xsk_pool) && err =3D=3D -ENOBUFS)
++				result =3D ICE_XDP_EXIT;
++			else
++				result =3D ICE_XDP_CONSUMED;
++			goto out_failure;
++		}
+ 	}
+=20
+ 	switch (act) {
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethern=
+et/intel/igb/igb_main.c
+index b2295caa2f0ab..e01be809d030e 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -8621,6 +8621,7 @@ static struct sk_buff *igb_run_xdp(struct igb_adapter=
+ *adapter,
+=20
+ 	prefetchw(xdp->data_hard_start); /* xdp_frame write */
 =20
 +	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
- 	act =3D bpf_prog_run_xdp(prog, xdp);
+ 	act =3D bpf_prog_run_xdp(xdp_prog, xdp);
+ 	switch (act) {
+ 	case XDP_PASS:
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethern=
+et/intel/igc/igc_main.c
+index e9bb403bbacf9..8321419b3a307 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -2485,7 +2485,10 @@ static int __igc_xdp_run_prog(struct igc_adapter *ad=
+apter,
+ 			      struct bpf_prog *prog,
+ 			      struct xdp_buff *xdp)
+ {
+-	u32 act =3D bpf_prog_run_xdp(prog, xdp);
++	u32 act;
++
++	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
++	act =3D bpf_prog_run_xdp(prog, xdp);
 =20
- 	rx_stats =3D &rxq->stats;
+ 	switch (act) {
+ 	case XDP_PASS:
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/et=
+hernet/intel/ixgbe/ixgbe_main.c
+index 94bde2cad0f47..de564e8b83be2 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -2203,6 +2203,7 @@ static struct sk_buff *ixgbe_run_xdp(struct ixgbe_ada=
+pter *adapter,
+=20
+ 	prefetchw(xdp->data_hard_start); /* xdp_frame write */
+=20
++	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+ 	act =3D bpf_prog_run_xdp(xdp_prog, xdp);
+ 	switch (act) {
+ 	case XDP_PASS:
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c b/drivers/net/eth=
+ernet/intel/ixgbe/ixgbe_xsk.c
+index 59798bc33298f..b988f758aad49 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_xsk.c
+@@ -104,18 +104,20 @@ static int ixgbe_run_xdp_zc(struct ixgbe_adapter *ada=
+pter,
+ 	struct xdp_frame *xdpf;
+ 	u32 act;
+=20
+-	xdp_prog =3D READ_ONCE(rx_ring->xdp_prog);
+-	act =3D bpf_prog_run_xdp(xdp_prog, xdp);
++	scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock) {
++		xdp_prog =3D READ_ONCE(rx_ring->xdp_prog);
++		act =3D bpf_prog_run_xdp(xdp_prog, xdp);
+=20
+-	if (likely(act =3D=3D XDP_REDIRECT)) {
+-		err =3D xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
+-		if (!err)
+-			return IXGBE_XDP_REDIR;
+-		if (xsk_uses_need_wakeup(rx_ring->xsk_pool) && err =3D=3D -ENOBUFS)
+-			result =3D IXGBE_XDP_EXIT;
+-		else
+-			result =3D IXGBE_XDP_CONSUMED;
+-		goto out_failure;
++		if (likely(act =3D=3D XDP_REDIRECT)) {
++			err =3D xdp_do_redirect(rx_ring->netdev, xdp, xdp_prog);
++			if (!err)
++				return IXGBE_XDP_REDIR;
++			if (xsk_uses_need_wakeup(rx_ring->xsk_pool) && err =3D=3D -ENOBUFS)
++				result =3D IXGBE_XDP_EXIT;
++			else
++				result =3D IXGBE_XDP_CONSUMED;
++			goto out_failure;
++		}
+ 	}
+=20
+ 	switch (act) {
+diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/ne=
+t/ethernet/intel/ixgbevf/ixgbevf_main.c
+index a44e4bd561421..1c58c08aa15ff 100644
+--- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
++++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+@@ -1059,7 +1059,8 @@ static struct sk_buff *ixgbevf_run_xdp(struct ixgbevf=
+_adapter *adapter,
+ 	if (!xdp_prog)
+ 		goto xdp_out;
+=20
+-	act =3D bpf_prog_run_xdp(xdp_prog, xdp);
++	scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock)
++		act =3D bpf_prog_run_xdp(xdp_prog, xdp);
+ 	switch (act) {
+ 	case XDP_PASS:
+ 		break;
 --=20
 2.43.0
 
