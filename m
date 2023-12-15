@@ -1,139 +1,262 @@
-Return-Path: <bpf+bounces-17962-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17963-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4237B8141DD
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 07:37:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F4BE8141FE
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 07:51:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C1FCB2109F
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 06:37:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B99B02836CE
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 06:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E0A8CA6B;
-	Fri, 15 Dec 2023 06:37:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22532D27D;
+	Fri, 15 Dec 2023 06:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YURSuVHP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cSb745NF"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C72FCA64
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 06:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3b9f8c9307dso354884b6e.0
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 22:37:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702622230; x=1703227030; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=whK72q5+6sWngI0W57PiBzq7Y6B836ek51+hDtN0bh4=;
-        b=YURSuVHPbAMwUQwNebp5+ncRgfr+Vxrtv+7iqa/SDTveCpvv0QLaKHODuML/DlPpI0
-         l1QugwqhYk96fIvNLv1zhKl0NQfs0Xvh8gNq4FZ3GAjXh6ZtaOvzJo5Ovb6MUKJNaldA
-         ZCGm2kRo1u00TzvR2iBsxGRGx6nqsqMoEZT8w/v7A0vljJaE5/tufTBU/xb7PcXCw+UD
-         D4kDEVEuwMl9tt4QCNRefxlyzWXeB6uhQ6KNnTunWUoGZrv7L8Cb4drq5ff6Vw5CFQZr
-         Z2anMJSwTcYE3RxRs06XLCCMQxXkcB1J8cyr7i90srdgnXRszlw2g1Ijx2WIMvZhKj1B
-         Waxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702622230; x=1703227030;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=whK72q5+6sWngI0W57PiBzq7Y6B836ek51+hDtN0bh4=;
-        b=Xz3pAcQKnXHplNenwwedN3U3kaXXsukGZd2XNdm4VRXoGcUuTwz/KrdASd4Q9Em8xg
-         bA+IomXpamzfXhdXVw+RkmI07/jnr70nxqlfpuUrBJ27L4G6C+nFBYEDfhjlDDDbb/wO
-         3VW2kiJRZltLY9avJdkRgxxUQA8khCokV+q7V0LgX/5WuN4P9C1IRV8E2grKioWl9Oue
-         GdV4QjS2b2x/tVtXZs7h0m8VJdZhPrRJgGqDsSzvIxUg88XSUOW33zm3rKlSDeqB4Na+
-         Qq1fkXX+9Q1HGjrVAhuL3jdGcTjDQx45V8IzIWvZrCczd4sfrx7jDkaPNwv6QQRh/q6+
-         KQbQ==
-X-Gm-Message-State: AOJu0YyAidO1VgnAr4qxMi21QOL4bBCU/qG2GtMXbsTYBDg6Z4j9cHHC
-	VXMTudQgpbsmRXb8ENSWqBM=
-X-Google-Smtp-Source: AGHT+IGXEJ9oGkq0vPeSLyGX7COdfoY4oxVtEbOYibTR1tRuoxL5QI5TU0JUJswLBGb5r40GYmFUsQ==
-X-Received: by 2002:a05:6808:1786:b0:3b9:cc1e:4726 with SMTP id bg6-20020a056808178600b003b9cc1e4726mr14466623oib.75.1702622230250;
-        Thu, 14 Dec 2023 22:37:10 -0800 (PST)
-Received: from surya ([2600:1700:3ec2:2011:267b:5fd0:9667:5cbd])
-        by smtp.gmail.com with ESMTPSA id h2-20020a056a00170200b006cea0054b9esm12606875pfc.213.2023.12.14.22.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 22:37:09 -0800 (PST)
-Date: Thu, 14 Dec 2023 22:37:07 -0800
-From: Manu Bretelle <chantr4@gmail.com>
-To: Quentin Monnet <quentin@isovalent.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Subject: Re: [PATCH v1 bpf-next 1/9] bpftool: add testing skeleton
-Message-ID: <ZXv0E0+npdrWNEvh@surya>
-References: <20231116194236.1345035-1-chantr4@gmail.com>
- <20231116194236.1345035-2-chantr4@gmail.com>
- <CAADnVQ+Mb-eQUxp-0c_C_nVme0Sqy7CST_vaCiawefjTb5spiw@mail.gmail.com>
- <a9ac8c82-7b97-4001-a839-215eb4cc292f@isovalent.com>
- <CAADnVQ+f80KNBcjYRzBJw4zhYfhYa=Cw9bdQEe+Z1=CnQaa9Gw@mail.gmail.com>
- <4aa42cb9-a03b-403c-976b-a1426a2fcdc4@isovalent.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA11B11CA9
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 06:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d22fb5f7-9b51-47c4-93d2-69064f2fb550@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702623067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5sJhptAwudjgBm+Vvp927KUt2AVw+5+lbcZ/j2jlews=;
+	b=cSb745NFZ2t/mdbeeXli5Iq2N/Bn3abo/CBVj6L9xLpHEGckMvcihh9wQh8VqitCRIQMzQ
+	zOHvdHjMWfutqaHnuoU13+V5Vh09SeNKkL4GaHoxHi2GTajyp9lYsylkcLASLDL34o250/
+	d+JkGEmsF//yhtRYbGYRC8GiLj4vL0g=
+Date: Thu, 14 Dec 2023 22:50:59 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4aa42cb9-a03b-403c-976b-a1426a2fcdc4@isovalent.com>
-
-On Mon, Nov 27, 2023 at 05:07:15PM +0000, Quentin Monnet wrote:
-> 2023-11-21 16:42 UTC+0000 ~ Alexei Starovoitov
-> <alexei.starovoitov@gmail.com>
-> > On Tue, Nov 21, 2023 at 8:26 AM Quentin Monnet <quentin@isovalent.com> wrote:
-> >>
-> >>>
-> >>> Does it have to leave in the kernel tree?
-> >>> We have bpftool on github, maybe it can be there?
-> >>> Do you want to run bpftool tester as part of BPF CI and that's why
-> >>> you want it to be in the kernel tree?
-> >>
-> >> It doesn't _have_ to be in the kernel tree, although it's a nice place
-> >> where to have it. We have bpftool on GitHub, but the CI that runs there
-> >> is triggered only when syncing the mirror to check that mirroring is not
-> >> broken, so after new patches are applied to bpf-next. If we want this on
-> >> GitHub, we would rather target the BPF CI infra.
-> >>
-> >> A nice point of having it in the repo would be the ability to add tests
-> >> at the same time as we add features in bpftool, of course.
-> > 
-> > Sounds nice in theory, but in practice that would mean that
-> > every bpftool developer adding a new feature would need to learn rust
-> > to add a corresponding test?
-> > I suspect devs might object to such a requirement.
-> 
-> True. I've been hoping the tests would look easy enough that devs could
-> update them without being particularly versed in Rust, but this is
-> probably wishful thinking, and prone to getting bugs in the tests.
-> 
-> I don't have a good proposal to address this, so I agree, this is
-> probably not a reasonable requirement.
-> 
-> > If tester and bpftool are not sync then they can be in separate repos.
-> 
-> Makes sense. I'd like to have the tests in the same repo, but for this
-> time, let's focus on getting these Rust tests added to the BPF CI infra
-> instead, if there's no easy way to switch to a more consensual language.
-> Manu, thoughts?
-
-I am fine with that, the work I have done cleaning my original code for this
-series is (or at least with minimal changes) self-contained.
-Having them hosted outside the tree and used is likely better than nothing.
-People can still build upon, and experience will help informing if we should
-eventually try to merge this back in.
+Subject: Re: [PATCH bpf-next v2 3/6] bpf: Allow per unit prefill for
+ non-fix-size percpu memory allocator
+Content-Language: en-GB
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231215001152.3249146-1-yonghong.song@linux.dev>
+ <20231215001209.3252729-1-yonghong.song@linux.dev>
+ <a8856c91-b8af-2293-3505-7a20d79cc89c@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <a8856c91-b8af-2293-3505-7a20d79cc89c@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
-Manu
-> 
-> Quentin
+On 12/14/23 7:19 PM, Hou Tao wrote:
+>
+> On 12/15/2023 8:12 AM, Yonghong Song wrote:
+>> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem allocation")
+>> added support for non-fix-size percpu memory allocation.
+>> Such allocation will allocate percpu memory for all buckets on all
+>> cpus and the memory consumption is in the order to quadratic.
+>> For example, let us say, 4 cpus, unit size 16 bytes, so each
+>> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256 bytes.
+>> Then let us say, 8 cpus with the same unit size, each cpu
+>> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024 bytes.
+>> So if the number of cpus doubles, the number of memory consumption
+>> will be 4 times. So for a system with large number of cpus, the
+>> memory consumption goes up quickly with quadratic order.
+>> For example, for 4KB percpu allocation, 128 cpus. The total memory
+>> consumption will 4KB * 128 * 128 = 64MB. Things will become
+>> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
+>>
+>> In Commit 41a5db8d8161, the non-fix-size percpu memory allocation is
+>> done in boot time, so for system with large number of cpus, the initial
+>> percpu memory consumption is very visible. For example, for 128 cpu
+>> system, the total percpu memory allocation will be at least
+>> (16 + 32 + 64 + 96 + 128 + 196 + 256 + 512 + 1024 + 2048 + 4096)
+>>    * 128 * 128 = ~138MB.
+>> which is pretty big. It will be even bigger for larger number of cpus.
+>>
+> SNIP
+>> index bb1223b21308..43e635c67150 100644
+>> --- a/include/linux/bpf_mem_alloc.h
+>> +++ b/include/linux/bpf_mem_alloc.h
+>> @@ -21,8 +21,15 @@ struct bpf_mem_alloc {
+>>    * 'size = 0' is for bpf_mem_alloc which manages many fixed-size objects.
+>>    * Alloc and free are done with bpf_mem_{alloc,free}() and the size of
+>>    * the returned object is given by the size argument of bpf_mem_alloc().
+>> + * If percpu equals true, error will be returned in order to avoid
+>> + * large memory consumption and the below bpf_mem_alloc_percpu_unit_init()
+>> + * should be used to do on-demand per-cpu allocation for each size.
+>>    */
+>>   int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu);
+>> +/* Initialize a non-fix-size percpu memory allocator */
+>> +int bpf_mem_alloc_percpu_init(struct bpf_mem_alloc *ma);
+>> +/* The percpu allocation with a specific unit size. */
+>> +int bpf_mem_alloc_percpu_unit_init(struct bpf_mem_alloc *ma, int size);
+>>   void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
+>>   
+>>   /* kmalloc/kfree equivalent: */
+>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+>> index c34513d645c4..4a9177770f93 100644
+>> --- a/kernel/bpf/core.c
+>> +++ b/kernel/bpf/core.c
+>> @@ -64,8 +64,8 @@
+>>   #define OFF	insn->off
+>>   #define IMM	insn->imm
+>>   
+>> -struct bpf_mem_alloc bpf_global_ma;
+>> -bool bpf_global_ma_set;
+>> +struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
+>> +bool bpf_global_ma_set, bpf_global_percpu_ma_set;
+>>   
+>>   /* No hurry in this branch
+>>    *
+>> @@ -2938,7 +2938,9 @@ static int __init bpf_global_ma_init(void)
+>>   
+>>   	ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
+>>   	bpf_global_ma_set = !ret;
+>> -	return ret;
+>> +	ret = bpf_mem_alloc_percpu_init(&bpf_global_percpu_ma);
+>> +	bpf_global_percpu_ma_set = !ret;
+>> +	return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
+>>   }
+>>   late_initcall(bpf_global_ma_init);
+>>   #endif
+>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
+>> index 472158f1fb08..aea4cd07c7b6 100644
+>> --- a/kernel/bpf/memalloc.c
+>> +++ b/kernel/bpf/memalloc.c
+>> @@ -121,6 +121,8 @@ struct bpf_mem_caches {
+>>   	struct bpf_mem_cache cache[NUM_CACHES];
+>>   };
+>>   
+>> +static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+> Is it better to make it being const ?
+
+Right. We can make it as const.
+
+>> +
+>>   static struct llist_node notrace *__llist_del_first(struct llist_head *head)
+>>   {
+>>   	struct llist_node *entry, *next;
+>> @@ -520,12 +522,14 @@ static int check_obj_size(struct bpf_mem_cache *c, unsigned int idx)
+>>    */
+>>   int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
+>>   {
+>> -	static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+>>   	int cpu, i, err, unit_size, percpu_size = 0;
+>>   	struct bpf_mem_caches *cc, __percpu *pcc;
+>>   	struct bpf_mem_cache *c, __percpu *pc;
+>>   	struct obj_cgroup *objcg = NULL;
+>>   
+>> +	if (percpu && size == 0)
+>> +		return -EINVAL;
+>> +
+>>   	/* room for llist_node and per-cpu pointer */
+>>   	if (percpu)
+>>   		percpu_size = LLIST_NODE_SZ + sizeof(void *);
+>> @@ -625,6 +629,68 @@ static void bpf_mem_alloc_destroy_cache(struct bpf_mem_cache *c)
+>>   	drain_mem_cache(c);
+>>   }
+>>   
+>> +int bpf_mem_alloc_percpu_init(struct bpf_mem_alloc *ma)
+>> +{
+>> +	struct bpf_mem_caches __percpu *pcc;
+>> +
+>> +	pcc = __alloc_percpu_gfp(sizeof(struct bpf_mem_caches), 8, GFP_KERNEL | __GFP_ZERO);
+>> +	if (!pcc)
+>> +		return -ENOMEM;
+> __GFP_ZERO is not needed. __alloc_percpu_gfp() will zero the returned
+> area by default.
+
+Thanks. Checked the comments in __alloc_percpu_gfp() and indeed, the returned
+buffer has been zeroed.
+
+>> +
+>> +	ma->caches = pcc;
+>> +	ma->percpu = true;
+>> +	return 0;
+>> +}
+>> +
+>> +int bpf_mem_alloc_percpu_unit_init(struct bpf_mem_alloc *ma, int size)
+>> +{
+>> +	static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+>> +	int cpu, i, err, unit_size, percpu_size = 0;
+>> +	struct bpf_mem_caches *cc, __percpu *pcc;
+>> +	struct obj_cgroup *objcg = NULL;
+>> +	struct bpf_mem_cache *c;
+>> +
+>> +	/* room for llist_node and per-cpu pointer */
+>> +	percpu_size = LLIST_NODE_SZ + sizeof(void *);
+>> +
+>> +	i = bpf_mem_cache_idx(size);
+>> +	if (i < 0)
+>> +		return -EINVAL;
+>> +
+>> +	err = 0;
+>> +	pcc = ma->caches;
+>> +	unit_size = sizes[i];
+>> +
+>> +#ifdef CONFIG_MEMCG_KMEM
+>> +	objcg = get_obj_cgroup_from_current();
+>> +#endif
+>> +	for_each_possible_cpu(cpu) {
+>> +		cc = per_cpu_ptr(pcc, cpu);
+>> +		c = &cc->cache[i];
+>> +		if (cpu == 0 && c->unit_size)
+>> +			goto out;
+>> +
+>> +		c->unit_size = unit_size;
+>> +		c->objcg = objcg;
+>> +		c->percpu_size = percpu_size;
+>> +		c->tgt = c;
+>> +
+>> +		init_refill_work(c);
+>> +		prefill_mem_cache(c, cpu);
+>> +
+>> +		if (cpu == 0) {
+>> +			err = check_obj_size(c, i);
+>> +			if (err) {
+>> +				bpf_mem_alloc_destroy_cache(c);
+> It seems drain_mem_cache() will be enough. Have you considered setting
+
+At prefill stage, looks like the following is enough:
+     free_all(__llist_del_all(&c->free_llist), percpu);
+But I agree that drain_mem_cache() is simpler and is
+easier for future potential code change.
+
+> low_watermark as 0 to prevent potential refill in unit_alloc() if the
+> initialization of the current unit fails ?
+
+I think it does make sense. For non-fix-size non-percpu prefill,
+if check_obj_size() failed, the prefill will fail, which include
+all buckets.
+
+In this case, if it fails for a particular bucket, we should
+make sure that bucket always return NULL ptr, so setting the
+low_watermark to 0 does make sense.
+
+>> +				goto out;
+>> +			}
+>> +		}
+>> +	}
+>> +
+>> +out:
+>> +	return err;
+>> +}
+>> +
+>>   static void check_mem_cache(struct bpf_mem_cache *c)
+>>   {
+>>   	WARN_ON_ONCE(!llist_empty(&c->free_by_rcu_ttrace));
+>>
+> .
+>
 
