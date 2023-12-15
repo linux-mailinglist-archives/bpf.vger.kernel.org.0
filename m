@@ -1,139 +1,119 @@
-Return-Path: <bpf+bounces-17991-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17992-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF1BB8146BF
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 12:22:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FFB681481C
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 13:32:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB1CF282518
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 11:22:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24B151F20F0C
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 12:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DADF24A03;
-	Fri, 15 Dec 2023 11:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296EB282E6;
+	Fri, 15 Dec 2023 12:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fLWeqMrI"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427D2249F2;
-	Fri, 15 Dec 2023 11:22:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Ss5tj611Rz1fyXw;
-	Fri, 15 Dec 2023 19:03:41 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
-	by mail.maildlp.com (Postfix) with ESMTPS id DB759140113;
-	Fri, 15 Dec 2023 19:04:50 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 15 Dec
- 2023 19:04:49 +0800
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To: Shakeel Butt <shakeelb@google.com>, Mina Almasry <almasrymina@google.com>
-CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
-	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
-	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Michael Chan
-	<michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, Shenwei
- Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, NXP Linux
- Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>,
-	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
-	<anthony.l.nguyen@intel.com>, Thomas Petazzoni
-	<thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, Russell King
-	<linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, Geetha
- sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
-	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin
-	<john@phrozen.org>, Sean Wang <sean.wang@mediatek.com>, Mark Lee
-	<Mark-MC.Lee@mediatek.com>, Lorenzo Bianconi <lorenzo@kernel.org>, Matthias
- Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Saeed Mahameed
-	<saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu Vultur
-	<horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei
- Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
-	<jaswinder.singh@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
-	<joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Siddharth Vadapalli <s-vadapalli@ti.com>, Ravi Gunasekaran
-	<r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, Jiawen Wu
-	<jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Ronak
- Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
-	<pv-drivers@vmware.com>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
-	<shayne.chen@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Juergen Gross
-	<jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>, Oleksandr
- Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko
-	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
-	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
-	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
-	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi
-	<stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan
-	<shuah@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
-	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
-	<justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
-	<willemdebruijn.kernel@gmail.com>
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com>
- <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
- <20231215021114.ipvdx2bwtxckrfdg@google.com>
-From: Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <793eb1bd-29bd-3c66-4ed2-9297879dbaa0@huawei.com>
-Date: Fri, 15 Dec 2023 19:04:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21832D033;
+	Fri, 15 Dec 2023 12:31:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BDD1C433C7;
+	Fri, 15 Dec 2023 12:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702643502;
+	bh=F2ajDU7FVMvzLFF89TySlMLk6Wm17ybM4bb/3tTycL4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fLWeqMrINDuf4fclsBa9vwJ3LVwgD8gZwJUzNMZAmMQw0OOq62kwBKytqminKjUPv
+	 KHUBcwnCONHfYXZBuIVONjo30VQ7p9m5QUGAdAdzxUlcV7bdkrk55xGQDf65yfJw6Z
+	 jcKABEYcIBxT+Ljw10Uu7TYsgEGhak+uvJ2Npicett7hvPGCgmVPn3TG/l5BIs8/mS
+	 3qGXDoJQ/AdnwPaa5YYTa3giFDmQIutX5qUAXNlddr6ZvrelenQCJhScNBCfIhB5Go
+	 5zJ1pFj3aGRJEejS61H6JkxF+vRaXFpUBwpdBXEge9czkeLn/alaLXqLxcbNuxtVHv
+	 W07Vz7GBxR7AQ==
+Date: Fri, 15 Dec 2023 13:31:32 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
+Cc: Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Paul Moore <paul@paul-moore.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Quentin Monnet <quentin@isovalent.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, gyroidos@aisec.fraunhofer.de
+Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
+ non-initial userns
+Message-ID: <20231215-golfanlage-beirren-f304f9dafaca@brauner>
+References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
+ <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231215021114.ipvdx2bwtxckrfdg@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500005.china.huawei.com (7.185.36.74)
+In-Reply-To: <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
 
-On 2023/12/15 10:11, Shakeel Butt wrote:
-> On Thu, Dec 14, 2023 at 08:27:55AM -0800, Mina Almasry wrote:
->> On Thu, Dec 14, 2023 at 4:05 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
->>>
-> [...]
->>> I perfer the second one personally, as devmem means that it is not
->>> readable from cpu.
->>
->> From my POV it has to be the first one. We want to abstract the memory
->> type from the drivers as much as possible, not introduce N new memory
->> types and ask the driver to implement new code for each of them
->> separately.
-
-That was my initial thinking too:
-https://www.spinics.net/lists/netdev/msg949376.html
-
-But after discussion, it may make more sense to have two sets of API from the
-driver's piont of view if we want a complete safe type protection, so that
-compiler can check everything statically and devmem driver API have a clear
-semantic:
-1. devmem is not allowed to be called into mm subsystem.
-2. it will not provide a API like page_address().
-
->>
+On Wed, Dec 13, 2023 at 03:38:13PM +0100, Michael Weiß wrote:
+> devguard is a simple LSM to allow CAP_MKNOD in non-initial user
+> namespace in cooperation of an attached cgroup device program. We
+> just need to implement the security_inode_mknod() hook for this.
+> In the hook, we check if the current task is guarded by a device
+> cgroup using the lately introduced cgroup_bpf_current_enabled()
+> helper. If so, we strip out SB_I_NODEV from the super block.
 > 
-> Agree with Mina's point. Let's aim to decouple memory types from
-> drivers.
-> .
+> Access decisions to those device nodes are then guarded by existing
+> device cgroups mechanism.
 > 
+> Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
+> ---
+
+I think you misunderstood me... My point was that I believe you don't
+need an additional LSM at all and no additional LSM hook. But I might be
+wrong. Only a POC would show.
+
+Just write a bpf lsm program that strips SB_I_NODEV in the existing
+security_sb_set_mnt_opts() call which is guranteed to be called when a
+new superblock is created.
+
+Store your device access rules in a bpf map or in the sb->s_security
+blob (This is where I'm fuzzy and could use a bpf LSM expert's input.).
+
+Then make that bpf lsm program kick in everytime a
+security_inode_mknod() and security_file_open() is called and do device
+access management in there. Actually, you might need to add one hook
+when the actual device that's about to be opened is know. 
+This should be where today the device access hooks are called.
+
+And then you should already be done with this. The only thing that you
+need is the capable check patch.
+
+You don't need that cgroup_bpf_current_enabled() per se. Device
+management could now be done per superblock, and not per task. IOW, you
+allowlist a bunch of devices that can be created and opened. Any task
+that passes basic permission checks and that passes the bpf lsm program
+may create device nodes.
+
+That's a way more natural device management model than making this a per
+cgroup thing. Though that could be implemented as well with this.
+
+I would try to write a bpf lsm program that does device access
+management with your capable() sysctl patch applied and see how far I
+get.
+
+I don't have the time otherwise I'd do it.
 
