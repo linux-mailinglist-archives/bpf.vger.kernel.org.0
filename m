@@ -1,138 +1,135 @@
-Return-Path: <bpf+bounces-17934-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17935-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A19813F9A
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 03:11:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 583DA813FA2
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 03:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B879D1C22029
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 02:11:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B2741C22035
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 02:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30657815;
-	Fri, 15 Dec 2023 02:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4947F809;
+	Fri, 15 Dec 2023 02:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="S4ihFpEG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XyWkoS2q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D20110E1
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 02:11:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--shakeelb.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1d092b42fb4so14044125ad.0
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 18:11:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E2177FC;
+	Fri, 15 Dec 2023 02:17:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c317723a8so2236745e9.3;
+        Thu, 14 Dec 2023 18:17:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702606276; x=1703211076; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hn2u3ohnyQZ77hNqSlm/EvFnLZDsF+Ox+1yQ+iYOeGU=;
-        b=S4ihFpEGaGASqDXTKfIcJabS3ty2QxSafop+BYrFlYS3RFOOEXc4/eKAaKZjzU4WWh
-         DRXxnvX7n3k/XvfTLWvDbDI7EuR8uo9fqmsBj1c8yy9c253JKQ6y5iHHgfx2WBSiVhqA
-         2KaQxhu0iAwy+KIml+CkrMRTA2GIVTgZvPP7BdOXDTLu9HND3PfxIVB0/V1suO6spBxu
-         w+ugljbilT8Xyj+wPr5aH1wcv+/1s6U3TWDxYLvRPl9zk0ug9BodKQROgmm6vOHwTIcs
-         r8iMGrzQdnS2SkDKDnKlkoTa1Io+H5bE4s67IUAtJ3FgiB0G2oYsfA9jZ4ClQJbAipA7
-         /6tg==
+        d=gmail.com; s=20230601; t=1702606622; x=1703211422; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RK9ZqvhW0YIqb3VALjkInZWNafqN/1JnCqtVoacc+0g=;
+        b=XyWkoS2q4hU1kmLTNp3I6cO7ypu3RlYiN9Fs4pZg0uAoFqgHU3nYIIxWPxd7uh/WdN
+         jI4wB6PlPKCxviVmfimNYRG+LdO+OlbOyGCmXu+pLZCMB+47ZlA6qJIBStsyVLkOwoCP
+         4AJy6z+lir4yImWzru915cPqPxh3oX4najUJSMScsRCvnkNIT6TMVG5lIuOH/SvTXvjt
+         +csxxvtl7rvaVEHkHKV8kmW3w3m9ry5lXJdNYCBgDzgXLA0HmZTlvlt7YuXIFGRa6iUJ
+         fcv+Y59IvlC4sQB2mWIF7ytCmcaJTRzJMnHcBiGraMKQn9hfTJ2kqogzukPERvRCKHhA
+         l0zA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702606276; x=1703211076;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Hn2u3ohnyQZ77hNqSlm/EvFnLZDsF+Ox+1yQ+iYOeGU=;
-        b=XwghupXN3PnxRYoOy0rdD8+8281jQGlaSZs461j3I2asuOt2or445zuHI1Nni1impe
-         PBOwTP7RTN24hc7Ds+TKIy41400FaQPYqsla4fjTJUtTzACf+UnfxMXm57o8rlJeRdg6
-         8ntxE2YK4T32l9x1kF/j668wlbQh5CV7k10VpG71/SI1WOBJ6eDyNzR8o5jNXoXO6H7s
-         TVY45eJV+CMbmn0GTTAxP3m8ftrDzJFS+fEbvla7xr0x55bTNBGdVD1BOuVWt6+QWi1L
-         fXChiGQK4rHxuGeycUQMLgvA4k2vqxpR+yMY/FfwNeiIpTW0ow/p/i31XIqi1hhCa2Q8
-         R9DQ==
-X-Gm-Message-State: AOJu0YzEQ6tM945Ofdd0ClW4NeB234p5Dkg0yh9ttPWg76icjblT7hFo
-	WhFeghwZkG/W1Pci/XxkZ5zHZVjc3SJ0IA==
-X-Google-Smtp-Source: AGHT+IFer5ptuGEEfLFmjy3FBazRTAHYraFtWH6cjZkWuSL5hJETliQbOEPas4rAqb9tpBNPAqzbmDmViSQbnQ==
-X-Received: from shakeelb.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:262e])
- (user=shakeelb job=sendgmr) by 2002:a17:902:f690:b0:1d0:8be8:bb7c with SMTP
- id l16-20020a170902f69000b001d08be8bb7cmr1969874plg.4.1702606275789; Thu, 14
- Dec 2023 18:11:15 -0800 (PST)
-Date: Fri, 15 Dec 2023 02:11:14 +0000
-In-Reply-To: <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1702606622; x=1703211422;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RK9ZqvhW0YIqb3VALjkInZWNafqN/1JnCqtVoacc+0g=;
+        b=Niz31dm6+qt3heS9F1z78GNAa4q9KMO+HUpIWdtilR+kTNKAOX8DpSX0Wr97QAjmqO
+         W1O/fmDA1OvCmPtsqSq8LzlXNQ14szY484wfTw86BFC0C2hSdRnbyhlhvt283g8ZXsy6
+         cnd/qEniLLTFg1ngPdMbc8xmLcSmNWaZ+KYcKX19kFpvOMhq4zCNzlXUfm1ppBBW1IEh
+         M4ymo/C+5F6aTBKTlBlVzVoEcuLZC8fc5QcbLIzxXpyFKyykQxMZ7crinxUeTSlD6YPa
+         7dYsMODQKCu3gcT9SUN9IKXff/YZEO+iIoj9RpCxf72E50EmI+AiJWRC4MGZbfNrhxrC
+         i07A==
+X-Gm-Message-State: AOJu0YxHkTpxI6ZuFvXk8eZXsUjDA3wXZX/4xamV5rxRJsYNpAp147fe
+	5heVodTPKOJUUwn8cOtJVWWhZfsFKeYs7Tp3qQA=
+X-Google-Smtp-Source: AGHT+IH+gNIkyMzIajJb4aTb9bkzSCH3dtGGEAxPG+1vniTQlhB914m7KSyQUB28yPBL1uN07DbzD1oRR8Q/1mc2Xcg=
+X-Received: by 2002:a05:600c:1827:b0:40c:3828:b8cb with SMTP id
+ n39-20020a05600c182700b0040c3828b8cbmr5248460wmp.101.1702606622346; Thu, 14
+ Dec 2023 18:17:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
-Message-ID: <20231215021114.ipvdx2bwtxckrfdg@google.com>
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-From: Shakeel Butt <shakeelb@google.com>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Yunsheng Lin <linyunsheng@huawei.com>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	"Christian =?utf-8?B?S8O2bmln?=" <christian.koenig@amd.com>, Michael Chan <michael.chan@broadcom.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, 
-	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
-	NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, 
-	Russell King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
-	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-	Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
-	Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, 
-	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
-	Ronak Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
-	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, 
-	Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, 
-	Stefano Stabellini <sstabellini@kernel.org>, 
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	"=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
+ <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
+ <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
+ <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
+ <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com> <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
+ <73d021e3f77161668aae833e478b210ed5cd2f4d.camel@gmail.com>
+ <CAEf4BzYuV3odyj8A77ZW8H9jyx_YLhAkSiM+1hkvtH=OYcHL3w@mail.gmail.com>
+ <526d4ac8f6788d3323d29fdbad0e0e5d09a534db.camel@gmail.com> <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
+In-Reply-To: <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 14 Dec 2023 18:16:50 -0800
+Message-ID: <CAADnVQ+RVT1pO1hTzMawdkfc9B0xAxas2XmSk6+_EiqX9Xy9Ug@mail.gmail.com>
+Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Hao Sun <sunhao.th@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 08:27:55AM -0800, Mina Almasry wrote:
-> On Thu, Dec 14, 2023 at 4:05=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.=
-com> wrote:
+On Thu, Dec 14, 2023 at 5:24=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Fri, 2023-12-15 at 02:49 +0200, Eduard Zingerman wrote:
+> > On Thu, 2023-12-14 at 16:06 -0800, Andrii Nakryiko wrote:
+> > [...]
+> > > If you agree with the analysis, we can start discussing what's the
+> > > best way to fix this.
 > >
-[...]
-> > I perfer the second one personally, as devmem means that it is not
-> > readable from cpu.
->=20
-> From my POV it has to be the first one. We want to abstract the memory
-> type from the drivers as much as possible, not introduce N new memory
-> types and ask the driver to implement new code for each of them
-> separately.
->=20
+> > Ok, yeap, I agree with you.
+> > Backtracker marks both registers in 'if' statement if one of them is
+> > tracked, but r8 is not marked at block entry and we miss r0.
+>
+> The brute-force solution is to keep a special mask for each
+> conditional jump in jump history. In this mask, mark all registers and
+> stack slots that gained range because of find_equal_scalars() executed
+> for this conditional jump. Use this mask to extend precise registers set.
+> However, such mask would be prohibitively large: (10+64)*8 bits.
+>
+> ---
+>
+> Here is an option that would fix the test in question, but I'm not
+> sure if it covers all cases:
+> 1. At the last instruction of each state (first instruction to be
+>    backtracked) we know the set of IDs that should be tracked for
+>    precision, as currently marked by mark_precise_scalar_ids().
+> 2. In jump history we can record IDs for src and dst registers when new
+>    entry is pushed.
+> 3. While backtracking 'if' statement, if one of the recorded IDs is in
+>    the set identified at (1), add src/dst regs to precise registers set.
+>
+> E.g. for the test-case at hand:
+>
+>   0: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+>   1: (bf) r7 =3D r0                       ; R0=3Dscalar(id=3D1) R7_w=3Dsc=
+alar(id=3D1)
+>   2: (bf) r8 =3D r0                       ; R0=3Dscalar(id=3D1) R8_w=3Dsc=
+alar(id=3D1)
+>   3: (85) call bpf_get_prandom_u32#7    ; R0=3Dscalar()
+>   --- checkpoint #1 r7.id =3D 1, r8.id =3D 1 ---
+>   4: (25) if r0 > 0x1 goto pc+0         ; R0=3Dscalar(smin=3Dsmin32=3D0,s=
+max=3Dumax=3Dsmax32=3Dumax32=3D1,...)
+>   --- checkpoint #2 r7.id =3D 1, r8.id =3D 1 ---
+>   5: (3d) if r8 >=3D r0 goto pc+3         ; R0=3D1 R8=3D0 | record r8.id=
+=3D1 in jump history
+>   6: (0f) r8 +=3D r8                      ; R8=3D0
 
-Agree with Mina's point. Let's aim to decouple memory types from
-drivers.
+can we detect that any register link is broken and force checkpoint here?
+
+>   --- checkpoint #3 r7.id =3D 1, r8.id =3D 0 ---
+>   7: (15) if r7 =3D=3D 0x0 goto pc+1
 
