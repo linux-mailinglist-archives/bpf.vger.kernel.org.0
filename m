@@ -1,293 +1,212 @@
-Return-Path: <bpf+bounces-17966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1E62814259
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 08:27:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3503D81428C
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 08:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3542128407F
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 07:27:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5D091F23E3A
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 07:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0152D2E5;
-	Fri, 15 Dec 2023 07:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CDEED515;
+	Fri, 15 Dec 2023 07:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EVjaXGzE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n0HmTqYc"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD63E10785
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 07:27:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15B8B111A4
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 07:38:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <752bd167-b28a-47f3-90bb-8b3b1ffa2c74@linux.dev>
+Message-ID: <1e5463b1-2291-4df2-8338-5d4011d24037@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702625244;
+	t=1702625921;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mwFJkv1ZNUgsmRpCAE4f+a4FKXFwDMGD9+zenti5rng=;
-	b=EVjaXGzEe+myD5isQNfTH/SjyOtIJiEsClxXCqy8qaPYdK3y/3ByhwwONWrtmU1n89fAkm
-	UiGdXIjHZhZSzUI5C9Xn0HFAkoLkJBiIrdSKiq5an0lAlK3xSdq0jNWDvGuT8Ve8T2d59Y
-	0c1ZWt/xXSNEPNPUHFQEmLZCbj0MFsQ=
-Date: Thu, 14 Dec 2023 23:27:14 -0800
+	bh=lw4hkCrrZ1CINHAPeciKBZGZBjaRjzi/bRgmu2XpO6E=;
+	b=n0HmTqYcxp8NavSGlUpdoGYWncm723ir89anR/YQ8tThCdXHUDwS/M2TwkhZ2KExcQmRii
+	Ss9adsQ8x1vlA5Jm28f6lR6F4K4VGy3Q0uU5EvwsM9/PBvPUEzGvilKjw5dCSqqPVYYwvE
+	ju0l0GtLdbFLthJJEnxv/pOW5Ao2enI=
+Date: Thu, 14 Dec 2023 23:38:36 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 3/6] bpf: Allow per unit prefill for
- non-fix-size percpu memory allocator
+Subject: Re: [PATCH bpf-next v2 6/6] selftests/bpf: Cope with 512 bytes limit
+ with bpf_global_percpu_ma
 Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
 To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
  Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
  Martin KaFai Lau <martin.lau@kernel.org>
 References: <20231215001152.3249146-1-yonghong.song@linux.dev>
- <20231215001209.3252729-1-yonghong.song@linux.dev>
- <a8856c91-b8af-2293-3505-7a20d79cc89c@huaweicloud.com>
- <d22fb5f7-9b51-47c4-93d2-69064f2fb550@linux.dev>
-In-Reply-To: <d22fb5f7-9b51-47c4-93d2-69064f2fb550@linux.dev>
+ <20231215001227.3254314-1-yonghong.song@linux.dev>
+ <64834348-0758-e388-e57f-0b71d0be42c9@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <64834348-0758-e388-e57f-0b71d0be42c9@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 12/14/23 10:50 PM, Yonghong Song wrote:
+On 12/14/23 7:33 PM, Hou Tao wrote:
+> Hi,
 >
-> On 12/14/23 7:19 PM, Hou Tao wrote:
+> On 12/15/2023 8:12 AM, Yonghong Song wrote:
+>> In the previous patch, the maximum data size for bpf_global_percpu_ma
+>> is 512 bytes. This breaks selftest test_bpf_ma. Let us adjust it
+>> accordingly. Also added a selftest to capture the verification failure
+>> when the allocation size is greater than 512.
 >>
->> On 12/15/2023 8:12 AM, Yonghong Song wrote:
->>> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem 
->>> allocation")
->>> added support for non-fix-size percpu memory allocation.
->>> Such allocation will allocate percpu memory for all buckets on all
->>> cpus and the memory consumption is in the order to quadratic.
->>> For example, let us say, 4 cpus, unit size 16 bytes, so each
->>> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256 
->>> bytes.
->>> Then let us say, 8 cpus with the same unit size, each cpu
->>> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024 
->>> bytes.
->>> So if the number of cpus doubles, the number of memory consumption
->>> will be 4 times. So for a system with large number of cpus, the
->>> memory consumption goes up quickly with quadratic order.
->>> For example, for 4KB percpu allocation, 128 cpus. The total memory
->>> consumption will 4KB * 128 * 128 = 64MB. Things will become
->>> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
->>>
->>> In Commit 41a5db8d8161, the non-fix-size percpu memory allocation is
->>> done in boot time, so for system with large number of cpus, the initial
->>> percpu memory consumption is very visible. For example, for 128 cpu
->>> system, the total percpu memory allocation will be at least
->>> (16 + 32 + 64 + 96 + 128 + 196 + 256 + 512 + 1024 + 2048 + 4096)
->>>    * 128 * 128 = ~138MB.
->>> which is pretty big. It will be even bigger for larger number of cpus.
->>>
->> SNIP
->>> index bb1223b21308..43e635c67150 100644
->>> --- a/include/linux/bpf_mem_alloc.h
->>> +++ b/include/linux/bpf_mem_alloc.h
->>> @@ -21,8 +21,15 @@ struct bpf_mem_alloc {
->>>    * 'size = 0' is for bpf_mem_alloc which manages many fixed-size 
->>> objects.
->>>    * Alloc and free are done with bpf_mem_{alloc,free}() and the 
->>> size of
->>>    * the returned object is given by the size argument of 
->>> bpf_mem_alloc().
->>> + * If percpu equals true, error will be returned in order to avoid
->>> + * large memory consumption and the below 
->>> bpf_mem_alloc_percpu_unit_init()
->>> + * should be used to do on-demand per-cpu allocation for each size.
->>>    */
->>>   int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool 
->>> percpu);
->>> +/* Initialize a non-fix-size percpu memory allocator */
->>> +int bpf_mem_alloc_percpu_init(struct bpf_mem_alloc *ma);
->>> +/* The percpu allocation with a specific unit size. */
->>> +int bpf_mem_alloc_percpu_unit_init(struct bpf_mem_alloc *ma, int 
->>> size);
->>>   void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma);
->>>     /* kmalloc/kfree equivalent: */
->>> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
->>> index c34513d645c4..4a9177770f93 100644
->>> --- a/kernel/bpf/core.c
->>> +++ b/kernel/bpf/core.c
->>> @@ -64,8 +64,8 @@
->>>   #define OFF    insn->off
->>>   #define IMM    insn->imm
->>>   -struct bpf_mem_alloc bpf_global_ma;
->>> -bool bpf_global_ma_set;
->>> +struct bpf_mem_alloc bpf_global_ma, bpf_global_percpu_ma;
->>> +bool bpf_global_ma_set, bpf_global_percpu_ma_set;
->>>     /* No hurry in this branch
->>>    *
->>> @@ -2938,7 +2938,9 @@ static int __init bpf_global_ma_init(void)
->>>         ret = bpf_mem_alloc_init(&bpf_global_ma, 0, false);
->>>       bpf_global_ma_set = !ret;
->>> -    return ret;
->>> +    ret = bpf_mem_alloc_percpu_init(&bpf_global_percpu_ma);
->>> +    bpf_global_percpu_ma_set = !ret;
->>> +    return !bpf_global_ma_set || !bpf_global_percpu_ma_set;
->>>   }
->>>   late_initcall(bpf_global_ma_init);
->>>   #endif
->>> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
->>> index 472158f1fb08..aea4cd07c7b6 100644
->>> --- a/kernel/bpf/memalloc.c
->>> +++ b/kernel/bpf/memalloc.c
->>> @@ -121,6 +121,8 @@ struct bpf_mem_caches {
->>>       struct bpf_mem_cache cache[NUM_CACHES];
->>>   };
->>>   +static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 
->>> 512, 1024, 2048, 4096};
->> Is it better to make it being const ?
->
-> Right. We can make it as const.
->
->>> +
->>>   static struct llist_node notrace *__llist_del_first(struct 
->>> llist_head *head)
->>>   {
->>>       struct llist_node *entry, *next;
->>> @@ -520,12 +522,14 @@ static int check_obj_size(struct bpf_mem_cache 
->>> *c, unsigned int idx)
->>>    */
->>>   int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool 
->>> percpu)
->>>   {
->>> -    static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 
->>> 512, 1024, 2048, 4096};
->>>       int cpu, i, err, unit_size, percpu_size = 0;
->>>       struct bpf_mem_caches *cc, __percpu *pcc;
->>>       struct bpf_mem_cache *c, __percpu *pc;
->>>       struct obj_cgroup *objcg = NULL;
->>>   +    if (percpu && size == 0)
->>> +        return -EINVAL;
->>> +
->>>       /* room for llist_node and per-cpu pointer */
->>>       if (percpu)
->>>           percpu_size = LLIST_NODE_SZ + sizeof(void *);
->>> @@ -625,6 +629,68 @@ static void bpf_mem_alloc_destroy_cache(struct 
->>> bpf_mem_cache *c)
->>>       drain_mem_cache(c);
->>>   }
->>>   +int bpf_mem_alloc_percpu_init(struct bpf_mem_alloc *ma)
->>> +{
->>> +    struct bpf_mem_caches __percpu *pcc;
->>> +
->>> +    pcc = __alloc_percpu_gfp(sizeof(struct bpf_mem_caches), 8, 
->>> GFP_KERNEL | __GFP_ZERO);
->>> +    if (!pcc)
->>> +        return -ENOMEM;
->> __GFP_ZERO is not needed. __alloc_percpu_gfp() will zero the returned
->> area by default.
->
-> Thanks. Checked the comments in __alloc_percpu_gfp() and indeed, the 
-> returned
-> buffer has been zeroed.
->
->>> +
->>> +    ma->caches = pcc;
->>> +    ma->percpu = true;
->>> +    return 0;
->>> +}
->>> +
->>> +int bpf_mem_alloc_percpu_unit_init(struct bpf_mem_alloc *ma, int size)
->>> +{
->>> +    static u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 
->>> 512, 1024, 2048, 4096};
->>> +    int cpu, i, err, unit_size, percpu_size = 0;
->>> +    struct bpf_mem_caches *cc, __percpu *pcc;
->>> +    struct obj_cgroup *objcg = NULL;
->>> +    struct bpf_mem_cache *c;
->>> +
->>> +    /* room for llist_node and per-cpu pointer */
->>> +    percpu_size = LLIST_NODE_SZ + sizeof(void *);
->>> +
->>> +    i = bpf_mem_cache_idx(size);
->>> +    if (i < 0)
->>> +        return -EINVAL;
->>> +
->>> +    err = 0;
->>> +    pcc = ma->caches;
->>> +    unit_size = sizes[i];
->>> +
->>> +#ifdef CONFIG_MEMCG_KMEM
->>> +    objcg = get_obj_cgroup_from_current();
->>> +#endif
->>> +    for_each_possible_cpu(cpu) {
->>> +        cc = per_cpu_ptr(pcc, cpu);
->>> +        c = &cc->cache[i];
->>> +        if (cpu == 0 && c->unit_size)
->>> +            goto out;
->>> +
->>> +        c->unit_size = unit_size;
->>> +        c->objcg = objcg;
->>> +        c->percpu_size = percpu_size;
->>> +        c->tgt = c;
->>> +
->>> +        init_refill_work(c);
->>> +        prefill_mem_cache(c, cpu);
->>> +
->>> +        if (cpu == 0) {
->>> +            err = check_obj_size(c, i);
->>> +            if (err) {
->>> +                bpf_mem_alloc_destroy_cache(c);
->> It seems drain_mem_cache() will be enough. Have you considered setting
->
-> At prefill stage, looks like the following is enough:
->     free_all(__llist_del_all(&c->free_llist), percpu);
-> But I agree that drain_mem_cache() is simpler and is
-> easier for future potential code change.
->
->> low_watermark as 0 to prevent potential refill in unit_alloc() if the
->> initialization of the current unit fails ?
->
-> I think it does make sense. For non-fix-size non-percpu prefill,
-> if check_obj_size() failed, the prefill will fail, which include
-> all buckets.
->
-> In this case, if it fails for a particular bucket, we should
-> make sure that bucket always return NULL ptr, so setting the
-> low_watermark to 0 does make sense.
-
-Thinking again. If the initialization of the current unit
-failed, the verification will fail and the corresponding
-bpf program will not be able to do memory alloc, so we
-should be fine.
-
-But it is totally possible that some prog later may
-call bpf_mem_alloc_percpu_unit_init() again with the
-same size/bucket. So we should simply reset bpf_mem_cache
-to 0 during the previous failed bpf_mem_alloc_percpu_unit_init()
-call. Is it possible that check_obj_size() may initially
-returns an error but sometime later something in
-the kernel changed and the check_obj_size() with the
-same size could return true?
-
-
->
->>> +                goto out;
->>> +            }
->>> +        }
->>> +    }
->>> +
->>> +out:
->>> +    return err;
->>> +}
->>> +
->>>   static void check_mem_cache(struct bpf_mem_cache *c)
->>>   {
->>> WARN_ON_ONCE(!llist_empty(&c->free_by_rcu_ttrace));
->>>
->> .
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   .../selftests/bpf/progs/percpu_alloc_fail.c    | 18 ++++++++++++++++++
+>>   .../testing/selftests/bpf/progs/test_bpf_ma.c  |  9 ---------
+>>   2 files changed, 18 insertions(+), 9 deletions(-)
 >>
+>> diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c b/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
+>> index 1a891d30f1fe..f2b8eb2ff76f 100644
+>> --- a/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
+>> +++ b/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
+>> @@ -17,6 +17,10 @@ struct val_with_rb_root_t {
+>>   	struct bpf_spin_lock lock;
+>>   };
+>>   
+>> +struct val_600b_t {
+>> +	char b[600];
+>> +};
+>> +
+>>   struct elem {
+>>   	long sum;
+>>   	struct val_t __percpu_kptr *pc;
+>> @@ -161,4 +165,18 @@ int BPF_PROG(test_array_map_7)
+>>   	return 0;
+>>   }
+>>   
+>> +SEC("?fentry.s/bpf_fentry_test1")
+>> +__failure __msg("bpf_percpu_obj_new type size (600) is greater than 512")
+>> +int BPF_PROG(test_array_map_8)
+>> +{
+>> +	struct val_600b_t __percpu_kptr *p;
+>> +
+>> +	p = bpf_percpu_obj_new(struct val_600b_t);
+>> +	if (!p)
+>> +		return 0;
+>> +
+>> +	bpf_percpu_obj_drop(p);
+>> +	return 0;
+>> +}
+>> +
+>>   char _license[] SEC("license") = "GPL";
+>> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_ma.c b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
+>> index b685a4aba6bd..68cba55eb828 100644
+>> --- a/tools/testing/selftests/bpf/progs/test_bpf_ma.c
+>> +++ b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
+>> @@ -188,9 +188,6 @@ DEFINE_ARRAY_WITH_PERCPU_KPTR(128);
+>>   DEFINE_ARRAY_WITH_PERCPU_KPTR(192);
+>>   DEFINE_ARRAY_WITH_PERCPU_KPTR(256);
+>>   DEFINE_ARRAY_WITH_PERCPU_KPTR(512);
+>> -DEFINE_ARRAY_WITH_PERCPU_KPTR(1024);
+>> -DEFINE_ARRAY_WITH_PERCPU_KPTR(2048);
+>> -DEFINE_ARRAY_WITH_PERCPU_KPTR(4096);
+> Considering the update in patch "bpf: Avoid unnecessary extra percpu
+> memory allocation", the definition of DEFINE_ARRAY_WITH_PERCPU_KPTR()
+> needs update as well, because for 512-sized per-cpu kptr, the tests only
+> allocate for (512 - sizeof(void *)) bytes. And we could do
+> DEFINE_ARRAY_WITH_PERCPU_KPTR(8) test after the update. I could do that
+> after the patch-set is landed if you don't have time to do that.
 >
+> A bit of off-topic, but it is still relevant. I have a question about
+> how to forcibly generate BTF info for struct definition in the test ?
+> Currently, I have to include  bin_data_xx in the definition of
+> map_value, but I don't want to increase the size of map_value. I had
+> tried to use BTF_TYPE_EMIT() in prog just like in linux kernel, but it
+> didn't work.
+
+Since you mentioned the btf generation issue, I did some investigation.
+To workaround btf generation issue, we can use the method in
+prog_tests/local_kptr_stash.c:
+
+====
+/* This is necessary so that LLVM generates BTF for node_data struct
+  * If it's not included, a fwd reference for node_data will be generated but
+  * no struct. Example BTF of "node" field in map_value when not included:
+  *
+  * [10] PTR '(anon)' type_id=35
+  * [34] FWD 'node_data' fwd_kind=struct
+  * [35] TYPE_TAG 'kptr_ref' type_id=34
+  *
+  * (with no node_data struct defined)
+  * Had to do the same w/ bpf_kfunc_call_test_release below
+  */
+struct node_data *just_here_because_btf_bug;
+struct refcounted_node *just_here_because_btf_bug2;
+====
+
+I have hacked the test_bpf_ma.c files and something like below
+should work to generate btf types:
+
+         struct bin_data_##_size { \
+                 char data[_size - sizeof(void *)]; \
+         }; \
++       /* See Commit 5d8d6634ccc, force btf generation for type bin_data_##_size */    \
++       struct bin_data_##_size *__bin_data_##_size; \
+         struct map_value_##_size { \
+                 struct bin_data_##_size __kptr * data; \
+-               /* To emit BTF info for bin_data_xx */ \
+-               struct bin_data_##_size not_used; \
+         }; \
+         struct { \
+                 __uint(type, BPF_MAP_TYPE_ARRAY); \
+@@ -40,8 +43,12 @@ int pid = 0;
+         } array_##_size SEC(".maps")
+  
+  #define DEFINE_ARRAY_WITH_PERCPU_KPTR(_size) \
++       struct percpu_bin_data_##_size { \
++               char data[_size]; \
++       }; \
++       struct percpu_bin_data_##_size *__percpu_bin_data_##_size; \
+         struct map_value_percpu_##_size { \
+-               struct bin_data_##_size __percpu_kptr * data; \
++               struct percpu_bin_data_##_size __percpu_kptr * data; \
+         }; \
+         struct { \
+                 __uint(type, BPF_MAP_TYPE_ARRAY); \
+
+I have a prototype to ensure the type (for percpu kptr) removing these
+'- sizeof(void *)' and enabling DEFINE_ARRAY_WITH_PERCPU_KPTR().
+Once we resolved the check_obj_size() issue, I can then post v3.
+
+>>   
+>>   SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
+>>   int test_batch_alloc_free(void *ctx)
+>> @@ -259,9 +256,6 @@ int test_batch_percpu_alloc_free(void *ctx)
+>>   	CALL_BATCH_PERCPU_ALLOC_FREE(192, 128, 6);
+>>   	CALL_BATCH_PERCPU_ALLOC_FREE(256, 128, 7);
+>>   	CALL_BATCH_PERCPU_ALLOC_FREE(512, 64, 8);
+>> -	CALL_BATCH_PERCPU_ALLOC_FREE(1024, 32, 9);
+>> -	CALL_BATCH_PERCPU_ALLOC_FREE(2048, 16, 10);
+>> -	CALL_BATCH_PERCPU_ALLOC_FREE(4096, 8, 11);
+>>   
+>>   	return 0;
+>>   }
+>> @@ -283,9 +277,6 @@ int test_percpu_free_through_map_free(void *ctx)
+>>   	CALL_BATCH_PERCPU_ALLOC(192, 128, 6);
+>>   	CALL_BATCH_PERCPU_ALLOC(256, 128, 7);
+>>   	CALL_BATCH_PERCPU_ALLOC(512, 64, 8);
+>> -	CALL_BATCH_PERCPU_ALLOC(1024, 32, 9);
+>> -	CALL_BATCH_PERCPU_ALLOC(2048, 16, 10);
+>> -	CALL_BATCH_PERCPU_ALLOC(4096, 8, 11);
+>>   
+>>   	return 0;
+>>   }
 
