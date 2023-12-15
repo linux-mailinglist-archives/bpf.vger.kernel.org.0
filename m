@@ -1,27 +1,27 @@
-Return-Path: <bpf+bounces-17906-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17907-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9785F813E91
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 01:12:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4A8813E92
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 01:12:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAF7D1C21FAC
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:12:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F059B21D81
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 00:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC071EC4;
-	Fri, 15 Dec 2023 00:12:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D1BEC9;
+	Fri, 15 Dec 2023 00:12:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1D4EBC
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 00:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37743EBC
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 00:12:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
 Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id 4ED582B8627F3; Thu, 14 Dec 2023 16:12:15 -0800 (PST)
+	id 47DEE2B86280D; Thu, 14 Dec 2023 16:12:21 -0800 (PST)
 From: Yonghong Song <yonghong.song@linux.dev>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -29,9 +29,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	kernel-team@fb.com,
 	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 4/6] bpf: Refill only one percpu element in memalloc
-Date: Thu, 14 Dec 2023 16:12:15 -0800
-Message-Id: <20231215001215.3253255-1-yonghong.song@linux.dev>
+Subject: [PATCH bpf-next v2 5/6] bpf: Limit up to 512 bytes for bpf_global_percpu_ma allocation
+Date: Thu, 14 Dec 2023 16:12:21 -0800
+Message-Id: <20231215001221.3253568-1-yonghong.song@linux.dev>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231215001152.3249146-1-yonghong.song@linux.dev>
 References: <20231215001152.3249146-1-yonghong.song@linux.dev>
@@ -43,44 +43,52 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-Typically for percpu map element or data structure, once allocated,
-most operations are lookup or in-place update. Deletion are really
-rare. Currently, for percpu data strcture, 4 elements will be
-refilled if the size is <=3D 256. Let us just do with one element
-for percpu data. For example, for size 256 and 128 cpus, the
-potential saving will be 3 * 256 * 128 * 128 =3D 12MB.
+For percpu data structure allocation with bpf_global_percpu_ma,
+the maximum data size is 4K. But for a system with large
+number of cpus, bigger data size (e.g., 2K, 4K) might consume
+a lot of memory. For example, the percpu memory consumption
+with unit size 2K and 1024 cpus will be 2K * 1K * 1k =3D 2GB
+memory.
+
+We should discourage such usage. Let us limit the maximum data
+size to be 512 for bpf_global_percpu_ma allocation.
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 ---
- kernel/bpf/memalloc.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ kernel/bpf/verifier.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index aea4cd07c7b6..7b5bd1294b77 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -485,11 +485,16 @@ static void init_refill_work(struct bpf_mem_cache *=
-c)
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index ce62ee0cc8f6..039d699a425d 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -192,6 +192,8 @@ struct bpf_verifier_stack_elem {
+ 					  POISON_POINTER_DELTA))
+ #define BPF_MAP_PTR(X)		((struct bpf_map *)((X) & ~BPF_MAP_PTR_UNPRIV))
 =20
- static void prefill_mem_cache(struct bpf_mem_cache *c, int cpu)
- {
--	/* To avoid consuming memory assume that 1st run of bpf
--	 * prog won't be doing more than 4 map_update_elem from
--	 * irq disabled region
-+	int cnt =3D 1;
++#define BPF_GLOBAL_PERCPU_MA_MAX_SIZE  512
 +
-+	/* To avoid consuming memory, for non-percpu allocation, assume that
-+	 * 1st run of bpf prog won't be doing more than 4 map_update_elem from
-+	 * irq disabled region if unit size is less than or equal to 256.
-+	 * For all other cases, let us just do one allocation.
- 	 */
--	alloc_bulk(c, c->unit_size <=3D 256 ? 4 : 1, cpu_to_node(cpu), false);
-+	if (!c->percpu_size && c->unit_size <=3D 256)
-+		cnt =3D 4;
-+	alloc_bulk(c, cnt, cpu_to_node(cpu), false);
- }
+ static int acquire_reference_state(struct bpf_verifier_env *env, int ins=
+n_idx);
+ static int release_reference(struct bpf_verifier_env *env, int ref_obj_i=
+d);
+ static void invalidate_non_owning_refs(struct bpf_verifier_env *env);
+@@ -12083,6 +12085,12 @@ static int check_kfunc_call(struct bpf_verifier_=
+env *env, struct bpf_insn *insn,
+ 					if (!bpf_global_percpu_ma_set)
+ 						return -ENOMEM;
 =20
- static int check_obj_size(struct bpf_mem_cache *c, unsigned int idx)
++					if (ret_t->size > BPF_GLOBAL_PERCPU_MA_MAX_SIZE) {
++						verbose(env, "bpf_percpu_obj_new type size (%d) is greater than %d=
+\n",
++							ret_t->size, BPF_GLOBAL_PERCPU_MA_MAX_SIZE);
++						return -EINVAL;
++					}
++
+ 					mutex_lock(&bpf_percpu_ma_lock);
+ 					err =3D bpf_mem_alloc_percpu_unit_init(&bpf_global_percpu_ma, ret_t=
+->size);
+ 					mutex_unlock(&bpf_percpu_ma_lock);
 --=20
 2.34.1
 
