@@ -1,155 +1,170 @@
-Return-Path: <bpf+bounces-17950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17951-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C192F8140A8
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 04:32:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A8E58140AD
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 04:33:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69FCC1F22F5E
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 03:32:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC15B1C222D0
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 03:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB895382;
-	Fri, 15 Dec 2023 03:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CqxcnsDs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D76539D;
+	Fri, 15 Dec 2023 03:33:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63064566C
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 03:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-336417c565eso143091f8f.3
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 19:31:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702611113; x=1703215913; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PCO0FrOZh37NR4IB3C1qSPzfnG/+tiqsccd0i13BeU8=;
-        b=CqxcnsDsHNkOeJhtcSgLgecn1W8scCRhxUByPkoDWIs15DX4HC2xN1nrVuQzu34xWK
-         LrF2kjDunHKFcIHurOWjzjd8fU2Hm3LQgrYNhQ/CeT90muc3XzeCnNj4xt+VPZ2pKFtF
-         +/Zqxvgf+l5N20SsrYFJztVgnr6rxclhmmWV7yLoroeW9VW590CszkQOUeaSVjVfGNxE
-         DlJRmpo+lodLxekkSTMAWY2QtjqzZQxy52qluQ4tgsVvWQoJeJtDdq/NplWTZuU7RO3R
-         1cIwA2AvJ8Vomh73SGtiTyVybrco8clh7x5oQThGUHbf5oMrZqOrWbdYz2P9lzhletag
-         rCjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702611113; x=1703215913;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PCO0FrOZh37NR4IB3C1qSPzfnG/+tiqsccd0i13BeU8=;
-        b=P4JcwjLPWjZFtdngX/dTL+uIiZW9U2lWFHgi9z5UwuPvD2Q0NMMy2K9JrYYJacjeiX
-         ahPMNNJeRxtwiWvZ+fSg1rNp0d+/ObIGC9v863Lwlx3jZhazoB4WNBF7SGwEEzFtd1V6
-         ynCwDcFM4mCzj+L0g7zQi+TFP3CsQ4g/K7bZqugWjJF0wg/D5lP5XNdQF1GeGjtevZEg
-         KDx9btFn9P6L+CSXK9GFXkAEXwmPWJwE8oinHFwegf6fW51NfEsVW/N7uttpKa211Lul
-         M1eZc2nAXF3EXgGnZm3QM9VfDH01+A+wo87J93AGW2arKife9xZxhgF8BzOZr+5yqk3S
-         1tnA==
-X-Gm-Message-State: AOJu0YwOvtyx5wZ+liixYXj3rQqQ3g3/NAdW6XSo5MEpen1BR+TxqJhi
-	HFfkDvTNbgbF2dDlkO4Cj2xtFch1EiZBdDVm3k0=
-X-Google-Smtp-Source: AGHT+IEtKWDW1s9czPsciMkYhTZAr2iTLZQsph3c1ZOPBqhKsejuu97n13mrlhtoSDBUeTD/f8mrZu0jJoigZWUPle8=
-X-Received: by 2002:a5d:5191:0:b0:333:1adc:a381 with SMTP id
- k17-20020a5d5191000000b003331adca381mr4091508wrv.31.1702611113161; Thu, 14
- Dec 2023 19:31:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E888ACA70
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 03:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SrvvF6y0bz4f3l1q
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 11:33:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 050D91A01C2
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 11:33:35 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgCH6bcLyXtlXPN_Dg--.9715S2;
+	Fri, 15 Dec 2023 11:33:34 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2 6/6] selftests/bpf: Cope with 512 bytes limit
+ with bpf_global_percpu_ma
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231215001152.3249146-1-yonghong.song@linux.dev>
+ <20231215001227.3254314-1-yonghong.song@linux.dev>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <64834348-0758-e388-e57f-0b71d0be42c9@huaweicloud.com>
+Date: Fri, 15 Dec 2023 11:33:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214120716.591528-1-dave@dtucker.co.uk> <CALOAHbDzZ_KU05jq+Z_j29gzfSFQTnspnGK3c0iH=4xRQ3ct8g@mail.gmail.com>
- <CALOAHbARerbgJy-ujXwbD=f4mqmO1WXTk+33Qjkhqg4rn_6nzg@mail.gmail.com>
- <10E0052D-E706-4395-A2EE-C1BD0BE54DD0@dtucker.co.uk> <CALOAHbAS4NZAdsx9ssurNsN+HLAitaETd50Ua5dOzP02KPRh0A@mail.gmail.com>
-In-Reply-To: <CALOAHbAS4NZAdsx9ssurNsN+HLAitaETd50Ua5dOzP02KPRh0A@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 14 Dec 2023 19:31:41 -0800
-Message-ID: <CAADnVQJi1mezWL6BKn=Vw4quev3pgLOW9q3Yz9GF=LjzZoHp6g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] bpf: Include pid, uid and comm in audit output
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: Dave Tucker <dave@dtucker.co.uk>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231215001227.3254314-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgCH6bcLyXtlXPN_Dg--.9715S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr1xAr4DKw47GryDJryxZrb_yoWrGrWDpa
+	48Aa4Fyr1vqw12g3W3tw4jkryrXrs2qFy5A3yfJry8Zr9Iq34xXr4Fk3W5JF98Ca929w13
+	AasagFZrCF1xC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Thu, Dec 14, 2023 at 6:33=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
-wrote:
->
-> On Thu, Dec 14, 2023 at 10:11=E2=80=AFPM Dave Tucker <dave@dtucker.co.uk>=
- wrote:
-> >
-> >
-> >
-> > > On 14 Dec 2023, at 13:21, Yafang Shao <laoar.shao@gmail.com> wrote:
-> > >
-> > > On Thu, Dec 14, 2023 at 9:13=E2=80=AFPM Yafang Shao <laoar.shao@gmail=
-.com> wrote:
-> > >>
-> > >> On Thu, Dec 14, 2023 at 8:07=E2=80=AFPM Dave Tucker <dave@dtucker.co=
-.uk> wrote:
-> > >>>
-> > >>> Current output from auditd is as follows:
-> > >>>
-> > >>> time->Wed Dec 13 21:39:24 2023
-> > >>> type=3DBPF msg=3Daudit(1702503564.519:11241): prog-id=3D439 op=3DLO=
-AD
-> > >>>
-> > >>> This only tells you that a BPF program was loaded, but without
-> > >>> any context. If we include the pid, uid and comm we get output as
-> > >>> follows:
-> > >>>
-> > >>> time->Wed Dec 13 21:59:59 2023
-> > >>> type=3DBPF msg=3Daudit(1702504799.156:99528): pid=3D27279 uid=3D0
-> > >>>        comm=3D"new_name" prog-id=3D50092 op=3DUNLOAD
-> > >>
-> > >> Is it possible to integrate these common details like pid, uid, and
-> > >> comm into the audit_log_format() function for automatic inclusion? O=
-r
-> > >> would it be more appropriate to create a new helper function like
-> > >> audit_log_format_common() dedicated specifically to incorporating
-> > >> these common details? What are your thoughts on this?
-> >
-> > There's audit_log_task_info from audit.h which adds everything. My
-> > concern was that it is very verbose and doesn=E2=80=99t appear to be wi=
-dely
-> > used. I don=E2=80=99t think it warrants a helper function just yet sinc=
-e
-> > we=E2=80=99re only doing audit logging in this one function.
-> >
-> > That said, I=E2=80=99m working on a patch series to add audit logging t=
-o
-> > bpf_link attach and detach events. I=E2=80=99ll gladly turn that into a
-> > helper then since it would be used in more than one place.
-> >
-> > > BTW, bpf prog can be unloaded in irq context. Therefore we can't do i=
-t
-> > > for BPF_AUDIT_UNLOAD.
-> >
-> > I=E2=80=99ve been running this locally, and occasionally I see unload e=
-vents
-> > where the comm is =E2=80=9Ckworker/0:0=E2=80=9D - I assume that those a=
-re from within
-> > the irq context.
-> >
-> > type=3DBPF msg=3Daudit(1702504511.397:202): pid=3D1 uid=3D0
-> >     comm=3D"systemd" prog-id=3D75 op=3DLOAD
-> >
-> > type=3DBPF msg=3Daudit(1702504541.516:213): pid=3D23152 uid=3D0
-> >     comm=3D"kworker/0:0" prog-id=3D75 op=3DUNLOAD
-> >
-> > That looks ok to me, but it wouldn=E2=80=99t be too hard to skip adding=
- this
-> > information in the irq context if you=E2=80=99d rather.
->
-> I believe we need to skip them. Including random task information
-> could potentially lead to confusion.
+Hi,
 
-Yep. It's broken.
-We cannot access current_cred() from here. Current is a random task.
+On 12/15/2023 8:12 AM, Yonghong Song wrote:
+> In the previous patch, the maximum data size for bpf_global_percpu_ma
+> is 512 bytes. This breaks selftest test_bpf_ma. Let us adjust it
+> accordingly. Also added a selftest to capture the verification failure
+> when the allocation size is greater than 512.
+>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  .../selftests/bpf/progs/percpu_alloc_fail.c    | 18 ++++++++++++++++++
+>  .../testing/selftests/bpf/progs/test_bpf_ma.c  |  9 ---------
+>  2 files changed, 18 insertions(+), 9 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c b/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
+> index 1a891d30f1fe..f2b8eb2ff76f 100644
+> --- a/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/percpu_alloc_fail.c
+> @@ -17,6 +17,10 @@ struct val_with_rb_root_t {
+>  	struct bpf_spin_lock lock;
+>  };
+>  
+> +struct val_600b_t {
+> +	char b[600];
+> +};
+> +
+>  struct elem {
+>  	long sum;
+>  	struct val_t __percpu_kptr *pc;
+> @@ -161,4 +165,18 @@ int BPF_PROG(test_array_map_7)
+>  	return 0;
+>  }
+>  
+> +SEC("?fentry.s/bpf_fentry_test1")
+> +__failure __msg("bpf_percpu_obj_new type size (600) is greater than 512")
+> +int BPF_PROG(test_array_map_8)
+> +{
+> +	struct val_600b_t __percpu_kptr *p;
+> +
+> +	p = bpf_percpu_obj_new(struct val_600b_t);
+> +	if (!p)
+> +		return 0;
+> +
+> +	bpf_percpu_obj_drop(p);
+> +	return 0;
+> +}
+> +
+>  char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/progs/test_bpf_ma.c b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
+> index b685a4aba6bd..68cba55eb828 100644
+> --- a/tools/testing/selftests/bpf/progs/test_bpf_ma.c
+> +++ b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
+> @@ -188,9 +188,6 @@ DEFINE_ARRAY_WITH_PERCPU_KPTR(128);
+>  DEFINE_ARRAY_WITH_PERCPU_KPTR(192);
+>  DEFINE_ARRAY_WITH_PERCPU_KPTR(256);
+>  DEFINE_ARRAY_WITH_PERCPU_KPTR(512);
+> -DEFINE_ARRAY_WITH_PERCPU_KPTR(1024);
+> -DEFINE_ARRAY_WITH_PERCPU_KPTR(2048);
+> -DEFINE_ARRAY_WITH_PERCPU_KPTR(4096);
+
+Considering the update in patch "bpf: Avoid unnecessary extra percpu
+memory allocation", the definition of DEFINE_ARRAY_WITH_PERCPU_KPTR()
+needs update as well, because for 512-sized per-cpu kptr, the tests only
+allocate for (512 - sizeof(void *)) bytes. And we could do
+DEFINE_ARRAY_WITH_PERCPU_KPTR(8) test after the update. I could do that
+after the patch-set is landed if you don't have time to do that.
+
+A bit of off-topic, but it is still relevant. I have a question about
+how to forcibly generate BTF info for struct definition in the test ?
+Currently, I have to include  bin_data_xx in the definition of
+map_value, but I don't want to increase the size of map_value. I had
+tried to use BTF_TYPE_EMIT() in prog just like in linux kernel, but it
+didn't work.
+>  
+>  SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
+>  int test_batch_alloc_free(void *ctx)
+> @@ -259,9 +256,6 @@ int test_batch_percpu_alloc_free(void *ctx)
+>  	CALL_BATCH_PERCPU_ALLOC_FREE(192, 128, 6);
+>  	CALL_BATCH_PERCPU_ALLOC_FREE(256, 128, 7);
+>  	CALL_BATCH_PERCPU_ALLOC_FREE(512, 64, 8);
+> -	CALL_BATCH_PERCPU_ALLOC_FREE(1024, 32, 9);
+> -	CALL_BATCH_PERCPU_ALLOC_FREE(2048, 16, 10);
+> -	CALL_BATCH_PERCPU_ALLOC_FREE(4096, 8, 11);
+>  
+>  	return 0;
+>  }
+> @@ -283,9 +277,6 @@ int test_percpu_free_through_map_free(void *ctx)
+>  	CALL_BATCH_PERCPU_ALLOC(192, 128, 6);
+>  	CALL_BATCH_PERCPU_ALLOC(256, 128, 7);
+>  	CALL_BATCH_PERCPU_ALLOC(512, 64, 8);
+> -	CALL_BATCH_PERCPU_ALLOC(1024, 32, 9);
+> -	CALL_BATCH_PERCPU_ALLOC(2048, 16, 10);
+> -	CALL_BATCH_PERCPU_ALLOC(4096, 8, 11);
+>  
+>  	return 0;
+>  }
+
 
