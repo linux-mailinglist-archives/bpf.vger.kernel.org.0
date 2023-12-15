@@ -1,180 +1,179 @@
-Return-Path: <bpf+bounces-18038-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18039-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B21638150E8
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 21:11:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7580B81515D
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 21:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 60BBD1F2584E
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 20:11:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9895F1C212E2
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 20:45:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5095645C0F;
-	Fri, 15 Dec 2023 20:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69BA74652A;
+	Fri, 15 Dec 2023 20:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X0GcXf2r"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="B40geWHs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510BB45BF6
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 20:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50bfd8d5c77so1244926e87.1
-        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 12:11:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F0E30105
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 20:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-54c70c70952so1311647a12.3
+        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 12:45:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702671070; x=1703275870; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d2QShfNMYTNkQiMpYuhiBqh+otMqXVhziiw2LYCI+tI=;
-        b=X0GcXf2rkvS6TqK2nImkuKV11QX1A4mfJ0PeinUHskjz/5m5gknlG0uAmKUd3eHANC
-         vXZMJHphIa3jPfYVWgMoqh2KA1gZq67ulfy8Y013YKHQ/igGMICi1l20Tcc0+q7fMKpK
-         L1pdRh6x8T1o+gPy2TkhlZ4FUisltOI/KwqHrdq4W5zE2TjRX8gOkfv6snhb/9eq35Ho
-         CCIqGvECTNST3Q+UBPUCqA2qKI5p1t6siALkVQqUOt2mapgssH+8iB2TwswrlHbyIyRk
-         vTTG2UrozuFB9Ze604qXAhpJxiBo/5m57GVyObaPUbhoISijfJwtLfQV7F6+QgBlGepv
-         ADzQ==
+        d=broadcom.com; s=google; t=1702673141; x=1703277941; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fd6pf0SmsbADl01eTngLjugAtsi8fnR8kkAFZ2aydB8=;
+        b=B40geWHsQyiLEZ36q9oNvAip7AWHNxewkd6kRo56U5cYjEagTFbTc8edN8wDK3SFwL
+         rhchxUMY5J7AcAhpwU8iWYHwUZSuxE6Wt0axxejDsyBJ2uztuyYgm//evGiAhmJPGykK
+         PH3+Ss9uYcED6s8vP1QWWYNm49XKHNuz07z+Q=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702671070; x=1703275870;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d2QShfNMYTNkQiMpYuhiBqh+otMqXVhziiw2LYCI+tI=;
-        b=UckAanK8JEXXJPu5ljig5hMiUkWndAtPb7iqnd712npvo00jxOdTdhDDzKP1zh+wtj
-         fLm7OcwEGho3eLeZflvt6zfUondNyHs1CIOsa785m5IYdk2P7mKXzia/YmXs9wxCvtVd
-         5xvosqiWfL7gSGVh7vbYPS2lJdAIzWcCdsRvwDT0v7QFrJ22cnGD8z6DjzJBLApkgUgy
-         60i/spflcItmMWbQ2SAu0HzFk6qhlM3j3RbNsxVgRu+5iNJ56tQUJGa+Fu3Z6sVZQEi+
-         NKP5FBjCsHr/xnTbqeigZLuE2+ZHGGL000zRLf0SuFbmISBP0M86CNN7XwUtWAgAK/k8
-         BzXA==
-X-Gm-Message-State: AOJu0YwAGk5U+uzcz3nWBq0IYyQjsodmBrIiWDkaPfOjM2RV66yzZNk6
-	w8VTxhwt2EGLNi6kxB6MRqQHoSlYCcz7kg==
-X-Google-Smtp-Source: AGHT+IFwJ89d7PzPEjKQQ9ZrZi6JfJf5Nkbv6zePOUcwdy11efiIGIRhmLjFUt5QSjuh72/ugL0maA==
-X-Received: by 2002:a05:6512:3b06:b0:50d:f786:f459 with SMTP id f6-20020a0565123b0600b0050df786f459mr3272454lfv.170.1702671070100;
-        Fri, 15 Dec 2023 12:11:10 -0800 (PST)
-Received: from erthalion.local (dslb-178-005-229-020.178.005.pools.vodafone-ip.de. [178.5.229.20])
-        by smtp.gmail.com with ESMTPSA id cx11-20020a170907168b00b00a1d5ebe8871sm11031490ejd.28.2023.12.15.12.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Dec 2023 12:11:09 -0800 (PST)
-From: Dmitrii Dolgov <9erthalion6@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	dan.carpenter@linaro.org,
-	olsajiri@gmail.com,
-	asavkov@redhat.com,
-	Dmitrii Dolgov <9erthalion6@gmail.com>
-Subject: [PATCH bpf-next v9 4/4] selftests/bpf: Test re-attachment fix for bpf_tracing_prog_attach
-Date: Fri, 15 Dec 2023 21:07:10 +0100
-Message-ID: <20231215200712.17222-5-9erthalion6@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231215200712.17222-1-9erthalion6@gmail.com>
-References: <20231215200712.17222-1-9erthalion6@gmail.com>
+        d=1e100.net; s=20230601; t=1702673141; x=1703277941;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fd6pf0SmsbADl01eTngLjugAtsi8fnR8kkAFZ2aydB8=;
+        b=OUFnwHuBxV4yjx1Cvf+vzWzNu0w95vEZyGB7X7cortGaHo6OkYtYECjGjONpcHw4ur
+         j+5wn8KTJfmsXMURhNd4tn2Ft2ZC1ZwG1YhRYPlH3h/CKgP/lLr7Yak54zQCPtswpQTy
+         yLByCJ/CpiPEA59D7uiNB0NKPUJZY3oubDHI7TNFAjf3Mi2JhiClSNOvGZoGl0PPZ/HB
+         6kpVOymZVcj416PsUvu0CGhS9pELhnLhnv0w/2gHr7qO6DN1/oYxTBabyyuFRd7liCYE
+         4cOWcbqdigjJ0pBHyS6Ofv9IC6y0OSv/OSexAE3l1smVGtYurxKnez8km2Y4kUwsuwET
+         vLiQ==
+X-Gm-Message-State: AOJu0YwL44K5NTW6JPmAqN0qOY7e0QVZgNuHwMk7nw0FqxO9mQukvFe+
+	YUWvr65teqiNNR4Oh7sIo/Cd7Wc3lPNuRjYVagwGEw==
+X-Google-Smtp-Source: AGHT+IGy7flyjLN3vYV71Xaj2okVYLzsCeJAsrUCtuQ3lXDk+XxLSP/iBERK1cv+oJ2cpjYari9aaSrttBM46+9j0Ek=
+X-Received: by 2002:a50:99da:0:b0:552:e7bf:d3da with SMTP id
+ n26-20020a5099da000000b00552e7bfd3damr267826edb.77.1702673140487; Fri, 15 Dec
+ 2023 12:45:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231214213138.98095-1-michael.chan@broadcom.com>
+ <20231215083759.0702559d@kernel.org> <ZXyFW0lIGluM8ipj@C02YVCJELVCG.dhcp.broadcom.net>
+ <20231215092112.3f0fee3d@kernel.org>
+In-Reply-To: <20231215092112.3f0fee3d@kernel.org>
+From: Michael Chan <michael.chan@broadcom.com>
+Date: Fri, 15 Dec 2023 12:45:27 -0800
+Message-ID: <CACKFLi=MGnF3Tp=5_c6jjXzRbnzWL7ec8ecUYNGh-QZ1b4K9_A@mail.gmail.com>
+Subject: Re: [PATCH net] bnxt_en: do not map packet buffers twice
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Andy Gospodarek <andrew.gospodarek@broadcom.com>, davem@davemloft.net, 
+	netdev@vger.kernel.org, edumazet@google.com, pabeni@redhat.com, 
+	bpf@vger.kernel.org, hawk@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	john.fastabend@gmail.com, Somnath Kotur <somnath.kotur@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+	boundary="000000000000bd12c1060c927bd5"
 
-Add a test case to verify the fix for "prog->aux->dst_trampoline and
-tgt_prog is NULL" branch in bpf_tracing_prog_attach. The sequence of
-events:
+--000000000000bd12c1060c927bd5
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-1. load rawtp program
-2. load fentry program with rawtp as target_fd
-3. create tracing link for fentry program with target_fd = 0
-4. repeat 3
+On Fri, Dec 15, 2023 at 9:21=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> Are the XDP_REDIRECT (target) and XDP_TX going to the same rings?
+> The locking seems to be missing, and bnxt_tx_int_xdp() does not
+> seem to be able to handle the optimization you described if
+> a ring contains a mix of XDP_REDIRECT and XDP_TX.
 
-Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
----
-Changes in v8:
-    - Cleanup, remove link opts and if condition around assert for the
-      expected error, unneeded parts of the test bpf prog and some
-      indendation improvements.
+XDP_REDIRECT mixed with XDP_TX won't work well currently.  It was
+briefly mentioned on the list a few months ago:
 
- .../bpf/prog_tests/recursive_attach.c         | 45 +++++++++++++++++++
- .../bpf/progs/fentry_recursive_target.c       | 10 +++++
- 2 files changed, 55 insertions(+)
+https://lore.kernel.org/netdev/CACKFLin+1whPs0qeM5xBb1yXx8FkFS_vGrW6PaGy41_=
+XVH=3DSGg@mail.gmail.com/
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-index 5b38783bcd16..1063b7924343 100644
---- a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-+++ b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
-@@ -66,3 +66,48 @@ void test_recursive_fentry_attach(void)
- 			fentry_recursive__destroy(tracing_chain[i]);
- 	}
- }
-+
-+/*
-+ * Test that a tracing prog reattachment (when we land in
-+ * "prog->aux->dst_trampoline and tgt_prog is NULL" branch in
-+ * bpf_tracing_prog_attach) does not lead to a crash due to missing attach_btf
-+ */
-+void test_fentry_attach_btf_presence(void)
-+{
-+	struct fentry_recursive_target *target_skel = NULL;
-+	struct fentry_recursive *tracing_skel = NULL;
-+	struct bpf_program *prog;
-+	int err, link_fd, tgt_prog_fd;
-+
-+	target_skel = fentry_recursive_target__open_and_load();
-+	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
-+		goto close_prog;
-+
-+	tracing_skel = fentry_recursive__open();
-+	if (!ASSERT_OK_PTR(tracing_skel, "fentry_recursive__open"))
-+		goto close_prog;
-+
-+	prog = tracing_skel->progs.recursive_attach;
-+	tgt_prog_fd = bpf_program__fd(target_skel->progs.fentry_target);
-+	err = bpf_program__set_attach_target(prog, tgt_prog_fd, "fentry_target");
-+	if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
-+		goto close_prog;
-+
-+	err = fentry_recursive__load(tracing_skel);
-+	if (!ASSERT_OK(err, "fentry_recursive__load"))
-+		goto close_prog;
-+
-+	tgt_prog_fd = bpf_program__fd(tracing_skel->progs.recursive_attach);
-+	link_fd = bpf_link_create(tgt_prog_fd, 0, BPF_TRACE_FENTRY, NULL);
-+	if (!ASSERT_GE(link_fd, 0, "link_fd"))
-+		goto close_prog;
-+
-+	fentry_recursive__detach(tracing_skel);
-+
-+	err = fentry_recursive__attach(tracing_skel);
-+	ASSERT_ERR(err, "fentry_recursive__attach");
-+
-+close_prog:
-+	fentry_recursive_target__destroy(target_skel);
-+	fentry_recursive__destroy(tracing_skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-index 6e0b5c716f8e..51af8426da3a 100644
---- a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-+++ b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
-@@ -15,3 +15,13 @@ int BPF_PROG(test1, int a)
- {
- 	return 0;
- }
-+
-+/*
-+ * Dummy bpf prog for testing attach_btf presence when attaching an fentry
-+ * program.
-+ */
-+SEC("raw_tp/sys_enter")
-+int BPF_PROG(fentry_target, struct pt_regs *regs, long id)
-+{
-+	return 0;
-+}
--- 
-2.41.0
+Yes, they share the same set of TX rings in the current code.  My plan
+is to have a set of dedicated TX rings for XDP_REDIRECT.  Adding
+locking to properly support XDP_REDIRECT and XDP_TX seems not ideal
+for performance.
 
+--000000000000bd12c1060c927bd5
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+OnaLEot1MoQO7BIe5S9H4AcCEXXcrJJiAtMCl47ARpyHmvQFQFFTrHgUYEd9V+9bOzY7MBIGSV1N
+/JfsT1sZw6HT0lJkSQefhPGpBniAob62DJP3qr11tu8CAwEAAaOCAdowggHWMA4GA1UdDwEB/wQE
+AwIFoDCBowYIKwYBBQUHAQEEgZYwgZMwTgYIKwYBBQUHMAKGQmh0dHA6Ly9zZWN1cmUuZ2xvYmFs
+c2lnbi5jb20vY2FjZXJ0L2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNydDBBBggrBgEFBQcw
+AYY1aHR0cDovL29jc3AuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAw
+TQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2Jh
+bHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwSQYDVR0fBEIwQDA+oDygOoY4aHR0cDov
+L2NybC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcmwwJAYDVR0R
+BB0wG4EZbWljaGFlbC5jaGFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNV
+HSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU31rAyTdZweIF0tJTFYwfOv2w
+L4QwDQYJKoZIhvcNAQELBQADggEBACcuyaGmk0NSZ7Kio7O7WSZ0j0f9xXcBnLbJvQXFYM7JI5uS
+kw5ozATEN5gfmNIe0AHzqwoYjAf3x8Dv2w7HgyrxWdpjTKQFv5jojxa3A5LVuM8mhPGZfR/L5jSk
+5xc3llsKqrWI4ov4JyW79p0E99gfPA6Waixoavxvv1CZBQ4Stu7N660kTu9sJrACf20E+hdKLoiU
+hd5wiQXo9B2ncm5P3jFLYLBmPltIn/uzdiYpFj+E9kS9XYDd+boBZhN1Vh0296zLQZobLfKFzClo
+E6IFyTTANonrXvCRgodKS+QJEH8Syu2jSKe023aVemkuZjzvPK7o9iU7BKkPG2pzLPgxggJtMIIC
+aQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQD
+EyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgxeQGjDntHGb2iaQkIw
+DQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIEQ+YkMETBXCAHqlOMZ+38ufM1ZJS7Yt
+nH3K1DkN1ISBMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTIx
+NTIwNDU0MVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCG
+SAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQC
+ATANBgkqhkiG9w0BAQEFAASCAQCYHKQQNozH6g+teTxFQV/CQJ3flbE/Vo6Kt7AwZsa45sR2YzIW
+sPxB2dFrdiKZl7uG2VFfsmlQODSLoeoy6vuP/JUoajI8Sq8K4/9IoffzPYzapSGt7d9J05agvL3w
+81sMdYplWicppNGZmUgkeW7+vH5+Zum4DjJ9JEV7F0yu2foLhdDhN7Hl/HryyqZjRG6ID7d9CwZp
+4Xeglit4evPNumFvD7r/kOk45p19Tn5auMi5Rv9RhGm8Zhv6PNYOAz1qXgjh41TPAxb81PUFSFtN
+NF1ABYk26taPYYSxKVI1Iws3wbFSApsZiAYupKpUMY0LrzvfCj3W+Z98AytWwFVn
+--000000000000bd12c1060c927bd5--
 
