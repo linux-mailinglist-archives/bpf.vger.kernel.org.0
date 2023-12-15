@@ -1,193 +1,186 @@
-Return-Path: <bpf+bounces-17944-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB4FB81406B
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 04:08:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8720814077
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 04:11:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 809BA1F2290D
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 03:08:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F08791C20E12
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 03:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DDC41C31;
-	Fri, 15 Dec 2023 03:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3260217E3;
+	Fri, 15 Dec 2023 03:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AkoONAbH"
 X-Original-To: bpf@vger.kernel.org
-Received: from out199-18.us.a.mail.aliyun.com (out199-18.us.a.mail.aliyun.com [47.90.199.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80B3663B3;
-	Fri, 15 Dec 2023 03:08:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VyWIqbq_1702609660;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VyWIqbq_1702609660)
-          by smtp.aliyun-inc.com;
-          Fri, 15 Dec 2023 11:07:41 +0800
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: pablo@netfilter.org,
-	kadlec@netfilter.org,
-	fw@strlen.de
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	coreteam@netfilter.org,
-	netfilter-devel@vger.kernel.org,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	ast@kernel.org
-Subject: [RFC nf-next v1 2/2] selftests/bpf: Add netfilter link prog update test
-Date: Fri, 15 Dec 2023 11:07:33 +0800
-Message-Id: <1702609653-45835-3-git-send-email-alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1702609653-45835-1-git-send-email-alibuda@linux.alibaba.com>
-References: <1702609653-45835-1-git-send-email-alibuda@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347D4D275;
+	Fri, 15 Dec 2023 03:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40c48d7a7a7so2130845e9.3;
+        Thu, 14 Dec 2023 19:11:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702609870; x=1703214670; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HWWvM6V+4Sz/C3HWl2XXKBRKAxsD/qZWAz3+i6W9vIE=;
+        b=AkoONAbHTLbcb+4vZxG8VUX3bdonca7dWy9n4/R2atJS3PFHA/zTvJ/Dw/T523SDeV
+         jJ/f41TmBLdXbbrSzW/owEd0k7CLL/66REPWvdRNKbJcZVH6f/eCy/ssdgG48f8a7ZxR
+         JlxyX3Tl9pzahbrqdm5T66aYzrMpn3p3Dp+A0NKfTroF3GeZ7m6QPiTNOQ2EdWG5TTLg
+         ddd/L2sPgdt4D6c/f8S8q9z7ioEaA47rX+kwlyIn8S4I8Qh/CosbLSQsxjwz8bJJ/RaF
+         9dZ0/tqQn+f7yfjwtsIKp86i7faXhGJfTpqU9ge/SOMF3kfkRHkDwCUWmCAtnXWyjdrz
+         ICHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702609870; x=1703214670;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HWWvM6V+4Sz/C3HWl2XXKBRKAxsD/qZWAz3+i6W9vIE=;
+        b=tztv/Hf/tifLdduFJ30r8BjXrrK3jJW4ySHKxDwhB2Vdc/SBsAPur3ZG7T0S09+z4/
+         RujJ6V6FQLeab/d/CTTN7YcEfc3gzO7OfqbIo6fFzwgt9vxacBfkt/+wGqQZps73UxZl
+         XBDwuwCByk3KByNTryqAdpt+tA5HbUjy7VNv7h3hY3gRA6OFVRM7zIwnuanRN8kc1uJh
+         BEixsJ/QEV9hkXAD8t4RPmtYYAiW+s1KBxT6S9Ub11SM3dwvESQARuNjX1MS98T/o5z8
+         xl3s5vIW4sEtrA1FHEJ3Y9+U2keCoTiz3xrQKUYwY1gbZnWGkl1xDb+3jjoQ21mr10xT
+         G3IA==
+X-Gm-Message-State: AOJu0YzmUFd2PWOf4W+Q0vBYL/g7JuTqml9snnkDWExN+8terbL5VUPI
+	OP+7Q4dpphdyOBfVqlcfX4CXb272OAuXxMBPGyY=
+X-Google-Smtp-Source: AGHT+IFKjwdIqetMw4ytAHX7krNYfIP4Nsnc8r/AbTBHBF0CuvK26jl6s0TZRrJbnF+FCJShuLXqT6Zw87RCZEfCfBs=
+X-Received: by 2002:adf:e282:0:b0:332:ef1e:bb88 with SMTP id
+ v2-20020adfe282000000b00332ef1ebb88mr5991991wri.33.1702609870183; Thu, 14 Dec
+ 2023 19:11:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <cover.1702594357.git.dxu@dxuuu.xyz> <97ada80f3aaaeb16bf97e31a8fc204513b4fb6a9.1702594357.git.dxu@dxuuu.xyz>
+ <CAADnVQ+j80DCDHsqJZVmBOohFzOT01Ofdi3TbFEuV2xJ4+A=tA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+j80DCDHsqJZVmBOohFzOT01Ofdi3TbFEuV2xJ4+A=tA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 14 Dec 2023 19:10:58 -0800
+Message-ID: <CAADnVQLtQ3Qcv3Fp9iNVCXY-_2zTP9hEFqccKLxjgUZNs_uWjw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: selftests: Add bpf_assert_if() and
+ bpf_assert_with_if() macros
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Shuah Khan <shuah@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Thu, Dec 14, 2023 at 6:46=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Dec 14, 2023 at 2:56=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > These macros are a temporary stop-gap until bpf exceptions support
+> > unwinding acquired entities. Basically these macros act as if they take
+> > a callback which only get executed if the assertion fails.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  .../testing/selftests/bpf/bpf_experimental.h  | 22 +++++++++++++++++++
+> >  1 file changed, 22 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/tes=
+ting/selftests/bpf/bpf_experimental.h
+> > index 1386baf9ae4a..d63f415bef26 100644
+> > --- a/tools/testing/selftests/bpf/bpf_experimental.h
+> > +++ b/tools/testing/selftests/bpf/bpf_experimental.h
+> > @@ -263,6 +263,17 @@ extern void bpf_throw(u64 cookie) __ksym;
+> >   */
+> >  #define bpf_assert(cond) if (!(cond)) bpf_throw(0);
+> >
+> > +/* Description
+> > + *     Assert that a conditional expression is true. If false, runs co=
+de in the
+> > + *     body before throwing.
+> > + * Returns
+> > + *     Void.
+> > + * Throws
+> > + *     An exception with the value zero when the assertion fails.
+> > + */
+> > +#define bpf_assert_if(cond) \
+> > +       for (int ___i =3D 0, ___j =3D !!(cond); !(___j) && !___i; bpf_t=
+hrow(0), ___i++)
+>
+> Kumar,
+>
+> Is this approach reliable?
+> I suspect the compiler can still optimize it.
+> I feel it will be annoying to clean up if folks start using it now,
+> since there won't be a drop in replacement.
+> Every such bpf_assert_if() would need to be manually patched.
+>
+> If 2nd part of exception is far, how about we add an equivalent
+> of __bpf_assert() macroses with conditional ops in asm,
+> but with extra 'asm volatile goto' that can be used to construct
+> release of resources.
+>
+> bpf_do_assert_eq(var1, 0) { bpf_spin_unlock(...); }
+> bpf_do_assert_lt(var2, 0) { bpf_spin_unlock(...); }
 
-Update prog for active links and verify whether
-the prog has been successfully replaced.
+Just realized that we can go the other way instead.
 
-Expected output:
+We can get rid of bpf_assert_eq/ne/... and replace with:
 
-./test_progs -t netfilter_link_update_prog
-Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h
+b/tools/testing/selftests/bpf/bpf_experimental.h
+index 1386baf9ae4a..1c500287766d 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -254,6 +254,15 @@ extern void bpf_throw(u64 cookie) __ksym;
+                }
+                 \
+         })
 
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
- .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
- 2 files changed, 107 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
++#define _EQ(LHS, RHS) \
++       ({ int var =3D 1;\
++               asm volatile goto("if %[lhs] =3D=3D %[rhs] goto %l[l_yes]" =
+\
++               :: [lhs] "r"(LHS), [rhs] "i"(RHS) :: l_yes);\
++       var =3D 0;\
++l_yes:\
++       var;\
++       })
++
+ /* Description
+  *     Assert that a conditional expression is true.
+  * Returns
+diff --git a/tools/testing/selftests/bpf/progs/exceptions.c
+b/tools/testing/selftests/bpf/progs/exceptions.c
+index 2811ee842b01..1111e852f154 100644
+--- a/tools/testing/selftests/bpf/progs/exceptions.c
++++ b/tools/testing/selftests/bpf/progs/exceptions.c
+@@ -203,6 +203,7 @@ __noinline int assert_nz_gfunc(u64 c)
+        volatile u64 cookie =3D c;
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
-new file mode 100644
-index 00000000..d23b544
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
-@@ -0,0 +1,83 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <test_progs.h>
-+#include <linux/netfilter.h>
-+#include <network_helpers.h>
-+#include "test_netfilter_link_update_prog.skel.h"
-+
-+#define SERVER_ADDR "127.0.0.1"
-+#define SERVER_PORT 12345
-+
-+static const char dummy_message[] = "A dummy message";
-+
-+static int send_dummy(int client_fd)
-+{
-+	struct sockaddr_storage saddr;
-+	struct sockaddr *saddr_p;
-+	socklen_t saddr_len;
-+	int err;
-+
-+	saddr_p = (struct sockaddr *)&saddr;
-+	err = make_sockaddr(AF_INET, SERVER_ADDR, SERVER_PORT, &saddr, &saddr_len);
-+	if (!ASSERT_OK(err, "make_sockaddr"))
-+		return -1;
-+
-+	err = sendto(client_fd, dummy_message, sizeof(dummy_message) - 1, 0, saddr_p, saddr_len);
-+	if (!ASSERT_GE(err, 0, "sendto"))
-+		return -1;
-+
-+	return 0;
-+}
-+
-+void test_netfilter_link_update_prog(void)
-+{
-+	LIBBPF_OPTS(bpf_netfilter_opts, opts,
-+		.pf = NFPROTO_IPV4,
-+		.hooknum = NF_INET_LOCAL_OUT,
-+		.priority = 100);
-+	struct test_netfilter_link_update_prog *skel;
-+	struct bpf_program *prog;
-+	int server_fd, client_fd;
-+	int err;
-+
-+	skel = test_netfilter_link_update_prog__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "test_netfilter_link_update_prog__open_and_load"))
-+		goto out;
-+
-+	prog = skel->progs.nf_link_prog;
-+
-+	if (!ASSERT_OK_PTR(prog, "load program"))
-+		goto out;
-+
-+	skel->links.nf_link_prog = bpf_program__attach_netfilter(prog, &opts);
-+	if (!ASSERT_OK_PTR(skel->links.nf_link_prog, "attach netfilter program"))
-+		goto out;
-+
-+	server_fd = start_server(AF_INET, SOCK_DGRAM, SERVER_ADDR, SERVER_PORT, 0);
-+	if (!ASSERT_GE(server_fd, 0, "start_server"))
-+		goto out;
-+
-+	client_fd = connect_to_fd(server_fd, 0);
-+	if (!ASSERT_GE(client_fd, 0, "connect_to_fd"))
-+		goto out;
-+
-+	send_dummy(client_fd);
-+
-+	ASSERT_EQ(skel->bss->counter, 0, "counter should be zero");
-+
-+	err = bpf_link__update_program(skel->links.nf_link_prog, skel->progs.nf_link_prog_new);
-+	if (!ASSERT_OK(err, "bpf_link__update_program"))
-+		goto out;
-+
-+	send_dummy(client_fd);
-+	ASSERT_GE(skel->bss->counter, 0, "counter should be greater than zero");
-+out:
-+	if (client_fd > 0)
-+		close(client_fd);
-+	if (server_fd > 0)
-+		close(server_fd);
-+
-+	test_netfilter_link_update_prog__destroy(skel);
-+}
-+
-+
-diff --git a/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-new file mode 100644
-index 00000000..42ae332
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+#define NF_ACCEPT 1
-+
-+SEC("netfilter")
-+int nf_link_prog(struct bpf_nf_ctx *ctx)
-+{
-+	return NF_ACCEPT;
-+}
-+
-+u64 counter = 0;
-+
-+SEC("netfilter")
-+int nf_link_prog_new(struct bpf_nf_ctx *ctx)
-+{
-+	counter++;
-+	return NF_ACCEPT;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
--- 
-1.8.3.1
+        bpf_assert(cookie !=3D 0);
++       bpf_assert(_EQ(cookie, 2));
+        return 0;
+ }
 
+we can probably remove bpf_assert_with() and
+all of the bpf_assert_le|ne|qt|eq|_with()
+
+Users can open code everything:
+if (!_EQ(foo, bar)) bpf_throw(123);
+
+bpf_assert_if() can work too,
+but let's call it bpf_do_assert() and use like:
+
+bpf_do_assert(EQ(time, 0)) {
+   // cleanup
+}
 
