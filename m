@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-17988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9F2814526
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 11:06:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 469EE814524
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 11:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EC861C22BEE
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 10:06:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBD471F23CD0
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 10:06:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD00619477;
-	Fri, 15 Dec 2023 10:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAABE18C11;
+	Fri, 15 Dec 2023 10:06:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B0C418C19
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 10:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADE318C14
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 10:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Ss4cJ0VWtz4f3knv
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 18:06:08 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Ss4cG1932z4f3lgS
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 18:06:06 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A4B861A0992
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 18:06:10 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 358191A070C
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 18:06:11 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgBHlQsLJXxlJTfVDg--.54090S6;
-	Fri, 15 Dec 2023 18:06:10 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgBHlQsLJXxlJTfVDg--.54090S7;
+	Fri, 15 Dec 2023 18:06:11 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -44,9 +44,9 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	xingwei lee <xrivendell7@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v3 2/5] bpf: Limit the number of kprobes when attaching program to multiple kprobes
-Date: Fri, 15 Dec 2023 18:07:05 +0800
-Message-Id: <20231215100708.2265609-3-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v3 3/5] selftests/bpf: Add test for abnormal cnt during multi-uprobe attachment
+Date: Fri, 15 Dec 2023 18:07:06 +0800
+Message-Id: <20231215100708.2265609-4-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20231215100708.2265609-1-houtao@huaweicloud.com>
 References: <20231215100708.2265609-1-houtao@huaweicloud.com>
@@ -57,68 +57,112 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHlQsLJXxlJTfVDg--.54090S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFWDXF4xCF1fAr1DJF13Jwb_yoW8Xr4rpF
-	1Dta4q9r4rXF4xKan5Zws5Zry0vanxW3y7JFsrXr9xAa17Xws5WF12grWjgF1Fv395Gayx
-	JFZ2q34jqrZrZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+X-CM-TRANSID:cCh0CgBHlQsLJXxlJTfVDg--.54090S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw4xAF1rCw43Kr4DXr1UWrg_yoW5WF4Upa
+	sIqryakF4fXF15X3yjyrWq9ryFvF4kury5CryxW34fZrnrJF10qF1xKFWxAF93ArZYva13
+	Aw1DtryUWrWUXaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-	JVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwI
-	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxUFa9-UUUUU
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-An abnormally big cnt may also be assigned to kprobe_multi.cnt when
-attaching multiple kprobes. It will trigger the following warning in
-kvmalloc_node():
+If an abnormally huge cnt is used for multi-uprobes attachment, the
+following warning will be reported:
 
-	if (unlikely(size > INT_MAX)) {
-	    WARN_ON_ONCE(!(flags & __GFP_NOWARN));
-	    return NULL;
-	}
+  ------------[ cut here ]------------
+  WARNING: CPU: 7 PID: 406 at mm/util.c:632 kvmalloc_node+0xd9/0xe0
+  Modules linked in: bpf_testmod(O)
+  CPU: 7 PID: 406 Comm: test_progs Tainted: G ...... 6.7.0-rc3+ #32
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+  RIP: 0010:kvmalloc_node+0xd9/0xe0
+  ......
+  Call Trace:
+   <TASK>
+   ? __warn+0x89/0x150
+   ? kvmalloc_node+0xd9/0xe0
+   bpf_uprobe_multi_link_attach+0x14a/0x480
+   __sys_bpf+0x14a9/0x2bc0
+   do_syscall_64+0x36/0xb0
+   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+   ......
+   </TASK>
+  ---[ end trace 0000000000000000 ]---
 
-Fix the warning by limiting the maximal number of kprobes in
-bpf_kprobe_multi_link_attach(). If the number of kprobes is greater than
-MAX_KPROBE_MULTI_CNT, the attachment will fail and return -E2BIG.
+So add a test to ensure the warning is fixed.
 
 Acked-by: Jiri Olsa <jolsa@kernel.org>
-Fixes: 0dcac2725406 ("bpf: Add multi kprobe link")
 Signed-off-by: Hou Tao <houtao1@huawei.com>
 ---
- kernel/trace/bpf_trace.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../bpf/prog_tests/uprobe_multi_test.c        | 32 ++++++++++++++++++-
+ 1 file changed, 31 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 75c05aea9fd9..97c0c49c40a0 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -43,6 +43,7 @@
- 	rcu_dereference_protected(p, lockdep_is_held(&bpf_event_mutex))
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+index ece260cf2c0b..07a009f95e85 100644
+--- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+@@ -234,6 +234,34 @@ static void test_attach_api_syms(void)
+ 	test_attach_api("/proc/self/exe", NULL, &opts);
+ }
  
- #define MAX_UPROBE_MULTI_CNT (1U << 20)
-+#define MAX_KPROBE_MULTI_CNT (1U << 20)
++static void test_attach_api_fails(void)
++{
++	LIBBPF_OPTS(bpf_link_create_opts, opts);
++	const char *path = "/proc/self/exe";
++	struct uprobe_multi *skel = NULL;
++	unsigned long offset = 0;
++	int link_fd = -1;
++
++	skel = uprobe_multi__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "uprobe_multi__open_and_load"))
++		goto cleanup;
++
++	/* abnormal cnt */
++	opts.uprobe_multi.path = path;
++	opts.uprobe_multi.offsets = &offset;
++	opts.uprobe_multi.cnt = INT_MAX;
++	link_fd = bpf_link_create(bpf_program__fd(skel->progs.uprobe), 0,
++				  BPF_TRACE_UPROBE_MULTI, &opts);
++	if (!ASSERT_ERR(link_fd, "link_fd"))
++		goto cleanup;
++	if (!ASSERT_EQ(link_fd, -E2BIG, "big cnt"))
++		goto cleanup;
++cleanup:
++	if (link_fd >= 0)
++		close(link_fd);
++	uprobe_multi__destroy(skel);
++}
++
+ static void __test_link_api(struct child *child)
+ {
+ 	int prog_fd, link1_fd = -1, link2_fd = -1, link3_fd = -1, link4_fd = -1;
+@@ -311,7 +339,7 @@ static void __test_link_api(struct child *child)
+ 	free(offsets);
+ }
  
- #ifdef CONFIG_MODULES
- struct bpf_trace_module {
-@@ -2972,6 +2973,8 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	cnt = attr->link_create.kprobe_multi.cnt;
- 	if (!cnt)
- 		return -EINVAL;
-+	if (cnt > MAX_KPROBE_MULTI_CNT)
-+		return -E2BIG;
+-void test_link_api(void)
++static void test_link_api(void)
+ {
+ 	struct child *child;
  
- 	size = cnt * sizeof(*addrs);
- 	addrs = kvmalloc_array(cnt, sizeof(*addrs), GFP_KERNEL);
+@@ -412,4 +440,6 @@ void test_uprobe_multi_test(void)
+ 		test_bench_attach_uprobe();
+ 	if (test__start_subtest("bench_usdt"))
+ 		test_bench_attach_usdt();
++	if (test__start_subtest("attach_api_fails"))
++		test_attach_api_fails();
+ }
 -- 
 2.29.2
 
