@@ -1,168 +1,239 @@
-Return-Path: <bpf+bounces-17958-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17959-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB7CE814196
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 06:54:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C0F2814199
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 06:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82EB42824B8
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 05:54:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F4E51C224A8
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 05:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732DD7470;
-	Fri, 15 Dec 2023 05:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534536D22;
+	Fri, 15 Dec 2023 05:55:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="Hw7CJfrB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ng4HRW6j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2516CCA67
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 05:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d347b4d676so2297365ad.2
-        for <bpf@vger.kernel.org>; Thu, 14 Dec 2023 21:54:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1702619643; x=1703224443; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fOoHdM5h9bwf4FU75c9JhTdCin+GzT+LCK1gzu+NdQk=;
-        b=Hw7CJfrBf3WUSjkK5CZuMc/BhSZsIA/RxnkvygUJP/ZV9xDkojZuYc/mWFjRezZ7VR
-         CqgMh36SXnlbPle69g6fSf4lpnQJJQKsim2Hv372YcJTuHLiMOIcDdGV/FvCobPvAf/K
-         yA7eVXzgOyo+h3eZsOCXUc/ehSXRztSkLJLape2O3qfVscU0FlEiGFz22jxdNSKrY3q8
-         EnX9yfXBd/Ubv2BCI5+WYg3c1dBXCSgyPdm/GVGaJGk4mwFHLCFwnz+nbiYyT+ZTrGHv
-         2rCkEs8wsR3W1SjvnqQBqykwEg8LO5KiuoG0LiYkq76wXvwB1Oha9cTF2J3Wizss2Eur
-         tyaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702619643; x=1703224443;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fOoHdM5h9bwf4FU75c9JhTdCin+GzT+LCK1gzu+NdQk=;
-        b=Taadk5h8bByuSJyjBFr8UBo89KR5RkDNiSK4+EAB+6txQYDteKOYwpgB2BRPtRxh8W
-         +rlMWtVUVqIDQiSCK+YatnzhaENzDeHarlFuOYEG1LdkRtWlv6VJt2mu0QmXPQX+F4RI
-         ziw0h04NjaDaz20mrgQuEZxwc6ASG8Kob9imZ9SMp82UHfNDSlOrL7Xz+fRbZcDZkx3e
-         +ilkJeUAXlcKThnSu81rY2W0sSc7bczbSNmVu6/t7/Z3An8eFyfy4wgcrDr9UNCG4G+B
-         KxXbwd+hOg0G62gWq1/ompcxba+FP+cW9lqfURcZAdGvFR7K/ZYVeJhMntyRmcx9TN1p
-         w/vQ==
-X-Gm-Message-State: AOJu0YzWBxo74cBiljTMqyMm0MBNhd20AVNXjxhpjaPWgtH9NtelhQQs
-	yRI4UaewjG97bah8WUdQVaPviw==
-X-Google-Smtp-Source: AGHT+IHS5eNnx4eTODXiGFp6VCbig0GK/VsSwcRzlq6iv7RUQFpt8KHA6pNXx5viXRHJRzh+LVMaKQ==
-X-Received: by 2002:a17:903:2348:b0:1d0:6ffe:9ef with SMTP id c8-20020a170903234800b001d06ffe09efmr12532549plh.77.1702619643479;
-        Thu, 14 Dec 2023 21:54:03 -0800 (PST)
-Received: from ?IPV6:2620:10d:c085:21e1::122b? ([2620:10d:c090:400::4:bb0d])
-        by smtp.gmail.com with ESMTPSA id ix22-20020a170902f81600b001d37c19b759sm853058plb.160.2023.12.14.21.54.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Dec 2023 21:54:03 -0800 (PST)
-Message-ID: <e78e0343-6647-4918-bacf-c00abc01a2ba@davidwei.uk>
-Date: Thu, 14 Dec 2023 21:54:00 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE9C1D30F
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 05:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0a8849cd-b8ca-4219-b7cc-5331c42fc190@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702619697;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gIpY/sTfSRL8B8SBlf3HZZ0vohPPshXoonB5eAF5rAU=;
+	b=ng4HRW6ju7vd1xe9gfXMF4ZCkxyiFUGtTGrApBbtq0hMxJRra0PVJcj8lGOFf0PGQ0eRR8
+	g6pwEBzK3sBDB3VO3MkvmBon/7fIH+qLWMCv4gmtIPVFnxSLWYitKnPzDH9eXAu12WuXhX
+	oBhnNJcl/5sFuy+G5cprm3lvuQfLOos=
+Date: Thu, 14 Dec 2023 21:54:50 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] bnxt_en: do not map packet buffers twice
-Content-Language: en-GB
-To: Michael Chan <michael.chan@broadcom.com>, davem@davemloft.net
-Cc: netdev@vger.kernel.org, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, bpf@vger.kernel.org, hawk@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, john.fastabend@gmail.com,
- Andy Gospodarek <andrew.gospodarek@broadcom.com>,
- Somnath Kotur <somnath.kotur@broadcom.com>
-References: <20231214213138.98095-1-michael.chan@broadcom.com>
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20231214213138.98095-1-michael.chan@broadcom.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf-next v13 08/14] bpf: hold module for
+ bpf_struct_ops_map.
+Content-Language: en-US
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ drosen@google.com
+References: <20231209002709.535966-1-thinker.li@gmail.com>
+ <20231209002709.535966-9-thinker.li@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231209002709.535966-9-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 2023-12-14 13:31, Michael Chan wrote:
-> From: Andy Gospodarek <andrew.gospodarek@broadcom.com>
+On 12/8/23 4:27 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
 > 
-> Remove double-mapping of DMA buffers as it can prevent page pool entries
-> from being freed.  Mapping is managed by page pool infrastructure and
-> was previously managed by the driver in __bnxt_alloc_rx_page before
-> allowing the page pool infrastructure to manage it.
+> To ensure that a module remains accessible whenever a struct_ops object of
+> a struct_ops type provided by the module is still in use.
 > 
-> Fixes: 578fcfd26e2a ("bnxt_en: Let the page pool manage the DMA mapping")
-> Reviewed-by: Somnath Kotur <somnath.kotur@broadcom.com>
-> Signed-off-by: Andy Gospodarek <andrew.gospodarek@broadcom.com>
-> Signed-off-by: Michael Chan <michael.chan@broadcom.com>
+> struct bpf_strct_ops_map doesn't hold a refcnt to btf anymore sicne a
 
-Reviewed-by: David Wei <dw@davidwei.uk>
+s /bpf_strct_/bpf_struct_/
 
+s/sicne/since/
+
+> module will hold a refcnt to it's btf already. But, struct_ops programs are
+> different. They hold their associated btf, not the module since they need
+> only btf to assure their types (signatures).
+
+The patch subject is not accurate. The patch holds the module refcnt when 
+verifying the bpf prog also. May be "hold module refcnt in struct_ops map 
+creation and prog verification".
+
+The commit message also is inaccurate on the prog load. It did not mention the 
+module is also held when loading struct_ops prog but it is only held during the 
+verification time. Please explain why it is only needed during the verification 
+time.
+
+> 
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 > ---
->  drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c | 11 ++---------
->  1 file changed, 2 insertions(+), 9 deletions(-)
+>   include/linux/bpf.h          |  1 +
+>   include/linux/bpf_verifier.h |  1 +
+>   kernel/bpf/bpf_struct_ops.c  | 28 +++++++++++++++++++++++-----
+>   kernel/bpf/verifier.c        | 10 ++++++++++
+>   4 files changed, 35 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-> index 96f5ca778c67..8cb9a99154aa 100644
-> --- a/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-> +++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_xdp.c
-> @@ -59,7 +59,6 @@ struct bnxt_sw_tx_bd *bnxt_xmit_bd(struct bnxt *bp,
->  	for (i = 0; i < num_frags ; i++) {
->  		skb_frag_t *frag = &sinfo->frags[i];
->  		struct bnxt_sw_tx_bd *frag_tx_buf;
-> -		struct pci_dev *pdev = bp->pdev;
->  		dma_addr_t frag_mapping;
->  		int frag_len;
->  
-> @@ -73,16 +72,10 @@ struct bnxt_sw_tx_bd *bnxt_xmit_bd(struct bnxt *bp,
->  		txbd = &txr->tx_desc_ring[TX_RING(prod)][TX_IDX(prod)];
->  
->  		frag_len = skb_frag_size(frag);
-> -		frag_mapping = skb_frag_dma_map(&pdev->dev, frag, 0,
-> -						frag_len, DMA_TO_DEVICE);
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 91bcd62d6fcf..c5c7cc4552f5 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1681,6 +1681,7 @@ struct bpf_struct_ops {
+>   	void (*unreg)(void *kdata);
+>   	int (*update)(void *kdata, void *old_kdata);
+>   	int (*validate)(void *kdata);
+> +	struct module *owner;
+>   	const char *name;
+>   	struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS];
+>   };
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index 314b679fb494..01113bcdd479 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -651,6 +651,7 @@ struct bpf_verifier_env {
+>   	u32 prev_insn_idx;
+>   	struct bpf_prog *prog;		/* eBPF program being verified */
+>   	const struct bpf_verifier_ops *ops;
+> +	struct module *attach_btf_mod;	/* The owner module of prog->aux->attach_btf */
+>   	struct bpf_verifier_stack_elem *head; /* stack of verifier states to be processed */
+>   	int stack_size;			/* number of states to be processed */
+>   	bool strict_alignment;		/* perform strict pointer alignment checks */
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index f943f8378e76..a838f7c7d583 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -641,12 +641,15 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
+>   		bpf_jit_uncharge_modmem(PAGE_SIZE);
+>   	}
+>   	bpf_map_area_free(st_map->uvalue);
+> -	btf_put(st_map->btf);
+>   	bpf_map_area_free(st_map);
+>   }
+>   
+>   static void bpf_struct_ops_map_free(struct bpf_map *map)
+>   {
+> +	struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
+> +
+> +	module_put(st_map->st_ops_desc->st_ops->owner);
 
-I checked that skb_frag_dma_map() calls dma_map_page() with page set to
-skb_frag_page(frag) and offset set to skb_frag_off(frag) + offset where
-offset is 0. This is thus equivalent to the line added below:
+The module_get was not done on st_ops->owner when st_map->btf is btf_vmlinux 
+(i.e. not module). Although it probably does not matter, I would feel more 
+comfortable if it only releases for the things that it did acquire earlier.
 
-page_pool_get_dma_addr(skb_frag_page(frag)) + skb_frag_off(frag)
+	/* st_ops->owner was acquired during map_alloc to implicitly holds
+	 * the btf's refcnt. The acquire was only done when btf_is_module()
+	 * st_map->btf cannot be NULL here.
+	 */
+	if (btf_is_module(st_map->btf))
+		module_put(st_map->st_ops_desc->st_ops->owner);
 
-> -
-> -		if (unlikely(dma_mapping_error(&pdev->dev, frag_mapping)))
-> -			return NULL;
+> +
+>   	/* The struct_ops's function may switch to another struct_ops.
+>   	 *
+>   	 * For example, bpf_tcp_cc_x->init() may switch to
+> @@ -681,6 +684,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   	size_t st_map_size;
+>   	struct bpf_struct_ops_map *st_map;
+>   	const struct btf_type *t, *vt;
+> +	struct module *mod = NULL;
+>   	struct bpf_map *map;
+>   	struct btf *btf;
+>   	int ret;
+> @@ -690,10 +694,20 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   		btf = btf_get_by_fd(attr->value_type_btf_obj_fd);
+>   		if (IS_ERR(btf))
+>   			return ERR_PTR(PTR_ERR(btf));
+> -	} else {
+> +
+> +		if (btf != btf_vmlinux) {
+> +			mod = btf_try_get_module(btf);
+> +			if (!mod) {
+> +				btf_put(btf);
+> +				return ERR_PTR(-EINVAL);
+> +			}
+> +		}
+> +		/* mod (NULL for btf_vmlinux) holds a refcnt to btf. We
+> +		 * don't need an extra refcnt here.
+> +		 */
+> +		btf_put(btf);
+> +	} else
+>   		btf = btf_vmlinux;
+> -		btf_get(btf);
+> -	}
+>   
+>   	st_ops_desc = bpf_struct_ops_find_value(btf, attr->btf_vmlinux_value_type_id);
+>   	if (!st_ops_desc) {
+> @@ -756,7 +770,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   errout_free:
+>   	__bpf_struct_ops_map_free(map);
+>   errout:
+> -	btf_put(btf);
+> +	module_put(mod);
+>   
+>   	return ERR_PTR(ret);
+>   }
+> @@ -886,6 +900,10 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
+>   	if (!bpf_struct_ops_valid_to_reg(new_map))
+>   		return -EINVAL;
+>   
+> +	/* The old map is holding the refcount for the owner module.  The
+> +	 * ownership of the owner module refcount is going to be
+> +	 * transferred from the old map to the new map.
+> +	 */
 
-I checked that page_pool_get_dma_addr() cannot fail or return an invalid
-mapping. The DMA mapping happens when bulk allocating the pp alloc cache
-during __page_pool_alloc_pages_slow(). If DMA mapping fails during
-page_pool_dma_map() then the page is not stored in the cache. Therefore
-any pages allocated from the pp will have a valid DMA addr.
+This part I don't understand. Both old and new map hold its own module's 
+refcount at map_alloc time and release its own module refcnt during map_free().
+Where the module refcount transfer happened?
 
-> -
-> -		dma_unmap_addr_set(frag_tx_buf, mapping, frag_mapping);
+>   	if (!st_map->st_ops_desc->st_ops->update)
+>   		return -EOPNOTSUPP;
+>   
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 795c16f9cf57..c303cf2fb5ff 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20079,6 +20079,14 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+>   	}
+>   
+>   	btf = prog->aux->attach_btf;
+> +	if (btf != btf_vmlinux) {
 
-As discussed with Michael Chan, only XDP_TX will have multiple page
-frags. Presumably only XDP_TX will have num_frags > 0 and enter this for
-loop. Even though XDP_REDIRECT also calls bnxt_xmit_bd() from
-__bnxt_xmit_xdp_redirect(), I assume xdp_buff_has_frags() returns false.
+	if (btf_is_module(btf)) {
 
-> -
->  		flags = frag_len << TX_BD_LEN_SHIFT;
->  		txbd->tx_bd_len_flags_type = cpu_to_le32(flags);
-> +		frag_mapping = page_pool_get_dma_addr(skb_frag_page(frag)) +
-> +			       skb_frag_off(frag);
+> +		/* Make sure st_ops is valid through the lifetime of env */
+> +		env->attach_btf_mod = btf_try_get_module(btf);
+> +		if (!env->attach_btf_mod) {
+> +			verbose(env, "owner module of btf is not found\n");
+> +			return -ENOTSUPP;
+> +		}
+> +	}
+>   
+>   	btf_id = prog->aux->attach_btf_id;
+>   	st_ops_desc = bpf_struct_ops_find(btf, btf_id);
+> @@ -20792,6 +20800,8 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+>   		env->prog->expected_attach_type = 0;
+>   
+>   	*prog = env->prog;
+> +
+> +	module_put(env->attach_btf_mod);
+>   err_unlock:
+>   	if (!is_priv)
+>   		mutex_unlock(&bpf_verifier_lock);
 
-I trust that the page pool DMA mapping management is correct.
-
-Both skb_frag_dma_map() and page_pool_dma_map() call into
-dma_map_page_attrs(), but page_pool_dma_map() has flags
-DMA_ATTR_SKIP_CPU_SYNC and DMA_ATTR_WEAK_ORDERING set whereas
-skb_frag_dma_map() has no flags.
-
-DMA_ATTR_WEAK_ORDERING is optional and ignored for platforms that do not
-support it, therefore safe to use.
-
-DMA_ATTR_SKIP_CPU_SYNC is used since presumably there is no sharing of
-pages between multiple devices. IIRC there is a single page pool per Rx
-queue/NAPI context.
-
->  		txbd->tx_bd_haddr = cpu_to_le64(frag_mapping);
->  
->  		len = frag_len;
 
