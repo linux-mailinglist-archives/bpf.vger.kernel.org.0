@@ -1,248 +1,128 @@
-Return-Path: <bpf+bounces-17971-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 584B481436F
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 09:18:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D110E814491
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 10:36:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61CDA1C22606
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 08:18:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F9DF284812
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 09:35:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83D211CBC;
-	Fri, 15 Dec 2023 08:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 450422510D;
+	Fri, 15 Dec 2023 09:33:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="j2nwutH6"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90FFE11C8D
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 08:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Ss2D539BXz4f3k6d
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 16:18:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B3BCD1A0C8C
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 16:18:30 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgC3EULSC3xlsmM4Dw--.23978S2;
-	Fri, 15 Dec 2023 16:18:30 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Reduce the scope of rcu_read_lock
- when updating fd map
-To: John Fastabend <john.fastabend@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Song Liu <song@kernel.org>,
- Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- xingwei lee <xrivendell7@gmail.com>, Hou Tao <houtao1@huawei.com>
-References: <20231214043010.3458072-1-houtao@huaweicloud.com>
- <20231214043010.3458072-2-houtao@huaweicloud.com>
- <657a9f1ea1ff4_48672208f0@john.notmuch>
- <ba0e18ba-f6be-ceb9-412e-48e8e41cb5b6@huaweicloud.com>
- <CAADnVQK+C+9BVowRxESJhuH7BM+SWn2u_fTU2wjH0YuA-N9egw@mail.gmail.com>
- <657b545493a0b_511332086@john.notmuch>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <441aaa49-b7ab-9694-d4c7-f9659cc23780@huaweicloud.com>
-Date: Fri, 15 Dec 2023 16:18:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA6119BDF;
+	Fri, 15 Dec 2023 09:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-Id:
+	Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=M6xOa2fYXl3T5Nij1IGMapcelc4vod3qWujvkNL82EQ=; b=j2nwutH6cjxGn6zu9q2Jxr8W3/
+	lkRuWHA2VNVNiroJZLzT3fOMTKjNSK3zCVlitlmqCKQRc9laFozuwpeLaX80Nl7i1NNbb0Kkkv5Hs
+	zNiDBMcPiWrP8fj+JA+GnjcNpHzvNZ2IXuwpp7btsy8hWHGWejQeP82Tud78W4yQ2XkZiAAYMOfll
+	HNyB5ItcoZlsTNiJ4XPTiu0S/fO4WybnLTjLpeBqgENl/hsbTr3bpZciOgIQFP2jjLI9l3eElim4H
+	bzk1m8T76cJeCvy43cpiRZwwtWYIkWf5BK1MB6n8Ia2VTaIl/vzPClRahZBKIudlpWS+fp3yQpKD5
+	Qm4R46Ig==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+	id 1rE4ZE-009rFx-0N;
+	Fri, 15 Dec 2023 09:33:12 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
+	id BCB7C3005B2; Fri, 15 Dec 2023 10:33:11 +0100 (CET)
+Message-Id: <20231215091216.135791411@infradead.org>
+User-Agent: quilt/0.65
+Date: Fri, 15 Dec 2023 10:12:16 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: paul.walmsley@sifive.com,
+ palmer@dabbelt.com,
+ aou@eecs.berkeley.edu,
+ tglx@linutronix.de,
+ mingo@redhat.com,
+ bp@alien8.de,
+ dave.hansen@linux.intel.com,
+ x86@kernel.org,
+ hpa@zytor.com,
+ davem@davemloft.net,
+ dsahern@kernel.org,
+ daniel@iogearbox.net,
+ andrii@kernel.org,
+ martin.lau@linux.dev,
+ song@kernel.org,
+ yonghong.song@linux.dev,
+ john.fastabend@gmail.com,
+ kpsingh@kernel.org,
+ sdf@google.com,
+ haoluo@google.com,
+ jolsa@kernel.org,
+ Arnd Bergmann <arnd@arndb.de>,
+ samitolvanen@google.com,
+ keescook@chromium.org,
+ nathan@kernel.org,
+ ndesaulniers@google.com,
+ linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org,
+ linux-arch@vger.kernel.org,
+ llvm@lists.linux.dev,
+ jpoimboe@kernel.org,
+ joao@overdrivepizza.com,
+ mark.rutland@arm.com,
+ peterz@infradead.org
+Subject: [PATCH v3 0/7] x86/cfi,bpf: Fix CFI vs eBPF
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <657b545493a0b_511332086@john.notmuch>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgC3EULSC3xlsmM4Dw--.23978S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtFW7CFy3Aw4xKF1kZry7Wrg_yoWxXr1UpF
-	ykCFWUKr18XFsIgw4ava93WryUtw45WF47Xws5J3y5Arn8KF1fWr1xtFs3uFn0kr17JF48
-	X347W3sxA348A37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUrR6zUUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
+Hi!
 
-On 12/15/2023 3:15 AM, John Fastabend wrote:
-> Alexei Starovoitov wrote:
->> On Wed, Dec 13, 2023 at 11:31 PM Hou Tao <houtao@huaweicloud.com> wrote:
->>> Hi,
->>>
->>> On 12/14/2023 2:22 PM, John Fastabend wrote:
->>>> Hou Tao wrote:
->>>>> From: Hou Tao <houtao1@huawei.com>
->>>>>
->>>>> There is no rcu-read-lock requirement for ops->map_fd_get_ptr() or
->>>>> ops->map_fd_put_ptr(), so doesn't use rcu-read-lock for these two
->>>>> callbacks.
->>>>>
->>>>> For bpf_fd_array_map_update_elem(), accessing array->ptrs doesn't need
->>>>> rcu-read-lock because array->ptrs must still be allocated. For
->>>>> bpf_fd_htab_map_update_elem(), htab_map_update_elem() only requires
->>>>> rcu-read-lock to be held to avoid the WARN_ON_ONCE(), so only use
->>>>> rcu_read_lock() during the invocation of htab_map_update_elem().
->>>>>
->>>>> Acked-by: Yonghong Song <yonghong.song@linux.dev>
->>>>> Signed-off-by: Hou Tao <houtao1@huawei.com>
->>>>> ---
->>>>>  kernel/bpf/hashtab.c | 6 ++++++
->>>>>  kernel/bpf/syscall.c | 4 ----
->>>>>  2 files changed, 6 insertions(+), 4 deletions(-)
->>>>>
->>>>> diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
->>>>> index 5b9146fa825f..ec3bdcc6a3cf 100644
->>>>> --- a/kernel/bpf/hashtab.c
->>>>> +++ b/kernel/bpf/hashtab.c
->>>>> @@ -2523,7 +2523,13 @@ int bpf_fd_htab_map_update_elem(struct bpf_map *map, struct file *map_file,
->>>>>      if (IS_ERR(ptr))
->>>>>              return PTR_ERR(ptr);
->>>>>
->>>>> +    /* The htab bucket lock is always held during update operations in fd
->>>>> +     * htab map, and the following rcu_read_lock() is only used to avoid
->>>>> +     * the WARN_ON_ONCE in htab_map_update_elem().
->>>>> +     */
-> Ah ok but isn't this comment wrong because you do need rcu read lock to do
-> the walk with lookup_nulls_elem_raw where there is no lock being held? And
-> then the subsequent copy in place is fine because you do have a lock.
->
-> So its not just to appease the WARN_ON_ONCE here it has an actual real
-> need?
->
->>>>> +    rcu_read_lock();
->>>>>      ret = htab_map_update_elem(map, key, &ptr, map_flags);
->>>>> +    rcu_read_unlock();
->>>> Did we consider dropping the WARN_ON_ONCE in htab_map_update_elem()? It
->>>> looks like there are two ways to get to htab_map_update_elem() either
->>>> through a syscall and the path here (bpf_fd_htab_map_update_elem) or
->>>> through a BPF program calling, bpf_update_elem()? In the BPF_CALL
->>>> case bpf_map_update_elem() already has,
->>>>
->>>>    WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held())
->>>>
->>>> The htab_map_update_elem() has an additional check for
->>>> rcu_read_lock_trace_held(), but not sure where this is coming from
->>>> at the moment. Can that be added to the BPF caller side if needed?
->>>>
->>>> Did I miss some caller path?
->>> No. But I think the main reason for the extra WARN in
->>> bpf_map_update_elem() is that bpf_map_update_elem() may be inlined by
->>> verifier in do_misc_fixups(), so the WARN_ON_ONCE in
->>> bpf_map_update_elem() will not be invoked ever. For
->>> rcu_read_lock_trace_held(), I have added the assertion in
->>> bpf_map_delete_elem() recently in commit 169410eba271 ("bpf: Check
->>> rcu_read_lock_trace_held() before calling bpf map helpers").
->> Yep.
->> We should probably remove WARN_ONs from
->> bpf_map_update_elem() and others in kernel/bpf/helpers.c
->> since they are inlined by the verifier with 99% probability
->> and the WARNs are never called even in DEBUG kernels.
->> And confusing developers. As this thread shows.
-> Agree. The rcu_read needs to be close as possible to where its actually
-> needed and the WARN_ON_ONCE should be dropped if its going to be
-> inlined.
+What started with the simple observation that bpf_dispatcher_*_func() was
+broken for calling CFI functions with a __nocfi calling context for FineIBT
+ended up with a complete BPF wide CFI fixup.
 
-I did some investigation on these bpf map helpers and the
-implementations of these helpers in various kinds of bpf map. It seems
-most implementations (besides dev_map_hash_ops) already have added
-proper RCU lock assertions, so I think it is indeed OK to remove
-WARN_ON_ONCE() on these bpf map helpers after fixing the assertion in
-dev_map_hash_ops. The following is the details:
+With these changes on the BPF selftest suite passes without crashing -- there's
+still a few failures, but Alexei has graciously offered to look into those.
 
-1. bpf_map_lookup_elem helper
-(a) hash/lru_hash/percpu_hash/lru_percpu_hash
-with !rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
-!rcu_read_lock_bh_held() in __htab_map_lookup_elem()
+(Alexei, I have presumed your SoB on the very last patch, please update
+as you see fit)
 
-(b) array/percpu_array
-no deletion, so no RCU
+Changes since v2 are numerous but include:
+ - cfi_get_offset() -- as a means to communicate the offset (ast)
+ - 5 new patches fixing various BPF internals to be CFI clean
 
-(c) lpm_trie
-with rcu_read_lock_bh_held() in trie_lookup_elem()
+Note: it *might* be possible to merge the
+bpf_bpf_tcp_ca.c:unsupported_ops[] thing into the CFI stubs, as is
+get_info will have a NULL stub, unlike the others.
 
-(d) htab_of_maps
-with !rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
-!rcu_read_lock_bh_held() in __htab_map_lookup_elem()
-
-(e) array_of_maps
-no deletion, so no RCU
-
-(f) sockmap
-rcu_read_lock_held() in __sock_map_lookup_elem()
-
-(g) sockhash
-rcu_read_lock_held() in__sock_hash_lookup_elem()
-
-(h) devmap
-rcu_read_lock_bh_held() in __dev_map_lookup_elem()
-
-(i) devmap_hash (incorrect assertion)
-No rcu_read_lock_bh_held() in __dev_map_hash_lookup_elem()
-
-(j) xskmap
-rcu_read_lock_bh_held() in __xsk_map_lookup_elem()
-
-2. bpf_map_update_elem helper
-(a) hash/lru_hash/percpu_hash/lru_percpu_hash
-with !rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
-!rcu_read_lock_bh_held() in
-htab_map_update_elem()/htab_lru_map_update_elem()/__htab_percpu_map_update_elem()/__htab_lru_percpu_map_update_elem()
-
-(b) array/percpu_array
-no RCU
-
-(c) lpm_trie
-use spin-lock, and no RCU
-
-(d) sockmap
-use spin-lock & with rcu_read_lock_held() in sock_map_update_common()
-
-(e) sockhash
-use spin-lock & with rcu_read_lock_held() in sock_hash_update_common()
-
-3.bpf_map_delete_elem helper
-(a) hash/lru_hash/percpu_hash/lru_percpu_hash
-with !rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
-!rcu_read_lock_bh_held() () in htab_map_delete_elem/htab_lru_map_delete_elem
-
-(b) array/percpu_array
-no support
-
-(c) lpm_trie
-use spin-lock, no rcu
-
-(d) sockmap
-use spin-lock
-
-(e) sockhash
-use spin-lock
-
-4. bpf_map_lookup_percpu_elem
-(a) percpu_hash/lru_percpu_hash
-with !rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
-!rcu_read_lock_bh_held() in __htab_map_lookup_elem()
-
-(b) percpu_array
-no deletion, no RCU
-
->> We can replace them with a comment that explains this inlining logic
->> and where the real WARNs are..
+---
+ arch/riscv/include/asm/cfi.h   |   3 +-
+ arch/riscv/kernel/cfi.c        |   2 +-
+ arch/x86/include/asm/cfi.h     | 126 +++++++++++++++++++++++++++++++++++++-
+ arch/x86/kernel/alternative.c  |  87 +++++++++++++++++++++++---
+ arch/x86/kernel/cfi.c          |   4 +-
+ arch/x86/net/bpf_jit_comp.c    | 134 +++++++++++++++++++++++++++++++++++------
+ include/asm-generic/Kbuild     |   1 +
+ include/linux/bpf.h            |  27 ++++++++-
+ include/linux/cfi.h            |  12 ++++
+ kernel/bpf/bpf_struct_ops.c    |  16 ++---
+ kernel/bpf/core.c              |  25 ++++++++
+ kernel/bpf/cpumask.c           |   8 ++-
+ kernel/bpf/helpers.c           |  18 +++++-
+ net/bpf/bpf_dummy_struct_ops.c |  31 +++++++++-
+ net/bpf/test_run.c             |  15 ++++-
+ net/ipv4/bpf_tcp_ca.c          |  69 +++++++++++++++++++++
+ 16 files changed, 528 insertions(+), 50 deletions(-)
 
 
