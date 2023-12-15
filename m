@@ -1,200 +1,296 @@
-Return-Path: <bpf+bounces-18051-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18052-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0402F8153D6
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 23:39:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CAD1815453
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 00:03:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 216C41C23250
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 22:39:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E9561F25629
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 23:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E51F0199C2;
-	Fri, 15 Dec 2023 22:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941A418EBB;
+	Fri, 15 Dec 2023 23:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hlq0OBaz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ipNFzlld"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92D9018ED8
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 22:39:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B1849F67
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 23:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-55193d5e8cdso1390761a12.1
-        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 14:39:22 -0800 (PST)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-40c580ba223so14305385e9.3
+        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 15:03:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702679961; x=1703284761; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702681388; x=1703286188; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QJIRgALtyoWUfCUQBDX8zPjiI5uj832KhlzRV2lZRCU=;
-        b=hlq0OBazraZ5bkoRRQiHDjkf+ktAALJTxidWARchG43eKUajghghqUzVhDiXjMhSv9
-         lNrvR0isQRK5tK9l6xxYiVh5Bw3O/GfPzxY6IeVrDVyVQC+aqWB+DvkvzjcH8Yag5F04
-         XLK1nz+rQ2KHx8ARku24rZ0lfng5pr9N3iderACHE8v8mSAYptX+pzVM55c1l0z3RntZ
-         wJhfHPOAhtCmizijUHfUDptx7cLnEbNbULArwfy7i026dcxv41HBQl2zT2CgFlTgaSAS
-         +j5IaCJncZoXuYJTL3rrxHa5Z1L4OB+SxyIrdN6I5MnaQSSUPTj1rQ2k2ThVlnnjGqTY
-         xHaw==
+        bh=Ci8RCbAmQN8bzikISe2KPPEnjwaZftRLc3VPZPqp3Ps=;
+        b=ipNFzlld6HzIKwrTJonXEUmW10855u1VO7jOsPVVlausyn2Qo8+D3Bhae4FZU3pwlG
+         6Yctg3+Y4bVJMaMlFMpbyAWiDMfELf2RDW1CSt8yqY3X31YxcTsfO1hZtBpnFpQ2MwTI
+         kd7UsRiI1VtZNapYC57c+P+rnhaq4UlB/iIt6iXiT03OZysky7O3Mk2Wf4A2HLB02Tat
+         sA0eWfaMHBj2Lu9fqZcnLrB/RuzRiBNgao8PZYPb/KCjyhvfXNWjoScm57kxkOnev7cZ
+         MqQ6qS9KYXt7zz6qqy7oIJ+V8+lEX2L61V14JMNioJci6TzT+4YDAvUT8bZk24BbywN6
+         dHkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702679961; x=1703284761;
+        d=1e100.net; s=20230601; t=1702681388; x=1703286188;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QJIRgALtyoWUfCUQBDX8zPjiI5uj832KhlzRV2lZRCU=;
-        b=GhlxhimRmH0DzSN66dXwIKK1N0BsAJ2qw/1X1iPFdQYSRkhaYNURTwfJ9F4s8IYI5L
-         ooqFcZED73VYw7vbbmz2ygVNC5D6Mc3pRuPBfzk0r8E8Fj1OP8yt0Skmz+Ea7iQqE5q7
-         MSLA5YFZGaA9fR9+RFHatMGyohknwpxHtvWH5hIrZYx8rAtEr5Qs9Q1kDZDmWjHY2UpR
-         UyAayqwjQ6HsIKakEpktBvnMDO7QkfibXKk0+CMbz+rZupawW9v3Xbjo/vt7+6B4jTHI
-         lY10Ikb0mxjA3iMZMfo/0WMiHQ4YxVYIjT3IllfNqPCpSYkzFVi0loMYhHVpGu3Bj0km
-         o3/g==
-X-Gm-Message-State: AOJu0YyWXBP2nMHaNbansp3FkKkFqj9Q/6Stm9j1Iav/Hp27LeS32QdP
-	VgEkpcHxyvfcas6/KEypwvZcRJ6pr/ECH/gS9Zs=
-X-Google-Smtp-Source: AGHT+IFnZimnLbXJ7dxgZwGvnDABkvNMO3CgmjlzFAw1Q+VIpIi/ex606lfLbJhC0ISalu7u4wnuTry1QpVOo3Mqp8w=
-X-Received: by 2002:a50:d5d6:0:b0:551:cff9:dae3 with SMTP id
- g22-20020a50d5d6000000b00551cff9dae3mr3452202edj.72.1702679960605; Fri, 15
- Dec 2023 14:39:20 -0800 (PST)
+        bh=Ci8RCbAmQN8bzikISe2KPPEnjwaZftRLc3VPZPqp3Ps=;
+        b=fxzGqce9yZHXDr5tSEJYYXK7z/3vxznmxwfGMDMAjAD9Mu8j/mnByGdPGwgHQ3A4Yp
+         GipyMc8KeXgl/7rEXTivdjOGrZzQOTt4vUS90vy9LXrCECECLPbP/WLxqq3jDNQCgokL
+         U55zBY6T4J4LTKKNx4HOAzMl/FvGmiil3D6Xs1lgnqtM0lDUbvEJsZW5scjysSS1HE+L
+         LBR+RBMOwrNfgAmXVhRUiWXO+b/eV9ar0WP9vnks0LINpzOEV2SBbK38bpizygC5GwlR
+         2GitaHwWNJs5VgBCYSZQeZa4SdvdLat4oOwV35o+zP2kIE1l0Lbmq1/qoTRvSqL3CY6a
+         2Lrg==
+X-Gm-Message-State: AOJu0Yw0HnjZ0iDR/g1dThF2qB2i9Jm/hGlR85Rs7LtmR8axkTNTPwCa
+	WEnbGKjil+4xazJYoRM18MZStR3CLJ+2mmqpMqw=
+X-Google-Smtp-Source: AGHT+IFurDx6C9EXGH0Xq/tHrdlWhKy6JUIABTPYIEZAQVezXJ6t1/F0YPR2P3sXeqV4DDa0AJzetfqGZeS2XObiaOA=
+X-Received: by 2002:a05:6000:ac6:b0:336:5b5d:966a with SMTP id
+ di6-20020a0560000ac600b003365b5d966amr534333wrb.111.1702681388384; Fri, 15
+ Dec 2023 15:03:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3dd9114c-599f-46b2-84b9-abcfd2dcbe33@linux.alibaba.com>
- <c3c47250-2923-c376-4f5e-ddaf148bbf32@oracle.com> <CAEf4BzZOBdV9vxV6Gr9b5pQ8+M6tPVnHdmELWqOd5jdcL=KpiA@mail.gmail.com>
- <23691bb5-9688-4e93-a98c-1024e8a8fc62@linux.alibaba.com> <CAEf4BzaQv23wzgmmoSFBja7Syp3m3fRrfzWkFobQ4NNisDTEyA@mail.gmail.com>
- <23bcab0e-bec1-4edd-b45a-0142ebcda41a@linux.alibaba.com>
-In-Reply-To: <23bcab0e-bec1-4edd-b45a-0142ebcda41a@linux.alibaba.com>
+References: <20231205184248.1502704-1-andrii@kernel.org> <20231205184248.1502704-10-andrii@kernel.org>
+ <ZXsPWvgt6xWtUizn@mail.gmail.com> <CAEf4BzbqRO-JTEfZ83pxfGe+1ULCtuBarNbaWDOi4eTfju6YAg@mail.gmail.com>
+ <ZXzUgFgCmPY9p0aV@mail.gmail.com>
+In-Reply-To: <ZXzUgFgCmPY9p0aV@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 15 Dec 2023 14:39:07 -0800
-Message-ID: <CAEf4BzYBqwDQ8LeyrQSOh+G8eofy1mN=j=DVrj5DkYovFW64Jw@mail.gmail.com>
-Subject: Re: Question about bpf perfbuf/ringbuf: pinned in backend with overwriting
-To: Philo Lu <lulie@linux.alibaba.com>
-Cc: bpf@vger.kernel.org, song@kernel.org, andrii@kernel.org, ast@kernel.org, 
-	Daniel Borkmann <daniel@iogearbox.net>, xuanzhuo@linux.alibaba.com, 
-	dust.li@linux.alibaba.com, guwen@linux.alibaba.com, alibuda@linux.alibaba.com, 
-	hengqi@linux.alibaba.com, Nathan Slingerland <slinger@meta.com>, 
-	"rihams@meta.com" <rihams@meta.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Dmitry Vyukov <dvyukov@google.com>
+Date: Fri, 15 Dec 2023 15:02:56 -0800
+Message-ID: <CAEf4BzayGCAakixaUjOPaw+A2jqUUyQb+PYYf7uMDyGeEB0cvQ@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 09/10] selftests/bpf: validate precision logic
+ in partial_stack_load_preserves_zeros
+To: Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
+	Eduard Zingerman <eddyz87@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 2:10=E2=80=AFAM Philo Lu <lulie@linux.alibaba.com> =
-wrote:
+On Fri, Dec 15, 2023 at 2:34=E2=80=AFPM Maxim Mikityanskiy <maxtram95@gmail=
+.com> wrote:
 >
->
->
-> On 2023/12/14 07:35, Andrii Nakryiko wrote:
-> > On Mon, Dec 11, 2023 at 4:39=E2=80=AFAM Philo Lu <lulie@linux.alibaba.c=
-om> wrote:
-> >>
-> >>
-> >>
-> >> On 2023/12/9 06:32, Andrii Nakryiko wrote:
-> >>> On Thu, Dec 7, 2023 at 6:49=E2=80=AFAM Alan Maguire <alan.maguire@ora=
-cle.com> wrote:
-> >>>>
-> >>>> On 07/12/2023 13:15, Philo Lu wrote:
-> >>>>> Hi all. I have a question when using perfbuf/ringbuf in bpf. I will
-> >>>>> appreciate it if you give me any advice.
-> >>>>>
-> >>>>> Imagine a simple case: the bpf program output a log (some tcp
-> >>>>> statistics) to user every time a packet is received, and the user
-> >>>>> actively read the logs if he wants. I do not want to keep a user pr=
-ocess
-> >>>>> alive, waiting for outputs of the buffer. User can read the buffer =
-as
-> >>>>> need. BTW, the order does not matter.
-> >>>>>
-> >>>>> To conclude, I hope the buffer performs like relayfs: (1) no need f=
-or
-> >>>>> user process to receive logs, and the user may read at any time (an=
-d no
-> >>>>> wakeup would be better); (2) old data can be overwritten by new one=
-s.
-> >>>>>
-> >>>>> Currently, it seems that perfbuf and ringbuf cannot satisfy both: (=
-i)
-> >>>>> ringbuf: only satisfies (1). However, if data arrive when the buffe=
-r is
-> >>>>> full, the new data will be lost, until the buffer is consumed. (ii)
-> >>>>> perfbuf: only satisfies (2). But user cannot access the buffer afte=
-r the
-> >>>>> process who creates it (including perf_event.rb via mmap) exits.
-> >>>>> Specifically, I can use BPF_F_PRESERVE_ELEMS flag to keep the
-> >>>>> perf_events, but I do not know how to get the buffer again in a new
-> >>>>> process.
-> >>>>>
-> >>>>> In my opinion, this can be solved by either of the following: (a) a=
-dd
-> >>>>> overwrite support in ringbuf (maybe a new flag for reserve), but we=
- have
-> >>>>> to address synchronization between kernel and user, especially unde=
-r
-> >>>>> variable data size, because when overwriting occurs, kernel has to
-> >>>>> update the consumer posi too; (b) implement map_fd_sys_lookup_elem =
-for
-> >>>>> perfbuf to expose fds to user via map_lookup_elem syscall, and a
-> >>>>> mechanism is need to preserve perf_event->rb when process exits
-> >>>>> (otherwise the buffer will be freed by perf_mmap_close). I am not s=
-ure
-> >>>>> if they are feasible, and which is better. If not, perhaps we can
-> >>>>> develop another mechanism to achieve this?
-> >>>>>
-> >>>>
-> >>>> There was an RFC a while back focused on supporting BPF ringbuf
-> >>>> over-writing [1]; at the time, Andrii noted some potential issues th=
-at
-> >>>> might be exposed by doing multiple ringbuf reserves to overfill the
-> >>>> buffer within the same program.
-> >>>>
-> >>>
-> >>> Correct. I don't think it's possible to correctly and safely support
-> >>> overwriting with BPF ringbuf that has variable-sized elements.
-> >>>
-> >>> We'll need to implement MPMC ringbuf (probably with fixed sized
-> >>> element size) to be able to support this.
-> >>>
-> >>
-> >> Thank you very much!
-> >>
-> >> If it is indeed difficult with ringbuf, maybe I can implement a new ty=
-pe
-> >> of bpf map based on relay interface [1]? e.g., init relay during map
-> >> creating, write into it with bpf helper, and then user can access to i=
-t
-> >> in filesystem. I think it will be a simple but useful map for
-> >> overwritable data transfer.
+> On Thu, 14 Dec 2023 at 15:45:07 -0800, Andrii Nakryiko wrote:
+> > On Thu, Dec 14, 2023 at 6:21=E2=80=AFAM Maxim Mikityanskiy <maxtram95@g=
+mail.com> wrote:
+> > >
+> > > Hi Andrii,
+> > >
+> > > I'm preparing a series for submission [1], and it started failing on
+> > > this selftest on big endian after I rebased over your series. Can we
+> > > discuss (see below) to figure out whether it's a bug in your patch or
+> > > whether I'm missing something?
+> > >
+> > > On Tue, 05 Dec 2023 at 10:42:47 -0800, Andrii Nakryiko wrote:
+> > > > Enhance partial_stack_load_preserves_zeros subtest with detailed
+> > > > precision propagation log checks. We know expect fp-16 to be spille=
+d,
+> > > > initially imprecise, zero const register, which is later marked as
+> > > > precise even when partial stack slot load is performed, even if it'=
+s not
+> > > > a register fill (!).
+> > > >
+> > > > Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > ---
+> > > >  .../selftests/bpf/progs/verifier_spill_fill.c    | 16 ++++++++++++=
+++++
+> > > >  1 file changed, 16 insertions(+)
+> > > >
+> > > > diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.=
+c b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> > > > index 41fd61299eab..df4920da3472 100644
+> > > > --- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> > > > +++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> > > > @@ -495,6 +495,22 @@ char single_byte_buf[1] SEC(".data.single_byte=
+_buf");
+> > > >  SEC("raw_tp")
+> > > >  __log_level(2)
+> > > >  __success
+> > > > +/* make sure fp-8 is all STACK_ZERO */
+> > > > +__msg("2: (7a) *(u64 *)(r10 -8) =3D 0          ; R10=3Dfp0 fp-8_w=
+=3D00000000")
+> > > > +/* but fp-16 is spilled IMPRECISE zero const reg */
+> > > > +__msg("4: (7b) *(u64 *)(r10 -16) =3D r0        ; R0_w=3D0 R10=3Dfp=
+0 fp-16_w=3D0")
+> > > > +/* and now check that precision propagation works even for such tr=
+icky case */
+> > > > +__msg("10: (71) r2 =3D *(u8 *)(r10 -9)         ; R2_w=3DP0 R10=3Df=
+p0 fp-16_w=3D0")
+> > >
+> > > Why do we require R2 to be precise at this point? It seems the only
+> > > reason it's marked as precise here is because it was marked at line 6=
+,
+> > > and the mark was never cleared: when R2 was overwritten at line 10, o=
+nly
+> > > __mark_reg_const_zero was called, and no-one cleared the flag, althou=
+gh
+> > > R2 was overwritten.
+> > >
+> > > Moreover, if I replace r2 with r3 in this block, it doesn't get the
+> > > precise mark, as I expect.
+> > >
+> > > Preserving the flag looks like a bug to me, but I wanted to double-ch=
+eck
+> > > with you.
+> > >
 > >
-> > I don't know much about relay, tbh. Give it a try, I guess.
-> > Alternatively, we need better and faster implementation of
-> > BPF_MAP_TYPE_QUEUE, which seems like the data structure that can
-> > support overwriting and generally be a fixed elementa size
-> > alternative/complement to BPF ringbuf.
 > >
+> > So let's look at the relevant pieces of the code and the log.
+> >
+> > First, note that we set fp-16 slot to all zeroes by spilling register
+> > with known value zero (but not yet marked precise)
+> >
+> > 3: (b7) r0 =3D 0                        ; R0_w=3D0
+> > 4: (7b) *(u64 *)(r10 -16) =3D r0        ; R0_w=3D0 R10=3Dfp0 fp-16_w=3D=
+0
+> >
+> > then eventually we get to insns #11, which is using r2 as an offset
+> > into map_value pointer, so r2's value is important to know precisely,
+> > so we start precision back propagation:
+> >
+> > 8: (73) *(u8 *)(r1 +0) =3D r2           ;
+> > R1_w=3Dmap_value(map=3D.data.single_by,ks=3D4,vs=3D1) R2_w=3DP0
+> > 9: (bf) r1 =3D r6                       ;
+> > R1_w=3Dmap_value(map=3D.data.single_by,ks=3D4,vs=3D1)
+> > R6_w=3Dmap_value(map=3D.data.single_by,ks=3D4,vs=3D1)
+> > 10: (71) r2 =3D *(u8 *)(r10 -9)         ; R2_w=3DP0 R10=3Dfp0 fp-16_w=
+=3D0
 >
-> Thank you for your reply. I am afraid BPF_MAP_TYPE_QUEUE cannot get rid
-> of locking overheads with concurrent reading and writing by design, and
-
-I disagree, I think [0] from Dmitry Vyukov is one way to implement
-lock-free BPF_MAP_TYPE_QUEUE. I don't know how easy it would be to
-implement overwriting support, but it would be worth considering.
-
-  [0] https://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mp=
-mc-queue
-
-
-
-> a lockless buffer like relay fits better to our case. So I will try it :)
+> All that you say below makes sense to me. What looks weird is this "P0"
+> at line 10, because it's before the backtracking happened. And if I
+> patch this block in the test as follows (replacing r2 with r3):
 >
-> >>
-> >> [1]
-> >> https://github.com/torvalds/linux/blob/master/Documentation/filesystem=
-s/relay.rst
-> >>
-> >>>> Alan
-> >>>>
-> >>>> [1]
-> >>>> https://lore.kernel.org/lkml/20220906195656.33021-2-flaniel@linux.mi=
-crosoft.com/
+> "r1 =3D %[single_byte_buf];"
+> "r3 =3D *(u8 *)(r10 -9);"
+> "r1 +=3D r3;"
+> "*(u8 *)(r1 + 0) =3D r3;"
+>
+> then I no longer see R3_w=3DP0 before the backtracking:
+>
+> 8: (73) *(u8 *)(r1 +0) =3D r2           ; R1_w=3Dmap_value(map=3D.data.si=
+ngle_by,ks=3D4,vs=3D1) R2_w=3DP0
+> 9: (bf) r1 =3D r6                       ; R1_w=3Dmap_value(map=3D.data.si=
+ngle_by,ks=3D4,vs=3D1) R6_w=3Dmap_value(map=3D.data.single_by,ks=3D4,vs=3D1=
+)
+> 10: (71) r3 =3D *(u8 *)(r10 -9)         ; R3_w=3D0 R10=3Dfp0 fp-16_w=3D0
+> 11: (0f) r1 +=3D r3
+>
+> although the backtracking that follows looks the same:
+>
+> mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx -1
+> mark_precise: frame0: regs=3Dr3 stack=3D before 10: (71) r3 =3D *(u8 *)(r=
+10 -9)
+> mark_precise: frame0: regs=3D stack=3D-16 before 9: (bf) r1 =3D r6
+> mark_precise: frame0: regs=3D stack=3D-16 before 8: (73) *(u8 *)(r1 +0) =
+=3D r2
+> mark_precise: frame0: regs=3D stack=3D-16 before 7: (0f) r1 +=3D r2
+> mark_precise: frame0: regs=3D stack=3D-16 before 6: (71) r2 =3D *(u8 *)(r=
+10 -1)
+> mark_precise: frame0: regs=3D stack=3D-16 before 5: (bf) r1 =3D r6
+> mark_precise: frame0: regs=3D stack=3D-16 before 4: (7b) *(u64 *)(r10 -16=
+) =3D r0
+> mark_precise: frame0: regs=3Dr0 stack=3D before 3: (b7) r0 =3D 0
+>
+> It seems the reason it shows R2_w=3DP0, but R3_w=3D0, is that at [2] you
+> overwrite the register boundaries with zero, but you don't reset the
+> precise flag, and r2 had it set higher above (for its previous value).
+>
+> What do you think? Does what I say make sense?
+
+Oh, I yes, now I see that as well. You are right. Turns out
+__mark_reg_const_zero() doesn't reset the precision flag. Yeah, in
+this case when we restore zero from spilled register we should reset
+precision for sure, that's an easy fix. But we need to also audit all
+the uses of __mark_reg_const_zero() and confirm that it's intended to
+preserve old value of precision flag (I suspect in some cases it's not
+and we should probably specify that we either clear or set if always).
+
+>
+> > 11: (0f) r1 +=3D r2
+> > mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx -1
+> > mark_precise: frame0: regs=3Dr2 stack=3D before 10: (71) r2 =3D *(u8 *)=
+(r10 -9)
+> >
+> > ^^ here r2 is assigned from fp-16 slot, so now we drop r2, but start
+> > tracking fp-16 to mark it as precise
+> >
+> > mark_precise: frame0: regs=3D stack=3D-16 before 9: (bf) r1 =3D r6
+> > mark_precise: frame0: regs=3D stack=3D-16 before 8: (73) *(u8 *)(r1 +0)=
+ =3D r2
+> > mark_precise: frame0: regs=3D stack=3D-16 before 7: (0f) r1 +=3D r2
+> > mark_precise: frame0: regs=3D stack=3D-16 before 6: (71) r2 =3D *(u8 *)=
+(r10 -1)
+> > mark_precise: frame0: regs=3D stack=3D-16 before 5: (bf) r1 =3D r6
+> >
+> > ^^ irrelevant instructions which we just skip
+> >
+> > mark_precise: frame0: regs=3D stack=3D-16 before 4: (7b) *(u64 *)(r10 -=
+16) =3D r0
+> >
+> > ^^ here we notice that fp-16 was set by spilling r0 state, so we drop
+> > fp-16, start tracking r0
+> >
+> > mark_precise: frame0: regs=3Dr0 stack=3D before 3: (b7) r0 =3D 0
+> >
+> > ^^ and finally we arrive at r0 which was assigned 0 directly. We are do=
+ne.
+> >
+> >
+> > All seems correct. Did you spot any problem in the logic?
+> >
+> >
+> > > The context why it's relevant to my series: after patch [3], this fil=
+l
+> > > goes to the then-branch on big endian (not to the else-branch, as
+> > > before), and I copy the register with copy_register_state, which
+> > > preserves the precise flag from the stack, not from the old value of =
+r2.
+> > >
+> >
+> > I haven't looked at your patches, sorry, let's try figuring out if the
+> > test's logic is broken, first.
+> >
+> > > > +__msg("11: (0f) r1 +=3D r2")
+> > > > +__msg("mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx -1=
+")
+> > > > +__msg("mark_precise: frame0: regs=3Dr2 stack=3D before 10: (71) r2=
+ =3D *(u8 *)(r10 -9)")
+> > > > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 9: (bf) r1=
+ =3D r6")
+> > > > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 8: (73) *(=
+u8 *)(r1 +0) =3D r2")
+> > > > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 7: (0f) r1=
+ +=3D r2")
+> > > > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 6: (71) r2=
+ =3D *(u8 *)(r10 -1)")
+> > > > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 5: (bf) r1=
+ =3D r6")
+> > > > +__msg("mark_precise: frame0: regs=3D stack=3D-16 before 4: (7b) *(=
+u64 *)(r10 -16) =3D r0")
+> > > > +__msg("mark_precise: frame0: regs=3Dr0 stack=3D before 3: (b7) r0 =
+=3D 0")
+> > > >  __naked void partial_stack_load_preserves_zeros(void)
+> > > >  {
+> > > >       asm volatile (
+> > > > --
+> > > > 2.34.1
+> > > >
+> > > >
+> > >
+> > > [1]: https://github.com/kernel-patches/bpf/pull/6132
+> > > [2]: https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git=
+/tree/kernel/bpf/verifier.c?id=3Dc838fe1282df540ebf6e24e386ac34acb3ef3115#n=
+4806
+> > > [3]: https://github.com/kernel-patches/bpf/pull/6132/commits/0e72ee54=
+1180812e515b2bf3ebd127b6e670fd59
 
