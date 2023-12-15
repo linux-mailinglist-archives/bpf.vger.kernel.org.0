@@ -1,140 +1,120 @@
-Return-Path: <bpf+bounces-18041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73F958151B9
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 22:15:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C31F18151DF
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 22:19:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01D5D1F26705
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 21:15:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D1342813E7
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 21:19:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1012147F66;
-	Fri, 15 Dec 2023 21:15:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F193A47F6A;
+	Fri, 15 Dec 2023 21:18:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lUHaJRVi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fRBTZE/a"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0627F47F5E
-	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 21:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1676B47F5E
+	for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 21:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a1f8a1e9637so195003566b.1
-        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 13:15:40 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-551437d5344so1411634a12.1
+        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 13:18:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702674939; x=1703279739; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702675132; x=1703279932; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/ZX/aGeM/eAc2JLCovGkdMBhWDbv8ZxkWMT65adB9bE=;
-        b=lUHaJRVixCUGU3p53wOvPT0zFQN93TiJooUFiOEKzq7SphfTUuEcFDKMwbIfGNNw1V
-         ebumKdXse04YQwvEGEX1kwgva9c1F3GZ3ZEGJO1tEx7u4OaQvql/BEf/L9rmW6TNfhKT
-         /4QKauIYshA7nOWcxKkhTDIrYLJlCXZHiCZmXqZv4H1bZMQSYLnPUAy4B4eO7L2hHk7R
-         VVOPkY8CkDNEV9THdgL56JzvTtXxCTjeWDwMnFXUO5l4UBRIQseWbvtm4/Z4v3pjPg29
-         08yRCr0BV4eqyD/6YZipQgBuN+4lx76Ok1Kar4hnFbaV4vLR/7jtTbdUDJn0uAuItVYm
-         Durg==
+        bh=2qhLCyesvidNeII+r693cw+udgFkyL9CFQnmJdZP9Z4=;
+        b=fRBTZE/aJToZPq1gqfu5czD6HKU3mEjjPjyDU47hG3k9YuWbap8JBS3Pbp/T4D1nc2
+         t5G4lrudo3JwEyQ/rzAUUFEdqjO9QhBU6K8T0FtxzMZs2buMnmtwPrHIQSmIlIU6UVh7
+         4mvgoGkkelHnobWcKEw2JkZBn7iE9lonVZMXwVHQsN1Y+m2hIn4oYJYGY2JkYuteYPlG
+         KYiObn2A6TtrwPz9Im27eWS7tXSSt7uWAJjG5OibqihLyr5K+v+6Rv1sfdskvTtHV6bj
+         RNqN4aKQxLRc3O6mAUnCEBLoxP1bzHQSIqnmFv+tqDEX66kt8WheHK6jKCzvA/AnnFVB
+         PWtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702674939; x=1703279739;
+        d=1e100.net; s=20230601; t=1702675132; x=1703279932;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/ZX/aGeM/eAc2JLCovGkdMBhWDbv8ZxkWMT65adB9bE=;
-        b=l7PwADDCJRVJx8BTp8mse019ZujDqlJCPqSwIpjIpcEy7Czf/IWVfaOzf3i/GRh39s
-         f01iVCTvHn6Dqh2Sa6VkvHHkmD+BDU0P0sSFTsrwDD3u/z5Akv+otNSMjeCDceI7R6AW
-         dPtWXjV5cWKvrBxH5Mn0mvT/Dlnw5girFcl1cuhtGuDTHsHDqkJuWs3l4TcYDVAiBdAe
-         FYBUUMsG6KF1bQa433891PRX7bwSx9JJi74Op4XEn9pwGFmZoIev6pPmZeW8AgsrBnwN
-         izfbCgXxo7wzC6LN5TDj60d8XUQaGoA2SLINyVa9VPIbi/pykZutC6eA6VD/QzykrXGW
-         jEnw==
-X-Gm-Message-State: AOJu0YydiOBi6ol2bkrzD2LYaX2kVEEUe27hctUiSpQkeEwFFrrmZVdP
-	DTCzS28T6cf3/vAmW2uADp+kHr2+c8TGwPxKIhiuplRdMCk=
-X-Google-Smtp-Source: AGHT+IGgDemQGrd3NdeqBS/LZvcpix775vWKB9TCH4FknerG6t8k+AxFsTXLwVxYrPsfybi+n4x//Q1gzgoZ6QYsl7o=
-X-Received: by 2002:a17:906:10cb:b0:a1f:9613:fe8e with SMTP id
- v11-20020a17090610cb00b00a1f9613fe8emr9673450ejv.51.1702674939091; Fri, 15
- Dec 2023 13:15:39 -0800 (PST)
+        bh=2qhLCyesvidNeII+r693cw+udgFkyL9CFQnmJdZP9Z4=;
+        b=Co4tkfpFZUQRzy9LJYUpd1bEojjckKFnaQrLuAbZDvJ+GBQQrN2FIFTlWhwY9Ays2Q
+         Hb1HGwJEYvFHetzPGx671aIst5Db9ZhZUtudQWxFNubqbhgzGza6LZVSDd5Upkkm/3wo
+         RyKOUztCWu5+WyI0e9hVPhgpQgVKH25ujuUvb7ZxpCULpE6279MQnrjuZlfqi9eP89Uc
+         +CKd9x8szxkwBTcDdLM1y6QTGj3YZpI1cKMQ5ADx+btzoUvsUscS1rxBdRPJSV64qe2I
+         t8zQnVSiD0PSOIUAKQnlRYTJRJI/y8wEHI40DEC0GqVGHsWhZsTek5jcJpiqIlnDYrvk
+         EyEg==
+X-Gm-Message-State: AOJu0YzZ/fSQ0jW1v0MWy3l5Sd3dkSS5ks/h0VtHJheDf2Jg1+1MHW+B
+	bZyOXkCr/QeVI9dNzY+zRYW42+22xPVK8xZyluw=
+X-Google-Smtp-Source: AGHT+IGkVcqRTYPOM93uDwsXWDxTmvtkojGmHgM5YwJWH143MTU8AwhtXPE/f3LZEONenkzyfEkAczowSOoMDSS7SS8=
+X-Received: by 2002:a50:d547:0:b0:54c:4837:9aa1 with SMTP id
+ f7-20020a50d547000000b0054c48379aa1mr6583364edj.72.1702675131996; Fri, 15 Dec
+ 2023 13:18:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215100708.2265609-1-houtao@huaweicloud.com>
-In-Reply-To: <20231215100708.2265609-1-houtao@huaweicloud.com>
+References: <20231215091826.2467281-1-jolsa@kernel.org>
+In-Reply-To: <20231215091826.2467281-1-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 15 Dec 2023 13:15:26 -0800
-Message-ID: <CAEf4BzYNtmEOmwigoXKU8Y8htwbMAde_bKoZUHEM9DjH9iM-Kg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/5] bpf: Fix warnings in kvmalloc_node()
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Song Liu <song@kernel.org>, Hao Luo <haoluo@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Daniel Borkmann <daniel@iogearbox.net>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, xingwei lee <xrivendell7@gmail.com>, houtao1@huawei.com
+Date: Fri, 15 Dec 2023 13:18:39 -0800
+Message-ID: <CAEf4BzZyZBED8cLNBufbQreQa2G+3uD10jpVYT8xjrZKDhy8xQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Add missing BPF_LINK_TYPE invocations
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Pengfei Xu <pengfei.xu@intel.com>, bpf@vger.kernel.org, 
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Hou Tao <houtao@huaweicloud.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 2:06=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
+On Fri, Dec 15, 2023 at 1:18=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> From: Hou Tao <houtao1@huawei.com>
+> Pengfei Xu reported [1] Syzkaller/KASAN issue found in bpf_link_show_fdin=
+fo.
 >
-> Hi,
+> The reason is missing BPF_LINK_TYPE invocation for uprobe multi
+> link and for several other links, adding that.
 >
-> The patch set aims to fix the warnings in kvmalloc_node() when passing
-> an abnormally big cnt during multiple kprobes/uprobes attachment.
+> [1] https://lore.kernel.org/bpf/ZXptoKRSLspnk2ie@xpf.sh.intel.com/
 >
-> Patch #1 and #2 fix the warning by limiting the maximal number of
-> uprobes/kprobes. Patch #3, #4, and #5 add tests to ensure these
-> warnings are fixed.
+> Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
+> Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link su=
+pport")
+> Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER program=
+s")
+> Fixes: 35dfaad7188c ("netkit, bpf: Add bpf programmable net device")
+> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/bpf_types.h | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
-> Please see individual patches for more details. Comments are always
-> welcome.
->
-> Change Log:
-> v3:
->   * add ack tags from Jiri
->   * return -E2BIG instead of -EINVAL for too-big cnt (Andrii)
->   * patch #3: rename the subtest from "failed_link_api" to
->               "attach_api_fails", so it is consistent with the naming
->               convention in multi-kprobe test.
->   * patch #4: newly-added patch to remove libbpf_get_error() in
->               kprobe_multi_test (Andrii)
->
-> v2: https://lore.kernel.org/bpf/20231213112531.3775079-1-houtao@huaweiclo=
-ud.com/
->   * limit the number of uprobes/kprobes instead of suppressing the
->     out-of-memory warning message (Alexei)
->   * provide a faked non-zero offsets to simplify the multiple uprobe
->     test (Jiri)
->
-> v1: https://lore.kernel.org/bpf/20231211112843.4147157-1-houtao@huaweiclo=
-ud.com/
->
-> Hou Tao (5):
->   bpf: Limit the number of uprobes when attaching program to multiple
->     uprobes
->   bpf: Limit the number of kprobes when attaching program to multiple
->     kprobes
->   selftests/bpf: Add test for abnormal cnt during multi-uprobe
->     attachment
->   selftests/bpf: Don't use libbpf_get_error() in kprobe_multi_test
->   selftests/bpf: Add test for abnormal cnt during multi-kprobe
->     attachment
->
->  kernel/trace/bpf_trace.c                      |  7 ++++
->  .../bpf/prog_tests/kprobe_multi_test.c        | 31 +++++++++++++++---
->  .../bpf/prog_tests/uprobe_multi_test.c        | 32 ++++++++++++++++++-
->  3 files changed, 64 insertions(+), 6 deletions(-)
->
+> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+> index fc0d6f32c687..38cbdaec6bdf 100644
+> --- a/include/linux/bpf_types.h
+> +++ b/include/linux/bpf_types.h
+> @@ -148,3 +148,7 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
+>  #endif
+>  BPF_LINK_TYPE(BPF_LINK_TYPE_KPROBE_MULTI, kprobe_multi)
+>  BPF_LINK_TYPE(BPF_LINK_TYPE_STRUCT_OPS, struct_ops)
+> +BPF_LINK_TYPE(BPF_LINK_TYPE_NETFILTER, netfilter)
+> +BPF_LINK_TYPE(BPF_LINK_TYPE_TCX, tcx)
+> +BPF_LINK_TYPE(BPF_LINK_TYPE_UPROBE_MULTI, uprobe_multi)
+> +BPF_LINK_TYPE(BPF_LINK_TYPE_NETKIT, netkit)
+
+let's reorder keeping UPROBE_MULTI first or last and then guard TCX,
+NETFILTER, and NETKIT with CONFIG_NET? This is based on similar guards
+in BPF_LINK_CREATE handling.
+
 > --
-> 2.29.2
+> 2.43.0
 >
->
-
-LGTM, for the series:
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
