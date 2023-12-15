@@ -1,112 +1,176 @@
-Return-Path: <bpf+bounces-17928-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-17929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07F3F813F56
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 02:43:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFAF7813F5F
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 02:45:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B5E5B21E38
-	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 01:43:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9667F1F232AE
+	for <lists+bpf@lfdr.de>; Fri, 15 Dec 2023 01:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45C8804;
-	Fri, 15 Dec 2023 01:43:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RPJ8PLMA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D21A807;
+	Fri, 15 Dec 2023 01:45:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EBC10F3;
-	Fri, 15 Dec 2023 01:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-40c2c65e6aaso1974805e9.2;
-        Thu, 14 Dec 2023 17:43:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702604614; x=1703209414; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZPXPBhj6r6wn/s7iUr6Ov+9BGjRNtkcDIxrWuGzYqqU=;
-        b=RPJ8PLMAbBBFLXfhdNL/hD+S1YytfI9setztdjqgghfH4hCHL7rwAGWSzd0x/wiuFB
-         Zr9D04NK+L/Rqqyb0/ShhhU4wgA7Koii5vaMmMl+6UfdSv1NW5p/gk1gdARneZZw38S1
-         L02bynZhEyQ0cQ/XoIQgxI9wGgoWLCv5OCN22TBax0ARRGCOmwo1+X4Sv/qAAv6Wop+I
-         bckt045hU1ZgA9Y/XeXYfyvD0d7PDabxgLbbdz7JrTe91XgFqWqS+hKF2VLdQ1b665gz
-         qjEZI3ztMO25Bf4FYl3l5WTEeo/pXX3jzFDrYkq7GAv/3W59ZXfJNVCiwLYeiUJEsDam
-         N1gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702604614; x=1703209414;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZPXPBhj6r6wn/s7iUr6Ov+9BGjRNtkcDIxrWuGzYqqU=;
-        b=Uj3L5Yfd4EwLg6DOsObRHIDPOy4A5CWzFD3yrRK+CJT8V1FPnOWUEIcF0bUga0b6uM
-         FLR4VCYiy3a7/jK8UG7/uuiYUPn/hhfUnJZkn5/3F7qnXxRo3RoUSsP0b0ccP5lRk3k+
-         4RCT+EwkYIIO9d9JXRl5XAHe7pwfay1Oa58Jbj1kdw9DvkHvzsTqKHe4Q+8xyY84bQKW
-         xMhaa/klsDjWFIeukTBoSsKZUHVaOoUADc4OBhrwm2AibUE8FZraL77nzrGIneyRYgW2
-         cdPu02A+HAH4rvwD+7YRdz8mQgfDdk5z6pnyI/Dim83Oz9Efpd8hfR+bjjl7ApOI0Czi
-         XkMQ==
-X-Gm-Message-State: AOJu0YzvH4m9GjNxfOS+qIntgoWn/1my6vZGTkZgB2GSDwGaaBaAnmsS
-	/+5xgHwNN/4eRSZ2vcyktu4=
-X-Google-Smtp-Source: AGHT+IGHbvX/KwnnFSDijk7FhPD1SJcKVFFkFn1IWOSVYXK88SCVtOeGj0OJgpawZ/uIv8bh4y5CIQ==
-X-Received: by 2002:a05:600c:1913:b0:40b:5e21:bde8 with SMTP id j19-20020a05600c191300b0040b5e21bde8mr5092782wmq.119.1702604614043;
-        Thu, 14 Dec 2023 17:43:34 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id p18-20020a5d6392000000b003333a216682sm17313271wru.97.2023.12.14.17.43.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Dec 2023 17:43:33 -0800 (PST)
-Message-ID: <feffb6294801f156ed049d47483164e0d51aa77b.camel@gmail.com>
-Subject: Re: [Bug Report] bpf: incorrectly pruning runtime execution path
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Hao Sun <sunhao.th@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, Linux Kernel Mailing
- List <linux-kernel@vger.kernel.org>
-Date: Fri, 15 Dec 2023 03:43:32 +0200
-In-Reply-To: <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
-References: 
-	<CACkBjsbj4y4EhqpV-ZVt645UtERJRTxfEab21jXD1ahPyzH4_g@mail.gmail.com>
-	 <CAEf4BzZ0xidVCqB47XnkXcNhkPWF6_nTV7yt+_Lf0kcFEut2Mg@mail.gmail.com>
-	 <CACkBjsaEQxCaZ0ERRnBXduBqdw3MXB5r7naJx_anqxi0Wa-M_Q@mail.gmail.com>
-	 <480a5cfefc23446f7c82c5b87eef6306364132b9.camel@gmail.com>
-	 <917DAD9F-8697-45B8-8890-D33393F6CDF1@gmail.com>
-	 <9dee19c7d39795242c15b2f7aa56fb4a6c3ebffa.camel@gmail.com>
-	 <73d021e3f77161668aae833e478b210ed5cd2f4d.camel@gmail.com>
-	 <CAEf4BzYuV3odyj8A77ZW8H9jyx_YLhAkSiM+1hkvtH=OYcHL3w@mail.gmail.com>
-	 <526d4ac8f6788d3323d29fdbad0e0e5d09a534db.camel@gmail.com>
-	 <2b49b96de9f8a1cd6d78cc5aebe7c35776cd2c19.camel@gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 085EC2574;
+	Fri, 15 Dec 2023 01:45:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F892C433C7;
+	Fri, 15 Dec 2023 01:45:41 +0000 (UTC)
+Date: Thu, 14 Dec 2023 20:46:29 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Network Development <netdev@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>, "Paul E. McKenney"
+ <paulmck@kernel.org>, Stephen Rothwell <sfr@canb.auug.org.au>, Alexander
+ Potapenko <glider@google.com>, Andrey Konovalov <andreyknvl@gmail.com>,
+ Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [bug] splat at boot
+Message-ID: <20231214204629.1b380b82@gandalf.local.home>
+In-Reply-To: <CAADnVQ+dPML0DW=Miuq=n7nC8m4gcPj7Dk_nhedzs9zTE30arw@mail.gmail.com>
+References: <CAADnVQ+dPML0DW=Miuq=n7nC8m4gcPj7Dk_nhedzs9zTE30arw@mail.gmail.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2023-12-15 at 03:24 +0200, Eduard Zingerman wrote:
-[...]
-> Here is an option that would fix the test in question, but I'm not
-> sure if it covers all cases:
-> 1. At the last instruction of each state (first instruction to be
->    backtracked) we know the set of IDs that should be tracked for
->    precision, as currently marked by mark_precise_scalar_ids().
-> 2. In jump history we can record IDs for src and dst registers when new
->    entry is pushed.
-> 3. While backtracking 'if' statement, if one of the recorded IDs is in
->    the set identified at (1), add src/dst regs to precise registers set.
+On Thu, 14 Dec 2023 17:25:46 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-Nah... this won't work for "second order" ids.
+> Hi All,
+> 
+> just noticed a boot splat that probably was there for lone time:
+> 
+> [    1.118691] ftrace: allocating 50546 entries in 198 pages
+> [    1.129690] ftrace: allocated 198 pages with 4 groups
+> [    1.130156]
+> [    1.130158] =============================
+> [    1.130159] [ BUG: Invalid wait context ]
+> [    1.130161] 6.7.0-rc3-00837-g403f3e8fda60 #5272 Not tainted
+> [    1.130163] -----------------------------
+> [    1.130165] swapper/0 is trying to lock:
+> [    1.130166] ffff88823fffb1d8 (&zone->lock){....}-{3:3}, at:
+> __rmqueue_pcplist+0xe80/0x1100
+> [    1.130181] other info that might help us debug this:
+> [    1.130182] context-{5:5}
 
-    --- suppose r2.id =3D=3D r3.id here
-    if r3 > 10 goto exit;
-    r1 +=3D r2
-    ... use r1 as precise ...
+Can you trigger this with CONFIG_PROVE_RAW_LOCK_NESTING disabled?
+
+If not, then I wouldn't worry about it for now, but this will need to be
+addressed when PREEMPT_RT is included.
+
+Basically, a spin_lock() in PREEMPT_RT is converted into a mutex, and most
+interrupt handlers and all softirqs are turned into threads. But there's
+still cases where spin_lock() can not be used. One is for interrupt
+handlers that will not turn into a thread (like the timer interrupt), and
+for when a raw_spin_lock is held. You can't have:
+
+  raw_spin_lock(rawlock);
+  spin_lock(spinlock);
+
+order.
+
+But if you can trigger it without the PROVE_RAW_LOCK_NESTING, then it's
+something that needs to be addressed today.
+
+-- Steve
+
+
+> [    1.130184] 3 locks held by swapper/0:
+> [    1.130185]  #0: ffffffff84334888 (slab_mutex){....}-{4:4}, at:
+> kmem_cache_create_usercopy+0x47/0x270
+> [    1.130197]  #1: ffffffff8437aad8 (kmemleak_lock){....}-{2:2}, at:
+> __create_object+0x36/0xa0
+> [    1.130207]  #2: ffff8881f6c37c18 (&pcp->lock){....}-{3:3}, at:
+> get_page_from_freelist+0x8be/0x2250
+> [    1.130215] stack backtrace:
+> [    1.130217] CPU: 0 PID: 0 Comm: swapper Not tainted
+> 6.7.0-rc3-00837-g403f3e8fda60 #5272
+> [    1.130221] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+> BIOS rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> [    1.130224] Call Trace:
+> [    1.130225]  <TASK>
+> [    1.130228]  dump_stack_lvl+0x4a/0x80
+> [    1.130234]  __lock_acquire+0xd5d/0x34e0
+> [    1.130244]  ? lockdep_hardirqs_on_prepare+0x220/0x220
+> [    1.130248]  ? __lock_acquire+0x906/0x34e0
+> [    1.130254]  lock_acquire+0x155/0x3b0
+> [    1.130258]  ? __rmqueue_pcplist+0xe80/0x1100
+> [    1.130263]  ? lock_sync+0x100/0x100
+> [    1.130268]  ? secondary_startup_64_no_verify+0x166/0x16b
+> [    1.130274]  ? lockdep_hardirqs_on_prepare+0x220/0x220
+> [    1.130279]  _raw_spin_lock_irqsave+0x3f/0x60
+> [    1.130284]  ? __rmqueue_pcplist+0xe80/0x1100
+> [    1.130288]  __rmqueue_pcplist+0xe80/0x1100
+> [    1.130293]  ? lock_acquire+0x165/0x3b0
+> [    1.130300]  ? find_suitable_fallback+0xe0/0xe0
+> [    1.130306]  get_page_from_freelist+0x91c/0x2250
+> [    1.130314]  ? lock_release+0x219/0x3a0
+> [    1.130317]  ? __stack_depot_save+0x223/0x450
+> [    1.130322]  ? reacquire_held_locks+0x270/0x270
+> [    1.130328]  ? __zone_watermark_ok+0x290/0x290
+> [    1.130332]  ? prepare_alloc_pages.constprop.0+0x173/0x220
+> [    1.130337]  __alloc_pages+0x188/0x390
+> [    1.130342]  ? __alloc_pages_slowpath.constprop.0+0x1380/0x1380
+> [    1.130347]  ? unwind_next_frame+0x1ee/0xe10
+> [    1.130354]  ? secondary_startup_64_no_verify+0x166/0x16b
+> [    1.130358]  ? secondary_startup_64_no_verify+0x166/0x16b
+> [    1.130362]  ? write_profile+0x220/0x220
+> [    1.130366]  ? policy_nodemask+0x28/0x190
+> [    1.130371]  alloc_pages_mpol+0xf0/0x2c0
+> [    1.130376]  ? mempolicy_in_oom_domain+0x90/0x90
+> [    1.130381]  ? secondary_startup_64_no_verify+0x166/0x16b
+> [    1.130387]  __stack_depot_save+0x36f/0x450
+> [    1.130393]  set_track_prepare+0x79/0xa0
+> [    1.130396]  ? get_object+0x50/0x50
+> [    1.130400]  ? kmem_cache_alloc_node+0x222/0x3b0
+> [    1.130404]  ? __kmem_cache_create+0x167/0x5e0
+> [    1.130408]  ? kmem_cache_create_usercopy+0x17c/0x270
+> [    1.130412]  ? kmem_cache_create+0x16/0x20
+> [    1.130415]  ? sched_init+0xf8/0x780
+> [    1.130420]  ? start_kernel+0x13c/0x390
+> [    1.130425]  ? x86_64_start_reservations+0x18/0x30
+> [    1.130428]  ? x86_64_start_kernel+0xb2/0xc0
+> [    1.130431]  ? secondary_startup_64_no_verify+0x166/0x16b
+> [    1.130436]  ? strncpy+0x33/0x60
+> [    1.130441]  __link_object+0x21c/0x4c0
+> [    1.130447]  __create_object+0x4e/0xa0
+> [    1.130452]  kmem_cache_alloc_node+0x222/0x3b0
+> [    1.130457]  ? calculate_sizes+0x2eb/0x320
+> [    1.130462]  __kmem_cache_create+0x167/0x5e0
+> [    1.130467]  kmem_cache_create_usercopy+0x17c/0x270
+> [    1.130471]  ? cpupri_init+0xe6/0x100
+> [    1.130478]  kmem_cache_create+0x16/0x20
+> [    1.130482]  sched_init+0xf8/0x780
+> [    1.130486]  start_kernel+0x13c/0x390
+> [    1.130491]  x86_64_start_reservations+0x18/0x30
+> [    1.130494]  x86_64_start_kernel+0xb2/0xc0
+> [    1.130498]  secondary_startup_64_no_verify+0x166/0x16b
+> [    1.130506]  </TASK>
+> [    1.133575] Running RCU self tests
+> 
+> Looks to be stackdepot related?
+> 
+> I haven't debugged it yet.
+> Wondering, is this a known issue?
+> 
+> CONFIG_KASAN=y
+> CONFIG_KASAN_GENERIC=y
+> CONFIG_KASAN_OUTLINE=y
+> # CONFIG_KASAN_INLINE is not set
+> CONFIG_KASAN_STACK=y
+> CONFIG_KASAN_VMALLOC=y
+> # CONFIG_KASAN_MODULE_TEST is not set
+> CONFIG_HAVE_ARCH_KFENCE=y
+> CONFIG_KFENCE=y
+> CONFIG_DEBUG_ATOMIC_SLEEP=y
+
 
