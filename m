@@ -1,82 +1,186 @@
-Return-Path: <bpf+bounces-18082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40215815731
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 05:08:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4376B815794
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 05:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71CC21C21678
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 04:08:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78B10B2122E
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 04:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F134710A32;
-	Sat, 16 Dec 2023 04:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BA11118E;
+	Sat, 16 Dec 2023 04:54:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iIiWkd0u"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2F410A2B
-	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 04:07:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SsXc01YDpz4f3jqC
-	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 12:07:28 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 834191A037F
-	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 12:07:29 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgAXvEqAIn1l1WKPDw--.35157S2;
-	Sat, 16 Dec 2023 12:07:29 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 6/6] selftests/bpf: Add a selftest with >
- 512-byte percpu allocation size
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231216023004.3738749-1-yonghong.song@linux.dev>
- <20231216023036.3743648-1-yonghong.song@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <04694af7-8298-ee01-d469-2bc9ed817cc4@huaweicloud.com>
-Date: Sat, 16 Dec 2023 12:07:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9548E13FF3;
+	Sat, 16 Dec 2023 04:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702702450; x=1734238450;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hbCzV9FRyfR9WQHmArq5wOV7koxOXpFFbjy3k1iOVwE=;
+  b=iIiWkd0u+l++9NKvsnPOdvQNOK+esIE9ooleHcK1qNVY1Clp5fUO2A0H
+   EiGbwxJ8hr7LcUeajNCRXYXgNSmLdUqsw50hCl8lOS1V50JgjFqy9Ec3F
+   s3+WlJqHFoWsWSp9yUIEqM6X0LHVMroRIeLrOpew5fgz+BdSaEfY8Nph6
+   ff3FnItSc8bxbHnnIwIqOdN6zqQtD0bK1zVZV98XD2txAdCsfyJabIcpe
+   e0W6N4xBwcU8jEekyEMtTPK0t8k7hjOkZeN7QkNXWcwEpJ3GHGWov57AG
+   yVlZ5lMZCr4VO+a0nVVK7MkUQJE8kfE4MmRBKieNEU+ya3GVi1gSJQMpZ
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="385777633"
+X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
+   d="scan'208";a="385777633"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 20:54:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="751162050"
+X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
+   d="scan'208";a="751162050"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 15 Dec 2023 20:54:04 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rEMga-0001Ac-1s;
+	Sat, 16 Dec 2023 04:54:01 +0000
+Date: Sat, 16 Dec 2023 12:53:43 +0800
+From: kernel test robot <lkp@intel.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>, bpf@vger.kernel.org,
+	intel-wired-lan@lists.osuosl.org
+Subject: Re: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP
+ redirect.
+Message-ID: <202312161212.D5tju5i6-lkp@intel.com>
+References: <20231215171020.687342-21-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231216023036.3743648-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgAXvEqAIn1l1WKPDw--.35157S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5R7kC6x804xWl14x267AKxVW8JVW5JwAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xv
-	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r
-	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vI
-	Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
-	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y
-	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4U
-	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UGYL9UUU
-	UU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215171020.687342-21-bigeasy@linutronix.de>
+
+Hi Sebastian,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on net-next/main]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrzej-Siewior/locking-local_lock-Introduce-guard-definition-for-local_lock/20231216-011911
+base:   net-next/main
+patch link:    https://lore.kernel.org/r/20231215171020.687342-21-bigeasy%40linutronix.de
+patch subject: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP redirect.
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20231216/202312161212.D5tju5i6-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312161212.D5tju5i6-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312161212.D5tju5i6-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/net/ethernet/intel/igb/igb_main.c:8620:3: error: cannot jump from this goto statement to its label
+                   goto xdp_out;
+                   ^
+   drivers/net/ethernet/intel/igb/igb_main.c:8624:2: note: jump bypasses initialization of variable with __attribute__((cleanup))
+           guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+           ^
+   include/linux/cleanup.h:142:15: note: expanded from macro 'guard'
+           CLASS(_name, __UNIQUE_ID(guard))
+                        ^
+   include/linux/compiler.h:180:29: note: expanded from macro '__UNIQUE_ID'
+   #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
+                               ^
+   include/linux/compiler_types.h:84:22: note: expanded from macro '__PASTE'
+   #define __PASTE(a,b) ___PASTE(a,b)
+                        ^
+   include/linux/compiler_types.h:83:23: note: expanded from macro '___PASTE'
+   #define ___PASTE(a,b) a##b
+                         ^
+   <scratch space>:52:1: note: expanded from here
+   __UNIQUE_ID_guard753
+   ^
+   1 error generated.
 
 
+vim +8620 drivers/net/ethernet/intel/igb/igb_main.c
 
-On 12/16/2023 10:30 AM, Yonghong Song wrote:
-> Add a selftest to capture the verification failure when the allocation
-> size is greater than 512.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+b1bb2eb0a0deb0 Alexander Duyck           2017-02-06  8608  
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8609  static struct sk_buff *igb_run_xdp(struct igb_adapter *adapter,
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8610  				   struct igb_ring *rx_ring,
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8611  				   struct xdp_buff *xdp)
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8612  {
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8613  	int err, result = IGB_XDP_PASS;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8614  	struct bpf_prog *xdp_prog;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8615  	u32 act;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8616  
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8617  	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8618  
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8619  	if (!xdp_prog)
+9cbc948b5a20c9 Sven Auhagen              2020-09-02 @8620  		goto xdp_out;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8621  
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8622  	prefetchw(xdp->data_hard_start); /* xdp_frame write */
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8623  
+d568b111738dbb Sebastian Andrzej Siewior 2023-12-15  8624  	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8625  	act = bpf_prog_run_xdp(xdp_prog, xdp);
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8626  	switch (act) {
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8627  	case XDP_PASS:
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8628  		break;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8629  	case XDP_TX:
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8630  		result = igb_xdp_xmit_back(adapter, xdp);
+74431c40b9c5fa Magnus Karlsson           2021-05-10  8631  		if (result == IGB_XDP_CONSUMED)
+74431c40b9c5fa Magnus Karlsson           2021-05-10  8632  			goto out_failure;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8633  		break;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8634  	case XDP_REDIRECT:
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8635  		err = xdp_do_redirect(adapter->netdev, xdp, xdp_prog);
+74431c40b9c5fa Magnus Karlsson           2021-05-10  8636  		if (err)
+74431c40b9c5fa Magnus Karlsson           2021-05-10  8637  			goto out_failure;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8638  		result = IGB_XDP_REDIR;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8639  		break;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8640  	default:
+c8064e5b4adac5 Paolo Abeni               2021-11-30  8641  		bpf_warn_invalid_xdp_action(adapter->netdev, xdp_prog, act);
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8642  		fallthrough;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8643  	case XDP_ABORTED:
+74431c40b9c5fa Magnus Karlsson           2021-05-10  8644  out_failure:
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8645  		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8646  		fallthrough;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8647  	case XDP_DROP:
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8648  		result = IGB_XDP_CONSUMED;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8649  		break;
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8650  	}
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8651  xdp_out:
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8652  	return ERR_PTR(-result);
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8653  }
+9cbc948b5a20c9 Sven Auhagen              2020-09-02  8654  
 
-Acked-by: Hou Tao <houtao1@huawei.com>
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
