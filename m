@@ -1,58 +1,60 @@
-Return-Path: <bpf+bounces-18074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F420981568E
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 03:52:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF961815697
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 04:01:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFE3D285AEB
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 02:52:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46811C243AC
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 03:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ABE320F3;
-	Sat, 16 Dec 2023 02:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78AAF1FDA;
+	Sat, 16 Dec 2023 03:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q8wt3Inh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kSJWuzXf"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6186412E43;
-	Sat, 16 Dec 2023 02:52:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 615E2C433C7;
-	Sat, 16 Dec 2023 02:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0F71869;
+	Sat, 16 Dec 2023 03:01:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB8FFC433C7;
+	Sat, 16 Dec 2023 03:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702695123;
-	bh=wEadWnvCc/HfoIu80FLtOBCdt6lNEYIGt4Ee9W8bEjg=;
+	s=k20201202; t=1702695691;
+	bh=/P/ZhrLqJHACtkn9yyEkbbr1lTbkhgNG4DxVbVllBpc=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Q8wt3InhMLHP4VwWMxtLBaYe3KIX1lISFdsJfCNMYuN6LBF/tbvmujO/sscks2DP0
-	 qabxY/Lv3ST8+XiAtfpeCmmt9Rw3NTPWReIFKDc8VnIoM1aQNyRZ6IOMs4lSocMGwH
-	 ClGUfqoazOPQtCpnh2M/dKPRR9nehaLyVlsdT3LDDeDHY3Cv9b6MN2yC8tRV6XZa3t
-	 QYjHj/d5BCuH73p6iErkWyO30jEcjW/wGMw12uB8rzMQCAzU9zhRX4QTbUg7KF/blS
-	 4zPRshHn9VtyganOS93WrDYuFSSvr2uFMnv/NoM/BXLMvpTjb5oT26u6a0Um1tmTXC
-	 A+xUgIOjlTUqg==
-Date: Fri, 15 Dec 2023 18:51:59 -0800
+	b=kSJWuzXf5JsHFjt6K7rC+2VlvyaR6vrFZPqXGVBXJ22KO4Xlf0lCZ6503KvqaGDL9
+	 IS4QM56v9pkuRl1X3HiEY24kAYSv4YOAY0AZ/6yZjXOI4Qubv7whLLJ6VlTUKGRtoT
+	 L1k7/gFq6GVPcg4ZfH/lgDpPFnzba89eyccX0FQbsbQFs3gfLhwEzKHSjRVwwazTVM
+	 npO5CMl1qlngApV+pK6Cki843NGMwIUeJYmBnzSLUYFdflZM16+e9IHhFZW2xB0jMs
+	 c7+bzsTrOS7SIewdnVCHELoCnspZ01H+edRsLNE8MGbibM1YZ+LoHXvhgn+1yeXICt
+	 ny2/w064p7T4A==
+Date: Fri, 15 Dec 2023 19:01:26 -0800
 From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- bpf@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
- <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
- <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
- <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael
- J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- "Christian =?UTF-8?B?S8O2bmln?=" <christian.koenig@amd.com>, Michael Chan
- <michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, Shenwei Wang
- <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, NXP Linux Team
- <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, Praveen
- Kaligineedi <pkaligineedi@google.com>, Shailend Chand
- <shailend@google.com>, Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
- <salil.mehta@huawei.com>, Jesse Brandeburg <jesse.brandeburg@intel.com>,
- Tony Nguyen <anthony.l.nguyen@intel.com>, Thomas Petazzoni
+To: Shakeel Butt <shakeelb@google.com>
+Cc: Mina Almasry <almasrymina@google.com>, Yunsheng Lin
+ <linyunsheng@huawei.com>, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, bpf@vger.kernel.org, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+ "H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>,
+ Sumit Semwal <sumit.semwal@linaro.org>, "Christian =?UTF-8?B?S8O2bmln?="
+ <christian.koenig@amd.com>, Michael Chan <michael.chan@broadcom.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard
+ Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei
+ Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+ <xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de
+ Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ Shailend Chand <shailend@google.com>, Yisen Zhuang
+ <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, Jesse
+ Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen
+ <anthony.l.nguyen@intel.com>, Thomas Petazzoni
  <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, Russell
  King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, Geetha
  sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>,
@@ -85,15 +87,17 @@ Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
  =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?=" <mic@digikod.net>, Nathan Chancellor
  <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, Bill
  Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, Jason
- Gunthorpe <jgg@nvidia.com>, Shakeel Butt <shakeelb@google.com>, Yunsheng
- Lin <linyunsheng@huawei.com>, Willem de Bruijn
+ Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
  <willemdebruijn.kernel@gmail.com>
-Subject: Re: [RFC PATCH net-next v1 2/4] net: introduce abstraction for
- network memory
-Message-ID: <20231215185159.7bada9a7@kernel.org>
-In-Reply-To: <20231214020530.2267499-3-almasrymina@google.com>
+Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t
+ instead of struct page in API
+Message-ID: <20231215190126.1040fa12@kernel.org>
+In-Reply-To: <20231215021114.ipvdx2bwtxckrfdg@google.com>
 References: <20231214020530.2267499-1-almasrymina@google.com>
-	<20231214020530.2267499-3-almasrymina@google.com>
+	<20231214020530.2267499-5-almasrymina@google.com>
+	<ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
+	<CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+	<20231215021114.ipvdx2bwtxckrfdg@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -103,25 +107,19 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Wed, 13 Dec 2023 18:05:25 -0800 Mina Almasry wrote:
-> +struct netmem {
-> +	union {
-> +		struct page page;
-> +
-> +		/* Stub to prevent compiler implicitly converting from page*
-> +		 * to netmem_t* and vice versa.
-> +		 *
-> +		 * Other memory type(s) net stack would like to support
-> +		 * can be added to this union.
-> +		 */
-> +		void *addr;
-> +	};
-> +};
+On Fri, 15 Dec 2023 02:11:14 +0000 Shakeel Butt wrote:
+> > From my POV it has to be the first one. We want to abstract the memory
+> > type from the drivers as much as possible, not introduce N new memory
+> > types and ask the driver to implement new code for each of them
+> > separately.
+> 
+> Agree with Mina's point. Let's aim to decouple memory types from
+> drivers.
 
-My mind went to something like:
+What does "decouple" mean? Drivers should never convert netmem 
+to pages. Either a path in the driver can deal with netmem,
+i.e. never touch the payload, or it needs pages.
 
-typedef unsigned long __bitwise netmem_ref;
-
-instead. struct netmem does not exist, it's a handle which has 
-to be converted to a real type using a helper.
+Perhaps we should aim to not export netmem_to_page(),
+prevent modules from accessing it directly.
 
