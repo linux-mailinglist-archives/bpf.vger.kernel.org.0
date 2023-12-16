@@ -1,186 +1,168 @@
-Return-Path: <bpf+bounces-18083-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18084-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4376B815794
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 05:54:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37EF48157D5
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 06:43:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78B10B2122E
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 04:54:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A256E1F2459D
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 05:43:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BA11118E;
-	Sat, 16 Dec 2023 04:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04BC311CAC;
+	Sat, 16 Dec 2023 05:43:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iIiWkd0u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SMNFWP8g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9548E13FF3;
-	Sat, 16 Dec 2023 04:54:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702702450; x=1734238450;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hbCzV9FRyfR9WQHmArq5wOV7koxOXpFFbjy3k1iOVwE=;
-  b=iIiWkd0u+l++9NKvsnPOdvQNOK+esIE9ooleHcK1qNVY1Clp5fUO2A0H
-   EiGbwxJ8hr7LcUeajNCRXYXgNSmLdUqsw50hCl8lOS1V50JgjFqy9Ec3F
-   s3+WlJqHFoWsWSp9yUIEqM6X0LHVMroRIeLrOpew5fgz+BdSaEfY8Nph6
-   ff3FnItSc8bxbHnnIwIqOdN6zqQtD0bK1zVZV98XD2txAdCsfyJabIcpe
-   e0W6N4xBwcU8jEekyEMtTPK0t8k7hjOkZeN7QkNXWcwEpJ3GHGWov57AG
-   yVlZ5lMZCr4VO+a0nVVK7MkUQJE8kfE4MmRBKieNEU+ya3GVi1gSJQMpZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="385777633"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="385777633"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2023 20:54:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10925"; a="751162050"
-X-IronPort-AV: E=Sophos;i="6.04,280,1695711600"; 
-   d="scan'208";a="751162050"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 15 Dec 2023 20:54:04 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rEMga-0001Ac-1s;
-	Sat, 16 Dec 2023 04:54:01 +0000
-Date: Sat, 16 Dec 2023 12:53:43 +0800
-From: kernel test robot <lkp@intel.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>, bpf@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP
- redirect.
-Message-ID: <202312161212.D5tju5i6-lkp@intel.com>
-References: <20231215171020.687342-21-bigeasy@linutronix.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4610C134A0
+	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 05:43:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6d9e993d94dso1093473a34.0
+        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 21:43:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702705383; x=1703310183; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZABzvnl3Tj5NpZaHDfVyLKhmD3eF6dhIzenWRLl2Alk=;
+        b=SMNFWP8g5VhTWLXV9ad8olOiaFZ31zREmDOGloCPmUnMytIfZn4aQrDZIguySV0hTz
+         XFMXIixPRKxU4U+a9JceHSuPlL0SbqlWyztKTYnq72pYamORyyZVfQObUhCFDp1gmM8L
+         4qJ2Df7a2KekV1eIHNOfLUH4Dxt+W3V2gm/O171KYREPTm5MFqeIroJNEcFrEMLeGP+X
+         7XdkA11J4tbqiZnJtOiPr356OKgLVsT3o06JVECaIfVmROWYm8FixI2LXnIYYZIiLT5M
+         i2fTkBmTHDcyzngtSw0KAJpBb34y7pfllQjSniGNXTwL7TFRrAUEHj2oTPaTEKE8vs4k
+         S3gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702705383; x=1703310183;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZABzvnl3Tj5NpZaHDfVyLKhmD3eF6dhIzenWRLl2Alk=;
+        b=IJDXuTP6h7Wxka6Cy+u9p4/Y3lRXcGW6BqnGpMGGfieA9edfe8BZymzsvqMsriRMR4
+         66ayhFIVQqUy2ijRk/nS1PsqerOkBn532jU45FcZbkUknANAlBRH//nHo1MJEgIujpri
+         NcTfMvX1xi2/QmHvtBNx39WC5OFCeRgp0WxrImzjbzsVnUA7OkwNg8tZ1ABYILUIajk+
+         2UPkXr7rsvdIQoWRcwuVxexRIpio+DX9vgj+CJu+JMZViFNl2WDE8QLSORhhxYFLrIg1
+         nYrAH37OfBKlJoPDWaJLEIRrLdDvBeBhbNfiyz+SryqI9fK7059SJwxcTOZ4HVn9k2kT
+         PDtw==
+X-Gm-Message-State: AOJu0YxP0COLmnL9b0EmTSdMpzAXzUkob1oKNIVAM0Opc2BVEI/yo1RO
+	qTNvdB3uQywfBHjEMXEsiEQ=
+X-Google-Smtp-Source: AGHT+IH+zMda2/xQvZAqNQA2qEIZKo5WxhYWS4qYKVXhsnsCgpIe1rKDWLIvMUxU0Cj6qrLQIz3TpQ==
+X-Received: by 2002:a05:6808:147:b0:3b8:b063:6679 with SMTP id h7-20020a056808014700b003b8b0636679mr11846548oie.112.1702705383142;
+        Fri, 15 Dec 2023 21:43:03 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:d12f:74e4:d58f:4cec? ([2600:1700:6cf8:1240:d12f:74e4:d58f:4cec])
+        by smtp.gmail.com with ESMTPSA id 67-20020a251546000000b00d9caecd5c86sm6012124ybv.62.2023.12.15.21.43.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Dec 2023 21:43:02 -0800 (PST)
+Message-ID: <b85024f1-87bd-487e-bfa0-68dae52c9071@gmail.com>
+Date: Fri, 15 Dec 2023 21:43:01 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231215171020.687342-21-bigeasy@linutronix.de>
-
-Hi Sebastian,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on net-next/main]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrzej-Siewior/locking-local_lock-Introduce-guard-definition-for-local_lock/20231216-011911
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20231215171020.687342-21-bigeasy%40linutronix.de
-patch subject: [PATCH net-next 20/24] net: intel: Use nested-BH locking for XDP redirect.
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20231216/202312161212.D5tju5i6-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231216/202312161212.D5tju5i6-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312161212.D5tju5i6-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/net/ethernet/intel/igb/igb_main.c:8620:3: error: cannot jump from this goto statement to its label
-                   goto xdp_out;
-                   ^
-   drivers/net/ethernet/intel/igb/igb_main.c:8624:2: note: jump bypasses initialization of variable with __attribute__((cleanup))
-           guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
-           ^
-   include/linux/cleanup.h:142:15: note: expanded from macro 'guard'
-           CLASS(_name, __UNIQUE_ID(guard))
-                        ^
-   include/linux/compiler.h:180:29: note: expanded from macro '__UNIQUE_ID'
-   #define __UNIQUE_ID(prefix) __PASTE(__PASTE(__UNIQUE_ID_, prefix), __COUNTER__)
-                               ^
-   include/linux/compiler_types.h:84:22: note: expanded from macro '__PASTE'
-   #define __PASTE(a,b) ___PASTE(a,b)
-                        ^
-   include/linux/compiler_types.h:83:23: note: expanded from macro '___PASTE'
-   #define ___PASTE(a,b) a##b
-                         ^
-   <scratch space>:52:1: note: expanded from here
-   __UNIQUE_ID_guard753
-   ^
-   1 error generated.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v13 04/14] bpf: add struct_ops_tab to btf.
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, drosen@google.com
+References: <20231209002709.535966-1-thinker.li@gmail.com>
+ <20231209002709.535966-5-thinker.li@gmail.com>
+ <466399be-c571-48af-8f48-8365689d4d20@linux.dev>
+ <fc15849b-2f71-420e-aab4-7a20014cba49@gmail.com>
+ <44dc6eb4-d524-4180-8970-4eef2a9b9f58@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <44dc6eb4-d524-4180-8970-4eef2a9b9f58@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-vim +8620 drivers/net/ethernet/intel/igb/igb_main.c
 
-b1bb2eb0a0deb0 Alexander Duyck           2017-02-06  8608  
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8609  static struct sk_buff *igb_run_xdp(struct igb_adapter *adapter,
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8610  				   struct igb_ring *rx_ring,
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8611  				   struct xdp_buff *xdp)
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8612  {
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8613  	int err, result = IGB_XDP_PASS;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8614  	struct bpf_prog *xdp_prog;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8615  	u32 act;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8616  
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8617  	xdp_prog = READ_ONCE(rx_ring->xdp_prog);
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8618  
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8619  	if (!xdp_prog)
-9cbc948b5a20c9 Sven Auhagen              2020-09-02 @8620  		goto xdp_out;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8621  
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8622  	prefetchw(xdp->data_hard_start); /* xdp_frame write */
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8623  
-d568b111738dbb Sebastian Andrzej Siewior 2023-12-15  8624  	guard(local_lock_nested_bh)(&bpf_run_lock.redirect_lock);
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8625  	act = bpf_prog_run_xdp(xdp_prog, xdp);
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8626  	switch (act) {
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8627  	case XDP_PASS:
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8628  		break;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8629  	case XDP_TX:
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8630  		result = igb_xdp_xmit_back(adapter, xdp);
-74431c40b9c5fa Magnus Karlsson           2021-05-10  8631  		if (result == IGB_XDP_CONSUMED)
-74431c40b9c5fa Magnus Karlsson           2021-05-10  8632  			goto out_failure;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8633  		break;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8634  	case XDP_REDIRECT:
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8635  		err = xdp_do_redirect(adapter->netdev, xdp, xdp_prog);
-74431c40b9c5fa Magnus Karlsson           2021-05-10  8636  		if (err)
-74431c40b9c5fa Magnus Karlsson           2021-05-10  8637  			goto out_failure;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8638  		result = IGB_XDP_REDIR;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8639  		break;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8640  	default:
-c8064e5b4adac5 Paolo Abeni               2021-11-30  8641  		bpf_warn_invalid_xdp_action(adapter->netdev, xdp_prog, act);
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8642  		fallthrough;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8643  	case XDP_ABORTED:
-74431c40b9c5fa Magnus Karlsson           2021-05-10  8644  out_failure:
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8645  		trace_xdp_exception(rx_ring->netdev, xdp_prog, act);
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8646  		fallthrough;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8647  	case XDP_DROP:
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8648  		result = IGB_XDP_CONSUMED;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8649  		break;
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8650  	}
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8651  xdp_out:
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8652  	return ERR_PTR(-result);
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8653  }
-9cbc948b5a20c9 Sven Auhagen              2020-09-02  8654  
+On 12/15/23 17:19, Martin KaFai Lau wrote:
+> On 12/15/23 1:42 PM, Kui-Feng Lee wrote:
+>>
+>>
+>> On 12/14/23 18:22, Martin KaFai Lau wrote:
+>>> On 12/8/23 4:26 PM, thinker.li@gmail.com wrote:
+>>>> +const struct bpf_struct_ops_desc *btf_get_struct_ops(struct btf 
+>>>> *btf, u32 *ret_cnt)
+>>>> +{
+>>>> +    if (!btf)
+>>>> +        return NULL;
+>>>> +    if (!btf->struct_ops_tab)
+>>>
+>>>          *ret_cnt = 0;
+>>>
+>>> unless the later patch checks the return value NULL before using 
+>>> *ret_cnt.
+>>> Anyway, better to set *ret_cnt to 0 if the btf has no struct_ops.
+>>>
+>>> The same should go for the "!btf" case above but I suspect the above 
+>>> !btf check is unnecessary also and the caller should have checked for 
+>>> !btf itself instead of expecting a list of struct_ops from a NULL 
+>>> btf. Lets continue the review on the later patches for now to confirm 
+>>> where the above !btf case might happen.
+>>
+>> Checking callers, I didn't find anything that make btf here NULL so far.
+> 
+>> It is safe to remove !btf check. For the same reason as assigning
+>> *ret_cnt for safe, this check should be fine here as well, right?
+> 
+> If for safety, why ref_cnt is not checked for NULL also? The userspace 
+> passed-in btf should have been checked for NULL long time before 
+> reaching here. There is no need to be over protective here. It would 
+> really need a BUG_ON instead if btf was NULL here (don't add a BUG_ON 
+> though).
+> 
+> afaict, no function in btf.c is checking the btf argument for NULL also.
+> 
+>>
+>> I don't have strong opinion here. What I though is to keep the values
+>> as it is without any side-effect if the function call fails and if
+>> possible. And, the callers should not expect the callee to set some
+>> specific values when a call fails.
+> 
+> For *ref_cnt stay uninit, there is a bug in patch 10 which exactly 
+> assumes 0 is set in *ret_cnt when there is no struct_ops. It is a good 
+> signal on how this function will be used.
+> 
+> I think it is arguable whether returning NULL here is failure. I would 
+> argue getting a 0 struct_ops_desc array is not a failure. It is why the 
+> !btf case confuses the return NULL case to mean a never would happen 
+> error instead of meaning there is no struct_ops. Taking out the !btf 
+> case, NULL means there is no struct_ops (instead of failure), so 0 cnt.
+> 
+> Anyhow, either assign 0 to *ret_cnt here, or fix patch 10 to init the 
+> local cnt 0 and write a warning comment here in btf_get_struct_ops() 
+> saying ret_cnt won't be set when there is no struct_ops in the btf.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+I will fix at the patch 10 by setting local cnt 0.
+
+> 
+> When looking at it again, how about moving the bpf_struct_ops_find_*() 
+> to btf.c. Then it will avoid the need of the new btf_get_struct_ops() 
+> function. bpf_struct_ops_find_*() can directly use the btf->struct_ops_tab.
+> 
+
+I prefer to keep them in bpf_struct_ops.c if it is ok to you.
+Fixing the initialization issue of bpf_struct_ops_find()
+should be enough.
+
+> 
+>>
+>>>
+>>>> +        return NULL;
+>>>> +
+>>>> +    *ret_cnt = btf->struct_ops_tab->cnt;
+>>>> +    return (const struct bpf_struct_ops_desc 
+>>>> *)btf->struct_ops_tab->ops;
+>>>> +}
+>>>
+> 
 
