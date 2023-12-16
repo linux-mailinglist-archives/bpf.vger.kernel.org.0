@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-18086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD52D8157F3
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 07:07:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E68AD815864
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 09:16:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D1BB1F234DF
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 06:07:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 711BFB248D0
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 08:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6E912B79;
-	Sat, 16 Dec 2023 06:07:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEDB5154B9;
+	Sat, 16 Dec 2023 08:15:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eHe/yu0J"
+	dkim=pass (2048-bit key) header.d=daynix-com.20230601.gappssmtp.com header.i=@daynix-com.20230601.gappssmtp.com header.b="fSQlZQCi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BB112B6B
-	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 06:07:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-203965f2da4so19757fac.3
-        for <bpf@vger.kernel.org>; Fri, 15 Dec 2023 22:07:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA05E13FF8
+	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 08:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=daynix.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=daynix.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6ce6d926f76so1918281b3a.1
+        for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 00:15:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702706836; x=1703311636; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+        d=daynix-com.20230601.gappssmtp.com; s=20230601; t=1702714547; x=1703319347; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=6NgA4WStLDgBriVIIz7c82UeMlZD0QR/ftt8MloP+Yw=;
-        b=eHe/yu0JXv50i13E4giWiQFFnErDJD+47OuqjVYQbv6DAJ51GpVLIS13eHGgbS52Hb
-         N0CEUcSZEcX0zXCe21UgoI6dIbLfJKgINKQdV3Aixe2O5KZ/XqJMe+vT4rF6qHLePhFv
-         Xfgq9cA/NV53OawpvPa0E58p8m8xMwr4qYlw4uGeDfrPzZgwc4PyOvyZsQp62Dal2GkK
-         sh9obDPv074NVWrjSuXIxEGRu7eZqOyi5Ci43drLio1jmrb68ssO/temRMtrjJ4FsIev
-         xiauQZ43r/J+krvJ/W2NReHSqDKguojlG4deyU6sm56w1jPQxGSb8KiW1c400s9xdoJz
-         6qEQ==
+        bh=j34U3DbBJyUmmhCTSIWekoWpOW5ZdWSwa2YWU4yaUK4=;
+        b=fSQlZQCinU0xlc/C7XkWiMFc/n4JnuL0J2BMpN1y8kLXwcdhoph+AlxWeMItVAImiE
+         jM6ABIHhQDEgvbUyrzd0X86wCICqDW0QvnwDyNVUmlW8ad0NDZMuENaA94eOpf7oizEP
+         bDYoM5g04sXrYq6RBCcofqg0ond+33l5i0vzg/PGAo3DUXZcGUqXEDVCqO6Cs2Cgyd+8
+         3XZ+Sn2e9+MB3nRsl1LetszqffjwE/g4YMF7OH5tJCqwkugzCAmwj2hA3oZYRVc8jb3y
+         hGh6UPJHOvtpum9xUHMXBH80bGdJWsu/fBlT2pXpcPZS2i1YXetEGlN4ZOnLjFpAJrP4
+         FKVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702706836; x=1703311636;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
+        d=1e100.net; s=20230601; t=1702714547; x=1703319347;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6NgA4WStLDgBriVIIz7c82UeMlZD0QR/ftt8MloP+Yw=;
-        b=lhKTl7erNbTxTHztBPhQSF4VizMBJ0VTQShDZepLp/Tm7UYqDxAMRCVPHswAvFDYaL
-         /TZXZAQi1ujhqik7F3HQnquuU22lT6fbakgEItlr3YCXMEREvjd8uovyOQh1UWV75oXA
-         mPPvQ+UMYc9D3/yr5KVUEk3R4piuUJ6E7GMeOPeASsrIP+uVaC8Qx45u2g4QMg1Qm8ao
-         qbet7wXqQalnclFmSbsCMy40u2Kwul+bpAbaJklJ6hdY2LVRSEJlQtGkGymF1uKsJecJ
-         gkfaJOaL6OFI9SoglwQOtKXtnfyMfk76FA16f6oK0VIzoxrC4PF5/gidXHMfUKX/AG9m
-         igPg==
-X-Gm-Message-State: AOJu0YyljGgqGMTzM5kNOEQHTxkWEWjE6Qj3ccV75xuCYXIoA3fiYXyP
-	oRAE6ms36guKP5ee9a/0HBjmQgpSIf4=
-X-Google-Smtp-Source: AGHT+IGHa5aYkk4IX4025yfM3PtKqm82Zwb4pzjhfUuB7L1Jl3WM4UuskTDX3VEUUMv2wFXCrLzufA==
-X-Received: by 2002:a05:6870:d1c1:b0:203:4d5f:9143 with SMTP id b1-20020a056870d1c100b002034d5f9143mr3671751oac.31.1702706836049;
-        Fri, 15 Dec 2023 22:07:16 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:d12f:74e4:d58f:4cec? ([2600:1700:6cf8:1240:d12f:74e4:d58f:4cec])
-        by smtp.gmail.com with ESMTPSA id f190-20020a0ddcc7000000b00577269ba9e9sm6889522ywe.86.2023.12.15.22.07.14
+        bh=j34U3DbBJyUmmhCTSIWekoWpOW5ZdWSwa2YWU4yaUK4=;
+        b=SnvqTOMYZfsQoFNIYmD+RQhnQNLuoBGW2+foWA5GOcfTX1d1GAs5ddtp/dQxAm2c0r
+         wPqu0ZuloZ00c4tXMeRpKNxVOLE3E+McfRSymuuH5/8r2hx0jivM2xxw8OwmX+yoFwkx
+         5LthHzA1B8oA/z3DeroTJQB4VU2FElp8ae5BOlGYw2RW8+mwkMyUmVaa7s67LuvZsR/O
+         MLZQez01fUk5fuvKf3IaoztN5MT8Va7yhl3vB9QrKzR5EpddCKR3mMqe6QhWbNXC+2E3
+         tKCH41kzlCc1eTAn/A5s3zgdea9YbZLMN+d2OCwMuo1N0OkGouCuaqqMZzOUiWeiPF5w
+         1QoQ==
+X-Gm-Message-State: AOJu0YwS1aoAAK3R0I7dpKEKydUs80cHGYtqajaXPRRZeHWcbvERhtlC
+	STXD3gII/Gpa8EJnuLVmLPy/aw==
+X-Google-Smtp-Source: AGHT+IEeuPfCOabIrvg0uS3E2YqqLjNkgjJjHCcIA2x49ExvIgKwxCgYmGKVjZEUpfIORWU2Bd9Yug==
+X-Received: by 2002:a05:6a00:198b:b0:6ce:78c9:5979 with SMTP id d11-20020a056a00198b00b006ce78c95979mr17324911pfl.18.1702714547181;
+        Sat, 16 Dec 2023 00:15:47 -0800 (PST)
+Received: from [157.82.205.15] ([157.82.205.15])
+        by smtp.gmail.com with ESMTPSA id p18-20020a056a000b5200b006ce835b77d9sm14707733pfo.20.2023.12.16.00.15.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Dec 2023 22:07:15 -0800 (PST)
-Message-ID: <390f3c92-2df6-4cea-aa78-ecc92a9fe8aa@gmail.com>
-Date: Fri, 15 Dec 2023 22:07:14 -0800
+        Sat, 16 Dec 2023 00:15:46 -0800 (PST)
+Message-ID: <11507101-ca4f-486d-9fb8-a5d4de0b1b85@daynix.com>
+Date: Sat, 16 Dec 2023 17:15:39 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,76 +66,89 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v13 07/14] bpf: pass attached BTF to the
- bpf_struct_ops subsystem
+Subject: Re: Should I add BPF kfuncs for userspace apps? And how?
 Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, drosen@google.com
-References: <20231209002709.535966-1-thinker.li@gmail.com>
- <20231209002709.535966-8-thinker.li@gmail.com>
- <4e6bff53-a219-4c69-a662-75e097100c9c@linux.dev>
- <e2222287-6438-4de7-a747-9e04c5fd3f55@gmail.com>
- <3fd164b6-622e-499e-9fa4-6d56442b086f@linux.dev>
- <a3ab56ff-ca03-4f28-b2e7-4f0b50bfaaae@gmail.com>
-In-Reply-To: <a3ab56ff-ca03-4f28-b2e7-4f0b50bfaaae@gmail.com>
+To: Stephen Hemminger <stephen@networkplumber.org>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Jason Wang <jasowang@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>, Xuan Zhuo
+ <xuanzhuo@linux.alibaba.com>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Yuri Benditovich
+ <yuri.benditovich@daynix.com>, Andrew Melnychenko <andrew@daynix.com>,
+ Benjamin Tissoires <bentiss@kernel.org>, bpf <bpf@vger.kernel.org>,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, kvm@vger.kernel.org,
+ LKML <linux-kernel@vger.kernel.org>,
+ virtualization@lists.linux-foundation.org,
+ "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>
+References: <2f33be45-fe11-4b69-8e89-4d2824a0bf01@daynix.com>
+ <CAO-hwJJhzHtKrUEw0zrjgub3+eapgJG-zsG0HRB=PaPi6BxG+w@mail.gmail.com>
+ <e256c6df-0a66-4f86-ae96-bff17920c2fb@daynix.com>
+ <CAO-hwJKMrWYRNpuprDj9=k87V0yHtLPEJuQ94bpOF3O81=v0kA@mail.gmail.com>
+ <0d68722c-9e29-407b-9ef0-331683c995d2@daynix.com>
+ <20231214094042.75f704f6@hermes.local>
+ <72b8e198-7058-469a-a1e0-17f48330deca@daynix.com>
+ <20231215083644.4dd9a323@hermes.local>
+From: Akihiko Odaki <akihiko.odaki@daynix.com>
+In-Reply-To: <20231215083644.4dd9a323@hermes.local>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-
-
-On 12/15/23 21:55, Kui-Feng Lee wrote:
+On 2023/12/16 1:36, Stephen Hemminger wrote:
+> On Fri, 15 Dec 2023 14:49:56 +0900
+> Akihiko Odaki <akihiko.odaki@daynix.com> wrote:
 > 
-> 
-> On 12/15/23 16:19, Martin KaFai Lau wrote:
->> On 12/15/23 2:10 PM, Kui-Feng Lee wrote:
+>>>> It is exactly what BPF_PROG_TYPE_SOCKET_FILTER does, but it lacks a
+>>>> mechanism to report hash values so I need to extend it or invent a new
+>>>> method. Extending BPF_PROG_TYPE_SOCKET_FILTER is not a way forward since
+>>>> CO-RE is superior to the context rewrite it relies on. But apparently
+>>>> adopting kfuncs and CO-RE also means to lose the "we don't break user
+>>>> space" contract although I have no intention to expose kernel internals
+>>>> to the eBPF program.
 >>>
+>>> An example is how one part of DPDK recomputes RSS over TAP.
 >>>
->>> On 12/14/23 18:44, Martin KaFai Lau wrote:
->>>> On 12/8/23 4:27 PM, thinker.li@gmail.com wrote:
->>>>> @@ -681,15 +682,30 @@ static struct bpf_map 
->>>>> *bpf_struct_ops_map_alloc(union bpf_attr *attr)
->>>>>       struct bpf_struct_ops_map *st_map;
->>>>>       const struct btf_type *t, *vt;
->>>>>       struct bpf_map *map;
->>>>> +    struct btf *btf;
->>>>>       int ret;
->>>>> -    st_ops_desc = bpf_struct_ops_find_value(btf_vmlinux, 
->>>>> attr->btf_vmlinux_value_type_id);
->>>>> -    if (!st_ops_desc)
->>>>> -        return ERR_PTR(-ENOTSUPP);
->>>>> +    if (attr->value_type_btf_obj_fd) {
->>>>> +        /* The map holds btf for its whole life time. */
->>>>> +        btf = btf_get_by_fd(attr->value_type_btf_obj_fd);
->>>>> +        if (IS_ERR(btf))
->>>>> +            return ERR_PTR(PTR_ERR(btf));
->>>>
->>>>              return ERR_CAST(btf);
->>>>
->>>> It needs to check for btf_is_module:
->>>>
->>>>          if (!btf_is_module(btf)) {
->>>>              btf_put(btf);
->>>>              return ERR_PTR(-EINVAL);
->>>>          }
+>>> https://git.dpdk.org/dpdk/tree/drivers/net/tap/bpf/tap_bpf_program.c
 >>>
->>> Even btf is btf_vmlinux the kernel's btf, it still works.
+>>> This feature is likely to be removed, because it is not actively used
+>>> and the changes in BPF program loading broke it on current kernel
+>>> releases.  Which brings up the point that since the kernel does
+>>> not have stable API/ABI for BPF program infrastructure, I would
+>>> avoid it for projects that don't want to deal with that.
 >>
->> btf could be a bpf program's btf. It needs to ensure it is a kernel 
->> module btf here.
+>> It's unfortunate to hear that, but thanks for the information.
+>> I'll consider more about the option not using BPF (plain ioctl and
+>> in-kernel implementation).
 > 
-> Got it!
+> With libbpf, things are much better. It is just that projects like
+> DPDK have to support wide range of kernels including older versions of RHEL.
 
-Isn't btf_is_kernel() better here?
-User space may pass a fd to btf_vmlinux.
+I have checked DPDK documentation. It says it supports the oldest LTS 
+kernel:
+https://doc.dpdk.org/guides/linux_gsg/sys_reqs.html#system-software
 
-> 
->>
->>> Although libbpf pass 0 as the value of value_type_btf_obj_fd for
->>> btf_vmlinux now, it should be OK for a user space loader to
->>> pass a fd of btf_vmlinux.
->>>
->>> WDYT?
->>
+My use case is QEMU, which has much more relaxed compatibility 
+requirement that refers to recent distribution versions instead of LTS 
+kernels:
+https://qemu.readthedocs.io/en/v8.1.0/about/build-platforms.html
+
+That said, I'm not really concerned about the case running QEMU on older 
+kernels. QEMU developers can just pay extra efforts to support those old 
+kernels if necessary.
+
+The more concerning scenario is that a newer kernel breaks compatibility 
+with older QEMU versions; such a scenario has not been considered before 
+AFAIK.
+
+QEMU already uses libbpf to load a BPF_PROG_TYPE_SOCKET_FILTER program.
 
