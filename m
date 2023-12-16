@@ -1,130 +1,128 @@
-Return-Path: <bpf+bounces-18062-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18063-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD8E88155BB
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 01:54:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 245868155EA
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 02:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A09EA283422
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 00:54:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C271C23B04
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 01:20:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043B21365;
-	Sat, 16 Dec 2023 00:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85D361106;
+	Sat, 16 Dec 2023 01:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gyqciA6i"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VE9E7FSI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7DE7F2;
-	Sat, 16 Dec 2023 00:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-40c256ffdbcso14139625e9.2;
-        Fri, 15 Dec 2023 16:54:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702688040; x=1703292840; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I0wkBeN2mknWfCaYD90okNAjhG97xOBmh5EL3y5dSjM=;
-        b=gyqciA6i/mJasUIygwZqT91L2RbW+6l4OPQaxt0zuF0AL5S3f3tBNiZj0MPm7hSnfh
-         6clUfr1NIs2Li/E/e9VgOh0AJeM6on0arofnNyZSrQPSo9W4RpItqzYbO2uBBRCH8O7r
-         NAPnZd1lKCz/JXLTAfgENF1VCRtHTtZmDI1DPTqkU26XIS8N9LiLURuTcIq5XshKFPCR
-         vhVM7TOv+21aPYw6C+PRhra7d22qRyBf9Z1T5IVXRefXyzRG/tL0Z2FjuMWS7LT0HPmB
-         AM/Skj2oXcVgWw1kzy5FI3G5+cn6YfjFkZ5z5p66PM3DaqFozKI6tIhqwsfntp6Zp4ho
-         ogpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702688040; x=1703292840;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I0wkBeN2mknWfCaYD90okNAjhG97xOBmh5EL3y5dSjM=;
-        b=ZEtRGCTrAFjlW+hF1j7OfRcc/1UD4ZhnueZ6oV3GeDqxYuW7gYbMi2rKJSXjY0dhYR
-         mfEz6wyFzTIwiguJcFQzXQZ1WiIc56IF1o2GTf6U8kBHgMwGNEnvgKJcvWPNee0U3Bio
-         +Y2NKO53JzwR2BI12SM2oUvOgoF11po8i2+ENN1xNtH3hehV3CctmLhjlR8oL6Rw5DuY
-         MQOjcqZTxXPnBtsk7rXvARTPrfd6ASYqtQo/L5sAKAiy/0WOdqqBRGJ+SnevQzOlVmPD
-         uLeHl1TywqW0VxdpX1ANBz4kRkkmN13OIHtcRc/H4d98EBSwU9XJfy/ydwNoMYAoRKKR
-         vcSw==
-X-Gm-Message-State: AOJu0Yx/KaTsG9jW/H4ecF5xoD7wzW9iUuLhZO6b7Z5FHDvcB9nV5cIx
-	0e1irjkncRAwwHoOqv71v+I+oi3l0fWzIS2J0wk=
-X-Google-Smtp-Source: AGHT+IFuGmazbLWUSb4nLKggAzQnLeNmhiza7lIRh77ULXtw19cTSgKhotygxYJ0AUw8jKf6X6LfkImHGcy9Q5DkS7c=
-X-Received: by 2002:adf:f609:0:b0:336:458b:38d with SMTP id
- t9-20020adff609000000b00336458b038dmr2405362wrp.115.1702688040032; Fri, 15
- Dec 2023 16:54:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E0C10EE
+	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 01:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <44dc6eb4-d524-4180-8970-4eef2a9b9f58@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1702689595;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JAEcl4cquQqM7eNM00aJdC3UaEH8nY11mNPK2QM2iFM=;
+	b=VE9E7FSIRJLAzUZuHofLs9TT3Y9KQsbK+p1Kyu+NtEMtWIpExzeR2wZC016p7TChKO2nDP
+	kpXiAiBugMAS5xS3dr76b9UZcFByIvBdrA7yM1fo7kS+TFokBwiJKfV8rLar211xJib3Yr
+	AqAK+JmMvemZcTWB6gLhGgPFp8cq6Eo=
+Date: Fri, 15 Dec 2023 17:19:48 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231215091216.135791411@infradead.org>
-In-Reply-To: <20231215091216.135791411@infradead.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 15 Dec 2023 16:53:48 -0800
-Message-ID: <CAADnVQJoEkdjyCEJRPASjBw1QGsKYrF33QdMGc1RZa9b88bAEA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/7] x86/cfi,bpf: Fix CFI vs eBPF
-To: Peter Zijlstra <peterz@infradead.org>, Ilya Leoshkevich <iii@linux.ibm.com>, 
-	Martin KaFai Lau <martin.lau@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Sami Tolvanen <samitolvanen@google.com>, Kees Cook <keescook@chromium.org>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	linux-arch <linux-arch@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>, 
-	Josh Poimboeuf <jpoimboe@kernel.org>, Joao Moreira <joao@overdrivepizza.com>, 
-	Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v13 04/14] bpf: add struct_ops_tab to btf.
+Content-Language: en-US
+To: Kui-Feng Lee <sinquersw@gmail.com>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, drosen@google.com
+References: <20231209002709.535966-1-thinker.li@gmail.com>
+ <20231209002709.535966-5-thinker.li@gmail.com>
+ <466399be-c571-48af-8f48-8365689d4d20@linux.dev>
+ <fc15849b-2f71-420e-aab4-7a20014cba49@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <fc15849b-2f71-420e-aab4-7a20014cba49@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Dec 15, 2023 at 1:33=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> Hi!
->
-> What started with the simple observation that bpf_dispatcher_*_func() was
-> broken for calling CFI functions with a __nocfi calling context for FineI=
-BT
-> ended up with a complete BPF wide CFI fixup.
->
-> With these changes on the BPF selftest suite passes without crashing -- t=
-here's
-> still a few failures, but Alexei has graciously offered to look into thos=
-e.
->
-> (Alexei, I have presumed your SoB on the very last patch, please update
-> as you see fit)
->
-> Changes since v2 are numerous but include:
->  - cfi_get_offset() -- as a means to communicate the offset (ast)
->  - 5 new patches fixing various BPF internals to be CFI clean
+On 12/15/23 1:42 PM, Kui-Feng Lee wrote:
+> 
+> 
+> On 12/14/23 18:22, Martin KaFai Lau wrote:
+>> On 12/8/23 4:26 PM, thinker.li@gmail.com wrote:
+>>> +const struct bpf_struct_ops_desc *btf_get_struct_ops(struct btf *btf, u32 
+>>> *ret_cnt)
+>>> +{
+>>> +    if (!btf)
+>>> +        return NULL;
+>>> +    if (!btf->struct_ops_tab)
+>>
+>>          *ret_cnt = 0;
+>>
+>> unless the later patch checks the return value NULL before using *ret_cnt.
+>> Anyway, better to set *ret_cnt to 0 if the btf has no struct_ops.
+>>
+>> The same should go for the "!btf" case above but I suspect the above !btf 
+>> check is unnecessary also and the caller should have checked for !btf itself 
+>> instead of expecting a list of struct_ops from a NULL btf. Lets continue the 
+>> review on the later patches for now to confirm where the above !btf case might 
+>> happen.
+> 
+> Checking callers, I didn't find anything that make btf here NULL so far.
 
-Looks great to me. Pushed to bpf-next.
+> It is safe to remove !btf check. For the same reason as assigning
+> *ret_cnt for safe, this check should be fine here as well, right?
 
-There is a failure on s390 that I temporarily denylisted
-with an extra patch.
-And sent a proposed fix:
-https://lore.kernel.org/bpf/20231216004549.78355-1-alexei.starovoitov@gmail=
-.com/
+If for safety, why ref_cnt is not checked for NULL also? The userspace passed-in 
+btf should have been checked for NULL long time before reaching here. There is 
+no need to be over protective here. It would really need a BUG_ON instead if btf 
+was NULL here (don't add a BUG_ON though).
 
-Ilya,
-please take a look.
+afaict, no function in btf.c is checking the btf argument for NULL also.
 
-> Note: it *might* be possible to merge the
-> bpf_bpf_tcp_ca.c:unsupported_ops[] thing into the CFI stubs, as is
-> get_info will have a NULL stub, unlike the others.
+> 
+> I don't have strong opinion here. What I though is to keep the values
+> as it is without any side-effect if the function call fails and if
+> possible. And, the callers should not expect the callee to set some
+> specific values when a call fails.
 
-That's a good idea. Will clean up unsupported_ops.
-Either myself or Martin will follow up.
+For *ref_cnt stay uninit, there is a bug in patch 10 which exactly assumes 0 is 
+set in *ret_cnt when there is no struct_ops. It is a good signal on how this 
+function will be used.
+
+I think it is arguable whether returning NULL here is failure. I would argue 
+getting a 0 struct_ops_desc array is not a failure. It is why the !btf case 
+confuses the return NULL case to mean a never would happen error instead of 
+meaning there is no struct_ops. Taking out the !btf case, NULL means there is no 
+struct_ops (instead of failure), so 0 cnt.
+
+Anyhow, either assign 0 to *ret_cnt here, or fix patch 10 to init the local cnt 
+0 and write a warning comment here in btf_get_struct_ops() saying ret_cnt won't 
+be set when there is no struct_ops in the btf.
+
+When looking at it again, how about moving the bpf_struct_ops_find_*() to btf.c. 
+Then it will avoid the need of the new btf_get_struct_ops() function. 
+bpf_struct_ops_find_*() can directly use the btf->struct_ops_tab.
+
+
+> 
+>>
+>>> +        return NULL;
+>>> +
+>>> +    *ret_cnt = btf->struct_ops_tab->cnt;
+>>> +    return (const struct bpf_struct_ops_desc *)btf->struct_ops_tab->ops;
+>>> +}
+>>
+
 
