@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-18099-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18100-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45044815B71
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 20:47:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4065E815C06
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 23:07:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA5B21F2369A
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 19:47:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A97F21F22BD6
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 22:07:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DBF328C2;
-	Sat, 16 Dec 2023 19:47:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72E2A358AD;
+	Sat, 16 Dec 2023 22:06:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OFfmWsIU"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lLU0lYDS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6B79321B9
-	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 19:47:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819EA35284
+	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 22:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-35f9f3e98f4so107455ab.1
-        for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 11:47:08 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55193d5e8cdso2133493a12.1
+        for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 14:06:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702756028; x=1703360828; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1702764412; x=1703369212; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Xk2EOjATRTJxRrrcnsFLeLcL8neXxaj8OIxb84EMHzw=;
-        b=OFfmWsIUMY2kYqh9vTdql015YTC3dnoxdnV97ZTUlcKD9Zbtj+Jm9vbyiEScZ6+Lv2
-         DoKjKibIHgHn62Vb1wLzwCQpRPeCwmz8ot3GWB7MmUVxGSSd+5aqMLVCkQ7u2H0cGCAa
-         H7jCDp48lyfOMaSLlSGkEJZomFBB5mrkl9NnOqNXy+/FTEsksbHgOoMYq6nR9zPux31h
-         3HMsN/+IHqQOE7C3DDhQnBBEo/8CRndntfezBNwihqcPP2fE/MKJHY/sNaND09y0BTqN
-         3caIzYnEyMno1RfETMVWyi/kRRi8BeplFC6tB9eRfL2wMBly1BT3TnAS8lnIBm1lh7r5
-         ygFQ==
+        bh=+A7W+kQw39I0W+Av8fUPMRQeHZ3+3clgt7HAcEmlw4M=;
+        b=lLU0lYDSOvL7Pdd2ht480XXWFbTog77uJW3GTfVxty9Yo6ftdBe0qIAvqkxneVS8iw
+         su0w5Q+ZgOL9reXN36S6iswgCRkkzJpOgZL1tkEHTPF5aC/6gPgsjfFlFsV9uy2lOvNa
+         CliMKrSAutKrFZTp2jJ1NQ1jxdY/Rw9s2yUIeUtrOgdqbaMpQ1/448fznFnXN+W9V2Ib
+         yT8JWrMA0TRzIFxIn/wS8aFice/kLFTkekGFkJuZpP1MVvH1KXVUuYrvZNBawl/Uwbwj
+         bYOGEtIU/RCzWJ+bMRfLcFJaOfy7T38M+WdmyKnfaddKScHuw0BoB20QzKDZzgD3BXMc
+         7q9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702756028; x=1703360828;
+        d=1e100.net; s=20230601; t=1702764412; x=1703369212;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xk2EOjATRTJxRrrcnsFLeLcL8neXxaj8OIxb84EMHzw=;
-        b=JtA3lTQ7tqlLDYU7hEUsL7kzqQ2BgqVmbDtSRC/tBoVY6GQDSdUq398ArO7YklWDdP
-         gV74dOqhfPyhM9cQjfBYFVhZlUTZf/A+yMwTzp5n1H9RtetSHYKMUpcGK6tqUjcChI5F
-         MVXjcrRpe94t+5Ph5iv4HnUZeyz2djEeia0z0SZ6asEPZT1Db7HNAFnWIWkeXNbCmJHO
-         pxmK/L0nhkZ9HZ6tmStIEXUeiRtraZOScsXRgRQEj0fQdF+m6ZEeMi6LMlTYIcqiDzlk
-         skoJdNnbwGE/NQyluoZLndNmDqX8QojLMehZkbG03Suqxil5fafJXjMtaCP1L7fjDer2
-         UO8A==
-X-Gm-Message-State: AOJu0YwCagxH+ZxCDoDk+j1HmQSh8UZDUnesYJ3yzR4kl5AZgGGqCnee
-	ujEDwGvzFb3Y+/snMCaI73cwIa7D2hEv1saw3uKjRyjIN5uA
-X-Google-Smtp-Source: AGHT+IHa9aIn8GHUUATHAR1L+/ljRLtkiN3R+7lVDsJdPWFsH3yTbIL2YrlMWg/x4IkixakKOEE3J0YlmnozG4Be4ic=
-X-Received: by 2002:a92:d7cc:0:b0:35f:716d:443c with SMTP id
- g12-20020a92d7cc000000b0035f716d443cmr207119ilq.16.1702756027759; Sat, 16 Dec
- 2023 11:47:07 -0800 (PST)
+        bh=+A7W+kQw39I0W+Av8fUPMRQeHZ3+3clgt7HAcEmlw4M=;
+        b=pt8DPdf06s6desYD6MPkGTinY9WprPp9q4S1q2FGTdaEcGifVBFqa9inxf8GDMtEs2
+         1RdR44lVU4u0KIGRyX3gN9IUks6G0XukiEbpIDOtNy/xbtVOa2+JPMdnJGy2TisLsz9u
+         tXWScbgseU95c7ZF9RB2lh7BhgqZ2eYHRyD9zYxtbIlDe2DPLlYn4ZoIqGE8hV6zsaP+
+         JYjRazb+b9lAcw1zGAEvp+a/9krY5pYBEpa+hi8wfycnOXriGWfFU2Ig2l5lE60Lk/CB
+         4VEYiHk8+F8pfvYInXaMfh9YR81z38Ej8jM9a284i3O/CE539oWdnsmPwc6srrRdW7Ed
+         YpVQ==
+X-Gm-Message-State: AOJu0Yx76zm/m76f6EjNv9EoK490S4eDRqifoWFt7YJAtNFI18Qs2noC
+	jgqcfm7SDEzN41+xQnj+pqgv1iK1h/JEtq30TSFo8w==
+X-Google-Smtp-Source: AGHT+IGDXfzXuemDkP4NhH4/F2a+MWPk45mdXOzcRD0E8CLBsGt8xOy7gIh+Vxsp5NTZ/wNHJ6UVEu48UkBiCbqW+qY=
+X-Received: by 2002:a17:907:7d8c:b0:a19:a19b:55ef with SMTP id
+ oz12-20020a1709077d8c00b00a19a19b55efmr7448815ejc.127.1702764411294; Sat, 16
+ Dec 2023 14:06:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,14 +64,15 @@ References: <20231214020530.2267499-1-almasrymina@google.com>
  <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
  <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
  <20231215021114.ipvdx2bwtxckrfdg@google.com> <20231215190126.1040fa12@kernel.org>
-In-Reply-To: <20231215190126.1040fa12@kernel.org>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Sat, 16 Dec 2023 11:46:54 -0800
-Message-ID: <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
+ <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
+In-Reply-To: <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Sat, 16 Dec 2023 14:06:37 -0800
+Message-ID: <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
 Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
  of struct page in API
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Mina Almasry <almasrymina@google.com>, Yunsheng Lin <linyunsheng@huawei.com>, 
+To: Shakeel Butt <shakeelb@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, Yunsheng Lin <linyunsheng@huawei.com>, 
 	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bpf@vger.kernel.org, 
 	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
 	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
@@ -119,30 +120,53 @@ Cc: Mina Almasry <almasrymina@google.com>, Yunsheng Lin <linyunsheng@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 15, 2023 at 7:01=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
+On Sat, Dec 16, 2023 at 11:47=E2=80=AFAM Shakeel Butt <shakeelb@google.com>=
+ wrote:
 >
-> On Fri, 15 Dec 2023 02:11:14 +0000 Shakeel Butt wrote:
-> > > From my POV it has to be the first one. We want to abstract the memor=
-y
-> > > type from the drivers as much as possible, not introduce N new memory
-> > > types and ask the driver to implement new code for each of them
-> > > separately.
+> On Fri, Dec 15, 2023 at 7:01=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> =
+wrote:
 > >
-> > Agree with Mina's point. Let's aim to decouple memory types from
-> > drivers.
+> > On Fri, 15 Dec 2023 02:11:14 +0000 Shakeel Butt wrote:
+> > > > From my POV it has to be the first one. We want to abstract the mem=
+ory
+> > > > type from the drivers as much as possible, not introduce N new memo=
+ry
+> > > > types and ask the driver to implement new code for each of them
+> > > > separately.
+> > >
+> > > Agree with Mina's point. Let's aim to decouple memory types from
+> > > drivers.
+> >
+> > What does "decouple" mean? Drivers should never convert netmem
+> > to pages. Either a path in the driver can deal with netmem,
+> > i.e. never touch the payload, or it needs pages.
 >
-> What does "decouple" mean? Drivers should never convert netmem
-> to pages. Either a path in the driver can deal with netmem,
-> i.e. never touch the payload, or it needs pages.
 
-"Decouple" might not be the right word. What I wanted to say was to
-avoid too much specialization such that we have to have a new API for
-every new fancy thing.
+I'm guessing the paths in the driver that need pages will have to be
+disabled for non-paged netmem, which is fine.
 
+One example that I ran into with GVE is that it calls page_address()
+to copy small packets instead of adding them as a frag. I can add a
+netmem_address() that returns page_address() for pages, and NULL for
+non-pages (never passing non-pages to mm code). The driver can detect
+that the netmem has no address, and disable the optimization for
+non-paged netmem.
+
+> "Decouple" might not be the right word. What I wanted to say was to
+> avoid too much specialization such that we have to have a new API for
+> every new fancy thing.
 >
-> Perhaps we should aim to not export netmem_to_page(),
-> prevent modules from accessing it directly.
+> >
+> > Perhaps we should aim to not export netmem_to_page(),
+> > prevent modules from accessing it directly.
+>
+> +1.
 
-+1.
+This is an aggressive approach and I like it. I'll try to make it work
+(should be fine).
+
+
+--
+Thanks,
+Mina
 
