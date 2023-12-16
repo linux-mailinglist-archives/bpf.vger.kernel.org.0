@@ -1,128 +1,118 @@
-Return-Path: <bpf+bounces-18063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18064-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245868155EA
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 02:20:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F13DF81562B
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 02:58:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C271C23B04
-	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 01:20:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21D091C24870
+	for <lists+bpf@lfdr.de>; Sat, 16 Dec 2023 01:58:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85D361106;
-	Sat, 16 Dec 2023 01:20:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0ABF1875;
+	Sat, 16 Dec 2023 01:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VE9E7FSI"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="TUAwfwJs"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11E0C10EE
-	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 01:19:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <44dc6eb4-d524-4180-8970-4eef2a9b9f58@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702689595;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JAEcl4cquQqM7eNM00aJdC3UaEH8nY11mNPK2QM2iFM=;
-	b=VE9E7FSIRJLAzUZuHofLs9TT3Y9KQsbK+p1Kyu+NtEMtWIpExzeR2wZC016p7TChKO2nDP
-	kpXiAiBugMAS5xS3dr76b9UZcFByIvBdrA7yM1fo7kS+TFokBwiJKfV8rLar211xJib3Yr
-	AqAK+JmMvemZcTWB6gLhGgPFp8cq6Eo=
-Date: Fri, 15 Dec 2023 17:19:48 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082A515494
+	for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 01:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BG0gSZ9004047;
+	Sat, 16 Dec 2023 01:56:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=CpD0g9Xlqth/N8sJ3jdOMRaSKKDxSul2AIDCmdvFfA4=;
+ b=TUAwfwJsJCmuIBzJ072w8do1W7NWQk193N0uI5N8VDkTYw64aGPYJI24lj29gQsFlbnK
+ qpKn2e0G2GDEWXrn3mUxIJ7S5oQO8nENRJQHXbIO5C9VEeqBpcqWFgO9Ekdgf1pdfw+A
+ CoMJ2VTuqjFeaZQnfG5+aZWk0xLOvbSecwb7mLSegr3tSWxoaKlkKuJJdOCMFlQFtKpV
+ 4MO73kllzrSWAqKP7Zv9TCKBQmrKUwXzOM1w8RaGb8E5kthk1+IARBMQDKkf7wDBF6wr
+ 6H9zntc2tftObSYGIhPQpUJEd9smDgBSBBlJKTy0KqIPS5uMwOaPtFdkkEq5CDB1wgMk oA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v11k71971-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 16 Dec 2023 01:56:30 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BG1lh5N017373;
+	Sat, 16 Dec 2023 01:56:30 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v11k7196j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 16 Dec 2023 01:56:30 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BFMoORh005066;
+	Sat, 16 Dec 2023 01:56:29 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4sm3vt1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 16 Dec 2023 01:56:29 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BG1uRf358786128
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 16 Dec 2023 01:56:27 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF3CA20043;
+	Sat, 16 Dec 2023 01:56:27 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 64A1A20040;
+	Sat, 16 Dec 2023 01:56:27 +0000 (GMT)
+Received: from heavy (unknown [9.171.70.156])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Sat, 16 Dec 2023 01:56:27 +0000 (GMT)
+Date: Sat, 16 Dec 2023 02:56:25 +0100
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: andrii@kernel.org, daniel@iogearbox.net, peterz@infradead.org,
+        martin.lau@kernel.org, bpf@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH bpf-next] s390/bpf: Fix indirect trampoline generation
+Message-ID: <rcozfumr3cg2rsvth7d4e2tash7vqrbumddoina2ivqlftyo7b@inoaz3nkvojq>
+References: <20231216004549.78355-1-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v13 04/14] bpf: add struct_ops_tab to btf.
-Content-Language: en-US
-To: Kui-Feng Lee <sinquersw@gmail.com>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, drosen@google.com
-References: <20231209002709.535966-1-thinker.li@gmail.com>
- <20231209002709.535966-5-thinker.li@gmail.com>
- <466399be-c571-48af-8f48-8365689d4d20@linux.dev>
- <fc15849b-2f71-420e-aab4-7a20014cba49@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <fc15849b-2f71-420e-aab4-7a20014cba49@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231216004549.78355-1-alexei.starovoitov@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 3EYlmFU6M4IIbQxdWZDKPdCnnl2_kCeC
+X-Proofpoint-GUID: 1ChskPT0gk7d_-zQZlM5-_1DwtX9SOhC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-16_01,2023-12-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=520 spamscore=0 suspectscore=0 clxscore=1011
+ priorityscore=1501 phishscore=0 malwarescore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312160012
 
-On 12/15/23 1:42 PM, Kui-Feng Lee wrote:
+On Fri, Dec 15, 2023 at 04:45:49PM -0800, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
+> The func_addr used to be NULL for indirect trampolines used by struct_ops.
+> Now func_addr is a valid function pointer.
+> Hence use BPF_TRAMP_F_INDIRECT flag to detect such condition.
 > 
-> On 12/14/23 18:22, Martin KaFai Lau wrote:
->> On 12/8/23 4:26 PM, thinker.li@gmail.com wrote:
->>> +const struct bpf_struct_ops_desc *btf_get_struct_ops(struct btf *btf, u32 
->>> *ret_cnt)
->>> +{
->>> +    if (!btf)
->>> +        return NULL;
->>> +    if (!btf->struct_ops_tab)
->>
->>          *ret_cnt = 0;
->>
->> unless the later patch checks the return value NULL before using *ret_cnt.
->> Anyway, better to set *ret_cnt to 0 if the btf has no struct_ops.
->>
->> The same should go for the "!btf" case above but I suspect the above !btf 
->> check is unnecessary also and the caller should have checked for !btf itself 
->> instead of expecting a list of struct_ops from a NULL btf. Lets continue the 
->> review on the later patches for now to confirm where the above !btf case might 
->> happen.
-> 
-> Checking callers, I didn't find anything that make btf here NULL so far.
+> Fixes: 2cd3e3772e41 ("x86/cfi,bpf: Fix bpf_struct_ops CFI")
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> ---
+>  arch/s390/net/bpf_jit_comp.c               | 3 ++-
+>  tools/testing/selftests/bpf/DENYLIST.s390x | 2 --
+>  2 files changed, 2 insertions(+), 3 deletions(-)
 
-> It is safe to remove !btf check. For the same reason as assigning
-> *ret_cnt for safe, this check should be fine here as well, right?
+IIUC F_INDIRECT trampolines are called via C function pointers, and
+func_addr does not participate in any call chains, but is rather used
+as a source of CFI information. So returning to %r14 is the right
+thing to do.
 
-If for safety, why ref_cnt is not checked for NULL also? The userspace passed-in 
-btf should have been checked for NULL long time before reaching here. There is 
-no need to be over protective here. It would really need a BUG_ON instead if btf 
-was NULL here (don't add a BUG_ON though).
+Thanks!
 
-afaict, no function in btf.c is checking the btf argument for NULL also.
-
-> 
-> I don't have strong opinion here. What I though is to keep the values
-> as it is without any side-effect if the function call fails and if
-> possible. And, the callers should not expect the callee to set some
-> specific values when a call fails.
-
-For *ref_cnt stay uninit, there is a bug in patch 10 which exactly assumes 0 is 
-set in *ret_cnt when there is no struct_ops. It is a good signal on how this 
-function will be used.
-
-I think it is arguable whether returning NULL here is failure. I would argue 
-getting a 0 struct_ops_desc array is not a failure. It is why the !btf case 
-confuses the return NULL case to mean a never would happen error instead of 
-meaning there is no struct_ops. Taking out the !btf case, NULL means there is no 
-struct_ops (instead of failure), so 0 cnt.
-
-Anyhow, either assign 0 to *ret_cnt here, or fix patch 10 to init the local cnt 
-0 and write a warning comment here in btf_get_struct_ops() saying ret_cnt won't 
-be set when there is no struct_ops in the btf.
-
-When looking at it again, how about moving the bpf_struct_ops_find_*() to btf.c. 
-Then it will avoid the need of the new btf_get_struct_ops() function. 
-bpf_struct_ops_find_*() can directly use the btf->struct_ops_tab.
-
-
-> 
->>
->>> +        return NULL;
->>> +
->>> +    *ret_cnt = btf->struct_ops_tab->cnt;
->>> +    return (const struct bpf_struct_ops_desc *)btf->struct_ops_tab->ops;
->>> +}
->>
-
+Reviewed-by: Ilya Leoshkevich <iii@linux.ibm.com>
 
