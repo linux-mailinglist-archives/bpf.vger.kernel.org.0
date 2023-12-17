@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-18131-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34913815F3D
-	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 14:18:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4B3A815F3F
+	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 14:19:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E65D9283075
-	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 13:18:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B01C1F21C1A
+	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 13:19:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E607E44394;
-	Sun, 17 Dec 2023 13:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D69244C6F;
+	Sun, 17 Dec 2023 13:18:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AfeBzLBP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RzKLY7MN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f196.google.com (mail-il1-f196.google.com [209.85.166.196])
+Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2853F4438A;
-	Sun, 17 Dec 2023 13:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11DB446D3;
+	Sun, 17 Dec 2023 13:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f196.google.com with SMTP id e9e14a558f8ab-35f96476fb3so10853075ab.0;
-        Sun, 17 Dec 2023 05:18:35 -0800 (PST)
+Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-6d3165ac96bso226580b3a.0;
+        Sun, 17 Dec 2023 05:18:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702819115; x=1703423915; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702819119; x=1703423919; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vIG7gX50kKtmhzIyeXshzVLZolIi3kTx5IiKTBxlLu0=;
-        b=AfeBzLBP3Ji4QAVi7lLUbh9DM76OXM6lmJCPMv/nq/ui33zvH/NHOAYYkUOU2adLMm
-         5TtmtbZxIZmT3eCCzTEeX0QrLXZTngNvghJKdx9A3IOmePv9m8Tnm7Ogm9XcEcEtShDY
-         lgjETwE497tF72SXO1S6Upyl8G4att9TP1ryfAj9/N+mFw49+wx9FuvzG7JYd2ZgekkW
-         XhIh407i6PHBjZS9UFercvjiBuZVdw3OLQnbS3uS8w53pOUrrA00Pfs3kJw4jlddMRMo
-         T73g8wHb2TdKJLcZPWNAf2J9CBis307DalPQ3iqKDbyhA23R0rVIi3OOA4W00xQ1JPVF
-         wizA==
+        bh=/5PxWUcu/ifiy+mTxB+eS5k2/O2oeySj89/JuoUzQzw=;
+        b=RzKLY7MNyryEyzhFh/RudabzSklYQPMtFF3J1EMz3YQgnADBRtufbCETHLfhHrv1FW
+         /38nQsqt9I3k1ul9seIQtBVJH0LXt5gyywKTRgrPv4fzrnDKfw5iBt8ZWyimeCNpiRFj
+         NwuCHrk2jnOXz2tquCqOwK2fU36R+hHOJG45UvEQPW6Q6a/tpnXgRzJsU3ASIPKs7VPi
+         SlK1876oVUJlwt5Q/W+x707FZ4YET0BpZa+5YZxY6zccpX8FkQicJkcFkl0Y2ddbmoEB
+         yuxws+3eXq/NoxFr4aaIYZk1NRbi8kXdDZm/F7dcqPiYdCemI0ffFdcsFCpYZ7aO67AY
+         W9Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702819115; x=1703423915;
+        d=1e100.net; s=20230601; t=1702819119; x=1703423919;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vIG7gX50kKtmhzIyeXshzVLZolIi3kTx5IiKTBxlLu0=;
-        b=Apj/4407NcEw7wXwuOv3pG/98AzDKtiLFWdZ5PiJPiiw47wI6o5488E1Bc91HCHgwT
-         c6l9ZT8r8qNHiBNQKj9st0YjfsHeKSLrPRT4rgLjyXc8yzZ3+1semDPmg4y2S3J7/8Ia
-         UH9poOJd27/e5kBdGpvFWpf3eiTgAnvkqijOIUJQ65TYAF4Za4cJLu33UWo+uhV7D4QT
-         +Isf74+vqbTBmBSteLxV/kgDiktSQbCGpGiSyNEWNV18fZO5rPHiXv3Oum//E0gQ+7+t
-         YdOvqnJDbjNHZe3RPsJDHcwdIBRJzyl1WkumL922XX866ZuEkCg1P4Zj1GHFa8vsPLal
-         k03g==
-X-Gm-Message-State: AOJu0YwViGd36lOCWnSiB/Y0iolbFFxi7EBLJ4wBuzreZ2h3xaclS7HC
-	zurKVkalfQzLY2u5fxncSLo=
-X-Google-Smtp-Source: AGHT+IFuYVYqCJXnlGSY0RyODewiiUKWPVJpKtwtNSLuGT8b2gpJNCbkzwTNT0Y1LI2TQsPuyAjZBA==
-X-Received: by 2002:a05:6e02:1a64:b0:35d:87d4:938c with SMTP id w4-20020a056e021a6400b0035d87d4938cmr23751297ilv.15.1702819115079;
-        Sun, 17 Dec 2023 05:18:35 -0800 (PST)
+        bh=/5PxWUcu/ifiy+mTxB+eS5k2/O2oeySj89/JuoUzQzw=;
+        b=t7Orx+RSEFW4M2FOXNNVUqcEACVW3ealtviMH6KbFXJ6fsRXfLdWaY5sSjKhsNCxfi
+         z93ckoWIbUrv4KUR2UWjUHBAXYnGn/2Y9VI4E01PYmmFrJhSqLetaaQYkr7u9C//CmDT
+         5wtkzlpk/b9sAW3rBrAiCssxQVZb+YAhx3IHz4P0hu+GswuxGffCuLd1zL6Ej+mOUb6N
+         To8gOEZ9CkU9ixYlQZ2ho/V7u+sAejgvjR4mETA0foqhlLj5eXqffVywqi6bC1TO8Y19
+         1wppkszcFqDTTuke7gcyDZ8Eg7dJoCW5gqVgwNUaDv0NDEQwxpKZoA7PzpJztZW+H5sT
+         DSfA==
+X-Gm-Message-State: AOJu0Yw+plCUc5xijHbqwk+Nty3Q7Bt8D1INbvv9jNnsZ5kf4X4kYeHd
+	6AkFrYi2h3NUaT+QWCz0U+Q=
+X-Google-Smtp-Source: AGHT+IGPY16Yge/9iDfCYyCspVfPdW7X7tOPmmEr3ZXjdFPg0jTlouyPA+7+iesblpEZ3NVWZ5Jolg==
+X-Received: by 2002:a05:6a20:7d93:b0:18f:97c:8244 with SMTP id v19-20020a056a207d9300b0018f097c8244mr9127608pzj.78.1702819119160;
+        Sun, 17 Dec 2023 05:18:39 -0800 (PST)
 Received: from localhost.localdomain ([43.129.244.20])
-        by smtp.gmail.com with ESMTPSA id h10-20020a170902f7ca00b001d395d3df30sm1099425plw.130.2023.12.17.05.18.30
+        by smtp.gmail.com with ESMTPSA id h10-20020a170902f7ca00b001d395d3df30sm1099425plw.130.2023.12.17.05.18.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Dec 2023 05:18:34 -0800 (PST)
+        Sun, 17 Dec 2023 05:18:38 -0800 (PST)
 From: Menglong Dong <menglong8.dong@gmail.com>
 To: andrii@kernel.org,
 	eddyz87@gmail.com,
@@ -73,11 +73,10 @@ Cc: ast@kernel.org,
 	jolsa@kernel.org,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Menglong Dong <menglong8.dong@gmail.com>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: [PATCH bpf-next v4 1/3] bpf: make the verifier tracks the "not equal" for regs
-Date: Sun, 17 Dec 2023 21:17:14 +0800
-Message-Id: <20231217131716.830290-2-menglong8.dong@gmail.com>
+	Menglong Dong <menglong8.dong@gmail.com>
+Subject: [PATCH bpf-next v4 2/3] selftests/bpf: activate the OP_NE login in range_cond()
+Date: Sun, 17 Dec 2023 21:17:15 +0800
+Message-Id: <20231217131716.830290-3-menglong8.dong@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231217131716.830290-1-menglong8.dong@gmail.com>
 References: <20231217131716.830290-1-menglong8.dong@gmail.com>
@@ -89,89 +88,67 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We can derive some new information for BPF_JNE in regs_refine_cond_op().
-Take following code for example:
+The edge range checking for the registers is supported by the verifier
+now, so we can activate the extended login in
+tools/testing/selftests/bpf/prog_tests/reg_bounds.c/range_cond() to test
+such logic.
 
-  /* The type of "a" is u32 */
-  if (a > 0 && a < 100) {
-    /* the range of the register for a is [0, 99], not [1, 99],
-     * and will cause the following error:
-     *
-     *   invalid zero-sized read
-     *
-     * as a can be 0.
-     */
-    bpf_skb_store_bytes(skb, xx, xx, a, 0);
-  }
+Besides, I added some cases to the "crafted_cases" array for this logic.
+These cases are mainly used to test the edge of the src reg and dst reg.
 
-In the code above, "a > 0" will be compiled to "jmp xxx if a == 0". In the
-TRUE branch, the dst_reg will be marked as known to 0. However, in the
-fallthrough(FALSE) branch, the dst_reg will not be handled, which makes
-the [min, max] for a is [0, 99], not [1, 99].
+All reg bounds testings has passed in the SLOW_TESTS mode:
 
-For BPF_JNE, we can reduce the range of the dst reg if the src reg is a
-const and is exactly the edge of the dst reg.
+$ export SLOW_TESTS=1 && ./test_progs -t reg_bounds -j
+Summary: 65/18959832 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 ---
+v3:
+- do some adjustment to the crafted cases that we added
 v2:
-- fix a typo in the subject
-- add some comments, as Eduard advised
+- add some cases to the "crafted_cases"
 ---
- kernel/bpf/verifier.c | 38 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/reg_bounds.c     | 20 +++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1863826a4ac3..29c41d66ea6f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -14343,7 +14343,43 @@ static void regs_refine_cond_op(struct bpf_reg_state *reg1, struct bpf_reg_state
- 		}
+diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+index 0c9abd279e18..c9dc9fe73211 100644
+--- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
++++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
+@@ -590,12 +590,7 @@ static void range_cond(enum num_t t, struct range x, struct range y,
+ 		*newy = range(t, max_t(t, x.a, y.a), min_t(t, x.b, y.b));
  		break;
- 	case BPF_JNE:
--		/* we don't derive any new information for inequality yet */
-+		if (!is_reg_const(reg2, is_jmp32))
-+			swap(reg1, reg2);
-+		if (!is_reg_const(reg2, is_jmp32))
-+			break;
+ 	case OP_NE:
+-		/* generic case, can't derive more information */
+-		*newx = range(t, x.a, x.b);
+-		*newy = range(t, y.a, y.b);
+-		break;
+-
+-		/* below extended logic is not supported by verifier just yet */
++		/* below logic is supported by the verifier now */
+ 		if (x.a == x.b && x.a == y.a) {
+ 			/* X is a constant matching left side of Y */
+ 			*newx = range(t, x.a, x.b);
+@@ -2101,6 +2096,19 @@ static struct subtest_case crafted_cases[] = {
+ 	{S32, S64, {(u32)(s32)S32_MIN, (u32)(s32)-255}, {(u32)(s32)-2, 0}},
+ 	{S32, S64, {0, 1}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
+ 	{S32, U32, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
 +
-+		/* try to recompute the bound of reg1 if reg2 is a const and
-+		 * is exactly the edge of reg1.
-+		 */
-+		val = reg_const_value(reg2, is_jmp32);
-+		if (is_jmp32) {
-+			/* u32_min_value is not equal to 0xffffffff at this point,
-+			 * because otherwise u32_max_value is 0xffffffff as well,
-+			 * in such a case both reg1 and reg2 would be constants,
-+			 * jump would be predicted and reg_set_min_max() won't
-+			 * be called.
-+			 *
-+			 * Same reasoning works for all {u,s}{min,max}{32,64} cases
-+			 * below.
-+			 */
-+			if (reg1->u32_min_value == (u32)val)
-+				reg1->u32_min_value++;
-+			if (reg1->u32_max_value == (u32)val)
-+				reg1->u32_max_value--;
-+			if (reg1->s32_min_value == (s32)val)
-+				reg1->s32_min_value++;
-+			if (reg1->s32_max_value == (s32)val)
-+				reg1->s32_max_value--;
-+		} else {
-+			if (reg1->umin_value == (u64)val)
-+				reg1->umin_value++;
-+			if (reg1->umax_value == (u64)val)
-+				reg1->umax_value--;
-+			if (reg1->smin_value == (s64)val)
-+				reg1->smin_value++;
-+			if (reg1->smax_value == (s64)val)
-+				reg1->smax_value--;
-+		}
- 		break;
- 	case BPF_JSET:
- 		if (!is_reg_const(reg2, is_jmp32))
++	/* edge overlap testings for BPF_NE, skipped some cases that already
++	 * exist above.
++	 */
++	{U64, U64, {0, U64_MAX}, {U64_MAX, U64_MAX}},
++	{U64, U64, {0, U64_MAX}, {0, 0}},
++	{S64, U64, {S64_MIN, 0}, {S64_MIN, S64_MIN}},
++	{S64, U64, {S64_MIN, 0}, {0, 0}},
++	{S64, U64, {S64_MIN, S64_MAX}, {S64_MAX, S64_MAX}},
++	{U32, U32, {0, U32_MAX}, {0, 0}},
++	{S32, U32, {(u32)(s32)S32_MIN, 0}, {0, 0}},
++	{S32, U32, {(u32)(s32)S32_MIN, 0}, {(u32)(s32)S32_MIN, (u32)(s32)S32_MIN}},
++	{S32, U32, {(u32)(s32)S32_MIN, S32_MAX}, {S32_MAX, S32_MAX}},
+ };
+ 
+ /* Go over crafted hard-coded cases. This is fast, so we do it as part of
 -- 
 2.39.2
 
