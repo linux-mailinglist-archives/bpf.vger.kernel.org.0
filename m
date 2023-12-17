@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-18111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13D5815DE6
-	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 08:32:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC89D815DE7
+	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 08:35:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2B7B1C21176
-	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 07:32:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAE611C218FD
+	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 07:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58941859;
-	Sun, 17 Dec 2023 07:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2D6185B;
+	Sun, 17 Dec 2023 07:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GhfvYMt2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g57WsWls"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68341849
-	for <bpf@vger.kernel.org>; Sun, 17 Dec 2023 07:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A4F1849
+	for <bpf@vger.kernel.org>; Sun, 17 Dec 2023 07:35:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-77f50307a1fso178906985a.3
-        for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 23:32:26 -0800 (PST)
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-77f37772ab6so192328485a.0
+        for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 23:35:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702798346; x=1703403146; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702798515; x=1703403315; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=a6NhZXlCGAdCAlck267aDYKH/LyZKZnMPBeOrGIRf2k=;
-        b=GhfvYMt2ohsfe/yyhhWZ8vMJ5zz4CyqNOry5sDAVH53V1Bd36J4sBJgo1JBxuOwNU3
-         etbmJOy5btkyZ/MoqwyVwL29hmnDhX/RuuyhRonurVamZPu8khsxU8bKMu9MvyZg8vkK
-         oFj2MIrAcu0sFUXJpDQQsdvr+2xthg6K+EWd9fD+NmxIopQGlS6OU+gQooCN6+D+uAnT
-         bBUM0HsB6t4i7IK1/dMQFgts2txsnW6pT/0dxuywfsST3gqnXhavp5lEtYlnokWz2bvx
-         oKRul8N8EvWfwmmlUS4AYPFkQlYorZYZAZS3gWX+qjowoVgjgw9x9cYvYwhvzW6eXvqf
-         ZEQA==
+        bh=b1Tjg41kg+n8ysxIY2dEFeIhjBUVrafz5o1kk3T6Ppo=;
+        b=g57WsWlsx/mUuE8Dwbe8lpTFg7mxi0Suv8k3NEMMP+MkDyMPBcEmu4LRpYnRM/00G6
+         VS6YpIjRCzkylAgRS9AQkbDRKCBIycn5/w58cHwbBN8UESGPwwQQKu3bKBYuFBlXWN8W
+         glIwkj/U/WlnYB0BA1BPrveTZILXDMgAfqhOtQM3TrHUTX+d1mO+sjtmhwSuWVNn2SJL
+         0wr89t/lKEmesNy75z9l4gOdMLvULEFXi9QvG8igHrNiJFHI6hdywMTJY4n9LlfLPyNe
+         SvSEJyBp4DlG8Ezmmk0kNiVWT8Hs4vS+o7ISzmi+418B6J2kwaQ+H6OW+fb3s8SIuVHw
+         vBSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702798346; x=1703403146;
+        d=1e100.net; s=20230601; t=1702798515; x=1703403315;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=a6NhZXlCGAdCAlck267aDYKH/LyZKZnMPBeOrGIRf2k=;
-        b=mSKyz5n/yvm5vq3LfdsrDDGHGg00ccwEcp6cg0zyIdHwSMI7b/eQm+ixCF+2VHNUEg
-         ILwdozueFEZpZP0O3IN5kBWmLNir2ThnHBziEx3ELW5eOx2PMFNRdWqWwT2eakYPW4Ky
-         U/m1KHPgpQq29F7Tq2kUMjyxAfyL6evEmAJO+YmRCRgiQcn8bHacX0Rbfv1Drpp1wgng
-         UMjviXQ6YmF+bZ9kph8tfBq5o35iCx5gunJNMQjtSDsz6+ZiJLiW76AJUDV51GxPfO6Y
-         N0AjjaNRyS55N594JzpzpcskEBS8sunrs+NaB0VQHbEszVnd5zrh+bcvhP66NuO4hrTd
-         QTBw==
-X-Gm-Message-State: AOJu0YxDsPySTDL+TAo4254Wqa0U7FKuQ8+t7IrAUrpg1fHC9nq+Z13M
-	vX3rz7+76Ig8B+AUAldS9wA=
-X-Google-Smtp-Source: AGHT+IHBdFGr+TeHbiqmxqJ2vdFgBckNWC+Q/PTPmYYOwHftAsdvX5emG5Xj+4TzgKsQJatA7iwWxw==
-X-Received: by 2002:a05:620a:378a:b0:77f:7e6d:3153 with SMTP id pi10-20020a05620a378a00b0077f7e6d3153mr9988840qkn.51.1702798345652;
-        Sat, 16 Dec 2023 23:32:25 -0800 (PST)
+        bh=b1Tjg41kg+n8ysxIY2dEFeIhjBUVrafz5o1kk3T6Ppo=;
+        b=SXmUenxJQSiqDYGbLzYoUw5yklROP5X/Wh42PMzXjoRpwTaoQhKZi7yNUN50g+Rwxj
+         bvrPc39D/EBKMrW/aX6gQ3Oo1FiA3huDFevi+WZgiNax0mEgvqmhCGZvHby61iTn2aoO
+         KwltNkCjBD4xjUP0azklb46JU38No/bZi0o8T4l0Uy3dcVQLK3S1GUU762HEc9Bdvns4
+         jc784q9wckUmifuFoU4M53df/EEHgbLqt+yaU1N866DpcUIEELx5rZ2twHq3wJHwo9ek
+         TL6amop0uyywYR/5hvlec6+C0zPXCg8/pKeBs5cgH93Jw0/YnHeka+gUsxySlPmkRZEj
+         0SZA==
+X-Gm-Message-State: AOJu0Yzvft2E0ltKettyRuNIGqAq2jmSCXzFYlqiox7sEuD+msgAIR4/
+	/SFUnE8CT6QYB7/IkNC6z2M=
+X-Google-Smtp-Source: AGHT+IGlMkpl8oCAZG6Cx0T4lIFjpl4kqL6GVTbYE+b9ZZXaWzbFDr1NNoG6UDIiA3WmrsWH+GjHIQ==
+X-Received: by 2002:a05:620a:149c:b0:77e:fba3:81f6 with SMTP id w28-20020a05620a149c00b0077efba381f6mr16308701qkj.140.1702798515008;
+        Sat, 16 Dec 2023 23:35:15 -0800 (PST)
 Received: from ?IPV6:2600:1700:6cf8:1240:bb8c:c0f2:4408:50cf? ([2600:1700:6cf8:1240:bb8c:c0f2:4408:50cf])
-        by smtp.gmail.com with ESMTPSA id y3-20020a25ad03000000b00dbcd3e5ae6asm3135170ybi.37.2023.12.16.23.32.24
+        by smtp.gmail.com with ESMTPSA id v126-20020a818584000000b005a7aef2c1c3sm7803512ywf.132.2023.12.16.23.35.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Dec 2023 23:32:25 -0800 (PST)
-Message-ID: <ee53a95d-cded-46d6-947a-55a9d200b09b@gmail.com>
-Date: Sat, 16 Dec 2023 23:32:23 -0800
+        Sat, 16 Dec 2023 23:35:14 -0800 (PST)
+Message-ID: <1e1325ea-0eec-4d9f-95d9-fb5acd3f533d@gmail.com>
+Date: Sat, 16 Dec 2023 23:35:12 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,152 +66,135 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v13 13/14] selftests/bpf: test case for
- register_bpf_struct_ops().
+Subject: Re: [PATCH bpf-next v13 14/14] bpf: pass btf object id in
+ bpf_map_info.
 Content-Language: en-US
 To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
 Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
  kernel-team@meta.com, andrii@kernel.org, drosen@google.com
 References: <20231209002709.535966-1-thinker.li@gmail.com>
- <20231209002709.535966-14-thinker.li@gmail.com>
- <83daf2e3-6e2e-45f2-9a54-32fac1c98cde@linux.dev>
+ <20231209002709.535966-15-thinker.li@gmail.com>
+ <df53e635-9ba2-4dac-8aad-4aa491e61f4d@linux.dev>
 From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <83daf2e3-6e2e-45f2-9a54-32fac1c98cde@linux.dev>
+In-Reply-To: <df53e635-9ba2-4dac-8aad-4aa491e61f4d@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 12/14/23 23:17, Martin KaFai Lau wrote:
+On 12/14/23 23:46, Martin KaFai Lau wrote:
 > On 12/8/23 4:27 PM, thinker.li@gmail.com wrote:
->> diff --git 
->> a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c 
->> b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
->> new file mode 100644
->> index 000000000000..55a4c6ed92aa
->> --- /dev/null
->> +++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
->> @@ -0,0 +1,92 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
->> +#include <test_progs.h>
->> +#include <time.h>
+>> From: Kui-Feng Lee <thinker.li@gmail.com>
+>>
+>> Include btf object id (btf_obj_id) in bpf_map_info so that tools (ex:
+>> bpftools struct_ops dump) know the correct btf from the kernel to look up
+>> type information of struct_ops types.
+>>
+>> Since struct_ops types can be defined and registered in a module. The
+>> type information of a struct_ops type are defined in the btf of the
+>> module defining it.  The userspace tools need to know which btf is for
+>> the module defining a struct_ops type.
+>>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   include/linux/bpf.h            | 1 +
+>>   include/uapi/linux/bpf.h       | 2 +-
+>>   kernel/bpf/bpf_struct_ops.c    | 7 +++++++
+>>   kernel/bpf/syscall.c           | 2 ++
+>>   tools/include/uapi/linux/bpf.h | 2 +-
+>>   5 files changed, 12 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+>> index c881befa35f5..26103d8a4374 100644
+>> --- a/include/linux/bpf.h
+>> +++ b/include/linux/bpf.h
+>> @@ -3350,5 +3350,6 @@ struct bpf_struct_ops_##_name 
+>> {                    \
+>>   int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
+>>                    struct btf *btf,
+>>                    struct bpf_verifier_log *log);
+>> +void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct 
+>> bpf_map *map);
+> 
+> This needs to be in the CONFIG_BPF_JIT guard also.
+
+Got it!
+> 
+>>   #endif /* _LINUX_BPF_H */
+>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+>> index 5c3838a97554..716c6b28764d 100644
+>> --- a/include/uapi/linux/bpf.h
+>> +++ b/include/uapi/linux/bpf.h
+>> @@ -6534,7 +6534,7 @@ struct bpf_map_info {
+>>       __u32 btf_id;
+>>       __u32 btf_key_type_id;
+>>       __u32 btf_value_type_id;
+>> -    __u32 :32;    /* alignment pad */
+>> +    __u32 btf_obj_id;
+> 
+> may be "btf_vmlinux_id" to make it clear it is a kernel btf and should 
+> be used with map_info->btf_vmlinux_value_type_id.
+
+Sure!
+
+> 
+>>       __u64 map_extra;
+>>   } __attribute__((aligned(8)));
+>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+>> index fd26716fa0f9..51c0de75aa85 100644
+>> --- a/kernel/bpf/bpf_struct_ops.c
+>> +++ b/kernel/bpf/bpf_struct_ops.c
+>> @@ -979,3 +979,10 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
+>>       kfree(link);
+>>       return err;
+>>   }
 >> +
->> +#include "struct_ops_module.skel.h"
->> +#include "testmod_unload.skel.h"
->> +
->> +static void test_regular_load(void)
+>> +void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct 
+>> bpf_map *map)
 >> +{
->> +    DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
->> +    struct struct_ops_module *skel;
->> +    struct testmod_unload *skel_unload;
->> +    struct bpf_link *link_map_free = NULL;
->> +    struct bpf_link *link;
->> +    int err, i;
+>> +    struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map 
+>> *)map;
 >> +
->> +    skel = struct_ops_module__open_opts(&opts);
->> +    if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
->> +        return;
->> +
->> +    err = struct_ops_module__load(skel);
->> +    if (!ASSERT_OK(err, "struct_ops_module_load"))
->> +        goto cleanup;
->> +
->> +    link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
->> +    ASSERT_OK_PTR(link, "attach_test_mod_1");
->> +
->> +    /* test_2() will be called from bpf_dummy_reg() in bpf_testmod.c */
->> +    ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
->> +
->> +    bpf_link__destroy(link);
->> +
->> +cleanup:
->> +    skel_unload = testmod_unload__open_and_load();
->> +
->> +    if (ASSERT_OK_PTR(skel_unload, "testmod_unload_open"))
->> +        link_map_free = 
->> bpf_program__attach(skel_unload->progs.trace_map_free);
->> +    struct_ops_module__destroy(skel);
->> +
->> +    if (!ASSERT_OK_PTR(link_map_free, "create_link_map_free"))
->> +        return;
->> +
->> +    /* Wait for the struct_ops map to be freed. Struct_ops maps hold a
->> +     * refcount to the module btf. And, this function unloads and then
->> +     * loads bpf_testmod. Without waiting the map to be freed, the next
->> +     * test may fail to unload the bpf_testmod module since the map is
->> +     * still holding a refcnt to the module.
->> +     */
->> +    for (i = 0; i < 10; i++) {
->> +        if (skel_unload->bss->bpf_testmod_put)
->> +            break;
->> +        usleep(100000);
->> +    }
->> +    ASSERT_EQ(skel_unload->bss->bpf_testmod_put, 1, "map_free");
->> +
->> +    bpf_link__destroy(link_map_free);
->> +    testmod_unload__destroy(skel_unload);
+>> +    info->btf_obj_id = btf_obj_id(st_map->btf);
 >> +}
->> +
->> +static void test_load_without_module(void)
->> +{
->> +    DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
->> +    struct struct_ops_module *skel;
->> +    int err;
->> +
->> +    err = unload_bpf_testmod(false);
->> +    if (!ASSERT_OK(err, "unload_bpf_testmod"))
->> +        return;
->> +
->> +    skel = struct_ops_module__open_opts(&opts);
->> +    if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
->> +        goto cleanup;
->> +    err = struct_ops_module__load(skel);
+>> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+>> index 4aced7e58904..3cab56cd02ff 100644
+>> --- a/kernel/bpf/syscall.c
+>> +++ b/kernel/bpf/syscall.c
+>> @@ -4715,6 +4715,8 @@ static int bpf_map_get_info_by_fd(struct file 
+>> *file,
+>>           info.btf_value_type_id = map->btf_value_type_id;
+>>       }
+>>       info.btf_vmlinux_value_type_id = map->btf_vmlinux_value_type_id;
+>> +    if (map->map_type == BPF_MAP_TYPE_STRUCT_OPS)
+>> +        bpf_map_struct_ops_info_fill(&info, map);
 > 
-> Both the module btf and the .ko itself are gone from the kernel now?
-> This is basically testing libbpf cannot find 'struct bpf_testmod_ops' 
-> from the running kernel?
+> This patch should be moved earlier in the set instead of after the 
+> selftest patch 13. May be after patch 5 where st_map->btf is added.
 
-Yes, you are right! So, I just rewrote this by calling bpf_map_create()
-instead of calling the skeleton. To simplify the test, I actually use
-bpf_map_info of an existing map created from the skeleton as inputs to
-bpf_map_create(). And, the btf_obj_id (or btf_vmlinux_id) is used and
-tested here.
+No problem
 
 > 
-> How about create another struct_ops_module_notfound.c bpf program:
-> SEC(".struct_ops.link")
-> struct bpf_testmod_ops_notfound testmod_1 = {
->      .test_1 = (void *)test_1,
->      .test_2 = (void *)test_2,
-> };
-> 
-> and avoid the usleep() wait and the unload_bpf_testmod()?
+> and where is the test for this?
 
-
-In order to skip finding module btf for using bpf_map_create(),
-I use the skeleton to create a map first to get its bpf_map_info.
-So, it still needs to load and unload the same module.
+I use bpf_map_info as a part of calling bpf_map_create() while
+testmod.ko is unloaded. It check if this change work as well.
 
 > 
->> +    ASSERT_ERR(err, "struct_ops_module_load");
->> +
->> +    struct_ops_module__destroy(skel);
->> +
->> +cleanup:
->> +    /* Without this, the next test may fail */
->> +    load_bpf_testmod(false);
->> +}
->> +
->> +void serial_test_struct_ops_module(void)
->> +{
->> +    if (test__start_subtest("regular_load"))
->> +        test_regular_load();
->> +
->> +    if (test__start_subtest("load_without_module"))
->> +        test_load_without_module();
->> +}
->> +
-> 
+>>       if (bpf_map_is_offloaded(map)) {
+>>           err = bpf_map_offload_info_fill(&info, map);
+>> diff --git a/tools/include/uapi/linux/bpf.h 
+>> b/tools/include/uapi/linux/bpf.h
+>> index 5c3838a97554..716c6b28764d 100644
+>> --- a/tools/include/uapi/linux/bpf.h
+>> +++ b/tools/include/uapi/linux/bpf.h
+>> @@ -6534,7 +6534,7 @@ struct bpf_map_info {
+>>       __u32 btf_id;
+>>       __u32 btf_key_type_id;
+>>       __u32 btf_value_type_id;
+>> -    __u32 :32;    /* alignment pad */
+>> +    __u32 btf_obj_id;
+>>       __u64 map_extra;
+>>   } __attribute__((aligned(8)));
 > 
 
