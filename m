@@ -1,168 +1,217 @@
-Return-Path: <bpf+bounces-18110-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18111-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED2B815DD1
-	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 08:12:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B13D5815DE6
+	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 08:32:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DD661C21A1A
-	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 07:12:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D2B7B1C21176
+	for <lists+bpf@lfdr.de>; Sun, 17 Dec 2023 07:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 203051851;
-	Sun, 17 Dec 2023 07:12:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58941859;
+	Sun, 17 Dec 2023 07:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O24h1dpq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GhfvYMt2"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030A8184F
-	for <bpf@vger.kernel.org>; Sun, 17 Dec 2023 07:12:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5c13f568-325c-4e5c-9f9e-ca5da5c2c75b@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1702797128;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fOn5pf9zgNApqvevOk8k+HShvz62ZXAU6ZYyum1JQ5M=;
-	b=O24h1dpqBc5eML4Te+m2RB0muUHDZb75KQAYG/f7eWgsb/TkThFGXEE6BkNCLIqnexGfU3
-	DkFgJUrRNtsCu2UYgjsIsIEWOWSxYWJ9TafXPxJTUNBEQp7+uL2Ea2l1GV+5eZVwDz0mo3
-	OF0n8WhaKKFLtShhzwEsxE/OZSEfwJg=
-Date: Sat, 16 Dec 2023 23:11:48 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68341849
+	for <bpf@vger.kernel.org>; Sun, 17 Dec 2023 07:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-77f50307a1fso178906985a.3
+        for <bpf@vger.kernel.org>; Sat, 16 Dec 2023 23:32:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702798346; x=1703403146; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a6NhZXlCGAdCAlck267aDYKH/LyZKZnMPBeOrGIRf2k=;
+        b=GhfvYMt2ohsfe/yyhhWZ8vMJ5zz4CyqNOry5sDAVH53V1Bd36J4sBJgo1JBxuOwNU3
+         etbmJOy5btkyZ/MoqwyVwL29hmnDhX/RuuyhRonurVamZPu8khsxU8bKMu9MvyZg8vkK
+         oFj2MIrAcu0sFUXJpDQQsdvr+2xthg6K+EWd9fD+NmxIopQGlS6OU+gQooCN6+D+uAnT
+         bBUM0HsB6t4i7IK1/dMQFgts2txsnW6pT/0dxuywfsST3gqnXhavp5lEtYlnokWz2bvx
+         oKRul8N8EvWfwmmlUS4AYPFkQlYorZYZAZS3gWX+qjowoVgjgw9x9cYvYwhvzW6eXvqf
+         ZEQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702798346; x=1703403146;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a6NhZXlCGAdCAlck267aDYKH/LyZKZnMPBeOrGIRf2k=;
+        b=mSKyz5n/yvm5vq3LfdsrDDGHGg00ccwEcp6cg0zyIdHwSMI7b/eQm+ixCF+2VHNUEg
+         ILwdozueFEZpZP0O3IN5kBWmLNir2ThnHBziEx3ELW5eOx2PMFNRdWqWwT2eakYPW4Ky
+         U/m1KHPgpQq29F7Tq2kUMjyxAfyL6evEmAJO+YmRCRgiQcn8bHacX0Rbfv1Drpp1wgng
+         UMjviXQ6YmF+bZ9kph8tfBq5o35iCx5gunJNMQjtSDsz6+ZiJLiW76AJUDV51GxPfO6Y
+         N0AjjaNRyS55N594JzpzpcskEBS8sunrs+NaB0VQHbEszVnd5zrh+bcvhP66NuO4hrTd
+         QTBw==
+X-Gm-Message-State: AOJu0YxDsPySTDL+TAo4254Wqa0U7FKuQ8+t7IrAUrpg1fHC9nq+Z13M
+	vX3rz7+76Ig8B+AUAldS9wA=
+X-Google-Smtp-Source: AGHT+IHBdFGr+TeHbiqmxqJ2vdFgBckNWC+Q/PTPmYYOwHftAsdvX5emG5Xj+4TzgKsQJatA7iwWxw==
+X-Received: by 2002:a05:620a:378a:b0:77f:7e6d:3153 with SMTP id pi10-20020a05620a378a00b0077f7e6d3153mr9988840qkn.51.1702798345652;
+        Sat, 16 Dec 2023 23:32:25 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:bb8c:c0f2:4408:50cf? ([2600:1700:6cf8:1240:bb8c:c0f2:4408:50cf])
+        by smtp.gmail.com with ESMTPSA id y3-20020a25ad03000000b00dbcd3e5ae6asm3135170ybi.37.2023.12.16.23.32.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Dec 2023 23:32:25 -0800 (PST)
+Message-ID: <ee53a95d-cded-46d6-947a-55a9d200b09b@gmail.com>
+Date: Sat, 16 Dec 2023 23:32:23 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 2/6] bpf: Allow per unit prefill for
- non-fix-size percpu memory allocator
-Content-Language: en-GB
-To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231216023004.3738749-1-yonghong.song@linux.dev>
- <20231216023015.3741144-1-yonghong.song@linux.dev>
- <ca0512d6-fa01-9d94-017f-a717756dcf86@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ca0512d6-fa01-9d94-017f-a717756dcf86@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v13 13/14] selftests/bpf: test case for
+ register_bpf_struct_ops().
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, drosen@google.com
+References: <20231209002709.535966-1-thinker.li@gmail.com>
+ <20231209002709.535966-14-thinker.li@gmail.com>
+ <83daf2e3-6e2e-45f2-9a54-32fac1c98cde@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <83daf2e3-6e2e-45f2-9a54-32fac1c98cde@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
 
-On 12/15/23 7:12 PM, Hou Tao wrote:
-> Hi,
->
-> On 12/16/2023 10:30 AM, Yonghong Song wrote:
->> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem allocation")
->> added support for non-fix-size percpu memory allocation.
->> Such allocation will allocate percpu memory for all buckets on all
->> cpus and the memory consumption is in the order to quadratic.
->> For example, let us say, 4 cpus, unit size 16 bytes, so each
->> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256 bytes.
->> Then let us say, 8 cpus with the same unit size, each cpu
->> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024 bytes.
->> So if the number of cpus doubles, the number of memory consumption
->> will be 4 times. So for a system with large number of cpus, the
->> memory consumption goes up quickly with quadratic order.
->> For example, for 4KB percpu allocation, 128 cpus. The total memory
->> consumption will 4KB * 128 * 128 = 64MB. Things will become
->> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
-> SNIP
->> +__init int bpf_mem_alloc_percpu_init(struct bpf_mem_alloc *ma)
+
+On 12/14/23 23:17, Martin KaFai Lau wrote:
+> On 12/8/23 4:27 PM, thinker.li@gmail.com wrote:
+>> diff --git 
+>> a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c 
+>> b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+>> new file mode 100644
+>> index 000000000000..55a4c6ed92aa
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+>> @@ -0,0 +1,92 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Copyright (c) 2023 Meta Platforms, Inc. and affiliates. */
+>> +#include <test_progs.h>
+>> +#include <time.h>
+>> +
+>> +#include "struct_ops_module.skel.h"
+>> +#include "testmod_unload.skel.h"
+>> +
+>> +static void test_regular_load(void)
 >> +{
->> +	struct bpf_mem_caches __percpu *pcc;
+>> +    DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
+>> +    struct struct_ops_module *skel;
+>> +    struct testmod_unload *skel_unload;
+>> +    struct bpf_link *link_map_free = NULL;
+>> +    struct bpf_link *link;
+>> +    int err, i;
 >> +
->> +	pcc = __alloc_percpu_gfp(sizeof(struct bpf_mem_caches), 8, GFP_KERNEL);
->> +	if (!pcc)
->> +		return -ENOMEM;
+>> +    skel = struct_ops_module__open_opts(&opts);
+>> +    if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
+>> +        return;
 >> +
->> +	ma->caches = pcc;
->> +	ma->percpu = true;
->> +	return 0;
+>> +    err = struct_ops_module__load(skel);
+>> +    if (!ASSERT_OK(err, "struct_ops_module_load"))
+>> +        goto cleanup;
+>> +
+>> +    link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
+>> +    ASSERT_OK_PTR(link, "attach_test_mod_1");
+>> +
+>> +    /* test_2() will be called from bpf_dummy_reg() in bpf_testmod.c */
+>> +    ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
+>> +
+>> +    bpf_link__destroy(link);
+>> +
+>> +cleanup:
+>> +    skel_unload = testmod_unload__open_and_load();
+>> +
+>> +    if (ASSERT_OK_PTR(skel_unload, "testmod_unload_open"))
+>> +        link_map_free = 
+>> bpf_program__attach(skel_unload->progs.trace_map_free);
+>> +    struct_ops_module__destroy(skel);
+>> +
+>> +    if (!ASSERT_OK_PTR(link_map_free, "create_link_map_free"))
+>> +        return;
+>> +
+>> +    /* Wait for the struct_ops map to be freed. Struct_ops maps hold a
+>> +     * refcount to the module btf. And, this function unloads and then
+>> +     * loads bpf_testmod. Without waiting the map to be freed, the next
+>> +     * test may fail to unload the bpf_testmod module since the map is
+>> +     * still holding a refcnt to the module.
+>> +     */
+>> +    for (i = 0; i < 10; i++) {
+>> +        if (skel_unload->bss->bpf_testmod_put)
+>> +            break;
+>> +        usleep(100000);
+>> +    }
+>> +    ASSERT_EQ(skel_unload->bss->bpf_testmod_put, 1, "map_free");
+>> +
+>> +    bpf_link__destroy(link_map_free);
+>> +    testmod_unload__destroy(skel_unload);
 >> +}
 >> +
->> +int bpf_mem_alloc_percpu_unit_init(struct bpf_mem_alloc *ma, int size)
+>> +static void test_load_without_module(void)
 >> +{
->> +	int cpu, i, err = 0, unit_size, percpu_size;
->> +	struct bpf_mem_caches *cc, __percpu *pcc;
->> +	struct obj_cgroup *objcg;
->> +	struct bpf_mem_cache *c;
+>> +    DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
+>> +    struct struct_ops_module *skel;
+>> +    int err;
 >> +
->> +	i = bpf_mem_cache_idx(size);
->> +	if (i < 0)
->> +		return -EINVAL;
+>> +    err = unload_bpf_testmod(false);
+>> +    if (!ASSERT_OK(err, "unload_bpf_testmod"))
+>> +        return;
 >> +
->> +	/* room for llist_node and per-cpu pointer */
->> +	percpu_size = LLIST_NODE_SZ + sizeof(void *);
->> +
->> +	pcc = ma->caches;
->> +	unit_size = sizes[i];
->> +
->> +#ifdef CONFIG_MEMCG_KMEM
->> +	objcg = get_obj_cgroup_from_current();
->> +#endif
-> For bpf_global_percpu_ma, we also need to account the allocated memory
-> to root memory cgroup just like bpf_global_ma did, do we ? So it seems
-> that we need to initialize c->objcg early in bpf_mem_alloc_percpu_init ().
+>> +    skel = struct_ops_module__open_opts(&opts);
+>> +    if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
+>> +        goto cleanup;
+>> +    err = struct_ops_module__load(skel);
+> 
+> Both the module btf and the .ko itself are gone from the kernel now?
+> This is basically testing libbpf cannot find 'struct bpf_testmod_ops' 
+> from the running kernel?
 
-Good point. Agree. the original behavior percpu non-fix-size mem
-allocation is to do get_obj_cgroup_from_current() at init stage
-and charge to root memory cgroup, and we indeed should move
-the above bpf_mem_alloc_percpu_init().
+Yes, you are right! So, I just rewrote this by calling bpf_map_create()
+instead of calling the skeleton. To simplify the test, I actually use
+bpf_map_info of an existing map created from the skeleton as inputs to
+bpf_map_create(). And, the btf_obj_id (or btf_vmlinux_id) is used and
+tested here.
 
->> +	for_each_possible_cpu(cpu) {
->> +		cc = per_cpu_ptr(pcc, cpu);
->> +		c = &cc->cache[i];
->> +		if (cpu == 0 && c->unit_size)
->> +			goto out;
+> 
+> How about create another struct_ops_module_notfound.c bpf program:
+> SEC(".struct_ops.link")
+> struct bpf_testmod_ops_notfound testmod_1 = {
+>      .test_1 = (void *)test_1,
+>      .test_2 = (void *)test_2,
+> };
+> 
+> and avoid the usleep() wait and the unload_bpf_testmod()?
+
+
+In order to skip finding module btf for using bpf_map_create(),
+I use the skeleton to create a map first to get its bpf_map_info.
+So, it still needs to load and unload the same module.
+
+> 
+>> +    ASSERT_ERR(err, "struct_ops_module_load");
 >> +
->> +		c->unit_size = unit_size;
->> +		c->objcg = objcg;
->> +		c->percpu_size = percpu_size;
->> +		c->tgt = c;
+>> +    struct_ops_module__destroy(skel);
 >> +
->> +		init_refill_work(c);
->> +		prefill_mem_cache(c, cpu);
->> +
->> +		if (cpu == 0) {
->> +			err = check_obj_size(c, i);
->> +			if (err) {
->> +				drain_mem_cache(c);
->> +				memset(c, 0, sizeof(*c));
-> I also forgot about c->objcg. objcg may be leaked if we do memset() here.
-
-The objcg gets a reference at init bpf_mem_alloc_init() stage
-and released at bpf_mem_alloc_destroy(). For bpf_global_ma,
-if there is a failure, indeed bpf_mem_alloc_destroy() will be
-called and the reference c->objcg will be released.
-
-So if we move get_obj_cgroup_from_current() to
-bpf_mem_alloc_percpu_init() stage, we should be okay here.
-
-BTW, is check_obj_size() really necessary here? My answer is no
-since as you mentioned, the size->cache_index is pretty stable,
-so check_obj_size() should not return error in such cases.
-What do you think?
-
->> +				goto out;
->> +			}
->> +		}
->> +	}
->> +
->> +out:
->> +	return err;
+>> +cleanup:
+>> +    /* Without this, the next test may fail */
+>> +    load_bpf_testmod(false);
 >> +}
 >> +
->>   
-> .
->
+>> +void serial_test_struct_ops_module(void)
+>> +{
+>> +    if (test__start_subtest("regular_load"))
+>> +        test_regular_load();
+>> +
+>> +    if (test__start_subtest("load_without_module"))
+>> +        test_load_without_module();
+>> +}
+>> +
+> 
+> 
 
