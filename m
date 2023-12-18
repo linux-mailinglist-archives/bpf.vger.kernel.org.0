@@ -1,25 +1,25 @@
-Return-Path: <bpf+bounces-18175-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18176-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E1AC8168BC
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 09:52:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED2F8816B7A
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 11:47:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D0C2A1C20905
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 08:52:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A25121F22FA7
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 10:47:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48F910A2C;
-	Mon, 18 Dec 2023 08:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB7F18E2D;
+	Mon, 18 Dec 2023 10:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="pVnxw0u3"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="jWVsRnIY"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED231094F;
-	Mon, 18 Dec 2023 08:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A73E61A5AE
+	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 10:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -27,51 +27,31 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
 	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
 	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=u9rU7FfAkS1Xg3KQP7X+Uy8VuWy1sh7xNAOO2EeOmow=; b=pVnxw0u3V2KMrtdVYsexwpdnA5
-	XUz4IKQOBNxaBluhdNYzL8zwlyI8CjvzruSXco86xKeQ6QX9cV0XiRUgx1SayqkGcLFTuuCdNcreN
-	IYv72Eo9aa2ezSpHM/sq6jV2R3+vIjjFyGjsK/x2Nl8dUJj/GySOniPAkjktHMBS0gwug9YlUSVKk
-	E1ANshGn7IEXwUCrQ0edmmtKumnnePMpDfJ7tvxXWWIUvjf8OwTHC7AAiHt93l6j9w58BEch4hds3
-	CFiaDf4S4lSKklzGWwvE7xj7zzlkiYN9B3rJVXyRh4lviegYdZLL2jkzTg8CtU/F3vHY7hgsqJnoi
-	sJS6vhrQ==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
+	bh=ict6ujVKU9AnPJz7b+brdH6rE/shWm3mMk3Ray5s0l8=; b=jWVsRnIYLzxHiBeSP+RVUdRcKW
+	Kl51eIVCel5aCrgYDKKZlFeTlaLhKJBeyPT6ByEYTXe20VIb9VUYcclswTlH9fHPuUCw+pNKkjGbX
+	jn6EWOijlxCa0FjK8Ni8S4at5FHy/nwP0duKYOzgztqiPh9DabD/lAUxp4urtNhC9OSE3PBl4zk55
+	QIKW5/kHTZCO336loQOJzx4oTEVytsR+wCUhJC0wa7bbRrWwjJv69+Vm2j7x4LSvd05+0aHB248Z3
+	nrCvMlTzQFCOJuBLbvrEovxPTzouKcYwnSPFs2Sx3aLhBdHmtntZacW2HpVD54ORPpKH8GV89UPcb
+	bMHEmPTg==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1rF9M8-000GMZ-Kc; Mon, 18 Dec 2023 09:52:08 +0100
+	id 1rFB8r-00040N-2Y; Mon, 18 Dec 2023 11:46:33 +0100
 Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1rF9M6-000DSm-B8; Mon, 18 Dec 2023 09:52:06 +0100
-Subject: Re: [PATCH net-next 16/24] net: netkit, veth, tun, virt*: Use
- nested-BH locking for XDP redirect.
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Boqun Feng
- <boqun.feng@gmail.com>, Eric Dumazet <edumazet@google.com>,
- Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
- "K. Y. Srinivasan" <kys@microsoft.com>, "Michael S. Tsirkin"
- <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Dexuan Cui <decui@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Hao Luo <haoluo@google.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, Juergen Gross <jgross@suse.com>,
- KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Nikolay Aleksandrov <razor@blackwall.org>, Song Liu <song@kernel.org>,
- Stanislav Fomichev <sdf@google.com>,
- Stefano Stabellini <sstabellini@kernel.org>, Wei Liu <wei.liu@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
- virtualization@lists.linux.dev, xen-devel@lists.xenproject.org
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
- <20231215171020.687342-17-bigeasy@linutronix.de>
+	id 1rFB8q-000RZV-LJ; Mon, 18 Dec 2023 11:46:32 +0100
+Subject: Re: [PATCH bpf-next] bpf: ensure precise is reset to false in
+ __mark_reg_const_zero()
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@kernel.org
+Cc: kernel-team@meta.com, Maxim Mikityanskiy <maxtram95@gmail.com>
+References: <20231215235822.908223-1-andrii@kernel.org>
 From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <74feb818-7109-cb1e-8eec-a037c17a2871@iogearbox.net>
-Date: Mon, 18 Dec 2023 09:52:05 +0100
+Message-ID: <f1161484-c38c-4178-1163-ac9b14c20715@iogearbox.net>
+Date: Mon, 18 Dec 2023 11:46:32 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 Precedence: bulk
@@ -80,82 +60,101 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231215171020.687342-17-bigeasy@linutronix.de>
+In-Reply-To: <20231215235822.908223-1-andrii@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27126/Sun Dec 17 10:37:59 2023)
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27127/Mon Dec 18 10:39:04 2023)
 
-Hi Sebastian,
-
-On 12/15/23 6:07 PM, Sebastian Andrzej Siewior wrote:
-> The per-CPU variables used during bpf_prog_run_xdp() invocation and
-> later during xdp_do_redirect() rely on disabled BH for their protection.
-> Without locking in local_bh_disable() on PREEMPT_RT these data structure
-> require explicit locking.
+On 12/16/23 12:58 AM, Andrii Nakryiko wrote:
+> It is safe to always start with imprecise SCALAR_VALUE register.
+> Previously __mark_reg_const_zero() relied on caller to reset precise
+> mark, but it's very error prone and we already missed it in a few
+> places. So instead make __mark_reg_const_zero() reset precision always,
+> as it's a safe default for SCALAR_VALUE. Explanation is basically the
+> same as for why we are resetting (or rather not setting) precision in
+> current state. If necessary, precision propagation will set it to
+> precise correctly.
 > 
-> This is a follow-up on the previous change which introduced
-> bpf_run_lock.redirect_lock and uses it now within drivers.
+> As such, also remove a big comment about forward precision propagation
+> in mark_reg_stack_read() and avoid unnecessarily setting precision to
+> true after reading from STACK_ZERO stack. Again, precision propagation
+> will correctly handle this, if that SCALAR_VALUE register will ever be
+> needed to be precise.
 > 
-> The simple way is to acquire the lock before bpf_prog_run_xdp() is
-> invoked and hold it until the end of function.
-> This does not always work because some drivers (cpsw, atlantic) invoke
-> xdp_do_flush() in the same context.
-> Acquiring the lock in bpf_prog_run_xdp() and dropping in
-> xdp_do_redirect() (without touching drivers) does not work because not
-> all driver, which use bpf_prog_run_xdp(), do support XDP_REDIRECT (and
-> invoke xdp_do_redirect()).
+> Reported-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>   kernel/bpf/verifier.c                            | 16 +++-------------
+>   .../selftests/bpf/progs/verifier_spill_fill.c    | 10 ++++++++--
+>   2 files changed, 11 insertions(+), 15 deletions(-)
 > 
-> Ideally the minimal locking scope would be bpf_prog_run_xdp() +
-> xdp_do_redirect() and everything else (error recovery, DMA unmapping,
-> free/ alloc of memory, …) would happen outside of the locked section.
-[...]
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 1863826a4ac3..3009d1faec86 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -1781,6 +1781,7 @@ static void __mark_reg_const_zero(struct bpf_reg_state *reg)
+>   {
+>   	__mark_reg_known(reg, 0);
+>   	reg->type = SCALAR_VALUE;
+> +	reg->precise = false; /* all scalars are assumed imprecise initially */
 
->   drivers/net/hyperv/netvsc_bpf.c |  1 +
->   drivers/net/netkit.c            | 13 +++++++----
->   drivers/net/tun.c               | 28 +++++++++++++----------
->   drivers/net/veth.c              | 40 ++++++++++++++++++++-------------
->   drivers/net/virtio_net.c        |  1 +
->   drivers/net/xen-netfront.c      |  1 +
->   6 files changed, 52 insertions(+), 32 deletions(-)
-[...]
+Could you elaborate on why it is safe to set it to false instead of using:
 
-Please exclude netkit from this set given it does not support XDP, but
-instead only accepts tc BPF typed programs.
+   reg->precise = !env->bpf_capable;
 
-Thanks,
-Daniel
+For !cap_bpf we typically always set precise requirement to true, see also
+__mark_reg_unknown().
 
-> diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-> index 39171380ccf29..fbcf78477bda8 100644
-> --- a/drivers/net/netkit.c
-> +++ b/drivers/net/netkit.c
-> @@ -80,8 +80,15 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
->   	netkit_prep_forward(skb, !net_eq(dev_net(dev), dev_net(peer)));
->   	skb->dev = peer;
->   	entry = rcu_dereference(nk->active);
-> -	if (entry)
-> -		ret = netkit_run(entry, skb, ret);
-> +	if (entry) {
-> +		scoped_guard(local_lock_nested_bh, &bpf_run_lock.redirect_lock) {
-> +			ret = netkit_run(entry, skb, ret);
-> +			if (ret == NETKIT_REDIRECT) {
-> +				dev_sw_netstats_tx_add(dev, 1, len);
-> +				skb_do_redirect(skb);
-> +			}
-> +		}
-> +	}
->   	switch (ret) {
->   	case NETKIT_NEXT:
->   	case NETKIT_PASS:
-> @@ -95,8 +102,6 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
->   		}
->   		break;
->   	case NETKIT_REDIRECT:
-> -		dev_sw_netstats_tx_add(dev, 1, len);
-> -		skb_do_redirect(skb);
->   		break;
->   	case NETKIT_DROP:
->   	default:
+>   }
+>   
+>   static void mark_reg_known_zero(struct bpf_verifier_env *env,
+> @@ -4706,21 +4707,10 @@ static void mark_reg_stack_read(struct bpf_verifier_env *env,
+>   		zeros++;
+>   	}
+>   	if (zeros == max_off - min_off) {
+> -		/* any access_size read into register is zero extended,
+> -		 * so the whole register == const_zero
+> +		/* Any access_size read into register is zero extended,
+> +		 * so the whole register == const_zero.
+>   		 */
+>   		__mark_reg_const_zero(&state->regs[dst_regno]);
+> -		/* backtracking doesn't support STACK_ZERO yet,
+> -		 * so mark it precise here, so that later
+> -		 * backtracking can stop here.
+> -		 * Backtracking may not need this if this register
+> -		 * doesn't participate in pointer adjustment.
+> -		 * Forward propagation of precise flag is not
+> -		 * necessary either. This mark is only to stop
+> -		 * backtracking. Any register that contributed
+> -		 * to const 0 was marked precise before spill.
+> -		 */
+> -		state->regs[dst_regno].precise = true;
+>   	} else {
+>   		/* have read misc data from the stack */
+>   		mark_reg_unknown(env, state->regs, dst_regno);
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> index 508f5d6c7347..39fe3372e0e0 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> @@ -499,8 +499,14 @@ __success
+>   __msg("2: (7a) *(u64 *)(r10 -8) = 0          ; R10=fp0 fp-8_w=00000000")
+>   /* but fp-16 is spilled IMPRECISE zero const reg */
+>   __msg("4: (7b) *(u64 *)(r10 -16) = r0        ; R0_w=0 R10=fp0 fp-16_w=0")
+> -/* and now check that precision propagation works even for such tricky case */
+> -__msg("10: (71) r2 = *(u8 *)(r10 -9)         ; R2_w=P0 R10=fp0 fp-16_w=0")
+> +/* validate that assigning R2 from STACK_ZERO doesn't mark register
+> + * precise immediately; if necessary, it will be marked precise later
+> + */
+> +__msg("6: (71) r2 = *(u8 *)(r10 -1)          ; R2_w=0 R10=fp0 fp-8_w=00000000")
+> +/* similarly, when R2 is assigned from spilled register, it is initially
+> + * imprecise, but will be marked precise later once it is used in precise context
+> + */
+> +__msg("10: (71) r2 = *(u8 *)(r10 -9)         ; R2_w=0 R10=fp0 fp-16_w=0")
+>   __msg("11: (0f) r1 += r2")
+>   __msg("mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx -1")
+>   __msg("mark_precise: frame0: regs=r2 stack= before 10: (71) r2 = *(u8 *)(r10 -9)")
+> 
+
 
