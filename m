@@ -1,179 +1,265 @@
-Return-Path: <bpf+bounces-18179-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18180-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 849BA816FDE
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 14:11:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F3B2817007
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 14:15:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD6DDB22AA1
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 13:11:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCFCD2870BB
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 13:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F5A7349C;
-	Mon, 18 Dec 2023 12:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A29923D545;
+	Mon, 18 Dec 2023 13:11:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KjFSCYne"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9074873470
-	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 12:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Vyn3DTA_1702904306;
-Received: from 30.221.128.103(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0Vyn3DTA_1702904306)
-          by smtp.aliyun-inc.com;
-          Mon, 18 Dec 2023 20:58:27 +0800
-Message-ID: <82ae47cf-74ae-445a-b00c-e068f49a348a@linux.alibaba.com>
-Date: Mon, 18 Dec 2023 20:58:25 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6241D130;
+	Mon, 18 Dec 2023 13:11:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF277C433C7;
+	Mon, 18 Dec 2023 13:11:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702905098;
+	bh=6l99G9SwnwfiuAJoN7J6V+bSsS0jMPeuAMhXxQll1nQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KjFSCYneAIh6v9GMExZGvlCJsf8N7Z9+FOioNIsaqAgbWXDRLc4Dn+MhNDQwr9F4Q
+	 XE/gXV46pFPzSsVc6FMQbQi8blxfCrcaWfUXYfC5vBARzZkfsInMqLd+gOkSWp19vQ
+	 HKa0EfFkSdWani9nIMrfV5ZsqMejOdf0KGLzYTIS7ZWYPm+OdPHSIWpM+Q6jPqPqu3
+	 17R0tR13wIgnswgZxBrSkg9b8jwitDHV93HsezYYh8WPYZXRiLh/5H9Kwq0yeHxXPO
+	 UjHO8wsWerwu9eQzqUQc0DWql0sUAKhwm5gpbkhiBEtqqiHnpJNmmc4cNesHv/S3M2
+	 Lz9yfahkiOBDg==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v5 00/34] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date: Mon, 18 Dec 2023 22:11:32 +0900
+Message-Id: <170290509018.220107.1347127510564358608.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question about bpf perfbuf/ringbuf: pinned in backend with
- overwriting
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, song@kernel.org, andrii@kernel.org, ast@kernel.org,
- Daniel Borkmann <daniel@iogearbox.net>, xuanzhuo@linux.alibaba.com,
- dust.li@linux.alibaba.com, guwen@linux.alibaba.com,
- alibuda@linux.alibaba.com, hengqi@linux.alibaba.com,
- Nathan Slingerland <slinger@meta.com>, "rihams@meta.com" <rihams@meta.com>,
- Alan Maguire <alan.maguire@oracle.com>, Dmitry Vyukov <dvyukov@google.com>
-References: <3dd9114c-599f-46b2-84b9-abcfd2dcbe33@linux.alibaba.com>
- <c3c47250-2923-c376-4f5e-ddaf148bbf32@oracle.com>
- <CAEf4BzZOBdV9vxV6Gr9b5pQ8+M6tPVnHdmELWqOd5jdcL=KpiA@mail.gmail.com>
- <23691bb5-9688-4e93-a98c-1024e8a8fc62@linux.alibaba.com>
- <CAEf4BzaQv23wzgmmoSFBja7Syp3m3fRrfzWkFobQ4NNisDTEyA@mail.gmail.com>
- <23bcab0e-bec1-4edd-b45a-0142ebcda41a@linux.alibaba.com>
- <CAEf4BzYBqwDQ8LeyrQSOh+G8eofy1mN=j=DVrj5DkYovFW64Jw@mail.gmail.com>
- <CACT4Y+bb7DuQXQ=-PRO4FteRz_4OLsRw0tXFKqNiOoT6UOFLaA@mail.gmail.com>
-From: Philo Lu <lulie@linux.alibaba.com>
-In-Reply-To: <CACT4Y+bb7DuQXQ=-PRO4FteRz_4OLsRw0tXFKqNiOoT6UOFLaA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+Hi,
+
+Here is the 5th version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
+
+https://lore.kernel.org/all/170203105427.579004.8033550792660734570.stgit@devnote2/
+
+This version fixes a bug of simple LRU [12/34] which caused some bug
+reports and add a testcase to avoid regression [33/34].
+
+Overview
+--------
+This series does major 2 changes, enable multiple function-graphs on
+the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+fprobe on this function-graph.
+
+The former changes had been sent from Steven Rostedt 4 years ago (*),
+which allows users to set different setting function-graph tracer (and
+other tracers based on function-graph) in each trace-instances at the
+same time.
+
+(*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
+
+The purpose of latter change are;
+
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
+
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, which enables to
+call function-graph entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+Series
+------
+- Patch [1/34] and [2/34] are adding a comment for ftrace_regs.
+- Patch [3/34] to [18/34] are the multiple function-graph support.
+- Patch [19/34] and [20/34] adds new function-graph callbacks with
+  ftrace_regs and x86-64 implementation.
+- Patch [21/34] to [27/34] are preparation (adding util functions) of
+  the new fprobe and its user.
+- Patch [28/34] to [32/34] rewrites fprobes and updates its users.
+- Patch [33/34] adds new testcase of fprobe register/unregsiter
+  repeatedly.
+- Patch [34/34] is a documentation update.
+
+This series can be applied against the trace-v6.7-rc4 on linux-trace tree.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (19):
+      tracing: Add a comment about ftrace_regs definition
+      x86: tracing: Add ftrace_regs definition in the header
+      function_graph: Use a simple LRU for fgraph_array index number
+      function_graph: Add a new entry handler with parent_ip and ftrace_regs
+      function_graph: Add a new exit handler with parent_ip and ftrace_regs
+      x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+      arm64: ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      selftests/ftrace: Add a test case for repeating register/unregister fprobe
+      Documentation: probes: Update fprobe on function-graph tracer
+
+Steven Rostedt (VMware) (15):
+      function_graph: Convert ret_stack to a series of longs
+      fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+      function_graph: Add an array structure that will allow multiple callbacks
+      function_graph: Allow multiple users to attach to function graph
+      function_graph: Remove logic around ftrace_graph_entry and return
+      ftrace/function_graph: Pass fgraph_ops to function graph callbacks
+      ftrace: Allow function_graph tracer to be enabled in instances
+      ftrace: Allow ftrace startup flags exist without dynamic ftrace
+      function_graph: Have the instances use their own ftrace_ops for filtering
+      function_graph: Add "task variables" per task for fgraph_ops
+      function_graph: Move set_graph_function tests to shadow stack global var
+      function_graph: Move graph depth stored data to shadow stack global var
+      function_graph: Move graph notrace bit to shadow stack global var
+      function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+      function_graph: Add selftest for passing local variables
 
 
-On 2023/12/16 16:50, Dmitry Vyukov wrote:
-> On Fri, 15 Dec 2023 at 23:39, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->>> On 2023/12/14 07:35, Andrii Nakryiko wrote:
->>>> On Mon, Dec 11, 2023 at 4:39 AM Philo Lu <lulie@linux.alibaba.com> wrote:
->>>>>
->>>>>
->>>>>
->>>>> On 2023/12/9 06:32, Andrii Nakryiko wrote:
->>>>>> On Thu, Dec 7, 2023 at 6:49 AM Alan Maguire <alan.maguire@oracle.com> wrote:
->>>>>>>
->>>>>>> On 07/12/2023 13:15, Philo Lu wrote:
->>>>>>>> Hi all. I have a question when using perfbuf/ringbuf in bpf. I will
->>>>>>>> appreciate it if you give me any advice.
->>>>>>>>
->>>>>>>> Imagine a simple case: the bpf program output a log (some tcp
->>>>>>>> statistics) to user every time a packet is received, and the user
->>>>>>>> actively read the logs if he wants. I do not want to keep a user process
->>>>>>>> alive, waiting for outputs of the buffer. User can read the buffer as
->>>>>>>> need. BTW, the order does not matter.
->>>>>>>>
->>>>>>>> To conclude, I hope the buffer performs like relayfs: (1) no need for
->>>>>>>> user process to receive logs, and the user may read at any time (and no
->>>>>>>> wakeup would be better); (2) old data can be overwritten by new ones.
->>>>>>>>
->>>>>>>> Currently, it seems that perfbuf and ringbuf cannot satisfy both: (i)
->>>>>>>> ringbuf: only satisfies (1). However, if data arrive when the buffer is
->>>>>>>> full, the new data will be lost, until the buffer is consumed. (ii)
->>>>>>>> perfbuf: only satisfies (2). But user cannot access the buffer after the
->>>>>>>> process who creates it (including perf_event.rb via mmap) exits.
->>>>>>>> Specifically, I can use BPF_F_PRESERVE_ELEMS flag to keep the
->>>>>>>> perf_events, but I do not know how to get the buffer again in a new
->>>>>>>> process.
->>>>>>>>
->>>>>>>> In my opinion, this can be solved by either of the following: (a) add
->>>>>>>> overwrite support in ringbuf (maybe a new flag for reserve), but we have
->>>>>>>> to address synchronization between kernel and user, especially under
->>>>>>>> variable data size, because when overwriting occurs, kernel has to
->>>>>>>> update the consumer posi too; (b) implement map_fd_sys_lookup_elem for
->>>>>>>> perfbuf to expose fds to user via map_lookup_elem syscall, and a
->>>>>>>> mechanism is need to preserve perf_event->rb when process exits
->>>>>>>> (otherwise the buffer will be freed by perf_mmap_close). I am not sure
->>>>>>>> if they are feasible, and which is better. If not, perhaps we can
->>>>>>>> develop another mechanism to achieve this?
->>>>>>>>
->>>>>>>
->>>>>>> There was an RFC a while back focused on supporting BPF ringbuf
->>>>>>> over-writing [1]; at the time, Andrii noted some potential issues that
->>>>>>> might be exposed by doing multiple ringbuf reserves to overfill the
->>>>>>> buffer within the same program.
->>>>>>>
->>>>>>
->>>>>> Correct. I don't think it's possible to correctly and safely support
->>>>>> overwriting with BPF ringbuf that has variable-sized elements.
->>>>>>
->>>>>> We'll need to implement MPMC ringbuf (probably with fixed sized
->>>>>> element size) to be able to support this.
->>>>>>
->>>>>
->>>>> Thank you very much!
->>>>>
->>>>> If it is indeed difficult with ringbuf, maybe I can implement a new type
->>>>> of bpf map based on relay interface [1]? e.g., init relay during map
->>>>> creating, write into it with bpf helper, and then user can access to it
->>>>> in filesystem. I think it will be a simple but useful map for
->>>>> overwritable data transfer.
->>>>
->>>> I don't know much about relay, tbh. Give it a try, I guess.
->>>> Alternatively, we need better and faster implementation of
->>>> BPF_MAP_TYPE_QUEUE, which seems like the data structure that can
->>>> support overwriting and generally be a fixed elementa size
->>>> alternative/complement to BPF ringbuf.
->>>>
->>>
->>> Thank you for your reply. I am afraid BPF_MAP_TYPE_QUEUE cannot get rid
->>> of locking overheads with concurrent reading and writing by design, and
->>
->> I disagree, I think [0] from Dmitry Vyukov is one way to implement
->> lock-free BPF_MAP_TYPE_QUEUE. I don't know how easy it would be to
->> implement overwriting support, but it would be worth considering.
->>
->>    [0] https://www.1024cores.net/home/lock-free-algorithms/queues/bounded-mpmc-queue
-> 
-> 
-> I am missing some context here. But note that this queue is not
-> formally lock-free. While it's usually faster and more scalable than
-> mutex-protected queues, stuck readers and writers will eventually
-> block each other. Stucking for a short time is not a problem because
-> the queue allows parallelism for both readers and writers. But if
-> threads get stuck for a long time and the queue wraps around so that
-> writers try to write to elements being read/written by slow threads,
-> they block. Similarly, readers get blocked by slow writers even if
-> there are other fully written elements in the queue already.
-> The queue is not serializable either, which may be surprisable in some cases.
-> 
-> Adding overwriting support may be an interesting exercise.
-> I guess readers could use some variation of a seqlock to deal with
-> elements that are being overwritten.
-> Writers can already skip over other slow writers. Normally this is
-> used w/o wrap-around, but I suspect it can just work with wrap-around
-> as well (a writer can skip over a writer stuck on the previous lap).
-> Since we overwrite elements, the queue provides only a very weak
-> notion of FIFO anyway, so skipping over very old writers may be fine's
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    2 
+ arch/arm64/include/asm/ftrace.h                    |   24 
+ arch/arm64/kernel/entry-ftrace.S                   |   28 +
+ arch/arm64/kernel/ftrace.c                         |   19 
+ arch/loongarch/Kconfig                             |    1 
+ arch/loongarch/include/asm/ftrace.h                |    2 
+ arch/loongarch/kernel/ftrace_dyn.c                 |    6 
+ arch/powerpc/include/asm/ftrace.h                  |    9 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/s390/Kconfig                                  |    1 
+ arch/s390/include/asm/ftrace.h                     |    7 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   17 
+ arch/x86/kernel/ftrace.c                           |   51 +
+ arch/x86/kernel/ftrace_64.S                        |   37 +
+ include/linux/fprobe.h                             |   58 +
+ include/linux/ftrace.h                             |  167 +++
+ include/linux/sched.h                              |    2 
+ include/linux/trace_recursion.h                    |   39 -
+ kernel/trace/Kconfig                               |   19 
+ kernel/trace/bpf_trace.c                           |   14 
+ kernel/trace/fgraph.c                              | 1003 ++++++++++++++++----
+ kernel/trace/fprobe.c                              |  631 +++++++++----
+ kernel/trace/ftrace.c                              |   13 
+ kernel/trace/ftrace_internal.h                     |    2 
+ kernel/trace/trace.h                               |   94 ++
+ kernel/trace/trace_fprobe.c                        |  114 +-
+ kernel/trace/trace_functions.c                     |    8 
+ kernel/trace/trace_functions_graph.c               |   96 +-
+ kernel/trace/trace_irqsoff.c                       |   10 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |   10 
+ kernel/trace/trace_selftest.c                      |  178 +++-
+ lib/test_fprobe.c                                  |   51 -
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 39 files changed, 2101 insertions(+), 699 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
 
-Thanks for these hints. The MPMC queue with a seqlock could be a 
-effective method to improve BPF_MAP_TYPE_QUEUE. But I don't think it 
-will work well in our case.
-
-In my opinion, under very frequent writing, it will be hard for reader 
-to get all elements in one shot (e.g., bpf_map_lookup_batch), because we 
-use a seqlock and the whole buffer could be large. What's worse, with 
-overwriting, many elements will be dropped sliently before readers get 
-access to them.
-
-Basically, I think BPF_MAP_TYPE_QUEUE assumes reliable results by 
-design, and so does ringbuf. But in our case, we'd rather catch logs in 
-time, even at the cost of few wrong records, and this is how relay performs.
-
-Anyway, the MPMC queue optimization for BPF_MAP_TYPE_QUEUE is an 
-interesting topic. I'd like to try it besides relay if possible.
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
