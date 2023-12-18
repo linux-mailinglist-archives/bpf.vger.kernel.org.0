@@ -1,305 +1,446 @@
-Return-Path: <bpf+bounces-18142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7592881641E
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 02:33:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E28181645F
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 03:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D1D61C220DB
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 01:33:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FFBE1C21EA3
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 02:40:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768F34428;
-	Mon, 18 Dec 2023 01:33:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCBE43C36;
+	Mon, 18 Dec 2023 02:40:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2V1P0caR"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 079F7440A
-	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 01:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sthhp0Zg6z4f3jYj
-	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 09:15:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 6755D1A06D7
-	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 09:15:39 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgBnyrg2nX9lJteGDw--.58193S2;
-	Mon, 18 Dec 2023 09:15:38 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 2/6] bpf: Allow per unit prefill for
- non-fix-size percpu memory allocator
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231216023004.3738749-1-yonghong.song@linux.dev>
- <20231216023015.3741144-1-yonghong.song@linux.dev>
- <ca0512d6-fa01-9d94-017f-a717756dcf86@huaweicloud.com>
- <5c13f568-325c-4e5c-9f9e-ca5da5c2c75b@linux.dev>
- <9bf96304-2cfe-453c-a709-00eb56fdf136@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <c753b490-3609-0db5-5233-efae17136291@huaweicloud.com>
-Date: Mon, 18 Dec 2023 09:15:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8F723D7
+	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 02:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbcfd1b2c96so2227177276.1
+        for <bpf@vger.kernel.org>; Sun, 17 Dec 2023 18:40:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1702867228; x=1703472028; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uVjX3efebsTHCy5NEFD49ffT48NKuorZAF9DlMaHKLg=;
+        b=2V1P0caREInwUKcJNBlTmj5fsZ/XbhobNSFc7BsOTyk9udW1Su+j1AQUSw+rso+vdj
+         V7bElHL21BcOoTZLmVgyU8Y5A2lIaOyg37jXyeSbQ+Po31qG3I8nBKaVG+5lQFDIbACB
+         7CRALX0skfkQRqTmstJUEEBhd8MjvMKkVLZficvGmoTGAuP6OGeXSYw0UIXD8oyc2+o4
+         htUW6xgI+dgoTvC9W/IQnm3SrOQN38wvdRDAcJR7EjdRNTzLmoZ6ep07ljSD52JIYkcp
+         Czf7jHyyD1c2m+lWryrEFU7BrY/4vgvhrRq32ZVn4D/uFxA3yYkjROEpnhtixYhTZ4Y6
+         FMkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702867228; x=1703472028;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uVjX3efebsTHCy5NEFD49ffT48NKuorZAF9DlMaHKLg=;
+        b=jJQ5UnhX2zSy/+yah7g5v9WqRz+AIVr1slNJbNY4QviLykFQN5jnLQAGcGu4th5v+N
+         B2IA826DA+Og7OSvmlSSnHSRxtJd2iUpAaRUX89oO+DrGnTLqltId8NScZoUBnVRtV8G
+         H6IcLjWOwFXjvIU/Buu36EFSSIljRM1bt1iReZ9RlLwAiBxbEEJeQrpAq2xVwsXBaHrB
+         5bVQUPui5yoV3ctV9p1O1uSGPh7rZv+0G/tfGICjDqkPbhOHBaHktfRKYkPVmbElrnk1
+         dpd4h7wskzNZ6mgeZzTqKXca/XTeLCx9j+0EAaoqeYoSMBf+t/TaILZ2xGrvh4ZjgOLG
+         z2/w==
+X-Gm-Message-State: AOJu0YyccluIIrKP65GTqlRdULBRPeU3G4//A60K69pC6dtXbHUswWTr
+	5xYIfljWM0zDNyCXF1qbsPWdGAtc54w5JfIqMw==
+X-Google-Smtp-Source: AGHT+IE/14AKExgQSsOleyhN3X2YBynw58FppSnrB57aWD6VmpZDxQExkk16rVwYDEn//RSLzetKLp+d5q29L5J2MA==
+X-Received: from almasrymina.svl.corp.google.com ([2620:15c:2c4:200:5cbf:3534:fb34:758e])
+ (user=almasrymina job=sendgmr) by 2002:a25:8247:0:b0:dbd:24b0:f581 with SMTP
+ id d7-20020a258247000000b00dbd24b0f581mr627694ybn.12.1702867228269; Sun, 17
+ Dec 2023 18:40:28 -0800 (PST)
+Date: Sun, 17 Dec 2023 18:40:07 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <9bf96304-2cfe-453c-a709-00eb56fdf136@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgBnyrg2nX9lJteGDw--.58193S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ar4kAry5XFy7Zr1xAF45trb_yoWfZF4UpF
-	n7tF18Ary5Jr1kJr1jqw1UXFy5tr18Xw1UJr18XF1UZr15Xr1jgr4UXr1qgFy5Jr48Jr4U
-	Jr1UXry7Zr1UXrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20231218024024.3516870-1-almasrymina@google.com>
+Subject: [RFC PATCH net-next v5 00/14] Device Memory TCP
+From: Mina Almasry <almasrymina@google.com>
+To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org
+Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, 
+	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Pavel Begunkov <asml.silence@gmail.com>, 
+	David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeelb@google.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Major changes in RFC v5:
+------------------------
 
-On 12/18/2023 1:21 AM, Yonghong Song wrote:
->
-> On 12/16/23 11:11 PM, Yonghong Song wrote:
->>
->> On 12/15/23 7:12 PM, Hou Tao wrote:
->>> Hi,
->>>
->>> On 12/16/2023 10:30 AM, Yonghong Song wrote:
->>>> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem
->>>> allocation")
->>>> added support for non-fix-size percpu memory allocation.
->>>> Such allocation will allocate percpu memory for all buckets on all
->>>> cpus and the memory consumption is in the order to quadratic.
->>>> For example, let us say, 4 cpus, unit size 16 bytes, so each
->>>> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256
->>>> bytes.
->>>> Then let us say, 8 cpus with the same unit size, each cpu
->>>> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024
->>>> bytes.
->>>> So if the number of cpus doubles, the number of memory consumption
->>>> will be 4 times. So for a system with large number of cpus, the
->>>> memory consumption goes up quickly with quadratic order.
->>>> For example, for 4KB percpu allocation, 128 cpus. The total memory
->>>> consumption will 4KB * 128 * 128 = 64MB. Things will become
->>>> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
->>> SNIP
->>>> +__init int bpf_mem_alloc_percpu_init(struct bpf_mem_alloc *ma)
->>>> +{
->>>> +    struct bpf_mem_caches __percpu *pcc;
->>>> +
->>>> +    pcc = __alloc_percpu_gfp(sizeof(struct bpf_mem_caches), 8,
->>>> GFP_KERNEL);
->>>> +    if (!pcc)
->>>> +        return -ENOMEM;
->>>> +
->>>> +    ma->caches = pcc;
->>>> +    ma->percpu = true;
->>>> +    return 0;
->>>> +}
->>>> +
->>>> +int bpf_mem_alloc_percpu_unit_init(struct bpf_mem_alloc *ma, int
->>>> size)
->>>> +{
->>>> +    int cpu, i, err = 0, unit_size, percpu_size;
->>>> +    struct bpf_mem_caches *cc, __percpu *pcc;
->>>> +    struct obj_cgroup *objcg;
->>>> +    struct bpf_mem_cache *c;
->>>> +
->>>> +    i = bpf_mem_cache_idx(size);
->>>> +    if (i < 0)
->>>> +        return -EINVAL;
->>>> +
->>>> +    /* room for llist_node and per-cpu pointer */
->>>> +    percpu_size = LLIST_NODE_SZ + sizeof(void *);
->>>> +
->>>> +    pcc = ma->caches;
->>>> +    unit_size = sizes[i];
->>>> +
->>>> +#ifdef CONFIG_MEMCG_KMEM
->>>> +    objcg = get_obj_cgroup_from_current();
->>>> +#endif
->>> For bpf_global_percpu_ma, we also need to account the allocated memory
->>> to root memory cgroup just like bpf_global_ma did, do we ? So it seems
->>> that we need to initialize c->objcg early in
->>> bpf_mem_alloc_percpu_init ().
->>
->> Good point. Agree. the original behavior percpu non-fix-size mem
->> allocation is to do get_obj_cgroup_from_current() at init stage
->> and charge to root memory cgroup, and we indeed should move
->> the above bpf_mem_alloc_percpu_init().
->>
->>>> +    for_each_possible_cpu(cpu) {
->>>> +        cc = per_cpu_ptr(pcc, cpu);
->>>> +        c = &cc->cache[i];
->>>> +        if (cpu == 0 && c->unit_size)
->>>> +            goto out;
->>>> +
->>>> +        c->unit_size = unit_size;
->>>> +        c->objcg = objcg;
->>>> +        c->percpu_size = percpu_size;
->>>> +        c->tgt = c;
->>>> +
->>>> +        init_refill_work(c);
->>>> +        prefill_mem_cache(c, cpu);
->>>> +
->>>> +        if (cpu == 0) {
->>>> +            err = check_obj_size(c, i);
->>>> +            if (err) {
->>>> +                drain_mem_cache(c);
->>>> +                memset(c, 0, sizeof(*c));
->>> I also forgot about c->objcg. objcg may be leaked if we do memset()
->>> here.
->>
->> The objcg gets a reference at init bpf_mem_alloc_init() stage
->> and released at bpf_mem_alloc_destroy(). For bpf_global_ma,
->> if there is a failure, indeed bpf_mem_alloc_destroy() will be
->> called and the reference c->objcg will be released.
->>
->> So if we move get_obj_cgroup_from_current() to
->> bpf_mem_alloc_percpu_init() stage, we should be okay here.
->>
->> BTW, is check_obj_size() really necessary here? My answer is no
->> since as you mentioned, the size->cache_index is pretty stable,
->> so check_obj_size() should not return error in such cases.
->> What do you think?
->
-> How about the following change on top of this patch?
+1. Rebased on top of 'Abstract page from net stack' series and used the
+   new netmem type to refer to LSB set pointers instead of re-using
+   struct page.
 
-I think the patch below is fine. Before the change, objcg is a
-per-bpf_mem_alloc object, but the implementation doesn't make it being
-explicit. The change below make the objcg being a a per-bpf_mem_alloc
-object.
->
-> diff --git a/include/linux/bpf_mem_alloc.h
-> b/include/linux/bpf_mem_alloc.h
-> index 43e635c67150..d1403204379e 100644
-> --- a/include/linux/bpf_mem_alloc.h
-> +++ b/include/linux/bpf_mem_alloc.h
-> @@ -11,6 +11,7 @@ struct bpf_mem_caches;
->  struct bpf_mem_alloc {
->         struct bpf_mem_caches __percpu *caches;
->         struct bpf_mem_cache __percpu *cache;
-> +       struct obj_cgroup *objcg;
->         bool percpu;
->         struct work_struct work;
->  };
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 5cf2738c20a9..6486da4ba097 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -553,6 +553,8 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma,
-> int size, bool percpu)
->                 if (memcg_bpf_enabled())
->                         objcg = get_obj_cgroup_from_current();
->  #endif
-> +               ma->objcg = objcg;
-> +
->                 for_each_possible_cpu(cpu) {
->                         c = per_cpu_ptr(pc, cpu);
->                         c->unit_size = unit_size;
-> @@ -573,6 +575,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma,
-> int size, bool percpu)
->  #ifdef CONFIG_MEMCG_KMEM
->         objcg = get_obj_cgroup_from_current();
->  #endif
-> +       ma->objcg = objcg;
->         for_each_possible_cpu(cpu) {
->                 cc = per_cpu_ptr(pcc, cpu);
->                 for (i = 0; i < NUM_CACHES; i++) {
-> @@ -637,6 +640,12 @@ __init int bpf_mem_alloc_percpu_init(struct
-> bpf_mem_alloc *ma)
->  
->         ma->caches = pcc;
->         ma->percpu = true;
-> +
-> +#ifdef CONFIG_MEMCG_KMEM
-> +       ma->objcg = get_obj_cgroup_from_current();
-> +#else
-> +       ma->objcg = NULL;
-> +#endif
->         return 0;
->  }
->
-> @@ -656,10 +665,8 @@ int bpf_mem_alloc_percpu_unit_init(struct
-> bpf_mem_alloc *ma, int size)
->  
->         pcc = ma->caches;
->         unit_size = sizes[i];
-> +       objcg = ma->objcg;
->  
-> -#ifdef CONFIG_MEMCG_KMEM
-> -       objcg = get_obj_cgroup_from_current();
-> -#endif
->         for_each_possible_cpu(cpu) {
->                 cc = per_cpu_ptr(pcc, cpu);
->                 c = &cc->cache[i];
-> @@ -799,9 +806,8 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
->                         rcu_in_progress +=
-> atomic_read(&c->call_rcu_ttrace_in_progress);
->                         rcu_in_progress +=
-> atomic_read(&c->call_rcu_in_progress);
->                 }
-> -               /* objcg is the same across cpus */
-> -               if (c->objcg)
-> -                       obj_cgroup_put(c->objcg);
-> +               if (ma->objcg)
-> +                       obj_cgroup_put(ma->objcg);
->                 destroy_mem_alloc(ma, rcu_in_progress);
->         }
->         if (ma->caches) {
-> @@ -817,8 +823,8 @@ void bpf_mem_alloc_destroy(struct bpf_mem_alloc *ma)
->                                 rcu_in_progress +=
-> atomic_read(&c->call_rcu_in_progress);
->                         }
->                 }
-> -               if (c->objcg)
-> -                       obj_cgroup_put(c->objcg);
-> +               if (ma->objcg)
-> +                       obj_cgroup_put(ma->objcg);
->                 destroy_mem_alloc(ma, rcu_in_progress);
->         }
->  }
->
-> I still think check_obj_size for percpu allocation is not needed.
-> But I guess we can address that issue later on.
+2. Downgraded this series back to RFC and called it RFC v5. This is
+   because this series is now dependent on 'Abstract page from net
+   stack'[1] and the queue API. Both are removed from the series to
+   pre-requisite work.
 
-You are right. check_obj_size() is not needed for per-cpu allocation, so
-it is OK to just remove it. I also remove check_obj_size() for kmalloc
-allocation in [1].
+3. Reworked the page_pool devmem support to use netmem and for some
+   more unified handling.
 
-[1]:
-https://lore.kernel.org/bpf/20231216131052.27621-1-houtao@huaweicloud.com/
->
->>
->>>> +                goto out;
->>>> +            }
->>>> +        }
->>>> +    }
->>>> +
->>>> +out:
->>>> +    return err;
->>>> +}
->>>> +
->>> .
->>>
->>
+4. Reworked the reference counting of net_iov (renamed from
+   page_pool_iov) to use pp_ref_count for refcounting.
+
+The full changes including the dependent series and GVE page pool
+support is here:
+
+https://github.com/mina/linux/commits/tcpdevmem-rfcv5/
+
+[1] https://patchwork.kernel.org/project/netdevbpf/list/?series=3D810774
+
+Major changes in v1:
+--------------------
+
+1. Implemented MVP queue API ndos to remove the userspace-visible
+   driver reset.
+
+2. Fixed issues in the napi_pp_put_page() devmem frag unref path.
+
+3. Removed RFC tag.
+
+Many smaller addressed comments across all the patches (patches have
+individual change log).
+
+Full tree including the rest of the GVE driver changes:
+https://github.com/mina/linux/commits/tcpdevmem-v1
+
+Changes in RFC v3:
+------------------
+
+1. Pulled in the memory-provider dependency from Jakub's RFC[1] to make the
+   series reviewable and mergable.
+
+2. Implemented multi-rx-queue binding which was a todo in v2.
+
+3. Fix to cmsg handling.
+
+The sticking point in RFC v2[2] was the device reset required to refill
+the device rx-queues after the dmabuf bind/unbind. The solution
+suggested as I understand is a subset of the per-queue management ops
+Jakub suggested or similar:
+
+https://lore.kernel.org/netdev/20230815171638.4c057dcd@kernel.org/
+
+This is not addressed in this revision, because:
+
+1. This point was discussed at netconf & netdev and there is openness to
+   using the current approach of requiring a device reset.
+
+2. Implementing individual queue resetting seems to be difficult for my
+   test bed with GVE. My prototype to test this ran into issues with the
+   rx-queues not coming back up properly if reset individually. At the
+   moment I'm unsure if it's a mistake in the POC or a genuine issue in
+   the virtualization stack behind GVE, which currently doesn't test
+   individual rx-queue restart.
+
+3. Our usecases are not bothered by requiring a device reset to refill
+   the buffer queues, and we'd like to support NICs that run into this
+   limitation with resetting individual queues.
+
+My thought is that drivers that have trouble with per-queue configs can
+use the support in this series, while drivers that support new netdev
+ops to reset individual queues can automatically reset the queue as
+part of the dma-buf bind/unbind.
+
+The same approach with device resets is presented again for consideration
+with other sticking points addressed.
+
+This proposal includes the rx devmem path only proposed for merge. For a
+snapshot of my entire tree which includes the GVE POC page pool support &
+device memory support:
+
+https://github.com/torvalds/linux/compare/master...mina:linux:tcpdevmem-v3
+
+[1] https://lore.kernel.org/netdev/f8270765-a27b-6ccf-33ea-cda097168d79@red=
+hat.com/T/
+[2] https://lore.kernel.org/netdev/CAHS8izOVJGJH5WF68OsRWFKJid1_huzzUK+hpKb=
+LcL4pSOD1Jw@mail.gmail.com/T/
+
+Changes in RFC v2:
+------------------
+
+The sticking point in RFC v1[1] was the dma-buf pages approach we used to
+deliver the device memory to the TCP stack. RFC v2 is a proof-of-concept
+that attempts to resolve this by implementing scatterlist support in the
+networking stack, such that we can import the dma-buf scatterlist
+directly. This is the approach proposed at a high level here[2].
+
+Detailed changes:
+1. Replaced dma-buf pages approach with importing scatterlist into the
+   page pool.
+2. Replace the dma-buf pages centric API with a netlink API.
+3. Removed the TX path implementation - there is no issue with
+   implementing the TX path with scatterlist approach, but leaving
+   out the TX path makes it easier to review.
+4. Functionality is tested with this proposal, but I have not conducted
+   perf testing yet. I'm not sure there are regressions, but I removed
+   perf claims from the cover letter until they can be re-confirmed.
+5. Added Signed-off-by: contributors to the implementation.
+6. Fixed some bugs with the RX path since RFC v1.
+
+Any feedback welcome, but specifically the biggest pending questions
+needing feedback IMO are:
+
+1. Feedback on the scatterlist-based approach in general.
+2. Netlink API (Patch 1 & 2).
+3. Approach to handle all the drivers that expect to receive pages from
+   the page pool (Patch 6).
+
+[1] https://lore.kernel.org/netdev/dfe4bae7-13a0-3c5d-d671-f61b375cb0b4@gma=
+il.com/T/
+[2] https://lore.kernel.org/netdev/CAHS8izPm6XRS54LdCDZVd0C75tA1zHSu6jLVO8n=
+zTLXCc=3DH7Nw@mail.gmail.com/
+
+----------------------
+
+* TL;DR:
+
+Device memory TCP (devmem TCP) is a proposal for transferring data to and/o=
+r
+from device memory efficiently, without bouncing the data to a host memory
+buffer.
+
+* Problem:
+
+A large amount of data transfers have device memory as the source and/or
+destination. Accelerators drastically increased the volume of such transfer=
+s.
+Some examples include:
+- ML accelerators transferring large amounts of training data from storage =
+into
+  GPU/TPU memory. In some cases ML training setup time can be as long as 50=
+% of
+  TPU compute time, improving data transfer throughput & efficiency can hel=
+p
+  improving GPU/TPU utilization.
+
+- Distributed training, where ML accelerators, such as GPUs on different ho=
+sts,
+  exchange data among them.
+
+- Distributed raw block storage applications transfer large amounts of data=
+ with
+  remote SSDs, much of this data does not require host processing.
+
+Today, the majority of the Device-to-Device data transfers the network are
+implemented as the following low level operations: Device-to-Host copy,
+Host-to-Host network transfer, and Host-to-Device copy.
+
+The implementation is suboptimal, especially for bulk data transfers, and c=
+an
+put significant strains on system resources, such as host memory bandwidth,
+PCIe bandwidth, etc. One important reason behind the current state is the
+kernel=E2=80=99s lack of semantics to express device to network transfers.
+
+* Proposal:
+
+In this patch series we attempt to optimize this use case by implementing
+socket APIs that enable the user to:
+
+1. send device memory across the network directly, and
+2. receive incoming network packets directly into device memory.
+
+Packet _payloads_ go directly from the NIC to device memory for receive and=
+ from
+device memory to NIC for transmit.
+Packet _headers_ go to/from host memory and are processed by the TCP/IP sta=
+ck
+normally. The NIC _must_ support header split to achieve this.
+
+Advantages:
+
+- Alleviate host memory bandwidth pressure, compared to existing
+ network-transfer + device-copy semantics.
+
+- Alleviate PCIe BW pressure, by limiting data transfer to the lowest level
+  of the PCIe tree, compared to traditional path which sends data through t=
+he
+  root complex.
+
+* Patch overview:
+
+** Part 1: netlink API
+
+Gives user ability to bind dma-buf to an RX queue.
+
+** Part 2: scatterlist support
+
+Currently the standard for device memory sharing is DMABUF, which doesn't
+generate struct pages. On the other hand, networking stack (skbs, drivers, =
+and
+page pool) operate on pages. We have 2 options:
+
+1. Generate struct pages for dmabuf device memory, or,
+2. Modify the networking stack to process scatterlist.
+
+
+** part 3: page pool support
+
+We piggy back on page pool memory providers proposal:
+https://github.com/kuba-moo/linux/tree/pp-providers
+
+It allows the page pool to define a memory provider that provides the
+page allocation and freeing. It helps abstract most of the device memory
+TCP changes from the driver.
+
+** part 4: support for unreadable skb frags
+
+Page pool iovs are not accessible by the host; we implement changes
+throughput the networking stack to correctly handle skbs with unreadable
+frags.
+
+** Part 5: recvmsg() APIs
+
+We define user APIs for the user to send and receive device memory.
+
+Not included with this series is the GVE devmem TCP support, just to
+simplify the review. Code available here if desired:
+https://github.com/mina/linux/tree/tcpdevmem
+
+This series is built on top of net-next with Jakub's pp-providers changes
+cherry-picked.
+
+* NIC dependencies:
+
+1. (strict) Devmem TCP require the NIC to support header split, i.e. the
+   capability to split incoming packets into a header + payload and to put
+   each into a separate buffer. Devmem TCP works by using device memory
+   for the packet payload, and host memory for the packet headers.
+
+2. (optional) Devmem TCP works better with flow steering support & RSS supp=
+ort,
+   i.e. the NIC's ability to steer flows into certain rx queues. This allow=
+s the
+   sysadmin to enable devmem TCP on a subset of the rx queues, and steer
+   devmem TCP traffic onto these queues and non devmem TCP elsewhere.
+
+The NIC I have access to with these properties is the GVE with DQO support
+running in Google Cloud, but any NIC that supports these features would suf=
+fice.
+I may be able to help reviewers bring up devmem TCP on their NICs.
+
+* Testing:
+
+The series includes a udmabuf kselftest that show a simple use case of
+devmem TCP and validates the entire data path end to end without
+a dependency on a specific dmabuf provider.
+
+** Test Setup
+
+Kernel: net-next with this series and memory provider API cherry-picked
+locally.
+
+Hardware: Google Cloud A3 VMs.
+
+NIC: GVE with header split & RSS & flow steering support.
+
+Cc: Pavel Begunkov <asml.silence@gmail.com>
+Cc: David Wei <dw@davidwei.uk>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Shailend Chand <shailend@google.com>
+Cc: Harshitha Ramamurthy <hramamurthy@google.com>
+Cc: Shakeel Butt <shakeelb@google.com>
+Cc: Jeroen de Borst <jeroendb@google.com>
+Cc: Praveen Kaligineedi <pkaligineedi@google.com>
+
+
+Jakub Kicinski (1):
+  net: page_pool: create hooks for custom page providers
+
+Mina Almasry (13):
+  net: page_pool: factor out page_pool recycle check
+  net: netdev netlink api to bind dma-buf to a net device
+  netdev: support binding dma-buf to netdevice
+  netdev: netdevice devmem allocator
+  page_pool: convert to use netmem
+  page_pool: devmem support
+  memory-provider: dmabuf devmem memory provider
+  net: support non paged skb frags
+  net: add support for skbs with unreadable frags
+  tcp: RX path for devmem TCP
+  net: add SO_DEVMEM_DONTNEED setsockopt to release RX frags
+  net: add devmem TCP documentation
+  selftests: add ncdevmem, netcat for devmem TCP
+
+ Documentation/netlink/specs/netdev.yaml |  52 +++
+ Documentation/networking/devmem.rst     | 271 +++++++++++++
+ Documentation/networking/index.rst      |   1 +
+ arch/alpha/include/uapi/asm/socket.h    |   8 +-
+ arch/mips/include/uapi/asm/socket.h     |   6 +
+ arch/parisc/include/uapi/asm/socket.h   |   6 +
+ arch/sparc/include/uapi/asm/socket.h    |   6 +
+ include/linux/skbuff.h                  |  68 +++-
+ include/linux/socket.h                  |   1 +
+ include/net/devmem.h                    | 127 ++++++
+ include/net/netdev_rx_queue.h           |   1 +
+ include/net/netmem.h                    | 223 ++++++++++-
+ include/net/page_pool/helpers.h         | 117 ++++--
+ include/net/page_pool/types.h           |  27 +-
+ include/net/sock.h                      |   2 +
+ include/net/tcp.h                       |   5 +-
+ include/trace/events/page_pool.h        |  28 +-
+ include/uapi/asm-generic/socket.h       |   6 +
+ include/uapi/linux/netdev.h             |  19 +
+ include/uapi/linux/uio.h                |  14 +
+ net/bpf/test_run.c                      |   5 +-
+ net/core/datagram.c                     |   6 +
+ net/core/dev.c                          | 314 ++++++++++++++-
+ net/core/gro.c                          |   7 +-
+ net/core/netdev-genl-gen.c              |  19 +
+ net/core/netdev-genl-gen.h              |   2 +
+ net/core/netdev-genl.c                  | 123 ++++++
+ net/core/page_pool.c                    | 419 +++++++++++++-------
+ net/core/skbuff.c                       |  92 ++++-
+ net/core/sock.c                         |  45 +++
+ net/ipv4/tcp.c                          | 196 +++++++++-
+ net/ipv4/tcp_input.c                    |  13 +-
+ net/ipv4/tcp_ipv4.c                     |   9 +
+ net/ipv4/tcp_output.c                   |   5 +-
+ net/packet/af_packet.c                  |   4 +-
+ tools/include/uapi/linux/netdev.h       |  19 +
+ tools/testing/selftests/net/.gitignore  |   1 +
+ tools/testing/selftests/net/Makefile    |   5 +
+ tools/testing/selftests/net/ncdevmem.c  | 489 ++++++++++++++++++++++++
+ 39 files changed, 2527 insertions(+), 234 deletions(-)
+ create mode 100644 Documentation/networking/devmem.rst
+ create mode 100644 include/net/devmem.h
+ create mode 100644 tools/testing/selftests/net/ncdevmem.c
+
+--=20
+2.43.0.472.g3155946c3a-goog
 
 
