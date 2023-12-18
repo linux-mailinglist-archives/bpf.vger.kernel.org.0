@@ -1,206 +1,192 @@
-Return-Path: <bpf+bounces-18226-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18227-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85C2C8178C1
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 18:30:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3680D8178DB
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 18:36:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 390182853F9
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 17:30:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F8B81C251F0
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 17:36:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EA667146C;
-	Mon, 18 Dec 2023 17:29:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Aui8BYGK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA7C5BF8A;
+	Mon, 18 Dec 2023 17:36:21 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D925D74B;
-	Mon, 18 Dec 2023 17:29:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702920578; x=1734456578;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=xgK8an1n5C5ZA4oAm3a0f1yPfRfiHPLIMGCEPWCtrBo=;
-  b=Aui8BYGKGlpNkbK/YsxgPBIeN28gRr2RYA4q7UXIDYzdun25iow7Iyo3
-   48sNKn5VLELF79RA6Dfw95zx7qJP4Rfci9gsLKE908RWNGoHKS8fxT2Eo
-   L14GQilEiEN+QyuQpo2+BqQpJ035T9AawSBACAylZXpyNUPr69pJqCPfs
-   6tfFwbTbKG1h3PEbwTRPSnhWJL0eaIzXAyv0zhXSUtB/UDjHzBEiKejU0
-   CRJ6UGzlSOLfXozBvnY52ZDXVupQuBHSfqeWHJPQ7cGdVfeV2ADkZDa1G
-   UCp/f1bij1sq/vKPbJBysi5l6slJ66k9S9mDAEcnXyUgIK2XX+hyb+fxR
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="2747717"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="2747717"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 09:29:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="768907242"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="768907242"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Dec 2023 09:29:38 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D52498B4
+	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 17:36:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BIHKVqx006891
+	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 09:36:19 -0800
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3v2jtxb474-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 09:36:19 -0800
+Received: from twshared21997.42.prn1.facebook.com (2620:10d:c0a8:1c::11) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Dec 2023 09:29:38 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Dec 2023 09:29:38 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 18 Dec 2023 09:29:38 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 18 Dec 2023 09:29:38 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cDlOzqQro9XSex5UQX36t7mmi7u/iYc1Rr5ZYe2XtgHGcRrI8k25+cVkk1g+wjN4hAOHw0OaEX7XlpOTCoPyO+ilUvrbR0Re5HaYUZ6TBXQmZrVT/q8LV9nTNo0eCO/N+TkSI9c8P/So2TsiKJ18tYvMdaVhi/BxPJbXQZP4ecN52Xumuh1tnjx66yocf0zabOHTRVkc15w/AmbwXwZ1biLfrRgq8izPmUl73PIHWMT/Lb2U8DeALZUsg0lfXd+Mg/RWFpTBtqtN/YJMq3kvcN1wB+TYBUFcu1zs6xVuzZOv6kUhO3b82ASrkl5iHzRdIhq5Z2US1Byk7J39PYd+YQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hv1wxUpBMFCNu6Mnn7GdQdP8mLYXGBb71HSeRaTZ67k=;
- b=ElN+UAVhUwzktnKJjJ0eAegIudcEKk4+MUjjoGcFV3seMLKwL7C/2bpy7QEZGxq2pas26yIINdaQlUlbVt4RxGosZmmo89tnmb2sD+ExHUYtex8AuNb7pMW/ySeZpBzsCbK5YJl2dnfIfYzJTwMnM8qypTHeNo2rPWzMyIfJGtJ7rJ4FfRQHd6CMtU8RbeppgX4dAoWTNVshVtu40BJPN2zaQurhk9Vs1QdlGbm5IJDPtnlCS63peGpQtoDRY4EKe7c4gJNOntARjbA+3K9uQfjpPy+en0v1wzHMfodaZDCYMne+JJJSLGqysUK+ER9to1yx42TL8zAs4BUtYqUvFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL3PR11MB6435.namprd11.prod.outlook.com (2603:10b6:208:3bb::9)
- by PH7PR11MB7549.namprd11.prod.outlook.com (2603:10b6:510:27b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.35; Mon, 18 Dec
- 2023 17:29:36 +0000
-Received: from BL3PR11MB6435.namprd11.prod.outlook.com
- ([fe80::11e1:7392:86a5:59e3]) by BL3PR11MB6435.namprd11.prod.outlook.com
- ([fe80::11e1:7392:86a5:59e3%4]) with mapi id 15.20.7091.034; Mon, 18 Dec 2023
- 17:29:36 +0000
-Message-ID: <6a440dec-9952-39ca-9022-1490c6626907@intel.com>
-Date: Mon, 18 Dec 2023 09:29:32 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: linux-next: Tree for Dec 15
- (drivers/net/ethernet/intel/ice/ice_base.c)
-To: Randy Dunlap <rdunlap@infradead.org>, Stephen Rothwell
-	<sfr@canb.auug.org.au>, Linux Next Mailing List <linux-next@vger.kernel.org>,
-	<intel-wired-lan@lists.osuosl.org>, "Zaremba, Larysa"
-	<larysa.zaremba@intel.com>, "Fijalkowski, Maciej"
-	<maciej.fijalkowski@intel.com>, <ast@kernel.org>, "bpf@vger.kernel.org"
-	<bpf@vger.kernel.org>
-CC: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "Network
- Development" <netdev@vger.kernel.org>, <jesse.brandeburg@intel.com>
-References: <20231215150128.07763fb1@canb.auug.org.au>
- <8b76dad3-8847-475b-aa17-613c9c978f7a@infradead.org>
-Content-Language: en-US
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-In-Reply-To: <8b76dad3-8847-475b-aa17-613c9c978f7a@infradead.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0063.namprd04.prod.outlook.com
- (2603:10b6:303:6b::8) To BL3PR11MB6435.namprd11.prod.outlook.com
- (2603:10b6:208:3bb::9)
+ 15.1.2507.34; Mon, 18 Dec 2023 09:36:16 -0800
+Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
+	id 1C0963D5F6B8B; Mon, 18 Dec 2023 09:36:01 -0800 (PST)
+From: Andrii Nakryiko <andrii@kernel.org>
+To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <martin.lau@kernel.org>
+CC: <andrii@kernel.org>, <kernel-team@meta.com>,
+        Maxim Mikityanskiy
+	<maxtram95@gmail.com>,
+        Yonghong Song <yonghong.song@linux.dev>
+Subject: [PATCH v2 bpf-next] bpf: ensure precise is reset to false in __mark_reg_const_zero()
+Date: Mon, 18 Dec 2023 09:36:01 -0800
+Message-ID: <20231218173601.53047-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL3PR11MB6435:EE_|PH7PR11MB7549:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f660498-493d-48c8-33f7-08dbffeee7fe
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R6znRkJmAe2TtJB61lwIWV52FT/gWlJks6baJvxmW6oJ4ATt6NtVWEGbsrJxWq9vxwecp8tuWADCrimjYN5u/9gusickybTFX/MXH38qA9kuitfZzp5LB8FfzX7DI/YCYOjNCc1c6I1AgFbEYShcD1j+F/c5CunWJISQNucanxp414ntdMexz7jDNRsTEyy41Hj/Z6THczUCwy3qVj5iggFrLRNpw+vKgc2GTKYjvpQJOzF3geBXaAcZGkLtaOpYYMgfCVOgtHLwXfk3ijTecKhthp6qAXof2gnjzoia32jaDOcKenVxelMbdl7cOhWYpowbu2JidXCvXV0qaLehkXs8tzqPe5gc0pUmKDMyEWN2wYtVokjMtgCQ7J0Zao+IdVw/EvL8pr75n+xLjfvcB2oQ1WBt0ZIbp8XI/2h+zKM6ZQr2GGQX4F0zjxhgIPv+d8UJZA+DRnT2BWLYbQy6LhIFJuQRX7a3sqmN2gl5qzvdd1wM7emnkagueR9ey3z5GFbtfkkHOCNgkkMvZGh3PJ4VkQU1s5omiRVKwcLQ0e3wbAWPW6W5z2JJdt5ARp3ZM0uvXRPYZXsbzcHvnsZ2m7CVX1LQb+QDmYjhvoeKlbsiEFj5X8FYHxZNYP+lBspk/M2Km6LQtH+5YNdiSjhRO/eeV7UlPCsOOogaYMDU6GU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB6435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(346002)(136003)(39860400002)(376002)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(82960400001)(2906002)(38100700002)(4744005)(41300700001)(36756003)(921008)(86362001)(31696002)(66946007)(54906003)(66476007)(66556008)(110136005)(6666004)(316002)(6512007)(478600001)(107886003)(2616005)(6486002)(31686004)(6506007)(26005)(5660300002)(53546011)(4326008)(8676002)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WGxwYmc3RUhBc2ZrbkJJaGp0NVlsZE5kWitxdUZJcXJYZ1RCTk9FaWlLYnA1?=
- =?utf-8?B?ZU10ODhBQ2xqbmlTV3R2L1hCdTJoLzdiNk9uMmFpZUFTekhlSi9BN1ZEVUlZ?=
- =?utf-8?B?SGZ0dUhmZ0twVkxEUFU2cmZlNVFyVlZzR0NYd1ZZbmtaNEt4enJDay9FMjZt?=
- =?utf-8?B?bTl1MW5xenN1bGQxMTBQS0owU1RxUXlQeFpZdFVIbjZKMjAweHFXN3BSWG1R?=
- =?utf-8?B?cVV4OXhVdkR5UUxrbnMyRFZuY250VGFUckdFTlVrRXd0SG1TVW5WYmRGbUhu?=
- =?utf-8?B?UVdNTytjL0h1cDFTMjJBTTVmMDRPcUtCSDV3ckZ1dzdOTDgzTSt0ay9VY1Ft?=
- =?utf-8?B?Ty9DRnJoeHN0Rmh6eGFzdEFQNG5YUnFIb001ekE4QzgzTXJHcUc5V0kzaW53?=
- =?utf-8?B?QWwvcys5ZGhwSkpNYWZiTkdJOFFUdGlGc0tsQzEvOURJMlBsZWRnWlM4aWEr?=
- =?utf-8?B?MWFkbjFqd05CMkFNRllUckd2YXp3RnZINnd2MnJpMXFZdjhueEx3UUFHeDdH?=
- =?utf-8?B?T0ZjNTEwZEk2QW1TOHFLVnc4ZncvbkVjdTlzcllUOWdNR2g1OFg0NUp3bHZx?=
- =?utf-8?B?RUNsRThSZ3RMdUVWbFNUVHk5Z3VBLzVwTlVBMFl0WExjajh3MFE1YVdRejEz?=
- =?utf-8?B?bUVRekYrQVZEbWl0SGJ2NDFEVmFlVGRWOGxianc0dU83Y2tHQnNJYWRsaFgz?=
- =?utf-8?B?b1FPR2k1ZFowOVo1NmNkQTJhaG5mdmM5L3E4NE1CU3F6R0NmK2VkQXhNTk54?=
- =?utf-8?B?eUVGdTF3K2x1aWZuUUhHUlh5SStjRlUzeTE5cDNibTFhQ253eTdYei8zMmRD?=
- =?utf-8?B?UFJZSktTTDg1Zk5yQWlRbjJRZEtUQlFUQTR5VGJaeWdqRWJBeVI4VmN4SmNt?=
- =?utf-8?B?Wk8xYmpEaS9PWjllVXE5bXBOSy9GSWtxeW01V08wbU43VVNzWFRxcDVMaGNz?=
- =?utf-8?B?ZTFmMEYyUHFucmdMVTMvekdvd01Yb2IrTHNHOHJVWElaL2xjOEtKYUtQWWxs?=
- =?utf-8?B?cklpdTB2T1JmcjVYcmNnRWxTVURFSjRFZWNMK0tac2VoUEdPeFFLdHM5TTJq?=
- =?utf-8?B?VnRVSndwU3JEdnpaUHBCY1FxWmR3WWMwMW5LbUQ4K0p5U3pMaG8xVlcyckhV?=
- =?utf-8?B?MFUvUWQ5akJ6S0lYYTB4cDhQRThrd0I1Z0dMYlJSSVkxN0Z5ZUVJbUtScGVM?=
- =?utf-8?B?dWtnZmdTSmNwMkp6R2cybkt0WW5jZXBFaVJ0azRsWHVHRWw2amVsQXpZaDZG?=
- =?utf-8?B?RjVHL3dmOG8vQldkVmR4SDNiaVp4NTZINlc1SnNScHJvVXhzaUd6V2VhOXF5?=
- =?utf-8?B?VnNjTjNrTnJCTFRQeExHcTV2ejNWUTJxN3U3THJ5RXRYSVJwOVRrby9XT01E?=
- =?utf-8?B?Rm1TQjdYSzRnTTg1YWRRNzJyNXVuM25EUkxJSkw5bllmVzNwV09OUlUrOTNN?=
- =?utf-8?B?dEd6U3pEWnV0YUdIYjV5eEFsbnpGeTVQaTI5NzRqSlNrVEZOSWdtWVRWQVRU?=
- =?utf-8?B?bjV3V0ZKRnUyMk1jZlJtRzlycXlYbXR5SEFhSXBEby9OWWtlNUVFQlpzdlMz?=
- =?utf-8?B?OXQ2Vm9QSUNnVHMrZEJta2NZR0xjTUV5K0ZrZ1pVNWdXSUN5RGV6VkVFenRC?=
- =?utf-8?B?cW5JWlV2TGJ6dnFVTGhjRkZqTWxkaVoxQ2ozL2p1QmpuUHErY25RNG9nanFr?=
- =?utf-8?B?YVM1aEtjaENjR28yby9abzdESHpIWHBzd1J4MTJNR2QxT3loeDBPRHlHOVlT?=
- =?utf-8?B?Qm5NdFNLUVpzNjYrakV0WndQbVM5RXRhM0ZFVXRTMWRQYXcya0x6SjZ2REFZ?=
- =?utf-8?B?Qk1VTXlzQmgxSzVEcDlGK2VXeC9QMWRYanNXYVdxc3VKRm5Pd3IxZTJTek5Y?=
- =?utf-8?B?RUgxSzJWd2JSQ1VpVzllUGtTeVpxN0cwRWdPRnNqV2RXYzBONG9WKzRMaW5O?=
- =?utf-8?B?UUJUS0tJcWZSVkY5NnR3b2JQVGpzQ3FpcUhLWTQvb1lOTlpKSUtyM2x1V1lK?=
- =?utf-8?B?MVBRYllNa3hjSDhpaWN5Zkk5SlpreFRIa0thTFAvNzhIcy9PUXNqaDBGd052?=
- =?utf-8?B?ZTNzV0VmbDhSMm1YSXdEZi8vY3BFNk9NditBSWNoeU9oR3E3aE5wWDRJczNm?=
- =?utf-8?B?WGU2WUo3bnpLTDBsa2VqSzJjUHpMbWhiVVlISjR3cUQ2bllJaWV5TElsYnRN?=
- =?utf-8?B?OEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f660498-493d-48c8-33f7-08dbffeee7fe
-X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB6435.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2023 17:29:36.4448
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F984TJnQuijBuzX16DStIpbazIM14krAU6cvBrv4okOh1XxwqiMtbEZSzEeeWXb7haChW1esUupSmW/T2xVlEwCKf14msQ1vLwJJ8OlCpBo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7549
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: cEQAEaz4Vj55_JVvOr-kpMz4BNcCwfRk
+X-Proofpoint-ORIG-GUID: cEQAEaz4Vj55_JVvOr-kpMz4BNcCwfRk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-18_11,2023-12-14_01,2023-05-22_02
 
+It is safe to always start with imprecise SCALAR_VALUE register.
+Previously __mark_reg_const_zero() relied on caller to reset precise
+mark, but it's very error prone and we already missed it in a few
+places. So instead make __mark_reg_const_zero() reset precision always,
+as it's a safe default for SCALAR_VALUE. Explanation is basically the
+same as for why we are resetting (or rather not setting) precision in
+current state. If necessary, precision propagation will set it to
+precise correctly.
 
+As such, also remove a big comment about forward precision propagation
+in mark_reg_stack_read() and avoid unnecessarily setting precision to
+true after reading from STACK_ZERO stack. Again, precision propagation
+will correctly handle this, if that SCALAR_VALUE register will ever be
+needed to be precise.
 
-On 12/15/2023 9:26 PM, Randy Dunlap wrote:
-> 
-> 
-> On 12/14/23 20:01, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20231214:
->>
-> 
-> on s390:
-> 
-> # CONFIG_XDP_SOCKETS is not set
-> 
-> ../drivers/net/ethernet/intel/ice/ice_base.c: In function 'ice_xsk_pool_fill_cb':
-> ../drivers/net/ethernet/intel/ice/ice_base.c:533:16: error: variable 'desc' has initializer but incomplete type
->    533 |         struct xsk_cb_desc desc = {};
->        |                ^~~~~~~~~~~
-> ../drivers/net/ethernet/intel/ice/ice_base.c:533:28: error: storage size of 'desc' isn't known
->    533 |         struct xsk_cb_desc desc = {};
->        |                            ^~~~
-> 
-> 
-> Full randconfig file is attached.
+Reported-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Acked-by: Maxim Mikityanskiy <maxtram95@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/bpf/verifier.c                         | 29 +++++++------------
+ .../selftests/bpf/progs/verifier_spill_fill.c | 10 +++++--
+ 2 files changed, 19 insertions(+), 20 deletions(-)
 
-Adding bpf as it's from d68d707dcbbf ("ice: Support XDP hints in AF_XDP 
-ZC mode") which is on bpf-next (and hasn't made it's way to the Intel 
-trees yet).
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1863826a4ac3..9456ee0ad129 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1777,10 +1777,14 @@ static void __mark_reg_known_zero(struct bpf_reg_=
+state *reg)
+ 	__mark_reg_known(reg, 0);
+ }
+=20
+-static void __mark_reg_const_zero(struct bpf_reg_state *reg)
++static void __mark_reg_const_zero(const struct bpf_verifier_env *env, st=
+ruct bpf_reg_state *reg)
+ {
+ 	__mark_reg_known(reg, 0);
+ 	reg->type =3D SCALAR_VALUE;
++	/* all scalars are assumed imprecise initially (unless unprivileged,
++	 * in which case everything is forced to be precise)
++	 */
++	reg->precise =3D !env->bpf_capable;
+ }
+=20
+ static void mark_reg_known_zero(struct bpf_verifier_env *env,
+@@ -4706,21 +4710,10 @@ static void mark_reg_stack_read(struct bpf_verifi=
+er_env *env,
+ 		zeros++;
+ 	}
+ 	if (zeros =3D=3D max_off - min_off) {
+-		/* any access_size read into register is zero extended,
+-		 * so the whole register =3D=3D const_zero
+-		 */
+-		__mark_reg_const_zero(&state->regs[dst_regno]);
+-		/* backtracking doesn't support STACK_ZERO yet,
+-		 * so mark it precise here, so that later
+-		 * backtracking can stop here.
+-		 * Backtracking may not need this if this register
+-		 * doesn't participate in pointer adjustment.
+-		 * Forward propagation of precise flag is not
+-		 * necessary either. This mark is only to stop
+-		 * backtracking. Any register that contributed
+-		 * to const 0 was marked precise before spill.
++		/* Any access_size read into register is zero extended,
++		 * so the whole register =3D=3D const_zero.
+ 		 */
+-		state->regs[dst_regno].precise =3D true;
++		__mark_reg_const_zero(env, &state->regs[dst_regno]);
+ 	} else {
+ 		/* have read misc data from the stack */
+ 		mark_reg_unknown(env, state->regs, dst_regno);
+@@ -4803,11 +4796,11 @@ static int check_stack_read_fixed_off(struct bpf_=
+verifier_env *env,
+=20
+ 				if (spill_cnt =3D=3D size &&
+ 				    tnum_is_const(reg->var_off) && reg->var_off.value =3D=3D 0) {
+-					__mark_reg_const_zero(&state->regs[dst_regno]);
++					__mark_reg_const_zero(env, &state->regs[dst_regno]);
+ 					/* this IS register fill, so keep insn_flags */
+ 				} else if (zero_cnt =3D=3D size) {
+ 					/* similarly to mark_reg_stack_read(), preserve zeroes */
+-					__mark_reg_const_zero(&state->regs[dst_regno]);
++					__mark_reg_const_zero(env, &state->regs[dst_regno]);
+ 					insn_flags =3D 0; /* not restoring original register state */
+ 				} else {
+ 					mark_reg_unknown(env, state->regs, dst_regno);
+@@ -7963,7 +7956,7 @@ static int process_iter_next_call(struct bpf_verifi=
+er_env *env, int insn_idx,
+ 	/* switch to DRAINED state, but keep the depth unchanged */
+ 	/* mark current iter state as drained and assume returned NULL */
+ 	cur_iter->iter.state =3D BPF_ITER_STATE_DRAINED;
+-	__mark_reg_const_zero(&cur_fr->regs[BPF_REG_0]);
++	__mark_reg_const_zero(env, &cur_fr->regs[BPF_REG_0]);
+=20
+ 	return 0;
+ }
+diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/to=
+ols/testing/selftests/bpf/progs/verifier_spill_fill.c
+index 508f5d6c7347..39fe3372e0e0 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
++++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+@@ -499,8 +499,14 @@ __success
+ __msg("2: (7a) *(u64 *)(r10 -8) =3D 0          ; R10=3Dfp0 fp-8_w=3D0000=
+0000")
+ /* but fp-16 is spilled IMPRECISE zero const reg */
+ __msg("4: (7b) *(u64 *)(r10 -16) =3D r0        ; R0_w=3D0 R10=3Dfp0 fp-1=
+6_w=3D0")
+-/* and now check that precision propagation works even for such tricky c=
+ase */
+-__msg("10: (71) r2 =3D *(u8 *)(r10 -9)         ; R2_w=3DP0 R10=3Dfp0 fp-=
+16_w=3D0")
++/* validate that assigning R2 from STACK_ZERO doesn't mark register
++ * precise immediately; if necessary, it will be marked precise later
++ */
++__msg("6: (71) r2 =3D *(u8 *)(r10 -1)          ; R2_w=3D0 R10=3Dfp0 fp-8=
+_w=3D00000000")
++/* similarly, when R2 is assigned from spilled register, it is initially
++ * imprecise, but will be marked precise later once it is used in precis=
+e context
++ */
++__msg("10: (71) r2 =3D *(u8 *)(r10 -9)         ; R2_w=3D0 R10=3Dfp0 fp-1=
+6_w=3D0")
+ __msg("11: (0f) r1 +=3D r2")
+ __msg("mark_precise: frame0: last_idx 11 first_idx 0 subseq_idx -1")
+ __msg("mark_precise: frame0: regs=3Dr2 stack=3D before 10: (71) r2 =3D *=
+(u8 *)(r10 -9)")
+--=20
+2.34.1
 
-Thanks,
-Tony
 
