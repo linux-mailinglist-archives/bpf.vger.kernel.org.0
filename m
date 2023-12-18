@@ -1,68 +1,104 @@
-Return-Path: <bpf+bounces-18164-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18165-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 654F2816676
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 07:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B0068816682
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 07:30:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ABA728260A
-	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 06:27:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DA4928277B
+	for <lists+bpf@lfdr.de>; Mon, 18 Dec 2023 06:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A286FDE;
-	Mon, 18 Dec 2023 06:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62C9D6FA5;
+	Mon, 18 Dec 2023 06:30:48 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-155-179.mail-mxout.facebook.com (66-220-155-179.mail-mxout.facebook.com [66.220.155.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0280B6FA2;
-	Mon, 18 Dec 2023 06:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VygYz0X_1702880804;
-Received: from 30.221.148.252(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VygYz0X_1702880804)
-          by smtp.aliyun-inc.com;
-          Mon, 18 Dec 2023 14:26:45 +0800
-Message-ID: <e616c2ac-e68b-3814-eac3-304e49eb39b8@linux.alibaba.com>
-Date: Mon, 18 Dec 2023 14:26:43 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2D1D6FA4
+	for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 06:30:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id 7E6D92BB1F6A1; Sun, 17 Dec 2023 22:30:31 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next v4 0/7] bpf: Reduce memory usage for bpf_global_percpu_ma
+Date: Sun, 17 Dec 2023 22:30:31 -0800
+Message-Id: <20231218063031.3037929-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-Subject: =?UTF-8?Q?Can_netfilter-ebpf_modify_packets_=ef=bc=9f?=
-To: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de,
- coreteam@netfilter.org, pabeni@redhat.com, ast@kernel.org,
- netfilter-devel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
+Currently when a bpf program intends to allocate memory for percpu kptr,
+the verifier will call bpf_mem_alloc_init() to prefill all supported
+unit sizes and this caused memory consumption very big for large number
+of cpus. For example, for 128-cpu system, the total memory consumption
+with initial prefill is ~175MB. Things will become worse for systems
+with even more cpus.
 
-Hello everyone,
+Patch 1 avoids unnecessary extra percpu memory allocation.
+Patch 2 adds objcg to bpf_mem_alloc at init stage so objcg can be
+associated with root cgroup and objcg can be passed to later
+bpf_mem_alloc_percpu_unit_init().
+Patch 3 addresses memory consumption issue by avoiding to prefill
+with all unit sizes, i.e. only prefilling with user specified size.
+Patch 4 further reduces memory consumption by limiting the
+number of prefill entries for percpu memory allocation.
+Patch 5 rejects percpu memory allocation with bpf_global_percpu_ma
+when allocation size is greater than 512 bytes.
+Patch 6 fixed test_bpf_ma test due to Patch 5.
+Patch 7 added one test to show the verification failure log message.
 
-I've noticed that it's not possible to modify packets via netfilter-ebpf 
-right now. I'm curious if this is by design.
+Changelogs:
+  v3 -> v4:
+    . Add objcg to bpf_mem_alloc during init stage.
+    . Initialize objcg at init stage but use it in bpf_mem_alloc_percpu_u=
+nit_init().
+    . Remove check_obj_size() in bpf_mem_alloc_percpu_unit_init().
+  v2 -> v3:
+    . Clear the bpf_mem_cache if prefill fails.
+    . Change test_bpf_ma percpu allocation tests to use bucket_size
+      as allocation size instead of bucket_size - 8.
+    . Remove __GFP_ZERO flag from __alloc_percpu_gfp() call.
+  v1 -> v2:
+    . Avoid unnecessary extra percpu memory allocation.
+    . Add a separate function to do bpf_global_percpu_ma initialization
+    . promote.
+    . Promote function static 'sizes' array to file static.
+    . Add comments to explain to refill only one item for percpu alloc.
 
-Currently, I've observed some issues, such as:
+Yonghong Song (7):
+  bpf: Avoid unnecessary extra percpu memory allocation
+  bpf: Add objcg to bpf_mem_alloc
+  bpf: Allow per unit prefill for non-fix-size percpu memory allocator
+  bpf: Refill only one percpu element in memalloc
+  bpf: Limit up to 512 bytes for bpf_global_percpu_ma allocation
+  selftests/bpf: Cope with 512 bytes limit with bpf_global_percpu_ma
+  selftests/bpf: Add a selftest with > 512-byte percpu allocation size
 
-1. The dynptr obtained through bpf_dynptr_from_skb in the netfilter-ebpf 
-prog is read-only.
-2. In addition to modification, applications may also need to delete or 
-append some data in the skb, which dynptr_write cannot meet.
-3. Modifying packets involves recalculating csum, or updating 
-transparent header, etc.
-4. The BPF_PROG_TYPE_SCHED_ACT provides a large number of helpers that 
-can meet various packet modification scenarios. However, due to arg_type 
-type checks(ARG_PTR_TO_CTX), we cannot use them directly in netfilter yet.
+ include/linux/bpf.h                           |  2 +-
+ include/linux/bpf_mem_alloc.h                 |  8 ++
+ kernel/bpf/core.c                             |  8 +-
+ kernel/bpf/memalloc.c                         | 90 ++++++++++++++++---
+ kernel/bpf/verifier.c                         | 36 ++++----
+ .../selftests/bpf/prog_tests/test_bpf_ma.c    | 20 +++--
+ .../selftests/bpf/progs/percpu_alloc_fail.c   | 18 ++++
+ .../testing/selftests/bpf/progs/test_bpf_ma.c | 34 +++----
+ 8 files changed, 160 insertions(+), 56 deletions(-)
 
-Looking forward to any feedback.
+--=20
+2.34.1
 
-Best wishes,
-D. Wythe
 
