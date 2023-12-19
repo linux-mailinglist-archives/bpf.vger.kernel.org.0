@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-18283-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18284-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E6C4818895
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 14:24:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78E26818898
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 14:24:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EC71284588
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 13:24:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D94BF1F24AC6
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 13:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478931A728;
-	Tue, 19 Dec 2023 13:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BCA7199CA;
+	Tue, 19 Dec 2023 13:23:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFuN0W0h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SM5u7iyT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D04D18ED6;
-	Tue, 19 Dec 2023 13:23:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AB891BDE4;
+	Tue, 19 Dec 2023 13:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55370780c74so2477463a12.1;
-        Tue, 19 Dec 2023 05:23:41 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a1fae88e66eso506047066b.3;
+        Tue, 19 Dec 2023 05:23:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702992220; x=1703597020; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702992231; x=1703597031; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=69alNgUwO4fEHcqvlE9wDHPb87XBycRiNpEU0YqP8dI=;
-        b=eFuN0W0hlGpPbszrLgW5riCtIgRr7m9ocAWh8w/UFI6osJooFYma5j5BiO3cYxP3tg
-         BpPzBimkv8XeTSmas1PtEYID8vLWuTEnG+oYjRIoeQ5bibskAAhAkTw9sYSRj81wbFh2
-         JXciVW88h5BLdC6b2RRlGwm91Jv5q0LcWzVsMVeQBfMm0c0F006ja6OWZFl9t7Cnd2OE
-         +vcLkn0OA+8FBebv3SDZwxjHFrxa3Lo9XaGPAmCCDEBci4I30tqCp0HaHNfrev4LGWJO
-         o2R69ykhB5eYiqXo26krQHqYsW3wBj5M85AjSCuSVIEKC8PVlwqewGEpkAH46PVRHiVZ
-         sL+A==
+        bh=ohwYq5yvCWylGOCoc6Y4haRzMcah4GL3U4oOACkoFzA=;
+        b=SM5u7iyTBNgorQl5b5reRwNHUYurdglIVUzCKJE0zHEem/+otcJq5ul9k/soESdCTR
+         VOtutIy5a66iETJ2fg1zSjz/ETRUuu8I44OTCuk9yEd3OGNjA/7TQxOCGdyU+aG1C4dT
+         FvTfZ60Iz+3LsEOuCXjLkOEECa3ldgC/Ip+w+1pQygdhr6N/jMMlNTO1OvYD7Un9ahrQ
+         ZBdCE/PT2aL7vygAvF8DtluHDE3dBrjU3u1Vhp4RKvoX/OvEEQeta1M1y+G9i5uWCATG
+         Mj2NINyxUVwREfXpGp9pGmQRxyrpMzFmjQ7SyYSIQ3zz/9hAtfQk6/APd+vhPZ2Li73F
+         FKaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702992220; x=1703597020;
+        d=1e100.net; s=20230601; t=1702992231; x=1703597031;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=69alNgUwO4fEHcqvlE9wDHPb87XBycRiNpEU0YqP8dI=;
-        b=PIlzXNpcx/5ZaZ4BjW5K0bA3NSmvZwMHh0qJtvQOBVhTXfuTgj3SWD+jYddbWh6SAS
-         ioLCf1YVJbHINVAhsvIuNVIbebwdPf7K+gTCbHxEma9a0jDOy7PvuIYCr7b1UzKyxNHL
-         kVYm3lBzEyeNSG7qsyHZP4EO5Kj04HmxV/cSlAle2WMKw7UuOpnqnf5ASfNFFKfuM/+/
-         r9vYRsD1VD+JCTMj1mYfIea+hRKBxxREW3dbHEAhxYgZ3qcrm/CTk02A3RZeEN5CaLpE
-         js03RA5fr/CqQ+RbI9moP0MlfTCwE8Mzg+Uan7ZRU4w//0AawofUVGp2AyfRRVsFZT7G
-         z7tw==
-X-Gm-Message-State: AOJu0YwumZwudBxDor3GE84pf0WkH0DwqyXP2TRNShKfp2wFKk3GT1j8
-	Kv1GCzA/m8Jzi9bVZIhDzLU=
-X-Google-Smtp-Source: AGHT+IFI7ga9857gOeHls61Pb8uACAAUgA2DnLBwa41gHMWBZxqS4Pzzc5dvwJBFt14RpJDi1nv2Xg==
-X-Received: by 2002:a17:906:2d6:b0:a1f:8aa3:2bd4 with SMTP id 22-20020a17090602d600b00a1f8aa32bd4mr8549477ejk.133.1702992220176;
-        Tue, 19 Dec 2023 05:23:40 -0800 (PST)
+        bh=ohwYq5yvCWylGOCoc6Y4haRzMcah4GL3U4oOACkoFzA=;
+        b=iK45I26RlyHEANcEn+AngsQ4u+lQ03hTSI612w+Hed5Ndto9TPOv8hhpiQQEt7jFQt
+         NXboPJ2zdD+rp4RstAXzEuUiHqDwtrTu1ikhmk4x8nA7ybRGOv8uB8PpEm7SB/wj/gsM
+         oFQmYa2JTzOHTwDfN+dEC1/CCdySteRkJn/OEORm+srhWmzxDTInltx3AReHyo17OMxz
+         eBA+XyOgMn+6+ctLs0J/EVD9mvoYXelJ53DXTRnO6yBgZpUFJLwbw2sHzNNz9fowFAiM
+         WHJHcriIL6F72vb+Dx6TPZMNaU7xgd2aPgfpKvhOJsEeGmFwYs+bFCiQXD/N82kNTq1m
+         bx1Q==
+X-Gm-Message-State: AOJu0Yz6dQIGyEwUHZpq2H0Li6I+dSCrAbbcYMOUgrBiqGRwab0K1o/x
+	wSYbigC0t5yL+tuiYLVGq85PRLWtRJp/KA==
+X-Google-Smtp-Source: AGHT+IGRuUI5sjGWayqzk1nu+YcOF+NdSZNg0993gxhNqRabSi0YpJqlMgSlxTmgC+d4nSCVRZI+Fw==
+X-Received: by 2002:a17:906:21d:b0:a23:59ea:1065 with SMTP id 29-20020a170906021d00b00a2359ea1065mr1815968ejd.55.1702992231231;
+        Tue, 19 Dec 2023 05:23:51 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ot17-20020a170906ccd100b00a235b01886dsm2285702ejb.10.2023.12.19.05.23.39
+        by smtp.gmail.com with ESMTPSA id vt6-20020a170907a60600b00a1ce98016b6sm15544493ejc.97.2023.12.19.05.23.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 05:23:39 -0800 (PST)
+        Tue, 19 Dec 2023 05:23:50 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 19 Dec 2023 14:23:37 +0100
+Date: Tue, 19 Dec 2023 14:23:48 +0100
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -74,11 +74,10 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 06/34] function_graph: Allow multiple users to attach
- to function graph
-Message-ID: <ZYGZWWqwtSP82Sja@krava>
+Subject: Re: [PATCH v5 24/34] fprobe: Use ftrace_regs in fprobe entry handler
+Message-ID: <ZYGZZES--JmqQN_v@krava>
 References: <170290509018.220107.1347127510564358608.stgit@devnote2>
- <170290516454.220107.14775763404510245361.stgit@devnote2>
+ <170290538307.220107.14964448383069008953.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,69 +86,137 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <170290516454.220107.14775763404510245361.stgit@devnote2>
+In-Reply-To: <170290538307.220107.14964448383069008953.stgit@devnote2>
 
-On Mon, Dec 18, 2023 at 10:12:45PM +0900, Masami Hiramatsu (Google) wrote:
+On Mon, Dec 18, 2023 at 10:16:23PM +0900, Masami Hiramatsu (Google) wrote:
 
 SNIP
 
->  /* Both enabled by default (can be cleared by function_graph tracer flags */
->  static bool fgraph_sleep_time = true;
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 84e8a0f6e4e0..d3f8745d8ead 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2503,7 +2503,7 @@ static int __init bpf_event_init(void)
+>  fs_initcall(bpf_event_init);
+>  #endif /* CONFIG_MODULES */
 >  
-> @@ -126,9 +247,34 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
->  	calltime = trace_clock_local();
+> -#ifdef CONFIG_FPROBE
+> +#if defined(CONFIG_FPROBE) && defined(CONFIG_DYNAMIC_FTRACE_WITH_REGS)
+>  struct bpf_kprobe_multi_link {
+>  	struct bpf_link link;
+>  	struct fprobe fp;
+> @@ -2733,10 +2733,14 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
 >  
->  	index = current->curr_ret_stack;
-> -	RET_STACK_INC(current->curr_ret_stack);
-> +	/* ret offset = 1 ; type = reserved */
-> +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
->  	ret_stack = RET_STACK(current, index);
-> +	ret_stack->ret = ret;
-> +	/*
-> +	 * The unwinders expect curr_ret_stack to point to either zero
-> +	 * or an index where to find the next ret_stack. Even though the
-> +	 * ret stack might be bogus, we want to write the ret and the
-> +	 * index to find the ret_stack before we increment the stack point.
-> +	 * If an interrupt comes in now before we increment the curr_ret_stack
-> +	 * it may blow away what we wrote. But that's fine, because the
-> +	 * index will still be correct (even though the 'ret' won't be).
-> +	 * What we worry about is the index being correct after we increment
-> +	 * the curr_ret_stack and before we update that index, as if an
-> +	 * interrupt comes in and does an unwind stack dump, it will need
-> +	 * at least a correct index!
-> +	 */
->  	barrier();
-> +	current->curr_ret_stack += FGRAPH_RET_INDEX + 1;
-> +	/*
-> +	 * This next barrier is to ensure that an interrupt coming in
-> +	 * will not corrupt what we are about to write.
-> +	 */
-> +	barrier();
+>  static int
+>  kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+> -			  unsigned long ret_ip, struct pt_regs *regs,
+> +			  unsigned long ret_ip, struct ftrace_regs *fregs,
+>  			  void *data)
+>  {
+>  	struct bpf_kprobe_multi_link *link;
+> +	struct pt_regs *regs = ftrace_get_regs(fregs);
 > +
-> +	/* Still keep it reserved even if an interrupt came in */
-> +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
+> +	if (!regs)
+> +		return 0;
+>  
+>  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+>  	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> @@ -3008,7 +3012,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+>  	kvfree(cookies);
+>  	return err;
+>  }
+> -#else /* !CONFIG_FPROBE */
+> +#else /* !CONFIG_FPROBE || !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
+>  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+>  {
+>  	return -EOPNOTSUPP;
+> diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> index 6cd2a4e3afb8..f12569494d8a 100644
+> --- a/kernel/trace/fprobe.c
+> +++ b/kernel/trace/fprobe.c
+> @@ -46,7 +46,7 @@ static inline void __fprobe_handler(unsigned long ip, unsigned long parent_ip,
+>  	}
+>  
+>  	if (fp->entry_handler)
+> -		ret = fp->entry_handler(fp, ip, parent_ip, ftrace_get_regs(fregs), entry_data);
+> +		ret = fp->entry_handler(fp, ip, parent_ip, fregs, entry_data);
+>  
+>  	/* If entry_handler returns !0, nmissed is not counted. */
+>  	if (rh) {
+> @@ -182,7 +182,7 @@ static void fprobe_init(struct fprobe *fp)
+>  		fp->ops.func = fprobe_kprobe_handler;
+>  	else
+>  		fp->ops.func = fprobe_handler;
+> -	fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS;
+> +	fp->ops.flags |= FTRACE_OPS_FL_SAVE_ARGS;
 
-seems like this was set already few lines above?
+so with this change you move to ftrace_caller trampoline,
+but we need ftrace_regs_caller right?
+
+otherwise the (!regs) check in kprobe_multi_link_handler
+will be allways true IIUC
 
 jirka
 
-> +
->  	ret_stack->ret = ret;
->  	ret_stack->func = func;
->  	ret_stack->calltime = calltime;
-> @@ -159,6 +305,12 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->  			 unsigned long frame_pointer, unsigned long *retp)
->  {
->  	struct ftrace_graph_ent trace;
-> +	int offset;
-> +	int start;
-> +	int type;
-> +	int val;
-> +	int cnt = 0;
-> +	int i;
+>  }
 >  
->  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
->  	/*
-
-SNIP
+>  static int fprobe_init_rethook(struct fprobe *fp, int num)
+> diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
+> index 7d2ddbcfa377..ef6b36fd05ae 100644
+> --- a/kernel/trace/trace_fprobe.c
+> +++ b/kernel/trace/trace_fprobe.c
+> @@ -320,12 +320,16 @@ NOKPROBE_SYMBOL(fexit_perf_func);
+>  #endif	/* CONFIG_PERF_EVENTS */
+>  
+>  static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+> -			     unsigned long ret_ip, struct pt_regs *regs,
+> +			     unsigned long ret_ip, struct ftrace_regs *fregs,
+>  			     void *entry_data)
+>  {
+>  	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
+> +	struct pt_regs *regs = ftrace_get_regs(fregs);
+>  	int ret = 0;
+>  
+> +	if (!regs)
+> +		return 0;
+> +
+>  	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
+>  		fentry_trace_func(tf, entry_ip, regs);
+>  #ifdef CONFIG_PERF_EVENTS
+> diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
+> index 24de0e5ff859..ff607babba18 100644
+> --- a/lib/test_fprobe.c
+> +++ b/lib/test_fprobe.c
+> @@ -40,7 +40,7 @@ static noinline u32 fprobe_selftest_nest_target(u32 value, u32 (*nest)(u32))
+>  
+>  static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
+>  				    unsigned long ret_ip,
+> -				    struct pt_regs *regs, void *data)
+> +				    struct ftrace_regs *fregs, void *data)
+>  {
+>  	KUNIT_EXPECT_FALSE(current_test, preemptible());
+>  	/* This can be called on the fprobe_selftest_target and the fprobe_selftest_target2 */
+> @@ -81,7 +81,7 @@ static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
+>  
+>  static notrace int nest_entry_handler(struct fprobe *fp, unsigned long ip,
+>  				      unsigned long ret_ip,
+> -				      struct pt_regs *regs, void *data)
+> +				      struct ftrace_regs *fregs, void *data)
+>  {
+>  	KUNIT_EXPECT_FALSE(current_test, preemptible());
+>  	return 0;
+> diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
+> index 64e715e7ed11..1545a1aac616 100644
+> --- a/samples/fprobe/fprobe_example.c
+> +++ b/samples/fprobe/fprobe_example.c
+> @@ -50,7 +50,7 @@ static void show_backtrace(void)
+>  
+>  static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
+>  				unsigned long ret_ip,
+> -				struct pt_regs *regs, void *data)
+> +				struct ftrace_regs *fregs, void *data)
+>  {
+>  	if (use_trace)
+>  		/*
+> 
 
