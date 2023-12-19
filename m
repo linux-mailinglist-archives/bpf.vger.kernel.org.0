@@ -1,125 +1,150 @@
-Return-Path: <bpf+bounces-18260-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18261-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6412C818006
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 04:04:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84EB5818052
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 04:58:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ED081C22C3E
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 03:04:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35532284326
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 03:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4B1469D;
-	Tue, 19 Dec 2023 03:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA45953B4;
+	Tue, 19 Dec 2023 03:58:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PZjvlTjF"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB11C4411
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 03:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SvM3M4B6wz4f3l2J
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 11:03:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 4EB1A1A0A1C
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 11:04:02 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgBXbLohCIFlQ_DkDw--.427S2;
-	Tue, 19 Dec 2023 11:04:02 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-Subject: Re: [PATCH bpf-next v4 3/7] bpf: Allow per unit prefill for
- non-fix-size percpu memory allocator
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231218063031.3037929-1-yonghong.song@linux.dev>
- <20231218063047.3040611-1-yonghong.song@linux.dev>
-Message-ID: <69fa30e8-81d2-5f61-3248-4ce7320cbfe8@huaweicloud.com>
-Date: Tue, 19 Dec 2023 11:04:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E8EC132
+	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 03:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50c222a022dso4845327e87.1
+        for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 19:58:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1702958281; x=1703563081; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QFMDBuRI0yIhgu5G0f945foLHQ4bi+M6kOncymn8N3c=;
+        b=PZjvlTjF9Qo99wE18FhwaD/EImCzUcU4B64KC6ysvXc15qD8FepPBos1CS0LACRSNq
+         Zh0IwV2Ft3sb9R07D/tpnxTkjz68hVwI51g0a2SK6mC8ohog0ZNHaA6iM99QPDfl+3wm
+         R0mVajHSYpnAO1CjWjTAFUMyiWlB4cELZwrJU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702958281; x=1703563081;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QFMDBuRI0yIhgu5G0f945foLHQ4bi+M6kOncymn8N3c=;
+        b=PiAh9ph+rRWtVi+AeS+xMzcRI1SCuKfnHuamrIRdCt46Kbb4xQakn08Sgb4Cl36YZn
+         cpvJ3HzpO//+yKPMS0bqcWnXzNY+pxvd8TBObsHxb94/0HIDpUH+Y1X03Lh/b8XT70Tn
+         R3qQricV3DLfMVktOrgeY2ZkduRgwvX77B6oyWZdjnsZ/tDR0x3yifbkdBkXXfW5kMb1
+         g//nUfCnQf0VSBEHFloiTYSEwAd6Hzi+T+yX0LVw1EkSHKU8bQVO/iNOA8SRA/tXUEby
+         +qRoY12q+la5H1SJnKXiLMvLz4MYFyHbkUy+0/gPs11w4s6oYNKl4xt2SM2t1/jr8s4c
+         iDEQ==
+X-Gm-Message-State: AOJu0Yzr3GvKj7cejg1V/puQ+gFlIvRnyeQulg52wkzLsWVTaE9Ny9Yq
+	5hMr5kqX9cbyD+Zp6uS3cC4WP5XK1+EbHMDiZ6Jz6xCd
+X-Google-Smtp-Source: AGHT+IEs68fG6azM+hmYgnh/5g7YIslL/cMnBAE0n8GwvaMLBbO+RIb7fGJmP9zn5XLQg7c2lNOvNQ==
+X-Received: by 2002:a05:6512:3d08:b0:50b:f0de:621a with SMTP id d8-20020a0565123d0800b0050bf0de621amr9795177lfv.22.1702958281328;
+        Mon, 18 Dec 2023 19:58:01 -0800 (PST)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id dw11-20020a0565122c8b00b0050d12f2a97asm3046171lfb.177.2023.12.18.19.58.00
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Dec 2023 19:58:00 -0800 (PST)
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50c222a022dso4845313e87.1
+        for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 19:58:00 -0800 (PST)
+X-Received: by 2002:a05:6512:220f:b0:50e:44a4:f7e3 with SMTP id
+ h15-20020a056512220f00b0050e44a4f7e3mr233393lfu.81.1702958280178; Mon, 18 Dec
+ 2023 19:58:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231218063047.3040611-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgBXbLohCIFlQ_DkDw--.427S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZrW8CFWDuF1DCF18ZrW7CFg_yoW5GFyfpa
-	yDW34rCF90vrnrGw4kK3WkCr1rG3yrWr1DJ3yYyr4qkrnxJ3WIkryktws09a4kZws5GF1Y
-	qayDZr17XayjvaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+References: <20231219000520.34178-1-alexei.starovoitov@gmail.com>
+ <CAHk-=wg7JuFYwGy=GOMbRCtOL+jwSQsdUaBsRWkDVYbxipbM5A@mail.gmail.com> <CAADnVQJfyfbpEVHnBy2DDGEJvUm8K25b9NHCzu08Uv96OS8NaA@mail.gmail.com>
+In-Reply-To: <CAADnVQJfyfbpEVHnBy2DDGEJvUm8K25b9NHCzu08Uv96OS8NaA@mail.gmail.com>
+From: Linus Torvalds <torvalds@linuxfoundation.org>
+Date: Mon, 18 Dec 2023 19:57:42 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh5qvbPDXUxnawwVWvoRi6fSwFM6h5rYkKmetovmOxjOg@mail.gmail.com>
+Message-ID: <CAHk-=wh5qvbPDXUxnawwVWvoRi6fSwFM6h5rYkKmetovmOxjOg@mail.gmail.com>
+Subject: Re: pull-request: bpf-next 2023-12-18
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Christian Brauner <brauner@kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 18 Dec 2023 at 17:48, Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+>
+> Point taken.
+> We can do s/__u32 token_fd/__u64 token/
+> and waste upper 32-bit as flags that indicate that lower 32-bit is an FD
+> or
+> are you ok with __u32 token that is 'fd + 1'.
 
+No, you make it follow the standard pattern that Unix has always had:
+file descriptors are _signed_ integer, and negative means error (or
+special cases).
 
-On 12/18/2023 2:30 PM, Yonghong Song wrote:
-> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem allocation")
-> added support for non-fix-size percpu memory allocation.
-> Such allocation will allocate percpu memory for all buckets on all
-> cpus and the memory consumption is in the order to quadratic.
-> For example, let us say, 4 cpus, unit size 16 bytes, so each
-> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256 bytes.
-> Then let us say, 8 cpus with the same unit size, each cpu
-> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024 bytes.
-> So if the number of cpus doubles, the number of memory consumption
-> will be 4 times. So for a system with large number of cpus, the
-> memory consumption goes up quickly with quadratic order.
-> For example, for 4KB percpu allocation, 128 cpus. The total memory
-> consumption will 4KB * 128 * 128 = 64MB. Things will become
-> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
->
-> In Commit 41a5db8d8161, the non-fix-size percpu memory allocation is
-> done in boot time, so for system with large number of cpus, the initial
-> percpu memory consumption is very visible. For example, for 128 cpu
-> system, the total percpu memory allocation will be at least
-> (16 + 32 + 64 + 96 + 128 + 196 + 256 + 512 + 1024 + 2048 + 4096)
->   * 128 * 128 = ~138MB.
-> which is pretty big. It will be even bigger for larger number of cpus.
->
-> Note that the current prefill also allocates 4 entries if the unit size
-> is less than 256. So on top of 138MB memory consumption, this will
-> add more consumption with
-> 3 * (16 + 32 + 64 + 96 + 128 + 196 + 256) * 128 * 128 = ~38MB.
-> Next patch will try to reduce this memory consumption.
->
-> Later on, Commit 1fda5bb66ad8 ("bpf: Do not allocate percpu memory
-> at init stage") moved the non-fix-size percpu memory allocation
-> to bpf verificaiton stage. Once a particular bpf_percpu_obj_new()
-> is called by bpf program, the memory allocator will try to fill in
-> the cache with all sizes, causing the same amount of percpu memory
-> consumption as in the boot stage.
->
-> To reduce the initial percpu memory consumption for non-fix-size
-> percpu memory allocation, instead of filling the cache with all
-> supported allocation sizes, this patch intends to fill the cache
-> only for the requested size. As typically users will not use large
-> percpu data structure, this can save memory significantly.
-> For example, the allocation size is 64 bytes with 128 cpus.
-> Then total percpu memory amount will be 64 * 128 * 128 = 1MB,
-> much less than previous 138MB.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+Now, traditionally a 'fd' is literally just of type "int", but for
+structures it's actually good to make it be a sized entity, so just
+make it be __s32, and make any special cases be actual negative
+numbers.
 
-Acked-by: Hou Tao <houtao1@huawei.com>
+Because I'll just go out on a limb and say that two billion file
+descriptors is enough for anybody, and if we ever were to hit that
+number, we'll have *way* more serious problems elsewhere long long
+before. And in practice, "int" is 32-bit on all current and
+near-future architectures, so "__s32" really is the same as "int" in
+all practical respects, and making the size explicit is just a good
+idea.
 
+You might want to perhaps pre-reserve a few negative numbers for
+actual special cases, eg "openat()" uses
+
+    #define AT_FDCWD -100
+
+which I don't think is a great example to follow in the details: it
+should have parenthesis, and "100" is a rather odd number to choose,
+but it's certainly an example of a not-fundamentally-broken "not a
+file descriptor, but a special case".
+
+Now, if you have a 'flags' or 'cmd' field for *other* reasons, then
+you can certainly just use one of the flags for "I have a file
+descriptor". But don't do some odd "translate values", and don't add
+32 bits just for that.
+
+That's also a perfectly fine traditional unix use (example: socket
+control messages - "struct cmsghdr" with "cmsg_type = SCM_RIGHTS" in
+unix domain sockets).
+
+But if you don't have some other reason for having a separate flag for
+"I also have a file descriptor you should use", then just make a
+negative number mean "no file descriptor".
+
+It's easy to test for the number being negative, but it's also just
+easy to *not* test for, ie it's also perfectly fine to just do
+something like
+
+        struct fd f = fdget(fd);
+
+without ever even bothering to test whether 'fd' is negative or not.
+It is guaranteed to fail for negative numbers and just look exactly
+like the "not open" case, so if you don't care about the difference
+between "invalid" and "not open", then a negative fd also works just
+as-is with no extra code at all.
+
+                   Linus
+
+                     Linus
 
