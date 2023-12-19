@@ -1,168 +1,94 @@
-Return-Path: <bpf+bounces-18305-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18306-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09DC8818B7A
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 16:45:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63413818B95
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 16:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90EAF1F24D16
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 15:45:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 187791F2511F
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 15:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3902E1CABC;
-	Tue, 19 Dec 2023 15:45:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547721CF8B;
+	Tue, 19 Dec 2023 15:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GEayn6jZ"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="RQui2A1u"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B063D1CA9D;
-	Tue, 19 Dec 2023 15:45:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95728C433C7;
-	Tue, 19 Dec 2023 15:45:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703000747;
-	bh=GcnM/9qUtAiC1oXsREg0xuwm28B5TD507+XDSxGomi0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=GEayn6jZWrmFBgWClezgVIOZ5CYCSEBzpSLcXmNUs5mR5N+BGMDr0iAYV1ICzZ/jN
-	 xPol13YhrAVCxkwldtSDFXItV9bVuIO+6iTdjlnyKnkagKypwiON0swg0HG+g8mKss
-	 RDqzq1PZ81nDV/CJx7cTEg5kmnAsvmNDkXHU+ak1r0/v8trWwCYt8dPX5Tu+1CbZjq
-	 pgjj9msNHdAHAv6kD9zUTTwUQt0wukgKALUQcimrE7ZrRE7Cxd4K5L5uWRENKkDODp
-	 lC2POex1m/PQV9FWPUoOedLOULtm0OtiMmZgL/4fy9JcY8SPMI1dPl7kIQcjLj42tl
-	 7dN2Y/H9pNoeQ==
-Date: Wed, 20 Dec 2023 00:45:40 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>, Mark
- Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 06/34] function_graph: Allow multiple users to attach
- to function graph
-Message-Id: <20231220004540.0af568c69ecaf9170430a383@kernel.org>
-In-Reply-To: <ZYGZWWqwtSP82Sja@krava>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-	<170290516454.220107.14775763404510245361.stgit@devnote2>
-	<ZYGZWWqwtSP82Sja@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B751D523
+	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 15:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dbd721384c0so353876276.1
+        for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 07:50:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1703001041; x=1703605841; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NVU3xgdBvk8XLcWcWDCVL/vRqj5MRBe6Jvgvwc1AhvM=;
+        b=RQui2A1uT8eC2GJrweOL5umZPPoynwMDMBJJ2Y0zFoE0T9vUAg8H6KXW8JE91DzzKO
+         vj1VtTf6rL1xIQAUuG7ovAS6yne+hn1IJErB3OC1AdEhu7GndJgNo0szuW+SJcJoPhW3
+         /xYpv1o/IoOE8W9LTQW6weNPAt+HnaJonXWyxiGE+MskHQ7oqWoM3uJZrWFJ2pmGbwVy
+         Sv+JEQ3ohYk28AGtaju4a55ve6Pub4cGnD/n5LZuuG8TcQtrWOfPKCqj1gSZjhuoVMDf
+         hVdKDgdmp+tqiMm9vjreJdPppgl68wM/teQMH3Y4Q/yoQWoiUB6JcYMkTlJs46RpDf1O
+         krrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703001041; x=1703605841;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NVU3xgdBvk8XLcWcWDCVL/vRqj5MRBe6Jvgvwc1AhvM=;
+        b=DW3+sxgRqEqvLDak08ei/Z/sXrrnv1JfqGMvde4PHShIeaqAnxq6t8MQbLJd5g+RLz
+         uijsPpsF6cKSV8VSbrWObLcMCkSlbXCkvIfJ45NIcq0uEjyEs0OtPl9gY71zL9wQ2FoN
+         HRCbxLirMiTWp6zA2SbAignCEW0Fu31dyV33bsPaF3aPuTvHfnz2mhwDzHUO5xt2QdBQ
+         OW6+90IYylo1XG3NfVvpCn16f0rMYlwnI83fyGY4V8i0ASW4hrr0Ftnf4y2hT252sICg
+         LnvZiSD4mR+GN3eJqjWBLPscDze8taXWbqpucExHuisIHFlpj6U8LYrvEShUNQ1ofMlO
+         UfxA==
+X-Gm-Message-State: AOJu0YxKPP69Bq5mRJx7laHah3hSl8Zs0ioHgN8FV6EgNMSjfM+uV4js
+	mAaLiQtXqsX+1S32kKPB6VfcgT3FUI2WBXs6Jt2avUGxxb3UQqw=
+X-Google-Smtp-Source: AGHT+IHXCsS5gaTDuiAV6NwC9RdUuO5SFm8NffKn5PZ7Y0ea+RPB//BbuwYD3fRBEFlSewNUS1PpOmkkp2Mq1xTeyL8=
+X-Received: by 2002:a05:6902:534:b0:db7:dacf:ed96 with SMTP id
+ y20-20020a056902053400b00db7dacfed96mr10313762ybs.119.1703001041508; Tue, 19
+ Dec 2023 07:50:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <09e4992c-9def-41b5-a806-2978b3ae35c6@I-love.SAKURA.ne.jp>
+ <CAHC9VhR_27_LtskFF_0Bzb_9R5r0NRvdW0z0bd9iU8JBOe+HPA@mail.gmail.com> <e7c8c948-edfc-4ac7-8a11-2ce11c1e88a1@I-love.SAKURA.ne.jp>
+In-Reply-To: <e7c8c948-edfc-4ac7-8a11-2ce11c1e88a1@I-love.SAKURA.ne.jp>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 19 Dec 2023 10:50:30 -0500
+Message-ID: <CAHC9VhRibiS-FYs=NHe04_51C+KBy2AAKHut8CKpYs-2KVij_A@mail.gmail.com>
+Subject: Re: [RFC PATCH v3] LSM: Officially support appending LSM hooks after boot.
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: linux-security-module <linux-security-module@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	KP Singh <kpsingh@kernel.org>, Kees Cook <keescook@chromium.org>, 
+	Casey Schaufler <casey@schaufler-ca.com>, song@kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, renauld@google.com, 
+	Paolo Abeni <pabeni@redhat.com>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 19 Dec 2023 14:23:37 +0100
-Jiri Olsa <olsajiri@gmail.com> wrote:
+On Tue, Dec 19, 2023 at 8:19=E2=80=AFAM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> On 2023/12/19 8:19, Paul Moore wrote:
+> > My objections presented in the v2 revision of this patchset remain.
+>
+> No. I answered that your solution is not a viable option at
+> https://lkml.kernel.org/r/d759146e-5d74-4782-931b-adda33b125d4@I-love.SAK=
+URA.ne.jp .
 
-> On Mon, Dec 18, 2023 at 10:12:45PM +0900, Masami Hiramatsu (Google) wrote:
-> 
-> SNIP
-> 
-> >  /* Both enabled by default (can be cleared by function_graph tracer flags */
-> >  static bool fgraph_sleep_time = true;
-> >  
-> > @@ -126,9 +247,34 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
-> >  	calltime = trace_clock_local();
-> >  
-> >  	index = current->curr_ret_stack;
-> > -	RET_STACK_INC(current->curr_ret_stack);
-> > +	/* ret offset = 1 ; type = reserved */
-> > +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
-> >  	ret_stack = RET_STACK(current, index);
-> > +	ret_stack->ret = ret;
-> > +	/*
-> > +	 * The unwinders expect curr_ret_stack to point to either zero
-> > +	 * or an index where to find the next ret_stack. Even though the
-> > +	 * ret stack might be bogus, we want to write the ret and the
-> > +	 * index to find the ret_stack before we increment the stack point.
-> > +	 * If an interrupt comes in now before we increment the curr_ret_stack
-> > +	 * it may blow away what we wrote. But that's fine, because the
-> > +	 * index will still be correct (even though the 'ret' won't be).
-> > +	 * What we worry about is the index being correct after we increment
-> > +	 * the curr_ret_stack and before we update that index, as if an
-> > +	 * interrupt comes in and does an unwind stack dump, it will need
-> > +	 * at least a correct index!
-> > +	 */
-> >  	barrier();
-> > +	current->curr_ret_stack += FGRAPH_RET_INDEX + 1;
-> > +	/*
-> > +	 * This next barrier is to ensure that an interrupt coming in
-> > +	 * will not corrupt what we are about to write.
-> > +	 */
-> > +	barrier();
-> > +
-> > +	/* Still keep it reserved even if an interrupt came in */
-> > +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
-> 
-> seems like this was set already few lines above?
+Let me be very clear, I'm not merging this patch at this point in time
+or in the foreseeable future.
 
-Yeah, there is a trick (trap) for interrupts between writes. We can not do
-atomically write the last stack entry and increment stack index. But it must
-be done for shadow unwinding insinde interrupts. Thus,
-
-(1) write a reserve type entry on the new stack entry
-(2) increment curr_ret_stack to the new stack entry
-(3) rewrite the new stack entry again
-
-If an interrupt happens between (1) and (2), stack unwinder can find the
-correct latest shadow stack frame from the curr_ret_stack. This interrupts
-can store their shadow stack so... wait something went wrong.
-
-If the interrupt *overwrites* the shadow stack and (3) recovers it,
-if another interrupt before (3), the shadow stack will be corrupted...
-
-OK, I think we need a "rsrv_ret_stack" index. Basically new one will do;
-
-(1) increment rsrv_ret_stack
-(2) write a reserve type entry
-(3) set curr_ret_stack = rsrv_ret_stack
-
-And before those,
-
-(0) if rsrv_ret_stack != curr_ret_stack, write a reserve type entry at
-    rsrv_ret_stack for the previous frame (which offset can be read
-    from curr_ret_stack)
-
-Than it will never be broken.
-(of course when decrement curr_ret_stack, rsrv_ret_stack is also decremented)
-
-Thank you,
-
-> 
-> jirka
-> 
-> > +
-> >  	ret_stack->ret = ret;
-> >  	ret_stack->func = func;
-> >  	ret_stack->calltime = calltime;
-> > @@ -159,6 +305,12 @@ int function_graph_enter(unsigned long ret, unsigned long func,
-> >  			 unsigned long frame_pointer, unsigned long *retp)
-> >  {
-> >  	struct ftrace_graph_ent trace;
-> > +	int offset;
-> > +	int start;
-> > +	int type;
-> > +	int val;
-> > +	int cnt = 0;
-> > +	int i;
-> >  
-> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
-> >  	/*
-> 
-> SNIP
-> 
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+--=20
+paul-moore.com
 
