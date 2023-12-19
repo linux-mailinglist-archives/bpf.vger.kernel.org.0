@@ -1,96 +1,95 @@
-Return-Path: <bpf+bounces-18285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18286-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8D148188C1
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 14:38:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0731A8188CB
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 14:44:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81ED6285AAB
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 13:38:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B19091F22B15
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 13:44:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F038A19471;
-	Tue, 19 Dec 2023 13:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED84A19BCA;
+	Tue, 19 Dec 2023 13:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g6D0Qy0h"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F931A587
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 13:37:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A3D4C433C8;
-	Tue, 19 Dec 2023 13:37:53 +0000 (UTC)
-Date: Tue, 19 Dec 2023 08:38:51 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Philo Lu
- <lulie@linux.alibaba.com>, bpf@vger.kernel.org, song@kernel.org,
- andrii@kernel.org, ast@kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
- xuanzhuo@linux.alibaba.com, dust.li@linux.alibaba.com,
- guwen@linux.alibaba.com, alibuda@linux.alibaba.com,
- hengqi@linux.alibaba.com, Nathan Slingerland <slinger@meta.com>,
- "rihams@meta.com" <rihams@meta.com>, Alan Maguire
- <alan.maguire@oracle.com>, Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: Question about bpf perfbuf/ringbuf: pinned in backend with
- overwriting
-Message-ID: <20231219083851.0ec83349@gandalf.local.home>
-In-Reply-To: <qdiw6a7acgvepckv6uts5iusp74m7ud4i4lpniu3mgq6jdrs6s@mnttkagth64k>
-References: <3dd9114c-599f-46b2-84b9-abcfd2dcbe33@linux.alibaba.com>
-	<c3c47250-2923-c376-4f5e-ddaf148bbf32@oracle.com>
-	<CAEf4BzZOBdV9vxV6Gr9b5pQ8+M6tPVnHdmELWqOd5jdcL=KpiA@mail.gmail.com>
-	<23691bb5-9688-4e93-a98c-1024e8a8fc62@linux.alibaba.com>
-	<CAEf4BzaQv23wzgmmoSFBja7Syp3m3fRrfzWkFobQ4NNisDTEyA@mail.gmail.com>
-	<qdiw6a7acgvepckv6uts5iusp74m7ud4i4lpniu3mgq6jdrs6s@mnttkagth64k>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7217F199AD;
+	Tue, 19 Dec 2023 13:44:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62D88C433C8;
+	Tue, 19 Dec 2023 13:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1702993442;
+	bh=85MC7cgpkPCUWh0/C8WDuOGLM+4AcByal2VMdxrQAf4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g6D0Qy0hJsH5qNmaB5hjpTpOng9pk2ajAjDXQIE1fZrJ61OPW3n3K6uK4Ie9Zst+P
+	 BaIDxQtmvsIaDm7M90FXjJaXBDBw3MXjONSNwJTMB1qwT2Ccc/6VqWNS19KaDI7fjm
+	 Kzpsb+yO2mvUrJtvf0Wwce68JIliTG5gNGF+UyBY0Uloi+pJhOXDxOQwNXu5PaU8aL
+	 KpnA5Gh0VS4WoakXZxKYH+HBv5aIxU4kIU9lLXkp9saf9D+e2agt2Att0iwqd92bMS
+	 NXDVXq2mO9S8g8NSi6tLYNuPfIfmFKPMQtA9UbdqecqsPHvg9GAFNiOLd05Oh+sreB
+	 92hv7+lSTSQOQ==
+Date: Tue, 19 Dec 2023 14:43:53 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Paul Moore <paul@paul-moore.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Quentin Monnet <quentin@isovalent.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"Serge E. Hallyn" <serge@hallyn.com>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, gyroidos@aisec.fraunhofer.de
+Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
+ non-initial userns
+Message-ID: <20231219-gebaggert-felgen-279a8e8716a8@brauner>
+References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
+ <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de>
+ <20231215-golfanlage-beirren-f304f9dafaca@brauner>
+ <61b39199-022d-4fd8-a7bf-158ee37b3c08@aisec.fraunhofer.de>
+ <20231215-kubikmeter-aufsagen-62bf8d4e3d75@brauner>
+ <20231215-eiern-drucken-69cf4780d942@brauner>
+ <20231218170916.cd319dbcf83f2dd7da24e48f@canonical.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231218170916.cd319dbcf83f2dd7da24e48f@canonical.com>
 
-On Tue, 19 Dec 2023 14:23:59 +0800
-Shung-Hsi Yu <shung-hsi.yu@suse.com> wrote:
+> The only thing that is not clear to me about the sb_device_access hook is, what we can check inside it practically?
+> Yes, we have an access to struct super_block, but at this point this structure is not filled with anything useful. We only
+> can determine a filesystem type and that's all. It means that we can use this hook as a flag that says "ok, we do care about device permissions,
+> kernel, please do not set SB_I_NODEV for us". Am I correct?
 
-> Curious whether it is possible to reuse ftrace's trace buffer instead
-> (or it's underlying ring buffer implementation at
-> kernel/trace/ring_buffer.c). AFAICT it satisfies both requirements that
-> Philo stated: (1) no need for user process as the buffer is accessible
-> through tracefs, and (2) has an overwrite mode.
+What the the LSM needs to definitely know is what filesystem type and
+what user namespace are relevant. Because this whole thing is mostly
+interesting for the != init_user_ns case here.
 
-Yes, the ftrace ring-buffer was in fact designed for the above use case.
+And both things are already present at that point in time (Technically,
+kernfs stuff can be a bit different but kernfs stuff does have
+SB_I_NODEV unconditionally so it really doesn't matter.).The thing is
+though that you want device access settled as soon as possible when the
+superblock isn't yet exposed anywhere. And for that alloc_super() is
+pretty convenient. Then you don't have to put much thought into it.
 
-> 
-> Further more, a natural feature request that would come after
-> overwriting support would be snapshotting, and that has already been
-> covered in ftrace.
-
-Yes, it has that too.
-
-> 
-> Note: technically BPF program could already write to ftrace's trace
-> buffer with the bpf_trace_vprintk() helper, but that goes through string
-> formatting and only allows writing into to the global buffer.
-
-When eBPF was first being developed, Alexei told me he tried the ftrace
-ring buffer, and he said the filtering was too slow. That's because it
-would always write into the ring buffer and then try to discard it after
-the fact, which required a few cmpxchg to synchronize. He decided that the
-perf ring buffer was a better fit for this.
-
-That was solved with this: 0fc1b09ff1ff4 ("tracing: Use temp buffer when
-filtering events") Which makes the filtering similar to perf as perf always
-copies events to a temporary buffer first.
-
-It still falls back to writing directly into the ring buffer if the temp
-buffer is currently being used by another event on the same CPU.
-
-Note that the perf ring buffer was designed for profiling (taking
-intermediate traces) and tightly coupled to have a reader. Whereas the
-ftrace ring buffer was designed for high speed constant tracing, with or
-without a reader.
-
--- Steve
+But we can always move the hook to another place. It's also feasible to
+do this in vfs_get_tree() for example and provide the fs_context but
+again. I don't see why we need to do this now.
 
