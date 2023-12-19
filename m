@@ -1,43 +1,64 @@
-Return-Path: <bpf+bounces-18347-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18348-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC1058193F1
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 23:57:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20F578194E0
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 01:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C005B2262B
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 22:57:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCE822875E6
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 00:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50133D0C5;
-	Tue, 19 Dec 2023 22:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA0E17EF;
+	Wed, 20 Dec 2023 00:00:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xhkXf21S"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OKmmh94W"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301C03D0AE;
-	Tue, 19 Dec 2023 22:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=M7vYwyFBTmXa7mBCYsTu/n+QlJGbIPVud40PFjUfiyM=; b=xhkXf21S7LYXVoeF3VpoobRnb1
-	Dv/PMqOfwlfkkNy03gDBHnf/IIFG77n6wGj0BTrf8LNTtz8SO9dBU+okjGyKQEGNouOKTwGupcAdH
-	QEdbpM11JGfsOi69JGBQ5sHDaj4XjsPX+ZCJzy34OlxUIf397A4FHIEW6w5tMQLxXbcbbULfCsVK+
-	36/PLyjx85RGIXKof1LCC8rO0Euokn+xoMjE8j/Nv8q/kPMxpP4lFvJuYTCQxYygpuoByjK4zKKSf
-	SQ9SG+/Kh97kOTdsb4dsMpazvluGNzPLaTYf4UKtDg7XKTrO0MOoFZwSy/gzY0uFAQt5HQg9IICMu
-	2m7ELvOQ==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFj1v-00Fdwd-1k;
-	Tue, 19 Dec 2023 22:57:39 +0000
-Message-ID: <41abf11c-dbd4-48b1-8ca3-746b62256da8@infradead.org>
-Date: Tue, 19 Dec 2023 14:57:38 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F63E40BE5;
+	Wed, 20 Dec 2023 00:00:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a1ca24776c3so42141766b.0;
+        Tue, 19 Dec 2023 16:00:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703030402; x=1703635202; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gwhJzmoPbvlufJXYZVSOwhyDBPsxrIm+e0rqKip7J9M=;
+        b=OKmmh94WoF8v1IELhEjaTWfCwW/xeEmGbA8brBTJxz76u0by5oRKcfPsWLBvewhkoV
+         SCCYLr/hUb65nO7sOi5bSKCez9cv/PURCmqq7P8hD3Hiv0qisx37QxFO+gc02/gaUYOt
+         W/yzkNGf62a6XY4fU8FBeybIdYbgwePiIBnIrVTCErPDWVwOsJMEXCf9xI22+vBxa3Uk
+         QXCFQVSpUI6pho9kfCz0YKte1soZBphv184LVsPtoXug8gZZ7sACQx6PTQxT7fk5SXn1
+         x78JsYHIMK+ZMIWZraVL8JpsuiefZaC3T4NmorQlUbvff1R/OuzOC4tJBfIhIHPpeHB8
+         cpwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703030402; x=1703635202;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gwhJzmoPbvlufJXYZVSOwhyDBPsxrIm+e0rqKip7J9M=;
+        b=rUe8Sw6TUUZnTX8mEV6sR1TDsK+yHTqECVQnOUb+bAFV4N/KGv9hPeJl7U6OOb7Mg7
+         Kx2pZB1SVxaP24/rAkmRcIvkL8Xu7tBqHNUxnhtaHAbiyt/1FFv8F9tdBERz41a2vLPF
+         ARcScpSJizg59m9V4Gly8xtl6UL3pYvuAggM18qrwzpwZG1kyLYy69pPysDW/56/YOA0
+         CpOIVrFIzbA2fRdngeiAqHzKwG9it4y9m1XaLgD98n1SAU3RziumHFIJ6C3MX0btwMax
+         tpUpZAxuPyoyR5GM28EJmRZwUqdPjKhAUq1Xh3DYZVr95AgznemKVFxC76WGvp5V+q0G
+         8hLg==
+X-Gm-Message-State: AOJu0YyK2LamWOIyRE3ogtrxsYTaGR3ISWuQwpgGb2luyXV6UZ87baW4
+	zvH08U4AhjNS8lbAvDXQ6kw=
+X-Google-Smtp-Source: AGHT+IEnzoyGyEaqEP1FV/hE9gguSDOlXvVD4FxAlOhLZGUxznuFC52CV3Bimn4dlMDdoJvMFHB9ag==
+X-Received: by 2002:a17:906:5498:b0:a23:4e54:25c9 with SMTP id r24-20020a170906549800b00a234e5425c9mr1807264ejo.36.1703030402286;
+        Tue, 19 Dec 2023 16:00:02 -0800 (PST)
+Received: from [192.168.8.100] ([85.255.233.166])
+        by smtp.gmail.com with ESMTPSA id f11-20020a170906138b00b00a268d06d127sm326646ejc.7.2023.12.19.16.00.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Dec 2023 16:00:01 -0800 (PST)
+Message-ID: <040a2f67-cdc2-4e75-84ba-36ec13cbc00b@gmail.com>
+Date: Tue, 19 Dec 2023 23:55:01 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -45,82 +66,141 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] xsk: make struct xsk_cb_desc available outside
- CONFIG_XDP_SOCKETS
+Subject: Re: [net-next v1 08/16] memory-provider: dmabuf devmem memory
+ provider
 Content-Language: en-US
-To: Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- Tony Nguyen <anthony.l.nguyen@intel.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Jonathan Lemon <jonathan.lemon@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+To: Mina Almasry <almasrymina@google.com>
+Cc: Shailend Chand <shailend@google.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ bpf@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>,
  Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Larysa Zaremba <larysa.zaremba@intel.com>
-References: <20231219110205.1289506-1-vladimir.oltean@nxp.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231219110205.1289506-1-vladimir.oltean@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>, Arnd Bergmann
+ <arnd@arndb.de>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeelb@google.com>, Willem de Bruijn <willemb@google.com>,
+ Kaiyuan Zhang <kaiyuanz@google.com>
+References: <20231208005250.2910004-1-almasrymina@google.com>
+ <20231208005250.2910004-9-almasrymina@google.com>
+ <b07a4eca-0c3d-4620-9f97-b1d2c76642c2@gmail.com>
+ <CAHS8izNVFx6oHoo7y86P8Di9VCVe8A_n_9UZFkg5Wnt=A=YcNQ@mail.gmail.com>
+ <b1aea7bc-9627-499a-9bee-d2cc07856978@gmail.com>
+ <CAHS8izPry13h49v+PqrmWSREZKZjYpPesxUTyPQy7AGyFwzo4g@mail.gmail.com>
+ <661c1bae-d7d3-457e-b545-5f67b9ef4197@gmail.com>
+ <CAHS8izOY9xm=LBEN8sYwEa3aFB4GWDvJVacom3o4mHZPdHzTUg@mail.gmail.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izOY9xm=LBEN8sYwEa3aFB4GWDvJVacom3o4mHZPdHzTUg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-
-On 12/19/23 03:02, Vladimir Oltean wrote:
-> The ice driver fails to build when CONFIG_XDP_SOCKETS is disabled.
+On 12/14/23 20:03, Mina Almasry wrote:
+> On Mon, Dec 11, 2023 at 12:37 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> ...
+>>>> If you remove the branch, let it fall into ->release and rely
+>>>> on refcounting there, then the callback could also fix up
+>>>> release_cnt or ask pp to do it, like in the patch I linked above
+>>>>
+>>>
+>>> Sadly I don't think this is possible due to the reasons I mention in
+>>> the commit message of that patch. Prematurely releasing ppiov and not
+>>> having them be candidates for recycling shows me a 4-5x degradation in
+>>> performance.
+>>
+>> I don't think I follow. The concept is to only recycle a buffer (i.e.
+>> make it available for allocation) when its refs drop to zero, which is
+>> IMHO the only way it can work, and IIUC what this patchset is doing.
+>>
+>> That's also I suggest to do, but through a slightly different path.
+>> Let's say at some moment there are 2 refs (e.g. 1 for an skb and
+>> 1 for userspace/xarray).
+>>
+>> Say it first puts the skb:
+>>
+>> napi_pp_put_page()
+>>     -> page_pool_return_page()
+>>       -> mp_ops->release_page()
+>>          -> need_to_free = put_buf()
+>>             // not last ref, need_to_free==false,
+>>             // don't recycle, don't increase release_cnt
+>>
+>> Then you put the last ref:
+>>
+>> page_pool_iov_put_many()
+>>     -> page_pool_return_page()
+>>       -> mp_ops->release_page()
+>>          -> need_to_free = put_buf()
+>>             // last ref, need_to_free==true,
+>>             // recycle and release_cnt++
+>>
+>> And that last put can even be recycled right into the
+>> pp / ptr_ring, in which case it doesn't need to touch
+>> release_cnt. Does it make sense? I don't see where
+>> 4-5x degradation would come from
+>>
+>>
 > 
-> drivers/net/ethernet/intel/ice/ice_base.c:533:21: error:
-> variable has incomplete type 'struct xsk_cb_desc'
->         struct xsk_cb_desc desc = {};
->                            ^
-> include/net/xsk_buff_pool.h:15:8: note:
-> forward declaration of 'struct xsk_cb_desc'
-> struct xsk_cb_desc;
->        ^
+> Sorry for the late reply, I have been working on this locally.
 > 
-> Fixes: d68d707dcbbf ("ice: Support XDP hints in AF_XDP ZC mode")
-> Closes: https://lore.kernel.org/netdev/8b76dad3-8847-475b-aa17-613c9c978f7a@infradead.org/
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> What you're saying makes sense, and I'm no longer sure why I was
+> seeing a perf degradation without '[net-next v1 10/16] page_pool:
+> don't release iov on elevanted refcount'. However, even though what
+> you're saying is technically correct, AFAIU it's actually semantically
+> wrong. When a page is released by the page_pool, we should call
+> page_pool_clear_pp_info() and completely disconnect the page from the
+> pool. If we call release_page() on a page and then the page pool sees
+> it again in page_pool_return_page(), I think that is considered a bug.
+
+You're adding a new feature the semantics of which is already
+different from what is in there, you can extend it any way as long
+as it makes sense and agreed on. IMHO, it does. But well, if
+there is a better solution I'm all for it.
+
+> In fact I think what you're proposing is as a result of a bug because
+> we don't call a page_pool_clear_pp_info() equivalent on releasing
+> ppiov.
+
+I don't get it, what bug? page_pool_clear_pp_info() is not called
+for ppiov because it doesn't make sense to call it for ppiov,
+there is no reason to clear ppiov->pp, nor there is any pp_magic.
 
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> However, I'm reasonably confident I figured out the right thing to do
+> here. The page_pool uses page->pp_frag_count for its refcounting.
+> pp_frag_count is a misnomer, it's being renamed to pp_ref_count in
+> Liang's series[1]). In this series I used a get_page/put_page
+> equivalent for refcounting. Once I transitioned to using
+> pp_[frag|ref]_count for refcounting inside the page_pool, the issue
+> went away, and I no longer need the patch 'page_pool: don't release
+> iov on elevanted refcount'.
 
-Thanks.
+Lovely, I'll take a look later! (also assuming it's in v5)
 
-> ---
-> Posting to net-next since this tree is broken at this stage, not only
-> bpf-next.
+
+> There is an additional upside, since pages and ppiovs are both being
+> refcounted using pp_[frag|ref]_count, we get some unified handling for
+> ppiov and we reduce the checks around ppiov. This should be fixed
+> properly in the next series.
 > 
->  include/net/xdp_sock_drv.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> I still need to do some work (~1 week) before I upload the next
+> version as there is a new requirement from MM that we transition to a
+> new type and not re-use page*, but I uploaded my changes github with
+> the refcounting issues resolved in case they're useful to you. Sorry
+> for the churn:
 > 
-> diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
-> index b62bb8525a5f..526c1e7f505e 100644
-> --- a/include/net/xdp_sock_drv.h
-> +++ b/include/net/xdp_sock_drv.h
-> @@ -12,14 +12,14 @@
->  #define XDP_UMEM_MIN_CHUNK_SHIFT 11
->  #define XDP_UMEM_MIN_CHUNK_SIZE (1 << XDP_UMEM_MIN_CHUNK_SHIFT)
->  
-> -#ifdef CONFIG_XDP_SOCKETS
-> -
->  struct xsk_cb_desc {
->  	void *src;
->  	u8 off;
->  	u8 bytes;
->  };
->  
-> +#ifdef CONFIG_XDP_SOCKETS
-> +
->  void xsk_tx_completed(struct xsk_buff_pool *pool, u32 nb_entries);
->  bool xsk_tx_peek_desc(struct xsk_buff_pool *pool, struct xdp_desc *desc);
->  u32 xsk_tx_peek_release_desc_batch(struct xsk_buff_pool *pool, u32 max);
+> https://github.com/mina/linux/commits/tcpdevmem-v1.5/
+> 
+> [1] https://patchwork.kernel.org/project/netdevbpf/list/?series=809049&state=*
+> 
 
 -- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+Pavel Begunkov
 
