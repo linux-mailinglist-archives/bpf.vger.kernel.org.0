@@ -1,137 +1,213 @@
-Return-Path: <bpf+bounces-18345-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18346-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 010C0819359
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 23:14:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 496F68193DD
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 23:52:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 944E31F21862
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 22:14:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7208A1C24F66
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 22:52:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903953D3A0;
-	Tue, 19 Dec 2023 22:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC5B3D0B3;
+	Tue, 19 Dec 2023 22:52:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ncNJ6vWg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T6xev0+F"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E363D0C1;
-	Tue, 19 Dec 2023 22:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d3aa0321b5so27101305ad.2;
-        Tue, 19 Dec 2023 14:06:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703023569; x=1703628369; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KpQ/R44BfxnaThyybloTKnv0rytzbAxoza/GiXNSIDA=;
-        b=ncNJ6vWgX9CegEJrw/sDH/cC/sIDn8/b+1y8rqdxZYLJFJgEFD3nbcTUN4gPitUMM6
-         rDv4V7YhzMzWOWo1JMa0OBxaIV+jWepOSRPZ/xFRks3VXqArOraSIPzLkJV3/D44Tqb1
-         SuuY6sPeVOg0qYmByojdfYYgiFkO13E6na+96pSQ/G1aUPOhM6T2WPB07w+ogammKqMO
-         MEC00qE0QLtGNYC5mBxLGhVIfHMp9S97duNb8iQ4d6hmq3zugul3aPCrHISWL4vQz+MN
-         v7n8aduHqrzxk0ainxT5phbd7yU9fN3DKXo2pWsIrYNZa7rIJi2SAudfsmERwa8xG+Rf
-         CsCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703023569; x=1703628369;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=KpQ/R44BfxnaThyybloTKnv0rytzbAxoza/GiXNSIDA=;
-        b=EZVaquAW6sh0VHpIVzEUSQ6RupExoSORzXfe+fsjJELmeEdjKn+4VP6yeqHr0OFojU
-         DcVTLmZov1VxEW/19JX2cAMjW0lWhSyjAi7sCaIRTrvO9M5ti7F6Tkgs49WWQks4KpX+
-         btF/tjxyEw8dIThOFIAk1Jv7Ha/tCj0j5R9Tmt60tfHKFAe/wET8rKpM657jeGSae/UO
-         b90dMa+0qhG5+xoDbX+yPVzqE5oA+j8EIer0/pact39cZLXHJa+BkS8zLM8zgtvG84yU
-         kWqH3rq7CaRsXfFc2KEEkr1ks2DoFAJbMJ0ZC0lNZnQ/ctL+mSZ/JXrZXihcsOxNguO3
-         RbKw==
-X-Gm-Message-State: AOJu0YzSS3KdUFPZNc0Y8mnRLB6O6HaWhF9pw8wRi1VLjt6dO6hFlb4F
-	WmAmhZr4jflkh+J1G8etCw4=
-X-Google-Smtp-Source: AGHT+IEjWk57tP9AGmj5l4hY+NlculjvAxGJP8YTdR+jwFopaczXUyZ4VFRhcpqOolsT2GNpWLn+Vw==
-X-Received: by 2002:a17:902:e88f:b0:1d0:6ffd:e2da with SMTP id w15-20020a170902e88f00b001d06ffde2damr23446902plg.116.1703023569011;
-        Tue, 19 Dec 2023 14:06:09 -0800 (PST)
-Received: from localhost ([98.97.32.4])
-        by smtp.gmail.com with ESMTPSA id p17-20020a170903249100b001cfbe348ca5sm21533352plw.187.2023.12.19.14.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 14:06:08 -0800 (PST)
-Date: Tue, 19 Dec 2023 14:06:07 -0800
-From: John Fastabend <john.fastabend@gmail.com>
-To: John Fastabend <john.fastabend@gmail.com>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Kuniyuki Iwashima <kuniyu@amazon.com>, 
- xrivendell7@gmail.com
-Cc: alexander@mihalicyn.com, 
- bpf@vger.kernel.org, 
- daan.j.demeyer@gmail.com, 
- davem@davemloft.net, 
- dhowells@redhat.com, 
- edumazet@google.com, 
- john.fastabend@gmail.com, 
- kuba@kernel.org, 
- kuniyu@amazon.com, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- pabeni@redhat.com
-Message-ID: <658213cf198a3_96d8820886@john.notmuch>
-In-Reply-To: <6581fd3754b79_95e63208f@john.notmuch>
-References: <CABOYnLwXyxPukiaL36NvGvSa6yW3y0rXgrU=ABOzE-1gDAc4-g@mail.gmail.com>
- <20231219155057.12716-1-kuniyu@amazon.com>
- <6581f509a56ea_90e25208c7@john.notmuch>
- <6581fd3754b79_95e63208f@john.notmuch>
-Subject: Re: memory leak in unix_create1/copy_process/security_prepare_creds
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98EF33DB8C;
+	Tue, 19 Dec 2023 22:52:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20FADC433C7;
+	Tue, 19 Dec 2023 22:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703026326;
+	bh=3d5e2aUYMvcozpuqzXim5hohQZk4N3N4SmHcyRdCntc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=T6xev0+FV3fDb/mYUfcl5Fmn8BtiZ468wXbAb/2c6ecNu9SAKggagRcWZY7DU4BBI
+	 6PNDDEVEaW07keZLg21OseWmJGb/+sz0GN/KnB5mOpHWfyuBxrApnnNij7Maksf9Zi
+	 ja5m+cfCSsWf3VoeCiHYrSovHe7wYCQgLC4NZmRB6BPCCq23mB7XFxpsQTlMGoUIWY
+	 tcSuUirvRD747eZUmD/16B6qTTUS0QIO9+7Ix4XH3WIPBmrxXAXN9a9opmie35dSYc
+	 U2t6A7yooWn0Ta4uCpR/TPzAqd2ML79AK6EFzxxL0KNAbi3HgU+vLtWO1TiqkhAdTO
+	 RiazzkQJhSORQ==
+Date: Wed, 20 Dec 2023 07:51:59 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>, Mark
+ Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 24/34] fprobe: Use ftrace_regs in fprobe entry
+ handler
+Message-Id: <20231220075159.a999e25dbf56f0334ba79249@kernel.org>
+In-Reply-To: <ZYGZZES--JmqQN_v@krava>
+References: <170290509018.220107.1347127510564358608.stgit@devnote2>
+	<170290538307.220107.14964448383069008953.stgit@devnote2>
+	<ZYGZZES--JmqQN_v@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-John Fastabend wrote:
-> John Fastabend wrote:
-> > Kuniyuki Iwashima wrote:
-> > > From: xingwei lee <xrivendell7@gmail.com>
-> > > Date: Tue, 19 Dec 2023 17:12:25 +0800
-> > > > Hello I found a bug in net/af_unix in the lastest upstream linux
-> > > > 6.7.rc5 and comfired in lastest net/net-next/bpf/bpf-next tree.
-> > > > Titled "TITLE: memory leak in unix_create1=E2=80=9D and I also up=
-load the
-> > > > repro.c and repro.txt.
-> > > > =
+On Tue, 19 Dec 2023 14:23:48 +0100
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-> > > > If you fix this issue, please add the following tag to the commit=
-:
-> > > > Reported-by: xingwei Lee <xrivendell7@gmail.com>
-> > > =
+> On Mon, Dec 18, 2023 at 10:16:23PM +0900, Masami Hiramatsu (Google) wrote:
+> 
+> SNIP
+> 
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 84e8a0f6e4e0..d3f8745d8ead 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -2503,7 +2503,7 @@ static int __init bpf_event_init(void)
+> >  fs_initcall(bpf_event_init);
+> >  #endif /* CONFIG_MODULES */
+> >  
+> > -#ifdef CONFIG_FPROBE
+> > +#if defined(CONFIG_FPROBE) && defined(CONFIG_DYNAMIC_FTRACE_WITH_REGS)
+> >  struct bpf_kprobe_multi_link {
+> >  	struct bpf_link link;
+> >  	struct fprobe fp;
+> > @@ -2733,10 +2733,14 @@ kprobe_multi_link_prog_run(struct bpf_kprobe_multi_link *link,
+> >  
+> >  static int
+> >  kprobe_multi_link_handler(struct fprobe *fp, unsigned long fentry_ip,
+> > -			  unsigned long ret_ip, struct pt_regs *regs,
+> > +			  unsigned long ret_ip, struct ftrace_regs *fregs,
+> >  			  void *data)
+> >  {
+> >  	struct bpf_kprobe_multi_link *link;
+> > +	struct pt_regs *regs = ftrace_get_regs(fregs);
+> > +
+> > +	if (!regs)
+> > +		return 0;
+> >  
+> >  	link = container_of(fp, struct bpf_kprobe_multi_link, fp);
+> >  	kprobe_multi_link_prog_run(link, get_entry_ip(fentry_ip), regs);
+> > @@ -3008,7 +3012,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+> >  	kvfree(cookies);
+> >  	return err;
+> >  }
+> > -#else /* !CONFIG_FPROBE */
+> > +#else /* !CONFIG_FPROBE || !CONFIG_DYNAMIC_FTRACE_WITH_REGS */
+> >  int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+> >  {
+> >  	return -EOPNOTSUPP;
+> > diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+> > index 6cd2a4e3afb8..f12569494d8a 100644
+> > --- a/kernel/trace/fprobe.c
+> > +++ b/kernel/trace/fprobe.c
+> > @@ -46,7 +46,7 @@ static inline void __fprobe_handler(unsigned long ip, unsigned long parent_ip,
+> >  	}
+> >  
+> >  	if (fp->entry_handler)
+> > -		ret = fp->entry_handler(fp, ip, parent_ip, ftrace_get_regs(fregs), entry_data);
+> > +		ret = fp->entry_handler(fp, ip, parent_ip, fregs, entry_data);
+> >  
+> >  	/* If entry_handler returns !0, nmissed is not counted. */
+> >  	if (rh) {
+> > @@ -182,7 +182,7 @@ static void fprobe_init(struct fprobe *fp)
+> >  		fp->ops.func = fprobe_kprobe_handler;
+> >  	else
+> >  		fp->ops.func = fprobe_handler;
+> > -	fp->ops.flags |= FTRACE_OPS_FL_SAVE_REGS;
+> > +	fp->ops.flags |= FTRACE_OPS_FL_SAVE_ARGS;
+> 
+> so with this change you move to ftrace_caller trampoline,
+> but we need ftrace_regs_caller right?
 
-> > > Thanks for reporting!
-> > > =
+Yes, that's right.
 
-> > > It seems 8866730aed510 forgot to add sock_put().
-> > > I've confirmed that the diff below silenced kmemleak but will check=
+> 
+> otherwise the (!regs) check in kprobe_multi_link_handler
+> will be allways true IIUC
 
-> > > more before posting a patch.
-> > =
+Ah, OK. So until we move to fgraph [28/34], keep this flag SAVE_REGS
+then kprobe_multi test will pass.
 
-> > Did it really silence the memleak?
-> =
+OK, let me keep it so.
 
-> Yes reverting the patch fixed the issue for me.
+Thank you!
 
-The problem is we call proto update twice that bumps the refcnt
-when adding a the same element to the map in the same slot. I'll fix
-this on sockmap side so we can keep the current af_unix logic. Should
-be able to push a fix tomorrow.
+> 
+> jirka
+> 
+> >  }
+> >  
+> >  static int fprobe_init_rethook(struct fprobe *fp, int num)
+> > diff --git a/kernel/trace/trace_fprobe.c b/kernel/trace/trace_fprobe.c
+> > index 7d2ddbcfa377..ef6b36fd05ae 100644
+> > --- a/kernel/trace/trace_fprobe.c
+> > +++ b/kernel/trace/trace_fprobe.c
+> > @@ -320,12 +320,16 @@ NOKPROBE_SYMBOL(fexit_perf_func);
+> >  #endif	/* CONFIG_PERF_EVENTS */
+> >  
+> >  static int fentry_dispatcher(struct fprobe *fp, unsigned long entry_ip,
+> > -			     unsigned long ret_ip, struct pt_regs *regs,
+> > +			     unsigned long ret_ip, struct ftrace_regs *fregs,
+> >  			     void *entry_data)
+> >  {
+> >  	struct trace_fprobe *tf = container_of(fp, struct trace_fprobe, fp);
+> > +	struct pt_regs *regs = ftrace_get_regs(fregs);
+> >  	int ret = 0;
+> >  
+> > +	if (!regs)
+> > +		return 0;
+> > +
+> >  	if (trace_probe_test_flag(&tf->tp, TP_FLAG_TRACE))
+> >  		fentry_trace_func(tf, entry_ip, regs);
+> >  #ifdef CONFIG_PERF_EVENTS
+> > diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
+> > index 24de0e5ff859..ff607babba18 100644
+> > --- a/lib/test_fprobe.c
+> > +++ b/lib/test_fprobe.c
+> > @@ -40,7 +40,7 @@ static noinline u32 fprobe_selftest_nest_target(u32 value, u32 (*nest)(u32))
+> >  
+> >  static notrace int fp_entry_handler(struct fprobe *fp, unsigned long ip,
+> >  				    unsigned long ret_ip,
+> > -				    struct pt_regs *regs, void *data)
+> > +				    struct ftrace_regs *fregs, void *data)
+> >  {
+> >  	KUNIT_EXPECT_FALSE(current_test, preemptible());
+> >  	/* This can be called on the fprobe_selftest_target and the fprobe_selftest_target2 */
+> > @@ -81,7 +81,7 @@ static notrace void fp_exit_handler(struct fprobe *fp, unsigned long ip,
+> >  
+> >  static notrace int nest_entry_handler(struct fprobe *fp, unsigned long ip,
+> >  				      unsigned long ret_ip,
+> > -				      struct pt_regs *regs, void *data)
+> > +				      struct ftrace_regs *fregs, void *data)
+> >  {
+> >  	KUNIT_EXPECT_FALSE(current_test, preemptible());
+> >  	return 0;
+> > diff --git a/samples/fprobe/fprobe_example.c b/samples/fprobe/fprobe_example.c
+> > index 64e715e7ed11..1545a1aac616 100644
+> > --- a/samples/fprobe/fprobe_example.c
+> > +++ b/samples/fprobe/fprobe_example.c
+> > @@ -50,7 +50,7 @@ static void show_backtrace(void)
+> >  
+> >  static int sample_entry_handler(struct fprobe *fp, unsigned long ip,
+> >  				unsigned long ret_ip,
+> > -				struct pt_regs *regs, void *data)
+> > +				struct ftrace_regs *fregs, void *data)
+> >  {
+> >  	if (use_trace)
+> >  		/*
+> > 
 
-We probably never noticed for other socket types because its an
-unusal replace to do same sock/same slot, but af_unix has this
-side effect of incrementing the refcnt that doesn't exist elsewhere.
 
-Thanks,
-John=
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
