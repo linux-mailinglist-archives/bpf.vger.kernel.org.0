@@ -1,80 +1,81 @@
-Return-Path: <bpf+bounces-18268-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18269-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56CBE81817F
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 07:24:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C77F818366
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 09:33:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E4081C23620
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 06:24:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B67AF1F24E79
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 08:33:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA35779C6;
-	Tue, 19 Dec 2023 06:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7510101EF;
+	Tue, 19 Dec 2023 08:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Tp1E5CRn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c7YW4Tak"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCED912B8C
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 06:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cc5a0130faso38132361fa.1
-        for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 22:24:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4758475
+	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 08:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50e3901c2e2so2379256e87.0
+        for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 00:33:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1702967052; x=1703571852; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702974795; x=1703579595; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=1Auxou83JdnsHIJC7wnABg9DC+uIr9hzQFpgIW17Duo=;
-        b=Tp1E5CRnh6gnxx0TYdcrR4VTmH4OxE4CLoC9VS5WIa3qEp0YS0vA0x1/W43A5Ef+NB
-         FtoCQULaPpL36EBQCaS4B51X2/t8KIRWkdwrviAksaiNcLccULwAlOf1vkQ9/oFHlkIs
-         nc5LQHovGWTKXtQJiAnZk+/YRO1SQ72SSqFScTUf9NtcqwXE16nkAtLSPqI46th64zHy
-         U2ENin46KSfDRDEERxffvPMGkoMHvVcZ/zKLTf34czsKTT3KXKOExTh1zRThN1RTa1U2
-         hVSMg/7+lolBqyFsRuP8w69IG5dqBJ3SIjL2fRYTR/jfZJ6x1pZ3Cwfh+3QElAPIKwbV
-         B30w==
+        bh=WjuR2cOSot7LVLVZ63kUM0uCZTgB9PZs0GuW36ctkxU=;
+        b=c7YW4TakF1nzLqnKshGuE9RR+EnIpNf+Y4RcjN1oV6cY+noHMRzRrB3fU5c4wCAMtN
+         mRmXSqSlI68OJ5PGKB2ZEc7naIsWYmXO7Bu4mSgElKSaoXWs3Nu3gxw/kgKE6gQ83pww
+         P/o2P10QCB2JEt1aFfoF7gf5+ywSdvQ1GqOGCSImBhSc4TPrDarL1z5aeydhTjbiOtPx
+         Smef9S2MqAFadcabuUvqVTEEZUojYFNRgeWw/lF3eS4bdLW6qqqfNWJc64tQ08gArvoJ
+         RfwSTOrejLBS7Yun7QM5Jzt2xthQiC6iTbE2kUpAqK6Hh0WI2oI4iW+07rvxT1gAniXr
+         P2Sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702967052; x=1703571852;
+        d=1e100.net; s=20230601; t=1702974795; x=1703579595;
         h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Auxou83JdnsHIJC7wnABg9DC+uIr9hzQFpgIW17Duo=;
-        b=M8ZBs7T0eILwrf/OY0BDccEubN2TriypB4joCzZpsvntWG2pfIXW9fDpPo2jZHtRtF
-         JVi3XdhogAudYL2aS8OfSdwpUR5P5c0TCFQ/LWDuSrZlmdsHxYPbIxvK+Tv0co/CPa60
-         V8E834t/Q0KVkDVtCkdqBGfPK1g8F4uiHcmuK5vufiSBsIylMTbrNY/SEyISVA/IHujC
-         yuwlNMQ1NBZR/Qr2yOYzKrxUGxS7joJf5eS/c1x/AM8QSh9/Iq1Wl3/ueFdAktNW95DL
-         I0OOgTirVdmoygo3+UkgThDRdrB3s/vPw6rxilNJHkud6uGegxePhNPVlmkNzE+ZI4le
-         RPIA==
-X-Gm-Message-State: AOJu0Yyk/fQCLYroOeBYXf0hf0EKcvKb3SLDJCz/A3JjfqmtEwMp2f34
-	4IQZFrC+nuaFmuwlV82L8lrvXg==
-X-Google-Smtp-Source: AGHT+IGH900/aZY9sNxMTGw9nRG2mPGsKzKG7JYilU+W2GHS64Nu+zCzNN6qX6VL8kfur12XSzjzrQ==
-X-Received: by 2002:a2e:7c17:0:b0:2cc:57a7:9076 with SMTP id x23-20020a2e7c17000000b002cc57a79076mr2447126ljc.65.1702967051892;
-        Mon, 18 Dec 2023 22:24:11 -0800 (PST)
-Received: from u94a ([2401:e180:8d03:b561:561e:cf3c:7434:b888])
-        by smtp.gmail.com with ESMTPSA id g22-20020a62e316000000b006d273997cd5sm5538320pfh.91.2023.12.18.22.24.06
+        bh=WjuR2cOSot7LVLVZ63kUM0uCZTgB9PZs0GuW36ctkxU=;
+        b=MR7vQ3osJxMm3Ju2nxXEHzm5lbS7CddlvJGZHhX37GsRLsNvd7WGcJqtuEFEr702md
+         6Y9sfqZt/3yCbYHIfpcdUaSlmOosdcVRNATcKygIKdyo3gjom8sCOl9PUBj6Nvm3mlN7
+         b3AAd9WdD7KH1qa5v0HxL2/e/BfOoUL+2LLAIXhPkE7WQxche6U3qpuUMoTNLI2QBOV1
+         UEJwhYO6z+PvVJkl0MT5CnogR7ZvUri8TEAn63aRSYEy19CFwcF+9GI/MPpndS+jRBKf
+         zkZVV9WAhqPDaSUATJSZpHH7YXJKfsP7YhKzQ7PpjjF8PmVAvdEMrHsUR3sRGW3gb5HM
+         DhLA==
+X-Gm-Message-State: AOJu0Yy5Kd2lC8jBJkzmUfvReGLMTUIJdWaDlSwDErvQDQzbVZWG0J6f
+	fvI5YNSdv6QDbHn9/nFnl8U=
+X-Google-Smtp-Source: AGHT+IEWDdPtktfrcifHEXRZ0ECNiYXGNNVn1hA2Ar1OvJC7Op9ua5S8SBJVY8DNwqrpDs2aspFATA==
+X-Received: by 2002:a05:6512:3b0d:b0:50e:d18:bd6e with SMTP id f13-20020a0565123b0d00b0050e0d18bd6emr7211361lfv.71.1702974795322;
+        Tue, 19 Dec 2023 00:33:15 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id q3-20020a5085c3000000b0054ccac03945sm11117389edh.12.2023.12.19.00.33.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Dec 2023 22:24:11 -0800 (PST)
-Date: Tue, 19 Dec 2023 14:23:59 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	Philo Lu <lulie@linux.alibaba.com>
-Cc: bpf@vger.kernel.org, song@kernel.org, andrii@kernel.org, 
-	ast@kernel.org, Daniel Borkmann <daniel@iogearbox.net>, 
-	xuanzhuo@linux.alibaba.com, dust.li@linux.alibaba.com, guwen@linux.alibaba.com, 
-	alibuda@linux.alibaba.com, hengqi@linux.alibaba.com, Nathan Slingerland <slinger@meta.com>, 
-	"rihams@meta.com" <rihams@meta.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: Question about bpf perfbuf/ringbuf: pinned in backend with
- overwriting
-Message-ID: <qdiw6a7acgvepckv6uts5iusp74m7ud4i4lpniu3mgq6jdrs6s@mnttkagth64k>
-References: <3dd9114c-599f-46b2-84b9-abcfd2dcbe33@linux.alibaba.com>
- <c3c47250-2923-c376-4f5e-ddaf148bbf32@oracle.com>
- <CAEf4BzZOBdV9vxV6Gr9b5pQ8+M6tPVnHdmELWqOd5jdcL=KpiA@mail.gmail.com>
- <23691bb5-9688-4e93-a98c-1024e8a8fc62@linux.alibaba.com>
- <CAEf4BzaQv23wzgmmoSFBja7Syp3m3fRrfzWkFobQ4NNisDTEyA@mail.gmail.com>
+        Tue, 19 Dec 2023 00:33:14 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 19 Dec 2023 09:33:12 +0100
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Alan Maguire <alan.maguire@oracle.com>
+Subject: Re: [PATCHv2 bpf-next 1/2] bpf: Fail uprobe multi link with negative
+ offset
+Message-ID: <ZYFVSJqB3tiz5ttR@krava>
+References: <20231217215538.3361991-1-jolsa@kernel.org>
+ <20231217215538.3361991-2-jolsa@kernel.org>
+ <CAEf4BzaE7DPtetyE-EBvW_QJcO9vHOAanh7aPWEXemB=J3b_Mw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,62 +85,77 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaQv23wzgmmoSFBja7Syp3m3fRrfzWkFobQ4NNisDTEyA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaE7DPtetyE-EBvW_QJcO9vHOAanh7aPWEXemB=J3b_Mw@mail.gmail.com>
 
-On Wed, Dec 13, 2023 at 03:35:19PM -0800, Andrii Nakryiko wrote:
-> On Mon, Dec 11, 2023 at 4:39 AM Philo Lu <lulie@linux.alibaba.com> wrote:
-> [...]
-> > >>> Imagine a simple case: the bpf program output a log (some tcp
-> > >>> statistics) to user every time a packet is received, and the user
-> > >>> actively read the logs if he wants. I do not want to keep a user process
-> > >>> alive, waiting for outputs of the buffer. User can read the buffer as
-> > >>> need. BTW, the order does not matter.
-
-Not sure if it's the same usecase, but I'd imagine for debugging
-hard-to-reproduce issue where little is known (thus minimal filtering is
-applied and the volume of event is large), this would be quite useful.
-You just want to gather as much details as possible for events that
-happens just before the issue occurs, and don't care about events that
-happended much earlier.
-
-> > >>> To conclude, I hope the buffer performs like relayfs: (1) no need for
-> > >>> user process to receive logs, and the user may read at any time (and no
-> > >>> wakeup would be better); (2) old data can be overwritten by new ones.
-> > >>> 
-> > >>> Currently, it seems that perfbuf and ringbuf cannot satisfy both: (i)
-> > >>> ringbuf: only satisfies (1). However, if data arrive when the buffer is
-> > >>> full, the new data will be lost, until the buffer is consumed. (ii)
-> > >>> perfbuf: only satisfies (2). But user cannot access the buffer after the
-> > >>> process who creates it (including perf_event.rb via mmap) exits.
-> > >>> Specifically, I can use BPF_F_PRESERVE_ELEMS flag to keep the
-> > >>> perf_events, but I do not know how to get the buffer again in a new
-> > >>> process.
-> > 
-> > [...]
-> > 
-> > If it is indeed difficult with ringbuf, maybe I can implement a new type
-> > of bpf map based on relay interface [1]? e.g., init relay during map
-> > creating, write into it with bpf helper, and then user can access to it
-> > in filesystem. I think it will be a simple but useful map for
-> > overwritable data transfer.
+On Mon, Dec 18, 2023 at 09:56:38AM -0800, Andrii Nakryiko wrote:
+> On Sun, Dec 17, 2023 at 1:55 PM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Currently the __uprobe_register will return 0 (success) when called with
+> > negative offset. The reason is that the call to register_for_each_vma and
+> > then build_map_info won't return error for negative offset. They just won't
+> > do anything - no matching vma is found so there's no registered breakpoint
+> > for the uprobe.
+> >
+> > I don't think we can change the behaviour of __uprobe_register and fail
+> > for negative uprobe offset, because apps might depend on that already.
+> >
+> > But I think we can still make the change and check for it on bpf multi
+> > link syscall level.
+> >
+> > Also moving the __get_user call and check for the offsets to the top of
+> > loop, to fail early without extra __get_user calls for ref_ctr_offset
+> > and cookie arrays.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> >  kernel/trace/bpf_trace.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> > index 97c0c49c40a0..492d60e9c480 100644
+> > --- a/kernel/trace/bpf_trace.c
+> > +++ b/kernel/trace/bpf_trace.c
+> > @@ -3391,15 +3391,19 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+> >                 goto error_free;
+> >
+> >         for (i = 0; i < cnt; i++) {
+> > -               if (ucookies && __get_user(uprobes[i].cookie, ucookies + i)) {
+> > +               if (__get_user(uprobes[i].offset, uoffsets + i)) {
+> >                         err = -EFAULT;
+> >                         goto error_free;
+> >                 }
+> > +               if (uprobes[i].offset < 0) {
+> > +                       err = -EINVAL;
+> > +                       goto error_free;
+> > +               }
 > 
-> I don't know much about relay, tbh. Give it a try, I guess.
-> Alternatively, we need better and faster implementation of
-> BPF_MAP_TYPE_QUEUE, which seems like the data structure that can
-> support overwriting and generally be a fixed elementa size
-> alternative/complement to BPF ringbuf.
+> I applied this because it does fix the problem, but the whole
+> reshuffle of offsets in front of cookies is pointless, because of the
+> common for() loop. You are saving one or two __get_user() calls before
+> failing.
+> 
+> If we really want to do validation first, reading offsets should be in
+> its own for loop, then uref_ctr_offsets in its own, and then cookies
+> in its own loop as well. That way we read and validate the entire
+> array before reading another array. Please consider a follow up, if
+> you think it's important enough.
 
-Curious whether it is possible to reuse ftrace's trace buffer instead
-(or it's underlying ring buffer implementation at
-kernel/trace/ring_buffer.c). AFAICT it satisfies both requirements that
-Philo stated: (1) no need for user process as the buffer is accessible
-through tracefs, and (2) has an overwrite mode.
+ok, thanks
 
-Further more, a natural feature request that would come after
-overwriting support would be snapshotting, and that has already been
-covered in ftrace.
+jirka
 
-Note: technically BPF program could already write to ftrace's trace
-buffer with the bpf_trace_vprintk() helper, but that goes through string
-formatting and only allows writing into to the global buffer.
+> 
+> 
+> >                 if (uref_ctr_offsets && __get_user(uprobes[i].ref_ctr_offset, uref_ctr_offsets + i)) {
+> >                         err = -EFAULT;
+> >                         goto error_free;
+> >                 }
+> > -               if (__get_user(uprobes[i].offset, uoffsets + i)) {
+> > +               if (ucookies && __get_user(uprobes[i].cookie, ucookies + i)) {
+> >                         err = -EFAULT;
+> >                         goto error_free;
+> >                 }
+> > --
+> > 2.43.0
+> >
 
