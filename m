@@ -1,64 +1,64 @@
-Return-Path: <bpf+bounces-18282-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F56481888E
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 14:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E6C4818895
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 14:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97E8E2840B5
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 13:23:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EC71284588
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 13:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A517018EAE;
-	Tue, 19 Dec 2023 13:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478931A728;
+	Tue, 19 Dec 2023 13:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GQTVaq0p"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFuN0W0h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C57D18E13;
-	Tue, 19 Dec 2023 13:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D04D18ED6;
+	Tue, 19 Dec 2023 13:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2340c803c6so324060166b.0;
-        Tue, 19 Dec 2023 05:23:28 -0800 (PST)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55370780c74so2477463a12.1;
+        Tue, 19 Dec 2023 05:23:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702992207; x=1703597007; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1702992220; x=1703597020; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YwcaPbKi8QnFAxKSbYWNRfJwjYBPl0UD3EkTy1k1RjI=;
-        b=GQTVaq0p6ubvFbGrjS1/OLKzkdoxKaQ7MTuSrIP1jrseBWILFfPLH0l25e7O31voRI
-         HDDYdXKimX1uXkw2+ajQCA2OR8SyJrQdkESq4/WSBNj2GSuTtfD7sZTc7+ZFbNBANM/n
-         QPElhVvWhZAlc6YDTb1zAvp0ygSKazLDqmbvUhr3SuXZGxCGujotutWTL/PvurcmAEDX
-         FGIyWrq8oggYS2hjnv7fFDzSAwPFyWKUaw1vC9h3q/lDykmOjD6ouXaVvcrHWDgo8472
-         S8/y1vIaDGYYOzfo629QsJMy8GnJIbHgUwKCzpiT9adawPZJD/6Qc8wV75vSrKq7w3Ly
-         41EA==
+        bh=69alNgUwO4fEHcqvlE9wDHPb87XBycRiNpEU0YqP8dI=;
+        b=eFuN0W0hlGpPbszrLgW5riCtIgRr7m9ocAWh8w/UFI6osJooFYma5j5BiO3cYxP3tg
+         BpPzBimkv8XeTSmas1PtEYID8vLWuTEnG+oYjRIoeQ5bibskAAhAkTw9sYSRj81wbFh2
+         JXciVW88h5BLdC6b2RRlGwm91Jv5q0LcWzVsMVeQBfMm0c0F006ja6OWZFl9t7Cnd2OE
+         +vcLkn0OA+8FBebv3SDZwxjHFrxa3Lo9XaGPAmCCDEBci4I30tqCp0HaHNfrev4LGWJO
+         o2R69ykhB5eYiqXo26krQHqYsW3wBj5M85AjSCuSVIEKC8PVlwqewGEpkAH46PVRHiVZ
+         sL+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702992207; x=1703597007;
+        d=1e100.net; s=20230601; t=1702992220; x=1703597020;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YwcaPbKi8QnFAxKSbYWNRfJwjYBPl0UD3EkTy1k1RjI=;
-        b=mQbD4QIboqJeFUNp0xqjXRWayjskSA/tRhVIxpMoJMw4Da0uFH4lpPw3FN2Lgbb/Bh
-         EwJUGTcS02AwaghtFmVrh/pSK4lLoZdfIazB9yli5+GKaVv5bi+oC4KEdGtbc8cPPeOt
-         Yrw5DpOoxMWs+J0tDORdX4THf5HKAw/yVLty+CumpVmVhr1aF2Zp1oeXuEoSzp+3UCqf
-         XlizFZlEtskScJ4wAt0WRAkR3Z7rIHWDwI5sUwRgVVc0hmbAbkEvIwdObY4CQp00U3En
-         l2DTkoXBeHtTR9CsGZ3Wsb5mI7ddaKlDO8EUk2MLA4fXohsAdLEhJxagy6BCK4PF7evt
-         df2Q==
-X-Gm-Message-State: AOJu0YxuFm0CYGRN8j08gXhfZ8ddaqh4gP33R5Y9ll19bGqWc9SnoufN
-	mdl/7xKvMFOYSier1lSOYYA=
-X-Google-Smtp-Source: AGHT+IEZ1Amm7e+11O4wvzisyYuM6SsjCmPFI7PGFSWOcJR3aOzCoXHG/Pwh8lzOtiMuJM/qi5IQ1g==
-X-Received: by 2002:a17:906:bc56:b0:a23:5f70:a5f with SMTP id s22-20020a170906bc5600b00a235f700a5fmr1354003ejv.92.1702992206554;
-        Tue, 19 Dec 2023 05:23:26 -0800 (PST)
+        bh=69alNgUwO4fEHcqvlE9wDHPb87XBycRiNpEU0YqP8dI=;
+        b=PIlzXNpcx/5ZaZ4BjW5K0bA3NSmvZwMHh0qJtvQOBVhTXfuTgj3SWD+jYddbWh6SAS
+         ioLCf1YVJbHINVAhsvIuNVIbebwdPf7K+gTCbHxEma9a0jDOy7PvuIYCr7b1UzKyxNHL
+         kVYm3lBzEyeNSG7qsyHZP4EO5Kj04HmxV/cSlAle2WMKw7UuOpnqnf5ASfNFFKfuM/+/
+         r9vYRsD1VD+JCTMj1mYfIea+hRKBxxREW3dbHEAhxYgZ3qcrm/CTk02A3RZeEN5CaLpE
+         js03RA5fr/CqQ+RbI9moP0MlfTCwE8Mzg+Uan7ZRU4w//0AawofUVGp2AyfRRVsFZT7G
+         z7tw==
+X-Gm-Message-State: AOJu0YwumZwudBxDor3GE84pf0WkH0DwqyXP2TRNShKfp2wFKk3GT1j8
+	Kv1GCzA/m8Jzi9bVZIhDzLU=
+X-Google-Smtp-Source: AGHT+IFI7ga9857gOeHls61Pb8uACAAUgA2DnLBwa41gHMWBZxqS4Pzzc5dvwJBFt14RpJDi1nv2Xg==
+X-Received: by 2002:a17:906:2d6:b0:a1f:8aa3:2bd4 with SMTP id 22-20020a17090602d600b00a1f8aa32bd4mr8549477ejk.133.1702992220176;
+        Tue, 19 Dec 2023 05:23:40 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id kt17-20020a1709079d1100b00a015eac52dcsm15306406ejc.108.2023.12.19.05.23.25
+        by smtp.gmail.com with ESMTPSA id ot17-20020a170906ccd100b00a235b01886dsm2285702ejb.10.2023.12.19.05.23.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 05:23:26 -0800 (PST)
+        Tue, 19 Dec 2023 05:23:39 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 19 Dec 2023 14:23:23 +0100
+Date: Tue, 19 Dec 2023 14:23:37 +0100
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -74,10 +74,11 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 24/34] fprobe: Use ftrace_regs in fprobe entry handler
-Message-ID: <ZYGZS190qqH-zUAB@krava>
+Subject: Re: [PATCH v5 06/34] function_graph: Allow multiple users to attach
+ to function graph
+Message-ID: <ZYGZWWqwtSP82Sja@krava>
 References: <170290509018.220107.1347127510564358608.stgit@devnote2>
- <170290538307.220107.14964448383069008953.stgit@devnote2>
+ <170290516454.220107.14775763404510245361.stgit@devnote2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,107 +87,69 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <170290538307.220107.14964448383069008953.stgit@devnote2>
+In-Reply-To: <170290516454.220107.14775763404510245361.stgit@devnote2>
 
-On Mon, Dec 18, 2023 at 10:16:23PM +0900, Masami Hiramatsu (Google) wrote:
-> From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> 
-> This allows fprobes to be available with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
-> instead of CONFIG_DYNAMIC_FTRACE_WITH_REGS, then we can enable fprobe
-> on arm64.
-> 
-> Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Acked-by: Florent Revest <revest@chromium.org>
+On Mon, Dec 18, 2023 at 10:12:45PM +0900, Masami Hiramatsu (Google) wrote:
 
-this change breaks kprobe multi bpf tests (crash below), which are
-partially fixed by [1] later on, but I think we have to keep
-bisecting crash free
+SNIP
 
-it looks like the rethook will get wrong pointer.. I'm still trying
-to digest the whole thing, so I might have some updates later ;-)
+>  /* Both enabled by default (can be cleared by function_graph tracer flags */
+>  static bool fgraph_sleep_time = true;
+>  
+> @@ -126,9 +247,34 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+>  	calltime = trace_clock_local();
+>  
+>  	index = current->curr_ret_stack;
+> -	RET_STACK_INC(current->curr_ret_stack);
+> +	/* ret offset = 1 ; type = reserved */
+> +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
+>  	ret_stack = RET_STACK(current, index);
+> +	ret_stack->ret = ret;
+> +	/*
+> +	 * The unwinders expect curr_ret_stack to point to either zero
+> +	 * or an index where to find the next ret_stack. Even though the
+> +	 * ret stack might be bogus, we want to write the ret and the
+> +	 * index to find the ret_stack before we increment the stack point.
+> +	 * If an interrupt comes in now before we increment the curr_ret_stack
+> +	 * it may blow away what we wrote. But that's fine, because the
+> +	 * index will still be correct (even though the 'ret' won't be).
+> +	 * What we worry about is the index being correct after we increment
+> +	 * the curr_ret_stack and before we update that index, as if an
+> +	 * interrupt comes in and does an unwind stack dump, it will need
+> +	 * at least a correct index!
+> +	 */
+>  	barrier();
+> +	current->curr_ret_stack += FGRAPH_RET_INDEX + 1;
+> +	/*
+> +	 * This next barrier is to ensure that an interrupt coming in
+> +	 * will not corrupt what we are about to write.
+> +	 */
+> +	barrier();
+> +
+> +	/* Still keep it reserved even if an interrupt came in */
+> +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
+
+seems like this was set already few lines above?
 
 jirka
 
+> +
+>  	ret_stack->ret = ret;
+>  	ret_stack->func = func;
+>  	ret_stack->calltime = calltime;
+> @@ -159,6 +305,12 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+>  			 unsigned long frame_pointer, unsigned long *retp)
+>  {
+>  	struct ftrace_graph_ent trace;
+> +	int offset;
+> +	int start;
+> +	int type;
+> +	int val;
+> +	int cnt = 0;
+> +	int i;
+>  
+>  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+>  	/*
 
-[1] fprobe: Rewrite fprobe on function-graph tracer
----
-Dec 19 13:50:04 qemu kernel: BUG: kernel NULL pointer dereference, address: 0000000000000098
-Dec 19 13:50:04 qemu kernel: #PF: supervisor read access in kernel mode
-Dec 19 13:50:04 qemu kernel: #PF: error_code(0x0000) - not-present page
-Dec 19 13:50:04 qemu kernel: PGD 10955f067 P4D 10955f067 PUD 103113067 PMD 0 
-Dec 19 13:50:04 qemu kernel: Oops: 0000 [#1] PREEMPT SMP DEBUG_PAGEALLOC KASAN NOPTI
-Dec 19 13:50:04 qemu kernel: CPU: 1 PID: 747 Comm: test_progs Tainted: G    B      OE      6.7.0-rc3+ #194 85bc8297edbc7f21acfc743dabbd52cac073a6bf
-Dec 19 13:50:04 qemu kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-1.fc38 04/01/2014
-Dec 19 13:50:04 qemu kernel: RIP: 0010:arch_rethook_prepare+0x18/0x60
-Dec 19 13:50:04 qemu kernel: Code: 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 41 55 41 54 55 48 89 f5 53 48 89 fb 48 8d be 98 00 00 00 e8 68 8f 59 >
-Dec 19 13:50:04 qemu kernel: RSP: 0018:ffff888125f97a88 EFLAGS: 00010286
-Dec 19 13:50:04 qemu kernel: RAX: 0000000000000001 RBX: ffff88818a231410 RCX: ffffffff812190b6
-Dec 19 13:50:04 qemu kernel: RDX: fffffbfff0c42e95 RSI: 0000000000000008 RDI: ffffffff862174a0
-Dec 19 13:50:04 qemu kernel: RBP: 0000000000000000 R08: 0000000000000001 R09: fffffbfff0c42e94
-Dec 19 13:50:04 qemu kernel: R10: ffffffff862174a7 R11: 0000000000000000 R12: ffff88818a231420
-Dec 19 13:50:04 qemu kernel: R13: ffffffff8283ee8e R14: ffff88818a231410 R15: fffffffffffffff7
-Dec 19 13:50:04 qemu kernel: FS:  00007ff8a16cfd00(0000) GS:ffff88842c600000(0000) knlGS:0000000000000000
-Dec 19 13:50:05 qemu kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-Dec 19 13:50:05 qemu kernel: CR2: 0000000000000098 CR3: 000000010633c005 CR4: 0000000000770ef0
-Dec 19 13:50:05 qemu kernel: PKRU: 55555554
-Dec 19 13:50:05 qemu kernel: Call Trace:
-Dec 19 13:50:05 qemu kernel:  <TASK>
-Dec 19 13:50:05 qemu kernel:  ? __die+0x1f/0x70
-Dec 19 13:50:05 qemu kernel:  ? page_fault_oops+0x215/0x620
-Dec 19 13:50:05 qemu kernel:  ? rcu_is_watching+0x34/0x60
-Dec 19 13:50:05 qemu kernel:  ? __pfx_page_fault_oops+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  ? asm_sysvec_apic_timer_interrupt+0x16/0x20
-Dec 19 13:50:05 qemu kernel:  ? do_user_addr_fault+0x4b3/0x910
-Dec 19 13:50:05 qemu kernel:  ? exc_page_fault+0x77/0x130
-Dec 19 13:50:05 qemu kernel:  ? asm_exc_page_fault+0x22/0x30
-Dec 19 13:50:05 qemu kernel:  ? bpf_prog_test_run_tracing+0x1ce/0x2d0
-Dec 19 13:50:05 qemu kernel:  ? add_taint+0x26/0x90
-Dec 19 13:50:05 qemu kernel:  ? arch_rethook_prepare+0x18/0x60
-Dec 19 13:50:05 qemu kernel:  ? arch_rethook_prepare+0x18/0x60
-Dec 19 13:50:05 qemu kernel:  ? bpf_prog_test_run_tracing+0x1ce/0x2d0
-Dec 19 13:50:05 qemu kernel:  rethook_hook+0x1e/0x50
-Dec 19 13:50:05 qemu kernel:  ? __pfx_bpf_fentry_test1+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  ? bpf_prog_test_run_tracing+0x1ce/0x2d0
-Dec 19 13:50:05 qemu kernel:  fprobe_handler+0x1ca/0x350
-Dec 19 13:50:05 qemu kernel:  ? __pfx_bpf_fentry_test1+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  arch_ftrace_ops_list_func+0x143/0x2e0
-Dec 19 13:50:05 qemu kernel:  ? bpf_prog_test_run_tracing+0x1ce/0x2d0
-Dec 19 13:50:05 qemu kernel:  ftrace_call+0x5/0x44
-Dec 19 13:50:05 qemu kernel:  ? __pfx_lock_release+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  ? rcu_is_watching+0x34/0x60
-Dec 19 13:50:05 qemu kernel:  ? bpf_prog_test_run_tracing+0xcd/0x2d0
-Dec 19 13:50:05 qemu kernel:  ? bpf_fentry_test1+0x5/0x10
-Dec 19 13:50:05 qemu kernel:  ? rcu_is_watching+0x34/0x60
-Dec 19 13:50:05 qemu kernel:  bpf_fentry_test1+0x5/0x10
-Dec 19 13:50:05 qemu kernel:  bpf_prog_test_run_tracing+0x1ce/0x2d0
-Dec 19 13:50:05 qemu kernel:  ? __pfx_lock_release+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  ? __pfx_bpf_prog_test_run_tracing+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  ? __pfx_lock_release+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  ? __fget_light+0xdf/0x100
-Dec 19 13:50:05 qemu kernel:  ? __bpf_prog_get+0x107/0x150
-Dec 19 13:50:05 qemu kernel:  __sys_bpf+0x552/0x2ef0
-Dec 19 13:50:05 qemu kernel:  ? rcu_is_watching+0x34/0x60
-Dec 19 13:50:05 qemu kernel:  ? __pfx___sys_bpf+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  ? __pfx_lock_release+0x10/0x10
-Dec 19 13:50:05 qemu kernel:  ? vfs_write+0x1fa/0x740
-Dec 19 13:50:05 qemu kernel:  ? rcu_is_watching+0x34/0x60
-Dec 19 13:50:05 qemu kernel:  ? rcu_is_watching+0x34/0x60
-Dec 19 13:50:05 qemu kernel:  ? lockdep_hardirqs_on_prepare+0xe/0x250
-Dec 19 13:50:05 qemu kernel:  ? seqcount_lockdep_reader_access.constprop.0+0x105/0x120
-Dec 19 13:50:05 qemu kernel:  ? seqcount_lockdep_reader_access.constprop.0+0xb2/0x120
-Dec 19 13:50:05 qemu kernel:  __x64_sys_bpf+0x44/0x60
-Dec 19 13:50:05 qemu kernel:  do_syscall_64+0x3f/0xf0
-Dec 19 13:50:05 qemu kernel:  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-Dec 19 13:50:05 qemu kernel: RIP: 0033:0x7ff8a1897b4d
-Dec 19 13:50:05 qemu kernel: Code: c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f >
-Dec 19 13:50:05 qemu kernel: RSP: 002b:00007fff34f7d158 EFLAGS: 00000206 ORIG_RAX: 0000000000000141
-Dec 19 13:50:05 qemu kernel: RAX: ffffffffffffffda RBX: 00007ff8a19aa000 RCX: 00007ff8a1897b4d
-Dec 19 13:50:05 qemu kernel: RDX: 0000000000000050 RSI: 00007fff34f7d190 RDI: 000000000000000a
-Dec 19 13:50:05 qemu kernel: RBP: 00007fff34f7d170 R08: 0000000000000000 R09: 00007fff34f7d190
-Dec 19 13:50:05 qemu kernel: R10: 0000000000000064 R11: 0000000000000206 R12: 0000000000000004
-Dec 19 13:50:05 qemu kernel: R13: 0000000000000000 R14: 00007ff8a19df000 R15: 0000000000e56db0
-Dec 19 13:50:05 qemu kernel:  </TASK>
-Dec 19 13:50:05 qemu kernel: Modules linked in: bpf_testmod(OE) intel_rapl_msr intel_rapl_common crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_inte>
-Dec 19 13:50:05 qemu kernel: CR2: 0000000000000098
-Dec 19 13:50:05 qemu kernel: ---[ end trace 0000000000000000 ]---
+SNIP
 
