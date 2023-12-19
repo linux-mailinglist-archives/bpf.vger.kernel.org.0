@@ -1,113 +1,168 @@
-Return-Path: <bpf+bounces-18304-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18305-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAFE8818B25
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 16:24:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09DC8818B7A
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 16:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA83B1C248A5
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 15:24:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90EAF1F24D16
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 15:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCA51D130;
-	Tue, 19 Dec 2023 15:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3902E1CABC;
+	Tue, 19 Dec 2023 15:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WXg/R5O7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GEayn6jZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0EFA1CA91
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 15:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1702999444;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qqy3wtKu2RpMhAf44zdAjTFEaoDT5QKe4xFKMUw3+5k=;
-	b=WXg/R5O7SFEfxPiOR2XNRTBVZJZwLd5TtZ4za1nk0U1CxkZesjv8ykVrOXPm9IQBQpc8KL
-	vgTPXQL3Fa42P1Bfd4zzh5uCkPSyyCFN4lXvOHgVXfGWctCRSHwdMikBTbAxyhl34QDO81
-	jREUvt4fCsuVEiZTtv5WldcFytximmY=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-641-8OP-JsTSO0StuF2cO9M7yA-1; Tue, 19 Dec 2023 10:24:02 -0500
-X-MC-Unique: 8OP-JsTSO0StuF2cO9M7yA-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a236e1a1720so11383066b.0
-        for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 07:24:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702999441; x=1703604241;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qqy3wtKu2RpMhAf44zdAjTFEaoDT5QKe4xFKMUw3+5k=;
-        b=GhEO8Y4TGDe4eZZohDeIxpm1atylVntxiDQLaqYd24cVbU2vkcvoWVn2cSPYdqcGTe
-         fOejd8EL29Cb6NcT+AgTeSohdQPErGIf1vpc9y3tBoBZLKwC3O8Aii9cymwT/+15tMxs
-         BhiGpfkQxSXzX+sl+w4MzK2LuOgnoLGH8dTEroDTEaqYCqJRvPmx8XODJZVegtem2zH0
-         n4l8X/lqBruJUUcNV06Ax+BtHj0dGlWw0+I24eluhNWHU6deDSfRqrVGlOsBbJN7EGa9
-         BXUYzOKKDO4o6YDhbcmortXxhbby5sX/nsyeT/eJjsZa9YyjfuT5tx31PWHm/KONDV10
-         BbNw==
-X-Gm-Message-State: AOJu0YwQdzmYKhyX9HLZmc6r1L1a5v9Ra92aTAUnMUpwBfbnAc2//ABW
-	1UrvD8hqFqJMVnidWyyz0wyVGdSXyt+cxY2XK4RQ7Lwh3Wp06lngOVjfz9VMCLuJFHyzR+UXsJn
-	qVkBAjlUfrY/v
-X-Received: by 2002:a17:906:354e:b0:a23:58f9:e1e3 with SMTP id s14-20020a170906354e00b00a2358f9e1e3mr3600145eja.2.1702999441095;
-        Tue, 19 Dec 2023 07:24:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFd0dgWBJVckg8y4NbbSgoLWG04HdfE6jM/KTshFzIrCjgjsrKQx/VS4FbrtGGixICTTdPZ4w==
-X-Received: by 2002:a17:906:354e:b0:a23:58f9:e1e3 with SMTP id s14-20020a170906354e00b00a2358f9e1e3mr3600131eja.2.1702999440790;
-        Tue, 19 Dec 2023 07:24:00 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-246-245.dyn.eolo.it. [146.241.246.245])
-        by smtp.gmail.com with ESMTPSA id jw11-20020a17090776ab00b00a2358b0fa03sm2574203ejc.194.2023.12.19.07.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Dec 2023 07:24:00 -0800 (PST)
-Message-ID: <c49124012f186e06a4a379b060c85e4cca1a9d53.camel@redhat.com>
-Subject: Re: [PATCH v5 net-next 1/3] net: introduce page_pool pointer in
- softnet_data percpu struct
-From: Paolo Abeni <pabeni@redhat.com>
-To: Ilias Apalodimas <ilias.apalodimas@linaro.org>, hawk@kernel.org
-Cc: lorenzo.bianconi@redhat.com, davem@davemloft.net, kuba@kernel.org, 
-	edumazet@google.com, bpf@vger.kernel.org, toke@redhat.com, 
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com, sdf@google.com, 
-	netdev@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>
-Date: Tue, 19 Dec 2023 16:23:58 +0100
-In-Reply-To: <b1432fc51c694f1be8daabb19773744fcee13cf1.1702563810.git.lorenzo@kernel.org>
-References: <cover.1702563810.git.lorenzo@kernel.org>
-	 <b1432fc51c694f1be8daabb19773744fcee13cf1.1702563810.git.lorenzo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B063D1CA9D;
+	Tue, 19 Dec 2023 15:45:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95728C433C7;
+	Tue, 19 Dec 2023 15:45:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703000747;
+	bh=GcnM/9qUtAiC1oXsREg0xuwm28B5TD507+XDSxGomi0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=GEayn6jZWrmFBgWClezgVIOZ5CYCSEBzpSLcXmNUs5mR5N+BGMDr0iAYV1ICzZ/jN
+	 xPol13YhrAVCxkwldtSDFXItV9bVuIO+6iTdjlnyKnkagKypwiON0swg0HG+g8mKss
+	 RDqzq1PZ81nDV/CJx7cTEg5kmnAsvmNDkXHU+ak1r0/v8trWwCYt8dPX5Tu+1CbZjq
+	 pgjj9msNHdAHAv6kD9zUTTwUQt0wukgKALUQcimrE7ZrRE7Cxd4K5L5uWRENKkDODp
+	 lC2POex1m/PQV9FWPUoOedLOULtm0OtiMmZgL/4fy9JcY8SPMI1dPl7kIQcjLj42tl
+	 7dN2Y/H9pNoeQ==
+Date: Wed, 20 Dec 2023 00:45:40 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>, Mark
+ Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 06/34] function_graph: Allow multiple users to attach
+ to function graph
+Message-Id: <20231220004540.0af568c69ecaf9170430a383@kernel.org>
+In-Reply-To: <ZYGZWWqwtSP82Sja@krava>
+References: <170290509018.220107.1347127510564358608.stgit@devnote2>
+	<170290516454.220107.14775763404510245361.stgit@devnote2>
+	<ZYGZWWqwtSP82Sja@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2023-12-14 at 15:29 +0100, Lorenzo Bianconi wrote:
-> Allocate percpu page_pools in softnet_data.
-> Moreover add cpuid filed in page_pool struct in order to recycle the
-> page in the page_pool "hot" cache if napi_pp_put_page() is running on
-> the same cpu.
-> This is a preliminary patch to add xdp multi-buff support for xdp running
-> in generic mode.
->=20
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  include/linux/netdevice.h       |  1 +
->  include/net/page_pool/helpers.h |  5 +++++
->  include/net/page_pool/types.h   |  1 +
->  net/core/dev.c                  | 39 ++++++++++++++++++++++++++++++++-
->  net/core/page_pool.c            |  5 +++++
->  net/core/skbuff.c               |  5 +++--
->  6 files changed, 53 insertions(+), 3 deletions(-)
+On Tue, 19 Dec 2023 14:23:37 +0100
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-@Jesper, @Ilias: could you please have a look at the pp bits?
+> On Mon, Dec 18, 2023 at 10:12:45PM +0900, Masami Hiramatsu (Google) wrote:
+> 
+> SNIP
+> 
+> >  /* Both enabled by default (can be cleared by function_graph tracer flags */
+> >  static bool fgraph_sleep_time = true;
+> >  
+> > @@ -126,9 +247,34 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+> >  	calltime = trace_clock_local();
+> >  
+> >  	index = current->curr_ret_stack;
+> > -	RET_STACK_INC(current->curr_ret_stack);
+> > +	/* ret offset = 1 ; type = reserved */
+> > +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
+> >  	ret_stack = RET_STACK(current, index);
+> > +	ret_stack->ret = ret;
+> > +	/*
+> > +	 * The unwinders expect curr_ret_stack to point to either zero
+> > +	 * or an index where to find the next ret_stack. Even though the
+> > +	 * ret stack might be bogus, we want to write the ret and the
+> > +	 * index to find the ret_stack before we increment the stack point.
+> > +	 * If an interrupt comes in now before we increment the curr_ret_stack
+> > +	 * it may blow away what we wrote. But that's fine, because the
+> > +	 * index will still be correct (even though the 'ret' won't be).
+> > +	 * What we worry about is the index being correct after we increment
+> > +	 * the curr_ret_stack and before we update that index, as if an
+> > +	 * interrupt comes in and does an unwind stack dump, it will need
+> > +	 * at least a correct index!
+> > +	 */
+> >  	barrier();
+> > +	current->curr_ret_stack += FGRAPH_RET_INDEX + 1;
+> > +	/*
+> > +	 * This next barrier is to ensure that an interrupt coming in
+> > +	 * will not corrupt what we are about to write.
+> > +	 */
+> > +	barrier();
+> > +
+> > +	/* Still keep it reserved even if an interrupt came in */
+> > +	current->ret_stack[index + FGRAPH_RET_INDEX] = 1;
+> 
+> seems like this was set already few lines above?
 
-Thanks!
+Yeah, there is a trick (trap) for interrupts between writes. We can not do
+atomically write the last stack entry and increment stack index. But it must
+be done for shadow unwinding insinde interrupts. Thus,
 
-Paolo
+(1) write a reserve type entry on the new stack entry
+(2) increment curr_ret_stack to the new stack entry
+(3) rewrite the new stack entry again
 
+If an interrupt happens between (1) and (2), stack unwinder can find the
+correct latest shadow stack frame from the curr_ret_stack. This interrupts
+can store their shadow stack so... wait something went wrong.
+
+If the interrupt *overwrites* the shadow stack and (3) recovers it,
+if another interrupt before (3), the shadow stack will be corrupted...
+
+OK, I think we need a "rsrv_ret_stack" index. Basically new one will do;
+
+(1) increment rsrv_ret_stack
+(2) write a reserve type entry
+(3) set curr_ret_stack = rsrv_ret_stack
+
+And before those,
+
+(0) if rsrv_ret_stack != curr_ret_stack, write a reserve type entry at
+    rsrv_ret_stack for the previous frame (which offset can be read
+    from curr_ret_stack)
+
+Than it will never be broken.
+(of course when decrement curr_ret_stack, rsrv_ret_stack is also decremented)
+
+Thank you,
+
+> 
+> jirka
+> 
+> > +
+> >  	ret_stack->ret = ret;
+> >  	ret_stack->func = func;
+> >  	ret_stack->calltime = calltime;
+> > @@ -159,6 +305,12 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+> >  			 unsigned long frame_pointer, unsigned long *retp)
+> >  {
+> >  	struct ftrace_graph_ent trace;
+> > +	int offset;
+> > +	int start;
+> > +	int type;
+> > +	int val;
+> > +	int cnt = 0;
+> > +	int i;
+> >  
+> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> >  	/*
+> 
+> SNIP
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
