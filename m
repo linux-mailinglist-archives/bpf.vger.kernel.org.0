@@ -1,108 +1,98 @@
-Return-Path: <bpf+bounces-18296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94BAC818913
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 14:56:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B329681898D
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 15:16:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB6851C23FE7
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 13:56:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 634FD288C5C
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 14:16:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962C81A287;
-	Tue, 19 Dec 2023 13:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA0D1B268;
+	Tue, 19 Dec 2023 14:15:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5DBF1B268
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 13:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SvdX230Mjz4f3lDG
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 21:56:18 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 963871A0834
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 21:56:23 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAnKQ8GoYFlwpVPEA--.1928S4;
-	Tue, 19 Dec 2023 21:56:23 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf-next] selftests/bpf: Close cgrp fd before calling cleanup_cgroup_environment()
-Date: Tue, 19 Dec 2023 21:57:27 +0800
-Message-Id: <20231219135727.2661527-1-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122DF1A728;
+	Tue, 19 Dec 2023 14:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Svdx41fcWz1fydm;
+	Tue, 19 Dec 2023 22:14:32 +0800 (CST)
+Received: from dggpeml500010.china.huawei.com (unknown [7.185.36.155])
+	by mail.maildlp.com (Postfix) with ESMTPS id DF89A1800E3;
+	Tue, 19 Dec 2023 22:15:44 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 19 Dec
+ 2023 22:15:43 +0800
+From: Xin Liu <liuxin350@huawei.com>
+To: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>
+CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <yanan@huawei.com>,
+	<wuchangye@huawei.com>, <xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
+	<liuxin350@huawei.com>, <tianmuyang@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: An invalid memory access was discovered by a fuzz test
+Date: Tue, 19 Dec 2023 22:15:44 +0800
+Message-ID: <20231219141544.128812-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAnKQ8GoYFlwpVPEA--.1928S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtrWkXr4UXw15KF15Wr4DJwb_yoWkXrgEyF
-	4FqrykZrWDAan8Kr4Skr909F43Ga15WryrJwnxJr98Za1Uuan8JF4kuFZ8GF9xZ398Gay3
-	Ga4kXFy5Kry7KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb28YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF
-	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42
-	IY6xAIw20EY4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-	jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQzVbUUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
 
-From: Hou Tao <houtao1@huawei.com>
+Hi all:
 
-There is error log when htab-mem benchmark completes. The error log
-looks as follows:
+The issue occurred while reading an ELF file in libbpf.c during fuzzing
 
-$ ./bench htab-mem -d1
-Setting up benchmark 'htab-mem'...
-Benchmark 'htab-mem' started.
-......
-(cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
+    Using host libthread_db library "/usr/lib64/libthread_db.so.1".
+    0.000243187s DEBUG total counters = 7816
+    0.000346533s DEBUG binary maps to 400000-155f280, len = 18215552
+    0.000765462s DEBUG init_fuzzer:run_seed: running initial seed path="crash-sigsegv-b905489aaeb39555ff1245117f1efd1677195b9ac1437bfb18b8d2d04099704b"
 
-Fix it by closing cgrp fd before invoking cleanup_cgroup_environment().
+    Program received signal SIGSEGV, Segmentation fault.
+    0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+    4206 in libbpf.c
+    (gdb) bt
+    #0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+    #1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
+    #2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
+    #3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
+    #4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
+    #5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
+    #6 0x000000000087ad92 in tracing::span::Span::in_scope ()
+    #7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
+    #8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
+    #9 0x00000000005f2601 in main ()
+    (gdb)
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- tools/testing/selftests/bpf/benchs/bench_htab_mem.c | 1 +
- 1 file changed, 1 insertion(+)
+then, I checked the code and found that scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
 
-diff --git a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-index 9146d3f414d2..926ee822143e 100644
---- a/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-+++ b/tools/testing/selftests/bpf/benchs/bench_htab_mem.c
-@@ -335,6 +335,7 @@ static void htab_mem_report_final(struct bench_res res[], int res_cnt)
- 	       " peak memory usage %7.2lfMiB\n",
- 	       loop_mean, loop_stddev, mem_mean, mem_stddev, peak_mem / 1048576.0);
- 
-+	close(ctx.fd);
- 	cleanup_cgroup_environment();
- }
- 
--- 
-2.29.2
+    if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
+    
+The scn_data is derived from the code above:
+    
+    scn = elf_sec_by_idx(obj, sec_idx);
+    scn_data = elf_sec_data(obj, scn);
+    
+    relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+    sec_name = elf_sec_name(obj, scn);
+    if (!relo_sec_name || !sec_name)    // don't check whether scn_data is NULL
+    	return -EINVAL;
 
+Do sec_data and sec_name always occur together? Is it possible that scn_data is NULL but sec_name
+is not NULL? libbpf uses sec_name to determine if it’s a null pointer, Maybe we should do some
+check here.
 
