@@ -1,107 +1,137 @@
-Return-Path: <bpf+bounces-18344-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18345-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C65D8192C1
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 23:02:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 010C0819359
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 23:14:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7C45288459
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 22:02:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 944E31F21862
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 22:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776153C46F;
-	Tue, 19 Dec 2023 22:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 903953D3A0;
+	Tue, 19 Dec 2023 22:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="En52GGV/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ncNJ6vWg"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C278A3D0A2;
-	Tue, 19 Dec 2023 22:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=9fg+mSaYZimcw8y/Rf+e+q5+qIfmlkXuesAXEDPfX40=; b=En52GGV/ikcV6Y3pg2C96xts26
-	4JqFe2vNHEyY1jHjjOcxMJlWs7zPiiu/AXt+VDe422hQuRFpju1YhYLpC4H4OelaWUKS6KIvIDdY6
-	COGm0sGAnBEJssBqFh87cVdsSMSaYlss9F1fTMQlo7Dk/a5lanzLAzV7LclxqwEw9VRzd2FtLe6fe
-	ywFFqT+XXsrUmcB8p3FvYa54yxV7jk3Jlud41zRtVJ4qnup+ZyZKUV2bFbneu9dLuTQCYRFQw0TuU
-	zQ//Jpo7iLbNW7fU4Hs/qdSEnyjGQT61PcHfzwwjvslqmSP4rlEuiNUqBMcC27F3cQsdTLtC7/rFz
-	IAjlzbWw==;
-Received: from [50.53.46.231] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rFiAU-00FYL9-05;
-	Tue, 19 Dec 2023 22:02:26 +0000
-Message-ID: <a3fbe3a7-738a-438b-b8ff-2d0f812033d3@infradead.org>
-Date: Tue, 19 Dec 2023 14:02:25 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E363D0C1;
+	Tue, 19 Dec 2023 22:06:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d3aa0321b5so27101305ad.2;
+        Tue, 19 Dec 2023 14:06:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703023569; x=1703628369; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KpQ/R44BfxnaThyybloTKnv0rytzbAxoza/GiXNSIDA=;
+        b=ncNJ6vWgX9CegEJrw/sDH/cC/sIDn8/b+1y8rqdxZYLJFJgEFD3nbcTUN4gPitUMM6
+         rDv4V7YhzMzWOWo1JMa0OBxaIV+jWepOSRPZ/xFRks3VXqArOraSIPzLkJV3/D44Tqb1
+         SuuY6sPeVOg0qYmByojdfYYgiFkO13E6na+96pSQ/G1aUPOhM6T2WPB07w+ogammKqMO
+         MEC00qE0QLtGNYC5mBxLGhVIfHMp9S97duNb8iQ4d6hmq3zugul3aPCrHISWL4vQz+MN
+         v7n8aduHqrzxk0ainxT5phbd7yU9fN3DKXo2pWsIrYNZa7rIJi2SAudfsmERwa8xG+Rf
+         CsCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703023569; x=1703628369;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KpQ/R44BfxnaThyybloTKnv0rytzbAxoza/GiXNSIDA=;
+        b=EZVaquAW6sh0VHpIVzEUSQ6RupExoSORzXfe+fsjJELmeEdjKn+4VP6yeqHr0OFojU
+         DcVTLmZov1VxEW/19JX2cAMjW0lWhSyjAi7sCaIRTrvO9M5ti7F6Tkgs49WWQks4KpX+
+         btF/tjxyEw8dIThOFIAk1Jv7Ha/tCj0j5R9Tmt60tfHKFAe/wET8rKpM657jeGSae/UO
+         b90dMa+0qhG5+xoDbX+yPVzqE5oA+j8EIer0/pact39cZLXHJa+BkS8zLM8zgtvG84yU
+         kWqH3rq7CaRsXfFc2KEEkr1ks2DoFAJbMJ0ZC0lNZnQ/ctL+mSZ/JXrZXihcsOxNguO3
+         RbKw==
+X-Gm-Message-State: AOJu0YzSS3KdUFPZNc0Y8mnRLB6O6HaWhF9pw8wRi1VLjt6dO6hFlb4F
+	WmAmhZr4jflkh+J1G8etCw4=
+X-Google-Smtp-Source: AGHT+IEjWk57tP9AGmj5l4hY+NlculjvAxGJP8YTdR+jwFopaczXUyZ4VFRhcpqOolsT2GNpWLn+Vw==
+X-Received: by 2002:a17:902:e88f:b0:1d0:6ffd:e2da with SMTP id w15-20020a170902e88f00b001d06ffde2damr23446902plg.116.1703023569011;
+        Tue, 19 Dec 2023 14:06:09 -0800 (PST)
+Received: from localhost ([98.97.32.4])
+        by smtp.gmail.com with ESMTPSA id p17-20020a170903249100b001cfbe348ca5sm21533352plw.187.2023.12.19.14.06.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Dec 2023 14:06:08 -0800 (PST)
+Date: Tue, 19 Dec 2023 14:06:07 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: John Fastabend <john.fastabend@gmail.com>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Kuniyuki Iwashima <kuniyu@amazon.com>, 
+ xrivendell7@gmail.com
+Cc: alexander@mihalicyn.com, 
+ bpf@vger.kernel.org, 
+ daan.j.demeyer@gmail.com, 
+ davem@davemloft.net, 
+ dhowells@redhat.com, 
+ edumazet@google.com, 
+ john.fastabend@gmail.com, 
+ kuba@kernel.org, 
+ kuniyu@amazon.com, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ pabeni@redhat.com
+Message-ID: <658213cf198a3_96d8820886@john.notmuch>
+In-Reply-To: <6581fd3754b79_95e63208f@john.notmuch>
+References: <CABOYnLwXyxPukiaL36NvGvSa6yW3y0rXgrU=ABOzE-1gDAc4-g@mail.gmail.com>
+ <20231219155057.12716-1-kuniyu@amazon.com>
+ <6581f509a56ea_90e25208c7@john.notmuch>
+ <6581fd3754b79_95e63208f@john.notmuch>
+Subject: Re: memory leak in unix_create1/copy_process/security_prepare_creds
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] samples/bpf: use %lu format specifier for unsigned long
- values
-Content-Language: en-US
-To: Colin Ian King <colin.i.king@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231219152307.368921-1-colin.i.king@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20231219152307.368921-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+John Fastabend wrote:
+> John Fastabend wrote:
+> > Kuniyuki Iwashima wrote:
+> > > From: xingwei lee <xrivendell7@gmail.com>
+> > > Date: Tue, 19 Dec 2023 17:12:25 +0800
+> > > > Hello I found a bug in net/af_unix in the lastest upstream linux
+> > > > 6.7.rc5 and comfired in lastest net/net-next/bpf/bpf-next tree.
+> > > > Titled "TITLE: memory leak in unix_create1=E2=80=9D and I also up=
+load the
+> > > > repro.c and repro.txt.
+> > > > =
 
+> > > > If you fix this issue, please add the following tag to the commit=
+:
+> > > > Reported-by: xingwei Lee <xrivendell7@gmail.com>
+> > > =
 
-On 12/19/23 07:23, Colin Ian King wrote:
-> Currently %ld format specifiers are being used for unsigned long
-> values. Fix this by using %lu instead. Cleans up cppcheck warnings:
-> 
-> warning: %ld in format string (no. 1) requires 'long' but the argument
-> type is 'unsigned long'. [invalidPrintfArgType_sint]
-> 
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> > > Thanks for reporting!
+> > > =
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> > > It seems 8866730aed510 forgot to add sock_put().
+> > > I've confirmed that the diff below silenced kmemleak but will check=
 
-Thanks.
+> > > more before posting a patch.
+> > =
 
-> ---
->  samples/bpf/cpustat_user.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/samples/bpf/cpustat_user.c b/samples/bpf/cpustat_user.c
-> index ab90bb08a2b4..356f756cba0d 100644
-> --- a/samples/bpf/cpustat_user.c
-> +++ b/samples/bpf/cpustat_user.c
-> @@ -66,10 +66,10 @@ static void cpu_stat_print(void)
->  
->  		printf("CPU-%-6d ", j);
->  		for (i = 0; i < MAX_CSTATE_ENTRIES; i++)
-> -			printf("%-11ld ", data->cstate[i] / 1000000);
-> +			printf("%-11lu ", data->cstate[i] / 1000000);
->  
->  		for (i = 0; i < MAX_PSTATE_ENTRIES; i++)
-> -			printf("%-11ld ", data->pstate[i] / 1000000);
-> +			printf("%-11lu ", data->pstate[i] / 1000000);
->  
->  		printf("\n");
->  	}
+> > Did it really silence the memleak?
+> =
 
--- 
-#Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://subspace.kernel.org/etiquette.html
+> Yes reverting the patch fixed the issue for me.
+
+The problem is we call proto update twice that bumps the refcnt
+when adding a the same element to the map in the same slot. I'll fix
+this on sockmap side so we can keep the current af_unix logic. Should
+be able to push a fix tomorrow.
+
+We probably never noticed for other socket types because its an
+unusal replace to do same sock/same slot, but af_unix has this
+side effect of incrementing the refcnt that doesn't exist elsewhere.
+
+Thanks,
+John=
 
