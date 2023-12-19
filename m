@@ -1,159 +1,132 @@
-Return-Path: <bpf+bounces-18251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67C63817F2A
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 02:11:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E74A817F2F
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 02:15:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1E86B2408A
-	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 01:11:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA7211F23208
+	for <lists+bpf@lfdr.de>; Tue, 19 Dec 2023 01:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC4215A0;
-	Tue, 19 Dec 2023 01:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2290A1381;
+	Tue, 19 Dec 2023 01:15:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KA/I3J2n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gxvT6pqu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63672637
-	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 01:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a1fae88e66eso438558666b.3
-        for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 17:11:44 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3495410E4
+	for <bpf@vger.kernel.org>; Tue, 19 Dec 2023 01:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3365f1326e4so2676370f8f.1
+        for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 17:15:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1702948302; x=1703553102; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Hej4AjxanXNrySIhvl+6S8hgAgsJIbBbBmJWQyMfh84=;
-        b=KA/I3J2nI6vlr40oNCHPbjUm5JWHTBOJePD2krxYp5sHnpLVCU5ETGfFX/mHuBmnbv
-         g6O4F1Mkwmv3UQ9k8xtQq5ZT44fOPtbIuSQSbAuX426WlLO9GzUDgJrYO/h3XQXKkkIi
-         qSYT/HVBGHuIoS2THkDngcmFlyRQ63X8fKl6I=
+        d=gmail.com; s=20230601; t=1702948529; x=1703553329; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=50OUIIqph5wXqODzVeWVSRaHi5HO6yKUd5PpBi4ufIk=;
+        b=gxvT6pquoFERXqBtn/3VRXJSyjMPtWLtbTycnYUEKIeeFRQV7cFUGG/cMIVAhZZUZf
+         JGi1/mtZSFDCAyiad0fRLM0b3WPbeOrae3Yqw0y3M8fZyXI6k9DzO9ysxcFNFlgTpY1B
+         AhNmDZHYHNGNOXD0WY3+64Q5ooFjWuNIyiWX1phzvbFN+aISEw2QnU6X/bFdDFr76fFl
+         e5/qHicqlmMqrr1WOdfxNomujheAlgim5wjNaHTIOyMkPS6ST1tZV8H7nP4Tstav9D5/
+         S6O7yGQKaP8fIugLPdzb6nKdAcnVehgUMhKwYkALQ2w8BbxCghCCWYybELThl0u4QGHP
+         nxVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702948302; x=1703553102;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Hej4AjxanXNrySIhvl+6S8hgAgsJIbBbBmJWQyMfh84=;
-        b=sWPJu8wWqzJo5ujIfCS0AJziPt4BTXVxh+StriZrZVwggpz+M9yALYDlJlp2eJpzD/
-         OYt0c4+VvJwfpi7NyIYkUCos6zout5qJJtcC3UfpNozEiNXRn8H6kwj3W9jJt/9AsPeI
-         YN3OnlOtAqG4wg2qbn+08qIXXbpnm8QQGPGQl1cm86soXUay9+clw0N33ZPK/0H6/jwr
-         4rWI7t/RHSoJ0Bnk1JpQMUPDoPeiMDSUrtAC8XSHu1Hk2yMmel40jvw2uKdFivDnUIEe
-         CRQ7JaE0WXFtjZUQpAAm0mk4gjjKA3gwGsA55OCo1Sfz8x4woOHJwaNrrD82E8jeQ1RK
-         JOqw==
-X-Gm-Message-State: AOJu0Yz5i6lk4QX2X3rVdrJIxGs3fnvAwICBWJUWfwjSSNkXvp10N5wg
-	N2/UsF2+DuMjbWiKyy5pThUScreX6OZTZR2jK2lFoA==
-X-Google-Smtp-Source: AGHT+IHnvIPHe+NCbHz0V/Ai3Va85arXO1teHlcA7baGA6NmH2G8UmGyeJEM3BQpzzKdmIQ9yjyUFw==
-X-Received: by 2002:a17:907:948f:b0:a01:8ff7:5fa0 with SMTP id dm15-20020a170907948f00b00a018ff75fa0mr8484463ejc.6.1702948302351;
-        Mon, 18 Dec 2023 17:11:42 -0800 (PST)
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com. [209.85.221.44])
-        by smtp.gmail.com with ESMTPSA id l17-20020a170906a41100b00a236eb66b2fsm492517ejz.82.2023.12.18.17.11.41
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Dec 2023 17:11:42 -0800 (PST)
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33666fb9318so1964901f8f.2
-        for <bpf@vger.kernel.org>; Mon, 18 Dec 2023 17:11:41 -0800 (PST)
-X-Received: by 2002:a05:600c:511a:b0:405:37bb:d942 with SMTP id
- o26-20020a05600c511a00b0040537bbd942mr8221931wms.4.1702948301548; Mon, 18 Dec
- 2023 17:11:41 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702948529; x=1703553329;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=50OUIIqph5wXqODzVeWVSRaHi5HO6yKUd5PpBi4ufIk=;
+        b=ou8M7K4/AwPc4vTyNxRChFudwUJ3vPr7GgADCo+z9JLBHqA1aMdMSiPqY3TFqwgYZL
+         pF4z1pI/VMplC5CgetO0KPJGTFi/PQbijlS6QifWWkZu7VMLbU6QjdLIWm0lQ5aky8NH
+         OW9T/uNO/ZIMpu1tXzF9IwYGHebHlLEPznInuF18bPYyI4J5ttV746WPKgJUxehYA1KF
+         d2pmNb6ckpiF3nqMpe7S3JPzoMfWmfl5PXg8PmSRPmDB0Zue82dg8UO5vSsSM/lxbhQI
+         Ee0dDcs56+Wfnw78c/i/iSMZl9HYRAxvno7eXvCs7fGRu3fsq94C3+sSkR9SSZWFMHZu
+         nr0A==
+X-Gm-Message-State: AOJu0YyJmNqQlyXGwCXwn4DPQTcgrTZTAZ2iVtMDL4HUu1pLAcdVdnDn
+	7woMu8SO4CkOmvaTFdMNL9BylBmoMr3gYhlwtdk=
+X-Google-Smtp-Source: AGHT+IHZa/VMCz915fiAiIe2ynBdaU1bzV+Xote9kzNTYL6LUlAsCyXWwE80BGKR7Ot6n57uQ4AClZk9wSprPZREN1c=
+X-Received: by 2002:adf:e781:0:b0:336:616f:c1ec with SMTP id
+ n1-20020adfe781000000b00336616fc1ecmr1998825wrm.103.1702948528480; Mon, 18
+ Dec 2023 17:15:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231219000520.34178-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20231219000520.34178-1-alexei.starovoitov@gmail.com>
-From: Linus Torvalds <torvalds@linuxfoundation.org>
-Date: Mon, 18 Dec 2023 17:11:23 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg7JuFYwGy=GOMbRCtOL+jwSQsdUaBsRWkDVYbxipbM5A@mail.gmail.com>
-Message-ID: <CAHk-=wg7JuFYwGy=GOMbRCtOL+jwSQsdUaBsRWkDVYbxipbM5A@mail.gmail.com>
-Subject: Re: pull-request: bpf-next 2023-12-18
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: kuba@kernel.org, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, daniel@iogearbox.net, andrii@kernel.org, 
-	peterz@infradead.org, brauner@kernel.org, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, kernel-team@fb.com
+References: <20231207215152.GA168514@maniforge> <CAADnVQ+Mhe6ean6J3vH1ugTyrgWNxupLoFfwKu6-U=3R8i1TNQ@mail.gmail.com>
+ <20231212214532.GB1222@maniforge> <157b01da2d46$b7453e20$25cfba60$@gmail.com>
+ <CAADnVQKd7X1v6CwCa2MyJjQkN8hKsHJ_g9Kk5CwWSbp9+1_3zw@mail.gmail.com>
+ <20231212233555.GA53579@maniforge> <CAADnVQJ-JwNTY5fW-oXdTur9aDrv2NQoreTH3yYZemVBVtq9fQ@mail.gmail.com>
+ <20231213185603.GA1968@maniforge> <CAADnVQLOjByUKJNyLdvDzwuegtjZFwrttHft_1o8BoyDCXQvDQ@mail.gmail.com>
+ <20231214174437.GA2853@maniforge> <ZXvkS4qmRMZqlWhA@infradead.org>
+In-Reply-To: <ZXvkS4qmRMZqlWhA@infradead.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 18 Dec 2023 17:15:16 -0800
+Message-ID: <CAADnVQ+ExRC_RavN_sbuOmuwyP6+HKnV9bFjJOseORBaVw0Jcg@mail.gmail.com>
+Subject: Re: [Bpf] BPF ISA conformance groups
+To: Christoph Hellwig <hch@infradead.org>
+Cc: David Vernet <void@manifault.com>, Dave Thaler <dthaler1968@googlemail.com>, bpf@ietf.org, 
+	bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 18 Dec 2023 at 16:05, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, Dec 14, 2023 at 9:29=E2=80=AFPM Christoph Hellwig <hch@infradead.or=
+g> wrote:
 >
-> 2) Introduce BPF token object, from Andrii Nakryiko.
+> We need the concept in the spec just to allow future extensability.
 
-I assume this is why I and some other unusual recipients are cc'd,
-because the networking people feel like they can't judge this and
-shouldn't merge non-networking code like this.
+Completely agree that the concept of the groups is necessary.
 
-Honestly, I was told - and expected - that this part would come in a
-branch of its own, so that it would be sanely reviewable.
+I'm arguing that what was proposed:
+1. "basic": all instructions not covered by another group below.
+2. "atomic": all Atomic operations.
+3. "divide": all division and modulo operations.
+4. "legacy": all legacy packet access instructions (deprecated).
+5. "map": 64-bit immediate instructions that deal with map fds or map
+indices.
+6. "code": 64-bit immediate instruction that has a "code pointer" type.
+7. "func": program-local functions.
 
-Now it's mixed in with everything else.
+logically makes sense, but might not work for HW
+(based on the history of nfp offload).
+imo "basic" and "legacy" won't work either.
+So it's a lesser evil.
 
-This is *literally* why we have branches in git, so that people can
-make more independent changes and judgements, and so that we don't
-have to be in a situation where "look, here's ten different things,
-pull it all or nothing".
+Anyway, let's look at:
 
-Many of the changes *look* like they are in branches, but they've been
-the "fake branches" that are just done as "patch series in a branch,
-with the cover letter as the merge message".
+   | BPF_CALL | 0x8   | 0x0 | call helper         | see Helper        |
+   |          |       |     | function by address | functions         |
+   |          |       |     |                     | (Section 3.3.1)   |
+   +----------+-------+-----+---------------------+-------------------+
+   | BPF_CALL | 0x8   | 0x1 | call PC +=3D imm      | see Program-local |
+   |          |       |     |                     | functions         |
+   |          |       |     |                     | (Section 3.3.2)   |
+   +----------+-------+-----+---------------------+-------------------+
+   | BPF_CALL | 0x8   | 0x2 | call helper         | see Helper        |
+   |          |       |     | function by BTF ID  | functions         |
+   |          |       |     |                     | (Section 3.3.
 
-Which is great for maintaining that cover letter information and a
-certain amount of historical clarity, but not helpful AT ALL for the
-"independent changes" thing when it is all mixed up in history, where
-independent things are mostly serialized and not actually independent
-in history at all.
+Having separate category 7 for single insn BPF_CALL 0x8 0x1
+while keeping 0x8 0x0 and 0x8 0x2 in "basic" seems just
+as logical as having atomic_add insn in "basic" instead of "atomic".
 
-So now it appears to be one big mess, and exactly that "all or
-nothing" thing that isn't great, since the whole point was that the
-networking people weren't comfortable with the reviewing filesystem
-side.
+Then we have several kinds of ld_imm64. Sounds like the idea
+is to split 0x18 0x4 into "code" and the rest into "map" group?
+Is it logical or not?
 
-And honestly, the bpf side *still* seems to be absolutely conbfused
-and complkete crap when it comes to file descriptors.
+Maybe we should do risc-v like group instead?
+Just these 4:
+- Base Integer Instruction Set, 32-bit
+- Base Integer Instruction Set, 64-bit
+- Integer Multiplication and Division
+- Atomic Instructions
 
-I took a quick look, and I *still* see new code being introduced there
-that thinks that file descriptor zero is special, and we tols you a
-*year* ago that that wasn't true, and that you need to fix this.
-
-I literally see complete garbage like tghis:
-
-        ..
-        __u32 btf_token_fd;
-        ...
-        if (attr->btf_token_fd) {
-                token = bpf_token_get_from_fd(attr->btf_token_fd);
-
-and this is all *new* code that makes that same bogus sh*t-for-brains
-mistake that was wrong the first time.
-
-So now I'm saying NAK. Enough is enough.  No more of this crazy "I
-don't understand even the _basics_ of file descriptors, and yet I'm
-introducing new random interfaces".
-
-I know you thought fd zero was something invalid. You were told
-otherwise. Apparently you just ignored being wrong, and have decided
-to double down on being wrong.
-
-We don't take this kind of flat-Earther crap.
-
-File descriptors don't start at 1. Deal with reality. Stop making the
-same mistake over and over. If you ant to have a "no file descriptor"
-flag, you use a signed type, and a signed value for that, because file
-descriptor zero is perfectly valid, and I don't want to hear any more
-uninformed denialism.
-
-Stop polluting the kernel with incorrect assumptions.
-
-So yes, I will keep NAK'ing this until this kind of fundamental
-mistake is fixed. This is not rocket science, and this is not
-something that wasn't discussed before. Your ignorance has now turned
-from "I didn't know" to "I didn 't care", and at that point I really
-don't want to see new code any more.
-
-               Linus
+And that's it. The rest of risc-v groups have no equivalent in bpf isa.
 
