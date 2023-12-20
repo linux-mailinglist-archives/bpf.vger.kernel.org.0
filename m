@@ -1,54 +1,47 @@
-Return-Path: <bpf+bounces-18384-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18385-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5F28819FF1
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 14:38:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5009381A005
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 14:42:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68217B21FCE
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 13:38:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5514B1C22692
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 13:42:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C773C3529C;
-	Wed, 20 Dec 2023 13:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="OFjtUT/r"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E4734CD6;
+	Wed, 20 Dec 2023 13:41:53 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573D230662;
-	Wed, 20 Dec 2023 13:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=8RSMaLm8J3BAud8wZe5DBi5drp4MBQE414D7i1/am6w=; b=OFjtUT/rPMi+Tbe1mlO9EDFhRK
-	Z5qjbejrCpkKmTlbBmc5VevZNJ4blFKIVChjjQA/OlRRxLlt0btzzlzOkItDpQku7Kon7YMJmrR+b
-	ywcN2Zjttn4elWwU+yhppv5SFi0TcjR3TWtw24fxiH3kYJthxtqyys5xUVAHu0cFEYDFKb6UEPshf
-	jU9jB9B6dHK6yXYo/uM59cMGNi1TionJ65q3Zm37N2dM4Q9Hg13L9YGVcBN+EBlDhJelbNIuq/DGh
-	DYRxP2Q7Xe8xSvA/gyoQXW5KjQcxqN7aSHuIhkvWciQFRVvHNwuXd2eK+8MjmvuC19cckjy/Wdx79
-	tj/IZIlg==;
-Received: from 36.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.36] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rFwm6-000BrB-NW; Wed, 20 Dec 2023 14:38:14 +0100
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: bpf@vger.kernel.org
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
-	Christian Brauner <brauner@kernel.org>,
-	Jie Jiang <jiejiang@chromium.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Subject: [PATCH bpf-next] bpf: Re-support uid and gid when mounting bpffs
-Date: Wed, 20 Dec 2023 14:38:05 +0100
-Message-Id: <20231220133805.20953-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E106336AED;
+	Wed, 20 Dec 2023 13:41:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SwF8R1tSfzWk3v;
+	Wed, 20 Dec 2023 21:41:27 +0800 (CST)
+Received: from dggpeml500010.china.huawei.com (unknown [7.185.36.155])
+	by mail.maildlp.com (Postfix) with ESMTPS id 1B4D9180085;
+	Wed, 20 Dec 2023 21:41:47 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by dggpeml500010.china.huawei.com
+ (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 20 Dec
+ 2023 21:41:46 +0800
+From: Xin Liu <liuxin350@huawei.com>
+To: <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<martin.lau@linux.dev>, <song@kernel.org>, <yhs@fb.com>,
+	<john.fastabend@gmail.com>, <kpsingh@kernel.org>, <sdf@google.com>,
+	<haoluo@google.com>, <jolsa@kernel.org>
+CC: <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>, <yanan@huawei.com>,
+	<wuchangye@huawei.com>, <xiesongyang@huawei.com>, <kongweibin2@huawei.com>,
+	<liuxin350@huawei.com>, <tianmuyang@huawei.com>, <zhangmingyi5@huawei.com>
+Subject: [PATCH] fix null pointer dereference in bpf_object__collect_prog_relos
+Date: Wed, 20 Dec 2023 21:41:51 +0800
+Message-ID: <20231220134151.144224-1-liuxin350@huawei.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,152 +49,68 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27129/Wed Dec 20 10:38:37 2023)
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500010.china.huawei.com (7.185.36.155)
 
-For a clean, conflict-free revert of the token-related patches in commit
-d17aff807f84 ("Revert BPF token-related functionality"), the bpf fs commit
-750e785796bb ("bpf: Support uid and gid when mounting bpffs") was undone
-temporarily as well.
+From: zhangmingyi <zhangmingyi5@huawei.com>
 
-This patch manually re-adds the functionality from the original one back
-in 750e785796bb, no other functional changes intended.
+a issue occurred while reading an ELF file in libbpf.c during fuzzing:
 
-Testing:
+	Program received signal SIGSEGV, Segmentation fault.
+	0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+	4206 in libbpf.c
+	(gdb) bt
+	#0 0x0000000000958e97 in bpf_object.collect_prog_relos () at libbpf.c:4206
+	#1 0x000000000094f9d6 in bpf_object.collect_relos () at libbpf.c:6706
+	#2 0x000000000092bef3 in bpf_object_open () at libbpf.c:7437
+	#3 0x000000000092c046 in bpf_object.open_mem () at libbpf.c:7497
+	#4 0x0000000000924afa in LLVMFuzzerTestOneInput () at fuzz/bpf-object-fuzzer.c:16
+	#5 0x000000000060be11 in testblitz_engine::fuzzer::Fuzzer::run_one ()
+	#6 0x000000000087ad92 in tracing::span::Span::in_scope ()
+	#7 0x00000000006078aa in testblitz_engine::fuzzer::util::walkdir ()
+	#8 0x00000000005f3217 in testblitz_engine::entrypoint::main::{{closure}} ()
+	#9 0x00000000005f2601 in main ()
+	(gdb)
 
-  # mount -t bpf -o uid=65534,gid=65534 bpffs ./foo
-  # ls -la . | grep foo
-  drwxrwxrwt   2 nobody nogroup          0 Dec 20 13:16 foo
-  # mount -t bpf
-  bpffs on /root/foo type bpf (rw,relatime,uid=65534,gid=65534)
+scn_data was null at this code(tools/lib/bpf/src/libbpf.c):
 
-Also, passing invalid arguments for uid/gid are properly rejected as expected.
+	if (rel->r_offset % BPF_INSN_SZ || rel->r_offset >= scn_data->d_size) {
 
-Fixes: d17aff807f84 ("Revert BPF token-related functionality")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: Jie Jiang <jiejiang@chromium.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org
+The scn_data is derived from the code above:
+    
+	scn = elf_sec_by_idx(obj, sec_idx);
+	scn_data = elf_sec_data(obj, scn);
+
+	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+	sec_name = elf_sec_name(obj, scn);
+	if (!relo_sec_name || !sec_name)// don't check whether scn_data is NULL
+		return -EINVAL;
+
+In certain special scenarios, such as reading a malformed ELF file,
+it is possible that scn_data may be a null pointer
+
+Signed-off-by: zhangmingyi  <zhangmingyi5@huawei.com>
+Signed-off-by: Xin Liu <liuxin350@huawei.com>
+Signed-off-by: Changye Wu <wuchangye@huawei.com>
 ---
- kernel/bpf/inode.c | 53 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 51 insertions(+), 2 deletions(-)
+ tools/lib/bpf/libbpf.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
-index 1aafb2ff2e95..41e0a55c35f5 100644
---- a/kernel/bpf/inode.c
-+++ b/kernel/bpf/inode.c
-@@ -599,8 +599,15 @@ EXPORT_SYMBOL(bpf_prog_get_type_path);
-  */
- static int bpf_show_options(struct seq_file *m, struct dentry *root)
- {
--	umode_t mode = d_inode(root)->i_mode & S_IALLUGO & ~S_ISVTX;
--
-+	struct inode *inode = d_inode(root);
-+	umode_t mode = inode->i_mode & S_IALLUGO & ~S_ISVTX;
-+
-+	if (!uid_eq(inode->i_uid, GLOBAL_ROOT_UID))
-+		seq_printf(m, ",uid=%u",
-+			   from_kuid_munged(&init_user_ns, inode->i_uid));
-+	if (!gid_eq(inode->i_gid, GLOBAL_ROOT_GID))
-+		seq_printf(m, ",gid=%u",
-+			   from_kgid_munged(&init_user_ns, inode->i_gid));
- 	if (mode != S_IRWXUGO)
- 		seq_printf(m, ",mode=%o", mode);
- 	return 0;
-@@ -625,15 +632,21 @@ static const struct super_operations bpf_super_ops = {
- };
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index e067be95da3c..df1b550f7460 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -4344,6 +4344,8 @@ bpf_object__collect_prog_relos(struct bpf_object *obj, Elf64_Shdr *shdr, Elf_Dat
  
- enum {
-+	OPT_UID,
-+	OPT_GID,
- 	OPT_MODE,
- };
+ 	scn = elf_sec_by_idx(obj, sec_idx);
+ 	scn_data = elf_sec_data(obj, scn);
++	if (!scn_data)
++		return -LIBBPF_ERRNO__FORMAT;
  
- static const struct fs_parameter_spec bpf_fs_parameters[] = {
-+	fsparam_u32	("uid",				OPT_UID),
-+	fsparam_u32	("gid",				OPT_GID),
- 	fsparam_u32oct	("mode",			OPT_MODE),
- 	{}
- };
- 
- struct bpf_mount_opts {
-+	kuid_t uid;
-+	kgid_t gid;
- 	umode_t mode;
- };
- 
-@@ -641,6 +654,8 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- {
- 	struct bpf_mount_opts *opts = fc->fs_private;
- 	struct fs_parse_result result;
-+	kuid_t uid;
-+	kgid_t gid;
- 	int opt;
- 
- 	opt = fs_parse(fc, bpf_fs_parameters, param, &result);
-@@ -662,12 +677,42 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 	}
- 
- 	switch (opt) {
-+	case OPT_UID:
-+		uid = make_kuid(current_user_ns(), result.uint_32);
-+		if (!uid_valid(uid))
-+			goto bad_value;
-+
-+		/*
-+		 * The requested uid must be representable in the
-+		 * filesystem's idmapping.
-+		 */
-+		if (!kuid_has_mapping(fc->user_ns, uid))
-+			goto bad_value;
-+
-+		opts->uid = uid;
-+		break;
-+	case OPT_GID:
-+		gid = make_kgid(current_user_ns(), result.uint_32);
-+		if (!gid_valid(gid))
-+			goto bad_value;
-+
-+		/*
-+		 * The requested gid must be representable in the
-+		 * filesystem's idmapping.
-+		 */
-+		if (!kgid_has_mapping(fc->user_ns, gid))
-+			goto bad_value;
-+
-+		opts->gid = gid;
-+		break;
- 	case OPT_MODE:
- 		opts->mode = result.uint_32 & S_IALLUGO;
- 		break;
- 	}
- 
- 	return 0;
-+bad_value:
-+	return invalfc(fc, "Bad value for '%s'", param->key);
- }
- 
- struct bpf_preload_ops *bpf_preload_ops;
-@@ -750,6 +795,8 @@ static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
- 	sb->s_op = &bpf_super_ops;
- 
- 	inode = sb->s_root->d_inode;
-+	inode->i_uid = opts->uid;
-+	inode->i_gid = opts->gid;
- 	inode->i_op = &bpf_dir_iops;
- 	inode->i_mode &= ~S_IALLUGO;
- 	populate_bpffs(sb->s_root);
-@@ -785,6 +832,8 @@ static int bpf_init_fs_context(struct fs_context *fc)
- 		return -ENOMEM;
- 
- 	opts->mode = S_IRWXUGO;
-+	opts->uid = current_fsuid();
-+	opts->gid = current_fsgid();
- 
- 	fc->fs_private = opts;
- 	fc->ops = &bpf_context_ops;
+ 	relo_sec_name = elf_sec_str(obj, shdr->sh_name);
+ 	sec_name = elf_sec_name(obj, scn);
 -- 
-2.27.0
+2.33.0
 
 
