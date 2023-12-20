@@ -1,187 +1,194 @@
-Return-Path: <bpf+bounces-18371-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18372-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CE65819BEC
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 11:02:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1D2D819CB0
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 11:25:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BECAB1F26631
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 10:02:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86B3A282CFC
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 10:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26AAA20B2E;
-	Wed, 20 Dec 2023 10:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8551C21371;
+	Wed, 20 Dec 2023 10:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MoLMUGgP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i927pW08"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1BF208C4;
-	Wed, 20 Dec 2023 10:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:Cc:To:References:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=EUpvZ7ImcN6iRBfQR5QrQA+ZGjPdmy3aiW0Hd3hcrnQ=; b=MoLMUGgP4+KzLa7czzl6ONHYAl
-	0EqEtrZ0BILxZDz94BF+D9YBpP5rnTozkKaFIFBIuUYKU1xIZNU+pAxJpzqEYCv27vgA7swaWERo7
-	BfOZ1gkpo4x8Og2VMsUKVEDuUGtw7SaW+P6LQYY6LopglGIUD5U5BonG/EK/64C1pnE2tboUg4frK
-	RQfiRG4qlnoMpAqhY95ffzvQ4Oc+iEIjj12ezG9e1K2/lGLTQJO0DPj1WdeFk9d3bikVLFZE6nlZk
-	WiznGcVG3CXkV5mT5ZXM58GZymTsxR8/mura55GcV6XQuCIzFlJGEq03UCW5r/VksscUb6bk0txps
-	kgd+K/EA==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rFtOB-000Bvm-31; Wed, 20 Dec 2023 11:01:19 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rFtOA-0008Xz-Gj; Wed, 20 Dec 2023 11:01:18 +0100
-Subject: LSF/MM/BPF: 2024: Call for Proposals
-References: <7970ad75-ca6a-34b9-43ea-c6f67fe6eae6@iogearbox.net>
-To: lsf-pc@lists.linuxfoundation.org
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-block@vger.kernel.org, linux-scsi@vger.kernel.org,
- linux-nvme@lists.infradead.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-From: Daniel Borkmann <daniel@iogearbox.net>
-X-Forwarded-Message-Id: <7970ad75-ca6a-34b9-43ea-c6f67fe6eae6@iogearbox.net>
-Message-ID: <4343d07b-b1b2-d43b-c201-a48e89145e5c@iogearbox.net>
-Date: Wed, 20 Dec 2023 11:01:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9577521362
+	for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 10:22:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703067770;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3tenCflcvwHDUupcimFI6COHvWVks/d4mt7BRqPCBH0=;
+	b=i927pW082998OCCHVinpFZ9nDQkG9ZzvLWuKuuOYYQ7JdcAp4WruzhD5DP9f/gm3LL+hJG
+	SzDe0l1gRsm7dLiHMKNApSCbNvDmbRm/GJ5QUyBawnhcLNa5q4wGwRfGQL62XrISS1HNAm
+	U/wp+MJ+kJgWNVpIOcX5vjgOEyltfx0=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-499-CMuRLN5oOc6d5Vw2WcII8A-1; Wed, 20 Dec 2023 05:22:49 -0500
+X-MC-Unique: CMuRLN5oOc6d5Vw2WcII8A-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a268540bc61so19068966b.0
+        for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 02:22:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703067767; x=1703672567;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3tenCflcvwHDUupcimFI6COHvWVks/d4mt7BRqPCBH0=;
+        b=rGqg/n+kmismw8KMfxCsMsDFC4z/XgpIPB9zopWgLQSTWWf/UTKDKcconqPqa6Zjdc
+         0cJFmEgKx2mUoq+3oaBh4ol6iEnDFpVURT2QQWIHzLFBWKcqwux6a9A3AWqoFKrGnXMu
+         kLVnlGwC0HfrhzRkTqggIWROUudvj56IkLXsII+jPdIW4M5Mt8cGhGEqcWMsD8SReTwz
+         cpiA0sbakBwYfZ/R4Jtts/37pKm6J7xA+a9ys/cocjRZaWChAdnSDHN22goVhzyrkks/
+         wWBlpURh9eoGVl+m9QvVHra8lROU+lZD3YoyBt5pgoQsz4qxr+nj8uLRmWzbvPP4w35G
+         H9AA==
+X-Gm-Message-State: AOJu0YzpuGNu4VT787IcP8GW7STG+DCIxNfvkKqL3MvNZerPG45ezIy6
+	ceIQZZRMZDE+9EDgqKq1voPWViqMRXh/q3jBWHjjF6Q91EQF2SwgJuKYYoGPnIqqvGK+aXkRryu
+	QwGazxGAU9t5iD5nbg2Ay
+X-Received: by 2002:a17:907:72c3:b0:a23:679c:4683 with SMTP id du3-20020a17090772c300b00a23679c4683mr4746679ejc.4.1703067767658;
+        Wed, 20 Dec 2023 02:22:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGtUPRbx8MOeVOB8yA1mqeocJegsUUHrUmn8bGLwalPKHDnymDVFdMN/bgsTjAY0nQT2gkKMA==
+X-Received: by 2002:a17:907:72c3:b0:a23:679c:4683 with SMTP id du3-20020a17090772c300b00a23679c4683mr4746660ejc.4.1703067767211;
+        Wed, 20 Dec 2023 02:22:47 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-246-245.dyn.eolo.it. [146.241.246.245])
+        by smtp.gmail.com with ESMTPSA id i19-20020a170906265300b00a234c5d0834sm4115922ejc.175.2023.12.20.02.22.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 02:22:46 -0800 (PST)
+Message-ID: <533e8e80c4db4ecd34a2c49dd3de3e76810afe22.camel@redhat.com>
+Subject: Re: [PATCH v6 bpf-next 3/6] bpf: tcp: Handle BPF SYN Cookie in
+ skb_steal_sock().
+From: Paolo Abeni <pabeni@redhat.com>
+To: Mat Martineau <martineau@kernel.org>, Kuniyuki Iwashima
+ <kuniyu@amazon.com>
+Cc: Matthieu Baerts <matttbe@kernel.org>, edumazet@google.com, 
+ andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net,  kuni1840@gmail.com, martin.lau@linux.dev,
+ netdev@vger.kernel.org,  mptcp@lists.linux.dev
+Date: Wed, 20 Dec 2023 11:22:45 +0100
+In-Reply-To: <7d00ad25-abaa-191d-8e80-32674377b053@kernel.org>
+References: 
+	<CANn89i+8e8VJ8cJX6vwLFhtj=BmT233nNr=F9H3nFs8BZgTbsQ@mail.gmail.com>
+	 <20231215023707.41864-1-kuniyu@amazon.com>
+	 <7d00ad25-abaa-191d-8e80-32674377b053@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <7970ad75-ca6a-34b9-43ea-c6f67fe6eae6@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27128/Tue Dec 19 10:36:48 2023)
 
-The annual Linux Storage, Filesystem, Memory Management, and BPF
-(LSF/MM/BPF) Summit for 2024 will be held from May 13 to May 15
-at the Hilton Salt Lake City Center in Salt Lake City, Utah, USA.
+On Tue, 2023-12-19 at 08:45 -0800, Mat Martineau wrote:
+> On Fri, 15 Dec 2023, Kuniyuki Iwashima wrote:
+>=20
+> > From: Eric Dumazet <edumazet@google.com>
+> > Date: Thu, 14 Dec 2023 17:31:15 +0100
+> > > On Thu, Dec 14, 2023 at 4:56=E2=80=AFPM Kuniyuki Iwashima <kuniyu@ama=
+zon.com> wrote:
+> > > >=20
+> > > > We will support arbitrary SYN Cookie with BPF.
+> > > >=20
+> > > > If BPF prog validates ACK and kfunc allocates a reqsk, it will
+> > > > be carried to TCP stack as skb->sk with req->syncookie 1.  Also,
+> > > > the reqsk has its listener as req->rsk_listener with no refcnt
+> > > > taken.
+> > > >=20
+> > > > When the TCP stack looks up a socket from the skb, we steal
+> > > > inet_reqsk(skb->sk)->rsk_listener in skb_steal_sock() so that
+> > > > the skb will be processed in cookie_v[46]_check() with the
+> > > > listener.
+> > > >=20
+> > > > Note that we do not clear skb->sk and skb->destructor so that we
+> > > > can carry the reqsk to cookie_v[46]_check().
+> > > >=20
+> > > > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > > > ---
+> > > >  include/net/request_sock.h | 15 +++++++++++++--
+> > > >  1 file changed, 13 insertions(+), 2 deletions(-)
+> > > >=20
+> > > > diff --git a/include/net/request_sock.h b/include/net/request_sock.=
+h
+> > > > index 26c630c40abb..8839133d6f6b 100644
+> > > > --- a/include/net/request_sock.h
+> > > > +++ b/include/net/request_sock.h
+> > > > @@ -101,10 +101,21 @@ static inline struct sock *skb_steal_sock(str=
+uct sk_buff *skb,
+> > > >         }
+> > > >=20
+> > > >         *prefetched =3D skb_sk_is_prefetched(skb);
+> > > > -       if (*prefetched)
+> > > > +       if (*prefetched) {
+> > > > +#if IS_ENABLED(CONFIG_SYN_COOKIES)
+> > > > +               if (sk->sk_state =3D=3D TCP_NEW_SYN_RECV && inet_re=
+qsk(sk)->syncookie) {
+> > > > +                       struct request_sock *req =3D inet_reqsk(sk)=
+;
+> > > > +
+> > > > +                       *refcounted =3D false;
+> > > > +                       sk =3D req->rsk_listener;
+> > > > +                       req->rsk_listener =3D NULL;
+> > >=20
+> > > I am not sure about interactions with MPTCP.
+> > >=20
+> > > I would be nice to have their feedback.
+> >=20
+> > Matthieu, Mat, Paolo, could you double check if the change
+> > above is sane ?
+> > https://lore.kernel.org/bpf/20231214155424.67136-4-kuniyu@amazon.com/
+>=20
+> Hi Kuniyuki -
+>=20
+> Yes, we will take a look. Haven't had time to look in detail yet but I=
+=20
+> wanted to let you know we saw your message and will follow up.
 
-LSF/MM/BPF is an invitation-only technical workshop to map out
-improvements to the Linux storage, filesystem, BPF, and memory
-management subsystems that will make their way into the mainline
-kernel within the coming years.
+I'm sorry for the late reply.
 
-LSF/MM/BPF 2024 will be a three day, stand-alone conference with
-four subsystem-specific tracks, cross-track discussions, as well
-as BoF and hacking sessions:
+AFAICS, from mptcp perspective, the main differences from built-in
+cookie validation are:
 
-          https://events.linuxfoundation.org/lsfmmbpf/
+- cookie allocation via mptcp_subflow_reqsk_alloc() and cookie
+'finalization' via cookie_tcp_reqsk_init() /
+mptcp_subflow_init_cookie_req(req, sk, skb) could refer 2 different
+listeners - within the same REUSEPORT group.
 
-On behalf of the committee I am issuing a call for agenda proposals
-that are suitable for cross-track discussion as well as technical
-subjects for the breakout sessions.
+- incoming pure syn packets will not land into the TCP stack, so
+af_ops->route_req will not happen.
 
-If advance notice is required for visa applications then please
-point that out in your proposal or request to attend, and submit
-the topic as soon as possible.
+I think both the above are problematic form mptcp.=C2=A0
 
-We are asking that you please let us know you want to be invited
-by March 1, 2024. We realize that travel is an ever changing target,
-but it helps us to get an idea of possible attendance numbers.
-Clearly things can and will change, so consider the request to
-attend deadline more about planning and less about concrete plans.
+Potentially we can have both mptcp-enabled and plain tcp socket with
+the same reuseport group.=20
 
-1) Fill out the following Google form to request attendance and
-suggest any topics for discussion:
+Currently the mptcp code assumes the listener is mptcp
+cookie_tcp_reqsk_init(), the req is mptcp, too. I think we could fix
+this at the mptcp level, but no patch ready at the moment.
 
-          https://forms.gle/TGCgBDH1x5pXiWFo7
+Even the missing call to route_req() is problematic, as we use that to
+fetch required information from the initial syn for MP_JOIN subflows -
+yep, unfortunately mptcp needs to track of some state across MPJ syn
+and MPJ 3rd ack reception.
 
-In previous years we have accidentally missed people's attendance
-requests because they either did not Cc lsf-pc@ or we simply missed
-them in the flurry of emails we get. Our community is large and our
-volunteers are busy, filling this out will help us to make sure we
-do not miss anybody.
+Fixing this last item looks more difficult. I think it would be safer
+and simpler to avoid mptcp support for generic syncookie and ev enable
+it later - after we address things on the mptcp side.
 
-2) Proposals for agenda topics should ideally still be sent to the
-following lists to allow for discussion among your peers. This will
-help us figure out which topics are important for the agenda:
+@Eric, were you looking to something else and/or more specific?
 
-          lsf-pc@lists.linux-foundation.org
+Thanks!
 
-... and Cc the mailing lists that are relevant for the topic in
-question:
+Paolo
 
-          FS:     linux-fsdevel@vger.kernel.org
-          MM:     linux-mm@kvack.org
-          Block:  linux-block@vger.kernel.org
-          ATA:    linux-ide@vger.kernel.org
-          SCSI:   linux-scsi@vger.kernel.org
-          NVMe:   linux-nvme@lists.infradead.org
-          BPF:    bpf@vger.kernel.org
-
-Please tag your proposal with [LSF/MM/BPF TOPIC] to make it easier
-to track. In addition, please make sure to start a new thread for
-each topic rather than following up to an existing one. Agenda
-topics and attendees will be selected by the program committee,
-but the final agenda will be formed by consensus of the attendees
-on the day.
-
-3) This year we would also like to try and make sure we are
-including new members in the community that the program committee
-may not be familiar with. The Google form has an area for people to
-add required/optional attendees. Please encourage new members of the
-community to submit a request for an invite as well, but additionally
-if maintainers or long term community members could add nominees to
-the form it would help us make sure that new members get the proper
-consideration.
-
-For discussion leaders, slides and visualizations are encouraged to
-outline the subject matter and focus the discussions. Please refrain
-from lengthy presentations and talks in order for sessions to be
-productive; the sessions are supposed to be interactive, inclusive
-discussions.
-
-We are still looking into the virtual component. We will likely run
-something similar to what we did last year, but details on that will
-be forthcoming.
-
-2023: https://lwn.net/Articles/lsfmmbpf2023/
-
-2022: https://lwn.net/Articles/lsfmm2022/
-
-2019: https://lwn.net/Articles/lsfmm2019/
-
-2018: https://lwn.net/Articles/lsfmm2018/
-
-2017: https://lwn.net/Articles/lsfmm2017/
-
-2016: https://lwn.net/Articles/lsfmm2016/
-
-2015: https://lwn.net/Articles/lsfmm2015/
-
-2014: http://lwn.net/Articles/LSFMM2014/
-
-4) If you have feedback on last year's meeting that we can use to
-improve this year's, please also send that to:
-
-          lsf-pc@lists.linux-foundation.org
-
-Thank you on behalf of the program committee:
-
-          Amir Goldstein (Filesystems)
-          Jan Kara (Filesystems)
-          Martin K. Petersen (Storage)
-          Javier González (Storage)
-          Michal Hocko (MM)
-          Dan Williams (MM)
-          Daniel Borkmann (BPF)
-          Martin KaFai Lau (BPF)
 
 
