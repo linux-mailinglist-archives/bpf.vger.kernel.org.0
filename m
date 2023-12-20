@@ -1,79 +1,54 @@
-Return-Path: <bpf+bounces-18383-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E01819FDD
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 14:34:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F28819FF1
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 14:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 700052859A8
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 13:34:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68217B21FCE
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 13:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8C6364C0;
-	Wed, 20 Dec 2023 13:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C773C3529C;
+	Wed, 20 Dec 2023 13:38:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="duvH+fN6"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="OFjtUT/r"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECDC34571
-	for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 13:34:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-55333eb0312so3560727a12.1
-        for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 05:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703079266; x=1703684066; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w3A/URYk/DG7Nbo2s4FISJ26H5RRuamlRT5uGABUpxw=;
-        b=duvH+fN6/JpqfzK+rrN7ehQ8SkyZbb7NIbJqyEf9aXG9i3BrCZUFkBMxQ0wXE3K2XY
-         vkZ3CT6SHcbKE7kHsY+mDxDmRL3AKB0FyIMySYUgB6d2vgjo5NZYZoEkoEzWuhe/V7KE
-         JKrE5xAl//rhetgnoTf/trbSi7owwFo1vW757Lim8tSfQwWbRW+CJr5RrJn5Df24R9UV
-         NEZXz74513IL9eWXDT90l2uYmLyM5hg4vRq3pWkJtqx020MZt7iwNbPQWCw1iovwuBGV
-         4wi44ipdWC3QaO7glokLwn3U5f11fTjGHqc38q8CYjc85A8H3JJEsitnxjmLq6Uf+U2K
-         w5+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703079266; x=1703684066;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w3A/URYk/DG7Nbo2s4FISJ26H5RRuamlRT5uGABUpxw=;
-        b=WcT6rnOvCEqXPA3fzESqWh/QummsGnz1Df+CycgLAOJ8lmxoq/X5mexIVVzUvaGCH0
-         mZYq8gtjWfElVV3TlqhpIsZxhhbzFDTv5NJXvY/wbRWZk1lg+rjKnDMNR5Xck9cxWkQS
-         PruAweKzBENWaTn0SVV1DzGGNR2bOOHxXE5XHtOiCOZz4J8del1H7oTW/MDiCiUtWSb3
-         89QwdqAPCQhdxSZ3zgQ7EYOPVgKn05+yecHePq2wQ1SrRJlFMeLbczbGfka9Vj7qsbBk
-         fND91eNeAWtOSyPkypYXgo7iZ6edUKNw1ejc9C0sodzMeSyy6Ov7xVjNT+2Zf/IL+JYb
-         7x1Q==
-X-Gm-Message-State: AOJu0YzioX3reH16mpdBkPSxyVKrNZ2tHnJ9gTHdRJI4jva9WIjvN7Hu
-	cBMF8QKQ1De/VA5z5MQd7sfoxHrPtEY=
-X-Google-Smtp-Source: AGHT+IHlsOOIMQ6illWNLSeMhgElrmpwGRDjOW2Fk6H1fH90XRmaik9e0+vylhGEtL8+h05d4Os06A==
-X-Received: by 2002:a17:906:270a:b0:a23:54a3:696e with SMTP id z10-20020a170906270a00b00a2354a3696emr3110136ejc.13.1703079266198;
-        Wed, 20 Dec 2023 05:34:26 -0800 (PST)
-Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id vs4-20020a170907a58400b00a22fb8901c4sm9951032ejc.12.2023.12.20.05.34.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 05:34:25 -0800 (PST)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org
-Cc: andrii@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@linux.dev,
-	kernel-team@fb.com,
-	yonghong.song@linux.dev,
-	quentin@isovalent.com,
-	alan.maguire@oracle.com,
-	Eduard Zingerman <eddyz87@gmail.com>
-Subject: [RFC v3 3/3] selftests/bpf: verify bpftool emits preserve_static_offset
-Date: Wed, 20 Dec 2023 15:34:11 +0200
-Message-ID: <20231220133411.22978-4-eddyz87@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231220133411.22978-1-eddyz87@gmail.com>
-References: <20231220133411.22978-1-eddyz87@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 573D230662;
+	Wed, 20 Dec 2023 13:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=8RSMaLm8J3BAud8wZe5DBi5drp4MBQE414D7i1/am6w=; b=OFjtUT/rPMi+Tbe1mlO9EDFhRK
+	Z5qjbejrCpkKmTlbBmc5VevZNJ4blFKIVChjjQA/OlRRxLlt0btzzlzOkItDpQku7Kon7YMJmrR+b
+	ywcN2Zjttn4elWwU+yhppv5SFi0TcjR3TWtw24fxiH3kYJthxtqyys5xUVAHu0cFEYDFKb6UEPshf
+	jU9jB9B6dHK6yXYo/uM59cMGNi1TionJ65q3Zm37N2dM4Q9Hg13L9YGVcBN+EBlDhJelbNIuq/DGh
+	DYRxP2Q7Xe8xSvA/gyoQXW5KjQcxqN7aSHuIhkvWciQFRVvHNwuXd2eK+8MjmvuC19cckjy/Wdx79
+	tj/IZIlg==;
+Received: from 36.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.36] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rFwm6-000BrB-NW; Wed, 20 Dec 2023 14:38:14 +0100
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: bpf@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	Christian Brauner <brauner@kernel.org>,
+	Jie Jiang <jiejiang@chromium.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	linux-fsdevel@vger.kernel.org
+Subject: [PATCH bpf-next] bpf: Re-support uid and gid when mounting bpffs
+Date: Wed, 20 Dec 2023 14:38:05 +0100
+Message-Id: <20231220133805.20953-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -81,293 +56,152 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27129/Wed Dec 20 10:38:37 2023)
 
-Extend test_bpftool.py with following test cases:
-- Load a small program that has some context types in it's BTF,
-  verify that "bpftool btf dump file ... format c" emits
-  preserve_static_offset attribute.
-- Load a small program that has no context types in it's BTF,
-  verify that "bpftool btf dump file ... format c" does not emit
-  preserve_static_offset attribute.
-- Load a small program that uses a map,
-  verify that "bpftool btf dump map pinned ... value format c"
-  emit preserve_static_offset for expected types.
+For a clean, conflict-free revert of the token-related patches in commit
+d17aff807f84 ("Revert BPF token-related functionality"), the bpf fs commit
+750e785796bb ("bpf: Support uid and gid when mounting bpffs") was undone
+temporarily as well.
 
-Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+This patch manually re-adds the functionality from the original one back
+in 750e785796bb, no other functional changes intended.
+
+Testing:
+
+  # mount -t bpf -o uid=65534,gid=65534 bpffs ./foo
+  # ls -la . | grep foo
+  drwxrwxrwt   2 nobody nogroup          0 Dec 20 13:16 foo
+  # mount -t bpf
+  bpffs on /root/foo type bpf (rw,relatime,uid=65534,gid=65534)
+
+Also, passing invalid arguments for uid/gid are properly rejected as expected.
+
+Fixes: d17aff807f84 ("Revert BPF token-related functionality")
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Jie Jiang <jiejiang@chromium.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org
 ---
- .../bpf/progs/dummy_no_context_btf.c          |  12 +++
- .../selftests/bpf/progs/dummy_prog_with_map.c |  65 ++++++++++++
- .../selftests/bpf/progs/dummy_sk_buff_user.c  |  29 +++++
- tools/testing/selftests/bpf/test_bpftool.py   | 100 ++++++++++++++++++
- 4 files changed, 206 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/dummy_no_context_btf.c
- create mode 100644 tools/testing/selftests/bpf/progs/dummy_prog_with_map.c
- create mode 100644 tools/testing/selftests/bpf/progs/dummy_sk_buff_user.c
+ kernel/bpf/inode.c | 53 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 51 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/dummy_no_context_btf.c b/tools/testing/selftests/bpf/progs/dummy_no_context_btf.c
-new file mode 100644
-index 000000000000..5a1df4984dce
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/dummy_no_context_btf.c
-@@ -0,0 +1,12 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
+diff --git a/kernel/bpf/inode.c b/kernel/bpf/inode.c
+index 1aafb2ff2e95..41e0a55c35f5 100644
+--- a/kernel/bpf/inode.c
++++ b/kernel/bpf/inode.c
+@@ -599,8 +599,15 @@ EXPORT_SYMBOL(bpf_prog_get_type_path);
+  */
+ static int bpf_show_options(struct seq_file *m, struct dentry *root)
+ {
+-	umode_t mode = d_inode(root)->i_mode & S_IALLUGO & ~S_ISVTX;
+-
++	struct inode *inode = d_inode(root);
++	umode_t mode = inode->i_mode & S_IALLUGO & ~S_ISVTX;
 +
-+/* A dummy program that does not reference context types in it's BTF */
-+SEC("tc")
-+__u32 dummy_prog(void *ctx)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/dummy_prog_with_map.c b/tools/testing/selftests/bpf/progs/dummy_prog_with_map.c
-new file mode 100644
-index 000000000000..0268317494ef
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/dummy_prog_with_map.c
-@@ -0,0 +1,65 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+#if __has_attribute(btf_decl_tag)
-+#define __decl_tag_bpf_ctx __attribute__((btf_decl_tag(("preserve_static_offset"))))
-+#endif
-+
-+struct test_struct_a {
-+	int v;
-+} __decl_tag_bpf_ctx;
-+
-+struct test_struct_b {
-+	int v;
-+} __decl_tag_bpf_ctx;
-+
-+struct test_struct_c {
-+	int v;
-+} __decl_tag_bpf_ctx;
-+
-+struct test_struct_d {
-+	int v;
-+} __decl_tag_bpf_ctx;
-+
-+struct test_struct_e {
-+	int v;
-+} __decl_tag_bpf_ctx;
-+
-+struct test_struct_f {
-+	int v;
-+} __decl_tag_bpf_ctx;
-+
-+typedef struct test_struct_c test_struct_c_td;
-+
-+struct map_value {
-+	struct test_struct_a a;
-+	struct test_struct_b b[2];
-+	test_struct_c_td c;
-+	const struct test_struct_d *(*d)(volatile struct test_struct_e *);
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 4);
-+	__type(key, int);
-+	__type(value, struct map_value);
-+} test_map1 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 4);
-+	__type(key, int);
-+	__type(value, struct test_struct_f);
-+} test_map2 SEC(".maps");
-+
-+/* A dummy program that references map 'test_map', used by test_bpftool.py */
-+SEC("tc")
-+int dummy_prog_with_map(void *ctx)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/dummy_sk_buff_user.c b/tools/testing/selftests/bpf/progs/dummy_sk_buff_user.c
-new file mode 100644
-index 000000000000..8c10aebe8689
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/dummy_sk_buff_user.c
-@@ -0,0 +1,29 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* In linux/bpf.h __bpf_ctx macro is defined differently for BPF and
-+ * non-BPF targets:
-+ * - for BPF it is __attribute__((preserve_static_offset))
-+ * - for non-BPF it is __attribute__((btf_decl_tag("preserve_static_offset")))
-+ *
-+ * bpftool uses decl tag as a signal to emit preserve_static_offset,
-+ * thus additional declaration is needed in this test.
-+ */
-+#if __has_attribute(btf_decl_tag)
-+#define __decl_tag_bpf_ctx __attribute__((btf_decl_tag(("preserve_static_offset"))))
-+#endif
-+
-+struct __decl_tag_bpf_ctx __sk_buff;
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+
-+/* A dummy program that references __sk_buff type in it's BTF,
-+ * used by test_bpftool.py.
-+ */
-+SEC("tc")
-+int sk_buff_user(struct __sk_buff *skb)
-+{
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/test_bpftool.py b/tools/testing/selftests/bpf/test_bpftool.py
-index 1c2408ee1f5d..d3a8b71afcc1 100644
---- a/tools/testing/selftests/bpf/test_bpftool.py
-+++ b/tools/testing/selftests/bpf/test_bpftool.py
-@@ -3,10 +3,12 @@
++	if (!uid_eq(inode->i_uid, GLOBAL_ROOT_UID))
++		seq_printf(m, ",uid=%u",
++			   from_kuid_munged(&init_user_ns, inode->i_uid));
++	if (!gid_eq(inode->i_gid, GLOBAL_ROOT_GID))
++		seq_printf(m, ",gid=%u",
++			   from_kgid_munged(&init_user_ns, inode->i_gid));
+ 	if (mode != S_IRWXUGO)
+ 		seq_printf(m, ",mode=%o", mode);
+ 	return 0;
+@@ -625,15 +632,21 @@ static const struct super_operations bpf_super_ops = {
+ };
  
- import collections
- import functools
-+import io
- import json
- import os
- import socket
- import subprocess
-+import tempfile
- import unittest
+ enum {
++	OPT_UID,
++	OPT_GID,
+ 	OPT_MODE,
+ };
  
+ static const struct fs_parameter_spec bpf_fs_parameters[] = {
++	fsparam_u32	("uid",				OPT_UID),
++	fsparam_u32	("gid",				OPT_GID),
+ 	fsparam_u32oct	("mode",			OPT_MODE),
+ 	{}
+ };
  
-@@ -25,6 +27,10 @@ class UnprivilegedUserError(Exception):
-     pass
+ struct bpf_mount_opts {
++	kuid_t uid;
++	kgid_t gid;
+ 	umode_t mode;
+ };
  
+@@ -641,6 +654,8 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ {
+ 	struct bpf_mount_opts *opts = fc->fs_private;
+ 	struct fs_parse_result result;
++	kuid_t uid;
++	kgid_t gid;
+ 	int opt;
  
-+class MissingDependencyError(Exception):
-+    pass
-+
-+
- def _bpftool(args, json=True):
-     _args = ["bpftool"]
-     if json:
-@@ -63,12 +69,26 @@ DMESG_EMITTING_HELPERS = [
-         "bpf_trace_vprintk",
-     ]
+ 	opt = fs_parse(fc, bpf_fs_parameters, param, &result);
+@@ -662,12 +677,42 @@ static int bpf_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	}
  
-+BPFFS_MOUNT = "/sys/fs/bpf/"
+ 	switch (opt) {
++	case OPT_UID:
++		uid = make_kuid(current_user_ns(), result.uint_32);
++		if (!uid_valid(uid))
++			goto bad_value;
 +
-+DUMMY_SK_BUFF_USER_OBJ = cur_dir + "/dummy_sk_buff_user.bpf.o"
-+DUMMY_NO_CONTEXT_BTF_OBJ = cur_dir + "/dummy_no_context_btf.bpf.o"
-+DUMMY_PROG_WITH_MAP_OBJ = cur_dir + "/dummy_prog_with_map.bpf.o"
++		/*
++		 * The requested uid must be representable in the
++		 * filesystem's idmapping.
++		 */
++		if (!kuid_has_mapping(fc->user_ns, uid))
++			goto bad_value;
 +
- class TestBpftool(unittest.TestCase):
-     @classmethod
-     def setUpClass(cls):
-         if os.getuid() != 0:
-             raise UnprivilegedUserError(
-                 "This test suite needs root privileges")
-+        objs = [DUMMY_SK_BUFF_USER_OBJ,
-+                DUMMY_NO_CONTEXT_BTF_OBJ,
-+                DUMMY_PROG_WITH_MAP_OBJ]
-+        for obj in objs:
-+            if os.path.exists(obj):
-+                continue
-+            raise MissingDependencyError(
-+                "File " + obj + " does not exist, make sure progs/*.c are compiled")
++		opts->uid = uid;
++		break;
++	case OPT_GID:
++		gid = make_kgid(current_user_ns(), result.uint_32);
++		if (!gid_valid(gid))
++			goto bad_value;
++
++		/*
++		 * The requested gid must be representable in the
++		 * filesystem's idmapping.
++		 */
++		if (!kgid_has_mapping(fc->user_ns, gid))
++			goto bad_value;
++
++		opts->gid = gid;
++		break;
+ 	case OPT_MODE:
+ 		opts->mode = result.uint_32 & S_IALLUGO;
+ 		break;
+ 	}
  
-     @default_iface
-     def test_feature_dev_json(self, iface):
-@@ -172,3 +192,83 @@ class TestBpftool(unittest.TestCase):
-         res = bpftool(["feature", "probe", "macros"])
-         for pattern in expected_patterns:
-             self.assertRegex(res, pattern)
-+
-+    def assertStringsPresent(self, text, patterns):
-+        pos = 0
-+        for i, pat in enumerate(patterns):
-+            m = text.find(pat, pos)
-+            if m == -1:
-+                with io.StringIO() as msg:
-+                    print("Can't find expected string:", file=msg)
-+                    for s in patterns[0:i]:
-+                        print("    MATCHED: " + s, file=msg)
-+                    print("NOT MATCHED: " + pat, file=msg)
-+                    print("", file=msg)
-+                    print("Searching in:", file=msg)
-+                    print(text, file=msg)
-+                    self.fail(msg.getvalue())
-+            pos += len(pat)
-+
-+    def assertPreserveStaticOffset(self, btf_dump, types):
-+        self.assertStringsPresent(btf_dump, [
-+            "#if !defined(BPF_NO_PRESERVE_STATIC_OFFSET) && " +
-+              "__has_attribute(preserve_static_offset)",
-+            "#pragma clang attribute push " +
-+              "(__attribute__((preserve_static_offset)), apply_to = record)"
-+        ] + ["struct " + t + ";" for t in types] + [
-+            "#endif /* BPF_NO_PRESERVE_STATIC_OFFSET */"
-+        ])
-+
-+    # Load a small program that has some context types in it's BTF,
-+    # verify that "bpftool btf dump file ... format c" emits
-+    # preserve_static_offset attribute.
-+    def test_c_dump_preserve_static_offset_present(self):
-+        res = bpftool(["btf", "dump", "file", DUMMY_SK_BUFF_USER_OBJ, "format", "c"])
-+        self.assertPreserveStaticOffset(res, ["__sk_buff"])
-+
-+    # Load a small program that has no context types in it's BTF,
-+    # verify that "bpftool btf dump file ... format c" does not emit
-+    # preserve_static_offset attribute.
-+    def test_c_dump_no_preserve_static_offset(self):
-+        res = bpftool(["btf", "dump", "file", DUMMY_NO_CONTEXT_BTF_OBJ, "format", "c"])
-+        self.assertNotRegex(res, "preserve_static_offset")
-+        self.assertStringsPresent(res, [
-+            "preserve_access_index",
-+            "typedef unsigned int __u32;"
-+        ])
-+
-+    # When BTF is dumped for maps bpftool follows a slightly different
-+    # code path, that filters which BTF types would be printed.
-+    # Test this code path here:
-+    # - load a program that uses a map, value type of which references
-+    #   a number of structs annotated with preserve_static_offset;
-+    # - dump BTF for that map and check preserve_static_offset annotation
-+    #   for expected structs.
-+    def test_c_dump_preserve_static_offset_map(self):
-+        prog_pin = tempfile.mktemp(prefix="dummy_prog_with_map", dir=BPFFS_MOUNT)
-+        maps_dir = tempfile.mktemp(prefix="dummy_prog_with_map_maps", dir=BPFFS_MOUNT)
-+        map_pin1 = maps_dir + "/test_map1"
-+        map_pin2 = maps_dir + "/test_map2"
-+
-+        bpftool(["prog", "load", DUMMY_PROG_WITH_MAP_OBJ, prog_pin, "pinmaps", maps_dir])
-+        try:
-+            map1 = bpftool(["btf", "dump", "map", "pinned", map_pin1, "value", "format", "c"])
-+            map2 = bpftool(["btf", "dump", "map", "pinned", map_pin2, "value", "format", "c"])
-+        finally:
-+            os.remove(prog_pin)
-+            os.remove(map_pin1)
-+            os.remove(map_pin2)
-+            os.rmdir(maps_dir)
-+
-+        # test_map1 should have all types except struct test_struct_f
-+        self.assertPreserveStaticOffset(map1, [
-+            "test_struct_a", "test_struct_b", "test_struct_c",
-+            "test_struct_d", "test_struct_e",
-+        ])
-+        self.assertNotRegex(map1, "test_struct_f")
-+
-+        # test_map2 should have only struct test_struct_f
-+        self.assertPreserveStaticOffset(map2, [
-+            "test_struct_f"
-+        ])
-+        self.assertNotRegex(map2, "struct test_struct_a")
+ 	return 0;
++bad_value:
++	return invalfc(fc, "Bad value for '%s'", param->key);
+ }
+ 
+ struct bpf_preload_ops *bpf_preload_ops;
+@@ -750,6 +795,8 @@ static int bpf_fill_super(struct super_block *sb, struct fs_context *fc)
+ 	sb->s_op = &bpf_super_ops;
+ 
+ 	inode = sb->s_root->d_inode;
++	inode->i_uid = opts->uid;
++	inode->i_gid = opts->gid;
+ 	inode->i_op = &bpf_dir_iops;
+ 	inode->i_mode &= ~S_IALLUGO;
+ 	populate_bpffs(sb->s_root);
+@@ -785,6 +832,8 @@ static int bpf_init_fs_context(struct fs_context *fc)
+ 		return -ENOMEM;
+ 
+ 	opts->mode = S_IRWXUGO;
++	opts->uid = current_fsuid();
++	opts->gid = current_fsgid();
+ 
+ 	fc->fs_private = opts;
+ 	fc->ops = &bpf_context_ops;
 -- 
-2.42.1
+2.27.0
 
 
