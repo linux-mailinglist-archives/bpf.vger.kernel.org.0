@@ -1,225 +1,169 @@
-Return-Path: <bpf+bounces-18422-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18423-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5D3181A7E2
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 22:11:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC8E81A85A
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 22:43:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E2C1286A04
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 21:11:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE737287328
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 21:42:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9716B48CD8;
-	Wed, 20 Dec 2023 21:11:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4040F4BA89;
+	Wed, 20 Dec 2023 21:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iFyhXVgn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YIX4x5/p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8497B48796;
-	Wed, 20 Dec 2023 21:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43434495E2;
+	Wed, 20 Dec 2023 21:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33668163949so69799f8f.2;
-        Wed, 20 Dec 2023 13:11:39 -0800 (PST)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-54f4f7e88feso157063a12.3;
+        Wed, 20 Dec 2023 13:40:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703106698; x=1703711498; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vcmfAZtKeHQ+xz4l7OTo1rSFylynVcbq+ZS/3NlOtSo=;
-        b=iFyhXVgnnS060kCc2qzkZT6ysybHruYBFnPRAG2ar7hLIqlrG8Qbzisn6tGYmfvNik
-         9VBIT/xh9CflEISptX6FR2gmjfDN8KEJHLre5A4b+QnQnryEQ31R818tr80FPx3/jEhP
-         NSsyCPXRyxAJ/lg/6s9GKbyryB7+0ZcAypQj/b6osY1pS/EHb4aeASOGKCslpfE5GNz7
-         FBz8TPtyh+LCekCya+83RylqbyAoBQEOVQ2BV8WzyMHTtE6Fl/L8h8akII73JZZBdQ4b
-         R5vrAASBeNKn0CXgp3FExlYGZo7MluqProU2YVQbGKj+yAEpsB5Q9EmLu+vIc3or4pKX
-         UOTA==
+        d=gmail.com; s=20230601; t=1703108425; x=1703713225; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MzuubNkvst/9i8BFChAgxHMD9ThadUV92R9A6HcZzrE=;
+        b=YIX4x5/p2cmHw83mm/O6yyGLKp6gNDmuqwznR5PYtNhFSS1CzBOE1BZ5bfdIwsevUR
+         K0/8IgjyykVEFy30vnQ97Ztna7R+9ZSEylyMLG0PNf/hHr2gT7IZIHkduFf2SJVzRFh2
+         pcU23sDGEcFEkOVwKIVoxTe1mrt5zzHVE+RGGBbxeCpu/5IXUVUTNo8BI3T+xaGaRZgx
+         5P6V/TeguPVJkalBITSh1DMlPfZo3vA1xr2u2MnApJHz/fIgdipWFkrB7OnJXh/LENvy
+         5KGeIINXGZPpRIN6g573Y0SQd9M6xg3c9pbnvdGXRG3lCUx+x3GXuYNRuYdd2NLyYuLz
+         rj1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703106698; x=1703711498;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vcmfAZtKeHQ+xz4l7OTo1rSFylynVcbq+ZS/3NlOtSo=;
-        b=sqLYCwLIVCIz/hsWFqM+bTrYOm/pY6VzcGrIVq7OF7R0PzUFanIkZYQHwbp9zM1Z26
-         F9G5uNIwiSjn3u8XX3bCk8HDakp8D6hFTI53Pr/2FzY5FrB8YfcizzUaMDOP1mF6ATIj
-         SA+RgBsKfJMqVX36z3mcoYC1OGTFRlGvRbdI/i9sCsg9tKScsSziFy3S548POr0Uy4su
-         v4roxjBSv2NvLkruHTEB8lRswi7uhAhXUm/wQWekz1ZZm0q8SbrK9TGqDaw1GCgrHQHC
-         qZ7EMIrEQvuhIXcQEciNJ0vpb8pmM61sQswV6CwDsIPfWsIiCZCmNm1Vq+KM4QcLmbEQ
-         NAkw==
-X-Gm-Message-State: AOJu0YwsF0nRLAdcHKdmmABCHlWyFIooGHAeDr/HxARguldlILHpixmF
-	6ASVXF09jNL4/uUq9yNNBa+cqyWu1Gpq0NbPsbM=
-X-Google-Smtp-Source: AGHT+IHjOkPEU1b26MfTtMIY0DN6AeEhVHPXnN8otVaKeYwi4QrGZHpE84IQwSr4f+XbFVhBiTrH6O08PNUI51gjBGI=
-X-Received: by 2002:a5d:4f06:0:b0:336:6ebb:704f with SMTP id
- c6-20020a5d4f06000000b003366ebb704fmr63710wru.122.1703106697456; Wed, 20 Dec
- 2023 13:11:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703108425; x=1703713225;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MzuubNkvst/9i8BFChAgxHMD9ThadUV92R9A6HcZzrE=;
+        b=jMqt0hLDZgOWwEX+AvRovVTla31hb3jQhTh+EfN+8E6Ll3NtLsKb6nvjARCLfWjctJ
+         t/1uJ+HfFhjCyimNBbw09X2tjcIcaIBHkHS/BoE4LlagPJxLdnlbmEHmOJ1i0kGJIlCA
+         fidn2E+IguDKJcvq/zykZaDnM8z5msjK7leryqwhP7iO8pWiMlY93nzPP7ssJF6GXVJ3
+         4xo20VFY+Q0BZA/4rWToyhn0/6rFO7zTMTqB0eJpXfE0tePtb9tLgrtt7UhBEn1KlDQK
+         nxJ+L0sc/MWRv0CRYop8LFyibzQ6dL5LWeLiyDtk2AEFkEbaqMa8biKPK7QfIsiOQsaj
+         19DQ==
+X-Gm-Message-State: AOJu0Yw7rYOy+znShyJU0pxeyf+9Lf5BVX8M4L0rMgnQIEn9SO7XHq8V
+	ctQqw1+l1cZdr1qTnUQxsAI=
+X-Google-Smtp-Source: AGHT+IFgt5CHbyFocEJTyy1xKdfEag+/QY5YQzYz1KGsLP+apqD8OMxmN5u2n9D9p0Z6o71u/+sX5w==
+X-Received: by 2002:a50:cd51:0:b0:553:5f4:7d81 with SMTP id d17-20020a50cd51000000b0055305f47d81mr4684928edj.61.1703108425239;
+        Wed, 20 Dec 2023 13:40:25 -0800 (PST)
+Received: from localhost ([185.220.101.166])
+        by smtp.gmail.com with ESMTPSA id a5-20020aa7cf05000000b005537e39745csm296817edy.47.2023.12.20.13.40.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 13:40:24 -0800 (PST)
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Maxim Mikityanskiy <maxim@isovalent.com>
+Subject: [PATCH bpf-next 00/15] Improvements for tracking scalars in the BPF verifier
+Date: Wed, 20 Dec 2023 23:39:58 +0200
+Message-ID: <20231220214013.3327288-1-maxtram95@gmail.com>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1703081351-85579-1-git-send-email-alibuda@linux.alibaba.com> <1703081351-85579-2-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1703081351-85579-2-git-send-email-alibuda@linux.alibaba.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 20 Dec 2023 13:11:26 -0800
-Message-ID: <CAADnVQK3Wk+pKbvc5_7jgaQ=qFq3y0ozgnn+dbW56DaHL2ExWQ@mail.gmail.com>
-Subject: Re: [RFC nf-next v3 1/2] netfilter: bpf: support prog update
-To: "D. Wythe" <alibuda@linux.alibaba.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, 
-	Florian Westphal <fw@strlen.de>, bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, coreteam@netfilter.org, 
-	netfilter-devel <netfilter-devel@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 20, 2023 at 6:09=E2=80=AFAM D. Wythe <alibuda@linux.alibaba.com=
-> wrote:
->
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
->
-> To support the prog update, we need to ensure that the prog seen
-> within the hook is always valid. Considering that hooks are always
-> protected by rcu_read_lock(), which provide us the ability to
-> access the prog under rcu.
->
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->  net/netfilter/nf_bpf_link.c | 63 ++++++++++++++++++++++++++++++++++-----=
-------
->  1 file changed, 48 insertions(+), 15 deletions(-)
->
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index e502ec0..9bc91d1 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -8,17 +8,8 @@
->  #include <net/netfilter/nf_bpf_link.h>
->  #include <uapi/linux/netfilter_ipv4.h>
->
-> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
-> -                                   const struct nf_hook_state *s)
-> -{
-> -       const struct bpf_prog *prog =3D bpf_prog;
-> -       struct bpf_nf_ctx ctx =3D {
-> -               .state =3D s,
-> -               .skb =3D skb,
-> -       };
-> -
-> -       return bpf_prog_run(prog, &ctx);
-> -}
-> +/* protect link update in parallel */
-> +static DEFINE_MUTEX(bpf_nf_mutex);
->
->  struct bpf_nf_link {
->         struct bpf_link link;
-> @@ -26,8 +17,20 @@ struct bpf_nf_link {
->         struct net *net;
->         u32 dead;
->         const struct nf_defrag_hook *defrag_hook;
-> +       struct rcu_head head;
+From: Maxim Mikityanskiy <maxim@isovalent.com>
 
-I have to point out the same issues as before, but
-will ask them differently...
+The goal of this series is to extend the verifier's capabilities of
+tracking scalars when they are spilled to stack, especially when the
+spill or fill is narrowing. It also contains a fix by Eduard for
+infinite loop detection and a state pruning optimization by Eduard that
+compensates for a verification complexity regression introduced by
+tracking unbounded scalars. These improvements reduce the surface of
+false rejections that I saw while working on Cilium codebase.
 
-Why do you think above rcu_head is necessary?
+Patch 1 (Maxim): Fix for an existing test, it will matter later in the
+series.
 
->  };
->
-> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
-> +                                   const struct nf_hook_state *s)
-> +{
-> +       const struct bpf_nf_link *nf_link =3D bpf_link;
-> +       struct bpf_nf_ctx ctx =3D {
-> +               .state =3D s,
-> +               .skb =3D skb,
-> +       };
-> +       return bpf_prog_run(rcu_dereference_raw(nf_link->link.prog), &ctx=
-);
-> +}
-> +
->  #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV=
-6)
->  static const struct nf_defrag_hook *
->  get_proto_defrag_hook(struct bpf_nf_link *link,
-> @@ -126,8 +129,7 @@ static void bpf_nf_link_release(struct bpf_link *link=
-)
->  static void bpf_nf_link_dealloc(struct bpf_link *link)
->  {
->         struct bpf_nf_link *nf_link =3D container_of(link, struct bpf_nf_=
-link, link);
-> -
-> -       kfree(nf_link);
-> +       kfree_rcu(nf_link, head);
+Patches 2-3 (Eduard): Fixes for false rejections in infinite loop
+detection that happen in the selftests when my patches are applied.
 
-Why is this needed ?
-Have you looked at tcx_link_lops ?
+Patches 4-5 (Maxim): Fix the inconsistency of find_equal_scalars that
+was possible if 32-bit spills were made.
 
->  }
->
->  static int bpf_nf_link_detach(struct bpf_link *link)
-> @@ -162,7 +164,34 @@ static int bpf_nf_link_fill_link_info(const struct b=
-pf_link *link,
->  static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *ne=
-w_prog,
->                               struct bpf_prog *old_prog)
->  {
-> -       return -EOPNOTSUPP;
-> +       struct bpf_nf_link *nf_link =3D container_of(link, struct bpf_nf_=
-link, link);
-> +       int err =3D 0;
-> +
-> +       mutex_lock(&bpf_nf_mutex);
+Patches 6-11 (Maxim): Support the case when boundary checks are first
+performed after the register was spilled to the stack.
 
-Why do you need this mutex?
-What race does it solve?
+Patches 12-13 (Maxim): Support narrowing fills.
 
-> +
-> +       if (nf_link->dead) {
-> +               err =3D -EPERM;
-> +               goto out;
-> +       }
-> +
-> +       /* target old_prog mismatch */
-> +       if (old_prog && link->prog !=3D old_prog) {
-> +               err =3D -EPERM;
-> +               goto out;
-> +       }
-> +
-> +       old_prog =3D link->prog;
-> +       if (old_prog =3D=3D new_prog) {
-> +               /* don't need update */
-> +               bpf_prog_put(new_prog);
-> +               goto out;
-> +       }
-> +
-> +       old_prog =3D xchg(&link->prog, new_prog);
-> +       bpf_prog_put(old_prog);
-> +out:
-> +       mutex_unlock(&bpf_nf_mutex);
-> +       return err;
->  }
->
->  static const struct bpf_link_ops bpf_nf_link_lops =3D {
-> @@ -226,7 +255,11 @@ int bpf_nf_link_attach(const union bpf_attr *attr, s=
-truct bpf_prog *prog)
->
->         link->hook_ops.hook =3D nf_hook_run_bpf;
->         link->hook_ops.hook_ops_type =3D NF_HOOK_OP_BPF;
-> -       link->hook_ops.priv =3D prog;
-> +
-> +       /* bpf_nf_link_release & bpf_nf_link_dealloc() can ensures that l=
-ink remains
-> +        * valid at all times within nf_hook_run_bpf().
-> +        */
-> +       link->hook_ops.priv =3D link;
->
->         link->hook_ops.pf =3D attr->link_create.netfilter.pf;
->         link->hook_ops.priority =3D attr->link_create.netfilter.priority;
-> --
-> 1.8.3.1
->
+Patches 14-15 (Eduard): Optimization for state pruning in stacksafe() to
+mitigate the verification complexity regression.
+
+veristat -e file,prog,states -f '!states_diff<50' -f '!states_pct<10' -f '!states_a<10' -f '!states_b<10' -C ...
+
+ * Without patch 14:
+
+File                  Program       States (A)  States (B)  States    (DIFF)
+--------------------  ------------  ----------  ----------  ----------------
+bpf_xdp.o             tail_lb_ipv6        3877        2936    -941 (-24.27%)
+pyperf180.bpf.o       on_event            8422       10456   +2034 (+24.15%)
+pyperf600.bpf.o       on_event           22259       37319  +15060 (+67.66%)
+pyperf600_iter.bpf.o  on_event             400         540    +140 (+35.00%)
+strobemeta.bpf.o      on_event            4702       13435  +8733 (+185.73%)
+
+ * With patch 14:
+
+File                  Program       States (A)  States (B)  States  (DIFF)
+--------------------  ------------  ----------  ----------  --------------
+bpf_xdp.o             tail_lb_ipv6        3877        2937  -940 (-24.25%)
+pyperf600_iter.bpf.o  on_event             400         500  +100 (+25.00%)
+
+Eduard Zingerman (4):
+  bpf: make infinite loop detection in is_state_visited() exact
+  selftests/bpf: check if imprecise stack spills confuse infinite loop
+    detection
+  bpf: Optimize state pruning for spilled scalars
+  selftests/bpf: states pruning checks for scalar vs STACK_{MISC,ZERO}
+
+Maxim Mikityanskiy (11):
+  selftests/bpf: Fix the u64_offset_to_skb_data test
+  bpf: Make bpf_for_each_spilled_reg consider narrow spills
+  selftests/bpf: Add a test case for 32-bit spill tracking
+  bpf: Add the assign_scalar_id_before_mov function
+  bpf: Add the get_reg_width function
+  bpf: Assign ID to scalars on spill
+  selftests/bpf: Test assigning ID to scalars on spill
+  bpf: Track spilled unbounded scalars
+  selftests/bpf: Test tracking spilled unbounded scalars
+  bpf: Preserve boundaries and track scalars on narrowing fill
+  selftests/bpf: Add test cases for narrowing fill
+
+ include/linux/bpf_verifier.h                  |   2 +-
+ kernel/bpf/verifier.c                         | 160 +++++-
+ .../bpf/progs/verifier_direct_packet_access.c |   2 +-
+ .../selftests/bpf/progs/verifier_loops1.c     |  24 +
+ .../selftests/bpf/progs/verifier_spill_fill.c | 529 +++++++++++++++++-
+ .../testing/selftests/bpf/verifier/precise.c  |   6 +-
+ 6 files changed, 677 insertions(+), 46 deletions(-)
+
+-- 
+2.42.1
 
