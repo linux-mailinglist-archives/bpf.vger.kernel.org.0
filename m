@@ -1,138 +1,142 @@
-Return-Path: <bpf+bounces-18420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E101781A781
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 21:12:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A5E381A791
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 21:19:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 749641F23AB3
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 20:12:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 120F4B23EB8
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 20:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D76348788;
-	Wed, 20 Dec 2023 20:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E21487B4;
+	Wed, 20 Dec 2023 20:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="kKjxRhPJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="12FlTals"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hsFOp8wg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF8E4879E
-	for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 20:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id 2B9475C039E;
-	Wed, 20 Dec 2023 15:12:15 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 20 Dec 2023 15:12:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1703103135;
-	 x=1703189535; bh=MiCarwXy7gpl1SRxgIJdsA5C5UsMskqS6g7fT1sRzZk=; b=
-	kKjxRhPJ8pAoybWTBjQBtRVaRDIFMSPPxK8tV4lA5vnJlBzlomXDzGT9dmW4Mw71
-	bL9ixwSVUtq0EMaJJW85mMWaSlU7ofx++ajRWZCFfP+YTe2agnsNVjUwcgFxBoR/
-	VitJkfm5egBE+7vqlCOFhL3Y4da2vGdAhzx6MeXs2S86sB0gQVxxfi7norLxVfVX
-	ZBWwi/5NqUokCADFOMxaI6yNO3flIpOYSUt68oj378e851LKxUPZFTJ1DY0/7mZa
-	ie7+XR/IjyjdpHGNK20wiNlYJQQXlzxjnFhFY5BAY5W4hO1XPcsUcSE5MN/NJqxK
-	6+b6Q1X1agHw/v9y1fdnLA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703103135; x=
-	1703189535; bh=MiCarwXy7gpl1SRxgIJdsA5C5UsMskqS6g7fT1sRzZk=; b=1
-	2FlTals7Ipb3mcyENVflfsk+dJZdkzLkJCHnxgt86beYydiu3S765OAFjcSv4owg
-	DFlARQAH34cyLMeird8rFH4BtdrJmDe5KSHBGHYZr3OwpEYtRN1SqnNqVReNEkbn
-	CiY3tvCigDdxeIVC1X+i/UtT5fQnThO9LOHb5E95Lk36OS5Lz5NTz0tPl3kFxAiS
-	IOCZ//rxphc3QsFg5XlGBQbwNJBk0g0fieQMovIDLR0BZcw2pwLzw9tVyZmHYwXH
-	XMF29xVcgieYybjCo19ww7Hylt51et4YSHt4MGvK09kfe4/YVyrrj6F7NmIHRieO
-	mCKculgymhJnbL9ng0OFA==
-X-ME-Sender: <xms:nkqDZczIE6hIYkEJY69vdx4QWxcYlXj_5CRa0F0TUuRgt6NfqPANYw>
-    <xme:nkqDZQTj2aJBnBO1B-532o1aVDA8cvwTarVuECeGVhoJHoGFpE_8pU6blvtyPn8tK
-    E1f5On_u1ExqpOuXg>
-X-ME-Received: <xmr:nkqDZeWYy8-cAbBIumAJZNMMpHmltGLGFepGSZ2dGRb2dVgtHKMU9fNmF4l5YbeK1vHC65xcAfBBtMHYb22-YJQkjdPBvdcLpdI0YH4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduvddgudefgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
-    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:nkqDZahDDTNdkrcNIIImi72DS4-Pdap1KGPdbqRGAKbYbKuMqFFPmQ>
-    <xmx:nkqDZeCCkvLOlbf7M3DZZcfi83ZNmtpKZSYlM0-hXerEZw0kx3Tvng>
-    <xmx:nkqDZbKVXVHzCIanKBW8PN81yxARv45xw9UruVcVgTsl_S02T0nawQ>
-    <xmx:n0qDZZM_bLNqOlxYwwzp_0s8EM4jpgDIcg5TJwU41TIMU8852iHC_w>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 20 Dec 2023 15:12:14 -0500 (EST)
-Date: Wed, 20 Dec 2023 13:12:13 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, Quentin Monnet <quentin@isovalent.com>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: Dynamic kfunc discovery
-Message-ID: <u46rtj6fbsbjiic4d2vs6gm3humqainrox7ik7rzknw6bn3bs3@n2wpzc36meck>
-References: <67b0a25f-b75b-453c-9dde-17adf527a14a@app.fastmail.com>
- <CAADnVQLYafmCffxbpxcTFf09W6XqgXCRH6V4gpRL+82+OMMVMA@mail.gmail.com>
- <ZYKu1oysidMOHbbE@krava>
- <4hfjkuvoprm5qawiscm6yd64ffhuf7ig2onm2zqc2bb2r7bbvv@u774my22jfn6>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC04E4879E
+	for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 20:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a2358a75b69so11022166b.1
+        for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 12:19:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703103549; x=1703708349; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Y2UZCUgS/FwiHH80VPz3kQUKybpXGfMuVngN2unU37o=;
+        b=hsFOp8wgiiLrd0l1967Gpf6cZKShjE6ZSfZlAjjtwbOnoCFkPAk57qOFMZSu0hP4or
+         MwXGa74UIIzJN7R8ICdvPWTJZ0qxLc9KLYk334HxS0dcVuSRz1H7Vw//hl/QkA/Q1DAq
+         VKZTjAAUnA53SvOL9j4gnCkUJ7Ot/H+NbNN5w4y3Go+onj9/6tTids5iXBGIMpAMqNs9
+         /LWm6ybiKjYdnCjKWCeOKKoa8hKCz3ytO6VMif9m9sj40AZrCcU3YT6xRYCZuyFl42cw
+         Zq6B6LQExy3oUAsNK5P+Q0+FYu/LLVPr4bh0RsRXZOVSuMvHPTWsZYz5wM0VUdCrSdzz
+         CmAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703103549; x=1703708349;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2UZCUgS/FwiHH80VPz3kQUKybpXGfMuVngN2unU37o=;
+        b=GDZ7LwbYKNlzKb2vX+hG6FKL2A70gYO5BTeNBTE7CNaZHEzMuPSekGoaEBFrmmKcfs
+         gzR9S8MUTJSHZIvS/T70jfOERRDEk/pqMi/ODKuhd/iOo3QfhRNmSn+Nav9fbQoF7Wgi
+         wTZl+xF88uw0bNpFMCi7yKhaWadWwvlJBlmkFKIpvzYoZp5qJchAANk7S53DRgdLv5/9
+         bK3PLNb006Z43xEjPNXoxEcFPki9kBj2w6StlCGNSjCcOxizgHd3qYxh6XDdIEMwYQ+L
+         nM065hW3LRzfpPFmEm9PYu1YurjD+HLw4mSOR2qAJ8dbfvr46eD4hKjtODyRvXQzPAuH
+         yW9A==
+X-Gm-Message-State: AOJu0Yy2gCR/GsNseXo1bZ7vYupIOKWqmgdr+VTLWKtKkEkHBoPIbEuS
+	5M5uPbvnp2IpLUKT9RAsyzxKHXAFj8hL9Q==
+X-Google-Smtp-Source: AGHT+IEreT/cnNYQ5ZpZH7qrH1+yxkWa2KAi68UVYr+O0R/xtwaLEkJ62eN9kB1n3v/eXp7IXBWipg==
+X-Received: by 2002:a17:906:20d0:b0:a23:b64b:3dd4 with SMTP id c16-20020a17090620d000b00a23b64b3dd4mr3496039ejc.24.1703103548927;
+        Wed, 20 Dec 2023 12:19:08 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id zs8-20020a170907714800b00a2686db1e81sm180648ejb.26.2023.12.20.12.19.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 12:19:08 -0800 (PST)
+Message-ID: <e912efb0f87d91037c8b33ad1821f17fd7b3ddde.camel@gmail.com>
+Subject: Re: [RFC v3 0/3] use preserve_static_offset in bpf uapi headers
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Quentin Monnet
+	 <quentin@isovalent.com>, Alan Maguire <alan.maguire@oracle.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
+ Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Kernel Team <kernel-team@fb.com>,
+ Yonghong Song <yonghong.song@linux.dev>
+Date: Wed, 20 Dec 2023 22:19:07 +0200
+In-Reply-To: <CAADnVQJKbtFAKDo6LGTmufXO-eDptud6pymDJLA-=o-qtk4Z4w@mail.gmail.com>
+References: <20231220133411.22978-1-eddyz87@gmail.com>
+	 <CAADnVQJKbtFAKDo6LGTmufXO-eDptud6pymDJLA-=o-qtk4Z4w@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4hfjkuvoprm5qawiscm6yd64ffhuf7ig2onm2zqc2bb2r7bbvv@u774my22jfn6>
 
-On Wed, Dec 20, 2023 at 09:44:10AM -0700, Daniel Xu wrote:
-> Hi Jiri,
-> 
-> On Wed, Dec 20, 2023 at 10:07:34AM +0100, Jiri Olsa wrote:
-> > On Tue, Dec 19, 2023 at 07:15:42PM -0800, Alexei Starovoitov wrote:
-> > > On Tue, Dec 19, 2023 at 9:29 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > I was chatting w/ Quentin [0] about how bpftool could:
-> > > >
-> > > > 1. Support a "feature dump" of all supported kfuncs on running kernel
-> > > > 2. Generate vmlinux.h with kfunc prototypes
-> > > >
-> > > > I had another idea this morning so I thought I'd bounce it around
-> > > > on the list in case others had better ones. 3 vague ideas:
-> > > >
-> > > > 1. Add a BTF type tag annotation in __bpf_kfunc macro. This would
-> > > >    let bpftool parse BTF to do discovery. It would be fairly clean and
-> > > >    straightforward, except that I don't think GCC supports these type
-> > > >    tags. So only clang-built-linux would work.
-> > > >
-> > > > 2. Do the same thing as above, except rather than tagging src code,
-> > > >    teach pahole about the .BTF_ids section in vmlinux. pahole could then
-> > > >    construct BTF with the appropriate type tags.
-> > 
-> > I thought it'd be nice to have this in BTF, but to generate the .BTF_ids
-> > section we need the BTF data (for BTF IDs), so that might be tricky
-> 
-> Isn't .BTF_ids already present in vmlinux before getting to
-> resolve_btfids? It looks to me like all resolve_btfids does is patch
-> symbols to the read BTF ID values.
-> 
-> To inject BTF type tags from pahole, I don't think it needs a patched
-> .BTF_ids section, right? After pahole has generated all the regular
-> entries, it could walk .BTF_ids and try to match up symbol names with
-> BTF function entries. And then inject the BTF type tag.
+On Wed, 2023-12-20 at 11:20 -0800, Alexei Starovoitov wrote:
+> On Wed, Dec 20, 2023 at 5:34=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> > This RFC does not handle type pt_regs used for kprobes/
+> > This type is defined in architecture specific headers like
+> > arch/x86/include/asm/ptrace.h and is hidden behind typedef
+> > bpf_user_pt_regs_t in include/uapi/asm-generic/bpf_perf_event.h.
+> > There are two ways to handle struct pt_regs:
+> > 1. Modify all architecture specific ptrace.h files to use __bpf_ctx;
+> > 2. Add annotated forward declaration for pt_regs in
+> >    include/uapi/asm-generic/bpf_perf_event.h, e.g. as follows:
+> >=20
+> >     #if __has_attribute(preserve_static_offset) && defined(__bpf__)
+> >     #define __bpf_ctx __attribute__((preserve_static_offset))
+> >     #else
+> >     #define __bpf_ctx
+> >     #endif
+> >=20
+> >     struct __bpf_ctx pt_regs;
+> >=20
+> >     #undef __bpf_ctx
+> >=20
+> >     #include <linux/ptrace.h>
+> >=20
+> >     /* Export kernel pt_regs structure */
+> >     typedef struct pt_regs bpf_user_pt_regs_t;
+> >=20
+> > Unfortunately, it might be the case that option (2) is not sufficient,
+> > as at-least BPF selftests access pt_regs either via vmlinux.h or by
+> > directly including ptrace.h.
+> >=20
+> > If option (1) is to be implemented, it feels unreasonable to continue
+> > copying definition of __bpf_ctx macro from file to file.
+> > Given absence of common uapi exported headers between bpf.h and
+> > bpf_perf_event.h/ptrace.h, it looks like a new uapi header would have
+> > to be added, e.g. include/uapi/bpf_compiler.h.
+> > For the moment this header would contain only the definition for
+> > __bpf_ctx, and would be included in bpf.h, nf_bpf_link.h and
+> > architecture specific ptrace.h.
+> >=20
+> > Please advise.
+>=20
+> I'm afraid option 1 is a non starter. bpf quirks cannot impose
+> such heavy tax on the kernel.
+>=20
+> Option 2 is equally hacky.
+>=20
+> I think we should do what v2 did and hard code pt_regs in bpftool.
 
-I have a working prototype. Will send out a patch later today.
+I agree on (1).
+As for (2), I use the same hack in current patch for bpftool to avoid
+hacking main logic of BPF dump, it works and is allowed by C language
+standard (albeit in vague terms, but example is present).
+Unfortunately (2) does not propagate to vmlinux.h.
 
-[...]
+Quentin, Alan, what do you think about hard-coding only pt_regs?
 
