@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-18356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18357-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 265038196C5
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 03:20:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E59ED8196D8
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 03:30:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598181C24693
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 02:20:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E540A1C20C4F
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 02:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EF4CBE6F;
-	Wed, 20 Dec 2023 02:20:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126358C00;
+	Wed, 20 Dec 2023 02:30:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ETRr+YlV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WjFZsk3b"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC2EBE4C
-	for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 02:20:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3A0CFC433C9;
-	Wed, 20 Dec 2023 02:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E901883C
+	for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 02:30:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 11F29C433C9;
+	Wed, 20 Dec 2023 02:30:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703038827;
-	bh=4MNOiK/KdMkptao47kh4i6lSE/Ge/LxWgds8LflKdU8=;
+	s=k20201202; t=1703039423;
+	bh=shA+6vVmD81xST8OEEufkcvJZk2974goyXt1R3S/PaQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ETRr+YlVQIwzRrSeXcwrNIivveVFCX9jIy2EFt50lKlDdJFIOtJIIYUddf/mH8Sg0
-	 aQCngdwzTYQY0FdZxDqVKzaSqsmaEHbz4Fsn0WGwoatuVUBM0mKLu2o5yvkPe77qZ2
-	 WIlpRgr5R7EDtvrElv/G4TSHKkEpXvfMAKqPQzYXoHAAdyoe9ptsx+uiuVdR3sVuAq
-	 7SXIi/AU7WTVSzjymZWC0fMiTMp4IxjdpRXyTStMIULL9HMTG2OdXZthn0dyAewLW5
-	 ITz9S/+9dZeJBN/BZQCWB3HwiAvyJuDw4rmpVgk3hM54Xs9QO0iq5RXJNsHyu1on41
-	 oW7y/srOt9CxA==
+	b=WjFZsk3bT0NtKpxOLc0y6hysDxJcDQbDyI5CEBNIVV2zI8bgCu4C2eDV6oNZV7wT4
+	 V8Xo5XDAjr8hBUl6CfksVtz8e2SRC8qPwtInq142WUwEdeyJzCuOw0L/O4eDGbztCV
+	 q57D+z+hpwvGiltB5rVVVt9JrTQkvKkHmGsIfvcYbz5+7UMqkP1xqCxTO3AC6q8Iga
+	 mLs7GkhOgHUqBYVicjGgxBSRPksAVKP156qaWGZLFAqcn/t/097r8d9245dfdTu118
+	 8L1OAO+k0TmPmnaNm2LXR4HvHMxctUIaALJC9xNNaA1IcnW2FqJw+RRPSZ2/uVJ+1/
+	 BzBYJ4/iNCNQw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 20179C561EE;
-	Wed, 20 Dec 2023 02:20:27 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EBDF2D8C98A;
+	Wed, 20 Dec 2023 02:30:22 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -43,55 +43,43 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 bpf-next 00/10] Enhance BPF global subprogs with argument
- tags
+Subject: Re: [PATCH bpf-next] selftests/bpf: Close cgrp fd before calling
+ cleanup_cgroup_environment()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170303882712.21964.17240380114004392748.git-patchwork-notify@kernel.org>
-Date: Wed, 20 Dec 2023 02:20:27 +0000
-References: <20231215011334.2307144-1-andrii@kernel.org>
-In-Reply-To: <20231215011334.2307144-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, kernel-team@meta.com
+ <170303942296.26103.7995929302760177863.git-patchwork-notify@kernel.org>
+Date: Wed, 20 Dec 2023 02:30:22 +0000
+References: <20231219135727.2661527-1-houtao@huaweicloud.com>
+In-Reply-To: <20231219135727.2661527-1-houtao@huaweicloud.com>
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, alexei.starovoitov@gmail.com,
+ andrii@kernel.org, song@kernel.org, haoluo@google.com,
+ yonghong.song@linux.dev, daniel@iogearbox.net, kpsingh@kernel.org,
+ sdf@google.com, jolsa@kernel.org, john.fastabend@gmail.com,
+ houtao1@huawei.com
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Thu, 14 Dec 2023 17:13:24 -0800 you wrote:
-> This patch set adds verifier support for annotating user's global BPF subprog
-> arguments with few commonly requested annotations, to improve global subprog
-> verification experience.
+On Tue, 19 Dec 2023 21:57:27 +0800 you wrote:
+> From: Hou Tao <houtao1@huawei.com>
 > 
-> These tags are:
->   - ability to annotate a special PTR_TO_CTX argument;
->   - ability to annotate a generic PTR_TO_MEM as non-null.
+> There is error log when htab-mem benchmark completes. The error log
+> looks as follows:
+> 
+> $ ./bench htab-mem -d1
+> Setting up benchmark 'htab-mem'...
+> Benchmark 'htab-mem' started.
+> ......
+> (cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
 > 
 > [...]
 
 Here is the summary with links:
-  - [v3,bpf-next,01/10] bpf: abstract away global subprog arg preparation logic from reg state setup
-    https://git.kernel.org/bpf/bpf-next/c/4ba1d0f23414
-  - [v3,bpf-next,02/10] bpf: reuse btf_prepare_func_args() check for main program BTF validation
-    https://git.kernel.org/bpf/bpf-next/c/5eccd2db42d7
-  - [v3,bpf-next,03/10] bpf: prepare btf_prepare_func_args() for handling static subprogs
-    https://git.kernel.org/bpf/bpf-next/c/e26080d0da87
-  - [v3,bpf-next,04/10] bpf: move subprog call logic back to verifier.c
-    https://git.kernel.org/bpf/bpf-next/c/c5a7244759b1
-  - [v3,bpf-next,05/10] bpf: reuse subprog argument parsing logic for subprog call checks
-    https://git.kernel.org/bpf/bpf-next/c/f18c3d88deed
-  - [v3,bpf-next,06/10] bpf: support 'arg:xxx' btf_decl_tag-based hints for global subprog args
-    https://git.kernel.org/bpf/bpf-next/c/94e1c70a3452
-  - [v3,bpf-next,07/10] bpf: add support for passing dynptr pointer to global subprog
-    https://git.kernel.org/bpf/bpf-next/c/a64bfe618665
-  - [v3,bpf-next,08/10] libbpf: add __arg_xxx macros for annotating global func args
-    https://git.kernel.org/bpf/bpf-next/c/aae9c25dda15
-  - [v3,bpf-next,09/10] selftests/bpf: add global subprog annotation tests
-    https://git.kernel.org/bpf/bpf-next/c/0a0ffcac92d5
-  - [v3,bpf-next,10/10] selftests/bpf: add freplace of BTF-unreliable main prog test
-    https://git.kernel.org/bpf/bpf-next/c/f0a5056222f2
+  - [bpf-next] selftests/bpf: Close cgrp fd before calling cleanup_cgroup_environment()
+    https://git.kernel.org/bpf/bpf-next/c/441c725ed592
 
 You are awesome, thank you!
 -- 
