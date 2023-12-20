@@ -1,178 +1,326 @@
-Return-Path: <bpf+bounces-18397-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18398-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B3E181A58A
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 17:44:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 561CB81A5C2
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 17:57:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4F701F23FAA
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 16:44:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B06621F23FE7
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 16:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEEF041A92;
-	Wed, 20 Dec 2023 16:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FA8C4653E;
+	Wed, 20 Dec 2023 16:57:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="HSqZGhTt";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DQEy3oz1"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="oVnSqvb1"
 X-Original-To: bpf@vger.kernel.org
-Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBDA41206
-	for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 16:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailout.nyi.internal (Postfix) with ESMTP id 64FE85C080A;
-	Wed, 20 Dec 2023 11:44:12 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Wed, 20 Dec 2023 11:44:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1703090652;
-	 x=1703177052; bh=jpQ0Kv5hUSr3ZuDqaULtAU1wJfLWs31OCn2y/KTUOQU=; b=
-	HSqZGhTtGEQvGdNTiO9QoB3GofS4l0o/e2DS2tE/UTPan/vbFrE1NqscFkw6EwJG
-	sMRBKVsPP5lwEwj8+alHoM12yBLa3jN7ZjvpM3wJfZjubTdjDPE5dGNkLhUOHs8b
-	13caeKy0TEreAtsEV+mlRtcBGC6mnOuIPzdcBew8rpoSXCiHxEOJzsRz34Ot/BzR
-	xxWb1Bptql04xap59FMXmCdnQhlEudrwGDP0N5YypGokEmW1mb8qGAov0O7abS2o
-	CWUf2JF8V/1nTIEf5YHPBWfvVWA5fRx5c6tn1pYxAxx+qeK6QAhdnJQxRTtA6Dvz
-	PARoFG/eE5J2NZFKuOG9Iw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1703090652; x=
-	1703177052; bh=jpQ0Kv5hUSr3ZuDqaULtAU1wJfLWs31OCn2y/KTUOQU=; b=D
-	QEy3oz1nLhwapuZVV8vMDRmdKvEhrQtWD6hXbWVLbi1+AP9ZwszJWUR5tZr6QqLZ
-	Xx2/atudkUXfNIJAoBe7XWV1wa0n6zLOdGY6tY+Uw7flFqPQemmLg17Fvvi7DERs
-	MCb8yXJZJSKkHKiq0TBjB+cf/CeLBX8k8Wkwzoa4IG2XTXmYBEeRx0pIDNYTEpkW
-	/Z3YJYAU/xQwpSUS75CxLUwQ/diAyG9aeDpLbIBE0j9c52cEGj3p2coRYcKpIFhJ
-	y6MpCzU753prS4Z1X8fU5rNPxFYXw4ofIvXzXhlTSzBx/yWJk1xk1HL1Zfl/yvio
-	b9omdKe7WeiXFmFxg2Pow==
-X-ME-Sender: <xms:3BmDZb5fy4hP_9ikKuttqTntbVsohK3YNTif_4M56vFgz-iB5Vs66g>
-    <xme:3BmDZQ6UukUkIe05EmxBwu0TjvoaF9gCTnxaYngUASrmRmVHqTsAUbxKqpYXertbi
-    RIhzP8BImCZ3nCeXA>
-X-ME-Received: <xmr:3BmDZSf2vemwp10OZbk5hPu2N2gCEr3aY7h0s_Xv_EtWKhmIziXjwGAOlvbtqoX7eI0MHN6rLQex2t9G4URj_BE3ifg7HIPvdmOfYdM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduvddgledvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:3BmDZcJE4DMoIhCiYhDBG0f8wB3tAodztSBpnQ4_JtdiWWtXzYTztg>
-    <xmx:3BmDZfJWX29Jv5222tJnaQ3VBHoFfCaveBcn5TNPp0MRddIMMr09QA>
-    <xmx:3BmDZVwNtJc_2S0Ph4excnu5LJDFSRPxa-v2WEhFjyTOeILn6GtYwQ>
-    <xmx:3BmDZX1CdlrAaWQDFHuFPzwP1wLLT443ZJqqv8fgso88c30MJ9_07w>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 20 Dec 2023 11:44:11 -0500 (EST)
-Date: Wed, 20 Dec 2023 09:44:10 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, Quentin Monnet <quentin@isovalent.com>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: Dynamic kfunc discovery
-Message-ID: <4hfjkuvoprm5qawiscm6yd64ffhuf7ig2onm2zqc2bb2r7bbvv@u774my22jfn6>
-References: <67b0a25f-b75b-453c-9dde-17adf527a14a@app.fastmail.com>
- <CAADnVQLYafmCffxbpxcTFf09W6XqgXCRH6V4gpRL+82+OMMVMA@mail.gmail.com>
- <ZYKu1oysidMOHbbE@krava>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C9746535
+	for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 16:56:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BKGmMGk016425;
+	Wed, 20 Dec 2023 16:56:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=mcznnzxzLUwi3gyWSPkKnz9qk0WNvqVNrCRGu+qa4O4=;
+ b=oVnSqvb1v7P+xQzVGzMlZrt9HvbbP4PqXtqjR6ARSxdM6UjiufN10GCT7AXquKoe+bAq
+ 9yNOav6kQBl6y62w2iR2OOjKFsBtLXZi1R8F66efW92r3vpp5V14d56vOsuGiknupBwX
+ bX5UoC4y9Zl7xI+fTjhPS2VWfBkLzZVnckjBNCoskh7dp7EPTYUGamgOyyKtD0Jr+cz5
+ TPE0hvveK5BWcdqHo3ywJ0CXUgFpRjmTDlGwxZQWItnmC5+zWnZQUg53mmc3QoosVoXa
+ w2ADGUE05EYbMM3BDMq+ib0yuWPVwHXLyp97CJ8gJwyLWmEouoGQHetPo+xlGXY2KRul 6A== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3v443yg8a1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 16:56:28 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BKF04d9013893;
+	Wed, 20 Dec 2023 16:56:28 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3v1qqkfhy4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Dec 2023 16:56:28 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BKGuQSG15991536
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 20 Dec 2023 16:56:26 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 04ACC20049;
+	Wed, 20 Dec 2023 16:56:26 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 633DF20040;
+	Wed, 20 Dec 2023 16:56:23 +0000 (GMT)
+Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.81.245])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 20 Dec 2023 16:56:23 +0000 (GMT)
+From: Hari Bathini <hbathini@linux.ibm.com>
+To: bpf@vger.kernel.org, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Song Liu <songliubraving@fb.com>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 1/2] powerpc/bpf: ensure module addresses are supported
+Date: Wed, 20 Dec 2023 22:26:21 +0530
+Message-ID: <20231220165622.246723-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZYKu1oysidMOHbbE@krava>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: GpObFSWZVqUJgaTLpW231MS2WGe2rTU5
+X-Proofpoint-GUID: GpObFSWZVqUJgaTLpW231MS2WGe2rTU5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-20_10,2023-12-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ impostorscore=0 malwarescore=0 spamscore=0 priorityscore=1501 bulkscore=0
+ clxscore=1011 suspectscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2312200120
 
-Hi Jiri,
+Currently, bpf jit code on powerpc assumes all the bpf functions and
+helpers to be kernel text. This is false for kfunc case, as function
+addresses are mostly module addresses in that case. Ensure module
+addresses are supported to enable kfunc support.
 
-On Wed, Dec 20, 2023 at 10:07:34AM +0100, Jiri Olsa wrote:
-> On Tue, Dec 19, 2023 at 07:15:42PM -0800, Alexei Starovoitov wrote:
-> > On Tue, Dec 19, 2023 at 9:29 AM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > >
-> > > Hi,
-> > >
-> > > I was chatting w/ Quentin [0] about how bpftool could:
-> > >
-> > > 1. Support a "feature dump" of all supported kfuncs on running kernel
-> > > 2. Generate vmlinux.h with kfunc prototypes
-> > >
-> > > I had another idea this morning so I thought I'd bounce it around
-> > > on the list in case others had better ones. 3 vague ideas:
-> > >
-> > > 1. Add a BTF type tag annotation in __bpf_kfunc macro. This would
-> > >    let bpftool parse BTF to do discovery. It would be fairly clean and
-> > >    straightforward, except that I don't think GCC supports these type
-> > >    tags. So only clang-built-linux would work.
-> > >
-> > > 2. Do the same thing as above, except rather than tagging src code,
-> > >    teach pahole about the .BTF_ids section in vmlinux. pahole could then
-> > >    construct BTF with the appropriate type tags.
-> 
-> I thought it'd be nice to have this in BTF, but to generate the .BTF_ids
-> section we need the BTF data (for BTF IDs), so that might be tricky
+This effectively reverts commit feb6307289d8 ("powerpc64/bpf: Optimize
+instruction sequence used for function calls") and commit 43d636f8b4fd
+("powerpc64/bpf elfv1: Do not load TOC before calling functions") that
+assumed only kernel text for bpf functions/helpers.
 
-Isn't .BTF_ids already present in vmlinux before getting to
-resolve_btfids? It looks to me like all resolve_btfids does is patch
-symbols to the read BTF ID values.
+Also, commit b10cb163c4b3 ("powerpc64/bpf elfv2: Setup kernel TOC in
+r2 on entry") that paved the way for the commits mentioned above is
+reverted.
 
-To inject BTF type tags from pahole, I don't think it needs a patched
-.BTF_ids section, right? After pahole has generated all the regular
-entries, it could walk .BTF_ids and try to match up symbol names with
-BTF function entries. And then inject the BTF type tag.
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+---
+ arch/powerpc/net/bpf_jit.h        |  2 +-
+ arch/powerpc/net/bpf_jit_comp32.c |  8 +--
+ arch/powerpc/net/bpf_jit_comp64.c | 90 +++++++++++++++++--------------
+ 3 files changed, 52 insertions(+), 48 deletions(-)
 
-> 
-> > 
-> > resolve_btfids knows about all of them already.
-> > The best is to teach bpftool about them as well.
-> > It can look for BTF_SET8_START and there it can find btf_ids
-> 
-> with the access to vmlinux, bpftool could get the addresses of all
-> set8s, read all btf ids and generate the header
-> 
-> $ nm vmlinux | grep BTF_ID__set8 
-> ffffffff843bf044 r __BTF_ID__set8__bpf_kfunc_check_set_skb
-> ffffffff843bf064 r __BTF_ID__set8__bpf_kfunc_check_set_sock_addr
-> ffffffff843bf054 r __BTF_ID__set8__bpf_kfunc_check_set_xdp
-> ffffffff843be940 r __BTF_ID__set8__bpf_map_iter_kfunc_ids
-> ffffffff843bf22c r __BTF_ID__set8__bpf_mptcp_fmodret_ids
-> ffffffff843be604 r __BTF_ID__set8__bpf_rstat_kfunc_ids
-> ffffffff843bf074 r __BTF_ID__set8__bpf_sk_iter_kfunc_ids
-> ffffffff843bf1c4 r __BTF_ID__set8__bpf_tcp_ca_check_kfunc_ids
-> ffffffff843bf0bc r __BTF_ID__set8__bpf_test_modify_return_ids
-> ffffffff843be864 r __BTF_ID__set8__common_btf_ids
-> ffffffff843be9a8 r __BTF_ID__set8__cpumask_kfunc_btf_ids
-> ffffffff843bf174 r __BTF_ID__set8__fou_kfunc_set
-> ffffffff843be678 r __BTF_ID__set8__fs_kfunc_set_ids
-> ffffffff843be794 r __BTF_ID__set8__generic_btf_ids
-> ffffffff843be650 r __BTF_ID__set8__key_sig_kfunc_set
-> ffffffff843bf10c r __BTF_ID__set8__nf_ct_kfunc_set
-> ffffffff843bf164 r __BTF_ID__set8__nf_nat_kfunc_set
-> ffffffff843bf18c r __BTF_ID__set8__tcp_cubic_check_kfunc_ids
-> ffffffff843bf0dc r __BTF_ID__set8__test_sk_check_kfunc_ids
-> ffffffff843bf084 r __BTF_ID__set8__xdp_metadata_kfunc_ids
-> ffffffff843bf1f4 r __BTF_ID__set8__xfrm_ifc_kfunc_set
-> ffffffff843bf20c r __BTF_ID__set8__xfrm_state_kfunc_set
-> 
-> jirka
-> 
-> > of all kfuncs.
-> > From there it can generate them into vmlinux.h
-> > 
-> > We wanted kfuncs to appear in vmlinux.h for quite some time,
-> > but no one had cycles to do it.
-> > Still an awesome feature to have.
-> > 
+diff --git a/arch/powerpc/net/bpf_jit.h b/arch/powerpc/net/bpf_jit.h
+index cdea5dccaefe..48503caa5b58 100644
+--- a/arch/powerpc/net/bpf_jit.h
++++ b/arch/powerpc/net/bpf_jit.h
+@@ -160,7 +160,7 @@ static inline void bpf_clear_seen_register(struct codegen_context *ctx, int i)
+ }
+ 
+ void bpf_jit_init_reg_mapping(struct codegen_context *ctx);
+-int bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *ctx, u64 func);
++void bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *ctx, u64 func);
+ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct codegen_context *ctx,
+ 		       u32 *addrs, int pass, bool extra_pass);
+ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx);
+diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+index 2f39c50ca729..1236a75c04ea 100644
+--- a/arch/powerpc/net/bpf_jit_comp32.c
++++ b/arch/powerpc/net/bpf_jit_comp32.c
+@@ -201,7 +201,7 @@ void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
+ }
+ 
+ /* Relative offset needs to be calculated based on final image location */
+-int bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *ctx, u64 func)
++void bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *ctx, u64 func)
+ {
+ 	s32 rel = (s32)func - (s32)(fimage + ctx->idx);
+ 
+@@ -214,8 +214,6 @@ int bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *
+ 		EMIT(PPC_RAW_MTCTR(_R0));
+ 		EMIT(PPC_RAW_BCTRL());
+ 	}
+-
+-	return 0;
+ }
+ 
+ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
+@@ -1054,9 +1052,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+ 				EMIT(PPC_RAW_STW(bpf_to_ppc(BPF_REG_5), _R1, 12));
+ 			}
+ 
+-			ret = bpf_jit_emit_func_call_rel(image, fimage, ctx, func_addr);
+-			if (ret)
+-				return ret;
++			bpf_jit_emit_func_call_rel(image, fimage, ctx, func_addr);
+ 
+ 			EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_0) - 1, _R3));
+ 			EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_0), _R4));
+diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+index 79f23974a320..e7199c202a00 100644
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -126,11 +126,6 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
+ {
+ 	int i;
+ 
+-#ifndef CONFIG_PPC_KERNEL_PCREL
+-	if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2))
+-		EMIT(PPC_RAW_LD(_R2, _R13, offsetof(struct paca_struct, kernel_toc)));
+-#endif
+-
+ 	/*
+ 	 * Initialize tail_call_cnt if we do tail calls.
+ 	 * Otherwise, put in NOPs so that it can be skipped when we are
+@@ -145,6 +140,8 @@ void bpf_jit_build_prologue(u32 *image, struct codegen_context *ctx)
+ 		EMIT(PPC_RAW_NOP());
+ 	}
+ 
++#define BPF_TAILCALL_PROLOGUE_SIZE	8
++
+ 	if (bpf_has_stack_frame(ctx)) {
+ 		/*
+ 		 * We need a stack frame, but we don't necessarily need to
+@@ -204,14 +201,9 @@ void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
+ 
+ static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u64 func)
+ {
+-	unsigned long func_addr = func ? ppc_function_entry((void *)func) : 0;
+-	long reladdr;
+-
+-	if (WARN_ON_ONCE(!core_kernel_text(func_addr)))
+-		return -EINVAL;
+-
+ 	if (IS_ENABLED(CONFIG_PPC_KERNEL_PCREL)) {
+-		reladdr = func_addr - CTX_NIA(ctx);
++		unsigned long func_addr = func ? ppc_function_entry((void *)func) : 0;
++		long reladdr = func_addr - CTX_NIA(ctx);
+ 
+ 		if (reladdr >= (long)SZ_8G || reladdr < -(long)SZ_8G) {
+ 			pr_err("eBPF: address of %ps out of range of pcrel address.\n",
+@@ -225,31 +217,35 @@ static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u
+ 		EMIT(PPC_RAW_BCTR());
+ 
+ 	} else {
+-		reladdr = func_addr - kernel_toc_addr();
+-		if (reladdr > 0x7FFFFFFF || reladdr < -(0x80000000L)) {
+-			pr_err("eBPF: address of %ps out of range of kernel_toc.\n", (void *)func);
+-			return -ERANGE;
+-		}
+-
+-		EMIT(PPC_RAW_ADDIS(_R12, _R2, PPC_HA(reladdr)));
+-		EMIT(PPC_RAW_ADDI(_R12, _R12, PPC_LO(reladdr)));
+-		EMIT(PPC_RAW_MTCTR(_R12));
++#ifdef PPC64_ELF_ABI_v1
++		/* func points to the function descriptor */
++		PPC_LI64(b2p[TMP_REG_2], func);
++		/* Load actual entry point from function descriptor */
++		PPC_BPF_LL(b2p[TMP_REG_1], b2p[TMP_REG_2], 0);
++		/* ... and move it to CTR */
++		EMIT(PPC_RAW_MTCTR(b2p[TMP_REG_1]));
++		/*
++		 * Load TOC from function descriptor at offset 8.
++		 * We can clobber r2 since we get called through a
++		 * function pointer (so caller will save/restore r2)
++		 * and since we don't use a TOC ourself.
++		 */
++		PPC_BPF_LL(2, b2p[TMP_REG_2], 8);
++#else
++		/* We can clobber r12 */
++		PPC_LI64(12, func);
++		EMIT(PPC_RAW_MTCTR(12));
++#endif
+ 		EMIT(PPC_RAW_BCTRL());
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-int bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *ctx, u64 func)
++void bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *ctx, u64 func)
+ {
+ 	unsigned int i, ctx_idx = ctx->idx;
+ 
+-	if (WARN_ON_ONCE(func && is_module_text_address(func)))
+-		return -EINVAL;
+-
+-	/* skip past descriptor if elf v1 */
+-	func += FUNCTION_DESCR_SIZE;
+-
+ 	/* Load function address into r12 */
+ 	PPC_LI64(_R12, func);
+ 
+@@ -267,10 +263,20 @@ int bpf_jit_emit_func_call_rel(u32 *image, u32 *fimage, struct codegen_context *
+ 		for (i = ctx->idx - ctx_idx; i < 5; i++)
+ 			EMIT(PPC_RAW_NOP());
+ 
++#ifdef PPC64_ELF_ABI_v1
++	/*
++	 * Load TOC from function descriptor at offset 8.
++	 * We can clobber r2 since we get called through a
++	 * function pointer (so caller will save/restore r2)
++	 * and since we don't use a TOC ourself.
++	 */
++	PPC_BPF_LL(2, 12, 8);
++	/* Load actual entry point from function descriptor */
++	PPC_BPF_LL(12, 12, 0);
++#endif
++
+ 	EMIT(PPC_RAW_MTCTR(_R12));
+ 	EMIT(PPC_RAW_BCTRL());
+-
+-	return 0;
+ }
+ 
+ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 out)
+@@ -283,10 +289,6 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 	 */
+ 	int b2p_bpf_array = bpf_to_ppc(BPF_REG_2);
+ 	int b2p_index = bpf_to_ppc(BPF_REG_3);
+-	int bpf_tailcall_prologue_size = 8;
+-
+-	if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2))
+-		bpf_tailcall_prologue_size += 4; /* skip past the toc load */
+ 
+ 	/*
+ 	 * if (index >= array->map.max_entries)
+@@ -325,8 +327,14 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 
+ 	/* goto *(prog->bpf_func + prologue_size); */
+ 	EMIT(PPC_RAW_LD(bpf_to_ppc(TMP_REG_1), bpf_to_ppc(TMP_REG_1), offsetof(struct bpf_prog, bpf_func)));
++#ifdef PPC64_ELF_ABI_v1
++	/* skip past the function descriptor */
+ 	EMIT(PPC_RAW_ADDI(bpf_to_ppc(TMP_REG_1), bpf_to_ppc(TMP_REG_1),
+-			FUNCTION_DESCR_SIZE + bpf_tailcall_prologue_size));
++			FUNCTION_DESCR_SIZE + BPF_TAILCALL_PROLOGUE_SIZE));
++#else
++	EMIT(PPC_RAW_ADDI(bpf_to_ppc(TMP_REG_1), bpf_to_ppc(TMP_REG_1),
++			BPF_TAILCALL_PROLOGUE_SIZE));
++#endif
+ 	EMIT(PPC_RAW_MTCTR(bpf_to_ppc(TMP_REG_1)));
+ 
+ 	/* tear down stack, restore NVRs, ... */
+@@ -992,13 +1000,13 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+ 			if (ret < 0)
+ 				return ret;
+ 
+-			if (func_addr_fixed)
++			if (func_addr_fixed) {
+ 				ret = bpf_jit_emit_func_call_hlp(image, ctx, func_addr);
+-			else
+-				ret = bpf_jit_emit_func_call_rel(image, fimage, ctx, func_addr);
+-
+-			if (ret)
+-				return ret;
++				if (ret)
++					return ret;
++			} else {
++				bpf_jit_emit_func_call_rel(image, fimage, ctx, func_addr);
++			}
+ 
+ 			/* move return value from r3 to BPF_REG_0 */
+ 			EMIT(PPC_RAW_MR(bpf_to_ppc(BPF_REG_0), _R3));
+-- 
+2.43.0
 
-Thanks,
-Daniel
 
