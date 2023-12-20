@@ -1,175 +1,100 @@
-Return-Path: <bpf+bounces-18352-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18353-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 689DE819611
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 02:01:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A9FD819656
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 02:34:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C282E286EE1
-	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 01:01:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4EA541C256F2
+	for <lists+bpf@lfdr.de>; Wed, 20 Dec 2023 01:34:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520284421;
-	Wed, 20 Dec 2023 01:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC166FA9;
+	Wed, 20 Dec 2023 01:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZdPqqC2m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JwG44T51"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB86A79CC;
-	Wed, 20 Dec 2023 01:00:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6587AC433C8;
-	Wed, 20 Dec 2023 01:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B4AFC06;
+	Wed, 20 Dec 2023 01:30:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5BFF5C433CA;
+	Wed, 20 Dec 2023 01:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703034054;
-	bh=4syDIv0RLwOoNUlwaRQGOzsRhe4oIXvWdi4qYIv7kc8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ZdPqqC2m65iV4CGkhx4G5oQ95lk6Am7JoKxR95gUf91AXAr38xSW/Ie3u6p57szTH
-	 +xQ/05BAVUzvNCEfnxIVTtKrKvUNqjTtLVoznBNSNL7V0ouLSV3RyteV2OkF2C/aFk
-	 AFp4E7cfVa1RSgP521RsfQUNr3QNvY9B74a+VJJvs2zJTdhc64rTr0z7Hu3Y8s9EoA
-	 sK81M+Iy3Ue0P2B6DyRg93Z/yx3yGeCj5G7h4yMCwfJ0nAmIA+GRjCQPf8CcKLPwuZ
-	 YGl0lNaIh3QT2wmVP04/E8jR7LoZRiRtKzpYvviV6/MBMGgHClSpSrOUcI890fk+Vo
-	 iblBm9KsE5Dug==
-Date: Wed, 20 Dec 2023 10:00:47 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>, Mark
- Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 28/34] fprobe: Rewrite fprobe on function-graph
- tracer
-Message-Id: <20231220100047.e33d862cb869423c2a3a82bf@kernel.org>
-In-Reply-To: <ZYGrB7NsDEWk2liL@krava>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-	<170290542972.220107.9135357273431693988.stgit@devnote2>
-	<ZYGrB7NsDEWk2liL@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=k20201202; t=1703035825;
+	bh=ZrNoIh29HSTlJOYdA5duZSg9G5/8jsY1BPip+euLb+U=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=JwG44T515OOs2PbyRLEZiKieywVD6225ABxcba+1ehwDyy2cBP+3J+6h/lq3wnvoz
+	 /DXxsKKqlrAEiKmM3D3hkWFM17ys5Nh8Ea+PtSVfkcb/9F6MTqyji5Zi/uENWLX8sR
+	 /BgEemUIHlqb2kiVBbaobqEw0THYujxtXvXhFUnbHH0Gv7bnsB9aPLVIT0yGFv1f+F
+	 ICEwCq+nTqf7EQSGjLTugtSCGciGDZli+ipM2AGRp4IZ5TU1N5MWqweQsOi/fRkx2Y
+	 /iAq3Mxz8dOKbgMbpLnKttLkOLCor2su5v3u6LdDwHyZwyZZ/FP5w4kcEUsW0UTQWR
+	 UkBhPrjwNLyWA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3E8E5C561EE;
+	Wed, 20 Dec 2023 01:30:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 0/4] bpf: support to track BPF_JNE
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170303582525.28294.7293109481883503225.git-patchwork-notify@kernel.org>
+Date: Wed, 20 Dec 2023 01:30:25 +0000
+References: <20231219134800.1550388-1-menglong8.dong@gmail.com>
+In-Reply-To: <20231219134800.1550388-1-menglong8.dong@gmail.com>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, yonghong.song@linux.dev,
+ alexei.starovoitov@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+ john.fastabend@gmail.com, martin.lau@linux.dev, song@kernel.org,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ mykolal@fb.com, shuah@kernel.org, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
 
-On Tue, 19 Dec 2023 15:39:03 +0100
-Jiri Olsa <olsajiri@gmail.com> wrote:
+Hello:
 
-> On Mon, Dec 18, 2023 at 10:17:10PM +0900, Masami Hiramatsu (Google) wrote:
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Tue, 19 Dec 2023 21:47:56 +0800 you wrote:
+> For now, the reg bounds is not handled for BPF_JNE case, which can cause
+> the failure of following case:
 > 
-> SNIP
+>   /* The type of "a" is u32 */
+>   if (a > 0 && a < 100) {
+>     /* the range of the register for a is [0, 99], not [1, 99],
+>      * and will cause the following error:
+>      *
+>      *   invalid zero-sized read
+>      *
+>      * as a can be 0.
+>      */
+>     bpf_skb_store_bytes(skb, xx, xx, a, 0);
+>   }
 > 
-> > -static void fprobe_exit_handler(struct rethook_node *rh, void *data,
-> > -				unsigned long ret_ip, struct pt_regs *regs)
-> > +static int fprobe_entry(unsigned long func, unsigned long ret_ip,
-> > +			struct ftrace_regs *fregs, struct fgraph_ops *gops)
-> >  {
-> > -	struct fprobe *fp = (struct fprobe *)data;
-> > -	struct fprobe_rethook_node *fpr;
-> > -	struct ftrace_regs *fregs = (struct ftrace_regs *)regs;
-> > -	int bit;
-> > +	struct fprobe_hlist_node *node, *first;
-> > +	unsigned long *fgraph_data = NULL;
-> > +	unsigned long header;
-> > +	int reserved_words;
-> > +	struct fprobe *fp;
-> > +	int used, ret;
-> >  
-> > -	if (!fp || fprobe_disabled(fp))
-> > -		return;
-> > +	if (WARN_ON_ONCE(!fregs))
-> > +		return 0;
-> >  
-> > -	fpr = container_of(rh, struct fprobe_rethook_node, node);
-> > +	first = node = find_first_fprobe_node(func);
-> > +	if (unlikely(!first))
-> > +		return 0;
-> > +
-> > +	reserved_words = 0;
-> > +	hlist_for_each_entry_from_rcu(node, hlist) {
-> > +		if (node->addr != func)
-> > +			break;
-> > +		fp = READ_ONCE(node->fp);
-> > +		if (!fp || !fp->exit_handler)
-> > +			continue;
-> > +		/*
-> > +		 * Since fprobe can be enabled until the next loop, we ignore the
-> > +		 * fprobe's disabled flag in this loop.
-> > +		 */
-> > +		reserved_words +=
-> > +			DIV_ROUND_UP(fp->entry_data_size, sizeof(long)) + 1;
-> > +	}
-> > +	node = first;
-> > +	if (reserved_words) {
-> > +		fgraph_data = fgraph_reserve_data(gops->idx, reserved_words * sizeof(long));
-> > +		if (unlikely(!fgraph_data)) {
-> > +			hlist_for_each_entry_from_rcu(node, hlist) {
-> > +				if (node->addr != func)
-> > +					break;
-> > +				fp = READ_ONCE(node->fp);
-> > +				if (fp && !fprobe_disabled(fp))
-> > +					fp->nmissed++;
-> > +			}
-> > +			return 0;
-> > +		}
-> > +	}
-> 
-> this looks expensive compared to what we do now.. IIUC due to the graph
-> ops limitations (16 ctive ops), you have just single graph ops for fprobe
-> and each fprobe registration stores ips into hash which you need to search
-> in here to get registered callbacks..?
+> [...]
 
-I think this is not so expensive. Most cases, it only hits 1 fprobe on the
-hash. And if the fprobe is only used to hook the entry, reserved_words == 0.
+Here is the summary with links:
+  - [bpf-next,v5,1/4] bpf: make the verifier tracks the "not equal" for regs
+    https://git.kernel.org/bpf/bpf-next/c/d028f87517d6
+  - [bpf-next,v5,2/4] selftests/bpf: remove reduplicated s32 casting in "crafted_cases"
+    https://git.kernel.org/bpf/bpf-next/c/1de584832375
+  - [bpf-next,v5,3/4] selftests/bpf: activate the OP_NE logic in range_cond()
+    https://git.kernel.org/bpf/bpf-next/c/31d9cc96b1e3
+  - [bpf-next,v5,4/4] selftests/bpf: add testcase to verifier_bounds.c for BPF_JNE
+    https://git.kernel.org/bpf/bpf-next/c/463ea64eb008
 
-> I wonder would it make sense to allow arbitrary number of active graph_ops
-> with the price some callback might fail because there's no stack space so
-> each fprobe instance would have its own graph_ops.. and we would get rid
-> of the code above (and below) ?
-
-Yeah, actually my first implementation is that. But I realized that doesn't
-work, this requires intermediate object which has refcounter because the
-"marker" on the shadow stack will be left after unregistering it. We need to
-identify which is still available and which is not. And for that purpose,
-we may need to introduce similar structure in the fgraph too.
-
-The current multi-fgraph does;
-
- - if CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS=n (called from dedicated mcount
-   asm code), it has to loop on all fgraph_ops and check the hash, which is
-   inefficient but it can easily push the return trace entry on the shadow
-   stack.
-
- - if CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS=y (called from ftrace asm code),
-   it does not need to loop (that will be done by ftrace) but each handler
-   does NOT know who pushed the return trace entry on the shadow stack.
-   Thus it has to decode the shadow stack and check it needs to push return
-   trace entry or not. And this is hard if the traced function is self-
-   recursive call or tail call. To check the recursive call, I introduced
-   a bitmap entry on the shadow stack. This bitmap size limits the max
-   number of fgraph.
-
-So, unlimit the number of fgraph, we may need to stack the number of fgraph
-on the stack and each fgraph callback has to unwind the shadow stack to check
-whether their own number is there instead of checking the bit in the bitmap.
-That will be more trusted way but maybe slow.
-
-Another option is introducing a pair of pre- and post-callbacks which is called
-before and after calling the list/direct call of ftrace_ops. And pre-callback
-will push the ret_stack on shadow stack and post-callback will commit or cancel it.
-(but this one is hard to design... maybe becomes ugly interface.)
-
-Thank you,
-
+You are awesome, thank you!
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
