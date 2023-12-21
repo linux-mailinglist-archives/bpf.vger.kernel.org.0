@@ -1,91 +1,111 @@
-Return-Path: <bpf+bounces-18547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9C3581BC8E
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 18:04:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B80EA81BC91
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 18:05:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A1561C25D37
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 17:04:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41ECAB21D7B
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 17:05:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEA7659908;
-	Thu, 21 Dec 2023 17:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E743D58234;
+	Thu, 21 Dec 2023 17:05:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OU9C4gpH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ID5uMII1"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0385822F;
-	Thu, 21 Dec 2023 17:04:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA25C433C7;
-	Thu, 21 Dec 2023 17:04:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703178249;
-	bh=AysrOZqlgDc9SH4JdkOPA/Ij/sFWqRmgvn05g9ch6eY=;
-	h=From:Date:Subject:To:Cc:From;
-	b=OU9C4gpHAmQFAZbNin+YimkeoUoRvhV1Q6ltOAIXJv2wZWB6QtXJvL9Chvz5lwTEa
-	 dBE5zM/lmFKrIBj/GjYvdbKLSywpoJ9cj5IbqYzM7SAOh537K3FUyF5SEhzHH5/zA0
-	 N3w4uz290mLGyKEZI5AUV7EIxZPF19FmJAK3kXbPaR+7tJHZxKvz7HVsyLNUTAEbzX
-	 EYZDCR0ozA4ldOE4qwMskL0nGHxcaU2LurAab//q0+QhxHYZWF76ERp9gPooKZE187
-	 7/VGKvzeZiswWWZudsFzVo3QKhBEIVcsmp3f/3icbSGXB9BwxNfmyZG3tZSHPGqWot
-	 CpXQDFqGUI89g==
-From: Simon Horman <horms@kernel.org>
-Date: Thu, 21 Dec 2023 18:03:52 +0100
-Subject: [PATCH bpf-next] bpf: Avoid unnecessary use of comma operator in
- verifier
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE295822D
+	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 17:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33686649b72so959775f8f.3
+        for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 09:05:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703178343; x=1703783143; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LUMp5fzumXMNmnf9T/7Q1DmkhRz1J1Uw0YIx+NCj/Yc=;
+        b=ID5uMII13Eo4JQgR0GOy/KSGeHBekKfd1RmMeIlXF//kfZ/lXYzNfxrGGRriqoeO+W
+         lx9SnEjlEjzjhoUyPNRO+9jrY2GJXZUfb7ZKdRqABu8jcmU66lmxgXsar5EloKMC902Q
+         wgkmIx4xnGhSGwIay72TN2eE/y0O4lPRafsaLY8R5PTVoAanu3rfHXr3EDut8pzTohkN
+         W3VT13M6qslHANU5tL6/OW6ZXiQLj0A4cccLUIJxD7zFgnMc441ci5EA0oooHx/LauJA
+         UfTSV9eQ4ogl0n9RKAJ4YgsyI3Px2qN2OX1SeiPrcW0TTP43H93T18xXr1+P2e26HAFT
+         znFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703178343; x=1703783143;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LUMp5fzumXMNmnf9T/7Q1DmkhRz1J1Uw0YIx+NCj/Yc=;
+        b=sF7mclkD9Q5admV+kkKV1njLCQmdwjAaDzEL0DP4cE/TWOKzqRRHiO0E+faNWkKQil
+         qZIjUuIffGau5trlC10ezgFX5vLp4BJvM0rCgVftVW0ytaNCRdaqn1SVR0B7qQ2zNHxF
+         /wKG9SwoW5AyRhpyLENLmJfrFXEVtBMO1tOevikA+tMUXC2chkDBpRMl31CyKmIcNC9j
+         1t5yL8zoCoZMFHL7dG/lQObvBVXTgNvF+6lVpKSb2rvfQwBU37urTpWmDyEw+l5LMkYl
+         jqg2IyyJG0Dre7V3vLlI7FKyNFHhDF2sEA7zV1flDZcTcbKZVoEVANmFEdlZxeZ5HeJt
+         64MA==
+X-Gm-Message-State: AOJu0YybTWnzPo70TpL2+hPayiS9Fqw2KqlLqmgbG3oO3mSKf0cH2SWR
+	M4Gb1IV0n3pZ/MMhbegjE3oO0MOH9gTSbssV/1c=
+X-Google-Smtp-Source: AGHT+IFgkgF4MYQ34/3OkEuFi7vNoBtjV8syWKbEPMX35t6yg2yGBP9kntK8i/yppDXrQj/dfjSAJe5Q8AzWu0bs1sI=
+X-Received: by 2002:adf:fdc7:0:b0:333:37f6:ad33 with SMTP id
+ i7-20020adffdc7000000b0033337f6ad33mr43993wrs.102.1703178342933; Thu, 21 Dec
+ 2023 09:05:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231221-bpf-verifier-comma-v1-1-cde2530912e9@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAPdvhGUC/x2MQQqAMAzAviI9W3AVFfyKeOhmpz04ZRMRxL87P
- QaS3JAkqiToixuinJp0CxlMWYBbOMyCOmUGqqg2RAbt7vHMjVeJ6LZ1ZWQnTOxsZ9sGcrhH8Xr
- 90wE+P8h1wPg8LzZvRNluAAAA
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>
-Cc: John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
- Nick Desaulniers <ndesaulniers@google.com>, 
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
- bpf@vger.kernel.org, llvm@lists.linux.dev
-X-Mailer: b4 0.12.3
+References: <421d18942d6ad28625530a8b3247595dc05eb100.1703110747.git.dxu@dxuuu.xyz>
+ <62ytcwvqvnd5wiyaic7iedfjlnh5qfclqqbsng3obx7rbpsrqv@3bjpvcep4zme> <ZYP40EN9U9GKOu7x@krava>
+In-Reply-To: <ZYP40EN9U9GKOu7x@krava>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 21 Dec 2023 09:05:31 -0800
+Message-ID: <CAADnVQJL7Yodi67f2A79Pah-Uek+WX66CVs=tAFAoYsh+t+3_Q@mail.gmail.com>
+Subject: Re: [PATCH dwarves] pahole: Inject kfunc decl tags into BTF
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	Quentin Monnet <quentin@isovalent.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Although it does not seem to have any untoward side-effects,
-the use of ';' to separate to assignments seems more appropriate than ','.
+On Thu, Dec 21, 2023 at 12:35=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
+te:
+> you need to pick up only 'BTF_ID(func, ...)' IDs that belongs to SET8 lis=
+ts,
+> which are bounded by __BTF_ID__set8__<name> symbols, which also provide s=
+ize
 
-Flagged by clang-17 -Wcomma
++1
 
-No functional change intended.
-Compile tested only.
+> >
+> > Maybe we need a codemod from:
+> >
+> >         BTF_ID(func, ...
+> >
+> > to:
+> >
+> >         BTF_ID(kfunc, ...
+>
+> I think it's better to keep just 'func' and not to do anything special fo=
+r
+> kfuncs in resolve_btfids logic to keep it simple
+>
+> also it's going to be already in pahole so if we want to make a fix in fu=
+ture
+> you need to change pahole, resolve_btfids and possibly also kernel
 
-Signed-off-by: Simon Horman <horms@kernel.org>
----
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I still don't understand why you guys want to add it to vmlinux BTF.
+The kernel has no use in this additional data.
+It already knows about all kfuncs.
+This extra memory is a waste of space from kernel pov.
+Unless I am missing something.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index f13008d27f35..a376eb609c41 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -9616,7 +9616,7 @@ static int set_find_vma_callback_state(struct bpf_verifier_env *env,
- 	callee->regs[BPF_REG_2].type = PTR_TO_BTF_ID;
- 	__mark_reg_known_zero(&callee->regs[BPF_REG_2]);
- 	callee->regs[BPF_REG_2].btf =  btf_vmlinux;
--	callee->regs[BPF_REG_2].btf_id = btf_tracing_ids[BTF_TRACING_TYPE_VMA],
-+	callee->regs[BPF_REG_2].btf_id = btf_tracing_ids[BTF_TRACING_TYPE_VMA];
- 
- 	/* pointer to stack or null */
- 	callee->regs[BPF_REG_3] = caller->regs[BPF_REG_4];
-
+imo this logic belongs in bpftool only.
+It can dump vmlinux BTF and emit __ksym protos into vmlinux.h
 
