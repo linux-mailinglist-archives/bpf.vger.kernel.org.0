@@ -1,166 +1,203 @@
-Return-Path: <bpf+bounces-18503-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18504-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C54D81AF3C
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 08:16:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0B581AF57
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 08:23:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30B531F22224
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 07:16:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E3354B230B2
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 07:23:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41B85D29D;
-	Thu, 21 Dec 2023 07:16:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 837BDD2E1;
+	Thu, 21 Dec 2023 07:23:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s86fa2ez"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LleBpi+w"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74985D309
-	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 07:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ea395971-25f0-4b5c-8303-1620154e9b9d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703142969;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71BE7156C3
+	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 07:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1703143426;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4inj7ND6rBRq7WMmjXP/p0GFXM9N/aYAzJgAPliGyOg=;
-	b=s86fa2ezd6EKpi3QxRPLk2ugkDwcbWRnKtTZ0h4ThvxDlVkXpBMiX8HVEkWHOlJoM0bpiV
-	Nz7C35gjLkEJFz8+KT6fVRCwHib1IFQWgDQ730LTEwAeDUJZ0a3YEs5StvVXVW5F/x6FNf
-	fBZ1tKuqzJFrGGxJ6rEnD2IY4ewRJ3g=
-Date: Wed, 20 Dec 2023 23:16:04 -0800
+	bh=S5iQ5Rxhg2tY1zdXpfTYhKOCTGWvTSDlEblG2q97v7A=;
+	b=LleBpi+w7hfz7nEqkuUMwqp+962aIvSeE7OCknNxFfsEi6Yi0icuToF759ar7Emd4SUTAJ
+	e39qXCDe/XDxuPa2PKnUFF9fLt0slOtiZfoqfPC0Je5n2ltY2QTH2HWJ8Nsgqk1UvqrT4Z
+	LiV/ZPeKEWG8fPmWAVu+/iv4O7LwDB8=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-573-4_PnelCQM-yU3gBr7ANYTg-1; Thu, 21 Dec 2023 02:23:43 -0500
+X-MC-Unique: 4_PnelCQM-yU3gBr7ANYTg-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a232f069e60so4621366b.1
+        for <bpf@vger.kernel.org>; Wed, 20 Dec 2023 23:23:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703143423; x=1703748223;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S5iQ5Rxhg2tY1zdXpfTYhKOCTGWvTSDlEblG2q97v7A=;
+        b=KQw0AowXVKcip6xt+TyQ7KlXLPk5/VMfZTCBcwDVjEl84td8P3TIuwn/moiwnyEQb7
+         YrxYVjSZ2ICYJJiyfdJ8q5cMKNt+SsbiIfNGljDgA1PMehmPtJL7BUxxpWzm+FKD+0qD
+         n27hsFHvbY+xMU9sJEHkgdjLGXtqXvNK/L/9QltHwC5TCIdpJL+1nHWGu5FUqcLLQ9mF
+         Yxx0fxsPN4T06zY6Jaa1Gucw6eKegWu59ul/0SctulEQtnxkNbxmwYdqftT4gV2GXuaP
+         iCxOAfMGl36S9fP64CcWxjJz4Fq2+kboFt6/9xnWfu6sxVakR/nDe6zMJd892lcXoy6u
+         W1TA==
+X-Gm-Message-State: AOJu0YyOa0qgnY0Kz0R7Z7Z1DkJ1sPSWX/7MMfX1TpzWOTY+vt8NlKhl
+	/5+83yO+hqLvdNKMHhdLE9ZBhKhrYhwP9welemnwnyLwRxTvUnp14PaWzN8edyL+S4UjPka3qTE
+	naRDqtHMTI+p+
+X-Received: by 2002:a17:907:d109:b0:a1e:3c8f:bc9e with SMTP id uy9-20020a170907d10900b00a1e3c8fbc9emr23223342ejc.0.1703143422830;
+        Wed, 20 Dec 2023 23:23:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHJlrKEtTtOyCKehzFoJjXimAif6KDElEO473ECyE4PhiXX1tTJ3lp/aIKEunA4mCeIyZAo2Q==
+X-Received: by 2002:a17:907:d109:b0:a1e:3c8f:bc9e with SMTP id uy9-20020a170907d10900b00a1e3c8fbc9emr23223329ejc.0.1703143422464;
+        Wed, 20 Dec 2023 23:23:42 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-246-124.dyn.eolo.it. [146.241.246.124])
+        by smtp.gmail.com with ESMTPSA id j26-20020a170906411a00b00a26aaad6618sm82483ejk.35.2023.12.20.23.23.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 23:23:41 -0800 (PST)
+Message-ID: <3830bef7b52414e3a0b874d3fd23d7e8bc4c1c2f.camel@redhat.com>
+Subject: Re: [PATCH net 3/3] ice: Fix PF with enabled XDP going no-carrier
+ after reset
+From: Paolo Abeni <pabeni@redhat.com>
+To: "Nelson, Shannon" <shannon.nelson@amd.com>, Larysa Zaremba
+	 <larysa.zaremba@intel.com>
+Cc: Tony Nguyen <anthony.l.nguyen@intel.com>, davem@davemloft.net, 
+	kuba@kernel.org, edumazet@google.com, netdev@vger.kernel.org, 
+	maciej.fijalkowski@intel.com, magnus.karlsson@intel.com, ast@kernel.org, 
+	daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com, 
+	bpf@vger.kernel.org, Przemek Kitszel <przemyslaw.kitszel@intel.com>, Simon
+	Horman <horms@kernel.org>, Chandan Kumar Rout <chandanx.rout@intel.com>
+Date: Thu, 21 Dec 2023 08:23:39 +0100
+In-Reply-To: <e24ad563-f814-490f-8659-af6ff15cdbc0@amd.com>
+References: <20231218192708.3397702-1-anthony.l.nguyen@intel.com>
+	 <20231218192708.3397702-4-anthony.l.nguyen@intel.com>
+	 <18b686c6-aec1-41ce-8d9c-572667c9a738@amd.com>
+	 <ZYKypxfcfwTjZQ8w@lzaremba-mobl.ger.corp.intel.com>
+	 <e24ad563-f814-490f-8659-af6ff15cdbc0@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 3/8] bpf: Allow per unit prefill for
- non-fix-size percpu memory allocator
-To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231221045954.1969955-1-yonghong.song@linux.dev>
- <20231221050010.1971932-1-yonghong.song@linux.dev>
- <58e11994-6f73-20de-eab8-f4d7a4f71d80@huaweicloud.com>
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <58e11994-6f73-20de-eab8-f4d7a4f71d80@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
+On Wed, 2023-12-20 at 09:04 -0800, Nelson, Shannon wrote:
+> On 12/20/2023 1:23 AM, Larysa Zaremba wrote:
+> >=20
+> > On Tue, Dec 19, 2023 at 04:09:09PM -0800, Nelson, Shannon wrote:
+> > > On 12/18/2023 11:27 AM, Tony Nguyen wrote:
+> > > > Caution: This message originated from an External Source. Use prope=
+r caution when opening attachments, clicking links, or responding.
+> > > >=20
+> > > >=20
+> > > > From: Larysa Zaremba <larysa.zaremba@intel.com>
+> > > >=20
+> > > > Commit 6624e780a577fc596788 ("ice: split ice_vsi_setup into smaller
+> > > > functions") has refactored a bunch of code involved in PFR. In this
+> > > > process, TC queue number adjustment for XDP was lost. Bring it back=
+.
+> > > >=20
+> > > > Lack of such adjustment causes interface to go into no-carrier afte=
+r a
+> > > > reset, if XDP program is attached, with the following message:
+> > > >=20
+> > > > ice 0000:b1:00.0: Failed to set LAN Tx queue context, error: -22
+> > > > ice 0000:b1:00.0 ens801f0np0: Failed to open VSI 0x0006 on switch 0=
+x0001
+> > > > ice 0000:b1:00.0: enable VSI failed, err -22, VSI index 0, type ICE=
+_VSI_PF
+> > > > ice 0000:b1:00.0: PF VSI rebuild failed: -22
+> > > > ice 0000:b1:00.0: Rebuild failed, unload and reload driver
+> > > >=20
+> > > > Fixes: 6624e780a577 ("ice: split ice_vsi_setup into smaller functio=
+ns")
+> > > > Reviewed-by: Przemek Kitszel <przemyslaw.kitszel@intel.com>
+> > > > Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
+> > > > Reviewed-by: Simon Horman <horms@kernel.org>
+> > > > Tested-by: Chandan Kumar Rout <chandanx.rout@intel.com> (A Continge=
+nt Worker at Intel)
+> > > > Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> > > > ---
+> > > >    drivers/net/ethernet/intel/ice/ice_lib.c | 3 +++
+> > > >    1 file changed, 3 insertions(+)
+> > > >=20
+> > > > diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net=
+/ethernet/intel/ice/ice_lib.c
+> > > > index de7ba87af45d..1bad6e17f9be 100644
+> > > > --- a/drivers/net/ethernet/intel/ice/ice_lib.c
+> > > > +++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+> > > > @@ -2371,6 +2371,9 @@ static int ice_vsi_cfg_tc_lan(struct ice_pf *=
+pf, struct ice_vsi *vsi)
+> > > >                   } else {
+> > > >                           max_txqs[i] =3D vsi->alloc_txq;
+> > > >                   }
+> > > > +
+> > > > +               if (vsi->type =3D=3D ICE_VSI_PF)
+> > > > +                       max_txqs[i] +=3D vsi->num_xdp_txq;
+> > >=20
+> > > Since this new code is coming right after an existing
+> > >                if (vsi->type =3D=3D ICE_VSI_CHNL)
+> > > it looks like it would make sense to make it an 'else if' in that las=
+t
+> > > block, e.g.:
+> > >=20
+> > >                if (vsi->type =3D=3D ICE_VSI_CHNL) {
+> > >                        if (!vsi->alloc_txq && vsi->num_txq)
+> > >                                max_txqs[i] =3D vsi->num_txq;
+> > >                        else
+> > >                                max_txqs[i] =3D pf->num_lan_tx;
+> > >                } else if (vsi->type =3D=3D ICE_VSI_PF) {
+> > >                        max_txqs[i] +=3D vsi->num_xdp_txq;
+> >=20
+> > Would need to be
+> >          max_txqs[i] =3D vsi->alloc_txq + vsi->num_xdp_txq;
+> >=20
+> > >                } else {
+> > >                        max_txqs[i] =3D vsi->alloc_txq;
+> > >                }
+> > >=20
+> > > Of course this begins to verge on the switch/case/default format.
+> > >=20
+> > > sln
+> > >=20
+> >=20
+> > I was going for logic: assign default values first, adjust based on ena=
+bled
+> > features (well, a single feature) second. The thing that in my opinion =
+would
+> > make it more clear would be replacing 'vsi->type =3D=3D ICE_VSI_PF' wit=
+h
+> > ice_is_xdp_ena_vsi(). Do you think this is worth doing?
+>=20
+> Hmm... I made a dumb error in a quick read of the code.  This suggests=
+=20
+> that making the intent of the code more clear would be a good idea.  I=
+=20
+> think that the ice_is_xdp_ena_vsi() would definitely make it more clear=
+=20
+> as opposed to the bare ICE_VCSI_PF.
 
-On 12/20/23 10:26 PM, Hou Tao wrote:
-> Hi,
->
-> On 12/21/2023 1:00 PM, Yonghong Song wrote:
->> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem allocation")
->> added support for non-fix-size percpu memory allocation.
->> Such allocation will allocate percpu memory for all buckets on all
->> cpus and the memory consumption is in the order to quadratic.
->> For example, let us say, 4 cpus, unit size 16 bytes, so each
->> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256 bytes.
->> Then let us say, 8 cpus with the same unit size, each cpu
->> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024 bytes.
->> So if the number of cpus doubles, the number of memory consumption
->> will be 4 times. So for a system with large number of cpus, the
->> memory consumption goes up quickly with quadratic order.
->> For example, for 4KB percpu allocation, 128 cpus. The total memory
->> consumption will 4KB * 128 * 128 = 64MB. Things will become
->> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
->>
->> In Commit 41a5db8d8161, the non-fix-size percpu memory allocation is
->> done in boot time, so for system with large number of cpus, the initial
->> percpu memory consumption is very visible. For example, for 128 cpu
->> system, the total percpu memory allocation will be at least
->> (16 + 32 + 64 + 96 + 128 + 196 + 256 + 512 + 1024 + 2048 + 4096)
->>    * 128 * 128 = ~138MB.
->> which is pretty big. It will be even bigger for larger number of cpus.
-> SNIP
->> +
->>   static void drain_mem_cache(struct bpf_mem_cache *c)
->>   {
->>   	bool percpu = !!c->percpu_size;
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index f13008d27f35..08f9a49cc11c 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -12141,20 +12141,6 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>   				if (meta.func_id == special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
->>   					return -ENOMEM;
->>   
->> -				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->> -					if (!bpf_global_percpu_ma_set) {
->> -						mutex_lock(&bpf_percpu_ma_lock);
->> -						if (!bpf_global_percpu_ma_set) {
->> -							err = bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
->> -							if (!err)
->> -								bpf_global_percpu_ma_set = true;
->> -						}
->> -						mutex_unlock(&bpf_percpu_ma_lock);
->> -						if (err)
->> -							return err;
->> -					}
->> -				}
->> -
->>   				if (((u64)(u32)meta.arg_constant.value) != meta.arg_constant.value) {
->>   					verbose(env, "local type ID argument must be in range [0, U32_MAX]\n");
->>   					return -EINVAL;
->> @@ -12175,6 +12161,26 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
->>   					return -EINVAL;
->>   				}
->>   
->> +				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->> +					if (!bpf_global_percpu_ma_set) {
->> +						mutex_lock(&bpf_percpu_ma_lock);
->> +						if (!bpf_global_percpu_ma_set) {
->> +							err = bpf_mem_alloc_percpu_init(&bpf_global_percpu_ma);
-> Because ma->objcg is assigned as get_obj_cgroup_from_current(), so I
-> think the memory account will be incorrect, right ? Maybe we should pass
-> objcg to bpf_mem_alloc_percpu_init() explicit. For root memcg, I think
-> the objcg is NULL.
+I think that the current patch fits well for stable, and the issue
+looks relevant enough that we should prefer have it fixed in this
+cycle. Any refactoring/change would not allow such result due to the
+timing.
 
-You are correct. Calling bpf_mem_alloc_percpu_init() in init stage
-is exactly the reason to have proper root memcg for objcg. Sorry I missed it.
+I'll apply the series as-is, please follow-up on net-next as needed (no
+rush).
 
-I remembered I indeed traced it a few days ago and indeed it is NULL.
-There are three ways to resolve this:
-    1 Just do 'ma->objcg = NULL' unconditionally in bpf_mem_alloc_percpu_init().
-    2 Second, we can remember objcg = bpf_mem_alloc_percpu_init() at init stage,
-      e.g., in bpf_global_ma_init() init function (core.c), and later it can
-      be used in bpf_mem_alloc_percpu_init().
-    3 Still do bpf_mem_alloc_percpu_init() at init stage to initialize ma->objcg
-      properly. But delay __alloc_percpu_gfp() later when verifier found a call
-      to bpf_percpu_obj_new(). We could add a call bpf_mem_alloc_percpu_init_caches()
-      to do __alloc_percpu_grp().
+Cheers,
 
-I prefer option 3, what do you think?
+Paolo
 
->> +							if (!err)
->> +								bpf_global_percpu_ma_set = true;
->> +						}
->> +						mutex_unlock(&bpf_percpu_ma_lock);
->> +						if (err)
->> +							return err;
->> +					}
->> +
->> +					mutex_lock(&bpf_percpu_ma_lock);
->> +					err = bpf_mem_alloc_percpu_unit_init(&bpf_global_percpu_ma, ret_t->size);
->> +					mutex_unlock(&bpf_percpu_ma_lock);
->> +					if (err)
->> +						return err;
->> +				}
->> +
->>   				struct_meta = btf_find_struct_meta(ret_btf, ret_btf_id);
->>   				if (meta.func_id == special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->>   					if (!__btf_type_is_scalar_struct(env, ret_btf, ret_t, 0)) {
->
 
