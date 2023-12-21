@@ -1,211 +1,392 @@
-Return-Path: <bpf+bounces-18549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F4A381BD7C
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 18:44:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 775B281BD99
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 18:51:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C7CB31F26A83
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 17:44:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F3D8288DDF
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 17:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F5C6280D;
-	Thu, 21 Dec 2023 17:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 663E4634E4;
+	Thu, 21 Dec 2023 17:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VHWYghN0";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="w94XaKTp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YOoDUE5P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F100EBA2F
-	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 17:44:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BLFQIfi023588;
-	Thu, 21 Dec 2023 17:43:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=uSgd9V6mAsmaiOID95NnFt1TKtqAxoZmQFXNiXy8Yho=;
- b=VHWYghN0JdtTuT3V6FEFC2zdgomTLFtBIxGnNm7LhpQ3ClxPDXH78epc9fSVeNnd83Ij
- 6mCvM80+KDfbCb3sSRe5+9nNfWa2+yC2TYNV2KtVoWsp/Thyr2jiewZev/z2l7pHrv5+
- ulHGacuJZIcihK2pJAX8RBizH+Y743U2/PvuE7/RwEbiWP05KgGVHfBLS0U7cCxscreI
- k0A21skbUv6kXbt6onbxmjmezKeeQcpYkiS1IOEH92gTW7rvjc3gyUlKHSv/1WS7PtZ1
- wu2Iqc/XxyeFfB9OzDBc279Q0b5xfx1b/5CeuAq/wkzXYHIlJ6neyfVheiG/JeEiTWdo rQ== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3v13xdkqgu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Dec 2023 17:43:46 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3BLGtuMw035519;
-	Thu, 21 Dec 2023 17:43:45 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2040.outbound.protection.outlook.com [104.47.57.40])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3v12bbpmt6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Dec 2023 17:43:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dr7UL0W/mGTA41DiEjsmwA4aET6qr7bPhBGEOiLTEMSc3/QsM6Qu3MLO+3m1mNqEvXhAkZ4P4Si1GOcChEUuCP1voZh7qoKczc9oWcN3Ua6ptWD2fYN3XmhqTPUeUqSKIjpizxBv0GLdraIBVB5sZSjKEqJXpJdrQUMAQtXrIrr9ogG+QULkXhhSrn7+Y9ANz1wDpIIDeIQuRIV3nFunM4yHp1M3+m8b7eP2CKB3Q1f/SBle8y1O8YBnyhX5fRX4s7uXle0yh8Fl7tqQ7hn0pCVdb8hN6I3eP9QrRBFnx9tdyfTLrYTvW21wvjaOXUJaJ47dnWV9/JwdBAg8GgkT6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uSgd9V6mAsmaiOID95NnFt1TKtqAxoZmQFXNiXy8Yho=;
- b=dD5X2PGhs3RLi0MzL+fPz4XWCGenzhZcaJHN0BaBrA5wTdqHnERT+1pHN0+kdf7dkiOlx+1sadoJnwLEDvrj4/ft0J/ADk8wwv2danWJPnmmwKvZbKN6tXFH4gUAN5i82CWgw3W4iJWxZqD9E/rU+v2cFC6QEb4F3p3tQn62K9UlhjB7w8cSlgozNjpOZKNcO8GpYa+o2MAS9vap5A/eQTUCQTLitmgkrSVN0r+FZ2kZGEKAwUa268KPJA29VOFihECQLheXHXrC/+QSorXhvBcjJK5tcq0uY+Kh76KngWWdzMPT6ETMJNjdG4qWzNKUEql319Y3pDeB3I26pv9DNg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F202362811
+	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 17:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-50e67f70f34so94366e87.0
+        for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 09:51:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uSgd9V6mAsmaiOID95NnFt1TKtqAxoZmQFXNiXy8Yho=;
- b=w94XaKTpy8Rx9E3ZSe8EYR7kfUS99cAdjwZJqDiGizr05l54aKojP4e6+AJ5qN56kjv/W224T32Eceidu4Bu5C1ejQPhG1H7b4mq8UhfRKtpr0i+lt0rTFIZYUZJZp7Ow2Pv+w8vL3VFr+b9jSmxFmsrjz2mmFRBiJcvh2N38k0=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by SJ0PR10MB5582.namprd10.prod.outlook.com (2603:10b6:a03:3db::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7113.21; Thu, 21 Dec
- 2023 17:43:15 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::8f9a:840c:f0a6:eaee]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::8f9a:840c:f0a6:eaee%6]) with mapi id 15.20.7113.019; Thu, 21 Dec 2023
- 17:43:15 +0000
-Message-ID: <fecae4fe-b804-c7f5-1854-66af2f16a44a@oracle.com>
-Date: Thu, 21 Dec 2023 17:42:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH dwarves] pahole: Inject kfunc decl tags into BTF
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Jiri Olsa <olsajiri@gmail.com>
-Cc: Daniel Xu <dxu@dxuuu.xyz>, Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Quentin Monnet <quentin@isovalent.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-References: <421d18942d6ad28625530a8b3247595dc05eb100.1703110747.git.dxu@dxuuu.xyz>
- <62ytcwvqvnd5wiyaic7iedfjlnh5qfclqqbsng3obx7rbpsrqv@3bjpvcep4zme>
- <ZYP40EN9U9GKOu7x@krava>
- <CAADnVQJL7Yodi67f2A79Pah-Uek+WX66CVs=tAFAoYsh+t+3_Q@mail.gmail.com>
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <CAADnVQJL7Yodi67f2A79Pah-Uek+WX66CVs=tAFAoYsh+t+3_Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2P153CA0006.APCP153.PROD.OUTLOOK.COM
- (2603:1096:4:140::22) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        d=gmail.com; s=20230601; t=1703181087; x=1703785887; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bWurB7w0TSY5mVS5ATkWE793jcbo8OU00Iep2/kZrvk=;
+        b=YOoDUE5PLWFp71nstN+oq2M094aAx84ajgtbK260M3wcyqXUXdzuy5dRcIva9oN4lZ
+         V3okm3gXNK7Tkt4/h3PfR0F1IHkEUxILlwkEldKWWHZRJc0ROaEVoDBgrv3F+QbA7vKP
+         iZYpabMlFx+RKYLVDImCGji3jguh0T03sW0Y6XPV4lnjL/x61FQ3z1+cXOwabFMK4J3U
+         ZnipfUcQdhWjLF3GjC33t6N+GAgyryW+sDqppfq24xGJwHqwlKy1EvaYEcAxrLPK33O7
+         RYufCvfccVjD35tZLJ2s1vJeQbRr+0lTgYfslkHvM98xlN5m78QqOxt9GuljsHCukgZS
+         2o6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703181087; x=1703785887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bWurB7w0TSY5mVS5ATkWE793jcbo8OU00Iep2/kZrvk=;
+        b=Diu+P+ELTElnTcTQz7r9+UyHjWzQqsdJF7nqujQQPdyKB81m7gJcIzL+j7yXOFFYKj
+         RFE/Imf4Nors9W8r57XhtzGXqeAb7uM8rrF4pUjaXKSENU70hZZFSY5Zo3nMdAGUSCp3
+         +JFu5n2d+x1dfDjLSEvRk+Nw0Rbn4Bl4AhOUMgE3D2GShnLxZ3rhPU3c65Tq6pwP3yQJ
+         5Z3oR9CFfSU9vzIlpAC+jI07JjkfyOh50C1822s/YvR9yLpzxHHScpps+pgQYvQyRTc2
+         rQo819xzWXn3Z3jjSe+nsFV++ltzSeNmgQvyim/jHafD+yNZYuLO/zoOW9GnPFTMwnrN
+         7xxg==
+X-Gm-Message-State: AOJu0YyHeB9ohtsmzHTlEC57OWKtnWIRLdsUPgs1qE7IFrTuYLPsqU+q
+	8bBvkNkwvNp0QEdMkJ1IDFLO+9pVHR1LTJiYvS8=
+X-Google-Smtp-Source: AGHT+IElNhOJ+WbAxzcaU4qMnPCkFrInRBbdL565PY8Vm6SJL73H7LJaSpBWuDqXOSvxf2Ia4BNTiMJq8NIWvnYK1o4=
+X-Received: by 2002:a05:6512:108a:b0:50e:410d:8abc with SMTP id
+ j10-20020a056512108a00b0050e410d8abcmr3575928lfg.137.1703181086305; Thu, 21
+ Dec 2023 09:51:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|SJ0PR10MB5582:EE_
-X-MS-Office365-Filtering-Correlation-Id: a8497b61-79ea-431e-d1bb-08dc024c4f14
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	jSzqUtGr0HJWQLVdfQS7lzf8m3PIja3QVUYxRjCBLOVI5TS27n4frdK1MKidBuzpqgab3Bta1YkyjGroUvYrzQV8kSpjj7HAsMy/z8h5Y/vXVAQD4PkEgbh+P3YtWS6WABJVJukTk3jcjgs9j2ANAwcqrjXnssueFucXXin5axbyVV9qm31wzZFYBrLgHFj3YbrKMXWXpP1KP4j1EUhWS4Tz3oB4peyL4C95+Y4ggxP3uDXO2d0oJFCxZzy+1yS0Sg+jKYXm7tSaDhU2imfV2eaobFfdeH/NyHEipEzW5V7OYDPD3RDakjNslPccfR7IyFX1Lb9Xr5cb2juytju/4Nxs4g12CqbD7CiOV72Z6co9gpon7Kn140RXLpLqME09QLaVEDd65q9c0kpMS8CYB3TlPzKGPt5dGUDliHuvA5+mcEttWdY+Lm4Vx2GqgQBDed0YkKprrnOHJIFi6in2txiNn98Xkn3PL6FC6B6jdtiJ1oIiD2C5OzRXl9dHLlDOEPnGMYMdkeEf62wDQLWXB+ggN+cvfMEsR4TQGJQEk6jCD5g1EVy1WgGQCpIBEYnNoeiMyVALpakai8YLZyDE1I+T5VAFRtCrN3MUU85J7tbUhRbGT2KYhi77jmGADKIKtr1rM9b3eVKS94JA+K/QEg==
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(376002)(39860400002)(366004)(396003)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(6506007)(2906002)(6666004)(31696002)(86362001)(36756003)(6512007)(53546011)(478600001)(83380400001)(38100700002)(2616005)(41300700001)(5660300002)(54906003)(6486002)(110136005)(66556008)(66476007)(66946007)(31686004)(316002)(8676002)(4326008)(8936002)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?K2R5QVVhdlk2bjJkWkxJdmhaUzJOdGVXb1hRaFNxNmx2TlRiVldxb0tvQjJK?=
- =?utf-8?B?dDA5cm5ibzlzblB3Qm5CeHFVdTNRVWlSbmd2VmRmQ0wyRmpyZG9RSm1qQXI5?=
- =?utf-8?B?d3VsV1NJR3ZyUWo2c015cHl4TGNSLzFlcGpNZUdFTW80OUtkNDdHRytjVkFC?=
- =?utf-8?B?MFJGODYwd3Roemg1WnYwS1AydGZybEk1ZjBTZG15N0NEaDAwM0hlTU14U2Q2?=
- =?utf-8?B?L3pIUit0dmJGM0VxL1NkaDBXOU9FVytHcHF1UTN4VXNNNG5XZFpQSjlYSEN2?=
- =?utf-8?B?L0grVStXc293QURtNDlac21CSituNEppdzZONGtHekZzZ2kwSmRFNS9iZXNJ?=
- =?utf-8?B?dTJaRWlNc0NGZ0JCN2VSZFNtMXpxTDQ2ZngyZlR1bjR2MDBRanlPcGdOM0hI?=
- =?utf-8?B?NlNpalI4d1Q5WEFtelVrakd3cWdBMkRVZmpCRFRKY0pCTzV4OUxhNGgwMm9Q?=
- =?utf-8?B?bkkwMHhHc3M3b0tqdENXWUlCK3JjbTZGRVBxbTg0Z1MxMmp0U3NjaVhncVBL?=
- =?utf-8?B?ZG5lRnRhdHRNVll2b2M1STJEWEpTdXpIY3hjVWpQMWRnclRDWkJQYk9HenNh?=
- =?utf-8?B?SG9rdXVON0FWNExyb1M5eEIzd1JWRFBHOVVGYTdidUFBcERPbXM0d2dQdEk5?=
- =?utf-8?B?MkNRRzR1eUYvcVNtNWhBd2FnTzJnZzJ4eGw0cVJUbGxZNk5QWC9Jb0c4SHYv?=
- =?utf-8?B?djAwS1hCVjlUSm4vdEY3ZnBCSlp6TjdwUzN5YVpyMWE4M3VJUzR0ZzV5Tzhi?=
- =?utf-8?B?M2ZRTlBhQWJKdUlwWmZwV1Fmemg2dHFkdHRXVGE4NVE5Y0lpc1dtbFhwWkNO?=
- =?utf-8?B?b3B4UEJHeVpqZk9GMEFMUGR3WUFQd2JwNkFXSy9MSlhVRWF4T3JSNDNoMWdl?=
- =?utf-8?B?NjJla1Q2ZDRLUEdVREt5YkZTc1lRY2hZT3NpZlJNY1BBbXIrVjhDYU54RW1H?=
- =?utf-8?B?OHNReUdVT252OHQ5aDFoK0pjRFhtVzRnNG9YSFZZSlNYNjdaV0R2cXpGdXdG?=
- =?utf-8?B?RlpXMnZzc0VjSE5MOG4xZVByR2pNWXY4NEpEL3RCN2ZkSlJpdzVaMDZQSUVy?=
- =?utf-8?B?djVuMmNzcXNvY3g1cllDUmZIdytZTnJic1J6UHR2dDZJeDd2b3R5dUZnRitv?=
- =?utf-8?B?VFhnM0crMy93ZTk5ZmN3ZjFzT1hWelZNRDhCS3hoTEo3N1hWTDEzc1JkRXYx?=
- =?utf-8?B?dVBkRko3YWhNNHIzcEo0Ui9TNUt3WVdIRnQ3YjdkU0tBS0ZyaDIzV21wRmpR?=
- =?utf-8?B?SkRnckpWTmZiK1J5OXdwQW9sMHlQU2wvWDJjTnc4aTZYRngyUXJNbkZ1Z3E3?=
- =?utf-8?B?RzcxYXQvMzVGdDA4MUhjQmx0ZUk2SkFLNGplSHkxNHN2RXgzQXpObTd5U2ZL?=
- =?utf-8?B?N2N6TXBtYiszSU4wSjk3TDhvV00xN0x2ZkEvczVuN0RtM2dtNnNjbjlQcEFQ?=
- =?utf-8?B?MmpYVGdKTlJWbzFHK1VMR3dUWDZuYWRLTEN2dXUwRjUvTTR3c2s4aEJvWml2?=
- =?utf-8?B?dkYrSGZXdlBmeVRsYnFNZUdIOVByZWVCQ3EvOXJtMEZoek0zREwzVlU2UWpx?=
- =?utf-8?B?U2l4eWRVaENoYUJHZFljOTk4emxTTkRLQXppZlFKSldTYzN2eXRkYXVCdjRh?=
- =?utf-8?B?ZWNQM2NaRTMzbWtvUTFnSU8zTFYzeVJmNjRjN21rU3dQTGVSd0xsMTY3Z1lt?=
- =?utf-8?B?QlZjVm11QkJXV1JpeENPTTlqa1dXZCt6dUNKVE93NGVQNElUV0h5UFN1WEJK?=
- =?utf-8?B?QW1pRnBkTU5CSXlxM0ljOXJta3RVZVJuSEVtWG5TVC8zYVBXQTRsWHVZUi9P?=
- =?utf-8?B?Q1VPUDNnblNWdGZLVmtKWnViSjBUbUxlSG9UeTEvc2l3UitpVnRxS051OXNq?=
- =?utf-8?B?VG02MUdRSjhPQVNkYzU2UjFoaFJ6c0I5eUZxdUZRSG5jd2ZBNXVkdGpiWGda?=
- =?utf-8?B?RUI2MEtQT011VXVHeDdWQld4WnRXMVhhSE9KZWkxSCsydk55TkVTc0xXNWNB?=
- =?utf-8?B?eGRLaGpXZXRsemlKRlpadGcxa0k5b0lRRnhncXNyZnE5b2h2VFdvUEVYQzZx?=
- =?utf-8?B?Tk9jcXhpZkluL08yYjIzUmN5SERERXhyajZZWEorRTlDSGE3TC90R05Namt6?=
- =?utf-8?B?c2IzTXdhQjBrNVFYT0ZjME1FdVpaU0Z2WWdMbGhJY051Z29ObTYrU1FMR04v?=
- =?utf-8?Q?a4d7auMLeFp+zc/CaI/wWfo=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	slARAwsjulOH8FWxv4UT0JXzdQRI/+/pwYTWNY33G4rOyL1UN7qOGeBYMeH7M6M0RZ9ny3DWtHVzl3zhtuT3df7mNTAuStQP1eK6DrrXtlcXqwDFTw4HXHEeWlAVDnYXtXh1ryJDT+UZ/jzQthfHcXvAk87HktJgLSU3naFDp3azaklzwM1o4e9NZ3/Lic6ey7Txig6BrlHfDDnHISkO1JC9vy8AtqNVCES3cp2D9i1BZst4nuyx1Az9kblDtcjYrwutsMfNzVs6SZ1fXvph7cCdhnsZ25OBijlU++vVXrtNh8j4tCpJWYho1BOzF98yEPJcj6cUUJBZV5teq6s4Vmd3hQMymuh/GYUS9860aofqa4gzgDKAsXgWjOvqFmjVK4ryTP6UvQvSQwKzS1bcHqtzA23OISCfhQ0zxRNF+DDILN+kTPK3wUgNpStGRefh1l5wyLZK9aOjQq/HBDOF5u+KfyppAMQq4o4GsbWiwrA7U8IVaxh8wmcTuEFOIaLop1hN23kYA0XAkecwRGYo/DXtWjDmYRjwzTRcrt1iG/Coa21hNcuj3aEktJkQZ7m6Pr63HzbfkRyo6M5Zp452zS8X47RHXIn2Yv84YWcNohA=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8497b61-79ea-431e-d1bb-08dc024c4f14
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Dec 2023 17:43:15.1509
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s1IkVhr/bkmCscRee/2fGb9iJNydE639sWNRYzPrMdvI/wIq6k/GoawWWWQHQgWoK/c4AezIqPoWX3GH3/jCBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB5582
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-21_09,2023-12-21_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 bulkscore=0 adultscore=0 suspectscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
- definitions=main-2312210135
-X-Proofpoint-GUID: r_FPQekI5Mq9DCQXkMzRl65telEvd5hH
-X-Proofpoint-ORIG-GUID: r_FPQekI5Mq9DCQXkMzRl65telEvd5hH
+References: <20231220170604.183380-1-andreimatei1@gmail.com>
+ <20231220170604.183380-2-andreimatei1@gmail.com> <CAEf4BzajeEa970Jm6MQCOiT-7++o_dA+KcoE_pQL-yGBZhtKUw@mail.gmail.com>
+In-Reply-To: <CAEf4BzajeEa970Jm6MQCOiT-7++o_dA+KcoE_pQL-yGBZhtKUw@mail.gmail.com>
+From: Andrei Matei <andreimatei1@gmail.com>
+Date: Thu, 21 Dec 2023 12:51:14 -0500
+Message-ID: <CABWLseugK9zg9nawVG=hQzEQv=fLKzPjZPJC3nCoOw2KKn_xaQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Simplify checking size of helper accesses
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, eddyz87@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 21/12/2023 17:05, Alexei Starovoitov wrote:
-> On Thu, Dec 21, 2023 at 12:35 AM Jiri Olsa <olsajiri@gmail.com> wrote:
->> you need to pick up only 'BTF_ID(func, ...)' IDs that belongs to SET8 lists,
->> which are bounded by __BTF_ID__set8__<name> symbols, which also provide size
-> 
-> +1
-> 
->>>
->>> Maybe we need a codemod from:
->>>
->>>         BTF_ID(func, ...
->>>
->>> to:
->>>
->>>         BTF_ID(kfunc, ...
->>
->> I think it's better to keep just 'func' and not to do anything special for
->> kfuncs in resolve_btfids logic to keep it simple
->>
->> also it's going to be already in pahole so if we want to make a fix in future
->> you need to change pahole, resolve_btfids and possibly also kernel
-> 
-> I still don't understand why you guys want to add it to vmlinux BTF.
-> The kernel has no use in this additional data.
-> It already knows about all kfuncs.
-> This extra memory is a waste of space from kernel pov.
-> Unless I am missing something.
-> 
-> imo this logic belongs in bpftool only.
-> It can dump vmlinux BTF and emit __ksym protos into vmlinux.h
-> 
+On Wed, Dec 20, 2023 at 11:30=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Dec 20, 2023 at 9:06=E2=80=AFAM Andrei Matei <andreimatei1@gmail.=
+com> wrote:
+> >
+> > This patch simplifies the verification of size arguments associated to
+> > pointer arguments to helpers and kfuncs. Many helpers take a pointer
+> > argument followed by the size of the memory access performed to be
+> > performed through that pointer. Before this patch, the handling of the
+> > size argument in check_mem_size_reg() was confusing and wasteful: if th=
+e
+> > size register's lower bound was 0, then the verification was done twice=
+:
+> > once considering the size of the access to be the lower-bound of the
+> > respective argument, and once considering the upper bound (even if the
+> > two are the same). The upper bound checking is a super-set of the
+> > lower-bound checking(*), except: the only point of the lower-bound chec=
+k
+> > is to handle the case where zero-sized-accesses are explicitly not
+> > allowed and the lower-bound is zero. This static condition is now
+> > checked explicitly, replacing a much more complex, expensive and
+> > confusing verification call to check_helper_mem_access().
+> >
+> > Now that check_mem_size_reg() deals directly with the zero_size_allowed
+> > checking, the single remaining call to check_helper_mem_access() can
+> > pass a static value for the zero_size_allowed arg, instead of
+> > propagating a dynamic one. I think this is an improvement, as tracking
+> > the wide propagation of zero_sized_allowed is already complicated.
+> >
+> > Error messages change in this patch. Before, messages about illegal
+> > zero-size accesses depended on the type of the pointer and on other
+> > conditions, and sometimes the message was plain wrong: in some tests
+> > that changed you'll see that the old message was something like "R1 min
+> > value is outside of the allowed memory range", where R1 is the pointer
+> > register; the error was wrongly claiming that the pointer was bad
+> > instead of the size being bad. Other times the information that the siz=
+e
+> > came for a register with a possible range of values was wrong, and the
+> > error presented the size as a fixed zero. Now the errors refer to the
+> > right register. However, the old error messages did contain useful
+> > information about the pointer register which is now lost. The next patc=
+h
+> > will bring that information back.
+> >
+> > (*) Besides standing to reason that the checks for a bigger size access
+> > are a super-set of the checks for a smaller size access, I have also
+> > mechanically verified this by reading the code for all types of
+> > pointers. I could convince myself that it's true for all but
+> > PTR_TO_BTF_ID (check_ptr_to_btf_access). There, simply looking
+> > line-by-line does not immediately prove what we want. If anyone has any
+> > qualms, let me know.
+> >
+> > Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
+> > ---
+> >  kernel/bpf/verifier.c                         | 28 ++++++++----
+> >  .../bpf/progs/verifier_helper_value_access.c  | 45 +++++++++++++++++--
+> >  .../selftests/bpf/progs/verifier_raw_stack.c  |  2 +-
+> >  3 files changed, 61 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 1863826a4ac3..4409b8f2b0f3 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -7267,6 +7267,7 @@ static int check_mem_size_reg(struct bpf_verifier=
+_env *env,
+> >                               bool zero_size_allowed,
+> >                               struct bpf_call_arg_meta *meta)
+> >  {
+> > +       const bool size_is_const =3D tnum_is_const(reg->var_off);
+> >         int err;
+> >
+> >         /* This is used to refine r0 return value bounds for helpers
+> > @@ -7282,7 +7283,7 @@ static int check_mem_size_reg(struct bpf_verifier=
+_env *env,
+> >         /* The register is SCALAR_VALUE; the access check
+> >          * happens using its boundaries.
+> >          */
+> > -       if (!tnum_is_const(reg->var_off))
+> > +       if (!size_is_const)
+> >                 /* For unprivileged variable accesses, disable raw
+> >                  * mode so that the program is required to
+> >                  * initialize all the memory that the helper could
+> > @@ -7296,12 +7297,9 @@ static int check_mem_size_reg(struct bpf_verifie=
+r_env *env,
+> >                 return -EACCES;
+> >         }
+> >
+> > -       if (reg->umin_value =3D=3D 0) {
+> > -               err =3D check_helper_mem_access(env, regno - 1, 0,
+> > -                                             zero_size_allowed,
+> > -                                             meta);
+> > -               if (err)
+> > -                       return err;
+> > +       if (reg->umin_value =3D=3D 0 && !zero_size_allowed) {
+> > +               verbose(env, "R%d invalid zero-sized read\n", regno);
+> > +               return -EACCES;
+> >         }
+> >
+>
+> I feel like this simplification is the only one necessary. Code change
+> below (for umax) seems unnecessary.
+>
+> >         if (reg->umax_value >=3D BPF_MAX_VAR_SIZ) {
+> > @@ -7309,9 +7307,21 @@ static int check_mem_size_reg(struct bpf_verifie=
+r_env *env,
+> >                         regno);
+> >                 return -EACCES;
+> >         }
+> > +       /* If !zero_size_allowed, we already checked that umin_value > =
+0, so
+> > +        * umax_value should also be > 0.
+> > +        */
+> > +       if (reg->umax_value =3D=3D 0 && !zero_size_allowed) {
+> > +               verbose(env, "verifier bug: !zero_size_allowed should h=
+ave been handled already\n");
+> > +               return -EFAULT;
+> > +       }
+>
+> This check seems unnecessary. If we have a bug and umax < umin, then
+> a) we should detect it earlier in reg bounds sanity check and b)
+> check_helper_mem_access would still reject umax=3D=3D0 case if
+> !zero_size_allowed. On the other hand, this check does nothing if
+> zero_size_allowed=3D=3Dtrue.
+>
+> So it's at best partially useful, I'd just drop it. If you do drop it,
+> please add my ack to the next revision, thanks. (I might disappear due
+> to holidays, so might be slow to review/reply going forward).
+>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> >         err =3D check_helper_mem_access(env, regno - 1,
+> > -                                     reg->umax_value,
+> > -                                     zero_size_allowed, meta);
+> > +                               reg->umax_value,
+> > +                               /* zero_size_allowed: we asserted above=
+ that umax_value is not
+> > +                                * zero if !zero_size_allowed, so we do=
+n't need any further
+> > +                                * checks.
+> > +                                */
+> > +                               true,
+> > +                               meta);
+>
+> and here if we leave zero_size_allowed, what's the worst that can
+> happen? I'd keep the original call as is.
 
-If the goal is to have bpftool detect all kfuncs, would having a BPF
-kfunc iterator that bpftool could use to iterate over registered kfuncs
-work perhaps?
+Nothing bad will happen. I can revert these changes if you want, no problem=
+.
+But:
+The point of this code change was not to have any effects at run-time, but
+rather to simplify the code conceptually. The way I see it, terminating the
+dynamic aspect of zero_size_allowed here is a good thing: with this change,=
+ all
+callers now pass a static constant as zero_size_allowed to
+check_helper_mem_access(), so tracking the possible values of the argument
+becomes much easier. I generally dislike the fact that a lot of functions h=
+ave
+this zero_size_allowed argument; I've tried to figure out some alternative
+where zero-sized reads are summarily rejected somewhere high-up so that
+functions like check_packet_access, check_map_access, check_mem_region_acce=
+ss,
+check_buffer_access, check_stack_range_initialized do not need this argumen=
+t
+any more. But so far I came up empty handed and gave up for now, given that
+these functions are called from multiple places. Still, I see
+check_mem_size_reg() passing a static `true` as a step in the right directi=
+on
+for future refactorings.
+Similarly, the point of the assertion I've added above was not that it's
+"necessary"; the point was for it to act like commentary assuring the reade=
+r
+that the value of zero_size_allowed doesn't matter any more.
+
+
+
+Since we're talking, let me ask you this: would you agree that, if the acce=
+ss
+size is zero, the pointer value does not need to be checked *at all*? Meani=
+ng,
+if zero_size_allowed is true and the size is zero, the verifier can allow e=
+ven
+invalid pointers (or registers that are not a pointer at all) to be used?
+Because if the answer is yes, that might help getting a cleaner code struct=
+ure
+in place -- because it would mean that verifying zero-sized accesses can be
+terminated early both for zero_size_allowed =3D true/false.
+
+>
+> >         if (!err)
+> >                 err =3D mark_chain_precision(env, regno);
+> >         return err;
+> > diff --git a/tools/testing/selftests/bpf/progs/verifier_helper_value_ac=
+cess.c b/tools/testing/selftests/bpf/progs/verifier_helper_value_access.c
+> > index 692216c0ad3d..137cce939711 100644
+> > --- a/tools/testing/selftests/bpf/progs/verifier_helper_value_access.c
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_helper_value_access.c
+> > @@ -89,9 +89,14 @@ l0_%=3D:       exit;                                =
+           \
+> >         : __clobber_all);
+> >  }
+> >
+> > +/* Call a function taking a pointer and a size which doesn't allow the=
+ size to
+> > + * be zero (i.e. bpf_trace_printk() declares the second argument to be
+> > + * ARG_CONST_SIZE, not ARG_CONST_SIZE_OR_ZERO). We attempt to pass zer=
+o for the
+> > + * size and expect to fail.
+> > + */
+> >  SEC("tracepoint")
+> >  __description("helper access to map: empty range")
+> > -__failure __msg("invalid access to map value, value_size=3D48 off=3D0 =
+size=3D0")
+> > +__failure __msg("R2 invalid zero-sized read")
+> >  __naked void access_to_map_empty_range(void)
+> >  {
+> >         asm volatile ("                                 \
+> > @@ -113,6 +118,38 @@ l0_%=3D:     exit;                                =
+           \
+> >         : __clobber_all);
+> >  }
+> >
+> > +/* Like the test above, but this time the size register is not known t=
+o be zero;
+> > + * its lower-bound is zero though, which is still unacceptible.
+>
+> typo: unacceptable
+>
+> we normally add new tests in a separate patch. Fixing existing tests
+> to make them pass together with kernel change is the only case were we
+> mix selftests changes and kernel changes.
+>
+> > + */
+> > +SEC("tracepoint")
+> > +__description("helper access to map: possibly-empty range")
+> > +__failure __msg("R2 invalid zero-sized read")
+> > +__naked void access_to_map_possibly_empty_range(void)
+> > +{
+> > +       asm volatile ("                                         \
+> > +       r2 =3D r10;                                               \
+> > +       r2 +=3D -8;                                               \
+> > +       r1 =3D 0;                                                 \
+> > +       *(u64*)(r2 + 0) =3D r1;                                   \
+> > +       r1 =3D %[map_hash_48b] ll;                                \
+> > +       call %[bpf_map_lookup_elem];                            \
+> > +       if r0 =3D=3D 0 goto l0_%=3D;                                  \
+> > +       r1 =3D r0;                                                \
+> > +       /* Read an unknown value */                             \
+> > +       r7 =3D *(u64*)(r0 + 0);                                   \
+> > +       /* Make it small and positive, to avoid other errors */ \
+> > +       r7 &=3D 4;                                                \
+> > +       r2 =3D 0;                                                 \
+> > +       r2 +=3D r7;                                               \
+> > +       call %[bpf_trace_printk];                               \
+> > +l0_%=3D: exit;                                               \
+> > +"      :
+> > +       : __imm(bpf_map_lookup_elem),
+> > +         __imm(bpf_trace_printk),
+> > +         __imm_addr(map_hash_48b)
+> > +       : __clobber_all);
+> > +}
+> > +
+> >  SEC("tracepoint")
+> >  __description("helper access to map: out-of-bound range")
+> >  __failure __msg("invalid access to map value, value_size=3D48 off=3D0 =
+size=3D56")
+> > @@ -221,7 +258,7 @@ l0_%=3D:      exit;                                =
+           \
+> >
+> >  SEC("tracepoint")
+> >  __description("helper access to adjusted map (via const imm): empty ra=
+nge")
+> > -__failure __msg("invalid access to map value, value_size=3D48 off=3D4 =
+size=3D0")
+> > +__failure __msg("R2 invalid zero-sized read")
+> >  __naked void via_const_imm_empty_range(void)
+> >  {
+> >         asm volatile ("                                 \
+> > @@ -386,7 +423,7 @@ l0_%=3D:      exit;                                =
+           \
+> >
+> >  SEC("tracepoint")
+> >  __description("helper access to adjusted map (via const reg): empty ra=
+nge")
+> > -__failure __msg("R1 min value is outside of the allowed memory range")
+> > +__failure __msg("R2 invalid zero-sized read")
+> >  __naked void via_const_reg_empty_range(void)
+> >  {
+> >         asm volatile ("                                 \
+> > @@ -556,7 +593,7 @@ l0_%=3D:      exit;                                =
+           \
+> >
+> >  SEC("tracepoint")
+> >  __description("helper access to adjusted map (via variable): empty ran=
+ge")
+> > -__failure __msg("R1 min value is outside of the allowed memory range")
+> > +__failure __msg("R2 invalid zero-sized read")
+> >  __naked void map_via_variable_empty_range(void)
+> >  {
+> >         asm volatile ("                                 \
+> > diff --git a/tools/testing/selftests/bpf/progs/verifier_raw_stack.c b/t=
+ools/testing/selftests/bpf/progs/verifier_raw_stack.c
+> > index f67390224a9c..3dbda85e2997 100644
+> > --- a/tools/testing/selftests/bpf/progs/verifier_raw_stack.c
+> > +++ b/tools/testing/selftests/bpf/progs/verifier_raw_stack.c
+> > @@ -64,7 +64,7 @@ __naked void load_bytes_negative_len_2(void)
+> >
+> >  SEC("tc")
+> >  __description("raw_stack: skb_load_bytes, zero len")
+> > -__failure __msg("invalid zero-sized read")
+> > +__failure __msg("R4 invalid zero-sized read")
+> >  __naked void skb_load_bytes_zero_len(void)
+> >  {
+> >         asm volatile ("                                 \
+> > --
+> > 2.40.1
+> >
 
