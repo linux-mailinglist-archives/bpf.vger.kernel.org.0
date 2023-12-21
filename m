@@ -1,372 +1,217 @@
-Return-Path: <bpf+bounces-18506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7385481B03C
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 09:23:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF3A381B059
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 09:35:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE2B6B22C0A
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 08:23:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2A0328566C
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 08:35:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75B216427;
-	Thu, 21 Dec 2023 08:23:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67C3A168D3;
+	Thu, 21 Dec 2023 08:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YldkdlVo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUrnWPrA"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430D21802F;
-	Thu, 21 Dec 2023 08:23:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67253C433C7;
-	Thu, 21 Dec 2023 08:23:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703146998;
-	bh=B35QcwsC4O63UMvesltMIDSbeJC19DahzEoyJy3Ilq0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YldkdlVoX0mTzOK4ybsaTzOG68Rl+Pg4b8NzYmPS8O3zZy2NMe8K51qnK8fM+v1YN
-	 +YXFPdW8X7du4YYqsSE+VNji0qfX+3tptyj04fv5j/bCoesgQMUx4ZlKqDakW3XkJ2
-	 gtq36tKXsDxcDs5+xkqEP38EZstI6KOeqsbWqEyU1XTBrW76/cBx3qSHvxD010+yqH
-	 AkKRbL4Mjvt/VDHDoL2kXrPJTYQZvd6QJuxKOLnXtzYoQmsKUDAh4pQ73p/xIncrBe
-	 8+zAhkDbLEF4AGVei8baOJpJ9E0Y06p09u9N1cQjACrGSTDuyoqXaoUIuVDdyA0RHy
-	 RpC/2hztxpCxg==
-Date: Thu, 21 Dec 2023 09:23:14 +0100
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
-	davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
-	pabeni@redhat.com, bpf@vger.kernel.org, toke@redhat.com,
-	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
-	sdf@google.com, Yan Zhai <yan@cloudflare.com>
-Subject: Re: [PATCH v5 net-next 3/3] xdp: add multi-buff support for xdp
- running in generic mode
-Message-ID: <ZYP18oSWJp87xuej@lore-desk>
-References: <cover.1702563810.git.lorenzo@kernel.org>
- <e73a75e0d0f81a3b20568675829df4763fa0d389.1702563810.git.lorenzo@kernel.org>
- <d617df2b-620f-4a6f-b7dd-852bf156f904@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EA4156D6
+	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 08:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-54c77e0835bso646089a12.2
+        for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 00:35:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703147723; x=1703752523; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=k/egtQUfhnH8HhwF4ZJdZxXBgbO9sY0ZJxQtjF0wxek=;
+        b=HUrnWPrARDBwc6f4Ie2r6dANs+1BIj3u7WL41jHispUawPjhWqiq/6zAV9z8Fnx1Pa
+         RdkFeM8sHzUpGGOdkzy6CKjc+R4iy8LDrwnZkF2AU2hKRf94k0hfAPfZASb3sr1SXIsg
+         Uw/ZZng+aryrC0iJ+7+J8DBrRDBssbS1EiMpfdgc5/OzXIQRyIU5CKOKzAVmJFKIEfVv
+         BzWcBx3l15kB/pW+kewpZRs0DdZpsyFqqyDHukUN6zmFocSJ51JgG+F4QcueXnp2QBVA
+         M6+dbLx6jJOFwgGgAJpvaFro2/jdClTt16dQHSIvaUHEYsA7fa5hiVDEZr7K1pbVnZO+
+         Fvjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703147723; x=1703752523;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k/egtQUfhnH8HhwF4ZJdZxXBgbO9sY0ZJxQtjF0wxek=;
+        b=b/DGXgPs2E/uqXeZDsT8FwlfqidvBH8VGjC0NRJFxuAKHqyT+9zA6fO+BOnmml4COZ
+         tpnopC/1OZTmdHrzkTfdfo9hMADtwiMTEK82OwhSUe55YK+2dvZUtg6GiqLTbtaI3IZX
+         sulp969B8AsKwvfdmoohptBkuBNkIjXzE4J2hTQ+6/nBF0fDr5pLHLPVYre+qF7OW49M
+         L84orDhLQdxYRtB8XKrN3pFZ3mMIzn4QW9kXlNYG8StFxjVIyFvvrCIKq22detsWWY1+
+         pjiYx/aZ+PL8RCbHn3A/DCeL9VJGakD6s+XeV21A2jJnlBBaToLHG34DgmCY0ElFS5Mn
+         Hepw==
+X-Gm-Message-State: AOJu0Yz4f2Wp0djriKljnPfsMLmLV3Dm3zWT5dYfeq27dbSONteP5vvl
+	3gX9d/C8cSgreZIQ2LLdILk=
+X-Google-Smtp-Source: AGHT+IEBCIrx3tlp3bZr0BgPAQxv3C7yhzOjSICYArmw/xB1EB/ykLiL2jQM7/8lDDyeWFJP7ihZuw==
+X-Received: by 2002:a17:906:2dc5:b0:a26:89fc:1904 with SMTP id h5-20020a1709062dc500b00a2689fc1904mr1644989eji.5.1703147722478;
+        Thu, 21 Dec 2023 00:35:22 -0800 (PST)
+Received: from krava ([83.240.62.111])
+        by smtp.gmail.com with ESMTPSA id w6-20020a170906480600b00a2693a66d03sm692415ejq.160.2023.12.21.00.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 00:35:22 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 21 Dec 2023 09:35:20 +0100
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: acme@kernel.org, quentin@isovalent.com, andrii.nakryiko@gmail.com,
+	ast@kernel.org, daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves] pahole: Inject kfunc decl tags into BTF
+Message-ID: <ZYP4yK4qg2iJfTSx@krava>
+References: <421d18942d6ad28625530a8b3247595dc05eb100.1703110747.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="shbNIzSJcJdv1gzc"
-Content-Disposition: inline
-In-Reply-To: <d617df2b-620f-4a6f-b7dd-852bf156f904@kernel.org>
-
-
---shbNIzSJcJdv1gzc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <421d18942d6ad28625530a8b3247595dc05eb100.1703110747.git.dxu@dxuuu.xyz>
 
->=20
->=20
-> On 14/12/2023 15.29, Lorenzo Bianconi wrote:
-> > Similar to native xdp, do not always linearize the skb in
-> > netif_receive_generic_xdp routine but create a non-linear xdp_buff to be
-> > processed by the eBPF program. This allow to add  multi-buffer support
-> > for xdp running in generic mode.
-> >=20
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> > ---
-> >   net/core/dev.c | 153 +++++++++++++++++++++++++++++++++++++++++++------
-> >   1 file changed, 134 insertions(+), 19 deletions(-)
-> >=20
-> > diff --git a/net/core/dev.c b/net/core/dev.c
-> > index d7857de03dba..47164acc3268 100644
-> > --- a/net/core/dev.c
-> > +++ b/net/core/dev.c
-> > @@ -4854,6 +4854,12 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb=
-, struct xdp_buff *xdp,
-> >   	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
-> >   	xdp_prepare_buff(xdp, hard_start, skb_headroom(skb) - mac_len,
-> >   			 skb_headlen(skb) + mac_len, true);
-> > +	if (skb_is_nonlinear(skb)) {
-> > +		skb_shinfo(skb)->xdp_frags_size =3D skb->data_len;
-> > +		xdp_buff_set_frags_flag(xdp);
-> > +	} else {
-> > +		xdp_buff_clear_frags_flag(xdp);
-> > +	}
-> >   	orig_data_end =3D xdp->data_end;
-> >   	orig_data =3D xdp->data;
-> > @@ -4883,6 +4889,14 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb=
-, struct xdp_buff *xdp,
-> >   		skb->len +=3D off; /* positive on grow, negative on shrink */
-> >   	}
-> > +	/* XDP frag metadata (e.g. nr_frags) are updated in eBPF helpers
-> > +	 * (e.g. bpf_xdp_adjust_tail), we need to update data_len here.
-> > +	 */
-> > +	if (xdp_buff_has_frags(xdp))
-> > +		skb->data_len =3D skb_shinfo(skb)->xdp_frags_size;
-> > +	else
-> > +		skb->data_len =3D 0;
-> > +
-> >   	/* check if XDP changed eth hdr such SKB needs update */
-> >   	eth =3D (struct ethhdr *)xdp->data;
-> >   	if ((orig_eth_type !=3D eth->h_proto) ||
-> > @@ -4916,12 +4930,118 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *s=
-kb, struct xdp_buff *xdp,
-> >   	return act;
-> >   }
-> > +static int netif_skb_segment_for_xdp(struct sk_buff **pskb,
->=20
-> This function "...segment_for_xdp" always reallocate SKB and copies all
-> bits over.
-> Should it have been named "skb_realloc_for_xdp" ?
+On Wed, Dec 20, 2023 at 03:19:52PM -0700, Daniel Xu wrote:
+> This commit teaches pahole to parse symbols in .BTF_ids section in
+> vmlinux and discover exported kfuncs. Pahole then takes the list of
+> kfuncs and injects a BTF_KIND_DECL_TAG for each kfunc.
+> 
+> This enables downstream users and tools to dynamically discover which
+> kfuncs are available on a system by parsing vmlinux or module BTF, both
+> available in /sys/kernel/btf.
+> 
+> Example of encoding:
+> 
+>         $ bpftool btf dump file .tmp_vmlinux.btf | rg DECL_TAG | wc -l
+>         388
+> 
+>         $ bpftool btf dump file .tmp_vmlinux.btf | rg 68940
+>         [68940] FUNC 'bpf_xdp_get_xfrm_state' type_id=68939 linkage=static
+>         [128124] DECL_TAG 'kfunc' type_id=68940 component_idx=-1
+> 
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 
-Hi Jesper,
+SNIP
 
-ack, naming is always hard :)
+> +
+> +static int btf_encoder__tag_kfunc(struct btf_encoder *encoder, const char *kfunc)
+> +{
+> +	int nr_types, type_id, err = -1;
+> +	struct btf *btf = encoder->btf;
 
->=20
-> I was really hopeing we can find a design to avoid doing this realloc.
->=20
-> If the BPF-prog doesn't write into any of the fragments, then we can
-> avoid this realloc (+copy) dance. We designed XDP multi-buff to have
-> exactly the same layout+location as SKB in skb_shared_info, exactly to
-> avoid having to reallocated.
+could we store the kuncs in sorted array (by name) and iterate all IDs
+just once while doing the bsearch for the name over the kfuncs array
 
-I 100% agree with you, but we will need a similar copy fallback approach
-anyway, right? It is just a matter to understand if we should implement it
-with page_pool or page_frag_cache (or something different).
+> +
+> +	nr_types = btf__type_cnt(btf);
+> +	for (type_id = 1; type_id < nr_types; type_id++) {
+> +		const struct btf_type *type;
+> +		const char *name;
+> +
+> +		type = btf__type_by_id(btf, type_id);
+> +		if (!type) {
+> +			fprintf(stderr, "%s: malformed BTF, can't resolve type for ID %d\n",
+> +				__func__, type_id);
+> +			goto out;
+> +		}
+> +
+> +		if (!btf_is_func(type))
+> +			continue;
+> +
+> +		name = btf__name_by_offset(btf, type->name_off);
+> +		if (!name) {
+> +			fprintf(stderr, "%s: malformed BTF, can't resolve name for ID %d\n",
+> +				__func__, type_id);
+> +			goto out;
+> +		}
+> +
+> +		if (strcmp(name, kfunc))
+> +		    continue;
+> +
+> +		err = btf__add_decl_tag(btf, BTF_KFUNC_TYPE_TAG, type_id, -1);
+> +		if (err < 0) {
+> +			fprintf(stderr, "%s: failed to insert kfunc decl tag for '%s': %d\n",
+> +				__func__, kfunc, err);
+> +			goto out;
+> +		}
+> +
+> +		err = 0;
+> +		break;
+> +	}
+> +
+> +out:
+> +	return err;
+> +}
+> +
+> +static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
+> +{
+> +	const char *filename = encoder->filename;
+> +	GElf_Shdr shdr_mem, *shdr;
+> +	int symbols_shndx = -1;
+> +	int idlist_shndx = -1;
+> +	Elf_Scn *scn = NULL;
+> +	Elf_Data *symbols;
+> +	int fd, err = -1;
+> +	size_t strtabidx;
+> +	Elf *elf = NULL;
+> +	size_t strndx;
+> +	char *secname;
+> +	int nr_syms;
+> +	int i = 0;
+> +
+> +	fd = open(filename, O_RDONLY);
+> +	if (fd < 0) {
+> +		fprintf(stderr, "Cannot open %s\n", filename);
+> +		goto out;
+> +	}
+> +
+> +	if (elf_version(EV_CURRENT) == EV_NONE) {
+> +		elf_error("Cannot set libelf version");
+> +		goto out;
+> +	}
+> +
+> +	elf = elf_begin(fd, ELF_C_READ, NULL);
+> +	if (elf == NULL) {
+> +		elf_error("Cannot update ELF file");
+> +		goto out;
+> +	}
 
->=20
-> More comments inline below...
->=20
-> > +				     struct bpf_prog *prog)
-> > +{
-> > +#if IS_ENABLED(CONFIG_PAGE_POOL)
-> > +	struct softnet_data *sd =3D this_cpu_ptr(&softnet_data);
-> > +	u32 size, truesize, len, max_head_size, off;
-> > +	struct sk_buff *skb =3D *pskb, *nskb;
-> > +	int err, i, head_off;
-> > +	void *data;
-> > +
-> > +	/* XDP does not support fraglist so we need to linearize
-> > +	 * the skb.
-> > +	 */
-> > +	if (skb_has_frag_list(skb) || !prog->aux->xdp_has_frags)
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	max_head_size =3D SKB_WITH_OVERHEAD(PAGE_SIZE - XDP_PACKET_HEADROOM);
-> > +	if (skb->len > max_head_size + MAX_SKB_FRAGS * PAGE_SIZE)
-> > +		return -ENOMEM;
-> > +
-> > +	size =3D min_t(u32, skb->len, max_head_size);
-> > +	truesize =3D SKB_HEAD_ALIGN(size) + XDP_PACKET_HEADROOM;
-> > +	data =3D page_pool_dev_alloc_va(sd->page_pool, &truesize);
-> > +	if (!data)
-> > +		return -ENOMEM;
-> > +
-> > +	nskb =3D napi_build_skb(data, truesize);
-> > +	if (!nskb) {
-> > +		page_pool_free_va(sd->page_pool, data, true);
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	skb_reserve(nskb, XDP_PACKET_HEADROOM);
-> > +	skb_copy_header(nskb, skb);
-> > +	skb_mark_for_recycle(nskb);
-> > +
-> > +	err =3D skb_copy_bits(skb, 0, nskb->data, size);
->=20
-> This will likely copy part of the "frags" into the SKB "head" area.
->=20
-> Especially for netstack generated TCP packets, this will change the
-> segmentation layout significantly.  I wonder what (performance) effects
-> this will have on further handling of these SKBs.
+SNIP
 
-Do you think it can be a problem? I think in this way we can reduce the
-number of allocated page. Moreover, what about the case when skb head is
-bigger than a single page? Do you think we should use bigger allocation ord=
-er?
+> +		}
+> +		free(kfunc);
+> +	}
+> +
+> +	err = 0;
+> +out:
 
->=20
->=20
->=20
-> > +	if (err) {
-> > +		consume_skb(nskb);
-> > +		return err;
-> > +	}
-> > +	skb_put(nskb, size);
-> > +
-> > +	head_off =3D skb_headroom(nskb) - skb_headroom(skb);
-> > +	skb_headers_offset_update(nskb, head_off);
-> > +
-> > +	off =3D size;
-> > +	len =3D skb->len - off;
-> > +	for (i =3D 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
-> > +		struct page *page;
-> > +		u32 page_off;
-> > +
-> > +		size =3D min_t(u32, len, PAGE_SIZE);
-> > +		truesize =3D size;
-> > +
-> > +		page =3D page_pool_dev_alloc(sd->page_pool, &page_off,
-> > +					   &truesize);
-> > +		if (!data) {
-> > +			consume_skb(nskb);
-> > +			return -ENOMEM;
-> > +		}
-> > +
-> > +		skb_add_rx_frag(nskb, i, page, page_off, size, truesize);
-> > +		err =3D skb_copy_bits(skb, off, page_address(page) + page_off,
-> > +				    size);
->=20
-> I think it is correct, but we can easily endup with the new SKB (nskb)
-> having a different nskb->nr_frags.
+leaking fd and elf object (elf_end)
 
-see above
+jirka
 
->=20
->=20
-> > +		if (err) {
-> > +			consume_skb(nskb);
-> > +			return err;
-> > +		}
-> > +
-> > +		len -=3D size;
-> > +		off +=3D size;
-> > +	}
-> > +
-> > +	consume_skb(skb);
-> > +	*pskb =3D nskb;
-> > +
-> > +	return 0;
-> > +#else
-> > +	return -EOPNOTSUPP;
-> > +#endif
-> > +}
-> > +
-> > +static int netif_skb_check_for_xdp(struct sk_buff **pskb,
-> > +				   struct bpf_prog *prog)
-> > +{
-> > +	struct sk_buff *skb =3D *pskb;
-> > +	int err, hroom, troom;
-> > +
-> > +	if (!netif_skb_segment_for_xdp(pskb, prog))
-> > +		return 0;
->=20
-> IMHO the code call logic, does not make it easy to add cases where we
-> can avoid the realloc.  With this patch, it feels like the realloc+copy
-> code path is the "main" code path for XDP-generic.
-
-ack, I think it would depend about the logic to avoid realloc+copy. We could
-revaluate it when we have this logic in place. What do you think?
-
->=20
-> Our goal should be to avoid realloc.
->=20
-> My goal for XDP multi-buff was/is that it can co-exist with GSO/GRO
-> packets.  This patchset is a step in the direction of enabling GRO on
-> devices with XDP (generic) loaded.  And I was really excited about this,
-> but the overhead is going to be massive compared to normal GRO (without
-> realloc+copy) that XDP end-users are going to be disappointed.
->=20
->=20
-> > +
-> > +	/* In case we have to go down the path and also linearize,
-> > +	 * then lets do the pskb_expand_head() work just once here.
-> > +	 */
-> > +	hroom =3D XDP_PACKET_HEADROOM - skb_headroom(skb);
-> > +	troom =3D skb->tail + skb->data_len - skb->end;
-> > +	err =3D pskb_expand_head(skb,
-> > +			       hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
-> > +			       troom > 0 ? troom + 128 : 0, GFP_ATOMIC);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	return skb_linearize(skb);
-> > +}
-> > +
-> >   static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
-> >   				     struct xdp_buff *xdp,
-> >   				     struct bpf_prog *xdp_prog)
-> >   {
-> >   	struct sk_buff *skb =3D *pskb;
-> > -	u32 act =3D XDP_DROP;
-> > +	u32 mac_len, act =3D XDP_DROP;
-> >   	/* Reinjected packets coming from act_mirred or similar should
-> >   	 * not get XDP generic processing.
-> > @@ -4929,41 +5049,36 @@ static u32 netif_receive_generic_xdp(struct sk_=
-buff **pskb,
-> >   	if (skb_is_redirected(skb))
-> >   		return XDP_PASS;
-> > -	/* XDP packets must be linear and must have sufficient headroom
-> > -	 * of XDP_PACKET_HEADROOM bytes. This is the guarantee that also
-> > -	 * native XDP provides, thus we need to do it here as well.
-> > +	/* XDP packets must have sufficient headroom of XDP_PACKET_HEADROOM
-> > +	 * bytes. This is the guarantee that also native XDP provides,
-> > +	 * thus we need to do it here as well.
->=20
-> Some "native" XDP provider only have 192 bytes as HEADROOM and XDP code
-> can this not being static (256 bytes).  So, perhaps it is time to allow
-> XDP generic to only require 192 bytes?
-
-ack, agree. I think this can be added a separated patch.
-
-Regards,
-Lorenzo
-
->=20
-> >   	 */
-> > +	mac_len =3D skb->data - skb_mac_header(skb);
-> > +	__skb_push(skb, mac_len);
-> > +
-> >   	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
-> >   	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
-> > -		int hroom =3D XDP_PACKET_HEADROOM - skb_headroom(skb);
-> > -		int troom =3D skb->tail + skb->data_len - skb->end;
-> > -
-> > -		/* In case we have to go down the path and also linearize,
-> > -		 * then lets do the pskb_expand_head() work just once here.
-> > -		 */
-> > -		if (pskb_expand_head(skb,
-> > -				     hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
-> > -				     troom > 0 ? troom + 128 : 0, GFP_ATOMIC))
-> > -			goto do_drop;
-> > -		if (skb_linearize(skb))
-> > +		if (netif_skb_check_for_xdp(pskb, xdp_prog))
-> >   			goto do_drop;
-> >   	}
-> > -	act =3D bpf_prog_run_generic_xdp(skb, xdp, xdp_prog);
-> > +	__skb_pull(*pskb, mac_len);
-> > +
-> > +	act =3D bpf_prog_run_generic_xdp(*pskb, xdp, xdp_prog);
-> >   	switch (act) {
-> >   	case XDP_REDIRECT:
-> >   	case XDP_TX:
-> >   	case XDP_PASS:
-> >   		break;
-> >   	default:
-> > -		bpf_warn_invalid_xdp_action(skb->dev, xdp_prog, act);
-> > +		bpf_warn_invalid_xdp_action((*pskb)->dev, xdp_prog, act);
-> >   		fallthrough;
-> >   	case XDP_ABORTED:
-> > -		trace_xdp_exception(skb->dev, xdp_prog, act);
-> > +		trace_xdp_exception((*pskb)->dev, xdp_prog, act);
-> >   		fallthrough;
-> >   	case XDP_DROP:
-> >   	do_drop:
-> > -		kfree_skb(skb);
-> > +		kfree_skb(*pskb);
-> >   		break;
-> >   	}
-
---shbNIzSJcJdv1gzc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZYP18gAKCRA6cBh0uS2t
-rD3TAP9oC3lA853JbsLlpoS8+VB70FhI4TG8Io8DcfFQApJeKAD6AyvloGY7X0Q/
-t0DclHLpyFbyDmqnbleDM6E1Y5MfRgg=
-=eOUp
------END PGP SIGNATURE-----
-
---shbNIzSJcJdv1gzc--
+> +	return err;
+> +}
+> +
+>  int btf_encoder__encode(struct btf_encoder *encoder)
+>  {
+>  	int err;
+> @@ -1366,6 +1563,11 @@ int btf_encoder__encode(struct btf_encoder *encoder)
+>  	if (btf__type_cnt(encoder->btf) == 1)
+>  		return 0;
+>  
+> +	if (btf_encoder__tag_kfuncs(encoder)) {
+> +		fprintf(stderr, "%s: failed to tag kfuncs!\n", __func__);
+> +		return -1;
+> +	}
+> +
+>  	if (btf__dedup(encoder->btf, NULL)) {
+>  		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
+>  		return -1;
+> -- 
+> 2.42.1
+> 
 
