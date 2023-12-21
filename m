@@ -1,71 +1,74 @@
-Return-Path: <bpf+bounces-18551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709BF81BDDF
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 19:06:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B43C781BDE0
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 19:06:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D6F628C1ED
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 18:05:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7E461C216E2
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 18:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D37E064AB1;
-	Thu, 21 Dec 2023 18:02:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3731364ABB;
+	Thu, 21 Dec 2023 18:02:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UTgd5KQI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZOqBdDrz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53816351A
-	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 18:01:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A493634EE
+	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 18:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40d3bf30664so10791775e9.0
-        for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 10:01:59 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3366e78d872so953834f8f.3
+        for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 10:02:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703181718; x=1703786518; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703181733; x=1703786533; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=01pmU25iPd68MvEa08pvyHeTqz7/GCeqoZjVP1yol7Q=;
-        b=UTgd5KQICQXXrh5joayiXAuPYCRsat11OXeR3Mdy6TS+cThmxJpReiTgaSa26FfsqT
-         UtP9+o6tEJMOiukg28km/id1Y3SwbsCFq1Ir17aPM96xPffMtoR19U5WdQSEQtqoUlNF
-         YrxTBH3cBxWfGrB9B7WhTzlXhT6dXuXdNuijvNvm3j6pTU7OvVewquc5jNXUQSq1LBBt
-         X+j4RLTycRCwC/I6qIXuMSs5pc8OHrTJIRhJBvmf4q02r7LM4oQCeFWE2tJbsnu4gb7q
-         u+d7vgkxRq71BgFiuKC7NxTD8vx68BtaheTgER0LQNW1CKDhx5VcW7S4KK9rY8XJ/ksz
-         Nxew==
+        bh=WOBgNh4oHntmRaMAdNdxxX343EN4oLhRYEPnrEBTRRA=;
+        b=ZOqBdDrzxlgvLgU0Ykb65j2xHQb1DIs+f7ciCV1Uua0AfW1Glu38x/Ytc7MMtUb7PC
+         sxDliDfrcC7U/W+Jj894mz901KT1JwoLXT4wMJh5j4NV4JWT/EjQli9eufN9JChay9oq
+         63ECaD6FrbBFxd6Z35dg1GGU2li5M6Qitdc15Mo12WC+IeKKtkltmTFfOLsocJtNOSto
+         /2xInhUrxencP8/UCRPCiuJoJnO382KrmO9iXCn76ch6HuKukF7yaQdN1jaf9s984rhm
+         EAqhmtRg0f1sXOyFPWoR83BBNZD+zZX0FrbEo7iUcRaPOv0ssemU1ThBCL7jbNzZhAx9
+         LSHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703181718; x=1703786518;
+        d=1e100.net; s=20230601; t=1703181733; x=1703786533;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=01pmU25iPd68MvEa08pvyHeTqz7/GCeqoZjVP1yol7Q=;
-        b=l3GRf60aJI64dC5t/1MEfPy6CwNv7y5z6AggQnC/9pdhEAvc1E7xElDBKcEam1i1F3
-         j+hyrkN6+lujABHbSe9MJGxRBy+3+KBY80a0zpl7NaDyyJAZ+PMoXVQE5aPo/mll2iMl
-         Cpuoe7RwVQpAxxiXhS0ey4+N4P88ru3e+i3urnp1OisfwiU5thZ+2fZqFWU4OndnAx4Z
-         QlpXqzuLvF0bBayxjwWJGov8HR313YXSwksBGFlqCSP1X0MSgdnBZc8drf5yst1stNDj
-         za0IJQ3rg7b3RbmWHWEHw4DoN2ng2ko3vYLE4rkyt2wf7FYlYNkiPA5W5xwegF7rnuMY
-         L+zA==
-X-Gm-Message-State: AOJu0YwMhL7fwswhNBxHur9gdMGIMiAVxvxeFw/bZG5eQTAp5TGvjW8X
-	PlH1gxVqcAl2HI9RLiM06FY=
-X-Google-Smtp-Source: AGHT+IHgB+nLl8gIEpEnD9VgIo7NLzszKEWYXSCl31SJipM/XdzNGqle9PjHPWf+9b3qOAtSPJHavQ==
-X-Received: by 2002:a05:600c:1f8d:b0:40d:3d06:5107 with SMTP id je13-20020a05600c1f8d00b0040d3d065107mr72744wmb.64.1703181717802;
-        Thu, 21 Dec 2023 10:01:57 -0800 (PST)
+        bh=WOBgNh4oHntmRaMAdNdxxX343EN4oLhRYEPnrEBTRRA=;
+        b=XHbImXYwA2SV03zlg6T0PHhg97bx2YTrek7elkTsGa0P8wOc2AwHJ5jDeH76AkWm7V
+         cM5idgVIDcECNhcuM4IKd6DMVZR1x9CYnw3h53/Mch0+Kj8D1S6nDQ7v61WxZ3CyYiJQ
+         YVclkD4k/NsSla6cAO+9H79gR8ITVX+k8Na5gXyWterCuFrHMI3FM+SqnrmR+h0oTrj2
+         lvgjp5/YOHG+fLdgrcFJKDSJ4o4Ds4CBRNQsi398UVFDZF7z3B1R0lHoKze+OzE6ZhqU
+         4yaRJ5ejiRwBsx7O888IgkNrUPAaTM6hngJfZgdVMKMHL8lgdh10gITqSg+MYCOLGwF5
+         joLA==
+X-Gm-Message-State: AOJu0YzVCLzXoer5hjslB0/GPrCrqgkqNVE/Yws5ikQ4CLI5mjm8YwZu
+	APL2B14/idLEZphDJPQiHD4=
+X-Google-Smtp-Source: AGHT+IF1VgNkqGmUTnfP5mCbBdvdK16eMxXdhH9RXbwU5OVzUsVvHeiLu67kKyDsc6yAf08xX13npg==
+X-Received: by 2002:a05:600c:4e90:b0:40b:5e22:2e8 with SMTP id f16-20020a05600c4e9000b0040b5e2202e8mr36930wmq.84.1703181732732;
+        Thu, 21 Dec 2023 10:02:12 -0800 (PST)
 Received: from krava (cst-prg-70-88.cust.vodafone.cz. [46.135.70.88])
-        by smtp.gmail.com with ESMTPSA id h8-20020a05600c314800b003fee6e170f9sm4069142wmo.45.2023.12.21.10.01.55
+        by smtp.gmail.com with ESMTPSA id o20-20020a05600c4fd400b0040b37f1079dsm11921987wmq.29.2023.12.21.10.02.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 10:01:57 -0800 (PST)
+        Thu, 21 Dec 2023 10:02:12 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 21 Dec 2023 19:01:51 +0100
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	dxu@dxuuu.xyz, memxor@gmail.com, john.fastabend@gmail.com,
-	bpf@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf-next 0/5] bpf: volatile compare
-Message-ID: <ZYR9jwJOgRjW0YYr@krava>
-References: <20231221033854.38397-1-alexei.starovoitov@gmail.com>
+Date: Thu, 21 Dec 2023 19:02:02 +0100
+To: Dmitrii Dolgov <9erthalion6@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+	yonghong.song@linux.dev, dan.carpenter@linaro.org,
+	olsajiri@gmail.com, asavkov@redhat.com
+Subject: Re: [PATCH bpf-next v10 1/4] bpf: Relax tracing prog recursive
+ attach rules
+Message-ID: <ZYR9mrvFargzFlQp@krava>
+References: <20231220180422.8375-1-9erthalion6@gmail.com>
+ <20231220180422.8375-2-9erthalion6@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -74,65 +77,180 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231221033854.38397-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20231220180422.8375-2-9erthalion6@gmail.com>
 
-On Wed, Dec 20, 2023 at 07:38:49PM -0800, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
+On Wed, Dec 20, 2023 at 07:04:16PM +0100, Dmitrii Dolgov wrote:
+> Currently, it's not allowed to attach an fentry/fexit prog to another
+> one fentry/fexit. At the same time it's not uncommon to see a tracing
+> program with lots of logic in use, and the attachment limitation
+> prevents usage of fentry/fexit for performance analysis (e.g. with
+> "bpftool prog profile" command) in this case. An example could be
+> falcosecurity libs project that uses tp_btf tracing programs.
 > 
-> v1->v2:
-> Fixed issues pointed out by Daniel, added more tests, attempted to convert profiler.c,
-> but barrier_var() wins vs bpf_cmp(). To be investigated.
-> Patches 1-4 are good to go, but 5 needs more work.
+> Following the corresponding discussion [1], the reason for that is to
+> avoid tracing progs call cycles without introducing more complex
+> solutions. But currently it seems impossible to load and attach tracing
+> programs in a way that will form such a cycle. The limitation is coming
+> from the fact that attach_prog_fd is specified at the prog load (thus
+> making it impossible to attach to a program loaded after it in this
+> way), as well as tracing progs not implementing link_detach.
 > 
-> Alexei Starovoitov (5):
->   selftests/bpf: Attempt to build BPF programs with -Wsign-compare
->   bpf: Introduce "volatile compare" macro
->   selftests/bpf: Convert exceptions_assert.c to bpf_cmp
->   selftests/bpf: Remove bpf_assert_eq-like macros.
->   selftests/bpf: Attempt to convert profiler.c to bpf_cmp.
+> Replace "no same type" requirement with verification that no more than
+> one level of attachment nesting is allowed. In this way only one
+> fentry/fexit program could be attached to another fentry/fexit to cover
+> profiling use case, and still no cycle could be formed. To implement,
+> add a new field into bpf_prog_aux to track nested attachment for tracing
+> programs.
 
-lgtm, for patches 1-4:
+SNIP
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index eb447b0a9423..e7393674ab94 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1414,6 +1414,7 @@ struct bpf_prog_aux {
+>  	bool dev_bound; /* Program is bound to the netdev. */
+>  	bool offload_requested; /* Program is bound and offloaded to the netdev. */
+>  	bool attach_btf_trace; /* true if attaching to BTF-enabled raw tp */
+> +	bool attach_tracing_prog; /* true if tracing another tracing program */
+>  	bool func_proto_unreliable;
+>  	bool sleepable;
+>  	bool tail_call_reachable;
+> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+> index 5e43ddd1b83f..c40cad8886e9 100644
+> --- a/kernel/bpf/syscall.c
+> +++ b/kernel/bpf/syscall.c
+> @@ -2702,6 +2702,22 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
+>  			goto free_prog_sec;
+>  	}
+>  
+> +	/*
+> +	 * Bookkeeping for managing the program attachment chain.
+> +	 *
+> +	 * It might be tempting to set attach_tracing_prog flag at the attachment
+> +	 * time, but this will not prevent from loading bunch of tracing prog
+> +	 * first, then attach them one to another.
+
+hi,
+sorry for delayed response..  this part gets trickier with every change :-)
+
+> +	 *
+> +	 * The flag attach_tracing_prog is set for the whole program lifecycle, and
+> +	 * doesn't have to be cleared in bpf_tracing_link_release, since tracing
+> +	 * programs cannot change attachment target.
+
+I'm not sure that's the case.. AFAICS the bpf_tracing_prog_attach can
+be called on already loaded program with different target program it
+was loaded for, like:
+
+  load fentry1   -> bpf_test_fentry1
+
+  load fentry2   -> fentry1
+    fentry2->attach_tracing_prog = true
+
+  load ext1      -> prog
+
+  attach fentry2 -> ext1
+
+in which case we drop the tgt_prog from loading time
+and attach fentry2 to ext1
+
+but I think we could just fix with resseting the attach_tracing_prog
+in bpf_tracing_prog_attach when the tgt_prog switch happens
+
+it'd be great to have test for that.. also to find out it's real case,
+I'm not sure I haven't overlooked anything
 
 jirka
 
-> 
->  tools/testing/selftests/bpf/Makefile          |   1 +
->  .../testing/selftests/bpf/bpf_experimental.h  | 194 ++++--------------
->  .../bpf/progs/bpf_iter_bpf_percpu_hash_map.c  |   2 +-
->  .../selftests/bpf/progs/bpf_iter_task_vmas.c  |   2 +-
->  .../selftests/bpf/progs/bpf_iter_tasks.c      |   2 +-
->  .../selftests/bpf/progs/bpf_iter_test_kern4.c |   2 +-
->  .../progs/cgroup_getset_retval_setsockopt.c   |   2 +-
->  .../selftests/bpf/progs/cgrp_ls_sleepable.c   |   2 +-
->  .../selftests/bpf/progs/cpumask_success.c     |   2 +-
->  .../testing/selftests/bpf/progs/exceptions.c  |  20 +-
->  .../selftests/bpf/progs/exceptions_assert.c   |  80 ++++----
->  tools/testing/selftests/bpf/progs/iters.c     |   4 +-
->  .../selftests/bpf/progs/iters_task_vma.c      |   3 +-
->  .../selftests/bpf/progs/linked_funcs1.c       |   2 +-
->  .../selftests/bpf/progs/linked_funcs2.c       |   2 +-
->  .../testing/selftests/bpf/progs/linked_list.c |   2 +-
->  .../selftests/bpf/progs/local_storage.c       |   2 +-
->  tools/testing/selftests/bpf/progs/lsm.c       |   2 +-
->  .../selftests/bpf/progs/normal_map_btf.c      |   2 +-
->  .../selftests/bpf/progs/profiler.inc.h        |  71 ++-----
->  tools/testing/selftests/bpf/progs/profiler2.c |   1 +
->  tools/testing/selftests/bpf/progs/profiler3.c |   1 +
->  .../selftests/bpf/progs/sockopt_inherit.c     |   2 +-
->  .../selftests/bpf/progs/sockopt_multi.c       |   2 +-
->  .../selftests/bpf/progs/sockopt_qos_to_cc.c   |   2 +-
->  .../testing/selftests/bpf/progs/test_bpf_ma.c |   2 +-
->  .../bpf/progs/test_core_reloc_kernel.c        |   2 +-
->  .../bpf/progs/test_core_reloc_module.c        |   8 +-
->  .../selftests/bpf/progs/test_fsverity.c       |   2 +-
->  .../bpf/progs/test_skc_to_unix_sock.c         |   2 +-
->  .../bpf/progs/test_xdp_do_redirect.c          |   2 +-
->  31 files changed, 146 insertions(+), 279 deletions(-)
-> 
+> +	 */
+> +	if (type == BPF_PROG_TYPE_TRACING && dst_prog &&
+> +	    dst_prog->type == BPF_PROG_TYPE_TRACING) {
+> +		prog->aux->attach_tracing_prog = true;
+> +	}
+> +
+>  	/* find program type: socket_filter vs tracing_filter */
+>  	err = find_prog_type(type, prog);
+>  	if (err < 0)
+> @@ -3135,7 +3151,12 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
+>  	}
+>  
+>  	if (tgt_prog_fd) {
+> -		/* For now we only allow new targets for BPF_PROG_TYPE_EXT */
+> +		/*
+> +		 * For now we only allow new targets for BPF_PROG_TYPE_EXT. If this
+> +		 * part would be changed to implement the same for
+> +		 * BPF_PROG_TYPE_TRACING, do not forget to update the way how
+> +		 * attach_tracing_prog flag is set.
+> +		 */
+>  		if (prog->type != BPF_PROG_TYPE_EXT) {
+>  			err = -EINVAL;
+>  			goto out_put_prog;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 8e7b6072e3f4..f8c15ce8fd05 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20077,6 +20077,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  			    struct bpf_attach_target_info *tgt_info)
+>  {
+>  	bool prog_extension = prog->type == BPF_PROG_TYPE_EXT;
+> +	bool prog_tracing = prog->type == BPF_PROG_TYPE_TRACING;
+>  	const char prefix[] = "btf_trace_";
+>  	int ret = 0, subprog = -1, i;
+>  	const struct btf_type *t;
+> @@ -20147,10 +20148,21 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  			bpf_log(log, "Can attach to only JITed progs\n");
+>  			return -EINVAL;
+>  		}
+> -		if (tgt_prog->type == prog->type) {
+> -			/* Cannot fentry/fexit another fentry/fexit program.
+> -			 * Cannot attach program extension to another extension.
+> -			 * It's ok to attach fentry/fexit to extension program.
+> +		if (prog_tracing) {
+> +			if (aux->attach_tracing_prog) {
+> +				/*
+> +				 * Target program is an fentry/fexit which is already attached
+> +				 * to another tracing program. More levels of nesting
+> +				 * attachment are not allowed.
+> +				 */
+> +				bpf_log(log, "Cannot nest tracing program attach more than once\n");
+> +				return -EINVAL;
+> +			}
+> +		} else if (tgt_prog->type == prog->type) {
+> +			/*
+> +			 * To avoid potential call chain cycles, prevent attaching of a
+> +			 * program extension to another extension. It's ok to attach
+> +			 * fentry/fexit to extension program.
+>  			 */
+>  			bpf_log(log, "Cannot recursively attach\n");
+>  			return -EINVAL;
+> @@ -20163,16 +20175,15 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
+>  			 * except fentry/fexit. The reason is the following.
+>  			 * The fentry/fexit programs are used for performance
+>  			 * analysis, stats and can be attached to any program
+> -			 * type except themselves. When extension program is
+> -			 * replacing XDP function it is necessary to allow
+> -			 * performance analysis of all functions. Both original
+> -			 * XDP program and its program extension. Hence
+> -			 * attaching fentry/fexit to BPF_PROG_TYPE_EXT is
+> -			 * allowed. If extending of fentry/fexit was allowed it
+> -			 * would be possible to create long call chain
+> -			 * fentry->extension->fentry->extension beyond
+> -			 * reasonable stack size. Hence extending fentry is not
+> -			 * allowed.
+> +			 * type. When extension program is replacing XDP function
+> +			 * it is necessary to allow performance analysis of all
+> +			 * functions. Both original XDP program and its program
+> +			 * extension. Hence attaching fentry/fexit to
+> +			 * BPF_PROG_TYPE_EXT is allowed. If extending of
+> +			 * fentry/fexit was allowed it would be possible to create
+> +			 * long call chain fentry->extension->fentry->extension
+> +			 * beyond reasonable stack size. Hence extending fentry
+> +			 * is not allowed.
+>  			 */
+>  			bpf_log(log, "Cannot extend fentry/fexit\n");
+>  			return -EINVAL;
 > -- 
-> 2.34.1
-> 
+> 2.41.0
 > 
 
