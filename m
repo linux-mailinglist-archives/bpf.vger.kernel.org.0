@@ -1,229 +1,372 @@
-Return-Path: <bpf+bounces-18505-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18506-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 306F981AFD3
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 08:52:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7385481B03C
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 09:23:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6130FB23BB8
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 07:52:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE2B6B22C0A
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 08:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80792154BB;
-	Thu, 21 Dec 2023 07:52:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75B216427;
+	Thu, 21 Dec 2023 08:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X0TwC4Mm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YldkdlVo"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03EB7156C9
-	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 07:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2c6e0258-8ecf-4acd-9cb9-8b9ac6222794@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1703145160;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1d2ceve+3phxZ9nH7IW39aBCY3ci1u9+TrsjLI8bNmk=;
-	b=X0TwC4MmCQZsBSpyXIwcAAf5+IxgOPvFNiI1kmNNMN+si1OCnKiNYFXQxMW1z/hejPiZyV
-	9qvcDTLSNeQryNR8Iv3bWjK+NvRK0+ymg9g6AkjCHjeqw111Gz4rGpu4Lhu/+2BDMJd98E
-	WMQKBBgMYbqXnpRA00qGEkcJ09+hejo=
-Date: Wed, 20 Dec 2023 23:52:33 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430D21802F;
+	Thu, 21 Dec 2023 08:23:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67253C433C7;
+	Thu, 21 Dec 2023 08:23:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703146998;
+	bh=B35QcwsC4O63UMvesltMIDSbeJC19DahzEoyJy3Ilq0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YldkdlVoX0mTzOK4ybsaTzOG68Rl+Pg4b8NzYmPS8O3zZy2NMe8K51qnK8fM+v1YN
+	 +YXFPdW8X7du4YYqsSE+VNji0qfX+3tptyj04fv5j/bCoesgQMUx4ZlKqDakW3XkJ2
+	 gtq36tKXsDxcDs5+xkqEP38EZstI6KOeqsbWqEyU1XTBrW76/cBx3qSHvxD010+yqH
+	 AkKRbL4Mjvt/VDHDoL2kXrPJTYQZvd6QJuxKOLnXtzYoQmsKUDAh4pQ73p/xIncrBe
+	 8+zAhkDbLEF4AGVei8baOJpJ9E0Y06p09u9N1cQjACrGSTDuyoqXaoUIuVDdyA0RHy
+	 RpC/2hztxpCxg==
+Date: Thu, 21 Dec 2023 09:23:14 +0100
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: netdev@vger.kernel.org, lorenzo.bianconi@redhat.com,
+	davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+	pabeni@redhat.com, bpf@vger.kernel.org, toke@redhat.com,
+	willemdebruijn.kernel@gmail.com, jasowang@redhat.com,
+	sdf@google.com, Yan Zhai <yan@cloudflare.com>
+Subject: Re: [PATCH v5 net-next 3/3] xdp: add multi-buff support for xdp
+ running in generic mode
+Message-ID: <ZYP18oSWJp87xuej@lore-desk>
+References: <cover.1702563810.git.lorenzo@kernel.org>
+ <e73a75e0d0f81a3b20568675829df4763fa0d389.1702563810.git.lorenzo@kernel.org>
+ <d617df2b-620f-4a6f-b7dd-852bf156f904@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v5 3/8] bpf: Allow per unit prefill for
- non-fix-size percpu memory allocator
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231221045954.1969955-1-yonghong.song@linux.dev>
- <20231221050010.1971932-1-yonghong.song@linux.dev>
- <58e11994-6f73-20de-eab8-f4d7a4f71d80@huaweicloud.com>
- <ea395971-25f0-4b5c-8303-1620154e9b9d@linux.dev>
-In-Reply-To: <ea395971-25f0-4b5c-8303-1620154e9b9d@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="shbNIzSJcJdv1gzc"
+Content-Disposition: inline
+In-Reply-To: <d617df2b-620f-4a6f-b7dd-852bf156f904@kernel.org>
 
 
-On 12/20/23 11:16 PM, Yonghong Song wrote:
->
-> On 12/20/23 10:26 PM, Hou Tao wrote:
->> Hi,
->>
->> On 12/21/2023 1:00 PM, Yonghong Song wrote:
->>> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem 
->>> allocation")
->>> added support for non-fix-size percpu memory allocation.
->>> Such allocation will allocate percpu memory for all buckets on all
->>> cpus and the memory consumption is in the order to quadratic.
->>> For example, let us say, 4 cpus, unit size 16 bytes, so each
->>> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256 
->>> bytes.
->>> Then let us say, 8 cpus with the same unit size, each cpu
->>> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024 
->>> bytes.
->>> So if the number of cpus doubles, the number of memory consumption
->>> will be 4 times. So for a system with large number of cpus, the
->>> memory consumption goes up quickly with quadratic order.
->>> For example, for 4KB percpu allocation, 128 cpus. The total memory
->>> consumption will 4KB * 128 * 128 = 64MB. Things will become
->>> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
->>>
->>> In Commit 41a5db8d8161, the non-fix-size percpu memory allocation is
->>> done in boot time, so for system with large number of cpus, the initial
->>> percpu memory consumption is very visible. For example, for 128 cpu
->>> system, the total percpu memory allocation will be at least
->>> (16 + 32 + 64 + 96 + 128 + 196 + 256 + 512 + 1024 + 2048 + 4096)
->>>    * 128 * 128 = ~138MB.
->>> which is pretty big. It will be even bigger for larger number of cpus.
->> SNIP
->>> +
->>>   static void drain_mem_cache(struct bpf_mem_cache *c)
->>>   {
->>>       bool percpu = !!c->percpu_size;
->>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>> index f13008d27f35..08f9a49cc11c 100644
->>> --- a/kernel/bpf/verifier.c
->>> +++ b/kernel/bpf/verifier.c
->>> @@ -12141,20 +12141,6 @@ static int check_kfunc_call(struct 
->>> bpf_verifier_env *env, struct bpf_insn *insn,
->>>                   if (meta.func_id == 
->>> special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
->>>                       return -ENOMEM;
->>>   -                if (meta.func_id == 
->>> special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->>> -                    if (!bpf_global_percpu_ma_set) {
->>> -                        mutex_lock(&bpf_percpu_ma_lock);
->>> -                        if (!bpf_global_percpu_ma_set) {
->>> -                            err = 
->>> bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
->>> -                            if (!err)
->>> -                                bpf_global_percpu_ma_set = true;
->>> -                        }
->>> - mutex_unlock(&bpf_percpu_ma_lock);
->>> -                        if (err)
->>> -                            return err;
->>> -                    }
->>> -                }
->>> -
->>>                   if (((u64)(u32)meta.arg_constant.value) != 
->>> meta.arg_constant.value) {
->>>                       verbose(env, "local type ID argument must be 
->>> in range [0, U32_MAX]\n");
->>>                       return -EINVAL;
->>> @@ -12175,6 +12161,26 @@ static int check_kfunc_call(struct 
->>> bpf_verifier_env *env, struct bpf_insn *insn,
->>>                       return -EINVAL;
->>>                   }
->>>   +                if (meta.func_id == 
->>> special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->>> +                    if (!bpf_global_percpu_ma_set) {
->>> +                        mutex_lock(&bpf_percpu_ma_lock);
->>> +                        if (!bpf_global_percpu_ma_set) {
->>> +                            err = 
->>> bpf_mem_alloc_percpu_init(&bpf_global_percpu_ma);
->> Because ma->objcg is assigned as get_obj_cgroup_from_current(), so I
->> think the memory account will be incorrect, right ? Maybe we should pass
->> objcg to bpf_mem_alloc_percpu_init() explicit. For root memcg, I think
->> the objcg is NULL.
->
-> You are correct. Calling bpf_mem_alloc_percpu_init() in init stage
-> is exactly the reason to have proper root memcg for objcg. Sorry I 
-> missed it.
->
-> I remembered I indeed traced it a few days ago and indeed it is NULL.
-> There are three ways to resolve this:
->    1 Just do 'ma->objcg = NULL' unconditionally in 
-> bpf_mem_alloc_percpu_init().
->    2 Second, we can remember objcg = bpf_mem_alloc_percpu_init() at 
-> init stage,
->      e.g., in bpf_global_ma_init() init function (core.c), and later 
-> it can
->      be used in bpf_mem_alloc_percpu_init().
->    3 Still do bpf_mem_alloc_percpu_init() at init stage to initialize 
-> ma->objcg
->      properly. But delay __alloc_percpu_gfp() later when verifier 
-> found a call
->      to bpf_percpu_obj_new(). We could add a call 
-> bpf_mem_alloc_percpu_init_caches()
->      to do __alloc_percpu_grp().
->
-> I prefer option 3, what do you think?
+--shbNIzSJcJdv1gzc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The option 4 below:
+>=20
+>=20
+> On 14/12/2023 15.29, Lorenzo Bianconi wrote:
+> > Similar to native xdp, do not always linearize the skb in
+> > netif_receive_generic_xdp routine but create a non-linear xdp_buff to be
+> > processed by the eBPF program. This allow to add  multi-buffer support
+> > for xdp running in generic mode.
+> >=20
+> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+> > ---
+> >   net/core/dev.c | 153 +++++++++++++++++++++++++++++++++++++++++++------
+> >   1 file changed, 134 insertions(+), 19 deletions(-)
+> >=20
+> > diff --git a/net/core/dev.c b/net/core/dev.c
+> > index d7857de03dba..47164acc3268 100644
+> > --- a/net/core/dev.c
+> > +++ b/net/core/dev.c
+> > @@ -4854,6 +4854,12 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb=
+, struct xdp_buff *xdp,
+> >   	xdp_init_buff(xdp, frame_sz, &rxqueue->xdp_rxq);
+> >   	xdp_prepare_buff(xdp, hard_start, skb_headroom(skb) - mac_len,
+> >   			 skb_headlen(skb) + mac_len, true);
+> > +	if (skb_is_nonlinear(skb)) {
+> > +		skb_shinfo(skb)->xdp_frags_size =3D skb->data_len;
+> > +		xdp_buff_set_frags_flag(xdp);
+> > +	} else {
+> > +		xdp_buff_clear_frags_flag(xdp);
+> > +	}
+> >   	orig_data_end =3D xdp->data_end;
+> >   	orig_data =3D xdp->data;
+> > @@ -4883,6 +4889,14 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *skb=
+, struct xdp_buff *xdp,
+> >   		skb->len +=3D off; /* positive on grow, negative on shrink */
+> >   	}
+> > +	/* XDP frag metadata (e.g. nr_frags) are updated in eBPF helpers
+> > +	 * (e.g. bpf_xdp_adjust_tail), we need to update data_len here.
+> > +	 */
+> > +	if (xdp_buff_has_frags(xdp))
+> > +		skb->data_len =3D skb_shinfo(skb)->xdp_frags_size;
+> > +	else
+> > +		skb->data_len =3D 0;
+> > +
+> >   	/* check if XDP changed eth hdr such SKB needs update */
+> >   	eth =3D (struct ethhdr *)xdp->data;
+> >   	if ((orig_eth_type !=3D eth->h_proto) ||
+> > @@ -4916,12 +4930,118 @@ u32 bpf_prog_run_generic_xdp(struct sk_buff *s=
+kb, struct xdp_buff *xdp,
+> >   	return act;
+> >   }
+> > +static int netif_skb_segment_for_xdp(struct sk_buff **pskb,
+>=20
+> This function "...segment_for_xdp" always reallocate SKB and copies all
+> bits over.
+> Should it have been named "skb_realloc_for_xdp" ?
 
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index 984c83ecace9..f90989cc9cbc 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -122,6 +122,7 @@ struct bpf_mem_caches {
-  };
-  
-  static const u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
-+static struct obj_cgroup *objcg_at_init __ro_after_init;
-  
-  static struct llist_node notrace *__llist_del_first(struct llist_head *head)
-  {
-@@ -590,7 +591,7 @@ int bpf_mem_alloc_percpu_init(struct bpf_mem_alloc *ma)
-         ma->percpu = true;
-  
-  #ifdef CONFIG_MEMCG_KMEM
--       ma->objcg = get_obj_cgroup_from_current();
-+       ma->objcg = objcg_at_init;
-  #else
-         ma->objcg = NULL;
-  #endif
-@@ -1015,3 +1016,10 @@ void notrace *bpf_mem_cache_alloc_flags(struct bpf_mem_alloc *ma, gfp_t flags)
-  
-         return !ret ? NULL : ret + LLIST_NODE_SZ;
-  }
-+
-+static int __init find_objcg_at_init(void)
-+{
-+       objcg_at_init = get_obj_cgroup_from_current();
-+       return 0;
-+}
-+late_initcall(find_objcg_at_init);
+Hi Jesper,
 
-It seems this is better?
+ack, naming is always hard :)
 
->
->>> +                            if (!err)
->>> +                                bpf_global_percpu_ma_set = true;
->>> +                        }
->>> + mutex_unlock(&bpf_percpu_ma_lock);
->>> +                        if (err)
->>> +                            return err;
->>> +                    }
->>> +
->>> +                    mutex_lock(&bpf_percpu_ma_lock);
->>> +                    err = 
->>> bpf_mem_alloc_percpu_unit_init(&bpf_global_percpu_ma, ret_t->size);
->>> +                    mutex_unlock(&bpf_percpu_ma_lock);
->>> +                    if (err)
->>> +                        return err;
->>> +                }
->>> +
->>>                   struct_meta = btf_find_struct_meta(ret_btf, 
->>> ret_btf_id);
->>>                   if (meta.func_id == 
->>> special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->>>                       if (!__btf_type_is_scalar_struct(env, ret_btf, 
->>> ret_t, 0)) {
->>
->
+>=20
+> I was really hopeing we can find a design to avoid doing this realloc.
+>=20
+> If the BPF-prog doesn't write into any of the fragments, then we can
+> avoid this realloc (+copy) dance. We designed XDP multi-buff to have
+> exactly the same layout+location as SKB in skb_shared_info, exactly to
+> avoid having to reallocated.
+
+I 100% agree with you, but we will need a similar copy fallback approach
+anyway, right? It is just a matter to understand if we should implement it
+with page_pool or page_frag_cache (or something different).
+
+>=20
+> More comments inline below...
+>=20
+> > +				     struct bpf_prog *prog)
+> > +{
+> > +#if IS_ENABLED(CONFIG_PAGE_POOL)
+> > +	struct softnet_data *sd =3D this_cpu_ptr(&softnet_data);
+> > +	u32 size, truesize, len, max_head_size, off;
+> > +	struct sk_buff *skb =3D *pskb, *nskb;
+> > +	int err, i, head_off;
+> > +	void *data;
+> > +
+> > +	/* XDP does not support fraglist so we need to linearize
+> > +	 * the skb.
+> > +	 */
+> > +	if (skb_has_frag_list(skb) || !prog->aux->xdp_has_frags)
+> > +		return -EOPNOTSUPP;
+> > +
+> > +	max_head_size =3D SKB_WITH_OVERHEAD(PAGE_SIZE - XDP_PACKET_HEADROOM);
+> > +	if (skb->len > max_head_size + MAX_SKB_FRAGS * PAGE_SIZE)
+> > +		return -ENOMEM;
+> > +
+> > +	size =3D min_t(u32, skb->len, max_head_size);
+> > +	truesize =3D SKB_HEAD_ALIGN(size) + XDP_PACKET_HEADROOM;
+> > +	data =3D page_pool_dev_alloc_va(sd->page_pool, &truesize);
+> > +	if (!data)
+> > +		return -ENOMEM;
+> > +
+> > +	nskb =3D napi_build_skb(data, truesize);
+> > +	if (!nskb) {
+> > +		page_pool_free_va(sd->page_pool, data, true);
+> > +		return -ENOMEM;
+> > +	}
+> > +
+> > +	skb_reserve(nskb, XDP_PACKET_HEADROOM);
+> > +	skb_copy_header(nskb, skb);
+> > +	skb_mark_for_recycle(nskb);
+> > +
+> > +	err =3D skb_copy_bits(skb, 0, nskb->data, size);
+>=20
+> This will likely copy part of the "frags" into the SKB "head" area.
+>=20
+> Especially for netstack generated TCP packets, this will change the
+> segmentation layout significantly.  I wonder what (performance) effects
+> this will have on further handling of these SKBs.
+
+Do you think it can be a problem? I think in this way we can reduce the
+number of allocated page. Moreover, what about the case when skb head is
+bigger than a single page? Do you think we should use bigger allocation ord=
+er?
+
+>=20
+>=20
+>=20
+> > +	if (err) {
+> > +		consume_skb(nskb);
+> > +		return err;
+> > +	}
+> > +	skb_put(nskb, size);
+> > +
+> > +	head_off =3D skb_headroom(nskb) - skb_headroom(skb);
+> > +	skb_headers_offset_update(nskb, head_off);
+> > +
+> > +	off =3D size;
+> > +	len =3D skb->len - off;
+> > +	for (i =3D 0; i < MAX_SKB_FRAGS && off < skb->len; i++) {
+> > +		struct page *page;
+> > +		u32 page_off;
+> > +
+> > +		size =3D min_t(u32, len, PAGE_SIZE);
+> > +		truesize =3D size;
+> > +
+> > +		page =3D page_pool_dev_alloc(sd->page_pool, &page_off,
+> > +					   &truesize);
+> > +		if (!data) {
+> > +			consume_skb(nskb);
+> > +			return -ENOMEM;
+> > +		}
+> > +
+> > +		skb_add_rx_frag(nskb, i, page, page_off, size, truesize);
+> > +		err =3D skb_copy_bits(skb, off, page_address(page) + page_off,
+> > +				    size);
+>=20
+> I think it is correct, but we can easily endup with the new SKB (nskb)
+> having a different nskb->nr_frags.
+
+see above
+
+>=20
+>=20
+> > +		if (err) {
+> > +			consume_skb(nskb);
+> > +			return err;
+> > +		}
+> > +
+> > +		len -=3D size;
+> > +		off +=3D size;
+> > +	}
+> > +
+> > +	consume_skb(skb);
+> > +	*pskb =3D nskb;
+> > +
+> > +	return 0;
+> > +#else
+> > +	return -EOPNOTSUPP;
+> > +#endif
+> > +}
+> > +
+> > +static int netif_skb_check_for_xdp(struct sk_buff **pskb,
+> > +				   struct bpf_prog *prog)
+> > +{
+> > +	struct sk_buff *skb =3D *pskb;
+> > +	int err, hroom, troom;
+> > +
+> > +	if (!netif_skb_segment_for_xdp(pskb, prog))
+> > +		return 0;
+>=20
+> IMHO the code call logic, does not make it easy to add cases where we
+> can avoid the realloc.  With this patch, it feels like the realloc+copy
+> code path is the "main" code path for XDP-generic.
+
+ack, I think it would depend about the logic to avoid realloc+copy. We could
+revaluate it when we have this logic in place. What do you think?
+
+>=20
+> Our goal should be to avoid realloc.
+>=20
+> My goal for XDP multi-buff was/is that it can co-exist with GSO/GRO
+> packets.  This patchset is a step in the direction of enabling GRO on
+> devices with XDP (generic) loaded.  And I was really excited about this,
+> but the overhead is going to be massive compared to normal GRO (without
+> realloc+copy) that XDP end-users are going to be disappointed.
+>=20
+>=20
+> > +
+> > +	/* In case we have to go down the path and also linearize,
+> > +	 * then lets do the pskb_expand_head() work just once here.
+> > +	 */
+> > +	hroom =3D XDP_PACKET_HEADROOM - skb_headroom(skb);
+> > +	troom =3D skb->tail + skb->data_len - skb->end;
+> > +	err =3D pskb_expand_head(skb,
+> > +			       hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
+> > +			       troom > 0 ? troom + 128 : 0, GFP_ATOMIC);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	return skb_linearize(skb);
+> > +}
+> > +
+> >   static u32 netif_receive_generic_xdp(struct sk_buff **pskb,
+> >   				     struct xdp_buff *xdp,
+> >   				     struct bpf_prog *xdp_prog)
+> >   {
+> >   	struct sk_buff *skb =3D *pskb;
+> > -	u32 act =3D XDP_DROP;
+> > +	u32 mac_len, act =3D XDP_DROP;
+> >   	/* Reinjected packets coming from act_mirred or similar should
+> >   	 * not get XDP generic processing.
+> > @@ -4929,41 +5049,36 @@ static u32 netif_receive_generic_xdp(struct sk_=
+buff **pskb,
+> >   	if (skb_is_redirected(skb))
+> >   		return XDP_PASS;
+> > -	/* XDP packets must be linear and must have sufficient headroom
+> > -	 * of XDP_PACKET_HEADROOM bytes. This is the guarantee that also
+> > -	 * native XDP provides, thus we need to do it here as well.
+> > +	/* XDP packets must have sufficient headroom of XDP_PACKET_HEADROOM
+> > +	 * bytes. This is the guarantee that also native XDP provides,
+> > +	 * thus we need to do it here as well.
+>=20
+> Some "native" XDP provider only have 192 bytes as HEADROOM and XDP code
+> can this not being static (256 bytes).  So, perhaps it is time to allow
+> XDP generic to only require 192 bytes?
+
+ack, agree. I think this can be added a separated patch.
+
+Regards,
+Lorenzo
+
+>=20
+> >   	 */
+> > +	mac_len =3D skb->data - skb_mac_header(skb);
+> > +	__skb_push(skb, mac_len);
+> > +
+> >   	if (skb_cloned(skb) || skb_is_nonlinear(skb) ||
+> >   	    skb_headroom(skb) < XDP_PACKET_HEADROOM) {
+> > -		int hroom =3D XDP_PACKET_HEADROOM - skb_headroom(skb);
+> > -		int troom =3D skb->tail + skb->data_len - skb->end;
+> > -
+> > -		/* In case we have to go down the path and also linearize,
+> > -		 * then lets do the pskb_expand_head() work just once here.
+> > -		 */
+> > -		if (pskb_expand_head(skb,
+> > -				     hroom > 0 ? ALIGN(hroom, NET_SKB_PAD) : 0,
+> > -				     troom > 0 ? troom + 128 : 0, GFP_ATOMIC))
+> > -			goto do_drop;
+> > -		if (skb_linearize(skb))
+> > +		if (netif_skb_check_for_xdp(pskb, xdp_prog))
+> >   			goto do_drop;
+> >   	}
+> > -	act =3D bpf_prog_run_generic_xdp(skb, xdp, xdp_prog);
+> > +	__skb_pull(*pskb, mac_len);
+> > +
+> > +	act =3D bpf_prog_run_generic_xdp(*pskb, xdp, xdp_prog);
+> >   	switch (act) {
+> >   	case XDP_REDIRECT:
+> >   	case XDP_TX:
+> >   	case XDP_PASS:
+> >   		break;
+> >   	default:
+> > -		bpf_warn_invalid_xdp_action(skb->dev, xdp_prog, act);
+> > +		bpf_warn_invalid_xdp_action((*pskb)->dev, xdp_prog, act);
+> >   		fallthrough;
+> >   	case XDP_ABORTED:
+> > -		trace_xdp_exception(skb->dev, xdp_prog, act);
+> > +		trace_xdp_exception((*pskb)->dev, xdp_prog, act);
+> >   		fallthrough;
+> >   	case XDP_DROP:
+> >   	do_drop:
+> > -		kfree_skb(skb);
+> > +		kfree_skb(*pskb);
+> >   		break;
+> >   	}
+
+--shbNIzSJcJdv1gzc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZYP18gAKCRA6cBh0uS2t
+rD3TAP9oC3lA853JbsLlpoS8+VB70FhI4TG8Io8DcfFQApJeKAD6AyvloGY7X0Q/
+t0DclHLpyFbyDmqnbleDM6E1Y5MfRgg=
+=eOUp
+-----END PGP SIGNATURE-----
+
+--shbNIzSJcJdv1gzc--
 
