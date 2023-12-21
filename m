@@ -1,177 +1,151 @@
-Return-Path: <bpf+bounces-18540-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF7A581B9A3
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 15:34:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7825A81B9D2
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 15:48:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DD6D1C258E0
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 14:34:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C0D51F225FE
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 14:48:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAA01D6A9;
-	Thu, 21 Dec 2023 14:34:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ly2KnS5k"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B5A1DFF1;
+	Thu, 21 Dec 2023 14:48:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2A4036089;
-	Thu, 21 Dec 2023 14:34:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97EE2C433C7;
-	Thu, 21 Dec 2023 14:34:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703169270;
-	bh=AVm3a85Vz/dkmcLeGNufWQT9b61HwwEX8sYAWAbZ+rY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ly2KnS5kV4vXYDg5FR9TIlPhjrOWKlQYU3cwmH5lvyn6U29Csx1JtiV5TEdz4syMU
-	 aKnUR1+4S0GBTdRtRsmr0DrbT9VG8zFe2zYAKSOdD0GSS4MIxZCs+Y4iQ80lBz9qUn
-	 XqRxIMGEEVfcYYijkAJjtBkCKl9KZbcYHXqgbqY17UiKvwTDCQXqbC39t5+DB0PCM/
-	 6jiii/HPZLysgsvuMYvv6LiIJtz3Xy/BECcvq4jSuvHL8eqOxu/KUmVCcHivfYss96
-	 ysnMsMQ/ELasNLtowzHwrwvRe28CU9lkRpcqnQoA72MvtEpWvLOr34MRgD3MGl1nlw
-	 p5xVfHvznIHAA==
-Date: Thu, 21 Dec 2023 14:34:22 +0000
-From: Lee Jones <lee@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	syzbot+97a4fe20470e9bc30810@syzkaller.appspotmail.com,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Xu Kuohai <xukuohai@huawei.com>, Will Deacon <will@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Pu Lehui <pulehui@huawei.com>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: Re: [PATCHv4 bpf 1/2] bpf: Fix prog_array_map_poke_run map poke
- update
-Message-ID: <20231221143422.GI10102@google.com>
-References: <20231206083041.1306660-1-jolsa@kernel.org>
- <20231206083041.1306660-2-jolsa@kernel.org>
- <20231221090745.GA431072@google.com>
- <2023122113-thirsting-county-ca67@gregkh>
- <20231221095522.GB10102@google.com>
- <2023122132-splashing-blip-ced4@gregkh>
- <20231221101744.GD10102@google.com>
- <ZYRE5dF6j63fEv8A@krava>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1E836089
+	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 14:48:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39068C433C7;
+	Thu, 21 Dec 2023 14:48:14 +0000 (UTC)
+Date: Thu, 21 Dec 2023 09:49:17 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Philo Lu <lulie@linux.alibaba.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Shung-Hsi Yu
+ <shung-hsi.yu@suse.com>, bpf@vger.kernel.org, song@kernel.org,
+ andrii@kernel.org, ast@kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+ xuanzhuo@linux.alibaba.com, dust.li@linux.alibaba.com,
+ guwen@linux.alibaba.com, alibuda@linux.alibaba.com,
+ hengqi@linux.alibaba.com, Nathan Slingerland <slinger@meta.com>,
+ "rihams@meta.com" <rihams@meta.com>, Alan Maguire
+ <alan.maguire@oracle.com>, Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: Question about bpf perfbuf/ringbuf: pinned in backend with
+ overwriting
+Message-ID: <20231221094917.20718e9b@gandalf.local.home>
+In-Reply-To: <cde8a134-8185-4387-a2f5-db2f1173b31b@linux.alibaba.com>
+References: <3dd9114c-599f-46b2-84b9-abcfd2dcbe33@linux.alibaba.com>
+	<c3c47250-2923-c376-4f5e-ddaf148bbf32@oracle.com>
+	<CAEf4BzZOBdV9vxV6Gr9b5pQ8+M6tPVnHdmELWqOd5jdcL=KpiA@mail.gmail.com>
+	<23691bb5-9688-4e93-a98c-1024e8a8fc62@linux.alibaba.com>
+	<CAEf4BzaQv23wzgmmoSFBja7Syp3m3fRrfzWkFobQ4NNisDTEyA@mail.gmail.com>
+	<qdiw6a7acgvepckv6uts5iusp74m7ud4i4lpniu3mgq6jdrs6s@mnttkagth64k>
+	<20231219083851.0ec83349@gandalf.local.home>
+	<cde8a134-8185-4387-a2f5-db2f1173b31b@linux.alibaba.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZYRE5dF6j63fEv8A@krava>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 21 Dec 2023, Jiri Olsa wrote:
+On Thu, 21 Dec 2023 21:00:39 +0800
+Philo Lu <lulie@linux.alibaba.com> wrote:
 
-> On Thu, Dec 21, 2023 at 10:17:44AM +0000, Lee Jones wrote:
-> > On Thu, 21 Dec 2023, Greg KH wrote:
-> > 
-> > > On Thu, Dec 21, 2023 at 09:55:22AM +0000, Lee Jones wrote:
-> > > > On Thu, 21 Dec 2023, Greg KH wrote:
-> > > > 
-> > > > > On Thu, Dec 21, 2023 at 09:07:45AM +0000, Lee Jones wrote:
-> > > > > > Dear Stable,
-> > > > > > 
-> > > > > > > Lee pointed out issue found by syscaller [0] hitting BUG in prog array
-> > > > > > > map poke update in prog_array_map_poke_run function due to error value
-> > > > > > > returned from bpf_arch_text_poke function.
-> > > > > > > 
-> > > > > > > There's race window where bpf_arch_text_poke can fail due to missing
-> > > > > > > bpf program kallsym symbols, which is accounted for with check for
-> > > > > > > -EINVAL in that BUG_ON call.
-> > > > > > > 
-> > > > > > > The problem is that in such case we won't update the tail call jump
-> > > > > > > and cause imbalance for the next tail call update check which will
-> > > > > > > fail with -EBUSY in bpf_arch_text_poke.
-> > > > > > > 
-> > > > > > > I'm hitting following race during the program load:
-> > > > > > > 
-> > > > > > >   CPU 0                             CPU 1
-> > > > > > > 
-> > > > > > >   bpf_prog_load
-> > > > > > >     bpf_check
-> > > > > > >       do_misc_fixups
-> > > > > > >         prog_array_map_poke_track
-> > > > > > > 
-> > > > > > >                                     map_update_elem
-> > > > > > >                                       bpf_fd_array_map_update_elem
-> > > > > > >                                         prog_array_map_poke_run
-> > > > > > > 
-> > > > > > >                                           bpf_arch_text_poke returns -EINVAL
-> > > > > > > 
-> > > > > > >     bpf_prog_kallsyms_add
-> > > > > > > 
-> > > > > > > After bpf_arch_text_poke (CPU 1) fails to update the tail call jump, the next
-> > > > > > > poke update fails on expected jump instruction check in bpf_arch_text_poke
-> > > > > > > with -EBUSY and triggers the BUG_ON in prog_array_map_poke_run.
-> > > > > > > 
-> > > > > > > Similar race exists on the program unload.
-> > > > > > > 
-> > > > > > > Fixing this by moving the update to bpf_arch_poke_desc_update function which
-> > > > > > > makes sure we call __bpf_arch_text_poke that skips the bpf address check.
-> > > > > > > 
-> > > > > > > Each architecture has slightly different approach wrt looking up bpf address
-> > > > > > > in bpf_arch_text_poke, so instead of splitting the function or adding new
-> > > > > > > 'checkip' argument in previous version, it seems best to move the whole
-> > > > > > > map_poke_run update as arch specific code.
-> > > > > > > 
-> > > > > > > [0] https://syzkaller.appspot.com/bug?extid=97a4fe20470e9bc30810
-> > > > > > > 
-> > > > > > > Cc: Lee Jones <lee@kernel.org>
-> > > > > > > Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> > > > > > > Fixes: ebf7d1f508a7 ("bpf, x64: rework pro/epilogue and tailcall handling in JIT")
-> > > > > > > Reported-by: syzbot+97a4fe20470e9bc30810@syzkaller.appspotmail.com
-> > > > > > > Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> > > > > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > > > > ---
-> > > > > > >  arch/x86/net/bpf_jit_comp.c | 46 +++++++++++++++++++++++++++++
-> > > > > > >  include/linux/bpf.h         |  3 ++
-> > > > > > >  kernel/bpf/arraymap.c       | 58 +++++++------------------------------
-> > > > > > >  3 files changed, 59 insertions(+), 48 deletions(-)
-> > > > > > 
-> > > > > > Please could we have this backported?
-> > > > > > 
-> > > > > > Guided by the Fixes: tag.
-> > > > > 
-> > > > > <formletter>
-> > > > > 
-> > > > > This is not the correct way to submit patches for inclusion in the
-> > > > > stable kernel tree.  Please read:
-> > > > >     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > > > > for how to do this properly.
-> > > > > 
-> > > > > </formletter>
-> > > > 
-> > > > Apologies.
-> > > > 
-> > > > Commit ID: 4b7de801606e504e69689df71475d27e35336fb3
-> > > > Subject:   bpf: Fix prog_array_map_poke_run map poke update
-> > > > Reason:    Fixes a race condition in BPF.
-> > > > Versions:  linux-5.10.y+, as specified by the Fixes: tag above
-> > > 
-> > > Did not apply to 5.10.y or 5.15.y, so if you need/want it there, we will
-> > > need a working backport that has been tested.  Other trees it's now
-> > > queued up for.
-> > 
-> > Thank you.
+> Hi Steven,
 > 
-> please let me know if you need any help with that, I can check on that
+> Thanks for your explanation about ftrace ring buffer. Also thanks to 
+> Shung-Hsi for the discussion.
+> 
+> Here are some features of ftrace buffer that I'm not sure if they are 
+> right. Could you please tell me if my understandings correct?
+> 
+> (1) When reading and writing occur concurrently:
+>    (a) If reader is faster than writer, the reader cannot get the page 
+> which is still being written, which means the reader cannot get the data 
+> immediately of one-page length in the worst case.
 
-I absolutely do.  I have no way to test BPF.
+Nope, that's not the case. Otherwise you couldn't do this!
 
--- 
-Lee Jones [李琼斯]
+ ~# cd /sys/kernel/tracing
+ ~# echo hello world > trace_marker
+ ~# cat trace_pipe
+           <...>-861     [001] ..... 76124.880943: tracing_mark_write: hello world
+
+Yes, the reader swaps out an active sub-buffer to read it. But it's fine if
+the writer is still on that sub-buffer. That's because the sub-buffers are
+a linked list and the writer will simply walk off the end of the sub-buffer
+and back into the sub-buffers in the active ring buffer.
+
+Note, in this case, the ring buffer cannot give the sub-buffer to the
+reader to pass to splice, as then it could free it while the writer is
+still on it, but instead, copies the data for the reader. It also keeps
+track of what it copied so it doesn't copy it again the next time.
+
+>    (b) If writer is faster than reader, the only race between them is 
+> when reader is doing swap while writer wraps in overwrite mode. But if 
+> the reader has finished swapping, the writer can wrap safely, because 
+> the reader page if already out of the buffer page list.
+
+Yes, that is the point of contention. But the writer doesn't wait for the
+reader. The reader does a cmpxchg loop to make sure it's not conflicting
+with the writer. The writer has priority and doesn't loop in this case.
+That is, a reader will not slow down the writer except for what the
+hardware causes in the contention.
+
+> 
+> (2) As the per-cpu buffer list is dynamic with reader page moves, we 
+> cannot do mmap to expose the buffer to user. Users can consume at most 
+> one page at a time.
+
+The code works with splice, and the way trace-cmd does it, is to use the
+max pipe size, and will read by default 64kb at a time. The internals swap
+out one sub-buffer at a time, but then move them into the pipe, with zero
+copy (if the sub-buffers are full and the writer is not still on them). The
+user can see all these sub-buffers in the pipe at once.
+
+I'm working to have 6.8 remove the limit of "one page" and allow the
+sub-buffers to be any order of pages (1,2,4,8,...). I'm hoping to have that
+work pushed to linux-next by end of today.
+
+ https://lore.kernel.org/linux-trace-kernel/20231219185414.474197117@goodmis.org/
+
+and we are also working on mmapping the ring buffer to user space:
+
+ https://lore.kernel.org/linux-trace-kernel/20231219184556.1552951-1-vdonnefort@google.com/
+
+That may not make 6.8 but will likely make 6.9 at the latest.
+
+It still requires user space to make an ioctl() system call between
+sub-buffers, as the swap logic is still implemented.
+
+The way it will work is all the sub-buffers will be mmapped to user space
+including the reader page. A meta data will point to which sub-buffer is
+what. When user space calls the ioctl() it will update which one of the
+mapped sub-buffers is the "reader-page" (really "reader-subbuf") and the
+writers will not write on it. When user space is finished reading the data
+on the reader-page it will call the ioctl() again and the meta data will be
+updated to point to which sub-buffer is now the new "reader-page" for user
+space to read.
+
+There's no new allocations needed for the swap. The old reader-subbuf gets
+swapped with one of the active sub-buffers and becomes an active sub-buffer
+itself. The swapped out sub-buffer becomes the new "reader-page/subbuf".
+
+> 
+> (3) The wake-up behavior is controllable. If there is no waiter at all, 
+> no overhead will be induced because of waking up.
+
+Correct. When there's a waiter, a bit is set and an irq_work is called to
+wake up the waiter (this is basically the same as what perf does).
+
+You can also set when you want to wake up via the buffer_percent file in
+tracefs. If the buffer is not filled to the percentage specified, it will
+not wake up the waiters.
+
+-- Steve
 
