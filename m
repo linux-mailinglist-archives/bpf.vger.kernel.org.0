@@ -1,261 +1,262 @@
-Return-Path: <bpf+bounces-18509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3A081B07E
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 09:42:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BD6381B081
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 09:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46C8F1F238AE
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 08:42:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 329C92867EE
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 08:43:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFFD171D5;
-	Thu, 21 Dec 2023 08:42:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A4617743;
+	Thu, 21 Dec 2023 08:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="tFNmCAe4"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3251802F
-	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 08:42:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4SwkSm4VnSz4f3kFY
-	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 16:42:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 6CF8A1A0186
-	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 16:42:19 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgCH4EBn+oNlsFpeEQ--.58510S2;
-	Thu, 21 Dec 2023 16:42:19 +0800 (CST)
-Subject: Re: [PATCH bpf-next v5 3/8] bpf: Allow per unit prefill for
- non-fix-size percpu memory allocator
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20231221045954.1969955-1-yonghong.song@linux.dev>
- <20231221050010.1971932-1-yonghong.song@linux.dev>
- <58e11994-6f73-20de-eab8-f4d7a4f71d80@huaweicloud.com>
- <ea395971-25f0-4b5c-8303-1620154e9b9d@linux.dev>
- <2c6e0258-8ecf-4acd-9cb9-8b9ac6222794@linux.dev>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <c6d1f8a8-90dc-be35-b7de-d0b60195a293@huaweicloud.com>
-Date: Thu, 21 Dec 2023 16:42:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E38D171A4;
+	Thu, 21 Dec 2023 08:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1703148231; x=1734684231;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=6Z0GX+7uv/sLnLPaDYt0IYinAk1hhGwTjf3POoo3T8k=;
+  b=tFNmCAe4iv+u82hnB004VmCENiHEkxYuUu/i+h0BApBf+F4BlwDkl9v7
+   2li6PdzdC5srCPcFi2A5fgdO/sBxybLtDNU/+jHeGR6ySUsi7McElZsFN
+   l0DoLUAwkUJ+vGk29eNDEmvHkzE808pVdcmzaUe+G17Zgb+xeeL+8GVdR
+   0=;
+X-IronPort-AV: E=Sophos;i="6.04,293,1695686400"; 
+   d="scan'208";a="692362979"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-d23e07e8.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2023 08:43:26 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan3.iad.amazon.com [10.32.235.38])
+	by email-inbound-relay-iad-1d-m6i4x-d23e07e8.us-east-1.amazon.com (Postfix) with ESMTPS id 1694C807C9;
+	Thu, 21 Dec 2023 08:43:23 +0000 (UTC)
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.21.151:52540]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.24.220:2525] with esmtp (Farcaster)
+ id 814705f6-82be-4f1f-98f2-f02d986b747a; Thu, 21 Dec 2023 08:43:22 +0000 (UTC)
+X-Farcaster-Flow-ID: 814705f6-82be-4f1f-98f2-f02d986b747a
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 21 Dec 2023 08:43:21 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.143.88.82) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 21 Dec 2023 08:43:17 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <kuniyu@amazon.com>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <edumazet@google.com>, <kuni1840@gmail.com>,
+	<martin.lau@linux.dev>, <netdev@vger.kernel.org>, <pabeni@redhat.com>,
+	<yonghong.song@linux.dev>
+Subject: Re: [PATCH v7 bpf-next 6/6] selftest: bpf: Test bpf_sk_assign_tcp_reqsk().
+Date: Thu, 21 Dec 2023 17:43:07 +0900
+Message-ID: <20231221084307.77438-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20231221070443.68167-1-kuniyu@amazon.com>
+References: <20231221070443.68167-1-kuniyu@amazon.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <2c6e0258-8ecf-4acd-9cb9-8b9ac6222794@linux.dev>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:gCh0CgCH4EBn+oNlsFpeEQ--.58510S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr1rXr1UCF15tryxWFy7Awb_yoWfXFW8pr
-	1kJF1UJry5Jrn7Jw1Utr1UJryUtr1UXw1UJr1UJF1UAr47Xr1jqr1UXr1j9r1UJr48JF1U
-	Jr1UXr17Zr1UJrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D032UWB002.ant.amazon.com (10.13.139.190) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
 
-Hi,
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+Date: Thu, 21 Dec 2023 16:04:43 +0900
+> From: Martin KaFai Lau <martin.lau@linux.dev>
+> Date: Wed, 20 Dec 2023 22:35:26 -0800
+> > On 12/20/23 5:28 PM, Kuniyuki Iwashima wrote:
+> > > +static int tcp_validate_header(struct tcp_syncookie *ctx)
+> > > +{
+> > > +	s64 csum;
+> > > +
+> > > +	if (tcp_reload_headers(ctx))
+> > > +		goto err;
+> > > +
+> > > +	csum = bpf_csum_diff(0, 0, (void *)ctx->tcp, ctx->tcp->doff * 4, 0);
+> > > +	if (csum < 0)
+> > > +		goto err;
+> > > +
+> > > +	if (ctx->ipv4) {
+> > > +		/* check tcp_v4_csum(csum) is 0 if not on lo. */
+> > > +
+> > > +		csum = bpf_csum_diff(0, 0, (void *)ctx->ipv4, ctx->ipv4->ihl * 4, 0);
+> > > +		if (csum < 0)
+> > > +			goto err;
+> > > +
+> > > +		if (csum_fold(csum) != 0)
+> > > +			goto err;
+> > > +	} else if (ctx->ipv6) {
+> > > +		/* check tcp_v6_csum(csum) is 0 if not on lo. */
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +err:
+> > > +	return -1;
+> > > +}
+> > > +
+> > > +static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
+> > > +{
+> > > +	char opcode, opsize;
+> > > +
+> > > +	if (ctx->ptr + 1 > ctx->data_end)
+> > > +		goto stop;
+> > > +
+> > > +	opcode = *ctx->ptr++;
+> > > +
+> > > +	if (opcode == TCPOPT_EOL)
+> > > +		goto stop;
+> > > +
+> > > +	if (opcode == TCPOPT_NOP)
+> > > +		goto next;
+> > > +
+> > > +	if (ctx->ptr + 1 > ctx->data_end)
+> > > +		goto stop;
+> > > +
+> > > +	opsize = *ctx->ptr++;
+> > > +
+> > > +	if (opsize < 2)
+> > > +		goto stop;
+> > > +
+> > > +	switch (opcode) {
+> > > +	case TCPOPT_MSS:
+> > > +		if (opsize == TCPOLEN_MSS && ctx->tcp->syn &&
+> > > +		    ctx->ptr + (TCPOLEN_MSS - 2) < ctx->data_end)
+> > > +			ctx->attrs.mss = get_unaligned_be16(ctx->ptr);
+> > > +		break;
+> > > +	case TCPOPT_WINDOW:
+> > > +		if (opsize == TCPOLEN_WINDOW && ctx->tcp->syn &&
+> > > +		    ctx->ptr + (TCPOLEN_WINDOW - 2) < ctx->data_end) {
+> > > +			ctx->attrs.wscale_ok = 1;
+> > > +			ctx->attrs.snd_wscale = *ctx->ptr;
+> > > +		}
+> > > +		break;
+> > > +	case TCPOPT_TIMESTAMP:
+> > > +		if (opsize == TCPOLEN_TIMESTAMP &&
+> > > +		    ctx->ptr + (TCPOLEN_TIMESTAMP - 2) < ctx->data_end) {
+> > > +			ctx->attrs.rcv_tsval = get_unaligned_be32(ctx->ptr);
+> > > +			ctx->attrs.rcv_tsecr = get_unaligned_be32(ctx->ptr + 4);
+> > > +
+> > > +			if (ctx->tcp->syn && ctx->attrs.rcv_tsecr)
+> > > +				ctx->attrs.tstamp_ok = 0;
+> > > +			else
+> > > +				ctx->attrs.tstamp_ok = 1;
+> > > +		}
+> > > +		break;
+> > > +	case TCPOPT_SACK_PERM:
+> > > +		if (opsize == TCPOLEN_SACK_PERM && ctx->tcp->syn &&
+> > > +		    ctx->ptr + (TCPOLEN_SACK_PERM - 2) < ctx->data_end)
+> > > +			ctx->attrs.sack_ok = 1;
+> > > +		break;
+> > > +	}
+> > > +
+> > > +	ctx->ptr += opsize - 2;
+> > > +next:
+> > > +	return 0;
+> > > +stop:
+> > > +	return 1;
+> > > +}
+> > > +
+> > > +static void tcp_parse_options(struct tcp_syncookie *ctx)
+> > > +{
+> > > +	ctx->ptr = (char *)(ctx->tcp + 1);
+> > > +
+> > > +	bpf_loop(40, tcp_parse_option, ctx, 0);
+> > > +}
+> > > +
+> > > +static int tcp_validate_sysctl(struct tcp_syncookie *ctx)
+> > > +{
+> > > +	if ((ctx->ipv4 && ctx->attrs.mss != MSS_LOCAL_IPV4) ||
+> > > +	    (ctx->ipv6 && ctx->attrs.mss != MSS_LOCAL_IPV6))
+> > > +		goto err;
+> > > +
+> > > +	if (!ctx->attrs.wscale_ok || ctx->attrs.snd_wscale != 7)
+> > > +		goto err;
+> > > +
+> > > +	if (!ctx->attrs.tstamp_ok)
+> > 
+> > The bpf-ci reported error in cpuv4. The email from bot+bpf-ci@kernel.org has the 
+> > link.
+> 
+> I like the mail from the bot, it's useful, but it seems that
+> it's sent to the patch author only when the CI passes ?
+> 
+> But yeah, I found the failed test.
+> https://github.com/kernel-patches/bpf/actions/runs/7284164398/job/19849657597
+> 
+> 
+> > 
+> > I tried the following:
+> > 
+> > 	if (!ctx->attrs.tstamp_ok) {
+> > 		bpf_printk("ctx->attrs.tstamp_ok %u",
+> > 			ctx->attrs.tstamp_ok);
+> > 		goto err;
+> > 	}
+> > 
+> > 
+> > The above prints tstamp_ok as 1 while there is a "if (!ctx->attrs.tstamp_ok)" 
+> > test before it.
+> > 
+> > Yonghong and I debugged it quite a bit. verifier concluded the 
+> > ctx->attrs.tstamp_ok is 0. We knew some red herring like cpuv4 has fewer 
+> > register spilling but not able to root cause it yet.
+> > 
+> > In the mean time, there are existing selftests parsing the tcp header. For 
+> > example, the test_parse_tcp_hdr_opt[_dynptr].c. Not as complete as your 
+> > tcp_parse_option() but should be pretty close. It does not use bpf_loop. It uses 
+> > a bounded loop + a subprog (the parse_hdr_opt in the selftests) instead. You can 
+> > consider a similar construct to see if it works around the cpuv4 CI issue for 
+> > the time being.
+> 
+> Sure, I'll install the latest clang/llvm and check if the test
+> passes without bpf_loop().
 
-On 12/21/2023 3:52 PM, Yonghong Song wrote:
->
-> On 12/20/23 11:16 PM, Yonghong Song wrote:
->>
->> On 12/20/23 10:26 PM, Hou Tao wrote:
->>> Hi,
->>>
->>> On 12/21/2023 1:00 PM, Yonghong Song wrote:
->>>> Commit 41a5db8d8161 ("Add support for non-fix-size percpu mem
->>>> allocation")
->>>> added support for non-fix-size percpu memory allocation.
->>>> Such allocation will allocate percpu memory for all buckets on all
->>>> cpus and the memory consumption is in the order to quadratic.
->>>> For example, let us say, 4 cpus, unit size 16 bytes, so each
->>>> cpu has 16 * 4 = 64 bytes, with 4 cpus, total will be 64 * 4 = 256
->>>> bytes.
->>>> Then let us say, 8 cpus with the same unit size, each cpu
->>>> has 16 * 8 = 128 bytes, with 8 cpus, total will be 128 * 8 = 1024
->>>> bytes.
->>>> So if the number of cpus doubles, the number of memory consumption
->>>> will be 4 times. So for a system with large number of cpus, the
->>>> memory consumption goes up quickly with quadratic order.
->>>> For example, for 4KB percpu allocation, 128 cpus. The total memory
->>>> consumption will 4KB * 128 * 128 = 64MB. Things will become
->>>> worse if the number of cpus is bigger (e.g., 512, 1024, etc.)
->>>>
->>>> In Commit 41a5db8d8161, the non-fix-size percpu memory allocation is
->>>> done in boot time, so for system with large number of cpus, the
->>>> initial
->>>> percpu memory consumption is very visible. For example, for 128 cpu
->>>> system, the total percpu memory allocation will be at least
->>>> (16 + 32 + 64 + 96 + 128 + 196 + 256 + 512 + 1024 + 2048 + 4096)
->>>>    * 128 * 128 = ~138MB.
->>>> which is pretty big. It will be even bigger for larger number of cpus.
->>> SNIP
->>>> +
->>>>   static void drain_mem_cache(struct bpf_mem_cache *c)
->>>>   {
->>>>       bool percpu = !!c->percpu_size;
->>>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->>>> index f13008d27f35..08f9a49cc11c 100644
->>>> --- a/kernel/bpf/verifier.c
->>>> +++ b/kernel/bpf/verifier.c
->>>> @@ -12141,20 +12141,6 @@ static int check_kfunc_call(struct
->>>> bpf_verifier_env *env, struct bpf_insn *insn,
->>>>                   if (meta.func_id ==
->>>> special_kfunc_list[KF_bpf_obj_new_impl] && !bpf_global_ma_set)
->>>>                       return -ENOMEM;
->>>>   -                if (meta.func_id ==
->>>> special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->>>> -                    if (!bpf_global_percpu_ma_set) {
->>>> -                        mutex_lock(&bpf_percpu_ma_lock);
->>>> -                        if (!bpf_global_percpu_ma_set) {
->>>> -                            err =
->>>> bpf_mem_alloc_init(&bpf_global_percpu_ma, 0, true);
->>>> -                            if (!err)
->>>> -                                bpf_global_percpu_ma_set = true;
->>>> -                        }
->>>> - mutex_unlock(&bpf_percpu_ma_lock);
->>>> -                        if (err)
->>>> -                            return err;
->>>> -                    }
->>>> -                }
->>>> -
->>>>                   if (((u64)(u32)meta.arg_constant.value) !=
->>>> meta.arg_constant.value) {
->>>>                       verbose(env, "local type ID argument must be
->>>> in range [0, U32_MAX]\n");
->>>>                       return -EINVAL;
->>>> @@ -12175,6 +12161,26 @@ static int check_kfunc_call(struct
->>>> bpf_verifier_env *env, struct bpf_insn *insn,
->>>>                       return -EINVAL;
->>>>                   }
->>>>   +                if (meta.func_id ==
->>>> special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->>>> +                    if (!bpf_global_percpu_ma_set) {
->>>> +                        mutex_lock(&bpf_percpu_ma_lock);
->>>> +                        if (!bpf_global_percpu_ma_set) {
->>>> +                            err =
->>>> bpf_mem_alloc_percpu_init(&bpf_global_percpu_ma);
->>> Because ma->objcg is assigned as get_obj_cgroup_from_current(), so I
->>> think the memory account will be incorrect, right ? Maybe we should
->>> pass
->>> objcg to bpf_mem_alloc_percpu_init() explicit. For root memcg, I think
->>> the objcg is NULL.
->>
->> You are correct. Calling bpf_mem_alloc_percpu_init() in init stage
->> is exactly the reason to have proper root memcg for objcg. Sorry I
->> missed it.
->>
->> I remembered I indeed traced it a few days ago and indeed it is NULL.
->> There are three ways to resolve this:
->>    1 Just do 'ma->objcg = NULL' unconditionally in
->> bpf_mem_alloc_percpu_init().
->>    2 Second, we can remember objcg = bpf_mem_alloc_percpu_init() at
->> init stage,
->>      e.g., in bpf_global_ma_init() init function (core.c), and later
->> it can
->>      be used in bpf_mem_alloc_percpu_init().
->>    3 Still do bpf_mem_alloc_percpu_init() at init stage to initialize
->> ma->objcg
->>      properly. But delay __alloc_percpu_gfp() later when verifier
->> found a call
->>      to bpf_percpu_obj_new(). We could add a call
->> bpf_mem_alloc_percpu_init_caches()
->>      to do __alloc_percpu_grp().
->>
->> I prefer option 3, what do you think?
->
-> The option 4 below:
->
-> diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-> index 984c83ecace9..f90989cc9cbc 100644
-> --- a/kernel/bpf/memalloc.c
-> +++ b/kernel/bpf/memalloc.c
-> @@ -122,6 +122,7 @@ struct bpf_mem_caches {
->  };
->  
->  static const u16 sizes[NUM_CACHES] = {96, 192, 16, 32, 64, 128, 256,
-> 512, 1024, 2048, 4096};
-> +static struct obj_cgroup *objcg_at_init __ro_after_init;
->  
->  static struct llist_node notrace *__llist_del_first(struct llist_head
-> *head)
->  {
-> @@ -590,7 +591,7 @@ int bpf_mem_alloc_percpu_init(struct bpf_mem_alloc
-> *ma)
->         ma->percpu = true;
->  
->  #ifdef CONFIG_MEMCG_KMEM
-> -       ma->objcg = get_obj_cgroup_from_current();
-> +       ma->objcg = objcg_at_init;
->  #else
->         ma->objcg = NULL;
->  #endif
-> @@ -1015,3 +1016,10 @@ void notrace *bpf_mem_cache_alloc_flags(struct
-> bpf_mem_alloc *ma, gfp_t flags)
->  
->         return !ret ? NULL : ret + LLIST_NODE_SZ;
->  }
-> +
-> +static int __init find_objcg_at_init(void)
-> +{
-> +       objcg_at_init = get_obj_cgroup_from_current();
-> +       return 0;
-> +}
-> +late_initcall(find_objcg_at_init);
->
-> It seems this is better?
+I've tested a simple diff below and some more different patterns, but
+the prog cannot be loaded.  Without bpf_loop(), the parser can loop
+only 4 times (s/40/4/), but then, it does not fully parse the necessary
+options, so the packet is dropped due to tcp_validate_sysctl(), and the
+test fails.
 
-It seems that you are worried about the objcg of root memcg may change
-from NULL to something else one day, right ? If it is the case, I think
-both option 3 and 4 are fine. But I still think passing the desired
-objcg to bpf_mem_alloc_percpu_init() directly is better. If the objcg of
-root memcg is not NULL afterwards, we can update the passed parameter
-accordingly.
->
->>
->>>> +                            if (!err)
->>>> +                                bpf_global_percpu_ma_set = true;
->>>> +                        }
->>>> + mutex_unlock(&bpf_percpu_ma_lock);
->>>> +                        if (err)
->>>> +                            return err;
->>>> +                    }
->>>> +
->>>> +                    mutex_lock(&bpf_percpu_ma_lock);
->>>> +                    err =
->>>> bpf_mem_alloc_percpu_unit_init(&bpf_global_percpu_ma, ret_t->size);
->>>> +                    mutex_unlock(&bpf_percpu_ma_lock);
->>>> +                    if (err)
->>>> +                        return err;
->>>> +                }
->>>> +
->>>>                   struct_meta = btf_find_struct_meta(ret_btf,
->>>> ret_btf_id);
->>>>                   if (meta.func_id ==
->>>> special_kfunc_list[KF_bpf_percpu_obj_new_impl]) {
->>>>                       if (!__btf_type_is_scalar_struct(env,
->>>> ret_btf, ret_t, 0)) {
->>>
->>
+So it seems that tcp_parse_option() cannot work around the issue even
+without bpf_loop() and this series needs to wait the cpuv4 fix..
 
+---8<---
+@@ -259,9 +260,13 @@ static int tcp_parse_option(__u32 index, struct tcp_syncookie *ctx)
+ 
+ static void tcp_parse_options(struct tcp_syncookie *ctx)
+ {
++	int i;
++
+ 	ctx->ptr = (char *)(ctx->tcp + 1);
+ 
+-	bpf_loop(40, tcp_parse_option, ctx, 0);
++	for (i = 0; i < 40; i++)
++		if (tcp_parse_option(i, ctx))
++			break;
+ }
+ 
+ static int tcp_validate_sysctl(struct tcp_syncookie *ctx)
+---8<---
+
+---8<---
+BPF program is too large. Processed 1000001 insn
+processed 1000001 insns (limit 1000000) max_states_per_insn 30 total_states 41159 peak_states 344 mark_read 55
+-- END PROG LOAD LOG --
+libbpf: prog 'tcp_custom_syncookie': failed to load: -7
+---8<---
 
