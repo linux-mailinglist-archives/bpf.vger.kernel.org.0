@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-18552-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18553-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43C781BDE0
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 19:06:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF15B81BDE1
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 19:06:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7E461C216E2
-	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 18:06:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C6C91F22C18
+	for <lists+bpf@lfdr.de>; Thu, 21 Dec 2023 18:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3731364ABB;
-	Thu, 21 Dec 2023 18:02:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 251D964A86;
+	Thu, 21 Dec 2023 18:02:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZOqBdDrz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ce+05KGr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A493634EE
-	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 18:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC9964A80
+	for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 18:02:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3366e78d872so953834f8f.3
-        for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 10:02:14 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c2308faedso12087405e9.1
+        for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 10:02:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703181733; x=1703786533; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703181744; x=1703786544; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WOBgNh4oHntmRaMAdNdxxX343EN4oLhRYEPnrEBTRRA=;
-        b=ZOqBdDrzxlgvLgU0Ykb65j2xHQb1DIs+f7ciCV1Uua0AfW1Glu38x/Ytc7MMtUb7PC
-         sxDliDfrcC7U/W+Jj894mz901KT1JwoLXT4wMJh5j4NV4JWT/EjQli9eufN9JChay9oq
-         63ECaD6FrbBFxd6Z35dg1GGU2li5M6Qitdc15Mo12WC+IeKKtkltmTFfOLsocJtNOSto
-         /2xInhUrxencP8/UCRPCiuJoJnO382KrmO9iXCn76ch6HuKukF7yaQdN1jaf9s984rhm
-         EAqhmtRg0f1sXOyFPWoR83BBNZD+zZX0FrbEo7iUcRaPOv0ssemU1ThBCL7jbNzZhAx9
-         LSHw==
+        bh=gvXN0NHtG/1lJwpiS8SYhodcmqjSBIq30TbPaGEuA5E=;
+        b=ce+05KGrX8cK3rEyHSlJasangXbMf4blGGq98/bPLra9jF39S5pimb6CVdzOK2S8p6
+         ISzgx/KfyyCtPt5tHsZjWzB7yvEBOQdOrvoUsRXUopYgRXo9zoGD6NZvsUoeU4cwkAAQ
+         kia0DCxT3aD2bNJU8vk2hM7qXdOMZ2UHXY3umfvPwPymEhPPDmJlJnuJ9ZyO68Sydw2A
+         oWyrsDwZjN55tQ0UKxv9AHW5IjmB2iDbQoeIuD+lK0cjEdSUnOTLQmUEBj3yghhJDaoG
+         Xfn4kMKJ84emZYyIvORArUTEnRmPEz6X6JnG4tjzUIQuTE+gO9zW9Hgb9IDGDx90/q8n
+         i+5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703181733; x=1703786533;
+        d=1e100.net; s=20230601; t=1703181744; x=1703786544;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WOBgNh4oHntmRaMAdNdxxX343EN4oLhRYEPnrEBTRRA=;
-        b=XHbImXYwA2SV03zlg6T0PHhg97bx2YTrek7elkTsGa0P8wOc2AwHJ5jDeH76AkWm7V
-         cM5idgVIDcECNhcuM4IKd6DMVZR1x9CYnw3h53/Mch0+Kj8D1S6nDQ7v61WxZ3CyYiJQ
-         YVclkD4k/NsSla6cAO+9H79gR8ITVX+k8Na5gXyWterCuFrHMI3FM+SqnrmR+h0oTrj2
-         lvgjp5/YOHG+fLdgrcFJKDSJ4o4Ds4CBRNQsi398UVFDZF7z3B1R0lHoKze+OzE6ZhqU
-         4yaRJ5ejiRwBsx7O888IgkNrUPAaTM6hngJfZgdVMKMHL8lgdh10gITqSg+MYCOLGwF5
-         joLA==
-X-Gm-Message-State: AOJu0YzVCLzXoer5hjslB0/GPrCrqgkqNVE/Yws5ikQ4CLI5mjm8YwZu
-	APL2B14/idLEZphDJPQiHD4=
-X-Google-Smtp-Source: AGHT+IF1VgNkqGmUTnfP5mCbBdvdK16eMxXdhH9RXbwU5OVzUsVvHeiLu67kKyDsc6yAf08xX13npg==
-X-Received: by 2002:a05:600c:4e90:b0:40b:5e22:2e8 with SMTP id f16-20020a05600c4e9000b0040b5e2202e8mr36930wmq.84.1703181732732;
-        Thu, 21 Dec 2023 10:02:12 -0800 (PST)
+        bh=gvXN0NHtG/1lJwpiS8SYhodcmqjSBIq30TbPaGEuA5E=;
+        b=IZGldErBuUxY/bn/RgeORFOaOjhWim2oy1mwkERHIpooPv9/D12SwLLBj52PEDTS1A
+         VvoxpnRbJ/2aJ3Irh97XhIDp6vV8EYH9kBM/q/+5XwIWldtVxS5SFkTP6lx8JZpokYYt
+         q3PTMwGCF2NRnW7BZKpo7UT6ut8WsRmxB2qZK603ikevfMQ9g+WoeXau5PDCG31CNmp6
+         QNWaEjb5hA5nTGBj6mhOaQXhw1C9XrlTlcgsdaDECcM35jCKjvoC0wmJW5uMSW2qprOX
+         UBqm+XcAgO9uYto6dRxK4vZtRieNLk3vY5CNyDvssCACnoct2RTxHza0sbqxV9HsYkgy
+         6EJw==
+X-Gm-Message-State: AOJu0YyNS4rxVnmFJqSGbRnJHR+rzFXhbBBm0y9iRNyEXQUCB2SHu7zx
+	q+2Q/c8IhiINK9Bhqrq6lN0=
+X-Google-Smtp-Source: AGHT+IGcN3UasxFG1PsGG5OJ7SpzDCVPSGY2hdGBTRoWwlb86kdtoI7cY/txRM19Dih6W3WU8WuAPw==
+X-Received: by 2002:a05:600c:1f13:b0:40d:347c:67e0 with SMTP id bd19-20020a05600c1f1300b0040d347c67e0mr46779wmb.109.1703181743919;
+        Thu, 21 Dec 2023 10:02:23 -0800 (PST)
 Received: from krava (cst-prg-70-88.cust.vodafone.cz. [46.135.70.88])
-        by smtp.gmail.com with ESMTPSA id o20-20020a05600c4fd400b0040b37f1079dsm11921987wmq.29.2023.12.21.10.02.09
+        by smtp.gmail.com with ESMTPSA id az1-20020a05600c600100b0040b5517ae31sm12169700wmb.6.2023.12.21.10.02.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Dec 2023 10:02:12 -0800 (PST)
+        Thu, 21 Dec 2023 10:02:23 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 21 Dec 2023 19:02:02 +0100
+Date: Thu, 21 Dec 2023 19:02:18 +0100
 To: Dmitrii Dolgov <9erthalion6@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
 	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
 	yonghong.song@linux.dev, dan.carpenter@linaro.org,
 	olsajiri@gmail.com, asavkov@redhat.com
-Subject: Re: [PATCH bpf-next v10 1/4] bpf: Relax tracing prog recursive
- attach rules
-Message-ID: <ZYR9mrvFargzFlQp@krava>
+Subject: Re: [PATCH bpf-next v10 2/4] selftests/bpf: Add test for recursive
+ attachment of tracing progs
+Message-ID: <ZYR9qqKNheExCCIP@krava>
 References: <20231220180422.8375-1-9erthalion6@gmail.com>
- <20231220180422.8375-2-9erthalion6@gmail.com>
+ <20231220180422.8375-3-9erthalion6@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,179 +77,283 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231220180422.8375-2-9erthalion6@gmail.com>
+In-Reply-To: <20231220180422.8375-3-9erthalion6@gmail.com>
 
-On Wed, Dec 20, 2023 at 07:04:16PM +0100, Dmitrii Dolgov wrote:
-> Currently, it's not allowed to attach an fentry/fexit prog to another
-> one fentry/fexit. At the same time it's not uncommon to see a tracing
-> program with lots of logic in use, and the attachment limitation
-> prevents usage of fentry/fexit for performance analysis (e.g. with
-> "bpftool prog profile" command) in this case. An example could be
-> falcosecurity libs project that uses tp_btf tracing programs.
+On Wed, Dec 20, 2023 at 07:04:17PM +0100, Dmitrii Dolgov wrote:
+> Verify the fact that only one fentry prog could be attached to another
+> fentry, building up an attachment chain of limited size. Use existing
+> bpf_testmod as a start of the chain.
 > 
-> Following the corresponding discussion [1], the reason for that is to
-> avoid tracing progs call cycles without introducing more complex
-> solutions. But currently it seems impossible to load and attach tracing
-> programs in a way that will form such a cycle. The limitation is coming
-> from the fact that attach_prog_fd is specified at the prog load (thus
-> making it impossible to attach to a program loaded after it in this
-> way), as well as tracing progs not implementing link_detach.
+> Signed-off-by: Dmitrii Dolgov <9erthalion6@gmail.com>
+> ---
+> Changes in v10:
+>     - Add tests for loading tracing progs without attaching, and
+>       detaching tracing progs.
 > 
-> Replace "no same type" requirement with verification that no more than
-> one level of attachment nesting is allowed. In this way only one
-> fentry/fexit program could be attached to another fentry/fexit to cover
-> profiling use case, and still no cycle could be formed. To implement,
-> add a new field into bpf_prog_aux to track nested attachment for tracing
-> programs.
+> Changes in v8:
+>     - Cleanup test bpf progs and the content of first/second condition
+>       in the loop.
+> 
+> Changes in v5:
+>     - Test only one level of attachment
+> 
+>  .../bpf/prog_tests/recursive_attach.c         | 192 ++++++++++++++++++
+>  .../selftests/bpf/progs/fentry_recursive.c    |  16 ++
+>  .../bpf/progs/fentry_recursive_target.c       |  17 ++
+>  3 files changed, 225 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/recursive_attach.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/fentry_recursive_target.c
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/recursive_attach.c b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
+> new file mode 100644
+> index 000000000000..4b46dc358925
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/recursive_attach.c
+> @@ -0,0 +1,192 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2023 Red Hat, Inc. */
+> +#include <test_progs.h>
+> +#include "fentry_recursive.skel.h"
+> +#include "fentry_recursive_target.skel.h"
+> +#include <bpf/btf.h>
+> +#include "bpf/libbpf_internal.h"
+> +
+> +/*
+> + * Test that recursive attachment of tracing progs with more than one nesting
+> + * level is not possible. Create a chain of attachment, verify that the last
+> + * prog will fail.
+> + */
+> +void test_recursive_fentry_attach(void)
+> +{
 
-SNIP
-
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index eb447b0a9423..e7393674ab94 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1414,6 +1414,7 @@ struct bpf_prog_aux {
->  	bool dev_bound; /* Program is bound to the netdev. */
->  	bool offload_requested; /* Program is bound and offloaded to the netdev. */
->  	bool attach_btf_trace; /* true if attaching to BTF-enabled raw tp */
-> +	bool attach_tracing_prog; /* true if tracing another tracing program */
->  	bool func_proto_unreliable;
->  	bool sleepable;
->  	bool tail_call_reachable;
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 5e43ddd1b83f..c40cad8886e9 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2702,6 +2702,22 @@ static int bpf_prog_load(union bpf_attr *attr, bpfptr_t uattr, u32 uattr_size)
->  			goto free_prog_sec;
->  	}
->  
-> +	/*
-> +	 * Bookkeeping for managing the program attachment chain.
-> +	 *
-> +	 * It might be tempting to set attach_tracing_prog flag at the attachment
-> +	 * time, but this will not prevent from loading bunch of tracing prog
-> +	 * first, then attach them one to another.
-
-hi,
-sorry for delayed response..  this part gets trickier with every change :-)
-
-> +	 *
-> +	 * The flag attach_tracing_prog is set for the whole program lifecycle, and
-> +	 * doesn't have to be cleared in bpf_tracing_link_release, since tracing
-> +	 * programs cannot change attachment target.
-
-I'm not sure that's the case.. AFAICS the bpf_tracing_prog_attach can
-be called on already loaded program with different target program it
-was loaded for, like:
-
-  load fentry1   -> bpf_test_fentry1
-
-  load fentry2   -> fentry1
-    fentry2->attach_tracing_prog = true
-
-  load ext1      -> prog
-
-  attach fentry2 -> ext1
-
-in which case we drop the tgt_prog from loading time
-and attach fentry2 to ext1
-
-but I think we could just fix with resseting the attach_tracing_prog
-in bpf_tracing_prog_attach when the tgt_prog switch happens
-
-it'd be great to have test for that.. also to find out it's real case,
-I'm not sure I haven't overlooked anything
+please use subtests for multiple tests in one object,
+check for example the test_kprobe_multi_test
 
 jirka
 
-> +	 */
-> +	if (type == BPF_PROG_TYPE_TRACING && dst_prog &&
-> +	    dst_prog->type == BPF_PROG_TYPE_TRACING) {
-> +		prog->aux->attach_tracing_prog = true;
+> +	struct fentry_recursive_target *target_skel = NULL;
+> +	struct fentry_recursive *tracing_chain[2] = {};
+> +	struct bpf_program *prog;
+> +	int prev_fd, err;
+> +
+> +	target_skel = fentry_recursive_target__open_and_load();
+> +	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
+> +		goto close_prog;
+> +
+> +	/* Create an attachment chain with two fentry progs */
+> +	for (int i = 0; i < 2; i++) {
+> +		tracing_chain[i] = fentry_recursive__open();
+> +		if (!ASSERT_OK_PTR(tracing_chain[i], "fentry_recursive__open"))
+> +			goto close_prog;
+> +
+> +		/*
+> +		 * The first prog in the chain is going to be attached to the target
+> +		 * fentry program, the second one to the previous in the chain.
+> +		 */
+> +		prog = tracing_chain[i]->progs.recursive_attach;
+> +		if (i == 0) {
+> +			prev_fd = bpf_program__fd(target_skel->progs.test1);
+> +			err = bpf_program__set_attach_target(prog, prev_fd, "test1");
+> +		} else {
+> +			prev_fd = bpf_program__fd(tracing_chain[i-1]->progs.recursive_attach);
+> +			err = bpf_program__set_attach_target(prog, prev_fd, "recursive_attach");
+> +		}
+> +
+> +		if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
+> +			goto close_prog;
+> +
+> +		err = fentry_recursive__load(tracing_chain[i]);
+> +		/* The first attach should succeed, the second fail */
+> +		if (i == 0) {
+> +			if (!ASSERT_OK(err, "fentry_recursive__load"))
+> +				goto close_prog;
+> +
+> +			err = fentry_recursive__attach(tracing_chain[i]);
+> +			if (!ASSERT_OK(err, "fentry_recursive__attach"))
+> +				goto close_prog;
+> +		} else {
+> +			if (!ASSERT_ERR(err, "fentry_recursive__load"))
+> +				goto close_prog;
+> +		}
 > +	}
 > +
->  	/* find program type: socket_filter vs tracing_filter */
->  	err = find_prog_type(type, prog);
->  	if (err < 0)
-> @@ -3135,7 +3151,12 @@ static int bpf_tracing_prog_attach(struct bpf_prog *prog,
->  	}
->  
->  	if (tgt_prog_fd) {
-> -		/* For now we only allow new targets for BPF_PROG_TYPE_EXT */
+> +close_prog:
+> +	fentry_recursive_target__destroy(target_skel);
+> +	for (int i = 0; i < 2; i++) {
+> +		if (tracing_chain[i])
+> +			fentry_recursive__destroy(tracing_chain[i]);
+> +	}
+> +}
+> +
+> +/*
+> + * Test that recursive loading of tracing progs with more than one nesting
+> + * level is not possible either. Identical to the previous one, but without
+> + * fentry attach.
+> + */
+> +void test_recursive_fentry_load(void)
+> +{
+> +	struct fentry_recursive_target *target_skel = NULL;
+> +	struct fentry_recursive *tracing_chain[2] = {};
+> +	struct bpf_program *prog;
+> +	int prev_fd, err;
+> +
+> +	target_skel = fentry_recursive_target__open_and_load();
+> +	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
+> +		goto close_prog;
+> +
+> +	/* Create an attachment chain with two fentry progs */
+> +	for (int i = 0; i < 2; i++) {
+> +		tracing_chain[i] = fentry_recursive__open();
+> +		if (!ASSERT_OK_PTR(tracing_chain[i], "fentry_recursive__open"))
+> +			goto close_prog;
+> +
 > +		/*
-> +		 * For now we only allow new targets for BPF_PROG_TYPE_EXT. If this
-> +		 * part would be changed to implement the same for
-> +		 * BPF_PROG_TYPE_TRACING, do not forget to update the way how
-> +		 * attach_tracing_prog flag is set.
+> +		 * The first prog in the chain is going to be attached to the target
+> +		 * fentry program, the second one to the previous in the chain.
 > +		 */
->  		if (prog->type != BPF_PROG_TYPE_EXT) {
->  			err = -EINVAL;
->  			goto out_put_prog;
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 8e7b6072e3f4..f8c15ce8fd05 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -20077,6 +20077,7 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
->  			    struct bpf_attach_target_info *tgt_info)
->  {
->  	bool prog_extension = prog->type == BPF_PROG_TYPE_EXT;
-> +	bool prog_tracing = prog->type == BPF_PROG_TYPE_TRACING;
->  	const char prefix[] = "btf_trace_";
->  	int ret = 0, subprog = -1, i;
->  	const struct btf_type *t;
-> @@ -20147,10 +20148,21 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
->  			bpf_log(log, "Can attach to only JITed progs\n");
->  			return -EINVAL;
->  		}
-> -		if (tgt_prog->type == prog->type) {
-> -			/* Cannot fentry/fexit another fentry/fexit program.
-> -			 * Cannot attach program extension to another extension.
-> -			 * It's ok to attach fentry/fexit to extension program.
-> +		if (prog_tracing) {
-> +			if (aux->attach_tracing_prog) {
-> +				/*
-> +				 * Target program is an fentry/fexit which is already attached
-> +				 * to another tracing program. More levels of nesting
-> +				 * attachment are not allowed.
-> +				 */
-> +				bpf_log(log, "Cannot nest tracing program attach more than once\n");
-> +				return -EINVAL;
-> +			}
-> +		} else if (tgt_prog->type == prog->type) {
+> +		prog = tracing_chain[i]->progs.recursive_attach;
+> +		if (i == 0) {
+> +			prev_fd = bpf_program__fd(target_skel->progs.test1);
+> +			err = bpf_program__set_attach_target(prog, prev_fd, "test1");
+> +		} else {
+> +			prev_fd = bpf_program__fd(tracing_chain[i-1]->progs.recursive_attach);
+> +			err = bpf_program__set_attach_target(prog, prev_fd, "recursive_attach");
+> +		}
+> +
+> +		if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
+> +			goto close_prog;
+> +
+> +		err = fentry_recursive__load(tracing_chain[i]);
+> +		/* The first attach should succeed, the second fail */
+> +		if (i == 0) {
+> +			if (!ASSERT_OK(err, "fentry_recursive__load"))
+> +				goto close_prog;
+> +		} else {
+> +			if (!ASSERT_ERR(err, "fentry_recursive__load"))
+> +				goto close_prog;
+> +		}
+> +	}
+> +
+> +close_prog:
+> +	fentry_recursive_target__destroy(target_skel);
+> +	for (int i = 0; i < 2; i++) {
+> +		if (tracing_chain[i])
+> +			fentry_recursive__destroy(tracing_chain[i]);
+> +	}
+> +}
+> +
+> +/*
+> + * Test that attach_tracing_prog flag will be set throughout the whole
+> + * lifecycle of an fentry prog, independently from whether it's detached.
+> + */
+> +void test_recursive_fentry_detach(void)
+> +{
+> +	struct fentry_recursive_target *target_skel = NULL;
+> +	struct fentry_recursive *tracing_chain[2] = {};
+> +	struct bpf_program *prog;
+> +	int prev_fd, err;
+> +
+> +	/* Load the target fentry */
+> +	target_skel = fentry_recursive_target__open_and_load();
+> +	if (!ASSERT_OK_PTR(target_skel, "fentry_recursive_target__open_and_load"))
+> +		goto close_prog;
+> +
+> +	/* Create an attachment chain with two fentry progs */
+> +	for (int i = 0; i < 2; i++) {
+> +		tracing_chain[i] = fentry_recursive__open();
+> +		if (!ASSERT_OK_PTR(tracing_chain[i], "fentry_recursive__open"))
+> +			goto close_prog;
+> +
+> +		/*
+> +		 * The first prog in the chain is going to be attached to the target
+> +		 * fentry program, the second one to the previous in the chain.
+> +		 */
+> +		prog = tracing_chain[i]->progs.recursive_attach;
+> +		if (i == 0) {
+> +			prev_fd = bpf_program__fd(target_skel->progs.test1);
+> +			err = bpf_program__set_attach_target(prog, prev_fd, "test1");
+> +		} else {
+> +			prev_fd = bpf_program__fd(tracing_chain[i-1]->progs.recursive_attach);
+> +			err = bpf_program__set_attach_target(prog, prev_fd, "recursive_attach");
+> +		}
+> +
+> +		if (!ASSERT_OK(err, "bpf_program__set_attach_target"))
+> +			goto close_prog;
+> +
+> +		err = fentry_recursive__load(tracing_chain[i]);
+> +		/* The first attach should succeed, the second fail */
+> +		if (i == 0) {
+> +			if (!ASSERT_OK(err, "fentry_recursive__load"))
+> +				goto close_prog;
+> +
+> +			err = fentry_recursive__attach(tracing_chain[i]);
+> +			if (!ASSERT_OK(err, "fentry_recursive__attach"))
+> +				goto close_prog;
+> +
 > +			/*
-> +			 * To avoid potential call chain cycles, prevent attaching of a
-> +			 * program extension to another extension. It's ok to attach
-> +			 * fentry/fexit to extension program.
->  			 */
->  			bpf_log(log, "Cannot recursively attach\n");
->  			return -EINVAL;
-> @@ -20163,16 +20175,15 @@ int bpf_check_attach_target(struct bpf_verifier_log *log,
->  			 * except fentry/fexit. The reason is the following.
->  			 * The fentry/fexit programs are used for performance
->  			 * analysis, stats and can be attached to any program
-> -			 * type except themselves. When extension program is
-> -			 * replacing XDP function it is necessary to allow
-> -			 * performance analysis of all functions. Both original
-> -			 * XDP program and its program extension. Hence
-> -			 * attaching fentry/fexit to BPF_PROG_TYPE_EXT is
-> -			 * allowed. If extending of fentry/fexit was allowed it
-> -			 * would be possible to create long call chain
-> -			 * fentry->extension->fentry->extension beyond
-> -			 * reasonable stack size. Hence extending fentry is not
-> -			 * allowed.
-> +			 * type. When extension program is replacing XDP function
-> +			 * it is necessary to allow performance analysis of all
-> +			 * functions. Both original XDP program and its program
-> +			 * extension. Hence attaching fentry/fexit to
-> +			 * BPF_PROG_TYPE_EXT is allowed. If extending of
-> +			 * fentry/fexit was allowed it would be possible to create
-> +			 * long call chain fentry->extension->fentry->extension
-> +			 * beyond reasonable stack size. Hence extending fentry
-> +			 * is not allowed.
->  			 */
->  			bpf_log(log, "Cannot extend fentry/fexit\n");
->  			return -EINVAL;
+> +			 * Flag attach_tracing_prog should still be set, preventing
+> +			 * attachment of the following prog.
+> +			 */
+> +			fentry_recursive__detach(tracing_chain[i]);
+> +		} else {
+> +			if (!ASSERT_ERR(err, "fentry_recursive__load"))
+> +				goto close_prog;
+> +		}
+> +	}
+> +
+> +close_prog:
+> +	fentry_recursive_target__destroy(target_skel);
+> +	for (int i = 0; i < 2; i++) {
+> +		if (tracing_chain[i])
+> +			fentry_recursive__destroy(tracing_chain[i]);
+> +	}
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/fentry_recursive.c b/tools/testing/selftests/bpf/progs/fentry_recursive.c
+> new file mode 100644
+> index 000000000000..b9e4d35ac597
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/fentry_recursive.c
+> @@ -0,0 +1,16 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2023 Red Hat, Inc. */
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +/*
+> + * Dummy fentry bpf prog for testing fentry attachment chains
+> + */
+> +SEC("fentry/XXX")
+> +int BPF_PROG(recursive_attach, int a)
+> +{
+> +	return 0;
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/fentry_recursive_target.c b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
+> new file mode 100644
+> index 000000000000..6e0b5c716f8e
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/fentry_recursive_target.c
+> @@ -0,0 +1,17 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Copyright (c) 2023 Red Hat, Inc. */
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include <bpf/bpf_tracing.h>
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +/*
+> + * Dummy fentry bpf prog for testing fentry attachment chains. It's going to be
+> + * a start of the chain.
+> + */
+> +SEC("fentry/bpf_testmod_fentry_test1")
+> +int BPF_PROG(test1, int a)
+> +{
+> +	return 0;
+> +}
 > -- 
 > 2.41.0
 > 
