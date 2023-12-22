@@ -1,170 +1,189 @@
-Return-Path: <bpf+bounces-18629-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18630-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2A6881D053
-	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 00:09:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9093981D083
+	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 00:40:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E55551F215CE
-	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 23:09:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F1D81C223F8
+	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 23:40:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A930533CDF;
-	Fri, 22 Dec 2023 23:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECC5B35EF5;
+	Fri, 22 Dec 2023 23:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZsFrVmqz"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="BhX1fWLh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 052D933CD3;
-	Fri, 22 Dec 2023 23:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1703286540; x=1734822540;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mE+/rA1kW3jYRzqy+tN5kOQRkiH4WOFAewKMLD7BFQ8=;
-  b=ZsFrVmqzpBo1YJqMEuxPvS6dTmy+4k/8ax5ylSkWFczxKJoxBds16sO+
-   j5Tjy5XQoCa3HIilufKDIzvoUoQKWbS/LgebrTqiIMTCDhnwgHWLmZU9J
-   KKdoeGsZr7FdyDvpevbX6KR7g4yTndBhNLmyXym2ocqJA11Z+zcONtjrk
-   Uk1T3cf2YV6j/D2+VaDZXd8io05IeWQ1D/Inf4vc0Clr2x3CV6nFrk4FR
-   5udnQqxBmRy5SEt/ZQfyjX6+fJVEE7RiVHYdfamZWRaRua/6Y12KlpCe7
-   /OjXI6G7jama4waVNbGreaetzgtvMfKFjcT31FpsYiagz3O2jOiPV6zvS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="462605125"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="462605125"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2023 15:08:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10932"; a="895619632"
-X-IronPort-AV: E=Sophos;i="6.04,297,1695711600"; 
-   d="scan'208";a="895619632"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Dec 2023 15:08:52 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rGocX-0009y9-11;
-	Fri, 22 Dec 2023 23:08:25 +0000
-Date: Sat, 23 Dec 2023 07:07:25 +0800
-From: kernel test robot <lkp@intel.com>
-To: Philo Lu <lulie@linux.alibaba.com>, bpf@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, ast@kernel.org,
-	daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, rostedt@goodmis.org, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, linux-trace-kernel@vger.kernel.org,
-	xuanzhuo@linux.alibaba.com, dust.li@linux.alibaba.com,
-	alibuda@linux.alibaba.com, guwen@linux.alibaba.com,
-	hengqi@linux.alibaba.com, shung-hsi.yu@suse.com
-Subject: Re: [PATCH bpf-next 1/3] bpf: implement relay map basis
-Message-ID: <202312230638.IYDD8JOz-lkp@intel.com>
-References: <20231222122146.65519-2-lulie@linux.alibaba.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8B733CFA
+	for <bpf@vger.kernel.org>; Fri, 22 Dec 2023 23:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dbd721384c0so2284256276.1
+        for <bpf@vger.kernel.org>; Fri, 22 Dec 2023 15:40:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1703288404; x=1703893204; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xtZ7DoTLW1exe07faZsWlns7AQkFSE4d8R8G8FL+W54=;
+        b=BhX1fWLha23oq5ZIgDUjH9vv1lGlwIVCi3GLw0JwRo0aG7XwYZv85+77LskHdlQo1D
+         bwsIkS7xpvTFw8oAdgSv29mGaUrAvP5Wx/261gIhM/6zMeo8k42oB/b9HryLnDsJE8Cx
+         GUytWtYtsKa24oI4PUJff9pGZFK90skjIWVkJFW+GNQC5Y5dcuxibGnU6oiPOsX5oH/h
+         Y0L+oVrW5PSmYh7FetSM7oaX5V8tDNInJlKAZiXQBMZ6OpYSMCX46FBWXE+jLXKCAYan
+         dodQ1jF0leo+SSkWoD+CU1evbVt2XuUFoQbJacILMO5Q4u2CKs4FahH5T3D6g3H192Ug
+         jr5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703288404; x=1703893204;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xtZ7DoTLW1exe07faZsWlns7AQkFSE4d8R8G8FL+W54=;
+        b=KwtZqPNworB0OwTtdvZBU6mPctYTkAO6Rvn3wfJn7wc//P5niiZv7iKdvOC27MjUAt
+         K9rgs7Bn7iiMgCAr5+oPoMkG/eAvVkLMoFf88GRpQdMT62jowx7vu7kd14Airhzjmf+h
+         n5oZQHwwx362z36ogGD3nWDMrYhcZhN1K/EOpC3TzwNh2fyLNLftJ7l+oavl5lCQg24t
+         ZWou9Anc3jZUvKN9P6QnNaahqNouJKX0zZCIMPPn2xfkCDe3iLTSVn+osX/hZLPBD+Pv
+         59a05u7Oamlhjda+I1v5Vo9FmnqHoRwgr+jGtlb/xZMKR2vk5QYdkI/yZ/737CTYj6UZ
+         ncLA==
+X-Gm-Message-State: AOJu0Yz/wAYjaW3uFKMsmpfv4fp6o6U+ph+hYC7/9zMNG9Y8RX8g1CYe
+	jFOptxazS/uNA+eTaPA3I57/839x0CuLlmRtzhPwYa+1oDvr
+X-Google-Smtp-Source: AGHT+IFJ56Y4CS1sroZ1McDCZ+aO7O7hN62WOIlrr6chYjjZ1T/kSBIrM5eXZxDJkKi8QxYqJszlIDxKoUo1/cuCEUA=
+X-Received: by 2002:a25:db4b:0:b0:db7:dacf:ed65 with SMTP id
+ g72-20020a25db4b000000b00db7dacfed65mr1422088ybf.70.1703288404352; Fri, 22
+ Dec 2023 15:40:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231222122146.65519-2-lulie@linux.alibaba.com>
+References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
+ <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de> <20231215-golfanlage-beirren-f304f9dafaca@brauner>
+ <61b39199-022d-4fd8-a7bf-158ee37b3c08@aisec.fraunhofer.de>
+ <20231215-kubikmeter-aufsagen-62bf8d4e3d75@brauner> <CAADnVQKeUmV88OfQOfiX04HjKbXq7Wfcv+N3O=5kdL4vic6qrw@mail.gmail.com>
+ <20231216-vorrecht-anrief-b096fa50b3f7@brauner> <CAADnVQK7MDUZTUxcqCH=unrrGExCjaagfJFqFPhVSLUisJVk_Q@mail.gmail.com>
+ <20231218-chipsatz-abfangen-d62626dfb9e2@brauner>
+In-Reply-To: <20231218-chipsatz-abfangen-d62626dfb9e2@brauner>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 22 Dec 2023 18:39:53 -0500
+Message-ID: <CAHC9VhSZDMWJ_kh+RaB6dsPLQjkrjDY4bVkqsFDG3JtjinT_bQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
+ non-initial userns
+To: Christian Brauner <brauner@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	=?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>, 
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Quentin Monnet <quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, gyroidos@aisec.fraunhofer.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Philo,
+On Mon, Dec 18, 2023 at 7:30=E2=80=AFAM Christian Brauner <brauner@kernel.o=
+rg> wrote:
+> I'm not generally opposed to kfuncs ofc but here it just seems a bit
+> pointless. What we want is to keep SB_I_{NODEV,MANAGED_DEVICES} confined
+> to alloc_super(). The only central place it's raised where we control
+> all locking and logic. So it doesn't even have to appear in any
+> security_*() hooks.
+>
+> diff --git a/security/security.c b/security/security.c
+> index 088a79c35c26..bf440d15615d 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1221,6 +1221,33 @@ int security_sb_alloc(struct super_block *sb)
+>         return rc;
+>  }
+>
+> +/*
+> + * security_sb_device_access() - Let LSMs handle device access
+> + * @sb: filesystem superblock
+> + *
+> + * Let an LSM take over device access management for this superblock.
+> + *
+> + * Return: Returns 1 if LSMs handle device access, 0 if none does and -E=
+RRNO on
+> + *         failure.
+> + */
+> +int security_sb_device_access(struct super_block *sb)
+> +{
+> +       int thisrc;
+> +       int rc =3D LSM_RET_DEFAULT(sb_device_access);
+> +       struct security_hook_list *hp;
+> +
+> +       hlist_for_each_entry(hp, &security_hook_heads.sb_device_access, l=
+ist) {
+> +               thisrc =3D hp->hook.sb_device_access(sb);
+> +               if (thisrc < 0)
+> +                       return thisrc;
+> +               /* At least one LSM claimed device access management. */
+> +               if (thisrc =3D=3D 1)
+> +                       rc =3D 1;
+> +       }
+> +
+> +       return rc;
+> +}
 
-kernel test robot noticed the following build warnings:
+I worry that this hook, and the way it is plumbed into alloc_super()
+below, brings us back to the problem of authoritative LSM hooks which
+is something I can't support at this point in time.  The same can be
+said for a LSM directly flipping bits in the superblock struct.
 
-[auto build test WARNING on bpf-next/master]
+The LSM should not grant any additional privilege, either directly in
+the LSM code, or indirectly via the caller; the LSM should only
+restrict operations which would have otherwise been allowed.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Philo-Lu/bpf-implement-relay-map-basis/20231222-204545
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20231222122146.65519-2-lulie%40linux.alibaba.com
-patch subject: [PATCH bpf-next 1/3] bpf: implement relay map basis
-config: arm-randconfig-001-20231223 (https://download.01.org/0day-ci/archive/20231223/202312230638.IYDD8JOz-lkp@intel.com/config)
-compiler: clang version 18.0.0git (https://github.com/llvm/llvm-project d3ef86708241a3bee902615c190dead1638c4e09)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231223/202312230638.IYDD8JOz-lkp@intel.com/reproduce)
+The LSM should also refrain from modifying any kernel data structures
+that do not belong directly to the LSM.  A LSM caller may modify
+kernel data structures that it owns based on the result of the LSM
+hook, so long as those modifications do not grant additional privilege
+as described above.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202312230638.IYDD8JOz-lkp@intel.com/
+> diff --git a/fs/super.c b/fs/super.c
+> index 076392396e72..2295c0f76e56 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -325,7 +325,7 @@ static struct super_block *alloc_super(struct file_sy=
+stem_type *type, int flags,
+>  {
+>         struct super_block *s =3D kzalloc(sizeof(struct super_block),  GF=
+P_USER);
+>         static const struct super_operations default_op;
+> -       int i;
+> +       int err, i;
+>
+>         if (!s)
+>                 return NULL;
+> @@ -362,8 +362,16 @@ static struct super_block *alloc_super(struct file_s=
+ystem_type *type, int flags,
+>         }
+>         s->s_bdi =3D &noop_backing_dev_info;
+>         s->s_flags =3D flags;
+> -       if (s->s_user_ns !=3D &init_user_ns)
+> +
+> +       err =3D security_sb_device_access(s);
+> +       if (err < 0)
+> +               goto fail;
+> +
+> +       if (err)
+> +               s->s_iflags |=3D SB_I_MANAGED_DEVICES;
+> +       else if (s->s_user_ns !=3D &init_user_ns)
+>                 s->s_iflags |=3D SB_I_NODEV;
+> +
+>         INIT_HLIST_NODE(&s->s_instances);
+>         INIT_HLIST_BL_HEAD(&s->s_roots);
+>         mutex_init(&s->s_sync_lock);
 
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/relaymap.c:79:13: warning: address of array 'attr->map_name' will always evaluate to 'true' [-Wpointer-bool-conversion]
-      79 |         if (!attr->map_name || strlen(attr->map_name) == 0)
-         |             ~~~~~~~^~~~~~~~
-   1 warning generated.
-
-
-vim +79 kernel/bpf/relaymap.c
-
-    43	
-    44	/* bpf_attr is used as follows:
-    45	 * - key size: must be 0
-    46	 * - value size: value will be used as directory name by map_update_elem
-    47	 *   (to create relay files). If passed as 0, it will be set to NAME_MAX as
-    48	 *   default
-    49	 *
-    50	 * - max_entries: subbuf size
-    51	 * - map_extra: subbuf num, default as 8
-    52	 *
-    53	 * When alloc, we do not set up relay files considering dir_name conflicts.
-    54	 * Instead we use relay_late_setup_files() in map_update_elem(), and thus the
-    55	 * value is used as dir_name, and map->name is used as base_filename.
-    56	 */
-    57	static struct bpf_map *relay_map_alloc(union bpf_attr *attr)
-    58	{
-    59		struct bpf_relay_map *rmap;
-    60	
-    61		if (unlikely(attr->map_flags & ~RELAY_CREATE_FLAG_MASK))
-    62			return ERR_PTR(-EINVAL);
-    63	
-    64		/* key size must be 0 in relay map */
-    65		if (unlikely(attr->key_size))
-    66			return ERR_PTR(-EINVAL);
-    67	
-    68		if (unlikely(attr->value_size > NAME_MAX)) {
-    69			pr_warn("value_size should be no more than %d\n", NAME_MAX);
-    70			return ERR_PTR(-EINVAL);
-    71		} else if (attr->value_size == 0)
-    72			attr->value_size = NAME_MAX;
-    73	
-    74		/* set default subbuf num */
-    75		attr->map_extra = attr->map_extra & UINT_MAX;
-    76		if (!attr->map_extra)
-    77			attr->map_extra = 8;
-    78	
-  > 79		if (!attr->map_name || strlen(attr->map_name) == 0)
-    80			return ERR_PTR(-EINVAL);
-    81	
-    82		rmap = bpf_map_area_alloc(sizeof(*rmap), NUMA_NO_NODE);
-    83		if (!rmap)
-    84			return ERR_PTR(-ENOMEM);
-    85	
-    86		bpf_map_init_from_attr(&rmap->map, attr);
-    87	
-    88		rmap->relay_cb.create_buf_file = create_buf_file_handler;
-    89		rmap->relay_cb.remove_buf_file = remove_buf_file_handler;
-    90		if (attr->map_flags & BPF_F_OVERWRITE)
-    91			rmap->relay_cb.subbuf_start = subbuf_start_overwrite;
-    92	
-    93		rmap->relay_chan = relay_open(NULL, NULL,
-    94								attr->max_entries, attr->map_extra,
-    95								&rmap->relay_cb, NULL);
-    96		if (!rmap->relay_chan)
-    97			return ERR_PTR(-EINVAL);
-    98	
-    99		return &rmap->map;
-   100	}
-   101	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+paul-moore.com
 
