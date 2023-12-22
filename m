@@ -1,148 +1,109 @@
-Return-Path: <bpf+bounces-18574-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18575-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9FC81C273
-	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 01:53:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A418B81C27A
+	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 01:58:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F309A1F25AAE
-	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 00:53:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D39931C23FD2
+	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 00:58:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CF641873;
-	Fri, 22 Dec 2023 00:53:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D19ACA5E;
+	Fri, 22 Dec 2023 00:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F7bMi2UG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ewXLrxBJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32ADF1844
-	for <bpf@vger.kernel.org>; Fri, 22 Dec 2023 00:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09476623;
+	Fri, 22 Dec 2023 00:58:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40d41555f9dso7940615e9.2
-        for <bpf@vger.kernel.org>; Thu, 21 Dec 2023 16:53:07 -0800 (PST)
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-35d725ac060so5312945ab.2;
+        Thu, 21 Dec 2023 16:58:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703206386; x=1703811186; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9Ev0yx+zSWuWnYukCfgE+/Vfv6VmpR6GaBijlHfGytw=;
-        b=F7bMi2UGEE4a2ep86avOoewjc3z2QGPF8TN2RbRf5gLUZnlupx2vBca1yahh7b7MFa
-         ywPTbj+DqZMbiI6A2JSlIDlrkpsuXgtu23xcMU5y6avj2Z9vlDSodlNcvxiUWYK7w+Cd
-         hbh7++6KF4jwW5YZe+RonnQj4u0JJFbYC71azg50T2XfgOEgynj0corO+lIfQA3aXxbL
-         VI5KjJHP5lMTOHTe2HQf2mSzD8r2bgx8unbYR95nAUen9+/cwfW29rS4bUyF+UEUkvI/
-         KRljvVP4AyedUg+Ydld3hxW+eQbaU7J3swrCzzA0hw3AGCbF/867cr2hzdxUuB6iG/za
-         yIbQ==
+        d=gmail.com; s=20230601; t=1703206689; x=1703811489; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qNBZw8far6r+uQKfW3GLV97maqwcZ2n3sxfjJZfkPLE=;
+        b=ewXLrxBJe64EggFb2lh/FpHnYZiOLJaWy8cPxCTeroCHKZbrtQaCWRYGGd38XEUXLB
+         NoSU3pKnGgkDFpMQmZdWaZOz7MO5AW2OjBbRRhUtnf/9ysdTMxLwpUX+fYbirrDJWs6R
+         q+Cc2JL7FbZxsL8JyqDNeh0UQl//J1+tH8S8t2Y4oytY+pubLhidMihOCnvKv9rjA7mg
+         0l7MLunuamQWUFvhvOPOX42HZefhk8a/Nf3jrbpAwCK7ZZIcEfPfVyxWNzxiu1kb2MKQ
+         y69xZ1M6dw2Ox9u+9tW5cXVBH09zDg2prA0V/amYanY2xoytrevZaSxG+++k6xgmIRVX
+         nFpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703206386; x=1703811186;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703206689; x=1703811489;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9Ev0yx+zSWuWnYukCfgE+/Vfv6VmpR6GaBijlHfGytw=;
-        b=DVmRz46GVIGVewvAlGfrOXR9SolTvtV6pBByXF+7ZT/4CyUL/Jpsw/hkbMX0OZkluY
-         cWuVl978Rne/IxQhmqJmrxcBucGb/vZIcTDk+QdCDely14l8zHHWhNOWBuLaxkaUrtML
-         0e9qHLX+c0EQ9jnlOTR96B/5lqrwrN3bQu71YkLQJaWg/D3Fg2eHahuoZjXiRCzoFT0v
-         v2DSsm2XdutseeHPgSd8N9k90KKo04pirhfMyBErrISQ71tcNJpKVXbO0NBkGRl6+00u
-         uA49rnGlONpa2NjFevE+JKS9nbGy3LJgGtK6vr1KFoCPkC2x3zsmJZUCiG3e3EIUdRBl
-         +Yuw==
-X-Gm-Message-State: AOJu0YwJ/t/9RtnWP42E6VfXbgNK8LbdzdQvTkEW5pPTzf1GkuwYBirR
-	di49O1IxdktWhBSh5vHuy5tDuK7wtiZaiGl1BLc=
-X-Google-Smtp-Source: AGHT+IGfO1yF3PBBC9L0IqSZnppA7kKSUX+FYfec/JuogE+iqtl7CaJHl6qXUWnrqMo2hkb08d4sP9jjMc0Og7QXOb0=
-X-Received: by 2002:a05:600c:33aa:b0:40d:3a34:82ef with SMTP id
- o42-20020a05600c33aa00b0040d3a3482efmr292375wmp.136.1703206386034; Thu, 21
- Dec 2023 16:53:06 -0800 (PST)
+        bh=qNBZw8far6r+uQKfW3GLV97maqwcZ2n3sxfjJZfkPLE=;
+        b=Mv6LHBOAtZdfYPDceOnOKh2y/Snkmr2zGIEiaEBVQiqi89b4zPyb8kGcs6e+tKfG/S
+         zDtjhjwOiIrw8aDEupk834LcCrm30DHh49T+BIdX/xZpbeqMEvOo85BaR2SVAVnytEMk
+         sgiTIywtK+2LMkkOO+sl2zszWsIgX+sdHRltaxJVspdVZlnI0iwDIfhYL8mvRrBW2Xlj
+         gEGdz/TKmoOxX9KBas5OIq6pCKUS/qJ+XuUMvL7HRLRmdwV88bE4VN8HFb98d5v7iVCl
+         fWrP16jkb1rSmkOz92hb+PSl4mP+/xj9YpWmeeN+K5E+NegR4TiZRMbmjWlJNhu0+B/a
+         qQKA==
+X-Gm-Message-State: AOJu0YxdMfPj7AqOPQuGYYH7/ygtUuw9JoO4fCy5yuOEeHbqe162JDJt
+	nLrEAJP48b7GqNZsOr09huU=
+X-Google-Smtp-Source: AGHT+IH7UuQV6Jl8jSnT1D/fJz/HLpOeyjg4k6dO2l3wELYOvHTeClLCWM2E6xYCr2MyV2hYzDJuHw==
+X-Received: by 2002:a05:6e02:20e5:b0:35f:b441:5c76 with SMTP id q5-20020a056e0220e500b0035fb4415c76mr588132ilv.17.1703206688883;
+        Thu, 21 Dec 2023 16:58:08 -0800 (PST)
+Received: from localhost ([121.167.227.144])
+        by smtp.gmail.com with ESMTPSA id j18-20020a63ec12000000b005c19c586cb7sm2162844pgh.33.2023.12.21.16.58.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Dec 2023 16:58:07 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 22 Dec 2023 09:58:04 +0900
+From: Tejun Heo <tj@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Azeem Shaikh <azeemshaikh38@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Waiman Long <longman@redhat.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	bpf@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] kernfs: Convert kernfs_walk_ns() from strlcpy()
+ to strscpy()
+Message-ID: <ZYTfHH5078rtOui1@mtj.duckdns.org>
+References: <20231212211606.make.155-kees@kernel.org>
+ <20231212211741.164376-1-keescook@chromium.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <421d18942d6ad28625530a8b3247595dc05eb100.1703110747.git.dxu@dxuuu.xyz>
- <62ytcwvqvnd5wiyaic7iedfjlnh5qfclqqbsng3obx7rbpsrqv@3bjpvcep4zme>
- <ZYP40EN9U9GKOu7x@krava> <CAADnVQJL7Yodi67f2A79Pah-Uek+WX66CVs=tAFAoYsh+t+3_Q@mail.gmail.com>
- <fecae4fe-b804-c7f5-1854-66af2f16a44a@oracle.com> <CAADnVQ+9PZvTc034oHa=7yQFPtyV=Yvjqef2+r97SyKFOgV=RA@mail.gmail.com>
- <yx7o3e4lep5fonxw26kltlbzysos3e5t4y54xwx6oiafggwfpg@b4kpw72xyhch>
-In-Reply-To: <yx7o3e4lep5fonxw26kltlbzysos3e5t4y54xwx6oiafggwfpg@b4kpw72xyhch>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 21 Dec 2023 16:52:54 -0800
-Message-ID: <CAADnVQL=8q_SxXkpUcwzkNzT8dqM0xufDLAeUojuHD9PBF4CkA@mail.gmail.com>
-Subject: Re: [PATCH dwarves] pahole: Inject kfunc decl tags into BTF
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Alan Maguire <alan.maguire@oracle.com>, Jiri Olsa <olsajiri@gmail.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Quentin Monnet <quentin@isovalent.com>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231212211741.164376-1-keescook@chromium.org>
 
-On Thu, Dec 21, 2023 at 10:18=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Hi Alexei,
->
-> On Thu, Dec 21, 2023 at 10:07:33AM -0800, Alexei Starovoitov wrote:
-> > On Thu, Dec 21, 2023 at 9:43=E2=80=AFAM Alan Maguire <alan.maguire@orac=
-le.com> wrote:
-> > >
-> > > On 21/12/2023 17:05, Alexei Starovoitov wrote:
-> > > > On Thu, Dec 21, 2023 at 12:35=E2=80=AFAM Jiri Olsa <olsajiri@gmail.=
-com> wrote:
-> > > >> you need to pick up only 'BTF_ID(func, ...)' IDs that belongs to S=
-ET8 lists,
-> > > >> which are bounded by __BTF_ID__set8__<name> symbols, which also pr=
-ovide size
-> > > >
-> > > > +1
-> > > >
-> > > >>>
-> > > >>> Maybe we need a codemod from:
-> > > >>>
-> > > >>>         BTF_ID(func, ...
-> > > >>>
-> > > >>> to:
-> > > >>>
-> > > >>>         BTF_ID(kfunc, ...
-> > > >>
-> > > >> I think it's better to keep just 'func' and not to do anything spe=
-cial for
-> > > >> kfuncs in resolve_btfids logic to keep it simple
-> > > >>
-> > > >> also it's going to be already in pahole so if we want to make a fi=
-x in future
-> > > >> you need to change pahole, resolve_btfids and possibly also kernel
-> > > >
-> > > > I still don't understand why you guys want to add it to vmlinux BTF=
-.
-> > > > The kernel has no use in this additional data.
-> > > > It already knows about all kfuncs.
-> > > > This extra memory is a waste of space from kernel pov.
-> > > > Unless I am missing something.
-> > > >
-> > > > imo this logic belongs in bpftool only.
-> > > > It can dump vmlinux BTF and emit __ksym protos into vmlinux.h
-> > > >
-> > >
-> > > If the goal is to have bpftool detect all kfuncs, would having a BPF
-> > > kfunc iterator that bpftool could use to iterate over registered kfun=
-cs
-> > > work perhaps?
-> >
-> > The kernel code ? Why ?
-> > bpftool can do the same thing as this patch. Iterate over set8 in vmlin=
-ux elf.
->
-> I think you're right for vmlinux -- bpftool can look at the elf file on
-> a running system. But I'm not sure it works for modules.
->
-> IIUC, the actual module ELF can go away while the kernel holds onto the
-> memory (as with initramfs). And even if that wasn't the case, in
-> containerized environments you may not be able to always see
-> /lib/modules or similar.
+On Tue, Dec 12, 2023 at 01:17:38PM -0800, Kees Cook wrote:
+> strlcpy() reads the entire source buffer first. This read may exceed
+> the destination size limit. This is both inefficient and can lead
+> to linear read overflows if a source string is not NUL-terminated[1].
+> Additionally, it returns the size of the source string, not the
+> resulting size of the destination string. In an effort to remove strlcpy()
+> completely[2], replace strlcpy() here with strscpy().
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy [1]
+> Link: https://github.com/KSPP/linux/issues/89 [2]
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Azeem Shaikh <azeemshaikh38@gmail.com>
+> Link: https://lore.kernel.org/r/20231116192127.1558276-1-keescook@chromium.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-Indeed. Access to .ko files may be difficult even for full root
-without containers.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-What is vmlinux BTF before/after for our current set of kfuncs ?
+Thanks.
+
+-- 
+tejun
 
