@@ -1,202 +1,172 @@
-Return-Path: <bpf+bounces-18592-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18593-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93BBF81C6EB
-	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 09:54:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F97981C75B
+	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 10:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09D3E1F26461
-	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 08:54:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 020921C215AC
+	for <lists+bpf@lfdr.de>; Fri, 22 Dec 2023 09:36:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAA5D295;
-	Fri, 22 Dec 2023 08:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="UtB45gC5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ECD8DF67;
+	Fri, 22 Dec 2023 09:36:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2715DC8EE;
-	Fri, 22 Dec 2023 08:54:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=a/icFs/vjCT6R1zos3pJn3NYi+OarKNXzvYLpYsbkHI=; b=UtB45gC5rA9kZM1HFfgnbZ0OY9
-	pm9vPzBR6DueD9EgkBgCAbIhczKcVwlysTsAoMYbDrXImgjLkjJSZWSdGPQmmEjMMMj47TrqAAil2
-	HNxxpW3DmIqq00x33rNq5xh6OQq4dLgfAUd9l5DjBt65pDLiNvsotF7bJ5fU9HCd9LYUzICoIpcb0
-	GZvK8zQPanTosAOTx+91HEh0eLNS4vqcvJVoRX1TGjZFRJ16eQ0OnRI9zK/bKb9/b+BJnR4y9/4kG
-	27p4JF2a72YXq2Rn2ZDV+d7uQrciZ5jAf6uQ4xfdCED6X77DKaAVyQJUv7Ytbu5HRmMY77J1KUbKs
-	jk5brX7Q==;
-Received: from 226.206.1.85.dynamic.wline.res.cust.swisscom.ch ([85.1.206.226] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rGbIP-000JZ9-N8; Fri, 22 Dec 2023 09:54:17 +0100
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf-next 2023-12-22
-Date: Fri, 22 Dec 2023 09:54:16 +0100
-Message-Id: <20231222085416.5438-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19315DDB5
+	for <bpf@vger.kernel.org>; Fri, 22 Dec 2023 09:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SxMcF4tRtz4f57jR
+	for <bpf@vger.kernel.org>; Fri, 22 Dec 2023 17:35:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 1D4AA1A01C3
+	for <bpf@vger.kernel.org>; Fri, 22 Dec 2023 17:35:59 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP1 (Coremail) with SMTP id cCh0CgAHVQt5WIVlbZ1MEQ--.57057S2;
+	Fri, 22 Dec 2023 17:35:57 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+Subject: Re: [PATCH bpf-next v6 0/8] bpf: Reduce memory usage for
+ bpf_global_percpu_ma
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20231222031729.1287957-1-yonghong.song@linux.dev>
+Message-ID: <cb8edf4b-f585-4e3e-9bed-10f5b36e427c@huaweicloud.com>
+Date: Fri, 22 Dec 2023 17:35:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20231222031729.1287957-1-yonghong.song@linux.dev>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27130/Thu Dec 21 10:38:20 2023)
+Content-Language: en-US
+X-CM-TRANSID:cCh0CgAHVQt5WIVlbZ1MEQ--.57057S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF4DWFyxGw4rGrWDtryrZwb_yoWrtrW3pF
+	s7Jr4ayryDAF97Gw1fK3Z7uF1fXwn5WF1rJ3yYkryDCrnIgr109rZ2kw1UWF9xGFs3JF1f
+	tFyqqwn3Wa1UZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+Hi,
 
-The following pull-request contains BPF updates for your *net-next* tree.
+On 12/22/2023 11:17 AM, Yonghong Song wrote:
+> Currently when a bpf program intends to allocate memory for percpu kptr,
+> the verifier will call bpf_mem_alloc_init() to prefill all supported
+> unit sizes and this caused memory consumption very big for large number
+> of cpus. For example, for 128-cpu system, the total memory consumption
+> with initial prefill is ~175MB. Things will become worse for systems
+> with even more cpus.
+>
+> Patch 1 avoids unnecessary extra percpu memory allocation.
+> Patch 2 adds objcg to bpf_mem_alloc at init stage so objcg can be
+> associated with root cgroup and objcg can be passed to later
+> bpf_mem_alloc_percpu_unit_init().
+> Patch 3 addresses memory consumption issue by avoiding to prefill
+> with all unit sizes, i.e. only prefilling with user specified size.
+> Patch 4 further reduces memory consumption by limiting the
+> number of prefill entries for percpu memory allocation.
+> Patch 5 has much smaller low/high watermarks for percpu allocation
+> to reduce memory consumption.
+> Patch 6 rejects percpu memory allocation with bpf_global_percpu_ma
+> when allocation size is greater than 512 bytes.
+> Patch 7 fixed test_bpf_ma test due to Patch 5.
+> Patch 8 added one test to show the verification failure log message.
 
-We've added 22 non-merge commits during the last 3 day(s) which contain
-a total of 23 files changed, 652 insertions(+), 431 deletions(-).
+FYI. After applying the patch set, the memory consumption in bpf memory
+benchmark [1] on 8-CPU VM decreases a lot:
 
-The main changes are:
+Before the patch set:
 
-1) Add verifier support for annotating user's global BPF subprogram arguments
-   with few commonly requested annotations for a better developer experience,
-   from Andrii Nakryiko.
+$ for i in 1 4 8; do ./bench -w3 -d10 bpf_ma -p${i} -a --percpu; done |
+grep Summary
+Summary: per-prod alloc   14.16 ± 0.59M/s free   36.18 ± 0.39M/s, total
+memory usage  183.71 ± 10.38MiB
+Summary: per-prod alloc   12.35 ± 1.10M/s free   35.79 ± 0.51M/s, total
+memory usage  744.52 ± 11.64MiB
+Summary: per-prod alloc   11.15 ± 0.20M/s free   35.72 ± 0.27M/s, total
+memory usage 2545.98 ± 537.57MiB
 
-   These tags are:
-     - Ability to annotate a special PTR_TO_CTX argument
-     - Ability to annotate a generic PTR_TO_MEM as non-NULL
+After the patch set:
 
-2) Support BPF verifier tracking of BPF_JNE which helps cases when the compiler
-   transforms (unsigned) "a > 0" into "if a == 0 goto xxx" and the like, from
-   Menglong Dong.
+$ for i in 1 4 8; do ./bench -w3 -d10 bpf_ma -p${i} -a --percpu; done |
+grep Summary
+Summary: per-prod alloc    0.86 ± 0.00M/s free   37.29 ± 0.11M/s, total
+memory usage    0.00 ± 0.00MiB
+Summary: per-prod alloc    0.85 ± 0.00M/s free   36.70 ± 0.24M/s, total
+memory usage    0.00 ± 0.00MiB
+Summary: per-prod alloc    0.84 ± 0.00M/s free   37.21 ± 0.17M/s, total
+memory usage    0.00 ± 0.00MiB
 
-3) Fix a warning in bpf_mem_cache's check_obj_size() as reported by LKP, from Hou Tao.
+However the allocation performance also degrades a lot. It seems it is
+due to patch 5 (bpf: Use smaller low/high marks for percpu allocation),
+because c->batch is 1 now, so each allocation needs one run of irq_work.
 
-4) Re-support uid/gid options when mounting bpffs which had to be reverted with
-   the prior token series revert to avoid conflicts, from Daniel Borkmann.
+[1]:
+https://lore.kernel.org/bpf/20231221141501.3588586-1-houtao@huaweicloud.com/
+> Changelogs:
+>   v5 -> v6:
+>     . Change bpf_mem_alloc_percpu_init() to add objcg as one of parameters.
+>       For bpf_global_percpu_ma, the objcg is NULL, corresponding root memcg.
+>   v4 -> v5:
+>     . Do not do bpf_global_percpu_ma initialization at init stage, instead
+>       doing initialization when the verifier knows it is going to be used
+>       by bpf prog.
+>     . Using much smaller low/high watermarks for percpu allocation.
+>   v3 -> v4:
+>     . Add objcg to bpf_mem_alloc during init stage.
+>     . Initialize objcg at init stage but use it in bpf_mem_alloc_percpu_unit_init().
+>     . Remove check_obj_size() in bpf_mem_alloc_percpu_unit_init().
+>   v2 -> v3:
+>     . Clear the bpf_mem_cache if prefill fails.
+>     . Change test_bpf_ma percpu allocation tests to use bucket_size
+>       as allocation size instead of bucket_size - 8.
+>     . Remove __GFP_ZERO flag from __alloc_percpu_gfp() call.
+>   v1 -> v2:
+>     . Avoid unnecessary extra percpu memory allocation.
+>     . Add a separate function to do bpf_global_percpu_ma initialization
+>     . promote.
+>     . Promote function static 'sizes' array to file static.
+>     . Add comments to explain to refill only one item for percpu alloc.
+>
+> Yonghong Song (8):
+>   bpf: Avoid unnecessary extra percpu memory allocation
+>   bpf: Add objcg to bpf_mem_alloc
+>   bpf: Allow per unit prefill for non-fix-size percpu memory allocator
+>   bpf: Refill only one percpu element in memalloc
+>   bpf: Use smaller low/high marks for percpu allocation
+>   bpf: Limit up to 512 bytes for bpf_global_percpu_ma allocation
+>   selftests/bpf: Cope with 512 bytes limit with bpf_global_percpu_ma
+>   selftests/bpf: Add a selftest with > 512-byte percpu allocation size
+>
+>  include/linux/bpf_mem_alloc.h                 |  8 ++
+>  kernel/bpf/memalloc.c                         | 93 ++++++++++++++++---
+>  kernel/bpf/verifier.c                         | 45 ++++++---
+>  .../selftests/bpf/prog_tests/test_bpf_ma.c    | 20 ++--
+>  .../selftests/bpf/progs/percpu_alloc_fail.c   | 18 ++++
+>  .../testing/selftests/bpf/progs/test_bpf_ma.c | 66 ++++++-------
+>  6 files changed, 184 insertions(+), 66 deletions(-)
+>
 
-5) Fix a libbpf NULL pointer dereference in bpf_object__collect_prog_relos() found
-   from fuzzing the library with malformed ELF files, from Mingyi Zhang.
-
-6) Skip DWARF sections in libbpf's linker sanity check given compiler options to
-   generate compressed debug sections can trigger a rejection due to misalignment,
-   from Alyssa Ross.
-
-7) Fix an unnecessary use of the comma operator in BPF verifier, from Simon Horman.
-
-8) Fix format specifier for unsigned long values in cpustat sample, from Colin Ian King.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-Thanks a lot & wishing you all happy holidays!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Andrii Nakryiko, Christian Brauner, Daniel Borkmann, Dave Marchevsky, 
-Eduard Zingerman, kernel test robot, Randy Dunlap, Sergei Trofimovich, 
-Shung-Hsi Yu
-
-----------------------------------------------------------------
-
-The following changes since commit 1728df7fc11bf09322852ff05e73908244011594:
-
-  Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next (2023-12-19 18:35:28 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git tags/for-netdev
-
-for you to fetch changes up to 5abde62465222edd3080b70099bd809f166d5d7d:
-
-  bpf: Avoid unnecessary use of comma operator in verifier (2023-12-21 22:40:25 +0100)
-
-----------------------------------------------------------------
-bpf-next-for-netdev
-
-----------------------------------------------------------------
-Alexei Starovoitov (3):
-      Merge branch 'bpf-support-to-track-bpf_jne'
-      Merge branch 'enhance-bpf-global-subprogs-with-argument-tags'
-      Merge branch 'bpf-fix-warning-in-check_obj_size'
-
-Alyssa Ross (1):
-      libbpf: Skip DWARF sections in linker sanity check
-
-Andrii Nakryiko (10):
-      bpf: abstract away global subprog arg preparation logic from reg state setup
-      bpf: reuse btf_prepare_func_args() check for main program BTF validation
-      bpf: prepare btf_prepare_func_args() for handling static subprogs
-      bpf: move subprog call logic back to verifier.c
-      bpf: reuse subprog argument parsing logic for subprog call checks
-      bpf: support 'arg:xxx' btf_decl_tag-based hints for global subprog args
-      bpf: add support for passing dynptr pointer to global subprog
-      libbpf: add __arg_xxx macros for annotating global func args
-      selftests/bpf: add global subprog annotation tests
-      selftests/bpf: add freplace of BTF-unreliable main prog test
-
-Colin Ian King (1):
-      samples/bpf: Use %lu format specifier for unsigned long values
-
-Daniel Borkmann (1):
-      bpf: Re-support uid and gid when mounting bpffs
-
-Hou Tao (3):
-      selftests/bpf: Close cgrp fd before calling cleanup_cgroup_environment()
-      bpf: Use c->unit_size to select target cache during free
-      selftests/bpf: Remove tests for zeroed-array kptr
-
-Menglong Dong (4):
-      bpf: make the verifier tracks the "not equal" for regs
-      selftests/bpf: remove reduplicated s32 casting in "crafted_cases"
-      selftests/bpf: activate the OP_NE logic in range_cond()
-      selftests/bpf: add testcase to verifier_bounds.c for BPF_JNE
-
-Mingyi Zhang (1):
-      libbpf: Fix NULL pointer dereference in bpf_object__collect_prog_relos
-
-Simon Horman (1):
-      bpf: Avoid unnecessary use of comma operator in verifier
-
- include/linux/bpf.h                                |   7 +-
- include/linux/bpf_verifier.h                       |  29 ++-
- kernel/bpf/btf.c                                   | 282 ++++++---------------
- kernel/bpf/inode.c                                 |  53 +++-
- kernel/bpf/memalloc.c                              | 105 +-------
- kernel/bpf/verifier.c                              | 224 +++++++++++++---
- samples/bpf/cpustat_user.c                         |   4 +-
- tools/lib/bpf/bpf_helpers.h                        |   3 +
- tools/lib/bpf/libbpf.c                             |   2 +
- tools/lib/bpf/linker.c                             |   3 +
- .../testing/selftests/bpf/benchs/bench_htab_mem.c  |   1 +
- .../selftests/bpf/prog_tests/fexit_bpf2bpf.c       |  30 ++-
- tools/testing/selftests/bpf/prog_tests/log_fixup.c |   4 +-
- .../testing/selftests/bpf/prog_tests/reg_bounds.c  |  27 +-
- tools/testing/selftests/bpf/prog_tests/verifier.c  |   2 +
- .../selftests/bpf/progs/cgrp_kfunc_failure.c       |   2 +-
- .../selftests/bpf/progs/freplace_unreliable_prog.c |  20 ++
- .../selftests/bpf/progs/task_kfunc_failure.c       |   2 +-
- tools/testing/selftests/bpf/progs/test_bpf_ma.c    | 100 ++++----
- .../selftests/bpf/progs/test_global_func5.c        |   2 +-
- .../testing/selftests/bpf/progs/verifier_bounds.c  |  62 +++++
- .../bpf/progs/verifier_btf_unreliable_prog.c       |  20 ++
- .../selftests/bpf/progs/verifier_global_subprogs.c |  99 +++++++-
- 23 files changed, 652 insertions(+), 431 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/progs/freplace_unreliable_prog.c
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_btf_unreliable_prog.c
 
