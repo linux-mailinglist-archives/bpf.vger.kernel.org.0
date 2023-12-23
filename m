@@ -1,188 +1,125 @@
-Return-Path: <bpf+bounces-18642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FA0B81D38F
-	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 11:40:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7CC881D3B7
+	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 12:15:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FFFF1C21524
-	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 10:39:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 466A7B22D55
+	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 11:15:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94715CA48;
-	Sat, 23 Dec 2023 10:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909D68F7E;
+	Sat, 23 Dec 2023 11:15:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF5E5946D
-	for <bpf@vger.kernel.org>; Sat, 23 Dec 2023 10:39:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sy0zJ5vDMz4f3jsQ
-	for <bpf@vger.kernel.org>; Sat, 23 Dec 2023 18:39:40 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B06CC1A08FC
-	for <bpf@vger.kernel.org>; Sat, 23 Dec 2023 18:39:43 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgCH1QvquIZljMSpEQ--.5375S7;
-	Sat, 23 Dec 2023 18:39:43 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf-next v2 3/3] selftests/bpf: Test the inlining of bpf_kptr_xchg()
-Date: Sat, 23 Dec 2023 18:40:42 +0800
-Message-Id: <20231223104042.1432300-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20231223104042.1432300-1-houtao@huaweicloud.com>
-References: <20231223104042.1432300-1-houtao@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6969A8F75
+	for <bpf@vger.kernel.org>; Sat, 23 Dec 2023 11:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 3BNBFSTP051661
+	for <bpf@vger.kernel.org>; Sat, 23 Dec 2023 20:15:28 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
+ Sat, 23 Dec 2023 20:15:28 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 3BNBFSBK051657
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO)
+	for <bpf@vger.kernel.org>; Sat, 23 Dec 2023 20:15:28 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <f53342c8-ac93-46ab-afd3-a72ffeaca617@I-love.SAKURA.ne.jp>
+Date: Sat, 23 Dec 2023 20:15:28 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCH1QvquIZljMSpEQ--.5375S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw1DCFy8WF1UKFy7WFWfZrb_yoW5Zryrpa
-	yrKFy5tr4Iq3W7C3yxGF47XFZ3Kan5urWYqrWfurWUAF1UZ34kXF1kKFs8tFnxXrWYvryr
-	ZF1ftrn5CF1rJF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+User-Agent: Mozilla Thunderbird
+Subject: Fwd: [PATCH] security: new security_file_ioctl_compat() hook
+References: <CALcwBGC9LzzdJeq3SWy9F3g5A32s5uSvJZae4j+rwNQqqLHCKg@mail.gmail.com>
+Content-Language: en-US
+To: bpf <bpf@vger.kernel.org>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <CALcwBGC9LzzdJeq3SWy9F3g5A32s5uSvJZae4j+rwNQqqLHCKg@mail.gmail.com>
+X-Forwarded-Message-Id: <CALcwBGC9LzzdJeq3SWy9F3g5A32s5uSvJZae4j+rwNQqqLHCKg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Hou Tao <houtao1@huawei.com>
+Does anything need to be updated for the BPF LSM or
+does it auto-magically pick up new hooks?
 
-The test uses bpf_prog_get_info_by_fd() to obtain the xlated
-instructions of the program first. Since these instructions have
-already been rewritten by the verifier, the tests then checks whether
-the rewritten instructions are as expected.
+-------- Forwarded Message --------
+References: <20230906102557.3432236-1-alpic@google.com> <20231219090909.2827497-1-alpic@google.com>
+In-Reply-To: <20231219090909.2827497-1-alpic@google.com>
+From: Alfred Piccioni <alpic@google.com>
+Date: Tue, 19 Dec 2023 10:10:38 +0100
+Message-ID: <CALcwBGC9LzzdJeq3SWy9F3g5A32s5uSvJZae4j+rwNQqqLHCKg@mail.gmail.com>
+Subject: Re: [PATCH] security: new security_file_ioctl_compat() hook
+To: Paul Moore <paul@paul-moore.com>, Stephen Smalley <stephen.smalley.work@gmail.com>, Eric Paris <eparis@parisplace.org>
+Cc: linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, stable@vger.kernel.org, selinux@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/prog_tests/kptr_xchg_inline.c         | 51 +++++++++++++++++++
- .../selftests/bpf/progs/kptr_xchg_inline.c    | 28 ++++++++++
- 2 files changed, 79 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c
- create mode 100644 tools/testing/selftests/bpf/progs/kptr_xchg_inline.c
+Thanks for taking the time to review! Apologies for the number of
+small mistakes.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c b/tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c
-new file mode 100644
-index 000000000000..5a4bee1cf970
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#include <test_progs.h>
-+
-+#include "linux/filter.h"
-+#include "kptr_xchg_inline.skel.h"
-+
-+void test_kptr_xchg_inline(void)
-+{
-+	struct kptr_xchg_inline *skel;
-+	struct bpf_insn *insn = NULL;
-+	struct bpf_insn exp;
-+	unsigned int cnt;
-+	int err;
-+
-+#if !defined(__x86_64__)
-+	test__skip();
-+	return;
-+#endif
-+
-+	skel = kptr_xchg_inline__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_load"))
-+		return;
-+
-+	err = get_xlated_program(bpf_program__fd(skel->progs.kptr_xchg_inline), &insn, &cnt);
-+	if (!ASSERT_OK(err, "prog insn"))
-+		goto out;
-+
-+	/* The original instructions are:
-+	 * r1 = map[id:xxx][0]+0
-+	 * r2 = 0
-+	 * call bpf_kptr_xchg#yyy
-+	 *
-+	 * call bpf_kptr_xchg#yyy will be inlined as:
-+	 * r0 = r2
-+	 * r0 = atomic64_xchg((u64 *)(r1 +0), r0)
-+	 */
-+	if (!ASSERT_GT(cnt, 5, "insn cnt"))
-+		goto out;
-+
-+	exp = BPF_MOV64_REG(BPF_REG_0, BPF_REG_2);
-+	if (!ASSERT_OK(memcmp(&insn[3], &exp, sizeof(exp)), "mov"))
-+		goto out;
-+
-+	exp = BPF_ATOMIC_OP(BPF_DW, BPF_XCHG, BPF_REG_1, BPF_REG_0, 0);
-+	if (!ASSERT_OK(memcmp(&insn[4], &exp, sizeof(exp)), "xchg"))
-+		goto out;
-+out:
-+	free(insn);
-+	kptr_xchg_inline__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/kptr_xchg_inline.c b/tools/testing/selftests/bpf/progs/kptr_xchg_inline.c
-new file mode 100644
-index 000000000000..1db7909828d1
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/kptr_xchg_inline.c
-@@ -0,0 +1,28 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_experimental.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct bin_data {
-+	char blob[32];
-+};
-+
-+#define private(name) SEC(".bss." #name) __hidden __attribute__((aligned(8)))
-+private(kptr) struct bin_data __kptr * ptr;
-+
-+SEC("tc")
-+int kptr_xchg_inline(void *ctx)
-+{
-+	void *old;
-+
-+	old = bpf_kptr_xchg(&ptr, NULL);
-+	if (old)
-+		bpf_obj_drop(old);
-+
-+	return 0;
-+}
--- 
-2.29.2
+> s/syscal/syscall/
+> Might to consider checking using codespell to catch such things
+> although it is imperfect.
+
+Fixed, loaded codespell.
+
+> Paul doesn't like C++-style comments so rewrite using kernel coding
+> style for multi-line comments or drop.
+> I don't think kernel coding style strictly prohibits use for
+> single-line comments and it isn't detected by checkpatch.pl but he has
+> previously
+> raised this on other patches. I actually like the C++-style comments
+> for one-liners especially for comments at the end of a line of code
+> but Paul is the maintainer so he gets the final word.
+
+Changed to /**/ style comments. No particular preference on my side
+for comment structure, just used to C++/Java style.
+
+> Sorry, missed this the first time but cut-and-paste error above:
+> s/GETFLAGS/SETFLAGS/
+
+Egads. Fixed.
+
+> Also, IIRC, Paul prefers putting a pair of parentheses after function
+> names to distinguish them, so in the subject line
+> and description it should be security_file_ioctl_compat() and
+> security_file_ioctl(), and you should put a patch version
+> in the [PATCH] prefix e.g. [PATCH v3] to make clear that it is a later
+> version, and usually one doesn't capitalize SELinux
+> or the leading verb in the subject line (just "selinux: introduce").
+
+Changed title to lower-case, prefixed with security, changed slightly
+to fit in summary with new parentheses. Added [PATCH V3] to the
+subject.
+
+> Actually, since this spans more than just SELinux, the prefix likely
+> needs to reflect that (e.g. security: introduce ...)
+> and the patch should go to the linux-security-module mailing list too
+> and perhaps linux-fsdevel for the ioctl change.
+
+Added cc 'selinux@vger.kernel.org' and cc
+'linux-kernel@vger.kernel.org'. Thanks!
+
+> I didn't do an audit but does anything need to be updated for the BPF
+> LSM or does it auto-magically pick up new hooks?
+
+I'm unsure. I looked through the BPF LSM and I can't see any way it's
+picking up the file_ioctl hook to begin with. It appears to me
+skimming through the code that it automagically picks it up, but I'm
+not willing to bet the kernel on it.
+
+Do you know who would be a good person to ask about this to make sure?
 
 
