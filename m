@@ -1,37 +1,40 @@
-Return-Path: <bpf+bounces-18646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1108681D3C1
-	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 12:28:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DFE881D41E
+	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 14:02:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B12F71F22B1F
-	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 11:28:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E7FD1F227AE
+	for <lists+bpf@lfdr.de>; Sat, 23 Dec 2023 13:02:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B38CA61;
-	Sat, 23 Dec 2023 11:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7097D2F2;
+	Sat, 23 Dec 2023 13:02:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9856CA48;
-	Sat, 23 Dec 2023 11:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Sy23H3z3Sz4f3k5s;
-	Sat, 23 Dec 2023 19:28:11 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 015A51A090E;
-	Sat, 23 Dec 2023 19:28:13 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgCnS0pJxIZlpFwoEg--.65176S2;
-	Sat, 23 Dec 2023 19:28:12 +0800 (CST)
-Subject: Re: [PATCH bpf-next 2/3] bpf: implement map_update_elem to init relay
- file
-To: Philo Lu <lulie@linux.alibaba.com>, bpf@vger.kernel.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4F1BD2E9;
+	Sat, 23 Dec 2023 13:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Vz1GATd_1703336548;
+Received: from 30.39.236.78(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0Vz1GATd_1703336548)
+          by smtp.aliyun-inc.com;
+          Sat, 23 Dec 2023 21:02:30 +0800
+Message-ID: <87b4f7fc-cc98-496c-bbff-6e3890278e35@linux.alibaba.com>
+Date: Sat, 23 Dec 2023 21:02:28 +0800
+Precedence: bulk
+X-Mailing-List: bpf@vger.kernel.org
+List-Id: <bpf.vger.kernel.org>
+List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/3] bpf: implement relay map basis
+To: Hou Tao <houtao@huaweicloud.com>, bpf@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
  andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
  yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
@@ -41,117 +44,198 @@ Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
  dust.li@linux.alibaba.com, alibuda@linux.alibaba.com,
  guwen@linux.alibaba.com, hengqi@linux.alibaba.com, shung-hsi.yu@suse.com
 References: <20231222122146.65519-1-lulie@linux.alibaba.com>
- <20231222122146.65519-3-lulie@linux.alibaba.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <cb325603-4bf4-57cf-ca63-aa12580646fc@huaweicloud.com>
-Date: Sat, 23 Dec 2023 19:28:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-Precedence: bulk
-X-Mailing-List: bpf@vger.kernel.org
-List-Id: <bpf.vger.kernel.org>
-List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20231222122146.65519-3-lulie@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
+ <20231222122146.65519-2-lulie@linux.alibaba.com>
+ <35f5a5bf-7059-a177-cd94-b60ed8dbff03@huaweicloud.com>
+From: Philo Lu <lulie@linux.alibaba.com>
+In-Reply-To: <35f5a5bf-7059-a177-cd94-b60ed8dbff03@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:Syh0CgCnS0pJxIZlpFwoEg--.65176S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF47Ary5uw1DXr15Zry8AFb_yoW5JF13pF
-	WrGFn3Cr4Iqr43Z3say3Z5WryrZw1rXr17X3s7Aa40yrySgrn5tr4kKayDCr4ayr45uw4j
-	va1jgw4jk3y0krDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUo0eHDUUUU
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
 
-On 12/22/2023 8:21 PM, Philo Lu wrote:
-> map_update_elem is used to create relay files and bind them with the
-> relay channel, which is created with BPF_MAP_CREATE. This allows users
-> to set a custom directory name. It must be used with key=NULL and
-> flag=0.
->
-> Here is an example:
-> ```
-> struct {
-> __uint(type, BPF_MAP_TYPE_RELAY);
-> __uint(max_entries, 4096);
-> } my_relay SEC(".maps");
-> ...
-> char dir_name[] = "relay_test";
-> bpf_map_update_elem(map_fd, NULL, dir_name, 0);
-> ```
->
-> Then, directory `/sys/kerenl/debug/relay_test` will be created, which
-> includes files of my_relay0...my_relay[#cpu]. Each represents a per-cpu
-> buffer with size 8 * 4096 B (there are 8 subbufs by default, each with
-> size 4096B).
 
-It is a little weird. Because the name of the relay file is
-$debug_fs_root/$value_name/${map_name}xxx. Could we update it to
-$debug_fs_root/$map_name/$value_name/xxx instead ?
-> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
-> ---
->  kernel/bpf/relaymap.c | 32 +++++++++++++++++++++++++++++++-
->  1 file changed, 31 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/relaymap.c b/kernel/bpf/relaymap.c
-> index d0adc7f67758..588c8de0a4bd 100644
-> --- a/kernel/bpf/relaymap.c
-> +++ b/kernel/bpf/relaymap.c
-> @@ -117,7 +117,37 @@ static void *relay_map_lookup_elem(struct bpf_map *map, void *key)
->  static long relay_map_update_elem(struct bpf_map *map, void *key, void *value,
->  				   u64 flags)
->  {
-> -	return -EOPNOTSUPP;
-> +	struct bpf_relay_map *rmap;
-> +	struct dentry *parent;
-> +	int err;
-> +
-> +	if (unlikely(flags))
-> +		return -EINVAL;
-> +
-> +	if (unlikely(key))
-> +		return -EINVAL;
-> +
-> +	rmap = container_of(map, struct bpf_relay_map, map);
-> +
+On 2023/12/23 19:22, Hou Tao wrote:
+> Hi,
+> 
+> On 12/22/2023 8:21 PM, Philo Lu wrote:
+>> BPF_MAP_TYPE_RELAY is implemented based on relay interface, which
+>> creates per-cpu buffer to transfer data. Each buffer is essentially a
+>> list of fix-sized sub-buffers, and is exposed to user space as files in
+>> debugfs. attr->max_entries is used as subbuf size and attr->map_extra is
+>> used as subbuf num. Currently, the default value of subbuf num is 8.
+>>
+>> The data can be accessed by read or mmap via these files. For example,
+>> if there are 2 cpus, files could be `/sys/kernel/debug/mydir/my_rmap0`
+>> and `/sys/kernel/debug/mydir/my_rmap1`.
+>>
+>> Buffer-only mode is used to create the relay map, which just allocates
+>> the buffer without creating user-space files. Then user can setup the
+>> files with map_update_elem, thus allowing user to define the directory
+>> name in debugfs. map_update_elem is implemented in the following patch.
+>>
+>> A new map flag named BPF_F_OVERWRITE is introduced to set overwrite mode
+>> of relay map.
+> 
+> Beside adding a new map type, could we consider only use kfuncs to
+> support the creation of rchan and the write of rchan ? I think
+> bpf_cpumask will be a good reference.
 
-Lock is needed here, because .map_update_elem can be invoked concurrently.
-> +	/* The directory already exists */
-> +	if (rmap->relay_chan->has_base_filename)
-> +		return -EEXIST;
-> +
-> +	/* Setup relay files. Note that the directory name passed as value should
-> +	 * not be longer than map->value_size, including the '\0' at the end.
-> +	 */
-> +	((char *)value)[map->value_size - 1] = '\0';
-> +	parent = debugfs_create_dir(value, NULL);
-> +	if (IS_ERR_OR_NULL(parent))
-> +		return PTR_ERR(parent);
-> +
-> +	err = relay_late_setup_files(rmap->relay_chan, map->name, parent);
-> +	if (err) {
-> +		debugfs_remove_recursive(parent);
-> +		return err;
-> +	}
-> +
-> +	return 0;
->  }
->  
->  static long relay_map_delete_elem(struct bpf_map *map, void *key)
+This is a good question. TBH, I have thought of implement it with 
+helpers (I'm not very familiar with kfuncs, but I think they could be 
+similar?), but I was stumped by how to close the channel. We can create 
+a relay channel, hold it with a map, but it could be difficult for the 
+bpf program to close the channel with relay_close(). And I think it 
+could be the difference compared with bpf_cpumask.
+>>
+>> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+>> ---
+>>   include/linux/bpf_types.h |   3 +
+>>   include/uapi/linux/bpf.h  |   7 ++
+>>   kernel/bpf/Makefile       |   3 +
+>>   kernel/bpf/relaymap.c     | 157 ++++++++++++++++++++++++++++++++++++++
+>>   kernel/bpf/syscall.c      |   1 +
+>>   5 files changed, 171 insertions(+)
+>>   create mode 100644 kernel/bpf/relaymap.c
+>>
+> 
+> SNIP
+>> diff --git a/kernel/bpf/relaymap.c b/kernel/bpf/relaymap.c
+>> new file mode 100644
+>> index 000000000000..d0adc7f67758
+>> --- /dev/null
+>> +++ b/kernel/bpf/relaymap.c
+>> @@ -0,0 +1,157 @@
+>> +#include <linux/cpumask.h>
+>> +#include <linux/debugfs.h>
+>> +#include <linux/filter.h>
+>> +#include <linux/relay.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/bpf.h>
+>> +#include <linux/err.h>
+>> +
+>> +#define RELAY_CREATE_FLAG_MASK (BPF_F_OVERWRITE)
+>> +
+>> +struct bpf_relay_map {
+>> +	struct bpf_map map;
+>> +	struct rchan *relay_chan;
+>> +	struct rchan_callbacks relay_cb;
+>> +};
+> 
+> It seems that there is no need to add relay_cb in bpf_relay_map. We
+> could define two kinds of rchan_callbacks: one for non-overwrite mode
+> and another one for overwrite mode.
 
+We need to store relay_cb, because the relay channel only uses a pointer 
+of struct rchan_callbacks. So I maintain it with the map, or is there a 
+better place to store it?
+>> +
+>> +static struct dentry *create_buf_file_handler(const char *filename,
+>> +							   struct dentry *parent, umode_t mode,
+>> +							   struct rchan_buf *buf, int *is_global)
+>> +{
+>> +	/* Because we do relay_late_setup_files(), create_buf_file(NULL, NULL, ...)
+>> +	 * will be called by relay_open.
+>> +	 */
+>> +	if (!filename)
+>> +		return NULL;
+>> +
+>> +	return debugfs_create_file(filename, mode, parent, buf,
+>> +				   &relay_file_operations);
+>> +}
+>> +
+>> +static int remove_buf_file_handler(struct dentry *dentry)
+>> +{
+>> +	debugfs_remove(dentry);
+>> +	return 0;
+>> +}
+>> +
+>> +/* For non-overwrite, use default subbuf_start cb */
+>> +static int subbuf_start_overwrite(struct rchan_buf *buf, void *subbuf,
+>> +						   void *prev_subbuf, size_t prev_padding)
+>> +{
+>> +	return 1;
+>> +}
+>> +
+>> +/* bpf_attr is used as follows:
+>> + * - key size: must be 0
+>> + * - value size: value will be used as directory name by map_update_elem
+>> + *   (to create relay files). If passed as 0, it will be set to NAME_MAX as
+>> + *   default
+>> + *
+>> + * - max_entries: subbuf size
+>> + * - map_extra: subbuf num, default as 8
+>> + *
+>> + * When alloc, we do not set up relay files considering dir_name conflicts.
+>> + * Instead we use relay_late_setup_files() in map_update_elem(), and thus the
+>> + * value is used as dir_name, and map->name is used as base_filename.
+>> + */
+>> +static struct bpf_map *relay_map_alloc(union bpf_attr *attr)
+>> +{
+>> +	struct bpf_relay_map *rmap;
+>> +
+>> +	if (unlikely(attr->map_flags & ~RELAY_CREATE_FLAG_MASK))
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	/* key size must be 0 in relay map */
+>> +	if (unlikely(attr->key_size))
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	if (unlikely(attr->value_size > NAME_MAX)) {
+>> +		pr_warn("value_size should be no more than %d\n", NAME_MAX);
+>> +		return ERR_PTR(-EINVAL);
+>> +	} else if (attr->value_size == 0)
+>> +		attr->value_size = NAME_MAX;
+>> +
+>> +	/* set default subbuf num */
+>> +	attr->map_extra = attr->map_extra & UINT_MAX;
+> 
+> Should we reject invalid map_extra and return -EINVAL instead ?
+
+Ack, will add a check here.
+>> +	if (!attr->map_extra)
+>> +		attr->map_extra = 8;
+>> +
+>> +	if (!attr->map_name || strlen(attr->map_name) == 0)
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	rmap = bpf_map_area_alloc(sizeof(*rmap), NUMA_NO_NODE);
+>> +	if (!rmap)
+>> +		return ERR_PTR(-ENOMEM);
+>> +
+>> +	bpf_map_init_from_attr(&rmap->map, attr);
+>> +
+>> +	rmap->relay_cb.create_buf_file = create_buf_file_handler;
+>> +	rmap->relay_cb.remove_buf_file = remove_buf_file_handler;
+>> +	if (attr->map_flags & BPF_F_OVERWRITE)
+>> +		rmap->relay_cb.subbuf_start = subbuf_start_overwrite;
+>> +
+>> +	rmap->relay_chan = relay_open(NULL, NULL,
+>> +							attr->max_entries, attr->map_extra,
+>> +							&rmap->relay_cb, NULL);
+>> +	if (!rmap->relay_chan)
+>> +		return ERR_PTR(-EINVAL);
+> 
+> Need to free rmap.
+
+Good catch. Will fix it.
+>> +
+>> +	return &rmap->map;
+>> +}
+>> +
+>> +static void relay_map_free(struct bpf_map *map)
+>> +{
+>> +	struct bpf_relay_map *rmap;
+>> +
+>> +	rmap = container_of(map, struct bpf_relay_map, map);
+>> +	relay_close(rmap->relay_chan);
+>> +	debugfs_remove_recursive(rmap->relay_chan->parent);
+> 
+> rmap->relay_chan may be freed by relay_close(), so it is not safe to
+> dereference relay_chan->parent here. And is debugfs_remove_recursive()
+> necessary here ?
+
+debugfs_remove_recursive is needed here, otherwise the directory will be 
+left, but the order is indeed incorrect here. I will move it before 
+relay_close, and check if rmap->relay_chan->parent is valid.
+
+Thanks.
 
