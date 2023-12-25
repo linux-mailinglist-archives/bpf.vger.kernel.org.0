@@ -1,38 +1,38 @@
-Return-Path: <bpf+bounces-18658-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18659-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62F6E81DF60
-	for <lists+bpf@lfdr.de>; Mon, 25 Dec 2023 10:08:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3163D81DF6C
+	for <lists+bpf@lfdr.de>; Mon, 25 Dec 2023 10:18:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7100281CA4
-	for <lists+bpf@lfdr.de>; Mon, 25 Dec 2023 09:08:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56F2E1C21864
+	for <lists+bpf@lfdr.de>; Mon, 25 Dec 2023 09:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ADBA3D9C;
-	Mon, 25 Dec 2023 09:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB6E94C7B;
+	Mon, 25 Dec 2023 09:18:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFDD4C7B;
-	Mon, 25 Dec 2023 09:07:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFBF3D74;
+	Mon, 25 Dec 2023 09:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8DxE_BjRollQWoEAA--.22002S3;
-	Mon, 25 Dec 2023 17:07:48 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8CxRPDuSIllyGoEAA--.22117S3;
+	Mon, 25 Dec 2023 17:18:38 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bxbb5iRollt44JAA--.30202S2;
-	Mon, 25 Dec 2023 17:07:46 +0800 (CST)
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx2r3rSIllApIJAA--.9188S2;
+	Mon, 25 Dec 2023 17:18:36 +0800 (CST)
 From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Hengqi Chen <hengqi.chen@gmail.com>,
-	loongarch@lists.linux.dev,
-	bpf@vger.kernel.org,
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: Add BPF JIT for LOONGARCH entry
-Date: Mon, 25 Dec 2023 17:07:30 +0800
-Message-ID: <20231225090730.6074-1-yangtiezhu@loongson.cn>
+Subject: [PATCH bpf-next v1] bpf: Return -ENOTSUPP if callbacks are not allowed in non-JITed programs
+Date: Mon, 25 Dec 2023 17:18:30 +0800
+Message-ID: <20231225091830.6094-1-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -41,53 +41,67 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Bxbb5iRollt44JAA--.30202S2
+X-CM-TRANSID:AQAAf8Cx2r3rSIllApIJAA--.9188S2
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Wr1xKrWDAw1kXry3tr1kWFX_yoWfJrX_Kr
-	srJay7X3y8JF4akw40gasa9asxZw4xXFZa93ZFg39rJa4Utry8JrWqyasa9r1ruFZ3uFZ0
-	qan7JF9IkrW7uosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb3kYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
-	6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-	vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_
-	Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-	AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-	cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-	IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVj
-	vjDU0xZFpf9x07jjwZcUUUUU=
+X-Coremail-Antispam: 1Uk129KBj93XoW7Cw1ktr43JFWUAFy7Ww15Awc_yoW8WF1kpF
+	4UWF9FkF4Fqa4xuF9rXrs3CFWYvwsYqw47GFy8C34FyF1kAw17Jrn3Gry2va43trWUZryF
+	v3yxuFWj9w1UWFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j1LvtUUUUU=
 
-After commit 5dc615520c4d ("LoongArch: Add BPF JIT support"),
-there is no BPF JIT for LOONGARCH entry, in order to maintain
-the current code and the new features timely, just add it.
+If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
+exist 6 failed tests.
+
+  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+  [root@linux bpf]# ./test_verifier | grep FAIL
+  #107/p inline simple bpf_loop call FAIL
+  #108/p don't inline bpf_loop call, flags non-zero FAIL
+  #109/p don't inline bpf_loop call, callback non-constant FAIL
+  #110/p bpf_loop_inline and a dead func FAIL
+  #111/p bpf_loop_inline stack locations for loop vars FAIL
+  #112/p inline bpf_loop call in a big program FAIL
+  Summary: 505 PASSED, 266 SKIPPED, 6 FAILED
+
+The test log shows that callbacks are not allowed in non-JITed programs,
+interpreter doesn't support them yet, thus these tests should be skipped
+if jit is disabled, just return -ENOTSUPP instead of -EINVAL for pseudo
+calls in fixup_call_args().
+
+With this patch:
+
+  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+  [root@linux bpf]# ./test_verifier | grep FAIL
+  Summary: 505 PASSED, 272 SKIPPED, 0 FAILED
 
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7cef2d2ef8d7..3ba07b212d38 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3651,6 +3651,13 @@ L:	bpf@vger.kernel.org
- S:	Supported
- F:	arch/arm64/net/
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index a376eb609c41..1c780a893284 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -19069,7 +19069,7 @@ static int fixup_call_args(struct bpf_verifier_env *env)
+ 			 * have to be rejected, since interpreter doesn't support them yet.
+ 			 */
+ 			verbose(env, "callbacks are not allowed in non-JITed programs\n");
+-			return -EINVAL;
++			return -ENOTSUPP;
+ 		}
  
-+BPF JIT for LOONGARCH
-+M:	Tiezhu Yang <yangtiezhu@loongson.cn>
-+R:	Hengqi Chen <hengqi.chen@gmail.com>
-+L:	bpf@vger.kernel.org
-+S:	Maintained
-+F:	arch/loongarch/net/
-+
- BPF JIT for MIPS (32-BIT AND 64-BIT)
- M:	Johan Almbladh <johan.almbladh@anyfinetworks.com>
- M:	Paul Burton <paulburton@kernel.org>
+ 		if (!bpf_pseudo_call(insn))
 -- 
 2.42.0
 
