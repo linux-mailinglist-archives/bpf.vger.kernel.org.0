@@ -1,292 +1,157 @@
-Return-Path: <bpf+bounces-18656-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F06181DDCF
-	for <lists+bpf@lfdr.de>; Mon, 25 Dec 2023 04:13:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B59A381DDDD
+	for <lists+bpf@lfdr.de>; Mon, 25 Dec 2023 04:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 507522819CF
-	for <lists+bpf@lfdr.de>; Mon, 25 Dec 2023 03:13:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95547B20F34
+	for <lists+bpf@lfdr.de>; Mon, 25 Dec 2023 03:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA4DA4C;
-	Mon, 25 Dec 2023 03:12:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50342A56;
+	Mon, 25 Dec 2023 03:15:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PnkuOBkl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nw6TXAlu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 613634A17;
-	Mon, 25 Dec 2023 03:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543AFA4C;
+	Mon, 25 Dec 2023 03:15:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-67f85d29d14so27793096d6.1;
-        Sun, 24 Dec 2023 19:12:57 -0800 (PST)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33678156e27so3308414f8f.1;
+        Sun, 24 Dec 2023 19:15:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703473976; x=1704078776; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703474154; x=1704078954; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=stc1KaRMKqDMQyE8dlkS4piT7lRpW1LtMhsAboA4VmI=;
-        b=PnkuOBkl8ql2qpvv0BCn/JuYIyYuwSTm7A0dY+eM/asGtgrkuE/iJQYvIYBWgLFkST
-         NE9KIBBs+P2Lhtpp86IuUvLekmFSBbRbz/9YOJEdyJdx/TbXBDCucGAdUVD1eWu0kdNN
-         uyPxU8xGn4zFpEU2XVPwPV6zWJzYUGf8O4C4lzAcVOY6PGXfoOOJ4TcQFjHXzQo1TtxG
-         AfCLxtdNWV5IvqVWsvcraxf8jtwdcTpn/xkNhZwLBxXIpRm1dx6j2Rw+RCKLt4Gy3yiX
-         mVxDIvKRR3+bnL+Fh7IFZ6PnhAWTdJ+zSl7n6fxFky4LxCpFnUBp7tmKv+8AN08TiiWf
-         6zGQ==
+        bh=k42dv9cULHqbXBuZcvQpqJeLLWeESM/hS6ldT4hs2m4=;
+        b=Nw6TXAluWJ7ZW4Y7/AtyKCejGj/yMZrvb3QAQsBuhjRAZKgJcmRVkwavoDo5g+mj2X
+         q1kFXr6nIma4zbsD07twvqwOR51/f8ScW5EssH6rVr9BcPzUBDW5THZg8Bps757rAf6+
+         a2RvcIFG5O003dGd5W44bvjxT7oqawYJS5fHTHrZ5IKUYco1ESKWpEAcKcJH5tx+Wwjg
+         P/mt5TH3F90t5cWSghWQiksiSCBXGpRtAGGR2g7PM8mTwZaCqu9TIGblUFswzONsT6rX
+         M6i7UIQHB6i8J8V4W/VtRvDeqJC27fDNwqC6scxmWNuZwg6mW7RO0J2dpJFMEOixMFIm
+         nHCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703473976; x=1704078776;
+        d=1e100.net; s=20230601; t=1703474154; x=1704078954;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=stc1KaRMKqDMQyE8dlkS4piT7lRpW1LtMhsAboA4VmI=;
-        b=Fe7W2Y8xQc1K1DYV0dGvg1b4HPR9YQTU7JIP9WT4yFDpXf6TBSdWxwYVoo9WXZM4Td
-         eB2ZrYhMyyndUQVoCQRqKZ2HOV86tPkuMNWzhtAAN16Q4mRv6MAYq3z+q+fdepMcg/Y+
-         DD4YiFds7xLLv5QfWDPvk+0uT4nLQDrU74vAYkGYjhFGiH/qe4JJhJB/OCg+6AcJ4xtR
-         Vq2yjxZlwgxabFm2yXglALJCBApvHYLw/Rcy3na/+ft/QaiiR/WyM2dNssn1lK8w5CsE
-         xRbFqsO4XfRZguSL593AHwxF5P6/4yNR93pW4N6wlev0wE+/+t9gqKPdMNOW/Mcq1RmD
-         WVnw==
-X-Gm-Message-State: AOJu0Yy4F/9nxaMVs3QkPp86jPRDWzaF0juOhOmA2w3Dis986o1sS73x
-	9pxfWDyB3iYwrPThGX1AhKw0Z/IOu0R8tgx6bBc=
-X-Google-Smtp-Source: AGHT+IH0MaXg/bxmj+IKekD2gC/g6X7v02PuvSaBpohWy8f6AdLoMmwb9hBQJLS6ZVnYEpAnNiREy667re5oC73QVBQ=
-X-Received: by 2002:a05:6214:140c:b0:67f:ae1d:9187 with SMTP id
- pr12-20020a056214140c00b0067fae1d9187mr3853691qvb.69.1703473976160; Sun, 24
- Dec 2023 19:12:56 -0800 (PST)
+        bh=k42dv9cULHqbXBuZcvQpqJeLLWeESM/hS6ldT4hs2m4=;
+        b=vlGjnYbNBwuYuG2lNJROWnVvr2vb9c5AMdxJofrsWFoyfDQaPxDvJMGAXobomNQ+hc
+         rz4bAc9LDYSNWjuRjMq/6mD2QQU8nTTcXtRqFWmesC1+IMPAl9bsXvDooUY2hyQ0FonW
+         +YGZtxiLidC7BQnMe1msUbLunjxJ/Qz4DIOCHh45NJbAzAUQ57IARFua4Pe6LJDXVICI
+         OmJhrlpBxN0b2YLLfvmOKpmUaAUiT4+zCYWajtmcvkozC5aIVrOYNKgNoVogLcbpnja8
+         kJ1IiOx9nZbX4Hpm7+3SusTmMSX4WRLZAH3Wd0AzKnO4HKeCdZ2DS4/iJXuZK6wgnx3B
+         DduA==
+X-Gm-Message-State: AOJu0YwzqT7BpM2wPSbu9ZZqOMsAkyvocxFvXX3qm45JsgaRrkpb0JBe
+	tTNitliaMCIZlk/ReSdqXejbNJNK8BfGeS5hi3c=
+X-Google-Smtp-Source: AGHT+IE9Xxxg8/YGHc1yVs4qvYx066zi+QA3Y13LmGiJ6dKfo6+ofO0zpnvnrIDaKLdNhGg2/KikhwwIzuJ2MnKPcM8=
+X-Received: by 2002:adf:f5cc:0:b0:336:6bf0:a005 with SMTP id
+ k12-20020adff5cc000000b003366bf0a005mr3030980wrp.92.1703474154305; Sun, 24
+ Dec 2023 19:15:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214125033.4158-1-laoar.shao@gmail.com> <CAHC9VhTs_5-SFq2M+w4SE7gMd3cHXP2P3y71O4H_q7XGUtvVUg@mail.gmail.com>
- <CALOAHbDEoZ_gPNg-ABE0-Qc0uPqwHJBLRpqSjFd7fH6r+oH23A@mail.gmail.com> <CAHC9VhQkRPMO2Xpg0gYdpOPZTDrp1xKwU=idt9EQJg7Zi7XjqQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhQkRPMO2Xpg0gYdpOPZTDrp1xKwU=idt9EQJg7Zi7XjqQ@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 25 Dec 2023 11:12:19 +0800
-Message-ID: <CALOAHbA-aW5gHXuf4MZVDXqD89Ri=9Ff7wcnV5wnBe=+pjkLrQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 0/5] mm, security, bpf: Fine-grained control
- over memory policy adjustments with lsm bpf
-To: Paul Moore <paul@paul-moore.com>
-Cc: Kees Cook <keescook@chromium.org>, "luto@amacapital.net" <luto@amacapital.net>, wad@chromium.org, 
-	akpm@linux-foundation.org, jmorris@namei.org, serge@hallyn.com, 
-	omosnace@redhat.com, casey@schaufler-ca.com, kpsingh@kernel.org, 
-	mhocko@suse.com, ying.huang@intel.com, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
-	ligang.bdlg@bytedance.com
+References: <20231220214013.3327288-1-maxtram95@gmail.com> <20231220214013.3327288-9-maxtram95@gmail.com>
+In-Reply-To: <20231220214013.3327288-9-maxtram95@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 24 Dec 2023 19:15:42 -0800
+Message-ID: <CAADnVQ+6MjSLRq5hFy=kHosoWR=RDOSuU1znCrkcRp-WeD5CMw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 08/15] bpf: Assign ID to scalars on spill
+To: Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, Maxim Mikityanskiy <maxim@isovalent.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 25, 2023 at 3:44=E2=80=AFAM Paul Moore <paul@paul-moore.com> wr=
-ote:
->
-> On Sat, Dec 23, 2023 at 10:35=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
-m> wrote:
-> > On Sat, Dec 23, 2023 at 8:16=E2=80=AFAM Paul Moore <paul@paul-moore.com=
-> wrote:
-> > > On Thu, Dec 14, 2023 at 7:51=E2=80=AFAM Yafang Shao <laoar.shao@gmail=
+On Wed, Dec 20, 2023 at 1:40=E2=80=AFPM Maxim Mikityanskiy <maxtram95@gmail=
 .com> wrote:
-> > > >
-> > > > Background
-> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > >
-> > > > In our containerized environment, we've identified unexpected OOM e=
-vents
-> > > > where the OOM-killer terminates tasks despite having ample free mem=
-ory.
-> > > > This anomaly is traced back to tasks within a container using mbind=
-(2) to
-> > > > bind memory to a specific NUMA node. When the allocated memory on t=
-his node
-> > > > is exhausted, the OOM-killer, prioritizing tasks based on oom_score=
-,
-> > > > indiscriminately kills tasks.
-> > > >
-> > > > The Challenge
-> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > >
-> > > > In a containerized environment, independent memory binding by a use=
-r can
-> > > > lead to unexpected system issues or disrupt tasks being run by othe=
-r users
-> > > > on the same server. If a user genuinely requires memory binding, we=
- will
-> > > > allocate dedicated servers to them by leveraging kubelet deployment=
-.
-> > > >
-> > > > Currently, users possess the ability to autonomously bind their mem=
-ory to
-> > > > specific nodes without explicit agreement or authorization from our=
- end.
-> > > > It's imperative that we establish a method to prevent this behavior=
-.
-> > > >
-> > > > Proposed Solution
-> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > >
-> > > > - Capability
-> > > >   Currently, any task can perform MPOL_BIND without specific capabi=
-lities.
-> > > >   Enforcing CAP_SYS_RESOURCE or CAP_SYS_NICE could be an option, bu=
-t this
-> > > >   may have unintended consequences. Capabilities, being broad, migh=
-t grant
-> > > >   unnecessary privileges. We should explore alternatives to prevent
-> > > >   unexpected side effects.
-> > > >
-> > > > - LSM
-> > > >   Introduce LSM hooks for syscalls such as mbind(2) and set_mempoli=
-cy(2)
-> > > >   to disable MPOL_BIND. This approach is more flexibility and allow=
-s for
-> > > >   fine-grained control without unintended consequences. A sample LS=
-M BPF
-> > > >   program is included, demonstrating practical implementation in a
-> > > >   production environment.
-> > > >
-> > > > - seccomp
-> > > >   seccomp is relatively heavyweight, making it less suitable for
-> > > >   enabling in our production environment:
-> > > >   - Both kubelet and containers need adaptation to support it.
-> > > >   - Dynamically altering security policies for individual container=
-s
-> > > >     without interrupting their operations isn't straightforward.
-> > > >
-> > > > Future Considerations
-> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > >
-> > > > In addition, there's room for enhancement in the OOM-killer for cas=
-es
-> > > > involving CONSTRAINT_MEMORY_POLICY. It would be more beneficial to
-> > > > prioritize selecting a victim that has allocated memory on the same=
- NUMA
-> > > > node. My exploration on the lore led me to a proposal[0] related to=
- this
-> > > > matter, although consensus seems elusive at this point. Nevertheles=
-s,
-> > > > delving into this specific topic is beyond the scope of the current
-> > > > patchset.
-> > > >
-> > > > [0]. https://lore.kernel.org/lkml/20220512044634.63586-1-ligang.bdl=
-g@bytedance.com/
-> > > >
-> > > > Changes:
-> > > > - v4 -> v5:
-> > > >   - Revise the commit log in patch #5. (KP)
-> > > > - v3 -> v4: https://lwn.net/Articles/954126/
-> > > >   - Drop the changes around security_task_movememory (Serge)
-> > > > - RCC v2 -> v3: https://lwn.net/Articles/953526/
-> > > >   - Add MPOL_F_NUMA_BALANCING man-page (Ying)
-> > > >   - Fix bpf selftests error reported by bot+bpf-ci
-> > > > - RFC v1 -> RFC v2: https://lwn.net/Articles/952339/
-> > > >   - Refine the commit log to avoid misleading
-> > > >   - Use one common lsm hook instead and add comment for it
-> > > >   - Add selinux implementation
-> > > >   - Other improments in mempolicy
-> > > > - RFC v1: https://lwn.net/Articles/951188/
-> > > >
-> > > > Yafang Shao (5):
-> > > >   mm, doc: Add doc for MPOL_F_NUMA_BALANCING
-> > > >   mm: mempolicy: Revise comment regarding mempolicy mode flags
-> > > >   mm, security: Add lsm hook for memory policy adjustment
-> > > >   security: selinux: Implement set_mempolicy hook
-> > > >   selftests/bpf: Add selftests for set_mempolicy with a lsm prog
-> > > >
-> > > >  .../admin-guide/mm/numa_memory_policy.rst          | 27 +++++++
-> > > >  include/linux/lsm_hook_defs.h                      |  3 +
-> > > >  include/linux/security.h                           |  9 +++
-> > > >  include/uapi/linux/mempolicy.h                     |  2 +-
-> > > >  mm/mempolicy.c                                     |  8 +++
-> > > >  security/security.c                                | 13 ++++
-> > > >  security/selinux/hooks.c                           |  8 +++
-> > > >  security/selinux/include/classmap.h                |  2 +-
-> > > >  .../selftests/bpf/prog_tests/set_mempolicy.c       | 84 ++++++++++=
-++++++++++++
-> > > >  .../selftests/bpf/progs/test_set_mempolicy.c       | 28 ++++++++
-> > > >  10 files changed, 182 insertions(+), 2 deletions(-)
-> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/set_memp=
-olicy.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/test_set_memp=
-olicy.c
-> > >
-> > > In your original patchset there was a lot of good discussion about
-> > > ways to solve, or mitigate, this problem using existing mechanisms;
-> > > while you disputed many (all?) of those suggestions, I felt that they
-> > > still had merit over your objections.
-> >
-> > JFYI. The initial patchset presents three suggestions:
-> > - Disabling CONFIG_NUMA, proposed by Michal:
-> >   By default, tasks on a server allocate memory from their local
-> > memory node initially. Disabling CONFIG_NUMA could potentially lead to
-> > a performance hit.
-> >
-> > - Adjusting NUMA workload configuration, also from Michal:
-> >   This adjustment has been successfully implemented on some dedicated
-> > clusters, as mentioned in the commit log. However, applying this
-> > change universally across a large fleet of servers might result in
-> > significant wastage of physical memory.
-> >
-> > - Implementing seccomp, suggested by Ondrej and Casey:
-> >   As indicated in the commit log, altering the security policy
-> > dynamically without interrupting a running container isn't
-> > straightforward. Implementing seccomp requires the introduction of an
-> > eBPF-based seccomp, which constitutes a substantial change.
-> >   [ The seccomp maintainer has been added to this mail thread for
-> > further discussion. ]
 >
-> The seccomp filter runs cBFF (classic BPF) and not eBPF; there are a
-> number of sandboxing tools designed to make this easier to use,
-> including systemd, and if you need to augment your existing
-> application there are libraries available to make this easier.
-
-Let's delve into how cBPF-based seccomp operates with runc [0] - our
-application:
-
-1. Create a seccomp filter in /path/to/seccomp/profile.json.
-2. Initiate a container with this filter rule using
-    docker run --rm \
-             -it \
-             --security-opt seccomp=3D/path/to/seccomp/profile.json \
-             hello-world
-
-However, modifying or removing the seccomp filter mandates stopping
-the running container and repeating the aforementioned steps. This
-interruption isn't desirable for us.
-
-The inability to dynamically alter the seccomp filter with cBPF arises
-from the kernel lacking a method to unload the seccomp once attached
-to a task. In other words, cBPF-based seccomp cannot dynamically
-attach and detach from tasks. Please correct me if my understanding is
-incorrect.
-
-[0]. https://docs.docker.com/engine/security/seccomp/
-
+> From: Maxim Mikityanskiy <maxim@isovalent.com>
 >
-> > > I also don't believe the
-> > > SELinux implementation of the set_mempolicy hook fits with the
-> > > existing SELinux philosophy of access control via type enforcement;
-> > > outside of some checks on executable memory and low memory ranges,
-> > > SELinux doesn't currently enforce policy on memory ranges like this,
-> > > SELinux focuses more on tasks being able to access data/resources on
-> > > the system.
-> > >
-> > > My current opinion is that you should pursue some of the mitigations
-> > > that have already been mentioned, including seccomp and/or a better
-> > > NUMA workload configuration.  I would also encourage you to pursue th=
-e
-> > > OOM improvement you briefly described.  All of those seem like better
-> > > options than this new LSM/SELinux hook.
-> >
-> > Using the OOM solution should not be our primary approach. Whenever
-> > possible, we should prioritize alternative solutions to prevent
-> > encountering the OOM situation.
+> Currently, when a scalar bounded register is spilled to the stack, its
+> ID is preserved, but only if was already assigned, i.e. if this register
+> was MOVed before.
 >
-> It's a good thing that there exist other options.
+> Assign an ID on spill if none is set, so that equal scalars could be
+> tracked if a register is spilled to the stack and filled into another
+> register.
+>
+> One test is adjusted to reflect the change in register IDs.
+>
+> Signed-off-by: Maxim Mikityanskiy <maxim@isovalent.com>
+> ---
+>  kernel/bpf/verifier.c                                     | 8 +++++++-
+>  .../selftests/bpf/progs/verifier_direct_packet_access.c   | 2 +-
+>  2 files changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b757fdbbbdd2..caa768f1e369 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4503,9 +4503,15 @@ static int check_stack_write_fixed_off(struct bpf_=
+verifier_env *env,
+>
+>         mark_stack_slot_scratched(env, spi);
+>         if (reg && !(off % BPF_REG_SIZE) && register_is_bounded(reg) && e=
+nv->bpf_capable) {
+> +               bool reg_value_fits;
+> +
+> +               reg_value_fits =3D get_reg_width(reg) <=3D BITS_PER_BYTE =
+* size;
+> +               /* Make sure that reg had an ID to build a relation on sp=
+ill. */
+> +               if (reg_value_fits)
+> +                       assign_scalar_id_before_mov(env, reg);
 
-Absolutely, let's explore alternative options beforehand.
+Thanks.
+I just debugged this issue as part of my bpf_cmp series.
 
---=20
-Regards
-Yafang
+llvm generated:
+
+1093: (7b) *(u64 *)(r10 -96) =3D r0     ;
+R0_w=3Dscalar(smin=3Dsmin32=3D-4095,smax=3Dsmax32=3D256) R10=3Dfp0
+fp-96_w=3Dscalar(smin=3Dsmin32=3D-4095,smax=3Dsmax32=3D256)
+; if (bpf_cmp(filepart_length, >, MAX_PATH))
+1094: (25) if r0 > 0x100 goto pc+903          ;
+R0_w=3Dscalar(id=3D53,smin=3Dsmin32=3D0,smax=3Dumax=3Dsmax32=3Dumax32=3D256=
+,var_off=3D(0x0;
+0x1ff))
+
+the verifier refined the range of 'r0' here,
+but the code just read spilled value from stack:
+
+1116: (79) r1 =3D *(u64 *)(r10 -64)     ; R1_w=3Dmap_value
+; payload +=3D filepart_length;
+1117: (79) r2 =3D *(u64 *)(r10 -96)     ;
+R2_w=3Dscalar(smin=3Dsmin32=3D-4095,smax=3Dsmax32=3D256) R10=3Dfp0
+fp-96=3Dscalar(smin=3Dsmin32=3D-4095,smax=3Dsmax32=3D256)
+1118: (0f) r1 +=3D r2 ;
+R1_w=3Dmap_value(map=3Ddata_heap,ks=3D4,vs=3D23040,off=3D148,smin=3Dsmin32=
+=3D-4095,smax=3Dsmax32=3D3344)
+
+And later errors as:
+"R1 min value is negative, either use unsigned index or do a if (index
+>=3D0) check."
+
+This verifier improvement is certainly necessary.
+
+Since you've analyzed this issue did you figure out a workaround
+for C code on existing and older kernels?
 
