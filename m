@@ -1,91 +1,108 @@
-Return-Path: <bpf+bounces-18666-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18667-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BACE81E30C
-	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 01:20:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02BF081E46B
+	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 02:39:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E6BA1F21E8B
-	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 00:20:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6190B28280E
+	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 01:39:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 020881852;
-	Tue, 26 Dec 2023 00:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EGulxQ0a"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D356A35;
+	Tue, 26 Dec 2023 01:39:07 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8400715CB;
-	Tue, 26 Dec 2023 00:20:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3ECEC433CA;
-	Tue, 26 Dec 2023 00:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703550029;
-	bh=viWaVDgZggRIC+o1djZ9IF495Y7uvJgX50ROW6lgb8E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=EGulxQ0aRmTNruUx3GKzXeud8BJciXVftEVkUSyTpcOIM3yhzQuVhvCx5B9WS1ARx
-	 bg41Z/eMW1yPZASeWOrhYDYnZTdeW044e9NidLVmOIAnzU5UhyMCIZKgYgrtedg6dc
-	 2xDec3CDR5P8CE7J6UeZsWwU3Mtg+td3ATN0DqSmA0R9nWvUsETe5phgQXIL5Mul+L
-	 EPrIfxggPTVih0FGqZPxlxbOthFTyJ+nbXCzfr1U2twCPPGyrbUqBRk+B0TSr7IrO3
-	 9RNrFlvNi3Hm8nDBzg/XqV8g5GBnPKu3Wd9gM9Tb3mIexbcPpplmAQqhUe2gGD8mcY
-	 yZtgOYUUuThaQ==
-Date: Tue, 26 Dec 2023 09:20:23 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 11/34] function_graph: Have the instances use their
- own ftrace_ops for filtering
-Message-Id: <20231226092023.2383d0d05c1120c094302685@kernel.org>
-In-Reply-To: <170290522555.220107.1435543481968270637.stgit@devnote2>
-References: <170290509018.220107.1347127510564358608.stgit@devnote2>
-	<170290522555.220107.1435543481968270637.stgit@devnote2>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6DCA28
+	for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 01:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Szcr14JNlz4f3khr
+	for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 09:38:57 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 91AC41A0855
+	for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 09:39:00 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgDniEexLopldSkREw--.499S2;
+	Tue, 26 Dec 2023 09:39:00 +0800 (CST)
+Subject: Re: Using BPF_MAP_TYPE_LPM_TRIE for string matching
+From: Hou Tao <houtao@huaweicloud.com>
+To: Dominic <d.dropify@gmail.com>, bpf@vger.kernel.org
+References: <CAJxriS06VxYSaCoo0WT2LtUPPwXopyMHr=-FyR5qRoeGWguBZg@mail.gmail.com>
+ <b9262f12-73e8-a090-1197-2cf380ba3cea@huaweicloud.com>
+Message-ID: <72cac21d-f973-a40c-35de-cc7942ecae06@huaweicloud.com>
+Date: Tue, 26 Dec 2023 09:38:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+In-Reply-To: <b9262f12-73e8-a090-1197-2cf380ba3cea@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgDniEexLopldSkREw--.499S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArW3Aw1kJF4kur1rAry7Jrb_yoW8Gr47pa
+	yF9ayFyF4kJr1kKwnaq3y8Wr98ArsY9w4UAFyDGrZaq34DWF1jvF1xJw40ya47Jr1DG347
+	Xa1Fv34kAa1UAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hi,
 
-On Mon, 18 Dec 2023 22:13:46 +0900
-"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
-> @@ -408,15 +395,51 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->  	return -EBUSY;
->  }
->  
-> +/* This is called from ftrace_graph_func() via ftrace */
-> +int function_graph_enter_ops(unsigned long ret, unsigned long func,
-> +			     unsigned long frame_pointer, unsigned long *retp,
-> +			     struct fgraph_ops *gops)
-> +{
-> +	struct ftrace_graph_ent trace;
-> +	int index;
-> +	int type;
-> +
+On 12/25/2023 10:24 PM, Hou Tao wrote:
+> Hi,
+>
+> On 12/22/2023 8:05 PM, Dominic wrote:
+>> Can BPF_MAP_TYPE_LPM_TRIE be used for string matching? I tried it but
+>> the matching doesn't work as expected.
+> Yes. LPM_TRIE will work for string matching.  Did you setup the key size
+> of the map and the prefixlen field of bpf_lpm_trie_key correctly ?
+> Because the unit of key_size is in-bytes and it should be the maximal
+> length of these strings, but the unit of prefixlen is in-bits and it is
+> the length of string expressed in bits. And could you share the steps on
+> how you used it ?
 
-Here,  I found that this needs to check whether the fgraph_array[gops->idx]
-is still valid or not. When unregistering the fgraph, fgraph_array[idx] is
-cleared (with fgraph_stub) and disable ftrace. So there is a chance to hit
-this and it will mess up the shadow stack because gops->idx is already invalid.
+Forgot to mention the trick when using LPM_TRIE for string matching.
+Because LPM_TRIE uses longest prefix matching to find the target
+element, so using the string abcd as key to lookup LPM_TRIE will match
+the string abc saved in LPM_TRIE and it is not we wanted. To fix that,
+we need to add the terminated null byte of the string to the key, so the
+string abc\0 will not be the prefix of the string abcd\0. The code
+snippet looks as follows.
 
-Thank you,
+map_fd = bpf_map_create(BPF_MAP_TYPE_LPM_TRIE, name,
+sizeof(bpf_lpm_trie_key) + max_string_length + 1, value_size,
+max_entries, &opts);
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+key.prefixlen = (strlen(str) + 1) * 8;
+memcpy(key.data, str, strlen(str) + 1);
+bpf_map_update_elem(map_fd, &key, &value, BPF_NOEXIST);
+
+>
+>> Thanks & Regards,
+>> Dominic
+>>
+>> .
+>
+> .
+
 
