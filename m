@@ -1,85 +1,141 @@
-Return-Path: <bpf+bounces-18673-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18674-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8769881E707
-	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 12:06:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A9AA81E797
+	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 14:22:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B90FB1C21F0A
-	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 11:06:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A01781F22811
+	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 13:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA93C4E1BC;
-	Tue, 26 Dec 2023 11:06:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0CC4EB4C;
+	Tue, 26 Dec 2023 13:22:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IO0IE05L"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J4L5rAOf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 425A94E1A1
-	for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 11:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-67f911e9ac4so37230636d6.3
-        for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 03:06:38 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439264EB35
+	for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 13:22:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2ccc41e1105so11215041fa.0
+        for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 05:22:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703588797; x=1704193597; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P5P85/21DkVDTU0e9tO3V+0IhDVl6xeXMSjQT+g8krI=;
-        b=IO0IE05LyQOLlBzNVCloFXA1DJ260ESQL32IJTdNFO5qJSBUrImkX80LhD9nA7Isb7
-         6BMAdtO1bLQ6LUBCc/d/6h8bdZSzcTcIzBOEVauJ27g+vTst3AJEWJwyAlgYMzHFwtDP
-         y/5oAgwcOoglDQ4djWNoRaluswBdTUfxZXltKVWhI2UIqtuMcKSyP5enH8Z5tkyurtqe
-         rsRyIwNcMXAJI/Jx5jUSZNKmEFAaU6wZ6SdTXHxPqJ9LL0mBYv3QiZ6LEKy7lepWGxBy
-         TCQNTq8c9wcDGgUt3qDlupgMBzvy3qeMeMT8pvqaanIthto9Lb4np12mAxuVEatYUhjg
-         Zfdw==
+        d=suse.com; s=google; t=1703596933; x=1704201733; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CR5Mc6S1wCj7Fjrv1MlaC7BI2JRcmGN+tCmj6tVa1EY=;
+        b=J4L5rAOfh7bGj6TxHaPH/s8tGriFNUOuCsRhtpwZ62slFmHk/eyYyBsvKkXoM8SRMq
+         mcNFrSuzMpiPwmWs57bX/PLID6vdZsGYiJTLdUd6PwcqANZ9/kjywE+XlXwtKX0NfiY/
+         SASTUiTVvXEE4vN/zCzTqdpz8y+oUt/72PYc5fVRCczJLIZL8oTnV5ZDupGJfO5Nk7GF
+         12fcMpLh85yMZ69/k13G86omfTYgqHUBqm5ywKidkzbJnF9gsH8t65CNhfguxr8Dx32A
+         nT7sFBmgXug4CpshkW1/abafQmTeuveFPwry5V1KZpLxYAOQzLyiNzvveMhU+teyufdZ
+         iO3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703588797; x=1704193597;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P5P85/21DkVDTU0e9tO3V+0IhDVl6xeXMSjQT+g8krI=;
-        b=IZV/Fd3oy9K+P+RusDEcihJC9UaN2SVal224tqa9J522N3AGD/7shEuutiy95l+3xx
-         hiNd4d40ZOw0uFO/CSdFs5Sd8S1Rsg/xzqkrGyEepRSVv90SBM100RCng9Vo6ITYvbzL
-         N+Li9Nd6VVnR3doe3Jf+UQbWDaplizcATm808vuaYWU/Gd+GbSYIJrCaJFGkEL3qZ949
-         BNhDm78vw2ADs2XrLDrWGpRINhmiXfAfujXKUHSNoq602SA36dcEwoPxBGu9HoV8wtKo
-         6m8+/BItdlt1jMS3ET8hlx+JzWEYnMmD9zvmM6AtjnIyC8sQgMDCllHW8O2j/RsbdykT
-         mxjQ==
-X-Gm-Message-State: AOJu0YyrzIgGPRlc0sp2UmbZlS8hgCWOUGTV4wvC4KZKcYuJm9IrKluX
-	dwWsdGkLP23Lh4BUzQ102P26SYp0eX5WyUW31fWpi4uef1Y=
-X-Google-Smtp-Source: AGHT+IFnVV9TVWvDIW0JkTlzXSsu59A3Rgd8X2srFZxrz/+XAnyt/4uu5RrEUrY0ZvZdJkjRv7yZxWv7aw8e7l8cGdI=
-X-Received: by 2002:ad4:558f:0:b0:67f:aec9:6929 with SMTP id
- f15-20020ad4558f000000b0067faec96929mr6414927qvx.71.1703588796706; Tue, 26
- Dec 2023 03:06:36 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703596933; x=1704201733;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CR5Mc6S1wCj7Fjrv1MlaC7BI2JRcmGN+tCmj6tVa1EY=;
+        b=pvEvWIyYng1Ai+zXM8H2/D/hi7pWATPsOLgRSfyFXaBrzTKeuloZ2ga4DbkfANA7fv
+         JHeoaockM1GApon5xh+9be++HdvrqRiupGSiLYnda7IKsgBdzXfbc/flU7rkUykFxhQ0
+         P1OnwI9QE3roAslQBbaGNEWkMQMCHQAT6Tw9n6+cR9XrUSxiV+UVcmlaPX44YRy2sATf
+         MSPer7vPT+YESH7po50BWLBRP5rfhl5ykeTvh6MxBnP8KSldgzmlkqCL3KMXSU1CuiNg
+         KzVWzobsrbP+FcODC6uMaQ1wdri5k7T+shZvKKagy9Vben9/proq98mdI+ct9udM1kbg
+         gSIQ==
+X-Gm-Message-State: AOJu0YyqXq7fqsIFzI3nFxGHyJOZi9jUFH4NLPQCFnpaHYEoXoT4E3mu
+	zAwY23UzgoIJsdLjH7itru7SqJ2w5MlhWg==
+X-Google-Smtp-Source: AGHT+IHhN61dvntgp6XWctfPX5u8iVH15VLdhnKHc3ENYWxrGgPtdwk0Uxk67Oon7SfRsIhRxfDing==
+X-Received: by 2002:a2e:9049:0:b0:2cc:7d70:fa45 with SMTP id n9-20020a2e9049000000b002cc7d70fa45mr3070024ljg.27.1703596933283;
+        Tue, 26 Dec 2023 05:22:13 -0800 (PST)
+Received: from u94a (2001-b011-fa04-d3bc-b2dc-efff-fee8-7e7a.dynamic-ip6.hinet.net. [2001:b011:fa04:d3bc:b2dc:efff:fee8:7e7a])
+        by smtp.gmail.com with ESMTPSA id jk15-20020a170903330f00b001d1c96a0c63sm10075044plb.274.2023.12.26.05.22.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 05:22:12 -0800 (PST)
+Date: Tue, 26 Dec 2023 21:22:03 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org, Maxim Mikityanskiy <maxim@isovalent.com>
+Subject: Re: [PATCH bpf-next 01/15] selftests/bpf: Fix the
+ u64_offset_to_skb_data test
+Message-ID: <j3ops2mlylgtb5ybkht75gu3dljlee6omu6zu4hsmnojssziyo@gnpsrrvh7f7l>
+References: <20231220214013.3327288-1-maxtram95@gmail.com>
+ <20231220214013.3327288-2-maxtram95@gmail.com>
+ <w7xg34uqlrnbb3o3rspng6y563astp3hkfxjtz3xp32rqr4a42@xgpeu7qevatg>
+ <ZYqtDuhpbS1ltM2Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Chris Rankin <rankincj@gmail.com>
-Date: Tue, 26 Dec 2023 11:06:25 +0000
-Message-ID: <CAK2bqVJPOE85VqfCEU07sjjE=530D_ac_AgcnFB6GdFKzN85AQ@mail.gmail.com>
-Subject: HID-BPF fails to initialise for Linux 6.6.8, claiming -EINVAL
-To: bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZYqtDuhpbS1ltM2Q@mail.gmail.com>
 
-Hi,
+On Tue, Dec 26, 2023 at 12:38:06PM +0200, Maxim Mikityanskiy wrote:
+> On Tue, 26 Dec 2023 at 17:52:56 +0800, Shung-Hsi Yu wrote:
+> > On Wed, Dec 20, 2023 at 11:39:59PM +0200, Maxim Mikityanskiy wrote:
+> > > From: Maxim Mikityanskiy <maxim@isovalent.com>
+> > > 
+> > > The u64_offset_to_skb_data test is supposed to make a 64-bit fill, but
+> > > instead makes a 16-bit one. Fix the test according to its intention. The
+> > > 16-bit fill is covered by u16_offset_to_skb_data.
+> > 
+> > Cover letter mentioned
+> > 
+> >   Patch 1 (Maxim): Fix for an existing test, it will matter later in the
+> >   series.
+> > 
+> > However no subsequent patch touch upon u64_offset_to_skb_data(). Was the
+> > followup missing from this series?
+> 
+> Thanks for your vigilance, but it's actually correct, sorry for not
+> making it clear enough. In patch 11 ("bpf: Preserve boundaries and track
+> scalars on narrowing fill") I modify u16_offset_to_skb_data, because it
+> becomes a valid pattern after that change. If I didn't change and fix
+> u64_offset_to_skb_data here, I'd need to modify it in patch 11 as well
+> (that's what I meant when I said "it will matter later in the series",
+> it's indeed subtle and implicit, now that I look at it), because it
+> would also start passing, however, that's not what we want, because:
+> 
+> 1. Both tests would essentially test the same thing: a 16-bit fill after
+> a 32-bit spill.
+> 
+> 2. The description of u64_offset_to_skb_data clearly says: "Refill as
+> u64". It's a typo in the code, u16->u64 makes sense, because we spill
+> two u32s and fill them as a single u64.
+> 
+> So, this patch essentially prevents wrong changes in a further patch.
 
-I have tried to add BPF LSM support to my 6.6.8 kernel, but HID-BPF
-fails with this message:
+Thank for the thorough explanation. Now I can see and agree that the
+u16->u64 change should be made. Digging back a big, the change also
+aligns with what's said in commit 0be2516f865f5 ("selftests/bpf: Tests
+for state pruning with u32 spill/fill") that introduced the check:
 
-[    3.210054] hid_bpf: error while preloading HID BPF dispatcher: -22
+  ... checks that a filled u64 register is marked unknown if the
+  register spilled in the same slack slot was less than 8B.
 
-At this point, I can only assume that the Kconfig rules are somehow
-incomplete and that there is a missing dependency somewhere.
+Side note: the r4 value in comment is still "R4=umax=65535", that
+probably should be updated as well now that r4 is unbounded.
 
-I have raised this issue as:
-https://bugzilla.kernel.org/show_bug.cgi?id=218320, where I have
-attached my kernel config. Can anyone see what I might be missing
-please?
-
-Thanks,
-Chris
+> [...]
+> > > -	r4 = *(u16*)(r10 - 8);				\
+> > > +	r4 = *(u64*)(r10 - 8);				\
+> > >  	r0 = r2;					\
+> > >  	/* r0 += r4 R0=pkt R2=pkt R3=pkt_end R4=umax=65535 */\
+> > >  	r0 += r4;					\
 
