@@ -1,121 +1,145 @@
-Return-Path: <bpf+bounces-18671-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18672-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 426EF81E6E0
-	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 11:16:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D97081E6EA
+	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 11:38:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0BB6282ED6
-	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 10:16:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4000E1F21EE8
+	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 10:38:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED5114E1A1;
-	Tue, 26 Dec 2023 10:15:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32FF62207A;
+	Tue, 26 Dec 2023 10:38:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dm2U+IJR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D724D594;
-	Tue, 26 Dec 2023 10:15:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8DxPIfQp4plmsEEAA--.387S3;
-	Tue, 26 Dec 2023 18:15:44 +0800 (CST)
-Received: from [10.130.0.149] (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxXOTNp4plEiMLAA--.41447S3;
-	Tue, 26 Dec 2023 18:15:41 +0800 (CST)
-Subject: Re: [PATCH] MAINTAINERS: Add BPF JIT for LOONGARCH entry
-To: Huacai Chen <chenhuacai@kernel.org>
-References: <20231225090730.6074-1-yangtiezhu@loongson.cn>
- <CAAhV-H4J6qRcC-nwJfVzoQYhOPKAMZmq=3xWuDpgdLrw4A2SPg@mail.gmail.com>
-Cc: Hengqi Chen <hengqi.chen@gmail.com>, loongarch@lists.linux.dev,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <e9f3c6c3-69f6-621c-92a2-9786f09fe3d6@loongson.cn>
-Date: Tue, 26 Dec 2023 18:15:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABE51E48A;
+	Tue, 26 Dec 2023 10:38:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-54cb4fa667bso5165464a12.3;
+        Tue, 26 Dec 2023 02:38:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703587090; x=1704191890; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RNFOYxOzxlD3oJvg3yOj9aCj5UZhCdf3rCeNzSOfqG8=;
+        b=dm2U+IJRUUvZ7F09Ka1ioIvd5Ho1ELYS7pYBnmx6A4w3edtN91NLS6UO+ZgIZMlkn5
+         sB9NaUoqQczGgdzXdF7hrUce4YYnP8zkwR9fYKgC0UcdxGwrXiWgSiY927uMtG4ZlnMe
+         1pK6w75dIjEdCz0opJqsUNsOkcjpNc0MNErdFRxa2KBqjh+4jS/snQNGd5BT52yTY0am
+         U6FV2mc0Agab30QjNcQS4lA2X7W5UvBXVGa4E70ivb96f1mPoBdorQLcMWGsCE1vvW2Q
+         abpk1DVTtKT+and/Q/odvmInQV4LPkjgOA7YIJHEm3itGPeBcThF78fSfn/dlSnntpz5
+         3ojQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703587090; x=1704191890;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RNFOYxOzxlD3oJvg3yOj9aCj5UZhCdf3rCeNzSOfqG8=;
+        b=aaSN037m2yHVE55vbC5Y9XM7DPFH1MU3XDsc1Ka95ohaA73VbmwIC7EtBLLoklmQeo
+         ojxYUMtxOwuKH+X8QeNyik0gFx0aXfkYklzK6y9492vLlC9F0Gn8hsbAgY3+wa9+K95n
+         qPUaX1KoV4SwbxGoAoGY3i1UJhujrkmjnVu+JIk0mVqFKF/zGv0cd3dTiwQO5ZXDwfOg
+         KfmyQo4FyyzvyWrjKqRbo5yOjrKwMixyp7C8FtOXr5UIDXmXcmIrcOOsCw+A6C/+D9NN
+         NeKDtmHqP2DXorawTp3WYWGPoPXeWpGq1jiFjl/gMJDZd0p0sN/6xVmC40BBn4b4RcSw
+         OHFg==
+X-Gm-Message-State: AOJu0YxSrexcuZUgqQErtUg2tbPLlY3DfrWpnUbW6CxEYzuUubCp9iI2
+	0QelqMtWSV2ioSX4o5kGPIo=
+X-Google-Smtp-Source: AGHT+IHonaeiY2gSwu5qqv1ZBX50s/xg0LHtnvm02YI8U59u8gTRBuC2W4DepMz6dOpBvHCZvtVYsA==
+X-Received: by 2002:a17:906:af93:b0:a26:9963:5e59 with SMTP id mj19-20020a170906af9300b00a2699635e59mr3155678ejb.77.1703587090279;
+        Tue, 26 Dec 2023 02:38:10 -0800 (PST)
+Received: from localhost ([185.220.101.83])
+        by smtp.gmail.com with ESMTPSA id t14-20020a170906608e00b00a26f20fa719sm1675374ejj.220.2023.12.26.02.38.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Dec 2023 02:38:09 -0800 (PST)
+Date: Tue, 26 Dec 2023 12:38:06 +0200
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+	Maxim Mikityanskiy <maxim@isovalent.com>
+Subject: Re: [PATCH bpf-next 01/15] selftests/bpf: Fix the
+ u64_offset_to_skb_data test
+Message-ID: <ZYqtDuhpbS1ltM2Q@mail.gmail.com>
+References: <20231220214013.3327288-1-maxtram95@gmail.com>
+ <20231220214013.3327288-2-maxtram95@gmail.com>
+ <w7xg34uqlrnbb3o3rspng6y563astp3hkfxjtz3xp32rqr4a42@xgpeu7qevatg>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H4J6qRcC-nwJfVzoQYhOPKAMZmq=3xWuDpgdLrw4A2SPg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxXOTNp4plEiMLAA--.41447S3
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Cw1rZFWrGw4rAw1UAFy7Arc_yoW8XF1rpw
-	48AFs8ArWkGr1xA3ZrK39avasIqrykCr92ga9Fk395ArnxZw43Gr18Xwn8uFW0qa10kFWI
-	vrn2934Sqa15JacCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE
-	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
-	AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
-	rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
-	CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
-	67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU25Ef
-	UUUUU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <w7xg34uqlrnbb3o3rspng6y563astp3hkfxjtz3xp32rqr4a42@xgpeu7qevatg>
 
+On Tue, 26 Dec 2023 at 17:52:56 +0800, Shung-Hsi Yu wrote:
+> On Wed, Dec 20, 2023 at 11:39:59PM +0200, Maxim Mikityanskiy wrote:
+> > From: Maxim Mikityanskiy <maxim@isovalent.com>
+> > 
+> > The u64_offset_to_skb_data test is supposed to make a 64-bit fill, but
+> > instead makes a 16-bit one. Fix the test according to its intention. The
+> > 16-bit fill is covered by u16_offset_to_skb_data.
+> 
+> Cover letter mentioned
+> 
+>   Patch 1 (Maxim): Fix for an existing test, it will matter later in the
+>   series.
+> 
+> However no subsequent patch touch upon u64_offset_to_skb_data(). Was the
+> followup missing from this series?
 
+Thanks for your vigilance, but it's actually correct, sorry for not
+making it clear enough. In patch 11 ("bpf: Preserve boundaries and track
+scalars on narrowing fill") I modify u16_offset_to_skb_data, because it
+becomes a valid pattern after that change. If I didn't change and fix
+u64_offset_to_skb_data here, I'd need to modify it in patch 11 as well
+(that's what I meant when I said "it will matter later in the series",
+it's indeed subtle and implicit, now that I look at it), because it
+would also start passing, however, that's not what we want, because:
 
-On 12/26/2023 12:05 PM, Huacai Chen wrote:
-> Also list the loongarch maillist? See the "KERNEL VIRTUAL MACHINE FOR
-> MIPS (KVM/mips)" entry.
+1. Both tests would essentially test the same thing: a 16-bit fill after
+a 32-bit spill.
 
-I think it is not necessary, it is duplicate.
+2. The description of u64_offset_to_skb_data clearly says: "Refill as
+u64". It's a typo in the code, u16->u64 makes sense, because we spill
+two u32s and fill them as a single u64.
 
-Because this file is used for get_maintainer.pl, and arch/loongarch/net/
-is a subdirectory of arch/loongarch, so when execute the command
+So, this patch essentially prevents wrong changes in a further patch.
 
-   ./scripts/get_maintainer.pl -f arch/loongarch/net/
-
-the outputs will include both bpf@ and loongarch@ maillists automatically.
-
-Thanks,
-Tiezhu
-
-> Huacai
->
-> On Mon, Dec 25, 2023 at 5:08 PM Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
->>
->> After commit 5dc615520c4d ("LoongArch: Add BPF JIT support"),
->> there is no BPF JIT for LOONGARCH entry, in order to maintain
->> the current code and the new features timely, just add it.
->>
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>  MAINTAINERS | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 7cef2d2ef8d7..3ba07b212d38 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -3651,6 +3651,13 @@ L:       bpf@vger.kernel.org
->>  S:     Supported
->>  F:     arch/arm64/net/
->>
->> +BPF JIT for LOONGARCH
->> +M:     Tiezhu Yang <yangtiezhu@loongson.cn>
->> +R:     Hengqi Chen <hengqi.chen@gmail.com>
->> +L:     bpf@vger.kernel.org
->> +S:     Maintained
->> +F:     arch/loongarch/net/
->> +
->>  BPF JIT for MIPS (32-BIT AND 64-BIT)
->>  M:     Johan Almbladh <johan.almbladh@anyfinetworks.com>
->>  M:     Paul Burton <paulburton@kernel.org>
->> --
->> 2.42.0
->>
->>
-
+> > Signed-off-by: Maxim Mikityanskiy <maxim@isovalent.com>
+> > [...]
+> >  SEC("tc")
+> >  __description("Spill u32 const scalars.  Refill as u64.  Offset to skb->data")
+> > -__failure __msg("invalid access to packet")
+> > +__failure __msg("math between pkt pointer and register with unbounded min value is not allowed")
+> >  __naked void u64_offset_to_skb_data(void)
+> >  {
+> >  	asm volatile ("					\
+> > @@ -253,7 +253,7 @@ __naked void u64_offset_to_skb_data(void)
+> >  	w7 = 20;					\
+> >  	*(u32*)(r10 - 4) = r6;				\
+> >  	*(u32*)(r10 - 8) = r7;				\
+> > -	r4 = *(u16*)(r10 - 8);				\
+> > +	r4 = *(u64*)(r10 - 8);				\
+> >  	r0 = r2;					\
+> >  	/* r0 += r4 R0=pkt R2=pkt R3=pkt_end R4=umax=65535 */\
+> >  	r0 += r4;					\
 
