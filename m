@@ -1,149 +1,139 @@
-Return-Path: <bpf+bounces-18677-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18678-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 568DD81E840
-	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 16:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC5A81E906
+	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 19:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8866D1C21676
-	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 15:59:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 062DC1C215B1
+	for <lists+bpf@lfdr.de>; Tue, 26 Dec 2023 18:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 793054F888;
-	Tue, 26 Dec 2023 15:59:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD46853E3B;
+	Tue, 26 Dec 2023 18:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="sXGNVCyp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03AE4F5F2
-	for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 15:59:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7b7fe6d256eso637592139f.1
-        for <bpf@vger.kernel.org>; Tue, 26 Dec 2023 07:59:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703606359; x=1704211159;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xKqABHvkxI9tRyf7K59TFrJ0M3NEAQM3qHeXYjfCyOc=;
-        b=ZTyJAcmqR1eiMO26YX9iZ4ZXAls9NHlBJ6ValH9Pai2lGkws5Tdmw8Fw3wCbRRwX0I
-         Py/277bTBdhvnKFGUHbiZuhzpoYu/FaVDYJT6sMQS3LIqwXxttTHFXZY20TZqmw33F2v
-         1tCbeLFdalEc+VPtwoYX8dSU9FktpkuCHA9Ulff0bpbv6SCtNe8SId8SPB0kk3uqrWiA
-         kht0Jq+L4offdcTo3gp/y0E0oIjV5dmzRQJQOgaB+b39ceFhhJRcWkWMJ8h8du1Jas3K
-         IZ9P6nu6vF6F9X43UilAK5Q+gTGlHNtZWsRBnHeGnhkZ4/bQ/Q2LESx10QCiL/QAYhJ4
-         Xsqw==
-X-Gm-Message-State: AOJu0Yyix7rRGkaW/wnfmEz0SWwD4JZrEbxBVHGWeL4TAEwwjjSSltwv
-	1Ee6ZNZ8uFF534D3o8ePL+dQEBTmA1pOYQZyPBwdBQlfBStJ
-X-Google-Smtp-Source: AGHT+IFYdVQOgeJNL01WZvVJm0kp2LoIHqrruHZ5LRJl9WCkA4ny8esb0VoDSz0n2XB3QJvEym4hfLsGwi2X00TF6f4CH5+AXXiL
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0410453E39;
+	Tue, 26 Dec 2023 18:24:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1703615055; x=1704219855; i=markus.elfring@web.de;
+	bh=f/Jl+Efb4DezWv7JjmB2u06F6X9iJ9wWuCDtqZqFeRI=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=sXGNVCypFGIAsK2RhOYeKeJcBXK67emWhsnUVXWiS516ZyuRkp7swYAV0uPfTp/s
+	 rf4/PxzykXj5No3yhYFHysooCljMX1Yc7znaiaz4B0eAgQGlK7rj38hdFkIiuy56J
+	 bmKQCEPGLwIO4O+mSGRvEaCkSvwqoLa3xO3uTI5l0VlB/glh8EFeN13xluHtoTXxy
+	 w0BsIZ/+mkgffR2WBfCDQA076d+IgxOtivut6fSRkSwrnCXSyZj59Ff5aoctIPUyd
+	 KMKrodkijx2nsde3PY5Kd9a2nEIEJ/zPTRCJZKpv45nmV4z4tZai4TPMTD38Gw4P+
+	 Wbu/RU5+TVUEZBtUjg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mvslx-1r151E32WN-00sV6f; Tue, 26
+ Dec 2023 19:24:15 +0100
+Message-ID: <3203eb44-6e69-4bda-b585-426408cb75ee@web.de>
+Date: Tue, 26 Dec 2023 19:24:14 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c28:b0:35f:d4dc:1b1d with SMTP id
- m8-20020a056e021c2800b0035fd4dc1b1dmr774874ilh.1.1703606359070; Tue, 26 Dec
- 2023 07:59:19 -0800 (PST)
-Date: Tue, 26 Dec 2023 07:59:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dea025060d6bc3bc@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in ___bpf_prog_run (4)
-From: syzbot <syzbot+853242d9c9917165d791@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
-	martin.lau@linux.dev, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: bpf@vger.kernel.org, linux-input@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ David Vernet <void@manifault.com>, Jiri Kosina <jikos@kernel.org>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] HID: bpf: One function call less in
+ call_hid_bpf_rdesc_fixup() after error detection
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:K8fF/UijAIywnS52YDqNMULxk3+NZg9vn/tgRlNElb24o0WwTPy
+ VrprFxvBxar+Yk/bUyDiW3oFnHnY3d9QkFy4oTSTjHa+DVPlGrkiLHcX29RQV/JRckCY7tG
+ tURb2Nx0wHr7uGfDz3PyL+uKqEFOyNqfdV4m/IyWF0bu/qPDYbW3StSulfsTU4PtarOzrSZ
+ thlRopo4UMn+BP4/reC6Q==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ACMj+myOfk8=;jpf3JzHWCKMdYEDE/lVe892U+x4
+ +ohp9E/66yrl6WArelsmeCzCtQLU5fI+nQz7+zbw8Rh7E4VS27xlSmLkUV5qOh2xnr6qIfy4Q
+ 3dy+CqcHiggMWvfaECy2Z6m3vxQ9Bm0Mc5dyCpzFmkQzVujDTRaSu7DIVbCNe21prKltoKpXb
+ tdocUzGGyrxAtCz8mFjQL3ZDccW8JMS8bw4ZkghMy4kpgCn2GkN2sjxSiwBbHV6nX0zRsZ0op
+ QbnDeY5zK23XqNZovTNe+OHJudY1lRWl6kHVDBtaUM3xAOHHLd7O1v98JfVSfXaYXJzgG4/pK
+ BDshva6Z4zkX+TQxn8Ft4yehcRikfPJ0NhDQW5K3HkxykkW6o09ES8fdGs/nKA5WNdgQalVG1
+ rFtwmh18kyx720dpBmhBcKqdu71ptDhEPPfdOk8mLJhlvxOvVVBH1vMBqBdDcjUY6s8J7o0Nd
+ RLXVJ+bKBzm35jVdHDvLMzCUAbVJRYz6kURg7LnIPXfyXsnwUOtujb+yPPbb+1oRa4KloCizJ
+ XFX0IGTJn2hIoSJOUnw0XGX7Ztpt0femIsvtemDdevZ0cAmIX3BvW2m3tjUX0g3TqmdILQQ2u
+ YFg6ecDBEb0LpRy+SY5iaXrE7GKrO41zkVDwI32FG0l5Q5yR6Y/ey/onqVUyjNDdR5kERT1jf
+ kt5JmgkuFbGtQt61GghABhN220XPNDtW6WjNRsoRYaqWDYcXoeim83XjKVapCm2gRt9Xyjzdn
+ KBngG0gisHHl3IVS6KTFtGXXJ+lAUGsqERTaHsanM0N5Ue0UWO3obSXYryiqe+6wUB0VTX+IU
+ t6FCx2S7nGCeseWuES59HYJybPKMQJEJVuSreQn2CvV9mIHPrQTyiORK4uLp+U/UWU0aTahmB
+ Lhv7kA4oulJjI6g0RQA0wVC0fEzAksp+9AltVkfGI0P/MnG5P8tWuMIuVCJn7swQbV4NwKM3R
+ h08qWA==
 
-Hello,
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Tue, 26 Dec 2023 19:13:25 +0100
 
-syzbot found the following issue on:
+The kfree() function was called in one case by the
+call_hid_bpf_rdesc_fixup() function during error handling
+even if the passed data structure member contained a null pointer.
+This issue was detected by using the Coccinelle software.
 
-HEAD commit:    55cb5f43689d Merge tag 'trace-v6.7-rc6' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1275e59ee80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4a65fa9f077ead01
-dashboard link: https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Thus adjust jump targets.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ drivers/hid/bpf/hid_bpf_dispatch.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ab88d88fa1d1/disk-55cb5f43.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/587fd1186192/vmlinux-55cb5f43.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c7bbb5741191/bzImage-55cb5f43.xz
+diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_=
+dispatch.c
+index d9ef45fcaeab..c84fe55be5ed 100644
+=2D-- a/drivers/hid/bpf/hid_bpf_dispatch.c
++++ b/drivers/hid/bpf/hid_bpf_dispatch.c
+@@ -118,17 +118,17 @@ u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev=
+, u8 *rdesc, unsigned int *s
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
+ 	ctx_kern.data =3D kzalloc(ctx_kern.ctx.allocated_size, GFP_KERNEL);
+ 	if (!ctx_kern.data)
+-		goto ignore_bpf;
++		goto dup_mem;
 
-=====================================================
-BUG: KMSAN: uninit-value in ___bpf_prog_run+0x8a26/0xdb80 kernel/bpf/core.c:2037
- ___bpf_prog_run+0x8a26/0xdb80 kernel/bpf/core.c:2037
- __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2203
- bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
- bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
- bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
- __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
- __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
- __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+ 	memcpy(ctx_kern.data, rdesc, min_t(unsigned int, *size, HID_MAX_DESCRIPT=
+OR_SIZE));
 
-Uninit was stored to memory at:
- ___bpf_prog_run+0x8567/0xdb80
- __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2203
- bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
- bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
- bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
- __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
- __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
- __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+ 	ret =3D hid_bpf_prog_run(hdev, HID_BPF_PROG_TYPE_RDESC_FIXUP, &ctx_kern)=
+;
+ 	if (ret < 0)
+-		goto ignore_bpf;
++		goto free_data;
 
-Local variable stack created at:
- __bpf_prog_run512+0x45/0xe0 kernel/bpf/core.c:2203
- bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
+ 	if (ret) {
+ 		if (ret > ctx_kern.ctx.allocated_size)
+-			goto ignore_bpf;
++			goto free_data;
 
-CPU: 1 PID: 13775 Comm: syz-executor.3 Not tainted 6.7.0-rc6-syzkaller-00022-g55cb5f43689d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-=====================================================
+ 		*size =3D ret;
+ 	}
+@@ -137,8 +137,9 @@ u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev, =
+u8 *rdesc, unsigned int *s
 
+ 	return rdesc;
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+- ignore_bpf:
++free_data:
+ 	kfree(ctx_kern.data);
++dup_mem:
+ 	return kmemdup(rdesc, *size, GFP_KERNEL);
+ }
+ EXPORT_SYMBOL_GPL(call_hid_bpf_rdesc_fixup);
+=2D-
+2.43.0
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
