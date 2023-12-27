@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-18693-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18694-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACB5681EF38
-	for <lists+bpf@lfdr.de>; Wed, 27 Dec 2023 14:42:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CE9081EF39
+	for <lists+bpf@lfdr.de>; Wed, 27 Dec 2023 14:43:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36F7C282736
-	for <lists+bpf@lfdr.de>; Wed, 27 Dec 2023 13:42:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C177F1C219F9
+	for <lists+bpf@lfdr.de>; Wed, 27 Dec 2023 13:43:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA9C44C94;
-	Wed, 27 Dec 2023 13:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519E544C94;
+	Wed, 27 Dec 2023 13:43:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nz53ItIn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MS/ESYJW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40C2744C83
-	for <bpf@vger.kernel.org>; Wed, 27 Dec 2023 13:41:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B10644C8A
+	for <bpf@vger.kernel.org>; Wed, 27 Dec 2023 13:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-427e7aa0207so5565191cf.2
-        for <bpf@vger.kernel.org>; Wed, 27 Dec 2023 05:41:57 -0800 (PST)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3bbbf5a59b7so926457b6e.3
+        for <bpf@vger.kernel.org>; Wed, 27 Dec 2023 05:43:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703684516; x=1704289316; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703684614; x=1704289414; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eGYkgO+v5dM4VLhHEOXOcJg+nv/40e6lm1iAJuP4cT4=;
-        b=Nz53ItIny6nS8pqS8yFNakrGiZaTtcVG5YWSzx/vk9EGA//L6hn2ZwD5Ncc61EVKlJ
-         V9tH9WpWhArMo3DZgFUt2pqFwB4dpq5WX9DPMzZ6PfU/bC4KmiU9KaclOAPrnxWOdfOg
-         osxHSmGFkAJGef1OulNJfOGtTcz/vOXw6/4yRfSXYtC1JVDshGn3bYFp7zC4LDZmFqSE
-         gmuicDY5Dex5m0FNAE8hIK/VyE/AHXxRLt8g0jiyFzXuyaFjq5Q0gWGkzZHRSVcIQAq+
-         AjDL/LFKTXidrAUftSmoiMUviBKUyGTfjpjH9Yty2TaFnlluzWgz8Ja5ZKQpvdx0G7pa
-         xe+w==
+        bh=ghPnYABuGzwzAX7KSAoS94qyMhu1dseUeyq2m6hXjNA=;
+        b=MS/ESYJWSf+EJNsS9NNgpK9NN3nWcj8rVfYOJ2n1uUPAyrB3ydKiMqJU4/MUeONiY3
+         7LS4iKZA/8X99sR3g9RF6n/E1vYosVMBAbiSdLnbL0IvL78x5Fsp2OHNslE97Cio9h9r
+         CGiGiTGsZLImXhU6B44DWobwE55HRjXTHWBRsg5RmQJGueecGpUMDc0tw/dtXsoWKyaS
+         VhOyqIBLarNtSRTWtG+FqysbpOrX1IUHcmC4FglLSVsFCsxOm4uncghqrIrQwdff0gmG
+         W9PkpQxiOW324zS9ABplis3AN8Y78Sb8EzW8JjaWW6F0vN8P0bUI/XZvyj3Tqs1Azlcj
+         P5og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703684516; x=1704289316;
+        d=1e100.net; s=20230601; t=1703684614; x=1704289414;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eGYkgO+v5dM4VLhHEOXOcJg+nv/40e6lm1iAJuP4cT4=;
-        b=C304g63zYVSOVaLhDOV/c7GJOidZGgnr7o56iTVBq3qZ8FzSMhj1fdoKAnEfzIqyNO
-         Qg68kS48RF2xvhN1jjavV6U+BMfO2+nO+ZHg4WlAjflyW+8JCdoFzkPciIEjKUJTx4h4
-         HBdohpSqADNEIHrmCpIesZmexGjr3oMQJSt3K16DUlbeOtItsnCHcqwWyzQux8iEyH2u
-         /c92Xjkrdl0+NHVnr3lwdt8kSetPSfcYDfOENySa3ptvbmibMVouNYAq9X2wxyG8ia9/
-         UUM4zgcJ5KkGkEfeOL3xAQfWFenB16Txqcpwgq6D74Q0IL2PpfYMz5tnxPUV1AgAXxDd
-         bBGw==
-X-Gm-Message-State: AOJu0YxYCwULAOVgo4PfDk7hqr8dPFfYQpeUnPHVaKkpMbXhUZbXBv2o
-	eWuagSVo0EF3TBBAd+BSQQhW16y9BEAbsyR9zbc=
-X-Google-Smtp-Source: AGHT+IHGf9I/zb8m9acOZ0iBcevkWCkj9WuY2fOazZahOGnEMUqAuUpqoj9T3gCqlLWRkb5leMi/vkMRg+BiwmcWR74=
-X-Received: by 2002:a0c:dd10:0:b0:67f:bb8c:880b with SMTP id
- u16-20020a0cdd10000000b0067fbb8c880bmr7906956qvk.56.1703684515984; Wed, 27
- Dec 2023 05:41:55 -0800 (PST)
+        bh=ghPnYABuGzwzAX7KSAoS94qyMhu1dseUeyq2m6hXjNA=;
+        b=gxXM5yjGi74UjaoQNsyFyV5jkELVQs3DaeWfev0x/R5Psw7QXiGq/IS+n6Y7ScxZRR
+         MBZofrEasctM0RGqVcVfF71JEX3/6jK4FQP+KYIT5hTkWkhMSYuDGyH5dE63RhRCS5Hl
+         xbhAFrROlq4x27vvsCmsKn0mKv3W2ZBYxcKVGPInzzrNoCKh2sTow9fYj3x7hmxttZHt
+         H9WaN0iOzwTQE8RPLBzepKsrUCIX45oMKPvcBvGTTUpEBFYtu5xBsGEYP8qQPcyFx3A7
+         CksGbbypQkJrWHaLmpTo5ew8ghwNLIwoGyuIrGyxU9trTCjj2LIv/29AtjmbSJezuOiB
+         X/Gw==
+X-Gm-Message-State: AOJu0YxmstwpuX8NNMazdxXiOsU00Ne4wGdBR/VRnwlOOJSU5B/GrZ9t
+	q57pT6dNPWLbwSO+pp35r7jTcWxdd6aHThG4vRw=
+X-Google-Smtp-Source: AGHT+IHq7fBsehRR4iMr3lyoGakho2zHuMn7EAbHIHEExMxZqNd3LVloQHL2z088FJyP0mvhTv3H6VLR6u3OnFaJTEw=
+X-Received: by 2002:a05:6808:1814:b0:3b8:43b6:1e34 with SMTP id
+ bh20-20020a056808181400b003b843b61e34mr9832850oib.30.1703684614185; Wed, 27
+ Dec 2023 05:43:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231227100130.84501-1-lulie@linux.alibaba.com> <20231227100130.84501-2-lulie@linux.alibaba.com>
-In-Reply-To: <20231227100130.84501-2-lulie@linux.alibaba.com>
+References: <20231227100130.84501-1-lulie@linux.alibaba.com> <20231227100130.84501-4-lulie@linux.alibaba.com>
+In-Reply-To: <20231227100130.84501-4-lulie@linux.alibaba.com>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 27 Dec 2023 21:41:19 +0800
-Message-ID: <CALOAHbCocE7r4o4oGgQ+BeuSxf+-op9hnEYnq_7zdHf_VEf-LQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1 1/3] bpf: implement relay map basis
+Date: Wed, 27 Dec 2023 21:42:56 +0800
+Message-ID: <CALOAHbDDx8K3qf623KOo-EYFksTRLgHOgDw0WcsZsrTXukO0fw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1 3/3] selftests/bpf: add bpf relay map selftests
 To: Philo Lu <lulie@linux.alibaba.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
 	john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev, 
@@ -80,85 +80,28 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, Dec 27, 2023 at 6:01=E2=80=AFPM Philo Lu <lulie@linux.alibaba.com> =
 wrote:
 >
-> BPF_MAP_TYPE_RELAY is implemented based on relay interface, which
-> creates per-cpu buffer to transfer data. Each buffer is essentially a
-> list of fix-sized sub-buffers, and is exposed to user space as files in
-> debugfs. All of these compose a "relay chanel", which is the kernel of a
-> relay map.
->
-> Currently, attr->max_entries is used as subbuf size and attr->map_extra
-> is used as subbuf num, and the default value of subbuf num is 8. A new
-> map flag named BPF_F_OVERWRITE is also introduced to set overwrite mode
-> of relay map.
->
-> A relay map is represented as a directory in debugfs, and the per-cpu
-> buffers are files in this directory. Users can get the data through read
-> or mmap.
->
-> To avoid directory name conflicting, relay_map_update_elem is provided
-> to set the name. In fact, we create the relay channel and buffers with
-> BPF_MAP_CREATE, and create relay files and bind them with the channel
-> using BPF_MAP_UPDATE_ELEM. Generally, map_update_elem should be called
-> once and only once.
->
-> Here is an example:
-> ```
-> struct {
-> __uint(type, BPF_MAP_TYPE_RELAY);
-> __uint(max_entries, 4096);
-> } my_relay SEC(".maps");
-> ...
-> char dir_name[] =3D "relay_test";
-> bpf_map_update_elem(map_fd, NULL, dir_name, 0);
-> ```
->
-> Assume there are 2 cpus, we will have 2 files:
-> ```
-> /sys/kerenl/debug/relay_test/my_relay0
-> /sys/kerenl/debug/relay_test/my_relay1
-> ```
-
-Is there a specific reason why relayfs necessitates creating an
-individual file for each CPU? Alternatively, are there any approaches
-available to collectively expose all CPUs using a single file?
-
-When dealing with a large number of available CPUs, such as 236,
-reading the buffer using the command `cat
-/sys/kernel/debug/relay_test/my_relay{0...236} | awk '{}' ` can become
-a bit cumbersome and tedious.
-
-> Each represents a per-cpu buffer with size 8 * 4096 B (there are 8
-> subbufs by default, each with size 4096B).
+> The operations of relay map create, update_elem, and output are tested.
+> The test is borrowed from ringbuf tests, where 2 samples are written
+> into the relay channel, and we get the samples by reading the files.
+> Overwriting mode is also tested, where the size of relay buffer equals
+> sample size and just the last sample can be seen.
 >
 > Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
 > ---
->  include/linux/bpf_types.h |   3 +
->  include/uapi/linux/bpf.h  |   7 ++
->  kernel/bpf/Makefile       |   3 +
->  kernel/bpf/relaymap.c     | 199 ++++++++++++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c      |   2 +
->  5 files changed, 214 insertions(+)
->  create mode 100644 kernel/bpf/relaymap.c
+>  tools/include/uapi/linux/bpf.h                |   7 +
+>  tools/testing/selftests/bpf/Makefile          |   2 +-
+>  tools/testing/selftests/bpf/config            |   1 +
+>  .../selftests/bpf/prog_tests/relay_map.c      | 197 ++++++++++++++++++
+>  .../selftests/bpf/progs/test_relay_map.c      |  69 ++++++
+>  5 files changed, 275 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/relay_map.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_relay_map.c
 >
-> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> index fc0d6f32c687..c122d7b494c5 100644
-> --- a/include/linux/bpf_types.h
-> +++ b/include/linux/bpf_types.h
-> @@ -132,6 +132,9 @@ BPF_MAP_TYPE(BPF_MAP_TYPE_STRUCT_OPS, bpf_struct_ops_=
-map_ops)
->  BPF_MAP_TYPE(BPF_MAP_TYPE_RINGBUF, ringbuf_map_ops)
->  BPF_MAP_TYPE(BPF_MAP_TYPE_BLOOM_FILTER, bloom_filter_map_ops)
->  BPF_MAP_TYPE(BPF_MAP_TYPE_USER_RINGBUF, user_ringbuf_map_ops)
-> +#ifdef CONFIG_RELAY
-> +BPF_MAP_TYPE(BPF_MAP_TYPE_RELAY, relay_map_ops)
-> +#endif
->
->  BPF_LINK_TYPE(BPF_LINK_TYPE_RAW_TRACEPOINT, raw_tracepoint)
->  BPF_LINK_TYPE(BPF_LINK_TYPE_TRACING, tracing)
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 754e68ca8744..143b75676bd3 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index 7f24d898efbb..1e545bfe701f 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
 > @@ -951,6 +951,7 @@ enum bpf_map_type {
 >         BPF_MAP_TYPE_BLOOM_FILTER,
 >         BPF_MAP_TYPE_USER_RINGBUF,
@@ -191,264 +134,329 @@ fault).
 >                  */
 >                 __u64   map_extra;
 >         };
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index f526b7573e97..45b35bb0e572 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -10,6 +10,9 @@ obj-$(CONFIG_BPF_SYSCALL) +=3D syscall.o verifier.o ino=
-de.o helpers.o tnum.o log.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D bpf_iter.o map_iter.o task_iter.o prog_it=
-er.o link_iter.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D hashtab.o arraymap.o percpu_freelist.o bp=
-f_lru_list.o lpm_trie.o map_in_map.o bloom_filter.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D local_storage.o queue_stack_maps.o ringbu=
-f.o
-> +ifeq ($(CONFIG_RELAY),y)
-> +obj-$(CONFIG_BPF_SYSCALL) +=3D relaymap.o
-> +endif
->  obj-$(CONFIG_BPF_SYSCALL) +=3D bpf_local_storage.o bpf_task_storage.o
->  obj-${CONFIG_BPF_LSM}    +=3D bpf_inode_storage.o
->  obj-$(CONFIG_BPF_SYSCALL) +=3D disasm.o mprog.o
-> diff --git a/kernel/bpf/relaymap.c b/kernel/bpf/relaymap.c
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
+ts/bpf/Makefile
+> index 617ae55c3bb5..8cebb3810d50 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -427,7 +427,7 @@ LINKED_SKELS :=3D test_static_linked.skel.h linked_fu=
+ncs.skel.h               \
+>  LSKELS :=3D fentry_test.c fexit_test.c fexit_sleep.c atomics.c          =
+ \
+>         trace_printk.c trace_vprintk.c map_ptr_kern.c                   \
+>         core_kern.c core_kern_overflow.c test_ringbuf.c                 \
+> -       test_ringbuf_map_key.c
+> +       test_ringbuf_map_key.c test_relay_map.c
+>
+>  # Generate both light skeleton and libbpf skeleton for these
+>  LSKELS_EXTRA :=3D test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.=
+c \
+> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests=
+/bpf/config
+> index c125c441abc7..8de1adf587f0 100644
+> --- a/tools/testing/selftests/bpf/config
+> +++ b/tools/testing/selftests/bpf/config
+> @@ -87,3 +87,4 @@ CONFIG_VSOCKETS=3Dy
+>  CONFIG_VXLAN=3Dy
+>  CONFIG_XDP_SOCKETS=3Dy
+>  CONFIG_XFRM_INTERFACE=3Dy
+> +CONFIG_RELAY=3Dy
+> diff --git a/tools/testing/selftests/bpf/prog_tests/relay_map.c b/tools/t=
+esting/selftests/bpf/prog_tests/relay_map.c
 > new file mode 100644
-> index 000000000000..02b33a8e6b6c
+> index 000000000000..bd9c1e62ca78
 > --- /dev/null
-> +++ b/kernel/bpf/relaymap.c
-> @@ -0,0 +1,199 @@
+> +++ b/tools/testing/selftests/bpf/prog_tests/relay_map.c
+> @@ -0,0 +1,197 @@
 > +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/cpumask.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/filter.h>
-> +#include <linux/relay.h>
-> +#include <linux/slab.h>
+> +#define _GNU_SOURCE
+> +#include <linux/compiler.h>
 > +#include <linux/bpf.h>
-> +#include <linux/err.h>
+> +#include <sys/sysinfo.h>
+> +#include <test_progs.h>
+> +#include <sched.h>
 > +
-> +#define RELAY_CREATE_FLAG_MASK (BPF_F_OVERWRITE)
+> +#include "test_relay_map.lskel.h"
 > +
-> +struct bpf_relay_map {
-> +       struct bpf_map map;
-> +       struct rchan *relay_chan;
-> +       struct rchan_callbacks relay_cb;
+> +static int duration;
+> +
+> +/* file names in debugfs */
+> +static const char dirname[]            =3D "relay_map_selftest";
+> +static const char mapname[]            =3D "relay_map";
+> +static const char mapname_ow[] =3D "relay_map_ow";
+> +struct relay_sample {
+> +       int pid;
+> +       int seq;
+> +       long value;
+> +       char comm[16];
 > +};
 > +
-> +static struct dentry *create_buf_file_handler(const char *filename,
-> +                                      struct dentry *parent, umode_t mod=
-e,
-> +                                      struct rchan_buf *buf, int *is_glo=
-bal)
-> +{
-> +       /* Because we do relay_late_setup_files(), create_buf_file(NULL, =
-NULL, ...)
-> +        * will be called by relay_open.
-> +        */
-> +       if (!filename)
-> +               return NULL;
+> +static int sample_cnt;
+> +static int overwrite;
 > +
-> +       return debugfs_create_file(filename, mode, parent, buf,
-> +                                  &relay_file_operations);
+> +static void process_sample(struct relay_sample *s)
+> +{
+> +       ++sample_cnt;
+> +
+> +       switch (s->seq) {
+> +       case 0:
+> +               /* sample1 will not appear in overwrite mode */
+> +               CHECK(overwrite !=3D 0, "overwrite_mode",
+> +                     "sample1 appears in overwrite mode\n");
+> +               CHECK(s->value !=3D 333, "sample1_value", "exp %ld, got %=
+ld\n",
+> +                     333L, s->value);
+> +               break;
+> +       case 1:
+> +               CHECK(s->value !=3D 777, "sample2_value", "exp %ld, got %=
+ld\n",
+> +                     777L, s->value);
+> +               break;
+> +       default:
+> +               break;
+> +       }
 > +}
 > +
-> +static int remove_buf_file_handler(struct dentry *dentry)
+> +static int relaymap_read(const char *mapname)
 > +{
-> +       debugfs_remove(dentry);
+> +       int cpu =3D libbpf_num_possible_cpus();
+> +       char name[NAME_MAX];
+> +       struct relay_sample data;
+> +       int maxloop;
+> +       FILE *fp;
+> +
+> +       for (int i =3D 0; i < cpu; ++i) {
+> +               sprintf(name, "/sys/kernel/debug/%s/%s%d", dirname, mapna=
+me, i);
+> +               fp =3D fopen(name, "r");
+
+fclose() is missed.
+
+> +               if (CHECK(!fp, "fopen", "relay file open failed\n"))
+> +                       return -1;
+> +
+> +               maxloop =3D 0;
+> +               while (fread(&data, sizeof(data), 1, fp)) {
+> +                       process_sample(&data);
+> +
+> +                       /* just 2 samples output */
+> +                       if (++maxloop > 2)
+> +                               return -1;
+> +               }
+> +       }
 > +       return 0;
 > +}
 > +
-> +/* For non-overwrite, use default subbuf_start cb */
-> +static int subbuf_start_overwrite(struct rchan_buf *buf, void *subbuf,
-> +                                      void *prev_subbuf, size_t prev_pad=
-ding)
+> +static struct test_relay_map_lskel *skel;
+> +
+> +static void trigger_samples(void)
 > +{
-> +       return 1;
+> +       skel->bss->dropped =3D 0;
+> +       skel->bss->total =3D 0;
+> +       skel->bss->seq =3D 0;
+> +
+> +       /* trigger exactly two samples */
+> +       skel->bss->value =3D 333;
+> +       syscall(__NR_getpgid);
+> +       skel->bss->value =3D 777;
+> +       syscall(__NR_getpgid);
 > +}
 > +
-> +/* bpf_attr is used as follows:
-> + * - key size: must be 0
-> + * - value size: value will be used as directory name by map_update_elem
-> + *   (to create relay files). If passed as 0, it will be set to NAME_MAX=
- as
-> + *   default
-> + *
-> + * - max_entries: subbuf size
-> + * - map_extra: subbuf num, default as 8
-> + *
-> + * When alloc, we do not set up relay files considering dir_name conflic=
-ts.
-> + * Instead we use relay_late_setup_files() in map_update_elem(), and thu=
-s the
-> + * value is used as dir_name, and map->name is used as base_filename.
-> + */
-> +static struct bpf_map *relay_map_alloc(union bpf_attr *attr)
+> +static void relaymap_subtest(void)
 > +{
-> +       struct bpf_relay_map *rmap;
+> +       int err, map_fd;
 > +
-> +       if (unlikely(attr->map_flags & ~RELAY_CREATE_FLAG_MASK))
-> +               return ERR_PTR(-EINVAL);
+> +       skel =3D test_relay_map_lskel__open();
+> +       if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
+> +               return;
 > +
-> +       /* key size must be 0 in relay map */
-> +       if (unlikely(attr->key_size))
-> +               return ERR_PTR(-EINVAL);
+> +       /* setup relay param */
+> +       skel->maps.relay_map.max_entries =3D 1024;
 > +
-> +       /* value size is used as directory name length */
-> +       if (unlikely(attr->value_size > NAME_MAX)) {
-> +               pr_warn("value_size should be no more than %d\n", NAME_MA=
-X);
-> +               return ERR_PTR(-EINVAL);
-> +       } else if (attr->value_size =3D=3D 0)
-> +               attr->value_size =3D NAME_MAX;
+> +       err =3D test_relay_map_lskel__load(skel);
+> +       if (CHECK(err, "skel_load", "skeleton load failed\n"))
+> +               goto cleanup;
 > +
-> +       /* set default subbuf num */
-> +       if (unlikely(attr->map_extra & ~UINT_MAX))
-> +               return ERR_PTR(-EINVAL);
-> +       attr->map_extra =3D attr->map_extra & UINT_MAX;
-> +       if (!attr->map_extra)
-> +               attr->map_extra =3D 8;
+> +       /* only trigger BPF program for current process */
+> +       skel->bss->pid =3D getpid();
 > +
-> +       if (strlen(attr->map_name) =3D=3D 0)
-> +               return ERR_PTR(-EINVAL);
+> +       /* turn off overwrite */
+> +       skel->bss->overwrite_enable =3D 0;
+> +       overwrite =3D skel->bss->overwrite_enable;
 > +
-> +       rmap =3D bpf_map_area_alloc(sizeof(*rmap), NUMA_NO_NODE);
-> +       if (!rmap)
-> +               return ERR_PTR(-ENOMEM);
+> +       err =3D test_relay_map_lskel__attach(skel);
+> +       if (CHECK(err, "skel_attach", "skeleton attachment failed: %d\n",=
+ err))
+> +               goto cleanup;
 > +
-> +       bpf_map_init_from_attr(&rmap->map, attr);
+> +       /* before file setup - output failed */
+> +       trigger_samples();
+> +       CHECK(skel->bss->dropped !=3D 2, "err_dropped", "exp %ld, got %ld=
+\n",
+> +             0L, skel->bss->dropped);
+> +       CHECK(skel->bss->total !=3D 2, "err_total", "exp %ld, got %ld\n",
+> +             2L, skel->bss->total);
 > +
-> +       rmap->relay_cb.create_buf_file =3D create_buf_file_handler;
-> +       rmap->relay_cb.remove_buf_file =3D remove_buf_file_handler;
-> +       if (attr->map_flags & BPF_F_OVERWRITE)
-> +               rmap->relay_cb.subbuf_start =3D subbuf_start_overwrite;
+> +       /* after file setup - output succ */
+> +       map_fd =3D skel->maps.relay_map.map_fd;
+> +       err =3D bpf_map_update_elem(map_fd, NULL, dirname, 0);
+> +       if (CHECK(err, "map_update", "map update failed: %d\n", err))
+> +               goto cleanup;
+> +       trigger_samples();
+> +       CHECK(skel->bss->dropped !=3D 0, "err_dropped", "exp %ld, got %ld=
+\n",
+> +             0L, skel->bss->dropped);
+> +       CHECK(skel->bss->total !=3D 2, "err_total", "exp %ld, got %ld\n",
+> +             2L, skel->bss->total);
 > +
-> +       rmap->relay_chan =3D relay_open(NULL, NULL,
-> +                               attr->max_entries, attr->map_extra,
-> +                               &rmap->relay_cb, NULL);
-> +       if (!rmap->relay_chan) {
-> +               bpf_map_area_free(rmap);
-> +               return ERR_PTR(-EINVAL);
-> +       }
+> +       sample_cnt =3D 0;
+> +       err =3D relaymap_read(mapname);
+> +       CHECK(sample_cnt !=3D 2, "sample_cnt", "exp %d samples, got %d\n"=
+,
+> +                  2, sample_cnt);
 > +
-> +       return &rmap->map;
+> +       test_relay_map_lskel__detach(skel);
+> +cleanup:
+> +       test_relay_map_lskel__destroy(skel);
 > +}
 > +
-> +static void relay_map_free(struct bpf_map *map)
+> +static void relaymap_overwrite_subtest(void)
 > +{
-> +       struct bpf_relay_map *rmap;
-> +       struct dentry *parent;
+> +       int err, map_fd;
 > +
-> +       rmap =3D container_of(map, struct bpf_relay_map, map);
+> +       skel =3D test_relay_map_lskel__open();
+> +       if (CHECK(!skel, "skel_open", "skeleton open failed\n"))
+> +               return;
 > +
-> +       parent =3D rmap->relay_chan->parent;
-> +       relay_close(rmap->relay_chan);
-> +       /* relay_chan->parent should be removed mannually if exists. */
-> +       debugfs_remove_recursive(parent);
-> +       bpf_map_area_free(rmap);
+> +       /* To test overwrite mode, we create subbuf of one-sample size */
+> +       skel->maps.relay_map_ow.max_entries =3D sizeof(struct relay_sampl=
+e);
+> +
+> +       err =3D test_relay_map_lskel__load(skel);
+> +       if (CHECK(err, "skel_load", "skeleton load failed\n"))
+> +               goto cleanup;
+> +
+> +       /* only trigger BPF program for current process */
+> +       skel->bss->pid =3D getpid();
+> +
+> +       /* turn on overwrite */
+> +       skel->bss->overwrite_enable =3D 1;
+> +       overwrite =3D skel->bss->overwrite_enable;
+> +
+> +       err =3D test_relay_map_lskel__attach(skel);
+> +       if (CHECK(err, "skel_attach", "skeleton attachment failed: %d\n",=
+ err))
+> +               goto cleanup;
+> +
+> +       map_fd =3D skel->maps.relay_map_ow.map_fd;
+> +       err =3D bpf_map_update_elem(map_fd, NULL, dirname, 0);
+> +       if (CHECK(err, "map_update", "map update failed: %d\n", err))
+> +               goto cleanup;
+> +       trigger_samples();
+> +       /* relay_write never fails whether overwriting or not */
+> +       CHECK(skel->bss->dropped !=3D 0, "err_dropped", "exp %ld, got %ld=
+\n",
+> +             0L, skel->bss->dropped);
+> +       CHECK(skel->bss->total !=3D 2, "err_total", "exp %ld, got %ld\n",
+> +             2L, skel->bss->total);
+> +
+> +       /* 2 samples are output, but only the last (val=3D777) could be s=
+een */
+> +       sample_cnt =3D 0;
+> +       err =3D relaymap_read(mapname_ow);
+> +       CHECK(sample_cnt !=3D 1, "sample_cnt", "exp %d samples, got %d\n"=
+,
+> +                  1, sample_cnt);
+> +
+> +       test_relay_map_lskel__detach(skel);
+> +cleanup:
+> +       test_relay_map_lskel__destroy(skel);
 > +}
 > +
-> +static void *relay_map_lookup_elem(struct bpf_map *map, void *key)
+> +void test_relaymap(void)
 > +{
-> +       return ERR_PTR(-EOPNOTSUPP);
+> +       if (test__start_subtest("relaymap"))
+> +               relaymap_subtest();
+> +       if (test__start_subtest("relaymap_overwrite"))
+> +               relaymap_overwrite_subtest();
 > +}
+> diff --git a/tools/testing/selftests/bpf/progs/test_relay_map.c b/tools/t=
+esting/selftests/bpf/progs/test_relay_map.c
+> new file mode 100644
+> index 000000000000..1adf1be8e125
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_relay_map.c
+> @@ -0,0 +1,69 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <vmlinux.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_misc.h"
 > +
-> +static long relay_map_update_elem(struct bpf_map *map, void *key, void *=
-value,
-> +                                  u64 flags)
+> +char _license[] SEC("license") =3D "GPL";
+> +
+> +extern int bpf_relay_output(struct bpf_map *map, void *data,
+> +                                     __u64 data__sz, __u32 flags) __ksym=
+;
+> +
+> +struct relay_sample {
+> +       int pid;
+> +       int seq;
+> +       long value;
+> +       char comm[16];
+> +};
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_RELAY);
+> +       __uint(max_entries, 1024);
+> +} relay_map SEC(".maps");
+> +
+> +struct {
+> +       __uint(type, BPF_MAP_TYPE_RELAY);
+> +       __uint(map_flags, BPF_F_OVERWRITE);
+> +       __uint(max_entries, 1024);
+> +       __uint(map_extra, 1);
+> +} relay_map_ow SEC(".maps");
+> +
+> +/* inputs */
+> +int pid =3D 0;
+> +long value =3D 0;
+> +int overwrite_enable =3D 0;
+> +
+> +/* outputs */
+> +long total =3D 0;
+> +long dropped =3D 0;
+> +
+> +/* inner state */
+> +long seq =3D 0;
+> +
+> +SEC("fentry/" SYS_PREFIX "sys_getpgid")
+> +int test_bpf_relaymap(void *ctx)
 > +{
-> +       struct bpf_relay_map *rmap;
-> +       struct dentry *parent;
-> +       int err;
+> +       int cur_pid =3D bpf_get_current_pid_tgid() >> 32;
+> +       struct relay_sample sample;
+> +       int ret =3D 0;
 > +
-> +       if (unlikely(flags))
-> +               return -EINVAL;
+> +       if (cur_pid !=3D pid)
+> +               return 0;
 > +
-> +       if (unlikely(key))
-> +               return -EINVAL;
+> +       sample.pid =3D pid;
+> +       bpf_get_current_comm(sample.comm, sizeof(sample.comm));
+> +       sample.value =3D value;
+> +       sample.seq =3D seq++;
+> +       __sync_fetch_and_add(&total, 1);
 > +
-> +       /* If the directory already exists, debugfs_create_dir will fail.=
- It could
-> +        * have been created by map_update_elem before, or another system=
- that uses
-> +        * debugfs.
-> +        *
-> +        * Note that the directory name passed as value should not be lon=
-ger than
-> +        * map->value_size, including the '\0' at the end.
-> +        */
-> +       ((char *)value)[map->value_size - 1] =3D '\0';
-> +       parent =3D debugfs_create_dir(value, NULL);
-> +       if (IS_ERR_OR_NULL(parent))
-> +               return PTR_ERR(parent);
+> +       if (overwrite_enable)
+> +               ret =3D bpf_relay_output((struct bpf_map *)&relay_map_ow,
+> +                                     &sample, sizeof(sample), 0);
+> +       else
+> +               ret =3D bpf_relay_output((struct bpf_map *)&relay_map,
+> +                                     &sample, sizeof(sample), 0);
 > +
-> +       /* We don't need a lock here, because the relay channel is protec=
-ted in
-> +        * relay_late_setup_files() with a mutex.
-> +        */
-> +       rmap =3D container_of(map, struct bpf_relay_map, map);
-> +       err =3D relay_late_setup_files(rmap->relay_chan, map->name, paren=
-t);
-> +       if (err) {
-> +               debugfs_remove_recursive(parent);
-> +               return err;
-> +       }
+> +       if (ret)
+> +               __sync_fetch_and_add(&dropped, 1);
 > +
 > +       return 0;
 > +}
-> +
-> +static long relay_map_delete_elem(struct bpf_map *map, void *key)
-> +{
-> +       return -EOPNOTSUPP;
-> +}
-> +
-> +static int relay_map_get_next_key(struct bpf_map *map, void *key,
-> +                                   void *next_key)
-> +{
-> +       return -EOPNOTSUPP;
-> +}
-> +
-> +static u64 relay_map_mem_usage(const struct bpf_map *map)
-> +{
-> +       struct bpf_relay_map *rmap;
-> +       u64 usage =3D sizeof(struct bpf_relay_map);
-> +
-> +       rmap =3D container_of(map, struct bpf_relay_map, map);
-> +       usage +=3D sizeof(struct rchan);
-> +       usage +=3D (sizeof(struct rchan_buf) + rmap->relay_chan->alloc_si=
-ze)
-> +                        * num_online_cpus();
-> +       return usage;
-> +}
-> +
-> +BTF_ID_LIST_SINGLE(relay_map_btf_ids, struct, bpf_relay_map)
-> +const struct bpf_map_ops relay_map_ops =3D {
-> +       .map_meta_equal =3D bpf_map_meta_equal,
-> +       .map_alloc =3D relay_map_alloc,
-> +       .map_free =3D relay_map_free,
-> +       .map_lookup_elem =3D relay_map_lookup_elem,
-> +       .map_update_elem =3D relay_map_update_elem,
-> +       .map_delete_elem =3D relay_map_delete_elem,
-> +       .map_get_next_key =3D relay_map_get_next_key,
-> +       .map_mem_usage =3D relay_map_mem_usage,
-> +       .map_btf_id =3D &relay_map_btf_ids[0],
-> +};
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 1bf9805ee185..d6b7949e29c7 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -1147,6 +1147,7 @@ static int map_create(union bpf_attr *attr)
->         }
->
->         if (attr->map_type !=3D BPF_MAP_TYPE_BLOOM_FILTER &&
-> +           attr->map_type !=3D BPF_MAP_TYPE_RELAY &&
->             attr->map_extra !=3D 0)
->                 return -EINVAL;
->
-> @@ -1202,6 +1203,7 @@ static int map_create(union bpf_attr *attr)
->         case BPF_MAP_TYPE_USER_RINGBUF:
->         case BPF_MAP_TYPE_CGROUP_STORAGE:
->         case BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE:
-> +       case BPF_MAP_TYPE_RELAY:
->                 /* unprivileged */
->                 break;
->         case BPF_MAP_TYPE_SK_STORAGE:
 > --
 > 2.32.0.3.g01195cf9f
 >
