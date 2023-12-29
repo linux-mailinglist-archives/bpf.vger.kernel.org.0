@@ -1,162 +1,141 @@
-Return-Path: <bpf+bounces-18738-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18739-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56E6D81FDFE
-	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 09:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADDEA81FE0C
+	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 09:15:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 132152824AF
-	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 08:03:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 687722848E3
+	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 08:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9478E747B;
-	Fri, 29 Dec 2023 08:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D26748C;
+	Fri, 29 Dec 2023 08:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TL0uNxiH"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com [209.85.167.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5308BE7;
-	Fri, 29 Dec 2023 08:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VzQtt.u_1703837012;
-Received: from 30.221.145.217(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VzQtt.u_1703837012)
-          by smtp.aliyun-inc.com;
-          Fri, 29 Dec 2023 16:03:33 +0800
-Message-ID: <00d390f3-1d92-43e5-adec-b7d0b8885fdc@linux.alibaba.com>
-Date: Fri, 29 Dec 2023 16:03:31 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968E963BD;
+	Fri, 29 Dec 2023 08:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f193.google.com with SMTP id 5614622812f47-3bbc649c275so1157539b6e.0;
+        Fri, 29 Dec 2023 00:15:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703837734; x=1704442534; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mls/lKeRuEJX81ADB8AP6pjIEWywIDX4oG7UfNICr7k=;
+        b=TL0uNxiHJPqAkOLXCZMMojevWm2KC4EXJkibujsSdaqbumoGfxbG+8gUB1cQGA2VdP
+         5FBufApeWTtKJ4zJqyoKDktTEdIdp1+ruO9TmmB0Wgocrh1BM4PEfXGtm/k2CnhytTp/
+         0hhsYtYVsoJitwuz2D2TMgx3o+SXhdXMhT4qtFrc+wR2D5U+quG7bbJ7aqpIaB8egNJB
+         CSv+E4/BgDQe9S2rSqR7rnRZ7NL7dWncr9aEJEisuwOHpRtgJ7Lrdhn1olOpGHmpXARK
+         DWZtrs76Q5BR7YQRnAgDq/NfUbC5Q/W33eMZx3sAW4WuN2RZMnmSrOCQ8dFHmxZSF3u2
+         teqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703837734; x=1704442534;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mls/lKeRuEJX81ADB8AP6pjIEWywIDX4oG7UfNICr7k=;
+        b=Ycjm+oUGZfqmMxDZoIQBJNBJyH/EhLzF/2lXDOIFm1tCEZ+uRntlXnys98dB8DNHj2
+         HX3laOJn2R2jwUOBvuT3wowPbV9dPLJSDqTa0dbWlV6aw4scgZzTpPCTWtS5ThAfUnwJ
+         DUk7pFiFGJagyF0F6zWBV61sKNj8jQxCQb3hpBi/BBLZhaeKl5Vcke7o3dX+ASfhtngk
+         FnutpUoYhkb3GBUVkQaeVdcEKuRjOb9Qs8BVXcSvhg88Zbw3bZWsb4jgM5e6K3zJcpTA
+         TqC420U1xpnH6wn5c3cN/ubJcE8Z6b2oRthAl1y3xSpV13+g38rP+eh4NgGVo3ZnpyVB
+         ShDA==
+X-Gm-Message-State: AOJu0Yxu7oOtop6ZTA23g8/hYKVBZlSdRxbJb/tAQCWijqwo77Ow+3Dk
+	XDg7eKhxZWP1D7NbjA0Vw+U=
+X-Google-Smtp-Source: AGHT+IHqrCvsUFLVr2LGXBlSiozkeXrZfKQwcvZIEeFWIKpzouqr1zjJvb4G1ZTQRWPnA8YiVZjhKQ==
+X-Received: by 2002:a05:6808:138c:b0:3bb:7cce:1ed0 with SMTP id c12-20020a056808138c00b003bb7cce1ed0mr6911861oiw.81.1703837734600;
+        Fri, 29 Dec 2023 00:15:34 -0800 (PST)
+Received: from localhost.localdomain ([43.129.244.20])
+        by smtp.gmail.com with ESMTPSA id h12-20020a63df4c000000b005bd2b3a03eesm14339412pgj.6.2023.12.29.00.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Dec 2023 00:15:34 -0800 (PST)
+From: Menglong Dong <menglong8.dong@gmail.com>
+To: andrii@kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	mykolal@fb.com,
+	shuah@kernel.org,
+	horms@kernel.org,
+	dhowells@redhat.com,
+	linyunsheng@huawei.com,
+	aleksander.lobakin@intel.com,
+	joannelkoong@gmail.com,
+	laoar.shao@gmail.com,
+	kuifeng@meta.com,
+	menglong8.dong@gmail.com,
+	bjorn@rivosinc.com,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next 0/2] bpf: add csum/ip_summed fields to __sk_buff
+Date: Fri, 29 Dec 2023 16:14:07 +0800
+Message-Id: <20231229081409.1276386-1-menglong8.dong@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC nf-next v4 1/2] netfilter: bpf: support prog update
-Content-Language: en-US
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-To: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org, coreteam@netfilter.org,
- netfilter-devel@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, ast@kernel.org
-References: <1703836449-88705-1-git-send-email-alibuda@linux.alibaba.com>
- <1703836449-88705-2-git-send-email-alibuda@linux.alibaba.com>
-In-Reply-To: <1703836449-88705-2-git-send-email-alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
+For now, we have to call some helpers when we need to update the csum,
+such as bpf_l4_csum_replace, bpf_l3_csum_replace, etc. These helpers are
+not inlined, which causes poor performance.
 
+In fact, we can define our own csum update functions in BPF program
+instead of bpf_l3_csum_replace, which is totally inlined and efficient.
+However, we can't do this for bpf_l4_csum_replace for now, as we can't
+update skb->csum, which can cause skb->csum invalid in the rx path with
+CHECKSUM_COMPLETE mode.
 
-On 12/29/23 3:54 PM, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
->
-> To support the prog update, we need to ensure that the prog seen
-> within the hook is always valid. Considering that hooks are always
-> protected by rcu_read_lock(), which provide us the ability to
-> access the prog under rcu.
->
-> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
-> ---
->   net/netfilter/nf_bpf_link.c | 50 ++++++++++++++++++++++++++++++---------------
->   1 file changed, 34 insertions(+), 16 deletions(-)
->
-> diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
-> index e502ec0..7c32ccb 100644
-> --- a/net/netfilter/nf_bpf_link.c
-> +++ b/net/netfilter/nf_bpf_link.c
-> @@ -8,26 +8,26 @@
->   #include <net/netfilter/nf_bpf_link.h>
->   #include <uapi/linux/netfilter_ipv4.h>
->   
-> -static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
-> -				    const struct nf_hook_state *s)
-> -{
-> -	const struct bpf_prog *prog = bpf_prog;
-> -	struct bpf_nf_ctx ctx = {
-> -		.state = s,
-> -		.skb = skb,
-> -	};
-> -
-> -	return bpf_prog_run(prog, &ctx);
-> -}
-> -
->   struct bpf_nf_link {
->   	struct bpf_link link;
->   	struct nf_hook_ops hook_ops;
->   	struct net *net;
->   	u32 dead;
->   	const struct nf_defrag_hook *defrag_hook;
-> +	struct rcu_head head;
->   };
->   
-> +static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
-> +				    const struct nf_hook_state *s)
-> +{
-> +	const struct bpf_nf_link *nf_link = bpf_link;
-> +	struct bpf_nf_ctx ctx = {
-> +		.state = s,
-> +		.skb = skb,
-> +	};
-> +	return bpf_prog_run(rcu_dereference_raw(nf_link->link.prog), &ctx);
-> +}
-> +
->   #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
->   static const struct nf_defrag_hook *
->   get_proto_defrag_hook(struct bpf_nf_link *link,
-> @@ -126,8 +126,7 @@ static void bpf_nf_link_release(struct bpf_link *link)
->   static void bpf_nf_link_dealloc(struct bpf_link *link)
->   {
->   	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
-> -
-> -	kfree(nf_link);
-> +	kfree_rcu(nf_link, head);
->   }
->   
->   static int bpf_nf_link_detach(struct bpf_link *link)
-> @@ -162,7 +161,22 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
->   static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
->   			      struct bpf_prog *old_prog)
->   {
-> -	return -EOPNOTSUPP;
-> +	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
-> +	int err = 0;
-> +
-> +	if (nf_link->dead)
-> +		return -EPERM;
-> +
-> +	if (old_prog) {
-> +		/* target old_prog mismatch */
-> +		if (!cmpxchg(&link->prog, old_prog, new_prog))
-> +			return -EPERM;
-> +	} else {
-> +		old_prog = xchg(&link->prog, new_prog);
-> +	}
-> +
-> +	bpf_prog_put(old_prog);
-> +	return err;
->   }
+What's more, we can't use the direct data access and have to use
+skb_store_bytes() with the BPF_F_RECOMPUTE_CSUM flag in some case, such
+as modifing the vni in the vxlan header and the underlay udp header has
+no checksum.
 
-I made a mistake here, and I will fix it in the next version.
-Sorry for that.
+In the first patch, we make skb->csum readable and writable, and we make
+skb->ip_summed readable. For now, for tc only. With these 2 fields, we
+don't need to call bpf helpers for csum update any more.
 
-D. Wythe
+In the second patch, we add some testcases for the read/write testing for
+skb->csum and skb->ip_summed.
 
->   
->   static const struct bpf_link_ops bpf_nf_link_lops = {
-> @@ -226,7 +240,11 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
->   
->   	link->hook_ops.hook = nf_hook_run_bpf;
->   	link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
-> -	link->hook_ops.priv = prog;
-> +
-> +	/* bpf_nf_link_release & bpf_nf_link_dealloc() can ensures that link remains
-> +	 * valid at all times within nf_hook_run_bpf().
-> +	 */
-> +	link->hook_ops.priv = link;
->   
->   	link->hook_ops.pf = attr->link_create.netfilter.pf;
->   	link->hook_ops.priority = attr->link_create.netfilter.priority;
+If this series is acceptable, we can define the inlined functions for csum
+update in libbpf in the next step.
+
+Menglong Dong (2):
+  bpf: add csum/ip_summed fields to __sk_buff
+  testcases/bpf: add testcases for skb->csum to ctx_skb.c
+
+ include/linux/skbuff.h                        |  2 +
+ include/uapi/linux/bpf.h                      |  2 +
+ net/core/filter.c                             | 22 ++++++++++
+ tools/include/uapi/linux/bpf.h                |  2 +
+ .../testing/selftests/bpf/verifier/ctx_skb.c  | 43 +++++++++++++++++++
+ 5 files changed, 71 insertions(+)
+
+-- 
+2.39.2
 
 
