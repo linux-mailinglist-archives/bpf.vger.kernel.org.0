@@ -1,29 +1,29 @@
-Return-Path: <bpf+bounces-18725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D8E81FDAA
-	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 08:34:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5274D81FDAC
+	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 08:34:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 043B31C22E48
-	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 07:34:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 067B9285046
+	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 07:34:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E7011CBB;
-	Fri, 29 Dec 2023 07:31:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE3F125AF;
+	Fri, 29 Dec 2023 07:31:38 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12C61171F;
-	Fri, 29 Dec 2023 07:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63ACA11730;
+	Fri, 29 Dec 2023 07:31:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VzQtfBO_1703835092;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VzQtfBO_1703835092)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VzQtfC1_1703835093;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VzQtfC1_1703835093)
           by smtp.aliyun-inc.com;
-          Fri, 29 Dec 2023 15:31:32 +0800
+          Fri, 29 Dec 2023 15:31:33 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -39,9 +39,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux-foundation.org,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v3 20/27] virtio_net: separate receive_mergeable
-Date: Fri, 29 Dec 2023 15:31:01 +0800
-Message-Id: <20231229073108.57778-21-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v3 21/27] virtio_net: separate receive_buf
+Date: Fri, 29 Dec 2023 15:31:02 +0800
+Message-Id: <20231229073108.57778-22-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20231229073108.57778-1-xuanzhuo@linux.alibaba.com>
 References: <20231229073108.57778-1-xuanzhuo@linux.alibaba.com>
@@ -54,117 +54,91 @@ MIME-Version: 1.0
 X-Git-Hash: 20112a26898d
 Content-Transfer-Encoding: 8bit
 
-This commit separates the function receive_mergeable(),
-put the logic of appending frag to the skb as an independent function.
+This commit separates the function receive_buf(), then we wrap the logic
+of handling the skb to an independent function virtnet_receive_done().
 The subsequent commit will reuse it.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio/main.c | 77 ++++++++++++++++++++++++---------------
- 1 file changed, 47 insertions(+), 30 deletions(-)
+ drivers/net/virtio/main.c | 56 ++++++++++++++++++++++-----------------
+ 1 file changed, 32 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-index ab1970158d85..212af542bfbe 100644
+index 212af542bfbe..325d39c39792 100644
 --- a/drivers/net/virtio/main.c
 +++ b/drivers/net/virtio/main.c
-@@ -1401,6 +1401,49 @@ static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
- 	return NULL;
+@@ -1565,32 +1565,11 @@ static void virtio_skb_set_hash(const struct virtio_net_hdr_v1_hash *hdr_hash,
+ 	skb_set_hash(skb, __le32_to_cpu(hdr_hash->hash_value), rss_hash_type);
  }
  
-+struct sk_buff *virtnet_skb_append_frag(struct sk_buff *head_skb,
-+					struct sk_buff *curr_skb,
-+					struct page *page, void *buf,
-+					int len, int truesize)
+-static void receive_buf(struct virtnet_info *vi, struct virtnet_rq *rq,
+-			void *buf, unsigned int len, void **ctx,
+-			unsigned int *xdp_xmit,
+-			struct virtnet_rq_stats *stats)
++static void virtnet_receive_done(struct virtnet_info *vi, struct virtnet_rq *rq,
++				 struct sk_buff *skb)
+ {
+-	struct net_device *dev = vi->dev;
+-	struct sk_buff *skb;
+ 	struct virtio_net_common_hdr *hdr;
+-
+-	if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
+-		pr_debug("%s: short packet %i\n", dev->name, len);
+-		DEV_STATS_INC(dev, rx_length_errors);
+-		virtnet_rq_free_buf(vi, rq, buf);
+-		return;
+-	}
+-
+-	if (vi->mergeable_rx_bufs)
+-		skb = receive_mergeable(dev, vi, rq, buf, ctx, len, xdp_xmit,
+-					stats);
+-	else if (vi->big_packets)
+-		skb = receive_big(dev, vi, rq, buf, len, stats);
+-	else
+-		skb = receive_small(dev, vi, rq, buf, ctx, len, xdp_xmit, stats);
+-
+-	if (unlikely(!skb))
+-		return;
++	struct net_device *dev = vi->dev;
+ 
+ 	hdr = skb_vnet_common_hdr(skb);
+ 	if (dev->features & NETIF_F_RXHASH && vi->has_rss_hash_report)
+@@ -1620,6 +1599,35 @@ static void receive_buf(struct virtnet_info *vi, struct virtnet_rq *rq,
+ 	dev_kfree_skb(skb);
+ }
+ 
++static void receive_buf(struct virtnet_info *vi, struct virtnet_rq *rq,
++			void *buf, unsigned int len, void **ctx,
++			unsigned int *xdp_xmit,
++			struct virtnet_rq_stats *stats)
 +{
-+	int num_skb_frags;
-+	int offset;
++	struct net_device *dev = vi->dev;
++	struct sk_buff *skb;
 +
-+	num_skb_frags = skb_shinfo(curr_skb)->nr_frags;
-+	if (unlikely(num_skb_frags == MAX_SKB_FRAGS)) {
-+		struct sk_buff *nskb = alloc_skb(0, GFP_ATOMIC);
-+
-+		if (unlikely(!nskb))
-+			return NULL;
-+
-+		if (curr_skb == head_skb)
-+			skb_shinfo(curr_skb)->frag_list = nskb;
-+		else
-+			curr_skb->next = nskb;
-+		curr_skb = nskb;
-+		head_skb->truesize += nskb->truesize;
-+		num_skb_frags = 0;
++	if (unlikely(len < vi->hdr_len + ETH_HLEN)) {
++		pr_debug("%s: short packet %i\n", dev->name, len);
++		DEV_STATS_INC(dev, rx_length_errors);
++		virtnet_rq_free_buf(vi, rq, buf);
++		return;
 +	}
 +
-+	if (curr_skb != head_skb) {
-+		head_skb->data_len += len;
-+		head_skb->len += len;
-+		head_skb->truesize += truesize;
-+	}
++	if (vi->mergeable_rx_bufs)
++		skb = receive_mergeable(dev, vi, rq, buf, ctx, len, xdp_xmit,
++					stats);
++	else if (vi->big_packets)
++		skb = receive_big(dev, vi, rq, buf, len, stats);
++	else
++		skb = receive_small(dev, vi, rq, buf, ctx, len, xdp_xmit, stats);
 +
-+	offset = buf - page_address(page);
-+	if (skb_can_coalesce(curr_skb, num_skb_frags, page, offset)) {
-+		put_page(page);
-+		skb_coalesce_rx_frag(curr_skb, num_skb_frags - 1,
-+				     len, truesize);
-+	} else {
-+		skb_add_rx_frag(curr_skb, num_skb_frags, page,
-+				offset, len, truesize);
-+	}
++	if (unlikely(!skb))
++		return;
 +
-+	return curr_skb;
++	virtnet_receive_done(vi, rq, skb);
 +}
 +
- static struct sk_buff *receive_mergeable(struct net_device *dev,
- 					 struct virtnet_info *vi,
- 					 struct virtnet_rq *rq,
-@@ -1450,8 +1493,6 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 	if (unlikely(!curr_skb))
- 		goto err_skb;
- 	while (--num_buf) {
--		int num_skb_frags;
--
- 		buf = virtnet_rq_get_buf(rq, &len, &ctx);
- 		if (unlikely(!buf)) {
- 			pr_debug("%s: rx error: %d buffers out of %d missing\n",
-@@ -1476,34 +1517,10 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 			goto err_skb;
- 		}
- 
--		num_skb_frags = skb_shinfo(curr_skb)->nr_frags;
--		if (unlikely(num_skb_frags == MAX_SKB_FRAGS)) {
--			struct sk_buff *nskb = alloc_skb(0, GFP_ATOMIC);
--
--			if (unlikely(!nskb))
--				goto err_skb;
--			if (curr_skb == head_skb)
--				skb_shinfo(curr_skb)->frag_list = nskb;
--			else
--				curr_skb->next = nskb;
--			curr_skb = nskb;
--			head_skb->truesize += nskb->truesize;
--			num_skb_frags = 0;
--		}
--		if (curr_skb != head_skb) {
--			head_skb->data_len += len;
--			head_skb->len += len;
--			head_skb->truesize += truesize;
--		}
--		offset = buf - page_address(page);
--		if (skb_can_coalesce(curr_skb, num_skb_frags, page, offset)) {
--			put_page(page);
--			skb_coalesce_rx_frag(curr_skb, num_skb_frags - 1,
--					     len, truesize);
--		} else {
--			skb_add_rx_frag(curr_skb, num_skb_frags, page,
--					offset, len, truesize);
--		}
-+		curr_skb  = virtnet_skb_append_frag(head_skb, curr_skb, page,
-+						    buf, len, truesize);
-+		if (!curr_skb)
-+			goto err_skb;
- 	}
- 
- 	ewma_pkt_len_add(&rq->mrg_avg_pkt_len, head_skb->len);
+ /* Unlike mergeable buffers, all buffers are allocated to the
+  * same size, except for the headroom. For this reason we do
+  * not need to use  mergeable_len_to_ctx here - it is enough
 -- 
 2.32.0.3.g01195cf9f
 
