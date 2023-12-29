@@ -1,29 +1,29 @@
-Return-Path: <bpf+bounces-18728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18731-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6976981FDB2
-	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 08:34:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA85481FDB9
+	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 08:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 261D32850BE
-	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 07:34:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC2861C22F6B
+	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 07:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2390C12B6B;
-	Fri, 29 Dec 2023 07:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A9EA12E43;
+	Fri, 29 Dec 2023 07:31:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01977125CE;
-	Fri, 29 Dec 2023 07:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CCBB125D8;
+	Fri, 29 Dec 2023 07:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VzQtfD5_1703835096;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VzQtfD5_1703835096)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0VzQyWBn_1703835097;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0VzQyWBn_1703835097)
           by smtp.aliyun-inc.com;
-          Fri, 29 Dec 2023 15:31:37 +0800
+          Fri, 29 Dec 2023 15:31:38 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -39,9 +39,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux-foundation.org,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v3 24/27] virtio_net: xsk: rx: support recv small mode
-Date: Fri, 29 Dec 2023 15:31:05 +0800
-Message-Id: <20231229073108.57778-25-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v3 25/27] virtio_net: xsk: rx: free the unused xsk buffer
+Date: Fri, 29 Dec 2023 15:31:06 +0800
+Message-Id: <20231229073108.57778-26-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20231229073108.57778-1-xuanzhuo@linux.alibaba.com>
 References: <20231229073108.57778-1-xuanzhuo@linux.alibaba.com>
@@ -54,64 +54,34 @@ MIME-Version: 1.0
 X-Git-Hash: 20112a26898d
 Content-Transfer-Encoding: 8bit
 
-receive the xsk buffer for small mode.
+Since this will be called in other circumstances(freeze), we must check
+whether it is xsk's buffer in this function. It cannot be judged outside
+this function.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio/xsk.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+ drivers/net/virtio/main.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/virtio/xsk.c b/drivers/net/virtio/xsk.c
-index 005bb5f66271..ee09e898a291 100644
---- a/drivers/net/virtio/xsk.c
-+++ b/drivers/net/virtio/xsk.c
-@@ -200,6 +200,37 @@ static struct sk_buff *virtnet_receive_xsk_merge(struct net_device *dev, struct
- 	return NULL;
- }
+diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
+index b1567f0746e8..cc0194c14c98 100644
+--- a/drivers/net/virtio/main.c
++++ b/drivers/net/virtio/main.c
+@@ -3962,6 +3962,14 @@ void virtnet_rq_free_unused_bufs(struct virtqueue *vq)
+ 	rq = &vi->rq[i];
  
-+static struct sk_buff *virtnet_receive_xsk_small(struct net_device *dev, struct virtnet_info *vi,
-+						 struct virtnet_rq *rq, struct xdp_buff *xdp,
-+						 unsigned int *xdp_xmit,
-+						 struct virtnet_rq_stats *stats)
-+{
-+	struct bpf_prog *prog;
-+	u32 ret;
+ 	while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
++		if (rq->xsk.pool) {
++			struct xdp_buff *xdp;
 +
-+	ret = XDP_PASS;
-+	rcu_read_lock();
-+	prog = rcu_dereference(rq->xdp_prog);
-+	if (prog)
-+		ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit, stats);
-+	rcu_read_unlock();
++			xdp = (struct xdp_buff *)buf;
++			xsk_buff_free(xdp);
++			continue;
++		}
 +
-+	switch (ret) {
-+	case XDP_PASS:
-+		return xdp_construct_skb(rq, xdp);
-+
-+	case XDP_TX:
-+	case XDP_REDIRECT:
-+		return NULL;
-+
-+	default:
-+		/* drop packet */
-+		xsk_buff_free(xdp);
-+		u64_stats_inc(&stats->drops);
-+		return NULL;
-+	}
-+}
-+
- struct sk_buff *virtnet_receive_xsk_buf(struct virtnet_info *vi, struct virtnet_rq *rq,
- 					void *buf, u32 len,
- 					unsigned int *xdp_xmit,
-@@ -227,6 +258,8 @@ struct sk_buff *virtnet_receive_xsk_buf(struct virtnet_info *vi, struct virtnet_
+ 		if (virtqueue_get_dma_premapped(rq->vq))
+ 			virtnet_rq_unmap(rq, buf, 0);
  
- 	if (vi->mergeable_rx_bufs)
- 		skb = virtnet_receive_xsk_merge(dev, vi, rq, xdp, xdp_xmit, stats);
-+	else
-+		skb = virtnet_receive_xsk_small(dev, vi, rq, xdp, xdp_xmit, stats);
- 
- 	return skb;
- }
 -- 
 2.32.0.3.g01195cf9f
 
