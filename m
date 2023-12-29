@@ -1,352 +1,178 @@
-Return-Path: <bpf+bounces-18744-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18745-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1137820183
-	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 22:04:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D194682022E
+	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 23:31:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B537E1C22477
-	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 21:04:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E727B222F1
+	for <lists+bpf@lfdr.de>; Fri, 29 Dec 2023 22:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC9814299;
-	Fri, 29 Dec 2023 21:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC89A14ABC;
+	Fri, 29 Dec 2023 22:31:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="aP1vJwDI"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52F414A84;
-	Fri, 29 Dec 2023 21:04:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B2B4C433C7;
-	Fri, 29 Dec 2023 21:04:04 +0000 (UTC)
-Date: Fri, 29 Dec 2023 16:04:55 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Jiri Olsa <jolsa@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, bpf@vger.kernel.org
-Subject: Re: [PATCH] ftrace: Fix modification of direct_function hash while
- in use
-Message-ID: <20231229160455.17b0f136@gandalf.local.home>
-In-Reply-To: <20231229115134.08dd5174@gandalf.local.home>
-References: <20231229115134.08dd5174@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E0214A9F
+	for <bpf@vger.kernel.org>; Fri, 29 Dec 2023 22:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3bbd6e377dfso1215689b6e.3
+        for <bpf@vger.kernel.org>; Fri, 29 Dec 2023 14:31:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1703889080; x=1704493880; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cKuwmPo0DfBIWzAt1z512mSnZOucjghMMfliRHXEH1s=;
+        b=aP1vJwDInt8gYlakcnK3OUNMmlxanL3bkhPp6jxwrknpA+SzJhpVBN16YEnkIXBHzf
+         hXG7BxmOtAHopuef1ni8nAUK1jiJ1LnjDdPIjblVpVfke+zbKsA873ZbiOBpLkS3CEYT
+         B4fRjJ8/nKwl5nP6HDh75QwiUY5ax09NGBiazXHLZisO+hDDxPvRybbWXxsuE7oNVx58
+         2FJM/9D8VCvpG52TUKFfhWt3fNOtMrC1ZMxSPrm2Dq/xIO7v6uj9qftLfLlsi1IdvGca
+         cnfI1f0pMrLLbbyUenmd8nIuJb8WH3JoXeLCWHSLSoEIGxrCW3kYLS78cPR94IXXYhop
+         ml0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703889080; x=1704493880;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cKuwmPo0DfBIWzAt1z512mSnZOucjghMMfliRHXEH1s=;
+        b=P+7OfrPSs6e0ldJDKZMV+F9vPpIiFsngBYx3yQpYjbQYnjEicHc7ExMHpbmgIRUtkx
+         xYu8QrpoJeaU4V/8ZvGfoaHwqgRG0hDKxd6lG4j0K/jPDO+qG5GBhjsPrJ5htSDRs5IG
+         m0cA9QsnM3mviG119+UqlcNJlJHOn2cVLI1i1xV/f7iPTo7mPRk3OLhvMxe2ka1EqO3E
+         rbkcNBNCRInwll/Cj/RBjipCckDf2NSuXYSqBFCpCFRNLs/f6o8FzK3aPNgnh6R4hSjO
+         wR+uX/S4lxpf2K7w7OHCXFHQPEc7bGGlegarJofENuyJ5iSakQxtbMldxDWHwx35lA8s
+         oMRg==
+X-Gm-Message-State: AOJu0Yx1z00yw9Hq5kZXfjzxtYLVUupiMMgy3XNnsu881Ap4XW3qoL09
+	KAOIIWwU0KaBKAaQN71NYpbWmL/Eh9JM8LazfjdIUormYBZg
+X-Google-Smtp-Source: AGHT+IH12p3W0EY0p2NLPuPUYmviE7rijb7+Yqlz23Ciy+fi2PqGwDl7fAvtLAZVWy+vn0LPl9k2jB9xmjX76ZOvJYg=
+X-Received: by 2002:a05:6808:1206:b0:3bb:e0d4:9f29 with SMTP id
+ a6-20020a056808120600b003bbe0d49f29mr1864931oil.44.1703889079797; Fri, 29 Dec
+ 2023 14:31:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20231213143813.6818-1-michael.weiss@aisec.fraunhofer.de>
+ <20231213143813.6818-4-michael.weiss@aisec.fraunhofer.de> <20231215-golfanlage-beirren-f304f9dafaca@brauner>
+ <61b39199-022d-4fd8-a7bf-158ee37b3c08@aisec.fraunhofer.de>
+ <20231215-kubikmeter-aufsagen-62bf8d4e3d75@brauner> <CAADnVQKeUmV88OfQOfiX04HjKbXq7Wfcv+N3O=5kdL4vic6qrw@mail.gmail.com>
+ <20231216-vorrecht-anrief-b096fa50b3f7@brauner> <CAADnVQK7MDUZTUxcqCH=unrrGExCjaagfJFqFPhVSLUisJVk_Q@mail.gmail.com>
+ <20231218-chipsatz-abfangen-d62626dfb9e2@brauner> <CAHC9VhSZDMWJ_kh+RaB6dsPLQjkrjDY4bVkqsFDG3JtjinT_bQ@mail.gmail.com>
+ <f38ceaaf-916a-4e44-9312-344ed1b4c9c4@aisec.fraunhofer.de>
+In-Reply-To: <f38ceaaf-916a-4e44-9312-344ed1b4c9c4@aisec.fraunhofer.de>
+From: Paul Moore <paul@paul-moore.com>
+Date: Fri, 29 Dec 2023 17:31:08 -0500
+Message-ID: <CAHC9VhT3dbFc4DWc8WFRavWY1M+_+DzPbHuQ=PumROsx0rY2vA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 3/3] devguard: added device guard for mknod in
+ non-initial userns
+To: =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Cc: Christian Brauner <brauner@kernel.org>, Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Quentin Monnet <quentin@isovalent.com>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	LSM List <linux-security-module@vger.kernel.org>, gyroidos@aisec.fraunhofer.de
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Dec 27, 2023 at 9:31=E2=80=AFAM Michael Wei=C3=9F
+<michael.weiss@aisec.fraunhofer.de> wrote:
+> Hi Paul, what would you think about if we do it as shown in the
+> patch below (untested)?
+>
+> I have adapted Christians patch slightly in a way that we do let
+> all LSMs agree on if device access management should be done or not.
+> Similar to the security_task_prctl() hook.
 
-Masami and Jiri,
+I think it's worth taking a minute to talk about this proposed change
+and the existing security_task_prctl() hook, as there is an important
+difference between the two which is the source of my concern.
 
-This patch made it through all my tests. If I can get an Acked-by by
-Sunday, I'll include it in my push to Linus (I have a couple of other fixes
-to send him).
+If you look at the prctl() syscall implementation, right at the top of
+the function you see the LSM hook:
 
--- Steve
+  SYSCALL_DEFINE(prctl, ...)
+  {
+    ...
 
+    error =3D security_task_prctl(...);
+    if (error !=3D -ENOSYS)
+      return error;
 
-On Fri, 29 Dec 2023 11:51:34 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+    error =3D 0;
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> Masami Hiramatsu reported a memory leak in register_ftrace_direct() where
-> if the number of new entries are added is large enough to cause two
-> allocations in the loop:
-> 
->         for (i = 0; i < size; i++) {
->                 hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
->                         new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
->                         if (!new)
->                                 goto out_remove;
->                         entry->direct = addr;
->                 }
+    ....
+  }
+
+While it is true that the LSM hook returns a "special" value, -ENOSYS,
+from a practical perspective this is not significantly different from
+the much more common zero value used to indicate no restriction from
+the LSM layer.  However, the more important thing to note is that the
+return value from security_task_prctl() does not influence any other
+access controls in the caller outside of those implemented inside the
+LSM; in fact the error code is reset to zero immediately after the LSM
+hook.
+
+More on this below ...
+
+> diff --git a/fs/super.c b/fs/super.c
+> index 076392396e72..6510168d51ce 100644
+> --- a/fs/super.c
+> +++ b/fs/super.c
+> @@ -325,7 +325,7 @@ static struct super_block *alloc_super(struct file_sy=
+stem_type *type, int flags,
+>  {
+>         struct super_block *s =3D kzalloc(sizeof(struct super_block),  GF=
+P_USER);
+>         static const struct super_operations default_op;
+> -       int i;
+> +       int i, err;
+>
+>         if (!s)
+>                 return NULL;
+> @@ -362,8 +362,16 @@ static struct super_block *alloc_super(struct file_s=
+ystem_type *type, int flags,
 >         }
-> 
-> Where ftrace_add_rec_direct() has:
-> 
->         if (ftrace_hash_empty(direct_functions) ||
->             direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
->                 struct ftrace_hash *new_hash;
->                 int size = ftrace_hash_empty(direct_functions) ? 0 :
->                         direct_functions->count + 1;
-> 
->                 if (size < 32)
->                         size = 32;
-> 
->                 new_hash = dup_hash(direct_functions, size);
->                 if (!new_hash)
->                         return NULL;
-> 
->                 *free_hash = direct_functions;
->                 direct_functions = new_hash;
->         }
-> 
-> The "*free_hash = direct_functions;" can happen twice, losing the previous
-> allocation of direct_functions.
-> 
-> But this also exposed a more serious bug.
-> 
-> The modification of direct_functions above is not safe. As
-> direct_functions can be referenced at any time to find what direct caller
-> it should call, the time between:
-> 
->                 new_hash = dup_hash(direct_functions, size);
->  and
->                 direct_functions = new_hash;
-> 
-> can have a race with another CPU (or even this one if it gets interrupted),
-> and the entries being moved to the new hash are not referenced.
-> 
-> That's because the "dup_hash()" is really misnamed and is really a
-> "move_hash()". It moves the entries from the old hash to the new one.
-> 
-> Now even if that was changed, this code is not proper as direct_functions
-> should not be updated until the end. That is the best way to handle
-> function reference changes, and is the way other parts of ftrace handles
-> this.
-> 
-> The following is done:
-> 
->  1. Change add_hash_entry() to return the entry it created and inserted
->     into the hash, and not just return success or not.
-> 
->  2. Replace ftrace_add_rec_direct() with add_hash_entry(), and remove
->     the former.
-> 
->  3. Allocate a "new_hash" at the start that is made for holding both the
->     new hash entries as well as the existing entries in direct_functions.
-> 
->  4. Copy (not move) the direct_function entries over to the new_hash.
-> 
->  5. Copy the entries of the added hash to the new_hash.
-> 
->  6. If everything succeeds, then use rcu_pointer_assign() to update the
->     direct_functions with the new_hash.
-> 
-> This simplifies the code and fixes both the memory leak as well as the
-> race condition mentioned above.
-> 
-> Link: https://lore.kernel.org/all/170368070504.42064.8960569647118388081.stgit@devnote2/
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 763e34e74bb7d ("ftrace: Add register_ftrace_direct()")
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> ---
->  kernel/trace/ftrace.c | 100 ++++++++++++++++++++----------------------
->  1 file changed, 47 insertions(+), 53 deletions(-)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 8de8bec5f366..b01ae7d36021 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -1183,18 +1183,19 @@ static void __add_hash_entry(struct ftrace_hash *hash,
->  	hash->count++;
->  }
->  
-> -static int add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
-> +static struct ftrace_func_entry *
-> +add_hash_entry(struct ftrace_hash *hash, unsigned long ip)
->  {
->  	struct ftrace_func_entry *entry;
->  
->  	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
->  	if (!entry)
-> -		return -ENOMEM;
-> +		return NULL;
->  
->  	entry->ip = ip;
->  	__add_hash_entry(hash, entry);
->  
-> -	return 0;
-> +	return entry;
->  }
->  
->  static void
-> @@ -1349,7 +1350,6 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
->  	struct ftrace_func_entry *entry;
->  	struct ftrace_hash *new_hash;
->  	int size;
-> -	int ret;
->  	int i;
->  
->  	new_hash = alloc_ftrace_hash(size_bits);
-> @@ -1366,8 +1366,7 @@ alloc_and_copy_ftrace_hash(int size_bits, struct ftrace_hash *hash)
->  	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
->  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> -			ret = add_hash_entry(new_hash, entry->ip);
-> -			if (ret < 0)
-> +			if (add_hash_entry(new_hash, entry->ip) == NULL)
->  				goto free_hash;
->  		}
->  	}
-> @@ -2536,7 +2535,7 @@ ftrace_find_unique_ops(struct dyn_ftrace *rec)
->  
->  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_DIRECT_CALLS
->  /* Protected by rcu_tasks for reading, and direct_mutex for writing */
-> -static struct ftrace_hash *direct_functions = EMPTY_HASH;
-> +static struct ftrace_hash __rcu *direct_functions = EMPTY_HASH;
->  static DEFINE_MUTEX(direct_mutex);
->  int ftrace_direct_func_count;
->  
-> @@ -2555,39 +2554,6 @@ unsigned long ftrace_find_rec_direct(unsigned long ip)
->  	return entry->direct;
->  }
->  
-> -static struct ftrace_func_entry*
-> -ftrace_add_rec_direct(unsigned long ip, unsigned long addr,
-> -		      struct ftrace_hash **free_hash)
-> -{
-> -	struct ftrace_func_entry *entry;
-> -
-> -	if (ftrace_hash_empty(direct_functions) ||
-> -	    direct_functions->count > 2 * (1 << direct_functions->size_bits)) {
-> -		struct ftrace_hash *new_hash;
-> -		int size = ftrace_hash_empty(direct_functions) ? 0 :
-> -			direct_functions->count + 1;
-> -
-> -		if (size < 32)
-> -			size = 32;
-> -
-> -		new_hash = dup_hash(direct_functions, size);
-> -		if (!new_hash)
-> -			return NULL;
-> -
-> -		*free_hash = direct_functions;
-> -		direct_functions = new_hash;
-> -	}
-> -
-> -	entry = kmalloc(sizeof(*entry), GFP_KERNEL);
-> -	if (!entry)
-> -		return NULL;
-> -
-> -	entry->ip = ip;
-> -	entry->direct = addr;
-> -	__add_hash_entry(direct_functions, entry);
-> -	return entry;
-> -}
-> -
->  static void call_direct_funcs(unsigned long ip, unsigned long pip,
->  			      struct ftrace_ops *ops, struct ftrace_regs *fregs)
->  {
-> @@ -4223,8 +4189,8 @@ enter_record(struct ftrace_hash *hash, struct dyn_ftrace *rec, int clear_filter)
->  		/* Do nothing if it exists */
->  		if (entry)
->  			return 0;
-> -
-> -		ret = add_hash_entry(hash, rec->ip);
-> +		if (add_hash_entry(hash, rec->ip) == NULL)
-> +			ret = -ENOMEM;
->  	}
->  	return ret;
->  }
-> @@ -5266,7 +5232,8 @@ __ftrace_match_addr(struct ftrace_hash *hash, unsigned long ip, int remove)
->  		return 0;
->  	}
->  
-> -	return add_hash_entry(hash, ip);
-> +	entry = add_hash_entry(hash, ip);
-> +	return entry ? 0 :  -ENOMEM;
->  }
->  
->  static int
-> @@ -5410,7 +5377,7 @@ static void remove_direct_functions_hash(struct ftrace_hash *hash, unsigned long
->   */
->  int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  {
-> -	struct ftrace_hash *hash, *free_hash = NULL;
-> +	struct ftrace_hash *hash, *new_hash = NULL, *free_hash = NULL;
->  	struct ftrace_func_entry *entry, *new;
->  	int err = -EBUSY, size, i;
->  
-> @@ -5436,17 +5403,44 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  		}
->  	}
->  
-> -	/* ... and insert them to direct_functions hash. */
->  	err = -ENOMEM;
+>         s->s_bdi =3D &noop_backing_dev_info;
+>         s->s_flags =3D flags;
+> -       if (s->s_user_ns !=3D &init_user_ns)
 > +
-> +	/* Make a copy hash to place the new and the old entries in */
-> +	size = hash->count + direct_functions->count;
-> +	if (size > 32)
-> +		size = 32;
-> +	new_hash = alloc_ftrace_hash(fls(size));
-> +	if (!new_hash)
-> +		goto out_unlock;
+> +       err =3D security_sb_device_access(s);
+> +       if (err < 0 && err !=3D -EOPNOTSUPP)
+> +               goto fail;
 > +
-> +	/* Now copy over the existing direct entries */
-> +	size = 1 << direct_functions->size_bits;
-> +	for (i = 0; i < size; i++) {
-> +		hlist_for_each_entry(entry, &direct_functions->buckets[i], hlist) {
-> +			new = add_hash_entry(new_hash, entry->ip);
-> +			if (!new)
-> +				goto out_unlock;
-> +			new->direct = entry->direct;
-> +		}
-> +	}
-> +
-> +	/* ... and add the new entries */
-> +	size = 1 << hash->size_bits;
->  	for (i = 0; i < size; i++) {
->  		hlist_for_each_entry(entry, &hash->buckets[i], hlist) {
-> -			new = ftrace_add_rec_direct(entry->ip, addr, &free_hash);
-> +			new = add_hash_entry(new_hash, entry->ip);
->  			if (!new)
-> -				goto out_remove;
-> +				goto out_unlock;
-> +			/* Update both the copy and the hash entry */
-> +			new->direct = addr;
->  			entry->direct = addr;
->  		}
->  	}
->  
-> +	free_hash = direct_functions;
-> +	rcu_assign_pointer(direct_functions, new_hash);
-> +	new_hash = NULL;
-> +
->  	ops->func = call_direct_funcs;
->  	ops->flags = MULTI_FLAGS;
->  	ops->trampoline = FTRACE_REGS_ADDR;
-> @@ -5454,17 +5448,17 @@ int register_ftrace_direct(struct ftrace_ops *ops, unsigned long addr)
->  
->  	err = register_ftrace_function_nolock(ops);
->  
-> - out_remove:
-> -	if (err)
-> -		remove_direct_functions_hash(hash, addr);
-> -
->   out_unlock:
->  	mutex_unlock(&direct_mutex);
->  
-> -	if (free_hash) {
-> +	if (free_hash && free_hash != EMPTY_HASH) {
->  		synchronize_rcu_tasks();
->  		free_ftrace_hash(free_hash);
->  	}
-> +
-> +	if (new_hash)
-> +		free_ftrace_hash(new_hash);
-> +
->  	return err;
->  }
->  EXPORT_SYMBOL_GPL(register_ftrace_direct);
-> @@ -6309,7 +6303,7 @@ ftrace_graph_set_hash(struct ftrace_hash *hash, char *buffer)
->  
->  				if (entry)
->  					continue;
-> -				if (add_hash_entry(hash, rec->ip) < 0)
-> +				if (add_hash_entry(hash, rec->ip) == NULL)
->  					goto out;
->  			} else {
->  				if (entry) {
+> +       if (err && s->s_user_ns !=3D &init_user_ns)
+>                 s->s_iflags |=3D SB_I_NODEV;
+> +       else
+> +               s->s_iflags |=3D SB_I_MANAGED_DEVICES;
 
+This is my concern, depending on what the LSM hook returns, the
+superblock's flags are set differently, affecting much more than just
+a LSM-based security mechanism.
+
+LSMs should not be able to undermine, shortcut, or otherwise bypass
+access controls built into other parts of the kernel.  In other words,
+a LSM should only ever be able to deny an operation, it should not be
+able to permit an operation that otherwise would have been denied.
+
+>         INIT_HLIST_NODE(&s->s_instances);
+>         INIT_HLIST_BL_HEAD(&s->s_roots);
+>         mutex_init(&s->s_sync_lock);
+
+--=20
+paul-moore.com
 
