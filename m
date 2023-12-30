@@ -1,44 +1,44 @@
-Return-Path: <bpf+bounces-18751-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18752-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E716D820859
-	for <lists+bpf@lfdr.de>; Sat, 30 Dec 2023 21:06:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C4EA82085D
+	for <lists+bpf@lfdr.de>; Sat, 30 Dec 2023 21:08:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 773971F229EA
-	for <lists+bpf@lfdr.de>; Sat, 30 Dec 2023 20:06:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 324F21F2299B
+	for <lists+bpf@lfdr.de>; Sat, 30 Dec 2023 20:08:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2CCC2E3;
-	Sat, 30 Dec 2023 20:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61ED4C2E9;
+	Sat, 30 Dec 2023 20:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="fn3gQFbK"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="t9apMdl9"
 X-Original-To: bpf@vger.kernel.org
 Received: from mout.web.de (mout.web.de [212.227.15.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40785BE68;
-	Sat, 30 Dec 2023 20:06:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D781CBE5D;
+	Sat, 30 Dec 2023 20:08:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1703966781; x=1704571581; i=markus.elfring@web.de;
-	bh=D2US4ZEXMGNvCB3ybkBudZXkGlLbPNb81iXdW55uLKs=;
+	t=1703966896; x=1704571696; i=markus.elfring@web.de;
+	bh=rAdygzKsqo2awjxq9Z7K0OqKNlPxCRegPbkMKgPEzqA=;
 	h=X-UI-Sender-Class:Date:Subject:From:To:Cc:References:
 	 In-Reply-To;
-	b=fn3gQFbKxRl8mXMrDVsEWJx2c89ER+Ze0ltH72Ev/IMvYr6GsW5Rq68QP1sOcX/o
-	 sBt65kduKqN8ItflfgT2s+aJSq2b07FlX/TNYcbguI1RgRjQ2tBSu+Gzg0wxZWipv
-	 PPz/rv+bLwSy13jrOVgiNaUG4nd94NQnHyg+2Tn5MEViAC4lcisSKggmDwiq+dOXz
-	 riHdtobzV5na9Id4yT2Iwf06qraQgLs1fCVFylsaumdSoDy0pvUBDJmniJ7BCiwgD
-	 FnNPSqzGouviFjrD6xYNHr+tYGOPTklMrbgdtqD5YICb/efTAi25dba9hmbrXmAfa
-	 t9jSwzq9bOAV2Yi7dA==
+	b=t9apMdl9JHUgfJkl67EqSzX4k1VZQa4CSAeNzR14gTH2CKJBT0LBvm/Cv4ehVUaF
+	 rznikftrvSK3bYtsk/87aOgV7KmN6aW2L+fuBVyi9oj9sFpcBjQaDQUVz21/0P4Ci
+	 nZvcT/CdWkfS6O7w0xx5ELH/NiALWkeUtminTScIMRNjUWYIaR9+0A0O97pTRuXTi
+	 eGM99TEg0A4/tbZnUHfXTLumoIUzasWfVuoO/OkLCHsWNp+O/IpyeCjbFAcS9dLe7
+	 Ot0tX2euN1YAWtndcN5Nj/OzNtarfODNsVQGi8Q+w98KqXoNu/f9dBwFP11JaMu3P
+	 owbuV95QnS+YRWWy8Q==
 X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MSZI5-1rmQse0L4T-00Ss84; Sat, 30
- Dec 2023 21:06:21 +0100
-Message-ID: <2c4ef323-4ed7-4b43-8dfe-b55aeecaa3bf@web.de>
-Date: Sat, 30 Dec 2023 21:06:18 +0100
+Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MTfon-1rnXNV2aKL-00TvHq; Sat, 30
+ Dec 2023 21:08:16 +0100
+Message-ID: <ed2f5323-390f-4c9d-919d-df43ba1cad2b@web.de>
+Date: Sat, 30 Dec 2023 21:08:15 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -46,8 +46,8 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [PATCH 1/5] bpf: Improve exception handling in
- bpf_struct_ops_link_create()
+Subject: =?UTF-8?Q?=5BPATCH_2/5=5D_bpf=3A_Move_an_assignment_for_the_variabl?=
+ =?UTF-8?B?ZSDigJxzdF9tYXDigJ0gaW4gYnBmX3N0cnVjdF9vcHNfbGlua19jcmVhdGUoKQ==?=
 Content-Language: en-GB
 From: Markus Elfring <Markus.Elfring@web.de>
 To: bpf@vger.kernel.org, netdev@vger.kernel.org,
@@ -62,88 +62,60 @@ References: <7011cdcc-4287-4e63-8bfa-f08710f670b1@web.de>
 In-Reply-To: <7011cdcc-4287-4e63-8bfa-f08710f670b1@web.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:QUFRAMK31tz+n4I7fbLISjWjYnW9MXfTu8MQzaa7dzNHG4lyZE9
- hPxewfn30rrz6QwVKBfATU6jer4OQYLjoEp378zCcClBtSZXKtjPzGiOZ/EDARroYPzqeCD
- fILh7XzcmKpu8WyrVUOgLnEUEa3y6Imf5a7fbxgAHjX3/SDQvv6xMWdsug5E/4Mm33z+Bz3
- t9mZsI5CijtdmA9xcFYvw==
+X-Provags-ID: V03:K1:18qx8X9R9dIRWlO2/jLbUn6fKchkG9q9s5s9lZu63vS38Eo/5ev
+ RnmbniKYVw/tMozG3vCSqLSGPjlaFDksCSEyEFK8nKfoIyBun8gZQBBNtpgbPJr6Wp3YViV
+ n/AltZPgSrTzW3zwsNWLIEZy7Th93dxW2YnmsPbqFlw5ZWVV0+0eiGedZ7RXxjpv4Mrceyq
+ dIy6B/+jmbxElD6HkJX8Q==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:juW6K/s+4Cg=;f9KejanXXCgaKD/YMUAkjb+PKOh
- NZ1KABzA54jNWyTHEcMkbriJRgAfvb2Mu8Vm5g31J7ttikxn+VVDnVZHrfsVE2sb974NcyoPB
- 1XZsJlrk/sm8lSg+7aCcqnQ+5ydNQB/qtTDOIK6PCs1rVqBbSbUWak8o8CI6fcqUcH5rnEnF6
- e/yI1VbyDK6CCCurwwr+1rShIAxhHvqdtdO+eI2XI1TQZJqIaXMNdzfetVyPdUG6okIQmIeAh
- T1NbB4EHV8/qgYgNnn63zUbY5E9v5BMg24b36wMSyAdsw/5qoMFpsUgtfkGhiFJ74b1gPP0h0
- 7RWCHVN9mlO5JUwcvySwz4wxC8ccWtFE1Q3W4njASSruuxHb8SHNbez5MAXJbDrh3B84ayA2j
- PqrfEeAnI9jnTA7nr40QjSn+4XOFz0toulO4iJIEKAg/BxMKmDyJGhPtedl0WNVDC3fS7YH7y
- tW8PitrX+XZYNikB59EgFgg/YRI5GN7U5xC8Dm8lC2aR61up2A0d9scwbw+hGsPkoi0IVcoFS
- 4AnY5WyGAL8v+qXvr/cPHbvDVkAdFlXOa3CXeQVmEeobOIo7gn8Wf8Bf0ZhGuIYJZkr72IIzZ
- rKknj9AO44Y3E3cnrSdr4EtOviVIF2/kJcucQeJmcQHMpTr/gfKnbBBepN01zDjttz7Clh4aZ
- 3dzCV0CLCd7yegKbpRR1x3rjtXbNkLyb6F0NpF75mg+DIreeXuZLpq0Jjv6XJ7ZnoAq837TVS
- O7gFffOgxcxqsXv8d5/Y3rEAhuFxnH6W+7rDVXwWvzeNWaHtxmH6aJbVX6sq9Fe5cZZaoYNZJ
- fkYzMxU3iglc7D8PpIDVwA346seOePP1otkraudIPvggQ4V6L9i0B3PTpFLnxkYmLoP78BYZw
- MUrPaYzS62uCWzY2mqda6lY06EkatAZHuTDF8UJMXqtmD71UqKRu+QG69mzGJW4Wx4D41w+DF
- EGIBPw==
+UI-OutboundReport: notjunk:1;M01:P0:i0un/BHbWps=;QKSAScUuoXyGC47nAxt4n0/zVM5
+ wpBfYIQsN/kjWMzBtX+Ek+R15mw4eH8Lzju2aQ+ejfnuZqNMDZxPuc2RqwZe4Ov7cNb6WuQ2c
+ Lu+Eogw6bSRQABNBrv/RkXVWtZTtPcXQEOmyn6SM8UK9qorbPJZ0CMw0ILegPwkhLq6tK/1pz
+ mNCjRqv/aHhpWXzFiQYzf8hRjWxlQNpy7CnfG3fT+PTmN/tzyrb31W5TZ/4yHgMJhmB4oavlA
+ 2lNArTKwkfmfO0mGBeOj9XPi/8ApRYC2Z+9Qc/K5XG2xzxueKU5MSFq8M6fyfJaaUmSANJUXW
+ R9t0qlVB/g+vAOrSok7rv7r94FAO26vrQttz53agoQW9vN3tK9Gk55cq3CKtvn2J7iSQi+YPN
+ cLEoc7+t0Z9ZTcHE0nNwmcshOthzEq2Bt5PhABxjSV532O8yZO8EKxEymAHrAipbPVcCRFQZJ
+ JpmUD2PnpI/RRQpDCORvCrepVECBSfT1gQhWGS0JaCAOEDlUpYb6ziYJj6E3hryx048Swz9Aj
+ 5T8vAb3BZGuxCN3QQrVw4TaZWc+6IWmdpJjF8iTqFIlNE2vCScb0KF2hYSU8ygNFL5SleIGx6
+ 008CdapbEA8tjCiJ/sF9xZWNB0JrMUgVM5l61wtOmEJi2UB/z7gSGRo48pSqVk6i47ccjnPxX
+ i6iPqRaExLPU7R0RDS5K0ZKr8pLfAvAOtyjPlSPZDl1VjRAn6mlWSlfDMT2kBFgke5vOVvlYP
+ JizTrINS7kElSNl/6eP+6g84nLKTTqjyLJ8tLXOvxR9d6TRhD5e9Wthjou87KkCLoq778nad/
+ ZofMjzuEBHro5p/JLiDA3e8fU7LOsmLy/FIyNE5nHVX293+trIAyFfG0wphkn5EO+8nkhAH25
+ xG6OmtE5mWbO9Nq9ZVO9pDLHjST4b1XPiJUqZvj65ThGwj7s69i8Yq62BsUyrHZkeC2FuIXmN
+ x5010zC6Cb/rzRRyGeL71QRvjZ8=
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sat, 30 Dec 2023 18:50:45 +0100
+Date: Sat, 30 Dec 2023 19:00:12 +0100
 
-The kfree() function was called in two cases by
-the bpf_struct_ops_link_create() function during error handling
-even if the passed variable contained a null pointer.
-This issue was detected by using the Coccinelle software.
-
-* Thus use another label.
-
-* Reorder function calls at the end.
-
-* Delete an initialisation (for the variable =E2=80=9Clink=E2=80=9D)
-  which became unnecessary with this refactoring.
+Move one assignment for the variable =E2=80=9Cst_map=E2=80=9D closer to th=
+e place
+where this pointer is used.
 
 Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 =2D--
- kernel/bpf/bpf_struct_ops.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ kernel/bpf/bpf_struct_ops.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 02068bd0e4d9..b49ea460d616 100644
+index b49ea460d616..4133d65c2a28 100644
 =2D-- a/kernel/bpf/bpf_struct_ops.c
 +++ b/kernel/bpf/bpf_struct_ops.c
-@@ -888,7 +888,7 @@ static const struct bpf_link_ops bpf_struct_ops_map_lo=
-ps =3D {
+@@ -898,8 +898,6 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
+ 	if (IS_ERR(map))
+ 		return PTR_ERR(map);
 
- int bpf_struct_ops_link_create(union bpf_attr *attr)
- {
--	struct bpf_struct_ops_link *link =3D NULL;
-+	struct bpf_struct_ops_link *link;
- 	struct bpf_link_primer link_primer;
- 	struct bpf_struct_ops_map *st_map;
- 	struct bpf_map *map;
-@@ -902,13 +902,13 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
-
+-	st_map =3D (struct bpf_struct_ops_map *)map;
+-
  	if (!bpf_struct_ops_valid_to_reg(map)) {
  		err =3D -EINVAL;
--		goto err_out;
-+		goto put_map;
- 	}
+ 		goto put_map;
+@@ -916,6 +914,7 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
+ 	if (err)
+ 		goto err_out;
 
- 	link =3D kzalloc(sizeof(*link), GFP_USER);
- 	if (!link) {
- 		err =3D -ENOMEM;
--		goto err_out;
-+		goto put_map;
- 	}
- 	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map=
-_lops, NULL);
-
-@@ -927,7 +927,8 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
- 	return bpf_link_settle(&link_primer);
-
- err_out:
--	bpf_map_put(map);
- 	kfree(link);
-+put_map:
-+	bpf_map_put(map);
- 	return err;
- }
++	st_map =3D (struct bpf_struct_ops_map *)map;
+ 	err =3D st_map->st_ops->reg(st_map->kvalue.data);
+ 	if (err) {
+ 		bpf_link_cleanup(&link_primer);
 =2D-
 2.43.0
 
