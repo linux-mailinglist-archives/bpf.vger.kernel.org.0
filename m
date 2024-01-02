@@ -1,168 +1,224 @@
-Return-Path: <bpf+bounces-18824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18823-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B72B4822561
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:09:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58CEF82255E
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:05:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2ADC1B22481
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 23:09:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1907F1C22B3D
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 23:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6CD91773B;
-	Tue,  2 Jan 2024 23:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA3217742;
+	Tue,  2 Jan 2024 23:05:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="qz/RcS2u";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="qz/RcS2u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtCoocYz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6C9C1772B
-	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 23:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id DD175C19ECB5
-	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 15:02:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1704236526; bh=hlto+uNBNfggphdxtvSkJL4q0FuNtYnUIpbKtl9OO0Q=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe;
-	b=qz/RcS2u6I8wnJwuVOcMUoK0g/2AMPhVS4QYJizWY7if4itje6j1M2GhLacHtuz3I
-	 ImQkm2fc6Kh64mKUEW6PzkWE50xmGNAK4H0haZlzUd1vj4AbKnk6nccYJu/GFF1PvE
-	 9pQ0NiLiuh26/oW8hODUnU9P/tFCfYJIQLvGmjWo=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Jan  2 15:02:06 2024
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 8C4FAC18DB8E;
-	Tue,  2 Jan 2024 15:02:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1704236526; bh=hlto+uNBNfggphdxtvSkJL4q0FuNtYnUIpbKtl9OO0Q=;
-	h=Date:From:To:Cc:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe;
-	b=qz/RcS2u6I8wnJwuVOcMUoK0g/2AMPhVS4QYJizWY7if4itje6j1M2GhLacHtuz3I
-	 ImQkm2fc6Kh64mKUEW6PzkWE50xmGNAK4H0haZlzUd1vj4AbKnk6nccYJu/GFF1PvE
-	 9pQ0NiLiuh26/oW8hODUnU9P/tFCfYJIQLvGmjWo=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id C9B63C18DB8E
- for <bpf@ietfa.amsl.com>; Tue,  2 Jan 2024 15:02:05 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.407
-X-Spam-Level: 
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id nd11ccBCoD56 for <bpf@ietfa.amsl.com>;
- Tue,  2 Jan 2024 15:02:03 -0800 (PST)
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com
- [209.85.160.177])
- (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 793D3C15790F
- for <bpf@ietf.org>; Tue,  2 Jan 2024 15:02:03 -0800 (PST)
-Received: by mail-qt1-f177.google.com with SMTP id
- d75a77b69052e-4280e3ab14fso25766731cf.2
- for <bpf@ietf.org>; Tue, 02 Jan 2024 15:02:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=1e100.net; s=20230601; t=1704236522; x=1704841322;
- h=user-agent:content-disposition:mime-version:message-id:subject:cc
- :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
- :reply-to;
- bh=mbv7eXA0YkHuMGlCtE5D28uGMMy2CbhyvAx7RZCrbOE=;
- b=Hvd3kqvF6cdsQA/1h9GLd/b8azBe3NA4buDOiVRJsTD3litSArXzIT/Z9DIZdUYHLh
- FuyIhybgquy9yDJ3mqK57CYpC99KhsgehMA9vx6GLJ8SU1qYQKEnyy5DResO/XTWaA8S
- OaG3/hiCoq0K3ZP0L6JbggcFPhxxpOuPSoNFMRAAcXCSFU7gLen2rCWWmOUmI+z/FI7p
- IPriNiL7tkNlz/NiP+lHXnhPVwN7Sgmw1zOrImHCGNnZyYKrKYiIOztObF8Ohi9Wouxp
- 0w034rNY4V444LcK4v4SkWzXb69+fHwmfGezD6L/Bce5O/J6joc4vXwhJgOT04nSsoiV
- xTvA==
-X-Gm-Message-State: AOJu0YyZdib/KLfISfa3w7X7GalhDGhvSUXR7gWk/7VjG905kWdR0YjE
- iSP4dhrtiHvuFrwxBZFeshI=
-X-Google-Smtp-Source: AGHT+IEj6RE0ZKjkwh1OaFIa0MuB0v4rJ0cAW79jNt6zCSvpM0Ffk/5klKq9KgrjRh4/OXMETrdbTw==
-X-Received: by 2002:ac8:5d88:0:b0:423:70f4:c28d with SMTP id
- d8-20020ac85d88000000b0042370f4c28dmr27602408qtx.67.1704236522367; 
- Tue, 02 Jan 2024 15:02:02 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
- by smtp.gmail.com with ESMTPSA id
- br7-20020a05622a1e0700b00425dac6d04csm13496276qtb.3.2024.01.02.15.02.01
- (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
- Tue, 02 Jan 2024 15:02:01 -0800 (PST)
-Date: Tue, 2 Jan 2024 17:01:59 -0600
-From: David Vernet <void@manifault.com>
-To: lsf-pc@lists.linux-foundation.org
-Cc: bpf@vger.kernel.org, bpf@ietf.org, dthaler1968@googlemail.com,
- alexei.starovoitov@gmail.com, hch@infradead.org
-Message-ID: <20240102230159.GA1682@maniforge>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255FA1772C;
+	Tue,  2 Jan 2024 23:05:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A43A7C433C7;
+	Tue,  2 Jan 2024 23:05:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704236742;
+	bh=T6cXZag/Xy65XNlKPdc4AWtqQPyk9JHRqhKUCxsZsBY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=XtCoocYzHvo//7+EA3mfYWOHX9EIE0xClVk2Hh8KjUCHbOLySkNh6Uli8DsDZbysb
+	 EYpN0fOqylv/K4teNG//cP1FVP4ZEozs8Zj7yP16QW+2uI7CvZix9wK0q3R/63nWSd
+	 NEoEss9ZMalFTjKSc+FsPEYoj/+STjn7LQqgw3+tCVlJuMGLGKnqw7cMgUI6yAepE1
+	 OcWo/a/qwYxQdmKR4icMTeHUCFY4Wgs9MalwiErq8eDF4OBEWxEz9KO/1LQjdXDFBE
+	 KcWg/z5bcH7ni5qjF+OT6/QNKrEjIm1W8PxpLojC4XsUa47Zhf+xzFbmenLnGUyfPc
+	 bgZIM7QBjH+xA==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e9e5c97e1so1450898e87.0;
+        Tue, 02 Jan 2024 15:05:42 -0800 (PST)
+X-Gm-Message-State: AOJu0YyVQaBkLUBenTsZJq95GpUeYbAz65nNzwVui+0R3hZxt/uzoRX1
+	XDunK48UHcQDhKJLJm/yibKW3uilSGJxEIznBKc=
+X-Google-Smtp-Source: AGHT+IGBq5Wx9cuhkjxZD5vLlZHMjMLTYjOlb1oTEXQMYX/3bSwNfoIGP73Iy73kkhNHntatC/YNWTBCF4ehZeIdWZc=
+X-Received: by 2002:a05:6512:3ba5:b0:50e:7d6b:b5b2 with SMTP id
+ g37-20020a0565123ba500b0050e7d6bb5b2mr6487931lfv.6.1704236740865; Tue, 02 Jan
+ 2024 15:05:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mutt/2.2.12 (2023-09-09)
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/4czOgX2cmkMdDMiBrvd5cz-Lm2M>
-Subject: [Bpf] [LSF/MM/BPF TOPIC] BPF IETF Standardization
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: multipart/mixed; boundary="===============8474092263061492278=="
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+References: <20231211045543.31741-1-khuey@kylehuey.com> <20231211045543.31741-2-khuey@kylehuey.com>
+In-Reply-To: <20231211045543.31741-2-khuey@kylehuey.com>
+From: Song Liu <song@kernel.org>
+Date: Tue, 2 Jan 2024 15:05:29 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4s5ZaZB0kFz8CWK-NvS4KrE7w90Fzz-wF5WgUMC7dPog@mail.gmail.com>
+Message-ID: <CAPhsuW4s5ZaZB0kFz8CWK-NvS4KrE7w90Fzz-wF5WgUMC7dPog@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] perf/bpf: Call bpf handler directly, not through
+ overflow machinery
+To: Kyle Huey <me@kylehuey.com>
+Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sun, Dec 10, 2023 at 8:55=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
+>
+> To ultimately allow bpf programs attached to perf events to completely
+> suppress all of the effects of a perf event overflow (rather than just th=
+e
+> sample output, as they do today), call bpf_overflow_handler() from
+> __perf_event_overflow() directly rather than modifying struct perf_event'=
+s
+> overflow_handler. Return the bpf program's return value from
+> bpf_overflow_handler() so that __perf_event_overflow() knows how to
+> proceed. Remove the now unnecessary orig_overflow_handler from struct
+> perf_event.
+>
+> This patch is solely a refactoring and results in no behavior change.
+>
+> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
+> Suggested-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  include/linux/perf_event.h |  6 +-----
+>  kernel/events/core.c       | 28 +++++++++++++++-------------
+>  2 files changed, 16 insertions(+), 18 deletions(-)
+>
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index 5547ba68e6e4..312b9f31442c 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -810,7 +810,6 @@ struct perf_event {
+>         perf_overflow_handler_t         overflow_handler;
+>         void                            *overflow_handler_context;
+>  #ifdef CONFIG_BPF_SYSCALL
+> -       perf_overflow_handler_t         orig_overflow_handler;
+>         struct bpf_prog                 *prog;
+>         u64                             bpf_cookie;
+>  #endif
+> @@ -1337,10 +1336,7 @@ __is_default_overflow_handler(perf_overflow_handle=
+r_t overflow_handler)
+>  #ifdef CONFIG_BPF_SYSCALL
+>  static inline bool uses_default_overflow_handler(struct perf_event *even=
+t)
+>  {
+> -       if (likely(is_default_overflow_handler(event)))
+> -               return true;
+> -
+> -       return __is_default_overflow_handler(event->orig_overflow_handler=
+);
+> +       return is_default_overflow_handler(event);
+>  }
+>  #else
+>  #define uses_default_overflow_handler(event) \
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index b704d83a28b2..54f6372d2634 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -9515,6 +9515,12 @@ static inline bool sample_is_allowed(struct perf_e=
+vent *event, struct pt_regs *r
+>         return true;
+>  }
+>
+> +#ifdef CONFIG_BPF_SYSCALL
+> +static int bpf_overflow_handler(struct perf_event *event,
+> +                               struct perf_sample_data *data,
+> +                               struct pt_regs *regs);
+> +#endif
+> +
+>  /*
+>   * Generic event overflow handling, sampling.
+>   */
+> @@ -9584,7 +9590,10 @@ static int __perf_event_overflow(struct perf_event=
+ *event,
+>                 irq_work_queue(&event->pending_irq);
+>         }
+>
+> -       READ_ONCE(event->overflow_handler)(event, data, regs);
+> +#ifdef CONFIG_BPF_SYSCALL
+> +       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
 
---===============8474092263061492278==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2qenCBFtpnrJjjDh"
-Content-Disposition: inline
-
-
---2qenCBFtpnrJjjDh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hello,
-
-I would like to give an update on the latest regarding the BPF IETF
-standardization efforts, and to discuss what I believe will be the long
-term standardization roadmap. We're making good headway on standardizing
-the BPF ISA, but there's a lot more that we'll eventually need to
-formalize and standardize in the BPF ecosystem, and I think it would be
-beneficial to discuss and hear folks' perspective on things.
+This condition is hard to follow. Please consider simplifying it.
 
 Thanks,
-David
+Song
 
---2qenCBFtpnrJjjDh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZZSV5wAKCRBZ5LhpZcTz
-ZAIfAQCdrs3LYC5zbs2o0e4BfkiCZm/FpGD8oCsDNUMGmORfhgD/QnJjx74OC8XU
-2wTibuAn/5dLmQsP8KFWplhD/gd36gw=
-=hEHY
------END PGP SIGNATURE-----
-
---2qenCBFtpnrJjjDh--
-
-
---===============8474092263061492278==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
-
---===============8474092263061492278==--
-
+> +#endif
+> +               READ_ONCE(event->overflow_handler)(event, data, regs);
+>
+>         if (*perf_event_fasync(event) && event->pending_kill) {
+>                 event->pending_wakeup =3D 1;
+> @@ -10394,9 +10403,9 @@ static void perf_event_free_filter(struct perf_ev=
+ent *event)
+>  }
+>
+>  #ifdef CONFIG_BPF_SYSCALL
+> -static void bpf_overflow_handler(struct perf_event *event,
+> -                                struct perf_sample_data *data,
+> -                                struct pt_regs *regs)
+> +static int bpf_overflow_handler(struct perf_event *event,
+> +                               struct perf_sample_data *data,
+> +                               struct pt_regs *regs)
+>  {
+>         struct bpf_perf_event_data_kern ctx =3D {
+>                 .data =3D data,
+> @@ -10417,10 +10426,8 @@ static void bpf_overflow_handler(struct perf_eve=
+nt *event,
+>         rcu_read_unlock();
+>  out:
+>         __this_cpu_dec(bpf_prog_active);
+> -       if (!ret)
+> -               return;
+>
+> -       event->orig_overflow_handler(event, data, regs);
+> +       return ret;
+>  }
+>
+>  static int perf_event_set_bpf_handler(struct perf_event *event,
+> @@ -10456,8 +10463,6 @@ static int perf_event_set_bpf_handler(struct perf=
+_event *event,
+>
+>         event->prog =3D prog;
+>         event->bpf_cookie =3D bpf_cookie;
+> -       event->orig_overflow_handler =3D READ_ONCE(event->overflow_handle=
+r);
+> -       WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
+>         return 0;
+>  }
+>
+> @@ -10468,7 +10473,6 @@ static void perf_event_free_bpf_handler(struct pe=
+rf_event *event)
+>         if (!prog)
+>                 return;
+>
+> -       WRITE_ONCE(event->overflow_handler, event->orig_overflow_handler)=
+;
+>         event->prog =3D NULL;
+>         bpf_prog_put(prog);
+>  }
+> @@ -11928,13 +11932,11 @@ perf_event_alloc(struct perf_event_attr *attr, =
+int cpu,
+>                 overflow_handler =3D parent_event->overflow_handler;
+>                 context =3D parent_event->overflow_handler_context;
+>  #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_EVENT_TRACING)
+> -               if (overflow_handler =3D=3D bpf_overflow_handler) {
+> +               if (parent_event->prog) {
+>                         struct bpf_prog *prog =3D parent_event->prog;
+>
+>                         bpf_prog_inc(prog);
+>                         event->prog =3D prog;
+> -                       event->orig_overflow_handler =3D
+> -                               parent_event->orig_overflow_handler;
+>                 }
+>  #endif
+>         }
+> --
+> 2.34.1
+>
+>
 
