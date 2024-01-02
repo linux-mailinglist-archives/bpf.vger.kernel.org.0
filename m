@@ -1,138 +1,110 @@
-Return-Path: <bpf+bounces-18779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5B2822098
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 18:48:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7291C8220CB
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 19:11:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82B7C1C226B6
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 17:48:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 830861C227FD
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 18:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACED2156C4;
-	Tue,  2 Jan 2024 17:48:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43465156E6;
+	Tue,  2 Jan 2024 18:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XXzB7oeF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mG5t1Rdr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF229156C7
-	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 17:48:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-555bd21f9fdso3716990a12.0
-        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 09:48:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE840156D9
+	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 18:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6d9b2241a14so2500028b3a.1
+        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 10:11:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704217681; x=1704822481; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=vSUOO60rLEVEVmp75iV59iLLYAb7ftSlOa2ZLUeioVY=;
-        b=XXzB7oeFspInCkr5H5lE8rA0Oi07h8R502iOoD2A4RWMTXBYLwpBaOqdy3oHzNbyfc
-         VDlylFmfE6XVZhvZ0RtL7bBTd1MEPeHd6FMMe3P8qNtGbVaTM4rVgFSmZ02+hXpdHrEA
-         18Y8A3YVQj3i/tFpM9UTxuFtcNeXBeQmLKywPWwEpfgiUI0BFGibsHOmJtiIf86Sbrwe
-         FbzfLE9OkfGhEv4S5JT0U6oqu/tlwSiYz12e7DCHi4RKFsoYVhZrGdXc+H+T3UidqbZu
-         5/oL2IQxqrWn/w9cCru8y6JxlP0D4Qrsuk/yBf35KJwPyEIM1L75RZzv1gEABNyon/h7
-         3TBg==
+        d=google.com; s=20230601; t=1704219096; x=1704823896; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=STqN8+id8xOXR4JwigzV6hothyUF9kt5Ue3l3saivJk=;
+        b=mG5t1RdrgEsvW/Qmbq/ajTipvpvJH8Oi+6JVCTce5jjh+EdOvism/VZs/ZZJqwSKce
+         PweFHc4zEQGqfJj+5RF/5Lq5/LE8QbgF7KQB4oHY9uo+wN6J50eNzHYAG84J6OatE6Sq
+         5neS++ul/EpwllclTdd/2xrYgqi7StU/I6lDNGJhgBrqy1+WqAvJR+nig1PVPe9fU7ES
+         gS0GNyz+D2EEiz6l8t6y2Y98gsADqO988f4RKy9BOm+Wb6rT9YewXFVkOyFY1IXOsAbw
+         lCbMb3geiz9N0AwvV0XgZato4+SQvJE1pRvPYPuHQGJtXq+RDi/1xTrvDLXKP6K8Hv3l
+         7HoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704217681; x=1704822481;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vSUOO60rLEVEVmp75iV59iLLYAb7ftSlOa2ZLUeioVY=;
-        b=w1INQMNuhg5+1kQ3HVzSKotuIz8+fSOA5oXRinJOpoW2KQMhMhTK+AWLhoctFniPQQ
-         7eAkRzOX8MJQUfSxNfhMbmwv/3F0NCmhGua/i9fLLuzkiBqyrMowOmGzH+/CYmE5lDQR
-         zsP8vfJKJx1uyCo68EBp38yvMT7fnEKqJ4vaFJ9m+rbi9SYvuCF//bonVunWAjby8iBp
-         hmnWnUPSMF5YkN8fx/rnqMKEV7W56nK729RkO/9GUcxVDZxWssEHyxacTeOYUvDauq/e
-         sdelC5iVZfwj5RATukjUNwY6Rmh5gO97alwpjsYoqkN53n7y6O6mL9IO/dMh6O/NvBCr
-         CbtA==
-X-Gm-Message-State: AOJu0YwLbaTVgY1MMrDFzOz1A6anolMgFaqj8UGUe51bgsqrDJOrg5Lb
-	JhXVvWBIZ6/1z+jt9R7OdVw=
-X-Google-Smtp-Source: AGHT+IF9Kc7rq3K1DG1paAwncodUBDc7Ealqhsy9LyXWfO7M6big/zKNk1QoCSeVT0LrjJjAaXMCnQ==
-X-Received: by 2002:a50:c049:0:b0:552:d790:ce07 with SMTP id u9-20020a50c049000000b00552d790ce07mr11434786edd.36.1704217680787;
-        Tue, 02 Jan 2024 09:48:00 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id f11-20020a056402004b00b005557bbb81bfsm7472927edu.79.2024.01.02.09.47.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 09:47:59 -0800 (PST)
-Message-ID: <28bcf5ae2df9ed0bd1603ed161e1d4488694c0d9.camel@gmail.com>
-Subject: Re: test_kmod.sh fails with constant blinding
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, Bram Schuur
-	 <bschuur@stackstate.com>, "ykaliuta@redhat.com" <ykaliuta@redhat.com>
-Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
-	"johan.almbladh@anyfinetworks.com"
-	 <johan.almbladh@anyfinetworks.com>
-Date: Tue, 02 Jan 2024 19:47:58 +0200
-In-Reply-To: <08287f7c-d0aa-4ded-a26d-34023051dd14@linux.dev>
-References: 
-	<AM0PR0202MB3412F6D0F59E5EBA0CA74747C461A@AM0PR0202MB3412.eurprd02.prod.outlook.com>
-	 <08287f7c-d0aa-4ded-a26d-34023051dd14@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+        d=1e100.net; s=20230601; t=1704219096; x=1704823896;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=STqN8+id8xOXR4JwigzV6hothyUF9kt5Ue3l3saivJk=;
+        b=vTcDhcYfjSk+SQh4oSnAiUanHHz4wTEVu4BhOnPSwAm7U1gpGBwQVT5MWk7layV0Xc
+         lJOsVM2xN+qrGKMGhyJIUcmujnguf3FLZBAJd7LAwdlnvK7awTF/fD0scvBhEKiGR+U/
+         NFrj/+LYuGbG3fBhHyEhvD1rHm9tKFETRjEWugTUx8FgofdFEeDiJA7RguECKoPuPuzQ
+         mLu8kck495Y9hlZIW0ATaMfpdW66WrkRLqgsAWDOhlfAoiNztG1DSmI4cPJU7yLg58O6
+         sZapbeoZrSwfCdXhDBhcAKe0GONcMQ7jISXzN3B4UwjBnuOJZ0D5BZHVQP8lsVxJRfAI
+         +otA==
+X-Gm-Message-State: AOJu0YxLBFZ/VJbAnA9XXMvPnrlymEt593PvGlU4MTcpMs4pbj40zGXv
+	PSdyT+jZjIbURAfETWvi/gRsAl4AZtb6vQ==
+X-Google-Smtp-Source: AGHT+IHqCmrQAH9xo58u1x9kh7B6PHS2ZFO8CBoaFvnThto2SDCZ8vSUwhXdAgmrJW7OvtNBqeJZsaw=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a05:6a00:114f:b0:6da:b362:34bf with SMTP id
+ b15-20020a056a00114f00b006dab36234bfmr538pfm.1.1704219095942; Tue, 02 Jan
+ 2024 10:11:35 -0800 (PST)
+Date: Tue, 2 Jan 2024 10:11:34 -0800
+In-Reply-To: <20231229081409.1276386-1-menglong8.dong@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20231229081409.1276386-1-menglong8.dong@gmail.com>
+Message-ID: <ZZRR1q1JrJMD1lAy@google.com>
+Subject: Re: [PATCH bpf-next 0/2] bpf: add csum/ip_summed fields to __sk_buff
+From: Stanislav Fomichev <sdf@google.com>
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com, 
+	jolsa@kernel.org, davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org, horms@kernel.org, 
+	dhowells@redhat.com, linyunsheng@huawei.com, aleksander.lobakin@intel.com, 
+	joannelkoong@gmail.com, laoar.shao@gmail.com, kuifeng@meta.com, 
+	bjorn@rivosinc.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-On Tue, 2024-01-02 at 08:56 -0800, Yonghong Song wrote:
-> On 1/2/24 7:11 AM, Bram Schuur wrote:
-> > Me and my colleague Jan-Gerd Tenberge encountered this issue in product=
-ion on the 5.15, 6.1 and 6.2 kernel versions. We make a small reproducible =
-case that might help find the root cause:
-> >=20
-> > simple_repo.c:
-> >=20
-> > #include <linux/bpf.h>
-> > #include <bpf/bpf_helpers.h>
-> >=20
-> > SEC("socket")
-> > int socket__http_filter(struct __sk_buff* skb) {
-> >  =C2=A0 volatile __u32 r =3D bpf_get_prandom_u32();
-> >  =C2=A0 if (r =3D=3D 0) {
-> >  =C2=A0 =C2=A0 goto done;
-> >  =C2=A0 }
-> >=20
-> >=20
-> > #pragma clang loop unroll(full)
-> >  =C2=A0 for (int i =3D 0; i < 12000; i++) {
-> >  =C2=A0 =C2=A0 r +=3D 1;
-> >  =C2=A0 }
-> >=20
-> > #pragma clang loop unroll(full)
-> >  =C2=A0 for (int i =3D 0; i < 12000; i++) {
-> >  =C2=A0 =C2=A0 r +=3D 1;
-> >  =C2=A0 }
-> > done:
-> >  =C2=A0 return r;
-> > }
-> >=20
-> > Looking at kernel/bpf/core.c it seems that during constant blinding eve=
-ry instruction which has an constant operand gets 2 additional instructions=
-. This increases the amount of instructions between the JMP and target of t=
-he JMP cause rewrite of the JMP to fail because the offset becomes bigger t=
-han S16_MAX.
->=20
-> This is indeed possible as verifier might increase insn account in variou=
-s cases.
-> -mcpu=3Dv4 is designed to solve this problem but it is only available at =
-6.6 and above.
+On 12/29, Menglong Dong wrote:
+> For now, we have to call some helpers when we need to update the csum,
+> such as bpf_l4_csum_replace, bpf_l3_csum_replace, etc. These helpers are
+> not inlined, which causes poor performance.
+> 
+> In fact, we can define our own csum update functions in BPF program
+> instead of bpf_l3_csum_replace, which is totally inlined and efficient.
+> However, we can't do this for bpf_l4_csum_replace for now, as we can't
+> update skb->csum, which can cause skb->csum invalid in the rx path with
+> CHECKSUM_COMPLETE mode.
+> 
+> What's more, we can't use the direct data access and have to use
+> skb_store_bytes() with the BPF_F_RECOMPUTE_CSUM flag in some case, such
+> as modifing the vni in the vxlan header and the underlay udp header has
+> no checksum.
+> 
+> In the first patch, we make skb->csum readable and writable, and we make
+> skb->ip_summed readable. For now, for tc only. With these 2 fields, we
+> don't need to call bpf helpers for csum update any more.
+> 
+> In the second patch, we add some testcases for the read/write testing for
+> skb->csum and skb->ip_summed.
+> 
+> If this series is acceptable, we can define the inlined functions for csum
+> update in libbpf in the next step.
 
-There might be situations when -mcpu=3Dv4 won't help, as currently llvm
-would generate long jumps only when it knows at compile time that jump
-is indeed long. However here constant blinding would probably triple
-the size of the loop body, so for llvm this jump won't be long.
-
-If we consider this corner case an issue, it might be possible to fix
-it by teaching bpf_jit_blind_constants() to insert 'BPF_JMP32 | BPF_JA'
-when jump targets cross the 2**16 thresholds.
-Wdyt?
+One downside of exposing those as __sk_buff fields is that all this
+skb internal csum stuff now becomes a UAPI. And I'm not sure we want
+that :-) Should we add a lightweight kfunc to reset the fields instead?
+Or will it still have an unacceptable overhead?
 
