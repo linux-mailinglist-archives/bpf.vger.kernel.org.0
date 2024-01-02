@@ -1,233 +1,173 @@
-Return-Path: <bpf+bounces-18814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F14D8224AD
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 23:23:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A5568224D9
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 23:39:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 195FA1F23724
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 22:23:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BDAF1F237B1
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 22:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38A3B171C8;
-	Tue,  2 Jan 2024 22:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C99171D7;
+	Tue,  2 Jan 2024 22:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g2u3iKjQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NM6zyFEK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C691798E
-	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 22:22:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA614171CE
+	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 22:39:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33694bf8835so8356913f8f.3
-        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 14:22:45 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a26fa294e56so632843066b.0
+        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 14:39:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704234164; x=1704838964; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FDwbLpzkiZwzLN6LlwqoPCHG8NWbwDYx8UA8VxHDvWE=;
-        b=g2u3iKjQtXFsqpm5lXCAjU4oMwb7BhDProzFyOvwH7StxnH/H8K0VhUuSy5X8Fum4H
-         iKXAvEuIW6W4zTP8Oxg+AYawstGWa7KiD7AWYFhL71NOJhLOauaq+K08jW8C3Ul3tp09
-         Qb6AGUh/SyrM68W5TqNpN0GYcUsP8MKb3ZBjch6UoNracNBX8TGmjfHvP/pQYEL9C5ZO
-         HqnfA7T/0F5tNkc9hlhiTwkCQ9WgT4M1gjuYeio27sgTC139OIl7Yp6oXmcx4PsU0EG/
-         x4RZVUni77+rbVIy/jGo+42VlBj5D/1JLmtCxgbixIelLq6yyiAkSoFBdS39hthe8R8R
-         dcoA==
+        d=gmail.com; s=20230601; t=1704235163; x=1704839963; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=R/KGgQZ510Uk0fsKqsBYp6kL5o9GRHUMEK/wtfJVZY4=;
+        b=NM6zyFEK3cBYAi4tbRG4G1K2SEtAtmOu95zhvVQBStTCftoIOXH74BR3nYDJQE19km
+         IntAZHRK22W/jDMldOju018QLvp6FZCOtrSxihfK1FRN9yepJO2O5F/Y0m7nWnkjAdOm
+         bXjDvlkiOs1HNHKECSH1qFnjBvUrJI/yfgrep4DmPvh8ZcX/h20lWcWl740FAv+wqndN
+         O9TiZl1+i/bSX7fZYmYgJLvc88+Vj27UDa2sbYOYRWqMZwOh2R4arQ64bO9wNTN2wt/K
+         HXR2ls16X08dxZ++2uwMxM5m7KtaxRS76k0yNqneupbGqhPPlmEzVj1CW1pwEZmqo83K
+         9Weg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704234164; x=1704838964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FDwbLpzkiZwzLN6LlwqoPCHG8NWbwDYx8UA8VxHDvWE=;
-        b=DrQh4h0o8GdhaMRkpIZ4LDC47xindCEvxlhbB3scAPHOhM0AnazQxTzofITC97i1QA
-         ZavQd5DkdiD+1n1NwvF/zUfESPY4iriAa8/XGTuy28W8Ikeo42OZuy10MEssZQPSR+t+
-         XCvoauqN2p3wsGzZI+PmwWe+0raJ2tnhOx+d3X1i+0cvZ/YHItW5x5RWMyiKxsu9G8w8
-         xFm+6woJKOYBQ5IHAo03ZfcHqaV9Tr2UExR3yfpcEYtP+I4Jie2gU/EINKyYGkEzIgZ7
-         VCYXz1iQbAavhf/5MPT33rjDimKC8Yx9tQTHopnGRcEuq/2l5fTI5/i2b6ZQivgsFxxD
-         IgnQ==
-X-Gm-Message-State: AOJu0YwW293SfdKiAi9vOXSsCgUXqzLOLbywNOTFy5ZgiFTrGj5RHN7r
-	mwF0WBQp5F4msMa+sc7wF+tnNUmw9opeEa/5hbo=
-X-Google-Smtp-Source: AGHT+IF6O5iXD925W2UO5L5pXoxHYFHpRbT8UAattzm+OlZA4Y3RYMsbRNcEm9Z9mnsvuBn2d6LHwgmfmUf1XF1fYuE=
-X-Received: by 2002:adf:a1c4:0:b0:336:c876:a3ff with SMTP id
- v4-20020adfa1c4000000b00336c876a3ffmr6764939wrv.71.1704234164170; Tue, 02 Jan
- 2024 14:22:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704235163; x=1704839963;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=R/KGgQZ510Uk0fsKqsBYp6kL5o9GRHUMEK/wtfJVZY4=;
+        b=TnCR6XwrYLb0u8sbuglb27J1hSRGnLZvcr5cDj68qQojFeur4sWfXcHJkwTP6bfA5u
+         M26D0pJfcyx0UejWL0uWhhyQKVh6lzJoko88eQrpeM80P11nzzuunHa0zmBf9vlwUPTR
+         Bnc5fIyMzpN1BHeqyZO2N0geJGEP6X8II2w6KRM+m5XL9Vl9iehs900neca12/TfIO77
+         1TmrnjKealv7k8OZy23GzSxtE9D177/LatbtSaY55LlCnG25DdJpym8+rR+BRn+XzeRb
+         z49OToBMAuZNMQblxLqJZarzFqxSI7se7XwnONlDFJO1y5bsbnZ4aPQ++gN/BeM5mJqX
+         aa+Q==
+X-Gm-Message-State: AOJu0YzHKJLPOg0lUMBRnK9TiSYF9bjlu073vIGpkvezyzKsdbnOfBic
+	AXl1zRs/Ycky/XomwhCmFag=
+X-Google-Smtp-Source: AGHT+IFkRXMT9sZ4FLeeihnOSHPwwww3EwoUQrFm7EuKRobSJlrVLY0REe67n0BjG3Tu+AXYnMO6NQ==
+X-Received: by 2002:a17:907:2813:b0:a22:ebf2:1edc with SMTP id eb19-20020a170907281300b00a22ebf21edcmr7193466ejc.16.1704235162938;
+        Tue, 02 Jan 2024 14:39:22 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id gj17-20020a170907741100b00a28116285e0sm1888169ejc.165.2024.01.02.14.39.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 14:39:22 -0800 (PST)
+Message-ID: <d3ea8754ed4c5f8a33b3fd2cc69eeff7f362ce35.camel@gmail.com>
+Subject: Re: test_kmod.sh fails with constant blinding
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, Bram Schuur
+	 <bschuur@stackstate.com>, "ykaliuta@redhat.com" <ykaliuta@redhat.com>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"johan.almbladh@anyfinetworks.com"
+	 <johan.almbladh@anyfinetworks.com>
+Date: Wed, 03 Jan 2024 00:39:21 +0200
+In-Reply-To: <1b45ec38-3a7f-4745-a063-8b16b040004c@linux.dev>
+References: 
+	<AM0PR0202MB3412F6D0F59E5EBA0CA74747C461A@AM0PR0202MB3412.eurprd02.prod.outlook.com>
+	 <08287f7c-d0aa-4ded-a26d-34023051dd14@linux.dev>
+	 <28bcf5ae2df9ed0bd1603ed161e1d4488694c0d9.camel@gmail.com>
+	 <1b45ec38-3a7f-4745-a063-8b16b040004c@linux.dev>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240102190726.2017424-1-yonghong.song@linux.dev> <CAEf4BzaWets3fHUGtctwCNWecR9ASRCO2kFagNy8jJZmPBWYDA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaWets3fHUGtctwCNWecR9ASRCO2kFagNy8jJZmPBWYDA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 2 Jan 2024 14:22:32 -0800
-Message-ID: <CAEf4BzZccDxr-okp1J96iZ86BpJuPePdGySff87BeQZfQfWLCg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Track aligned st store as imprecise spilled registers
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, 
-	Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 2, 2024 at 1:42=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, Jan 2, 2024 at 11:07=E2=80=AFAM Yonghong Song <yonghong.song@linu=
-x.dev> wrote:
-> >
-> > With patch set [1], precision backtracing supports register spill/fill
-> > to/from the stack. The patch [2] allows initial imprecise register spil=
-l
-> > with content 0. This is a common case for cpuv3 and lower for
-> > initializing the stack variables with pattern
-> >   r1 =3D 0
-> >   *(u64 *)(r10 - 8) =3D r1
-> > and the [2] has demonstrated good verification improvement.
-> >
-> > For cpuv4, the initialization could be
-> >   *(u64 *)(r10 - 8) =3D 0
-> > The current verifier marks the r10-8 contents with STACK_ZERO.
-> > Similar to [2], let us permit the above insn to behave like
-> > imprecise register spill which can reduce number of verified states.
-> >
-> > I checked cpuv3 and cpuv4 with and without this patch.
-> > There is no change for cpuv3 since '*(u64 *)(r10 - 8) =3D 0'
-> > is only generated with cpuv4.
-> >
-> > For cpuv4:
-> > $ ../veristat -C old.cpuv4.csv new.cpuv4.csv -e file,prog,insns,states =
--s '|insns_diff|'
-> > File                                                   Program         =
-                                      Insns (A)  Insns (B)  Insns    (DIFF)=
-  States (A)  States (B)  States (DIFF)
-> > -----------------------------------------------------  ----------------=
-------------------------------------  ---------  ---------  ---------------=
-  ----------  ----------  -------------
-> > pyperf600_bpf_loop.bpf.linked3.o                       on_event        =
-                                           6066       4889  -1177 (-19.40%)=
-         403         321  -82 (-20.35%)
-> > xdp_synproxy_kern.bpf.linked3.o                        syncookie_tc    =
-                                          12412      11719    -693 (-5.58%)=
-         345         330   -15 (-4.35%)
-> > xdp_synproxy_kern.bpf.linked3.o                        syncookie_xdp   =
-                                          12478      11794    -684 (-5.48%)=
-         346         331   -15 (-4.34%)
-> > test_cls_redirect.bpf.linked3.o                        cls_redirect    =
-                                          35483      35387     -96 (-0.27%)=
-        2179        2177    -2 (-0.09%)
-> > local_storage_bench.bpf.linked3.o                      get_local       =
-                                            228        168    -60 (-26.32%)=
-          17          14   -3 (-17.65%)
-> > test_l4lb_noinline.bpf.linked3.o                       balancer_ingress=
-                                           4494       4522     +28 (+0.62%)=
-         217         219    +2 (+0.92%)
-> > test_l4lb_noinline_dynptr.bpf.linked3.o                balancer_ingress=
-                                           1432       1455     +23 (+1.61%)=
-          92          94    +2 (+2.17%)
-> > verifier_iterating_callbacks.bpf.linked3.o             widening        =
-                                             52         41    -11 (-21.15%)=
-           4           3   -1 (-25.00%)
-> > test_xdp_noinline.bpf.linked3.o                        balancer_ingress=
-_v6                                        3462       3458      -4 (-0.12%)=
-         216         216    +0 (+0.00%)
-> > ...
-> >
-> > test_l4lb_noinline and test_l4lb_noinline_dynptr has minor regression, =
-but
-> > pyperf600_bpf_loop and local_storage_bench gets pretty good improvement=
-.
-> >
-> >   [1] https://lore.kernel.org/all/20231205184248.1502704-1-andrii@kerne=
-l.org/
-> >   [2] https://lore.kernel.org/all/20231205184248.1502704-9-andrii@kerne=
-l.org/
-> >
-> > Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
-> > Cc: Martin KaFai Lau <kafai@fb.com>
-> > Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> > ---
-> >  kernel/bpf/verifier.c                                   | 2 +-
-> >  tools/testing/selftests/bpf/progs/verifier_spill_fill.c | 4 ++--
-> >  2 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index a376eb609c41..17ad0228270e 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -4491,7 +4491,7 @@ static int check_stack_write_fixed_off(struct bpf=
-_verifier_env *env,
-> >                 if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
-> >                         state->stack[spi].spilled_ptr.id =3D 0;
-> >         } else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn)=
- &&
-> > -                  insn->imm !=3D 0 && env->bpf_capable) {
-> > +                  env->bpf_capable) {
->
-> the change makes sense, there is nothing special about insn->imm =3D=3D 0
-> case, so LGTM
->
-> >                 struct bpf_reg_state fake_reg =3D {};
-> >
-> >                 __mark_reg_known(&fake_reg, insn->imm);
-> > diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/=
-tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-> > index 39fe3372e0e0..05de3de56e79 100644
-> > --- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-> > +++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-> > @@ -496,13 +496,13 @@ SEC("raw_tp")
-> >  __log_level(2)
-> >  __success
-> >  /* make sure fp-8 is all STACK_ZERO */
->
-> but we should update STACK_ZERO comments in this test
->
-> and also, STACK_ZERO situation is still possible, right? E.g., when we
-> spill register at -4 offset, not -8. So I'd either extend or add
-> another test to make sure we still validate that STACK_ZERO slots
-> return precise zero. Can you add something like this?
->
->
-> > -__msg("2: (7a) *(u64 *)(r10 -8) =3D 0          ; R10=3Dfp0 fp-8_w=3D00=
-000000")
-> > +__msg("2: (7a) *(u64 *)(r10 -8) =3D 0          ; R10=3Dfp0 fp-8_w=3D0"=
-)
-> >  /* but fp-16 is spilled IMPRECISE zero const reg */
-> >  __msg("4: (7b) *(u64 *)(r10 -16) =3D r0        ; R0_w=3D0 R10=3Dfp0 fp=
--16_w=3D0")
-> >  /* validate that assigning R2 from STACK_ZERO doesn't mark register
-> >   * precise immediately; if necessary, it will be marked precise later
-> >   */
-> > -__msg("6: (71) r2 =3D *(u8 *)(r10 -1)          ; R2_w=3D0 R10=3Dfp0 fp=
--8_w=3D00000000")
-> > +__msg("6: (71) r2 =3D *(u8 *)(r10 -1)          ; R2_w=3D0 R10=3Dfp0 fp=
--8_w=3D0")
-> >  /* similarly, when R2 is assigned from spilled register, it is initial=
-ly
-> >   * imprecise, but will be marked precise later once it is used in prec=
-ise context
-> >   */
+On Tue, 2024-01-02 at 11:41 -0800, Yonghong Song wrote:
+> On 1/2/24 9:47 AM, Eduard Zingerman wrote:
+> > On Tue, 2024-01-02 at 08:56 -0800, Yonghong Song wrote:
+> > > On 1/2/24 7:11 AM, Bram Schuur wrote:
+> > > > Me and my colleague Jan-Gerd Tenberge encountered this issue in pro=
+duction on the 5.15, 6.1 and 6.2 kernel versions. We make a small reproduci=
+ble case that might help find the root cause:
+> > > >=20
+> > > > simple_repo.c:
+> > > >=20
+> > > > #include <linux/bpf.h>
+> > > > #include <bpf/bpf_helpers.h>
+> > > >=20
+> > > > SEC("socket")
+> > > > int socket__http_filter(struct __sk_buff* skb) {
+> > > >   =C2=A0 volatile __u32 r =3D bpf_get_prandom_u32();
+> > > >   =C2=A0 if (r =3D=3D 0) {
+> > > >   =C2=A0 =C2=A0 goto done;
+> > > >   =C2=A0 }
+> > > >=20
+> > > >=20
+> > > > #pragma clang loop unroll(full)
+> > > >   =C2=A0 for (int i =3D 0; i < 12000; i++) {
+> > > >   =C2=A0 =C2=A0 r +=3D 1;
+> > > >   =C2=A0 }
+> > > >=20
+> > > > #pragma clang loop unroll(full)
+> > > >   =C2=A0 for (int i =3D 0; i < 12000; i++) {
+> > > >   =C2=A0 =C2=A0 r +=3D 1;
+> > > >   =C2=A0 }
+> > > > done:
+> > > >   =C2=A0 return r;
+> > > > }
+> > > >=20
+> > > > Looking at kernel/bpf/core.c it seems that during constant blinding=
+ every instruction which has an constant operand gets 2 additional instruct=
+ions. This increases the amount of instructions between the JMP and target =
+of the JMP cause rewrite of the JMP to fail because the offset becomes bigg=
+er than S16_MAX.
+> > > This is indeed possible as verifier might increase insn account in va=
+rious cases.
+> > > -mcpu=3Dv4 is designed to solve this problem but it is only available=
+ at 6.6 and above.
+> > There might be situations when -mcpu=3Dv4 won't help, as currently llvm
+> > would generate long jumps only when it knows at compile time that jump
+> > is indeed long. However here constant blinding would probably triple
+> > the size of the loop body, so for llvm this jump won't be long.
+> >=20
+> > If we consider this corner case an issue, it might be possible to fix
+>=20
+> This definitely a corner case. But full unroll is not what we recommended=
+ although
+> we do try to accommodate it with cpuv4.
+>=20
+> > it by teaching bpf_jit_blind_constants() to insert 'BPF_JMP32 | BPF_JA'
+> > when jump targets cross the 2**16 thresholds.
+> > Wdyt?
+>=20
+> If we indeed hit an issue with cpuv4, I prefer to fix in llvm side.
+> Currently, gotol is generated if offset is >=3D S16_MAX/2 or <=3D S16_MIN=
+/2.
+> We could make range further smaller or all gotol since there are quite
+> some architectures supporting gotol now (x86, arm, riscv, ppc, etc.).
+>=20
 
-And seems like test_verifier test is failing now ([0]):
+I tried building this program as v3 and as v4 using the following
+command line:
 
-  #114/p BPF_ST_MEM stack imm zero, variable offset FAIL
-  Failed to load prog 'Invalid argument'!
-  At program exit the register R0 has smin=3D0 smax=3D255 should have been =
-in [0, 1]
-  verification time 19 usec
-  stack depth 32
-  processed 11 insns (limit 1000000) max_states_per_insn 0
-total_states 0 peak_states 0 mark_read 0
+  clang -O2 --target=3Dbpf -c t.c -mcpu=3D<v3 or v4> -o t.o
 
+(I copied definitions of SEC and bpf_get_prandom_u32 from bpf_helper_defs.h=
+).
 
-  [0] https://github.com/kernel-patches/bpf/actions/runs/7389645653/job/201=
-03046755
-
-> > --
-> > 2.34.1
-> >
+With the following results:
+- when built as v4 program can be compiled, gotol is generated and
+  program can be loaded even when bpf_jit_harded is set:
+  "echo 2 > /proc/sys/net/core/bpf_jit_harden"
+  (as far as I understand this is sufficient to request constant blinding);
+- when built as v3 clang exits with error message (both distro clang-16 and
+  my local build for clang-18):
+  "fatal error: error in backend: Branch target out of insn range"
+  so I'm curious which flags were used by Bram.
+- Also, program cannot be compiled when -g is specified:
+  on my machine with 32G of RAM clang consumes all available RAM
+  (w/o -g "only" 155Mb of RAM are used).
 
