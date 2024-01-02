@@ -1,149 +1,204 @@
-Return-Path: <bpf+bounces-18771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18772-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88CB7821F49
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 17:14:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16F7C821F4C
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 17:14:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 077B31F22AFA
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 16:14:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F6DE1C22481
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 16:14:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D994514F6B;
-	Tue,  2 Jan 2024 16:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E110714F73;
+	Tue,  2 Jan 2024 16:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2FKSaEn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nsYpGk6k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9DB14F60;
-	Tue,  2 Jan 2024 16:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2cca5e7b390so95470961fa.3;
-        Tue, 02 Jan 2024 08:13:53 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02CC14F60
+	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 16:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-555d4232e4fso3511564a12.3
+        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 08:14:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704212031; x=1704816831; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4xCYs0xb0AKl7N7GGsMPlUYfHCJVdIQ68KKnAogFYu4=;
-        b=F2FKSaEnayb4RhDdYENniVUNvB82Ie++A6wRQI1H8HUH5GzGbqGz168PqpU/q5pSXR
-         R9jNHoTD+CGgAGsb0p6oPP5GFQEndcYFfhPRjr712XZahpe1bqlYiyE386uoaI3bpV3B
-         57F7YdOs6q5NjrMgvt3ULG8v5WTLGBGgPvBqi+depzacXXXd0KwddT7v1c9CIsjLq56E
-         gx+pSXZknNphxLvsdE4TyG7IF4jHcDTnLzsd88BHHed/p4vIigN3dtDt2iIsN6UyaDul
-         mhKYiOy4eOviY5IaIc0sybhEK68uqNcrStrOdKkFY8LO9PnVcVvB79GcxCYgkl7nJKHT
-         wfig==
+        d=google.com; s=20230601; t=1704212070; x=1704816870; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hd2aplMCet1ULWImTVMnDRzK7TL9hZ+ZX0uPlm9Tbpc=;
+        b=nsYpGk6kupUKR1Qxd4pt+MtzmA3B1XsadgguFFYG5Nk6G6jsf/0sK0dla4la28IPYe
+         J68Sc+IIkxrem44lkKnwnmdNtv54oCHSz3aOaOydM9a6va5CTA1yQyUoOR0fP4coORcf
+         9wCr9dU92Is4MmJNTvkRhNwRAWNCmcwWkBoOfYczAQjx6GnmxK4xwW779G0DNVwAj+++
+         IaZVzjDcjTxPfmhZJtPS1LmbdfgCD+CQoRrALapZcFfl4wTyO+QnAgdVdlUatSejh6zU
+         In+nuSkIJBwFiSS9NYQ4k0BHLGW7PJzWhuqalMZw0OgsP9yxxJmX1z5hoNzdOMB1LI8L
+         RLUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704212031; x=1704816831;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4xCYs0xb0AKl7N7GGsMPlUYfHCJVdIQ68KKnAogFYu4=;
-        b=nb76SAIXUHBBkGd+cGtUrQvY8VsBsXxcfxmqomSE6YocP0Y5cXNEEecBNz5v1aldqX
-         n29bCzUOWtck7zisExK9g2uclP/0SbbVXWvPNg1u2w9kx3C5VdUIxLY4eiYn1k9EJs8F
-         VBadjnYEHxnP3exH/1P/dv+2/dFpkV6OcpJhmibH/WghEs6079P1COcpEcZgW4zwjJAi
-         Q5nNLQYWyMp27I8dOHACNCywq3Y9zD3fETpdQfdsyH58LLw/oMNLYJ3a4wiqE5+/un2B
-         MTAYbBdqlvqOQy0YJ0BDH1lM74xcY/pDnWxZu1S8RFh9qpOn0aw7DDbpuNInXF8b4ffn
-         dNhQ==
-X-Gm-Message-State: AOJu0Yz3Yex1T6hqfnezuKweLtO7y3ddXgAhphlLRgXBSBYgBBE5XLo4
-	o0fVVU/rS3sIfB3PdY5xSxq6yCYymnY=
-X-Google-Smtp-Source: AGHT+IHbcndaDOIG7fOVUiSo4jHCswK69Q/Vc4wYfdHKyT0C56cw9IlN1m5RHADUYG6QUQkwUVedlg==
-X-Received: by 2002:a2e:2a02:0:b0:2cc:fa53:d29b with SMTP id q2-20020a2e2a02000000b002ccfa53d29bmr2021279ljq.48.1704212031245;
-        Tue, 02 Jan 2024 08:13:51 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id p17-20020aa7cc91000000b0055627eeb8b9sm3642990edt.32.2024.01.02.08.13.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jan 2024 08:13:50 -0800 (PST)
-Message-ID: <1179fcf4e4feaf5d9161eb0ec8fb41e4f08511a4.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v1] bpf: Return -ENOTSUPP if callbacks are not
- allowed in non-JITed programs
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Tiezhu Yang <yangtiezhu@loongson.cn>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Tue, 02 Jan 2024 18:13:49 +0200
-In-Reply-To: <20231225091830.6094-1-yangtiezhu@loongson.cn>
-References: <20231225091830.6094-1-yangtiezhu@loongson.cn>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+        d=1e100.net; s=20230601; t=1704212070; x=1704816870;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hd2aplMCet1ULWImTVMnDRzK7TL9hZ+ZX0uPlm9Tbpc=;
+        b=MUqduQl9fJSki6w0E5yX9ZkZWX1n9VxGFT5xQ0Qwspn6CuY+QHXAlymBGKDjFRmkcW
+         R7ByG/UdsIC/6wVsO0/xRFQQqQLeLrhUEDUAlHNXl8GTF3LnmHiq4K/iQkUv8sSVzbzw
+         GgTO79VqFmd4a7OAKuJRS2jFqKe71q/Ogb0O4PTxj4CHjKVmXNaHQaCObmhpcRODlRXC
+         dfqKBtTZVIbWDRi/1cfMRyAwiPfduP2d4VGZ5lRpcbLVxoF6zFibgG/MNm5o8N8a1NPl
+         44ULzmwKAhPcSgJxi9kk7xzTVBkAqzt8ZPvnyy0IDV1E7QTNfwryMRXZq/XILpJC1bGS
+         VajQ==
+X-Gm-Message-State: AOJu0YwbckJFoGm4x2tpfNopCtk5m5ozjEVPM3IxWWu4jMC+c7qEDWt3
+	MG9SegHPXQBa+Pg+hQY4yxHZXKbl/708ZKQjlGy6qsR+zNN7
+X-Google-Smtp-Source: AGHT+IFJ3xiAnAAHviNNi+mEA9xiSIWfCXxzkbkl9TWLLiupNuy3YZ8o9IKmk26LnKZQwIZ/I/z3OiIAFQuWEIa3Vgs=
+X-Received: by 2002:a17:906:6a18:b0:a27:4725:6e4f with SMTP id
+ qw24-20020a1709066a1800b00a2747256e4fmr6049949ejc.144.1704212069959; Tue, 02
+ Jan 2024 08:14:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
+ <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+ <20231215021114.ipvdx2bwtxckrfdg@google.com> <20231215190126.1040fa12@kernel.org>
+ <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
+ <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
+ <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
+ <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com> <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
+ <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
+In-Reply-To: <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Tue, 2 Jan 2024 08:14:17 -0800
+Message-ID: <CAHS8izNqeiK1tq=48LMbbqq5B4d2mhgbuKRvnFtiBngf73jXZg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
+ of struct page in API
+To: Yunsheng Lin <linyunsheng@huawei.com>
+Cc: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Michael Chan <michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, 
+	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
+	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, 
+	Russell King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, 
+	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
+	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, 
+	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
+	Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
+	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
+	Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
+	Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, 
+	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
+	Ronak Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
+	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, 
+	Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, 
+	Stefano Stabellini <sstabellini@kernel.org>, 
+	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2023-12-25 at 17:18 +0800, Tiezhu Yang wrote:
-> If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
-> exist 6 failed tests.
->=20
->   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
->   [root@linux bpf]# ./test_verifier | grep FAIL
->   #107/p inline simple bpf_loop call FAIL
->   #108/p don't inline bpf_loop call, flags non-zero FAIL
->   #109/p don't inline bpf_loop call, callback non-constant FAIL
->   #110/p bpf_loop_inline and a dead func FAIL
->   #111/p bpf_loop_inline stack locations for loop vars FAIL
->   #112/p inline bpf_loop call in a big program FAIL
->   Summary: 505 PASSED, 266 SKIPPED, 6 FAILED
->=20
-> The test log shows that callbacks are not allowed in non-JITed programs,
-> interpreter doesn't support them yet, thus these tests should be skipped
-> if jit is disabled, just return -ENOTSUPP instead of -EINVAL for pseudo
-> calls in fixup_call_args().
->=20
-> With this patch:
->=20
->   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
->   [root@linux bpf]# ./test_verifier | grep FAIL
->   Summary: 505 PASSED, 272 SKIPPED, 0 FAILED
->=20
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  kernel/bpf/verifier.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index a376eb609c41..1c780a893284 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -19069,7 +19069,7 @@ static int fixup_call_args(struct bpf_verifier_en=
-v *env)
->  			 * have to be rejected, since interpreter doesn't support them yet.
->  			 */
->  			verbose(env, "callbacks are not allowed in non-JITed programs\n");
-> -			return -EINVAL;
-> +			return -ENOTSUPP;
->  		}
-> =20
->  		if (!bpf_pseudo_call(insn))
+On Thu, Dec 21, 2023 at 10:42=E2=80=AFPM Yunsheng Lin <linyunsheng@huawei.c=
+om> wrote:
+>
+> On 2023/12/22 5:22, Mina Almasry wrote:
+> > On Thu, Dec 21, 2023 at 3:32=E2=80=AFAM Yunsheng Lin <linyunsheng@huawe=
+i.com> wrote:
+> >>
+> >> On 2023/12/20 11:01, Mina Almasry wrote:
+> >>
+> >> ...
+> >>
+> >>>>>> Perhaps we should aim to not export netmem_to_page(),
+> >>>>>> prevent modules from accessing it directly.
+> >>>>>
+> >>>>> +1.
+> >>>>
+> >>>
+> >>> I looked into this, but it turns out it's a slightly bigger change
+> >>> that needs some refactoring to make it work. There are few places
+> >>> where I believe I need to add netmem_to_page() that are exposed to th=
+e
+> >>> drivers via inline helpers, these are:
+> >>>
+> >>> - skb_frag_page(), which returns NULL if the netmem is not a page, bu=
+t
+> >>> needs to do a netmem_to_page() to return the page otherwise.
+> >>
+> >> Is it possible to introduce something like skb_frag_netmem() for
+> >> netmem? so that we can keep most existing users of skb_frag_page()
+> >> unchanged and avoid adding additional checking overhead for existing
+> >> users.
+> >>
+> >
+> > In my experience most current skb_frag_page() users need specifically
+> > the struct page*. Example is illegal_highdma() which
+> > PageHighMem(skb_frag_page())
+>
+> For illegal_highdma() case, is it possible to use something like
+> skb_readabe_frag() checking to avoid calling skb_frag_page() for netmem?
+>
 
-I agree with this change, however I think that it should be consistent.
-Quick and non-exhaustive grepping shows that there are 4 places where
-"non-JITed" is used in error messages: in check_map_func_compatibility()
-and in fixup_call_args().
-All these places currently use -EINVAL and should be updated to -ENOTSUPP,
-if this change gets a green light.
+Not teh skb_readable_frag() check I think, because illegal_highdma()
+is not trying to read the SKB per se.
 
-If the goal is to merely make test_verifier pass when JIT is disabled
-there is a different way:
-- test_progs has a global variable 'env.jit_enabled' which is used by
-  several tests to decide whether to skip or not;
-- loop inlining tests could use similar feature, but unfortunately
-  test_verifier does not provide similar functionality;
-- test_verifier is sort-of in legacy mode, so instead of porting the
-  jit_enabled to test_verifier, I think that loop inlining tests
-  should be migrated to test_progs. I can do that some time after [1]
-  would be landed.
- =20
-[1] https://lore.kernel.org/bpf/20231223104042.1432300-3-houtao@huaweicloud=
-.com/
+But I agree with your general point, and that should be handled
+correctly in this patch which adds devmem support:
+
+https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.3516870=
+-10-almasrymina@google.com/
+
+The idea being that skb_frag_page() can return NULL if the frag is not
+paged, and the relevant callers are modified to handle that.
+
+> >
+> > But RFC v5 adds skb_frag_netmem() for callsites that want a netmem and
+> > don't care about specifically a page:
+> >
+> > https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.351=
+6870-10-almasrymina@google.com/
+> >
+> >>> - The helpers inside skb_add_rx_frag(), which needs to do a
+> >>> netmem_to_page() to set skb->pfmemalloc.
+> >>
+> >> Similar as above, perhaps introduce something like skb_add_rx_netmem_f=
+rag()?
+> >>
+> >
+> > Yes, v3 of this series adds skb_add_rx_frag_netmem():
+> >
+> > https://patchwork.kernel.org/project/netdevbpf/patch/20231220214505.230=
+3297-4-almasrymina@google.com/
+
+
+
+--=20
+Thanks,
+Mina
 
