@@ -1,127 +1,93 @@
-Return-Path: <bpf+bounces-18821-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18822-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBD5C82250A
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 23:58:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D54E822556
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:02:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E13E1C219D4
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 22:58:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E05C41F2305B
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 23:02:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E12EE1772F;
-	Tue,  2 Jan 2024 22:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Kfw1Fcfx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AC21772B;
+	Tue,  2 Jan 2024 23:02:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B732E17980
-	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 22:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <dadb229a-d811-4542-a53f-3a78e559e639@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704236287;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=25gs3WH+C3MtBTiiFP49L8wsgVhUB8Z0Q30aeythoxg=;
-	b=Kfw1FcfxvCB1Jp+1FFhSEdFRuFj7wNSiPPiI5NXLKW3ltZMt5eWDTHnYINUzcHwVtAlfdL
-	hzyK4DBRHu4TnbV5x/nRfSVYzOp4lI9ct3Hy+U3DA3pyPV3FZUOEB3s1zmAoGGgckNs2nm
-	83tujYyHTo40bZI3UCY3u2qbiO5S2o8=
-Date: Tue, 2 Jan 2024 14:58:00 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9017417984
+	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 23:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-42832d5ac39so3758221cf.0
+        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 15:02:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704236522; x=1704841322;
+        h=user-agent:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mbv7eXA0YkHuMGlCtE5D28uGMMy2CbhyvAx7RZCrbOE=;
+        b=t2H18VkD08iJETE9CkG1VjK74zLYIgBJprrSJ7tK0q9BUCzy4YtetQMRk+FsIIjYga
+         OhVPyHsUeP6I2K6e/D/kp7weivmGTT643NbRRtI8GRCGhCHn/2GbS4PxEGcOC8okZvwN
+         VeaFWxm7BeRgaUThL6oyX9FQKrwj2Ag5rG7VBf8/q1GiO0xPkAyNXSRU8TZBOSovac1D
+         /slQoSCYpn+F630w0RtFxoDr4fHy8wksnAu+NR/er0XgWvjwkO+HJImGmpxacD5iaszo
+         nP/MZKsgdBstg0805xQBwDq8dfIFW0ls5mfBcVZmD93FzZZMx/AGWpEPzc4lHZEK7mE1
+         DBLQ==
+X-Gm-Message-State: AOJu0Yz9+xLaEiOfY4ZkUGZmr6iCbQTnGsXvQVlNc7UgB/9FwweENfEv
+	nTsSrhJsPUFPbpDdi9jHjBY=
+X-Google-Smtp-Source: AGHT+IEj6RE0ZKjkwh1OaFIa0MuB0v4rJ0cAW79jNt6zCSvpM0Ffk/5klKq9KgrjRh4/OXMETrdbTw==
+X-Received: by 2002:ac8:5d88:0:b0:423:70f4:c28d with SMTP id d8-20020ac85d88000000b0042370f4c28dmr27602408qtx.67.1704236522367;
+        Tue, 02 Jan 2024 15:02:02 -0800 (PST)
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id br7-20020a05622a1e0700b00425dac6d04csm13496276qtb.3.2024.01.02.15.02.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 15:02:01 -0800 (PST)
+Date: Tue, 2 Jan 2024 17:01:59 -0600
+From: David Vernet <void@manifault.com>
+To: lsf-pc@lists.linux-foundation.org
+Cc: bpf@vger.kernel.org, bpf@ietf.org, dthaler1968@googlemail.com,
+	alexei.starovoitov@gmail.com, hch@infradead.org
+Subject: [LSF/MM/BPF TOPIC] BPF IETF Standardization
+Message-ID: <20240102230159.GA1682@maniforge>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 bpf 2/4] xsk: fix usage of multi-buffer BPF helpers for
- ZC XDP
-Content-Language: en-US
-To: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: netdev@vger.kernel.org, magnus.karlsson@intel.com, bjorn@kernel.org,
- echaudro@redhat.com, lorenzo@kernel.org, tirthendu.sarkar@intel.com,
- bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-References: <20231221132656.384606-1-maciej.fijalkowski@intel.com>
- <20231221132656.384606-3-maciej.fijalkowski@intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231221132656.384606-3-maciej.fijalkowski@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2qenCBFtpnrJjjDh"
+Content-Disposition: inline
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On 12/21/23 5:26 AM, Maciej Fijalkowski wrote:
-> This comes from __xdp_return() call with xdp_buff argument passed as
-> NULL which is supposed to be consumed by xsk_buff_free() call.
-> 
-> To address this properly, in ZC case, a node that represents the frag
-> being removed has to be pulled out of xskb_list. Introduce
-> appriopriate xsk helpers to do such node operation and use them
-> accordingly within bpf_xdp_adjust_tail().
 
-[ ... ]
+--2qenCBFtpnrJjjDh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +static inline struct xdp_buff *xsk_buff_get_tail(struct xdp_buff *first)
-> +{
-> +	struct xdp_buff_xsk *xskb = container_of(first, struct xdp_buff_xsk, xdp);
-> +	struct xdp_buff_xsk *frag;
-> +
-> +	frag = list_last_entry(&xskb->pool->xskb_list, struct xdp_buff_xsk,
-> +			       xskb_list_node);
-> +	return &frag->xdp;
-> +}
-> +
+Hello,
 
-[ ... ]
+I would like to give an update on the latest regarding the BPF IETF
+standardization efforts, and to discuss what I believe will be the long
+term standardization roadmap. We're making good headway on standardizing
+the BPF ISA, but there's a lot more that we'll eventually need to
+formalize and standardize in the BPF ecosystem, and I think it would be
+beneficial to discuss and hear folks' perspective on things.
 
-> +static void __shrink_data(struct xdp_buff *xdp, struct xdp_mem_info *mem_info,
-> +			  skb_frag_t *frag, int shrink)
-> +{
-> +	if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
-> +		struct xdp_buff *tail = xsk_buff_get_tail(xdp);
-> +
-> +		if (tail)
-> +			tail->data_end -= shrink;
-> +	}
-> +	skb_frag_size_sub(frag, shrink);
-> +}
-> +
-> +static bool shrink_data(struct xdp_buff *xdp, skb_frag_t *frag, int shrink)
-> +{
-> +	struct xdp_mem_info *mem_info = &xdp->rxq->mem;
-> +
-> +	if (skb_frag_size(frag) == shrink) {
-> +		struct page *page = skb_frag_page(frag);
-> +		struct xdp_buff *zc_frag = NULL;
-> +
-> +		if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
-> +			zc_frag = xsk_buff_get_tail(xdp);
-> +
-> +			if (zc_frag) {
+Thanks,
+David
 
-Based on the xsk_buff_get_tail(), would zc_frag ever be NULL?
+--2qenCBFtpnrJjjDh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +				xdp_buff_clear_frags_flag(zc_frag);
-> +				xsk_buff_del_tail(zc_frag);
-> +			}
-> +		}
-> +
-> +		__xdp_return(page_address(page), mem_info, false, zc_frag);
+-----BEGIN PGP SIGNATURE-----
 
-and iiuc, this patch is fixing a bug when zc_frag is NULL and 
-MEM_TYPE_XSK_BUFF_POOL.
+iHUEARYIAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZZSV5wAKCRBZ5LhpZcTz
+ZAIfAQCdrs3LYC5zbs2o0e4BfkiCZm/FpGD8oCsDNUMGmORfhgD/QnJjx74OC8XU
+2wTibuAn/5dLmQsP8KFWplhD/gd36gw=
+=hEHY
+-----END PGP SIGNATURE-----
 
-> +		return true;
-> +	}
-> +	__shrink_data(xdp, mem_info, frag, shrink);
-> +	return false;
-> +}
-> +
-
+--2qenCBFtpnrJjjDh--
 
