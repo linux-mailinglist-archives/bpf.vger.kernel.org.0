@@ -1,131 +1,172 @@
-Return-Path: <bpf+bounces-18812-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18813-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B4F4822354
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 22:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BA1782249B
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 23:14:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABF971F231ED
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 21:46:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 107A91F23684
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 22:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00AC3168A8;
-	Tue,  2 Jan 2024 21:46:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAE92171B6;
+	Tue,  2 Jan 2024 22:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OvpDOW5m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MuwWQcu7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E403168A9
-	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 21:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6D6F17743;
+	Tue,  2 Jan 2024 22:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40d899205c7so15987875e9.2
-        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 13:46:03 -0800 (PST)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-336dcebcdb9so5934696f8f.1;
+        Tue, 02 Jan 2024 14:13:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704231962; x=1704836762; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704233630; x=1704838430; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KEPBRZZ5qNyDneIr4bEy8RPz8SxNDLuj+T7t+bdwwCs=;
-        b=OvpDOW5mykDhS+pTFUXnjovvJ5pTxird3vLLdbiV4saR75IaGZRTtK18cugyjsquZV
-         hI/VmiLXdn5zbIRH0uWpyLQIwhs9mBumvk9ooW4/Kz+GmOgelke+H7cnVQNA+d6dF7J+
-         4ClDSrC4wVJr0aX5fQwimomb3eZ3iW9m3DwRxXjCvq1mbrGuabB6H1E6P94/OZB3DVDX
-         FAbr4HS6NpJ14ZVBnUy8wjfYU5GX8R0nMkHDwlKYg7Rck3z85PzJFgkRe9GkPu3PXhjS
-         RGhSlUwdbT7aqFKdfgJl67EKpIJuzcc2eUELpqN+s18iLxs5kmYsCVlS/RtKHcgw7vse
-         f4DQ==
+        bh=mO6XebmqdF5n6gT+avY0yL7UnfUFBRrIUEgVS3y8Y1g=;
+        b=MuwWQcu7TV354UHK/dW++VfRGH7pfOXgjdUmRE/y9Llpco84nzwf9xNtMeWg7wVNPY
+         TqQJXunGy9kDtLwBzBc3Mmfyu2ykbyQ8ZtX0dgx2OYZjIbA7HeokMibf0zyEWKly741F
+         9hWpd2ATev3QKV/k6hptArO7gjBX4nnLE87IRMS9EDrt50anxJKFNCi5Cvu0QeVlqcOt
+         Js9mhb/TEBwVfXfjxS0/BYGYavhmgxcxEGFGkThYgfV0urA47h8hLIzqtTva3jQPPUjq
+         ZaXrwA+XOJYY8sVfs7RmqHOLp0Xub4Onjwt0hCxlmu6VqqeFXIF43t0dNt68xEkSyr4B
+         1x2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704231962; x=1704836762;
+        d=1e100.net; s=20230601; t=1704233630; x=1704838430;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KEPBRZZ5qNyDneIr4bEy8RPz8SxNDLuj+T7t+bdwwCs=;
-        b=UzcFxfVh9MZLYdnJqEzaEG1tDKW+ulMVkH0QYALuFznrDh27bQapWZbsjXXIc1l7EE
-         zy4qNQUwUFJcQRXdt15qtk0QLt44wvlE8U8ha+DBoIKXj/bHYdnyCwYLYDSHONhZ0ivh
-         s7HqY9D3xIh8FLWBs29AAT/STyZN6iNQD7S+mPTEZK8e4rJv6KxwsDWsKGuFFANsCYqm
-         PGtpNAL3O05J+qLnEN9kur7vFrUdWAwRfqLu9n6qsqYb0kF5bMMHhreumVf1FDUSO5rk
-         npyic9a9u8NZmf76icw13teJuHIxcSOqAe9Jbdp3LYK1YCIW2MYxRsPXWHznZQD9eIaC
-         NESQ==
-X-Gm-Message-State: AOJu0YyzHA0pP3wtZgcfp4v3DtIfT3iIcgqhthX47kUmMyxPylAMkhzs
-	KmEw069E62T/MEbN1bk1U/t2GkfZ2ov3lhDGFb/x+HdH
-X-Google-Smtp-Source: AGHT+IFbMeuts+keWFu9Rb3jePt2mM6n5qOum4HVcjSwSwdpHsFKs7bLGy6u0T0tpsK8dg6/aLDizCAPGeIRN02/npE=
-X-Received: by 2002:a05:600c:4f43:b0:40d:8590:a310 with SMTP id
- m3-20020a05600c4f4300b0040d8590a310mr2309404wmq.88.1704231962153; Tue, 02 Jan
- 2024 13:46:02 -0800 (PST)
+        bh=mO6XebmqdF5n6gT+avY0yL7UnfUFBRrIUEgVS3y8Y1g=;
+        b=B0F3xjYGV5IBYh6NC7kZWet77a9G0Mj5yK0zPFcpChWJe2BYkw50Aln4KDbzKuf5ud
+         YOqDdERGd2Y///1BDGROoHZeIZSC5hd/wJxn4HWQpsfZAf24dzY9+SauLFMLVEyVZJWg
+         fDZ4p5V/DcZmjh/IzcjdpuYPzqMPjX2o2qANo8JCsBarX+6m4ft5W6Aam30W86ig4A0h
+         tf1F3k4rZSYYt91E5Yb+uAmdz9Me/d6jgpLQAJtrVxcNJ93qH9ORJF0IjBlCzegcUgh6
+         9zjwU1vx/3Q9VsAZJMTD2Ak1imtJRQ1cN7nEuglLPaDhxdtDoF9HHSqEjkTB5ykApTZ6
+         TpUg==
+X-Gm-Message-State: AOJu0YxH3/fc6ZPc+V8BWju1Tef7xb4RC6pRdtyJl33sbpHQmKkI1+2o
+	Dgy6z1TiDoP5nV3TgDDLcFGXsVwxq+yV9Py9wCE=
+X-Google-Smtp-Source: AGHT+IHmWxIwetL6s0CPOugm22RrLj9syYOjOHnsC1ph5XPduxZALQyWtL65srekpH2svnp5WA3oS9qGBvPLWyivxfU=
+X-Received: by 2002:a05:600c:a56:b0:40c:6eda:93a6 with SMTP id
+ c22-20020a05600c0a5600b0040c6eda93a6mr4702278wmq.43.1704233629693; Tue, 02
+ Jan 2024 14:13:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66rZqUjFHvhx82A@mail.gmail.com>
-In-Reply-To: <CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66rZqUjFHvhx82A@mail.gmail.com>
+References: <20231222113102.4148-1-laoar.shao@gmail.com> <20231222113102.4148-3-laoar.shao@gmail.com>
+In-Reply-To: <20231222113102.4148-3-laoar.shao@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 2 Jan 2024 13:45:49 -0800
-Message-ID: <CAEf4BzbowzKU+8tZTSnxPTG-x-2ypT-EshZxS+G+c3DeLtsA0w@mail.gmail.com>
-Subject: Re: Funky verifier packet range error (> check works, != does not).
-To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc: BPF Mailing List <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
+Date: Tue, 2 Jan 2024 14:13:37 -0800
+Message-ID: <CAEf4BzbvPFYx3JpUaKnpG=HaNheQkJbUfaTd=DW0GbYi4A-A7A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Add bpf_iter_cpumask kfuncs
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com, 
+	hannes@cmpxchg.org, bpf@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 29, 2023 at 5:31=E2=80=AFPM Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
+On Fri, Dec 22, 2023 at 3:31=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
 >
-> I have a relatively complex program that fails to load on 6.5.6 with a
+> Add three new kfuncs for bpf_iter_cpumask.
+> - bpf_iter_cpumask_new
+> - bpf_iter_cpumask_next
+> - bpf_iter_cpumask_destroy
 >
-> if (data + 98 !=3D data_end) return TC_ACT_SHOT;
+> These new kfuncs facilitate the iteration of percpu data, such as
+> runqueues, psi_cgroup_cpu, and more.
 >
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  kernel/bpf/cpumask.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++=
+++
+>  1 file changed, 48 insertions(+)
+>
+> diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+> index 2e73533..4ae07a4 100644
+> --- a/kernel/bpf/cpumask.c
+> +++ b/kernel/bpf/cpumask.c
+> @@ -422,6 +422,51 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cpum=
+ask *cpumask)
+>         return cpumask_weight(cpumask);
+>  }
+>
+> +struct bpf_iter_cpumask {
+> +       __u64 __opaque[2];
+> +} __aligned(8);
+> +
+> +struct bpf_iter_cpumask_kern {
+> +       struct cpumask *mask;
+> +       int *cpu;
+> +} __aligned(8);
+> +
+> +__bpf_kfunc u32 bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, struct=
+ cpumask *mask)
+> +{
+> +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
+> +
+> +       kit->cpu =3D bpf_mem_alloc(&bpf_global_ma, sizeof(*kit->cpu));
 
-How realistic is such code in practice? Is there a situation in which
-it's critical to ensure that the packet has exactly X bytes in [data,
-data_end) range? Even in that case we can have data in frags, though,
-right? So I'm just wondering if we are discussing some rather
-theoretical situation?
+why dynamic memory allocation of 4 bytes?... just have `int cpu;`
+field in bpf_iter_cpumask_kern?
 
-> check, that loads fine if I change the above !=3D to (a you would think
-> weaker) > check.
+> +       if (!kit->cpu)
+> +               return -ENOMEM;
+> +
+> +       kit->mask =3D mask;
+> +       *kit->cpu =3D -1;
+> +       return 0;
+> +}
+> +
+> +__bpf_kfunc int *bpf_iter_cpumask_next(struct bpf_iter_cpumask *it)
+> +{
+> +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
+> +       struct cpumask *mask =3D kit->mask;
+> +       int cpu;
+> +
+> +       cpu =3D cpumask_next(*kit->cpu, mask);
+> +       if (cpu >=3D nr_cpu_ids)
+> +               return NULL;
+> +
+> +       *kit->cpu =3D cpu;
+> +       return kit->cpu;
+> +}
+> +
+> +__bpf_kfunc void bpf_iter_cpumask_destroy(struct bpf_iter_cpumask *it)
+> +{
+> +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
+> +
+> +       if (!kit->cpu)
+> +               return;
+> +       bpf_mem_free(&bpf_global_ma, kit->cpu);
+> +}
+> +
+>  __bpf_kfunc_end_defs();
 >
-> It's not important, hit this while debugging, and I don't know if the
-> cause is the verifier treating !=3D differently than > or the compiler
-> optimizing !=3D somehow... but my gut feeling is on the former: some
-> verifier logic special cases > without doing something similar for the
-> stronger !=3D comparison.
+>  BTF_SET8_START(cpumask_kfunc_btf_ids)
+> @@ -450,6 +495,9 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cpuma=
+sk *cpumask)
+>  BTF_ID_FLAGS(func, bpf_cpumask_any_distribute, KF_RCU)
+>  BTF_ID_FLAGS(func, bpf_cpumask_any_and_distribute, KF_RCU)
+>  BTF_ID_FLAGS(func, bpf_cpumask_weight, KF_RCU)
+> +BTF_ID_FLAGS(func, bpf_iter_cpumask_new, KF_ITER_NEW | KF_RCU)
+> +BTF_ID_FLAGS(func, bpf_iter_cpumask_next, KF_ITER_NEXT | KF_RET_NULL | K=
+F_RCU)
+> +BTF_ID_FLAGS(func, bpf_iter_cpumask_destroy, KF_ITER_DESTROY)
+>  BTF_SET8_END(cpumask_kfunc_btf_ids)
 >
-> ...
-> 453: (85) call bpf_trace_printk#6     ; R0_w=3Dscalar()
-> ; if (data + 98 !=3D data_end) return TC_ACT_SHOT;
-> 454: (bf) r1 =3D r6                     ; R1_w=3Dpkt(off=3D0,r=3D42,imm=
-=3D0)
-> R6=3Dpkt(off=3D0,r=3D42,imm=3D0)
-> 455: (07) r1 +=3D 98                    ; R1_w=3Dpkt(off=3D98,r=3D42,imm=
-=3D0)
-> ; if (data + 98 !=3D data_end) return TC_ACT_SHOT;
-> 456: (5d) if r1 !=3D r9 goto pc-23      ; R1_w=3Dpkt(off=3D98,r=3D42,imm=
-=3D0)
-> R9=3Dpkt_end(off=3D0,imm=3D0)
-> *** IMHO here r=3D42 should be bumped to 98 ***
-> 457: (bf) r3 =3D r6                     ; R3_w=3Dpkt(off=3D0,r=3D42,imm=
-=3D0)
-> R6=3Dpkt(off=3D0,r=3D42,imm=3D0)
-> 458: (07) r3 +=3D 34                    ; R3_w=3Dpkt(off=3D34,r=3D42,imm=
-=3D0)
-> ; uint64_t cs =3D bpf_csum_diff(NULL, 0, data + 14 + 20, 98 - 14 - 20, 0x=
-FFFF);
-> 459: (b7) r1 =3D 0                      ; R1_w=3D0
-> 460: (b7) r2 =3D 0                      ; R2_w=3D0
-> 461: (b7) r4 =3D 64                     ; R4_w=3D64
-> 462: (b7) r5 =3D 65535                  ; R5_w=3D65535
-> 463: (85) call bpf_csum_diff#28
-> invalid access to packet, off=3D34 size=3D64, R3(id=3D0,off=3D34,r=3D42)
-> R3 offset is outside of the packet
->
-> Side note: bpf_csum_diff() is super non user-friendly, but that's for
-> another thread...
->
-> Happy New Year,
-> Maciej
+>  static const struct btf_kfunc_id_set cpumask_kfunc_set =3D {
+> --
+> 1.8.3.1
 >
 
