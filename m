@@ -1,204 +1,139 @@
-Return-Path: <bpf+bounces-18772-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18773-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F7C821F4C
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 17:14:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECAA6821F9F
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 17:40:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F6DE1C22481
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 16:14:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B6FC280FDB
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 16:40:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E110714F73;
-	Tue,  2 Jan 2024 16:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E28F14F89;
+	Tue,  2 Jan 2024 16:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nsYpGk6k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jIpKI8xb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02CC14F60
-	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 16:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-555d4232e4fso3511564a12.3
-        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 08:14:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3B814F7C
+	for <bpf@vger.kernel.org>; Tue,  2 Jan 2024 16:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5534dcfdd61so16332872a12.0
+        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 08:40:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704212070; x=1704816870; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hd2aplMCet1ULWImTVMnDRzK7TL9hZ+ZX0uPlm9Tbpc=;
-        b=nsYpGk6kupUKR1Qxd4pt+MtzmA3B1XsadgguFFYG5Nk6G6jsf/0sK0dla4la28IPYe
-         J68Sc+IIkxrem44lkKnwnmdNtv54oCHSz3aOaOydM9a6va5CTA1yQyUoOR0fP4coORcf
-         9wCr9dU92Is4MmJNTvkRhNwRAWNCmcwWkBoOfYczAQjx6GnmxK4xwW779G0DNVwAj+++
-         IaZVzjDcjTxPfmhZJtPS1LmbdfgCD+CQoRrALapZcFfl4wTyO+QnAgdVdlUatSejh6zU
-         In+nuSkIJBwFiSS9NYQ4k0BHLGW7PJzWhuqalMZw0OgsP9yxxJmX1z5hoNzdOMB1LI8L
-         RLUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704212070; x=1704816870;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=gmail.com; s=20230601; t=1704213602; x=1704818402; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:to:from:subject:message-id:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hd2aplMCet1ULWImTVMnDRzK7TL9hZ+ZX0uPlm9Tbpc=;
-        b=MUqduQl9fJSki6w0E5yX9ZkZWX1n9VxGFT5xQ0Qwspn6CuY+QHXAlymBGKDjFRmkcW
-         R7ByG/UdsIC/6wVsO0/xRFQQqQLeLrhUEDUAlHNXl8GTF3LnmHiq4K/iQkUv8sSVzbzw
-         GgTO79VqFmd4a7OAKuJRS2jFqKe71q/Ogb0O4PTxj4CHjKVmXNaHQaCObmhpcRODlRXC
-         dfqKBtTZVIbWDRi/1cfMRyAwiPfduP2d4VGZ5lRpcbLVxoF6zFibgG/MNm5o8N8a1NPl
-         44ULzmwKAhPcSgJxi9kk7xzTVBkAqzt8ZPvnyy0IDV1E7QTNfwryMRXZq/XILpJC1bGS
-         VajQ==
-X-Gm-Message-State: AOJu0YwbckJFoGm4x2tpfNopCtk5m5ozjEVPM3IxWWu4jMC+c7qEDWt3
-	MG9SegHPXQBa+Pg+hQY4yxHZXKbl/708ZKQjlGy6qsR+zNN7
-X-Google-Smtp-Source: AGHT+IFJ3xiAnAAHviNNi+mEA9xiSIWfCXxzkbkl9TWLLiupNuy3YZ8o9IKmk26LnKZQwIZ/I/z3OiIAFQuWEIa3Vgs=
-X-Received: by 2002:a17:906:6a18:b0:a27:4725:6e4f with SMTP id
- qw24-20020a1709066a1800b00a2747256e4fmr6049949ejc.144.1704212069959; Tue, 02
- Jan 2024 08:14:29 -0800 (PST)
+        bh=bPX9+0Rd0BEN71Oi5tXu2086fK1YHGta6pZECOhxfJo=;
+        b=jIpKI8xbYQKPf8yTO4Yv/zkwJcf5s14tVco0sCnIODln+AA9O0z7/l6tEfNmB1c2Vf
+         LF0wyC5N5+JgGe5q3oMORppxG2Ncx6R4laEAB+MLZZ5e+HnIwE1biB+R6NM4la2gfUbD
+         QML33TXQJ7iA9ZSjxbdKr6sx4It+3sA1Vzpk9cWYxPD6n2yFfjfV8kcM/l2bN6HKtKLQ
+         jq3SZM8nHtvKhUp8oaccogtcj3e3O2Fq91zV+NdWS1oz/jht+yXRta8qn7Mjs4/2b/TB
+         L3q4IviK6plbg/h8xN264ISecAfd5PGNnjodiFxhGHtb1R60XZ1cu2LT/BypV33K86va
+         QssA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704213602; x=1704818402;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bPX9+0Rd0BEN71Oi5tXu2086fK1YHGta6pZECOhxfJo=;
+        b=dc1vt/4hYnn11NqE/HAO4qXbB1sa6RKQ9PVv0BFQwFlI0Et0xyxvWg2Oglk7/e36e/
+         BBdX5ipHw5Ydm5Q4/l3UnvLmJbBeyGFTsI1ZvrzibItvPZT8ft8PjThPbJeensWvaKZN
+         mX42zjV74AjTztvzyecfbKZ0/R1p+NUZWgduaH8w0Dco/DIpqaR9+THU2w1P+iWtuDwL
+         7x4cpY+UTX4kB901WTnaTzjeB7Yerh3P2tS1Zl+K9Faos+JRei72SHWmN/2kW7EaAgwd
+         GWsh8OFHjNE4pDBArN7Uq3lXrlPYWgNrfiAGueXkKFF1PhmSXtUgNe5Z8D5AkXdP3DuA
+         AG3A==
+X-Gm-Message-State: AOJu0YzNVmKcHKMglB5bRmpu2u00J1Eo2XYjO37u34jl5ODLCBm87GWR
+	bleodyUQKl1JaJgZKSsBGY7VGwyKHaE=
+X-Google-Smtp-Source: AGHT+IFAGcmU/u8U667yqHcapgE///lgzopcES0/T83ljof8PzOi8I0NLbckkZtX0orezBUB9jCVoQ==
+X-Received: by 2002:a05:6402:40cf:b0:554:8296:81d5 with SMTP id z15-20020a05640240cf00b00554829681d5mr16879129edb.3.1704213602142;
+        Tue, 02 Jan 2024 08:40:02 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id cq8-20020a056402220800b0055507ee70a4sm10058415edb.23.2024.01.02.08.40.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 08:40:01 -0800 (PST)
+Message-ID: <1b75e54f235a7cb510768ca8142f15171024dd78.camel@gmail.com>
+Subject: Re: Funky verifier packet range error (> check works, != does not).
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Maciej =?UTF-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>, BPF
+	Mailing List <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
+Date: Tue, 02 Jan 2024 18:39:55 +0200
+In-Reply-To: <CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66rZqUjFHvhx82A@mail.gmail.com>
+References: 
+	<CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66rZqUjFHvhx82A@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231214020530.2267499-1-almasrymina@google.com>
- <20231214020530.2267499-5-almasrymina@google.com> <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
- <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
- <20231215021114.ipvdx2bwtxckrfdg@google.com> <20231215190126.1040fa12@kernel.org>
- <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
- <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
- <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
- <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com> <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
- <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
-In-Reply-To: <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 2 Jan 2024 08:14:17 -0800
-Message-ID: <CAHS8izNqeiK1tq=48LMbbqq5B4d2mhgbuKRvnFtiBngf73jXZg@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
- of struct page in API
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, 
-	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Michael Chan <michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, Wei Fang <wei.fang@nxp.com>, 
-	Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>, 
-	NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Shailend Chand <shailend@google.com>, 
-	Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta <salil.mehta@huawei.com>, 
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, 
-	Russell King <linux@armlinux.org.uk>, Sunil Goutham <sgoutham@marvell.com>, 
-	Geetha sowjanya <gakula@marvell.com>, Subbaraya Sundeep <sbhatta@marvell.com>, 
-	hariprasad <hkelam@marvell.com>, Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>, 
-	Sean Wang <sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, 
-	Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>, 
-	Dexuan Cui <decui@microsoft.com>, Jassi Brar <jaswinder.singh@linaro.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu <joabreu@synopsys.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Siddharth Vadapalli <s-vadapalli@ti.com>, 
-	Ravi Gunasekaran <r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, 
-	Jiawen Wu <jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, 
-	Ronak Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, 
-	Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen <shayne.chen@mediatek.com>, 
-	Kalle Valo <kvalo@kernel.org>, Juergen Gross <jgross@suse.com>, 
-	Stefano Stabellini <sstabellini@kernel.org>, 
-	Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Stefan Hajnoczi <stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan <shuah@kernel.org>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 21, 2023 at 10:42=E2=80=AFPM Yunsheng Lin <linyunsheng@huawei.c=
-om> wrote:
->
-> On 2023/12/22 5:22, Mina Almasry wrote:
-> > On Thu, Dec 21, 2023 at 3:32=E2=80=AFAM Yunsheng Lin <linyunsheng@huawe=
-i.com> wrote:
-> >>
-> >> On 2023/12/20 11:01, Mina Almasry wrote:
-> >>
-> >> ...
-> >>
-> >>>>>> Perhaps we should aim to not export netmem_to_page(),
-> >>>>>> prevent modules from accessing it directly.
-> >>>>>
-> >>>>> +1.
-> >>>>
-> >>>
-> >>> I looked into this, but it turns out it's a slightly bigger change
-> >>> that needs some refactoring to make it work. There are few places
-> >>> where I believe I need to add netmem_to_page() that are exposed to th=
-e
-> >>> drivers via inline helpers, these are:
-> >>>
-> >>> - skb_frag_page(), which returns NULL if the netmem is not a page, bu=
-t
-> >>> needs to do a netmem_to_page() to return the page otherwise.
-> >>
-> >> Is it possible to introduce something like skb_frag_netmem() for
-> >> netmem? so that we can keep most existing users of skb_frag_page()
-> >> unchanged and avoid adding additional checking overhead for existing
-> >> users.
-> >>
-> >
-> > In my experience most current skb_frag_page() users need specifically
-> > the struct page*. Example is illegal_highdma() which
-> > PageHighMem(skb_frag_page())
->
-> For illegal_highdma() case, is it possible to use something like
-> skb_readabe_frag() checking to avoid calling skb_frag_page() for netmem?
->
+On Fri, 2023-12-29 at 17:31 -0800, Maciej =C5=BBenczykowski wrote:
+> I have a relatively complex program that fails to load on 6.5.6 with a
+>=20
+> if (data + 98 !=3D data_end) return TC_ACT_SHOT;
+>=20
+> check, that loads fine if I change the above !=3D to (a you would think
+> weaker) > check.
+>=20
+> It's not important, hit this while debugging, and I don't know if the
+> cause is the verifier treating !=3D differently than > or the compiler
+> optimizing !=3D somehow... but my gut feeling is on the former: some
+> verifier logic special cases > without doing something similar for the
+> stronger !=3D comparison.
 
-Not teh skb_readable_frag() check I think, because illegal_highdma()
-is not trying to read the SKB per se.
+Please note the following comment in verifier.c:find_good_pkt_pointers():
 
-But I agree with your general point, and that should be handled
-correctly in this patch which adds devmem support:
+    /* Examples for register markings:
+     *
+     * pkt_data in dst register:
+     *
+     *   r2 =3D r3;
+     *   r2 +=3D 8;
+     *   if (r2 > pkt_end) goto <handle exception>
+     *   <access okay>
+     *
+     *   r2 =3D r3;
+     *   r2 +=3D 8;
+     *   if (r2 < pkt_end) goto <access okay>
+     *   <handle exception>
+     *
+     *   Where:
+     *     r2 =3D=3D dst_reg, pkt_end =3D=3D src_reg
+     *     r2=3Dpkt(id=3Dn,off=3D8,r=3D0)
+     *     r3=3Dpkt(id=3Dn,off=3D0,r=3D0)
+     *
+       ... a few lines skipped ...
+     *
+     * Find register r3 and mark its range as r3=3Dpkt(id=3Dn,off=3D0,r=3D8=
+)
+     * or r3=3Dpkt(id=3Dn,off=3D0,r=3D8-1), so that range of bytes [r3, r3 =
++ 8)
+     * and [r3, r3 + 8-1) respectively is safe to access depending on
+     * the check.
+     */
 
-https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.3516870=
--10-almasrymina@google.com/
+In other words, from 'data + 98 > data_end' follows that 'data + 98 <=3D da=
+ta_end',
+which means that accessible range for 'data' pointer could be incremented b=
+y 97 bytes.
+However, the 'data + 98 !=3D data_end' is not sufficient to conclude that 9=
+8 more bytes
+are available, as e.g. the following: 'data + 42 =3D=3D data_end' could be =
+true at the same time.
+Does this makes sense?
 
-The idea being that skb_frag_page() can return NULL if the frag is not
-paged, and the relevant callers are modified to handle that.
-
-> >
-> > But RFC v5 adds skb_frag_netmem() for callsites that want a netmem and
-> > don't care about specifically a page:
-> >
-> > https://patchwork.kernel.org/project/netdevbpf/patch/20231218024024.351=
-6870-10-almasrymina@google.com/
-> >
-> >>> - The helpers inside skb_add_rx_frag(), which needs to do a
-> >>> netmem_to_page() to set skb->pfmemalloc.
-> >>
-> >> Similar as above, perhaps introduce something like skb_add_rx_netmem_f=
-rag()?
-> >>
-> >
-> > Yes, v3 of this series adds skb_add_rx_frag_netmem():
-> >
-> > https://patchwork.kernel.org/project/netdevbpf/patch/20231220214505.230=
-3297-4-almasrymina@google.com/
-
-
-
---=20
 Thanks,
-Mina
+Eduard
 
