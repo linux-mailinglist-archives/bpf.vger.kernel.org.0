@@ -1,27 +1,27 @@
-Return-Path: <bpf+bounces-18761-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18762-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6769F821798
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 07:11:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80CA882179D
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 07:12:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B429282114
-	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 06:11:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E7C82822E6
+	for <lists+bpf@lfdr.de>; Tue,  2 Jan 2024 06:12:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1CA1C29;
-	Tue,  2 Jan 2024 06:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF536110;
+	Tue,  2 Jan 2024 06:11:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FCB94431;
-	Tue,  2 Jan 2024 06:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26884C84;
+	Tue,  2 Jan 2024 06:11:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VzmJOCt_1704175877;
-Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VzmJOCt_1704175877)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0VzmJOEx_1704175881;
+Received: from j66a10360.sqa.eu95.tbsite.net(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VzmJOEx_1704175881)
           by smtp.aliyun-inc.com;
           Tue, 02 Jan 2024 14:11:21 +0800
 From: "D. Wythe" <alibuda@linux.alibaba.com>
@@ -38,10 +38,12 @@ Cc: bpf@vger.kernel.org,
 	kuba@kernel.org,
 	pabeni@redhat.com,
 	ast@kernel.org
-Subject: [RFC nf-next v5 0/2] netfilter: bpf: support prog update
-Date: Tue,  2 Jan 2024 14:11:15 +0800
-Message-Id: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
+Subject: [RFC nf-next v5 1/2] netfilter: bpf: support prog update
+Date: Tue,  2 Jan 2024 14:11:16 +0800
+Message-Id: <1704175877-28298-2-git-send-email-alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
+References: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -50,42 +52,106 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
 From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-This patches attempt to implements updating of progs within
-bpf netfilter link, allowing user update their ebpf netfilter
-prog in hot update manner.
+To support the prog update, we need to ensure that the prog seen
+within the hook is always valid. Considering that hooks are always
+protected by rcu_read_lock(), which provide us the ability to
+access the prog under rcu.
 
-Besides, a corresponding test case has been added to verify
-whether the update works.
---
-v1:
-1. remove unnecessary context, access the prog directly via rcu.
-2. remove synchronize_rcu(), dealloc the nf_link via kfree_rcu.
-3. check the dead flag during the update.
---
-v1->v2:
-1. remove unnecessary nf_prog, accessing nf_link->link.prog in direct.
---
-v2->v3:
-1. access nf_link->link.prog via rcu_dereference_raw to avoid warning.
---
-v3->v4:
-1. remove mutex for link update, as it is unnecessary and can be replaced
-by atomic operations.
---
-v4->v5:
-1. fix error retval check on cmpxhcg
+Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+---
+ net/netfilter/nf_bpf_link.c | 50 ++++++++++++++++++++++++++++++---------------
+ 1 file changed, 34 insertions(+), 16 deletions(-)
 
-D. Wythe (2):
-  netfilter: bpf: support prog update
-  selftests/bpf: Add netfilter link prog update test
-
- net/netfilter/nf_bpf_link.c                        | 50 ++++++++-----
- .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
- .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
- 3 files changed, 141 insertions(+), 16 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
-
+diff --git a/net/netfilter/nf_bpf_link.c b/net/netfilter/nf_bpf_link.c
+index e502ec0..47bbdf1 100644
+--- a/net/netfilter/nf_bpf_link.c
++++ b/net/netfilter/nf_bpf_link.c
+@@ -8,26 +8,26 @@
+ #include <net/netfilter/nf_bpf_link.h>
+ #include <uapi/linux/netfilter_ipv4.h>
+ 
+-static unsigned int nf_hook_run_bpf(void *bpf_prog, struct sk_buff *skb,
+-				    const struct nf_hook_state *s)
+-{
+-	const struct bpf_prog *prog = bpf_prog;
+-	struct bpf_nf_ctx ctx = {
+-		.state = s,
+-		.skb = skb,
+-	};
+-
+-	return bpf_prog_run(prog, &ctx);
+-}
+-
+ struct bpf_nf_link {
+ 	struct bpf_link link;
+ 	struct nf_hook_ops hook_ops;
+ 	struct net *net;
+ 	u32 dead;
+ 	const struct nf_defrag_hook *defrag_hook;
++	struct rcu_head head;
+ };
+ 
++static unsigned int nf_hook_run_bpf(void *bpf_link, struct sk_buff *skb,
++				    const struct nf_hook_state *s)
++{
++	const struct bpf_nf_link *nf_link = bpf_link;
++	struct bpf_nf_ctx ctx = {
++		.state = s,
++		.skb = skb,
++	};
++	return bpf_prog_run(rcu_dereference_raw(nf_link->link.prog), &ctx);
++}
++
+ #if IS_ENABLED(CONFIG_NF_DEFRAG_IPV4) || IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+ static const struct nf_defrag_hook *
+ get_proto_defrag_hook(struct bpf_nf_link *link,
+@@ -126,8 +126,7 @@ static void bpf_nf_link_release(struct bpf_link *link)
+ static void bpf_nf_link_dealloc(struct bpf_link *link)
+ {
+ 	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
+-
+-	kfree(nf_link);
++	kfree_rcu(nf_link, head);
+ }
+ 
+ static int bpf_nf_link_detach(struct bpf_link *link)
+@@ -162,7 +161,22 @@ static int bpf_nf_link_fill_link_info(const struct bpf_link *link,
+ static int bpf_nf_link_update(struct bpf_link *link, struct bpf_prog *new_prog,
+ 			      struct bpf_prog *old_prog)
+ {
+-	return -EOPNOTSUPP;
++	struct bpf_nf_link *nf_link = container_of(link, struct bpf_nf_link, link);
++	int err = 0;
++
++	if (nf_link->dead)
++		return -EPERM;
++
++	if (old_prog) {
++		/* target old_prog mismatch */
++		if (cmpxchg(&link->prog, old_prog, new_prog) != old_prog)
++			return -EPERM;
++	} else {
++		old_prog = xchg(&link->prog, new_prog);
++	}
++
++	bpf_prog_put(old_prog);
++	return err;
+ }
+ 
+ static const struct bpf_link_ops bpf_nf_link_lops = {
+@@ -226,7 +240,11 @@ int bpf_nf_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
+ 
+ 	link->hook_ops.hook = nf_hook_run_bpf;
+ 	link->hook_ops.hook_ops_type = NF_HOOK_OP_BPF;
+-	link->hook_ops.priv = prog;
++
++	/* bpf_nf_link_release & bpf_nf_link_dealloc() can ensures that link remains
++	 * valid at all times within nf_hook_run_bpf().
++	 */
++	link->hook_ops.priv = link;
+ 
+ 	link->hook_ops.pf = attr->link_create.netfilter.pf;
+ 	link->hook_ops.priority = attr->link_create.netfilter.priority;
 -- 
 1.8.3.1
 
