@@ -1,120 +1,142 @@
-Return-Path: <bpf+bounces-18963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED86982391E
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 00:26:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3D5F823934
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 00:32:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BC2E1F254B9
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 23:26:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 818CB285825
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 23:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7515F1F609;
-	Wed,  3 Jan 2024 23:26:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E86F1F945;
+	Wed,  3 Jan 2024 23:32:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="lJYbtwRp";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bkEYNB6m"
 X-Original-To: bpf@vger.kernel.org
-Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8932C1EB2D
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 23:26:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id D4E5E2C478AF2; Wed,  3 Jan 2024 15:26:22 -0800 (PST)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Add a selftest with not-8-byte aligned BPF_ST
-Date: Wed,  3 Jan 2024 15:26:22 -0800
-Message-Id: <20240103232622.3771107-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240103232617.3770727-1-yonghong.song@linux.dev>
-References: <20240103232617.3770727-1-yonghong.song@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 557D81F607;
+	Wed,  3 Jan 2024 23:32:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id 127D03200A61;
+	Wed,  3 Jan 2024 18:32:09 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 03 Jan 2024 18:32:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1704324729; x=1704411129; bh=fBlTY1O1StgZyteJRwSj0
+	WOCCgegue7fpMlq4tQR6pE=; b=lJYbtwRpU+dVyyJzJZGCzGN92FAzyXisdOTyA
+	hga+Tz/oNJxJ3/vh/ENWw6VHA+9HerOrPM2yWKDSKa04HVB3afWClfUwTaAtFILW
+	OOVdYMb3RS7WYs0cPfNNo/UZh0rAW6MwxJFDMOxHBIHXACpAM3WNV/bs0rxvDBBj
+	GGHGGty44rb3NCzCrLoYZRXL72lVlXj0gf3g6rWQUy1UjZo3Ifu4q9QhgmHzssry
+	WN/qaTsiffEf1EDV1rHDW/plzF8viJ497gnxWhdrOnnKviF3QxnTaFMD8DHcWi4j
+	+0GbOI3AcpHRe4idSw13HwvflHAZYyOVVWd+rhnaTiuXyjVvg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704324729; x=1704411129; bh=fBlTY1O1StgZyteJRwSj0WOCCgeg
+	ue7fpMlq4tQR6pE=; b=bkEYNB6mF2hRhn3oPBkxEv4MTis76LQX6kxIG4Z0a6O8
+	23WlTBLrL4m/EbFGIxviTL79olTDxMSHWoK7u5IxthjrQXU02MP8fVR8cEHO+s3z
+	h8von97bCIEtyKs9dVGqsTso2HX2723lGaEJ4DG9E3VuEupuwDZ9ImKTyv6mHiqP
+	wuOuteLGQc8bzh+zQfHLyBvqgY03UkxiOnIeaQST+5haxhjaEnRa2cWZ0ZH2VtaB
+	xJAiTBX7cdldtYW6XK3hKhIJwA2WtWLJps3e0b9RRiYcZfCwinXmUFCGzKY9UGcZ
+	iRKgeAvxv5v7eXLQegka4wpUNzFHNkzVJlpd+Y9hfw==
+X-ME-Sender: <xms:ee6VZb7nVEguWYMYGcsHeDfQzGSOkMaR910F5h5_TmodHTwiD3gTCw>
+    <xme:ee6VZQ58ecOlJDLxO9xUG2RyHUBjmzzDeyXxPFYSsl0hQYEbGH4rsOw9xQlLBnzuT
+    vvXCum2bPsN3CBkhA>
+X-ME-Received: <xmr:ee6VZSe-dtivdRXsviJeY6ng4lQHZMCRz8IWSabTPNAqBqnMe4LBurFOoNG8A-3AhFklujKA1fjO7IkhP1LAuxJY96RzHZw2HFvb1CmYlV_Q4Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegiedguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeeifffgledvffeitdeljedvte
+    effeeivdefheeiveevjeduieeigfetieevieffffenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:ee6VZcJsPTwIypaABAx54mLUiDqR-eW4GzwFx7VZtovUCBL5U1HhmQ>
+    <xmx:ee6VZfJe-ZA9i8lcfVslhcroQyOjo5igaaU6c31UT9YGkk1qQl0hXA>
+    <xmx:ee6VZVx1eanecM8vnOIT199ezlrPTsbYNWWHs1kGu3CorWW_CdOwMg>
+    <xmx:ee6VZQ5hX2kthjEX-X3ufwYaJnC9ulEG6gmoMS1iN5eth7eiyZ1LQQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 3 Jan 2024 18:32:07 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: coreteam@netfilter.org,
+	netdev@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-kselftest@vger.kernel.org,
+	fsverity@lists.linux.dev,
+	netfilter-devel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	bpf@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	olsajiri@gmail.com,
+	quentin@isovalent.com,
+	alan.maguire@oracle.com,
+	memxor@gmail.com
+Subject: [PATCH bpf-next 0/2] Annotate kfuncs in .BTF_ids section
+Date: Wed,  3 Jan 2024 16:31:54 -0700
+Message-ID: <cover.1704324602.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Add a selftest with a 4 bytes BPF_ST of 0 where the store is not
-8-byte aligned. The goal is to ensure that STACK_ZERO is properly
-marked for the spill and the STACK_ZERO value can propagate
-properly during the load.
+This is a bpf-treewide change that annotates all kfuncs as such inside
+.BTF_ids. This annotation eventually allows us to automatically generate
+kfunc prototypes from bpftool.
 
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../selftests/bpf/progs/verifier_spill_fill.c | 44 +++++++++++++++++++
- 1 file changed, 44 insertions(+)
+We store this metadata inside a yet-unused flags field inside struct
+btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/to=
-ols/testing/selftests/bpf/progs/verifier_spill_fill.c
-index d4b3188afe07..6017b26d957d 100644
---- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
-@@ -583,6 +583,50 @@ __naked void partial_stack_load_preserves_zeros(void=
-)
- 	: __clobber_common);
- }
-=20
-+SEC("raw_tp")
-+__log_level(2)
-+__success
-+/* fp-4 is STACK_ZERO */
-+__msg("2: (62) *(u32 *)(r10 -4) =3D 0          ; R10=3Dfp0 fp-8=3D0000??=
-??")
-+/* validate that assigning R2 from STACK_ZERO with zero value doesn't ma=
-rk register
-+ * precise immediately; if necessary, it will be marked precise later
-+ */
-+__msg("4: (71) r2 =3D *(u8 *)(r10 -1)          ; R2_w=3D0 R10=3Dfp0 fp-8=
-=3D0000????")
-+__msg("5: (0f) r1 +=3D r2")
-+__msg("mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1")
-+__msg("mark_precise: frame0: regs=3Dr2 stack=3D before 4: (71) r2 =3D *(=
-u8 *)(r10 -1)")
-+__naked void partial_stack_load_preserves_partial_zeros(void)
-+{
-+	asm volatile (
-+		/* fp-4 is value zero */
-+		".8byte %[fp4_st_zero];" /* LLVM-18+: *(u32 *)(r10 -4) =3D 0; */
-+
-+		/* load single U8 from non-aligned stack zero slot */
-+		"r1 =3D %[single_byte_buf];"
-+		"r2 =3D *(u8 *)(r10 -1);"
-+		"r1 +=3D r2;"
-+		"*(u8 *)(r1 + 0) =3D r2;" /* this should be fine */
-+
-+		/* load single U16 from non-aligned stack zero slot */
-+		"r1 =3D %[single_byte_buf];"
-+		"r2 =3D *(u16 *)(r10 -2);"
-+		"r1 +=3D r2;"
-+		"*(u8 *)(r1 + 0) =3D r2;" /* this should be fine */
-+
-+		/* load single U32 from non-aligned stack zero slot */
-+		"r1 =3D %[single_byte_buf];"
-+		"r2 =3D *(u32 *)(r10 -4);"
-+		"r1 +=3D r2;"
-+		"*(u8 *)(r1 + 0) =3D r2;" /* this should be fine */
-+
-+		"r0 =3D 0;"
-+		"exit;"
-+	:
-+	: __imm_ptr(single_byte_buf),
-+	  __imm_insn(fp4_st_zero, BPF_ST_MEM(BPF_W, BPF_REG_FP, -4, 0))
-+	: __clobber_common);
-+}
-+
- char two_byte_buf[2] SEC(".data.two_byte_buf");
-=20
- SEC("raw_tp")
---=20
-2.34.1
+More details about the full chain of events are available in commit 2's
+description.
+
+Daniel Xu (2):
+  bpf: btf: Support optional flags for BTF_SET8 sets
+  bpf: treewide: Annotate BPF kfuncs in BTF
+
+ drivers/hid/bpf/hid_bpf_dispatch.c              |  4 ++--
+ fs/verity/measure.c                             |  2 +-
+ include/linux/btf_ids.h                         | 17 ++++++++++++-----
+ kernel/bpf/btf.c                                |  3 +++
+ kernel/bpf/cpumask.c                            |  2 +-
+ kernel/bpf/helpers.c                            |  4 ++--
+ kernel/bpf/map_iter.c                           |  2 +-
+ kernel/cgroup/rstat.c                           |  2 +-
+ kernel/trace/bpf_trace.c                        |  4 ++--
+ net/bpf/test_run.c                              |  4 ++--
+ net/core/filter.c                               |  8 ++++----
+ net/core/xdp.c                                  |  2 +-
+ net/ipv4/bpf_tcp_ca.c                           |  2 +-
+ net/ipv4/fou_bpf.c                              |  2 +-
+ net/ipv4/tcp_bbr.c                              |  2 +-
+ net/ipv4/tcp_cubic.c                            |  2 +-
+ net/ipv4/tcp_dctcp.c                            |  2 +-
+ net/netfilter/nf_conntrack_bpf.c                |  2 +-
+ net/netfilter/nf_nat_bpf.c                      |  2 +-
+ net/xfrm/xfrm_interface_bpf.c                   |  2 +-
+ net/xfrm/xfrm_state_bpf.c                       |  2 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c     |  2 +-
+ 22 files changed, 42 insertions(+), 32 deletions(-)
+
+-- 
+2.42.1
 
 
