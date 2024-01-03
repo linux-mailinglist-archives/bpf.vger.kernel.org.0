@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-18867-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18868-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD47B8230A0
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 16:34:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D965F8230A1
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 16:34:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCCEE1F2488C
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 15:34:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C99E61C23754
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 15:34:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B82161B271;
-	Wed,  3 Jan 2024 15:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA1D1C290;
+	Wed,  3 Jan 2024 15:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WwvB7vTC"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uvLJHex6"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B5F1B296
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 15:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83EED1BDC3
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 15:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--brho.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbdac466edcso10138981276.2
-        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 07:33:21 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbe9eeb4a60so771613276.3
+        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 07:33:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704296000; x=1704900800; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1704296001; x=1704900801; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iyqq+fE1NkHrvUhRDNlGH8Dgi07Vh12wXyYd0sabOJE=;
-        b=WwvB7vTCtKWxWx4vgepaiaefjGiFoUZQV8k/KXFGYkAKYLhlwz3ein3EAyhlyKYeRd
-         mPV6tJXtymGI2OqJpdUvdGAylDoxL+b5r+ANQrdFQKQ8lVARuV8d/kMCU8lUqMVMR4d7
-         V3tFSj6xr1dVAeE5+w5JStR+8etD2QoElo7HARbRzHz6+EvfAYcLGU9rZfdKljm11g9A
-         5IC83wgsbIcU1uvoAVdTkslCtPAtMuexLQoRsJJVR+sZ/vQiAbhUdJTq0WisaTDlQ743
-         NCLgdJx7E52OLGfxsSDBdiCDiUeEHnqZzNau3yzAu01UxYyitGLRVp7CAIUvkGx/Gcu5
-         vr1w==
+        bh=OicT+l3EZJlJYj2TM+wBf0RsBy8Da2sRlMessm79MX4=;
+        b=uvLJHex6cAxG69h2j4On6/Tu/EsYcNpVMI2NmLGQI8RWBwWHngmeHhT0oyQhqe8s32
+         stH33io1hEAl4bavoNn1xdcJFxGfPx6X8zx52aAULkBGPblLw8Eae6hGcWA0ZYQqI7wS
+         FjMRHkuOP3b/8D2pGisXsGJVZAX+VGzwhZF1x2bHN3XqksXovR9EIo8XpU6hA/Eo/UwG
+         usExDcJVq3htvPw8uIkdAgJ0Ni50W0jAnK6gn9lQYp0FMGE7HnXxVii4GVLQ2IdzSw63
+         myUNm3DxQG7jpll7B1l2dMjO2T0X9DX46O7j3Ti7wzIsWqAIa4fwNag5t3joNxG+Hrr5
+         btWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704296000; x=1704900800;
+        d=1e100.net; s=20230601; t=1704296001; x=1704900801;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iyqq+fE1NkHrvUhRDNlGH8Dgi07Vh12wXyYd0sabOJE=;
-        b=lGOqCpRQdTJ/DxrLSm5ES6xcMq8JASDk4VrS9OSoJfFMVo9j3DqMX2a4YUxzu8kkPs
-         GMrWTY5Dxx1q7zNT0teM6C8SjgZmqiH7OZ+t4emzQ9dOM+Y90qLmJE2ItQr2Riii6vPB
-         zoOgvUmNbg3Y1rKnP+EMnFMywc40MeIa250zPRIUxrV42t4RnIGfHwhQKrYuq1gAVD0F
-         eoVbMZx0bDvSJ3gIMT2VH3xb+G77vkUg1uMQJofqpkXphLDfO1niInGkJ52Zua5eQXZL
-         CPEH+BuMbZ6X33VJdm2fFqg1XdSYLKo2XssNmN+Otk0A8L9oHnvOjaVEXcmrbKJpInnE
-         LUpA==
-X-Gm-Message-State: AOJu0YwyUrgDrAoRT7x8dXvdmqwQZ/DoNfdFF7xHQ8WXyKUNE1M6zn/s
-	PNrcOClWDqi4Tz5dU5xeawxZ3nrcmuK4JTU=
-X-Google-Smtp-Source: AGHT+IF6sM8Lzs882ujLhq7q/bK9uAvKMHC3e/wALAesdwXB1bLYZYP0QlL849nMwejsRip5WOrWHgMU
+        bh=OicT+l3EZJlJYj2TM+wBf0RsBy8Da2sRlMessm79MX4=;
+        b=R4sVm78eBfsU0jnaupySBbI8Z+Xr8kwrkEsUkshREVfyWcNrM/pxH9F7IbOPCBM8VY
+         ypcpPy2SGa9fDSF9PT8uak+qrUj7ktR7uV0FwRILPlEmC6d+7UPnUWs1vspuHh2M1jmb
+         nukeyKrNbLBt7HccQtu1fHUrNapngd9XuXKtVRE1dP9HjPLWPZmPZpKaAXHzOXLuL8A6
+         FKhOmrTZ4kdjwsotP35QoHoP9Vs25Ui8KryYRSxmncWAf+U0z/ARKzScelOeH0ilR77M
+         QuPViHUqDHIXqAPjcIj6fsxPK2bzwjzO/MfafO3svP8ym8XRNhCctlFzrjcX/C7G+Hw9
+         19/A==
+X-Gm-Message-State: AOJu0Yz3b7/0+D3EG20a6D/CBdbIK3k833iUA7x7MtJ79pwM20q4ebaN
+	h+x+9X+hd2o4h0XiklMGjIJsYxnYEXGiCNc=
+X-Google-Smtp-Source: AGHT+IFBRD+ZEI1ilypTnzEQs3SBZHYgKw6gKzJ73D+jgtUEvgAc3+DG2QK8wd49cHs1EI2qezTz6GFM
 X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:93:4:7e71:cfbd:2031:cc52])
- (user=brho job=sendgmr) by 2002:a25:9b09:0:b0:dbd:e996:1944 with SMTP id
- y9-20020a259b09000000b00dbde9961944mr511514ybn.5.1704296000533; Wed, 03 Jan
- 2024 07:33:20 -0800 (PST)
-Date: Wed,  3 Jan 2024 10:33:01 -0500
+ (user=brho job=sendgmr) by 2002:a25:7495:0:b0:dbe:9f12:cfc6 with SMTP id
+ p143-20020a257495000000b00dbe9f12cfc6mr37792ybc.1.1704296001660; Wed, 03 Jan
+ 2024 07:33:21 -0800 (PST)
+Date: Wed,  3 Jan 2024 10:33:02 -0500
 In-Reply-To: <20240103153307.553838-1-brho@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -63,8 +63,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240103153307.553838-1-brho@google.com>
 X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240103153307.553838-2-brho@google.com>
-Subject: [PATCH bpf-next 1/2] libbpf: add helpers for mmapping maps
+Message-ID: <20240103153307.553838-3-brho@google.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: add inline assembly helpers to
+ access array elements
 From: Barret Rhoden <brho@google.com>
 To: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
@@ -73,129 +74,408 @@ Cc: mattbobrowski@google.com, bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-bpf_map__mmap_size() was internal to bpftool.  Use that to make wrappers
-for mmap and munmap.
+When accessing an array, even if you insert your own bounds check,
+sometimes the compiler will remove the check, or modify it such that the
+verifier no longer knows your access is within bounds.
+
+The compiler is even free to make a copy of a register, check the copy,
+and use the original to access the array.  The verifier knows the *copy*
+is within bounds, but not the original register!
 
 Signed-off-by: Barret Rhoden <brho@google.com>
 ---
- tools/bpf/bpftool/gen.c  | 16 +++-------------
- tools/lib/bpf/libbpf.c   | 23 +++++++++++++++++++++++
- tools/lib/bpf/libbpf.h   |  6 ++++++
- tools/lib/bpf/libbpf.map |  4 ++++
- 4 files changed, 36 insertions(+), 13 deletions(-)
+ tools/testing/selftests/bpf/Makefile          |   2 +-
+ .../bpf/prog_tests/test_array_elem.c          | 112 ++++++++++
+ .../selftests/bpf/progs/array_elem_test.c     | 195 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |  43 ++++
+ 4 files changed, 351 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+ create mode 100644 tools/testing/selftests/bpf/progs/array_elem_test.c
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index ee3ce2b8000d..a328e960c141 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -453,16 +453,6 @@ static void print_hex(const char *data, int data_sz)
- 	}
- }
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index 617ae55c3bb5..651d4663cc78 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -34,7 +34,7 @@ LIBELF_CFLAGS	:= $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
+ LIBELF_LIBS	:= $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
  
--static size_t bpf_map_mmap_sz(const struct bpf_map *map)
--{
--	long page_sz = sysconf(_SC_PAGE_SIZE);
--	size_t map_sz;
--
--	map_sz = (size_t)roundup(bpf_map__value_size(map), 8) * bpf_map__max_entries(map);
--	map_sz = roundup(map_sz, page_sz);
--	return map_sz;
--}
--
- /* Emit type size asserts for all top-level fields in memory-mapped internal maps. */
- static void codegen_asserts(struct bpf_object *obj, const char *obj_name)
- {
-@@ -641,7 +631,7 @@ static void codegen_destroy(struct bpf_object *obj, const char *obj_name)
- 		if (bpf_map__is_internal(map) &&
- 		    (bpf_map__map_flags(map) & BPF_F_MMAPABLE))
- 			printf("\tskel_free_map_data(skel->%1$s, skel->maps.%1$s.initial_value, %2$zd);\n",
--			       ident, bpf_map_mmap_sz(map));
-+			       ident, bpf_map__mmap_size(map));
- 		codegen("\
- 			\n\
- 				skel_closenz(skel->maps.%1$s.map_fd);	    \n\
-@@ -723,7 +713,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 					goto cleanup;			    \n\
- 				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
- 			}						    \n\
--			", ident, bpf_map_mmap_sz(map));
-+			", ident, bpf_map__mmap_size(map));
- 	}
- 	codegen("\
- 		\n\
-@@ -780,7 +770,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 			if (!skel->%1$s)				    \n\
- 				return -ENOMEM;				    \n\
- 			",
--		       ident, bpf_map_mmap_sz(map), mmap_flags);
-+		       ident, bpf_map__mmap_size(map), mmap_flags);
- 	}
- 	codegen("\
- 		\n\
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index ebcfb2147fbd..171a977cb5fd 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -9830,6 +9830,29 @@ void *bpf_map__initial_value(struct bpf_map *map, size_t *psize)
- 	return map->mmaped;
- }
- 
-+size_t bpf_map__mmap_size(const struct bpf_map *map)
-+{
-+	long page_sz = sysconf(_SC_PAGE_SIZE);
-+	size_t map_sz;
+ CFLAGS += -g $(OPT_FLAGS) -rdynamic					\
+-	  -Wall -Werror 						\
++	  -dicks -Wall -Werror 						\
+ 	  $(GENFLAGS) $(SAN_CFLAGS) $(LIBELF_CFLAGS)			\
+ 	  -I$(CURDIR) -I$(INCLUDE_DIR) -I$(GENDIR) -I$(LIBDIR)		\
+ 	  -I$(TOOLSINCDIR) -I$(APIDIR) -I$(OUTPUT)
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_array_elem.c b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+new file mode 100644
+index 000000000000..c953636f07c9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+@@ -0,0 +1,112 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC. */
++#include <test_progs.h>
++#include "array_elem_test.skel.h"
 +
-+	map_sz = (size_t)roundup(bpf_map__value_size(map), 8) *
-+		bpf_map__max_entries(map);
-+	map_sz = roundup(map_sz, page_sz);
-+	return map_sz;
++#define NR_MAP_ELEMS 100
++
++/*
++ * Helper to load and run a program.
++ * Call must define skel, map_elems, and bss_elems.
++ * Destroy the skel when you're done.
++ */
++#define load_and_run(PROG) ({						\
++	int err;							\
++	skel = array_elem_test__open();					\
++	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
++		return;							\
++	bpf_program__set_autoload(skel->progs.x_ ## PROG, true);	\
++	err = array_elem_test__load(skel);				\
++	if (!ASSERT_EQ(err, 0, "array_elem_test load")) {		\
++		array_elem_test__destroy(skel);				\
++		return;							\
++	}								\
++	err = array_elem_test__attach(skel);				\
++	if (!ASSERT_EQ(err, 0, "array_elem_test attach")) {		\
++		array_elem_test__destroy(skel);				\
++		return;							\
++	}								\
++	for (int i = 0; i < NR_MAP_ELEMS; i++)				\
++		skel->bss->lookup_indexes[i] = i;			\
++	map_elems = bpf_map__mmap(skel->maps.arraymap);			\
++	ASSERT_OK_PTR(map_elems, "mmap");				\
++	bss_elems = skel->bss->bss_elems;				\
++	skel->bss->target_pid = getpid();				\
++	usleep(1);							\
++})
++
++static void test_access_all(void)
++{
++	struct array_elem_test *skel;
++	int *map_elems;
++	int *bss_elems;
++
++	load_and_run(access_all);
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		ASSERT_EQ(map_elems[i], i, "array_elem map value not written");
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		ASSERT_EQ(bss_elems[i], i, "array_elem bss value not written");
++
++	array_elem_test__destroy(skel);
 +}
 +
-+void *bpf_map__mmap(const struct bpf_map *map)
++static void test_oob_access(void)
 +{
-+	return mmap(NULL, bpf_map__mmap_size(map),
-+		    PROT_READ | PROT_WRITE, MAP_SHARED,
-+		    bpf_map__fd(map), 0);
++	struct array_elem_test *skel;
++	int *map_elems;
++	int *bss_elems;
++
++	load_and_run(oob_access);
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		ASSERT_EQ(map_elems[i], 0, "array_elem map value was written");
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		ASSERT_EQ(bss_elems[i], 0, "array_elem bss value was written");
++
++	array_elem_test__destroy(skel);
 +}
 +
-+int bpf_map__munmap(const struct bpf_map *map, void *addr)
++static void test_access_array_map_infer_sz(void)
 +{
-+	return munmap(addr, bpf_map__mmap_size(map));
++	struct array_elem_test *skel;
++	int *map_elems;
++	int *bss_elems __maybe_unused;
++
++	load_and_run(access_array_map_infer_sz);
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		ASSERT_EQ(map_elems[i], i, "array_elem map value not written");
++
++	array_elem_test__destroy(skel);
 +}
 +
- bool bpf_map__is_internal(const struct bpf_map *map)
- {
- 	return map->libbpf_type != LIBBPF_MAP_UNSPEC;
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 6cd9c501624f..148f4c783ca7 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -996,6 +996,12 @@ LIBBPF_API int bpf_map__set_map_extra(struct bpf_map *map, __u64 map_extra);
- LIBBPF_API int bpf_map__set_initial_value(struct bpf_map *map,
- 					  const void *data, size_t size);
- LIBBPF_API void *bpf_map__initial_value(struct bpf_map *map, size_t *psize);
-+/* get the mmappable size of the map */
-+LIBBPF_API size_t bpf_map__mmap_size(const struct bpf_map *map);
-+/* mmap the map */
-+LIBBPF_API void *bpf_map__mmap(const struct bpf_map *map);
-+/* munmap the map at addr */
-+LIBBPF_API int bpf_map__munmap(const struct bpf_map *map, void *addr);
++
++/* Test that attempting to load a bad program fails. */
++#define test_bad(PROG) ({						\
++	struct array_elem_test *skel;					\
++	int err;							\
++	skel = array_elem_test__open();					\
++	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
++		return;							\
++	bpf_program__set_autoload(skel->progs.x_bad_ ## PROG, true); 	\
++	err = array_elem_test__load(skel);				\
++	ASSERT_ERR(err, "array_elem_test load " # PROG);		\
++	array_elem_test__destroy(skel);					\
++})
++
++void test_test_array_elem(void)
++{
++	if (test__start_subtest("array_elem_access_all"))
++		test_access_all();
++	if (test__start_subtest("array_elem_oob_access"))
++		test_oob_access();
++	if (test__start_subtest("array_elem_access_array_map_infer_sz"))
++		test_access_array_map_infer_sz();
++	if (test__start_subtest("array_elem_bad_map_array_access"))
++		test_bad(map_array_access);
++	if (test__start_subtest("array_elem_bad_bss_array_access"))
++		test_bad(bss_array_access);
++}
+diff --git a/tools/testing/selftests/bpf/progs/array_elem_test.c b/tools/testing/selftests/bpf/progs/array_elem_test.c
+new file mode 100644
+index 000000000000..9d48afc933f0
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/array_elem_test.c
+@@ -0,0 +1,195 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC. */
++#include <stdbool.h>
++#include <linux/types.h>
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++
++char _license[] SEC("license") = "GPL";
++
++int target_pid = 0;
++
++#define NR_MAP_ELEMS 100
++
++/*
++ * We want to test valid accesses into an array, but we also need to fool the
++ * verifier.  If we just do for (i = 0; i < 100; i++), the verifier knows the
++ * value of i and can tell we're inside the array.
++ *
++ * This "lookup" array is just the values 0, 1, 2..., such that
++ * lookup_indexes[i] == i.  (set by userspace).  But the verifier doesn't know
++ * that.
++ */
++unsigned int lookup_indexes[NR_MAP_ELEMS];
++
++/* Arrays can be in the BSS or inside a map element.  Make sure both work. */
++int bss_elems[NR_MAP_ELEMS];
++
++struct map_array {
++	int elems[NR_MAP_ELEMS];
++};
++
++/*
++ * This is an ARRAY_MAP of a single struct, and that struct is an array of
++ * elements.  Userspace can mmap the map as if it was just a basic array of
++ * elements.  Though if you make an ARRAY_MAP where the *values* are ints, don't
++ * forget that bpf map elements are rounded up to 8 bytes.
++ *
++ * Once you get the pointer to the base of the inner array, you can access all
++ * of the elements without another bpf_map_lookup_elem(), which is useful if you
++ * are operating on multiple elements while holding a spinlock.
++ */
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct map_array);
++	__uint(map_flags, BPF_F_MMAPABLE);
++} arraymap SEC(".maps");
++
++static struct map_array *get_map_array(void)
++{
++	int zero = 0;
++
++	return bpf_map_lookup_elem(&arraymap, &zero);
++}
++
++static int *get_map_elems(void)
++{
++	struct map_array *arr = get_map_array();
++
++	if (!arr)
++		return NULL;
++	return arr->elems;
++}
++
++/*
++ * Test that we can access all elements, and that we are accessing the element
++ * we think we are accessing.
++ */
++static void access_all(void)
++{
++	int *map_elems = get_map_elems();
++	int *x;
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++) {
++		x = bpf_array_elem(map_elems, NR_MAP_ELEMS, lookup_indexes[i]);
++		if (x)
++			*x = i;
++	}
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++) {
++		x = bpf_array_sz_elem(bss_elems, lookup_indexes[i]);
++		if (x)
++			*x = i;
++	}
++}
++
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int x_access_all(void *ctx)
++{
++	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
++		return 0;
++	access_all();
++	return 0;
++}
++
++/*
++ * Helper for various OOB tests.  An out-of-bound access should be handled like
++ * a lookup failure.  Specifically, the verifier should ensure we do not access
++ * outside the array.  Userspace will check that we didn't access somewhere
++ * inside the array.
++ */
++static void set_elem_to_1(long idx)
++{
++	int *map_elems = get_map_elems();
++	int *x;
++
++	x = bpf_array_elem(map_elems, NR_MAP_ELEMS, idx);
++	if (x)
++		*x = 1;
++	x = bpf_array_sz_elem(bss_elems, idx);
++	if (x)
++		*x = 1;
++}
++
++/*
++ * Test various out-of-bounds accesses.
++ */
++static void oob_access(void)
++{
++	set_elem_to_1(NR_MAP_ELEMS + 5);
++	set_elem_to_1(NR_MAP_ELEMS);
++	set_elem_to_1(-1);
++	set_elem_to_1(~0UL);
++}
++
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int x_oob_access(void *ctx)
++{
++	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
++		return 0;
++	oob_access();
++	return 0;
++}
++
++/*
++ * Test that we can use the ARRAY_SIZE-style helper with an array in a map.
++ *
++ * Note that you cannot infer the size of the array from just a pointer; you
++ * have to use the actual elems[100].  i.e. this will fail and should fail to
++ * compile (-Wsizeof-pointer-div):
++ *
++ *	int *map_elems = get_map_elems();
++ *	x = bpf_array_sz_elem(map_elems, lookup_indexes[i]);
++ */
++static void access_array_map_infer_sz(void)
++{
++	struct map_array *arr = get_map_array();
++	int *x;
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++) {
++		x = bpf_array_sz_elem(arr->elems, lookup_indexes[i]);
++		if (x)
++			*x = i;
++	}
++}
++
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int x_access_array_map_infer_sz(void *ctx)
++{
++	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
++		return 0;
++	access_array_map_infer_sz();
++	return 0;
++}
++
++
++
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int x_bad_map_array_access(void *ctx)
++{
++	int *map_elems = get_map_elems();
++
++	/*
++	 * Need to check to promote map_elems from MAP_OR_NULL to MAP so that we
++	 * fail to load below for the right reason.
++	 */
++	if (!map_elems)
++		return 0;
++	/* Fail to load: we don't prove our access is inside map_elems[] */
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		map_elems[lookup_indexes[i]] = i;
++	return 0;
++}
++
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int x_bad_bss_array_access(void *ctx)
++{
++	/* Fail to load: we don't prove our access is inside bss_elems[] */
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		bss_elems[lookup_indexes[i]] = i;
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index 2fd59970c43a..002bab44cde2 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -135,4 +135,47 @@
+ /* make it look to compiler like value is read and written */
+ #define __sink(expr) asm volatile("" : "+g"(expr))
  
- /**
-  * @brief **bpf_map__is_internal()** tells the caller whether or not the
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index 91c5aef7dae7..9e44de4fbf39 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -411,4 +411,8 @@ LIBBPF_1.3.0 {
- } LIBBPF_1.2.0;
- 
- LIBBPF_1.4.0 {
-+	global:
-+		bpf_map__mmap_size;
-+		bpf_map__mmap;
-+		bpf_map__munmap;
- } LIBBPF_1.3.0;
++/*
++ * Access an array element within a bound, such that the verifier knows the
++ * access is safe.
++ *
++ * This macro asm is the equivalent of:
++ *
++ *	if (!arr)
++ *		return NULL;
++ *	if (idx >= arr_sz)
++ *		return NULL;
++ *	return &arr[idx];
++ *
++ * The index (___idx below) needs to be a u64, at least for certain versions of
++ * the BPF ISA, since there aren't u32 conditional jumps.
++ */
++#define bpf_array_elem(arr, arr_sz, idx) ({				\
++	typeof(&(arr)[0]) ___arr = arr;					\
++	__u64 ___idx = idx;						\
++	if (___arr) {							\
++		asm volatile("if %[__idx] >= %[__bound] goto 1f;	\
++			      %[__idx] *= %[__size];		\
++			      %[__arr] += %[__idx];		\
++			      goto 2f;				\
++			      1:;				\
++			      %[__arr] = 0;			\
++			      2:				\
++			      "						\
++			     : [__arr]"+r"(___arr), [__idx]"+r"(___idx)	\
++			     : [__bound]"r"((arr_sz)),		        \
++			       [__size]"i"(sizeof(typeof((arr)[0])))	\
++			     : "cc");					\
++	}								\
++	___arr;								\
++})
++
++/*
++ * Convenience wrapper for bpf_array_elem(), where we compute the size of the
++ * array.  Be sure to use an actual array, and not a pointer, just like with the
++ * ARRAY_SIZE macro.
++ */
++#define bpf_array_sz_elem(arr, idx) \
++	bpf_array_elem(arr, sizeof(arr) / sizeof((arr)[0]), idx)
++
+ #endif
 -- 
 2.43.0.472.g3155946c3a-goog
 
