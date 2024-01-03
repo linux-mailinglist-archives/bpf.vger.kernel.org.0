@@ -1,104 +1,247 @@
-Return-Path: <bpf+bounces-18961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D6CA82391A
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 00:18:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A85B782391D
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 00:26:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C318B24793
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 23:18:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 31D221F2597B
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 23:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F0C1EB53;
-	Wed,  3 Jan 2024 23:18:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iwN3QdN7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661901EB5A;
+	Wed,  3 Jan 2024 23:26:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from 69-171-232-181.mail-mxout.facebook.com (69-171-232-181.mail-mxout.facebook.com [69.171.232.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E53C1EB51
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 23:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-50eaabc36bcso506197e87.2
-        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 15:17:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704323877; x=1704928677; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3fD1kciZPEAf4Ee/FJGbnCGmPXbrutUTQB4FcxfXjWU=;
-        b=iwN3QdN78cFnMGOk2akAdUbsPeet2FWWc6FDV/CAkcGnXIQg9qoUooIaO0R/LViCzF
-         ZGMs4bplmY1t//3g20X2tvsF3hWwpht2IAkv2JmZPx8dvdqQF0IwNofXEGKa3uYiENh1
-         BSOhB7+CG35n1mUlW8dYovWcKq5pAnihHUped69NgagdxfsaOdAvCZk21+ZNw+EEE6UX
-         2Ls6pCQw4v+x91XpXutxlGhXNaNObcbfv92x7lW4FYhkOcot2A8iI3U1W9t+ChmTSfGm
-         oOHI9SJxNqSwTmIxDcghtjHtYyTY66rVHdGkuk4pr4525Yxu1zUjRIThDvNGKnqC9HwD
-         pIVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704323877; x=1704928677;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3fD1kciZPEAf4Ee/FJGbnCGmPXbrutUTQB4FcxfXjWU=;
-        b=anrk76Kbjq8HoTsCGPrRCmkjrzAeHecAARCA4PgWEAEc5pLak8P+OBRk+I+PdZFN7o
-         eHIA0j5yt3MsBu7zdRaESTz4ybAo1OOHFukJ67VcuM5+IkIDTw5SHwPt6UbR0KEYBJXr
-         5CZrzuPhuUfkPyaUgF2vhlZ3BKNS95IXbvFutMBjAc44Wio5PZkp5GF7GEiNO9ofMyi4
-         JWgrUYidcx4gBq+exV+vKsb6RRjbe+JnaXhW3BJW1D34igchEY7/vJG1tSWtF/jI6GNI
-         HIcDaZH8wpIyc22pubuGzg0YkbcmrwoJQhzQ3oC1II8BqnmC2ME6+zLLU5i7IFXelS/t
-         2P5w==
-X-Gm-Message-State: AOJu0YwTDdIJ5HdtybBgFVZyp0lilcaDVWBSCSHDrydgbAxxd9OXbFwV
-	E1GNqLB1UlVkPQCuT+V90D0=
-X-Google-Smtp-Source: AGHT+IF2FbFx1eIzX3RYhcTfXstpkzT4hLG3yQ8CkX/p7/jZvoY1/ONTK8Fxxr3723ycP3PQxhdiMA==
-X-Received: by 2002:ac2:5e33:0:b0:50e:6b48:5407 with SMTP id o19-20020ac25e33000000b0050e6b485407mr7421617lfg.82.1704323877223;
-        Wed, 03 Jan 2024 15:17:57 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id zv13-20020a170907718d00b00a26aeb9e37csm12355725ejb.6.2024.01.03.15.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 15:17:56 -0800 (PST)
-Message-ID: <28d03d76c70881a739f2f0b745da1fba131d486f.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/9] libbpf: name internal functions
- consistently
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko
-	 <andrii@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>,
- Kernel Team <kernel-team@meta.com>
-Date: Thu, 04 Jan 2024 01:17:55 +0200
-In-Reply-To: <CAADnVQ+XcewF3aQm1itG_8GDOEbgRZLknYPyK_JuCjzQJ4=+_w@mail.gmail.com>
-References: <20240102190055.1602698-1-andrii@kernel.org>
-	 <20240102190055.1602698-2-andrii@kernel.org>
-	 <CAADnVQ+XcewF3aQm1itG_8GDOEbgRZLknYPyK_JuCjzQJ4=+_w@mail.gmail.com>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810BB1EB2D
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 23:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id A5E1F2C478ADB; Wed,  3 Jan 2024 15:26:17 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Martin KaFai Lau <kafai@fb.com>
+Subject: [PATCH bpf-next v2 1/2] bpf: Track aligned st store as imprecise spilled registers
+Date: Wed,  3 Jan 2024 15:26:17 -0800
+Message-Id: <20240103232617.3770727-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-01-03 at 15:12 -0800, Alexei Starovoitov wrote:
-[...]
-> At the same time I agree that a public function looking different from
-> internal is a good thing to have.
-> We have LIBBPF_API that is used in the headers.
-> Maybe we should start using something similar in .c files
-> than there will be no confusion.
->=20
-> Not a strong opinion.
->=20
-> Eduard,
-> what's your take?
+With patch set [1], precision backtracing supports register spill/fill
+to/from the stack. The patch [2] allows initial imprecise register spill
+with content 0. This is a common case for cpuv3 and lower for
+initializing the stack variables with pattern
+  r1 =3D 0
+  *(u64 *)(r10 - 8) =3D r1
+and the [2] has demonstrated good verification improvement.
 
-I kind-off like private vs. public method encoded as '_' vs. '__'.
-But this seem to be a minor detail, personally I grep header file
-each time to see if LIBBPF_API is used for certain function and
-that is not a big deal.
+For cpuv4, the initialization could be
+  *(u64 *)(r10 - 8) =3D 0
+The current verifier marks the r10-8 contents with STACK_ZERO.
+Similar to [2], let us permit the above insn to behave like
+imprecise register spill which can reduce number of verified states.
+The change is in function check_stack_write_fixed_off().
+
+Before this patch, spilled zero will be marked as STACK_ZERO
+which can provide precise values. In check_stack_write_var_off(),
+STACK_ZERO will be maintained if writing a const zero
+so later it can provide precise values if needed.
+
+The above handling of '*(u64 *)(r10 - 8) =3D 0' as a spill
+will have issues in check_stack_write_var_off() as the spill
+will be converted to STACK_MISC and the precise value 0
+is lost. To fix this issue, if the spill slots with const
+zero and the BPF_ST write also with const zero, the spill slots
+are preserved, which can later provide precise values
+if needed. Without the change in check_stack_write_var_off(),
+the test_verifier subtest 'BPF_ST_MEM stack imm zero, variable offset'
+will fail.
+
+I checked cpuv3 and cpuv4 with and without this patch with veristat.
+There is no state change for cpuv3 since '*(u64 *)(r10 - 8) =3D 0'
+is only generated with cpuv4.
+
+For cpuv4:
+$ ../veristat -C old.cpuv4.csv new.cpuv4.csv -e file,prog,insns,states -f=
+ 'insns_diff!=3D0'
+File                                        Program              Insns (A=
+)  Insns (B)  Insns    (DIFF)  States (A)  States (B)  States (DIFF)
+------------------------------------------  -------------------  --------=
+-  ---------  ---------------  ----------  ----------  -------------
+local_storage_bench.bpf.linked3.o           get_local                  22=
+8        168    -60 (-26.32%)          17          14   -3 (-17.65%)
+pyperf600_bpf_loop.bpf.linked3.o            on_event                  606=
+6       4889  -1177 (-19.40%)         403         321  -82 (-20.35%)
+test_cls_redirect.bpf.linked3.o             cls_redirect             3548=
+3      35387     -96 (-0.27%)        2179        2177    -2 (-0.09%)
+test_l4lb_noinline.bpf.linked3.o            balancer_ingress          449=
+4       4522     +28 (+0.62%)         217         219    +2 (+0.92%)
+test_l4lb_noinline_dynptr.bpf.linked3.o     balancer_ingress          143=
+2       1455     +23 (+1.61%)          92          94    +2 (+2.17%)
+test_xdp_noinline.bpf.linked3.o             balancer_ingress_v6       346=
+2       3458      -4 (-0.12%)         216         216    +0 (+0.00%)
+verifier_iterating_callbacks.bpf.linked3.o  widening                    5=
+2         41    -11 (-21.15%)           4           3   -1 (-25.00%)
+xdp_synproxy_kern.bpf.linked3.o             syncookie_tc             1241=
+2      11719    -693 (-5.58%)         345         330   -15 (-4.35%)
+xdp_synproxy_kern.bpf.linked3.o             syncookie_xdp            1247=
+8      11794    -684 (-5.48%)         346         331   -15 (-4.34%)
+
+test_l4lb_noinline and test_l4lb_noinline_dynptr has minor regression, bu=
+t
+pyperf600_bpf_loop and local_storage_bench gets pretty good improvement.
+
+  [1] https://lore.kernel.org/all/20231205184248.1502704-1-andrii@kernel.=
+org/
+  [2] https://lore.kernel.org/all/20231205184248.1502704-9-andrii@kernel.=
+org/
+
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Martin KaFai Lau <kafai@fb.com>
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/bpf/verifier.c                         | 21 +++++++++++++++++--
+ .../selftests/bpf/progs/verifier_spill_fill.c | 16 +++++++-------
+ 2 files changed, 27 insertions(+), 10 deletions(-)
+
+Changelogs:
+  v1 -> v2:
+    - Preserve with-const-zero spill if writing is also zero
+      in check_stack_write_var_off().
+    - Add a test with not-8-byte-aligned BPF_ST store.
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d4e31f61de0e..cfe7a68d90a5 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4491,7 +4491,7 @@ static int check_stack_write_fixed_off(struct bpf_v=
+erifier_env *env,
+ 		if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
+ 			state->stack[spi].spilled_ptr.id =3D 0;
+ 	} else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
+-		   insn->imm !=3D 0 && env->bpf_capable) {
++		   env->bpf_capable) {
+ 		struct bpf_reg_state fake_reg =3D {};
+=20
+ 		__mark_reg_known(&fake_reg, insn->imm);
+@@ -4613,11 +4613,28 @@ static int check_stack_write_var_off(struct bpf_v=
+erifier_env *env,
+=20
+ 	/* Variable offset writes destroy any spilled pointers in range. */
+ 	for (i =3D min_off; i < max_off; i++) {
++		struct bpf_reg_state *spill_reg;
+ 		u8 new_type, *stype;
+-		int slot, spi;
++		int slot, spi, j;
+=20
+ 		slot =3D -i - 1;
+ 		spi =3D slot / BPF_REG_SIZE;
++
++		/* If writing_zero and the the spi slot contains a spill of value 0,
++		 * maintain the spill type.
++		 */
++		if (writing_zero && !(i % BPF_REG_SIZE) && is_spilled_scalar_reg(&stat=
+e->stack[spi])) {
++			spill_reg =3D &state->stack[spi].spilled_ptr;
++			if (tnum_is_const(spill_reg->var_off) && spill_reg->var_off.value =3D=
+=3D 0) {
++				for (j =3D BPF_REG_SIZE; j > 0; j--) {
++					if (state->stack[spi].slot_type[j - 1] !=3D STACK_SPILL)
++						break;
++				}
++				i +=3D BPF_REG_SIZE - j - 1;
++				continue;
++			}
++		}
++
+ 		stype =3D &state->stack[spi].slot_type[slot % BPF_REG_SIZE];
+ 		mark_stack_slot_scratched(env, spi);
+=20
+diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/to=
+ols/testing/selftests/bpf/progs/verifier_spill_fill.c
+index 39fe3372e0e0..d4b3188afe07 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
++++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+@@ -495,14 +495,14 @@ char single_byte_buf[1] SEC(".data.single_byte_buf"=
+);
+ SEC("raw_tp")
+ __log_level(2)
+ __success
+-/* make sure fp-8 is all STACK_ZERO */
+-__msg("2: (7a) *(u64 *)(r10 -8) =3D 0          ; R10=3Dfp0 fp-8_w=3D0000=
+0000")
++/* fp-8 is spilled IMPRECISE value zero (represented by a zero value fak=
+e reg) */
++__msg("2: (7a) *(u64 *)(r10 -8) =3D 0          ; R10=3Dfp0 fp-8_w=3D0")
+ /* but fp-16 is spilled IMPRECISE zero const reg */
+ __msg("4: (7b) *(u64 *)(r10 -16) =3D r0        ; R0_w=3D0 R10=3Dfp0 fp-1=
+6_w=3D0")
+-/* validate that assigning R2 from STACK_ZERO doesn't mark register
++/* validate that assigning R2 from STACK_SPILL with zero value  doesn't =
+mark register
+  * precise immediately; if necessary, it will be marked precise later
+  */
+-__msg("6: (71) r2 =3D *(u8 *)(r10 -1)          ; R2_w=3D0 R10=3Dfp0 fp-8=
+_w=3D00000000")
++__msg("6: (71) r2 =3D *(u8 *)(r10 -1)          ; R2_w=3D0 R10=3Dfp0 fp-8=
+_w=3D0")
+ /* similarly, when R2 is assigned from spilled register, it is initially
+  * imprecise, but will be marked precise later once it is used in precis=
+e context
+  */
+@@ -520,14 +520,14 @@ __msg("mark_precise: frame0: regs=3Dr0 stack=3D bef=
+ore 3: (b7) r0 =3D 0")
+ __naked void partial_stack_load_preserves_zeros(void)
+ {
+ 	asm volatile (
+-		/* fp-8 is all STACK_ZERO */
++		/* fp-8 is value zero (represented by a zero value fake reg) */
+ 		".8byte %[fp8_st_zero];" /* LLVM-18+: *(u64 *)(r10 -8) =3D 0; */
+=20
+ 		/* fp-16 is const zero register */
+ 		"r0 =3D 0;"
+ 		"*(u64 *)(r10 -16) =3D r0;"
+=20
+-		/* load single U8 from non-aligned STACK_ZERO slot */
++		/* load single U8 from non-aligned spilled value zero slot */
+ 		"r1 =3D %[single_byte_buf];"
+ 		"r2 =3D *(u8 *)(r10 -1);"
+ 		"r1 +=3D r2;"
+@@ -539,7 +539,7 @@ __naked void partial_stack_load_preserves_zeros(void)
+ 		"r1 +=3D r2;"
+ 		"*(u8 *)(r1 + 0) =3D r2;" /* this should be fine */
+=20
+-		/* load single U16 from non-aligned STACK_ZERO slot */
++		/* load single U16 from non-aligned spilled value zero slot */
+ 		"r1 =3D %[single_byte_buf];"
+ 		"r2 =3D *(u16 *)(r10 -2);"
+ 		"r1 +=3D r2;"
+@@ -551,7 +551,7 @@ __naked void partial_stack_load_preserves_zeros(void)
+ 		"r1 +=3D r2;"
+ 		"*(u8 *)(r1 + 0) =3D r2;" /* this should be fine */
+=20
+-		/* load single U32 from non-aligned STACK_ZERO slot */
++		/* load single U32 from non-aligned spilled value zero slot */
+ 		"r1 =3D %[single_byte_buf];"
+ 		"r2 =3D *(u32 *)(r10 -4);"
+ 		"r1 +=3D r2;"
+--=20
+2.34.1
+
 
