@@ -1,106 +1,104 @@
-Return-Path: <bpf+bounces-18841-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18842-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59D4A82260E
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 01:45:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9788C82261D
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 01:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 430E0B20BBB
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:45:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30C3D2849B6
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A109B65E;
-	Wed,  3 Jan 2024 00:45:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2B61841;
+	Wed,  3 Jan 2024 00:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KKJsDdho"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="akrdPTzW"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 229067EB
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 00:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCCEC186D
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 00:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fbdd0cc8-4078-40a7-9654-7e3c0cfce738@linux.dev>
+Message-ID: <c628c362-b2e8-4ad6-a34f-50c2822bccd6@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704242702;
+	t=1704243135;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UNxqBjSNC+XVDtC5glFYJ/tq+t6h6/t5//H1Q8s+pL4=;
-	b=KKJsDdhotxh85o0sywTwAPjdm1DZdUYlbddqD/OVDC7XFK/S0OkuqC/rPNdNnsII5Y7lj7
-	U0A806Pm7TqLQ396RAHIHDUXOlPXry5iDHSaRELM/jgK2geo0aDjAEN3tFAQJ4ZxkE+MiK
-	BgqtULTxHorAXaQYB/gglx158GGh6nc=
-Date: Tue, 2 Jan 2024 16:44:58 -0800
+	bh=2mbj4kJrIPUoYXn0O/rO1FE3ZmQq2KHBRtLh1iaeHtE=;
+	b=akrdPTzW4lRmi8ZQ5d27pMsj7HS5d7WnxvsY5G0Fq9ASMXKuHNSqgeKU7ZSdljPcfmEH5V
+	6Sf6/2+bjYWXYhc3nSAFUP8rV3VZoGnNjgLMdIxRDRC1+AiUmZ0Ln2bxC8scN4l0NhmBBF
+	JQuvUNTQ/K2+uod3MQ8qfQwmyq98MDo=
+Date: Tue, 2 Jan 2024 16:52:08 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf 3/3] selftests/bpf: Test gotol with large offsets
-Content-Language: en-GB
-To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
-References: <20240102193531.3169422-1-iii@linux.ibm.com>
- <20240102193531.3169422-4-iii@linux.ibm.com>
+Subject: Re: [PATCH bpf-next 0/2] bpf: add csum/ip_summed fields to __sk_buff
+Content-Language: en-US
+To: Menglong Dong <menglong8.dong@gmail.com>
+Cc: Stanislav Fomichev <sdf@google.com>, andrii@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, haoluo@google.com,
+ jolsa@kernel.org, davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, mykolal@fb.com, shuah@kernel.org, horms@kernel.org,
+ dhowells@redhat.com, linyunsheng@huawei.com, aleksander.lobakin@intel.com,
+ joannelkoong@gmail.com, laoar.shao@gmail.com, kuifeng@meta.com,
+ bjorn@rivosinc.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20231229081409.1276386-1-menglong8.dong@gmail.com>
+ <ZZRR1q1JrJMD1lAy@google.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240102193531.3169422-4-iii@linux.ibm.com>
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <ZZRR1q1JrJMD1lAy@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
+On 1/2/24 10:11 AM, Stanislav Fomichev wrote:
+> On 12/29, Menglong Dong wrote:
+>> For now, we have to call some helpers when we need to update the csum,
+>> such as bpf_l4_csum_replace, bpf_l3_csum_replace, etc. These helpers are
+>> not inlined, which causes poor performance.
+>>
+>> In fact, we can define our own csum update functions in BPF program
+>> instead of bpf_l3_csum_replace, which is totally inlined and efficient.
+>> However, we can't do this for bpf_l4_csum_replace for now, as we can't
+>> update skb->csum, which can cause skb->csum invalid in the rx path with
+>> CHECKSUM_COMPLETE mode.
+>>
+>> What's more, we can't use the direct data access and have to use
+>> skb_store_bytes() with the BPF_F_RECOMPUTE_CSUM flag in some case, such
+>> as modifing the vni in the vxlan header and the underlay udp header has
+>> no checksum.
 
-On 1/2/24 11:30 AM, Ilya Leoshkevich wrote:
-> Test gotol with offsets that don't fit into a short (i.e., larger than
-> 32k or smaller than -32k).
->
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+There is bpf_csum_update(), does it work?
+A helper call should be acceptable comparing with the csum calculation itself.
 
-It might be useful to explain why the test will fail
-with unpriv mode (4K insn limit) just in case that
-people are not aware of the reason.
+>>
+>> In the first patch, we make skb->csum readable and writable, and we make
+>> skb->ip_summed readable. For now, for tc only. With these 2 fields, we
+>> don't need to call bpf helpers for csum update any more.
+>>
+>> In the second patch, we add some testcases for the read/write testing for
+>> skb->csum and skb->ip_summed.
+>>
+>> If this series is acceptable, we can define the inlined functions for csum
+>> update in libbpf in the next step.
+> 
+> One downside of exposing those as __sk_buff fields is that all this
+> skb internal csum stuff now becomes a UAPI. And I'm not sure we want
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
++1. Please no new __sk_buff extension and no new conversion in 
+bpf_convert_ctx_access().
 
-> ---
->   .../selftests/bpf/progs/verifier_gotol.c      | 19 +++++++++++++++++++
->   1 file changed, 19 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_gotol.c b/tools/testing/selftests/bpf/progs/verifier_gotol.c
-> index d1edbcff9a18..05a329ee45ee 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_gotol.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_gotol.c
-> @@ -33,6 +33,25 @@ l3_%=:							\
->   	: __clobber_all);
->   }
->   
-> +SEC("socket")
-> +__description("gotol, large_imm")
-> +__success __failure_unpriv __retval(40000)
-> +__naked void gotol_large_imm(void)
-> +{
-> +	asm volatile ("					\
-> +	gotol 1f;					\
-> +0:							\
-> +	r0 = 0;						\
-> +	.rept 40000;					\
-> +	r0 += 1;					\
-> +	.endr;						\
-> +	exit;						\
-> +1:	gotol 0b;					\
-> +"	:
-> +	:
-> +	: __clobber_all);
-> +}
-> +
->   #else
->   
->   SEC("socket")
+> that :-) Should we add a lightweight kfunc to reset the fields instead?
+> Or will it still have an unacceptable overhead?
+
 
