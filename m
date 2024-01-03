@@ -1,192 +1,101 @@
-Return-Path: <bpf+bounces-18837-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18838-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 975828225D1
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 01:06:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F14AA8225EF
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 01:30:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C63B1C22C02
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:06:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F37181C21A38
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49EFC361;
-	Wed,  3 Jan 2024 00:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9411937E;
+	Wed,  3 Jan 2024 00:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cjIosAUy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEJ5jZcO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45CC34A0D
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 00:06:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBF7365
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 00:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a1915034144so1120940566b.0
-        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 16:06:19 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e7d6565b5so6992610e87.0
+        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 16:29:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704240377; x=1704845177; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XgFyJIpT1pHW3CdPgSQIrLVxiOC1SZuMhLqy+b3mk4A=;
-        b=cjIosAUyqfN2wzvtOm/IUYIdsjPJb4x4fpoGrhArb5bAcj1wOb4M8IfkTcpuHffmTt
-         vemxfzryBTBm0eTDQDRR8/eS4ZFKQWN978aZ/pg5PjppOUWKALRQSozmcd3oyYUHod8N
-         N6EE5ak1DhlT7th6ql7mp7xB5RuhFaQdjgL/418hI5xllHwKXoFQ20C2JnsGMVWhmGMV
-         0NNksJtE3wX9AbDVN9C0OxvkoDqUXNrs0jwUgPM4eF1zkryJ0wQ/oZZZrorb+LdbcbkR
-         4x5YTzmlmYH7U+ZHgmMho1RmcJGrKHKKXSg0y6ZfT9D+4D5W04C6R3L9x+4rLHE+Su/4
-         RGJA==
+        d=gmail.com; s=20230601; t=1704241792; x=1704846592; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=/NuEYRVMmU3j8zLeEzt2XMC1SMBWR9eBLbI2/u4otwI=;
+        b=iEJ5jZcODMmYI2yfcGTXZzzifUqMvEDT/VSkDjurJfXRL7F5aysAtF+bm3NzCGhmnV
+         MImMhhdI0ivg/oePt7fcJ+5vxqnMsFZIyJIQHJyFFl8oclmvfrDZNj8EzEPzI8b69i/+
+         /x7qBPY+Ut6eI0COITDnRbKVWgdaZd1ApmV0zQeNoTN36eW2OflB/8oOLxc5teFqb660
+         qSX4MwE/fw18Z8craPCpIn3OoAVnz0899KoOCnZmC/wdoZ9SuWLRjdQDrCGa19/Q06ik
+         Mw8MIhDNaQ7cdOC4hgHQkqsO/1ZdigLtwzn5OXd1JOruSipj7U5JXxhEJLYSsqBEWlyE
+         GQWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704240377; x=1704845177;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XgFyJIpT1pHW3CdPgSQIrLVxiOC1SZuMhLqy+b3mk4A=;
-        b=txaaJ8+zWHkGUTN4KoP1GXLVL3cAMA99fKXTKwcoLqr3XqH0GvhYtEirXaIYE8RgoC
-         B4afkkIlqb510D2kB+faN35krfkaJosCJF3m675y9t/ofmhJO3liU/zqQDQYdTKz8cOy
-         E1wyS9CBBiLRJDRjwnNMYJxE98VQayAUK8q2lGrqhN3ia8VA0gMZoN9WfV/4uORm1tsa
-         nh5HYTyABc5ldWoS0TtY5Y2qlXh2Vvfya9Z2J/6UMltA5wGDhsRhdx8Kb7msIFFDXaX0
-         2rYCSJ2ArlQV353/z/TqdfsG6L7cm4ammc0ZEO2ZIh+gZmfbbdAqThauf+DdrWSvRAAt
-         YifQ==
-X-Gm-Message-State: AOJu0YxFnYvrskWGjM/+cALONPeWPvfu7hUGNpGOBjKIaM9JLPCmYsdZ
-	kxJMJ1cupiKSlo3zjHBVvT/vj2j0w/UfH/qUDss=
-X-Google-Smtp-Source: AGHT+IF8s+k5SMhb6W1+9MkvtuX9lOk1syZsF3TD0BPj1viUUayXAyLN7QQCgxzv2f01GafvfsTHzpYz/o0dr3dqkQM=
-X-Received: by 2002:a17:906:c196:b0:a28:6611:966c with SMTP id
- g22-20020a170906c19600b00a286611966cmr707132ejz.77.1704240377413; Tue, 02 Jan
- 2024 16:06:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704241792; x=1704846592;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/NuEYRVMmU3j8zLeEzt2XMC1SMBWR9eBLbI2/u4otwI=;
+        b=jTAt+S6RUQBp8/u60lFbFDvU2lMIyxNlse9nWMWqaZeuiXal9I3wmQyYt5VVzKXkfZ
+         syoAX0R40hdWDtoXTXbAR4eIrdKy5inStia4aPEubptiVNenltHPJ53tcvFfp/YR6bvD
+         aSngOHKDb0w0M55fmU4ObP/D/Mmw6KY89kO+mArtlw/8Afag9DndPAcVVzygM2etEdab
+         f4/QH6bVTNmtOrnVoZzAklFM3qh7vi5tCLdvDMGViO4F7PO9ZUgh6RiOtNzkgnH9kRRm
+         7jbecvD2my6ypfi414koGkHvqCWS9uQ0+n/c8kyAraXusnthZMNYL0rvapLvU9BwV7cS
+         1Okw==
+X-Gm-Message-State: AOJu0YxyzfAEne8IgvaI3rv9wd9mh3+rngw0JD01WBc9hQNRjcFbtlJA
+	6AcpVbv3DX1v5bw1YFV+3eEzlgUFFaLi3g==
+X-Google-Smtp-Source: AGHT+IGdRlZEhLlmXkHEmqj/Ap/urkgf8jW9ooXhMAhIAvbu4cI2Q5X/rBWwMWsPnBPiwdtQptHlBw==
+X-Received: by 2002:a05:6512:2255:b0:50e:9c5d:35f5 with SMTP id i21-20020a056512225500b0050e9c5d35f5mr1500192lfu.121.1704241791442;
+        Tue, 02 Jan 2024 16:29:51 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id dg24-20020a0564021d1800b00552cf686df3sm16682116edb.52.2024.01.02.16.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jan 2024 16:29:50 -0800 (PST)
+Message-ID: <90cce906fd6628354c6cd3fab9820549f6337dd5.camel@gmail.com>
+Subject: Re: Funky verifier packet range error (> check works, != does not).
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Maciej
+	=?UTF-8?Q?=C5=BBenczykowski?=
+	 <zenczykowski@gmail.com>
+Cc: BPF Mailing List <bpf@vger.kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>
+Date: Wed, 03 Jan 2024 02:29:44 +0200
+In-Reply-To: <CAEf4BzaLyHbddd-FfCMWBjbGb0==D1a=xyi0-u0zpQHonkhfyg@mail.gmail.com>
+References: 
+	<CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66rZqUjFHvhx82A@mail.gmail.com>
+	 <CAEf4BzbowzKU+8tZTSnxPTG-x-2ypT-EshZxS+G+c3DeLtsA0w@mail.gmail.com>
+	 <CAHo-Oox+=KLhtdgwv7MFx7Yn9TYAy86_Z-b5Hw_BQ=BnLGrbGw@mail.gmail.com>
+	 <CAEf4BzaLyHbddd-FfCMWBjbGb0==D1a=xyi0-u0zpQHonkhfyg@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66rZqUjFHvhx82A@mail.gmail.com>
- <CAEf4BzbowzKU+8tZTSnxPTG-x-2ypT-EshZxS+G+c3DeLtsA0w@mail.gmail.com> <CAHo-Oox+=KLhtdgwv7MFx7Yn9TYAy86_Z-b5Hw_BQ=BnLGrbGw@mail.gmail.com>
-In-Reply-To: <CAHo-Oox+=KLhtdgwv7MFx7Yn9TYAy86_Z-b5Hw_BQ=BnLGrbGw@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 2 Jan 2024 16:06:04 -0800
-Message-ID: <CAEf4BzaLyHbddd-FfCMWBjbGb0==D1a=xyi0-u0zpQHonkhfyg@mail.gmail.com>
-Subject: Re: Funky verifier packet range error (> check works, != does not).
-To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc: BPF Mailing List <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 2, 2024 at 2:45=E2=80=AFPM Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
->
-> On Tue, Jan 2, 2024 at 1:46=E2=80=AFPM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Fri, Dec 29, 2023 at 5:31=E2=80=AFPM Maciej =C5=BBenczykowski
-> > <zenczykowski@gmail.com> wrote:
-> > >
-> > > I have a relatively complex program that fails to load on 6.5.6 with =
-a
-> > >
-> > > if (data + 98 !=3D data_end) return TC_ACT_SHOT;
-> > >
-> >
-> > How realistic is such code in practice? Is there a situation in which
-> > it's critical to ensure that the packet has exactly X bytes in [data,
-> > data_end) range? Even in that case we can have data in frags, though,
-> > right? So I'm just wondering if we are discussing some rather
-> > theoretical situation?
->
-> So, as I mentioned I hit this while debugging some other complex code,
-> so the example 98 isn't a particularly good value
-> (when I actually hit this I think I was trying to match some ping packets=
-).
->
-> However, elsewhere in the same program I need to match and reply to
-> IPv6 NS packets
-> (for an IPv6 address the kernel doesn't own, to workaround a pair of
-> kernel bugs / missing features in ipv6 neigh proxy).
->
-> In practice the NS I receive and need to handle are always:
->   14 ethernet + 40 ipv6 + 8 icmp6 + 16 target + 8 byte link address
-> option =3D 86 bytes long
-> (and if they're not, then my current code can't parse them anyway)
-> so it's natural to do something like:
->
-> handle_ns_with_laddr(struct __sk_buff *skb) {
->   if (skb->data + 86 !=3D skb->data_end) return;
->   struct ethernet_ipv6_ns *pkt =3D data;
->   if (pkt->ether.h_proto !=3D htons(ETH_P_IPV6)) return;
->   if (pkt->ip6.nexthdr !=3D IPPROTO_ICMPV6) return;
->   ...etc...
-> }
->
-> Yeah, there's lots of caveats in the above (lack of pull, etc), but it
-> is enough to handle the case I need handled...
+On Tue, 2024-01-02 at 16:06 -0800, Andrii Nakryiko wrote:
+[...]
+> For the fix that Eduard proposed (and checking
+> try_match_pkt_pointers), should we do a similar simplification as we
+> do for scalar register comparisons? Make sure that data_end is always
+> on the right by swapping, if that's not the case. And also use
+> corresponding rev_opcode() and flip_opcode() operations to minimize
+> the amount of logic and duplicated code?
+>=20
+> And I mean not just for new JEQ/JNE cases, but let's also refactor and
+> simplify existing logic as well?
 
-Yeah, that's what I was getting at, just using data_end as a marker
-for packet length seems incorrect. But I do see the point that it's
-just an unnecessary complication for users to work around.
-
-For the fix that Eduard proposed (and checking
-try_match_pkt_pointers), should we do a similar simplification as we
-do for scalar register comparisons? Make sure that data_end is always
-on the right by swapping, if that's not the case. And also use
-corresponding rev_opcode() and flip_opcode() operations to minimize
-the amount of logic and duplicated code?
-
-And I mean not just for new JEQ/JNE cases, but let's also refactor and
-simplify existing logic as well?
-
->
-> Obviously I could rewrite the above as:
->   if (skb->data + 86 > skb->data_end) return;
->   if (skb->data + 86 < skb->data_end) return;
->
-> though I guess a too smart compiler could optimize that back down to =3D=
-=3D ...
->
-> > > check, that loads fine if I change the above !=3D to (a you would thi=
-nk
-> > > weaker) > check.
-> > >
-> > > It's not important, hit this while debugging, and I don't know if the
-> > > cause is the verifier treating !=3D differently than > or the compile=
-r
-> > > optimizing !=3D somehow... but my gut feeling is on the former: some
-> > > verifier logic special cases > without doing something similar for th=
-e
-> > > stronger !=3D comparison.
-> > >
-> > > ...
-> > > 453: (85) call bpf_trace_printk#6     ; R0_w=3Dscalar()
-> > > ; if (data + 98 !=3D data_end) return TC_ACT_SHOT;
-> > > 454: (bf) r1 =3D r6                     ; R1_w=3Dpkt(off=3D0,r=3D42,i=
-mm=3D0)
-> > > R6=3Dpkt(off=3D0,r=3D42,imm=3D0)
-> > > 455: (07) r1 +=3D 98                    ; R1_w=3Dpkt(off=3D98,r=3D42,=
-imm=3D0)
-> > > ; if (data + 98 !=3D data_end) return TC_ACT_SHOT;
-> > > 456: (5d) if r1 !=3D r9 goto pc-23      ; R1_w=3Dpkt(off=3D98,r=3D42,=
-imm=3D0)
-> > > R9=3Dpkt_end(off=3D0,imm=3D0)
-> > > *** IMHO here r=3D42 should be bumped to 98 ***
-> > > 457: (bf) r3 =3D r6                     ; R3_w=3Dpkt(off=3D0,r=3D42,i=
-mm=3D0)
-> > > R6=3Dpkt(off=3D0,r=3D42,imm=3D0)
-> > > 458: (07) r3 +=3D 34                    ; R3_w=3Dpkt(off=3D34,r=3D42,=
-imm=3D0)
-> > > ; uint64_t cs =3D bpf_csum_diff(NULL, 0, data + 14 + 20, 98 - 14 - 20=
-, 0xFFFF);
-> > > 459: (b7) r1 =3D 0                      ; R1_w=3D0
-> > > 460: (b7) r2 =3D 0                      ; R2_w=3D0
-> > > 461: (b7) r4 =3D 64                     ; R4_w=3D64
-> > > 462: (b7) r5 =3D 65535                  ; R5_w=3D65535
-> > > 463: (85) call bpf_csum_diff#28
-> > > invalid access to packet, off=3D34 size=3D64, R3(id=3D0,off=3D34,r=3D=
-42)
-> > > R3 offset is outside of the packet
-> > >
-> > > Side note: bpf_csum_diff() is super non user-friendly, but that's for
-> > > another thread...
-> > >
-> > > Happy New Year,
-> > > Maciej
-> > >
+Yes, this should simplify the function significantly.
 
