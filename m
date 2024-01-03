@@ -1,217 +1,90 @@
-Return-Path: <bpf+bounces-18839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BC048225F9
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 01:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 74C6C82260D
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 01:42:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 744FF1C21BA9
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:31:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BBFA1C21BB7
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 00:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F30FB651;
-	Wed,  3 Jan 2024 00:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D309B171D4;
+	Wed,  3 Jan 2024 00:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iKK3ljvF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wsvPl0Fa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD6BC17980
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 00:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a27f0963a80so202002366b.0
-        for <bpf@vger.kernel.org>; Tue, 02 Jan 2024 16:30:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704241858; x=1704846658; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tebPRqY7w+uMXCIfgLVM1nkPlwrU95Hv1qw0Dz7XkiE=;
-        b=iKK3ljvFvAi7j0VX9Co9iCx8RddE5suWvk1DVLdeDnDUJO7WBCFG23Q4cM/Ee+nn5z
-         DgWfLjk8CuTyRmeLP5Em+eimRsY/RuVxlag67PQYLCGySTQyHFophclzwmVKUNEyP8Co
-         viParuyJ9y95bEoCDDKr8Ymn7geszdNr3aHioNsQn8Vl3M9BmDP6+Y0kr5TrxyJPHdBW
-         C9zOGT1m6Rh2WRCRJNiQzqszba1opQ30a3s7Oal9t4CMANB6PvvV8rSUEbroUZAVcRUQ
-         W/3LPkuphWL2clpIK8vDuyNu3W/HbizK3ttE/v8LspcLVLYiXXfHsWk16I+tUQfKEGBr
-         8JQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704241858; x=1704846658;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tebPRqY7w+uMXCIfgLVM1nkPlwrU95Hv1qw0Dz7XkiE=;
-        b=uet9SPLyk303QpjouFug6RABNaqBq6pThSe6vG3gZpjZylOwo325p1kpwes+tdnw7l
-         dZsPSqcQqI4BATs2jCVcrTHNSH61tMuBCPwU6Uv6KF19flVDoGM9m6DlT9RcJfHKUCk5
-         YWOPncUJUnNV9K6T3Gx9GQhpPH3mQiSOcVelOdt3U0FIfMGcKNNVcVbFeG8RwLXdbIf/
-         njE87HA3VZCyxZv5voyZbb6iAd5PvswuHNsI4phSBBpZTkXDiXCz98I3koeUJ/mcj6sN
-         5gbyv8lGnYK0lv6GDoPw+c8H31aBm6sBoEk7bzFE8WXveMlir59UyTFJvOA/MLFAR27E
-         nYhA==
-X-Gm-Message-State: AOJu0YwEzXG2jckKPpXXZ61ak1KuKNDXjYEddYwszNa9wKoUOCDWkUGI
-	uK2NF+yq8k+eCBU/WzjBnXmv68KFLhZG7fi9Wumoajra
-X-Google-Smtp-Source: AGHT+IG2E+SNQVbueNEYK/bqlHQqSoXe7YNF0VZ7xp3zgTow2yOEjauprF/YA5FNK23+F4JDPwP+8RTUvebDVldeVYc=
-X-Received: by 2002:a17:906:e952:b0:a28:97c4:dd07 with SMTP id
- jw18-20020a170906e95200b00a2897c4dd07mr13659ejb.63.1704241858046; Tue, 02 Jan
- 2024 16:30:58 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AF1171C8
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 00:42:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6f05eb0d-4807-4eef-99ba-2bfa9bd334af@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704242526;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YWuR+5lv5PYCX5iNY8fEAzOxuY3biWLay6PfqBzpAS0=;
+	b=wsvPl0Fa3s+BOHjZHEdZtw2sMlGNEJKn4moEyY2znrsep3r4fObooKc7sUNNcY1izThMih
+	vW57U4OkNQZ+qCnGj1hfMP00rFZ/89ZMcx9iLoF0p59luMEsrBNCURvQztcIkoAqWCCjhz
+	QNHUXeG6BbZh583eAi+l4agFRHcaXHs=
+Date: Tue, 2 Jan 2024 16:41:59 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220233127.1990417-1-andrii@kernel.org> <20231220233127.1990417-8-andrii@kernel.org>
- <aa5oh3hr4hbq6uk5ejmazunhv4scr6fbmzuxqibilucwprhidy@wsmnjikxm6vu> <CAEf4BzYHrdeGHYuNgiyVUCB3K1RJ6TS3qb_U2tx7i2Sn3W6Etg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYHrdeGHYuNgiyVUCB3K1RJ6TS3qb_U2tx7i2Sn3W6Etg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 2 Jan 2024 16:30:45 -0800
-Message-ID: <CAEf4BzZ92W9Td6uvH=XBvUL9iLJHK15Ze9O49XH7s0CdTyPirQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 7/8] libbpf: implement __arg_ctx fallback logic
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf 2/3] selftests/bpf: Double the size of test_loader log
+Content-Language: en-GB
+To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
+References: <20240102193531.3169422-1-iii@linux.ibm.com>
+ <20240102193531.3169422-3-iii@linux.ibm.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240102193531.3169422-3-iii@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jan 2, 2024 at 9:06=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Dec 21, 2023 at 5:26=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Dec 20, 2023 at 03:31:26PM -0800, Andrii Nakryiko wrote:
-> > > This limitation was the reason to add btf_decl_tag("arg:ctx"), making
-> > > the actual argument type not important, so that user can just define
-> > > "generic" signature:
-> > >
-> > >   __noinline int global_subprog(void *ctx __arg_ctx) { ... }
-> >
-> > Just realized that we probably need to enforce in both libbpf doing
-> > rewrite and in the kernel that __arg_ctx is either valid
-> > 'struct correct_type_for_bpf_prog *' or 'void *'.
-> >
-> > Otherwise the user will get surprising behavior when
-> > int foo(struct __sk_buff *ctx __arg_ctx)
-> > {
-> >   ctx->len;
-> > }
-> > will get rewritten to 'struct pt_regs *ctx' based on prog type
-> > while all asm instructions inside prog were compiled with 'struct __sk_=
-buff'
-> > and CO_RE performs relocations against that type.
->
-> Nothing really prevents users from misusing types even today, so it
-> doesn't seem like a common problem, luckily.
->
-> But really the problem is that some program types don't have an
-> associated struct name at all, but still a valid context. Like for
-> LSM/TRACING programs it's a u64[]/u64 *. For tracepoints context is
-> defined as just plain u64 (according to bpf_ctx_convert), and so on.
->
-> Oh, and there is KPROBE program type, where it's (typedef)
-> bpf_user_pt_regs_t, and for backwards compatibility reasons we also
-> allow basically non-existing `struct bpf_user_pt_regs_t`.
->
-> So it gets messy. Either way, I have a patch set coming up for
-> kernel-side __arg_xxx tags support, so let's discuss it there?
->
-> >
-> > > +static struct {
-> > > +     enum bpf_prog_type prog_type;
-> > > +     const char *ctx_name;
-> > > +} global_ctx_map[] =3D {
-> > > +     { BPF_PROG_TYPE_CGROUP_DEVICE,           "bpf_cgroup_dev_ctx" }=
-,
-> > > +     { BPF_PROG_TYPE_CGROUP_SKB,              "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_CGROUP_SOCK,             "bpf_sock" },
-> > > +     { BPF_PROG_TYPE_CGROUP_SOCK_ADDR,        "bpf_sock_addr" },
-> > > +     { BPF_PROG_TYPE_CGROUP_SOCKOPT,          "bpf_sockopt" },
-> > > +     { BPF_PROG_TYPE_CGROUP_SYSCTL,           "bpf_sysctl" },
-> > > +     { BPF_PROG_TYPE_FLOW_DISSECTOR,          "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_KPROBE,                  "bpf_user_pt_regs_t" }=
-,
-> > > +     { BPF_PROG_TYPE_LWT_IN,                  "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_LWT_OUT,                 "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_LWT_SEG6LOCAL,           "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_LWT_XMIT,                "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_NETFILTER,               "bpf_nf_ctx" },
-> > > +     { BPF_PROG_TYPE_PERF_EVENT,              "bpf_perf_event_data" =
-},
-> > > +     { BPF_PROG_TYPE_RAW_TRACEPOINT,          "bpf_raw_tracepoint_ar=
-gs" },
-> > > +     { BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE, "bpf_raw_tracepoint_ar=
-gs" },
-> > > +     { BPF_PROG_TYPE_SCHED_ACT,               "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_SCHED_CLS,               "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_SK_LOOKUP,               "bpf_sk_lookup" },
-> > > +     { BPF_PROG_TYPE_SK_MSG,                  "sk_msg_md" },
-> > > +     { BPF_PROG_TYPE_SK_REUSEPORT,            "sk_reuseport_md" },
-> > > +     { BPF_PROG_TYPE_SK_SKB,                  "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_SOCK_OPS,                "bpf_sock_ops" },
-> > > +     { BPF_PROG_TYPE_SOCKET_FILTER,           "__sk_buff" },
-> > > +     { BPF_PROG_TYPE_XDP,                     "xdp_md" },
-> >
-> > We already share the .c files (like relo_core.c) between kernel and lib=
-bpf
-> > let's share here as well to avoid copy paste.
-> > All of the above is available in include/linux/bpf_types.h
->
-> True, but libbpf sources are built both as part of the kernel repo and
-> separately on Github, so we'll need to start syncing
-> include/linux/bpf_types.h into tools/include, so that's a bit of
-> inconvenience.
->
-> But most of all I don't want to do it for a few other reasons.
->
-> This table was manually constructed by inspecting struct bpf_ctx_convert =
-with:
->
->   bpftool btf dump file /sys/kernel/btf/vmlinux format c | rg
-> bpf_ctx_convert -A65 | rg _prog
->
-> And it has to be manual because of other program types that don't have
-> associated struct for context. So even if there was bpf_types.h, we
-> can't use it as is.
 
-Another headache I realized as I was reading someone else's patch is
-all the #ifdef CONFIG_xxx checks, which we'd need to fake to even get
-a full list of program types. In short, it's more trouble than it's
-worth.
+On 1/2/24 11:30 AM, Ilya Leoshkevich wrote:
+> Testing long jumps requires having >32k instructions. That many
+> instructions require the verifier log buffer of 2 megabytes.
+>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+> ---
+>   tools/testing/selftests/bpf/test_loader.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+> index 37ffa57f28a1..b0bfcc8d4638 100644
+> --- a/tools/testing/selftests/bpf/test_loader.c
+> +++ b/tools/testing/selftests/bpf/test_loader.c
+> @@ -12,7 +12,7 @@
+>   #define str_has_pfx(str, pfx) \
+>   	(strncmp(str, pfx, __builtin_constant_p(pfx) ? sizeof(pfx) - 1 : strlen(pfx)) == 0)
+>   
+> -#define TEST_LOADER_LOG_BUF_SZ 1048576
+> +#define TEST_LOADER_LOG_BUF_SZ 2097152
 
->
-> But, if your concern is maintainability of this, I don't think that's
-> a problem at all. Even if we add a new program type with its own
-> struct name for context, we don't even have to extend this table
-> (though we might, if we want to), because at that point kernel is
-> guaranteed to have in-kernel native support for __arg_ctx, so libbpf
-> doesn't have to do type rewriting.
->
-> Also, this probably is the first explicit table that shows which
-> struct names should be used for global subprog context argument (if
-> not using __arg_ctx, of course). Which is not really a reason per se,
-> but it beats reading kernel code, and (non-trivially) figuring out
-> that one needs to look how struct bpf_ctx_convert is generated, etc.
-> Having this explicit table is much easier to link as a reference for
-> those special context type names.
->
-> >
-> > > +             /* clone fn/fn_proto, unless we already did it for anot=
-her arg */
-> > > +             if (func_rec->type_id =3D=3D orig_fn_id) {
-> >
-> > It feels that body of this 'if' can be factored out as a separate helpe=
-r function.
-> >
->
-> Sure, I'll try to factor it out.
->
-> > > -static int
-> > > -bpf_object__load_progs(struct bpf_object *obj, int log_level)
-> > > +static int bpf_object_load_progs(struct bpf_object *obj, int log_lev=
-el)
-> >
-> > pls keep __ convention.
->
-> replied on another patch, I'll do a conversion to consistent naming in
-> the next revision
+I think this patch is not necessary.
+If the log buffer size is not enough, the kernel
+verifier will wrap around and overwrite some initial states,
+but all later states are still preserved. In my opinion,
+there is really no need to increase the buffer size in this case,
+esp. it is a verification success case.
+
+>   
+>   #define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
+>   #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
 
