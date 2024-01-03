@@ -1,121 +1,84 @@
-Return-Path: <bpf+bounces-18879-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18880-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B000E823427
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 19:15:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DEE1823445
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 19:20:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2EBD1C23CD3
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 18:15:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6D081F252F6
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 18:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51F7A1C68D;
-	Wed,  3 Jan 2024 18:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7291C69F;
+	Wed,  3 Jan 2024 18:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="l6hK0Wvl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HLk6wSlJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76031C687
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 18:15:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <3ac01843-9dbf-4c5b-a1ac-9acda8c47f19@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1704305718;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4ePo2e7VahwNsJqqP8C5+eRFkn+vsnHXsUq4BXBIX04=;
-	b=l6hK0WvlDNApC2jS75NwrGEgce2p9BbUcRUd0tHdWHaP/o/qu4GB3udOFxKFOH4YhsudX1
-	rJALU2JTg6zKVMwnn8uAQPHSyyNJEDMIgsxnM7sVtjxfnwgxeAUnB65EAc/zL2Fy0hp6O4
-	35qBRWQePQit3jrIj74OYWy4roWfvJE=
-Date: Wed, 3 Jan 2024 10:15:10 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E2AA1C69C
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 18:20:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A3FEDC433C9;
+	Wed,  3 Jan 2024 18:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704306027;
+	bh=8w0Nvd1ELbOqw80wG0/as0qKKWEpX/2G9Pr+I4Oht9k=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=HLk6wSlJjkfPPowIm88DjPNH/6rz4Ul6/HklurR35+MF+W7NcTFYeOKA1kwqFeWYl
+	 BRAE2+vDcUDlSmzfRaNa1SEcOgoSlM9d8JZXmW61MQHkNoqyMQWP2x1HX/xJUpWREk
+	 S7zSrw+IHFwF02WMXgKyjQ2Nbbp+NYQAI/MVqKYAuWu8Xe0DOZunn+kSv65CwgIKqK
+	 /ZrNRBNs2CiEhayRWVZ7Qdnpmiqr6stbwrian9VP4f2+PW1UvtIiUIyaxQCcdpShDi
+	 1zk12xgFlghLX4pLmtKzc6L7ucLxYuAd3Mz00sQdIPbPzdmAdnlluIrWj0T9xaLLdY
+	 1JuyucecTNNEg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8CD84DCB6FE;
+	Wed,  3 Jan 2024 18:20:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf 2/3] selftests/bpf: Double the size of test_loader log
-Content-Language: en-GB
-To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>
-References: <20240102193531.3169422-1-iii@linux.ibm.com>
- <20240102193531.3169422-3-iii@linux.ibm.com>
- <6f05eb0d-4807-4eef-99ba-2bfa9bd334af@linux.dev>
- <958781f9b02cb1d5ef82a0d78d65ecdbb3f26893.camel@linux.ibm.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <958781f9b02cb1d5ef82a0d78d65ecdbb3f26893.camel@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH bpf-next v4 0/2] bpf: Simplify checking size of helper
+ accesses
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170430602757.21278.8763472170745604411.git-patchwork-notify@kernel.org>
+Date: Wed, 03 Jan 2024 18:20:27 +0000
+References: <20231221232225.568730-1-andreimatei1@gmail.com>
+In-Reply-To: <20231221232225.568730-1-andreimatei1@gmail.com>
+To: Andrei Matei <andreimatei1@gmail.com>
+Cc: bpf@vger.kernel.org, andrii.nakryiko@gmail.com, eddyz87@gmail.com
+
+Hello:
+
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
+
+On Thu, 21 Dec 2023 18:22:23 -0500 you wrote:
+> v3->v4:
+> - kept only the minimal change, undoing debatable changes (Andrii)
+> - dropped the second patch from before, with changes to the error
+>   message (Andrii)
+> - extracted the new test into a separate patch (Andrii)
+> - added Acked by Andrii
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v4,1/2] bpf: Simplify checking size of helper accesses
+    https://git.kernel.org/bpf/bpf-next/c/da0391947c10
+  - [bpf-next,v4,2/2] bpf: add a possibly-zero-sized read test
+    https://git.kernel.org/bpf/bpf-next/c/faf05f4d56a4
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-On 1/2/24 11:05 PM, Ilya Leoshkevich wrote:
-> On Tue, 2024-01-02 at 16:41 -0800, Yonghong Song wrote:
->> On 1/2/24 11:30 AM, Ilya Leoshkevich wrote:
->>> Testing long jumps requires having >32k instructions. That many
->>> instructions require the verifier log buffer of 2 megabytes.
->>>
->>> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
->>> ---
->>>    tools/testing/selftests/bpf/test_loader.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/tools/testing/selftests/bpf/test_loader.c
->>> b/tools/testing/selftests/bpf/test_loader.c
->>> index 37ffa57f28a1..b0bfcc8d4638 100644
->>> --- a/tools/testing/selftests/bpf/test_loader.c
->>> +++ b/tools/testing/selftests/bpf/test_loader.c
->>> @@ -12,7 +12,7 @@
->>>    #define str_has_pfx(str, pfx) \
->>>          (strncmp(str, pfx, __builtin_constant_p(pfx) ? sizeof(pfx)
->>> - 1 : strlen(pfx)) == 0)
->>>    
->>> -#define TEST_LOADER_LOG_BUF_SZ 1048576
->>> +#define TEST_LOADER_LOG_BUF_SZ 2097152
->> I think this patch is not necessary.
->> If the log buffer size is not enough, the kernel
->> verifier will wrap around and overwrite some initial states,
->> but all later states are still preserved. In my opinion,
->> there is really no need to increase the buffer size in this case,
->> esp. it is a verification success case.
-> What I observed in this case was that bpf_check() still returned
-> -ENOSPC and failed the prog load. IIUC you are referring to the
-> functionality introduced by the following commit:
->
-> commit 1216640938035e63bdbd32438e91c9bcc1fd8ee1
-> Author: Andrii Nakryiko <andrii@kernel.org>
-> Date:   Thu Apr 6 16:41:49 2023 -0700
->
->      bpf: Switch BPF verifier log to be a rotating log by default
->
-> The commit message says, among other things:
->
->      The only user-visible change is which portion of verifier log user
->      ends up seeing *if buffer is too small*.
->
-> So if we don't increase the log size, we would still have to deal with
-> -ENOSPC. An alternative would be to reallocate the log buffer and try
-> again. But I thought that for the test code we better keep it as simple
-> as possible.
-
-Okay, thanks for the explanation. I applied the patch set to
-my local env and indeed, with this patch, I can see libbpf returns
-an error. So as you suggested, let us increase the buffer size to
-avoid extra handling in test_progs. So
-
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-
->   
->>>    #define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
->>>    #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
 
