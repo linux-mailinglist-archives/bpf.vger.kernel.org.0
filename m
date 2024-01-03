@@ -1,528 +1,200 @@
-Return-Path: <bpf+bounces-18966-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18967-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84CC782393D
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 00:33:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E25E382394B
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 00:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB172287BE2
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 23:33:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 492EA1F25F0F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 23:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 355A120327;
-	Wed,  3 Jan 2024 23:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80AF1F926;
+	Wed,  3 Jan 2024 23:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="ORXW7+FD";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="1ydONiDv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LHdh+Sch"
 X-Original-To: bpf@vger.kernel.org
-Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE4D1F60B;
-	Wed,  3 Jan 2024 23:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailnew.west.internal (Postfix) with ESMTP id 33B312B0020B;
-	Wed,  3 Jan 2024 18:32:22 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 03 Jan 2024 18:32:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1704324741; x=
-	1704331941; bh=e1zzbqCtNji+Aum6AoMU4JtJ0ZJakVaP1wCJJC7nMGs=; b=O
-	RXW7+FDgFXUaHM0BxCUi54PHTCSYIPWztgOAGUck6UHl+qGHfaYP+QVC5C0PU8EU
-	6SF5okPVHiwbXZgv4yv73p7OyMBnggKiTnI2Qf1ugiVAK/2CWFe5AGLWyLKrJ2ei
-	QnvJQhVFM1X0M3Q+4aaBA6WEX3a/i5cyP3zEtDrQ97CWge2xEyaJL2GXW1jcrGFu
-	J1tjPdQm7Pp+t29YSbHLg2NymsA+o4bJUlI0ikCxF/eFIrbK6nTD7Yk8J6JMZPhT
-	XmeSp+WCq7+Tbil/qzZKW/68BkXlwmS4vibimU26IAQ3FdBIaHPf257jaP3gEIlA
-	T6Gm39fDzkMqkF7MmT2eA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704324741; x=
-	1704331941; bh=e1zzbqCtNji+Aum6AoMU4JtJ0ZJakVaP1wCJJC7nMGs=; b=1
-	ydONiDvKxPAVNKdHHJXzlJHpzUouWfZ2W4ucuxgocYoCD35JZPg2ZMCAzuc8OJzm
-	QIGoFDl+SL+RWR9jmBQBUJwSIMZz+ms1uZEgos8OPKH23KCJPFW7kOzPi5Bi5jhp
-	l46z66PCGRabuQKKELqfMuKL7KzeElxUofal7ZsxLmcRJTDVPkRWN3R55J2+znRf
-	PDEJRo3trte4AlY43sc9LTqlbNBesaWHZwe5XO9/5srA2nIIxi+vqaN31mkxnjKd
-	eUp2L+zLUC07fvmV4OvsxQA+wZvNVUSx0PlVkCmdkN0duaAdsHJdRY8XAqBY8Gm1
-	5tIApW8PE4QtX2L7YZA1g==
-X-ME-Sender: <xms:g-6VZQZYy9lZc_yJWRHNDkL9Bnf7FLhpanJqwUXdBjkaz2VOWmp9WA>
-    <xme:g-6VZbb6Jw7CTIn4P01bXzfbp8pUPb3nYiyuxP6HR418yaoyC6IaKCfGgIFS7yaGe
-    qKpVnDFB6EDR0E6bQ>
-X-ME-Received: <xmr:g-6VZa-bbd3TuoO9ILwrFIP7huOzCeFRevJC-ftq9nOBYGZQuexSuybEUBHVkdC4sAWAFedx84DZiG_Uo9I0lcGA4jTDVvf5LwvygiDBIfVzXQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegiedguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertder
-    tddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepgfefgfegjefhudeikedvueetffelieefuedvhfehjeeljeej
-    kefgffeghfdttdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:g-6VZarvwU0qj1dOWKtA660ZvoTyect4_fvfzyi2h1uRxi1R72AwjQ>
-    <xmx:g-6VZbqL4fHPQNOP9znfqNPSiNhEXgXo4TLwpac4wlHU2qEdjxlCoA>
-    <xmx:g-6VZYQ28DwQRaBuAJNS9uIOTQYrjbgEvWYlQU2vP7bq4QKpWnQ0ow>
-    <xmx:he6VZYX3u2jVlVVpOeIkliTupPCBqQ-9CV-ZAHG-aTjOTr-41ofdX8snFCo>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 3 Jan 2024 18:32:15 -0500 (EST)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: benjamin.tissoires@redhat.com,
-	hawk@kernel.org,
-	edumazet@google.com,
-	alexandre.torgue@foss.st.com,
-	ebiggers@kernel.org,
-	tj@kernel.org,
-	rostedt@goodmis.org,
-	shuah@kernel.org,
-	martin.lau@linux.dev,
-	ast@kernel.org,
-	fw@strlen.de,
-	kuba@kernel.org,
-	pablo@netfilter.org,
-	jikos@kernel.org,
-	john.fastabend@gmail.com,
-	mcoquelin.stm32@gmail.com,
-	mhiramat@kernel.org,
-	yonghong.song@linux.dev,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	dsahern@kernel.org,
-	hannes@cmpxchg.org,
-	lizefan.x@bytedance.com,
-	pabeni@redhat.com,
-	steffen.klassert@secunet.com,
-	daniel@iogearbox.net,
-	tytso@mit.edu,
-	andrii@kernel.org,
-	davem@davemloft.net,
-	kadlec@netfilter.org,
-	song@kernel.org,
-	alexei.starovoitov@gmail.com,
-	olsajiri@gmail.com,
-	quentin@isovalent.com,
-	alan.maguire@oracle.com,
-	memxor@gmail.com
-Cc: kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mykolal@fb.com,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	fsverity@lists.linux.dev,
-	bpf@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	coreteam@netfilter.org,
-	linux-kselftest@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH bpf-next 2/2] bpf: treewide: Annotate BPF kfuncs in BTF
-Date: Wed,  3 Jan 2024 16:31:56 -0700
-Message-ID: <68d5598e5708dfe3370406cd5c946565ca4b50f1.1704324602.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <cover.1704324602.git.dxu@dxuuu.xyz>
-References: <cover.1704324602.git.dxu@dxuuu.xyz>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD4F1F607
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 23:43:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5537114380bso8647856a12.3
+        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 15:43:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704325430; x=1704930230; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gFmseUsMI41Cam7iaRLO+MUeVdN/+Onq65eZGeGVN9k=;
+        b=LHdh+SchcgGb8g+Fw5XwKaN/s7WTzuT3ZeL8nkCPCpJgkOIrw85oGoTcfRwzlYy/oZ
+         BZlzYwJDiIdcdWktw293cfBA9u8iBCv62CAF/LSfMJuxXynwYlcWQUCI3IPiuXkjWXpr
+         RmvWh3sjRAQc6n1rkP+Q0cBfZq+4jgCTuqrbNPrCeU3mR8dmIgqf5Fr8rekelovHQp39
+         0FsCu38FGCzwiUiJ1aZhAFo2ANEwn4NrP0UQOgooRcStYPor4r50C06EpveCS8cW4RdV
+         Pxiry5u0UH4GAGdMd6Hje6KcNc2OlZ/blX2UczlQRlZ9Dp9gQF1NC/BEVXo628hsoif7
+         J5+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704325430; x=1704930230;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gFmseUsMI41Cam7iaRLO+MUeVdN/+Onq65eZGeGVN9k=;
+        b=xCslBgPp+n3Y4oXwWC/rn0CY/dluSj4ILMQaRgi3SNb4NoHvPHLWy8DaFVHxRkDTRN
+         u7Ji9HlZqiKjjBOCI/zKZEYcYZ7PN4oaK84xtoWBy05SAtxSqTofOPR1JL34pNDTMlao
+         UBFS5I4ws6M29n++LKdkkIqgPuA5+vPAHhv6K+jSXdMoizSM/3glS98Bi7/DDOfpNNZU
+         bETY1QTAXWyY1xIk9hCgCSeKuK1bI9rRN5Lg/egQ8cmJN3g0rgoh3SLqvzedKpFR7VW1
+         dNHvdUUW9kePrl0DCqdBcwDPRTiK9p7Li7Yi5ctoQ92lZtL8nDIPU0DZd5QKkppuCKSy
+         VTwA==
+X-Gm-Message-State: AOJu0Yzm0rR36ifoJr63xhK2ncO4woyMQK0gSX5lCLlbwkYW92aNFFP2
+	HjQkYFA3PVyrHGTJ7NlJEMo=
+X-Google-Smtp-Source: AGHT+IGBhUFRG4CVAJhBbzc3fz95f4adgqNiQ0fsUPiaFGmSr2r1KsGIYAzXtGdYiGmT3crXKkwCmg==
+X-Received: by 2002:a50:8d5a:0:b0:555:b361:4791 with SMTP id t26-20020a508d5a000000b00555b3614791mr5117274edt.60.1704325429829;
+        Wed, 03 Jan 2024 15:43:49 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id b10-20020a0564021f0a00b00552d45bd8e7sm17989995edb.77.2024.01.03.15.43.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 15:43:49 -0800 (PST)
+Message-ID: <7746c6fa67e655b288e069b0c1d6393dc8c46502.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 8/9] libbpf: implement __arg_ctx fallback
+ logic
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org,
+ kernel-team@meta.com, Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 04 Jan 2024 01:43:48 +0200
+In-Reply-To: <CAEf4BzaB_dOz8QmG9kGM7ViD=iM7P-a1GsMAMyyJhdf1W2Kwng@mail.gmail.com>
+References: <20240102190055.1602698-1-andrii@kernel.org>
+	 <20240102190055.1602698-9-andrii@kernel.org>
+	 <75cad82e8e11b6049c99dcd2170fb445e2d3d2ee.camel@gmail.com>
+	 <CAEf4BzaB_dOz8QmG9kGM7ViD=iM7P-a1GsMAMyyJhdf1W2Kwng@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=mQGNBGKNNQEBDACwcUNXZOGTzn4rr7Sd18SA5Wv0Wna/ONE0ZwZEx+sIjyGrPOIhR14/DsOr3ZJer9UJ/WAJwbxOBj6E5Y2iF7grehljNbLr/jMjzPJ+hJpfOEAb5xjCB8xIqDoric1WRcCaRB+tDSk7jcsIIiMish0diTK3qTdu4MB6i/sh4aeFs2nifkNi3LdBuk8Xnk+RJHRoKFJ+C+EoSmQPuDQIRaF9N2m4yO0eG36N8jLwvUXnZzGvHkphoQ9ztbRJp58oh6xT7uH62m98OHbsVgzYKvHyBu/IU2ku5kVG9pLrFp25xfD4YdlMMkJH6l+jk+cpY0cvMTS1b6/g+1fyPM+uzD8Wy+9LtZ4PHwLZX+t4ONb/48i5AKq/jSsb5HWdciLuKEwlMyFAihZamZpEj+9n91NLPX4n7XeThXHaEvaeVVl4hfW/1Qsao7l1YjU/NCHuLaDeH4U1P59bagjwo9d1n5/PESeuD4QJFNqW+zkmE4tmyTZ6bPV6T5xdDRHeiITGc00AEQEAAbQkRWR1YXJkIFppbmdlcm1hbiA8ZWRkeXo4N0BnbWFpbC5jb20+iQHUBBMBCgA+FiEEx+6LrjApQyqnXCYELgxleklgRAkFAmKNNQECGwMFCQPCZwAFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQLgxleklgRAlWZAv/cJ5v3zlEyP0/jMKQBqbVCCHTirPEw+nqxbkeSO6r2FUds0NnGA9a6NPOpBH+qW7a6+n6q3sIbvH7jlss4pzLI7LYlDC6z+egTv7KR5X1xFrY1uR5UGs1beAjnzYeV2hK4yqRUfygsT0Wk5e4FiNBv4+DUZ8r0cNDkO6swJxU55DO21mcteC147+4aDoHZ40R0tsAu+brDGSSoOPpb0RWVsEf9XOBJqWWA+T7mluw
+ nYzhLWGcczc6J71q1Dje0l5vIPaSFOgwmWD4DA+WvuxM/shH4rtWeodbv iCTce6yYIygHgUAtJcHozAlgRrL0jz44cggBTcoeXp/atckXK546OugZPnl00J3qmm5uWAznU6T5YDv2vCvAMEbz69ib+kHtnOSBvR0Jb86UZZqSb4ATfwMOWe9htGTjKMb0QQOLK0mTcrk/TtymaG+T4Fsos0kgrxqjgfrxxEhYcVNW8v8HISmFGFbqsJmFbVtgk68BcU0wgF8oFxo7u+XYQDdKbI1uQGNBGKNNQEBDADbQIdo8L3sdSWGQtu+LnFqCZoAbYurZCmUjLV3df1b+sg+GJZvVTmMZnzDP/ADufcbjopBBjGTRAY4L76T2niu2EpjclMMM3mtrOc738Kr3+RvPjUupdkZ1ZEZaWpf4cZm+4wH5GUfyu5pmD5WXX2i1r9XaUjeVtebvbuXWmWI1ZDTfOkiz/6Z0GDSeQeEqx2PXYBcepU7S9UNWttDtiZ0+IH4DZcvyKPUcK3tOj4u8GvO3RnOrglERzNCM/WhVdG1+vgU9fXO83TB/PcfAsvxYSie7u792s/I+yA4XKKh82PSTvTzg2/4vEDGpI9yubkfXRkQN28w+HKF5qoRB8/L1ZW/brlXkNzA6SveJhCnH7aOF0Yezl6TfX27w1CW5Xmvfi7X33V/SPvo0tY1THrO1c+bOjt5F+2/K3tvejmXMS/I6URwa8n1e767y5ErFKyXAYRweE9zarEgpNZTuSIGNNAqK+SiLLXt51G7P30TVavIeB6s2lCt1QKt62ccLqUAEQEAAYkBvAQYAQoAJhYhBMfui64wKUMqp1wmBC4MZXpJYEQJBQJijTUBAhsMBQkDwmcAAAoJEC4MZXpJYEQJkRAMAKNvWVwtXm/WxWoiLnXyF2WGXKoDe5+itTLvBmKcV/b1OKZF1s90V7WfSBz712eFAynEzyeezPbwU8QBiTpZcHXwQni3IYKvsh7s
+ t1iq+gsfnXbPz5AnS598ScZI1oP7OrPSFJkt/z4acEbOQDQs8aUqrd46PV jsdqGvKnXZxzylux29UTNby4jTlz9pNJM+wPrDRmGfchLDUmf6CffaUYCbu4FiId+9+dcTCDvxbABRy1C3OJ8QY7cxfJ+pEZW18fRJ0XCl/fiV/ecAOfB3HsqgTzAn555h0rkFgay0hAvMU/mAW/CFNSIxV397zm749ZNLA0L2dMy1AKuOqH+/B+/ImBfJMDjmdyJQ8WU/OFRuGLdqOd2oZrA1iuPIa+yUYyZkaZfz/emQwpIL1+Q4p1R/OplA4yc301AqruXXUcVDbEB+joHW3hy5FwK5t5OwTKatrSJBkydSF9zdXy98fYzGniRyRA65P0Ix/8J3BYB4edY2/w0Ip/mdYsYQljBY0A==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-This commit marks kfuncs as such inside the .BTF_ids section. The upshot
-of these annotations is that we'll be able to automatically generate
-kfunc prototypes for downstream users. The process is as follows:
+On Wed, 2024-01-03 at 15:10 -0800, Andrii Nakryiko wrote:
+> On Wed, Jan 3, 2024 at 12:57=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >=20
+> > On Tue, 2024-01-02 at 11:00 -0800, Andrii Nakryiko wrote:
+> >=20
+> > [...]
+> >=20
+> > > +static int clone_func_btf_info(struct btf *btf, int orig_fn_id, stru=
+ct bpf_program *prog)
+> > > +{
+> >=20
+> > [...]
+> >=20
+> > > +     /* clone FUNC first, btf__add_func() enforces
+> > > +      * non-empty name, so use entry program's name as
+> > > +      * a placeholder, which we replace immediately
+> > > +      */
+> > > +     fn_id =3D btf__add_func(btf, prog->name, btf_func_linkage(fn_t)=
+, fn_t->type);
+> >=20
+> > Nit: Why not call this function near the end, when fn_proto_id is avail=
+able?
+> >      Thus avoiding need to "guess" fn_t->type.
+> >=20
+>=20
+> I think I did it to not have to remember btf_func_linkage(fn_t)
+> (because fn_t will be invalidated) and because name_off will be reused
+> for parameters. Neither is a big deal, I'll adjust to your suggestion.
+>=20
+> But note, we are not guessing ID, it's guaranteed to be +1, it's an
+> API contract of btf__add_xxx() APIs.
 
-1. In source, tag kfunc BTF_SET8 sets with BTF_SET8_KFUNC flag
-2. During build, pahole injects into BTF a "bpf_kfunc" BTF_DECL_TAG for
-   each function inside BTF_SET8_KFUNC sets
-3. At runtime, vmlinux or module BTF is made available in sysfs
-4. At runtime, bpftool (or similar) can look at provided BTF and
-   generate appropriate prototypes for functions with "bpf_kfunc" tag
+Noted, well, maybe just skip this nit in such a case.
 
-To ensure future kfunc are similarly tagged, we add a WARN_ON() inside
-kfunc registration so developers will notice issues duringn development.
+> > [...]
+> >=20
+> > > +static int bpf_program_fixup_func_info(struct bpf_object *obj, struc=
+t bpf_program *prog)
+> > > +{
+> >=20
+> > [...]
+> >=20
+> > > +     for (i =3D 1, n =3D btf__type_cnt(btf); i < n; i++) {
+> >=20
+> > [...]
+> >=20
+> > > +
+> > > +             /* clone fn/fn_proto, unless we already did it for anot=
+her arg */
+> > > +             if (func_rec->type_id =3D=3D orig_fn_id) {
+> > > +                     int fn_id;
+> > > +
+> > > +                     fn_id =3D clone_func_btf_info(btf, orig_fn_id, =
+prog);
+> > > +                     if (fn_id < 0) {
+> > > +                             err =3D fn_id;
+> > > +                             goto err_out;
+> > > +                     }
+> > > +
+> > > +                     /* point func_info record to a cloned FUNC type=
+ */
+> > > +                     func_rec->type_id =3D fn_id;
+> >=20
+> > Would it be helpful to add a log here, saying that BTF for function
+> > so and so is changed before load?
+>=20
+> Would it? We don't have global subprog's name readily available, it
+> seems. So I'd need to refetch it by fn_id, then btf__str_by_offset()
+> just to emit cryptic (for most users) notifications that something
+> about some func info was adjusted. And then the user would get this
+> same message for the same subprog but in the context of a different
+> entry program. Just confusing, tbh.
+>=20
+> Unless you insist, I'd leave it as is. This logic is supposed to be
+> bullet-proof, so I'm not worried about debugging regressions with it
+> (but maybe I'm delusional).
 
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- drivers/hid/bpf/hid_bpf_dispatch.c                    | 4 ++--
- fs/verity/measure.c                                   | 2 +-
- include/linux/btf_ids.h                               | 3 +++
- kernel/bpf/btf.c                                      | 3 +++
- kernel/bpf/cpumask.c                                  | 2 +-
- kernel/bpf/helpers.c                                  | 4 ++--
- kernel/bpf/map_iter.c                                 | 2 +-
- kernel/cgroup/rstat.c                                 | 2 +-
- kernel/trace/bpf_trace.c                              | 4 ++--
- net/bpf/test_run.c                                    | 4 ++--
- net/core/filter.c                                     | 8 ++++----
- net/core/xdp.c                                        | 2 +-
- net/ipv4/bpf_tcp_ca.c                                 | 2 +-
- net/ipv4/fou_bpf.c                                    | 2 +-
- net/ipv4/tcp_bbr.c                                    | 2 +-
- net/ipv4/tcp_cubic.c                                  | 2 +-
- net/ipv4/tcp_dctcp.c                                  | 2 +-
- net/netfilter/nf_conntrack_bpf.c                      | 2 +-
- net/netfilter/nf_nat_bpf.c                            | 2 +-
- net/xfrm/xfrm_interface_bpf.c                         | 2 +-
- net/xfrm/xfrm_state_bpf.c                             | 2 +-
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 2 +-
- 22 files changed, 33 insertions(+), 27 deletions(-)
+I was thinking about someone finding out that actual in-kernel BTF
+is different from that in the program object file, while debugging
+something. Might be a bit surprising. I'm not insisting on this, though.
 
-diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf_dispatch.c
-index d9ef45fcaeab..e277b74e8831 100644
---- a/drivers/hid/bpf/hid_bpf_dispatch.c
-+++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-@@ -172,7 +172,7 @@ hid_bpf_get_data(struct hid_bpf_ctx *ctx, unsigned int offset, const size_t rdwr
-  * The following set contains all functions we agree BPF programs
-  * can use.
-  */
--BTF_SET8_START(hid_bpf_kfunc_ids)
-+BTF_SET8_START(hid_bpf_kfunc_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, hid_bpf_get_data, KF_RET_NULL)
- BTF_SET8_END(hid_bpf_kfunc_ids)
- 
-@@ -440,7 +440,7 @@ static const struct btf_kfunc_id_set hid_bpf_fmodret_set = {
- };
- 
- /* for syscall HID-BPF */
--BTF_SET8_START(hid_bpf_syscall_kfunc_ids)
-+BTF_SET8_START(hid_bpf_syscall_kfunc_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, hid_bpf_attach_prog)
- BTF_ID_FLAGS(func, hid_bpf_allocate_context, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, hid_bpf_release_context, KF_RELEASE)
-diff --git a/fs/verity/measure.c b/fs/verity/measure.c
-index bf7a5f4cccaf..7e6c4ad9f8ce 100644
---- a/fs/verity/measure.c
-+++ b/fs/verity/measure.c
-@@ -159,7 +159,7 @@ __bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr_ker
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(fsverity_set_ids)
-+BTF_SET8_START(fsverity_set_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
- BTF_SET8_END(fsverity_set_ids)
- 
-diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-index 88f914579fa1..771e29762a2d 100644
---- a/include/linux/btf_ids.h
-+++ b/include/linux/btf_ids.h
-@@ -8,6 +8,9 @@ struct btf_id_set {
- 	u32 ids[];
- };
- 
-+/* This flag implies BTF_SET8 holds kfunc(s) */
-+#define BTF_SET8_KFUNC		(1 << 0)
-+
- struct btf_id_set8 {
- 	u32 cnt;
- 	u32 flags;
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 51e8b4bee0c8..b8ba00a4179f 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -7769,6 +7769,9 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
- 	struct btf *btf;
- 	int ret, i;
- 
-+	/* All kfuncs need to be tagged as such in BTF */
-+	WARN_ON(!(kset->set->flags & BTF_SET8_KFUNC));
-+
- 	btf = btf_get_module_btf(kset->owner);
- 	if (!btf) {
- 		if (!kset->owner && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) {
-diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-index 2e73533a3811..4155c479cc2f 100644
---- a/kernel/bpf/cpumask.c
-+++ b/kernel/bpf/cpumask.c
-@@ -424,7 +424,7 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cpumask *cpumask)
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(cpumask_kfunc_btf_ids)
-+BTF_SET8_START(cpumask_kfunc_btf_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_cpumask_create, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_cpumask_release, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_cpumask_acquire, KF_ACQUIRE | KF_TRUSTED_ARGS)
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index be72824f32b2..c4c2a3bd36f6 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2543,7 +2543,7 @@ __bpf_kfunc void bpf_throw(u64 cookie)
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(generic_btf_ids)
-+BTF_SET8_START(generic_btf_ids, BTF_SET8_KFUNC)
- #ifdef CONFIG_KEXEC_CORE
- BTF_ID_FLAGS(func, crash_kexec, KF_DESTRUCTIVE)
- #endif
-@@ -2588,7 +2588,7 @@ BTF_ID(struct, cgroup)
- BTF_ID(func, bpf_cgroup_release_dtor)
- #endif
- 
--BTF_SET8_START(common_btf_ids)
-+BTF_SET8_START(common_btf_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_cast_to_kern_ctx)
- BTF_ID_FLAGS(func, bpf_rdonly_cast)
- BTF_ID_FLAGS(func, bpf_rcu_read_lock)
-diff --git a/kernel/bpf/map_iter.c b/kernel/bpf/map_iter.c
-index 6abd7c5df4b3..225c70e88cb7 100644
---- a/kernel/bpf/map_iter.c
-+++ b/kernel/bpf/map_iter.c
-@@ -213,7 +213,7 @@ __bpf_kfunc s64 bpf_map_sum_elem_count(const struct bpf_map *map)
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(bpf_map_iter_kfunc_ids)
-+BTF_SET8_START(bpf_map_iter_kfunc_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_map_sum_elem_count, KF_TRUSTED_ARGS)
- BTF_SET8_END(bpf_map_iter_kfunc_ids)
- 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index c0adb7254b45..732df57b7c1d 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -520,7 +520,7 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
- }
- 
- /* Add bpf kfuncs for cgroup_rstat_updated() and cgroup_rstat_flush() */
--BTF_SET8_START(bpf_rstat_kfunc_ids)
-+BTF_SET8_START(bpf_rstat_kfunc_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, cgroup_rstat_updated)
- BTF_ID_FLAGS(func, cgroup_rstat_flush, KF_SLEEPABLE)
- BTF_SET8_END(bpf_rstat_kfunc_ids)
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 7ac6c52b25eb..bf1ef600e4d2 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -1412,7 +1412,7 @@ __bpf_kfunc int bpf_verify_pkcs7_signature(struct bpf_dynptr_kern *data_ptr,
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(key_sig_kfunc_set)
-+BTF_SET8_START(key_sig_kfunc_set, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_lookup_user_key, KF_ACQUIRE | KF_RET_NULL | KF_SLEEPABLE)
- BTF_ID_FLAGS(func, bpf_lookup_system_key, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_key_put, KF_RELEASE)
-@@ -1475,7 +1475,7 @@ __bpf_kfunc int bpf_get_file_xattr(struct file *file, const char *name__str,
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(fs_kfunc_set_ids)
-+BTF_SET8_START(fs_kfunc_set_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_get_file_xattr, KF_SLEEPABLE | KF_TRUSTED_ARGS)
- BTF_SET8_END(fs_kfunc_set_ids)
- 
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index dfd919374017..18b91612931d 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -617,7 +617,7 @@ CFI_NOSEAL(bpf_kfunc_call_memb_release_dtor);
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(bpf_test_modify_return_ids)
-+BTF_SET8_START(bpf_test_modify_return_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_modify_return_test)
- BTF_ID_FLAGS(func, bpf_modify_return_test2)
- BTF_ID_FLAGS(func, bpf_fentry_test1, KF_SLEEPABLE)
-@@ -628,7 +628,7 @@ static const struct btf_kfunc_id_set bpf_test_modify_return_set = {
- 	.set   = &bpf_test_modify_return_ids,
- };
- 
--BTF_SET8_START(test_sk_check_kfunc_ids)
-+BTF_SET8_START(test_sk_check_kfunc_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_release, KF_RELEASE)
- BTF_ID_FLAGS(func, bpf_kfunc_call_memb_release, KF_RELEASE)
- BTF_SET8_END(test_sk_check_kfunc_ids)
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 24061f29c9dd..f278a3976f61 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -11853,15 +11853,15 @@ int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
- 	return 0;
- }
- 
--BTF_SET8_START(bpf_kfunc_check_set_skb)
-+BTF_SET8_START(bpf_kfunc_check_set_skb, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_dynptr_from_skb)
- BTF_SET8_END(bpf_kfunc_check_set_skb)
- 
--BTF_SET8_START(bpf_kfunc_check_set_xdp)
-+BTF_SET8_START(bpf_kfunc_check_set_xdp, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_dynptr_from_xdp)
- BTF_SET8_END(bpf_kfunc_check_set_xdp)
- 
--BTF_SET8_START(bpf_kfunc_check_set_sock_addr)
-+BTF_SET8_START(bpf_kfunc_check_set_sock_addr, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_sock_addr_set_sun_path)
- BTF_SET8_END(bpf_kfunc_check_set_sock_addr)
- 
-@@ -11936,7 +11936,7 @@ __bpf_kfunc int bpf_sock_destroy(struct sock_common *sock)
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(bpf_sk_iter_kfunc_ids)
-+BTF_SET8_START(bpf_sk_iter_kfunc_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_sock_destroy, KF_TRUSTED_ARGS)
- BTF_SET8_END(bpf_sk_iter_kfunc_ids)
- 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 4869c1c2d8f3..84a01fb26f41 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -771,7 +771,7 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(xdp_metadata_kfunc_ids)
-+BTF_SET8_START(xdp_metadata_kfunc_ids, BTF_SET8_KFUNC)
- #define XDP_METADATA_KFUNC(_, __, name, ___) BTF_ID_FLAGS(func, name, KF_TRUSTED_ARGS)
- XDP_METADATA_KFUNC_xxx
- #undef XDP_METADATA_KFUNC
-diff --git a/net/ipv4/bpf_tcp_ca.c b/net/ipv4/bpf_tcp_ca.c
-index ae8b15e6896f..096918e9f93f 100644
---- a/net/ipv4/bpf_tcp_ca.c
-+++ b/net/ipv4/bpf_tcp_ca.c
-@@ -195,7 +195,7 @@ bpf_tcp_ca_get_func_proto(enum bpf_func_id func_id,
- 	}
- }
- 
--BTF_SET8_START(bpf_tcp_ca_check_kfunc_ids)
-+BTF_SET8_START(bpf_tcp_ca_check_kfunc_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, tcp_reno_ssthresh)
- BTF_ID_FLAGS(func, tcp_reno_cong_avoid)
- BTF_ID_FLAGS(func, tcp_reno_undo_cwnd)
-diff --git a/net/ipv4/fou_bpf.c b/net/ipv4/fou_bpf.c
-index 4da03bf45c9b..e527be123f79 100644
---- a/net/ipv4/fou_bpf.c
-+++ b/net/ipv4/fou_bpf.c
-@@ -100,7 +100,7 @@ __bpf_kfunc int bpf_skb_get_fou_encap(struct __sk_buff *skb_ctx,
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(fou_kfunc_set)
-+BTF_SET8_START(fou_kfunc_set, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_skb_set_fou_encap)
- BTF_ID_FLAGS(func, bpf_skb_get_fou_encap)
- BTF_SET8_END(fou_kfunc_set)
-diff --git a/net/ipv4/tcp_bbr.c b/net/ipv4/tcp_bbr.c
-index 22358032dd48..dbf904312292 100644
---- a/net/ipv4/tcp_bbr.c
-+++ b/net/ipv4/tcp_bbr.c
-@@ -1155,7 +1155,7 @@ static struct tcp_congestion_ops tcp_bbr_cong_ops __read_mostly = {
- 	.set_state	= bbr_set_state,
- };
- 
--BTF_SET8_START(tcp_bbr_check_kfunc_ids)
-+BTF_SET8_START(tcp_bbr_check_kfunc_ids, BTF_SET8_KFUNC)
- #ifdef CONFIG_X86
- #ifdef CONFIG_DYNAMIC_FTRACE
- BTF_ID_FLAGS(func, bbr_init)
-diff --git a/net/ipv4/tcp_cubic.c b/net/ipv4/tcp_cubic.c
-index 0fd78ecb67e7..b10bbc1cbc14 100644
---- a/net/ipv4/tcp_cubic.c
-+++ b/net/ipv4/tcp_cubic.c
-@@ -485,7 +485,7 @@ static struct tcp_congestion_ops cubictcp __read_mostly = {
- 	.name		= "cubic",
- };
- 
--BTF_SET8_START(tcp_cubic_check_kfunc_ids)
-+BTF_SET8_START(tcp_cubic_check_kfunc_ids, BTF_SET8_KFUNC)
- #ifdef CONFIG_X86
- #ifdef CONFIG_DYNAMIC_FTRACE
- BTF_ID_FLAGS(func, cubictcp_init)
-diff --git a/net/ipv4/tcp_dctcp.c b/net/ipv4/tcp_dctcp.c
-index bb23bb5b387a..2d2a8ba3e19e 100644
---- a/net/ipv4/tcp_dctcp.c
-+++ b/net/ipv4/tcp_dctcp.c
-@@ -260,7 +260,7 @@ static struct tcp_congestion_ops dctcp_reno __read_mostly = {
- 	.name		= "dctcp-reno",
- };
- 
--BTF_SET8_START(tcp_dctcp_check_kfunc_ids)
-+BTF_SET8_START(tcp_dctcp_check_kfunc_ids, BTF_SET8_KFUNC)
- #ifdef CONFIG_X86
- #ifdef CONFIG_DYNAMIC_FTRACE
- BTF_ID_FLAGS(func, dctcp_init)
-diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
-index 475358ec8212..329b3f2a68d0 100644
---- a/net/netfilter/nf_conntrack_bpf.c
-+++ b/net/netfilter/nf_conntrack_bpf.c
-@@ -467,7 +467,7 @@ __bpf_kfunc int bpf_ct_change_status(struct nf_conn *nfct, u32 status)
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(nf_ct_kfunc_set)
-+BTF_SET8_START(nf_ct_kfunc_set, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_xdp_ct_alloc, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_xdp_ct_lookup, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_skb_ct_alloc, KF_ACQUIRE | KF_RET_NULL)
-diff --git a/net/netfilter/nf_nat_bpf.c b/net/netfilter/nf_nat_bpf.c
-index 6e3b2f58855f..22237dda59df 100644
---- a/net/netfilter/nf_nat_bpf.c
-+++ b/net/netfilter/nf_nat_bpf.c
-@@ -54,7 +54,7 @@ __bpf_kfunc int bpf_ct_set_nat_info(struct nf_conn___init *nfct,
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(nf_nat_kfunc_set)
-+BTF_SET8_START(nf_nat_kfunc_set, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_ct_set_nat_info, KF_TRUSTED_ARGS)
- BTF_SET8_END(nf_nat_kfunc_set)
- 
-diff --git a/net/xfrm/xfrm_interface_bpf.c b/net/xfrm/xfrm_interface_bpf.c
-index 7d5e920141e9..484cc727a253 100644
---- a/net/xfrm/xfrm_interface_bpf.c
-+++ b/net/xfrm/xfrm_interface_bpf.c
-@@ -93,7 +93,7 @@ __bpf_kfunc int bpf_skb_set_xfrm_info(struct __sk_buff *skb_ctx, const struct bp
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(xfrm_ifc_kfunc_set)
-+BTF_SET8_START(xfrm_ifc_kfunc_set, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_skb_get_xfrm_info)
- BTF_ID_FLAGS(func, bpf_skb_set_xfrm_info)
- BTF_SET8_END(xfrm_ifc_kfunc_set)
-diff --git a/net/xfrm/xfrm_state_bpf.c b/net/xfrm/xfrm_state_bpf.c
-index 9e20d4a377f7..d22276b003b4 100644
---- a/net/xfrm/xfrm_state_bpf.c
-+++ b/net/xfrm/xfrm_state_bpf.c
-@@ -117,7 +117,7 @@ __bpf_kfunc void bpf_xdp_xfrm_state_release(struct xfrm_state *x)
- 
- __bpf_kfunc_end_defs();
- 
--BTF_SET8_START(xfrm_state_kfunc_set)
-+BTF_SET8_START(xfrm_state_kfunc_set, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_xdp_get_xfrm_state, KF_RET_NULL | KF_ACQUIRE)
- BTF_ID_FLAGS(func, bpf_xdp_xfrm_state_release, KF_RELEASE)
- BTF_SET8_END(xfrm_state_kfunc_set)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 91907b321f91..32972334cd50 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -341,7 +341,7 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
- 	.write = bpf_testmod_test_write,
- };
- 
--BTF_SET8_START(bpf_testmod_common_kfunc_ids)
-+BTF_SET8_START(bpf_testmod_common_kfunc_ids, BTF_SET8_KFUNC)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_new, KF_ITER_NEW)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
--- 
-2.42.1
+> > > +             }
+> > > +
+> > > +             /* create PTR -> STRUCT type chain to mark PTR_TO_CTX a=
+rgument;
+> > > +              * we do it just once per main BPF program, as all glob=
+al
+> > > +              * funcs share the same program type, so need only PTR =
+->
+> > > +              * STRUCT type chain
+> > > +              */
+> > > +             if (ptr_id =3D=3D 0) {
+> > > +                     struct_id =3D btf__add_struct(btf, ctx_name, 0)=
+;
+> >=20
+> > Nit: Maybe try looking up existing id for type ctx_name first?
+>=20
+> It didn't feel important and I didn't want to do another linear BTF
+> search for each such argument. It's trivial to look it up, but I still
+> feel like that's a waste... I tried to avoid many linear searches,
+> which is why I structured the logic to do one pass over BTF to find
+> all decl_tags instead of going over each function and arg and
+> searching for decl_tag.
+>
+> Let's keep it as is, if there are any reasons to try to reuse struct
+> (if it is at all present, which for kprobe, for example, is quite
+> unlikely due to fancy bpf_user_pt_regs_t name), then we can easily add
+> it with no regressions.
 
+I was thinking about possible interaction with btf_struct_access(),
+but that is not used to verify context access at the moment.
+So, probably not important.
 
