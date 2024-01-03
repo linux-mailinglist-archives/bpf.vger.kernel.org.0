@@ -1,85 +1,126 @@
-Return-Path: <bpf+bounces-18916-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35EDC8236D6
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 21:55:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 050418236DA
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 21:57:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75BB22876B4
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 20:55:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B41181C2448F
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 20:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8281D55E;
-	Wed,  3 Jan 2024 20:55:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 988DE1D553;
+	Wed,  3 Jan 2024 20:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j5Hh2//e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TisVoPnQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 657E31D54E;
-	Wed,  3 Jan 2024 20:55:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4342C433C7;
-	Wed,  3 Jan 2024 20:55:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704315332;
-	bh=AeTKh3wRabFnQ1yuK+vyl+Mc6+9kDxEh7vO32+RO5Dw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=j5Hh2//e7rRibhQAqELfRdXJ8t5GJI43thG2563X9Z65lUWLC/4445nICOSZmhcsp
-	 AjYUL/xmOm1BrAfesT3Q1yKO96Y97obfWM6o72WpyyVAOol0/oKLOPiNY1mxukdB8Y
-	 eDiTiJVbhpIuIzQnhj/8ui3yXl/eTDrNOyqI+gM9/i/9YVrQhlfVj3Oq5fy/Ch6UK+
-	 w48pUxJXvaFFnB+jfAOxSWQ5m0WFhx5AS0Gx0+8uAsdEr1yChBmcuu1XtSPHTAve7I
-	 8KpSMJAGBXhEImItfgF2rDIWlwyBz3csh5TMDAyGrdF6U9zr3B8rnNEVB1h8ifeY25
-	 tNK4CS3wVZeZA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-	id 49369403EF; Wed,  3 Jan 2024 17:55:30 -0300 (-03)
-Date: Wed, 3 Jan 2024 17:55:30 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Song Liu <song@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Ming Wang <wangming01@loongson.cn>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v1] perf env: Avoid recursively taking env->bpf_progs.lock
-Message-ID: <ZZXJwsYlGxYoQOeP@kernel.org>
-References: <20231207014655.1252484-1-irogers@google.com>
- <CAP-5=fWdAouBb7us44HOdd+ZfBj5fLFTuLCokbG8w3jVuQgTxw@mail.gmail.com>
- <ZZWK43OPvGcd-BAR@kernel.org>
- <CAPhsuW6EZ-FoZFbCuxs7gAa0OaQGw0zMLDaeEsNoU31vjXijnQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C751D54F
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 20:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a27cc46d40bso395283866b.0
+        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 12:57:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704315433; x=1704920233; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fbD+QivCInD7NoZM6wwTcnF8AWd+bVNAIvDi8tU+TRE=;
+        b=TisVoPnQHDv6dJLzgUdMtAcm4BYJjc81mBFoR38j4SnsqgmvW0757SCSMK1znQ0eqa
+         sDbL6QghysYFP27Z6oPtNh4eFgwMmvWsPg3ZVopPjlDy12cFWx0mqwzkP5L+mmxVyKUv
+         5AW70g1WjbKxpiUXsf6SNE7cAoFtWqU95TGyUntju6QyencU7LNd9awacDf+u69kLqsS
+         k8wSPL3KKKFNd5Gt5VHZbGzj8SZl631q/wRaOQUuTu+GdAJQHHo7D1DNt3/Hhv1W4C4H
+         IlnaXGAPyjnjdpnTPqRswCIiycdCiljk5/gEdr4Qj47pPdgEoN2Dy38JanMwdzE8ap7l
+         Gxyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704315433; x=1704920233;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fbD+QivCInD7NoZM6wwTcnF8AWd+bVNAIvDi8tU+TRE=;
+        b=oEuRUgLV+c+tb4dSTBv3Fr5GdbDvHpc3zLx6dnsIGdvkEOUzhKXsZ4Cptp0ggVw+Qp
+         AxYUjabddh9iuJxp8D3Rrj302qd9bOW8YJj9PwdLBmoxFpIxYJQmpkcVRX4jsxQYt6Pb
+         tJqOurgVjWM2ZNjZLudOM9mAsVB2Lg+uke9xuK2BFp7iy2/m1fX0uhrb0MHP4D6cc85n
+         WWcmcaTsSex2Bsb4tn8SrQ+GxkYevgjI0nOIuw7aE4L985VbAC8nwUJqHrma0CGLlsP/
+         TmAy3ZgM6myiIdHPb67qkIWuQweyM5D6aUkcSc+spjFmdhLiMfockir1nrtfOk9nYzxp
+         coVg==
+X-Gm-Message-State: AOJu0YwsAGU+p0xP3j1kTwsjDxiM/7JIa1gpZNDLkZweX0oshyzIhjUD
+	Z3MSEjRxn0rI27VDrzlLpdM0WDX/sDg=
+X-Google-Smtp-Source: AGHT+IFPUjWUGT5p7twAPAbHlpeLRUF1QfpKkPxYc7h03LYTUwc5HUcZEdXpz4klpeeL2eN4GaeZJQ==
+X-Received: by 2002:a17:906:2694:b0:a28:ac26:b5e5 with SMTP id t20-20020a170906269400b00a28ac26b5e5mr371862ejc.187.1704315432752;
+        Wed, 03 Jan 2024 12:57:12 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id wb1-20020a170907d50100b00a2300127f26sm13102457ejc.185.2024.01.03.12.57.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 12:57:12 -0800 (PST)
+Message-ID: <a767a0ca32a8ab30474320594917c1599465ebc1.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 0/9] Libbpf-side __arg_ctx fallback support
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+ ast@kernel.org,  daniel@iogearbox.net, martin.lau@kernel.org
+Cc: kernel-team@meta.com
+Date: Wed, 03 Jan 2024 22:57:11 +0200
+In-Reply-To: <20240102190055.1602698-1-andrii@kernel.org>
+References: <20240102190055.1602698-1-andrii@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW6EZ-FoZFbCuxs7gAa0OaQGw0zMLDaeEsNoU31vjXijnQ@mail.gmail.com>
-X-Url: http://acmel.wordpress.com
 
-Em Wed, Jan 03, 2024 at 09:40:26AM -0800, Song Liu escreveu:
-> On Wed, Jan 3, 2024 at 8:27 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
-> > Applied, with that minor patch reduction hunk and this:
+On Tue, 2024-01-02 at 11:00 -0800, Andrii Nakryiko wrote:
+> Support __arg_ctx global function argument tag semantics even on older ke=
+rnels
+> that don't natively support it through btf_decl_tag("arg:ctx").
+>=20
+> Patch #1 does a bunch of internal renaming to make internal function nami=
+ng
+> consistent. We were doing it lazily up until now, but mixing single and d=
+ouble
+> underscored names are confusing, so let's bite a bullet and get it over t=
+he
+> finish line in one go.
+>=20
+> Patches #3-#7 are preparatory work to allow to postpone BTF loading into =
+the
+> kernel until after all the BPF program relocations (including global func
+> appending to main programs) are done. Patch #5 is perhaps the most import=
+ant
+> and establishes pre-created stable placeholder FDs, so that relocations c=
+an
+> embed valid map FDs into ldimm64 instructions.
+>=20
+> Once BTF is done after relocation, what's left is to adjust BTF informati=
+on to
+> have each main program's copy of each used global subprog to point to its=
+ own
+> adjusted FUNC -> FUNC_PROTO type chain (if they use __arg_ctx) in such a =
+way
+> as to satisfy type expectations of BPF verifier regarding the PTR_TO_CTX
+> argument definition. See patch #8 for details.
+>=20
+> Patch #9 adds few more __arg_ctx use cases (edge cases like multiple argu=
+ments
+> having __arg_ctx, etc) to test_global_func_ctx_args.c, to make it simple =
+to
+> validate that this logic indeed works on old kernels. It does.
 
-> > Fixes: f8dfeae009effc0b ("perf bpf: Show more BPF program info in print_bpf_prog_info()")
+I've read through the patch-set and it seems to be fine,
+as far as my (limited) understanding of the code base goes.
+Left a few nitpicks.
 
-> > Song, can I have your Acked-by?
+[...]
 
-> LGTM. Thanks for the fix!
 
-> Acked-by: Song Liu <song@kernel.org>
-
-Thanks! Added to the cset.
-
-- Arnaldo
 
