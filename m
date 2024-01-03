@@ -1,468 +1,254 @@
-Return-Path: <bpf+bounces-18888-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18922-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0322823515
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 19:54:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 097E5823754
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 22:55:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F4161F25739
-	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 18:54:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21BBA1C241C8
+	for <lists+bpf@lfdr.de>; Wed,  3 Jan 2024 21:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2FC1CFA4;
-	Wed,  3 Jan 2024 18:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64E4D1DA29;
+	Wed,  3 Jan 2024 21:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4pip9BVQ"
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="5+Pqed04"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3B371CA82
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 18:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--brho.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-5e763e03f4dso111595587b3.2
-        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 10:54:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704308048; x=1704912848; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2bcLG4z5ud00ASvT+xYfTg01O0l5cqSjV16/RoDUU1c=;
-        b=4pip9BVQCKXGbdmskl3RmVQSrG6XUU0JRey2wylYKJG9W0C/A4AcgEgc8HEtxesCsb
-         MWS/bFQKkgfWuvxPgU48tBXv/n3P/27XIEYrVWhpd7EU4BtziUMROyCdnHH76jB0wP8h
-         g/KwnTPcCCWzUxLt2hRnw3emBekvwQAn8qbS1i2GnBusTjSa5dXh6hkXg0r2fhy5D5lE
-         dTnBfLMMd/kbEDweaC4BtXelo4d4DJhSxma1g8/ouHSAbcKOixnRlQ/c4CL67p6HdMAn
-         JODN8uK6MIB7K/bTLDp4Y5l3GhIn6aK1AikbE8ObvM5gXvfvWg2AGxQanniZXOvvklyl
-         Mbdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704308048; x=1704912848;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2bcLG4z5ud00ASvT+xYfTg01O0l5cqSjV16/RoDUU1c=;
-        b=ebYjgSNr7bsUgxSNE+aIYs9nWxRso6iBLjFJl2TEmyuu8KAgPbHOGTpLaD06H1Kbna
-         yWvR1bzvcRBSv9jC7pRJZVvJYYT6Vp5CqAeHaNlwwJT+a7MCQhcV7IYNHtWfcKLHkTmL
-         mrPpAETp9PnJMwAOIiaFumR917KKRb6MfWjM/vwSW+xARr/PAL6rhXRc3GSSWsuc/nuc
-         AfsFpvLTozjVHmhW9oRid+DMNdHrvuDAK3vw37ky7zVQAsnIjDJ9o54E+XD7BMbrBlLY
-         VH29f/xkqEoo2BiACr1FG+8pRUit9b5PWUC9TStqHmlJlm5Dz6vZylQ/X8zfIjrSo+iX
-         bOPA==
-X-Gm-Message-State: AOJu0Yz5IjpFJZ6G3qr44bFttSh5YL+zDuP2IYUqWNBEPjrVL4cJLuUy
-	Z6iqinA2T06sPjSZR/DcET3sygBIglRjACE=
-X-Google-Smtp-Source: AGHT+IG28PnnP7ATCARB255QRQFXcLeoT4HMWxENL9liok87DD4ZsFniPsEvotONJZ+gcKQMEfocdQPe
-X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:93:4:7e71:cfbd:2031:cc52])
- (user=brho job=sendgmr) by 2002:a05:6902:100e:b0:dbe:30cd:8fcb with SMTP id
- w14-20020a056902100e00b00dbe30cd8fcbmr331668ybt.0.1704308047925; Wed, 03 Jan
- 2024 10:54:07 -0800 (PST)
-Date: Wed,  3 Jan 2024 13:53:59 -0500
-In-Reply-To: <20240103185403.610641-1-brho@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD3341DA23
+	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 21:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: from pps.filterd (m0355091.ppops.net [127.0.0.1])
+	by mx0b-00823401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 403C8S2K026707;
+	Wed, 3 Jan 2024 18:56:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
+	from:to:cc:subject:date:message-id:content-type
+	:content-transfer-encoding:mime-version; s=DKIM202306; bh=vqzjzW
+	jZu9rO3aGKW/yPR1jTOaAjWmgnnc3WiG+zlHU=; b=5+Pqed04wX5LqCDmV08h9U
+	COTbGk3JuS2xolqMjKO6xT5Cd2ckAU8IGCCoZpwgKTA5rmj1wJat+p/jESUcUz1d
+	cvWNG56dNf8eoCku0PtafUZWNj5ToEKZzG3Ip37QLwTG4MISbXnOf80wTXOxKjnJ
+	6puATOUUSxKcfK34NSeSb9vnRuCbgX7pfsja7HZRf9YvvZIdmrWRuKFHw9g1oStR
+	edyH2sWXodXUNmzvhuqeEUBwXPpULa/4Yk+tORTk6vlp87W7x5bNi/7H3uYfkvxx
+	JtvZYeAiM2w5ITTNMp2H6dlWhT06KRigDrzNg25Wjagtj7h++uNwnlxNXuaQ0xag
+	==
+Received: from apc01-psa-obe.outbound.protection.outlook.com (mail-psaapc01lp2040.outbound.protection.outlook.com [104.47.26.40])
+	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3vd7aw0nc0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Jan 2024 18:56:05 +0000 (GMT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QtVEsTMjXLVPvrq5qZ6FGMEczOCgKFX3dLO7pbXP/BOp7WT5Y3B+R+cbYp70mxRug3HAOoGMMwZ2gz7Bs12q4F1yfINmXkE91OVBr+Y3BkDlFwH2vYfmgq+uXu6YmBw4XPTfGzyREd1jzLC08aGmwYo/mtfZPU/AFJZ1aPPBcD4OvVC4tJat7AYqDc49xkIugV0jpe28WEsS3fVGLmcBKvCIU3WfeBNKq6KHEzsyXQvpVzSZmU10AD/bXeQUa2lr7KHIC7RZVFsfE7sJtQms3asHiUTfyuKrUZv71gXKYxFO6WBeIV9kUhWrjK99KVtDGJesXmHDOguuvOr7VKcXkA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vqzjzWjZu9rO3aGKW/yPR1jTOaAjWmgnnc3WiG+zlHU=;
+ b=SkfXegjURMAV42f5H1NkRLzfPZrmlQcvF5h9J+UyQmOvgvtnwPzTVA8PMJU3XJTp8AahwWO2CW+Qf7bBHWEHNsab6K9PEsJpueykjGe+NLOF820cA9+pS8+oa86F/UAeIpOMYZdjeiOIMe2iUr3svEyxP5Q9BR3z4enap/CYVpyX5aPgmoSdbqXH5LcdO5oo24mRtvBPBFeXCJJB7lXNQhS6AUxdPjC8hplbNovY/hL0GkFf85uxWlED2qmK+iGSWxb+JGPvY8AhGFYM5e40q8POeIvAn4g0+vHD9fqQyCz1YuPhdztfV9SYU8goaYpKmJl7uOVwzsvHh2qIey0BLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=motorola.com; dmarc=pass action=none header.from=motorola.com;
+ dkim=pass header.d=motorola.com; arc=none
+Received: from SEZPR03MB6786.apcprd03.prod.outlook.com (2603:1096:101:66::5)
+ by KL1PR0302MB5412.apcprd03.prod.outlook.com (2603:1096:820:36::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.13; Wed, 3 Jan
+ 2024 18:56:01 +0000
+Received: from SEZPR03MB6786.apcprd03.prod.outlook.com
+ ([fe80::c0d5:21be:6c82:e5f6]) by SEZPR03MB6786.apcprd03.prod.outlook.com
+ ([fe80::c0d5:21be:6c82:e5f6%6]) with mapi id 15.20.7159.013; Wed, 3 Jan 2024
+ 18:56:01 +0000
+From: Maxwell Bland <mbland@motorola.com>
+To: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+CC: Andrew Wheeler <awheeler@motorola.com>,
+        =?utf-8?B?U2FtbXkgQlMyIFF1ZSB8IOmYmeaWjOeUnw==?= <quebs2@motorola.com>,
+        "di_jin@brown.edu" <di_jin@brown.edu>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "vpk@cs.brown.edu" <vpk@cs.brown.edu>,
+        "v.atlidakis@gmail.com"
+	<v.atlidakis@gmail.com>
+Subject: [PATCH 1/2] Adding BPF NX
+Thread-Topic: [PATCH 1/2] Adding BPF NX
+Thread-Index: Ado+dbT9jfWatuBPQB+UpA/3vxssOw==
+Date: Wed, 3 Jan 2024 18:56:00 +0000
+Message-ID: 
+ <SEZPR03MB6786385FE7630DC906EB0BFAB4602@SEZPR03MB6786.apcprd03.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEZPR03MB6786:EE_|KL1PR0302MB5412:EE_
+x-ms-office365-filtering-correlation-id: add1d9ea-78bf-4132-0ea1-08dc0c8da0f7
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ S/6JiQdqqFD6ryfRZuKgrkKVTqtnWlhHaGs+7VBRwzFj+Ok2wMh8W8n5mH23z0DVc/nT/V0KdOdjyLaELOAmulnlrFx02T4k34X5+aEPPdc6Db6eXfHqywP0H7MzKy6jcuaQDwygZdgHmVwb/euUvgNl3q3exExLQ2Fa3yMK3v6oXNFZO6BYb6f12CJsqS4EHARd6PZa+1gSIbc2Q/9VRJMyv6tY08Z42P3dazyWwC5+ZGB9jgK/bvYHTMHTzTUcuB1PHZfPxWp9Gluia4RF3lBzB6+zMv4/M1aA86XF0bLV0Pl3jREnpVFHxnwg0OXXEJuFkfhMZuH+FOeJTOkFS0d+6SPaiJk2BCH9jAV0NWtHrC+k0AdDJwPFJzLwtaKS3y/J6B4nHk7vYX6bYxHQqqyVYesS6y5bVv0eA47E43rH1BY1VdRclf94mZr5ihMK14K8Y4T7Uju+uSx+6Egx/rINGXyuYiBHqwaiFOS6HQRxzQ5f+Wu9gQBgV350N+Dof6JKAlgQeuZd5hU1d7eLgoPyrr0BtAVIrtVOK3uHlveZxLQUyl0uP9Lhcebvvww5G2WZQGt9Us2iin4s1n3JHbPcsaXb8zyCpU1BdJbDp9UA0NEz26rJS1Coa7O6iChmkP1f3VexPSEHyLam/VeZcZSwYdXxf1fUBae7MECAnno=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR03MB6786.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(346002)(136003)(376002)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(2906002)(52536014)(8936002)(4326008)(8676002)(5660300002)(54906003)(316002)(66446008)(66946007)(38070700009)(66476007)(64756008)(66556008)(76116006)(6916009)(82960400001)(86362001)(122000001)(38100700002)(26005)(9686003)(6506007)(478600001)(71200400001)(7696005)(33656002)(83380400001)(41300700001)(55016003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?QXExOWY1OFdLUnc5NHkwSUdIQnIxS0pMM3B3Mm4wTDVZRElEOU92dFVJcEFi?=
+ =?utf-8?B?eHV4c3M0R0t4UkRlUjJkdXFpbGcwYXI1Qm5vZi9ZYU5acjVXRjJaYnh6blZC?=
+ =?utf-8?B?enI4ZktXOVk2RHdjSzlBN1N2VWFnNWJaU0dPZ1QxQXdwc0tkOUxtQm52eW5S?=
+ =?utf-8?B?WVZTZFpJdkx3VUkxL0tFSW15SEtHb09KbXlzRU5TblBqM3VEK3NrR3I1c2Zu?=
+ =?utf-8?B?OXBWVTNQVDdlSDVuT3RabWdnS01NMFBSLzcyUXRHcDJqQkJCa2VrQkZKbC9z?=
+ =?utf-8?B?ZkIwYWZUZnRSUlVYc2pjelRzY3ZrbWMrSW40bGJ4ampOTzVuUzJBK3gxQ3ph?=
+ =?utf-8?B?ek5TMysrdVdQbXJ6OUZ1ZmxkUm5HQ3RmUWdSYlpzbFdqaERERWJkdW42ZDgv?=
+ =?utf-8?B?aU5RVStUQmx6ZUs3eHdJYTUzMWZ6T29zbExDR2tDRjM3UFlhVDhUUS9iRXhj?=
+ =?utf-8?B?a0tjMG41dGxKaklZVkVrUE8rRy9zK2hIRi9uQzdxcmZWblpoU01vYnBOdVAw?=
+ =?utf-8?B?WXIyVlJsZUk5SWd1OXFtY3E0OUJNVlJpbHZreTlJViswRVdRbkJuZ3FYNUla?=
+ =?utf-8?B?S2FoblRTcmZvZmR4TGpLeWtiV0hWcWt5NTVBNXpjS3c1dWg3OStNUVQ0cXJx?=
+ =?utf-8?B?L2tURmowWFptN2s4MC9mUlVlWnowWFRnbCtXc295RGRUTTU5c0RMc0dKdVFG?=
+ =?utf-8?B?REl6eGFsRW1GUldaQjgwNzRPV29RVGVuNVZUT1NVTTJ3eDI4NVVwK0JnUVBI?=
+ =?utf-8?B?SDByemVkY0VlenAwQ0tYLzFnakNYa1NGSWdFR3Frd255bkR3YitYN0xrenNW?=
+ =?utf-8?B?clcxNC9lMUhFR29Ra2pHL3RFNXhWdEhudk5DV2s5MmY1VEFsVFlmOURRNVpW?=
+ =?utf-8?B?WDM4VWVqcWkyVG1HQzBUc1B5SGpLYUFuOGpLcVZsSkpSdklYTEoxL1FTMXcx?=
+ =?utf-8?B?dnF3c1krUU5kTlhaQ2J0SGRnRCtIS3hnTko3eE95QUM0N2FxT3YrQW8vMzUx?=
+ =?utf-8?B?QkI1QXlmdmpiZERjc1VLYzFHM0tTc252Y3JRY1M4N08yUFFMNU1VL2ZxMVJk?=
+ =?utf-8?B?djRjNmZnbkV0MFdaWjdiTEFvVzZaSmthUzN1b1U2clBqaGo3emdxUG9tVEpU?=
+ =?utf-8?B?dUZkUTVNLzduSFVxQWtGMjFiTTRLT0xPMGpRNkFFK3VTZGNXMmVHaGN6YW9H?=
+ =?utf-8?B?dGpCZkp3VFVjZVJPcE1NN3pTVHh5OVEzQUtFOUY5MmdobXFxUFBjSzh3L3kz?=
+ =?utf-8?B?R3oxK25qQlNycDh6NDYwRGZEN0Y4U3NFZ1Q3cVp5Qk13REpmUmJUTFpFUkI1?=
+ =?utf-8?B?S25FZlA3Z0x4SGdna0VHUSs0SXh0OG85aVRMYndtN0hzc3hwaTF0NzVrSXNr?=
+ =?utf-8?B?WlRIaFIxY0NlZlY1d2dROUN6WlMrUGRBR2ZJRkdMOEd5L2VTL1VjVFVWT1dI?=
+ =?utf-8?B?U1lndEQvVEZWUmtUZ0dBS2hKb2tjT1dKSjZ4V3Z2MHBvSWRORGI4ZGM4bWNr?=
+ =?utf-8?B?Sk91ZnhtbzVEd0w2bm9MU1dJdE1ZZ0lHaFZ3NGcxUTczdDNJbXlPSU5Rb2ZC?=
+ =?utf-8?B?d1FkZ0dxWlozaVlEUUV5V0hsYWE4ZTUyckt5SzZ0OG9WcDU2aE81SWtmZklu?=
+ =?utf-8?B?dzFWTDF0MnZRODJ5QkVLOWFJVGN1b2YvM1AzRnc5cTJFcDJzaDFSRWNiaElM?=
+ =?utf-8?B?YzF1eU5JWVdHblgzNi9qT2FqR2JEYnEwZ1MwUE9FU2MwVXBmSzFUV1loQk1T?=
+ =?utf-8?B?cHFVNkd1bWU0VjJHclBLQkdsNGg3NkJ2Uk5IbENHZlJ4OE4rSmlKclBXclF2?=
+ =?utf-8?B?RzFWbHZUbjNUNDlGL3QxY3J5M1prQitUUFVCeGQyaW4wb0Z0UEs4ZE1saHYw?=
+ =?utf-8?B?dmxOS2VEMzArcFBrNG1rNGZRT2xnTEJqWTRrdE5jRDdzU0NJamhuR2FsYi9R?=
+ =?utf-8?B?OWhsZTZzakNqblduVkxKU0RzTFNjNlZkTy9PZnh6bjZKdEtiUGgxQ3RtS0xs?=
+ =?utf-8?B?TVFId2lyT2s2YmFyL3B4OVc0cHM5T01TcjJkVktnM3lqcFlaREhMUDZURkpZ?=
+ =?utf-8?B?eUMvNVl2OE8xVVZ3cnRvem9SWTJWUVpHNUJyeXV0OXAvWEVyQjdPQ1JhcFhr?=
+ =?utf-8?Q?Brrg=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240103185403.610641-1-brho@google.com>
-X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
-Message-ID: <20240103185403.610641-3-brho@google.com>
-Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly helpers to
- access array elements
-From: Barret Rhoden <brho@google.com>
-To: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>
-Cc: mattbobrowski@google.com, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-OriginatorOrg: motorola.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR03MB6786.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: add1d9ea-78bf-4132-0ea1-08dc0c8da0f7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jan 2024 18:56:00.9838
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5c7d0b28-bdf8-410c-aa93-4df372b16203
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LpH51uYDIVrgjwxS82hpx1UEj7gvhCINM1RrXosEGmJ6DI5tpqLsv6RvfgZWBUTNm3hKWJiDzgfT1jlqk39KWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0302MB5412
+X-Proofpoint-ORIG-GUID: AudrD0C79z3WOBLsxPdQZlu90KqBwBtT
+X-Proofpoint-GUID: AudrD0C79z3WOBLsxPdQZlu90KqBwBtT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-02_01,2023-11-30_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0
+ mlxlogscore=896 spamscore=0 clxscore=1011 priorityscore=1501
+ suspectscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2311290000 definitions=main-2401030153
 
-When accessing an array, even if you insert your own bounds check,
-sometimes the compiler will remove the check, or modify it such that the
-verifier no longer knows your access is within bounds.
-
-The compiler is even free to make a copy of a register, check the copy,
-and use the original to access the array.  The verifier knows the *copy*
-is within bounds, but not the original register!
-
-Signed-off-by: Barret Rhoden <brho@google.com>
----
- .../bpf/prog_tests/test_array_elem.c          | 112 ++++++++++
- .../selftests/bpf/progs/array_elem_test.c     | 195 ++++++++++++++++++
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  43 ++++
- 3 files changed, 350 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_array_elem.c
- create mode 100644 tools/testing/selftests/bpf/progs/array_elem_test.c
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_array_elem.c b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
-new file mode 100644
-index 000000000000..c953636f07c9
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
-@@ -0,0 +1,112 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Google LLC. */
-+#include <test_progs.h>
-+#include "array_elem_test.skel.h"
-+
-+#define NR_MAP_ELEMS 100
-+
-+/*
-+ * Helper to load and run a program.
-+ * Call must define skel, map_elems, and bss_elems.
-+ * Destroy the skel when you're done.
-+ */
-+#define load_and_run(PROG) ({						\
-+	int err;							\
-+	skel = array_elem_test__open();					\
-+	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
-+		return;							\
-+	bpf_program__set_autoload(skel->progs.x_ ## PROG, true);	\
-+	err = array_elem_test__load(skel);				\
-+	if (!ASSERT_EQ(err, 0, "array_elem_test load")) {		\
-+		array_elem_test__destroy(skel);				\
-+		return;							\
-+	}								\
-+	err = array_elem_test__attach(skel);				\
-+	if (!ASSERT_EQ(err, 0, "array_elem_test attach")) {		\
-+		array_elem_test__destroy(skel);				\
-+		return;							\
-+	}								\
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)				\
-+		skel->bss->lookup_indexes[i] = i;			\
-+	map_elems = bpf_map__mmap(skel->maps.arraymap);			\
-+	ASSERT_OK_PTR(map_elems, "mmap");				\
-+	bss_elems = skel->bss->bss_elems;				\
-+	skel->bss->target_pid = getpid();				\
-+	usleep(1);							\
-+})
-+
-+static void test_access_all(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems;
-+
-+	load_and_run(access_all);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], i, "array_elem map value not written");
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(bss_elems[i], i, "array_elem bss value not written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+static void test_oob_access(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems;
-+
-+	load_and_run(oob_access);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], 0, "array_elem map value was written");
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(bss_elems[i], 0, "array_elem bss value was written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+static void test_access_array_map_infer_sz(void)
-+{
-+	struct array_elem_test *skel;
-+	int *map_elems;
-+	int *bss_elems __maybe_unused;
-+
-+	load_and_run(access_array_map_infer_sz);
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		ASSERT_EQ(map_elems[i], i, "array_elem map value not written");
-+
-+	array_elem_test__destroy(skel);
-+}
-+
-+
-+/* Test that attempting to load a bad program fails. */
-+#define test_bad(PROG) ({						\
-+	struct array_elem_test *skel;					\
-+	int err;							\
-+	skel = array_elem_test__open();					\
-+	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))		\
-+		return;							\
-+	bpf_program__set_autoload(skel->progs.x_bad_ ## PROG, true); 	\
-+	err = array_elem_test__load(skel);				\
-+	ASSERT_ERR(err, "array_elem_test load " # PROG);		\
-+	array_elem_test__destroy(skel);					\
-+})
-+
-+void test_test_array_elem(void)
-+{
-+	if (test__start_subtest("array_elem_access_all"))
-+		test_access_all();
-+	if (test__start_subtest("array_elem_oob_access"))
-+		test_oob_access();
-+	if (test__start_subtest("array_elem_access_array_map_infer_sz"))
-+		test_access_array_map_infer_sz();
-+	if (test__start_subtest("array_elem_bad_map_array_access"))
-+		test_bad(map_array_access);
-+	if (test__start_subtest("array_elem_bad_bss_array_access"))
-+		test_bad(bss_array_access);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/array_elem_test.c b/tools/testing/selftests/bpf/progs/array_elem_test.c
-new file mode 100644
-index 000000000000..9d48afc933f0
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/array_elem_test.c
-@@ -0,0 +1,195 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Google LLC. */
-+#include <stdbool.h>
-+#include <linux/types.h>
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int target_pid = 0;
-+
-+#define NR_MAP_ELEMS 100
-+
-+/*
-+ * We want to test valid accesses into an array, but we also need to fool the
-+ * verifier.  If we just do for (i = 0; i < 100; i++), the verifier knows the
-+ * value of i and can tell we're inside the array.
-+ *
-+ * This "lookup" array is just the values 0, 1, 2..., such that
-+ * lookup_indexes[i] == i.  (set by userspace).  But the verifier doesn't know
-+ * that.
-+ */
-+unsigned int lookup_indexes[NR_MAP_ELEMS];
-+
-+/* Arrays can be in the BSS or inside a map element.  Make sure both work. */
-+int bss_elems[NR_MAP_ELEMS];
-+
-+struct map_array {
-+	int elems[NR_MAP_ELEMS];
-+};
-+
-+/*
-+ * This is an ARRAY_MAP of a single struct, and that struct is an array of
-+ * elements.  Userspace can mmap the map as if it was just a basic array of
-+ * elements.  Though if you make an ARRAY_MAP where the *values* are ints, don't
-+ * forget that bpf map elements are rounded up to 8 bytes.
-+ *
-+ * Once you get the pointer to the base of the inner array, you can access all
-+ * of the elements without another bpf_map_lookup_elem(), which is useful if you
-+ * are operating on multiple elements while holding a spinlock.
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct map_array);
-+	__uint(map_flags, BPF_F_MMAPABLE);
-+} arraymap SEC(".maps");
-+
-+static struct map_array *get_map_array(void)
-+{
-+	int zero = 0;
-+
-+	return bpf_map_lookup_elem(&arraymap, &zero);
-+}
-+
-+static int *get_map_elems(void)
-+{
-+	struct map_array *arr = get_map_array();
-+
-+	if (!arr)
-+		return NULL;
-+	return arr->elems;
-+}
-+
-+/*
-+ * Test that we can access all elements, and that we are accessing the element
-+ * we think we are accessing.
-+ */
-+static void access_all(void)
-+{
-+	int *map_elems = get_map_elems();
-+	int *x;
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_elem(map_elems, NR_MAP_ELEMS, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_sz_elem(bss_elems, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_access_all(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	access_all();
-+	return 0;
-+}
-+
-+/*
-+ * Helper for various OOB tests.  An out-of-bound access should be handled like
-+ * a lookup failure.  Specifically, the verifier should ensure we do not access
-+ * outside the array.  Userspace will check that we didn't access somewhere
-+ * inside the array.
-+ */
-+static void set_elem_to_1(long idx)
-+{
-+	int *map_elems = get_map_elems();
-+	int *x;
-+
-+	x = bpf_array_elem(map_elems, NR_MAP_ELEMS, idx);
-+	if (x)
-+		*x = 1;
-+	x = bpf_array_sz_elem(bss_elems, idx);
-+	if (x)
-+		*x = 1;
-+}
-+
-+/*
-+ * Test various out-of-bounds accesses.
-+ */
-+static void oob_access(void)
-+{
-+	set_elem_to_1(NR_MAP_ELEMS + 5);
-+	set_elem_to_1(NR_MAP_ELEMS);
-+	set_elem_to_1(-1);
-+	set_elem_to_1(~0UL);
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_oob_access(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	oob_access();
-+	return 0;
-+}
-+
-+/*
-+ * Test that we can use the ARRAY_SIZE-style helper with an array in a map.
-+ *
-+ * Note that you cannot infer the size of the array from just a pointer; you
-+ * have to use the actual elems[100].  i.e. this will fail and should fail to
-+ * compile (-Wsizeof-pointer-div):
-+ *
-+ *	int *map_elems = get_map_elems();
-+ *	x = bpf_array_sz_elem(map_elems, lookup_indexes[i]);
-+ */
-+static void access_array_map_infer_sz(void)
-+{
-+	struct map_array *arr = get_map_array();
-+	int *x;
-+
-+	for (int i = 0; i < NR_MAP_ELEMS; i++) {
-+		x = bpf_array_sz_elem(arr->elems, lookup_indexes[i]);
-+		if (x)
-+			*x = i;
-+	}
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_access_array_map_infer_sz(void *ctx)
-+{
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+	access_array_map_infer_sz();
-+	return 0;
-+}
-+
-+
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_bad_map_array_access(void *ctx)
-+{
-+	int *map_elems = get_map_elems();
-+
-+	/*
-+	 * Need to check to promote map_elems from MAP_OR_NULL to MAP so that we
-+	 * fail to load below for the right reason.
-+	 */
-+	if (!map_elems)
-+		return 0;
-+	/* Fail to load: we don't prove our access is inside map_elems[] */
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		map_elems[lookup_indexes[i]] = i;
-+	return 0;
-+}
-+
-+SEC("?tp/syscalls/sys_enter_nanosleep")
-+int x_bad_bss_array_access(void *ctx)
-+{
-+	/* Fail to load: we don't prove our access is inside bss_elems[] */
-+	for (int i = 0; i < NR_MAP_ELEMS; i++)
-+		bss_elems[lookup_indexes[i]] = i;
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index 2fd59970c43a..002bab44cde2 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -135,4 +135,47 @@
- /* make it look to compiler like value is read and written */
- #define __sink(expr) asm volatile("" : "+g"(expr))
- 
-+/*
-+ * Access an array element within a bound, such that the verifier knows the
-+ * access is safe.
-+ *
-+ * This macro asm is the equivalent of:
-+ *
-+ *	if (!arr)
-+ *		return NULL;
-+ *	if (idx >= arr_sz)
-+ *		return NULL;
-+ *	return &arr[idx];
-+ *
-+ * The index (___idx below) needs to be a u64, at least for certain versions of
-+ * the BPF ISA, since there aren't u32 conditional jumps.
-+ */
-+#define bpf_array_elem(arr, arr_sz, idx) ({				\
-+	typeof(&(arr)[0]) ___arr = arr;					\
-+	__u64 ___idx = idx;						\
-+	if (___arr) {							\
-+		asm volatile("if %[__idx] >= %[__bound] goto 1f;	\
-+			      %[__idx] *= %[__size];		\
-+			      %[__arr] += %[__idx];		\
-+			      goto 2f;				\
-+			      1:;				\
-+			      %[__arr] = 0;			\
-+			      2:				\
-+			      "						\
-+			     : [__arr]"+r"(___arr), [__idx]"+r"(___idx)	\
-+			     : [__bound]"r"((arr_sz)),		        \
-+			       [__size]"i"(sizeof(typeof((arr)[0])))	\
-+			     : "cc");					\
-+	}								\
-+	___arr;								\
-+})
-+
-+/*
-+ * Convenience wrapper for bpf_array_elem(), where we compute the size of the
-+ * array.  Be sure to use an actual array, and not a pointer, just like with the
-+ * ARRAY_SIZE macro.
-+ */
-+#define bpf_array_sz_elem(arr, idx) \
-+	bpf_array_elem(arr, sizeof(arr) / sizeof((arr)[0]), idx)
-+
- #endif
--- 
-2.43.0.472.g3155946c3a-goog
-
+RnJvbTogVGVudXQgPHRlbnV0QE5pb2JpdW0+DQpTdWJqZWN0OiBbUEFUQ0ggMS8yXSBBZGRpbmcg
+QlBGIE5YDQoNClJlc2VydmUgYSBtZW1vcnkgcmVnaW9uIGZvciBCUEYgcHJvZ3JhbSwgYW5kIGNo
+ZWNrIGZvciBpdCBpbiB0aGUgaW50ZXJwcmV0ZXIuIFRoaXMgc2ltdWxhdGUgdGhlIGVmZmVjdA0K
+b2Ygbm9uLWV4ZWN1dGFibGUgbWVtb3J5IGZvciBCUEYgZXhlY3V0aW9uLg0KDQpTaWduZWQtb2Zm
+LWJ5OiBNYXh3ZWxsIEJsYW5kIDxtYmxhbmRAbW90b3JvbGEuY29tPg0KLS0tDQphcmNoL3g4Ni9p
+bmNsdWRlL2FzbS9wZ3RhYmxlXzY0X3R5cGVzLmggfCAgOSArKysrKysrKysNCiBhcmNoL3g4Ni9t
+bS9mYXVsdC5jICAgICAgICAgICAgICAgICAgICAgfCAgNiArKysrKy0NCiBrZXJuZWwvYnBmL0tj
+b25maWcgICAgICAgICAgICAgICAgICAgICAgfCAxNiArKysrKysrKysrKysrKysNCiBrZXJuZWwv
+YnBmL2NvcmUuYyAgICAgICAgICAgICAgICAgICAgICAgfCAzNSArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKystLS0NCiA0IGZpbGVzIGNoYW5nZWQsIDYyIGluc2VydGlvbnMoKyksIDQgZGVs
+ZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3RhYmxlXzY0
+X3R5cGVzLmggYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3RhYmxlXzY0X3R5cGVzLmgNCmluZGV4
+IDM4YjU0Yjk5MmYzMi4uYWQxMTY1MWViMDczIDEwMDY0NA0KLS0tIGEvYXJjaC94ODYvaW5jbHVk
+ZS9hc20vcGd0YWJsZV82NF90eXBlcy5oDQorKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS9wZ3Rh
+YmxlXzY0X3R5cGVzLmgNCkBAIC0xMjMsNiArMTIzLDkgQEAgZXh0ZXJuIHVuc2lnbmVkIGludCBw
+dHJzX3Blcl9wNGQ7DQogDQogI2RlZmluZSBfX1ZNQUxMT0NfQkFTRV9MNAkweGZmZmZjOTAwMDAw
+MDAwMDBVTA0KICNkZWZpbmUgX19WTUFMTE9DX0JBU0VfTDUgCTB4ZmZhMDAwMDAwMDAwMDAwMFVM
+DQorI2lmZGVmIENPTkZJR19CUEZfTlgNCisjZGVmaW5lIF9fQlBGX1ZCQVNFCQkweGZmZmZlYjAw
+MDAwMDAwMDBVTA0KKyNlbmRpZg0KIA0KICNkZWZpbmUgVk1BTExPQ19TSVpFX1RCX0w0CTMyVUwN
+CiAjZGVmaW5lIFZNQUxMT0NfU0laRV9UQl9MNQkxMjgwMFVMDQpAQCAtMTY5LDYgKzE3MiwxMiBA
+QCBleHRlcm4gdW5zaWduZWQgaW50IHB0cnNfcGVyX3A0ZDsNCiAjZGVmaW5lIFZNQUxMT0NfUVVB
+UlRFUl9TSVpFCSgoVk1BTExPQ19TSVpFX1RCIDw8IDQwKSA+PiAyKQ0KICNkZWZpbmUgVk1BTExP
+Q19FTkQJCShWTUFMTE9DX1NUQVJUICsgVk1BTExPQ19RVUFSVEVSX1NJWkUgLSAxKQ0KIA0KKyNp
+ZmRlZiBDT05GSUdfQlBGX05YDQorI2RlZmluZSBCUEZfU0laRV9HQgkJNTEyVUwNCisjZGVmaW5l
+IEJQRl9WU1RBUlQJCV9fQlBGX1ZCQVNFDQorI2RlZmluZSBCUEZfVkVORAkJKEJQRl9WU1RBUlQg
+KyBfQUMoQlBGX1NJWkVfR0IgPDwgMzAsIFVMKSkNCisjZW5kaWYgLyogQ09ORklHX0JQRl9OWCAq
+Lw0KKw0KIC8qDQogICogdm1hbGxvYyBtZXRhZGF0YSBhZGRyZXNzZXMgYXJlIGNhbGN1bGF0ZWQg
+YnkgYWRkaW5nIHNoYWRvdy9vcmlnaW4gb2Zmc2V0cw0KICAqIHRvIHZtYWxsb2MgYWRkcmVzcy4N
+CmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9tbS9mYXVsdC5jIGIvYXJjaC94ODYvbW0vZmF1bHQuYw0K
+aW5kZXggYWI3NzhlYWMxOTUyLi5jZmI2M2VmNzIxNjggMTAwNjQ0DQotLS0gYS9hcmNoL3g4Ni9t
+bS9mYXVsdC5jDQorKysgYi9hcmNoL3g4Ni9tbS9mYXVsdC5jDQpAQCAtMjM1LDcgKzIzNSwxMSBA
+QCBzdGF0aWMgbm9pbmxpbmUgaW50IHZtYWxsb2NfZmF1bHQodW5zaWduZWQgbG9uZyBhZGRyZXNz
+KQ0KIAlwdGVfdCAqcHRlX2s7DQogDQogCS8qIE1ha2Ugc3VyZSB3ZSBhcmUgaW4gdm1hbGxvYyBh
+cmVhOiAqLw0KLQlpZiAoIShhZGRyZXNzID49IFZNQUxMT0NfU1RBUlQgJiYgYWRkcmVzcyA8IFZN
+QUxMT0NfRU5EKSkNCisJaWYgKCEoYWRkcmVzcyA+PSBWTUFMTE9DX1NUQVJUICYmIGFkZHJlc3Mg
+PCBWTUFMTE9DX0VORCkNCisjaWZkZWYgQlBGX05YDQorCQkmJiAhKGFkZHJlc3MgPj0gQlBGX1ZT
+VEFSVCAmJiBhZGRyZXNzIDwgQlBGX1ZFTkQpDQorI2VuZGlmDQorCSkNCiAJCXJldHVybiAtMTsN
+CiANCiAJLyoNCmRpZmYgLS1naXQgYS9rZXJuZWwvYnBmL0tjb25maWcgYi9rZXJuZWwvYnBmL0tj
+b25maWcNCmluZGV4IDZhOTA2ZmY5MzAwNi4uNzE2MGRjYWFhNThhIDEwMDY0NA0KLS0tIGEva2Vy
+bmVsL2JwZi9LY29uZmlnDQorKysgYi9rZXJuZWwvYnBmL0tjb25maWcNCkBAIC04Niw2ICs4Niwy
+MiBAQCBjb25maWcgQlBGX1VOUFJJVl9ERUZBVUxUX09GRg0KIA0KIAkgIElmIHlvdSBhcmUgdW5z
+dXJlIGhvdyB0byBhbnN3ZXIgdGhpcyBxdWVzdGlvbiwgYW5zd2VyIFkuDQogDQorY29uZmlnIEJQ
+Rl9IQVJERU5JTkcNCisJYm9vbCAiRW5hYmxlIEJQRiBpbnRlcnByZXRlciBoYXJkZW5pbmciDQor
+CXNlbGVjdCBCUEYNCisJZGVwZW5kcyBvbiBYODZfNjQgJiYgIVJBTkRPTUlaRV9NRU1PUlkgJiYg
+IUJQRl9KSVRfQUxXQVlTX09ODQorCWRlZmF1bHQgbg0KKwloZWxwDQorCSAgRW5oYW5jZSBicGYg
+aW50ZXJwcmV0ZXIncyBzZWN1cml0eQ0KKw0KK2NvbmZpZyBCUEZfTlgNCitib29sICJFbmFibGUg
+YnBmIE5YIg0KKwlkZXBlbmRzIG9uIEJQRl9IQVJERU5JTkcgJiYgIURZTkFNSUNfTUVNT1JZX0xB
+WU9VVA0KKwlkZWZhdWx0IG4NCisJaGVscA0KKwkgIEFsbG9jYXRlIGVCUEYgcHJvZ3JhbXMgaW4g
+c2VwZXJhdGUgYXJlYSBhbmQgbWFrZSBzdXJlIHRoZQ0KKwkgIGludGVycHJldGVkIHByb2dyYW1z
+IGFyZSBpbiB0aGUgcmVnaW9uLg0KKw0KIHNvdXJjZSAia2VybmVsL2JwZi9wcmVsb2FkL0tjb25m
+aWciDQogDQogY29uZmlnIEJQRl9MU00NCmRpZmYgLS1naXQgYS9rZXJuZWwvYnBmL2NvcmUuYyBi
+L2tlcm5lbC9icGYvY29yZS5jDQppbmRleCBmZTI1NGFlMDM1ZmUuLjU2ZDllOGQ0YTZkZSAxMDA2
+NDQNCi0tLSBhL2tlcm5lbC9icGYvY29yZS5jDQorKysgYi9rZXJuZWwvYnBmL2NvcmUuYw0KQEAg
+LTg4LDYgKzg4LDM0IEBAIHZvaWQgKmJwZl9pbnRlcm5hbF9sb2FkX3BvaW50ZXJfbmVnX2hlbHBl
+cihjb25zdCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLCBpbnQgaywgdW5zDQogCXJldHVybiBOVUxMOw0K
+IH0NCiANCisjaWZkZWYgQ09ORklHX0JQRl9OWA0KKyNkZWZpbmUgQlBGX01FTU9SWV9BTElHTiBy
+b3VuZHVwX3Bvd19vZl90d28oc2l6ZW9mKHN0cnVjdCBicGZfcHJvZykgKyBcDQorCQlCUEZfTUFY
+SU5TTlMgKiBzaXplb2Yoc3RydWN0IGJwZl9pbnNuKSkNCitzdGF0aWMgdm9pZCAqX19icGZfdm1h
+bGxvYyh1bnNpZ25lZCBsb25nIHNpemUsIGdmcF90IGdmcF9tYXNrKQ0KK3sNCisJcmV0dXJuIF9f
+dm1hbGxvY19ub2RlX3JhbmdlKHNpemUsIEJQRl9NRU1PUllfQUxJR04sIEJQRl9WU1RBUlQsIEJQ
+Rl9WRU5ELA0KKwkJCWdmcF9tYXNrLCBQQUdFX0tFUk5FTCwgMCwgTlVNQV9OT19OT0RFLA0KKwkJ
+CV9fYnVpbHRpbl9yZXR1cm5fYWRkcmVzcygwKSk7DQorfQ0KKw0KK3N0YXRpYyB2b2lkIGJwZl9p
+bnNuX2NoZWNrX3JhbmdlKGNvbnN0IHN0cnVjdCBicGZfaW5zbiAqaW5zbikNCit7DQorCWlmICgo
+dW5zaWduZWQgbG9uZylpbnNuIDwgQlBGX1ZTVEFSVA0KKwkJCXx8ICh1bnNpZ25lZCBsb25nKWlu
+c24gPj0gQlBGX1ZFTkQgLSBzaXplb2Yoc3RydWN0IGJwZl9pbnNuKSkNCisJCUJVRygpOw0KK30N
+CisNCisjZWxzZQ0KK3N0YXRpYyB2b2lkICpfX2JwZl92bWFsbG9jKHVuc2lnbmVkIGxvbmcgc2l6
+ZSwgZ2ZwX3QgZ2ZwX21hc2spDQorew0KKwlyZXR1cm4gX192bWFsbG9jKHNpemUsIGdmcF9tYXNr
+KTsNCit9DQorDQorc3RhdGljIHZvaWQgYnBmX2luc25fY2hlY2tfcmFuZ2UoY29uc3Qgc3RydWN0
+IGJwZl9pbnNuICppbnNuKQ0KK3sNCit9DQorI2VuZGlmIC8qIENPTkZJR19CUEZfTlggKi8NCisN
+CiBzdHJ1Y3QgYnBmX3Byb2cgKmJwZl9wcm9nX2FsbG9jX25vX3N0YXRzKHVuc2lnbmVkIGludCBz
+aXplLCBnZnBfdCBnZnBfZXh0cmFfZmxhZ3MpDQogew0KIAlnZnBfdCBnZnBfZmxhZ3MgPSBicGZf
+bWVtY2dfZmxhZ3MoR0ZQX0tFUk5FTCB8IF9fR0ZQX1pFUk8gfCBnZnBfZXh0cmFfZmxhZ3MpOw0K
+QEAgLTk1LDcgKzEyMyw3IEBAIHN0cnVjdCBicGZfcHJvZyAqYnBmX3Byb2dfYWxsb2Nfbm9fc3Rh
+dHModW5zaWduZWQgaW50IHNpemUsIGdmcF90IGdmcF9leHRyYV9mbGFnDQogCXN0cnVjdCBicGZf
+cHJvZyAqZnA7DQogDQogCXNpemUgPSByb3VuZF91cChzaXplLCBQQUdFX1NJWkUpOw0KLQlmcCA9
+IF9fdm1hbGxvYyhzaXplLCBnZnBfZmxhZ3MpOw0KKwlmcCA9IF9fYnBmX3ZtYWxsb2Moc2l6ZSwg
+Z2ZwX2ZsYWdzKTsNCiAJaWYgKGZwID09IE5VTEwpDQogCQlyZXR1cm4gTlVMTDsNCiANCkBAIC0y
+NDYsNyArMjc0LDcgQEAgc3RydWN0IGJwZl9wcm9nICpicGZfcHJvZ19yZWFsbG9jKHN0cnVjdCBi
+cGZfcHJvZyAqZnBfb2xkLCB1bnNpZ25lZCBpbnQgc2l6ZSwNCiAJaWYgKHBhZ2VzIDw9IGZwX29s
+ZC0+cGFnZXMpDQogCQlyZXR1cm4gZnBfb2xkOw0KIA0KLQlmcCA9IF9fdm1hbGxvYyhzaXplLCBn
+ZnBfZmxhZ3MpOw0KKwlmcCA9IF9fYnBmX3ZtYWxsb2Moc2l6ZSwgZ2ZwX2ZsYWdzKTsNCiAJaWYg
+KGZwKSB7DQogCQltZW1jcHkoZnAsIGZwX29sZCwgZnBfb2xkLT5wYWdlcyAqIFBBR0VfU0laRSk7
+DQogCQlmcC0+cGFnZXMgPSBwYWdlczsNCkBAIC0xMzgwLDcgKzE0MDgsNyBAQCBzdGF0aWMgc3Ry
+dWN0IGJwZl9wcm9nICpicGZfcHJvZ19jbG9uZV9jcmVhdGUoc3RydWN0IGJwZl9wcm9nICpmcF9v
+dGhlciwNCiAJZ2ZwX3QgZ2ZwX2ZsYWdzID0gR0ZQX0tFUk5FTCB8IF9fR0ZQX1pFUk8gfCBnZnBf
+ZXh0cmFfZmxhZ3M7DQogCXN0cnVjdCBicGZfcHJvZyAqZnA7DQogDQotCWZwID0gX192bWFsbG9j
+KGZwX290aGVyLT5wYWdlcyAqIFBBR0VfU0laRSwgZ2ZwX2ZsYWdzKTsNCisJZnAgPSBfX2JwZl92
+bWFsbG9jKGZwX290aGVyLT5wYWdlcyAqIFBBR0VfU0laRSwgZ2ZwX2ZsYWdzKTsNCiAJaWYgKGZw
+ICE9IE5VTEwpIHsNCiAJCS8qIGF1eC0+cHJvZyBzdGlsbCBwb2ludHMgdG8gdGhlIGZwX290aGVy
+IG9uZSwgc28NCiAJCSAqIHdoZW4gcHJvbW90aW5nIHRoZSBjbG9uZSB0byB0aGUgcmVhbCBwcm9n
+cmFtLA0KQEAgLTE2OTUsNiArMTcyMyw3IEBAIHN0YXRpYyB1NjQgX19fYnBmX3Byb2dfcnVuKHU2
+NCAqcmVncywgY29uc3Qgc3RydWN0IGJwZl9pbnNuICppbnNuKQ0KICNkZWZpbmUgQ09OVF9KTVAg
+KHsgaW5zbisrOyBnb3RvIHNlbGVjdF9pbnNuOyB9KQ0KIA0KIHNlbGVjdF9pbnNuOg0KKwlicGZf
+aW5zbl9jaGVja19yYW5nZShpbnNuKTsNCiAJZ290byAqanVtcHRhYmxlW2luc24tPmNvZGVdOw0K
+IA0KIAkvKiBFeHBsaWNpdGx5IG1hc2sgdGhlIHJlZ2lzdGVyLWJhc2VkIHNoaWZ0IGFtb3VudHMg
+d2l0aCA2MyBvciAzMQ0K
 
