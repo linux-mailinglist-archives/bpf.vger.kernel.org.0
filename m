@@ -1,116 +1,106 @@
-Return-Path: <bpf+bounces-19056-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19058-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62AFD8248BD
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 20:12:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 949948248F0
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 20:23:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0278EB251CB
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 19:12:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48A891F241EB
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 19:23:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93D312C1B0;
-	Thu,  4 Jan 2024 19:12:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3480E2C1AC;
+	Thu,  4 Jan 2024 19:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="RfML0zpv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WDfn5vH0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3092C1AC
-	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 19:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d4ab4e65aeso12296565ad.0
-        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 11:12:12 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 464EF2C681;
+	Thu,  4 Jan 2024 19:23:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e766937ddso992942e87.3;
+        Thu, 04 Jan 2024 11:23:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1704395532; x=1705000332; darn=vger.kernel.org;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wiuAbn1hA+wD2zanBuCoA6Xdp/ZRkyF/eu8Vv75E5eo=;
-        b=RfML0zpvfX0WvcbBFM4tkJjHu4JlaLSfa0/ZBQmuv3iCsyUg6QLLxpc7U8aJfPTflr
-         QkCygdaeBzjptmGH8YG6y/v1xtyTpP17NFfjpNa4JZowCjVSwQCR6+HC9SQs7V8EBVvq
-         cSjD/LHVp1fa51531fbhsGW86uqDufzsbjjyxZ+CYBYQYz0CUZTPs1MmDz2Ns0u7i79d
-         jNNE3koYpzR47UM9IuzKG9r95tM0WaypdoxLAhB391Hdhm3B6kL0sFedcBs4NIP+2zMP
-         WHCAPUlwmQiFyoYSMXzd+CSfrSRGrp/fH9SmhB14jR8PAizi7jI88Uan8fgLPwd0SUX+
-         U3Xw==
+        d=gmail.com; s=20230601; t=1704396222; x=1705001022; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PngtyanlhICbee0KDi7iQcNT635NIWO7h/ak7+PfeDI=;
+        b=WDfn5vH0dCPxT+yHZPZRDI8TeRvTVuB8Q8agL3+kLUfzwyaj+4KJYgQPbVbQa0PPTT
+         du0i4R9Pe4sIVEte5zDHJxPoxakjAy5WZ5cVk8MAKgg9SlFIANu+DIwSuOoQNm84wSQ+
+         t9CXQbVDrbCLqX7OZm0Zzb79uAunUwVCk1qtLCxGgYnQhvrBHqkVyRLiBgNQcSGfc82F
+         MsfL91I0rOYGJT33v7zOF7BIGk4u+VanQLt3Y/SDY80QypE9p9pZT2oUoeYzWCWe9WKH
+         gMLzDlrkVnvxgn5LORQGS41Wesln08/NgCD4XFnWptacThrSuQwi+a5knoVPG38wmkV7
+         GTPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704395532; x=1705000332;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wiuAbn1hA+wD2zanBuCoA6Xdp/ZRkyF/eu8Vv75E5eo=;
-        b=lo66PnOUBMz9ainT7xlxpVyAooH7RhB4tR3DT2s/tV34VHmvbiPcyDPwULa+dkHKGy
-         AaiZ2Dg8ttMZFmlE9JtLW2MWAiIeKF3k1+KZX/FX1ekbH3bl7Z72OyHAWSQIvir3plw5
-         7R4XEhwRxmluCYRBB+UUXu1P81QlZt0z9CTP7UsyurAo8ITxncjrxOiLh60KQgF9+9NA
-         onSi7PlYvrXF7EAJy8biNhneeYJUQjkCU/cLieyjfw5A5Zi1i7Y8REnm7qi7KVwzIDIF
-         Iusre8EOcsobsIexu88Wq28GQBY61AEnk2XSd3Un+gfa/bCV/OClcmVcCNsYVstQp6p3
-         auow==
-X-Gm-Message-State: AOJu0YxKvz3zTYLRj28FwQCLFd5CfKxTSZAxpta6i950UDenOK1VeYyl
-	qLTqkOKLWjT+/+OVIQTLuN4=
-X-Google-Smtp-Source: AGHT+IF8NBDEzEGYQcF27Qh4/HMfq2Q29GAe84qQeg2jGA8hMXmsXodkyDwrxrzH/bMNHmGnbODQ7A==
-X-Received: by 2002:a17:903:484:b0:1d4:e575:520a with SMTP id jj4-20020a170903048400b001d4e575520amr165714plb.46.1704395531858;
-        Thu, 04 Jan 2024 11:12:11 -0800 (PST)
-Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
-        by smtp.gmail.com with ESMTPSA id h9-20020a170902f7c900b001d4752f5403sm17021666plw.206.2024.01.04.11.12.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Jan 2024 11:12:11 -0800 (PST)
-From: dthaler1968@googlemail.com
-X-Google-Original-From: <dthaler1968@gmail.com>
-To: "'Aoyang Fang \(SSE, 222010547\)'" <aoyangfang@link.cuhk.edu.cn>,
-	<bpf@vger.kernel.org>,
-	<bpf@ietf.org>
-Cc: <void@manifault.com>
-References: <3A7D0A57-02EF-4ACB-A599-1029CFCA7E74@link.cuhk.edu.cn>
-In-Reply-To: <3A7D0A57-02EF-4ACB-A599-1029CFCA7E74@link.cuhk.edu.cn>
-Subject: RE: [PATCH] update the consistency issue in documentation
-Date: Thu, 4 Jan 2024 11:12:09 -0800
-Message-ID: <015701da3f41$eaab4d10$c001e730$@gmail.com>
+        d=1e100.net; s=20230601; t=1704396222; x=1705001022;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PngtyanlhICbee0KDi7iQcNT635NIWO7h/ak7+PfeDI=;
+        b=UvpLNdN+fE1/lmQRxMm7fyZv2YZFPJ+Vby8JMhMmM6ShEnTTngX6HwmUZyJXquyJk3
+         1K1Uh5Fc5rmmH1zzeInbwjF1jLpefo9pb7bwd4GEwGnZWPPGLuP6dYJjqfBzhEuykgpH
+         ehLYpAuN2fssiURVwP7uEx9kCTgK+Zz7ykhgL/iP//FCF6I4Ovhvl6PsHbBatOk+Szl7
+         GmmeC4OTo5AgmOCLCoq/bnuexklhg/CzBmdCLpNKXWd38Z2u7AVxUdXv1zRKO9OHgWAN
+         VnyIwD1nXzr0fbEJ/H156kS524LkO36Pfv6pMQfLePgXgzUM3zgAGaB/sfbFDQYlFT2l
+         OWKQ==
+X-Gm-Message-State: AOJu0Yz3B8BOjTZAIIYB0NRuU7ACCN0AFakv9HDL7PaqJRRBEOt+32X1
+	8lEIXapsYN/kh9ph0dKFdVtjgqbdjP3rjrtaEOo=
+X-Google-Smtp-Source: AGHT+IG9T0FiiGPu67lzYqzONX+bAfLTPv2+2J1Ro6tvLQzWP52DQMpQdQrscwBC6Mh60CduZkVGLdcqkX7/FVHUKQo=
+X-Received: by 2002:a05:6512:14b:b0:50e:71d4:a37f with SMTP id
+ m11-20020a056512014b00b0050e71d4a37fmr556963lfo.55.1704396221935; Thu, 04 Jan
+ 2024 11:23:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-us
-Thread-Index: AQJcMuQj7ImLqPZXOVe7T7DiaRKhU6/GHKMQ
+References: <20240103222034.2582628-1-andrii@kernel.org> <20240103222034.2582628-14-andrii@kernel.org>
+ <CAHk-=whDxm+nqu0=7TNJ9XJq=hNuO5QsV7+=PTYt+Ykvz51yQg@mail.gmail.com>
+In-Reply-To: <CAHk-=whDxm+nqu0=7TNJ9XJq=hNuO5QsV7+=PTYt+Ykvz51yQg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 4 Jan 2024 11:23:30 -0800
+Message-ID: <CAEf4BzY6gx+kYmKju+EOtz2MgDa_Ryv+_DSmhtJQRoYvp=DtfA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 13/29] libbpf: add BPF token support to
+ bpf_map_create() API
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	paul@paul-moore.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> -----Original Message-----
-> From: Aoyang Fang (SSE, 222010547) <aoyangfang@link.cuhk.edu.cn>
-> Sent: Wednesday, January 3, 2024 7:13 PM
-> To: bpf@vger.kernel.org; bpf@ietf.org
-> Cc: void@manifault.com
-> Subject: [PATCH] update the consistency issue in documentation
-> 
-> From fa9f3f47ddeb3e9a615c17aea57d2ecd53a7d201 Mon Sep 17 00:00:00
-> 2001
-> From: lincyawer <53161583+Lincyaw@users.noreply.github.com>
-> Date: Thu, 4 Jan 2024 10:51:36 +0800
-> Subject: [PATCH] The original documentation of BPF_JMP instructions is
-> somehow misleading. The code part of instruction, e.g., BPF_JEQ's value is
-> noted as 0x1, however, in `include/uapi/linux/bpf.h`, the value of BPF_JEQ
-is
-> 0x10. At the same time, the description convention is inconsistent with
-the
-> BPF_ALU, whose code are also 4bit, but the value of BPF_ADD is 0x00
+On Thu, Jan 4, 2024 at 11:04=E2=80=AFAM Linus Torvalds
+<torvalds@linuxfoundation.org> wrote:
+>
+> On Wed, 3 Jan 2024 at 14:24, Andrii Nakryiko <andrii@kernel.org> wrote:
+> >
+> > Add ability to provide token_fd for BPF_MAP_CREATE command through
+> > bpf_map_create() API.
+>
+> I'll try to look through the series later, but this email was marked
+> as spam for me.
 
-https://www.ietf.org/archive/id/draft-ietf-bpf-isa-00.html#section-3 says:
-> ==============  ======  =================
-> 4 bits (MSB)    1 bit   3 bits (LSB)
-> ==============  ======  =================
-> code            source  instruction class
-> ==============  ======  =================
+Great, thanks for taking a look!
 
-Hence the code field is 4 bits, and 0x10 cannot fit in a 4 bit field.
-The documentation is already internally consistent, and this proposed
-change would make the documentation incorrect.
+>
+> And it seems to be due to all your emails failing DMARC, even though
+> the others came through:
+>
+>        dmarc=3Dfail (p=3DNONE sp=3DNONE dis=3DNONE) header.from=3Dkernel.=
+org
+>
+> there's no DKIM signature at all, looks like you never went through
+> the kernel.org smtp servers.
 
-Dave
+Yep, thanks for flagging, I guess I'll need to go read Konstantin's
+instructions and adjust my git send-email workflow.
 
+>
+>              Linus
 
