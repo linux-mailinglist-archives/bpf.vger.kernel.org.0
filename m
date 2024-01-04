@@ -1,245 +1,176 @@
-Return-Path: <bpf+bounces-19055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19057-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 404FB824891
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 20:05:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74BAD8248BE
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 20:12:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 582C51C21696
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 19:05:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3D7AB24E49
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 19:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA9528E21;
-	Thu,  4 Jan 2024 19:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0973C2C18E;
+	Thu,  4 Jan 2024 19:12:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nQF2VtXu"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="w0gFWA9L";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="ZA+L76NM";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="HXsRr9LS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33ED28E1F
-	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 19:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a28cd136f03so97966866b.2
-        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 11:05:10 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D395D28E06
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 19:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id CC263C04B956
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 11:12:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1704395537; bh=Nf1NAzKq38WLgSv96qGj6DkiAgkRmYQ6qIAh4zvVNRM=;
+	h=To:Cc:References:In-Reply-To:Date:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=w0gFWA9LNIdY8Yiu2U1x0N+wVON/hTbcfYpkCCBk/PhvpXH5VvH1AbU+NAy8Uq7Mg
+	 3qvW9Y64EN3hDQbclCaLceMv6VF3nO9m+FooU+WKIfMNiaQ1T9EU4e66NxA8U49Q1A
+	 MYvg/OIdiG77RoBwPR0I4Wn29Tcfo803OIGFw16s=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id ABB88C157924;
+ Thu,  4 Jan 2024 11:12:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1704395537; bh=Nf1NAzKq38WLgSv96qGj6DkiAgkRmYQ6qIAh4zvVNRM=;
+ h=From:To:Cc:References:In-Reply-To:Date:Subject:List-Id:
+ List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+ b=ZA+L76NMIdj/2KAWVc+2JE7/djkrMulYmX6mbJnZFvCAK1usA90LmgbriSfoblurP
+ D+hHguRB4vw/AjeBE+a9JSd8JGQuCZUKpqB3mInhw6GwhtGraCW65x3ieTunUR/8HC
+ DdKanhrV9ntIerE9aKLwBX+sZ5QwSzTXaS6E/WTo=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 89C0BC157924
+ for <bpf@ietfa.amsl.com>; Thu,  4 Jan 2024 11:12:16 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.855
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id VHM0ts5UzZwv for <bpf@ietfa.amsl.com>;
+ Thu,  4 Jan 2024 11:12:12 -0800 (PST)
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com
+ [IPv6:2607:f8b0:4864:20::636])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id E890AC14CE53
+ for <bpf@ietf.org>; Thu,  4 Jan 2024 11:12:12 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id
+ d9443c01a7336-1d427518d52so5664405ad.0
+ for <bpf@ietf.org>; Thu, 04 Jan 2024 11:12:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704395109; x=1704999909; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8QmMpR0XqPFYGjNvFAoUCJxRUKXdQ5AMTfb38YDKlIc=;
-        b=nQF2VtXuOcFAbJp85/l0obJaXLD9BXaRHfpEDqtbpQCLaz+ios3qZ45LbmYX5G5Sxm
-         vllyyc6ReoT3yQExaVm9wYzA2h1sbhOTqK3XJTDBDXxKbYIWDK8k6b5PCa2VNB+NXX5K
-         jL4GR5BWpIp1qSFfyYlZRWMjrcoAqK4WBieIvqcAeMHFq259foaJtmG2rvsroGLTLAJc
-         P8W0aW9ss2z5rbOJoXiXR1g2KztexOjE/+AYLMAR38UNrx3r7fx8vZsI86D1OMHD83Xq
-         ewh6qf+TfXNOZod1dgfSJiDeQDckK0cpFy+dRc0BTyKLzI5SL+TgqHauUusz1nameAUb
-         Jl1Q==
+ d=googlemail.com; s=20230601; t=1704395532; x=1705000332; darn=ietf.org;
+ h=thread-index:content-language:content-transfer-encoding
+ :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=wiuAbn1hA+wD2zanBuCoA6Xdp/ZRkyF/eu8Vv75E5eo=;
+ b=HXsRr9LSGn1PiriFQP9UwCEQJGTm7iqZBpu9Nf6fe+b0Qvr4MP0Pk9Tlvx5PBp49vn
+ VYLwiCdb3opiXfTeHTlKMGtkOoIL1np/yWi37tvDGdK+Fc+x1j/Qucy/SZRjrjsz8L10
+ KX9FdzgiIiAvW5Y8Lx7n4ZUaC/rPJhpK08vl3sP7Lplo5X/wqPdhV87+pwcjUggyDm9X
+ ScG8Zv6tey9etxmPQkTukmsihlgGVkBijVRei7ZvfAqk7r0BsHYvufIQ0AUg8/MHXrE4
+ p7aX4uY56AcI9MXS/vvxaX2hE5yZMHoesEagJK6voZt8QL08xc8TiC7TOOeoAUJWP1FE
+ 4IXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704395109; x=1704999909;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8QmMpR0XqPFYGjNvFAoUCJxRUKXdQ5AMTfb38YDKlIc=;
-        b=Hnq1EDlKpZJqdbcSCBwNHuzhvLn6MtwtLGYNJTvS1f9Gn9yIBnjMG3xq66g3weMwCY
-         eXrTm/dCdHIn9TzqTu3yL7acnUfP82TKnGzLKxYjjmnJKdORjsM1TrFB7LK7NcRbQ1nr
-         Hh6opMA7Wr4YlkCgqk3RTX3uOGkLPEO3hwruCct35vj4XLqfG936tRN5ioi7x/sWe9hy
-         06Z6824pXO95OwiATI6BlmPzfjHecrZSIXNnTpuUPkeOaRORtwNrc8rDcevZHUruO0N1
-         golAdBo5lOCAcZ+HWsz/O8wkDZHIP85lsjGO3oJmWqTnQxto+oMPxCT/SGgpfqvm5ctt
-         Q7cA==
-X-Gm-Message-State: AOJu0Yznp0A2940msfZEoJui+yQY3DzfPCskwUH34IWWitVGpnFqxRTQ
-	j2we4X0FrXclJaySKD36wPoRSjzYUdVYfZavs2k=
-X-Google-Smtp-Source: AGHT+IGxzXP4V/t5fuCf8KFcuyHxAsChnzeZiIOL1ibtZX3iWvFRi+ROArtl5w+M5oOvODQvzxGWskJ90trjxtfwKlE=
-X-Received: by 2002:a17:906:81d5:b0:a19:53d9:b365 with SMTP id
- e21-20020a17090681d500b00a1953d9b365mr591226ejx.57.1704395108679; Thu, 04 Jan
- 2024 11:05:08 -0800 (PST)
+ d=1e100.net; s=20230601; t=1704395532; x=1705000332;
+ h=thread-index:content-language:content-transfer-encoding
+ :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+ :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=wiuAbn1hA+wD2zanBuCoA6Xdp/ZRkyF/eu8Vv75E5eo=;
+ b=oNhHbFmx6uMFRjoF/xD81zSksWtrglWmbqoeWQSz0ltI2CrP9TWibggaYjXTYIm8b6
+ vnDs0n4hIQs/an997i84oSU4SapZF8VFdTa22I1KtgkFa01yqUnUh4MjtTau+hu6juh3
+ KkxFx7NMniW65nzi65SVuNmHmSgY0PwjHZ3E8Bz6GlwAFIc1P0P1k33FE7+a8pbXgNY6
+ dWX4oEF8FhYAZjUaIIYbrEENMx9xYXRKkm2fywvM8XweH1LNTYe7qfht73Hy0ru3FQkT
+ j/nhvJU1BdaLuxIBrFvoSO58jQ/K5NYZ6yE4PifxuTU++0NTimt3oh08xsGsaZGX3Zxi
+ BrxQ==
+X-Gm-Message-State: AOJu0YwMzL5XdDalQUyJHOWNXgrynks9IeY3OCboV1fHM2+qvQ5Ieti/
+ 18V779PAMRHS9EUvNIn7YKydKKkBL+w=
+X-Google-Smtp-Source: AGHT+IF8NBDEzEGYQcF27Qh4/HMfq2Q29GAe84qQeg2jGA8hMXmsXodkyDwrxrzH/bMNHmGnbODQ7A==
+X-Received: by 2002:a17:903:484:b0:1d4:e575:520a with SMTP id
+ jj4-20020a170903048400b001d4e575520amr165714plb.46.1704395531858; 
+ Thu, 04 Jan 2024 11:12:11 -0800 (PST)
+Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net.
+ [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
+ h9-20020a170902f7c900b001d4752f5403sm17021666plw.206.2024.01.04.11.12.10
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 04 Jan 2024 11:12:11 -0800 (PST)
+X-Google-Original-From: <dthaler1968@gmail.com>
+To: "'Aoyang Fang \(SSE, 222010547\)'" <aoyangfang@link.cuhk.edu.cn>,
+ <bpf@vger.kernel.org>, <bpf@ietf.org>
+Cc: <void@manifault.com>
+References: <3A7D0A57-02EF-4ACB-A599-1029CFCA7E74@link.cuhk.edu.cn>
+In-Reply-To: <3A7D0A57-02EF-4ACB-A599-1029CFCA7E74@link.cuhk.edu.cn>
+Date: Thu, 4 Jan 2024 11:12:09 -0800
+Message-ID: <015701da3f41$eaab4d10$c001e730$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231226191148.48536-1-alexei.starovoitov@gmail.com>
- <20231226191148.48536-3-alexei.starovoitov@gmail.com> <CAEf4BzYQxH7k22tY7ZFXLLmFS4xy4wNGAVVF2OJECv=1RajF4Q@mail.gmail.com>
- <CAADnVQKcPCoFyqebM6GU7Y8M-6di-Zww8zCjydDiOMjXt4VzAQ@mail.gmail.com>
-In-Reply-To: <CAADnVQKcPCoFyqebM6GU7Y8M-6di-Zww8zCjydDiOMjXt4VzAQ@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 4 Jan 2024 11:04:55 -0800
-Message-ID: <CAEf4BzYfd4MR-4+bWq_fYv-5SEk1oWBDuM06vb2OtpDKTepDQw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 2/6] bpf: Introduce "volatile compare" macros
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQJcMuQj7ImLqPZXOVe7T7DiaRKhU6/GHKMQ
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/78B0his_UicOrI51d1XhMEIruaY>
+Subject: Re: [Bpf] [PATCH] update the consistency issue in documentation
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Original-From: dthaler1968@googlemail.com
+From: dthaler1968=40googlemail.com@dmarc.ietf.org
 
-On Wed, Jan 3, 2024 at 10:04=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Jan 3, 2024 at 11:20=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> > > +
-> > > +/* C type conversions coupled with comparison operator are tricky.
-> > > + * Make sure BPF program is compiled with -Wsign-compre then
-> >
-> > fixed typo while applying: compare
->
-> ohh. I cannot even copy-paste properly.
->
-> > > + * __lhs OP __rhs below will catch the mistake.
-> > > + * Be aware that we check only __lhs to figure out the sign of compa=
-re.
-> > > + */
-> > > +#define _bpf_cmp(LHS, OP, RHS, NOFLIP) \
-> >
-> > nit: NOFLIP name is absolutely confusing, tbh, it would be nice to
-> > rename it to something more easily understood (DEFAULT is IMO better)
->
-> I actually had it as DEFAULT, but it was less clear.
-> NOFLIP means whether the condition should be flipped or not.
-> DEFAULT is too ambiguous.
+> -----Original Message-----
+> From: Aoyang Fang (SSE, 222010547) <aoyangfang@link.cuhk.edu.cn>
+> Sent: Wednesday, January 3, 2024 7:13 PM
+> To: bpf@vger.kernel.org; bpf@ietf.org
+> Cc: void@manifault.com
+> Subject: [PATCH] update the consistency issue in documentation
+> 
+> From fa9f3f47ddeb3e9a615c17aea57d2ecd53a7d201 Mon Sep 17 00:00:00
+> 2001
+> From: lincyawer <53161583+Lincyaw@users.noreply.github.com>
+> Date: Thu, 4 Jan 2024 10:51:36 +0800
+> Subject: [PATCH] The original documentation of BPF_JMP instructions is
+> somehow misleading. The code part of instruction, e.g., BPF_JEQ's value is
+> noted as 0x1, however, in `include/uapi/linux/bpf.h`, the value of BPF_JEQ
+is
+> 0x10. At the same time, the description convention is inconsistent with
+the
+> BPF_ALU, whose code are also 4bit, but the value of BPF_ADD is 0x00
 
-LIKELY (or UNLIKELY, whichever makes sense) might be another
-suggestion. But it's minor, so feel free to ignore.
+https://www.ietf.org/archive/id/draft-ietf-bpf-isa-00.html#section-3 says:
+> ==============  ======  =================
+> 4 bits (MSB)    1 bit   3 bits (LSB)
+> ==============  ======  =================
+> code            source  instruction class
+> ==============  ======  =================
 
->
-> > > +       ({ \
-> > > +               typeof(LHS) __lhs =3D (LHS); \
-> > > +               typeof(RHS) __rhs =3D (RHS); \
-> > > +               bool ret; \
-> > > +               _Static_assert(sizeof(&(LHS)), "1st argument must be =
-an lvalue expression"); \
-> > > +               (void)(__lhs OP __rhs); \
-> >
-> > what is this part for? Is this what "__lhs OP __rhs below will catch
-> > the mistake" in the comment refers to?
->
-> Yes. This one will give proper error either on GCC -Wall
-> or with clang -Wall -Wsign-compare.
->
-> >
-> > BTW, I think we hit this one when invalid OP is specified, before we
-> > get to (void)"bug" (see below). So maybe it would be better to push it
-> > deeper into __bpf_cmp itself?
-> >
-> > > +               if (__cmp_cannot_be_signed(OP) || !__is_signed_type(t=
-ypeof(__lhs))) {\
-> > > +                       if (sizeof(__rhs) =3D=3D 8) \
-> > > +                               ret =3D __bpf_cmp(__lhs, OP, "", "r",=
- __rhs, NOFLIP); \
-> > > +                       else \
-> > > +                               ret =3D __bpf_cmp(__lhs, OP, "", "i",=
- __rhs, NOFLIP); \
-> >
-> > tbh, I'm also not 100% sure why this sizeof() =3D=3D 8 and correspondin=
-g r
-> > vs i change? Can you please elaborate (and add a comment in a follow
-> > up, perhaps?)
->
-> That was in the commit log:
-> "
-> Note that the macros has to be careful with RHS assembly predicate.
-> Since:
-> u64 __rhs =3D 1ull << 42;
-> asm goto("if r0 < %[rhs] goto +1" :: [rhs] "ri" (__rhs));
-> LLVM will silently truncate 64-bit constant into s32 imm.
-> "
->
-> I will add a comment to the code as well.
+Hence the code field is 4 bits, and 0x10 cannot fit in a 4 bit field.
+The documentation is already internally consistent, and this proposed
+change would make the documentation incorrect.
 
-ah, ok, it didn't click for me, thanks for adding a comment
+Dave
 
-while on the topic, is there a problem specifying "ri" for sizeof() <
-8 case? At least for alu32 cases, shouldn't we allow w1 < w2 kind of
-situations?
-
->
-> >
-> > > +               } else { \
-> > > +                       if (sizeof(__rhs) =3D=3D 8) \
-> > > +                               ret =3D __bpf_cmp(__lhs, OP, "s", "r"=
-, __rhs, NOFLIP); \
-> > > +                       else \
-> > > +                               ret =3D __bpf_cmp(__lhs, OP, "s", "i"=
-, __rhs, NOFLIP); \
-> >
-> > one simplification that would reduce number of arguments to __bpf_cmp:
-> >
-> > in __bpf_cmp (drop # before OP):
-> >
-> > asm volatile goto("if %[lhs] " OP " %[rhs] goto %l[l_true]"
-> >
-> >
-> > And here you just stringify operator, appending "s" if necessary:
-> >
-> > ret =3D __bpf_cmp(__lhs, #OP, "i", __rhs, NOFLIP);
-> >
-> > or
-> >
-> > ret =3D __bpf_cmp(__lhs, "s"#OP, "r", __rhs, NOFLIP);
-> >
-> > Consider for a follow up, if you agree it is a simplification.
->
-> Just to reduce the number of arguments? I will give it a try.
-
-yeah, pretty much just for that
-
->
-> > I actually like a more verbose but also more explicit way of likely
-> > implementation, listing explicitly supported operators.  It will also
-> > be easier for users to check what they are supposed to pass. So that's
-> > another thing to maybe do in the follow up?
->
-> I thought about making unlikely explicit, but it looked weird and noisy:
->                 if (__builtin_strcmp(#OP, "=3D=3D") =3D=3D 0 ||
->                     __builtin_strcmp(#OP, "!=3D") =3D=3D 0 ||
->                     __builtin_strcmp(#OP, "<") =3D=3D 0  ||
-> ...
-> and all the noise just to make unlikely match likely.
->
-> I felt it's not worth it and the error in the current form as you noticed=
-:
->
-> > progs/iters_task_vma.c:31:7: error: invalid operand for instruction
-> >    31 |                 if (bpf_cmp_unlikely(seen, <<, 1000))
-> > <inline asm>:1:8: note: instantiated into assembly here
-> >    1 |         if r6 << 1000 goto LBB0_6
->
-> is much cleaner instead of (void) return.
-
-Right, I only played with unlikely last time. Trying the same with
-likely right now, it's not that great:
-
-In file included from progs/profiler2.c:6:
-progs/profiler.inc.h:225:7: error: variable 'ret' is uninitialized
-when used here [-Werror,-Wuninitialized]
-  225 |                 if (bpf_cmp_likely(filepart_length, <=3D=3D, MAX_PA=
-TH)) {
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/data/users/andriin/linux/tools/testing/selftests/bpf/bpf_experimental.h:32=
-2:3:
-note: expanded from macro 'bpf_cmp_likely'
-  322 |                 ret;
-                                 \
-      |                 ^~~
-progs/profiler.inc.h:225:7: note: variable 'ret' is declared here
-/data/users/andriin/linux/tools/testing/selftests/bpf/bpf_experimental.h:30=
-7:3:
-note: expanded from macro 'bpf_cmp_likely'
-  307 |                 bool ret;
-                                 \
-      |                 ^
-
-I tried adding _Static_assert, and it is triggered for all valid cases
-as well, so it seems like the compiler doesn't detect this last branch
-as dead code, unfortunately.
-
->
-> I've tried many different ways to have a helper macro
-> #define flip_cmp_opcode(OP)
-> and use it inside the bpf_cmp, but couldn't make it work.
-> This is the shortest version of macros I came up with.
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
