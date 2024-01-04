@@ -1,202 +1,157 @@
-Return-Path: <bpf+bounces-18986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-18989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29DBC823A48
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 02:39:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 302FB823A4F
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 02:42:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0A3CB21DD5
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 01:39:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43A321C24B9C
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 01:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E40C71847;
-	Thu,  4 Jan 2024 01:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA95C1C20;
+	Thu,  4 Jan 2024 01:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mfGRZLyi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BF221FB3
-	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 01:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 403GiLdK020285
-	for <bpf@vger.kernel.org>; Wed, 3 Jan 2024 17:39:16 -0800
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3vda7m3vf3-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 17:39:15 -0800
-Received: from twshared29562.14.frc2.facebook.com (2620:10d:c0a8:1b::2d) by
- mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 3 Jan 2024 17:39:13 -0800
-Received: by devbig019.vll3.facebook.com (Postfix, from userid 137359)
-	id 805EB3DFAFEB9; Wed,  3 Jan 2024 17:39:10 -0800 (PST)
-From: Andrii Nakryiko <andrii@kernel.org>
-To: <bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <martin.lau@kernel.org>
-CC: <andrii@kernel.org>, <kernel-team@meta.com>,
-        Eduard Zingerman
-	<eddyz87@gmail.com>
-Subject: [PATCH v3 bpf-next 9/9] selftests/bpf: add __arg_ctx BTF rewrite test
-Date: Wed, 3 Jan 2024 17:38:47 -0800
-Message-ID: <20240104013847.3875810-10-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240104013847.3875810-1-andrii@kernel.org>
-References: <20240104013847.3875810-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E65491878
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 01:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-336746c7b6dso33515f8f.0
+        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 17:41:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704332518; x=1704937318; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=owFicmdt8Z93Mo23mHgHl5yM/Cxr8Gr0qCbKIRDU3lI=;
+        b=mfGRZLyiYbf4Xmx7Bi3n3albXVNJT2LDvZDLh1gQe9upBqJD0Ir8LnvircChLpaKsg
+         prDlBZhQkmI25hE4virrx4cHFy8sHfsGRC7/NJXjRAZbD3Linkkus2fttdueCAQzZQLO
+         6tbm72xmgigoT4frsEIv0gXfIaly+EWCLhRM2JqEvC7mDWv+570hR4BHPHYGhImKLMpj
+         BdXQm2O0Qo3vHso785Qd3qD28NDMQtoZA2NGHbY077JREGtdWXML1LH3ykTPrFBI1xeJ
+         QVwzuyRVPabGgx619jW5FDHS3F2en9XE0CgxBxhglDvA/9X+YIAgd14KRk8+EfoWYIpg
+         pskQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704332518; x=1704937318;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=owFicmdt8Z93Mo23mHgHl5yM/Cxr8Gr0qCbKIRDU3lI=;
+        b=Fi2SdKujLlHhYdWbe5m8hMI6XrEm8t0TNolIiw5wtGaku8BLi5kSOyYrZ1mVUeBf2u
+         GeUMBapyO3ThwIYIk5kWsSbhPsrNutN9Hot1JYrEOiDgjTnnKMTgYnFX9VG/QMPoNPqA
+         Q/VK9W9mQT7Z1Sz4Xtg7Yu6MbvQAwv7QmJCpwYRC98Cl9w1i+MA32WlGAUAtDTgpw3Iq
+         8NoY8zJlLPJiO523asgiiuJZhF6SWMjkZgxeGhAYab0YWY95hu0605HhuCrwWEaMZ2qp
+         qUqkdV24O+WwMaJdLWcNcGTyj8AwXLL/TQVfF1l+UFwo+AAGohvH6HRRph0ruv0vXB/H
+         58kg==
+X-Gm-Message-State: AOJu0YzM1+YQjXXVjaZ94ScwBZas5myXqWv6xH/e1ZJ5HInbXuSyeh8Z
+	ex+udlDJJwfd/zehGLZ46t7iu/IOmcmvPyLOWkc=
+X-Google-Smtp-Source: AGHT+IGPfmRNDH7z1kBV73btG7eMWN5Z3iShUNpkF3qAFkZvK9c5NcfF3TsZz701hlzdgHYSyhsGUjszX8hsX1BB/yA=
+X-Received: by 2002:a5d:66cb:0:b0:337:39c7:2a3 with SMTP id
+ k11-20020a5d66cb000000b0033739c702a3mr3355655wrw.129.1704332517937; Wed, 03
+ Jan 2024 17:41:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <TYZPR03MB679243A8E626CC796CB7BDBDB461A@TYZPR03MB6792.apcprd03.prod.outlook.com>
+ <CAKOkDnNAQSrWxsJBrcLV7ReaQkX_BHX+EAn69e0cpe9b=FAsUg@mail.gmail.com>
+ <CAKOkDnPnNE=MNP-1_8=T9vw6Ox80OAJmKonzpDO4abW8Dz9JwA@mail.gmail.com> <SEZPR03MB67865F9167DABCA16AA6811BB4602@SEZPR03MB6786.apcprd03.prod.outlook.com>
+In-Reply-To: <SEZPR03MB67865F9167DABCA16AA6811BB4602@SEZPR03MB6786.apcprd03.prod.outlook.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 3 Jan 2024 17:41:46 -0800
+Message-ID: <CAADnVQJCxFt2R=fbqx1T_03UioAsBO4UXYGh58kJaYHDpMHyxw@mail.gmail.com>
+Subject: Re: [External] Fwd: BPF-NX+CFI is a good upstreaming candidate
+To: Maxwell Bland <mbland@motorola.com>
+Cc: "Jin, Di" <di_jin@brown.edu>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"v.atlidakis@gmail.com" <v.atlidakis@gmail.com>, "vpk@cs.brown.edu" <vpk@cs.brown.edu>, 
+	Andrew Wheeler <awheeler@motorola.com>, =?UTF-8?B?U2FtbXkgQlMyIFF1ZSB8IOmYmeaWjOeUnw==?= <quebs2@motorola.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: NkaUzKRCTAnrK6ZSDueAZDoCp5HZGp3D
-X-Proofpoint-ORIG-GUID: NkaUzKRCTAnrK6ZSDueAZDoCp5HZGp3D
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-01-03_10,2024-01-03_01,2023-05-22_02
 
-Add a test validating that libbpf uploads BTF and func_info with
-rewritten type information for arguments of global subprogs that are
-marked with __arg_ctx tag.
+On Wed, Jan 3, 2024 at 3:45=E2=80=AFPM Maxwell Bland <mbland@motorola.com> =
+wrote:
+>
+> > -----Original Message-----
+> > From: Jin, Di <di_jin@brown.edu>
+> > Sent: Wednesday, January 3, 2024 4:39 PM
+> > To: bpf@vger.kernel.org
+> > Subject: [External] Fwd: BPF-NX+CFI is a good upstreaming candidate
+> >
+> > ---------- Forwarded message ---------
+> > From: Jin, Di <di_jin@brown.edu>
+> > Date: Wed, Jan 3, 2024 at 5:19=E2=80=AFPM
+> > Subject: Re: BPF-NX+CFI is a good upstreaming candidate
+> > To: Maxwell Bland <mbland@motorola.com>
+> > Cc: v.atlidakis@gmail.com <v.atlidakis@gmail.com>, vpk@cs.brown.edu
+> > <vpk@cs.brown.edu>, dborkman@kernel.org <dborkman@kernel.org>, lsf-
+> > pc@lists.linux-foundation.org <lsf-pc@lists.linux-foundation.org>,
+> > bpf@vger.kernel.org <bpf@vger.kernel.org>, Andrew Wheeler
+> > <awheeler@motorola.com>, Sammy BS2 Que | =E9=98=99=E6=96=8C=E7=94=9F
+> > <quebs2@motorola.com>
+> >
+> >
+> > Dear all,
+> >
+> > There are a couple of noteworthy things about the patches:
+> > 1. They currently don't work with CONFIG_RANDOMIZE_MEMORY, which
+> > should probably be addressed.
+> > 2. BPF-CFI tries to ensure the interpreter starts from the correct offs=
+et under
+> > code-reuse attacks, which means it needs some form of control flow inte=
+grity.
+> > Here we are enforcing that with the state of a read-only variable, whic=
+h is
+> > toggled by temporarily disabling the WP bit. This also introduces the p=
+roblem
+> > of having to disable interrupt during the interpreter's execution other=
+wise the
+> > variable will be in the wrong state during interrupt. In the paper we o=
+ptimized
+> > away the toggling of the WP bit by some trick involving turning off pro=
+tection
+> > like SMAP during the interpreter's execution, which is faster in terms =
+of
+> > performance, but the security trade-off is a bit more subtle. The argum=
+ent
+> > being that SMAP (or PAN) are contributing very marginally when BPF
+> > programs are being executed, since the things they are defending agains=
+t,
+> > namely user-controlled memory content, are already present in the execu=
+tion
+> > context. This version of BPF-CFI should incur almost no overhead. The W=
+P bit
+> > toggling version I don't have numbers at hand.
+> >
+> > @Maxwell: If you are not in a hurry (I will need a couple of days) I ca=
+n
+> > generate a set of patches that are compatible for patch submission (pro=
+per
+> > name and email address, signoff, formatting, etc.), during which I can =
+also get
+> > some performance numbers. We can discuss authorship depending on how
+> > much you want to adapt these patches.
+> >
+> > Regards,
+> > Di Jin
+>
+> Hi Di Jin,
+>
+> Thanks! I sent some formatted patches for review a bit earlier today. See=
+ https://lore.kernel.org/bpf/SEZPR03MB678610EEBA5140BAA4D1F13EB4602@SEZPR03=
+MB6786.apcprd03.prod.outlook.com/. There was great feedback from Alexei Sta=
+rovoitov on the issue of Spectre effecting the interpreter when JIT is enab=
+led, so there is a mutual conflict with any hardening options which disable=
+ JIT. This seems to be a major barrier.
 
-Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/prog_tests/test_global_funcs.c        | 106 ++++++++++++++++++
- 1 file changed, 106 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c b=
-/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-index e0879df38639..67d4ef9e62b3 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_global_funcs.c
-@@ -20,6 +20,109 @@
- #include "test_global_func17.skel.h"
- #include "test_global_func_ctx_args.skel.h"
-=20
-+#include "bpf/libbpf_internal.h"
-+#include "btf_helpers.h"
-+
-+static void check_ctx_arg_type(const struct btf *btf, const struct btf_p=
-aram *p)
-+{
-+	const struct btf_type *t;
-+	const char *s;
-+
-+	t =3D btf__type_by_id(btf, p->type);
-+	if (!ASSERT_EQ(btf_kind(t), BTF_KIND_PTR, "ptr_t"))
-+		return;
-+
-+	s =3D btf_type_raw_dump(btf, t->type);
-+	if (!ASSERT_HAS_SUBSTR(s, "STRUCT 'bpf_perf_event_data' size=3D0 vlen=3D=
-0",
-+			       "ctx_struct_t"))
-+		return;
-+}
-+
-+static void subtest_ctx_arg_rewrite(void)
-+{
-+	struct test_global_func_ctx_args *skel =3D NULL;
-+	struct bpf_prog_info info;
-+	char func_info_buf[1024] __attribute__((aligned(8)));
-+	struct bpf_func_info_min *rec;
-+	struct btf *btf =3D NULL;
-+	__u32 info_len =3D sizeof(info);
-+	int err, fd, i;
-+
-+	skel =3D test_global_func_ctx_args__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	bpf_program__set_autoload(skel->progs.arg_tag_ctx_perf, true);
-+
-+	err =3D test_global_func_ctx_args__load(skel);
-+	if (!ASSERT_OK(err, "skel_load"))
-+		goto out;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.func_info =3D ptr_to_u64(&func_info_buf);
-+	info.nr_func_info =3D 3;
-+	info.func_info_rec_size =3D sizeof(struct bpf_func_info_min);
-+
-+	fd =3D bpf_program__fd(skel->progs.arg_tag_ctx_perf);
-+	err =3D bpf_prog_get_info_by_fd(fd, &info, &info_len);
-+	if (!ASSERT_OK(err, "prog_info"))
-+		goto out;
-+
-+	if (!ASSERT_EQ(info.nr_func_info, 3, "nr_func_info"))
-+		goto out;
-+
-+	btf =3D btf__load_from_kernel_by_id(info.btf_id);
-+	if (!ASSERT_OK_PTR(btf, "obj_kern_btf"))
-+		goto out;
-+
-+	rec =3D (struct bpf_func_info_min *)func_info_buf;
-+	for (i =3D 0; i < info.nr_func_info; i++, rec =3D (void *)rec + info.fu=
-nc_info_rec_size) {
-+		const struct btf_type *fn_t, *proto_t;
-+		const char *name;
-+
-+		if (rec->insn_off =3D=3D 0)
-+			continue; /* main prog, skip */
-+
-+		fn_t =3D btf__type_by_id(btf, rec->type_id);
-+		if (!ASSERT_OK_PTR(fn_t, "fn_type"))
-+			goto out;
-+		if (!ASSERT_EQ(btf_kind(fn_t), BTF_KIND_FUNC, "fn_type_kind"))
-+			goto out;
-+		proto_t =3D btf__type_by_id(btf, fn_t->type);
-+		if (!ASSERT_OK_PTR(proto_t, "proto_type"))
-+			goto out;
-+
-+		name =3D btf__name_by_offset(btf, fn_t->name_off);
-+		if (strcmp(name, "subprog_ctx_tag") =3D=3D 0) {
-+			/* int subprog_ctx_tag(void *ctx __arg_ctx) */
-+			if (!ASSERT_EQ(btf_vlen(proto_t), 1, "arg_cnt"))
-+				goto out;
-+
-+			/* arg 0 is PTR -> STRUCT bpf_perf_event_data */
-+			check_ctx_arg_type(btf, &btf_params(proto_t)[0]);
-+		} else if (strcmp(name, "subprog_multi_ctx_tags") =3D=3D 0) {
-+			/* int subprog_multi_ctx_tags(void *ctx1 __arg_ctx,
-+			 *			      struct my_struct *mem,
-+			 *			      void *ctx2 __arg_ctx)
-+			 */
-+			if (!ASSERT_EQ(btf_vlen(proto_t), 3, "arg_cnt"))
-+				goto out;
-+
-+			/* arg 0 is PTR -> STRUCT bpf_perf_event_data */
-+			check_ctx_arg_type(btf, &btf_params(proto_t)[0]);
-+			/* arg 2 is PTR -> STRUCT bpf_perf_event_data */
-+			check_ctx_arg_type(btf, &btf_params(proto_t)[2]);
-+		} else {
-+			ASSERT_FAIL("unexpected subprog %s", name);
-+			goto out;
-+		}
-+	}
-+
-+out:
-+	btf__free(btf);
-+	test_global_func_ctx_args__destroy(skel);
-+}
-+
- void test_test_global_funcs(void)
- {
- 	RUN_TESTS(test_global_func1);
-@@ -40,4 +143,7 @@ void test_test_global_funcs(void)
- 	RUN_TESTS(test_global_func16);
- 	RUN_TESTS(test_global_func17);
- 	RUN_TESTS(test_global_func_ctx_args);
-+
-+	if (test__start_subtest("ctx_arg_rewrite"))
-+		subtest_ctx_arg_rewrite();
- }
---=20
-2.34.1
-
+Not quite. The presence of _any_ interpreter in the kernel text is
+a problem regardless of whether JIT-ing is enabled or not.
+In bpf case we can always use JIT and remove the interpreter from vmlinux.
+Hence "JIT always on" is a security fix.
 
