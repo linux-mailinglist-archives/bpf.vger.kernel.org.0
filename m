@@ -1,129 +1,198 @@
-Return-Path: <bpf+bounces-19010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04E56823BD0
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 06:39:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0048823C01
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 07:04:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 166091C24C78
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 05:39:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47AE4286F87
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 06:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45EDF18640;
-	Thu,  4 Jan 2024 05:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185E618C31;
+	Thu,  4 Jan 2024 06:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HGUe1DgF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJ2HI8Ls"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6F91862D
-	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 05:39:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2102218EBD
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 06:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33723ad790cso121858f8f.1
-        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 21:39:42 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40d4a222818so6662835e9.0
+        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 22:04:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704346780; x=1704951580; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704348242; x=1704953042; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/E9RVyHBQxuSD+t/xFiwEMLinUzKnQy5Uq2prnwx324=;
-        b=HGUe1DgFh9gxmNhcXrIZUwsoceUqwzMsnoe8pY81ZEipQabaaqPXsD4dauwa/lnIFW
-         jDGM92jtRb4WJ3UwB1xysmfLIoVuly2Uu7NXD16g+rin9FozlG8q0U3tUKUfGVZum5yd
-         yFqMDKY3TkIdZioK2kPy7q03gHo2ZEUXBQByCeB/sT208qh3fw65QfcKD5+AhG9UOBwP
-         1i4vlqVowvMMQMLsO/PIHmCCZ4jXZU9F/bEd+1706ZNVaA9QIvz/r2a4+u4QpHtIIHCs
-         PqQToShQtzLHEyroL31EuA2w+shhaZTQK6ar2Tnpqe78xxE8xW/tL/M2At/97cbIUoUY
-         7vXQ==
+        bh=4ybCF+Hxy0ygDy/j2/K+Ki2UTLHEtTEJ3IYaizFfCBs=;
+        b=FJ2HI8LsEnBSs+xSEw7qUVPmgMpTXt1ozxtxvJqTUay1PTtQeNNuSW//PBjf7EdqQt
+         TA0R6OELn0D1gSiMOiwMjgvYUn4BWKTlizEDXK7nbjN4/m/F3gW1ZxMCG7NXq9kK+t4V
+         /U3CJtpygBFh83Z8tR0Gs+/3UlapJfqOrK6wEH/vwEthIcpcAGevKpJQva5IcOErzSPC
+         adW4oFPGvgrKfI9OegfrYLTabzZNFr1L8Gi9y37OwBnI94yHoIjd/YxGnyhyFSiVQ8aG
+         KCSjzwwn128BuR+3DbXtoMoU1QjZd3NCebUtJmtl/Dj9d0kN7SQAXXCErRLej4HhjMGW
+         sK/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704346780; x=1704951580;
+        d=1e100.net; s=20230601; t=1704348242; x=1704953042;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/E9RVyHBQxuSD+t/xFiwEMLinUzKnQy5Uq2prnwx324=;
-        b=nKiOOdmRU6Xnkw/8Cp4aFW63tp0EWLygCTVMfOZw79o1pT9JfQBtmEeTxeamSs75yN
-         wrdnawSH4IK4bTSpSo1fkqUg6b3l4O6uy5vmE0icyUupG0ft9lJZXfhHoj/rrg2leSQf
-         auST5IUZVji3BNqLyr3zqfJMKghnM0wvdtEPpdZ53GgfBeK94X9Iwe4mgQCc/2DE3Zyz
-         kVxVBHKJYHuELOV+TuKDRaYXNNpA1AI6KwrtPBfoEQOmB253y21nk8D4xVm7sIw35LO1
-         c5UwZZ2+/M3cgPYLUYMjliqhUvOS9biyYD3mQ+eNHoJk2QLDLUs4ef4UpXW6hXhyJ1l0
-         0hkg==
-X-Gm-Message-State: AOJu0Yxb5TZOTFVXlwBPDgOqwnsFo7BIoTE4x8xCyC5uoYqSxucLIYMs
-	gBGKC4Q04DKb7X/SAmFwXdZWHSwcNF/ptJujqYc=
-X-Google-Smtp-Source: AGHT+IF6hYE+DX2T4Mxpf9mYK3mtTQAjXYUnfcA2ppSfg2vRGH7IH/7ltytUXGQZ4zexH1qGD6cBKl50/kp6socTzpU=
-X-Received: by 2002:a05:6000:1b8a:b0:336:82a4:f7bc with SMTP id
- r10-20020a0560001b8a00b0033682a4f7bcmr37369wru.37.1704346780354; Wed, 03 Jan
- 2024 21:39:40 -0800 (PST)
+        bh=4ybCF+Hxy0ygDy/j2/K+Ki2UTLHEtTEJ3IYaizFfCBs=;
+        b=a65hGmsAzsz2LVp0iFxT3HiF3NcyBOpbeoyYouHIM0/SfszT6g4G0VFpdyRS05+qw1
+         wxMKxUNz4G5Kjv5hmOdp4wF04HcTk+bOuW8d8IV65a1mo6CwBYApJRFt3Tc/tPgtyajG
+         O5D7RgSZrfD89u3byxoIGC7uCeGxk4RzzvFt3plC8/18HEd5buZYY9PWRu1WHIN4U3FC
+         46pPI6Tawln6euI+QrvD81rWgyZe1tTQc86LBk9X1iMqeyPLdrn0HimYxUTmdPgBte97
+         M9xRTtg9SvBfkXuTrUoYIn8gyU5agwoXzYWKlhzfq52jIdypxh3GXcGezrwp5wdMNtNN
+         /SXQ==
+X-Gm-Message-State: AOJu0YyI86E+2SyiccJvse20+uQAIBRnVgYtx5yuNNmBBGZN4S+5wDSL
+	Ds+j0iuUEYlI2vhCWfx5lfsVPK1F75gAeQw8llY=
+X-Google-Smtp-Source: AGHT+IG0T9lVTeenI+6vdQ6XTBX0W9r9t26z+BIYLglioK+F2gK0ydtqNNWLZTXFMn5++8zPczpfQsHunG+AZKeIpwQ=
+X-Received: by 2002:a05:600c:518b:b0:40d:51c5:665d with SMTP id
+ fa11-20020a05600c518b00b0040d51c5665dmr36117wmb.0.1704348242087; Wed, 03 Jan
+ 2024 22:04:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104013847.3875810-1-andrii@kernel.org> <20240104013847.3875810-8-andrii@kernel.org>
-In-Reply-To: <20240104013847.3875810-8-andrii@kernel.org>
+References: <20231226191148.48536-1-alexei.starovoitov@gmail.com>
+ <20231226191148.48536-3-alexei.starovoitov@gmail.com> <CAEf4BzYQxH7k22tY7ZFXLLmFS4xy4wNGAVVF2OJECv=1RajF4Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzYQxH7k22tY7ZFXLLmFS4xy4wNGAVVF2OJECv=1RajF4Q@mail.gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 3 Jan 2024 21:39:29 -0800
-Message-ID: <CAADnVQJn0+fvvbOVnfPFQm=1j+=oFsjy65T2-QY8Ps0pL4nh_A@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 7/9] libbpf: implement __arg_ctx fallback logic
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kernel Team <kernel-team@meta.com>, Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 3 Jan 2024 22:03:50 -0800
+Message-ID: <CAADnVQKcPCoFyqebM6GU7Y8M-6di-Zww8zCjydDiOMjXt4VzAQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/6] bpf: Introduce "volatile compare" macros
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 3, 2024 at 5:39=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org> =
-wrote:
+On Wed, Jan 3, 2024 at 11:20=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+> > +
+> > +/* C type conversions coupled with comparison operator are tricky.
+> > + * Make sure BPF program is compiled with -Wsign-compre then
 >
-> This limitation was the reason to add btf_decl_tag("arg:ctx"), making
-> the actual argument type not important, so that user can just define
-> "generic" signature:
+> fixed typo while applying: compare
+
+ohh. I cannot even copy-paste properly.
+
+> > + * __lhs OP __rhs below will catch the mistake.
+> > + * Be aware that we check only __lhs to figure out the sign of compare=
+.
+> > + */
+> > +#define _bpf_cmp(LHS, OP, RHS, NOFLIP) \
 >
->   __noinline int global_subprog(void *ctx __arg_ctx) { ... }
+> nit: NOFLIP name is absolutely confusing, tbh, it would be nice to
+> rename it to something more easily understood (DEFAULT is IMO better)
 
-I still think that this __arg_ctx only makes sense with 'void *'.
-Blind rewrite of ctx is a foot gun.
+I actually had it as DEFAULT, but it was less clear.
+NOFLIP means whether the condition should be flipped or not.
+DEFAULT is too ambiguous.
 
-I've tried the following:
+> > +       ({ \
+> > +               typeof(LHS) __lhs =3D (LHS); \
+> > +               typeof(RHS) __rhs =3D (RHS); \
+> > +               bool ret; \
+> > +               _Static_assert(sizeof(&(LHS)), "1st argument must be an=
+ lvalue expression"); \
+> > +               (void)(__lhs OP __rhs); \
+>
+> what is this part for? Is this what "__lhs OP __rhs below will catch
+> the mistake" in the comment refers to?
 
-diff --git a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-index 9a06e5eb1fbe..0e5f5205d4a8 100644
---- a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-+++ b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
-@@ -106,9 +106,9 @@ int perf_event_ctx(void *ctx)
- /* this global subprog can be now called from many types of entry progs, e=
-ach
-  * with different context type
-  */
--__weak int subprog_ctx_tag(void *ctx __arg_ctx)
-+__weak int subprog_ctx_tag(long ctx __arg_ctx)
- {
--       return bpf_get_stack(ctx, stack, sizeof(stack), 0);
-+       return bpf_get_stack((void *)ctx, stack, sizeof(stack), 0);
- }
+Yes. This one will give proper error either on GCC -Wall
+or with clang -Wall -Wsign-compare.
 
- struct my_struct { int x; };
-@@ -131,7 +131,7 @@ int arg_tag_ctx_raw_tp(void *ctx)
- {
-        struct my_struct x =3D { .x =3D 123 };
+>
+> BTW, I think we hit this one when invalid OP is specified, before we
+> get to (void)"bug" (see below). So maybe it would be better to push it
+> deeper into __bpf_cmp itself?
+>
+> > +               if (__cmp_cannot_be_signed(OP) || !__is_signed_type(typ=
+eof(__lhs))) {\
+> > +                       if (sizeof(__rhs) =3D=3D 8) \
+> > +                               ret =3D __bpf_cmp(__lhs, OP, "", "r", _=
+_rhs, NOFLIP); \
+> > +                       else \
+> > +                               ret =3D __bpf_cmp(__lhs, OP, "", "i", _=
+_rhs, NOFLIP); \
+>
+> tbh, I'm also not 100% sure why this sizeof() =3D=3D 8 and corresponding =
+r
+> vs i change? Can you please elaborate (and add a comment in a follow
+> up, perhaps?)
 
--       return subprog_ctx_tag(ctx) + subprog_multi_ctx_tags(ctx, &x, ctx);
-+       return subprog_ctx_tag((long)ctx) +
-subprog_multi_ctx_tags(ctx, &x, ctx);
- }
+That was in the commit log:
+"
+Note that the macros has to be careful with RHS assembly predicate.
+Since:
+u64 __rhs =3D 1ull << 42;
+asm goto("if r0 < %[rhs] goto +1" :: [rhs] "ri" (__rhs));
+LLVM will silently truncate 64-bit constant into s32 imm.
+"
 
-and it "works".
+I will add a comment to the code as well.
 
-Both kernel and libbpf should really limit it to 'void *'.
+>
+> > +               } else { \
+> > +                       if (sizeof(__rhs) =3D=3D 8) \
+> > +                               ret =3D __bpf_cmp(__lhs, OP, "s", "r", =
+__rhs, NOFLIP); \
+> > +                       else \
+> > +                               ret =3D __bpf_cmp(__lhs, OP, "s", "i", =
+__rhs, NOFLIP); \
+>
+> one simplification that would reduce number of arguments to __bpf_cmp:
+>
+> in __bpf_cmp (drop # before OP):
+>
+> asm volatile goto("if %[lhs] " OP " %[rhs] goto %l[l_true]"
+>
+>
+> And here you just stringify operator, appending "s" if necessary:
+>
+> ret =3D __bpf_cmp(__lhs, #OP, "i", __rhs, NOFLIP);
+>
+> or
+>
+> ret =3D __bpf_cmp(__lhs, "s"#OP, "r", __rhs, NOFLIP);
+>
+> Consider for a follow up, if you agree it is a simplification.
 
-In the other email I suggested to allow types that match expected
-based on prog type, but even that is probably a danger zone as well.
-The correct type would already be detected by the verifier,
-so extra __arg_ctx is pointless.
-It makes sense only for such polymorphic functions and those
-better use 'void *' and don't dereference it.
+Just to reduce the number of arguments? I will give it a try.
 
-I think this can be a follow up.
+> I actually like a more verbose but also more explicit way of likely
+> implementation, listing explicitly supported operators.  It will also
+> be easier for users to check what they are supposed to pass. So that's
+> another thing to maybe do in the follow up?
+
+I thought about making unlikely explicit, but it looked weird and noisy:
+                if (__builtin_strcmp(#OP, "=3D=3D") =3D=3D 0 ||
+                    __builtin_strcmp(#OP, "!=3D") =3D=3D 0 ||
+                    __builtin_strcmp(#OP, "<") =3D=3D 0  ||
+...
+and all the noise just to make unlikely match likely.
+
+I felt it's not worth it and the error in the current form as you noticed:
+
+> progs/iters_task_vma.c:31:7: error: invalid operand for instruction
+>    31 |                 if (bpf_cmp_unlikely(seen, <<, 1000))
+> <inline asm>:1:8: note: instantiated into assembly here
+>    1 |         if r6 << 1000 goto LBB0_6
+
+is much cleaner instead of (void) return.
+
+I've tried many different ways to have a helper macro
+#define flip_cmp_opcode(OP)
+and use it inside the bpf_cmp, but couldn't make it work.
+This is the shortest version of macros I came up with.
 
