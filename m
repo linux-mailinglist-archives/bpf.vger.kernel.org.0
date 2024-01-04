@@ -1,198 +1,114 @@
-Return-Path: <bpf+bounces-19041-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19042-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 523D88244DF
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 16:23:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0174A824670
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 17:41:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9E1FB2142B
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 15:23:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA5CF1F21FC0
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 16:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90DD5241FF;
-	Thu,  4 Jan 2024 15:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CDE2511D;
+	Thu,  4 Jan 2024 16:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="t8OW53/b"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PPd66eru"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CECD241E2;
-	Thu,  4 Jan 2024 15:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240104152317euoutp02af64ea5d44089fbf76814de916d80a0e~nLjblY91G0383403834euoutp02S;
-	Thu,  4 Jan 2024 15:23:17 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240104152317euoutp02af64ea5d44089fbf76814de916d80a0e~nLjblY91G0383403834euoutp02S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1704381797;
-	bh=JalEKYMkjsneZ1f8omw/O0M8dMeqvgrqvomUY87Fhfg=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=t8OW53/bBoW8L9GkkTvvZs4nFJoit0t32xAeCuyCdhzm1xAwgLcS4i+QWCwdYR751
-	 uKMHMPmL5vl+T13dMvzs0JbHPIPONUmbj2fR7/shSJjCihhOnUxf+2BsbU5u+eRnWB
-	 tCGKFybp2cf3kUnCH+qV1xVYfB6EOQwcBXv3BBDg=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240104152317eucas1p19950f0b8746d6f6c732a2653a49e0a67~nLjbVXSBN1357313573eucas1p1J;
-	Thu,  4 Jan 2024 15:23:17 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id D1.15.09539.46DC6956; Thu,  4
-	Jan 2024 15:23:16 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240104152316eucas1p15614f44c3e210a165983df57e9014009~nLja2BBXo1074810748eucas1p17;
-	Thu,  4 Jan 2024 15:23:16 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240104152316eusmtrp27b5ba330034b29d296ed9522af8c9794~nLja06KbN2376823768eusmtrp2M;
-	Thu,  4 Jan 2024 15:23:16 +0000 (GMT)
-X-AuditID: cbfec7f2-515ff70000002543-5e-6596cd646407
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id D0.E3.09146.46DC6956; Thu,  4
-	Jan 2024 15:23:16 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240104152316eusmtip1a81f893d56955799d8aa2aa6593eae90~nLjaj-tQO0636206362eusmtip1-;
-	Thu,  4 Jan 2024 15:23:16 +0000 (GMT)
-Received: from localhost (106.210.248.231) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Thu, 4 Jan 2024 15:23:15 +0000
-Date: Thu, 4 Jan 2024 16:23:11 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Matthew Wilcox <willy@infradead.org>
-CC: Luis Chamberlain <mcgrof@kernel.org>, <josh@joshtriplett.org>, Kees Cook
-	<keescook@chromium.org>, Eric Biederman <ebiederm@xmission.com>, Iurii
-	Zaikin <yzaikin@google.com>, Steven Rostedt <rostedt@goodmis.org>, Masami
-	Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Thomas
-	Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, Stephen
-	Boyd <sboyd@kernel.org>, Andy Lutomirski <luto@amacapital.net>, Will Drewry
-	<wad@chromium.org>, Ingo Molnar <mingo@redhat.com>, Peter Zijlstra
-	<peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel
-	Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider
-	<vschneid@redhat.com>, Petr Mladek <pmladek@suse.com>, John Ogness
-	<john.ogness@linutronix.de>, Sergey Senozhatsky <senozhatsky@chromium.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S Keshavamurthy
-	<anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>,
-	Balbir Singh <bsingharora@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend
-	<john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
-	KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
-	<yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-	<linux-fsdevel@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>
-Subject: Re: [PATCH v2 00/10] sysctl: Remove sentinel elements from kernel
- dir
-Message-ID: <20240104152311.f62uxcnimol5qwxx@localhost>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428A4250F5
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 16:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50eabbc3dccso754619e87.2
+        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 08:37:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704386266; x=1704991066; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=lOUlJTvlofCwMSaQvA0o4eh0heV5cfbSZuU/ZU0jFMg=;
+        b=PPd66eruoATT8xgQrenbQcWLc01uFm+GlFwL0lzTyd3/xs0lKd4Z+V7ot2COFZJni7
+         EMADd6Aai2hd1PGnFipvqflsV502NdtqiiyKiMognI3eqQPtVC84l+Jz4wacFZ/GHMPk
+         amMuVPRzazPcHWvL36GuwDCr+dhlgKfaT/NszWnSdAXzSogPlPT0UiUMFJX0lhg2r6/T
+         ffAM4wDWfi+LIgVeZ1rO9fihGxalE7mopzub75GehR3UOvlcPKzGa+lkLHEDRIhneyvm
+         08KsQEnAPgcTZ1ge/TH0fuMh6/nljiKDCAJ19Z4SgGmv8rsT1uvyuwOlmPfehTuxkJhv
+         PA5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704386266; x=1704991066;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lOUlJTvlofCwMSaQvA0o4eh0heV5cfbSZuU/ZU0jFMg=;
+        b=b4NY1NY+jyjW6Bxk2MEpLFWesY/nvfPnjf8z6SN30Adx5MFfICbSwppw49kPjnzkM3
+         XSzlW7F6vzUKPadfL+SqIR6EMHqmIw10J86zzCkoiCLLvUdwdZYc1OPQ6m+KZkReid+i
+         hCJEPW3adsIfw8Dy2CwW+JmXNLAmfM1Qr9vcbqmiaHt642C0diyjj9WXhw0TJ+/y8OYQ
+         mFLbaVQAngcE9vqeF4F+HvzQJZ57SqFwg4KouqGjbmFM/i/k3001s6/2wDxrwEsIgq0S
+         3IBcBV6zwbOvZU2gneajxdzRM/xZAaI9LE6vUFQkDUz/CLL66I2XDgGCb0KQ0K/OOhAa
+         Cx/w==
+X-Gm-Message-State: AOJu0YwRD9GgpOfr3gSyQNe9T4VW8QNIb+J8u2KfB6hZxE3RDboDo0OM
+	mcORh85NaefRDP9PjLrT8zA=
+X-Google-Smtp-Source: AGHT+IG5uJVXBni5A54lfDkeVdrlmF9Q88YIUGFOPsObbCnA3HAjg0hMQ4g+XmazMtqG+aKCvqMxjw==
+X-Received: by 2002:a05:6512:3491:b0:50e:285f:3a8 with SMTP id v17-20020a056512349100b0050e285f03a8mr239148lfr.108.1704386265949;
+        Thu, 04 Jan 2024 08:37:45 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id k2-20020a170906128200b00a28ec89674bsm556504ejb.173.2024.01.04.08.37.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 08:37:45 -0800 (PST)
+Message-ID: <63b227a753c6e6e18acf808d1ac5a77fa922a655.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Track aligned st store as
+ imprecise spilled registers
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>, Kuniyuki
+ Iwashima <kuniyu@amazon.com>, Martin KaFai Lau <kafai@fb.com>
+Date: Thu, 04 Jan 2024 18:37:43 +0200
+In-Reply-To: <20240103232617.3770727-1-yonghong.song@linux.dev>
+References: <20240103232617.3770727-1-yonghong.song@linux.dev>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="jzrq2uleinvzsb23"
-Content-Disposition: inline
-In-Reply-To: <ZZbJRiN8ENV/FoTV@casper.infradead.org>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTazBcZxjud87ZcxZds5bwRTpjZkOmFTSRhK8XnaTVyZlp0shM+yP5kdrG
-	GTTsiqWk1RmbirpUY8LSIKxL3NYlNkuo6yg2CEoIJYmUsF0rS12KitXdHG0z03/P+zzv873P
-	8+Pj4oJmypEbLI5gwsWiECFpSdR1bfS7B/RlMAdqdV5obTMbR42/TxBoZWOCQssdGhINTY+Q
-	KFMnI1CO7h6FCvP/xFHOQByBZlJrcbRdF0ehdk0rhS7Xl2KobjgPoI70LJOgkKDnd2tI9Oiq
-	nED3kkNRY+8qhrQtKRhqau4m0P2fckjUUd1HIGVlLAfdHB3EUEViGQeNpc4AlGaYBaiwZB8a
-	alNgSJm+RSFNShuGtqdXOagl4QmGjA9qCDS0ridQY00BiTQlWyS6rZLjKKHDlLC2c41CE0nb
-	FNpcN915oqzjoOKGj4960JPzWwRdkVsB6OzYQYJWl/2K0Q1Zjyg6rmWcohWqSPp2qStd2KTD
-	6KSxIZwe1/vQqvJEkn74oImkDf39FJ0fK8fp1II24Gd/1vLdACYk+Esm/M33/C2DRlpWQJjB
-	KlqxsMyJBVWWScCCC/mHoXawhpMELLkCfimAldX9O8MKgD/f2CTZYRnAyRSdaeC+sMxNO5nd
-	An4JgPoch393rhdMk6ygBnBTv9uMCb4zHPnx1gue5LvBgfmHuPkdO/7rcF7taaZxfg0PXqv/
-	3Ixt+X5w+E4zYcY8vjdUFxkBi21g9/WnBLsfDct0JcD8DM7fA0uMXDNtYUrW1P39Tsq9cEnr
-	z3b8BvaoxzFzSshfsIIVRUrACr6wdqZ1B9vCOY2aYvFrcLshb8eQBmCrcZFiByWAxbJVjN16
-	B8YNP6XYa8fg8x+iWGgNx57ZsDGt4bW6TJyleTAhXsAa90Hl43kiFezNeqlY1kvFsv4rxtJu
-	UNG4RP6P3g+L8/U4i31gVdUCoQBUOXBgIqWhgYz0oJiJ8pCKQqWR4kCP85JQFTD9ql6jZqke
-	3Jj7w6MdYFzQDpxN5qlbyl+AIyGWiBmhHa+6Ko0R8AJEl75iwiWfhUeGMNJ2sIdLCB14LgFO
-	jIAfKIpgLjBMGBP+j4pxLRxjsSh1srvTB13D23M96QNMsFeS59XkA187+oY807r49TRtvjJ7
-	3jXurxP7XeSqXK2xJ/7OqNdxv3apQrKr1Cj3HA+8uy60mu2ydr45ZRt9atHakusq4/jFjJZ7
-	vJVxQt2ZGmJf/UXRR7LVCzZ9HKvEcq3LzOHxty2Go0NqrW1PxvtPFTQHGdw6E1Xnags6Hfo+
-	FZ7SZ2EL7u2jdssXA0YCj6zu+s7rVbfTl+y7f6uXZeMx4yMjYWcMst7MyeDsy55HWk4vGjbu
-	43m7F4nqCApFOE58kluZcebKgkjtHXPl4qH+tW993pCMtZ07+tj3QzcoD9QeEvUvvQ8WDKEn
-	vcUJwcfOpgoJaZDooCseLhX9DXoa/GDQBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA2VTe0xTVxz23Ht7b0FIKuC8dHNulTiHrrbldTqK2UbirpKBWcyW6DatcANk
-	lJI+jDzUwpgpBTeUxyaCFhBRW3mDMhiyrsAYD6EdyFMRBCyvBXwAQ2DtmmUm++873+/7vt/v
-	d3IOE3UZwtnMyGgFLYsWR3FwR6xtrWX4vbCObJrXNe4GF1cuobDuySAGny0PEvCpsQWHprEe
-	HP5gScRgrqWdgIX5L1CYey8Zg+Pp1Shcr0kmoKHlLgGT7lxHYM0fVwA0ZuZYC1opfPlbOQ6H
-	v8/CYHuqBNa1PUfgZMM5BNb/3IpB80+5ODSWdmBQd0vFgEX3uxGoT7nBgH3p4wBmzE0AWFi8
-	A5oatQjUZa4SsOVcIwLXx54zYIN6BIFrveUYNC1NY7CuvACHLcWrOKysyEKh2midsLppkYCD
-	mnUCrixZ+4zoahjwWm3wB1zq4cwqRukv6wF1SdWNUVU3+hGqNmeYoJIbBghKW6GkKq97UoX1
-	FoTS9JlQamA6gKq4mYJTQ731ODXX2UlQ+aoslEovaAQHXzvMFcmkSgX9VoRUrgjgHOFDAZcv
-	hFyBt5DL9/L78n2BD2fPXlEYHRV5gpbt2XuMG3F1fQmLmdl4cvbsNwwV0DtqAJNJsrzJqbFt
-	GuDIdGEVATL1vhnVAAcr/wZZ/qyHYceu5MteDW4XzQPS0DyK2g9VgHz0YPYfFcbyIHt+LMNt
-	GGftJu/NDKG2Dm6sneRMlcCmR1nlzuTy+SbExruygsnKWcomd2b5kVVX14A9sxeQy81NhL2w
-	iWy9+BizYZR1gpxYSGXYvCjrdbJ4jWmjHawL1Lem4fZltpMLk8fsM58in65OgHTgmvNKUM4r
-	QTn/BdlpT7JvzYL8j95FXsufRu04gCwp+RPTAuImcKOVckm4RM7nysUSuTI6nBsqlVQA69Ou
-	aV6uvAMuT81zDQBhAgPwsDpHy3RdgI1FS6NpjptzaUkG7eIcJo6No2XSozJlFC03AB/rHZ5H
-	2ZtDpdZ/Eq04yvfl+fC9fYU8H6GvF2eL8/4YtdiFFS5W0F/TdAwt+9eHMB3YKkTfGPgicKF6
-	5vZJk+jt4n1bk4qkXvFTO7a+8yT+I4fY2aCAd5PIWPzjTdWfhVtOTbVppJOb42I+SVAf6jpn
-	qV3MYgcyhZ5NrR1a+PluP2OeB9tJ43TAkPkX3z8v+9HwhtSzvHjjdp7guI/yixSRQ58AnS84
-	Ejkqdqv+zl2btNJSOpC2JeiQkHTqzB574H885HZDyPyBDRn9v5i/DakZjavifppWh48pLrgT
-	A/2u2cG0MESvzjzofua0Z79upD7PXNv81c6gh6FDjzlzF1R3NfDim7uutA63ByTeEpgWOs2j
-	OlGCaGPCfkk8MIuWeB/2eKyAicPbuk8nninzV1f8PvGrOweTR4j5nqhMLv4bnkmcD28EAAA=
-X-CMS-MailID: 20240104152316eucas1p15614f44c3e210a165983df57e9014009
-X-Msg-Generator: CA
-X-RootMTR: 20240104150558eucas1p2cfaa2a4ea3933e8dfbf1bc94fb9e6ff5
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240104150558eucas1p2cfaa2a4ea3933e8dfbf1bc94fb9e6ff5
-References: <20240104-jag-sysctl_remove_empty_elem_kernel-v2-0-836cc04e00ec@samsung.com>
-	<CGME20240104150558eucas1p2cfaa2a4ea3933e8dfbf1bc94fb9e6ff5@eucas1p2.samsung.com>
-	<ZZbJRiN8ENV/FoTV@casper.infradead.org>
 
---jzrq2uleinvzsb23
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Jan 04, 2024 at 03:05:42PM +0000, Matthew Wilcox wrote:
-> On Thu, Jan 04, 2024 at 04:02:21PM +0100, Joel Granados via B4 Relay wrot=
-e:
-> > From: Joel Granados <j.granados@samsung.com>
-> >=20
-> > What?
+On Wed, 2024-01-03 at 15:26 -0800, Yonghong Song wrote:
+> With patch set [1], precision backtracing supports register spill/fill
+> to/from the stack. The patch [2] allows initial imprecise register spill
+> with content 0. This is a common case for cpuv3 and lower for
+> initializing the stack variables with pattern
+>   r1 =3D 0
+>   *(u64 *)(r10 - 8) =3D r1
+> and the [2] has demonstrated good verification improvement.
 >=20
-> The reason I wanted you to do the sentinel removal before the split was
-> so that there weren't two rounds of patches.  Ironically, because you
-> refused to do it that way, not only are there two rounds of patches, but
-> I'm being cc'd on all of them, so I get all the $%*^ emails twice.
->=20
-> Please at least stop cc'ing me.
-Will do
+> For cpuv4, the initialization could be
+>   *(u64 *)(r10 - 8) =3D 0
+> The current verifier marks the r10-8 contents with STACK_ZERO.
+> Similar to [2], let us permit the above insn to behave like
+> imprecise register spill which can reduce number of verified states.
+> The change is in function check_stack_write_fixed_off().
 
---=20
+Hi Yonghong,
 
-Joel Granados
+I agree with this change, but I don't understand under which conditions
+current STACK_ZERO logic is sub-optimal.
+I tried executing test case from patch #2 w/o applying patch #1 and it pass=
+es.
+Could you please elaborate / conjure a test case that would fail w/o patch =
+#1?
 
---jzrq2uleinvzsb23
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Eduard
 
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmWWzV4ACgkQupfNUreW
-QU8FhwwAiNDNSaoaB/pGcA4KJtPoMdEJm9tL4XsYkZf24rQJXWitgrDdtcgoZo65
-VMARclf+GYvEvKwbnBJTK3mvcW4sHq0QoAGQy8AtQuo8dFk2K+n4XvvyKuWRlPRF
-hgE2MsdpbWNSFaKPYw5o6MYcjDmxkusvPifKASX/NANB16gjAWtjHqLfhRN+uXA7
-Hsxg3zQwr0sN+/7apAHCWO5X1A4RLpBoT9tjPnqPCKWCeya9HMpQfIwfRs9qIiM3
-NQsVAtLT8f5e969fRNEzDvPF2m/bV3ecyxTL/mEOd7TP2H0pL/8FkPw55aWMSt0q
-XxavHxTdl1Qo7oPVQMUckL9j58Nc5oDzPevLjGi0wZEpFcuQWRskWSZf7nTh0wEj
-cGU7UYjwF9ZRvp4axwPkIMQ1aanxXZ+KOh6GwORsCpHpnjzDKdBG273k5Lo7GB7j
-KpdO+fxc94k33h0uCV46v8YhAKy3WGnioX0EMwmOjhQiMnGU3cpVLedXpBJUmxFk
-57Osrz7P
-=hr38
------END PGP SIGNATURE-----
-
---jzrq2uleinvzsb23--
+[...]
 
