@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-19079-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19080-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D78AC824BA0
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 00:04:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BBE4824BAD
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 00:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 694F2284B75
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 23:04:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9344DB237BB
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 23:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48A32D022;
-	Thu,  4 Jan 2024 23:04:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA0112D049;
+	Thu,  4 Jan 2024 23:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OruWNbWF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YO1sTj53"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755342D040
-	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 23:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60152D021
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 23:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ccb4adbffbso12679831fa.0
-        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 15:04:14 -0800 (PST)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-55642663ac4so1207872a12.1
+        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 15:09:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704409452; x=1705014252; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704409790; x=1705014590; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xG7lsq34UrUr9ddN9PZhCzdDbNOCukOjgxD/Q275gJ8=;
-        b=OruWNbWFfEFb8znKkdahSTnLdmUhnsovKfvOC9PB6DGh7lKfbXWjttLA+FNdvhTgcV
-         F5/GMU+aaBPz/KKWtRRzg3XeJRPL4GKl/b9+WM6s/A9S1fjf8c4t//ixLuz6b3JfDhGQ
-         g/zM/8adtVbYOTrToPAmzcSrUZt18YAV66O/4c/GS1jnfV7pFp902rmGIA0Ix394kBSZ
-         Jn38OpZL9M9Mm5J+8dfb6WIkzUgXIbyNeqgDxSkGrq5ejPB+76K1EW3Wlyyb16iDmXSW
-         vA/5dJzzbi/4qryP4S5k5fdhNtt/wm+CzdsqDAwsDMCgHY/JMG1CW47IqNYFr2+96r7d
-         8MWw==
+        bh=RTCD0rYi89xQS99aF05cXwW3Lr+HVczkmO/TBpxG1Ns=;
+        b=YO1sTj53Tjx9aaL6QLeZ63VRtFaEWCS0xxgZD6DDemPfAU+LcED05HZdd74Z7rKiof
+         j4j+IF8yf/5yUVMYf+SkiiC24zeE7eGqHOOCvgvzsUGxi3y2CKvvW5DUwaaw8IlxQLxp
+         Xwpzm/sgX43PZUasjl4ShPCSmSVq9PJfOJITQl7pROygw02JaXw+EZ35D2Sb7sVEI7uO
+         FWAezqYBRqLb2ems830X6kjMZx7qx+8mtHeEaiXacvKyLq9fegyF31IqOBCyLxd96Adk
+         GBLE0KHkFElGFYwFGk/mYJXUtffpXJ588abHghRJ4ZeKvAV2+kTqC/sEmJL5QPPS5tgC
+         XWAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704409452; x=1705014252;
+        d=1e100.net; s=20230601; t=1704409790; x=1705014590;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xG7lsq34UrUr9ddN9PZhCzdDbNOCukOjgxD/Q275gJ8=;
-        b=I9dKEFtNvQDPr4iQU/4EkxW5EAU3yeRlvWlKWaNGA2B1nsMzAtS+xyav/09XOvJy9P
-         mQsMIDHPmf0TZdPWGePQXnrVtRiyzb9Vh31pkmxXMiSGdVuSrVldvs0MW8YKvdTLdwVu
-         +u9+Ix6Hj2/SjSkiYVCv6GOzu6KfOLwzIUShjHcSICXZGLIeY4XkM2JGDOn+oxl+NwFp
-         2jyY6uMvGCxorfFHxgxYUtMQRevwrjdZSXTQjXpvr/WeqyGreAR1puclgIsY8uSauPJi
-         XJ6M3cwOwsCUX9RnsvkOLY1nnfL/Dms6Kp7DQtR/KZH6WbhJnq5mDfPQwp917Lmt9BlJ
-         il+g==
-X-Gm-Message-State: AOJu0YzIXhbBZjW13UqPWq2LMwcWUpyKs/+QlazBNqDsmIZ5zpl5gGex
-	nC3iHbMbNUaIVKeOWxnoBjwiR4Et8B5oc2PD+so=
-X-Google-Smtp-Source: AGHT+IHH1nUn7Ym5cony8PKVZkZtTz0m4R1520Ou3qCIsYuzLg6FxPEshoFbGjzHerj0lmp7ZIfv9xFLXQklFUZKHG8=
-X-Received: by 2002:a2e:7215:0:b0:2cc:3793:5575 with SMTP id
- n21-20020a2e7215000000b002cc37935575mr720395ljc.93.1704409452091; Thu, 04 Jan
- 2024 15:04:12 -0800 (PST)
+        bh=RTCD0rYi89xQS99aF05cXwW3Lr+HVczkmO/TBpxG1Ns=;
+        b=pKLjOL8ryA3g1k3I8x986LlVgjAPpZZFyRjd2dYZOS9Y7/0pr0/7xVpsxcO5Waw0f9
+         ZnN+5+kAx2eZFp+WhA3n+BTPikF8JEUyxECsdGfw4PJlJSrENuIUomUWfN55O2HVZNjX
+         Jn1/ESuWfDv5ZN5vKuDD4PkO9QopwPbIUHccOmcZnvx600HM99c8xHLnNxTbHVUMJxPv
+         7aQVj3/6XXHDWYvY6z43ZcgldhvejObw9ecBLfrR2bBt6M6ZO08QJW4SMGccQX8QkAfh
+         I1cSqSjj90nh43bSfs3c9rk5jukPGDBi5hKEp00GgkisurPX4uCKBwfZvhETp0FRzYf+
+         yH7Q==
+X-Gm-Message-State: AOJu0YwiPEtKulxCUb+jjsdvljeEa0XDwLx4ch5EacB9B02URH7zv9xK
+	FauPN6dJtkNsds9XKm23EGzTmagq0axfPtZGX6XKx6U7
+X-Google-Smtp-Source: AGHT+IHx1fNJVA/MffOLkBwR2MSSM8tU9SilYBSYK4u+opgPNipiEn5CX5jrE3lEjIM72FTTFuzTFPH+fXry/np3YCI=
+X-Received: by 2002:a05:6402:794:b0:553:97fd:c42e with SMTP id
+ d20-20020a056402079400b0055397fdc42emr712378edy.31.1704409789848; Thu, 04 Jan
+ 2024 15:09:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -61,166 +61,125 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240103232617.3770727-1-yonghong.song@linux.dev>
-In-Reply-To: <20240103232617.3770727-1-yonghong.song@linux.dev>
+ <f4c1ebf73ccf4099f44045e8a5b053b7acdffeed.camel@gmail.com>
+ <cbff1224-39c0-4555-a688-53e921065b97@linux.dev> <69410e766d68f4e69400ba9b1c3b4c56feaa2ca2.camel@gmail.com>
+In-Reply-To: <69410e766d68f4e69400ba9b1c3b4c56feaa2ca2.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 4 Jan 2024 15:03:59 -0800
-Message-ID: <CAEf4BzYOuQw-+Gtfk5LgeXJzaWBetrPUaetRL8PgTdoYQe5CgA@mail.gmail.com>
+Date: Thu, 4 Jan 2024 15:09:37 -0800
+Message-ID: <CAEf4Bzb0LdSPnFZ-kPRftofA6LsaOkxXLN4_fr9BLR3iG-te-g@mail.gmail.com>
 Subject: Re: [PATCH bpf-next v2 1/2] bpf: Track aligned st store as imprecise
  spilled registers
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
 	Martin KaFai Lau <martin.lau@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, 
 	Martin KaFai Lau <kafai@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 3, 2024 at 3:26=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
-ev> wrote:
+On Thu, Jan 4, 2024 at 1:11=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> With patch set [1], precision backtracing supports register spill/fill
-> to/from the stack. The patch [2] allows initial imprecise register spill
-> with content 0. This is a common case for cpuv3 and lower for
-> initializing the stack variables with pattern
->   r1 =3D 0
->   *(u64 *)(r10 - 8) =3D r1
-> and the [2] has demonstrated good verification improvement.
->
-> For cpuv4, the initialization could be
->   *(u64 *)(r10 - 8) =3D 0
-> The current verifier marks the r10-8 contents with STACK_ZERO.
-> Similar to [2], let us permit the above insn to behave like
-> imprecise register spill which can reduce number of verified states.
-> The change is in function check_stack_write_fixed_off().
->
-> Before this patch, spilled zero will be marked as STACK_ZERO
-> which can provide precise values. In check_stack_write_var_off(),
-> STACK_ZERO will be maintained if writing a const zero
-> so later it can provide precise values if needed.
->
-> The above handling of '*(u64 *)(r10 - 8) =3D 0' as a spill
-> will have issues in check_stack_write_var_off() as the spill
-> will be converted to STACK_MISC and the precise value 0
-> is lost. To fix this issue, if the spill slots with const
-> zero and the BPF_ST write also with const zero, the spill slots
-> are preserved, which can later provide precise values
-> if needed. Without the change in check_stack_write_var_off(),
-> the test_verifier subtest 'BPF_ST_MEM stack imm zero, variable offset'
-> will fail.
->
-> I checked cpuv3 and cpuv4 with and without this patch with veristat.
-> There is no state change for cpuv3 since '*(u64 *)(r10 - 8) =3D 0'
-> is only generated with cpuv4.
->
-> For cpuv4:
-> $ ../veristat -C old.cpuv4.csv new.cpuv4.csv -e file,prog,insns,states -f=
- 'insns_diff!=3D0'
-> File                                        Program              Insns (A=
-)  Insns (B)  Insns    (DIFF)  States (A)  States (B)  States (DIFF)
-> ------------------------------------------  -------------------  --------=
--  ---------  ---------------  ----------  ----------  -------------
-> local_storage_bench.bpf.linked3.o           get_local                  22=
-8        168    -60 (-26.32%)          17          14   -3 (-17.65%)
-> pyperf600_bpf_loop.bpf.linked3.o            on_event                  606=
-6       4889  -1177 (-19.40%)         403         321  -82 (-20.35%)
-> test_cls_redirect.bpf.linked3.o             cls_redirect             3548=
-3      35387     -96 (-0.27%)        2179        2177    -2 (-0.09%)
-> test_l4lb_noinline.bpf.linked3.o            balancer_ingress          449=
-4       4522     +28 (+0.62%)         217         219    +2 (+0.92%)
-> test_l4lb_noinline_dynptr.bpf.linked3.o     balancer_ingress          143=
-2       1455     +23 (+1.61%)          92          94    +2 (+2.17%)
-> test_xdp_noinline.bpf.linked3.o             balancer_ingress_v6       346=
-2       3458      -4 (-0.12%)         216         216    +0 (+0.00%)
-> verifier_iterating_callbacks.bpf.linked3.o  widening                    5=
-2         41    -11 (-21.15%)           4           3   -1 (-25.00%)
-> xdp_synproxy_kern.bpf.linked3.o             syncookie_tc             1241=
-2      11719    -693 (-5.58%)         345         330   -15 (-4.35%)
-> xdp_synproxy_kern.bpf.linked3.o             syncookie_xdp            1247=
-8      11794    -684 (-5.48%)         346         331   -15 (-4.34%)
->
-> test_l4lb_noinline and test_l4lb_noinline_dynptr has minor regression, bu=
-t
-> pyperf600_bpf_loop and local_storage_bench gets pretty good improvement.
->
->   [1] https://lore.kernel.org/all/20231205184248.1502704-1-andrii@kernel.=
-org/
->   [2] https://lore.kernel.org/all/20231205184248.1502704-9-andrii@kernel.=
-org/
->
-> Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
-> Cc: Martin KaFai Lau <kafai@fb.com>
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->  kernel/bpf/verifier.c                         | 21 +++++++++++++++++--
->  .../selftests/bpf/progs/verifier_spill_fill.c | 16 +++++++-------
->  2 files changed, 27 insertions(+), 10 deletions(-)
->
-> Changelogs:
->   v1 -> v2:
->     - Preserve with-const-zero spill if writing is also zero
->       in check_stack_write_var_off().
->     - Add a test with not-8-byte-aligned BPF_ST store.
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index d4e31f61de0e..cfe7a68d90a5 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4491,7 +4491,7 @@ static int check_stack_write_fixed_off(struct bpf_v=
-erifier_env *env,
->                 if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
->                         state->stack[spi].spilled_ptr.id =3D 0;
->         } else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &=
-&
-> -                  insn->imm !=3D 0 && env->bpf_capable) {
-> +                  env->bpf_capable) {
->                 struct bpf_reg_state fake_reg =3D {};
->
->                 __mark_reg_known(&fake_reg, insn->imm);
-> @@ -4613,11 +4613,28 @@ static int check_stack_write_var_off(struct bpf_v=
-erifier_env *env,
->
->         /* Variable offset writes destroy any spilled pointers in range. =
-*/
->         for (i =3D min_off; i < max_off; i++) {
-> +               struct bpf_reg_state *spill_reg;
->                 u8 new_type, *stype;
-> -               int slot, spi;
-> +               int slot, spi, j;
->
->                 slot =3D -i - 1;
->                 spi =3D slot / BPF_REG_SIZE;
-> +
-> +               /* If writing_zero and the the spi slot contains a spill =
+> On Thu, 2024-01-04 at 12:12 -0800, Yonghong Song wrote:
+> [...]
+> > > > @@ -4613,11 +4613,28 @@ static int check_stack_write_var_off(struct=
+ bpf_verifier_env *env,
+> > > >
+> > > >           /* Variable offset writes destroy any spilled pointers in=
+ range. */
+> > > >           for (i =3D min_off; i < max_off; i++) {
+> > > > +         struct bpf_reg_state *spill_reg;
+> > > >                   u8 new_type, *stype;
+> > > > -         int slot, spi;
+> > > > +         int slot, spi, j;
+> > > >
+> > > >                   slot =3D -i - 1;
+> > > >                   spi =3D slot / BPF_REG_SIZE;
+> > > > +
+> > > > +         /* If writing_zero and the the spi slot contains a spill =
 of value 0,
-> +                * maintain the spill type.
-> +                */
-> +               if (writing_zero && !(i % BPF_REG_SIZE) && is_spilled_sca=
+> > > > +          * maintain the spill type.
+> > > > +          */
+> > > > +         if (writing_zero && !(i % BPF_REG_SIZE) && is_spilled_sca=
 lar_reg(&state->stack[spi])) {
-> +                       spill_reg =3D &state->stack[spi].spilled_ptr;
-> +                       if (tnum_is_const(spill_reg->var_off) && spill_re=
-g->var_off.value =3D=3D 0) {
-
-here we assume that *spilled* register is zero and will stay zero,
-even if it's imprecise. This is wrong, because imprecise SCALAR 0 is
-actually an unknown scalar when doing state pruning. So we need to
-either force the spilled register to be precise, or overwrite it with
-STACK_MISC.
-
-
-> +                               for (j =3D BPF_REG_SIZE; j > 0; j--) {
-> +                                       if (state->stack[spi].slot_type[j=
- - 1] !=3D STACK_SPILL)
-> +                                               break;
-> +                               }
-> +                               i +=3D BPF_REG_SIZE - j - 1;
-> +                               continue;
-> +                       }
-> +               }
-> +
->                 stype =3D &state->stack[spi].slot_type[slot % BPF_REG_SIZ=
-E];
->                 mark_stack_slot_scratched(env, spi);
+> > > Talked to Andrii today, and he noted that spilled reg should be marke=
+d
+> > > precise at this point.
+> >
+> > Could you help explain why?
+> >
+> > Looks we did not mark reg as precise with fixed offset as below:
+> >
+> >          if (reg && !(off % BPF_REG_SIZE) && register_is_bounded(reg) &=
+& env->bpf_capable) {
+> >                  save_register_state(env, state, spi, reg, size);
+> >                  /* Break the relation on a narrowing spill. */
+> >                  if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
+> >                          state->stack[spi].spilled_ptr.id =3D 0;
+> >          } else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn=
+) &&
+> >                     insn->imm !=3D 0 && env->bpf_capable) {
+> >
+> > I probably missed something about precision tracking...
 >
+> The discussed justification was that if verifier assumes something
+> about the value of scalar (in this case that it is 0) such scalar
+> should be marked precise (e.g. this is done for value_regno in
+> check_stack_write_var_off()).
+>
+> This seemed logical at the time of discussion, however, I can't figure
+> a counter example at the moment. It appears that whatever are
+> assumptions in check_stack_write_var_off() if spill is used in the
+> precise context it would be marked eventually.
+> E.g. the following is correctly rejected:
+>
+> SEC("raw_tp")
+> __log_level(2) __flag(BPF_F_TEST_STATE_FREQ)
+> __failure
+> __naked void var_stack_1(void)
+> {
+>         asm volatile (
+>                 "call %[bpf_get_prandom_u32];"
+>                 "r9 =3D 100500;"
+>                 "if r0 > 42 goto +1;"
+>                 "r9 =3D 0;"
+>                 "*(u64 *)(r10 - 16) =3D r9;"
+>                 "call %[bpf_get_prandom_u32];"
+>                 "r0 &=3D 0xf;"
+>                 "r1 =3D -1;"
+>                 "r1 -=3D r0;"
+>                 "r2 =3D r10;"
+>                 "r2 +=3D r1;"
+>                 "r0 =3D 0;"
+>                 "*(u8 *)(r2 + 0) =3D r0;"
+>                 "r1 =3D %[two_byte_buf];"
+>                 "r2 =3D *(u32 *)(r10 -16);"
+>                 "r1 +=3D r2;"
+>                 "*(u8 *)(r1 + 0) =3D r2;" /* this should not be fine */
+>                 "exit;"
+>         :
+>         : __imm_ptr(two_byte_buf),
+>           __imm(bpf_get_prandom_u32)
+>         : __clobber_common);
+> }
+>
+> So now I'm not sure :(
+> Sorry for too much noise.
 
-[...]
+
+hm... does that test have to do so many things and do all these u64 vs
+u32 vs u8 conversions? Can we try a simple test were we spill u64
+SCALAR (imprecise) zero register to fp-8 or fp-16, and then use those
+fp-8|fp-16 slot as an index into an array in precise context. Then
+have a separate delayed branch that will write non-zero to fp-8|fp-16.
+States shouldn't converge and this should be rejected.
+
+
+Yonghong, the reason fixed offset stack write works is because we know
+exactly the stack slot in which spilled register is and we can
+backtrack and mark it as precise, if necessary. With variable offset
+stack access there is no single stack slot (in general case), so we
+lose the link to that spilled register. So we need to either eagerly
+mark spilled registers as precise or just do STACK_MISC kind of logic.
 
