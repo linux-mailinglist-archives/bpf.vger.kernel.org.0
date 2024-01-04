@@ -1,258 +1,338 @@
-Return-Path: <bpf+bounces-19065-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19066-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B390824987
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 21:23:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 431768249E4
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 21:58:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08CFC1C22A0B
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 20:23:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5F471F23424
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 20:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182452C69C;
-	Thu,  4 Jan 2024 20:23:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01FE528E03;
+	Thu,  4 Jan 2024 20:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XhiqChDm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJEo0xWa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198C32C687;
-	Thu,  4 Jan 2024 20:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704399801; x=1735935801;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=4uyMXuA06Nh7xXtPomAsqaFXra6boiNWAIeN99X7drg=;
-  b=XhiqChDmfJ+wGFiLNwiyuPqSEGYXGQkNdZYI4N2MYgeN+rbUzOTdeDZj
-   1veAG34dDeD9L3esppz5296mwC0pQ//0yA/j81OaD8RcQzYI4rNnS1Dtr
-   PgqBmv7A1M8c0wpmGIV6uhn4lBsrkJBovkNnVRAvgt1RevOtb8Z2U0SsO
-   qh8N65EgZvGIFQ0RozqHiButupQiK6HEjqOllUq5iNxBzSwnK25z33nSu
-   p6kVqzBNIMlyZ7A/jYZSGfu663WuyjjEJKF9dsb8raJ1HUDMkbSPV9HFN
-   JGjLUTZylcZfgjlIaBLL15jgqkLYBjXYd+2fiBAhkX53YnVCcGIWnsRwU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="15977811"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="15977811"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 12:23:19 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="899420306"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="899420306"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Jan 2024 12:23:18 -0800
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Jan 2024 12:23:18 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 4 Jan 2024 12:23:18 -0800
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 4 Jan 2024 12:23:17 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FYx2EymUoilf8J/+IT9leoxb5SPVGHGTGM++9m89t6Geij0+0/F9sl579wPdtHmQQipRfnaYKemqOHdfXFPnKjiRvXhe8Hs/CeLPujNKEhlEgYXsr3bPf6YXq1RyoCwHk06alPI8dZ5IC6cE1+ZuqsGSCKrDvQILNtOW7xyfGkde0Nr8sntrX8x6qlP6NVf1CEaAU+cLkF7SOXIDabR/mGGaqg1zsjhgC/a9bWuIbNukp5AybA/uyG2wYGN0uHMzcitVpvVbmFISpufkMbsLDkTRaiH5IS8z5htZHQR5dCdf6LEA7KIdYnVeuWum2qM6Nj5c6mOWkazW6Kx5sX2qiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KsRKneKWKJzGRLcubOv3UJVU95WtL7D0c8QqDKOBE9I=;
- b=AYOxAZwjrgRi4xT0qOOi3c7jo8V71P5qoWKIYlziDMC4k71okwzc6WXuoynvbTB2Yvw1bLYJmN2aql+ACM9co4Ogdoaw8zsrsytKF9a7+98alcDvUZDATa5f+k8QyDdPdjj2JEcw7Thpl70y06qF1D66e7Cof/iadatK+dizeyFDwJVdNbXK0COj21FzE8CMnbelNrp7pB6eaX5ZdxlLX/sJRA12asmsE2g73ZwF9LGNecX4gex/LDIjHuBhLSfUQCivauohyqeNginu+LMZJmrSWzdvje3X8bb0/LKsDw0aw2ez2rdLoJnXlmN3SU8T8oTZpc5Ak2LV5a+Zy5tfUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com (2603:10b6:8:b3::19) by
- PH8PR11MB8288.namprd11.prod.outlook.com (2603:10b6:510:1c8::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7135.25; Thu, 4 Jan
- 2024 20:23:13 +0000
-Received: from DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::ccab:b5f4:e200:ee47]) by DM4PR11MB6117.namprd11.prod.outlook.com
- ([fe80::ccab:b5f4:e200:ee47%6]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 20:23:13 +0000
-Date: Thu, 4 Jan 2024 21:23:08 +0100
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-CC: <netdev@vger.kernel.org>, <magnus.karlsson@intel.com>, <bjorn@kernel.org>,
-	<echaudro@redhat.com>, <lorenzo@kernel.org>, <tirthendu.sarkar@intel.com>,
-	<bpf@vger.kernel.org>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>
-Subject: Re: [PATCH v3 bpf 2/4] xsk: fix usage of multi-buffer BPF helpers
- for ZC XDP
-Message-ID: <ZZcTrLaTKXZpwvOE@boxer>
-References: <20231221132656.384606-1-maciej.fijalkowski@intel.com>
- <20231221132656.384606-3-maciej.fijalkowski@intel.com>
- <dadb229a-d811-4542-a53f-3a78e559e639@linux.dev>
- <ZZVNa6CN8Y1KUtNM@boxer>
- <7d2cd6c4-0d65-4a65-beb1-2dd995ac9b2f@linux.dev>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <7d2cd6c4-0d65-4a65-beb1-2dd995ac9b2f@linux.dev>
-X-ClientProxiedBy: FR0P281CA0202.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:ad::17) To DM4PR11MB6117.namprd11.prod.outlook.com
- (2603:10b6:8:b3::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02FA2C1B5
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 20:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-556ea884968so1113463a12.3
+        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 12:58:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704401916; x=1705006716; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DG1xxcdJwyhqh7oFACCdO8dJ6hXhXM6B32M1bqgt+gw=;
+        b=aJEo0xWatYGJ7Ye01orzeTuOr4EVetzoI3ay8RgH5ib+vWevZJdHfcwf7vdT/vkEhh
+         j/xvnTZEfVaU9nw+BzAiYK4Db+xIbk4v0qf2+ymf6JO+SM0lBOYSACKWc3v9J4dcJcVL
+         duiVT8gPO1BMsM4MPGlEoun7jvvboVCtirpUW9UP5oLW8Hcc2Po60zhPRIfGpCwTopje
+         nHQO0n4Gen5+C4A2cuEccmtrg+nclCKs99D6WkuHpxogBhR3cJauyYIamUWJxTwWGWgT
+         4uIFWM+Fgo1hkLgRoDSvu21v7dkDrJZ/ee10CqJXpjQnKGiSmd8nNEvrC4UYV9yYgKiv
+         FLtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704401916; x=1705006716;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DG1xxcdJwyhqh7oFACCdO8dJ6hXhXM6B32M1bqgt+gw=;
+        b=HaXtCQ8R5EGDcI+j4/H3NnUDoh+2pJI/CsdyhHOqibSdlWZ6URrxFoIsxgixDXw1rP
+         /z6H1GqtuLf0oGAOKNCVssuj29L68PiPXw9lSMfGEm+TcMTUG7DnAVz4vUsFzSmT2mDn
+         Vb+xMD0pSUgpBN+VSBp2dUAUJcr+3T21sqAc5sbl3Tgneri6q8EDR0ZqKwXuFGqcjfen
+         ifB2o0klOXqVyDMh6Lm8WkOlnKUGhJeVhVdTTe+iXe5jJ9J11L8T70k8LVBg+qielQ/5
+         Ci09Ilu8XBw7FqvR3VZZoakY10sjPEYhfQ1h5Rs3ljHMULV4Anhi+UtUOTYxA4Jf+jQD
+         OCSw==
+X-Gm-Message-State: AOJu0YwCBEzEsAOgCISMJ/0HjSBGf9zKM6Mo1wy88Hu7XrnOpgYrxHHJ
+	XDJkIramdW2E5U+azxVl7Gz7D9TMssx/h5fmFFo=
+X-Google-Smtp-Source: AGHT+IGO0UPrXN43HJ0IHFOPn2n/WT/ItMeybW9vQPUrlyOhBLH9nEiiFSAEkl9iH8T0VkRCHYGdu64dey+XmWHivBI=
+X-Received: by 2002:a50:8e5c:0:b0:556:c95d:9cfa with SMTP id
+ 28-20020a508e5c000000b00556c95d9cfamr640296edx.75.1704401915619; Thu, 04 Jan
+ 2024 12:58:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6117:EE_|PH8PR11MB8288:EE_
-X-MS-Office365-Filtering-Correlation-Id: ae22aefe-82b4-4bf9-aa07-08dc0d62fa00
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: v2ecb+oYn64cT+pLptzB8pi0h6tAQlmb8dxDRsUmfI3bGkyubYgXCUM2sZopzPuKC3BLjAZxgBbbrUNNUvDmjx1Se7CNKnHPzd4LbsXep57ewBSlHc2z4kv+nSFDtCNs6shLnB2KwHmzgW0lPyhY/7/Ex6TnXJOjUtcebnNGGSHiU99AOf7uZSO25eUY4/TQbof3oQVS2yUXCO49QIF7/L2XobkHt4xA/mNS5IYzQFVGdTAvjNEe400/+0feJrsgRdVIk/YoZdiQxTJVwgCHJLMReP/4V+NBTlcSGpeQAPNXls8NYdF5C8Fi3SHnCCTLnhNgdK2e1Up/6nZRVuuPRh9gYkbMBOmLjav5dgP/M5E//HX3nf7fYylyu2LMZ/nYl/qhXHsUCbYQiEirxcq4ASPgCnTbbd02bvJuWXVrU94TvL0Q9RwhXFFi7CY8nCEc2K6EHRgzF1M1JVM83NBqwmXd4SLaX7thX1+DJ4bgl3CF8OCBzHjZJIYWvTQM+QLsWqJenFrgLJOGNSJKuRkjQtOfmTDAyOqLyuirnL+xPyd1+LRKsGAJr/cJOEmNjyrifzYzUD0keHMiQMN2zbJB3NIazA9AwOuM5yPoKYKPY52OYdDFNbP1OS1lVwMnUkYm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6117.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(346002)(136003)(376002)(39860400002)(230922051799003)(230273577357003)(230173577357003)(451199024)(1800799012)(186009)(64100799003)(6506007)(53546011)(38100700002)(4326008)(66946007)(2906002)(82960400001)(33716001)(83380400001)(316002)(5660300002)(8676002)(44832011)(41300700001)(8936002)(6666004)(6916009)(66476007)(26005)(66556008)(6512007)(478600001)(86362001)(6486002)(9686003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sZrQRY/7gAHXVTO4dZnEWAw87by1JsiY0WU1nPkVKnFy4eV8siu1Zlt22HOM?=
- =?us-ascii?Q?L8hSA35Z+svvXSaXfnx5u5mYjAshMFftpLHHD1ZMFQVq46tlH8ybiwfQlGdh?=
- =?us-ascii?Q?Y6knlwj9YhEENoOU9Q0G4UP2yw9wtNNtEv8AF1mShxRjrbbXaFVQMD5uBDqB?=
- =?us-ascii?Q?LisgM4Y8z/DZcTpw5R5VOMH7Hv7zBYbkT/cbFGuvIbP+S6LKGIthEjguxIOU?=
- =?us-ascii?Q?UN2ZO1mwftuXT9xHnRm/4TCRFmDuT07oi8WfRueacOtKgyHXT470+92IZxeg?=
- =?us-ascii?Q?6FsE0KBkXmYIoL8WIV9YTY7KnyU3oKMK7mdagisrgOs0ftVk/XhOlFXOrGro?=
- =?us-ascii?Q?We1uTH9BAVQhTcw7t7qd6aMhxqMuo2ZSBOJKEr0WeISpI3nd+dlOUI3sh+p/?=
- =?us-ascii?Q?Lc/B79GSdTpfV6ay2OoIwVgl85LiyxUOYt+Oo3trVnnJiXKrH8f5QoWcWQjX?=
- =?us-ascii?Q?Cuzb6k8i2RWGXvk31fI5AZAstLeUSyennHnvVJfZ1BKO8KRf7pey4CthQu/R?=
- =?us-ascii?Q?0pf12ppjOkAdwGv9gtRt6JciO8E6est2qCreqQ3ouJyEqLuIAo4ZJjDxb/3p?=
- =?us-ascii?Q?v/Vu8A8n6bhtfDiIXAgOiJGxEZI1itGa8mtvV1zNohNH5itIRenVvl2h5tUj?=
- =?us-ascii?Q?SZsbyhD8j7WiSeDiTWSYFOIqfw3G20CRtAlgGVRePyrqidu762rKlDJEa4zI?=
- =?us-ascii?Q?KgCX+vxl6b54Jz2uB64TTC8gHXAHZ0FzMBXE+oegSY256nmONuXKGPXEp5Vr?=
- =?us-ascii?Q?qNft5E2X66SWlcSvTnifOBd9xXovdupyJnLqadlXlAiCGnOca4i94uSAi4Yw?=
- =?us-ascii?Q?Dj9YE7kTTR8pr3Ae7RVvxvBDI13626ZRby/nY6rA0npmNdQ4vQbxtmJzL989?=
- =?us-ascii?Q?ri9WTlqQgM6cBLF9zYM+NWSamA9qqbtfe6r2GcBh3zddau6hKwXC7dVwB9HS?=
- =?us-ascii?Q?1XMpbAyM4CM3zKI2e49+2ztangjAPhkrMnml9CDx0l+r7Mvhza7YsfyEk/GK?=
- =?us-ascii?Q?jgEOyVdt0dJ3pgI2rQlT6+Wx8aNSVO+r4qSgBSqDpt8D3S6xX5cjyJ8Gv6+y?=
- =?us-ascii?Q?wUjWHw42fMgD2DsAEvnVo8+Or7H9DztwJE8oWYG7Zh0pDUswikQCZSp7QEzr?=
- =?us-ascii?Q?U8+apDhmgEJ7wzb5Lo661I3RwhOm/pOXx1NmXSatnWOaXpg/LnqH/AQWmuuh?=
- =?us-ascii?Q?ms72ViKMLzLCfhHBcQVzLRZOq+BXBSMUU8pqoqBOL63rPyf0K0OKJA6L7RBP?=
- =?us-ascii?Q?M59WHqhejx8AmARyKC7WSTpBCy5zimqmjWDdJnE4oA6FimJmzItc9OKnxMBn?=
- =?us-ascii?Q?NJ8laMlsCnrd7j9BpruBI86aH1uIIajTicIdII/Cnq7Wiypy5FlJOy3Gjuek?=
- =?us-ascii?Q?nAKPHd+KJYN1k/01XTIEKD79rzTS1TYuqnprNt73amTgrf19cfxv8K9ARlgU?=
- =?us-ascii?Q?8IvrMYxwbN+yesNGQ7ZFdJxMwtvo0kWjOU+nVJtjlxaG4JV3A+p+Qlm2JzYi?=
- =?us-ascii?Q?An1+dPYbxubw/whllwS/NQrZtlg23uMHEad7FpHep0ioAsvW+xQxq2K+NTg2?=
- =?us-ascii?Q?RMxkuqDxqgiP8zD4OF6OXZbOAVu62EsJVFhMvjbAhcGQd5TwBp5bmqtOMw7I?=
- =?us-ascii?Q?kA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae22aefe-82b4-4bf9-aa07-08dc0d62fa00
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6117.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2024 20:23:13.3272
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MbPLdSvnk2jf0r/Et2N9IVcXDzx3RiGQhvEom1ujH2Gw5BwxBgJdVPoW9owMlWVs72WsD5WX3RhXQkl2Uw4sUqvUkloKKSnAgSopbu+oxiU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB8288
-X-OriginatorOrg: intel.com
+References: <20240104013847.3875810-1-andrii@kernel.org> <20240104013847.3875810-8-andrii@kernel.org>
+ <CAADnVQJn0+fvvbOVnfPFQm=1j+=oFsjy65T2-QY8Ps0pL4nh_A@mail.gmail.com>
+ <CAEf4BzYt9yrGUBpSfAR8=vuh7kONFSsFZAKtbg21r4Hoj92gAQ@mail.gmail.com> <CAADnVQLOYU67aRyp92S0G8AEVxXRYndb6hWrtHZOH9gr0Q7JEQ@mail.gmail.com>
+In-Reply-To: <CAADnVQLOYU67aRyp92S0G8AEVxXRYndb6hWrtHZOH9gr0Q7JEQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 4 Jan 2024 12:58:23 -0800
+Message-ID: <CAEf4BzaSspEa27TtMLRv-V4ipGhVdK9y5Ynu9teYNDp4f0CctA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 7/9] libbpf: implement __arg_ctx fallback logic
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 03, 2024 at 02:53:20PM -0800, Martin KaFai Lau wrote:
-> On 1/3/24 4:04 AM, Maciej Fijalkowski wrote:
-> > On Tue, Jan 02, 2024 at 02:58:00PM -0800, Martin KaFai Lau wrote:
-> > > On 12/21/23 5:26 AM, Maciej Fijalkowski wrote:
-> > > > This comes from __xdp_return() call with xdp_buff argument passed as
-> > > > NULL which is supposed to be consumed by xsk_buff_free() call.
-> > > > 
-> > > > To address this properly, in ZC case, a node that represents the frag
-> > > > being removed has to be pulled out of xskb_list. Introduce
-> > > > appriopriate xsk helpers to do such node operation and use them
-> > > > accordingly within bpf_xdp_adjust_tail().
-> > > 
-> > > [ ... ]
-> > > 
-> > > > +static inline struct xdp_buff *xsk_buff_get_tail(struct xdp_buff *first)
-> > > > +{
-> > > > +	struct xdp_buff_xsk *xskb = container_of(first, struct xdp_buff_xsk, xdp);
-> > > > +	struct xdp_buff_xsk *frag;
-> > > > +
-> > > > +	frag = list_last_entry(&xskb->pool->xskb_list, struct xdp_buff_xsk,
-> > > > +			       xskb_list_node);
-> > > > +	return &frag->xdp;
-> > > > +}
-> > > > +
-> > > 
-> > > [ ... ]
-> > > 
-> > > > +static void __shrink_data(struct xdp_buff *xdp, struct xdp_mem_info *mem_info,
-> > > > +			  skb_frag_t *frag, int shrink)
-> > > > +{
-> > > > +	if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
-> > > > +		struct xdp_buff *tail = xsk_buff_get_tail(xdp);
-> > > > +
-> > > > +		if (tail)
-> > > > +			tail->data_end -= shrink;
-> > > > +	}
-> > > > +	skb_frag_size_sub(frag, shrink);
-> > > > +}
-> > > > +
-> > > > +static bool shrink_data(struct xdp_buff *xdp, skb_frag_t *frag, int shrink)
-> > > > +{
-> > > > +	struct xdp_mem_info *mem_info = &xdp->rxq->mem;
-> > > > +
-> > > > +	if (skb_frag_size(frag) == shrink) {
-> > > > +		struct page *page = skb_frag_page(frag);
-> > > > +		struct xdp_buff *zc_frag = NULL;
-> > > > +
-> > > > +		if (mem_info->type == MEM_TYPE_XSK_BUFF_POOL) {
-> > > > +			zc_frag = xsk_buff_get_tail(xdp);
-> > > > +
-> > > > +			if (zc_frag) {
-> > > 
-> > > Based on the xsk_buff_get_tail(), would zc_frag ever be NULL?
-> > 
-> > Hey Martin thanks for taking a look, I had to do this in order to satisfy
-> > !CONFIG_XDP_SOCKETS builds :/
-> 
-> There is compilation/checker warning if it does not check for NULL?
-> 
-> hmm... but it still should not reach here in the runtime and call
-> xsk_buff_get_tail() in the !CONFIG_XDP_SOCKETS build. Can the NULL test on
-> the get_tail() return value be removed? The above "mem_info->type ==
-> MEM_TYPE_XSK_BUFF_POOL" should have avoided the get_tail() call for the
-> !CONFIG_XDP_SOCKETS build. Otherwise, it could be passing NULL to the
-> __xdp_return() and hit the same bug again. The NULL check here is pretty
-> hard to reason logically.
+On Thu, Jan 4, 2024 at 10:52=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Thu, Jan 4, 2024 at 10:37=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Jan 3, 2024 at 9:39=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Wed, Jan 3, 2024 at 5:39=E2=80=AFPM Andrii Nakryiko <andrii@kernel=
+.org> wrote:
+> > > >
+> > > > This limitation was the reason to add btf_decl_tag("arg:ctx"), maki=
+ng
+> > > > the actual argument type not important, so that user can just defin=
+e
+> > > > "generic" signature:
+> > > >
+> > > >   __noinline int global_subprog(void *ctx __arg_ctx) { ... }
+> > >
+> > > I still think that this __arg_ctx only makes sense with 'void *'.
+> > > Blind rewrite of ctx is a foot gun.
+> > >
+> > > I've tried the following:
+> > >
+> > > diff --git a/tools/testing/selftests/bpf/progs/test_global_func_ctx_a=
+rgs.c
+> > > b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+> > > index 9a06e5eb1fbe..0e5f5205d4a8 100644
+> > > --- a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+> > > +++ b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+> > > @@ -106,9 +106,9 @@ int perf_event_ctx(void *ctx)
+> > >  /* this global subprog can be now called from many types of entry pr=
+ogs, each
+> > >   * with different context type
+> > >   */
+> > > -__weak int subprog_ctx_tag(void *ctx __arg_ctx)
+> > > +__weak int subprog_ctx_tag(long ctx __arg_ctx)
+> > >  {
+> > > -       return bpf_get_stack(ctx, stack, sizeof(stack), 0);
+> > > +       return bpf_get_stack((void *)ctx, stack, sizeof(stack), 0);
+> > >  }
+> > >
+> > >  struct my_struct { int x; };
+> > > @@ -131,7 +131,7 @@ int arg_tag_ctx_raw_tp(void *ctx)
+> > >  {
+> > >         struct my_struct x =3D { .x =3D 123 };
+> > >
+> > > -       return subprog_ctx_tag(ctx) + subprog_multi_ctx_tags(ctx, &x,=
+ ctx);
+> > > +       return subprog_ctx_tag((long)ctx) +
+> > > subprog_multi_ctx_tags(ctx, &x, ctx);
+> > >  }
+> > >
+> > > and it "works".
+> >
+> > Yeah, but you had to actively force casting everywhere *and* you still
+> > had to consciously add __arg_ctx, right? If a user wants to subvert
+> > the type system, they will do it. It's C, after all. But if they just
+> > accidentally use sk_buff ctx and call it from the XDP program with
+> > xdp_buff/xdp_md, the compiler will call out type mismatch.
+>
+> I could have used long everywhere and avoided casts.
+>
 
-Thanks for bringing this up, you are of course right. I'll address that.
+My point was that it's hard to accidentally forget to "generalize"
+type if you were supporting sk_buff, and suddenly started calling it
+with xdp_md.
 
-> 
-> > 
-> > > 
-> > > > +				xdp_buff_clear_frags_flag(zc_frag);
-> > > > +				xsk_buff_del_tail(zc_frag);
-> > > > +			}
-> > > > +		}
-> > > > +
-> > > > +		__xdp_return(page_address(page), mem_info, false, zc_frag);
-> > > 
-> > > and iiuc, this patch is fixing a bug when zc_frag is NULL and
-> > > MEM_TYPE_XSK_BUFF_POOL.
-> > 
-> > Generally I don't see the need for xdp_return_buff() (which calls in the
-> > end __xdp_return() being discussed) to handle MEM_TYPE_XSK_BUFF_POOL, this
-> > could be refactored later and then probably this fix would look different,
-> > but this is out of the scope now.
-> > 
-> > > 
-> > > > +		return true;
-> > > > +	}
-> > > > +	__shrink_data(xdp, mem_info, frag, shrink);
-> > > > +	return false;
-> > > > +}
-> > > > +
-> > > 
-> > > 
-> > 
-> 
-> 
+From my POV, if I'm a user, and I declare an argument as long and
+annotate it as __arg_ctx, then I know what I'm doing and I'd hate for
+some smart-ass library to double-guess me dictating what exact
+incantation I should specify to make it happy.
+
+If I'm clueless and just randomly sprinkling __arg_ctx, then I have
+bigger problems than type mismatch.
+
+> > >
+> > > Both kernel and libbpf should really limit it to 'void *'.
+> > >
+> > > In the other email I suggested to allow types that match expected
+> > > based on prog type, but even that is probably a danger zone as well.
+> > > The correct type would already be detected by the verifier,
+> > > so extra __arg_ctx is pointless.
+> > > It makes sense only for such polymorphic functions and those
+> > > better use 'void *' and don't dereference it.
+> > >
+> > > I think this can be a follow up.
+> >
+> > Not really just polymorphic functions. Think about subprog
+> > specifically for the fentry program, as one example. You *need*
+> > __arg_ctx just to make context passing work, but you also want
+> > non-`void *` type to access arguments.
+> >
+> > int subprog(u64 *args __arg_ctx) { ... }
+> >
+> > SEC("fentry")
+> > int BPF_PROG(main_prog, ...)
+> > {
+> >     return subprog(ctx);
+> > }
+> >
+> > Similarly, tracepoint programs, you'd have:
+> >
+> > int subprog(struct syscall_trace_enter* ctx __arg_ctx) { ... }
+> >
+> > SEC("tracepoint/syscalls/sys_enter_kill")
+> > int main_prog(struct syscall_trace_enter* ctx)
+> > {
+> >     return subprog(ctx);
+> > }
+> >
+> > So that's one group of cases.
+>
+> But the above two are not supported by libbpf
+> since it doesn't handle "tracing" and "tracepoint" prog types
+> in global_ctx_map.
+
+Ok, so I'm confused now. I thought we were talking about both
+kernel-side and libbpf-side extra checks.
+
+Look, I don't want libbpf to be too smart and actually cause
+unnecessary problems for users (pt_regs being one such case, see
+below), and making users do work arounds just to satisfy libbpf. Like
+passing `void * ctx __arg_ctx`, but then casting to `struct pt_regs`,
+for example. (see below about pt_regs)
+
+Sure, if someone has no clue what they are doing and specifies a
+different type, I think it's acceptable for them to have that bug.
+They will debug it, fix it, learn something, and won't do it again.
+I'd rather assume users know what they are doing rather than
+double-guess what they are doing.
+
+If we are talking about libbpf-only changes just for those types that
+libbpf is rewriting, fine (though I'm still not happy about struct
+pt_regs case not working), we can add it. If Eduard concurs, I'll add
+it, it's not hard. But as I said, I think libbpf would be doing
+something that it's not supposed to do here (libbpf is just silently
+adding an annotation, effectively, it's not changing how code is
+generated or how verifier is interpreting types).
+
+If we are talking about kernel-side extra checks, I propose we do that
+on my next patch set adding PTR_TO_BTF_ID, but again, we need to keep
+those non-polymorphic valid cases in mind (u64 *ctx for fentry,
+tracepoint structs, etc) and not make them unnecessarily painful.
+
+> I suspect the kernel sort-of supports above, but in a dangerous
+> and broken way.
+>
+> My point is that users must not use __arg_ctx in these two cases.
+> fentry (tracing prog type) wants 'void *' in the kernel to
+> match to ctx.
+> So the existing mechanism (prior to arg_ctx in the kernel)
+> should already work.
+
+Let's unpack. fentry doesn't "want" `void *`, it just doesn't support
+passing context argument to global subprog. So you would have to
+specify __arg_ctx, and that will only work on recent enough kernels.
+
+At that point, all of `long ctx __arg_ctx`, `void *ctx __arg_ctx` and
+`u64 *ctx __arg_ctx` will work. Yes, `long ctx` out of those 3 are
+weird, but verifier will treat it as PTR_TO_CTX regardless of specific
+type correctly.
+
+More importantly, I'm saying that both `void *ctx __arg_ctx` and `u64
+*ctx __arg_ctx` should work for fentry, don't you agree?
+
+>
+> > Another special case are networking programs, where both "__sk_buff"
+> > and "sk_buff" are allowed, same for "xdp_buff" and "xdp_md".
+>
+> what do you mean both?
+> networking bpf prog must only use __sk_buff and that is one and
+> only supported ctx.
+> Using 'struct sk_buff *ctx __arg_ctx' will be a bad bug.
+> Since offsets will be all wrong while ctx rewrite will apply garbage
+> and will likely fail.
+
+You are right about wrong offsets, but the kernel does allow it. See
+[0]. I actually tried, and indeed, it allows sk_buff to denote
+"context". Note that I had to comment out skb->len dereference
+(otherwise verifier will correctly complain about wrong offset), but
+it is recognized as PTR_TO_CTX and I could technically pass it to
+another subprog or helpers/kfuncs (and that would work).
+
+  [0] https://lore.kernel.org/all/20230301154953.641654-2-joannelkoong@gmai=
+l.com/
+
+diff --git a/tools/testing/selftests/bpf/progs/test_global_func2.c
+b/tools/testing/selftests/bpf/progs/test_global_func2.c
+index 2beab9c3b68a..29d7f3e78f8e 100644
+--- a/tools/testing/selftests/bpf/progs/test_global_func2.c
++++ b/tools/testing/selftests/bpf/progs/test_global_func2.c
+@@ -1,16 +1,15 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /* Copyright (c) 2020 Facebook */
+-#include <stddef.h>
+-#include <linux/bpf.h>
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include "bpf_misc.h"
+
+ #define MAX_STACK (512 - 3 * 32)
+
+ static __attribute__ ((noinline))
+-int f0(int var, struct __sk_buff *skb)
++int f0(int var, struct sk_buff *skb)
+ {
+-       return skb->len;
++       return 0;
+ }
+
+ __attribute__ ((noinline))
+@@ -20,7 +19,7 @@ int f1(struct __sk_buff *skb)
+
+        __sink(buf[MAX_STACK - 1]);
+
+-       return f0(0, skb) + skb->len;
++       return f0(0, (void*)skb) + skb->len;
+ }
+
+ int f3(int, struct __sk_buff *skb, int);
+@@ -45,5 +44,5 @@ SEC("tc")
+ __success
+ int global_func2(struct __sk_buff *skb)
+ {
+-       return f0(1, skb) + f1(skb) + f2(2, skb) + f3(3, skb, 4);
++       return f0(1, (void *)skb) + f1(skb) + f2(2, skb) + f3(3, skb, 4);
+ }
+
+
+>
+> > Also, kprobes are special, both "struct bpf_user_pt_regs_t" and
+> > *typedef* "bpf_user_pt_regs_t" are supported. But in practice users
+> > will often just use `struct pt_regs *ctx`, actually.
+>
+> Same thing. The global bpf prog has to use bpf_user_pt_regs_t
+> to be properly recognized as ctx arg type.
+> Nothing special. Using 'struct pt_regs * ctx __arg_ctx' and blind
+> rewrite will cause similar hard to debug bugs when
+> bpf_user_pt_regs_t doesn't match pt_regs that bpf prog sees
+> at compile time.
+
+So this is not the same thing as skbuff. If BPF program is meant for a
+single architecture, like x86-64, it's completely valid (and that's
+what people have been doing with static subprogs for ages now) to just
+use `struct pt_regs`. They are the same thing on x86.
+
+I'll say even more, with libbpf's PT_REGS_xxx() macros you don't even
+need to know about pt_regs vs user_pt_regs difference, as macros
+properly force-cast arguments, depending on architecture. So in your
+BPF code you can just pass `struct pt_regs *` around just fine across
+multiple architectures as long as you only use PT_REGS_xxx() macros
+and then pass that context to helpers (to get stack trace,
+bpf_perf_event_output, etc).
+
+No one even knows about bpf_user_pt_regs_t, I had to dig it up from
+kernel source code and let users know what exact type name to use for
+global subprog.
 
