@@ -1,240 +1,187 @@
-Return-Path: <bpf+bounces-19004-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19005-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95A97823B03
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 04:15:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6FA9823B28
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 04:40:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E58D3B24A71
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 03:15:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6F891C24A1C
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 03:40:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1A55257;
-	Thu,  4 Jan 2024 03:15:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="syyBlebt";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="iW3iPwJm";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=cuhko365.onmicrosoft.com header.i=@cuhko365.onmicrosoft.com header.b="JtoYeXTD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055025681;
+	Thu,  4 Jan 2024 03:40:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806185221
-	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 03:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=link.cuhk.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 694C7C151990
-	for <bpf@vger.kernel.org>; Wed,  3 Jan 2024 19:15:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1704338123; bh=3uJ6RA1ReXyLH0otCj+lzoNKixzkwqVrhWw+W5JhlaY=;
-	h=From:To:CC:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe;
-	b=syyBlebtawyuSJ45MFMTZ5x+smqI5z1lhLffdDfJSMCVavTgZQRud89HHJkHzNchV
-	 hyPO8PfHcJhEJPYJz7RJA7zvmcdnORgWq5MXpsQcCXG3WNp9T1UBxiAVFr9pYJcuqm
-	 wZ6e4jnEwySXW2Xft9YmPtU1cPF8nMORAHB3tuys=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Wed Jan  3 19:15:23 2024
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id D9AF4C14F6BE;
-	Wed,  3 Jan 2024 19:15:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1704338122; bh=3uJ6RA1ReXyLH0otCj+lzoNKixzkwqVrhWw+W5JhlaY=;
-	h=From:To:CC:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
-	 List-Post:List-Help:List-Subscribe;
-	b=iW3iPwJm7lQMYmbnkhUY8l/A29IyFW5iN+KTObV401WHqsQh9wg2ECc/4SF8QiWTH
-	 lyksx67YTDQksLgIMNpqA4188magTl66KzLHqRztrKmL9UeGeOX7XsdvYK3i3HhT9H
-	 pJRKZg1Cu4Gc46g2UAfOzpVMaH/z4ikdL9NbCkj0=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id DDC1FC14F6AA
- for <bpf@ietfa.amsl.com>; Wed,  3 Jan 2024 19:12:45 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.911
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
- header.d=cuhko365.onmicrosoft.com
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 6aJOvEIdpZnK for <bpf@ietfa.amsl.com>;
- Wed,  3 Jan 2024 19:12:43 -0800 (PST)
-Received: from JPN01-OS0-obe.outbound.protection.outlook.com
- (mail-os0jpn01on2081.outbound.protection.outlook.com [40.107.113.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 9B8E7C1654E9
- for <bpf@ietf.org>; Wed,  3 Jan 2024 19:12:42 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cnBdDBYy8a7DtV/WdQJWqjR2+BW9AR7m+rXOvJ1HiwjAc+enLciAXT2GlnesHh3Lj2qQjNisjjXEhFW0RJbAtLHDfmQRGo5EiTuBiEjrrykuKlxGG+p0Xp6XfhApPc0v63SYtCq1OuexWKlTWp5cWOZPwXjZhQqzFXQY+6Py9Pt5WHvm7DMgWJjVMwpYLY4atEa7UlfV4M18ZuivVh4OCSiDZonJ4R971+kPn9IMscNMI99B0VIr4bHmB7n1eWxf4r69hUKs8XIjSorw5aCY54SSQ2/HcWpu3dXsLteztqB4VO0McXSTp7Jljyp3+vrrQzMV8s/QLPC12mWcsDLSfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com; 
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9jIWgysWGTweyjwCg095ynhHbkS2XmiZeTcX8lM5KCI=;
- b=PKDWE3z/6wdYNY1zKD3AvSqRvXSrH4t1D7Wh06iJZ71YMsKvaObRyj4aDZ6mG6UALgPFnNKE3lLYbWkZwMu1QTekfwtfhq0uy7LVuBAQomb9tVJ/cS/byaj8tcv1Mo8CLQJfN9nJ8R04UUg63mdq0H96KHNn08X33EZymfX8DOnA086nIv4o8Zf3Bbe3hl0AIYQf28AyUcNucjLGXcv+2NzD3rDsz8KgmKlzQ4wSKYi8fTHQKhaqgzl+Q6ckNyMJWP0VcBt5XkmuYd+CLki3Z9uQfUk+2yA7ehYGO8QycD5z80yyTrXJ+BgTFDTaWBpvBLF0YZEL+T9Xm01jCSCn7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=link.cuhk.edu.cn; dmarc=pass action=none
- header.from=link.cuhk.edu.cn; dkim=pass header.d=link.cuhk.edu.cn; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=cuhko365.onmicrosoft.com; s=selector2-cuhko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9jIWgysWGTweyjwCg095ynhHbkS2XmiZeTcX8lM5KCI=;
- b=JtoYeXTD+DzR8cY8Cy01ti3AvCrtDTPnS4U67NssGqGtBtaUfwH4Hyz2xtWkDQnq1NFBd2v+y+XvrFraYaRCHxi28yPTDljCdXCIdoCCqrV544y8ggimg/hCjGyNGAN0dyS26tKsN5zIawVDoqCtEqCnL0/7s8b6InPTwmAgeQs=
-Received: from TYWP286MB3822.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:447::6)
- by TY3P286MB3732.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:3d2::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7159.14; Thu, 4 Jan
- 2024 03:12:41 +0000
-Received: from TYWP286MB3822.JPNP286.PROD.OUTLOOK.COM
- ([fe80::6fa9:a85c:1adc:827b]) by TYWP286MB3822.JPNP286.PROD.OUTLOOK.COM
- ([fe80::6fa9:a85c:1adc:827b%4]) with mapi id 15.20.7159.013; Thu, 4 Jan 2024
- 03:12:40 +0000
-From: "Aoyang Fang (SSE, 222010547)" <aoyangfang@link.cuhk.edu.cn>
-To: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "bpf@ietf.org" <bpf@ietf.org>
-CC: "void@manifault.com" <void@manifault.com>
-Thread-Topic: [PATCH] update the consistency issue in documentation
-Thread-Index: AQHaPrvgz1htAWG5g0GpJpM0pJumoQ==
-Date: Thu, 4 Jan 2024 03:12:40 +0000
-Message-ID: <3A7D0A57-02EF-4ACB-A599-1029CFCA7E74@link.cuhk.edu.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=link.cuhk.edu.cn;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYWP286MB3822:EE_|TY3P286MB3732:EE_
-x-ms-office365-filtering-correlation-id: 6b400a82-a466-442a-3aab-08dc0cd302ec
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: F0/ERUlKP99wPR2PbYlw0RS3aNIZB3AHbJVOFx7uDcLY1I4fBn2bRafOArL409nBjWaQQwUMPNAHSTdsgqw107zCeKY2Vt9p8iQoRttBJnhEPvdl1ResjiUrRBcZmKoQV0jnVRj6436LqCtbc/3KKuzjkyy1Sqel52vN3b7DZdd8ScxQMU+sov8uUqLkq+PN6MMQBweFtUe/McXBobo/FgzSQcIb70xEiucSi4l1yIPIMDt4+9rIBTZqXXhMzGoM4wY03IcyjFaNQ7IdUnFxSKnLFzjmhhUJ4iW20IMzgFYRsoNOCJaCVUATs4wLZiV+9SxSXCdfmOPvPyMVqMYZDDJF9SoYo14sFU4NsY0ycNb7yFJyTCKPYJ1uHjcAMmTsSFcaL+l/gk7zVAkecyXgnrjBOg4P9HMdyoVKozHaRqO0Lzd3DMQ8VIKKwgvTUQ1xcL8GLaJPulwAE39Rph42EraTajOn7nfEQUS9dWXJ9PW6jX88fCJyXXKPR1PVJj0PS5sFLNDum2EJcFcXUII+e1EgbsNTmxqWBAs8ywIIPn+b3Z8ILROnY55l0TrssXVP77R5Z56SYftjJY/9w+HfAPZgM8Mim9w7U1mm1bmBFJI2VbE6oIXZnpySYAW6kQxAYxRWkWUT906JNbK01Mnbhg==
-x-forefront-antispam-report: CIP:255.255.255.255; CTRY:; LANG:en; SCL:1; SRV:;
- IPV:NLI; SFV:NSPM; H:TYWP286MB3822.JPNP286.PROD.OUTLOOK.COM; PTR:; CAT:NONE;
- SFS:(13230031)(376002)(136003)(366004)(396003)(346002)(39850400004)(230922051799003)(1800799012)(64100799003)(451199024)(186009)(8676002)(4326008)(41320700001)(2906002)(5660300002)(478600001)(71200400001)(6506007)(6512007)(53546011)(64756008)(66446008)(66556008)(76116006)(66946007)(316002)(66476007)(786003)(110136005)(8936002)(6486002)(41300700001)(38070700009)(83380400001)(122000001)(2616005)(86362001)(38100700002)(26005)(33656002)(45980500001);
- DIR:OUT; SFP:1101; 
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?I1Rm8UpCrykiPL1phWhcEHv+IHHCH2Dhb+sXNGO+cSrPSD/E3KXXm4dmdScn?=
- =?us-ascii?Q?1CZVd5DMMQ0vhlaquq1Cyi7i4/drmfoVoWUPtW+rCJETx5+npOBU+ym+CzqJ?=
- =?us-ascii?Q?swL1p2ViRqk2iR19WH9xBvRiozD82HNt8pTpPsHIYTVBbFMRYu65GinOEty8?=
- =?us-ascii?Q?RQQdH4605jLRdN6AjC+zWc96Q5yo1aJTYbHK7QZDZf/LOnpcy5TnzdxjXsiQ?=
- =?us-ascii?Q?LVD0aQDEGUSpfVLzJqcTe67O+C6LzumvOS/Tz98J5iXGmUyQKas/+L60OLPU?=
- =?us-ascii?Q?nBPn5dm1aXxxpVXRNDgHmr2+ahc6xuU9BzsE8m6CL0gwZkPFVu0zTpYMUVcm?=
- =?us-ascii?Q?smb6xWE3y9X6SrRnKagseep7eVcCywzNi9dMRQX9sK+fpkzmxLDlR5B4nFE8?=
- =?us-ascii?Q?LXJB+6lVMIkmAZAYqcCmZOCycJ6P2q42BL18encM1idKQL2ITNcMn4C1inmk?=
- =?us-ascii?Q?5xr6+1OlYYpskgclr4O3kc5f+BHVDT2NBqMK68k/n42gwYS9sYKTZyGUsQeR?=
- =?us-ascii?Q?QLFbI0f9kNY2glmPFksf5Qz8Xv6E6+MyMxpKlXz2qO+X0cA+HaOHQ1G4igh4?=
- =?us-ascii?Q?cDACjsWJ1abk91aWucg+rELM7k9AocR79GQFGh6ghP1AcOfRJ2I8SKNzIGRY?=
- =?us-ascii?Q?DnYmezU+WM5c++HtN2oOVBu/v50aN/21Qth/o8dt667ybe0KOfr4rVnguW6n?=
- =?us-ascii?Q?Uex0npreGwDAjuwmSs1zyShkkFQcV1xPvD6zAU+sUcvxSZ3QJEz7gP41lEDS?=
- =?us-ascii?Q?Ta1Zud+85UCP/oqAWWVOPPy+WEmHNVs0CtA64Up8JcVLV8+6BwF/ej6jfZMt?=
- =?us-ascii?Q?BjlmgnoRPAdbKHgpEqWCUa+K2mwKHG6T64G6ZDOO48128Ew/7DAIIn32BLsW?=
- =?us-ascii?Q?qNUNOZueZjfr4CzFMhsoS5udcYWWDfDoYIyi99CD/dew+pNp1nc8MeKIhnvL?=
- =?us-ascii?Q?Actor+w84ZvBSoSgoNhyK3L3Ur1fKEG1A5MVgoOQUruEBSizt7musg/Jvhip?=
- =?us-ascii?Q?4vonFZ+H4pEHCXCy3dCqQrerAKeK7CfAOS5VX8V3DBvdLAbYn4uCGGgHERvk?=
- =?us-ascii?Q?AWXiSu7W2INIf8dPXS6UCZ2eYbi/uH+FlQwFzEPYsbE1k/Dhq8P5ExBxoDpI?=
- =?us-ascii?Q?cNuqqngaH/hkEUSdsHSdI87kHDZthi9Vab/G4dvuMUgR439QeURczVy5OrUb?=
- =?us-ascii?Q?o/FniWSNjLLRkrR7Xm07aSFjvvpwqDeMK6vJqQ7oGF8oLgAOQSxwUSB/Z6CO?=
- =?us-ascii?Q?CPi/N9HDfC+pH0kQ6Ipm2wwsoTYR11mI7HqQBRjyyNNo8lBdcNGdQyU6qDJJ?=
- =?us-ascii?Q?pB52HDLWOBxAsryj+vj6aWDSdsZOsaqXQJ+zAqpg2vOS3aspvE26jV5hpAAw?=
- =?us-ascii?Q?iz4HUKZcxMQdmDw7f5WjmOG+ui9gT4KBlI2RQWu9HPcyh6CYaPJvDMpitsVF?=
- =?us-ascii?Q?OVuiHydcmiV4FbadjYj0uwTosdKhs/QrjOGM+92LvR/Xr2KBvTJcN056Eu0u?=
- =?us-ascii?Q?vCu6OGusRhVfu8gOBF9YF+MZ5r8L35DGZC9BZiOwg6+dEljIwJCa+LWwz1T5?=
- =?us-ascii?Q?rZGif8W6+EUhzOgLHhU4JhxdI+kM6rh7BZTmerHJ6oh7t7YNBcvnOwvq6kLD?=
- =?us-ascii?Q?Iw=3D=3D?=
-Content-ID: <DD654C668D7F8F42A34CD27A924BF85C@JPNP286.PROD.OUTLOOK.COM>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DE35258
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 03:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dbdc52f2359so104344276.3
+        for <bpf@vger.kernel.org>; Wed, 03 Jan 2024 19:39:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704339597; x=1704944397;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VUqPSUfrIPOL1uXR1pm95hr2+CVxs8yp09wLUY6ssNo=;
+        b=LfEIP0t36QPsS/r7nBSLIPZC0amypn5gaFHIJHeFXVnNWelAsICC67cBE+LtjiYIBW
+         YeR9WDh/Nej5Q30c2JcvH7BiLQFqJ5vI5oFZGxq2VMBrE9pSUTtt7/1Dwo3MeyR7awYP
+         7YS5GSizTCn90oqZmgpXxaro9m7I14U/YS6iag1b6dsULly3rHTfmiqfjO/b7eY+2P79
+         cobU4H8lXbilJCnS+L3UQjiYJa+4g4AtqY7zA81Pe2CIJKYhBOrbL9AXZApcvP6+4V3G
+         Iamw6/xMS+u5qZF3OO7ZcKbuCtw3GooAkuxnTuxw8xHh6fvlnrk9qktP1VsdHLU4VlZJ
+         TRTw==
+X-Gm-Message-State: AOJu0YxKZrOMrjQ+REHyTkuEFvYvsA1QdaaVUA3/kI4YejRd62s6lXBd
+	Rndl9EVGzfzF5DK4jpq1TYM0htmV3DavrQ==
+X-Google-Smtp-Source: AGHT+IFO+87vWRR8RS1szy3Pcb6hJD5nj6OhfAJKpOjoGCYle6aBaEw+ugceWsf69tgOiyF8F8midA==
+X-Received: by 2002:a25:dc44:0:b0:dbd:b5e8:6303 with SMTP id y65-20020a25dc44000000b00dbdb5e86303mr28494ybe.108.1704339597434;
+        Wed, 03 Jan 2024 19:39:57 -0800 (PST)
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+        by smtp.gmail.com with ESMTPSA id dm6-20020ad44e26000000b0067f6ec98ae9sm11406751qvb.32.2024.01.03.19.39.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jan 2024 19:39:56 -0800 (PST)
+Date: Wed, 3 Jan 2024 21:39:54 -0600
+From: David Vernet <void@manifault.com>
+To: "Aoyang Fang (SSE, 222010547)" <aoyangfang@link.cuhk.edu.cn>
+Cc: "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"bpf@ietf.org" <bpf@ietf.org>
+Subject: Re: [PATCH] update the consistency issue in documentation
+Message-ID: <20240104033954.GC303539@maniforge>
+References: <F349E672-63EB-4DA3-84F8-45E360E02594@link.cuhk.edu.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: link.cuhk.edu.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYWP286MB3822.JPNP286.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b400a82-a466-442a-3aab-08dc0cd302ec
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jan 2024 03:12:40.5998 (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e5898b7a-9c87-4a4b-b22a-2df3f355e01e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sGcZRQr+aKrj+2wGhm8aJbxJGaRUA8qAgYXlZiG4hauVTxo/oW7WQASQ/jGozgq3FyqX3OoyhvfsL0e+tuNz1KfhoSMiPJRMS0kmL/4buio=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3P286MB3732
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/xBh7k_g_tlVyn7ycwyln2lTPGgA>
-Subject: [Bpf] [PATCH] update the consistency issue in documentation
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="1brf73tkHEfxX8Ia"
+Content-Disposition: inline
+In-Reply-To: <F349E672-63EB-4DA3-84F8-45E360E02594@link.cuhk.edu.cn>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
->From fa9f3f47ddeb3e9a615c17aea57d2ecd53a7d201 Mon Sep 17 00:00:00 2001
-From: lincyawer <53161583+Lincyaw@users.noreply.github.com>
-Date: Thu, 4 Jan 2024 10:51:36 +0800
-Subject: [PATCH] The original documentation of BPF_JMP instructions is somehow
-misleading. The code part of instruction, e.g., BPF_JEQ's value is noted as
-0x1, however, in `include/uapi/linux/bpf.h`, the value of BPF_JEQ is 0x10. At
-the same time, the description convention is inconsistent with the BPF_ALU,
-whose code are also 4bit, but the value of BPF_ADD is 0x00
 
-Signed-off-by: lincyawer <53161583+Lincyaw@users.noreply.github.com>
----
-.../bpf/standardization/instruction-set.rst | 34 +++++++++----------
-1 file changed, 17 insertions(+), 17 deletions(-)
+--1brf73tkHEfxX8Ia
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-index 245b6defc..dee3b1fa8 100644
---- a/Documentation/bpf/standardization/instruction-set.rst
-+++ b/Documentation/bpf/standardization/instruction-set.rst
-@@ -355,23 +355,23 @@ The 'code' field encodes the operation as below:
-======== ===== === =========================================== =========================================
-code value src description notes
-======== ===== === =========================================== =========================================
--BPF_JA 0x0 0x0 PC += offset BPF_JMP class
--BPF_JA 0x0 0x0 PC += imm BPF_JMP32 class
--BPF_JEQ 0x1 any PC += offset if dst == src
--BPF_JGT 0x2 any PC += offset if dst > src unsigned
--BPF_JGE 0x3 any PC += offset if dst >= src unsigned
--BPF_JSET 0x4 any PC += offset if dst & src
--BPF_JNE 0x5 any PC += offset if dst != src
--BPF_JSGT 0x6 any PC += offset if dst > src signed
--BPF_JSGE 0x7 any PC += offset if dst >= src signed
--BPF_CALL 0x8 0x0 call helper function by address see `Helper functions`_
--BPF_CALL 0x8 0x1 call PC += imm see `Program-local functions`_
--BPF_CALL 0x8 0x2 call helper function by BTF ID see `Helper functions`_
--BPF_EXIT 0x9 0x0 return BPF_JMP only
--BPF_JLT 0xa any PC += offset if dst < src unsigned
--BPF_JLE 0xb any PC += offset if dst <= src unsigned
--BPF_JSLT 0xc any PC += offset if dst < src signed
--BPF_JSLE 0xd any PC += offset if dst <= src signed
-+BPF_JA 0x00 0x0 PC += offset BPF_JMP class
-+BPF_JA 0x00 0x0 PC += imm BPF_JMP32 class
-+BPF_JEQ 0x10 any PC += offset if dst == src
-+BPF_JGT 0x20 any PC += offset if dst > src unsigned
-+BPF_JGE 0x30 any PC += offset if dst >= src unsigned
-+BPF_JSET 0x40 any PC += offset if dst & src
-+BPF_JNE 0x50 any PC += offset if dst != src
-+BPF_JSGT 0x60 any PC += offset if dst > src signed
-+BPF_JSGE 0x70 any PC += offset if dst >= src signed
-+BPF_CALL 0x80 0x0 call helper function by address see `Helper functions`_
-+BPF_CALL 0x80 0x1 call PC += imm see `Program-local functions`_
-+BPF_CALL 0x80 0x2 call helper function by BTF ID see `Helper functions`_
-+BPF_EXIT 0x90 0x0 return BPF_JMP only
-+BPF_JLT 0xa0 any PC += offset if dst < src unsigned
-+BPF_JLE 0xb0 any PC += offset if dst <= src unsigned
-+BPF_JSLT 0xc0 any PC += offset if dst < src signed
-+BPF_JSLE 0xd0 any PC += offset if dst <= src signed
-======== ===== === =========================================== =========================================
-The BPF program needs to store the return value into register R0 before doing a
--- 
-2.42.0
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
+On Thu, Jan 04, 2024 at 03:09:32AM +0000, Aoyang Fang (SSE, 222010547) wrot=
+e:
+> From fa9f3f47ddeb3e9a615c17aea57d2ecd53a7d201 Mon Sep 17 00:00:00 2001
+> From: lincyawer <53161583+Lincyaw@users.noreply.github.com>
+> Date: Thu, 4 Jan 2024 10:51:36 +0800
+> Subject: [PATCH] The original documentation of BPF_JMP instructions is so=
+mehow
+> misleading. The code part of instruction, e.g., BPF_JEQ's value is noted =
+as
+> 0x1, however, in `include/uapi/linux/bpf.h`, the value of BPF_JEQ is 0x10=
+=2E At
+> the same time, the description convention is inconsistent with the BPF_AL=
+U,
+> whose code are also 4bit, but the value of BPF_ADD is 0x00
+>=20
+> Signed-off-by: lincyawer <53161583+Lincyaw@users.noreply.github.com>
+
+Hi Aoyang,
+
+Could you please resend this patch to the lists in plain text? The Linux
+kernel mailing lists will drop html-encoded emails. Please see [0] for
+more information. You can just use git send-email with a patch file as
+follows:
+
+$ git format-patch HEAD~ --subject-prefix=3D'PATCH bpf-next' HEAD~
+$ git send-email <patch> --to bpf@vger.kernel.org --cc bpf@ietf.org
+
+[0]: https://docs.kernel.org/process/submitting-patches.html#no-mime-no-lin=
+ks-no-compression-no-attachments-just-plain-text
+
+Please make sure that the Signed-off-by tag includes your name and real
+email address as well.
+
+Thanks,
+David
+
+> ---
+> .../bpf/standardization/instruction-set.rst | 34 +++++++++----------
+> 1 file changed, 17 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Docu=
+mentation/bpf/standardization/instruction-set.rst
+> index 245b6defc..dee3b1fa8 100644
+> --- a/Documentation/bpf/standardization/instruction-set.rst
+> +++ b/Documentation/bpf/standardization/instruction-set.rst
+> @@ -355,23 +355,23 @@ The 'code' field encodes the operation as below:
+> =3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D =3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> code value src description notes
+> =3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D =3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> -BPF_JA 0x0 0x0 PC +=3D offset BPF_JMP class
+> -BPF_JA 0x0 0x0 PC +=3D imm BPF_JMP32 class
+> -BPF_JEQ 0x1 any PC +=3D offset if dst =3D=3D src
+> -BPF_JGT 0x2 any PC +=3D offset if dst > src unsigned
+> -BPF_JGE 0x3 any PC +=3D offset if dst >=3D src unsigned
+> -BPF_JSET 0x4 any PC +=3D offset if dst & src
+> -BPF_JNE 0x5 any PC +=3D offset if dst !=3D src
+> -BPF_JSGT 0x6 any PC +=3D offset if dst > src signed
+> -BPF_JSGE 0x7 any PC +=3D offset if dst >=3D src signed
+> -BPF_CALL 0x8 0x0 call helper function by address see `Helper functions`_
+> -BPF_CALL 0x8 0x1 call PC +=3D imm see `Program-local functions`_
+> -BPF_CALL 0x8 0x2 call helper function by BTF ID see `Helper functions`_
+> -BPF_EXIT 0x9 0x0 return BPF_JMP only
+> -BPF_JLT 0xa any PC +=3D offset if dst < src unsigned
+> -BPF_JLE 0xb any PC +=3D offset if dst <=3D src unsigned
+> -BPF_JSLT 0xc any PC +=3D offset if dst < src signed
+> -BPF_JSLE 0xd any PC +=3D offset if dst <=3D src signed
+> +BPF_JA 0x00 0x0 PC +=3D offset BPF_JMP class
+> +BPF_JA 0x00 0x0 PC +=3D imm BPF_JMP32 class
+> +BPF_JEQ 0x10 any PC +=3D offset if dst =3D=3D src
+> +BPF_JGT 0x20 any PC +=3D offset if dst > src unsigned
+> +BPF_JGE 0x30 any PC +=3D offset if dst >=3D src unsigned
+> +BPF_JSET 0x40 any PC +=3D offset if dst & src
+> +BPF_JNE 0x50 any PC +=3D offset if dst !=3D src
+> +BPF_JSGT 0x60 any PC +=3D offset if dst > src signed
+> +BPF_JSGE 0x70 any PC +=3D offset if dst >=3D src signed
+> +BPF_CALL 0x80 0x0 call helper function by address see `Helper functions`_
+> +BPF_CALL 0x80 0x1 call PC +=3D imm see `Program-local functions`_
+> +BPF_CALL 0x80 0x2 call helper function by BTF ID see `Helper functions`_
+> +BPF_EXIT 0x90 0x0 return BPF_JMP only
+> +BPF_JLT 0xa0 any PC +=3D offset if dst < src unsigned
+> +BPF_JLE 0xb0 any PC +=3D offset if dst <=3D src unsigned
+> +BPF_JSLT 0xc0 any PC +=3D offset if dst < src signed
+> +BPF_JSLE 0xd0 any PC +=3D offset if dst <=3D src signed
+> =3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D =3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> The BPF program needs to store the return value into register R0 before d=
+oing a
+> --
+> 2.42.0
+>=20
+>=20
+
+--1brf73tkHEfxX8Ia
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZZYoigAKCRBZ5LhpZcTz
+ZAiTAQCGSefNSKJEKIHA2oxbXKhV97CnsS7R5/MQANdhe+Qk+QEA4ziQyYdU4Zjs
+gSjkFSZtyJ1D0ZbmxzLBSMVQq+/EIAM=
+=NYDe
+-----END PGP SIGNATURE-----
+
+--1brf73tkHEfxX8Ia--
 
