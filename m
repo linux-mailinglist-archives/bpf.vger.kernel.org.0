@@ -1,141 +1,181 @@
-Return-Path: <bpf+bounces-19050-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19051-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B5D82482E
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 19:30:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE665824847
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 19:37:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A5681C22550
-	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 18:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8412F287FB4
+	for <lists+bpf@lfdr.de>; Thu,  4 Jan 2024 18:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E47126ADB;
-	Thu,  4 Jan 2024 18:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65CE028E0F;
+	Thu,  4 Jan 2024 18:37:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iNSISFVJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bKP2w0JP"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E45F28E09
-	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 18:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B91328E09
+	for <bpf@vger.kernel.org>; Thu,  4 Jan 2024 18:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50e9e5c97e1so941226e87.0
-        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 10:30:50 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e67e37661so962284e87.0
+        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 10:37:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704393049; x=1704997849; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3NbtTDNz1OO1Xy0CTFBMxkfIzdL78neCxWNMZ/LSgAU=;
-        b=iNSISFVJrHJdX8kNgGhvx5pDs8w+7Se/dh+r0SVL9AvVCRlnTnvY59L5O5KkPjvf1e
-         +8tyT0SmqFx/CeegZKCDyQ2CYkk4clN6F+koqGxbbqFWOWy7T1p5CCiZ6cjZ8Mfi9j2D
-         Bzrtb0OmDTwiQSe+QC+jiYWjOmopeTeIn9XCYsQn88EYZ+IRkOdpQbhDSUw8VHPXGa13
-         klQRRL4+Th9fScuB3NhefAXQheWNEwh8NcoRoZrum4UiMO6Pb/o2WKa28PbVrdWzynvj
-         xo4Hf/63IPEyindQBNuLuNrbMBqlLxIq5dT2gIhVc/21D9Drh4hxCJnJ8HuS+lGq2Tiq
-         /3hg==
+        d=gmail.com; s=20230601; t=1704393468; x=1704998268; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Uj457E1t/NepR0JOENdx16qd5oEVavBN1vzTezPCuJM=;
+        b=bKP2w0JPtdBkc2BOaqfMJutxXRrULgQDag0ts06JK2GMUhu6xUx14wfoS/qVFSE1ch
+         x5TtPo9yUfK3KnHy+dK+tzTdPBhFNl/LoKJYtBxHBJwu+B0O3/ayxpmyguwS4+ptXckW
+         YkcMSVzIHlHSH9Ak+m884GFzt/qRzw1079kjcu80yzywSzjULvCtPG0x+OCwOc2ctzCD
+         6vW0ZrwLFAqeOLNDDQumW4mmBbGsUPqrN8wEql1w5a62O+O4KGmTlj/AP3FxxUq2U2vy
+         R99awiXGHgwUNIOq8zW3DhEc01mH4XtUGB0pTXVfSVokhYjU++GhQX7fw09sDWfyfE81
+         d3Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704393049; x=1704997849;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3NbtTDNz1OO1Xy0CTFBMxkfIzdL78neCxWNMZ/LSgAU=;
-        b=PlUH03ZmjnkroB4rWfX3iAnyR9s4CFZMWUWs4sq40qXEPIJYivcyGCxbU7yUDoM5OF
-         ELWmlvDg4Wgac14uuyuE3bz+8xhGQ1w03Q+ylyHKgGRArqLBFjMjCQxsTii2k2GN/C1E
-         JZb5DzDqmJJlPunw6MwKYmMA3wUaZiqu4wRkn5iBywtZNR3gDMT9TWNuTFFYzA1ZAjs3
-         IJCk1y239X4zKRwL23A5Ja9nfM4mMdv/WJjC6VZYnQn/OphJaIY1b2HqJTUN2Z6WrI7t
-         unN5Xszz/G8So/zcHfWS7DbtqoQidsc10KyRCQLim5bPCs0eZgvBRtzpqYP5NVB840Im
-         mo2A==
-X-Gm-Message-State: AOJu0YzzpLFo2t5DoE14AmgeTNocQ5BaXtHQJ+xJHIMuY0rPwrcpzWl5
-	Z1QuI6FiMbGZhNgvFwCs65U=
-X-Google-Smtp-Source: AGHT+IGrq6vFiTrMClh+VEdl3JSksrxaDZVWIf5yHJEIdWhp4PVw88XmF9C7ZWtb9B4C/NnUBg1HgA==
-X-Received: by 2002:a05:6512:951:b0:50e:76aa:77d6 with SMTP id u17-20020a056512095100b0050e76aa77d6mr518273lft.32.1704393048580;
-        Thu, 04 Jan 2024 10:30:48 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id n2-20020a170906164200b00a269e651abesm14354325ejd.176.2024.01.04.10.30.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 10:30:48 -0800 (PST)
-Message-ID: <f4c1ebf73ccf4099f44045e8a5b053b7acdffeed.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Track aligned st store as
- imprecise spilled registers
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>, Kuniyuki
- Iwashima <kuniyu@amazon.com>, Martin KaFai Lau <kafai@fb.com>
-Date: Thu, 04 Jan 2024 20:30:47 +0200
-In-Reply-To: <20240103232617.3770727-1-yonghong.song@linux.dev>
-References: <20240103232617.3770727-1-yonghong.song@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+        d=1e100.net; s=20230601; t=1704393468; x=1704998268;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Uj457E1t/NepR0JOENdx16qd5oEVavBN1vzTezPCuJM=;
+        b=GJDfTRpYsa/ib+9GNr09hwOFwm2qnlLYQ9hOk90rXY8Lcj7yoWYFpJKphygL0AV6lE
+         sV4xQULa8YIvHtL0wie5XLP8S1VV6vIAdV7cEQ8Ur94qoKeRpyjjKb7cJzmbJSajJghJ
+         mkvz7UGav0LQW14fV0fLcFdwoU1ErLW7/BEGopd7TZej+mJrnZbd58k2rhSgTRYZiGAu
+         1QrUCnm1Ke+ug/ZpZby1FXFKXzfxju1icKIiq6wXgkrOAvjSTx4l9jDPAoaf2JQXkihU
+         HVE8tdi7CCXUlW5oaPLl3qanvVM8qbj8DuINzk9l2STGdhg+7uXSLMkB6C2AT6SXPp4L
+         0EqA==
+X-Gm-Message-State: AOJu0YzMIv4QzhLLYv81FMAJe/TXWu2nack6YUl1elWpZEFhILCKOcP+
+	DGcn780WcN5S5rxE1JlMQIn4a4Ef+EidaBkLYmk=
+X-Google-Smtp-Source: AGHT+IH//tm/+uisteE3bSu9TEvkGMUKlttXSdNJ2SsvfrMElIG6sza66/51BfsY0JRj6Xm354DnqbHshkPSzooVoKw=
+X-Received: by 2002:ac2:5df3:0:b0:50e:62b1:f68d with SMTP id
+ z19-20020ac25df3000000b0050e62b1f68dmr578661lfq.78.1704393468015; Thu, 04 Jan
+ 2024 10:37:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240104013847.3875810-1-andrii@kernel.org> <20240104013847.3875810-8-andrii@kernel.org>
+ <CAADnVQJn0+fvvbOVnfPFQm=1j+=oFsjy65T2-QY8Ps0pL4nh_A@mail.gmail.com>
+In-Reply-To: <CAADnVQJn0+fvvbOVnfPFQm=1j+=oFsjy65T2-QY8Ps0pL4nh_A@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 4 Jan 2024 10:37:35 -0800
+Message-ID: <CAEf4BzYt9yrGUBpSfAR8=vuh7kONFSsFZAKtbg21r4Hoj92gAQ@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 7/9] libbpf: implement __arg_ctx fallback logic
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
+	Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-01-03 at 15:26 -0800, Yonghong Song wrote:
+On Wed, Jan 3, 2024 at 9:39=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Jan 3, 2024 at 5:39=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org=
+> wrote:
+> >
+> > This limitation was the reason to add btf_decl_tag("arg:ctx"), making
+> > the actual argument type not important, so that user can just define
+> > "generic" signature:
+> >
+> >   __noinline int global_subprog(void *ctx __arg_ctx) { ... }
+>
+> I still think that this __arg_ctx only makes sense with 'void *'.
+> Blind rewrite of ctx is a foot gun.
+>
+> I've tried the following:
+>
+> diff --git a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.=
+c
+> b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+> index 9a06e5eb1fbe..0e5f5205d4a8 100644
+> --- a/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+> +++ b/tools/testing/selftests/bpf/progs/test_global_func_ctx_args.c
+> @@ -106,9 +106,9 @@ int perf_event_ctx(void *ctx)
+>  /* this global subprog can be now called from many types of entry progs,=
+ each
+>   * with different context type
+>   */
+> -__weak int subprog_ctx_tag(void *ctx __arg_ctx)
+> +__weak int subprog_ctx_tag(long ctx __arg_ctx)
+>  {
+> -       return bpf_get_stack(ctx, stack, sizeof(stack), 0);
+> +       return bpf_get_stack((void *)ctx, stack, sizeof(stack), 0);
+>  }
+>
+>  struct my_struct { int x; };
+> @@ -131,7 +131,7 @@ int arg_tag_ctx_raw_tp(void *ctx)
+>  {
+>         struct my_struct x =3D { .x =3D 123 };
+>
+> -       return subprog_ctx_tag(ctx) + subprog_multi_ctx_tags(ctx, &x, ctx=
+);
+> +       return subprog_ctx_tag((long)ctx) +
+> subprog_multi_ctx_tags(ctx, &x, ctx);
+>  }
+>
+> and it "works".
 
-I missed one thing while looking at this patch, please see below.
+Yeah, but you had to actively force casting everywhere *and* you still
+had to consciously add __arg_ctx, right? If a user wants to subvert
+the type system, they will do it. It's C, after all. But if they just
+accidentally use sk_buff ctx and call it from the XDP program with
+xdp_buff/xdp_md, the compiler will call out type mismatch.
 
-[...]
+>
+> Both kernel and libbpf should really limit it to 'void *'.
+>
+> In the other email I suggested to allow types that match expected
+> based on prog type, but even that is probably a danger zone as well.
+> The correct type would already be detected by the verifier,
+> so extra __arg_ctx is pointless.
+> It makes sense only for such polymorphic functions and those
+> better use 'void *' and don't dereference it.
+>
+> I think this can be a follow up.
 
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index d4e31f61de0e..cfe7a68d90a5 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4491,7 +4491,7 @@ static int check_stack_write_fixed_off(struct bpf_v=
-erifier_env *env,
->  		if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
->  			state->stack[spi].spilled_ptr.id =3D 0;
->  	} else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
-> -		   insn->imm !=3D 0 && env->bpf_capable) {
-> +		   env->bpf_capable) {
->  		struct bpf_reg_state fake_reg =3D {};
-> =20
->  		__mark_reg_known(&fake_reg, insn->imm);
-> @@ -4613,11 +4613,28 @@ static int check_stack_write_var_off(struct bpf_v=
-erifier_env *env,
-> =20
->  	/* Variable offset writes destroy any spilled pointers in range. */
->  	for (i =3D min_off; i < max_off; i++) {
-> +		struct bpf_reg_state *spill_reg;
->  		u8 new_type, *stype;
-> -		int slot, spi;
-> +		int slot, spi, j;
-> =20
->  		slot =3D -i - 1;
->  		spi =3D slot / BPF_REG_SIZE;
-> +
-> +		/* If writing_zero and the the spi slot contains a spill of value 0,
-> +		 * maintain the spill type.
-> +		 */
-> +		if (writing_zero && !(i % BPF_REG_SIZE) && is_spilled_scalar_reg(&stat=
-e->stack[spi])) {
+Not really just polymorphic functions. Think about subprog
+specifically for the fentry program, as one example. You *need*
+__arg_ctx just to make context passing work, but you also want
+non-`void *` type to access arguments.
 
-Talked to Andrii today, and he noted that spilled reg should be marked
-precise at this point.
+int subprog(u64 *args __arg_ctx) { ... }
 
-> +			spill_reg =3D &state->stack[spi].spilled_ptr;
-> +			if (tnum_is_const(spill_reg->var_off) && spill_reg->var_off.value =3D=
-=3D 0) {
-> +				for (j =3D BPF_REG_SIZE; j > 0; j--) {
-> +					if (state->stack[spi].slot_type[j - 1] !=3D STACK_SPILL)
-> +						break;
-> +				}
-> +				i +=3D BPF_REG_SIZE - j - 1;
-> +				continue;
-> +			}
-> +		}
-> +
->  		stype =3D &state->stack[spi].slot_type[slot % BPF_REG_SIZE];
->  		mark_stack_slot_scratched(env, spi);
+SEC("fentry")
+int BPF_PROG(main_prog, ...)
+{
+    return subprog(ctx);
+}
+
+Similarly, tracepoint programs, you'd have:
+
+int subprog(struct syscall_trace_enter* ctx __arg_ctx) { ... }
+
+SEC("tracepoint/syscalls/sys_enter_kill")
+int main_prog(struct syscall_trace_enter* ctx)
+{
+    return subprog(ctx);
+}
+
+So that's one group of cases.
+
+Another special case are networking programs, where both "__sk_buff"
+and "sk_buff" are allowed, same for "xdp_buff" and "xdp_md".
+
+Also, kprobes are special, both "struct bpf_user_pt_regs_t" and
+*typedef* "bpf_user_pt_regs_t" are supported. But in practice users
+will often just use `struct pt_regs *ctx`, actually.
+
+There might be some other edges I don't yet realize.
+
+In short, I think any sort of enforcement will just cause unnecessary
+pain, while seemingly fixing some problem that doesn't seem to be a
+problem in practice.
 
