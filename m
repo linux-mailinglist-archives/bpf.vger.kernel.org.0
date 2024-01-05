@@ -1,177 +1,206 @@
-Return-Path: <bpf+bounces-19135-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19136-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE65D825914
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 18:32:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19CE8825949
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 18:44:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88553281CA6
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 17:32:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92AD21F242BA
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 17:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3582F328C9;
-	Fri,  5 Jan 2024 17:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B48321B5;
+	Fri,  5 Jan 2024 17:43:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TdfeqZAo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8253C321A9
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 17:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7b7fdde8b2dso162267839f.3
-        for <bpf@vger.kernel.org>; Fri, 05 Jan 2024 09:32:33 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62A0328B7
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 17:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e3ab65709so5640705e9.3
+        for <bpf@vger.kernel.org>; Fri, 05 Jan 2024 09:43:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704476631; x=1705081431; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=95VdpUhA9MrNzncCSC+fHbqmAm/ZfAqnVD0xuy0EJ6I=;
+        b=TdfeqZAoQ9ZbF80pji0LLfA8m4kTCoF6duvyanvwNqBdGMJ4rhS1/hAJWkuZ2kq1ob
+         C+uQYqKCQoXoemsfsQyfi1Ki96nxrT6kHznC8cYEvrLRTLdBaQHKtPcxzFo8ZfR4iEzM
+         KBw+QHndw6tK2G4DRdWmZXWQGoWeWfjy0pGUsD98Tq+LHytSXBVqndeqzefq6Yti/iP9
+         73w7IcVe6eVssFyz5mcvkLLWGLPaSOjW86BmjE2cOIZEiD8dTcxNV385Pe1NT8wXDGCq
+         2H6u1rs1RebkRrbvCC5vEgwVgUDzw+nB8YPpIISyqbpRHEETkB/rkZngx1iJrNaqEhRx
+         iiNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704475952; x=1705080752;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EATfGG2+PisH1hXGp7ObnfeaaEJzw+IxUMnODwpyuTI=;
-        b=p6DhNEYQpoKsPZrHwOwxqkcJ3wIqvPUR3rsaY/+tXl+/ULyzlmFp6mBL7isWwfx2J2
-         99JRSSkuHxq54uxxbdY0ShqGADwiGro917idyguGXLN6geD6G5BTiFBqNqxum/H9vM6N
-         wQ2NZ/dynnV9kluMW0KWhxTj3oVml8h/cLTHX8IZfEMOfxu48KOjiCx36hOg6EW9vxZN
-         P3PJG7Dbo1+5vtivU9/E9F1HJFvzrIhpXmI1+7tM+O3aG8aIBbtbwvAXxxeEWihO99IQ
-         KpLFo6+6/ISqTkSszaImw7cFx7nOdVzS5P1jtA+v4pyCUZiO6N4v3uN8ErsjLr9yjBhp
-         wddg==
-X-Gm-Message-State: AOJu0Yy9pJJmVzD2JrkbC1X8B71JF1N1BsTWjYuaMRvHVeDW2R58v7uW
-	mkzgBwSDSxexUoCxt/4zM2Osd9MHTVj1FaS1ximaEXDuUBZk
-X-Google-Smtp-Source: AGHT+IGns/PkbiGRGP7Vrp27ykA2swovFnQd3eZqd+GMeyO2j30wA8Reufk2C1Dh9RvlYcH7DumWZuUwtHI9eFjsKinFcZAEqauN
+        d=1e100.net; s=20230601; t=1704476631; x=1705081431;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=95VdpUhA9MrNzncCSC+fHbqmAm/ZfAqnVD0xuy0EJ6I=;
+        b=R/WnYK+2cvwswt9uIG3NU4JJ561+49jy7rIEZvI/jJOTrOezzu88+MV6wISPANb+I6
+         6TOxaBD3NR6FPEvHZZpP3GSnHAzNW0RYM9VLcONFRgDnf8ds8bKpujmNzLw8VpSYq/er
+         Fo16agIlTdTW1hZ7NyzpArGNbQa0G4CMKiUt4OJbQqpgre1r0zJqO3wBVTTEj30aBcVr
+         VPcGRSBjhcXxFIXw1p+J1+lwCbAFd5xrTKLsGkFuuu2DnqtIwIRLMYrDc7nhAaRXI8//
+         bOkffE5lH8FEsmkADkwUPQ5I3nL2w86afDIwScpPmXzDOFElNf7vNfCSXtGUkdYgJvvn
+         MQWg==
+X-Gm-Message-State: AOJu0YxLZzdMI/nBBp0nMb7jRzGdaIQqltgy+9mPsdTgRntzCeUr5USQ
+	vzQL5PplIn2OyDYBOsSD5kJUy1nMmdIvZL0jPCQ=
+X-Google-Smtp-Source: AGHT+IE4lUMwYMiaYCUt+0eAI/e0A2l3j/v9AkXw6D0WXYap534tb/+6iQvQ6PyhpQQcHFgdfdXS03xfZz6XEF6LJlI=
+X-Received: by 2002:a05:600c:243:b0:40b:5e59:cc9e with SMTP id
+ 3-20020a05600c024300b0040b5e59cc9emr1592566wmj.127.1704476630904; Fri, 05 Jan
+ 2024 09:43:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:48cf:b0:46e:820:2920 with SMTP id
- cu15-20020a05663848cf00b0046e08202920mr25494jab.3.1704475952293; Fri, 05 Jan
- 2024 09:32:32 -0800 (PST)
-Date: Fri, 05 Jan 2024 09:32:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aa2f41060e363b2b@google.com>
-Subject: [syzbot] [bpf?] [net?] WARNING in __sk_msg_free
-From: syzbot <syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, borisp@nvidia.com, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, dhowells@redhat.com, 
-	edumazet@google.com, jakub@cloudflare.com, john.fastabend@gmail.com, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+References: <20240104142226.87869-1-hffilwlqm@gmail.com> <20240104142226.87869-3-hffilwlqm@gmail.com>
+ <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com> <43499e38-f395-4efd-867f-8a2fa0571ecd@gmail.com>
+In-Reply-To: <43499e38-f395-4efd-867f-8a2fa0571ecd@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 5 Jan 2024 09:43:39 -0800
+Message-ID: <CAADnVQLhxem1m5Nfkf7GhDKRcYaD+g9k3ZW_BD6t58OACr3fQg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf, x64: Fix tailcall hierarchy
+To: Leon Hwang <hffilwlqm@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
+	Ilya Leoshkevich <iii@linux.ibm.com>, Hengqi Chen <hengqi.chen@gmail.com>, kernel-patches-bot@fb.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Thu, Jan 4, 2024 at 10:16=E2=80=AFPM Leon Hwang <hffilwlqm@gmail.com> wr=
+ote:
+>
+>
+>
+> On 5/1/24 12:15, Alexei Starovoitov wrote:
+> > On Thu, Jan 4, 2024 at 6:23=E2=80=AFAM Leon Hwang <hffilwlqm@gmail.com>=
+ wrote:
+> >>
+> >>
+> >> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> >> index fe30b9ebb8de4..67fa337fc2e0c 100644
+> >> --- a/arch/x86/net/bpf_jit_comp.c
+> >> +++ b/arch/x86/net/bpf_jit_comp.c
+> >> @@ -259,7 +259,7 @@ struct jit_context {
+> >>  /* Number of bytes emit_patch() needs to generate instructions */
+> >>  #define X86_PATCH_SIZE         5
+> >>  /* Number of bytes that will be skipped on tailcall */
+> >> -#define X86_TAIL_CALL_OFFSET   (11 + ENDBR_INSN_SIZE)
+> >> +#define X86_TAIL_CALL_OFFSET   (22 + ENDBR_INSN_SIZE)
+> >>
+> >>  static void push_r12(u8 **pprog)
+> >>  {
+> >> @@ -406,14 +406,21 @@ static void emit_prologue(u8 **pprog, u32 stack_=
+depth, bool ebpf_from_cbpf,
+> >>          */
+> >>         emit_nops(&prog, X86_PATCH_SIZE);
+> >>         if (!ebpf_from_cbpf) {
+> >> -               if (tail_call_reachable && !is_subprog)
+> >> +               if (tail_call_reachable && !is_subprog) {
+> >>                         /* When it's the entry of the whole tailcall c=
+ontext,
+> >>                          * zeroing rax means initialising tail_call_cn=
+t.
+> >>                          */
+> >> -                       EMIT2(0x31, 0xC0); /* xor eax, eax */
+> >> -               else
+> >> -                       /* Keep the same instruction layout. */
+> >> -                       EMIT2(0x66, 0x90); /* nop2 */
+> >> +                       EMIT2(0x31, 0xC0);       /* xor eax, eax */
+> >> +                       EMIT1(0x50);             /* push rax */
+> >> +                       /* Make rax as ptr that points to tail_call_cn=
+t. */
+> >> +                       EMIT3(0x48, 0x89, 0xE0); /* mov rax, rsp */
+> >> +                       EMIT1_off32(0xE8, 2);    /* call main prog */
+> >> +                       EMIT1(0x59);             /* pop rcx, get rid o=
+f tail_call_cnt */
+> >> +                       EMIT1(0xC3);             /* ret */
+> >> +               } else {
+> >> +                       /* Keep the same instruction size. */
+> >> +                       emit_nops(&prog, 13);
+> >> +               }
+> >
+> > I'm afraid the extra call breaks stack unwinding and many other things.
+>
+> I was worried about it. But I'm not sure how it breaks stack unwinding.
+>
+> However, without the extra call, I've tried another approach:
+>
+> * [RFC PATCH bpf-next 1/3] bpf, x64: Fix tailcall hierarchy
+>   https://lore.kernel.org/bpf/20231005145814.83122-2-hffilwlqm@gmail.com/
+>
+> It's to propagate tail_call_cnt_ptr, too. But more complicated:
+>
+> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> index 8c10d9abc..001c5e4b7 100644
+> --- a/arch/x86/net/bpf_jit_comp.c
+> +++ b/arch/x86/net/bpf_jit_comp.c
+> @@ -313,24 +332,15 @@ static void emit_prologue(u8 **pprog, u32 stack_dep=
+th, bool ebpf_from_cbpf,
+>                           bool tail_call_reachable, bool is_subprog,
+>                           bool is_exception_cb)
+>  {
+> +       int tcc_ptr_off =3D round_up(stack_depth, 8) + 8;
+> +       int tcc_off =3D tcc_ptr_off + 8;
+>         u8 *prog =3D *pprog;
+>
+>         /* BPF trampoline can be made to work without these nops,
+>          * but let's waste 5 bytes for now and optimize later
+>          */
+>         EMIT_ENDBR();
+> -       memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
+> -       prog +=3D X86_PATCH_SIZE;
+> -       if (!ebpf_from_cbpf) {
+> -               if (tail_call_reachable && !is_subprog)
+> -                       /* When it's the entry of the whole tailcall cont=
+ext,
+> -                        * zeroing rax means initialising tail_call_cnt.
+> -                        */
+> -                       EMIT2(0x31, 0xC0); /* xor eax, eax */
+> -               else
+> -                       /* Keep the same instruction layout. */
+> -                       EMIT2(0x66, 0x90); /* nop2 */
+> -       }
+> +       emit_nops(&prog, X86_PATCH_SIZE);
+>         /* Exception callback receives FP as third parameter */
+>         if (is_exception_cb) {
+>                 EMIT3(0x48, 0x89, 0xF4); /* mov rsp, rsi */
+> @@ -347,15 +357,52 @@ static void emit_prologue(u8 **pprog, u32 stack_dep=
+th, bool ebpf_from_cbpf,
+>                 EMIT1(0x55);             /* push rbp */
+>                 EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
+>         }
+> +       if (!ebpf_from_cbpf) {
+> +               if (tail_call_reachable && !is_subprog) {
+> +                       /* Make rax as ptr that points to tail_call_cnt. =
+*/
+> +                       EMIT3(0x48, 0x89, 0xE8);          /* mov rax, rbp=
+ */
+> +                       EMIT2_off32(0x48, 0x2D, tcc_off); /* sub rax, tcc=
+_off */
+> +                       /* When it's the entry of the whole tail call con=
+text,
+> +                        * storing 0 means initialising tail_call_cnt.
+> +                        */
+> +                       EMIT2_off32(0xC7, 0x00, 0);       /* mov dword pt=
+r [rax], 0 */
+> +               } else {
+> +                       /* Keep the same instruction layout. */
+> +                       emit_nops(&prog, 3);
+> +                       emit_nops(&prog, 6);
+> +                       emit_nops(&prog, 6);
 
-syzbot found the following issue on:
+Extra 15 nops in the prologue of every bpf program (tailcall or not)
+is too high a price to pay.
 
-HEAD commit:    2ab1efad60ad net/sched: cls_api: complement tcf_tfilter_du..
-git tree:       net-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=162a3829e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a4e9ca8e3c104d2a
-dashboard link: https://syzkaller.appspot.com/bug?extid=f2977222e0e95cec15c8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=153f4f29e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14acd65ee80000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/bc9bebeba249/disk-2ab1efad.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1b355f4afef6/vmlinux-2ab1efad.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0c561e15b929/bzImage-2ab1efad.xz
-
-The issue was bisected to:
-
-commit fe1e81d4f73b6cbaed4fcc476960d26770642842
-Author: David Howells <dhowells@redhat.com>
-Date:   Wed Jun 7 18:19:17 2023 +0000
-
-    tls/sw: Support MSG_SPLICE_PAGES
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13e87d81e80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10187d81e80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17e87d81e80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
-Fixes: fe1e81d4f73b ("tls/sw: Support MSG_SPLICE_PAGES")
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5059 at include/linux/skmsg.h:137 sk_msg_check_to_free include/linux/skmsg.h:137 [inline]
-WARNING: CPU: 0 PID: 5059 at include/linux/skmsg.h:137 sk_msg_check_to_free include/linux/skmsg.h:135 [inline]
-WARNING: CPU: 0 PID: 5059 at include/linux/skmsg.h:137 __sk_msg_free+0x29f/0x390 net/core/skmsg.c:203
-Modules linked in:
-CPU: 0 PID: 5059 Comm: syz-executor395 Not tainted 6.7.0-rc6-syzkaller-01873-g2ab1efad60ad #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
-RIP: 0010:sk_msg_check_to_free include/linux/skmsg.h:137 [inline]
-RIP: 0010:sk_msg_check_to_free include/linux/skmsg.h:135 [inline]
-RIP: 0010:__sk_msg_free+0x29f/0x390 net/core/skmsg.c:203
-Code: 00 00 48 83 e0 fe 48 83 c8 02 49 89 85 40 02 00 00 8b 44 24 0c 48 83 c4 30 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 62 98 00 f9 90 <0f> 0b 90 e8 59 98 00 f9 48 63 5c 24 08 48 83 fb 13 0f 87 9d 00 00
-RSP: 0018:ffffc90003bff8e8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 000000000000000e RCX: ffffffff8886e85f
-RDX: ffff888022e88000 RSI: ffffffff8886e90e RDI: 0000000000000005
-RBP: 000000000000000e R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000036 R11: 0000000000000002 R12: 0000000000000036
-R13: ffff8880177f2018 R14: 0000000000000007 R15: dffffc0000000000
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0c1dd31a18 CR3: 000000000cd77000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- tls_free_rec net/tls/tls_sw.c:359 [inline]
- tls_free_open_rec net/tls/tls_sw.c:370 [inline]
- tls_sw_release_resources_tx+0x4e8/0x6f0 net/tls/tls_sw.c:2467
- tls_sk_proto_cleanup net/tls/tls_main.c:352 [inline]
- tls_sk_proto_close+0x678/0xac0 net/tls/tls_main.c:382
- inet_release+0x132/0x270 net/ipv4/af_inet.c:433
- inet6_release+0x4f/0x70 net/ipv6/af_inet6.c:485
- __sock_release+0xae/0x260 net/socket.c:659
- sock_close+0x1c/0x20 net/socket.c:1419
- __fput+0x270/0xb70 fs/file_table.c:394
- task_work_run+0x14d/0x240 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa8a/0x2ad0 kernel/exit.c:869
- do_group_exit+0xd4/0x2a0 kernel/exit.c:1018
- get_signal+0x23b5/0x2790 kernel/signal.c:2904
- arch_do_signal_or_restart+0x90/0x7f0 arch/x86/kernel/signal.c:309
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x121/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1e/0x60 kernel/entry/common.c:296
- do_syscall_64+0x4d/0x110 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f0c1dcdae39
-Code: Unable to access opcode bytes at 0x7f0c1dcdae0f.
-RSP: 002b:00007f0c1dc9d218 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: 0000000000010000 RBX: 00007f0c1dd64328 RCX: 00007f0c1dcdae39
-RDX: 00000000fffffecc RSI: 0000000020000100 RDI: 0000000000000004
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f0c1dd64320
-R13: 0000000000000000 R14: 00007f0c1dd32004 R15: 34ea337571a66fd8
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Think of a simple fix other on verifier side or
+simple approach that all JITs can easily do.
 
