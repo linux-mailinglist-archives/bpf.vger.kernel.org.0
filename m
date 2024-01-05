@@ -1,238 +1,271 @@
-Return-Path: <bpf+bounces-19111-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19112-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EEA2824E2F
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 06:42:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FF89824E89
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 07:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB5AC2854C3
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 05:42:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7E9D1F22519
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 06:16:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F294B53BF;
-	Fri,  5 Jan 2024 05:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB975690;
+	Fri,  5 Jan 2024 06:16:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YHlYgyem"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iTBcXyip"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05A31DFD5
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 05:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F73B610E
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 06:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-336990fb8fbso892003f8f.1
-        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 21:42:52 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d4a980fdedso9368335ad.1
+        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 22:16:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704433371; x=1705038171; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w/F5Bv558nBjCHAzBZNUrymIlbVmbzyR5fnhTxoZ47Y=;
-        b=YHlYgyemVMHZoRCO72d8N1PhIkNsw0PUHOSgEgCQeH8De5BZHaLDKm+pkD6238/l2v
-         pMrX1SBuywSgyK8u31ebHPj8xqt1qMAhkkNDEZN+dJgZkgT1A83fi+kzpfpkvvhSHcN0
-         vONyKqprGY1sRRdyG9+ZIS4F3JICFlWbJak8vMZfKD6oWolXApK3T+IG0B6hNu7nITJx
-         kZzXFL1reLiWJd9WBOTqjiZhw0IuX/YOAsu3RsY2SLwUSR5IVqlIpE8HUP0V+WTq00U7
-         clQWr6LLnpE7FONPriJ+WncY6pLgbi1ErG1//lj2isPFfnUu6crW+fnk76IP4JE+QoAL
-         wReg==
+        d=gmail.com; s=20230601; t=1704435363; x=1705040163; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3NX7XOwiEfZ6zJGfheJUMmxobQkLM6PSUzG9+Rlyuiw=;
+        b=iTBcXyipP4PrA8dMjrKiyHFiecNiT6CmVkNi9q9OMLwIcFVbNBl/TbyYXQZ9dEcQty
+         hXVNSaRo2cgiDiCwk7RIY/U68ea8M3gQmu4UHD9OFkZ10eTK39/7QLfCYH+DGPZU91GB
+         KEJbMkcd/pjrHuLjFhqq+wENsZ4aWU0TXdD/Eqh/4QaXxTnlLtaKQtgHLOdPa8/fCQ6T
+         X50jTUgGlhme2xJi+E8CP90rqKR1bwWKkWGyCtwThPP95Dn5qO2AvlQh4CEp10fVnos/
+         53OOApgk8RaBgr/Ob/TX2L2MQD5CEGxDYeOxK3RLssYppcYCmunmjiGhiok+Lt8FJ0D/
+         ujdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704433371; x=1705038171;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w/F5Bv558nBjCHAzBZNUrymIlbVmbzyR5fnhTxoZ47Y=;
-        b=CDk61nLuGuCfbut4gH0i6YQLGOERjW2nR8txzbh7qLQLZy6adApN5TLm9AqPOf7Ygx
-         XAslOiiLFigEi5WnWJ4Zkbs/e6WfveEI5exYCsyDzE7U+ZbMa5Cr3n2pTWSjtnbfxrFJ
-         MqRS5mOVZ8vbc8CDE1vg+/TmInahvC/jXF/jbmSZYnPah6q9d8RUpNSx7hHPyiAeZFot
-         yL+Qj8Fk8FdlgfN+E5d5QNeUmgvKochrTSIz581wk0dWNql3kOUgbfB815bkrxSad6wt
-         5ExZ6UopkW7k0EhlN6pEIXQtjkDc0XqtWruvjn6OZlg04AByYRdYW009cugkoIt15arU
-         GbAw==
-X-Gm-Message-State: AOJu0Yy7392tJLEbj651DMMSvf2pnsBtXpNQb6rAVt65gFTpU3dZ9fBB
-	Ernc9ntuPJoT9fXzLk97K1VViwGFxN8/6rRxa7s=
-X-Google-Smtp-Source: AGHT+IGd0koJIPmMAH/uvHAraQlmkISy3OPT2FEdeLjKuqWpRmAlqVMQ95WNIRrf6biPXDYc/L0JUPzVgzpsrqc2lf8=
-X-Received: by 2002:adf:c7d3:0:b0:336:9f70:a708 with SMTP id
- y19-20020adfc7d3000000b003369f70a708mr1294619wrg.107.1704433370688; Thu, 04
- Jan 2024 21:42:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704435363; x=1705040163;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3NX7XOwiEfZ6zJGfheJUMmxobQkLM6PSUzG9+Rlyuiw=;
+        b=Gi1D4un0IUHovIuqYcleJFvP9mW/WYinud1/TosC9S2Y68bsWRQwiQFRfBjhjsFIdH
+         rPe5yI+ldnwQHyj2tdBpEE+7TGK+PUX3+BKZfyjpYGuEcRDN2lW7mATiR+SswuGfPCuw
+         2EpcLOj+wg//F89i08qpqKjdWNM7rdMZvkW4iQWSX4o96/eMxCA2eZMs3cmANUcASbMX
+         1D5VuZaT7cXYaZFvUTlLSdnuCYnex2m++kZPLmWpjpgTld5MAVCV08qRu4/1M8ZR9MOs
+         6zcddrSao8uiT1Dt8WjF3vsl+8UAWFyOlDEV+RfYb7MfSFWbBEsAHXhrU7Vha35V0ruu
+         eqdw==
+X-Gm-Message-State: AOJu0YzukqUXdQM4XR7vfgT5MkFnPJ2xt2RhrBZVCbpNIu0EPJIK/GOo
+	HAPBGLD1wGv9RQUPBd3HlRliRzvPwgc=
+X-Google-Smtp-Source: AGHT+IG5KRHzsvTuXSLjAHZZIhduGtVCSte7fRiuxIjXeTrjjUxEg0WAoNMainxaWvDFeeMB7YM0tw==
+X-Received: by 2002:a17:902:da8b:b0:1d3:ee1f:ce54 with SMTP id j11-20020a170902da8b00b001d3ee1fce54mr2032927plx.89.1704435362672;
+        Thu, 04 Jan 2024 22:16:02 -0800 (PST)
+Received: from [10.22.68.80] ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id v10-20020a170902b7ca00b001d414a00fd9sm598184plz.29.2024.01.04.22.15.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 22:16:02 -0800 (PST)
+Message-ID: <43499e38-f395-4efd-867f-8a2fa0571ecd@gmail.com>
+Date: Fri, 5 Jan 2024 14:15:58 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104013847.3875810-1-andrii@kernel.org> <20240104013847.3875810-8-andrii@kernel.org>
- <CAADnVQJn0+fvvbOVnfPFQm=1j+=oFsjy65T2-QY8Ps0pL4nh_A@mail.gmail.com>
- <CAEf4BzYt9yrGUBpSfAR8=vuh7kONFSsFZAKtbg21r4Hoj92gAQ@mail.gmail.com>
- <CAADnVQLOYU67aRyp92S0G8AEVxXRYndb6hWrtHZOH9gr0Q7JEQ@mail.gmail.com>
- <CAEf4BzaSspEa27TtMLRv-V4ipGhVdK9y5Ynu9teYNDp4f0CctA@mail.gmail.com>
- <CAADnVQKPSXUxT6HLF-hMeVd6zJhNqriFjaqdeNkyj_wRFN8Hdg@mail.gmail.com> <CAEf4BzahccE=CuWk1G05byopvd9b_iwdeF5aeL4TSNR7Cg10ZA@mail.gmail.com>
-In-Reply-To: <CAEf4BzahccE=CuWk1G05byopvd9b_iwdeF5aeL4TSNR7Cg10ZA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 4 Jan 2024 21:42:39 -0800
-Message-ID: <CAADnVQL=eNJN8GkOHGXJAm4=P+=KUJkudX_3hU6TNrpAcAuZ=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 7/9] libbpf: implement __arg_ctx fallback logic
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Jiri Olsa <jolsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/4] bpf, x64: Fix tailcall hierarchy
+Content-Language: en-US
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
+ Hengqi Chen <hengqi.chen@gmail.com>, kernel-patches-bot@fb.com
+References: <20240104142226.87869-1-hffilwlqm@gmail.com>
+ <20240104142226.87869-3-hffilwlqm@gmail.com>
+ <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 4, 2024 at 7:58=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Jan 4, 2024 at 5:34=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Jan 4, 2024 at 12:58=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > >
-> > > My point was that it's hard to accidentally forget to "generalize"
-> > > type if you were supporting sk_buff, and suddenly started calling it
-> > > with xdp_md.
-> > >
-> > > From my POV, if I'm a user, and I declare an argument as long and
-> > > annotate it as __arg_ctx, then I know what I'm doing and I'd hate for
-> > > some smart-ass library to double-guess me dictating what exact
-> > > incantation I should specify to make it happy.
-> >
-> > But that's exactly what's happening!
-> > The smart-ass libbpf ignores the type in 'struct sk_buff *skb __arg_ctx=
-'
-> > and replaces it with whatever is appropriate for prog type.
->
-> The only thing that libbpf does in this case is it honors __arg_ctx
-> and makes it work *exactly the same* as __arg_ctx natively works on
-> the newest kernel. Not more, not less. It doesn't change compilation
-> or verification rules. At all.
 
-Here in all previous emails I was talking about both kernel and libbpf.
-Both shouldn't be breaking C rules.
-Not singling out libbpf.
 
-> Validating f1() func#2...
-> 20: R1=3Dctx() R10=3Dfp0
-> ; int f1(struct sk_buff *skb)
->
-> It's a context.
+On 5/1/24 12:15, Alexei Starovoitov wrote:
+> On Thu, Jan 4, 2024 at 6:23 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index fe30b9ebb8de4..67fa337fc2e0c 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -259,7 +259,7 @@ struct jit_context {
+>>  /* Number of bytes emit_patch() needs to generate instructions */
+>>  #define X86_PATCH_SIZE         5
+>>  /* Number of bytes that will be skipped on tailcall */
+>> -#define X86_TAIL_CALL_OFFSET   (11 + ENDBR_INSN_SIZE)
+>> +#define X86_TAIL_CALL_OFFSET   (22 + ENDBR_INSN_SIZE)
+>>
+>>  static void push_r12(u8 **pprog)
+>>  {
+>> @@ -406,14 +406,21 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+>>          */
+>>         emit_nops(&prog, X86_PATCH_SIZE);
+>>         if (!ebpf_from_cbpf) {
+>> -               if (tail_call_reachable && !is_subprog)
+>> +               if (tail_call_reachable && !is_subprog) {
+>>                         /* When it's the entry of the whole tailcall context,
+>>                          * zeroing rax means initialising tail_call_cnt.
+>>                          */
+>> -                       EMIT2(0x31, 0xC0); /* xor eax, eax */
+>> -               else
+>> -                       /* Keep the same instruction layout. */
+>> -                       EMIT2(0x66, 0x90); /* nop2 */
+>> +                       EMIT2(0x31, 0xC0);       /* xor eax, eax */
+>> +                       EMIT1(0x50);             /* push rax */
+>> +                       /* Make rax as ptr that points to tail_call_cnt. */
+>> +                       EMIT3(0x48, 0x89, 0xE0); /* mov rax, rsp */
+>> +                       EMIT1_off32(0xE8, 2);    /* call main prog */
+>> +                       EMIT1(0x59);             /* pop rcx, get rid of tail_call_cnt */
+>> +                       EMIT1(0xC3);             /* ret */
+>> +               } else {
+>> +                       /* Keep the same instruction size. */
+>> +                       emit_nops(&prog, 13);
+>> +               }
+> 
+> I'm afraid the extra call breaks stack unwinding and many other things.
 
-Ohh. Looks like I screwed it up back then.
-        /* only compare that prog's ctx type name is the same as
-         * kernel expects. No need to compare field by field.
-         * It's ok for bpf prog to do:
-         * struct __sk_buff {};
-         * int socket_filter_bpf_prog(struct __sk_buff *skb)
-         * { // no fields of skb are ever used }
-         */
-        if (strcmp(ctx_tname, "__sk_buff") =3D=3D 0 && strcmp(tname,
-"sk_buff") =3D=3D 0)
-                return ctx_type;
+I was worried about it. But I'm not sure how it breaks stack unwinding.
 
-See comment. The intent was to allow __sk_buff in prog to
-match with __sk_buff in the kernel.
-Brainfart.
+However, without the extra call, I've tried another approach:
 
-> Not really, see below. For a long time *we thought* that kernel
-> recognizes bpf_user_pt_regs_t, but in reality it wanted `struct
-> bpf_user_pt_regs_t` which doesn't even exist in kernel and has nothing
-> common with either `struct pt_regs` or `struct user_pt_regs`. I fixed
-> that and now the kernel recognizes *both* typedef and struct
-> bpf_user_pt_regs_t. And there is no point in using typedef, because
-> `struct bpf_user_pt_regs_t` is backwards compatible and that's what
-> users actually use in practice.
+* [RFC PATCH bpf-next 1/3] bpf, x64: Fix tailcall hierarchy
+  https://lore.kernel.org/bpf/20231005145814.83122-2-hffilwlqm@gmail.com/
 
-Hmm.
-The test with
-__weak int kprobe_typedef_ctx_subprog(bpf_user_pt_regs_t *ctx)
+It's to propagate tail_call_cnt_ptr, too. But more complicated:
 
-was added back in Feb 2023.
-So it was surely working for the last year.
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 8c10d9abc..001c5e4b7 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -313,24 +332,15 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+ 			  bool tail_call_reachable, bool is_subprog,
+ 			  bool is_exception_cb)
+ {
++	int tcc_ptr_off = round_up(stack_depth, 8) + 8;
++	int tcc_off = tcc_ptr_off + 8;
+ 	u8 *prog = *pprog;
+ 
+ 	/* BPF trampoline can be made to work without these nops,
+ 	 * but let's waste 5 bytes for now and optimize later
+ 	 */
+ 	EMIT_ENDBR();
+-	memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
+-	prog += X86_PATCH_SIZE;
+-	if (!ebpf_from_cbpf) {
+-		if (tail_call_reachable && !is_subprog)
+-			/* When it's the entry of the whole tailcall context,
+-			 * zeroing rax means initialising tail_call_cnt.
+-			 */
+-			EMIT2(0x31, 0xC0); /* xor eax, eax */
+-		else
+-			/* Keep the same instruction layout. */
+-			EMIT2(0x66, 0x90); /* nop2 */
+-	}
++	emit_nops(&prog, X86_PATCH_SIZE);
+ 	/* Exception callback receives FP as third parameter */
+ 	if (is_exception_cb) {
+ 		EMIT3(0x48, 0x89, 0xF4); /* mov rsp, rsi */
+@@ -347,15 +357,52 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+ 		EMIT1(0x55);             /* push rbp */
+ 		EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
+ 	}
++	if (!ebpf_from_cbpf) {
++		if (tail_call_reachable && !is_subprog) {
++			/* Make rax as ptr that points to tail_call_cnt. */
++			EMIT3(0x48, 0x89, 0xE8);          /* mov rax, rbp */
++			EMIT2_off32(0x48, 0x2D, tcc_off); /* sub rax, tcc_off */
++			/* When it's the entry of the whole tail call context,
++			 * storing 0 means initialising tail_call_cnt.
++			 */
++			EMIT2_off32(0xC7, 0x00, 0);       /* mov dword ptr [rax], 0 */
++		} else {
++			/* Keep the same instruction layout. */
++			emit_nops(&prog, 3);
++			emit_nops(&prog, 6);
++			emit_nops(&prog, 6);
++		}
++	}
+ 
+ 	/* X86_TAIL_CALL_OFFSET is here */
+ 	EMIT_ENDBR();
+ 
++	if (tail_call_reachable) {
++		/* Here, rax is tail_call_cnt_ptr. */
++		if (!is_subprog) {
++			/* Because pushing tail_call_cnt_ptr may cover tail_call_cnt,
++			 * it's required to store tail_call_cnt before storing
++			 * tail_call_cnt_ptr.
++			 */
++			EMIT1(0x50);                       /* push rax */
++			EMIT2(0x8B, 0x00);                 /* mov eax, dword ptr [rax] */
++			EMIT2_off32(0x89, 0x85, -tcc_off); /* mov dword ptr [rbp - tcc_off], eax */
++			EMIT1(0x58);                       /* pop rax */
++			/* mov qword ptr [rbp - tcc_ptr_off], rax */
++			EMIT3_off32(0x48, 0x89, 0x85, -tcc_ptr_off);
++		} else {
++			/* As for subprog, tail_call_cnt is meaningless. Storing
++			 * tail_call_cnt_ptr is enough.
++			 */
++			/* mov qword ptr [rbp - tcc_ptr_off], rax */
++			EMIT3_off32(0x48, 0x89, 0x85, -tcc_ptr_off);
++		}
++		/* Reserve 16 bytes for tail_call_cnt_ptr and tail_call_cnt. */
++		stack_depth += 16;
++	}
+ 	/* sub rsp, rounded_stack_depth */
+ 	if (stack_depth)
+ 		EMIT3_off32(0x48, 0x81, 0xEC, round_up(stack_depth, 8));
+-	if (tail_call_reachable)
+-		EMIT1(0x50);         /* push rax */
+ 	*pprog = prog;
+ }
 
-> > __PT_REGS_CAST is arch dependent and typeof makes it seen with
-> > correct btf_id and the kernel knows it's PTR_TO_CTX.
->
-> TBH, I don't know what btf_id has to do with this, it looks either as
-> a distraction or subtle point you are making that I'm missing.
-> __PT_REGS_CAST() just does C language cast, there is no BTF or BTF ID
-> involved here, so what am I missing?
+How about this approach?
 
-That was your patch :)
-I'm just pointing out the neat trick with typeof to put
-the correct type in there,
-so it's later seen with proper btf_id and recognized as ctx.
-You added it a year ago.
+Thanks,
+Leon
 
->
-> Why not? This is what I don't get. Here's a real piece of code to
-> demonstrate what users do in practice:
->
-> struct bpf_user_pt_regs_t {}
->
-> __hidden int handle_event_user_pt_regs(struct bpf_user_pt_regs_t* ctx) {
->   if (pyperf_prog_cfg.sample_interval > 0) {
->     if (__sync_fetch_and_add(&total_events_count, 1) %
->         pyperf_prog_cfg.sample_interval) {
->       return 0;
->     }
->   }
->
->   return handle_event_helper((struct pt_regs*)ctx, NULL);
-> }
-
-I think you're talking about kernel prior to that commit a year ago
-that made it possible to drop 'struct'.
-
-> I'm saying that I explicitly do want to be able to declare (in general):>
-> int handle_event_user(struct pt_regs *ctx __arg_ctx) { ...}
->
-> And this would work both on old and new kernels, with and without
-> native __arg_ctx support. And it will be very close to static subprogs
-> in the existing code base.
->
-> Why do you want to disallow this artificially?
-
-Not artificially, but only when pt_regs in bpf prog doesn't match
-what kernel is passing.
-I think allowing only:
-  handle_event_user(void *ctx __arg_ctx)
-and prog will cast it to pt_regs immediately is less surprising
-and proper C code,
-but
-  handle_event_user(struct pt_regs *ctx __arg_ctx)
-is also ok when pt_regs is indeed what is being passed.
-Which will be the case for x86.
-And will be fine on arm64 too, because
-arch/arm64/include/asm/ptrace.h
-struct pt_regs {
-        union {
-                struct user_pt_regs user_regs;
-
-but if arm64 ever changes that layout we should start failing to load.
-
-> All the above is already checked and enforced by the compiler. Libbpf
-> doesn't subvert it in any way. All that libbpf is doing is saying "ah,
-> user, you want this argument to be treated as PTR_TO_CTX, right? Too
-> bad host kernel is a bit too old to understand __arg_ctx natively, but
-> worry you not, I'll just quickly fix up BTF information that *only
-> kernel* uses *only to check type name* (nothing else!), and it will
-> look like kernel actually understood __arg_ctx, that's all, happy
-> BPF'ing!".
-
-and this way libbpf _may_ introduce a hard to debug bug.
-The same mistake the new kernel _may_ do with __arg_ctx with old libbpf.
-Both will do a hidden typecast when the bpf prog is
-potentially written with different type.
-
-foo(struct pt_regs *ctx __arg_ctx)
-Quick git grep shows that it will probably work on all archs
-except 'arc' where
-arch/arc/include/uapi/asm/bpf_perf_event.h:typedef struct
-user_regs_struct bpf_user_pt_regs_t;
-and struct pt_regs seems to have a different layout than user_regs_struct.
-
-But when kernel allows sk_buff to be passed into
-foo(struct pt_regs *ctx __arg_ctx)
-is just broken.
+> The proper frame needs to be setup (push rbp; etc)
+> and 'leave' + emit_return() is used.
+> Plain 'ret' is not ok.
+> x86_call_depth_emit_accounting() needs to be used too.
+> That will make X86_TAIL_CALL_OFFSET adjustment very complicated.
+> Also the fix doesn't address the stack size issue.
+> We shouldn't allow all the extra frames at run-time.
+> 
+> The tail_cnt_ptr approach is interesting but too heavy,
+> since arm64, s390 and other JITs would need to repeat it with equally
+> complicated calculations in TAIL_CALL_OFFSET.
+> 
+> The fix should really be thought through for all JITs. Not just x86.
+> 
+> I'm thinking whether we should do the following instead:
+> 
+> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> index 0bdbbbeab155..0b45571559be 100644
+> --- a/kernel/bpf/arraymap.c
+> +++ b/kernel/bpf/arraymap.c
+> @@ -910,7 +910,7 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
+>         if (IS_ERR(prog))
+>                 return prog;
+> 
+> -       if (!bpf_prog_map_compatible(map, prog)) {
+> +       if (!bpf_prog_map_compatible(map, prog) || prog->aux->func_cnt) {
+>                 bpf_prog_put(prog);
+>                 return ERR_PTR(-EINVAL);
+>         }
+> 
+> This will stop stack growth, but it will break a few existing tests.
+> I feel it's a price worth paying.
+> 
+> John, Daniel,
+> 
+> do you see anything breaking on cilium side if we disallow
+> progs with subprogs to be inserted in prog_array ?
+> 
+> Other alternatives?
 
