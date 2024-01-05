@@ -1,210 +1,177 @@
-Return-Path: <bpf+bounces-19120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDFE3825255
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 11:47:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C1EE825366
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 13:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D44C1F23D52
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 10:47:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60C4A1C23031
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 12:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51BD725553;
-	Fri,  5 Jan 2024 10:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D9102C6A7;
+	Fri,  5 Jan 2024 12:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kKiggGu/"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56397250ED
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 10:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T60X43Wy2z4f3lW3
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 18:47:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 3A6851A098C
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 18:47:22 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAXZw013pdlA+1eFg--.49979S7;
-	Fri, 05 Jan 2024 18:47:22 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: bpf@vger.kernel.org
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Song Liu <song@kernel.org>,
-	Hao Luo <haoluo@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A662C866
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 12:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd37c0b8e5so1590331fa.3
+        for <bpf@vger.kernel.org>; Fri, 05 Jan 2024 04:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704458428; x=1705063228; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=e9xylIBBAQXzAFQAicy5nw4p6iD5j3rKJwt/VNt0O4o=;
+        b=kKiggGu/eeg5C6/r9ff/aR9M0zc7Gaf56GneG0QTf/B29qHVqyx7Y1Mmv3sgwQLm25
+         kzin95X4WyEiuWrMICewSb1YIDS6dBz2eqSnFwtVFjzn4Q2KjRKKb9YMj4LHC63d3pjH
+         MghCp9nrOgLMWZjKSQt6OGVNwFJkN9p3oKEsa03s8aKoCqtzU3WAfqyV8qbOyC4GKGTI
+         0fkHedJqIc+5vmmVEvuVEewCaGtNSxIU7fjhSG4Co4OvL+jIuEAhua9ccVnBxuNTyREg
+         busGbY/LT3b/I9ju/4mEYwZ9FoxdAGELRU8tjo5sViRcQ3bEmNIgxHoXMRZg+D2WbwcD
+         ZhrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704458428; x=1705063228;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e9xylIBBAQXzAFQAicy5nw4p6iD5j3rKJwt/VNt0O4o=;
+        b=Z8yg2t+Xzj5IGY2CV5Bs5nYy9IfoLFibtktwKQl+FwGIjDbO1StNBsL3u1ao/ACZls
+         bjwqWFWFRNHWtBZUUJFbGkUC9Ic7Nwy+bQnoVLA5X+lgEAJsFNvshf9oZjF++k44sBtC
+         wbeiOE8pbwcxp4QSo/74OCKbiJW5i+iKPjAHe0PaWGD4r7UXeAf1+nCa6CwD5kpJsy/5
+         UlUQrEzDKe1SiVdH+PkprROt7O1Hnm2eZ1XGSMrVbEfeyPmMOr1TK+5yGzaB18lyC8rG
+         DnZO7HUog1j/R7b3A2CBdFQVXBrIQl1MNcHrTTbK/DLbBvwc+5OWSVvJk8Rsi1/TxWtY
+         Uyww==
+X-Gm-Message-State: AOJu0YwfdQrgJJWL1VeJf1Um6n4Se3NyMAg7ODmRCCuUhOc5Zjt8BO8f
+	wt4wyaMkIVDYJL9pp1pEttA=
+X-Google-Smtp-Source: AGHT+IGj/m0KdG396Q9BYFRZktCXcQo4IsSUVfMPxFi/WW4BkdOrGiZysD+WSxvlrvajaLnQ6/N9lA==
+X-Received: by 2002:a19:ae1a:0:b0:50e:7f5e:59b with SMTP id f26-20020a19ae1a000000b0050e7f5e059bmr985351lfc.60.1704458428022;
+        Fri, 05 Jan 2024 04:40:28 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id n8-20020a170906724800b00a26a5f83cecsm841630ejk.79.2024.01.05.04.40.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 04:40:27 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 5 Jan 2024 13:40:25 +0100
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Leon Hwang <hffilwlqm@gmail.com>, bpf <bpf@vger.kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf-next v3 3/3] selftests/bpf: Test the inlining of bpf_kptr_xchg()
-Date: Fri,  5 Jan 2024 18:48:19 +0800
-Message-Id: <20240105104819.3916743-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20240105104819.3916743-1-houtao@huaweicloud.com>
-References: <20240105104819.3916743-1-houtao@huaweicloud.com>
+	Andrii Nakryiko <andrii@kernel.org>,
+	"Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	Ilya Leoshkevich <iii@linux.ibm.com>,
+	Hengqi Chen <hengqi.chen@gmail.com>, kernel-patches-bot@fb.com
+Subject: Re: [PATCH bpf-next 2/4] bpf, x64: Fix tailcall hierarchy
+Message-ID: <ZZf4uXuSvFq1JwU1@krava>
+References: <20240104142226.87869-1-hffilwlqm@gmail.com>
+ <20240104142226.87869-3-hffilwlqm@gmail.com>
+ <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAXZw013pdlA+1eFg--.49979S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw1xKw4xJr17Jw43CFWDCFg_yoWrGF45pa
-	yrKry5Kr48J3WIk34fGF4UZFyfKan5urW5XrWfurWUZF1UZ34kXF18Kr1DtFnxXrW09ry5
-	ZF18trn8CFn8AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+In-Reply-To: <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
 
-From: Hou Tao <houtao1@huawei.com>
+On Thu, Jan 04, 2024 at 08:15:36PM -0800, Alexei Starovoitov wrote:
+> On Thu, Jan 4, 2024 at 6:23 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+> >
+> >
+> > diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+> > index fe30b9ebb8de4..67fa337fc2e0c 100644
+> > --- a/arch/x86/net/bpf_jit_comp.c
+> > +++ b/arch/x86/net/bpf_jit_comp.c
+> > @@ -259,7 +259,7 @@ struct jit_context {
+> >  /* Number of bytes emit_patch() needs to generate instructions */
+> >  #define X86_PATCH_SIZE         5
+> >  /* Number of bytes that will be skipped on tailcall */
+> > -#define X86_TAIL_CALL_OFFSET   (11 + ENDBR_INSN_SIZE)
+> > +#define X86_TAIL_CALL_OFFSET   (22 + ENDBR_INSN_SIZE)
+> >
+> >  static void push_r12(u8 **pprog)
+> >  {
+> > @@ -406,14 +406,21 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+> >          */
+> >         emit_nops(&prog, X86_PATCH_SIZE);
+> >         if (!ebpf_from_cbpf) {
+> > -               if (tail_call_reachable && !is_subprog)
+> > +               if (tail_call_reachable && !is_subprog) {
+> >                         /* When it's the entry of the whole tailcall context,
+> >                          * zeroing rax means initialising tail_call_cnt.
+> >                          */
+> > -                       EMIT2(0x31, 0xC0); /* xor eax, eax */
+> > -               else
+> > -                       /* Keep the same instruction layout. */
+> > -                       EMIT2(0x66, 0x90); /* nop2 */
+> > +                       EMIT2(0x31, 0xC0);       /* xor eax, eax */
+> > +                       EMIT1(0x50);             /* push rax */
+> > +                       /* Make rax as ptr that points to tail_call_cnt. */
+> > +                       EMIT3(0x48, 0x89, 0xE0); /* mov rax, rsp */
+> > +                       EMIT1_off32(0xE8, 2);    /* call main prog */
+> > +                       EMIT1(0x59);             /* pop rcx, get rid of tail_call_cnt */
+> > +                       EMIT1(0xC3);             /* ret */
+> > +               } else {
+> > +                       /* Keep the same instruction size. */
+> > +                       emit_nops(&prog, 13);
+> > +               }
+> 
+> I'm afraid the extra call breaks stack unwinding and many other things.
+> The proper frame needs to be setup (push rbp; etc)
+> and 'leave' + emit_return() is used.
+> Plain 'ret' is not ok.
+> x86_call_depth_emit_accounting() needs to be used too.
+> That will make X86_TAIL_CALL_OFFSET adjustment very complicated.
+> Also the fix doesn't address the stack size issue.
+> We shouldn't allow all the extra frames at run-time.
+> 
+> The tail_cnt_ptr approach is interesting but too heavy,
+> since arm64, s390 and other JITs would need to repeat it with equally
+> complicated calculations in TAIL_CALL_OFFSET.
+> 
+> The fix should really be thought through for all JITs. Not just x86.
+> 
+> I'm thinking whether we should do the following instead:
+> 
+> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
+> index 0bdbbbeab155..0b45571559be 100644
+> --- a/kernel/bpf/arraymap.c
+> +++ b/kernel/bpf/arraymap.c
+> @@ -910,7 +910,7 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
+>         if (IS_ERR(prog))
+>                 return prog;
+> 
+> -       if (!bpf_prog_map_compatible(map, prog)) {
+> +       if (!bpf_prog_map_compatible(map, prog) || prog->aux->func_cnt) {
+>                 bpf_prog_put(prog);
+>                 return ERR_PTR(-EINVAL);
+>         }
+> 
+> This will stop stack growth, but it will break a few existing tests.
+> I feel it's a price worth paying.
+> 
+> John, Daniel,
+> 
+> do you see anything breaking on cilium side if we disallow
+> progs with subprogs to be inserted in prog_array ?
 
-The test uses bpf_prog_get_info_by_fd() to obtain the xlated
-instructions of the program first. Since these instructions have
-already been rewritten by the verifier, the tests then checks whether
-the rewritten instructions are as expected. And to ensure LLVM generates
-code exactly as expected, use inline assembly and a naked function.
+FWIW tetragon should be ok with this.. we use few subprograms in
+hubble, but most of them are not called from tail called programs
 
-Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../bpf/prog_tests/kptr_xchg_inline.c         | 51 +++++++++++++++++++
- .../selftests/bpf/progs/kptr_xchg_inline.c    | 48 +++++++++++++++++
- 2 files changed, 99 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c
- create mode 100644 tools/testing/selftests/bpf/progs/kptr_xchg_inline.c
+jirka
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c b/tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c
-new file mode 100644
-index 0000000000000..5a4bee1cf9707
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c
-@@ -0,0 +1,51 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#include <test_progs.h>
-+
-+#include "linux/filter.h"
-+#include "kptr_xchg_inline.skel.h"
-+
-+void test_kptr_xchg_inline(void)
-+{
-+	struct kptr_xchg_inline *skel;
-+	struct bpf_insn *insn = NULL;
-+	struct bpf_insn exp;
-+	unsigned int cnt;
-+	int err;
-+
-+#if !defined(__x86_64__)
-+	test__skip();
-+	return;
-+#endif
-+
-+	skel = kptr_xchg_inline__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_load"))
-+		return;
-+
-+	err = get_xlated_program(bpf_program__fd(skel->progs.kptr_xchg_inline), &insn, &cnt);
-+	if (!ASSERT_OK(err, "prog insn"))
-+		goto out;
-+
-+	/* The original instructions are:
-+	 * r1 = map[id:xxx][0]+0
-+	 * r2 = 0
-+	 * call bpf_kptr_xchg#yyy
-+	 *
-+	 * call bpf_kptr_xchg#yyy will be inlined as:
-+	 * r0 = r2
-+	 * r0 = atomic64_xchg((u64 *)(r1 +0), r0)
-+	 */
-+	if (!ASSERT_GT(cnt, 5, "insn cnt"))
-+		goto out;
-+
-+	exp = BPF_MOV64_REG(BPF_REG_0, BPF_REG_2);
-+	if (!ASSERT_OK(memcmp(&insn[3], &exp, sizeof(exp)), "mov"))
-+		goto out;
-+
-+	exp = BPF_ATOMIC_OP(BPF_DW, BPF_XCHG, BPF_REG_1, BPF_REG_0, 0);
-+	if (!ASSERT_OK(memcmp(&insn[4], &exp, sizeof(exp)), "xchg"))
-+		goto out;
-+out:
-+	free(insn);
-+	kptr_xchg_inline__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/kptr_xchg_inline.c b/tools/testing/selftests/bpf/progs/kptr_xchg_inline.c
-new file mode 100644
-index 0000000000000..2414ac20b6d50
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/kptr_xchg_inline.c
-@@ -0,0 +1,48 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2023. Huawei Technologies Co., Ltd */
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_experimental.h"
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct bin_data {
-+	char blob[32];
-+};
-+
-+#define private(name) SEC(".bss." #name) __hidden __attribute__((aligned(8)))
-+private(kptr) struct bin_data __kptr * ptr;
-+
-+SEC("tc")
-+__naked int kptr_xchg_inline(void)
-+{
-+	asm volatile (
-+		"r1 = %[ptr] ll;"
-+		"r2 = 0;"
-+		"call %[bpf_kptr_xchg];"
-+		"if r0 == 0 goto 1f;"
-+		"r1 = r0;"
-+		"r2 = 0;"
-+		"call %[bpf_obj_drop_impl];"
-+	"1:"
-+		"r0 = 0;"
-+		"exit;"
-+		:
-+		: __imm_addr(ptr),
-+		  __imm(bpf_kptr_xchg),
-+		  __imm(bpf_obj_drop_impl)
-+		: __clobber_all
-+	);
-+}
-+
-+/* BTF FUNC records are not generated for kfuncs referenced
-+ * from inline assembly. These records are necessary for
-+ * libbpf to link the program. The function below is a hack
-+ * to ensure that BTF FUNC records are generated.
-+ */
-+void __btf_root(void)
-+{
-+	bpf_obj_drop(NULL);
-+}
--- 
-2.29.2
-
+> 
+> Other alternatives?
+> 
 
