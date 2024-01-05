@@ -1,192 +1,104 @@
-Return-Path: <bpf+bounces-19097-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19098-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC3DB824C8D
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 02:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1F2C824C90
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 02:31:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95D5A284C8E
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 01:26:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43B572861D4
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 01:31:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E4161FA3;
-	Fri,  5 Jan 2024 01:24:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D031FA5;
+	Fri,  5 Jan 2024 01:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Clbt61oB";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="i+l8k8Vu"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="axeNh4il"
 X-Original-To: bpf@vger.kernel.org
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9D81C10;
-	Fri,  5 Jan 2024 01:24:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id 24AD23200B83;
-	Thu,  4 Jan 2024 20:24:02 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 04 Jan 2024 20:24:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1704417841;
-	 x=1704504241; bh=8oxbnZeja7VLjsmNqyq5U5Vh+kwCbUgeDbgUqppXGZw=; b=
-	Clbt61oBxHKzbCGy07g4rOxFGxLX2tL7ztb/4TkbPXfZQuKZQ/QyOJQC/agh/u3h
-	4fxlz6ral5PdX4FkRqJWcF6oOsXVYXhgCtHv1LjN2lvqDGU7s0B9cTK1b0BBwMSN
-	Z21AW0UE1OfncoCrqw/ZTJ03MT0LBK7yK5qE9/P+P351qT15DP1nWGH4RNBxBmGb
-	tO6f5eGnKgZ1kbYkENSmdY8a4F2wJztAWfX5xOY89USB7OLTQuskrt4lGgi3cc9T
-	w7b9FmxorG2Xa4WFoaEXObUiXijrMNw7TQkTptGio3KGcNk8JF3fr8BDUWUuZWqW
-	oKTxhIxshUpNCydt78/Q0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704417841; x=
-	1704504241; bh=8oxbnZeja7VLjsmNqyq5U5Vh+kwCbUgeDbgUqppXGZw=; b=i
-	+l8k8VuIIdFlO50LVgUeJ1KML/J4piu+x2pGugwd5FztWf51/Ha/wIbikIFRayzp
-	T7n59YgISpvOMgNWfbOfEuBVVvKfosnDYq6HPcq5F1UX6AmEMkdiAIGBHevcT/Dm
-	S2EUPLEmdWoad7JyXOn3jWXU7RWYCArPyw3wcR4dk1suiIFlEOhaMmkts8ndy248
-	9tDIS1kH9aqutke0Bfh6+hh3+vQGe3Af4gHoOI3D7L0FAvpWUBIWHpzgWAsUQlD0
-	PM+Nmh7bZ8JinIJP3b/Ox/mxbQbRQkLLTndWItk2SNGEQRo4mXSvM982IvCXhiQR
-	DjV2EM404gB2LJeKh54tA==
-X-ME-Sender: <xms:MVqXZSKBaN7TBhy4Zc2VdmVgU2iOjocnFdMiSSbj67X6d8369G6Ugw>
-    <xme:MVqXZaKj0WUXZtlpI0oTrRKBjodl_ocKWNAYGm1i6MNkSwITV2NiXAl395E-aWn6-
-    L0B9LCLdQuyStiJ0w>
-X-ME-Received: <xmr:MVqXZSuQ_v8RvaMsu0noBR27s66DAhhJndwlJlMp5FBIwU845HUb6zYQoIxDtwjSyMxcp4UUBAbEpjxAhOsfvQAgaXUxjOPCktOCE2c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegkedgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpeffffeggeekjedvjeegheetkeduhffgfeegveeklefhgeeu
-    leejhfeljedtkeevffenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdr
-    giihii
-X-ME-Proxy: <xmx:MVqXZXZwcSucBHIhiIBwPwtGo9-q9c77HCauzLkeGXV8HjMuHQH7pw>
-    <xmx:MVqXZZaqYqcT9VxtI0DGRaCm_ZP9bPeKhD8rUgvJ66XIhiV9dl2TcA>
-    <xmx:MVqXZTACdMHw1kpLkYuwllTDf7gxzqYcenRHKF_77XgrFHA__kvrTg>
-    <xmx:MVqXZSIUUz5GnIstwKXA44tQlTXR3xA31LFZ7_wMUlud7BuBd_h6yQ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Jan 2024 20:24:00 -0500 (EST)
-Date: Thu, 4 Jan 2024 18:23:58 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	Quentin Monnet <quentin@isovalent.com>, Alan Maguire <alan.maguire@oracle.com>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH bpf-next 1/2] bpf: btf: Support optional flags for
- BTF_SET8 sets
-Message-ID: <dpjloyytomne6efi76qe4mmh3mdjp67penogwbak7ojznf23wc@5gs6o7gc2gdt>
-References: <cover.1704324602.git.dxu@dxuuu.xyz>
- <29644dc7906c7c0e6843d8acf92c3e29089845d0.1704324602.git.dxu@dxuuu.xyz>
- <ZZaVFxMvmMjbOlra@krava>
- <CAADnVQKZZw-e12-BOJsMMiA3s+vOskQEYRqhviQC2rBMf4AckA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A698E1FA3
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 01:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28c0df4b42eso91730a91.1
+        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 17:31:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1704418296; x=1705023096; darn=vger.kernel.org;
+        h=thread-index:content-language:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V2ip3HyFSIgJvnIybn9HMd2m8Il7ZR7wesMKa0O8xLI=;
+        b=axeNh4illfp7CqbsL+tDQbLvnAU6PPkQdM2jvfqlAKwDbp21ukWpSQTxiyBMMmajrZ
+         HzSyDiGMqNGcy9zDajPnrHr8EryB3AiXCU6JE+vhz2T0CSA965UI4/nn7OUT9qU9z2ro
+         t3TryITHYvn6NY7HI7xd6pwN0SCKe7Qp7GiFZKmYsURqyH57EcnxBa2aswCgZ1yo3h8k
+         hgtbnKn+nVDXW2sclSR3CHcd4cUhAAHMvVfXylt8030vKr8OkVmUKfi8F/pibmSKzOWl
+         gQjBUGC5TjlMWRNNzVHPRUXzME74AbSNDWuI3n2y2svCBHn76SZdlN5X5l2QKB8Yl1Ty
+         XX4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704418296; x=1705023096;
+        h=thread-index:content-language:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=V2ip3HyFSIgJvnIybn9HMd2m8Il7ZR7wesMKa0O8xLI=;
+        b=BcTXkIlXjIE8qzj5IDG1b2j1uoz++lozjFQC+hpEg7GmppOtsG9/VOKkQJcsv96Vjk
+         imzJyhvjzyhqXvOVHaW0f8+e3rXNLb0+9VhEmrKYFbftDj2nDoS3Pq8FKOELUrtD+9Nj
+         4Mt+uqIFEw70/xGmw6pzvRjnw1aEKx+1oIWgp0jDZem5zMvpzc3YqQEkVqEwnOjU+WCR
+         mHB9JFXqheSzmxCnE2G3r/iXiJVqfEWgjgaDmESA+uV+3ONyrChnWtghHse42jM5wM3t
+         9zg5yQgFstekaglYbMOLg3A94W0wnEnqONkEFYb8Eth1EkJKqWXtGz332zytN+fhSyfv
+         yv6Q==
+X-Gm-Message-State: AOJu0Yyz09bZxiHOyBm/Wsp/bxm1d22PArVI+4LnffStjW/aoXZ4uKvc
+	FrVASQV4Ozl0fwnsTFvFeW0=
+X-Google-Smtp-Source: AGHT+IGm42lGvj7Hd2Dqngvfm8PL1uInOI1xwJUAIoTZm1BPLs08wrOFP5SgaAlTzdeXfgco5N1iIA==
+X-Received: by 2002:a17:90b:4a0e:b0:28c:65ee:3c37 with SMTP id kk14-20020a17090b4a0e00b0028c65ee3c37mr1703007pjb.9.1704418295780;
+        Thu, 04 Jan 2024 17:31:35 -0800 (PST)
+Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
+        by smtp.gmail.com with ESMTPSA id r23-20020a17090b051700b0028b6759d8c1sm349996pjz.29.2024.01.04.17.31.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Jan 2024 17:31:35 -0800 (PST)
+From: dthaler1968@googlemail.com
+X-Google-Original-From: <dthaler1968@gmail.com>
+To: "'Aoyang Fang \(SSE, 222010547\)'" <aoyangfang@link.cuhk.edu.cn>,
+	<dthaler1968@googlemail.com>
+Cc: <bpf@ietf.org>,
+	<bpf@vger.kernel.org>
+References: <3A7D0A57-02EF-4ACB-A599-1029CFCA7E74@link.cuhk.edu.cn> <015701da3f41$eaab4d10$c001e730$@gmail.com> <20654405-C500-4A24-B09E-A28B25DF32AC@link.cuhk.edu.cn>
+In-Reply-To: <20654405-C500-4A24-B09E-A28B25DF32AC@link.cuhk.edu.cn>
+Subject: RE: [PATCH] update the consistency issue in documentation
+Date: Thu, 4 Jan 2024 17:31:33 -0800
+Message-ID: <076801da3f76$eb0cdaf0$c12690d0$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKZZw-e12-BOJsMMiA3s+vOskQEYRqhviQC2rBMf4AckA@mail.gmail.com>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: en-us
+Thread-Index: AQJcMuQj7ImLqPZXOVe7T7DiaRKhUwLxzd5EAg7D4uSvnoJBMA==
 
-On Thu, Jan 04, 2024 at 09:11:56AM -0800, Alexei Starovoitov wrote:
-> On Thu, Jan 4, 2024 at 3:23 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Wed, Jan 03, 2024 at 04:31:55PM -0700, Daniel Xu wrote:
-> > > This commit adds support for optional flags on BTF_SET8s.
-> > > struct btf_id_set8 already supported 32 bits worth of flags, but was
-> > > only used for alignment purposes before.
-> > >
-> > > We now use these bits to encode flags. The next commit will tag all
-> > > kfunc sets with a flag so that pahole can recognize which
-> > > BTF_ID_FLAGS(func, ..) are actual kfuncs.
-> > >
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >  include/linux/btf_ids.h | 14 +++++++++-----
-> > >  1 file changed, 9 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > > index a9cb10b0e2e9..88f914579fa1 100644
-> > > --- a/include/linux/btf_ids.h
-> > > +++ b/include/linux/btf_ids.h
-> > > @@ -183,17 +183,21 @@ extern struct btf_id_set name;
-> > >   * .word (1 << 3) | (1 << 1) | (1 << 2)
-> > >   *
-> > >   */
-> > > -#define __BTF_SET8_START(name, scope)                        \
-> > > +#define ___BTF_SET8_START(name, scope, flags)                \
-> > >  asm(                                                 \
-> > >  ".pushsection " BTF_IDS_SECTION ",\"a\";       \n"   \
-> > >  "." #scope " __BTF_ID__set8__" #name ";        \n"   \
-> > >  "__BTF_ID__set8__" #name ":;                   \n"   \
-> > > -".zero 8                                       \n"   \
-> > > +".zero 4                                       \n"   \
-> > > +".long " #flags                               "\n"   \
-> > >  ".popsection;                                  \n");
-> > >
-> > > -#define BTF_SET8_START(name)                         \
-> > > +#define __BTF_SET8_START(name, scope, flags, ...)    \
-> > > +___BTF_SET8_START(name, scope, flags)
-> > > +
-> > > +#define BTF_SET8_START(name, ...)                    \
-> > >  __BTF_ID_LIST(name, local)                           \
-> > > -__BTF_SET8_START(name, local)
-> > > +__BTF_SET8_START(name, local, ##__VA_ARGS__, 0)
-> >
-> > I think it'd better to use something like:
-> >
-> >   BTF_SET8_KFUNCS_START(fsverity_set_ids)
-> >
-> > instead of:
-> >
-> >   BTF_SET8_START(fsverity_set_ids, BTF_SET8_KFUNC)
-> >
-> > and to keep current BTF_SET8_START without flags argument, like:
-> >
-> >   #define BTF_SET8_START(name) \
-> >     __BTF_SET8_START(... , 0, ...
-> >
-> >   #define BTF_SET8_KFUNCS_START(name) \
-> >     __BTF_SET8_START(... , BTF_SET8_KFUNC, ...
-> 
-> I was about to suggest the same :)
-> 
-> We can drop SET8 part as well, since it's implementation detail.
-> Just BTF_KFUNCS_START and pair it with BTF_KFUNCS_END
-> that will be the same as BTF_SET8_END.
-> Until we need to do something else with these macros.
+Aoyang Fang (SSE, 222010547) <aoyangfang@link.cuhk.edu.cn> wrote:=20
+> If so, the value of arithmetic instructions=E2=80=99 code should be 4 =
+bit, rather than
+> BPF_ADD: 0x00, BPF_SUB: 0x10, BPF_MUL: 0x20. Otherwise the convention =
+of
+> arithmetic instruction is not consistent with the convention of jump
+> instructions.
 
-Ack, will change.
+Good point, you are right that section 3.1 (Arithmetic instructions) and =
+3.3 (Jump instructions)
+are not consistent with each other.  Since 'code' is defined in section =
+3 as a 4-bit field,
+I agree that it would be more consistent to change section 3.1 rather =
+than defining
+8-bit values for a 4-bit field.
 
-> 
-> >
-> > also I'd rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS (with S)
-> >
-> > do you have the pahole changes somewhere? would be great to
-> > see all the related changes and try the whole thing
-> 
-> +1
-> without corresponding pahole changes it's not clear whether
-> it actually helps.
+Dave
+=20
 
-Here's a checkpointed branch: https://github.com/danobi/pahole/tree/kfunc_btf-mailed .
-I won't force push to it.
 
-It should work against this patchset. I might need to clean it up a bit still.
-
-Thanks,
-Daniel
 
