@@ -1,34 +1,34 @@
-Return-Path: <bpf+bounces-19122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19119-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA49C825257
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 11:47:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B342C825254
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 11:47:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6391F25549
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 10:47:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8A011C23090
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 10:47:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BB925554;
-	Fri,  5 Jan 2024 10:47:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 213FD250E5;
+	Fri,  5 Jan 2024 10:47:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9E92286B9
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 10:47:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FEDF250E7
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 10:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T60X51jmlz4f3jHg
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 18:47:17 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T60X32rL9z4f3lDV
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 18:47:15 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 91EA21A0946
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 18:47:20 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 248E41A08C8
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 18:47:21 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAXZw013pdlA+1eFg--.49979S4;
-	Fri, 05 Jan 2024 18:47:19 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgAXZw013pdlA+1eFg--.49979S5;
+	Fri, 05 Jan 2024 18:47:20 +0800 (CST)
 From: Hou Tao <houtao@huaweicloud.com>
 To: bpf@vger.kernel.org
 Cc: Martin KaFai Lau <martin.lau@linux.dev>,
@@ -44,10 +44,12 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	houtao1@huawei.com
-Subject: [PATCH bpf-next v3 0/3] bpf: inline bpf_kptr_xchg()
-Date: Fri,  5 Jan 2024 18:48:16 +0800
-Message-Id: <20240105104819.3916743-1-houtao@huaweicloud.com>
+Subject: [PATCH bpf-next v3 1/3] bpf: Support inlining bpf_kptr_xchg() helper
+Date: Fri,  5 Jan 2024 18:48:17 +0800
+Message-Id: <20240105104819.3916743-2-houtao@huaweicloud.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20240105104819.3916743-1-houtao@huaweicloud.com>
+References: <20240105104819.3916743-1-houtao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,84 +57,147 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAXZw013pdlA+1eFg--.49979S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxCrW5JFWUtFWUKryDXF4rAFb_yoW5Xw43pa
-	yft343Kr42qFy2kw43GwnFqa4Fyws5Wry5Xr1fA3sYy3WUZFy8Xr1fKrWF9r9xWFZ0gFyr
-	Ar1I9rySk3WktFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
-	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
-	IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-	87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-TRANSID:cCh0CgAXZw013pdlA+1eFg--.49979S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxCrW5CF48GryDCr1rArykGrg_yoWrtr1fpF
+	Z8tryfKr4qq3WkA3srJan7Zry5Zw48C342gFnrury8A3W2qas7XFykKas0q3s8tr1jka4F
+	yryj9rZI93s8ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGw
+	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
+	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
+	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2mL9UUUUU
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 From: Hou Tao <houtao1@huawei.com>
 
-Hi,
-
 The motivation of inlining bpf_kptr_xchg() comes from the performance
-profiling of bpf memory allocator benchmark [1]. The benchmark uses
+profiling of bpf memory allocator benchmark. The benchmark uses
 bpf_kptr_xchg() to stash the allocated objects and to pop the stashed
 objects for free. After inling bpf_kptr_xchg(), the performance for
-object free on 8-CPUs VM increases about 2%~10%. However the performance
-gain comes with costs: both the kasan and kcsan checks on the pointer
-will be unavailable. Initially the inline is implemented in do_jit() for
-x86-64 directly, but I think it will more portable to implement the
-inline in verifier.
+object free on 8-CPUs VM increases about 2%~10%. The inline also has
+downside: both the kasan and kcsan checks on the pointer will be
+unavailable.
 
-Patch #1 supports inlining bpf_kptr_xchg() helper and enables it on
-x86-4. Patch #2 factors out a helper for newly-added test in patch #3.
-Patch #3 tests whether the inlining of bpf_kptr_xchg() is expected.
-Please see individual patches for more details. And comments are always
-welcome.
+bpf_kptr_xchg() can be inlined by converting the calling of
+bpf_kptr_xchg() into an atomic_xchg() instruction. But the conversion
+depends on two conditions:
+1) JIT backend supports atomic_xchg() on pointer-sized word
+2) For the specific arch, the implementation of xchg is the same as
+   atomic_xchg() on pointer-sized words.
 
-Change Log:
-v3:
-  * rebased on bpf-next tree
-  * patch 1 & 2: Add Rvb-by and Ack-by tags from Eduard
-  * patch 3: use inline assembly and naked function instead of c code
-             (suggested by Eduard)
+It seems most 64-bit JIT backends satisfies these two conditions. But
+as a precaution, defining a weak function bpf_jit_supports_ptr_xchg()
+to state whether such conversion is safe and only supporting inline for
+64-bit host.
 
-v2: https://lore.kernel.org/bpf/20231223104042.1432300-1-houtao@huaweicloud.com/
-  * rebased on bpf-next tree
-  * drop patch #1 in v1 due to discussion in [2]
-  * patch #1: add the motivation in the commit message, merge patch #1
-              and #3 into the new patch in v2. (Daniel)
-  * patch #2/#3: newly-added patch to test the inlining of
-                 bpf_kptr_xchg() (Eduard)
+For x86-64, it supports BPF_XCHG atomic operation and both xchg() and
+atomic_xchg() use arch_xchg() to implement the exchange, so enabling the
+inline of bpf_kptr_xchg() on x86-64 first.
 
-v1: https://lore.kernel.org/bpf/95b8c2cd-44d5-5fe1-60b5-7e8218779566@huaweicloud.com/
+Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+---
+ arch/x86/net/bpf_jit_comp.c |  5 +++++
+ include/linux/filter.h      |  1 +
+ kernel/bpf/core.c           | 10 ++++++++++
+ kernel/bpf/helpers.c        |  1 +
+ kernel/bpf/verifier.c       | 17 +++++++++++++++++
+ 5 files changed, 34 insertions(+)
 
-[1]: https://lore.kernel.org/bpf/20231221141501.3588586-1-houtao@huaweicloud.com/
-[2]: https://lore.kernel.org/bpf/fd94efb9-4a56-c982-dc2e-c66be5202cb7@huaweicloud.com/
-
-Hou Tao (3):
-  bpf: Support inlining bpf_kptr_xchg() helper
-  selftests/bpf: Factor out get_xlated_program() helper
-  selftests/bpf: Test the inlining of bpf_kptr_xchg()
-
- arch/x86/net/bpf_jit_comp.c                   |  5 ++
- include/linux/filter.h                        |  1 +
- kernel/bpf/core.c                             | 10 ++++
- kernel/bpf/helpers.c                          |  1 +
- kernel/bpf/verifier.c                         | 17 +++++++
- .../selftests/bpf/prog_tests/ctx_rewrite.c    | 44 ----------------
- .../bpf/prog_tests/kptr_xchg_inline.c         | 51 +++++++++++++++++++
- .../selftests/bpf/progs/kptr_xchg_inline.c    | 48 +++++++++++++++++
- tools/testing/selftests/bpf/test_verifier.c   | 47 +----------------
- tools/testing/selftests/bpf/testing_helpers.c | 42 +++++++++++++++
- tools/testing/selftests/bpf/testing_helpers.h |  6 +++
- 11 files changed, 183 insertions(+), 89 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/kptr_xchg_inline.c
- create mode 100644 tools/testing/selftests/bpf/progs/kptr_xchg_inline.c
-
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index bdacbb84456d9..9fd275b5827ac 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -3245,3 +3245,8 @@ void bpf_arch_poke_desc_update(struct bpf_jit_poke_descriptor *poke,
+ 		BUG_ON(ret < 0);
+ 	}
+ }
++
++bool bpf_jit_supports_ptr_xchg(void)
++{
++	return true;
++}
+diff --git a/include/linux/filter.h b/include/linux/filter.h
+index 68fb6c8142fec..35f067fd3840a 100644
+--- a/include/linux/filter.h
++++ b/include/linux/filter.h
+@@ -955,6 +955,7 @@ bool bpf_jit_supports_subprog_tailcalls(void);
+ bool bpf_jit_supports_kfunc_call(void);
+ bool bpf_jit_supports_far_kfunc_call(void);
+ bool bpf_jit_supports_exceptions(void);
++bool bpf_jit_supports_ptr_xchg(void);
+ void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie);
+ bool bpf_helper_changes_pkt_data(void *func);
+ 
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index ea6843be2616c..fbb1d95a9b446 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -2925,6 +2925,16 @@ bool __weak bpf_jit_supports_far_kfunc_call(void)
+ 	return false;
+ }
+ 
++/* Return TRUE if the JIT backend satisfies the following two conditions:
++ * 1) JIT backend supports atomic_xchg() on pointer-sized words.
++ * 2) Under the specific arch, the implementation of xchg() is the same
++ *    as atomic_xchg() on pointer-sized words.
++ */
++bool __weak bpf_jit_supports_ptr_xchg(void)
++{
++	return false;
++}
++
+ /* To execute LD_ABS/LD_IND instructions __bpf_prog_run() may call
+  * skb_copy_bits(), so provide a weak definition of it for NET-less config.
+  */
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index be72824f32b2c..e04ca1af89272 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1414,6 +1414,7 @@ BPF_CALL_2(bpf_kptr_xchg, void *, map_value, void *, ptr)
+ {
+ 	unsigned long *kptr = map_value;
+ 
++	/* This helper may be inlined by verifier. */
+ 	return xchg(kptr, (unsigned long)ptr);
+ }
+ 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d5f4ff1eb235d..b962357acad41 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -19805,6 +19805,23 @@ static int do_misc_fixups(struct bpf_verifier_env *env)
+ 			continue;
+ 		}
+ 
++		/* Implement bpf_kptr_xchg inline */
++		if (prog->jit_requested && BITS_PER_LONG == 64 &&
++		    insn->imm == BPF_FUNC_kptr_xchg &&
++		    bpf_jit_supports_ptr_xchg()) {
++			insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_2);
++			insn_buf[1] = BPF_ATOMIC_OP(BPF_DW, BPF_XCHG, BPF_REG_1, BPF_REG_0, 0);
++			cnt = 2;
++
++			new_prog = bpf_patch_insn_data(env, i + delta, insn_buf, cnt);
++			if (!new_prog)
++				return -ENOMEM;
++
++			delta    += cnt - 1;
++			env->prog = prog = new_prog;
++			insn      = new_prog->insnsi + i + delta;
++			continue;
++		}
+ patch_call_imm:
+ 		fn = env->ops->get_func_proto(insn->imm, env->prog);
+ 		/* all functions that have prototype and verifier allowed
 -- 
 2.29.2
 
