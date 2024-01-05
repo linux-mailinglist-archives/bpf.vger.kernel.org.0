@@ -1,92 +1,139 @@
-Return-Path: <bpf+bounces-19142-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19143-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D35D825BEF
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 21:46:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C003C825BFB
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 21:53:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47B452852E5
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 20:46:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA46D1C2373F
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 20:53:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96083219E1;
-	Fri,  5 Jan 2024 20:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884DF20B09;
+	Fri,  5 Jan 2024 20:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ct+78WEs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iNkoBQQS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E477219E5
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 20:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a29a4f610b1so51849966b.3
-        for <bpf@vger.kernel.org>; Fri, 05 Jan 2024 12:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1704487575; x=1705092375; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=48Pygpvzohi6FI3UgDRHQW6kLMNkjc+UGce0GSe977c=;
-        b=ct+78WEsaxtswbrnH0nbA8K18ycZPa8iYHooRrEE1Za6+klL8RUjepj0Tn+zB5tMSc
-         am11I5yjssnhLnaH0Bhhyty0fb0D2gWbcYQyT1rQfEZk6/yd+YpqP/ZPj4ifWaxZTuPr
-         FFU5NadMx00DuzveSMqN7ZEH4aIGRrkBTu+is=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704487575; x=1705092375;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=48Pygpvzohi6FI3UgDRHQW6kLMNkjc+UGce0GSe977c=;
-        b=RPu/pUE0T5AFAHERrdAqUYw8UIMK44oPTQtBbUfQTSXZ0A7Nm1jb4er04FrDlwe9SC
-         zDNAZxpzrwsE6YzPjN5oks/CukN0U3xR7xRGS1vdDbWg5DYCiYoqRgNL2a8eXsGQa5n5
-         x7PPLVA6f8QFNsXOIcYibiX6e47V8V3UCcGNzgHrzWOort0JY8pXKn61u0wQ18vbiLf+
-         cR8tjoFtiGs2gVK3Herm7AD5Xa9WoWgJiCP6ZqyirTlKzNUbGHlFP3wbaCExLBgPKuJC
-         /D7LVjmFtiCGs27FVQpcYeUHHzbmhv8kQ7uG2fdRzRs549KZpVG9xtA6q3khfJExnAKU
-         Qs0Q==
-X-Gm-Message-State: AOJu0YyiwwpFCSaWoRRb/0efC5uJ8vpfFgZQo0ZPTHD+T7MRcjzw3sxG
-	Hh3pyhRuap+hGBzFj+zrETtLpZZMNPPXc2rtKZsDgUJUvi126aem
-X-Google-Smtp-Source: AGHT+IH7N9d81A8k156RBymgvn6VnPHxA0Mrum0EPAfHauKq+tF0FpOGbJiqcGuQpuzvAofszwFD0w==
-X-Received: by 2002:a17:906:fd86:b0:a27:f465:298c with SMTP id xa6-20020a170906fd8600b00a27f465298cmr1785075ejb.124.1704487575305;
-        Fri, 05 Jan 2024 12:46:15 -0800 (PST)
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com. [209.85.208.42])
-        by smtp.gmail.com with ESMTPSA id u20-20020a1709067d1400b00a233efe6aa7sm1242870ejo.51.2024.01.05.12.46.14
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Jan 2024 12:46:14 -0800 (PST)
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55642663ac4so2229377a12.1
-        for <bpf@vger.kernel.org>; Fri, 05 Jan 2024 12:46:14 -0800 (PST)
-X-Received: by 2002:a17:906:74c1:b0:a28:fab0:9004 with SMTP id
- z1-20020a17090674c100b00a28fab09004mr943524ejl.86.1704487574561; Fri, 05 Jan
- 2024 12:46:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9CD219E1
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 20:53:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CECDC433C7;
+	Fri,  5 Jan 2024 20:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704488001;
+	bh=ozJhC13l/0lhd1Ruc0Raha+Nmp4qiQHERE7QESsjRAw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iNkoBQQSyVQ0NLF1j4u/OuSyYoST4pYRawvvepeMQ9h/Q6ODfhAiSoL5zmBde+7Bq
+	 LnRMD0uy+jIghuQdztZsP054Kzm/f7OR982UAQQ2gM8HxDK42f0BnFlnifMlkOT2UT
+	 TW7RFnvW1WlilvYy7DF3sopePxKct33obDKcfcNqkec03PfzQLxG9Za0Kw2ZMKEts0
+	 thi6TGXZe85euVigV54kCn4Lw6Exq7ZDwsJrdW3Da5UOVx45ZUf5IzdgkEdIjaR8ZD
+	 tygN8B5GpHl+rbMA4p1Ky1Vmq+GbtQ/ZgTbBkt9p8nyHJnb7o6ogEuC9xGB5t0wL7p
+	 O8I7LrgQUrUmg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+	id 41576403EF; Fri,  5 Jan 2024 17:53:18 -0300 (-03)
+Date: Fri, 5 Jan 2024 17:53:18 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+	Quentin Monnet <quentin@isovalent.com>,
+	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
+Subject: Re: [PATCH] bpftool: Add missing libgen.h for basename()
+Message-ID: <ZZhsPs00TI75RdAr@kernel.org>
+References: <ZZYgMYmb_qE94PUB@kernel.org>
+ <ZZZ7hgqlYjNJOynA@krava>
+ <ZZakH8LluKodXql-@kernel.org>
+ <ZZasL_pO09Zt3R4e@kernel.org>
+ <ZZfCX7tcM0RnuHJT@krava>
+ <ZZgZ0cxEa7HvSUF6@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103222034.2582628-1-andrii@kernel.org> <20240103222034.2582628-4-andrii@kernel.org>
- <CAHk-=wi7=fQCgjnex_+KwNiAKuZYS=QOzfD_dSWys0SMmbYOtQ@mail.gmail.com> <ZZhncYtRDp/pI+Aa@casper.infradead.org>
-In-Reply-To: <ZZhncYtRDp/pI+Aa@casper.infradead.org>
-From: Linus Torvalds <torvalds@linuxfoundation.org>
-Date: Fri, 5 Jan 2024 12:45:57 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi_DdgW73uVCRHsNNm6-J0+JZOas92ybNsCoEfcWac3xw@mail.gmail.com>
-Message-ID: <CAHk-=wi_DdgW73uVCRHsNNm6-J0+JZOas92ybNsCoEfcWac3xw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 03/29] bpf: introduce BPF token object
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	paul@paul-moore.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZgZ0cxEa7HvSUF6@krava>
+X-Url: http://acmel.wordpress.com
 
-On Fri, 5 Jan 2024 at 12:32, Matthew Wilcox <willy@infradead.org> wrote:
->
-> I can't tell from the description whether there are going to be a lot of
-> these.  If there are, it might make sense to create a slab cache for
-> them rather than get them from the general-purpose kmalloc caches.
+Em Fri, Jan 05, 2024 at 04:01:37PM +0100, Jiri Olsa escreveu:
+> On Fri, Jan 05, 2024 at 09:48:31AM +0100, Jiri Olsa wrote:
+> > On Thu, Jan 04, 2024 at 10:01:35AM -0300, Arnaldo Carvalho de Melo wrote:
+> > 
+> > SNIP
+> > 
+> > >    9    51.66 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-17) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2) flex 2.5.37
+> > >   10    60.77 amazonlinux:2023              : Ok   gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2) , clang version 15.0.7 (Amazon Linux 15.0.7-3.amzn2023.0.1) flex 2.6.4
+> > >   11    61.29 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
+> > >   12    74.72 archlinux:base                : Ok   gcc (GCC) 13.2.1 20230801 , clang version 16.0.6 flex 2.6.4
+> > > 
+> > > / $ grep -B8 -A2 -w basename /usr/include/string.h
+> > > #ifdef _GNU_SOURCE
+> > > #define	strdupa(x)	strcpy(alloca(strlen(x)+1),x)
+> > > int strverscmp (const char *, const char *);
+> > > char *strchrnul(const char *, int);
+> > > char *strcasestr(const char *, const char *);
+> > > void *memrchr(const void *, int, size_t);
+> > > void *mempcpy(void *, const void *, size_t);
+> > > #ifndef __cplusplus
+> > > char *basename();
+> > > #endif
+> > > #endif
+> > > / $ cat /etc/os-release
+> > > NAME="Alpine Linux"
+> > > ID=alpine
+> > > VERSION_ID=3.19.0
+> > > PRETTY_NAME="Alpine Linux v3.19"
+> > > HOME_URL="https://alpinelinux.org/"
+> > > BUG_REPORT_URL="https://gitlab.alpinelinux.org/alpine/aports/-/issues"
+> > > / $
+> > > 
+> > > Weird, they had it and now removed the _GNU_SOURCE bits (edge is their
+> > > devel distro, like rawhide is for fedora, tumbleweed for opensuse, etc).
+> > 
+> > let's see, I asked them in here: https://gitlab.alpinelinux.org/alpine/aports/-/issues/15643
+> 
+> it got removed in musl libc recently:
+>   https://git.musl-libc.org/cgit/musl/commit/?id=725e17ed6dff4d0cd22487bb64470881e86a92e7
+> 
+> so perhaps switching to POSIX version of basename is the easiest way out?
 
-I suspect it's a "count on the fingers of your hand" thing, and having
-a slab cache would be more overhead than you'd ever win.
+I think so, in all of perf we use the POSIX one, strdup'ing the arg,
+etc.
 
-           Linus
+Something like the patch below?
+
+- Arnaldo
+
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index ee3ce2b8000d75d2..a5cc5938c3d7951e 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -7,6 +7,7 @@
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
++#include <libgen.h>
+ #include <linux/err.h>
+ #include <stdbool.h>
+ #include <stdio.h>
+@@ -56,9 +57,10 @@ static bool str_has_suffix(const char *str, const char *suffix)
+ 
+ static void get_obj_name(char *name, const char *file)
+ {
+-	/* Using basename() GNU version which doesn't modify arg. */
+-	strncpy(name, basename(file), MAX_OBJ_NAME_LEN - 1);
+-	name[MAX_OBJ_NAME_LEN - 1] = '\0';
++	char file_copy[PATH_MAX];
++	/* Using basename() POSIX version to be more portable. */
++	strncpy(file_copy, file, PATH_MAX - 1)[PATH_MAX - 1] = '\0';
++	strncpy(name, basename(file_copy), MAX_OBJ_NAME_LEN - 1)[MAX_OBJ_NAME_LEN - 1] = '\0';
+ 	if (str_has_suffix(name, ".o"))
+ 		name[strlen(name) - 2] = '\0';
+ 	sanitize_identifier(name);
 
