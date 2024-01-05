@@ -1,256 +1,225 @@
-Return-Path: <bpf+bounces-19115-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19116-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BF22824F92
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 09:16:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F6C382501E
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 09:40:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 052A61F22C07
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 08:16:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCF41B2229A
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 08:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25E320B37;
-	Fri,  5 Jan 2024 08:16:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Quo1Mdut"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 140C322311;
+	Fri,  5 Jan 2024 08:40:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98EC520B29
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 08:16:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-50e80d40a41so1591829e87.1
-        for <bpf@vger.kernel.org>; Fri, 05 Jan 2024 00:16:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704442568; x=1705047368; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=KRShYcucNXaR640BsevHR3hUNLw9fdWJPmv5lYSr/no=;
-        b=Quo1MdutXVX9liUODrLeLkKsLJjwGnIqEaO6zDqS+NkGDtMzKn2/EVjZ5IDVs61pY+
-         iDL8AhOiYjgA37LmIF53OE9fMwWZ2f2JNygtkvBdACc4LZlQhVmQB78TjPLMHsrRXA0g
-         r9dv4x1VS81kgx5JhwS57h9XgKNYrp8SXJnLbyp57W7CyWmeNOOWapzla78nuPEN8fim
-         cJ36P5SVpgqR0RYarwZ8yu7ynvJRmx5bZNdPAq9edo6V31529DT3Hv6NViIDSA8wXxeF
-         Jwd+H2PZVKEmjnX9MmLQrk/ERSHuh2I7nqsTUBqc4ixeGqKAIDlApFxoHC29rgYDoHYR
-         yrTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704442568; x=1705047368;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KRShYcucNXaR640BsevHR3hUNLw9fdWJPmv5lYSr/no=;
-        b=B8TLfsUpjEGwynY9MqPxqe30Z3W885CEifGmwrP+HKOWrzm6bdecUOlNb26MURg6Yp
-         GZk07Kbqu3JcgkKrueMRjJSwSkEEndPoRHuNcY+83DOGSzGWvOMagILCC6JLzKmj6yLx
-         rWhA8dOppx7Yt+DLEqSl+JAzWYaGn2BB9sq2f8tc2ClF04c2Gu5BknpyRKFJ41v4cbWm
-         gZuSnXAFNwxg9ZU5xDhR63hI+SVShI9/fwd9Awns5HnTwfUmEXg+E3I+lSTGES94lg+L
-         j7ubhNFDpru3EB7Hr7yuT74tVadF+EW/736sLvv8dDLGFFMJtlVAjlvDG+pmYQUrveBL
-         5IEQ==
-X-Gm-Message-State: AOJu0Yz9x/ZdHzKKkpeBV5wUUhv/Xxr6brXrr163zurrNEmNLKKAyqGW
-	xkuo2T5W/ZRaS1MYTWp/ULI=
-X-Google-Smtp-Source: AGHT+IGi6hrkXAo4HoD9odK3xRFfmIPc9e4Lv4So41M7556JabPACuwEB/fs60BW/2zXX9MxFEBBrA==
-X-Received: by 2002:a05:6512:39c8:b0:50e:af8c:1ee6 with SMTP id k8-20020a05651239c800b0050eaf8c1ee6mr801491lfu.65.1704442567317;
-        Fri, 05 Jan 2024 00:16:07 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id w14-20020a1709067c8e00b00a26b37e0e7fsm597252ejo.60.2024.01.05.00.16.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 00:16:07 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 5 Jan 2024 09:16:05 +0100
-To: andrii@kernel.org
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next] selftests/bpf: detect testing prog flags support
-Message-ID: <ZZe6xaT6xGNyXizA@krava>
-References: <20240104223932.1971645-1-andrii@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198A9225DE;
+	Fri,  5 Jan 2024 08:40:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4T5xjG2Wkkz1vrfH;
+	Fri,  5 Jan 2024 16:40:02 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (unknown [7.185.36.74])
+	by mail.maildlp.com (Postfix) with ESMTPS id 298FF1400DD;
+	Fri,  5 Jan 2024 16:40:16 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 5 Jan
+ 2024 16:40:15 +0800
+Subject: Re: [RFC PATCH net-next v1 4/4] net: page_pool: use netmem_t instead
+ of struct page in API
+To: Mina Almasry <almasrymina@google.com>
+CC: Shakeel Butt <shakeelb@google.com>, Jakub Kicinski <kuba@kernel.org>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<bpf@vger.kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar
+	<mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
+	<hpa@zytor.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+	=?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>, Michael Chan
+	<michael.chan@broadcom.com>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+	Wei Fang <wei.fang@nxp.com>, Shenwei Wang <shenwei.wang@nxp.com>, Clark Wang
+	<xiaoning.wang@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Jeroen de Borst
+	<jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+	Shailend Chand <shailend@google.com>, Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>, Jesse Brandeburg
+	<jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Marcin Wojtas
+	<mw@semihalf.com>, Russell King <linux@armlinux.org.uk>, Sunil Goutham
+	<sgoutham@marvell.com>, Geetha sowjanya <gakula@marvell.com>, Subbaraya
+ Sundeep <sbhatta@marvell.com>, hariprasad <hkelam@marvell.com>, Felix Fietkau
+	<nbd@nbd.name>, John Crispin <john@phrozen.org>, Sean Wang
+	<sean.wang@mediatek.com>, Mark Lee <Mark-MC.Lee@mediatek.com>, Lorenzo
+ Bianconi <lorenzo@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Saeed
+ Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>, Horatiu
+ Vultur <horatiu.vultur@microchip.com>, <UNGLinuxDriver@microchip.com>, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Wei
+ Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Jassi Brar
+	<jaswinder.singh@linaro.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Jose Abreu
+	<joabreu@synopsys.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Siddharth Vadapalli <s-vadapalli@ti.com>, Ravi Gunasekaran
+	<r-gunasekaran@ti.com>, Roger Quadros <rogerq@kernel.org>, Jiawen Wu
+	<jiawenwu@trustnetic.com>, Mengyuan Lou <mengyuanlou@net-swift.com>, Ronak
+ Doshi <doshir@vmware.com>, VMware PV-Drivers Reviewers
+	<pv-drivers@vmware.com>, Ryder Lee <ryder.lee@mediatek.com>, Shayne Chen
+	<shayne.chen@mediatek.com>, Kalle Valo <kvalo@kernel.org>, Juergen Gross
+	<jgross@suse.com>, Stefano Stabellini <sstabellini@kernel.org>, Oleksandr
+ Tyshchenko <oleksandr_tyshchenko@epam.com>, Andrii Nakryiko
+	<andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
+	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh
+	<kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Stefan Hajnoczi
+	<stefanha@redhat.com>, Stefano Garzarella <sgarzare@redhat.com>, Shuah Khan
+	<shuah@kernel.org>, =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>,
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers
+	<ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, Justin Stitt
+	<justinstitt@google.com>, Jason Gunthorpe <jgg@nvidia.com>, Willem de Bruijn
+	<willemdebruijn.kernel@gmail.com>
+References: <20231214020530.2267499-1-almasrymina@google.com>
+ <20231214020530.2267499-5-almasrymina@google.com>
+ <ddffff98-f3de-6a5d-eb26-636dacefe9aa@huawei.com>
+ <CAHS8izO2nDHuxKau8iLcAmnho-1TYkzW09MBZ80+JzOo9YyVFA@mail.gmail.com>
+ <20231215021114.ipvdx2bwtxckrfdg@google.com>
+ <20231215190126.1040fa12@kernel.org>
+ <CALvZod5myy2SvuCMNmqjjYeNONqSArV+8y8mrkfnNeog8WLjng@mail.gmail.com>
+ <CAHS8izOLBtjHOqbTS_PiTNe+rTE=jboDWDM9zS108B57vVNcwA@mail.gmail.com>
+ <CAHS8izMkCwv3jak9KUHeDUrkwBNNpdYk4voEX7Cbp7mTpNAQdA@mail.gmail.com>
+ <54f226ef-df2d-9f32-fa3f-e846d6510758@huawei.com>
+ <CAHS8izP63wXGH+Q3y1H=ycT=AHYnhGveBnuyF_rYioAjZ=Hn=g@mail.gmail.com>
+ <7c6d35e3-165f-5883-1c1b-fce82c976028@huawei.com>
+ <CAHS8izNqeiK1tq=48LMbbqq5B4d2mhgbuKRvnFtiBngf73jXZg@mail.gmail.com>
+ <fda068d0-f7fb-90fc-cdd6-1f853a4a225f@huawei.com>
+ <CAHS8izNAxB=DQzSBOGbm6SsiL1cLSijj9n=g3d3egSxnOcBibQ@mail.gmail.com>
+ <99817ed2-8ba6-ef8f-3ccb-2a2ab284b4af@huawei.com>
+ <CAHS8izMMdmWoUHetA=GceJWVBgrCNAutn+B4ErMZFG=gmF5rww@mail.gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <894177e8-6403-e31c-e246-d9234218626b@huawei.com>
+Date: Fri, 5 Jan 2024 16:40:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104223932.1971645-1-andrii@kernel.org>
+In-Reply-To: <CAHS8izMMdmWoUHetA=GceJWVBgrCNAutn+B4ErMZFG=gmF5rww@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
 
-On Thu, Jan 04, 2024 at 02:39:32PM -0800, andrii@kernel.org wrote:
-> From: Andrii Nakryiko <andrii@kernel.org>
+On 2024/1/5 2:24, Mina Almasry wrote:
+> On Thu, Jan 4, 2024 at 12:48 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2024/1/4 2:38, Mina Almasry wrote:
+>>> On Wed, Jan 3, 2024 at 1:47 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>>>
+>>>> On 2024/1/3 0:14, Mina Almasry wrote:
+>>>>>
+>>>>> The idea being that skb_frag_page() can return NULL if the frag is not
+>>>>> paged, and the relevant callers are modified to handle that.
+>>>>
+>>>> There are many existing drivers which are not expecting NULL returning for
+>>>> skb_frag_page() as those drivers are not supporting devmem, adding additionl
+>>>> checking overhead in skb_frag_page() for those drivers does not make much
+>>>> sense, IMHO, it may make more sense to introduce a new helper for the driver
+>>>> supporting devmem or networking core that needing dealing with both normal
+>>>> page and devmem.
+>>>>
+>>>> And we are also able to keep the old non-NULL returning semantic for
+>>>> skb_frag_page().
+>>>
+>>> I think I'm seeing agreement that the direction we're heading into
+>>> here is that most net stack & drivers should use the abstract netmem
+>>
+>> As far as I see, at least for the drivers, I don't think we have a clear
+>> agreement if we should have a unified driver facing struct or API for both
+>> normal page and devmem yet.
+>>
 > 
-> Various tests specify extra testing prog_flags when loading BPF
-> programs, like BPF_F_TEST_RND_HI32, and more recently also
-> BPF_F_TEST_REG_INVARIANTS. While BPF_F_TEST_RND_HI32 is old enough to
-> not cause much problem on older kernels, BPF_F_TEST_REG_INVARIANTS is
-> very fresh and unconditionally specifying it causes selftests to fail on
-> even slightly outdated kernels.
+> To be honest I definitely read that we have agreement that we should
+> have a unified driver facing struct from the responses in this thread
+> like this one:
 > 
-> This breaks libbpf CI test against 4.9 and 5.15 kernels, it can break
-> some local development (done outside of VM), etc.
-> 
-> To prevent this, and guard against similar problems in the future, do
-> runtime detection of supported "testing flags", and only provide those
-> that host kernel recognizes.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> https://lore.kernel.org/netdev/20231215190126.1040fa12@kernel.org/
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+Which specific comment made you thinking as above?
+I think it definitely need clarifying here, as I read it differently as
+you did.
 
-jirka
-
-> ---
->  .../bpf/prog_tests/bpf_verif_scale.c          |  2 +-
->  .../selftests/bpf/prog_tests/reg_bounds.c     |  2 +-
->  tools/testing/selftests/bpf/test_loader.c     |  2 +-
->  tools/testing/selftests/bpf/test_sock_addr.c  |  3 +-
->  tools/testing/selftests/bpf/test_verifier.c   |  2 +-
->  tools/testing/selftests/bpf/testing_helpers.c | 32 +++++++++++++++++--
->  tools/testing/selftests/bpf/testing_helpers.h |  2 ++
->  7 files changed, 38 insertions(+), 7 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> index e770912fc1d2..4c6ada5b270b 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-> @@ -35,7 +35,7 @@ static int check_load(const char *file, enum bpf_prog_type type)
->  	}
->  
->  	bpf_program__set_type(prog, type);
-> -	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS);
-> +	bpf_program__set_flags(prog, testing_prog_flags());
->  	bpf_program__set_log_level(prog, 4 | extra_prog_load_log_flags);
->  
->  	err = bpf_object__load(obj);
-> diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> index 820d0bcfc474..eb74363f9f70 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-> @@ -840,7 +840,7 @@ static int load_range_cmp_prog(struct range x, struct range y, enum op op,
->  		.log_level = 2,
->  		.log_buf = log_buf,
->  		.log_size = log_sz,
-> -		.prog_flags = BPF_F_TEST_REG_INVARIANTS,
-> +		.prog_flags = testing_prog_flags(),
->  	);
->  
->  	/* ; skip exit block below
-> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-> index 74ceb7877ae2..941778ac2691 100644
-> --- a/tools/testing/selftests/bpf/test_loader.c
-> +++ b/tools/testing/selftests/bpf/test_loader.c
-> @@ -181,7 +181,7 @@ static int parse_test_spec(struct test_loader *tester,
->  	memset(spec, 0, sizeof(*spec));
->  
->  	spec->prog_name = bpf_program__name(prog);
-> -	spec->prog_flags = BPF_F_TEST_REG_INVARIANTS; /* by default be strict */
-> +	spec->prog_flags = testing_prog_flags();
->  
->  	btf = bpf_object__btf(obj);
->  	if (!btf) {
-> diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing/selftests/bpf/test_sock_addr.c
-> index b0068a9d2cfe..80c42583f597 100644
-> --- a/tools/testing/selftests/bpf/test_sock_addr.c
-> +++ b/tools/testing/selftests/bpf/test_sock_addr.c
-> @@ -19,6 +19,7 @@
->  #include <bpf/libbpf.h>
->  
->  #include "cgroup_helpers.h"
-> +#include "testing_helpers.h"
->  #include "bpf_util.h"
->  
->  #ifndef ENOTSUPP
-> @@ -679,7 +680,7 @@ static int load_path(const struct sock_addr_test *test, const char *path)
->  
->  	bpf_program__set_type(prog, BPF_PROG_TYPE_CGROUP_SOCK_ADDR);
->  	bpf_program__set_expected_attach_type(prog, test->expected_attach_type);
-> -	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS);
-> +	bpf_program__set_flags(prog, testing_prog_flags());
->  
->  	err = bpf_object__load(obj);
->  	if (err) {
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index f36e41435be7..50fdc1100a4b 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -1588,7 +1588,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->  	if (fixup_skips != skips)
->  		return;
->  
-> -	pflags = BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS;
-> +	pflags = testing_prog_flags();
->  	if (test->flags & F_LOAD_WITH_STRICT_ALIGNMENT)
->  		pflags |= BPF_F_STRICT_ALIGNMENT;
->  	if (test->flags & F_NEEDS_EFFICIENT_UNALIGNED_ACCESS)
-> diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-> index d2458c1b1671..e1f797c5c501 100644
-> --- a/tools/testing/selftests/bpf/testing_helpers.c
-> +++ b/tools/testing/selftests/bpf/testing_helpers.c
-> @@ -251,6 +251,34 @@ __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info)
->  }
->  
->  int extra_prog_load_log_flags = 0;
-> +static int prog_test_flags = -1;
-> +
-> +int testing_prog_flags(void)
-> +{
-> +	static int prog_flags[] = { BPF_F_TEST_RND_HI32, BPF_F_TEST_REG_INVARIANTS };
-> +	static struct bpf_insn insns[] = {
-> +		BPF_MOV64_IMM(BPF_REG_0, 0),
-> +		BPF_EXIT_INSN(),
-> +	};
-> +	int insn_cnt = ARRAY_SIZE(insns), i, fd, flags = 0;
-> +	LIBBPF_OPTS(bpf_prog_load_opts, opts);
-> +
-> +	if (prog_test_flags >= 0)
-> +		return prog_test_flags;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(prog_flags); i++) {
-> +		opts.prog_flags = prog_flags[i];
-> +		fd = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "flag-test", "GPL",
-> +				   insns, insn_cnt, &opts);
-> +		if (fd >= 0) {
-> +			flags |= prog_flags[i];
-> +			close(fd);
-> +		}
-> +	}
-> +
-> +	prog_test_flags = flags;
-> +	return prog_test_flags;
-> +}
->  
->  int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
->  		       struct bpf_object **pobj, int *prog_fd)
-> @@ -276,7 +304,7 @@ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
->  	if (type != BPF_PROG_TYPE_UNSPEC && bpf_program__type(prog) != type)
->  		bpf_program__set_type(prog, type);
->  
-> -	flags = bpf_program__flags(prog) | BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS;
-> +	flags = bpf_program__flags(prog) | testing_prog_flags();
->  	bpf_program__set_flags(prog, flags);
->  
->  	err = bpf_object__load(obj);
-> @@ -299,7 +327,7 @@ int bpf_test_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
->  {
->  	LIBBPF_OPTS(bpf_prog_load_opts, opts,
->  		.kern_version = kern_version,
-> -		.prog_flags = BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS,
-> +		.prog_flags = testing_prog_flags(),
->  		.log_level = extra_prog_load_log_flags,
->  		.log_buf = log_buf,
->  		.log_size = log_buf_sz,
-> diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-> index 35284faff4f2..1caa16f5096c 100644
-> --- a/tools/testing/selftests/bpf/testing_helpers.h
-> +++ b/tools/testing/selftests/bpf/testing_helpers.h
-> @@ -46,4 +46,6 @@ static inline __u64 get_time_ns(void)
->  	return (u64)t.tv_sec * 1000000000 + t.tv_nsec;
->  }
->  
-> +int testing_prog_flags(void);
-> +
->  #endif /* __TESTING_HELPERS_H */
-> -- 
-> 2.34.1
+> But I'll let folks correct me if I'm wrong.
+> 
+>>> type, and only specific code that needs a page or devmem (like
+>>> tcp_receive_zerocopy or tcp_recvmsg_dmabuf) will be the ones that
+>>> unpack the netmem and get the underlying page or devmem, using
+>>> skb_frag_page() or something like skb_frag_dmabuf(), etc.
+>>>
+>>> As Jason says repeatedly, I'm not allowed to blindly cast a netmem to
+>>> a page and assume netmem==page. Netmem can only be cast to a page
+>>> after checking the low bits and verifying the netmem is actually a
+>>
+>> I thought it would be best to avoid casting a netmem or devmem to a
+>> page in the driver, I think the main argument is that it is hard
+>> to audit very single driver doing a checking before doing the casting
+>> in the future? and we can do better auditting if the casting is limited
+>> to a few core functions in the networking core.
+>>
+> 
+> Correct, the drivers should never cast directly, but helpers like
+> skb_frag_page() must check that the netmem is a page before doing a
+> cast.
+> 
+>>> page. I think any suggestions that blindly cast a netmem to page
+>>> without the checks will get nacked by Jason & Christian, so the
+>>> checking in the specific cases where the code needs to know the
+>>> underlying memory type seems necessary.
+>>>
+>>> IMO I'm not sure the checking is expensive. With likely/unlikely &
+>>> static branches the checks should be very minimal or a straight no-op.
+>>> For example in RFC v2 where we were doing a lot of checks for devmem
+>>> (we don't do that anymore for RFCv5), I had run the page_pool perf
+>>> tests and proved there is little to no perf regression:
+>>
+>> For MAX_SKB_FRAGS being 17, it means we may have 17 additional checking
+>> overhead for the drivers not supporting devmem, not to mention we may
+>> have bigger value for MAX_SKB_FRAGS if BIG TCP is enable.
+>>
+> 
+> With static branch the checks should be complete no-ops unless the
+> user's set up enabled devmem.
+
+What if the user does set up enabled devmem and still want to enable
+page_pool for normal page in the same system?
+
+Is there a reason I don't know, which stops you from keeping the old
+helper and introducing a new helper if it is needed for the new netmem
+thing?
+
+> 
+>> Even there is no notiable performance degradation for a specific case,
+>> we should avoid the overhead as much as possible for the existing use
+>> case when supporting a new use case.
+>>
+>>>
+>>> https://lore.kernel.org/netdev/CAHS8izM4w2UETAwfnV7w+ZzTMxLkz+FKO+xTgRdtYKzV8RzqXw@mail.gmail.com/
+>>
+>> The above test case does not even seems to be testing a code path calling
+>> skb_frag_page() as my understanding.
+>>
+>>>
+> 
 > 
 > 
 
