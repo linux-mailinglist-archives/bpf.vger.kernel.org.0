@@ -1,243 +1,138 @@
-Return-Path: <bpf+bounces-19100-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19101-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A379824C98
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 02:34:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71EBA824CB1
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 03:02:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 740E41C22772
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 01:34:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1329C285A70
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 02:02:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C4E1FBF;
-	Fri,  5 Jan 2024 01:34:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9352B1FBF;
+	Fri,  5 Jan 2024 02:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mNFcYEf2"
+	dkim=pass (2048-bit key) header.d=brown.edu header.i=@brown.edu header.b="oxK+CU4z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91CB51FA3
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 01:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-336788cb261so808265f8f.3
-        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 17:34:11 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DC21FAD
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 02:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=brown.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=brown.edu
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dbe87cbc052so1073157276.2
+        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 18:01:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704418450; x=1705023250; darn=vger.kernel.org;
+        d=brown.edu; s=google; t=1704420115; x=1705024915; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NTU3BEd57q6Iqlyfk1MFWnb+N40Hc9qX00XCpvcwStI=;
-        b=mNFcYEf28sDpReyg51l1X6zscMcgC7MQjNfkSHwC/2UgwSKIqx5WVXvEO0BaQo80GA
-         INvqi7mjYM88XfOph6t7pQAuTvk6iSSkicFB5xQK+edC2vpwIdOPSoILAa39D+CYSPTw
-         TjpnzJpzMv+zJ+mZw4vkD2YN9S7xEjB9G7AS/5Tf4GUyytS2iaDI1oZ5MDUTN1RpJzxn
-         ADKkw7kz3Yspax2PtppvJQw8I4QpwHA0KM+kcG/UWxeKQ2spSQk74NACN1+fsBr8lIwt
-         rZ2vhNGbH2mh6obyubk9O6EcDQJf7W7pdfjoUycF0PTxqo7FtNy9CsRjY9XgzDDXmkeJ
-         UFiw==
+        bh=H4lirGd5bZpUo1tvOIy+zyGMevvHIFchfVIby/9FZss=;
+        b=oxK+CU4zmaQ8ndFtEn2XM/zfSu0Hy42W7b7OSt3XbntlTFY9dwtqGcxmHg5/FQ3Ewd
+         x6Z1QvqqDVftGu6pqW304e+uRPvgEEdebnEJluaaxNuUAzdwJUT7KIfYwO+1Y5QYJjDO
+         F4Jaw0XFP7HERTYY7MxP62TVnu8T88WwbeWH6QjO1GKLgoYZERSNo/IbhSu95y7/s0k/
+         tGl+nv6q0RopX54VpkQsaDVFolgRF5k1r/j1QrRClMo3WoEnLWpfseony7LWKlGiWVYh
+         qFa0lZYcnxj9O2jsM84Kt6NupCbhjrbimAyEFQ9nUgPrJ7C86i3kvoFKQ/AFlb7dBCt3
+         QCBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704418450; x=1705023250;
+        d=1e100.net; s=20230601; t=1704420115; x=1705024915;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NTU3BEd57q6Iqlyfk1MFWnb+N40Hc9qX00XCpvcwStI=;
-        b=coh1vOuxMABj+RwYeFeVqVzAOy4b73ntC4LejaQv57HazpL7PT36aX+/jagqUQc7MD
-         +242nAyVUm/TCAMnI8rO1K5geg9qtORUsrSTdBQswmM6fGF8O5P42+cALkFbnR4sOfEx
-         JlW2NaZZmttiSa6jGS2mdCJa2WWjLI5rMD/dI3iSgB4NptwGVOM9XDebA0jEma7zXC0X
-         JJxyYUAOr7jVoXT+ym7is/TyTiu1oXFjxgYTyPVjKweprIXX+03ognx2InT2M7pvMDpj
-         W1i76VBfoCP/FZJk+rKf56p+E27GVRsWHu6TBpJFF3mQmFR9EynTfo2f0pS7eA+PaqiA
-         Ebtg==
-X-Gm-Message-State: AOJu0YzkauoKdEJQtUQdhLNwUVSCd+YtBKtrAf5gFCBDLyXTMFrIdOCl
-	LoJHtb/oT9JELhTe1Skq+2scZ62ki1T+ce/fUxs=
-X-Google-Smtp-Source: AGHT+IEsZB4PRLPEY2+sDJOcfglO4hd6hZbDHF4X7/PfNnpU53LF74nHx+icjZpXpxE6MWizEEKVZePlIKC+S3Fpfzo=
-X-Received: by 2002:adf:eb89:0:b0:337:2e15:21be with SMTP id
- t9-20020adfeb89000000b003372e1521bemr816363wrn.54.1704418449403; Thu, 04 Jan
- 2024 17:34:09 -0800 (PST)
+        bh=H4lirGd5bZpUo1tvOIy+zyGMevvHIFchfVIby/9FZss=;
+        b=dQi7f/hjIH84i8Hm3czjAAauqKGkkguMStBb12zazmc8amD4xWzdvCbJc1tnLX19f0
+         XwK+vsUuALCr09UVBxj/0TiMF7YA/RcM17a6rgjEDQP2yYHIdcfLLMjbJgAYTD5TpbM5
+         tvOccHhaICRwZQtYPkvrLw+WhCwKSaco2Pr9I+1Mi/73NKjzhXBbPdWdbwi0gmugvh8D
+         ZR4zuFyZz6aYmTjPmuSAKzcJFgz2g2vN7JPmeADQHTVh9uzhBcfSzW6PrNttTXcHqY+3
+         ekfw0gf6xy99wm0PB+FMo/IIXtQbx8VFFlW9eXG+Hw9A5ceMoPUyjz5O0nZQFQhz48/z
+         WCvg==
+X-Gm-Message-State: AOJu0YycUsXV7Gc8QwajY9wDmSYHMEjirCRxC2S8LILugu7xYnCFJg8Z
+	iyNG0EIxugOtbGr26Y0X+NfJYRG6KqiygAXRZBgjZr8wRMM03EVEgTFvbJhWiQ==
+X-Google-Smtp-Source: AGHT+IEBQUQ7wDm86bYMKHcAQ/CxsTqf9eJ9WjdKVY2vvN7syGgHwQI2R5J40LRHPqXczrbJ4kKEA4c9LLHtdQrQs5k=
+X-Received: by 2002:a5b:1cf:0:b0:dbe:a39e:d451 with SMTP id
+ f15-20020a5b01cf000000b00dbea39ed451mr1417974ybp.1.1704420115173; Thu, 04 Jan
+ 2024 18:01:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240104013847.3875810-1-andrii@kernel.org> <20240104013847.3875810-8-andrii@kernel.org>
- <CAADnVQJn0+fvvbOVnfPFQm=1j+=oFsjy65T2-QY8Ps0pL4nh_A@mail.gmail.com>
- <CAEf4BzYt9yrGUBpSfAR8=vuh7kONFSsFZAKtbg21r4Hoj92gAQ@mail.gmail.com>
- <CAADnVQLOYU67aRyp92S0G8AEVxXRYndb6hWrtHZOH9gr0Q7JEQ@mail.gmail.com> <CAEf4BzaSspEa27TtMLRv-V4ipGhVdK9y5Ynu9teYNDp4f0CctA@mail.gmail.com>
-In-Reply-To: <CAEf4BzaSspEa27TtMLRv-V4ipGhVdK9y5Ynu9teYNDp4f0CctA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 4 Jan 2024 17:33:57 -0800
-Message-ID: <CAADnVQKPSXUxT6HLF-hMeVd6zJhNqriFjaqdeNkyj_wRFN8Hdg@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 7/9] libbpf: implement __arg_ctx fallback logic
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>, 
-	Jiri Olsa <jolsa@kernel.org>
+References: <TYZPR03MB679243A8E626CC796CB7BDBDB461A@TYZPR03MB6792.apcprd03.prod.outlook.com>
+ <CAKOkDnNAQSrWxsJBrcLV7ReaQkX_BHX+EAn69e0cpe9b=FAsUg@mail.gmail.com>
+ <CAKOkDnPnNE=MNP-1_8=T9vw6Ox80OAJmKonzpDO4abW8Dz9JwA@mail.gmail.com>
+ <SEZPR03MB67865F9167DABCA16AA6811BB4602@SEZPR03MB6786.apcprd03.prod.outlook.com>
+ <CAADnVQJCxFt2R=fbqx1T_03UioAsBO4UXYGh58kJaYHDpMHyxw@mail.gmail.com>
+In-Reply-To: <CAADnVQJCxFt2R=fbqx1T_03UioAsBO4UXYGh58kJaYHDpMHyxw@mail.gmail.com>
+From: "Jin, Di" <di_jin@brown.edu>
+Date: Thu, 4 Jan 2024 21:01:44 -0500
+Message-ID: <CAKOkDnPZ5SKYOQhE646Se5oYCi7Rc3ubUTnrE+-aXiViTsA1jQ@mail.gmail.com>
+Subject: Re: [External] Fwd: BPF-NX+CFI is a good upstreaming candidate
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Maxwell Bland <mbland@motorola.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>, 
+	"v.atlidakis@gmail.com" <v.atlidakis@gmail.com>, "vpk@cs.brown.edu" <vpk@cs.brown.edu>, 
+	Andrew Wheeler <awheeler@motorola.com>, =?UTF-8?B?U2FtbXkgQlMyIFF1ZSB8IOmYmeaWjOeUnw==?= <quebs2@motorola.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 4, 2024 at 12:58=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
->
-> My point was that it's hard to accidentally forget to "generalize"
-> type if you were supporting sk_buff, and suddenly started calling it
-> with xdp_md.
->
-> From my POV, if I'm a user, and I declare an argument as long and
-> annotate it as __arg_ctx, then I know what I'm doing and I'd hate for
-> some smart-ass library to double-guess me dictating what exact
-> incantation I should specify to make it happy.
+Dear Alexei and the rest of the community,
 
-But that's exactly what's happening!
-The smart-ass libbpf ignores the type in 'struct sk_buff *skb __arg_ctx'
-and replaces it with whatever is appropriate for prog type.
-More below.
+I do want to make a note about the concept of the interpreter being
+"less secure".
 
->  static __attribute__ ((noinline))
-> -int f0(int var, struct __sk_buff *skb)
-> +int f0(int var, struct sk_buff *skb)
->  {
-> -       return skb->len;
-> +       return 0;
->  }
->
->  __attribute__ ((noinline))
-> @@ -20,7 +19,7 @@ int f1(struct __sk_buff *skb)
->
->         __sink(buf[MAX_STACK - 1]);
->
-> -       return f0(0, skb) + skb->len;
-> +       return f0(0, (void*)skb) + skb->len;
+Firstly the interpreter is not contributing that much to the
+exploitation of Spectre. While Google Project Zero did say without the
+interpreter building the specific exploit they had for Spectre V2
+seems "annoying", that is all there is to it, the security benefit of
+removing the interpreter is more like an annoyance instead of a
+roadblock. It is quite likely that automated tools can find gadgets
+that can do the jobs without too much trouble, the only annoying bit
+would be the attackers would have to find different gadgets for
+differently built kernels.
 
-This is static f0. Not sure what you're trying to say.
-I don't think btf_get_prog_ctx_type() logic applies here.
+Granted, removing any unused functionality can be an improvement for a
+system's security, and the observation that the interpreter can be
+removed without too much pain was quite interesting when the option
+was introduced. But in this specific case, the security trade-off here
+is a balancing act between two functionalities: JITed BPF and the
+interpreter, since removing BPF altogether is probably not an option
+in realistic terms. The JITed BPF has more than contributed its fair
+share of assistance to various attacks[1-3], including the original
+Spectre attacks[4]. So disabling JIT and keeping the interpreter in
+place is, security-wise, an even better mitigation, if we had to
+remove one of the two paths.
 
-> I'll say even more, with libbpf's PT_REGS_xxx() macros you don't even
-> need to know about pt_regs vs user_pt_regs difference, as macros
-> properly force-cast arguments, depending on architecture. So in your
-> BPF code you can just pass `struct pt_regs *` around just fine across
-> multiple architectures as long as you only use PT_REGS_xxx() macros
-> and then pass that context to helpers (to get stack trace,
-> bpf_perf_event_output, etc).
+I would argue that keeping the interpreter, especially hardened with
+defenses proposed in EPF, is at the very least a competitive option
+for security. It enables system admins to disable JIT as
+mitigation/prevention against potential risk from the JITed component
+of BPF (which is now impossible), while still enjoying the security
+enhancement provided by EPF defenses.
 
-Pretty much. For some time the kernel recognized bpf_user_pt_regs_t
-as PTR_TO_CTX for kprobe.
-And the users who needed global prog verification with ctx
-already used that feature.
-We even have helper macros to typeof to correct btf type.
+If I can have your blessing on the security trade-off, I can move
+forward to try to adapt the patches for submission.
 
-From selftests:
+Regards,
+Di
 
-_weak int kprobe_typedef_ctx_subprog(bpf_user_pt_regs_t *ctx)
-{
-        return bpf_get_stack(ctx, &stack, sizeof(stack), 0);
-}
-
-SEC("?kprobe")
-__success
-int kprobe_typedef_ctx(void *ctx)
-{
-        return kprobe_typedef_ctx_subprog(ctx);
-}
-
-#define pt_regs_struct_t typeof(*(__PT_REGS_CAST((struct pt_regs *)NULL)))
-
-__weak int kprobe_struct_ctx_subprog(pt_regs_struct_t *ctx)
-{
-        return bpf_get_stack((void *)ctx, &stack, sizeof(stack), 0);
-}
-
-SEC("?kprobe")
-__success
-int kprobe_resolved_ctx(void *ctx)
-{
-        return kprobe_struct_ctx_subprog(ctx);
-}
-
-__PT_REGS_CAST is arch dependent and typeof makes it seen with
-correct btf_id and the kernel knows it's PTR_TO_CTX.
-All that works. No need for __arg_ctx.
-I'm sure you know this.
-I'm only explaining for everybody else to follow.
-
-> No one even knows about bpf_user_pt_regs_t, I had to dig it up from
-> kernel source code and let users know what exact type name to use for
-> global subprog.
-
-Few people know that global subprogs are verified differently than static.
-That's true, but I bet people that knew also used the right type for ctx.
-If you're saying that __arg_ctx is making it easier for users
-to use global subprogs I certainly agree, but it's not
-something that was mandatory for uniform global progs.
-__arg_ctx main value is for polymorphic subprogs.
-An add-on value is ease-of-use for existing non polymorphic subrpogs.
-
-I'm saying that in the above example working code:
-
-__weak int kprobe_typedef_ctx_subprog(bpf_user_pt_regs_t *ctx)
-
-should _not_ be allowed to be replaced with:
-
-__weak int kprobe_typedef_ctx_subprog(struct pt_regs *ctx __arg_ctx)
-
-Unfortunately in the newest kernel/libbpf patches allowed it and
-this way both kernel and libbpf are silently breaking C type
-matching rules and general expectations of C language.
-
-Consider these variants:
-
-1.
-__weak int kprobe_typedef_ctx_subprog(struct pt_regs *ctx __arg_ctx)
-{ PT_REGS_PARM1(ctx); }
-
-2.
-__weak int kprobe_typedef_ctx_subprog(void *ctx __arg_ctx)
-{ struct pt_regs *regs =3D ctx; PT_REGS_PARM1(regs); }
-
-3.
-__weak int kprobe_typedef_ctx_subprog(bpf_user_pt_regs_t *ctx)
-{ PT_REGS_PARM1(ctx); }
-
-In 1 and 3 the caller has to type cast to correct type.
-In 2 the caller can pass anything without type cast.
-
-In C when the user writes: void foo(int *p)
-it knows that it can access it as pointer to int in the callee
-and it's caller's job to pass correct pointer into it.
-When caller type casts something else to 'int *' it's caller's fault
-if things don't work.
-Now when user writes:
-void foo(void *p) { int *i =3D p;
-
-the caller can pass anything into foo() and callee's fault
-to assume that 'void *' is 'int *'.
-These are the C rules that we're breaking with __arg_ctx.
-
-In 2 it's clear to callee that any ctx argument could have been passed
-and type cast to 'struct pt_regs *' it's callee's responsibility.
-
-In 3 the users know that only bpf_user_pt_regs_t will be passed in.
-
-But 1 (the current kernel and libbpf) breaks these C rules.
-The C language tells prog writer to expect that only 'struct pt_regs *'
-will be passed, but the kernel/libbpf allows any ctx to be passed in.
-
-Hence 1 should be disallowed.
-
-The 'void *' case 2 we extend in the future to truly support polymorphism:
-
-__weak int subprog(void *ctx __arg_ctx)
-{
-  __u32 ctx_btf_id =3D bpf_core_typeof(*ctx);
-
-  if (ctx_btf_id =3D=3D bpf_core_type_id_kernel(struct sk_buff)) {
-      struct sk_buff *skb =3D ctx;
-      ..
-  } else if (ctx_btf_id =3D=3D bpf_core_type_id_kernel(struct xdp_buff)) {
-      struct xdp_buff *xdp =3D ctx;
-
-and it will conform to C rules. It's on callee side to do the right
-thing with 'void *'.
+[1] Reshetova, Elena, Filippo Bonazzi, and N. Asokan. "Randomization
+can=E2=80=99t stop BPF JIT spray." In Network and System Security: 11th
+International Conference, NSS 2017, Helsinki, Finland, August 21=E2=80=9323=
+,
+2017, Proceedings 11, pp. 233-247. Springer International Publishing,
+2017.
+[2] Nelson, Luke, Jacob Van Geffen, Emina Torlak, and Xi Wang.
+"Specification and verification in the field: Applying formal methods
+to {BPF} just-in-time compilers in the Linux kernel." In 14th USENIX
+Symposium on Operating Systems Design and Implementation (OSDI 20),
+pp. 41-61. 2020.
+[3] Kirzner, Ofek, and Adam Morrison. "An analysis of speculative type
+confusion vulnerabilities in the wild." In 30th USENIX Security
+Symposium (USENIX Security 21), pp. 2399-2416. 2021.
+[4] Kocher, Paul, Jann Horn, Anders Fogh, Daniel Genkin, Daniel Gruss,
+Werner Haas, Mike Hamburg et al. "Spectre attacks: Exploiting
+speculative execution." Communications of the ACM 63, no. 7 (2020):
+93-101.
 
