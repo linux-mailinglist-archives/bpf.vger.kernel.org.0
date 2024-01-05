@@ -1,271 +1,270 @@
-Return-Path: <bpf+bounces-19112-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19113-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF89824E89
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 07:16:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B4FA824F10
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 08:14:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7E9D1F22519
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 06:16:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9310285EB4
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 07:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB975690;
-	Fri,  5 Jan 2024 06:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97171CA85;
+	Fri,  5 Jan 2024 07:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iTBcXyip"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wQD25/vj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F73B610E
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 06:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d4a980fdedso9368335ad.1
-        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 22:16:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704435363; x=1705040163; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3NX7XOwiEfZ6zJGfheJUMmxobQkLM6PSUzG9+Rlyuiw=;
-        b=iTBcXyipP4PrA8dMjrKiyHFiecNiT6CmVkNi9q9OMLwIcFVbNBl/TbyYXQZ9dEcQty
-         hXVNSaRo2cgiDiCwk7RIY/U68ea8M3gQmu4UHD9OFkZ10eTK39/7QLfCYH+DGPZU91GB
-         KEJbMkcd/pjrHuLjFhqq+wENsZ4aWU0TXdD/Eqh/4QaXxTnlLtaKQtgHLOdPa8/fCQ6T
-         X50jTUgGlhme2xJi+E8CP90rqKR1bwWKkWGyCtwThPP95Dn5qO2AvlQh4CEp10fVnos/
-         53OOApgk8RaBgr/Ob/TX2L2MQD5CEGxDYeOxK3RLssYppcYCmunmjiGhiok+Lt8FJ0D/
-         ujdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704435363; x=1705040163;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3NX7XOwiEfZ6zJGfheJUMmxobQkLM6PSUzG9+Rlyuiw=;
-        b=Gi1D4un0IUHovIuqYcleJFvP9mW/WYinud1/TosC9S2Y68bsWRQwiQFRfBjhjsFIdH
-         rPe5yI+ldnwQHyj2tdBpEE+7TGK+PUX3+BKZfyjpYGuEcRDN2lW7mATiR+SswuGfPCuw
-         2EpcLOj+wg//F89i08qpqKjdWNM7rdMZvkW4iQWSX4o96/eMxCA2eZMs3cmANUcASbMX
-         1D5VuZaT7cXYaZFvUTlLSdnuCYnex2m++kZPLmWpjpgTld5MAVCV08qRu4/1M8ZR9MOs
-         6zcddrSao8uiT1Dt8WjF3vsl+8UAWFyOlDEV+RfYb7MfSFWbBEsAHXhrU7Vha35V0ruu
-         eqdw==
-X-Gm-Message-State: AOJu0YzukqUXdQM4XR7vfgT5MkFnPJ2xt2RhrBZVCbpNIu0EPJIK/GOo
-	HAPBGLD1wGv9RQUPBd3HlRliRzvPwgc=
-X-Google-Smtp-Source: AGHT+IG5KRHzsvTuXSLjAHZZIhduGtVCSte7fRiuxIjXeTrjjUxEg0WAoNMainxaWvDFeeMB7YM0tw==
-X-Received: by 2002:a17:902:da8b:b0:1d3:ee1f:ce54 with SMTP id j11-20020a170902da8b00b001d3ee1fce54mr2032927plx.89.1704435362672;
-        Thu, 04 Jan 2024 22:16:02 -0800 (PST)
-Received: from [10.22.68.80] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id v10-20020a170902b7ca00b001d414a00fd9sm598184plz.29.2024.01.04.22.15.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Jan 2024 22:16:02 -0800 (PST)
-Message-ID: <43499e38-f395-4efd-867f-8a2fa0571ecd@gmail.com>
-Date: Fri, 5 Jan 2024 14:15:58 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68691DDE9
+	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 07:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ddc70b06-9fde-412f-88c0-3097e967dc6a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704438858;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JsdSmGipa4+YPIt4vauko05iXOhOMGxP1inPInaS8uw=;
+	b=wQD25/vjXAejbWlq3r/6f9Dy1gtSXLcxp7Tx7Kpleu4gbBH241nMiZHhfOaV+/gETIPJ1Q
+	1cp4asF2ORe3elzLCzqAmraWMcVsGtFkVHqsUjZUjxrtc2iWSlENLcI+j/35GDACljTXpm
+	AaM6yidJQMKbhx2SZiUM13sRpoLh3Ug=
+Date: Thu, 4 Jan 2024 23:14:10 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/4] bpf, x64: Fix tailcall hierarchy
-Content-Language: en-US
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
- Jakub Sitnicki <jakub@cloudflare.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
- Hengqi Chen <hengqi.chen@gmail.com>, kernel-patches-bot@fb.com
-References: <20240104142226.87869-1-hffilwlqm@gmail.com>
- <20240104142226.87869-3-hffilwlqm@gmail.com>
- <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Track aligned st store as imprecise
+ spilled registers
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Martin KaFai Lau <kafai@fb.com>
+References: <20240103232617.3770727-1-yonghong.song@linux.dev>
+ <f4c1ebf73ccf4099f44045e8a5b053b7acdffeed.camel@gmail.com>
+ <cbff1224-39c0-4555-a688-53e921065b97@linux.dev>
+ <69410e766d68f4e69400ba9b1c3b4c56feaa2ca2.camel@gmail.com>
+ <CAEf4Bzb0LdSPnFZ-kPRftofA6LsaOkxXLN4_fr9BLR3iG-te-g@mail.gmail.com>
+ <67a4b5b8bdb24a80c1289711c7c156b6c8247403.camel@gmail.com>
+ <CAEf4BzZ8tAXQtCvUEEELy8S26Wf7OEO6APSprQFEBND7M_FXrQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzZ8tAXQtCvUEEELy8S26Wf7OEO6APSprQFEBND7M_FXrQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
-
-On 5/1/24 12:15, Alexei Starovoitov wrote:
-> On Thu, Jan 4, 2024 at 6:23 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+On 1/4/24 5:05 PM, Andrii Nakryiko wrote:
+> On Thu, Jan 4, 2024 at 3:29 PM Eduard Zingerman <eddyz87@gmail.com> wrote:
+>> On Thu, 2024-01-04 at 15:09 -0800, Andrii Nakryiko wrote:
+>> [...]
+>>>> This seemed logical at the time of discussion, however, I can't figure
+>>>> a counter example at the moment. It appears that whatever are
+>>>> assumptions in check_stack_write_var_off() if spill is used in the
+>>>> precise context it would be marked eventually.
+>>>> E.g. the following is correctly rejected:
+>>>>
+>>>> SEC("raw_tp")
+>>>> __log_level(2) __flag(BPF_F_TEST_STATE_FREQ)
+>>>> __failure
+>>>> __naked void var_stack_1(void)
+>>>> {
+>>>>          asm volatile (
+>>>>                  "call %[bpf_get_prandom_u32];"
+>>>>                  "r9 = 100500;"
+>>>>                  "if r0 > 42 goto +1;"
+>>>>                  "r9 = 0;"
+>>>>                  "*(u64 *)(r10 - 16) = r9;"
+>>>>                  "call %[bpf_get_prandom_u32];"
+>>>>                  "r0 &= 0xf;"
+>>>>                  "r1 = -1;"
+>>>>                  "r1 -= r0;"
+>>>>                  "r2 = r10;"
+>>>>                  "r2 += r1;"
+>>>>                  "r0 = 0;"
+>>>>                  "*(u8 *)(r2 + 0) = r0;"
+>>>>                  "r1 = %[two_byte_buf];"
+>>>>                  "r2 = *(u32 *)(r10 -16);"
+>>>>                  "r1 += r2;"
+>>>>                  "*(u8 *)(r1 + 0) = r2;" /* this should not be fine */
+>>>>                  "exit;"
+>>>>          :
+>>>>          : __imm_ptr(two_byte_buf),
+>>>>            __imm(bpf_get_prandom_u32)
+>>>>          : __clobber_common);
+>>>> }
+>>>>
+>>>> So now I'm not sure :(
+>>>> Sorry for too much noise.
+>>>
+>>> hm... does that test have to do so many things and do all these u64 vs
+>>> u32 vs u8 conversions?
+>> The test is actually quite minimal, the longest part is conjuring of
+>> varying offset pointer in r2, here it is with additional comments:
 >>
+>>      /* Write 0 or 100500 to fp-16, 0 is on the first verification pass */
+>>      "call %[bpf_get_prandom_u32];"
+>>      "r9 = 100500;"
+>>      "if r0 > 42 goto +1;"
+>>      "r9 = 0;"
+>>      "*(u64 *)(r10 - 16) = r9;"
+>>      /* prepare a variable length access */
+>>      "call %[bpf_get_prandom_u32];"
+>>      "r0 &= 0xf;" /* r0 range is [0; 15] */
+>>      "r1 = -1;"
+>>      "r1 -= r0;"  /* r1 range is [-16; -1] */
+>>      "r2 = r10;"
+>>      "r2 += r1;"  /* r2 range is [fp-16; fp-1] */
+>>      /* do a variable length write of constant 0 */
+>>      "r0 = 0;"
+>>      "*(u8 *)(r2 + 0) = r0;"
+> I meant this u8
+>
+>>      /* use fp-16 to access an array of length 2 */
+>>      "r1 = %[two_byte_buf];"
+>>      "r2 = *(u32 *)(r10 -16);"
+> and this u32. I'm not saying it's anything wrong, but it's simpler to
+> deal with u64 consistently. There is nothing wrong with the test per
+> se, I'm just saying we should try eliminate unnecessary cross-plays
+> with narrowing/widening stores/loads.
+>
+> But that's offtopic, sorry.
+>
+>>      "r1 += r2;"
+>>      "*(u8 *)(r1 + 0) = r2;" /* this should not be fine */
+>>      "exit;"
 >>
->> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->> index fe30b9ebb8de4..67fa337fc2e0c 100644
->> --- a/arch/x86/net/bpf_jit_comp.c
->> +++ b/arch/x86/net/bpf_jit_comp.c
->> @@ -259,7 +259,7 @@ struct jit_context {
->>  /* Number of bytes emit_patch() needs to generate instructions */
->>  #define X86_PATCH_SIZE         5
->>  /* Number of bytes that will be skipped on tailcall */
->> -#define X86_TAIL_CALL_OFFSET   (11 + ENDBR_INSN_SIZE)
->> +#define X86_TAIL_CALL_OFFSET   (22 + ENDBR_INSN_SIZE)
+>>> Can we try a simple test were we spill u64
+>>> SCALAR (imprecise) zero register to fp-8 or fp-16, and then use those
+>>> fp-8|fp-16 slot as an index into an array in precise context. Then
+>>> have a separate delayed branch that will write non-zero to fp-8|fp-16.
+>>> States shouldn't converge and this should be rejected.
+>> That is what test above does but it also includes varying offset access.
 >>
->>  static void push_r12(u8 **pprog)
->>  {
->> @@ -406,14 +406,21 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
->>          */
->>         emit_nops(&prog, X86_PATCH_SIZE);
->>         if (!ebpf_from_cbpf) {
->> -               if (tail_call_reachable && !is_subprog)
->> +               if (tail_call_reachable && !is_subprog) {
->>                         /* When it's the entry of the whole tailcall context,
->>                          * zeroing rax means initialising tail_call_cnt.
->>                          */
->> -                       EMIT2(0x31, 0xC0); /* xor eax, eax */
->> -               else
->> -                       /* Keep the same instruction layout. */
->> -                       EMIT2(0x66, 0x90); /* nop2 */
->> +                       EMIT2(0x31, 0xC0);       /* xor eax, eax */
->> +                       EMIT1(0x50);             /* push rax */
->> +                       /* Make rax as ptr that points to tail_call_cnt. */
->> +                       EMIT3(0x48, 0x89, 0xE0); /* mov rax, rsp */
->> +                       EMIT1_off32(0xE8, 2);    /* call main prog */
->> +                       EMIT1(0x59);             /* pop rcx, get rid of tail_call_cnt */
->> +                       EMIT1(0xC3);             /* ret */
->> +               } else {
->> +                       /* Keep the same instruction size. */
->> +                       emit_nops(&prog, 13);
->> +               }
-> 
-> I'm afraid the extra call breaks stack unwinding and many other things.
+> Yes, and the test fails, but if you read the log, you'll see that fp-8
+> is never marked precise, but it should. So we need more elaborate test
+> that would somehow exploit fp-8 imprecision.
+>
+> I ran out of time. But what I tried was replacing
+>
+>
+> "r2 = *(u32 *)(r10 -16);"
+>
+> with
+>
+> "r2 = *(u8 *)(r2 +0);"
+>
+> So keep both read and write as variable offset. And we are saved by
+> some missing logic in read_var_off that would set r2 as known zero
+> (because it should be for the branch where both fp-8 and fp-16 are
+> zero). But that fails in the branch that should succeed, and if that
+> branch actually succeeds, I suspect the branch where we initialize
+> with non-zero r9 will erroneously succeed.
 
-I was worried about it. But I'm not sure how it breaks stack unwinding.
+I did some experiments but still confused.
+With the current patch set and the above Andrii's suggested changes, we have
+...
+13: R1_w=scalar(smin=smin32=-16,smax=smax32=-1,umin=0xfffffffffffffff0,umin32=0xfffffff0,var_off=(0xfffffffffffffff0; 0xf)) R2_w=fp(smin=smin32=-16,smax=smax32=-1,umin=0xfffffffffffffff0,umin32=0xfffffff0,var_off=(0xfffffffffffffff0; 0xf))
+13: (b7) r0 = 0                       ; R0_w=0
+14: (73) *(u8 *)(r2 +0) = r0          ; R0_w=0 R2_w=fp(smin=smin32=-16,smax=smax32=-1,umin=0xfffffffffffffff0,umin32=0xfffffff0,var_off=(0xfffffffffffffff0; 0xf)) fp-8=mmmmmmmm fp-16=0
+15: (bf) r1 = r6                      ; R1_w=map_value(map=.data.two_byte_,ks=4,vs=2) R6=map_value(map=.data.two_byte_,ks=4,vs=2)
+16: (71) r2 = *(u8 *)(r2 +0)          ; R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff)) fp-16=0
+17: (0f) r1 += r2
+mark_precise: frame0: last_idx 17 first_idx 8 subseq_idx -1
+mark_precise: frame0: regs=r2 stack= before 16: (71) r2 = *(u8 *)(r2 +0)
+18: R1_w=map_value(map=.data.two_byte_,ks=4,vs=2,smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff)) R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
+18: (73) *(u8 *)(r1 +0) = r2
+invalid access to map value, value_size=2 off=255 size=1
+R1 max value is outside of the allowed memory range
 
-However, without the extra call, I've tried another approach:
+Now, let us add the precision marking,
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4619,11 +4619,18 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
+  
+                 slot = -i - 1;
+                 spi = slot / BPF_REG_SIZE;
++               mark_stack_slot_scratched(env, spi);
+  
+                 /* If writing_zero and the the spi slot contains a spill of value 0,
+                  * maintain the spill type.
+                  */
+                 if (writing_zero && !(i % BPF_REG_SIZE) && is_spilled_scalar_reg(&state->stack[spi])) {
++                       if (value_regno >= 0) {
++                               err = mark_chain_precision(env, value_regno);
++                               if (err)
++                                       return err;
++                       }
++
+                         spill_reg = &state->stack[spi].spilled_ptr;
+                         if (tnum_is_const(spill_reg->var_off) && spill_reg->var_off.value == 0) {
+                                 for (j = BPF_REG_SIZE; j > 0; j--) {
+@@ -4636,7 +4643,6 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
+                 }
+  
+                 stype = &state->stack[spi].slot_type[slot % BPF_REG_SIZE];
+-               mark_stack_slot_scratched(env, spi);
+  
+                 if (!env->allow_ptr_leaks && *stype != STACK_MISC && *stype != STACK_ZERO) {
+                         /* Reject the write if range we may write to has not
 
-* [RFC PATCH bpf-next 1/3] bpf, x64: Fix tailcall hierarchy
-  https://lore.kernel.org/bpf/20231005145814.83122-2-hffilwlqm@gmail.com/
 
-It's to propagate tail_call_cnt_ptr, too. But more complicated:
+With the above change, the verifier output:
+...
+13: R1_w=scalar(smin=smin32=-16,smax=smax32=-1,umin=0xfffffffffffffff0,umin32=0xfffffff0,var_off=(0xfffffffffffffff0; 0xf)) R2_w=fp(smin=smin32=-16,smax=smax32=-1,umin=0xfffffffffffffff0,umin32=0xfffffff0,var_off=(0xfffffffffffffff0; 0xf))
+13: (b7) r0 = 0                       ; R0_w=0
+14: (73) *(u8 *)(r2 +0) = r0
+mark_precise: frame0: last_idx 14 first_idx 8 subseq_idx -1
+mark_precise: frame0: regs=r0 stack= before 13: (b7) r0 = 0
+     <==== added precision marking for the value register
+15: R0_w=0 R2_w=fp(smin=smin32=-16,smax=smax32=-1,umin=0xfffffffffffffff0,umin32=0xfffffff0,var_off=(0xfffffffffffffff0; 0xf)) fp-8=mmmmmmmm fp-16=0
+15: (bf) r1 = r6                      ; R1_w=map_value(map=.data.two_byte_,ks=4,vs=2) R6=map_value(map=.data.two_byte_,ks=4,vs=2)
+16: (71) r2 = *(u8 *)(r2 +0)          ; R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff)) fp-16=0
+17: (0f) r1 += r2
+mark_precise: frame0: last_idx 17 first_idx 8 subseq_idx -1
+mark_precise: frame0: regs=r2 stack= before 16: (71) r2 = *(u8 *)(r2 +0)
+18: R1_w=map_value(map=.data.two_byte_,ks=4,vs=2,smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff)) R2_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=255,var_off=(0x0; 0xff))
+18: (73) *(u8 *)(r1 +0) = r2
+invalid access to map value, value_size=2 off=255 size=1
+R1 max value is outside of the allowed memory range
 
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 8c10d9abc..001c5e4b7 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -313,24 +332,15 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
- 			  bool tail_call_reachable, bool is_subprog,
- 			  bool is_exception_cb)
- {
-+	int tcc_ptr_off = round_up(stack_depth, 8) + 8;
-+	int tcc_off = tcc_ptr_off + 8;
- 	u8 *prog = *pprog;
- 
- 	/* BPF trampoline can be made to work without these nops,
- 	 * but let's waste 5 bytes for now and optimize later
- 	 */
- 	EMIT_ENDBR();
--	memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
--	prog += X86_PATCH_SIZE;
--	if (!ebpf_from_cbpf) {
--		if (tail_call_reachable && !is_subprog)
--			/* When it's the entry of the whole tailcall context,
--			 * zeroing rax means initialising tail_call_cnt.
--			 */
--			EMIT2(0x31, 0xC0); /* xor eax, eax */
--		else
--			/* Keep the same instruction layout. */
--			EMIT2(0x66, 0x90); /* nop2 */
--	}
-+	emit_nops(&prog, X86_PATCH_SIZE);
- 	/* Exception callback receives FP as third parameter */
- 	if (is_exception_cb) {
- 		EMIT3(0x48, 0x89, 0xF4); /* mov rsp, rsi */
-@@ -347,15 +357,52 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
- 		EMIT1(0x55);             /* push rbp */
- 		EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
- 	}
-+	if (!ebpf_from_cbpf) {
-+		if (tail_call_reachable && !is_subprog) {
-+			/* Make rax as ptr that points to tail_call_cnt. */
-+			EMIT3(0x48, 0x89, 0xE8);          /* mov rax, rbp */
-+			EMIT2_off32(0x48, 0x2D, tcc_off); /* sub rax, tcc_off */
-+			/* When it's the entry of the whole tail call context,
-+			 * storing 0 means initialising tail_call_cnt.
-+			 */
-+			EMIT2_off32(0xC7, 0x00, 0);       /* mov dword ptr [rax], 0 */
-+		} else {
-+			/* Keep the same instruction layout. */
-+			emit_nops(&prog, 3);
-+			emit_nops(&prog, 6);
-+			emit_nops(&prog, 6);
-+		}
-+	}
- 
- 	/* X86_TAIL_CALL_OFFSET is here */
- 	EMIT_ENDBR();
- 
-+	if (tail_call_reachable) {
-+		/* Here, rax is tail_call_cnt_ptr. */
-+		if (!is_subprog) {
-+			/* Because pushing tail_call_cnt_ptr may cover tail_call_cnt,
-+			 * it's required to store tail_call_cnt before storing
-+			 * tail_call_cnt_ptr.
-+			 */
-+			EMIT1(0x50);                       /* push rax */
-+			EMIT2(0x8B, 0x00);                 /* mov eax, dword ptr [rax] */
-+			EMIT2_off32(0x89, 0x85, -tcc_off); /* mov dword ptr [rbp - tcc_off], eax */
-+			EMIT1(0x58);                       /* pop rax */
-+			/* mov qword ptr [rbp - tcc_ptr_off], rax */
-+			EMIT3_off32(0x48, 0x89, 0x85, -tcc_ptr_off);
-+		} else {
-+			/* As for subprog, tail_call_cnt is meaningless. Storing
-+			 * tail_call_cnt_ptr is enough.
-+			 */
-+			/* mov qword ptr [rbp - tcc_ptr_off], rax */
-+			EMIT3_off32(0x48, 0x89, 0x85, -tcc_ptr_off);
-+		}
-+		/* Reserve 16 bytes for tail_call_cnt_ptr and tail_call_cnt. */
-+		stack_depth += 16;
-+	}
- 	/* sub rsp, rounded_stack_depth */
- 	if (stack_depth)
- 		EMIT3_off32(0x48, 0x81, 0xEC, round_up(stack_depth, 8));
--	if (tail_call_reachable)
--		EMIT1(0x50);         /* push rax */
- 	*pprog = prog;
- }
+Note that we do have precision marking for register r0 at insn 14.
+But backtracking at insn 17 stops at insn 16 and it did not reach back
+to insn 14, so precision marking is not really needed in this particular
+case. Maybe I missed something here.
 
-How about this approach?
+There is an alternative implementation in check_stack_write_var_off().
+For a spill of value/reg 0, we can convert it to STACK_ZERO instead
+of trying to maintain STACK_SPILL. If we convert it to STACK_ZERO,
+then we can reuse the rest of logic in check_stack_write_var_off()
+and at the end we have
 
-Thanks,
-Leon
+         if (zero_used) {
+                 /* backtracking doesn't work for STACK_ZERO yet. */
+                 err = mark_chain_precision(env, value_regno);
+                 if (err)
+                         return err;
+         }
 
-> The proper frame needs to be setup (push rbp; etc)
-> and 'leave' + emit_return() is used.
-> Plain 'ret' is not ok.
-> x86_call_depth_emit_accounting() needs to be used too.
-> That will make X86_TAIL_CALL_OFFSET adjustment very complicated.
-> Also the fix doesn't address the stack size issue.
-> We shouldn't allow all the extra frames at run-time.
-> 
-> The tail_cnt_ptr approach is interesting but too heavy,
-> since arm64, s390 and other JITs would need to repeat it with equally
-> complicated calculations in TAIL_CALL_OFFSET.
-> 
-> The fix should really be thought through for all JITs. Not just x86.
-> 
-> I'm thinking whether we should do the following instead:
-> 
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index 0bdbbbeab155..0b45571559be 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -910,7 +910,7 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
->         if (IS_ERR(prog))
->                 return prog;
-> 
-> -       if (!bpf_prog_map_compatible(map, prog)) {
-> +       if (!bpf_prog_map_compatible(map, prog) || prog->aux->func_cnt) {
->                 bpf_prog_put(prog);
->                 return ERR_PTR(-EINVAL);
->         }
-> 
-> This will stop stack growth, but it will break a few existing tests.
-> I feel it's a price worth paying.
-> 
-> John, Daniel,
-> 
-> do you see anything breaking on cilium side if we disallow
-> progs with subprogs to be inserted in prog_array ?
-> 
-> Other alternatives?
+although I do not fully understand the above either. Need to go back to
+git history to find why.
+
+
+>
+> Anyways, I still claim that we are mishandling a precision of spilled
+> register when doing zero var_off writes.
+>
+>
+>
+>> [...]
 
