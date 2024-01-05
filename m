@@ -1,204 +1,189 @@
-Return-Path: <bpf+bounces-19095-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19096-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B668824C55
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 02:05:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 547F5824C74
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 02:18:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93EF41F2340E
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 01:05:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D29E0B2415A
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 01:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602DA1C02;
-	Fri,  5 Jan 2024 01:05:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E951FCC;
+	Fri,  5 Jan 2024 01:18:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K1OkHQ5q"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="CChYtD/q";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="1wh6oQWv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A09B1854
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 01:05:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cce6bb9b48so13323201fa.1
-        for <bpf@vger.kernel.org>; Thu, 04 Jan 2024 17:05:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704416731; x=1705021531; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KmS5/R456qIKMtn+yUDU5rBlBvbAGXegaQyotziEQEM=;
-        b=K1OkHQ5qN6iOpZoJN9NTIVvDxQZlB8yaD14fLMKALM7I+ROmLHIoT7BWH8y+dMiH2K
-         zh4di5gCyNFPuJCr83y1vxF8aFVuF49O+D17sWwrMiQUXWLnBHCW0UoImDaLueS/yaEG
-         GH9XI1N4QVEcJ38jfsjwTx5oG73BFGZ0rbdjZjXi4tRWonP7DuNCOICzbpMKbUS2ob/p
-         re03OMHDOIBkKd4gglwDWv7JSYcLoibrvoUUfY1cYg4OBLK07Oi1sE/UO8gzCaUAY7D1
-         PNCL7cB5FJ1tS5WN2O1ygobVdQ75zFTVYKIm6OfeCbMvy5esEA4wx3GSKeI5lFui1+Ud
-         TtPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704416731; x=1705021531;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KmS5/R456qIKMtn+yUDU5rBlBvbAGXegaQyotziEQEM=;
-        b=pdv4LzxLIUbXSmu+Nj9PgQSxDFUovMDrkQ19vks5zhs5z02y5PheNoeh+nL7uTlJ5G
-         yKHlxvXMhyVThglq7h6W/M4M92zFULdCG5IpoAYXsGdu1qaTNg+EC5xygVC87IxgqBR4
-         ishu7vB7zm5KfhNLRjauKzfTA9jEnSgQQ7A2P/o918FVNoAWZHnUoxp3pSW3qBuMF1p2
-         ARzewPRVekg9q3eo0P9Q4Ym4NuniNyi+3SbUZLGd8nboXYL1m4MBTzsf5UX9kT8EG8V/
-         jZxYiCC0MVv3uxhL00snngkuEzWg8EMcJU6kiv1AJncLlOajyhtv4D4WbqTJ5/gc/BN5
-         E0NA==
-X-Gm-Message-State: AOJu0YxUM1YRp0742AtV/7bMv75v+5VKnaD2yLRB83U85SCNelkHf7OL
-	UxB1zIyMJ17Wvl9h4KcTWp77FtzPaBVODsE4eSo=
-X-Google-Smtp-Source: AGHT+IHCSy5G97/8HRsM8QGbXGalKvbgsaSnD0okjrXGQTn5Nm0j04r/2SgTnXp8TUKpz1jw696u6jh0M4RUfAvd7l0=
-X-Received: by 2002:a2e:b1c8:0:b0:2cc:5caa:ee95 with SMTP id
- e8-20020a2eb1c8000000b002cc5caaee95mr362834lja.143.1704416731054; Thu, 04 Jan
- 2024 17:05:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE4020EE;
+	Fri,  5 Jan 2024 01:18:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailnew.west.internal (Postfix) with ESMTP id C93FE2B003E7;
+	Thu,  4 Jan 2024 20:17:57 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 04 Jan 2024 20:18:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704417477; x=1704424677; bh=52XpvHOHlL
+	252gSJofKsvelo6vnSoD2F1sW3aqDiEc8=; b=CChYtD/qnwH77ERKCPSM4z8LRz
+	+8OB5rRXpI1jXkdcTzfUhf1Z2sPC4AqY0+RERDIf2sl3Zpi9c1QF6Xiv/KgdqX0M
+	2/4NQXFRVGnYbZiLpVrsXl7YmtORxrP/88PjCtbL6T6YwPu1rFfRMZeBFJWLG2FY
+	WqrTwekcbM1qEtYsR+iYhMeQ6SvH1Rro+ZVTCRC0rYc7OoD8jn8kA1kt7GZMHNz3
+	QDYkR0qxGQ1TjCzL9pTIyb8ctnFn5GhbX6W+WinGlhwZKeCHm4F2IYicjwD+MjgG
+	zvvOvdT6yPMGipIjboVEExpht1uwx3I7yqe3ayjPzBhYF6C+y0HP6ZGs0fmw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704417477; x=1704424677; bh=52XpvHOHlL252gSJofKsvelo6vnS
+	oD2F1sW3aqDiEc8=; b=1wh6oQWvPt1AjiN1FW4IOBsDfmPMjEe2uVSRt45VvcLx
+	6arPsk+rG0ahJF5ZOshlyrLEVyGX8KMp7Oe0jXW3hf8kYMfIEnjsShlyx/u0CqK4
+	737ZUsPlqRAPfLSZPFR9vykLMgc0cCtPNGLJDkVBN4vIYasROEgKueRRnco/dccH
+	xJ3wmQ4Z0jvKgf7kgi05FaevaxEhaX0ZPaWDV83c6kcCj74FZxcDnE9ayu7Age81
+	NRBDbIFKe2ZvYJ5r17sOZyZt2VlRQXK6IB3XbP45nFfhqRHWzoukfojoh+2pESAT
+	qAGyQhz5LGqoFDDdmxrgGFDYL1DzCRCpCpvAmZsCgw==
+X-ME-Sender: <xms:w1iXZQeEttVwQM-R3vZQ4HEjdhQF8hyO7f9OrnH9ps-4RUFAyFNadA>
+    <xme:w1iXZSOdvgmukBfCLvnRq5Xg5haJd1OgRKXSfigHFW7s4Rw7ynpqk2gxpF6-KrfjS
+    ijQztVtgADbulmSfA>
+X-ME-Received: <xmr:w1iXZRiy-pRLAYn_AVW4HSknB1nhIhypI5MJiNwI9g-82JPkTCoc_GvA9XVRbCJHoWz-tgs2R5GiH5_QEG9l_V4ZF9c_AaalFlS01D0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegkedgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:w1iXZV_Qwu2WMv8EByq9LGS-5hmqZHx9ygDd2aljTvrIsaOKol8JfA>
+    <xmx:w1iXZcvW__hoVurNrGi43dnwCeDE9JeyPI-BSJ2hLh8RkOSfceIVCg>
+    <xmx:w1iXZcFy822a46qBXxBSbllHxXuD7J9sfzqyTvxU-Cd6wTNwSzBIdA>
+    <xmx:xViXZcXkc8ccHN_ZxMaNCS-R59zdNxS6LVIE_-jcTZggLP8pSgMpknUwrXM>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 4 Jan 2024 20:17:52 -0500 (EST)
+Date: Thu, 4 Jan 2024 18:17:50 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: benjamin.tissoires@redhat.com, hawk@kernel.org, edumazet@google.com,
+ 	alexandre.torgue@foss.st.com, ebiggers@kernel.org, tj@kernel.org,
+ rostedt@goodmis.org, 	shuah@kernel.org, martin.lau@linux.dev,
+ ast@kernel.org, fw@strlen.de, 	kuba@kernel.org, pablo@netfilter.org,
+ jikos@kernel.org, john.fastabend@gmail.com, 	mcoquelin.stm32@gmail.com,
+ mhiramat@kernel.org, yonghong.song@linux.dev,
+ 	Herbert Xu <herbert@gondor.apana.org.au>, dsahern@kernel.org,
+ hannes@cmpxchg.org, lizefan.x@bytedance.com, 	pabeni@redhat.com,
+ steffen.klassert@secunet.com, daniel@iogearbox.net, 	tytso@mit.edu,
+ andrii@kernel.org, davem@davemloft.net, kadlec@netfilter.org,
+ 	song@kernel.org, alexei.starovoitov@gmail.com, quentin@isovalent.com,
+ 	alan.maguire@oracle.com, memxor@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, 	haoluo@google.com, mathieu.desnoyers@efficios.com,
+ mykolal@fb.com, 	linux-input@vger.kernel.org,
+ linux-kernel@vger.kernel.org, fsverity@lists.linux.dev,
+ 	bpf@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, 	netdev@vger.kernel.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ 	linux-kselftest@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ 	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next 2/2] bpf: treewide: Annotate BPF kfuncs in BTF
+Message-ID: <bix2uwya2mnk2vgno3vkdpg5kyusq763bmfj2ov6zwpbva6q4h@nqgm3vk4byh5>
+References: <cover.1704324602.git.dxu@dxuuu.xyz>
+ <68d5598e5708dfe3370406cd5c946565ca4b50f1.1704324602.git.dxu@dxuuu.xyz>
+ <ZZaZf_8RuX2xqZGf@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103232617.3770727-1-yonghong.song@linux.dev>
- <f4c1ebf73ccf4099f44045e8a5b053b7acdffeed.camel@gmail.com>
- <cbff1224-39c0-4555-a688-53e921065b97@linux.dev> <69410e766d68f4e69400ba9b1c3b4c56feaa2ca2.camel@gmail.com>
- <CAEf4Bzb0LdSPnFZ-kPRftofA6LsaOkxXLN4_fr9BLR3iG-te-g@mail.gmail.com> <67a4b5b8bdb24a80c1289711c7c156b6c8247403.camel@gmail.com>
-In-Reply-To: <67a4b5b8bdb24a80c1289711c7c156b6c8247403.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 4 Jan 2024 17:05:18 -0800
-Message-ID: <CAEf4BzZ8tAXQtCvUEEELy8S26Wf7OEO6APSprQFEBND7M_FXrQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/2] bpf: Track aligned st store as imprecise
- spilled registers
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, 
-	Martin KaFai Lau <kafai@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZaZf_8RuX2xqZGf@krava>
 
-On Thu, Jan 4, 2024 at 3:29=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> On Thu, 2024-01-04 at 15:09 -0800, Andrii Nakryiko wrote:
-> [...]
-> > > This seemed logical at the time of discussion, however, I can't figur=
-e
-> > > a counter example at the moment. It appears that whatever are
-> > > assumptions in check_stack_write_var_off() if spill is used in the
-> > > precise context it would be marked eventually.
-> > > E.g. the following is correctly rejected:
-> > >
-> > > SEC("raw_tp")
-> > > __log_level(2) __flag(BPF_F_TEST_STATE_FREQ)
-> > > __failure
-> > > __naked void var_stack_1(void)
-> > > {
-> > >         asm volatile (
-> > >                 "call %[bpf_get_prandom_u32];"
-> > >                 "r9 =3D 100500;"
-> > >                 "if r0 > 42 goto +1;"
-> > >                 "r9 =3D 0;"
-> > >                 "*(u64 *)(r10 - 16) =3D r9;"
-> > >                 "call %[bpf_get_prandom_u32];"
-> > >                 "r0 &=3D 0xf;"
-> > >                 "r1 =3D -1;"
-> > >                 "r1 -=3D r0;"
-> > >                 "r2 =3D r10;"
-> > >                 "r2 +=3D r1;"
-> > >                 "r0 =3D 0;"
-> > >                 "*(u8 *)(r2 + 0) =3D r0;"
-> > >                 "r1 =3D %[two_byte_buf];"
-> > >                 "r2 =3D *(u32 *)(r10 -16);"
-> > >                 "r1 +=3D r2;"
-> > >                 "*(u8 *)(r1 + 0) =3D r2;" /* this should not be fine =
-*/
-> > >                 "exit;"
-> > >         :
-> > >         : __imm_ptr(two_byte_buf),
-> > >           __imm(bpf_get_prandom_u32)
-> > >         : __clobber_common);
-> > > }
-> > >
-> > > So now I'm not sure :(
-> > > Sorry for too much noise.
-> >
-> >
-> > hm... does that test have to do so many things and do all these u64 vs
-> > u32 vs u8 conversions?
->
-> The test is actually quite minimal, the longest part is conjuring of
-> varying offset pointer in r2, here it is with additional comments:
->
->     /* Write 0 or 100500 to fp-16, 0 is on the first verification pass */
->     "call %[bpf_get_prandom_u32];"
->     "r9 =3D 100500;"
->     "if r0 > 42 goto +1;"
->     "r9 =3D 0;"
->     "*(u64 *)(r10 - 16) =3D r9;"
->     /* prepare a variable length access */
->     "call %[bpf_get_prandom_u32];"
->     "r0 &=3D 0xf;" /* r0 range is [0; 15] */
->     "r1 =3D -1;"
->     "r1 -=3D r0;"  /* r1 range is [-16; -1] */
->     "r2 =3D r10;"
->     "r2 +=3D r1;"  /* r2 range is [fp-16; fp-1] */
->     /* do a variable length write of constant 0 */
->     "r0 =3D 0;"
->     "*(u8 *)(r2 + 0) =3D r0;"
+Hi Jiri, 
 
-I meant this u8
+On Thu, Jan 04, 2024 at 12:41:51PM +0100, Jiri Olsa wrote:
+> On Wed, Jan 03, 2024 at 04:31:56PM -0700, Daniel Xu wrote:
+> 
+> SNIP
+> 
+> > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> > index 88f914579fa1..771e29762a2d 100644
+> > --- a/include/linux/btf_ids.h
+> > +++ b/include/linux/btf_ids.h
+> > @@ -8,6 +8,9 @@ struct btf_id_set {
+> >  	u32 ids[];
+> >  };
+> >  
+> > +/* This flag implies BTF_SET8 holds kfunc(s) */
+> > +#define BTF_SET8_KFUNC		(1 << 0)
+> > +
+> >  struct btf_id_set8 {
+> >  	u32 cnt;
+> >  	u32 flags;
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 51e8b4bee0c8..b8ba00a4179f 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -7769,6 +7769,9 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+> >  	struct btf *btf;
+> >  	int ret, i;
+> >  
+> > +	/* All kfuncs need to be tagged as such in BTF */
+> > +	WARN_ON(!(kset->set->flags & BTF_SET8_KFUNC));
+> 
+> __register_btf_kfunc_id_set gets called also from the 'hooks' path:
+> 
+>   bpf_mptcp_kfunc_init
+>     register_btf_fmodret_id_set
+>       __register_btf_kfunc_id_set
+> 
+> so it will hit the warn.. it should be probably in the register_btf_kfunc_id_set ?
 
->     /* use fp-16 to access an array of length 2 */
->     "r1 =3D %[two_byte_buf];"
->     "r2 =3D *(u32 *)(r10 -16);"
+Yeah, good catch.
 
-and this u32. I'm not saying it's anything wrong, but it's simpler to
-deal with u64 consistently. There is nothing wrong with the test per
-se, I'm just saying we should try eliminate unnecessary cross-plays
-with narrowing/widening stores/loads.
+> 
+> also given that we can have modules calling register_btf_kfunc_id_set,
+> should we just return error instead of the warn?
 
-But that's offtopic, sorry.
+It looks like quite a few registrations go through late_initcall(),
+in which error codes are thrown away. I'm looking at
+init/main.c:do_initcall_level:
 
->     "r1 +=3D r2;"
->     "*(u8 *)(r1 + 0) =3D r2;" /* this should not be fine */
->     "exit;"
->
-> > Can we try a simple test were we spill u64
-> > SCALAR (imprecise) zero register to fp-8 or fp-16, and then use those
-> > fp-8|fp-16 slot as an index into an array in precise context. Then
-> > have a separate delayed branch that will write non-zero to fp-8|fp-16.
-> > States shouldn't converge and this should be rejected.
->
-> That is what test above does but it also includes varying offset access.
->
+        for (fn = initcall_levels[level]; fn < initcall_levels[level+1]; fn++)
+                do_one_initcall(initcall_from_entry(fn));
 
-Yes, and the test fails, but if you read the log, you'll see that fp-8
-is never marked precise, but it should. So we need more elaborate test
-that would somehow exploit fp-8 imprecision.
+Higher level question: if out of tree module does not follow convention,
+it would still make sense to WARN(), right?
 
-I ran out of time. But what I tried was replacing
+> 
+> SNIP
+> 
+> > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > index 91907b321f91..32972334cd50 100644
+> > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > @@ -341,7 +341,7 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
+> >  	.write = bpf_testmod_test_write,
+> >  };
+> >  
+> > -BTF_SET8_START(bpf_testmod_common_kfunc_ids)
+> > +BTF_SET8_START(bpf_testmod_common_kfunc_ids, BTF_SET8_KFUNC)
+> >  BTF_ID_FLAGS(func, bpf_iter_testmod_seq_new, KF_ITER_NEW)
+> >  BTF_ID_FLAGS(func, bpf_iter_testmod_seq_next, KF_ITER_NEXT | KF_RET_NULL)
+> >  BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
+> 
+> we need to change also bpf_testmod_check_kfunc_ids set
 
+Good catch, thanks.
 
-"r2 =3D *(u32 *)(r10 -16);"
-
-with
-
-"r2 =3D *(u8 *)(r2 +0);"
-
-So keep both read and write as variable offset. And we are saved by
-some missing logic in read_var_off that would set r2 as known zero
-(because it should be for the branch where both fp-8 and fp-16 are
-zero). But that fails in the branch that should succeed, and if that
-branch actually succeeds, I suspect the branch where we initialize
-with non-zero r9 will erroneously succeed.
-
-Anyways, I still claim that we are mishandling a precision of spilled
-register when doing zero var_off writes.
-
-
-
-> [...]
+Daniel
 
