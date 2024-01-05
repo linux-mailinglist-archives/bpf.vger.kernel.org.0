@@ -1,76 +1,91 @@
-Return-Path: <bpf+bounces-19125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19126-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59A30825643
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 16:01:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6A4B825663
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 16:11:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3CAC281295
-	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 15:01:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08A651C2285C
+	for <lists+bpf@lfdr.de>; Fri,  5 Jan 2024 15:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2C62E3F3;
-	Fri,  5 Jan 2024 15:01:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7DD22E636;
+	Fri,  5 Jan 2024 15:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X9Vp3fQb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PG3pndaW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7AF2DF87
-	for <bpf@vger.kernel.org>; Fri,  5 Jan 2024 15:01:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37AB2E3F9;
+	Fri,  5 Jan 2024 15:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-55692ad81e3so1831877a12.1
-        for <bpf@vger.kernel.org>; Fri, 05 Jan 2024 07:01:40 -0800 (PST)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cd0d05838fso19733751fa.1;
+        Fri, 05 Jan 2024 07:11:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704466899; x=1705071699; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704467498; x=1705072298; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s93w6c9lejCAACKBzXsviPSdy6Rf5GyqrNGTM64w9dk=;
-        b=X9Vp3fQbzgkJDR9DvtGzC3TZ9HlwjNguOa3ecxPvjjeggekb+lJpuBQ1xhL6soMlTL
-         fPqgjOQEw2TAVX+xrMlUICfKdCp6KgN7MGlvEXjxChM7ydscYD9nhIQr4YIbd1cZaL2O
-         /tJrFslG5Z4nGbhhjm2QXRij3sNG7UA5cAlewaw31BDSnHrMk38+UGLdkbVbhnbFEb0a
-         UibZo5dD7LJG8g73rIEWH+LUIuQr4KKcEZsQaHD/2QQX3iDX3OjF8zlvpG79UKu92hTl
-         ZLfViYdu+vGWrsUL3cfNywpwxn9AW+pqO+MI7r436nZHl73bmk03Kh2AIGpUcDWMeEvg
-         RCHA==
+        bh=0jvwWQN/4UcpzgDB9Dn1kP+j0A1/ex5/bFC8KQNDn3Y=;
+        b=PG3pndaWch0kpQQ4uz03Ea42EX3tDvibJ5UG/iOfVorNRvJc3jStI3kfc1CEW9jS58
+         IBqupqwjkcvvWJdVDjqSBMdPKF7L12JR4tOm7pF2aJmgsH+VLRYycFy8mH3fZiOVuax1
+         YmNHl2jGNsLZf8RRHvMi9VX/E51ds7yz4l0mh3DoNEkhLAfsNzDN1toP9WJxTRoGdgve
+         JI+JrVd3JxF09Ypq4Z8j5vON+1GrTWz4NtFONgOMQzv5yp0JbTij7VFzEQl68gkpp9/W
+         Epu1nUJbPLEKm7olI50ShrzrY5dtlkxbHUMr875/inR2t8P0LCiD51zCAp2qNHn4CA5P
+         61jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704466899; x=1705071699;
+        d=1e100.net; s=20230601; t=1704467498; x=1705072298;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=s93w6c9lejCAACKBzXsviPSdy6Rf5GyqrNGTM64w9dk=;
-        b=l4vli0wrNkFUNfAJhK4FclMITx8iR7YG6DGtTyB/u3aNU95DrUobJVL0Nq1mlZ9wRc
-         Fja2PRxAVNxnqRCTCsLxnanZFD6voTEG7k206EIHYjPQNd+SInGlc0h+oNFYKCyLwlyH
-         z2VUn9I+CF538ZeZVrO4Tod/+e4MSf3ELTkI1jhUfmMXqCeYKEogC301m+qvZCScn5gd
-         BkSJffwv10WLf7eZ4qNy60p7oAeXl/F5PTiSTDqwLMBCtsnYVf7WKE7ayspT0Kxp6Buj
-         BD31eN0ddwNDSrtJA35VEv1EBWVT8tTfNyKCVypCwGyIL/2cs2qtHQNrJ/3MS00HbrLp
-         FMiA==
-X-Gm-Message-State: AOJu0YxO+uZtcU5H2/UBtKnoQ9vyP9y5CeLNWiMGTLeh/3imGC9O3R7X
-	/eVRb7JkJtgU7sDnboJNtV5jxHRguDw=
-X-Google-Smtp-Source: AGHT+IH4qQ2U1Bxw/+wUzwXANFtPw4fiyRw5QCN2+MjgM7oJO0k9+aiQ1OFCGh0WvQzXgQjR/wjzqQ==
-X-Received: by 2002:a17:907:c9a5:b0:a22:ebf2:1edc with SMTP id uj37-20020a170907c9a500b00a22ebf21edcmr933472ejc.16.1704466899038;
-        Fri, 05 Jan 2024 07:01:39 -0800 (PST)
+        bh=0jvwWQN/4UcpzgDB9Dn1kP+j0A1/ex5/bFC8KQNDn3Y=;
+        b=MLr2XuLtC5iiBgUQcZknbDA09sPCWq/ShEqH1gbKzFjhPFNiWBrtvBmqMciE6CN2kf
+         tlNGYR1jUMcpbcsu7UeTfztRAYoSAH7iexOUKFyHglHonIxX85XsivR97ypoQTKdeVw6
+         RhUARaMsGFFmhAxB6R98bpLRROVCQNajZFh+9H0OIah9/eHnq0RhoOrObHM8IZ6lmCgT
+         VzhDUSO12UytFCnCEXc8XwcAnMzpKejNnvSkGQOcvvz5BmnxFTisJntIjNkrLJA732dJ
+         AKVr2jad4/ngO9KwMvBQI9BUNFbGLj+mqzNKbS/1KfLVQXYcTahZXFEATFOKZnzLO2e9
+         panw==
+X-Gm-Message-State: AOJu0YwyPf2kQTxRlHw0KIxA59I7bxOtnzPGLb954QJFRZKIaYZfxMFw
+	buvG6q2lXcmL8NKKDC8etFY=
+X-Google-Smtp-Source: AGHT+IFfGsd7OhjOyharZSVfOb2cwd7D3hSDlT4qWYQ2gJAsNlPcjNmo0EWFSODi+SQP2gAcMZ+9jA==
+X-Received: by 2002:ac2:58e3:0:b0:50e:3714:b420 with SMTP id v3-20020ac258e3000000b0050e3714b420mr959191lfo.9.1704467497642;
+        Fri, 05 Jan 2024 07:11:37 -0800 (PST)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id z11-20020a17090665cb00b00a26f6be432asm956336ejn.70.2024.01.05.07.01.38
+        by smtp.gmail.com with ESMTPSA id b1-20020a170906490100b00a26b36311ecsm986048ejq.146.2024.01.05.07.11.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Jan 2024 07:01:38 -0800 (PST)
+        Fri, 05 Jan 2024 07:11:36 -0800 (PST)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 5 Jan 2024 16:01:37 +0100
-To: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Quentin Monnet <quentin@isovalent.com>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH] bpftool: Add missing libgen.h for basename()
-Message-ID: <ZZgZ0cxEa7HvSUF6@krava>
-References: <ZZYgMYmb_qE94PUB@kernel.org>
- <ZZZ7hgqlYjNJOynA@krava>
- <ZZakH8LluKodXql-@kernel.org>
- <ZZasL_pO09Zt3R4e@kernel.org>
- <ZZfCX7tcM0RnuHJT@krava>
+Date: Fri, 5 Jan 2024 16:11:33 +0100
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: alexandre.torgue@foss.st.com, benjamin.tissoires@redhat.com,
+	lizefan.x@bytedance.com, Herbert Xu <herbert@gondor.apana.org.au>,
+	dsahern@kernel.org, hannes@cmpxchg.org, rostedt@goodmis.org,
+	mcoquelin.stm32@gmail.com, pablo@netfilter.org,
+	martin.lau@linux.dev, edumazet@google.com, daniel@iogearbox.net,
+	ebiggers@kernel.org, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, hawk@kernel.org,
+	steffen.klassert@secunet.com, jikos@kernel.org, kuba@kernel.org,
+	fw@strlen.de, ast@kernel.org, song@kernel.org, pabeni@redhat.com,
+	shuah@kernel.org, tytso@mit.edu, tj@kernel.org,
+	kadlec@netfilter.org, davem@davemloft.net, mhiramat@kernel.org,
+	andrii@kernel.org, alexei.starovoitov@gmail.com, olsajiri@gmail.com,
+	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	mathieu.desnoyers@efficios.com, mykolal@fb.com,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	fsverity@lists.linux.dev, bpf@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: treewide: Annotate BPF kfuncs in BTF
+Message-ID: <ZZgcJTdwMZHglPtr@krava>
+References: <cover.1704422454.git.dxu@dxuuu.xyz>
+ <a923e3809955bdfd2bc8d6a103c20e01f1636dbc.1704422454.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,48 +94,50 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZfCX7tcM0RnuHJT@krava>
+In-Reply-To: <a923e3809955bdfd2bc8d6a103c20e01f1636dbc.1704422454.git.dxu@dxuuu.xyz>
 
-On Fri, Jan 05, 2024 at 09:48:31AM +0100, Jiri Olsa wrote:
-> On Thu, Jan 04, 2024 at 10:01:35AM -0300, Arnaldo Carvalho de Melo wrote:
-> 
-> SNIP
-> 
-> >    9    51.66 amazonlinux:2                 : Ok   gcc (GCC) 7.3.1 20180712 (Red Hat 7.3.1-17) , clang version 11.1.0 (Amazon Linux 2 11.1.0-1.amzn2.0.2) flex 2.5.37
-> >   10    60.77 amazonlinux:2023              : Ok   gcc (GCC) 11.4.1 20230605 (Red Hat 11.4.1-2) , clang version 15.0.7 (Amazon Linux 15.0.7-3.amzn2023.0.1) flex 2.6.4
-> >   11    61.29 amazonlinux:devel             : Ok   gcc (GCC) 11.3.1 20221121 (Red Hat 11.3.1-4) , clang version 15.0.6 (Amazon Linux 15.0.6-3.amzn2023.0.2) flex 2.6.4
-> >   12    74.72 archlinux:base                : Ok   gcc (GCC) 13.2.1 20230801 , clang version 16.0.6 flex 2.6.4
-> > 
-> > / $ grep -B8 -A2 -w basename /usr/include/string.h
-> > #ifdef _GNU_SOURCE
-> > #define	strdupa(x)	strcpy(alloca(strlen(x)+1),x)
-> > int strverscmp (const char *, const char *);
-> > char *strchrnul(const char *, int);
-> > char *strcasestr(const char *, const char *);
-> > void *memrchr(const void *, int, size_t);
-> > void *mempcpy(void *, const void *, size_t);
-> > #ifndef __cplusplus
-> > char *basename();
-> > #endif
-> > #endif
-> > / $ cat /etc/os-release
-> > NAME="Alpine Linux"
-> > ID=alpine
-> > VERSION_ID=3.19.0
-> > PRETTY_NAME="Alpine Linux v3.19"
-> > HOME_URL="https://alpinelinux.org/"
-> > BUG_REPORT_URL="https://gitlab.alpinelinux.org/alpine/aports/-/issues"
-> > / $
-> > 
-> > Weird, they had it and now removed the _GNU_SOURCE bits (edge is their
-> > devel distro, like rawhide is for fedora, tumbleweed for opensuse, etc).
-> 
-> let's see, I asked them in here: https://gitlab.alpinelinux.org/alpine/aports/-/issues/15643
+On Thu, Jan 04, 2024 at 07:45:49PM -0700, Daniel Xu wrote:
 
-it got removed in musl libc recently:
-  https://git.musl-libc.org/cgit/musl/commit/?id=725e17ed6dff4d0cd22487bb64470881e86a92e7
+SNIP
 
-so perhaps switching to POSIX version of basename is the easiest way out?
+> diff --git a/fs/verity/measure.c b/fs/verity/measure.c
+> index bf7a5f4cccaf..3969d54158d1 100644
+> --- a/fs/verity/measure.c
+> +++ b/fs/verity/measure.c
+> @@ -159,9 +159,9 @@ __bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr_ker
+>  
+>  __bpf_kfunc_end_defs();
+>  
+> -BTF_SET8_START(fsverity_set_ids)
+> +BTF_KFUNCS_START(fsverity_set_ids)
+>  BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
+> -BTF_SET8_END(fsverity_set_ids)
+> +BTF_KFUNCS_END(fsverity_set_ids)
+>  
+>  static int bpf_get_fsverity_digest_filter(const struct bpf_prog *prog, u32 kfunc_id)
+>  {
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 51e8b4bee0c8..8cc718f37a9d 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7802,6 +7802,10 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+>  {
+>  	enum btf_kfunc_hook hook;
+>  
+> +	/* All kfuncs need to be tagged as such in BTF */
+> +	if (WARN_ON(!(kset->set->flags & BTF_SET8_KFUNCS)))
+> +		return -EINVAL;
+
+having the warning for module with wrong set8 flags seems wrong to me,
+I think we should trigger the warn only for kernel calls.. by adding
+kset->owner check in the condition above
 
 jirka
+
+> +
+>  	hook = bpf_prog_type_to_kfunc_hook(prog_type);
+>  	return __register_btf_kfunc_id_set(hook, kset);
+>  }
+
+SNIP
 
