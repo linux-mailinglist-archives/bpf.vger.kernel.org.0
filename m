@@ -1,119 +1,115 @@
-Return-Path: <bpf+bounces-19163-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19164-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AF99825E98
-	for <lists+bpf@lfdr.de>; Sat,  6 Jan 2024 07:55:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 52CD4825EF6
+	for <lists+bpf@lfdr.de>; Sat,  6 Jan 2024 09:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCE811F23E41
-	for <lists+bpf@lfdr.de>; Sat,  6 Jan 2024 06:55:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06BA21F2388F
+	for <lists+bpf@lfdr.de>; Sat,  6 Jan 2024 08:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9A83FDD;
-	Sat,  6 Jan 2024 06:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6F763A8;
+	Sat,  6 Jan 2024 08:51:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="yOcIiVCB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZimhIGQm"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2AA728F3;
-	Sat,  6 Jan 2024 06:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=OuVdUPjUvU4/6iSnWx34w41LnQL5QQ6HXu6RyAkm9Bc=; b=yOcIiVCBn/mREvuXDvq8dQNSrM
-	kPMJ1RY531i/cUKvqHE+ZB2V0QsBVn6IGxBpupWpcMJ6FZhHHpzqUtuKBGB9anMFvScHeBUNIHuSI
-	IZtE1+roTYlzY9YZI8ipiAIJYTmwONsXE6TCr5Q5jizWYqZHFPZ+Aat8pAwC+46kmgREZ4cAnMpPN
-	9l/3RgaxloDOjqG4uXTWxLvOncqGs26+qZnd9453JL2wREqcs5Nf8LqLCKGuVxfJp+L8772uMVhkf
-	tKig/QksdHFSwzmiWMWWS0TF2JD2Rp9BnC1jFP+pEiOWMZbIEok63iR4iWEsTFmnURNFtKbq3qsQn
-	c5uHVkhA==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-	id 1rM0aw-000rYt-0K;
-	Sat, 06 Jan 2024 06:55:46 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: netdev@vger.kernel.org
-Cc: patches@lists.linux.dev,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Subject: [PATCH bpf-next] net: filter: fix spelling mistakes
-Date: Fri,  5 Jan 2024 22:55:45 -0800
-Message-ID: <20240106065545.16855-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE4C63DB
+	for <bpf@vger.kernel.org>; Sat,  6 Jan 2024 08:51:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF14C433CB
+	for <bpf@vger.kernel.org>; Sat,  6 Jan 2024 08:51:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704531078;
+	bh=Nc5jWr/5nwFKIKve0HuxdZZCtUJGzusKWK+jUL3p3i4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZimhIGQmyBE8bZWv9tASaOfTjPNuFUdO1FyHmbLz+QwZt5Fpo1qnotlw8BGbiWrcx
+	 hXpWnMVK2G6ITyqxm6TNvTL5U5D61nTNycOEdcR40TSilkDTHy1E58wyhOtLshexXb
+	 jn7j8uFCrofN0DJ1VEeZtuhDJgRybwLEdp6HF5CFuS4YyKssqTGZWo6QdBXaqZA5Vw
+	 foz4xRl4IC/arsFlVUJLT8sFCaVLjRISDbniDKr0Q4Rh0n5dyn24LRNSgEoeZLoj5l
+	 fvM1havSSkUURlWZmNxu8nJzW3+T7Oajovv1T0h7EUk3QirsAb4z8sXUmd3z3h7ILr
+	 FTHKt4j/E9rnA==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50eaa8b447bso308586e87.1
+        for <bpf@vger.kernel.org>; Sat, 06 Jan 2024 00:51:18 -0800 (PST)
+X-Gm-Message-State: AOJu0YzScvN4qmMd4Ct2v0ofv4260of7vQD4VJpx0q3617KevJPTYcnF
+	3Fnc6OhLV+8q2Itf7JzWg6GQIB/RRyHQ43DtRMo=
+X-Google-Smtp-Source: AGHT+IFca1tPKYFDF6HFrLBQA/9Kx4S7KVyCuBXGxMZC4q1bJ+7slq/LTySr/9yVwDIrI3GjWZmDgEtUWJHXlk3R/Qo=
+X-Received: by 2002:a19:f607:0:b0:50e:7041:e6d with SMTP id
+ x7-20020a19f607000000b0050e70410e6dmr127134lfe.45.1704531076350; Sat, 06 Jan
+ 2024 00:51:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240105104819.3916743-1-houtao@huaweicloud.com>
+ <CAPhsuW6EFyr-CrsOfsJBgCJzygV7-v52aKvLJgTBzMdoVm8pSw@mail.gmail.com> <95ea0a85-2c3b-33da-d5f0-27089171ce2d@huaweicloud.com>
+In-Reply-To: <95ea0a85-2c3b-33da-d5f0-27089171ce2d@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Sat, 6 Jan 2024 00:51:04 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW5QH1BxaE5CMesf=d8ncdmzX3ie6YfDBhhNdNWe1nASQg@mail.gmail.com>
+Message-ID: <CAPhsuW5QH1BxaE5CMesf=d8ncdmzX3ie6YfDBhhNdNWe1nASQg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/3] bpf: inline bpf_kptr_xchg()
+To: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, houtao1@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fix spelling errors as reported by codespell.
+On Fri, Jan 5, 2024 at 6:34=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
+te:
+>
+>
+>
+> On 1/6/2024 6:53 AM, Song Liu wrote:
+> > On Fri, Jan 5, 2024 at 2:47=E2=80=AFAM Hou Tao <houtao@huaweicloud.com>=
+ wrote:
+> >> From: Hou Tao <houtao1@huawei.com>
+> >>
+> >> Hi,
+> >>
+> >> The motivation of inlining bpf_kptr_xchg() comes from the performance
+> >> profiling of bpf memory allocator benchmark [1]. The benchmark uses
+> >> bpf_kptr_xchg() to stash the allocated objects and to pop the stashed
+> >> objects for free. After inling bpf_kptr_xchg(), the performance for
+> >> object free on 8-CPUs VM increases about 2%~10%. However the performan=
+ce
+> >> gain comes with costs: both the kasan and kcsan checks on the pointer
+> >> will be unavailable. Initially the inline is implemented in do_jit() f=
+or
+> >> x86-64 directly, but I think it will more portable to implement the
+> >> inline in verifier.
+> > How much work would it take to enable this on other major architectures=
+?
+> > AFAICT, most jit compilers already handle BPF_XCHG, so it should be
+> > relatively simple?
+>
+> Yes. I think enabling this inline will be relatively simple. As said in
+> patch #1, the inline depends on two conditions:
+> 1) atomic_xchg() support on pointer-sized word.
+> 2)  the implementation of xchg is the same as atomic_xchg() on
+> pointer-sized words.
+> For condition 1), I think most major architecture JIT backends have
+> support it. So the following work is to check the implementation of xchg
+> and atomic_xchg(), to enable the inline and to do more test.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
----
-base-commit: 610a9b8f49fbcf1100716370d3b5f6f884a2835a
+Thanks for the clarification.
 
- net/core/filter.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> I will try to enable the inline on arm64 first. And will x86-64 + arm64
+> be enough for the definition of "major architectures" ? Or Should it
+> include riscv, s380, powerpc as well ?
 
-diff -- a/net/core/filter.c b/net/core/filter.c
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -777,7 +777,7 @@ jmp_rest:
- 			BPF_EMIT_JMP;
- 			break;
- 
--		/* ldxb 4 * ([14] & 0xf) is remaped into 6 insns. */
-+		/* ldxb 4 * ([14] & 0xf) is remapped into 6 insns. */
- 		case BPF_LDX | BPF_MSH | BPF_B: {
- 			struct sock_filter tmp = {
- 				.code	= BPF_LD | BPF_ABS | BPF_B,
-@@ -803,7 +803,7 @@ jmp_rest:
- 			*insn = BPF_MOV64_REG(BPF_REG_A, BPF_REG_TMP);
- 			break;
- 		}
--		/* RET_K is remaped into 2 insns. RET_A case doesn't need an
-+		/* RET_K is remapped into 2 insns. RET_A case doesn't need an
- 		 * extra mov as BPF_REG_0 is already mapped into BPF_REG_A.
- 		 */
- 		case BPF_RET | BPF_A:
-@@ -2967,7 +2967,7 @@ BPF_CALL_4(bpf_msg_pop_data, struct sk_m
- 	 *
- 	 * Then if B is non-zero AND there is no space allocate space and
- 	 * compact A, B regions into page. If there is space shift ring to
--	 * the rigth free'ing the next element in ring to place B, leaving
-+	 * the right free'ing the next element in ring to place B, leaving
- 	 * A untouched except to reduce length.
- 	 */
- 	if (start != offset) {
-@@ -8226,7 +8226,7 @@ xdp_func_proto(enum bpf_func_id func_id,
- #if IS_MODULE(CONFIG_NF_CONNTRACK) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES)
- 	/* The nf_conn___init type is used in the NF_CONNTRACK kfuncs. The
- 	 * kfuncs are defined in two different modules, and we want to be able
--	 * to use them interchangably with the same BTF type ID. Because modules
-+	 * to use them interchangeably with the same BTF type ID. Because modules
- 	 * can't de-duplicate BTF IDs between each other, we need the type to be
- 	 * referenced in the vmlinux BTF or the verifier will get confused about
- 	 * the different types. So we add this dummy type reference which will
+x86_64 + arm64 is "major" enough. :) Maintainers of other JIT engines
+can help with other archs.
+
+Thanks,
+Song
 
