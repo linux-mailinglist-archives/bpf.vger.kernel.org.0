@@ -1,122 +1,208 @@
-Return-Path: <bpf+bounces-19158-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19159-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E57A825DEE
-	for <lists+bpf@lfdr.de>; Sat,  6 Jan 2024 03:35:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50404825DF3
+	for <lists+bpf@lfdr.de>; Sat,  6 Jan 2024 03:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C13F21F2459A
-	for <lists+bpf@lfdr.de>; Sat,  6 Jan 2024 02:35:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 740081C23746
+	for <lists+bpf@lfdr.de>; Sat,  6 Jan 2024 02:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE49136F;
-	Sat,  6 Jan 2024 02:34:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE1715AB;
+	Sat,  6 Jan 2024 02:38:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="by2uOLxl"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC28F15AB
-	for <bpf@vger.kernel.org>; Sat,  6 Jan 2024 02:34:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T6PYB5Sbyz4f3pC2
-	for <bpf@vger.kernel.org>; Sat,  6 Jan 2024 10:34:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 93B191A01CA
-	for <bpf@vger.kernel.org>; Sat,  6 Jan 2024 10:34:40 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP4 (Coremail) with SMTP id gCh0CgA3RkY9vJhlFfwaFw--.58489S2;
-	Sat, 06 Jan 2024 10:34:40 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 0/3] bpf: inline bpf_kptr_xchg()
-To: Song Liu <song@kernel.org>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Hao Luo <haoluo@google.com>,
- Yonghong Song <yonghong.song@linux.dev>,
- Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- Eduard Zingerman <eddyz87@gmail.com>, houtao1@huawei.com
-References: <20240105104819.3916743-1-houtao@huaweicloud.com>
- <CAPhsuW6EFyr-CrsOfsJBgCJzygV7-v52aKvLJgTBzMdoVm8pSw@mail.gmail.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <95ea0a85-2c3b-33da-d5f0-27089171ce2d@huaweicloud.com>
-Date: Sat, 6 Jan 2024 10:34:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBA0F136F
+	for <bpf@vger.kernel.org>; Sat,  6 Jan 2024 02:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3606e15d718so1251525ab.1
+        for <bpf@vger.kernel.org>; Fri, 05 Jan 2024 18:38:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704508698; x=1705113498; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=X9pTSJvtgK9fzYVJafKGoAjt6MEEwj5RzUgUXTN7Vv0=;
+        b=by2uOLxljEMvcQkw5OwCXljlNDdlzIN+37HIjt9Dya6CwpoIjtppBpn3qf1PIT3z7Y
+         58BJuxDTkHegiT6KwoRaGD4cdkLlBAHlQ7qYgk4y8GWcrpCEOyxZC6MmfTph2ofhcipy
+         dARseMWVTwX5KEnGutXaykYipJhu2DV+3sw6s8m+nYBCYqFPp8cz1taB0KNwcPAR3IRN
+         OcP68Eb8pVy61pRdiuzPEqnSpbXaWGUlTFQuVG2XHjtPuNdO+AYZ3nok32iZ6IBOb+LW
+         H7VpNvmd9rcLH4Epy3SNXplYYzSwdKcj94jz2x57Afp5boBCfCGoitg7tnrQXwNkZNoq
+         +3xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704508698; x=1705113498;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=X9pTSJvtgK9fzYVJafKGoAjt6MEEwj5RzUgUXTN7Vv0=;
+        b=Rbm+5Jqx3wpslKiVeGvhobdPcub7UZp0GLyAP0rCJnJOWXZf9xyRaZEmeEsTtAvM6M
+         cRbqlZrgHivOVGmIHFLQBgYWoSvF06LmftvNesLQ6DYNHitc5P1rQwGRbKn17qYGDDIZ
+         +KDaDRZ+mck2IQikt0LwN6Pc2Nb9N2Hz6B7PiPXW6PDbR0fG1LnWjKI3Ct3V4jC/7NRM
+         579JVV+Q9EhZTeiQm3ZNg2mt6II3mdrrJekbvHAT1Sn8RuVwRNc9F6fb1u9nw7WaIRH8
+         cMDpxUIhkFb4PtWHsSCD9+oxoRQtHZSk+jic+n0ijzJv6jcAlYaF8L3mIbtyw83e9LRF
+         fhVg==
+X-Gm-Message-State: AOJu0YzNUcDOqIhbWaf7nA+KkM2+rQUVzjlpgsEJ/IJzgDMqayynNs4r
+	dAgsDLozN9OrsCL6g8tEd08=
+X-Google-Smtp-Source: AGHT+IGHXqyqlRwdZK9t33nethu8r4HPuJZqKz60pbBqgUi3hCx9c5r51UHzctgfP8Tomfhd/fabnQ==
+X-Received: by 2002:a05:6e02:1e02:b0:35d:5995:1d74 with SMTP id g2-20020a056e021e0200b0035d59951d74mr725692ila.57.1704508697813;
+        Fri, 05 Jan 2024 18:38:17 -0800 (PST)
+Received: from [192.168.1.1] (bb219-74-10-34.singnet.com.sg. [219.74.10.34])
+        by smtp.gmail.com with ESMTPSA id jb1-20020a170903258100b001d2e958e34bsm2076298plb.159.2024.01.05.18.38.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Jan 2024 18:38:17 -0800 (PST)
+Message-ID: <856e001b-f8a6-4b80-929f-f6839053a9aa@gmail.com>
+Date: Sat, 6 Jan 2024 10:38:13 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAPhsuW6EFyr-CrsOfsJBgCJzygV7-v52aKvLJgTBzMdoVm8pSw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 2/4] bpf, x64: Fix tailcall hierarchy
 Content-Language: en-US
-X-CM-TRANSID:gCh0CgA3RkY9vJhlFfwaFw--.58489S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFWDXw4Dtry8Cw1kWr17Wrg_yoW8Ww4DpF
-	WrGryUtrZrGF98A3WDX3y3Xa4fA393u345WrnIy3yDA3W5Xr9rWF95t3s09F98uF4Ika4j
-	ya17Zr9xW3WFyFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IUbPEf5UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ "Fijalkowski, Maciej" <maciej.fijalkowski@intel.com>,
+ Jakub Sitnicki <jakub@cloudflare.com>, Ilya Leoshkevich <iii@linux.ibm.com>,
+ Hengqi Chen <hengqi.chen@gmail.com>, kernel-patches-bot@fb.com
+References: <20240104142226.87869-1-hffilwlqm@gmail.com>
+ <20240104142226.87869-3-hffilwlqm@gmail.com>
+ <CAADnVQJ1szry9P00wweVDu4d0AQoM_49qT-_ueirvggAiCZrpw@mail.gmail.com>
+ <43499e38-f395-4efd-867f-8a2fa0571ecd@gmail.com>
+ <CAADnVQLhxem1m5Nfkf7GhDKRcYaD+g9k3ZW_BD6t58OACr3fQg@mail.gmail.com>
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAADnVQLhxem1m5Nfkf7GhDKRcYaD+g9k3ZW_BD6t58OACr3fQg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
 
-On 1/6/2024 6:53 AM, Song Liu wrote:
-> On Fri, Jan 5, 2024 at 2:47 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> From: Hou Tao <houtao1@huawei.com>
+On 2024/1/6 01:43, Alexei Starovoitov wrote:
+> On Thu, Jan 4, 2024 at 10:16 PM Leon Hwang <hffilwlqm@gmail.com> wrote:
 >>
->> Hi,
 >>
->> The motivation of inlining bpf_kptr_xchg() comes from the performance
->> profiling of bpf memory allocator benchmark [1]. The benchmark uses
->> bpf_kptr_xchg() to stash the allocated objects and to pop the stashed
->> objects for free. After inling bpf_kptr_xchg(), the performance for
->> object free on 8-CPUs VM increases about 2%~10%. However the performance
->> gain comes with costs: both the kasan and kcsan checks on the pointer
->> will be unavailable. Initially the inline is implemented in do_jit() for
->> x86-64 directly, but I think it will more portable to implement the
->> inline in verifier.
-> How much work would it take to enable this on other major architectures?
-> AFAICT, most jit compilers already handle BPF_XCHG, so it should be
-> relatively simple?
+>>
+>> On 5/1/24 12:15, Alexei Starovoitov wrote:
+>>> On Thu, Jan 4, 2024 at 6:23 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>>>
+>>>>
+>>>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>>>> index fe30b9ebb8de4..67fa337fc2e0c 100644
+>>>> --- a/arch/x86/net/bpf_jit_comp.c
+>>>> +++ b/arch/x86/net/bpf_jit_comp.c
+>>>> @@ -259,7 +259,7 @@ struct jit_context {
+>>>>  /* Number of bytes emit_patch() needs to generate instructions */
+>>>>  #define X86_PATCH_SIZE         5
+>>>>  /* Number of bytes that will be skipped on tailcall */
+>>>> -#define X86_TAIL_CALL_OFFSET   (11 + ENDBR_INSN_SIZE)
+>>>> +#define X86_TAIL_CALL_OFFSET   (22 + ENDBR_INSN_SIZE)
+>>>>
+>>>>  static void push_r12(u8 **pprog)
+>>>>  {
+>>>> @@ -406,14 +406,21 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+>>>>          */
+>>>>         emit_nops(&prog, X86_PATCH_SIZE);
+>>>>         if (!ebpf_from_cbpf) {
+>>>> -               if (tail_call_reachable && !is_subprog)
+>>>> +               if (tail_call_reachable && !is_subprog) {
+>>>>                         /* When it's the entry of the whole tailcall context,
+>>>>                          * zeroing rax means initialising tail_call_cnt.
+>>>>                          */
+>>>> -                       EMIT2(0x31, 0xC0); /* xor eax, eax */
+>>>> -               else
+>>>> -                       /* Keep the same instruction layout. */
+>>>> -                       EMIT2(0x66, 0x90); /* nop2 */
+>>>> +                       EMIT2(0x31, 0xC0);       /* xor eax, eax */
+>>>> +                       EMIT1(0x50);             /* push rax */
+>>>> +                       /* Make rax as ptr that points to tail_call_cnt. */
+>>>> +                       EMIT3(0x48, 0x89, 0xE0); /* mov rax, rsp */
+>>>> +                       EMIT1_off32(0xE8, 2);    /* call main prog */
+>>>> +                       EMIT1(0x59);             /* pop rcx, get rid of tail_call_cnt */
+>>>> +                       EMIT1(0xC3);             /* ret */
+>>>> +               } else {
+>>>> +                       /* Keep the same instruction size. */
+>>>> +                       emit_nops(&prog, 13);
+>>>> +               }
+>>>
+>>> I'm afraid the extra call breaks stack unwinding and many other things.
+>>
+>> I was worried about it. But I'm not sure how it breaks stack unwinding.
+>>
+>> However, without the extra call, I've tried another approach:
+>>
+>> * [RFC PATCH bpf-next 1/3] bpf, x64: Fix tailcall hierarchy
+>>   https://lore.kernel.org/bpf/20231005145814.83122-2-hffilwlqm@gmail.com/
+>>
+>> It's to propagate tail_call_cnt_ptr, too. But more complicated:
+>>
+>> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+>> index 8c10d9abc..001c5e4b7 100644
+>> --- a/arch/x86/net/bpf_jit_comp.c
+>> +++ b/arch/x86/net/bpf_jit_comp.c
+>> @@ -313,24 +332,15 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+>>                           bool tail_call_reachable, bool is_subprog,
+>>                           bool is_exception_cb)
+>>  {
+>> +       int tcc_ptr_off = round_up(stack_depth, 8) + 8;
+>> +       int tcc_off = tcc_ptr_off + 8;
+>>         u8 *prog = *pprog;
+>>
+>>         /* BPF trampoline can be made to work without these nops,
+>>          * but let's waste 5 bytes for now and optimize later
+>>          */
+>>         EMIT_ENDBR();
+>> -       memcpy(prog, x86_nops[5], X86_PATCH_SIZE);
+>> -       prog += X86_PATCH_SIZE;
+>> -       if (!ebpf_from_cbpf) {
+>> -               if (tail_call_reachable && !is_subprog)
+>> -                       /* When it's the entry of the whole tailcall context,
+>> -                        * zeroing rax means initialising tail_call_cnt.
+>> -                        */
+>> -                       EMIT2(0x31, 0xC0); /* xor eax, eax */
+>> -               else
+>> -                       /* Keep the same instruction layout. */
+>> -                       EMIT2(0x66, 0x90); /* nop2 */
+>> -       }
+>> +       emit_nops(&prog, X86_PATCH_SIZE);
+>>         /* Exception callback receives FP as third parameter */
+>>         if (is_exception_cb) {
+>>                 EMIT3(0x48, 0x89, 0xF4); /* mov rsp, rsi */
+>> @@ -347,15 +357,52 @@ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+>>                 EMIT1(0x55);             /* push rbp */
+>>                 EMIT3(0x48, 0x89, 0xE5); /* mov rbp, rsp */
+>>         }
+>> +       if (!ebpf_from_cbpf) {
+>> +               if (tail_call_reachable && !is_subprog) {
+>> +                       /* Make rax as ptr that points to tail_call_cnt. */
+>> +                       EMIT3(0x48, 0x89, 0xE8);          /* mov rax, rbp */
+>> +                       EMIT2_off32(0x48, 0x2D, tcc_off); /* sub rax, tcc_off */
+>> +                       /* When it's the entry of the whole tail call context,
+>> +                        * storing 0 means initialising tail_call_cnt.
+>> +                        */
+>> +                       EMIT2_off32(0xC7, 0x00, 0);       /* mov dword ptr [rax], 0 */
+>> +               } else {
+>> +                       /* Keep the same instruction layout. */
+>> +                       emit_nops(&prog, 3);
+>> +                       emit_nops(&prog, 6);
+>> +                       emit_nops(&prog, 6);
+> 
+> Extra 15 nops in the prologue of every bpf program (tailcall or not)
+> is too high a price to pay.
+> 
+> Think of a simple fix other on verifier side or
+> simple approach that all JITs can easily do.
 
-Yes. I think enabling this inline will be relatively simple. As said in
-patch #1, the inline depends on two conditions:
-1) atomic_xchg() support on pointer-sized word.
-2)  the implementation of xchg is the same as atomic_xchg() on
-pointer-sized words.
-For condition 1), I think most major architecture JIT backends have
-support it. So the following work is to check the implementation of xchg
-and atomic_xchg(), to enable the inline and to do more test.
+It's not easy but I'll have a hard try.
 
-I will try to enable the inline on arm64 first. And will x86-64 + arm64
-be enough for the definition of "major architectures" ? Or Should it
-include riscv, s380, powerpc as well ?
-
-> Other than this, for the set
->
-> Acked-by: Song Liu <song@kernel.org>
-
-Thanks for the ack.
->
-> Thanks,
-> Song
-> .
-
+Thanks,
+Leon
 
