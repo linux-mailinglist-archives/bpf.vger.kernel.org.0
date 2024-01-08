@@ -1,137 +1,92 @@
-Return-Path: <bpf+bounces-19195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F11682746A
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 16:47:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 491FA827491
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 17:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A8F51C22F07
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 15:47:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9426B21C13
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 16:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57ADE52F61;
-	Mon,  8 Jan 2024 15:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F7F151C5B;
+	Mon,  8 Jan 2024 16:00:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mKiHVVQk"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SXOJttRi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85A6F5103E;
-	Mon,  8 Jan 2024 15:46:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-28c2b8d6f2aso1084519a91.2;
-        Mon, 08 Jan 2024 07:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704728777; x=1705333577; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6ABIEatGvpONoYLEnM8zujVINLyFvWCQbpURBZGHqyc=;
-        b=mKiHVVQktys16d1/b7MkCrWnZpxoc85LXFsbfPNgCTaSKxzoEVLjYAGOJTC3BJs0Ri
-         gL+zJO9U+OG2jhMKU8xNhWqXKGp8UYZ6Mls75foj0jYdK47r0avg7bNJXwnyasj1ZcrO
-         sPnNK6VpmYnJ2QePsIi/5W3xfqVSTnfKppGBvRi5rTMzDwjGLWZsCcLNmjjiCukNDrrG
-         Xj9LJ2k3ZKNFkc9qGPhV68i2yOQ19fwGsCH71zj6BrM09uNKjdtpMBMgzCBwaQH8abz6
-         uF/B2dNgnZRla6DBZSpbl8NQrlIZ9qMgOf1oCtX4Fe2U0ufnceUG6yZ3wF83rYAXWAWS
-         Nr1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704728777; x=1705333577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6ABIEatGvpONoYLEnM8zujVINLyFvWCQbpURBZGHqyc=;
-        b=DRNJ9ccm3E1JS+xYu+dDCA5ArlD9Har8fv3orStiZ+OfN492TEFY6WyC4n8LOU8xku
-         gzD9wxTHLzgCmtITiazSTStFtLfKSPTeoh7kkaHEqXlpfHnN4JdamoZmcA9SIdljWuxZ
-         fysQjfFNNxyBS/aIF2i7VXotREOT0hL/HWKGMrFjFWfBAkJ8eTvqNos2T/ohDkPauiEk
-         Db9uJ19HX2G82pNEahfFADiwgtNxddbsA2fGYWnSg8T8n8Gd4KC6y9FkvTyVqOteDaQq
-         53op73ytnw9V8zsNwz6HOFA7tEIEvBtrVWAtuiIasoOpCThcQORgFchS27I5DGoO0ET9
-         yZFQ==
-X-Gm-Message-State: AOJu0Yx9imv/mZvKyOkJzI1wnz8vrI37Y4ymdzoeaL/4ZjNNZCWipJWC
-	LQ0/3uAZESRxiyj/6jFaIroZDhLxj7gqcCR8Vm37dVqT
-X-Google-Smtp-Source: AGHT+IHZJe1ZY74k1Lg4LUidpgawMu0QAPQhvu8GZrpY+cE2pAX9oNfGVAG8ljK3e18QPKlpOElMC5jvPt+GMAfHuo0=
-X-Received: by 2002:a17:90a:d315:b0:28c:d85:9807 with SMTP id
- p21-20020a17090ad31500b0028c0d859807mr1131248pju.78.1704728776801; Mon, 08
- Jan 2024 07:46:16 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB8A51C51
+	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 16:00:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=HvKMB7Amwnf4YmHthQLzVzMzQpiNhalR9XuEKWvBCgQ=; b=SXOJttRiLM0meXkwzbpRElTIQd
+	wsRFXGF5PItztCBFbZfp9RVdRqGGr0HApm8KKibXJh6eBe98hG/B3R0C58XV8beXWXF0bymVXgwZD
+	uPLjS0MtSbBTOSXleBcBPtwVLdYeSu7uN1R7q0tYwCGfHiaO2mKmHqTJxZ5v9W1BCA9ePckKHLAG0
+	Gtkn36BuiU0CRmrHjxlQEGFHBLCMU7jEVSJ1EzPhnpYBtYtm6MV9UyS+fxOI8UvZF9qPO0rrNKj3A
+	U1WlMV7JbDo70jT9OKTwRYRz+mhJE8yiTXOC4g/2IZQeiNc0TUIZiWOtXbUQ/cRtqQRsuC1QeP8jk
+	OnVY5g8A==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rMs2t-005ZUp-39;
+	Mon, 08 Jan 2024 16:00:11 +0000
+Date: Mon, 8 Jan 2024 08:00:11 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: David Vernet <void@manifault.com>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Dave Thaler <dthaler1968@googlemail.com>, bpf@ietf.org,
+	bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [Bpf] BPF ISA conformance groups
+Message-ID: <ZZwcC7nZiZ+OV1ST@infradead.org>
+References: <CAADnVQJ-JwNTY5fW-oXdTur9aDrv2NQoreTH3yYZemVBVtq9fQ@mail.gmail.com>
+ <20231213185603.GA1968@maniforge>
+ <CAADnVQLOjByUKJNyLdvDzwuegtjZFwrttHft_1o8BoyDCXQvDQ@mail.gmail.com>
+ <20231214174437.GA2853@maniforge>
+ <ZXvkS4qmRMZqlWhA@infradead.org>
+ <CAADnVQ+ExRC_RavN_sbuOmuwyP6+HKnV9bFjJOseORBaVw0Jcg@mail.gmail.com>
+ <09dc01da32a6$99c97e50$cd5c7af0$@gmail.com>
+ <CAADnVQ+Kb20aUZdcqSh5eF-_dzpHWcpjAtYpLgg5Fqog=g7hpA@mail.gmail.com>
+ <ZYPiq6ijLaMl/QD8@infradead.org>
+ <20240105220711.GA1001999@maniforge>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103095650.25769-1-linyunsheng@huawei.com>
- <20240103095650.25769-5-linyunsheng@huawei.com> <1a66f99173de36e1ae639569582feaf76202361d.camel@gmail.com>
- <705e59c2-6f46-5d39-b8da-8e2310904d71@huawei.com>
-In-Reply-To: <705e59c2-6f46-5d39-b8da-8e2310904d71@huawei.com>
-From: Alexander Duyck <alexander.duyck@gmail.com>
-Date: Mon, 8 Jan 2024 07:45:40 -0800
-Message-ID: <CAKgT0UdLA820trYGWkgNR8KFX=QbFbiR_AcrWXwFwrmQzaVmKA@mail.gmail.com>
-Subject: Re: [PATCH net-next 4/6] vhost/net: remove vhost_net_page_frag_refill()
-To: Yunsheng Lin <linyunsheng@huawei.com>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Jason Wang <jasowang@redhat.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105220711.GA1001999@maniforge>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Jan 8, 2024 at 1:06=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.com=
-> wrote:
->
-> On 2024/1/6 0:06, Alexander H Duyck wrote:
-> >>
-> >>  static void handle_tx_copy(struct vhost_net *net, struct socket *sock=
-)
-> >> @@ -1353,8 +1318,7 @@ static int vhost_net_open(struct inode *inode, s=
-truct file *f)
-> >>                      vqs[VHOST_NET_VQ_RX]);
-> >>
-> >>      f->private_data =3D n;
-> >> -    n->page_frag.page =3D NULL;
-> >> -    n->refcnt_bias =3D 0;
-> >> +    n->pf_cache.va =3D NULL;
-> >>
-> >>      return 0;
-> >>  }
-> >> @@ -1422,8 +1386,9 @@ static int vhost_net_release(struct inode *inode=
-, struct file *f)
-> >>      kfree(n->vqs[VHOST_NET_VQ_RX].rxq.queue);
-> >>      kfree(n->vqs[VHOST_NET_VQ_TX].xdp);
-> >>      kfree(n->dev.vqs);
-> >> -    if (n->page_frag.page)
-> >> -            __page_frag_cache_drain(n->page_frag.page, n->refcnt_bias=
-);
-> >> +    if (n->pf_cache.va)
-> >> +            __page_frag_cache_drain(virt_to_head_page(n->pf_cache.va)=
-,
-> >> +                                    n->pf_cache.pagecnt_bias);
-> >>      kvfree(n);
-> >>      return 0;
-> >>  }
-> >
-> > I would recommend reordering this patch with patch 5. Then you could
-> > remove the block that is setting "n->pf_cache.va =3D NULL" above and ju=
-st
-> > make use of page_frag_cache_drain in the lower block which would also
-> > return the va to NULL.
->
-> I am not sure if we can as there is no zeroing for 'struct vhost_net' in
-> vhost_net_open().
->
-> If we don't have "n->pf_cache.va =3D NULL", don't we use the uninitialize=
-d data
-> when calling page_frag_alloc_align() for the first time?
+On Fri, Jan 05, 2024 at 04:07:11PM -0600, David Vernet wrote:
+> 
+> So how do we want to move forward here? It sounds like we're leaning
+> toward's Alexei's proposal of having:
+> 
+> - Base Integer Instruction Set, 32-bit
+> - Base Integer Instruction Set, 64-bit
+> - Integer Multiplication and Division
+> - Atomic Instructions
 
-I see. So kvmalloc is used instead of kvzalloc when allocating the
-structure. That might be an opportunity to clean things up a bit by
-making that change to reduce the risk of some piece of memory
-initialization being missed.
+As in the 64-bit integer set would be an add-on to the first one which
+is the core set?  In that case that's fine with me, but the above
+wording is a bit suboptimal.
 
-That said, I still think reordering the two patches might be useful as
-it would help to make it so that the change you make to vhost_net is
-encapsulated in one patch to fully enable the use of the new page pool
-API.
+> And then either having 3 separate groups for the calls, or putting all 3
+> in the basic group? I'd lean towards the latter given that we're
+> decoupling ISA compliance from the verifier, but don't feel strongly
+> either way.
+
+What would be the three different groups for the calls?  I think just
+having the call instruction in the base group should be fine.  We'll
+need to put in some wording that having support for any kind of call
+depends on the program type.
+
 
