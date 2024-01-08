@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-19185-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19186-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7EF8826FCA
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 14:30:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C3C826FCB
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 14:30:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CED71C22328
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 13:30:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 986221C216D1
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 13:30:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 650BD45954;
-	Mon,  8 Jan 2024 13:28:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B82444C7F;
+	Mon,  8 Jan 2024 13:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ccOaIgJc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Aw+FdnZs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA6145946
-	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 13:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63AB94438E
+	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 13:28:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ccbded5aa4so19644361fa.1
-        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 05:28:36 -0800 (PST)
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2cd33336b32so22536391fa.0
+        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 05:28:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704720515; x=1705325315; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704720516; x=1705325316; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=40cXEfsT3AQZRZjpinyQmxm4bk5f/1kPx03yy0k5fSs=;
-        b=ccOaIgJckE6PvI+rAsIA0JK8wZ+e4Ao+RdnKK9k+a9QYjwNZO3NoD95keLnthXgjKZ
-         Bt59gUYwieiz3ZiUpLc1AXd+HEeNjcrFGxupGBYxYkIyVeM6eylhuiDIcSRfKckkip+D
-         TGhLAKGqBemKCFzFrFSbWHDJeJVDiaks91frWhScu9E3bwwB57iRLOP3RT293GsPG8Sr
-         XZKrt6fXMhvdjgjApqFZ3mwlOtK1727dZ897MA8DPF2/CsX7fXTPahyDZOwUlFoQb2Lx
-         +p2mgVSeXtxNIASqZNOxpZNXGorUJiQfj7I517OTOPddanYSTqA+q9NqlZm1VIhkkyTo
-         5Lmg==
+        bh=svOhLEBQw6ySn+JyuvVFhHT4ff1lI5RHm+bZAAT+5+M=;
+        b=Aw+FdnZsna9+eBjktc7BDolowIVVyVA6bjn7CC5x2GlTxq9ipQqeVbcp34+Fhxrd93
+         WDiwpqe9BThQVdCqumnhAtAQzztNJhwdtPi3mSdHROmSwvhCB9lJiavGsjuArIXSUsWK
+         ApGGemDtNRo7ZruUYFKgMYroxMoUBiFArdWjOCHHD+Rp+TG3x26OGQ3UsPrln6KFLh/k
+         Nj52E1zDeuuzM1MbXeRtID//7zMHAckm0Qb9gCN95HLoyE0z5oOR1vOHq1XqZeZFHjNe
+         R3MKvyohQRJ5mk3Ax/XTsnh0PbSj2qmXE9aYGBcmcgvjWvNys90MImLZh3uYVc4wt2Ms
+         cwSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704720515; x=1705325315;
+        d=1e100.net; s=20230601; t=1704720516; x=1705325316;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=40cXEfsT3AQZRZjpinyQmxm4bk5f/1kPx03yy0k5fSs=;
-        b=DzanLJFocWmd2l3wEydzbh4IaXhMFA1FLZvuQ2+2P1nBlFWnGQFL8gqhvji7fvH35Q
-         /8O1CV2x3djv3p8dtFQvg9k5PSMvgF5P9USTa2kZX2VhH74xaeFT03Ox6TcKRkcIBYOu
-         riyc3eIQXZ1BOz/y+yzCh3ynyyKT2cLkP8NUH8OuPGziFWo0jH5YoiE2nf1GBZeJn/V6
-         0xvBMgkekQbIxMikTsEbk4qUA34J4ya5yi4hysVlFOpKYtXl2Txn+HpksLo4je1UKlDt
-         OQfB0e2CO99tvOAD0KPFHwnWppV8B1kzA/BEagxHV5oYzUvfIm8/BfSYomgi6JXFcGOe
-         F5gA==
-X-Gm-Message-State: AOJu0YzKTBJH/fGoxfJqTq2UwBoybVu0PEbj1Yp/h7L56DZJ3X1G4wIe
-	2+D7b2gPqHaDDz8wtbzfnc7Br4zDou8=
-X-Google-Smtp-Source: AGHT+IEkejAEIFcD4bD2WxXUfgo1CKUvQgGfGRJavVHXZqlx2TDzNmusE31cBIauJItMfVJ29NwbDQ==
-X-Received: by 2002:a2e:a37a:0:b0:2cc:e85b:7075 with SMTP id i26-20020a2ea37a000000b002cce85b7075mr1669306ljn.4.1704720514646;
-        Mon, 08 Jan 2024 05:28:34 -0800 (PST)
+        bh=svOhLEBQw6ySn+JyuvVFhHT4ff1lI5RHm+bZAAT+5+M=;
+        b=J5yefNQo7FVCmAMOxpRjnT9JdpGjKbMy+kQhKre8clOuxjBn/GFJtcKVT2RTdy69u6
+         mSjydmElmmKfqIXPhxssTAO2RuNWz8Nl3tRC6MfZwpzJN00M9gAaaDnB5krTZYT2l8yn
+         qB4KLpOvNAifh1/f8HvsSGWPfW1L1T4Kb+++4ctm5NE36JUZK+9+aRLIsyqbvXRoUXsl
+         pV+TGxOvFWymWGeKL0Oq5pgYpfPRuFJa9ugTGMYCFPriAQ3srHfSip6iHWIhTD3sLsKj
+         /InWnl8i2rSVTTChKL0vlqxR5c78KeNrsKJl7S2Z4laG2LxKqVcYWJwFNt+AYObWGFag
+         jB5A==
+X-Gm-Message-State: AOJu0Yz4RgiKfKcDfiy9JwHoQ6U4oruZ323/AdCsI3EowcAOIXFicWa7
+	cLmj7NKH/8oEFpqBca3xovdUDgTElzs=
+X-Google-Smtp-Source: AGHT+IE7DvlBwND6leoOmmU9j678tYl60HqN6p5fd8a5bP92o8c95aMZbffUE4CtBcdxzF/mkhTpqA==
+X-Received: by 2002:a2e:9e46:0:b0:2cd:304f:8959 with SMTP id g6-20020a2e9e46000000b002cd304f8959mr1474114ljk.29.1704720516067;
+        Mon, 08 Jan 2024 05:28:36 -0800 (PST)
 Received: from localhost.localdomain (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id z3-20020a2ebe03000000b002cd3e2fc054sm1171458ljq.57.2024.01.08.05.28.33
+        by smtp.gmail.com with ESMTPSA id z3-20020a2ebe03000000b002cd3e2fc054sm1171458ljq.57.2024.01.08.05.28.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 05:28:34 -0800 (PST)
+        Mon, 08 Jan 2024 05:28:35 -0800 (PST)
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org
@@ -66,11 +66,10 @@ Cc: andrii@kernel.org,
 	kernel-team@fb.com,
 	yonghong.song@linux.dev,
 	zenczykowski@gmail.com,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH bpf-next 1/3] bpf: simplify try_match_pkt_pointers()
-Date: Mon,  8 Jan 2024 15:28:00 +0200
-Message-ID: <20240108132802.6103-2-eddyz87@gmail.com>
+	Eduard Zingerman <eddyz87@gmail.com>
+Subject: [PATCH bpf-next 2/3] bpf: infer packet range for 'if pkt ==/!= pkt_end' comparisons
+Date: Mon,  8 Jan 2024 15:28:01 +0200
+Message-ID: <20240108132802.6103-3-eddyz87@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240108132802.6103-1-eddyz87@gmail.com>
 References: <20240108132802.6103-1-eddyz87@gmail.com>
@@ -80,144 +79,56 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Reduce number of cases handled in try_match_pkt_pointers()
-to <pkt_data> <op> <pkt_end> or <pkt_meta> <op> <pkt_data>
-by flipping opcode.
+Extend try_match_pkt_pointers() to handle == and != operations.
+For instruction:
 
-Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+      .--------------- pointer to packet with some range R
+      |     .--------- pointer to packet end
+      v     v
+  if rA == rB goto ...
+
+It is valid to infer that R bytes are available in packet.
+This change should allow verification of BPF generated for
+C code like below:
+
+  if (data + 42 != data_end) { ... }
+
+Suggested-by: Maciej Żenczykowski <zenczykowski@gmail.com>
+Link: https://lore.kernel.org/bpf/CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66rZqUjFHvhx82A@mail.gmail.com/
 Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- kernel/bpf/verifier.c | 104 ++++++++++--------------------------------
- 1 file changed, 24 insertions(+), 80 deletions(-)
+ kernel/bpf/verifier.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index adbf330d364b..918e6a7912e2 100644
+index 918e6a7912e2..b229ba0ad114 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
-@@ -14677,6 +14677,9 @@ static bool try_match_pkt_pointers(const struct bpf_insn *insn,
+@@ -14677,6 +14677,7 @@ static bool try_match_pkt_pointers(const struct bpf_insn *insn,
  				   struct bpf_verifier_state *this_branch,
  				   struct bpf_verifier_state *other_branch)
  {
-+	int opcode = BPF_OP(insn->code);
-+	int dst_regno = insn->dst_reg;
-+
- 	if (BPF_SRC(insn->code) != BPF_X)
- 		return false;
++	struct bpf_verifier_state *eq_branch;
+ 	int opcode = BPF_OP(insn->code);
+ 	int dst_regno = insn->dst_reg;
  
-@@ -14684,90 +14687,31 @@ static bool try_match_pkt_pointers(const struct bpf_insn *insn,
- 	if (BPF_CLASS(insn->code) == BPF_JMP32)
- 		return false;
- 
--	switch (BPF_OP(insn->code)) {
-+	if (dst_reg->type == PTR_TO_PACKET_END ||
-+	    src_reg->type == PTR_TO_PACKET_META) {
-+		swap(src_reg, dst_reg);
-+		dst_regno = insn->src_reg;
-+		opcode = flip_opcode(opcode);
-+	}
-+
-+	if ((dst_reg->type != PTR_TO_PACKET ||
-+	     src_reg->type != PTR_TO_PACKET_END) &&
-+	    (dst_reg->type != PTR_TO_PACKET_META ||
-+	     !reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET)))
-+		return false;
-+
-+	switch (opcode) {
- 	case BPF_JGT:
--		if ((dst_reg->type == PTR_TO_PACKET &&
--		     src_reg->type == PTR_TO_PACKET_END) ||
--		    (dst_reg->type == PTR_TO_PACKET_META &&
--		     reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
--			/* pkt_data' > pkt_end, pkt_meta' > pkt_data */
--			find_good_pkt_pointers(this_branch, dst_reg,
--					       dst_reg->type, false);
--			mark_pkt_end(other_branch, insn->dst_reg, true);
--		} else if ((dst_reg->type == PTR_TO_PACKET_END &&
--			    src_reg->type == PTR_TO_PACKET) ||
--			   (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKET) &&
--			    src_reg->type == PTR_TO_PACKET_META)) {
--			/* pkt_end > pkt_data', pkt_data > pkt_meta' */
--			find_good_pkt_pointers(other_branch, src_reg,
--					       src_reg->type, true);
--			mark_pkt_end(this_branch, insn->src_reg, false);
--		} else {
--			return false;
--		}
--		break;
--	case BPF_JLT:
--		if ((dst_reg->type == PTR_TO_PACKET &&
--		     src_reg->type == PTR_TO_PACKET_END) ||
--		    (dst_reg->type == PTR_TO_PACKET_META &&
--		     reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
--			/* pkt_data' < pkt_end, pkt_meta' < pkt_data */
--			find_good_pkt_pointers(other_branch, dst_reg,
--					       dst_reg->type, true);
--			mark_pkt_end(this_branch, insn->dst_reg, false);
--		} else if ((dst_reg->type == PTR_TO_PACKET_END &&
--			    src_reg->type == PTR_TO_PACKET) ||
--			   (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKET) &&
--			    src_reg->type == PTR_TO_PACKET_META)) {
--			/* pkt_end < pkt_data', pkt_data > pkt_meta' */
--			find_good_pkt_pointers(this_branch, src_reg,
--					       src_reg->type, false);
--			mark_pkt_end(other_branch, insn->src_reg, true);
--		} else {
--			return false;
--		}
--		break;
- 	case BPF_JGE:
--		if ((dst_reg->type == PTR_TO_PACKET &&
--		     src_reg->type == PTR_TO_PACKET_END) ||
--		    (dst_reg->type == PTR_TO_PACKET_META &&
--		     reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
--			/* pkt_data' >= pkt_end, pkt_meta' >= pkt_data */
--			find_good_pkt_pointers(this_branch, dst_reg,
--					       dst_reg->type, true);
--			mark_pkt_end(other_branch, insn->dst_reg, false);
--		} else if ((dst_reg->type == PTR_TO_PACKET_END &&
--			    src_reg->type == PTR_TO_PACKET) ||
--			   (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKET) &&
--			    src_reg->type == PTR_TO_PACKET_META)) {
--			/* pkt_end >= pkt_data', pkt_data >= pkt_meta' */
--			find_good_pkt_pointers(other_branch, src_reg,
--					       src_reg->type, false);
--			mark_pkt_end(this_branch, insn->src_reg, true);
--		} else {
--			return false;
--		}
-+		/* pkt_data >/>= pkt_end, pkt_meta >/>= pkt_data */
-+		find_good_pkt_pointers(this_branch, dst_reg, dst_reg->type, opcode == BPF_JGE);
-+		mark_pkt_end(other_branch, dst_regno, opcode == BPF_JGT);
+@@ -14713,6 +14714,13 @@ static bool try_match_pkt_pointers(const struct bpf_insn *insn,
+ 		find_good_pkt_pointers(other_branch, dst_reg, dst_reg->type, opcode == BPF_JLT);
+ 		mark_pkt_end(this_branch, dst_regno, opcode == BPF_JLE);
  		break;
-+	case BPF_JLT:
- 	case BPF_JLE:
--		if ((dst_reg->type == PTR_TO_PACKET &&
--		     src_reg->type == PTR_TO_PACKET_END) ||
--		    (dst_reg->type == PTR_TO_PACKET_META &&
--		     reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
--			/* pkt_data' <= pkt_end, pkt_meta' <= pkt_data */
--			find_good_pkt_pointers(other_branch, dst_reg,
--					       dst_reg->type, false);
--			mark_pkt_end(this_branch, insn->dst_reg, true);
--		} else if ((dst_reg->type == PTR_TO_PACKET_END &&
--			    src_reg->type == PTR_TO_PACKET) ||
--			   (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKET) &&
--			    src_reg->type == PTR_TO_PACKET_META)) {
--			/* pkt_end <= pkt_data', pkt_data <= pkt_meta' */
--			find_good_pkt_pointers(this_branch, src_reg,
--					       src_reg->type, true);
--			mark_pkt_end(other_branch, insn->src_reg, false);
--		} else {
--			return false;
--		}
-+		/* pkt_data </<= pkt_end, pkt_meta </<= pkt_data */
-+		find_good_pkt_pointers(other_branch, dst_reg, dst_reg->type, opcode == BPF_JLT);
-+		mark_pkt_end(this_branch, dst_regno, opcode == BPF_JLE);
- 		break;
++	case BPF_JEQ:
++	case BPF_JNE:
++		/* pkt_data ==/!= pkt_end, pkt_meta ==/!= pkt_data */
++		eq_branch = opcode == BPF_JEQ ? other_branch : this_branch;
++		find_good_pkt_pointers(eq_branch, dst_reg, dst_reg->type, true);
++		mark_pkt_end(eq_branch, dst_regno, false);
++		break;
  	default:
  		return false;
+ 	}
 -- 
 2.43.0
 
