@@ -1,134 +1,128 @@
-Return-Path: <bpf+bounces-19198-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19199-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A3518275A1
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 17:45:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A2038276C4
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 18:59:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7ABFB222CB
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 16:45:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93D30284847
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 17:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA29653E18;
-	Mon,  8 Jan 2024 16:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C561255778;
+	Mon,  8 Jan 2024 17:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="O/oflqmm"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="QCuiJ8OT";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HW+5pS6p"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E83D53E25
-	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 16:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dbed4b84667so1254928276.0
-        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 08:45:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1704732329; x=1705337129; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jVuIgnahugRDwfdeFuBbzBR3KYIVwzwbEm3l+2cHWHs=;
-        b=O/oflqmmVGXi/gsBbl5n3jgKfJd7Ucyqf314VgRuqyaxh4WTNEDGyR6bMRATLr61ws
-         ObR534bSwrget/UfQHk4a5y/efFa8lgdETOGSiuV1g4Dl3htj9uWvmN7jsvRCGTPh9+E
-         B0V5NJwkGvmMsMeyChZWtT7pO/eHCH6f5SogLhWNfXPdegvxCwkQa24Un+DgKVuVQ8Ag
-         rJTtKXDOT+9b8+2nxWvTS+OsHdCKzLb5qeSb68d5z09Tvt8MMHpUDJhWjZWYTTuDT6VY
-         a9d9zHIkRZOEM8zlon1whQim2fTEageFYWGsDleI5IUxew8H74HB/HcECD1h3LJndpr2
-         0vPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704732329; x=1705337129;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jVuIgnahugRDwfdeFuBbzBR3KYIVwzwbEm3l+2cHWHs=;
-        b=tsta2LhfEWZHZlhyPloTceBcstWE+yIjw2qBU9mSV5FaHkQ6JGm9t/bUmNu0OO75hD
-         NkbBkkm1aj4KdAan2OZRSQT7gsoNR5g4L0FlpNmlPL66kew73IwtarWc6ItxG7kadjLI
-         kmQA+CQHIpoYvmGpa/fO5dh2rNQBdZqRO9iWIQCXqUFs4n5fZpzhtBASd9X1v6PdlYZw
-         Orqi8IzXCVLuts7cW3+f1nuWh5ZaiAs9WFPERG3L5GGkMN70muYOpp6h9rtHIEa/DvXa
-         LxUkUOPMKwugodTMD6lJ7wJvljEVz76JnzHGGWO622pHx5bYqNVVoaBQmaA1+8KjgKn6
-         OuPw==
-X-Gm-Message-State: AOJu0YwcP9xs9cAx1iU6D39ZG1+BSGoYSr8slFB2l5gt8nY5vK4mbVEH
-	umNAiurcw1wjfuyoKGcJvQRMl/vFk9vrjjgqWPln/xFsm8WX
-X-Google-Smtp-Source: AGHT+IFw22iEGTnFRWzmYXtloBMr6VnOd6CaxkdRy6faH/1+2adk2GdZEx6ti0o3TaY8BDjCpQlMpNb3yTSntSVs0DQ=
-X-Received: by 2002:a05:6902:2747:b0:dbe:346b:b97 with SMTP id
- ea7-20020a056902274700b00dbe346b0b97mr921467ybb.23.1704732328906; Mon, 08 Jan
- 2024 08:45:28 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735C854BF7;
+	Mon,  8 Jan 2024 17:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id C2DC53200D00;
+	Mon,  8 Jan 2024 12:52:53 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 08 Jan 2024 12:52:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1704736373;
+	 x=1704822773; bh=U5vHpLovxHw2jLbFSMwbVDfMhB5fX3K4zCUa0DIZn9Q=; b=
+	QCuiJ8OTr3lnfrzIujxwe/TZfLN1UIxB9lhaB8yim94u+mOcHro7SQ0ObxmjGCj4
+	Tb5u0npdf4GTBeVq7Cz2aFXmNa+QaEhiPOPcYSTHw5bxB+WNwzuSL0IBboyPK2jL
+	RzROivW2MUr5bdEzhDn/fpTjaPkhuKq7Y2O2FlIsGTSQ9/BiKUju+JyX8yMRXGxy
+	4JPkPMqkebAGZ6X5Oy2CJOJRzQ+gue9Cqa/+eZVCp0qB+sAUPlgY+jxbyGXJVYhe
+	X8V375V1byyUcuQNDBOBnTK7GBHSMhaLYEUU1U0iaoBJMrNlJHxV6qxUG3wMq5B0
+	uH7MPtSQ6xQmfd7oR7iFQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704736373; x=
+	1704822773; bh=U5vHpLovxHw2jLbFSMwbVDfMhB5fX3K4zCUa0DIZn9Q=; b=H
+	W+5pS6p8StQO1iOCpRMUGETWwegLC/itEkr0WC7HcpACh+OG0OM0TAGa2hkvGwaP
+	5qvYy2mXuiO0tnh4P2u0crfFK96diRxzgDdqyWzqT/FYexQukTZ6mnUCLxYEbIIM
+	4VlhkzufmFARICF16ChUFz/yOoBP+iZekdv0UswKOkpjR6BNq5VapPZOg1q2qT/C
+	5PveKLQu44B16jB0rftks3B649wadrnfVLj2ZAxOpu0DO54vzbm8rXKi4m1mMfQ9
+	/eYc+hn5aySPRTAK8Hg9gCA/LLAcGWZE7njvQ556WjGBHBu6qQhslWNzlDUkyO8K
+	iQsL/YuJcDENA1Msf1eVA==
+X-ME-Sender: <xms:dDacZcuDTXN6lIEB8WcOO16Pq_Tb_ovk8QZo9ds7l0Lpb-hT7fKQlg>
+    <xme:dDacZZebg42EFk_Dte7vA-bggeXbFkekpX81XBWPhF---MbikwU4NEQAq_cbaMZyt
+    GDLFMocQhEF5-vUZA>
+X-ME-Received: <xmr:dDacZXxBZ9cQLWYl6jdfdcpCufgtDH1LcuUb3pmhHdXoOlL94QlkfynIuxozVxZlTsp7KYObYheOxk2Q_1uOjqeGruABsR5zL19sbLc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehjedguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:dTacZfO1_6ZhFSPZ7zYR_vaSkrh9xyqkFLtjv5fayG8ZpCbkP8Qaxg>
+    <xmx:dTacZc-OoIoBjtWs99QJ3JVhf7MeRx8huVlrpOGlzP4IbiCQjrWwAg>
+    <xmx:dTacZXVkZfDjbk7VxlH_D6LS-Uq5m97mwmnDhWMv7x4tSBRugNGqbw>
+    <xmx:dTacZcOHJTHi1jhIyuq6e13SVSM7x8VZNsMZkqqn0mrcGx9wqqEgzA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 8 Jan 2024 12:52:51 -0500 (EST)
+Date: Mon, 8 Jan 2024 10:52:49 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Lorenz Bauer <lorenz.bauer@isovalent.com>
+Cc: linux-input@vger.kernel.org, coreteam@netfilter.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org, fsverity@lists.linux.dev, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	cgroups@vger.kernel.org, alexei.starovoitov@gmail.com, olsajiri@gmail.com, 
+	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com
+Subject: Re: [PATCH bpf-next v3 0/3] Annotate kfuncs in .BTF_ids section
+Message-ID: <6t5bei3t2gwhuycu6ewftrgfuuyfhs26euymkysefqyfabgupa@3od5pe6ajybo>
+References: <cover.1704565248.git.dxu@dxuuu.xyz>
+ <CAN+4W8gPeQ2OjoYLKXsNPyhSVTB+vcSaS3Xzw=-M9Rf5MXfKPg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103222034.2582628-1-andrii@kernel.org> <20240103222034.2582628-4-andrii@kernel.org>
- <CAHk-=wgmjr4nhxGheec1OwuYRk02d0+quUAViVk1v+w=Kvg15w@mail.gmail.com>
-In-Reply-To: <CAHk-=wgmjr4nhxGheec1OwuYRk02d0+quUAViVk1v+w=Kvg15w@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Mon, 8 Jan 2024 11:45:17 -0500
-Message-ID: <CAHC9VhQg7mYnQw-o1TYon_bdtk_CMzJaf6u5FTPosniG-UXK1w@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 03/29] bpf: introduce BPF token object
-To: Linus Torvalds <torvalds@linuxfoundation.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN+4W8gPeQ2OjoYLKXsNPyhSVTB+vcSaS3Xzw=-M9Rf5MXfKPg@mail.gmail.com>
 
-On Fri, Jan 5, 2024 at 4:45=E2=80=AFPM Linus Torvalds
-<torvalds@linuxfoundation.org> wrote:
-> On Wed, 3 Jan 2024 at 14:21, Andrii Nakryiko <andrii@kernel.org> wrote:
+Hi Lorenz,
+
+On Mon, Jan 08, 2024 at 10:15:45AM +0100, Lorenz Bauer wrote:
+> On Sat, Jan 6, 2024 at 7:25 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 > >
-> > +bool bpf_token_capable(const struct bpf_token *token, int cap)
-> > +{
-> > +       /* BPF token allows ns_capable() level of capabilities, but onl=
-y if
-> > +        * token's userns is *exactly* the same as current user's usern=
-s
-> > +        */
-> > +       if (token && current_user_ns() =3D=3D token->userns) {
-> > +               if (ns_capable(token->userns, cap))
-> > +                       return true;
-> > +               if (cap !=3D CAP_SYS_ADMIN && ns_capable(token->userns,=
- CAP_SYS_ADMIN))
-> > +                       return true;
-> > +       }
-> > +       /* otherwise fallback to capable() checks */
-> > +       return capable(cap) || (cap !=3D CAP_SYS_ADMIN && capable(CAP_S=
-YS_ADMIN));
-> > +}
->
-> This *feels* like it should be written as
->
->     bool bpf_token_capable(const struct bpf_token *token, int cap)
->     {
->         struct user_namespace *ns =3D &init_ns;
->
->         /* BPF token allows ns_capable() level of capabilities, but only =
-if
->          * token's userns is *exactly* the same as current user's userns
->          */
->         if (token && current_user_ns() =3D=3D token->userns)
->                 ns =3D token->userns;
->         return ns_capable(ns, cap) ||
->                 (cap !=3D CAP_SYS_ADMIN && capable(CAP_SYS_ADMIN));
->     }
->
-> And yes, I realize that the function will end up later growing a
->
->         security_bpf_token_capable(token, cap)
->
-> test inside that 'if (token ..)' statement, and this would change the
-> order of that test so that the LSM hook would now be done before the
-> capability checks are done, but that all still seems just more of an
-> argument for the simplification.
+> > === Description ===
+> >
+> > This is a bpf-treewide change that annotates all kfuncs as such inside
+> > .BTF_ids. This annotation eventually allows us to automatically generate
+> > kfunc prototypes from bpftool.
+> >
+> > We store this metadata inside a yet-unused flags field inside struct
+> > btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+> 
+> This is great, thanks for tackling this. With yout patches we can
+> figure out the full set of kfuncs. Is there a way to extend it so that
+> we can tell which program context a kfunc can be called from?
 
-I have no problem with rewriting things, my only ask is that we stick
-with the idea of doing the capability checks before the LSM hook.  The
-DAC-before-MAC (capability-before-LSM) pattern is one we try to stick
-to most everywhere in the kernel and deviating from it here could
-potentially result in some odd/unexpected behavior from a user
-perspective.
+I think a potential approach would be to extend BTF_ID_FLAGS() with some
+more flags if we want to continue with .BTF_ids parsing technique. But
+it has some issues with program-type-less helpers that are associated with
+attachpoints as well as struct_ops helpers.
 
---=20
-paul-moore.com
+Since it looks like we're in rather early stages of program-type-less
+world, maybe it'd be good to defer solving this problem until more use
+cases are established and we can find a good cut point to design around.
+Even with uapi helpers there was no way before.
+
+Thanks,
+Daniel
 
