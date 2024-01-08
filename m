@@ -1,153 +1,122 @@
-Return-Path: <bpf+bounces-19190-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19191-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C59DC827050
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 14:51:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2955782706F
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 14:57:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E96B51C228AE
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 13:51:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7D281F22CFD
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 13:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408DD4597E;
-	Mon,  8 Jan 2024 13:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C106845976;
+	Mon,  8 Jan 2024 13:57:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gwOD3s4Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B0usINco"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D7045943
-	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 13:49:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19E34645A
+	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 13:57:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-557dcb0f870so396113a12.2
-        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 05:49:38 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50e7c6e3c63so1674813e87.3
+        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 05:57:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704721777; x=1705326577; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8/dppo67RVAjc4Gf+PU21CXfwM4RbMYMPqnFHtOQcPM=;
-        b=gwOD3s4YjGyVIfldLlpIxY3pZDAZk1YpdE4eZ01ZRQZzDjOsP7wKSLceXd0anGOYyf
-         3vAK26UnWG8dvOzS+OiqfySszWxXlHKglWIFZehdL+xzowuV9ESwtiJ+rIqEBQzU7ZCT
-         Yn4JiWLSKOp3BwCGjA/Q/M4MkF/z7T6sJhWeyKB6NvSl3r/IhE4RzrQ8mzwVjPBfhkmP
-         H6JHO0Oqz5xp4qtdm1ww5L4QeHwmB13usMAIYJ+32U1STy51cGY7ntuLYHX9yRMLGmDI
-         7zxyWPgX+aH6HOdQMCK2pYHhBOtcUsbsCm70gueBWR7gcvE6/NsbBygnOjMRnk02IIwq
-         aVfA==
+        d=gmail.com; s=20230601; t=1704722257; x=1705327057; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dwC2+IEsdxuZpYMyuPfPXI4nc8Sboc6WOWmh07VyMF8=;
+        b=B0usINcodVGyhZIlV8HDeNv4l8T33iRckxCzZkyWOJRjw2yELgTUGWXUcGVedWyZgT
+         iIUG5IUSqeUKNjCpzVa7Nn18N082LaIE99JK0yqWB5FcMtGnwuXoydd+6L5UlxQPuI+G
+         g/YVx6e5wfkPsFR1UBFhmzkbJ25FeOLgRmGAOZWN9PQGbVitpJuCNRVUn8KQy/LtrB0L
+         WeKGzH2tGQF5Ov7Yv1ihinPGv7p3e5JHulKGpOr8M1zcVNHH1G3yXRBR/SeAOy5fDaIZ
+         4qXes345uzvcz089kNO0SlbjSA/KRu2gdD+Dz6CDvt8yKJe2Vce47WhIPC/KMtVyRDBL
+         JPRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704721777; x=1705326577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8/dppo67RVAjc4Gf+PU21CXfwM4RbMYMPqnFHtOQcPM=;
-        b=uEubhpUsetWOD1PZ10wG/UeV0ARbn34TSlGqCI3XBdbQgE5fvMpLL2hGsHbzWP67kF
-         LzvdedD1yoItgnWwdV86DozeNVPWiIe5tGCGh2MV2yF9q8FnAiszTU8VcrYUpCk5gjCb
-         64A5XgAH7DbG/zFQjHd2WMyOuh3PlgoOd0PK7pIbRoDwf85dq72yHtFqoHMVL0p7l1i/
-         SJfMBWgrn3P6h6jplpFAmGe4kEaCdJqLCWVxJ31Vw57Y0ap3YoGfZFHoLCnkcN27wrWs
-         TVh9b2AtYnmg4Phq88BLY+2+iqFIPm1byf7a03/F7rYnLoTEXPZrNBSpWjLE7C0NL0aw
-         ovyw==
-X-Gm-Message-State: AOJu0YyKEZkjYklLb4BxrPwJwKrZPRF0K8KcK+AXuwZfAQauaUGzcCf0
-	KZnPbvKT9MBWJEXb/19U6u12+afh3+FGAOQur5w=
-X-Google-Smtp-Source: AGHT+IG5vMQXX2C3JznKW0WnIqOtYqp/+vu8T0kOIFviVJ/4P8rkW6HSgPINHfvLmB8MdETTxmMVyFGJ0Y8UPhFt0a0=
-X-Received: by 2002:a17:906:398e:b0:a28:cb84:1888 with SMTP id
- h14-20020a170906398e00b00a28cb841888mr1769730eje.2.1704721777048; Mon, 08 Jan
- 2024 05:49:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704722257; x=1705327057;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dwC2+IEsdxuZpYMyuPfPXI4nc8Sboc6WOWmh07VyMF8=;
+        b=c+2XfieHzQJeWXWBU4JtFnsnCEqMv+oBCz2F/z9mI3w6bHhYJRYSCDv+xwwLPgxuA3
+         CDtJuvK/66rWckBU7B35weHr73RG7CrTxF81BYD22WSUVaXMSvm6vg/gYZnTIqmACElQ
+         bVKl5Bf6DusYq+FCwcIZF7ewsg2i/3oxyyNz3rxSwbBbn9v757UDQrZw66o4t8EJJcBz
+         GfP1OLJL5JWhu7ki2vU+9O/cy8Nqcl/e0X3fQNAri2l4COH3asJz06buY614xod7PZR+
+         RFY0KkJsFHNVYgC0mWk09dP6qyCAsnRVu3DUIegkmIt3ZkYSDSZBHBPAH/OLiEKvnUXI
+         JWHg==
+X-Gm-Message-State: AOJu0YySx6trKwAYAo6fPko5u+sjyi1zLbjXsBYEcpiolAwbjWfkxUos
+	oeyrFK6K1fC+c4LyxnP9FAg=
+X-Google-Smtp-Source: AGHT+IEKIz/4SwIh9XBbwJKrZyGvFDCwMwUK/Pm+I/mrFKS9XPKS+vNPNsgs+TwEcQG9HguEwzhTag==
+X-Received: by 2002:a05:6512:3094:b0:50e:4299:de2 with SMTP id z20-20020a056512309400b0050e42990de2mr967201lfd.164.1704722256743;
+        Mon, 08 Jan 2024 05:57:36 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id u5-20020ac25185000000b0050eab7d397bsm1157742lfi.256.2024.01.08.05.57.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 05:57:36 -0800 (PST)
+Message-ID: <c1dc9b8cf943b59396559be26706b77625fbac08.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: infer packet range for 'if pkt ==/!=
+ pkt_end' comparisons
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Maciej =?UTF-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net,  martin.lau@linux.dev, kernel-team@fb.com,
+ yonghong.song@linux.dev
+Date: Mon, 08 Jan 2024 15:57:35 +0200
+In-Reply-To: <CAHo-OowJWNFMAEwvFhaPUevHjTYBe71NuMgYLBShtzxFcSQ3jw@mail.gmail.com>
+References: <20240108132802.6103-1-eddyz87@gmail.com>
+	 <20240108132802.6103-3-eddyz87@gmail.com>
+	 <CAHo-OowJWNFMAEwvFhaPUevHjTYBe71NuMgYLBShtzxFcSQ3jw@mail.gmail.com>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108132802.6103-1-eddyz87@gmail.com> <20240108132802.6103-3-eddyz87@gmail.com>
-In-Reply-To: <20240108132802.6103-3-eddyz87@gmail.com>
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Date: Mon, 8 Jan 2024 05:49:25 -0800
-Message-ID: <CAHo-OowJWNFMAEwvFhaPUevHjTYBe71NuMgYLBShtzxFcSQ3jw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/3] bpf: infer packet range for 'if pkt ==/!=
- pkt_end' comparisons
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-(I've looked at all 3 patches, and they seem fine... but I don't claim
-to understand the intricacies of the verifier/registers/etc well
-enough to be certain)
+On Mon, 2024-01-08 at 05:49 -0800, Maciej =C5=BBenczykowski wrote:
+> (I've looked at all 3 patches, and they seem fine... but I don't claim
+> to understand the intricacies of the verifier/registers/etc well
+> enough to be certain)
 
-On Mon, Jan 8, 2024 at 5:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
- wrote:
->
-> Extend try_match_pkt_pointers() to handle =3D=3D and !=3D operations.
-> For instruction:
->
->       .--------------- pointer to packet with some range R
->       |     .--------- pointer to packet end
->       v     v
->   if rA =3D=3D rB goto ...
+Thank you.
 
-it's possible this would be better without the 'goto' as just 'if (rA
-=3D=3D rB) ...'
+> On Mon, Jan 8, 2024 at 5:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+> >=20
+> > Extend try_match_pkt_pointers() to handle =3D=3D and !=3D operations.
+> > For instruction:
+> >=20
+> >       .--------------- pointer to packet with some range R
+> >       |     .--------- pointer to packet end
+> >       v     v
+> >   if rA =3D=3D rB goto ...
+>=20
+> it's possible this would be better without the 'goto' as just 'if (rA
+> =3D=3D rB) ...'
 
->
-> It is valid to infer that R bytes are available in packet.
-> This change should allow verification of BPF generated for
-> C code like below:
->
->   if (data + 42 !=3D data_end) { ... }
+The idea was to show this as BPF asm instruction, which has syntax
+'if rA =3D=3D rB goto C'. I'll wait for more feedback and submit v2
+with updated commit message to make it more clear.
 
-this should probably be:
-  if (data + 42 !=3D data_end) return;
-  ...
+> > It is valid to infer that R bytes are available in packet.
+> > This change should allow verification of BPF generated for
+> > C code like below:
+> >=20
+> >   if (data + 42 !=3D data_end) { ... }
+>=20
+> this should probably be:
+>   if (data + 42 !=3D data_end) return;
+>   ...
 
->
-> Suggested-by: Maciej =C5=BBenczykowski <zenczykowski@gmail.com>
-> Link: https://lore.kernel.org/bpf/CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66r=
-ZqUjFHvhx82A@mail.gmail.com/
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->  kernel/bpf/verifier.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 918e6a7912e2..b229ba0ad114 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -14677,6 +14677,7 @@ static bool try_match_pkt_pointers(const struct b=
-pf_insn *insn,
->                                    struct bpf_verifier_state *this_branch=
-,
->                                    struct bpf_verifier_state *other_branc=
-h)
->  {
-> +       struct bpf_verifier_state *eq_branch;
->         int opcode =3D BPF_OP(insn->code);
->         int dst_regno =3D insn->dst_reg;
->
-> @@ -14713,6 +14714,13 @@ static bool try_match_pkt_pointers(const struct =
-bpf_insn *insn,
->                 find_good_pkt_pointers(other_branch, dst_reg, dst_reg->ty=
-pe, opcode =3D=3D BPF_JLT);
->                 mark_pkt_end(this_branch, dst_regno, opcode =3D=3D BPF_JL=
-E);
->                 break;
-> +       case BPF_JEQ:
-> +       case BPF_JNE:
-> +               /* pkt_data =3D=3D/!=3D pkt_end, pkt_meta =3D=3D/!=3D pkt=
-_data */
-> +               eq_branch =3D opcode =3D=3D BPF_JEQ ? other_branch : this=
-_branch;
-> +               find_good_pkt_pointers(eq_branch, dst_reg, dst_reg->type,=
- true);
-> +               mark_pkt_end(eq_branch, dst_regno, false);
-> +               break;
->         default:
->                 return false;
->         }
-> --
-> 2.43.0
->
+Makes sense, will update commit message.
 
