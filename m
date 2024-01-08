@@ -1,230 +1,214 @@
-Return-Path: <bpf+bounces-19235-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19236-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 291BA827B95
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 00:27:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AF18827BA7
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 00:39:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BEACB21AF9
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 23:27:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCB721F2412C
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 23:39:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8D756751;
-	Mon,  8 Jan 2024 23:24:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EEE5646E;
+	Mon,  8 Jan 2024 23:39:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="HzR6Ew9u"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JVTlQzjC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B729156747
-	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 23:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5986d902ae6so400935eaf.3
-        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 15:24:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1704756265; x=1705361065; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KPSBbp9ZkK3DjLiJQ98AmTXwQJNlra7MUAA1GhykwOI=;
-        b=HzR6Ew9uRkIiMxyfpKZWEaW5JMhlktGpVoRl321bQ8o7YxqjCCNXmJWOZFbBZQyBEc
-         lk3xaqCzJb80H+39y6TS0RQ403aK6cWq3Hscy1iQiuTPlowja/NanjYWaiyX7YIo9WuK
-         wL9/x8BfEsWnpwu2kBWg8KLW9XeJS8OazvGBVPL0PHwZLPLhNMioG4JX6P/bzD3Ms/wC
-         pubcTPfVx2Wmz1nMAepVXmM4P6JUxU1hfOHVcJNQlFKWeSdc4zbshC6qR2RYmvk1T06E
-         QDT8OXTOdMna9MXx/bIUZV+VeXUK5DXqgzh9EtM38RPQ/eZwEnjXd861c7hZyURQVEuM
-         yaFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704756265; x=1705361065;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KPSBbp9ZkK3DjLiJQ98AmTXwQJNlra7MUAA1GhykwOI=;
-        b=waacTiuAnaSOKdSEB/6CAaaJn45HWjxZrnonD17PXc0+/PgKqLfaIHiEQEOsNr7qx7
-         G20E6RehdYw5izxWV/fXsFQznCctz3nu5/x9//WRbhzfAwUvWJZiA2RpmPIj01Lb9QVC
-         iBA3CaRerR3OGC8ia85TzxDft1yyGMBxBKcvBa4CvqFvxFH7v+YudgufHGIe4i9keOzB
-         33mjDDZk4fs1btZxcerxvcZD7H+YLxhFJmOp5kfGILdo56HgNUELU/FFJXRHMVWfxa7T
-         qDXQ5iw6sLVdBjxEuPOS/qR7wGKCXI1uWFlsMdf8Laml0nZRjG5/H1MHvjMQK1tBGR+U
-         tPoA==
-X-Gm-Message-State: AOJu0YyDH+s1bGISCT1IjeqVq0wGtN/QD5yB1HcMjW94W8EKYhL9fktO
-	8rUhWCrLqMY91UrDxuvSdPImMI437J+t1w==
-X-Google-Smtp-Source: AGHT+IG6TjgDsF2/wiQZGTMuZxptSmvk3GWiEObIO6GHNnPzxuKZtxqFZlRulgKrzheBB4cQNX0BWQ==
-X-Received: by 2002:a05:6358:919e:b0:175:5fcf:34c6 with SMTP id j30-20020a056358919e00b001755fcf34c6mr4611159rwa.43.1704756265456;
-        Mon, 08 Jan 2024 15:24:25 -0800 (PST)
-Received: from ?IPv6:2601:647:4900:1fbb:599e:4610:68fc:6ddd? ([2601:647:4900:1fbb:599e:4610:68fc:6ddd])
-        by smtp.gmail.com with ESMTPSA id h16-20020a056a00001000b006cecaff9e29sm393892pfk.128.2024.01.08.15.24.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Jan 2024 15:24:24 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D593356741
+	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 23:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fd15fbaa-93cc-4197-a800-cc836fe641a7@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1704757150;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XCrOA9OgMY610EVfkW+bcVE8uf71gWqyNCbGNlUj6dg=;
+	b=JVTlQzjCL67yNv7jzOLxH+jQnP0Kdl1kwMeirlVSoAHG1vtAoFWBATmpQiHKEMme5YHJoN
+	PDbnQEK/+9K+d4iv2kULuJAYm3PTbbXFfet1FV/ULZjc4ceOAdZKewqhd7xn9mzTAZoZtz
+	EvfRwVnjYE/I4J8r/EF7FEU0vBrLMus=
+Date: Mon, 8 Jan 2024 15:39:06 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.7\))
-Subject: Re: [PATCH bpf 1/2] bpf: Avoid iter->offset making backward progress
- in bpf_iter_udp
-From: Aditi Ghag <aditi.ghag@isovalent.com>
-In-Reply-To: <9f3c86e9-111c-4cf0-ad8b-aafbd301bbb3@linux.dev>
-Date: Mon, 8 Jan 2024 15:24:22 -0800
-Cc: Daniel Borkmann <daniel@iogearbox.net>,
- Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>,
- netdev@vger.kernel.org,
- kernel-team@meta.com,
- bpf@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E12CF653-CCF3-497D-9B1F-AC8264390256@isovalent.com>
-References: <20231219193259.3230692-1-martin.lau@linux.dev>
- <8d15f3a7-b7bc-1a45-0bdf-a0ccc311f576@iogearbox.net>
- <fc1b5650-72bb-4b09-bab4-f61b2186f673@linux.dev>
- <9f3697c1-ed15-4a3d-9113-c4437f421bb3@linux.dev>
- <8787f5c0-fed0-b8fa-997b-4d17d9966f13@iogearbox.net>
- <639b1f3f-cb53-4058-8426-14bd50f2b78f@linux.dev>
- <8AF6C653-61DB-4142-B2B3-5C6A7D966AF8@isovalent.com>
- <41818988-af0e-4d61-8505-4a13782ad61c@linux.dev>
- <61BFE697-3A12-4D0E-A5B9-FA2677D988E2@isovalent.com>
- <9f3c86e9-111c-4cf0-ad8b-aafbd301bbb3@linux.dev>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-X-Mailer: Apple Mail (2.3608.120.23.2.7)
+MIME-Version: 1.0
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Track aligned st store as imprecise
+ spilled registers
+Content-Language: en-GB
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Martin KaFai Lau <kafai@fb.com>
+References: <20240103232617.3770727-1-yonghong.song@linux.dev>
+ <CAEf4BzYXm-2qkM3Gx5Did9nuLAkA+SvfK75Aj5pjeDWmBMQTSg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <CAEf4BzYXm-2qkM3Gx5Did9nuLAkA+SvfK75Aj5pjeDWmBMQTSg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
+On 1/8/24 3:23 PM, Andrii Nakryiko wrote:
+> On Wed, Jan 3, 2024 at 3:26 PM Yonghong Song <yonghong.song@linux.dev> wrote:
+>> With patch set [1], precision backtracing supports register spill/fill
+>> to/from the stack. The patch [2] allows initial imprecise register spill
+>> with content 0. This is a common case for cpuv3 and lower for
+>> initializing the stack variables with pattern
+>>    r1 = 0
+>>    *(u64 *)(r10 - 8) = r1
+>> and the [2] has demonstrated good verification improvement.
+>>
+>> For cpuv4, the initialization could be
+>>    *(u64 *)(r10 - 8) = 0
+>> The current verifier marks the r10-8 contents with STACK_ZERO.
+>> Similar to [2], let us permit the above insn to behave like
+>> imprecise register spill which can reduce number of verified states.
+>> The change is in function check_stack_write_fixed_off().
+>>
+>> Before this patch, spilled zero will be marked as STACK_ZERO
+>> which can provide precise values. In check_stack_write_var_off(),
+>> STACK_ZERO will be maintained if writing a const zero
+>> so later it can provide precise values if needed.
+>>
+>> The above handling of '*(u64 *)(r10 - 8) = 0' as a spill
+>> will have issues in check_stack_write_var_off() as the spill
+>> will be converted to STACK_MISC and the precise value 0
+>> is lost. To fix this issue, if the spill slots with const
+>> zero and the BPF_ST write also with const zero, the spill slots
+>> are preserved, which can later provide precise values
+>> if needed. Without the change in check_stack_write_var_off(),
+>> the test_verifier subtest 'BPF_ST_MEM stack imm zero, variable offset'
+>> will fail.
+>>
+>> I checked cpuv3 and cpuv4 with and without this patch with veristat.
+>> There is no state change for cpuv3 since '*(u64 *)(r10 - 8) = 0'
+>> is only generated with cpuv4.
+>>
+>> For cpuv4:
+>> $ ../veristat -C old.cpuv4.csv new.cpuv4.csv -e file,prog,insns,states -f 'insns_diff!=0'
+>> File                                        Program              Insns (A)  Insns (B)  Insns    (DIFF)  States (A)  States (B)  States (DIFF)
+>> ------------------------------------------  -------------------  ---------  ---------  ---------------  ----------  ----------  -------------
+>> local_storage_bench.bpf.linked3.o           get_local                  228        168    -60 (-26.32%)          17          14   -3 (-17.65%)
+>> pyperf600_bpf_loop.bpf.linked3.o            on_event                  6066       4889  -1177 (-19.40%)         403         321  -82 (-20.35%)
+>> test_cls_redirect.bpf.linked3.o             cls_redirect             35483      35387     -96 (-0.27%)        2179        2177    -2 (-0.09%)
+>> test_l4lb_noinline.bpf.linked3.o            balancer_ingress          4494       4522     +28 (+0.62%)         217         219    +2 (+0.92%)
+>> test_l4lb_noinline_dynptr.bpf.linked3.o     balancer_ingress          1432       1455     +23 (+1.61%)          92          94    +2 (+2.17%)
+>> test_xdp_noinline.bpf.linked3.o             balancer_ingress_v6       3462       3458      -4 (-0.12%)         216         216    +0 (+0.00%)
+>> verifier_iterating_callbacks.bpf.linked3.o  widening                    52         41    -11 (-21.15%)           4           3   -1 (-25.00%)
+>> xdp_synproxy_kern.bpf.linked3.o             syncookie_tc             12412      11719    -693 (-5.58%)         345         330   -15 (-4.35%)
+>> xdp_synproxy_kern.bpf.linked3.o             syncookie_xdp            12478      11794    -684 (-5.48%)         346         331   -15 (-4.34%)
+>>
+>> test_l4lb_noinline and test_l4lb_noinline_dynptr has minor regression, but
+>> pyperf600_bpf_loop and local_storage_bench gets pretty good improvement.
+>>
+>>    [1] https://lore.kernel.org/all/20231205184248.1502704-1-andrii@kernel.org/
+>>    [2] https://lore.kernel.org/all/20231205184248.1502704-9-andrii@kernel.org/
+>>
+>> Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
+>> Cc: Martin KaFai Lau <kafai@fb.com>
+>> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+>> ---
+>>   kernel/bpf/verifier.c                         | 21 +++++++++++++++++--
+>>   .../selftests/bpf/progs/verifier_spill_fill.c | 16 +++++++-------
+>>   2 files changed, 27 insertions(+), 10 deletions(-)
+>>
+>> Changelogs:
+>>    v1 -> v2:
+>>      - Preserve with-const-zero spill if writing is also zero
+>>        in check_stack_write_var_off().
+>>      - Add a test with not-8-byte-aligned BPF_ST store.
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index d4e31f61de0e..cfe7a68d90a5 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -4491,7 +4491,7 @@ static int check_stack_write_fixed_off(struct bpf_verifier_env *env,
+>>                  if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
+>>                          state->stack[spi].spilled_ptr.id = 0;
+>>          } else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &&
+>> -                  insn->imm != 0 && env->bpf_capable) {
+>> +                  env->bpf_capable) {
+>>                  struct bpf_reg_state fake_reg = {};
+>>
+>>                  __mark_reg_known(&fake_reg, insn->imm);
+>> @@ -4613,11 +4613,28 @@ static int check_stack_write_var_off(struct bpf_verifier_env *env,
+>>
+>>          /* Variable offset writes destroy any spilled pointers in range. */
+>>          for (i = min_off; i < max_off; i++) {
+>> +               struct bpf_reg_state *spill_reg;
+>>                  u8 new_type, *stype;
+>> -               int slot, spi;
+>> +               int slot, spi, j;
+>>
+>>                  slot = -i - 1;
+>>                  spi = slot / BPF_REG_SIZE;
+>> +
+>> +               /* If writing_zero and the the spi slot contains a spill of value 0,
+>> +                * maintain the spill type.
+>> +                */
+>> +               if (writing_zero && !(i % BPF_REG_SIZE) && is_spilled_scalar_reg(&state->stack[spi])) {
+>> +                       spill_reg = &state->stack[spi].spilled_ptr;
+>> +                       if (tnum_is_const(spill_reg->var_off) && spill_reg->var_off.value == 0) {
+>> +                               for (j = BPF_REG_SIZE; j > 0; j--) {
+>> +                                       if (state->stack[spi].slot_type[j - 1] != STACK_SPILL)
+>> +                                               break;
+>> +                               }
+>> +                               i += BPF_REG_SIZE - j - 1;
+>> +                               continue;
+>> +                       }
+>> +               }
+>> +
+> Yonghong, I just replied to one of Eduard's email. I think the overall
+> approach will be correct.
+>
+> But two small things. Above, if you detect tnum_is_conxt() and value
+> is zero, it seems like you'd need to set zero_used=true.
 
-> On Jan 4, 2024, at 4:33 PM, Martin KaFai Lau <martin.lau@linux.dev> =
-wrote:
->=20
-> On 1/4/24 3:38 PM, Aditi Ghag wrote:
->>>> I'm not sure about semantics of the resume operation for certain =
-corner cases like these:
->>>> - The BPF UDP sockets iterator was stopped while iterating bucker =
-#X, and the offset was set to 2. bpf_iter_udp_seq_stop then released =
-references to the batched sockets, and marks the bucket X iterator state =
-(aka iter->st_bucket_done) as false.
->>>> - Before the iterator is "resumed", the bucket #X was mutated such =
-that the previously iterated sockets were removed, and new sockets were =
-added.  With the current logic, the iterator will skip the first two =
-sockets in the bucket, which isn't right. This is slightly different =
-from the case where sockets were updated in the X -1 bucket *after* it =
-was fully iterated. Since the bucket and sock locks are released, we =
-don't have any guarantees that the underlying sockets table isn't =
-mutated while the userspace has a valid iterator.
->>>> What do you think about such cases?
->>> I believe it is something orthogonal to the bug fix here but we =
-could use this thread to discuss.
->> Yes, indeed! But I piggy-backed on the same thread, as one potential =
-option could be to always start iterating from the beginning of a =
-bucket. (More details below.)
->>>=20
->>> This is not something specific to the bpf tcp/udp iter which uses =
-the offset as a best effort to resume (e.g. the inet_diag and the =
-/proc/net/{tcp[6],udp} are using similar strategy to resume). To improve =
-it, it will need to introduce some synchronization with the (potentially =
-fast path) writer side (e.g. bind, after 3WHS...etc). Not convinced it =
-is worth it to catch these cases.
->> Right, synchronizing fast paths with the iterator logic seems like an =
-overkill.
->> If we change the resume semantics, and make the iterator always start =
-from the beginning of a bucket, it could solve some of these corner =
-cases (and simplify the batching logic). The last I checked, the TCP =
-(BPF) iterator logic was tightly coupled with the=20
->=20
-> Always resume from the beginning of the bucket? hmm... then it is =
-making backward progress and will hit the same bug again. or I =
-miss-understood your proposal?
+Yes, my planned change is to add mark_chain_precision() explicitly after
+    if (writing_zero && !(i % BPF_REG_SIZE) && is_spilled_scalar_reg(&state->stack[spi])) {
 
-I presumed that the user would be required to pass a bigger buffer when =
-seq_printf fails to capture the socket data being iterated (this was =
-prior to when I wasn't aware of the logic that decided when to stop the =
-sockets iterator).=20
+But yes, setting zero_used=true much simpler.
 
-Thanks for the code pointer in your last message, so I'll expand on the =
-proposal below.
+>
+> But I actually want to propose to implement this slightly differently.
+> Instead of skipping multiple bytes, I think it would be better to just
+> check one byte at a time. Just like we have
+>
+>
+> if (writing_zero && *stype == STACK_ZERO) {
+>      new_type = STACK_ZERO;
+>      zero_used = true;
+> }
+>
+> we can insert
+>
+> if (writing_zero && *stype == STACK_SPILL && tnum_is_const(..) &&
+> var_off.value == 0) {
+>      zero_used = true;
+>      continue;
+> }
+>
+> It will be very similar to STACK_ZERO handling, but we won't be
+> overwriting slot type. But handling one byte at a time is more in line
+> with the rest of the logic.
+>
+> WDYT?
 
-Also, we could continue to discuss if there are better ways to handle =
-the cases where an iterator is stopped, but I would expect that we still =
-need to fix the broken case in the current code, and get it backported. =
-So I'll keep an eye out for your v2 patch.=20
+Thanks for suggestion. Sounds good. Will do.
 
->=20
->> file based iterator (/proc/net/{tcp,udp}), so I'm not sure if it's an =
-easy change if we were to change the resume semantics for both TCP and =
-UDP BFP iterators?
->> Note that, this behavior would be similar to the lseek operation with =
-seq_file [1]. Here is a snippet -
->=20
-> bpf_iter does not support lseek.
->=20
->> The stop() function closes a session; its job, of course, is to clean =
-up. If dynamic memory is allocated for the iterator, stop() is the place =
-to free it; if a lock was taken by start(), stop() must release that =
-lock. The value that *pos was set to by the last next() call before =
-stop() is remembered, and used for the first start() call of the next =
-session unless lseek() has been called on the file; in that case next =
-start() will be asked to start at position zero
->> [1] https://docs.kernel.org/filesystems/seq_file.html
->>>=20
->>> For the cases described above, skipped the newer sockets is arguably =
-ok. These two new sockets will not be captured anyway even the batch was =
-not stop()-ed in the middle. I also don't see how it is different =
-semantically if the two new sockets are added to the X-1 bucket: the =
-sockets are added after the bpf-iter scanned it regardless they are =
-added to an earlier bucket or to an earlier location of the same bucket.
->>>=20
->>> That said, the bpf_iter_udp_seq_stop() should only happen if the =
-bpf_prog bpf_seq_printf() something AND hit the seq->buf (PAGE_SIZE) << =
-3) limit or the count in "read(iter_fd, buf, count)" limit.
->> Thanks for sharing the additional context. Would you have a link for =
-these set of conditions where an iterator can be stopped? It'll be good =
-to document the API semantics so that users are aware of the =
-implications of setting the read size parameter too low.
->=20
-> Most of the conditions should be in bpf_seq_read() in bpf_iter.c.
-
-Ah! This is helpful.
-
->=20
-> Again, this resume on offset behavior is not something specific to =
-bpf-{tcp,udp}-iter.
->=20
->>> For this case, bpf_iter.c may be improved to capture the whole =
-batch's seq_printf() to seq->buf first even the userspace's buf is full. =
-It would be a separate effort if it is indeed needed.
->> Interesting proposal... Other option could be to invalidate the =
-userspace iterator if an entire bucket batch is not being captured, so =
-that userspace can retry with a bigger buffer.
->=20
-> Not sure how to invalidate the user buffer without breaking the =
-existing userspace app though.
-
-By "invalidate the user buffer", I meant passing an error code to the =
-userspace app, so that the userspace can allocate a bigger buffer =
-accordingly. (I wasn't aware if/of how this was being done behind the =
-scenes in bpf_seq_read, so thanks for the pointer.)
-Based on my reading of the code, bpf_seq_read does seem to pass an error =
-code when the passed buffer size isn't enough. When that happens, I =
-would've expected the userspace iterator to be invalidated rather than =
-resumed, and the BPF iterator program to be rerun with a larger buffer.
-
->=20
-> The earlier idea on seq->buf was a quick thought. I suspect there is =
-still things that need to think through if we did want to explore how to =
-provide better guarantee to allow seq_printf() for one whole batch. I =
-still feel it is overkill.
-
-I'm still trying to fully grasp the logic in bpf_seq_read, but it seems =
-like it's a generic function for all BPF iterators (and not just BPF =
-TCP/UDP iterator). *sigh* So if we wanted to simplify the resume case =
-such that we didn't have to keep track of offsets within a batch, we =
-would have to tailor the bpf_seq_read specifically for the batching =
-logic in BPF TCP/UDP iterator (being able to fully capture batched =
-sockets printf). That would indeed be a separate effort, and would need =
-more discussion. One possible solution could be to handle "resume" =
-operation in seq->buf without involving the BPF TCP/UDP handlers, but I =
-haven't fully thought of this proposal. /cc Daniel=20
-
-
-
+>
+>>                  stype = &state->stack[spi].slot_type[slot % BPF_REG_SIZE];
+>>                  mark_stack_slot_scratched(env, spi);
+>>
+> [...]
 
