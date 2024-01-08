@@ -1,82 +1,177 @@
-Return-Path: <bpf+bounces-19206-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19207-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E9A827979
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 21:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B38E827980
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 21:52:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA9811F23FA6
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 20:52:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2D961F23FA4
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 20:52:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8DDB55C28;
-	Mon,  8 Jan 2024 20:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C7055787;
+	Mon,  8 Jan 2024 20:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gpcw9jTn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JqsaWkrU"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38BA255C09
-	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 20:51:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9201C433B1
-	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 20:51:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704747108;
-	bh=0OPhYk2xderx9pYgUD5dzUZnAeIpu2Rq+iujdsMQvfs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gpcw9jTnST9NtkRYc02XMfwC6Df/qBgap11ztW2K+10EV/9onFvjagTnu5EzE+6f3
-	 j+n2su0QE/ELlQANwLL0J3nZkzXd1v9zXARWWDO4FZToBDlIx+g/BO9UWsPKs4Onc3
-	 aeA7+atYlGHmXlgsdEk4XNNCvaK9GlCjLwrPUe5KR9hixs5q/3yukHHm7EMC6PJdWB
-	 TsQPMMR25fSOIAnG/OFuYhRXPamgjFGNtY4VuSQN4f6B+A4F0M2in7/cjWQONMWDHB
-	 j2Ccv/WY/F68RBNyt64bFl9tzNxEOjIR3EBYmr3LfcNOb/F5Vz7dtSrGkHtwjpRPWy
-	 PSJzc7MtrrI0Q==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-50e7dd8bce8so2471394e87.1
-        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 12:51:48 -0800 (PST)
-X-Gm-Message-State: AOJu0Ywcb36udGu0/lsFyZuJOYX5SsaqIoS2Pl1LlYwsQoSJI/K0cNCH
-	zq4GxNd7EKf8lD/IDFSEa4RyAPrYsuDcUtJ/gq8=
-X-Google-Smtp-Source: AGHT+IG0Q5zyr+l2GHExUV4bCyx7GOhNUKTib9tiOfI+bFheJWhFN22UTTHjfSmycUSCabXg3ZGgEahO6FeN1hKUpYE=
-X-Received: by 2002:a05:6512:4002:b0:50e:40bf:e0a4 with SMTP id
- br2-20020a056512400200b0050e40bfe0a4mr2119990lfb.132.1704747106890; Mon, 08
- Jan 2024 12:51:46 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E5955E46;
+	Mon,  8 Jan 2024 20:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a2ac304e526so120871666b.0;
+        Mon, 08 Jan 2024 12:52:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704747142; x=1705351942; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pt5ZBMAmBsmSRV69wcHOG+kyXrXealjLznmp8t+4vXs=;
+        b=JqsaWkrU8WEgInv5qAVCSNDP2gREWCF7JMvEhcrZd1A/vU9k9Ke5yuuAZTbW+PZVJf
+         VonW9nTlzi5ja3NQ77BOv8hHNOThTiS4nFNEfSldyJzHd1Gn6j1HY0WN5k1zr6DsW1ZM
+         qtgLxMaOIsAE47wGAlNV64Ix63FDLPOtsM7H1Y0dgJXJ5KMsAhyfzjQqzjpsF39y3YZF
+         4RET/jatxb415cZVOUebbPmaqFK1wtQW6tSUPfyhRJj+kWLcBAaglZOKQnC1Aq4lGMBJ
+         OsawXOTYzFVbkgFdUwJJq/IaB8cqlYJ96NJeM4ezf1D8w0LQ+8VtpBrswgs4oiYYLtvt
+         f3Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704747142; x=1705351942;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pt5ZBMAmBsmSRV69wcHOG+kyXrXealjLznmp8t+4vXs=;
+        b=PaUITy8RYeGLsmHGBiW/yPLSt93f0dly9LLyJ2kuoGui4O10RbtMe/zwBLJLP6NizJ
+         /7yzDcuL1QzDF6EmF/GTAiR49pW+y5I26vvIpqCGzTpouUyp3Z2Zq6zSt9w0UHE9WbZG
+         voGvyOkIrHiGQRyZ8vsQ6pW871hvQNb9Q9JhSmuZeIA/nhJBEgUNkZ/TAHleHLwXPUFP
+         Kz1/2GZs3Frp8McFS3moaTya90tVx3AHFaUbnL8bVwUADdeAgAbgar+/Bo5+UYwu084p
+         1WQdJZ5vAl7xRLOqq1vMRpbl/azXkLkwx+IM0CGTIPtTIRHVq/YuYSThdBVUlLlU2xXq
+         6Ucg==
+X-Gm-Message-State: AOJu0Yy5CnbRbJ7ncr4DUvWeUWCJHmVG6m3++i16EiWPGVEOGFpZVnt7
+	kCAUfrO6gRtAXwIYmR9ehLE=
+X-Google-Smtp-Source: AGHT+IFqN6+gjU6/FmZMQH3eFTlQMUeABxDMRt7hv7vBNJphODGfuL+eU8WN5ynT1iAAytnaXuSitw==
+X-Received: by 2002:a17:907:500f:b0:a2b:1a20:36b7 with SMTP id fw15-20020a170907500f00b00a2b1a2036b7mr11421ejc.49.1704747142437;
+        Mon, 08 Jan 2024 12:52:22 -0800 (PST)
+Received: from localhost ([185.220.101.66])
+        by smtp.gmail.com with ESMTPSA id gl16-20020a170906e0d000b00a28bf7969cdsm240864ejb.180.2024.01.08.12.52.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jan 2024 12:52:22 -0800 (PST)
+From: Maxim Mikityanskiy <maxtram95@gmail.com>
+To: Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: John Fastabend <john.fastabend@gmail.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Maxim Mikityanskiy <maxim@isovalent.com>
+Subject: [PATCH bpf-next v2 00/15] Improvements for tracking scalars in the BPF verifier
+Date: Mon,  8 Jan 2024 22:51:54 +0200
+Message-ID: <20240108205209.838365-1-maxtram95@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221141501.3588586-1-houtao@huaweicloud.com> <20231221141501.3588586-2-houtao@huaweicloud.com>
-In-Reply-To: <20231221141501.3588586-2-houtao@huaweicloud.com>
-From: Song Liu <song@kernel.org>
-Date: Mon, 8 Jan 2024 12:51:35 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW5DLQrb5oHsx309F2ATj5hzuDrZw+ZseDxy4Js6EjHVpA@mail.gmail.com>
-Message-ID: <CAPhsuW5DLQrb5oHsx309F2ATj5hzuDrZw+ZseDxy4Js6EjHVpA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Move bench specific metrics
- into union of structs
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Hao Luo <haoluo@google.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, houtao1@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 21, 2023 at 6:14=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> From: Hou Tao <houtao1@huawei.com>
->
-> Various benchmarks define its specific metrics in bench_res. This not
-> only bloats the size of bench_res, but also make the code that tries to
-> reuse the space hard to follow.
->
-> So move benchmark specific metrics into stand-alone structs and pack
-> these structs into a union to reduce the size of bench_res.
->
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+From: Maxim Mikityanskiy <maxim@isovalent.com>
 
-Acked-by: Song Liu <song@kernel.org>
+The goal of this series is to extend the verifier's capabilities of
+tracking scalars when they are spilled to stack, especially when the
+spill or fill is narrowing. It also contains a fix by Eduard for
+infinite loop detection and a state pruning optimization by Eduard that
+compensates for a verification complexity regression introduced by
+tracking unbounded scalars. These improvements reduce the surface of
+false rejections that I saw while working on Cilium codebase.
+
+Patch 1 (Maxim): Fix for an existing test, it will matter later in the
+series.
+
+Patches 2-3 (Eduard): Fixes for false rejections in infinite loop
+detection that happen in the selftests when my patches are applied.
+
+Patches 4-5 (Maxim): Fix the inconsistency of find_equal_scalars that
+was possible if 32-bit spills were made.
+
+Patches 6-11 (Maxim): Support the case when boundary checks are first
+performed after the register was spilled to the stack.
+
+Patches 12-13 (Maxim): Support narrowing fills.
+
+Patches 14-15 (Eduard): Optimization for state pruning in stacksafe() to
+mitigate the verification complexity regression.
+
+veristat -e file,prog,states -f '!states_diff<50' -f '!states_pct<10' -f '!states_a<10' -f '!states_b<10' -C ...
+
+ * Without patch 14:
+
+File                  Program       States (A)  States (B)  States    (DIFF)
+--------------------  ------------  ----------  ----------  ----------------
+bpf_xdp.o             tail_lb_ipv6        3877        2936    -941 (-24.27%)
+pyperf180.bpf.o       on_event            8422       10456   +2034 (+24.15%)
+pyperf600.bpf.o       on_event           22259       37319  +15060 (+67.66%)
+pyperf600_iter.bpf.o  on_event             400         540    +140 (+35.00%)
+strobemeta.bpf.o      on_event            4702       13435  +8733 (+185.73%)
+
+ * With patch 14:
+
+File                  Program       States (A)  States (B)  States  (DIFF)
+--------------------  ------------  ----------  ----------  --------------
+bpf_xdp.o             tail_lb_ipv6        3877        2937  -940 (-24.25%)
+pyperf600_iter.bpf.o  on_event             400         500  +100 (+25.00%)
+
+v2 changes:
+
+Fixed comments in patch 1, moved endianness checks to header files in
+patch 12 where possible, added Eduard's ACKs.
+
+Eduard Zingerman (4):
+  bpf: make infinite loop detection in is_state_visited() exact
+  selftests/bpf: check if imprecise stack spills confuse infinite loop
+    detection
+  bpf: Optimize state pruning for spilled scalars
+  selftests/bpf: states pruning checks for scalar vs STACK_{MISC,ZERO}
+
+Maxim Mikityanskiy (11):
+  selftests/bpf: Fix the u64_offset_to_skb_data test
+  bpf: Make bpf_for_each_spilled_reg consider narrow spills
+  selftests/bpf: Add a test case for 32-bit spill tracking
+  bpf: Add the assign_scalar_id_before_mov function
+  bpf: Add the get_reg_width function
+  bpf: Assign ID to scalars on spill
+  selftests/bpf: Test assigning ID to scalars on spill
+  bpf: Track spilled unbounded scalars
+  selftests/bpf: Test tracking spilled unbounded scalars
+  bpf: Preserve boundaries and track scalars on narrowing fill
+  selftests/bpf: Add test cases for narrowing fill
+
+ include/linux/bpf_verifier.h                  |   4 +-
+ include/linux/filter.h                        |  12 +
+ kernel/bpf/verifier.c                         | 155 ++++-
+ .../bpf/progs/verifier_direct_packet_access.c |   2 +-
+ .../selftests/bpf/progs/verifier_loops1.c     |  24 +
+ .../selftests/bpf/progs/verifier_spill_fill.c | 533 +++++++++++++++++-
+ .../testing/selftests/bpf/verifier/precise.c  |   6 +-
+ 7 files changed, 685 insertions(+), 51 deletions(-)
+
+-- 
+2.43.0
+
 
