@@ -1,162 +1,151 @@
-Return-Path: <bpf+bounces-19231-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19232-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09B57827B5B
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 00:17:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F038827B5C
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 00:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57AF7B22AEE
-	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 23:17:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7D30B22AE5
+	for <lists+bpf@lfdr.de>; Mon,  8 Jan 2024 23:19:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8214153E1F;
-	Mon,  8 Jan 2024 23:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC7754BE8;
+	Mon,  8 Jan 2024 23:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lqNkjJwK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f6JEm8VW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C896D56740
-	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 23:17:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1141DDDC
+	for <bpf@vger.kernel.org>; Mon,  8 Jan 2024 23:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d40eec5e12so19084165ad.1
-        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 15:17:04 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-554fe147ddeso2709049a12.3
+        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 15:19:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704755824; x=1705360624; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mxEt8//a9tk6CLrSUF1WftcF2StETIlvw7vdnyy+NI0=;
-        b=lqNkjJwKHoGV8hc7Ahm4RGu5UACoMqzvHoZ06QpVFNMPbetRtqQL0jC3XJrwIi76I3
-         nZ28BtGisGV3+lEPZnKHn6ixQ6osl87iBUW+tX21mPliv/goBl1aAp+38WKLHD10afXe
-         7rggq9EQ8S+GLp+G78pfF2drOrbqYugCLO2Z3wxIdcKHhdRDDXxa9EGWPtogJqDmy0+1
-         tOuL79UVq55kf82Fe2TKj0kp/vFgG5Kh5eYcndyLgl+QfDId+tPl1iiSiDn21nFLNWw5
-         gdIL0Gj2ka09q3zuhOfj1OcIuJTdjHWw8UIC1YjwsX0FtE4nVoY2CtCfSJbGWs5iIlTI
-         mTCw==
+        d=gmail.com; s=20230601; t=1704755948; x=1705360748; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Afg0AcqhIevhmFxuBteeGJ2HWHgx2Jjye14ZXducJlc=;
+        b=f6JEm8VWkuAmrZ4rX8E+lWjQJV9NZTPg6SmfQWaB0Tukj3p3g6Xph+CbKqa8HiVIs9
+         XRM11cdB3p5CxilO6+3xKHgNMER8DsqIE5Puxd4/ahNZjokw8QVer2wZv481fzUwEwlX
+         YE/GCjBts4hGR4oeME4dX5ROnEc4XBAECl8nEcP25MGP+236aCVlkAP1MouYZSujVj77
+         FZZZgpQLlptWWxD8cEDlVRAzSSuw3ETAAc6fDF4dZLr2uoOSNhG/rQ16SNrF6Agi3sq/
+         4jGdS2Cx5FNI3QqSRKIhRnjBmnMZXx1OjI54/WGIb3N6Nz9josHKLMCTAv3GpF7Ug7EF
+         zttQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704755824; x=1705360624;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mxEt8//a9tk6CLrSUF1WftcF2StETIlvw7vdnyy+NI0=;
-        b=mzhaJBdAjiUs4HsWI+vFEdeJyZwVmLN0K+h7zy+44FtRdxKAT34Yc0kGn3Kd22pxti
-         Cb6kKfj0AJOBVLzfizZ6EyAbAFC6QMJCB1v1IZd3ifI6J3y7274DcCl04obbczer43X3
-         s8Z7XQsuQhEGzNuyWnQC9zMEiOhSUrEugMOaxjpsXkJ6O2lfeAKCQGICJCBzFI2BW+zr
-         uKwQaSaFSocljxEEmdWd7EzUEtZVhe0nLHrr8gqQNP+S3fp5Pu0AMZzRtl6Mo7yNhnGM
-         4638Rw8vWPeRzNb76XGqYF6VOioTEHC1vm5vbkwocxGabA0zLOmQZYc2BcshXmXsE5K+
-         qJ2A==
-X-Gm-Message-State: AOJu0YxXoB/yCducER+P989Kjw+9AVBfVCjXAUBanwEhvYdszhG0aWfy
-	bAtnD2ljZteYM+6OXZhqk3Y=
-X-Google-Smtp-Source: AGHT+IGHJKGDNZ/MVClgntnHNTwSjFngLW2Vj7RPy7o0rFeMckOsXbYb9iqKKrRX0oC3yY5qtrbnJA==
-X-Received: by 2002:a17:902:b907:b0:1d4:fda1:e355 with SMTP id bf7-20020a170902b90700b001d4fda1e355mr4370366plb.94.1704755823970;
-        Mon, 08 Jan 2024 15:17:03 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id n10-20020a1709026a8a00b001cfc35d1326sm416763plk.177.2024.01.08.15.17.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jan 2024 15:17:03 -0800 (PST)
-Message-ID: <c38e87c8301aa383ae622a14c75c39b2dc4f7989.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/5] bpf: Introduce "volatile compare" macro
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov
-	 <alexei.starovoitov@gmail.com>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>,  Martin KaFai Lau <martin.lau@kernel.org>, Daniel Xu
- <dxu@dxuuu.xyz>, John Fastabend <john.fastabend@gmail.com>, bpf
- <bpf@vger.kernel.org>, Kernel Team <kernel-team@fb.com>
-Date: Tue, 09 Jan 2024 01:16:58 +0200
-In-Reply-To: <dc6ce5dc-afb9-4b5b-a99a-1577b99f6a96@linux.dev>
-References: <20231221033854.38397-1-alexei.starovoitov@gmail.com>
-	 <20231221033854.38397-3-alexei.starovoitov@gmail.com>
-	 <CAP01T77fbW-9N+Z-2LFS=174HN6v_OJAbR_s6EOfLLW8Oceh_g@mail.gmail.com>
-	 <CAADnVQKY4hB4quJX_oyq4GULEJkehXWx6uW1nAYHveyvdyG8sw@mail.gmail.com>
-	 <CAADnVQ+tYBpt_aRG5aU3sAYEysKxUOKQ24dBG4bP2kLy8nmmgA@mail.gmail.com>
-	 <44a9223b6638673487850eb9d70cc01ef58e9d93.camel@gmail.com>
-	 <dc6ce5dc-afb9-4b5b-a99a-1577b99f6a96@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+        d=1e100.net; s=20230601; t=1704755948; x=1705360748;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Afg0AcqhIevhmFxuBteeGJ2HWHgx2Jjye14ZXducJlc=;
+        b=TDdTiHeZ6IG4s+ekUg7nP98qOF24LiSuURnw7T+aXGYmnRW7KgOz94FG/uYGMFCCR/
+         gNkjsFvlXyhFy/ZdTu1DSNfvNsRESLoGOF3BbAFupNfAAlCbUBHo79nSQaXUAbUFRI7k
+         Dsir6zLby7DQqFLRM4pomaUnk5ACkrB+MbmRm5VtXrKDnnDhKcQwSZkN6TaCInXrGCT9
+         eh0iWUkAR8mrU0bMsiMgfdOWG/D2g7m6eACWHnwr+8prIyXjpNABtnbxW6VYUSLttogY
+         MmlXLDLjtIYC4CG5Ez2FBHry3KjMJK35ttiCfJFClyyoxRcOABKIaGQdYyZufHuhkdZd
+         SK/Q==
+X-Gm-Message-State: AOJu0Yzah1mswroXFRUuNRRxGC8WFSJtW7pBhWcVLwWCfUbqOjjCnMFd
+	SGyUpGvMjtE8RiGzgL6F43zqjjHKn0JHVP0p3PI=
+X-Google-Smtp-Source: AGHT+IFdDOXyH6MoNeiJiKCckpSduG1dtTsq2UkaVBxHSAfANzNM1nKOjCJXynTXQE8MW7sbi4C5WzJSLhqcNunTnco=
+X-Received: by 2002:aa7:cd76:0:b0:556:e2c8:d693 with SMTP id
+ ca22-20020aa7cd76000000b00556e2c8d693mr1483093edb.124.1704755947587; Mon, 08
+ Jan 2024 15:19:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240103232617.3770727-1-yonghong.song@linux.dev>
+ <f4c1ebf73ccf4099f44045e8a5b053b7acdffeed.camel@gmail.com>
+ <cbff1224-39c0-4555-a688-53e921065b97@linux.dev> <69410e766d68f4e69400ba9b1c3b4c56feaa2ca2.camel@gmail.com>
+ <CAEf4Bzb0LdSPnFZ-kPRftofA6LsaOkxXLN4_fr9BLR3iG-te-g@mail.gmail.com>
+ <67a4b5b8bdb24a80c1289711c7c156b6c8247403.camel@gmail.com>
+ <CAEf4BzZ8tAXQtCvUEEELy8S26Wf7OEO6APSprQFEBND7M_FXrQ@mail.gmail.com> <1c2e09212c4ac27345083a3c374dd82b0bbfdf2f.camel@gmail.com>
+In-Reply-To: <1c2e09212c4ac27345083a3c374dd82b0bbfdf2f.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 8 Jan 2024 15:18:55 -0800
+Message-ID: <CAEf4BzbxX6=oDjZS+uecSWerfR6Ob2h8sA6Y57jV_VE+Ep7GQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] bpf: Track aligned st store as imprecise
+ spilled registers
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, 
+	Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-01-08 at 13:21 -0800, Yonghong Song wrote:
-[...]
-> Thanks for the detailed analysis! Previously we intend to do the followin=
-g:
->=20
-> - When 32-bit value is passed to "r" constraint:
->    - for cpu v3/v4 a 32-bit register should be selected;
->    - for cpu v1/v2 a warning should be reported.
->=20
-> So in the above, the desired asm code should be
->=20
->      ...
->      # %bb.0:
->      	call bar
->      	#APP
->      	w0 +=3D 1
->      	#NO_APP
->      	exit
->      ...
->=20
-> for cpuv3/cpuv4. I guess some more work in llvm is needed
-> to achieve that.
+On Fri, Jan 5, 2024 at 3:52=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Thu, 2024-01-04 at 17:05 -0800, Andrii Nakryiko wrote:
+> [...]
+> > > The test is actually quite minimal, the longest part is conjuring of
+> > > varying offset pointer in r2, here it is with additional comments:
+> > >
+> > >     /* Write 0 or 100500 to fp-16, 0 is on the first verification pas=
+s */
+> > >     "call %[bpf_get_prandom_u32];"
+> > >     "r9 =3D 100500;"
+> > >     "if r0 > 42 goto +1;"
+> > >     "r9 =3D 0;"
+> > >     "*(u64 *)(r10 - 16) =3D r9;"
+> > >     /* prepare a variable length access */
+> > >     "call %[bpf_get_prandom_u32];"
+> > >     "r0 &=3D 0xf;" /* r0 range is [0; 15] */
+> > >     "r1 =3D -1;"
+> > >     "r1 -=3D r0;"  /* r1 range is [-16; -1] */
+> > >     "r2 =3D r10;"
+> > >     "r2 +=3D r1;"  /* r2 range is [fp-16; fp-1] */
+> > >     /* do a variable length write of constant 0 */
+> > >     "r0 =3D 0;"
+> > >     "*(u8 *)(r2 + 0) =3D r0;"
+> [...]
+> > Yes, and the test fails, but if you read the log, you'll see that fp-8
+> > is never marked precise, but it should. So we need more elaborate test
+> > that would somehow exploit fp-8 imprecision.
+>
+> Sorry, I don't understand why fp-8 should be precise for this particular =
+test.
+> Only value read from fp-16 is used in precise context.
+>
+> [...]
+> > So keep both read and write as variable offset. And we are saved by
+> > some missing logic in read_var_off that would set r2 as known zero
+> > (because it should be for the branch where both fp-8 and fp-16 are
+> > zero). But that fails in the branch that should succeed, and if that
+> > branch actually succeeds, I suspect the branch where we initialize
+> > with non-zero r9 will erroneously succeed.
+> >
+> > Anyways, I still claim that we are mishandling a precision of spilled
+> > register when doing zero var_off writes.
+>
+> Currently check_stack_read_var_off() has two possible outcomes:
+> - if all bytes at varying offset are STACK_ZERO destination register
+>   is set to zero;
+> - otherwise destination register is set to unbound scalar.
+>
+> Unless I missed something, STACK_ZERO is assigned to .slot_type only
+> in check_stack_write_fixed_off(), and there the source register is
+> marked as precise immediately.
+>
+> So, it appears to me that current state of patch #1 is ok.
 
-To make clang emit w0 the following modification is needed:
+I agree. Thinking some more I agree with you, what I was concerned
+about should be handled properly at read time. So I think what we have
+in this patch is ok. Sorry for the noise :)
 
-diff --git a/llvm/lib/Target/BPF/BPFISelLowering.cpp b/llvm/lib/Target/BPF/=
-BPFISelLowering.cpp
-index b20e09c7f95f..4c504d587ce6 100644
---- a/llvm/lib/Target/BPF/BPFISelLowering.cpp
-+++ b/llvm/lib/Target/BPF/BPFISelLowering.cpp
-@@ -265,6 +265,8 @@ BPFTargetLowering::getRegForInlineAsmConstraint(const T=
-argetRegisterInfo *TRI,
-     // GCC Constraint Letters
-     switch (Constraint[0]) {
-     case 'r': // GENERAL_REGS
-+      if (HasAlu32 && VT =3D=3D MVT::i32)
-+        return std::make_pair(0U, &BPF::GPR32RegClass);
-       return std::make_pair(0U, &BPF::GPRRegClass);
-     case 'w':
-       if (HasAlu32)
-
-However, as Alexei notes in the sibling thread,
-this leads to incompatibility with some existing inline assembly.
-E.g. there are two compilation errors in selftests.
-I'll write in some more detail in the sibling thread.
-
-> On the other hand, for cpuv3/v4, for regular C code,
-> I think the compiler might be already omitting the conversion and use w
-> register already. So I am not sure whether the patch [6]
-> is needed or not. Could you double check?
-
-Yes, for regular C code, generated assembly uses 32-bit registers as expect=
-ed:
-
-echo $(cat <<EOF
-extern unsigned long bar(unsigned);
-void foo(void) {
-  bar(bar(7));
-}
-EOF
-) | clang -mcpu=3Dv3 -O2 --target=3Dbpf -mcpu=3Dv3 -x c -S -o - -
-
-...
-
-foo:                                    # @foo
-# %bb.0:
-	w1 =3D 7
-	call bar
-	w1 =3D w0
-	call bar
-	exit
+>
+> In case if check_stack_read_var_off() would be modified to check not
+> only for STACK_ZERO, but also for zero spills, I think that all such
+> spills would have to be marked precise at the time of read,
+> as backtracking would not be able to find those later.
+> But that is not related to change in check_stack_write_var_off()
+> introduced by this patch.
 
