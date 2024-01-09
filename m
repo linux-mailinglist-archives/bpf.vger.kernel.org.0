@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-19241-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19242-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7CC1827C30
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 01:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD721827C33
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 01:46:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A9ED2839BB
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 00:44:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4590628516F
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 00:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 258AF647;
-	Tue,  9 Jan 2024 00:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8D8A50;
+	Tue,  9 Jan 2024 00:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gZv/nrEQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KcMO+gad"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185B456743
-	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 00:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8FFD647
+	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 00:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5576fae29ffso2274316a12.1
-        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 16:44:05 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50e7d6565b5so2541416e87.0
+        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 16:45:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704761044; x=1705365844; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704761155; x=1705365955; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U2INMq1jSEBaYaXp+tHbt8h6C0Lmr0UJQjbxb8re7lo=;
-        b=gZv/nrEQA7sxqZvDd1noDF1u1POje18yPMsMJQM9PgH0yM5FFMGYlY4xE6we2Fcegq
-         aVndCHN9EZ1dvBqXIexXRf30PV2zoMRFNU3oiQK2HqkVuZMWZjguM61GTQKNHV/eoc3/
-         QagIdQ1zUojetSHz3SkKtz94CBvW1pw17sDTrj78bceSYq0NXVua159pFgxZC+VCBSu6
-         +ALsg+MKdcLn8PCgHpEVrtVCi+B5WheuAGSKoFjzvUtiat5Vqt4PO7oyjhRJ68fDjRxO
-         uerlP5uZEEVeXuiJWEQbE/5eOupsIBEebWvsH03SCDUuRWTZvmodFobu5SUhTwBtrC1F
-         UY5g==
+        bh=GhWFTWUzeI0kbfJO5FVpC2TNo1q6ZT2LOEVaOqDoCKk=;
+        b=KcMO+gadtDKEVXc+KKzngjin9SGdSBWs33BUqYHjxya9C9qlYZDO7ceNcMqZPTj1Nw
+         dBztWAb01Aa27mxUUgIVgJNGtS9p9JGJbgylQ1tvDSo1DOWvb8v0oi1ShPUpg46jh9DM
+         Pndm0btieocjMsqSirv2ZfHosrKUGyg2jwpfzXajyHe90RG26q9iULsQVKYkzETniM1c
+         IciA3m6OV9E7/gsM6EsQDoGWKiO89V3EeXOnSxo2dTqWecktSoHYI6lVRG/rUKN28ncO
+         5l+dYbryv0zexKsUAtZq73s5cU1ikt2tUIyh9eQc4MKttvZSQrz253jIQaOpqOw2672d
+         D+og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704761044; x=1705365844;
+        d=1e100.net; s=20230601; t=1704761155; x=1705365955;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U2INMq1jSEBaYaXp+tHbt8h6C0Lmr0UJQjbxb8re7lo=;
-        b=vNRKiiluinyKGDPTWFPAr+8aGkpoqadI4YVISLwl9WMmb5fUZyljrmWbIm7f9pkml7
-         4fuXtGGVpj3JKAbpwsBQ60b1oVv+S0nrEPjndD2HQYL2zQUV2bCPfBOswBvsEBT22zum
-         ZVRqvSoG5XMj+11GU1FLOrl78uM0qhK93KwtY7AqriHJtI3vtKOQwPo3JNbY4T1YAFbO
-         nJDmyC8xALosHodSmA+lYAJ+//0qip0HtCV2Qbi5JTZ0c1/kPK0fkZ/l0293EgDgDRVQ
-         p5DmO3VFkv/hw9vM87MUfxC9YY5aAFd+q4n0DDbLzSQ60kzqexO5m7mdnPf+4GyOz9BE
-         dY3g==
-X-Gm-Message-State: AOJu0YzWoflTxdluAXaRmLYUm7fM46ogXSzAfPvIH+xA7v4OdaAV+wJF
-	3gIvcMnpi8OvsGw3oLR5GQJCJ9kpyN7vvkx3zjpX3orj
-X-Google-Smtp-Source: AGHT+IFv6eGutVr2GCH8bEbKSyXypG9b6Dd9ZvbdCXXtVon0RiA2bwFT71CaZT1dwcUAkkQ233zPuGCjSHCiH2YJSaw=
-X-Received: by 2002:a50:9993:0:b0:556:e686:ba4 with SMTP id
- m19-20020a509993000000b00556e6860ba4mr2084542edb.84.1704761044257; Mon, 08
- Jan 2024 16:44:04 -0800 (PST)
+        bh=GhWFTWUzeI0kbfJO5FVpC2TNo1q6ZT2LOEVaOqDoCKk=;
+        b=Rx37qeXhqLRorPJSb8uPgQC1BAqhfBkNoSDhdnVpZzm64XKXASU68H8of9B6wM62lW
+         905vhYqMNK3vo4xaD2Ypgr8c6TFl/ecJ+31joUwN1D+oRHHJ3BnJfUGSIT6/i442qcGL
+         GVIXquL9mtXA8TwGxXLjcQXqSy/rJ3p0dkuBrJlSW0jvMv4fhkwpM3WIzgOLazCIpjxo
+         VKj5zDz34ZIIcaXM6UyJqjvzINDxVUbM/L71FJZ2fwF1g1zz8YGIUFGPhC2wAUEEvqRw
+         4FrsR4VBhYEfCGucAg8CDXGDA2aSiN1BuW9lGAxKnoVBvUaoCEHmTB3oIALd1u3EmrOj
+         qVRA==
+X-Gm-Message-State: AOJu0YyhdCHygO1Y5PTa6SNphQ8o8dmpfpZl5YYaFC0b9U4AwB2QCSpU
+	0m5bfQ6vGkq9+vZmCbVKT8+cu/rQfJFWmdmIGiQ=
+X-Google-Smtp-Source: AGHT+IHrGInvzAxcJl1uUIILhJRBN6awd3hqjvlVUphfcD8inMM3z4xgm9kfwnUTNwfb7tdHfhdB1mR8KTfi+lHO3AQ=
+X-Received: by 2002:ac2:4853:0:b0:50e:7dcc:ee63 with SMTP id
+ 19-20020ac24853000000b0050e7dccee63mr1741138lfy.35.1704761154431; Mon, 08 Jan
+ 2024 16:45:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240108132802.6103-1-eddyz87@gmail.com> <20240108132802.6103-2-eddyz87@gmail.com>
- <CAEf4Bzb5NNWRroWtg5cRy4FUV8-AhrRbsd7_D12F3SJu7hTcqw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzb5NNWRroWtg5cRy4FUV8-AhrRbsd7_D12F3SJu7hTcqw@mail.gmail.com>
+References: <20240108132802.6103-1-eddyz87@gmail.com> <20240108132802.6103-3-eddyz87@gmail.com>
+In-Reply-To: <20240108132802.6103-3-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 8 Jan 2024 16:43:52 -0800
-Message-ID: <CAEf4BzYP-AVF5a3=KM-+T=fHN3-0YHEGrQKPLVqvbJsKJJXZvw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/3] bpf: simplify try_match_pkt_pointers()
+Date: Mon, 8 Jan 2024 16:45:41 -0800
+Message-ID: <CAEf4BzYSPGmMucCwADeKYcivyyvnf0jDvxuRGieMGeW8+Ci89w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/3] bpf: infer packet range for 'if pkt ==/!=
+ pkt_end' comparisons
 To: Eduard Zingerman <eddyz87@gmail.com>
 Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
 	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
@@ -74,98 +74,72 @@ Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 8, 2024 at 4:40=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Mon, Jan 8, 2024 at 5:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> On Mon, Jan 8, 2024 at 5:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
-> >
-> > Reduce number of cases handled in try_match_pkt_pointers()
-> > to <pkt_data> <op> <pkt_end> or <pkt_meta> <op> <pkt_data>
-> > by flipping opcode.
-> >
-> > Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
-> > ---
-> >  kernel/bpf/verifier.c | 104 ++++++++++--------------------------------
-> >  1 file changed, 24 insertions(+), 80 deletions(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index adbf330d364b..918e6a7912e2 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -14677,6 +14677,9 @@ static bool try_match_pkt_pointers(const struct=
- bpf_insn *insn,
-> >                                    struct bpf_verifier_state *this_bran=
-ch,
-> >                                    struct bpf_verifier_state *other_bra=
-nch)
-> >  {
-> > +       int opcode =3D BPF_OP(insn->code);
-> > +       int dst_regno =3D insn->dst_reg;
-> > +
-> >         if (BPF_SRC(insn->code) !=3D BPF_X)
-> >                 return false;
-> >
-> > @@ -14684,90 +14687,31 @@ static bool try_match_pkt_pointers(const stru=
-ct bpf_insn *insn,
-> >         if (BPF_CLASS(insn->code) =3D=3D BPF_JMP32)
-> >                 return false;
-> >
-> > -       switch (BPF_OP(insn->code)) {
-> > +       if (dst_reg->type =3D=3D PTR_TO_PACKET_END ||
-> > +           src_reg->type =3D=3D PTR_TO_PACKET_META) {
-> > +               swap(src_reg, dst_reg);
-> > +               dst_regno =3D insn->src_reg;
-> > +               opcode =3D flip_opcode(opcode);
-> > +       }
-> > +
-> > +       if ((dst_reg->type !=3D PTR_TO_PACKET ||
-> > +            src_reg->type !=3D PTR_TO_PACKET_END) &&
-> > +           (dst_reg->type !=3D PTR_TO_PACKET_META ||
-> > +            !reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET)))
-> > +               return false;
+> Extend try_match_pkt_pointers() to handle =3D=3D and !=3D operations.
+> For instruction:
 >
-> this inverted original condition just breaks my brain, I can't wrap my
-> head around it :) I think the original is easier to reason about
-> because it's two clear allowable patterns for which we do something. I
-> understand that this early exit reduces nestedness, but at least for
-> me it would be simpler to have the original non-inverted condition
-> with a nested switch.
+>       .--------------- pointer to packet with some range R
+>       |     .--------- pointer to packet end
+>       v     v
+>   if rA =3D=3D rB goto ...
 >
+> It is valid to infer that R bytes are available in packet.
+> This change should allow verification of BPF generated for
+> C code like below:
 >
-> > +
-> > +       switch (opcode) {
-> >         case BPF_JGT:
-> > -               if ((dst_reg->type =3D=3D PTR_TO_PACKET &&
-> > -                    src_reg->type =3D=3D PTR_TO_PACKET_END) ||
-> > -                   (dst_reg->type =3D=3D PTR_TO_PACKET_META &&
-> > -                    reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) =
-{
-> > -                       /* pkt_data' > pkt_end, pkt_meta' > pkt_data */
-> > -                       find_good_pkt_pointers(this_branch, dst_reg,
-> > -                                              dst_reg->type, false);
-> > -                       mark_pkt_end(other_branch, insn->dst_reg, true)=
-;
+>   if (data + 42 !=3D data_end) { ... }
+>
+> Suggested-by: Maciej =C5=BBenczykowski <zenczykowski@gmail.com>
+> Link: https://lore.kernel.org/bpf/CAHo-Oow5V2u4ZYvzuR8NmJmFDPNYp0pQDJX66r=
+ZqUjFHvhx82A@mail.gmail.com/
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 918e6a7912e2..b229ba0ad114 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -14677,6 +14677,7 @@ static bool try_match_pkt_pointers(const struct b=
+pf_insn *insn,
+>                                    struct bpf_verifier_state *this_branch=
+,
+>                                    struct bpf_verifier_state *other_branc=
+h)
+>  {
+> +       struct bpf_verifier_state *eq_branch;
+>         int opcode =3D BPF_OP(insn->code);
+>         int dst_regno =3D insn->dst_reg;
+>
+> @@ -14713,6 +14714,13 @@ static bool try_match_pkt_pointers(const struct =
+bpf_insn *insn,
+>                 find_good_pkt_pointers(other_branch, dst_reg, dst_reg->ty=
+pe, opcode =3D=3D BPF_JLT);
+>                 mark_pkt_end(this_branch, dst_regno, opcode =3D=3D BPF_JL=
+E);
+>                 break;
+> +       case BPF_JEQ:
+> +       case BPF_JNE:
+> +               /* pkt_data =3D=3D/!=3D pkt_end, pkt_meta =3D=3D/!=3D pkt=
+_data */
+> +               eq_branch =3D opcode =3D=3D BPF_JEQ ? other_branch : this=
+_branch;
+> +               find_good_pkt_pointers(eq_branch, dst_reg, dst_reg->type,=
+ true);
+> +               mark_pkt_end(eq_branch, dst_regno, false);
 
-it seems like you can make a bit of simplification if mark_pkt_end
-would just accept struct bpf_reg_state * instead of int regn (you
-won't need to keep track of dst_regno at all, right?)
+hm... if pkt_data !=3D pkt_end in this_branch, can we really infer
+whether reg->range is BEYOND_PKT_END or AT_PKT_END? What if it's
+IN_FRONT_OF_PKT_END?
 
-> > -               } else if ((dst_reg->type =3D=3D PTR_TO_PACKET_END &&
-> > -                           src_reg->type =3D=3D PTR_TO_PACKET) ||
-> > -                          (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PAC=
-KET) &&
-> > -                           src_reg->type =3D=3D PTR_TO_PACKET_META)) {
-> > -                       /* pkt_end > pkt_data', pkt_data > pkt_meta' */
-> > -                       find_good_pkt_pointers(other_branch, src_reg,
-> > -                                              src_reg->type, true);
-> > -                       mark_pkt_end(this_branch, insn->src_reg, false)=
-;
-> > -               } else {
-> > -                       return false;
-> > -               }
-> > -               break;
+> +               break;
+>         default:
+>                 return false;
+>         }
+> --
+> 2.43.0
 >
-> [...]
 
