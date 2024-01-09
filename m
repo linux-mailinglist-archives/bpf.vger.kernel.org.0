@@ -1,111 +1,131 @@
-Return-Path: <bpf+bounces-19252-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19253-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3987B82833F
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 10:32:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BC6A82838A
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 10:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB648287694
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 09:32:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C45D31F28A53
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 09:57:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6FA1347A4;
-	Tue,  9 Jan 2024 09:32:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DA935EF7;
+	Tue,  9 Jan 2024 09:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="kToQmThK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tn0jv3ig"
 X-Original-To: bpf@vger.kernel.org
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDAD33CF2
-	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 09:32:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1704792759; bh=AzERsTe4iifZ3yUxSLa14M3+lHAO7HrXuc1YkqElR1I=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=kToQmThKnhVcw1ROYP5+YrRIcPr3SKWtfXX5OSm6QuE6aH2vEhV4sIaZZca20dlIQ
-	 nvaeKGJ0Xd9PG4x5Z3gfMb8+wwasscA5fu5jiBwVLAoeyd8HdLaZdiY7RSlCaREtnx
-	 8UEIpbnLC1m6o0I5Q+pg1UmsMlqI996CTQlRwbw8=
-Received: from pek-lxu-l1.wrs.com ([111.198.225.215])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id 82294E65; Tue, 09 Jan 2024 17:32:34 +0800
-X-QQ-mid: xmsmtpt1704792754tcw7rzjbi
-Message-ID: <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
-X-QQ-XMAILINFO: MIAHdi1iQo+zj8Otn7YvBohfHC0fy23kZUcjScuxcWltv+1S+IIhq/kbnNDf5T
-	 GhanIkVQQJXJU7tPy0AJTngditIH2sJHKy7HQHmHrLAyqdBL5AHzgc+q6Uu0GYF1pIfJQdkv2U50
-	 UcbVHHEX6hYCV2MOLUOI8XoJDISPmYBW9423K3jiIfEW0hEu9I9c0XzwC38f9F2x9Jvlq0OXzuby
-	 egR29jdSZBvqh6tnEyHTW7AFUfcAzT5Y1dqmZTXgXvSmxf6cwMgYtVXHJNr9zYcY7mICncpeG9aY
-	 6mc2Ez0iql9DxmacuRJih9b/ysD3o3hl04EJRkG4GOxbPG0U4sup8ImCDplbnmbqhOnAWfCzNr/e
-	 0RFsAI0Mo/TdMN04/4UXm0Tgv7KbvqEMjsI/y7qtoAd/cPlT2hLcOIhiFUbOpCr1IqXRYds97Dch
-	 qDSnD/62T2VoGE49XJzDaYJa4vbCD27EZFV7PqugTXb166AOEJYJLRD4d7YqtGv0AcdQ8ZnjL+cC
-	 iY93pghBzpGkYyOBa0j6D7Voq1j4RVI9SV1JS0vucBnvTp5Sj9MpHHEPykOGvpAN8UNVueek6IHc
-	 vXitgVbHJOeMFklNkzDeov/fZqpWdpxuHThmFdfWrF4PXzAtyvDUlzQ9W5Tm2edhYyCC5awAvPZs
-	 GJmRqvoX32loEPDTBCm0w5oJh7As4Lzn6WlI9ATzhyUbAN5stO+/o7q8JB/Cdt0UjCm9iF+nzK5p
-	 0QT0fKlXprk17TJ0Y9b7gYHGhPMbp7PxZmhHBY85OFNPw7jK+RAbTwI9HJLm5w5+kqNi5KfyVTp6
-	 kKX6DUM4pqobwatVJFGEve0JP/GU0Qj/I3eNH+rUukLc6V3SjAc/e2N3eno0rHuki3yqGzBrEQ7G
-	 jc9NQda98nQ7TnPQHZLaw0hYFIikBZH+GtZS3a38LYwSxfzAMRDSWexgE4Lj1LoLzIyslX/f0F
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	borisp@nvidia.com,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 163DF358A0;
+	Tue,  9 Jan 2024 09:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2ccbded5aa4so31398621fa.1;
+        Tue, 09 Jan 2024 01:57:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704794220; x=1705399020; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FNT3knrwtx3ZC85CWhs6pgGlgSacEXpphCQbs6n70C0=;
+        b=Tn0jv3igbLr4mDkkRt7ZquqKM/lpEze0j/LRzoKkc5lZRyundLhVvYLbT1MkJaMzm/
+         dbwhv6wE6ZqkY8nkiNn3hcAEgzawsIWiblibXasW0Npo9m9yWAtUYIQwFrgL61KZob97
+         RT4BP72sJthDsWGRaR/WQJWnObksXh29xj6GMU5/+Z+ttE77HquXSMegKz+7LYfwL+DB
+         dYJNZTnUPBLs7d1wIF+nbpfg8dinVYGnwFc95uc8BriiUGZK/Hs0k7IZkQxAMGw92BLQ
+         50oIFHGb6Ly8B0RR9zUqF2FDsvmcphbVFqMAtN3+CiV9sW1thKMsBVCCul8lmPwsZhGs
+         vVgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704794220; x=1705399020;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FNT3knrwtx3ZC85CWhs6pgGlgSacEXpphCQbs6n70C0=;
+        b=AdJfct5WErIo9TrQbhEC9Bl8dOIhtOa/weTj2hKADuuhLzR8cI6gDlfvrCa58gcKsI
+         LXhk8HPX9+FbQUFXGrgzupQo2ckUy6qCfxg045W6tk7fIlL7lbHN6k9T9BDWUWpH8cgr
+         OXLr616YnWNyzwvlYvnPUvZ6ZoMYSnVskzUUz/oxSCYF/Vda//mTU5cfDTRohzW3L83y
+         cdesRxDO/85W1StkqMzsL5bb5JDwK3zoYFZUei+PzY9vY4QqzGjtvromrziMWml0pNRo
+         3OmQBjhdJrHJK3M3NDCl3Rqtj4k4xyPqodVzGHr4OUG/IfErBVBCRvbENQyYdoVuZ/VC
+         9tjw==
+X-Gm-Message-State: AOJu0Yw9zc3ZIU7cROEoVhmxvh4PuuWASsDmivstBkNllPC1mwNUWLwe
+	Ful62oAiZiNyK10IetFlGpg=
+X-Google-Smtp-Source: AGHT+IGkMB2ZfO0i6cIwd5Kg8TbkhohMQGYVm9XLNv8yuUlqP+sGYQmxfMcZd4FSKhvAQ2tlr0BySg==
+X-Received: by 2002:a05:651c:603:b0:2cc:e48d:d0f3 with SMTP id k3-20020a05651c060300b002cce48dd0f3mr2208277lje.79.1704794219704;
+        Tue, 09 Jan 2024 01:56:59 -0800 (PST)
+Received: from lab.hqhome163.com ([194.183.10.152])
+        by smtp.googlemail.com with ESMTPSA id a3-20020a17090680c300b00a2a4a6e1bc5sm832017ejx.204.2024.01.09.01.56.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 01:56:59 -0800 (PST)
+From: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Alessandro Carminati <alessandro.carminati@gmail.com>,
 	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	dhowells@redhat.com,
-	edumazet@google.com,
-	jakub@cloudflare.com,
-	john.fastabend@gmail.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] tls: fix WARNING in __sk_msg_free
-Date: Tue,  9 Jan 2024 17:32:35 +0800
-X-OQ-MSGID: <20240109093234.561184-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000aa2f41060e363b2b@google.com>
-References: <000000000000aa2f41060e363b2b@google.com>
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] find_vma BPF test: increase length CPU computation
+Date: Tue,  9 Jan 2024 09:56:37 +0000
+Message-Id: <20240109095637.35934-1-alessandro.carminati@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-type: text/plain
 Content-Transfer-Encoding: 8bit
 
-Syzbot constructed 32 scatterlists, and the data members in struct sk_msg_sg 
-can only store a maximum of MAX_MSG_FRAGS scatterlists.
-However, the value of MAX_MSG_FRAGS=CONFIG_MAX_SKB_FRAG is less than 32, which
-leads to the warning reported here.
+Some aarch64 systems running a PREEMPT_RT patched kernel, needs
+more time to complete the test.
+This change mirrors:
+commit ba83af059153 ("Improve stability of find_vma BPF test")
+addressing similar requirements and allowing the QTI SA8775P based
+systems, and others, to complete the test when running RT kernel.
 
-Prevent similar issues from occurring by checking whether sg.end is greater 
-than MAX_MSG_FRAGS.
-
-Reported-and-tested-by: syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
 ---
- net/tls/tls_sw.c | 2 ++
- 1 file changed, 2 insertions(+)
+ tools/testing/selftests/bpf/prog_tests/find_vma.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
-index e37b4d2e2acd..68dbe821f61d 100644
---- a/net/tls/tls_sw.c
-+++ b/net/tls/tls_sw.c
-@@ -1016,6 +1016,8 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+diff --git a/tools/testing/selftests/bpf/prog_tests/find_vma.c b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+index 5165b38f0e59..43d62db8d57b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/find_vma.c
++++ b/tools/testing/selftests/bpf/prog_tests/find_vma.c
+@@ -51,7 +51,7 @@ static void test_find_vma_pe(struct find_vma *skel)
+ 	struct bpf_link *link = NULL;
+ 	volatile int j = 0;
+ 	int pfd, i;
+-	const int one_bn = 1000000000;
++	const int dummy_wait = 2500000000;
  
- 		msg_pl = &rec->msg_plaintext;
- 		msg_en = &rec->msg_encrypted;
-+		if (msg_pl->sg.end >= MAX_MSG_FRAGS)
-+			return -EINVAL;
+ 	pfd = open_pe();
+ 	if (pfd < 0) {
+@@ -68,10 +68,10 @@ static void test_find_vma_pe(struct find_vma *skel)
+ 	if (!ASSERT_OK_PTR(link, "attach_perf_event"))
+ 		goto cleanup;
  
- 		orig_size = msg_pl->sg.size;
- 		full_record = false;
+-	for (i = 0; i < one_bn && find_vma_pe_condition(skel); ++i)
++	for (i = 0; i < dummy_wait && find_vma_pe_condition(skel); ++i)
+ 		++j;
+ 
+-	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */, i == one_bn);
++	test_and_reset_skel(skel, -EBUSY /* in nmi, irq_work is busy */, i == dummy_wait);
+ cleanup:
+ 	bpf_link__destroy(link);
+ 	close(pfd);
 -- 
-2.43.0
+2.34.1
 
 
