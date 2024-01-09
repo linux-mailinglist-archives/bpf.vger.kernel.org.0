@@ -1,120 +1,367 @@
-Return-Path: <bpf+bounces-19273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79E45828C1E
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 19:10:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E16F828C48
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 19:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D9C71F252D7
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 18:05:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FBFE1F25225
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 18:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F0C63C473;
-	Tue,  9 Jan 2024 18:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D03A3BB33;
+	Tue,  9 Jan 2024 18:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PWzY5dej"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="TETwlPSJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28F033BB24
-	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 18:02:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2cd0f4f306fso38562521fa.0
-        for <bpf@vger.kernel.org>; Tue, 09 Jan 2024 10:02:45 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E463C142
+	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 18:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d426ad4433so16503155ad.0
+        for <bpf@vger.kernel.org>; Tue, 09 Jan 2024 10:06:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704823364; x=1705428164; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qdkJC+ujzcdAYnRBhIl4ExzHPcdimqPKuukxz/IQcv4=;
-        b=PWzY5dej/Rs/uMlzgp3ybGdmbBmjJvAcYTAhPZ8eoIAg/JYrUCf1hNRYVaNNWjn/01
-         JZ5EX91befSXwbPSI1SSnhMiXS51Ar9CJUlfaHvuPv/Kms1mJM53lOiWmzq8h0oWWx99
-         EyVtbT+fqyiQrY2Xnmg2U+UcwVXAIkQMtj7sL6+egTVcoMbwTIEDSkgW89+30HPcgUpB
-         aShEw2Tl8tULsTS0CDfylneu5BgNq3cNPRz8ex4x/a5cX8r46FuoNomr8kryPgYmOXKP
-         ORjWBx47jndzhyRJ5WSHKDasQyDHL0sI3wXqYyS1R1+M8xIh4AoXe1t8bgK9vsOst1ft
-         phqQ==
+        d=googlemail.com; s=20230601; t=1704823584; x=1705428384; darn=vger.kernel.org;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=U25Q7Bky2SQDCwPSDu/qLPO3Ikh5MXLLwfZ2ubor4bc=;
+        b=TETwlPSJUnAL8QtKKIHuIzou0KGAsQSxyorPBhq7JkYMQ/IStzmq5iV5gtlR1rsYao
+         ukjq1d+W3/ztXCv/eLubRnuju0CbQhbJ00zT6w2ggIVvbccLfQif72PJBVezMRT2x+87
+         bW4xLw1SC+Babk50XcMt/oMxF2O/L50Jk4lUpk5kuO4QYTYVRY6eCCDBeYGqlQuTFEXu
+         5J5Za8hPR4Pvw8nPvHuJesKr3wn/Y83Sd9dv9Si7sr/TIthWHnpmcNCP5Ez6VHchBPaI
+         tzs8rdo7Ik9yKR7pvAI45WZ4i4HFhn0TFpsyA/QGBseHn8bEXVDCsaXSsaS4TB7CDYyS
+         eNJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704823364; x=1705428164;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qdkJC+ujzcdAYnRBhIl4ExzHPcdimqPKuukxz/IQcv4=;
-        b=glZkQDh5s9PGsUpCUABYurIxpg7362j4ek342Uz9IHSpXMmEOi5pe7ZzzeWLuH8ErF
-         uT5dmQ1ny9fqTcrnAKlCa6P9hEDhUq6Q9d5vcPNbgWw4GQcbZPfpfcjMIu7DborI2V9K
-         SZC8br92j96Zg0m3uwpStI376rAuui9oHe+isUNCigyyjQZDB5w3ZjS3A9UmuwQFk7Gb
-         gfioBV5RXnzPI/Ij7SPJU2O6FhFopjgnmSQymeW5OvwJzV8YI2v4Bp2hnnmQcjmojbuE
-         pZb4aMScEOp7ZO4kKQculLdV8nOw0chO/kxre+kHxMDYN5YlGMZ2zWggYjbMVSvrSw4i
-         sHKQ==
-X-Gm-Message-State: AOJu0YxJLByDREaatkSwn/baRSjO1VjqxT5EN2Y8DDlwZ87Wm9icPsYO
-	5Ae89oXSPmF0VgBFx8PlR2I=
-X-Google-Smtp-Source: AGHT+IElW3zYu4XEtkB/6yD9RKqrEWWEJj1PTamCWYSzRrOX71bLUaMogowkkHvu6DFNkCU9TR0tZg==
-X-Received: by 2002:a05:651c:200c:b0:2cc:eefc:20af with SMTP id s12-20020a05651c200c00b002cceefc20afmr2117958ljo.52.1704823363904;
-        Tue, 09 Jan 2024 10:02:43 -0800 (PST)
-Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
-        by smtp.gmail.com with ESMTPSA id z7-20020a2ebcc7000000b002cd632cea48sm426086ljp.106.2024.01.09.10.02.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 10:02:43 -0800 (PST)
-Message-ID: <de8dd3773d84b4c07fbba2776d52bf2114ca5414.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: Track aligned st store as
- imprecise spilled registers
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,
- kernel-team@fb.com, Martin KaFai Lau <martin.lau@kernel.org>, Kuniyuki
- Iwashima <kuniyu@amazon.com>, Martin KaFai Lau <kafai@fb.com>
-Date: Tue, 09 Jan 2024 20:02:41 +0200
-In-Reply-To: <20240109040524.2313448-1-yonghong.song@linux.dev>
-References: <20240109040524.2313448-1-yonghong.song@linux.dev>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.2 
+        d=1e100.net; s=20230601; t=1704823584; x=1705428384;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U25Q7Bky2SQDCwPSDu/qLPO3Ikh5MXLLwfZ2ubor4bc=;
+        b=brNmDRMhC2iCkasyBKoKFBeTVCRiw7RDzvidVre0E0kVi5X/urTfshTCs1ZcyI1WaE
+         yyVJUxgTEjuJAl+1uoh88+5p13qq/z4NRn8EsC04T57R12nXP+jqbpbJJQpYFZfRDa0Y
+         vjhtwdEs6Ve+cf1NwmQw6KQxVWBR5MQHoJZbrjYGjIih5UMDVHoTQTaAQ5MKEOEtIZSq
+         bffNHiMYYIPyGYmfHLRxUIrhxsRqZ3Ml56Ax12C6VdAStuEzBLN2PqbSCgcOpUDW8bY9
+         fySrPzshmXyysoTVqaYHkk5YaMGspM3uJI90OMvNgLp5Spg9yj8xV0JhKocBOMPeW5lX
+         Ma7w==
+X-Gm-Message-State: AOJu0YwqR8jG6D2LOrJVQdBVR+LaasA092nPxsQil3VrTX9DurPYjH7d
+	x+Id7hfHvkdslTkXTZZGCAY=
+X-Google-Smtp-Source: AGHT+IE6W5Mk+Evlcwr5Kru3as/e/t5osxM09raTZxhHRhJBvII8yFFG5NPzm2g8Gj0tN34PJUBtyg==
+X-Received: by 2002:a17:903:124a:b0:1d4:60b8:aefa with SMTP id u10-20020a170903124a00b001d460b8aefamr3685811plh.9.1704823584188;
+        Tue, 09 Jan 2024 10:06:24 -0800 (PST)
+Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
+        by smtp.gmail.com with ESMTPSA id q1-20020a170902bd8100b001d06b63bb98sm2081032pls.71.2024.01.09.10.06.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Jan 2024 10:06:23 -0800 (PST)
+From: dthaler1968@googlemail.com
+X-Google-Original-From: <dthaler1968@gmail.com>
+To: "'David Vernet'" <void@manifault.com>,
+	"'Aoyang Fang'" <aoyangfang@link.cuhk.edu.cn>
+Cc: <bpf@vger.kernel.org>,
+	<bpf@ietf.org>,
+	<dthaler1968@googlemail.com>
+References: <20240105031450.57681-2-aoyangfang@link.cuhk.edu.cn> <20240109173227.GB79024@maniforge>
+In-Reply-To: <20240109173227.GB79024@maniforge>
+Subject: RE: [PATCH bpf-next] The original document has some inconsistency.
+Date: Tue, 9 Jan 2024 10:06:22 -0800
+Message-ID: <016101da4326$8dbad1a0$a93074e0$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQI1wP8LxzfmoxB4tOuKvJCTZksNJgF+CbdPsA7WTWA=
+Content-Language: en-us
 
-On Mon, 2024-01-08 at 20:05 -0800, Yonghong Song wrote:
-[...]
-> @@ -4640,7 +4641,18 @@ static int check_stack_write_var_off(struct bpf_ve=
-rifier_env *env,
->  			return -EINVAL;
->  		}
-> =20
-> -		/* Erase all spilled pointers. */
-> +		/* If writing_zero and the the spi slot contains a spill of value 0,
-> +		 * maintain the spill type.
-> +		 */
-> +		if (writing_zero && is_spilled_scalar_reg(&state->stack[spi])) {
+David Vernet <void@manifault.com> writes: 
+> Hi Aoyang,
+> 
+> Thanks a lot for your contribution. I agree that we need to fix the
+document
+> to be consistent, though I'm afraid that I think this patch goes in the
+wrong
+> direction by making everything match the jump instruction class. More
+below.
 
-As discussed on offlist today, this should probably look as follows:
+I disagree, and I agree with Aoyang's direction.
 
--               if (writing_zero && is_spilled_scalar_reg(&state->stack[spi=
-])) {
-+               if (writing_zero && *stype =3D=3D STACK_SPILL && is_spilled=
-_scalar_reg(&state->stack[spi])) {
+> nit: Could you please update the patch subject to be more self-describing.
+For
+> example, something like:
+> 
+> Use consistent numerical widths in instructions.rst encodings
 
-In order to handle cases like "mmmmSSSS" for slot types.
+I agree with that subject.
 
-> +			spill_reg =3D &state->stack[spi].spilled_ptr;
-> +			if (tnum_is_const(spill_reg->var_off) && spill_reg->var_off.value =3D=
-=3D 0) {
-> +				zero_used =3D true;
-> +				continue;
-> +			}
-> +		}
-> +
-> +		/* Erase all other spilled pointers. */
->  		state->stack[spi].spilled_ptr.type =3D NOT_INIT;
-> =20
->  		/* Update the slot type. */
-[...]
+> > For example:
+> > 1. 1.3.1 Arithmetic instructions use '8 bits length' encoding to
+> >    express the 'code' value, e.g., BPF_ADD=0x00, BPF_SUB=0x10,
+> >    BPF_MUL=0x20. However the length of the 'code' is 4 bits. On the
+> >    other hand, 1.3.3 Jump instructions use '4 bits length' encoding,
+> >    e.g., BPF_JEQ=0x1 and BPF_JGT=0x2.
+> > 2. There are also many places that use '8 bits length' encoding to
+> >    express the corresponding contents, e.g., 1.4 Load and store
+> >    instructions, BPF_ABS=0x20, BPF_IND=0x40. However, the length of
+> >    'mode modifier' is 3 bits.
+> >
+> > To summarize, the only place that has inconsistent encoding is Jump
+> > instructions. After discussing with Dave, dthaler1968@googlemail.com,
+> > we agree that the document should be more clear.
+> >
+> > Signed-off-by: Aoyang Fang <aoyangfang@link.cuhk.edu.cn>
+> >
+> > ---
+> >  .../bpf/standardization/instruction-set.rst   | 170 +++++++++---------
+> >  1 file changed, 85 insertions(+), 85 deletions(-)
+> >
+> > diff --git a/Documentation/bpf/standardization/instruction-set.rst
+> > b/Documentation/bpf/standardization/instruction-set.rst
+> > index 245b6defc..57dd1fa00 100644
+> > --- a/Documentation/bpf/standardization/instruction-set.rst
+> > +++ b/Documentation/bpf/standardization/instruction-set.rst
+> > @@ -172,18 +172,18 @@ Instruction classes
+> >
+> >  The three LSB bits of the 'opcode' field store the instruction class:
+> >
+> > -=========  =====  ===============================
+> ===================================
+> > -class      value  description                      reference
+> > -=========  =====  ===============================
+> ===================================
+> > -BPF_LD     0x00   non-standard load operations     `Load and store
+> instructions`_
+> > -BPF_LDX    0x01   load into register operations    `Load and store
+> instructions`_
+> > -BPF_ST     0x02   store from immediate operations  `Load and store
+> instructions`_
+> > -BPF_STX    0x03   store from register operations   `Load and store
+> instructions`_
+> > -BPF_ALU    0x04   32-bit arithmetic operations     `Arithmetic and jump
+> instructions`_
+> > -BPF_JMP    0x05   64-bit jump operations           `Arithmetic and jump
+> instructions`_
+> > -BPF_JMP32  0x06   32-bit jump operations           `Arithmetic and jump
+> instructions`_
+> > -BPF_ALU64  0x07   64-bit arithmetic operations     `Arithmetic and jump
+> instructions`_
+> > -=========  =====  ===============================
+> > ===================================
+> > +=========  =============  ===============================
+> ===================================
+> > +class      value(3 bits)  description                      reference
+> > +=========  =============  ===============================
+> ===================================
+> > +BPF_LD     0x0            non-standard load operations     `Load and
+store
+> instructions`_
+> > +BPF_LDX    0x1            load into register operations    `Load and
+store
+> instructions`_
+> > +BPF_ST     0x2            store from immediate operations  `Load and
+store
+> instructions`_
+> > +BPF_STX    0x3            store from register operations   `Load and
+store
+> instructions`_
+> > +BPF_ALU    0x4            32-bit arithmetic operations     `Arithmetic
+and jump
+> instructions`_
+> > +BPF_JMP    0x5            64-bit jump operations           `Arithmetic
+and jump
+> instructions`_
+> > +BPF_JMP32  0x6            32-bit jump operations           `Arithmetic
+and jump
+> instructions`_
+> > +BPF_ALU64  0x7            64-bit arithmetic operations     `Arithmetic
+and jump
+> instructions`_
+> > +=========  =============  ===============================
+> > +===================================
+> 
+> Hmm, I presonally think this is more confusing. The opcode field is 8
+bits. We
+> already specify that the value is the three LSB of the opcode field. It's
+> certainly subjective, but I think we should have the value reflect the
+actual
+> value in the field it's embedded in. In my opinion, changing the value to
+not
+> reflect its place in the actual opcode in my opinion imposes a burden on
+the
+> reader to go back and reference where the field actually belongs in the
+full
+> opcode. It's a tradeoff, but I think we're already on the winning end of
+that
+> tradeoff.
+
+This document is an IETF standards specification so it's worth looking at
+what
+typical RFC conventions are.
+
+* RFC 791 section 3.1 defines the IPv4 header, where the Version field is
+the high
+   4 bits of a byte.  It defines the value as 4, not 0x40.
+   It also defines the Type of Service bits which are 1 bit fields with
+value 0 or 1
+   (not, say 0x40).
+* RFC 8200 section 3 defines the IPv6 header, where the Version field is the
+high
+   4 bits of a byte.  It defines the value as 6, not 0x60.
+
+Etc.  Offhand I am not aware of any RFC that uses the convention you
+suggest,
+though perhaps others are?
+
+> >  Arithmetic and jump instructions
+> >  ================================
+> > @@ -203,12 +203,12 @@ code            source  instruction class
+> >  **source**
+> >    the source operand location, which unless otherwise specified is one
+of:
+> >
+> > -  ======  =====  ==============================================
+> > -  source  value  description
+> > -  ======  =====  ==============================================
+> > -  BPF_K   0x00   use 32-bit 'imm' value as source operand
+> > -  BPF_X   0x08   use 'src_reg' register value as source operand
+> > -  ======  =====  ==============================================
+> > +  ======  ============
+> > + ==============================================
+> > +  source  value(1 bit)  description
+> > +  ======  ============
+> ==============================================
+> > +  BPF_K   0x0           use 32-bit 'imm' value as source operand
+> > +  BPF_X   0x1           use 'src_reg' register value as source operand
+> > +  ======  ============
+> > + ==============================================
+> 
+> Same here as well. The value isn't really 0x1, it's 0x8. And 0x08 is even
+more
+> clear yet, given that we're representing the value of the bit in the 8 bit
+opcode
+> field.
+
+Its 1, in the same sense as the TOS bits in RFC 791 are 1.
+
+> >  **instruction class**
+> >    the instruction class (see `Instruction classes`_) @@ -221,27
+> > +221,27 @@ otherwise identical operations.
+> >  The 'code' field encodes the operation as below, where 'src' and
+> > 'dst' refer  to the values of the source and destination registers,
+respectively.
+> >
+> > -=========  =====  =======
+> ==========================================================
+> > -code       value  offset   description
+> > -=========  =====  =======
+> ==========================================================
+> > -BPF_ADD    0x00   0        dst += src
+> > -BPF_SUB    0x10   0        dst -= src
+> > -BPF_MUL    0x20   0        dst \*= src
+> > -BPF_DIV    0x30   0        dst = (src != 0) ? (dst / src) : 0
+> > -BPF_SDIV   0x30   1        dst = (src != 0) ? (dst s/ src) : 0
+> > -BPF_OR     0x40   0        dst \|= src
+> > -BPF_AND    0x50   0        dst &= src
+> > -BPF_LSH    0x60   0        dst <<= (src & mask)
+> > -BPF_RSH    0x70   0        dst >>= (src & mask)
+> > -BPF_NEG    0x80   0        dst = -dst
+> > -BPF_MOD    0x90   0        dst = (src != 0) ? (dst % src) : dst
+> > -BPF_SMOD   0x90   1        dst = (src != 0) ? (dst s% src) : dst
+> > -BPF_XOR    0xa0   0        dst ^= src
+> > -BPF_MOV    0xb0   0        dst = src
+> > -BPF_MOVSX  0xb0   8/16/32  dst = (s8,s16,s32)src
+> > -BPF_ARSH   0xc0   0        :term:`sign extending<Sign Extend>` dst >>=
+(src &
+> mask)
+> > -BPF_END    0xd0   0        byte swap operations (see `Byte swap
+instructions`_
+> below)
+> >
+> > -=========  =====  =======
+> > ==========================================================
+> > +=========  =============  =======
+> ==========================================================
+> > +code       value(4 bits)  offset   description
+> > +=========  =============  =======
+> ==========================================================
+> > +BPF_ADD    0x0            0        dst += src
+> > +BPF_SUB    0x1            0        dst -= src
+> > +BPF_MUL    0x2            0        dst \*= src
+> > +BPF_DIV    0x3            0        dst = (src != 0) ? (dst / src) : 0
+> > +BPF_SDIV   0x3            1        dst = (src != 0) ? (dst s/ src) : 0
+> > +BPF_OR     0x4            0        dst \|= src
+> > +BPF_AND    0x5            0        dst &= src
+> > +BPF_LSH    0x6            0        dst <<= (src & mask)
+> > +BPF_RSH    0x7            0        dst >>= (src & mask)
+> > +BPF_NEG    0x8            0        dst = -dst
+> > +BPF_MOD    0x9            0        dst = (src != 0) ? (dst % src) : dst
+> > +BPF_SMOD   0x9            1        dst = (src != 0) ? (dst s% src) :
+dst
+> > +BPF_XOR    0xa            0        dst ^= src
+> > +BPF_MOV    0xb            0        dst = src
+> > +BPF_MOVSX  0xb            8/16/32  dst = (s8,s16,s32)src
+> > +BPF_ARSH   0xc            0        :term:`sign extending<Sign Extend>`
+dst >>=
+> (src & mask)
+> > +BPF_END    0xd            0        byte swap operations (see `Byte swap
+> instructions`_ below)
+> > +=========  =============  =======
+> > +==========================================================
+> 
+> Same here.
+> 
+> >  Underflow and overflow are allowed during arithmetic operations,
+> > meaning  the 64-bit or 32-bit value will wrap. If BPF program
+> > execution would @@ -314,13 +314,13 @@ select what byte order the
+> > operation converts from or to. For  ``BPF_ALU64``, the 1-bit source
+> > operand field in the opcode is reserved  and must be set to 0.
+> >
+> > -=========  =========  =====
+> =================================================
+> > -class      source     value  description
+> > -=========  =========  =====
+> =================================================
+> > -BPF_ALU    BPF_TO_LE  0x00   convert between host byte order and little
+> endian
+> > -BPF_ALU    BPF_TO_BE  0x08   convert between host byte order and big
+> endian
+> > -BPF_ALU64  Reserved   0x00   do byte swap unconditionally
+> > -=========  =========  =====
+> > =================================================
+> > +=========  =========  ============
+> =================================================
+> > +class      source     value(1 bit)  description
+> > +=========  =========  ============
+> =================================================
+> > +BPF_ALU    BPF_TO_LE  0x0           convert between host byte order and
+little
+> endian
+> > +BPF_ALU    BPF_TO_BE  0x1           convert between host byte order and
+big
+> endian
+> > +BPF_ALU64  Reserved   0x0           do byte swap unconditionally
+> > +=========  =========  ============
+> > +=================================================
+> 
+> Same here. Which bit does the 0x1 actually correspond to? It's
+self-evident in
+> the former, not the latter.
+
+Would you then say that RFC 791 (and many RFCs since) is not self-evident?
+
+If the WG chooses to diverge from the most common ways the IETF defines
+bit formats, that might be ok but may need a section explaining the
+divergent convention.   My personal preference though is to stay consistent
+with the normal IETF convention, which part of the ISA doc already did.
+
+Dave
+
 
