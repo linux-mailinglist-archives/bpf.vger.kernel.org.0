@@ -1,152 +1,169 @@
-Return-Path: <bpf+bounces-19261-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19263-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 122C6828919
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 16:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1393B8289BD
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 17:11:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E9B828602D
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 15:36:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7C37285CDF
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 16:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5272B39FEE;
-	Tue,  9 Jan 2024 15:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F0B3A1AC;
+	Tue,  9 Jan 2024 16:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ywhli+63"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="VChYLp0x";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="qT8l080W"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBB439FE5;
-	Tue,  9 Jan 2024 15:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33761e291c1so1773590f8f.0;
-        Tue, 09 Jan 2024 07:36:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704814579; x=1705419379; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uoyz0fX05VFZUA0YqL9VDmTIjZubn+1o1Tubn/qOGIQ=;
-        b=Ywhli+630+H5SS8G8SdP1TgmtDG/N/PFkP2WGwB56asraV+ksNO+EQ+Nd63U29BAbU
-         fSWUwniKDPXC92LKRHrteNS3OxqKE8EQmyz9ciQdzSl1/bSzQqMArWwl4MIDw80JhIF0
-         c/Fnf+H+GpVfZx79mUQkH2XY1llzmOX3YX9f2zX2ndpK3KLJLjmqcII44z0j1yL0j+eO
-         t67668S4U0KHxsGVPtEetlCLC3xyNDxQfi3sFop+epuH1ri4FJs4LLx56Say1DLzk2qY
-         SU6zQH2ihIkCaUx5jVAxR61/E0gWEia9X41U1kOp4z3CcMJAZGuGkTyfeKSOVI3rA6/l
-         PYdQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE847374C5
+	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 16:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 0DB41C151707
+	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 08:10:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1704816658; bh=ro1hB8hsHFhnjQPspRrn2xODmYJZ/DH+/Hzd/ZvAcPk=;
+	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=VChYLp0xf8VRJToC5hUZBf9CVqMY/HiwMGf9Bp5Q7qdNgvdcPDk7i9AqVN5+YsqHX
+	 LREZ7ufmbEs663GrEsGJnQB9gI1Hl6kqCFMO2x7zWKWdHJFtbR3W7U659LuzJavbgX
+	 FV9yJkrPiGFSuVTU2nzJGGVcJOnjt0aCTYJEt2O8=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Jan  9 08:10:57 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id C5D4DC151076;
+	Tue,  9 Jan 2024 08:10:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1704816657; bh=ro1hB8hsHFhnjQPspRrn2xODmYJZ/DH+/Hzd/ZvAcPk=;
+	h=Date:From:To:Cc:References:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=qT8l080WpUSxRFBSdtR9qAv0/i8QvrxJSUHIDyMOFxQR240mnmxk9KO2pg7Wo37VV
+	 79M5To6gCJ9XE5BYIudwj/SpBoSSJoOBlePdbSZngFNhDNEgj2wX8B+d3sHpqY4cVt
+	 H3qxmKyBZkNLNf1wAW7vk8TpvEkD7hsZQfpyIzG0=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 9E845C151076
+ for <bpf@ietfa.amsl.com>; Tue,  9 Jan 2024 08:10:56 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.407
+X-Spam-Level: 
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id O-fWCa4IwyDV for <bpf@ietfa.amsl.com>;
+ Tue,  9 Jan 2024 08:10:54 -0800 (PST)
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com
+ [209.85.160.178])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 8AAAEC15106C
+ for <bpf@ietf.org>; Tue,  9 Jan 2024 08:10:54 -0800 (PST)
+Received: by mail-qt1-f178.google.com with SMTP id
+ d75a77b69052e-427c4bf6017so25059121cf.0
+ for <bpf@ietf.org>; Tue, 09 Jan 2024 08:10:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704814579; x=1705419379;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uoyz0fX05VFZUA0YqL9VDmTIjZubn+1o1Tubn/qOGIQ=;
-        b=JieGXoKZP7k3rk6YPPWHfixkbKRotT7DbtHPiIDd7T5qHFDza36BU4ezZtpMhsXh94
-         VkfEbOz2hKMQvTqbTHEtqcJs8UtUgR0YcRhpKynwa/kI64NSETaar8OJ1t1QxYvWrrQ3
-         R8zx/zjY89SgKzAMJIaQEN9RM+gkBS64XhivyMdqm4xqkOOc3xddjKpY93w34z72kqq4
-         AAJLD9P1sG97NqMhmvhLIRS+qoFLkdmoEDUmVhe4ybcwQJ9ndUys46N5o+ygGkF13SsV
-         N+K4hiQjw2N45pVVMOKStpg0wggSZBbvJXRqvXamIuXO6U6qtquzZ4ToAPCH6rZGaM67
-         IHgQ==
-X-Gm-Message-State: AOJu0YxCCM27bXFYGTlNNmxIZ0Nxzz+IUei2UEE3mjw0J83tqFy6OeDx
-	ajb3sOuzaSQlh1JF3+i2dBhYW4IU1g==
-X-Google-Smtp-Source: AGHT+IFF0m5AF5RduXEuT8dKBFZD9iSqrXMBvW+29jCDOiEUyuHNHIbAu0bVFq7vtE0jEW+OG0UyyA==
-X-Received: by 2002:a5d:6349:0:b0:336:641d:626c with SMTP id b9-20020a5d6349000000b00336641d626cmr476091wrw.61.1704814578883;
-        Tue, 09 Jan 2024 07:36:18 -0800 (PST)
-Received: from staff-net-cx-3510.intern.ethz.ch (2001-67c-10ec-5784-8000--1bd.net6.ethz.ch. [2001:67c:10ec:5784:8000::1bd])
-        by smtp.gmail.com with ESMTPSA id j25-20020adfb319000000b0033672cfca96sm2682295wrd.89.2024.01.09.07.36.18
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 09 Jan 2024 07:36:18 -0800 (PST)
-From: Hao Sun <sunhao.th@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ppenkov@google.com,
-	willemb@google.com,
-	ast@kernel.org,
-	linux-kernel@vger.kernel.org,
-	Hao Sun <sunhao.th@gmail.com>
-Subject: [PATCH] bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
-Date: Tue,  9 Jan 2024 16:36:09 +0100
-Message-ID: <20240109153609.10185-1-sunhao.th@gmail.com>
-X-Mailer: git-send-email 2.43.0
+ d=1e100.net; s=20230601; t=1704816653; x=1705421453;
+ h=user-agent:in-reply-to:content-disposition:mime-version:references
+ :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=OjHBEaHdSWTXb4kkRiKmuiZT+NrTmZbIpDxetZWh61Q=;
+ b=WFgG4QGd21Np4mzqf7fdblJwzkPTJ/UhgqsDY9VmKz7gUaulSaip73YytnuVMYdKUF
+ TOwnqmUh4YdzIHN8j/MMurvbEsCMSXLVZ0YUJ1QKDFdYtmmKUcNBLQ1axw8CIxR+FqYQ
+ kyfP450Jro03vQ1BSC4RNCYjPr1JnCn4WmmGtigkEq/f99Ok28gNfFY3Za5ZxCWCqc3H
+ qikY0U2rgvl46hjhiJvopwBdwGookciyLpxsR/Uimtlj1PM37piKLMOzne063k5jbeDL
+ LGcdo/HqW5lcuU+VUMg11AUCJ3YjC54C4o0GJWmj2VxluzXhtwCZtAz2q+wPwUjLQv19
+ nG/w==
+X-Gm-Message-State: AOJu0YwNwdHQe382lOT2MkPwObYl/G0p24HI7a+ttZ4HfmCecQ8KCOEP
+ N43pQYYIjWkv6EOzRh4l9O8=
+X-Google-Smtp-Source: AGHT+IGBqw1cmDw2DclhEzdS/UFv8UIi6ctTp3CrKjlzcyvgrEiB//yI4t6hxIL8RvF8CvT3nJ61Lw==
+X-Received: by 2002:ac8:588a:0:b0:425:8a27:4bef with SMTP id
+ t10-20020ac8588a000000b004258a274befmr8169503qta.34.1704816653533; 
+ Tue, 09 Jan 2024 08:10:53 -0800 (PST)
+Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
+ by smtp.gmail.com with ESMTPSA id
+ ch6-20020a05622a40c600b004299d5ee4f9sm984072qtb.13.2024.01.09.08.10.52
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Tue, 09 Jan 2024 08:10:53 -0800 (PST)
+Date: Tue, 9 Jan 2024 10:10:49 -0600
+From: David Vernet <void@manifault.com>
+To: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
+Cc: bpf@vger.kernel.org, bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
+Message-ID: <20240109161049.GA79024@maniforge>
+References: <20240108214231.5280-1-dthaler1968@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240108214231.5280-1-dthaler1968@gmail.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/Hm53g8MpTjA1xL2Z6MqtUxbyHhk>
+Subject: Re: [Bpf] [PATCH bpf-next] Introduce concept of conformance groups
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: multipart/mixed; boundary="===============0242594030948904788=="
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 
-For PTR_TO_FLOW_KEYS, check_flow_keys_access() only uses fixed off
-for validation. However, variable offset ptr alu is not prohibited
-for this ptr kind. So the variable offset is not checked.
 
-The following prog is accepted:
-func#0 @0
-0: R1=ctx() R10=fp0
-0: (bf) r6 = r1                       ; R1=ctx() R6_w=ctx()
-1: (79) r7 = *(u64 *)(r6 +144)        ; R6_w=ctx() R7_w=flow_keys()
-2: (b7) r8 = 1024                     ; R8_w=1024
-3: (37) r8 /= 1                       ; R8_w=scalar()
-4: (57) r8 &= 1024                    ; R8_w=scalar(smin=smin32=0,
-smax=umax=smax32=umax32=1024,var_off=(0x0; 0x400))
-5: (0f) r7 += r8
-mark_precise: frame0: last_idx 5 first_idx 0 subseq_idx -1
-mark_precise: frame0: regs=r8 stack= before 4: (57) r8 &= 1024
-mark_precise: frame0: regs=r8 stack= before 3: (37) r8 /= 1
-mark_precise: frame0: regs=r8 stack= before 2: (b7) r8 = 1024
-6: R7_w=flow_keys(smin=smin32=0,smax=umax=smax32=umax32=1024,var_off
-=(0x0; 0x400)) R8_w=scalar(smin=smin32=0,smax=umax=smax32=umax32=1024,
-var_off=(0x0; 0x400))
-6: (79) r0 = *(u64 *)(r7 +0)          ; R0_w=scalar()
-7: (95) exit
+--===============0242594030948904788==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="y9U2/K0VhlYetP/p"
+Content-Disposition: inline
 
-This prog loads flow_keys to r7, and adds the variable offset r8
-to r7, and finally causes out-of-bounds access:
 
-BUG: unable to handle page fault for address: ffffc90014c80038
-...
-Call Trace:
- <TASK>
- bpf_dispatcher_nop_func include/linux/bpf.h:1231 [inline]
- __bpf_prog_run include/linux/filter.h:651 [inline]
- bpf_prog_run include/linux/filter.h:658 [inline]
- bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
- bpf_flow_dissect+0x15f/0x350 net/core/flow_dissector.c:991
- bpf_prog_test_run_flow_dissector+0x39d/0x620 net/bpf/test_run.c:1359
- bpf_prog_test_run kernel/bpf/syscall.c:4107 [inline]
- __sys_bpf+0xf8f/0x4560 kernel/bpf/syscall.c:5475
- __do_sys_bpf kernel/bpf/syscall.c:5561 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5559 [inline]
- __x64_sys_bpf+0x73/0xb0 kernel/bpf/syscall.c:5559
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
+--y9U2/K0VhlYetP/p
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fix this by rejecting ptr alu with variable offset on flow_keys.
-Applying the patch makes the program rejected with "R7 pointer
-arithmetic on flow_keys prohibited"
+On Mon, Jan 08, 2024 at 01:42:31PM -0800, Dave Thaler wrote:
+> The discussion of what the actual conformance groups should be
+> is still in progress, so this is just part 1 which only uses
+> "legacy" for deprecated instructions and "basic" for everything
+> else.  Subsequent patches will add more groups as discussion
+> continues.
+>=20
+> Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
 
-Fixes: d58e468b1112 ("flow_dissector: implements flow dissector BPF hook")
-Signed-off-by: Hao Sun <sunhao.th@gmail.com>
----
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Acked-by: David Vernet <void@manifault.com>
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index adbf330d364b..65f598694d55 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12826,6 +12826,10 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 	}
- 
- 	switch (base_type(ptr_reg->type)) {
-+	case PTR_TO_FLOW_KEYS:
-+		if (known)
-+			break;
-+		fallthrough;
- 	case CONST_PTR_TO_MAP:
- 		/* smin_val represents the known value */
- 		if (known && smin_val == 0 && opcode == BPF_ADD)
+--y9U2/K0VhlYetP/p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYIAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZZ1wCQAKCRBZ5LhpZcTz
+ZNvkAP4k0oNAU9M55irsV/VVDiH+6Jk3IUpHNEA3MvR/N7yy4QD/XGn/Ezb0dxXK
+OhwWh6U96BYhqEKNoC54oUxYATkVhAA=
+=TSRE
+-----END PGP SIGNATURE-----
+
+--y9U2/K0VhlYetP/p--
+
+
+--===============0242594030948904788==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 -- 
-2.34.1
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
+
+--===============0242594030948904788==--
 
 
