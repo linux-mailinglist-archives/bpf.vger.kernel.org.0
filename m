@@ -1,169 +1,159 @@
-Return-Path: <bpf+bounces-19239-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19240-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38193827BDE
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 01:07:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA972827C27
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 01:41:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1D69285072
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 00:07:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86DB01F241CD
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 00:41:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9303C20E7;
-	Tue,  9 Jan 2024 00:07:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E5539E;
+	Tue,  9 Jan 2024 00:41:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JxAZKkcw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cHGx94nJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877A117C3;
-	Tue,  9 Jan 2024 00:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63B0370
+	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 00:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-557c188f313so2012569a12.1;
-        Mon, 08 Jan 2024 16:07:39 -0800 (PST)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33677fb38a3so2570256f8f.0
+        for <bpf@vger.kernel.org>; Mon, 08 Jan 2024 16:41:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704758858; x=1705363658; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704760869; x=1705365669; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aUySmjIsH1ToYk/DO1r1tgP06Oaww11ce8VZTbFo34Q=;
-        b=JxAZKkcwILY3AJzl/3O74LqvYqcA3605+7i85FDgSdbHXDPX8Q7DGbMnEtsFygQr0W
-         lhZd/OIKH180diPa38Adngf29bNKeP54hiRFMMItFcTqIC5CvXFaQCPJ21C63NeCUPDL
-         i6NwOYR2z+im/IrN84IjGnja58XSGltMLAM8mXlOCBAQ5RjQUfgxE2CHMaKzTW2RfCch
-         7570sgE8sSsJq2VJVoIxE5c4RXv+1YQpR/xTFOTj9NZRNxxe73WOfFAPq0XPTe3VCuMP
-         2xgCMeCM/IuDtl9cg0Jt732znlswtrZtWBEQ+00MQZQ5rLkhVUgFHEimI78AiwWJ0YSZ
-         mhmA==
+        bh=wWBrUHm1A8atZLyptd7jmcXQtY/89jU2BTsJtF2nbqY=;
+        b=cHGx94nJ62ByfPA+AWV8PTHYomYKvzMPct9hS/TVPxIYcdk5F9eyBPfkUc0Ds3M14R
+         m4tWC+78zJhP2waPcWj9mZea1igmPD+ZMZwDpbDrBkA2LTNK1PTeCXnXw2PenTEX/vNT
+         BMP/Zg+bNUXgh44+g8iN37S10gmwjXfIt2nS1KrLdqvLW8jqHW/7tQNlKPPnbb6EFVtW
+         LgOuRNM1NIm3WyaTzx93SIJPi1f6hbXgkdkjYhaUK78UkTrOd+M3wb670cyISajmmLHr
+         YsLynvIDuWxPLaqh9OaXjY3Rv4m/vsJW/KFJ0KYO4d9qKMIDlreOyD5DMNPgapEJeUP1
+         BEag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704758858; x=1705363658;
+        d=1e100.net; s=20230601; t=1704760869; x=1705365669;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aUySmjIsH1ToYk/DO1r1tgP06Oaww11ce8VZTbFo34Q=;
-        b=h8p/FwGs9KNRieDqZkm0ZTzSdZDdMIuFD+Y3OEnwcr5ElFW4OH8VyTkl8CCOv0J/cg
-         0SSY/YVZCTuBOyKMRrKf7etdL6zKWYT9Qc052AbDABMdwkeIw41dgVjkKFpuKk6kv071
-         nn/jLuOoep6segcUi+5k0vNZGK+dvIpPHJvITw7lRZH5kubdwzf7ObMtQ2r9l4gsEDhk
-         lP2glSMsW3QekoOK+1Sx3L1wUfnePlTyUx/yAhe4lSNNLlGFJ8SfT+4oGrV7ixiwZtc6
-         b8ugdWchX4xf7256g9kRIfdkOjennCZpmy1i4WSqWCintNnWAA1kRMf4/CxH4ZXZd4Mi
-         ONZQ==
-X-Gm-Message-State: AOJu0YzKErUQdczPI6uDXTJ1xby8KBRPbMTQ01fQQIm+6d5b/CK8y6c2
-	Yvma4lVrbbjzzKykP/S/KfDZdGfSYmxi10BTwX0=
-X-Google-Smtp-Source: AGHT+IEhZMahxE6XL79rn3qxvkTP/cFMykC14+MaP32XhB7A8NjWjyqurv88RNsV1NJ2Mo9tkD/G+zsebjNktJlHXRw=
-X-Received: by 2002:a50:a6dd:0:b0:557:e3f:2cec with SMTP id
- f29-20020a50a6dd000000b005570e3f2cecmr525326edc.13.1704758857611; Mon, 08 Jan
- 2024 16:07:37 -0800 (PST)
+        bh=wWBrUHm1A8atZLyptd7jmcXQtY/89jU2BTsJtF2nbqY=;
+        b=v9DBVDp18s7SOCfZQherZhL36dkcnXThWQyr3PM9inV2IxBF/IknFNOZnqs9CLIED/
+         fuzhtK7NPIP7EOEfDu9zxCDaW/ZMSlMSNjov8rDavneWLTgckqbyAwMjF8ipjcOgdjRj
+         Q21PvN/2DKRbV0EY8igsZ6+XtrWMNPl2c5EuuYC5q+yCibsfqjCIzzu4VmkUnk+J8u9l
+         SKL0akaGUOlwzN/EwwyeHOaY0zlSjDzczGC3k3cnAREkEF5uV4WG2EWhPdxCZ78oOUy6
+         kS5bWzkDK4YSIvqa/5NatkNubICd3xc6ij4b1yAPGxiPvIZFh+0fqz2uMnYzJ9kSNMKr
+         4aeA==
+X-Gm-Message-State: AOJu0Yzy7jqOjfgjZv1vRtISu0tLMRUmZS9xoIyQdiTGavzVQVXe7jw4
+	pO4n5xE0FVgNdZZ+4/VkaJ8X3cuWSNmm1xTUXCcIqhZW
+X-Google-Smtp-Source: AGHT+IHWO9dEi72YIW2KIhu6QBSAtwm8+ToSBYzXRzYd3Jtlz3KL+aEKuSKmFUnMYTFYkpyep1nZk02JOjlTwNqAvUM=
+X-Received: by 2002:a05:6000:1147:b0:337:6258:4e73 with SMTP id
+ d7-20020a056000114700b0033762584e73mr113558wrx.87.1704760868956; Mon, 08 Jan
+ 2024 16:41:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103222034.2582628-1-andrii@kernel.org> <20240103222034.2582628-4-andrii@kernel.org>
- <CAHk-=wgmjr4nhxGheec1OwuYRk02d0+quUAViVk1v+w=Kvg15w@mail.gmail.com> <CAHC9VhQg7mYnQw-o1TYon_bdtk_CMzJaf6u5FTPosniG-UXK1w@mail.gmail.com>
-In-Reply-To: <CAHC9VhQg7mYnQw-o1TYon_bdtk_CMzJaf6u5FTPosniG-UXK1w@mail.gmail.com>
+References: <20240108132802.6103-1-eddyz87@gmail.com> <20240108132802.6103-2-eddyz87@gmail.com>
+In-Reply-To: <20240108132802.6103-2-eddyz87@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 8 Jan 2024 16:07:25 -0800
-Message-ID: <CAEf4BzYMrvtTjkBUWOk1TKi8qiBbwv1xv=eJeF3j3QrY1M=h3g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 03/29] bpf: introduce BPF token object
-To: Paul Moore <paul@paul-moore.com>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, 
-	netdev@vger.kernel.org, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, kernel-team@meta.com
+Date: Mon, 8 Jan 2024 16:40:56 -0800
+Message-ID: <CAEf4Bzb5NNWRroWtg5cRy4FUV8-AhrRbsd7_D12F3SJu7hTcqw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/3] bpf: simplify try_match_pkt_pointers()
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, zenczykowski@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 8, 2024 at 8:45=E2=80=AFAM Paul Moore <paul@paul-moore.com> wro=
-te:
+On Mon, Jan 8, 2024 at 5:28=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> On Fri, Jan 5, 2024 at 4:45=E2=80=AFPM Linus Torvalds
-> <torvalds@linuxfoundation.org> wrote:
-> > On Wed, 3 Jan 2024 at 14:21, Andrii Nakryiko <andrii@kernel.org> wrote:
-> > >
-> > > +bool bpf_token_capable(const struct bpf_token *token, int cap)
-> > > +{
-> > > +       /* BPF token allows ns_capable() level of capabilities, but o=
-nly if
-> > > +        * token's userns is *exactly* the same as current user's use=
-rns
-> > > +        */
-> > > +       if (token && current_user_ns() =3D=3D token->userns) {
-> > > +               if (ns_capable(token->userns, cap))
-> > > +                       return true;
-> > > +               if (cap !=3D CAP_SYS_ADMIN && ns_capable(token->usern=
-s, CAP_SYS_ADMIN))
-> > > +                       return true;
-> > > +       }
-> > > +       /* otherwise fallback to capable() checks */
-> > > +       return capable(cap) || (cap !=3D CAP_SYS_ADMIN && capable(CAP=
-_SYS_ADMIN));
-> > > +}
-> >
-> > This *feels* like it should be written as
-> >
-> >     bool bpf_token_capable(const struct bpf_token *token, int cap)
-> >     {
-> >         struct user_namespace *ns =3D &init_ns;
-> >
-> >         /* BPF token allows ns_capable() level of capabilities, but onl=
-y if
-> >          * token's userns is *exactly* the same as current user's usern=
-s
-> >          */
-> >         if (token && current_user_ns() =3D=3D token->userns)
-> >                 ns =3D token->userns;
-> >         return ns_capable(ns, cap) ||
-> >                 (cap !=3D CAP_SYS_ADMIN && capable(CAP_SYS_ADMIN));
-> >     }
-> >
-> > And yes, I realize that the function will end up later growing a
-> >
-> >         security_bpf_token_capable(token, cap)
-> >
-> > test inside that 'if (token ..)' statement, and this would change the
-> > order of that test so that the LSM hook would now be done before the
-> > capability checks are done, but that all still seems just more of an
-> > argument for the simplification.
+> Reduce number of cases handled in try_match_pkt_pointers()
+> to <pkt_data> <op> <pkt_end> or <pkt_meta> <op> <pkt_data>
+> by flipping opcode.
 >
-> I have no problem with rewriting things, my only ask is that we stick
-> with the idea of doing the capability checks before the LSM hook.  The
-> DAC-before-MAC (capability-before-LSM) pattern is one we try to stick
-> to most everywhere in the kernel and deviating from it here could
-> potentially result in some odd/unexpected behavior from a user
-> perspective.
-
-Makes sense, Paul. With the suggested rewrite we'll get an LSM call
-before we get to ns_capable() (which we avoid doing in BPF code base,
-generally speaking, after someone called this out earlier). Hmm...
-
-I guess it will be better to keep this logic as is then, I believe it
-was more of a subjective stylistical nit from Linus, so it probably is
-ok to keep existing code.
-
-Alternatively we could do something like:
-
-struct user_namespace *ns =3D &init_ns;
-
-if (token && current_user_ns() =3D=3D token->userns)
-    ns =3D token->user_ns;
-else
-    token =3D NULL;
-
-if (ns_capable(ns, cap) || (cap !=3D CAP_SYS_ADMIN && ns_capable(ns,
-CAP_SYS_ADMIN)) {
-    if (token)
-        return security_bpf_token_capable(token, cap) =3D=3D 0;
-    return true;
-}
-return false;
-
-Or something along those lines? I don't particularly care (though the
-latter seems a bit more ceremonious), so please let me know the
-preference, if any.
-
-
+> Suggested-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  kernel/bpf/verifier.c | 104 ++++++++++--------------------------------
+>  1 file changed, 24 insertions(+), 80 deletions(-)
 >
-> --
-> paul-moore.com
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index adbf330d364b..918e6a7912e2 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -14677,6 +14677,9 @@ static bool try_match_pkt_pointers(const struct b=
+pf_insn *insn,
+>                                    struct bpf_verifier_state *this_branch=
+,
+>                                    struct bpf_verifier_state *other_branc=
+h)
+>  {
+> +       int opcode =3D BPF_OP(insn->code);
+> +       int dst_regno =3D insn->dst_reg;
+> +
+>         if (BPF_SRC(insn->code) !=3D BPF_X)
+>                 return false;
+>
+> @@ -14684,90 +14687,31 @@ static bool try_match_pkt_pointers(const struct=
+ bpf_insn *insn,
+>         if (BPF_CLASS(insn->code) =3D=3D BPF_JMP32)
+>                 return false;
+>
+> -       switch (BPF_OP(insn->code)) {
+> +       if (dst_reg->type =3D=3D PTR_TO_PACKET_END ||
+> +           src_reg->type =3D=3D PTR_TO_PACKET_META) {
+> +               swap(src_reg, dst_reg);
+> +               dst_regno =3D insn->src_reg;
+> +               opcode =3D flip_opcode(opcode);
+> +       }
+> +
+> +       if ((dst_reg->type !=3D PTR_TO_PACKET ||
+> +            src_reg->type !=3D PTR_TO_PACKET_END) &&
+> +           (dst_reg->type !=3D PTR_TO_PACKET_META ||
+> +            !reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET)))
+> +               return false;
+
+this inverted original condition just breaks my brain, I can't wrap my
+head around it :) I think the original is easier to reason about
+because it's two clear allowable patterns for which we do something. I
+understand that this early exit reduces nestedness, but at least for
+me it would be simpler to have the original non-inverted condition
+with a nested switch.
+
+
+> +
+> +       switch (opcode) {
+>         case BPF_JGT:
+> -               if ((dst_reg->type =3D=3D PTR_TO_PACKET &&
+> -                    src_reg->type =3D=3D PTR_TO_PACKET_END) ||
+> -                   (dst_reg->type =3D=3D PTR_TO_PACKET_META &&
+> -                    reg_is_init_pkt_pointer(src_reg, PTR_TO_PACKET))) {
+> -                       /* pkt_data' > pkt_end, pkt_meta' > pkt_data */
+> -                       find_good_pkt_pointers(this_branch, dst_reg,
+> -                                              dst_reg->type, false);
+> -                       mark_pkt_end(other_branch, insn->dst_reg, true);
+> -               } else if ((dst_reg->type =3D=3D PTR_TO_PACKET_END &&
+> -                           src_reg->type =3D=3D PTR_TO_PACKET) ||
+> -                          (reg_is_init_pkt_pointer(dst_reg, PTR_TO_PACKE=
+T) &&
+> -                           src_reg->type =3D=3D PTR_TO_PACKET_META)) {
+> -                       /* pkt_end > pkt_data', pkt_data > pkt_meta' */
+> -                       find_good_pkt_pointers(other_branch, src_reg,
+> -                                              src_reg->type, true);
+> -                       mark_pkt_end(this_branch, insn->src_reg, false);
+> -               } else {
+> -                       return false;
+> -               }
+> -               break;
+
+[...]
 
