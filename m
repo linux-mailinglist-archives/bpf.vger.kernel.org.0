@@ -1,227 +1,149 @@
-Return-Path: <bpf+bounces-19290-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19291-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A95F8290BF
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 00:17:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 593758290C7
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 00:22:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06B001F2775B
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 23:17:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08084287EC3
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 23:22:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCFDC3E472;
-	Tue,  9 Jan 2024 23:17:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 793483E47E;
+	Tue,  9 Jan 2024 23:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="En/cp51a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HJRf6NN0"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F3D93DB80
-	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 23:17:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8683C433C7;
-	Tue,  9 Jan 2024 23:17:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704842260;
-	bh=2KR/5Kot6N8mA+Dpd3BU3h3s4aYllPOQDZkZIfzXEFo=;
-	h=From:To:Cc:Subject:Date:From;
-	b=En/cp51aQDb+j5oII2GaUqeWAtnPpdc+ju7f8gwZcoCsTNs8xxnr3RNf/FDoO4xc0
-	 vf+wwF0pgN4ymwQtfTIXkgbYl1UlsaUf0MprcrbFFJPBNk6WQay5gguXeLRmFDL4af
-	 qHkYOHltLFPOwl6jHX13JGXjGdo0+wpGmHoGV2ugrJr0sBwW/YDHevaZiAekjLGVwj
-	 Qn32xct4lqAemuuzLTbD4W07UGqx+1caSkWQXnsCYvBT2Btgana7o6bfq3Ub5aeaoe
-	 vbKRhj9vr1ZGlAfk81jse2zabrLe2VEnboc6n9kWGJDmiAiIl9px8NugLFpuFxW+op
-	 r4QLZAWAv0f+w==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com,
-	Song Liu <song@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH v2 bpf-next] selftests/bpf: detect testing prog flags support
-Date: Tue,  9 Jan 2024 15:17:38 -0800
-Message-Id: <20240109231738.575844-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FC93E473;
+	Tue,  9 Jan 2024 23:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7ba903342c2so254411739f.3;
+        Tue, 09 Jan 2024 15:22:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704842561; x=1705447361; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uPqy+82fb4SEKR56UmyLvl8CBKyqJEkW6ciRME8Jc5k=;
+        b=HJRf6NN07l+nSl7oMoVB2poxhZ0oZ4mncvxIuaVNCGajDuQ2RlsZdaeUvQ+l9fWbyE
+         ycyUgFH43t4SocYJjF7VN5rFHweo40qIBj3pgot/bUZrCVdnFwBirzKv2C6zdjNgwHNv
+         GbV8VEPV1IhTky4z6FOahlylzp8tDoAkxJNrni01EX8bIKjDM8RhOVwGxFSQXWAUJ4pg
+         ldX6QdkGKLxiOtGM7vX3wxc0yiyg++138l4nfwxkFynAzIgswwosdK/8gc9K5H1Xg7UR
+         S/U8Mz5CdhrbYA09Zfz4eKPrOkvSStePfr9YOZschFm+MRm2VfraJDGUYDrzYCnKBmun
+         W7qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704842561; x=1705447361;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uPqy+82fb4SEKR56UmyLvl8CBKyqJEkW6ciRME8Jc5k=;
+        b=WuqFUPhGuTCURI147zBM9Y/EOP4gOvw8+y37jmVV0CIEoIEM61pKhnD6yZV5AnWuXt
+         by0ikQQ18FFKgvcuxbfEBvLqSkcAWWawsU+aqZhUOeBGmT0QYymazBCUTqH40eQJjEGi
+         oxXoXliyeimFvT9Cb7zYvlUp5QzOMConUbT5/co2GBmKZp9UjTgAME9JiMYVF5vhWRJx
+         pKTKzsYKCzuYlHSIMJjknqVW95WBhCrvoK4bGkn7xIHc8tmX14dBq62wIamLK+6Da15j
+         oOI1EhKTV/nsJsDVXJjWpESiODw7UBg/CuM48qnUwYVcHp5vrEzFTkYRMmlaIm/u6hHk
+         0ZXA==
+X-Gm-Message-State: AOJu0YwvjSzfqd1afrdkOG6yo6yScMmsPy3XVzBNUYpWNUqcL6s570Za
+	7FUDkXNzGJo0OAcQHwJlzpM=
+X-Google-Smtp-Source: AGHT+IGGt6OAJV1oxXGi3mKg/cLI3CBEmG5ulIXCjnOwGBwFESR2ItT+BmBDixngwudJjuOzHAmo5A==
+X-Received: by 2002:a05:6e02:b2d:b0:360:976f:d0b8 with SMTP id e13-20020a056e020b2d00b00360976fd0b8mr210234ilu.44.1704842560724;
+        Tue, 09 Jan 2024 15:22:40 -0800 (PST)
+Received: from localhost ([98.97.116.78])
+        by smtp.gmail.com with ESMTPSA id v3-20020a1709029a0300b001d4c316e3a4sm2303718plp.189.2024.01.09.15.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Jan 2024 15:22:40 -0800 (PST)
+Date: Tue, 09 Jan 2024 15:22:39 -0800
+From: John Fastabend <john.fastabend@gmail.com>
+To: Edward Adam Davis <eadavis@qq.com>, 
+ syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
+Cc: andrii@kernel.org, 
+ ast@kernel.org, 
+ borisp@nvidia.com, 
+ bpf@vger.kernel.org, 
+ daniel@iogearbox.net, 
+ davem@davemloft.net, 
+ dhowells@redhat.com, 
+ edumazet@google.com, 
+ jakub@cloudflare.com, 
+ john.fastabend@gmail.com, 
+ kuba@kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ pabeni@redhat.com, 
+ syzkaller-bugs@googlegroups.com
+Message-ID: <659dd53f1652b_2796120896@john.notmuch>
+In-Reply-To: <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
+References: <000000000000aa2f41060e363b2b@google.com>
+ <tencent_146C309740E8F6ECD2CC5C7ADA6E202D450A@qq.com>
+Subject: RE: [PATCH] tls: fix WARNING in __sk_msg_free
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Various tests specify extra testing prog_flags when loading BPF
-programs, like BPF_F_TEST_RND_HI32, and more recently also
-BPF_F_TEST_REG_INVARIANTS. While BPF_F_TEST_RND_HI32 is old enough to
-not cause much problem on older kernels, BPF_F_TEST_REG_INVARIANTS is
-very fresh and unconditionally specifying it causes selftests to fail on
-even slightly outdated kernels.
+Edward Adam Davis wrote:
+> Syzbot constructed 32 scatterlists, and the data members in struct sk_msg_sg 
+> can only store a maximum of MAX_MSG_FRAGS scatterlists.
+> However, the value of MAX_MSG_FRAGS=CONFIG_MAX_SKB_FRAG is less than 32, which
+> leads to the warning reported here.
+> 
+> Prevent similar issues from occurring by checking whether sg.end is greater 
+> than MAX_MSG_FRAGS.
+> 
+> Reported-and-tested-by: syzbot+f2977222e0e95cec15c8@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>  net/tls/tls_sw.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+> index e37b4d2e2acd..68dbe821f61d 100644
+> --- a/net/tls/tls_sw.c
+> +++ b/net/tls/tls_sw.c
+> @@ -1016,6 +1016,8 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+>  
+>  		msg_pl = &rec->msg_plaintext;
+>  		msg_en = &rec->msg_encrypted;
+> +		if (msg_pl->sg.end >= MAX_MSG_FRAGS)
+> +			return -EINVAL;
+>  
+>  		orig_size = msg_pl->sg.size;
+>  		full_record = false;
+> -- 
+> 2.43.0
+> 
 
-This breaks libbpf CI test against 4.9 and 5.15 kernels, it can break
-some local development (done outside of VM), etc.
+I'll test this in a bit, but I suspect this error is because even
+if the msg_pl is full (the sg.end == MAX_MSG_FRAGS) the code is
+missing a full_record=true set to force the loop to do the send
+and abort. My opinion is we should never iterated the loop if the
+msg_pl was full.
 
-To prevent this, and guard against similar problems in the future, do
-runtime detection of supported "testing flags", and only provide those
-that host kernel recognizes.
+I think something like this is actually needed.
 
-Acked-by: Song Liu <song@kernel.org>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/prog_tests/bpf_verif_scale.c          |  2 +-
- .../selftests/bpf/prog_tests/reg_bounds.c     |  2 +-
- tools/testing/selftests/bpf/test_loader.c     |  2 +-
- tools/testing/selftests/bpf/test_sock_addr.c  |  3 +-
- tools/testing/selftests/bpf/test_verifier.c   |  2 +-
- tools/testing/selftests/bpf/testing_helpers.c | 32 +++++++++++++++++--
- tools/testing/selftests/bpf/testing_helpers.h |  2 ++
- 7 files changed, 38 insertions(+), 7 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-index e770912fc1d2..4c6ada5b270b 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_verif_scale.c
-@@ -35,7 +35,7 @@ static int check_load(const char *file, enum bpf_prog_type type)
- 	}
- 
- 	bpf_program__set_type(prog, type);
--	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS);
-+	bpf_program__set_flags(prog, testing_prog_flags());
- 	bpf_program__set_log_level(prog, 4 | extra_prog_load_log_flags);
- 
- 	err = bpf_object__load(obj);
-diff --git a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-index 820d0bcfc474..eb74363f9f70 100644
---- a/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-+++ b/tools/testing/selftests/bpf/prog_tests/reg_bounds.c
-@@ -840,7 +840,7 @@ static int load_range_cmp_prog(struct range x, struct range y, enum op op,
- 		.log_level = 2,
- 		.log_buf = log_buf,
- 		.log_size = log_sz,
--		.prog_flags = BPF_F_TEST_REG_INVARIANTS,
-+		.prog_flags = testing_prog_flags(),
- 	);
- 
- 	/* ; skip exit block below
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index f01391021218..2c954f40f815 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -181,7 +181,7 @@ static int parse_test_spec(struct test_loader *tester,
- 	memset(spec, 0, sizeof(*spec));
- 
- 	spec->prog_name = bpf_program__name(prog);
--	spec->prog_flags = BPF_F_TEST_REG_INVARIANTS; /* by default be strict */
-+	spec->prog_flags = testing_prog_flags();
- 
- 	btf = bpf_object__btf(obj);
- 	if (!btf) {
-diff --git a/tools/testing/selftests/bpf/test_sock_addr.c b/tools/testing/selftests/bpf/test_sock_addr.c
-index b0068a9d2cfe..80c42583f597 100644
---- a/tools/testing/selftests/bpf/test_sock_addr.c
-+++ b/tools/testing/selftests/bpf/test_sock_addr.c
-@@ -19,6 +19,7 @@
- #include <bpf/libbpf.h>
- 
- #include "cgroup_helpers.h"
-+#include "testing_helpers.h"
- #include "bpf_util.h"
- 
- #ifndef ENOTSUPP
-@@ -679,7 +680,7 @@ static int load_path(const struct sock_addr_test *test, const char *path)
- 
- 	bpf_program__set_type(prog, BPF_PROG_TYPE_CGROUP_SOCK_ADDR);
- 	bpf_program__set_expected_attach_type(prog, test->expected_attach_type);
--	bpf_program__set_flags(prog, BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS);
-+	bpf_program__set_flags(prog, testing_prog_flags());
- 
- 	err = bpf_object__load(obj);
- 	if (err) {
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index f36e41435be7..50fdc1100a4b 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -1588,7 +1588,7 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 	if (fixup_skips != skips)
- 		return;
- 
--	pflags = BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS;
-+	pflags = testing_prog_flags();
- 	if (test->flags & F_LOAD_WITH_STRICT_ALIGNMENT)
- 		pflags |= BPF_F_STRICT_ALIGNMENT;
- 	if (test->flags & F_NEEDS_EFFICIENT_UNALIGNED_ACCESS)
-diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
-index d2458c1b1671..ba9311fd0510 100644
---- a/tools/testing/selftests/bpf/testing_helpers.c
-+++ b/tools/testing/selftests/bpf/testing_helpers.c
-@@ -252,6 +252,34 @@ __u32 link_info_prog_id(const struct bpf_link *link, struct bpf_link_info *info)
- 
- int extra_prog_load_log_flags = 0;
- 
-+int testing_prog_flags(void)
-+{
-+	static int cached_flags = -1;
-+	static int prog_flags[] = { BPF_F_TEST_RND_HI32, BPF_F_TEST_REG_INVARIANTS };
-+	static struct bpf_insn insns[] = {
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_EXIT_INSN(),
-+	};
-+	int insn_cnt = ARRAY_SIZE(insns), i, fd, flags = 0;
-+	LIBBPF_OPTS(bpf_prog_load_opts, opts);
-+
-+	if (cached_flags >= 0)
-+		return cached_flags;
-+
-+	for (i = 0; i < ARRAY_SIZE(prog_flags); i++) {
-+		opts.prog_flags = prog_flags[i];
-+		fd = bpf_prog_load(BPF_PROG_TYPE_SOCKET_FILTER, "flag-test", "GPL",
-+				   insns, insn_cnt, &opts);
-+		if (fd >= 0) {
-+			flags |= prog_flags[i];
-+			close(fd);
-+		}
-+	}
-+
-+	cached_flags = flags;
-+	return cached_flags;
-+}
-+
- int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
- 		       struct bpf_object **pobj, int *prog_fd)
- {
-@@ -276,7 +304,7 @@ int bpf_prog_test_load(const char *file, enum bpf_prog_type type,
- 	if (type != BPF_PROG_TYPE_UNSPEC && bpf_program__type(prog) != type)
- 		bpf_program__set_type(prog, type);
- 
--	flags = bpf_program__flags(prog) | BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS;
-+	flags = bpf_program__flags(prog) | testing_prog_flags();
- 	bpf_program__set_flags(prog, flags);
- 
- 	err = bpf_object__load(obj);
-@@ -299,7 +327,7 @@ int bpf_test_load_program(enum bpf_prog_type type, const struct bpf_insn *insns,
- {
- 	LIBBPF_OPTS(bpf_prog_load_opts, opts,
- 		.kern_version = kern_version,
--		.prog_flags = BPF_F_TEST_RND_HI32 | BPF_F_TEST_REG_INVARIANTS,
-+		.prog_flags = testing_prog_flags(),
- 		.log_level = extra_prog_load_log_flags,
- 		.log_buf = log_buf,
- 		.log_size = log_buf_sz,
-diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
-index 35284faff4f2..1caa16f5096c 100644
---- a/tools/testing/selftests/bpf/testing_helpers.h
-+++ b/tools/testing/selftests/bpf/testing_helpers.h
-@@ -46,4 +46,6 @@ static inline __u64 get_time_ns(void)
- 	return (u64)t.tv_sec * 1000000000 + t.tv_nsec;
- }
- 
-+int testing_prog_flags(void);
-+
- #endif /* __TESTING_HELPERS_H */
--- 
-2.34.1
-
+diff --git a/net/tls/tls_sw.c b/net/tls/tls_sw.c
+index e37b4d2e2acd..9cfa6f8d51e3 100644
+--- a/net/tls/tls_sw.c
++++ b/net/tls/tls_sw.c
+@@ -1052,8 +1052,10 @@ static int tls_sw_sendmsg_locked(struct sock *sk, struct msghdr *msg,
+                        if (ret < 0)
+                                goto send_end;
+                        tls_ctx->pending_open_record_frags = true;
+-                       if (full_record || eor || sk_msg_full(msg_pl))
++                       if (full_record || eor || sk_msg_full(msg_pl)) {
++                               full_record = true;
+                                goto copied;
++                       }
+                        continue;
+                }
 
