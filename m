@@ -1,236 +1,226 @@
-Return-Path: <bpf+bounces-19285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19286-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36935828FA7
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 23:18:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0A0829005
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 23:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A293B256DA
-	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 22:18:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 022561F2509C
+	for <lists+bpf@lfdr.de>; Tue,  9 Jan 2024 22:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DDBA3EA97;
-	Tue,  9 Jan 2024 22:16:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2831F3DB8A;
+	Tue,  9 Jan 2024 22:38:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwd91x1d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mXHA+K9K"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 670B93E49C;
-	Tue,  9 Jan 2024 22:16:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65911C43390;
-	Tue,  9 Jan 2024 22:16:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704838611;
-	bh=eFscEoCIAi+UJQp3abWYRAO4Lvaf4O8cRgQlKNDdBDE=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=nwd91x1dNBtR27yxcFd0vdX2R91nFh2sr80+T1Mley6qHjF9tzWrlj+ePeAo1JxtU
-	 RFKB15XZuN5KBaRz2C6VCT+zmSkveQn0//sEnRFTjDrpc8G2xk1iEig4yLS1YZxODy
-	 MztA4vPoFh+YfBSThZU3Cefn1qUWqpIXYsT+3h4BD/D9Z4XcykFVPnQHPTSnDk+c0a
-	 l8CGJMFEWrx3nPPssuHkDAE0VyoU8A8AQHggWOiYyx4MtNFkQj1aUFMGSVnGeFiqMB
-	 wfJ4l9Qx1nnSBv4gDTiq/c49JAKkmfyVXJOtWB+P5Lgy9qzOBHRvY8UJbKeZCFUsc2
-	 uuqtHzBFSfbxA==
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Tue, 09 Jan 2024 15:16:29 -0700
-Subject: [PATCH 1/3] selftests/bpf: Update LLVM Phabricator links
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0574112E41
+	for <bpf@vger.kernel.org>; Tue,  9 Jan 2024 22:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-555f581aed9so4081583a12.3
+        for <bpf@vger.kernel.org>; Tue, 09 Jan 2024 14:38:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704839920; x=1705444720; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=To9llvZs8uqaFMu8/1D5jzPMoU7/vjq4zQl8S61WgAE=;
+        b=mXHA+K9Kekx/BJ6xwEQSj/O3X6+IVZeE6gRgaKsRWSRphkVgxmv2UcvZZ15mDpkKq0
+         I0pN5FJQlkp3F0UnIcEIfkvCIiumRU8FODPuvxNbEluznpuJyB/FQ8sE+jwst7i8OmyN
+         jiLGZO4X0uXmkpnAYRht7Qm9cPb/tRI6usZWFd3vAwV+rHgwOwvVAt/U1bBBMd5UaOXj
+         xNQv25xhhsgpGGEyIIfDzHaoGpi7g1hzBDHGxM0WKkVIGsdLwrfrI7BZ1aq+k4MVvbcf
+         sGm2FZNOMksRA+mXq1/0XT/ShCrh3a9PDSeYPmCtDgvIFgMk5dAQsalNfnW4X0w9ODiy
+         p2rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704839920; x=1705444720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=To9llvZs8uqaFMu8/1D5jzPMoU7/vjq4zQl8S61WgAE=;
+        b=amCOu6XSFx4oAMu/ZR0DSPvv+Uc5V3QX+THfjHHydmfVXFN+qRan/3ztLNW8DDk2H3
+         RZkHhhAAwLtoVf5AX56F1x/bISlBphhiAfAVmI/Zd6u2Su2zu9UrHh6W8yZJYobPtZ+U
+         pxz7lUzdhjzJEc+Igfb3I3A5Ij8a4JzN34yEAHXf0zNt9k8hHh3W8pLZIUTjLgRpXs2O
+         x4uhMrAAEFN8bssQ/KsJMwAKKXwvCWdYG3yHDUDKbP1uhpNbPu+KlKsEFizL7q5z46oK
+         Ch/Fyu+KmvHKzRyn1DcJo1N6dhygVvPDkHzYPNPibhi1BL0wkEAJmZnLKEe+TBjYRq1E
+         Q8Og==
+X-Gm-Message-State: AOJu0YzBzbWpsVTPmubipVPHt3QAmr7yk8W1Fmw/ZsmJRhEfsELK5w7/
+	pd6FAdLccGADRz5rENaH5rz411WBS9VgLrGZMik=
+X-Google-Smtp-Source: AGHT+IGRC5Qa8+Qi6+D3WkrDTd8QITnMf1fGNWWtteM+YKwR+RWZje6Z+9QMCBPPD0zanfoBKm+6BeFSOGI0MnQtuvI=
+X-Received: by 2002:a50:d499:0:b0:558:17a1:22d2 with SMTP id
+ s25-20020a50d499000000b0055817a122d2mr52438edi.68.1704839919957; Tue, 09 Jan
+ 2024 14:38:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240109-update-llvm-links-v1-1-eb09b59db071@kernel.org>
-References: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
-In-Reply-To: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
-To: akpm@linux-foundation.org
-Cc: llvm@lists.linux.dev, patches@lists.linux.dev, 
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linuxppc-dev@lists.ozlabs.org, kvm@vger.kernel.org, 
- linux-riscv@lists.infradead.org, linux-trace-kernel@vger.kernel.org, 
- linux-s390@vger.kernel.org, linux-pm@vger.kernel.org, 
- linux-crypto@vger.kernel.org, linux-efi@vger.kernel.org, 
- amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
- linux-media@vger.kernel.org, linux-arch@vger.kernel.org, 
- kasan-dev@googlegroups.com, linux-mm@kvack.org, bridge@lists.linux.dev, 
- netdev@vger.kernel.org, linux-security-module@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>, 
- ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, mykolal@fb.com, 
- bpf@vger.kernel.org
-X-Mailer: b4 0.13-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7587; i=nathan@kernel.org;
- h=from:subject:message-id; bh=eFscEoCIAi+UJQp3abWYRAO4Lvaf4O8cRgQlKNDdBDE=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDKlzj15IUNPmFinNmNO40TyB+eHTwFMf6kVvPC5Rrjn6Z
- JdC/PJtHaUsDGJcDLJiiizVj1WPGxrOOct449QkmDmsTCBDGLg4BWAiwu8YGVbUeWkdrFi1UUdq
- 4sron76zUsq4BZg2/XauNjb4rF67R4iR4W11UIPnynvJDpfc96myPrzLNvclj2HuZymRz+4ctQ5
- n2AA=
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+References: <20240109040524.2313448-1-yonghong.song@linux.dev>
+In-Reply-To: <20240109040524.2313448-1-yonghong.song@linux.dev>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 9 Jan 2024 14:38:27 -0800
+Message-ID: <CAEf4BzZgKWA6h4cEyxrFri4r+u976cNcm4vzFgKvJ0j=+uT+Jw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 1/2] bpf: Track aligned st store as imprecise
+ spilled registers
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kuniyuki Iwashima <kuniyu@amazon.com>, 
+	Martin KaFai Lau <kafai@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-reviews.llvm.org was LLVM's Phabricator instances for code review. It
-has been abandoned in favor of GitHub pull requests. While the majority
-of links in the kernel sources still work because of the work Fangrui
-has done turning the dynamic Phabricator instance into a static archive,
-there are some issues with that work, so preemptively convert all the
-links in the kernel sources to point to the commit on GitHub.
+On Mon, Jan 8, 2024 at 8:05=E2=80=AFPM Yonghong Song <yonghong.song@linux.d=
+ev> wrote:
+>
+> With patch set [1], precision backtracing supports register spill/fill
+> to/from the stack. The patch [2] allows initial imprecise register spill
+> with content 0. This is a common case for cpuv3 and lower for
+> initializing the stack variables with pattern
+>   r1 =3D 0
+>   *(u64 *)(r10 - 8) =3D r1
+> and the [2] has demonstrated good verification improvement.
+>
+> For cpuv4, the initialization could be
+>   *(u64 *)(r10 - 8) =3D 0
+> The current verifier marks the r10-8 contents with STACK_ZERO.
+> Similar to [2], let us permit the above insn to behave like
+> imprecise register spill which can reduce number of verified states.
+> The change is in function check_stack_write_fixed_off().
+>
+> Before this patch, spilled zero will be marked as STACK_ZERO
+> which can provide precise values. In check_stack_write_var_off(),
+> STACK_ZERO will be maintained if writing a const zero
+> so later it can provide precise values if needed.
+>
+> The above handling of '*(u64 *)(r10 - 8) =3D 0' as a spill
+> will have issues in check_stack_write_var_off() as the spill
+> will be converted to STACK_MISC and the precise value 0
+> is lost. To fix this issue, if the spill slots with const
+> zero and the BPF_ST write also with const zero, the spill slots
+> are preserved, which can later provide precise values
+> if needed. Without the change in check_stack_write_var_off(),
+> the test_verifier subtest 'BPF_ST_MEM stack imm zero, variable offset'
+> will fail.
+>
+> I checked cpuv3 and cpuv4 with and without this patch with veristat.
+> There is no state change for cpuv3 since '*(u64 *)(r10 - 8) =3D 0'
+> is only generated with cpuv4.
+>
+> For cpuv4:
+> $ ../veristat -C old.cpuv4.csv new.cpuv4.csv -e file,prog,insns,states -f=
+ 'insns_diff!=3D0'
+> File                                        Program              Insns (A=
+)  Insns (B)  Insns    (DIFF)  States (A)  States (B)  States (DIFF)
+> ------------------------------------------  -------------------  --------=
+-  ---------  ---------------  ----------  ----------  -------------
+> local_storage_bench.bpf.linked3.o           get_local                  22=
+8        168    -60 (-26.32%)          17          14   -3 (-17.65%)
+> pyperf600_bpf_loop.bpf.linked3.o            on_event                  606=
+6       4889  -1177 (-19.40%)         403         321  -82 (-20.35%)
+> test_cls_redirect.bpf.linked3.o             cls_redirect             3548=
+3      35387     -96 (-0.27%)        2179        2177    -2 (-0.09%)
+> test_l4lb_noinline.bpf.linked3.o            balancer_ingress          449=
+4       4522     +28 (+0.62%)         217         219    +2 (+0.92%)
+> test_l4lb_noinline_dynptr.bpf.linked3.o     balancer_ingress          143=
+2       1455     +23 (+1.61%)          92          94    +2 (+2.17%)
+> test_xdp_noinline.bpf.linked3.o             balancer_ingress_v6       346=
+2       3458      -4 (-0.12%)         216         216    +0 (+0.00%)
+> verifier_iterating_callbacks.bpf.linked3.o  widening                    5=
+2         41    -11 (-21.15%)           4           3   -1 (-25.00%)
+> xdp_synproxy_kern.bpf.linked3.o             syncookie_tc             1241=
+2      11719    -693 (-5.58%)         345         330   -15 (-4.35%)
+> xdp_synproxy_kern.bpf.linked3.o             syncookie_xdp            1247=
+8      11794    -684 (-5.48%)         346         331   -15 (-4.34%)
+>
+> test_l4lb_noinline and test_l4lb_noinline_dynptr has minor regression, bu=
+t
+> pyperf600_bpf_loop and local_storage_bench gets pretty good improvement.
+>
+>   [1] https://lore.kernel.org/all/20231205184248.1502704-1-andrii@kernel.=
+org/
+>   [2] https://lore.kernel.org/all/20231205184248.1502704-9-andrii@kernel.=
+org/
+>
+> Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Cc: Martin KaFai Lau <kafai@fb.com>
+> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  kernel/bpf/verifier.c                            | 16 ++++++++++++++--
+>  .../selftests/bpf/progs/verifier_spill_fill.c    | 16 ++++++++--------
+>  2 files changed, 22 insertions(+), 10 deletions(-)
+>
+> Changelogs:
+>   v2 -> v3:
+>     - add precision checking to the spilled zero value register in
+>       check_stack_write_var_off().
+>     - check spill slot-by-slot instead of in a bunch within a spi.
+>   v1 -> v2:
+>     - Preserve with-const-zero spill if writing is also zero
+>       in check_stack_write_var_off().
+>     - Add a test with not-8-byte-aligned BPF_ST store.
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index adbf330d364b..54da1045e078 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4493,7 +4493,7 @@ static int check_stack_write_fixed_off(struct bpf_v=
+erifier_env *env,
+>                 if (fls64(reg->umax_value) > BITS_PER_BYTE * size)
+>                         state->stack[spi].spilled_ptr.id =3D 0;
+>         } else if (!reg && !(off % BPF_REG_SIZE) && is_bpf_st_mem(insn) &=
+&
+> -                  insn->imm !=3D 0 && env->bpf_capable) {
+> +                  env->bpf_capable) {
+>                 struct bpf_reg_state fake_reg =3D {};
+>
+>                 __mark_reg_known(&fake_reg, insn->imm);
+> @@ -4615,6 +4615,7 @@ static int check_stack_write_var_off(struct bpf_ver=
+ifier_env *env,
+>
+>         /* Variable offset writes destroy any spilled pointers in range. =
+*/
+>         for (i =3D min_off; i < max_off; i++) {
+> +               struct bpf_reg_state *spill_reg;
+>                 u8 new_type, *stype;
+>                 int slot, spi;
+>
+> @@ -4640,7 +4641,18 @@ static int check_stack_write_var_off(struct bpf_ve=
+rifier_env *env,
+>                         return -EINVAL;
+>                 }
+>
+> -               /* Erase all spilled pointers. */
+> +               /* If writing_zero and the the spi slot contains a spill =
+of value 0,
+> +                * maintain the spill type.
+> +                */
+> +               if (writing_zero && is_spilled_scalar_reg(&state->stack[s=
+pi])) {
 
-Most of the commits have the corresponding differential review link in
-the commit message itself so there should not be any loss of fidelity in
-the relevant information.
+nit: I'd probably move `struct bpf_reg_state *spill_reg;` here to keep it l=
+ocal
 
-Additionally, fix a typo in the xdpwall.c print ("LLMV" -> "LLVM") while
-in the area.
+other than the missing `*stype =3D=3D STACK_SPILL` check that Eduard
+already called out, looks good to me!
 
-Link: https://discourse.llvm.org/t/update-on-github-pull-requests/71540/172
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
-Cc: ast@kernel.org
-Cc: daniel@iogearbox.net
-Cc: andrii@kernel.org
-Cc: mykolal@fb.com
-Cc: bpf@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
----
- tools/testing/selftests/bpf/README.rst             | 32 +++++++++++-----------
- tools/testing/selftests/bpf/prog_tests/xdpwall.c   |  2 +-
- .../selftests/bpf/progs/test_core_reloc_type_id.c  |  2 +-
- 3 files changed, 18 insertions(+), 18 deletions(-)
+> +                       spill_reg =3D &state->stack[spi].spilled_ptr;
+> +                       if (tnum_is_const(spill_reg->var_off) && spill_re=
+g->var_off.value =3D=3D 0) {
+> +                               zero_used =3D true;
+> +                               continue;
+> +                       }
+> +               }
+> +
+> +               /* Erase all other spilled pointers. */
+>                 state->stack[spi].spilled_ptr.type =3D NOT_INIT;
+>
+>                 /* Update the slot type. */
 
-diff --git a/tools/testing/selftests/bpf/README.rst b/tools/testing/selftests/bpf/README.rst
-index cb9b95702ac6..b9a493f66557 100644
---- a/tools/testing/selftests/bpf/README.rst
-+++ b/tools/testing/selftests/bpf/README.rst
-@@ -115,7 +115,7 @@ the insn 20 undoes map_value addition. It is currently impossible for the
- verifier to understand such speculative pointer arithmetic.
- Hence `this patch`__ addresses it on the compiler side. It was committed on llvm 12.
- 
--__ https://reviews.llvm.org/D85570
-+__ https://github.com/llvm/llvm-project/commit/ddf1864ace484035e3cde5e83b3a31ac81e059c6
- 
- The corresponding C code
- 
-@@ -165,7 +165,7 @@ This is due to a llvm BPF backend bug. `The fix`__
- has been pushed to llvm 10.x release branch and will be
- available in 10.0.1. The patch is available in llvm 11.0.0 trunk.
- 
--__  https://reviews.llvm.org/D78466
-+__  https://github.com/llvm/llvm-project/commit/3cb7e7bf959dcd3b8080986c62e10a75c7af43f0
- 
- bpf_verif_scale/loop6.bpf.o test failure with Clang 12
- ======================================================
-@@ -204,7 +204,7 @@ r5(w5) is eventually saved on stack at insn #24 for later use.
- This cause later verifier failure. The bug has been `fixed`__ in
- Clang 13.
- 
--__  https://reviews.llvm.org/D97479
-+__  https://github.com/llvm/llvm-project/commit/1959ead525b8830cc8a345f45e1c3ef9902d3229
- 
- BPF CO-RE-based tests and Clang version
- =======================================
-@@ -221,11 +221,11 @@ failures:
- - __builtin_btf_type_id() [0_, 1_, 2_];
- - __builtin_preserve_type_info(), __builtin_preserve_enum_value() [3_, 4_].
- 
--.. _0: https://reviews.llvm.org/D74572
--.. _1: https://reviews.llvm.org/D74668
--.. _2: https://reviews.llvm.org/D85174
--.. _3: https://reviews.llvm.org/D83878
--.. _4: https://reviews.llvm.org/D83242
-+.. _0: https://github.com/llvm/llvm-project/commit/6b01b465388b204d543da3cf49efd6080db094a9
-+.. _1: https://github.com/llvm/llvm-project/commit/072cde03aaa13a2c57acf62d79876bf79aa1919f
-+.. _2: https://github.com/llvm/llvm-project/commit/00602ee7ef0bf6c68d690a2bd729c12b95c95c99
-+.. _3: https://github.com/llvm/llvm-project/commit/6d218b4adb093ff2e9764febbbc89f429412006c
-+.. _4: https://github.com/llvm/llvm-project/commit/6d6750696400e7ce988d66a1a00e1d0cb32815f8
- 
- Floating-point tests and Clang version
- ======================================
-@@ -234,7 +234,7 @@ Certain selftests, e.g. core_reloc, require support for the floating-point
- types, which was introduced in `Clang 13`__. The older Clang versions will
- either crash when compiling these tests, or generate an incorrect BTF.
- 
--__  https://reviews.llvm.org/D83289
-+__  https://github.com/llvm/llvm-project/commit/a7137b238a07d9399d3ae96c0b461571bd5aa8b2
- 
- Kernel function call test and Clang version
- ===========================================
-@@ -248,7 +248,7 @@ Without it, the error from compiling bpf selftests looks like:
- 
-   libbpf: failed to find BTF for extern 'tcp_slow_start' [25] section: -2
- 
--__ https://reviews.llvm.org/D93563
-+__ https://github.com/llvm/llvm-project/commit/886f9ff53155075bd5f1e994f17b85d1e1b7470c
- 
- btf_tag test and Clang version
- ==============================
-@@ -264,8 +264,8 @@ Without them, the btf_tag selftest will be skipped and you will observe:
- 
-   #<test_num> btf_tag:SKIP
- 
--.. _0: https://reviews.llvm.org/D111588
--.. _1: https://reviews.llvm.org/D111199
-+.. _0: https://github.com/llvm/llvm-project/commit/a162b67c98066218d0d00aa13b99afb95d9bb5e6
-+.. _1: https://github.com/llvm/llvm-project/commit/3466e00716e12e32fdb100e3fcfca5c2b3e8d784
- 
- Clang dependencies for static linking tests
- ===========================================
-@@ -274,7 +274,7 @@ linked_vars, linked_maps, and linked_funcs tests depend on `Clang fix`__ to
- generate valid BTF information for weak variables. Please make sure you use
- Clang that contains the fix.
- 
--__ https://reviews.llvm.org/D100362
-+__ https://github.com/llvm/llvm-project/commit/968292cb93198442138128d850fd54dc7edc0035
- 
- Clang relocation changes
- ========================
-@@ -292,7 +292,7 @@ Here, ``type 2`` refers to new relocation type ``R_BPF_64_ABS64``.
- To fix this issue, user newer libbpf.
- 
- .. Links
--.. _clang reloc patch: https://reviews.llvm.org/D102712
-+.. _clang reloc patch: https://github.com/llvm/llvm-project/commit/6a2ea84600ba4bd3b2733bd8f08f5115eb32164b
- .. _kernel llvm reloc: /Documentation/bpf/llvm_reloc.rst
- 
- Clang dependencies for the u32 spill test (xdpwall)
-@@ -304,6 +304,6 @@ from running test_progs will look like:
- 
- .. code-block:: console
- 
--  test_xdpwall:FAIL:Does LLVM have https://reviews.llvm.org/D109073? unexpected error: -4007
-+  test_xdpwall:FAIL:Does LLVM have https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d5? unexpected error: -4007
- 
--__ https://reviews.llvm.org/D109073
-+__ https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d
-diff --git a/tools/testing/selftests/bpf/prog_tests/xdpwall.c b/tools/testing/selftests/bpf/prog_tests/xdpwall.c
-index f3927829a55a..4599154c8e9b 100644
---- a/tools/testing/selftests/bpf/prog_tests/xdpwall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/xdpwall.c
-@@ -9,7 +9,7 @@ void test_xdpwall(void)
- 	struct xdpwall *skel;
- 
- 	skel = xdpwall__open_and_load();
--	ASSERT_OK_PTR(skel, "Does LLMV have https://reviews.llvm.org/D109073?");
-+	ASSERT_OK_PTR(skel, "Does LLVM have https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d5?");
- 
- 	xdpwall__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_core_reloc_type_id.c b/tools/testing/selftests/bpf/progs/test_core_reloc_type_id.c
-index 22aba3f6e344..6fc8b9d66e34 100644
---- a/tools/testing/selftests/bpf/progs/test_core_reloc_type_id.c
-+++ b/tools/testing/selftests/bpf/progs/test_core_reloc_type_id.c
-@@ -80,7 +80,7 @@ int test_core_type_id(void *ctx)
- 	 * to detect whether this test has to be executed, however strange
- 	 * that might look like.
- 	 *
--	 *   [0] https://reviews.llvm.org/D85174
-+	 *   [0] https://github.com/llvm/llvm-project/commit/00602ee7ef0bf6c68d690a2bd729c12b95c95c99
- 	 */
- #if __has_builtin(__builtin_preserve_type_info)
- 	struct core_reloc_type_id_output *out = (void *)&data.out;
-
--- 
-2.43.0
-
+[...]
 
