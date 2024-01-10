@@ -1,104 +1,319 @@
-Return-Path: <bpf+bounces-19296-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19297-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D6CE829151
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 01:26:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A467282915A
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 01:28:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28E901F265D2
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 00:26:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09BB8B25813
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 00:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6DD39F;
-	Wed, 10 Jan 2024 00:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D618A5D;
+	Wed, 10 Jan 2024 00:27:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GAmpRe8P"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJddKhGs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FCF0383
-	for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 00:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-429985e952bso10729671cf.3
-        for <bpf@vger.kernel.org>; Tue, 09 Jan 2024 16:26:31 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8E23A5A;
+	Wed, 10 Jan 2024 00:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-5578485fc0eso2658433a12.1;
+        Tue, 09 Jan 2024 16:27:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704846390; x=1705451190; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7hriQJykUGbCZHrp0p8WR5gw3Nx0Y5gCOyCGd42caIQ=;
-        b=GAmpRe8PtfzRR6/eKLcRSf+xpey/uzdv13NWI4nh/j6b2JxCDGsYFf/jN8quGamZt5
-         0CNErSx8OoTH/LH+lqa8avR0HDbJ+aPrW1Qh+oKQus7GV2O8RLCBrFCWK+tozTZF8th4
-         mmwt2oeabagXzr3RjjrYjqYKO9kQhJ5tgW3YfLiW8JjT4wM88yqjvD3agjSzf0kLYWYF
-         6fwvNQz8UVjTOUjCovas/uaBRHSzvwhyV4AVe3RlZWrKabCI0W6cEXKYUHDTaEJINd8+
-         puv64ia/Q0HhOOygkKpwnboLOyFAJFrtVDhvuaLaJ2WBdD/m3ZJw3gQd0V7VMT6eIIV8
-         ZlSQ==
+        d=gmail.com; s=20230601; t=1704846470; x=1705451270; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hy7+jUvQqoJloYURgKxR3EyjkKVp9Y3cK5plR19wMMg=;
+        b=mJddKhGsXsQs2l2b7zygNgzGt+JzuTE4CpJCwsa9Qtq5d0gooRGG4WwNBQddp3Rkza
+         uC5/L9Ctigy3gslI5fRa+OrR4fHFK0IvTJ3ac43fOjbKA1eev4bbW8haUK4dEyhHr2KN
+         HgkmzxEtIM3ElcGM5M7AHtohtt7lC3SU+i1ZNeLWP9NIS9i882mLS0hB4MGMBMVl6yx7
+         YopjpxlUCp1P4ZypzBnqMB54jtfdIRWwRwDRHVqaPZQLQf/Tns/s9d3T/UEM5EpXQaFg
+         SaZ3Nd5msS0ak1Ev7ERB2e20pUX75XaYHrgZEO64ZQevj0RSsQfHeLNVh2zyVUFGjPWk
+         iwpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704846390; x=1705451190;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7hriQJykUGbCZHrp0p8WR5gw3Nx0Y5gCOyCGd42caIQ=;
-        b=GGYp28yNrJTwr47SC1uCoYLbzeg8mlQbOK2PysAPWWkcQTo298fqIqdajGN/hVickN
-         v73LUa/ZnAmmJnskycg01cOA0CM3enTKGDLjh7bTjRfjJJT8avsxmM0pdngnA37sZhS4
-         97M7enXb7MF5uRnWbnCFI1gmhPK6mADC54XEZ5SfV1vCnd53xYPCxYB/OlFK1IvY61hp
-         DOh7qNXfah/QKJ3TvG1BP+RLbLNfjm+ou/iZ/lFpSMEdzyvILMb3vgtJG7Lz2F8vK5nG
-         z8nWSH3UEHg9XM/hEOgCEfDp/NTc8/KF/juNOYbuihljOlbksYhbK9FK22V+7A/k0nvz
-         VuQw==
-X-Gm-Message-State: AOJu0Yzm8uCkwcpAzGWFcmNXMF+CnHNpwVhe+Gk9knyvPVQ87TPZcSuW
-	Owy+7RE7Q51BFSeGSgT92iLkpfaxIaYA
-X-Google-Smtp-Source: AGHT+IF+52nsDiokOz506BLJb9c/T/9dxaWvDrKk5j2HauIr3W+OqiBD/UsEQ8ZMZ4bptGTMmV9eRA==
-X-Received: by 2002:ac8:580d:0:b0:429:972d:8781 with SMTP id g13-20020ac8580d000000b00429972d8781mr316318qtg.38.1704846390186;
-        Tue, 09 Jan 2024 16:26:30 -0800 (PST)
-Received: from [192.168.1.31] (d-65-175-157-166.nh.cpe.atlanticbb.net. [65.175.157.166])
-        by smtp.gmail.com with ESMTPSA id ex16-20020a05622a519000b00427f47af434sm1325635qtb.61.2024.01.09.16.26.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 09 Jan 2024 16:26:29 -0800 (PST)
-Message-ID: <1ebf65a2-810b-482c-85f9-7ce02ec4970a@google.com>
-Date: Tue, 9 Jan 2024 19:26:28 -0500
+        d=1e100.net; s=20230601; t=1704846470; x=1705451270;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hy7+jUvQqoJloYURgKxR3EyjkKVp9Y3cK5plR19wMMg=;
+        b=EZRIU5kq5m0yCY41lqn2swJZ5R8kc6pe7FgK06XUnRdEt504e3aY08bA+T02RLUCJH
+         m95o4+jjb2zPqTtLuYGJsExGs7+4wlAAPz/4nBv8RTKlFWnlSZ6sqMKxHRCqwqr3tOOl
+         XtZ+6+mYyuf5fFrfHO7wHA46l8r26H4MY/QAtJAF7E9hdFhjCuZ4nIeF2VxxVkukWHYm
+         NdMvbnev3KfhKiM7jDu/F74Ytg3sR7AttuS9j91xGcEYbQ3YjUsrR1tQU3txHouQtSKr
+         Xzu3d3F8FGT4nwFA0950Gtt66n4DbWc1/J8rj2BiJoiK6f5FR0opc7ULTDyDKijbkNta
+         GIQg==
+X-Gm-Message-State: AOJu0Yzehsl3wS2BkpF7cQzgK5HgBDF5TY/ju0mi0hbnqn1IatEzmamT
+	kTiQGxPLKiCmGMGG5DhO1HPRPG8YSvYPaCOg5ik=
+X-Google-Smtp-Source: AGHT+IEk5DOXT7M1TFgsCjoko9tnbdQiej14HTFPW5wLCelnSKCdq+bXiQ16vSt5wVZYwU+n+dpOQMLytlytwykmR3M=
+X-Received: by 2002:aa7:c9cc:0:b0:558:25a3:145a with SMTP id
+ i12-20020aa7c9cc000000b0055825a3145amr105769edt.30.1704846469992; Tue, 09 Jan
+ 2024 16:27:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly
- helpers to access array elements
-Content-Language: en-US
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, mattbobrowski@google.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240103185403.610641-1-brho@google.com>
- <20240103185403.610641-3-brho@google.com> <ZZa1668ft4Npd1DA@krava>
-From: Barret Rhoden <brho@google.com>
-In-Reply-To: <ZZa1668ft4Npd1DA@krava>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240108205209.838365-1-maxtram95@gmail.com> <20240108205209.838365-16-maxtram95@gmail.com>
+In-Reply-To: <20240108205209.838365-16-maxtram95@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 9 Jan 2024 16:27:38 -0800
+Message-ID: <CAEf4BzaQzWLJqMuOtBX+wmH4EH43nYjTcuVun5nGUwEY_6E7RA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 15/15] selftests/bpf: states pruning checks
+ for scalar vs STACK_{MISC,ZERO}
+To: Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 1/4/24 08:43, Jiri Olsa wrote:
-> I wonder we could use the existing RUN_TESTS macro and use tags
-> in programs like we do for example in progs/test_global_func1.c:
-> 
->    SEC("tc")
->    __failure __msg("combined stack size of 4 calls is 544")
->    int global_func1(struct __sk_buff *skb)
+On Mon, Jan 8, 2024 at 12:53=E2=80=AFPM Maxim Mikityanskiy <maxtram95@gmail=
+.com> wrote:
+>
+> From: Eduard Zingerman <eddyz87@gmail.com>
+>
+> Check that stacksafe() considers the following old vs cur stack spill
+> state combinations equivalent:
+> - spill of unbound scalar vs combination of STACK_{MISC,ZERO,INVALID}
+> - STACK_MISC vs spill of unbound scalar
+> - spill of scalar 0 vs STACK_ZERO
+> - STACK_ZERO vs spill of scalar 0
+>
+> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  .../selftests/bpf/progs/verifier_spill_fill.c | 192 ++++++++++++++++++
+>  1 file changed, 192 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c b/to=
+ols/testing/selftests/bpf/progs/verifier_spill_fill.c
+> index 3764111d190d..3cd3fe30357f 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_spill_fill.c
+> @@ -1044,4 +1044,196 @@ l0_%=3D:  r1 >>=3D 32;                           =
+           \
+>         : __clobber_all);
+>  }
+>
+> +/* stacksafe(): check if spill of unbound scalar in old state is
+> + * considered equivalent to any state of the spill in the current state.
+> + *
+> + * On the first verification path an unbound scalar is written for
+> + * fp-8 and later marked precise.
+> + * On the second verification path a mix of STACK_MISC/ZERO/INVALID is
+> + * written to fp-8. These should be considered equivalent.
+> + */
+> +SEC("socket")
+> +__success __log_level(2)
+> +__msg("10: (79) r0 =3D *(u64 *)(r10 -8)")
+> +__msg("10: safe")
+> +__msg("processed 16 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void old_unbound_scalar_vs_cur_anything(void)
+> +{
+> +       asm volatile(
+> +       /* get a random value for branching */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "r7 =3D r0;"
+> +       /* get a random value for storing at fp-8 */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "if r7 =3D=3D 0 goto 1f;"
+> +       /* unbound scalar written to fp-8 */
+> +       "*(u64*)(r10 - 8) =3D r0;"
+> +       "goto 2f;"
+> +"1:"
+> +       /* mark fp-8 as mix of STACK_MISC/ZERO/INVALID */
+> +       "r1 =3D 0;"
+> +       "*(u8*)(r10 - 8) =3D r0;"
 
-This worked, thanks.
+this is actually a spilled register, not STACK_ZERO. Is it important?
 
-The style of test I have right now is that each test is a separate 
-program, with all programs in the same skeleton.  RUN_TESTS attempted to 
-load the __failure programs, with the side-effect of loading all of the 
-non-failures too.
+> +       "*(u8*)(r10 - 7) =3D r1;"
+> +       /* fp-2..fp-6 remain STACK_INVALID */
+> +       "*(u8*)(r10 - 1) =3D r0;"
+> +"2:"
+> +       /* read fp-8 and force it precise, should be considered safe
+> +        * on second visit
+> +        */
+> +       "r0 =3D *(u64*)(r10 - 8);"
+> +       "r0 &=3D 0xff;"
+> +       "r1 =3D r10;"
+> +       "r1 +=3D r0;"
+> +       "exit;"
+> +       :
+> +       : __imm(bpf_ktime_get_ns)
+> +       : __clobber_all);
+> +}
+> +
+> +/* stacksafe(): check if STACK_MISC in old state is considered
+> + * equivalent to stack spill of unbound scalar in cur state.
+> + */
+> +SEC("socket")
+> +__success __log_level(2)
+> +__msg("8: (79) r0 =3D *(u64 *)(r10 -8)         ; R0_w=3Dscalar(id=3D1) R=
+10=3Dfp0 fp-8=3Dscalar(id=3D1)")
+> +__msg("8: safe")
+> +__msg("processed 11 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void old_unbound_scalar_vs_cur_stack_misc(void)
+> +{
+> +       asm volatile(
+> +       /* get a random value for branching */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "if r0 =3D=3D 0 goto 1f;"
+> +       /* conjure unbound scalar at fp-8 */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "*(u64*)(r10 - 8) =3D r0;"
+> +       "goto 2f;"
+> +"1:"
+> +       /* conjure STACK_MISC at fp-8 */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "*(u64*)(r10 - 8) =3D r0;"
+> +       "*(u32*)(r10 - 4) =3D r0;"
+> +"2:"
+> +       /* read fp-8, should be considered safe on second visit */
+> +       "r0 =3D *(u64*)(r10 - 8);"
+> +       "exit;"
+> +       :
+> +       : __imm(bpf_ktime_get_ns)
+> +       : __clobber_all);
+> +}
+> +
+> +/* stacksafe(): check if stack spill of unbound scalar in old state is
+> + * considered equivalent to STACK_MISC in cur state.
+> + */
+> +SEC("socket")
+> +__success  __log_level(2)
+> +__msg("8: (79) r0 =3D *(u64 *)(r10 -8)         ; R0_w=3Dscalar() R10=3Df=
+p0 fp-8=3Dmmmmmmmm")
+> +__msg("8: safe")
+> +__msg("processed 11 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void old_stack_misc_vs_cur_unbound_scalar(void)
+> +{
+> +       asm volatile(
+> +       /* get a random value for branching */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "if r0 =3D=3D 0 goto 1f;"
+> +       /* conjure STACK_MISC at fp-8 */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "*(u64*)(r10 - 8) =3D r0;"
+> +       "*(u32*)(r10 - 4) =3D r0;"
+> +       "goto 2f;"
+> +"1:"
+> +       /* conjure unbound scalar at fp-8 */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "*(u64*)(r10 - 8) =3D r0;"
+> +"2:"
+> +       /* read fp-8, should be considered safe on second visit */
+> +       "r0 =3D *(u64*)(r10 - 8);"
+> +       "exit;"
+> +       :
+> +       : __imm(bpf_ktime_get_ns)
+> +       : __clobber_all);
+> +}
+> +
+> +/* stacksafe(): check if spill of register with value 0 in old state
+> + * is considered equivalent to STACK_ZERO.
+> + */
+> +SEC("socket")
+> +__success __log_level(2)
+> +__msg("9: (79) r0 =3D *(u64 *)(r10 -8)")
+> +__msg("9: safe")
+> +__msg("processed 15 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void old_spill_zero_vs_stack_zero(void)
+> +{
+> +       asm volatile(
+> +       /* get a random value for branching */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "r7 =3D r0;"
+> +       /* get a random value for storing at fp-8 */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "if r7 =3D=3D 0 goto 1f;"
+> +       /* conjure spilled register with value 0 at fp-8 */
+> +       "*(u64*)(r10 - 8) =3D r0;"
+> +       "if r0 !=3D 0 goto 3f;"
+> +       "goto 2f;"
+> +"1:"
+> +       /* conjure STACK_ZERO at fp-8 */
+> +       "r1 =3D 0;"
+> +       "*(u64*)(r10 - 8) =3D r1;"
 
-Thanks,
+this is not STACK_ZERO, it's full register spill
 
-Barret
+> +"2:"
+> +       /* read fp-8 and force it precise, should be considered safe
+> +        * on second visit
+> +        */
+> +       "r0 =3D *(u64*)(r10 - 8);"
+> +       "r1 =3D r10;"
+> +       "r1 +=3D r0;"
+> +"3:"
+> +       "exit;"
+> +       :
+> +       : __imm(bpf_ktime_get_ns)
+> +       : __clobber_all);
+> +}
+> +
+> +/* stacksafe(): similar to old_spill_zero_vs_stack_zero() but the
+> + * other way around: check if STACK_ZERO is considered equivalent to
+> + * spill of register with value 0.
+> + */
+> +SEC("socket")
+> +__success __log_level(2)
+> +__msg("8: (79) r0 =3D *(u64 *)(r10 -8)")
+> +__msg("8: safe")
+> +__msg("processed 14 insns")
+> +__flag(BPF_F_TEST_STATE_FREQ)
+> +__naked void old_stack_zero_vs_spill_zero(void)
+> +{
+> +       asm volatile(
+> +       /* get a random value for branching */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "if r0 =3D=3D 0 goto 1f;"
+> +       /* conjure STACK_ZERO at fp-8 */
+> +       "r1 =3D 0;"
+> +       "*(u64*)(r10 - 8) =3D r1;"
 
+same, please double check this STACK_xxx assumptions, as now we spill
+registers instead of STACK_ZERO in a lot of cases
 
+> +       "goto 2f;"
+> +"1:"
+> +       /* conjure spilled register with value 0 at fp-8 */
+> +       "call %[bpf_ktime_get_ns];"
+> +       "*(u64*)(r10 - 8) =3D r0;"
+> +       "if r0 !=3D 0 goto 3f;"
+> +"2:"
+> +       /* read fp-8 and force it precise, should be considered safe
+> +        * on second visit
+> +        */
+> +       "r0 =3D *(u64*)(r10 - 8);"
+> +       "r1 =3D r10;"
+> +       "r1 +=3D r0;"
+> +"3:"
+> +       "exit;"
+> +       :
+> +       : __imm(bpf_ktime_get_ns)
+> +       : __clobber_all);
+> +}
+> +
+>  char _license[] SEC("license") =3D "GPL";
+> --
+> 2.43.0
+>
 
