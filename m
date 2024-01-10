@@ -1,120 +1,86 @@
-Return-Path: <bpf+bounces-19316-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC71E829575
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 09:57:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17F07829606
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 10:15:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E27B1B24D6D
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 08:57:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB7501F26E9F
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 09:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E9F939AEF;
-	Wed, 10 Jan 2024 08:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B2D3E472;
+	Wed, 10 Jan 2024 09:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M73ETF37"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WEhML+gG"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DCDE3B185
-	for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 08:57:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704877065;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XsFJ64qhgo8dpCR3ZN8nHJuU62Q+ROyJhHepqFzOWSQ=;
-	b=M73ETF37hSzFoY4AQb1GG2sT4Ag2nrJLQoJ4oyNkSjppMoGJUYrt/vkCvcfTvvT0k+tbYh
-	r5Vp6Be4kdUFVh2kfjdjme1Kbw6/p6TeLZV3m61qaUBxNvKkb4tocdLV9I8LV1nPZ+8+gC
-	W60Kws+uMtQsf0T/7Zq8Cbth7DR1xS8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-515-Rwth6r8GNb-AXO8Dgvsk6A-1; Wed,
- 10 Jan 2024 03:57:42 -0500
-X-MC-Unique: Rwth6r8GNb-AXO8Dgvsk6A-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 185543C0F185;
-	Wed, 10 Jan 2024 08:57:42 +0000 (UTC)
-Received: from alecto.usersys.redhat.com (unknown [10.45.226.29])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 0A26BC15E6A;
-	Wed, 10 Jan 2024 08:57:39 +0000 (UTC)
-From: Artem Savkov <asavkov@redhat.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	bpf@vger.kernel.org,
-	netdev@vger.kernel.org,
-	jolsa@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	Artem Savkov <asavkov@redhat.com>,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: [PATCH bpf-next v2] selftests/bpf: fix potential premature unload in bpf_testmod
-Date: Wed, 10 Jan 2024 09:57:37 +0100
-Message-ID: <20240110085737.8895-1-asavkov@redhat.com>
-In-Reply-To: <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
-References: <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1B93D0C3
+	for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 09:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--nogikh.bounces.google.com
+Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-a28b9b87013so458154966b.0
+        for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 01:15:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704878112; x=1705482912; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=22meeCLCLk1sr+ZeBgBSyZzfHRxkkpMLTBZ1RKzMp7A=;
+        b=WEhML+gGbJxSrenA9eLRKjZ2KY/fNPoUWSxHR4Y941VVr5FmdKrnEkJhVZxvmFubD/
+         OMxvAvEHo/w1xuxRI8nQIYBpalGDHSNnqPsqZ5KDCAbKL6Xo8gJl23yvR6fqRwY0nmru
+         JzRUp7GaoulXOt+vdJ8K3NxDyOHa/fZU9mqAlFR/yuAbeFB9Ob1vywbAinI67cKnhDwl
+         jA+XtdBKj+BMxMcoxhQKlY0Ht8gYNVivF9nyxH71hrrrB0f85iJRCySX+pkryPRILHCZ
+         9zRfiYreNbhhI9NSchkDxB6GfufcwXt24rgUuq8LBSqtWdrHmguTXYJaMZUILcwJvou6
+         rbLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704878112; x=1705482912;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=22meeCLCLk1sr+ZeBgBSyZzfHRxkkpMLTBZ1RKzMp7A=;
+        b=QOtc3vwmmoMH1qAg3GucAX6uQ2UrmFEfl4KFAoJMVQyTOp8XhBb0wWcQZ7YMN8OTZF
+         Bj4mKBGKyG3lG1wEm5EyE/v21Yl/eFA7OGeCOFZVkn6vof3hC0AqqbVVhmSvaCwIthGF
+         pznjrH4RY33hVaxRLcwhtAgC7rEr/ZRFQS37mv72UKBcYxhl+kHXoQL1ikibAOhjV2Vg
+         /j/tr7NlQ5d3Np0dvRHY6R4kDSsYv0wpeXDQh6k5EJI+Nt/GtI7d6BLgvrWtTxM3zw4v
+         f7Ym6rmPQPx4gElWDWaZcNOYn1CPwNpi6S8s+pNmx0S8/uOBkn/YZl4WZWKpwXAMPnFM
+         YeOA==
+X-Gm-Message-State: AOJu0YwZz3OoKHBgMlm4xtnwTlvSY7yu74Fz2S/V76SORr9w3bOJnsTY
+	qjiH1gbso1ikCbBVCTDgauuchg7dS9ry5X4C/Q==
+X-Google-Smtp-Source: AGHT+IHM8JuNl/FzfRgv7kFNtWTX/Dshz79l5nmXtz4XHV7Kd5Q8CYGVBOXDaIntaQbKbitkmYqtlcdcPDY=
+X-Received: from nogikhp920.muc.corp.google.com ([2a00:79e0:9c:201:8a0f:76e:1832:6c58])
+ (user=nogikh job=sendgmr) by 2002:a17:906:36cf:b0:a28:e1a4:ae3e with SMTP id
+ b15-20020a17090636cf00b00a28e1a4ae3emr22935ejc.0.1704878112336; Wed, 10 Jan
+ 2024 01:15:12 -0800 (PST)
+Date: Wed, 10 Jan 2024 10:15:09 +0100
+In-Reply-To: <CAEf4BzYMx_TbBY4yeK_iJqq65XHY5V3yQQ1PzfOh6OMQwyz5cA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Mime-Version: 1.0
+References: <CAEf4BzYMx_TbBY4yeK_iJqq65XHY5V3yQQ1PzfOh6OMQwyz5cA@mail.gmail.com>
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20240110091509.1155824-1-nogikh@google.com>
+Subject: Re: Re: [syzbot] [bpf?] WARNING in __mark_chain_precision (3)
+From: Aleksandr Nogikh <nogikh@google.com>
+To: andrii.nakryiko@gmail.com
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzbot+4d6330e14407721955eb@syzkaller.appspotmail.com, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-It is possible for bpf_kfunc_call_test_release() to be called from
-bpf_map_free_deferred() when bpf_testmod is already unloaded and
-perf_test_stuct.cnt which it tries to decrease is no longer in memory.
-This patch tries to fix the issue by waiting for all references to be
-dropped in bpf_testmod_exit().
 
-The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
-but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
-synchronous grace periods urgently").
+> #syz fix: 482d548d bpf: handle fake register spill to stack with
+> BPF_ST_MEM instruction
 
-Fixes: 65eb006d85a2a ("bpf: Move kernel test kfuncs to bpf_testmod")
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+It needs to stay on one line, otherwise only part of the title
+is considered.
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 91907b321f913..e7c9e1c7fde04 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2020 Facebook */
- #include <linux/btf.h>
- #include <linux/btf_ids.h>
-+#include <linux/delay.h>
- #include <linux/error-injection.h>
- #include <linux/init.h>
- #include <linux/module.h>
-@@ -544,6 +545,14 @@ static int bpf_testmod_init(void)
- 
- static void bpf_testmod_exit(void)
- {
-+        /* Need to wait for all references to be dropped because
-+         * bpf_kfunc_call_test_release() which currently resides in kernel can
-+         * be called after bpf_testmod is unloaded. Once release function is
-+         * moved into the module this wait can be removed.
-+         */
-+	while (refcount_read(&prog_test_struct.cnt) > 1)
-+		msleep(20);
-+
- 	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
- }
- 
--- 
-2.43.0
-
+#syz fix: bpf: handle fake register spill to stack with BPF_ST_MEM instruction
 
