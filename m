@@ -1,60 +1,76 @@
-Return-Path: <bpf+bounces-19319-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19320-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22F498299E1
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 12:55:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B36CE829A9E
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 13:50:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E9D61C21AAB
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 11:55:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A9EB1F25EFC
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 12:50:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8E447F57;
-	Wed, 10 Jan 2024 11:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFEAF4879F;
+	Wed, 10 Jan 2024 12:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CtgjtoHD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7544038DE0;
-	Wed, 10 Jan 2024 11:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC2D4878E;
+	Wed, 10 Jan 2024 12:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2a1a584e8bso407307166b.1;
-        Wed, 10 Jan 2024 03:55:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704887746; x=1705492546;
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-40e43e489e4so46072955e9.1;
+        Wed, 10 Jan 2024 04:49:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704890962; x=1705495762; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XxADgN4BIB9wGmJchf0EcDFoLEDhQTLFvqAQ3eCiias=;
+        b=CtgjtoHDBQEwsf4mCSGzAVK3lO4sjy+YTsnXPU7qQefrt91b1SphzNKpExU/wjAsaC
+         i5XsdeSfZ0RxMv791ZZ/ec1ym6OSWIs/X+E6+3MIUbcUjor5PrHoL8ybRL8FjuZi8UzU
+         dmvteoZsKnfruOvLyWEgSqu32/sqm0szc3/dWUPKdHrB3uBViM2m1u6c+aUyeoP2NiUj
+         ln36dJymT52DtSakylHSf7K2coJOp0Xzy/xN7B65PosRqDPWEA8wJD+9hP0XAGVnxIl7
+         nSo9ZyBN2Zw5qXJdySIev8sYOY6zJPhpXa19QNxLu7n4Znb6fHXsYF+mRPXwLFes3JKI
+         0yxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704890962; x=1705495762;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=p4iKGaZccjg1i1z4b53D4lvLZtxTImDFeDZiPP01Gww=;
-        b=ovDBX8WblbhXjSPwtaRmGoKQgRAC824TN9Vl+ZK8ptUaeraLeFbIPmnwQ35ID05vpQ
-         1eOkfHAIesecTZEXCQcJk03bBxynWhCAJVElkZTsOmEXCXp+KV1ZVZ1hsN0gz4nHVOkU
-         CBDQ37i4vu9Guff5+n46lU8SVaVqpJJwbd0/D8i3Oufhg6pEfyCikQwbmW2/yn08X/2f
-         zAr8kOYllFgbYK6PZutssGMdPKXFs189iaopKM6OtO2+mlhxKeswAJ5QKLT6OYmN2qcA
-         S1j2PjHmirK7UJp+bROxFFCwGtnCaq/u7H+XHUiGAoiPbrmfib+ux/9q/EbXSRMlSzUc
-         702Q==
-X-Gm-Message-State: AOJu0YxA+EsnFeuXQ1eZwbGM6XJxH8KPRTMaXElgrzVNd4fMz6BlXcNS
-	V/03Oh3fHWpo+7vtbYYlRbU=
-X-Google-Smtp-Source: AGHT+IFmAe2+SZr6Pc6/cb4mqYYBt0goGvCGNC6eFy+acfj9VZH4n6c910KO3L9RmEJ0pZnI3SKBAg==
-X-Received: by 2002:a17:906:16cb:b0:a2b:9f69:95b8 with SMTP id t11-20020a17090616cb00b00a2b9f6995b8mr475672ejd.76.1704887746594;
-        Wed, 10 Jan 2024 03:55:46 -0800 (PST)
-Received: from gmail.com (fwdproxy-cln-011.fbsv.net. [2a03:2880:31ff:b::face:b00c])
-        by smtp.gmail.com with ESMTPSA id ld12-20020a170906f94c00b00a2362c5e3dbsm1998949ejb.151.2024.01.10.03.55.45
+        bh=XxADgN4BIB9wGmJchf0EcDFoLEDhQTLFvqAQ3eCiias=;
+        b=lGJIA8PtfbMg1VbGDQGFQ/dkrCBTgpo6z/zHun7U33YKxynrrcD6o/wDz9tY9RmVyR
+         fAgMJiaoQ5cfr5li2h8rTVZSg2Gp6VYSBDT9vlSbYhCWqzkgU7NHxaHFVdVGuKmoYCoy
+         JfO48npbJ5IXINryoJzhBQrtWwcPs3D33ViQx4no7XXlV8Go7seSON58m7fHBGDXIQTO
+         oKuAMKGgZQ/fR3QZSw0JZjQmf2F7AGfD/juAtd31c1UymIm8ZSPxGpZO/j1BqGHXt3RO
+         XtIo54DO9gqM+YuadxTptglCQORp/9Zm/3QvV7GzXQCq4xtqwr4Nv4uIVbflqHg40V52
+         h6sA==
+X-Gm-Message-State: AOJu0YwJG1UldVvqFj63TVMPcDg1rvD7twXzfvVYJXE9EUs4vf6D8w6U
+	cWAdeuQQcDbcFBpAk+ZnWcI=
+X-Google-Smtp-Source: AGHT+IG80/MvhCHaJfYeEqM54J2wpTJEN9IWnYHNY5nH8Id7Ho0AFMXU2bbEKB56NjmkTaJ3O+F0lw==
+X-Received: by 2002:a05:600c:4753:b0:40c:2d80:6c2a with SMTP id w19-20020a05600c475300b0040c2d806c2amr602297wmo.113.1704890961617;
+        Wed, 10 Jan 2024 04:49:21 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id u6-20020a05600c138600b0040d5a9d6b68sm2147371wmf.6.2024.01.10.04.49.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jan 2024 03:55:46 -0800 (PST)
-Date: Wed, 10 Jan 2024 03:55:44 -0800
-From: Breno Leitao <leitao@debian.org>
-To: Ingo Molnar <mingo@kernel.org>
-Cc: jpoimboe@kernel.org, mingo@redhat.com, tglx@linutronix.de, bp@alien8.de,
-	x86@kernel.org, leit@meta.com, linux-kernel@vger.kernel.org,
-	pawan.kumar.gupta@linux.intel.com, bpf@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH v6 00/13] x86/bugs: Add a separate config for each
- mitigation
-Message-ID: <ZZ6FwMTRppSa2eOG@gmail.com>
-References: <20231121160740.1249350-1-leitao@debian.org>
- <ZZ5p3vdnTtU5TeJe@gmail.com>
+        Wed, 10 Jan 2024 04:49:21 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 10 Jan 2024 13:49:19 +0100
+To: Artem Savkov <asavkov@redhat.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix potential premature unload
+ in bpf_testmod
+Message-ID: <ZZ6ST3ohMwIzQUlE@krava>
+References: <20240109164317.16371-1-asavkov@redhat.com>
+ <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
+ <ZZ5R-3FAHNoDStqc@wtfbox.lan>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -63,72 +79,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZZ5p3vdnTtU5TeJe@gmail.com>
+In-Reply-To: <ZZ5R-3FAHNoDStqc@wtfbox.lan>
 
-On Wed, Jan 10, 2024 at 10:56:46AM +0100, Ingo Molnar wrote:
+On Wed, Jan 10, 2024 at 09:14:51AM +0100, Artem Savkov wrote:
+> On Tue, Jan 09, 2024 at 11:40:38AM -0800, Yonghong Song wrote:
+> > 
+> > On 1/9/24 8:43 AM, Artem Savkov wrote:
+> > > It is possible for bpf_kfunc_call_test_release() to be called from
+> > > bpf_map_free_deferred() when bpf_testmod is already unloaded and
+> > > perf_test_stuct.cnt which it tries to decrease is no longer in memory.
+> > > This patch tries to fix the issue by waiting for all references to be
+> > > dropped in bpf_testmod_exit().
+> > > 
+> > > The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
+> > > but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
+> > > synchronous grace periods urgently").
+> > > 
+> > > Fixes: 65eb006d85a2a ("bpf: Move kernel test kfuncs to bpf_testmod")
+> > 
+> > Please add your Signed-off-by tag.
 > 
-> * Breno Leitao <leitao@debian.org> wrote:
+> Thanks for noticing. Will resend with signed-off-by and your ack.
 > 
-> > Currently, the CONFIG_SPECULATION_MITIGATIONS is halfway populated,
-> > where some mitigations have entries in Kconfig, and they could be
-> > modified, while others mitigations do not have Kconfig entries, and
-> > could not be controlled at build time.
+> > I think the root cause is that bpf_kfunc_call_test_acquire() kfunc
+> > is defined in bpf_testmod and the kfunc returns some data in bpf_testmod.
+> > But the release function bpf_kfunc_call_test_release() is in the kernel.
+> > The release func tries to access some data in bpf_testmod which might
+> > have been unloaded. The prog_test_ref_kfunc is defined in the kernel, so
+> > no bpf_testmod btf reference is hold so bpf_testmod can be unloaded before
+> > bpf_kfunc_call_test_release().
+> > As you mentioned, we won't have this issue if bpf_kfunc_call_test_acquire()
+> > is also in the kernel.
 > > 
-> > The fact of having a fine grained control can help in a few ways:
-> > 
-> > 1) Users can choose and pick only mitigations that are important for
-> > their workloads.
-> > 
-> > 2) Users and developers can choose to disable mitigations that mangle
-> > the assembly code generation, making it hard to read.
-> > 
-> > 3) Separate configs for just source code readability,
-> > so that we see *which* butt-ugly piece of crap code is for what
-> > reason.
-> > 
-> > Important to say, if a mitigation is disabled at compilation time, it
-> > could be enabled at runtime using kernel command line arguments.
-> > 
-> > Discussion about this approach:
-> > https://lore.kernel.org/all/CAHk-=wjTHeQjsqtHcBGvy9TaJQ5uAm5HrCDuOD9v7qA9U1Xr4w@mail.gmail.com/
-> > and
-> > https://lore.kernel.org/lkml/20231011044252.42bplzjsam3qsasz@treble/
-> > 
-> > In order to get the missing mitigations, some clean up was done.
-> > 
-> > 1) Get a namespace for mitigations, prepending MITIGATION to the Kconfig
-> > entries.
-> > 
-> > 2) Adding the missing mitigations, so, the mitigations have entries in the
-> > Kconfig that could be easily configure by the user.
-> > 
-> > With this patchset applied, all configs have an individual entry under
-> > CONFIG_SPECULATION_MITIGATIONS, and all of them starts with CONFIG_MITIGATION.
+> > I think putting bpf_kfunc_call_test_acquire() in bpf_testmod and
+> > bpf_kfunc_call_test_release() in kernel is not a good idea and confusing.
+> > But since this is only for tests, I guess we can live with that. With that,
 > 
-> Yeah, so:
-> 
->  - I took this older series and updated it to current upstream, and made
->    sure all renames were fully done: there were two new Kconfig option
->    uses, which I integrated into the series. (Sorry about the delay, holiday & stuff.)
-> 
->  - I also widened the renames to comments and messages, which were not
->    always covered.
-> 
->  - Then I took this cover letter and combined it with a more high level
->    description of the reasoning behind this series I wrote up, and added it
->    to patch #1. (see it below.)
-> 
->  - Then I removed the changelog repetition from the other patches and just
->    referred them back to patch #1.
-> 
->  - Then I stuck the resulting updated series into tip:x86/bugs, without the 
->    last 3 patches that modify behavior.
+> Correct. 65eb006d85a2a ("bpf: Move kernel test kfuncs to bpf_testmod")
+> also mentions why bpf_kfunc_call_test_release() is not in the module and
+> states that this is temporary. I'll add a comment in v2 so the wait can
+> be removed once the functions are re-united.
 
-Thanks for your work. I am currently reviwing the tip branch and the
-merge seems go so far.
+I somehow recall it has to do with the fact you can't have trusted
+pointer on module's object, so that's why those structs had to stay
+in kernel.. but I might be wrong
 
-Regarding the last 3 patches, what are the next steps?
+jirka
 
-Thank you!
-Breno
+>  
+> > Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> > 
+> > > ---
+> > >   tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 4 ++++
+> > >   1 file changed, 4 insertions(+)
+> > > 
+> > > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > index 91907b321f913..63f0dbd016703 100644
+> > > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > > @@ -2,6 +2,7 @@
+> > >   /* Copyright (c) 2020 Facebook */
+> > >   #include <linux/btf.h>
+> > >   #include <linux/btf_ids.h>
+> > > +#include <linux/delay.h>
+> > >   #include <linux/error-injection.h>
+> > >   #include <linux/init.h>
+> > >   #include <linux/module.h>
+> > > @@ -544,6 +545,9 @@ static int bpf_testmod_init(void)
+> > >   static void bpf_testmod_exit(void)
+> > >   {
+> > > +	while (refcount_read(&prog_test_struct.cnt) > 1)
+> > > +		msleep(20);
+> > > +
+> > >   	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
+> > >   }
+> > 
+> 
+> -- 
+> Regards,
+>   Artem
+> 
 
