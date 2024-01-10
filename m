@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-19328-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19329-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C51A4829FB3
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 18:50:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C74BB829FBA
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 18:52:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21D39B25948
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 17:50:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D971D1C21B1F
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 17:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7DFF4D109;
-	Wed, 10 Jan 2024 17:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD094D100;
+	Wed, 10 Jan 2024 17:52:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RDAB/sug"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ADSlyfcR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5014CE17
-	for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 17:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 871DA4878C
+	for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 17:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-33694bf8835so3741852f8f.3
-        for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 09:50:19 -0800 (PST)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3375a236525so3693380f8f.0
+        for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 09:52:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704909018; x=1705513818; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704909139; x=1705513939; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3JCVA0MAbyhY2Xtej73DUOwjD+Mhw2xqSxOeOgV8vB0=;
-        b=RDAB/sug7tdQCBEESt15MYJDg0/74czccFLqnx8DUxNQ+YUC0lDtgaFJu3e8uLfrMq
-         8bpkRbCvCmE3eSWscxcoDG0arJnGvsXROQPDoBSWkUTSFupSFi3HCpt41nq+1zfJ+wVj
-         VZv+PO3BYlNpXMIBO9HRTp9iyhDi8y3Izru3qAIf4Ou8RTtNiztnQ0ENNeXKT8Ui0OEy
-         3G43QlGLnFiNCUDj/OUrRXLPx1Ak7XrewKk4+rNz0CiavgWszg/QTCH2peaiFpmu+KcW
-         ThSyZw5WMIpFsFkU5R6sKqaLDSmM7+72DiFQWwLvNe4gALDfnhkCE7ocK9BiPLbY0HOg
-         Tkmg==
+        bh=m5a1/PeB0/x2QQ9GmeyF3u8gNKl+K/1e1Jf5A7J9crU=;
+        b=ADSlyfcRixW4Zp3DJ9iNMeodEx6uKl9b7DDBzj0KIf4ctmY70HpQW02DcGfbP6M6Am
+         qolFfm9cITQQi3pAb0l7POeHMUXMRds5Udvd97bGzEZMvjBRzkoixshWk1f4qNc3hZR3
+         nOmdg/KaU5nFqpee2njrbSQQTuDBoLi3ia3equ/d7ZvWnGy0yzgbyCuUROZ3C5E4C4tg
+         o0OAjdqvP1fkgBwY9WLuwZdAYAMigEJeUhsSWzmzfrYngRxv84f5FjD+fta4v0Q0m3rl
+         Cn1rOwFAI0wCBld7npKCiKTWY9nfexk7N48Vo8yjKq7BcJcVpiufwok4A4S8R8rI/OCC
+         hZXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704909018; x=1705513818;
+        d=1e100.net; s=20230601; t=1704909139; x=1705513939;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3JCVA0MAbyhY2Xtej73DUOwjD+Mhw2xqSxOeOgV8vB0=;
-        b=YcTWQDOAaceegwm6Q/Ow83CFlDSZnH0mJGuvzBGCqqDmi0vTga5yjx/Ca0wInvEw2n
-         tMuL/JyvbW8rLuSGtrN4MlOVkt/oWtUNvke+uU3QwCwU3KITj+twAO+vpSUSJ4IoyKU6
-         vEIObNALIdamQ2m9VBeQgCcGCWzN6Jtr4WS3b+e/ZOziNa3S2MAiEF+UcqaH8mgIjxvq
-         71j5WokRkzZGglpvOxVJZ3vLLepLj1Og8sAH1/sPpmk7ygMAKHu1ZEkvX8CBDEuQMREW
-         BrbmDj0uknrp54RJrfzQFnFFPPxvn4RrfmlMTrEyIVDt/P33mUqmK3ao/GsyEZ1c6IWO
-         6dXw==
-X-Gm-Message-State: AOJu0YwWH+REPJ1W3PgUrsISfvIEZVuQrgQr7gS1Xin+2EyZr/Mw/N6q
-	pQ/d1B/YWCRQyfT2TyDd6jx0SQZtmakHBuprq8A=
-X-Google-Smtp-Source: AGHT+IERfbRgg4uM150NFiiEKtiwlyVEt9GyiFnu0KOkpjz678Xdxb4GwABvoc/T8iVX8cj58Nck7kolW9EUs63XKw8=
-X-Received: by 2002:a05:6000:245:b0:336:67fa:971a with SMTP id
- m5-20020a056000024500b0033667fa971amr707485wrz.101.1704909017707; Wed, 10 Jan
- 2024 09:50:17 -0800 (PST)
+        bh=m5a1/PeB0/x2QQ9GmeyF3u8gNKl+K/1e1Jf5A7J9crU=;
+        b=Sclc311ckxWmuZC5BQRwDF5cCWO0O7agEjh6zz8NfH/b5wnkf2jd1HGnKrbLw9CMyE
+         yGh+x/BT7oNyHOcretKF0cZ8VYeNuvWSYWV2pcesbRQtqiz/8/x13JqDakK704iaSTDt
+         UFj1Wx41Zqx5bjiMJdYSa/+lbuH0lr9wurT1WPOlo9HagsJWBdKZwfm6v4fAkEc/+JSC
+         MFx2/Sh0mOHSD979MhOVVWgXe17+VI5AismFqmnKllAvCqWFLPVxhOQ8iY++jUs/ZYGt
+         IZsryULWX8PnMmTVO6oiiFi/ntojSHJU04L+wrWFeC68YQwbVgCnl4on9CvhHsSRXYog
+         m8mw==
+X-Gm-Message-State: AOJu0Yx6BDMf7z0Papz0hW5HDxPdslisL+Ez4lo2498SgUwZJEvsl6tx
+	bCKokWcDcNt7EoOyZ9xpcNezGpplbAgxF9FHr/4=
+X-Google-Smtp-Source: AGHT+IEH8DEBg6az7jbn3m2omuJ/CgHRz89+5r9iDiAFZxy8rxPfGvKQhQrIInYkgszohIO9w7ywiNL70Y2px9M9J88=
+X-Received: by 2002:a5d:6984:0:b0:337:68ab:6184 with SMTP id
+ g4-20020a5d6984000000b0033768ab6184mr812465wru.26.1704909138618; Wed, 10 Jan
+ 2024 09:52:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110060037.4202-1-laoar.shao@gmail.com> <20240110060037.4202-2-laoar.shao@gmail.com>
-In-Reply-To: <20240110060037.4202-2-laoar.shao@gmail.com>
+References: <20240110060037.4202-1-laoar.shao@gmail.com> <20240110060037.4202-3-laoar.shao@gmail.com>
+In-Reply-To: <20240110060037.4202-3-laoar.shao@gmail.com>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 10 Jan 2024 09:50:06 -0800
-Message-ID: <CAADnVQ+Upjb6TCVSeAh2VYXwY+wZfF8OFCwNMQk3uKL06nynTQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/2] bpf: Add bpf_iter_cpumask kfuncs
+Date: Wed, 10 Jan 2024 09:52:07 -0800
+Message-ID: <CAADnVQJc8MzBey6fKu1K+WSCCWUCo81-9Pbro6sV77N3r3sTBA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for cpumask iter
 To: Yafang Shao <laoar.shao@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
@@ -78,32 +78,51 @@ Content-Transfer-Encoding: quoted-printable
 
 On Tue, Jan 9, 2024 at 10:00=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
 wrote:
->
-> +__bpf_kfunc int bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, struct=
- cpumask *mask)
+> +
+> +SEC("iter/cgroup")
+> +int BPF_PROG(cpu_cgroup, struct bpf_iter_meta *meta, struct cgroup *cgrp=
+)
 > +{
-> +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
+> +       u32 *cpu, nr_running =3D 0, psi_nr_running =3D 0, nr_cpus =3D 0;
+> +       unsigned int tasks[NR_PSI_TASK_COUNTS];
+> +       struct psi_group_cpu *groupc;
+> +       struct bpf_cpumask *mask;
+> +       struct task_struct *p;
+> +       struct rq *rq;
 > +
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_cpumask_kern) > sizeof(struct=
- bpf_iter_cpumask));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_cpumask_kern) !=3D
-> +                    __alignof__(struct bpf_iter_cpumask));
+> +       /* epilogue */
+> +       if (cgrp =3D=3D NULL)
+> +               return 0;
 > +
-> +       kit->mask =3D mask;
-> +       kit->cpu =3D -1;
-> +       return 0;
-> +}
+> +       mask =3D bpf_cpumask_create();
+> +       if (!mask)
+> +               return 1;
 > +
+> +       p =3D bpf_task_from_pid(target_pid);
+> +       if (!p) {
+> +               bpf_cpumask_release(mask);
+> +               return 1;
+> +       }
+> +
+> +       bpf_cpumask_copy(mask, p->cpus_ptr);
+> +       bpf_for_each(cpumask, cpu, &mask->cpumask) {
+> +               rq =3D (struct rq *)bpf_per_cpu_ptr(&runqueues, *cpu);
+> +               if (!rq)
+> +                       continue;
+> +               nr_running +=3D rq->nr_running;
+> +               nr_cpus +=3D 1;
+> +
+> +               groupc =3D (struct psi_group_cpu *)bpf_per_cpu_ptr(&syste=
+m_group_pcpu, *cpu);
+> +               if (!groupc)
+> +                       continue;
+> +               bpf_probe_read_kernel(&tasks, sizeof(tasks), &groupc->tas=
+ks);
+> +               psi_nr_running +=3D tasks[NR_RUNNING];
+> +       }
 
-...
-
-> +BTF_ID_FLAGS(func, bpf_iter_cpumask_new, KF_ITER_NEW | KF_RCU)
-
-this is not safe.
-KF_RCU means that 'mask' pointer is valid in RCU CS,
-but you're storing the pointer in the iterator that may leak
-past RCU CS.
-
-You need KF_RCU_PROTECTED at least.
-KF_TRUSTED_ARGS might be necessary too. This needs to be thought through.
+Instead of probe_read_kernel (which is not fast) please use
+bpf_rdonly_cast() and access groups->tasks.
+array should already be recognized by the verifier, but if not let's
+fix the verifier instead of fallback to probe_read.
 
