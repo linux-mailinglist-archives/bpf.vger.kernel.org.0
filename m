@@ -1,62 +1,62 @@
-Return-Path: <bpf+bounces-19311-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCC1C829385
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 07:00:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51392829386
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 07:00:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D0DA1F22005
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 06:00:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 69A8D1C25626
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 06:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D306032C68;
-	Wed, 10 Jan 2024 06:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B47232C76;
+	Wed, 10 Jan 2024 06:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EJpvh3Ma"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z4wRwM8t"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C0266FB8
-	for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 06:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A955320E
+	for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 06:00:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-28b9e9e83b0so2101808a91.2
-        for <bpf@vger.kernel.org>; Tue, 09 Jan 2024 22:00:45 -0800 (PST)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-28b82dc11e6so2100905a91.1
+        for <bpf@vger.kernel.org>; Tue, 09 Jan 2024 22:00:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704866445; x=1705471245; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704866447; x=1705471247; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kS8GvLbbeGDbJvqofqy/MGxYvoochU4qZXHFlO0ftOs=;
-        b=EJpvh3MaiI1O6cqosESToL0QJvh4Qh/1UhjrMlee/5dQ+0yTKQ+Ddpt2uAyLkLpBwS
-         mZVC4E45cp4GNclP3sZTEmyxsv4gqezyW4d2Xf7EqntLkkJouHOh++NKduNqNDlggNYC
-         vbmtUxm9YsP9ictLRTNAO910BVz4frIpN3sdqph099HL1teGeTF7YcnjAcq+KsUvlYVU
-         hUe8nhbZ3ER2CihF/n0UIXvn36UxCCtC/tDzLl1ZjQ+Ew6zAtpHUkbTqNNhK5gClV9/T
-         jBhCeG1PfX5uS9OGctwKkrChA6DbZNyxCX4qCpYxhJKO0RGJvoCcgEWxGr+aP/qH6wjA
-         D1zA==
+        bh=ha3kmEZb+Z+oMAQIYW0pwTQy6r4g4WaQOe0ZYiLVL/U=;
+        b=Z4wRwM8tChD1aRSksdFCN8uSfMVlEwVmdtr5eGSipIPL0X1hNiMSxhUeZtViIqSBUu
+         lIadPChJqNxDvjdns1KqjYc3qKOfuoAIjJWIQbrjalQp8CGe0JIAGS08aOyLHNKDaUvx
+         aKWwyWUB5nVAkPZdovLMhuCBZHT45EWZthfBb1TtBovv725rXiGvHvEjqTMRanririBt
+         rxfR0cpDO/9gtD5g9B6kvoBQh5qpXJFRjdMzCj7LZHIiKyk0+qlgjLyBNhrfV6NqbmuD
+         1VaJmcSl5EcmqO5E/kiWxVYS9xWbgc3gWM+rV/0I7NVTz+nK+2l1TDx8vryPOq+8aL+O
+         dQ4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704866445; x=1705471245;
+        d=1e100.net; s=20230601; t=1704866447; x=1705471247;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kS8GvLbbeGDbJvqofqy/MGxYvoochU4qZXHFlO0ftOs=;
-        b=k6yiz1lbWkWG6JqEKpdZFgxupF5YWIGgeRSFWhYj9x8A/rO4XUbuAruxluzKflZScH
-         b8AD5Q+dqgD8ZmVVeCy8U8jHGgRej55TV0mrD8M4BA5S2CjsZAdiOLSutWfkteXyZHAx
-         xamR6h3lns5Z3vWYZmR+szWPLotKB6iK0q1wNaHFimoA7sgV3pgXk+lBO/v6t5iheiOT
-         ULm28XLkU6aPjUW5tIZpGQkQ4/jrj3IemiJEiThDD96WNb1HohRJIsNmCz7FgjYjr8VU
-         /8OY9Dnxtd3uQdUXEdmJDZvlsihKUJRw/wV19z8TjBwuHoFe9QbvKUMhxZ41CQ5AhDGj
-         65VA==
-X-Gm-Message-State: AOJu0YzCon5P6ozc9xyxGa8NDhGNOC4u8cRNNnqOibLH64KqU7Qe4ZX7
-	Vb8TkpQELtwWkyIsQ/armf4=
-X-Google-Smtp-Source: AGHT+IHVGYuIVLfUfIt42CR8x7Z+EiLMu7bPdJwStupgTpoWbieRVe5rTjfi3nFHbKLAG4hKbwqSUA==
-X-Received: by 2002:a17:90b:fd8:b0:28c:ef28:b451 with SMTP id gd24-20020a17090b0fd800b0028cef28b451mr197251pjb.83.1704866445301;
-        Tue, 09 Jan 2024 22:00:45 -0800 (PST)
+        bh=ha3kmEZb+Z+oMAQIYW0pwTQy6r4g4WaQOe0ZYiLVL/U=;
+        b=Koin26uTTrivEF9qU5Orly1bRIT6nQ2a/OlClYMrY1n7qaS2ZDZ5uUM93IPEJpd5ft
+         RALPoFreVyg7nGhZoBKbiTBnHmEZjxrXBMRnQHOan56hFVxAV4EBgSyUWi/eSsqJxUkB
+         LXQh3VR/N510JyXkMLFLfEq6tIUgkO5oSiorYTS8NVcN9kmtMLQ6iRkwqzPb3c5nS0It
+         e7NAep+g+olC3q7CnOuP3+U+9Wdd9QlU4NqP7DjC26Jh/ybapXvk5zo5Nrem41RXgvEs
+         vJRiYBW99ABV2SAMYwcqtX46ASql6w+jQBdL5QjMgLzGgma4Ea686KjYzbXZyofVuUJD
+         PTdQ==
+X-Gm-Message-State: AOJu0YyrDAmHSp/eico+8WpwMcYHmqxgd88m5O+YvDKlrVkMRwtkSj/E
+	/v7eE5Ukb7TpzleQkzyNgPBgBK/OSaO944jL
+X-Google-Smtp-Source: AGHT+IE5a90Kfk5Yk9u1BLTOekuw14LNZXyKKOrSN7A1RM6lszUngXMcVdi0V0o2YfnjpuG5RkI20Q==
+X-Received: by 2002:a17:90a:b390:b0:28d:34d0:1240 with SMTP id e16-20020a17090ab39000b0028d34d01240mr247587pjr.95.1704866446640;
+        Tue, 09 Jan 2024 22:00:46 -0800 (PST)
 Received: from vultr.guest ([149.28.194.201])
-        by smtp.gmail.com with ESMTPSA id sx4-20020a17090b2cc400b0028ce9c709e4sm540923pjb.26.2024.01.09.22.00.44
+        by smtp.gmail.com with ESMTPSA id sx4-20020a17090b2cc400b0028ce9c709e4sm540923pjb.26.2024.01.09.22.00.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 22:00:44 -0800 (PST)
+        Tue, 09 Jan 2024 22:00:46 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: ast@kernel.org,
 	daniel@iogearbox.net,
@@ -72,9 +72,9 @@ To: ast@kernel.org,
 	tj@kernel.org
 Cc: bpf@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v2 bpf-next 1/2] bpf: Add bpf_iter_cpumask kfuncs
-Date: Wed, 10 Jan 2024 06:00:36 +0000
-Message-Id: <20240110060037.4202-2-laoar.shao@gmail.com>
+Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for cpumask iter
+Date: Wed, 10 Jan 2024 06:00:37 +0000
+Message-Id: <20240110060037.4202-3-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240110060037.4202-1-laoar.shao@gmail.com>
 References: <20240110060037.4202-1-laoar.shao@gmail.com>
@@ -86,106 +86,263 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add three new kfuncs for bpf_iter_cpumask.
-- bpf_iter_cpumask_new
-- bpf_iter_cpumask_next
-- bpf_iter_cpumask_destroy
+Within the BPF program, we leverage the cgroup iterator to iterate through
+percpu runqueue data, specifically the 'nr_running' metric. Subsequently
+ we expose this data to userspace by means of a sequence file.
 
-These new kfuncs facilitate the iteration of percpu data, such as
-runqueues, psi_cgroup_cpu, and more.
+The CPU affinity for the cpumask is determined by the PID of a task:
+
+- PID of the init task (PID 1)
+  We typically don't set CPU affinity for init task and thus we can iterate
+  across all possible CPUs. However, in scenarios where you've set CPU
+  affinity for the init task, you should set the cpumask of your current
+  task to full-F. Then proceed to iterate through all possible CPUs using
+  the current task.
+- PID of a task with defined CPU affinity
+  The aim here is to iterate through a specific cpumask. This scenario
+  aligns with tasks residing within a cpuset cgroup.
+- Invalid PID (e.g., PID -1)
+  No cpumask is available in this case.
+
+The result as follows,
+  #62/1    cpumask_iter/init_pid:OK
+  #62/2    cpumask_iter/invalid_pid:OK
+  #62/3    cpumask_iter/self_pid_one_cpu:OK
+  #62/4    cpumask_iter/self_pid_multi_cpus:OK
+  #62      cpumask_iter:OK
+  Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/bpf/cpumask.c | 69 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+ .../selftests/bpf/prog_tests/cpumask_iter.c   | 134 ++++++++++++++++++
+ .../selftests/bpf/progs/cpumask_common.h      |   3 +
+ .../selftests/bpf/progs/test_cpumask_iter.c   |  62 ++++++++
+ 3 files changed, 199 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cpumask_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cpumask_iter.c
 
-diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
-index 2e73533a3811..366ebe604b1d 100644
---- a/kernel/bpf/cpumask.c
-+++ b/kernel/bpf/cpumask.c
-@@ -422,6 +422,72 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cpumask *cpumask)
- 	return cpumask_weight(cpumask);
- }
- 
-+struct bpf_iter_cpumask {
-+	__u64 __opaque[2];
-+} __aligned(8);
+diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask_iter.c b/tools/testing/selftests/bpf/prog_tests/cpumask_iter.c
+new file mode 100644
+index 000000000000..689ccc4d3c3b
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/cpumask_iter.c
+@@ -0,0 +1,134 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2023 Yafang Shao <laoar.shao@gmail.com> */
 +
-+struct bpf_iter_cpumask_kern {
-+	struct cpumask *mask;
-+	int cpu;
-+} __aligned(8);
++#define _GNU_SOURCE
++#include <sched.h>
++#include <stdio.h>
++#include <unistd.h>
 +
-+/**
-+ * bpf_iter_cpumask_new() - Create a new bpf_iter_cpumask for a specified cpumask
-+ * @it: Pointer to the newly created bpf_iter_cpumask structure.
-+ * @mask: The cpumask to be iterated over.
-+ *
-+ * This function initializes a new bpf_iter_cpumask structure for iterating over
-+ * the specified CPU mask. It assigns the provided cpumask to the newly created
-+ * bpf_iter_cpumask @it for subsequent iteration operations.
-+ *
-+ * On success, 0 is returen. On failure, ERR is returned.
-+ */
-+__bpf_kfunc int bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, struct cpumask *mask)
++#include <test_progs.h>
++#include "cgroup_helpers.h"
++#include "test_cpumask_iter.skel.h"
++
++static void verify_percpu_data(struct bpf_link *link, int nr_cpu_exp, int nr_running_exp)
 +{
-+	struct bpf_iter_cpumask_kern *kit = (void *)it;
++	int iter_fd, len, item, nr_running, psi_running, nr_cpus;
++	static char buf[128];
++	size_t left;
++	char *p;
 +
-+	BUILD_BUG_ON(sizeof(struct bpf_iter_cpumask_kern) > sizeof(struct bpf_iter_cpumask));
-+	BUILD_BUG_ON(__alignof__(struct bpf_iter_cpumask_kern) !=
-+		     __alignof__(struct bpf_iter_cpumask));
++	iter_fd = bpf_iter_create(bpf_link__fd(link));
++	if (!ASSERT_GE(iter_fd, 0, "iter_fd"))
++		return;
 +
-+	kit->mask = mask;
-+	kit->cpu = -1;
++	memset(buf, 0, sizeof(buf));
++	left = ARRAY_SIZE(buf);
++	p = buf;
++	while ((len = read(iter_fd, p, left)) > 0) {
++		p += len;
++		left -= len;
++	}
++
++	item = sscanf(buf, "nr_running %u nr_cpus %u psi_running %u\n",
++		      &nr_running, &nr_cpus, &psi_running);
++	if (nr_cpu_exp == -1) {
++		ASSERT_EQ(item, -1, "seq_format");
++		goto out;
++	}
++
++	ASSERT_EQ(item, 3, "seq_format");
++	ASSERT_GE(nr_running, nr_running_exp, "nr_running");
++	ASSERT_GE(psi_running, nr_running_exp, "nr_running");
++	ASSERT_EQ(nr_cpus, nr_cpu_exp, "nr_cpus");
++
++	/* read() after iter finishes should be ok. */
++	if (len == 0)
++		ASSERT_OK(read(iter_fd, buf, sizeof(buf)), "second_read");
++
++out:
++	close(iter_fd);
++}
++
++void test_cpumask_iter(void)
++{
++	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
++	int nr_possible, cgrp_fd, pid, err, cnt, i;
++	struct test_cpumask_iter *skel = NULL;
++	union bpf_iter_link_info linfo;
++	int cpu_ids[] = {1, 3, 4, 5};
++	struct bpf_link *link;
++	cpu_set_t set;
++
++	skel = test_cpumask_iter__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "test_for_each_cpu__open_and_load"))
++		return;
++
++	if (setup_cgroup_environment())
++		goto destroy;
++
++	/* Utilize the cgroup iter */
++	cgrp_fd = get_root_cgroup();
++	if (!ASSERT_GE(cgrp_fd, 0, "create cgrp"))
++		goto cleanup;
++
++	memset(&linfo, 0, sizeof(linfo));
++	linfo.cgroup.cgroup_fd = cgrp_fd;
++	linfo.cgroup.order = BPF_CGROUP_ITER_SELF_ONLY;
++	opts.link_info = &linfo;
++	opts.link_info_len = sizeof(linfo);
++
++	link = bpf_program__attach_iter(skel->progs.cpu_cgroup, &opts);
++	if (!ASSERT_OK_PTR(link, "attach_iter"))
++		goto close_fd;
++
++	skel->bss->target_pid = 1;
++	/* In case init task is set CPU affinity */
++	err = sched_getaffinity(1, sizeof(set), &set);
++	if (!ASSERT_OK(err, "setaffinity"))
++		goto close_fd;
++
++	cnt = CPU_COUNT(&set);
++	nr_possible = bpf_num_possible_cpus();
++	if (test__start_subtest("init_pid"))
++		/* curent task is running. */
++		verify_percpu_data(link, cnt, cnt == nr_possible ? 1 : 0);
++
++	skel->bss->target_pid = -1;
++	if (test__start_subtest("invalid_pid"))
++		verify_percpu_data(link, -1, -1);
++
++	pid = getpid();
++	skel->bss->target_pid = pid;
++	CPU_ZERO(&set);
++	CPU_SET(0, &set);
++	err = sched_setaffinity(pid, sizeof(set), &set);
++	if (!ASSERT_OK(err, "setaffinity"))
++		goto free_link;
++
++	if (test__start_subtest("self_pid_one_cpu"))
++		verify_percpu_data(link, 1, 1);
++
++	/* Assume there are at least 8 CPUs on the testbed */
++	if (nr_possible < 8)
++		goto free_link;
++
++	CPU_ZERO(&set);
++	/* Set the CPU affinitiy: 1,3-5 */
++	for (i = 0; i < ARRAY_SIZE(cpu_ids); i++)
++		CPU_SET(cpu_ids[i], &set);
++	err = sched_setaffinity(pid, sizeof(set), &set);
++	if (!ASSERT_OK(err, "setaffinity"))
++		goto free_link;
++
++	if (test__start_subtest("self_pid_multi_cpus"))
++		verify_percpu_data(link, ARRAY_SIZE(cpu_ids), 1);
++
++free_link:
++	bpf_link__destroy(link);
++close_fd:
++	close(cgrp_fd);
++cleanup:
++	cleanup_cgroup_environment();
++destroy:
++	test_cpumask_iter__destroy(skel);
++}
+diff --git a/tools/testing/selftests/bpf/progs/cpumask_common.h b/tools/testing/selftests/bpf/progs/cpumask_common.h
+index 0cd4aebb97cf..5f2f44eca4c4 100644
+--- a/tools/testing/selftests/bpf/progs/cpumask_common.h
++++ b/tools/testing/selftests/bpf/progs/cpumask_common.h
+@@ -55,6 +55,9 @@ void bpf_cpumask_copy(struct bpf_cpumask *dst, const struct cpumask *src) __ksym
+ u32 bpf_cpumask_any_distribute(const struct cpumask *src) __ksym;
+ u32 bpf_cpumask_any_and_distribute(const struct cpumask *src1, const struct cpumask *src2) __ksym;
+ u32 bpf_cpumask_weight(const struct cpumask *cpumask) __ksym;
++int bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, struct cpumask *mask) __ksym;
++int *bpf_iter_cpumask_next(struct bpf_iter_cpumask *it) __ksym;
++void bpf_iter_cpumask_destroy(struct bpf_iter_cpumask *it) __ksym;
+ 
+ void bpf_rcu_read_lock(void) __ksym;
+ void bpf_rcu_read_unlock(void) __ksym;
+diff --git a/tools/testing/selftests/bpf/progs/test_cpumask_iter.c b/tools/testing/selftests/bpf/progs/test_cpumask_iter.c
+new file mode 100644
+index 000000000000..68ebfa0963c7
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_cpumask_iter.c
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2023 Yafang Shao <laoar.shao@gmail.com> */
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++#include "task_kfunc_common.h"
++#include "cpumask_common.h"
++
++extern const struct psi_group_cpu system_group_pcpu __ksym __weak;
++extern const struct rq runqueues __ksym __weak;
++
++int target_pid;
++
++SEC("iter/cgroup")
++int BPF_PROG(cpu_cgroup, struct bpf_iter_meta *meta, struct cgroup *cgrp)
++{
++	u32 *cpu, nr_running = 0, psi_nr_running = 0, nr_cpus = 0;
++	unsigned int tasks[NR_PSI_TASK_COUNTS];
++	struct psi_group_cpu *groupc;
++	struct bpf_cpumask *mask;
++	struct task_struct *p;
++	struct rq *rq;
++
++	/* epilogue */
++	if (cgrp == NULL)
++		return 0;
++
++	mask = bpf_cpumask_create();
++	if (!mask)
++		return 1;
++
++	p = bpf_task_from_pid(target_pid);
++	if (!p) {
++		bpf_cpumask_release(mask);
++		return 1;
++	}
++
++	bpf_cpumask_copy(mask, p->cpus_ptr);
++	bpf_for_each(cpumask, cpu, &mask->cpumask) {
++		rq = (struct rq *)bpf_per_cpu_ptr(&runqueues, *cpu);
++		if (!rq)
++			continue;
++		nr_running += rq->nr_running;
++		nr_cpus += 1;
++
++		groupc = (struct psi_group_cpu *)bpf_per_cpu_ptr(&system_group_pcpu, *cpu);
++		if (!groupc)
++			continue;
++		bpf_probe_read_kernel(&tasks, sizeof(tasks), &groupc->tasks);
++		psi_nr_running += tasks[NR_RUNNING];
++	}
++	BPF_SEQ_PRINTF(meta->seq, "nr_running %u nr_cpus %u psi_running %u\n",
++		       nr_running, nr_cpus, psi_nr_running);
++
++	bpf_task_release(p);
++	bpf_cpumask_release(mask);
 +	return 0;
 +}
 +
-+/**
-+ * bpf_iter_cpumask_next() - Get the next CPU in a bpf_iter_cpumask
-+ * @it: The bpf_iter_cpumask structure for iteration.
-+ *
-+ * This function retrieves a pointer to the number of the next CPU within the
-+ * specified bpf_iter_cpumask. It allows sequential access to CPUs within the
-+ * cpumask. If there are no further CPUs available, it returns NULL.
-+ *
-+ * Returns a pointer to the number of the next CPU in the cpumask or NULL if no
-+ * further CPUs.
-+ */
-+__bpf_kfunc int *bpf_iter_cpumask_next(struct bpf_iter_cpumask *it)
-+{
-+	struct bpf_iter_cpumask_kern *kit = (void *)it;
-+	struct cpumask *mask = kit->mask;
-+	int cpu;
-+
-+	cpu = cpumask_next(kit->cpu, mask);
-+	if (cpu >= nr_cpu_ids)
-+		return NULL;
-+
-+	kit->cpu = cpu;
-+	return &kit->cpu;
-+}
-+
-+/**
-+ * bpf_iter_cpumask_destroy() - Destroy a bpf_iter_cpumask
-+ * @it: Pointer to the bpf_iter_cpumask structure to be destroyed.
-+ */
-+__bpf_kfunc void bpf_iter_cpumask_destroy(struct bpf_iter_cpumask *it)
-+{
-+}
-+
- __bpf_kfunc_end_defs();
- 
- BTF_SET8_START(cpumask_kfunc_btf_ids)
-@@ -450,6 +516,9 @@ BTF_ID_FLAGS(func, bpf_cpumask_copy, KF_RCU)
- BTF_ID_FLAGS(func, bpf_cpumask_any_distribute, KF_RCU)
- BTF_ID_FLAGS(func, bpf_cpumask_any_and_distribute, KF_RCU)
- BTF_ID_FLAGS(func, bpf_cpumask_weight, KF_RCU)
-+BTF_ID_FLAGS(func, bpf_iter_cpumask_new, KF_ITER_NEW | KF_RCU)
-+BTF_ID_FLAGS(func, bpf_iter_cpumask_next, KF_ITER_NEXT | KF_RET_NULL | KF_RCU)
-+BTF_ID_FLAGS(func, bpf_iter_cpumask_destroy, KF_ITER_DESTROY)
- BTF_SET8_END(cpumask_kfunc_btf_ids)
- 
- static const struct btf_kfunc_id_set cpumask_kfunc_set = {
++char _license[] SEC("license") = "GPL";
 -- 
 2.30.1 (Apple Git-130)
 
