@@ -1,313 +1,602 @@
-Return-Path: <bpf+bounces-19299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23E08829191
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 01:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA49A8291AC
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 02:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27D9E1C25362
-	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 00:43:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D0831C2413E
+	for <lists+bpf@lfdr.de>; Wed, 10 Jan 2024 01:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D5C2595;
-	Wed, 10 Jan 2024 00:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78260645;
+	Wed, 10 Jan 2024 01:00:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N4+ucrYB"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hoyL0WeC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BA3B23B1;
-	Wed, 10 Jan 2024 00:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40e54f233abso4155125e9.0;
-        Tue, 09 Jan 2024 16:42:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3609738D
+	for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 01:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--brho.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5f874219ff9so31105367b3.0
+        for <bpf@vger.kernel.org>; Tue, 09 Jan 2024 17:00:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704847374; x=1705452174; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lpXFLoXQYi2E5X0fFdaKS875hFkfPN+jWP9OARQtqOg=;
-        b=N4+ucrYBC0G5mez3DMnj4La+KjruYX7QGnJnND+YGKH+BHeyPURe68h5VWXAPtkKHJ
-         prnHkakmLwscNs32XJ0VbXAyDKFXJhnPl8sSlI9nbiPTraN7i8Md7N8Ij8aL/r5sxmIM
-         nQ5LiQHTDPKZ0HSGjVVVe0Vtj+3UI/e/fg9vPbWUDAs+vTAhzib8ohND7NHAIOUbmjw7
-         7yRgibw6MNZTJv1e/lhilwBrKzP+ekYvHef9ChAm8sUTTKWEODSTDhr00WUA/cQ7ZcgP
-         a+Xxji+691Rv5fDChNiIIkxuI2ZsKYPRHeS0q9v+2G+7bXM/0DqSklyjbaWzAGOsNqDC
-         6nGw==
+        d=google.com; s=20230601; t=1704848425; x=1705453225; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zuYyMrBNcDpnbsdEm25PL7v/orAm1QROAGpPEuxmFkY=;
+        b=hoyL0WeC9P4fcG8n4iR/A4ibvf2/o+r4cpFn23Og27BjG9M4ze52j/jAAOsKVp8ztI
+         XItp4G/jWieLhrjV09F3RPlyfzPGIY/OVTMhghGhMulFQxGbRBAlSMXTFB+/ZSjpzutN
+         Yd6sNEqJV0S7K9yddfDsP7oWuYLuMFcZ+6II+wubImn6Z2uZXOFfQDhi0VbDDoAwqvEa
+         Zg+LQc5+CDSd06IymfU6phccddH4m5pQqHEUeeoTUumfVZUuWLKQHsbUB0gh2qWiTXhK
+         m/O6DL2Nu3VLeeduP92Sfptl969nsm5IPyCGNen3SVwgSkwwsFJa2H35ju4/uq9KiYB5
+         xdmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704847374; x=1705452174;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lpXFLoXQYi2E5X0fFdaKS875hFkfPN+jWP9OARQtqOg=;
-        b=n6N1VLBQ+cktasUg27B3GEjK9YtXzxQ6K46r8W9E/G4MfTZqWXUn2j6REaBaXsDlxf
-         2uuKaWywSffsX6D39bZEDAOU9AyTcp8VHv/PoplSKEb+Vo33Df+8nB9/LOMhxElEuKSA
-         creNtOgBJC6J5IASRl8Y50N1mjIswccxc/T3Qo9a/Hs4hlkNEnhG3lQpAijQGQqAxmXA
-         AM0I9AZ9pxhiusYglEB8l89Cdb4OwxVKqa/l1q8HdABvZe3r3z5jf7cX6xE6c+4JVJHE
-         9cJf9t51wRIU3NFnDM1eE33TKZzDLCQfdWWDminEJFXKd6sy5OzPoq82MdAPiyk6l4QS
-         Ee0g==
-X-Gm-Message-State: AOJu0Yybc0xXu5nY/QtlSL6B9ylDmTpDhR0qOcadgDP/7ERFpjvZHwiF
-	RH0Ya+FHYnPZcYPfI/dfIvxO5c35hfYryrztlp0=
-X-Google-Smtp-Source: AGHT+IFIIQq1eCPExKNyna8q1ShGM+3BjLm/OurhrerEtZw3fd9fO7rJQm2C086fXBO8ZyhqyhNHmgm9z/a4zU+KWhI=
-X-Received: by 2002:a05:600c:540a:b0:40e:550e:410c with SMTP id
- he10-20020a05600c540a00b0040e550e410cmr79985wmb.36.1704847374309; Tue, 09 Jan
- 2024 16:42:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704848425; x=1705453225;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zuYyMrBNcDpnbsdEm25PL7v/orAm1QROAGpPEuxmFkY=;
+        b=GxEoV/rQlf2z69RCpVp2R37N9TdgFRm+sFqRX1AYrvY86ADggQuRSwYJLFkwjOa/5s
+         NWt1snywJcmC/eD12zpnzPLQoy+7r6GbZhfPL4PNulCmdFpaWXzlJLE/MOJArA87Bzam
+         t0HZn0Y1Z4H1bNd27G1OypoQ+fHP4UD5m5kk3Be3kbtS5uSk+gzSDbCUTYkFwpM+mVKx
+         yv2VkT/vADVnef6o24q4mq1z0Y5RgmhP8x1OvvTuwYMolGUqj+YQ769sreLmgu1Q9yQq
+         1rCh4QFapwrIAYEwpJhWEz1qH5/tqfqKdYEi0C3w0rZV/XP1/yy6S++XTTQjdVmmzTr3
+         k2ng==
+X-Gm-Message-State: AOJu0Yzz+C4oeK+ep77dQ3IO6/U1PnotzleeWmuAwlJkJ9YIwj/41g+N
+	P7HswjkTyT6lBc8lAiMj6n8trquzfxd81qI=
+X-Google-Smtp-Source: AGHT+IFJJIdAIDOGb7tfHmvAG1S3sAk7eaj/DTrBV1NmDfjIbS+BcAqmHl/A/PTrudGzgwrVxZSqJzAO
+X-Received: from gnomeregan.cam.corp.google.com ([2620:15c:93:4:6e02:226:46e2:967b])
+ (user=brho job=sendgmr) by 2002:a05:690c:a88:b0:5e8:f747:1c99 with SMTP id
+ ci8-20020a05690c0a8800b005e8f7471c99mr176053ywb.4.1704848425222; Tue, 09 Jan
+ 2024 17:00:25 -0800 (PST)
+Date: Tue,  9 Jan 2024 20:00:05 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240103185403.610641-1-brho@google.com> <20240103185403.610641-3-brho@google.com>
- <ZZa1668ft4Npd1DA@krava> <f3dd9d80-3fab-4676-b589-1d4667431287@linux.dev> <e5e52e0a-7494-47bb-8a6a-9819b0c93bd8@google.com>
-In-Reply-To: <e5e52e0a-7494-47bb-8a6a-9819b0c93bd8@google.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 9 Jan 2024 16:42:43 -0800
-Message-ID: <CAADnVQ+oY9cdNKyby0sYDAHdFC-LeSmF3idKJeVzmQGXqCQocQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: add inline assembly
- helpers to access array elements
-To: Barret Rhoden <brho@google.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <olsajiri@gmail.com>, 
-	Eddy Z <eddyz87@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
-	Matt Bobrowski <mattbobrowski@google.com>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.472.g3155946c3a-goog
+Message-ID: <20240110010009.1210237-1-brho@google.com>
+Subject: [PATCH v3 bpf-next] selftests/bpf: add inline assembly helpers to
+ access array elements
+From: Barret Rhoden <brho@google.com>
+To: Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, Eddy Z <eddyz87@gmail.com>, 
+	Jiri Olsa <olsajiri@gmail.com>
+Cc: mattbobrowski@google.com, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 4, 2024 at 1:30=E2=80=AFPM Barret Rhoden <brho@google.com> wrot=
-e:
->
-> On 1/4/24 12:31, Yonghong Song wrote:
-> [snip]
->
-> >>> +/*
-> >>> + * Access an array element within a bound, such that the verifier
-> >>> knows the
-> >>> + * access is safe.
-> >>> + *
-> >>> + * This macro asm is the equivalent of:
-> >>> + *
-> >>> + *    if (!arr)
-> >>> + *        return NULL;
-> >>> + *    if (idx >=3D arr_sz)
-> >>> + *        return NULL;
-> >>> + *    return &arr[idx];
-> >>> + *
-> >>> + * The index (___idx below) needs to be a u64, at least for certain
-> >>> versions of
-> >>> + * the BPF ISA, since there aren't u32 conditional jumps.
-> >>> + */
-> >>> +#define bpf_array_elem(arr, arr_sz, idx) ({                \
-> >>> +    typeof(&(arr)[0]) ___arr =3D arr;                    \
-> >>> +    __u64 ___idx =3D idx;                        \
-> >>> +    if (___arr) {                            \
-> >>> +        asm volatile("if %[__idx] >=3D %[__bound] goto 1f;    \
-> >>> +                  %[__idx] *=3D %[__size];        \
-> >>> +                  %[__arr] +=3D %[__idx];        \
-> >>> +                  goto 2f;                \
-> >>> +                  1:;                \
-> >>> +                  %[__arr] =3D 0;            \
-> >>> +                  2:                \
-> >>> +                  "                        \
-> >>> +                 : [__arr]"+r"(___arr), [__idx]"+r"(___idx)    \
-> >>> +                 : [__bound]"r"((arr_sz)),                \
-> >>> +                   [__size]"i"(sizeof(typeof((arr)[0])))    \
-> >>> +                 : "cc");                    \
-> >>> +    }                                \
-> >>> +    ___arr;                                \
-> >>> +})
-> >
-> > The LLVM bpf backend has made some improvement to handle the case like
-> >    r1 =3D ...
-> >    r2 =3D r1 + 1
-> >    if (r2 < num) ...
-> >    using r1
-> > by preventing generating the above code pattern.
-> >
-> > The implementation is a pattern matching style so surely it won't be
-> > able to cover all cases.
-> >
-> > Do you have specific examples which has verification failure due to
-> > false array out of bound access?
->
-> Not in a small example.  =3D(
->
-> This bug has an example, but it was part of a larger program:
-> https://github.com/google/ghost-userspace/issues/31
->
-> The rough progression was:
-> - sometimes the compiler optimizes out the checks.  So we added a macro
-> to make the compiler not know the value of the variable anymore.
-> - then, the compiler would occasionally do the check on a copy of the
-> register, so we did the comparison and index operation all in assembly.
->
->
-> I tried using bpf_cmp_likely() in my actual program (not just a one-off
-> test), and still had a verifier issue.  It's a large and convoluted
-> program, so it might be hard to get a small reproducer.  But it a
-> different compiler issue than the one you mentioned.
->
-> Specifically, I swapped out my array-access-macro for this one, using
-> bpf_cmp_likely():
->
-> #define bpf_array_elem(arr, arr_sz, idx) ({ \
->          typeof(&(arr)[0]) ___arr =3D arr;        \
->          typeof(&(arr)[0]) ___ret =3D 0;          \
->          u64 ___idx =3D idx;                      \
->          if (___arr && bpf_cmp_likely(___idx, <, arr_sz))   \
->                  ___ret =3D &___arr[___idx];\
->          ___ret;                          \
-> })
->
-> which should be the same logic as before:
->
->   *      if (!arr)
->   *              return NULL;
->   *      if (idx >=3D arr_sz)
->   *              return NULL;
->   *      return &arr[idx];
->
-> The issue I run into is different than the one you had.  The compiler
-> did the bounds check, but then for some reason recreated the index.  The
-> index is coming from another map.
->
-> Arguably, the verifier is doing its job - that value could have changed.
->   I just don't want the compiler to do the reread or any other
-> shenanigans in between the bounds check and the usage.
->
-> The guts of the error:
-> - r0 is the map (L127)
-> - r1 is the index, read from another map (L128)
-> - r1 gets verified to be less than 0x200 (L129)
-> - some other stuff happens
-> - r1 gets read again, and is no longer bound (L132)
-> - r1 gets scaled up by 896.
->    (896*0x200 =3D 0x70000, would be the real bound, but r1 lost the 0x200
-> bound)
-> - r0 indexed by the bad r1 (L134)
-> - blow up (L143)
->
-> 127: (15) if r0 =3D=3D 0x0 goto pc+1218   ;
-> R0=3Dmap_value(off=3D0,ks=3D4,vs=3D458752,imm=3D0)
->
-> 128: (79) r1 =3D *(u64 *)(r10 -40)      ;
-> R1_w=3DPscalar(umax=3D4294967295,var_off=3D(0x0; 0xffffffff)) R10=3Dfp0
->
-> 129: (35) if r1 >=3D 0x200 goto pc+1216         ;
-> R1_w=3DPscalar(umax=3D511,var_off=3D(0x0; 0x1ff))
->
-> 130: (79) r4 =3D *(u64 *)(r10 -56)      ; R4_w=3DPscalar() R10=3Dfp0;
->
-> 131: (37) r4 /=3D 1000                  ; R4_w=3DPscalar()
->
-> 132: (79) r1 =3D *(u64 *)(r10 -40)      ;
-> R1_w=3DPscalar(umax=3D4294967295,var_off=3D(0x0; 0xffffffff)) R10=3Dfp0;
->
-> 133: (27) r1 *=3D 896                   ;
-> R1_w=3DPscalar(umax=3D3848290696320,var_off=3D(0x0;
-> 0x3ffffffff80),s32_max=3D2147483520,u32_max=3D-128)
->
-> 134: (0f) r0 +=3D r1                    ;
-> R0_w=3Dmap_value(off=3D0,ks=3D4,vs=3D458752,umax=3D3848290696320,var_off=
-=3D(0x0;
-> 0x3ffffffff80),s32_max=3D2147483520,u32_max=3D-128)
-> R1_w=3DPscalar(umax=3D3848290696320,var_off=3D(0x0;
-> 0x3ffffffff80),s32_max=3D2147483520,u32_max=3D-128)
->
-> 135: (79) r3 =3D *(u64 *)(r10 -48)      ;
-> R3_w=3Dmap_value(off=3D0,ks=3D4,vs=3D15728640,imm=3D0) R10=3Dfp0;
->
-> 136: (0f) r3 +=3D r8                    ;
-> R3_w=3Dmap_value(off=3D0,ks=3D4,vs=3D15728640,umax=3D15728400,var_off=3D(=
-0x0;
-> 0xfffff0),s32_max=3D16777200,u32_max=3D16777200)
-> R8=3DPscalar(umax=3D15728400,var_off=3D(0x0; 0xfffff0))
->
-> 137: (61) r1 =3D *(u32 *)(r7 +16)       ;
-> R1_w=3DPscalar(umax=3D4294967295,var_off=3D(0x0; 0xffffffff))
-> R7=3Dmap_value(id=3D18779,off=3D0,ks=3D4,vs=3D224,imm=3D0)
->
-> 138: (79) r2 =3D *(u64 *)(r3 +88)       ; R2=3DPscalar()
-> R3=3Dmap_value(off=3D0,ks=3D4,vs=3D15728640,umax=3D15728400,var_off=3D(0x=
-0;
-> 0xfffff0),s32_max=3D16777200,u32_max=3D16777200)
->
-> 139: (a5) if r1 < 0x9 goto pc+1       ;
-> R1=3DPscalar(umin=3D9,umax=3D4294967295,var_off=3D(0x0; 0xffffffff))
->
-> 140: (b7) r1 =3D 0                      ; R1_w=3DP0
->
-> 141: (27) r1 *=3D 72                    ; R1_w=3DP0
->
-> 142: (0f) r0 +=3D r1                    ;
-> R0_w=3Dmap_value(off=3D0,ks=3D4,vs=3D458752,umax=3D3848290696320,var_off=
-=3D(0x0;
-> 0x3ffffffff80),s32_max=3D2147483520,u32_max=3D-128) R1_w=3DP0
->
-> 143: (7b) *(u64 *)(r0 +152) =3D r2
->
->
-> if i put in a little ASM magic to tell the compiler to not recreate the
-> index, it works, like so:
->
-> #define BPF_MUST_CHECK(x) ({ asm volatile ("" : "+r"(x)); x; })
->
-> #define bpf_array_elem(arr, arr_sz, idx) ({ \
->          typeof(&(arr)[0]) ___arr =3D arr;        \
->          typeof(&(arr)[0]) ___ret =3D 0;          \
->          u64 ___idx =3D idx;                      \
->          BPF_MUST_CHECK(___idx);                \
->         if (___arr && bpf_cmp_likely(___idx, <, arr_sz))   \
->                  ___ret =3D &___arr[___idx];\
->          ___ret;                          \
-> })
->
-> though anecdotally, that only stops the "reread the index from its map"
-> problem, similar to a READ_ONCE.  the compiler is still free to just use
-> another register for the check.
->
-> The bit of ASM i had from a while back that did that was:
->
->   *      r2 =3D r8
->   *      r2 <<=3D 32
->
->   *      r2 >>=3D 32
->   *      if r2 > 0x3ff goto pc+29
->
->   *      r8 <<=3D 32
->
->   *      r8 >>=3D 32
->
->   *      r8 <<=3D 6
->
->   *      r0 +=3D r8
->   *      *(u64 *)(r0 +48) =3D r3
->
->
-> where r2 was bounds checked, but r8 was used instead.
->
-> I'll play around and see if I can come up with a selftest that can run
-> into any of these "you did the check, but threw the check away" scenarios=
-.
+When accessing an array, even if you insert your own bounds check,
+sometimes the compiler will remove the check.  bpf_cmp() will force the
+compiler to do the check.
 
-Before we add full asm bpf_array_elem() macros let's fully
-understand the issue first. Maybe it's a llvm deficiency
-or verifier miss that can be addressed.
-asm everywhere isn't a viable approach long term.
+However, the compiler is free to make a copy of a register, check the copy,
+and use the original to access the array.  The verifier knows the *copy*
+is within bounds, but not the original register!
 
-First start with:
-asm volatile ("" : "+r"((short)x));
+Although I couldn't recreate the "bounds check a copy of a register",
+the test below managed to get the compiler to spill a register to the
+stack, then bounds-check the register, and later reread the register -
+sans bounds check.
 
-It will avoid unnecessary <<=3D32, >>=3D32 in -mcpu=3Dv3,v4.
+By performing the bounds check and the indexing in assembly, we ensure
+the register used to index the array was bounds checked.
 
-Then do:
-if (likely(___arr) && bpf_cmp_likely(___idx, <, arr_sz))
-    ^^^
-just to have the expected basic block layout,
-because that's what your asm does.
+Signed-off-by: Barret Rhoden <brho@google.com>
+---
+v2: https://lore.kernel.org/bpf/20240103185403.610641-1-brho@google.com
 
-And, of course, a selftest is necessary to debug this further.
+Changes since v2:
+- added a test prog that should load, but fails to verify for me (Debian
+  clang version 16.0.6 (16)).  these tests might be brittle and start
+  successfully verifying for other compiler versions.
+- removed the mmap-an-arraymap patch
+- removed macros and added some "test fixture" code
+- used RUN_TESTS for the __failure cases
+
+
+ .../bpf/prog_tests/test_array_elem.c          | 167 ++++++++++++
+ .../selftests/bpf/progs/array_elem_test.c     | 256 ++++++++++++++++++
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |  43 +++
+ 3 files changed, 466 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+ create mode 100644 tools/testing/selftests/bpf/progs/array_elem_test.c
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_array_elem.c b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+new file mode 100644
+index 000000000000..93e8f03fdeac
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/test_array_elem.c
+@@ -0,0 +1,167 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC. */
++#include <test_progs.h>
++#include "array_elem_test.skel.h"
++
++#include <sys/mman.h>
++
++#define NR_MAP_ELEMS 100
++
++static size_t map_mmap_sz(struct bpf_map *map)
++{
++	size_t mmap_sz;
++
++	mmap_sz = (size_t)roundup(bpf_map__value_size(map), 8) *
++		bpf_map__max_entries(map);
++	mmap_sz = roundup(mmap_sz, sysconf(_SC_PAGE_SIZE));
++
++	return mmap_sz;
++}
++
++static void *map_mmap(struct bpf_map *map)
++{
++	return mmap(NULL, map_mmap_sz(map), PROT_READ | PROT_WRITE, MAP_SHARED,
++		    bpf_map__fd(map), 0);
++}
++
++static void map_munmap(struct bpf_map *map, void *addr)
++{
++	munmap(addr, map_mmap_sz(map));
++}
++
++struct arr_elem_fixture {
++	struct array_elem_test *skel;
++	int *map_elems;
++};
++
++static void setup_fixture(struct arr_elem_fixture *tf, size_t prog_off)
++{
++	struct array_elem_test *skel;
++	struct bpf_program *prog;
++	int err;
++
++	skel = array_elem_test__open();
++	if (!ASSERT_OK_PTR(skel, "array_elem_test open"))
++		return;
++
++	/*
++	 * Our caller doesn't know the addr of the program until the skeleton is
++	 * opened.  But the offset to the pointer is statically known.
++	 */
++	prog = *(struct bpf_program**)((__u8*)skel + prog_off);
++	bpf_program__set_autoload(prog, true);
++
++	err = array_elem_test__load(skel);
++	if (!ASSERT_EQ(err, 0, "array_elem_test load")) {
++		array_elem_test__destroy(skel);
++		return;
++	}
++
++	err = array_elem_test__attach(skel);
++	if (!ASSERT_EQ(err, 0, "array_elem_test attach")) {
++		array_elem_test__destroy(skel);
++		return;
++	}
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++) {
++		skel->bss->lookup_indexes[i] = i;
++		err = bpf_map_update_elem(bpf_map__fd(skel->maps.lookup_again),
++					  &i, &i, BPF_ANY);
++		ASSERT_EQ(err, 0, "array_elem_test set lookup_again");
++	}
++
++	tf->map_elems = map_mmap(skel->maps.arraymap);
++	ASSERT_OK_PTR(tf->map_elems, "mmap");
++
++	tf->skel = skel;
++}
++
++static void run_test(struct arr_elem_fixture *tf)
++{
++	tf->skel->bss->target_pid = getpid();
++	usleep(1);
++}
++
++static void destroy_fixture(struct arr_elem_fixture *tf)
++{
++	map_munmap(tf->skel->maps.arraymap, tf->map_elems);
++	array_elem_test__destroy(tf->skel);
++}
++
++static void test_access_single(void)
++{
++	struct arr_elem_fixture tf[1];
++
++	setup_fixture(tf, offsetof(struct array_elem_test,
++				   progs.access_single));
++	run_test(tf);
++
++	ASSERT_EQ(tf->map_elems[0], 1337, "array_elem map value not written");
++
++	destroy_fixture(tf);
++}
++
++static void test_access_all(void)
++{
++	struct arr_elem_fixture tf[1];
++
++	setup_fixture(tf, offsetof(struct array_elem_test,
++				   progs.access_all));
++	run_test(tf);
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		ASSERT_EQ(tf->map_elems[i], i,
++			  "array_elem map value not written");
++
++	destroy_fixture(tf);
++}
++
++static void test_oob_access(void)
++{
++	struct arr_elem_fixture tf[1];
++
++	setup_fixture(tf, offsetof(struct array_elem_test,
++				   progs.oob_access));
++	run_test(tf);
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		ASSERT_EQ(tf->map_elems[i], 0,
++			  "array_elem map value was written");
++
++	destroy_fixture(tf);
++}
++
++static void test_infer_size(void)
++{
++	struct arr_elem_fixture tf[1];
++
++	setup_fixture(tf, offsetof(struct array_elem_test,
++				   progs.infer_size));
++	run_test(tf);
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		ASSERT_EQ(tf->map_elems[i], i,
++			  "array_elem map value not written");
++
++	destroy_fixture(tf);
++}
++
++void test_test_array_elem(void)
++{
++	if (test__start_subtest("real_access_single"))
++		test_access_single();
++	if (test__start_subtest("real_access_all"))
++		test_access_all();
++	if (test__start_subtest("real_oob_access"))
++		test_oob_access();
++	if (test__start_subtest("real_infer_size"))
++		test_infer_size();
++
++	/*
++	 * RUN_TESTS() will load the *bad* tests, marked with
++	 * __failure, and ensure they fail to load.  It will also load the
++	 * *good* tests, which we already tested, so you'll see some tests twice
++	 * in the output.
++	 */
++	RUN_TESTS(array_elem_test);
++}
+diff --git a/tools/testing/selftests/bpf/progs/array_elem_test.c b/tools/testing/selftests/bpf/progs/array_elem_test.c
+new file mode 100644
+index 000000000000..9cd90a3623e5
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/array_elem_test.c
+@@ -0,0 +1,256 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC. */
++
++#include <vmlinux.h>
++#include <stdbool.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++#include "bpf_misc.h"
++#include "bpf_experimental.h"
++
++char _license[] SEC("license") = "GPL";
++
++int target_pid = 0;
++
++#define NR_MAP_ELEMS 100
++
++/*
++ * We want to test valid accesses into an array, but we also need to fool the
++ * verifier.  If we just do for (i = 0; i < 100; i++), the verifier knows the
++ * value of i and can tell we're inside the array.
++ *
++ * This "lookup" array is just the values 0, 1, 2..., such that
++ * lookup_indexes[i] == i.  (set by userspace).  But the verifier doesn't know
++ * that.
++ */
++unsigned int lookup_indexes[NR_MAP_ELEMS];
++
++/*
++ * This second lookup array also has the values 0, 1, 2.  The extra layer of
++ * lookups seems to make the compiler work a little harder, and more likely to
++ * spill to the stack.
++ */
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, NR_MAP_ELEMS);
++	__type(key, u32);
++	__type(value, u32);
++	__uint(map_flags, BPF_F_MMAPABLE);
++} lookup_again SEC(".maps");
++
++struct map_array {
++	int elems[NR_MAP_ELEMS];
++};
++
++/*
++ * This is an ARRAY_MAP of a single struct, and that struct is an array of
++ * elements.  Userspace can mmap the map as if it was just a basic array of
++ * elements.  Though if you make an ARRAY_MAP where the *values* are ints, don't
++ * forget that bpf map elements are rounded up to 8 bytes.
++ *
++ * Once you get the pointer to the base of the inner array, you can access all
++ * of the elements without another bpf_map_lookup_elem(), which is useful if you
++ * are operating on multiple elements while holding a spinlock.
++ */
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, u32);
++	__type(value, struct map_array);
++	__uint(map_flags, BPF_F_MMAPABLE);
++} arraymap SEC(".maps");
++
++static struct map_array *get_map_array(void)
++{
++	int zero = 0;
++
++	return bpf_map_lookup_elem(&arraymap, &zero);
++}
++
++static int *get_map_elems(void)
++{
++	struct map_array *arr = get_map_array();
++
++	if (!arr)
++		return NULL;
++	return arr->elems;
++}
++
++/*
++ * This is convoluted enough that the compiler may spill a register (r1) before
++ * bounds checking it.
++ */
++static void bad_set_elem(unsigned int which, int val)
++{
++	u32 idx_1;
++	u32 *idx_2p;
++	int *map_elems;
++
++	if (which >= NR_MAP_ELEMS)
++		return;
++
++	idx_1 = lookup_indexes[which];
++	idx_2p = bpf_map_lookup_elem(&lookup_again, &idx_1);
++	if (!idx_2p)
++		return;
++
++	/*
++	 * reuse idx_1, which is often r1.  if you use a new variable, e.g.
++	 * idx_3 = *idx_2p, the compiler will pick a non-caller save register
++	 * (e.g. r6), and won't spill it to the stack.
++	 */
++	idx_1 = *idx_2p;
++
++	/*
++	 * Whether we use bpf_cmp or a normal comparison, r1 might get spilled
++	 * to the stack, *then* checked against NR_MAP_ELEMS.  The verifier will
++	 * know r1's bounds, but since the check happened after the spill, it
++	 * doesn't know about the stack variable's bounds.
++	 */
++	if (bpf_cmp_unlikely(idx_1, >=, NR_MAP_ELEMS))
++		return;
++
++	/*
++	 * This does a bpf_map_lookup_elem(), which is a function call, which
++	 * necessitates spilling r1.
++	 */
++	map_elems = get_map_elems();
++	if (map_elems)
++		map_elems[idx_1] = val;
++}
++
++SEC("?tp/syscalls/sys_enter_nanosleep")
++__failure
++__msg("R0 unbounded memory access, make sure to bounds check any such access")
++int bad_access_single(void *ctx)
++{
++	bad_set_elem(0, 1337);
++	return 0;
++}
++
++SEC("?tp/syscalls/sys_enter_nanosleep")
++__failure
++__msg("R0 unbounded memory access, make sure to bounds check any such access")
++int bad_access_all(void *ctx)
++{
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		bad_set_elem(i, i);
++	return 0;
++}
++
++/*
++ * Both lookup_indexes and lookup_again are identity maps, i.e. f(x) = x (within
++ * bounds), so ultimately we're setting map_elems[which] = val.
++ */
++static void good_set_elem(unsigned int which, int val)
++{
++	u32 idx_1;
++	u32 *idx_2p;
++	int *map_elems, *x;
++
++	if (which >= NR_MAP_ELEMS)
++		return;
++	idx_1 = lookup_indexes[which];
++	idx_2p = bpf_map_lookup_elem(&lookup_again, &idx_1);
++
++	if (!idx_2p)
++		return;
++
++	idx_1 = *idx_2p;
++
++	map_elems = get_map_elems();
++	x = bpf_array_elem(map_elems, NR_MAP_ELEMS, idx_1);
++	if (x)
++		*x = val;
++}
++
++/*
++ * Test accessing a single element in the array with a convoluted lookup.
++ */
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int access_single(void *ctx)
++{
++	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
++		return 0;
++
++	good_set_elem(0, 1337);
++
++	return 0;
++}
++
++/*
++ * Test that we can access all elements, and that we are accessing the element
++ * we think we are accessing.
++ */
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int access_all(void *ctx)
++{
++	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
++		return 0;
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++)
++		good_set_elem(i, i);
++
++	return 0;
++}
++
++/*
++ * Helper for various OOB tests.  An out-of-bound access should be handled like
++ * a lookup failure.  Specifically, the verifier should ensure we do not access
++ * outside the array.  Userspace will check that we didn't access somewhere
++ * inside the array.
++ */
++static void set_elem_to_1(long idx)
++{
++	int *map_elems = get_map_elems();
++	int *x;
++
++	x = bpf_array_elem(map_elems, NR_MAP_ELEMS, idx);
++	if (x)
++		*x = 1;
++}
++
++/*
++ * Test various out-of-bounds accesses.
++ */
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int oob_access(void *ctx)
++{
++	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
++		return 0;
++
++	set_elem_to_1(NR_MAP_ELEMS + 5);
++	set_elem_to_1(NR_MAP_ELEMS);
++	set_elem_to_1(-1);
++	set_elem_to_1(~0UL);
++
++	return 0;
++}
++
++/*
++ * Test that we can use the ARRAY_SIZE-style helper with an array in a map.
++ *
++ * Note that you cannot infer the size of the array from just a pointer; you
++ * have to use the actual elems[100].  i.e. this will fail and should fail to
++ * compile (-Wsizeof-pointer-div):
++ *
++ *	int *map_elems = get_map_elems();
++ *	x = bpf_array_sz_elem(map_elems, lookup_indexes[i]);
++ */
++SEC("?tp/syscalls/sys_enter_nanosleep")
++int infer_size(void *ctx)
++{
++	struct map_array *arr = get_map_array();
++	int *x;
++
++	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
++		return 0;
++
++	for (int i = 0; i < NR_MAP_ELEMS; i++) {
++		x = bpf_array_sz_elem(arr->elems, lookup_indexes[i]);
++		if (x)
++			*x = i;
++	}
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index 2fd59970c43a..002bab44cde2 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -135,4 +135,47 @@
+ /* make it look to compiler like value is read and written */
+ #define __sink(expr) asm volatile("" : "+g"(expr))
+ 
++/*
++ * Access an array element within a bound, such that the verifier knows the
++ * access is safe.
++ *
++ * This macro asm is the equivalent of:
++ *
++ *	if (!arr)
++ *		return NULL;
++ *	if (idx >= arr_sz)
++ *		return NULL;
++ *	return &arr[idx];
++ *
++ * The index (___idx below) needs to be a u64, at least for certain versions of
++ * the BPF ISA, since there aren't u32 conditional jumps.
++ */
++#define bpf_array_elem(arr, arr_sz, idx) ({				\
++	typeof(&(arr)[0]) ___arr = arr;					\
++	__u64 ___idx = idx;						\
++	if (___arr) {							\
++		asm volatile("if %[__idx] >= %[__bound] goto 1f;	\
++			      %[__idx] *= %[__size];		\
++			      %[__arr] += %[__idx];		\
++			      goto 2f;				\
++			      1:;				\
++			      %[__arr] = 0;			\
++			      2:				\
++			      "						\
++			     : [__arr]"+r"(___arr), [__idx]"+r"(___idx)	\
++			     : [__bound]"r"((arr_sz)),		        \
++			       [__size]"i"(sizeof(typeof((arr)[0])))	\
++			     : "cc");					\
++	}								\
++	___arr;								\
++})
++
++/*
++ * Convenience wrapper for bpf_array_elem(), where we compute the size of the
++ * array.  Be sure to use an actual array, and not a pointer, just like with the
++ * ARRAY_SIZE macro.
++ */
++#define bpf_array_sz_elem(arr, idx) \
++	bpf_array_elem(arr, sizeof(arr) / sizeof((arr)[0]), idx)
++
+ #endif
+-- 
+2.43.0.472.g3155946c3a-goog
+
 
