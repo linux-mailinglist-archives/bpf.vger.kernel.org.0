@@ -1,138 +1,96 @@
-Return-Path: <bpf+bounces-19382-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19383-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9811A82B5D2
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 21:20:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D95F82B5E5
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 21:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3794028C4BC
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 20:20:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B09BB1C2438D
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 20:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EC75730B;
-	Thu, 11 Jan 2024 20:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 306C456B86;
+	Thu, 11 Jan 2024 20:28:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Pz76U6jP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T8tBj8+Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B43A56B6C;
-	Thu, 11 Jan 2024 20:20:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C575C43390;
-	Thu, 11 Jan 2024 20:20:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705004407;
-	bh=+QavJfo5shHsDI54vIkucOEkmDxcfkwD6QfPD3io40U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Pz76U6jPieOUiWYaAgRMSZ0RaLxs3b1cj+yfIzSrgCEHRBjcAABzNWoHXXaVgbbVR
-	 JNL9z6/6pKRr8TJbyGaLt7nR6s0+DfKU4aAcu4ZDw5Do5dHTvwf4BPKmoh0ZdmM/wj
-	 jISSXv6Gt4afZr8OahwxcH5973TMwOHw2ZxyVygTiXXrAn8B+w5p4KN/47VPigb+oS
-	 lYek+N6adK2I8qsxnhvl1i233QVbL1Z/OOAND2xJb1gcc/MqtuOAhpUYiVLBzA8k05
-	 Pn5/fUyVcxSYy0zI54/QOKcb1yk1mCMG9Vo/M2TPP27bkS1dSLsIkepje263KX/Vl3
-	 DZj5TG7UMZ1Rw==
-Date: Thu, 11 Jan 2024 13:20:03 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	clang-built-linux <llvm@lists.linux.dev>, patches@lists.linux.dev,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	ppc-dev <linuxppc-dev@lists.ozlabs.org>, kvm@vger.kernel.org,
-	linux-riscv <linux-riscv@lists.infradead.org>,
-	linux-trace-kernel@vger.kernel.org,
-	linux-s390 <linux-s390@vger.kernel.org>,
-	Linux Power Management <linux-pm@vger.kernel.org>,
-	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-	linux-efi <linux-efi@vger.kernel.org>,
-	amd-gfx list <amd-gfx@lists.freedesktop.org>,
-	dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-	linux-arch <linux-arch@vger.kernel.org>,
-	kasan-dev <kasan-dev@googlegroups.com>,
-	linux-mm <linux-mm@kvack.org>, bridge@lists.linux.dev,
-	Network Development <netdev@vger.kernel.org>,
-	LSM List <linux-security-module@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH 1/3] selftests/bpf: Update LLVM Phabricator links
-Message-ID: <20240111202003.GA3418790@dev-arch.thelio-3990X>
-References: <20240109-update-llvm-links-v1-0-eb09b59db071@kernel.org>
- <20240109-update-llvm-links-v1-1-eb09b59db071@kernel.org>
- <6a655e9f-9878-4292-9d16-f988c4bdfc73@linux.dev>
- <20240111194001.GA3805856@dev-arch.thelio-3990X>
- <CAADnVQKFv2DKE=Um=+kcEzSWYCp9USQT_VpTawzNY6eRaUdu5g@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D849B56B7C
+	for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 20:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <1308094b-434d-4372-9546-34d17d350820@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705004915;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=lTEEqJuej7c76jN5VUN7lve+VlLIQFJhZ26dQSaKC6A=;
+	b=T8tBj8+QfOFu17t7wPPPS61GfF0Wg6idnJwmPZwFC1sZgwtsj7tSptvOB5HqSoRoF6yeVX
+	icoskDYAVtHCwj893MMaLgZhQjNusheyHHTrB4P//UlUn/69PlE9ielmmoacAxzLMvDqP7
+	qvOg+cC2jgP0jlzzRaFBRvziyuPez0g=
+Date: Thu, 11 Jan 2024 12:28:30 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQKFv2DKE=Um=+kcEzSWYCp9USQT_VpTawzNY6eRaUdu5g@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: apply map_set_def_max_entries() for inner_maps
+ on creation
+To: Andrey Grafin <conquistador@yandex-team.ru>, bpf@vger.kernel.org
+Cc: andrii@kernel.org
+References: <20240111200513.9254-1-conquistador@yandex-team.ru>
+Content-Language: en-GB
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240111200513.9254-1-conquistador@yandex-team.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi Alexei,
 
-On Thu, Jan 11, 2024 at 12:00:50PM -0800, Alexei Starovoitov wrote:
-> On Thu, Jan 11, 2024 at 11:40 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > Hi Yonghong,
-> >
-> > On Wed, Jan 10, 2024 at 08:05:36PM -0800, Yonghong Song wrote:
-> > >
-> > > On 1/9/24 2:16 PM, Nathan Chancellor wrote:
-> > > > reviews.llvm.org was LLVM's Phabricator instances for code review. It
-> > > > has been abandoned in favor of GitHub pull requests. While the majority
-> > > > of links in the kernel sources still work because of the work Fangrui
-> > > > has done turning the dynamic Phabricator instance into a static archive,
-> > > > there are some issues with that work, so preemptively convert all the
-> > > > links in the kernel sources to point to the commit on GitHub.
-> > > >
-> > > > Most of the commits have the corresponding differential review link in
-> > > > the commit message itself so there should not be any loss of fidelity in
-> > > > the relevant information.
-> > > >
-> > > > Additionally, fix a typo in the xdpwall.c print ("LLMV" -> "LLVM") while
-> > > > in the area.
-> > > >
-> > > > Link: https://discourse.llvm.org/t/update-on-github-pull-requests/71540/172
-> > > > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > >
-> > > Ack with one nit below.
-> > >
-> > > Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> >
-> > <snip>
-> >
-> > > > @@ -304,6 +304,6 @@ from running test_progs will look like:
-> > > >   .. code-block:: console
-> > > > -  test_xdpwall:FAIL:Does LLVM have https://reviews.llvm.org/D109073? unexpected error: -4007
-> > > > +  test_xdpwall:FAIL:Does LLVM have https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d5? unexpected error: -4007
-> > > > -__ https://reviews.llvm.org/D109073
-> > > > +__ https://github.com/llvm/llvm-project/commit/ea72b0319d7b0f0c2fcf41d121afa5d031b319d
-> > >
-> > > To be consistent with other links, could you add the missing last alnum '5' to the above link?
-> >
-> > Thanks a lot for catching this and providing an ack. Andrew, could you
-> > squash this update into selftests-bpf-update-llvm-phabricator-links.patch?
-> 
-> Please send a new patch.
-> We'd like to take all bpf patches through the bpf tree to avoid conflicts.
+On 1/11/24 12:05 PM, Andrey Grafin wrote:
+> This patch allows to create BPF_MAP_TYPE_ARRAY_OF_MAPS and
+> BPF_MAP_TYPE_HASH_OF_MAPS with values of BPF_MAP_TYPE_PERF_EVENT_ARRAY.
+>
+> Previous behaviour created a zero filled btf_map_def for inner maps and
+> tried to use it for a map creation but the linux kernel forbids to create
+> a BPF_MAP_TYPE_PERF_EVENT_ARRAY map with max_entries=0.
 
-Very well, I've sent a standalone v2 on top of bpf-next:
+Could you add a test case for this so it will be clear from code
+what is the previous behavior and what is the new behavior?
 
-https://lore.kernel.org/20240111-bpf-update-llvm-phabricator-links-v2-1-9a7ae976bd64@kernel.org/
-
-Andrew, just drop selftests-bpf-update-llvm-phabricator-links.patch
-altogether in that case, the other two patches are fine to go via -mm I
-think.
-
-Cheers,
-Nathan
+>
+> Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
+> ---
+>   tools/lib/bpf/libbpf.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index e067be95da3c..8f4d580187aa 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -70,6 +70,7 @@
+>   
+>   static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
+>   static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
+> +static int map_set_def_max_entries(struct bpf_map *map);
+>   
+>   static const char * const attach_type_name[] = {
+>   	[BPF_CGROUP_INET_INGRESS]	= "cgroup_inet_ingress",
+> @@ -5212,6 +5213,9 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>   
+>   	if (bpf_map_type__is_map_in_map(def->type)) {
+>   		if (map->inner_map) {
+> +			err = map_set_def_max_entries(map->inner_map);
+> +			if (err)
+> +				return err;
+>   			err = bpf_object__create_map(obj, map->inner_map, true);
+>   			if (err) {
+>   				pr_warn("map '%s': failed to create inner map: %d\n",
 
