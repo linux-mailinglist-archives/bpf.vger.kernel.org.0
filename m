@@ -1,143 +1,118 @@
-Return-Path: <bpf+bounces-19351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA5BA82A58D
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 02:27:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD8C82A5AB
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 02:51:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6629CB24102
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 01:27:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F102284304
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 01:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A989BECB;
-	Thu, 11 Jan 2024 01:27:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4D4807;
+	Thu, 11 Jan 2024 01:51:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="STBrG1bG";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="0Dvct0On"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KBkx//Re"
 X-Original-To: bpf@vger.kernel.org
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69F63EA3;
-	Thu, 11 Jan 2024 01:27:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id 8E7543200B0F;
-	Wed, 10 Jan 2024 20:27:17 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 10 Jan 2024 20:27:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1704936437;
-	 x=1705022837; bh=QgJ9yQRRKlfBjz+XKZdFtWiCEuEshUHPGj0G2dnzzCg=; b=
-	STBrG1bGxG9KECg8tUylREuoybIu6frA/RDhI3qlD+TatlhS6DPr2KUWx0dMGbNf
-	8FtyvtQH/a8KTQTlx+KUhvDrr7ga5ficqg5mD7QZ/9he/7pFqHtsp+X2l0CkSlem
-	zTAmGBcDdglWUzWnmPaQQahUgpdik0lA6W5LlKq2YwCZ59LtPDwkj2RNstPlfxxG
-	DW9Vbz8Mwz7/imCPxxOOz4xZV4pb6cVvXKL1nDY2ti/0ouQzt55WLfLgJcoo8y2P
-	nWWAkNXMFtZ988jgVKTgvI3UFoZF8b7O3ZuR11plDJHf2Epz4gYbyXmUq58YDvxr
-	uDeu6uI+6AkEgXjRqIWMYQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704936437; x=
-	1705022837; bh=QgJ9yQRRKlfBjz+XKZdFtWiCEuEshUHPGj0G2dnzzCg=; b=0
-	Dvct0OnhZVG/wGSy5gsSBaBR2WiUmUsEDzpaq9C5wsA2wO1SBr5FrmLV6FizRxA4
-	tHCee13S7hioNUNMUD2Uh93ZQWcyETroPMgZ1vTlScZt5jlFZEhN7NLLUrjuovc6
-	npL8mzK48TRW6+SFDgYL/Hc+J34J0DYIbs+QB1U3l8Twsw86Nhr88JXXVcnFX749
-	tTvx4NWSeX9SUYWT7oDn3DvwbN6MLxI9g+XBer6Us4vXNY8Hm1FaBoKoYBMjU6DE
-	BjJewqTmZh2KQeFrJr7wFnup3Vhid8GjWLaDUtty8k0YyDRyxklPCFQeaNUuT7/h
-	YhWtc186QJTDTSsHRqHBg==
-X-ME-Sender: <xms:9EOfZTnFiT7AviZswKwRoNkqrNbj8K9ez2XidvJwx7Nx1u1e80Ykeg>
-    <xme:9EOfZW1LXO6vlqrCeXly_C375UszVuS4LP7sxzRr7hTmSdTnnGEx2YFjRchuYPHhp
-    mj56LC33bTiE8Qz4g>
-X-ME-Received: <xmr:9EOfZZpj7G4EBoIDdZPP1G8Ghrr8J9_-ua4DQSZ1yKssDtk5vBMDA2x03SAAJo1-12-gXBxnWo7dwYJ6JDM_eUyxxSR71cIJM8QqcvY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeivddgfedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:9EOfZbkw_j6esdY-P5EQ-USwoRWWJdGmc-_AHlRimuap2ul0VFxsnw>
-    <xmx:9EOfZR250MbUOKnCud3XjKDWXIZ2TvGPqsLVUZO5yiLhPXh1l4gZcA>
-    <xmx:9EOfZat70XpuFS1_voSC5eeoW9fDQfSfcxREJ-DOuVRhcFX_nBg0sg>
-    <xmx:9UOfZd5I1RjT6oTaaRHIeb_QGmP9nvTavRkHt3Am6RrI2wkwTdaxyg>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 10 Jan 2024 20:27:15 -0500 (EST)
-Date: Wed, 10 Jan 2024 18:27:13 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Lorenz Bauer <lorenz.bauer@isovalent.com>
-Cc: andrii@kernel.org, ast@kernel.org, daniel@iogearbox.net, 
-	martin.lau@linux.dev, alexei.starovoitov@gmail.com, olsajiri@gmail.com, 
-	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/3] bpf: btf: Add BTF_KFUNCS_START/END macro
- pair
-Message-ID: <446p3sgkjndfa45dqfy7a3nu5nfbczn55eazpkup6b46zi5vnw@eu7us32trhcc>
-References: <cover.1704565248.git.dxu@dxuuu.xyz>
- <ae0a144d9ade8bf096317cc86367ed1f5468af25.1704565248.git.dxu@dxuuu.xyz>
- <CAN+4W8isJzy=J_CciNqwUa5o7wu+RQ1_cvPYXt7_OkgjPycsDw@mail.gmail.com>
- <hn3ukzscwlquov6k2nw3omi4vmwo44d7yqyqtrn57xgtpqvrau@db2rdabczwph>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAE27ED
+	for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 01:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5f69383e653so50120737b3.1
+        for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 17:50:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704937858; x=1705542658; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mLQ2Camh48mLWWN4hephUD+TLzX5ShJOpFW1YgDQOUc=;
+        b=KBkx//ReCZSjs26njmtN/UEZIgmJyCvglPVYraEVVzBe2LxiYsLQsKb/mde42MiPf9
+         /lNu+RZIvJmbBs9sDxRBtgIpeIA6mmapNs6ldrw20AzoLlMgkPqH6Jcdjj4z/BCvrJLD
+         dp8ul20LDEqmsk0xtd2iOFODm4DcxcAeFT0WbIsk3wOemoPKxsmmdO5ZCyGfBnJYwYuK
+         UkqiSJ8IDIzIkThGZHKhiA1DY5S/4GYf68JImhXsj0trIE8NoO7mW4Zqf0Ej6W/3SO7i
+         VEP/wojdNX3H+mIpgO68hmgTb4r21s+81cgSiqtQ52r/Xru/XPVmX5bYSFa1LAnLGcWq
+         m6nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704937858; x=1705542658;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mLQ2Camh48mLWWN4hephUD+TLzX5ShJOpFW1YgDQOUc=;
+        b=pRUdOzRZzRNhkPR0z9K4Hi+d0wLr5KpNQxUCQ8EUJFiDNzOQJvmG5ZByjFgwqU2ZJH
+         UJ0c0jIKWZvh7dYLSRRK2nrFGfcRsyo9J9Xquhz6pB36TUo1zBtoOUxyxEap91cWZorQ
+         JfS5XB7bW4qeCdd+0q1ZiSfCMV5YvKTRbpYHpQxK6shvxwDXp5dIdisCM/ZCODAis5//
+         iBmtYwcqIX6PibWDDiJ6fyWEKOjIX6w0duPZSDZaAAfIPC1ufcCKjrIzjW45iTHtRdZb
+         d4inbRTe52Mk7XhT/ASeyJLWB4J+J3V1wlL5sl/EHbdU8auqNWhG5qEstMiLDvFZfTvP
+         247A==
+X-Gm-Message-State: AOJu0Yykoc2cGSDLkmNFqiXKcrwrfXqUf/6YGffBCZ+kDd0i96emi2kE
+	aS6gy4846/RmEhPx7oOz7OM=
+X-Google-Smtp-Source: AGHT+IF8iPuhB5cbGoa08NGs5+z1ZCxT+Szujp8q+2XI3lX9qxkBv3cYIC9+3ol5OAFlp7+t1Yzn1g==
+X-Received: by 2002:a0d:eb8b:0:b0:5f6:dd94:38f2 with SMTP id u133-20020a0deb8b000000b005f6dd9438f2mr551338ywe.6.1704937858147;
+        Wed, 10 Jan 2024 17:50:58 -0800 (PST)
+Received: from ?IPV6:2600:1700:6cf8:1240:b02f:5810:3abc:c82? ([2600:1700:6cf8:1240:b02f:5810:3abc:c82])
+        by smtp.gmail.com with ESMTPSA id u80-20020a818453000000b005e7467eaa43sm14368ywf.32.2024.01.10.17.50.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 10 Jan 2024 17:50:57 -0800 (PST)
+Message-ID: <0dd5949b-b6f8-4d88-88ba-cc079096ce32@gmail.com>
+Date: Wed, 10 Jan 2024 17:50:56 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <hn3ukzscwlquov6k2nw3omi4vmwo44d7yqyqtrn57xgtpqvrau@db2rdabczwph>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC bpf-next] bpf, selftests/bpf: Support PTR_MAYBE_NULL for
+ struct_ops arguments.
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, davemarchevsky@meta.com,
+ dvernet@meta.com
+References: <20240110221750.798813-1-thinker.li@gmail.com>
+ <55ada30c-039d-4121-a4d2-efda578f600f@linux.dev>
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <55ada30c-039d-4121-a4d2-efda578f600f@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jan 08, 2024 at 10:59:53AM -0700, Daniel Xu wrote:
-> On Mon, Jan 08, 2024 at 10:14:13AM +0100, Lorenz Bauer wrote:
-> > On Sat, Jan 6, 2024 at 7:25 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > >
-> > > This macro pair is functionally equivalent to BTF_SET8_START/END, except
-> > > with BTF_SET8_KFUNCS flag set in the btf_id_set8 flags field. The next
-> > > commit will codemod all kfunc set8s to this new variant such that all
-> > > kfuncs are tagged as such in .BTF_ids section.
-> > >
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >  include/linux/btf_ids.h | 11 +++++++++++
-> > >  1 file changed, 11 insertions(+)
-> > >
-> > > diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
-> > > index dca09b7f21dc..0fe4f1cd1918 100644
-> > > --- a/include/linux/btf_ids.h
-> > > +++ b/include/linux/btf_ids.h
-> > > @@ -8,6 +8,9 @@ struct btf_id_set {
-> > >         u32 ids[];
-> > >  };
-> > >
-> > > +/* This flag implies BTF_SET8 holds kfunc(s) */
-> > > +#define BTF_SET8_KFUNCS                (1 << 0)
-> > 
-> > Nit: could this be an enum so that the flag is discoverable via BTF?
+
+
+On 1/10/24 15:44, Martin KaFai Lau wrote:
+> On 1/10/24 2:17 PM, thinker.li@gmail.com wrote:
+>> The proposed solution here is to add PTR_MAYBE_NULL annotations to
+>> arguments
 > 
-> Sure, makes sense.
+> [ ... ]
+> 
+>> == Future Work ==
+>>
+>> We require an improved method for annotating arguments. Initially, we
+>> anticipated annotating arguments by appending a suffix to argument names,
+>> such as arg1__maybe_null. However, this approach does not function for
+>> function pointers due to compiler limitations. Nevertheless, it does work
+>> for functions. To resolve this, we need compiler support to enable the
+>> inclusion of argument names in the DWARF for function pointer types.
+> 
+> After reading the high level of the patch,
+> while it needs compiler work to support decl tagging (or arg name) in a 
+> struct_ops's func_proto, changing the info->reg_type of a struct_ops's 
+> argument have been doable in the ".is_valid_access" without new kernel 
+> code change in verifier/btf.c.
 
-I took a look - don't think we can make it an enum. See
-include/linux/btf.h:
+btf_ctx_access() mentioned in the original message is a help function
+called by the implementation of .is_valid_access. So, just like you
+said, they definitely can be handled by .is_valid_access it-self.
 
-      /* These need to be macros, as the expressions are used in assembler input */
-      #define KF_ACQUIRE      (1 << 0) /* kfunc is an acquire function */
-      #define KF_RELEASE      (1 << 1) /* kfunc is a release function */
-      [..]
+Do you prefer to let developers to handle it by themself instead of
+handling by the helpers?
 
-Could do some redefines but maybe not worth it. The new flag is a pretty
-deep impl detail anyways.
-
-Thanks,
-Daniel
+> 
+> Take a look at the bpf_tcp_ca_is_valid_access() which promotes the 
+> info->btf_id to "struct tcp_sock". The same could be done for 
+> info->reg_type (e.g. adding PTR_MAYBE_NULL).
 
