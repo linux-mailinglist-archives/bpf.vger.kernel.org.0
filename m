@@ -1,140 +1,181 @@
-Return-Path: <bpf+bounces-19355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12A0682A609
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 03:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49FF482A625
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 03:46:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A92731F24367
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 02:32:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E78A31F239F5
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 02:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABEC15CA;
-	Thu, 11 Jan 2024 02:32:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F98EA3;
+	Thu, 11 Jan 2024 02:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FvdNN/dl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ARFIKYHi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6827F137D
-	for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 02:32:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6C0A3C
+	for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 02:46:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-680d2ec3459so37773776d6.0
-        for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 18:32:21 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3376ead25e1so3176273f8f.3
+        for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 18:46:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704940340; x=1705545140; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704941200; x=1705546000; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VQLQuWE2rLyeBFJtGgzWSLnQZedd3fYvu5wv5dx80s4=;
-        b=FvdNN/dl8P9sYD7Mj+pgozb3LK1sPSYLsB2XNWrQtCHcaQfeBZB0sVX86e9Jq+cWcC
-         R6zv+BZcQtUxdU05TB4BEJuzklqgFIEfoRX+Nydi2NydY/ZqwVgSskUFSbBKJCzdu+RG
-         s+oYAosQBn85sPWxWfSih4BnqHG/EbRb2jrWo0vK6w+o/Q3q/4uM4CUCVSxXG7cUlVI1
-         2CoL6a0w8t1aYML4SagAUtgm/bwTM+1CsaZyUS7u9RRyZ6g0dzYmBYUIYmAegbV9MVE3
-         59vNs7rgGTF3TKYYrxRvz+VsNvhfFA0HDUnwREtqv1rngNSVwvGf+DBUsCzJz0fhkHBx
-         hktA==
+        bh=hV4JJ0s1Z1D0ty0PXPzEDItIhdbKBZjWyN2KlLOpdTw=;
+        b=ARFIKYHiG4r9hzkZQNIiGXBrsyM6+cAQfAHXrE26HN4mJgxmOh9voBn3gdBOmuvDww
+         d2YmJUDVq7M+1CbMeIXrFOqqxwycsW/48PWwbiXHYrV+l5LaC69Za2n11HOucSkxsU5M
+         4i24mHgGGGf69k0AFjx9umvnZhFbTOGExaJXECZgROMo916sMgLQPRiy2fdnYCvNuOAm
+         U6man1y3Bm3cvD9iZRro0MmEaNNBBZLELdLbFw3Fdl1UTPk0DwU6cYq/LupKr2Igd8Bv
+         2rCAgM/dtBB5yY8Nkf/QFVEw8+zGZbRWwDEx6zuyC21cZetz33Dz80HutnpLONhfITSn
+         +MSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704940340; x=1705545140;
+        d=1e100.net; s=20230601; t=1704941200; x=1705546000;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VQLQuWE2rLyeBFJtGgzWSLnQZedd3fYvu5wv5dx80s4=;
-        b=jVhve4+Cv1gDstQoG1GW8aVAlvlaj5E8OfQ+TdpMn+7TUjxhDsXTwGeRH+cOMXVyHT
-         M7ZclEnpE0MTEUn7qzZO3sYodqX/9J+bgjaZ75E8mWodDs9zsJFQGUNtxjAT9yODuOq5
-         NLIyuYRzi7z/Bju1vKwZaLgFuN2ARys8XqUBupY+6av689WpLkahdx2UwygOQSpISmAL
-         VORbhJ2sPLNhKnwM3yI6vmD0XdnyTh9arPMvdrdSSRN8KwMukg/K83yFUyLbjtNLryuO
-         uWnep75WaeP3jczh4e6lGkLoKvS1m8VpBd0QCUSmaJrAH/396leRRY5ugQvpMWCscQwp
-         7Eww==
-X-Gm-Message-State: AOJu0YwM5CaeIEBVylpF1/kdChiFLmcVGmYF7Z9P//dHoj/U7DgdPoDN
-	CX/Zmpggz4xxpMfG3/cfPiGKsSpxeNPO2It5xUY=
-X-Google-Smtp-Source: AGHT+IGgL+RTMV6p8KOnkDy6sviCzl6tg7h4Bht2E8CuDNQQd5+zwkapMgMKZ4B3MOsDZPJwiF1kCdi2ajSZv9yGfUY=
-X-Received: by 2002:a0c:e186:0:b0:680:ccbe:ff24 with SMTP id
- p6-20020a0ce186000000b00680ccbeff24mr45353qvl.17.1704940340324; Wed, 10 Jan
- 2024 18:32:20 -0800 (PST)
+        bh=hV4JJ0s1Z1D0ty0PXPzEDItIhdbKBZjWyN2KlLOpdTw=;
+        b=hfFrmQMs4yxELOmXOZj/urAZlW1IUFrFiGTrmaKT1j0QVnmZYxdY3LE1tILE3DhF/D
+         T1AHFMJqmNzblzZofb14TqDbYIDPMXf1NY+s7CgJdyzHlr3OyRc6oYZRsrG2Wl9dmAnu
+         aDn4Z0K0NkZF7iyGtGrSGDv1ZjILzpJICrDqL6mru8yE1YZYXWJLROQUs+cfI5+oosEJ
+         YqpLP+pjkXkAQaFswT+xi56zDuQbsHsJ0t9BqldD4MCg2/VtB80ynztcEtRBGhZnc9V5
+         Ip6LfkSFt0ueKmjPIGBGKru8ofMwJnt6lq17qaIXmyJJ4bjQFKa+Wj/RC0Zy6m5+ULup
+         pfBg==
+X-Gm-Message-State: AOJu0YwvK//iFpRsdN+Pofcg/iiYJ1gN8h21nxz5MkTWJdCcxsxxy1E/
+	zrMLYM05Cg5obEhcee/J3hk3mtjaXIaRBPZA6IBWrNhqpmc=
+X-Google-Smtp-Source: AGHT+IH2kVUuB3jEtObjCIV67b83a2mdWp3hvFF/mAtTfhm6eX41+59r5j7mSkEuf/2if28DmskmSXfVnCSAyCtIZPo=
+X-Received: by 2002:a5d:66cb:0:b0:336:783f:ca2e with SMTP id
+ k11-20020a5d66cb000000b00336783fca2emr248986wrw.18.1704941200145; Wed, 10 Jan
+ 2024 18:46:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240110060037.4202-1-laoar.shao@gmail.com> <20240110060037.4202-3-laoar.shao@gmail.com>
- <CAADnVQJc8MzBey6fKu1K+WSCCWUCo81-9Pbro6sV77N3r3sTBA@mail.gmail.com>
-In-Reply-To: <CAADnVQJc8MzBey6fKu1K+WSCCWUCo81-9Pbro6sV77N3r3sTBA@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 11 Jan 2024 10:31:44 +0800
-Message-ID: <CALOAHbBN_3cXmrU1r9y_5ighS1M3wn6XbM7o6+rzP=U_wPoURQ@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 2/2] selftests/bpf: Add selftests for cpumask iter
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Tejun Heo <tj@kernel.org>, bpf <bpf@vger.kernel.org>
+References: <20231221033854.38397-1-alexei.starovoitov@gmail.com>
+ <20231221033854.38397-3-alexei.starovoitov@gmail.com> <CAP01T77fbW-9N+Z-2LFS=174HN6v_OJAbR_s6EOfLLW8Oceh_g@mail.gmail.com>
+ <CAADnVQKY4hB4quJX_oyq4GULEJkehXWx6uW1nAYHveyvdyG8sw@mail.gmail.com>
+ <CAADnVQ+tYBpt_aRG5aU3sAYEysKxUOKQ24dBG4bP2kLy8nmmgA@mail.gmail.com>
+ <44a9223b6638673487850eb9d70cc01ef58e9d93.camel@gmail.com>
+ <CAADnVQLmXxn9RrniktuW80XO14oyOmgJ_NboBBC_-CU4O=-v9g@mail.gmail.com> <87h6jm6atm.fsf@oracle.com>
+In-Reply-To: <87h6jm6atm.fsf@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 10 Jan 2024 18:46:29 -0800
+Message-ID: <CAADnVQK54oAjfKtciJ5Z4fwChUDUC_1HYkodzwDzJR42GSun1w@mail.gmail.com>
+Subject: Re: asm register constraint. Was: [PATCH v2 bpf-next 2/5] bpf:
+ Introduce "volatile compare" macro
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, "Jose E. Marchesi" <jemarch@gnu.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, 
+	John Fastabend <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 11, 2024 at 1:52=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, Jan 9, 2024 at 3:00=E2=80=AFAM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
 >
-> On Tue, Jan 9, 2024 at 10:00=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> > +
-> > +SEC("iter/cgroup")
-> > +int BPF_PROG(cpu_cgroup, struct bpf_iter_meta *meta, struct cgroup *cg=
-rp)
-> > +{
-> > +       u32 *cpu, nr_running =3D 0, psi_nr_running =3D 0, nr_cpus =3D 0=
-;
-> > +       unsigned int tasks[NR_PSI_TASK_COUNTS];
-> > +       struct psi_group_cpu *groupc;
-> > +       struct bpf_cpumask *mask;
-> > +       struct task_struct *p;
-> > +       struct rq *rq;
-> > +
-> > +       /* epilogue */
-> > +       if (cgrp =3D=3D NULL)
-> > +               return 0;
-> > +
-> > +       mask =3D bpf_cpumask_create();
-> > +       if (!mask)
-> > +               return 1;
-> > +
-> > +       p =3D bpf_task_from_pid(target_pid);
-> > +       if (!p) {
-> > +               bpf_cpumask_release(mask);
-> > +               return 1;
-> > +       }
-> > +
-> > +       bpf_cpumask_copy(mask, p->cpus_ptr);
-> > +       bpf_for_each(cpumask, cpu, &mask->cpumask) {
-> > +               rq =3D (struct rq *)bpf_per_cpu_ptr(&runqueues, *cpu);
-> > +               if (!rq)
-> > +                       continue;
-> > +               nr_running +=3D rq->nr_running;
-> > +               nr_cpus +=3D 1;
-> > +
-> > +               groupc =3D (struct psi_group_cpu *)bpf_per_cpu_ptr(&sys=
-tem_group_pcpu, *cpu);
-> > +               if (!groupc)
-> > +                       continue;
-> > +               bpf_probe_read_kernel(&tasks, sizeof(tasks), &groupc->t=
-asks);
-> > +               psi_nr_running +=3D tasks[NR_RUNNING];
-> > +       }
+> >
+> > Also need to align with GCC. (Jose cc-ed)
 >
-> Instead of probe_read_kernel (which is not fast) please use
-> bpf_rdonly_cast() and access groups->tasks.
-> array should already be recognized by the verifier, but if not let's
-> fix the verifier instead of fallback to probe_read.
+> GCC doesn't have an integrated assembler, so using -masm=3Dpseudoc it jus=
+t
+> compiles the program above to:
+>
+>   foo:
+>         call bar
+>         r0 +=3D 1
+>         exit
+>
+> Also, at the moment we don't support a "w" constraint, because the
+> assembly-like assembly syntax we started with implies different
+> instructions that interpret the values stored in the BPF 64-bit
+> registers as 32-bit or 64-bit values, i.e.
+>
+>   mov %r1, 1
+>   mov32 %r1, 1
 
-Thanks for your suggestion.
-Will do it.
+Heh. gcc tried to invent a traditional looking asm for bpf and instead
+invented the above :)
+x86 and arm64 use single 'mov' and encode sub-registers as rax/eax or x0/w0=
+.
 
---=20
-Regards
-Yafang
+imo support of gcc-only asm style is an obstacle in gcc-bpf adoption.
+It's not too far to reconsider supporting this. You can easily
+remove the support and it will reduce your maintenance/support work.
+It's a bit of a distraction in this thread too.
+
+> But then the pseudo-c assembly syntax (that we also support) translates
+> some of the semantics of the instructions to the register names,
+> creating the notion that BPF actually has both 32-bit registers and
+> 64-bit registers, i.e.
+>
+>   r1 +=3D 1
+>   w1 +=3D 1
+>
+> In GCC we support both assembly syntaxes and currently we lack the
+> ability to emit 32-bit variants in templates like "%[reg] +=3D 1", so I
+> suppose we can introduce a "w" constraint to:
+>
+> 2. When pseudo-c assembly syntax is used, expect a 32-bit mode to match
+>    the operand and warn about operand size overflow whenever necessary,
+>    and then emit "w" instead of "r" as the register name.
+
+clang supports "w" constraint with -mcpu=3Dv3,v4 and emits 'w'
+as register name.
+
+> > And, the most importantly, we need a way to go back to old behavior,
+> > since u32 var; asm("...":: "r"(var)); will now
+> > allocate "w" register or warn.
+>
+> Is it really necessary to change the meaning of "r"?  You can write
+> templates like the one triggering this problem like:
+>
+>   asm volatile ("%[reg] +=3D 1"::[reg]"w"((unsigned)bar()));
+>
+> Then the checks above will be performed, driven by the particular
+> constraint explicitly specified by the user, not driven by the type of
+> the value passed as the operand.
+
+That's a good question.
+For x86 "r" constraint means 8, 16, 32, or 64 bit integer.
+For arm64 "r" constraint means 32 or 64 bit integer.
+
+and this is traditional behavior of "r" in other asms too:
+AMDGPU - 32 or 64
+Hexagon - 32 or 64
+powerpc - 32 or 64
+risc-v - 32 or 64
+
+imo it makes sense for bpf asm to align with the rest so that:
+
+asm volatile ("%[reg] +=3D 1"::[reg]"r"((unsigned)bar())); would generate
+w0 +=3D 1, NO warn (with -mcpu=3Dv3,v4; and a warn with -mcpu=3Dv1,v2)
+
+asm volatile ("%[reg] +=3D 1"::[reg]"r"((unsigned long)bar()));
+r0 +=3D 1, NO warn
+
+asm volatile ("%[reg] +=3D 1"::[reg]"w"((unsigned)bar()));
+w0 +=3D 1, NO warn
+
+asm volatile ("%[reg] +=3D 1"::[reg]"w"((unsigned long)bar()));
+w0 +=3D 1 and a warn (currently there is none in clang)
+
+I think we can add "R" constraint to mean 64-bit register only:
+
+asm volatile ("%[reg] +=3D 1"::[reg]"R"((unsigned)bar()));
+r0 +=3D 1 and a warn
+
+asm volatile ("%[reg] +=3D 1"::[reg]"R"((unsigned long)bar()));
+r0 +=3D 1, NO warn
 
