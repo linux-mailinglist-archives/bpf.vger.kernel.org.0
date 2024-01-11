@@ -1,181 +1,261 @@
-Return-Path: <bpf+bounces-19356-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19357-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49FF482A625
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 03:46:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB4D382A678
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 04:27:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E78A31F239F5
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 02:46:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E09BC1C2330A
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 03:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F98EA3;
-	Thu, 11 Jan 2024 02:46:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C708C10E8;
+	Thu, 11 Jan 2024 03:27:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ARFIKYHi"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SLNsQabf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B6C0A3C
-	for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 02:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3376ead25e1so3176273f8f.3
-        for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 18:46:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704941200; x=1705546000; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hV4JJ0s1Z1D0ty0PXPzEDItIhdbKBZjWyN2KlLOpdTw=;
-        b=ARFIKYHiG4r9hzkZQNIiGXBrsyM6+cAQfAHXrE26HN4mJgxmOh9voBn3gdBOmuvDww
-         d2YmJUDVq7M+1CbMeIXrFOqqxwycsW/48PWwbiXHYrV+l5LaC69Za2n11HOucSkxsU5M
-         4i24mHgGGGf69k0AFjx9umvnZhFbTOGExaJXECZgROMo916sMgLQPRiy2fdnYCvNuOAm
-         U6man1y3Bm3cvD9iZRro0MmEaNNBBZLELdLbFw3Fdl1UTPk0DwU6cYq/LupKr2Igd8Bv
-         2rCAgM/dtBB5yY8Nkf/QFVEw8+zGZbRWwDEx6zuyC21cZetz33Dz80HutnpLONhfITSn
-         +MSQ==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACC6EBF
+	for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 03:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704943656;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AUSAkkLrb0z3ZgTRvc5R86FhRwLBEg1Wd5G+5voljgI=;
+	b=SLNsQabfFFQZ0zNm9Pt2wmm6Jk1wzjIYaPBDnOo64U8+CJMhfm2Fh0QpyvOdf7Y24ibPkI
+	BOjQlxTaMeN6FvleaH6lkJeH7y9BOJMN4LvjLHHXzbh2DtX6ePeEy+zMPnVKAJucnfpX1Q
+	jNwPy2Umx9rvyOk4PLXmLNH5IYsl/fQ=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-650-eDrPkY1iMQaJZIb7nk87Ug-1; Wed, 10 Jan 2024 22:27:35 -0500
+X-MC-Unique: eDrPkY1iMQaJZIb7nk87Ug-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3bbd0056a7eso6562477b6e.0
+        for <bpf@vger.kernel.org>; Wed, 10 Jan 2024 19:27:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704941200; x=1705546000;
+        d=1e100.net; s=20230601; t=1704943652; x=1705548452;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hV4JJ0s1Z1D0ty0PXPzEDItIhdbKBZjWyN2KlLOpdTw=;
-        b=hfFrmQMs4yxELOmXOZj/urAZlW1IUFrFiGTrmaKT1j0QVnmZYxdY3LE1tILE3DhF/D
-         T1AHFMJqmNzblzZofb14TqDbYIDPMXf1NY+s7CgJdyzHlr3OyRc6oYZRsrG2Wl9dmAnu
-         aDn4Z0K0NkZF7iyGtGrSGDv1ZjILzpJICrDqL6mru8yE1YZYXWJLROQUs+cfI5+oosEJ
-         YqpLP+pjkXkAQaFswT+xi56zDuQbsHsJ0t9BqldD4MCg2/VtB80ynztcEtRBGhZnc9V5
-         Ip6LfkSFt0ueKmjPIGBGKru8ofMwJnt6lq17qaIXmyJJ4bjQFKa+Wj/RC0Zy6m5+ULup
-         pfBg==
-X-Gm-Message-State: AOJu0YwvK//iFpRsdN+Pofcg/iiYJ1gN8h21nxz5MkTWJdCcxsxxy1E/
-	zrMLYM05Cg5obEhcee/J3hk3mtjaXIaRBPZA6IBWrNhqpmc=
-X-Google-Smtp-Source: AGHT+IH2kVUuB3jEtObjCIV67b83a2mdWp3hvFF/mAtTfhm6eX41+59r5j7mSkEuf/2if28DmskmSXfVnCSAyCtIZPo=
-X-Received: by 2002:a5d:66cb:0:b0:336:783f:ca2e with SMTP id
- k11-20020a5d66cb000000b00336783fca2emr248986wrw.18.1704941200145; Wed, 10 Jan
- 2024 18:46:40 -0800 (PST)
+        bh=AUSAkkLrb0z3ZgTRvc5R86FhRwLBEg1Wd5G+5voljgI=;
+        b=UlQB3iCNDPnwUJXSVG8gColv8OfZMO0Rm5ioe33xncYEWMFMtcbTeUD5/geuC8X7qi
+         mp04aVp2NECu4D25+kbi0dXFchPnQbgP5HrR1hpAIKCSP9JKSsJ17o/nVSHFjHK8ilw/
+         S/kTrLtzf8XhKlooB3Yyd+o53h5fhZCIjxgtsjO//P/STUrjKwQ0torXk4e8Ow94mqrY
+         gN8uyq4zz+biODFiWuD4G6qVbUVFTtDmIDm6xFLWVLxaMwcvaP9hSY4MUyZbDTfiGWw1
+         HmvQFyxuyKYeqoHpYO40rQgURZ+Z7FVc7y+kLfoiUhfDnCl81p88iWJjc3+3XEflWyqF
+         G1Eg==
+X-Gm-Message-State: AOJu0YziSf+ZMkt8dmqNBesFdWivvLQXO7JZ0T9HGArkQtxflTY8n96X
+	9YhNHX7Z85tpY3eebpgrKR9CAkiPKlGXyeXfz6Ec2Tq6mGbvOJjNoFxPUy5nWU4xkHm87kKysVq
+	mJBbfkfDT8h8jiw9RKIYwhScksoFI2xgXPii3
+X-Received: by 2002:a05:6808:2f10:b0:3bd:3ce8:2377 with SMTP id gu16-20020a0568082f1000b003bd3ce82377mr1008840oib.114.1704943652633;
+        Wed, 10 Jan 2024 19:27:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEs8BJSRABz8aEdKyp40req/7d+/7A982/3ciC8ZpjhwQIZZsbp4MHstORlvr74V2fg98eAbKEU0qT16NyDo70=
+X-Received: by 2002:a05:6808:2f10:b0:3bd:3ce8:2377 with SMTP id
+ gu16-20020a0568082f1000b003bd3ce82377mr1008825oib.114.1704943652388; Wed, 10
+ Jan 2024 19:27:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231221033854.38397-1-alexei.starovoitov@gmail.com>
- <20231221033854.38397-3-alexei.starovoitov@gmail.com> <CAP01T77fbW-9N+Z-2LFS=174HN6v_OJAbR_s6EOfLLW8Oceh_g@mail.gmail.com>
- <CAADnVQKY4hB4quJX_oyq4GULEJkehXWx6uW1nAYHveyvdyG8sw@mail.gmail.com>
- <CAADnVQ+tYBpt_aRG5aU3sAYEysKxUOKQ24dBG4bP2kLy8nmmgA@mail.gmail.com>
- <44a9223b6638673487850eb9d70cc01ef58e9d93.camel@gmail.com>
- <CAADnVQLmXxn9RrniktuW80XO14oyOmgJ_NboBBC_-CU4O=-v9g@mail.gmail.com> <87h6jm6atm.fsf@oracle.com>
-In-Reply-To: <87h6jm6atm.fsf@oracle.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 10 Jan 2024 18:46:29 -0800
-Message-ID: <CAADnVQK54oAjfKtciJ5Z4fwChUDUC_1HYkodzwDzJR42GSun1w@mail.gmail.com>
-Subject: Re: asm register constraint. Was: [PATCH v2 bpf-next 2/5] bpf:
- Introduce "volatile compare" macro
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, "Jose E. Marchesi" <jemarch@gnu.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Yonghong Song <yonghong.song@linux.dev>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Daniel Xu <dxu@dxuuu.xyz>, 
-	John Fastabend <john.fastabend@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Kernel Team <kernel-team@fb.com>
+References: <20231229073108.57778-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20231229073108.57778-1-xuanzhuo@linux.alibaba.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Thu, 11 Jan 2024 11:27:19 +0800
+Message-ID: <CACGkMEsExWq6wn7rLxqbL6o4aTiu7fm8yDN36qdtd1K9aeyHVw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 00/27] virtio-net: support AF_XDP zero copy
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 9, 2024 at 3:00=E2=80=AFAM Jose E. Marchesi
-<jose.marchesi@oracle.com> wrote:
+On Fri, Dec 29, 2023 at 3:31=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
+om> wrote:
 >
-> >
-> > Also need to align with GCC. (Jose cc-ed)
+> ## AF_XDP
 >
-> GCC doesn't have an integrated assembler, so using -masm=3Dpseudoc it jus=
-t
-> compiles the program above to:
+> XDP socket(AF_XDP) is an excellent bypass kernel network framework. The z=
+ero
+> copy feature of xsk (XDP socket) needs to be supported by the driver. The
+> performance of zero copy is very good. mlx5 and intel ixgbe already suppo=
+rt
+> this feature, This patch set allows virtio-net to support xsk's zerocopy =
+xmit
+> feature.
 >
->   foo:
->         call bar
->         r0 +=3D 1
->         exit
+> At present, we have completed some preparation:
 >
-> Also, at the moment we don't support a "w" constraint, because the
-> assembly-like assembly syntax we started with implies different
-> instructions that interpret the values stored in the BPF 64-bit
-> registers as 32-bit or 64-bit values, i.e.
+> 1. vq-reset (virtio spec and kernel code)
+> 2. virtio-core premapped dma
+> 3. virtio-net xdp refactor
 >
->   mov %r1, 1
->   mov32 %r1, 1
-
-Heh. gcc tried to invent a traditional looking asm for bpf and instead
-invented the above :)
-x86 and arm64 use single 'mov' and encode sub-registers as rax/eax or x0/w0=
-.
-
-imo support of gcc-only asm style is an obstacle in gcc-bpf adoption.
-It's not too far to reconsider supporting this. You can easily
-remove the support and it will reduce your maintenance/support work.
-It's a bit of a distraction in this thread too.
-
-> But then the pseudo-c assembly syntax (that we also support) translates
-> some of the semantics of the instructions to the register names,
-> creating the notion that BPF actually has both 32-bit registers and
-> 64-bit registers, i.e.
+> So it is time for Virtio-Net to complete the support for the XDP Socket
+> Zerocopy.
 >
->   r1 +=3D 1
->   w1 +=3D 1
+> Virtio-net can not increase the queue num at will, so xsk shares the queu=
+e with
+> kernel.
 >
-> In GCC we support both assembly syntaxes and currently we lack the
-> ability to emit 32-bit variants in templates like "%[reg] +=3D 1", so I
-> suppose we can introduce a "w" constraint to:
+> On the other hand, Virtio-Net does not support generate interrupt from dr=
+iver
+> manually, so when we wakeup tx xmit, we used some tips. If the CPU run by=
+ TX
+> NAPI last time is other CPUs, use IPI to wake up NAPI on the remote CPU. =
+If it
+> is also the local CPU, then we wake up napi directly.
 >
-> 2. When pseudo-c assembly syntax is used, expect a 32-bit mode to match
->    the operand and warn about operand size overflow whenever necessary,
->    and then emit "w" instead of "r" as the register name.
-
-clang supports "w" constraint with -mcpu=3Dv3,v4 and emits 'w'
-as register name.
-
-> > And, the most importantly, we need a way to go back to old behavior,
-> > since u32 var; asm("...":: "r"(var)); will now
-> > allocate "w" register or warn.
+> This patch set includes some refactor to the virtio-net to let that to su=
+pport
+> AF_XDP.
 >
-> Is it really necessary to change the meaning of "r"?  You can write
-> templates like the one triggering this problem like:
+> ## performance
 >
->   asm volatile ("%[reg] +=3D 1"::[reg]"w"((unsigned)bar()));
+> ENV: Qemu with vhost-user(polling mode).
+> Host CPU: Intel(R) Xeon(R) Platinum 8163 CPU @ 2.50GHz
 >
-> Then the checks above will be performed, driven by the particular
-> constraint explicitly specified by the user, not driven by the type of
-> the value passed as the operand.
+> ### virtio PMD in guest with testpmd
+>
+> testpmd> show port stats all
+>
+>  ######################## NIC statistics for port 0 #####################=
+###
+>  RX-packets: 19531092064 RX-missed: 0     RX-bytes: 1093741155584
+>  RX-errors: 0
+>  RX-nombuf: 0
+>  TX-packets: 5959955552 TX-errors: 0     TX-bytes: 371030645664
+>
+>
+>  Throughput (since last show)
+>  Rx-pps:   8861574     Rx-bps:  3969985208
+>  Tx-pps:   8861493     Tx-bps:  3969962736
+>  ########################################################################=
+####
+>
+> ### AF_XDP PMD in guest with testpmd
+>
+> testpmd> show port stats all
+>
+>   ######################## NIC statistics for port 0  ###################=
+#####
+>   RX-packets: 68152727   RX-missed: 0          RX-bytes:  3816552712
+>   RX-errors: 0
+>   RX-nombuf:  0
+>   TX-packets: 68114967   TX-errors: 33216      TX-bytes:  3814438152
+>
+>   Throughput (since last show)
+>   Rx-pps:      6333196          Rx-bps:   2837272088
+>   Tx-pps:      6333227          Tx-bps:   2837285936
+>   #######################################################################=
+#####
+>
+> But AF_XDP consumes more CPU for tx and rx napi(100% and 86%).
+>
+> ## maintain
+>
+> I am currently a reviewer for virtio-net. I commit to maintain AF_XDP sup=
+port in
+> virtio-net.
+>
+> Please review.
+>
+> Thanks.
+>
+> v3
+>     1. virtio introduces helpers for virtio-net sq using premapped dma
+>     2. xsk has more complete support for merge mode
+>     3. fix some problems
+>
+> v2
+>     1. wakeup uses the way of GVE. No send ipi to wakeup napi on remote c=
+pu.
+>     2. remove rcu. Because we synchronize all operat, so the rcu is not n=
+eeded.
+>     3. split the commit "move to virtio_net.h" in last patch set. Just mo=
+ve the
+>        struct/api to header when we use them.
+>     4. add comments for some code
+>
+> v1:
+>     1. remove two virtio commits. Push this patchset to net-next
+>     2. squash "virtio_net: virtnet_poll_tx support rescheduled" to xsk: s=
+upport tx
+>     3. fix some warnings
+>
+>
+>
+> Xuan Zhuo (27):
+>   virtio_net: rename free_old_xmit_skbs to free_old_xmit
+>   virtio_net: unify the code for recycling the xmit ptr
+>   virtio_net: independent directory
+>   virtio_net: move core structures to virtio_net.h
+>   virtio_net: add prefix virtnet to all struct inside virtio_net.h
+>   virtio_ring: introduce virtqueue_get_buf_ctx_dma()
+>   virtio_ring: virtqueue_disable_and_recycle let the callback detach
+>     bufs
+>   virtio_ring: introduce virtqueue_detach_unused_buf_dma()
+>   virtio_ring: introduce virtqueue_get_dma_premapped()
+>   virtio_net: sq support premapped mode
+>   virtio_net: separate virtnet_rx_resize()
+>   virtio_net: separate virtnet_tx_resize()
+>   virtio_net: xsk: bind/unbind xsk
+>   virtio_net: xsk: prevent disable tx napi
+>   virtio_net: move some api to header
+>   virtio_net: xsk: tx: support xmit xsk buffer
+>   virtio_net: xsk: tx: support wakeup
+>   virtio_net: xsk: tx: handle the transmitted xsk buffer
+>   virtio_net: xsk: tx: free the unused xsk buffer
+>   virtio_net: separate receive_mergeable
+>   virtio_net: separate receive_buf
+>   virtio_net: xsk: rx: support fill with xsk buffer
+>   virtio_net: xsk: rx: support recv merge mode
+>   virtio_net: xsk: rx: support recv small mode
+>   virtio_net: xsk: rx: free the unused xsk buffer
+>   virtio_net: update tx timeout record
+>   virtio_net: xdp_features add NETDEV_XDP_ACT_XSK_ZEROCOPY
 
-That's a good question.
-For x86 "r" constraint means 8, 16, 32, or 64 bit integer.
-For arm64 "r" constraint means 32 or 64 bit integer.
+Hi Xuan:
 
-and this is traditional behavior of "r" in other asms too:
-AMDGPU - 32 or 64
-Hexagon - 32 or 64
-powerpc - 32 or 64
-risc-v - 32 or 64
+This series seems too huge to be reviewed easily.
 
-imo it makes sense for bpf asm to align with the rest so that:
+I'd suggest to split it to be multiple series (as suggested by
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#tl-dr)
 
-asm volatile ("%[reg] +=3D 1"::[reg]"r"((unsigned)bar())); would generate
-w0 +=3D 1, NO warn (with -mcpu=3Dv3,v4; and a warn with -mcpu=3Dv1,v2)
+Thanks
 
-asm volatile ("%[reg] +=3D 1"::[reg]"r"((unsigned long)bar()));
-r0 +=3D 1, NO warn
+>
+>  MAINTAINERS                                 |   2 +-
+>  drivers/net/Kconfig                         |   8 +-
+>  drivers/net/Makefile                        |   2 +-
+>  drivers/net/virtio/Kconfig                  |  13 +
+>  drivers/net/virtio/Makefile                 |   8 +
+>  drivers/net/{virtio_net.c =3D> virtio/main.c} | 806 +++++++++-----------
+>  drivers/net/virtio/virtio_net.h             | 337 ++++++++
+>  drivers/net/virtio/xsk.c                    | 626 +++++++++++++++
+>  drivers/net/virtio/xsk.h                    |  32 +
+>  drivers/virtio/virtio_ring.c                | 235 ++++--
+>  include/linux/virtio.h                      |  22 +-
+>  11 files changed, 1582 insertions(+), 509 deletions(-)
+>  create mode 100644 drivers/net/virtio/Kconfig
+>  create mode 100644 drivers/net/virtio/Makefile
+>  rename drivers/net/{virtio_net.c =3D> virtio/main.c} (90%)
+>  create mode 100644 drivers/net/virtio/virtio_net.h
+>  create mode 100644 drivers/net/virtio/xsk.c
+>  create mode 100644 drivers/net/virtio/xsk.h
+>
+> --
+> 2.32.0.3.g01195cf9f
+>
 
-asm volatile ("%[reg] +=3D 1"::[reg]"w"((unsigned)bar()));
-w0 +=3D 1, NO warn
-
-asm volatile ("%[reg] +=3D 1"::[reg]"w"((unsigned long)bar()));
-w0 +=3D 1 and a warn (currently there is none in clang)
-
-I think we can add "R" constraint to mean 64-bit register only:
-
-asm volatile ("%[reg] +=3D 1"::[reg]"R"((unsigned)bar()));
-r0 +=3D 1 and a warn
-
-asm volatile ("%[reg] +=3D 1"::[reg]"R"((unsigned long)bar()));
-r0 +=3D 1, NO warn
 
