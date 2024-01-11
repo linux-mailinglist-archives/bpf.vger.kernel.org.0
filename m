@@ -1,91 +1,161 @@
-Return-Path: <bpf+bounces-19374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19373-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87DF882B4EF
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 19:53:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D56F82B4ED
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 19:51:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8367B24BBA
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 18:53:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 313CCB252CD
+	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 18:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E04254BCE;
-	Thu, 11 Jan 2024 18:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7125A54BD8;
+	Thu, 11 Jan 2024 18:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b="A7IwUP/+"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wy52FIvW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yq895Kaf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wy52FIvW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yq895Kaf"
 X-Original-To: bpf@vger.kernel.org
-Received: from forwardcorp1a.mail.yandex.net (forwardcorp1a.mail.yandex.net [178.154.239.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43FC53E2C
-	for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 18:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex-team.ru
-Received: from mail-nwsmtp-smtp-corp-main-69.vla.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-69.vla.yp-c.yandex.net [IPv6:2a02:6b8:c29:fcc6:0:640:eb21:0])
-	by forwardcorp1a.mail.yandex.net (Yandex) with ESMTPS id 46A2B61286;
-	Thu, 11 Jan 2024 21:51:38 +0300 (MSK)
-Received: from conquistador.yandex.net (unknown [2a02:6b8:0:40c:d80d:e04a:8a36:b2e9])
-	by mail-nwsmtp-smtp-corp-main-69.vla.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id WpogZhYIcW20-qVy496rY;
-	Thu, 11 Jan 2024 21:51:38 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
-	s=default; t=1704999098;
-	bh=3je4lo/RuetL6S/DDrbTaWQnuCH8qimsCfA0nYqMcGs=;
-	h=Message-ID:Date:Cc:Subject:To:From;
-	b=A7IwUP/+ycw/XNWnGndc3biyS0BdwfioHtu48nBLw8qAGxsbMaiRblPvZeTWRLMlJ
-	 kFklbQwU61MATvaFhnwvBuIS2Pfnq++cGlpNgw9V8twuX3PlTBpn3Ja/S7FZa9oLfA
-	 /HxNDSlAgOwVGdwuluQzBmju/7Xa44QfC0DwbX+4=
-Authentication-Results: mail-nwsmtp-smtp-corp-main-69.vla.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-From: Andrey Grafin <conquistador@yandex-team.ru>
-To: bpf@vger.kernel.org
-Cc: andrii@kernel.org
-Subject: [PATCH bpf] bpf: apply map_set_def_max_entries() for inner_maps on creation
-Date: Thu, 11 Jan 2024 21:51:19 +0300
-Message-ID: <20240111185119.16306-1-conquistador@yandex-team.ru>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3656F42068;
+	Thu, 11 Jan 2024 18:51:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 05025220C2;
+	Thu, 11 Jan 2024 18:51:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704999085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sj827Oy0dLrs9nkkRq5Ag0QiOI3PKN49Fz2TDvOicqM=;
+	b=wy52FIvW+CtgGNtHDERO0/tXEdU7+QrmUfxJgmxmOzMDoBZ38dCOYmZnY58GT5QhzaRAMA
+	poyxFbtmYmtW+ZyLvh91CTusE8pEqa3qP7mnBEvDgFZ0urdvrmqAG1KYTGYHNrkR0aT2H8
+	3vNozGFjLyAQWc8nKHDrRK1uZbT/H1k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704999085;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sj827Oy0dLrs9nkkRq5Ag0QiOI3PKN49Fz2TDvOicqM=;
+	b=yq895KafECOGtBV29JLlyW5haxoeE+Mc/e5YMVnOpLZ8LpNm2+pNbR5PCv6PvhXdvyNpym
+	G36rATxmFreB6RBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704999085; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sj827Oy0dLrs9nkkRq5Ag0QiOI3PKN49Fz2TDvOicqM=;
+	b=wy52FIvW+CtgGNtHDERO0/tXEdU7+QrmUfxJgmxmOzMDoBZ38dCOYmZnY58GT5QhzaRAMA
+	poyxFbtmYmtW+ZyLvh91CTusE8pEqa3qP7mnBEvDgFZ0urdvrmqAG1KYTGYHNrkR0aT2H8
+	3vNozGFjLyAQWc8nKHDrRK1uZbT/H1k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704999085;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sj827Oy0dLrs9nkkRq5Ag0QiOI3PKN49Fz2TDvOicqM=;
+	b=yq895KafECOGtBV29JLlyW5haxoeE+Mc/e5YMVnOpLZ8LpNm2+pNbR5PCv6PvhXdvyNpym
+	G36rATxmFreB6RBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E6310132CF;
+	Thu, 11 Jan 2024 18:51:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id CZryN6w4oGWpegAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 11 Jan 2024 18:51:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 834FBA0807; Thu, 11 Jan 2024 19:51:24 +0100 (CET)
+Date: Thu, 11 Jan 2024 19:51:24 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+3779764ddb7a3e19437f@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, axboe@kernel.dk, bpf@vger.kernel.org,
+	brauner@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+	haoluo@google.com, hawk@kernel.org, jack@suse.cz,
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+	kuba@kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, luto@kernel.org, martin.lau@linux.dev,
+	netdev@vger.kernel.org, peterz@infradead.org,
+	reiserfs-devel@vger.kernel.org, sdf@google.com, song@kernel.org,
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+	tintinm2017@gmail.com, yhs@fb.com, yukuai3@huawei.com
+Subject: Re: [syzbot] [bpf?] [reiserfs?] WARNING: locking bug in corrupted (2)
+Message-ID: <20240111185124.ajlkmj4b2p57kbli@quack3>
+References: <000000000000a4a46106002c5e42@google.com>
+ <000000000000301d7e060eae2133@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000301d7e060eae2133@google.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [2.83 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.07)[62.78%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a];
+	 TAGGED_RCPT(0.00)[3779764ddb7a3e19437f];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RL3o6cafsyspy4quzngzwrpg9m)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[29];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,kernel.dk,vger.kernel.org,iogearbox.net,davemloft.net,google.com,suse.cz,gmail.com,linux.dev,infradead.org,googlegroups.com,linutronix.de,fb.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Level: **
+X-Spam-Score: 2.83
+X-Spam-Flag: NO
 
-This patch allows to create BPF_MAP_TYPE_ARRAY_OF_MAPS and
-BPF_MAP_TYPE_HASH_OF_MAPS with values of BPF_MAP_TYPE_PERF_EVENT_ARRAY.
+On Thu 11-01-24 08:35:04, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=120430a5e80000
+> start commit:   c17414a273b8 Merge tag 'sh-for-v6.5-tag1' of git://git.ker..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=7ad417033279f15a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3779764ddb7a3e19437f
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bbd544a80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13fd50b0a80000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-Previous behaviour created a zero filled btf_map_def for inner maps and
-tried to use it for a map creation but the linux kernel forbids to create
-a BPF_MAP_TYPE_PERF_EVENT_ARRAY map with max_entries=0.
-
-Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
----
- tools/lib/bpf/libbpf.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index e067be95da3c..8f4d580187aa 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -70,6 +70,7 @@
+Looks plausible.
  
- static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
- static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
-+static int map_set_def_max_entries(struct bpf_map *map);
- 
- static const char * const attach_type_name[] = {
- 	[BPF_CGROUP_INET_INGRESS]	= "cgroup_inet_ingress",
-@@ -5212,6 +5213,9 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
- 
- 	if (bpf_map_type__is_map_in_map(def->type)) {
- 		if (map->inner_map) {
-+			err = map_set_def_max_entries(map->inner_map);
-+			if (err)
-+				return err;
- 			err = bpf_object__create_map(obj, map->inner_map, true);
- 			if (err) {
- 				pr_warn("map '%s': failed to create inner map: %d\n",
+#syz fix: fs: Block writes to mounted block devices
+
+								Honza
 -- 
-2.41.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
