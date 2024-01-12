@@ -1,206 +1,170 @@
-Return-Path: <bpf+bounces-19394-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19395-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8719B82B937
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 02:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 687B282B947
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 02:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1796CB24365
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 01:45:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64FCBB26C47
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 01:57:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB95A10FE;
-	Fri, 12 Jan 2024 01:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pSn2CAz/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5398A139F;
+	Fri, 12 Jan 2024 01:57:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B73EC5
-	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 01:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <aea7e756-9b3a-46b0-af27-207ba306b875@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705023902;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Y7MYBGykbo+B7B7Y08PI4vamNAzIA5zfjIRY6lTBuws=;
-	b=pSn2CAz/EElnB7fJJRrtE8kRoLfDNbwFJNj7z2xfGflYckT7lQKJaXAO6/HhU/PeW6VXhV
-	MmLkvXYVdIqHBcv1O7+HCIuHx68bDUICAr5l0P5fDf+OknpR3r4oSMNVkpHfL02c2fjQdz
-	LS3y9dJU9GRd1kvRpmjV12taud4cw0M=
-Date: Thu, 11 Jan 2024 17:44:55 -0800
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED18D1399;
+	Fri, 12 Jan 2024 01:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8Dx++punKBlH2wEAA--.12938S3;
+	Fri, 12 Jan 2024 09:57:02 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxXN5tnKBlkHgSAA--.48129S2;
+	Fri, 12 Jan 2024 09:57:01 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v2] selftests/bpf: Skip callback tests if jit is disabled in test_verifier
+Date: Fri, 12 Jan 2024 09:57:00 +0800
+Message-ID: <20240112015700.19974-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v7 bpf-next 5/6] bpf: tcp: Support arbitrary SYN Cookie.
-Content-Language: en-US
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-References: <20231221012806.37137-1-kuniyu@amazon.com>
- <20231221012806.37137-6-kuniyu@amazon.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231221012806.37137-6-kuniyu@amazon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8DxXN5tnKBlkHgSAA--.48129S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxGFW3tr1UtrW5ur1xGr1kCrX_yoW5uFy7pF
+	WkGr1qkFn8JF1Sgr17ArnxKFWFvw4vqw18Jr98G3yUZa1DAw13Jrn7KFyYvF9xGrW5ua4S
+	vFWxuFW5uw4UXFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AK
+	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j8yCJUUUUU=
 
-On 12/20/23 5:28 PM, Kuniyuki Iwashima wrote:
-> This patch adds a new kfunc available at TC hook to support arbitrary
-> SYN Cookie.
-> 
-> The basic usage is as follows:
-> 
->      struct bpf_tcp_req_attrs attrs = {
->          .mss = mss,
->          .wscale_ok = wscale_ok,
->          .rcv_wscale = rcv_wscale, /* Server's WScale < 15 */
->          .snd_wscale = snd_wscale, /* Client's WScale < 15 */
->          .tstamp_ok = tstamp_ok,
->          .rcv_tsval = tsval,
->          .rcv_tsecr = tsecr, /* Server's Initial TSval */
->          .usec_ts_ok = usec_ts_ok,
->          .sack_ok = sack_ok,
->          .ecn_ok = ecn_ok,
->      }
-> 
->      skc = bpf_skc_lookup_tcp(...);
->      sk = (struct sock *)bpf_skc_to_tcp_sock(skc);
->      bpf_sk_assign_tcp_reqsk(skb, sk, attrs, sizeof(attrs));
->      bpf_sk_release(skc);
-> 
-> bpf_sk_assign_tcp_reqsk() takes skb, a listener sk, and struct
-> bpf_tcp_req_attrs and allocates reqsk and configures it.  Then,
-> bpf_sk_assign_tcp_reqsk() links reqsk with skb and the listener.
-> 
-> The notable thing here is that we do not hold refcnt for both reqsk
-> and listener.  To differentiate that, we mark reqsk->syncookie, which
-> is only used in TX for now.  So, if reqsk->syncookie is 1 in RX, it
-> means that the reqsk is allocated by kfunc.
-> 
-> When skb is freed, sock_pfree() checks if reqsk->syncookie is 1,
-> and in that case, we set NULL to reqsk->rsk_listener before calling
-> reqsk_free() as reqsk does not hold a refcnt of the listener.
-> 
-> When the TCP stack looks up a socket from the skb, we steal the
-> listener from the reqsk in skb_steal_sock() and create a full sk
-> in cookie_v[46]_check().
-> 
-> The refcnt of reqsk will finally be set to 1 in tcp_get_cookie_sock()
-> after creating a full sk.
-> 
-> Note that we can extend struct bpf_tcp_req_attrs in the future when
-> we add a new attribute that is determined in 3WHS.
+If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
+exist 6 failed tests.
 
-Notice a few final details.
+  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
+  [root@linux bpf]# ./test_verifier | grep FAIL
+  #106/p inline simple bpf_loop call FAIL
+  #107/p don't inline bpf_loop call, flags non-zero FAIL
+  #108/p don't inline bpf_loop call, callback non-constant FAIL
+  #109/p bpf_loop_inline and a dead func FAIL
+  #110/p bpf_loop_inline stack locations for loop vars FAIL
+  #111/p inline bpf_loop call in a big program FAIL
+  Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
 
-> 
-> Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-> ---
->   include/net/tcp.h |  13 ++++++
->   net/core/filter.c | 113 +++++++++++++++++++++++++++++++++++++++++++++-
->   net/core/sock.c   |  14 +++++-
->   3 files changed, 136 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/net/tcp.h b/include/net/tcp.h
-> index a63916f41f77..20619df8819e 100644
-> --- a/include/net/tcp.h
-> +++ b/include/net/tcp.h
-> @@ -600,6 +600,19 @@ static inline bool cookie_ecn_ok(const struct net *net, const struct dst_entry *
->   }
->   
->   #if IS_ENABLED(CONFIG_BPF)
-> +struct bpf_tcp_req_attrs {
-> +	u32 rcv_tsval;
-> +	u32 rcv_tsecr;
-> +	u16 mss;
-> +	u8 rcv_wscale;
-> +	u8 snd_wscale;
-> +	u8 ecn_ok;
-> +	u8 wscale_ok;
-> +	u8 sack_ok;
-> +	u8 tstamp_ok;
-> +	u8 usec_ts_ok;
+The test log shows that callbacks are not allowed in non-JITed programs,
+interpreter doesn't support them yet, thus these tests should be skipped
+if jit is disabled, copy some check functions from the other places under
+tools directory, and then handle this case in do_test_single().
 
-Add "u8 reserved[3];" for the 3 bytes tail padding.
+With this patch:
 
-> +};
-> +
->   static inline bool cookie_bpf_ok(struct sk_buff *skb)
->   {
->   	return skb->sk;
-> diff --git a/net/core/filter.c b/net/core/filter.c
-> index 24061f29c9dd..961c2d30bd72 100644
-> --- a/net/core/filter.c
-> +++ b/net/core/filter.c
-> @@ -11837,6 +11837,105 @@ __bpf_kfunc int bpf_sock_addr_set_sun_path(struct bpf_sock_addr_kern *sa_kern,
->   
->   	return 0;
->   }
-> +
-> +__bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct sk_buff *skb, struct sock *sk,
-> +					struct bpf_tcp_req_attrs *attrs, int attrs__sz)
-> +{
-> +#if IS_ENABLED(CONFIG_SYN_COOKIES)
-> +	const struct request_sock_ops *ops;
-> +	struct inet_request_sock *ireq;
-> +	struct tcp_request_sock *treq;
-> +	struct request_sock *req;
-> +	struct net *net;
-> +	__u16 min_mss;
-> +	u32 tsoff = 0;
-> +
-> +	if (attrs__sz != sizeof(*attrs))
-> +		return -EINVAL;
-> +
-> +	if (!sk)
-> +		return -EINVAL;
-> +
-> +	if (!skb_at_tc_ingress(skb))
-> +		return -EINVAL;
-> +
-> +	net = dev_net(skb->dev);
-> +	if (net != sock_net(sk))
-> +		return -ENETUNREACH;
-> +
-> +	switch (skb->protocol) {
-> +	case htons(ETH_P_IP):
-> +		ops = &tcp_request_sock_ops;
-> +		min_mss = 536;
-> +		break;
-> +#if IS_BUILTIN(CONFIG_IPV6)
-> +	case htons(ETH_P_IPV6):
-> +		ops = &tcp6_request_sock_ops;
-> +		min_mss = IPV6_MIN_MTU - 60;
-> +		break;
-> +#endif
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (sk->sk_type != SOCK_STREAM || sk->sk_state != TCP_LISTEN ||
-> +	    sk_is_mptcp(sk))
-> +		return -EINVAL;
-> +
+  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
+  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
+  [root@linux bpf]# ./test_verifier | grep FAIL
+  Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
 
-and check for:
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+v2: Remove inline keyword in C files, sorry for that.
 
-	if (attrs->reserved[0] || attrs->reserved[1] || attrs->reserved[2])
-		return -EINVAL;
+Thanks very much for the feedbacks from Eduard, John, Jiri and Daniel.
+I do not move loop inlining tests to test_progs, just copy some check
+functions and do the minimal changes in test_verifier.
 
-It will be safer if it needs to extend "struct bpf_tcp_req_attrs". There is an 
-existing example in __bpf_nf_ct_lookup() when checking the 'struct bpf_ct_opts 
-*opts'.
+ tools/testing/selftests/bpf/test_verifier.c | 39 +++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
+index f36e41435be7..d4e600e3caec 100644
+--- a/tools/testing/selftests/bpf/test_verifier.c
++++ b/tools/testing/selftests/bpf/test_verifier.c
+@@ -21,6 +21,7 @@
+ #include <sched.h>
+ #include <limits.h>
+ #include <assert.h>
++#include <fcntl.h>
+ 
+ #include <linux/unistd.h>
+ #include <linux/filter.h>
+@@ -1397,6 +1398,34 @@ static bool is_skip_insn(struct bpf_insn *insn)
+ 	return memcmp(insn, &skip_insn, sizeof(skip_insn)) == 0;
+ }
+ 
++static bool is_ldimm64_insn(struct bpf_insn *insn)
++{
++	return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
++}
++
++static bool insn_is_pseudo_func(struct bpf_insn *insn)
++{
++	return is_ldimm64_insn(insn) && insn->src_reg == BPF_PSEUDO_FUNC;
++}
++
++static bool is_jit_enabled(void)
++{
++	const char *jit_sysctl = "/proc/sys/net/core/bpf_jit_enable";
++	bool enabled = false;
++	int sysctl_fd;
++
++	sysctl_fd = open(jit_sysctl, 0, O_RDONLY);
++	if (sysctl_fd != -1) {
++		char tmpc;
++
++		if (read(sysctl_fd, &tmpc, sizeof(tmpc)) == 1)
++			enabled = (tmpc != '0');
++		close(sysctl_fd);
++	}
++
++	return enabled;
++}
++
+ static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
+ {
+ 	int i;
+@@ -1662,6 +1691,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+ 		goto close_fds;
+ 	}
+ 
++	if (!is_jit_enabled()) {
++		for (i = 0; i < prog_len; i++, prog++) {
++			if (insn_is_pseudo_func(prog)) {
++				printf("SKIP (callbacks are not allowed in non-JITed programs)\n");
++				skips++;
++				goto close_fds;
++			}
++		}
++	}
++
+ 	alignment_prevented_execution = 0;
+ 
+ 	if (expected_ret == ACCEPT || expected_ret == VERBOSE_ACCEPT) {
+-- 
+2.42.0
 
 
