@@ -1,124 +1,158 @@
-Return-Path: <bpf+bounces-19413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13DF082BB1E
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 07:02:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DA2782BB33
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 07:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A1761C23C41
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 06:02:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BB441F26832
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 06:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD9855B5DE;
-	Fri, 12 Jan 2024 06:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208A65C8EA;
+	Fri, 12 Jan 2024 06:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JHpsD+8d"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eGugH5Wn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C305B5BA
-	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 06:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-336755f1688so5080644f8f.0
-        for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 22:02:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705039346; x=1705644146; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NlM7X7t0RHEYSLIvi0to7M5Zz9I1Z4MUk5uJ4p3aSNI=;
-        b=JHpsD+8d3SvQhMGbpXbpeWRp4NLtpnBSyHDYC7I6g0z4Zg8/Z7muDerYz1IHnPhROC
-         YEcaFPQ6uV/SKrl+6my9LZK2/LABO90y1n1aIaDKcw17sLI/8lx1yR7MgMn/xl30lstW
-         qxUPXL7ugogc5/KCKqn5qgJTCVQ8GgHsq5SoBwykANVwm/1h8ubecu26wQY1rqMz+eKn
-         r7IfZTaG6VSrmzI9NSezF9xgvfSfKTnZfD+vQv8X7k0CjTjV3YFLiTVNTCN1QQcypl8e
-         fwp4dcSySCRmeEVVOCST4rL/uC6/Rcfb+Vdy9Fq3CUjDpP/i0zRC/FY94VvUo0cZY8MP
-         MveA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705039346; x=1705644146;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NlM7X7t0RHEYSLIvi0to7M5Zz9I1Z4MUk5uJ4p3aSNI=;
-        b=mFrOyOl2n8sqUpJYW8r0pZ4mwWjkq8O5qWwA8vkZotP0870UgwwYzCzdlviGuzyNRy
-         z4MdwxMyP/kVq7g3yc4NWvnVL599pt0uZro9vmttqUWtBh3tuhVb0Y8Wg7Uy0EQkN+d1
-         w/g/oZg6uVOfi6ddHE1lc7htcJ9NAnpd2fv/rDFmNa4eQErm+X5dajdoWYNLV4vylW94
-         KPfg3S3igwmZbY2RpaV5OO4Yn0ShsPmj31J/k2U9DmPgV/PNA1oW2ze7epdzxn7mSSoe
-         67gj3vvR9lGNvZyTqqA344Al9WhPfxFSi03IXFoZNZXCFh9gpgbwK/8nMqrU52hHSjDo
-         x4Hw==
-X-Gm-Message-State: AOJu0YxZw5lJjnOPYXXOu2a9OnIF4TriEWF/c/zm4LudgwD4ZObHHF4u
-	Ze2QknJy4WeFYMA1L9QIbBmMtZcgm2pXS/6VQ7I=
-X-Google-Smtp-Source: AGHT+IGZM4od0Pp1LPFokadNbS61ttn8yDjt3WcAr5w1pnbVZ3GIj3nkvMooMalUT4rTxJnk/jexdTVWq+8YVPA9eVU=
-X-Received: by 2002:adf:fe0d:0:b0:336:fad1:ff49 with SMTP id
- n13-20020adffe0d000000b00336fad1ff49mr387479wrr.86.1705039345923; Thu, 11 Jan
- 2024 22:02:25 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F1871B28E
+	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 06:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a413b206-df50-4445-a4de-494339ea1ce6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705040411;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F3CefQsNxnc4oyPR3RnCTgbsveJDAg5y8po7bcHYoXE=;
+	b=eGugH5WneMC3LUSY8pnvckG0sQRCSCeTE8Pl/bt2dIyyMk5x/VenzZHMHbycivuvE+S8jt
+	odwR6ppAtTpHHeXYzc1AB13H17MK4tejkjDd3JixZx7D4mMF1BWtkbHKYG+mCjTW7PAaD0
+	4SB4xhj6/PSTKQ6KnEpd2GFYMFyUqUs=
+Date: Thu, 11 Jan 2024 22:20:06 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240112041649.2891872-1-yonghong.song@linux.dev>
- <CAADnVQLH66gFbyqekSEbpzc+CRYkbMxcCAtBvMcCJo+8tfauqg@mail.gmail.com> <2c6fb29f-0256-4dec-a7d4-ce7bc24f091b@linux.dev>
-In-Reply-To: <2c6fb29f-0256-4dec-a7d4-ce7bc24f091b@linux.dev>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 11 Jan 2024 22:02:14 -0800
-Message-ID: <CAADnVQJD_jWCZQ3iMbaNNanagnM2AKDY3VL227D5O2oDVO4TWw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix a 'unused function' compilation error
-To: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v7 bpf-next 0/6] bpf: tcp: Support arbitrary SYN Cookie at
+ TC.
+Content-Language: en-US
+To: Kuniyuki Iwashima <kuniyu@amazon.com>
+Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Yonghong Song <yonghong.song@linux.dev>
+References: <20231221012806.37137-1-kuniyu@amazon.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20231221012806.37137-1-kuniyu@amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 11, 2024 at 9:29=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
-dev> wrote:
->
->
-> On 1/11/24 8:59 PM, Alexei Starovoitov wrote:
-> > On Thu, Jan 11, 2024 at 8:17=E2=80=AFPM Yonghong Song <yonghong.song@li=
-nux.dev> wrote:
-> >> Building the kernel with latest llvm18, I hit the following error:
-> >>
-> >>   /home/yhs/work/bpf-next/kernel/bpf/verifier.c:4383:13: error: unused=
- function '__is_scalar_unbounded' [-Werror,-Wunused-function]
-> >>    4383 | static bool __is_scalar_unbounded(struct bpf_reg_state *reg)
-> >>         |             ^~~~~~~~~~~~~~~~~~~~~
-> >>   1 error generated.
-> >>
-> >> Patches [1] and [2] are in the same patch set. Patch [1] removed
-> >> the usage of __is_scalar_unbounded(), and patch [2] re-introduced
-> >> the usage of the function. Currently patch [1] is merged into
-> >> bpf-next while patch [2] does not, hence the above compilation
-> >> error is triggered.
-> >>
-> >> To fix the compilation failure, let us temporarily make
-> >> __is_scalar_unbounded() not accessible through macro '#if 0'.
-> >> It can be re-introduced later when [2] is ready to merge.
-> >>
-> >>    [1] https://lore.kernel.org/bpf/20240108205209.838365-11-maxtram95@=
-gmail.com/
-> >>    [2] https://lore.kernel.org/bpf/20240108205209.838365-15-maxtram95@=
-gmail.com/
-> > Ouch. Sorry. This interaction between patches was unexpected.
-> > Instead of this particular if 0 patch, is there a way to amend pushed
-> > patches to avoid this issue?
->
-> Another option is that in merged patch [1] removing the function __is_sca=
-lar_unbounded().
-> And the function can be re-introduced later if needed.
+On 12/20/23 5:28 PM, Kuniyuki Iwashima wrote:
+> Under SYN Flood, the TCP stack generates SYN Cookie to remain stateless
+> for the connection request until a valid ACK is responded to the SYN+ACK.
+> 
+> The cookie contains two kinds of host-specific bits, a timestamp and
+> secrets, so only can it be validated by the generator.  It means SYN
+> Cookie consumes network resources between the client and the server;
+> intermediate nodes must remember which nodes to route ACK for the cookie.
+> 
+> SYN Proxy reduces such unwanted resource allocation by handling 3WHS at
+> the edge network.  After SYN Proxy completes 3WHS, it forwards SYN to the
+> backend server and completes another 3WHS.  However, since the server's
+> ISN differs from the cookie, the proxy must manage the ISN mappings and
+> fix up SEQ/ACK numbers in every packet for each connection.  If a proxy
+> node goes down, all the connections through it are terminated.  Keeping
+> a state at proxy is painful from that perspective.
+> 
+> At AWS, we use a dirty hack to build truly stateless SYN Proxy at scale.
+> Our SYN Proxy consists of the front proxy layer and the backend kernel
+> module.  (See slides of LPC2023 [0], p37 - p48)
+> 
+> The cookie that SYN Proxy generates differs from the kernel's cookie in
+> that it contains a secret (called rolling salt) (i) shared by all the proxy
+> nodes so that any node can validate ACK and (ii) updated periodically so
+> that old cookies cannot be validated and we need not encode a timestamp for
+> the cookie.  Also, ISN contains WScale, SACK, and ECN, not in TS val.  This
+> is not to sacrifice any connection quality, where some customers turn off
+> TCP timestamps option due to retro CVE.
+> 
+> After 3WHS, the proxy restores SYN, encapsulates ACK into SYN, and forward
+> the TCP-in-TCP packet to the backend server.  Our kernel module works at
+> Netfilter input/output hooks and first feeds SYN to the TCP stack to
+> initiate 3WHS.  When the module is triggered for SYN+ACK, it looks up the
+> corresponding request socket and overwrites tcp_rsk(req)->snt_isn with the
+> proxy's cookie.  Then, the module can complete 3WHS with the original ACK
+> as is.
+> 
+> This way, our SYN Proxy does not manage the ISN mappings nor wait for
+> SYN+ACK from the backend thus can remain stateless.  It's working very
+> well for high-bandwidth services like multiple Tbps, but we are looking
+> for a way to drop the dirty hack and further optimise the sequences.
+> 
+> If we could validate an arbitrary SYN Cookie on the backend server with
+> BPF, the proxy would need not restore SYN nor pass it.  After validating
+> ACK, the proxy node just needs to forward it, and then the server can do
+> the lightweight validation (e.g. check if ACK came from proxy nodes, etc)
+> and create a connection from the ACK.
+> 
+> This series allows us to create a full sk from an arbitrary SYN Cookie,
+> which is done in 3 steps.
+> 
+>    1) At tc, BPF prog calls a new kfunc to create a reqsk and configure
+>       it based on the argument populated from SYN Cookie.  The reqsk has
+>       its listener as req->rsk_listener and is passed to the TCP stack as
+>       skb->sk.
+> 
+>    2) During TCP socket lookup for the skb, skb_steal_sock() returns a
+>       listener in the reuseport group that inet_reqsk(skb->sk)->rsk_listener
+>       belongs to.
+> 
+>    3) In cookie_v[46]_check(), the reqsk (skb->sk) is fully initialised and
+>       a full sk is created.
+> 
+> The kfunc usage is as follows:
+> 
+>      struct bpf_tcp_req_attrs attrs = {
+>          .mss = mss,
+>          .wscale_ok = wscale_ok,
+>          .rcv_wscale = rcv_wscale, /* Server's WScale < 15 */
+>          .snd_wscale = snd_wscale, /* Client's WScale < 15 */
+>          .tstamp_ok = tstamp_ok,
+>          .rcv_tsval = tsval,
+>          .rcv_tsecr = tsecr, /* Server's Initial TSval */
+>          .usec_ts_ok = usec_ts_ok,
+>          .sack_ok = sack_ok,
+>          .ecn_ok = ecn_ok,
+>      }
+> 
+>      skc = bpf_skc_lookup_tcp(...);
+>      sk = (struct sock *)bpf_skc_to_tcp_sock(skc);
+>      bpf_sk_assign_tcp_reqsk(skb, sk, attrs, sizeof(attrs));
+>      bpf_sk_release(skc);
+> 
+> [0]: https://lpc.events/event/17/contributions/1645/attachments/1350/2701/SYN_Proxy_at_Scale_with_BPF.pdf
+> 
+> 
+> Changes:
+>    v7:
+>      * Patch 5 & 6
+>        * Drop MPTCP support
 
-Right. That will work, but it's not a tiny function.
-So it's a code churn to remove it in a commit just to add it back
-a few commits later.
+I think Yonghong's (thanks!) cpuv4 patch 
+(https://lore.kernel.org/bpf/20240110051348.2737007-1-yonghong.song@linux.dev/) 
+has addressed the issue that the selftest in patch 6 has encountered.
 
-To fix the build I dropped the last two commits,
-but the issue remains.
-If they're resend in the same shape later they will
-re-introduce a bisect issue. Hence the question,
-how we can tweak the patch "bpf: Track spilled unbounded scalars"
-so it doesn't leave behind an unused static function.
+There are some minor comments in v7. Please respin v8 when the cpuv4 patch has 
+concluded so that it can kick off the CI also.
+
 
