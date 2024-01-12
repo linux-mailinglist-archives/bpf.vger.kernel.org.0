@@ -1,145 +1,119 @@
-Return-Path: <bpf+bounces-19405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C45182B9BD
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 03:52:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 675A582B9CF
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 04:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 196961F23EF9
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 02:52:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45B191C236FB
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 03:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4CC9136B;
-	Fri, 12 Jan 2024 02:52:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0340A185A;
+	Fri, 12 Jan 2024 03:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EimyvKrb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="my31i/Z4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF2C111A
-	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 02:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705027959; x=1736563959;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gULOz4wSNw6VRb753Cs6Pq8UhUr772nmVhTnaD2EZIc=;
-  b=EimyvKrbAvE0F9hB+Jf1dmYXvI5nzVesr4sLo/iAQm8L9KnIOeSsFDNT
-   q98awfafVaVflCUpBh8DjZIxx7/8vWJCwavAsE2EOe0Jn3Kq5RPhtXr7I
-   c7OP5omkkq95GCGDx1V7AkJj99A/9kkxmX/JHC1v1TvZ+1Edxpq7qrtu+
-   Rkuu78fRH+4GILEhZd5qW4WbiJfUsO9gK9ezRYFSvjUw6SMFDVvsjDi0r
-   m2Vxy3uGxuENh3SlAaXIOaiz34CuccnX5450oqr6/WVfZVl/pk0Mvoo7w
-   cSIGPfsmfeKaKzqYjZvBMfNwo9ju2QZ9/rfB2Mmq0jSHqBudeMW4XHZmV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10950"; a="6433971"
-X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
-   d="scan'208";a="6433971"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2024 18:52:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,188,1695711600"; 
-   d="scan'208";a="31235980"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 11 Jan 2024 18:52:36 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rO7er-0008yq-1G;
-	Fri, 12 Jan 2024 02:52:33 +0000
-Date: Fri, 12 Jan 2024 10:52:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Quentin Monnet <quentin@isovalent.com>
-Cc: oe-kbuild-all@lists.linux.dev, Jiri Olsa <jolsa@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH] bpftool: Add missing libgen.h for basename()
-Message-ID: <202401121009.hCPmwMe6-lkp@intel.com>
-References: <ZZYgMYmb_qE94PUB@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5A3136B;
+	Fri, 12 Jan 2024 03:00:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E8E72C433C7;
+	Fri, 12 Jan 2024 03:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705028447;
+	bh=zXeYoAgg1Gny/6BTNUuxDse5agMCghbKe4l+4jpUdX0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=my31i/Z4TsqIpo+UxhKr4Mar/ykDjndLkCJNNFzc+3f9fAGZer0iCEY87ygReLLWb
+	 RH9KtNbiZcUJwxpc5ckkSxJXe31YUPLSj9KPhgNwV0jTirHUlFo6jJ6Jqt8jykdciH
+	 lta4Chs7UW5bT7BmvoB9z34BkQSwPk2CX2hAvvEy1ecalGfBArro7BuhixKNYsP4uj
+	 a5k7tLeYTYNLi2TBZigD8IbA9UPbQzd7PqCT3QDGYuO4DG4/t/tAMtgUv0AcOnPS9R
+	 sI9pBPJ5EP76OBudEQMzpHuGCuEHboTKBdrD6kzvKG310b5vnRfyLAcquBKdyvlJx+
+	 Iu5qK1OYSkC2g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D0605D8C96E;
+	Fri, 12 Jan 2024 03:00:46 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZZYgMYmb_qE94PUB@kernel.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v2 00/15] Improvements for tracking scalars in the
+ BPF verifier
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170502844684.24601.17326225284234857035.git-patchwork-notify@kernel.org>
+Date: Fri, 12 Jan 2024 03:00:46 +0000
+References: <20240108205209.838365-1-maxtram95@gmail.com>
+In-Reply-To: <20240108205209.838365-1-maxtram95@gmail.com>
+To: Maxim Mikityanskiy <maxtram95@gmail.com>
+Cc: eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, shung-hsi.yu@suse.com, john.fastabend@gmail.com,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
+ mykolal@fb.com, shuah@kernel.org, davem@davemloft.net, kuba@kernel.org,
+ hawk@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ netdev@vger.kernel.org, maxim@isovalent.com
 
-Hi Arnaldo,
+Hello:
 
-kernel test robot noticed the following build warnings:
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-[auto build test WARNING on bpf-next/master]
-[also build test WARNING on bpf/master linus/master v6.7 next-20240111]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Mon,  8 Jan 2024 22:51:54 +0200 you wrote:
+> From: Maxim Mikityanskiy <maxim@isovalent.com>
+> 
+> The goal of this series is to extend the verifier's capabilities of
+> tracking scalars when they are spilled to stack, especially when the
+> spill or fill is narrowing. It also contains a fix by Eduard for
+> infinite loop detection and a state pruning optimization by Eduard that
+> compensates for a verification complexity regression introduced by
+> tracking unbounded scalars. These improvements reduce the surface of
+> false rejections that I saw while working on Cilium codebase.
+> 
+> [...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Arnaldo-Carvalho-de-Melo/bpftool-Add-missing-libgen-h-for-basename/20240104-110542
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/ZZYgMYmb_qE94PUB%40kernel.org
-patch subject: [PATCH] bpftool: Add missing libgen.h for basename()
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240112/202401121009.hCPmwMe6-lkp@intel.com/reproduce)
+Here is the summary with links:
+  - [bpf-next,v2,01/15] selftests/bpf: Fix the u64_offset_to_skb_data test
+    https://git.kernel.org/bpf/bpf-next/c/02fb00d34de1
+  - [bpf-next,v2,02/15] bpf: make infinite loop detection in is_state_visited() exact
+    https://git.kernel.org/bpf/bpf-next/c/3a96c705f48a
+  - [bpf-next,v2,03/15] selftests/bpf: check if imprecise stack spills confuse infinite loop detection
+    https://git.kernel.org/bpf/bpf-next/c/723909ae6496
+  - [bpf-next,v2,04/15] bpf: Make bpf_for_each_spilled_reg consider narrow spills
+    https://git.kernel.org/bpf/bpf-next/c/0e00a9551c61
+  - [bpf-next,v2,05/15] selftests/bpf: Add a test case for 32-bit spill tracking
+    https://git.kernel.org/bpf/bpf-next/c/221dffec93e8
+  - [bpf-next,v2,06/15] bpf: Add the assign_scalar_id_before_mov function
+    https://git.kernel.org/bpf/bpf-next/c/85b6e9d75c8e
+  - [bpf-next,v2,07/15] bpf: Add the get_reg_width function
+    https://git.kernel.org/bpf/bpf-next/c/b08973e4d9c4
+  - [bpf-next,v2,08/15] bpf: Assign ID to scalars on spill
+    https://git.kernel.org/bpf/bpf-next/c/26b560765e67
+  - [bpf-next,v2,09/15] selftests/bpf: Test assigning ID to scalars on spill
+    https://git.kernel.org/bpf/bpf-next/c/5a052eb509e9
+  - [bpf-next,v2,10/15] bpf: Track spilled unbounded scalars
+    https://git.kernel.org/bpf/bpf-next/c/53ac20c9e0dd
+  - [bpf-next,v2,11/15] selftests/bpf: Test tracking spilled unbounded scalars
+    https://git.kernel.org/bpf/bpf-next/c/9ba80a06cabb
+  - [bpf-next,v2,12/15] bpf: Preserve boundaries and track scalars on narrowing fill
+    (no matching commit)
+  - [bpf-next,v2,13/15] selftests/bpf: Add test cases for narrowing fill
+    (no matching commit)
+  - [bpf-next,v2,14/15] bpf: Optimize state pruning for spilled scalars
+    (no matching commit)
+  - [bpf-next,v2,15/15] selftests/bpf: states pruning checks for scalar vs STACK_{MISC,ZERO}
+    (no matching commit)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202401121009.hCPmwMe6-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   Makefile.config:1153: libpfm4 not found, disables libpfm4 support. Please install libpfm4-dev
-     PERF_VERSION = 6.7.rc6.ge6bdf4fd535b
-   gen.c: In function 'get_obj_name':
->> gen.c:61:32: warning: passing argument 1 of '__xpg_basename' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-      61 |         strncpy(name, basename(file), MAX_OBJ_NAME_LEN - 1);
-         |                                ^~~~
-   In file included from gen.c:10:
-   /usr/include/libgen.h:34:36: note: expected 'char *' but argument is of type 'const char *'
-      34 | extern char *__xpg_basename (char *__path) __THROW;
-         |                              ~~~~~~^~~~~~
---
-   gen.c: In function 'get_obj_name':
->> gen.c:61:32: warning: passing argument 1 of '__xpg_basename' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-      61 |         strncpy(name, basename(file), MAX_OBJ_NAME_LEN - 1);
-         |                                ^~~~
-   In file included from gen.c:10:
-   /usr/include/libgen.h:34:36: note: expected 'char *' but argument is of type 'const char *'
-      34 | extern char *__xpg_basename (char *__path) __THROW;
-         |                              ~~~~~~^~~~~~
-   gen.c: In function 'get_obj_name':
->> gen.c:61:32: warning: passing argument 1 of '__xpg_basename' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-      61 |         strncpy(name, basename(file), MAX_OBJ_NAME_LEN - 1);
-         |                                ^~~~
-   In file included from gen.c:10:
-   /usr/include/libgen.h:34:36: note: expected 'char *' but argument is of type 'const char *'
-      34 | extern char *__xpg_basename (char *__path) __THROW;
-         |                              ~~~~~~^~~~~~
-   gen.c: In function 'get_obj_name':
->> gen.c:61:32: warning: passing argument 1 of '__xpg_basename' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-      61 |         strncpy(name, basename(file), MAX_OBJ_NAME_LEN - 1);
-         |                                ^~~~
-   In file included from gen.c:10:
-   /usr/include/libgen.h:34:36: note: expected 'char *' but argument is of type 'const char *'
-      34 | extern char *__xpg_basename (char *__path) __THROW;
-         |                              ~~~~~~^~~~~~
---
-   gen.c: In function 'get_obj_name':
->> gen.c:61:32: warning: passing argument 1 of '__xpg_basename' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-      61 |         strncpy(name, basename(file), MAX_OBJ_NAME_LEN - 1);
-         |                                ^~~~
-   In file included from gen.c:10:
-   /usr/include/libgen.h:34:36: note: expected 'char *' but argument is of type 'const char *'
-      34 | extern char *__xpg_basename (char *__path) __THROW;
-         |                              ~~~~~~^~~~~~
-
+You are awesome, thank you!
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
