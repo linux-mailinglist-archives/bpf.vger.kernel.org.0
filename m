@@ -1,119 +1,99 @@
-Return-Path: <bpf+bounces-19406-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19407-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 675A582B9CF
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 04:00:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FEE282BA49
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 05:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45B191C236FB
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 03:00:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 017841F26381
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 04:17:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0340A185A;
-	Fri, 12 Jan 2024 03:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="my31i/Z4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DAF22090;
+	Fri, 12 Jan 2024 04:17:08 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5A3136B;
-	Fri, 12 Jan 2024 03:00:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E8E72C433C7;
-	Fri, 12 Jan 2024 03:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705028447;
-	bh=zXeYoAgg1Gny/6BTNUuxDse5agMCghbKe4l+4jpUdX0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=my31i/Z4TsqIpo+UxhKr4Mar/ykDjndLkCJNNFzc+3f9fAGZer0iCEY87ygReLLWb
-	 RH9KtNbiZcUJwxpc5ckkSxJXe31YUPLSj9KPhgNwV0jTirHUlFo6jJ6Jqt8jykdciH
-	 lta4Chs7UW5bT7BmvoB9z34BkQSwPk2CX2hAvvEy1ecalGfBArro7BuhixKNYsP4uj
-	 a5k7tLeYTYNLi2TBZigD8IbA9UPbQzd7PqCT3QDGYuO4DG4/t/tAMtgUv0AcOnPS9R
-	 sI9pBPJ5EP76OBudEQMzpHuGCuEHboTKBdrD6kzvKG310b5vnRfyLAcquBKdyvlJx+
-	 Iu5qK1OYSkC2g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D0605D8C96E;
-	Fri, 12 Jan 2024 03:00:46 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8421B281
+	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 04:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id A1B822C8FE519; Thu, 11 Jan 2024 20:16:49 -0800 (PST)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next] bpf: Fix a 'unused function' compilation error
+Date: Thu, 11 Jan 2024 20:16:49 -0800
+Message-Id: <20240112041649.2891872-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2 00/15] Improvements for tracking scalars in the
- BPF verifier
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170502844684.24601.17326225284234857035.git-patchwork-notify@kernel.org>
-Date: Fri, 12 Jan 2024 03:00:46 +0000
-References: <20240108205209.838365-1-maxtram95@gmail.com>
-In-Reply-To: <20240108205209.838365-1-maxtram95@gmail.com>
-To: Maxim Mikityanskiy <maxtram95@gmail.com>
-Cc: eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, shung-hsi.yu@suse.com, john.fastabend@gmail.com,
- martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
- kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- mykolal@fb.com, shuah@kernel.org, davem@davemloft.net, kuba@kernel.org,
- hawk@kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- netdev@vger.kernel.org, maxim@isovalent.com
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+Building the kernel with latest llvm18, I hit the following error:
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+ /home/yhs/work/bpf-next/kernel/bpf/verifier.c:4383:13: error: unused fun=
+ction '__is_scalar_unbounded' [-Werror,-Wunused-function]
+  4383 | static bool __is_scalar_unbounded(struct bpf_reg_state *reg)
+       |             ^~~~~~~~~~~~~~~~~~~~~
+ 1 error generated.
 
-On Mon,  8 Jan 2024 22:51:54 +0200 you wrote:
-> From: Maxim Mikityanskiy <maxim@isovalent.com>
-> 
-> The goal of this series is to extend the verifier's capabilities of
-> tracking scalars when they are spilled to stack, especially when the
-> spill or fill is narrowing. It also contains a fix by Eduard for
-> infinite loop detection and a state pruning optimization by Eduard that
-> compensates for a verification complexity regression introduced by
-> tracking unbounded scalars. These improvements reduce the surface of
-> false rejections that I saw while working on Cilium codebase.
-> 
-> [...]
+Patches [1] and [2] are in the same patch set. Patch [1] removed
+the usage of __is_scalar_unbounded(), and patch [2] re-introduced
+the usage of the function. Currently patch [1] is merged into
+bpf-next while patch [2] does not, hence the above compilation
+error is triggered.
 
-Here is the summary with links:
-  - [bpf-next,v2,01/15] selftests/bpf: Fix the u64_offset_to_skb_data test
-    https://git.kernel.org/bpf/bpf-next/c/02fb00d34de1
-  - [bpf-next,v2,02/15] bpf: make infinite loop detection in is_state_visited() exact
-    https://git.kernel.org/bpf/bpf-next/c/3a96c705f48a
-  - [bpf-next,v2,03/15] selftests/bpf: check if imprecise stack spills confuse infinite loop detection
-    https://git.kernel.org/bpf/bpf-next/c/723909ae6496
-  - [bpf-next,v2,04/15] bpf: Make bpf_for_each_spilled_reg consider narrow spills
-    https://git.kernel.org/bpf/bpf-next/c/0e00a9551c61
-  - [bpf-next,v2,05/15] selftests/bpf: Add a test case for 32-bit spill tracking
-    https://git.kernel.org/bpf/bpf-next/c/221dffec93e8
-  - [bpf-next,v2,06/15] bpf: Add the assign_scalar_id_before_mov function
-    https://git.kernel.org/bpf/bpf-next/c/85b6e9d75c8e
-  - [bpf-next,v2,07/15] bpf: Add the get_reg_width function
-    https://git.kernel.org/bpf/bpf-next/c/b08973e4d9c4
-  - [bpf-next,v2,08/15] bpf: Assign ID to scalars on spill
-    https://git.kernel.org/bpf/bpf-next/c/26b560765e67
-  - [bpf-next,v2,09/15] selftests/bpf: Test assigning ID to scalars on spill
-    https://git.kernel.org/bpf/bpf-next/c/5a052eb509e9
-  - [bpf-next,v2,10/15] bpf: Track spilled unbounded scalars
-    https://git.kernel.org/bpf/bpf-next/c/53ac20c9e0dd
-  - [bpf-next,v2,11/15] selftests/bpf: Test tracking spilled unbounded scalars
-    https://git.kernel.org/bpf/bpf-next/c/9ba80a06cabb
-  - [bpf-next,v2,12/15] bpf: Preserve boundaries and track scalars on narrowing fill
-    (no matching commit)
-  - [bpf-next,v2,13/15] selftests/bpf: Add test cases for narrowing fill
-    (no matching commit)
-  - [bpf-next,v2,14/15] bpf: Optimize state pruning for spilled scalars
-    (no matching commit)
-  - [bpf-next,v2,15/15] selftests/bpf: states pruning checks for scalar vs STACK_{MISC,ZERO}
-    (no matching commit)
+To fix the compilation failure, let us temporarily make
+__is_scalar_unbounded() not accessible through macro '#if 0'.
+It can be re-introduced later when [2] is ready to merge.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+  [1] https://lore.kernel.org/bpf/20240108205209.838365-11-maxtram95@gmai=
+l.com/
+  [2] https://lore.kernel.org/bpf/20240108205209.838365-15-maxtram95@gmai=
+l.com/
 
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ kernel/bpf/verifier.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 7ddad07ae928..e1f42082f32f 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -4380,6 +4380,7 @@ static u64 reg_const_value(struct bpf_reg_state *re=
+g, bool subreg32)
+ 	return subreg32 ? tnum_subreg(reg->var_off).value : reg->var_off.value;
+ }
+=20
++#if 0
+ static bool __is_scalar_unbounded(struct bpf_reg_state *reg)
+ {
+ 	return tnum_is_unknown(reg->var_off) &&
+@@ -4388,6 +4389,7 @@ static bool __is_scalar_unbounded(struct bpf_reg_st=
+ate *reg)
+ 	       reg->s32_min_value =3D=3D S32_MIN && reg->s32_max_value =3D=3D S=
+32_MAX &&
+ 	       reg->u32_min_value =3D=3D 0 && reg->u32_max_value =3D=3D U32_MAX=
+;
+ }
++#endif
+=20
+ static bool __is_pointer_value(bool allow_ptr_leaks,
+ 			       const struct bpf_reg_state *reg)
+--=20
+2.34.1
 
 
