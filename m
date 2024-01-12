@@ -1,296 +1,267 @@
-Return-Path: <bpf+bounces-19416-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19417-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F54A82BC21
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 08:58:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D7D482BE27
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 11:11:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD5DC283462
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 07:58:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7AD41F21D64
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 10:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 418B05D8F1;
-	Fri, 12 Jan 2024 07:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 111D25D8FE;
+	Fri, 12 Jan 2024 10:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V0yYy0kr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CzhPqmYc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEFF4812;
-	Fri, 12 Jan 2024 07:58:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45B75C43394;
-	Fri, 12 Jan 2024 07:58:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C705C8FE;
+	Fri, 12 Jan 2024 10:10:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D885AC433C7;
+	Fri, 12 Jan 2024 10:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705046317;
-	bh=Uglla99ShZFkkZxMOw+1oo+SNUsVn5iSreLOyPhroTE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V0yYy0kr0A76VaCGj7yqY7nDzqXvfaO9Co/TJkUAVvHyLlocSL0r/TTZk7ji/vnnM
-	 qXvxBG+CkVOTSf6B5x9Y2wwyiPGNo3zbjlTRA3bE/rxQ4SPgdDudOo0mOnne8a8DIu
-	 UTsDGOExHq067/44ew38TbIcX1bSgkzDhW/HNnWaZDBieo1n0L1HOi6PXebyJcGHNf
-	 fSfWhniFb0+jiLWAnW+x6pTmEDJhQgj5CGyZILbSduuWg7oyrn8g9XRIQ2qaHTe5oV
-	 YdT3si4gAzQ1sOqDJ+eJa2T8G0ItogB2EHdH2ZBElSD6sdb5VyEBBsa17Hwp+X0d/V
-	 0g054ct6biFYQ==
-Date: Fri, 12 Jan 2024 08:58:32 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, paul@paul-moore.com, 
-	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 03/29] bpf: introduce BPF token object
-Message-ID: <20240112-unpraktisch-kuraufenthalt-4fef655deab2@brauner>
-References: <CAHk-=wgmjr4nhxGheec1OwuYRk02d0+quUAViVk1v+w=Kvg15w@mail.gmail.com>
- <CAEf4Bzb6jnJL98SLPJB7Vjxo_O33W8HjJuAsyP3+6xigZtsTkA@mail.gmail.com>
- <20240108-gasheizung-umstand-a36d89ed36b7@brauner>
- <CAEf4Bzb+7NzYs5ScggtgAJ6A5-oU5GymvdoEbpfNVOG-XmWZig@mail.gmail.com>
- <20240109-tausend-tropenhelm-2a9914326249@brauner>
- <CAEf4BzaAoXYb=qnj6rvDw8VewhvYNrs5oxe=q7VBe0jjWXivhg@mail.gmail.com>
- <20240110-nervt-monopol-6d307e2518f4@brauner>
- <CAEf4BzYOU5ZVqnTDTEmrHL-+tYY76kz4LO_0XauWibnhtzCFXg@mail.gmail.com>
- <20240111-amten-stiefel-043027f9520f@brauner>
- <CAEf4BzYcec97posh6N3LM8tJLsxrSLiFYq9csRWcy8=VnTJ23A@mail.gmail.com>
+	s=k20201202; t=1705054257;
+	bh=zMCldC3g0if4jocUa7hXngCNMXtp+UiFT5i/S3qyfxU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CzhPqmYcyijuC6OkxKcjAEV54/ThoBtq93+JD03SpasKNxKZyIdXCYGfzusHi/emr
+	 oVQhPe0WZyVlmL5yDFNSb0jlhHHxOKHwa+lx9XbgprRivq75UuS8Q90Zpk6XC8sZOW
+	 +OQDgC8bKjFaensf/VBlVYpTybZdnX7VLBK6UXA5Mwdf0jHxj7Fx1AYvxk2mvOTpxD
+	 NnlJMi2oOKl8i42Lf6JJYNgrQf56tFYfPA4mXMtlIFrZWWtxy87DiURkdMhEo6Q0rA
+	 XQQ1LSxdA3LD3no8kavQx6nufBptxd5PpyZVVAqTFj01GIV18trVEkEQ5T3Kt8pHJh
+	 0qofCsrSxNTSg==
+From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Florent Revest <revest@chromium.org>
+Cc: linux-trace-kernel@vger.kernel.org,
+	LKML <linux-kernel@vger.kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Guo Ren <guoren@kernel.org>
+Subject: [PATCH v6 00/36] tracing: fprobe: function_graph: Multi-function graph and fprobe on fgraph
+Date: Fri, 12 Jan 2024 19:10:50 +0900
+Message-Id: <170505424954.459169.10630626365737237288.stgit@devnote2>
+X-Mailer: git-send-email 2.34.1
+User-Agent: StGit/0.19
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzYcec97posh6N3LM8tJLsxrSLiFYq9csRWcy8=VnTJ23A@mail.gmail.com>
 
-On Thu, Jan 11, 2024 at 09:41:25AM -0800, Andrii Nakryiko wrote:
-> On Thu, Jan 11, 2024 at 2:38 AM Christian Brauner <brauner@kernel.org> wrote:
-> >
-> > > > The current check is inconsisent. It special-cases init_user_ns. The
-> > > > correct thing to do for what you're intending imho is:
-> > > >
-> > > > bool bpf_token_capable(const struct bpf_token *token, int cap)
-> > > > {
-> > > >         struct user_namespace *userns = &init_user_ns;
-> > > >
-> > > >         if (token)
-> > > >                 userns = token->userns;
-> > > >         if (ns_capable(userns, cap))
-> > > >                 return true;
-> > > >         return cap != CAP_SYS_ADMIN && ns_capable(userns, CAP_SYS_ADMIN))
-> > > >
-> > > > }
-> > >
-> > > Unfortunately the above becomes significantly more hairy when LSM
-> > > (security_bpf_token_capable) gets involved, while preserving the rule
-> > > "if token doesn't give rights, fall back to init userns checks".
-> >
-> > Why? Please explain your reasoning in detail.
-> 
-> Why which part? About LSM interaction making this much hairier? Then see below.
-> 
-> But if your "why?" is about "pretend no token, if token doesn't give
-> rights", then that's what I tried to explain in my last email(s). It
-> significantly alters (for the worse) user-space integration story
-> (providing a token can be a regression, so now it's not safe to
-> opportunistically try to create and use BPF token; on the other hand,
-> automatically retrying inside libbpf makes for confusing user
-> experience and inefficiencies). Please let me know which parts are not
-> clear.
-> 
-> >
-> > >
-> > > I'm happy to accommodate any implementation of bpf_token_capable() as
-> > > long as it behaves as discussed above and also satisfies Paul's
-> > > requirement that capability checks should happen before LSM checks.
-> > >
-> > > >
-> > > > Because any caller located in an ancestor user namespace of
-> > > > token->user_ns will be privileged wrt to the token's userns as long as
-> > > > they have that capability in their user namespace.
-> > >
-> > > And with `current_user_ns() == token->userns` check we won't be using
-> > > token->userns while the caller is in ancestor user namespace, we'll
-> > > use capable() check, which will succeed only in init user_ns, assuming
-> > > corresponding CAP_xxx is actually set.
-> >
-> > Why? This isn't how any of our ns_capable() logic works.
-> >
-> > This basically argues that anyone in an ancestor user namespace is not
-> > allowed to operate on any of their descendant child namespaces unless
-> > they are in the init_user_ns.
-> >
-> > But that's nonsense as I'm trying to tell you. Any process in an
-> > ancestor user namespace that is privileged over the child namespace can
-> > just setns() into it and then pass that bpf_token_capable() check by
-> > supplying the token.
-> >
-> > At this point just do it properly and allow callers that are privileged
-> > in the token user namespace to load bpf programs. It also means you get
-> > user namespace nesting done properly.
-> 
-> Ok, I see. This `current_user_ns() == token->userns` check prevents
-> this part of cap_capable() to ever be exercised:
-> 
->  if ((ns->parent == cred->user_ns) && uid_eq(ns->owner, cred->euid))
->     return 0;
-> 
-> Got it. I'm all for not adding any unnecessary restrictions.
-> 
-> >
-> > >
-> > > >
-> > > > For example, if the caller is in the init_user_ns and permissions
-> > > > for CAP_WHATEVER is checked for in token->user_ns and the caller has
-> > > > CAP_WHATEVER in init_user_ns then they also have it in all
-> > > > descendant user namespaces.
-> > >
-> > > Right, so if they didn't use a token they would still pass
-> > > capable(CAP_WHATEVER), right?
-> >
-> > Yes, I'm trying to accomodate your request but making it work
-> > consistently.
-> >
-> > >
-> > > >
-> > > > The original intention had been to align with what we require during
-> > > > token creation meaning that once a token has been created interacting
-> > > > with this token is specifically confined to caller's located in the
-> > > > token's user namespace.
-> > > >
-> > > > If that's not the case then it doesn't make sense to not allow
-> > > > permission checking based on regular capability semantics. IOW, why
-> > > > special case init_user_ns if you're breaking the confinement restriction
-> > > > anyway.
-> > >
-> > > I'm sorry, perhaps I'm dense, but with `current_user_ns() ==
-> > > token->userns` check I think we do fulfill the intention to not allow
-> > > using a token in a userns different from the one in which it was
-> > > created. If that condition isn't satisfied, the token is immediately
-> >
-> > My request originally was about never being able to interact with a
-> > token outside of that userns. This is different as you provide an escape
-> > hatch to init_user_ns. But if you need that and ignore the token then
-> > please do it properly. That's what I'm trying to tell you. See below.
-> 
-> Yes, I do need that. Thanks for providing the full code implementation
-> (including LSM), it's much easier this way to converge. Let's see
-> below.
-> 
-> >
-> > > ignored. So you can't use a token from another userns for anything,
-> > > it's just not there, effectively.
-> > >
-> > > And as I tried to explain above, I do think that ignoring the token
-> > > instead of erroring out early is what we want to provide good
-> > > user-space ecosystem integration of BPF token.
-> >
-> > There is no erroring out early in. It's:
-> >
-> > (1) Has a token been provided and is the caller capable wrt to the
-> >     namespace of the token? Any caller in an ancestor user namespace
-> >     that has the capability in that user namespace is capable wrt to
-> >     that token. That __includes__ a callers in the init_user_ns. IOW,
-> >     you don't need to fallback to any special checking for init_user_ns.
-> >     It is literally covered in the if (token) branch with the added
-> >     consistency that a process in an ancestor user namespace is
-> >     privileged wrt to that token as well.
-> >
-> > (2) No token has been provided. Then do what we always did and perform
-> >     the capability checks based on the initial user namespace.
-> >
-> > The only thing that you then still need is add that token_capable() hook
-> > in there:
-> >
-> > bool bpf_token_capable(const struct bpf_token *token, int cap)
-> > {
-> >         bool has_cap;
-> >         struct user_namespace *userns = &init_user_ns;
-> >
-> >         if (token)
-> >                 userns = token->userns;
-> >         if (ns_capable(userns, cap))
-> 
-> Here, we still need to check security_bpf_token_capable(token, cap)
-> result (and only if token != NULL). And if LSM returns < 0, then drop
-> the token and do the original init userns check.
-> 
-> And I just realized that my original implementation has the same
-> problem. In my current implementation if we have a token we will
-> terminate at LSM call, regardless if LSM allows or disallows the
-> token. But that's inconsistent behavior and shouldn't be like that.
-> 
-> I will add new tests that validate LSM interactions in the next revision.
-> 
-> >                 return true;
-> >         if (cap != CAP_SYS_ADMIN && ns_capable(userns, CAP_SYS_ADMIN))
-> >                 return token ? security_bpf_token_capable(token, cap) == 0 : true;
-> 
-> here as well, even if we have a token which passes ns_capable() check,
-> but LSM rejects this token, we still need to forget about the token
-> and do capable() checks in init userns.
-> 
-> >         return false;
-> > }
-> >
-> > Or write it however you like. I think this is way more consistent and
-> > gives you a more flexible permission model.
-> 
-> Yes, I like it, thanks. Taking into account fixed LSM interactions,
-> here's what I came up with. Yell if you can spot anything wrong (or
-> just hate the style). I did have a version without extra function,
-> just setting the token to NULL and "goto again" approach, but I think
-> it's way less readable and harder to follow. So this is my version
-> right now:
-> 
-> static bool bpf_ns_capable(struct user_namespace *ns, int cap)
-> {
->         return ns_capable(ns, cap) || (cap != CAP_SYS_ADMIN &&
-> ns_capable(ns, CAP_SYS_ADMIN));
-> }
-> 
-> static bool token_capable(const struct bpf_token *token, int cap)
-> {
->         struct user_namespace *userns;
-> 
->         userns = token ? token->userns : &init_user_ns;
->         if (!bpf_ns_capable(userns, cap))
->                 return false;
->         if (token && security_bpf_token_capable(token, cap) < 0)
->                 return false;
->         return true;
-> }
-> 
-> bool bpf_token_capable(const struct bpf_token *token, int cap)
-> {
->         /* BPF token allows ns_capable() level of capabilities, but if it
->          * doesn't grant required capabilities, ignore token and fallback to
->          * init userns-based checks
->          */
->         if (token && token_capable(token, cap))
->                 return true;
->         return token_capable(NULL, cap);
-> }
+Hi,
 
-My point is that the capable logic will walk upwards the user namespace
-hierarchy from the token->userns until the user namespace of the caller
-and terminate when it reached the init_user_ns.
+Here is the 6th version of the series to re-implement the fprobe on
+function-graph tracer. The previous version is;
 
-A caller is located in some namespace at the point where they call this
-function. They provided a token. The caller isn't capable in the
-namespace of the token so the function falls back to init_user_ns. Two
-interesting cases:
+https://lore.kernel.org/all/170290509018.220107.1347127510564358608.stgit@devnote2/
 
-(1) The caller wasn't in an ancestor userns of the token. If that's the
-    case then it follows that the caller also wasn't in the init_user_ns
-    because the init_user_ns is a descendant of all other user
-    namespaces. So falling back will fail.
+This version fixes use-after-unregister bug and arm64 stack unwinding
+bug [13/36], add an improvement for multiple interrupts during push
+operation[20/36], keep SAVE_REGS until BPF and fprobe_event using
+ftrace_regs[26/36], also reorder the patches[30/36][31/36] so that new
+fprobe can switch to SAVE_ARGS[32/36] safely.
+This series also temporarily adds a DIRECT_CALLS bugfix[1/36], which
+should be pushed separatedly as a stable bugfix.
 
-(2) The caller was in the same or an ancestor user namespace of the
-    token but didn't have the capability in that user namespace:
-    
-     (i) They were in a non-init_user_ns. Therefore they can't be
-         privileged in init_user_ns.
-    (ii) They were in init_user_ns. Therefore, they lacked privileges in
-         the init_user_ns.
-    
-In both cases your fallback will do nothing iiuc.
+There are some TODOs:
+ - Add s390x and loongarch support to fprobe (multiple fgraph).
+ - Fix to get the symbol address from ftrace entry address on arm64.
+   (This should be done in BPF trace event)
+ - Cleanup code, rename some terms(offset/index) and FGRAPH_TYPE_BITMAP
+   part should be merged to FGRAPH_TYPE_ARRAY patch.
+
+
+Overview
+--------
+This series does major 2 changes, enable multiple function-graphs on
+the ftrace (e.g. allow function-graph on sub instances) and rewrite the
+fprobe on this function-graph.
+
+The former changes had been sent from Steven Rostedt 4 years ago (*),
+which allows users to set different setting function-graph tracer (and
+other tracers based on function-graph) in each trace-instances at the
+same time.
+
+(*) https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
+
+The purpose of latter change are;
+
+ 1) Remove dependency of the rethook from fprobe so that we can reduce
+   the return hook code and shadow stack.
+
+ 2) Make 'ftrace_regs' the common trace interface for the function
+   boundary.
+
+1) Currently we have 2(or 3) different function return hook codes,
+ the function-graph tracer and rethook (and legacy kretprobe).
+ But since this  is redundant and needs double maintenance cost,
+ I would like to unify those. From the user's viewpoint, function-
+ graph tracer is very useful to grasp the execution path. For this
+ purpose, it is hard to use the rethook in the function-graph
+ tracer, but the opposite is possible. (Strictly speaking, kretprobe
+ can not use it because it requires 'pt_regs' for historical reasons.)
+
+2) Now the fprobe provides the 'pt_regs' for its handler, but that is
+ wrong for the function entry and exit. Moreover, depending on the
+ architecture, there is no way to accurately reproduce 'pt_regs'
+ outside of interrupt or exception handlers. This means fprobe should
+ not use 'pt_regs' because it does not use such exceptions.
+ (Conversely, kprobe should use 'pt_regs' because it is an abstract
+  interface of the software breakpoint exception.)
+
+This series changes fprobe to use function-graph tracer for tracing
+function entry and exit, instead of mixture of ftrace and rethook.
+Unlike the rethook which is a per-task list of system-wide allocated
+nodes, the function graph's ret_stack is a per-task shadow stack.
+Thus it does not need to set 'nr_maxactive' (which is the number of
+pre-allocated nodes).
+Also the handlers will get the 'ftrace_regs' instead of 'pt_regs'.
+Since eBPF mulit_kprobe/multi_kretprobe events still use 'pt_regs' as
+their register interface, this changes it to convert 'ftrace_regs' to
+'pt_regs'. Of course this conversion makes an incomplete 'pt_regs',
+so users must access only registers for function parameters or
+return value. 
+
+Design
+------
+Instead of using ftrace's function entry hook directly, the new fprobe
+is built on top of the function-graph's entry and return callbacks
+with 'ftrace_regs'.
+
+Since the fprobe requires access to 'ftrace_regs', the architecture
+must support CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS, which enables to
+call function-graph entry callback with 'ftrace_regs', and also
+CONFIG_HAVE_FUNCTION_GRAPH_FREGS, which passes the ftrace_regs to
+return_to_handler.
+
+All fprobes share a single function-graph ops (means shares a common
+ftrace filter) similar to the kprobe-on-ftrace. This needs another
+layer to find corresponding fprobe in the common function-graph
+callbacks, but has much better scalability, since the number of
+registered function-graph ops is limited.
+
+In the entry callback, the fprobe runs its entry_handler and saves the
+address of 'fprobe' on the function-graph's shadow stack as data. The
+return callback decodes the data to get the 'fprobe' address, and runs
+the exit_handler.
+
+The fprobe introduces two hash-tables, one is for entry callback which
+searches fprobes related to the given function address passed by entry
+callback. The other is for a return callback which checks if the given
+'fprobe' data structure pointer is still valid. Note that it is
+possible to unregister fprobe before the return callback runs. Thus
+the address validation must be done before using it in the return
+callback.
+
+This series can be applied against the v6.7 kernel.
+
+This series can also be found below branch.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-on-fgraph
+
+Thank you,
+
+---
+
+Masami Hiramatsu (Google) (21):
+      ftrace: Fix DIRECT_CALLS to use SAVE_REGS by default
+      tracing: Add a comment about ftrace_regs definition
+      tracing: Rename ftrace_regs_return_value to ftrace_regs_get_return_value
+      x86: tracing: Add ftrace_regs definition in the header
+      function_graph: Use a simple LRU for fgraph_array index number
+      function_graph: Improve push operation for several interrupts
+      function_graph: Add a new entry handler with parent_ip and ftrace_regs
+      function_graph: Add a new exit handler with parent_ip and ftrace_regs
+      x86/ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      arm64: ftrace: Enable HAVE_FUNCTION_GRAPH_FREGS
+      fprobe: Use ftrace_regs in fprobe entry handler
+      fprobe: Use ftrace_regs in fprobe exit handler
+      tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+      tracing: Add ftrace_fill_perf_regs() for perf event
+      tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+      bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+      fprobe: Rewrite fprobe on function-graph tracer
+      tracing/fprobe: Remove nr_maxactive from fprobe
+      selftests: ftrace: Remove obsolate maxactive syntax check
+      selftests/ftrace: Add a test case for repeating register/unregister fprobe
+      Documentation: probes: Update fprobe on function-graph tracer
+
+Steven Rostedt (VMware) (15):
+      function_graph: Convert ret_stack to a series of longs
+      fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
+      function_graph: Add an array structure that will allow multiple callbacks
+      function_graph: Allow multiple users to attach to function graph
+      function_graph: Remove logic around ftrace_graph_entry and return
+      ftrace/function_graph: Pass fgraph_ops to function graph callbacks
+      ftrace: Allow function_graph tracer to be enabled in instances
+      ftrace: Allow ftrace startup flags exist without dynamic ftrace
+      function_graph: Have the instances use their own ftrace_ops for filtering
+      function_graph: Add "task variables" per task for fgraph_ops
+      function_graph: Move set_graph_function tests to shadow stack global var
+      function_graph: Move graph depth stored data to shadow stack global var
+      function_graph: Move graph notrace bit to shadow stack global var
+      function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
+      function_graph: Add selftest for passing local variables
+
+
+ Documentation/trace/fprobe.rst                     |   42 +
+ arch/arm64/Kconfig                                 |    2 
+ arch/arm64/include/asm/ftrace.h                    |   24 
+ arch/arm64/kernel/entry-ftrace.S                   |   28 +
+ arch/arm64/kernel/ftrace.c                         |   21 
+ arch/loongarch/Kconfig                             |    1 
+ arch/loongarch/include/asm/ftrace.h                |    2 
+ arch/loongarch/kernel/ftrace_dyn.c                 |    6 
+ arch/powerpc/include/asm/ftrace.h                  |    9 
+ arch/powerpc/kernel/trace/ftrace.c                 |    2 
+ arch/powerpc/kernel/trace/ftrace_64_pg.c           |   10 
+ arch/s390/Kconfig                                  |    1 
+ arch/s390/include/asm/ftrace.h                     |    7 
+ arch/x86/Kconfig                                   |    4 
+ arch/x86/include/asm/ftrace.h                      |   17 
+ arch/x86/kernel/ftrace.c                           |   51 +
+ arch/x86/kernel/ftrace_64.S                        |   37 +
+ include/linux/fprobe.h                             |   58 +
+ include/linux/ftrace.h                             |  167 +++
+ include/linux/sched.h                              |    3 
+ include/linux/trace_recursion.h                    |   39 -
+ kernel/trace/Kconfig                               |   19 
+ kernel/trace/bpf_trace.c                           |   14 
+ kernel/trace/fgraph.c                              | 1067 ++++++++++++++++----
+ kernel/trace/fprobe.c                              |  631 ++++++++----
+ kernel/trace/ftrace.c                              |   23 
+ kernel/trace/ftrace_internal.h                     |    2 
+ kernel/trace/trace.h                               |   94 +-
+ kernel/trace/trace_fprobe.c                        |  114 +-
+ kernel/trace/trace_functions.c                     |    8 
+ kernel/trace/trace_functions_graph.c               |   96 +-
+ kernel/trace/trace_irqsoff.c                       |   10 
+ kernel/trace/trace_probe_tmpl.h                    |    2 
+ kernel/trace/trace_sched_wakeup.c                  |   10 
+ kernel/trace/trace_selftest.c                      |  178 +++
+ lib/test_fprobe.c                                  |   51 -
+ samples/fprobe/fprobe_example.c                    |    4 
+ .../test.d/dynevent/add_remove_fprobe_repeat.tc    |   19 
+ .../ftrace/test.d/dynevent/fprobe_syntax_errors.tc |    4 
+ 39 files changed, 2177 insertions(+), 700 deletions(-)
+ create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
+
+--
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
