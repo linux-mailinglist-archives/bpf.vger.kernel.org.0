@@ -1,158 +1,132 @@
-Return-Path: <bpf+bounces-19414-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19415-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DA2782BB33
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 07:20:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C094782BBE3
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 08:41:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BB441F26832
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 06:20:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9C11F24DE0
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 07:41:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208A65C8EA;
-	Fri, 12 Jan 2024 06:20:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eGugH5Wn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F7B5D72A;
+	Fri, 12 Jan 2024 07:41:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F1871B28E
-	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 06:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a413b206-df50-4445-a4de-494339ea1ce6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705040411;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F3CefQsNxnc4oyPR3RnCTgbsveJDAg5y8po7bcHYoXE=;
-	b=eGugH5WneMC3LUSY8pnvckG0sQRCSCeTE8Pl/bt2dIyyMk5x/VenzZHMHbycivuvE+S8jt
-	odwR6ppAtTpHHeXYzc1AB13H17MK4tejkjDd3JixZx7D4mMF1BWtkbHKYG+mCjTW7PAaD0
-	4SB4xhj6/PSTKQ6KnEpd2GFYMFyUqUs=
-Date: Thu, 11 Jan 2024 22:20:06 -0800
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E962E5B1E4;
+	Fri, 12 Jan 2024 07:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8CxrusI7aBlXHsEAA--.13273S3;
+	Fri, 12 Jan 2024 15:40:56 +0800 (CST)
+Received: from [10.130.0.149] (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx34cE7aBl_V8TAA--.50255S3;
+	Fri, 12 Jan 2024 15:40:53 +0800 (CST)
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: Skip callback tests if jit is
+ disabled in test_verifier
+To: Hou Tao <houtao@huaweicloud.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
+References: <20240112015700.19974-1-yangtiezhu@loongson.cn>
+ <1e919c98-2fc4-bd03-df19-97c4e8a24649@huaweicloud.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+ John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
+ bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <1930b1eb-afff-8509-e233-26c28e7622fd@loongson.cn>
+Date: Fri, 12 Jan 2024 15:40:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v7 bpf-next 0/6] bpf: tcp: Support arbitrary SYN Cookie at
- TC.
-Content-Language: en-US
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: Kuniyuki Iwashima <kuni1840@gmail.com>, bpf@vger.kernel.org,
- netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Yonghong Song <yonghong.song@linux.dev>
-References: <20231221012806.37137-1-kuniyu@amazon.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20231221012806.37137-1-kuniyu@amazon.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <1e919c98-2fc4-bd03-df19-97c4e8a24649@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:AQAAf8Bx34cE7aBl_V8TAA--.50255S3
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7uFW5uFWDJry3uF1kJrW8AFc_yoW8Xr4fpF
+	WDJFsFyFWkXryrKrWqqw17JF93trWkJryqyFZIgayUJwnxZr9YqF18KryF9FZrZryDua4I
+	vF48uF9xu3y3JacCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+	AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+	F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GF
+	ylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
+	xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
+	1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j1
+	WlkUUUUU=
 
-On 12/20/23 5:28 PM, Kuniyuki Iwashima wrote:
-> Under SYN Flood, the TCP stack generates SYN Cookie to remain stateless
-> for the connection request until a valid ACK is responded to the SYN+ACK.
-> 
-> The cookie contains two kinds of host-specific bits, a timestamp and
-> secrets, so only can it be validated by the generator.  It means SYN
-> Cookie consumes network resources between the client and the server;
-> intermediate nodes must remember which nodes to route ACK for the cookie.
-> 
-> SYN Proxy reduces such unwanted resource allocation by handling 3WHS at
-> the edge network.  After SYN Proxy completes 3WHS, it forwards SYN to the
-> backend server and completes another 3WHS.  However, since the server's
-> ISN differs from the cookie, the proxy must manage the ISN mappings and
-> fix up SEQ/ACK numbers in every packet for each connection.  If a proxy
-> node goes down, all the connections through it are terminated.  Keeping
-> a state at proxy is painful from that perspective.
-> 
-> At AWS, we use a dirty hack to build truly stateless SYN Proxy at scale.
-> Our SYN Proxy consists of the front proxy layer and the backend kernel
-> module.  (See slides of LPC2023 [0], p37 - p48)
-> 
-> The cookie that SYN Proxy generates differs from the kernel's cookie in
-> that it contains a secret (called rolling salt) (i) shared by all the proxy
-> nodes so that any node can validate ACK and (ii) updated periodically so
-> that old cookies cannot be validated and we need not encode a timestamp for
-> the cookie.  Also, ISN contains WScale, SACK, and ECN, not in TS val.  This
-> is not to sacrifice any connection quality, where some customers turn off
-> TCP timestamps option due to retro CVE.
-> 
-> After 3WHS, the proxy restores SYN, encapsulates ACK into SYN, and forward
-> the TCP-in-TCP packet to the backend server.  Our kernel module works at
-> Netfilter input/output hooks and first feeds SYN to the TCP stack to
-> initiate 3WHS.  When the module is triggered for SYN+ACK, it looks up the
-> corresponding request socket and overwrites tcp_rsk(req)->snt_isn with the
-> proxy's cookie.  Then, the module can complete 3WHS with the original ACK
-> as is.
-> 
-> This way, our SYN Proxy does not manage the ISN mappings nor wait for
-> SYN+ACK from the backend thus can remain stateless.  It's working very
-> well for high-bandwidth services like multiple Tbps, but we are looking
-> for a way to drop the dirty hack and further optimise the sequences.
-> 
-> If we could validate an arbitrary SYN Cookie on the backend server with
-> BPF, the proxy would need not restore SYN nor pass it.  After validating
-> ACK, the proxy node just needs to forward it, and then the server can do
-> the lightweight validation (e.g. check if ACK came from proxy nodes, etc)
-> and create a connection from the ACK.
-> 
-> This series allows us to create a full sk from an arbitrary SYN Cookie,
-> which is done in 3 steps.
-> 
->    1) At tc, BPF prog calls a new kfunc to create a reqsk and configure
->       it based on the argument populated from SYN Cookie.  The reqsk has
->       its listener as req->rsk_listener and is passed to the TCP stack as
->       skb->sk.
-> 
->    2) During TCP socket lookup for the skb, skb_steal_sock() returns a
->       listener in the reuseport group that inet_reqsk(skb->sk)->rsk_listener
->       belongs to.
-> 
->    3) In cookie_v[46]_check(), the reqsk (skb->sk) is fully initialised and
->       a full sk is created.
-> 
-> The kfunc usage is as follows:
-> 
->      struct bpf_tcp_req_attrs attrs = {
->          .mss = mss,
->          .wscale_ok = wscale_ok,
->          .rcv_wscale = rcv_wscale, /* Server's WScale < 15 */
->          .snd_wscale = snd_wscale, /* Client's WScale < 15 */
->          .tstamp_ok = tstamp_ok,
->          .rcv_tsval = tsval,
->          .rcv_tsecr = tsecr, /* Server's Initial TSval */
->          .usec_ts_ok = usec_ts_ok,
->          .sack_ok = sack_ok,
->          .ecn_ok = ecn_ok,
->      }
-> 
->      skc = bpf_skc_lookup_tcp(...);
->      sk = (struct sock *)bpf_skc_to_tcp_sock(skc);
->      bpf_sk_assign_tcp_reqsk(skb, sk, attrs, sizeof(attrs));
->      bpf_sk_release(skc);
-> 
-> [0]: https://lpc.events/event/17/contributions/1645/attachments/1350/2701/SYN_Proxy_at_Scale_with_BPF.pdf
-> 
-> 
-> Changes:
->    v7:
->      * Patch 5 & 6
->        * Drop MPTCP support
 
-I think Yonghong's (thanks!) cpuv4 patch 
-(https://lore.kernel.org/bpf/20240110051348.2737007-1-yonghong.song@linux.dev/) 
-has addressed the issue that the selftest in patch 6 has encountered.
 
-There are some minor comments in v7. Please respin v8 when the cpuv4 patch has 
-concluded so that it can kick off the CI also.
+On 01/12/2024 12:21 PM, Hou Tao wrote:
+> Hi,
+>
+> On 1/12/2024 9:57 AM, Tiezhu Yang wrote:
+>> If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
+>> exist 6 failed tests.
+
+...
+
+>> +static bool is_jit_enabled(void)
+>> +{
+>> +	const char *jit_sysctl = "/proc/sys/net/core/bpf_jit_enable";
+>> +	bool enabled = false;
+>> +	int sysctl_fd;
+>> +
+>> +	sysctl_fd = open(jit_sysctl, 0, O_RDONLY);
+>
+> It should be open(jit_sysctl, O_RDONLY).
+
+Yes, this function comes from test_progs.c, I think
+it is better to move it to testing_helpers.c with
+this change.
+
+>> +	if (sysctl_fd != -1) {
+>> +		char tmpc;
+>> +
+>> +		if (read(sysctl_fd, &tmpc, sizeof(tmpc)) == 1)
+>> +			enabled = (tmpc != '0');
+>> +		close(sysctl_fd);
+>> +	}
+>> +
+>> +	return enabled;
+>> +}
+>> +
+>>  static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
+>>  {
+>>  	int i;
+>> @@ -1662,6 +1691,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
+>>  		goto close_fds;
+>>  	}
+>>
+>> +	if (!is_jit_enabled()) {
+>
+> Is it necessary to check whether jit is enabled or not each time ? Could
+> we just check it only once just like unpriv_disabled does ?
+
+Yes, it looks better, will modify the related code.
+
+>> +		for (i = 0; i < prog_len; i++, prog++) {
+>
+> Is it better to only check pseudo_func only when both fd_prog < 0 and
+> saved_errno == EINVAL are true, so unnecessary check can be skipped ?
+
+Yes, will do it like this:
+
+   if (fd_prog < 0 && saved_errno == EINVAL && jit_disabled)
+
+Thanks,
+Tiezhu
 
 
