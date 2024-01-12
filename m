@@ -1,145 +1,186 @@
-Return-Path: <bpf+bounces-19388-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19389-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85ACC82B83B
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 00:49:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE12B82B896
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 01:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E9DC286518
-	for <lists+bpf@lfdr.de>; Thu, 11 Jan 2024 23:49:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6224E1F25F34
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 00:30:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A5759B79;
-	Thu, 11 Jan 2024 23:49:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89403657;
+	Fri, 12 Jan 2024 00:30:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="fjaBtMiq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Sk8P09X8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JJeHVu6s"
 X-Original-To: bpf@vger.kernel.org
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8FB57870
-	for <bpf@vger.kernel.org>; Thu, 11 Jan 2024 23:49:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.nyi.internal (Postfix) with ESMTP id A5CC35C01D8;
-	Thu, 11 Jan 2024 18:49:28 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Thu, 11 Jan 2024 18:49:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1705016968;
-	 x=1705103368; bh=ftYo/2+WHLnICyLWQVVUBgXURZNsx/tIehrbS6Fr07c=; b=
-	fjaBtMiq4H05/dzvYhzs3/r6MSkmx6eVxlESYGqb5OpS0X90Qoslh8fx/7OVQFCA
-	GFnqFcc+1g75ai9XHv+qfLQLKv6puU6IOdEVOUujMUxbxyRVVc9guEZhqLJnCw2Q
-	l5+Ap5AziEeM/dwqxK/iHU3BhnZkybOuleTBAmUWg8M4Cxet2YkzEPVk41bxamA2
-	z6Nasa3zn9V3hExrbs7oQSbkXLDYtqsdNbhWuQo8Fou3TZPXCGOYCXudm16B9rJD
-	oFx0VGKPDd+KwHvFboQZ0IDUA7ULdh2boF9sTJBkEedztttcPpKQp7dG8of7/rNa
-	5AL5yNLoWpdwHIlCsdMHYg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1705016968; x=
-	1705103368; bh=ftYo/2+WHLnICyLWQVVUBgXURZNsx/tIehrbS6Fr07c=; b=S
-	k8P09X8WSuDyW19II6+3f9pEPdGcg0Lqqxs9umeDi828C7xuqHkhy/JUHNYHqehB
-	Cd1qIxMEHZXINiX45GQzGzLmjNk2Jbn/Ok/ULBRieGsR4+L3HeJJFy+Fo+XW/ZXt
-	/8yF+6v4kphG1dLu7WJLT8xoU8a6Vhs0hdgE/KQiOr7K6tvBTjrwAOBsViGIBlBA
-	D6AO8FGzzIcVpgzlUFetMjJ6bV6cmWTkRaTdzQIOco/DWnPUpkhGn59DG7BNILiI
-	TnedexaqOGkhrnGY2SsHfo9xsseU+oWGDyGhsKAIMTaecOhfNCB3Sp7lUXOs8eQX
-	bOKBjQ/8cHhNUleOX+PnA==
-X-ME-Sender: <xms:iH6gZePO-X9FPXjZ-YslSjbqhbIAaA84ZoRDjBF70n-BbcIMduRusA>
-    <xme:iH6gZc8kd8j8m4IPy_rr2fojvvhDtrzmswYmLPWSR3ryw_nLfPqkZRny9LN2ST-gh
-    jG7LalB3QEZXvfOqw>
-X-ME-Received: <xmr:iH6gZVT-AM67PE2jQyTuU-cJwcNJLOtO_RGNBVPyfNNFwzh7IkF-QfApMRdMg_8GC0eJV3_FcmxpUQJqRjccLb2hUMEGUhNDom_DT-M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeigedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtgfeuueeukeeikefgieeukeffleetkeekkeeggeffvedt
-    vdejueehueeuleefteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:iH6gZestPy3YP6NJiC3iY9mofWylfq15dbNqzVh2JCnS7ymDPmBB-w>
-    <xmx:iH6gZWdzD2KKoadoFRusp9fMgWnzJpXSbmeakIltZVfMG6Bv6zWFZg>
-    <xmx:iH6gZS1JHdhx164gh8KHuUUrN7_EsPs0lb9wXhCMzZRO3xCEr4195w>
-    <xmx:iH6gZdwj_EVSEpYAUjvBb9pvSfs3bxvQUXy5s2kiPP9Mz7zCVLdXoA>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 11 Jan 2024 18:49:27 -0500 (EST)
-Date: Thu, 11 Jan 2024 16:49:25 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Song Liu <songliubraving@meta.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Alan Maguire <alan.maguire@oracle.com>, 
-	Jordan Rome <jordalgo@meta.com>, Yonghong Song <yhs@meta.com>, Kernel Team <kernel-team@meta.com>
-Subject: Re: RFC: Mark "inlined by some callers" functions in BTF
-Message-ID: <n7jdll2bwj7futzz227g2nlo53zwg774appc3paxhi3iv76ean@4oj7mxalthzz>
-References: <B653950A-A58F-44C0-AD9D-95370710810F@fb.com>
- <rclqt5yod7n5l3cjuptadouxw3xshcedibgfe4fc3qjy6psuf7@qj2cjmzu5iwe>
- <DF3DD763-E5F2-4032-8F54-E25AA1270E12@fb.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86906A57
+	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 00:30:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <66913891-84ec-449a-9590-bd8e4dc1de95@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705019415;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qiWysPkBri8Ct0ozDGDV3jxYPANNJnSRGwkVBw2sH7A=;
+	b=JJeHVu6sjpXpg+uTYHfAz3fC05v69bQ1smJb4NGesA5dZCcvZV01TQUfm0S4RPoWgjATVv
+	2Jp6XPxgIH2HEeRaOq2MwnqQ/RY+PDQUJNHVTcH6gwlG3uqfDX3a7TL2utZoBayz15nxU2
+	OINsiUYHayY4GBuMCoMxSi56bE7WNWw=
+Date: Thu, 11 Jan 2024 16:30:07 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Subject: Re: [RFC bpf-next] bpf, selftests/bpf: Support PTR_MAYBE_NULL for
+ struct_ops arguments.
+Content-Language: en-GB
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+ Kui-Feng Lee <sinquersw@gmail.com>, thinker.li@gmail.com
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, davemarchevsky@meta.com,
+ dvernet@meta.com
+References: <20240110221750.798813-1-thinker.li@gmail.com>
+ <55ada30c-039d-4121-a4d2-efda578f600f@linux.dev>
+ <0dd5949b-b6f8-4d88-88ba-cc079096ce32@gmail.com>
+ <5d3f90bc-2758-43a4-bf13-45dc50301758@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <5d3f90bc-2758-43a4-bf13-45dc50301758@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <DF3DD763-E5F2-4032-8F54-E25AA1270E12@fb.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 11, 2024 at 11:06:23PM +0000, Song Liu wrote:
-> 
-> 
-> > On Jan 11, 2024, at 2:48 PM, Daniel Xu <dxu@dxuuu.xyz> wrote:
-> > 
-> > Hi Song,
-> > 
-> > On Thu, Jan 11, 2024 at 09:51:05PM +0000, Song Liu wrote:
-> >> The problem
-> >> 
-> >> Inlining can cause surprises to tracing users, especially when the tool
-> >> appears to be working. For example, with
-> >> 
-> >>    [root@ ~]# bpftrace -e 'kprobe:switch_mm {}'
-> >>    Attaching 1 probe...
-> >> 
-> >> The user may not realize switch_mm() is inlined by leave_mm(), and we are
-> >> not tracing the code path leave_mm => switch_mm. (This is x86_64, and both
-> >> functions are in arch/x86/mm/tlb.c.)
-> >> 
-> >> We have folks working on ideas to create offline tools to detect such
-> >> issues for critical use cases at compile time. However, I think it is
-> >> necessary to handle it at program load/attach time.
-> > 
-> > Could you clarify what offline means?
-> 
-> The idea is to keep a list of kernel functions used by key services. At 
-> kernel build time, we check whether any of these functions are inlined. 
-> If so, the tool will catch it, and we need to add noinline to the function. 
 
-Neat idea!
+On 1/11/24 11:08 AM, Martin KaFai Lau wrote:
+> On 1/10/24 5:50 PM, Kui-Feng Lee wrote:
+>>
+>>
+>> On 1/10/24 15:44, Martin KaFai Lau wrote:
+>>> On 1/10/24 2:17 PM, thinker.li@gmail.com wrote:
+>>>> The proposed solution here is to add PTR_MAYBE_NULL annotations to
+>>>> arguments
+>>>
+>>> [ ... ]
+>>>
+>>>> == Future Work ==
+>>>>
+>>>> We require an improved method for annotating arguments. Initially, we
+>>>> anticipated annotating arguments by appending a suffix to argument 
+>>>> names,
+>>>> such as arg1__maybe_null. However, this approach does not function for
+>>>> function pointers due to compiler limitations. Nevertheless, it 
+>>>> does work
+>>>> for functions. To resolve this, we need compiler support to enable the
+>>>> inclusion of argument names in the DWARF for function pointer types.
+>>>
+>>> After reading the high level of the patch,
+>>> while it needs compiler work to support decl tagging (or arg name) 
+>>> in a struct_ops's func_proto, changing the info->reg_type of a 
+>>> struct_ops's argument have been doable in the ".is_valid_access" 
+>>> without new kernel code change in verifier/btf.c.
+>>
+>> btf_ctx_access() mentioned in the original message is a help function
+>> called by the implementation of .is_valid_access. So, just like you
+>> said, they definitely can be handled by .is_valid_access it-self.
+>>
+>> Do you prefer to let developers to handle it by themself instead of
+>> handling by the helpers?
+>
+> I would prefer one way to do the same thing. ".is_valid_access" should 
+> be more flexible and straightforward. e.g. 
+> "bpf_tcp_ca_is_valid_access" can promote all "struct sock" pointers to 
+> "struct tcp_sock" without needing to specify them func by func.
+>
+> It would be nice to eventually have both compilers support tagging in 
+> the struct_ops's func_proto. I was trying to say ".is_valid_access" 
+> can already add PTR_MAYBE_NULL now while waiting for the compiler 
+> support.
 
-> > I wonder if libbpf should just give a way for applications to query
-> > inline status. Seems most flexible.  And maybe also a special SEC() def?
-> 
-> API to query inline status makes sense. What do we do with SEC()?
+Considering gcc side does not support decl tag yet, after discussing with Alexei, we think we
+should delay to implement this func proto argument name/decl_tag in dwarf thing since we
+need to hack with gcc compiler. Adding PTR_MAYBE_NULL in the kernel should be good enough.
+Note that similarly, a lot of bpf_iter already adopts the same approach.
 
-Oh, I meant that you could make the SEC() parser take for example:
+For example, map_iter.c, we have
+   static const struct bpf_iter_reg bpf_map_elem_reg_info = {
+         .target                 = "bpf_map_elem",
+         .attach_target          = bpf_iter_attach_map,
+         .detach_target          = bpf_iter_detach_map,
+         .show_fdinfo            = bpf_iter_map_show_fdinfo,
+         .fill_link_info         = bpf_iter_map_fill_link_info,
+         .ctx_arg_info_size      = 2,
+         .ctx_arg_info           = {
+                 { offsetof(struct bpf_iter__bpf_map_elem, key),
+                   PTR_TO_BUF | PTR_MAYBE_NULL | MEM_RDONLY },
+                 { offsetof(struct bpf_iter__bpf_map_elem, value),
+                   PTR_TO_BUF | PTR_MAYBE_NULL },
+         },
+   };
 
-      SEC("kprobe.noinline/switch_mm")
+Or cgroup_iter.c
+   static struct bpf_iter_reg bpf_cgroup_reg_info = {
+         .target                 = "cgroup",
+         .feature                = BPF_ITER_RESCHED,
+         .attach_target          = bpf_iter_attach_cgroup,
+         .detach_target          = bpf_iter_detach_cgroup,
+         .show_fdinfo            = bpf_iter_cgroup_show_fdinfo,
+         .fill_link_info         = bpf_iter_cgroup_fill_link_info,
+         .ctx_arg_info_size      = 1,
+         .ctx_arg_info           = {
+                 { offsetof(struct bpf_iter__cgroup, cgroup),
+                   PTR_TO_BTF_ID_OR_NULL | PTR_TRUSTED },
+         },
+         .seq_info               = &cgroup_iter_seq_info,
+   };
 
-or something like that. Rather than add flags to bpf_program which may
-not be applicable to every program type.
+Eventually types in the above ctx_arg_info are assigned to
+reg type and used by the verifier.
 
-[...]
+Martin proposed change in is_valid_access() callback can also
+get modified register type. It should work well.
 
-Thanks,
-Daniel
+Although lacking of kernel maybe_null decl, we could still
+verify based on program BTF. Martin told me that
+current struct_ops func parameter validation does not
+check prog BTF. But if we truely want to verify,
+we can check program BTF as well to check whether
+the corresponding decl tag exists or not.
+For example, in tools/lib/bpf/bpf_helpers.h, we have
+#define __arg_nonnull __attribute((btf_decl_tag("arg:nonnull")))
+
+we can introduce
+#define __arg_maybe_null __attribute((btf_decl_tag("arg:maybe_null")))
+
+and the kernel can check bpf program argument decl tag
+to ensure its has __arg_maybe_null to be consistent
+with kernel PTR_MAYBE_NULL marking.
+
+>
+> If the sched_ext adds PTR_MAYBE_NULL in its ".is_valid_access", what 
+> else is missing in the verifier.c and btf.c? I saw the patch has the 
+> following changes in verifier.c. Is it needed?
+>
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 60f08f468399..190735f3eaf5 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -8200,6 +8200,7 @@ static int check_reg_type(struct 
+> bpf_verifier_env *env, u32 regno,
+> >       case PTR_TO_BTF_ID | PTR_TRUSTED:
+> >       case PTR_TO_BTF_ID | MEM_RCU:
+> >       case PTR_TO_BTF_ID | PTR_MAYBE_NULL:
+> > +    case PTR_TO_BTF_ID | PTR_MAYBE_NULL | PTR_TRUSTED:
+> >       case PTR_TO_BTF_ID | PTR_MAYBE_NULL | MEM_RCU:
+> >       {
+> >           /* For bpf_sk_release, it needs to match against first member
+>
 
