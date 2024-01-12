@@ -1,167 +1,119 @@
-Return-Path: <bpf+bounces-19453-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19454-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AD4182BE7F
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 11:22:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9500A82BF2C
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 12:24:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39AC01F29C25
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 10:22:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBF451C22E79
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 11:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B19E760B9D;
-	Fri, 12 Jan 2024 10:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45E2067E8A;
+	Fri, 12 Jan 2024 11:24:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f2z9gtUA"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OWbqIxGY";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JdeACgwt"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 404BC5D90A;
-	Fri, 12 Jan 2024 10:17:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3262C433F1;
-	Fri, 12 Jan 2024 10:17:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705054678;
-	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f2z9gtUAWIjEDs9pfVTmI6Zy2S9KhTEAr4uRe1HUHIokgTpq4u59CeZFnN5+AkPWh
-	 CGwyaj9gjzVtULbi8P2ZnK6nNyNfgbOG+jHrd0LMn9s6rkd9QYmbuwmkYRfSYO5msU
-	 DZaPnMVoglrPX4PuMRm7leKECaoBqVAfKqpdqkowhtekw8Bibu6PQJ8b7Ha0NT7X5q
-	 yI2S+C2yYbL7pWtiGwge8L9JBeYDByEbKb8BVgQN2r3Vq+lMZtc6BqBIX9FBTXimSv
-	 ApgS1tIfuEj08EoSVUNxW3tBxXbifc73LWam6TelHgIivaByLTXrSd6uA1g6ibIkGX
-	 Dub11J9U2j5vg==
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Florent Revest <revest@chromium.org>
-Cc: linux-trace-kernel@vger.kernel.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	bpf <bpf@vger.kernel.org>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693B064CFF;
+	Fri, 12 Jan 2024 11:23:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 12 Jan 2024 12:23:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1705058637;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ipRmzQ27dl1DxnG+lFoUSErLcW1ZeSdEpT87MdBHov8=;
+	b=OWbqIxGYriukbUuN3UMPklkgruSimjDJSDUOwZ5gBcO0O0DDs0Yz/NMj3gNm5LDTT+M10q
+	uWTbxGDIWi2mAwtPP8Rxr0hIaAQTbwiDYy/T94L1MypdJ5dREUmbTKW+4L0BqzdmcYkBUg
+	QBzw0257rqdWGTtxj5YAP21j5ip+5sjCiEKNr/fAodeDFbtmOgJVYwwyo+vPanLrcJPztN
+	g/CmxWfcvyJ0qMlvxEzcxL+lH3sTMivUUcaQ1lf2ZHmAWRCg84u4Mts42BUPxCUk4eA+a9
+	zIuUvov5uKxL9FTkij35cgRyPKvGOkEMjZlFdTnvdDwIldEwv/nieuZJaMYJQw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1705058637;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ipRmzQ27dl1DxnG+lFoUSErLcW1ZeSdEpT87MdBHov8=;
+	b=JdeACgwtioEI2COU5SpvVfU1cwQPg/wWwhEkVp+hhJLmUw8TlVFHJ6c4tXwbBnjcQkd74r
+	GDlENmh/5R6pSSCw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Mark Rutland <mark.rutland@arm.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
-	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v6 36/36] Documentation: probes: Update fprobe on function-graph tracer
-Date: Fri, 12 Jan 2024 19:17:52 +0900
-Message-Id: <170505467231.459169.5422331995958897132.stgit@devnote2>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <170505424954.459169.10630626365737237288.stgit@devnote2>
-References: <170505424954.459169.10630626365737237288.stgit@devnote2>
-User-Agent: StGit/0.19
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	David Ahern <dsahern@kernel.org>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next 12/24] seg6: Use nested-BH locking for
+ seg6_bpf_srh_states.
+Message-ID: <20240112112355.k1vpvtth@linutronix.de>
+References: <20231215171020.687342-1-bigeasy@linutronix.de>
+ <20231215171020.687342-13-bigeasy@linutronix.de>
+ <a8d155ec7d43bf3308fcfa3387dc16d1723617c6.camel@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a8d155ec7d43bf3308fcfa3387dc16d1723617c6.camel@redhat.com>
 
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+On 2023-12-18 09:33:39 [+0100], Paolo Abeni wrote:
+> > --- a/net/ipv6/seg6_local.c
+> > +++ b/net/ipv6/seg6_local.c
+> > @@ -1420,41 +1422,44 @@ static int input_action_end_bpf(struct sk_buff *skb,
+> >  	}
+> >  	advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
+> >  
+> > -	/* preempt_disable is needed to protect the per-CPU buffer srh_state,
+> > -	 * which is also accessed by the bpf_lwt_seg6_* helpers
+> > +	/* The access to the per-CPU buffer srh_state is protected by running
+> > +	 * always in softirq context (with disabled BH). On PREEMPT_RT the
+> > +	 * required locking is provided by the following local_lock_nested_bh()
+> > +	 * statement. It is also accessed by the bpf_lwt_seg6_* helpers via
+> > +	 * bpf_prog_run_save_cb().
+> >  	 */
+> > -	preempt_disable();
+> > -	srh_state->srh = srh;
+> > -	srh_state->hdrlen = srh->hdrlen << 3;
+> > -	srh_state->valid = true;
+> > +	scoped_guard(local_lock_nested_bh, &seg6_bpf_srh_states.bh_lock) {
+> > +		srh_state = this_cpu_ptr(&seg6_bpf_srh_states);
+> > +		srh_state->srh = srh;
+> > +		srh_state->hdrlen = srh->hdrlen << 3;
+> > +		srh_state->valid = true;
+> 
+> Here the 'scoped_guard' usage adds a lot of noise to the patch, due to
+> the added indentation. What about using directly
+> local_lock_nested_bh()/local_unlock_nested_bh() ?
 
-Update fprobe documentation for the new fprobe on function-graph
-tracer. This includes some bahvior changes and pt_regs to
-ftrace_regs interface change.
+If this is preferred, sure.
 
-Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
----
- Changes in v2:
-  - Update @fregs parameter explanation.
----
- Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+> Cheers,
+> 
+> Paolo
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index 196f52386aaa..f58bdc64504f 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
- Introduction
- ============
- 
--Fprobe is a function entry/exit probe mechanism based on ftrace.
--Instead of using ftrace full feature, if you only want to attach callbacks
--on function entry and exit, similar to the kprobes and kretprobes, you can
-+Fprobe is a function entry/exit probe mechanism based on the function-graph
-+tracer.
-+Instead of tracing all functions, if you want to attach callbacks on specific
-+function entry and exit, similar to the kprobes and kretprobes, you can
- use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
- instrumentation for multiple functions with single handler. This document
- describes how to use fprobe.
-@@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
- 
- .. code-block:: c
- 
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
- 
--Note that the @entry_ip is saved at function entry and passed to exit handler.
--If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-+Note that the @entry_ip is saved at function entry and passed to exit
-+handler.
-+If the entry callback function returns !0, the corresponding exit callback
-+will be cancelled.
- 
- @fp
-         This is the address of `fprobe` data structure related to this handler.
-@@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address that the traced function will return to,
-         somewhere in the caller. This can be used at both entry and exit.
- 
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the current return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. This
-+        includes the function parameters, or the return values. So user can
-+        access thos values via appropriate `ftrace_regs_*` APIs.
- 
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
-@@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
-         and `entry_data_size` field when registering the fprobe, the storage is
-         allocated and passed to both `entry_handler` and `exit_handler`.
- 
-+Entry data size and exit handlers on the same function
-+======================================================
-+
-+Since the entry data is passed via per-task stack and it is has limited size,
-+the entry data size per probe is limited to `15 * sizeof(long)`. You also need
-+to take care that the different fprobes are probing on the same function, this
-+limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
-+each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
-+you should keep the number of fprobes on the same function as small as
-+possible.
-+
- Share the callbacks with kprobes
- ================================
- 
-@@ -165,8 +177,8 @@ This counter counts up when;
-  - fprobe fails to take ftrace_recursion lock. This usually means that a function
-    which is traced by other ftrace users is called from the entry_handler.
- 
-- - fprobe fails to setup the function exit because of the shortage of rethook
--   (the shadow stack for hooking the function return.)
-+ - fprobe fails to setup the function exit because of failing to allocate the
-+   data buffer from the per-task shadow stack.
- 
- The `fprobe::nmissed` field counts up in both cases. Therefore, the former
- skips both of entry and exit callback and the latter skips the exit
-
+Sebastian
 
