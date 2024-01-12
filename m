@@ -1,72 +1,120 @@
-Return-Path: <bpf+bounces-19487-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19488-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C937482C64D
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 21:17:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 315AD82C64E
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 21:17:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71DA4287D50
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 20:17:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 65CB81F24DD7
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 20:17:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2425F168A2;
-	Fri, 12 Jan 2024 20:16:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156B916408;
+	Fri, 12 Jan 2024 20:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="Fgs9+S9+"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="VTu0ot7S";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="oi1MZ6gL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="S6MCBDyi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9E916417
-	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 20:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d54b86538aso38241855ad.0
-        for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 12:16:49 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796FE168BB
+	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 20:17:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 21659C14F6B2
+	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 12:16:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1705090616; bh=vdUv+o2GfU2nLET3XkBPjyV50X54dXhN/3iEK39y1yk=;
+	h=To:Cc:References:In-Reply-To:Date:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe:
+	 From;
+	b=VTu0ot7SgKvzmKBQ1D8LJYs7CU2xkMZDQ346s2yaO2WkMK8FeQUIZrVdrXUiEB7aX
+	 yCFUz5V3atKX0PEOle3G4+GV4qdFtCDQl6XCh+ipF2ppKjE3v+yS96+vmu142JGm33
+	 GUOsOSK37xqqbP7QMWv4SDDzX+V8ng0xrtzrVFQo=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id DAB1EC14F5FB;
+ Fri, 12 Jan 2024 12:16:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1705090615; bh=vdUv+o2GfU2nLET3XkBPjyV50X54dXhN/3iEK39y1yk=;
+ h=From:To:Cc:References:In-Reply-To:Date:Subject:List-Id:
+ List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+ b=oi1MZ6gLoFbetQVhDFx4Tvqvvb25wO3PHcpTD0hDhdjaStWtMSJn01+Kk8MHVLNQh
+ GTaK23Barq4u499BzJzeYR4yuVln+tRGiVp+CL8OmywXHiAfIroyr1PRJdZfjXEJVl
+ Xprs9xHwGaWnK1rh2mnVlHzxH8e9SpLyqiarXpsQ=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id C4B9AC14F5FB
+ for <bpf@ietfa.amsl.com>; Fri, 12 Jan 2024 12:16:54 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.855
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id f628NwXy2ao8 for <bpf@ietfa.amsl.com>;
+ Fri, 12 Jan 2024 12:16:49 -0800 (PST)
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com
+ [IPv6:2607:f8b0:4864:20::635])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id C30E7C14F5EA
+ for <bpf@ietf.org>; Fri, 12 Jan 2024 12:16:49 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id
+ d9443c01a7336-1d3e05abcaeso49642285ad.1
+ for <bpf@ietf.org>; Fri, 12 Jan 2024 12:16:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1705090609; x=1705695409; darn=vger.kernel.org;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=GThtuLp5dEKU7cGoP7pr5ztEC86PdrSRagZYibpGtVk=;
-        b=Fgs9+S9+VbD0KY4OuCT2uMOJaW+PNkc/85oKkyrIZTd4dlb1oqsW0YDnDxCbtLv4WJ
-         Naar1vdeZlLfrUxihfnjfXi5frTld1FF8U4+vokjc4oZqcPwGw5aCjhKe3pUsKjn8llT
-         QvLU/8ozw1VYRI8wRt0XKwOiVQYT+Q92oOv3yOCK9JhH8uk2sNrdR4KwEUZBRIOKoI+4
-         y2k+E4Se/MK1rLZaGiE8e/AXE2jczVdmonZKzyrQRPwm/b92ZyjF4Mg57L3I5FueKp4R
-         GHgmpHxeVVQmg+OR095WqYotk7KTO2aKfcN08JvnaIjZWmXqrcytDQZQQyHVBzcTR/9D
-         evlA==
+ d=googlemail.com; s=20230601; t=1705090609; x=1705695409; darn=ietf.org;
+ h=content-language:thread-index:content-transfer-encoding
+ :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+ :from:from:to:cc:subject:date:message-id:reply-to;
+ bh=GThtuLp5dEKU7cGoP7pr5ztEC86PdrSRagZYibpGtVk=;
+ b=S6MCBDyi3uo3F3N02KZeproz4vWlJj+VOcZBUBTpACwhmsJRgZ1NFaGQzYI06kdRhS
+ YeItrRHplQhAMr5HWJwr3xdL/s477ME3MrEW/8xlLpP8+ZNMQoJIn9Pl5jJ0qx7QEtR5
+ hihbRqxYAOW4jvaVxS3UKofvKKuYnvxtK43FC7vkCw0IoH5rPg9nJYjkLme7kl38cN91
+ eUhSspXP17lbmLiZjh0pzsYSl4Auun8YRX51aCSxArPiSz3cq18JeqcqT0DZNvPD55Vi
+ qwRp52h2Xfc6hPL4H2Ilheo4F+D5oqyJq1LUXgt120PcfJdCompcT4PxidiYwyKm+ipk
+ NLjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705090609; x=1705695409;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GThtuLp5dEKU7cGoP7pr5ztEC86PdrSRagZYibpGtVk=;
-        b=Rpo8c2EAWG3xWFFFldw6jcb1jHAInln3K4DGtqNazq3tMIphQe9lnY0A+Jkt00/OpA
-         421Y89nRBYvl/Bg8d9SnFKDJK2OzELEl6flG0gZqdWp7b663C9WYpQRX/FcF39QqG12S
-         A0w3t59dEn9W4c0O65OiCjQILS/SGKAW6lUggQJyXALSVrsDlaZrgDjN6CuUkNGO2vEv
-         GgYZva4iSTOf+ue9Kl7K0EIJjU86yBLPsB1JWLUzhQk3Gl/HcNU3vagpyAPqKmJZd4xL
-         qTWeMFPYHFYwqjJJmzo4NcfBVhs/YQMwc8gEASasiGa3XF9Z09WMBw53QOUajCf+gH4z
-         D4Cw==
-X-Gm-Message-State: AOJu0YznENi75IwpTnVmIXqDa+Eygtkis+NUOHXVWl2R7GmapDpmMH5y
-	JK+YT0iy7MDyJrXzCl3DfWV288MXlVVwGw==
+ d=1e100.net; s=20230601; t=1705090609; x=1705695409;
+ h=content-language:thread-index:content-transfer-encoding
+ :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+ :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+ bh=GThtuLp5dEKU7cGoP7pr5ztEC86PdrSRagZYibpGtVk=;
+ b=NyUoQQVY6wj8NF8Beto3T6ersOeBoO3p6VR5Np0ozyJzk4z6wrcSXKxekGwAr4pVO6
+ R/GHppj7T9QYUMtLLeWtF7qOkfALM1WtWa4tTZgHYyW+PER//MbLw4iwg5m1en3c8fbq
+ oXm5M97yDg8x9DmScjsf5PlOoKBq/MzVv4faMfQ0Gr9QBzxTHH60XtSAk6YQVpmm/+9K
+ C97Uq9eSmhZKG7HM34tTjxeEdqK5Rz24LSFVbSla88ISuZEsxBzKsxoD6WpZ3xB/0BQ0
+ RvYaGsdMNLyniSxCQ1GoGBxh+cUJujCQsUKH6DnAjqdTo/S1jD0UBxBbFh7uAetIozwI
+ 99ww==
+X-Gm-Message-State: AOJu0Yz+tRR1HL0hgQbfB26AYurSgpZDZOVMReNCnGdL/Fcot24dXhgH
+ zai+/IvKN02DO7RKYEa2FoE=
 X-Google-Smtp-Source: AGHT+IERW5XSbTb++I+ILOx+rpFMCIQ/ZH3qtWc1hQaI1Up4Z6olSn9h/ap2WH7P3907RI2/tC5vzA==
-X-Received: by 2002:a17:902:f54e:b0:1d4:ceaf:e7bd with SMTP id h14-20020a170902f54e00b001d4ceafe7bdmr1674077plf.99.1705090608818;
-        Fri, 12 Jan 2024 12:16:48 -0800 (PST)
-Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
-        by smtp.gmail.com with ESMTPSA id ji1-20020a170903324100b001d56a8020desm3560772plb.107.2024.01.12.12.16.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 12 Jan 2024 12:16:48 -0800 (PST)
-From: dthaler1968@googlemail.com
+X-Received: by 2002:a17:902:f54e:b0:1d4:ceaf:e7bd with SMTP id
+ h14-20020a170902f54e00b001d4ceafe7bdmr1674077plf.99.1705090608818; 
+ Fri, 12 Jan 2024 12:16:48 -0800 (PST)
+Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net.
+ [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
+ ji1-20020a170903324100b001d56a8020desm3560772plb.107.2024.01.12.12.16.47
+ (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 12 Jan 2024 12:16:48 -0800 (PST)
 X-Google-Original-From: <dthaler1968@gmail.com>
 To: "'David Vernet'" <void@manifault.com>,
 	<dthaler1968@googlemail.com>
-Cc: "'Aoyang Fang'" <aoyangfang@link.cuhk.edu.cn>,
-	<bpf@vger.kernel.org>,
-	<bpf@ietf.org>
-References: <20240105031450.57681-2-aoyangfang@link.cuhk.edu.cn> <20240109173227.GB79024@maniforge> <016101da4326$8dbad1a0$a93074e0$@gmail.com> <20240109191037.GC79024@maniforge>
+Cc: "'Aoyang Fang'" <aoyangfang@link.cuhk.edu.cn>, <bpf@vger.kernel.org>,
+ <bpf@ietf.org>
+References: <20240105031450.57681-2-aoyangfang@link.cuhk.edu.cn>
+ <20240109173227.GB79024@maniforge>
+ <016101da4326$8dbad1a0$a93074e0$@gmail.com>
+ <20240109191037.GC79024@maniforge>
 In-Reply-To: <20240109191037.GC79024@maniforge>
-Subject: RE: [PATCH bpf-next] The original document has some inconsistency.
 Date: Fri, 12 Jan 2024 12:16:47 -0800
 Message-ID: <025c01da4594$4544e3f0$cfceabd0$@gmail.com>
 Precedence: bulk
@@ -75,12 +123,24 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 X-Mailer: Microsoft Outlook 16.0
 Thread-Index: AQI1wP8LxzfmoxB4tOuKvJCTZksNJgF+CbdPAgEaFl8CBSGlwq/zgVcA
 Content-Language: en-us
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/64_m6qIJwN8i0by3HVKMMHHJ0s0>
+Subject: Re: [Bpf] [PATCH bpf-next] The original document has some
+ inconsistency.
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Original-From: dthaler1968@googlemail.com
+From: dthaler1968=40googlemail.com@dmarc.ietf.org
 
 David Vernet <void@manifault.com> wrote:
 [...]
@@ -654,4 +714,8 @@ convention.
 Dave
 
 
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
