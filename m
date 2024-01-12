@@ -1,108 +1,162 @@
-Return-Path: <bpf+bounces-19482-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19483-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69E2782C5CE
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 20:17:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63E4E82C5F6
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 20:39:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA245B23189
-	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 19:17:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8C31287130
+	for <lists+bpf@lfdr.de>; Fri, 12 Jan 2024 19:39:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE8015E92;
-	Fri, 12 Jan 2024 19:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B023C16418;
+	Fri, 12 Jan 2024 19:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KHKInoTS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kRHc3TwH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A531F16410;
-	Fri, 12 Jan 2024 19:16:59 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9672C433F1;
-	Fri, 12 Jan 2024 19:16:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705087019;
-	bh=CUEpNXtIj3y2YghfDHeACDupq7CbR+GCqp5Oj2Kn0Tg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KHKInoTSQcHD/QPi8oCP9sqJFNb7MY1iMt8aZaXwcUcKrLOtwHGWP8gCe0B6ZnvI5
-	 p6MdbRI9WZ0EU4zg5Fps+KrDi4bWz/M1gLkYOp4e3Ou5332D4FtGstAYgjfggYC3Hn
-	 qKud3prvJVCuRV8TMO1O0Xu15U1tv4jPFBAypq6CiqOyaDbLoxQAUjNILDEY+mXrFl
-	 MuXzPvQJ4I6W6RsYMs3zVBvutQsNfobH8N2gH3tB/2TsuIaFesy5VWXuUHRGZIe0ia
-	 SqVad8c3bOIpOYFW43f/bdYNExJOcGoM3xcVXbd7m3kJq4+xYkR3eNjojJAL6WTxOC
-	 mhpS2qzgklhQw==
-Date: Fri, 12 Jan 2024 20:16:53 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Linus Torvalds <torvalds@linuxfoundation.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, paul@paul-moore.com, 
-	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next 03/29] bpf: introduce BPF token object
-Message-ID: <20240112-hetzt-gepard-5110cf759a34@brauner>
-References: <20240108-gasheizung-umstand-a36d89ed36b7@brauner>
- <CAEf4Bzb+7NzYs5ScggtgAJ6A5-oU5GymvdoEbpfNVOG-XmWZig@mail.gmail.com>
- <20240109-tausend-tropenhelm-2a9914326249@brauner>
- <CAEf4BzaAoXYb=qnj6rvDw8VewhvYNrs5oxe=q7VBe0jjWXivhg@mail.gmail.com>
- <20240110-nervt-monopol-6d307e2518f4@brauner>
- <CAEf4BzYOU5ZVqnTDTEmrHL-+tYY76kz4LO_0XauWibnhtzCFXg@mail.gmail.com>
- <20240111-amten-stiefel-043027f9520f@brauner>
- <CAEf4BzYcec97posh6N3LM8tJLsxrSLiFYq9csRWcy8=VnTJ23A@mail.gmail.com>
- <20240112-unpraktisch-kuraufenthalt-4fef655deab2@brauner>
- <CAEf4Bza7UKjv1Hh_kcyBVJw22LDv4ZNA5uV7+WBdnhsM9O7uGQ@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547211640D
+	for <bpf@vger.kernel.org>; Fri, 12 Jan 2024 19:39:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <61159c7c-007a-42b8-a582-6dab246a4af6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705088387;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CZwVByqmKpuWKlLbiloZBLcX+3kre7YYlu5NoJPskxo=;
+	b=kRHc3TwHB+XgN/fAvlxU37fVWIaOCSCCNFsGDciC/8If9Bb8wGk9zvaHAV90hafVHaCucq
+	dkcsuKet39cdUhvlmNrbYmAcqxFlSuarNXvvKycdIqtbDt2tIB9gcrXBjyDTGO599941/T
+	s4sfiLz1aanrnFyQ1j9OghfoEpHjtX8=
+Date: Fri, 12 Jan 2024 11:39:43 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bza7UKjv1Hh_kcyBVJw22LDv4ZNA5uV7+WBdnhsM9O7uGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf v2] libbpf: Apply map_set_def_max_entries() for
+ inner_maps on creation
+Content-Language: en-GB
+To: Andrey Grafin <conquistador@yandex-team.ru>, bpf@vger.kernel.org
+Cc: andrii@kernel.org
+References: <20240112121051.17325-1-conquistador@yandex-team.ru>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20240112121051.17325-1-conquistador@yandex-team.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-> > My point is that the capable logic will walk upwards the user namespace
-> > hierarchy from the token->userns until the user namespace of the caller
-> > and terminate when it reached the init_user_ns.
-> >
-> > A caller is located in some namespace at the point where they call this
-> > function. They provided a token. The caller isn't capable in the
-> > namespace of the token so the function falls back to init_user_ns. Two
-> > interesting cases:
-> >
-> > (1) The caller wasn't in an ancestor userns of the token. If that's the
-> >     case then it follows that the caller also wasn't in the init_user_ns
-> >     because the init_user_ns is a descendant of all other user
-> >     namespaces. So falling back will fail.
-> 
-> agreed
-> 
-> >
-> > (2) The caller was in the same or an ancestor user namespace of the
-> >     token but didn't have the capability in that user namespace:
-> >
-> >      (i) They were in a non-init_user_ns. Therefore they can't be
-> >          privileged in init_user_ns.
-> >     (ii) They were in init_user_ns. Therefore, they lacked privileges in
-> >          the init_user_ns.
-> >
-> > In both cases your fallback will do nothing iiuc.
-> 
-> agreed as well
-> 
-> And I agree in general that there isn't a *practically useful* case
-> where this would matter much. But there is still (at least one) case
-> where there could be a regression: if token is created in
-> init_user_ns, caller has CAP_BPF in init_user_ns, caller passes that
-> token to BPF_PROG_LOAD, and LSM policy rejects that token in
-> security_bpf_token_capable(). Without the above implementation such
-> operation will be rejected, even though if there was no token passed
-> it would succeed. With my implementation above it will succeed as
-> expected.
 
-If that's the case then prevent the creation of tokens in the
-init_user_ns and be done with it. If you fallback anyway then this is
-the correct solution.
+On 1/12/24 4:10 AM, Andrey Grafin wrote:
+> This patch allows to create BPF_MAP_TYPE_ARRAY_OF_MAPS and
+> BPF_MAP_TYPE_HASH_OF_MAPS with values of BPF_MAP_TYPE_PERF_EVENT_ARRAY.
+>
+> Previous behaviour created a zero filled btf_map_def for inner maps and
+> tried to use it for a map creation but the linux kernel forbids to create
+> a BPF_MAP_TYPE_PERF_EVENT_ARRAY map with max_entries=0.
+>
+> A simple bpf snippet to reproduce:
+>    struct inner_map {
+>      __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+>      __uint(key_size, sizeof(int));
+>      __uint(value_size, sizeof(u32));
+>    } inner_map0 SEC(".maps"), inner_map1 SEC(".maps");
+>
+>    struct {
+>      __uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
+>      __uint(max_entries, 2);
+>      __type(key, u32);
+>      __array(values, struct inner_map);
+>    } outer_map SEC(".maps") = {
+>      .values = {&inner_map0, &inner_map1}};
+>    ...
 
-Make this change, please. I'm not willing to support this weird fallback
-stuff which is even hard to reason about.
+What I mean is to add a selftest in tools/testing/selftests/bpf/ directory,
+not a test with partial code in the commit message. You can add another
+subtest in tools/testing/selftests/bpf/progs/map_in_map.c.
+
+>
+> Previous behaviour:
+>    # sudo bpftool prog load ./bpf_sample.elf /sys/fs/bpf/test
+>      libbpf: map 'outer_map': failed to create inner map: -22
+>      libbpf: map 'outer_map': failed to create: Invalid argument(-22)
+>      libbpf: failed to load object './bpf_sample.elf'
+>      Error: failed to load object file
+>
+>    # sudo strace -e bpf bpftool prog load ./bpf_sample.elf /sys/fs/bpf/test
+>    ...
+>    bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERF_EVENT_ARRAY, key_size=4,
+>      value_size=4, max_entries=16, map_flags=0, inner_map_fd=0,
+>      map_name="inner_map0", map_ifindex=0, btf_fd=0, btf_key_type_id=0,
+>      btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 4
+>    bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERF_EVENT_ARRAY, key_size=4,
+>      value_size=4, max_entries=16, map_flags=0, inner_map_fd=0,
+>      map_name="inner_map1", map_ifindex=0, btf_fd=0, btf_key_type_id=0,
+>      btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 5
+>    bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERF_EVENT_ARRAY, key_size=4,
+>      value_size=4, max_entries=0, map_flags=0, inner_map_fd=0,
+>      map_name="outer_map.inner", map_ifindex=0, btf_fd=0,
+>      btf_key_type_id=0, btf_value_type_id=0, btf_vmlinux_value_type_id=0,
+>      map_extra=0}, 72) = -1 EINVAL (Invalid argument)
+>
+> New behaviour:
+>    # sudo strace -e bpf bpftool prog load ./bpf_sample.elf /sys/fs/bpf/test
+>    ...
+>    bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERF_EVENT_ARRAY, key_size=4,
+>      value_size=4, max_entries=16, map_flags=0, inner_map_fd=0,
+>      map_name="inner_map0", map_ifindex=0, btf_fd=0, btf_key_type_id=0,
+>      btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 4
+>    bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERF_EVENT_ARRAY, key_size=4,
+>      value_size=4, max_entries=16, map_flags=0, inner_map_fd=0,
+>      map_name="inner_map1", map_ifindex=0, btf_fd=0, btf_key_type_id=0,
+>      btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 5
+>    bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_PERF_EVENT_ARRAY, key_size=4,
+>      value_size=4, max_entries=16, map_flags=0, inner_map_fd=0,
+>      map_name="outer_map.inner", map_ifindex=0, btf_fd=0, btf_key_type_id=0,
+>      btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 6
+>    bpf(BPF_MAP_CREATE, {map_type=BPF_MAP_TYPE_ARRAY_OF_MAPS, key_size=4,
+>      value_size=4, max_entries=2, map_flags=0, inner_map_fd=6,
+>      map_name="outer_map", map_ifindex=0, btf_fd=0, btf_key_type_id=0,
+>      btf_value_type_id=0, btf_vmlinux_value_type_id=0, map_extra=0}, 72) = 7
+>    bpf(BPF_MAP_UPDATE_ELEM, {map_fd=7, key=0x7ffc89f2de54,
+>      value=0x7ffc89f2de58,flags=BPF_ANY}, 32) = 0
+>    bpf(BPF_MAP_UPDATE_ELEM, {map_fd=7, key=0x7ffc89f2de54,
+>      value=0x7ffc89f2de58, flags=BPF_ANY}, 32) = 0
+>    ...
+>    +++ exited with 0 +++
+>
+> Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
+> ---
+>   tools/lib/bpf/libbpf.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index e067be95da3c..8f4d580187aa 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -70,6 +70,7 @@
+>   
+>   static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
+>   static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
+> +static int map_set_def_max_entries(struct bpf_map *map);
+>   
+>   static const char * const attach_type_name[] = {
+>   	[BPF_CGROUP_INET_INGRESS]	= "cgroup_inet_ingress",
+> @@ -5212,6 +5213,9 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>   
+>   	if (bpf_map_type__is_map_in_map(def->type)) {
+>   		if (map->inner_map) {
+> +			err = map_set_def_max_entries(map->inner_map);
+> +			if (err)
+> +				return err;
+>   			err = bpf_object__create_map(obj, map->inner_map, true);
+>   			if (err) {
+>   				pr_warn("map '%s': failed to create inner map: %d\n",
 
