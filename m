@@ -1,144 +1,87 @@
-Return-Path: <bpf+bounces-19506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 159E582CDB7
-	for <lists+bpf@lfdr.de>; Sat, 13 Jan 2024 17:18:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 568DA82CE48
+	for <lists+bpf@lfdr.de>; Sat, 13 Jan 2024 20:20:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9DD51F22720
-	for <lists+bpf@lfdr.de>; Sat, 13 Jan 2024 16:18:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D423E1F22252
+	for <lists+bpf@lfdr.de>; Sat, 13 Jan 2024 19:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E0604A32;
-	Sat, 13 Jan 2024 16:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F6C63CC;
+	Sat, 13 Jan 2024 19:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Xnzpsfc1";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MJDYuIZn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R0wAltPC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D594A23AD;
-	Sat, 13 Jan 2024 16:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.nyi.internal (Postfix) with ESMTP id CD45E5C015C;
-	Sat, 13 Jan 2024 11:17:47 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 13 Jan 2024 11:17:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1705162667; x=1705249067; bh=MEDYmM5cVk
-	zuxdcLusRM8oPzUPvOS7c6CVBKYOnEpUQ=; b=Xnzpsfc1Nl63sjp7BTJAIuCmEp
-	cUpfhwChKEfReR1Psw6r7mE2+aRXLGMYrTQdE7y8dEkJD1RhelN3XbuAPsPqdfwU
-	8F9wkYxPexlfkc1FiyJhf61fKWJs59ruedYiDNd+fnK4FYZ56A/5Igw1X5eqztxu
-	F+6yO/0WBk2kvx5W/xNl5M5lAuqmfRWOY1qi2TJASnqAGFoJd7DnVQ0kFh9ae1+G
-	w4NiVKy1dL/Ofk8tkJHCR4gIm2jv6CHpPYKIH5fGBMxg0kdIVczBjKzuMlr8ML6Z
-	547+2kg8keGGTxL8kJy+e45ajDM97oOFsCNJDUWtBZc5ZyG+75NZgo7H3RQQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1705162667; x=1705249067; bh=MEDYmM5cVkzuxdcLusRM8oPzUPvO
-	S7c6CVBKYOnEpUQ=; b=MJDYuIZnfcoNAXxq7SZfX0nbx40/W8OL/awF37AflUbi
-	df1zwyv8Yl0LONbHxWUbygOojfYFXP5TJtIBeTAjdotnShknXgSdlNdYthgFaV+q
-	gftOJqPQ6+6m2a8si7ANLuwB3j7JqGomuHRqamhB3P6aHp4W8eMmnehIXiLPdb4i
-	z2+ZIwDbKnMdMEnqE5CwhgshtYKvcKP58Fpc77SVsEuYSBfnqlcTjHdQLmUbyYg9
-	SReb9RXWbBnm/FrIYhIg4wT57iZeBbfkihA3LjBHvT7LA0ABEMr/9zJDfUN+zLfC
-	Eshnw3CTKpJFJrglCgpOzqUtGf0scEsZOd298aLQfw==
-X-ME-Sender: <xms:q7eiZfE9PCD0JsFpwiV5hPc6lGTqA2ie0NHxajGocSsQdOq4opPE8Q>
-    <xme:q7eiZcUBbznI7dCLxsW2KDTobKkaHBPx5Qq-Ml14tVT1elIzkdHa4MnU43aY5who6
-    PBec8mmp8LAYTgUgw>
-X-ME-Received: <xmr:q7eiZRIX157GUhJVAVKWbpq3uXB55N784QI3W3BEBaXLBAsBIPdyPPk8EPmw7eZ3q4RS3tlCKwZWdfXM1co9Zy8pPtAchECDG327odo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdeijedgkeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
-    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:q7eiZdFqygVlOL7uxMwlcPKPoIajAPuK7WbTdtobRaYi_yDn58e_HA>
-    <xmx:q7eiZVUFF0bmdJN3bP5ZmS4mUUiCqL-E2moh1UehdxOumzPwYV5KQw>
-    <xmx:q7eiZYM_2qc3jM-u9lz1HicL2Rd_26OJZSoZqxZzXLENSwSMg6ms4Q>
-    <xmx:q7eiZWXaNdaK6K4jSsiKPbWYfVmvTPGIkjySaqH2L9UdU8-cyRAD2w>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 13 Jan 2024 11:17:45 -0500 (EST)
-Date: Sat, 13 Jan 2024 09:17:44 -0700
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: linux-input@vger.kernel.org, coreteam@netfilter.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org, fsverity@lists.linux.dev, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	cgroups@vger.kernel.org, alexei.starovoitov@gmail.com, quentin@isovalent.com, 
-	alan.maguire@oracle.com, memxor@gmail.com
-Subject: Re: [PATCH bpf-next v3 0/3] Annotate kfuncs in .BTF_ids section
-Message-ID: <nhpt647n2djmthtdkqzrfbpeuqkhfy567rt7qyqtymxejncbgr@4tpiyxy2sbcm>
-References: <cover.1704565248.git.dxu@dxuuu.xyz>
- <ZaFm13GyXUukcnkm@krava>
- <2dhmwvfnnqnlrui2qcr5fob54gdsuse5caievct42trvvia6qe@p24nymz3uttv>
- <ZaKW1AghwUnVz_c4@krava>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A3763A7;
+	Sat, 13 Jan 2024 19:20:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E35DDC433F1;
+	Sat, 13 Jan 2024 19:20:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705173626;
+	bh=WbWG2IiZZYGplfQqyzGwNMVETfJ4+WScuj2euCEwZL0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=R0wAltPCLv3ywoSnmFJ7VL/I67zA2t2dc05mFqRKn37/9x9xL49E/ll5ldo1hQJc/
+	 ors5aNYRSYp+toXSzT37jFzZ1vBV22RYCF4w8xZyed2cZEOzK52QeTVrt0ZVpl3Phy
+	 RjXP6YzVUqsacxO+x0OzQo6G2qUCNk+t9711sGkA53ZwAIVU5H5UD5Ety99V7haCDG
+	 CROcKn06T+Tkfp2rrCIAyGW/DBKyGz+CS8Nnz8wdnuaQL7aI5CmTDzNiMnIZOXsbtF
+	 KwifzFaszdF/2K6akPJS0zRF14DKAvap5grPcfHGCpnir3YIvXhBgDRpRE4P1hzul0
+	 ufqTSOmxHs6lw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C7B83DFC697;
+	Sat, 13 Jan 2024 19:20:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZaKW1AghwUnVz_c4@krava>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 bpf 0/3] bpf: Fix backward progress bug in bpf_iter_udp
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170517362581.27258.5049998565327508436.git-patchwork-notify@kernel.org>
+Date: Sat, 13 Jan 2024 19:20:25 +0000
+References: <20240112190530.3751661-1-martin.lau@linux.dev>
+In-Reply-To: <20240112190530.3751661-1-martin.lau@linux.dev>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, netdev@vger.kernel.org, kernel-team@meta.com
 
-Hi Jiri,
+Hello:
 
-On Sat, Jan 13, 2024 at 02:57:40PM +0100, Jiri Olsa wrote:
-> On Fri, Jan 12, 2024 at 01:03:59PM -0700, Daniel Xu wrote:
-> > On Fri, Jan 12, 2024 at 05:20:39PM +0100, Jiri Olsa wrote:
-> > > On Sat, Jan 06, 2024 at 11:24:07AM -0700, Daniel Xu wrote:
-> > > > === Description ===
-> > > > 
-> > > > This is a bpf-treewide change that annotates all kfuncs as such inside
-> > > > .BTF_ids. This annotation eventually allows us to automatically generate
-> > > > kfunc prototypes from bpftool.
-> > > > 
-> > > > We store this metadata inside a yet-unused flags field inside struct
-> > > > btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
-> > > > 
-> > > > More details about the full chain of events are available in commit 3's
-> > > > description.
-> > > > 
-> > > > The accompanying pahole changes (still needs some cleanup) can be viewed
-> > > > here on this "frozen" branch [0].
-> > > 
-> > > so the plan is to have bpftool support to generate header file
-> > > with detected kfuncs?
-> > 
-> > Yep, that's the major use case. But I see other use cases as well like
+This series was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Fri, 12 Jan 2024 11:05:27 -0800 you wrote:
+> From: Martin KaFai Lau <martin.lau@kernel.org>
 > 
-> ok, any chance you could already include it in the patchset?
-> would be a great way to test this.. maybe we could change
-> selftests to use that
+> This patch set fixes an issue in bpf_iter_udp that makes backward
+> progress and prevents the user space process from finishing. There is
+> a test at the end to reproduce the bug.
+> 
+> Please see individual patches for details.
+> 
+> [...]
 
-I haven't start working on that code yet, but I can.
+Here is the summary with links:
+  - [v3,bpf,1/3] bpf: iter_udp: Retry with a larger batch size without going back to the previous bucket
+    https://git.kernel.org/bpf/bpf/c/19ca0823f6ea
+  - [v3,bpf,2/3] bpf: Avoid iter->offset making backward progress in bpf_iter_udp
+    https://git.kernel.org/bpf/bpf/c/2242fd537fab
+  - [v3,bpf,3/3] selftests/bpf: Test udp and tcp iter batching
+    https://git.kernel.org/bpf/bpf/c/dbd7db7787ba
 
-Here is my plan FWIW:
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-1. Bump minimum required pahole version up. Or feature probe for
-   kfunc decl tag support. Whatever is the standard practice here.
 
-2. Teach bpftool to dump kfunc prototypes, guarded behind a flag.
-
-3. Flip bpftool flag on in selftest build and remove all manual kfunc
-   prototypes atomically in 1 commit.
-
-I thought it'd be nicer to do it incrementally given all the moving
-pieces. But if we want to land it all at once that is ok by me too.
-
-Thanks,
-Daniel
 
