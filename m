@@ -1,47 +1,42 @@
-Return-Path: <bpf+bounces-19544-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19545-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C27AC82DAD3
-	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 15:00:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 934D782DBE7
+	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 15:53:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A405E1C21A1B
-	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 14:00:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43F78280F32
+	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 14:53:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 459BA175B5;
-	Mon, 15 Jan 2024 14:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356E1175B9;
+	Mon, 15 Jan 2024 14:50:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D212C1757A;
-	Mon, 15 Jan 2024 14:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4010175AE
+	for <bpf@vger.kernel.org>; Mon, 15 Jan 2024 14:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TDDL969ZXz4f3jq2;
-	Mon, 15 Jan 2024 22:00:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id EEC511A0BAE;
-	Mon, 15 Jan 2024 22:00:19 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TDFRz6gcbz4f3jq0
+	for <bpf@vger.kernel.org>; Mon, 15 Jan 2024 22:50:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 0E6B01A017A
+	for <bpf@vger.kernel.org>; Mon, 15 Jan 2024 22:50:26 +0800 (CST)
 Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP2 (Coremail) with SMTP id Syh0CgBXeg1xOqVlBRm1Aw--.63466S2;
-	Mon, 15 Jan 2024 22:00:19 +0800 (CST)
-Subject: Re: [PATCH bpf-next v3 2/2] selftests/bpf: Skip callback tests if jit
- is disabled in test_verifier
-To: Tiezhu Yang <yangtiezhu@loongson.cn>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
- John Fastabend <john.fastabend@gmail.com>, Jiri Olsa <jolsa@kernel.org>,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240115070010.12338-1-yangtiezhu@loongson.cn>
- <20240115070010.12338-3-yangtiezhu@loongson.cn>
+	by APP4 (Coremail) with SMTP id gCh0CgA3PG4uRqVlRve0Aw--.8790S2;
+	Mon, 15 Jan 2024 22:50:25 +0800 (CST)
+Subject: Re: [PATCH bpf v3] libbpf: Apply map_set_def_max_entries() for
+ inner_maps on creation
+To: Andrey Grafin <conquistador@yandex-team.ru>, bpf@vger.kernel.org
+Cc: andrii@kernel.org
+References: <20240115125914.28588-1-conquistador@yandex-team.ru>
 From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <84e15d1c-c2a6-9af4-c123-beea01893a8f@huaweicloud.com>
-Date: Mon, 15 Jan 2024 22:00:17 +0800
+Message-ID: <6e0032a0-8a1f-6d9a-07b8-a3f312725949@huaweicloud.com>
+Date: Mon, 15 Jan 2024 22:50:22 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.0
 Precedence: bulk
@@ -50,122 +45,161 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240115070010.12338-3-yangtiezhu@loongson.cn>
+In-Reply-To: <20240115125914.28588-1-conquistador@yandex-team.ru>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-CM-TRANSID:Syh0CgBXeg1xOqVlBRm1Aw--.63466S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr4rAw48WF1kAr17Zr4DXFb_yoW5tw4rpF
-	4kJ3WqkF10va429r17Zwn7GFWYvw4kXw4UGryfW3y8AF4DJr13Jrn3KrWYvF93GrWrWa4S
-	va109r45Ww1UJFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:gCh0CgA3PG4uRqVlRve0Aw--.8790S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr1UAFWDGFyUuF4rGrW3ZFb_yoWruFy7pF
+	W8uFWakrWxXF12q347Jayj9rWYqw1vg34j9F1Sq34jyr4DXr9rXF1xKFZrJFnxu39Yqw1f
+	A3Wakr93uayktFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-	k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-	xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQzVbUUUUU=
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
 X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
 Hi,
 
-On 1/15/2024 3:00 PM, Tiezhu Yang wrote:
-> If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
-> exist 6 failed tests.
+On 1/15/2024 8:59 PM, Andrey Grafin wrote:
+> This patch allows to create BPF_MAP_TYPE_ARRAY_OF_MAPS and
+> BPF_MAP_TYPE_HASH_OF_MAPS with values of BPF_MAP_TYPE_PERF_EVENT_ARRAY.
 >
->   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
->   [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
->   [root@linux bpf]# ./test_verifier | grep FAIL
->   #106/p inline simple bpf_loop call FAIL
->   #107/p don't inline bpf_loop call, flags non-zero FAIL
->   #108/p don't inline bpf_loop call, callback non-constant FAIL
->   #109/p bpf_loop_inline and a dead func FAIL
->   #110/p bpf_loop_inline stack locations for loop vars FAIL
->   #111/p inline bpf_loop call in a big program FAIL
->   Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
+> Previous behaviour created a zero filled btf_map_def for inner maps and
+> tried to use it for a map creation but the linux kernel forbids to create
+> a BPF_MAP_TYPE_PERF_EVENT_ARRAY map with max_entries=0.
 >
-> The test log shows that callbacks are not allowed in non-JITed programs,
-> interpreter doesn't support them yet, thus these tests should be skipped
-> if jit is disabled, copy some check functions from the other places under
-> tools directory, and then handle this case in do_test_single().
->
-> With this patch:
->
->   [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
->   [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
->   [root@linux bpf]# ./test_verifier | grep FAIL
->   Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
->
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
 > ---
->  tools/testing/selftests/bpf/test_verifier.c | 23 +++++++++++++++++++++
->  1 file changed, 23 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-> index 1a09fc34d093..70f903e869b7 100644
-> --- a/tools/testing/selftests/bpf/test_verifier.c
-> +++ b/tools/testing/selftests/bpf/test_verifier.c
-> @@ -74,6 +74,7 @@
->  		    1ULL << CAP_BPF)
->  #define UNPRIV_SYSCTL "kernel/unprivileged_bpf_disabled"
->  static bool unpriv_disabled = false;
-> +static bool jit_disabled;
->  static int skips;
->  static bool verbose = false;
->  static int verif_log_level = 0;
-> @@ -1355,6 +1356,16 @@ static bool is_skip_insn(struct bpf_insn *insn)
->  	return memcmp(insn, &skip_insn, sizeof(skip_insn)) == 0;
->  }
->  
-> +static bool is_ldimm64_insn(struct bpf_insn *insn)
-> +{
-> +	return insn->code == (BPF_LD | BPF_IMM | BPF_DW);
-> +}
-> +
-> +static bool insn_is_pseudo_func(struct bpf_insn *insn)
-> +{
-> +	return is_ldimm64_insn(insn) && insn->src_reg == BPF_PSEUDO_FUNC;
-> +}
-> +
->  static int null_terminated_insn_len(struct bpf_insn *seq, int max_len)
->  {
->  	int i;
-> @@ -1619,6 +1630,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
->  		goto close_fds;
->  	}
->  
-> +	if (fd_prog < 0 && saved_errno == EINVAL && jit_disabled) {
-> +		for (i = 0; i < prog_len; i++, prog++) {
-> +			if (insn_is_pseudo_func(prog)) {
-> +				printf("SKIP (callbacks are not allowed in non-JITed programs)\n");
-> +				skips++;
-> +				goto close_fds;
-> +			}
-> +		}
-> +	}
+>  tools/lib/bpf/libbpf.c                        |  4 +++
+>  .../selftests/bpf/progs/test_map_in_map.c     | 23 +++++++++++++++
+>  tools/testing/selftests/bpf/test_maps.c       | 29 ++++++++++++++++++-
 
-I ran test_verifier before applying the patch set, it seems all
-expected_ret for these failed programs are ACCEPT, so I think it would
-be better to move the not-allowed-checking into "if (expected_ret ==
-ACCEPT || expected_ret == VERBOSE_ACCEPT)" block. I should suggest such
-modification in v2, sorry about that.
-> +
->  	alignment_prevented_execution = 0;
+It would be better to move the selftest into a separated patch, so the
+fix patch for libbpf could be backported alone.
+>  3 files changed, 55 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index e067be95da3c..8f4d580187aa 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -70,6 +70,7 @@
 >  
->  	if (expected_ret == ACCEPT || expected_ret == VERBOSE_ACCEPT) {
-> @@ -1844,6 +1865,8 @@ int main(int argc, char **argv)
->  		return EXIT_FAILURE;
+>  static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
+>  static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
+> +static int map_set_def_max_entries(struct bpf_map *map);
+>  
+>  static const char * const attach_type_name[] = {
+>  	[BPF_CGROUP_INET_INGRESS]	= "cgroup_inet_ingress",
+> @@ -5212,6 +5213,9 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
+>  
+>  	if (bpf_map_type__is_map_in_map(def->type)) {
+>  		if (map->inner_map) {
+> +			err = map_set_def_max_entries(map->inner_map);
+> +			if (err)
+> +				return err;
+>  			err = bpf_object__create_map(obj, map->inner_map, true);
+>  			if (err) {
+>  				pr_warn("map '%s': failed to create inner map: %d\n",
+> diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map.c b/tools/testing/selftests/bpf/progs/test_map_in_map.c
+> index f416032ba858..b393d2b8bd6f 100644
+> --- a/tools/testing/selftests/bpf/progs/test_map_in_map.c
+> +++ b/tools/testing/selftests/bpf/progs/test_map_in_map.c
+> @@ -21,6 +21,29 @@ struct {
+>  	__type(value, __u32);
+>  } mim_hash SEC(".maps");
+>  
+> +struct perf_event_array {
+> +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+> +	__type(key, __u32);
+> +	__type(value, __u32);
+> +} inner_map0 SEC(".maps"), inner_map1 SEC(".maps");
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
+> +	__uint(max_entries, 2);
+> +	__type(key, __u32);
+> +	__array(values, struct perf_event_array);
+> +} mim_array_pe SEC(".maps") = {
+> +	.values = {&inner_map0, &inner_map1}};
+> +
+> +struct {
+> +	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
+> +	__uint(max_entries, 2);
+> +	__type(key, __u32);
+> +	__array(values, struct perf_event_array);
+> +} mim_hash_pe SEC(".maps") = {
+> +	.values = {&inner_map0, &inner_map1}};
+> +
+> +
+>  SEC("xdp")
+>  int xdp_mimtest0(struct xdp_md *ctx)
+>  {
+> diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
+> index 7fc00e423e4d..03f4d448fd3b 100644
+> --- a/tools/testing/selftests/bpf/test_maps.c
+> +++ b/tools/testing/selftests/bpf/test_maps.c
+> @@ -1159,6 +1159,7 @@ static void test_map_in_map(void)
+>  	__u32 len = sizeof(info);
+>  	__u32 id = 0;
+>  	libbpf_print_fn_t old_print_fn;
+> +	int ret;
+
+Why not use err instead ?
+>  
+>  	obj = bpf_object__open(MAPINMAP_PROG);
+>  
+> @@ -1190,7 +1191,11 @@ static void test_map_in_map(void)
+>  		goto out_map_in_map;
 >  	}
 >  
-> +	jit_disabled = !is_jit_enabled();
-> +
->  	/* Use libbpf 1.0 API mode */
->  	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+> -	bpf_object__load(obj);
+> +	ret = bpf_object__load(obj);
+> +	if (ret) {
+> +		printf("Failed to load test prog\n");
+> +		goto out_map_in_map;
+> +	}
 >  
+>  	map = bpf_object__find_map_by_name(obj, "mim_array");
+>  	if (!map) {
+> @@ -1226,6 +1231,28 @@ static void test_map_in_map(void)
+>  		goto out_map_in_map;
+>  	}
+>  
+> +	map = bpf_object__find_map_by_name(obj, "mim_array_pe");
+> +	if (!map) {
+> +		printf("Failed to load array of perf event array maps\n");
+> +		goto out_map_in_map;
+> +	}
+> +	mim_fd = bpf_map__fd(map);
+> +	if (mim_fd < 0) {
+> +		printf("Failed to get descriptor for array of perf event array maps\n");
+> +		goto out_map_in_map;
+> +	}
+> +
+> +	map = bpf_object__find_map_by_name(obj, "mim_hash_pe");
+> +	if (!map) {
+> +		printf("Failed to load hash of perf event array maps\n");
+> +		goto out_map_in_map;
+> +	}
+> +	mim_fd = bpf_map__fd(map);
+> +	if (mim_fd < 0) {
+> +		printf("Failed to get descriptor for array of perf event array maps\n");
+
+array -> hash ?
+> +		goto out_map_in_map;
+> +	}
+> +
+>  	close(fd);
+>  	fd = -1;
+>  	bpf_object__close(obj);
 
 
