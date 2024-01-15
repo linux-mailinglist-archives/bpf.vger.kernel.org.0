@@ -1,256 +1,177 @@
-Return-Path: <bpf+bounces-19538-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ADBB82D9CB
-	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 14:14:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF2EF82DA63
+	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 14:43:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35B9C28218B
-	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 13:14:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72DD8B21A32
+	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 13:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C9C71757D;
-	Mon, 15 Jan 2024 13:12:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F1C31758E;
+	Mon, 15 Jan 2024 13:42:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from wp716.webpack.hosteurope.de (wp716.webpack.hosteurope.de [80.237.130.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2005171C9;
-	Mon, 15 Jan 2024 13:12:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TDCGX5wlDz4f3l2k;
-	Mon, 15 Jan 2024 21:12:04 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 7FE311A0D1A;
-	Mon, 15 Jan 2024 21:12:08 +0800 (CST)
-Received: from ultra.huawei.com (unknown [10.90.53.71])
-	by APP4 (Coremail) with SMTP id gCh0CgBnu20iL6VlSeWtAw--.15591S8;
-	Mon, 15 Jan 2024 21:12:08 +0800 (CST)
-From: Pu Lehui <pulehui@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F7F1757D;
+	Mon, 15 Jan 2024 13:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=alumni.tu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=alumni.tu-berlin.de
+Received: from dynamic-2a01-0c23-606a-b500-b981-1935-c9f7-1531.c23.pool.telefonica.de ([2a01:c23:606a:b500:b981:1935:c9f7:1531] helo=jt.fritz.box); authenticated
+	by wp716.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	id 1rPNEg-0006AL-4K; Mon, 15 Jan 2024 14:42:42 +0100
+From: =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <j-t.hinz@alumni.tu-berlin.de>
 To: bpf@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	netdev@vger.kernel.org
-Cc: =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: =?UTF-8?q?J=C3=B6rn-Thorben=20Hinz?= <j-t.hinz@alumni.tu-berlin.de>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Conor Dooley <conor@kernel.org>,
-	Luke Nelson <luke.r.nels@gmail.com>,
-	Pu Lehui <pulehui@huawei.com>,
-	Pu Lehui <pulehui@huaweicloud.com>
-Subject: [PATCH RESEND bpf-next v3 6/6] riscv, bpf: Optimize bswap insns with Zbb support
-Date: Mon, 15 Jan 2024 13:12:35 +0000
-Message-Id: <20240115131235.2914289-7-pulehui@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240115131235.2914289-1-pulehui@huaweicloud.com>
-References: <20240115131235.2914289-1-pulehui@huaweicloud.com>
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Deepa Dinamani <deepa.kernel@gmail.com>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Subject: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with bpf_setsockopt()
+Date: Mon, 15 Jan 2024 14:41:10 +0100
+Message-Id: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBnu20iL6VlSeWtAw--.15591S8
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFyrtFWkJF4UtFy3GF4xCrg_yoW7Gw4rpa
-	43Kr4ru3y8trsIy34kG3WDWw13GF1jyFnFvF1fJrZ5Xw4jv397G3WUtr4Fyry5G34fuay5
-	WF1DKr9rK3WUKFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr
-	0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUl
-	2NtUUUUU=
-X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
+X-bounce-key: webpack.hosteurope.de;j-t.hinz@alumni.tu-berlin.de;1705326171;87aeb70d;
+X-HE-SMSGID: 1rPNEg-0006AL-4K
 
-From: Pu Lehui <pulehui@huawei.com>
+A BPF application, e.g., a TCP congestion control, might benefit from or
+even require precise (=hardware) packet timestamps. These timestamps are
+already available through __sk_buff.hwtstamp and
+bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs were
+not allowed to set SO_TIMESTAMPING* on sockets.
 
-Optimize bswap instructions by rev8 Zbb instruction conbined with srli
-instruction. And Optimize 16-bit zero-extension with Zbb support.
+Enable BPF programs to actively request the generation of timestamps
+from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
+network device must still be done separately, in user space.
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
+This patch had previously been submitted in a two-part series (first
+link below). The second patch has been independently applied in commit
+7f6ca95d16b9 ("net: Implement missing getsockopt(SO_TIMESTAMPING_NEW)")
+(second link below).
+
+On the earlier submission, there was the open question whether to only
+allow, thus enforce, SO_TIMESTAMPING_NEW in this patch:
+
+For a BPF program, this won't make a difference: A timestamp, when
+accessed through the fields mentioned above, is directly read from
+skb_shared_info.hwtstamps, independent of the places where NEW/OLD is
+relevant. See bpf_convert_ctx_access() besides others.
+
+I am unsure, though, when it comes to the interconnection of user space
+and BPF "space", when both are interested in the timestamps. I think it
+would cause an unsolvable conflict when user space is bound to use
+SO_TIMESTAMPING_OLD with a BPF program only allowed to set
+SO_TIMESTAMPING_NEW *on the same socket*? Please correct me if I'm
+mistaken.
+
+Link: https://lore.kernel.org/lkml/20230703175048.151683-1-jthinz@mailbox.tu-berlin.de/
+Link: https://lore.kernel.org/all/20231221231901.67003-1-jthinz@mailbox.tu-berlin.de/
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Signed-off-by: Jörn-Thorben Hinz <j-t.hinz@alumni.tu-berlin.de>
 ---
- arch/riscv/net/bpf_jit.h        | 69 +++++++++++++++++++++++++++++++++
- arch/riscv/net/bpf_jit_comp64.c | 50 +-----------------------
- 2 files changed, 71 insertions(+), 48 deletions(-)
+ include/uapi/linux/bpf.h                            | 3 ++-
+ net/core/filter.c                                   | 2 ++
+ tools/include/uapi/linux/bpf.h                      | 3 ++-
+ tools/testing/selftests/bpf/progs/bpf_tracing_net.h | 2 ++
+ tools/testing/selftests/bpf/progs/setget_sockopt.c  | 4 ++++
+ 5 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index b00c5c0591d2..8b35f12a4452 100644
---- a/arch/riscv/net/bpf_jit.h
-+++ b/arch/riscv/net/bpf_jit.h
-@@ -1146,12 +1146,81 @@ static inline void emit_sextw(u8 rd, u8 rs, struct rv_jit_context *ctx)
- 	emit_addiw(rd, rs, 0, ctx);
- }
- 
-+static inline void emit_zexth(u8 rd, u8 rs, struct rv_jit_context *ctx)
-+{
-+	if (rvzbb_enabled()) {
-+		emit(rvzbb_zexth(rd, rs), ctx);
-+		return;
-+	}
-+
-+	emit_slli(rd, rs, 48, ctx);
-+	emit_srli(rd, rd, 48, ctx);
-+}
-+
- static inline void emit_zextw(u8 rd, u8 rs, struct rv_jit_context *ctx)
- {
- 	emit_slli(rd, rs, 32, ctx);
- 	emit_srli(rd, rd, 32, ctx);
- }
- 
-+static inline void emit_bswap(u8 rd, s32 imm, struct rv_jit_context *ctx)
-+{
-+	if (rvzbb_enabled()) {
-+		int bits = 64 - imm;
-+
-+		emit(rvzbb_rev8(rd, rd), ctx);
-+		if (bits)
-+			emit_srli(rd, rd, bits, ctx);
-+		return;
-+	}
-+
-+	emit_li(RV_REG_T2, 0, ctx);
-+
-+	emit_andi(RV_REG_T1, rd, 0xff, ctx);
-+	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
-+	emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
-+	emit_srli(rd, rd, 8, ctx);
-+	if (imm == 16)
-+		goto out_be;
-+
-+	emit_andi(RV_REG_T1, rd, 0xff, ctx);
-+	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
-+	emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
-+	emit_srli(rd, rd, 8, ctx);
-+
-+	emit_andi(RV_REG_T1, rd, 0xff, ctx);
-+	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
-+	emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
-+	emit_srli(rd, rd, 8, ctx);
-+	if (imm == 32)
-+		goto out_be;
-+
-+	emit_andi(RV_REG_T1, rd, 0xff, ctx);
-+	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
-+	emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
-+	emit_srli(rd, rd, 8, ctx);
-+
-+	emit_andi(RV_REG_T1, rd, 0xff, ctx);
-+	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
-+	emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
-+	emit_srli(rd, rd, 8, ctx);
-+
-+	emit_andi(RV_REG_T1, rd, 0xff, ctx);
-+	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
-+	emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
-+	emit_srli(rd, rd, 8, ctx);
-+
-+	emit_andi(RV_REG_T1, rd, 0xff, ctx);
-+	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
-+	emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
-+	emit_srli(rd, rd, 8, ctx);
-+out_be:
-+	emit_andi(RV_REG_T1, rd, 0xff, ctx);
-+	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
-+
-+	emit_mv(rd, RV_REG_T2, ctx);
-+}
-+
- #endif /* __riscv_xlen == 64 */
- 
- void bpf_jit_build_prologue(struct rv_jit_context *ctx);
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 18bbf8122eb3..e86e83649820 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -1176,8 +1176,7 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 	case BPF_ALU | BPF_END | BPF_FROM_LE:
- 		switch (imm) {
- 		case 16:
--			emit_slli(rd, rd, 48, ctx);
--			emit_srli(rd, rd, 48, ctx);
-+			emit_zexth(rd, rd, ctx);
- 			break;
- 		case 32:
- 			if (!aux->verifier_zext)
-@@ -1188,54 +1187,9 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 			break;
- 		}
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 754e68ca8744..8825d0648efe 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2734,7 +2734,8 @@ union bpf_attr {
+  * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
+  * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
+  * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**, **SO_REUSEADDR**,
+- * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**.
++ * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**,
++ * 		  **SO_TIMESTAMPING_NEW**, **SO_TIMESTAMPING_OLD**.
+  * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
+  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
+  * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 8c9f67c81e22..4f5280874fd8 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -5144,6 +5144,8 @@ static int sol_socket_sockopt(struct sock *sk, int optname,
+ 	case SO_MAX_PACING_RATE:
+ 	case SO_BINDTOIFINDEX:
+ 	case SO_TXREHASH:
++	case SO_TIMESTAMPING_NEW:
++	case SO_TIMESTAMPING_OLD:
+ 		if (*optlen != sizeof(int))
+ 			return -EINVAL;
  		break;
--
- 	case BPF_ALU | BPF_END | BPF_FROM_BE:
- 	case BPF_ALU64 | BPF_END | BPF_FROM_LE:
--		emit_li(RV_REG_T2, 0, ctx);
--
--		emit_andi(RV_REG_T1, rd, 0xff, ctx);
--		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
--		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
--		emit_srli(rd, rd, 8, ctx);
--		if (imm == 16)
--			goto out_be;
--
--		emit_andi(RV_REG_T1, rd, 0xff, ctx);
--		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
--		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
--		emit_srli(rd, rd, 8, ctx);
--
--		emit_andi(RV_REG_T1, rd, 0xff, ctx);
--		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
--		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
--		emit_srli(rd, rd, 8, ctx);
--		if (imm == 32)
--			goto out_be;
--
--		emit_andi(RV_REG_T1, rd, 0xff, ctx);
--		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
--		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
--		emit_srli(rd, rd, 8, ctx);
--
--		emit_andi(RV_REG_T1, rd, 0xff, ctx);
--		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
--		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
--		emit_srli(rd, rd, 8, ctx);
--
--		emit_andi(RV_REG_T1, rd, 0xff, ctx);
--		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
--		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
--		emit_srli(rd, rd, 8, ctx);
--
--		emit_andi(RV_REG_T1, rd, 0xff, ctx);
--		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
--		emit_slli(RV_REG_T2, RV_REG_T2, 8, ctx);
--		emit_srli(rd, rd, 8, ctx);
--out_be:
--		emit_andi(RV_REG_T1, rd, 0xff, ctx);
--		emit_add(RV_REG_T2, RV_REG_T2, RV_REG_T1, ctx);
--
--		emit_mv(rd, RV_REG_T2, ctx);
-+		emit_bswap(rd, imm, ctx);
- 		break;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 7f24d898efbb..09eaafa6ab43 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2734,7 +2734,8 @@ union bpf_attr {
+  * 		  **SO_RCVBUF**, **SO_SNDBUF**, **SO_MAX_PACING_RATE**,
+  * 		  **SO_PRIORITY**, **SO_RCVLOWAT**, **SO_MARK**,
+  * 		  **SO_BINDTODEVICE**, **SO_KEEPALIVE**, **SO_REUSEADDR**,
+- * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**.
++ * 		  **SO_REUSEPORT**, **SO_BINDTOIFINDEX**, **SO_TXREHASH**,
++ * 		  **SO_TIMESTAMPING_NEW**, **SO_TIMESTAMPING_OLD**.
+  * 		* **IPPROTO_TCP**, which supports the following *optname*\ s:
+  * 		  **TCP_CONGESTION**, **TCP_BPF_IW**,
+  * 		  **TCP_BPF_SNDCWND_CLAMP**, **TCP_SAVE_SYN**,
+diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
+index 1bdc680b0e0e..95f5f169819e 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
++++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
+@@ -15,8 +15,10 @@
+ #define SO_RCVLOWAT		18
+ #define SO_BINDTODEVICE		25
+ #define SO_MARK			36
++#define SO_TIMESTAMPING_OLD     37
+ #define SO_MAX_PACING_RATE	47
+ #define SO_BINDTOIFINDEX	62
++#define SO_TIMESTAMPING_NEW     65
+ #define SO_TXREHASH		74
+ #define __SO_ACCEPTCON		(1 << 16)
  
- 	/* dst = imm */
+diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/testing/selftests/bpf/progs/setget_sockopt.c
+index 7a438600ae98..54205d10793c 100644
+--- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
++++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
+@@ -48,6 +48,10 @@ static const struct sockopt_test sol_socket_tests[] = {
+ 	{ .opt = SO_MARK, .new = 0xeb9f, .expected = 0xeb9f, },
+ 	{ .opt = SO_MAX_PACING_RATE, .new = 0xeb9f, .expected = 0xeb9f, },
+ 	{ .opt = SO_TXREHASH, .flip = 1, },
++	{ .opt = SO_TIMESTAMPING_NEW, .new = SOF_TIMESTAMPING_RX_HARDWARE,
++		.expected = SOF_TIMESTAMPING_RX_HARDWARE, },
++	{ .opt = SO_TIMESTAMPING_OLD, .new = SOF_TIMESTAMPING_RX_HARDWARE,
++		.expected = SOF_TIMESTAMPING_RX_HARDWARE, },
+ 	{ .opt = 0, },
+ };
+ 
 -- 
-2.34.1
+2.39.2
 
 
