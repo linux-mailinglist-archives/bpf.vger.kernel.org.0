@@ -1,215 +1,229 @@
-Return-Path: <bpf+bounces-19551-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19552-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B9F82E03E
-	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 19:51:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 153A482E162
+	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 21:13:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25AFCB2120A
-	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 18:51:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAC701C22203
+	for <lists+bpf@lfdr.de>; Mon, 15 Jan 2024 20:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1249B18AE1;
-	Mon, 15 Jan 2024 18:51:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0969C199D3;
+	Mon, 15 Jan 2024 20:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V8S1POxK"
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Id0pIQvM"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from smtp-fw-33001.amazon.com (smtp-fw-33001.amazon.com [207.171.190.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8569118C01
-	for <bpf@vger.kernel.org>; Mon, 15 Jan 2024 18:51:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <1889a512-779d-40d9-9d13-ce3ebaed0483@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705344695;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=j1I6aNMdOJ7wKAvrqRRV+n8asgi8CUSNX6V9vrfhXqE=;
-	b=V8S1POxKa8WZGMpFX068VxcZaj45i/zv7bFZJpPGdp1rwFbhiL6DHdPGbwwEDZt88yXRMe
-	1wOlvh0edE+44Oqvlo/2lWGndDb+eMGJZ3GqZ7j1XproAyej2IISxn7qsXGNUxJ5dFS752
-	G/+SLYgmyZ166RmSloAuX9IUSTKA/4g=
-Date: Mon, 15 Jan 2024 10:51:29 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A06A199D0;
+	Mon, 15 Jan 2024 20:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1705349602; x=1736885602;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=EyZsQWag1Okc7cfmCCItZ6l0W8cgMueVfProkneQbSM=;
+  b=Id0pIQvMkbIq+QDmlttkS2SYjscZhPELj7rKk2WrhJKNd/u5MtUBmTdM
+   JULu8VH1fnE0DNIUCcJUDjqxie21RoAIdWdNgVsfZpg/4wjGWCjpk3FsW
+   Iw3g4TnZ6EEhCz8mkVqjXoWJrZOuXtrUIs09aSwuFxtV3WXE8gF3ywWqt
+   s=;
+X-IronPort-AV: E=Sophos;i="6.04,197,1695686400"; 
+   d="scan'208";a="321718437"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-d7759ebe.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jan 2024 20:13:16 +0000
+Received: from smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev (iad7-ws-svc-p70-lb3-vlan2.iad.amazon.com [10.32.235.34])
+	by email-inbound-relay-iad-1d-m6i4x-d7759ebe.us-east-1.amazon.com (Postfix) with ESMTPS id 324B44A3E1;
+	Mon, 15 Jan 2024 20:13:13 +0000 (UTC)
+Received: from EX19MTAUWB001.ant.amazon.com [10.0.21.151:49016]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.61.210:2525] with esmtp (Farcaster)
+ id bcae45fc-5982-4853-aeb7-c864dc97260d; Mon, 15 Jan 2024 20:13:13 +0000 (UTC)
+X-Farcaster-Flow-ID: bcae45fc-5982-4853-aeb7-c864dc97260d
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 15 Jan 2024 20:13:13 +0000
+Received: from 88665a182662.ant.amazon.com.com (10.187.170.32) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 15 Jan 2024 20:13:10 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <martin.lau@linux.dev>
+CC: <andrii@kernel.org>, <ast@kernel.org>, <bpf@vger.kernel.org>,
+	<daniel@iogearbox.net>, <edumazet@google.com>, <kuni1840@gmail.com>,
+	<kuniyu@amazon.com>, <netdev@vger.kernel.org>, <pabeni@redhat.com>
+Subject: Re: [PATCH v7 bpf-next 5/6] bpf: tcp: Support arbitrary SYN Cookie.
+Date: Mon, 15 Jan 2024 12:13:01 -0800
+Message-ID: <20240115201301.64265-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <aea7e756-9b3a-46b0-af27-207ba306b875@linux.dev>
+References: <aea7e756-9b3a-46b0-af27-207ba306b875@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf v3] libbpf: Apply map_set_def_max_entries() for
- inner_maps on creation
-Content-Language: en-GB
-To: Hou Tao <houtao@huaweicloud.com>,
- Andrey Grafin <conquistador@yandex-team.ru>, bpf@vger.kernel.org
-Cc: andrii@kernel.org
-References: <20240115125914.28588-1-conquistador@yandex-team.ru>
- <6e0032a0-8a1f-6d9a-07b8-a3f312725949@huaweicloud.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <6e0032a0-8a1f-6d9a-07b8-a3f312725949@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D044UWB002.ant.amazon.com (10.13.139.188) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Precedence: Bulk
 
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Date: Thu, 11 Jan 2024 17:44:55 -0800
+> On 12/20/23 5:28 PM, Kuniyuki Iwashima wrote:
+> > This patch adds a new kfunc available at TC hook to support arbitrary
+> > SYN Cookie.
+> > 
+> > The basic usage is as follows:
+> > 
+> >      struct bpf_tcp_req_attrs attrs = {
+> >          .mss = mss,
+> >          .wscale_ok = wscale_ok,
+> >          .rcv_wscale = rcv_wscale, /* Server's WScale < 15 */
+> >          .snd_wscale = snd_wscale, /* Client's WScale < 15 */
+> >          .tstamp_ok = tstamp_ok,
+> >          .rcv_tsval = tsval,
+> >          .rcv_tsecr = tsecr, /* Server's Initial TSval */
+> >          .usec_ts_ok = usec_ts_ok,
+> >          .sack_ok = sack_ok,
+> >          .ecn_ok = ecn_ok,
+> >      }
+> > 
+> >      skc = bpf_skc_lookup_tcp(...);
+> >      sk = (struct sock *)bpf_skc_to_tcp_sock(skc);
+> >      bpf_sk_assign_tcp_reqsk(skb, sk, attrs, sizeof(attrs));
+> >      bpf_sk_release(skc);
+> > 
+> > bpf_sk_assign_tcp_reqsk() takes skb, a listener sk, and struct
+> > bpf_tcp_req_attrs and allocates reqsk and configures it.  Then,
+> > bpf_sk_assign_tcp_reqsk() links reqsk with skb and the listener.
+> > 
+> > The notable thing here is that we do not hold refcnt for both reqsk
+> > and listener.  To differentiate that, we mark reqsk->syncookie, which
+> > is only used in TX for now.  So, if reqsk->syncookie is 1 in RX, it
+> > means that the reqsk is allocated by kfunc.
+> > 
+> > When skb is freed, sock_pfree() checks if reqsk->syncookie is 1,
+> > and in that case, we set NULL to reqsk->rsk_listener before calling
+> > reqsk_free() as reqsk does not hold a refcnt of the listener.
+> > 
+> > When the TCP stack looks up a socket from the skb, we steal the
+> > listener from the reqsk in skb_steal_sock() and create a full sk
+> > in cookie_v[46]_check().
+> > 
+> > The refcnt of reqsk will finally be set to 1 in tcp_get_cookie_sock()
+> > after creating a full sk.
+> > 
+> > Note that we can extend struct bpf_tcp_req_attrs in the future when
+> > we add a new attribute that is determined in 3WHS.
+> 
+> Notice a few final details.
+> 
+> > 
+> > Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> > ---
+> >   include/net/tcp.h |  13 ++++++
+> >   net/core/filter.c | 113 +++++++++++++++++++++++++++++++++++++++++++++-
+> >   net/core/sock.c   |  14 +++++-
+> >   3 files changed, 136 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/include/net/tcp.h b/include/net/tcp.h
+> > index a63916f41f77..20619df8819e 100644
+> > --- a/include/net/tcp.h
+> > +++ b/include/net/tcp.h
+> > @@ -600,6 +600,19 @@ static inline bool cookie_ecn_ok(const struct net *net, const struct dst_entry *
+> >   }
+> >   
+> >   #if IS_ENABLED(CONFIG_BPF)
+> > +struct bpf_tcp_req_attrs {
+> > +	u32 rcv_tsval;
+> > +	u32 rcv_tsecr;
+> > +	u16 mss;
+> > +	u8 rcv_wscale;
+> > +	u8 snd_wscale;
+> > +	u8 ecn_ok;
+> > +	u8 wscale_ok;
+> > +	u8 sack_ok;
+> > +	u8 tstamp_ok;
+> > +	u8 usec_ts_ok;
+> 
+> Add "u8 reserved[3];" for the 3 bytes tail padding.
+> 
+> > +};
+> > +
+> >   static inline bool cookie_bpf_ok(struct sk_buff *skb)
+> >   {
+> >   	return skb->sk;
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 24061f29c9dd..961c2d30bd72 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -11837,6 +11837,105 @@ __bpf_kfunc int bpf_sock_addr_set_sun_path(struct bpf_sock_addr_kern *sa_kern,
+> >   
+> >   	return 0;
+> >   }
+> > +
+> > +__bpf_kfunc int bpf_sk_assign_tcp_reqsk(struct sk_buff *skb, struct sock *sk,
+> > +					struct bpf_tcp_req_attrs *attrs, int attrs__sz)
+> > +{
+> > +#if IS_ENABLED(CONFIG_SYN_COOKIES)
+> > +	const struct request_sock_ops *ops;
+> > +	struct inet_request_sock *ireq;
+> > +	struct tcp_request_sock *treq;
+> > +	struct request_sock *req;
+> > +	struct net *net;
+> > +	__u16 min_mss;
+> > +	u32 tsoff = 0;
+> > +
+> > +	if (attrs__sz != sizeof(*attrs))
+> > +		return -EINVAL;
+> > +
+> > +	if (!sk)
+> > +		return -EINVAL;
+> > +
+> > +	if (!skb_at_tc_ingress(skb))
+> > +		return -EINVAL;
+> > +
+> > +	net = dev_net(skb->dev);
+> > +	if (net != sock_net(sk))
+> > +		return -ENETUNREACH;
+> > +
+> > +	switch (skb->protocol) {
+> > +	case htons(ETH_P_IP):
+> > +		ops = &tcp_request_sock_ops;
+> > +		min_mss = 536;
+> > +		break;
+> > +#if IS_BUILTIN(CONFIG_IPV6)
+> > +	case htons(ETH_P_IPV6):
+> > +		ops = &tcp6_request_sock_ops;
+> > +		min_mss = IPV6_MIN_MTU - 60;
+> > +		break;
+> > +#endif
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (sk->sk_type != SOCK_STREAM || sk->sk_state != TCP_LISTEN ||
+> > +	    sk_is_mptcp(sk))
+> > +		return -EINVAL;
+> > +
+> 
+> and check for:
+> 
+> 	if (attrs->reserved[0] || attrs->reserved[1] || attrs->reserved[2])
+> 		return -EINVAL;
+> 
+> It will be safer if it needs to extend "struct bpf_tcp_req_attrs". There is an 
+> existing example in __bpf_nf_ct_lookup() when checking the 'struct bpf_ct_opts 
+> *opts'.
 
-On 1/15/24 6:50 AM, Hou Tao wrote:
-> Hi,
->
-> On 1/15/2024 8:59 PM, Andrey Grafin wrote:
->> This patch allows to create BPF_MAP_TYPE_ARRAY_OF_MAPS and
->> BPF_MAP_TYPE_HASH_OF_MAPS with values of BPF_MAP_TYPE_PERF_EVENT_ARRAY.
->>
->> Previous behaviour created a zero filled btf_map_def for inner maps and
->> tried to use it for a map creation but the linux kernel forbids to create
->> a BPF_MAP_TYPE_PERF_EVENT_ARRAY map with max_entries=0.
->>
->> Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
->> ---
->>   tools/lib/bpf/libbpf.c                        |  4 +++
->>   .../selftests/bpf/progs/test_map_in_map.c     | 23 +++++++++++++++
->>   tools/testing/selftests/bpf/test_maps.c       | 29 ++++++++++++++++++-
-> It would be better to move the selftest into a separated patch, so the
-> fix patch for libbpf could be backported alone.
+I'll add that test in v8.
 
-+1. Please put the selftest into the second patch.
-Also for the second patch commit message, please mention
-the test run result. For example, command line './test_maps',
-without the first patch:
-   ...
-   err ...
-with the first patch:
-   ...
-   ... // everything is okay
-
->>   3 files changed, 55 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index e067be95da3c..8f4d580187aa 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -70,6 +70,7 @@
->>   
->>   static struct bpf_map *bpf_object__add_map(struct bpf_object *obj);
->>   static bool prog_is_subprog(const struct bpf_object *obj, const struct bpf_program *prog);
->> +static int map_set_def_max_entries(struct bpf_map *map);
->>   
->>   static const char * const attach_type_name[] = {
->>   	[BPF_CGROUP_INET_INGRESS]	= "cgroup_inet_ingress",
->> @@ -5212,6 +5213,9 @@ static int bpf_object__create_map(struct bpf_object *obj, struct bpf_map *map, b
->>   
->>   	if (bpf_map_type__is_map_in_map(def->type)) {
->>   		if (map->inner_map) {
->> +			err = map_set_def_max_entries(map->inner_map);
->> +			if (err)
->> +				return err;
->>   			err = bpf_object__create_map(obj, map->inner_map, true);
->>   			if (err) {
->>   				pr_warn("map '%s': failed to create inner map: %d\n",
->> diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map.c b/tools/testing/selftests/bpf/progs/test_map_in_map.c
->> index f416032ba858..b393d2b8bd6f 100644
->> --- a/tools/testing/selftests/bpf/progs/test_map_in_map.c
->> +++ b/tools/testing/selftests/bpf/progs/test_map_in_map.c
->> @@ -21,6 +21,29 @@ struct {
->>   	__type(value, __u32);
->>   } mim_hash SEC(".maps");
->>   
->> +struct perf_event_array {
->> +	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
->> +	__type(key, __u32);
->> +	__type(value, __u32);
->> +} inner_map0 SEC(".maps"), inner_map1 SEC(".maps");
->> +
->> +struct {
->> +	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
->> +	__uint(max_entries, 2);
->> +	__type(key, __u32);
->> +	__array(values, struct perf_event_array);
->> +} mim_array_pe SEC(".maps") = {
->> +	.values = {&inner_map0, &inner_map1}};
->> +
->> +struct {
->> +	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
->> +	__uint(max_entries, 2);
->> +	__type(key, __u32);
->> +	__array(values, struct perf_event_array);
->> +} mim_hash_pe SEC(".maps") = {
->> +	.values = {&inner_map0, &inner_map1}};
-
-This is tricky. I suggest to have max_entries to be
-1 for BPF_MAP_TYPE_HASH_OF_MAPS and put only &inner_map0
-in 'values'. If you have two buckets for the
-hash table, actually it is not clear eventually
-which map in which bucket.
-
->> +
->> +
->>   SEC("xdp")
->>   int xdp_mimtest0(struct xdp_md *ctx)
->>   {
->> diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
->> index 7fc00e423e4d..03f4d448fd3b 100644
->> --- a/tools/testing/selftests/bpf/test_maps.c
->> +++ b/tools/testing/selftests/bpf/test_maps.c
->> @@ -1159,6 +1159,7 @@ static void test_map_in_map(void)
->>   	__u32 len = sizeof(info);
->>   	__u32 id = 0;
->>   	libbpf_print_fn_t old_print_fn;
->> +	int ret;
-> Why not use err instead ?
->>   
->>   	obj = bpf_object__open(MAPINMAP_PROG);
->>   
->> @@ -1190,7 +1191,11 @@ static void test_map_in_map(void)
->>   		goto out_map_in_map;
->>   	}
->>   
->> -	bpf_object__load(obj);
->> +	ret = bpf_object__load(obj);
->> +	if (ret) {
->> +		printf("Failed to load test prog\n");
->> +		goto out_map_in_map;
->> +	}
->>   
->>   	map = bpf_object__find_map_by_name(obj, "mim_array");
->>   	if (!map) {
->> @@ -1226,6 +1231,28 @@ static void test_map_in_map(void)
->>   		goto out_map_in_map;
->>   	}
->>   
->> +	map = bpf_object__find_map_by_name(obj, "mim_array_pe");
->> +	if (!map) {
->> +		printf("Failed to load array of perf event array maps\n");
->> +		goto out_map_in_map;
->> +	}
->> +	mim_fd = bpf_map__fd(map);
->> +	if (mim_fd < 0) {
->> +		printf("Failed to get descriptor for array of perf event array maps\n");
->> +		goto out_map_in_map;
->> +	}
->> +
->> +	map = bpf_object__find_map_by_name(obj, "mim_hash_pe");
->> +	if (!map) {
->> +		printf("Failed to load hash of perf event array maps\n");
->> +		goto out_map_in_map;
->> +	}
->> +	mim_fd = bpf_map__fd(map);
->> +	if (mim_fd < 0) {
->> +		printf("Failed to get descriptor for array of perf event array maps\n");
-> array -> hash ?
->> +		goto out_map_in_map;
->> +	}
-
-The above change is really not necessary. If program loading is successful, all the
-maps should be created properly. I think your above bpf_object__load test should be
-good enough.
-
->> +
->>   	close(fd);
->>   	fd = -1;
->>   	bpf_object__close(obj);
->
+Thank you!
 
