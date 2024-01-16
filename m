@@ -1,62 +1,64 @@
-Return-Path: <bpf+bounces-19642-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19643-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D95F82F7B1
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 21:28:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B32A182F7B5
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 21:28:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 348522883D6
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 20:28:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9FE51C24B4D
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 20:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E29350A9F;
-	Tue, 16 Jan 2024 19:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A4B23740;
+	Tue, 16 Jan 2024 19:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pHqNoDGK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jHcHfCj9"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8002750A8E;
-	Tue, 16 Jan 2024 19:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE7750A94;
+	Tue, 16 Jan 2024 19:49:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434570; cv=none; b=dhelPkisefeTzR5CVddIRUPHs0nvDFEAmHSf0swCKaTO6Z1lsFcnPOexmhcDxEUtQYKSgwaCynmVKwpGS0NVzriNKTMqBt+fmaGYGYrWXunenCcSBwTwLdENcZpIcetkAYiQp8PnHmHZTC3jtSEiVxgnWHa0A5wHAjuhx5XODQE=
+	t=1705434573; cv=none; b=Z1pP2G1C4yhK/hTVhQDQOkzbxmBNDUxqFV2oVswk3jnCNYDhOHH1P2LwCQnxvivSZAhw4K09rohnqXC9Pp2QH7oKvw1Zxs8L42M6osZXbCcmIP5BRItr8kG+egj2ht/cujou3778afTu6mK4w3PUu5z4vA0tsZOJPQueJ578S6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434570; c=relaxed/simple;
-	bh=VLPD9k6rnpYEto5RbuNi8aqGwxQuGvH9H86d70Wgxbw=;
+	s=arc-20240116; t=1705434573; c=relaxed/simple;
+	bh=hORw/LjtmLslIhMW3hB1p5s4EeH7XhY/u0cxo++nrUU=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=Hh2YIbffb+0PUANfqUsNtbCplWbv4l+SMSIIjaYL8NEiup0nzHEM57qvRelw2lNIYAKrGiNU+/yvunPLn3f0JIcfDH/qj6ilZmlYvmNmAognNj3BH/lErVRJCjXMB2wCjk2BwlyqcK30CCJR+7XPVOQwW/N2ecSOBwyu8MS9K9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pHqNoDGK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8AC8C43399;
-	Tue, 16 Jan 2024 19:49:28 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=fAYKe4COdJPWnO0hrNww+RNmDSAhqvuh+tjE9et+w2e5PnUjM9fKsmvNHUfogh7Qg/wI2frbR6I0H+2m5SJUoWsPfh6zU7sBRcmXk8A9sTMpx8A51rhu4gZaD7lmOj+u/M0B/c0Dvcif+j/vxgUxqfA58aL9ML3lwB/hqur8jA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jHcHfCj9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E560FC433F1;
+	Tue, 16 Jan 2024 19:49:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434570;
-	bh=VLPD9k6rnpYEto5RbuNi8aqGwxQuGvH9H86d70Wgxbw=;
+	s=k20201202; t=1705434573;
+	bh=hORw/LjtmLslIhMW3hB1p5s4EeH7XhY/u0cxo++nrUU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pHqNoDGKjThcVvSGf0A2ueaHGMUBArm6CLaCEue3Z1sQWwiiv6ZJmLu0JYQcFV+I1
-	 tKbUA26m+sQrxNxan+kbyWZvgfMUw8oZyr0+Uhe73egVrSKdSBUtQPF/Juoa+bQy4K
-	 Ilvac2kcnEpzqfv+N6pUd38lTwKZ4GhVFYxGc1Gmrv5xsa5g7YjTbqccCl4L+/riAD
-	 LGfNkMaJvW+E4bfzd9tiryaaohcw4iGP9JBHkA0U8sT0rn/EJ2Ro6869wG/p31d4Y5
-	 WYj1u/Zbe8Ngq6vlPMEqMg44OYU3wIScka7VhxK5xmjnbfOnIrIzEsv4hN5Sf6LSTb
-	 jNbFB2OpQSskA==
+	b=jHcHfCj9e7G2Bzq9mdRRsVG6GRNCinmpln4/RZKVxAiLaEoqGlftf7tc04ICMBR7p
+	 JWcAY11bQiDs0WdEOXyH5sVKOCnwxyncC+FhWXyr/0CYOFIkUWXBO8CxusF7a9S7Pc
+	 ZvRLdLhhLetV4n3+8GExBRCtc/JCc59FvY1YAQyP3qAh3ffjyqmdCMoS5lae9Khr8N
+	 3ZfzIhh+WFE50MjCkb/F6szULlOWaw+oouxRlpBD65iyUcBj+lBBd6ywvLrLnSgfUY
+	 gtDez+Ti4ZEMSWlA1Fnp8oIxfN/9fDYxFk50PktxZ/Cqijb0JjUW/YqlSGyyzhHtLU
+	 +YNjckrrAxpqg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
 Cc: Yonghong Song <yonghong.song@linux.dev>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+	Alan Maguire <alan.maguire@oracle.com>,
 	Sasha Levin <sashal@kernel.org>,
+	ast@kernel.org,
 	daniel@iogearbox.net,
+	shuah@kernel.org,
 	nathan@kernel.org,
 	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	llvm@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 005/104] libbpf: Fix potential uninitialized tail padding with LIBBPF_OPTS_RESET
-Date: Tue, 16 Jan 2024 14:45:31 -0500
-Message-ID: <20240116194908.253437-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 006/104] selftests/bpf: Fix pyperf180 compilation failure with clang18
+Date: Tue, 16 Jan 2024 14:45:32 -0500
+Message-ID: <20240116194908.253437-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194908.253437-1-sashal@kernel.org>
 References: <20240116194908.253437-1-sashal@kernel.org>
@@ -73,202 +75,79 @@ Content-Transfer-Encoding: 8bit
 
 From: Yonghong Song <yonghong.song@linux.dev>
 
-[ Upstream commit 7f7c43693c1b46652cfafb7af67ba31726d6ec4e ]
+[ Upstream commit 100888fb6d8a185866b1520031ee7e3182b173de ]
 
-Martin reported that there is a libbpf complaining of non-zero-value tail
-padding with LIBBPF_OPTS_RESET macro if struct bpf_netkit_opts is modified
-to have a 4-byte tail padding. This only happens to clang compiler.
-The commend line is: ./test_progs -t tc_netkit_multi_links
-Martin and I did some investigation and found this indeed the case and
-the following are the investigation details.
+With latest clang18 (main branch of llvm-project repo), when building bpf selftests,
+    [~/work/bpf-next (master)]$ make -C tools/testing/selftests/bpf LLVM=1 -j
 
-Clang:
-  clang version 18.0.0
-  <I tried clang15/16/17 and they all have similar results>
+The following compilation error happens:
+    fatal error: error in backend: Branch target out of insn range
+    ...
+    Stack dump:
+    0.      Program arguments: clang -g -Wall -Werror -D__TARGET_ARCH_x86 -mlittle-endian
+      -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf/tools/include
+      -I/home/yhs/work/bpf-next/tools/testing/selftests/bpf -I/home/yhs/work/bpf-next/tools/include/uapi
+      -I/home/yhs/work/bpf-next/tools/testing/selftests/usr/include -idirafter
+      /home/yhs/work/llvm-project/llvm/build.18/install/lib/clang/18/include -idirafter /usr/local/include
+      -idirafter /usr/include -Wno-compare-distinct-pointer-types -DENABLE_ATOMICS_TESTS -O2 --target=bpf
+      -c progs/pyperf180.c -mcpu=v3 -o /home/yhs/work/bpf-next/tools/testing/selftests/bpf/pyperf180.bpf.o
+    1.      <eof> parser at end of file
+    2.      Code generation
+    ...
 
-tools/lib/bpf/libbpf_common.h:
-  #define LIBBPF_OPTS_RESET(NAME, ...)                                      \
-        do {                                                                \
-                memset(&NAME, 0, sizeof(NAME));                             \
-                NAME = (typeof(NAME)) {                                     \
-                        .sz = sizeof(NAME),                                 \
-                        __VA_ARGS__                                         \
-                };                                                          \
-        } while (0)
+The compilation failure only happens to cpu=v2 and cpu=v3. cpu=v4 is okay
+since cpu=v4 supports 32-bit branch target offset.
 
-  #endif
+The above failure is due to upstream llvm patch [1] where some inlining behavior
+are changed in clang18.
 
-tools/lib/bpf/libbpf.h:
-  struct bpf_netkit_opts {
-        /* size of this struct, for forward/backward compatibility */
-        size_t sz;
-        __u32 flags;
-        __u32 relative_fd;
-        __u32 relative_id;
-        __u64 expected_revision;
-        size_t :0;
-  };
-  #define bpf_netkit_opts__last_field expected_revision
-In the above struct bpf_netkit_opts, there is no tail padding.
+To workaround the issue, previously all 180 loop iterations are fully unrolled.
+The bpf macro __BPF_CPU_VERSION__ (implemented in clang18 recently) is used to avoid
+unrolling changes if cpu=v4. If __BPF_CPU_VERSION__ is not available and the
+compiler is clang18, the unrollng amount is unconditionally reduced.
 
-prog_tests/tc_netkit.c:
-  static void serial_test_tc_netkit_multi_links_target(int mode, int target)
-  {
-        ...
-        LIBBPF_OPTS(bpf_netkit_opts, optl);
-        ...
-        LIBBPF_OPTS_RESET(optl,
-                .flags = BPF_F_BEFORE,
-                .relative_fd = bpf_program__fd(skel->progs.tc1),
-        );
-        ...
-  }
-
-Let us make the following source change, note that we have a 4-byte
-tailing padding now.
-  diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-  index 6cd9c501624f..0dd83910ae9a 100644
-  --- a/tools/lib/bpf/libbpf.h
-  +++ b/tools/lib/bpf/libbpf.h
-  @@ -803,13 +803,13 @@ bpf_program__attach_tcx(const struct bpf_program *prog, int ifindex,
-   struct bpf_netkit_opts {
-        /* size of this struct, for forward/backward compatibility */
-        size_t sz;
-  -       __u32 flags;
-        __u32 relative_fd;
-        __u32 relative_id;
-        __u64 expected_revision;
-  +       __u32 flags;
-        size_t :0;
-   };
-  -#define bpf_netkit_opts__last_field expected_revision
-  +#define bpf_netkit_opts__last_field flags
-
-The clang 18 generated asm code looks like below:
-    ;       LIBBPF_OPTS_RESET(optl,
-    55e3: 48 8d 7d 98                   leaq    -0x68(%rbp), %rdi
-    55e7: 31 f6                         xorl    %esi, %esi
-    55e9: ba 20 00 00 00                movl    $0x20, %edx
-    55ee: e8 00 00 00 00                callq   0x55f3 <serial_test_tc_netkit_multi_links_target+0x18d3>
-    55f3: 48 c7 85 10 fd ff ff 20 00 00 00      movq    $0x20, -0x2f0(%rbp)
-    55fe: 48 8b 85 68 ff ff ff          movq    -0x98(%rbp), %rax
-    5605: 48 8b 78 18                   movq    0x18(%rax), %rdi
-    5609: e8 00 00 00 00                callq   0x560e <serial_test_tc_netkit_multi_links_target+0x18ee>
-    560e: 89 85 18 fd ff ff             movl    %eax, -0x2e8(%rbp)
-    5614: c7 85 1c fd ff ff 00 00 00 00 movl    $0x0, -0x2e4(%rbp)
-    561e: 48 c7 85 20 fd ff ff 00 00 00 00      movq    $0x0, -0x2e0(%rbp)
-    5629: c7 85 28 fd ff ff 08 00 00 00 movl    $0x8, -0x2d8(%rbp)
-    5633: 48 8b 85 10 fd ff ff          movq    -0x2f0(%rbp), %rax
-    563a: 48 89 45 98                   movq    %rax, -0x68(%rbp)
-    563e: 48 8b 85 18 fd ff ff          movq    -0x2e8(%rbp), %rax
-    5645: 48 89 45 a0                   movq    %rax, -0x60(%rbp)
-    5649: 48 8b 85 20 fd ff ff          movq    -0x2e0(%rbp), %rax
-    5650: 48 89 45 a8                   movq    %rax, -0x58(%rbp)
-    5654: 48 8b 85 28 fd ff ff          movq    -0x2d8(%rbp), %rax
-    565b: 48 89 45 b0                   movq    %rax, -0x50(%rbp)
-    ;       link = bpf_program__attach_netkit(skel->progs.tc2, ifindex, &optl);
-
-At -O0 level, the clang compiler creates an intermediate copy.
-We have below to store 'flags' with 4-byte store and leave another 4 byte
-in the same 8-byte-aligned storage undefined,
-    5629: c7 85 28 fd ff ff 08 00 00 00 movl    $0x8, -0x2d8(%rbp)
-and later we store 8-byte to the original zero'ed buffer
-    5654: 48 8b 85 28 fd ff ff          movq    -0x2d8(%rbp), %rax
-    565b: 48 89 45 b0                   movq    %rax, -0x50(%rbp)
-
-This caused a problem as the 4-byte value at [%rbp-0x2dc, %rbp-0x2e0)
-may be garbage.
-
-gcc (gcc 11.4) does not have this issue as it does zeroing struct first before
-doing assignments:
-  ;       LIBBPF_OPTS_RESET(optl,
-    50fd: 48 8d 85 40 fc ff ff          leaq    -0x3c0(%rbp), %rax
-    5104: ba 20 00 00 00                movl    $0x20, %edx
-    5109: be 00 00 00 00                movl    $0x0, %esi
-    510e: 48 89 c7                      movq    %rax, %rdi
-    5111: e8 00 00 00 00                callq   0x5116 <serial_test_tc_netkit_multi_links_target+0x1522>
-    5116: 48 8b 45 f0                   movq    -0x10(%rbp), %rax
-    511a: 48 8b 40 18                   movq    0x18(%rax), %rax
-    511e: 48 89 c7                      movq    %rax, %rdi
-    5121: e8 00 00 00 00                callq   0x5126 <serial_test_tc_netkit_multi_links_target+0x1532>
-    5126: 48 c7 85 40 fc ff ff 00 00 00 00      movq    $0x0, -0x3c0(%rbp)
-    5131: 48 c7 85 48 fc ff ff 00 00 00 00      movq    $0x0, -0x3b8(%rbp)
-    513c: 48 c7 85 50 fc ff ff 00 00 00 00      movq    $0x0, -0x3b0(%rbp)
-    5147: 48 c7 85 58 fc ff ff 00 00 00 00      movq    $0x0, -0x3a8(%rbp)
-    5152: 48 c7 85 40 fc ff ff 20 00 00 00      movq    $0x20, -0x3c0(%rbp)
-    515d: 89 85 48 fc ff ff             movl    %eax, -0x3b8(%rbp)
-    5163: c7 85 58 fc ff ff 08 00 00 00 movl    $0x8, -0x3a8(%rbp)
-  ;       link = bpf_program__attach_netkit(skel->progs.tc2, ifindex, &optl);
-
-It is not clear how to resolve the compiler code generation as the compiler
-generates correct code w.r.t. how to handle unnamed padding in C standard.
-So this patch changed LIBBPF_OPTS_RESET macro to avoid uninitialized tail
-padding. We already knows LIBBPF_OPTS macro works on both gcc and clang,
-even with tail padding. So LIBBPF_OPTS_RESET is changed to be a
-LIBBPF_OPTS followed by a memcpy(), thus avoiding uninitialized tail padding.
-
-The below is asm code generated with this patch and with clang compiler:
-    ;       LIBBPF_OPTS_RESET(optl,
-    55e3: 48 8d bd 10 fd ff ff          leaq    -0x2f0(%rbp), %rdi
-    55ea: 31 f6                         xorl    %esi, %esi
-    55ec: ba 20 00 00 00                movl    $0x20, %edx
-    55f1: e8 00 00 00 00                callq   0x55f6 <serial_test_tc_netkit_multi_links_target+0x18d6>
-    55f6: 48 c7 85 10 fd ff ff 20 00 00 00      movq    $0x20, -0x2f0(%rbp)
-    5601: 48 8b 85 68 ff ff ff          movq    -0x98(%rbp), %rax
-    5608: 48 8b 78 18                   movq    0x18(%rax), %rdi
-    560c: e8 00 00 00 00                callq   0x5611 <serial_test_tc_netkit_multi_links_target+0x18f1>
-    5611: 89 85 18 fd ff ff             movl    %eax, -0x2e8(%rbp)
-    5617: c7 85 1c fd ff ff 00 00 00 00 movl    $0x0, -0x2e4(%rbp)
-    5621: 48 c7 85 20 fd ff ff 00 00 00 00      movq    $0x0, -0x2e0(%rbp)
-    562c: c7 85 28 fd ff ff 08 00 00 00 movl    $0x8, -0x2d8(%rbp)
-    5636: 48 8b 85 10 fd ff ff          movq    -0x2f0(%rbp), %rax
-    563d: 48 89 45 98                   movq    %rax, -0x68(%rbp)
-    5641: 48 8b 85 18 fd ff ff          movq    -0x2e8(%rbp), %rax
-    5648: 48 89 45 a0                   movq    %rax, -0x60(%rbp)
-    564c: 48 8b 85 20 fd ff ff          movq    -0x2e0(%rbp), %rax
-    5653: 48 89 45 a8                   movq    %rax, -0x58(%rbp)
-    5657: 48 8b 85 28 fd ff ff          movq    -0x2d8(%rbp), %rax
-    565e: 48 89 45 b0                   movq    %rax, -0x50(%rbp)
-    ;       link = bpf_program__attach_netkit(skel->progs.tc2, ifindex, &optl);
-
-In the above code, a temporary buffer is zeroed and then has proper value assigned.
-Finally, values in temporary buffer are copied to the original variable buffer,
-hence tail padding is guaranteed to be 0.
+  [1] https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c607313a566eebb16e
 
 Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Tested-by: Martin KaFai Lau <martin.lau@kernel.org>
-Link: https://lore.kernel.org/bpf/20231107201511.2548645-1-yonghong.song@linux.dev
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Tested-by: Alan Maguire <alan.maguire@oracle.com>
+Link: https://lore.kernel.org/bpf/20231110193644.3130906-1-yonghong.song@linux.dev
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/libbpf_common.h | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ tools/testing/selftests/bpf/progs/pyperf180.c | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/tools/lib/bpf/libbpf_common.h b/tools/lib/bpf/libbpf_common.h
-index b7060f254486..8fe248e14eb6 100644
---- a/tools/lib/bpf/libbpf_common.h
-+++ b/tools/lib/bpf/libbpf_common.h
-@@ -79,11 +79,14 @@
-  */
- #define LIBBPF_OPTS_RESET(NAME, ...)					    \
- 	do {								    \
--		memset(&NAME, 0, sizeof(NAME));				    \
--		NAME = (typeof(NAME)) {					    \
--			.sz = sizeof(NAME),				    \
--			__VA_ARGS__					    \
--		};							    \
-+		typeof(NAME) ___##NAME = ({ 				    \
-+			memset(&___##NAME, 0, sizeof(NAME));		    \
-+			(typeof(NAME)) {				    \
-+				.sz = sizeof(NAME),			    \
-+				__VA_ARGS__				    \
-+			};						    \
-+		});							    \
-+		memcpy(&NAME, &___##NAME, sizeof(NAME));		    \
- 	} while (0)
- 
- #endif /* __LIBBPF_LIBBPF_COMMON_H */
+diff --git a/tools/testing/selftests/bpf/progs/pyperf180.c b/tools/testing/selftests/bpf/progs/pyperf180.c
+index c39f559d3100..42c4a8b62e36 100644
+--- a/tools/testing/selftests/bpf/progs/pyperf180.c
++++ b/tools/testing/selftests/bpf/progs/pyperf180.c
+@@ -1,4 +1,26 @@
+ // SPDX-License-Identifier: GPL-2.0
+ // Copyright (c) 2019 Facebook
+ #define STACK_MAX_LEN 180
++
++/* llvm upstream commit at clang18
++ *   https://github.com/llvm/llvm-project/commit/1a2e77cf9e11dbf56b5720c607313a566eebb16e
++ * changed inlining behavior and caused compilation failure as some branch
++ * target distance exceeded 16bit representation which is the maximum for
++ * cpu v1/v2/v3. Macro __BPF_CPU_VERSION__ is later implemented in clang18
++ * to specify which cpu version is used for compilation. So a smaller
++ * unroll_count can be set if __BPF_CPU_VERSION__ is less than 4, which
++ * reduced some branch target distances and resolved the compilation failure.
++ *
++ * To capture the case where a developer/ci uses clang18 but the corresponding
++ * repo checkpoint does not have __BPF_CPU_VERSION__, a smaller unroll_count
++ * will be set as well to prevent potential compilation failures.
++ */
++#ifdef __BPF_CPU_VERSION__
++#if __BPF_CPU_VERSION__ < 4
++#define UNROLL_COUNT 90
++#endif
++#elif __clang_major__ == 18
++#define UNROLL_COUNT 90
++#endif
++
+ #include "pyperf.h"
 -- 
 2.43.0
 
