@@ -1,136 +1,153 @@
-Return-Path: <bpf+bounces-19617-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19618-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7355C82F2B7
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 17:58:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB5B782F36C
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 18:45:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FAAD1F25446
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 16:58:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9E21F244B7
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 17:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFE3B1CA93;
-	Tue, 16 Jan 2024 16:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82711CABE;
+	Tue, 16 Jan 2024 17:45:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iJ4pRd6x"
+	dkim=pass (2048-bit key) header.d=nametag.social header.i=@nametag.social header.b="X0oeK3p8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA381C6A1;
-	Tue, 16 Jan 2024 16:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3366ddd1eddso8211063f8f.0;
-        Tue, 16 Jan 2024 08:58:04 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 558DB1CAB8
+	for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 17:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nametag.social
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nametag.social
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705427125; cv=none; b=K8Y9EPtVPE+daJtoIXDeJEvPIQOlAiAX6rkJDGCIXwanIAgoNy/5V3AEca97wGo+bg47N5J1j5mmUvZtR64XhTJVzPyaus4blHzTPn/QZyYYXbz+1byKuENcS/2c0MJ/JFPyhwYb31F7JLLE4B1KebdSYMGoOw7qpDcEP6PJeZw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705427125; c=relaxed/simple;
+	bh=lkMBIFrXjDCsSmfJXkXpyx9OpzXexiM6toFn83DP/bM=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
+	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
+	 Content-Type:Content-Transfer-Encoding; b=bkTLTr0HrX/JKIKlMhxvefuYFVoMGZWqacoVl3s8TWu96Fll5Kj5NyMcQwON2sZl2gCukQM1/BLO4NB5T+mubkXHuQUpB2A+030dQ6BuPKBPxZCCrtauSXMJAdkfnqt3+79p0jmA1DL/eF4u/fk+ASky9/z2YOsOIwLMccTnEcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=nametag.social header.i=@nametag.social header.b=X0oeK3p8; arc=none smtp.client-ip=209.85.218.41
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a2dc7827a97so284906866b.2
+        for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 09:45:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705424283; x=1706029083; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hWIMOxwPuwlyypi9mGRlB1wNl0jlfrKw1ScuZdtPpAE=;
-        b=iJ4pRd6xT/iZA0xUDuiNyKnNuxPjyrb+y0dg1DUodjolwttlJibv05ZLkLL6+3gKD3
-         0zpkPkM+3JvxcVNrqIvpY5V5eOYK/2nrKPxQf83UIBkxMRebE89lvbcKsSn6TwyCzhXh
-         NiuPFXkVTIZ9APRuDOrJOVWWQnwdrC5z/1yFImsAxNpYCcbtt16zBxjIhsLCFx5XMF0W
-         lKP4f7WHj50jjsr4r92UHwYgOsOYCrqdJDY1paSfS6p3YCrx8HDA3nFkxrMS6aLqv/p7
-         PVQ7tR6g5VQZXfoIOazul/LAqAFhDl+tNk2QOgvyJSXrxLsD/ctQpEmOF0mTFCmSnHkN
-         2YTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705424283; x=1706029083;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=nametag.social; s=google; t=1705427121; x=1706031921; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hWIMOxwPuwlyypi9mGRlB1wNl0jlfrKw1ScuZdtPpAE=;
-        b=Pn0GM/BnPhjvmGoo7LTZFwfqkPNI2QZ7NJylHmOEYw5BE8kDvwDPbDtJ265lkrIY63
-         rDcnM+CzNFLRqhSwEyLCcn4OwBLCzgVjoVnaMoUCaxH3VwFNRwqrlkGu7y362xKKxaiK
-         /RJzC/SYu8qb79nKqR7l4Q5b77xYsXmhT9Yaih6CDdumIvWqkLw1zR4b8WhFJXJG+52a
-         fyZk/WhexuWFdhettmt6OZo7rl503/vwd35zXcWzzcjREvr+sndkM7a4mRWsjzrGcEd5
-         W8eHzKhyF6xKXTVDbXqe7EJq04h0WULoRI2v/8LoEd4BF3U2nT6PV06TpxAlqULBgK4F
-         oNoA==
-X-Gm-Message-State: AOJu0Yy/oNVHxiswgEBPJIrqc2WWX+xWzsGvBg9BTyG4x/d6Kf9QLGSn
-	LJVAz7S0MH1AYNI6dxFMH6U=
-X-Google-Smtp-Source: AGHT+IEzI3h4gWrHRgRIUCmkOWf7L17Yh04pMYuuDkCdMR3c+TIBaC98FCnb6ejWkKylpXq7lzn3Qw==
-X-Received: by 2002:a5d:5943:0:b0:336:608f:91eb with SMTP id e3-20020a5d5943000000b00336608f91ebmr2017052wri.95.1705424282738;
-        Tue, 16 Jan 2024 08:58:02 -0800 (PST)
-Received: from krava ([83.240.60.213])
-        by smtp.gmail.com with ESMTPSA id co8-20020a0560000a0800b00336755f15b0sm15100243wrb.68.2024.01.16.08.58.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 08:58:02 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 16 Jan 2024 17:58:01 +0100
-To: Artem Savkov <asavkov@redhat.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Yonghong Song <yonghong.song@linux.dev>
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix potential premature
- unload in bpf_testmod
-Message-ID: <ZaajJVrGLakTmtH1@krava>
-References: <82f55c0e-0ec8-4fe1-8d8c-b1de07558ad9@linux.dev>
- <20240110085737.8895-1-asavkov@redhat.com>
+        bh=lkMBIFrXjDCsSmfJXkXpyx9OpzXexiM6toFn83DP/bM=;
+        b=X0oeK3p8vYoFm3QQSZTh9FJjro0shKH8oHCgDC5C3arReeZbPyTQ3fLpwY4vWiyLNg
+         oDKc4UYEXv87NYiyB4yJbpMPJ11QzJd3I3+xWTQ1s/u9riY/zEhOrAwpt9V+uVyKGU0y
+         ea22z+lstW3CTzfbX77pyXGXn7v76Ft0werMkFZxS350SAMA1tu3vmOD+ogTAy2NR5cS
+         90XzmcQ7zRv0zpSuZ1kEOqhv8OpGv1NNDTH9cAoj154qqV1r7v0Jw3NvkeiB0xLORWAK
+         1CzhouAvT8kp4fnVkurlTG+9RQmKXRCmBdu6nDFIao38VWmygq/Hy4wLOBwHq9DoE0eZ
+         6nOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705427121; x=1706031921;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lkMBIFrXjDCsSmfJXkXpyx9OpzXexiM6toFn83DP/bM=;
+        b=qw212yjn9pukAqC71dclp1LbO/QD0aoaz1o6tMEd5aU5ZAx9phSvtUac83Pnk+VbJS
+         ogOj9OL8kCGD4YvNXlurqvwCU5PQyfhkY4lRS7Kw9wyABalAWpaKFYmWxDMJeIV/mq+P
+         evRlyWAYlXx5sO4dr3Sz9GzK3oCbFKfnD0LZjl7M9C4tQLQNTA8Uq15kEJw+rYETZ2ZQ
+         wxc2bHFD+dtX3LXiVT8Rd5dXVVp0r+7Ls4db6DOMZyIYnUdioGt/OjkEATH6L4KspSoI
+         zXR152DJtM2wUyrINL/cP0SKtm8aETjl63CkJiZxHdyxYGSwp/rywHXvaEjWLNpHqOoY
+         u+9g==
+X-Gm-Message-State: AOJu0Yz99+xDYN0TBc7XU+sulJEPbEk7yeEYunL52ptieslMlEtzBC3J
+	N8zipxxCc9E2C6Iu6itq/XLtiSORUCS3EC8qiFSppN7gqC/AQQ==
+X-Google-Smtp-Source: AGHT+IHmTCLmiTRZU/LnxeFGY9tn5C8c+4VQL0fcVUuLvXprWz3y/GodTp1CIwtscTEMHP1xwXt0KmRQ/GlzPeEKKJA=
+X-Received: by 2002:a17:907:c01c:b0:a2d:e4b9:45b4 with SMTP id
+ ss28-20020a170907c01c00b00a2de4b945b4mr2017770ejc.75.1705427121451; Tue, 16
+ Jan 2024 09:45:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110085737.8895-1-asavkov@redhat.com>
+References: <CAM1kxwj533vwyxNvCPgXK2p=CxVszOm4T4g0YzaFhWPGATS0RA@mail.gmail.com>
+ <CAM1kxwi9FMUr3vOqZeRe3FjuvwQgdW-8g0HGLL5fU2tOOjRfYA@mail.gmail.com> <65a5bde2c4e31_2eaef20845@john.notmuch>
+In-Reply-To: <65a5bde2c4e31_2eaef20845@john.notmuch>
+From: Victor Stewart <v@nametag.social>
+Date: Tue, 16 Jan 2024 12:45:10 -0500
+Message-ID: <CAM1kxwgZB8h36SC5YMK0PNg25UvXWVTRmFJsaOOyaczD_+8SVw@mail.gmail.com>
+Subject: Re: [RFC bpf-next] crypto for unsleepable progs + new persistent bpf
+ map for kernel api structs
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Vadim Fedorenko <vadfed@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 10, 2024 at 09:57:37AM +0100, Artem Savkov wrote:
-> It is possible for bpf_kfunc_call_test_release() to be called from
-> bpf_map_free_deferred() when bpf_testmod is already unloaded and
-> perf_test_stuct.cnt which it tries to decrease is no longer in memory.
-> This patch tries to fix the issue by waiting for all references to be
-> dropped in bpf_testmod_exit().
-> 
-> The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
-> but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
-> synchronous grace periods urgently").
-> 
-> Fixes: 65eb006d85a2a ("bpf: Move kernel test kfuncs to bpf_testmod")
-> Signed-off-by: Artem Savkov <asavkov@redhat.com>
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
+On Mon, Jan 15, 2024 at 6:21=E2=80=AFPM John Fastabend <john.fastabend@gmai=
+l.com> wrote:
+>
+> Victor Stewart wrote:
+> > On Sat, Jan 13, 2024 at 2:31=E2=80=AFPM Victor Stewart <v@nametag.socia=
+l> wrote:
+> > >
+> > > i was just brainstorming at Vadim off mailing list about my desire to=
+ do AES
+> > > decryption of QUIC connection IDs in an XDP program, RE his pending
+> > > bpf crypto api patch series:
+> > >
+> > > https://lore.kernel.org/bpf/20231202010604.1877561-1-vadfed@meta.com/
+> > >
+> > > i'm hoping to gather some thoughts on the below two roadblocks:
+> > >
+> > >
+> > > (1) crypto for preemption disabled bpf programs
+> > >
+> > > as he mentioned in the comments of 1/3 and to me directly, a non slee=
+pable
+> > > bpf program is not allowed to allocate a crypto context.
+> > >
+> > > is it possible for this restriction to be lifted?
+> > >
+> > > if not what safeguards would be required to lift it?
+> > >
+> > > worst case maybe an API could be added for userspace to initialize th=
+e
+> > > context, as userspace must provide the key anyway.
+>
+> I'm trying to understand why this is "worst case" to setup the context
+> from userspace? Perhaps naively I haven't tried to code this up, but
+> it seems like a sensible workflow to have userspace generate the key and
+> also setup the context. Then have fastpath (XDP) use the context for
+> decrypting?
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+yes i agree 100%. i think adding a new syscall flag + struct is
+probably the ideal design?
 
-jirka
+syscall flag -> BPF_CRYPTO_CTX_CREATE
 
-> ---
->  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> index 91907b321f913..e7c9e1c7fde04 100644
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -2,6 +2,7 @@
->  /* Copyright (c) 2020 Facebook */
->  #include <linux/btf.h>
->  #include <linux/btf_ids.h>
-> +#include <linux/delay.h>
->  #include <linux/error-injection.h>
->  #include <linux/init.h>
->  #include <linux/module.h>
-> @@ -544,6 +545,14 @@ static int bpf_testmod_init(void)
->  
->  static void bpf_testmod_exit(void)
->  {
-> +        /* Need to wait for all references to be dropped because
-> +         * bpf_kfunc_call_test_release() which currently resides in kernel can
-> +         * be called after bpf_testmod is unloaded. Once release function is
-> +         * moved into the module this wait can be removed.
-> +         */
-> +	while (refcount_read(&prog_test_struct.cnt) > 1)
-> +		msleep(20);
-> +
->  	return sysfs_remove_bin_file(kernel_kobj, &bin_attr_bpf_testmod_file);
->  }
->  
-> -- 
-> 2.43.0
-> 
+struct {
+
+__aligned_u64 alg_name; // filter alg by synchronous, else return error
+__u8 alg_name_len;
+__u32 alg_type;
+__u32 alg_mask;
+
+__aligned_u64 cipher_key;
+__u8 cipher_key_len;
+
+__u8 array_idx;
+
+// etc...
+};
+
+store the created bpf_crypto_ctx objects in an array in
+kernel/bpf/crypto.c (the same as bpf_crypto_types) and add accessors
+
+and make it all array/index based for performance reasons. up to the
+user to manage the indexes.
+
+>
+> Thanks,
+> John
 
