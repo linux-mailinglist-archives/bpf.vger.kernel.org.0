@@ -1,116 +1,107 @@
-Return-Path: <bpf+bounces-19686-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19687-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E60282FC50
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 23:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 72D2E82FC63
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 23:19:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26C8F28F6F2
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 22:17:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B9FF28EE92
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 22:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D925A10F;
-	Tue, 16 Jan 2024 20:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25DD02577B;
+	Tue, 16 Jan 2024 20:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ptfqeuv6"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="YeYQRTBl"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DABE250F3
-	for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 20:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6533525625
+	for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 20:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705437970; cv=none; b=kmladlXIZaWwzxcIEXEDs2eQN5v4PawrcIsgc7iCEosgTNKW/wO/FVsThYW0u1m2cQnJpFteR7E8hGa0Qo4hLz1G+oDSFaQp3IWz+BlCyob2dqvLKT/u19ofKDtfg8zFbfEsPo0Wf7D8+X7pP+Es+Xv4TZ4gHo2DINKtJof+Y9Q=
+	t=1705438549; cv=none; b=LQVKtgkGOfCQ8WT11Kcjo2MwwquQH+MH6biLVJMU+KpsZQoIK+TqFm9K06Rf5ZzI5pQi9bUumZmejBC7j+1awJkCWEDsQeqVAIpFgUe6yXkSUVAt5qG8ggJzzFdIcW0cV1bz2bMQy5h+6PzT2rgFMPjVZtVSXEl6hTQT57u85NQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705437970; c=relaxed/simple;
-	bh=8R04pV7NenTmY//Xvc4y+OGOzxSJ8Fvcj0st4h/W1DQ=;
-	h=DKIM-Signature:Received:X-MC-Unique:Received:
-	 X-Google-DKIM-Signature:X-Gm-Message-State:X-Received:
-	 X-Google-Smtp-Source:X-Received:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=JwqlNO+KtA81veZO8gJMODRez/dVRyGrF3TSLAbzfvM6fbPXYKSqYHAHLs/yUFQraFA8aWz6sqmzniq5+J5HTIYxuddQAzeM6MrQkmB6lbyU9k8Jn38CwENXeITeYQD23soo6R/Gfy+Jw0bVjADnPQtu32p+ifgrROVgQYGpiMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ptfqeuv6; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705437968;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bY992iAsJxysfraXAvAsx9+n1cX0TFNO2wFD5XkN5qw=;
-	b=Ptfqeuv60pTOFBIy1QYtcpuzUzfS5SlDpd6QLiE65c04rzJ3rTTx3nPQ/FBqy57BiNUtHl
-	F3aOotjMlIspRZbtmXzDsNVmNngr1FVS+dJwL3GQBRGhLz6rGU5VgDKFAghNbftXcM4Fpg
-	JYOuujI4Xvg58f8Xx5DXDed5QJ/tC4U=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-692-Xz2mTvlMPg20Xqhhyz9ieA-1; Tue, 16 Jan 2024 15:46:06 -0500
-X-MC-Unique: Xz2mTvlMPg20Xqhhyz9ieA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-337bfd1ce50so263094f8f.3
-        for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 12:46:06 -0800 (PST)
+	s=arc-20240116; t=1705438549; c=relaxed/simple;
+	bh=DlZXQSEO2MSyZETuO+rcAWhvW1Ag1UJ2TRevGaH/dqc=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 X-Google-Original-From:To:References:In-Reply-To:Subject:Date:
+	 Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 X-Mailer:Thread-Index:Content-Language; b=fXf6BCNhjTfXmj/7QxKno9kUusCc3CHraj7IBL7Oytq9dZy87ufOoHP6P2WtekZNzXpOC7+/Fj6FhVgazEM/08VozWbEdC3GUqxEgr756w54SCai5Zmnhb2cxepJ3m13NJ3G6krRqAHytXo1CBl0L5a++ZOTcHxygOBUuxO3iaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=YeYQRTBl; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3bd5c4cffefso4421241b6e.1
+        for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 12:55:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1705438547; x=1706043347; darn=vger.kernel.org;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:to:from
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DlZXQSEO2MSyZETuO+rcAWhvW1Ag1UJ2TRevGaH/dqc=;
+        b=YeYQRTBlQjrz0kG4V8g70c5LK46rigolu+AcWDyJuoJOqVOLoC1n0Q2oRi+ocpjyNl
+         CuYD1UyGy6JGG4fjFAfBG4XjesPSORJYrKLSFYUP9oZAi+EfWiLC4vaNbV+/gWwTVw3/
+         WPFFq94aqWhtNcmlHOwPTDRVVFLrh3fSvzL2NIGtlnilKgkBRL8QxgckSr3EjAnQRegd
+         WZ40VQeoJY4RsQzEsORta0oIAPKOpMI6rVvBI8WOBugT/kk9bCjdfv2eZ65SaZxnGrpO
+         bYC1rny2t1hHT7Tff3LRrnbSHvjsYWFeA7vwlu4lfT/XIHEK7suDiqYc5H7MkNyc2HQN
+         Ca2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705437965; x=1706042765;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bY992iAsJxysfraXAvAsx9+n1cX0TFNO2wFD5XkN5qw=;
-        b=JfPEPtHMA4+nYs+J5gitWHFKr7JNgb6PVADrrw1DNXOlME5xBVI95dBY6q+EaKb0Gx
-         B9WrJ6aTiw28nMVhEEQMVzxQ2WMxRI25Pgf/DFqy9lZKFpwCcTg2KWEoek7S+Lr41e47
-         ZY/8v40ijLThITTeZl2oLXedO7KdmNB4EwXvKaTqt+zOZ1DqNfkfb8XVgmB2N0rAtx/p
-         y88lQm7LQRaNa5guuQGB7pXqyjRTZ9e2qOlA/PQtptbG4pCFxAtx+0Onn2IALc7GWTQs
-         vnroawGZb0tCO1MPjSTsN/hHtOgbkYNdKtOYYIQ2CBi/pGWYnfoDlSWhP1wkzhsLBItd
-         8atw==
-X-Gm-Message-State: AOJu0YzMgh09npq+VKghEIMQHvvj/AF1CJpUiXISj0loLyRWAX1JsEbH
-	qjQjCVrnWxAV8kWosmPejW93CjCz/XSk0K2vyPJGzm1ffsRUiFiYoHOaf8IhC1NmrZZuCEwHzXy
-	d5oHRrI8mgYR2Bua+hBvp
-X-Received: by 2002:a05:6000:1e91:b0:336:7758:c6f0 with SMTP id dd17-20020a0560001e9100b003367758c6f0mr4037111wrb.70.1705437965516;
-        Tue, 16 Jan 2024 12:46:05 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHBEgVRcQZRbRtvwBMA0vTrZAaj3oTq/d687Or3SKsa4+VHQJTpU40PB+JsEyt6A8/iN0r5Ow==
-X-Received: by 2002:a05:6000:1e91:b0:336:7758:c6f0 with SMTP id dd17-20020a0560001e9100b003367758c6f0mr4037099wrb.70.1705437965213;
-        Tue, 16 Jan 2024 12:46:05 -0800 (PST)
-Received: from redhat.com ([2.52.29.192])
-        by smtp.gmail.com with ESMTPSA id g17-20020a056000119100b003365951cef9sm18433wrx.55.2024.01.16.12.46.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jan 2024 12:46:04 -0800 (PST)
-Date: Tue, 16 Jan 2024 15:46:00 -0500
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	virtualization@lists.linux.dev, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 00/17] virtio-net: support AF_XDP zero copy (3/3)
-Message-ID: <20240116154405-mutt-send-email-mst@kernel.org>
-References: <20240116094313.119939-1-xuanzhuo@linux.alibaba.com>
- <e19024b42c8f72e2b09c819ff1a4118f4b73da78.camel@redhat.com>
- <20240116070705.1cbfc042@kernel.org>
+        d=1e100.net; s=20230601; t=1705438547; x=1706043347;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DlZXQSEO2MSyZETuO+rcAWhvW1Ag1UJ2TRevGaH/dqc=;
+        b=mLGD4tn21hO58l/+KzI8AhfPlpIczGhAOkl5BaLnXHnf1CoBkTJZVyhXQs89i0FOSz
+         AnqRlCwwA/IgEY+rcGxnAb9AA/Ke9yI6C1OSJ3zh2l9zAt80iVcqJnA4wUKa6g4Wprmr
+         obmL38k4DY9Qj+C6UvTP9smj8aXXw/QbzSydv49bpRr9CBoeTQERPz++n2Ljg9iM49J5
+         UC0bWgjeSro7ESRQKnkCCpczU7ZvnKHy7GUb1YXZHIGnbPO6Lwo7+HmYZeQ51UY2j2DD
+         259NNRPLjCvfv+Ue+dcGnGmzPRQK+0qkw+J7Fg/Y/HNewnbSItr76dmSxa7LDje0z/sG
+         Qxrg==
+X-Gm-Message-State: AOJu0Ywu80FJzOl61mUfJmbqE6qi385R48utzjb6knwM1NCraiqPZ2XR
+	+T+ea16c1/yyvXGVhXcnyS0=
+X-Google-Smtp-Source: AGHT+IG5/DVFmUDJZbosCWeDjP+r3KcPmjIWGwF0M9JDdRAfR7XeSlPbiUQBz/rxrO3D51moiCznPQ==
+X-Received: by 2002:a05:6359:2a0:b0:176:57b:f71d with SMTP id ek32-20020a05635902a000b00176057bf71dmr735462rwb.53.1705438547197;
+        Tue, 16 Jan 2024 12:55:47 -0800 (PST)
+Received: from ArmidaleLaptop (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
+        by smtp.gmail.com with ESMTPSA id fi21-20020a056a00399500b006d0d90edd2csm18695pfb.42.2024.01.16.12.55.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jan 2024 12:55:46 -0800 (PST)
+From: dthaler1968@googlemail.com
+X-Google-Original-From: <dthaler1968@gmail.com>
+To: <bpf@ietf.org>,
+	<bpf@vger.kernel.org>
+References: <085f01da48bb$fe0c3cb0$fa24b610$@gmail.com>
+In-Reply-To: <085f01da48bb$fe0c3cb0$fa24b610$@gmail.com>
+Subject: Sign extension ISA question
+Date: Tue, 16 Jan 2024 12:55:44 -0800
+Message-ID: <08ab01da48be$603541a0$209fc4e0$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240116070705.1cbfc042@kernel.org>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQGkwaT1bS2nmU/D6EzqCIA6r6THFLFH+T6A
+Content-Language: en-us
 
-On Tue, Jan 16, 2024 at 07:07:05AM -0800, Jakub Kicinski wrote:
-> On Tue, 16 Jan 2024 13:37:30 +0100 Paolo Abeni wrote:
-> > For future submission it would be better if you split this series in
-> > smaller chunks: the maximum size allowed is 15 patches.
-> 
-> Which does not mean you can split it up and post them all at the same
-> time, FWIW.
+(Resending since a spam filter seems to have blocked the first attempt.)
 
+Is there any semantic difference between the following two instructions?
 
-Really it's just 17 I don't think it matters. Some patches could be
-squashed easily but I think that would be artificial.
+{.opcode = BPF_ALU64 | BPF_MOV | BPF_K, .offset = 0, .imm = -1}
+
+{.opcode = BPF_ALU64 | BPF_MOVSX | BPF_K, .offset = 32, .imm = -1}
+
+From my reading both of them treat imm as a signed 32-bit number and
+sign-extend it to 64 bits.
+
+Dave
 
 
