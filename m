@@ -1,40 +1,40 @@
-Return-Path: <bpf+bounces-19612-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19613-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 258F382F182
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 16:30:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B6D282F1D5
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 16:50:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C56C41F21E01
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 15:30:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC1091F23CB8
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 15:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90CBC1C29B;
-	Tue, 16 Jan 2024 15:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD71E1C695;
+	Tue, 16 Jan 2024 15:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffDwVzuU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O24WnAlG"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F5C2563;
-	Tue, 16 Jan 2024 15:30:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8C923C43390;
-	Tue, 16 Jan 2024 15:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A2E1C2B3;
+	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3007DC433F1;
+	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705419025;
-	bh=au7Vv0YVe9jBCpigQHBl3gX/TdZHJ4nEa6OGC0H16A8=;
+	s=k20201202; t=1705420230;
+	bh=ga1BG+TMkJmfQLcIeSqBXVBSKeScehq6FZ56bqEch5g=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ffDwVzuU3G5g0DY9ukdU7eTpVDJZDVF+F5h4OQn4N65mHzPlA/sD70114j3inCHhD
-	 5loAc8G8ODAtjRr/9Ih++ApIiyAzgMj6MSgLmfqDmnpQs8ytwYOp2h63PeuGfLjFsY
-	 TwaSRkFcrTuU9R0oPROnrl50K6EzVRx7xpIEchto6UXHkBfeHgxQrbvRBK2R/4TgdJ
-	 048ZhcqpXfEVC+CBgMgj0MiGOSbYxp1+UBNt3FXq+0AUBldjBUvqHEzjcQuXORawSh
-	 xkkCSaBsv5S2NcPiUTg9erHQ17w2pCogjNeMDSEFkb1ev9dgaBIOKbHqBAntGn8BZw
-	 xkIx33M0Sa2sg==
+	b=O24WnAlG/yeYkgPVlYk81haJ3Y0TvJwGLpZqXVWkS+8/orlE+b7asI8JLxN+1fWnX
+	 HsWgQM72Gk3sdAqJqgi2EKl1zdX18rjKBueoaGfC3Mq1Da72+Q1DkFfM4XuPk+gsF/
+	 5ieJE47iYmmBbEu5uSpLvanKOTtCFTYdCUinYSlxa4a1fCkTw2nt4IshBSoWEs6xnh
+	 slk2OKY5UEpoRXAhblVllP0Ynl1EYSiXevjsVC0zKPykdzgeTr2eQKqzsuoJmwMNbe
+	 ALM8IjcQwQcUKxH72mhifeROtDJYAeddX7aP8EPMrJSGF1jjEKK7yKh80XXWy1IsHS
+	 /9+HzLeCOkHJw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6BA03D8C984;
-	Tue, 16 Jan 2024 15:30:25 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1A83AD8C96D;
+	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -43,37 +43,40 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v1] bpftool: Silence build warning about calloc()
+Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix potential premature unload in
+ bpf_testmod
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <170541902543.7600.3198212618804627500.git-patchwork-notify@kernel.org>
-Date: Tue, 16 Jan 2024 15:30:25 +0000
-References: <20240116061920.31172-1-yangtiezhu@loongson.cn>
-In-Reply-To: <20240116061920.31172-1-yangtiezhu@loongson.cn>
-To: Tiezhu Yang <yangtiezhu@loongson.cn>
+ <170542023010.19641.12554162884652194073.git-patchwork-notify@kernel.org>
+Date: Tue, 16 Jan 2024 15:50:30 +0000
+References: <20240110085737.8895-1-asavkov@redhat.com>
+In-Reply-To: <20240110085737.8895-1-asavkov@redhat.com>
+To: Artem Savkov <asavkov@redhat.com>
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- quentin@isovalent.com, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+ bpf@vger.kernel.org, netdev@vger.kernel.org, jolsa@kernel.org,
+ linux-kernel@vger.kernel.org, yonghong.song@linux.dev
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Tue, 16 Jan 2024 14:19:20 +0800 you wrote:
-> There exists the following warning when building bpftool:
+On Wed, 10 Jan 2024 09:57:37 +0100 you wrote:
+> It is possible for bpf_kfunc_call_test_release() to be called from
+> bpf_map_free_deferred() when bpf_testmod is already unloaded and
+> perf_test_stuct.cnt which it tries to decrease is no longer in memory.
+> This patch tries to fix the issue by waiting for all references to be
+> dropped in bpf_testmod_exit().
 > 
->   CC      prog.o
-> prog.c: In function ‘profile_open_perf_events’:
-> prog.c:2301:24: warning: ‘calloc’ sizes specified with ‘sizeof’ in the earlier argument and not in the later argument [-Wcalloc-transposed-args]
->  2301 |                 sizeof(int), obj->rodata->num_cpu * obj->rodata->num_metric);
->       |                        ^~~
-> prog.c:2301:24: note: earlier argument should specify number of elements, later size of each element
+> The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
+> but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
+> synchronous grace periods urgently").
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,v1] bpftool: Silence build warning about calloc()
-    https://git.kernel.org/bpf/bpf-next/c/d2729bb2c7e1
+  - [bpf-next,v2] selftests/bpf: fix potential premature unload in bpf_testmod
+    https://git.kernel.org/bpf/bpf-next/c/6ad61815babf
 
 You are awesome, thank you!
 -- 
