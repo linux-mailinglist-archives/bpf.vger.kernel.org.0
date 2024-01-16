@@ -1,60 +1,59 @@
-Return-Path: <bpf+bounces-19676-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19677-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BE2382FAE4
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 22:43:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D341D82FAE7
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 22:43:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 209891C264BB
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 21:43:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E1AD1F28C3A
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 21:43:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9489515CD6D;
-	Tue, 16 Jan 2024 20:01:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055632032C;
+	Tue, 16 Jan 2024 20:01:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PFpPznPK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k6v+qIHm"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132F515CD5D;
-	Tue, 16 Jan 2024 20:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F1515CD6C;
+	Tue, 16 Jan 2024 20:01:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435292; cv=none; b=YzeW8iJ9J3loNoVOWg/xF0dHB7Qzq1sS/OcAG9cVPWlc4g9BPYLfGewuqbY1mT6hCFRCbqGWdJyiwAE75SNJP01abrC+DGVympL60Jw9IszwAaLIGL9yPdx0Q3cVQMaRPsQNTQU5/2ze/FKgtbsFWjLVQsJbk5UWD+tp6lzrNN4=
+	t=1705435292; cv=none; b=arOyQIzgKANOdD2/xI1acgmMDDwl8Z3zs6uraKWDxQtq7tJfpKgsqCcxOmfkx33X6pNq+e8hWQTclUEOV/3WaNYpJ0Dyrf0yt0dwEIIPWjCBhxFrYbee2jsdt8C/C2kCAHI1GTUFaaEqMZ9KnS+4IyTOSzZQDEGutDoDNS+KcdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1705435292; c=relaxed/simple;
-	bh=vq364ttm36Xi3JMcm9u7oxJMHYbvzLLpKEWyuRmE7IY=;
+	bh=yb6LNy7ADxfioEwyvILdwpFFJbfJjNpZK/vzIoDYJKo=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=LyazN74PFuRPv4GHVV6umeWNK//vi2L9eNlIW4DBeP6keFW/y/I58tto6ev+1nM5o6b62xh0v30BDKy44grHFEA1zj6vNkibMd9AoeYyXGiDGceISq7wiunWf+gPlOh14bdBzhyMD+uJfCWuH7Rc87dmFrhHWLHXKUXqhrINLd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PFpPznPK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88D1EC43390;
-	Tue, 16 Jan 2024 20:01:29 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=iJ9JWz/VSDz6aSNr36tBR+tDsYqdkuFepJTD/Z8P66POOLrUhOdsyz8me5yW5aQonSHuuBMRHyE6IyNd32P1iGKW5g2a6031OYOblgRrm9Q3wSfcLDNsLUm3f+b05RgZdcWwua5b02PCHcJkcIO1nVoLL+2YukW1f+9CUSZWAps=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k6v+qIHm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F02C433F1;
+	Tue, 16 Jan 2024 20:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435290;
-	bh=vq364ttm36Xi3JMcm9u7oxJMHYbvzLLpKEWyuRmE7IY=;
+	s=k20201202; t=1705435292;
+	bh=yb6LNy7ADxfioEwyvILdwpFFJbfJjNpZK/vzIoDYJKo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PFpPznPKjB5y8FSOUFj7ZAJycoiAcRAQM8M4jozviLNSHvkvoPSfaEQCYYHi5v9cl
-	 WU0qGGeEdkMN+6AsntXs3ky5YpwHQiTL3QWCm0B1MEW6xuFS6Us/g4ud1HYCjfcy9Z
-	 COEJZmtuTXTEazscNedSkP3Vs/kS5OWojy0HAdUvP2LQz4a172777xBFKnDy0SsudG
-	 BWZGgPNXXF5sX1wpOZbscFsVDCc87P/kSZqajVwNv/MzvoXztjxr8DOF4tOMGURUQb
-	 6LtCrMLR+uwRIAVBqHA944kmrPZYgms8EOxMTSNoqJ8JLkbGGdAt3AT5vr742q6DsX
-	 NLM+7HeU1+hjA==
+	b=k6v+qIHmyA7L/uauNI8nsDaDcD43kLFDyd9pBM5iydfdJNtMuZu9C9/xB/hnYRiHK
+	 vlDokkEnDnPSvGpS8ayOwaiDqii1JGPKzeXdyK3HoXcpsDLY3bcxjTfUMhPoG9kyF6
+	 Kl0eZGcfdf4VFLmneVGNJSVF6ggeXmZ4/jvsizfhj0lIsp5Bdt6fxCxLVtbQ9sdYBK
+	 sFAAlCiCFOYjDexqp6uTrPWGGJX+d5dHS7HC2DI8MQAdkJTYPDipLsN+zDiyeWEDT1
+	 eIZnI6hVNckaGB7TLo6eiAdwrm2zmWsZi7K2d3ii7WH5h+ehlYH3SHFBZtjTskio9A
+	 H3Lxl/UxhzAqQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrei Matei <andreimatei1@gmail.com>,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
+Cc: Hou Tao <houtao1@huawei.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	ast@kernel.org,
 	daniel@iogearbox.net,
+	andrii@kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 18/44] bpf: Guard stack limits against 32bit overflow
-Date: Tue, 16 Jan 2024 14:59:47 -0500
-Message-ID: <20240116200044.258335-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 19/44] bpf: Set uattr->batch.count as zero before batched update or deletion
+Date: Tue, 16 Jan 2024 14:59:48 -0500
+Message-ID: <20240116200044.258335-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116200044.258335-1-sashal@kernel.org>
 References: <20240116200044.258335-1-sashal@kernel.org>
@@ -69,66 +68,49 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.10.208
 Content-Transfer-Encoding: 8bit
 
-From: Andrei Matei <andreimatei1@gmail.com>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit 1d38a9ee81570c4bd61f557832dead4d6f816760 ]
+[ Upstream commit 06e5c999f10269a532304e89a6adb2fbfeb0593c ]
 
-This patch promotes the arithmetic around checking stack bounds to be
-done in the 64-bit domain, instead of the current 32bit. The arithmetic
-implies adding together a 64-bit register with a int offset. The
-register was checked to be below 1<<29 when it was variable, but not
-when it was fixed. The offset either comes from an instruction (in which
-case it is 16 bit), from another register (in which case the caller
-checked it to be below 1<<29 [1]), or from the size of an argument to a
-kfunc (in which case it can be a u32 [2]). Between the register being
-inconsistently checked to be below 1<<29, and the offset being up to an
-u32, it appears that we were open to overflowing the `int`s which were
-currently used for arithmetic.
+generic_map_{delete,update}_batch() doesn't set uattr->batch.count as
+zero before it tries to allocate memory for key. If the memory
+allocation fails, the value of uattr->batch.count will be incorrect.
 
-[1] https://github.com/torvalds/linux/blob/815fb87b753055df2d9e50f6cd80eb10235fe3e9/kernel/bpf/verifier.c#L7494-L7498
-[2] https://github.com/torvalds/linux/blob/815fb87b753055df2d9e50f6cd80eb10235fe3e9/kernel/bpf/verifier.c#L11904
+Fix it by setting uattr->batch.count as zero beore batched update or
+deletion.
 
-Reported-by: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20231207041150.229139-4-andreimatei1@gmail.com
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/r/20231208102355.2628918-6-houtao@huaweicloud.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/bpf/syscall.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 45c50ee9b037..2ee5f859e024 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3883,7 +3883,7 @@ static int check_ptr_to_map_access(struct bpf_verifier_env *env,
-  * The minimum valid offset is -MAX_BPF_STACK for writes, and
-  * -state->allocated_stack for reads.
-  */
--static int check_stack_slot_within_bounds(int off,
-+static int check_stack_slot_within_bounds(s64 off,
- 					  struct bpf_func_state *state,
- 					  enum bpf_access_type t)
- {
-@@ -3912,7 +3912,7 @@ static int check_stack_access_within_bounds(
- 	struct bpf_reg_state *regs = cur_regs(env);
- 	struct bpf_reg_state *reg = regs + regno;
- 	struct bpf_func_state *state = func(env, reg);
--	int min_off, max_off;
-+	s64 min_off, max_off;
- 	int err;
- 	char *err_extra;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index aaad2dce2be6..16affa09db5c 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -1285,6 +1285,9 @@ int generic_map_delete_batch(struct bpf_map *map,
+ 	if (!max_count)
+ 		return 0;
  
-@@ -3925,7 +3925,7 @@ static int check_stack_access_within_bounds(
- 		err_extra = " write to";
++	if (put_user(0, &uattr->batch.count))
++		return -EFAULT;
++
+ 	key = kmalloc(map->key_size, GFP_USER | __GFP_NOWARN);
+ 	if (!key)
+ 		return -ENOMEM;
+@@ -1343,6 +1346,9 @@ int generic_map_update_batch(struct bpf_map *map,
+ 	if (!max_count)
+ 		return 0;
  
- 	if (tnum_is_const(reg->var_off)) {
--		min_off = reg->var_off.value + off;
-+		min_off = (s64)reg->var_off.value + off;
- 		if (access_size > 0)
- 			max_off = min_off + access_size - 1;
- 		else
++	if (put_user(0, &uattr->batch.count))
++		return -EFAULT;
++
+ 	key = kmalloc(map->key_size, GFP_USER | __GFP_NOWARN);
+ 	if (!key)
+ 		return -ENOMEM;
 -- 
 2.43.0
 
