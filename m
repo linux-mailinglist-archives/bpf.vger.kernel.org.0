@@ -1,29 +1,29 @@
-Return-Path: <bpf+bounces-19564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99EFA82E894
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 05:50:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99A1282E896
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 05:50:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A519B22B0D
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 04:50:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CB801C22A24
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 04:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC3879F9;
-	Tue, 16 Jan 2024 04:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742018830;
+	Tue, 16 Jan 2024 04:50:42 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5B079C1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5EA79C3;
 	Tue, 16 Jan 2024 04:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8BxefAdC6Zl1JEAAA--.3085S3;
-	Tue, 16 Jan 2024 12:50:37 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8AxqvAeC6Zl2ZEAAA--.2979S3;
+	Tue, 16 Jan 2024 12:50:38 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxfs0bC6Zl4UgDAA--.15317S2;
-	Tue, 16 Jan 2024 12:50:36 +0800 (CST)
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Dxfs0bC6Zl4UgDAA--.15317S3;
+	Tue, 16 Jan 2024 12:50:37 +0800 (CST)
 From: Tiezhu Yang <yangtiezhu@loongson.cn>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -34,10 +34,12 @@ Cc: Eduard Zingerman <eddyz87@gmail.com>,
 	Hou Tao <houtao@huaweicloud.com>,
 	bpf@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v4 0/2] Skip callback tests if jit is disabled in test_verifier
-Date: Tue, 16 Jan 2024 12:50:28 +0800
-Message-ID: <20240116045030.23739-1-yangtiezhu@loongson.cn>
+Subject: [PATCH bpf-next v4 1/2] selftests/bpf: Move is_jit_enabled() to testing_helpers
+Date: Tue, 16 Jan 2024 12:50:29 +0800
+Message-ID: <20240116045030.23739-2-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20240116045030.23739-1-yangtiezhu@loongson.cn>
+References: <20240116045030.23739-1-yangtiezhu@loongson.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -45,48 +47,104 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Dxfs0bC6Zl4UgDAA--.15317S2
+X-CM-TRANSID:AQAAf8Dxfs0bC6Zl4UgDAA--.15317S3
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Xr47tF15Kr4kKFy5uFW3Jwc_yoWfZrcE9a
-	yUta4kXrs8AFn8AFy7GF1kuFZ8Gw4UWr1UtF4rXrWUtrW7ZF45GF4kXrZ5Za48W3y5Ga42
-	qF4DXFyfJr4jqosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
-	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUUUUU==
+X-Coremail-Antispam: 1Uk129KBj93XoWxZw4DJr4kZrWDXw1fuF45urX_yoW5XryUpa
+	yfGw12kr18tF1fJr17Jr4UWF4FgrZ7XrWUt3s0qrW5Zr4xJryxXr4xKFW0qF9xurZ0gFZ3
+	Za4IqFy5uw4xXFgCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r126r13M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	tVWrXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+	AKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU89vtJUUUUU==
 
-v4:
-  -- Move the not-allowed-checking into "if (expected_ret ...)"
-     block, thanks Hou Tao.
-  -- Do some small changes to avoid checkpatch warning
-     about "line length exceeds 100 columns".
+Currently, is_jit_enabled() is only used in test_progs, move it to
+testing_helpers so that it can be used in test_verifier. While at
+it, remove the second argument "0" of open() as Hou Tao suggested.
 
-v3:
-  -- Rebase on the latest bpf-next tree.
-  -- Address the review comments by Hou Tao,
-     remove the second argument "0" of open(),
-     check only once whether jit is disabled,
-     check fd_prog, saved_errno and jit_disabled to skip.
-
-Tiezhu Yang (2):
-  selftests/bpf: Move is_jit_enabled() to testing_helpers
-  selftests/bpf: Skip callback tests if jit is disabled in test_verifier
-
- tools/testing/selftests/bpf/test_progs.c      | 18 ---------------
- tools/testing/selftests/bpf/test_verifier.c   | 23 +++++++++++++++++++
- tools/testing/selftests/bpf/testing_helpers.c | 18 +++++++++++++++
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Acked-by: Hou Tao <houtao1@huawei.com>
+---
+ tools/testing/selftests/bpf/test_progs.c      | 18 ------------------
+ tools/testing/selftests/bpf/testing_helpers.c | 18 ++++++++++++++++++
  tools/testing/selftests/bpf/testing_helpers.h |  1 +
- 4 files changed, 42 insertions(+), 18 deletions(-)
+ 3 files changed, 19 insertions(+), 18 deletions(-)
 
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 1b9387890148..808550986f30 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -547,24 +547,6 @@ int bpf_find_map(const char *test, struct bpf_object *obj, const char *name)
+ 	return bpf_map__fd(map);
+ }
+ 
+-static bool is_jit_enabled(void)
+-{
+-	const char *jit_sysctl = "/proc/sys/net/core/bpf_jit_enable";
+-	bool enabled = false;
+-	int sysctl_fd;
+-
+-	sysctl_fd = open(jit_sysctl, 0, O_RDONLY);
+-	if (sysctl_fd != -1) {
+-		char tmpc;
+-
+-		if (read(sysctl_fd, &tmpc, sizeof(tmpc)) == 1)
+-			enabled = (tmpc != '0');
+-		close(sysctl_fd);
+-	}
+-
+-	return enabled;
+-}
+-
+ int compare_map_keys(int map1_fd, int map2_fd)
+ {
+ 	__u32 key, next_key;
+diff --git a/tools/testing/selftests/bpf/testing_helpers.c b/tools/testing/selftests/bpf/testing_helpers.c
+index 106ef05586b8..a59e56d804ee 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.c
++++ b/tools/testing/selftests/bpf/testing_helpers.c
+@@ -457,3 +457,21 @@ int get_xlated_program(int fd_prog, struct bpf_insn **buf, __u32 *cnt)
+ 	*buf = NULL;
+ 	return -1;
+ }
++
++bool is_jit_enabled(void)
++{
++	const char *jit_sysctl = "/proc/sys/net/core/bpf_jit_enable";
++	bool enabled = false;
++	int sysctl_fd;
++
++	sysctl_fd = open(jit_sysctl, O_RDONLY);
++	if (sysctl_fd != -1) {
++		char tmpc;
++
++		if (read(sysctl_fd, &tmpc, sizeof(tmpc)) == 1)
++			enabled = (tmpc != '0');
++		close(sysctl_fd);
++	}
++
++	return enabled;
++}
+diff --git a/tools/testing/selftests/bpf/testing_helpers.h b/tools/testing/selftests/bpf/testing_helpers.h
+index e099aa4da611..d14de81727e6 100644
+--- a/tools/testing/selftests/bpf/testing_helpers.h
++++ b/tools/testing/selftests/bpf/testing_helpers.h
+@@ -52,5 +52,6 @@ struct bpf_insn;
+  */
+ int get_xlated_program(int fd_prog, struct bpf_insn **buf, __u32 *cnt);
+ int testing_prog_flags(void);
++bool is_jit_enabled(void);
+ 
+ #endif /* __TESTING_HELPERS_H */
 -- 
 2.42.0
 
