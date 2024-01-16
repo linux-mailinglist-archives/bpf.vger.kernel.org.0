@@ -1,29 +1,29 @@
-Return-Path: <bpf+bounces-19576-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19577-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C41A82EA87
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 08:59:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAB3282EA8A
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 08:59:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B94D0284F2B
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 07:59:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89AD51F24140
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 07:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8231C11C92;
-	Tue, 16 Jan 2024 07:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899D2125B6;
+	Tue, 16 Jan 2024 07:59:34 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88DB111AB;
-	Tue, 16 Jan 2024 07:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED4D11700;
+	Tue, 16 Jan 2024 07:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W-lNYOL_1705391967;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W-lNYOL_1705391967)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W-lJQhy_1705391968;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W-lJQhy_1705391968)
           by smtp.aliyun-inc.com;
-          Tue, 16 Jan 2024 15:59:27 +0800
+          Tue, 16 Jan 2024 15:59:28 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -39,9 +39,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next 2/5] virtio_ring: virtqueue_disable_and_recycle let the callback detach bufs
-Date: Tue, 16 Jan 2024 15:59:21 +0800
-Message-Id: <20240116075924.42798-3-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next 3/5] virtio_ring: introduce virtqueue_detach_unused_buf_dma()
+Date: Tue, 16 Jan 2024 15:59:22 +0800
+Message-Id: <20240116075924.42798-4-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240116075924.42798-1-xuanzhuo@linux.alibaba.com>
 References: <20240116075924.42798-1-xuanzhuo@linux.alibaba.com>
@@ -54,196 +54,113 @@ MIME-Version: 1.0
 X-Git-Hash: e56718642c76
 Content-Transfer-Encoding: 8bit
 
-Now, inside virtqueue_disable_and_recycle, the recycle() just has two
-parameters(vq, buf) after detach operate.
+introduce virtqueue_detach_unused_buf_dma() to collect the dma
+info when get buf from virtio core for premapped mode.
 
-But if we are in premapped mode, we may need to get some dma info when
-detach buf like virtqueue_get_buf_ctx_dma().
-
-So we call recycle directly, this callback detaches bufs self. It should
-complete the work of detaching all the unused buffers.
+If the virtio queue is premapped mode, the virtio-net send buf may
+have many desc. Every desc dma address need to be unmap. So here we
+introduce a new helper to collect the dma address of the buffer from
+the virtio core.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio/main.c    | 60 +++++++++++++++++++-----------------
- drivers/virtio/virtio_ring.c | 10 +++---
- include/linux/virtio.h       |  4 +--
- 3 files changed, 38 insertions(+), 36 deletions(-)
+ drivers/virtio/virtio_ring.c | 33 +++++++++++++++++++++++++--------
+ include/linux/virtio.h       |  1 +
+ 2 files changed, 26 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/virtio/main.c b/drivers/net/virtio/main.c
-index ac3a529c7729..186b2cf5d8fc 100644
---- a/drivers/net/virtio/main.c
-+++ b/drivers/net/virtio/main.c
-@@ -150,7 +150,8 @@ struct virtio_net_common_hdr {
- 	};
- };
- 
--static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
-+static void virtnet_rq_free_unused_bufs(struct virtqueue *vq);
-+static void virtnet_sq_free_unused_bufs(struct virtqueue *vq);
- 
- static bool is_xdp_frame(void *ptr)
- {
-@@ -587,20 +588,6 @@ static void virtnet_rq_set_premapped(struct virtnet_info *vi)
- 	}
- }
- 
--static void virtnet_rq_unmap_free_buf(struct virtqueue *vq, void *buf)
--{
--	struct virtnet_info *vi = vq->vdev->priv;
--	struct virtnet_rq *rq;
--	int i = vq2rxq(vq);
--
--	rq = &vi->rq[i];
--
--	if (rq->do_dma)
--		virtnet_rq_unmap(rq, buf, 0);
--
--	virtnet_rq_free_buf(vi, rq, buf);
--}
--
- static void free_old_xmit(struct virtnet_sq *sq, bool in_napi)
- {
- 	u64 bytes = 0, packets = 0;
-@@ -2244,7 +2231,7 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
- 		cancel_work_sync(&rq->dim.work);
- 	}
- 
--	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_unmap_free_buf);
-+	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_free_unused_bufs);
- 	if (err)
- 		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
- 
-@@ -2283,7 +2270,7 @@ static int virtnet_tx_resize(struct virtnet_info *vi,
- 
- 	__netif_tx_unlock_bh(txq);
- 
--	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
-+	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_bufs);
- 	if (err)
- 		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
- 
-@@ -4026,31 +4013,48 @@ static void free_receive_page_frags(struct virtnet_info *vi)
- 		}
- }
- 
--static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf)
-+static void virtnet_sq_free_unused_bufs(struct virtqueue *vq)
- {
--	if (!is_xdp_frame(buf))
--		dev_kfree_skb(buf);
--	else
--		xdp_return_frame(ptr_to_xdp(buf));
-+	void *buf;
-+
-+	while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
-+		if (!is_xdp_frame(buf))
-+			dev_kfree_skb(buf);
-+		else
-+			xdp_return_frame(ptr_to_xdp(buf));
-+	}
- }
- 
--static void free_unused_bufs(struct virtnet_info *vi)
-+static void virtnet_rq_free_unused_bufs(struct virtqueue *vq)
- {
-+	struct virtnet_info *vi = vq->vdev->priv;
-+	struct virtnet_rq *rq;
-+	int i = vq2rxq(vq);
- 	void *buf;
-+
-+	rq = &vi->rq[i];
-+
-+	while ((buf = virtqueue_detach_unused_buf(vq)) != NULL) {
-+		if (rq->do_dma)
-+			virtnet_rq_unmap(rq, buf, 0);
-+
-+		virtnet_rq_free_buf(vi, rq, buf);
-+	}
-+}
-+
-+static void free_unused_bufs(struct virtnet_info *vi)
-+{
- 	int i;
- 
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
- 		struct virtqueue *vq = vi->sq[i].vq;
--		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
--			virtnet_sq_free_unused_buf(vq, buf);
-+		virtnet_sq_free_unused_bufs(vq);
- 		cond_resched();
- 	}
- 
- 	for (i = 0; i < vi->max_queue_pairs; i++) {
- 		struct virtqueue *vq = vi->rq[i].vq;
--
--		while ((buf = virtqueue_detach_unused_buf(vq)) != NULL)
--			virtnet_rq_unmap_free_buf(vq, buf);
-+		virtnet_rq_free_unused_bufs(vq);
- 		cond_resched();
- 	}
- }
 diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-index 82f72428605b..ecbaf7568251 100644
+index ecbaf7568251..2c5089d3b510 100644
 --- a/drivers/virtio/virtio_ring.c
 +++ b/drivers/virtio/virtio_ring.c
-@@ -2198,11 +2198,10 @@ static int virtqueue_resize_packed(struct virtqueue *_vq, u32 num)
+@@ -1012,7 +1012,7 @@ static bool virtqueue_enable_cb_delayed_split(struct virtqueue *_vq)
+ 	return true;
  }
  
- static int virtqueue_disable_and_recycle(struct virtqueue *_vq,
--					 void (*recycle)(struct virtqueue *vq, void *buf))
-+					 void (*recycle)(struct virtqueue *vq))
+-static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
++static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq, struct virtio_dma_head *dma)
  {
  	struct vring_virtqueue *vq = to_vvq(_vq);
- 	struct virtio_device *vdev = vq->vq.vdev;
--	void *buf;
- 	int err;
- 
- 	if (!vq->we_own_ring)
-@@ -2218,8 +2217,7 @@ static int virtqueue_disable_and_recycle(struct virtqueue *_vq,
- 	if (err)
- 		return err;
- 
--	while ((buf = virtqueue_detach_unused_buf(_vq)) != NULL)
--		recycle(_vq, buf);
-+	recycle(_vq);
- 
- 	return 0;
+ 	unsigned int i;
+@@ -1025,7 +1025,7 @@ static void *virtqueue_detach_unused_buf_split(struct virtqueue *_vq)
+ 			continue;
+ 		/* detach_buf_split clears data, so grab it now. */
+ 		buf = vq->split.desc_state[i].data;
+-		detach_buf_split(vq, i, NULL, NULL);
++		detach_buf_split(vq, i, dma, NULL);
+ 		vq->split.avail_idx_shadow--;
+ 		vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+ 				vq->split.avail_idx_shadow);
+@@ -1909,7 +1909,7 @@ static bool virtqueue_enable_cb_delayed_packed(struct virtqueue *_vq)
+ 	return true;
  }
-@@ -2814,7 +2812,7 @@ EXPORT_SYMBOL_GPL(vring_create_virtqueue_dma);
-  *
-  */
- int virtqueue_resize(struct virtqueue *_vq, u32 num,
--		     void (*recycle)(struct virtqueue *vq, void *buf))
-+		     void (*recycle)(struct virtqueue *vq))
- {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
- 	int err;
-@@ -2905,7 +2903,7 @@ EXPORT_SYMBOL_GPL(virtqueue_set_dma_premapped);
-  * -EPERM: Operation not permitted
-  */
- int virtqueue_reset(struct virtqueue *_vq,
--		    void (*recycle)(struct virtqueue *vq, void *buf))
-+		    void (*recycle)(struct virtqueue *vq))
- {
- 	struct vring_virtqueue *vq = to_vvq(_vq);
- 	int err;
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index 572aecec205b..7a5e9ea7d420 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -115,9 +115,9 @@ dma_addr_t virtqueue_get_avail_addr(const struct virtqueue *vq);
- dma_addr_t virtqueue_get_used_addr(const struct virtqueue *vq);
  
- int virtqueue_resize(struct virtqueue *vq, u32 num,
--		     void (*recycle)(struct virtqueue *vq, void *buf));
-+		     void (*recycle)(struct virtqueue *vq));
- int virtqueue_reset(struct virtqueue *vq,
--		    void (*recycle)(struct virtqueue *vq, void *buf));
-+		    void (*recycle)(struct virtqueue *vq));
+-static void *virtqueue_detach_unused_buf_packed(struct virtqueue *_vq)
++static void *virtqueue_detach_unused_buf_packed(struct virtqueue *_vq, struct virtio_dma_head *dma)
+ {
+ 	struct vring_virtqueue *vq = to_vvq(_vq);
+ 	unsigned int i;
+@@ -1922,7 +1922,7 @@ static void *virtqueue_detach_unused_buf_packed(struct virtqueue *_vq)
+ 			continue;
+ 		/* detach_buf clears data, so grab it now. */
+ 		buf = vq->packed.desc_state[i].data;
+-		detach_buf_packed(vq, i, NULL, NULL);
++		detach_buf_packed(vq, i, dma, NULL);
+ 		END_USE(vq);
+ 		return buf;
+ 	}
+@@ -2614,19 +2614,36 @@ bool virtqueue_enable_cb_delayed(struct virtqueue *_vq)
+ EXPORT_SYMBOL_GPL(virtqueue_enable_cb_delayed);
  
  /**
-  * struct virtio_device - representation of a device using virtio
+- * virtqueue_detach_unused_buf - detach first unused buffer
++ * virtqueue_detach_unused_buf_dma - detach first unused buffer
+  * @_vq: the struct virtqueue we're talking about.
++ * @dma: the head of the array to store the dma info
++ *
++ * more see virtqueue_get_buf_ctx_dma()
+  *
+  * Returns NULL or the "data" token handed to virtqueue_add_*().
+  * This is not valid on an active queue; it is useful for device
+  * shutdown or the reset queue.
+  */
+-void *virtqueue_detach_unused_buf(struct virtqueue *_vq)
++void *virtqueue_detach_unused_buf_dma(struct virtqueue *_vq, struct virtio_dma_head *dma)
+ {
+ 	struct vring_virtqueue *vq = to_vvq(_vq);
+ 
+-	return vq->packed_ring ? virtqueue_detach_unused_buf_packed(_vq) :
+-				 virtqueue_detach_unused_buf_split(_vq);
++	return vq->packed_ring ? virtqueue_detach_unused_buf_packed(_vq, dma) :
++				 virtqueue_detach_unused_buf_split(_vq, dma);
++}
++EXPORT_SYMBOL_GPL(virtqueue_detach_unused_buf_dma);
++
++/**
++ * virtqueue_detach_unused_buf - detach first unused buffer
++ * @_vq: the struct virtqueue we're talking about.
++ *
++ * Returns NULL or the "data" token handed to virtqueue_add_*().
++ * This is not valid on an active queue; it is useful for device
++ * shutdown or the reset queue.
++ */
++void *virtqueue_detach_unused_buf(struct virtqueue *_vq)
++{
++	return virtqueue_detach_unused_buf_dma(_vq, NULL);
+ }
+ EXPORT_SYMBOL_GPL(virtqueue_detach_unused_buf);
+ 
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 7a5e9ea7d420..2596f0e7e395 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -104,6 +104,7 @@ bool virtqueue_poll(struct virtqueue *vq, unsigned);
+ bool virtqueue_enable_cb_delayed(struct virtqueue *vq);
+ 
+ void *virtqueue_detach_unused_buf(struct virtqueue *vq);
++void *virtqueue_detach_unused_buf_dma(struct virtqueue *_vq, struct virtio_dma_head *dma);
+ 
+ unsigned int virtqueue_get_vring_size(const struct virtqueue *vq);
+ 
 -- 
 2.32.0.3.g01195cf9f
 
