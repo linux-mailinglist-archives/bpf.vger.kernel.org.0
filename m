@@ -1,59 +1,66 @@
-Return-Path: <bpf+bounces-19635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26D2482F666
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 20:58:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC0682F695
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 21:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D0AD1C2408D
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 19:58:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 43981B24D57
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 20:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D0E7328A6;
-	Tue, 16 Jan 2024 19:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D981B41C6C;
+	Tue, 16 Jan 2024 19:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n3WONRA/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GIoP1hMU"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 087F6321A1;
-	Tue, 16 Jan 2024 19:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B2241778;
+	Tue, 16 Jan 2024 19:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434289; cv=none; b=npNjefy/+dG/s952dzb23qCgEYCAuRHXodjp2es2oIroOFF6UYEdJ6ldtu2fI0bnssb228CIaYznQVBlVFceD/VUKOR+8QWYl9EGrnl6Vv1/QWLKGF3IMP/JYV4WcroQqfYy8gr69pAh5jY8bdH1wLlhJ8mCTi96q2WSkBI/4Sg=
+	t=1705434340; cv=none; b=tIeihrqOzby3Hi1d8DVpH0UQVq2IJ8b2CZAXnIo0MgY3Iwkn23imZxHO/TNkgYP4FD9zftlOZjKJT8K3UbaqqIPteHppHxm+QFCxoE6gazobEdm74jHXy5Ub/Ulp73OvCIbStM93LvQ34/96gT/K5qi5ZlJ2ZnRGbhwdJw/dNww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434289; c=relaxed/simple;
-	bh=wworOC67y9iTAVp+T5FvBy9JQQc7AjuTaatdOEHECuQ=;
+	s=arc-20240116; t=1705434340; c=relaxed/simple;
+	bh=UJjrdwgJB6dEm9810nwT8dcuk2xsksgaiGtYCpqtQOE=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=beUMhtQOPjOvdCuaaqGgV94qKLlS32PTpMFcUYc1LP6RQVVk/+21WYhm8W18g49SN8aK+MhoWmZkt8X6ioFlPDW0y8i22hhxETtv6V4kOOjjtSXCAVodMekqHEDQ3NGFMqWSCNIOwlu0OYGPQ9iGbgQ6sqQfblX35dOmXGsRTJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n3WONRA/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE0F0C433F1;
-	Tue, 16 Jan 2024 19:44:47 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=dKVHaAQJkD3OXrnqP5E4Ayf6dsq3VvpD6hCCzhFRf9I3RXt1ib3QACgyYyooDzFRjKN0JjdrJm91lFobU+QaPj4Yo0ZBeNC3gCSod3upqKlrb4VcGDWMmRtAkhvxTOX0lSCrIFDDRsbBHOaUMhokrve7iwHg0H+f11rlmn/Lc+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GIoP1hMU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82E40C433C7;
+	Tue, 16 Jan 2024 19:45:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434288;
-	bh=wworOC67y9iTAVp+T5FvBy9JQQc7AjuTaatdOEHECuQ=;
+	s=k20201202; t=1705434340;
+	bh=UJjrdwgJB6dEm9810nwT8dcuk2xsksgaiGtYCpqtQOE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n3WONRA/rLebnX8wvn35OUQSn6miRa/HJFpfcKfBYw8krVlQ2FHckDsaBG6JcysaK
-	 EG7VaFBOKC/nWqLQbyaMcqBNB5r0hAiOWoYUnvvhnGfS7z9LeCOWPCOMnWEeAS/Ofa
-	 xZr6g5OAUM1fX3VfKlNDtZgwMPE87O0Y85xUPmCEXKm/VO6spnVigOc3WDbyVjbAzE
-	 5ioHkn03sem4+HNAacri6oGgx8WXSxB+0Eq2RlGA37nKVH57iTdj00dcbXJ1yETKT6
-	 cmHq4s4SBMpzpZZkVqa551l8V3fmOlkznxaxssfWMUUIB2cVcEyZn7prl1VYXt7cWY
-	 g4x62suymEJSQ==
+	b=GIoP1hMUxml6v0ahcMDfLKO3hN7LQrZ8zh6tS52+ulHI9iZhPLU5idAAUqR0kJEgL
+	 bEIDkWoC5bmqgFpolxmJGK4zIN3uDWDyU/GJKZ6Ugtz5bNuf0opApTZQxrRLpFUWj0
+	 ukc2u69E1uDrHjlaox3TTR+4taY53QD1QELChXwuY9JudnTpde/Uhg7WDuTTlAT/J6
+	 AWM66aFNxznqu5N47hSvc6GnAWZjar8e36awurX4XvwYJ1fWOH5JQ/N+WU0GBTVPoa
+	 fCRTNqhhA3sJ6OmfsA17Z7cVHIDcyg5SeUfENaVHOktVqEVNVSUBUed2CiDZYS+3zZ
+	 bbDoV3jvDswVg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Hou Tao <houtao1@huawei.com>,
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
 	daniel@iogearbox.net,
-	andrii@kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 052/108] bpf: Set uattr->batch.count as zero before batched update or deletion
-Date: Tue, 16 Jan 2024 14:39:18 -0500
-Message-ID: <20240116194225.250921-52-sashal@kernel.org>
+	shuah@kernel.org,
+	davem@davemloft.net,
+	kuba@kernel.org,
+	hawk@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 066/108] selftests/bpf: fix compiler warnings in RELEASE=1 mode
+Date: Tue, 16 Jan 2024 14:39:32 -0500
+Message-ID: <20240116194225.250921-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116194225.250921-1-sashal@kernel.org>
 References: <20240116194225.250921-1-sashal@kernel.org>
@@ -68,49 +75,50 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
 
-From: Hou Tao <houtao1@huawei.com>
+From: Andrii Nakryiko <andrii@kernel.org>
 
-[ Upstream commit 06e5c999f10269a532304e89a6adb2fbfeb0593c ]
+[ Upstream commit 62d9a969f4a95219c757831e9ad66cd4dd9edee5 ]
 
-generic_map_{delete,update}_batch() doesn't set uattr->batch.count as
-zero before it tries to allocate memory for key. If the memory
-allocation fails, the value of uattr->batch.count will be incorrect.
+When compiling BPF selftests with RELEASE=1, we get two new
+warnings, which are treated as errors. Fix them.
 
-Fix it by setting uattr->batch.count as zero beore batched update or
-deletion.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/r/20231208102355.2628918-6-houtao@huaweicloud.com
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Link: https://lore.kernel.org/r/20231212225343.1723081-1-andrii@kernel.org
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/syscall.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ tools/testing/selftests/bpf/veristat.c        | 2 +-
+ tools/testing/selftests/bpf/xdp_hw_metadata.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 0ed286b8a0f0..96911f9dedfc 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -1676,6 +1676,9 @@ int generic_map_delete_batch(struct bpf_map *map,
- 	if (!max_count)
- 		return 0;
+diff --git a/tools/testing/selftests/bpf/veristat.c b/tools/testing/selftests/bpf/veristat.c
+index 655095810d4a..0ad98b6a8e6e 100644
+--- a/tools/testing/selftests/bpf/veristat.c
++++ b/tools/testing/selftests/bpf/veristat.c
+@@ -1214,7 +1214,7 @@ static int cmp_join_stat(const struct verif_stats_join *s1,
+ 			 enum stat_id id, enum stat_variant var, bool asc)
+ {
+ 	const char *str1 = NULL, *str2 = NULL;
+-	double v1, v2;
++	double v1 = 0.0, v2 = 0.0;
+ 	int cmp = 0;
  
-+	if (put_user(0, &uattr->batch.count))
-+		return -EFAULT;
-+
- 	key = kvmalloc(map->key_size, GFP_USER | __GFP_NOWARN);
- 	if (!key)
- 		return -ENOMEM;
-@@ -1733,6 +1736,9 @@ int generic_map_update_batch(struct bpf_map *map, struct file *map_file,
- 	if (!max_count)
- 		return 0;
- 
-+	if (put_user(0, &uattr->batch.count))
-+		return -EFAULT;
-+
- 	key = kvmalloc(map->key_size, GFP_USER | __GFP_NOWARN);
- 	if (!key)
- 		return -ENOMEM;
+ 	fetch_join_stat_value(s1, id, var, &str1, &v1);
+diff --git a/tools/testing/selftests/bpf/xdp_hw_metadata.c b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+index c3ba40d0b9de..c5e7937d7f63 100644
+--- a/tools/testing/selftests/bpf/xdp_hw_metadata.c
++++ b/tools/testing/selftests/bpf/xdp_hw_metadata.c
+@@ -70,7 +70,7 @@ static int open_xsk(int ifindex, struct xsk *xsk, __u32 queue_id)
+ 		.frame_size = XSK_UMEM__DEFAULT_FRAME_SIZE,
+ 		.flags = XDP_UMEM_UNALIGNED_CHUNK_FLAG,
+ 	};
+-	__u32 idx;
++	__u32 idx = 0;
+ 	u64 addr;
+ 	int ret;
+ 	int i;
 -- 
 2.43.0
 
