@@ -1,134 +1,97 @@
-Return-Path: <bpf+bounces-19605-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19606-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF17482EFCE
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 14:37:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D4A482EFEF
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 14:46:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 322211F2402B
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 13:37:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBF151C23289
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 13:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBE21BDC5;
-	Tue, 16 Jan 2024 13:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b="Tm/etXvw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA4D1BDDA;
+	Tue, 16 Jan 2024 13:46:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from forwardcorp1b.mail.yandex.net (forwardcorp1b.mail.yandex.net [178.154.239.136])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1821E1BC4E
-	for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 13:36:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex-team.ru
-Received: from mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:291a:0:640:e5df:0])
-	by forwardcorp1b.mail.yandex.net (Yandex) with ESMTPS id CFBB162091;
-	Tue, 16 Jan 2024 16:34:55 +0300 (MSK)
-Received: from conquistador.yandex.net (unknown [2a02:6b8:0:40c:d80d:e04a:8a36:b2e9])
-	by mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id pYobUg0iCW20-1EIpaDn8;
-	Tue, 16 Jan 2024 16:34:55 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
-	s=default; t=1705412095;
-	bh=I4pF+1IBkMkwOZulreOBxgZPfdP+MHdaESgx0GX0eq0=;
-	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=Tm/etXvwT5IUaQQ72u5fjIbLPAzXhctOkWz5pOBHO/0zCLpdraRdnp2komi19gZbv
-	 SBURIk8OB1khp0DOM/1+eF0Ag2wDVMRbEFeb3bwx/zy0nls2Awmt0TmcZ3Px09NdX1
-	 iDipEA+i5psJ/vZpYdgjkQPK7R3wE8HyDwvokmKU=
-Authentication-Results: mail-nwsmtp-smtp-corp-main-62.myt.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-From: Andrey Grafin <conquistador@yandex-team.ru>
-To: bpf@vger.kernel.org
-Cc: andrii@kernel.org
-Subject: [PATCH bpf v4 2/2] selftest/bpf: Add map_in_maps with BPF_MAP_TYPE_PERF_EVENT_ARRAY values
-Date: Tue, 16 Jan 2024 16:34:43 +0300
-Message-ID: <20240116133443.21164-2-conquistador@yandex-team.ru>
-In-Reply-To: <20240116133443.21164-1-conquistador@yandex-team.ru>
-References: <20240116133443.21164-1-conquistador@yandex-team.ru>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033711B944;
+	Tue, 16 Jan 2024 13:46:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W-mKldk_1705412774;
+Received: from 30.221.145.228(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W-mKldk_1705412774)
+          by smtp.aliyun-inc.com;
+          Tue, 16 Jan 2024 21:46:15 +0800
+Message-ID: <3a82adb1-c839-4e82-834f-a63f9910b28d@linux.alibaba.com>
+Date: Tue, 16 Jan 2024 21:46:14 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC nf-next v5 0/2] netfilter: bpf: support prog update
+Content-Language: en-US
+From: "D. Wythe" <alibuda@linux.alibaba.com>
+To: pablo@netfilter.org, kadlec@netfilter.org, fw@strlen.de
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, coreteam@netfilter.org,
+ netfilter-devel@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, ast@kernel.org
+References: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
+In-Reply-To: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Check that bpf_object__load() successfully creates map_in_maps
-with BPF_MAP_TYPE_PERF_EVENT_ARRAY values.
-This changes cover fix in the commit 912884275669
-("libbpf: Apply map_set_def_max_entries() for inner_maps on creation").
 
-A command line output is:
-- w/o fix
-$ sudo ./test_maps
-libbpf: map 'mim_array_pe': failed to create inner map: -22
-libbpf: map 'mim_array_pe': failed to create: Invalid argument(-22)
-libbpf: failed to load object './test_map_in_map.bpf.o'
-Failed to load test prog
 
-- with fix
-$ sudo ./test_maps
-...
-test_maps: OK, 0 SKIPPED
+Just a reminder to avoid forgetting this patch by everyone. 🙂
 
-Signed-off-by: Andrey Grafin <conquistador@yandex-team.ru>
----
- .../selftests/bpf/progs/test_map_in_map.c     | 23 +++++++++++++++++++
- tools/testing/selftests/bpf/test_maps.c       |  6 ++++-
- 2 files changed, 28 insertions(+), 1 deletion(-)
+Best wishes,
+D. Wythe
 
-diff --git a/tools/testing/selftests/bpf/progs/test_map_in_map.c b/tools/testing/selftests/bpf/progs/test_map_in_map.c
-index f416032ba858..54ce1f4bdc7b 100644
---- a/tools/testing/selftests/bpf/progs/test_map_in_map.c
-+++ b/tools/testing/selftests/bpf/progs/test_map_in_map.c
-@@ -21,6 +21,29 @@ struct {
- 	__type(value, __u32);
- } mim_hash SEC(".maps");
- 
-+struct perf_event_array {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__type(key, __u32);
-+	__type(value, __u32);
-+} inner_map0 SEC(".maps"), inner_map1 SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY_OF_MAPS);
-+	__uint(max_entries, 2);
-+	__type(key, __u32);
-+	__array(values, struct perf_event_array);
-+} mim_array_pe SEC(".maps") = {
-+	.values = {&inner_map0, &inner_map1}};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH_OF_MAPS);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__array(values, struct perf_event_array);
-+} mim_hash_pe SEC(".maps") = {
-+	.values = {&inner_map0}};
-+
-+
- SEC("xdp")
- int xdp_mimtest0(struct xdp_md *ctx)
- {
-diff --git a/tools/testing/selftests/bpf/test_maps.c b/tools/testing/selftests/bpf/test_maps.c
-index 7fc00e423e4d..e0dd101c9f2b 100644
---- a/tools/testing/selftests/bpf/test_maps.c
-+++ b/tools/testing/selftests/bpf/test_maps.c
-@@ -1190,7 +1190,11 @@ static void test_map_in_map(void)
- 		goto out_map_in_map;
- 	}
- 
--	bpf_object__load(obj);
-+	err = bpf_object__load(obj);
-+	if (err) {
-+		printf("Failed to load test prog\n");
-+		goto out_map_in_map;
-+	}
- 
- 	map = bpf_object__find_map_by_name(obj, "mim_array");
- 	if (!map) {
--- 
-2.41.0
+
+On 1/2/24 2:11 PM, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+>
+> This patches attempt to implements updating of progs within
+> bpf netfilter link, allowing user update their ebpf netfilter
+> prog in hot update manner.
+>
+> Besides, a corresponding test case has been added to verify
+> whether the update works.
+> --
+> v1:
+> 1. remove unnecessary context, access the prog directly via rcu.
+> 2. remove synchronize_rcu(), dealloc the nf_link via kfree_rcu.
+> 3. check the dead flag during the update.
+> --
+> v1->v2:
+> 1. remove unnecessary nf_prog, accessing nf_link->link.prog in direct.
+> --
+> v2->v3:
+> 1. access nf_link->link.prog via rcu_dereference_raw to avoid warning.
+> --
+> v3->v4:
+> 1. remove mutex for link update, as it is unnecessary and can be replaced
+> by atomic operations.
+> --
+> v4->v5:
+> 1. fix error retval check on cmpxhcg
+>
+> D. Wythe (2):
+>    netfilter: bpf: support prog update
+>    selftests/bpf: Add netfilter link prog update test
+>
+>   net/netfilter/nf_bpf_link.c                        | 50 ++++++++-----
+>   .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
+>   .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
+>   3 files changed, 141 insertions(+), 16 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
+>
 
 
