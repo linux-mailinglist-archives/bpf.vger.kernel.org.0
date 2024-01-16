@@ -1,61 +1,59 @@
-Return-Path: <bpf+bounces-19656-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38CA782F933
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 22:02:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A1F82F96A
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 22:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFE66B25205
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 21:02:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2BC01F27108
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 21:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 149522CCBC;
-	Tue, 16 Jan 2024 19:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27DB1F615;
+	Tue, 16 Jan 2024 19:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TvvyzzuP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V5Fkq5nQ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866F22C866;
-	Tue, 16 Jan 2024 19:55:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750ED1420B2;
+	Tue, 16 Jan 2024 19:55:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705434924; cv=none; b=cC9pJYxinlkVeDG+sp92ReJJXFiFvCtD9L8HQV97P23Y+fj80vvzrbdllzJxb9ivM0mM7QrLrBckymktZp18WkudemUduC+rqMSEtrF4IeloV9M1sJaU3eSM9T/EJnuTQQVibt2d9PQICiQycsm0tqBMuGt+vDDihUXsa38irAs=
+	t=1705434958; cv=none; b=EwHBrlVXc2TmHndLpAH1ygmmSxe9TcW9IhWcWljfaKERBIxtnJoeiWegIgpIIgYLHvKyvrZJqokcwKcJZ7UekFgjZPc377HNs1uZita4Tz2Aa6DiyAII7dPW0n7t8Oa2JjxzgO3pQbONb8NUrErBb8unypDARI0R75rcKKkO7kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705434924; c=relaxed/simple;
-	bh=qe+pNJ+ssyCgfFk2VBJHz5U42mWNKP3MaUbYM8MusOo=;
+	s=arc-20240116; t=1705434958; c=relaxed/simple;
+	bh=3IAgGDz0yjGZhxDZbsMLsE9h3ifZOAZyMRq8lFAyhIA=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=KxA8+bARoyU2JkdiMKQOjEjPKMMGZN0dPfXh5yjI4Ed37bRhXO1rv/Krl9WKQBTrBDwiz2xsXXqj27b8hwbH7On+A1YrBW3cNnejB27MPTkOChP8JpxDtGDchGmqBPBJCsQ5TrZjctJWLPYzISJaiCPDQoifJzp6OEQb0ArNVno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TvvyzzuP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43F59C433F1;
-	Tue, 16 Jan 2024 19:55:23 +0000 (UTC)
+	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=mYBnTfe84+mBWtsqBUvl8r8cwAEuSNurJBIrr1wIjOfXpRa/vR5HjW1HfECduWhucd3Zoe1JwulmozKO7csMLsf+XdQFP2u9MorMgtNc7dX2GFwRRdPgB9kLI3GWX1O5jHAcA8FqV7x8I/w/iRff7PNsaN6EzbogrS9KMbFI+lM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V5Fkq5nQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C25FC43390;
+	Tue, 16 Jan 2024 19:55:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705434924;
-	bh=qe+pNJ+ssyCgfFk2VBJHz5U42mWNKP3MaUbYM8MusOo=;
+	s=k20201202; t=1705434958;
+	bh=3IAgGDz0yjGZhxDZbsMLsE9h3ifZOAZyMRq8lFAyhIA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=TvvyzzuPGFX9sUFmfErAU75OVcW3s8RYk9lOltQkwbCI08jY4F4vQ1Gr1dS3H4Qcf
-	 zIbB1Ip4y2dKhMU4xYMlxKNbCMS3Kj7CdMEE5v31wK+tTY9vyYR5/HwODmmKaiG3eC
-	 PQZ8pr9eL2DiBK+Qp85cV6gSm9cL3S2TxnCUELCLBF7vtQORWeHDLekDPK7Tyfvf2F
-	 bGHbErTuABAsC8UACsExeh5mWNkO6qHRPyO6xKQSbwQg8alnSQhqKcf+E5HKwbG9qA
-	 b0WLlCzHpWz916jAm3dmmI1tSJhZWneiVbMkJGeu1dtr4OfmMg/yxEPJH1uS5gUvUx
-	 ubkIGHEj88Jhw==
+	b=V5Fkq5nQmPK+HdgaFEGnaoal5Ar/jxxIimsRt6VLTPSczz/38O77MDaZHjWmKBaz0
+	 mML0EOJQ9LcS2BnqhT7GHbIXBlxit1TdHCb27I81NHsNy0LG7zdOkfYQmwkNlvoJ8J
+	 pyOYdE0Qbsk6hGdTzqCXcKUc4tjR9wl6mrJnhs2cAdJbfMlzZAZMeHO4RTtzCsoLQS
+	 v4JnHhl9R2wNxt+uwLODiVgwSfiXVd67ErwJA6MyYa19ryMgd1/sUhuLQk47t0E++2
+	 vxM3wdvV47QeD5AqcT0ezHEiBfJ23prio7bpBcJp0sSWAz7+aoi8aYYKgRekZ5iWyH
+	 tY3mqYEzOLtUg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yafang Shao <laoar.shao@gmail.com>,
+Cc: Hou Tao <houtao1@huawei.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	andrii@kernel.org,
 	daniel@iogearbox.net,
-	shuah@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 05/68] selftests/bpf: Fix issues in setup_classid_environment()
-Date: Tue, 16 Jan 2024 14:53:04 -0500
-Message-ID: <20240116195511.255854-5-sashal@kernel.org>
+	andrii@kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 21/68] bpf: Check rcu_read_lock_trace_held() before calling bpf map helpers
+Date: Tue, 16 Jan 2024 14:53:20 -0500
+Message-ID: <20240116195511.255854-21-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240116195511.255854-1-sashal@kernel.org>
 References: <20240116195511.255854-1-sashal@kernel.org>
@@ -70,83 +68,93 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.73
 Content-Transfer-Encoding: 8bit
 
-From: Yafang Shao <laoar.shao@gmail.com>
+From: Hou Tao <houtao1@huawei.com>
 
-[ Upstream commit 4849775587844e44d215289c425bcd70f315efe7 ]
+[ Upstream commit 169410eba271afc9f0fb476d996795aa26770c6d ]
 
-If the net_cls subsystem is already mounted, attempting to mount it again
-in setup_classid_environment() will result in a failure with the error code
-EBUSY. Despite this, tmpfs will have been successfully mounted at
-/sys/fs/cgroup/net_cls. Consequently, the /sys/fs/cgroup/net_cls directory
-will be empty, causing subsequent setup operations to fail.
+These three bpf_map_{lookup,update,delete}_elem() helpers are also
+available for sleepable bpf program, so add the corresponding lock
+assertion for sleepable bpf program, otherwise the following warning
+will be reported when a sleepable bpf program manipulates bpf map under
+interpreter mode (aka bpf_jit_enable=0):
 
-Here's an error log excerpt illustrating the issue when net_cls has already
-been mounted at /sys/fs/cgroup/net_cls prior to running
-setup_classid_environment():
+  WARNING: CPU: 3 PID: 4985 at kernel/bpf/helpers.c:40 ......
+  CPU: 3 PID: 4985 Comm: test_progs Not tainted 6.6.0+ #2
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996) ......
+  RIP: 0010:bpf_map_lookup_elem+0x54/0x60
+  ......
+  Call Trace:
+   <TASK>
+   ? __warn+0xa5/0x240
+   ? bpf_map_lookup_elem+0x54/0x60
+   ? report_bug+0x1ba/0x1f0
+   ? handle_bug+0x40/0x80
+   ? exc_invalid_op+0x18/0x50
+   ? asm_exc_invalid_op+0x1b/0x20
+   ? __pfx_bpf_map_lookup_elem+0x10/0x10
+   ? rcu_lockdep_current_cpu_online+0x65/0xb0
+   ? rcu_is_watching+0x23/0x50
+   ? bpf_map_lookup_elem+0x54/0x60
+   ? __pfx_bpf_map_lookup_elem+0x10/0x10
+   ___bpf_prog_run+0x513/0x3b70
+   __bpf_prog_run32+0x9d/0xd0
+   ? __bpf_prog_enter_sleepable_recur+0xad/0x120
+   ? __bpf_prog_enter_sleepable_recur+0x3e/0x120
+   bpf_trampoline_6442580665+0x4d/0x1000
+   __x64_sys_getpgid+0x5/0x30
+   ? do_syscall_64+0x36/0xb0
+   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+   </TASK>
 
-- Before that change
-
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
-  test_cgroup_v1v2:PASS:server_fd 0 nsec
-  test_cgroup_v1v2:PASS:client_fd 0 nsec
-  test_cgroup_v1v2:PASS:cgroup_fd 0 nsec
-  test_cgroup_v1v2:PASS:server_fd 0 nsec
-  run_test:PASS:skel_open 0 nsec
-  run_test:PASS:prog_attach 0 nsec
-  test_cgroup_v1v2:PASS:cgroup-v2-only 0 nsec
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
-  (cgroup_helpers.c:540: errno: No such file or directory) Opening cgroup classid: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/net_cls.classid
-  run_test:PASS:skel_open 0 nsec
-  run_test:PASS:prog_attach 0 nsec
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup-test-work-dir/cgroup.procs
-  run_test:FAIL:join_classid unexpected error: 1 (errno 2)
-  test_cgroup_v1v2:FAIL:cgroup-v1v2 unexpected error: -1 (errno 2)
-  (cgroup_helpers.c:248: errno: No such file or directory) Opening Cgroup Procs: /sys/fs/cgroup/net_cls/cgroup.procs
-  #44      cgroup_v1v2:FAIL
-  Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
-
-- After that change
-  $ tools/testing/selftests/bpf/test_progs --name=cgroup_v1v2
-  #44      cgroup_v1v2:OK
-  Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
-
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Link: https://lore.kernel.org/r/20231111090034.4248-3-laoar.shao@gmail.com
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/r/20231204140425.1480317-2-houtao@huaweicloud.com
 Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/cgroup_helpers.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ kernel/bpf/helpers.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/cgroup_helpers.c b/tools/testing/selftests/bpf/cgroup_helpers.c
-index e914cc45b766..6f00bee917a0 100644
---- a/tools/testing/selftests/bpf/cgroup_helpers.c
-+++ b/tools/testing/selftests/bpf/cgroup_helpers.c
-@@ -467,10 +467,20 @@ int setup_classid_environment(void)
- 		return 1;
- 	}
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 6212e4ae084b..34135fbd6097 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -28,12 +28,13 @@
+  *
+  * Different map implementations will rely on rcu in map methods
+  * lookup/update/delete, therefore eBPF programs must run under rcu lock
+- * if program is allowed to access maps, so check rcu_read_lock_held in
+- * all three functions.
++ * if program is allowed to access maps, so check rcu_read_lock_held() or
++ * rcu_read_lock_trace_held() in all three functions.
+  */
+ BPF_CALL_2(bpf_map_lookup_elem, struct bpf_map *, map, void *, key)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
++		     !rcu_read_lock_bh_held());
+ 	return (unsigned long) map->ops->map_lookup_elem(map, key);
+ }
  
--	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls") &&
--	    errno != EBUSY) {
--		log_err("mount cgroup net_cls");
--		return 1;
-+	if (mount("net_cls", NETCLS_MOUNT_PATH, "cgroup", 0, "net_cls")) {
-+		if (errno != EBUSY) {
-+			log_err("mount cgroup net_cls");
-+			return 1;
-+		}
-+
-+		if (rmdir(NETCLS_MOUNT_PATH)) {
-+			log_err("rmdir cgroup net_cls");
-+			return 1;
-+		}
-+		if (umount(CGROUP_MOUNT_DFLT)) {
-+			log_err("umount cgroup base");
-+			return 1;
-+		}
- 	}
+@@ -49,7 +50,8 @@ const struct bpf_func_proto bpf_map_lookup_elem_proto = {
+ BPF_CALL_4(bpf_map_update_elem, struct bpf_map *, map, void *, key,
+ 	   void *, value, u64, flags)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
++		     !rcu_read_lock_bh_held());
+ 	return map->ops->map_update_elem(map, key, value, flags);
+ }
  
- 	cleanup_classid_environment();
+@@ -66,7 +68,8 @@ const struct bpf_func_proto bpf_map_update_elem_proto = {
+ 
+ BPF_CALL_2(bpf_map_delete_elem, struct bpf_map *, map, void *, key)
+ {
+-	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_bh_held());
++	WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &&
++		     !rcu_read_lock_bh_held());
+ 	return map->ops->map_delete_elem(map, key);
+ }
+ 
 -- 
 2.43.0
 
