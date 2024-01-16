@@ -1,239 +1,111 @@
-Return-Path: <bpf+bounces-19683-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19684-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7648382FBC6
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 23:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EEC482FC38
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 23:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B92BB28E3B
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 22:02:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82AE1B257D2
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 22:12:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BED67738;
-	Tue, 16 Jan 2024 20:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E941BC33;
+	Tue, 16 Jan 2024 20:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fGM2yjgO"
+	dkim=pass (2048-bit key) header.d=nametag.social header.i=@nametag.social header.b="FXHI7rMq"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978DD67729;
-	Tue, 16 Jan 2024 20:04:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7BB1D68E
+	for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 20:30:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705435487; cv=none; b=XiQuUFKtquq+sELmfvEEKHvx4bAoj4LOp0iDPBV8DbeUzJ0Ugovcl3aMdHQws7PWqNpc29alTrdPiz7zz5qemhgY8yDCMQ4sJzVFXtwp2Ua197+sbyFmWu74zSbiinc7IE9cSQpn3/Rvi0LcBjime717E7UikngzKEchLXG2VsA=
+	t=1705437013; cv=none; b=aR0Cb99+0Pui1eraykP58AQtdtNCjag095FFBuooei0z2ODHSWUqGEoRBlL7l4XEoFDgKdLtqS92D/SUdDAizd74E8O5DSjczC+uUCpc+7nPeilUxPpqShjstCwY9SGTLJ6SzhJ5dLxGkOJxtJJgvpAWI1XknS2lspVsFY/ZhXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705435487; c=relaxed/simple;
-	bh=bnE2wWvjkbJ9xzsnbTTH261tLlfBZGLqvhUGY8+P9mc=;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:X-stable:
-	 X-Patchwork-Hint:X-stable-base:Content-Transfer-Encoding; b=fg+uby55QHNWd77tU4GwbxaAilgzskhYgAENVihbGaVUC9iyr01WMaZfBQGGgqKKaQ+x5oZLgS1A6hhNdALM2HBOTwl6lzoOTUStUFCYcn/Zu7mzY9olW14pIpxeT9kGFm+fdqwxyCFSwIIQNpucJXf7VrCRGlm4uMyl7RCK3xY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fGM2yjgO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32F2EC43394;
-	Tue, 16 Jan 2024 20:04:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705435487;
-	bh=bnE2wWvjkbJ9xzsnbTTH261tLlfBZGLqvhUGY8+P9mc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fGM2yjgOS7s0Rgy4YGLujMNYqN9CYkEOfXS1c7vFO9AFIcSxYP4wZhgB1lbDJH7Gp
-	 275i0pchy1hKzkm6u4GLDSOstGNe18PZ/DwmL5KuML3Ff9rtiqsrA4DXH4JIxhFPa+
-	 qwngeM/FAaFleWPA0i2SLDWBbCHAKzydDxg70odq6pGd1FELiUfbEJu3u+VVKjWwDO
-	 An9pf+TqumXSJQeSquveYH7ZtxVb+Ndsq57I+eyA8k9FH36AqKHq2fLpr5lCMMRYLo
-	 7fcoU33/O0H4yDzYPe4D+Owsiw+7WSbjLzqFXNmLUZgN1MF9W2AvmK8DUitAoQeFSz
-	 zNVDXty49imJw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Hou Tao <houtao1@huawei.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
+	s=arc-20240116; t=1705437013; c=relaxed/simple;
+	bh=MBq8ZxD517/cVqQuntfz9TUT37KOhQ2K3vkie+0LLY4=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding; b=ag0JGPfePir8V0kVqQNMT/7leoiAjZ2StL+2dAi1yPphO0WS5905/Oh8jhMEizAYd8rZspARrBa3sStigOoeRI4FIjBXMhs2I9IA8KqYwT4BlPzPujPUgXBwgFb/HawF+D+TmHyF1/escKi4v4d+Ao1dCO20cfsBXS27vlSONcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nametag.social; spf=pass smtp.mailfrom=nametag.social; dkim=pass (2048-bit key) header.d=nametag.social header.i=@nametag.social header.b=FXHI7rMq; arc=none smtp.client-ip=209.85.167.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nametag.social
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nametag.social
+Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-3bd5c4cffefso4401558b6e.1
+        for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 12:30:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nametag.social; s=google; t=1705437010; x=1706041810; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=GEiuDDGZ7yJfP3jaaAdiMXsKQuVidWJh/astRVgD+dc=;
+        b=FXHI7rMqmGmz4wZSG+ViWzycVKDjQz80ouD+YewPqGlPGfaJv4l7gOIU01jaLKKJOg
+         ziJyK2S3L93Jmk1bLDrz5WtKA/5k6OrXlXjKtV5PZsoKGcu+0WMLc5nNxoYDPeUkaNM4
+         a5mr/hPPBT7/yhNdBOfi9e/X8X9tMq5XDSeNWBDTQxa90HC41mgDoC2RYbeWDrrxoHt2
+         xGJk6vCS5kmIICtfMjz3bT7zF1yT6fDYeQ+lVRskCRcAByq7IGQxKnfu/SnMF7qpHsA0
+         B3bB7mAUozyWfaoTMXYZ/tfoz/hD5y4a5e+/j2eBwW9yV+5ECBWEmgaeUxRt5n1vS8dE
+         tnkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705437010; x=1706041810;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GEiuDDGZ7yJfP3jaaAdiMXsKQuVidWJh/astRVgD+dc=;
+        b=ok7/H3IeCzLqfFK4bmXqeGvcbxmLPPC9Df2LyV9lEyAFqg8rsoKEHxxZmvdsh7ZSsc
+         HpTpS+fHWqo17XdJUjrqNjJ9gfh+p7dACSNK/H1UKko73moT7/fZs8i3Sgw3twkjKjkF
+         UCM0sKk70KT4+7FzF6hgPnDf3mPYOFYNxtxHBgOXr7OaNw2pGQMQvTrTzdnMNqDkNMkh
+         +CXrtG4O9BgcpWvGuggQpDymrlH+5sQoduFKu/JBx0njUUySKsRf59ycbDkG0+3iifqF
+         Qg60EdOVUqbf0HaBVyRZwjGNTBTB2Kd4GhIdlfKzufupF9AMwTobyD4ODEiETmaS1dIf
+         t7wA==
+X-Gm-Message-State: AOJu0YxB/eQZA/CzIe1Q1f85y7IeY6RHIfT1y0ATlNv4dqP0wvBaJU1K
+	iQB0YuT4HBjv4jwkwaksvKlVYywHmVod01TrlZq5J6EEXBs=
+X-Google-Smtp-Source: AGHT+IHaPJdRlZ93kkjPakTjx1JDrET3snk6dRaDKb09oTSbCSn7asSHjH60UQ7kyoQRO7VGHEyVXg==
+X-Received: by 2002:a05:6808:1396:b0:3bd:9129:faf8 with SMTP id c22-20020a056808139600b003bd9129faf8mr676113oiw.83.1705437010164;
+        Tue, 16 Jan 2024 12:30:10 -0800 (PST)
+Received: from 2603-7000-3200-684c-0000-0000-0000-1ac2.res6.spectrum.com (2603-7000-3200-684c-0000-0000-0000-1ac2.res6.spectrum.com. [2603:7000:3200:684c::1ac2])
+        by smtp.gmail.com with ESMTPSA id p24-20020a05620a113800b00783183a9b03sm3924759qkk.134.2024.01.16.12.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jan 2024 12:30:09 -0800 (PST)
+From: Victor Stewart <v@nametag.social>
+To: borkmann@iogearbox.net,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 07/22] bpf: Add map and need_defer parameters to .map_fd_put_ptr()
-Date: Tue, 16 Jan 2024 15:04:01 -0500
-Message-ID: <20240116200432.260016-7-sashal@kernel.org>
+Cc: Victor Stewart <v@nametag.social>
+Subject: [PATCH] fix bpf_redirect_peer header doc
+Date: Tue, 16 Jan 2024 20:29:52 +0000
+Message-ID: <20240116202952.241009-1-v@nametag.social>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116200432.260016-1-sashal@kernel.org>
-References: <20240116200432.260016-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.305
 Content-Transfer-Encoding: 8bit
 
-From: Hou Tao <houtao1@huawei.com>
+ammend bpf_redirect_peer header doc to mention tcx and netkit
 
-[ Upstream commit 20c20bd11a0702ce4dc9300c3da58acf551d9725 ]
-
-map is the pointer of outer map, and need_defer needs some explanation.
-need_defer tells the implementation to defer the reference release of
-the passed element and ensure that the element is still alive before
-the bpf program, which may manipulate it, exits.
-
-The following three cases will invoke map_fd_put_ptr() and different
-need_defer values will be passed to these callers:
-
-1) release the reference of the old element in the map during map update
-   or map deletion. The release must be deferred, otherwise the bpf
-   program may incur use-after-free problem, so need_defer needs to be
-   true.
-2) release the reference of the to-be-added element in the error path of
-   map update. The to-be-added element is not visible to any bpf
-   program, so it is OK to pass false for need_defer parameter.
-3) release the references of all elements in the map during map release.
-   Any bpf program which has access to the map must have been exited and
-   released, so need_defer=false will be OK.
-
-These two parameters will be used by the following patches to fix the
-potential use-after-free problem for map-in-map.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Link: https://lore.kernel.org/r/20231204140425.1480317-3-houtao@huaweicloud.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bpf.h     |  6 +++++-
- kernel/bpf/arraymap.c   | 12 +++++++-----
- kernel/bpf/hashtab.c    |  6 +++---
- kernel/bpf/map_in_map.c |  2 +-
- kernel/bpf/map_in_map.h |  2 +-
- 5 files changed, 17 insertions(+), 11 deletions(-)
+ include/uapi/linux/bpf.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 766ea96bf5b8..269754890879 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -44,7 +44,11 @@ struct bpf_map_ops {
- 	/* funcs called by prog_array and perf_event_array map */
- 	void *(*map_fd_get_ptr)(struct bpf_map *map, struct file *map_file,
- 				int fd);
--	void (*map_fd_put_ptr)(void *ptr);
-+	/* If need_defer is true, the implementation should guarantee that
-+	 * the to-be-put element is still alive before the bpf program, which
-+	 * may manipulate it, exists.
-+	 */
-+	void (*map_fd_put_ptr)(struct bpf_map *map, void *ptr, bool need_defer);
- 	u32 (*map_gen_lookup)(struct bpf_map *map, struct bpf_insn *insn_buf);
- 	u32 (*map_fd_sys_lookup_elem)(void *ptr);
- 	void (*map_seq_show_elem)(struct bpf_map *map, void *key,
-diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-index 0c17aab3ce5f..44f53c06629e 100644
---- a/kernel/bpf/arraymap.c
-+++ b/kernel/bpf/arraymap.c
-@@ -469,7 +469,7 @@ int bpf_fd_array_map_update_elem(struct bpf_map *map, struct file *map_file,
- 
- 	old_ptr = xchg(array->ptrs + index, new_ptr);
- 	if (old_ptr)
--		map->ops->map_fd_put_ptr(old_ptr);
-+		map->ops->map_fd_put_ptr(map, old_ptr, true);
- 
- 	return 0;
- }
-@@ -485,7 +485,7 @@ static int fd_array_map_delete_elem(struct bpf_map *map, void *key)
- 
- 	old_ptr = xchg(array->ptrs + index, NULL);
- 	if (old_ptr) {
--		map->ops->map_fd_put_ptr(old_ptr);
-+		map->ops->map_fd_put_ptr(map, old_ptr, true);
- 		return 0;
- 	} else {
- 		return -ENOENT;
-@@ -509,8 +509,9 @@ static void *prog_fd_array_get_ptr(struct bpf_map *map,
- 	return prog;
- }
- 
--static void prog_fd_array_put_ptr(void *ptr)
-+static void prog_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
-+	/* bpf_prog is freed after one RCU or tasks trace grace period */
- 	bpf_prog_put(ptr);
- }
- 
-@@ -598,8 +599,9 @@ static void *perf_event_fd_array_get_ptr(struct bpf_map *map,
- 	return ee;
- }
- 
--static void perf_event_fd_array_put_ptr(void *ptr)
-+static void perf_event_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
-+	/* bpf_perf_event is freed after one RCU grace period */
- 	bpf_event_entry_free_rcu(ptr);
- }
- 
-@@ -640,7 +642,7 @@ static void *cgroup_fd_array_get_ptr(struct bpf_map *map,
- 	return cgroup_get_from_fd(fd);
- }
- 
--static void cgroup_fd_array_put_ptr(void *ptr)
-+static void cgroup_fd_array_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
- 	/* cgroup_put free cgrp after a rcu grace period */
- 	cgroup_put(ptr);
-diff --git a/kernel/bpf/hashtab.c b/kernel/bpf/hashtab.c
-index 3f3ed33bd2fd..8e379b667a0f 100644
---- a/kernel/bpf/hashtab.c
-+++ b/kernel/bpf/hashtab.c
-@@ -677,7 +677,7 @@ static void htab_put_fd_value(struct bpf_htab *htab, struct htab_elem *l)
- 
- 	if (map->ops->map_fd_put_ptr) {
- 		ptr = fd_htab_map_get_ptr(map, l);
--		map->ops->map_fd_put_ptr(ptr);
-+		map->ops->map_fd_put_ptr(map, ptr, true);
- 	}
- }
- 
-@@ -1337,7 +1337,7 @@ static void fd_htab_map_free(struct bpf_map *map)
- 		hlist_nulls_for_each_entry_safe(l, n, head, hash_node) {
- 			void *ptr = fd_htab_map_get_ptr(map, l);
- 
--			map->ops->map_fd_put_ptr(ptr);
-+			map->ops->map_fd_put_ptr(map, ptr, false);
- 		}
- 	}
- 
-@@ -1378,7 +1378,7 @@ int bpf_fd_htab_map_update_elem(struct bpf_map *map, struct file *map_file,
- 
- 	ret = htab_map_update_elem(map, key, &ptr, map_flags);
- 	if (ret)
--		map->ops->map_fd_put_ptr(ptr);
-+		map->ops->map_fd_put_ptr(map, ptr, false);
- 
- 	return ret;
- }
-diff --git a/kernel/bpf/map_in_map.c b/kernel/bpf/map_in_map.c
-index 9670ee5ee74e..051c5e40792c 100644
---- a/kernel/bpf/map_in_map.c
-+++ b/kernel/bpf/map_in_map.c
-@@ -102,7 +102,7 @@ void *bpf_map_fd_get_ptr(struct bpf_map *map,
- 	return inner_map;
- }
- 
--void bpf_map_fd_put_ptr(void *ptr)
-+void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool need_defer)
- {
- 	/* ptr->ops->map_free() has to go through one
- 	 * rcu grace period by itself.
-diff --git a/kernel/bpf/map_in_map.h b/kernel/bpf/map_in_map.h
-index 6183db9ec08c..1e652a7bf60e 100644
---- a/kernel/bpf/map_in_map.h
-+++ b/kernel/bpf/map_in_map.h
-@@ -18,7 +18,7 @@ bool bpf_map_meta_equal(const struct bpf_map *meta0,
- 			const struct bpf_map *meta1);
- void *bpf_map_fd_get_ptr(struct bpf_map *map, struct file *map_file,
- 			 int ufd);
--void bpf_map_fd_put_ptr(void *ptr);
-+void bpf_map_fd_put_ptr(struct bpf_map *map, void *ptr, bool need_defer);
- u32 bpf_map_fd_sys_lookup_elem(void *ptr);
- 
- #endif
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 754e68ca8..01cc6abe2 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -4839,9 +4839,9 @@ union bpf_attr {
+  * 		going through the CPU's backlog queue.
+  *
+  * 		The *flags* argument is reserved and must be 0. The helper is
+- * 		currently only supported for tc BPF program types at the ingress
+- * 		hook and for veth device types. The peer device must reside in a
+- * 		different network namespace.
++ * 		currently only supported for tc and tcx BPF program types at the 
++ * 		ingress hook and for veth and netkit target device types. The peer 
++ * 		device must reside in a different network namespace.
+  * 	Return
+  * 		The helper returns **TC_ACT_REDIRECT** on success or
+  * 		**TC_ACT_SHOT** on error.
 -- 
 2.43.0
-
 
