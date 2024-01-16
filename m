@@ -1,87 +1,83 @@
-Return-Path: <bpf+bounces-19613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6D282F1D5
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 16:50:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C90482F274
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 17:36:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC1091F23CB8
-	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 15:50:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 321BE1C22935
+	for <lists+bpf@lfdr.de>; Tue, 16 Jan 2024 16:36:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD71E1C695;
-	Tue, 16 Jan 2024 15:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E587469;
+	Tue, 16 Jan 2024 16:36:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O24WnAlG"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="SBgXSU1i"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A2E1C2B3;
-	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3007DC433F1;
-	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705420230;
-	bh=ga1BG+TMkJmfQLcIeSqBXVBSKeScehq6FZ56bqEch5g=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=O24WnAlG/yeYkgPVlYk81haJ3Y0TvJwGLpZqXVWkS+8/orlE+b7asI8JLxN+1fWnX
-	 HsWgQM72Gk3sdAqJqgi2EKl1zdX18rjKBueoaGfC3Mq1Da72+Q1DkFfM4XuPk+gsF/
-	 5ieJE47iYmmBbEu5uSpLvanKOTtCFTYdCUinYSlxa4a1fCkTw2nt4IshBSoWEs6xnh
-	 slk2OKY5UEpoRXAhblVllP0Ynl1EYSiXevjsVC0zKPykdzgeTr2eQKqzsuoJmwMNbe
-	 ALM8IjcQwQcUKxH72mhifeROtDJYAeddX7aP8EPMrJSGF1jjEKK7yKh80XXWy1IsHS
-	 /9+HzLeCOkHJw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1A83AD8C96D;
-	Tue, 16 Jan 2024 15:50:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEAF41C698;
+	Tue, 16 Jan 2024 16:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=koP0W+CZNZR7MUqDikSTc30SoJIawy0LoQzZcq5Zun8=; b=SBgXSU1iweN0BNqiISJnZZvXVk
+	8vLKuTACx1Cy+AEk985t1Hmscy+SDMEXIo6M2GeNnU4X57bnnn1wT+FHPoJ+MkSVwUPy6AafbH5c4
+	uDFAAjYLZmIuQagqrTvDYfwNoqhiDATRgeRjbTnqv7l7ZcfZ/zzq6uuC057APGjfACXkrivLE28je
+	6ugEOcmGvzGjtPqERCYZtNUM0Jvi0YNzVRWnbjvDEJCZvjNhCorziRnGg/UICdUQtcqwg/nQJ8tN7
+	KPFYSIvKLOxvCmt/8VrL7uHS9iZxI0uannOJRx+Mk30yG5/VQRCL8Wms7z21YDC+2wrIDu8rZMAOJ
+	G+oG7FBA==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rPmAX-0002xU-Ev; Tue, 16 Jan 2024 17:20:05 +0100
+Received: from [178.197.248.14] (helo=linux.home)
+	by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1rPmAW-000PvQ-Tf; Tue, 16 Jan 2024 17:20:04 +0100
+Subject: Re: [PATCH v4 2/2] selftests/bpf: Add test for alu on
+ PTR_TO_FLOW_KEYS
+To: Hao Sun <sunhao.th@gmail.com>, bpf@vger.kernel.org
+Cc: willemb@google.com, ast@kernel.org, andrii@kernel.org, eddyz87@gmail.com,
+ yonghong.song@linux.dev, linux-kernel@vger.kernel.org
+References: <20240115082028.9992-1-sunhao.th@gmail.com>
+ <20240115082028.9992-2-sunhao.th@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <3c69823d-1e46-60f4-5a41-d6a2983af532@iogearbox.net>
+Date: Tue, 16 Jan 2024 17:20:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v2] selftests/bpf: fix potential premature unload in
- bpf_testmod
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170542023010.19641.12554162884652194073.git-patchwork-notify@kernel.org>
-Date: Tue, 16 Jan 2024 15:50:30 +0000
-References: <20240110085737.8895-1-asavkov@redhat.com>
-In-Reply-To: <20240110085737.8895-1-asavkov@redhat.com>
-To: Artem Savkov <asavkov@redhat.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, netdev@vger.kernel.org, jolsa@kernel.org,
- linux-kernel@vger.kernel.org, yonghong.song@linux.dev
+In-Reply-To: <20240115082028.9992-2-sunhao.th@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27156/Tue Jan 16 10:38:07 2024)
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Wed, 10 Jan 2024 09:57:37 +0100 you wrote:
-> It is possible for bpf_kfunc_call_test_release() to be called from
-> bpf_map_free_deferred() when bpf_testmod is already unloaded and
-> perf_test_stuct.cnt which it tries to decrease is no longer in memory.
-> This patch tries to fix the issue by waiting for all references to be
-> dropped in bpf_testmod_exit().
+On 1/15/24 9:20 AM, Hao Sun wrote:
+> Add a test case for PTR_TO_FLOW_KEYS alu. Testing if alu with
+> variable offset on flow_keys is rejected.
 > 
-> The issue can be triggered by running 'test_progs -t map_kptr' in 6.5,
-> but is obscured in 6.6 by d119357d07435 ("rcu-tasks: Treat only
-> synchronous grace periods urgently").
-> 
-> [...]
+> Signed-off-by: Hao Sun <sunhao.th@gmail.com>
 
-Here is the summary with links:
-  - [bpf-next,v2] selftests/bpf: fix potential premature unload in bpf_testmod
-    https://git.kernel.org/bpf/bpf-next/c/6ad61815babf
+Thanks applied, I've also added a note that we already have coverage
+on the success case. Do you plan to follow up with checking the
+remaining pointer types as Eduard suggested earlier?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Daniel
 
