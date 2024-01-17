@@ -1,160 +1,167 @@
-Return-Path: <bpf+bounces-19735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B938F830776
-	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 15:02:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1397E830A1B
+	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 16:55:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1AA41C2198A
-	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 14:02:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 280B31C219C0
+	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 15:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1887B208A2;
-	Wed, 17 Jan 2024 14:02:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B782230C;
+	Wed, 17 Jan 2024 15:55:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XK/WUdrQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dvk8/f8/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3DF20310;
-	Wed, 17 Jan 2024 14:02:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F3321A16;
+	Wed, 17 Jan 2024 15:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705500146; cv=none; b=rII5FJbnbXh+vwZ0Gz4xPQ8DvdITFbwH6GwE1QDqnm7aeYqy09btaqgmWZqwPSw4928wCD10b9ZLTyiQDlzsp55e/ax7zkM2grtfAvS5GJFeUAWZav0JDiwTcXQ7vRNyLaNBrkR4SMLNIckHLgzFFlMl2/4M2dCiL+Z9HhQla4k=
+	t=1705506904; cv=none; b=ci2eReWfEnlpfOxRwYCqtU9OvOB4vc6PE4IX4CaelxH3hPLQe1WVwIQ3J/whNY14G0sVmeL+pfl3A9NKHcq6iZ8Q0rjp9grWDA6Wvn1i/sQheoXkGC0emu1wjE4vv4IfdTCb1cpUzcao2eqbbg7JkZiVx7gYG/bRQt5G9CayfL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705500146; c=relaxed/simple;
-	bh=vtpkyqMtotdPC2V3QrjFzYhU+aMye5ylP4D8sV1rPag=;
+	s=arc-20240116; t=1705506904; c=relaxed/simple;
+	bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
-	 X-Google-Original-From:Date:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=Y5jsBGo1eJr00CnBBmrvEz3BfUYD5HEFbW30N+GTuPuEo1o0QlBPwOZZ4VDVe7/PglxHdOnGToe7wuY/g7CJ66ao4YtkutsdboLgUpWEZeXCuEfm6YRQ4ccInknPL6fkzDfnb21VKBonEmO/a5ix4IlZKLlR4+cnprLcrWkOlJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XK/WUdrQ; arc=none smtp.client-ip=209.85.167.44
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:Date:
+	 From:To:Cc:Message-ID:In-Reply-To:References:Subject:Mime-Version:
+	 Content-Type:Content-Transfer-Encoding; b=ajkBXDmtS7H1Aeo9qSlleNT4HpF/k3t2gUJEsoSuXfZvSWyDb1ws88+Jzn5U3hyAg3RrA0RxYOOqSLb6YGatWOziav9SP444p1Y8oRNfz7VRhpZufQaCkHdlv0SsznfrWdOWmtGaAi9uQSSaFVCHc7SMQhGpqernvnDtiDy6OqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dvk8/f8/; arc=none smtp.client-ip=209.85.219.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e766937ddso12508282e87.3;
-        Wed, 17 Jan 2024 06:02:24 -0800 (PST)
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-680b1335af6so93855216d6.1;
+        Wed, 17 Jan 2024 07:55:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705500143; x=1706104943; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rwS+kUbEj1CXgTKMF4Pii0I/Gobr3HpDHcwboK5dbsc=;
-        b=XK/WUdrQywnCR4yMVnitdfppyvDvpmGuQchqbbP/I6B/pqFmITsxM1+HXSzzeKVNyY
-         Oh9wtE7b1JJbw7SxZx5kFJJybQweonVyW2QSmTmJ4uR8OT3i/c8Z4OfQ8QnummSUiRaq
-         Jrj6xbSvULQ+yn/ND1NdSeSMsXB5ErlUdQ8xnCXKzaf1XdGgvZA3mrdUPn2RxD9JEfXv
-         30iojob8UkutPw0WCK/OCrdF1TvlAToblcWGR6L4Jo1uY2cMHWXTCxhqpc5obOl6eSiS
-         yU/Fy1iuq2jlI6VEF+LPK4A6JIqhu3lkaC4SpSfN4vm71L8u0FAl4MLvFOMYNCBTcVmy
-         H8lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705500143; x=1706104943;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705506902; x=1706111702; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rwS+kUbEj1CXgTKMF4Pii0I/Gobr3HpDHcwboK5dbsc=;
-        b=wZfAmZnolRoV2tEFldnHg2t2s4k4+YEXh7D5fuiBlDJBMlQkO8miSy+bZN3djypEte
-         PshOH/WGHpeQM1RXPHJ/B0BeKG26ps0V8t1zYf75sBBZmsx77ZwEuaZVzJ6PNpOlQFzl
-         ZT0LJTPJS9qJ2eiHPMDvo6RxQFa1UjMvNN3l42j+Vsg+OLZwGoptyMnvH5sKn3i1rggs
-         dYWwTaykUWa2VsQZqO5aNfrOILjqLZC+pYTW/P9UOo8Bw04z2G2Bf6/jI8IPktg1IhLF
-         oeP9BlvcP9i0ixSiYWNniBkevw8LHJNMXm9TJiat8qT81Mbt6opj5o3NrI++haeLLlVG
-         vE6w==
-X-Gm-Message-State: AOJu0YwnLi19tJcRGCHx02CfBIS94e0g6CG8CA9Q8VZjILUEq8xVYhGF
-	172m0jUgU0CSatq97WkI9Mk=
-X-Google-Smtp-Source: AGHT+IF/BBzzY9gEnN3f+YYZe5+56B7mSMR+czMogSauXjYzh53Ufl4NGtVeOgr/Ey+baAcGpKwEEQ==
-X-Received: by 2002:a05:6512:23aa:b0:50e:ab53:e3ce with SMTP id c42-20020a05651223aa00b0050eab53e3cemr5067948lfv.73.1705500142690;
-        Wed, 17 Jan 2024 06:02:22 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id z9-20020a1709060f0900b00a28f6294233sm7792207eji.76.2024.01.17.06.02.21
+        bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
+        b=dvk8/f8/2jB5aZe7zNFkQZ/ejUppjaKbdR/8nxkSG79U+tturBRm51To2SWPC9sHGe
+         aLpDeRpPDva5Q0oYTZnGS54EcmdZDVfhAUXyYfrs8vhfOoQbNKX4q5c+9GonWpsJjcM2
+         +CWJicwLzn7dYvNLztnqu3Njwrf4isYiAvnReX0FvhvZDV16bUDb4CtKS3zTEKC9Lbvb
+         rSrZmPAZLxwDqrGU1TZZiT7geGb3b2DSTtO1NTPXSyzigj7uq7MNmv1P6OM8RhsCPbsk
+         qkwTdM0ojsgQ/dTXVn2p2AG+F7UCvQqAOP4TVkyFyMZB7LvuW1eTkKTVGAK5vF85Vrqh
+         0T1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705506902; x=1706111702;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ttGJe8J4pcxRkey779Yd+cZv874UqM4wsN7cskxubio=;
+        b=jFebSC/WUErS27Edax5RA+EhrAF0vwHYVek/+QFQAKaIZaWCF3H8XBPWdsbQoo3rvy
+         +ZM0c1RxlXtSL/83PqDXRER20WQ7hYPlhtcrxGR48p46HRlO3fvNaknK2gaghfqhCWdj
+         J/DBwc6ZAH85hlfYtnUPpUjkQnT1efgzNSof26kdtXBm+g1azd+FfSsjwd7BO6rG7mS2
+         BOOg0KOMrTwjVktGwvP9woVzb+kMWeng4I5R+1Cpr2SnFcwW9/RtOp58lThKC3tJVeh8
+         +JlTu9yM+NuQtg/GBkhG8Rn0YoBYiISNxkJJabPJ1v8CCMuLbwp8Yex+RJUD2Gns2R+Y
+         7Q4A==
+X-Gm-Message-State: AOJu0YxKCxIrLyS4IzAwpKXJXaIo3n3gnLAf7ZgNUZowLjG/ngnGAYBz
+	xVsIcbAWrVDihVWYWgjlEiA=
+X-Google-Smtp-Source: AGHT+IFUKgLAXPaJ1GM7ZGPSYyL9MUqnyevX9UQH1PtY6537DD4fa9EPrz350Q+gOCYQG6L2WQwC/w==
+X-Received: by 2002:a0c:dd11:0:b0:681:698e:17d8 with SMTP id u17-20020a0cdd11000000b00681698e17d8mr1348439qvk.52.1705506902051;
+        Wed, 17 Jan 2024 07:55:02 -0800 (PST)
+Received: from localhost (48.230.85.34.bc.googleusercontent.com. [34.85.230.48])
+        by smtp.gmail.com with ESMTPSA id v20-20020ad448d4000000b006817069492bsm1407241qvx.70.2024.01.17.07.55.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 06:02:22 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 17 Jan 2024 15:02:20 +0100
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-perf-users@vger.kernel.org,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>, bpf@vger.kernel.org
-Subject: Re: [PATCH v1] uprobes: use pagesize-aligned virtual address when
- replacing pages
-Message-ID: <Zafd7FkFdts6Ikp-@krava>
-References: <20240115100731.91007-1-david@redhat.com>
+        Wed, 17 Jan 2024 07:55:01 -0800 (PST)
+Date: Wed, 17 Jan 2024 10:55:01 -0500
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>, 
+ =?UTF-8?B?SsO2cm4tVGhvcmJlbiBIaW56?= <j-t.hinz@alumni.tu-berlin.de>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Arnd Bergmann <arnd@arndb.de>, 
+ Deepa Dinamani <deepa.kernel@gmail.com>, 
+ bpf@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ netdev@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Message-ID: <65a7f855821cc_6d500294d0@willemb.c.googlers.com.notmuch>
+In-Reply-To: <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
+References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
+ <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
+ <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
+Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
+ bpf_setsockopt()
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240115100731.91007-1-david@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-cc-ing bpf list
+Martin KaFai Lau wrote:
+> On 1/16/24 7:17 AM, Willem de Bruijn wrote:
+> > J=C3=B6rn-Thorben Hinz wrote:
+> >> A BPF application, e.g., a TCP congestion control, might benefit fro=
+m or
+> >> even require precise (=3Dhardware) packet timestamps. These timestam=
+ps are
+> >> already available through __sk_buff.hwtstamp and
+> >> bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs =
+were
+> >> not allowed to set SO_TIMESTAMPING* on sockets.
+> =
 
-jirka
+> This patch only uses the SOF_TIMESTAMPING_RX_HARDWARE in the selftest. =
+How about =
 
-On Mon, Jan 15, 2024 at 11:07:31AM +0100, David Hildenbrand wrote:
-> uprobes passes an unaligned page mapping address to
-> folio_add_new_anon_rmap(), which ends up triggering a VM_BUG_ON() we
-> recently extended in commit 372cbd4d5a066 ("mm: non-pmd-mappable, large
-> folios for folio_add_new_anon_rmap()").
-> 
-> Arguably, this is uprobes code doing something wrong; however,
-> for the time being it would have likely worked in rmap code because
-> __folio_set_anon() would set folio->index to the same value.
-> 
-> Looking at __replace_page(), we'd also pass slightly wrong values to
-> mmu_notifier_range_init(), page_vma_mapped_walk(), flush_cache_page(),
-> ptep_clear_flush() and set_pte_at_notify(). I suspect most of them are
-> fine, but let's just mark the introducing commit as the one needed
-> fixing. I don't think CC stable is warranted.
-> 
-> We'll add more sanity checks in rmap code separately, to make sure that
-> we always get properly aligned addresses.
-> 
-> Reported-by: Jiri Olsa <jolsa@kernel.org>
-> Closes: https://lkml.kernel.org/r/ZaMR2EWN-HvlCfUl@krava
-> Fixes: c517ee744b96 ("uprobes: __replace_page() should not use page_address_in_vma()")
-> Tested-by: Jiri Olsa <jolsa@kernel.org>
-> Reviewed-by: Ryan Roberts <ryan.roberts@arm.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Oleg Nesterov <oleg@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Ian Rogers <irogers@google.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  kernel/events/uprobes.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-> index 485bb0389b488..929e98c629652 100644
-> --- a/kernel/events/uprobes.c
-> +++ b/kernel/events/uprobes.c
-> @@ -537,7 +537,7 @@ int uprobe_write_opcode(struct arch_uprobe *auprobe, struct mm_struct *mm,
->  		}
->  	}
->  
-> -	ret = __replace_page(vma, vaddr, old_page, new_page);
-> +	ret = __replace_page(vma, vaddr & PAGE_MASK, old_page, new_page);
->  	if (new_page)
->  		put_page(new_page);
->  put_old:
-> -- 
-> 2.43.0
-> 
-> 
+> others? e.g. the SOF_TIMESTAMPING_TX_* that will affect the sk->sk_erro=
+r_queue =
+
+> which seems not good. If rx tstamp is useful, tx tstamp should be usefu=
+l also?
+
+Good point. Or should not be allowed to be set from BPF.
+
+That significantly changes process behavior, e.g., by returning POLLERR.
+ =
+
+> >>
+> >> Enable BPF programs to actively request the generation of timestamps=
+
+> >> from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
+> >> network device must still be done separately, in user space.
+> =
+
+> hmm... so both ioctl(SIOCSHWTSTAMP) of the netdevice and the =
+
+> SOF_TIMESTAMPING_RX_HARDWARE of the sk must be done?
+> =
+
+> I likely miss something. When skb is created in the driver rx path, the=
+ sk is =
+
+> not known yet though. How the SOF_TIMESTAMPING_RX_HARDWARE of the sk af=
+fects the =
+
+> skb_shinfo(skb)->hwtstamps?
+
+Indeed it does not seem to do anything in the datapath.
+
+Requesting SOF_TIMESTAMPING_RX_SOFTWARE will call net_enable_timestamp
+to start timestamping packets.
+
+But SOF_TIMESTAMPING_RX_HARDWARE does not so thing.
+
+Drivers do use it in ethtool get_ts_info to signal hardware
+capabilities. But those must be configured using the ioctl.
+
+It is there more for consistency with the other timestamp recording
+options, I suppose.
+
 
