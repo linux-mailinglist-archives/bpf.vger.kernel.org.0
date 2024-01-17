@@ -1,156 +1,120 @@
-Return-Path: <bpf+bounces-19708-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19709-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E001282FF66
-	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 04:49:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 689E782FF7B
+	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 05:16:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8981C23C88
-	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 03:49:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BA9E4B24066
+	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 04:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 239D453B4;
-	Wed, 17 Jan 2024 03:49:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="yH80jARS";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="SQlFVkTh";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mLOJ2qbQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D31A567D;
+	Wed, 17 Jan 2024 04:16:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3444696
-	for <bpf@vger.kernel.org>; Wed, 17 Jan 2024 03:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A97E046BB;
+	Wed, 17 Jan 2024 04:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705463340; cv=none; b=ad/gf2cKH8ajwpkMI0xU86E6NoSRBBOl6rlvsH2NAqIyEf78xwCj3qq1qepHCR0JOaXETAZfsWMCofUl5dN7aAPHwPKvNN8gsGRfw+yvbvxOW7nxn9apKZKJzhzahKZ7rNfRixkmOCHvbeNWJkX+Kspmxa4yhY6BPsf0s+V/ZdQ=
+	t=1705464972; cv=none; b=VbMyvjPIZjgbq2FVL1kxxmfDMxvrEAlxZUEZFkzY67MSkLcjxYAuYuJ3X+xjVCbk2Dt1H+Fy2h49JSQzdK/TBheN1rbJ7SxRAJe5wABoOKaiW7UwioDm1B0zQcvVsGiRKtNQ3wbw8c8h1e09k4sVVPv2Av33DyYe2zKHwERscis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705463340; c=relaxed/simple;
-	bh=VxFplyoToX+5xGv60J8MONy6X6rHxKnru1jctRcfLFg=;
-	h=Received:DKIM-Signature:X-Mailbox-Line:Received:DKIM-Signature:
-	 X-Original-To:Delivered-To:Received:X-Virus-Scanned:X-Spam-Flag:
-	 X-Spam-Score:X-Spam-Level:X-Spam-Status:Received:Received:
-	 Message-ID:DKIM-Signature:Date:MIME-Version:Content-Language:To:Cc:
-	 References:X-Report-Abuse:From:In-Reply-To:X-Migadu-Flow:
-	 Archived-At:Subject:X-BeenThere:X-Mailman-Version:Precedence:
-	 List-Id:List-Unsubscribe:List-Archive:List-Post:List-Help:
-	 List-Subscribe:Content-Transfer-Encoding:Content-Type:Errors-To:
-	 Sender; b=hA4uw/bKsz0b7Vkfr8T3R9fkdzsGOLVvsmVIA7HkjfVNRuVim/mN8ktyggzMbaUY+el7VVfQE+2LpMXy9X0pvB1HmUD4fslZjAOgndrTk4Qb1F26qpzyJ9xPuY4ngw4VDWN7VcjAevZVov2UwguMMbqFuUrGrjuAnlaBHQoM7/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=yH80jARS; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=SQlFVkTh; dkim=fail (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mLOJ2qbQ reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id 55EB2C18DB94
-	for <bpf@vger.kernel.org>; Tue, 16 Jan 2024 19:48:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1705463338; bh=VxFplyoToX+5xGv60J8MONy6X6rHxKnru1jctRcfLFg=;
-	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=yH80jARSXTESyPLa2k1ZUmQ1dYe5LP823D2n3me0ZOsXC4qf5c6gfrxM7sY1ZSEAK
-	 7WEASIsTq2cA8/3iFYk6q8QssLYWctC3yhH9HR7eJenIJOWLIyiU0EASmHILbDj0E/
-	 xR53pMUQjQRmKwrqU23SQMHplg4omBBZtqNJB/yQ=
-X-Mailbox-Line: From bpf-bounces@ietf.org  Tue Jan 16 19:48:58 2024
-Received: from ietfa.amsl.com (localhost [IPv6:::1])
-	by ietfa.amsl.com (Postfix) with ESMTP id E4C73C1519A9;
-	Tue, 16 Jan 2024 19:48:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
-	t=1705463337; bh=VxFplyoToX+5xGv60J8MONy6X6rHxKnru1jctRcfLFg=;
-	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
-	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
-	b=SQlFVkThntU5D1tyYQPz3lvcz5TjDvJn1t90uDW0IFWIN8Ch0uwyo8fciWTlHdGHS
-	 LCyMvDuxw83k20wZ1quPMSJgOh9yLr+1RtEGtNobWtH4dcrKyU0KlOMi2+v5LJKs57
-	 z9tP+fuu3iJJJ2qJc9lJz9ZXno0hIaSg67JyjkPo=
-X-Original-To: bpf@ietfa.amsl.com
-Delivered-To: bpf@ietfa.amsl.com
-Received: from localhost (localhost [127.0.0.1])
- by ietfa.amsl.com (Postfix) with ESMTP id E1BA5C1519A9
- for <bpf@ietfa.amsl.com>; Tue, 16 Jan 2024 19:48:56 -0800 (PST)
-X-Virus-Scanned: amavisd-new at amsl.com
-X-Spam-Flag: NO
-X-Spam-Score: -2.107
-X-Spam-Level: 
-Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
- header.d=linux.dev
-Received: from mail.ietf.org ([50.223.129.194])
- by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 0IggB_NdpnYh for <bpf@ietfa.amsl.com>;
- Tue, 16 Jan 2024 19:48:52 -0800 (PST)
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com
- [91.218.175.173])
- (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
- key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
- (No client certificate requested)
- by ietfa.amsl.com (Postfix) with ESMTPS id 4C442C1519A8
- for <bpf@ietf.org>; Tue, 16 Jan 2024 19:48:51 -0800 (PST)
-Message-ID: <4dfb0d6a-aa48-4d96-82f0-09a960b1012f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
- t=1705463329;
- h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
- to:to:cc:cc:mime-version:mime-version:content-type:content-type:
- content-transfer-encoding:content-transfer-encoding:
- in-reply-to:in-reply-to:references:references;
- bh=2/zDiCJtc3agPb6f1beZHyOJ+Io71uJUKvXiCzaP7rk=;
- b=mLOJ2qbQDaCnk9bxeczh41ajmg13UhHrrXgbBh9vlA/SvIVE9OUxGxWBTBUH+gQhe92Rt5
- N2OFSRNcD5cWfOh9fCFL+FUvGwKLYh+v6H3seOrawtK1ifF0NbZHSOf8NoyJRDzQYwFMJI
- LwInwD4mq11oRwUy6q8wjHvskQrUqRo=
-Date: Tue, 16 Jan 2024 19:48:44 -0800
+	s=arc-20240116; t=1705464972; c=relaxed/simple;
+	bh=feAlLSG9OsTk/C5TuxkqX6cYf+9wY1DNEhQwJHnt4eg=;
+	h=Received:Received:Received:Subject:To:Cc:References:From:
+	 Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:Content-Language:X-CM-TRANSID:
+	 X-Coremail-Antispam:X-CM-SenderInfo; b=fUqBnb+/b2az9v8jbKqyOrPynH8Twz0AaU5L4h36jG+3YH7adCxYx/iqPpaHs0206Ir9SPMjl1TlFRli8dNEXU8bSLoLLL58ZavqiNj1XSP/tkKvt7xQc3+oQYInT7OBQF4zpb2WTk8iTSeLw4jvXzRk77Afk1TsY7hCjxpxxDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TFCH41dq4z4f3lg3;
+	Wed, 17 Jan 2024 12:16:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 5487C1A084D;
+	Wed, 17 Jan 2024 12:16:06 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP4 (Coremail) with SMTP id gCh0CgDHGm2AVKdlhLZVBA--.33385S2;
+	Wed, 17 Jan 2024 12:16:03 +0800 (CST)
+Subject: Re: [PATCH AUTOSEL 4.19 07/22] bpf: Add map and need_defer parameters
+ to .map_fd_put_ptr()
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>, daniel@iogearbox.net,
+ andrii@kernel.org, bpf@vger.kernel.org
+References: <20240116200432.260016-1-sashal@kernel.org>
+ <20240116200432.260016-7-sashal@kernel.org>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <aa7ce9ae-cba1-120c-a5d3-851c4e4d1fb2@huaweicloud.com>
+Date: Wed, 17 Jan 2024 12:16:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Language: en-GB
-To: dthaler1968@googlemail.com
-Cc: bpf@ietf.org, bpf@vger.kernel.org
-References: <085f01da48bb$fe0c3cb0$fa24b610$@gmail.com>
- <08ab01da48be$603541a0$209fc4e0$@gmail.com>
- <829aa552-b04e-4f08-9874-b3f929741852@linux.dev>
- <095f01da48e8$611687d0$23439770$@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
- include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <095f01da48e8$611687d0$23439770$@gmail.com>
-X-Migadu-Flow: FLOW_OUT
-Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/uQiqhURdtxV_ZQOTgjCdm-seh74>
-Subject: Re: [Bpf] Sign extension ISA question
-X-BeenThere: bpf@ietf.org
-X-Mailman-Version: 2.1.39
-Precedence: list
-List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
-List-Post: <mailto:bpf@ietf.org>
-List-Help: <mailto:bpf-request@ietf.org?subject=help>
+In-Reply-To: <20240116200432.260016-7-sashal@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Errors-To: bpf-bounces@ietf.org
-Sender: "Bpf" <bpf-bounces@ietf.org>
+Content-Language: en-US
+X-CM-TRANSID:gCh0CgDHGm2AVKdlhLZVBA--.33385S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1DWw17WFWDKFW8JryxKrg_yoW8Wry8pF
+	WfXF4Utw4kJ3yvgwsxAanrZrWFywn3Jr90kr48Xw1rZFZ8J34fKrWxta1avFy5CryF9Fy7
+	XwnFy3WIywn5Aa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On 1/16/24 5:56 PM, dthaler1968@googlemail.com wrote:
-> Yonghong Song <yonghong.song@linux.dev> wrote:
->>> Is there any semantic difference between the following two instructions?
->>>
->>> {.opcode = BPF_ALU64 | BPF_MOV | BPF_K, .offset = 0, .imm = -1}
->> This is supported. Sign extension of -1 will be put into ALU64 reg.
->>
->>> {.opcode = BPF_ALU64 | BPF_MOVSX | BPF_K, .offset = 32, .imm = -1}
->> This is not supported. BPF_MOVSX only supports register extension.
->> We should make it clear in the doc.
-> Is that limitation a Linux-specific implementation statement? (i.e., put into
-> linux-notes.txt)
+
+
+On 1/17/2024 4:04 AM, Sasha Levin wrote:
+> From: Hou Tao <houtao1@huawei.com>
 >
-> Or that the meaning is undefined for all runtimes and could be used
-> for some other purpose in the future?  (i.e., put into instruction-set.rst)
+> [ Upstream commit 20c20bd11a0702ce4dc9300c3da58acf551d9725 ]
 >
-> For now I'll interpret it as the latter.
+> map is the pointer of outer map, and need_defer needs some explanation.
+> need_defer tells the implementation to defer the reference release of
+> the passed element and ensure that the element is still alive before
+> the bpf program, which may manipulate it, exits.
+>
+> The following three cases will invoke map_fd_put_ptr() and different
+> need_defer values will be passed to these callers:
+>
+> 1) release the reference of the old element in the map during map update
+>    or map deletion. The release must be deferred, otherwise the bpf
+>    program may incur use-after-free problem, so need_defer needs to be
+>    true.
+> 2) release the reference of the to-be-added element in the error path of
+>    map update. The to-be-added element is not visible to any bpf
+>    program, so it is OK to pass false for need_defer parameter.
+> 3) release the references of all elements in the map during map release.
+>    Any bpf program which has access to the map must have been exited and
+>    released, so need_defer=false will be OK.
+>
+> These two parameters will be used by the following patches to fix the
+> potential use-after-free problem for map-in-map.
+>
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> Link: https://lore.kernel.org/r/20231204140425.1480317-3-houtao@huaweicloud.com
+> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-You are right. The
-   {.opcode = BPF_ALU64 | BPF_MOVSX | BPF_K, .offset = 32, .imm = -1}
-is not supported by bpf ISA. Currently, it will be an illegal encoding
-from kernel perspective.
+The patch is just a preparatory patch for fix, please drop it.
 
--- 
-Bpf mailing list
-Bpf@ietf.org
-https://www.ietf.org/mailman/listinfo/bpf
 
