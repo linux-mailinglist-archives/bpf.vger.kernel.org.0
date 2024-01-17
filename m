@@ -1,140 +1,112 @@
-Return-Path: <bpf+bounces-19723-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19724-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 722AB83041A
-	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 12:03:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E2B830438
+	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 12:10:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 956D41C23F89
-	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 11:02:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DA051C2172E
+	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 11:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E55711CFB7;
-	Wed, 17 Jan 2024 11:02:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="J2Ime0pY";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="r17Hk7sJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A21E1DA4C;
+	Wed, 17 Jan 2024 11:10:12 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B43F519BA5;
-	Wed, 17 Jan 2024 11:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2567C1DFCA;
+	Wed, 17 Jan 2024 11:10:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705489371; cv=none; b=Xp65gIznLp+CNsQkyZN/oCl2UkSiYGN+YK6nG7mTny62Qql5UQ9yIEw1mPuwlhpSEQHcFmBnYawZLHun2rns2RfQvuCRL0gnUmulwcfBcSmwi5zY2feglZjhT5cmvu25BfHonZQa92ECX9VU7pj+lBXUx8SQT18bZImXIvPNGOo=
+	t=1705489812; cv=none; b=hUxedksBE5mpjuND9OxkZqbGp2N6jncxkZrP53JvW1+dtsBCgRojbezx2vafUPYt08YfUUNXlnRh8IpkEyeC4HJbx6CSSXDnsNh4gnlIOUPFroVbS4fbB5qymJ5KEXW0zhYOwB6F18n7I+Hrlp20xaMkVcZcFMTeuoQPtjVTFJo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705489371; c=relaxed/simple;
-	bh=qHQ+N4umlEdjLufFxkO1Ro/Oj3IAM6psLP+SKnUMgPI=;
-	h=Received:Received:DKIM-Signature:DKIM-Signature:X-ME-Sender:
-	 X-ME-Received:X-ME-Proxy-Cause:X-ME-Proxy:Feedback-ID:Received:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mm7r5AzFQHhe1L6ehLTBWv2e3OjcEWKLj9oJhX56CTQ4w4gWSWRaUM9SG3Bgi79wWS36qqmTXQ2ctWGXhxCvKd8JyGjAN+Rj8agKXe79KI32bdVvhG/OsW4tgmZAV+5GsFMJCNSRkqu4ACiYLq9m6w70/lMobY5CxgosTcj50pQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=J2Ime0pY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=r17Hk7sJ; arc=none smtp.client-ip=64.147.123.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.west.internal (Postfix) with ESMTP id BC3C73200A74;
-	Wed, 17 Jan 2024 06:02:47 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 17 Jan 2024 06:02:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1705489367; x=1705575767; bh=kRTRAeywno
-	UPKAnDlbOo2Rog7s7oJJTn5uJyXbPOWdw=; b=J2Ime0pYlsYOx881YUe/h3nqUD
-	CaZ19S1HP8RkY+1nsESGJHeOj86vc7Dw2NgkTxBt6tlUYbn5xdhKphpQNw3Chxgc
-	P4Y2Vw/4CBFCEM9s+WqQ/A84uHMNza/RyhhpSOi2KwiPNjOlDOoYY5d2V7E4M8Ia
-	v+Z29nQQ180UHTgAJWHoUe2Wz7XufFkmyWe5KxIgpfBu1OrEWQL1WsB8v8HmFnhv
-	vuS5cU0dxwHRt8O8YjhF09zoT3I3W634C43cb00tU+Y6vU5yj0nHYintt2I0Jxjc
-	/vUIw6Yg0wC5t6mqnPf1TrixfvMzBF/JHnv9SD1aUWowyBcFY6N3/ccqgUKA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1705489367; x=1705575767; bh=kRTRAeywnoUPKAnDlbOo2Rog7s7o
-	JJTn5uJyXbPOWdw=; b=r17Hk7sJ/tUT2HFV3zFGc7g/yFugl9NV904vKYKZ07mY
-	bGVhzgkKZBg5HF7brtN4f5G45jSHJiFe0DLO90HKK8KPBLnpO+QoxaLbA5g2fMUk
-	/z5oToY53Rd4N0OAVfXxQTK4b12/KnXBDbeKVqkOTZ337FCL0G2HG9Zzz/ob55G4
-	DNZU0YAAM0a8xHAPghTf27DYTF8RwCTRH39Gm7aVnBJPup2O+A2acut4baEgDOsJ
-	gI6+tRO9IlfHWJ5VHopPzrTc90dfcTI44fKDFGIwscqXyT4rUGPeeqUEEB5vNT5V
-	TMvt3fjeE7UC5Xi4q+LXy8uSzhAe1o6KNNwwIELAbA==
-X-ME-Sender: <xms:1rOnZevhlxNa3IBGmp2mvZ0O_02J9K4UVCZpfw8VSbuTdXLYH_xb9Q>
-    <xme:1rOnZTdvPiNUtk8YyPwMHpMxsPji7gujlq9l4bK9r88OTvnJy4a9IsBR0Av3Xyvkh
-    bjW-xPUQhaw6w>
-X-ME-Received: <xmr:1rOnZZwclUlrgRDRIcxKDXXKJSUki-70CG3Cc-DxJXgBR3zcJd4QouEwgwN2-SNElw_6Hqn5nL9JASlcUurLe7kFHFp9W65vPQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdejhedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
-    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:1rOnZZPC5DiEO1X4H7FAI1U0-8W-ApuxvNQMO_iMBd0_ULOezrrf2Q>
-    <xmx:1rOnZe-u_tXhvqaoVqVyStYfQseolTAymhbyXLd6mvga5edtsry28Q>
-    <xmx:1rOnZRXS1fV9FHX8tzKxmywXo_1BDE6-D9D08zvjPqWOsQkXi1CxtQ>
-    <xmx:17OnZf3auseHDmO_yGAAhVOGEJiQLyeZrzKfk2dqJe98XDPMJ718AA>
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 17 Jan 2024 06:02:46 -0500 (EST)
-Date: Wed, 17 Jan 2024 12:02:44 +0100
-From: Greg KH <greg@kroah.com>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: stable@vger.kernel.org, bpf@vger.kernel.org,
+	s=arc-20240116; t=1705489812; c=relaxed/simple;
+	bh=97XFvg/ZvIno7ulGfllvk9ZIzkwOJB/SI/7Omc23lUM=;
+	h=Received:Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding:X-CM-TRANSID:
+	 X-CM-SenderInfo:X-Coremail-Antispam; b=GJ5XwRzMjfPjJHmq6Sj6LaGZp27B9pRjofIbFBX9ruttq7M4cIxJAOGAv8plIPFkJ2IHBakXCUgPJz+/fv9uOxT0Jdtha+/ZrE2es7BEg7Glp6BDIBvcvib3nh1j6Nqt5b0asRl8sbLwMxuPLeH7jZbcuNkoOgNwx5ok96KqaU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [113.200.148.30])
+	by gateway (Coremail) with SMTP id _____8DxWPCKtadlZiYBAA--.5562S3;
+	Wed, 17 Jan 2024 19:10:02 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx7c6Jtadl+1MGAA--.32440S2;
+	Wed, 17 Jan 2024 19:10:01 +0800 (CST)
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
+To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-	Alan Maguire <alan.maguire@oracle.com>
-Subject: Re: [PATCH stable 6.1 2/2] bpf: Add
- --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags
- for v1.25
-Message-ID: <2024011730-droplet-related-5a61@gregkh>
-References: <20240117094424.487462-1-jolsa@kernel.org>
- <20240117094424.487462-3-jolsa@kernel.org>
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: Eduard Zingerman <eddyz87@gmail.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Hou Tao <houtao@huaweicloud.com>,
+	Song Liu <song@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH bpf-next v5 0/3] Skip callback tests if jit is disabled in test_verifier
+Date: Wed, 17 Jan 2024 19:09:57 +0800
+Message-ID: <20240117111000.12763-1-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117094424.487462-3-jolsa@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8Bx7c6Jtadl+1MGAA--.32440S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrZr43CrykGw4rCw1xGr45Jwc_yoWkAwcEka
+	y8tF95JrZ8ZFyYya47GFn8urZ8Ga1rWr1UtF45X3yUtrW7ZF45WF4kArZ8Za4kW3y5Ka42
+	yrsxXryfJr4qqosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
+	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+	cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+	vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUUUUU==
 
-On Wed, Jan 17, 2024 at 10:44:24AM +0100, Jiri Olsa wrote:
-> From: Alan Maguire <alan.maguire@oracle.com>
-> 
-> commit 7b99f75942da332e3f4f865e55a10fec95a30d4f upstream.
-> 
-> v1.25 of pahole supports filtering out functions with multiple inconsistent
-> function prototypes or optimized-out parameters from the BTF representation.
-> These present problems because there is no additional info in BTF saying which
-> inconsistent prototype matches which function instance to help guide attachment,
-> and functions with optimized-out parameters can lead to incorrect assumptions
-> about register contents.
-> 
-> So for now, filter out such functions while adding BTF representations for
-> functions that have "."-suffixes (foo.isra.0) but not optimized-out parameters.
-> This patch assumes that below linked changes land in pahole for v1.25.
-> 
-> Issues with pahole filtering being too aggressive in removing functions
-> appear to be resolved now, but CI and further testing will confirm.
-> 
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
-> Link: https://lore.kernel.org/r/20230510130241.1696561-1-alan.maguire@oracle.com
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
->  scripts/pahole-flags.sh | 3 +++
->  1 file changed, 3 insertions(+)
+v5:
+  -- Reuse is_ldimm64_insn() and insn_is_pseudo_func(),
+     thanks Song Liu.
 
-Again, a signed-off-by please.
+v4:
+  -- Move the not-allowed-checking into "if (expected_ret ...)"
+     block, thanks Hou Tao.
+  -- Do some small changes to avoid checkpatch warning
+     about "line length exceeds 100 columns".
 
-Resend the whole series?
+v3:
+  -- Rebase on the latest bpf-next tree.
+  -- Address the review comments by Hou Tao,
+     remove the second argument "0" of open(),
+     check only once whether jit is disabled,
+     check fd_prog, saved_errno and jit_disabled to skip.
 
-thanks,
+Tiezhu Yang (3):
+  selftests/bpf: Move is_jit_enabled() to testing_helpers
+  libbpf: Move insn_is_pseudo_func() to libbpf_internal.h
+  selftests/bpf: Skip callback tests if jit is disabled in 
+    test_verifier
 
-greg k-h
+ tools/lib/bpf/libbpf.c                        |  5 -----
+ tools/lib/bpf/libbpf_internal.h               |  5 +++++
+ tools/testing/selftests/bpf/test_progs.c      | 18 -----------------
+ tools/testing/selftests/bpf/test_verifier.c   | 20 ++++++++++++++++---
+ tools/testing/selftests/bpf/testing_helpers.c | 18 +++++++++++++++++
+ tools/testing/selftests/bpf/testing_helpers.h |  1 +
+ 6 files changed, 41 insertions(+), 26 deletions(-)
+
+-- 
+2.42.0
+
 
