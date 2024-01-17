@@ -1,101 +1,88 @@
-Return-Path: <bpf+bounces-19713-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19714-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D828830091
-	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 08:34:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E228830252
+	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 10:30:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 475B0B242E9
-	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 07:34:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEA3428661D
+	for <lists+bpf@lfdr.de>; Wed, 17 Jan 2024 09:30:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3366BE58;
-	Wed, 17 Jan 2024 07:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D5F713FFA;
+	Wed, 17 Jan 2024 09:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aQdvwjzu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OwDBPmtk"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4E7C122
-	for <bpf@vger.kernel.org>; Wed, 17 Jan 2024 07:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC54B13FEB
+	for <bpf@vger.kernel.org>; Wed, 17 Jan 2024 09:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705476833; cv=none; b=aufYzNvGqKWiZNnel4b+eQYt9o/HWtxJS3bvK9cCzYChDtZrH6fTsxIYd/sT9F6e15Ioa8Y/dJnWrrs94rqcyJRqIqC3oSyGIqEN2sJ1MRSoqYpRWy6UNS93/3UiuxOdTj/AfyIOGjCZAeSsonLT+U27G0n/MSCbtbnF54B3Q0w=
+	t=1705483824; cv=none; b=jw8YhHBpI1Ok8BrFIFCU4rwFxZ0FgvyzavZ1RhsZBglghirIQXorZTJ2RFLVD5WPpOVklnYwSVlTXZRSjnyx9GXt/6lb0DJjbTxrMFoKb8PRS4rVCrVIRw08B3mHmtnRRzk1GlRYJJlGrJrXO0E8uWTSmFNt+V/2TpwXwpSAIQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705476833; c=relaxed/simple;
-	bh=3YX7pDoceQX+E+TvVPVvV9f2P0ODXQ1tsjMOk7kPRaE=;
-	h=Message-ID:DKIM-Signature:Date:MIME-Version:Subject:
-	 Content-Language:To:Cc:References:X-Report-Abuse:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-Migadu-Flow; b=b4tSdTJJGhbjAtDQhL5+LrjMNCyCRmS4mL/BHYgSXeua5IMvEEdPKQNezs1C2NX975TBXgtmli4PeQemty0AT6YsNbq1DkR1aj9M7ntHRmtYUxNa0vm3g86OXpuI0IWjYVDT2kjJKEpbGSKmANjOnn958+w3/267+PrHr4WCgYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aQdvwjzu; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <51fd5249-140a-4f1b-b20e-703f159e88a3@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705476829;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oceJQDqoX4I7y29qmqcV6++w314V1TBOmZ9jW9CBGiQ=;
-	b=aQdvwjzuKH4Mw5ibWflyGPsS2g6+/CnLCjfdWOoPu0k8znSNt+CmydaGi3uV2EL0WxLGIj
-	HOh40RCMoLdQ5nCvicBMUfyAcwmxm+kSVLSCdG3nstmn6gvvdTFHBlB5ZxjM1kHTX/1RBu
-	BRRVKyn3CHDDArGpEzjoYJHSW7U+2oc=
-Date: Tue, 16 Jan 2024 23:33:39 -0800
+	s=arc-20240116; t=1705483824; c=relaxed/simple;
+	bh=bi5kHH3uNJitKZ2twRisHFVZSvSEYXv4KDeNBWvtyhs=;
+	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
+	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=Z+BzRG1pXC5w2NZ5zerxtmJVWPOgnFZ81j7DVXz+Zt/4rwJHge9niZcfanDgEGyDWk6677J3XORZrRWB7uGHXHj2qKicw2hwl+28I/JwmTvDVLnmvtkbJO82X3yey0dD/yBm+hZavgl9mml2kidzawMQ+khV5hTlC/eopbhIFpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OwDBPmtk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 79576C43390;
+	Wed, 17 Jan 2024 09:30:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705483824;
+	bh=bi5kHH3uNJitKZ2twRisHFVZSvSEYXv4KDeNBWvtyhs=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=OwDBPmtk3dUPrf60lIl4NQ5rxgPrTHwt2sWIQka/PZuyfJEmIWM3ybTHig9uRpggU
+	 JKYAkvsxX1+mqk0UFkkTsWgGWSqXvJRh5uswPyp30dUgNC5oLSyobnJ0Ks6M6I98Ff
+	 RfOuFNzC9oeiLhVSNHDW7NC+DmqJ1Bv+dgZLeUWiuc+/1FXg6UY2EQ+MuVE0QubmHa
+	 fHYE0OcGqefyp0JaIt2/vVIvLYwS7dVCFXz1HSF0boInH8nFWxn/T6VSyV8srlO4v2
+	 /Kyoczyh+BdI36TY72s2OaG9PcOldKJNx9wbkz2xk2a3ZJdPckDWpNmWLvs/UJCGhb
+	 d2JP5WL0xVllg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 61E86D8C96C;
+	Wed, 17 Jan 2024 09:30:24 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: Allow setting SO_TIMESTAMPING* with
- bpf_setsockopt()
-Content-Language: en-US
-To: =?UTF-8?Q?J=C3=B6rn-Thorben_Hinz?= <j-t.hinz@alumni.tu-berlin.de>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Shuah Khan <shuah@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Deepa Dinamani <deepa.kernel@gmail.com>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240115134110.11624-1-j-t.hinz@alumni.tu-berlin.de>
- <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <65a69e1be51ef_380df0294d9@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH] fix bpf_redirect_peer header doc
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170548382439.26855.7775028080477717698.git-patchwork-notify@kernel.org>
+Date: Wed, 17 Jan 2024 09:30:24 +0000
+References: <20240116202952.241009-1-v@nametag.social>
+In-Reply-To: <20240116202952.241009-1-v@nametag.social>
+To: Victor Stewart <v@nametag.social>
+Cc: borkmann@iogearbox.net, bpf@vger.kernel.org
 
-On 1/16/24 7:17 AM, Willem de Bruijn wrote:
-> Jörn-Thorben Hinz wrote:
->> A BPF application, e.g., a TCP congestion control, might benefit from or
->> even require precise (=hardware) packet timestamps. These timestamps are
->> already available through __sk_buff.hwtstamp and
->> bpf_sock_ops.skb_hwtstamp, but could not be requested: BPF programs were
->> not allowed to set SO_TIMESTAMPING* on sockets.
+Hello:
 
-This patch only uses the SOF_TIMESTAMPING_RX_HARDWARE in the selftest. How about 
-others? e.g. the SOF_TIMESTAMPING_TX_* that will affect the sk->sk_error_queue 
-which seems not good. If rx tstamp is useful, tx tstamp should be useful also?
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
->>
->> Enable BPF programs to actively request the generation of timestamps
->> from a stream socket. The also required ioctl(SIOCSHWTSTAMP) on the
->> network device must still be done separately, in user space.
+On Tue, 16 Jan 2024 20:29:52 +0000 you wrote:
+> ammend bpf_redirect_peer header doc to mention tcx and netkit
+> 
+> ---
+>  include/uapi/linux/bpf.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-hmm... so both ioctl(SIOCSHWTSTAMP) of the netdevice and the 
-SOF_TIMESTAMPING_RX_HARDWARE of the sk must be done?
+Here is the summary with links:
+  - fix bpf_redirect_peer header doc
+    https://git.kernel.org/bpf/bpf-next/c/985b8ea9ec7e
 
-I likely miss something. When skb is created in the driver rx path, the sk is 
-not known yet though. How the SOF_TIMESTAMPING_RX_HARDWARE of the sk affects the 
-skb_shinfo(skb)->hwtstamps?
-
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
 
