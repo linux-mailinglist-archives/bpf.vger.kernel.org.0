@@ -1,238 +1,138 @@
-Return-Path: <bpf+bounces-19852-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34FAC832260
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 00:46:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7BE4832268
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 00:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 522E91C22555
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 23:46:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60777286882
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 23:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D34B1EA78;
-	Thu, 18 Jan 2024 23:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA35D1EB38;
+	Thu, 18 Jan 2024 23:53:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iGZTSTqV"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="qvCPp6Lf";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="rhOdZvQK";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p/wIt5QZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47DA71EB36
-	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 23:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13D71E526
+	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 23:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705621584; cv=none; b=hkwHLvx2c+6eLZPEGNbhX2Qe1Obi85o8sA35SFUdjVZz3Hbzq7Y7O2KetPTOUFcKjEtfIcpl4UF/aKBymzQqJCX1T+9ZrRk6HF2STvWCUgMU8Pzii+Ov3SVTv45Xm4HRB5NThhrIw7ZPp6VyhOUcGUiH9Wt6tXLxKIpcfOZxFYY=
+	t=1705621996; cv=none; b=Z4LFtD/i537m+bnRgZZp7MCaLNoThhTjyZjZwLdpVh/9+llEKhqxJ0qjT9Um1dztKgpyaR43zG4SAZtSjRubobjN5l1/zvNqm1gUER2IrTcWKgFkfmqIdQYpfIJX2E/qPhNPN3DuV6ZGmMm/BjuONF0Vr6kECpqMRQpduSBSYg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705621584; c=relaxed/simple;
-	bh=Xl0h5L2fd25neAAROHrFTgoHIROMVMw/vprFzb05CwU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TqV+RtCkiF5mfdzttp6kdPK6zV6Su6HHp/VybG9WAHjX39y9JD05Ed8aXV34YYOh3AJzui9m2UkWEj3gmsnK99dtK2jtwEKLfKv+4j3G2qloakdZv/55lmroJfBd5B5EQojZ/ShJFbczvZ+WgKFUGI4ViZGLWOR4M7ta/WSCylM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iGZTSTqV; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7e1e4aec-c33f-4d71-9add-5f15849f9075@linux.dev>
+	s=arc-20240116; t=1705621996; c=relaxed/simple;
+	bh=JfrLEE9IshdfhmZ6itydh/21p103xvFYgSMmABhZ7rc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
+	 Subject:Content-Type; b=jG2huiBIZYzDcC8MLWAA64L+5im9OxLXFllGMhSmFrBKvCIiHc3dynVMCbEJYdJFj2kxnMK1uO0S8r/qezLHkp6+eRcW1sRGSzoqHxdh07lCMGl4mz8UUnKpV8QXRj6eMMtGbmxBZpDUEZcLk7yFhyr7PsfI4Q+ahmn+EgiM1mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=qvCPp6Lf; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=rhOdZvQK; dkim=fail (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p/wIt5QZ reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 07132C15108B
+	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 15:53:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1705621994; bh=JfrLEE9IshdfhmZ6itydh/21p103xvFYgSMmABhZ7rc=;
+	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=qvCPp6LfBCRXwLPgRoFDRqlJ+lw+dKHbA1OWBRYoDYTUeo5Pnk2pb3qKppeyV0/gh
+	 HwX6U7KZ4r0jk4SBV3mdUtSJM1pk99R0/GqFKb79vto+RfVKgh5zB/jvAauzil1Iep
+	 ye6LSWOpCP+JCuYqy56AGXARBna6mhXv8YGNzfxA=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Thu Jan 18 15:53:13 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id B9C18C14F738;
+	Thu, 18 Jan 2024 15:53:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1705621993; bh=JfrLEE9IshdfhmZ6itydh/21p103xvFYgSMmABhZ7rc=;
+	h=Date:To:Cc:References:From:In-Reply-To:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=rhOdZvQKqFKDrFosj10hqgMWvQmgkcrdIIdZd1G4orj4TfV2Ndl3ksJD9/CmcUjof
+	 L7yBB8E8AhBJxnyb+oEF7eiQhgMKzg0FYjra+9gqPSbpXw0kSzRdKvAotjKKcqCWjf
+	 BbQVwsbE8Q8kYB9Pru/OgkwPQm7mnDzfyWVT+av0=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 025B5C14F6E4
+ for <bpf@ietfa.amsl.com>; Thu, 18 Jan 2024 15:53:12 -0800 (PST)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -7.106
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (1024-bit key)
+ header.d=linux.dev
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id CVemNnGBE4wG for <bpf@ietfa.amsl.com>;
+ Thu, 18 Jan 2024 15:53:07 -0800 (PST)
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com
+ [95.215.58.176])
+ (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 5CD1CC14F738
+ for <bpf@ietf.org>; Thu, 18 Jan 2024 15:53:06 -0800 (PST)
+Message-ID: <9fe7008b-2fc2-47ad-879b-53da4d0f9c1d@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705621580;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p9OGzjQPgJu4t0WSdVN1Nr01hknLaU+f3FB7bQRkZeE=;
-	b=iGZTSTqVWG4v+jEZKHP7doU12AA2XSfUmD1IoFrOV8kc9NTP6bjPbiltooSa2FHSBavZMf
-	Gd1wYSG95rg5DqiHGLkDd8/QJXYaTkg7bqVRZsCQQ0kGjmXSpOZWyUG2sNp1QmLeoobjPA
-	GH4IwF8USxGnpkvqvOsPzPINfWC9Iko=
-Date: Thu, 18 Jan 2024 15:46:12 -0800
+ t=1705621984;
+ h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+ to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+ content-transfer-encoding:content-transfer-encoding:
+ in-reply-to:in-reply-to:references:references;
+ bh=xciUpB1EYvV1sOyg2VNkB2I07bZOj6mqEI6iYK8mLGM=;
+ b=p/wIt5QZpTvjtsJmjzXzU+QCU23IC9uRt7ST6Verli19H1exTRhlwQUQnl3wCMePDBt+EW
+ rrwT5D9QlYoxWd4cFmKPi0gwVQdPJoFdb+L/wjHfxJwtvIpykbZNZch+P7vT/qxy4SwTnP
+ QWTo0HYHC2aepqOWvW5/bnZlaQZEdEg=
+Date: Thu, 18 Jan 2024 15:53:01 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 bpf-next 3/3] selftests/bpf: Add selftests for cpumask
- iter
 Content-Language: en-GB
-To: Yafang Shao <laoar.shao@gmail.com>, ast@kernel.org, daniel@iogearbox.net,
- john.fastabend@gmail.com, andrii@kernel.org, martin.lau@linux.dev,
- song@kernel.org, kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
- jolsa@kernel.org, tj@kernel.org
-Cc: bpf@vger.kernel.org, lkp@intel.com
-References: <20240117024823.4186-1-laoar.shao@gmail.com>
- <20240117024823.4186-4-laoar.shao@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+To: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>,
+ bpf@vger.kernel.org
+Cc: bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
+References: <20240118232954.27206-1-dthaler1968@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and
+ include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240117024823.4186-4-laoar.shao@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20240118232954.27206-1-dthaler1968@gmail.com>
 X-Migadu-Flow: FLOW_OUT
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/BcwW1piEsNbzMQgUpUjNaIY9S9g>
+Subject: Re: [Bpf] [PATCH bpf-next] bpf,
+ docs: Clarify that MOVSX is only for BPF_X not BPF_K
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 
 
-On 1/16/24 6:48 PM, Yafang Shao wrote:
-> Within the BPF program, we leverage the cgroup iterator to iterate through
-> percpu runqueue data, specifically the 'nr_running' metric. Subsequently
->   we expose this data to userspace by means of a sequence file.
+On 1/18/24 3:29 PM, Dave Thaler wrote:
+> Per discussion on the mailing list at
+> https://mailarchive.ietf.org/arch/msg/bpf/uQiqhURdtxV_ZQOTgjCdm-seh74/
+> the MOVSX operation is only defined to support register extension.
 >
-> The CPU affinity for the cpumask is determined by the PID of a task:
+> The document didn't previously state this and incorrectly implied
+> that one could use an immediate value.
 >
-> - PID of the init task (PID 1)
->    We typically don't set CPU affinity for init task and thus we can iterate
->    across all possible CPUs. However, in scenarios where you've set CPU
->    affinity for the init task, you should set the cpumask of your current
->    task to full-F. Then proceed to iterate through all possible CPUs using
+> Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
 
-Wat is full-F? It would be good if you can clarify in the commit message.
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
->    the current task.
-> - PID of a task with defined CPU affinity
->    The aim here is to iterate through a specific cpumask. This scenario
->    aligns with tasks residing within a cpuset cgroup.
-> - Invalid PID (e.g., PID -1)
->    No cpumask is available in this case.
->
-> The result as follows,
->    #65/1    cpumask_iter/init_pid:OK
->    #65/2    cpumask_iter/invalid_pid:OK
->    #65/3    cpumask_iter/self_pid_one_cpu:OK
->    #65/4    cpumask_iter/self_pid_multi_cpus:OK
->    #65      cpumask_iter:OK
->    Summary: 1/4 PASSED, 0 SKIPPED, 0 FAILED
->
-> CONFIG_PSI=y is required for this testcase.
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->   tools/testing/selftests/bpf/config            |   1 +
->   .../selftests/bpf/prog_tests/cpumask_iter.c   | 134 ++++++++++++++++++
->   .../selftests/bpf/progs/cpumask_common.h      |   3 +
->   .../selftests/bpf/progs/test_cpumask_iter.c   |  56 ++++++++
->   4 files changed, 194 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/cpumask_iter.c
->   create mode 100644 tools/testing/selftests/bpf/progs/test_cpumask_iter.c
->
-> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-> index c125c441abc7..9c42568ed376 100644
-> --- a/tools/testing/selftests/bpf/config
-> +++ b/tools/testing/selftests/bpf/config
-> @@ -78,6 +78,7 @@ CONFIG_NF_CONNTRACK_MARK=y
->   CONFIG_NF_DEFRAG_IPV4=y
->   CONFIG_NF_DEFRAG_IPV6=y
->   CONFIG_NF_NAT=y
-> +CONFIG_PSI=y
->   CONFIG_RC_CORE=y
->   CONFIG_SECURITY=y
->   CONFIG_SECURITYFS=y
-> diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask_iter.c b/tools/testing/selftests/bpf/prog_tests/cpumask_iter.c
-> new file mode 100644
-> index 000000000000..984d01d09d79
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/cpumask_iter.c
-> @@ -0,0 +1,134 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Yafang Shao <laoar.shao@gmail.com> */
-> +
-> +#define _GNU_SOURCE
-> +#include <sched.h>
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +
-> +#include <test_progs.h>
-> +#include "cgroup_helpers.h"
-> +#include "test_cpumask_iter.skel.h"
-> +
-> +static void verify_percpu_data(struct bpf_link *link, int nr_cpu_exp, int nr_running_exp)
-> +{
-> +	int iter_fd, len, item, nr_running, psi_running, nr_cpus;
-> +	static char buf[128];
-
-why static?
-
-> +	size_t left;
-> +	char *p;
-> +
-> +	iter_fd = bpf_iter_create(bpf_link__fd(link));
-> +	if (!ASSERT_GE(iter_fd, 0, "iter_fd"))
-> +		return;
-> +
-> +	memset(buf, 0, sizeof(buf));
-> +	left = ARRAY_SIZE(buf);
-> +	p = buf;
-> +	while ((len = read(iter_fd, p, left)) > 0) {
-> +		p += len;
-> +		left -= len;
-> +	}
-> +
-> +	item = sscanf(buf, "nr_running %u nr_cpus %u psi_running %u\n",
-> +		      &nr_running, &nr_cpus, &psi_running);
-> +	if (nr_cpu_exp == -1) {
-> +		ASSERT_EQ(item, -1, "seq_format");
-> +		goto out;
-> +	}
-> +
-> +	ASSERT_EQ(item, 3, "seq_format");
-> +	ASSERT_GE(nr_running, nr_running_exp, "nr_running");
-> +	ASSERT_GE(psi_running, nr_running_exp, "psi_running");
-> +	ASSERT_EQ(nr_cpus, nr_cpu_exp, "nr_cpus");
-> +
-> +	/* read() after iter finishes should be ok. */
-> +	if (len == 0)
-> +		ASSERT_OK(read(iter_fd, buf, sizeof(buf)), "second_read");
-
-The above 'if' statement is irrelevant to the main purpose of this test
-and can be removed.
-
-> +
-> +out:
-> +	close(iter_fd);
-> +}
-> +
-> +void test_cpumask_iter(void)
-> +{
-> +	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
-> +	int nr_possible, cgrp_fd, pid, err, cnt, i;
-> +	struct test_cpumask_iter *skel = NULL;
-
-= NULL is not needed.
-
-> +	union bpf_iter_link_info linfo;
-> +	int cpu_ids[] = {1, 3, 4, 5};
-> +	struct bpf_link *link;
-> +	cpu_set_t set;
-> +
-> +	skel = test_cpumask_iter__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "test_for_each_cpu__open_and_load"))
-> +		return;
-> +
-> +	if (setup_cgroup_environment())
-> +		goto destroy;
-> +
-> +	/* Utilize the cgroup iter */
-> +	cgrp_fd = get_root_cgroup();
-> +	if (!ASSERT_GE(cgrp_fd, 0, "create cgrp"))
-> +		goto cleanup;
-> +
-> +	memset(&linfo, 0, sizeof(linfo));
-> +	linfo.cgroup.cgroup_fd = cgrp_fd;
-> +	linfo.cgroup.order = BPF_CGROUP_ITER_SELF_ONLY;
-> +	opts.link_info = &linfo;
-> +	opts.link_info_len = sizeof(linfo);
-> +
-> +	link = bpf_program__attach_iter(skel->progs.cpu_cgroup, &opts);
-> +	if (!ASSERT_OK_PTR(link, "attach_iter"))
-> +		goto close_fd;
-> +
-> +	skel->bss->target_pid = 1;
-> +	/* In case init task is set CPU affinity */
-> +	err = sched_getaffinity(1, sizeof(set), &set);
-> +	if (!ASSERT_OK(err, "setaffinity"))
-> +		goto close_fd;
-
-goto free_link.
-
-> +
-> +	cnt = CPU_COUNT(&set);
-> +	nr_possible = bpf_num_possible_cpus();
-> +	if (test__start_subtest("init_pid"))
-> +		/* curent task is running. */
-> +		verify_percpu_data(link, cnt, cnt == nr_possible ? 1 : 0);
-[...]
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
