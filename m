@@ -1,184 +1,113 @@
-Return-Path: <bpf+bounces-19846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19848-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B46B08321BE
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 23:54:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6F6A832241
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 00:30:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 520C8288AEC
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 22:54:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECD681C22D67
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 23:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6541D69F;
-	Thu, 18 Jan 2024 22:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396551DFEF;
+	Thu, 18 Jan 2024 23:30:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="A2jfHGLz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCCD41EB37
-	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 22:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEA81EB37
+	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 23:30:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705618474; cv=none; b=rfPexOlXtOjmnDcKHqC9SNFHHv0dkOWxUL7wCk2vcObHa4zLAsJP4M85VVS/Na8NYM7tqVWN5wLRx4trm6KmtdTw3k6iqlN1WDwTO+ltr9I1im+6P9MvRhVCev3l4iY6btQptqCC7MdvR8XsuFvVm3zAwnZtSRevPjzI0PwSh8Y=
+	t=1705620612; cv=none; b=DxLq4fP6qbqsZYdy+zeJMDT9dvUnQQQgYgw1KxPdr3g0tkCZOLDseR+IBNJENz+SBhdwIlqnUlvrFhC8pFx1jQenmEtzzl1VCuzyKOBC+mU5/lDQU38c6lwX1OhY27zddy3vZwKTmW4EqbzHih/mNYX9w/+DSuAcBgDnnh6fVVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705618474; c=relaxed/simple;
-	bh=SlA5jVz2M9fWHBrYymjxdoyuAvVq6Ty4NY2T/nZOl2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qj8QLNC62auyl91Lsi2h6e0e90zgW8y2boSCB4IsBc4K0C/oobWTVOWGH9xMODuMkLc/Un+OgiNU2gGR+4s+5JxVImUcE+O9EDg0xaAYbDq49x7AnPEr8AwngtZK00VgBfRfJH7yeBXOBv47zX1iYnDRPzacmbG90Vs91p3BIPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78313f4d149so16384685a.1
-        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 14:54:32 -0800 (PST)
+	s=arc-20240116; t=1705620612; c=relaxed/simple;
+	bh=11O8UZBN33Ii3GjRQDchEaq+2Za3tlWpI8wBB/KemJ0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=usN0nprV/O+okv65M5R6SqDZNfsrRXFeMz7D+7D9VFKpP3bwa6ptPY1lMSUFHlWqh8+ZKcvNFHAz+iY0znlMBw5MjiXSTaR9WV9GGi67hTVshNdBebzLmoGXZktfPp12is39jH56NprSBX/94n0NOoTtoqsUtVsG95yZ6s74h18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=A2jfHGLz; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6d9344f30caso160736b3a.1
+        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 15:30:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1705620609; x=1706225409; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ioogeLx+74muZbeEkvEVMi/iHfl4LvcvtqKYeaQeBCA=;
+        b=A2jfHGLzOAYzKJGAbT8duNDCr5ix4mdbtXLdVd3lmkBHbicAvaogcXwcoD3JF9c/sf
+         ueB5xaLYNNqywMCOVxe0wyHbeCniHj5Qc/eMhPAewnXFJkWDZAmHFszKO+qayhksID7V
+         Hn1exrrxh+rgMZzmkQ3z4IsjUiG/uBWrEKwYQTPeEJ/Zb6K8zaQNmDnJG8hIuFUIwyiN
+         nkmZLKPGmXZN4IH5EdqGHONGJaPDAdSQOOTL0ZEtXBnuqQwRdV8glBR/m9Y1qLKsyQLx
+         Z9U8/a9aqzOe3RCOkEGDdKarrwSPRg66SmN1CBxzAzPvX38jKfn4aOewKI+n9fYh0jUe
+         3w9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705618471; x=1706223271;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pHOoNlrfjEvGZsS1hMw+vPiGNp386bKPhKGHFHXOF6k=;
-        b=hXmNKXMes/GAYblaWzjSvhKxc9c0Ro9KTw8gpKKr7xSnV7N5lKAXX/Q/jlgkCD6zzN
-         UCID8MIJzWwi4QFBLLn9a6UMpKp+YbmNp0kGM1F8lPl3yLl99NRVfCqdrqB6rkCKdLm5
-         D4lY7WpeHUnxI0yzyagt5tV+M9HGiY9k0AtGH/cX58VWsU138HeDhQ5qr4pX9VW6OvRz
-         Oj4aG7oBHJ4qHeAK3FK6sdGqFkN/7xCxzH0kcD5UYHVGBButmhg4mVXVkFpdU/rITWWX
-         unH3yPGiNtPZF6Mn28q1fNlqUVmlMKqcqlmk9golcaPd7IH5ffPtsmQe7+OSJ47k3d10
-         W67w==
-X-Gm-Message-State: AOJu0YwF/JcNHM+FVNb5Vy8qqgcS3vJ0q05yf0g1ZzbOVc8UM6FjpbE1
-	fgLdn1Rw+EGIMiieMaFVs8WAqOo6A6VGPyTnAUneDd/GjDntIcqscXvq1h7ObPE=
-X-Google-Smtp-Source: AGHT+IEruA3k1UG2uHE367N8PlTpdFpfnc7U0KV1WRQHYT8CVTz0fCOvTQ/d5V1RmVscYsjkVdJziw==
-X-Received: by 2002:a05:620a:d5c:b0:783:88d0:85f3 with SMTP id o28-20020a05620a0d5c00b0078388d085f3mr17979qkl.154.1705618471579;
-        Thu, 18 Jan 2024 14:54:31 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id vv25-20020a05620a563900b007832895cf8csm5622191qkn.38.2024.01.18.14.54.30
+        d=1e100.net; s=20230601; t=1705620609; x=1706225409;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ioogeLx+74muZbeEkvEVMi/iHfl4LvcvtqKYeaQeBCA=;
+        b=nhqjwcW9WCs+awREFIP0frDUBEOn1rQ9YWgzaDvnH0uv0t2zP7hYV9cuW+C4MYnOEO
+         XR+fGHV6aUIbrHRMTbKFoJ5xRIsNvTjvN14BvRYTDovUjgpkscfjknbLr+Xp5bc9W9gh
+         Htg2dn+4udIx10Vy6DKrwf6Zz/V1tawhZRgXSXgc8vTE8n1OqLclcoDhwTc2uCvrhMYf
+         6M/qm2snl6R5InJhii3piaTiRaJhfOVDTNCNwjyOuAoaD1LsC4KbC5E8BiyAAb9/G1+C
+         Wq1L9ComGTy3aRpgm5B3ueLB0V3VToyichP6s5JLT+M9l07ZqlZ5rDuZ/Q7GJPTcmEG0
+         dpdQ==
+X-Gm-Message-State: AOJu0YzxenWFLPqxwdcjuL9TwV4UqB7HKhZm/jC9doyC9awfW3TwP/PS
+	wKz+1DjVcr6Fw5790NCGOKU3e5ARU85x/GvBTj2r+FIPN50qHfQEXoxow5BfiS0=
+X-Google-Smtp-Source: AGHT+IEyv9y6uis6khDQHvBrXdalw5Di3YAm1aMR/aQAxnmj7tK8SCcRHYpBxtanDRMsA0QboSFFHA==
+X-Received: by 2002:a05:6a00:2441:b0:6d9:8ddc:37e0 with SMTP id d1-20020a056a00244100b006d98ddc37e0mr97148pfj.28.1705620608816;
+        Thu, 18 Jan 2024 15:30:08 -0800 (PST)
+Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
+        by smtp.gmail.com with ESMTPSA id s13-20020a056a00194d00b006db13a02921sm3809815pfk.183.2024.01.18.15.30.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jan 2024 14:54:30 -0800 (PST)
-Date: Thu, 18 Jan 2024 16:54:29 -0600
-From: David Vernet <void@manifault.com>
-To: dthaler1968@googlemail.com
-Cc: 'Aoyang Fang' <aoyangfang@link.cuhk.edu.cn>, bpf@vger.kernel.org,
-	bpf@ietf.org
-Subject: Re: [PATCH bpf-next] The original document has some inconsistency.
-Message-ID: <20240118225429.GA875006@maniforge>
-References: <20240105031450.57681-2-aoyangfang@link.cuhk.edu.cn>
- <20240109173227.GB79024@maniforge>
- <016101da4326$8dbad1a0$a93074e0$@gmail.com>
- <20240109191037.GC79024@maniforge>
- <025c01da4594$4544e3f0$cfceabd0$@gmail.com>
+        Thu, 18 Jan 2024 15:30:08 -0800 (PST)
+From: Dave Thaler <dthaler1968@googlemail.com>
+X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+To: bpf@vger.kernel.org
+Cc: bpf@ietf.org,
+	Dave Thaler <dthaler1968@gmail.com>
+Subject: [PATCH bpf-next] bpf, docs: Clarify that MOVSX is only for BPF_X not BPF_K
+Date: Thu, 18 Jan 2024 15:29:54 -0800
+Message-Id: <20240118232954.27206-1-dthaler1968@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xcQc5tYfzAYvc18J"
-Content-Disposition: inline
-In-Reply-To: <025c01da4594$4544e3f0$cfceabd0$@gmail.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+Content-Transfer-Encoding: 8bit
 
+Per discussion on the mailing list at
+https://mailarchive.ietf.org/arch/msg/bpf/uQiqhURdtxV_ZQOTgjCdm-seh74/
+the MOVSX operation is only defined to support register extension.
 
---xcQc5tYfzAYvc18J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The document didn't previously state this and incorrectly implied
+that one could use an immediate value.
 
-On Fri, Jan 12, 2024 at 12:16:47PM -0800, dthaler1968@googlemail.com wrote:
+Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
+---
+ Documentation/bpf/standardization/instruction-set.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-[...]
+diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+index eb0f234a8..d17a96c62 100644
+--- a/Documentation/bpf/standardization/instruction-set.rst
++++ b/Documentation/bpf/standardization/instruction-set.rst
+@@ -317,7 +317,8 @@ The ``BPF_MOVSX`` instruction does a move operation with sign extension.
+ ``BPF_ALU | BPF_MOVSX`` :term:`sign extends<Sign Extend>` 8-bit and 16-bit operands into 32
+ bit operands, and zeroes the remaining upper 32 bits.
+ ``BPF_ALU64 | BPF_MOVSX`` :term:`sign extends<Sign Extend>` 8-bit, 16-bit, and 32-bit
+-operands into 64 bit operands.
++operands into 64 bit operands.  Unlike other arithmetic instructions,
++``BPF_MOVSX`` is only defined for register source operands (``BPF_X``).
+ 
+ Shift operations use a mask of 0x3F (63) for 64-bit operations and 0x1F (31)
+ for 32-bit operations.
+-- 
+2.40.1
 
-> >=20
-> > This is already pretty different from how we're visualizing and
-> enumerating
-> > the instructions in our document.
->=20
-> The packet layout diagram style above is indeed the most common
-> (and I'd be fine if the WG wants to switch to that style), but there are
-> RFCs that use other styles.  See for example RFC 9000 which uses a custom
-> style, but has a full explanation defining it.
-
-I guess my question would be why did RFC 9000 deviate, but I don't think
-that's super relevant or important. As I mention below, I'm fine with
-applying this change if you think it makes the doc more canonical.
-
-Regarding question of the layout diagram style, at this point I don't
-think we need to spend time switching the style, though I do think the
-other style is more legible than what we have now. If someone wants to
-do the work then I'd say go for it, but otherwise I'd prefer we don't
-block on it given how close we are to WG last call.
-
-> > Consider:
-> >=20
-> > 1. They're not even using numerical values to define some fields, such
-> >    as with Type of Service. They're specifying the exact values of
-> >    individual bits within the field (e.g. with Precedence).
-> >=20
-> > 2. They're using decimal instead of hexadecimal.
->=20
-> Sometimes values are given in decimal, sometimes in hexadecimal
-> (e.g., see Table 1 of RFC 9000), sometimes in binary (e.g., Precedence as
-> you noted).  Decimal is most common but hex or binary are ok if it's clear
-> that's what's used.
-
-Ack as well
-
-> > Unless I'm missing something, it seems like the deviation in terms of
-> using
-> > 0x40 vs. 0x4 is specific to how they present examples in the appendices
-> > (though even the appendices are using base 10).
->=20
-> For a 4-bit field, I've only seen cases where the value is 0x4, 4, or 010=
-0,
-> which fit into a 4-bit field.  I've not seen a case of 0x40.
-
-Fair enough, though as mentioned above, I'm having trouble understanding
-where deviations are acceptable or not. I trust your judgement though.
-
-> > So while I certainly agree that we should follow conventions, I think I=
-'d
-> prefer
-> > that we either follow them completely, or not sacrifice readability by
-> following
-> > them in specific ways which don't necessarily match the chosen format f=
-or
-> > our document.
->=20
-> If you're suggesting we use packet layout format like you quoted, that'd
-> be fine with me.
-
-See above -- if someone wants to do the work then I'd say go for it, but
-I don't think it should be a blocker.
-
-[...]
-
-> > I agree with you that we should stay consistent, but it seems like we're
-> being
-> > selective about it. Could you help me understand why the deviations we
-> have
-> > already wouldn't have required a separate section?
->=20
-> It's fair to argue that having a section defining the convention, like RFC
-> 9000 did,
-> would be recommended if one deviates from standard conventions. =20
-> But it'd be shorter (and perhaps less work) to use a more standard
-> convention.
-
-Agreed. At this point I'd say let's do whatever is kosher and will
-require less time and effort; unless someone wants to spend time writing
-up fancy ASCII diagrams.
-
-Thanks,
-David
-
---xcQc5tYfzAYvc18J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZamsJAAKCRBZ5LhpZcTz
-ZPltAP9XjoN7NK7RF90wSoKxx4e/gYdjBIPTRl4am4emDVKWjgEAl3gOqS7YDOYk
-4dA9kkZZvOv1jwq8qug4Cz+CPA+Nnw4=
-=sXuY
------END PGP SIGNATURE-----
-
---xcQc5tYfzAYvc18J--
 
