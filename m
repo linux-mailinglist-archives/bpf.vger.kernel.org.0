@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-19792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E9B48311D5
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 04:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A520D8311D6
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 04:32:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43D031C21A62
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 03:31:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9E2A1C21DB2
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 03:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AFE6120;
-	Thu, 18 Jan 2024 03:31:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B74763B5;
+	Thu, 18 Jan 2024 03:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HSSeSLYq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uMeqILeW"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7486FBC
-	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 03:31:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 050E45686
+	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 03:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705548716; cv=none; b=oyPM6uwMGDHkRP2XWt1HQW7+W9xI44qIVgl9oRNbFvKt6FXkJrG6Woi2w8yQ7ORj0aQQY7Pn4VjZV8etq4vx6AY5oKjMy4uEQ7EUfBG+1WuqMBvaAsbduIaqAPwqGTO7jXumwt30U95cDf92WqFmlh2F++fqvprIScwqYnrCEck=
+	t=1705548719; cv=none; b=fbzNYh0S/eAGpKApDDyjWC+rUQ6ZLOJ+1ETv08C6yckqw8qLjqZF0xPk2mjWikxeUtYa6SloV6X21jOEw8gVDeUQ8jP4xl6R/KFM/BzTnSteB333yN01mBH22ZMqZdGueWAXXOXqsmH0Fzz4crh20/bLvlHw4itPQv9Sfa/JvdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705548716; c=relaxed/simple;
-	bh=Xzmi2CjSg8UA6eWmEFRIr/rMVqLUpIugr1M2WiWbxyI=;
+	s=arc-20240116; t=1705548719; c=relaxed/simple;
+	bh=XnDNqdOpo01Es/FXqfLWlfzXWRQYAckC3ojy2/oQiCs=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-Id:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding; b=JQCq+Up/uigpic+DhqWFE/6D8JUXar+RB5zW84pIY3oQfkDdTPhSazQs7oMVwhnsrC0RD7b83Yy1D4/pnTYtWewgtPq7wLQ651L7Ks2U/xjjitolPMorLAIPTgMybM2/hM1iEzRK09NHr5OhEw6ZQCG/iuRKVRr+0i+J9raPvT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HSSeSLYq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68A9AC43390;
-	Thu, 18 Jan 2024 03:31:55 +0000 (UTC)
+	 Content-Transfer-Encoding; b=Ggk3jwBYvMCBABxAcbMfqAHY/82f/HHa++sm/l4GCSqHzctOLMPjrF69mKvjC1Y1n44/CwsoIZHGbrz6+Ed6H6gEUC3laBDOzek1UpE9Ixf2uUgd3Ivs5zKqN1O3mnVtGM/W6UAt6b8iZy65Dp4C/ahp3NrHUh7EuU/2UamN7NM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uMeqILeW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3768C433C7;
+	Thu, 18 Jan 2024 03:31:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705548715;
-	bh=Xzmi2CjSg8UA6eWmEFRIr/rMVqLUpIugr1M2WiWbxyI=;
+	s=k20201202; t=1705548718;
+	bh=XnDNqdOpo01Es/FXqfLWlfzXWRQYAckC3ojy2/oQiCs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HSSeSLYqiJMLMswe3uR1y8ssYOPVxqX8uy4p0YCDFpelqoXQD0nDZkd2jGVIZywHU
-	 Xq+WdYQdPG3GnEIMaiL+tqV/8/4QjCF4H4PD7ZXwe/DQnnvFafM4RDDu66Zp8zI5dD
-	 3/WktlQUPQgtqVIYT48o5T4U58bNkbO1bas5U0K2RNQTNHdq840zgbgxOeEBHGUHEJ
-	 ySaJEg/7VgEMG5IsydKqCVlxtwoSQCPJ80cIfwGCkSsC5guKADZIqSXda2SM1nzWIg
-	 98iRgEJAxTnDM6JXWmO5pP8p5Rn8gwkOB6LHCrs2f5aINZ+LScl9SBO3+Yvn6PGuJ2
-	 L9XYFboCQaH7Q==
+	b=uMeqILeWKErCiyqky4gHo5FrWrSVy064ndYMkgJe06Nth9CUVP8JMVyNt/bOUxHTE
+	 WajnqmDzNDKGtuO5JS6bWX9CDB/1VasXJISyqWcaLuD78U41tun9rG/TyU5ZStMtZw
+	 +dp2IKIiFIhTKcwuEbHSsmFofHghxw6oR1aJ1gle5mLe10L1B3LypVgB6M8hSeeKfQ
+	 K95H41oXze9cmUx9/9c03B0r8TQFT/OtCcAZkKNypTtIzGBc6oqKTEF86Q5X+3tVAo
+	 kigqwLOvb70A8Lldt44x5QKrfApGBtV0l8DdtMp8WJcRrDd9X/JcAld1QltiQvWpUt
+	 HzbY2RU5y5EQA==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -49,9 +49,9 @@ To: bpf@vger.kernel.org,
 	martin.lau@kernel.org
 Cc: andrii@kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH v3 bpf 3/5] bpf: enforce types for __arg_ctx-tagged arguments in global subprogs
-Date: Wed, 17 Jan 2024 19:31:41 -0800
-Message-Id: <20240118033143.3384355-4-andrii@kernel.org>
+Subject: [PATCH v3 bpf 4/5] selftests/bpf: add tests confirming type logic in kernel for __arg_ctx
+Date: Wed, 17 Jan 2024 19:31:42 -0800
+Message-Id: <20240118033143.3384355-5-andrii@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240118033143.3384355-1-andrii@kernel.org>
 References: <20240118033143.3384355-1-andrii@kernel.org>
@@ -63,235 +63,212 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add enforcement of expected types for context arguments tagged with
-arg:ctx (__arg_ctx) tag.
+Add a bunch of global subprogs across variety of program types to
+validate expected kernel type enforcement logic for __arg_ctx arguments.
 
-First, any program type will accept generic `void *` context type when
-combined with __arg_ctx tag.
-
-Besides accepting "canonical" struct names and `void *`, for a bunch of
-program types for which program context is actually a named struct, we
-allows a bunch of pragmatic exceptions to match real-world and expected
-usage:
-
-  - for both kprobes and perf_event we allow `bpf_user_pt_regs_t *` as
-    canonical context argument type, where `bpf_user_pt_regs_t` is a
-    *typedef*, not a struct;
-  - for kprobes, we also always accept `struct pt_regs *`, as that's what
-    actually is passed as a context to any kprobe program;
-  - for perf_event, we resolve typedefs (unless it's `bpf_user_pt_regs_t`)
-    down to actual struct type and accept `struct pt_regs *`, or
-    `struct user_pt_regs *`, or `struct user_regs_struct *`, depending
-    on the actual struct type kernel architecture points `bpf_user_pt_regs_t`
-    typedef to; otherwise, canonical `struct bpf_perf_event_data *` is
-    expected;
-  - for raw_tp/raw_tp.w programs, `u64/long *` are accepted, as that's
-    what's expected with BPF_PROG() usage; otherwise, canonical
-    `struct bpf_raw_tracepoint_args *` is expected;
-  - tp_btf supports both `struct bpf_raw_tracepoint_args *` and `u64 *`
-    formats, both are coded as expections as tp_btf is actually a TRACING
-    program type, which has no canonical context type;
-  - iterator programs accept `struct bpf_iter__xxx *` structs, currently
-    with no further iterator-type specific enforcement;
-  - fentry/fexit/fmod_ret/lsm/struct_ops all accept `u64 *`;
-  - classic tracepoint programs, as well as syscall and freplace
-    programs allow any user-provided type.
-
-In all other cases kernel will enforce exact match of struct name to
-expected canonical type. And if user-provided type doesn't match that
-expectation, verifier will emit helpful message with expected type name.
-
-Note a bit unnatural way the check is done after processing all the
-arguments. This is done to avoid conflict between bpf and bpf-next
-trees. Once trees converge, a small follow up patch will place a simple
-btf_validate_prog_ctx_type() check into a proper ARG_PTR_TO_CTX branch
-(which bpf-next tree patch refactored already), removing duplicated
-arg:ctx detection logic.
-
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/bpf/btf.c | 160 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 160 insertions(+)
+ .../bpf/progs/verifier_global_subprogs.c      | 164 +++++++++++++++++-
+ 1 file changed, 161 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 10ac9efc662d..596471189176 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -5709,6 +5709,149 @@ btf_get_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
- 	return ctx_type;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+index 9eeb2d89cda8..67dddd941891 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
++++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
+@@ -3,6 +3,7 @@
+ 
+ #include <vmlinux.h>
+ #include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
+ #include "bpf_misc.h"
+ #include "xdp_metadata.h"
+ #include "bpf_kfuncs.h"
+@@ -138,25 +139,182 @@ __weak int subprog_ctx_tag(void *ctx __arg_ctx)
+ 	return bpf_get_stack(ctx, stack, sizeof(stack), 0);
  }
  
-+/* forward declarations for arch-specific underlying types of
-+ * bpf_user_pt_regs_t; this avoids the need for arch-specific #ifdef
-+ * compilation guards below for BPF_PROG_TYPE_PERF_EVENT checks, but still
-+ * works correctly with __builtin_types_compatible_p() on respective
-+ * architectures
-+ */
-+struct user_regs_struct;
-+struct user_pt_regs;
-+
-+static int btf_validate_prog_ctx_type(struct bpf_verifier_log *log, const struct btf *btf,
-+				      const struct btf_type *t, int arg,
-+				      enum bpf_prog_type prog_type,
-+				      enum bpf_attach_type attach_type)
++__weak int raw_tp_canonical(struct bpf_raw_tracepoint_args *ctx __arg_ctx)
 +{
-+	const struct btf_type *ctx_type;
-+	const char *tname, *ctx_tname;
-+
-+	if (!btf_is_ptr(t)) {
-+		bpf_log(log, "arg#%d type isn't a pointer\n", arg);
-+		return -EINVAL;
-+	}
-+	t = btf_type_by_id(btf, t->type);
-+
-+	/* KPROBE and PERF_EVENT programs allow bpf_user_pt_regs_t typedef */
-+	if (prog_type == BPF_PROG_TYPE_KPROBE || prog_type == BPF_PROG_TYPE_PERF_EVENT) {
-+		while (btf_type_is_modifier(t) && !btf_type_is_typedef(t))
-+			t = btf_type_by_id(btf, t->type);
-+
-+		if (btf_type_is_typedef(t)) {
-+			tname = btf_name_by_offset(btf, t->name_off);
-+			if (tname && strcmp(tname, "bpf_user_pt_regs_t") == 0)
-+				return 0;
-+		}
-+	}
-+
-+	/* all other program types don't use typedefs for context type */
-+	while (btf_type_is_modifier(t))
-+		t = btf_type_by_id(btf, t->type);
-+
-+	/* `void *ctx __arg_ctx` is always valid */
-+	if (btf_type_is_void(t))
-+		return 0;
-+
-+	tname = btf_name_by_offset(btf, t->name_off);
-+	if (str_is_empty(tname)) {
-+		bpf_log(log, "arg#%d type doesn't have a name\n", arg);
-+		return -EINVAL;
-+	}
-+
-+	/* special cases */
-+	switch (prog_type) {
-+	case BPF_PROG_TYPE_KPROBE:
-+		if (__btf_type_is_struct(t) && strcmp(tname, "pt_regs") == 0)
-+			return 0;
-+		break;
-+	case BPF_PROG_TYPE_PERF_EVENT:
-+		if (__builtin_types_compatible_p(bpf_user_pt_regs_t, struct pt_regs) &&
-+		    __btf_type_is_struct(t) && strcmp(tname, "pt_regs") == 0)
-+			return 0;
-+		if (__builtin_types_compatible_p(bpf_user_pt_regs_t, struct user_pt_regs) &&
-+		    __btf_type_is_struct(t) && strcmp(tname, "user_pt_regs") == 0)
-+			return 0;
-+		if (__builtin_types_compatible_p(bpf_user_pt_regs_t, struct user_regs_struct) &&
-+		    __btf_type_is_struct(t) && strcmp(tname, "user_regs_struct") == 0)
-+			return 0;
-+		break;
-+	case BPF_PROG_TYPE_RAW_TRACEPOINT:
-+	case BPF_PROG_TYPE_RAW_TRACEPOINT_WRITABLE:
-+		/* allow u64* as ctx */
-+		if (btf_is_int(t) && t->size == 8)
-+			return 0;
-+		break;
-+	case BPF_PROG_TYPE_TRACING:
-+		switch (attach_type) {
-+		case BPF_TRACE_RAW_TP:
-+			/* tp_btf program is TRACING, so need special case here */
-+			if (__btf_type_is_struct(t) &&
-+			    strcmp(tname, "bpf_raw_tracepoint_args") == 0)
-+				return 0;
-+			/* allow u64* as ctx */
-+			if (btf_is_int(t) && t->size == 8)
-+				return 0;
-+			break;
-+		case BPF_TRACE_ITER:
-+			/* allow struct bpf_iter__xxx types only */
-+			if (__btf_type_is_struct(t) &&
-+			    strncmp(tname, "bpf_iter__", sizeof("bpf_iter__") - 1) == 0)
-+				return 0;
-+			break;
-+		case BPF_TRACE_FENTRY:
-+		case BPF_TRACE_FEXIT:
-+		case BPF_MODIFY_RETURN:
-+			/* allow u64* as ctx */
-+			if (btf_is_int(t) && t->size == 8)
-+				return 0;
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	case BPF_PROG_TYPE_LSM:
-+	case BPF_PROG_TYPE_STRUCT_OPS:
-+		/* allow u64* as ctx */
-+		if (btf_is_int(t) && t->size == 8)
-+			return 0;
-+		break;
-+	case BPF_PROG_TYPE_TRACEPOINT:
-+	case BPF_PROG_TYPE_SYSCALL:
-+	case BPF_PROG_TYPE_EXT:
-+		return 0; /* anything goes */
-+	default:
-+		break;
-+	}
-+
-+	ctx_type = find_canonical_prog_ctx_type(prog_type);
-+	if (!ctx_type) {
-+		/* should not happen */
-+		bpf_log(log, "btf_vmlinux is malformed\n");
-+		return -EINVAL;
-+	}
-+
-+	/* resolve typedefs and check that underlying structs are matching as well */
-+	while (btf_type_is_modifier(ctx_type))
-+		ctx_type = btf_type_by_id(btf_vmlinux, ctx_type->type);
-+
-+	/* if program type doesn't have distinctly named struct type for
-+	 * context, then __arg_ctx argument can only be `void *`, which we
-+	 * already checked above
-+	 */
-+	if (!__btf_type_is_struct(ctx_type)) {
-+		bpf_log(log, "arg#%d should be void pointer\n", arg);
-+		return -EINVAL;
-+	}
-+
-+	ctx_tname = btf_name_by_offset(btf_vmlinux, ctx_type->name_off);
-+	if (!__btf_type_is_struct(t) || strcmp(ctx_tname, tname) != 0) {
-+		bpf_log(log, "arg#%d should be `struct %s *`\n", arg, ctx_tname);
-+		return -EINVAL;
-+	}
-+
 +	return 0;
 +}
 +
- static int btf_translate_to_vmlinux(struct bpf_verifier_log *log,
- 				     struct btf *btf,
- 				     const struct btf_type *t,
-@@ -6953,6 +7096,23 @@ int btf_prepare_func_args(struct bpf_verifier_env *env, int subprog)
- 		return -EINVAL;
- 	}
++__weak int raw_tp_u64_array(u64 *ctx __arg_ctx)
++{
++	return 0;
++}
++
+ SEC("?raw_tp")
+ __success __log_level(2)
+ int arg_tag_ctx_raw_tp(void *ctx)
+ {
+-	return subprog_ctx_tag(ctx);
++	return subprog_ctx_tag(ctx) + raw_tp_canonical(ctx) + raw_tp_u64_array(ctx);
++}
++
++SEC("?raw_tp.w")
++__success __log_level(2)
++int arg_tag_ctx_raw_tp_writable(void *ctx)
++{
++	return subprog_ctx_tag(ctx) + raw_tp_canonical(ctx) + raw_tp_u64_array(ctx);
++}
++
++SEC("?tp_btf/sys_enter")
++__success __log_level(2)
++int arg_tag_ctx_raw_tp_btf(void *ctx)
++{
++	return subprog_ctx_tag(ctx) + raw_tp_canonical(ctx) + raw_tp_u64_array(ctx);
++}
++
++struct whatever { };
++
++__weak int tp_whatever(struct whatever *ctx __arg_ctx)
++{
++	return 0;
+ }
  
-+	for (i = 0; i < nargs; i++) {
-+		const char *tag;
+ SEC("?tp")
+ __success __log_level(2)
+ int arg_tag_ctx_tp(void *ctx)
+ {
+-	return subprog_ctx_tag(ctx);
++	return subprog_ctx_tag(ctx) + tp_whatever(ctx);
++}
 +
-+		if (sub->args[i].arg_type != ARG_PTR_TO_CTX)
-+			continue;
++__weak int kprobe_subprog_pt_regs(struct pt_regs *ctx __arg_ctx)
++{
++	return 0;
++}
 +
-+		/* check if arg has "arg:ctx" tag */
-+		t = btf_type_by_id(btf, args[i].type);
-+		tag = btf_find_decl_tag_value(btf, fn_t, i, "arg:");
-+		if (IS_ERR_OR_NULL(tag) || strcmp(tag, "ctx") != 0)
-+			continue;
-+
-+		if (btf_validate_prog_ctx_type(log, btf, t, i, prog_type,
-+					       prog->expected_attach_type))
-+			return -EINVAL;
-+	}
-+
- 	sub->arg_cnt = nargs;
- 	sub->args_cached = true;
++__weak int kprobe_subprog_typedef(bpf_user_pt_regs_t *ctx __arg_ctx)
++{
++	return 0;
+ }
  
+ SEC("?kprobe")
+ __success __log_level(2)
+ int arg_tag_ctx_kprobe(void *ctx)
+ {
+-	return subprog_ctx_tag(ctx);
++	return subprog_ctx_tag(ctx) +
++	       kprobe_subprog_pt_regs(ctx) +
++	       kprobe_subprog_typedef(ctx);
++}
++
++__weak int perf_subprog_regs(
++#if defined(bpf_target_riscv)
++	struct user_regs_struct *ctx __arg_ctx
++#elif defined(bpf_target_s390)
++	/* user_pt_regs typedef is anonymous struct, so only `void *` works */
++	void *ctx __arg_ctx
++#elif defined(bpf_target_loongarch) || defined(bpf_target_arm64) || defined(bpf_target_powerpc)
++	struct user_pt_regs *ctx __arg_ctx
++#else
++	struct pt_regs *ctx __arg_ctx
++#endif
++)
++{
++	return 0;
++}
++
++__weak int perf_subprog_typedef(bpf_user_pt_regs_t *ctx __arg_ctx)
++{
++	return 0;
++}
++
++__weak int perf_subprog_canonical(struct bpf_perf_event_data *ctx __arg_ctx)
++{
++	return 0;
++}
++
++SEC("?perf_event")
++__success __log_level(2)
++int arg_tag_ctx_perf(void *ctx)
++{
++	return subprog_ctx_tag(ctx) +
++	       perf_subprog_regs(ctx) +
++	       perf_subprog_typedef(ctx) +
++	       perf_subprog_canonical(ctx);
++}
++
++__weak int iter_subprog_void(void *ctx __arg_ctx)
++{
++	return 0;
++}
++
++__weak int iter_subprog_typed(struct bpf_iter__task *ctx __arg_ctx)
++{
++	return 0;
++}
++
++SEC("?iter/task")
++__success __log_level(2)
++int arg_tag_ctx_iter_task(struct bpf_iter__task *ctx)
++{
++	return (iter_subprog_void(ctx) + iter_subprog_typed(ctx)) & 1;
++}
++
++__weak int tracing_subprog_void(void *ctx __arg_ctx)
++{
++	return 0;
++}
++
++__weak int tracing_subprog_u64(u64 *ctx __arg_ctx)
++{
++	return 0;
++}
++
++int acc;
++
++SEC("?fentry/" SYS_PREFIX "sys_nanosleep")
++__success __log_level(2)
++int BPF_PROG(arg_tag_ctx_fentry)
++{
++	acc += tracing_subprog_void(ctx) + tracing_subprog_u64(ctx);
++	return 0;
++}
++
++SEC("?fexit/" SYS_PREFIX "sys_nanosleep")
++__success __log_level(2)
++int BPF_PROG(arg_tag_ctx_fexit)
++{
++	acc += tracing_subprog_void(ctx) + tracing_subprog_u64(ctx);
++	return 0;
++}
++
++SEC("?fmod_ret/" SYS_PREFIX "sys_nanosleep")
++__success __log_level(2)
++int BPF_PROG(arg_tag_ctx_fmod_ret)
++{
++	return tracing_subprog_void(ctx) + tracing_subprog_u64(ctx);
++}
++
++SEC("?lsm/bpf")
++__success __log_level(2)
++int BPF_PROG(arg_tag_ctx_lsm)
++{
++	return tracing_subprog_void(ctx) + tracing_subprog_u64(ctx);
++}
++
++SEC("?struct_ops/test_1")
++__success __log_level(2)
++int BPF_PROG(arg_tag_ctx_struct_ops)
++{
++	return tracing_subprog_void(ctx) + tracing_subprog_u64(ctx);
++}
++
++SEC(".struct_ops")
++struct bpf_dummy_ops dummy_1 = {
++	.test_1 = (void *)arg_tag_ctx_struct_ops,
++};
++
++SEC("?syscall")
++__success __log_level(2)
++int arg_tag_ctx_syscall(void *ctx)
++{
++	return tracing_subprog_void(ctx) + tracing_subprog_u64(ctx) + tp_whatever(ctx);
+ }
+ 
+ __weak int subprog_dynptr(struct bpf_dynptr *dptr)
 -- 
 2.34.1
 
