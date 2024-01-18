@@ -1,153 +1,120 @@
-Return-Path: <bpf+bounces-19788-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19789-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B6783113C
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 03:05:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB2248311D2
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 04:31:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54ADA1F221F6
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 02:05:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 814931F22E6F
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 03:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DDE6FBC;
-	Thu, 18 Jan 2024 02:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E880D568B;
+	Thu, 18 Jan 2024 03:31:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CA2BaMyZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sAVH6m+g"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C1CC63A4;
-	Thu, 18 Jan 2024 02:04:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7434F8BF6
+	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 03:31:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705543490; cv=none; b=Pp3C35IDmnU+4Hm7N0Gs7LRYnL0083fCZWzyir902UJWuZgYoCHg4QNjDuf5ZR1H8iw9co5CqPFLLSFfV6HDYbX32ZoWonGvEmwnNsrF6iEkwS02z0iG5Sp84blmFNmA7HKWb8ZR5NV2GiOoUlAIiPnnsPMUvCPVq8NsKJllLcA=
+	t=1705548706; cv=none; b=r5bnKnED22SCspeaESZUaR3oRuJE/zJ3VbHpXXPpYS82sbojT/9kZGWE5e/MUSSDX7ptBG7dcSA4eDdVdVg2SMMm9eTOgX6yQ8aQPvz00OPKOhr4ohmw6JZo6EAL9EoIZ6PTUJDuxLzmLWWDKEdX5czZinJex2iXpI+BfnxVB78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705543490; c=relaxed/simple;
-	bh=XNIIq6PjrrNjsY11XjebC3Pu5vgGDdfjY33hybEPFtg=;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding; b=Ju+hV3UNZmUEJVwV5v/RHPlhofwxccCrTGm8jQpwhsZSwv+RAI1kabVH+qbO53LljmdYrORsGH+02r32QjPElj/CClGfAzbPgtGoW+gEylhXQwW89PnFuDCTLPt81Bz8OOZ+v3I9dGEne+bIVLKBZ9GrcRvy1K+Pcs3DHg4Lpfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CA2BaMyZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49848C433C7;
-	Thu, 18 Jan 2024 02:04:48 +0000 (UTC)
+	s=arc-20240116; t=1705548706; c=relaxed/simple;
+	bh=Whd5HwRE8+EM2XMmERpO8hZ3is2G08egySHuKIBswd4=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-Id:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding; b=RuGTP1nAcPrjDH67euDkTd3e3SZyzQQ8htJdFxFNCBkPDcLJSxpD8ZLfpEat1x0leVyze38GyX68OPbWBVZv+j0RzshrmRtTIPa0Y02vK1J9CD3FO7lFtfn7S/sZaiQIsJ3WXe/zqpmQ9Pyki73fx89nHy49FaccJAQ2a8nJEPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sAVH6m+g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA96C433C7;
+	Thu, 18 Jan 2024 03:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705543490;
-	bh=XNIIq6PjrrNjsY11XjebC3Pu5vgGDdfjY33hybEPFtg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CA2BaMyZWcW//E9N/pitv8U2ATbyOQ6mwGVGbU1UaoUJcalwYQ8hRBXOeaj2VOgGX
-	 reHmCT4l43M/VGtp27rrYVb87W4ytKRwRPD/3iaAyKUdRWeWMPhjddkUVtuvAfwUng
-	 DcmYuKzBobzzJ7idQt/1znlTC2MygQzs42bxM7nEw/5MaPQCMaQp/Lry1IEFUa6BOL
-	 Yvox0R04NYH+uIhntcSyNs6/9wTFsmQ9iRHhOYsgoYcBOCXtFhHiTj9d3Pgnl3uV71
-	 3+ArXQW6A5Q8cNjEgJJolGs8QflwpGP7wDwZQb+bsZkx8SnLypuGwIlHmsq34CQb6B
-	 KLcmzmLOKAKqg==
-Date: Wed, 17 Jan 2024 18:04:47 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>, "David S. Miller"
- <davem@davemloft.net>, Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann
- <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>, Frederic
- Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>, Paolo
- Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>, Will
- Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Cong Wang <xiyou.wangcong@gmail.com>, Hao Luo
- <haoluo@google.com>, Jamal Hadi Salim <jhs@mojatatu.com>, Jesper Dangaard
- Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Jiri Pirko
- <jiri@resnulli.us>, John Fastabend <john.fastabend@gmail.com>, KP Singh
- <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Ronak Doshi
- <doshir@vmware.com>, Song Liu <song@kernel.org>, Stanislav Fomichev
- <sdf@google.com>, VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next 15/24] net: Use nested-BH locking for XDP
- redirect.
-Message-ID: <20240117180447.2512335b@kernel.org>
-In-Reply-To: <87ttnb6hme.fsf@toke.dk>
-References: <20231215171020.687342-1-bigeasy@linutronix.de>
-	<20231215171020.687342-16-bigeasy@linutronix.de>
-	<CAADnVQKJBpvfyvmgM29FLv+KpLwBBRggXWzwKzaCT9U-4bgxjA@mail.gmail.com>
-	<87r0iw524h.fsf@toke.dk>
-	<20240112174138.tMmUs11o@linutronix.de>
-	<87ttnb6hme.fsf@toke.dk>
+	s=k20201202; t=1705548705;
+	bh=Whd5HwRE8+EM2XMmERpO8hZ3is2G08egySHuKIBswd4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sAVH6m+gQ9u/0uN1KwTqP1n5FVh0LY01RKpFaX0Rbe2A2s0XObxx38YgxTA61MltH
+	 n+Oaelw7M2bzyRBcVKxAcPLSqbvkxvPP3vZ/yM6vjfBfZf+hArVaG97wxFxiOdrgXB
+	 fj1Q2zQXQS496RyPPaKkpIfCUWfb1PGgeyDmCSNZYt+WTSQEQf2zieeEc+9xjEwvHz
+	 R4YmlinCvFEmfZBAPkvjuow3KUvuQ66hMz6gCvtv62gnwO/rjDce2qbEntaQ6MK7AJ
+	 Qw+n/7SrvDaFy2QM4+Vx31DNl7dZuePZQ+ht/lD9eoZhuqxMajfkRhah29sNdsfRw+
+	 JcWZTUREiE/aQ==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: andrii@kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH v3 bpf 0/5] Tighten up arg:ctx type enforcement
+Date: Wed, 17 Jan 2024 19:31:38 -0800
+Message-Id: <20240118033143.3384355-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, 17 Jan 2024 17:37:29 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> I am not contesting that latency is important, but it's a pretty
-> fundamental trade-off and we don't want to kill throughput entirely
-> either. Especially since this is global to the whole kernel; and there
-> are definitely people who want to use XDP on an RT kernel and still
-> achieve high PPS rates.
->=20
-> (Whether those people really strictly speaking need to be running an RT
-> kernel is maybe debatable, but it does happen).
->=20
-> > I expected the lock operation (under RT) to always succeeds and not
-> > cause any delay because it should not be contended. =20
->=20
-> A lock does cause delay even when it's not contended. Bear in mind that
-> at 10 Gbps line rate, we have a budget of 64 nanoseconds to process each
-> packet (for 64-byte packets). So just the atomic op to figure out
-> whether there's any contention (around 10ns on the Intel processors I
-> usually test on) will blow a huge chunk of the total processing budget.
-> We can't actually do the full processing needed in those 64 nanoseconds
-> (not to mention the 6.4 nanoseconds we have available at 100Gbps), which
-> is why it's essential to amortise as much as we can over multiple
-> packets.
->=20
-> This is all back-of-the-envelope calculations, of course. Having some
-> actual numbers to look at would be great; I don't suppose you have a
-> setup where you can run xdp-bench and see how your patches affect the
-> throughput?
+Follow up fixes for kernel-side and libbpf-side logic around handling arg:ctx
+(__arg_ctx) tagged arguments of BPF global subprogs.
 
-A potentially stupid idea which I have been turning in my head is=20
-how we could get away from having the driver handle details of NAPI
-budgeting. It's an source of bugs and endless review comments.
+Patch #1 adds libbpf feature detection of kernel-side __arg_ctx support to
+avoid unnecessary rewriting BTF types. With stricter kernel-side type
+enforcement this is now mandatory to avoid problems with using `struct
+bpf_user_pt_regs_t` instead of actual typedef. For __arg_ctx tagged arguments
+verifier is now supporting either `bpf_user_pt_regs_t` typedef or resolves it
+down to the actual struct (pt_regs/user_pt_regs/user_regs_struct), depending
+on architecture), but for old kernels without __arg_ctx support it's more
+backwards compatible for libbpf to use `struct bpf_user_pt_regs_t` rewrite
+which will work on wider range of kernels. So feature detection prevent libbpf
+accidentally breaking global subprogs on new kernels.
 
-All drivers end up maintaining a counter of "how many packets have
-I processed" and comparing that against the budget. Would it be crazy
-if we put that inside napi_struct? Add a "budget" member inside
-napi_struct as well, and:
+We also adjust selftests to do similar feature detection (much simpler, but
+potentially breaking due to kernel source code refactoring, which is fine for
+selftests), and skip tests expecting libbpf's BTF type rewrites.
 
-struct napi_struct {
-...
-	// poll state
-	unsigned int budget;
-	unsigned int rx_used;
-...
-}
+Patch #2 is preparatory refactoring for patch #3 which adds type enforcement
+for arg:ctx tagged global subprog args. See the patch for specifics.
 
-static inline bool napi_rx_has_budget(napi)
-{
-	return napi->budget > napi->rx_used;
-}
+Patch #4 adds many new cases to ensure type logic works as expected.
 
-poll(napi) // no budget
-{
-	while (napi_rx_has_budget(napi)) {
-		napi_gro_receive(napi, skb); /* does napi->rx_used++ */
-		// maybe add explicit napi_rx_count() if
-		// driver did something funny with the frame.
-	}
-}
+Finally, patch #5 adds a relevant subset of kernel-side type checks to
+__arg_ctx cases that libbpf supports rewrite of. In libbpf's case, type
+violations are reported as warnings and BTF rewrite is not performed, which
+will eventually lead to BPF verifier complaining at program verification time.
 
-We can also create napi_tx_has_budget() so that people stop being
-confused whether budget is for Tx or not. And napi_xdp_comp_has_budget()
-so that people stop completing XDP in hard irq context (budget=3D=3D0)...
+Good care was taken to avoid conflicts between bpf and bpf-next tree (which
+has few follow up refactorings in the same code area). Once trees converge
+some of the code will be moved around a bit (and some will be deleted), but
+with no change to functionality or general shape of the code.
 
-And we can pass napi into napi_consume_skb(), instead of, presumably
-inexplicably to a newcomer, passing in budget.
-And napi_complete_done() can lose the work_done argument, too.
+v2->v3:
+  - support `bpf_user_pt_regs_t` typedef for KPROBE and PERF_EVENT (CI);
+v1->v2:
+  - add user_pt_regs and user_regs_struct support for PERF_EVENT (CI);
+  - drop FEAT_ARG_CTX_TAG enum leftover from patch #1;
+  - fix warning about default: without break in the switch (CI).
 
-Oh, and I'm bringing it up here, because CONFIG_RT can throw
-in "need_resched()" into the napi_rx_has_budget(), obviously.
+Andrii Nakryiko (5):
+  libbpf: feature-detect arg:ctx tag support in kernel
+  bpf: extract bpf_ctx_convert_map logic and make it more reusable
+  bpf: enforce types for __arg_ctx-tagged arguments in global subprogs
+  selftests/bpf: add tests confirming type logic in kernel for __arg_ctx
+  libbpf: warn on unexpected __arg_ctx type when rewriting BTF
+
+ include/linux/btf.h                           |   2 +-
+ kernel/bpf/btf.c                              | 231 ++++++++++++++++--
+ tools/lib/bpf/libbpf.c                        | 142 ++++++++++-
+ .../bpf/prog_tests/test_global_funcs.c        |  13 +
+ .../bpf/progs/verifier_global_subprogs.c      | 164 ++++++++++++-
+ 5 files changed, 513 insertions(+), 39 deletions(-)
+
+-- 
+2.34.1
+
 
