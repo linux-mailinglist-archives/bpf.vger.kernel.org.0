@@ -1,403 +1,258 @@
-Return-Path: <bpf+bounces-19840-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19841-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2DE9832142
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 23:01:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB92783217C
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 23:18:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03886B25A31
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 22:01:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D79191C23325
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 22:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4AA31A6B;
-	Thu, 18 Jan 2024 22:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B72631A9A;
+	Thu, 18 Jan 2024 22:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TuL8k02S"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aEhD5/h/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4B92E85F;
-	Thu, 18 Jan 2024 22:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949321E486
+	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 22:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705615278; cv=none; b=o080EOQXUGt1r8QsLpOyUUXSSKlkGhWfldo+n1FDyoapa9i/eM64FctftNXhvU6vAR/098YD8Cpp8jkpHx6XneIKtw01yEZqPiaZUQyXwYdsbKiH4JIzWtQtyk1CEpWpG8a3wrh4kpQEle7nKApLEmJYi428Du6MOA5lkg+qI8Y=
+	t=1705616328; cv=none; b=dv8DyLwJw57XklEHF7wRz2NekIJppjWt0N9Ga8qb5BCMbxEUFkwa3F3r9B3+KLrtCfIJ7ckmT6oVGSjDslTyH5L1+ioiSHqHJfZ5NQJAhVjdqQLs7Keinod/L+sUlKtJsdwspZU9R4nm8h+jMkEDX+1AEdI984/BKrJQSyCbdTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705615278; c=relaxed/simple;
-	bh=Efm+PXJ7N7sLa7pTKfa3U4klPY4k63z8iTuAYJQsFRk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lpDTr6UYeDYLuxmuhoXBzhiDX4tqrRGjSjyC/0CcoHsqgOg+v8sWPJak8x99GauwEVAd8wBp8piDiMA8mbbTlPEJgKsMvpCbt1YxAX8R8wZBJhYeG5kT8NCWRZdsbVxDC5uXfhuf8TXT+9xN9cxyYcGND8iT3IZy7nCo69yrMN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TuL8k02S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAF6AC433F1;
-	Thu, 18 Jan 2024 22:01:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705615278;
-	bh=Efm+PXJ7N7sLa7pTKfa3U4klPY4k63z8iTuAYJQsFRk=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TuL8k02S+rhHlOBqjRv0Smavss9EBk3xoM4T/tR2ORZvxXEhLahbpQ/dmGul9PWrq
-	 A9RdD2Z1J6BgiVqvTnRZurwFUT0p+OlEk2OJCQ14WJiP3naQpyi8HSLWVohkplLmb0
-	 v/O3d3YhWOHlTHgf2wgf8zYm2fyGK4bA7IiHIYsNCdJ/PVSi3AS+QF9zc5sJfzT3jp
-	 kNGy+Tb9AfAmD/cnsgRHPwl13/DE9hrMX1N1qyRienua8B33vCkeXeHRJsWHZirCFa
-	 flaZ7mjACUh0377u6gOTtZmBvU1lYF4k/RxUYBbsiWNyyrj4DcTuFz/JfSizGD0cUc
-	 BvFvE3ZMkVQBg==
-From: Jakub Kicinski <kuba@kernel.org>
-To: torvalds@linux-foundation.org
-Cc: kuba@kernel.org,
-	davem@davemloft.net,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	pabeni@redhat.com,
-	bpf@vger.kernel.org
-Subject: [GIT PULL] Networking for v6.8-rc1
-Date: Thu, 18 Jan 2024 14:01:16 -0800
-Message-ID: <20240118220116.2146136-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705616328; c=relaxed/simple;
+	bh=LtW60o0CKU7omMQRvIvfuZKyGKb/8C4/OhOsOxVUymI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CPCzc57JExumlVyatQl7Z9GkN+crMnpKDHK6kN7B4v8SBmjsLlrocG+bD997FX2u82RjOyZTQiI9ybFhLg+6kn+jow0q5m/NoBRtxLS/mGqCSk2+kNgpwDeGyqehFHuCkKLP3SFdPW5LX4lJzK5TXSI/IOj4G6xwzVqN0Rg9QsQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aEhD5/h/; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a0a382b1-467c-4c28-8882-8f523826178a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705616324;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ewxitrZLdDVnRn2s9kIpEbtOn1d9bIYWsnLT4JYtrXQ=;
+	b=aEhD5/h/fc91n4nGMubMmEesfEM+m6srAxSmDsgUS8R0cstYqLAv/ZZ1ZtjLazhxrFnGrf
+	dAzMXHLhS8knVZamRylS22n7ZZcd189472asK9odau2MGA8sANortD0soVjEuY7baJGqlf
+	nGqvFaES8gFzuvQYBAE2z26BTNn57XE=
+Date: Thu, 18 Jan 2024 14:18:37 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v16 09/14] bpf: hold module refcnt in
+ bpf_struct_ops map creation and prog verification.
+Content-Language: en-US
+To: thinker.li@gmail.com
+Cc: sinquersw@gmail.com, kuifeng@meta.com, bpf@vger.kernel.org,
+ ast@kernel.org, song@kernel.org, kernel-team@meta.com, andrii@kernel.org,
+ drosen@google.com
+References: <20240118014930.1992551-1-thinker.li@gmail.com>
+ <20240118014930.1992551-10-thinker.li@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <20240118014930.1992551-10-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+
+On 1/17/24 5:49 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
+> 
+> To ensure that a module remains accessible whenever a struct_ops object of
+> a struct_ops type provided by the module is still in use.
+> 
+> struct bpf_struct_ops_map doesn't hold a refcnt to btf anymore since a
+> module will hold a refcnt to it's btf already. But, struct_ops programs are
+> different. They hold their associated btf, not the module since they need
+> only btf to assure their types (signatures).
+> 
+> However, verifier holds the refcnt of the associated module of a struct_ops
+> type temporarily when verify a struct_ops prog. Verifier needs the help
+> from the verifier operators (struct bpf_verifier_ops) provided by the owner
+> module to verify data access of a prog, provide information, and generate
+> code.
+> 
+> This patch also add a count of links (links_cnt) to bpf_struct_ops_map. It
+> avoids bpf_struct_ops_map_put_progs() from accessing btf after calling
+> module_put() in bpf_struct_ops_map_free().
+
+Good catch in v16.
+
+> 
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   include/linux/bpf.h          |  1 +
+>   include/linux/bpf_verifier.h |  1 +
+>   kernel/bpf/bpf_struct_ops.c  | 31 +++++++++++++++++++++++++------
+>   kernel/bpf/verifier.c        | 10 ++++++++++
+>   4 files changed, 37 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+> index 3d1c1014fdb2..a977ed75288c 100644
+> --- a/include/linux/bpf.h
+> +++ b/include/linux/bpf.h
+> @@ -1674,6 +1674,7 @@ struct bpf_struct_ops {
+>   	int (*update)(void *kdata, void *old_kdata);
+>   	int (*validate)(void *kdata);
+>   	void *cfi_stubs;
+> +	struct module *owner;
+>   	const char *name;
+>   	struct btf_func_model func_models[BPF_STRUCT_OPS_MAX_NR_MEMBERS];
+>   };
+> diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+> index d07d857ca67f..e6cf025c9446 100644
+> --- a/include/linux/bpf_verifier.h
+> +++ b/include/linux/bpf_verifier.h
+> @@ -662,6 +662,7 @@ struct bpf_verifier_env {
+>   	u32 prev_insn_idx;
+>   	struct bpf_prog *prog;		/* eBPF program being verified */
+>   	const struct bpf_verifier_ops *ops;
+> +	struct module *attach_btf_mod;	/* The owner module of prog->aux->attach_btf */
+>   	struct bpf_verifier_stack_elem *head; /* stack of verifier states to be processed */
+>   	int stack_size;			/* number of states to be processed */
+>   	bool strict_alignment;		/* perform strict pointer alignment checks */
+> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+> index 3b8d689ece5d..61486f6595ea 100644
+> --- a/kernel/bpf/bpf_struct_ops.c
+> +++ b/kernel/bpf/bpf_struct_ops.c
+> @@ -40,6 +40,7 @@ struct bpf_struct_ops_map {
+>   	 * (in kvalue.data).
+>   	 */
+>   	struct bpf_link **links;
+> +	u32 links_cnt;
+>   	/* image is a page that has all the trampolines
+>   	 * that stores the func args before calling the bpf_prog.
+>   	 * A PAGE_SIZE "image" is enough to store all trampoline for
+> @@ -306,10 +307,9 @@ static void *bpf_struct_ops_map_lookup_elem(struct bpf_map *map, void *key)
+>   
+>   static void bpf_struct_ops_map_put_progs(struct bpf_struct_ops_map *st_map)
+>   {
+> -	const struct btf_type *t = st_map->st_ops_desc->type;
+>   	u32 i;
+>   
+> -	for (i = 0; i < btf_type_vlen(t); i++) {
+> +	for (i = 0; i < st_map->links_cnt; i++) {
+>   		if (st_map->links[i]) {
+>   			bpf_link_put(st_map->links[i]);
+>   			st_map->links[i] = NULL;
+> @@ -641,12 +641,20 @@ static void __bpf_struct_ops_map_free(struct bpf_map *map)
+>   		bpf_jit_uncharge_modmem(PAGE_SIZE);
+>   	}
+>   	bpf_map_area_free(st_map->uvalue);
+> -	btf_put(st_map->btf);
+>   	bpf_map_area_free(st_map);
+>   }
+>   
+>   static void bpf_struct_ops_map_free(struct bpf_map *map)
+>   {
+> +	struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
+> +
+> +	/* st_ops->owner was acquired during map_alloc to implicitly holds
+> +	 * the btf's refcnt. The acquire was only done when btf_is_module()
+> +	 * st_map->btf cannot be NULL here.
+> +	 */
+> +	if (btf_is_module(st_map->btf))
+> +		module_put(st_map->st_ops_desc->st_ops->owner);
+> +
+>   	/* The struct_ops's function may switch to another struct_ops.
+>   	 *
+>   	 * For example, bpf_tcp_cc_x->init() may switch to
+> @@ -682,6 +690,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   	size_t st_map_size;
+>   	struct bpf_struct_ops_map *st_map;
+>   	const struct btf_type *t, *vt;
+> +	struct module *mod = NULL;
+>   	struct bpf_map *map;
+>   	struct btf *btf;
+>   	int ret;
+> @@ -695,11 +704,20 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   			btf_put(btf);
+>   			return ERR_PTR(-EINVAL);
+>   		}
+> +
+> +		mod = btf_try_get_module(btf);
+
+nit. btf_put(btf) here.
+
+> +		if (!mod) {
+> +			btf_put(btf);
+> +			return ERR_PTR(-EINVAL);
+> +		}
+> +		/* mod holds a refcnt to btf. We don't need an extra refcnt
+> +		 * here.
+> +		 */
+> +		btf_put(btf);
+>   	} else {
+>   		btf = bpf_get_btf_vmlinux();
+>   		if (IS_ERR(btf))
+>   			return ERR_CAST(btf);
+> -		btf_get(btf);
+>   	}
+>   
+>   	st_ops_desc = bpf_struct_ops_find_value(btf, attr->btf_vmlinux_value_type_id);
+> @@ -746,8 +764,9 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   		goto errout_free;
+>   	}
+>   	st_map->uvalue = bpf_map_area_alloc(vt->size, NUMA_NO_NODE);
+> +	st_map->links_cnt = btf_type_vlen(t);
+>   	st_map->links =
+> -		bpf_map_area_alloc(btf_type_vlen(t) * sizeof(struct bpf_links *),
+> +		bpf_map_area_alloc(st_map->links_cnt * sizeof(struct bpf_links *),
+>   				   NUMA_NO_NODE);
+>   	if (!st_map->uvalue || !st_map->links) {
+>   		ret = -ENOMEM;
+> @@ -763,7 +782,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+>   errout_free:
+>   	__bpf_struct_ops_map_free(map);
+>   errout:
+> -	btf_put(btf);
+> +	module_put(mod);
+>   
+>   	return ERR_PTR(ret);
+>   }
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index ff41f7736618..60f08f468399 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -20243,6 +20243,14 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
+>   	}
+>   
+>   	btf = prog->aux->attach_btf ?: bpf_get_btf_vmlinux();
+> +	if (btf_is_module(btf)) {
+> +		/* Make sure st_ops is valid through the lifetime of env */
+> +		env->attach_btf_mod = btf_try_get_module(btf);
+> +		if (!env->attach_btf_mod) {
+> +			verbose(env, "owner module of btf is not found\n");
+
+nit. A better message, something like:
+
+			verbose(env, "struct_ops module %s is not found\n",
+				btf_get_name(btf));
+
+> +			return -ENOTSUPP;
+> +		}
+> +	}
+>   
+>   	btf_id = prog->aux->attach_btf_id;
+>   	st_ops_desc = bpf_struct_ops_find(btf, btf_id);
+> @@ -20968,6 +20976,8 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
+>   		env->prog->expected_attach_type = 0;
+>   
+>   	*prog = env->prog;
+> +
+> +	module_put(env->attach_btf_mod);
+>   err_unlock:
+>   	if (!is_priv)
+>   		mutex_unlock(&bpf_verifier_lock);
 
-Hi Linus!
-
-The following changes since commit 3e7aeb78ab01c2c2f0e1f784e5ddec88fcd3d106:
-
-  Merge tag 'net-next-6.8' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next (2024-01-11 10:07:29 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.8-rc1
-
-for you to fetch changes up to 925781a471d8156011e8f8c1baf61bbe020dac55:
-
-  Merge tag 'nf-24-01-18' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf (2024-01-18 12:45:05 -0800)
-
-----------------------------------------------------------------
-Including fixes from bpf and netfilter.
-
-Previous releases - regressions:
-
- - Revert "net: rtnetlink: Enslave device before bringing it up",
-   breaks the case inverse to the one it was trying to fix
-
- - net: dsa: fix oob access in DSA's netdevice event handler
-   dereference netdev_priv() before check its a DSA port
-
- - sched: track device in tcf_block_get/put_ext() only for clsact
-   binder types
-
- - net: tls, fix WARNING in __sk_msg_free when record becomes full
-   during splice and MORE hint set
-
- - sfp-bus: fix SFP mode detect from bitrate
-
- - drv: stmmac: prevent DSA tags from breaking COE
-
-Previous releases - always broken:
-
- - bpf: fix no forward progress in in bpf_iter_udp if output
-   buffer is too small
-
- - bpf: reject variable offset alu on registers with a type
-   of PTR_TO_FLOW_KEYS to prevent oob access
-
- - netfilter: tighten input validation
-
- - net: add more sanity check in virtio_net_hdr_to_skb()
-
- - rxrpc: fix use of Don't Fragment flag on RESPONSE packets,
-   avoid infinite loop
-
- - amt: do not use the portion of skb->cb area which may get clobbered
-
- - mptcp: improve validation of the MPTCPOPT_MP_JOIN MCTCP option
-
-Misc:
-
- - spring cleanup of inactive maintainers
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Alexei Starovoitov (2):
-      Merge branch 'bpf-fix-backward-progress-bug-in-bpf_iter_udp'
-      Merge branch 'tighten-up-arg-ctx-type-enforcement'
-
-Amit Cohen (3):
-      mlxsw: spectrum_acl_erp: Fix error flow of pool allocation failure
-      selftests: mlxsw: qos_pfc: Remove wrong description
-      selftests: mlxsw: qos_pfc: Adjust the test to support 8 lanes
-
-Andrii Nakryiko (5):
-      libbpf: feature-detect arg:ctx tag support in kernel
-      bpf: extract bpf_ctx_convert_map logic and make it more reusable
-      bpf: enforce types for __arg_ctx-tagged arguments in global subprogs
-      selftests/bpf: add tests confirming type logic in kernel for __arg_ctx
-      libbpf: warn on unexpected __arg_ctx type when rewriting BTF
-
-Arnd Bergmann (1):
-      wangxunx: select CONFIG_PHYLINK where needed
-
-Benjamin Poirier (3):
-      selftests: bonding: Change script interpreter
-      selftests: forwarding: Remove executable bits from lib.sh
-      selftests: bonding: Add more missing config options
-
-Breno Leitao (6):
-      net: fill in MODULE_DESCRIPTION()s for SLIP
-      net: fill in MODULE_DESCRIPTION()s for HSR
-      net: fill in MODULE_DESCRIPTION()s for NFC
-      net: fill in MODULE_DESCRIPTION()s for Sun RPC
-      net: fill in MODULE_DESCRIPTION()s for ds26522 module
-      net: fill in MODULE_DESCRIPTION()s for s2io
-
-Claudiu Beznea (1):
-      net: phy: micrel: populate .soft_reset for KSZ9131
-
-David Howells (1):
-      rxrpc: Fix use of Don't Fragment flag
-
-David S. Miller (1):
-      Merge branch 'tls-splice-hint-fixes'
-
-Dmitry Antipov (1):
-      net: liquidio: fix clang-specific W=1 build warnings
-
-Dmitry Safonov (1):
-      selftests/net/tcp-ao: Use LDLIBS instead of LDFLAGS
-
-Eric Dumazet (7):
-      mptcp: mptcp_parse_option() fix for MPTCPOPT_MP_JOIN
-      mptcp: strict validation before using mp_opt->hmac
-      mptcp: use OPTION_MPTCP_MPJ_SYNACK in subflow_finish_connect()
-      mptcp: use OPTION_MPTCP_MPJ_SYN in subflow_check_req()
-      mptcp: refine opt_mp_capable determination
-      udp: annotate data-races around up->pending
-      net: add more sanity check in virtio_net_hdr_to_skb()
-
-Fedor Pchelkin (1):
-      ipvs: avoid stat macros calls from preemptible context
-
-Hao Sun (2):
-      bpf: Reject variable offset alu on PTR_TO_FLOW_KEYS
-      selftests/bpf: Add test for alu on PTR_TO_FLOW_KEYS
-
-Horatiu Vultur (1):
-      net: micrel: Fix PTP frame parsing for lan8841
-
-Ido Schimmel (2):
-      mlxsw: spectrum_acl_tcam: Fix NULL pointer dereference in error path
-      mlxsw: spectrum_acl_tcam: Fix stack corruption
-
-Jakub Kicinski (20):
-      Merge branch 'fix-module_description-for-net-p1'
-      MAINTAINERS: eth: mtk: move John to CREDITS
-      MAINTAINERS: eth: mt7530: move Landen Chao to CREDITS
-      MAINTAINERS: eth: mvneta: move Thomas to CREDITS
-      MAINTAINERS: eth: mark Cavium liquidio as an Orphan
-      MAINTAINERS: Bluetooth: retire Johan (for now?)
-      MAINTAINERS: mark ax25 as Orphan
-      MAINTAINERS: ibmvnic: drop Dany from reviewers
-      Merge branch 'rtnetlink-allow-to-enslave-with-one-msg-an-up-interface'
-      Merge branch 'net-ethernet-ti-am65-cpsw-allow-for-mtu-values'
-      net: fill in MODULE_DESCRIPTION()s for wx_lib
-      Merge branch 'mptcp-better-validation-of-mptcpopt_mp_join-option'
-      selftests: netdevsim: sprinkle more udevadm settle
-      selftests: netdevsim: correct expected FEC strings
-      selftests: bonding: add missing build configs
-      net: netdevsim: don't try to destroy PHC on VFs
-      selftests: netdevsim: add a config file
-      Merge branch 'mlxsw-miscellaneous-fixes'
-      Merge tag 'for-netdev' of https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-      Merge tag 'nf-24-01-18' of git://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf
-
-Jiri Pirko (1):
-      net: sched: track device in tcf_block_get/put_ext() only for clsact binder types
-
-John Fastabend (2):
-      net: tls, fix WARNIING in __sk_msg_free
-      net: tls, add test to capture error on large splice
-
-Kunwu Chan (1):
-      net: dsa: vsc73xx: Add null pointer check to vsc73xx_gpio_probe
-
-Lin Ma (1):
-      net: qualcomm: rmnet: fix global oob in rmnet_policy
-
-Ludvig Pärsson (1):
-      ethtool: netlink: Add missing ethnl_ops_begin/complete
-
-Marc Kleine-Budde (1):
-      net: netdev_queue: netdev_txq_completed_mb(): fix wake condition
-
-Marcin Wojtas (1):
-      MAINTAINERS: eth: mvneta: update entry
-
-Martin KaFai Lau (3):
-      bpf: iter_udp: Retry with a larger batch size without going back to the previous bucket
-      bpf: Avoid iter->offset making backward progress in bpf_iter_udp
-      selftests/bpf: Test udp and tcp iter batching
-
-Nicolas Dichtel (3):
-      Revert "net: rtnetlink: Enslave device before bringing it up"
-      selftests: rtnetlink: check enslaving iface in a bond
-      selftests: rtnetlink: use setup_ns in bonding test
-
-Nikita Yushchenko (1):
-      net: ravb: Fix dma_addr_t truncation in error case
-
-Nikita Zhandarovich (1):
-      ipv6: mcast: fix data-race in ipv6_mc_down / mld_ifc_work
-
-Nithin Dabilpuram (1):
-      octeontx2-af: CN10KB: Fix FIFO length calculation for RPM2
-
-Pablo Neira Ayuso (8):
-      netfilter: nf_tables: reject invalid set policy
-      netfilter: nf_tables: validate .maxattr at expression registration
-      netfilter: nf_tables: bail out if stateful expression provides no .clone
-      netfilter: nft_limit: do not ignore unsupported flags
-      netfilter: nf_tables: check if catch-all set element is active in next generation
-      netfilter: nf_tables: do not allow mismatch field size and set key length
-      netfilter: nf_tables: skip dead set elements in netlink dump
-      netfilter: nf_tables: reject NFT_SET_CONCAT with not field length description
-
-Paolo Abeni (2):
-      Merge branch 'selftests-net-small-fixes'
-      mptcp: relax check on MPC passive fallback
-
-Pavel Tikhomirov (4):
-      netfilter: nfnetlink_log: use proper helper for fetching physinif
-      netfilter: nf_queue: remove excess nf_bridge variable
-      netfilter: propagate net to nf_bridge_get_physindev
-      netfilter: bridge: replace physindev with physinif in nf_bridge_info
-
-Petr Machata (1):
-      mlxsw: spectrum_router: Register netdevice notifier before nexthop
-
-Qiang Ma (1):
-      net: stmmac: ethtool: Fixed calltrace caused by unbalanced disable_irq_wake calls
-
-Romain Gantois (1):
-      net: stmmac: Prevent DSA tags from breaking COE
-
-Russell King (Oracle) (1):
-      net: sfp-bus: fix SFP mode detect from bitrate
-
-Sanjuán García, Jorge (1):
-      net: ethernet: ti: am65-cpsw: Fix max mtu to fit ethernet frames
-
-Sneh Shah (1):
-      net: stmmac: Fix ethool link settings ops for integrated PCS
-
-Taehee Yoo (1):
-      amt: do not use overwrapped cb area
-
-Tony Nguyen (1):
-      i40e: Include types.h to some headers
-
-Vladimir Oltean (1):
-      net: dsa: fix netdev_priv() dereference before check on non-DSA netdevice events
-
-Zhu Yanjun (1):
-      virtio_net: Fix "‘%d’ directive writing between 1 and 11 bytes into a region of size 10" warnings
-
- CREDITS                                            |  17 ++
- MAINTAINERS                                        |  16 +-
- drivers/net/amt.c                                  |   6 +-
- drivers/net/dsa/vitesse-vsc73xx-core.c             |   2 +
- .../ethernet/cavium/liquidio/cn23xx_pf_device.c    |   2 +-
- .../ethernet/cavium/liquidio/cn23xx_vf_device.c    |   2 +-
- .../net/ethernet/cavium/liquidio/octeon_mailbox.h  |   5 +-
- drivers/net/ethernet/intel/i40e/i40e_adminq_cmd.h  |   1 +
- drivers/net/ethernet/intel/i40e/i40e_diag.h        |   1 +
- drivers/net/ethernet/marvell/octeontx2/af/rpm.c    |   7 +-
- .../net/ethernet/mellanox/mlxsw/spectrum_acl_erp.c |   8 +-
- .../ethernet/mellanox/mlxsw/spectrum_acl_tcam.c    |   6 +-
- .../net/ethernet/mellanox/mlxsw/spectrum_router.c  |  24 +--
- drivers/net/ethernet/neterion/s2io.c               |   1 +
- drivers/net/ethernet/qualcomm/rmnet/rmnet_config.c |   2 +-
- drivers/net/ethernet/renesas/ravb_main.c           |   2 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac.h       |   1 +
- .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c   |  20 +-
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  33 ++-
- drivers/net/ethernet/ti/am65-cpsw-nuss.c           |   5 +-
- drivers/net/ethernet/wangxun/Kconfig               |   2 +-
- drivers/net/ethernet/wangxun/libwx/wx_lib.c        |   1 +
- drivers/net/netdevsim/netdev.c                     |   9 +-
- drivers/net/phy/micrel.c                           |   9 +
- drivers/net/phy/sfp-bus.c                          |   8 +-
- drivers/net/slip/slhc.c                            |   1 +
- drivers/net/slip/slip.c                            |   1 +
- drivers/net/virtio_net.c                           |   9 +-
- drivers/net/wan/slic_ds26522.c                     |   1 +
- include/linux/btf.h                                |   2 +-
- include/linux/netfilter_bridge.h                   |   6 +-
- include/linux/skbuff.h                             |   2 +-
- include/linux/virtio_net.h                         |   9 +-
- include/net/netdev_queues.h                        |   2 +-
- kernel/bpf/btf.c                                   | 231 ++++++++++++++++++---
- kernel/bpf/verifier.c                              |   4 +
- net/bridge/br_netfilter_hooks.c                    |  42 +++-
- net/bridge/br_netfilter_ipv6.c                     |  14 +-
- net/core/rtnetlink.c                               |  14 +-
- net/dsa/user.c                                     |   7 +-
- net/ethtool/features.c                             |   9 +-
- net/hsr/hsr_main.c                                 |   1 +
- net/ipv4/netfilter/nf_reject_ipv4.c                |   9 +-
- net/ipv4/udp.c                                     |  34 ++-
- net/ipv6/mcast.c                                   |   4 +
- net/ipv6/netfilter/nf_reject_ipv6.c                |  11 +-
- net/ipv6/udp.c                                     |  16 +-
- net/mptcp/options.c                                |   6 +-
- net/mptcp/subflow.c                                |  17 +-
- net/netfilter/ipset/ip_set_hash_netiface.c         |   8 +-
- net/netfilter/ipvs/ip_vs_xmit.c                    |   4 +-
- net/netfilter/nf_log_syslog.c                      |  13 +-
- net/netfilter/nf_queue.c                           |   6 +-
- net/netfilter/nf_tables_api.c                      |  44 ++--
- net/netfilter/nfnetlink_log.c                      |   8 +-
- net/netfilter/nft_limit.c                          |  19 +-
- net/netfilter/xt_physdev.c                         |   2 +-
- net/nfc/digital_core.c                             |   1 +
- net/nfc/nci/core.c                                 |   1 +
- net/nfc/nci/spi.c                                  |   1 +
- net/rxrpc/ar-internal.h                            |   1 +
- net/rxrpc/local_object.c                           |  13 +-
- net/rxrpc/output.c                                 |   6 +-
- net/rxrpc/rxkad.c                                  |   2 +
- net/sched/cls_api.c                                |  12 +-
- net/sunrpc/auth_gss/auth_gss.c                     |   1 +
- net/sunrpc/auth_gss/gss_krb5_mech.c                |   1 +
- net/sunrpc/sunrpc_syms.c                           |   1 +
- net/tls/tls_sw.c                                   |   6 +-
- tools/lib/bpf/libbpf.c                             | 142 ++++++++++++-
- .../selftests/bpf/prog_tests/sock_iter_batch.c     | 135 ++++++++++++
- .../selftests/bpf/prog_tests/test_global_funcs.c   |  13 ++
- .../testing/selftests/bpf/progs/bpf_tracing_net.h  |   3 +
- .../testing/selftests/bpf/progs/sock_iter_batch.c  |  91 ++++++++
- tools/testing/selftests/bpf/progs/test_jhash.h     |  31 +++
- .../selftests/bpf/progs/verifier_global_subprogs.c | 164 ++++++++++++++-
- .../bpf/progs/verifier_value_illegal_alu.c         |  19 ++
- tools/testing/selftests/drivers/net/bonding/config |   8 +
- .../drivers/net/bonding/mode-1-recovery-updelay.sh |   2 +-
- .../drivers/net/bonding/mode-2-recovery-updelay.sh |   2 +-
- .../testing/selftests/drivers/net/mlxsw/qos_pfc.sh |  19 +-
- .../drivers/net/mlxsw/spectrum-2/tc_flower.sh      | 106 +++++++++-
- .../testing/selftests/drivers/net/netdevsim/config |  10 +
- .../drivers/net/netdevsim/ethtool-common.sh        |   1 +
- .../selftests/drivers/net/netdevsim/ethtool-fec.sh |  18 +-
- .../drivers/net/netdevsim/udp_tunnel_nic.sh        |   1 +
- tools/testing/selftests/net/forwarding/lib.sh      |   0
- tools/testing/selftests/net/rtnetlink.sh           |  26 +++
- tools/testing/selftests/net/tcp_ao/Makefile        |   4 +-
- tools/testing/selftests/net/tls.c                  |  14 ++
- 90 files changed, 1366 insertions(+), 235 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/sock_iter_batch.c
- create mode 100644 tools/testing/selftests/bpf/progs/sock_iter_batch.c
- create mode 100644 tools/testing/selftests/drivers/net/netdevsim/config
- mode change 100755 => 100644 tools/testing/selftests/net/forwarding/lib.sh
 
