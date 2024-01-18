@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-19814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCED0831958
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 13:43:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99B3A831A7E
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 14:22:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DFC5B2592C
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 12:43:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC2621C2250F
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 13:22:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6820424B3A;
-	Thu, 18 Jan 2024 12:43:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FCE025544;
+	Thu, 18 Jan 2024 13:22:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3G7En7M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nk3HbDTc"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09BF241F6
-	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 12:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4BA184C
+	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 13:22:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705581789; cv=none; b=bGkcqgKc88wr3O05EPXxDrvT7y/SJU+GFDOTrZM4zOcE8n4AkO1rkVRKcG0iZfSMly8EE4KcSxmjVu7SOMF21ql+wDYRAeuTSBYmRe/KpRiNmhrpFeunngYK7ArD6Spf8SjW3g8kaLOKg7UyUM8vfuY2N/XcVoa1QWTnEnU4WLA=
+	t=1705584149; cv=none; b=nQD0vwhvu83bGRQCxFpw94pJ0QIfBb4sxHwWbbIUGYyFS6KObz1C/3xN1R1dbqlHgAg2fUcQ9Fx4Ay8ZHmzHPbHrUOJjcMl5MacwlxBAmTIxoiFj+DlnvmhLI/CHtAU9ExmMtHiIjJUGMukNafVcDpas9DjSEf1CVV96PXmT7bw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705581789; c=relaxed/simple;
-	bh=B1Nf/vU/Se+9W0oRiRjq0J//P3cWBuYHw+HeArK2m2Q=;
+	s=arc-20240116; t=1705584149; c=relaxed/simple;
+	bh=f6GpGmFwLmr3i1nXsDRMD/D+s608Tmhwf2/1v2GlDls=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
 	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=IiGglRKNahPfCibUjBHJ1EUsS6c3QoW5GKVEWbL5pLY9SVDoPPaqYRLwpJbFnXnJhexZ8xBRftYEKof1U3xC/BC1pS5YyhyhjXK5WSNg6XJA0wwi7cxXHJr7nMPrktFRRAgfb59hq29M+BWbFBdiImsH9NH89Zht73dOdj+CdRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z3G7En7M; arc=none smtp.client-ip=209.85.219.48
+	 Content-Type:Content-Transfer-Encoding; b=ImS/1t+UQL22XtMtFiwkSyVF9X6QQoEDY1GF3j28BukB5vlnB9/PFnnNKiIrdnKWbQkHX6Pql4mipm+TCL0GasLukUw4Dge5Zw+ct8te2uyEAIPN24WfrbG59dy/s3Vb7m64xPrW0OhjStBGwYqBF2H+9P6K9fX0sMKeXK/YkS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nk3HbDTc; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-68196a09e2eso1034816d6.3
-        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 04:43:07 -0800 (PST)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6818aa08a33so5187306d6.0
+        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 05:22:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705581786; x=1706186586; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705584147; x=1706188947; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vxIVWgzDWtzaZFVx/bD8zY3/b6ddBsH8xyvi8dh8Bsk=;
-        b=Z3G7En7MJKn/Q1CsLJwQXiCqs5/qloUS1ZLc/jtUV48e8lYhogDuzeiOadSoAelnbF
-         fj9luhNT1THooMbK4I6wOxxtc3uLyXe/bmkDrJtSOCtm71AA1dhLko93P5ymFkbZMe5J
-         Si2v2Q4VxPwtrI/gjv4I12C0hwGxSDU6mUMgGwqBohhbKNVkgATNowIl85F9iORVZ15L
-         c8Yw6YmxDEZu3AZDIqXKz5ztmDfsaKrcqlPCnAU8yRj1yCSCxDwUsgAZilnLGvKWNzsk
-         zwcJaSvfbBG8Golug+i3cEyzhbCtQSkjH4O5/LGB2FRBf95iLOMkKhXHjyyX/EhPgxIe
-         tIZw==
+        bh=j4F8bx2+kVlZQp+cBFq3wbhFrd3Xu2ACYCFOK8J3izE=;
+        b=nk3HbDTcDUhfi/NLsTnkdoPXz+WYPkbQd0COxRaJ22LjNXoKbn6IyG51xuO9XTA4XK
+         vf2/7sI0UdoB7AbBCur3Vy8rAHI1JPkj5kiNk3hdjHNqQUpWYBTxRwUTv0ryTNFQQAM0
+         hz+Qi89T4wXoPJewsFN7P7z6iTXK534PrI/7IhwXZEJmv/ztUMyEz0uvg6Ncb3OPW2vo
+         8kZFyy4pE7ZIm4u3zWO9P12nHWZCzODSiWqqPaGlyYQ72XowNsj0AD1IBXnSaoZgj1gH
+         eDkiWCK47W37giF9CWeAUzEN7IcXxgtForC0csDL46plgBqHjbRb3Z/5orTV/UXc5eQP
+         ngrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705581786; x=1706186586;
+        d=1e100.net; s=20230601; t=1705584147; x=1706188947;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vxIVWgzDWtzaZFVx/bD8zY3/b6ddBsH8xyvi8dh8Bsk=;
-        b=pBGk4efljZ/Rn/Q4LqbdoOKszK3xe3gvH/AbNsH3Jc7iZPhEDgl3WfsYPqUvAQ2HpQ
-         qWlRz9ZbwG2l4N1gch2R7ZZMPNDekdfAl/SzhRS/PBWO1T54UsrphgrGI9ldck9O3VRm
-         z1V7MAW7Rn/0V6OiUHHI5K94xr+PucByCevq8k/F0Nx0PtRldnZbbLJuF2DdaYJavJEL
-         svQKM9WswNFpbwxPsx5CWiMft07Y8AAvtvx33ZQwrZI5gEE8r6jXdc8Ff36ahbPREcuo
-         ufZ0bYOCaDmn5xZvOf0FDVxmCIT3sNeLEmz8t4L/8oD01CJM1wlnFg/Rf7BmPOTKuCng
-         WMJg==
-X-Gm-Message-State: AOJu0YzSOn/BirFLV8UEpm3DrZqeOYBHk2V58+c3EM8hw9jDhRwhzW4P
-	ND8fs41rg7+06weQNXJGBogmIR4ZR3Wr+MlsQ0myc09amky+x5Jue7aS6xBKjHqgpf82Jr6NQS5
-	JWMOUkRSNBSPvGPFWIFzkC/maAKs=
-X-Google-Smtp-Source: AGHT+IGoLCYTaNal5NiBZeOsY0c+gkGTxGWspO2TcyWBdZXfPfkx6sjkNSjuGX5NdDu/+DpFM6fCQVIjov2nwxNT6c0=
-X-Received: by 2002:a05:6214:1d09:b0:67a:b419:530f with SMTP id
- e9-20020a0562141d0900b0067ab419530fmr722382qvd.9.1705581786491; Thu, 18 Jan
- 2024 04:43:06 -0800 (PST)
+        bh=j4F8bx2+kVlZQp+cBFq3wbhFrd3Xu2ACYCFOK8J3izE=;
+        b=dQRX5Ne/bW4qMHMKzc8iCXCzCaTAX8944A4Nq1ONK7bMxmTGwAHV0dQsT7ku8UIHp5
+         YrN/DykCexe99RGNLnw1h5zs1D4QAg+TvcLG+rw0w9c/KqY/rfeyvZBHbVmMgfsOCtHM
+         66kaFPHyAy5FIirPwHm+AUdlUcOWYMe2a3Q8GdzhHlybc9Gd0H4wVuME/kNBiUfsvypR
+         VD2i9CJhT8MOtMixfYMHm8YG6tg0ib/BChYSaCCzrVojkptUaW9gs33Z+72ODLyxqp/P
+         JLJLuG2sWJHDav+lONZZmIOKSmn4bHfpvUI3cbaPcyZ9bFqLvPoNtEBdOtqsGGwvs+Wo
+         KxrQ==
+X-Gm-Message-State: AOJu0YzuZhZqj4TvoYLsqvUR3vkISVVJO/3GHs8HJhhJBbVCLaCPfFR8
+	fiC+QLjyU9I3TrUQzfK6FNMp1B8oIYvjR/IH5vQbkl6QvMV7rmyQs8rOowKki5CbB4JO9E4Q5Jb
+	2WW88ta1FiuHnNBBjZFyvF/APpM4=
+X-Google-Smtp-Source: AGHT+IFbpTfla3etcMgKCzGPh3UTy5uOh4Wmwwa2gQ4C3oJrKh55YNVG6lwVLd2fwXmoShKqwZC9DHRap+7DiX3HYHY=
+X-Received: by 2002:a0c:fcc4:0:b0:681:81b4:3d66 with SMTP id
+ i4-20020a0cfcc4000000b0068181b43d66mr2450239qvq.2.1705584146953; Thu, 18 Jan
+ 2024 05:22:26 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240118095416.989152-1-jolsa@kernel.org>
-In-Reply-To: <20240118095416.989152-1-jolsa@kernel.org>
+References: <20240118095416.989152-1-jolsa@kernel.org> <20240118095416.989152-3-jolsa@kernel.org>
+In-Reply-To: <20240118095416.989152-3-jolsa@kernel.org>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 18 Jan 2024 20:42:29 +0800
-Message-ID: <CALOAHbD6B+xG=Cn1za8QKf5MvodM7xUDUxkuM7YT-0emhh2e1g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 0/8] bpf: Add cookies retrieval for perf/kprobe
- multi links
+Date: Thu, 18 Jan 2024 21:21:50 +0800
+Message-ID: <CALOAHbDhZtZ+DARrWscFias1fn2LMFT5N3ojqPBxUJUJ1qRkJw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/8] bpf: Store cookies in kprobe_multi
+ bpf_link_info data
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
@@ -91,51 +91,100 @@ Content-Transfer-Encoding: quoted-printable
 
 On Thu, Jan 18, 2024 at 5:54=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> hi,
-> this patchset adds support to retrieve cookies from existing tracing
-> links that still did not support it plus changes to bpftool to display
-> them. It's leftover we discussed some time ago [1].
-
-Thanks for your work.
-
-bpf cookie is also displayed in the pid_iter [0]. After we add support
-for the cookie for other progs like kprobe_multi and uprobe_multi, I
-think we should update this file as well.
-
-[0]. tools/bpf/bpftool/skeleton/pid_iter.bpf.c
-
+> Storing cookies in kprobe_multi bpf_link_info data. The cookies
+> field is optional and if provided it needs to be an array of
+> __u64 with kprobe_multi.count length.
 >
-> thanks,
-> jirka
->
->
-> [1] https://lore.kernel.org/bpf/CALOAHbAZ6=3DA9j3VFCLoAC_WhgQKU7injMf06=
-=3DcM2sU4Hi4Sx+Q@mail.gmail.com/
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+
+LGTM.
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
+
 > ---
-> Jiri Olsa (8):
->       bpf: Add cookie to perf_event bpf_link_info records
->       bpf: Store cookies in kprobe_multi bpf_link_info data
->       bpftool: Fix wrong free call in do_show_link
->       selftests/bpf: Add cookies check for kprobe_multi fill_link_info te=
-st
->       selftests/bpf: Add cookies check for perf_event fill_link_info test
->       selftests/bpf: Add fill_link_info test for perf event
->       bpftool: Display cookie for perf event link probes
->       bpftool: Display cookie for kprobe multi link
+>  include/uapi/linux/bpf.h       |  1 +
+>  kernel/trace/bpf_trace.c       | 15 +++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  1 +
+>  3 files changed, 17 insertions(+)
 >
->  include/uapi/linux/bpf.h                                |   5 +++++
->  kernel/bpf/syscall.c                                    |   4 ++++
->  kernel/trace/bpf_trace.c                                |  15 ++++++++++=
-+++
->  tools/bpf/bpftool/link.c                                |  87 ++++++++++=
-+++++++++++++++++++++++++++++++++++++++++++++++++-------------
->  tools/include/uapi/linux/bpf.h                          |   5 +++++
->  tools/testing/selftests/bpf/prog_tests/fill_link_info.c | 114 ++++++++++=
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----=
-----------
->  tools/testing/selftests/bpf/progs/test_fill_link_info.c |   6 +++++
->  7 files changed, 204 insertions(+), 32 deletions(-)
-
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index b823d367a83c..199cb93dca7f 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -6563,6 +6563,7 @@ struct bpf_link_info {
+>                         __u32 count; /* in/out: kprobe_multi function cou=
+nt */
+>                         __u32 flags;
+>                         __u64 missed;
+> +                       __aligned_u64 cookies;
+>                 } kprobe_multi;
+>                 struct {
+>                         __aligned_u64 path;
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 7ac6c52b25eb..c98c20abaf99 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -2679,6 +2679,7 @@ static void bpf_kprobe_multi_link_dealloc(struct bp=
+f_link *link)
+>  static int bpf_kprobe_multi_link_fill_link_info(const struct bpf_link *l=
+ink,
+>                                                 struct bpf_link_info *inf=
+o)
+>  {
+> +       u64 __user *ucookies =3D u64_to_user_ptr(info->kprobe_multi.cooki=
+es);
+>         u64 __user *uaddrs =3D u64_to_user_ptr(info->kprobe_multi.addrs);
+>         struct bpf_kprobe_multi_link *kmulti_link;
+>         u32 ucount =3D info->kprobe_multi.count;
+> @@ -2686,6 +2687,8 @@ static int bpf_kprobe_multi_link_fill_link_info(con=
+st struct bpf_link *link,
+>
+>         if (!uaddrs ^ !ucount)
+>                 return -EINVAL;
+> +       if (ucookies && !ucount)
+> +               return -EINVAL;
+>
+>         kmulti_link =3D container_of(link, struct bpf_kprobe_multi_link, =
+link);
+>         info->kprobe_multi.count =3D kmulti_link->cnt;
+> @@ -2699,6 +2702,18 @@ static int bpf_kprobe_multi_link_fill_link_info(co=
+nst struct bpf_link *link,
+>         else
+>                 ucount =3D kmulti_link->cnt;
+>
+> +       if (ucookies) {
+> +               if (kmulti_link->cookies) {
+> +                       if (copy_to_user(ucookies, kmulti_link->cookies, =
+ucount * sizeof(u64)))
+> +                               return -EFAULT;
+> +               } else {
+> +                       for (i =3D 0; i < ucount; i++) {
+> +                               if (put_user(0, ucookies + i))
+> +                                       return -EFAULT;
+> +                       }
+> +               }
+> +       }
+> +
+>         if (kallsyms_show_value(current_cred())) {
+>                 if (copy_to_user(uaddrs, kmulti_link->addrs, ucount * siz=
+eof(u64)))
+>                         return -EFAULT;
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index b823d367a83c..199cb93dca7f 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -6563,6 +6563,7 @@ struct bpf_link_info {
+>                         __u32 count; /* in/out: kprobe_multi function cou=
+nt */
+>                         __u32 flags;
+>                         __u64 missed;
+> +                       __aligned_u64 cookies;
+>                 } kprobe_multi;
+>                 struct {
+>                         __aligned_u64 path;
+> --
+> 2.43.0
+>
 
 
 --=20
