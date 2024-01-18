@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-19779-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19780-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 078DC83110C
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 02:50:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA204831110
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 02:50:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6811F22A20
-	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 01:50:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 426B2B2362B
+	for <lists+bpf@lfdr.de>; Thu, 18 Jan 2024 01:50:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB36B53BE;
-	Thu, 18 Jan 2024 01:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BA779CD;
+	Thu, 18 Jan 2024 01:50:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OjrNvu7q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dcPOuDxg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A266106
-	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 01:49:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334C9539A
+	for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 01:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705542598; cv=none; b=q2et7JKqWFENF0T1ItEyu80nAinhdRVXRU+QdmdbUmc2RtWbogW5gm+vqj3QCsqvBU6ky9/B2IjAjWc9K/bMGOMG5SXvAdEPgOSolMrQ0+CbNQz8FOnXu+p7ve++l7gU0mypWau3PiEddBovvAekarASSdEe47hj1sdFFTtIp0w=
+	t=1705542599; cv=none; b=UnaPp0JqLqv1pR9ECfIv+i7bFazeggE6qaYsezO5SGywNVo1MtDfFBqTeiqNrBSmGKDbo5XjPjGCVHBSxF9l8BRLMstPvh+gZFN/hRbR104+J+VYAAWBOeflP9nZ69+14hA4awNxlRkyT1n3h/NOeApSwedR0TOeGFOvt8zg+aM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705542598; c=relaxed/simple;
-	bh=IOkgiO07bBK/wrJ4r9fDxQUgBloiAHVwSLk7tTq7/Os=;
+	s=arc-20240116; t=1705542599; c=relaxed/simple;
+	bh=lHlr6xo/jV93GA/GDJi41M1rVRXfLgqfjWdlAq1EEEo=;
 	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
 	 To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding; b=hexM7aVmgXTBvnhc6lNv1YGdgiljBZy4+s2/gt3aseukU8dmvttOMbKUVN2dhrTi6M+b5rJgaG1jLhOcMcaKOVB4uhe4zN8SfScNhwYqrQMgqOBb8JK1ZJY+rmiPpgGYK82ZeV41hAQtod0J017WkF4ArIRiF5B1AX01cozUeF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OjrNvu7q; arc=none smtp.client-ip=209.85.128.169
+	 MIME-Version:Content-Transfer-Encoding; b=GadRBI194XF7+jP2kDRrB2dJh4jQlQibkbwXvrrw0XQQd2mhO4eunu+TkL0wJvEtsCqznil68hCoyrfbJNS0f0YyjrfmHKF/K+ppOMiEWDkm820izXgTSv8Hf4NbaQggjpMTa4xNR2QMiM9HiZOJiTonEgGGFth1ifcXt/bn6D4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dcPOuDxg; arc=none smtp.client-ip=209.85.128.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5e54d40cca2so91055987b3.3
-        for <bpf@vger.kernel.org>; Wed, 17 Jan 2024 17:49:56 -0800 (PST)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5ff847429d4so2654697b3.1
+        for <bpf@vger.kernel.org>; Wed, 17 Jan 2024 17:49:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705542595; x=1706147395; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1705542597; x=1706147397; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nOEWFr262czTiNDRv4aa6h4SqGe3Y26acn2oWpaKI20=;
-        b=OjrNvu7q7FFi7C4KFCWljTF4FxWmRzB2zLDmXXSSU6kMIcC+D1cbBa3qS68tW+fwYm
-         Gxmu9326GK2F/Ks03hku198JU8ukggL5wswukdWg2i24L3+HQqLnsa8JDjrJg8VtoYfY
-         +bnwPWsM2nLio6H7gQjQvQBqEz41zSdxvhPHcqUie5Rmm1KcVApH7MzYrZ3RdkFKI5lT
-         XmxGe3q37bDMg0uNrOBDt02dcUW/ispWQRMAzQTdFq3jVmwJfnnwkjn2+1WaX4JTgcRm
-         1PXlXXPadvO+pjJXBWEKAB4a00H1XcKpnuACAuji08cqBYKBXbHIxwhSqrQLmajM4Nci
-         pEYA==
+        bh=Wrl7sbOFgHUbQRf8u0fI0nyuTg4aRrb+2j5aLreyuQA=;
+        b=dcPOuDxgYJ5ANoUFBqmdRPS1HcYQ7wYbGr+1IMa0NtzUgrMna6aOVwpRnpnHgjUm3E
+         hkA2O29eY4KV1A4v9XMrKscS+gXR2TzINL6jxwvlrC/HHbM8C78Bk55De3a5QEYY+qvC
+         qgZerItmNewF2LgRCkr7gpVEGTuATyIIIz0RD4/5kAU8keEo/ahi07y3UxJtUJkcBf8B
+         SE3zeGz6GpNoOx5DQgUmSCBEcTVuuF5zxVhvXkgPNZh/XPJ6H79+gsvpLbnq6/PZn7Yt
+         uED1rUzdzvH8FijzNTz+GGnMTXGeOaLLur29ooNXcu2Yz+qe+hilDwjYf8jbPC9uUND8
+         MsQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705542595; x=1706147395;
+        d=1e100.net; s=20230601; t=1705542597; x=1706147397;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nOEWFr262czTiNDRv4aa6h4SqGe3Y26acn2oWpaKI20=;
-        b=sDReBo1qCiKIgd5vk4foP2l4/rYO0WzuCP9OgGWsS6e8fseTwktRVK8oeBozK8UAih
-         HEinhOpmW9DJh2jryTKlZj172SLdqutMUQvCY1RtJAJut+xFymXERlabQcD6q8NigTaI
-         TxqzY2vW77p+fQ4oI7y30P74jqri/yN1V3ngy8UV1IHOYhcIEQ9Kly7BYGJAxxEpUzML
-         PhKWpFTaeNSYpgQiOFDs1sX5FM+83LA1EbIN0Z7ugjGPLtGrBhZoUVer4xwh3Iid2jEW
-         iJZFg2eHiEZFKWnvfNHTkBO4YB6zmrrr07+yR1Y+fsNaHCLzaGcvYu7dpB1ALq/NP9OZ
-         7Ruw==
-X-Gm-Message-State: AOJu0Yw0KtYyH+ierl4tKsL5+E7rxVC7lMJcvp9GihLLcs9cp2KlYbWX
-	prw7oiYSzFX0AKZ/zGHbQtYb08bzUy59vKGYnnqu8odeIMOpl4/hIVCXHw1J
-X-Google-Smtp-Source: AGHT+IHRGt3aedlVoJa2qLqspyceUocMHB4QDeiaffKxwTteV+pDjoe0rPEQ6z77nvdjbdpuunHtnA==
-X-Received: by 2002:a0d:d5c8:0:b0:5ff:51f1:c2 with SMTP id x191-20020a0dd5c8000000b005ff51f100c2mr85410ywd.75.1705542595578;
-        Wed, 17 Jan 2024 17:49:55 -0800 (PST)
+        bh=Wrl7sbOFgHUbQRf8u0fI0nyuTg4aRrb+2j5aLreyuQA=;
+        b=LooRlpsQFiYoiH+RuA+EkvismG+HWBDjnYPcV8qc2uMkNt8TBE7ZwiVJZk6CV5N/I9
+         R0idCtMY6iLNX+xKp4wdiu1jU4LBgXpw1QqpBLM+HGpN5Z0osuPcTH1h3ixKPY+b+zGM
+         97tPOgv5Jay+r/VkQbuuTeE9WkNDAqNDSEwooFmci5/K8ZdWFkcq5wWNnmx8QGIpjGek
+         jXBESaL3My/157+oNBCOKTpCkEaNo2NS0GveeUcXFCCRq/B/HdU8KMuPgdlgCtmQjdc6
+         sG436xe23MEoO2qzB0asgz0fQs+PxrvfeKprkGLkegQvouOWSQbrVbmuCQEyCcXQflTR
+         2lAQ==
+X-Gm-Message-State: AOJu0Yz2qirq6RrbBP85ZFV4SQoDMc1kCPwj/H6CgkRoi5KXJIhgHZGw
+	CVFTq0ZSR34FBLfGBA0xBewoArlE6XJKVP6JsQ+otK+xPFZHljANUdXfCBVH
+X-Google-Smtp-Source: AGHT+IG83Q6KvKHEfQEE+IN7GYg/YqqxTa2x6nPatGi7KXCO75wcFbZZ09jWV0Cbv0w0i6vaWmPF1Q==
+X-Received: by 2002:a0d:f685:0:b0:5d7:1941:356b with SMTP id g127-20020a0df685000000b005d71941356bmr123426ywf.82.1705542596965;
+        Wed, 17 Jan 2024 17:49:56 -0800 (PST)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:8b90:cd6a:b588:8d99])
-        by smtp.gmail.com with ESMTPSA id cb9-20020a05690c090900b005e5fff5c537sm6248606ywb.85.2024.01.17.17.49.54
+        by smtp.gmail.com with ESMTPSA id cb9-20020a05690c090900b005e5fff5c537sm6248606ywb.85.2024.01.17.17.49.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jan 2024 17:49:55 -0800 (PST)
+        Wed, 17 Jan 2024 17:49:56 -0800 (PST)
 From: thinker.li@gmail.com
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -79,9 +79,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v16 06/14] bpf: pass btf object id in bpf_map_info.
-Date: Wed, 17 Jan 2024 17:49:22 -0800
-Message-Id: <20240118014930.1992551-7-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v16 07/14] bpf: lookup struct_ops types from a given module BTF.
+Date: Wed, 17 Jan 2024 17:49:23 -0800
+Message-Id: <20240118014930.1992551-8-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240118014930.1992551-1-thinker.li@gmail.com>
 References: <20240118014930.1992551-1-thinker.li@gmail.com>
@@ -95,90 +95,96 @@ Content-Transfer-Encoding: 8bit
 
 From: Kui-Feng Lee <thinker.li@gmail.com>
 
-Include btf object id (btf_obj_id) in bpf_map_info so that tools (ex:
-bpftools struct_ops dump) know the correct btf from the kernel to look up
-type information of struct_ops types.
-
-Since struct_ops types can be defined and registered in a module. The
-type information of a struct_ops type are defined in the btf of the
-module defining it.  The userspace tools need to know which btf is for
-the module defining a struct_ops type.
+This is a preparation for searching for struct_ops types from a specified
+module. BTF is always btf_vmlinux now. This patch passes a pointer of BTF
+to bpf_struct_ops_find_value() and bpf_struct_ops_find(). Once the new
+registration API of struct_ops types is used, other BTFs besides
+btf_vmlinux can also be passed to them.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- include/linux/bpf.h            | 1 +
- include/uapi/linux/bpf.h       | 2 +-
- kernel/bpf/bpf_struct_ops.c    | 7 +++++++
- kernel/bpf/syscall.c           | 2 ++
- tools/include/uapi/linux/bpf.h | 2 +-
- 5 files changed, 12 insertions(+), 2 deletions(-)
+ include/linux/bpf.h         |  4 ++--
+ kernel/bpf/bpf_struct_ops.c | 11 ++++++-----
+ kernel/bpf/verifier.c       |  2 +-
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index ed4352f56d21..1e969d035b42 100644
+index 1e969d035b42..3d1c1014fdb2 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -1732,6 +1732,7 @@ struct bpf_dummy_ops {
- int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
- 			    union bpf_attr __user *uattr);
- #endif
-+void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
- #else
- static inline const struct bpf_struct_ops_desc *bpf_struct_ops_find(u32 type_id)
- {
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 754e68ca8744..8eb949b52102 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -6487,7 +6487,7 @@ struct bpf_map_info {
- 	__u32 btf_id;
- 	__u32 btf_key_type_id;
- 	__u32 btf_value_type_id;
--	__u32 :32;	/* alignment pad */
-+	__u32 btf_vmlinux_id;
- 	__u64 map_extra;
- } __attribute__((aligned(8)));
+@@ -1689,7 +1689,7 @@ struct bpf_struct_ops_desc {
  
+ #if defined(CONFIG_BPF_JIT) && defined(CONFIG_BPF_SYSCALL)
+ #define BPF_MODULE_OWNER ((void *)((0xeB9FUL << 2) + POISON_POINTER_DELTA))
+-const struct bpf_struct_ops_desc *bpf_struct_ops_find(u32 type_id);
++const struct bpf_struct_ops_desc *bpf_struct_ops_find(struct btf *btf, u32 type_id);
+ void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log);
+ bool bpf_struct_ops_get(const void *kdata);
+ void bpf_struct_ops_put(const void *kdata);
+@@ -1734,7 +1734,7 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
+ #endif
+ void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
+ #else
+-static inline const struct bpf_struct_ops_desc *bpf_struct_ops_find(u32 type_id)
++static inline const struct bpf_struct_ops_desc *bpf_struct_ops_find(struct btf *btf, u32 type_id)
+ {
+ 	return NULL;
+ }
 diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 5ddcca4c4fba..5e98af4fc2e2 100644
+index 5e98af4fc2e2..7505f515aac3 100644
 --- a/kernel/bpf/bpf_struct_ops.c
 +++ b/kernel/bpf/bpf_struct_ops.c
-@@ -947,3 +947,10 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
- 	kfree(link);
- 	return err;
+@@ -221,11 +221,11 @@ void bpf_struct_ops_init(struct btf *btf, struct bpf_verifier_log *log)
+ extern struct btf *btf_vmlinux;
+ 
+ static const struct bpf_struct_ops_desc *
+-bpf_struct_ops_find_value(u32 value_id)
++bpf_struct_ops_find_value(struct btf *btf, u32 value_id)
+ {
+ 	unsigned int i;
+ 
+-	if (!value_id || !btf_vmlinux)
++	if (!value_id || !btf)
+ 		return NULL;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
+@@ -236,11 +236,12 @@ bpf_struct_ops_find_value(u32 value_id)
+ 	return NULL;
  }
-+
-+void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map)
-+{
-+	struct bpf_struct_ops_map *st_map = (struct bpf_struct_ops_map *)map;
-+
-+	info->btf_vmlinux_id = btf_obj_id(st_map->btf);
-+}
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index a1f18681721c..05fe78ecc441 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -4687,6 +4687,8 @@ static int bpf_map_get_info_by_fd(struct file *file,
- 		info.btf_value_type_id = map->btf_value_type_id;
+ 
+-const struct bpf_struct_ops_desc *bpf_struct_ops_find(u32 type_id)
++const struct bpf_struct_ops_desc *
++bpf_struct_ops_find(struct btf *btf, u32 type_id)
+ {
+ 	unsigned int i;
+ 
+-	if (!type_id || !btf_vmlinux)
++	if (!type_id || !btf)
+ 		return NULL;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(bpf_struct_ops); i++) {
+@@ -682,7 +683,7 @@ static struct bpf_map *bpf_struct_ops_map_alloc(union bpf_attr *attr)
+ 	struct bpf_map *map;
+ 	int ret;
+ 
+-	st_ops_desc = bpf_struct_ops_find_value(attr->btf_vmlinux_value_type_id);
++	st_ops_desc = bpf_struct_ops_find_value(btf_vmlinux, attr->btf_vmlinux_value_type_id);
+ 	if (!st_ops_desc)
+ 		return ERR_PTR(-ENOTSUPP);
+ 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index a187317500dd..0744a1f194fa 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -20242,7 +20242,7 @@ static int check_struct_ops_btf_id(struct bpf_verifier_env *env)
  	}
- 	info.btf_vmlinux_value_type_id = map->btf_vmlinux_value_type_id;
-+	if (map->map_type == BPF_MAP_TYPE_STRUCT_OPS)
-+		bpf_map_struct_ops_info_fill(&info, map);
  
- 	if (bpf_map_is_offloaded(map)) {
- 		err = bpf_map_offload_info_fill(&info, map);
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 7f24d898efbb..1949d881f230 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -6487,7 +6487,7 @@ struct bpf_map_info {
- 	__u32 btf_id;
- 	__u32 btf_key_type_id;
- 	__u32 btf_value_type_id;
--	__u32 :32;	/* alignment pad */
-+	__u32 btf_vmlinux_id;
- 	__u64 map_extra;
- } __attribute__((aligned(8)));
- 
+ 	btf_id = prog->aux->attach_btf_id;
+-	st_ops_desc = bpf_struct_ops_find(btf_id);
++	st_ops_desc = bpf_struct_ops_find(btf_vmlinux, btf_id);
+ 	if (!st_ops_desc) {
+ 		verbose(env, "attach_btf_id %u is not a supported struct\n",
+ 			btf_id);
 -- 
 2.34.1
 
