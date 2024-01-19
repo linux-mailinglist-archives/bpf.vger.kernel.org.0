@@ -1,94 +1,131 @@
-Return-Path: <bpf+bounces-19915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D96B783304A
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 22:30:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5325833058
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 22:34:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92CB32864EC
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 21:30:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E73828489F
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 21:34:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5F05789B;
-	Fri, 19 Jan 2024 21:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB5458100;
+	Fri, 19 Jan 2024 21:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ScgvC17l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDjPkwBh"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE03B1DFCB
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 21:30:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E551DFCB
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 21:34:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705699828; cv=none; b=ivAzkVfnaL+uFmL/LsCWc25EyFiebkj6gYKy/QVbIu9VP09B7kUllTfAn8CC4h0uvB0zB/kVWWwJX6gyJ3j7jZq+9OK5knKNr7KX7KQIUjypiuWps3nbEeXId0C39E918KQVOEg9zWZIykCf146ts+vtPOLQ9LqlKarTTHhLi4k=
+	t=1705700086; cv=none; b=ezTXq2ax77CoHRbFcv2I+qddbIiFgDdN+QdqS1heskw2WdNpPFn2Ih/I470qIbKZRgxtk2wBHvWo8Q+KObh8CqShCcNGsX+p6ttfl9DTn9NA5Ed9YThucjqgMS4III7TQd1ngyWvsmus9T6Vxo5kZt8QEi5HKpUZr39D4hg0FOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705699828; c=relaxed/simple;
-	bh=S84juUtYF9jxV7yGY5zfhygbYFJwJDw42tabM00zU3Y=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=h40W5c6mHJ3JXsIU+sulb83B+E8I0rzU7pJiittBS7MMgIHyPklWzXFizraM0pq0d1Pr8hWIY9eMfL+9b4Pb6k5FKxSGn4ZNDa9286wUs9mKiKMaCoCW+YaE9gk6RWzEtJNbSCsBbrXerItBU2G0fEUi3r6K5EJylIXBI9hgcKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ScgvC17l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 37CDDC43390;
-	Fri, 19 Jan 2024 21:30:27 +0000 (UTC)
+	s=arc-20240116; t=1705700086; c=relaxed/simple;
+	bh=IPJp1WoVDiiiQbT0iGWL7OUaMCzCJlc9F76HAwr+Qck=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m/9MZrnoFor51R/G4hnUqA9PWRzU1qr2SGl1RE1Ml3vNs3jDsX7ojk5NaKXIm2dyO5CcZJMUnui1OhuVZ+W9as9khR1w37EyOc931DZrHFrgV9cluU3h+3QuAjsZviaxoOOvC64jCEKcr7bgJjBVxjitIfWyRknU3B13NtKa704=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDjPkwBh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8832C43390
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 21:34:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705699827;
-	bh=S84juUtYF9jxV7yGY5zfhygbYFJwJDw42tabM00zU3Y=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ScgvC17lpJjeAVG17fUreqVcVwfrF7QHA9o3X4NLwFsLzf1sJk5QSiXpoHScb3rce
-	 quSP964lT4L4jFjRArqq2Rb4OL7WiPdcpOpJ36IllVVOMR0HORL5Jp5IsilUcVEeK/
-	 t7aSmBn+XIhHRzul48yYTRC9v4pffC838xZpN4LlDr3CswCBONl8zosCNxwtAx0H1B
-	 MQ5MLTIySMEXmft+IHzdGvphZJ2nmwZHrFpxniuRxR9+zkcREBLmHaTc586FuP2evs
-	 /pt7tnXKwAGcz7yTp/+UaQv0pLP0Gs87qBQhO7FA/+sjZI350EC0m2kcooDmVdjWsj
-	 ekBfw3JUiIyGQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 17D0DD8C985;
-	Fri, 19 Jan 2024 21:30:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1705700085;
+	bh=IPJp1WoVDiiiQbT0iGWL7OUaMCzCJlc9F76HAwr+Qck=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kDjPkwBhsdfseHhGAAHOkc41jzWsqwtjw36OKmGd2PwLdOIUEBhg7trvzxkwgJcPR
+	 xTzQ8dDygSZB/mUXweAitAMzTtjjQ7wu7eGQAsMYtGHVpQSX+KfrwqrljdOzco19nL
+	 GEJ+iOxMhddDWSjP6cXlM/WdgYHX6GDZYR4/ThKhfLGeeawlZY5xaV3L685TZB75o4
+	 nceHD9Fu9OqIkdjWX37BnnWl5XWDMyy7CDpXMUMHQQ8AE6cNGc81iNv4J1N1KdAkns
+	 X3pxCDbh90Z3V7Hrq6s0RQRi/A4G7WriZheMsLcLYPIq74VXGhbuTXItSL3abj1X3t
+	 uIbqrmRSjLk+Q==
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50ea98440a7so1318078e87.1
+        for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 13:34:45 -0800 (PST)
+X-Gm-Message-State: AOJu0YwKKXYJ1IRRbY0zVkcGX/7B3a+iMdgMEmjsaf0AH9qtAOcDen8U
+	5JMmg7gaLSjF9Bz1GQzNdVtycmWdN6VleOcs21/sd4Jp3oX1ve63c06BOBYZ9ndaXYrR0HRQkfo
+	AgSn/TkcDsilpfEgmTUE18ZEqimE=
+X-Google-Smtp-Source: AGHT+IHQ9VtBTbXo65EUsuhKb/uwO3dKsxovylGl/5dt9QicLaYy1PdrRO82xzFRaDWKGg9lxZPMb5fq6jxLdudLiQI=
+X-Received: by 2002:ac2:5f10:0:b0:50e:7719:4687 with SMTP id
+ 16-20020ac25f10000000b0050e77194687mr93419lfq.145.1705700083822; Fri, 19 Jan
+ 2024 13:34:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v5 1/2] libbpf: Apply map_set_def_max_entries() for
- inner_maps on creation
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170569982709.24319.16024123262665382181.git-patchwork-notify@kernel.org>
-Date: Fri, 19 Jan 2024 21:30:27 +0000
-References: <20240117130619.9403-1-conquistador@yandex-team.ru>
-In-Reply-To: <20240117130619.9403-1-conquistador@yandex-team.ru>
-To: Andrey Grafin <conquistador@yandex-team.ru>
-Cc: bpf@vger.kernel.org, andrii@kernel.org
+References: <20240119210201.1295511-1-andrii@kernel.org> <CAPhsuW75zzq5W4yVOpuS9LcWV9koFrHPi+z72w1zGhCr0KKoVQ@mail.gmail.com>
+ <CAEf4BzZRaKsJ0T3LGxeCchSgLi6Gvs5-0pe0Ba6DQpFFSiF66w@mail.gmail.com> <CAEf4BzaHz3VRUs=vHC7u5rZmTHE7CTs78oYcOHripWM266QA+A@mail.gmail.com>
+In-Reply-To: <CAEf4BzaHz3VRUs=vHC7u5rZmTHE7CTs78oYcOHripWM266QA+A@mail.gmail.com>
+From: Song Liu <song@kernel.org>
+Date: Fri, 19 Jan 2024 13:34:32 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7PZ4aMmtZrTHx-R9yyU6aJbHhmEVhxL=CB6L+4Og9BAw@mail.gmail.com>
+Message-ID: <CAPhsuW7PZ4aMmtZrTHx-R9yyU6aJbHhmEVhxL=CB6L+4Og9BAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: call dup2() syscall directly
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Fri, Jan 19, 2024 at 1:30=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jan 19, 2024 at 1:21=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Fri, Jan 19, 2024 at 1:18=E2=80=AFPM Song Liu <song@kernel.org> wrot=
+e:
+> > >
+> > > On Fri, Jan 19, 2024 at 1:02=E2=80=AFPM Andrii Nakryiko <andrii@kerne=
+l.org> wrote:
+> > > >
+> > > > We've ran into issues with using dup2() API in production setting, =
+where
+> > > > libbpf is linked into large production environment and ends up call=
+ing
+> > > > uninteded custom implementations of dup2(). These custom implementa=
+tions
+> > >
+> > > typo: unintended
+> >
+> > oops, but probably doesn't warrant respinning
+> >
+> > >
+> > > > don't provide atomic FD replacement guarantees of dup2() syscall,
+> > > > leading to subtle and hard to debug issues.
+> > > >
+> > > > To prevent this in the future and guarantee that no libc implementa=
+tion
+> > > > will do their own custom non-atomic dup2() implementation, call dup=
+2()
+> > > > syscall directly with syscall(SYS_dup2).
+> > > >
+> > > > Note that some architectures don't seem to provide dup2 and have du=
+p3
+> > > > instead. Try to detect and pick best syscall.
+> > >
+> > > I wonder whether we can just always use dup3().
+> >
+> > dup3() (according to my git foo) was added in 4.17, which is more
+> > modern than some other usable BPF, so I don't want to just randomly
+> > bump the minimal supported (by libbpf) kernel for something like this.
+> >
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+I believe dup3() was added in 3.7.
 
-On Wed, 17 Jan 2024 16:06:18 +0300 you wrote:
-> This patch allows to auto create BPF_MAP_TYPE_ARRAY_OF_MAPS and
-> BPF_MAP_TYPE_HASH_OF_MAPS with values of BPF_MAP_TYPE_PERF_EVENT_ARRAY
-> by bpf_object__load().
-> 
-> Previous behaviour created a zero filled btf_map_def for inner maps and
-> tried to use it for a map creation but the linux kernel forbids to create
-> a BPF_MAP_TYPE_PERF_EVENT_ARRAY map with max_entries=0.
-> 
-> [...]
+>
+> Btw, this #ifdef check is the same as what glibc does for its
+> implementation of dup2() (except for fd equality check which isn't
+> necessary for libbpf), see [0]
+>
+>   [0] https://github.com/bminor/glibc/blob/master/sysdeps/unix/sysv/linux=
+/dup2.c
 
-Here is the summary with links:
-  - [bpf,v5,1/2] libbpf: Apply map_set_def_max_entries() for inner_maps on creation
-    https://git.kernel.org/bpf/bpf-next/c/683ed8edd0c7
-  - [bpf,v5,2/2] selftest/bpf: Add map_in_maps with BPF_MAP_TYPE_PERF_EVENT_ARRAY values
-    https://git.kernel.org/bpf/bpf-next/c/9d1a26e7e43c
+Yep, this looks good.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Thanks,
+Song
 
