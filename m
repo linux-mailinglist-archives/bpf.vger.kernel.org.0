@@ -1,119 +1,87 @@
-Return-Path: <bpf+bounces-19948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 851ED833191
-	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:32:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39CF7833192
+	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:32:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 24D781F22778
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:32:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A1E51C21F19
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B09B5A7B3;
-	Fri, 19 Jan 2024 23:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3013A5914D;
+	Fri, 19 Jan 2024 23:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YAQA/Y09"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SYUtFW3g"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E48759B4A;
-	Fri, 19 Jan 2024 23:31:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3991E48E
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705707085; cv=none; b=ioyfGZMNip4Co8VVTd9HsRhIe/Sf6/kbUA1V/Q1W9HniamVKprIxLvPGDVT7Bn4FH/9tzcgqrl10ytc4DQdvY4uYCC3zD+TQBuonN9+qgC4ap1hEpB8WfvJ1qHgd5xZDF/wZjje7uKDFjCp984M4HW/XxoedL5YblJpEDpYWSKM=
+	t=1705707117; cv=none; b=S7ffrDO/HamcpNtVWmL1yWAtENzAqRDiaU8M1CLRC6/oqDiv9j/1CW9vDdWd0nf1Uy+ELJuPBtSDv/eWvqAOiiBbvMOJqjVk1QrAQ6owY2+HrMCOvUD5VKHZu3v8bwrqOZEQmCiEn/g1E3jPyTpFbnMrj0DRSbyQ3d97YEMZXS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705707085; c=relaxed/simple;
-	bh=9khkhqzvLIulNsCTS8jeOkWg0pFG1sYZYYrSbURPQmo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Of6P0Jo9zrIUqWuapOkG5meKEPnMqHuRhhK39zQAOxjaLlQwdVrpdjE5QeCqG6hpm2mJvntcD8KpUUyPvirmmGZ7ptYhaNISfwI/mPSlg+1Vz69WbDldikiAyIRV6jvWglaS3mPMbwKg9hUwzLFIY06Hq9c6bki+lOv7o2GjaBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YAQA/Y09; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705707084; x=1737243084;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=9khkhqzvLIulNsCTS8jeOkWg0pFG1sYZYYrSbURPQmo=;
-  b=YAQA/Y09rju7cjY4HojJ1JTpVzzs5zRRuS2kwXltlGdzDQa06yyPcDyQ
-   n5Zi1XBYVc5tWBGFpt7X9d+1pyIc8cRy1dbmwFuAeTg8IOnnJkH+H61vo
-   gqVJGStUyRWlimbvrWekjoDuxZkcu/khnT17U/6x6/9h9vVLDMNm5s1I0
-   xZMFjNCGULrzgX22bmTnapOZplRZsu1vHEY9b/hMkgqsw80kS+3aTLLV5
-   Mk/xWZfbE/pNPgi7d6Xr+PB0L3QSGBtpKgPJCxUgRNS3JJFnELSenJ20Q
-   S2s5RTO36ywlVaN/g6U1E0cKja/vcEIIPr/fhB34HGwKrIZFW2Z4bSVZB
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="771713"
-X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
-   d="scan'208";a="771713"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 15:31:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="904277469"
-X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
-   d="scan'208";a="904277469"
-Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Jan 2024 15:31:21 -0800
-From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: netdev@vger.kernel.org,
-	magnus.karlsson@intel.com,
-	bjorn@kernel.org,
-	maciej.fijalkowski@intel.com,
-	echaudro@redhat.com,
-	lorenzo@kernel.org,
-	martin.lau@linux.dev,
-	tirthendu.sarkar@intel.com,
-	john.fastabend@gmail.com
-Subject: [PATCH v4 bpf 11/11] i40e: update xdp_rxq_info::frag_size for ZC enabled Rx queue
-Date: Sat, 20 Jan 2024 00:30:37 +0100
-Message-Id: <20240119233037.537084-12-maciej.fijalkowski@intel.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240119233037.537084-1-maciej.fijalkowski@intel.com>
-References: <20240119233037.537084-1-maciej.fijalkowski@intel.com>
+	s=arc-20240116; t=1705707117; c=relaxed/simple;
+	bh=8lLIchXajZfV+ZK0O8A2tOHiwM8Q32ka5EuOGnElS8s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E+QrYO7UAjyxMP0j7WoVWJUm2/bvDR0IiWIg8qxOmHxIIRSkIzTFiFvmmQEEcD9kux0wTDG68qSDko9T9i8TCu1p6M7cU8p3CCbr6E5VaB60LG9WLOQpX7UkEbk0EHxczrCEWRaiAX9ELvwY7vDBF9HIhcnZ5vnRjEoxXxlIYXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SYUtFW3g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E01EC43399
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705707117;
+	bh=8lLIchXajZfV+ZK0O8A2tOHiwM8Q32ka5EuOGnElS8s=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=SYUtFW3gDjL6T8F1KVqM2tHPns9JEBEIccijEz02XFMzvXl7y9+GB5yeeNuMo7iJF
+	 uKVJimjxGNk1V4m1gEmDBkOiCcNAxFUJzPfe0eyZTGZ4y0R7PS1DcEueVy5jFMpHkR
+	 RaS45Cc3NW6ajlEPHv0ZSZpVqiJnDMACAozNtg5VDs0k3nbn/lXFbXt4pd1wRzDc2W
+	 IXZWG7Km92DE+HvxFVIByubwzkSkCLxY86vvWZv27SnnsrbBoZqGL9QNoUb7Csk6PW
+	 Q7ZHpMYFiNhSD9BJ5zuZgpKgPDc8ZRgrxEnonhBfGE9xOkLS7X5Py46u89hknRmYbU
+	 opg+OVrL3C+eg==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-50ea9e189ebso1512286e87.3
+        for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 15:31:57 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxs/hvHrAoO5QQ/reag6E5uZ3OGP9FcRSxVbf9NMu9E4lpRrJTg
+	fmwNSYayA6Y5rlU2XkXAf9/wcvVDBVtJ8lP4XKLCSE0khwhxfwqOT23Z/FWPJtbePzmowCn9xzJ
+	vNSFPghXOsucvtOLKawieI0uqkvQ=
+X-Google-Smtp-Source: AGHT+IGv6l1VHGfKnaFX3t5l2sOYxpkCsK+v7StfBwT2fGE3sjcZ16OLSXhqaw0RN+lybG3PHnf3bSVcPhw0b0i9lkk=
+X-Received: by 2002:a19:9106:0:b0:50e:7c08:4351 with SMTP id
+ t6-20020a199106000000b0050e7c084351mr177300lfd.44.1705707115375; Fri, 19 Jan
+ 2024 15:31:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240119110505.400573-1-jolsa@kernel.org> <20240119110505.400573-3-jolsa@kernel.org>
+In-Reply-To: <20240119110505.400573-3-jolsa@kernel.org>
+From: Song Liu <song@kernel.org>
+Date: Fri, 19 Jan 2024 15:31:43 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW4th05b42=0ujY7jc5HQ603_+=qLnZ9qEPf8VL_Squ=MA@mail.gmail.com>
+Message-ID: <CAPhsuW4th05b42=0ujY7jc5HQ603_+=qLnZ9qEPf8VL_Squ=MA@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 2/8] bpf: Store cookies in kprobe_multi
+ bpf_link_info data
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Yafang Shao <laoar.shao@gmail.com>, bpf@vger.kernel.org, 
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Quentin Monnet <quentin@isovalent.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Now that i40e driver correctly sets up frag_size in xdp_rxq_info, let us
-make it work for ZC multi-buffer as well. i40e_ring::rx_buf_len for ZC
-is being set via xsk_pool_get_rx_frame_size() and this needs to be
-propagated up to xdp_rxq_info.
+On Fri, Jan 19, 2024 at 3:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Storing cookies in kprobe_multi bpf_link_info data. The cookies
+> field is optional and if provided it needs to be an array of
+> __u64 with kprobe_multi.count length.
+>
+> Acked-by: Yafang Shao <laoar.shao@gmail.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
-Fixes: 1c9ba9c14658 ("i40e: xsk: add RX multi-buffer support")
-Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
----
- drivers/net/ethernet/intel/i40e/i40e_main.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index f8d513499607..7b091ce64cc7 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -3609,7 +3609,14 @@ static int i40e_configure_rx_ring(struct i40e_ring *ring)
- 
- 	ring->xsk_pool = i40e_xsk_pool(ring);
- 	if (ring->xsk_pool) {
-+		xdp_rxq_info_unreg(&ring->xdp_rxq);
- 		ring->rx_buf_len = xsk_pool_get_rx_frame_size(ring->xsk_pool);
-+		err = __xdp_rxq_info_reg(&ring->xdp_rxq, ring->netdev,
-+					 ring->queue_index,
-+					 ring->q_vector->napi.napi_id,
-+					 ring->rx_buf_len);
-+		if (err)
-+			return err;
- 		err = xdp_rxq_info_reg_mem_model(&ring->xdp_rxq,
- 						 MEM_TYPE_XSK_BUFF_POOL,
- 						 NULL);
--- 
-2.34.1
-
+Acked-by: Song Liu <song@kernel.org>
 
