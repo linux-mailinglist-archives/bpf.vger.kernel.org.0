@@ -1,51 +1,52 @@
-Return-Path: <bpf+bounces-19892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19893-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40B01832853
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 12:06:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D752E832854
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 12:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC28A1F221ED
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 11:06:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FB48B20F9E
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 11:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E01D64C605;
-	Fri, 19 Jan 2024 11:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455514C617;
+	Fri, 19 Jan 2024 11:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UC6ryY1k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cBG/3iyp"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A1FA1D690
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 11:06:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C64371D690
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 11:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705662387; cv=none; b=VgObOB4pZ2Bq+Dyw0z2dn1KOgMB+QM/pTRf/Ks/Kk3Sxir3pb6BwkaWPO+7dAd1jzqHFY9Zj0VDfPlNbEZMOokV1GjYspAegynMZRHdHuamsZN9ZiXZUdYr8s7aya7VvF+YXdcQD/HHF5BdDaflXTPjPMBPuKxPoyoteQoZni1M=
+	t=1705662399; cv=none; b=dg0kMkqJMgptz2SwxROkhcXhpO+m5r7kL88hUWUvc3BwLVBDzo6n8lxU1ApmFiGOpYETMZl+iYWdxzsbG6EQum/2MYgW5YSorkuXKPQorx3mCSie1odP+urZlc6RQmEQlXQGUt06Zm9AZM2Q+IpEMFSffPueSduPgu2USOAYeDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705662387; c=relaxed/simple;
-	bh=NW5rzKFuCFZy1w810jndYtklE+L66BXOFRZlUSIkjhg=;
+	s=arc-20240116; t=1705662399; c=relaxed/simple;
+	bh=NLlaV3XE02nasKkwRmkOaj+YLOJt0lLnGlzXiXBtrsM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rxJswi67a2r4LTx7DBmvRsgmItfrzEGAG4vM79VyfpBoEnVEdfUjhLarZKu/7gFstzgJj0MFBoKoA+mtlP/6jVWtyuDalD+Ee1yBjA1qTyXxeqdFFCvT0/5L+aYsssnW00DZ3lv2xuTWTYz1f+1XBYi7ZobrIGi4XxVjV78aQNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UC6ryY1k; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB2F9C433C7;
-	Fri, 19 Jan 2024 11:06:22 +0000 (UTC)
+	 MIME-Version; b=u1DkcNA+883/4NzC0DMqKPlYp+HvJEfNGqqfQboZbWt6+qh/RExQuq4k3W7hly5iaJSA4oTWPX8hguwda7YgSwzfSZZlgRoTWNL7USH7so76OymG5XialE6kwV1vTNuvJcysfPcT8moZ+wVF/GJRizUpsjQD7fZGylJM/JMWrJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cBG/3iyp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02CF6C43390;
+	Fri, 19 Jan 2024 11:06:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705662387;
-	bh=NW5rzKFuCFZy1w810jndYtklE+L66BXOFRZlUSIkjhg=;
+	s=k20201202; t=1705662399;
+	bh=NLlaV3XE02nasKkwRmkOaj+YLOJt0lLnGlzXiXBtrsM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UC6ryY1kiWI75FAslAH8v+RnqC0Kham/6cjElMHxb4mOYfTwCaoXcZswpawGGGuOI
-	 7enz8/ReuoojPemFwklWTgijahbuwkKWjwE+Kv8RDd5ooOQuIyTYU8f8QKv47qJTMJ
-	 UHZHJuSR/GtDmngHyOoa2jLTbWMsG8qpW1w0aYCtw24Yc1bbtQ5sIqineR7g1P9Fyn
-	 mii8B5Z5Uw/DWuske5ZFgUAH4kjNbXvOlYkvnPo3/HU1ULUCX2lrj9+QD5G++/s1VM
-	 Pl7Pr0q2JTCRtBNrnvKkHlXdDVEzzQkB5evCorIMPydY2ss9fdmM9voT9PUWev7efU
-	 3HGeWVtYSwaFw==
+	b=cBG/3iypH+OZl+yllfLempiSz+8noZOFW/U1RAU51s5uCfRPKVJ7QivKSF2pjaKD3
+	 rwLVVmpMAFsuf2LMeqz3FhMq9sRUyDC403lrXcgYk7vbuSbAOPbvvZFhEZNl2EGzMm
+	 6JTSi65cR7u3ii+P3QPghXl409YbW6q5ZxO9eTSXEzYW+rDmdf/9AV84lO1JKC/Ty4
+	 erxKpHQu9QZ4uuE7KxZSRaqOKeYLeTgXAkdhJ7Mi7GVaQp9orLd41cv7V/mZ0nyEYF
+	 319hIeHnTjJvsoBGXnFp+cDNHCQq8rNC7avfbdaoe/tMiB/z/TboI5NNUMgYRzPHxJ
+	 IONaKGB1aykzg==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org,
+Cc: Quentin Monnet <quentin@isovalent.com>,
+	bpf@vger.kernel.org,
 	Martin KaFai Lau <kafai@fb.com>,
 	Song Liu <songliubraving@fb.com>,
 	Yonghong Song <yhs@fb.com>,
@@ -53,11 +54,10 @@ Cc: bpf@vger.kernel.org,
 	KP Singh <kpsingh@chromium.org>,
 	Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCHv2 bpf-next 6/8] selftests/bpf: Add fill_link_info test for perf event
-Date: Fri, 19 Jan 2024 12:05:03 +0100
-Message-ID: <20240119110505.400573-7-jolsa@kernel.org>
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCHv2 bpf-next 7/8] bpftool: Display cookie for perf event link probes
+Date: Fri, 19 Jan 2024 12:05:04 +0100
+Message-ID: <20240119110505.400573-8-jolsa@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240119110505.400573-1-jolsa@kernel.org>
 References: <20240119110505.400573-1-jolsa@kernel.org>
@@ -69,97 +69,143 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding fill_link_info test for perf event and testing we
-get its values back through the bpf_link_info interface.
+Displaying cookie for perf event link probes, in plain mode:
 
+  # bpftool link
+  17: perf_event  prog 90
+          kprobe ffffffff82b1c2b0 bpf_fentry_test1  cookie 3735928559
+  18: perf_event  prog 90
+          kretprobe ffffffff82b1c2b0 bpf_fentry_test1  cookie 3735928559
+  20: perf_event  prog 92
+          tracepoint sched_switch  cookie 3735928559
+  21: perf_event  prog 93
+          event software:page-faults  cookie 3735928559
+  22: perf_event  prog 91
+          uprobe /proc/self/exe+0xd703c  cookie 3735928559
+
+And in json mode:
+
+  # bpftool link -j | jq
+
+  {
+    "id": 30,
+    "type": "perf_event",
+    "prog_id": 160,
+    "retprobe": false,
+    "addr": 18446744071607272112,
+    "func": "bpf_fentry_test1",
+    "offset": 0,
+    "missed": 0,
+    "cookie": 3735928559
+  }
+
+  {
+    "id": 33,
+    "type": "perf_event",
+    "prog_id": 162,
+    "tracepoint": "sched_switch",
+    "cookie": 3735928559
+  }
+
+  {
+    "id": 34,
+    "type": "perf_event",
+    "prog_id": 163,
+    "event_type": "software",
+    "event_config": "page-faults",
+    "cookie": 3735928559
+  }
+
+  {
+    "id": 35,
+    "type": "perf_event",
+    "prog_id": 161,
+    "retprobe": false,
+    "file": "/proc/self/exe",
+    "offset": 880700,
+    "cookie": 3735928559
+  }
+
+Reviewed-by: Quentin Monnet <quentin@isovalent.com>
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../selftests/bpf/prog_tests/fill_link_info.c | 40 +++++++++++++++++++
- .../selftests/bpf/progs/test_fill_link_info.c |  6 +++
- 2 files changed, 46 insertions(+)
+ tools/bpf/bpftool/link.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-index 20e105001bc3..f3932941bbaa 100644
---- a/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-+++ b/tools/testing/selftests/bpf/prog_tests/fill_link_info.c
-@@ -109,6 +109,11 @@ static int verify_perf_link_info(int fd, enum bpf_perf_event_type type, long add
- 			      strlen(UPROBE_FILE));
- 			ASSERT_EQ(err, 0, "cmp_file_name");
- 		break;
-+	case BPF_PERF_EVENT_EVENT:
-+		ASSERT_EQ(info.perf_event.event.type, PERF_TYPE_SOFTWARE, "event_type");
-+		ASSERT_EQ(info.perf_event.event.config, PERF_COUNT_SW_PAGE_FAULTS, "event_config");
-+		ASSERT_EQ(info.perf_event.event.cookie, PERF_EVENT_COOKIE, "event_cookie");
-+		break;
- 	default:
- 		err = -1;
- 		break;
-@@ -189,6 +194,39 @@ static void test_tp_fill_link_info(struct test_fill_link_info *skel)
- 	bpf_link__destroy(link);
+diff --git a/tools/bpf/bpftool/link.c b/tools/bpf/bpftool/link.c
+index 35b6859dd7c3..b66a1598b87c 100644
+--- a/tools/bpf/bpftool/link.c
++++ b/tools/bpf/bpftool/link.c
+@@ -334,6 +334,7 @@ show_perf_event_kprobe_json(struct bpf_link_info *info, json_writer_t *wtr)
+ 			   u64_to_ptr(info->perf_event.kprobe.func_name));
+ 	jsonw_uint_field(wtr, "offset", info->perf_event.kprobe.offset);
+ 	jsonw_uint_field(wtr, "missed", info->perf_event.kprobe.missed);
++	jsonw_uint_field(wtr, "cookie", info->perf_event.kprobe.cookie);
  }
  
-+static void test_event_fill_link_info(struct test_fill_link_info *skel)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_perf_event_opts, opts,
-+		.bpf_cookie = PERF_EVENT_COOKIE,
-+	);
-+	struct bpf_link *link;
-+	int link_fd, err, pfd;
-+	struct perf_event_attr attr = {
-+		.type = PERF_TYPE_SOFTWARE,
-+		.config = PERF_COUNT_SW_PAGE_FAULTS,
-+		.freq = 1,
-+		.sample_freq = 1,
-+		.size = sizeof(struct perf_event_attr),
-+	};
-+
-+	pfd = syscall(__NR_perf_event_open, &attr, -1 /* pid */, 0 /* cpu 0 */,
-+		      -1 /* group id */, 0 /* flags */);
-+	if (!ASSERT_GE(pfd, 0, "perf_event_open"))
-+		return;
-+
-+	link = bpf_program__attach_perf_event_opts(skel->progs.event_run, pfd, &opts);
-+	if (!ASSERT_OK_PTR(link, "attach_event"))
-+		goto error;
-+
-+	link_fd = bpf_link__fd(link);
-+	err = verify_perf_link_info(link_fd, BPF_PERF_EVENT_EVENT, 0, 0, 0);
-+	ASSERT_OK(err, "verify_perf_link_info");
-+	bpf_link__destroy(link);
-+
-+error:
-+	close(pfd);
-+}
-+
- static void test_uprobe_fill_link_info(struct test_fill_link_info *skel,
- 				       enum bpf_perf_event_type type)
- {
-@@ -549,6 +587,8 @@ void test_fill_link_info(void)
- 		test_kprobe_fill_link_info(skel, BPF_PERF_EVENT_KPROBE, true);
- 	if (test__start_subtest("tracepoint_link_info"))
- 		test_tp_fill_link_info(skel);
-+	if (test__start_subtest("event_link_info"))
-+		test_event_fill_link_info(skel);
- 
- 	uprobe_offset = get_uprobe_offset(&uprobe_func);
- 	if (test__start_subtest("uprobe_link_info"))
-diff --git a/tools/testing/selftests/bpf/progs/test_fill_link_info.c b/tools/testing/selftests/bpf/progs/test_fill_link_info.c
-index 69509f8bb680..6afa834756e9 100644
---- a/tools/testing/selftests/bpf/progs/test_fill_link_info.c
-+++ b/tools/testing/selftests/bpf/progs/test_fill_link_info.c
-@@ -33,6 +33,12 @@ int BPF_PROG(tp_run)
- 	return 0;
+ static void
+@@ -343,6 +344,7 @@ show_perf_event_uprobe_json(struct bpf_link_info *info, json_writer_t *wtr)
+ 	jsonw_string_field(wtr, "file",
+ 			   u64_to_ptr(info->perf_event.uprobe.file_name));
+ 	jsonw_uint_field(wtr, "offset", info->perf_event.uprobe.offset);
++	jsonw_uint_field(wtr, "cookie", info->perf_event.uprobe.cookie);
  }
  
-+SEC("perf_event")
-+int event_run(void *ctx)
-+{
-+	return 0;
-+}
-+
- SEC("kprobe.multi")
- int BPF_PROG(kmulti_run)
+ static void
+@@ -350,6 +352,7 @@ show_perf_event_tracepoint_json(struct bpf_link_info *info, json_writer_t *wtr)
  {
+ 	jsonw_string_field(wtr, "tracepoint",
+ 			   u64_to_ptr(info->perf_event.tracepoint.tp_name));
++	jsonw_uint_field(wtr, "cookie", info->perf_event.tracepoint.cookie);
+ }
+ 
+ static char *perf_config_hw_cache_str(__u64 config)
+@@ -426,6 +429,8 @@ show_perf_event_event_json(struct bpf_link_info *info, json_writer_t *wtr)
+ 	else
+ 		jsonw_uint_field(wtr, "event_config", config);
+ 
++	jsonw_uint_field(wtr, "cookie", info->perf_event.event.cookie);
++
+ 	if (type == PERF_TYPE_HW_CACHE && perf_config)
+ 		free((void *)perf_config);
+ }
+@@ -754,6 +759,8 @@ static void show_perf_event_kprobe_plain(struct bpf_link_info *info)
+ 		printf("+%#x", info->perf_event.kprobe.offset);
+ 	if (info->perf_event.kprobe.missed)
+ 		printf("  missed %llu", info->perf_event.kprobe.missed);
++	if (info->perf_event.kprobe.cookie)
++		printf("  cookie %llu", info->perf_event.kprobe.cookie);
+ 	printf("  ");
+ }
+ 
+@@ -770,6 +777,8 @@ static void show_perf_event_uprobe_plain(struct bpf_link_info *info)
+ 	else
+ 		printf("\n\tuprobe ");
+ 	printf("%s+%#x  ", buf, info->perf_event.uprobe.offset);
++	if (info->perf_event.uprobe.cookie)
++		printf("cookie %llu  ", info->perf_event.uprobe.cookie);
+ }
+ 
+ static void show_perf_event_tracepoint_plain(struct bpf_link_info *info)
+@@ -781,6 +790,8 @@ static void show_perf_event_tracepoint_plain(struct bpf_link_info *info)
+ 		return;
+ 
+ 	printf("\n\ttracepoint %s  ", buf);
++	if (info->perf_event.tracepoint.cookie)
++		printf("cookie %llu  ", info->perf_event.tracepoint.cookie);
+ }
+ 
+ static void show_perf_event_event_plain(struct bpf_link_info *info)
+@@ -802,6 +813,9 @@ static void show_perf_event_event_plain(struct bpf_link_info *info)
+ 	else
+ 		printf("%llu  ", config);
+ 
++	if (info->perf_event.event.cookie)
++		printf("cookie %llu  ", info->perf_event.event.cookie);
++
+ 	if (type == PERF_TYPE_HW_CACHE && perf_config)
+ 		free((void *)perf_config);
+ }
 -- 
 2.43.0
 
