@@ -1,230 +1,178 @@
-Return-Path: <bpf+bounces-19877-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19878-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96FAB832509
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 08:30:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A65483255C
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 09:03:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47D8D2862C2
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 07:30:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23D1D1C20DC9
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 08:03:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A0F128DA1;
-	Fri, 19 Jan 2024 07:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCBCD531;
+	Fri, 19 Jan 2024 08:03:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YtgoPUoc"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F55DC15D;
-	Fri, 19 Jan 2024 07:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B25C28E01
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 08:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705649372; cv=none; b=G3UUk9I6sOI+MaTFb+SgDkhah8CH68bf0+0Qgy0Q7ShdxQ0aJFrZ9vM/fAzDFvox/I0L1AFDGJrGm/YmOxRsd+quoEaXk9zcCGh9M0oKOuPY+47DcnP5ZpOEqMokUJa3D33Y2aFX1hevElIq9cQ9ipG/mQf3Hnio/0Gv8fBMbn8=
+	t=1705651393; cv=none; b=fi+4iM3VjdO1rscuG1CB5oj4Qi3g/xTKXbYmFBlaoxDPtscLm33hrPHTrbT0YEHukX3xwbWD6UafWwCh3jy0cUcbaa85zMJSaYBAoMIlfRHDrcLWkjrGQydTjMSkZK1Qxd90ZX6DJpSAZwKSSodQhTe7ZXbub0YdOoooc2yXzcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705649372; c=relaxed/simple;
-	bh=ozu/HsbZAoRwYY5AZoROB+GuhJcVlIS4+UjK+SDUZg0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cHm6w2pIOXFBXLydYTepZuoIZ+DXPBWJ9uVFETS9nM5be0+Gwjhww2D11l3/6/1AgrkTYy+fHx7waaCo/1T8ekn7VaoSKTn6RUS51COCCFBJQydrSfv+2+uSWe7OfnA74xUEMpMxo9Lmk4keHekg98j3FVjtERy/5Jtr5DKB+ds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TGWTC3v8lz4f3lfX;
-	Fri, 19 Jan 2024 15:29:19 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B052B1A0AA6;
-	Fri, 19 Jan 2024 15:29:25 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAX6RHQJKplBOsuBQ--.42435S7;
-	Fri, 19 Jan 2024 15:29:25 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-To: x86@kernel.org,
-	bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	linux-kernel@vger.kernel.org,
-	xingwei lee <xrivendell7@gmail.com>,
-	Jann Horn <jannh@google.com>,
-	houtao1@huawei.com
-Subject: [PATCH bpf 3/3] selftest/bpf: Test the read of vsyscall page under x86-64
-Date: Fri, 19 Jan 2024 15:30:19 +0800
-Message-Id: <20240119073019.1528573-4-houtao@huaweicloud.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20240119073019.1528573-1-houtao@huaweicloud.com>
-References: <20240119073019.1528573-1-houtao@huaweicloud.com>
+	s=arc-20240116; t=1705651393; c=relaxed/simple;
+	bh=rlBWNmA92O7oTT0Z2xjFu14/ZaRjOdE97M2WYUyn5tM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ud3EosvE+AKV/hE7JAIyfDE08sBkaDRrzvpLYinCO6d8HC+qgxb6PWy468zNgIJzzbUiYiBgG881ZqGyNUBg/TU3sU/AIjHb2NZQNMHkrnCymizriQWGDFtNFANkzeldvVhuz7BY1YSW4OW/lTQK+F3AUphpUSBjQaQDf0Z82xE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YtgoPUoc; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-55790581457so555482a12.3
+        for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 00:03:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705651390; x=1706256190; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5kU/N9QNqdraOzqoaFF5z2FdAdLtcF2XhDqa6sXZkYI=;
+        b=YtgoPUoc7/EzkaONTosHbfMv4fTkH8nGEnhLnh9Djhl4DID27GRlH7UDNcQZtUWcjl
+         uPkD9ifcCdXQ1ATEshEYB0xY8eBtsqyxdtQolJJJMQJ9IS88JgaI9Dfp7BLGcEFvtX/z
+         /g9BDFhWiG8UVRLF1SS97Wf8aImAdeApSPjD+VZIHxohVlxpbct3RRrnlDSFDVskKBzh
+         Pq7kwAzZbn79NGRy705rPRM4xKUVri0HICYTbouwPo7ZMrKPa+mKm4ilnNhgTZ8whs09
+         KVUlHnewPeau5msudL6+avaqCLx6ZR15ucSMfESfU9R43BV7FnPCnLV9lpW9C4OwnoM9
+         cz3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705651390; x=1706256190;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5kU/N9QNqdraOzqoaFF5z2FdAdLtcF2XhDqa6sXZkYI=;
+        b=OuSqwK0vL6IQrztKkI2tFnGHEXUkvB78LHxXwYqeAxjR/B9QwQjhKBdgZuvwvbZKRE
+         ljCmgGpRkNGuu1PXqNMY0ajvbCKwaDbql6tu8baiVSovmjKA8cqi77MikZ0ikgRFcKkD
+         ERSr37XMP43VzIJgUzXTXYVUTeF76BaDtebR9CSdl4GS68fL1heAWJxZ2nzPbQEjVTT5
+         OLOXh/5/WbIgkxWO8MyobbRaPa3KFxZxxHiEoYMaYntGaNWECSx48ykV8T/n2A6fY1Eh
+         Il/2ZDs2DWaiCjSKhawUOU0qbCm/HSN6gJakfb5FCUv286sjRd8Wuc+vPHn6BSrAHmk7
+         soeg==
+X-Gm-Message-State: AOJu0Yzczld3dbun8wLR6Ui9h0C0SAyeViVhBLoYB0Ci4zi89ylfwWgE
+	xmJxGdN3I9GD7gmOM6r5H4LWwfp8girxBN4H18cPu0iKcrxjrmDS
+X-Google-Smtp-Source: AGHT+IEHvzCA5CMe80PxXtGtDrmGY2WW7beZ4NDF0xZ/iFxsvBLKzyhQZ/AQdJB9LCsYlcFK8yPZuQ==
+X-Received: by 2002:a50:9fca:0:b0:55a:47d6:ba25 with SMTP id c68-20020a509fca000000b0055a47d6ba25mr663276edf.33.1705651389970;
+        Fri, 19 Jan 2024 00:03:09 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id ev24-20020a056402541800b005581573e251sm10487303edb.2.2024.01.19.00.03.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jan 2024 00:03:09 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 19 Jan 2024 09:03:07 +0100
+To: Quentin Monnet <quentin@isovalent.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH bpf-next 8/8] bpftool: Display cookie for kprobe multi
+ link
+Message-ID: <Zaosu7TEPONDZRog@krava>
+References: <20240118095416.989152-1-jolsa@kernel.org>
+ <20240118095416.989152-9-jolsa@kernel.org>
+ <48e86f23-d938-4705-b91a-adbe4ee3123c@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX6RHQJKplBOsuBQ--.42435S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxZry5KrW3Zw4DKr4xKFyUWrg_yoWrtr4kp3
-	Wvy3W3Kr4fJw12yr4xWws8XFWrXr1kJF4Yyr95Wr13Zr47Zr9YqryIga4DtF15Grs3urW5
-	Za97Kas5Kr4UJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
-	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
-	Ij6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_
-	Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64
-	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2I
-	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAI
-	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <48e86f23-d938-4705-b91a-adbe4ee3123c@isovalent.com>
 
-From: Hou Tao <houtao1@huawei.com>
+On Thu, Jan 18, 2024 at 05:51:17PM +0000, Quentin Monnet wrote:
 
-Using bpf_probe_read_kernel{_str}() or bpf_probe_read{_str}() to read
-from vsyscall page under x86-64 will trigger oops, so add one test case
-to ensure that the problem is fixed.
+SNIP
 
-Beside those four bpf helpers mentioned above, testing the read of
-vsyscall page by using bpf_probe_read_user{_str} and
-bpf_copy_from_user{_task}() as well.
+> >  static __u64 *u64_to_arr(__u64 val)
+> > @@ -675,8 +706,8 @@ void netfilter_dump_plain(const struct bpf_link_info *info)
+> >  
+> >  static void show_kprobe_multi_plain(struct bpf_link_info *info)
+> >  {
+> > +	struct addr_cookie *data;
+> >  	__u32 i, j = 0;
+> > -	__u64 *addrs;
+> >  
+> >  	if (!info->kprobe_multi.count)
+> >  		return;
+> > @@ -688,8 +719,11 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
+> >  	printf("func_cnt %u  ", info->kprobe_multi.count);
+> >  	if (info->kprobe_multi.missed)
+> >  		printf("missed %llu  ", info->kprobe_multi.missed);
+> > -	addrs = (__u64 *)u64_to_ptr(info->kprobe_multi.addrs);
+> > -	qsort(addrs, info->kprobe_multi.count, sizeof(__u64), cmp_u64);
+> > +	data = get_addr_cookie_array(u64_to_ptr(info->kprobe_multi.addrs),
+> > +				     u64_to_ptr(info->kprobe_multi.cookies),
+> > +				     info->kprobe_multi.count);
+> > +	if (!data)
+> > +		return;
+> >  
+> >  	/* Load it once for all. */
+> >  	if (!dd.sym_count)
+> > @@ -697,12 +731,12 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
+> >  	if (!dd.sym_count)
+> >  		return;
+> 
+> Don't we need to free(data) if we return here?
 
-vsyscall page could be disabled by CONFIG_LEGACY_VSYSCALL_NONE or
-vsyscall=none boot cmd-line, but it doesn't affect the reproduce of the
-problem and the returned error codes.
+good catch! I guess I got distracted by show_kprobe_multi_plain being
+similar to show_kprobe_multi_json, which does not check dd.sym_count
+and does not return, which it should :-\ I'll include that fix as well
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- .../selftests/bpf/prog_tests/read_vsyscall.c  | 61 +++++++++++++++++++
- .../selftests/bpf/progs/read_vsyscall.c       | 45 ++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
- create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+thanks,
+jirka
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-new file mode 100644
-index 0000000000000..d9247cc89cf3e
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-@@ -0,0 +1,61 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include "test_progs.h"
-+#include "read_vsyscall.skel.h"
-+
-+#if defined(__x86_64__)
-+/* For VSYSCALL_ADDR */
-+#include <asm/vsyscall.h>
-+#else
-+/* To prevent build failure on non-x86 arch */
-+#define VSYSCALL_ADDR 0UL
-+#endif
-+
-+struct read_ret_desc {
-+	const char *name;
-+	int ret;
-+} all_read[] = {
-+	{ .name = "probe_read_kernel", .ret = -ERANGE },
-+	{ .name = "probe_read_kernel_str", .ret = -ERANGE },
-+	{ .name = "probe_read", .ret = -ERANGE },
-+	{ .name = "probe_read_str", .ret = -ERANGE },
-+	/* __access_ok() will fail */
-+	{ .name = "probe_read_user", .ret = -EFAULT },
-+	/* __access_ok() will fail */
-+	{ .name = "probe_read_user_str", .ret = -EFAULT },
-+	/* access_ok() will fail */
-+	{ .name = "copy_from_user", .ret = -EFAULT },
-+	/* both vma_lookup() and expand_stack() will fail */
-+	{ .name = "copy_from_user_task", .ret = -EFAULT },
-+};
-+
-+void test_read_vsyscall(void)
-+{
-+	struct read_vsyscall *skel;
-+	unsigned int i;
-+	int err;
-+
-+#if !defined(__x86_64__)
-+	test__skip();
-+	return;
-+#endif
-+	skel = read_vsyscall__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "read_vsyscall open_load"))
-+		return;
-+
-+	skel->bss->target_pid = getpid();
-+	err = read_vsyscall__attach(skel);
-+	if (!ASSERT_EQ(err, 0, "read_vsyscall attach"))
-+		goto out;
-+
-+	/* userspace may don't have vsyscall page due to LEGACY_VSYSCALL_NONE,
-+	 * but it doesn't affect the returned error codes.
-+	 */
-+	skel->bss->user_ptr = (void *)VSYSCALL_ADDR;
-+	usleep(1);
-+
-+	for (i = 0; i < ARRAY_SIZE(all_read); i++)
-+		ASSERT_EQ(skel->bss->read_ret[i], all_read[i].ret, all_read[i].name);
-+out:
-+	read_vsyscall__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/read_vsyscall.c b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-new file mode 100644
-index 0000000000000..986f96687ae15
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/read_vsyscall.c
-@@ -0,0 +1,45 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-+#include <linux/types.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_misc.h"
-+
-+int target_pid = 0;
-+void *user_ptr = 0;
-+int read_ret[8];
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("fentry/" SYS_PREFIX "sys_nanosleep")
-+int do_probe_read(void *ctx)
-+{
-+	char buf[8];
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+
-+	read_ret[0] = bpf_probe_read_kernel(buf, sizeof(buf), user_ptr);
-+	read_ret[1] = bpf_probe_read_kernel_str(buf, sizeof(buf), user_ptr);
-+	read_ret[2] = bpf_probe_read(buf, sizeof(buf), user_ptr);
-+	read_ret[3] = bpf_probe_read_str(buf, sizeof(buf), user_ptr);
-+	read_ret[4] = bpf_probe_read_user(buf, sizeof(buf), user_ptr);
-+	read_ret[5] = bpf_probe_read_user_str(buf, sizeof(buf), user_ptr);
-+
-+	return 0;
-+}
-+
-+SEC("fentry.s/" SYS_PREFIX "sys_nanosleep")
-+int do_copy_from_user(void *ctx)
-+{
-+	char buf[8];
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != target_pid)
-+		return 0;
-+
-+	read_ret[6] = bpf_copy_from_user(buf, sizeof(buf), user_ptr);
-+	read_ret[7] = bpf_copy_from_user_task(buf, sizeof(buf), user_ptr,
-+					      bpf_get_current_task_btf(), 0);
-+
-+	return 0;
-+}
--- 
-2.29.2
-
+> 
+> >  
+> > -	printf("\n\t%-16s %s", "addr", "func [module]");
+> > +	printf("\n\t%-16s %-16s %s", "addr", "cookie", "func [module]");
+> >  	for (i = 0; i < dd.sym_count; i++) {
+> > -		if (dd.sym_mapping[i].address != addrs[j])
+> > +		if (dd.sym_mapping[i].address != data[j].addr)
+> >  			continue;
+> > -		printf("\n\t%016lx %s",
+> > -		       dd.sym_mapping[i].address, dd.sym_mapping[i].name);
+> > +		printf("\n\t%016lx %-16llx %s",
+> > +		       dd.sym_mapping[i].address, data[j].cookie, dd.sym_mapping[i].name);
+> >  		if (dd.sym_mapping[i].module[0] != '\0')
+> >  			printf(" [%s]  ", dd.sym_mapping[i].module);
+> >  		else
+> > @@ -711,6 +745,7 @@ static void show_kprobe_multi_plain(struct bpf_link_info *info)
+> >  		if (j++ == info->kprobe_multi.count)
+> >  			break;
+> >  	}
+> > +	free(data);
+> >  }
+> >  
+> >  static void show_uprobe_multi_plain(struct bpf_link_info *info)
+> > @@ -966,6 +1001,14 @@ static int do_show_link(int fd)
+> >  				return -ENOMEM;
+> >  			}
+> >  			info.kprobe_multi.addrs = ptr_to_u64(addrs);
+> > +			cookies = calloc(count, sizeof(__u64));
+> > +			if (!cookies) {
+> > +				p_err("mem alloc failed");
+> > +				free(addrs);
+> > +				close(fd);
+> > +				return -ENOMEM;
+> > +			}
+> > +			info.kprobe_multi.cookies = ptr_to_u64(cookies);
+> >  			goto again;
+> >  		}
+> >  	}
+> 
 
