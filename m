@@ -1,147 +1,183 @@
-Return-Path: <bpf+bounces-19957-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19958-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C22428331B0
-	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:52:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C09248331B2
+	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C3E6B23626
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:52:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79C48284475
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 916D359173;
-	Fri, 19 Jan 2024 23:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E3959179;
+	Fri, 19 Jan 2024 23:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fhv8GmKu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YRV46JY9"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7087155E63
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:51:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1EA55E63;
+	Fri, 19 Jan 2024 23:54:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705708319; cv=none; b=UKEJp3xTJykdEFeUQbf3mJ/PlHP3LcpIJCWp1nog/srNAvjrgoPNVXekybg+QI56BfvsNESQMbDtmQ8NjYmmA6dfjmv6l4+3BywnHAfOtpXUhtD4JiiobmIabZaUAYSmRP2zwkEC4R+T4zzF27NI25QzZvjpZicVDblS1fppNLc=
+	t=1705708458; cv=none; b=LcF9o8qGmNLkDi8oxBYK4gy+bMGtJ/QSuGoip96n6SZq7YWZbw4efSw2c1msTRLiw4KsFdNE0W5JlXKW7+ME/+QY39s3LidLt5uGYftlFmHslNTquuls9CEK1SZF5xx2XwKgf7wS09SvSi0lZHsiIKyEzPSZE1cHeUDOYD7L+8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705708319; c=relaxed/simple;
-	bh=UfS/0VXJsSkYOfKjH2bpyDNyGVTgJUHvDtbK1E2VvD8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cg9rV2eIcDAdT90Lr5vavENh+J4Qij1XRGf+qnucUxD0pKfFUcXUM1tgCuE2HANf+l97wDFoxfMRX0omL2RGCM0W5qxl1QOMAq+XlY2QplnvZvLiSlLvLW2wdIO2UwtitKsAm9JYURYiRibVVQoH0FAXn5PIlewk7v03pOvFVI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fhv8GmKu; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705708315;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=TQ8xZsSJSODhnMgyiRDISjav5Ai2v8hg/uNsEeNtq/s=;
-	b=fhv8GmKuKZM9ISGNdJ9vEdrgTdlD8WDCX2t2BZo6pvGl7FSVFYwbtAuHWSXN48+x4bdgdY
-	ms/yt5mB9745+G88HBdSdHap1jjBbF/7zsSrHr1LHdTPrg+mboWdnszTwtOEmT0f9i22ya
-	TCFBion4sDnXc1G8zG26Y4RApSrYaQE=
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next] selftests/bpf: Fix the flaky tc_redirect_dtime test
-Date: Fri, 19 Jan 2024 15:51:43 -0800
-Message-Id: <20240119235143.1835178-1-martin.lau@linux.dev>
+	s=arc-20240116; t=1705708458; c=relaxed/simple;
+	bh=Tw1kfBbroK0xUIYhHQUqENaxo7vsNmH/RC4xN3Xsuso=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YTfalXDATsjSI/k8j+XnEFTq6c4WdAC5+yNI6J/pVi+DLQ6t/MetHTADBeDUdWvdPE/O4XGrhWnxinLEn9/lvOBZ2IFBotx7AZZv/CMp7Pw1Hoqu7AFx3CB8N5fdx7snaFtM5YWbOJz/re14BgEMcn+SU16WruLY7MJ8GKL83C4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YRV46JY9; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4298e866cd6so8653011cf.0;
+        Fri, 19 Jan 2024 15:54:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705708455; x=1706313255; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eIpC1Yh2GbIKhd5D8mXJR+ySfViqLAS3kNAflIvdAKM=;
+        b=YRV46JY9TQM+8ewi6zPPIh93tsyZ/Qwq1nPg2mkXhqkIhXdT4pJ3Cxm/fyVd62irDu
+         CbfwiaEZTfe+n/hX5XzcoOkxNz1RiSZtTuF6O6q4nHRhBL9YhqvAEpjbH252BThiwBUP
+         sDvZJoSxSwgFaFY077SttOZHj62xFXaLmjPBSeGaCCEXPCRsKsqgg/JTqbdb+oQFkMvo
+         ozgwsSoIAqYVbJmijQAPDbzzHfun8fpIK18QwMQPiEu16GctDOBQoyHFmjLpu2CLwyq2
+         fox9rAyUp3sC0AQ07A0IVsXmFiCTKC++r7LeX1T1PMuAv/J1L//r/N8Ti61yaqsrvjID
+         YMiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705708455; x=1706313255;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eIpC1Yh2GbIKhd5D8mXJR+ySfViqLAS3kNAflIvdAKM=;
+        b=b/60xdNIHjX6hclzWJyObwbXyrHTuc3JNVdbjzpuf5M9m90m55Z4Fro8wKOifEswsB
+         y+DktKflCijkaw3lYMMZS5eh0tfW4S7+jHQaUupw++Fj+r4yuFDgoh9+C2qkc71jG+ZB
+         YranMJa6uPU++b+5SxSsHTPR8n4uG6bzOMVfSEEbazLjfI0YIL2Lu3Hx3z9GUjGaRjFK
+         qA+wU9mYgKoM2n6JRUqgHhOjY2lKlMJG57pAqBrqDbE2V/d+auG7S2o1EYzCld65WNsO
+         i7EUgutWn3iJ7cl6gmITHiFfuC1BSgaor9c/rAdMXMwzDFbFc4PK+MkdCIgNjDGxNEBX
+         efKA==
+X-Gm-Message-State: AOJu0YyNkzVXQsKvU9gTD5AoxXR9i/c2uFU2R4nW7uxzsw3XZfa2gHFB
+	wYVS/RLlEBc+Qf/nTncUy8FYsKhBLoXmnBRe3xga/OB9wiiNFlbv7Qf3xGnPobkJWmLOa8A0bou
+	pca/JOSlOWCHnIJZ8bH90u27EyMY=
+X-Google-Smtp-Source: AGHT+IF/dfEg52iF8Fr7LCdYwjTvBj3XYBYnaquvHBJPojqniPmgblDW6hmT5RC8L9fU+1h1X65kNhbjMyi2SSHd1qU=
+X-Received: by 2002:a05:622a:282:b0:42a:8c3:65f with SMTP id
+ z2-20020a05622a028200b0042a08c3065fmr615932qtw.137.1705708455323; Fri, 19 Jan
+ 2024 15:54:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <f4l6fadtxnvttlb27heyl3r2bxettwwfu5vrazqykrshvrl3vm@ejw2ccatg3wi>
+ <0c0a7705e775b2548f3439600738311830dbe1a9.camel@gmail.com>
+ <uf7fpvox2s3ban33ybixlg2buxbh2ys2gl7wjrphuip2qrdsjr@56dp2546tuuu>
+ <71ac757d092c6103af7c6d0ebb4634afcaa0969a.camel@gmail.com>
+ <CAK3+h2yQBHRxp+rv7VBJqMQWeudADiDnwXZ+KesT4XSOupFMzA@mail.gmail.com>
+ <CAADnVQKMy_YchC2RVaGFiho7Qgdwxm9uPaQ74BMcwNE_zwbR4Q@mail.gmail.com>
+ <CAK3+h2waCj=GF2LdV+nWL3N+s9Ke-eHo-NVBhqm6CEsNE6zA5Q@mail.gmail.com> <CAEf4BzaGoR4+EYM3jQVQba19r818UR7HoobYPvrNK05V6gYV9g@mail.gmail.com>
+In-Reply-To: <CAEf4BzaGoR4+EYM3jQVQba19r818UR7HoobYPvrNK05V6gYV9g@mail.gmail.com>
+From: Vincent Li <vincent.mc.li@gmail.com>
+Date: Fri, 19 Jan 2024 15:54:04 -0800
+Message-ID: <CAK3+h2y9UVQsUy-COjTH3B-eot2xNNd+T1e848hZ7XDUTS-86A@mail.gmail.com>
+Subject: Re: Re: lsm_cgroup.c selftest fails to compile when CONFIG_PACKET!=y
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+On Fri, Jan 19, 2024 at 3:35=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Fri, Jan 19, 2024 at 3:13=E2=80=AFPM Vincent Li <vincent.mc.li@gmail.c=
+om> wrote:
+> >
+> > On Fri, Jan 19, 2024 at 2:26=E2=80=AFPM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Fri, Jan 19, 2024 at 7:00=E2=80=AFAM Vincent Li <vincent.mc.li@gma=
+il.com> wrote:
+> > > >
+> > > > On Fri, Jan 19, 2024 at 4:23=E2=80=AFAM Eduard Zingerman <eddyz87@g=
+mail.com> wrote:
+> > > > >
+> > > > > On Fri, 2024-01-19 at 16:04 +0800, Shung-Hsi Yu wrote:
+> > > > >
+> > > > > [...]
+> > > > >
+> > > > > > Final goal would be have BPF selftests compiled and test agains=
+t our own
+> > > > > > kernel, without having to come up with a specific kernel flavor=
+ that is
+> > > > > > used to build and run the selftest. For v5.14 and v5.19-based k=
+ernel it
+> > > > > > works: compilation is successful and I was able to run the veri=
+fier
+> > > > > > tests. (Did not try running the other tests though)
+> > > > >
+> > > > > You mean ./test_verifier binary, right?
+> > > > > A lot of tests had been moved from ./test_verifier to ./test_prog=
+s since.
+> > > > >
+> > > > > > > As far as I understand, selftests are supposed to be built an=
+d run
+> > > > > > > using specific configuration, here is how config for x86 CI i=
+s prepared:
+> > > > > > >
+> > > > > > > ./scripts/kconfig/merge_config.sh \
+> > > > > > >          ./tools/testing/selftests/bpf/config \
+> > > > > > >          ./tools/testing/selftests/bpf/config.vm \
+> > > > > > >          ./tools/testing/selftests/bpf/config.x86_64
+> > > > > > >
+> > > > > > > (root is kernel source).
+> > > > > > > I'm not sure if other configurations are supposed to be suppo=
+rted.
+> > > > > >
+> > > > > > Would it make sense to have makefile target that builds/runs a =
+smaller
+> > > > > > subset of general, config-agnostic selftests that tests the cor=
+e feature
+> > > > > > (e.g. verifier + instruction set)?
+> > > > >
+> > > > > In ideal world I'd say that ./test_progs should include/exclude t=
+ests
+> > > > > conditioned on current configuration, but I don't know how much w=
+ork
+> > > > > would it be to adapt build system for this.
+> > > > >
+> > > >
+> > > > I would also suggest skipping building the specific bpf test code w=
+hen
+> > > > a specific CONFIG is removed, sometimes
+> > > > I only want to test some bpf selftests code I am interested in :)
+> > >
+> > > I don't think we should be complicating bpf selftests to test
+> > > configurations with reduced kconfig.
+> > > bpf/config.* is what we target in bpf CI and we expect
+> > > developers do the same amount of testing before they send patches.
+> >
+> > Totally understand that from the kernel bpf developer perspective. I
+> > am a bpf user learning how to write a bpf program from selftests, but
+> > I guess there is another way to learn,  selftests is not for teaching
+> > bpf users, no need to complicate.
+>
+> Try libbpf-bootstrap ([0]) as a simple setup to play with new BPF
+> features. minimal or bootstrap examples are usually good starting
+> points.
+>
+>   [0] https://github.com/libbpf/libbpf-bootstrap
 
-BPF CI has been reporting the tc_redirect_dtime test failing
-from time to time:
-
-test_inet_dtime:PASS:setns src 0 nsec
-(network_helpers.c:253: errno: No route to host) Failed to connect to server
-close_netns:PASS:setns 0 nsec
-test_inet_dtime:FAIL:connect_to_fd unexpected connect_to_fd: actual -1 < expected 0
-test_tcp_clear_dtime:PASS:tcp ip6 clear dtime ingress_fwdns_p100 0 nsec
-
-The connect_to_fd failure (EHOSTUNREACH) is from the
-test_tcp_clear_dtime() test and it is the very first IPv6 traffic
-after setting up all the links, addresses, and routes.
-
-The symptom is this first connect() is always slow. In my setup, it
-could take ~3s.
-
-After some tracing and tcpdump, the slowness is mostly spent in
-the neighbor solicitation in the "ns_fwd" namespace while
-the "ns_src" and "ns_dst" are fine.
-
-I forced the kernel to drop the neighbor solicitation messages.
-I can then reproduce EHOSTUNREACH. What actually happen could be:
-- the neighbor advertisement came back a little slow.
-- the "ns_fwd" namespace concluded a neighbor discovery failure
-  and triggered the ndisc_error_report() => ip6_link_failure() =>
-  icmpv6_send(skb, ICMPV6_DEST_UNREACH, ICMPV6_ADDR_UNREACH, 0)
-- the client's connect() reports EHOSTUNREACH after receiving
-  the ICMPV6_DEST_UNREACH message.
-
-The neigh table of both "ns_src" and "ns_dst" namespace has already
-been manually populated but not the "ns_fwd" namespace. This patch
-fixes it by manually populating the neigh table also in the "ns_fwd"
-namespace.
-
-Although the namespace configuration part had been existed before
-the tc_redirect_dtime test, still Fixes-tagging the patch when
-the tc_redirect_dtime test was added since it is the only test
-hitting it so far.
-
-Fixes: c803475fd8dd ("bpf: selftests: test skb->tstamp in redirect_neigh")
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
- tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-index 518f143c5b0f..610887157fd8 100644
---- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-+++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
-@@ -188,6 +188,7 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
- {
- 	struct nstoken *nstoken = NULL;
- 	char src_fwd_addr[IFADDR_STR_LEN+1] = {};
-+	char src_addr[IFADDR_STR_LEN + 1] = {};
- 	int err;
- 
- 	if (result->dev_mode == MODE_VETH) {
-@@ -208,6 +209,9 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
- 	if (get_ifaddr("src_fwd", src_fwd_addr))
- 		goto fail;
- 
-+	if (get_ifaddr("src", src_addr))
-+		goto fail;
-+
- 	result->ifindex_src = if_nametoindex("src");
- 	if (!ASSERT_GT(result->ifindex_src, 0, "ifindex_src"))
- 		goto fail;
-@@ -270,6 +274,13 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
- 	SYS(fail, "ip route add " IP4_DST "/32 dev dst_fwd scope global");
- 	SYS(fail, "ip route add " IP6_DST "/128 dev dst_fwd scope global");
- 
-+	if (result->dev_mode == MODE_VETH) {
-+		SYS(fail, "ip neigh add " IP4_SRC " dev src_fwd lladdr %s", src_addr);
-+		SYS(fail, "ip neigh add " IP6_SRC " dev src_fwd lladdr %s", src_addr);
-+		SYS(fail, "ip neigh add " IP4_DST " dev dst_fwd lladdr %s", MAC_DST);
-+		SYS(fail, "ip neigh add " IP6_DST " dev dst_fwd lladdr %s", MAC_DST);
-+	}
-+
- 	close_netns(nstoken);
- 
- 	/** setup in 'dst' namespace */
--- 
-2.34.1
-
+Thanks! I am aware of libbpf-bootstrap, I am on an old centos 8 distro
+which often miss linux headers that some selftests happens to require,
+especially the ones that are not using vmlinux.h, when a bpf kernel
+developer submit patches and selftests that I am interested in, I want
+to run that selftests and learn the new feature, and then probably
+port the new useful selftests code to a real use case bpf program. I
+often run into other selftests compiling errors when I want to
+selftest the new feature I am interested in. Anyway, it is my build
+environment problem, not selftests.
 
