@@ -1,95 +1,147 @@
-Return-Path: <bpf+bounces-19936-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19937-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 437AF833174
-	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:25:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEBF083317B
+	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F0DB1C235C5
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:25:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA4681F2175D
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD59358AD6;
-	Fri, 19 Jan 2024 23:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF7E5914A;
+	Fri, 19 Jan 2024 23:30:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J+bU1+fY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PCCiGFdl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BAC5789B
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:25:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439201E48E;
+	Fri, 19 Jan 2024 23:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705706735; cv=none; b=LmarghH4wDe6vk2MgWbjb99tmbj8JJYa1eN3ced9ME25bF8ys6mBCZ4vLZOU9n613JNCubOy9d7/ye/NWZhdhoUObRLvPu4Jewn3/reFl3xIxfDoVqYYhsBY9NSiz9GihrSrP+8CaOOPmYUGHCKOwbqYoiE5lCVWz10Iw6jg4O0=
+	t=1705707056; cv=none; b=qXKDNpjlzH6qPItPdFbMnXA7HZ+UQI6FK81ijeSoBlR63cCFnqh/D/DL8bM85+ZR5M2hbjj8ElO5VbI4U74meLM7EH+AmViUeLauON13A2zyNZ/acwR6YtDtz3w2CFUpb0LJdKRh9fUPLe0q9cBpJcVFXdxFO4R0FGLEjqIDSMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705706735; c=relaxed/simple;
-	bh=O6DS758yv72ZBFWq4WdYvlJN/sbUbyPf1zHLiN1v54c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bZf9g+rrYu8UODwxmn8jMRzCJPzeWRwQXetiaqPQ40S5DoQKSrzAsZWlvQ8RyCi8pPmFYybpXLxskavC4tdobCv7JSxEoQQid6i76c/DJBFwDIzVeAQrtXnkxe/no8n0p7eB0vUNPuUmGlxKP+XtsuNOTgip/K+mnn95kZKJi+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J+bU1+fY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8827C43399
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:25:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705706734;
-	bh=O6DS758yv72ZBFWq4WdYvlJN/sbUbyPf1zHLiN1v54c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=J+bU1+fYFAyLB6w52Clc+QM+AZl15vWyNTi2JOqvKQCH2rPBQyCutsWY3bd3anzhP
-	 E288UZQ3C4x77hrl3+YUvfmCcpgSGB64VT0ozd8ncZ77BzeP9CAvV3pnJb75x4rBop
-	 4rXwT9CibJsaf1scZXHz0iTCQfUjYhSX/yxCKUOkPoeoAkJEPkBtyj2t++PQVKWx9g
-	 zKWfZAt3zHasntk/RG3Xy//Hs/Cu0NxXnhFH/d7z1gBuCWxgBAxI+t6tDgr3CG1UUE
-	 KTxnMzPqPaOQaxsWOtqp9lmhSsUkhZQyNvkA8SU/qLIPnBT97VrNk5acCujnU+8zm6
-	 oZrwHPAKSTgpw==
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-50eabbc3dccso1804745e87.2
-        for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 15:25:34 -0800 (PST)
-X-Gm-Message-State: AOJu0YyXbyopf7ys+9su5JzR9F/Ul5IKG68yiGchPBNnWR4cRaJMvSZc
-	rRbegt5Sd49w8phfJK6dtFQCemqhgNz4ZdgorvUt+NL1TahG5c/lNx5UxHHDdsgkLB8yC40fKxt
-	/nSmpuaoetaCYSdSHjtUltEXLNGE=
-X-Google-Smtp-Source: AGHT+IGPPIGLbVNMr4hw32Hl/v+R2Ko6J+snc04kg3pBYTzicDj2P7DFbur+2Soij03Vh2z0SNB5jBmFppqkmbQ03eE=
-X-Received: by 2002:a05:6512:3d29:b0:50e:6b54:6a61 with SMTP id
- d41-20020a0565123d2900b0050e6b546a61mr131243lfv.118.1705706732942; Fri, 19
- Jan 2024 15:25:32 -0800 (PST)
+	s=arc-20240116; t=1705707056; c=relaxed/simple;
+	bh=rzAoW+a+/BNoVTcy3pCJF5bnbiY67qtfHBrwcC2RdwM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eaDZaKGmCaJmrvBGTVSGJVxH328lP40Hw2rpJBpGryEagki9tlrXvj86Q6YXIO/QTd7mH9zW2aK0cnE0FwN2JUsxso2D505S/f5sGHvo4etMT7ss1Np7N36e1Su3wYjSYQR3hdwetKFuhBltORi8zNgxnMEwH0B91okCskIUBok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PCCiGFdl; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1705707054; x=1737243054;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rzAoW+a+/BNoVTcy3pCJF5bnbiY67qtfHBrwcC2RdwM=;
+  b=PCCiGFdlcuJsu7JFh49X6HHIwYCX1hw/TUF0FlVbzH8Ja0IF7PFmKojW
+   U3JsqZg8XvDSSgKoykojyoooYU216HsgNlFOj/TvFmjJrP3r0k1/Vms46
+   vQ+abrn+PUJcPdUDgCPUPCr3VUUKQw+NommGpHHx0OXbOa558cD3JFMN8
+   rC/N++PKndyJaM6tvz/KewHn4EEo/eOw5rvJqeVT25J6EN5K6pp73cnC8
+   Tw+5VpsAV0J54sQjXnngWJWFIYM2joajxZJNglZCE+PjiKnboPbNce6xl
+   8Ikt5B4OyvvS5WUD4qJ9kqx3SJPIPxx5ojbKDWg6iizlbSpuWpnTaTczx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="771462"
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="771462"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 15:30:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="904277409"
+X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
+   d="scan'208";a="904277409"
+Received: from boxer.igk.intel.com ([10.102.20.173])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Jan 2024 15:30:48 -0800
+From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org
+Cc: netdev@vger.kernel.org,
+	magnus.karlsson@intel.com,
+	bjorn@kernel.org,
+	maciej.fijalkowski@intel.com,
+	echaudro@redhat.com,
+	lorenzo@kernel.org,
+	martin.lau@linux.dev,
+	tirthendu.sarkar@intel.com,
+	john.fastabend@gmail.com
+Subject: [PATCH v4 bpf 00/11] net: bpf_xdp_adjust_tail() and Intel mbuf fixes
+Date: Sat, 20 Jan 2024 00:30:26 +0100
+Message-Id: <20240119233037.537084-1-maciej.fijalkowski@intel.com>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119110505.400573-1-jolsa@kernel.org> <20240119110505.400573-2-jolsa@kernel.org>
-In-Reply-To: <20240119110505.400573-2-jolsa@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Fri, 19 Jan 2024 15:25:21 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW7gFMtyWPGpWFORX6pNXLUqYSj2Srv1pVtgKoNS7g3=rQ@mail.gmail.com>
-Message-ID: <CAPhsuW7gFMtyWPGpWFORX6pNXLUqYSj2Srv1pVtgKoNS7g3=rQ@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 1/8] bpf: Add cookie to perf_event
- bpf_link_info records
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Yafang Shao <laoar.shao@gmail.com>, 
-	Quentin Monnet <quentin@isovalent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jan 19, 2024 at 3:05=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> At the moment we don't store cookie for perf_event probes,
-> while we do that for the rest of the probes.
->
-> Adding cookie fields to struct bpf_link_info perf event
-> probe records:
->
->   perf_event.uprobe
->   perf_event.kprobe
->   perf_event.tracepoint
->   perf_event.perf_event
->
-> And the code to store that in bpf_link_info struct.
->
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Hey,
 
-Acked-by: Song Liu <song@kernel.org>
+after a break followed by dealing with sickness, here is a v4 that makes
+bpf_xdp_adjust_tail() actually usable for ZC drivers that support XDP
+multi-buffer. This time I tried also using bpf_xdp_adjust_tail() with
+positive offset which exposed yet another issues, which can be observed
+by increased commit count when compared to v3.
+
+John, in the end I think we should remove handling
+MEM_TYPE_XSK_BUFF_POOL from __xdp_return(), but it is out of the scope
+for fixes set, IMHO.
+
+Thanks,
+Maciej
+
+v4:
+- do not clear frags flag when deleting tail; xsk_buff_pool now does
+  that
+- skip some NULL tests for xsk_buff_get_tail [Martin, John]
+- address problems around registering xdp_rxq_info
+- fix bpf_xdp_frags_increase_tail() for ZC mbuf
+
+v3:
+- add acks
+- s/xsk_buff_tail_del/xsk_buff_del_tail
+- address i40e as well (thanks Tirthendu)
+
+v2:
+- fix !CONFIG_XDP_SOCKETS builds
+- add reviewed-by tag to patch 3
+
+
+Maciej Fijalkowski (10):
+  xsk: recycle buffer in case Rx queue was full
+  xsk: make xsk_buff_pool responsible for clearing xdp_buff::flags
+  xsk: fix usage of multi-buffer BPF helpers for ZC XDP
+  ice: work on pre-XDP prog frag count
+  ice: remove redundant xdp_rxq_info registration
+  intel: xsk: initialize skb_frag_t::bv_offset in ZC drivers
+  ice: update xdp_rxq_info::frag_size for ZC enabled Rx queue
+  xdp: reflect tail increase for MEM_TYPE_XSK_BUFF_POOL
+  i40e: set xdp_rxq_info::frag_size
+  i40e: update xdp_rxq_info::frag_size for ZC enabled Rx queue
+
+Tirthendu Sarkar (1):
+  i40e: handle multi-buffer packets that are shrunk by xdp prog
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c   | 47 +++++++++++------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   | 51 +++++++++----------
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c    |  4 +-
+ drivers/net/ethernet/intel/ice/ice_base.c     |  7 ++-
+ drivers/net/ethernet/intel/ice/ice_txrx.c     | 19 ++++---
+ drivers/net/ethernet/intel/ice/ice_txrx.h     |  1 +
+ drivers/net/ethernet/intel/ice/ice_txrx_lib.h | 31 +++++++----
+ drivers/net/ethernet/intel/ice/ice_xsk.c      |  4 +-
+ include/net/xdp_sock_drv.h                    | 26 ++++++++++
+ net/core/filter.c                             | 43 ++++++++++++----
+ net/xdp/xsk.c                                 | 12 +++--
+ net/xdp/xsk_buff_pool.c                       |  3 ++
+ 12 files changed, 168 insertions(+), 80 deletions(-)
+
+-- 
+2.34.1
+
 
