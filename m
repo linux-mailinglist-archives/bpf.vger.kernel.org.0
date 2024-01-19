@@ -1,157 +1,127 @@
-Return-Path: <bpf+bounces-19895-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19896-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BAD5832935
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 12:52:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FDE1832970
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 13:23:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEB6B284F04
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 11:52:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CE311C23254
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 12:23:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BAC84EB4F;
-	Fri, 19 Jan 2024 11:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50E214F1F9;
+	Fri, 19 Jan 2024 12:23:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a2LbtVYz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GtYhRW2i"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936EE3C464;
-	Fri, 19 Jan 2024 11:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66C613C499;
+	Fri, 19 Jan 2024 12:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705665117; cv=none; b=TIjFtFTnQGVVQvLpxMJCD6YX2lkAtgFl8AVugsBYkq+tHqtDJhI1SwmyVzKmnOXjQLC8F12PPtQzXn96JevBvvpi+dk5A1WdDnuV57dR3JA/6sv0WcVBvPZur0IAWW3lPwgxxpr4NvxQn/AX0cIwPQjLKp3IsXHSe0illv2GU00=
+	t=1705667029; cv=none; b=Dv6Bcc5jy1EhwrPknfwoHREwX6bB3p1grOkzrz4JsyDJxL1pTPwv1ReOH6cAP0knR69kukhgDFFaZrFI66J+VNT38AbtGZ74XDhydd3LgJ+vzTA2eDjW0Z+4toZFo32nrxuXzIYAMnhP17jZ1HZGq8klGwm2B013ht9gjzYuCgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705665117; c=relaxed/simple;
-	bh=MoJtODAqN8sJeJKdztDG/Icxh9k12Zvo9ZAZFr4LcM0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LnLAG9cytEvov0u2LggIS4yLZvCg8Nwcs6iN/0D5dxhQhFhLjLQ4MCO6Y9340rxcj0/2MqM/d/eQwWpTLrS5vZjioCPFSJ8+tF4V2hjC555okn4hmMCLGmzi126kSnu9umXQ12kf+RJfCw4vo4GNszUAy0fRJ0IyiomAFL4ogdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a2LbtVYz; arc=none smtp.client-ip=209.85.218.42
+	s=arc-20240116; t=1705667029; c=relaxed/simple;
+	bh=uBY94QNQ8IlqeoaQVLgckjGtysQqcnaeus3ynVCXJm4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=AX9wbrm5cfM3kvnkhqeE9XfrNvkfbuVSAAIuBHEOpTZ7Rkh2wYWN4g8AKwASfEIk1rxXdS9mN2QsgFPDf8L871l39W/0WRoe2Juvqp3hOERtotjjQ6w1Kn6ZU495nJpUbY8UkKJnemi0iTyVEuna3tOM+i95/9kXqtBPS/8MA2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GtYhRW2i; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a2cad931c50so76767066b.1;
-        Fri, 19 Jan 2024 03:51:55 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-337c5eb1bddso595091f8f.3;
+        Fri, 19 Jan 2024 04:23:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705665114; x=1706269914; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=N+nGApR6ELoiL3OMjOtT0HdX+6Irdf82XlAS5k3TAgc=;
-        b=a2LbtVYzlo/G8CuLOxD3WB36rQZBv5rT/TKRkYE6TjTq199wxR0qBMX0sh4TnbUvrN
-         P37EJ5IPQOTl0U+NNFskdwCNmew5kuiKmsBFiLjoltpeRjrkRLnhxZluvxIFhY8IxUXC
-         6qXLuAdGKtLG6VdSl02aPhHrodyCRRB/NqmqFhOW1X0umn3JjWJcsrmzbaEGcZD9eLZg
-         FPGYwmMaox943G56kiwXSb3FAkfXx3hRAOM89UnKOxsAOc1W3DtDPL/BJKwPC4XwLGyv
-         ibk5z665NJNkr7FQtRmqoQ3u/TMf3Ba6n0bim+6NP+r23iimlUSNZOVXGI0PJfAN/D4B
-         lz9w==
+        d=gmail.com; s=20230601; t=1705667026; x=1706271826; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=v4VkxtsHOdUE4TpdWjEGpimNl0b6w54iAmLNYkEcmy8=;
+        b=GtYhRW2i7W0l3qtcMMFDacou2+93D0qPiaYsqhko6cWmVOmCrcLdaZaznZLV05dosH
+         h9bE7xGLUU0iyHgNNGypbr4afm0+BCvfiHA9XFITH6WGlLIg/qdfGLYLCCw6pWeNmkI4
+         ld0JSk5ezjmLDDlatMC8evbbjCaRgXLhc9p4NLoaRZgWAz0kvld3eHJusVBiqFIuliYo
+         Cx7kWlrtKghUV22ufeml1Xcn6ZShBX2RZnvuqC6L85oRx7eFmZe+CjOs6M0QEq4Xc/xi
+         1mvCG2AqaEWUk4q6lEauuO86X+cbrjSH6A8Vzdy/DuQRL6umwJxKia7xQNy3BbZ6rPZK
+         ovVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705665114; x=1706269914;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N+nGApR6ELoiL3OMjOtT0HdX+6Irdf82XlAS5k3TAgc=;
-        b=rlodyU5ZRCuS093+PbVss1hlt3LCpMNGMt+rQfUdw35gP3gAA1nE/ozGuV0qA3CmgX
-         Tkdx4aX4JfeqvuufpJT2LCq+6aZhX6UijOCDa1lQvUNhuNKFooPzmi7iA8QGIQ9Zib+1
-         /Kadso2m5PQpzYRxHK9bSkTK092NJEuT5sXAXgymPJcGXQ/UDcQY740nQNF4KKgj0fzL
-         fxM7N4WI3p9pH2l7vEywvRYSSVuUldMPk6penP87dky4/cRpsR+U5i4ZVHX7IGsKvmBZ
-         6BFf63LknXAwnOj4KB/VqZlinFDzn+clzDx66Y87IjKQuJp6SUO3LeSubB9Q3tz0kRdH
-         c6SQ==
-X-Gm-Message-State: AOJu0Yzu4qCMb+yZlpmWFuh+DQPcP4JV8ESGQF4gnZCkHFC5Z2b+n7pf
-	yMI5BSOgQf8puHQqW1m2b6+N70MRH9ikmb9kTsXLrxPKPqRBrfim
-X-Google-Smtp-Source: AGHT+IGEV/miycfbkg+BQ7i7fKCuISgbybbjg7HntzF1OrJafyBPtbCPRQOQOnDplN3zrLVJ/ZrAYw==
-X-Received: by 2002:a17:906:aeda:b0:a2e:8ab5:7ef with SMTP id me26-20020a170906aeda00b00a2e8ab507efmr1191387ejb.54.1705665113453;
-        Fri, 19 Jan 2024 03:51:53 -0800 (PST)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id l18-20020a1709061c5200b00a2ed534f21esm3085786ejg.63.2024.01.19.03.51.52
+        d=1e100.net; s=20230601; t=1705667026; x=1706271826;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v4VkxtsHOdUE4TpdWjEGpimNl0b6w54iAmLNYkEcmy8=;
+        b=FdnvQtUwcU9/6rFUYlI1v7UlvhopLI0DazdLicPSRJCfaIvefTwvN1Vx0XkTZ80NCU
+         B2zFr0D49m8O1RiDBL8JUU1RyiZQSSxBNI3B2FImGJ9ZKbFsM/4tvKTxU85xvZtLOngE
+         qU0RnBeqcg5G30PYamya47GYv4CpgW77xn4C5CTc+xWnwFqkpsMWA9uy9eiTuG6pVG09
+         N9E5GUsNi+Kf6KnHlQkYIRV51Yd3QuhVMsCIDFRkK9HJPKG9Fbb+s4hgAkK+KtumFWOX
+         atc5AA9KJ1lVsDA6XB+iJ/O+ksy5h3TFcOeY6nN6rV6AGAnPHySFu6Pym1xYsGlpQ/38
+         bNhQ==
+X-Gm-Message-State: AOJu0Yx14VB1iDBdzrCv2dG0Msbb6yn1bnsL/vES2T/rbGm1QFfyP65A
+	zCGStgIStp4xG0rKtGUEKEMkhTXDN9OZjaUDlZuaLgh8edFlsA+3
+X-Google-Smtp-Source: AGHT+IF1frQZcgXGi0SS6En7PJKEYIiUU61X/yAcKZ+RPbP1csMmSr+TOLndCJVy0+COd95+vgFQGQ==
+X-Received: by 2002:a05:600c:470c:b0:40e:62e6:d256 with SMTP id v12-20020a05600c470c00b0040e62e6d256mr1387524wmo.21.1705667026341;
+        Fri, 19 Jan 2024 04:23:46 -0800 (PST)
+Received: from [192.168.1.95] (host-176-36-0-241.b024.la.net.ua. [176.36.0.241])
+        by smtp.gmail.com with ESMTPSA id v11-20020a5d610b000000b00336ca349bdesm6370138wrt.47.2024.01.19.04.23.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 03:51:53 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 19 Jan 2024 12:51:51 +0100
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org,
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>,
-	Robert O'Callahan <robert@ocallahan.org>, bpf@vger.kernel.org
-Subject: Re: [PATCH v4 0/4] Combine perf and bpf for fast eval of hw
- breakpoint conditions
-Message-ID: <ZapiV-DqX_1tU8ii@krava>
-References: <20240119001352.9396-1-khuey@kylehuey.com>
+        Fri, 19 Jan 2024 04:23:45 -0800 (PST)
+Message-ID: <71ac757d092c6103af7c6d0ebb4634afcaa0969a.camel@gmail.com>
+Subject: Re: Re: lsm_cgroup.c selftest fails to compile when CONFIG_PACKET!=y
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, Andrii Nakryiko
+	 <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Yonghong Song
+	 <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 19 Jan 2024 14:23:44 +0200
+In-Reply-To: <uf7fpvox2s3ban33ybixlg2buxbh2ys2gl7wjrphuip2qrdsjr@56dp2546tuuu>
+References: 
+	<f4l6fadtxnvttlb27heyl3r2bxettwwfu5vrazqykrshvrl3vm@ejw2ccatg3wi>
+	 <0c0a7705e775b2548f3439600738311830dbe1a9.camel@gmail.com>
+	 <uf7fpvox2s3ban33ybixlg2buxbh2ys2gl7wjrphuip2qrdsjr@56dp2546tuuu>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240119001352.9396-1-khuey@kylehuey.com>
 
-On Thu, Jan 18, 2024 at 04:13:47PM -0800, Kyle Huey wrote:
-> rr, a userspace record and replay debugger[0], replays asynchronous events
-> such as signals and context switches by essentially[1] setting a breakpoint
-> at the address where the asynchronous event was delivered during recording
-> with a condition that the program state matches the state when the event
-> was delivered.
-> 
-> Currently, rr uses software breakpoints that trap (via ptrace) to the
-> supervisor, and evaluates the condition from the supervisor. If the
-> asynchronous event is delivered in a tight loop (thus requiring the
-> breakpoint condition to be repeatedly evaluated) the overhead can be
-> immense. A patch to rr that uses hardware breakpoints via perf events with
-> an attached BPF program to reject breakpoint hits where the condition is
-> not satisfied reduces rr's replay overhead by 94% on a pathological (but a
-> real customer-provided, not contrived) rr trace.
-> 
-> The only obstacle to this approach is that while the kernel allows a BPF
-> program to suppress sample output when a perf event overflows it does not
-> suppress signalling the perf event fd or sending the perf event's SIGTRAP.
-> This patch set redesigns __perf_overflow_handler() and
-> bpf_overflow_handler() so that the former invokes the latter directly when
-> appropriate rather than through the generic overflow handler machinery,
-> passes the return code of the BPF program back to __perf_overflow_handler()
-> to allow it to decide whether to execute the regular overflow handler,
-> reorders bpf_overflow_handler() and the side effects of perf event
-> overflow, changes __perf_overflow_handler() to suppress those side effects
-> if the BPF program returns zero, and adds a selftest.
-> 
-> The previous version of this patchset can be found at
-> https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kylehuey.com/
-> 
-> Changes since v3:
-> 
-> Patches 1, 2, 3 added various Acked-by.
-> 
-> Patch 4 addresses Song's review comments by dropping signals_expected and the
-> corresponding ASSERT_OKs, handling errors from signal(), and fixing multiline
-> comment formatting.
+On Fri, 2024-01-19 at 16:04 +0800, Shung-Hsi Yu wrote:
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+[...]
 
-jirka
+> Final goal would be have BPF selftests compiled and test against our own
+> kernel, without having to come up with a specific kernel flavor that is
+> used to build and run the selftest. For v5.14 and v5.19-based kernel it
+> works: compilation is successful and I was able to run the verifier
+> tests. (Did not try running the other tests though)
 
-> 
-> v2 of this patchset can be found at
-> https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey.com/
-> 
-> Changes since v2:
-> 
-> Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
-> this code to implement this feature in a cleaner way. Patch 2 is separated
-> for the benefit of the ARM arch maintainers.
-> 
-> Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
-> implementation thanks to the earlier refactoring.
-> 
-> Patch 4 is v2's patch 3, and addresses review comments about C++ style
-> comments, getting a TRAP_PERF definition into the test, and unnecessary
-> NULL checks.
-> 
-> [0] https://rr-project.org/
-> [1] Various optimizations exist to skip as much as execution as possible
-> before setting a breakpoint, and to determine a set of program state that
-> is practical to check and verify.
-> 
-> 
+You mean ./test_verifier binary, right?
+A lot of tests had been moved from ./test_verifier to ./test_progs since.
+
+> > As far as I understand, selftests are supposed to be built and run
+> > using specific configuration, here is how config for x86 CI is prepared=
+:
+> >=20
+> > ./scripts/kconfig/merge_config.sh \
+> >          ./tools/testing/selftests/bpf/config \
+> >          ./tools/testing/selftests/bpf/config.vm \
+> >          ./tools/testing/selftests/bpf/config.x86_64
+> >=20
+> > (root is kernel source).
+> > I'm not sure if other configurations are supposed to be supported.
+>=20
+> Would it make sense to have makefile target that builds/runs a smaller
+> subset of general, config-agnostic selftests that tests the core feature
+> (e.g. verifier + instruction set)?
+
+In ideal world I'd say that ./test_progs should include/exclude tests
+conditioned on current configuration, but I don't know how much work
+would it be to adapt build system for this.
 
