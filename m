@@ -1,60 +1,60 @@
-Return-Path: <bpf+bounces-19938-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19939-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AD2F83317D
-	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:31:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDE3683317F
+	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:31:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F496B224F0
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:31:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ED561F21624
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B9E5915B;
-	Fri, 19 Jan 2024 23:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E4D5917F;
+	Fri, 19 Jan 2024 23:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZETzoc4I"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kkx5ttQs"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306BD58AD3;
-	Fri, 19 Jan 2024 23:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0592C1E48E;
+	Fri, 19 Jan 2024 23:30:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705707056; cv=none; b=SU3gxdSsDaDUuGIf45QHEC8wmFUw0gDEPD8llFI+iKiHviDJHiWBxFFOtuLm7Wl5E0INUfXyzBPwftRxEN5QrguLE+sUHO0PO1oXmUC1ZKZ3o1VL0o8+njHYdvKiAn2xv9VgTVGdaZztw2NqeOenBvNqCO5y9MCSiaq5aWRXCrA=
+	t=1705707059; cv=none; b=lZdzHtgMEIzBd3w9+ghUlynVPmdWDVTX6DfregRuvJ22ZH1JWm+ytP3MkeKVuopBBx69sY5z589ULDETWR4qRCJzlOSRzbemgs8ZIBkvAyJgbMY4FU3xhNBcnPuj4CwPCQrEXzsavUkpZ7XE5xKGtCWVVkv4Uq7m6oEhBdeLSAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705707056; c=relaxed/simple;
-	bh=eJyulSxFkLgss8vVHYcG6J+Lt6BM/8SR04Fb1v9dFa8=;
+	s=arc-20240116; t=1705707059; c=relaxed/simple;
+	bh=kpk8AaVXYpFzGtJUYtRfQMluwRjTWdMB9fuKbx4RvTc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ldi1GSfqHQLab49gcqjCRs0kPIhN+ESYVk98TUPj/XY3Xhok4YuC0QpDt9HLtrmDfBo9TmxJmmmu+Rn2f1HZbUe+55UF6wBLKdBIJOcx3BmGT6j7HqQh0jGmLL1FzX3OK5+vRQ3iLENB0HnHLuwqfPcihFQngBk/Gi0ESb7r1HM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZETzoc4I; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=DK/Z31JnaEqAqDgmMCmOzsSrbsYxFV/FvMLfBnrl5QJJ7DKbFNOJq6dBTxE0hX6A5en4GghXJNaxdfRzpLQjMatdPSH8m3q79ZqM43CKgaymIPMRbJBUZUjeZ/s8aRbfnRSrQrWR2Y8kw0uI1IxO64HXHRBfJeHqKW1N72pWsPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kkx5ttQs; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1705707055; x=1737243055;
+  t=1705707058; x=1737243058;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=eJyulSxFkLgss8vVHYcG6J+Lt6BM/8SR04Fb1v9dFa8=;
-  b=ZETzoc4Ip0koSzyFMC810XOVK3M5XdD6zUFpaJKfScJqczc5olo/JMbH
-   RXztSjV5ajV7Jn//N0F4F4AXtqZkVXo4k/dx0azVKP9g0kZCCT6Z2RK5p
-   UeZpC6y4yxkAHwgohPSMID3swFGuhOFZ5ZyzZLPph8tAeUiEUwRlNsqd0
-   w4F2DJ/S0OSk5ahsLWRbh7Uu/hDa0Pt/HDTrn+CgyaGu19rzGQgYXZwdg
-   xBUJ71b+DnerfJRiYSDgK9sIaENU3aUtpQqpIrydWUbfOC6k097pYAQwd
-   2+SpIxYr1k5nejzYcdXWQI4Y0Kh8obLcZZbI5RikZxoU2kBUPrTtMNnIW
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="771523"
+  bh=kpk8AaVXYpFzGtJUYtRfQMluwRjTWdMB9fuKbx4RvTc=;
+  b=kkx5ttQsZZdbE+mwD8c/0DiuId0bO/5G56WBjJe01ZH+jENWnoH6l9ZX
+   rcmN4JpcYToWq9uqDnto3Tz12wNbRxulUtO4O/MkdDgO40bHnmQTv2JKE
+   eP4lPRkkcKMk64i8yHp/Pcgn3fvsdyztqX2ltTmshJi4PY4fGsHI0gz2+
+   1zZE5p+xdNh7MlwMSXLi/bCH9yY063N4nHdbP9aKbbfDnkEFHq/04Fvhd
+   NxQR/f/RkJLQf+2OX0fhM1xDSDOZtV9gYy+GOi54dJNsJkUKqpVKLAmfo
+   eY7+Z0WclUwxLWfNXrpCNH2qa+O/tNIf+2BF9OpjlJTKzjxl+Urrl/8oI
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="771540"
 X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
-   d="scan'208";a="771523"
+   d="scan'208";a="771540"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 15:30:54 -0800
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jan 2024 15:30:57 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="904277413"
+X-IronPort-AV: E=McAfee;i="6600,9927,10957"; a="904277418"
 X-IronPort-AV: E=Sophos;i="6.05,206,1701158400"; 
-   d="scan'208";a="904277413"
+   d="scan'208";a="904277418"
 Received: from boxer.igk.intel.com ([10.102.20.173])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Jan 2024 15:30:51 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 19 Jan 2024 15:30:54 -0800
 From: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -69,9 +69,9 @@ Cc: netdev@vger.kernel.org,
 	martin.lau@linux.dev,
 	tirthendu.sarkar@intel.com,
 	john.fastabend@gmail.com
-Subject: [PATCH v4 bpf 01/11] xsk: recycle buffer in case Rx queue was full
-Date: Sat, 20 Jan 2024 00:30:27 +0100
-Message-Id: <20240119233037.537084-2-maciej.fijalkowski@intel.com>
+Subject: [PATCH v4 bpf 02/11] xsk: make xsk_buff_pool responsible for clearing xdp_buff::flags
+Date: Sat, 20 Jan 2024 00:30:28 +0100
+Message-Id: <20240119233037.537084-3-maciej.fijalkowski@intel.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240119233037.537084-1-maciej.fijalkowski@intel.com>
 References: <20240119233037.537084-1-maciej.fijalkowski@intel.com>
@@ -83,49 +83,78 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add missing xsk_buff_free() call when __xsk_rcv_zc() failed to produce
-descriptor to XSK Rx queue.
+Currently, ZC drivers that support multi-buffer XDP, clear flag that
+indicates whether particular xdp_buff contains fragments only on the
+first processed fragment. Rest of the ZC XSK logic relies on that as
+well, but we could end up with fragments that have XDP_FLAGS_HAS_FRAGS
+set, which would confuse for example xsk_buff_free(), which might be
+called when bpf_xdp_adjust_tail() removes buffer.
 
+To fix this, let us clear the mentioned flag on xsk_buff_pool side at
+allocation time.
+
+Fixes: 1bbc04de607b ("ice: xsk: add RX multi-buffer support")
+Fixes: 1c9ba9c14658 ("i40e: xsk: add RX multi-buffer support")
 Fixes: 24ea50127ecf ("xsk: support mbuf on ZC RX")
-Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
 Signed-off-by: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
 ---
- net/xdp/xsk.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e_xsk.c | 1 -
+ drivers/net/ethernet/intel/ice/ice_xsk.c   | 1 -
+ net/xdp/xsk_buff_pool.c                    | 3 +++
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 9f13aa3353e3..1eadfac03cc4 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -167,8 +167,10 @@ static int xsk_rcv_zc(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
- 		contd = XDP_PKT_CONTD;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_xsk.c b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+index e99fa854d17f..fede0bb3e047 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_xsk.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_xsk.c
+@@ -499,7 +499,6 @@ int i40e_clean_rx_irq_zc(struct i40e_ring *rx_ring, int budget)
+ 		xdp_res = i40e_run_xdp_zc(rx_ring, first, xdp_prog);
+ 		i40e_handle_xdp_result_zc(rx_ring, first, rx_desc, &rx_packets,
+ 					  &rx_bytes, xdp_res, &failure);
+-		first->flags = 0;
+ 		next_to_clean = next_to_process;
+ 		if (failure)
+ 			break;
+diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
+index 5d1ae8e4058a..d9073a618ad6 100644
+--- a/drivers/net/ethernet/intel/ice/ice_xsk.c
++++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+@@ -895,7 +895,6 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring, int budget)
  
- 	err = __xsk_rcv_zc(xs, xskb, len, contd);
--	if (err || likely(!frags))
--		goto out;
-+	if (err)
-+		goto err;
-+	if (likely(!frags))
-+		return 0;
+ 		if (!first) {
+ 			first = xdp;
+-			xdp_buff_clear_frags_flag(first);
+ 		} else if (ice_add_xsk_frag(rx_ring, first, xdp, size)) {
+ 			break;
+ 		}
+diff --git a/net/xdp/xsk_buff_pool.c b/net/xdp/xsk_buff_pool.c
+index 28711cc44ced..dc5659da6728 100644
+--- a/net/xdp/xsk_buff_pool.c
++++ b/net/xdp/xsk_buff_pool.c
+@@ -555,6 +555,7 @@ struct xdp_buff *xp_alloc(struct xsk_buff_pool *pool)
  
- 	xskb_list = &xskb->pool->xskb_list;
- 	list_for_each_entry_safe(pos, tmp, xskb_list, xskb_list_node) {
-@@ -177,11 +179,13 @@ static int xsk_rcv_zc(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
- 		len = pos->xdp.data_end - pos->xdp.data;
- 		err = __xsk_rcv_zc(xs, pos, len, contd);
- 		if (err)
--			return err;
-+			goto err;
- 		list_del(&pos->xskb_list_node);
+ 	xskb->xdp.data = xskb->xdp.data_hard_start + XDP_PACKET_HEADROOM;
+ 	xskb->xdp.data_meta = xskb->xdp.data;
++	xskb->xdp.flags = 0;
+ 
+ 	if (pool->dma_need_sync) {
+ 		dma_sync_single_range_for_device(pool->dev, xskb->dma, 0,
+@@ -601,6 +602,7 @@ static u32 xp_alloc_new_from_fq(struct xsk_buff_pool *pool, struct xdp_buff **xd
+ 		}
+ 
+ 		*xdp = &xskb->xdp;
++		xskb->xdp.flags = 0;
+ 		xdp++;
  	}
  
--out:
-+	return 0;
-+err:
-+	xsk_buff_free(xdp);
- 	return err;
- }
+@@ -621,6 +623,7 @@ static u32 xp_alloc_reused(struct xsk_buff_pool *pool, struct xdp_buff **xdp, u3
+ 		list_del_init(&xskb->free_list_node);
  
+ 		*xdp = &xskb->xdp;
++		xskb->xdp.flags = 0;
+ 		xdp++;
+ 	}
+ 	pool->free_list_cnt -= nb_entries;
 -- 
 2.34.1
 
