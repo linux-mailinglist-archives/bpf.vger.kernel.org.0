@@ -1,334 +1,151 @@
-Return-Path: <bpf+bounces-19856-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19857-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD4783227B
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 01:08:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17A5A832286
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 01:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E114E1C22907
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 00:08:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A58BEB22F83
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 00:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2771802;
-	Fri, 19 Jan 2024 00:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC4081E;
+	Fri, 19 Jan 2024 00:14:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="bps6f9wA"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="h1YdhG/u"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEBCD634
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 00:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E5817F7
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 00:14:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705622927; cv=none; b=r/Wyr265l7EyOzqweMhtyT1hR70uh7o6t14yPliaXBKyeblbv6VLTCPwj5DpthiPqwaQy0vwLmLH7ubjDy2gNBXqXjRY8qKcX6EczRKpdlwhWXVQVH4ZTj9kHIx19hFZ4KZl5YT5oYcWzQHwA6lsY7TJJK7EJXLNgik9WMXymy4=
+	t=1705623252; cv=none; b=P4h9u1Ale/XQCiqXFxNBPLwNjgZ0jNwwbt/kU5Ood6acBLe3E8QvwhG/Xg329gUk8rQQSIv2aEewFigUlVXRDsGPegmqSa/Qg66jzH9eue4BrEE9m6ZVcVCjor+GQrVmNILCNoRR6wWYLImONVNHfwdR8l8m+F8hPveZIajd0AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705622927; c=relaxed/simple;
-	bh=Nl+g4tuaqCxOgaP3Iln3PLlQaui5SCReIL+qHRQfNC8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r97yyuMPjXyEtM+ENhyHdzZaZzSZmk/x3rtHyZQ9HgNZ7JdnKFNvy4waWGIiYbgp09CbhIPwa8U261JIM3zfuZwo1pOGhm5Vfm3ItvzX2/jZU21CU2vrmcj2ln3lwP6mJkuWGK/yBRPVFWqyTDKLG5t4dguhyEV+xn4mWIDxr20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=bps6f9wA; arc=none smtp.client-ip=209.85.208.169
+	s=arc-20240116; t=1705623252; c=relaxed/simple;
+	bh=vylMAwKjOKQHziaAu87Qiy3rOLrs3/9n8l6rCdO/DPQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fxALXxL/O1tGrA2HlY40vfSfuAJdkSbYwCbe0VtkaOh2Al1ufxrf6eKfosbY/dPQAfr3fu3nZnJhMMEqoopeNeQJMioATRaptd7ad1BUFRJfooeDpa8rPr7YHQ3rw2f8mWmpTL32ThXtzXnZxRuNhM+EA3dsiSAo5zFKS8cC78s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=h1YdhG/u; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ccae380df2so2793081fa.1
-        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 16:08:45 -0800 (PST)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d41bb4da91so1733555ad.0
+        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 16:14:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1705622924; x=1706227724; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nkPMMIL6cG9Vww2U8ysDt1UGfqwAexusqourdf/9zpY=;
-        b=bps6f9wAA0AU+KQiJVFMFH2DL2v0ct7AR3MMpIcZgczl8cr27GvuWteHqbOaE6k9Vm
-         J9Vl6CfqIK7PPOB2wlkMTzzxcUbKSCoX1GJf72LsPgVMObKa2a0rhbIkTnYBHLusxEcT
-         JvljttiDLwFuUN+tLjfMQP81YZIQD8+ki8rcy/kHlO74stkbYaJ39iF1F/OOFj4goRST
-         vYzFM1/vFCmTKb82GmwdFAqg0NgCSc6y7B5XfhBOkWM0w4Hyj95vlTMwSwXPpBadZKbR
-         SvNmXLTGBpplvnuPmFFnc85LMSMocnwcnDMmteVmunkSuvHzh1SL8XS9T4NjQZT7two7
-         bu+w==
+        d=kylehuey.com; s=google; t=1705623251; x=1706228051; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vylMAwKjOKQHziaAu87Qiy3rOLrs3/9n8l6rCdO/DPQ=;
+        b=h1YdhG/uV4V/7dPA2x3YbN229M0X7P6v2zSSe+uXUiHIMdatP0XlCzFYCbUuJ1G46x
+         dahGIt5fNpfWQIDjHYneNEpnnDm8eNnOe3NLKmg7eXk1dy0GT7cHDXLi5hvnTQ8ZOxpl
+         fr9O02KY9+W7dkAHDBXid5Q0VTLlPXsvyNXiwW1lPKBrDoEPlZ2TzItOOLl7vh/Bvpog
+         AwNHnWikEHg7/lg0QpQDYjhSq2fghMAb2tq1WyWT9tRY14EmXUMq34II00IqZezZGca8
+         OGiGlP9Z+LehY/t/sQcTBKvS9Han7yzEx6ruH93EJa735+PgjJqodlwIYEuitepwwQP6
+         bLDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705622924; x=1706227724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nkPMMIL6cG9Vww2U8ysDt1UGfqwAexusqourdf/9zpY=;
-        b=aI805eStmu7H7fsQNDlTLEefYyKpZhLMuAqN3DOtsMprBaGVmTsVQ5ce00IPp0xcl3
-         QKEEcPX0Gi5jpYElq1WBb95+pk2ean6e2XEJTUKblX1H16+0EzKP9xC8PRchro0zJrBs
-         NFlrdee9623NfTNMciNzhr5Y0m2ZclNaKpBiI4Sp5cASQ2sPJIDVxpRutClxNeNmSLTT
-         rQTm2XxiNQmfsoQ9kd2Z4R/rmvMoOLu1FSNbuxk/SzAp8wrIx2jKrfdRxlW9cGOxF258
-         QpRujRCP9mkLr1cluPypYXKVbJh4h2wETIOpSGR1040pyvPC18759k45ife0/Qlp5GR3
-         W3Dw==
-X-Gm-Message-State: AOJu0YyLi6Yeim/Lj7AxU4SYvffLLfwUQgoQZFmNzN6QEqyxLZuRPLWa
-	qBkOv0TLpazVh+NZKmwEA+va/DfbUx8YK6rA3nYedZogxr637L7Htbte25zVpfu8qOu/cXUVUc4
-	A7rki8EN4bU+M3ih4vH+gPEWJ8PGM4DAGBi/V
-X-Google-Smtp-Source: AGHT+IHB64Q4qh2RWUb4isRnAHtCK6Q9pIxFsYDwb6SY9a/ePbllFsxCV1Z7QOxrOiqE2y//IjAtR3g0wNaljLwkUsI=
-X-Received: by 2002:a2e:2e0b:0:b0:2cc:7db2:acb5 with SMTP id
- u11-20020a2e2e0b000000b002cc7db2acb5mr877140lju.93.1705622923687; Thu, 18 Jan
- 2024 16:08:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705623251; x=1706228051;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vylMAwKjOKQHziaAu87Qiy3rOLrs3/9n8l6rCdO/DPQ=;
+        b=dD4ukPtRkp5qxP01+K97IaMWzDruDanDX/k52nBBOFRlF6ZKhYoLhnDPd6b3USEFiS
+         9cyVbXbV1oTnhhjnhp97WCBQmY4Pszj5wy2/biJGLPUnVD1K7oyByw+Uo5NlJTFtg/v7
+         5gkT24KopgU0Soe/enlvvmUDEOVJWPBnzC0gMoz+C0ewtQXfoR7PXYWzhTNED+uqAElJ
+         ZMffaEF4IkfU6hzMz9fIq7I0yQCXr7/oolv/m80SgKURc/OudSHEbveLfU2A2ZKC1rPe
+         ZXksxQxkJxKaaMKL+ZiC4VB10LUpDZBqmBCNI6FJX6MQhmvwCWqdQ4VU5J05uyrG5mDK
+         N0iA==
+X-Gm-Message-State: AOJu0YwGSvUH1jt2cxu/VOaMKc1SI6UEjczbHJT6/azGd1Z1gx1c5yGq
+	REfQxIkDtEcjxMUxHNLC6pT8bqRTEiHl29iLXbbGWYXqZjcje3mANrny8H6hOA==
+X-Google-Smtp-Source: AGHT+IEujyYsUJGmW1OBKfiKKsRFXPX9ujLaJT4F5AN6NV2hBr7LLUYW0WtDMX5ex7jj9bZP6/c4ew==
+X-Received: by 2002:a17:902:f68b:b0:1d4:4482:83c7 with SMTP id l11-20020a170902f68b00b001d4448283c7mr1774551plg.117.1705623250639;
+        Thu, 18 Jan 2024 16:14:10 -0800 (PST)
+Received: from zhadum.home.kylehuey.com (c-76-126-33-191.hsd1.ca.comcast.net. [76.126.33.191])
+        by smtp.gmail.com with ESMTPSA id mj7-20020a1709032b8700b001d1d1ef8be6sm1921238plb.267.2024.01.18.16.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jan 2024 16:14:10 -0800 (PST)
+From: Kyle Huey <me@kylehuey.com>
+X-Google-Original-From: Kyle Huey <khuey@kylehuey.com>
+To: Kyle Huey <khuey@kylehuey.com>,
+	linux-kernel@vger.kernel.org,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Marco Elver <elver@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Song Liu <song@kernel.org>
+Cc: Robert O'Callahan <robert@ocallahan.org>,
+	bpf@vger.kernel.org
+Subject: [PATCH v4 0/4] Combine perf and bpf for fast eval of hw breakpoint conditions
+Date: Thu, 18 Jan 2024 16:13:47 -0800
+Message-Id: <20240119001352.9396-1-khuey@kylehuey.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231211045543.31741-1-khuey@kylehuey.com> <20231211045543.31741-5-khuey@kylehuey.com>
- <CAPhsuW7EU0nJq3fF_DqB3o7+5fuGZgs-W1jN1e4F4VHVjgj8Cg@mail.gmail.com>
-In-Reply-To: <CAPhsuW7EU0nJq3fF_DqB3o7+5fuGZgs-W1jN1e4F4VHVjgj8Cg@mail.gmail.com>
-From: Kyle Huey <me@kylehuey.com>
-Date: Thu, 18 Jan 2024 16:08:32 -0800
-Message-ID: <CAP045ApRRLnKtN69wj32q7pgNGVzFrusoWDJOQzxJs3yUsCekw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] selftest/bpf: Test a perf bpf program that
- suppresses side effects.
-To: Song Liu <song@kernel.org>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 2, 2024 at 2:49=E2=80=AFPM Song Liu <song@kernel.org> wrote:
->
-> On Sun, Dec 10, 2023 at 8:56=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote=
-:
-> >
-> > The test sets a hardware breakpoint and uses a bpf program to suppress =
-the
-> > side effects of a perf event sample, including I/O availability signals=
-,
-> > SIGTRAPs, and decrementing the event counter limit, if the ip matches t=
-he
-> > expected value. Then the function with the breakpoint is executed multi=
-ple
-> > times to test that all effects behave as expected.
-> >
-> > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> > ---
-> >  .../selftests/bpf/prog_tests/perf_skip.c      | 140 ++++++++++++++++++
-> >  .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
-> >  2 files changed, 155 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools=
-/testing/selftests/bpf/prog_tests/perf_skip.c
-> > new file mode 100644
-> > index 000000000000..0200736a8baf
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
-> > @@ -0,0 +1,140 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#define _GNU_SOURCE
-> > +
-> > +#include <test_progs.h>
-> > +#include "test_perf_skip.skel.h"
-> > +#include <linux/compiler.h>
-> > +#include <linux/hw_breakpoint.h>
-> > +#include <sys/mman.h>
-> > +
-> > +#ifndef TRAP_PERF
-> > +#define TRAP_PERF 6
-> > +#endif
-> > +
-> > +int signals_unexpected =3D 1;
-> > +int sigio_count, sigtrap_count;
-> > +
-> > +static void handle_sigio(int sig __always_unused)
-> > +{
-> > +       ASSERT_OK(signals_unexpected, "perf event not skipped");
->
-> ASSERT_OK is a little confusing. Maybe do something like:
->
-> static int signals_expected;
-> static void handle_sigio(int sig __always_unused)
-> {
->     ASSERT_EQ(signals_expected, 1, "expected sig_io");
-> }
-> serial_test_perf_skip()
-> {
-> ...
-> signals_expected =3D 1;
-> }
->
+rr, a userspace record and replay debugger[0], replays asynchronous events
+such as signals and context switches by essentially[1] setting a breakpoint
+at the address where the asynchronous event was delivered during recording
+with a condition that the program state matches the state when the event
+was delivered.
 
-I'll just drop signals_expected. Now that I'm counting the exact
-number of signals it's redundant.
+Currently, rr uses software breakpoints that trap (via ptrace) to the
+supervisor, and evaluates the condition from the supervisor. If the
+asynchronous event is delivered in a tight loop (thus requiring the
+breakpoint condition to be repeatedly evaluated) the overhead can be
+immense. A patch to rr that uses hardware breakpoints via perf events with
+an attached BPF program to reject breakpoint hits where the condition is
+not satisfied reduces rr's replay overhead by 94% on a pathological (but a
+real customer-provided, not contrived) rr trace.
 
-> > +       ++sigio_count;
-> > +}
-> > +
-> > +static void handle_sigtrap(int signum __always_unused,
-> > +                          siginfo_t *info,
-> > +                          void *ucontext __always_unused)
-> > +{
-> > +       ASSERT_OK(signals_unexpected, "perf event not skipped");
-> ditto
->
-> > +       ASSERT_EQ(info->si_code, TRAP_PERF, "wrong si_code");
-> > +       ++sigtrap_count;
-> > +}
-> > +
-> > +static noinline int test_function(void)
-> > +{
-> > +       asm volatile ("");
-> > +       return 0;
-> > +}
-> > +
-> > +void serial_test_perf_skip(void)
-> > +{
-> > +       struct sigaction action =3D {};
-> > +       struct sigaction previous_sigtrap;
-> > +       sighandler_t previous_sigio;
-> > +       struct test_perf_skip *skel =3D NULL;
-> > +       struct perf_event_attr attr =3D {};
-> > +       int perf_fd =3D -1;
-> > +       int err;
-> > +       struct f_owner_ex owner;
-> > +       struct bpf_link *prog_link =3D NULL;
-> > +
-> > +       action.sa_flags =3D SA_SIGINFO | SA_NODEFER;
-> > +       action.sa_sigaction =3D handle_sigtrap;
-> > +       sigemptyset(&action.sa_mask);
-> > +       if (!ASSERT_OK(sigaction(SIGTRAP, &action, &previous_sigtrap), =
-"sigaction"))
-> > +               return;
-> > +
-> > +       previous_sigio =3D signal(SIGIO, handle_sigio);
->
-> handle signal() errors here?
+The only obstacle to this approach is that while the kernel allows a BPF
+program to suppress sample output when a perf event overflows it does not
+suppress signalling the perf event fd or sending the perf event's SIGTRAP.
+This patch set redesigns __perf_overflow_handler() and
+bpf_overflow_handler() so that the former invokes the latter directly when
+appropriate rather than through the generic overflow handler machinery,
+passes the return code of the BPF program back to __perf_overflow_handler()
+to allow it to decide whether to execute the regular overflow handler,
+reorders bpf_overflow_handler() and the side effects of perf event
+overflow, changes __perf_overflow_handler() to suppress those side effects
+if the BPF program returns zero, and adds a selftest.
 
-Addressed in v4.
+The previous version of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20231211045543.31741-1-khuey@kylehuey.com/
 
-> > +
-> > +       skel =3D test_perf_skip__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "skel_load"))
-> > +               goto cleanup;
-> > +
-> > +       attr.type =3D PERF_TYPE_BREAKPOINT;
-> > +       attr.size =3D sizeof(attr);
-> > +       attr.bp_type =3D HW_BREAKPOINT_X;
-> > +       attr.bp_addr =3D (uintptr_t)test_function;
-> > +       attr.bp_len =3D sizeof(long);
-> > +       attr.sample_period =3D 1;
-> > +       attr.sample_type =3D PERF_SAMPLE_IP;
-> > +       attr.pinned =3D 1;
-> > +       attr.exclude_kernel =3D 1;
-> > +       attr.exclude_hv =3D 1;
-> > +       attr.precise_ip =3D 3;
-> > +       attr.sigtrap =3D 1;
-> > +       attr.remove_on_exec =3D 1;
-> > +
-> > +       perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
-> > +       if (perf_fd < 0 && (errno =3D=3D ENOENT || errno =3D=3D EOPNOTS=
-UPP)) {
-> > +               printf("SKIP:no PERF_TYPE_BREAKPOINT/HW_BREAKPOINT_X\n"=
-);
-> > +               test__skip();
-> > +               goto cleanup;
-> > +       }
-> > +       if (!ASSERT_OK(perf_fd < 0, "perf_event_open"))
-> > +               goto cleanup;
-> > +
-> > +       /* Configure the perf event to signal on sample. */
-> > +       err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
-> > +       if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
-> > +               goto cleanup;
-> > +
-> > +       owner.type =3D F_OWNER_TID;
-> > +       owner.pid =3D syscall(__NR_gettid);
-> > +       err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
-> > +       if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
-> > +               goto cleanup;
-> > +
-> > +       /*
-> > +        * Allow at most one sample. A sample rejected by bpf should
-> > +        * not count against this.
-> > +        */
->
-> Multi-line comment style should be like
+Changes since v3:
 
-Addressed in v4.
+Patches 1, 2, 3 added various Acked-by.
 
->         /* Allow at most one sample. A sample rejected by bpf should
->         * not count against this.
->         */
->
-> > +       err =3D ioctl(perf_fd, PERF_EVENT_IOC_REFRESH, 1);
-> > +       if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_REFRESH)"))
-> > +               goto cleanup;
-> > +
-> > +       prog_link =3D bpf_program__attach_perf_event(skel->progs.handle=
-r, perf_fd);
-> > +       if (!ASSERT_OK_PTR(prog_link, "bpf_program__attach_perf_event")=
-)
-> > +               goto cleanup;
-> > +
-> > +       /* Configure the bpf program to suppress the sample. */
-> > +       skel->bss->ip =3D (uintptr_t)test_function;
-> > +       test_function();
-> > +
-> > +       ASSERT_EQ(sigio_count, 0, "sigio_count");
-> > +       ASSERT_EQ(sigtrap_count, 0, "sigtrap_count");
-> > +
-> > +       /* Configure the bpf program to allow the sample. */
-> > +       skel->bss->ip =3D 0;
-> > +       signals_unexpected =3D 0;
-> > +       test_function();
-> > +
-> > +       ASSERT_EQ(sigio_count, 1, "sigio_count");
-> > +       ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
-> > +
-> > +       /*
-> > +        * Test that the sample above is the only one allowed (by perf,=
- not
-> > +        * by bpf)
-> > +        */
->
-> ditto.
->
-> > +       test_function();
-> > +
-> > +       ASSERT_EQ(sigio_count, 1, "sigio_count");
-> > +       ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
-> > +
-> > +cleanup:
-> > +       bpf_link__destroy(prog_link);
-> > +       if (perf_fd >=3D 0)
-> > +               close(perf_fd);
-> > +       test_perf_skip__destroy(skel);
-> > +
-> > +       signal(SIGIO, previous_sigio);
-> > +       sigaction(SIGTRAP, &previous_sigtrap, NULL);
-> > +}
-> > diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools=
-/testing/selftests/bpf/progs/test_perf_skip.c
-> > new file mode 100644
-> > index 000000000000..7eb8b6de7a57
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
-> > @@ -0,0 +1,15 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include "vmlinux.h"
-> > +#include <bpf/bpf_helpers.h>
-> > +#include <bpf/bpf_tracing.h>
-> > +
-> > +uintptr_t ip;
-> > +
-> > +SEC("perf_event")
-> > +int handler(struct bpf_perf_event_data *data)
-> > +{
-> > +       /* Skip events that have the correct ip. */
-> > +       return ip !=3D PT_REGS_IP(&data->regs);
-> > +}
-> > +
-> > +char _license[] SEC("license") =3D "GPL";
-> > --
-> > 2.34.1
-> >
+Patch 4 addresses Song's review comments by dropping signals_expected and the
+corresponding ASSERT_OKs, handling errors from signal(), and fixing multiline
+comment formatting.
 
-- Kyle
+v2 of this patchset can be found at
+https://lore.kernel.org/linux-kernel/20231207163458.5554-1-khuey@kylehuey.com/
+
+Changes since v2:
+
+Patches 1 and 2 were added from a suggestion by Namhyung Kim to refactor
+this code to implement this feature in a cleaner way. Patch 2 is separated
+for the benefit of the ARM arch maintainers.
+
+Patch 3 conceptually supercedes v2's patches 1 and 2, now with a cleaner
+implementation thanks to the earlier refactoring.
+
+Patch 4 is v2's patch 3, and addresses review comments about C++ style
+comments, getting a TRAP_PERF definition into the test, and unnecessary
+NULL checks.
+
+[0] https://rr-project.org/
+[1] Various optimizations exist to skip as much as execution as possible
+before setting a breakpoint, and to determine a set of program state that
+is practical to check and verify.
+
+
 
