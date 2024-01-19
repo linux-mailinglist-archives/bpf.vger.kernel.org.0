@@ -1,339 +1,154 @@
-Return-Path: <bpf+bounces-19934-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19935-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C86A8330FA
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:52:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96AE383315E
+	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:13:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBDB71F21B14
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 22:52:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 485531F23325
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:13:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746DE58AA9;
-	Fri, 19 Jan 2024 22:50:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC8A458ACF;
+	Fri, 19 Jan 2024 23:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZKz1SQs7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LB/DAmYa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE6759171
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 22:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2484458ABF;
+	Fri, 19 Jan 2024 23:13:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705704648; cv=none; b=anIZZEZbITF5/WQinKlNP1YxhRVbpm8Nqx4TVTfcPrBOb3ClvqP7LCiNyCtrtDRhABZYnKYSc8yQXuyMwl7TW1ZS3kQ7MSyD+fyaO3eGLHWFBbA8ghJX0hK4g0CC0re3jDyQkN8qquEIChPfgHjb6H3LldVHF1+GqLaANyHuvFU=
+	t=1705705991; cv=none; b=GiOhk0xk6qgk/gfJqcY3jDNFg1WP/4hyYQG4exd+ks8eNX8/NWCJUILUlDEAIihhX8Q9o7QLRgXlSP8dc2rd7hfVjJwpqyEzyTmSm019N0Vd2gUxnoLOGWmVB7lj+jpfVNWjuhA8ajoKl/hOtXJkWdeTS9Qv4oEqoZWkeuGyoIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705704648; c=relaxed/simple;
-	bh=SWB0ZHfeZoPg6tPNyHp8VWB8XO0lWeqASaf+7PmFZ80=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nMopPk/fviM2K/Y3j+lloPVK+5fQ7Yd3FdJ6CIFfhbA8QvzO2en9wtsLhbOQpR4Ol+iUS96vNnX8BCBVrZ4Qtblw1K1rbsO8qDNRvvV2gnRtjpEgAyKrybQOC5DHHK49VLj/FSPNbsxxYAYeEY2Bn6LtN3hDWIeWHaTCMXfnl4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZKz1SQs7; arc=none smtp.client-ip=209.85.128.179
+	s=arc-20240116; t=1705705991; c=relaxed/simple;
+	bh=ZIIpZqUlqJ4c4JFESES4pFdqT7/WY2rHoNYSsySC1eg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=N1g7VmKOn65NeUfI0Orqkt/XS4HlLZ3jME73Ts5+Dv57PUQ9jTVzhdg0/DAn141W2xYDvnLZ2nvEoumLY/hMUwRkMZEvriupQo3yM9n3ZPliim/1vDBq7Ch17SGM/FX2qjdzz9eoBU98LkJPyh0UNBs1ftGlH+cGxAs1HniqNVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LB/DAmYa; arc=none smtp.client-ip=209.85.160.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-5ff9eed5278so8507177b3.0
-        for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 14:50:45 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4298e866cd6so8429891cf.0;
+        Fri, 19 Jan 2024 15:13:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705704645; x=1706309445; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1705705989; x=1706310789; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sHUnm4yqsXHk4+Bq4H3avgcQOFnpIHhWYLrlVivvdZY=;
-        b=ZKz1SQs7Ti/jRcbxICkN4i6uZerUi+GGItJZZlADWUS5SQ6Q6UOdd8hRIWyUmOFaLM
-         IsesNi9lzQ5dtGucjnyldVJLF44g2HW1zwUDshZnOG2mddEw4+F4o8opMoATJXh66QaF
-         7MLoRqgH5/4qIxXZ57Lq7uZNq3/nfPu51E1N/9rOJXsXNBWQ5SIb1rMOwto9oVeOBGd6
-         +uJGYz1BXs5x2Rj+sJcrmVqzTr71bDE9k1U2Mo/xaU0B44ZW00ZjLnHm57NaYvR+GRlS
-         FR0cSzjTBviIRMxXCTKFrcLNxRNYJIQn0ZcaYJITOhJAYclbbpYVpn+iYf6VM3ZTVUWf
-         wIUw==
+        bh=+SVsGFrAqe3TDNcPEh3cHm84wfyPFhb/XHrX3klObA4=;
+        b=LB/DAmYaYVV95ykDJn2els4pfUROXK6jrDDcarRuKm29VqkU29dv02ImVdGQSpOrVk
+         JwHwNL27nvKcRovnmberFYKkKpb1WZtnj6t7ZhN2/p+8o2zciF1uoEKBrXhE+Q1w20/F
+         ALICthVcxg3DAFLVmB0sjZAfL3n+xY6O7c6TWizQthAHXHvjKOSrN2RFxZht06Xe8+xU
+         3hFqsF+XQNNAG3m9Fdmnx4hXSBm+bSKhaf1gzoyXQPkDPNJhS4c2KInfvZ0DuSnqml2u
+         wn9ZDWxutsVXHZQdz6PhJaOM8ReBQ3Zoz0lqytU9Tol9DTSJZ1do/Tvmds0CH4Fuc21U
+         Xwxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705704645; x=1706309445;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1705705989; x=1706310789;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sHUnm4yqsXHk4+Bq4H3avgcQOFnpIHhWYLrlVivvdZY=;
-        b=ha3HiMnEqVmig8xZi73nCHI3odbTRldDgbOxnJl1FbHW1utbnFyaafzHL9OkvBgqOy
-         TcJMXom5e+G8PN7T02R8boQGPoAWOSyiaH248760DlZMBPhPj2JsryrZCXU3iAhVlnTH
-         NhLL2B2gvTozLUZvzpQc44BsAxAzEtQV/95DJWr8IUWcIn3Mf3uN+2j1s7qBai3k90k9
-         0CZX+u0ONv3BbkgOd2NtL2TsUycPlz3xknqoTAN1RXBoQAxvQzINEH7f2LbmElKmcksh
-         7T8yopfDE/gwDlCfyoLdCNv0HlDbrFAm7vLGi1JWEAmZZarZTE0owOJOM2fvIKUWpiSc
-         X6Ww==
-X-Gm-Message-State: AOJu0YyD2RjdDvcQVd0rz7luhrwC9Vt2DXt7sjyYamKaJ37iIognM33y
-	jLTV+ChJq8yzA6u8SpwZfhNUAfZPo8TZoT+0LqIRENNltDxRiGv16GThD5Su
-X-Google-Smtp-Source: AGHT+IHk7scZfICzX2ODbMBhecVxZZxik3drH3SKMoc6Hqus6t5naC8ZZ+iGifP5uDhzPWXE0RkLtA==
-X-Received: by 2002:a0d:dd91:0:b0:5ff:9565:6f59 with SMTP id g139-20020a0ddd91000000b005ff95656f59mr608618ywe.3.1705704644769;
-        Fri, 19 Jan 2024 14:50:44 -0800 (PST)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:b170:5bda:247f:8c47])
-        by smtp.gmail.com with ESMTPSA id s184-20020a819bc1000000b005ffa70964f4sm411770ywg.115.2024.01.19.14.50.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jan 2024 14:50:44 -0800 (PST)
-From: thinker.li@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	drosen@google.com
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v17 14/14] selftests/bpf: test case for register_bpf_struct_ops().
-Date: Fri, 19 Jan 2024 14:50:05 -0800
-Message-Id: <20240119225005.668602-15-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240119225005.668602-1-thinker.li@gmail.com>
-References: <20240119225005.668602-1-thinker.li@gmail.com>
+        bh=+SVsGFrAqe3TDNcPEh3cHm84wfyPFhb/XHrX3klObA4=;
+        b=v7nx4pKiqv9r6XyuR8ORqGkxlaReVdg8qjVqWru8suCADlc0BBO+kFJV0XUtWv+2Gn
+         hjWmqymiYKQbgp1hykMoxD40FYq74gxvZ/crSfDgK3PTptzFd3W0Rjr9aQux/fy0iCVB
+         x7T8IlwoXv+A8oiz5uAXmzs9lQzSHKyVXTncugORmdnNk4TmXFChOoukSKdIJC+NWYhz
+         og8Q5K1VZHPZ9LpXxr5Q9YukCLsbtB8a9IytFTMl0dxKXlloFz1P0EboANRlwHs1d9q6
+         CrrgYkwV3JeoHCf1o3Ue1fat4lWGFSHRvyzCwNTNivLyl5GIrE1bBd1McX2wHhQAYayt
+         r5uw==
+X-Gm-Message-State: AOJu0YxWHGO2FSZH/DBgGgYjyXaZZhf8dwxtiPjlnWXLcSXtXpmnDYd1
+	L8cjB61C9GVwLYIlRajitlVAO2c8ExyleA4KPODqdqceggPdSYMnD5wqp0/sFwmyJOdpWNja86X
+	b6M4t6u1ZYr8WHVl7op5RQFffoeI=
+X-Google-Smtp-Source: AGHT+IGEvIsV4Ows3IIE4NBUU0O+nfy2CvS9bncOznixN4ljFR4vQmbq4hn2VrBpkfB4hGU0vhAY9mC7gWBXYidojOI=
+X-Received: by 2002:ac8:5f11:0:b0:429:d341:a11e with SMTP id
+ x17-20020ac85f11000000b00429d341a11emr631302qta.135.1705705988974; Fri, 19
+ Jan 2024 15:13:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <f4l6fadtxnvttlb27heyl3r2bxettwwfu5vrazqykrshvrl3vm@ejw2ccatg3wi>
+ <0c0a7705e775b2548f3439600738311830dbe1a9.camel@gmail.com>
+ <uf7fpvox2s3ban33ybixlg2buxbh2ys2gl7wjrphuip2qrdsjr@56dp2546tuuu>
+ <71ac757d092c6103af7c6d0ebb4634afcaa0969a.camel@gmail.com>
+ <CAK3+h2yQBHRxp+rv7VBJqMQWeudADiDnwXZ+KesT4XSOupFMzA@mail.gmail.com> <CAADnVQKMy_YchC2RVaGFiho7Qgdwxm9uPaQ74BMcwNE_zwbR4Q@mail.gmail.com>
+In-Reply-To: <CAADnVQKMy_YchC2RVaGFiho7Qgdwxm9uPaQ74BMcwNE_zwbR4Q@mail.gmail.com>
+From: Vincent Li <vincent.mc.li@gmail.com>
+Date: Fri, 19 Jan 2024 15:12:58 -0800
+Message-ID: <CAK3+h2waCj=GF2LdV+nWL3N+s9Ke-eHo-NVBhqm6CEsNE6zA5Q@mail.gmail.com>
+Subject: Re: Re: lsm_cgroup.c selftest fails to compile when CONFIG_PACKET!=y
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eduard Zingerman <eddyz87@gmail.com>, Shung-Hsi Yu <shung-hsi.yu@suse.com>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Yonghong Song <yonghong.song@linux.dev>, Jiri Olsa <jolsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Kui-Feng Lee <thinker.li@gmail.com>
+On Fri, Jan 19, 2024 at 2:26=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Jan 19, 2024 at 7:00=E2=80=AFAM Vincent Li <vincent.mc.li@gmail.c=
+om> wrote:
+> >
+> > On Fri, Jan 19, 2024 at 4:23=E2=80=AFAM Eduard Zingerman <eddyz87@gmail=
+.com> wrote:
+> > >
+> > > On Fri, 2024-01-19 at 16:04 +0800, Shung-Hsi Yu wrote:
+> > >
+> > > [...]
+> > >
+> > > > Final goal would be have BPF selftests compiled and test against ou=
+r own
+> > > > kernel, without having to come up with a specific kernel flavor tha=
+t is
+> > > > used to build and run the selftest. For v5.14 and v5.19-based kerne=
+l it
+> > > > works: compilation is successful and I was able to run the verifier
+> > > > tests. (Did not try running the other tests though)
+> > >
+> > > You mean ./test_verifier binary, right?
+> > > A lot of tests had been moved from ./test_verifier to ./test_progs si=
+nce.
+> > >
+> > > > > As far as I understand, selftests are supposed to be built and ru=
+n
+> > > > > using specific configuration, here is how config for x86 CI is pr=
+epared:
+> > > > >
+> > > > > ./scripts/kconfig/merge_config.sh \
+> > > > >          ./tools/testing/selftests/bpf/config \
+> > > > >          ./tools/testing/selftests/bpf/config.vm \
+> > > > >          ./tools/testing/selftests/bpf/config.x86_64
+> > > > >
+> > > > > (root is kernel source).
+> > > > > I'm not sure if other configurations are supposed to be supported=
+.
+> > > >
+> > > > Would it make sense to have makefile target that builds/runs a smal=
+ler
+> > > > subset of general, config-agnostic selftests that tests the core fe=
+ature
+> > > > (e.g. verifier + instruction set)?
+> > >
+> > > In ideal world I'd say that ./test_progs should include/exclude tests
+> > > conditioned on current configuration, but I don't know how much work
+> > > would it be to adapt build system for this.
+> > >
+> >
+> > I would also suggest skipping building the specific bpf test code when
+> > a specific CONFIG is removed, sometimes
+> > I only want to test some bpf selftests code I am interested in :)
+>
+> I don't think we should be complicating bpf selftests to test
+> configurations with reduced kconfig.
+> bpf/config.* is what we target in bpf CI and we expect
+> developers do the same amount of testing before they send patches.
 
-Create a new struct_ops type called bpf_testmod_ops within the bpf_testmod
-module. When a struct_ops object is registered, the bpf_testmod module will
-invoke test_2 from the module.
-
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 66 ++++++++++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 ++
- .../bpf/prog_tests/test_struct_ops_module.c   | 75 +++++++++++++++++++
- .../selftests/bpf/progs/struct_ops_module.c   | 30 ++++++++
- 4 files changed, 176 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_module.c
-
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 91907b321f91..9a7949730137 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2020 Facebook */
-+#include <linux/bpf.h>
- #include <linux/btf.h>
- #include <linux/btf_ids.h>
- #include <linux/error-injection.h>
-@@ -520,11 +521,75 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
- BTF_SET8_END(bpf_testmod_check_kfunc_ids)
- 
-+static int bpf_testmod_ops_init(struct btf *btf)
-+{
-+	return 0;
-+}
-+
-+static bool bpf_testmod_ops_is_valid_access(int off, int size,
-+					    enum bpf_access_type type,
-+					    const struct bpf_prog *prog,
-+					    struct bpf_insn_access_aux *info)
-+{
-+	return bpf_tracing_btf_ctx_access(off, size, type, prog, info);
-+}
-+
-+static int bpf_testmod_ops_init_member(const struct btf_type *t,
-+				       const struct btf_member *member,
-+				       void *kdata, const void *udata)
-+{
-+	return 0;
-+}
-+
- static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
- 	.owner = THIS_MODULE,
- 	.set   = &bpf_testmod_check_kfunc_ids,
- };
- 
-+static const struct bpf_verifier_ops bpf_testmod_verifier_ops = {
-+	.is_valid_access = bpf_testmod_ops_is_valid_access,
-+};
-+
-+static int bpf_dummy_reg(void *kdata)
-+{
-+	struct bpf_testmod_ops *ops = kdata;
-+	int r;
-+
-+	r = ops->test_2(4, 3);
-+
-+	return 0;
-+}
-+
-+static void bpf_dummy_unreg(void *kdata)
-+{
-+}
-+
-+static int bpf_testmod_test_1(void)
-+{
-+	return 0;
-+}
-+
-+static int bpf_testmod_test_2(int a, int b)
-+{
-+	return 0;
-+}
-+
-+static struct bpf_testmod_ops __bpf_testmod_ops = {
-+	.test_1 = bpf_testmod_test_1,
-+	.test_2 = bpf_testmod_test_2,
-+};
-+
-+struct bpf_struct_ops bpf_bpf_testmod_ops = {
-+	.verifier_ops = &bpf_testmod_verifier_ops,
-+	.init = bpf_testmod_ops_init,
-+	.init_member = bpf_testmod_ops_init_member,
-+	.reg = bpf_dummy_reg,
-+	.unreg = bpf_dummy_unreg,
-+	.cfi_stubs = &__bpf_testmod_ops,
-+	.name = "bpf_testmod_ops",
-+	.owner = THIS_MODULE,
-+};
-+
- extern int bpf_fentry_test1(int a);
- 
- static int bpf_testmod_init(void)
-@@ -535,6 +600,7 @@ static int bpf_testmod_init(void)
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &bpf_testmod_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_testmod_kfunc_set);
- 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_testmod_kfunc_set);
-+	ret = ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops, bpf_testmod_ops);
- 	if (ret < 0)
- 		return ret;
- 	if (bpf_fentry_test1(0) < 0)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index f32793efe095..ca5435751c79 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -28,4 +28,9 @@ struct bpf_iter_testmod_seq {
- 	int cnt;
- };
- 
-+struct bpf_testmod_ops {
-+	int (*test_1)(void);
-+	int (*test_2)(int a, int b);
-+};
-+
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-new file mode 100644
-index 000000000000..8d833f0c7580
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -0,0 +1,75 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <test_progs.h>
-+#include <time.h>
-+
-+#include "struct_ops_module.skel.h"
-+
-+static void check_map_info(struct bpf_map_info *info)
-+{
-+	struct bpf_btf_info btf_info;
-+	char btf_name[256];
-+	u32 btf_info_len = sizeof(btf_info);
-+	int err, fd;
-+
-+	fd = bpf_btf_get_fd_by_id(info->btf_vmlinux_id);
-+	if (!ASSERT_GE(fd, 0, "get_value_type_btf_obj_fd"))
-+		return;
-+
-+	memset(&btf_info, 0, sizeof(btf_info));
-+	btf_info.name = ptr_to_u64(btf_name);
-+	btf_info.name_len = sizeof(btf_name);
-+	err = bpf_btf_get_info_by_fd(fd, &btf_info, &btf_info_len);
-+	if (!ASSERT_OK(err, "get_value_type_btf_obj_info"))
-+		goto cleanup;
-+
-+	if (!ASSERT_EQ(strcmp(btf_name, "bpf_testmod"), 0, "get_value_type_btf_obj_name"))
-+		goto cleanup;
-+
-+cleanup:
-+	close(fd);
-+}
-+
-+static void test_struct_ops_load(void)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
-+	struct struct_ops_module *skel;
-+	struct bpf_map_info info = {};
-+	struct bpf_link *link;
-+	int err;
-+	u32 len;
-+
-+	skel = struct_ops_module__open_opts(&opts);
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_module_open"))
-+		return;
-+
-+	err = struct_ops_module__load(skel);
-+	if (!ASSERT_OK(err, "struct_ops_module_load"))
-+		goto cleanup;
-+
-+	len = sizeof(info);
-+	err = bpf_map_get_info_by_fd(bpf_map__fd(skel->maps.testmod_1), &info,
-+				     &len);
-+	if (!ASSERT_OK(err, "bpf_map_get_info_by_fd"))
-+		goto cleanup;
-+
-+	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	ASSERT_OK_PTR(link, "attach_test_mod_1");
-+
-+	/* test_2() will be called from bpf_dummy_reg() in bpf_testmod.c */
-+	ASSERT_EQ(skel->bss->test_2_result, 7, "test_2_result");
-+
-+	bpf_link__destroy(link);
-+
-+	check_map_info(&info);
-+
-+cleanup:
-+	struct_ops_module__destroy(skel);
-+}
-+
-+void serial_test_struct_ops_module(void)
-+{
-+	if (test__start_subtest("test_struct_ops_load"))
-+		test_struct_ops_load();
-+}
-+
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-new file mode 100644
-index 000000000000..e44ac55195ca
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "../bpf_testmod/bpf_testmod.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+int test_2_result = 0;
-+
-+SEC("struct_ops/test_1")
-+int BPF_PROG(test_1)
-+{
-+	return 0xdeadbeef;
-+}
-+
-+SEC("struct_ops/test_2")
-+int BPF_PROG(test_2, int a, int b)
-+{
-+	test_2_result = a + b;
-+	return a + b;
-+}
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_1 = {
-+	.test_1 = (void *)test_1,
-+	.test_2 = (void *)test_2,
-+};
-+
--- 
-2.34.1
-
+Totally understand that from the kernel bpf developer perspective. I
+am a bpf user learning how to write a bpf program from selftests, but
+I guess there is another way to learn,  selftests is not for teaching
+bpf users, no need to complicate.
 
