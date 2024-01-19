@@ -1,133 +1,125 @@
-Return-Path: <bpf+bounces-19873-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19874-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59BC7832427
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 06:14:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07412832503
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 08:29:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A5B7284A3B
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 05:14:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41C261C22430
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 07:29:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A8B4A12;
-	Fri, 19 Jan 2024 05:14:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A20D51A;
+	Fri, 19 Jan 2024 07:29:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28DEA63DF;
-	Fri, 19 Jan 2024 05:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C17944F;
+	Fri, 19 Jan 2024 07:29:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705641281; cv=none; b=tRnEaAWmuF7F3YW9SJKIRkarQ2+VPt5iMKWSItl2beUTCD3iVPmmRSOeFufwFGocKWbpU5LQEMEq2PX/Dr1jQ7lsPUbIwANK/ohKkIPVAf5piiUVzrUYQ7YKAavkjXGhTzav0aE3HZ5eK02Af0MfUBmiswsTzwQeWBXNkmol8vY=
+	t=1705649370; cv=none; b=gpgB+zfDXaRVBqrAgGz8aO5Dez4fXKGyH/hk7rbDnDuWaBBmrczvXEAeXBrwAHk/9nvuFhCHVJDOlxHUHuJ+WnzF/mGH12rSWNlC+XC/15JcixMrw50fp1wIFQh8D5ncvxqFzAqgYUAu/DUhIB/oBfUmAhjGf07lU97MWWhNnpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705641281; c=relaxed/simple;
-	bh=gxSzQTf6jmvbBw8nozGpd8UPCbitPnoQAkYe8hXwxzU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=j6FNoxrUUQyEDi8bPmDJzVglTei79cUkAbGIjnWO3AKtjFfNRFORcK3J27btLp0dSiS53CBrNxQrYTHQdqjJLYubsq67P7e3UlWH66+ThiggV1Mv0l+UtII9wT5fRgElFZqvvQBBaFnb/yLzptyG6Lna6ujvWv+rj3pEpFC++20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2904d8c29d2so107402a91.2;
-        Thu, 18 Jan 2024 21:14:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705641279; x=1706246079;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Heknx9B9Mq2DzjyZ9n1MXLrOGgOlHXA+fVx4XEJEn/0=;
-        b=CYbMyxcmXowrS52QWvD/8JevCnO7/i+Pbkz/42BPI+wM6YehzfX9dGmjK6y8HCCP6W
-         QG9ztqDB5lpqBHjz7UZJl+fIHLGLmTx3viNV0KrDRxmA55FlAicvG1aA5j2msJdztPH5
-         4kK+YYiamk1cmkh2u6aqcKkHKC6q6d0kpo5vpNssviA8Szq28gCjLhB+Rq656W/kW5yy
-         SfFZdTDZSyzZKnXaLGQHgM+TsX4/84O2Da2YqqdOegFc7meNAYWpAU48Bo9xRgxS2jzd
-         Oyhc4ee1yfanyEnuqr0rurE0Wz6ZASD4tsrfcsHuaGnT/z5eDBnfTfkcyFPwKss6ihjE
-         Ie/A==
-X-Gm-Message-State: AOJu0Yx5mBax5oksczVgQbVE0rSCb2AzoBpY1zSec5RJZm6P62FvUdxH
-	BCIdoH29b9UBIafnwSwYMf//PzRo+BOerwy/E8sxHgsAzhJD84m/sMKpL0Cc1FtRLsSbSmCAV1+
-	6xz2o4VWf79jS5kfruZJUskhdg7A=
-X-Google-Smtp-Source: AGHT+IEx04eW1wXaAKULD9Iv+dN8GjXTCGGwNL09a3nQ8jcBhD8NNbebPOh7vIxUq5iQSikVmgxSPzQvDqrlsxNVMhI=
-X-Received: by 2002:a17:90a:242:b0:28e:79cf:f1f1 with SMTP id
- t2-20020a17090a024200b0028e79cff1f1mr1562868pje.80.1705641279389; Thu, 18 Jan
- 2024 21:14:39 -0800 (PST)
+	s=arc-20240116; t=1705649370; c=relaxed/simple;
+	bh=tytnvRSUO7zZOO5vPr/o6H9cIOFeDZolqtImBleFC/Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KvxHwu82F0Vp8ea7uCsNDwe3N7sWYoq69yFLHtmWEibjw6V4J0H9Pb9UuxaLkxSFEEX3e1/SpW0/wtWIO449oSdg2cna5bw1ChvtJIVQoY5G5V6KuvclZzUl9/B8c3QzCcvfrIT15RU1EnsW1i1NS0eBrnEX1QSavBywkGCEIRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TGWT96wH9z4f3lVk;
+	Fri, 19 Jan 2024 15:29:17 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 22F131A0171;
+	Fri, 19 Jan 2024 15:29:24 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RHQJKplBOsuBQ--.42435S4;
+	Fri, 19 Jan 2024 15:29:22 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+To: x86@kernel.org,
+	bpf@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	linux-kernel@vger.kernel.org,
+	xingwei lee <xrivendell7@gmail.com>,
+	Jann Horn <jannh@google.com>,
+	houtao1@huawei.com
+Subject: [PATCH bpf 0/3] Fix the read of vsyscall page through bpf
+Date: Fri, 19 Jan 2024 15:30:16 +0800
+Message-Id: <20240119073019.1528573-1-houtao@huaweicloud.com>
+X-Mailer: git-send-email 2.29.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119001352.9396-1-khuey@kylehuey.com> <20240119001352.9396-4-khuey@kylehuey.com>
-In-Reply-To: <20240119001352.9396-4-khuey@kylehuey.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Thu, 18 Jan 2024 21:14:27 -0800
-Message-ID: <CAM9d7cgK_uKtPk_pz6WTCUNdaQWdLg=e3oq6Ah3fG8=DzxN+0g@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] perf/bpf: Allow a bpf program to suppress all
- sample side effects
-To: Kyle Huey <me@kylehuey.com>
-Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Marco Elver <elver@google.com>, Yonghong Song <yonghong.song@linux.dev>, Song Liu <song@kernel.org>, 
-	"Robert O'Callahan" <robert@ocallahan.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RHQJKplBOsuBQ--.42435S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr4rKrWUGF13trWkWr1Dtrb_yoW8CrW8pa
+	93Cw15Kr1rKFyayr43WasFvayrJ3WktF43Wrn7Ww1rZ3y7XF9Y9ryIga4UWry3AFyagry5
+	Zrs3tFykGw1jqF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
+	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+	IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+	87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-Hello,
+From: Hou Tao <houtao1@huawei.com>
 
-On Thu, Jan 18, 2024 at 4:14=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote:
->
-> Returning zero from a bpf program attached to a perf event already
-> suppresses any data output. Return early from __perf_event_overflow() in
-> this case so it will also suppress event_limit accounting, SIGTRAP
-> generation, and F_ASYNC signalling.
->
-> Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> Acked-by: Song Liu <song@kernel.org>
+Hi,
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+As reported by syzboot [1] and [2], when trying to read vsyscall page
+by using bpf_probe_read_kernel() or bpf_probe_read(), oops will happen.
 
-Thanks,
-Namhyung
+Thomas Gleixner had proposed a test patch [3], but it seems that no
+formal patch is posted after about one month [4], so I post it instead
+and add an Originally-from tag in patch #2.
 
+Patch #1 makes is_vsyscall_vaddr() being a common helper. Patch #2 fixes
+the problem by disallowing vsyscall page read for
+copy_from_kernel_nofault(). Patch #3 adds one test case to ensure the
+read of vsyscall page through bpf is rejected. Although vsyscall page
+can be disabled by vsyscall=none, but it doesn't affect the reproduce of
+the problem and the added test.
 
-> ---
->  kernel/events/core.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 24a718e7eb98..a329bec42c4d 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -9574,6 +9574,11 @@ static int __perf_event_overflow(struct perf_event=
- *event,
->
->         ret =3D __perf_event_account_interrupt(event, throttle);
->
-> +#ifdef CONFIG_BPF_SYSCALL
-> +       if (event->prog && !bpf_overflow_handler(event, data, regs))
-> +               return ret;
-> +#endif
-> +
->         /*
->          * XXX event_limit might not quite work as expected on inherited
->          * events
-> @@ -9623,10 +9628,7 @@ static int __perf_event_overflow(struct perf_event=
- *event,
->                 irq_work_queue(&event->pending_irq);
->         }
->
-> -#ifdef CONFIG_BPF_SYSCALL
-> -       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
-> -#endif
-> -               READ_ONCE(event->overflow_handler)(event, data, regs);
-> +       READ_ONCE(event->overflow_handler)(event, data, regs);
->
->         if (*perf_event_fasync(event) && event->pending_kill) {
->                 event->pending_wakeup =3D 1;
-> --
-> 2.34.1
->
+Comments are always welcome.
+
+[1]: https://lore.kernel.org/bpf/CAG48ez06TZft=ATH1qh2c5mpS5BT8UakwNkzi6nvK5_djC-4Nw@mail.gmail.com/
+[2]: https://lore.kernel.org/bpf/CABOYnLynjBoFZOf3Z4BhaZkc5hx_kHfsjiW+UWLoB=w33LvScw@mail.gmail.com/
+[3]: https://lore.kernel.org/bpf/87r0jwquhv.ffs@tglx/
+[4]: https://lore.kernel.org/bpf/e24b125c-8ff4-9031-6c53-67ff2e01f316@huaweicloud.com/
+
+Hou Tao (3):
+  x86/mm: Move is_vsyscall_vaddr() into mm_internal.h
+  x86/mm: Disallow vsyscall page read for copy_from_kernel_nofault()
+  selftest/bpf: Test the read of vsyscall page under x86-64
+
+ arch/x86/mm/fault.c                           | 11 +---
+ arch/x86/mm/maccess.c                         |  6 ++
+ arch/x86/mm/mm_internal.h                     | 13 ++++
+ .../selftests/bpf/prog_tests/read_vsyscall.c  | 61 +++++++++++++++++++
+ .../selftests/bpf/progs/read_vsyscall.c       | 45 ++++++++++++++
+ 5 files changed, 127 insertions(+), 9 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
+ create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+
+-- 
+2.29.2
+
 
