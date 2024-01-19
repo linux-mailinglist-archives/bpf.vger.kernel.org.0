@@ -1,255 +1,334 @@
-Return-Path: <bpf+bounces-19855-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19856-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C7C6832275
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 01:07:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBD4783227B
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 01:08:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FBBBB22F83
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 00:07:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E114E1C22907
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 00:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CE3228E10;
-	Fri, 19 Jan 2024 00:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2771802;
+	Fri, 19 Jan 2024 00:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="QsxmWnjp"
+	dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b="bps6f9wA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E64CA28E03
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 00:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEBCD634
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 00:08:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705622858; cv=none; b=pck0xh1r3ym8kqC//PhVZFGQCiuzWGUGerLyixYkV+ngRC06MXvsF5WjxktudtjMwu8s1+bmWTiTNdFDhSfpQVBb8GI8WTZhohBhUCg0bsCbX7GFx1ntjWFx69OaQhdEB4F3OThrIvHIzBAQnvUDgyvmPKB8T2cfJp0iEv3959o=
+	t=1705622927; cv=none; b=r/Wyr265l7EyOzqweMhtyT1hR70uh7o6t14yPliaXBKyeblbv6VLTCPwj5DpthiPqwaQy0vwLmLH7ubjDy2gNBXqXjRY8qKcX6EczRKpdlwhWXVQVH4ZTj9kHIx19hFZ4KZl5YT5oYcWzQHwA6lsY7TJJK7EJXLNgik9WMXymy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705622858; c=relaxed/simple;
-	bh=2tpFXdUHLYq6vpSJb6t5xz3SjDKWpiEEmbpAupwsgz4=;
+	s=arc-20240116; t=1705622927; c=relaxed/simple;
+	bh=Nl+g4tuaqCxOgaP3Iln3PLlQaui5SCReIL+qHRQfNC8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lyiTuCrqmllY47/DgBd5QJZl4U7VmLT5oTRcjzLR3cSdOkQlGEsDpQL+WVfWgabBaX9DwGWbgdJeTiS2KhxTAIOrEtbKRL3j4YPGAARMxNPU+qjPsiRM2Mv/RYTssJo2gcLAi3wFQm954XCTNIfLSvWuT3iXQ2bAsdM79z+TE+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=QsxmWnjp; arc=none smtp.client-ip=209.85.218.50
+	 To:Cc:Content-Type; b=r97yyuMPjXyEtM+ENhyHdzZaZzSZmk/x3rtHyZQ9HgNZ7JdnKFNvy4waWGIiYbgp09CbhIPwa8U261JIM3zfuZwo1pOGhm5Vfm3ItvzX2/jZU21CU2vrmcj2ln3lwP6mJkuWGK/yBRPVFWqyTDKLG5t4dguhyEV+xn4mWIDxr20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com; spf=pass smtp.mailfrom=kylehuey.com; dkim=pass (2048-bit key) header.d=kylehuey.com header.i=@kylehuey.com header.b=bps6f9wA; arc=none smtp.client-ip=209.85.208.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylehuey.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylehuey.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a28f66dc7ffso248487566b.0
-        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 16:07:36 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2ccae380df2so2793081fa.1
+        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 16:08:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google; t=1705622855; x=1706227655; darn=vger.kernel.org;
+        d=kylehuey.com; s=google; t=1705622924; x=1706227724; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6CKyX0pNzi99NBbDT3o8PZvJJ1Dz5/dMYP64jGriCpE=;
-        b=QsxmWnjpg67NjyD7Hb7X2VmsBU4DQIS5VOqHHY0N+GxkuV/HHZe1AM3iMpZgj70rjs
-         V6Ned/1bTRuFBofmbFa68PrNYNAc3O3tNQXpmvoFUOussULfYyVHxRKuMhaSM+cPokRA
-         7lNda6WFE1MSS5K3XT4enM8HEAPu6xBPJHnSX8mg+Nz+5sddRCahW7H1AAvtOuXeYvkr
-         +T6EdStltfGElKaDrmboklgyj4oeHmgk/m5dOaBKy5+Dts2otjT2Xf3vYRD3Fst9IiaG
-         jAvnUwKaor2nfoZFEy0eQq3iL015XstxN63L8SDs/Lh0Wzp8FB4ep6t2B21Td1cM+Ewe
-         JDEA==
+        bh=nkPMMIL6cG9Vww2U8ysDt1UGfqwAexusqourdf/9zpY=;
+        b=bps6f9wAA0AU+KQiJVFMFH2DL2v0ct7AR3MMpIcZgczl8cr27GvuWteHqbOaE6k9Vm
+         J9Vl6CfqIK7PPOB2wlkMTzzxcUbKSCoX1GJf72LsPgVMObKa2a0rhbIkTnYBHLusxEcT
+         JvljttiDLwFuUN+tLjfMQP81YZIQD8+ki8rcy/kHlO74stkbYaJ39iF1F/OOFj4goRST
+         vYzFM1/vFCmTKb82GmwdFAqg0NgCSc6y7B5XfhBOkWM0w4Hyj95vlTMwSwXPpBadZKbR
+         SvNmXLTGBpplvnuPmFFnc85LMSMocnwcnDMmteVmunkSuvHzh1SL8XS9T4NjQZT7two7
+         bu+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705622855; x=1706227655;
+        d=1e100.net; s=20230601; t=1705622924; x=1706227724;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6CKyX0pNzi99NBbDT3o8PZvJJ1Dz5/dMYP64jGriCpE=;
-        b=QKMOM+teual496znC4NOkFDA10XsVInVYAjv7DBGuWBgXItA26PAiCROQxdpPKQOh9
-         BfLB3pdd3fjtFFozMxHD8Ar9uDYQlsgT+9PwO6QqQC/rSl0cTexdYDpcyZfHP93LfOLz
-         XZS6AjOh0Cs6UCkGK7N40ZIoo5oclSMBFkDYMqR7KwZHsmYIbR+gtyo5pWrI8zHtscM0
-         g8jtdjSB9mmWP9DToIXVDewxd2Rltz7NjyV0snS2zgCJIMJYOmCU84z95GQ61g3EXGb2
-         +ka1YxHoLwhidxUQxeELoHnqMQ6lwkz8dPXETi3oKWggZT8S0slktgeh7XcoDL2no7oL
-         126g==
-X-Gm-Message-State: AOJu0YztPRenP+Td92zW42tAqp0AgPO1O0PSg8SN4S35E7j6E6p38UpK
-	ygtgvyB5dvzHC32vj7FpWW9ZGvolsBhYFioiA5T+qwiD0lg78MRoqjp+U/9hijzwZiVmT2P8JSW
-	PB7XxcHhrBWfHKqroqXU6tfDnkU1ifVTCJD8r
-X-Google-Smtp-Source: AGHT+IHgoAEVfm+MtfbTClIfy8far75akfY4VQrn/kESNUeUmaZAO7Xfnv1EQQm9ykdRXFK4YhXbAfyINSBmJUwxL+E=
-X-Received: by 2002:a17:907:a803:b0:a2c:c519:505f with SMTP id
- vo3-20020a170907a80300b00a2cc519505fmr165621ejc.4.1705622854964; Thu, 18 Jan
- 2024 16:07:34 -0800 (PST)
+        bh=nkPMMIL6cG9Vww2U8ysDt1UGfqwAexusqourdf/9zpY=;
+        b=aI805eStmu7H7fsQNDlTLEefYyKpZhLMuAqN3DOtsMprBaGVmTsVQ5ce00IPp0xcl3
+         QKEEcPX0Gi5jpYElq1WBb95+pk2ean6e2XEJTUKblX1H16+0EzKP9xC8PRchro0zJrBs
+         NFlrdee9623NfTNMciNzhr5Y0m2ZclNaKpBiI4Sp5cASQ2sPJIDVxpRutClxNeNmSLTT
+         rQTm2XxiNQmfsoQ9kd2Z4R/rmvMoOLu1FSNbuxk/SzAp8wrIx2jKrfdRxlW9cGOxF258
+         QpRujRCP9mkLr1cluPypYXKVbJh4h2wETIOpSGR1040pyvPC18759k45ife0/Qlp5GR3
+         W3Dw==
+X-Gm-Message-State: AOJu0YyLi6Yeim/Lj7AxU4SYvffLLfwUQgoQZFmNzN6QEqyxLZuRPLWa
+	qBkOv0TLpazVh+NZKmwEA+va/DfbUx8YK6rA3nYedZogxr637L7Htbte25zVpfu8qOu/cXUVUc4
+	A7rki8EN4bU+M3ih4vH+gPEWJ8PGM4DAGBi/V
+X-Google-Smtp-Source: AGHT+IHB64Q4qh2RWUb4isRnAHtCK6Q9pIxFsYDwb6SY9a/ePbllFsxCV1Z7QOxrOiqE2y//IjAtR3g0wNaljLwkUsI=
+X-Received: by 2002:a2e:2e0b:0:b0:2cc:7db2:acb5 with SMTP id
+ u11-20020a2e2e0b000000b002cc7db2acb5mr877140lju.93.1705622923687; Thu, 18 Jan
+ 2024 16:08:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231211045543.31741-1-khuey@kylehuey.com> <20231211045543.31741-2-khuey@kylehuey.com>
- <CAPhsuW4s5ZaZB0kFz8CWK-NvS4KrE7w90Fzz-wF5WgUMC7dPog@mail.gmail.com>
-In-Reply-To: <CAPhsuW4s5ZaZB0kFz8CWK-NvS4KrE7w90Fzz-wF5WgUMC7dPog@mail.gmail.com>
+References: <20231211045543.31741-1-khuey@kylehuey.com> <20231211045543.31741-5-khuey@kylehuey.com>
+ <CAPhsuW7EU0nJq3fF_DqB3o7+5fuGZgs-W1jN1e4F4VHVjgj8Cg@mail.gmail.com>
+In-Reply-To: <CAPhsuW7EU0nJq3fF_DqB3o7+5fuGZgs-W1jN1e4F4VHVjgj8Cg@mail.gmail.com>
 From: Kyle Huey <me@kylehuey.com>
-Date: Thu, 18 Jan 2024 16:07:23 -0800
-Message-ID: <CAP045AroaWOQW4hNuc7EYM4TBVpgAoq5H6q54ACLp=oGYridJQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] perf/bpf: Call bpf handler directly, not through
- overflow machinery
+Date: Thu, 18 Jan 2024 16:08:32 -0800
+Message-ID: <CAP045ApRRLnKtN69wj32q7pgNGVzFrusoWDJOQzxJs3yUsCekw@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] selftest/bpf: Test a perf bpf program that
+ suppresses side effects.
 To: Song Liu <song@kernel.org>
 Cc: Kyle Huey <khuey@kylehuey.com>, linux-kernel@vger.kernel.org, 
 	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
 	Namhyung Kim <namhyung@kernel.org>, Marco Elver <elver@google.com>, 
 	Yonghong Song <yonghong.song@linux.dev>, "Robert O'Callahan" <robert@ocallahan.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	bpf@vger.kernel.org
+	Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 2, 2024 at 3:05=E2=80=AFPM Song Liu <song@kernel.org> wrote:
+On Tue, Jan 2, 2024 at 2:49=E2=80=AFPM Song Liu <song@kernel.org> wrote:
 >
-> On Sun, Dec 10, 2023 at 8:55=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote=
+> On Sun, Dec 10, 2023 at 8:56=E2=80=AFPM Kyle Huey <me@kylehuey.com> wrote=
 :
 > >
-> > To ultimately allow bpf programs attached to perf events to completely
-> > suppress all of the effects of a perf event overflow (rather than just =
+> > The test sets a hardware breakpoint and uses a bpf program to suppress =
 the
-> > sample output, as they do today), call bpf_overflow_handler() from
-> > __perf_event_overflow() directly rather than modifying struct perf_even=
-t's
-> > overflow_handler. Return the bpf program's return value from
-> > bpf_overflow_handler() so that __perf_event_overflow() knows how to
-> > proceed. Remove the now unnecessary orig_overflow_handler from struct
-> > perf_event.
-> >
-> > This patch is solely a refactoring and results in no behavior change.
+> > side effects of a perf event sample, including I/O availability signals=
+,
+> > SIGTRAPs, and decrementing the event counter limit, if the ip matches t=
+he
+> > expected value. Then the function with the breakpoint is executed multi=
+ple
+> > times to test that all effects behave as expected.
 > >
 > > Signed-off-by: Kyle Huey <khuey@kylehuey.com>
-> > Suggested-by: Namhyung Kim <namhyung@kernel.org>
 > > ---
-> >  include/linux/perf_event.h |  6 +-----
-> >  kernel/events/core.c       | 28 +++++++++++++++-------------
-> >  2 files changed, 16 insertions(+), 18 deletions(-)
+> >  .../selftests/bpf/prog_tests/perf_skip.c      | 140 ++++++++++++++++++
+> >  .../selftests/bpf/progs/test_perf_skip.c      |  15 ++
+> >  2 files changed, 155 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_perf_skip.c
 > >
-> > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> > index 5547ba68e6e4..312b9f31442c 100644
-> > --- a/include/linux/perf_event.h
-> > +++ b/include/linux/perf_event.h
-> > @@ -810,7 +810,6 @@ struct perf_event {
-> >         perf_overflow_handler_t         overflow_handler;
-> >         void                            *overflow_handler_context;
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > -       perf_overflow_handler_t         orig_overflow_handler;
-> >         struct bpf_prog                 *prog;
-> >         u64                             bpf_cookie;
-> >  #endif
-> > @@ -1337,10 +1336,7 @@ __is_default_overflow_handler(perf_overflow_hand=
-ler_t overflow_handler)
-> >  #ifdef CONFIG_BPF_SYSCALL
-> >  static inline bool uses_default_overflow_handler(struct perf_event *ev=
-ent)
-> >  {
-> > -       if (likely(is_default_overflow_handler(event)))
-> > -               return true;
-> > -
-> > -       return __is_default_overflow_handler(event->orig_overflow_handl=
-er);
-> > +       return is_default_overflow_handler(event);
-> >  }
-> >  #else
-> >  #define uses_default_overflow_handler(event) \
-> > diff --git a/kernel/events/core.c b/kernel/events/core.c
-> > index b704d83a28b2..54f6372d2634 100644
-> > --- a/kernel/events/core.c
-> > +++ b/kernel/events/core.c
-> > @@ -9515,6 +9515,12 @@ static inline bool sample_is_allowed(struct perf=
-_event *event, struct pt_regs *r
-> >         return true;
-> >  }
-> >
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +static int bpf_overflow_handler(struct perf_event *event,
-> > +                               struct perf_sample_data *data,
-> > +                               struct pt_regs *regs);
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/perf_skip.c b/tools=
+/testing/selftests/bpf/prog_tests/perf_skip.c
+> > new file mode 100644
+> > index 000000000000..0200736a8baf
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/perf_skip.c
+> > @@ -0,0 +1,140 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#define _GNU_SOURCE
+> > +
+> > +#include <test_progs.h>
+> > +#include "test_perf_skip.skel.h"
+> > +#include <linux/compiler.h>
+> > +#include <linux/hw_breakpoint.h>
+> > +#include <sys/mman.h>
+> > +
+> > +#ifndef TRAP_PERF
+> > +#define TRAP_PERF 6
 > > +#endif
 > > +
-> >  /*
-> >   * Generic event overflow handling, sampling.
-> >   */
-> > @@ -9584,7 +9590,10 @@ static int __perf_event_overflow(struct perf_eve=
-nt *event,
-> >                 irq_work_queue(&event->pending_irq);
-> >         }
-> >
-> > -       READ_ONCE(event->overflow_handler)(event, data, regs);
-> > +#ifdef CONFIG_BPF_SYSCALL
-> > +       if (!(event->prog && !bpf_overflow_handler(event, data, regs)))
+> > +int signals_unexpected =3D 1;
+> > +int sigio_count, sigtrap_count;
+> > +
+> > +static void handle_sigio(int sig __always_unused)
+> > +{
+> > +       ASSERT_OK(signals_unexpected, "perf event not skipped");
 >
-> This condition is hard to follow. Please consider simplifying it.
+> ASSERT_OK is a little confusing. Maybe do something like:
 >
-> Thanks,
-> Song
+> static int signals_expected;
+> static void handle_sigio(int sig __always_unused)
+> {
+>     ASSERT_EQ(signals_expected, 1, "expected sig_io");
+> }
+> serial_test_perf_skip()
+> {
+> ...
+> signals_expected =3D 1;
+> }
+>
 
-It gets simplified later in patch 3/4.
+I'll just drop signals_expected. Now that I'm counting the exact
+number of signals it's redundant.
 
-- Kyle
+> > +       ++sigio_count;
+> > +}
+> > +
+> > +static void handle_sigtrap(int signum __always_unused,
+> > +                          siginfo_t *info,
+> > +                          void *ucontext __always_unused)
+> > +{
+> > +       ASSERT_OK(signals_unexpected, "perf event not skipped");
+> ditto
+>
+> > +       ASSERT_EQ(info->si_code, TRAP_PERF, "wrong si_code");
+> > +       ++sigtrap_count;
+> > +}
+> > +
+> > +static noinline int test_function(void)
+> > +{
+> > +       asm volatile ("");
+> > +       return 0;
+> > +}
+> > +
+> > +void serial_test_perf_skip(void)
+> > +{
+> > +       struct sigaction action =3D {};
+> > +       struct sigaction previous_sigtrap;
+> > +       sighandler_t previous_sigio;
+> > +       struct test_perf_skip *skel =3D NULL;
+> > +       struct perf_event_attr attr =3D {};
+> > +       int perf_fd =3D -1;
+> > +       int err;
+> > +       struct f_owner_ex owner;
+> > +       struct bpf_link *prog_link =3D NULL;
+> > +
+> > +       action.sa_flags =3D SA_SIGINFO | SA_NODEFER;
+> > +       action.sa_sigaction =3D handle_sigtrap;
+> > +       sigemptyset(&action.sa_mask);
+> > +       if (!ASSERT_OK(sigaction(SIGTRAP, &action, &previous_sigtrap), =
+"sigaction"))
+> > +               return;
+> > +
+> > +       previous_sigio =3D signal(SIGIO, handle_sigio);
+>
+> handle signal() errors here?
 
-> > +#endif
-> > +               READ_ONCE(event->overflow_handler)(event, data, regs);
-> >
-> >         if (*perf_event_fasync(event) && event->pending_kill) {
-> >                 event->pending_wakeup =3D 1;
-> > @@ -10394,9 +10403,9 @@ static void perf_event_free_filter(struct perf_=
-event *event)
-> >  }
-> >
-> >  #ifdef CONFIG_BPF_SYSCALL
-> > -static void bpf_overflow_handler(struct perf_event *event,
-> > -                                struct perf_sample_data *data,
-> > -                                struct pt_regs *regs)
-> > +static int bpf_overflow_handler(struct perf_event *event,
-> > +                               struct perf_sample_data *data,
-> > +                               struct pt_regs *regs)
-> >  {
-> >         struct bpf_perf_event_data_kern ctx =3D {
-> >                 .data =3D data,
-> > @@ -10417,10 +10426,8 @@ static void bpf_overflow_handler(struct perf_e=
-vent *event,
-> >         rcu_read_unlock();
-> >  out:
-> >         __this_cpu_dec(bpf_prog_active);
-> > -       if (!ret)
-> > -               return;
-> >
-> > -       event->orig_overflow_handler(event, data, regs);
-> > +       return ret;
-> >  }
-> >
-> >  static int perf_event_set_bpf_handler(struct perf_event *event,
-> > @@ -10456,8 +10463,6 @@ static int perf_event_set_bpf_handler(struct pe=
-rf_event *event,
-> >
-> >         event->prog =3D prog;
-> >         event->bpf_cookie =3D bpf_cookie;
-> > -       event->orig_overflow_handler =3D READ_ONCE(event->overflow_hand=
-ler);
-> > -       WRITE_ONCE(event->overflow_handler, bpf_overflow_handler);
-> >         return 0;
-> >  }
-> >
-> > @@ -10468,7 +10473,6 @@ static void perf_event_free_bpf_handler(struct =
-perf_event *event)
-> >         if (!prog)
-> >                 return;
-> >
-> > -       WRITE_ONCE(event->overflow_handler, event->orig_overflow_handle=
-r);
-> >         event->prog =3D NULL;
-> >         bpf_prog_put(prog);
-> >  }
-> > @@ -11928,13 +11932,11 @@ perf_event_alloc(struct perf_event_attr *attr=
-, int cpu,
-> >                 overflow_handler =3D parent_event->overflow_handler;
-> >                 context =3D parent_event->overflow_handler_context;
-> >  #if defined(CONFIG_BPF_SYSCALL) && defined(CONFIG_EVENT_TRACING)
-> > -               if (overflow_handler =3D=3D bpf_overflow_handler) {
-> > +               if (parent_event->prog) {
-> >                         struct bpf_prog *prog =3D parent_event->prog;
-> >
-> >                         bpf_prog_inc(prog);
-> >                         event->prog =3D prog;
-> > -                       event->orig_overflow_handler =3D
-> > -                               parent_event->orig_overflow_handler;
-> >                 }
-> >  #endif
-> >         }
+Addressed in v4.
+
+> > +
+> > +       skel =3D test_perf_skip__open_and_load();
+> > +       if (!ASSERT_OK_PTR(skel, "skel_load"))
+> > +               goto cleanup;
+> > +
+> > +       attr.type =3D PERF_TYPE_BREAKPOINT;
+> > +       attr.size =3D sizeof(attr);
+> > +       attr.bp_type =3D HW_BREAKPOINT_X;
+> > +       attr.bp_addr =3D (uintptr_t)test_function;
+> > +       attr.bp_len =3D sizeof(long);
+> > +       attr.sample_period =3D 1;
+> > +       attr.sample_type =3D PERF_SAMPLE_IP;
+> > +       attr.pinned =3D 1;
+> > +       attr.exclude_kernel =3D 1;
+> > +       attr.exclude_hv =3D 1;
+> > +       attr.precise_ip =3D 3;
+> > +       attr.sigtrap =3D 1;
+> > +       attr.remove_on_exec =3D 1;
+> > +
+> > +       perf_fd =3D syscall(__NR_perf_event_open, &attr, 0, -1, -1, 0);
+> > +       if (perf_fd < 0 && (errno =3D=3D ENOENT || errno =3D=3D EOPNOTS=
+UPP)) {
+> > +               printf("SKIP:no PERF_TYPE_BREAKPOINT/HW_BREAKPOINT_X\n"=
+);
+> > +               test__skip();
+> > +               goto cleanup;
+> > +       }
+> > +       if (!ASSERT_OK(perf_fd < 0, "perf_event_open"))
+> > +               goto cleanup;
+> > +
+> > +       /* Configure the perf event to signal on sample. */
+> > +       err =3D fcntl(perf_fd, F_SETFL, O_ASYNC);
+> > +       if (!ASSERT_OK(err, "fcntl(F_SETFL, O_ASYNC)"))
+> > +               goto cleanup;
+> > +
+> > +       owner.type =3D F_OWNER_TID;
+> > +       owner.pid =3D syscall(__NR_gettid);
+> > +       err =3D fcntl(perf_fd, F_SETOWN_EX, &owner);
+> > +       if (!ASSERT_OK(err, "fcntl(F_SETOWN_EX)"))
+> > +               goto cleanup;
+> > +
+> > +       /*
+> > +        * Allow at most one sample. A sample rejected by bpf should
+> > +        * not count against this.
+> > +        */
+>
+> Multi-line comment style should be like
+
+Addressed in v4.
+
+>         /* Allow at most one sample. A sample rejected by bpf should
+>         * not count against this.
+>         */
+>
+> > +       err =3D ioctl(perf_fd, PERF_EVENT_IOC_REFRESH, 1);
+> > +       if (!ASSERT_OK(err, "ioctl(PERF_EVENT_IOC_REFRESH)"))
+> > +               goto cleanup;
+> > +
+> > +       prog_link =3D bpf_program__attach_perf_event(skel->progs.handle=
+r, perf_fd);
+> > +       if (!ASSERT_OK_PTR(prog_link, "bpf_program__attach_perf_event")=
+)
+> > +               goto cleanup;
+> > +
+> > +       /* Configure the bpf program to suppress the sample. */
+> > +       skel->bss->ip =3D (uintptr_t)test_function;
+> > +       test_function();
+> > +
+> > +       ASSERT_EQ(sigio_count, 0, "sigio_count");
+> > +       ASSERT_EQ(sigtrap_count, 0, "sigtrap_count");
+> > +
+> > +       /* Configure the bpf program to allow the sample. */
+> > +       skel->bss->ip =3D 0;
+> > +       signals_unexpected =3D 0;
+> > +       test_function();
+> > +
+> > +       ASSERT_EQ(sigio_count, 1, "sigio_count");
+> > +       ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
+> > +
+> > +       /*
+> > +        * Test that the sample above is the only one allowed (by perf,=
+ not
+> > +        * by bpf)
+> > +        */
+>
+> ditto.
+>
+> > +       test_function();
+> > +
+> > +       ASSERT_EQ(sigio_count, 1, "sigio_count");
+> > +       ASSERT_EQ(sigtrap_count, 1, "sigtrap_count");
+> > +
+> > +cleanup:
+> > +       bpf_link__destroy(prog_link);
+> > +       if (perf_fd >=3D 0)
+> > +               close(perf_fd);
+> > +       test_perf_skip__destroy(skel);
+> > +
+> > +       signal(SIGIO, previous_sigio);
+> > +       sigaction(SIGTRAP, &previous_sigtrap, NULL);
+> > +}
+> > diff --git a/tools/testing/selftests/bpf/progs/test_perf_skip.c b/tools=
+/testing/selftests/bpf/progs/test_perf_skip.c
+> > new file mode 100644
+> > index 000000000000..7eb8b6de7a57
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/progs/test_perf_skip.c
+> > @@ -0,0 +1,15 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include "vmlinux.h"
+> > +#include <bpf/bpf_helpers.h>
+> > +#include <bpf/bpf_tracing.h>
+> > +
+> > +uintptr_t ip;
+> > +
+> > +SEC("perf_event")
+> > +int handler(struct bpf_perf_event_data *data)
+> > +{
+> > +       /* Skip events that have the correct ip. */
+> > +       return ip !=3D PT_REGS_IP(&data->regs);
+> > +}
+> > +
+> > +char _license[] SEC("license") =3D "GPL";
 > > --
 > > 2.34.1
 > >
-> >
+
+- Kyle
 
