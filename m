@@ -1,114 +1,79 @@
-Return-Path: <bpf+bounces-19869-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19870-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 708898322E5
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 02:13:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23D73832362
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 03:40:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51908B2161D
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 01:13:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1989285FE1
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 02:40:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D79ECE;
-	Fri, 19 Jan 2024 01:13:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9358C4C85;
+	Fri, 19 Jan 2024 02:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SqfGNb4x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uvmD4a/P"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F6A1362
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 01:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 161763D60;
+	Fri, 19 Jan 2024 02:40:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705626819; cv=none; b=XTpkzJLIR7nuM7s1/z2E6CME6qu8BlbTNqpe+GA42h0+9PLNalI/fh1VydNXhXpOy/plax3BMwU7Z+eLvF4NyY96xClFfvSA7RtrBOTaCenyssc8SuRQjtAG7LYec7Jpl9X6ZNqe4cfiLz9uITKFkcuDSU9DxQ2Pnl0a9F3P7vI=
+	t=1705632008; cv=none; b=Tu550jhx52itJJWbw3+2HBAGKiiOp9/jVs+amd5wAN3UFMotVsqAYBqoIxGbjgq0QaCgJKJ7Q2yfN4ZkBKD8c4SWeJ1cwDv+Be1p7oz2jm2bQbBColSFoYbvYW1Dihbg2n2k0NX7VHBO/FC9B1N5GRiYwq+P8UCi/vy4TP7GPSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705626819; c=relaxed/simple;
-	bh=cOPWf40MjTz1piciNTSrCBYqLbTRTE5V2+iinSaapP8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DnzKkpg177nYoa2wU4KU9Z2VISB/N+gmusu3cnOEuT3msFJyWHt2OXLWPwxkCTqrUJHzKlT86ui7kjm3fDR4/rdmRL1NpZRyUyctMnttojUapho5LFGJo3GRDJh4zBZIkHXoH+6++s6sn8sGdET3aRcScncU/T/Nps7YbQ2oC74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SqfGNb4x; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dc22ade26d8so274087276.1
-        for <bpf@vger.kernel.org>; Thu, 18 Jan 2024 17:13:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705626817; x=1706231617; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ASiQqrVN74A+P/GQZsybJd+sUdgSAvDG/Plw+gx4fUg=;
-        b=SqfGNb4xCep24zHHbe6VL56Vfl5JoGN8VUjk3faZEzz3p0+8i6Zu851t8ggk9tMY7L
-         J4eDF57coeRy6m87TjGABYZ362/3fk6MUgoQEe4kD7Q83f0CBQ6YoMvbao/COus40KJ6
-         DyY9gsapO5dG/YEwNmD0DY798jqVkCohIcaRQ2e2YwvpkQI9/74qs2D0fKQakmYfQGIk
-         6qs4yvSipp/02QbemU7Xi0Y71d11OjgYPfsUx0KaA8ew9+rgFI0RmEh3R4r24Qvoy/WD
-         lgeZN28UvYDqdlNqhNG7mgbkxMz7Hx4cbTqQ1AqnlV4D1ufO3/K6KrIcEz2mporSOV4C
-         YrCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705626817; x=1706231617;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ASiQqrVN74A+P/GQZsybJd+sUdgSAvDG/Plw+gx4fUg=;
-        b=GP+zX2eppZL0BI/z7FfF6BuT+XmKh8G2AtQJwPWWf5CO/bLA4li2mAr6/u9nwbn0DG
-         IUuguN9MSwXslS2i4m9VGIb7btCWanziweso1GSgUzlCIGRIAoEFrEdE6hW279wby13D
-         6eYoErwmGAlekk9z/oYN+OC+NTxbcSHNywKkokj1y7i5wGw1AYGqV3Kg4lTXltaMJhp/
-         lqG4z/PBFDOoeZwxIph67/YXPGxXTEpwwJ5vv2Qe5CQn72tLbSoJIjyfJrp20zMXv5HC
-         gFY0QJPIqrzVZQpvEpys5foiS/84rT9C6qEgEzxOGcnSNGmO7EG9L7WKBbJboA9Icvcx
-         Z3ZA==
-X-Gm-Message-State: AOJu0YxZ61Bwdl/mhLcIeU07X8AG+8w3DdPttfPQJjJ24uc+aXOk7el1
-	+ef0nhiSgluiWTL4Pbe0H2j0aJIMOeMs2VNvJilED3oQb05+Z1Jq
-X-Google-Smtp-Source: AGHT+IHE1o0X7uN70piYkLkyUFw8wsX/iu8ppaGe2az59GfuaHL65eFwzKB8K5AsJun8JhmWfjkg9A==
-X-Received: by 2002:a25:d006:0:b0:dbd:2399:1411 with SMTP id h6-20020a25d006000000b00dbd23991411mr1531893ybg.66.1705626816909;
-        Thu, 18 Jan 2024 17:13:36 -0800 (PST)
-Received: from ?IPV6:2600:1700:6cf8:1240:989a:640b:aca2:a8fd? ([2600:1700:6cf8:1240:989a:640b:aca2:a8fd])
-        by smtp.gmail.com with ESMTPSA id t2-20020a25f602000000b00dc237c2d43csm1940462ybd.49.2024.01.18.17.13.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jan 2024 17:13:36 -0800 (PST)
-Message-ID: <3f32dc15-17da-4d01-abc9-037ba93383e1@gmail.com>
-Date: Thu, 18 Jan 2024 17:13:35 -0800
+	s=arc-20240116; t=1705632008; c=relaxed/simple;
+	bh=gNk8EjuPwE6pWzdQFnXNNSZWVdsly5YNUbDjzAa5LVQ=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=ogvydpQ6c+iHHzhDNqhk+8Q9+PiOWesC5C8WKFVfVmDhq1gA6qNzgSUKlgcEnC9zUB+yF66/EYcABDnTQMggoxgZTWUZrRPVy906hHqJFnFswHzdz3oUMej9MLE/AMRVAn/N+II93Y7sxvTYZ/lluE9Rna+boKP9jIPODlM5Xz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uvmD4a/P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D997CC433C7;
+	Fri, 19 Jan 2024 02:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705632007;
+	bh=gNk8EjuPwE6pWzdQFnXNNSZWVdsly5YNUbDjzAa5LVQ=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=uvmD4a/P6XvTFzQ00IVpQgzy96klxpu1i01U5OqLIxnS3YYNeUdy2u7NzAwQtEc/b
+	 shIq/+LndPxN/vLwN8GKXD/p7w2Y7X4J7zP+upZRoxT78blsAmtYFCIl7+mHvcCAuu
+	 gBiM9TgcQHNnREeuj9puJ+kllsgmU94E96AJgfarDy9HsA8LoJYYDOIGvw59GOY+J0
+	 dlE4xZ4kF2cNqhKlK1hQh91DYQ83ccjraNZEbWYtTCm5XmhnilRA8Gbi7vKbdQgCN4
+	 uV+SX0zy/G2lzqUHk2ei4FXw049DzHSwSvsYyRMf8QMIbnxghDv6hxPdSJeTdXkE2S
+	 z5Q1BbPanvScQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AADF8D8C987;
+	Fri, 19 Jan 2024 02:40:07 +0000 (UTC)
+Subject: Re: [GIT PULL] Networking for v6.8-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240118220116.2146136-1-kuba@kernel.org>
+References: <20240118220116.2146136-1-kuba@kernel.org>
+X-PR-Tracked-List-Id: <bpf.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240118220116.2146136-1-kuba@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.8-rc1
+X-PR-Tracked-Commit-Id: 925781a471d8156011e8f8c1baf61bbe020dac55
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 736b5545d39ca59d4332a60e56cc8a1a5e264a8e
+Message-Id: <170563200766.16016.9453278464087717812.pr-tracker-bot@kernel.org>
+Date: Fri, 19 Jan 2024 02:40:07 +0000
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com, bpf@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v16 04/14] bpf: add struct_ops_tab to btf.
-Content-Language: en-US
-To: Martin KaFai Lau <martin.lau@linux.dev>, thinker.li@gmail.com
-Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, drosen@google.com
-References: <20240118014930.1992551-1-thinker.li@gmail.com>
- <20240118014930.1992551-5-thinker.li@gmail.com>
- <f9160cb0-c461-4006-bdea-0536cbaff917@linux.dev>
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <f9160cb0-c461-4006-bdea-0536cbaff917@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
 
+The pull request you sent on Thu, 18 Jan 2024 14:01:16 -0800:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git net-6.8-rc1
 
-On 1/18/24 13:36, Martin KaFai Lau wrote:
-> On 1/17/24 5:49 PM, thinker.li@gmail.com wrote:
->> diff --git a/include/linux/btf.h b/include/linux/btf.h
->> index 1d852dad7473..a68604904f4e 100644
->> --- a/include/linux/btf.h
->> +++ b/include/linux/btf.h
->> @@ -584,4 +584,6 @@ static inline bool btf_type_is_struct_ptr(struct 
->> btf *btf, const struct btf_type
->>       return btf_type_is_struct(t);
->>   }
->> +struct bpf_struct_ops_desc;
-> 
-> A forward declaration at the end of a .h file is suspicious....
-> Not needed also?
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/736b5545d39ca59d4332a60e56cc8a1a5e264a8e
 
-I will remove it.
+Thank you!
 
-> 
->> +
->>   #endif
-> 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
