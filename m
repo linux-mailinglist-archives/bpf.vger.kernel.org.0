@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-19952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7809983319A
-	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:37:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4313483319E
+	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 00:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28824283CCA
-	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:37:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC4D41F248D4
+	for <lists+bpf@lfdr.de>; Fri, 19 Jan 2024 23:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D365917C;
-	Fri, 19 Jan 2024 23:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EBE95915C;
+	Fri, 19 Jan 2024 23:40:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t95EQjT+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rxbXg+lf"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1651A5916C
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:37:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A78385914A
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705707430; cv=none; b=g+aV7fgl+ywvouwrtZ32sj/+TSWRzJa4BO72vyrvQBOVP5mfs+rWJ2LlqelesNQ7XdEVOYhRWOrIX9FggKQ9H7ieuTOh8whjKr+m0ajZc5nVefd8Qjss8gnJCB72AiDCMd5hereljUzXpWU1QfaGfamWUpld3mWtk1h0q81dYZg=
+	t=1705707618; cv=none; b=tBB12weUbDmG6Syeuwf8NHHM77HxDsmhMSAyb09/qtSyS0KL2BbXv989J5KDxrTppHhI7U2LKQndAbgkmc1Oad3rc7OaSZFMKEylp/rzQKkCyp7BGU7e1WgtJcbCwGcj2zNzlCyR0VugnJchcqKzdN+yg1cX2GLzgzdu+vTvTf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705707430; c=relaxed/simple;
-	bh=7A1LAT+eVYdIOdxPMj0gElYjjUVTrSsETuVzmgALSKo=;
+	s=arc-20240116; t=1705707618; c=relaxed/simple;
+	bh=kbwIC9RprFYmmya7PY6hZ5jOtWruDraroEWeTIwkw0M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=joL+HcF0Z+3dsIwI52/E5s0IQ/oHaPCtQj+TmKDFK1WjUj9iwcIJB65qQ1L97eHv4ggQbqCq5V/JGfegN/G2m/3ghY03IfsEhpLCWXnnDIwNSrXomWtMdqO3gno4jAxSx9Px1eFsdiH3jE/a3lXy7A+PcjoRv8905yMbblLK0mI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t95EQjT+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D904C433C7
-	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:37:09 +0000 (UTC)
+	 To:Cc:Content-Type; b=of7iLQoBaF0Lt+MrZHfNETmwFAJn/YiHAg37QlkZ1lY+np6QIvnPZRSUVfzOlz26yh8doPpuyk/6OD+bgAH+x6VoSiAQP8rJXNOQ6L6sKdzT2DEefc2v9vcroKNwRFVa/bEs+UC4nszvDtsUoHV3KUB3jyI7IQeIJmhSt88UxHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rxbXg+lf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E17BC433F1
+	for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 23:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705707429;
-	bh=7A1LAT+eVYdIOdxPMj0gElYjjUVTrSsETuVzmgALSKo=;
+	s=k20201202; t=1705707618;
+	bh=kbwIC9RprFYmmya7PY6hZ5jOtWruDraroEWeTIwkw0M=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=t95EQjT+909frfD+IKkCaKGNqYwyTbAgKI5M7XlmJxo5hkLPyRNAy9RvQRtaOBzyg
-	 BKrsjx81T+d2m0q32H3SwX5XCmxFAG+Fcy6839/AhY8OulTQDOIbHWNZR63UAnjtnj
-	 im4t8nihABY01JbnrjE6zdxkmPjH6qz68eo70KRSQdtoUo81vgZByrOUv/mWkoa4dc
-	 r70ozDvy9u7/QxniaVvG7wh5TwRdHxA1Ig9nlXUknJvEo3odUFzj2SmMy/k5EZiJcz
-	 Ym9FQzSR7MgXwas1M72eV9SEca7RbHt0R65BXrg07Uiff3p7ePSpMM8bEWN+H0dlP+
-	 HGur6XPJY7HVA==
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2cdf69bb732so15316691fa.3
-        for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 15:37:09 -0800 (PST)
-X-Gm-Message-State: AOJu0YzofmtMafNJiaIwNSfSfuLj/qAlSsBuoOnkaF/E/NgE7MPxohNS
-	yfyTrVUyBmwDRJ3kciE7NZNZ21Bp6MShPAQFAM2XML8P3RaRScygHppfb0V0U3b1uKJeQBtGxGp
-	qIvVMN3W3cJKOSyeCCjG+9AWmQf8=
-X-Google-Smtp-Source: AGHT+IFHJ32uoYC5aV7ZasUDcolfL3UX7GdbSSzaZVYVRwfEavZKnjFC7TSKzuZnlNAhxfyIS2qqN766kENtou7x2NE=
-X-Received: by 2002:a2e:a275:0:b0:2cd:735a:2a7a with SMTP id
- k21-20020a2ea275000000b002cd735a2a7amr110094ljm.117.1705707427485; Fri, 19
- Jan 2024 15:37:07 -0800 (PST)
+	b=rxbXg+lfvlyysqt7xhOnXTz7/icn3kE+MGS0xG8vdRQfYhouTWOO/JGAcC+Vt48/j
+	 bw0L4U839M4+V/KKMCKPH4gaZ1XG9zoNmbqVwmTYmzYo1wUZcpChmJuw7oiTLSP5/J
+	 c27SAbkiGFkcaIKW1qG1n73W9PfOot3KwRv29tb0rn3XEly3QXKzad8NCxOqQ8jK7c
+	 D9oGyka5ThO0mGAVOYOOC1ENBsaztrfagds8eswB30X/ODXiUtIsQw37jnGp2v6+tn
+	 ri0veC0B1o5g6Lusm2ypn6AlFKjJXhHVop4BL9nLF9m5l22DeE7jbgZ1mJUDHVEcSy
+	 WIdaKT+bwJxzg==
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50e80d14404so2065205e87.1
+        for <bpf@vger.kernel.org>; Fri, 19 Jan 2024 15:40:18 -0800 (PST)
+X-Gm-Message-State: AOJu0YzZUIlHtCYVKZB42Rl1O1FdTmzhXIaT6QeQQKOt8cZaowxyZW9X
+	XUNp1p3blBWDZ7TlO6Pjg7y2ImslzxQ3/5E5A5lbGrbUOZbQCj2cPibOpk0Do8WzDD4l04nrxbf
+	Pjty/T0Ynfm134TJzchhSeJGH29Q=
+X-Google-Smtp-Source: AGHT+IF6d4OYPrKnIuxQ8GKj1Om6xMT+WDD4dAYeaPCH2SjGndZnXeXQaI4ksVg6QgMM4QDH8eqUZv6bAkXbjdAxbD4=
+X-Received: by 2002:a19:8c0e:0:b0:50f:1758:33dc with SMTP id
+ o14-20020a198c0e000000b0050f175833dcmr250432lfd.21.1705707616407; Fri, 19 Jan
+ 2024 15:40:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119110505.400573-1-jolsa@kernel.org> <20240119110505.400573-5-jolsa@kernel.org>
-In-Reply-To: <20240119110505.400573-5-jolsa@kernel.org>
+References: <20240119110505.400573-1-jolsa@kernel.org> <20240119110505.400573-6-jolsa@kernel.org>
+In-Reply-To: <20240119110505.400573-6-jolsa@kernel.org>
 From: Song Liu <song@kernel.org>
-Date: Fri, 19 Jan 2024 15:36:56 -0800
-X-Gmail-Original-Message-ID: <CAPhsuW56LfPb6s-DpMDSGJLzTgn0FxUJmguP_nZoW8XRPgTu6g@mail.gmail.com>
-Message-ID: <CAPhsuW56LfPb6s-DpMDSGJLzTgn0FxUJmguP_nZoW8XRPgTu6g@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 4/8] selftests/bpf: Add cookies check for
- kprobe_multi fill_link_info test
+Date: Fri, 19 Jan 2024 15:40:04 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW6d4HjQQH=neJeaJ0hdkoyq22h7UyvJHdSVBMtgQB4ZUg@mail.gmail.com>
+Message-ID: <CAPhsuW6d4HjQQH=neJeaJ0hdkoyq22h7UyvJHdSVBMtgQB4ZUg@mail.gmail.com>
+Subject: Re: [PATCHv2 bpf-next 5/8] selftests/bpf: Add cookies check for
+ perf_event fill_link_info test
 To: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
@@ -76,8 +76,11 @@ Content-Transfer-Encoding: quoted-printable
 
 On Fri, Jan 19, 2024 at 3:06=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> Adding cookies check for kprobe_multi fill_link_info test,
-> plus tests for invalid values related to cookies.
+> Now that we get cookies for perf_event probes, adding tests
+> for cookie for kprobe/uprobe/tracepoint.
+>
+> The perf_event test needs to be added completely and is coming
+> in following change.
 >
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 
