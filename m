@@ -1,104 +1,147 @@
-Return-Path: <bpf+bounces-19961-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19962-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98AFE833246
-	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 02:32:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72A508332E1
+	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 07:05:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06E3AB22C17
-	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 01:32:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EBA61F22F57
+	for <lists+bpf@lfdr.de>; Sat, 20 Jan 2024 06:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5020EFC1D;
-	Sat, 20 Jan 2024 01:30:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56F31858;
+	Sat, 20 Jan 2024 06:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="r1QWOdgL"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0BB4EAF0;
-	Sat, 20 Jan 2024 01:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9666810E1
+	for <bpf@vger.kernel.org>; Sat, 20 Jan 2024 06:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705714201; cv=none; b=a/+w1GeY0DkMm/pnpyc+SRSGDKSg95hWj+0gO/szkD2DydESxpUAZcUH3IRCmkaLT2UJaDONIJgLn74mCbOThcbvussT00Zuq1NU9VJxE2/nil4isRMofY35QB/EeUor1wyM5wFxHradPPLgkA5xO/5VU9t47OShiBcdal0Q/mc=
+	t=1705730741; cv=none; b=EuTiLC7Zo/9vbnPBYhgN/RDf38DRvRDh5veD8oqLb61eStoHx74v8NK3Z7NfW3YOdGGCIwTzGvp3dCvY6Js9gbiVSElqz5sDxuKEYaSTJ2YiNklZyGki0kfT8MtlOxBU7oohNRt0mm+xiedSBwim9MElsnkY/Bs4cnLM2dyJWKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705714201; c=relaxed/simple;
-	bh=MZAFcNUX42DvZWaPmJOQSQ4sUhdk2XNLvhFLOgAqkPc=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=UO2I68gTGwbFdJRnN1YPk/T/gPKnn9zizPjJJZatf6YgYa3sjjJ8OaACPU/Uwb0S1KRif+B7vlM42DHvTa/vZGeu2K4a2AEfsAwjdLONvaZWXMEQBDfdVqMMTKwze+z7gRxv9iFFbpkA7UfK+TTwS/naHYXIeV+DqkdVWJsfVzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TGzRv3Zygz4f3jHc;
-	Sat, 20 Jan 2024 09:29:47 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B50F31A0171;
-	Sat, 20 Jan 2024 09:29:49 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP1 (Coremail) with SMTP id cCh0CgBXdQ4LIqtlqRR+BQ--.33617S2;
-	Sat, 20 Jan 2024 09:29:49 +0800 (CST)
-Subject: Re: [PATCH bpf 1/3] x86/mm: Move is_vsyscall_vaddr() into
- mm_internal.h
-To: Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org, bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
- Jann Horn <jannh@google.com>, houtao1@huawei.com
-References: <20240119073019.1528573-1-houtao@huaweicloud.com>
- <20240119073019.1528573-2-houtao@huaweicloud.com>
- <8511e5c6-eddb-4deb-932e-125e34cddba6@intel.com>
-From: Hou Tao <houtao@huaweicloud.com>
-Message-ID: <979ee85e-6f36-fa9c-847f-a9be1b92063f@huaweicloud.com>
-Date: Sat, 20 Jan 2024 09:29:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1705730741; c=relaxed/simple;
+	bh=UfS/0VXJsSkYOfKjH2bpyDNyGVTgJUHvDtbK1E2VvD8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z5O/MuaI4zKIz5iIw7+N1ZxMQea9tJAuHWwRDDjbE/SRYz3xWXKMxCtY/rbyIfzQsuEBpTLv51sfh6LboLTTQmzK72HMGzZv9yE1c7IQPmLBW1DvnpVN8iDzV4ftSnsJOg4xpPI5oBWazIcd3f0LOYCGzEJRMFYDSZTLVWpqz6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=r1QWOdgL; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705730737;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=TQ8xZsSJSODhnMgyiRDISjav5Ai2v8hg/uNsEeNtq/s=;
+	b=r1QWOdgLNcbFhPPc7gIpJ8Q4ohJjBf6w8/8//Mr+uKdAMeGJkHFx9ma0CkjSGofdZ/gxWY
+	0aZb3Srg1jwUVjpXitKBePLStSnW2Se5o1S5CFmCM/8FAc1AFXkLQUyVopk7sOgys2pO4a
+	CqDZWZMbzal8yii/u1V7ANirN8Ux0z8=
+From: Martin KaFai Lau <martin.lau@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@meta.com
+Subject: [PATCH v2 bpf-next 1/2] selftests/bpf: Fix the flaky tc_redirect_dtime test
+Date: Fri, 19 Jan 2024 22:05:17 -0800
+Message-Id: <20240120060518.3604920-1-martin.lau@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <8511e5c6-eddb-4deb-932e-125e34cddba6@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-CM-TRANSID:cCh0CgBXdQ4LIqtlqRR+BQ--.33617S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYx7kC6x804xWl14x267AKxVW8JVW5JwAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xv
-	wVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
-	xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-	FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr
-	0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
-	04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-	1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
-	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-	VFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi,
+From: Martin KaFai Lau <martin.lau@kernel.org>
 
-On 1/20/2024 8:35 AM, Sohil Mehta wrote:
-> On 1/18/2024 11:30 PM, Hou Tao wrote:
->> From: Hou Tao <houtao1@huawei.com>
->>
->> Moving is_vsyscall_vaddr() into mm_internal.h to make it available for
->> copy_from_kernel_nofault_allowed() in arch/x86/mm/maccess.c.
->>
-> Instead of mm_internal.h would a better place for is_vsyscall_vaddr() be
-> arch/x86/include/asm/vsyscall.h?
+BPF CI has been reporting the tc_redirect_dtime test failing
+from time to time:
 
-Yes, asm/vsyscall.h is better indeed. Will update in v2. Thanks for the
-suggestion.
->
-> Sohil
->
-> .
+test_inet_dtime:PASS:setns src 0 nsec
+(network_helpers.c:253: errno: No route to host) Failed to connect to server
+close_netns:PASS:setns 0 nsec
+test_inet_dtime:FAIL:connect_to_fd unexpected connect_to_fd: actual -1 < expected 0
+test_tcp_clear_dtime:PASS:tcp ip6 clear dtime ingress_fwdns_p100 0 nsec
+
+The connect_to_fd failure (EHOSTUNREACH) is from the
+test_tcp_clear_dtime() test and it is the very first IPv6 traffic
+after setting up all the links, addresses, and routes.
+
+The symptom is this first connect() is always slow. In my setup, it
+could take ~3s.
+
+After some tracing and tcpdump, the slowness is mostly spent in
+the neighbor solicitation in the "ns_fwd" namespace while
+the "ns_src" and "ns_dst" are fine.
+
+I forced the kernel to drop the neighbor solicitation messages.
+I can then reproduce EHOSTUNREACH. What actually happen could be:
+- the neighbor advertisement came back a little slow.
+- the "ns_fwd" namespace concluded a neighbor discovery failure
+  and triggered the ndisc_error_report() => ip6_link_failure() =>
+  icmpv6_send(skb, ICMPV6_DEST_UNREACH, ICMPV6_ADDR_UNREACH, 0)
+- the client's connect() reports EHOSTUNREACH after receiving
+  the ICMPV6_DEST_UNREACH message.
+
+The neigh table of both "ns_src" and "ns_dst" namespace has already
+been manually populated but not the "ns_fwd" namespace. This patch
+fixes it by manually populating the neigh table also in the "ns_fwd"
+namespace.
+
+Although the namespace configuration part had been existed before
+the tc_redirect_dtime test, still Fixes-tagging the patch when
+the tc_redirect_dtime test was added since it is the only test
+hitting it so far.
+
+Fixes: c803475fd8dd ("bpf: selftests: test skb->tstamp in redirect_neigh")
+Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
+---
+ tools/testing/selftests/bpf/prog_tests/tc_redirect.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+index 518f143c5b0f..610887157fd8 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
++++ b/tools/testing/selftests/bpf/prog_tests/tc_redirect.c
+@@ -188,6 +188,7 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ {
+ 	struct nstoken *nstoken = NULL;
+ 	char src_fwd_addr[IFADDR_STR_LEN+1] = {};
++	char src_addr[IFADDR_STR_LEN + 1] = {};
+ 	int err;
+ 
+ 	if (result->dev_mode == MODE_VETH) {
+@@ -208,6 +209,9 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ 	if (get_ifaddr("src_fwd", src_fwd_addr))
+ 		goto fail;
+ 
++	if (get_ifaddr("src", src_addr))
++		goto fail;
++
+ 	result->ifindex_src = if_nametoindex("src");
+ 	if (!ASSERT_GT(result->ifindex_src, 0, "ifindex_src"))
+ 		goto fail;
+@@ -270,6 +274,13 @@ static int netns_setup_links_and_routes(struct netns_setup_result *result)
+ 	SYS(fail, "ip route add " IP4_DST "/32 dev dst_fwd scope global");
+ 	SYS(fail, "ip route add " IP6_DST "/128 dev dst_fwd scope global");
+ 
++	if (result->dev_mode == MODE_VETH) {
++		SYS(fail, "ip neigh add " IP4_SRC " dev src_fwd lladdr %s", src_addr);
++		SYS(fail, "ip neigh add " IP6_SRC " dev src_fwd lladdr %s", src_addr);
++		SYS(fail, "ip neigh add " IP4_DST " dev dst_fwd lladdr %s", MAC_DST);
++		SYS(fail, "ip neigh add " IP6_DST " dev dst_fwd lladdr %s", MAC_DST);
++	}
++
+ 	close_netns(nstoken);
+ 
+ 	/** setup in 'dst' namespace */
+-- 
+2.34.1
 
 
