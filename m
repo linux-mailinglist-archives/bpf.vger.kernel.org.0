@@ -1,112 +1,124 @@
-Return-Path: <bpf+bounces-19974-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19975-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B7C6835755
-	for <lists+bpf@lfdr.de>; Sun, 21 Jan 2024 20:28:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3028D835762
+	for <lists+bpf@lfdr.de>; Sun, 21 Jan 2024 20:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D71E1C20C48
-	for <lists+bpf@lfdr.de>; Sun, 21 Jan 2024 19:28:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C600A1F218B9
+	for <lists+bpf@lfdr.de>; Sun, 21 Jan 2024 19:37:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC57C3839F;
-	Sun, 21 Jan 2024 19:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBD43839D;
+	Sun, 21 Jan 2024 19:36:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Pb7k3Ur8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dASLluEm"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DC03838D
-	for <bpf@vger.kernel.org>; Sun, 21 Jan 2024 19:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FADD374FA;
+	Sun, 21 Jan 2024 19:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705865272; cv=none; b=I/H4LbBVrV42wR2tm7Mbvalo7RV39kj3ThZoUtvZQWRH0YtnyXVqaLaZGuE2sjkyZq6I1qIEvzRtdTK75IGC9x8wuJhWuKdUDL/FqaluwrxV6MkBFNGYDLrgi5aGvt1Qu8qcNVRH/QXNmbTWv0MxkGaBsz6TFhyiHnWzFCNKA74=
+	t=1705865811; cv=none; b=lD+A1OsgyNAkr+D18oWw0cxxoY0lOrYnXGCkkXIv1NxoKuPRRivYMPNsKpO0Thx+WNGP92A3+y2DrQElC5o2VPy5VGwHFL1+N3vpjmJGyWwbbERb16ZdeuvAvz50s1XySByTSgHErFyo5GMKZ0Gu9uL+5ev8V57ctOVLbGBu+kI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705865272; c=relaxed/simple;
-	bh=2FpoKLKzqH8UC9hSwhA9E7HCkyq8gOsBF8dHu25KccI=;
+	s=arc-20240116; t=1705865811; c=relaxed/simple;
+	bh=4hiZpI+icBUVDpLbFrS9OTX9iRY/GXVx9pFghTt39N8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lCJkKcmTmUK4/PDGRZgBfR5KCg/vd74aGsiZaVgTInWywSk11lfoDDDNPM6uKccGo0RzJjAFdmSjf387NoRTMs/nRS42ufpIBZcRxJXdh12J7maqHKSau80h5d7Y5w3HX6zvZ1aoFVFGW7FK4AH3z8lbLZSqCuu8hzX27aqnkPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Pb7k3Ur8; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55a684acf92so2390566a12.0
-        for <bpf@vger.kernel.org>; Sun, 21 Jan 2024 11:27:50 -0800 (PST)
+	 To:Cc:Content-Type; b=leVnmM5yaakkzrEio/J6A6jI20nXe/ewJiW1hYtR4dQ892+Ia87RNDz6Ik9wqh/d6a54/2dYvuho7CI/nYYtQnLGY7pDB8rSYA1gRK5tM3/YoI5zO4LiobgkuUnDJrcT6kLu0sV9WXLQ4Th9hv3Sh76hDAn3UZJI80C89qLEywM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dASLluEm; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-599903c5618so23010eaf.3;
+        Sun, 21 Jan 2024 11:36:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1705865269; x=1706470069; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ilsHoBAFLGrxDRmI028SujMWUyj+V2X5SyCrYhyT90=;
-        b=Pb7k3Ur8ELXjk8kws/DCquJ0aRwO1f6XiTIz2OawJIrZSJKZ8QJUztXvAfbIVjJ2lq
-         d5UAcRcg4PH9UA9zBADHkHbrMhmFv+ciSigR8Yjri7idzif7p0GC++6AbvVWnJKoJZqP
-         zgFSJapFb8dYx71PTI53DVJO3kkMUL+l6ax+8=
+        d=gmail.com; s=20230601; t=1705865809; x=1706470609; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S9mrkCTZLpLTIVgbodq3Q2yrWiCs3Y0QddwuBNQZBFk=;
+        b=dASLluEmHz8dxnwJJ6038dimIoR+yKBfdr1vetvmcywAtbCwXt71l7y8W2v93cK/N7
+         sWcV1EZY0Zx0B7B4P27UD/tzysKs/QtNCm0m9LeWjDBdcBphQby5he2GSK8J6poKzqLr
+         QyNihb999wYyNxaYJNhbmZBFkegMLmJGIGi6HymU2F6ju4IFXqXC/LUptsjJhaCfGXcI
+         fZagwv5X9fZSeJagXtaRcjLf31noTLFAuEGtROL5GtY3C125y99+ID/74BKp/W6HuO7l
+         3Z1qGnh5YC8SQslkO0ENfsYKXZJg/1eUDZAzYJkrwPo3V3FFZfBei3wWgaJDirWg7AM+
+         um2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705865269; x=1706470069;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7ilsHoBAFLGrxDRmI028SujMWUyj+V2X5SyCrYhyT90=;
-        b=n6f9rKc9tsuBMgBUrqiho0mB0+2o2a4/9rOQcGh8aB5IJPT7AjKisI0Ya8lY0tqHy7
-         ZdGJ6fei7jj8Qtg5HVcUIKZMsqpAypV6jrIDCyJ88l4garcqIO7fRTbrkISm8SJ+8wKT
-         g720jOFoqgPpN+mWdqpV/E18NWlnvjaeoTikYRuzz92qQ045dnQRxaytc2zXeSjsO42Y
-         bKy8L3auztcnQ/ScKNfxfkAuh816KDZbe9O1EKFOdDxO+qoSuo304VwidkCUYGyIDGov
-         xW2y8tPENGp9GS/NeHOQo5TPU3loamotiDF5j8/2HcoXgIXv+8zxCLi89is6rgtGA1S7
-         vi0Q==
-X-Gm-Message-State: AOJu0YwOSW7uSUcYoWhI4JnTOjPQMckFQhwzhUjGRZ2PbV0eJ/FcLUVZ
-	ju1D0OHS+Q7inob5YK04uVxes44Mjhf6Jyk0kaen2f1wR9my8z/6V6QBe8gammwcFPI2VWNKXLo
-	9vB3f3g==
-X-Google-Smtp-Source: AGHT+IH8qxFW0QVkmzR3bE6rksvPvRbtBFn7vOZpuI7m4pCoHBgmQBdoGTpQFeGcYaAcOoZAO9ydxA==
-X-Received: by 2002:aa7:d14c:0:b0:55b:8fed:edc0 with SMTP id r12-20020aa7d14c000000b0055b8fededc0mr714643edo.105.1705865268838;
-        Sun, 21 Jan 2024 11:27:48 -0800 (PST)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id n13-20020a05640204cd00b0055971af7a23sm8139047edw.95.2024.01.21.11.27.47
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jan 2024 11:27:47 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso1076875a12.3
-        for <bpf@vger.kernel.org>; Sun, 21 Jan 2024 11:27:47 -0800 (PST)
-X-Received: by 2002:a05:6402:26d3:b0:55c:29c1:4186 with SMTP id
- x19-20020a05640226d300b0055c29c14186mr493069edd.26.1705865267510; Sun, 21 Jan
- 2024 11:27:47 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705865809; x=1706470609;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S9mrkCTZLpLTIVgbodq3Q2yrWiCs3Y0QddwuBNQZBFk=;
+        b=vPAAYdJtkuCQwN3JmYpyj9pSjfzOBEWT/PMwvCCj3WEUVrP0eDF5UQeetY8M3BKJMb
+         JYre4E/KobMCtg94cMI9ALpSmd/aUvUcn0xzM/nz8YVA1eJeaCIR0Q0BLz/ueMafz57Z
+         i9KMv5e6ndqqO1HGxgq9A6a3VrcKm3qDekp9yLVOGJfDHOGaHWVaeuo2/zLQZK9pV2Y6
+         PggYUABNCQjoOWSWukRDL3ph/kXRP9twRembhEH4ysxlhCQtldHivtaixJJijVMdxAOX
+         q8lXURTJCLIHYrnZKtgcpWKT/wMk0l0mi1hqMQ80/oHmCF4SCjMG6aap0cSAbylS3Ava
+         8aMg==
+X-Gm-Message-State: AOJu0YzxJDML535Om4WNfjfrbFEL8VhAVhBtWYUkXm2uY6svhs89Cf8t
+	b5tTSXI0Z0N1Rd0y/nneL9OO5O1WrglHkYLxMedsmBwh5fh0iM9CLi4MDhcv/IUnYGaaJ7PuPXB
+	lpXf2QwJCKyXHYP0ngQFQRtqtCr8=
+X-Google-Smtp-Source: AGHT+IFHv3E1uLwSsI4rohW7rEz+xLP0rfk9sXAsk3whE30cLxW9a2uBMCxCxEMiXjlbr3MXh4ro5os96q60sPf58GY=
+X-Received: by 2002:a05:6358:63a4:b0:176:4c81:bc0c with SMTP id
+ k36-20020a05635863a400b001764c81bc0cmr620221rwh.48.1705865808940; Sun, 21 Jan
+ 2024 11:36:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240119050000.3362312-1-andrii@kernel.org>
-In-Reply-To: <20240119050000.3362312-1-andrii@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 21 Jan 2024 11:27:31 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wg3BUNT1nmisracRWni9LzRYxeanj8sePCjya0HTEnCCQ@mail.gmail.com>
-Message-ID: <CAHk-=wg3BUNT1nmisracRWni9LzRYxeanj8sePCjya0HTEnCCQ@mail.gmail.com>
+References: <20240119050000.3362312-1-andrii@kernel.org> <CAHk-=wg3BUNT1nmisracRWni9LzRYxeanj8sePCjya0HTEnCCQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wg3BUNT1nmisracRWni9LzRYxeanj8sePCjya0HTEnCCQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Sun, 21 Jan 2024 11:36:36 -0800
+Message-ID: <CAEf4BzYTZ0KZYc+zgwSdm6h9i0nQAfM_ne8cdMoPJ36c3yNC1A@mail.gmail.com>
 Subject: Re: [GIT PULL] BPF token for v6.8
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, paul@paul-moore.com, 
-	brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, netdev@vger.kernel.org, 
+	paul@paul-moore.com, brauner@kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-security-module@vger.kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 18 Jan 2024 at 21:00, Andrii Nakryiko <andrii@kernel.org> wrote:
+On Sun, Jan 21, 2024 at 11:27=E2=80=AFAM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> This time I'm sending them as a dedicated PR. Please let me know if you are OK
-> pull them directly now, or whether I should target it for the next merge
-> window. If the latter is decided, would it be OK to land these patches into
-> bpf-next tree and then include them in a usual bpf-next PR batch?
+> On Thu, 18 Jan 2024 at 21:00, Andrii Nakryiko <andrii@kernel.org> wrote:
+> >
+> > This time I'm sending them as a dedicated PR. Please let me know if you=
+ are OK
+> > pull them directly now, or whether I should target it for the next merg=
+e
+> > window. If the latter is decided, would it be OK to land these patches =
+into
+> > bpf-next tree and then include them in a usual bpf-next PR batch?
+>
+> So I was keeping this pending while I dealt with all the other pulls
+> (and dealt with the weather-related fallout here too, of course).
+>
+> I've now looked through this again, and I'm ok with it, but notice
+> that it has been rebased in the last couple of days, which doesn't
+> make me all that happy doing a last-minute pull in this merge window.
 
-So I was keeping this pending while I dealt with all the other pulls
-(and dealt with the weather-related fallout here too, of course).
+Yes, I understand. BPF token patches change common (internal) parts of
+libbpf, and so there were conflicts with other libbpf-side changes in
+the bpf tree.
 
-I've now looked through this again, and I'm ok with it, but notice
-that it has been rebased in the last couple of days, which doesn't
-make me all that happy doing a last-minute pull in this merge window.
+>
+> End result: I think this might as well go through the bpf-next tree
+> and come next merge window through the usual channels.
 
-End result: I think this might as well go through the bpf-next tree
-and come next merge window through the usual channels.
+Sounds good, I'll route it through bpf-next, then. Thanks!
 
-I think Christian's concerns were sorted out too, but in case I'm
-mistaken, just holler.
+>
+> I think Christian's concerns were sorted out too, but in case I'm
+> mistaken, just holler.
 
-                  Linus
+I believe they were, yes.
+
+>
+>                   Linus
 
