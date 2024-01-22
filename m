@@ -1,69 +1,72 @@
-Return-Path: <bpf+bounces-20015-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20016-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA85C836EC7
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 19:02:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C978F836E5C
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 18:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BEE7B32BA8
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 17:39:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CFA9B305F8
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 17:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4875E46429;
-	Mon, 22 Jan 2024 16:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06A8B46432;
+	Mon, 22 Jan 2024 16:55:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="T72kJfp2"
+	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="gnMhS5S1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24D4646424
-	for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 16:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0602C46425
+	for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 16:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705942514; cv=none; b=uuwE0E01a3aONVQE3TQ5VszAeJq/BMnOIGO/+SXfHyS0D244dmjMQPt3tKRf7AOxVWUQClvt6/YCSWa1DXoupUE0fQAQlBKYbhglKjrpQjiPma/K002D2st5J2T6Vkd4PAzI1CMrKjP//GMJMMvLBdC8Pz73zR7E/nrldaZ7Zj0=
+	t=1705942515; cv=none; b=rbqEN+k5qFHGiAP9iCeddmg3f4gCaOvmq5IbR21/ncEfKdImtaixPoy1iSIQ2LwkfXRsBpc4keGUnKekTSWdU92gwoHiAaNtAMGTDg24NZqDKzhHvyKWR5/FMypRHAWQkmDox2Lw5e22H8TrJm0ctFiH5e8vJVT4Z6UoKEIAtok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705942514; c=relaxed/simple;
-	bh=xcOZXOmW4CiwlKXjgrn3cgZx0jiY+xMPgXhtUVfdwT4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=miu+Ymm9Y8Adn1LK3zRb2YnvS5N26EsFQG9gV9FiJMIc5SFh5SO4camLdSw09mtJrruPzQtwnXqmtpkg9DpAhbW+rewA3uEIIbQsvhhHImdj+DXGKRE6hldzlnMyz711UDv2NgipjLHrocq6OGaj9rtX5mhEkPwkgSkXt7CftEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=T72kJfp2; arc=none smtp.client-ip=209.85.221.45
+	s=arc-20240116; t=1705942515; c=relaxed/simple;
+	bh=tpQvt9G42nnQDZRlXc0TE2y39UU3Zn4Be+EgQfR1hxo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=WPherphXUSB+OmeV+gCRgHjEVHebktEmM8sMasiRvZkfoKcH8lRrSPvYYwzejC+JWrTjY+ksaUB6+bS5fns3E+bu+Y1iyuTExpf43UmyVPDwP9yobTdxS0LtCTtcBtW4Jz+Mn/5ckBZviMOS4S2uFNxkEPWyT9mLrwO33kl8k8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com; spf=pass smtp.mailfrom=isovalent.com; dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b=gnMhS5S1; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-339261a6ec2so1970768f8f.0
-        for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 08:55:12 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-40e880121efso37776615e9.3
+        for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 08:55:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1705942511; x=1706547311; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=79znhBKmtgq0b3DHGIoQWAjOyEBRxcrjW8aw4DLlRfM=;
-        b=T72kJfp24TaTuW8YLo411ShzU6y6WLjNu82NOWLehg3+dAGoaN80e0GTsoDonqL2zY
-         mU6riLjy8OqLdVl7q1h0zdujH2uu9qsDgEN616cvTWmUo8jtwZ/pEQSCtAgoeb2SCnTt
-         u6sZBZ4sGQUf9pHZois7fK2TA4ef60zRcgbx9w72RK7TTVMLpiCBFxFUG2GvI1KSHBgG
-         R9ZT7Qxj4o58en0l/lMvbMROsSl6RmRffn+X0ExlfEr5Z4Pb/psyq30sh6oTPRyJMEd+
-         fj2ZBz13UxMwlnFU54bg4J7VYR2MEwu0gwoOvTHsHs0LpiVkzkN/BBA4xkuuHF5JCBa9
-         VFvA==
+        d=isovalent.com; s=google; t=1705942512; x=1706547312; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3FGyeWs+ozxQbhoL9nxQPlsMBhd+vACZ0QkZ538lwU0=;
+        b=gnMhS5S1tqcizzdVHU0Ijg/nB5UQfbKwyHxA8tOgd2c9N25kNt4Xg8YuDU8He0iX5V
+         mIAsSLO44ux0WziyYWsMO3PCefiX00m3YgoYkUQGwv5BhgaxHsesfBchAsmxtg4T1pH3
+         kxvOFWSvulK2KpM3srELRspqsTSBUgxjZ7f5vCLYwPKlekHqqLyVKncHEPhKUg/ZEtRI
+         mtvQQ1hWU/xJpDcSkqUHnbhyrNAlzHcitO2Hl8QCp3ymFqNWXV49+iDmDD1fkjgSsmVG
+         97FasJVGxH3LJ1jC2ZgIjxCD4TmM+2PbI9VDqN6X1+ri2g69JTjUOu3zuNmFgsT8VmkP
+         SatQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705942511; x=1706547311;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=79znhBKmtgq0b3DHGIoQWAjOyEBRxcrjW8aw4DLlRfM=;
-        b=MCoKb8OlhEmeSOxPRjYD4EzvKKhFEDTXQjv0njTL51iaLnL4MbU2Q4y7ammaczf9tN
-         hebRt750oDsvNEzaJJVUMUp9fMwh+h3vBf5uxnBCoZc2PZrY2mfzXaYbyMEW41o+0dP4
-         5SByIs6Hhi7Oqahr0MeMH7gYNXd5BvYVt0xT4iDS5ZZOALfpjcd78aT4NWp1DyhdJVoC
-         ELX1LecTVuuGyt2WvC3Qjt98Hg1TbyVTSmA7CKb/a3wwDLErJPC76zIvk8oM3diqTH+q
-         SmqMnE6N/CnqzsrpSB7Pc/Voz3U8B16pPuklcDN84gaHqe9n3sJWGutOgne6Ocs7v3CT
-         395Q==
-X-Gm-Message-State: AOJu0Ywz8MSuMMfyL8SKReWKawqzUrF1ac8p4eNFSlLqTC88HCpKisrD
-	NiJUF2J+IwRSCZG0/AU1AjMw0GBI2UwE+3eZY8aKvd/2FIk65CyWwD1bPz3GXmw=
-X-Google-Smtp-Source: AGHT+IH9zoy6mxpNT6lsOvUDNT5Btq9ApZCQ2cpAo05EGdDUbxljC+Aken4xl7wqNL105lWNYsKL/A==
-X-Received: by 2002:adf:b343:0:b0:337:3977:5b42 with SMTP id k3-20020adfb343000000b0033739775b42mr2742569wrd.28.1705942511241;
-        Mon, 22 Jan 2024 08:55:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705942512; x=1706547312;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3FGyeWs+ozxQbhoL9nxQPlsMBhd+vACZ0QkZ538lwU0=;
+        b=nByySSNLOj8zwRifH/rSe5izlFgot0zeiSf+WxU22evT6B7Mg23XhOHIAyKxwKEnvx
+         O+kUNim8rGdiOvBbfykKt6KZYPbFOStwQH1kRIk0Bh5km3siavAvYH99ByuG2SzPAyNR
+         kXw+K6V3YktMcpTNdmVZXzvMBajA+n+iJaL68w7bJ6SfP1TPtVIzVb/1e/Of6vzsePtv
+         xCD0eRNu4nyZC90qCnExSC/AZmGVh1Vmb9iuwtT2tN9b+WTS1MeNWnKiiY/k6OPaSxIo
+         bcySJL+acBXewE+fmKXPfh0IKHiwcVoZ5qjbWjvOK0RBdazl7VwV4fPV0vNet62sQNha
+         9ORQ==
+X-Gm-Message-State: AOJu0YzMeg6+HlseLvZMi3km65WsspE+WLlRqCC5z/L/hida68Jsk9xE
+	k0uovHS1RBpCfPqRnbXnm6e4LW1mhOsmEr3sRAufU/BmLEVNSXKbPjmvp0W3Ds32upnDiyubIO2
+	V
+X-Google-Smtp-Source: AGHT+IH0Ofk1bctD/QDeuO5fUC1YNZvMxMsXi+gj4U16iuGulUVoZWnoV+GKrpiduS7zbfGO+fPXBQ==
+X-Received: by 2002:a05:600c:4a15:b0:40e:44c7:3d25 with SMTP id c21-20020a05600c4a1500b0040e44c73d25mr2313797wmp.69.1705942512160;
+        Mon, 22 Jan 2024 08:55:12 -0800 (PST)
 Received: from zh-lab-node-5.home ([2a02:168:f656:0:1ac0:4dff:fe0f:3782])
-        by smtp.gmail.com with ESMTPSA id i7-20020a5d6307000000b00337d71bb3c0sm10402466wru.46.2024.01.22.08.55.10
+        by smtp.gmail.com with ESMTPSA id i7-20020a5d6307000000b00337d71bb3c0sm10402466wru.46.2024.01.22.08.55.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jan 2024 08:55:10 -0800 (PST)
+        Mon, 22 Jan 2024 08:55:11 -0800 (PST)
 From: Anton Protopopov <aspsk@isovalent.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
@@ -75,10 +78,12 @@ To: Alexei Starovoitov <ast@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
 	bpf@vger.kernel.org
 Cc: Anton Protopopov <aspsk@isovalent.com>
-Subject: [RFC PATCH bpf-next 0/5] static branches
-Date: Mon, 22 Jan 2024 16:49:31 +0000
-Message-Id: <20240122164936.810117-1-aspsk@isovalent.com>
+Subject: [RFC PATCH bpf-next 1/5] bpf: fix potential error return
+Date: Mon, 22 Jan 2024 16:49:32 +0000
+Message-Id: <20240122164936.810117-2-aspsk@isovalent.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240122164936.810117-1-aspsk@isovalent.com>
+References: <20240122164936.810117-1-aspsk@isovalent.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,64 +92,44 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series adds support for mapping between xlated and original
-instructions offsets, mapping between xlated and jitted instructions
-offsets (x86), support for two new BPF instruction JA[SRC=1] and
-JA[SRC=3], and a new syscall to configure the jitted values of such
-instructions.
+The bpf_remove_insns() function returns WARN_ON_ONCE(error), where
+error is a result of bpf_adj_branches(), and thus should be always 0
+However, if for any reason it is not 0, then it will be converted to
+boolean by WARN_ON_ONCE and returned to user space as 1, not an actual
+error value. Fix this by returning the original err after the WARN check.
 
-This a follow up to the previous attempt to add static keys support
-(see [1], [2]) which implements lower-level functionality than what
-was proposed before.
+Signed-off-by: Anton Protopopov <aspsk@isovalent.com>
+---
+ kernel/bpf/core.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-It's RFC because 1) to run self-tests it requires a patched llvm
-(https://github.com/llvm/llvm-project/pull/75110, thanks a lot
-Yonghong!) 2) before spending time writing selftests and proper
-bpftool updates [this time] I would prefer to get some initial
-feedback first (for examples, see below)
-
-The first patch is a formal fix.
-The second patch adds xlated -> original mapping.
-The third patch adds xlated -> jitted mapping.
-The fourth patch adds support for new instructions.
-And the fifth patch adds support for new syscall.
-
-Altogether this provides enough functionality to dynamically patch
-programs and support simple static keys. See the third patch which
-displays an example of mappings between xlated->orig, xlated->jited.
-See the last patch which includes description of how to implement
-simple static key functionality.
-
-This would be also interesting to hear what people think about more
-high-level api where one "key" controls a set of static branches in
-multiple programs and can serialize access to all the branches. What
-kind of BPF object can represent such functionality, besides a map,
-if any?
-
-  [1] https://lpc.events/event/17/contributions/1608/attachments/1278/2578/bpf-static-keys.pdf
-  [2] https://lore.kernel.org/bpf/20231206141030.1478753-1-aspsk@isovalent.com/
-
-Anton Protopopov (5):
-  bpf: fix potential error return
-  bpf: keep track of and expose xlated insn offsets
-  bpf: x86: expose how xlated insns map to jitted insns
-  bpf: add support for an extended JA instruction
-  bpf: x86: add BPF_STATIC_BRANCH_UPDATE syscall
-
- arch/x86/net/bpf_jit_comp.c       |  71 ++++++++++++++++++-
- include/linux/bpf.h               |  11 +++
- include/linux/bpf_verifier.h      |   1 -
- include/linux/filter.h            |   1 +
- include/uapi/linux/bpf.h          |  26 +++++++
- kernel/bpf/core.c                 |  69 +++++++++++++++++-
- kernel/bpf/syscall.c              | 112 ++++++++++++++++++++++++++++++
- kernel/bpf/verifier.c             |  58 ++++++++++++----
- tools/bpf/bpftool/prog.c          |  14 ++++
- tools/bpf/bpftool/xlated_dumper.c |   2 +-
- tools/bpf/bpftool/xlated_dumper.h |   2 +
- tools/include/uapi/linux/bpf.h    |  26 +++++++
- 12 files changed, 375 insertions(+), 18 deletions(-)
-
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index fbb1d95a9b44..9ba9e0ea9c45 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -532,6 +532,8 @@ struct bpf_prog *bpf_patch_insn_single(struct bpf_prog *prog, u32 off,
+ 
+ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+ {
++	int err;
++
+ 	/* Branch offsets can't overflow when program is shrinking, no need
+ 	 * to call bpf_adj_branches(..., true) here
+ 	 */
+@@ -539,7 +541,12 @@ int bpf_remove_insns(struct bpf_prog *prog, u32 off, u32 cnt)
+ 		sizeof(struct bpf_insn) * (prog->len - off - cnt));
+ 	prog->len -= cnt;
+ 
+-	return WARN_ON_ONCE(bpf_adj_branches(prog, off, off + cnt, off, false));
++	err = bpf_adj_branches(prog, off, off + cnt, off, false);
++	WARN_ON_ONCE(err);
++	if (err)
++		return err;
++
++	return 0;
+ }
+ 
+ static void bpf_prog_kallsyms_del_subprogs(struct bpf_prog *fp)
 -- 
 2.34.1
 
