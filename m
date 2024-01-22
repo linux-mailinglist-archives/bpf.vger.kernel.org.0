@@ -1,266 +1,142 @@
-Return-Path: <bpf+bounces-19992-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19993-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A141835B44
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 07:55:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CE66835BF8
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 08:47:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7EE7B23EF1
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 06:55:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEEEB28826F
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 07:47:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877B7DF61;
-	Mon, 22 Jan 2024 06:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Io8sGADF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 736DD168A7;
+	Mon, 22 Jan 2024 07:46:22 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835AECA66
-	for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 06:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6FDE16416
+	for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 07:46:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705906497; cv=none; b=ef7No8bIDddEgFX6zUKgq29rf3k3GX7e1y61lQfk9e3VRZpfqm+gJIIUCF/gEpwHh6oEE2KtQH+8LpV1V/WsS6NYLseMU+F9fZNTZWuvEen191w68voYfYWVf7nt7QnKSIsqknAmIPjxN9VxYzncKvLFb9tGa4yj+VTdsRXS+uY=
+	t=1705909582; cv=none; b=Ir0n3WTAEJ6ltnMhHhJQzNlDVTpGmi4C+809hXxKRs2zXb0sp/e1vbROO3V8gTHPQbTGc6DVm4q+H7lPRuFmN6/W3P//JiSnW3TkK2aE+3f+vR0uW/0anYim+uuAijb+urSDCg6QoxmawhHyDHFbFn/oc7pexW+i/c7BTq9fAG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705906497; c=relaxed/simple;
-	bh=7E8E53K2VKxfUU8hm5+y8DQdxN4b4jDzMb6j3B0gODo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rVGTmaG6gFokv3hEsaaab45pi8SjBveinMeI1jkNrilEHxDgWgN2DFGvFuhbrScG4ET7cYDXrpK8bJi7gzfbmHYEBaVM9MrXUQZr3JxP0Sl/FcwJONT1oqLgbPwXstDcurHj0nAm1gMSk8DAl+kdNA5zaKJtOu7npurqzg2Rlsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Io8sGADF; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1705906494;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JvL0EYk0yA8VZbOmPDp1AqJR4YUQln1x+o2jxPOvKjI=;
-	b=Io8sGADFjBccMs4DsJxNUNl9RH/WT2DjWJFsMVYi1mRSyHBK0UAclQ7vyQS+7iklaCzljU
-	oBu2T14effK830Yrr3E4VHYoeWNsdcj44qnV94MM75velRycxrn8nzCrRt9f4Vr70IvnBf
-	OsPQXvcal+xo8DC7odfdycElUKSu5mM=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-161-CjrV2Ve2MqOu9oa4WpE4XQ-1; Mon, 22 Jan 2024 01:54:52 -0500
-X-MC-Unique: CjrV2Ve2MqOu9oa4WpE4XQ-1
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3bda48b93ffso3575186b6e.2
-        for <bpf@vger.kernel.org>; Sun, 21 Jan 2024 22:54:52 -0800 (PST)
+	s=arc-20240116; t=1705909582; c=relaxed/simple;
+	bh=1HWLd6cjnAiSE/YB5UYmIsvsAzIoN1hxyldr9FPzPqw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=ogZV8d2nXD1blskk+9/1Nx0N4jqaSPHM+e2VV3S79NWKsKGdjDTpO3kuoGehGN0PaLt/vmheiO8fvH4NSGcqJZePB67IsQ4gfGPQs73z9gS/C+GOvnF1+iovl3fGNI/d+4wYmsMRmMrSp2pL7w2a/yFA0+eu6Xd2vKMo1WFOM94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3627d99cbe5so7638765ab.2
+        for <bpf@vger.kernel.org>; Sun, 21 Jan 2024 23:46:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705906492; x=1706511292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JvL0EYk0yA8VZbOmPDp1AqJR4YUQln1x+o2jxPOvKjI=;
-        b=Y1JvnPF5O3hVfnyZ+o9Gkg9eST/CjdeQwGvYofkjrlx3d+46mewLOPkZLAOYGIgjiP
-         1XQSzGBj92Nq3iSu4e4HjY/RVjlqh9W0u853EwkQ87ZoDaz4yNSretNGbPDuohI7zgyg
-         mooOwSG7g1jC3E4fzsEtqIrkRHyyHpp2sepFrtj+ookVwUUFh61AKbADH3bKu5i59yjl
-         b4QliOub9Z+J4jltGUF17BRy5JKvrfInkYBYyotj+oBAlGR9q3gQSFWeq4Crmr4wlrFP
-         v80R2gu4sSu4Ynqh6grsl8LFRMJ1GzKN/yGGDcYqZR6GUtnBUwoz0a+l9LbNc3wfy4w0
-         HLaQ==
-X-Gm-Message-State: AOJu0YwCHuHRJzZCm/qAkm7sxp1dn+/xBD+eVnM3JcFLm/hw4+FTLOhA
-	C+nA91Lf86maZG4gSxbYUJVro6dhAnstPOlmH5p4IOkAjeJwCFiLr3OjbJmq3bLRpOHXeDYOWGb
-	0eaDvuq8S1IECI7UC7o/oYjHl9PLQfVikJ+nNcC8a4JHXl8bdigzYf+eRjDDnIBpSepjabcut+/
-	Qol9DFNHnUt/ZdJqs2pUgeIB1h
-X-Received: by 2002:a05:6808:21a0:b0:3bc:25c4:d85f with SMTP id be32-20020a05680821a000b003bc25c4d85fmr5424219oib.74.1705906492070;
-        Sun, 21 Jan 2024 22:54:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFZ8nvL3dGIQKuKlrjshwdncUFX/FxBnfNVdQigOwtAGbOH4UeeQB6L5XfmdlUoZquf1YQ7U/anP2pr+KQ9PzI=
-X-Received: by 2002:a05:6808:21a0:b0:3bc:25c4:d85f with SMTP id
- be32-20020a05680821a000b003bc25c4d85fmr5424214oib.74.1705906491848; Sun, 21
- Jan 2024 22:54:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705909580; x=1706514380;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hjeBalkypix5uZnv6/78S45Th9Z+D06qXD3yIf7OfY4=;
+        b=UMkvuYzcKcoaJ7ztsqOdaKXubqrpyFQvVWotf3z2RXI9OpgR37ES2S1amd+maXWaCk
+         8hQ7DE2WjAYiW8A7A26w0zgxvBx2eMkCteYjZIKKDekpuFnwtgPfvaGBv1dpDtCh9oE9
+         EtDCzo+ykGfFVM4KAUgYJgUAoLBjDYvSLm+MsyS4nlwY970+DUAVb+7XMliEbO1yiJ6Y
+         jPWJiAfYg/wP1ClqWHkDF7l7lfsCAuS2vISlM+ynY2ASt702Ei6gnW+m/prSoaOintro
+         2yMCIVoK8Hl6vvN9Tj2YO3nGpGu2wipHwwN9WjN15oW8HxWlmy1ChsBZYCYvRQfeAxaB
+         kkJg==
+X-Gm-Message-State: AOJu0YxhE+GoRUa72x9kY9++o46WuXv9tXrXsHkKqk1RvXEfTxcA83Ee
+	zzM3J8TMsJJqB+pR2Xq9kopKTqPDX5NPzghTMIMU29uFCT6Nb8h3CjzukL3Y25bTKV6LWHynHCa
+	tUp+96xHjvS7+nTQwObvgpUHTu1tq+oVZllAhqsYGqHewMitbitXVPk8=
+X-Google-Smtp-Source: AGHT+IGDeiT4cYa7qy6TL+jNU2foUYiDtAN/raMgagLIOwAy6tiJrqYuiFXsmgM1zsSG8rY5E6u72oz9hGAMgXb+rFd4QF0uhBEY
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231229073108.57778-1-xuanzhuo@linux.alibaba.com>
- <20231229073108.57778-7-xuanzhuo@linux.alibaba.com> <CACGkMEvaTr1iT1M7DXN1PNOAZPM75BGv-wTOkyqb-7Sgjshwaw@mail.gmail.com>
- <1705390340.4814627-3-xuanzhuo@linux.alibaba.com> <CACGkMEuo7m82cTxFSeryyYemMP8AgeKgE6kKYqoFGChTZ7KNWA@mail.gmail.com>
- <1705903444.5368986-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1705903444.5368986-1-xuanzhuo@linux.alibaba.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Mon, 22 Jan 2024 14:54:39 +0800
-Message-ID: <CACGkMEsYs3zKVNxzDMtAHZKAUEFppxBvWb0LMGDWVMwQqvX83Q@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 06/27] virtio_ring: introduce virtqueue_get_buf_ctx_dma()
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	"Michael S. Tsirkin" <mst@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+X-Received: by 2002:a05:6e02:1d88:b0:360:d7:186b with SMTP id
+ h8-20020a056e021d8800b0036000d7186bmr495290ila.0.1705909580012; Sun, 21 Jan
+ 2024 23:46:20 -0800 (PST)
+Date: Sun, 21 Jan 2024 23:46:19 -0800
+In-Reply-To: <000000000000dea025060d6bc3bc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000893270060f840665@google.com>
+Subject: Re: [syzbot] [bpf?] KMSAN: uninit-value in ___bpf_prog_run (4)
+From: syzbot <syzbot+853242d9c9917165d791@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, haoluo@google.com, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, linux-kernel@vger.kernel.org, 
+	martin.lau@linux.dev, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 22, 2024 at 2:12=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
->
-> On Mon, 22 Jan 2024 12:18:51 +0800, Jason Wang <jasowang@redhat.com> wrot=
-e:
-> > On Tue, Jan 16, 2024 at 3:47=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.aliba=
-ba.com> wrote:
-> > >
-> > > On Thu, 11 Jan 2024 16:34:09 +0800, Jason Wang <jasowang@redhat.com> =
-wrote:
-> > > > On Fri, Dec 29, 2023 at 3:31=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.a=
-libaba.com> wrote:
-> > > > >
-> > > > > introduce virtqueue_get_buf_ctx_dma() to collect the dma info whe=
-n
-> > > > > get buf from virtio core for premapped mode.
-> > > > >
-> > > > > If the virtio queue is premapped mode, the virtio-net send buf ma=
-y
-> > > > > have many desc. Every desc dma address need to be unmap. So here =
-we
-> > > > > introduce a new helper to collect the dma address of the buffer f=
-rom
-> > > > > the virtio core.
-> > > > >
-> > > > > Because the BAD_RING is called (that may set vq->broken), so
-> > > > > the relative "const" of vq is removed.
-> > > > >
-> > > > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > > > ---
-> > > > >  drivers/virtio/virtio_ring.c | 174 +++++++++++++++++++++++++----=
-------
-> > > > >  include/linux/virtio.h       |  16 ++++
-> > > > >  2 files changed, 142 insertions(+), 48 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio=
-_ring.c
-> > > > > index 51d8f3299c10..1374b3fd447c 100644
-> > > > > --- a/drivers/virtio/virtio_ring.c
-> > > > > +++ b/drivers/virtio/virtio_ring.c
-> > > > > @@ -362,6 +362,45 @@ static struct device *vring_dma_dev(const st=
-ruct vring_virtqueue *vq)
-> > > > >         return vq->dma_dev;
-> > > > >  }
-> > > > >
-> > > > > +/*
-> > > > > + *     use_dma_api premapped -> do_unmap
-> > > > > + *  1. false       false        false
-> > > > > + *  2. true        false        true
-> > > > > + *  3. true        true         false
-> > > > > + *
-> > > > > + * Only #3, we should return the DMA info to the driver.
-> > > >
-> > > > Btw, I guess you meant "#3 is false" here?
-> > > >
-> > > > And could we reduce the size of these 3 * 3 matrices? It's usually =
-a
-> > > > hint that the code is not optmized.
-> > >
-> > > On the process of doing dma map, we force the (use_dma_api, premapped=
-).
-> > >
-> > > if premapped:
-> > >      virtio core skip dma map
-> > > else:
-> > >         if use_dma_api:
-> > >                 do dma map
-> > >         else:
-> > >                 work with the physical address.
-> > >
-> > > Here we force the (premapped, do_unmap).
-> > >
-> > > do_unmap is an optimization. We just check this to know should we do =
-dma unmap
-> > > or not.
-> > >
-> > > Now, we introduced an new case, when the virtio core skip dma unmap,
-> > > we may need to return the dma info to the driver. That just occur whe=
-n
-> > > the (premapped, do_unmap) is (true, false). Because that the (premmap=
-ed,
-> > > do_unmap) may be (false, false).
-> > >
-> > > For the matrices, I just want to show where the do_unmap comes from.
-> > > That is a optimization, we use this many places, not to check (use_dm=
-a_api,
-> > > premapped) on the process of doing unmap. And only for the case #3, w=
-e should
-> > > return the dma info to drivers.
-> >
-> > Ok, it tries to ease the life of the readers.
-> >
-> > I wonder if something like
-> >
-> > bool virtqueue_needs_unmap() can help, it can judge based on the value
-> > of use_dma_api and premapped.
->
->
-> I think not too much.
->
-> Because do_unmap is for this.
->
->
->
-> +static bool vring_need_unmap(struct vring_virtqueue *vq,
-> +                            struct virtio_dma_head *dma,
-> +                            dma_addr_t addr, unsigned int length)
-> +{
-> +       if (vq->do_unmap)
-> +               return true;
->
-> Before this, we is to judge whether we should do unmap or not.
-> After this, we is to judge whehter we should return dma info to driver or=
- not.
->
-> If you want to simplify this function, I will say no.
->
-> If you want to replace "do_unmap" with virtqueue_needs_unmap(), I will sa=
-y ok.
+syzbot has found a reproducer for the following issue on:
 
-That's my point.
+HEAD commit:    9f8413c4a66f Merge tag 'cgroup-for-6.8' of git://git.kerne..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1493fa3de80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=656820e61b758b15
+dashboard link: https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=139d21e7e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12d6066fe80000
 
-> But I think we donot need to do that.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/79d9f2f4b065/disk-9f8413c4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/cbc68430d9c6/vmlinux-9f8413c4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9740ad9fc172/bzImage-9f8413c4.xz
 
-Just a suggestion, and you can move the comment above there.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+853242d9c9917165d791@syzkaller.appspotmail.com
 
-Thanks
+=====================================================
+BUG: KMSAN: uninit-value in ___bpf_prog_run+0xa766/0xdb80 kernel/bpf/core.c:2037
+ ___bpf_prog_run+0xa766/0xdb80 kernel/bpf/core.c:2037
+ __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2203
+ bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
+ bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
+ bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
+ __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
+ __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+ __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
->
-> +
-> +       if (!vq->premapped)
-> +               return false;
-> +
-> +       if (!dma)
-> +               return false;
-> +
-> +       if (unlikely(dma->next >=3D dma->num)) {
-> +               BAD_RING(vq, "premapped vq: collect dma overflow: %pad %u=
-\n",
-> +                        &addr, length);
-> +               return false;
-> +       }
-> +
-> +       dma->items[dma->next].addr =3D addr;
-> +       dma->items[dma->next].length =3D length;
-> +
-> +       ++dma->next;
-> +
-> +       return false;
-> +}
->
->
-> Thanks.
->
->
-> >
-> > Thanks
-> >
-> > >
-> > > Thanks.
-> > >
-> > > >
-> > > > Thanks
-> > > >
-> > > >
-> > >
-> >
->
+Uninit was stored to memory at:
+ ___bpf_prog_run+0x8567/0xdb80
+ __bpf_prog_run512+0xb5/0xe0 kernel/bpf/core.c:2203
+ bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
+ bpf_prog_test_run_skb+0x14e5/0x1f20 net/bpf/test_run.c:1045
+ bpf_prog_test_run+0x6af/0xac0 kernel/bpf/syscall.c:4040
+ __sys_bpf+0x649/0xd60 kernel/bpf/syscall.c:5401
+ __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+ __x64_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5485
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x6d/0x140 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
+Local variable stack created at:
+ __bpf_prog_run512+0x45/0xe0 kernel/bpf/core.c:2203
+ bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+ __bpf_prog_run include/linux/filter.h:651 [inline]
+ bpf_prog_run include/linux/filter.h:658 [inline]
+ bpf_test_run+0x482/0xb00 net/bpf/test_run.c:423
+
+CPU: 0 PID: 5010 Comm: syz-executor315 Not tainted 6.7.0-syzkaller-00562-g9f8413c4a66f #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+=====================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
