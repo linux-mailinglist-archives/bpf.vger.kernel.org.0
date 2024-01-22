@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-19997-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8614835C27
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 08:58:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67A23835C39
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 09:03:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F5B11F22FCC
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 07:58:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BF5E284ADF
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 08:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A26CA33CFA;
-	Mon, 22 Jan 2024 07:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD1D18623;
+	Mon, 22 Jan 2024 08:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CWZwPJzs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA2F18C3D;
-	Mon, 22 Jan 2024 07:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555A020DDB;
+	Mon, 22 Jan 2024 08:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705910236; cv=none; b=CR6P6gcPJYyEbDgKjiahGlHarW8h5Rj5OredbHG+gNl9vLmstNiZelBpAcUPM2QnQ7mDZAZLoS77lA3Gck8o5C0yy6rl9jDEJpQrqbfxZsAA+VCShpOhAg4clJ2YUfNSUfrE1vlJrL6BUnGl8ewS3LjER9oGE7Tcb/FEUXZiDAE=
+	t=1705910614; cv=none; b=IlxHtkldjL2HGVCbn8AiIR+p4OnIIZMQeSLowro0Il48Zt1Bxjf/KUKJqOZZkYBEaSr+ziScUd7VxN4qxv9T0QNujZcZB8L55HuBtVHNCsiSdme7jlSZg8egd/0NTNwYASEpYCylUX5X1ex4x6fEAz7tYp7ZX24s0WZiX2tIdZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705910236; c=relaxed/simple;
-	bh=l6MfQQw55J1lyN8m43DBpKixXCKLSr/+URZH8IUBdPw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KRQEVhzQpeM4iRuKICzwx4W/xjAPW/PmfUd29qQ7Uq4TseCqqq8FBaMyPqbc45m09rZ8KNxvUtX6LHRMhBbge+XhzIusXJTiUgcY9NtEeT8X1AlSZ0/5g5Ky46mooCimoZMufmSY70Umhl6b7amWiTRiZucwedMEh+d2kw9p7OI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [113.200.148.30])
-	by gateway (Coremail) with SMTP id _____8AxPOnSH65ll20DAA--.3871S3;
-	Mon, 22 Jan 2024 15:57:06 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxf8_NH65lKSIRAA--.13989S5;
-	Mon, 22 Jan 2024 15:57:04 +0800 (CST)
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
-To: Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1705910614; c=relaxed/simple;
+	bh=EbfASx6rdYM/fLYLjwpVsRLzQ8vlWH2xIbbLy3j+3tM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OCZvwTYgK0C3RUgkw8lVe3Ida/kLxlE3dIOF/68lV9MthJih1RqpUYZ4BpoYElc56RF7YZwiAPVFEJVleA3BPQv+hDeIwCzCCvTcPPVsjCMrnNGLPEDGNymRnvLsYe8rWZ5yMcbCv3XENMN1HONMvClhQR6NWRo+qH+vuTINgy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CWZwPJzs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5D4C433F1;
+	Mon, 22 Jan 2024 08:03:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705910613;
+	bh=EbfASx6rdYM/fLYLjwpVsRLzQ8vlWH2xIbbLy3j+3tM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=CWZwPJzsmVZOgK3YChPXH5NRZmsfEKYe7IwCl4TcaM2rMBfBh9lUOj9dC4x+uJj07
+	 qVFReVHCQYJvrrhaQxmtqk32z+3Yi2djZyJgKIl6GTBpqdNmVaPQ5efLoGP7lQGsEJ
+	 gwXomJoDvULTx67btE2gFB1fKNB5ygLwnIXUh48NYA78ZEFNczHxjciWkCPR4vpkkD
+	 0XLuShj6rY2lzT+t74k5GGpFa0HJrdaC0Jpm9tCB5SRU0xJiwdLtF50ME4vWrK30k3
+	 fMAk/bZBtBcGh0dkiRO6JumTf0829Ij5ERroQfhP+P0FefNuqWSs5SpUvrjvgpCIc9
+	 MjDf//lwlZw5A==
+From: Jiri Olsa <jolsa@kernel.org>
+To: stable@vger.kernel.org
+Cc: bpf@vger.kernel.org,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Hou Tao <houtao@huaweicloud.com>,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next v6 3/3] selftests/bpf: Skip callback tests if jit is disabled in test_verifier
-Date: Mon, 22 Jan 2024 15:57:00 +0800
-Message-ID: <20240122075700.7120-4-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20240122075700.7120-1-yangtiezhu@loongson.cn>
-References: <20240122075700.7120-1-yangtiezhu@loongson.cn>
+	Alan Maguire <alan.maguire@oracle.com>,
+	Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [PATCH stable 5.15] bpf: Add --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags for v1.25
+Date: Mon, 22 Jan 2024 09:03:29 +0100
+Message-ID: <20240122080329.856574-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,97 +57,51 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Cxf8_NH65lKSIRAA--.13989S5
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGFW3tr1UtrW5ur1xGF1fKrX_yoW5Gw45pa
-	y8JF1qkF10qa4I9ry7A393GFWY9w4vqw48JFy5uw48Z3Z5Aw47Xr1fKFyYvasxGrWFqasa
-	vanrurWUWw1UJFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
-	xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
-	Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x
-	0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04
-	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7Cj
-	xVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j2MKZUUUUU=
 
-If CONFIG_BPF_JIT_ALWAYS_ON is not set and bpf_jit_enable is 0, there
-exist 6 failed tests.
+From: Alan Maguire <alan.maguire@oracle.com>
 
-  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
-  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
-  [root@linux bpf]# ./test_verifier | grep FAIL
-  #106/p inline simple bpf_loop call FAIL
-  #107/p don't inline bpf_loop call, flags non-zero FAIL
-  #108/p don't inline bpf_loop call, callback non-constant FAIL
-  #109/p bpf_loop_inline and a dead func FAIL
-  #110/p bpf_loop_inline stack locations for loop vars FAIL
-  #111/p inline bpf_loop call in a big program FAIL
-  Summary: 768 PASSED, 15 SKIPPED, 6 FAILED
+commit 7b99f75942da332e3f4f865e55a10fec95a30d4f upstream.
 
-The test log shows that callbacks are not allowed in non-JITed programs,
-interpreter doesn't support them yet, thus these tests should be skipped
-if jit is disabled, just handle this case in do_test_single().
+[ small context conflict because of not backported --lang_exclude=rust
+option, which is not needed in 5.15 ]
 
-With this patch:
+v1.25 of pahole supports filtering out functions with multiple inconsistent
+function prototypes or optimized-out parameters from the BTF representation.
+These present problems because there is no additional info in BTF saying which
+inconsistent prototype matches which function instance to help guide attachment,
+and functions with optimized-out parameters can lead to incorrect assumptions
+about register contents.
 
-  [root@linux bpf]# echo 0 > /proc/sys/net/core/bpf_jit_enable
-  [root@linux bpf]# echo 0 > /proc/sys/kernel/unprivileged_bpf_disabled
-  [root@linux bpf]# ./test_verifier | grep FAIL
-  Summary: 768 PASSED, 21 SKIPPED, 0 FAILED
+So for now, filter out such functions while adding BTF representations for
+functions that have "."-suffixes (foo.isra.0) but not optimized-out parameters.
+This patch assumes that below linked changes land in pahole for v1.25.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Acked-by: Hou Tao <houtao1@huawei.com>
-Acked-by: Song Liu <song@kernel.org>
+Issues with pahole filtering being too aggressive in removing functions
+appear to be resolved now, but CI and further testing will confirm.
+
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+Link: https://lore.kernel.org/r/20230510130241.1696561-1-alan.maguire@oracle.com
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- tools/testing/selftests/bpf/test_verifier.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ scripts/pahole-flags.sh | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/test_verifier.c b/tools/testing/selftests/bpf/test_verifier.c
-index 1a09fc34d093..cf05448cfe13 100644
---- a/tools/testing/selftests/bpf/test_verifier.c
-+++ b/tools/testing/selftests/bpf/test_verifier.c
-@@ -74,6 +74,7 @@
- 		    1ULL << CAP_BPF)
- #define UNPRIV_SYSCTL "kernel/unprivileged_bpf_disabled"
- static bool unpriv_disabled = false;
-+static bool jit_disabled;
- static int skips;
- static bool verbose = false;
- static int verif_log_level = 0;
-@@ -1622,6 +1623,16 @@ static void do_test_single(struct bpf_test *test, bool unpriv,
- 	alignment_prevented_execution = 0;
+diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
+index d38fa6d84d62..5c724f697100 100755
+--- a/scripts/pahole-flags.sh
++++ b/scripts/pahole-flags.sh
+@@ -20,5 +20,8 @@ fi
+ if [ "${pahole_ver}" -ge "124" ]; then
+ 	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"
+ fi
++if [ "${pahole_ver}" -ge "125" ]; then
++	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
++fi
  
- 	if (expected_ret == ACCEPT || expected_ret == VERBOSE_ACCEPT) {
-+		if (fd_prog < 0 && saved_errno == EINVAL && jit_disabled) {
-+			for (i = 0; i < prog_len; i++, prog++) {
-+				if (!insn_is_pseudo_func(prog))
-+					continue;
-+				printf("SKIP (callbacks are not allowed in non-JITed programs)\n");
-+				skips++;
-+				goto close_fds;
-+			}
-+		}
-+
- 		if (fd_prog < 0) {
- 			printf("FAIL\nFailed to load prog '%s'!\n",
- 			       strerror(saved_errno));
-@@ -1844,6 +1855,8 @@ int main(int argc, char **argv)
- 		return EXIT_FAILURE;
- 	}
- 
-+	jit_disabled = !is_jit_enabled();
-+
- 	/* Use libbpf 1.0 API mode */
- 	libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
- 
+ echo ${extra_paholeopt}
 -- 
-2.42.0
+2.43.0
 
 
