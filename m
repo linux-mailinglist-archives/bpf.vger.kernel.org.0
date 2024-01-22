@@ -1,176 +1,170 @@
-Return-Path: <bpf+bounces-19990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8B86835B01
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 07:31:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D6D2835B2C
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 07:44:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FC75281037
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 06:31:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA99928749C
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 06:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42CD63C2F;
-	Mon, 22 Jan 2024 06:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5232A6FC6;
+	Mon, 22 Jan 2024 06:44:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Cq5jQMg4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="b/DuZuKm"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3578F9C4
-	for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 06:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E90AC8FD
+	for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 06:44:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705905060; cv=none; b=qlaf9lM5nm3ihagpM/SLj8iqtVkVSP65ZDWPyG6XDYR3jSgghfYW2uTRzLfnwjjROepqROf8v+gJlavUhIcvbGnz3W0H/gFOmBNAKxBsBkKQrpBy8pyNC4RRg2F6slUkGKeOgpwdaXKbTm0+gJimwWiYWe/uTdS7cgfms6E6gMI=
+	t=1705905850; cv=none; b=l3cSrQDuwkBuDX0fDuT2PXTCVkA/Ac34sjjSifltFVLW3KtDu2c13KSjaUOvjn0S6yhBeucuKVZ0d8LbxxRDvsAoukAQcKfTOj0N51FtRblpSaV7oK6RfpmQzK82wZ9NDZ+ieVLUPNugLg8U2RVWTSXhjOuDToaPBrIPEm2mkkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705905060; c=relaxed/simple;
-	bh=SScfUi//C5ZYNhcwl0wIXUFZfCGhL7nQm00JYt9e7N0=;
+	s=arc-20240116; t=1705905850; c=relaxed/simple;
+	bh=uhCfsj0/kIRJ6S2D2OfSX62lncPP1RbH8EQPsZyTC1I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e21uKTeoN0VbtDxwyCUb1Pd1d2dRY+8UYzLM1QZALVK9XTVDT2vp25Ta30s7LfwqfRQjE0jEbkVIB2ELebgLvUVngGQmc5wEGVdCvhmSE0bJMov6gu8hXCqv9twvCm8zdHdH3cu8pvKlqS40sqBf8EewS2CktvqMqWKtNPiPzfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Cq5jQMg4; arc=none smtp.client-ip=95.215.58.179
+	 In-Reply-To:Content-Type; b=QfjQxc7SHp/47wYxwWLSMtn5KJB1qZ6SJfz4ylRLN2KFNJuMA/wf7X+vRYU4GVNW0Mz6ny1f/+0jclppvFPopU+kOMNDwKURrhZOvMMH8XrsoDfBnBisB/WfT3lWgJJJiCaGkzCJgdoeV3ag1qW9SmSEfOkhkKWSFkqbqDGfO1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=b/DuZuKm; arc=none smtp.client-ip=95.215.58.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f227d88b-963a-4df0-a6bc-ad3b12abe6dd@linux.dev>
+Message-ID: <7fb4e5c0-3f9f-428d-80b9-a9727dd1dbd7@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705905056;
+	t=1705905846;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nytfd9cYSxIzkyb46ALEhPTR7VNtLMYQD9eRRWGEn5M=;
-	b=Cq5jQMg4ZAFODSMDK8JV6WQCwADbpvDLfmKgEX2Y0ozYYBbkUg1H49x4UX2VfSlpBADREq
-	/3pVQI0QX4ct7hXCJor0Bc7A+RRVpi4IB4UCuybNxiDK39jl9Y0asN9MfMtKYt7Vj3rnEt
-	8PWV7KEym7GDqQZlf3iTcTFJZX2cyHo=
-Date: Sun, 21 Jan 2024 22:30:47 -0800
+	bh=Hc0xT3sbjXEDdVB+rz6QMuCn/jZMiSso1kbNgT164Vw=;
+	b=b/DuZuKm7tN1IHzkEtDjnBTT7vJQPOlyM4hMeCCeZQd5oU1j+5ObG9TASRPWBDl6WtgLVu
+	PwkVuGN+EsAT9Tvo6W416cP9m9SgcHJBcXv08unFFCVbkXVA3CC90KiDCy3OMT3+1aCNSM
+	XxPOL99Z4/oQ+jAGnHxga+rLCTWLNPo=
+Date: Sun, 21 Jan 2024 22:44:01 -0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf 3/3] selftest/bpf: Test the read of vsyscall page
- under x86-64
+Subject: Re: [PATCH bpf-next] bpftool: add support for split BTF to gen
+ min_core_btf
 Content-Language: en-GB
-To: Hou Tao <houtao@huaweicloud.com>, x86@kernel.org, bpf@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>,
- Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, xingwei lee <xrivendell7@gmail.com>,
- Jann Horn <jannh@google.com>, houtao1@huawei.com
-References: <20240119073019.1528573-1-houtao@huaweicloud.com>
- <20240119073019.1528573-4-houtao@huaweicloud.com>
+To: Bryce Kahle <bryce.kahle@datadoghq.com>, bpf@vger.kernel.org
+Cc: quentin@isovalent.com, ast@kernel.org, daniel@iogearbox.net
+References: <CALvGib8483xSN1VWqxc4XN98k6Di2cNtW76UH_2Vmyft5WQpkQ@mail.gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240119073019.1528573-4-houtao@huaweicloud.com>
+In-Reply-To: <CALvGib8483xSN1VWqxc4XN98k6Di2cNtW76UH_2Vmyft5WQpkQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 1/18/24 11:30 PM, Hou Tao wrote:
-> From: Hou Tao <houtao1@huawei.com>
+On 1/19/24 1:18 PM, Bryce Kahle wrote:
+> Enables a user to generate minimized kernel module BTF.
 >
-> Using bpf_probe_read_kernel{_str}() or bpf_probe_read{_str}() to read
-> from vsyscall page under x86-64 will trigger oops, so add one test case
-> to ensure that the problem is fixed.
+> If an eBPF program probes a function within a kernel module or uses
+> types that come from a kernel module, split BTF is required. The split
+> module BTF contains only the BTF types that are unique to the module.
+> It will reference the base/vmlinux BTF types and always starts its type
+> IDs at X+1 where X is the largest type ID in the base BTF.
 >
-> Beside those four bpf helpers mentioned above, testing the read of
-> vsyscall page by using bpf_probe_read_user{_str} and
-> bpf_copy_from_user{_task}() as well.
+> Minimization allows a user to ship only the types necessary to do
+> relocations for the program(s) in the provided eBPF object file(s). A
+> minimized module BTF will still not contain vmlinux BTF types, so you
+> should always minimize the vmlinux file first, and then minimize the
+> kernel module file.
 >
-> vsyscall page could be disabled by CONFIG_LEGACY_VSYSCALL_NONE or
-> vsyscall=none boot cmd-line, but it doesn't affect the reproduce of the
-> problem and the returned error codes.
+> Example:
 >
-> Signed-off-by: Hou Tao <houtao1@huawei.com>
+> bpftool gen min_core_btf vmlinux.btf vm-min.btf prog.bpf.o
+> bpftool -B vm-min.btf gen min_core_btf mod.btf mod-min.btf prog.bpf.o
+>
+> Signed-off-by: Bryce Kahle <bryce.kahle@datadoghq.com>
 > ---
->   .../selftests/bpf/prog_tests/read_vsyscall.c  | 61 +++++++++++++++++++
->   .../selftests/bpf/progs/read_vsyscall.c       | 45 ++++++++++++++
->   2 files changed, 106 insertions(+)
->   create mode 100644 tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
->   create mode 100644 tools/testing/selftests/bpf/progs/read_vsyscall.c
+>   .../bpf/bpftool/Documentation/bpftool-gen.rst  | 18 +++++++++++++++++-
+>   tools/bpf/bpftool/gen.c                        | 17 ++++++++++++-----
+>   2 files changed, 29 insertions(+), 6 deletions(-)
 >
-> diff --git a/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-> new file mode 100644
-> index 0000000000000..d9247cc89cf3e
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/read_vsyscall.c
-> @@ -0,0 +1,61 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (C) 2024. Huawei Technologies Co., Ltd */
-> +#include "test_progs.h"
-> +#include "read_vsyscall.skel.h"
+> diff --git a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> index 5006e724d1bc..9c357d339000 100644
+> --- a/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> +++ b/tools/bpf/bpftool/Documentation/bpftool-gen.rst
+> @@ -16,7 +16,7 @@ SYNOPSIS
+>
+>    **bpftool** [*OPTIONS*] **gen** *COMMAND*
+>
+> - *OPTIONS* := { |COMMON_OPTIONS| | { **-L** | **--use-loader** } }
+> + *OPTIONS* := { |COMMON_OPTIONS| | { **-B** | **--base-btf** } | {
+> **-L** | **--use-loader** } }
+>
+>    *COMMAND* := { **object** | **skeleton** | **help** }
+>
+> @@ -202,6 +202,14 @@ OPTIONS
+>   =======
+>    .. include:: common_options.rst
+>
+> + -B, --base-btf *FILE*
+> +   Pass a base BTF object. Base BTF objects are typically used
+> +   with BTF objects for kernel modules. To avoid duplicating
+> +   all kernel symbols required by modules, BTF objects for
+> +   modules are "split", they are built incrementally on top of
+> +   the kernel (vmlinux) BTF object. So the base BTF reference
+> +   should usually point to the kernel BTF.
 > +
-> +#if defined(__x86_64__)
-> +/* For VSYSCALL_ADDR */
-> +#include <asm/vsyscall.h>
-> +#else
-> +/* To prevent build failure on non-x86 arch */
-> +#define VSYSCALL_ADDR 0UL
-> +#endif
+>    -L, --use-loader
+>      For skeletons, generate a "light" skeleton (also known as "loader"
+>      skeleton). A light skeleton contains a loader eBPF program. It does
+> @@ -444,3 +452,11 @@ ones given to min_core_btf.
+>     obj = bpf_object__open_file("one.bpf.o", &opts);
+>
+>     ...
 > +
-> +struct read_ret_desc {
-> +	const char *name;
-> +	int ret;
-> +} all_read[] = {
-> +	{ .name = "probe_read_kernel", .ret = -ERANGE },
-> +	{ .name = "probe_read_kernel_str", .ret = -ERANGE },
-> +	{ .name = "probe_read", .ret = -ERANGE },
-> +	{ .name = "probe_read_str", .ret = -ERANGE },
-> +	/* __access_ok() will fail */
-> +	{ .name = "probe_read_user", .ret = -EFAULT },
-> +	/* __access_ok() will fail */
-> +	{ .name = "probe_read_user_str", .ret = -EFAULT },
-> +	/* access_ok() will fail */
-> +	{ .name = "copy_from_user", .ret = -EFAULT },
-> +	/* both vma_lookup() and expand_stack() will fail */
-> +	{ .name = "copy_from_user_task", .ret = -EFAULT },
+> +Kernel module BTF may also be minimized by using the -B option:
+> +
+> +**$ bpftool -B 5.4.0-smaller.btf gen min_core_btf 5.4.0-module.btf
+> 5.4.0-module-smaller.btf one.bpf.o**
+> +
+> +A minimized module BTF will still not contain vmlinux BTF types, so you
+> +should always minimize the vmlinux file first, and then minimize the
+> +kernel module file.
+> diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+> index ee3ce2b8000d..634c809a5173 100644
+> --- a/tools/bpf/bpftool/gen.c
+> +++ b/tools/bpf/bpftool/gen.c
+> @@ -1630,6 +1630,7 @@ static int do_help(int argc, char **argv)
+>    "       %1$s %2$s help\n"
+>    "\n"
+>    "       " HELP_SPEC_OPTIONS " |\n"
+> + "                    {-B|--base-btf} |\n"
+>    "                    {-L|--use-loader} }\n"
+>    "",
+>    bin_name, "gen");
+> @@ -1695,14 +1696,14 @@ btfgen_new_info(const char *targ_btf_path)
+>    if (!info)
+>    return NULL;
+>
+> - info->src_btf = btf__parse(targ_btf_path, NULL);
+> + info->src_btf = btf__parse_split(targ_btf_path, base_btf);
+>    if (!info->src_btf) {
+>    err = -errno;
 
-The above comments are not clear enough. For example,
-'__access_ok() will fail', user will need to
-check the source code where __access_ok() is and
-this could be hard e.g., for probe_read_user_str().
-Another example, 'both vma_lookup() and expand_stack() will fail',
-where is vma_lookup()/expand_stack()? User needs to further
-check to make sense.
+Looks like you have formating issues here. The proper identation is gone.
 
-I suggest remove the above comments and add more
-detailed explanation in commit messages with callstack
-indicating where the fail/error return happens.
+>    p_err("failed parsing '%s' BTF file: %s", targ_btf_path, strerror(errno));
+>    goto err_out;
+>    }
+>
+> - info->marked_btf = btf__parse(targ_btf_path, NULL);
+> + info->marked_btf = btf__parse_split(targ_btf_path, base_btf);
+>    if (!info->marked_btf) {
+>    err = -errno;
+>    p_err("failed parsing '%s' BTF file: %s", targ_btf_path, strerror(errno));
 
-> +};
-> +
-> +void test_read_vsyscall(void)
-> +{
-> +	struct read_vsyscall *skel;
-> +	unsigned int i;
-> +	int err;
-> +
-> +#if !defined(__x86_64__)
-> +	test__skip();
-> +	return;
-> +#endif
-> +	skel = read_vsyscall__open_and_load();
-> +	if (!ASSERT_OK_PTR(skel, "read_vsyscall open_load"))
-> +		return;
-> +
-> +	skel->bss->target_pid = getpid();
-> +	err = read_vsyscall__attach(skel);
-> +	if (!ASSERT_EQ(err, 0, "read_vsyscall attach"))
-> +		goto out;
-> +
-> +	/* userspace may don't have vsyscall page due to LEGACY_VSYSCALL_NONE,
-> +	 * but it doesn't affect the returned error codes.
-> +	 */
-> +	skel->bss->user_ptr = (void *)VSYSCALL_ADDR;
-> +	usleep(1);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(all_read); i++)
-> +		ASSERT_EQ(skel->bss->read_ret[i], all_read[i].ret, all_read[i].name);
-> +out:
-> +	read_vsyscall__destroy(skel);
-> +}
 [...]
+
 
