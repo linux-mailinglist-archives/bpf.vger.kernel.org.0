@@ -1,107 +1,187 @@
-Return-Path: <bpf+bounces-19998-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-19999-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67A23835C39
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 09:03:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6C77835DBC
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 10:12:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BF5E284ADF
-	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 08:03:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0818B288C0C
+	for <lists+bpf@lfdr.de>; Mon, 22 Jan 2024 09:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD1D18623;
-	Mon, 22 Jan 2024 08:03:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25B453984F;
+	Mon, 22 Jan 2024 09:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CWZwPJzs"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jFVeag6W"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555A020DDB;
-	Mon, 22 Jan 2024 08:03:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D2739AC6
+	for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 09:12:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705910614; cv=none; b=IlxHtkldjL2HGVCbn8AiIR+p4OnIIZMQeSLowro0Il48Zt1Bxjf/KUKJqOZZkYBEaSr+ziScUd7VxN4qxv9T0QNujZcZB8L55HuBtVHNCsiSdme7jlSZg8egd/0NTNwYASEpYCylUX5X1ex4x6fEAz7tYp7ZX24s0WZiX2tIdZs=
+	t=1705914765; cv=none; b=Y30RVxGRjwMe+gESlbGEisHUHUbZwu+FzG9/qYqfvpBNvqMfpQYew/C3ibEjpUfi4kScJ0SOiyNWJ98q1qLWKH906pB7HAiH+gSrDlZ9dTbGmajUX0RuxS7VYfCmEYMkJISz+Pk7bnlqazhMWo+2hx1V7pys/OF07iEF5sYz/jA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705910614; c=relaxed/simple;
-	bh=EbfASx6rdYM/fLYLjwpVsRLzQ8vlWH2xIbbLy3j+3tM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OCZvwTYgK0C3RUgkw8lVe3Ida/kLxlE3dIOF/68lV9MthJih1RqpUYZ4BpoYElc56RF7YZwiAPVFEJVleA3BPQv+hDeIwCzCCvTcPPVsjCMrnNGLPEDGNymRnvLsYe8rWZ5yMcbCv3XENMN1HONMvClhQR6NWRo+qH+vuTINgy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CWZwPJzs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E5D4C433F1;
-	Mon, 22 Jan 2024 08:03:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705910613;
-	bh=EbfASx6rdYM/fLYLjwpVsRLzQ8vlWH2xIbbLy3j+3tM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CWZwPJzsmVZOgK3YChPXH5NRZmsfEKYe7IwCl4TcaM2rMBfBh9lUOj9dC4x+uJj07
-	 qVFReVHCQYJvrrhaQxmtqk32z+3Yi2djZyJgKIl6GTBpqdNmVaPQ5efLoGP7lQGsEJ
-	 gwXomJoDvULTx67btE2gFB1fKNB5ygLwnIXUh48NYA78ZEFNczHxjciWkCPR4vpkkD
-	 0XLuShj6rY2lzT+t74k5GGpFa0HJrdaC0Jpm9tCB5SRU0xJiwdLtF50ME4vWrK30k3
-	 fMAk/bZBtBcGh0dkiRO6JumTf0829Ij5ERroQfhP+P0FefNuqWSs5SpUvrjvgpCIc9
-	 MjDf//lwlZw5A==
-From: Jiri Olsa <jolsa@kernel.org>
-To: stable@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [PATCH stable 5.15] bpf: Add --skip_encoding_btf_inconsistent_proto, --btf_gen_optimized to pahole flags for v1.25
-Date: Mon, 22 Jan 2024 09:03:29 +0100
-Message-ID: <20240122080329.856574-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1705914765; c=relaxed/simple;
+	bh=+8NZkVAjHC96vpvuz759JVvziLYGwLvw1KXbIUU1Ifw=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=nk7/DP5xIxuw5jD5214cBmcUvVmqAUICYGKYHEcE98tiomCVYq57J7j576jlw1guqLBFPukwVqBcdklh4+3OloMjgXJEvScA+lZLR1kc2m8imfRxP/IkvhR8ZA5xd2f4sXkbU+u0KVQs1PnoqVZVusjdOu/7Eq95CDbgTf85slA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jFVeag6W; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ardb.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5ff84361ac3so48985337b3.1
+        for <bpf@vger.kernel.org>; Mon, 22 Jan 2024 01:12:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705914763; x=1706519563; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ea19sCEL6xgQZE8T1J3CxwQSa9lih2SSx5JLzIENUFI=;
+        b=jFVeag6WsJchA4MzP1DBhVJiwzgomHr0Hp9HDFrkbCxBIVxhj3NAASBsuFZRLcaVAV
+         F+mKiPtW2SeY1BQQqPIHzpJ0NpLW4tRnvXxbTj9s9d9yElL3BBY46tPeWNQz/RSK5+60
+         GVbgfRTDKcLuZwAMbumtzXBnAw2p/ht2/nye2oxnh/uACLViOOXK/lviQzQSNaA23s7p
+         CsfPnFB6f1ETLtBE7keIjrQFnEuAZd5BB24Kjit1tWGuXHqfhH/ecUYKUp7hRgqF0unn
+         Klzi7qmizCFSIdWEIhAxza2OTLf5hItkuRrB/A7TY7/eSI7skbSR4FSZOujq0idjZikW
+         YCeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705914763; x=1706519563;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ea19sCEL6xgQZE8T1J3CxwQSa9lih2SSx5JLzIENUFI=;
+        b=Smf1v0GzOXiqwu679RAmDqTiYlfzUYhO2p3U9OwOStGXX0XzOijn9Fu5ZTJq7xy0m0
+         jNRz9fs0bh7a84zf+UyQy6d8j9i6yqCHHrSk+0XHk82x6J3KqgXrOhJ20xVj16jjlAB7
+         viDmFYNppzcV1s2EyOK36uzTico4BKO/HcSVJt9WbokQH9k1IC40toGF9Uz82kyv65/E
+         IcN7Qp02DPKEqyVwXGraOKPc/3lLKXarmWh31gXMaLCyUANPE6KafkDaT3NfHFYQKA6o
+         LAXH7htI2YSRt9BYqg17KvdQAYI/YEV9rbGzEBa2UnYuEjd4pwQlug45liZVXy3hTVM3
+         G02g==
+X-Gm-Message-State: AOJu0YzglikFwQUplevuRg2rbKsZZoLwvXC3ageK0XEOpQZNkYoPggS5
+	NjseVS5n0fJAxJveAFzWJk8D4ov0mlwtWjjI0fgXDcNc6fijb9i+t67O+hTAEh2eD4C9Yg==
+X-Google-Smtp-Source: AGHT+IHHVJRyNmbX+T5omGh+241N4QnApogLAF/dX0Xt/Hc3Ga51fWxEHjLNZeYMHvdJvCh7gpZ+lp/5
+X-Received: from palermo.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:118a])
+ (user=ardb job=sendgmr) by 2002:a0d:d44d:0:b0:5f0:92a1:18b2 with SMTP id
+ w74-20020a0dd44d000000b005f092a118b2mr2271140ywd.2.1705914763174; Mon, 22 Jan
+ 2024 01:12:43 -0800 (PST)
+Date: Mon, 22 Jan 2024 10:08:52 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Developer-Key: i=ardb@kernel.org; a=openpgp; fpr=F43D03328115A198C90016883D200E9CA6329909
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3870; i=ardb@kernel.org;
+ h=from:subject; bh=dFHNAEG19z4Lmd37LarwGh98lLslGrVHWSybun0HPdA=;
+ b=owGbwMvMwCFmkMcZplerG8N4Wi2JIXWdwZKzFvHyjLMzXTcxOf9ZUPMychWTzv+M+KSPnP131
+ 7yxvaXXUcrCIMbBICumyCIw+++7nacnStU6z5KFmcPKBDKEgYtTACZyvYSR4eYL0zz7x87vfNaw
+ f+w+cXLfliPyEWk/vFnt36oxnVW0N2VkeN4zN+K+/KQCFjtJ6zuLLede4GXmkap2UuxbIjO79n8 SGwA=
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240122090851.851120-7-ardb+git@google.com>
+Subject: [RFC PATCH 0/5] x86: Build the core kernel using PIC codegen
+From: Ard Biesheuvel <ardb+git@google.com>
+To: linux-kernel@vger.kernel.org
+Cc: Ard Biesheuvel <ardb@kernel.org>, Kevin Loughlin <kevinloughlin@google.com>, 
+	Tom Lendacky <thomas.lendacky@amd.com>, Dionna Glaze <dionnaglaze@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Nathan Chancellor <nathan@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>, 
+	Justin Stitt <justinstitt@google.com>, linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-From: Alan Maguire <alan.maguire@oracle.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 7b99f75942da332e3f4f865e55a10fec95a30d4f upstream.
+Originally, only arch/x86/kernel/head64.c had some code that required
+special care because it executes very early from the 1:1 mapping of the
+kernel rather than the ordinary kernel virtual mapping.
 
-[ small context conflict because of not backported --lang_exclude=rust
-option, which is not needed in 5.15 ]
+This is no longer the case, and there is a lot of SEV related code that
+is reachable from the primary startup path, with no guarantees that the
+toolchain will produce code that runs correctly. This is especially
+problematic when it comes to things like string literals, which are
+emitted by the compiler as data objects, and subsequently referenced via
+an absolute address that is not mapped yet this early in the boot [0].
 
-v1.25 of pahole supports filtering out functions with multiple inconsistent
-function prototypes or optimized-out parameters from the BTF representation.
-These present problems because there is no additional info in BTF saying which
-inconsistent prototype matches which function instance to help guide attachment,
-and functions with optimized-out parameters can lead to incorrect assumptions
-about register contents.
+Kevin has been looking into failures resulting from the fact that Clang
+behaves slightly differently from GCC in this regard, by selectively
+applying PIC codegen to the objects in question. However, while this
+fixes the observed issues, it does not offer any guarantees, given that
+the set of reachable code from startup_64() does not appear to be
+bounded when running on SEV hardware.
 
-So for now, filter out such functions while adding BTF representations for
-functions that have "."-suffixes (foo.isra.0) but not optimized-out parameters.
-This patch assumes that below linked changes land in pahole for v1.25.
+Instead of applying this change piecemeal to objects that happen to have
+caused issues in the past, this series convert the core kernel to PIC
+codegen entirely.
 
-Issues with pahole filtering being too aggressive in removing functions
-appear to be resolved now, but CI and further testing will confirm.
-
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Link: https://lore.kernel.org/r/20230510130241.1696561-1-alan.maguire@oracle.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- scripts/pahole-flags.sh | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/scripts/pahole-flags.sh b/scripts/pahole-flags.sh
-index d38fa6d84d62..5c724f697100 100755
---- a/scripts/pahole-flags.sh
-+++ b/scripts/pahole-flags.sh
-@@ -20,5 +20,8 @@ fi
- if [ "${pahole_ver}" -ge "124" ]; then
- 	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_enum64"
- fi
-+if [ "${pahole_ver}" -ge "125" ]; then
-+	extra_paholeopt="${extra_paholeopt} --skip_encoding_btf_inconsistent_proto --btf_gen_optimized"
-+fi
+Note that this does not entirely solve the problem of the unbounded set
+of reachable code from the early SEV entrypoint: there might be code
+that attempts to access global objects via their kernel virtual address
+(which is not mapped yet). But at least all implicit accesses will be
+made via the same translation that the code is running from.
  
- echo ${extra_paholeopt}
--- 
-2.43.0
+This does result in a slight increase in code size (see below) but it
+also reduces the size of the KASLR relocation table (applied by the
+decompressor) by roughly half.
 
+
+Before
+
+$ size -x vmlinux
+   text	   data	    bss	    dec	    hex	filename
+0x1b78ec1	0xdde145	0x381000	47022086	2cd8006	vmlinux
+
+After
+
+$ size -x vmlinux
+   text	   data	    bss	    dec	    hex	filename
+0x1b8371b	0xde0d1d	0x370000	47006776	2cd4438	vmlinux
+
+
+[0] arch/x86/mm/mem_encrypt_identity.c has some nice examples of this,
+    where RIP-relative references are emitted using inline asm.
+
+[1] https://lkml.kernel.org/r/20240111223650.3502633-1-kevinloughlin%40google.com
+
+Cc: Kevin Loughlin <kevinloughlin@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Dionna Glaze <dionnaglaze@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Justin Stitt <justinstitt@google.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arch@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Cc: llvm@lists.linux.dev
+
+Ard Biesheuvel (5):
+  kallsyms: Avoid weak references for kallsyms symbols
+  vmlinux: Avoid weak reference to notes section
+  btf: Avoid weak external references
+  x86/head64: Replace pointer fixups with PIE codegen
+  x86: Build the core kernel with position independent codegen
+
+ arch/x86/Makefile                 |  18 ++-
+ arch/x86/boot/compressed/Makefile |   2 +-
+ arch/x86/entry/vdso/Makefile      |   2 +-
+ arch/x86/include/asm/init.h       |   2 -
+ arch/x86/include/asm/setup.h      |   2 +-
+ arch/x86/kernel/head64.c          | 117 +++++++-------------
+ arch/x86/realmode/rm/Makefile     |   1 +
+ include/asm-generic/vmlinux.lds.h |  23 ++++
+ kernel/bpf/btf.c                  |   4 +-
+ kernel/kallsyms.c                 |   6 -
+ kernel/kallsyms_internal.h        |  30 ++---
+ kernel/ksysfs.c                   |   4 +-
+ lib/buildid.c                     |   4 +-
+ 13 files changed, 104 insertions(+), 111 deletions(-)
+
+-- 
+2.43.0.429.g432eaa2c6b-goog
 
