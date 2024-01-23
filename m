@@ -1,93 +1,137 @@
-Return-Path: <bpf+bounces-20092-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20093-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37D20839126
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 15:18:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB65F8392A8
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 16:27:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C05BE1F237E9
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 14:18:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DD121F242B0
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 15:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF1B5F858;
-	Tue, 23 Jan 2024 14:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5FE55FDCB;
+	Tue, 23 Jan 2024 15:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="XDzZJJKa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ASWrNdU0"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D065DF0E
-	for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 14:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 063C35EE98
+	for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 15:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706019502; cv=none; b=tPxgw68KT2GKNJwoOmk/6ChDMAzFf346WBQxDYX8ZEQiGFKkQDP5lUofwafaZMOudhQa9/hsYpathNl8Tf3Q206Ad267uXLuEFh508IdCyLD0oN+u5iovHm+55pE3jxXL/7Rj/FWPMD7sxP3yIEOFVJfAT2mNd4K9DYCcHjisgY=
+	t=1706023666; cv=none; b=tUBDP6yfQ0/GqXUMxMroOSPwReTF7IyvCSKdBcj4BitzbjL+E3/Ni0x26/HeOwTOcstJGhKK/yfzQoPfNlgTDXL2dZiDXKbXClyhQVFi9G5W3oCyFjFq3B8qgdcWbp1Dd4LwfSC8Xd3/TLnCWLx5Cjr60LO5dhvLREqQ9N46lbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706019502; c=relaxed/simple;
-	bh=ffS+ScPCeVez6OL4+Ej9718Md/hM533j2EunQLhRix4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=f0iGPSzW9F096QYgMZv9xLK/a1pJmCGBv6sBEjgMutNdN/nIsGEDhX0x7O7HJKgGvt6ToacizQTOWsrEOQrERYObZnmu+owm6j0qwdSv9fwuBIYMMAu78Xb/NRMLz/OJCLf8iQn5rxKRbUalRlgIS8q7F8bFiTbPO54ULT7EATs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=XDzZJJKa; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=+mBezMCsio4vF2SPyvg+RD4LxCVT05dQgGMQuQ/EL7c=; b=XDzZJJKajJNwulUDnHDMrb4FqV
-	hqvelF/6vI1jFqySzz6kcfDHW02pNEtCC8YPILrpjIGY2NA2Srb50UVXF1cKFbX10atutedEkbPuD
-	aYrLj1BW0MnJcg0wmhg4U14D4vtvPL20yQWsUJU/XPZn7KIJyPirhwGj8D9xcLHtn++41Sc742yHO
-	H7EeQPtMYQWrpimF9C4sKfHsOaUYeF0Mv20kx73P/T0E6naoBncxpjEWekSjsBJ3tVl9HRX7hP6cP
-	mycnD/LVdvFg9WVS0Mg3xQH2B7V8F3x8/ETlfp78j1yxC4y+uIfVPkuQLD6xPNYaayX8n0ijjAyGa
-	tdLLrEjQ==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rSHbT-000Lvz-BW; Tue, 23 Jan 2024 15:18:15 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rSHbT-000Y2B-2l; Tue, 23 Jan 2024 15:18:15 +0100
-Subject: Re: [bug report] bpf: Add fd-based tcx multi-prog infra with link
- support
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, bpf@vger.kernel.org,
- Mathias Krause <minipli@grsecurity.net>
-References: <c46a511a-0335-44f5-b6ae-6ad71d6ef012@moroto.mountain>
- <d31ca459-5fcf-9e88-03dc-42e9fc10028a@iogearbox.net>
- <c900b111-d0ee-4663-8adb-479e4eb90f3e@moroto.mountain>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <faa5f64d-8320-8dc2-89bf-b5cfc4c3b2a6@iogearbox.net>
-Date: Tue, 23 Jan 2024 15:18:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1706023666; c=relaxed/simple;
+	bh=wt4e3Q23CWOJh2gHtLHk2i/IscjaQZx7YNaT/Pnys6g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WfECYwCT5BEYGwiAW2qUNfWPvez/nZMfcnF60Ct+qn+yaEGYy8tsPssRPFJWsFL4iabCQ8/rZvPhpKtDn+7MzcbmPti231RP/FPerYudc20zcxqksgojm4aGdVgqMkgyLJdXa/WZk2SpEws0b5pZEZOTFQiqwSDKRVb6ZgN/0DI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ASWrNdU0; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6db9e52bbccso2639303b3a.3
+        for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 07:27:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706023664; x=1706628464; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gXSfeoTGdgo+Urdtz7d3jF29Hy+v10mJfuOWrpz2bBs=;
+        b=ASWrNdU09cI13vKEGraKARXUNRdZGvgvL1UPHH6JoXvkeWdXtYIPACOSZbJw15wVMJ
+         +vmxjJje4IRjgzprXXYFLgMe9absCitIaMSD8oCeU6ducNs9s0Tm4q1LinxIO8UZsJuH
+         kLzbKqhahJsFQX4Eu2M4jIc1+UP7v0THh6v1jw1S3/gp/wa/vzBSrj3naOS6IN3RDT7l
+         aWhkxEZEFvM1FPCnriBjD94vxw9elOM/eFyzdzUfOqQopwk2P+lg8xghwTFMvokxeC2S
+         ab+EpUpXNJcsNB0gmX5QvqCu632nwxLET+aWRn5nFkh86yLqPa4LnfduiDqjBiofATRp
+         kIdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706023664; x=1706628464;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gXSfeoTGdgo+Urdtz7d3jF29Hy+v10mJfuOWrpz2bBs=;
+        b=qDKyrIe6fOEg+nZDSTQVe8LUDzxi3qcDRz6xvgweiRL+SOvjivQYBwslI2cAJNLusT
+         hIZjiz0YKYdvP5zbZB+rXWNO33HQGsPWfPe2artABqCJ66SJplXQBojh8j747hTLTGVk
+         DAV4UoXZHnS6pkYISjQROCYPfPTXEMsG+C8HhUD7nOVZZ+XMPiG204aoxv/coZ/em5bh
+         mYRVLdFFRy4xEjbx1Q9qcmsFZ/EBGmPI1wxylwuTKMOx1yWRfid2jFO1HDdJD8HL0iHv
+         WIT6MdJno/KS2w9rzwVW+A0zjsYeScEq3SMcYWREkh4b2WSr+BP0skcK3EUHfli/6MXg
+         GYuA==
+X-Gm-Message-State: AOJu0YygoNVA1x3s9Ayw2wZAo6osv3bDDpK16SyQaqydncdlyjnTXxmR
+	4/iJAlyEWH4HBZwGl/6XWcJMlKPHmmW9LaXL8AFIDm+xcDXmYvNJ
+X-Google-Smtp-Source: AGHT+IGHo3w6Ar8ifgV1OWBQrbY2HfNJUjqV/3GrpnfV1Y+n1gZHY/wWl37rygvJHjIgP9uQ9SfQ0Q==
+X-Received: by 2002:a05:6a00:1901:b0:6db:d589:1d62 with SMTP id y1-20020a056a00190100b006dbd5891d62mr3486127pfi.7.1706023664227;
+        Tue, 23 Jan 2024 07:27:44 -0800 (PST)
+Received: from localhost.localdomain ([183.193.176.90])
+        by smtp.gmail.com with ESMTPSA id s125-20020a625e83000000b006dae5e8a79asm12264233pfb.33.2024.01.23.07.27.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Jan 2024 07:27:43 -0800 (PST)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	tj@kernel.org
+Cc: bpf@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v4 bpf-next 0/3] bpf: Add bpf_iter_cpumask
+Date: Tue, 23 Jan 2024 23:27:13 +0800
+Message-Id: <20240123152716.5975-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <c900b111-d0ee-4663-8adb-479e4eb90f3e@moroto.mountain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27163/Tue Jan 23 10:42:11 2024)
+Content-Transfer-Encoding: 8bit
 
-On 1/23/24 3:01 PM, Dan Carpenter wrote:
-> Thanks Daniel.
-> 
-> Ugh...  This was such a stupid false positive on my part.  I have fixed
-> the check.  The drivers/hid/bpf/hid_bpf_dispatch.c warning is different
-> and still triggers.
+Three new kfuncs, namely bpf_iter_cpumask_{new,next,destroy}, have been
+added for the new bpf_iter_cpumask functionality. These kfuncs enable the
+iteration of percpu data, such as runqueues, system_group_pcpu, and more.
 
-No worries, it's always good to double check either way, and thanks for spotting
-the other one in hid!
+In our specific use case, we leverage the cgroup iterator to traverse
+percpu data, subsequently exposing it to userspace through a seq file.
+Refer to the test cases in patch #2 for further context and examples.
 
-Cheers,
-Daniel
+Changes:
+- v3 -> v4:
+  - Use a copy of cpumask to avoid potential use-after-free (Yonghong)
+  - Various code improvement in selftests (Yonghong)
+- v2 -> v3:
+  - Define KF_RCU_PROTECTED for bpf_iter_cpumask_new (Alexei)
+  - Code improvement in selftests
+  - Fix build error in selftest due to CONFIG_PSI=n
+    reported by kernel test robot <lkp@intel.com>
+- v1 -> v2: 
+  - Avoid changing cgroup subsystem (Tejun)
+  - Remove bpf_cpumask_set_from_pid(), and use bpf_cpumask_copy()
+    instead (Tejun)
+  - Use `int cpu;` field in bpf_iter_cpumask_kern (Andrii)
+- bpf: Add new bpf helper bpf_for_each_cpu
+  https://lwn.net/ml/bpf/20230801142912.55078-1-laoar.shao@gmail.com/
+
+Yafang Shao (3):
+  bpf: Add bpf_iter_cpumask kfuncs
+  bpf, doc: Add document for cpumask iter
+  selftests/bpf: Add selftests for cpumask iter
+
+ Documentation/bpf/cpumasks.rst                |  17 +++
+ kernel/bpf/cpumask.c                          |  82 +++++++++++
+ tools/testing/selftests/bpf/config            |   1 +
+ .../selftests/bpf/prog_tests/cpumask_iter.c   | 130 ++++++++++++++++++
+ .../selftests/bpf/progs/cpumask_common.h      |   3 +
+ .../selftests/bpf/progs/test_cpumask_iter.c   |  56 ++++++++
+ 6 files changed, 289 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cpumask_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cpumask_iter.c
+
+-- 
+2.39.1
+
 
