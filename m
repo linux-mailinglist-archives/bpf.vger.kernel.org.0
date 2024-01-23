@@ -1,178 +1,201 @@
-Return-Path: <bpf+bounces-20088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20090-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9899183907F
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 14:53:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDFD8390B3
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 15:00:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28BBF1F22A79
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 13:53:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D48DF1F21DEB
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 14:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB595FBB7;
-	Tue, 23 Jan 2024 13:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674CC5F853;
+	Tue, 23 Jan 2024 14:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IboYbwOi";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Kko701xO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gM8ngd9h"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D859D5F565;
-	Tue, 23 Jan 2024 13:52:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6681A5F84C
+	for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 14:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706017972; cv=none; b=P4jPLMZeRsvl+gluesFuCvXrkGPyTDTnuJo+oxhFg8u215qlBdte5iYrLkLIsF7Y5rvqAgAcd6jMWk6HjA591kgJjbnopP71enIp4BJyo+fSg6mK1iPXQ0FwNculpPcUxFjxPVLwasTzAwT66/AhWZ6lhxzcZS8R3wuvIyzp+HI=
+	t=1706018409; cv=none; b=Uc036vPY7649N+zxSVTfQVBQvulmv265iN2JgHPQ7xuz8Rd/4AAT43+jWF3dNx5P1SHI7j0BPj/XmHUIjb6Agf/M0/I7Rdia/90aQJQEOBpPDYwTrB3ho2z4gs0NMxVDO8aaj2FdOvMaLYoPPEvshxQ+D6DAEEfxYvS8aGgLcZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706017972; c=relaxed/simple;
-	bh=pISfP3Hzv5P7bazKFw8x24gFRtSxfRqfs11zSQ5Dbys=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gfywlABQO+5rtjm5fmJjNQyoRAZzVDbx5Pv/O3XwB+kEas1sGG48EdjfgqMiEtk6cangY+lfDKwAimzM4GvVKwAJu5cAU4p5T4G+pibTyl0VUQR0aJ2MlRvvaeeFdTZuNe+f61rKzO/bc2JuIx+LVGSVO9QaYJ9tRTLt0xt7KN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IboYbwOi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Kko701xO; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 22DEC1FD52;
-	Tue, 23 Jan 2024 13:52:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706017968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1706018409; c=relaxed/simple;
+	bh=jAdOEmsF97iKzLAoD7TXc795S/y+QOHp138fJpVqCJc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oUCCC7p3BESZ69H5X1NehJ8zDjQaqKBnuUiuGZ/J78yRvsknLSFulDZvMDbWvf0b9zzmjpu0pJ20n8Yc3bei1YZh8YifNtcguZTQkMUAsk9qLNcUy93CDqT7Vk1FWlaMkBVuyMWd9o0hT4Mg8C/+TvB8TVreHNO5rLYAx7Btd3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gM8ngd9h; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706018406;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IUKCAfTVoUrxB4zijGrDV9tJzwRsfCTR6KHiqfmXiK8=;
-	b=IboYbwOiqlbaX2wd0HmSqCbYgYrOKSDteGasFw296lSHkEyhATr/cH9zoRtqXElPiGxbnR
-	HxfNiJztorKYwBEJVT7yUSaSpkc9OlVcIU3hEEogrevpfSOJ3zHkMrxkVzRqlKuxR9qNdQ
-	RuaXoz0uAlp40FjCZCgIpHdkvQ8jt9k=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706017967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IUKCAfTVoUrxB4zijGrDV9tJzwRsfCTR6KHiqfmXiK8=;
-	b=Kko701xOZnUWqfDnlanF9u3rpQaVvN8IRdddv5a6v07dZ/hUHjSJS0D6Bjwno5Ui+ppHgb
-	osLwB01sY//O1VtfadNso6aoj9X5Fk+0R+egC/CyYSt040mF+sLFqYf5bMLssnnldLmVQl
-	0ARVwqFMvYvdbf8Xzb9sSXOMj0FxLz8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 04C62139B9;
-	Tue, 23 Jan 2024 13:52:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8KICAa/Er2UMVwAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Tue, 23 Jan 2024 13:52:47 +0000
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	cake@lists.bufferbloat.net
-Cc: "David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Jiri Pirko <jiri@resnulli.us>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	Stephen Hemminger <stephen@networkplumber.org>,
-	Petr Pavlu <ppavlu@suse.cz>,
-	Michal Kubecek <mkubecek@suse.cz>,
-	Martin Wilck <mwilck@suse.com>,
-	Pedro Tammela <pctammela@mojatatu.com>
-Subject: [PATCH v4 4/4] net/sched: Remove alias of sch_clsact
-Date: Tue, 23 Jan 2024 14:52:42 +0100
-Message-ID: <20240123135242.11430-5-mkoutny@suse.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240123135242.11430-1-mkoutny@suse.com>
-References: <20240123135242.11430-1-mkoutny@suse.com>
+	bh=6ljv/X7uYbbsqV2Uor8Gra6l6cjIKTAhCsOzrjLB+io=;
+	b=gM8ngd9h8RonTzkTqc8b3coU/2VW1RJNoa53PPgWqsGP8H/LIPNJl8E7SGceqLHDadIngX
+	V4trKO4VJqnNY4GFR8DP8F/Qv9JwjO9K0d7/f4PXLglFWJ9c3GamHFhjKIb8NFLxHbJztR
+	fkdpoBrM9FXiFgJ8PFlHip8KIzOk3ao=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-37-MN1uDnc9ODa6MEPxwLFbUg-1; Tue, 23 Jan 2024 09:00:05 -0500
+X-MC-Unique: MN1uDnc9ODa6MEPxwLFbUg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a2cb0d70d6cso193608266b.2
+        for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 06:00:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706018403; x=1706623203;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6ljv/X7uYbbsqV2Uor8Gra6l6cjIKTAhCsOzrjLB+io=;
+        b=baoPkv/o2E7FLzM9ApuCm3jETUELcPi2Ufs401fOYoQ5f17+HnAKctGxGttFCDByWg
+         tIYWeESJ0xmnMWoXyBV2IOwpOFzEgUYwlkidvjt5pKPjgvmEarzUXPrC7IgHFAHfLBMJ
+         GF+H8tvC19FWJfwTt1zqFVn6gOgVxOYGKcs540zD2e2fU3Jta2gA9rlIBRxHy9GhL6zX
+         Uv05yd7KQudwuc6AMbfGBt+TwjQNX7hEOHi+P+g29uNOW37+A+ArOavVt7GuLow/L4en
+         /1FyZd8Y077UnaXEXlyBczz/WUHRj1R9EZQo5q3MLr2UsAwAn+8/XIY3cS0uA0aESnBC
+         iydg==
+X-Gm-Message-State: AOJu0Yzd1FlwUpvalRVzSGTpsvl84Mnr4bbntUUYIHkEgSQ6+wDP/8ue
+	8VVlg2QFtGVPp5792i1WPsBarw7pqzheEPwWrUfkhwAfHcDFGTW+0BGyWQZn6v/xwshyCOchPOW
+	shEePFrLTUrdqVNSO8VyknIWTx1E44FeSi6EAJmxrDTMcLJrC8uopdFswGO40NorB5Gt7TkjNY7
+	PG5It2eeDkqRcGwWwHA0BpOPZmYa99xOMUwiw=
+X-Received: by 2002:a17:907:c207:b0:a30:1084:5a99 with SMTP id ti7-20020a170907c20700b00a3010845a99mr2019173ejc.95.1706018403333;
+        Tue, 23 Jan 2024 06:00:03 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE0Sp2H2I93EczvNszOSEBjw8WNNNIMuLtMz6TKwolFSbbbGG1yaPmrMoLsi2wuo8cVTLByzphCgtgz8G3pJUc=
+X-Received: by 2002:a17:907:c207:b0:a30:1084:5a99 with SMTP id
+ ti7-20020a170907c20700b00a3010845a99mr2019162ejc.95.1706018403037; Tue, 23
+ Jan 2024 06:00:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Kko701xO
-X-Spamd-Result: default: False [2.02 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	 R_RATELIMIT(0.00)[to_ip_from(RLhcw5w5rtick65589d1tggrs1)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.17)[69.66%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[29];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 2.02
-X-Rspamd-Queue-Id: 22DEC1FD52
-X-Spam-Level: **
-X-Spam-Flag: NO
-X-Spamd-Bar: ++
+References: <c46a511a-0335-44f5-b6ae-6ad71d6ef012@moroto.mountain>
+In-Reply-To: <c46a511a-0335-44f5-b6ae-6ad71d6ef012@moroto.mountain>
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Tue, 23 Jan 2024 14:59:51 +0100
+Message-ID: <CAO-hwJJ8vh8JD3-P43L-_CLNmPx0hWj44aom0O838vfP4=_1CA@mail.gmail.com>
+Subject: Re: [bug report] bpf: Add fd-based tcx multi-prog infra with link support
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: daniel@iogearbox.net, bpf@vger.kernel.org, 
+	Mathias Krause <minipli@grsecurity.net>, Jiri Kosina <jikos@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The module sch_ingress stands out among net/sched modules
-because it provides multiple act/sch functionalities in a single .ko.
-They have aliases to make autoloading work for any of the provided
-functionalities.
+Hi Dan,
 
-Since the autoloading was changed to uniformly request any functionality
-under its alias, the non-systemic aliases can be removed now (i.e.
-assuming the alias were only used to ensure autoloading).
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- net/sched/sch_ingress.c | 1 -
- 1 file changed, 1 deletion(-)
+On Tue, Jan 23, 2024 at 11:44=E2=80=AFAM Dan Carpenter <dan.carpenter@linar=
+o.org> wrote:
+>
+> Hello Daniel Borkmann and Benjamin Tissoires,
+>
+> I've included both warnings because they're sort of related and
+> hopefully it will save time to have this discussion in one thread.  I
+> recently added fdget() to my Smatch check for CVE-2023-1838 type
+> warnings and it generated the following output.  I'm not an expert on
+> this stuff, I'm just a monkey see, monkey do programmer.  I've filtered
+> out the obvious false positives but I'm not sure about these.
+>
+> The patch e420bed02507: "bpf: Add fd-based tcx multi-prog infra with
+> link support" from Jul 19, 2023 and f5c27da4e3c8 ("HID: initial BPF
+> implementation") from Nov 3, 2022 introduce the following static
+> checker warnings:
 
-diff --git a/net/sched/sch_ingress.c b/net/sched/sch_ingress.c
-index 48a800131e99..c2ef9dcf91d2 100644
---- a/net/sched/sch_ingress.c
-+++ b/net/sched/sch_ingress.c
-@@ -370,6 +370,5 @@ static void __exit ingress_module_exit(void)
- module_init(ingress_module_init);
- module_exit(ingress_module_exit);
- 
--MODULE_ALIAS("sch_clsact");
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Ingress and clsact based ingress and egress qdiscs");
--- 
-2.43.0
+Not sure why e420bed02507 would introduce the warning in HID-BPF. The
+double fget() you analyzed was present before that commit.
+
+>
+> drivers/hid/bpf/hid_bpf_dispatch.c:287 hid_bpf_attach_prog() warn: double=
+ fget(): 'prog_fd'
+> drivers/hid/bpf/hid_bpf_jmp_table.c:427 __hid_bpf_attach_prog() warn: fd =
+re-used after fget(): 'prog_fd'
+> kernel/bpf/syscall.c:3985 bpf_prog_detach() warn: double fget(): 'attr->a=
+ttach_bpf_fd'
+> kernel/bpf/syscall.c:3988 bpf_prog_detach() warn: double fget(): 'attr->a=
+ttach_bpf_fd'
+> kernel/bpf/syscall.c:3991 bpf_prog_detach() warn: double fget(): 'attr->a=
+ttach_bpf_fd'
+> kernel/bpf/syscall.c:4001 bpf_prog_detach() warn: double fget(): 'attr->a=
+ttach_bpf_fd'
+>
+> drivers/hid/bpf/hid_bpf_dispatch.c
+>    256  noinline int
+>    257  hid_bpf_attach_prog(unsigned int hid_id, int prog_fd, __u32 flags=
+)
+>    258  {
+>    259          struct hid_device *hdev;
+>    260          struct device *dev;
+>    261          int fd, err, prog_type =3D hid_bpf_get_prog_attach_type(p=
+rog_fd);
+>                                                                       ^^^=
+^^^^
+> fdget() here
+>
+>    262
+>    263          if (!hid_bpf_ops)
+>    264                  return -EINVAL;
+>    265
+>    266          if (prog_type < 0)
+>    267                  return prog_type;
+>    268
+>    269          if (prog_type >=3D HID_BPF_PROG_TYPE_MAX)
+>
+> We're doing checks to ensure that prog_type is correct
+>
+>    270                  return -EINVAL;
+>    271
+>    272          if ((flags & ~HID_BPF_FLAG_MASK))
+>    273                  return -EINVAL;
+>    274
+>    275          dev =3D bus_find_device(hid_bpf_ops->bus_type, NULL, &hid=
+_id, device_match_id);
+>    276          if (!dev)
+>    277                  return -EINVAL;
+>    278
+>    279          hdev =3D to_hid_device(dev);
+>    280
+>    281          if (prog_type =3D=3D HID_BPF_PROG_TYPE_DEVICE_EVENT) {
+>    282                  err =3D hid_bpf_allocate_event_data(hdev);
+>    283                  if (err)
+>    284                          return err;
+>    285          }
+>    286
+>    287          fd =3D __hid_bpf_attach_prog(hdev, prog_type, prog_fd, fl=
+ags);
+>                                                             ^^^^^^^
+> But then we look it up again so it's not necessarily the same file.
+
+Right. I did not want to have a too complex error code path there and
+so I did not keep a fget() around :(
+
+And I did not think this would be an attack vector (even if I have a
+hard time getting how this could be used).
+
+I'll send a patch later today to fix this.
+
+>
+>    288          if (fd < 0)
+>    289                  return fd;
+>    290
+>    291          if (prog_type =3D=3D HID_BPF_PROG_TYPE_RDESC_FIXUP) {
+>    292                  err =3D hid_bpf_reconnect(hdev);
+>    293                  if (err) {
+>    294                          close_fd(fd);
+>    295                          return err;
+>    296                  }
+>    297          }
+>    298
+>    299          return fd;
+>    300  }
+
+Cheers,
+Benjamin
 
 
