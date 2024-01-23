@@ -1,82 +1,50 @@
-Return-Path: <bpf+bounces-20138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC194839C5C
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 23:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F1F8839C6E
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 23:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D04051C26BDF
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 22:36:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B28011C2712D
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 22:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B69754BD1;
-	Tue, 23 Jan 2024 22:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AF453E11;
+	Tue, 23 Jan 2024 22:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mARSm+/X"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ID5Mj2TG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9245A54673;
-	Tue, 23 Jan 2024 22:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D905753815;
+	Tue, 23 Jan 2024 22:41:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706049387; cv=none; b=RuA++h0MF/ogokt1BtWhbXaO2IFipG6hwz4g/Ctoqkk0RlyGJ8ytDBv/OmNfEg/7/Hk5PHTQX5YSCDFqW1Xjk+aQHghLHLVBvzR8BTmvbQnXSBIJxtb7bXlDhQh0XSHekqwqNCiLfZQdv5H4//sgr0ocKQVbg4JME3DmiGNZcp4=
+	t=1706049681; cv=none; b=T6kMKeS8Dy+rUFtzJ7nja9MmjEYEfhd9duNv+OtyZb1U8o81euStghAnL70/mFDfPDsiJ0PdiJe/4/MS3R0fa1nAw69AM1R1oDaTZgF6ya7ZF95mjcnjLfVPDL5YFUXOB5LeSuvEdIpG2N5p9WTA9E5nw7F4q4iUpj21YVhJGso=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706049387; c=relaxed/simple;
-	bh=On0QlHaF09Uyj7/AoUsVsIOpy1PzAJx4etnXBVkU+oo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=f0zSt5Vx/xoMoiEbJ8gvzGQ8FdrBU0mr5D4IPd3k0mJ92LWvcjZhsfLTGDIPvHHF6oc5NpH8IBfFuYXObRL8XjBqj1+zlMBhI9lxDZ5HMeMFJjynmQpEUvDU1/4AR/U6aVn90i1xVobj9h1BgL8s5UF/0hMxCZWifDeNC3EqnU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mARSm+/X; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d6ff29293dso32426785ad.0;
-        Tue, 23 Jan 2024 14:36:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706049384; x=1706654184; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3/Yjct9w9OwNW7EA63W+TU6+iZOg/M5pr/hq6Il+TEo=;
-        b=mARSm+/X7uZ2sdKdj2UajPqrY8i2pfmn2EOq/RZAOEESsPiprUkWe3kJuZIctBvGLy
-         0wCMVmINkvkO/HQ9Tub0sG1dkahabneVfKGzHP4ACLrGAhPGM0HiSvMZ4XUTLdRMvNCl
-         XNrpYF1kFn6F4IR/B9ruWYAeXZKAGjEVegYYjECcbwUAV6aDbfecro0vf7PvJ65Q39iO
-         3hs6KUT9KlFV6tJchOtBBF8NtzjSmzNTHCOMK7PLRg/5TCZ3AB5ZsOllK1UflMGkO2eY
-         ySs99/GjqAoxz+sCREyP11wbl9ed21Mi8NRxNgtGXs3JMxkxiqXyOxCeI/TrpFfepNGW
-         kQFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706049384; x=1706654184;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3/Yjct9w9OwNW7EA63W+TU6+iZOg/M5pr/hq6Il+TEo=;
-        b=Q01zZ55CtDfabfTxXp8dxcptIwhwpGIH4iESNGC68giTec7SBGIqoIo3J397W1HznZ
-         Vw0AlSd4UJFWdM2QlKqhDOb3Jw5G25TVHnF0K1vIn7Ev+2+Sa0sEzZIjxwEZQl2gOHeJ
-         3jTUVjPPtcLMtv7ObYBEt+lEov3Own63LeRp2INGRD4mzNrWw6bJBwTjWiUtPV4o9kxN
-         tCmm9Ucg4wBclxjxTyAzI4mBp3AETf0x6KAHEQcX9d4iA189CwK23SvqMFmUYV+gQbcK
-         WacupESWNjEblB9sibrWGULfvONKkgpA24Ep+CLWHJyd/u8FDzN3YGrXjavzk9yOiUtm
-         +DtQ==
-X-Gm-Message-State: AOJu0Ywqj/zrODSf5MMQz8ncod/QdUwIi0Dy82TZc2Yu5nGUeSCP/GRO
-	ARwa8wkF9P1VrgczMVh4VKMa5pnQaExod+9Fhkbz8QWZXB++Kr9xCun++dut
-X-Google-Smtp-Source: AGHT+IFM/1ZZ032mmP+pOj9N4TP8cIEGf04lpwTBJwL0JUQZ9XlYtgTCPSkhRRy6cXANuW7R+ORXFg==
-X-Received: by 2002:a17:902:b58c:b0:1d7:a2:3332 with SMTP id a12-20020a170902b58c00b001d700a23332mr3600780pls.114.1706049383849;
-        Tue, 23 Jan 2024 14:36:23 -0800 (PST)
-Received: from john.. ([98.97.113.214])
-        by smtp.gmail.com with ESMTPSA id x9-20020a170902e04900b001d73f1fbdd9sm4875241plx.154.2024.01.23.14.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 14:36:22 -0800 (PST)
-From: John Fastabend <john.fastabend@gmail.com>
-To: netdev@vger.kernel.org,
-	jakub@cloudflare.com
-Cc: john.fastabend@gmail.com,
-	bpf@vger.kernel.org
-Subject: [PATCH bpf-next 4/4] bpf: sockmap test cork and pop combined
-Date: Tue, 23 Jan 2024 14:36:12 -0800
-Message-Id: <20240123223612.1015788-5-john.fastabend@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20240123223612.1015788-1-john.fastabend@gmail.com>
-References: <20240123223612.1015788-1-john.fastabend@gmail.com>
+	s=arc-20240116; t=1706049681; c=relaxed/simple;
+	bh=KBDvm6jR3jzfuV1y7xgwPcuBi4NbghpqGKRgTpdaYA0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=iAXyhE05Jd4Buz6p3cm7XCHcTjvbPFpUVLct3sD6V4vhQf+hDyZAx0XdxPUriOyv68+1NOUEhzkvHvQdatgJHy8Y5I5xSOcN+oyi8dU7dkIPjPBlMtDz195yw04QHqktOGRUL23MkfL3acPksYnKO1Dxl2PaZ+EqPcy/N84Xy/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ID5Mj2TG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D1F8C433F1;
+	Tue, 23 Jan 2024 22:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706049681;
+	bh=KBDvm6jR3jzfuV1y7xgwPcuBi4NbghpqGKRgTpdaYA0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ID5Mj2TG0vzsElzcLaMMnAeMTMVOy3C7JHQmAlFvDkTN6e51X3uYJw58Msqy0vT1P
+	 Sh2qQipu6ey19zHf7Lg3RNlPjzBpjW9T/P2fKyDQpxbrBMstepn64I2VFf5FraHQ3A
+	 gk5JYjZY+mJPUZfaTzY/eX6l2/BZLpOitxIdeHie+fA7QKeQAQQlgv5PU9AjolshuV
+	 V+hKnmz6hxJoi6WKcMT55N3wLRzhvfIg4H5NTXp4KeRzgtPJ/QIv4bep2o/UXBwg/5
+	 3z7lS0DKBMV4mgimBuNujDHL4xl747fdAY6S1tla2VhN+eJmR9u8yGYr+L95BzmT3A
+	 OyhtMLfb/pCyA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 489EBDFF761;
+	Tue, 23 Jan 2024 22:41:21 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,105 +52,64 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] riscv,
+ bpf: Fix unpredictable kernel crash about RV64 struct_ops
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170604968128.538.9171637206468068779.git-patchwork-notify@kernel.org>
+Date: Tue, 23 Jan 2024 22:41:21 +0000
+References: <20240123023207.1917284-1-pulehui@huaweicloud.com>
+In-Reply-To: <20240123023207.1917284-1-pulehui@huaweicloud.com>
+To: Pu Lehui <pulehui@huaweicloud.com>
+Cc: bpf@vger.kernel.org, linux-riscv@lists.infradead.org,
+ netdev@vger.kernel.org, bjorn@kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, palmer@dabbelt.com,
+ luke.r.nels@gmail.com, pulehui@huawei.com
 
-Its possible to cork data for some N bytes and then pop
-a some bytes off that scatterlist. Test combining cork
-and pop here.
+Hello:
 
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- .../bpf/prog_tests/sockmap_msg_helpers.c      | 19 ++++++++++++++-----
- .../bpf/progs/test_sockmap_msg_helpers.c      | 14 +++++++++++++-
- 2 files changed, 27 insertions(+), 6 deletions(-)
+This patch was applied to bpf/bpf.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c b/tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c
-index a05000b07891..cf38d6bb3f94 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_msg_helpers.c
-@@ -21,7 +21,7 @@ struct msg_test_opts {
- 
- #define POP_END -1
- 
--static void cork_send(struct msg_test_opts *opts, int cork)
-+static void cork_send(struct msg_test_opts *opts, int cork, int start, int len)
- {
- 	struct test_sockmap_msg_helpers *skel = opts->skel;
- 	char buf[] = "abcdefghijklmnopqrstuvwxyz";
-@@ -29,9 +29,12 @@ static void cork_send(struct msg_test_opts *opts, int cork)
- 	char *recvbuf;
- 	int i;
- 
--	skel->bss->pop = false;
-+	skel->bss->pop = !!len;
- 	skel->bss->cork = cork;
- 
-+	skel->bss->pop_start = start;
-+	skel->bss->pop_len = len;
-+
- 	/* Send N bytes in 27B chunks */
- 	for (i = 0; i < cork / sizeof(buf); i++) {
- 		sent = xsend(opts->client, buf, sizeof(buf), 0);
-@@ -48,7 +51,7 @@ static void cork_send(struct msg_test_opts *opts, int cork)
- 	ASSERT_EQ(skel->bss->size, cork, "cork did not receive all bytes");
- 
- 	recv = xrecv_nonblock(opts->server, recvbuf, total, 0);
--	if (recv != total)
-+	if (recv != total - len)
- 		FAIL("Received incorrect number of bytes");
- 
- 	free(recvbuf);
-@@ -88,9 +91,15 @@ static void test_sockmap_cork()
- 	opts.skel = skel;
- 
- 	/* Small cork */
--	cork_send(&opts, 54);
-+	cork_send(&opts, 54, 0, 0);
- 	/* Full cork */
--	cork_send(&opts, 270);
-+	cork_send(&opts, 270, 0, 0);
-+
-+	/* Combine cork and pop small */
-+	cork_send(&opts, 54, 0, 10);
-+	/* Full cork and pop */
-+	cork_send(&opts, 270, 200, 50);
-+
- close_sockets:
- 	close(client);
- 	close(server);
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_msg_helpers.c b/tools/testing/selftests/bpf/progs/test_sockmap_msg_helpers.c
-index 9622f154d016..4c7e70367e35 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_msg_helpers.c
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_msg_helpers.c
-@@ -37,8 +37,19 @@ int msg_helpers(struct sk_msg_md *msg)
- {
- 	size = msg->size;
- 
--	if (cork)
-+	/* If message is not yet fully cork'ed skip push, pull, pop */
-+	if (cork && cork > msg->size) {
- 		err = bpf_msg_cork_bytes(msg, cork);
-+		goto out;
-+	} else if (cork) {
-+	/* If we previously corked the msg we need to clear the cork
-+	 * otherwise next pop would cause datapath to wait for the
-+	 * popped bytes to actually do the send.
-+	 */
-+		err = bpf_msg_cork_bytes(msg, 0);
-+		if (err)
-+			goto out;
-+	}
- 
- 	if (pull)
- 		err = bpf_msg_pull_data(msg, pull_start, pull_end, 0);
-@@ -49,6 +60,7 @@ int msg_helpers(struct sk_msg_md *msg)
- 	if (pop)
- 		err = bpf_msg_pop_data(msg, pop_start, pop_len, 0);
- 
-+out:
- 	return SK_PASS;
- }
- 
+On Tue, 23 Jan 2024 02:32:07 +0000 you wrote:
+> From: Pu Lehui <pulehui@huawei.com>
+> 
+> We encountered a kernel crash triggered by the bpf_tcp_ca testcase as
+> show below:
+> 
+> Unable to handle kernel paging request at virtual address ff60000088554500
+> Oops [#1]
+> ...
+> CPU: 3 PID: 458 Comm: test_progs Tainted: G           OE      6.8.0-rc1-kselftest_plain #1
+> Hardware name: riscv-virtio,qemu (DT)
+> epc : 0xff60000088554500
+>  ra : tcp_ack+0x288/0x1232
+> epc : ff60000088554500 ra : ffffffff80cc7166 sp : ff2000000117ba50
+>  gp : ffffffff82587b60 tp : ff60000087be0040 t0 : ff60000088554500
+>  t1 : ffffffff801ed24e t2 : 0000000000000000 s0 : ff2000000117bbc0
+>  s1 : 0000000000000500 a0 : ff20000000691000 a1 : 0000000000000018
+>  a2 : 0000000000000001 a3 : ff60000087be03a0 a4 : 0000000000000000
+>  a5 : 0000000000000000 a6 : 0000000000000021 a7 : ffffffff8263f880
+>  s2 : 000000004ac3c13b s3 : 000000004ac3c13a s4 : 0000000000008200
+>  s5 : 0000000000000001 s6 : 0000000000000104 s7 : ff2000000117bb00
+>  s8 : ff600000885544c0 s9 : 0000000000000000 s10: ff60000086ff0b80
+>  s11: 000055557983a9c0 t3 : 0000000000000000 t4 : 000000000000ffc4
+>  t5 : ffffffff8154f170 t6 : 0000000000000030
+> status: 0000000200000120 badaddr: ff60000088554500 cause: 000000000000000c
+> Code: c796 67d7 0000 0000 0052 0002 c13b 4ac3 0000 0000 (0001) 0000
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf] riscv, bpf: Fix unpredictable kernel crash about RV64 struct_ops
+    https://git.kernel.org/bpf/bpf/c/1732ebc4a261
+
+You are awesome, thank you!
 -- 
-2.33.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
