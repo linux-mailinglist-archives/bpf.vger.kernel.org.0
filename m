@@ -1,186 +1,251 @@
-Return-Path: <bpf+bounces-20084-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20085-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5EC7838FC1
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 14:26:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BFC8839074
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 14:53:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54C8D1F264B8
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 13:26:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E47AC1F22E10
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 13:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA325FDD4;
-	Tue, 23 Jan 2024 13:15:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22AC35F841;
+	Tue, 23 Jan 2024 13:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="N4JjVyk4"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j5yWyNDX";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j5yWyNDX"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2DDA60248
-	for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 13:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961585EE87;
+	Tue, 23 Jan 2024 13:52:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706015729; cv=none; b=JSFBdk54iSTq375XYuhknrDij8mKOEOCzXkzwQq0VRosHJHmaBp0AiYQWuN3Q7c1OPEgfs5lHlNMDdZK1LpIVm06zRrdpiBCiUrminsxtj+Kc5Qo7EfuQqJdQG0LHpqS18D4tS8mn0ehMtjHu1l6FtDPkE63IRyj1KjPxQsXUpo=
+	t=1706017970; cv=none; b=LsAmvdPIKvNmOMQhwzocEuoIsvAswex+VtyvVJSWZfl7yLwFXgrofufbOOOLHiZktETUfllEKnCpmX2maoAZyMZrGJ8+B5PsXv5bKj9XRgKvYvA5NPA3TK4nB49msHS/ODl1Dls1xgy85udFC9eKSaVuhgSAcLKqrTBGji8eFcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706015729; c=relaxed/simple;
-	bh=M+VhKqH9tmrfCamt9jQYIe0AslgZkcHSPIugbic5y/8=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=emTSm/yCdTem37vnFd+xyO8LQhaDxrbNZ4AVf+CDN5WTdItcwoUzeKdK/eXdyrTJCOtk3FA7uX1IPalj0arEa3MHdmfB9+tPg3JHxpSlPy5KIZW8TwGrbmA69Z9ovz0o2K5MsLK6lgL1WBP1SCwZcn6tBJkal8xtW4Jn20RFiEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=N4JjVyk4; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=yNmTmqPO0Ve3Q/+Hp7iVnUvYuk7oGeZuR8hQ/0yVpnU=; b=N4JjVyk4cXzvcktObr1f1IbmWF
-	/HZv5CJsmNMEfcc6xN9NQe5h/RDYfuy+OxLMde0P5fghT22yUO4GM7sh301UD0Fu8Tqn/ptrjEUhL
-	qlEYY0TOBimGqookgRWUklnqK7vcddyuDzs863HFApYfScJ0Xyn26bdsK8iGRTzqq+46zE+e3VG8C
-	Cyd99tnTQp8Wf4IZF0L0d3W8E5HYldJl1jICrzkn47yMaXyjeUbpoLmlOiea4aNbSzKc7dlXgZL+W
-	DPLhzlgk+ircxkQhVYfiodN2J/CcUBPUEP1E+9S6aNm/Kgj3WtMlF9nOrXGuifV2aJ1/F/aVW8/F6
-	68XnugTw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rSGcX-000ClV-NX; Tue, 23 Jan 2024 14:15:17 +0100
-Received: from [85.1.206.226] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1rSGcX-00091k-DU; Tue, 23 Jan 2024 14:15:17 +0100
-Subject: Re: [bug report] bpf: Add fd-based tcx multi-prog infra with link
- support
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: bpf@vger.kernel.org, Mathias Krause <minipli@grsecurity.net>
-References: <c46a511a-0335-44f5-b6ae-6ad71d6ef012@moroto.mountain>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d31ca459-5fcf-9e88-03dc-42e9fc10028a@iogearbox.net>
-Date: Tue, 23 Jan 2024 14:15:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1706017970; c=relaxed/simple;
+	bh=JQy/dr7uzQI0KyqlOvGb+umF6PLdRTxKI0y9SDbr8XM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=s1quPeAVYEm7PB3Ivwd1/QH+6gterVMQedAlMGx6HRKmLpbcn7apZcuySyWae2cbSGyWeV4BDsKvvjY3kHzSV8mVaqymd4wtTDK+g411yphZOjQ7zIWdRuMQRnvuBUi9891DON4yEhFS7BAddNxlXLg2y9g3Y98dH/Ci1nQXm0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j5yWyNDX; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j5yWyNDX; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AE9971F791;
+	Tue, 23 Jan 2024 13:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706017966; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CarnWeIkkACTfle2HvzZUnaWqpriWpFFYHwb0I69pLU=;
+	b=j5yWyNDXGLWkCNyNnl7D6qNhCxUWFJpFiezdwaiko0Oa5EBUYsMwePeAf/YZUpxgwf9rxe
+	wuHOKp3c7bnYAhX9/Li5GIlMKE7+m1xYM8eHBWnI7EXJFefbiQ6AzON9JjRC76VLScj2LC
+	msRIH+dzyKd/qnoDj6SDYHRsB7B77tI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706017966; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CarnWeIkkACTfle2HvzZUnaWqpriWpFFYHwb0I69pLU=;
+	b=j5yWyNDXGLWkCNyNnl7D6qNhCxUWFJpFiezdwaiko0Oa5EBUYsMwePeAf/YZUpxgwf9rxe
+	wuHOKp3c7bnYAhX9/Li5GIlMKE7+m1xYM8eHBWnI7EXJFefbiQ6AzON9JjRC76VLScj2LC
+	msRIH+dzyKd/qnoDj6SDYHRsB7B77tI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 86802136A4;
+	Tue, 23 Jan 2024 13:52:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 46s9IK7Er2UMVwAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Tue, 23 Jan 2024 13:52:46 +0000
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	cake@lists.bufferbloat.net
+Cc: "David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	Stephen Hemminger <stephen@networkplumber.org>,
+	Petr Pavlu <ppavlu@suse.cz>,
+	Michal Kubecek <mkubecek@suse.cz>,
+	Martin Wilck <mwilck@suse.com>,
+	Pedro Tammela <pctammela@mojatatu.com>
+Subject: [PATCH v4 0/4] net/sched: Load modules via alias
+Date: Tue, 23 Jan 2024 14:52:38 +0100
+Message-ID: <20240123135242.11430-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <c46a511a-0335-44f5-b6ae-6ad71d6ef012@moroto.mountain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27163/Tue Jan 23 10:42:11 2024)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [7.50 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 R_RATELIMIT(0.00)[to_ip_from(RL63s8thh5w8zyxj4waeg9pq8e)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[29];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[davemloft.net,google.com,kernel.org,redhat.com,mojatatu.com,gmail.com,resnulli.us,iogearbox.net,linux.dev,toke.dk,intel.com,networkplumber.org,suse.cz,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: *******
+X-Spam-Score: 7.50
+X-Spam-Flag: NO
 
-Hi Dan,
+These modules may be loaded lazily without user's awareness and
+control. Add respective aliases to modules and request them under these
+aliases so that modprobe's blacklisting mechanism (through aliases)
+works for them. (The same pattern exists e.g. for filesystem
+modules.)
 
-On 1/23/24 11:43 AM, Dan Carpenter wrote:
-> Hello Daniel Borkmann and Benjamin Tissoires,
-> 
-> I've included both warnings because they're sort of related and
-> hopefully it will save time to have this discussion in one thread.  I
-> recently added fdget() to my Smatch check for CVE-2023-1838 type
-> warnings and it generated the following output.  I'm not an expert on
-> this stuff, I'm just a monkey see, monkey do programmer.  I've filtered
-> out the obvious false positives but I'm not sure about these.
-> 
-> The patch e420bed02507: "bpf: Add fd-based tcx multi-prog infra with
-> link support" from Jul 19, 2023 and f5c27da4e3c8 ("HID: initial BPF
-> implementation") from Nov 3, 2022 introduce the following static
-> checker warnings:
-> 
-> drivers/hid/bpf/hid_bpf_dispatch.c:287 hid_bpf_attach_prog() warn: double fget(): 'prog_fd'
-> drivers/hid/bpf/hid_bpf_jmp_table.c:427 __hid_bpf_attach_prog() warn: fd re-used after fget(): 'prog_fd'
-> kernel/bpf/syscall.c:3985 bpf_prog_detach() warn: double fget(): 'attr->attach_bpf_fd'
-> kernel/bpf/syscall.c:3988 bpf_prog_detach() warn: double fget(): 'attr->attach_bpf_fd'
-> kernel/bpf/syscall.c:3991 bpf_prog_detach() warn: double fget(): 'attr->attach_bpf_fd'
-> kernel/bpf/syscall.c:4001 bpf_prog_detach() warn: double fget(): 'attr->attach_bpf_fd'
+For example (before the change):
+  $ tc filter add dev lo parent 1: protocol ip prio 1 handle 10 tcindex ...
+  # cls_tcindex module is loaded despite a `blacklist cls_tcindex` entry
+  # in /etc/modprobe.d/*.conf
+
+After the change:
+  $ tc filter add dev lo parent 1: protocol ip prio 1 handle 10 tcindex ...
+  Unknown filter "tcindex", hence option "..." is unparsable
+  # explicit/acknowledged (privileged) action is needed
+  $ modprobe cls_tcindex
+  # blacklist entry won't apply to this direct modprobe, module is
+  # loaded with awareness
+
+A considered alternative was invoking `modprobe -b` always from
+request_module(), however, dismissed as too intrusive and slightly
+confusing in favor of the precedented aliases (the commit 7f78e0351394
+("fs: Limit sys_mount to only request filesystem modules.").
+
+User experience suffers in both alternatives. It's improvement is
+orthogonal to blacklist honoring.
+
+Changes from v1 (https://lore.kernel.org/r/20231121175640.9981-1-mkoutny@suse.com)
+- Treat sch_ and act_ modules analogously to cls_
+
+Changes from v2 (https://lore.kernel.org/r/20231206192752.18989-1-mkoutny@suse.com)
+- reorganized commits (one generated commit + manual pre-/post- work)
+- used alias names more fitting the existing net- aliases
+- more info in commit messages and cover letter
+- rebased on current master
+
+Changes from v3 (https://lore.kernel.org/r/20240112180646.13232-1-mkoutny@suse.com)
+- rebase on netdev/net-next/main
+- correct aliases in cls_* modules (wrong sed)
+- replace repeated prefix strings with a macro
+- patch also request_module call in qdisc_set_default()
+
+Michal Koutný (4):
+  net/sched: Add helper macros with module names
+  net/sched: Add module aliases for cls_,sch_,act_ modules
+  net/sched: Load modules via their alias
+  net/sched: Remove alias of sch_clsact
+
+ include/net/act_api.h      | 2 ++
+ include/net/pkt_cls.h      | 2 ++
+ include/net/pkt_sched.h    | 2 ++
+ net/sched/act_api.c        | 2 +-
+ net/sched/act_bpf.c        | 1 +
+ net/sched/act_connmark.c   | 1 +
+ net/sched/act_csum.c       | 1 +
+ net/sched/act_ct.c         | 1 +
+ net/sched/act_ctinfo.c     | 1 +
+ net/sched/act_gact.c       | 1 +
+ net/sched/act_gate.c       | 1 +
+ net/sched/act_ife.c        | 1 +
+ net/sched/act_mirred.c     | 1 +
+ net/sched/act_mpls.c       | 1 +
+ net/sched/act_nat.c        | 1 +
+ net/sched/act_pedit.c      | 1 +
+ net/sched/act_police.c     | 1 +
+ net/sched/act_sample.c     | 1 +
+ net/sched/act_simple.c     | 1 +
+ net/sched/act_skbedit.c    | 1 +
+ net/sched/act_skbmod.c     | 1 +
+ net/sched/act_tunnel_key.c | 1 +
+ net/sched/act_vlan.c       | 1 +
+ net/sched/cls_api.c        | 2 +-
+ net/sched/cls_basic.c      | 1 +
+ net/sched/cls_bpf.c        | 1 +
+ net/sched/cls_cgroup.c     | 1 +
+ net/sched/cls_flow.c       | 1 +
+ net/sched/cls_flower.c     | 1 +
+ net/sched/cls_fw.c         | 1 +
+ net/sched/cls_matchall.c   | 1 +
+ net/sched/cls_route.c      | 1 +
+ net/sched/cls_u32.c        | 1 +
+ net/sched/sch_api.c        | 4 ++--
+ net/sched/sch_cake.c       | 1 +
+ net/sched/sch_cbs.c        | 1 +
+ net/sched/sch_choke.c      | 1 +
+ net/sched/sch_codel.c      | 1 +
+ net/sched/sch_drr.c        | 1 +
+ net/sched/sch_etf.c        | 1 +
+ net/sched/sch_ets.c        | 1 +
+ net/sched/sch_fq.c         | 1 +
+ net/sched/sch_fq_codel.c   | 1 +
+ net/sched/sch_gred.c       | 1 +
+ net/sched/sch_hfsc.c       | 1 +
+ net/sched/sch_hhf.c        | 1 +
+ net/sched/sch_htb.c        | 1 +
+ net/sched/sch_ingress.c    | 3 ++-
+ net/sched/sch_mqprio.c     | 1 +
+ net/sched/sch_multiq.c     | 1 +
+ net/sched/sch_netem.c      | 1 +
+ net/sched/sch_pie.c        | 1 +
+ net/sched/sch_plug.c       | 1 +
+ net/sched/sch_prio.c       | 1 +
+ net/sched/sch_qfq.c        | 1 +
+ net/sched/sch_red.c        | 1 +
+ net/sched/sch_sfb.c        | 1 +
+ net/sched/sch_sfq.c        | 1 +
+ net/sched/sch_skbprio.c    | 1 +
+ net/sched/sch_taprio.c     | 1 +
+ net/sched/sch_tbf.c        | 1 +
+ 61 files changed, 66 insertions(+), 5 deletions(-)
 
 
-[...]
-> kernel/bpf/syscall.c
->      3956 static int bpf_prog_detach(const union bpf_attr *attr)
->      3957 {
->      3958         struct bpf_prog *prog = NULL;
->      3959         enum bpf_prog_type ptype;
->      3960         int ret;
->      3961
->      3962         if (CHECK_ATTR(BPF_PROG_DETACH))
->      3963                 return -EINVAL;
->      3964
->      3965         ptype = attach_type_to_prog_type(attr->attach_type);
->      3966         if (bpf_mprog_supported(ptype)) {
->      3967                 if (ptype == BPF_PROG_TYPE_UNSPEC)
->      3968                         return -EINVAL;
->      3969                 if (attr->attach_flags & ~BPF_F_ATTACH_MASK_MPROG)
->      3970                         return -EINVAL;
->      3971                 if (attr->attach_bpf_fd) {
->      3972                         prog = bpf_prog_get_type(attr->attach_bpf_fd, ptype);
->                                                            ^^^^^^^^^^^^^^^^^^^
->  From my understanding then this prog might not be the same prog which
-> we detach from later...
+base-commit: 736b5545d39ca59d4332a60e56cc8a1a5e264a8e
+-- 
+2.43.0
 
-Thanks for double checking, Dan! This branch above is only accessible when
-bpf_mprog_supported(ptype) holds true which is as of today BPF_PROG_TYPE_SCHED_CLS.
-
->      3973                         if (IS_ERR(prog))
->      3974                                 return PTR_ERR(prog);
->      3975                 }
->      3976         } else if (attr->attach_flags ||
->      3977                    attr->relative_fd ||
->      3978                    attr->expected_revision) {
->      3979                 return -EINVAL;
->      3980         }
->      3981
->      3982         switch (ptype) {
->      3983         case BPF_PROG_TYPE_SK_MSG:
->      3984         case BPF_PROG_TYPE_SK_SKB:
-> --> 3985                 ret = sock_map_prog_detach(attr, ptype);
->                                                      ^^^^
-> here.  Because instead of re-using prog we look it up again.
-
-So we never enter into this switch case given the ptype.
-
->      3986                 break;
->      3987         case BPF_PROG_TYPE_LIRC_MODE2:
->      3988                 ret = lirc_prog_detach(attr);
->      3989                 break;
->      3990         case BPF_PROG_TYPE_FLOW_DISSECTOR:
->      3991                 ret = netns_bpf_prog_detach(attr, ptype);
->      3992                 break;
->      3993         case BPF_PROG_TYPE_CGROUP_DEVICE:
->      3994         case BPF_PROG_TYPE_CGROUP_SKB:
->      3995         case BPF_PROG_TYPE_CGROUP_SOCK:
->      3996         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
->      3997         case BPF_PROG_TYPE_CGROUP_SOCKOPT:
->      3998         case BPF_PROG_TYPE_CGROUP_SYSCTL:
->      3999         case BPF_PROG_TYPE_SOCK_OPS:
->      4000         case BPF_PROG_TYPE_LSM:
->      4001                 ret = cgroup_bpf_prog_detach(attr, ptype);
->      4002                 break;
->      4003         case BPF_PROG_TYPE_SCHED_CLS:
->      4004                 if (attr->attach_type == BPF_TCX_INGRESS ||
->      4005                     attr->attach_type == BPF_TCX_EGRESS)
->      4006                         ret = tcx_prog_detach(attr, prog);
->      4007                 else
->      4008                         ret = netkit_prog_detach(attr, prog);
-
-... only these two detach functions above.
-
->      4009                 break;
->      4010         default:
->      4011                 ret = -EINVAL;
->      4012         }
->      4013
->      4014         if (prog)
->      4015                 bpf_prog_put(prog);
->      4016         return ret;
->      4017 }
-
-Thanks,
-Daniel
 
