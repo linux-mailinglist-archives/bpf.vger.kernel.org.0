@@ -1,184 +1,136 @@
-Return-Path: <bpf+bounces-20108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-20109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C0A83994A
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 20:13:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06BF88399C0
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 20:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10340291FAE
-	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 19:13:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3FC828E5D5
+	for <lists+bpf@lfdr.de>; Tue, 23 Jan 2024 19:40:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E259811F5;
-	Tue, 23 Jan 2024 19:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAADA82D71;
+	Tue, 23 Jan 2024 19:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ee+fcp3e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P0TEFW81"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEE6481DC
-	for <bpf@vger.kernel.org>; Tue, 23 Jan 2024 19:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E34811EE;
+	Tue, 23 Jan 2024 19:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706036840; cv=none; b=e4HIW9XbwcWRJITS2tNbLkjgz0HBHIaVjCTbO7vFYwuIoH2CFQLFrBZjguN/p5X60k8HMlBndP1eH0T9nxqnCpO5GgTYxK1txFqIZhhJM9s3H9yoke7+Sp+j7g8CJ8WZXj72yIXpCdS0Vi8QRnpWiXe/AYdmYRdT+bc7H2SauLM=
+	t=1706038847; cv=none; b=ipqRdKNivIKpzDoGLP5hklmZBoTu3eXEfGcmkS6tFa4dN9l7wwEVtpZiNBt3NiX5eat3layQ6lo+tXem7L5O9Ni1sUCB/W4I4cQeABUVov/ncXlExVDGkhxJzuPUf5+eUJiPdbJzTXRjD1yVHj0xaBEHO1YVdcRe9J9RNtrXVd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706036840; c=relaxed/simple;
-	bh=T1ojnkDmieNUMaMydDicnh2ZYXE6abGTtCW1fNinP3A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EcqKxlaH8ivRhm/KluFy060odjQccslIXpIFjoX7hzdl7tTcKyr5qQJRduwFLqn7GLdjpoe3V4KenY8mdTGTMI7i5aPiTkIvbUXpO6uz28pirnak0drEol8+i97MPx8fOQ6R1IAvOjWfIDlAS7aK8AUWDYpeRz79s2eAYZb/p1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ee+fcp3e; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e2247f21-3400-42b3-b346-a743bbce7677@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1706036837;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jCDacNONIVJ/nJUMw1gdlDXfnAzHvUXGGwp1+atxAo8=;
-	b=ee+fcp3eRLoLkpIzrhkbeD5mGthoxUdACK5aCnxtH/jFZaatDDYbhXp0BRnJMd7NDWBQ5U
-	6pbcF6aj2Ve5GRYexQBu32PU3jNIEr2o3BtcdqBQd87H27L54ZEuuSgMZH6Il4B0CbMTd9
-	IVhY6fexOiVLwFjPHrg3Xz1WWp6xnE8=
-Date: Tue, 23 Jan 2024 11:07:10 -0800
+	s=arc-20240116; t=1706038847; c=relaxed/simple;
+	bh=FYtZI+5R9kqbjSYb9CK9Mm6YPb0kqh9T3mg3nzspY5U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U2Ifm9s7a1qjzqr0auNUEifdxsQwR+dlicq+Kh1+GVZJrZxZLX29xfV7JY47pwLqKhF+E0EYcdFXqxDbAbhd4nqCqvO0schjO/JN5FkWytllgLtCsBxRafgV1UUhRn50cBKbzkxkG98Hyw6GrXkw7xBsMAgyPyXSjYktC9OPwDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P0TEFW81; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-600391ec9b2so8970757b3.1;
+        Tue, 23 Jan 2024 11:40:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706038845; x=1706643645; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oAivyP7SbKKLe4N0sRsoFf7bFFfahehZe+y/KoPgB24=;
+        b=P0TEFW81lYUoKuJ7PcTfD17OuDM3oS6hR2Wx1WQoiDmuxliOfgOEwPfVoblwMXqCrh
+         RzPO1TvR3JYGYJqUkFJSkyEXsr6/qMIYvepnwdsE8bs0kmi9Yfo+3kSElvkOLs75f4Uo
+         AaxFv0mSI/tRTNMGYE1n6RQpM6CxNkJ7oQBqFHQOs7xoKRm7MeGfA/cAtA/qqG2UuUD9
+         JFjtcE5/Do6E6SpsAUiAx71saCTdp2a/z8qvEaqG6ooXzMpXjOkKKF/CRIsMc4UyABaJ
+         khFDShRp4gdsY/uDXo4oEjkX3ZpbV4BSUL1iJGuOhcO04qxXXMnMc4Q/DaQJxfrZ1Avb
+         eZ+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706038845; x=1706643645;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oAivyP7SbKKLe4N0sRsoFf7bFFfahehZe+y/KoPgB24=;
+        b=erNBDtWSDgLDYn0sF7V5HnOgfMwgZl4en1uFXFV6HKYzgL290aZZNRN51z9QLrnTi3
+         5P9wumqSoqWDJPR7sI97NVnjeU1GrTqC7JLP3Lr1UTDNA9KnpJrCDmHSGQQlp/NREK2E
+         OOSquVyMeKRGX+bVbqKNJVXqLn9AJaJ0/0861Z6AZpinFwM18PhJ9GcVZ+Iulh0bIe7/
+         YR60qy+26KOJpeh+agqiXj3kq4EOBd3gFZh3gskVLx3BwGbf0rciHFxJEXseIdUqAk+O
+         BYmyUPu10KRWMP+LlmvJENyq1GRiCO6B6aqiR36XyjEKAInC+NVMhKGKVQ9Vl1EovI4c
+         Pogg==
+X-Gm-Message-State: AOJu0YykdTIb0aLwbW0VZEDlgLM9BSzgPZfkCRtrt4lIdTFhBGIB0kfN
+	/8hjYOsE0bqvSYecll3tieJ7pKp7T974EsFM0LyLVQWdrWcjsJsQ2Er0ILsnXnWUc+dkl2jc/H2
+	GHcBcC/wsuSF65/jFdYPXAxl8abU=
+X-Google-Smtp-Source: AGHT+IFSVzcDtpKRx1NESTI2URlQLZhAj4l5YWQzSM41ldKFvTUC8ClxeX7cOF8O8RDXVVzZGreIVRJcqSjnr3ns/Nc=
+X-Received: by 2002:a0d:ca82:0:b0:5ee:6ad3:b0b1 with SMTP id
+ m124-20020a0dca82000000b005ee6ad3b0b1mr5302626ywd.4.1706038844712; Tue, 23
+ Jan 2024 11:40:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: use r constraint instead of p constraint in
- selftests
-Content-Language: en-GB
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-References: <20240123181309.19853-1-jose.marchesi@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240123181309.19853-1-jose.marchesi@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <cover.1705432850.git.amery.hung@bytedance.com>
+ <813b2de18b94389f4df53f21b8a328e1c2fdda13.1705432850.git.amery.hung@bytedance.com>
+ <CAEf4BzaDCsVOBgCkZKPpM2RbsiKQMLToRaiYpBYejX=F5DncuA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaDCsVOBgCkZKPpM2RbsiKQMLToRaiYpBYejX=F5DncuA@mail.gmail.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Tue, 23 Jan 2024 11:40:34 -0800
+Message-ID: <CAMB2axNXn80BCNyX5cxjD-+QgfVnYRhK-DesvxewB13=vywceA@mail.gmail.com>
+Subject: Re: [RFC PATCH v7 6/8] tools/libbpf: Add support for BPF_PROG_TYPE_QDISC
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, yangpeihao@sjtu.edu.cn, 
+	toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, sdf@google.com, 
+	xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Jan 22, 2024 at 4:18=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, Jan 17, 2024 at 1:57=E2=80=AFPM Amery Hung <ameryhung@gmail.com> =
+wrote:
+> >
+> > While eBPF qdisc uses NETLINK for attachment, expected_attach_type is
+> > required at load time to verify context access from different programs.
+> > This patch adds the section definition for this.
+> >
+> > Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+> > ---
+> >  tools/lib/bpf/libbpf.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> > index e067be95da3c..0541f85b4ce6 100644
+> > --- a/tools/lib/bpf/libbpf.c
+> > +++ b/tools/lib/bpf/libbpf.c
+> > @@ -8991,6 +8991,10 @@ static const struct bpf_sec_def section_defs[] =
+=3D {
+> >         SEC_DEF("struct_ops.s+",        STRUCT_OPS, 0, SEC_SLEEPABLE),
+> >         SEC_DEF("sk_lookup",            SK_LOOKUP, BPF_SK_LOOKUP, SEC_A=
+TTACHABLE),
+> >         SEC_DEF("netfilter",            NETFILTER, BPF_NETFILTER, SEC_N=
+ONE),
+> > +       SEC_DEF("qdisc/enqueue",        QDISC, BPF_QDISC_ENQUEUE, SEC_A=
+TTACHABLE_OPT),
+> > +       SEC_DEF("qdisc/dequeue",        QDISC, BPF_QDISC_DEQUEUE, SEC_A=
+TTACHABLE_OPT),
+> > +       SEC_DEF("qdisc/reset",          QDISC, BPF_QDISC_RESET, SEC_ATT=
+ACHABLE_OPT),
+> > +       SEC_DEF("qdisc/init",           QDISC, BPF_QDISC_INIT, SEC_ATTA=
+CHABLE_OPT),
+>
+> seems like SEC_ATTACHABLE (or just 0) is what you want.
+> expected_attach_type shouldn't be optional for any new program type
+>
 
-On 1/23/24 10:13 AM, Jose E. Marchesi wrote:
-> Some of the BPF selftests use the "p" constraint in inline assembly
-> snippets, for input operands for MOV (rN = rM) instructions.
->
-> This is mainly done via the __imm_ptr macro defined in
-> tools/testing/selftests/bpf/progs/bpf_misc.h:
->
->    #define __imm_ptr(name) [name]"p"(&name)
->
-> Example:
->
->    int consume_first_item_only(void *ctx)
->    {
->          struct bpf_iter_num iter;
->          asm volatile (
->                  /* create iterator */
->                  "r1 = %[iter];"
->                  [...]
->                  :
->                  : __imm_ptr(iter)
->                  : CLOBBERS);
->          [...]
->    }
->
-> The "p" constraint is a tricky one.  It is documented in the GCC manual
-> section "Simple Constraints":
->
->    An operand that is a valid memory address is allowed.  This is for
->    ``load address'' and ``push address'' instructions.
->
->    p in the constraint must be accompanied by address_operand as the
->    predicate in the match_operand.  This predicate interprets the mode
->    specified in the match_operand as the mode of the memory reference for
->    which the address would be valid.
->
-> There are two problems:
->
-> 1. It is questionable whether that constraint was ever intended to be
->     used in inline assembly templates, because its behavior really
->     depends on compiler internals.  A "memory address" is not the same
->     than a "memory operand" or a "memory reference" (constraint "m"), and
->     in fact its usage in the template above results in an error in both
->     x86_64-linux-gnu and bpf-unkonwn-none:
->
->       foo.c: In function ‘bar’:
->       foo.c:6:3: error: invalid 'asm': invalid expression as operand
->          6 |   asm volatile ("r1 = %[jorl]" : : [jorl]"p"(&jorl));
->            |   ^~~
->
->     I would assume the same happens with aarch64, riscv, and most/all
->     other targets in GCC, that do not accept operands of the form A + B
->     that are not wrapped either in a const or in a memory reference.
->
->     To avoid that error, the usage of the "p" constraint in internal GCC
->     instruction templates is supposed to be complemented by the 'a'
->     modifier, like in:
->
->       asm volatile ("r1 = %a[jorl]" : : [jorl]"p"(&jorl));
->
->     Internally documented (in GCC's final.cc) as:
->
->       %aN means expect operand N to be a memory address
->          (not a memory reference!) and print a reference
->          to that address.
->
->     That works because when the modifier 'a' is found, GCC prints an
->     "operand address", which is not the same than an "operand".
->
->     But...
->
-> 2. Even if we used the internal 'a' modifier (we shouldn't) the 'rN =
->     rM' instruction really requires a register argument.  In cases
->     involving automatics, like in the examples above, we easily end with:
->
->       bar:
->          #APP
->              r1 = r10-4
->          #NO_APP
->
->     In other cases we could conceibly also end with a 64-bit label that
->     may overflow the 32-bit immediate operand of `rN = imm32'
->     instructions:
->
->          r1 = foo
->
->     All of which is clearly wrong.
->
-> clang happens to do "the right thing" in the current usage of __imm_ptr
-> in the BPF tests, because even with -O2 it seems to "reload" the
-> fp-relative address of the automatic to a register like in:
->
->    bar:
-> 	r1 = r10
-> 	r1 += -4
-> 	#APP
-> 	r1 = r1
-> 	#NO_APP
->
-> Which is what GCC would generate with -O0.  Whether this is by chance
-> or by design, the compiler shouln't be expected to do that reload
-> driven by the "p" constraint.
->
-> This patch changes the usage of the "p" constraint in the BPF
-> selftests macros to use the "r" constraint instead.  If a register is
-> what is required, we should let the compiler know.
->
-> Previous discussion in bpf@vger:
-> https://lore.kernel.org/bpf/87h6p5ebpb.fsf@oracle.com/T/#ef0df83d6975c34dff20bf0dd52e078f5b8ca2767
->
-> Tested in bpf-next master.
-> No regressions.
->
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
+Got it. Will change the flags to SEC_NONE.
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-
+> >  };
+> >
+> >  int libbpf_register_prog_handler(const char *sec,
+> > --
+> > 2.20.1
+> >
+> >
 
